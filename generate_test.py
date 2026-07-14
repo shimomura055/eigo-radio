@@ -8,10 +8,11 @@
 #   → 概要・キーワードコーナー組み立て(機械的) → 保存
 #
 # 使い方:
-#   python generate_test.py                  … B1レベルで通常実行(採点シート方式)
-#   python generate_test.py --level=A2        … A2レベルで実行
-#   python generate_test.py --auto            … 人間採点をスキップして自動選定
-#   python generate_test.py --level=B2 --auto … 組み合わせ可能
+#   python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py
+#   python generate_test.py --level=A2 --topic=topic_package_X.py --auto
+#   python generate_test.py --level=B2 --topic=topic_package_X.py --auto --full-auto
+#
+# --topic=は、gather_topic.pyが出力したtopic_package_*.pyのパスを指定する(必須)。
 
 import glob
 import json
@@ -65,6 +66,19 @@ LEVEL = LEVELS[LEVEL_KEY]
 MIN_WORDS = LEVEL["min_words"]
 MAX_WORDS = LEVEL["max_words"]
 
+# --- ブロック1-4: --topic=path/to/topic_package_X.py の指定を読み取る ---
+# 実行例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py
+# デフォルト値は持たない(貼り付け・git checkoutでの手動運用に戻さないため指定必須)
+TOPIC_PATH = None
+for arg in sys.argv:
+    if arg.startswith("--topic="):
+        TOPIC_PATH = arg.split("=", 1)[1]
+if TOPIC_PATH is None:
+    raise SystemExit(
+        "エラー: --topic=path/to/topic_package_X.py を指定してください"
+        "(例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py)"
+    )
+
 # レベルごとにファイルを分けるためのパターン。
 # これにより candidates_A2_001.md と episode_B2_003.json のように混ざらなくなる。
 CANDIDATES_PATTERN = f"candidates_{LEVEL_KEY}_*.md"
@@ -76,54 +90,34 @@ print(f"レベル設定: {LEVEL_KEY}({LEVEL['level_name']}) / AUTO_MODE={AUTO_MO
 # ============================================================
 # ブロック2: 今日のネタ(1トピック分をまとめて管理する)
 # ============================================================
-# トピックを切り替えるときは、このTOPIC_PACKAGE辞書を丸ごと差し替える。
-# 変数が分散していると更新漏れが起きるため、必ずセットで管理する。
-TOPIC_PACKAGE = {
-    'topic': 'The U.S.–Iran ceasefire is collapsing as Washington prepares to blockade Iranian ports and both sides contest control of the strategically vital Strait of Hormuz.',
-    'facts': """VERIFIED FACTS (confirmed by Associated Press, The Washington Post, Axios, ThePrint, CBS News - use as-is, do not invent numbers/quotes beyond these):
-- On July 13, 2026, the United States announced a new wave of strikes against Iranian military targets.
-- U.S. Central Command said American forces struck Iranian air-defense systems, coastal radar, missile and drone facilities, and small boats.
-- The U.S. military said it used one-way attack sea drones against an Iranian ship-maintenance facility and submarine; the Associated Press described this as the first reported U.S. use of that weapon in the conflict.
-- President Donald Trump announced that the United States would resume a naval blockade of Iranian ports and coastal areas beginning July 14 at 4 p.m. Eastern Time.
-- Trump said the United States would seek reimbursement equal to 20% of the value of cargo carried through the strait in exchange for providing security.
-- Iran's military leadership said the United States would not be permitted to determine how the Strait of Hormuz is managed.
-- The United States told Congress that renewed military action against Iran began on July 7, 2026, according to a letter obtained by CBS News.
-- Brent crude oil rose 7.8% on July 13 to $81.92 per barrel, according to The Washington Post's Associated Press report.
+# TOPIC_PACKAGEはコードに直接書かず、--topicで指定した外部ファイル
+# (gather_topic.py が出力する topic_package_*.py)から読み込む。
+# これにより「貼り付け→確認→git checkoutで戻す」という手動運用と、
+# それに伴う編集の巻き込み事故がなくなる。
+REQUIRED_TOPIC_KEYS = ["topic", "facts", "headlines", "article_summaries", "needs_name_check"]
 
-CONTESTED / SINGLE-SOURCE (attribute clearly, do not present as settled fact):
-- Iran's Revolutionary Guards said they attacked U.S. facilities in Bahrain and Kuwait, destroyed radar systems in Oman, and struck fuel and ammunition sites at Jordan's Prince Hassan Air Base; these claims could not be independently verified at the time.
-- Iran said it had closed the Strait of Hormuz, while the United States said the waterway remained open and that Iran did not control it; the rival claims do not establish the actual condition of shipping.
-- Axios reported that the practical details and seriousness of Trump's proposed 20% shipping charge were unclear and that regional allies had not been consulted.
-- Iranian official or semiofficial sources made claims about specific numbers of people killed or injured by U.S. strikes, but the figures were not independently confirmed in the sources reviewed.
-- The International Maritime Organization said there was no legal basis for mandatory transit tolls, while Iran and Trump argued that whoever provides security should receive compensation.
+def load_topic_package(path):
+    """--topicで指定された.pyファイルを読み込み、中のTOPIC_PACKAGE変数を取り出す。
+    自分のgather_topic.pyが生成した信頼できるローカルファイルという前提でexecする。"""
+    if not os.path.isfile(path):
+        raise SystemExit(f"エラー: --topicで指定されたファイルが見つかりません: {path}")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            code = f.read()
+        namespace = {}
+        exec(compile(code, path, "exec"), namespace)
+    except Exception as e:
+        raise SystemExit(f"エラー: --topicのファイル読み込みに失敗しました({path}): {e}")
+    if "TOPIC_PACKAGE" not in namespace:
+        raise SystemExit(f"エラー: {path} にTOPIC_PACKAGE変数が定義されていません。")
+    package = namespace["TOPIC_PACKAGE"]
+    missing = [k for k in REQUIRED_TOPIC_KEYS if k not in package]
+    if missing:
+        raise SystemExit(f"エラー: {path} のTOPIC_PACKAGEに必要なキーが不足しています: {', '.join(missing)}")
+    return package
 
-GENERAL KNOWLEDGE (you may explain these established concepts from your own knowledge):
-- The Strait of Hormuz is a major maritime chokepoint linking the Persian Gulf with the Gulf of Oman and the Arabian Sea.
-- Before the current conflict, roughly one-fifth of the world's oil and gas shipments passed through the strait.
-- Even a partial shutdown can affect fuel prices, insurance costs, shipping schedules, inflation, and energy supplies far beyond the Middle East.
-- The crisis follows a U.S.–Iran interim agreement intended to reopen the strait and pause fighting while the two sides pursued further negotiations.
-- The central political question now includes whether Iran, the United States, or neither country can dictate rules for commercial shipping through the strait.
-
-SPECULATION (encouraged, but always clearly framed, e.g. "If X happens..."):
-- If the United States enforces the announced blockade, Iran could respond with attacks on commercial shipping or regional military facilities, increasing the risk of a wider war.
-- If the strait becomes partially or fully inaccessible, energy prices, shipping insurance, and consumer inflation could rise globally.
-- If neither side can establish uncontested control, commercial carriers may delay voyages or reroute despite official claims that the waterway remains open.""",
-    'headlines': ['Associated Press: New U.S. strikes follow Trump’s plan to blockade Iran and charge ships for Hormuz protection', 'Reuters: Trump says Washington is restoring its blockade of Iranian shipping after renewed clashes', 'Axios: Trump’s Iran blockade is set to begin Tuesday afternoon', 'The Washington Post: U.S. strikes Iran again as Trump announces a renewed blockade and proposed shipping fees', 'RFE/RL: U.S. attacks on Iran prompt accusations that Tehran targeted civilians in Bahrain', 'CBS News: Trump tells Congress that military action against Iran resumed on July 7'],
-    'article_summaries': """Lead sentences by outlet (paraphrased close to the original opening line, not verbatim):
-
-Associated Press: The United States launched another round of attacks on Iran soon after Trump announced that Washington would restore a blockade and charge ships for protection in the Strait of Hormuz.
-
-Reuters: Trump said the United States was reinstating its blockade of Iranian shipping while promising to keep the Strait of Hormuz open after new missile and drone exchanges.
-
-Axios: The administration said it would stop ships from entering or leaving Iranian ports, with enforcement scheduled to begin at 4 p.m. Eastern Time on July 14.
-
-The Washington Post: The latest U.S. strikes came after Trump announced a renewed blockade and a significant policy shift involving fees for ships using the strait.
-
-RFE/RL: U.S. attacks on southern Iran prompted Iranian retaliation claims involving Gulf neighbors, including a Bahrain accusation that civilians were targeted.
-
-CBS News: Trump formally notified Congress that the renewed military campaign against Iran began July 7 and that U.S. forces remained prepared for additional action.""",
-    'needs_name_check': False,
-}
+TOPIC_PACKAGE = load_topic_package(TOPIC_PATH)
+print(f"トピック読み込み: {TOPIC_PATH}")
 
 TOPIC = TOPIC_PACKAGE["topic"]
 FACTS = TOPIC_PACKAGE["facts"]
