@@ -64,6 +64,18 @@ Your job:
        institutional-policy story is not the only valid choice, and should not be the default
        pick just because it is the most "official" or most widely covered story.
    State your judgment ((a) or (b)) and a one-line reason before writing MAIN STORY.
+0b. IF YOU JUDGED (b) BROAD TOPIC AREA: before deciding on the main storyline, do NOT settle
+    for a single broad search. You MUST run separate, explicitly different searches covering
+    at least these angles:
+    - a PRACTICAL angle: "{GENRE}" combined with words like "tips" or "how to"
+    - a PERSONAL-EXPERIENCE angle: "{GENRE}" combined with words like "personal experience"
+      or "my story"
+    - a TREND angle: "{GENRE}" combined with words like "trend" or "viral"
+    - the usual broad news search, as before.
+    Only after reviewing results from ALL of these angles should you decide on the main
+    storyline. Do NOT default to a government-agency or institutional-policy story just
+    because it was the first or most prominent result from the single broad search - weigh
+    it against what the practical/personal-experience/trend searches turned up.
 1. Identify the SINGLE most newsworthy, emotionally engaging recent event or storyline -
    not just any news item, but the one that independent sources are treating as the main
    story right now (dramatic, surprising, or emotionally resonant - the kind of thing a fan
