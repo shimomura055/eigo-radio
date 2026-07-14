@@ -8,11 +8,11 @@
 #   → 概要・キーワードコーナー組み立て(機械的) → 保存
 #
 # 使い方:
-#   python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py
-#   python generate_test.py --level=A2 --topic=topic_package_X.py --auto
-#   python generate_test.py --level=B2 --topic=topic_package_X.py --auto --full-auto
+#   python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.json
+#   python generate_test.py --level=A2 --topic=topic_package_X.json --auto
+#   python generate_test.py --level=B2 --topic=topic_package_X.json --auto --full-auto
 #
-# --topic=は、gather_topic.pyが出力したtopic_package_*.pyのパスを指定する(必須)。
+# --topic=は、gather_topic.pyが出力したtopic_package_*.jsonのパスを指定する(必須)。
 
 import glob
 import json
@@ -66,8 +66,8 @@ LEVEL = LEVELS[LEVEL_KEY]
 MIN_WORDS = LEVEL["min_words"]
 MAX_WORDS = LEVEL["max_words"]
 
-# --- ブロック1-4: --topic=path/to/topic_package_X.py の指定を読み取る ---
-# 実行例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py
+# --- ブロック1-4: --topic=path/to/topic_package_X.json の指定を読み取る ---
+# 実行例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.json
 # デフォルト値は持たない(貼り付け・git checkoutでの手動運用に戻さないため指定必須)
 TOPIC_PATH = None
 for arg in sys.argv:
@@ -75,8 +75,8 @@ for arg in sys.argv:
         TOPIC_PATH = arg.split("=", 1)[1]
 if TOPIC_PATH is None:
     raise SystemExit(
-        "エラー: --topic=path/to/topic_package_X.py を指定してください"
-        "(例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.py)"
+        "エラー: --topic=path/to/topic_package_X.json を指定してください"
+        "(例: python generate_test.py --level=B1 --topic=topic_package_NISA_2026-07-14.json)"
     )
 
 # レベルごとにファイルを分けるためのパターン。
@@ -91,26 +91,20 @@ print(f"レベル設定: {LEVEL_KEY}({LEVEL['level_name']}) / AUTO_MODE={AUTO_MO
 # ブロック2: 今日のネタ(1トピック分をまとめて管理する)
 # ============================================================
 # TOPIC_PACKAGEはコードに直接書かず、--topicで指定した外部ファイル
-# (gather_topic.py が出力する topic_package_*.py)から読み込む。
+# (gather_topic.py が出力する topic_package_*.json)から読み込む。
 # これにより「貼り付け→確認→git checkoutで戻す」という手動運用と、
 # それに伴う編集の巻き込み事故がなくなる。
 REQUIRED_TOPIC_KEYS = ["topic", "facts", "headlines", "article_summaries", "needs_name_check"]
 
 def load_topic_package(path):
-    """--topicで指定された.pyファイルを読み込み、中のTOPIC_PACKAGE変数を取り出す。
-    自分のgather_topic.pyが生成した信頼できるローカルファイルという前提でexecする。"""
+    """--topicで指定された.jsonファイルを読み込み、TOPIC_PACKAGE辞書として返す。"""
     if not os.path.isfile(path):
         raise SystemExit(f"エラー: --topicで指定されたファイルが見つかりません: {path}")
     try:
         with open(path, "r", encoding="utf-8") as f:
-            code = f.read()
-        namespace = {}
-        exec(compile(code, path, "exec"), namespace)
-    except Exception as e:
-        raise SystemExit(f"エラー: --topicのファイル読み込みに失敗しました({path}): {e}")
-    if "TOPIC_PACKAGE" not in namespace:
-        raise SystemExit(f"エラー: {path} にTOPIC_PACKAGE変数が定義されていません。")
-    package = namespace["TOPIC_PACKAGE"]
+            package = json.load(f)
+    except json.JSONDecodeError as e:
+        raise SystemExit(f"エラー: --topicのファイルが正しいJSONではありません({path}): {e}")
     missing = [k for k in REQUIRED_TOPIC_KEYS if k not in package]
     if missing:
         raise SystemExit(f"エラー: {path} のTOPIC_PACKAGEに必要なキーが不足しています: {', '.join(missing)}")
