@@ -240,5 +240,3 @@ with wave.open(out_wav, "wb") as w:
 seconds = len(audio) / (SAMPLE_RATE * 2)
 print("-" * 50)
 print(f"{out_wav} を保存しました(約 {seconds/60:.1f} 分)")
-
-# test
