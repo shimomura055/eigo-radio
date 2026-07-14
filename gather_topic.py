@@ -50,10 +50,24 @@ Today is {TODAY}.
 Search the web for recent news (prioritize the last 7 days) about this topic.
 
 Your job:
+0. GENRE TYPE JUDGMENT (do this first): decide whether "{GENRE}" is:
+   (a) a SPECIFIC SUBJECT - a particular team, idol group, athlete, artist, or other distinct
+       entity that itself narrows down what counts as "the story" (e.g. a baseball team, an
+       idol group, a named athlete). For these, your job is unchanged: find whatever event or
+       storyline about that specific subject is most newsworthy right now.
+   (b) a BROAD TOPIC AREA - a wide theme like health, personal finance, or climate change that
+       could be approached from many different angles. For these, do NOT simply pick whichever
+       story is internationally the most prominent or contains the genre keyword most
+       literally. Instead, prioritize the angle a Japanese English-learner would want to
+       personally listen to out of genuine interest - practical tips, a relatable trend, or
+       something close to an individual's real experience. A government-agency or
+       institutional-policy story is not the only valid choice, and should not be the default
+       pick just because it is the most "official" or most widely covered story.
+   State your judgment ((a) or (b)) and a one-line reason before writing MAIN STORY.
 1. Identify the SINGLE most newsworthy, emotionally engaging recent event or storyline -
    not just any news item, but the one that independent sources are treating as the main
    story right now (dramatic, surprising, or emotionally resonant - the kind of thing a fan
-   would want to keep following).
+   would want to keep following), guided by the genre-type judgment above.
 2. Gather this from AT LEAST 4 independent, reputable sources (news outlets, official
    team/league/artist sites).
 3. For each source, note: the outlet name, their headline, and their opening/lead sentence.
@@ -75,6 +89,8 @@ Your job:
    be romanized more than one way (yes/no, and which names).
 
 Write your findings in plain text under these exact headings:
+## GENRE TYPE
+(a) or (b), and a one-line reason for the judgment
 ## MAIN STORY
 ## VERIFIED FACTS
 ## GENERAL KNOWLEDGE

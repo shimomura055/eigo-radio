@@ -537,7 +537,7 @@ Design these elements:
    (c) phrase/collocation units over single words (e.g. "take off", "look forward to", "stock market").
    (d) fit for the {LEVEL['level_name']} level.
    For each phrase, also give a natural, idiomatic Japanese translation.
-   Separately, if (and only if) the episode's core requires ONE genuinely specialist term or acronym that ordinary people would not know, name it as "specialist_term" - this one word keeps an in-dialogue moment where MAYA asks and LEO explains. If no such term is truly needed, set specialist_term to "none". Every other technical or academic term is BANNED from the episode - the concept must be expressed in everyday words without ever naming it.
+   Separately, if (and only if) the episode's core requires ONE genuinely specialist term or acronym that ordinary people would not know, name it as "specialist_term" - this one word keeps an in-dialogue moment where MAYA asks and LEO explains. NEVER pick a word or acronym that matches the topic's own name/label (e.g. if the topic is about NISA, "NISA" itself cannot be the specialist_term) - that term belongs in the SCENE/opening or the early dialogue where it gets introduced naturally, not saved for a mid-episode "reveal a jargon word" beat. specialist_term exists only for a secondary, peripheral technical term encountered while digging into the topic, not the topic's own name. If no such secondary term is truly needed, set specialist_term to "none". Every other technical or academic term is BANNED from the episode - the concept must be expressed in everyday words without ever naming it.
 
 8. CLOSING IMAGE + QUESTION: {closer['instruction']}
 
