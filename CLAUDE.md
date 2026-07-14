@@ -33,3 +33,9 @@ Commit Messageは、変更内容が分かる簡潔なものにする。
 - 動作確認に失敗した場合
 
 それ以外の通常の開発では、Commit・Pushまでを一連の作業として自動的に完了する。
+
+意味のある変更をCommit・Pushしたら、その報告の最後に、変更したファイルの
+raw.githubusercontent.com URLを、そのままコピペできる形で必ず添える。
+
+例:
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
