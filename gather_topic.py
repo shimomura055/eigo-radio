@@ -146,6 +146,13 @@ else having created the situation - if the research notes are ambiguous about wh
 involved, keep that ambiguity explicit rather than smoothing it into a cleaner-sounding
 but less accurate sentence.
 
+LANGUAGE REQUIREMENT: the "topic", "facts", "headlines", and "article_summaries" fields must
+ALL be written in English, regardless of what language the research notes or original sources
+are in. The downstream script-generation pipeline assumes English FACTS, so Japanese (or any
+other non-English) prose in these fields is not acceptable. Proper nouns (e.g. a Japanese
+person's name written in its native script) may still appear inside the English text where
+natural - only the surrounding prose must be English.
+
 Return ONLY valid JSON in this exact schema:
 {{
   "topic": "one sentence, present tense, describing the story (this becomes the episode's TOPIC line)",
