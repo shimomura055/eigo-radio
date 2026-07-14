@@ -1,0 +1,43 @@
+# levels.py - レベル規格の単一の真実の情報源(generate_test.py / tts_test.py 共通)
+LEVELS = {
+    "A1": {
+        "level_name": "CEFR A1 (beginner)",
+        "toeic_range": "120-224",
+        "vocab_range": "most frequent 500 words",
+        "budget": "2",
+        "avg_sentence_len": "7",
+        "wpm_range": "90-100",
+        "min_words": 520,
+        "max_words": 600,
+    },
+    "A2": {
+        "level_name": "CEFR A2 (elementary)",
+        "toeic_range": "225-450",
+        "vocab_range": "most frequent 1,000 words",
+        "budget": "3",
+        "avg_sentence_len": "10",
+        "wpm_range": "105-115",
+        "min_words": 620,
+        "max_words": 700,
+    },
+    "B1": {
+        "level_name": "CEFR B1 (intermediate)",
+        "toeic_range": "600-750",
+        "vocab_range": "most frequent 2,000 words",
+        "budget": "5",
+        "avg_sentence_len": "15",
+        "wpm_range": "125-140",
+        "min_words": 780,
+        "max_words": 880,
+    },
+    "B2": {
+        "level_name": "CEFR B2 (upper-intermediate)",
+        "toeic_range": "785-900",
+        "vocab_range": "most frequent 3,500 words",
+        "budget": "8",
+        "avg_sentence_len": "19",
+        "wpm_range": "150-165",
+        "min_words": 950,
+        "max_words": 1050,
+    },
+}

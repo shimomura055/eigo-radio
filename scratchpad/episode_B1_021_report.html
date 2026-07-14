@@ -1,0 +1,188 @@
+<title>Iran/US情勢エピソード検証レポート</title>
+<section style="max-width:820px;margin:0 auto;padding:2rem 1.25rem;line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+
+<style>
+  :root{
+    --ink:#1a1a1a; --sub:#555; --bg:#fff; --card:#f7f7f8; --border:#e3e3e6;
+    --accent:#8b3a3a; --accent-bg:#faf0f0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#e8e6e3; --sub:#a8a5a0; --bg:#1c1b1a; --card:#242322; --border:#3a3836; --accent-bg:#3a2626; }
+  }
+  :root[data-theme="dark"]{ --ink:#e8e6e3; --sub:#a8a5a0; --bg:#1c1b1a; --card:#242322; --border:#3a3836; --accent-bg:#3a2626; }
+  :root[data-theme="light"]{ --ink:#1a1a1a; --sub:#555; --bg:#fff; --card:#f7f7f8; --border:#e3e3e6; --accent-bg:#faf0f0; }
+
+  h1{font-size:1.5rem;margin:0 0 .25rem;color:var(--ink);}
+  h2{font-size:1.15rem;margin:2rem 0 .75rem;color:var(--ink);border-bottom:2px solid var(--border);padding-bottom:.4rem;}
+  h3{font-size:1rem;margin:1.25rem 0 .4rem;color:var(--ink);}
+  p, li{color:var(--ink);}
+  .meta{color:var(--sub);font-size:.9rem;margin-bottom:1.5rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin:.75rem 0;}
+  .label{font-weight:600;color:var(--sub);font-size:.82rem;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem;}
+  ul{padding-left:1.3rem;}
+  .headline-list li{margin-bottom:.4rem;}
+  .ladder-step{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:.75rem 1rem;margin-bottom:.6rem;}
+  .ladder-step .num{color:var(--accent);font-weight:700;}
+  .script{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;font-size:.95rem;}
+  .turn{margin-bottom:.9rem;}
+  .speaker{font-weight:700;}
+  .speaker.maya{color:#a15c2e;}
+  .speaker.leo{color:#2e6ba1;}
+  @media (prefers-color-scheme: dark){ .speaker.maya{color:#e0a06a;} .speaker.leo{color:#7fb3e0;} }
+  :root[data-theme="dark"] .speaker.maya{color:#e0a06a;} :root[data-theme="dark"] .speaker.leo{color:#7fb3e0;}
+  :root[data-theme="light"] .speaker.maya{color:#a15c2e;} :root[data-theme="light"] .speaker.leo{color:#2e6ba1;}
+  .filepath{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--accent-bg);padding:.15rem .45rem;border-radius:5px;font-size:.9em;}
+  .status-ok{color:#2e7d32;font-weight:600;}
+  .status-fixed{color:#b8860b;font-weight:600;}
+  table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.9rem;}
+  th,td{border:1px solid var(--border);padding:.4rem .6rem;text-align:left;}
+  th{background:var(--card);}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:.9rem;}
+  .toc a{color:var(--ink);text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+</style>
+
+<h1>🎙️ eigo-radio 検証レポート — Iran/US情勢エピソード(B1)</h1>
+<p class="meta">実行日: 2026-07-14 ｜ パイプライン: gather_topic.py → generate_test.py --full-auto --level=B1 → tts_test.py --level=B1 ｜ 生成物: episode_B1_021.json / episode_B1_021_gemini.wav</p>
+
+<div class="toc">
+  <strong>目次</strong><br>
+  <a href="#topic">1. トピックパッケージ</a> ・
+  <a href="#plan">2. 企画書の要点</a> ・
+  <a href="#script">3. 台本全文</a> ・
+  <a href="#audio">4. 音声ファイル</a> ・
+  <a href="#issues">5. 発生した問題と対処</a>
+</div>
+
+<h2 id="topic">1. トピックパッケージ(gather_topic.py の出力)</h2>
+<p>ジャンル指定: <code>--genre="イラン アメリカ 情勢"</code>(トピック自体はスクリプトのWeb検索に判断させた)</p>
+
+<div class="card">
+  <div class="label">Topic</div>
+  <p>The U.S.–Iran ceasefire is collapsing as Washington prepares to blockade Iranian ports and both sides contest control of the strategically vital Strait of Hormuz.</p>
+</div>
+
+<h3>Headlines(6件・独立情報源)</h3>
+<ul class="headline-list">
+  <li>Associated Press: New U.S. strikes follow Trump's plan to blockade Iran and charge ships for Hormuz protection</li>
+  <li>Reuters: Trump says Washington is restoring its blockade of Iranian shipping after renewed clashes</li>
+  <li>Axios: Trump's Iran blockade is set to begin Tuesday afternoon</li>
+  <li>The Washington Post: U.S. strikes Iran again as Trump announces a renewed blockade and proposed shipping fees</li>
+  <li>RFE/RL: U.S. attacks on Iran prompt accusations that Tehran targeted civilians in Bahrain</li>
+  <li>CBS News: Trump tells Congress that military action against Iran resumed on July 7</li>
+</ul>
+<p style="font-size:.88rem;color:var(--sub);">人名確認(needs_name_check): False(実在の日本人名なし、ローマ字検証はスキップ)</p>
+
+<h2 id="plan">2. 企画書の要点(generate_test.py --full-auto の出力)</h2>
+
+<h3>注目度シグナル分析(FOCUS SIGNAL)</h3>
+<div class="card"><p>リード文ベース(V2)で分析し、rank1 = <strong>「The latest U.S. attacks or strikes on Iran」</strong>。企画の核(core_wow)はこの最新攻撃を中心に据えるよう指示された。</p></div>
+
+<h3>Concept Ladder(概念ラダー)</h3>
+<div class="ladder-step">
+  <span class="num">① 表層のフック</span> — The latest U.S. strikes are the real turning point, not just background noise around the blockade announcement.<br>
+  <em>reveal_bridge:</em> LEO explains that on July 13, U.S. forces hit Iranian air defenses, coastal radar, missile and drone facilities, and small boats—then did something new at sea.
+</div>
+<div class="ladder-step">
+  <span class="num">② 本当の機構</span> — One-way attack sea drones show the fight moving directly into the machinery that keeps ships and submarines operating.<br>
+  <em>reveal_bridge:</em> The reported first U.S. use of these drones in the conflict, against a ship-maintenance facility and a submarine, makes the question less about one explosion and more about who can keep control of the water.
+</div>
+<div class="ladder-step">
+  <span class="num">③ リスナーへの意味</span> — A waterway can be officially called open and still become too risky for ordinary commercial ships.<br>
+  <em>reveal_bridge:</em> If carriers, insurers, and captains cannot trust the competing claims about Hormuz, they may delay or reroute; that can reach fuel prices, deliveries, and inflation far beyond the region.
+</div>
+
+<h3>固有性の根拠(domain_rationale)</h3>
+<div class="card">
+<p>"Once the names, dates, and numbers are removed, the explanation is not a generic lesson about drones: it depends on this specific reported first use and on the particular choice to hit a maintenance facility and submarine, which reveals a new pressure point in this conflict. The material contained no direct first-person material—Trump's statements were supplied as paraphrases—so there was no personal voice to make the domain's subject; the concept ladder is consistent because every rung follows the latest strikes from the targets, to the weapon choice, to the danger that choice creates for shipping."</p>
+</div>
+
+<h3>その他の企画要素</h3>
+<table>
+  <tr><th>対立軸(tension)</th><td>MAYAは「封鎖公約があるなら攻撃は圧力戦術では」と疑い、LEOは「沿岸・海軍施設への攻撃は通常の政治的威嚇より遥かに危険」と反論</td></tr>
+  <tr><th>core_wow</th><td>米国の攻撃は単なる兵器破壊ではなく、世界の石油・天然ガスの約5分の1が通る唯一の狭い海路を米国が制御できるかを試している</td></tr>
+  <tr><th>新出語計画</th><td>blockade, cargo, facility, reroute, radar</td></tr>
+  <tr><th>専門用語(specialist_term)</th><td>chokepoint(1箇所のみMAYAが質問しLEOが説明)</td></tr>
+  <tr><th><strong>締めスタイル</strong></th><td><strong>one_line_reaction</strong>(短い率直な反応で終える。大きな人生訓や修辞的な問いかけなしのスタイル)</td></tr>
+  <tr><th>締めの絵</th><td>MAYA: "Wow, okay. Those little boats made this feel a lot bigger."</td></tr>
+  <tr><th>締めの問い</th><td>none(このスタイルでは問いかけなし)</td></tr>
+</table>
+
+<h3>構成表 → 台詞化 → 検品</h3>
+<ul>
+  <li>ビートシート: 全10ビート、予算合計830語</li>
+  <li>台詞化1回目で語数829語(規格780〜880語に適合、リトライ不要)</li>
+  <li>軽量推敲後: 831語</li>
+  <li>論理検品官の指摘: 5件(参考情報のみ、自動修理なし。例: turn18でMAYAが直前のLEOの例え話を繰り返す重複、turn19がやや文語的、など)</li>
+</ul>
+
+<h2 id="script">3. 台本全文(episode_B1_021.json)</h2>
+<p><strong>タイトル:</strong> Robot Boats at Hormuz ｜ 20ターン ｜ 831語 ｜ 約6.4分</p>
+
+<h3>単語コーナー(vocab_intro)</h3>
+<div class="card">
+<p>Before we start, here are five useful words for today.<br><br>
+Radar: equipment that finds objects from far away. Coastal radar can see ships near the shore.<br><br>
+Blockade: action that stops ships or goods moving. The blockade could stop ships from entering the area.<br><br>
+Facility: a place built for a special job. The strikes hit a military facility near the coast.<br><br>
+Reroute: to send something by a different way. Some ships may reroute to avoid danger.<br><br>
+Cargo: goods carried by a ship or plane. The ship was carrying cargo through the region.</p>
+</div>
+
+<h3>対話本編</h3>
+<div class="script">
+<div class="turn"><span class="speaker maya">MAYA:</span> The U.S. is bombing Iran again? Now I see robot boats everywhere in the headlines. I thought there was a ceasefire, but it seems to be breaking apart.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> Yeah. The key is not only that fighting returned. Look at what the latest strikes were aimed at.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> So what did the U.S. actually hit this time?</div>
+<div class="turn"><span class="speaker leo">LEO:</span> On July 13, U.S. forces hit Iranian air defenses, coastal radar, missile and drone sites, and small boats. That is a big list. They were not just hitting one building after making an announcement. They hit the things Iran uses near the coast to see trouble, protect itself, and send weapons out. So this is a turning point. It is not background noise around the blockade news. The strikes show that the U.S. is going after Iran's ability to work at sea, right now. That is why this latest wave matters more than a simple warning.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> But maybe this blockade is still mostly a political message, you know? Maybe it is more talk than action.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> No, not really. The blockade announcement is not the whole story. The U.S. is also striking the tools Iran uses to watch the coast, defend it, and threaten ships there. That is more than talk. The message is moving from words toward control of the water. I mean, they are not only saying, "Stay back." They are trying to decide who can move safely there now.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> So where do the robot boats fit into all this?</div>
+<div class="turn"><span class="speaker leo">LEO:</span> They fit into it as a way to hit Iran's naval support from the water. Reports say this was the first U.S. use of one-way attack sea drones in this conflict. The drones went after an Iranian ship-maintenance facility and a submarine. That is the sharp new part. The target was not only a weapon sitting outside somewhere. It was part of the place that keeps ships working. It helps fix them, ready them, and send them back out. So the U.S. was reaching toward the support behind Iran's naval power, not just the ships people can see. That matters because ships and submarines need people, parts, and safe places to return after a fight.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> I keep picturing a tiny boat going toward that place, with nobody sitting inside it.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> Exactly. That is the unsettling part. A small sea drone can make the first trip without putting a U.S. crew in that boat. But it can still reach the machines that keep ships and submarines moving. So now we are asking who can control the water, not only who can fire from farther away.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> Can Washington still call this pressure if it says it will keep the strait open? I vaguely remember an older attack on a ship, and things got worse.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> That promise may not calm things down. In 1988, during the Tanker War, a mine hit the USS Samuel B. Roberts, a U.S. Navy ship. That pulled the United States directly into combat with Iran. History does not repeat exactly. But danger around shipping can pull a larger fight into the open. If ships get hit, leaders may feel they have to answer. Then both sides can move from threats to a much bigger fight very fast.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> What makes this particular strait so important?</div>
+<div class="turn"><span class="speaker leo">LEO:</span> It is important because it is a chokepoint. A chokepoint is a narrow passage where a huge amount of traffic has to squeeze through. The Strait of Hormuz links the Persian Gulf to open sea. Before this conflict, roughly one-fifth of the world's oil and gas went through it. So pressure there tests who can shape that route. America wants to help set the rules. Iran says Washington cannot set those rules. And everybody using the water has to watch what happens next.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> So even if people say the strait is open, it could still feel closed to a captain.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> Yes, exactly. If captains cannot trust the rival claims about Hormuz, they may wait, turn around, or reroute. They can do that even without a formal order to close the water. Open on paper does not always mean safe enough for an ordinary ship. A captain has a crew and a valuable ship. If the risk feels too high, that captain may simply not go out that day.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> So people who have never heard of this strait could still end up paying for it.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> Yes. An insurer can raise the price of a cargo voyage before a missile moves. They do it because uncertainty changes the spreadsheet. If a company thinks a ship could face danger, it charges more money. Carriers may pass that extra cost into fuel prices, deliveries, and inflation. So a fight far away can show up in what you pay for a ride, a package, or food. It can reach people beyond the region.</div>
+<div class="turn"><span class="speaker maya">MAYA:</span> I keep thinking about a captain looking at that water and deciding not to go.</div>
+<div class="turn"><span class="speaker leo">LEO:</span> One small boat heads toward a shipyard. Who gets to set the rules in this water?</div>
+</div>
+
+<h2 id="audio">4. 生成された音声ファイル</h2>
+<div class="card">
+  <p><span class="label">Path</span><br><span class="filepath">C:\Users\tensh\eigo-radio\episode_B1_021_gemini.wav</span></p>
+  <p><span class="label">サイズ / 長さ</span><br>約17.0MB ／ 約5.9分</p>
+  <p><span class="label">構成</span><br>単語コーナー(ナレーター単独音声) + 対話10チャンク(MAYA/LEO交互音声)、チャンク間0.2秒の無音を挿入</p>
+</div>
+
+<h2 id="issues">5. 発生した問題と対処</h2>
+
+<h3>① 文字コードエラー(即解決)</h3>
+<p><span class="status-ok">解決済み</span> — <code>gather_topic.py</code>実行時、Windows既定のcp932コンソールエンコーディングでUnicode文字(en dash等)が扱えずクラッシュ。<code>PYTHONIOENCODING=utf-8</code> / <code>PYTHONUTF8=1</code>を環境変数として指定して再実行し、解決。コード自体は変更していない。</p>
+
+<h3>② dotenvモジュール未検出(即解決)</h3>
+<p><span class="status-ok">解決済み</span> — システムPythonではなく仮想環境(<code>.venv</code>)のPythonを使う必要があった。<code>.venv/Scripts/python.exe</code>を明示的に使用することで解決。コード変更なし。</p>
+
+<h3>③ tts_test.pyが約38分間ハング(重大)</h3>
+<p><span class="status-fixed">原因調査・改善対応済み</span></p>
+<ul>
+  <li><strong>症状:</strong> 初回のTTS実行で、開始から38分経過してもプロセスが完了せず、CPU使用量・標準出力に一切変化がなかった</li>
+  <li><strong>調査結果:</strong> Google宛のTCP接続(172.217.117.4:443)が<code>Established</code>のまま変化せず継続。<code>google-genai</code> SDK(v2.11.0)のソースを確認したところ、<code>tts_test.py</code>はAPI呼び出しに一切タイムアウトを指定しておらず、SDKのデフォルト挙動により<code>timeout=None</code>がhttpxに渡され、無期限待ちになっていたことが判明</li>
+  <li><strong>対処:</strong> ユーザー承認のもとプロセスを強制終了 → 途中生成ファイルなしを確認 → 恒久対策として以下2点を実装
+    <ul>
+      <li>各TTS API呼び出し(vocab_intro / 対話チャンク10回)にチャンク単位の所要時間計測ログを追加(<code>flush=True</code>付きで、ハング時にもログが即座に書き出されるように)</li>
+      <li><code>generate_content</code>呼び出しに<strong>120秒のタイムアウト</strong>(<code>http_options=types.HttpOptions(timeout=120_000)</code>)を追加。タイムアウト例外は既存の<code>except Exception</code>で捕捉され、既存の<code>MAX_RETRY=2</code>によるリトライ対象に自動的に含まれることをSDK内部実装から確認済み</li>
+    </ul>
+  </li>
+  <li><strong>再実行結果:</strong> ログ追加後に再実行したところ、全11回のAPI呼び出しは10.4〜42.4秒(平均約27秒)で正常完了し、合計約5.9分でWAVファイルが生成された。今回のハングは異常な単発事象だったことが定量的に裏付けられた</li>
+</ul>
+
+<h3>④ 台本の締め方に軽微な粗さ(未対応・参考情報)</h3>
+<p style="color:var(--sub);">論理検品官が5件の指摘を報告(turn18のMAYAの発言が直前の例えの繰り返し、turn19がやや文語的、等)。これらは仕様通り「報告のみで自動修理なし」の設計のため、今回は意図的に未修正のまま出力している。</p>
+
+</section>
