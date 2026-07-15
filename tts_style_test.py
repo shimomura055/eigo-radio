@@ -7,16 +7,19 @@
 # API呼び出しは1回(1チャンク)で済む。
 #
 # 使い方:
-#   python tts_style_test.py
+#   python tts_style_test.py                … 全パターンを実行
+#   python tts_style_test.py --only=H,I,J    … name(または先頭の記号)が一致するパターンだけ実行
 #
 # STYLE_PREFIX_CANDIDATESのリストを編集して候補を差し替える。
 
 import wave
 import os
 import re
+import json
 import time
 import array
 import sys
+from datetime import date, datetime
 
 from dotenv import load_dotenv
 from google import genai
@@ -122,6 +125,43 @@ Keep each speaker's voice, gender, and tone completely consistent from their fir
 
 """,
     },
+    {
+        "name": "H_AD_combo",
+        "desc": "A(感情の推移)+D(強調語の明示)",
+        "prefix": """TTS the following two lines at around 125-140 words per minute.
+
+MAYA's line carries genuine surprise and confusion - like she just read something online that doesn't add up, and she's half-laughing at her own confusion while asking. Her pitch should rise on "suddenly" and "today" - stress these two words clearly.
+
+LEO's line is a warm, gentle correction - reassuring, patient, like clearing up a friend's misunderstanding without making her feel silly. Slightly slower pace than MAYA's line. Stress the word "No" at the start, and slow slightly on "ordinary people" - his point is that this is an invitation to regular citizens, not an official change.
+
+""",
+    },
+    {
+        "name": "I_AB_combo",
+        "desc": "A(感情の推移)+B(声優的な演技指導)",
+        "prefix": """TTS the following two lines at around 125-140 words per minute.
+
+MAYA's line: take a short intake of breath before speaking, as if she just looked up from her phone. She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Let her pitch climb through the questions on "suddenly" and "today", then land slightly deflated on the last sentence.
+
+LEO's line: a beat of silence before he starts, then a calm, downward-inflected opening ("No,") that immediately signals reassurance. His line is a warm, gentle correction - patient, like clearing up a friend's misunderstanding without making her feel silly. Slightly slower pace than MAYA's line.
+
+Keep both voices' gender and identity consistent throughout.
+
+""",
+    },
+    {
+        "name": "J_ABD_combo",
+        "desc": "A+B+D(全部乗せ)",
+        "prefix": """TTS the following two lines at around 125-140 words per minute.
+
+MAYA's line: take a short intake of breath before speaking, as if she just looked up from her phone. She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Let her pitch climb through the questions, then land slightly deflated on the last sentence. Stress the words "suddenly" and "today" clearly - her confusion centers on the unexpected timing.
+
+LEO's line: a beat of silence before he starts, then a calm, downward-inflected opening ("No,") that immediately signals reassurance before the explanation. His line is a warm, gentle correction - patient, like clearing up a friend's misunderstanding without making her feel silly. Slightly slower pace than MAYA's line. Stress the word "No" and slow slightly on "ordinary people" - his point is that this is an invitation to regular citizens, not an official change.
+
+Keep both voices' gender and identity consistent throughout.
+
+""",
+    },
 ]
 
 # ============================================================
@@ -155,9 +195,47 @@ SAMPLE_RATE = 24000
 MAX_RETRY = 2             # 500エラー(既知の不具合)対策の再試行回数
 TTS_TIMEOUT_MS = 120_000  # 1回のAPI呼び出しの上限(ミリ秒)。無応答ハング対策。
 
-# Tier1の日次上限(gemini-2.5-pro-tts: 50回/日、実測値)を踏まえた警告しきい値。
-# このスクリプト単体でこの回数を超えるパターン数を指定した場合、警告のみ出して続行する。
-TIER1_DAILY_WARNING_THRESHOLD = 30
+# Tier1の日次上限(gemini-2.5-pro-tts: 50回/日、実測値)。
+TIER1_DAILY_LIMIT = 50
+
+# ============================================================
+# ブロック4-5: 本日の呼び出し回数の見立て(このスクリプト自身の記録のみ)
+# ============================================================
+# Google側に「消費済みクォータを問い合わせる」手段がないため、このスクリプトが
+# 自分で呼び出すたびに記録するローカルログから、本日ここまでの回数を見積もる。
+# あくまでこのスクリプト経由の記録に限った「見立て」であり、tts_test.py等
+# 他スクリプトからの呼び出しは含まれない点に注意。
+USAGE_LOG_PATH = ".tts_usage_log.jsonl"
+
+def load_today_call_count():
+    """USAGE_LOG_PATHから、今日の日付のエントリ数を数える(このスクリプトの記録分のみ)。"""
+    if not os.path.isfile(USAGE_LOG_PATH):
+        return 0
+    today_str = date.today().isoformat()
+    count = 0
+    with open(USAGE_LOG_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if entry.get("date") == today_str:
+                count += 1
+    return count
+
+def record_call(pattern_name):
+    """1回のAPI呼び出しが成功するたびに、ログへ1行追記する。"""
+    entry = {
+        "date": date.today().isoformat(),
+        "timestamp": datetime.now().isoformat(),
+        "script": "tts_style_test.py",
+        "pattern": pattern_name,
+    }
+    with open(USAGE_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 def build_speech_config():
     return types.SpeechConfig(
@@ -234,7 +312,7 @@ def call_tts(prompt, speech_config, label="pattern"):
             time.sleep(2)
 
 # ============================================================
-# ブロック5: 事前表示(パターン数・API呼び出し回数・警告)
+# ブロック5: --only=での絞り込み + 事前表示(パターン数・API呼び出し回数・警告)
 # ============================================================
 def build_dialogue_lines(script):
     return "\n".join(f'{t["speaker"]}: {t["text"]}' for t in script)
@@ -242,20 +320,45 @@ def build_dialogue_lines(script):
 DEFAULT_DIALOGUE_LINES = build_dialogue_lines(FIXED_SCRIPT)
 DIRECTIONS_DIALOGUE_LINES = build_dialogue_lines(FIXED_SCRIPT_WITH_DIRECTIONS)
 
-total_patterns = len(STYLE_PREFIX_CANDIDATES)
+# --- --only=H,I,J のような形で、name(または先頭の記号)が一致するパターンだけに絞る ---
+ONLY_FILTER = None
+for arg in sys.argv:
+    if arg.startswith("--only="):
+        ONLY_FILTER = [tok.strip() for tok in arg.split("=", 1)[1].split(",") if tok.strip()]
+
+def matches_only_filter(candidate_name, filter_tokens):
+    if filter_tokens is None:
+        return True
+    prefix = candidate_name.split("_")[0]
+    return candidate_name in filter_tokens or prefix in filter_tokens
+
+selected_candidates = [c for c in STYLE_PREFIX_CANDIDATES if matches_only_filter(c["name"], ONLY_FILTER)]
+if ONLY_FILTER is not None and not selected_candidates:
+    raise SystemExit(f"エラー: --onlyで指定された名前に一致するパターンがありません: {', '.join(ONLY_FILTER)}")
+
+total_patterns = len(selected_candidates)
 total_calls = total_patterns  # 固定スクリプトは1チャンクなので、1パターン=API呼び出し1回
 
+today_so_far = load_today_call_count()
+projected_total = today_so_far + total_calls
+
+if ONLY_FILTER is not None:
+    print(f"--only指定: {', '.join(ONLY_FILTER)} → {total_patterns} パターンに絞って実行します")
 print(f"STYLE_PREFIXパターン数: {total_patterns} 個")
-print(f"必要なAPI呼び出し回数: {total_calls} 回(1パターン=1回、固定スクリプトが1チャンクのため)")
-if total_calls > TIER1_DAILY_WARNING_THRESHOLD:
-    print(f"⚠ 警告: Tier1の日次上限(gemini-2.5-pro-tts、実測50回/日)に対して、"
-          f"このスクリプト単体で{total_calls}回消費します。他の作業分の枠が残らない可能性があります。")
+print(f"本日ここまでの呼び出し回数(このスクリプトの記録に基づく見立て。他スクリプト分は含まず): {today_so_far} 回")
+print(f"今回追加で必要な回数: {total_calls} 回")
+print(f"実行後の見込み合計: {projected_total} 回 / Tier1日次上限(実測): {TIER1_DAILY_LIMIT} 回")
+if projected_total > TIER1_DAILY_LIMIT:
+    print(f"⚠ 警告: 実行後の見込み合計が日次上限を超える可能性があります。"
+          f"他スクリプトでの呼び出し分も含めると、既に上限に達している可能性があります。")
+elif projected_total > TIER1_DAILY_LIMIT * 0.8:
+    print(f"⚠ 注意: 実行後の見込み合計が日次上限の8割を超えます。残り枠にご注意ください。")
 print()
 
 # ============================================================
 # ブロック6: パターンごとに音声化して連番保存
 # ============================================================
-for i, candidate in enumerate(STYLE_PREFIX_CANDIDATES, 1):
+for i, candidate in enumerate(selected_candidates, 1):
     name = candidate["name"]
     desc = candidate["desc"]
     prefix = candidate["prefix"]
@@ -267,6 +370,7 @@ for i, candidate in enumerate(STYLE_PREFIX_CANDIDATES, 1):
     print(f"[{i}/{total_patterns}] パターン{name}({desc})を生成中...", flush=True)
     prompt = prefix + dialogue_lines
     pcm = call_tts(prompt, build_speech_config(), label=f"pattern {name}")
+    record_call(name)
 
     with wave.open(out_wav, "wb") as w:
         w.setnchannels(1)
