@@ -101,7 +101,8 @@ target_wpm = LEVELS[LEVEL_KEY]["wpm_range"]
 SAMPLE_RATE = 24000
 CHUNK_SIZE = 2           # 1チャンクあたりのターン数(交互台本なら2以上で単独話者は発生しない)
 PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.2)  # チャンク間0.2秒の無音
-SECTION_PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.8)  # セクション(概要/キーワード/本編)切り替わり用の長めの無音
+SECTION_PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.8)  # セクション開始前(チャイム・タイトル読み上げの後)の無音
+SECTION_PAUSE_END = b"\x00\x00" * int(SAMPLE_RATE * 1.0)  # セクション本文が終わった直後、次のチャイムの前の無音
 MAX_RETRY = 2            # 500エラー(既知の不具合)対策の再試行回数
 TTS_TIMEOUT_MS = 120_000  # 1回のAPI呼び出しの上限(ミリ秒)。無応答ハング対策。通常は10〜42秒で完了する
 CHIME_PCM = generate_chime(SAMPLE_RATE)  # セクション開始の合図(440Hz→660Hzの短いチャイム)
@@ -355,7 +356,7 @@ if overview_intro:
     print("①概要(overview_intro)を音声化中...", flush=True)
     overview_pcm = call_tts(overview_intro, build_narrator_speech_config(), label="overview")
     record_call("overview")
-    audio += overview_pcm + PAUSE
+    audio += overview_pcm + SECTION_PAUSE_END
 else:
     print("  ※ この原稿にはoverview_introがありません(スキップ)")
 
@@ -364,7 +365,7 @@ if keywords_intro:
     print("②キーワードコーナー(keywords_intro)を音声化中...", flush=True)
     keywords_pcm = call_tts(keywords_intro, build_narrator_speech_config(), label="keywords")
     record_call("keywords")
-    audio += keywords_pcm + PAUSE
+    audio += keywords_pcm + SECTION_PAUSE_END
 else:
     print("  ※ この原稿にはkeywords_introがありません(スキップ)")
 
@@ -389,6 +390,8 @@ for i, chunk in enumerate(chunks, 1):
     pcm = call_tts(prompt, build_speech_config(), label=f"chunk {i}/{len(chunks)}")
     record_call(f"chunk_{i}")
     audio += pcm + PAUSE
+
+audio += SECTION_PAUSE_END  # 本編終了後の区切り(将来セクションが続く場合に備え、末尾にも入れておく)
 
 directions_path = latest.replace(".json", "_directions.json")
 with open(directions_path, "w", encoding="utf-8") as f:

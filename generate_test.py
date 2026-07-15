@@ -627,7 +627,7 @@ Other rules:
 - KEYWORDS: the listener has already learned today's keyword phrases in a keyword corner before the dialogue. Each phrase from keywords_plan appears naturally in exactly ONE beat (mark it in "keyword", copying the phrase text) - LEO or MAYA just USES it in context, nobody explains it.
 - SPECIALIST TERM: if the brief names a specialist_term (not "none"), exactly ONE beat contains its ask-and-explain moment (MAYA asks, LEO explains plainly). No other term gets this treatment.
 - JARGON BAN: no technical or academic term outside keywords_plan and specialist_term may appear in any beat.
-- maya_type per beat, exactly one of: "question" / "reaction" (short surprise or doubt, no question) / "restate" (half-step restatement, may be slightly wrong) / "pushback".
+- maya_type per beat, exactly one of: "question" / "reaction" (a short surprised or doubting line, OR a short acknowledgment showing she now understands or agrees, e.g. "oh, that makes sense" / "huh, I get it now" - neither version is a question) / "restate" (half-step restatement, may be slightly wrong) / "pushback".
   Rhythm: never more than 2 "question" beats in a row; after 2 questions the next must be reaction or restate.
 - Beat 1 = the scene (MAYA's opening). Second-to-last beat: maya_move reacts in whatever way fits the chosen closing style - a personal takeaway for the "vivid_moment" style, or a lighter comment/callback/curiosity for the other styles - NOT a mechanical recap of vocabulary or concepts. Last beat: leo_point = the closing_image; if closing_question is not "none", it becomes the episode's FINAL line; otherwise the episode simply ends on leo_point, optionally with one short MAYA button line right after.
 
@@ -711,8 +711,9 @@ This is NOT written English read aloud. It is two friends chatting. Concrete law
 7. SELF-TEST for every single turn: would this exact sentence survive being said out loud to a friend over coffee? If it sounds like a report, rewrite until it doesn't.
 
 # How to convert each beat
-- Each beat becomes 2-3 turns: MAYA's turn realizes her maya_move (in the form of her maya_type), LEO's turn delivers leo_point. Stay near the beat's word budget.
-- maya_type "reaction": a short surprised/doubting line with NO question mark.
+- Each beat becomes: MAYA's turn realizes her maya_move (in the form of her maya_type), then LEO's leo_point is delivered as TWO separate LEO turns with ONE short MAYA interjection between them (see LEO SPLIT RULE below) - so a beat with a leo_point normally yields 4 turns (MAYA move -> LEO part 1 -> MAYA interjection -> LEO part 2), not 2-3. Stay near the beat's word budget across the two LEO turns combined.
+- LEO SPLIT RULE (applies to every beat that has a leo_point, no exceptions): split leo_point at a natural break in its own content into two LEO turns, each roughly half to two-thirds of the original leo_point's length - do not cut content, just divide where it already breaks naturally. Between the two LEO turns, insert ONE short MAYA interjection line: a brief exclamation or reaction (e.g. "Oh...", "Wait, really?", "Huh."), NOT a question. This interjection is separate from the beat's own maya_move/maya_type - it does not count toward the "no more than 2 question beats in a row" rhythm rule, and it is not itself a beat.
+- maya_type "reaction": a short surprised or doubting line, OR a short acknowledgment showing she now understands or agrees (e.g. "oh, that makes sense", "huh, I get it now") - neither version is a question.
 - maya_type "restate": she rephrases LEO's previous point a half-step, sometimes slightly wrong; LEO gently corrects.
 - MAYA never introduces facts, names, or dates. Where the sheet says she vaguely recalls, keep it name-free; LEO supplies specifics.
 - TENSION-BEAT RULE: only the single comparative/historical example in the beat sheet (if any) may appear. No other such example may be named.
