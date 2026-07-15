@@ -123,7 +123,7 @@ For EACH line, write ONE direction paragraph that combines, in this order:
 2. 1-2 specific words copied from this line's own text that carry the emotional or informational weight, explicitly named as words to stress.
 
 Do NOT include any breath/pause/gesture cue, and do NOT mention this line's pace relative to the other speaker - describe only the emotional arc and the words to stress.
-
+{variety_block}
 Style reference (match only the shape/format of this example, not its content):
 "She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Her pitch should rise on \"suddenly\" and \"today\"."
 
@@ -135,15 +135,33 @@ Return ONLY valid JSON, with exactly one entry per line above, in the same order
 
 MAX_DIRECTION_RETRY = 2  # 演技指導生成(OpenAI呼び出し)の再試行回数
 
-def generate_style_prefix(chunk, target_wpm):
+def generate_style_prefix(chunk, target_wpm, used_directions):
     """
     チャンクの実際のセリフ内容をDIRECTION_PROMPTに渡し、行ごとの演技指導を
     生成した上で、A_line_by_line_emotion方式のテンプレート構造に当てはめて
     STYLE_PREFIXを組み立てる。戻り値は (style_prefix文字列, 行ごとの演技指導リスト)。
+
+    used_directionsは、このエピソード内でこれまでのチャンクに使った演技指導
+    (行ごとの文章)の蓄積リスト。同じ感情表現の語彙(concerned/cautious等)が
+    チャンクをまたいで繰り返されるのを防ぐため、プロンプトに「既に使った表現」
+    として渡す。
     """
     lines_for_prompt = [{"speaker": t["speaker"], "text": t["text"]} for t in chunk]
+
+    if used_directions:
+        variety_block = (
+            "\nVOCABULARY VARIETY: the following direction phrasings have already been used "
+            "earlier in this same episode. Do NOT reuse these words/phrases or close synonyms "
+            "(e.g. repeatedly defaulting to \"concerned\" or \"cautious\") - choose fresh, "
+            "specific language grounded in THIS line's own content instead:\n- "
+            + "\n- ".join(used_directions) + "\n"
+        )
+    else:
+        variety_block = ""
+
     prompt = DIRECTION_PROMPT.format(
-        lines_json=json.dumps(lines_for_prompt, ensure_ascii=False, indent=2))
+        lines_json=json.dumps(lines_for_prompt, ensure_ascii=False, indent=2),
+        variety_block=variety_block)
 
     directions = None
     for attempt in range(1, MAX_DIRECTION_RETRY + 2):
@@ -374,11 +392,13 @@ else:
 # ============================================================
 audio += narrate_section_title(data["title"], "main_title")
 
-direction_log = []  # 人間が後から確認できるよう、チャンクごとの演技指導を記録する
+direction_log = []    # 人間が後から確認できるよう、チャンクごとの演技指導を記録する
+used_directions = []   # 語彙の硬直を防ぐため、これまでのチャンクで使った演技指導を蓄積する
 for i, chunk in enumerate(chunks, 1):
     dialogue_lines = "\n".join(f'{t["speaker"]}: {t["text"]}' for t in chunk)
     print(f"  チャンク {i}/{len(chunks)}: 演技指導を生成中...", flush=True)
-    style_prefix, directions = generate_style_prefix(chunk, target_wpm)
+    style_prefix, directions = generate_style_prefix(chunk, target_wpm, used_directions)
+    used_directions.extend(directions)
     direction_log.append({
         "chunk": i,
         "turns": [{"speaker": t["speaker"], "text": t["text"], "direction": d}
