@@ -30,38 +30,95 @@ FIXED_SCRIPT = [
     {"speaker": "LEO", "text": "No, they are not suddenly inside it. Finance Minister Satsuki Katayama invited ordinary people to think about buying more Japanese assets."},
 ]
 
+# F_inline_stage_directions専用: 角括弧の演技指示をセリフ本文に埋め込んだ版。
+# このパターンのときだけFIXED_SCRIPTの代わりにこちらを使う。
+FIXED_SCRIPT_WITH_DIRECTIONS = [
+    {"speaker": "MAYA", "text": "[surprised, half-laughing at her own confusion, rising pitch] Wait, why is everyone saying government bonds are suddenly going into NISA? Did something change while I was asleep? People online sound like I can buy them there today."},
+    {"speaker": "LEO", "text": "[pause, then calm and reassuring] No, they are not suddenly inside it. Finance Minister Satsuki Katayama invited ordinary people to think about buying more Japanese assets."},
+]
+
 # ============================================================
-# ブロック2: STYLE_PREFIX候補(プレースホルダー。中身は後で差し替える)
+# ブロック2: STYLE_PREFIX候補
 # ============================================================
 STYLE_PREFIX_CANDIDATES = [
     {
-        "id": "01",
-        "label": "ダミー候補1(プレースホルダー)",
-        "prefix": """TTS the following conversation between MAYA and LEO, in natural conversational English.
+        "name": "00_current",
+        "desc": "現行版(比較の基準)",
+        "prefix": """TTS the following conversation between MAYA and LEO, in natural conversational English at around 125-140 words per minute.
 
-MAYA is a woman with a warm, curious female voice.
-LEO is a man with a warm, enthusiastic male voice.
+MAYA is a woman with a warm, curious female voice, genuinely surprised when reacting - like a friendly co-host discovering something amazing.
+LEO is a man with a warm, enthusiastic male voice, like a friendly science communicator sharing something he loves - never flat, curt, or lecturing.
 
-""",
-    },
-    {
-        "id": "02",
-        "label": "ダミー候補2(プレースホルダー)",
-        "prefix": """TTS the following conversation between MAYA and LEO, in natural conversational English at a slightly faster pace.
-
-MAYA is a woman with a warm, curious female voice, genuinely surprised when reacting.
-LEO is a man with a warm, enthusiastic male voice, like a friendly science communicator.
+React to each other as if this is a spontaneous conversation between two close colleagues, not a script being read aloud.
 
 Keep each speaker's voice, gender, and tone completely consistent from their first line to their last line in this excerpt.
 
 """,
     },
     {
-        "id": "03",
-        "label": "ダミー候補3(プレースホルダー)",
-        "prefix": """TTS the following conversation between MAYA and LEO.
+        "name": "A_line_by_line_emotion",
+        "desc": "セリフごとの感情の推移を直接指定",
+        "prefix": """TTS the following two lines at around 125-140 words per minute.
+
+MAYA's line carries genuine surprise and confusion - like she just read something online that doesn't add up, and she's half-laughing at her own confusion while asking. Her pitch should rise on "suddenly" and "today".
+
+LEO's line is a warm, gentle correction - reassuring, patient, like clearing up a friend's misunderstanding without making her feel silly. Slightly slower pace than MAYA's line.
+
+""",
+    },
+    {
+        "name": "B_voice_actor_direction",
+        "desc": "声優的な演技指導(呼吸・間・抑揚)",
+        "prefix": """TTS the following conversation between MAYA and LEO, 125-140 words per minute.
+Direct this like a voice actor would:
+- MAYA: a short intake of breath before speaking, as if she just looked up from her phone. Let her voice climb in pitch through the questions, then land slightly deflated on the last sentence.
+- LEO: a beat of silence before he starts, then a calm, downward-inflected opening ("No,") that immediately signals reassurance before the explanation.
+Keep both voices' gender and identity consistent throughout.
+
+""",
+    },
+    {
+        "name": "C_immersive_scene",
+        "desc": "情景・没入型のシーン設定",
+        "prefix": """This is a recording of two podcast co-hosts, MAYA (woman) and LEO (man), in a relaxed studio. MAYA just glanced at her phone mid-conversation and reacts out loud, genuinely puzzled. LEO, sitting across from her with his coffee, looks up and immediately, warmly sets her straight. TTS their exchange at 125-140 words per minute, capturing that exact moment - not a script reading.
+
+""",
+    },
+    {
+        "name": "D_stress_words",
+        "desc": "強調語の明示",
+        "prefix": """TTS the following conversation between MAYA (woman) and LEO (man) at around 125-140 words per minute, natural and conversational, not read aloud.
+
+For MAYA's line, stress the words "suddenly" and "today" - her confusion centers on the unexpected timing.
+For LEO's line, stress the word "No" and slow slightly on "ordinary people" - his point is that this is an invitation to regular citizens, not an official change.
+
+""",
+    },
+    {
+        "name": "E_minimal_control",
+        "desc": "対照群(最小限の指示)",
+        "prefix": """TTS this conversation between MAYA (woman) and LEO (man) naturally, 125-140 wpm.
+
+""",
+    },
+    {
+        "name": "F_inline_stage_directions",
+        "desc": "セリフ本文に演技指示を埋め込み(角括弧)",
+        "prefix": """TTS the following conversation between MAYA (woman) and LEO (man) at around 125-140 words per minute. Follow the bracketed direction before each line exactly, but do not speak the bracketed text itself aloud.
+
+""",
+    },
+    {
+        "name": "G_current_no_wpm",
+        "desc": "現行版から話速指定のみ削除(速度固定が抑揚を抑えていないか検証)",
+        "prefix": """TTS the following conversation between MAYA and LEO in natural conversational English.
+
+MAYA is a woman with a warm, curious female voice, genuinely surprised when reacting - like a friendly co-host discovering something amazing.
+LEO is a man with a warm, enthusiastic male voice, like a friendly science communicator sharing something he loves - never flat, curt, or lecturing.
 
 React to each other as if this is a spontaneous conversation between two close colleagues, not a script being read aloud.
+
+Keep each speaker's voice, gender, and tone completely consistent from their first line to their last line in this excerpt.
 
 """,
     },
@@ -179,7 +236,11 @@ def call_tts(prompt, speech_config, label="pattern"):
 # ============================================================
 # ブロック5: 事前表示(パターン数・API呼び出し回数・警告)
 # ============================================================
-dialogue_lines = "\n".join(f'{t["speaker"]}: {t["text"]}' for t in FIXED_SCRIPT)
+def build_dialogue_lines(script):
+    return "\n".join(f'{t["speaker"]}: {t["text"]}' for t in script)
+
+DEFAULT_DIALOGUE_LINES = build_dialogue_lines(FIXED_SCRIPT)
+DIRECTIONS_DIALOGUE_LINES = build_dialogue_lines(FIXED_SCRIPT_WITH_DIRECTIONS)
 
 total_patterns = len(STYLE_PREFIX_CANDIDATES)
 total_calls = total_patterns  # 固定スクリプトは1チャンクなので、1パターン=API呼び出し1回
@@ -195,14 +256,17 @@ print()
 # ブロック6: パターンごとに音声化して連番保存
 # ============================================================
 for i, candidate in enumerate(STYLE_PREFIX_CANDIDATES, 1):
-    pattern_id = candidate["id"]
-    label = candidate["label"]
+    name = candidate["name"]
+    desc = candidate["desc"]
     prefix = candidate["prefix"]
-    out_wav = f"style_test_{pattern_id}.wav"
+    out_wav = f"style_test_{name}.wav"
 
-    print(f"[{i}/{total_patterns}] パターン{pattern_id}({label})を生成中...", flush=True)
+    # F(角括弧の演技指示埋め込み)だけは、台詞本文自体も演技指示付きの版に差し替える。
+    dialogue_lines = DIRECTIONS_DIALOGUE_LINES if name == "F_inline_stage_directions" else DEFAULT_DIALOGUE_LINES
+
+    print(f"[{i}/{total_patterns}] パターン{name}({desc})を生成中...", flush=True)
     prompt = prefix + dialogue_lines
-    pcm = call_tts(prompt, build_speech_config(), label=f"pattern {pattern_id}")
+    pcm = call_tts(prompt, build_speech_config(), label=f"pattern {name}")
 
     with wave.open(out_wav, "wb") as w:
         w.setnchannels(1)
