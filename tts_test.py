@@ -10,6 +10,7 @@ import re
 import time
 import array
 import sys
+from datetime import date, datetime
 
 # ============================================================
 # ブロック1: レベル指定の読み取り(--level=XX)
@@ -26,6 +27,7 @@ if LEVEL_KEY is None:
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from openai import OpenAI
 from levels import LEVELS
 
 # ============================================================
@@ -68,31 +70,127 @@ def build_safe_chunks(turns, chunk_size):
 # ============================================================
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+openai_client = OpenAI()
 
 MODEL_NAME = "gemini-2.5-pro-preview-tts"  # proを試す
+MODEL_DIRECTOR = "gpt-5.6-luna"  # 演技指導(STYLE_PREFIX)の動的生成用(generate_test.pyのMODEL_PLANと同じ格)
 VOICE_MAYA = "Aoede"       # ← AI Studioで確認した名前(差し替え済)
 VOICE_LEO = "Iapetus"      # ← ぶっきらぼう対策の候補(差し替え済)
 VOICE_NARRATOR = "Charon"  # ← ①概要・②キーワードコーナー専用。1人読みなのでMAYA/LEOとは別の声にする
 
 target_wpm = LEVELS[LEVEL_KEY]["wpm_range"]
 
-# --- 声の性別ブレ対策: 男女を明示し、一貫性を保つよう念押し ---
-STYLE_PREFIX = f"""TTS the following conversation between MAYA and LEO, in natural conversational English at around {target_wpm} words per minute.
-
-MAYA is a woman with a warm, curious female voice, genuinely surprised when reacting - like a friendly co-host discovering something amazing.
-LEO is a man with a warm, enthusiastic male voice, like a friendly science communicator sharing something he loves - never flat, curt, or lecturing.
-
-React to each other as if this is a spontaneous conversation between two close colleagues, not a script being read aloud.
-
-Keep each speaker's voice, gender, and tone completely consistent from their first line to their last line in this excerpt.
-
-"""
-
 SAMPLE_RATE = 24000
 CHUNK_SIZE = 2           # 1チャンクあたりのターン数(交互台本なら2以上で単独話者は発生しない)
 PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.2)  # チャンク間0.2秒の無音
 MAX_RETRY = 2            # 500エラー(既知の不具合)対策の再試行回数
 TTS_TIMEOUT_MS = 120_000  # 1回のAPI呼び出しの上限(ミリ秒)。無応答ハング対策。通常は10〜42秒で完了する
+
+# ============================================================
+# ブロック3-5: 演技指導(STYLE_PREFIX)をチャンクのセリフ内容から動的生成
+# ============================================================
+# tts_style_test.pyでの検証の結果、"I_AB_combo"方式(呼吸・間の演技指導 +
+# セリフ内の具体的な単語を指定した感情の推移)が最も評価が高かったため、
+# その構造をテンプレートとして、毎回のセリフ内容に応じてOpenAIに
+# 演技指導を1行ずつ書かせ、STYLE_PREFIXを動的に組み立てる。
+DIRECTION_PROMPT = """You are directing text-to-speech voice actors for a podcast dialogue between MAYA (a woman) and LEO (a man). Below is one chunk of their dialogue, in order.
+
+For EACH line, write ONE direction paragraph that combines, in this order:
+1. A breath/pause/gesture cue right before the line starts - but ONLY if it fits naturally. If the line continues directly from the flow of conversation with no natural beat before it, skip this part entirely rather than forcing one.
+2. The emotional arc across the line, grounded STRICTLY in what this line's own words and context actually convey - never invent an emotion the text does not support.
+3. 1-2 specific words copied from this line's own text that carry the emotional or informational weight, explicitly named as words to stress.
+4. If relevant, this line's pace relative to the adjacent line from the other speaker (e.g. "slightly slower than LEO's line here").
+
+Style reference (match only the shape/format of this example, not its content):
+"take a short intake of breath before speaking, as if she just looked up from her phone. She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Let her pitch climb through the questions on \"suddenly\" and \"today\", then land slightly deflated on the last sentence."
+
+Dialogue lines (in order):
+{lines_json}
+
+Return ONLY valid JSON, with exactly one entry per line above, in the same order:
+{{"directions": ["direction paragraph for line 1", "direction paragraph for line 2", "..."]}}"""
+
+MAX_DIRECTION_RETRY = 2  # 演技指導生成(OpenAI呼び出し)の再試行回数
+
+def generate_style_prefix(chunk, target_wpm):
+    """
+    チャンクの実際のセリフ内容をDIRECTION_PROMPTに渡し、行ごとの演技指導を
+    生成した上で、I_AB_comboのテンプレート構造に当てはめてSTYLE_PREFIXを
+    組み立てる。戻り値は (style_prefix文字列, 行ごとの演技指導リスト)。
+    """
+    lines_for_prompt = [{"speaker": t["speaker"], "text": t["text"]} for t in chunk]
+    prompt = DIRECTION_PROMPT.format(
+        lines_json=json.dumps(lines_for_prompt, ensure_ascii=False, indent=2))
+
+    directions = None
+    for attempt in range(1, MAX_DIRECTION_RETRY + 2):
+        start = time.time()
+        try:
+            res = openai_client.chat.completions.create(
+                model=MODEL_DIRECTOR,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+            )
+            elapsed = time.time() - start
+            out = json.loads(res.choices[0].message.content)
+            directions = out["directions"]
+            if len(directions) != len(chunk):
+                raise RuntimeError(
+                    f"演技指導の行数({len(directions)})がチャンクの行数({len(chunk)})と一致しません")
+            print(f"    [演技指導生成] 所要時間: {elapsed:.1f}秒", flush=True)
+            break
+        except Exception as e:
+            elapsed = time.time() - start
+            print(f"    [演技指導生成] → エラー(試行{attempt}回目、{elapsed:.1f}秒後): {e}", flush=True)
+            if attempt > MAX_DIRECTION_RETRY:
+                raise
+            time.sleep(2)
+
+    lines = [f"TTS the following conversation between MAYA and LEO, at around {target_wpm} words per minute.", ""]
+    for t, d in zip(chunk, directions):
+        lines.append(f"{t['speaker']}'s line: {d}")
+        lines.append("")
+    lines.append("Keep each speaker's voice, gender, and tone completely consistent from their first line to their last line in this excerpt.")
+    lines.append("")
+    style_prefix = "\n".join(lines)
+    return style_prefix, directions
+
+# ============================================================
+# ブロック3-6: 本日の呼び出し回数の見立て(Gemini TTS呼び出し用ログ)
+# tts_style_test.pyと同じログファイルを共有し、両スクリプト合算で見立てる。
+# ============================================================
+TIER1_DAILY_LIMIT = 50  # gemini-2.5-pro-tts の日次上限(実測値)
+USAGE_LOG_PATH = ".tts_usage_log.jsonl"
+
+def load_today_call_count():
+    """USAGE_LOG_PATHから、今日の日付のエントリ数を数える(tts_test.py・tts_style_test.py合算)。"""
+    if not os.path.isfile(USAGE_LOG_PATH):
+        return 0
+    today_str = date.today().isoformat()
+    count = 0
+    with open(USAGE_LOG_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if entry.get("date") == today_str:
+                count += 1
+    return count
+
+def record_call(label):
+    """Gemini TTS呼び出しが成功するたびに、ログへ1行追記する。"""
+    entry = {
+        "date": date.today().isoformat(),
+        "timestamp": datetime.now().isoformat(),
+        "script": "tts_test.py",
+        "pattern": label,
+    }
+    with open(USAGE_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 # ============================================================
 # ブロック4: 最新の原稿を読み込み、ターンを安全にチャンク分割
@@ -107,6 +205,23 @@ with open(latest, "r", encoding="utf-8") as f:
 turns = data["turns"]
 chunks = build_safe_chunks(turns, CHUNK_SIZE)  # ← 単独話者チャンク防止版に変更
 print(f"『{data['title']}』 全{len(turns)}ターンを{len(chunks)}チャンクに分けて音声化します")
+
+overview_intro = data.get("overview_intro", "")
+keywords_intro = data.get("keywords_intro", "")
+
+# --- 事前表示: 本日の呼び出し回数の見立て(tts_style_test.pyと同じログを共有) ---
+total_calls_needed = len(chunks) + (1 if overview_intro else 0) + (1 if keywords_intro else 0)
+today_so_far = load_today_call_count()
+projected_total = today_so_far + total_calls_needed
+
+print(f"必要なGemini TTS呼び出し回数: {total_calls_needed} 回(概要{'1' if overview_intro else '0'} + "
+      f"キーワード{'1' if keywords_intro else '0'} + 本編{len(chunks)}チャンク)")
+print(f"本日ここまでの呼び出し回数(tts_test.py・tts_style_test.py合算の見立て): {today_so_far} 回")
+print(f"実行後の見込み合計: {projected_total} 回 / Tier1日次上限(実測): {TIER1_DAILY_LIMIT} 回")
+if projected_total > TIER1_DAILY_LIMIT:
+    print("⚠ 警告: 実行後の見込み合計が日次上限を超える可能性があります。")
+elif projected_total > TIER1_DAILY_LIMIT * 0.8:
+    print("⚠ 注意: 実行後の見込み合計が日次上限の8割を超えます。残り枠にご注意ください。")
 
 def build_speech_config():
     return types.SpeechConfig(
@@ -197,36 +312,52 @@ def call_tts(prompt, speech_config, label="chunk"):
 # ブロック4-5: ①概要(overview_intro)・②キーワードコーナー(keywords_intro)を
 #              それぞれ別々にナレーター単独音声で先に生成
 # ============================================================
-overview_intro = data.get("overview_intro", "")
 overview_pcm = b""
 if overview_intro:
     print("①概要(overview_intro)を音声化中...", flush=True)
     overview_pcm = call_tts(overview_intro, build_narrator_speech_config(), label="overview")
+    record_call("overview")
 else:
     print("  ※ この原稿にはoverview_introがありません(スキップ)")
 
-keywords_intro = data.get("keywords_intro", "")
 keywords_pcm = b""
 if keywords_intro:
     print("②キーワードコーナー(keywords_intro)を音声化中...", flush=True)
     keywords_pcm = call_tts(keywords_intro, build_narrator_speech_config(), label="keywords")
+    record_call("keywords")
 else:
     print("  ※ この原稿にはkeywords_introがありません(スキップ)")
 
 # ============================================================
-# ブロック5: チャンクごとに生成(500エラー時は再試行)
+# ブロック5: チャンクごとに演技指導を動的生成→音声化(500エラー時は再試行)
 # ============================================================
 audio = b""
 if overview_pcm:
     audio += overview_pcm + PAUSE
 if keywords_pcm:
     audio += keywords_pcm + PAUSE
+
+direction_log = []  # 人間が後から確認できるよう、チャンクごとの演技指導を記録する
 for i, chunk in enumerate(chunks, 1):
     dialogue_lines = "\n".join(f'{t["speaker"]}: {t["text"]}' for t in chunk)
-    prompt = STYLE_PREFIX + dialogue_lines
-    print(f"  チャンク {i}/{len(chunks)} を生成中...", flush=True)
+    print(f"  チャンク {i}/{len(chunks)}: 演技指導を生成中...", flush=True)
+    style_prefix, directions = generate_style_prefix(chunk, target_wpm)
+    direction_log.append({
+        "chunk": i,
+        "turns": [{"speaker": t["speaker"], "text": t["text"], "direction": d}
+                  for t, d in zip(chunk, directions)],
+    })
+
+    prompt = style_prefix + dialogue_lines
+    print(f"  チャンク {i}/{len(chunks)} を音声化中...", flush=True)
     pcm = call_tts(prompt, build_speech_config(), label=f"chunk {i}/{len(chunks)}")
+    record_call(f"chunk_{i}")
     audio += pcm + PAUSE
+
+directions_path = latest.replace(".json", "_directions.json")
+with open(directions_path, "w", encoding="utf-8") as f:
+    json.dump(direction_log, f, ensure_ascii=False, indent=2)
+print(f"演技指導の記録を {directions_path} に保存しました(内容確認用)。")
 
 # ============================================================
 # ブロック6: WAVファイルとして保存
