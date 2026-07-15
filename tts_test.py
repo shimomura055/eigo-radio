@@ -7,6 +7,7 @@ import json
 import wave
 import os
 import re
+import math
 import time
 import array
 import sys
@@ -47,6 +48,23 @@ def normalize_pcm(pcm_bytes, target_peak=0.7):
     )
     return normalized.tobytes()
 
+def generate_chime(sample_rate, freq1=440, freq2=660, duration_each=0.15, amplitude=0.3):
+    """
+    外部音源やAPIを使わず、その場でサイン波から短い2音チャイムを生成する
+    (セクション切り替わりの合図用)。クリック音を抑えるため、各音の
+    始まり・終わりに簡単なフェードイン・フェードアウトをかける。
+    """
+    fade_samples = max(1, int(sample_rate * 0.01))  # 約10msでフェード
+    samples = array.array('h')
+    for freq in (freq1, freq2):
+        n = int(sample_rate * duration_each)
+        for i in range(n):
+            t = i / sample_rate
+            fade = min(1.0, i / fade_samples, (n - i) / fade_samples)
+            value = amplitude * fade * math.sin(2 * math.pi * freq * t)
+            samples.append(int(value * 32767))
+    return samples.tobytes()
+
 def build_safe_chunks(turns, chunk_size):
     """
     通常はCHUNK_SIZEごとに区切るが、単独話者(MAYA/LEOのどちらか片方だけ)
@@ -83,26 +101,30 @@ target_wpm = LEVELS[LEVEL_KEY]["wpm_range"]
 SAMPLE_RATE = 24000
 CHUNK_SIZE = 2           # 1チャンクあたりのターン数(交互台本なら2以上で単独話者は発生しない)
 PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.2)  # チャンク間0.2秒の無音
+SECTION_PAUSE = b"\x00\x00" * int(SAMPLE_RATE * 0.8)  # セクション(概要/キーワード/本編)切り替わり用の長めの無音
 MAX_RETRY = 2            # 500エラー(既知の不具合)対策の再試行回数
 TTS_TIMEOUT_MS = 120_000  # 1回のAPI呼び出しの上限(ミリ秒)。無応答ハング対策。通常は10〜42秒で完了する
+CHIME_PCM = generate_chime(SAMPLE_RATE)  # セクション開始の合図(440Hz→660Hzの短いチャイム)
 
 # ============================================================
 # ブロック3-5: 演技指導(STYLE_PREFIX)をチャンクのセリフ内容から動的生成
 # ============================================================
-# tts_style_test.pyでの検証の結果、"I_AB_combo"方式(呼吸・間の演技指導 +
-# セリフ内の具体的な単語を指定した感情の推移)が最も評価が高かったため、
-# その構造をテンプレートとして、毎回のセリフ内容に応じてOpenAIに
-# 演技指導を1行ずつ書かせ、STYLE_PREFIXを動的に組み立てる。
+# tts_style_test.pyでの8パターン検証・AB統合版の聴き比べの結果、
+# Bの要素(呼吸・間の演技指導、相手との相対的な話速の指定)が硬さを
+# 生むと判断されたため、"A_line_by_line_emotion"方式(セリフの内容から
+# 読み取れる感情の推移 + セリフ本文の具体的な強調語)のみを採用する。
+# 毎回のセリフ内容に応じてOpenAIに演技指導を1行ずつ書かせ、
+# STYLE_PREFIXを動的に組み立てる。
 DIRECTION_PROMPT = """You are directing text-to-speech voice actors for a podcast dialogue between MAYA (a woman) and LEO (a man). Below is one chunk of their dialogue, in order.
 
 For EACH line, write ONE direction paragraph that combines, in this order:
-1. A breath/pause/gesture cue right before the line starts - but ONLY if it fits naturally. If the line continues directly from the flow of conversation with no natural beat before it, skip this part entirely rather than forcing one.
-2. The emotional arc across the line, grounded STRICTLY in what this line's own words and context actually convey - never invent an emotion the text does not support.
-3. 1-2 specific words copied from this line's own text that carry the emotional or informational weight, explicitly named as words to stress.
-4. If relevant, this line's pace relative to the adjacent line from the other speaker (e.g. "slightly slower than LEO's line here").
+1. The emotional arc across the line, grounded STRICTLY in what this line's own words and context actually convey - never invent an emotion the text does not support.
+2. 1-2 specific words copied from this line's own text that carry the emotional or informational weight, explicitly named as words to stress.
+
+Do NOT include any breath/pause/gesture cue, and do NOT mention this line's pace relative to the other speaker - describe only the emotional arc and the words to stress.
 
 Style reference (match only the shape/format of this example, not its content):
-"take a short intake of breath before speaking, as if she just looked up from her phone. She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Let her pitch climb through the questions on \"suddenly\" and \"today\", then land slightly deflated on the last sentence."
+"She carries genuine surprise and confusion - like she just read something online that doesn't add up, half-laughing at her own confusion while asking. Her pitch should rise on \"suddenly\" and \"today\"."
 
 Dialogue lines (in order):
 {lines_json}
@@ -115,8 +137,8 @@ MAX_DIRECTION_RETRY = 2  # 演技指導生成(OpenAI呼び出し)の再試行回
 def generate_style_prefix(chunk, target_wpm):
     """
     チャンクの実際のセリフ内容をDIRECTION_PROMPTに渡し、行ごとの演技指導を
-    生成した上で、I_AB_comboのテンプレート構造に当てはめてSTYLE_PREFIXを
-    組み立てる。戻り値は (style_prefix文字列, 行ごとの演技指導リスト)。
+    生成した上で、A_line_by_line_emotion方式のテンプレート構造に当てはめて
+    STYLE_PREFIXを組み立てる。戻り値は (style_prefix文字列, 行ごとの演技指導リスト)。
     """
     lines_for_prompt = [{"speaker": t["speaker"], "text": t["text"]} for t in chunk]
     prompt = DIRECTION_PROMPT.format(
@@ -195,7 +217,7 @@ def record_call(label):
 # ============================================================
 # ブロック4: 最新の原稿を読み込み、ターンを安全にチャンク分割
 # ============================================================
-latest = sorted(glob.glob(f"episode_{LEVEL_KEY}_*.json"))[-1]
+latest = sorted(glob.glob(f"episode_{LEVEL_KEY}_[0-9][0-9][0-9].json"))[-1]
 out_wav = latest.replace(".json", "_gemini.wav")
 print(f"読み込む原稿: {latest}")
 
@@ -210,12 +232,18 @@ overview_intro = data.get("overview_intro", "")
 keywords_intro = data.get("keywords_intro", "")
 
 # --- 事前表示: 本日の呼び出し回数の見立て(tts_style_test.pyと同じログを共有) ---
-total_calls_needed = len(chunks) + (1 if overview_intro else 0) + (1 if keywords_intro else 0)
+# 各セクション(概要/キーワード/本編)は、内容本体に加えてタイトル読み上げ
+# (Overview/Key Words/エピソードタイトル)が1回ずつ増える。本編のタイトル
+# 読み上げは常に発生する。
+overview_calls = 2 if overview_intro else 0    # 概要本体 + "Overview"読み上げ
+keywords_calls = 2 if keywords_intro else 0    # キーワード本体 + "Key Words"読み上げ
+main_calls = len(chunks) + 1                   # 本編チャンク + タイトル読み上げ
+total_calls_needed = overview_calls + keywords_calls + main_calls
 today_so_far = load_today_call_count()
 projected_total = today_so_far + total_calls_needed
 
-print(f"必要なGemini TTS呼び出し回数: {total_calls_needed} 回(概要{'1' if overview_intro else '0'} + "
-      f"キーワード{'1' if keywords_intro else '0'} + 本編{len(chunks)}チャンク)")
+print(f"必要なGemini TTS呼び出し回数: {total_calls_needed} 回(概要{overview_calls} + "
+      f"キーワード{keywords_calls} + 本編タイトル1+チャンク{len(chunks)})")
 print(f"本日ここまでの呼び出し回数(tts_test.py・tts_style_test.py合算の見立て): {today_so_far} 回")
 print(f"実行後の見込み合計: {projected_total} 回 / Tier1日次上限(実測): {TIER1_DAILY_LIMIT} 回")
 if projected_total > TIER1_DAILY_LIMIT:
@@ -308,34 +336,42 @@ def call_tts(prompt, speech_config, label="chunk"):
                 raise
             time.sleep(2)
 
+def narrate_section_title(title_text, label):
+    """セクション開始の合図(チャイム→タイトル読み上げ)のPCMをまとめて返す。"""
+    print(f"  セクションタイトル『{title_text}』を音声化中...", flush=True)
+    title_pcm = call_tts(title_text, build_narrator_speech_config(), label=label)
+    record_call(label)
+    return CHIME_PCM + title_pcm + SECTION_PAUSE
+
 # ============================================================
 # ブロック4-5: ①概要(overview_intro)・②キーワードコーナー(keywords_intro)を
 #              それぞれ別々にナレーター単独音声で先に生成
+#              (各セクションの前に、効果音+タイトル読み上げ+区切りポーズを付ける)
 # ============================================================
-overview_pcm = b""
+audio = b""
+
 if overview_intro:
+    audio += narrate_section_title("Overview", "overview_title")
     print("①概要(overview_intro)を音声化中...", flush=True)
     overview_pcm = call_tts(overview_intro, build_narrator_speech_config(), label="overview")
     record_call("overview")
+    audio += overview_pcm + PAUSE
 else:
     print("  ※ この原稿にはoverview_introがありません(スキップ)")
 
-keywords_pcm = b""
 if keywords_intro:
+    audio += narrate_section_title("Key Words", "keywords_title")
     print("②キーワードコーナー(keywords_intro)を音声化中...", flush=True)
     keywords_pcm = call_tts(keywords_intro, build_narrator_speech_config(), label="keywords")
     record_call("keywords")
+    audio += keywords_pcm + PAUSE
 else:
     print("  ※ この原稿にはkeywords_introがありません(スキップ)")
 
 # ============================================================
-# ブロック5: チャンクごとに演技指導を動的生成→音声化(500エラー時は再試行)
+# ブロック5: 本編(タイトル読み上げ→チャンクごとに演技指導を動的生成→音声化)
 # ============================================================
-audio = b""
-if overview_pcm:
-    audio += overview_pcm + PAUSE
-if keywords_pcm:
-    audio += keywords_pcm + PAUSE
+audio += narrate_section_title(data["title"], "main_title")
 
 direction_log = []  # 人間が後から確認できるよう、チャンクごとの演技指導を記録する
 for i, chunk in enumerate(chunks, 1):

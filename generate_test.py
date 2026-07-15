@@ -552,6 +552,42 @@ print()
 print("工程(3)a-2: 企画書を作成中...")
 brief = ask_llm(MODEL_PLAN, PLAN_PROMPT)
 
+# --- keywords_planの個数検証 + 簡単なリトライ(語数チェック&差し戻しと同じ考え方) ---
+# LLMがまれに「5〜7個」という指示を守らず少数しか返さないことがあるため、
+# 規定を下回った場合は当該部分だけを再生成する(1回のみ試みる。深追いはしない)。
+MIN_KEYWORDS = 5
+KEYWORDS_RETRY_PROMPT = f"""The keywords_plan below was generated for a podcast episode brief, but it has only {{count}} phrase(s), while the rule requires 5 to 7. Regenerate ONLY the keywords_plan, following the same selection rules as before.
+
+Topic: {TOPIC}
+Material:
+{FACTS}
+
+Episode brief so far (for context):
+{{brief_context}}
+
+KEYWORDS RULES: choose 5 to 7 vocabulary PHRASES or collocations (never a single isolated word). Prioritize, in this order:
+   (a) any phrase without which the dialogue's meaning would not land - always include these regardless of the rest below.
+   (b) phrases likely to reappear across OTHER episodes in the same genre, beyond just this topic.
+   (c) phrase/collocation units over single words (e.g. "take off", "look forward to", "stock market").
+   (d) fit for the {LEVEL['level_name']} level.
+   For each phrase, also give a natural, idiomatic Japanese translation.
+
+Return ONLY valid JSON:
+{{{{"keywords_plan": [{{{{"phrase": "English phrase or collocation", "japanese": "natural Japanese translation"}}}}]}}}}"""
+
+current_count = len(brief.get("keywords_plan", []))
+if current_count < MIN_KEYWORDS:
+    print(f"  ⚠ keywords_planが{current_count}個しかありません(規定5〜7個)。再生成を試みます...")
+    retry_out = ask_llm(MODEL_PLAN, KEYWORDS_RETRY_PROMPT.format(
+        count=current_count,
+        brief_context=json.dumps(brief, ensure_ascii=False, indent=2)))
+    retry_count = len(retry_out.get("keywords_plan", []))
+    if retry_count >= MIN_KEYWORDS:
+        brief["keywords_plan"] = retry_out["keywords_plan"]
+        print(f"  → 再生成後: {retry_count}個に更新しました")
+    else:
+        print(f"  → 再生成でも{retry_count}個止まりでした。現状のまま続行します(要人間確認)")
+
 # このprint()ブロックは、企画書の要点だけを人間が目視で確認できるようにするためのもの。
 # 全文はJSONに入っているので、ここでは概要だけ表示している。
 print()
