@@ -1,0 +1,354 @@
+{
+  "experiment_id": "ER-001B-6",
+  "model": "gemini-2.5-pro-preview-tts",
+  "qa_model": "gemini-3-flash-preview",
+  "language_code": "en-us",
+  "sample_rate": 24000,
+  "fixed_voice_assignment": {
+    "hanshin": "Aoede",
+    "caregiving": "Charon"
+  },
+  "section_join_pause_seconds": 0.8,
+  "volume_normalized": true,
+  "normalize_target_peak": 0.7,
+  "max_content_attempts": 2,
+  "common_base_instruction": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\n",
+  "level_instructions": {
+    "level0": "Use natural vocal variation appropriate to the script.\n\nGive important moments enough emphasis to be clear, but keep the overall delivery controlled and conversational.\n\nAllow explanatory passages to sound calm, while maintaining steady interest and connection with the listener.\n\nDo not overact.\n\n",
+    "level1": "Maintain a clearly engaged and expressive delivery throughout the full narration.\n\nUse moderately stronger emotional involvement, emphasis, and vocal variation than a standard conversational news reading.\n\nKeep a clear sense of forward movement, including during explanatory passages. Do not let the energy become passive or overly restrained.\n\nLet important contrasts, turning points, and conclusions stand out more clearly, while keeping the delivery natural and appropriate to the meaning of the script.\n\nUse a wider range of pitch, rhythm, and emphasis than Level 0, but keep the changes smooth and controlled.\n\n",
+    "level2": "Give the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n\n"
+  },
+  "pre_generation_validation": "共通基本指示の全条件一致、同一Levelの強度指示が題材間で一致、題材固有語句の非混入、Level間差異が強度指示のみであること、話速数値指定の非存在、見出し発話保証の存在、'In One Line'明示発話指示の存在、台本(チャンク本文)の題材内一致、を生成前にassertで検証し、全項目をパスしたことを確認してから生成を開始した(不一致があれば生成前にエラー終了する設計)。",
+  "clips": [
+    {
+      "file": "er001b6_hanshin_aoede_level0_full.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "level": "level0",
+      "condition": "hanshin_level0",
+      "script_file": "er001b5_hanshin_script.json",
+      "full_text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.\n\nToday’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.\n\nIn One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+      "script_sha256": "051ad4959e3866300ed34928a43ce0acd49110191eb007b9a41dccb755b2e497",
+      "level_instruction": "Use natural vocal variation appropriate to the script.\n\nGive important moments enough emphasis to be clear, but keep the overall delivery controlled and conversational.\n\nAllow explanatory passages to sound calm, while maintaining steady interest and connection with the listener.\n\nDo not overact.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nUse natural vocal variation appropriate to the script.\n\nGive important moments enough emphasis to be clear, but keep the overall delivery controlled and conversational.\n\nAllow explanatory passages to sound calm, while maintaining steady interest and connection with the listener.\n\nDo not overact.\n\n",
+      "prompt_sha256": "8143d1b7be279bc8a3dd46583fe0b5c4399997eed7830e5aa5d80c6ee54d4573",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.",
+          "word_count": 255,
+          "generation_seconds": 75.6,
+          "audio_duration_seconds": 96.9
+        },
+        {
+          "index": 2,
+          "label": "Today’s Tiger Points",
+          "text": "Today’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.",
+          "word_count": 161,
+          "generation_seconds": 54.1,
+          "audio_duration_seconds": 72.7
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+          "word_count": 52,
+          "generation_seconds": 21.9,
+          "audio_duration_seconds": 21.8
+        }
+      ],
+      "duration_seconds": 193.0,
+      "generated_at": "2026-07-17T14:32:39.346754",
+      "generation_attempts": 1,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "reasons": [],
+          "notes": "The narration perfectly follows the source script, including all five required headings as spoken text."
+        }
+      ],
+      "final_attempt_technical_check_passed": true
+    },
+    {
+      "file": "er001b6_hanshin_aoede_level1_full.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "level": "level1",
+      "condition": "hanshin_level1",
+      "script_file": "er001b5_hanshin_script.json",
+      "full_text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.\n\nToday’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.\n\nIn One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+      "script_sha256": "051ad4959e3866300ed34928a43ce0acd49110191eb007b9a41dccb755b2e497",
+      "level_instruction": "Maintain a clearly engaged and expressive delivery throughout the full narration.\n\nUse moderately stronger emotional involvement, emphasis, and vocal variation than a standard conversational news reading.\n\nKeep a clear sense of forward movement, including during explanatory passages. Do not let the energy become passive or overly restrained.\n\nLet important contrasts, turning points, and conclusions stand out more clearly, while keeping the delivery natural and appropriate to the meaning of the script.\n\nUse a wider range of pitch, rhythm, and emphasis than Level 0, but keep the changes smooth and controlled.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nMaintain a clearly engaged and expressive delivery throughout the full narration.\n\nUse moderately stronger emotional involvement, emphasis, and vocal variation than a standard conversational news reading.\n\nKeep a clear sense of forward movement, including during explanatory passages. Do not let the energy become passive or overly restrained.\n\nLet important contrasts, turning points, and conclusions stand out more clearly, while keeping the delivery natural and appropriate to the meaning of the script.\n\nUse a wider range of pitch, rhythm, and emphasis than Level 0, but keep the changes smooth and controlled.\n\n",
+      "prompt_sha256": "53526d64b160af77191a8776e1a2236823ca024c13d4df65a69ff48ef48d5c40",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.",
+          "word_count": 255,
+          "generation_seconds": 72.3,
+          "audio_duration_seconds": 97.2
+        },
+        {
+          "index": 2,
+          "label": "Today’s Tiger Points",
+          "text": "Today’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.",
+          "word_count": 161,
+          "generation_seconds": 48.5,
+          "audio_duration_seconds": 65.7
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+          "word_count": 52,
+          "generation_seconds": 22.0,
+          "audio_duration_seconds": 20.3
+        }
+      ],
+      "duration_seconds": 184.8,
+      "generated_at": "2026-07-17T14:38:14.083847",
+      "generation_attempts": 2,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "reasons": [
+            "unauthorized_wording_changes"
+          ],
+          "notes": "The narrator substituted the word 'mounted' for 'took' in the phrase 'took the mound' at approximately 01:57."
+        },
+        {
+          "attempt": 2,
+          "passed": true,
+          "reasons": [],
+          "notes": "The narration follows the source script perfectly, including all mandatory headings and sections."
+        }
+      ],
+      "final_attempt_technical_check_passed": true
+    },
+    {
+      "file": "er001b6_hanshin_aoede_level2_full.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "level": "level2",
+      "condition": "hanshin_level2",
+      "script_file": "er001b5_hanshin_script.json",
+      "full_text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.\n\nToday’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.\n\nIn One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+      "script_sha256": "051ad4959e3866300ed34928a43ce0acd49110191eb007b9a41dccb755b2e497",
+      "level_instruction": "Give the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n\n",
+      "prompt_sha256": "243ce0488123f6a2aef6bbf8eb8c4336edc6e5a847855f892398c5c2380c3af8",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.",
+          "word_count": 255,
+          "generation_seconds": 74.0,
+          "audio_duration_seconds": 100.9
+        },
+        {
+          "index": 2,
+          "label": "Today’s Tiger Points",
+          "text": "Today’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.",
+          "word_count": 161,
+          "generation_seconds": 50.0,
+          "audio_duration_seconds": 66.7
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+          "word_count": 52,
+          "generation_seconds": 21.0,
+          "audio_duration_seconds": 21.5
+        }
+      ],
+      "duration_seconds": 190.6,
+      "generated_at": "2026-07-17T14:40:48.675059",
+      "generation_attempts": 1,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "reasons": [],
+          "notes": "The audio accurately reflects the source script, including all required headings and body text without any omissions or unauthorized changes."
+        }
+      ],
+      "final_attempt_technical_check_passed": true
+    },
+    {
+      "file": "er001b6_caregiving_charon_level0_full.wav",
+      "topic": "caregiving",
+      "voice": "Charon",
+      "level": "level0",
+      "condition": "caregiving_level0",
+      "script_file": "er001b5_caregiving_script.json",
+      "full_text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.\n\nToday’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.\n\nIn One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+      "script_sha256": "f0d0dcc1bd670ee54b07d5f8abda6b79de79a52e088ef11718139d16a0fbb9c3",
+      "level_instruction": "Use natural vocal variation appropriate to the script.\n\nGive important moments enough emphasis to be clear, but keep the overall delivery controlled and conversational.\n\nAllow explanatory passages to sound calm, while maintaining steady interest and connection with the listener.\n\nDo not overact.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nUse natural vocal variation appropriate to the script.\n\nGive important moments enough emphasis to be clear, but keep the overall delivery controlled and conversational.\n\nAllow explanatory passages to sound calm, while maintaining steady interest and connection with the listener.\n\nDo not overact.\n\n",
+      "prompt_sha256": "8143d1b7be279bc8a3dd46583fe0b5c4399997eed7830e5aa5d80c6ee54d4573",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.",
+          "word_count": 123,
+          "generation_seconds": 41.9,
+          "audio_duration_seconds": 55.8
+        },
+        {
+          "index": 2,
+          "label": "Today’s Care Points",
+          "text": "Today’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.",
+          "word_count": 155,
+          "generation_seconds": 93.8,
+          "audio_duration_seconds": 71.5
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+          "word_count": 51,
+          "generation_seconds": 22.1,
+          "audio_duration_seconds": 23.7
+        }
+      ],
+      "duration_seconds": 152.6,
+      "generated_at": "2026-07-17T14:43:40.994750",
+      "generation_attempts": 1,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "reasons": [],
+          "notes": "The narration follows the source script perfectly, including all required headings."
+        }
+      ],
+      "final_attempt_technical_check_passed": true
+    },
+    {
+      "file": "er001b6_caregiving_charon_level1_full.wav",
+      "topic": "caregiving",
+      "voice": "Charon",
+      "level": "level1",
+      "condition": "caregiving_level1",
+      "script_file": "er001b5_caregiving_script.json",
+      "full_text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.\n\nToday’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.\n\nIn One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+      "script_sha256": "f0d0dcc1bd670ee54b07d5f8abda6b79de79a52e088ef11718139d16a0fbb9c3",
+      "level_instruction": "Maintain a clearly engaged and expressive delivery throughout the full narration.\n\nUse moderately stronger emotional involvement, emphasis, and vocal variation than a standard conversational news reading.\n\nKeep a clear sense of forward movement, including during explanatory passages. Do not let the energy become passive or overly restrained.\n\nLet important contrasts, turning points, and conclusions stand out more clearly, while keeping the delivery natural and appropriate to the meaning of the script.\n\nUse a wider range of pitch, rhythm, and emphasis than Level 0, but keep the changes smooth and controlled.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nMaintain a clearly engaged and expressive delivery throughout the full narration.\n\nUse moderately stronger emotional involvement, emphasis, and vocal variation than a standard conversational news reading.\n\nKeep a clear sense of forward movement, including during explanatory passages. Do not let the energy become passive or overly restrained.\n\nLet important contrasts, turning points, and conclusions stand out more clearly, while keeping the delivery natural and appropriate to the meaning of the script.\n\nUse a wider range of pitch, rhythm, and emphasis than Level 0, but keep the changes smooth and controlled.\n\n",
+      "prompt_sha256": "53526d64b160af77191a8776e1a2236823ca024c13d4df65a69ff48ef48d5c40",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.",
+          "word_count": 123,
+          "generation_seconds": 45.3,
+          "audio_duration_seconds": 58.0
+        },
+        {
+          "index": 2,
+          "label": "Today’s Care Points",
+          "text": "Today’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.",
+          "word_count": 155,
+          "generation_seconds": 52.2,
+          "audio_duration_seconds": 64.4
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+          "word_count": 51,
+          "generation_seconds": 45.8,
+          "audio_duration_seconds": 27.9
+        }
+      ],
+      "duration_seconds": 151.9,
+      "generated_at": "2026-07-17T14:48:28.292843",
+      "generation_attempts": 2,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": false,
+          "reasons": [
+            "unauthorized_wording_changes"
+          ],
+          "notes": "The audio changed 'prepare' to 'make' in the sentence 'Caregivers prepare meals' at approximately 00:56."
+        },
+        {
+          "attempt": 2,
+          "passed": false,
+          "reasons": [
+            "duplicated_content"
+          ],
+          "notes": "The audio contains duplicated headings. The first heading/line 'The Caregiver Is 75. The Person Receiving Care Is 75.' is spoken twice (00:00 and 00:03) by different voices. Similarly, the heading 'In One Line' is spoken twice (02:01 and 02:04)."
+        }
+      ],
+      "final_attempt_technical_check_passed": false
+    },
+    {
+      "file": "er001b6_caregiving_charon_level2_full.wav",
+      "topic": "caregiving",
+      "voice": "Charon",
+      "level": "level2",
+      "condition": "caregiving_level2",
+      "script_file": "er001b5_caregiving_script.json",
+      "full_text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.\n\nToday’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.\n\nIn One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+      "script_sha256": "f0d0dcc1bd670ee54b07d5f8abda6b79de79a52e088ef11718139d16a0fbb9c3",
+      "level_instruction": "Give the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n\n",
+      "final_style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nClearly say \"In One Line\" before reading the final section.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n\n",
+      "prompt_sha256": "243ce0488123f6a2aef6bbf8eb8c4336edc6e5a847855f892398c5c2380c3af8",
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.",
+          "word_count": 123,
+          "generation_seconds": 44.0,
+          "audio_duration_seconds": 55.8
+        },
+        {
+          "index": 2,
+          "label": "Today’s Care Points",
+          "text": "Today’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.",
+          "word_count": 155,
+          "generation_seconds": 50.1,
+          "audio_duration_seconds": 66.3
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "text": "In One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+          "word_count": 51,
+          "generation_seconds": 23.3,
+          "audio_duration_seconds": 28.7
+        }
+      ],
+      "duration_seconds": 152.4,
+      "generated_at": "2026-07-17T14:50:39.053097",
+      "generation_attempts": 1,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "passed": true,
+          "reasons": [],
+          "notes": "The narration perfectly matches the provided source script and includes all required headings."
+        }
+      ],
+      "final_attempt_technical_check_passed": true
+    }
+  ]
+}
