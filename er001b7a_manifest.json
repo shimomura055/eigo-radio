@@ -1,0 +1,71 @@
+{
+  "experiment_id": "ER-001B-7A",
+  "input_file": "er001b6_hanshin_aoede_level2_full.wav",
+  "output_file": "er001b7a_hanshin_level2_light_dynamics.wav",
+  "tts_regenerated": false,
+  "input_file_overwritten": false,
+  "processing": {
+    "method": "軽いソフトニー・コンプレッサー(ピーク検出エンベロープ、非対称アタック/リリース、しきい値=エンベロープ分布の90パーセンタイル、メイクアップゲインなし)",
+    "library": "numpy + scipy(このタスクのため.venvへ新規インストール。requirements.txt等は本リポジトリに存在しないため未追加)",
+    "params": {
+      "type": "soft_knee_compressor",
+      "threshold_percentile": 90,
+      "ratio": 2.5,
+      "knee_db": 6.0,
+      "attack_ms": 5.0,
+      "release_ms": 200.0,
+      "gain_smoothing_ms": 8.0,
+      "makeup_gain_db": 0.0
+    },
+    "threshold_db_used_this_file": -12.75
+  },
+  "unchanged": [
+    "再生速度",
+    "ピッチ",
+    "セクション間の0.8秒無音の位置",
+    "音声の開始・終了位置",
+    "台本",
+    "TTS生成内容",
+    "話者",
+    "感情演技",
+    "サンプルレート(24000Hz)",
+    "チャンネル数(モノラル)"
+  ],
+  "metrics_before": {
+    "label": "before",
+    "duration_seconds": 190.593,
+    "sample_rate": 24000,
+    "channels": 1,
+    "peak_dbfs": -3.1,
+    "rms_dbfs": -22.51,
+    "integrated_lufs_approx": -22.32,
+    "loudness_range_approx_lu": 3.51,
+    "clipping_sample_count": 0,
+    "clipping_detected": false,
+    "lufs_method_note": "ITU-R BS.1770のK-weightingを24kHz向けにRBJ Audio EQ Cookbookの式で再設計し、2段階ゲーティングで積分ラウドネスを近似計算したもの。公式のBS.1770準拠測定器とは完全には一致しない可能性がある近似値。",
+    "loudness_range_method_note": "3秒窓・1秒ホップの短時間ラウドネス分布のP95-P10による簡易近似。EBU R128のLRA完全準拠アルゴリズムではない。"
+  },
+  "metrics_after": {
+    "label": "after",
+    "duration_seconds": 190.593,
+    "sample_rate": 24000,
+    "channels": 1,
+    "peak_dbfs": -3.32,
+    "rms_dbfs": -22.95,
+    "integrated_lufs_approx": -22.78,
+    "loudness_range_approx_lu": 2.94,
+    "clipping_sample_count": 0,
+    "clipping_detected": false,
+    "lufs_method_note": "ITU-R BS.1770のK-weightingを24kHz向けにRBJ Audio EQ Cookbookの式で再設計し、2段階ゲーティングで積分ラウドネスを近似計算したもの。公式のBS.1770準拠測定器とは完全には一致しない可能性がある近似値。",
+    "loudness_range_method_note": "3秒窓・1秒ホップの短時間ラウドネス分布のP95-P10による簡易近似。EBU R128のLRA完全準拠アルゴリズムではない。"
+  },
+  "duration_difference_seconds": 0.0,
+  "pumping_check": {
+    "pumping_suspected": false,
+    "max_autocorr": 0.36,
+    "period_seconds_at_peak": 0.1,
+    "threshold_used": 0.5,
+    "note": "0.1〜2.0秒周期帯における自己相関のピークが閾値を超えた場合にポンピングの可能性ありとする簡易判定。音楽的なコンプレッサー用ポンピング検出の代替として、機械的な参考情報として扱うこと。"
+  },
+  "generated_at": "2026-07-17T15:51:35.899290"
+}
