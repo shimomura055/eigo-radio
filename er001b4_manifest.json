@@ -1,0 +1,61 @@
+{
+  "experiment_id": "ER-001B-4",
+  "model": "gemini-2.5-pro-preview-tts",
+  "language_code": "en-us",
+  "sample_rate": 24000,
+  "fixed_voice_assignment": {
+    "hanshin": "Aoede",
+    "caregiving": "Charon"
+  },
+  "note": "比較基準(baseline_reused)はER-001B-3の既存音声を再利用しており、今回は再生成していない。比較基準のtext/style_prefixはer001b3_manifest.jsonの記録値。connected条件のtextは比較基準と改行を含め完全に同一(HANSHIN_TEXT/CAREGIVING_TEXTのassertで起動時に検証済み)。connected条件の演技指示は、比較基準の指示文に「つながった語り」の指示を追加したのみで、既存の指示文自体は変更していない。",
+  "clips": [
+    {
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "condition": "minimal(ER-001B-3)",
+      "out_file": "er001b3_hanshin_aoede_minimal.wav",
+      "text": "One more hit. That was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6-5, but they refused to go quiet. Hanshin scored first, then Chunichi turned the game around in the fourth inning.\n\nFrom that moment, the Dragons tried to pull away, and the Tigers kept chasing.\n\nBy the ninth inning, Hanshin was only one run behind. Something could still happen.",
+      "style_prefix": "TTS the following sports story in natural, engaging English.\n\nSound like a friendly radio host sharing an exciting close game with listeners. Keep the delivery clear and natural. Do not shout or sound like a movie trailer.\n\n",
+      "duration_seconds": 26.5,
+      "source": "er001b3_manifest.json",
+      "reused": true
+    },
+    {
+      "topic": "caregiving",
+      "voice": "Charon",
+      "condition": "emotional_arc(ER-001B-3)",
+      "out_file": "er001b3_caregiving_charon_emotional_arc.wav",
+      "text": "When we hear the word \"caregiving,\" we may imagine a working adult taking care of an older parent.\n\nBut in many Japanese homes, the caregiver is also old. An older husband supports his older wife, or an older wife cares for her husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older.\n\nThe person giving support may also need support.",
+      "style_prefix": "TTS the following story in natural, engaging English.\n\nCreate a gentle but clear emotional arc across the passage.\n\nBegin in a familiar, conversational way. Add a little more weight when explaining that the caregiver may also be old. Make \"37.1 percent\" clear and important without sounding dramatic. End with warmth and a strong sense that the caregiver also deserves support.\n\nGive light emphasis to \"both people were 75 or older\" and \"may also need support.\"\n\nStay calm but actively engaged with the listener. Do not sound gloomy, sleepy, distant, or overly formal.\n\n",
+      "duration_seconds": 32.5,
+      "source": "er001b3_manifest.json",
+      "reused": true
+    },
+    {
+      "file": "er001b4_hanshin_aoede_connected.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "condition": "connected",
+      "text": "One more hit. That was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6-5, but they refused to go quiet. Hanshin scored first, then Chunichi turned the game around in the fourth inning.\n\nFrom that moment, the Dragons tried to pull away, and the Tigers kept chasing.\n\nBy the ninth inning, Hanshin was only one run behind. Something could still happen.",
+      "style_prefix": "TTS the following sports story in natural, engaging English.\n\nSound like a friendly radio host sharing an exciting close game with listeners. Keep the delivery clear and natural. Do not shout or sound like a movie trailer.\n\nSpeak to one interested listener rather than announcing to a large crowd.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, and use noticeable pauses only when the story truly changes direction.\n\nKeep the delivery lively, but save the strongest energy for the most important moments.\n\n",
+      "baseline_file": "er001b3_hanshin_aoede_minimal.wav",
+      "baseline_condition": "minimal(ER-001B-3)",
+      "duration_seconds": 28.9,
+      "generated_at": "2026-07-17T11:52:08.729547",
+      "reused": false
+    },
+    {
+      "file": "er001b4_caregiving_charon_connected.wav",
+      "topic": "caregiving",
+      "voice": "Charon",
+      "condition": "connected",
+      "text": "When we hear the word \"caregiving,\" we may imagine a working adult taking care of an older parent.\n\nBut in many Japanese homes, the caregiver is also old. An older husband supports his older wife, or an older wife cares for her husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older.\n\nThe person giving support may also need support.",
+      "style_prefix": "TTS the following story in natural, engaging English.\n\nCreate a gentle but clear emotional arc across the passage.\n\nBegin in a familiar, conversational way. Add a little more weight when explaining that the caregiver may also be old. Make \"37.1 percent\" clear and important without sounding dramatic. End with warmth and a strong sense that the caregiver also deserves support.\n\nGive light emphasis to \"both people were 75 or older\" and \"may also need support.\"\n\nStay calm but actively engaged with the listener. Do not sound gloomy, sleepy, distant, or overly formal.\n\nSpeak directly to one interested listener in a warm and natural way.\n\nCarry the meaning naturally across sentence boundaries. Do not treat every short sentence as a separate announcement. Group related sentences into complete thoughts, while keeping the important contrasts clear.\n\nUse noticeable pauses only when the topic or point changes.\n\n",
+      "baseline_file": "er001b3_caregiving_charon_emotional_arc.wav",
+      "baseline_condition": "emotional_arc(ER-001B-3)",
+      "duration_seconds": 31.0,
+      "generated_at": "2026-07-17T11:52:34.695875",
+      "reused": false
+    }
+  ]
+}
