@@ -14,3 +14,18 @@ topic_package_*
 
 # tts_style_test.pyのローカル使用回数ログ
 .tts_usage_log.jsonl
+
+# ER-002: A/B比較の話者対応表(評価確定前に開示してはならないため追跡対象外)
+*_ab_mapping.json
+
+# ER-002: er002_output/配下は原則Git追跡する(manifest.json・各種試行ログ・
+# QA結果・ユーザー評価などの実験JSONは追跡対象)。音声実体は*.wavルールで
+# 既に対象外。以下は個別に追跡対象外とする:
+#   - 元記事全文をそのまま保存するローカルキャッシュ(著作権・容量の観点。
+#     情報源・確認済み事実の要約はsource_refs.json/raw_facts.jsonへ保存し、
+#     そちらは追跡対象とする)
+er002_output/**/raw_source_fulltext*
+
+# ER-002: 一時ファイル・作業用スクラッチ領域
+er002_output/**/_tmp/
+*.tmp

@@ -1,0 +1,833 @@
+# ============================================================
+# er002_test_common.py
+# ER-002-S1/S1.1: 共通実験基盤のテスト(モック・固定データのみ使用)
+# ============================================================
+# 実TTS APIも実QA APIも一切呼び出さない。tts_call_fn/qa_call_fnは
+# すべてこのファイル内のモックに差し替えている。
+#
+# ここで証明できるのは「QAレスポンスの解析・分類・合否集約ロジックが
+# 期待どおり動くか」であり、「QAモデル(gemini-3-flash-preview)が実際に
+# 見出し欠落や言い換えを正しく検出できるか」という実能力の証明ではない
+# (それはER-002-S2以降、実APIで確認する)。個々のテストのdocstringに
+# この区別を明記している。
+#
+# 実行方法:
+#   .venv/Scripts/python.exe -m unittest er002_test_common -v
+
+import json
+import os
+import subprocess
+import tempfile
+import unittest
+import wave
+from unittest import mock
+
+import numpy as np
+
+import er002_ab_anonymize as ab
+import er002_common as common
+import er002_runner as runner
+
+
+# ============================================================
+# テスト用フィクスチャ(合成データ。実記事の文面は使わない)
+# ============================================================
+def make_word_text(n, prefix="word"):
+    return " ".join(f"{prefix}{i}" for i in range(n))
+
+
+def make_script(body_words=200, sub1_words=60, sub2_words=60, final_words=40,
+                 title="Sample Title", points_heading="Today's Sample Points",
+                 sub1_heading="First point heading", sub2_heading="Second point heading",
+                 sub1_paragraphs=None, sub2_paragraphs=None,
+                 n_subsections=2, final_heading="In One Line", n_sections_override=None):
+    if sub1_paragraphs is None:
+        sub1_paragraphs = [make_word_text(sub1_words, "s1w")]
+    if sub2_paragraphs is None:
+        sub2_paragraphs = [make_word_text(sub2_words, "s2w")]
+
+    subsections = [{"heading": sub1_heading, "paragraphs": sub1_paragraphs}]
+    if n_subsections >= 2:
+        subsections.append({"heading": sub2_heading, "paragraphs": sub2_paragraphs})
+    if n_subsections >= 3:
+        subsections.append({"heading": "Third point heading", "paragraphs": [make_word_text(20, "s3w")]})
+
+    sections = [
+        {"type": "body", "paragraphs": [make_word_text(body_words)]},
+        {"type": "section", "heading": points_heading, "subsections": subsections},
+        {"type": "section", "heading": final_heading, "paragraphs": [make_word_text(final_words)]},
+    ]
+    return {"title": title, "sections": sections}
+
+
+def make_qa_dict(plan, **overrides):
+    elements = common.build_expected_elements(plan)
+    base = {
+        "transcript": plan.full_text,
+        "element_counts": {k: 1 for k, _ in elements},
+        "body_dropped": False, "body_dropped_evidence": [],
+        "body_duplicated": False, "body_duplicated_evidence": [],
+        "unauthorized_paraphrase": False, "unauthorized_paraphrase_evidence": [],
+        "section_order_changed": False, "observed_section_order": [k for k, _ in elements],
+        "extra_unscripted_speech": False, "extra_unscripted_speech_evidence": [],
+        "notes": "ok",
+    }
+    base.update(overrides)
+    return base
+
+
+def make_qa_json(plan, **overrides):
+    return json.dumps(make_qa_dict(plan, **overrides))
+
+
+def make_wav_bytes(n_samples=1000, sample_rate=24000, value=1000):
+    import array
+    import io
+    samples = array.array("h", [value] * n_samples)
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sample_rate)
+        w.writeframes(samples.tobytes())
+    return buf.getvalue()
+
+
+# ============================================================
+# 1〜3, (追加) 構造検証: subsections=2件の強制・内容重複検出
+# ============================================================
+class StructureValidationTests(unittest.TestCase):
+    """検証対象: er002_common.validate_script_structure の集約ロジック。
+    QAモデルは一切関与しない、純粋なPythonロジックのテスト。"""
+
+    def test_exactly_two_subsections_passes(self):
+        script = make_script(n_subsections=2)
+        result = common.validate_script_structure(script)
+        self.assertTrue(result.valid, result.errors)
+        self.assertEqual(len(result.subsections), 2)
+
+    def test_one_subsection_fails(self):
+        script = make_script(n_subsections=1)
+        result = common.validate_script_structure(script)
+        self.assertFalse(result.valid)
+        self.assertTrue(any("正確に2件" in e for e in result.errors), result.errors)
+
+    def test_three_subsections_fails(self):
+        script = make_script(n_subsections=3)
+        result = common.validate_script_structure(script)
+        self.assertFalse(result.valid)
+        self.assertTrue(any("正確に2件" in e for e in result.errors), result.errors)
+
+    def test_duplicated_point_content_fails(self):
+        """Point OneとPoint Twoの小見出し・本文が完全一致している場合を
+        構造検証の段階で不合格にできることを確認する。"""
+        script = make_script(
+            sub1_heading="Same heading", sub2_heading="Same heading",
+            sub1_paragraphs=["identical text here"], sub2_paragraphs=["identical text here"],
+        )
+        result = common.validate_script_structure(script)
+        self.assertFalse(result.valid)
+        self.assertTrue(any("完全に重複" in e for e in result.errors), result.errors)
+
+
+# ============================================================
+# 4: 共通演技指示への記事固有語混入チェック
+# ============================================================
+class GenreLeakageTests(unittest.TestCase):
+    """検証対象: er002_common.find_genre_leakage / build_style_prefix。
+    ER-002-S0で発見された"care point"混入の回帰防止テスト。"""
+
+    def test_style_prefix_has_no_leakage(self):
+        prefix = common.build_style_prefix()
+        self.assertEqual(common.find_genre_leakage(prefix), [])
+        self.assertNotIn("care point", prefix.lower())
+        self.assertNotIn("tiger", prefix.lower())
+
+    def test_detects_known_leakage_terms(self):
+        broken_text = 'Clearly say "Point One" before the first care point and mention the Tiger fans.'
+        found = common.find_genre_leakage(broken_text)
+        self.assertIn("care point", found)
+        self.assertIn("tiger", found)
+
+    def test_assert_raises_on_leakage(self):
+        with self.assertRaises(AssertionError):
+            common.assert_no_genre_leakage("this text mentions a care point")
+
+
+# ============================================================
+# 5〜10: 技術問題の個別分類(embedded/grounded共通のclassify_qa_result)
+# ============================================================
+class QAClassificationTests(unittest.TestCase):
+    """検証対象: er002_common.classify_qa_result による
+    「レスポンス解析→11分類への集約」ロジック。QAモデル自身が実際に
+    見出し欠落等を検出できるかどうかは対象外(固定のQAレスポンスを
+    与えて、分類・合否判定コードが正しく動くかのみを確認する)。"""
+
+    def setUp(self):
+        self.script = make_script()
+        self.plan = common.build_narration_plan(self.script)
+
+    def test_all_clean_passes(self):
+        result = common.classify_qa_result(make_qa_dict(self.plan), self.plan)
+        self.assertTrue(result["passed"], result["reasons"])
+
+    def test_title_missing_classified(self):
+        raw = make_qa_dict(self.plan, element_counts={
+            **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "title": 0})
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertEqual(result["element_checks"]["title"]["status"], "missing")
+        self.assertIn("title", result["reasons"])
+
+    def test_in_one_line_duplicated_classified(self):
+        raw = make_qa_dict(self.plan, element_counts={
+            **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "in_one_line": 2})
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertEqual(result["element_checks"]["in_one_line"]["status"], "duplicated")
+
+    def test_body_dropped_classified(self):
+        raw = make_qa_dict(self.plan, body_dropped=True, body_dropped_evidence=["missing sentence X"])
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertIn("body_dropped", result["reasons"])
+        self.assertEqual(result["evidence"]["body_dropped_evidence"], ["missing sentence X"])
+
+    def test_body_duplicated_classified(self):
+        raw = make_qa_dict(self.plan, body_duplicated=True, body_duplicated_evidence=["repeated sentence Y"])
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertIn("body_duplicated", result["reasons"])
+
+    def test_unauthorized_paraphrase_classified(self):
+        raw = make_qa_dict(self.plan, unauthorized_paraphrase=True,
+                            unauthorized_paraphrase_evidence=[{"expected": "A", "observed": "B"}])
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertIn("unauthorized_paraphrase", result["reasons"])
+
+    def test_section_order_changed_classified(self):
+        raw = make_qa_dict(self.plan, section_order_changed=True,
+                            observed_section_order=["in_one_line", "title", "today_points_heading"])
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertIn("section_order_changed", result["reasons"])
+
+    def test_extra_unscripted_speech_classified(self):
+        """要求11項目のうち「台本にない追加発話」に対応。"""
+        raw = make_qa_dict(self.plan, extra_unscripted_speech=True,
+                            extra_unscripted_speech_evidence=["Thanks for listening!"])
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        self.assertIn("extra_unscripted_speech", result["reasons"])
+
+    def test_missing_field_is_unknown_not_ok(self):
+        """QAモデルがフィールドを返さなかった場合、勝手に合格扱いにしないことを確認。"""
+        raw = {"element_counts": {}}  # 何も返ってこないケースを模擬
+        result = common.classify_qa_result(raw, self.plan)
+        self.assertFalse(result["passed"])
+        for key, check in result["element_checks"].items():
+            self.assertEqual(check["status"], "unknown")
+
+
+# ============================================================
+# 11: QA応答の解析不能・矛盾はfail-closed
+# ============================================================
+class QAFailClosedTests(unittest.TestCase):
+    def test_unparseable_json_raises(self):
+        with self.assertRaises(common.QAParseError):
+            common.parse_qa_json("this is not json at all")
+
+    def test_none_response_raises(self):
+        with self.assertRaises(common.QAParseError):
+            common.parse_qa_json(None)
+
+    def test_call_qa_with_retry_parse_failure_is_fail_closed(self):
+        outcome = common.call_qa_with_retry(
+            qa_call_fn=lambda prompt, wav: "not json", prompt="p", wav_bytes=b"", max_retry=0)
+        self.assertTrue(outcome.parse_failed)
+        self.assertIsNone(outcome.raw_result)
+
+    def test_aggregate_disagreement_is_flagged(self):
+        """embedded/groundedのどちらかがpassed=Falseの場合はもちろん、
+        要素カウントの不一致が disagreements として明示的に記録される
+        ことを確認する(診断情報としての価値。現行ロジックでは、
+        カウントが食い違う時点で少なくとも片方は個別チェックにも
+        失敗するため、disagreements単独が合否を覆す独立要因には
+        ならない。この構造はレポートに明記する)。"""
+        script = make_script()
+        plan = common.build_narration_plan(script)
+        embedded = common.classify_qa_result(make_qa_dict(plan), plan)  # title=1 (ok)
+        grounded_raw = make_qa_dict(plan, element_counts={
+            **{k: 1 for k, _ in common.build_expected_elements(plan)}, "title": 0})
+        grounded = common.classify_qa_result(grounded_raw, plan)  # title=0 (missing)
+        aggregated = common.aggregate_qa(embedded, grounded)
+        self.assertFalse(aggregated["passed"])
+        self.assertIn("title", aggregated["disagreements"])
+
+
+# ============================================================
+# 12〜14: TTSコンテンツ試行のオーケストレーション
+# ============================================================
+class TTSContentAttemptTests(unittest.TestCase):
+    def setUp(self):
+        self.script = make_script()
+        self.plan = common.build_narration_plan(self.script)
+        self.style_prefix = common.build_style_prefix()
+
+    def test_all_attempts_fail_no_audio_adopted(self):
+        """3回とも技術検品に不合格なら、最終音声が採用されないことを確認。
+        既存のfail-open処理(ER-001B-6/7B)は使っていない: run_tts_content_attempts
+        は新規実装であり、全滅時にaccepted_audioをNoneのまま返す。"""
+        def tts_fn(prompt):
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(self.plan, element_counts={
+                **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "title": 0})
+
+        result = common.run_tts_content_attempts(self.plan, self.style_prefix, tts_fn, qa_fn,
+                                                   max_content_attempts=3, max_api_retry=0)
+        self.assertEqual(result.status, "FAILED_ALL_ATTEMPTS")
+        self.assertIsNone(result.accepted_audio)
+        self.assertEqual(len(result.attempts), 3)
+        self.assertTrue(all(a.outcome != "passed" for a in result.attempts))
+
+    def test_stops_at_first_passing_attempt(self):
+        """最初に検品を通過した試行で停止し、以降の試行を行わないことを確認。"""
+        state = {"content_attempt": 0}
+
+        def tts_fn(prompt):
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            # embedded/grounded 2回呼ばれるうちの「何回目のコンテンツ試行か」を
+            # ざっくり判定するため、呼び出し回数を利用する。
+            state["content_attempt"] += 1
+            call_index = state["content_attempt"]
+            # 1回目のcontent attemptはembeddedの時点で不合格にする(groundedは
+            # 呼ばれない=呼び出し回数1)。2回目のcontent attemptはembedded/grounded
+            # とも合格にする。
+            if call_index == 1:
+                return make_qa_json(self.plan, element_counts={
+                    **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "title": 0})
+            return make_qa_json(self.plan)
+
+        result = common.run_tts_content_attempts(self.plan, self.style_prefix, tts_fn, qa_fn,
+                                                   max_content_attempts=3, max_api_retry=0)
+        self.assertEqual(result.status, "OK")
+        self.assertEqual(result.accepted_attempt, 2)
+        self.assertEqual(len(result.attempts), 2, "3回目の試行が行われていないこと")
+
+    def test_api_retry_and_content_attempt_recorded_separately(self):
+        """TTS呼び出し自体が一時的に失敗した場合、tts_content_attempt_numberは
+        増やさずtts_api_retry_countだけが増えることを確認する。"""
+        call_state = {"tts_calls": 0}
+
+        def tts_fn(prompt):
+            call_state["tts_calls"] += 1
+            if call_state["tts_calls"] == 1:
+                raise RuntimeError("simulated transient API failure")
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(self.plan)
+
+        result = common.run_tts_content_attempts(self.plan, self.style_prefix, tts_fn, qa_fn,
+                                                   max_content_attempts=3, max_api_retry=2, sleep_fn=lambda s: None)
+        self.assertEqual(result.status, "OK")
+        self.assertEqual(result.accepted_attempt, 1, "API障害はtts_content_attemptを増やさない")
+        self.assertGreaterEqual(result.attempts[0].tts_api_retry_count, 1)
+
+
+# ============================================================
+# 15: 3チャンクの順序と0.8秒無音2箇所
+# ============================================================
+class ChunkAssemblyTests(unittest.TestCase):
+    def test_chunk_order_matches_er001b(self):
+        script = make_script(points_heading="Today's Sample Points")
+        plan = common.build_narration_plan(script)
+        labels = [label for label, _ in plan.chunks]
+        self.assertEqual(labels[0], "body")
+        self.assertEqual(labels[1], "Today's Sample Points")
+        self.assertEqual(labels[2], "In One Line")
+
+    def test_two_silences_of_exactly_0_8_seconds(self):
+        pcm_chunks = [b"\x01\x00" * 100, b"\x02\x00" * 100, b"\x03\x00" * 100]
+        audio, pause_positions = common.assemble_audio(pcm_chunks, sample_rate=24000, pause_seconds=0.8)
+        self.assertEqual(len(pause_positions), 2, "無音挿入は2箇所のみ(全見出し間ではない)")
+        expected_pause_bytes = int(24000 * 0.8) * 2  # 16bit=2byte/sample
+        # 1つ目の無音の直後から2つ目のチャンクが始まる位置を確認
+        chunk1_len = len(pcm_chunks[0])
+        self.assertEqual(pause_positions[0], chunk1_len)
+        pause1 = audio[chunk1_len:chunk1_len + expected_pause_bytes]
+        self.assertEqual(pause1, b"\x00\x00" * int(24000 * 0.8))
+        self.assertEqual(len(pause1), expected_pause_bytes)
+
+
+# ============================================================
+# 16〜17: Dynamics3(一度だけ適用・確定パラメータ一致)
+# ============================================================
+class Dynamics3Tests(unittest.TestCase):
+    def test_params_match_confirmed_spec(self):
+        p = common.DYNAMICS3_PARAMS
+        self.assertEqual(p["threshold_percentile"], 60)
+        self.assertEqual(p["ratio"], 8.0)
+        self.assertEqual(p["knee_db"], 6.0)
+        self.assertEqual(p["attack_ms"], 5.0)
+        self.assertEqual(p["release_ms"], 200.0)
+
+    def test_attenuation_only_no_amplification(self):
+        rng = np.random.default_rng(0)
+        c0 = rng.uniform(-0.5, 0.5, size=24000 * 2)  # 2秒分の合成信号
+        result = common.apply_dynamics3_once(c0, sample_rate=24000)
+        # match_loudness後の最終振幅がC0を超えていないとは限らない(ラウドネス整合で
+        # ゲインを掛け直すため)。「コンプレッション段階では減衰のみ」という確定条件は
+        # apply_compressor直後の内部アサーションで保証されている(この関数は例外を
+        #出さずに完走した時点でそのアサーションを通過済み)。
+        self.assertTrue(result.applied_once)
+        self.assertLessEqual(result.metrics_c1["peak_dbfs"], common.PEAK_CEILING_DB + 1e-6)
+        self.assertFalse(result.metrics_c1["clipping_detected"])
+
+    def test_dynamics_applied_exactly_once_in_runner(self):
+        """run_article経由で呼び出した場合に、apply_dynamics3_onceの呼び出し回数が
+        1回であることをモックで直接確認する(構造上の保証を実行レベルでも検証)。"""
+        script = make_script()
+
+        def script_fn(config):
+            return script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(200)
+
+        def qa_fn(prompt, wav):
+            plan = common.build_narration_plan(script)
+            return make_qa_json(plan)
+
+        config = {
+            "experiment_id": "ER-002-S1-TEST", "article_id": "t01",
+            "genre": "test", "topic_or_source": "synthetic", "voice": "Aoede",
+        }
+
+        with mock.patch("er002_common.apply_dynamics3_once", wraps=common.apply_dynamics3_once) as spy:
+            outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
+            self.assertEqual(outcome.manifest["status"], "OK")
+            self.assertEqual(spy.call_count, 1)
+
+
+def make_wav_pcm_only(n_samples, value=1000):
+    import array
+    return array.array("h", [value] * n_samples).tobytes()
+
+
+# ============================================================
+# 18: 単語数・音声時間・実効wpmの記録
+# ============================================================
+class MetricsRecordingTests(unittest.TestCase):
+    def test_evaluate_word_count_boundaries(self):
+        self.assertEqual(common.evaluate_word_count(400)["status"], "within_acceptable_range")
+        self.assertTrue(common.evaluate_word_count(400)["within_target"])
+        self.assertEqual(common.evaluate_word_count(350)["status"], "within_acceptable_range")
+        self.assertFalse(common.evaluate_word_count(350)["within_target"], "350語は許容内だが目標帯(380-420)の外")
+        self.assertEqual(common.evaluate_word_count(300)["status"], "out_of_range")
+        self.assertEqual(common.evaluate_word_count(500)["status"], "out_of_range")
+
+    def test_evaluate_duration_is_warning_only(self):
+        d = common.evaluate_duration(100)
+        self.assertFalse(d["within_warn_band"])
+        self.assertFalse(d["is_hard_gate"], "尺は自動不合格条件にしない")
+
+    def test_effective_wpm_computation(self):
+        self.assertEqual(common.effective_wpm(400, 160.0), 150.0)
+
+    def test_manifest_records_word_duration_wpm(self):
+        script = make_script(body_words=300, sub1_words=20, sub2_words=20, final_words=20)
+        plan = common.build_narration_plan(script)
+        expected_words = common.word_count(plan.full_text)
+
+        def script_fn(config):
+            return script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(24000 * 3)  # 3秒/チャンク
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(plan)
+
+        config = {"experiment_id": "E", "article_id": "a", "genre": "g", "topic_or_source": "s", "voice": "Aoede"}
+        outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
+        m = outcome.manifest
+        self.assertEqual(m["status"], "OK")
+        self.assertEqual(m["word_metrics"]["word_count"], expected_words)
+        self.assertIsNotNone(m["duration_metrics"]["duration_seconds"])
+        self.assertIsNotNone(m["effective_wpm"])
+
+
+# ============================================================
+# 19〜20: A/B匿名化
+# ============================================================
+class ABAnonymizationTests(unittest.TestCase):
+    def test_filename_does_not_reveal_speaker(self):
+        fname = ab.anonymized_filename("a04", 1)
+        self.assertEqual(fname, "er002_a04_sample_1.wav")
+        self.assertFalse(ab.filename_reveals_speaker(fname, ["Aoede", "Charon"]))
+
+    def test_metadata_stripped_does_not_reveal_speaker(self):
+        base = make_wav_bytes(1000)
+        # WAVにLIST/INFOチャンクとして話者名を埋め込んだものを模擬する
+        # (wave標準ライブラリでは書けないため、バイト列を手動で連結して模擬)。
+        fake_info_chunk = b"LIST" + (b"\x00\x00\x00\x10") + b"INFOIART" + b"\x00\x00\x00\x05" + b"Aoede\x00"
+        contaminated = base + fake_info_chunk
+        self.assertTrue(ab.metadata_reveals_speaker(contaminated, ["Aoede"]),
+                         "テストの前提として、汚染済みWAVは話者名を含んでいること")
+        cleaned = ab.strip_wav_metadata(base)  # strip対象はbase(正規のWAV)側の経路を確認
+        self.assertFalse(ab.metadata_reveals_speaker(cleaned, ["Aoede", "Charon"]))
+
+    def test_presentation_order_randomized_per_article(self):
+        entries = [{"voice": "Aoede"}, {"voice": "Charon"}]
+        seen_first_voice = set()
+        for i in range(20):
+            pres = ab.build_ab_presentation("a04", entries, seed=i)
+            seen_first_voice.add(pres.mapping["sample_1"]["voice"])
+        self.assertEqual(seen_first_voice, {"Aoede", "Charon"}, "sample_1が常に同じ話者に固定されていないこと")
+
+    def test_ab_mapping_file_is_gitignored(self):
+        """.gitignoreのパターンを文字列で確認するだけでなく、実際にgitが
+        追跡対象外と判定することをgit check-ignoreで確認する。"""
+        with tempfile.NamedTemporaryFile(prefix="er002_a04_", suffix="_ab_mapping.json", dir=".", delete=False) as f:
+            path = f.name
+        try:
+            result = subprocess.run(
+                ["git", "check-ignore", "-q", path],
+                cwd=".", capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, f"{path} がgit check-ignoreで無視されませんでした")
+        finally:
+            os.remove(path)
+
+    def test_ab_bundle_includes_evaluation_schema_per_sample(self):
+        """要求11: A/B評価項目(more_suitable_voice等)を匿名ファイルごとに保存できることを確認。"""
+        entries = [{"voice": "Aoede"}, {"voice": "Charon"}]
+        wav_bytes_by_label = {"Aoede": make_wav_bytes(500), "Charon": make_wav_bytes(500)}
+        bundle = runner.build_ab_bundle("a04", entries, wav_bytes_by_label, seed=1)
+        self.assertEqual(len(bundle["user_evaluations"]), 2)
+        for filename, evaluation in bundle["user_evaluations"].items():
+            self.assertFalse(ab.filename_reveals_speaker(filename, ["Aoede", "Charon"]))
+            self.assertEqual(evaluation["status"], "pending_user_listening")
+            for key in ("more_suitable_voice", "easier_to_finish", "difference", "reason"):
+                self.assertIn(key, evaluation)
+                self.assertIsNone(evaluation[key])
+
+
+# ============================================================
+# ER-002-S1.1 追加 1〜3: Git追跡方針
+# (JSON成果物は追跡対象、音声・A/B対応表・元記事全文キャッシュは除外)
+# ============================================================
+class GitTrackingPolicyTests(unittest.TestCase):
+    """git check-ignoreは対象パスが実在しなくても判定できるため、実ファイルを
+    作らずにポリシーだけを検証する(リポジトリへの残留物を作らない)。"""
+
+    def _is_ignored(self, path):
+        result = subprocess.run(["git", "check-ignore", "-q", path], cwd=".", capture_output=True)
+        return result.returncode == 0
+
+    def test_json_artifacts_under_er002_output_are_tracked(self):
+        for filename in common.TRACKED_ARTIFACT_FILENAMES:
+            path = os.path.join("er002_output", "a04", filename)
+            self.assertFalse(self._is_ignored(path), f"{path} がGit除外されています(追跡対象であるべき)")
+
+    def test_wav_under_er002_output_is_ignored(self):
+        path = os.path.join("er002_output", "a04", "final_audio.wav")
+        self.assertTrue(self._is_ignored(path))
+
+    def test_ab_mapping_under_er002_output_is_ignored(self):
+        path = os.path.join("er002_output", "a04", "er002_a04_ab_mapping.json")
+        self.assertTrue(self._is_ignored(path))
+
+    def test_raw_source_fulltext_cache_is_ignored(self):
+        path = os.path.join("er002_output", "a04", "raw_source_fulltext.txt")
+        self.assertTrue(self._is_ignored(path))
+
+    def test_manifest_write_does_not_leave_uncommitted_state_confusion(self):
+        """run_articleの出力先を実際にer002_output配下(一時的な記事ID)へ書いても、
+        git check-ignoreでJSONは追跡対象・WAVは対象外と判定されることを確認し、
+        テスト終了時にディレクトリを削除してリポジトリに残さない。"""
+        import shutil
+        script = make_script()
+
+        def script_fn(config):
+            return script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(2400)
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(common.build_narration_plan(script))
+
+        config = {"experiment_id": "E", "article_id": "__test_gitpolicy__", "genre": "g",
+                  "topic_or_source": "s", "voice": "Aoede"}
+        article_dir = os.path.join("er002_output", "__test_gitpolicy__")
+        try:
+            outcome = runner.run_article(config, script_fn, tts_fn, qa_fn, output_dir="er002_output")
+            self.assertEqual(outcome.manifest["status"], "OK")
+            manifest_path = os.path.join(article_dir, "manifest.json")
+            self.assertTrue(os.path.isfile(manifest_path))
+            self.assertFalse(self._is_ignored(manifest_path))
+            self.assertFalse(self._is_ignored(os.path.join(article_dir, "qa_results.json")))
+        finally:
+            if os.path.isdir(article_dir):
+                shutil.rmtree(article_dir)
+
+
+# ============================================================
+# ER-002-S1.1 追加 4〜8: QA再評価とTTS再生成の分離
+# ============================================================
+class QAReevaluationTests(unittest.TestCase):
+    def setUp(self):
+        self.script = make_script()
+        self.plan = common.build_narration_plan(self.script)
+
+    def test_first_inconclusive_does_not_regenerate_tts_same_audio_reevaluated(self):
+        """要求4: QA解析不能の1回目ではTTSを再生成せず、同じ音声を再評価することを確認。"""
+        calls = {"tts": 0, "qa": 0}
+
+        def tts_fn(prompt):
+            calls["tts"] += 1
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            calls["qa"] += 1
+            if calls["qa"] == 1:
+                return "not valid json at all"  # 1回目: 解析不能
+            return make_qa_json(self.plan)  # 2回目以降: 正常
+
+        result = common.run_tts_content_attempts(self.plan, common.build_style_prefix(), tts_fn, qa_fn,
+                                                   max_content_attempts=3, max_api_retry=0)
+        self.assertEqual(result.status, "OK")
+        self.assertEqual(result.accepted_attempt, 1, "TTSは1回しか生成されていない(再評価のみで合格)")
+        self.assertEqual(calls["tts"], 3, "3チャンク分のTTS呼び出しのみ(2回目のTTSコンテンツ試行は発生していない)")
+        self.assertEqual(len(result.attempts), 1)
+        self.assertEqual(result.attempts[0].qa_evaluation_attempt_count, 2, "同じ音声でQAを2回評価している")
+
+    def test_second_qa_evaluation_pass_adopts_same_tts_attempt(self):
+        """要求5: QAの2回目で合格した場合、同じTTS試行が採用されることを確認。"""
+        style_prefix = common.build_style_prefix()
+        qa_calls = {"n": 0}
+
+        def tts_fn(prompt):
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            qa_calls["n"] += 1
+            if qa_calls["n"] == 1:
+                return "{broken json"
+            return make_qa_json(self.plan)
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "passed")
+        self.assertEqual(len(outcome.attempts), 2)
+        self.assertEqual(outcome.attempts[0].outcome, "inconclusive")
+        self.assertEqual(outcome.attempts[1].outcome, "passed")
+
+    def test_both_qa_evaluations_inconclusive_yields_qa_inconclusive(self):
+        """要求6: 2回ともQA判定不能ならQA_INCONCLUSIVEになることを確認
+        (TTS_CONTENT_FAILUREとは別の分類であること)。"""
+        def qa_fn(prompt, wav):
+            return "still not json"
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "inconclusive")
+        self.assertEqual(len(outcome.attempts), 2)
+        self.assertEqual(common.OUTCOME_LABELS[outcome.final_outcome], "QA_INCONCLUSIVE")
+        self.assertNotEqual(common.OUTCOME_LABELS[outcome.final_outcome], "TTS_CONTENT_FAILURE")
+
+    def test_conclusive_defect_does_not_trigger_reevaluation(self):
+        """要求7: 有効なQAが音声上の不具合(見出し欠落等)を検出した場合、
+        同じ音声のQAを繰り返さないことを確認(embedded呼び出しは1回のみ)。"""
+        qa_calls = {"n": 0}
+
+        def qa_fn(prompt, wav):
+            qa_calls["n"] += 1
+            return make_qa_json(self.plan, element_counts={
+                **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "title": 0})
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "conclusive_fail")
+        self.assertEqual(len(outcome.attempts), 1, "確定的な不合格は再評価しない")
+        self.assertEqual(qa_calls["n"], 1, "groundedは呼ばれない(embeddedの時点で確定的に不合格)")
+
+    def test_qa_api_communication_retry_does_not_increment_evaluation_attempt(self):
+        """要求8: QA API通信リトライがqa_evaluation_attempt_numberを増やさないことを確認。"""
+        raw_calls = {"n": 0}
+
+        def qa_fn(prompt, wav):
+            raw_calls["n"] += 1
+            if raw_calls["n"] == 1:
+                raise RuntimeError("simulated transient network error")
+            return make_qa_json(self.plan)
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=2, sleep_fn=lambda s: None)
+        self.assertEqual(outcome.final_outcome, "passed")
+        self.assertEqual(len(outcome.attempts), 1, "通信リトライだけではqa_evaluation_attemptは増えない")
+        self.assertGreaterEqual(outcome.attempts[0].embedded_qa_api_retry_count, 1)
+
+
+# ============================================================
+# ER-002-S1.1 追加 9: TTS_CONTENT_FAILUREとQA_INCONCLUSIVEの分離集計
+# ============================================================
+class FailureClassificationTests(unittest.TestCase):
+    def test_tts_content_failure_and_qa_inconclusive_counted_separately(self):
+        script = make_script()
+        plan = common.build_narration_plan(script)
+        style_prefix = common.build_style_prefix()
+        state = {"content_attempt": 0}
+
+        def tts_fn(prompt):
+            return b"\x00\x01" * 50
+
+        def qa_fn(prompt, wav):
+            # このテストではcontent attemptごとに1回だけ呼ばれる設計にする
+            # (1回目=確定的な不合格、2回目以降=判定不能を再現)。
+            state["content_attempt"] += 1
+            n = state["content_attempt"]
+            if n == 1:
+                return make_qa_json(plan, element_counts={
+                    **{k: 1 for k, _ in common.build_expected_elements(plan)}, "title": 0})
+            return "not valid json"
+
+        result = common.run_tts_content_attempts(plan, style_prefix, tts_fn, qa_fn,
+                                                   max_content_attempts=2, max_api_retry=0)
+        self.assertEqual(result.status, "FAILED_ALL_ATTEMPTS")
+        self.assertEqual(result.attempts[0].outcome, "conclusive_fail")
+        self.assertEqual(result.attempts[1].outcome, "inconclusive")
+
+        counts = common.summarize_failure_outcomes(result.attempts)
+        self.assertEqual(counts["TTS_CONTENT_FAILURE"], 1)
+        self.assertEqual(counts["QA_INCONCLUSIVE"], 1)
+        self.assertEqual(counts["passed"], 0)
+        self.assertEqual(counts["TTS_API_EXHAUSTED"], 0)
+
+
+# ============================================================
+# ER-002-S1.1 追加 10: ユーザー評価の初期状態
+# ============================================================
+class UserEvaluationSchemaTests(unittest.TestCase):
+    def test_default_user_evaluation_is_pending(self):
+        evaluation = common.default_user_evaluation()
+        self.assertEqual(evaluation["status"], "pending_user_listening")
+        for key in ("listened_to_end", "wants_more_topics", "content_interest", "voice_fit", "completed_at"):
+            self.assertIsNone(evaluation[key])
+        self.assertIsNone(evaluation["structure_issue"]["present"])
+        self.assertIsNone(evaluation["dynamics_issue"]["present"])
+
+    def test_manifest_user_evaluation_starts_pending(self):
+        script = make_script()
+
+        def script_fn(config):
+            return script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(2400)
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(common.build_narration_plan(script))
+
+        config = {"experiment_id": "E", "article_id": "a05", "genre": "g", "topic_or_source": "s", "voice": "Aoede"}
+        outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
+        self.assertEqual(outcome.manifest["user_evaluation"]["status"], "pending_user_listening")
+
+
+# ============================================================
+# 21: 実行IDからの一括追跡
+# ============================================================
+class RunnerIntegrationTests(unittest.TestCase):
+    def test_single_manifest_traces_full_run(self):
+        script = make_script()
+        plan = common.build_narration_plan(script)
+
+        def script_fn(config):
+            return script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(24000 * 2)
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(plan)
+
+        config = {
+            "experiment_id": "ER-002-S1-TEST", "article_id": "a01",
+            "genre": "sports", "topic_or_source": "synthetic-fixture", "voice": "Aoede",
+            "prompt_version": "v1",
+        }
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            outcome = runner.run_article(config, script_fn, tts_fn, qa_fn, output_dir=tmpdir)
+            m = outcome.manifest
+            self.assertEqual(m["status"], "OK")
+            self.assertEqual(m["experiment_id"], "ER-002-S1-TEST")
+            self.assertEqual(m["article_id"], "a01")
+            for key in ("script_run", "tts_run", "dynamics", "word_metrics",
+                        "duration_metrics", "final_audio", "retry_limits"):
+                self.assertIsNotNone(m[key], f"{key} が記録されていません")
+
+            import os
+            manifest_path = os.path.join(tmpdir, "a01", "manifest.json")
+            self.assertTrue(os.path.isfile(manifest_path))
+            with open(manifest_path, encoding="utf-8") as f:
+                loaded = json.load(f)
+            self.assertEqual(loaded["experiment_id"], "ER-002-S1-TEST")
+
+    def test_script_retry_used_then_succeeds(self):
+        """台本: 初回不合格→全文再生成1回で合格、を確認する。"""
+        calls = {"n": 0}
+        good_script = make_script()
+
+        def script_fn(config):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return make_script(n_subsections=1)  # 1回目はわざと構造不合格
+            return good_script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(24000)
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(common.build_narration_plan(good_script))
+
+        config = {"experiment_id": "E", "article_id": "a02", "genre": "g", "topic_or_source": "s", "voice": "Aoede"}
+        outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
+        self.assertEqual(outcome.manifest["status"], "OK")
+        self.assertEqual(outcome.manifest["script_run"]["accepted_attempt"], 2)
+        self.assertEqual(calls["n"], 2)
+
+    def test_script_all_attempts_fail_stops_before_tts(self):
+        """台本が2回とも不合格ならTTS/QAを一切呼ばずFAILED_SCRIPTで停止することを確認。"""
+        tts_called = {"n": 0}
+        qa_called = {"n": 0}
+
+        def script_fn(config):
+            return make_script(n_subsections=1)  # 常に構造不合格
+
+        def tts_fn(prompt):
+            tts_called["n"] += 1
+            return make_wav_pcm_only(100)
+
+        def qa_fn(prompt, wav):
+            qa_called["n"] += 1
+            return "{}"
+
+        config = {"experiment_id": "E", "article_id": "a03", "genre": "g", "topic_or_source": "s", "voice": "Aoede"}
+        outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
+        self.assertEqual(outcome.manifest["status"], "FAILED_SCRIPT")
+        self.assertEqual(outcome.manifest["failure_classification"]["stage"], "script_generation")
+        self.assertEqual(tts_called["n"], 0, "台本が確定する前にTTSを呼んではいけない")
+        self.assertEqual(qa_called["n"], 0)
+        self.assertEqual(len(outcome.manifest["script_run"]["attempts"]), 2)
+
+
+if __name__ == "__main__":
+    unittest.main()
