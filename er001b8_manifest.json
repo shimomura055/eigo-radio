@@ -1,0 +1,288 @@
+{
+  "experiment_id": "ER-001B-8",
+  "purpose": "音声後処理方法の比較実験(サービス仕様・TTSの変更ではない)",
+  "input_file": "er001b6_hanshin_aoede_level2_full.wav",
+  "input_file_sha256": "c3c39f9302e2f0101589f3df1225db3785bb26f2e413dbf547a1b188539f9e85",
+  "tts_regenerated": false,
+  "protected_files_not_overwritten": [
+    "er001b6_hanshin_aoede_level2_full.wav",
+    "er001b7a_hanshin_level2_light_dynamics.wav"
+  ],
+  "chained_processing": false,
+  "environment": {
+    "python_version": "3.14.6",
+    "numpy_version": "2.5.1",
+    "scipy_version": "1.18.0",
+    "install_command": ".venv/Scripts/python.exe -m pip install numpy scipy",
+    "dependency_management_note": "本リポジトリにrequirements.txt等の正式な依存関係管理ファイルは存在しないため、今回の実験用として.venvへ直接インストールした。恒久的な依存関係ファイルの新設は行っていない。"
+  },
+  "original_metrics": {
+    "duration_seconds": 190.593,
+    "sample_count": 4574229,
+    "sample_rate": 24000,
+    "peak_dbfs": -3.1,
+    "rms_dbfs": -22.51,
+    "integrated_lufs_approx": -22.32,
+    "loudness_range_approx_lu": 3.51,
+    "crest_factor_db": 19.42,
+    "clipping_sample_count": 0,
+    "clipping_detected": false
+  },
+  "peak_ceiling_db": -1.0,
+  "loudness_match_target_lu": 0.3,
+  "lufs_method_note": "ITU-R BS.1770のK-weightingを24kHz向けにRBJ Audio EQ Cookbookの式で再設計し、2段階ゲーティングで積分ラウドネスを近似計算したもの(ER-001B-7Aと同一実装)。公式のBS.1770準拠測定器とは完全には一致しない可能性がある近似値。",
+  "loudness_range_method_note": "3秒窓・1秒ホップの短時間ラウドネス分布のP95-P10による簡易近似。EBU R128のLRA完全準拠アルゴリズムではない。",
+  "conditions": {
+    "dynamics1": {
+      "condition_name": "Dynamics 1 (ER-001B-7A相当の軽い処理)",
+      "input_file": "er001b6_hanshin_aoede_level2_full.wav",
+      "input_file_sha256": "c3c39f9302e2f0101589f3df1225db3785bb26f2e413dbf547a1b188539f9e85",
+      "output_file": "er001b8_hanshin_level2_dynamics1.wav",
+      "output_file_sha256": "0dc433c5eae8ed8c218ecf17f2e2faf8575cdea4cc3971c37b7458f6de62e4b6",
+      "compressor": {
+        "method": "軽いソフトニー・コンプレッサー(ピーク検出エンベロープ、非対称アタック/リリース、しきい値=エンベロープ分布のパーセンタイル、メイクアップゲインなし)",
+        "threshold_percentile": 90,
+        "threshold_db_used_this_file": -12.75,
+        "ratio": 2.5,
+        "knee_db": 6.0,
+        "attack_ms": 5.0,
+        "release_ms": 200.0,
+        "gain_smoothing_ms": 8.0,
+        "makeup_gain_before_loudness_match_db": 0.0
+      },
+      "loudness_matching": {
+        "target_lufs": -22.32,
+        "compressed_lufs_before_gain": -22.77,
+        "desired_gain_db": 0.453,
+        "peak_ceiling_db": -1.0,
+        "max_gain_allowed_by_peak_db": 2.316,
+        "applied_fixed_gain_db": 0.453,
+        "peak_ceiling_prioritized": false,
+        "final_peak_dbfs": -2.86,
+        "final_lufs_approx": -22.32,
+        "loudness_shortfall_lu": 0.0,
+        "within_0_3_lu_target": true
+      },
+      "gain_reduction_stats": {
+        "max_gain_reduction_db": -3.85,
+        "mean_gain_reduction_db": -0.143,
+        "p1_gain_reduction_db_most_compressed_region": -2.13
+      },
+      "metrics_after_compression_before_loudness_match": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -3.32,
+        "rms_dbfs": -22.95,
+        "integrated_lufs_approx": -22.77,
+        "loudness_range_approx_lu": 2.94,
+        "crest_factor_db": 19.63,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "metrics_final": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -2.86,
+        "rms_dbfs": -22.49,
+        "integrated_lufs_approx": -22.32,
+        "loudness_range_approx_lu": 2.94,
+        "crest_factor_db": 19.63,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "duration_matches_original": true,
+      "sample_count_matches_original": true,
+      "pumping_diagnostics": {
+        "pumping_suspected": false,
+        "max_autocorr": 0.36,
+        "period_seconds_at_peak": 0.1,
+        "threshold_used": 0.5,
+        "rapid_gain_recovery_event_count": 0,
+        "max_sustained_reduction_seconds": 0.25,
+        "note_full": "自己相関(0.1〜2.0秒周期帯)・急激なゲイン回復回数(50ms以内に-3dB以下→-0.5dB超)・最長の減衰継続時間(-1dB以下が連続する秒数)を参考として記録。機械検出だけではポンピング/平坦さ/押し込まれ感の不存在を保証しない(タスク仕様どおり)。"
+      },
+      "generated_at": "2026-07-17T16:56:06.777227"
+    },
+    "dynamics2": {
+      "condition_name": "Dynamics 2 (Dynamics 1より明確に強い処理)",
+      "input_file": "er001b6_hanshin_aoede_level2_full.wav",
+      "input_file_sha256": "c3c39f9302e2f0101589f3df1225db3785bb26f2e413dbf547a1b188539f9e85",
+      "output_file": "er001b8_hanshin_level2_dynamics2.wav",
+      "output_file_sha256": "44893233ee55db993ef1882f04efb6f8ad8844e05c21e44a0fefc2d69e3a1826",
+      "compressor": {
+        "method": "軽いソフトニー・コンプレッサー(ピーク検出エンベロープ、非対称アタック/リリース、しきい値=エンベロープ分布のパーセンタイル、メイクアップゲインなし)",
+        "threshold_percentile": 75,
+        "threshold_db_used_this_file": -14.94,
+        "ratio": 4.0,
+        "knee_db": 6.0,
+        "attack_ms": 5.0,
+        "release_ms": 200.0,
+        "gain_smoothing_ms": 8.0,
+        "makeup_gain_before_loudness_match_db": 0.0
+      },
+      "loudness_matching": {
+        "target_lufs": -22.32,
+        "compressed_lufs_before_gain": -23.5,
+        "desired_gain_db": 1.181,
+        "peak_ceiling_db": -1.0,
+        "max_gain_allowed_by_peak_db": 2.522,
+        "applied_fixed_gain_db": 1.181,
+        "peak_ceiling_prioritized": false,
+        "final_peak_dbfs": -2.34,
+        "final_lufs_approx": -22.32,
+        "loudness_shortfall_lu": 0.0,
+        "within_0_3_lu_target": true
+      },
+      "gain_reduction_stats": {
+        "max_gain_reduction_db": -6.46,
+        "mean_gain_reduction_db": -0.491,
+        "p1_gain_reduction_db_most_compressed_region": -4.29
+      },
+      "metrics_after_compression_before_loudness_match": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -3.52,
+        "rms_dbfs": -23.65,
+        "integrated_lufs_approx": -23.5,
+        "loudness_range_approx_lu": 2.63,
+        "crest_factor_db": 20.13,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "metrics_final": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -2.34,
+        "rms_dbfs": -22.47,
+        "integrated_lufs_approx": -22.32,
+        "loudness_range_approx_lu": 2.63,
+        "crest_factor_db": 20.13,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "duration_matches_original": true,
+      "sample_count_matches_original": true,
+      "pumping_diagnostics": {
+        "pumping_suspected": false,
+        "max_autocorr": 0.424,
+        "period_seconds_at_peak": 0.1,
+        "threshold_used": 0.5,
+        "rapid_gain_recovery_event_count": 0,
+        "max_sustained_reduction_seconds": 0.49,
+        "note_full": "自己相関(0.1〜2.0秒周期帯)・急激なゲイン回復回数(50ms以内に-3dB以下→-0.5dB超)・最長の減衰継続時間(-1dB以下が連続する秒数)を参考として記録。機械検出だけではポンピング/平坦さ/押し込まれ感の不存在を保証しない(タスク仕様どおり)。"
+      },
+      "generated_at": "2026-07-17T16:56:11.374425"
+    },
+    "dynamics3": {
+      "condition_name": "Dynamics 3 (平坦化の境界を確認するストレステスト)",
+      "input_file": "er001b6_hanshin_aoede_level2_full.wav",
+      "input_file_sha256": "c3c39f9302e2f0101589f3df1225db3785bb26f2e413dbf547a1b188539f9e85",
+      "output_file": "er001b8_hanshin_level2_dynamics3.wav",
+      "output_file_sha256": "d3bbc3d6b9e3c000291803f8041eb6774ce5c131e38665142632b0c0d3a0115c",
+      "compressor": {
+        "method": "軽いソフトニー・コンプレッサー(ピーク検出エンベロープ、非対称アタック/リリース、しきい値=エンベロープ分布のパーセンタイル、メイクアップゲインなし)",
+        "threshold_percentile": 60,
+        "threshold_db_used_this_file": -16.59,
+        "ratio": 8.0,
+        "knee_db": 6.0,
+        "attack_ms": 5.0,
+        "release_ms": 200.0,
+        "gain_smoothing_ms": 8.0,
+        "makeup_gain_before_loudness_match_db": 0.0
+      },
+      "loudness_matching": {
+        "target_lufs": -22.32,
+        "compressed_lufs_before_gain": -24.42,
+        "desired_gain_db": 2.103,
+        "peak_ceiling_db": -1.0,
+        "max_gain_allowed_by_peak_db": 2.959,
+        "applied_fixed_gain_db": 2.103,
+        "peak_ceiling_prioritized": false,
+        "final_peak_dbfs": -1.86,
+        "final_lufs_approx": -22.32,
+        "loudness_shortfall_lu": 0.0,
+        "within_0_3_lu_target": true
+      },
+      "gain_reduction_stats": {
+        "max_gain_reduction_db": -8.98,
+        "mean_gain_reduction_db": -1.05,
+        "p1_gain_reduction_db_most_compressed_region": -6.44
+      },
+      "metrics_after_compression_before_loudness_match": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -3.96,
+        "rms_dbfs": -24.57,
+        "integrated_lufs_approx": -24.42,
+        "loudness_range_approx_lu": 2.18,
+        "crest_factor_db": 20.61,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "metrics_final": {
+        "duration_seconds": 190.593,
+        "sample_count": 4574229,
+        "sample_rate": 24000,
+        "peak_dbfs": -1.86,
+        "rms_dbfs": -22.47,
+        "integrated_lufs_approx": -22.32,
+        "loudness_range_approx_lu": 2.18,
+        "crest_factor_db": 20.61,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "duration_matches_original": true,
+      "sample_count_matches_original": true,
+      "pumping_diagnostics": {
+        "pumping_suspected": false,
+        "max_autocorr": 0.464,
+        "period_seconds_at_peak": 0.1,
+        "threshold_used": 0.5,
+        "rapid_gain_recovery_event_count": 0,
+        "max_sustained_reduction_seconds": 0.8,
+        "note_full": "自己相関(0.1〜2.0秒周期帯)・急激なゲイン回復回数(50ms以内に-3dB以下→-0.5dB超)・最長の減衰継続時間(-1dB以下が連続する秒数)を参考として記録。機械検出だけではポンピング/平坦さ/押し込まれ感の不存在を保証しない(タスク仕様どおり)。"
+      },
+      "generated_at": "2026-07-17T16:56:16.031737"
+    }
+  },
+  "monotonicity_check": {
+    "max_gain_reduction_db_by_condition": {
+      "dynamics1": -3.85,
+      "dynamics2": -6.46,
+      "dynamics3": -8.98
+    },
+    "mean_gain_reduction_db_by_condition": {
+      "dynamics1": -0.143,
+      "dynamics2": -0.491,
+      "dynamics3": -1.05
+    },
+    "loudness_range_approx_lu_by_condition": {
+      "dynamics1": 2.94,
+      "dynamics2": 2.63,
+      "dynamics3": 2.18
+    },
+    "crest_factor_db_by_condition": {
+      "dynamics1": 19.63,
+      "dynamics2": 20.13,
+      "dynamics3": 20.61
+    },
+    "checks": {
+      "max_gain_reduction_db_monotonic_increasing_strength": true,
+      "mean_gain_reduction_db_monotonic_increasing_strength": true,
+      "loudness_range_monotonic_decreasing": true,
+      "crest_factor_monotonic_decreasing": false
+    },
+    "at_least_one_metric_shows_monotonic_strength_increase": true
+  },
+  "protected_files_verified_unchanged": true,
+  "protected_files_sha256": {
+    "er001b6_hanshin_aoede_level2_full.wav": "c3c39f9302e2f0101589f3df1225db3785bb26f2e413dbf547a1b188539f9e85",
+    "er001b7a_hanshin_level2_light_dynamics.wav": "73452388a3d65aa961d6890e8b690f5db2d8aa8cc7715f9901ce8f56fe09b143"
+  },
+  "generated_at": "2026-07-17T16:56:16.047251"
+}
