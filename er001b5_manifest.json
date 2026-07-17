@@ -1,0 +1,131 @@
+{
+  "experiment_id": "ER-001B-5",
+  "model": "gemini-2.5-pro-preview-tts",
+  "language_code": "en-us",
+  "sample_rate": 24000,
+  "fixed_voice_assignment": {
+    "hanshin": "Aoede",
+    "caregiving": "Charon"
+  },
+  "volume_normalized": true,
+  "normalize_target_peak": 0.7,
+  "long_text_handling": {
+    "single_call_attempted": true,
+    "single_call_result": "阪神全文(468語/2686文字)を1回のAPI呼び出しで生成する事前検証を実施したが、タイムアウト280秒でも完了せず不安定だった(255語のセクション単体は79秒で成功)。そのため9節の規定に従い、セクション単位の分割生成を採用した。",
+    "split_strategy": "文の途中では分割せず、セクション境界(body / 見出しセクション / In One Line)でのみ分割する。",
+    "join_method": "チャンクごとに音量正規化(target_peak=0.7)した後、チャンク間に0.6秒の無音のみを挿入して結合する。フェード等の後加工は行わない。",
+    "join_pause_seconds": 0.6,
+    "consistency": "分割位置・結合方法・無音の長さ・音量正規化方式は、全3音声で完全に同一。阪神の2条件は同一JSONから生成しているため分割位置も自動的に一致する。"
+  },
+  "note": "台本の正本はer001b5_hanshin_script.json / er001b5_caregiving_script.jsonで、ユーザーから提供された内容をそのまま保存したもの(要約・短縮・加筆・言い換え・句読点変更なし)。阪神の2条件は読み上げ本文が完全に同一(起動時assertで検証)。共通Emotional+Connected指示は阪神と老老介護で完全に同一(起動時assertで検証)。",
+  "clips": [
+    {
+      "file": "er001b5_hanshin_aoede_minimal_connected_full.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "condition": "minimal_connected",
+      "script_source_file": "er001b5_hanshin_script.json",
+      "full_text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.\n\nToday’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.\n\nIn One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+      "style_prefix": "TTS the following complete sports story in natural, engaging English.\n\nSound like a friendly radio host sharing an exciting close game with one interested listener. Keep the delivery clear, lively, and natural. Do not shout or sound like a movie trailer.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, and use noticeable pauses only when the story or section truly changes direction.\n\nKeep enough variation for a full-length narration. Do not stay at maximum energy throughout. Save the strongest energy for the most important moments, and allow calmer explanatory passages to breathe.\n\nTreat section headings as natural transitions within one continuous story, not as separate announcements.\n\n",
+      "input_char_count": 2686,
+      "word_count": 468,
+      "duration_seconds": 190.7,
+      "generated_at": "2026-07-17T12:47:37.403296",
+      "split_into_chunks": true,
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "word_count": 255,
+          "char_count": 1441
+        },
+        {
+          "index": 2,
+          "label": "Today’s Tiger Points",
+          "word_count": 161,
+          "char_count": 960
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "word_count": 52,
+          "char_count": 281
+        }
+      ],
+      "join_pause_seconds": 0.6
+    },
+    {
+      "file": "er001b5_hanshin_aoede_emotional_connected_full.wav",
+      "topic": "hanshin",
+      "voice": "Aoede",
+      "condition": "emotional_connected",
+      "script_source_file": "er001b5_hanshin_script.json",
+      "full_text": "One Hit Short: The Tigers Refused to Go Quiet\n\nOne more hit.\n\nThat was all Hanshin needed to turn a painful loss into a dramatic victory.\n\nThe Tigers lost to the Chunichi Dragons 6–5 last night, but they kept the game alive until the final inning.\n\nThis was not a quiet defeat. It was a wild chase that kept Hanshin fans waiting for one last surprise.\n\nThe game began well for the Tigers.\n\nHanshin scored first and looked ready to take control. For a while, it felt like this might be their night.\n\nBut the Dragons were not ready to fall.\n\nIn the fourth inning, Fukunaga brought home a run with a timely hit. Then Bosler delivered the biggest blow of the game: a home run that suddenly changed everything.\n\nIn only a few minutes, Chunichi took the lead and turned the mood inside Vantelin Dome upside down.\n\nFrom that moment, the game became simple.\n\nThe Dragons tried to pull away. The Tigers kept chasing.\n\nWhenever Chunichi moved further ahead, Hanshin came back again. The Tigers kept scoring, kept fighting and kept the Dragons under pressure.\n\nThen came the ninth inning.\n\nHanshin was only one run behind, and the door to a comeback was still open.\n\nFor Tigers fans, this was the moment when that familiar feeling returned.\n\n“Something can still happen.”\n\nOne good swing could have changed the entire night.\n\nBut this time, the final hit never came.\n\nThe Dragons escaped with a 6–5 victory, and the Tigers were left only one step away.\n\nToday’s Tiger Points\n\nA bitter first step for young Kesamaru\n\nYuki Kesamaru took the mound hoping to earn his first professional win.\n\nInstead, he met a Chunichi lineup that refused to stay quiet.\n\nThe Dragons fought back, and Bosler’s home run became the hardest moment of his night.\n\nIt was a bitter result, but one difficult start does not tell the whole story of a young pitcher.\n\nGames like this can become important lessons. The pressure, the mistakes and the disappointment may all help him when his next chance arrives.\n\nHanshin’s offense was still dangerous\n\nHanshin scored five runs, and that changes how we should see this loss.\n\nThe Tigers did not lose because their bats disappeared.\n\nThey attacked.\n\nThey answered.\n\nThey made Chunichi fight until the final out.\n\nThis was not a game in which Hanshin fell behind and quietly accepted defeat. Even in the ninth inning, the Dragons could not relax.\n\nThe Tigers lost, but they still looked dangerous.\n\nIn One Line\n\nThe Tigers kept chasing until the final inning, but one last hit stayed just out of reach.\n\nThe score says Chunichi won 6–5.\n\nBut the game itself told a different story.\n\nHanshin was not far away.\n\nNext time, the Tigers will want that final swing to change the ending.",
+      "style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nKeep enough vocal variation for a full-length narration, but do not overact. Save stronger emphasis for genuinely important moments, and let explanatory passages sound calmer and more conversational.\n\nTreat section headings as natural transitions within one continuous story, not as separate announcements.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or read in a distant and overly formal newsreader style.\n\n",
+      "input_char_count": 2686,
+      "word_count": 468,
+      "duration_seconds": 186.0,
+      "generated_at": "2026-07-17T12:50:04.154513",
+      "split_into_chunks": true,
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "word_count": 255,
+          "char_count": 1441
+        },
+        {
+          "index": 2,
+          "label": "Today’s Tiger Points",
+          "word_count": 161,
+          "char_count": 960
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "word_count": 52,
+          "char_count": 281
+        }
+      ],
+      "join_pause_seconds": 0.6
+    },
+    {
+      "file": "er001b5_caregiving_charon_emotional_connected_full.wav",
+      "topic": "caregiving",
+      "voice": "Charon",
+      "condition": "emotional_connected",
+      "script_source_file": "er001b5_caregiving_script.json",
+      "full_text": "The Caregiver Is 75. The Person Receiving Care Is 75.\n\nWe often picture caregiving as something done by healthy adult children. But that picture now shows only part of reality.\n\nAn older husband supports his older wife. An older wife supports her older husband.\n\nIn 37.1 percent of cases, both the person receiving care and the main caregiver living with them are 75 or older. That is the highest level ever recorded and well over one in three.\n\nThe number fits in a single line. But inside that line are people helping a partner despite back pain, waking up night after night, and going to the hospital while managing health problems of their own.\n\nThe person giving support may already need support too.\n\nToday’s Care Points\n\nThe idea that caregivers are healthy is breaking down\n\nCaregivers prepare meals, help someone get dressed, wake up during the night and take family members to the hospital.\n\nEach task may look small, but when the tasks continue every day, they drain physical strength. The caregiver may also be getting weaker with age or living with health problems.\n\nIf we look only at the person receiving care, we may miss the risk facing the whole household.\n\nFamily love should not carry the full weight of care\n\nThe wish to help because “we are married” or “we are family” is real. But love alone cannot remove exhaustion or back pain.\n\nHome-care workers, day services, short stays and local support centers can share the work. Using outside help does not mean giving up your role in the family.\n\nIt is another form of care that can stop both people from reaching their limit together.\n\nIn One Line\n\nThe shoulders carrying the burden of care already need support themselves.\n\nThe figure of 37.1 percent shows more than the strength of family bonds. When care stays entirely inside the home, both the caregiver and the person receiving care can move toward their limit at the same time.",
+      "style_prefix": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nKeep enough vocal variation for a full-length narration, but do not overact. Save stronger emphasis for genuinely important moments, and let explanatory passages sound calmer and more conversational.\n\nTreat section headings as natural transitions within one continuous story, not as separate announcements.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or read in a distant and overly formal newsreader style.\n\n",
+      "input_char_count": 1903,
+      "word_count": 329,
+      "duration_seconds": 138.5,
+      "generated_at": "2026-07-17T12:51:55.334207",
+      "split_into_chunks": true,
+      "chunk_count": 3,
+      "chunks": [
+        {
+          "index": 1,
+          "label": "body",
+          "word_count": 123,
+          "char_count": 705
+        },
+        {
+          "index": 2,
+          "label": "Today’s Care Points",
+          "word_count": 155,
+          "char_count": 896
+        },
+        {
+          "index": 3,
+          "label": "In One Line",
+          "word_count": 51,
+          "char_count": 298
+        }
+      ],
+      "join_pause_seconds": 0.6
+    }
+  ]
+}
