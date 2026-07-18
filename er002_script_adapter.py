@@ -151,3 +151,122 @@ def make_script_write_fn(topic_package: dict, client: Optional[OpenAI] = None):
     script_write_fn.prompt_version = PROMPT_VERSION
     script_write_fn.model = MODEL_WRITE
     return script_write_fn
+
+
+# ============================================================
+# ER-002-v1.1A: Editorial Briefを消費する台本生成プロンプト(v2)
+# ============================================================
+# v1(COMMON_SCRIPT_PROMPT_TEMPLATE)は変更しない。ER-002-v1.0の既存記事
+# (S3-B1のA01/A02等)はv1のまま追跡できる必要があるため。v2はEditorial
+# Brief(er002_editorial_common.build_editorial_brief)を追加の差し込み穴
+# として受け取る、別バージョンのテンプレート。
+#
+# テンプレート自体は依然としてジャンル非依存の共通テンプレート。記事固有の
+# 情報は{topic}/{facts_block}/{brief_block}という差し込み穴だけに限定する
+# (Brief自体はEditorial Angle工程が生成した構造化データであり、プロンプト
+# 文面そのものへ記事固有の文言を書き込むわけではない)。
+PROMPT_VERSION_V1_1A = "er002-script-adapter-v1.1a"
+
+COMMON_SCRIPT_PROMPT_TEMPLATE_V1_1A = """You are writing a script for a short English-language audio news segment aimed at Japanese learners of English (intermediate level). This is for LISTENING ONLY - the audience cannot see any images, charts, or screens, so nothing in the script may depend on something being shown visually.
+
+TOPIC:
+{topic}
+
+FACTS (each has a stable ID; do not add any factual claim - name, number, date, or event - that is not present here, and do not cite background/context facts as if they were verified facts):
+{facts_block}
+
+EDITORIAL BRIEF (you must follow this brief; do not deviate from it or invent a different angle):
+{brief_block}
+
+Write a script with exactly this structure:
+1. A short attention-grabbing title (not a full sentence, no ending punctuation).
+2. An opening/body section: several short paragraphs that execute the brief's concrete opening exactly as specified. If the brief's opening_mode is "hypothetical", the opening MUST clearly signal to the listener that this is a hypothetical or imagined scenario, not a reported fact (e.g. "Imagine..." or "Suppose..." framing) - never present a hypothetical as something that actually happened.
+3. A short heading in the exact pattern "Today's <2-3 word topic-appropriate noun phrase> Points".
+4. Exactly two discussion points under that heading, each with its own short sub-heading and 1-3 short paragraphs:
+   - Point One must accomplish the brief's point_one_editorial_role and center on point_one_core_claim.
+   - Point Two must accomplish the brief's point_two_editorial_role and center on point_two_core_claim. Point Two must NOT restate or overlap with Point One's claim - it must do a genuinely different job.
+5. A final section headed exactly "In One Line": one sentence that reframes/redefines the story in light of the brief's in_one_line_target (not a plain recap of the body), plus 1-3 additional short closing sentences.
+
+Do not write a flat timeline or a list of facts in sequence. Every fact you use must be in service of the central tension/question or one of the two point claims above - do not include a fact just because it is available. Build a throughline, not an inventory.
+
+Do not add any unconfirmed fact, number, quote, psychological state, or scene that is not in the FACTS list above. Do not strengthen the scope, certainty, or policy/decision status of any fact beyond what is stated (for example: do not turn "proposed" into "decided", "default/optional" into "mandatory", "partial" into "total", "may/could" into "will", "some" into "all", or "concern/correlation" into "proven causation").
+
+Target length for the WHOLE script (title + body + both points + In One Line, combined) is {target_min}-{target_max} English words. Do not go below {accept_min} or above {accept_max} words under any circumstance.
+
+Do not include any stage directions, acting notes, or instructions about how to perform the narration - only the words to be spoken. Do not reference images, charts, screens, or anything the listener would need to see.
+
+Return ONLY valid JSON, no other text, in exactly this shape:
+{{
+  "title": "...",
+  "body_paragraphs": ["...", "..."],
+  "points_heading": "Today's ... Points",
+  "point_one_heading": "...",
+  "point_one_paragraphs": ["...", "..."],
+  "point_two_heading": "...",
+  "point_two_paragraphs": ["...", "..."],
+  "in_one_line_paragraphs": ["...", "..."]
+}}"""
+
+
+def build_facts_block(fact_id_map: dict) -> str:
+    return "\n".join(f"{fid}: {text}" for fid, text in fact_id_map.items())
+
+
+def build_brief_block(brief: dict) -> str:
+    lines = [
+        f"central_tension_or_question: {brief['central_tension_or_question']}",
+        f"opening_mode: {brief['opening_mode']}",
+        f"concrete_opening: {brief['concrete_opening']}",
+        f"opening_fact_ids: {brief['opening_fact_ids']}",
+        f"hypothetical_disclosure_required: {brief['hypothetical_disclosure_required']}",
+        f"point_one_editorial_role: {brief['point_one_editorial_role']}",
+        f"point_one_core_claim: {brief['point_one_core_claim']}",
+        f"point_one_fact_ids: {brief['point_one_fact_ids']}",
+        f"point_two_editorial_role: {brief['point_two_editorial_role']}",
+        f"point_two_core_claim: {brief['point_two_core_claim']}",
+        f"point_two_fact_ids: {brief['point_two_fact_ids']}",
+        f"non_obvious_takeaway: {brief['non_obvious_takeaway']}",
+        f"listener_payoff: {brief['listener_payoff']}",
+        f"in_one_line_target: {brief['in_one_line_target']}",
+    ]
+    return "\n".join(lines)
+
+
+def build_prompt_v1_1a(topic: str, fact_id_map: dict, brief: dict) -> str:
+    return COMMON_SCRIPT_PROMPT_TEMPLATE_V1_1A.format(
+        topic=topic,
+        facts_block=build_facts_block(fact_id_map),
+        brief_block=build_brief_block(brief),
+        target_min=common.WORD_COUNT_TARGET_MIN,
+        target_max=common.WORD_COUNT_TARGET_MAX,
+        accept_min=common.WORD_COUNT_ACCEPT_MIN,
+        accept_max=common.WORD_COUNT_ACCEPT_MAX,
+    )
+
+
+def make_script_write_fn_v1_1a(
+    topic: str, fact_id_map: dict, brief: dict, client: Optional[OpenAI] = None,
+):
+    """Editorial Briefを消費するv1.1A版のscript_write_fn(config)->dict。
+    v1のmake_script_write_fnとは独立しており、既存の呼び出し元には影響しない。"""
+    if client is None:
+        load_dotenv()
+        client = OpenAI()
+
+    prompt = build_prompt_v1_1a(topic, fact_id_map, brief)
+    prompt_sha256 = sha256_text(prompt)
+
+    def script_write_fn(config: dict) -> dict:
+        response = client.chat.completions.create(
+            model=MODEL_WRITE,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+        )
+        raw = parse_script_json(response.choices[0].message.content)
+        return convert_to_er002_schema(raw)
+
+    script_write_fn.prompt_text = prompt
+    script_write_fn.prompt_sha256 = prompt_sha256
+    script_write_fn.prompt_version = PROMPT_VERSION_V1_1A
+    script_write_fn.model = MODEL_WRITE
+    return script_write_fn

@@ -1399,6 +1399,24 @@ def build_untested_editorial_hypotheses(hypotheses: list[str]) -> list[dict]:
     return [{"hypothesis": h, "untested": True, "result": None} for h in hypotheses]
 
 
+def default_editorial_diagnosis_classification() -> dict:
+    """ER-002-v1.1A-S1で追加。S3-B1のユーザー評価(A01/A02)で判明した
+    失敗原因を、トピック選定/編集アングル/Point設計/話者/構造/Dynamics3の
+    どれが要因かを個別に切り分けて記録するための分類。
+    default_content_evaluation_failure_classification()(S2由来、
+    トピック自体の内在的関心の低さを主眼とする分類)より粒度が細かい、
+    編集工程診断専用のスキーマ。"""
+    return {
+        "primary": None,  # 例: "COMMON_SCRIPT_EDITORIAL_FAILURE"
+        "topic_selection_failure": None,
+        "editorial_angle_failure": None,
+        "point_design_failure": None,
+        "voice_failure": None,
+        "structure_failure": None,
+        "dynamics_failure": None,
+    }
+
+
 # ============================================================
 # ブロック16: トピック候補の診断専用項目(S3以降。選定順位には使わない)
 # ============================================================

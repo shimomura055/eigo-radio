@@ -170,3 +170,13 @@ def save_frozen_conditions(path: str) -> dict:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(frozen, f, ensure_ascii=False, indent=2)
     return frozen
+
+
+def frozen_conditions_overall_sha256() -> str:
+    """ER-002-v1.0の全条件をまとめた1個のハッシュ値。frozen_at(実行のたびに
+    変わるタイムスタンプ)は対象から除外し、条件そのものだけで決定的になる
+    ようにしている。再実行入力バンドルのfrozen_conditions_sha256と比較して、
+    ER-002-v1.0以外の条件で保存されたバンドルを拒否するために使う。"""
+    frozen = build_frozen_conditions()
+    stable = {k: v for k, v in frozen.items() if k != "frozen_at"}
+    return sha256_json(stable)

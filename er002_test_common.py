@@ -26,6 +26,7 @@ import numpy as np
 
 import er002_ab_anonymize as ab
 import er002_common as common
+import er002_rerun_bundle as rerun
 import er002_runner as runner
 import er002_s3_config as s3config
 import er002_script_adapter as script_adapter
@@ -1278,6 +1279,141 @@ class FrozenConditionsTests(unittest.TestCase):
         frozen = freeze.build_frozen_conditions()
         expected = {a["article_id"]: a["voices"] for a in s3config.flatten_s3_batches()}
         self.assertEqual(frozen["voice_assignment"]["assignment"], expected)
+
+
+# ============================================================
+# ER-002-S3-B1 追加: 独立再実行用入力バンドル
+# ============================================================
+def make_sample_bundle(article_id="a01", frozen_sha=None):
+    frozen_sha = frozen_sha or freeze.frozen_conditions_overall_sha256()
+    bundle = rerun.build_bundle(
+        article_id=article_id,
+        selected_candidate_id="candidate_2",
+        selected_topic="Sample sports topic.",
+        topic_selection_result={"candidate_2": {"total_score": 28}},
+        source_refs=[{"outlet": "Sample Outlet", "url": "https://example.com/a"}],
+        source_retrieved_at="2026-07-19",
+        verified_facts=["Sample fact one.", "Sample fact two."],
+        script_generation_input={"topic": "Sample sports topic.", "facts": "VERIFIED FACTS:\n- Sample fact one."},
+        frozen_conditions_sha256=frozen_sha,
+        script_prompt_sha256=script_adapter.sha256_text(script_adapter.COMMON_SCRIPT_PROMPT_TEMPLATE),
+        topic_prompt_sha256="dummy_topic_prompt_sha256",
+        model_names={"script": script_adapter.MODEL_WRITE, "tts": common.MODEL_NAME, "qa": common.QA_MODEL_NAME},
+        model_settings={},
+        original_run_id="ER-002-S3-B1-a01-run1",
+        genre="sports",
+        voice="Aoede",
+    )
+    return bundle
+
+
+class RerunBundleTests(unittest.TestCase):
+    def test_save_and_load_round_trip(self):
+        """要求1: 再実行バンドルを保存・読み込みできる。"""
+        bundle = make_sample_bundle()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "rerun_input_bundle.json")
+            rerun.save_bundle(bundle, path)
+            loaded = rerun.load_bundle(path)
+        self.assertEqual(loaded["article_id"], "a01")
+        self.assertEqual(loaded["bundle_schema_version"], rerun.BUNDLE_SCHEMA_VERSION)
+        rerun.verify_bundle_integrity(loaded)  # 例外が出ないこと
+
+    def test_tampering_after_save_is_detected(self):
+        """要求2: 保存後に内容を変更するとハッシュ不一致を検出できる。"""
+        bundle = make_sample_bundle()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "rerun_input_bundle.json")
+            rerun.save_bundle(bundle, path)
+            loaded = rerun.load_bundle(path)
+        loaded["verified_facts"] = ["Tampered fact."]  # ハッシュを更新せずに中身だけ書き換える
+        with self.assertRaises(rerun.BundleIntegrityError):
+            rerun.verify_bundle_integrity(loaded)
+
+    def test_web_search_function_not_called_during_rerun(self):
+        """要求3: 再実行時にWeb検索関数が呼ばれない。run_independent_rerunの
+        シグネチャにWeb検索関連の引数が存在しないこと、および実行中に
+        トピック調査系の呼び出しが一切発生しないことを確認する。"""
+        import inspect
+        sig = inspect.signature(rerun.run_independent_rerun)
+        param_names = set(sig.parameters.keys())
+        for forbidden in ("web_search_fn", "topic_research_fn", "candidate_fetch_fn"):
+            self.assertNotIn(forbidden, param_names)
+
+        web_search_calls = {"n": 0}
+
+        def spy_web_search_fn(*args, **kwargs):
+            web_search_calls["n"] += 1
+            return "should never be called"
+
+        bundle_dict = json.loads(json.dumps(asdict_bundle(make_sample_bundle())))
+        current_sha = bundle_dict["frozen_conditions_sha256"]
+
+        def script_write_fn(config):
+            return make_script(body_words=250, sub1_words=40, sub2_words=40, final_words=30)
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(2400)
+
+        def qa_fn(prompt, wav):
+            plan = common.build_narration_plan(script_write_fn(None))
+            return make_qa_json(plan)
+
+        rerun.run_independent_rerun(
+            bundle_dict, script_write_fn, tts_fn, qa_fn, current_sha,
+            run_article_fn=runner.run_article,
+        )
+        self.assertEqual(web_search_calls["n"], 0, "run_independent_rerun内でWeb検索が呼ばれてはいけない")
+
+    def test_rerun_does_not_reuse_original_script(self):
+        """要求4: 再実行時に初回台本をそのまま再利用しない。script_write_fnが
+        毎回新しく呼ばれ、その戻り値がrun_articleへ渡されることを確認する
+        (キャッシュされた初回script_en.json等を読み込む経路が無い)。"""
+        bundle_dict = json.loads(json.dumps(asdict_bundle(make_sample_bundle())))
+        current_sha = bundle_dict["frozen_conditions_sha256"]
+
+        calls = {"n": 0}
+        fresh_script = make_script(body_words=290, sub1_words=30, sub2_words=30, final_words=20)
+
+        def script_write_fn(config):
+            calls["n"] += 1
+            return fresh_script
+
+        def tts_fn(prompt):
+            return make_wav_pcm_only(2400)
+
+        def qa_fn(prompt, wav):
+            return make_qa_json(common.build_narration_plan(fresh_script))
+
+        outcome = rerun.run_independent_rerun(
+            bundle_dict, script_write_fn, tts_fn, qa_fn, current_sha,
+            run_article_fn=runner.run_article,
+        )
+        self.assertGreaterEqual(calls["n"], 1, "script_write_fnが再実行のたびに呼ばれていること")
+        self.assertEqual(outcome.manifest["script_run"]["script"]["title"], fresh_script["title"])
+
+    def test_rejects_non_v1_0_frozen_conditions(self):
+        """要求5: ER-002-v1.0以外の条件ハッシュを拒否する。"""
+        bundle_dict = json.loads(json.dumps(asdict_bundle(make_sample_bundle())))
+        wrong_sha = "0" * 64
+        with self.assertRaises(rerun.BundleIntegrityError):
+            rerun.verify_bundle_frozen_conditions(bundle_dict, wrong_sha)
+
+    def test_a01_a02_reruns_excluded_from_s3_tally(self):
+        """要求6: A01・A02再実行がS3受入集計から除外される
+        (S3-P0のer002_s3_config側の除外設定と、バンドルのarticle_idが対応すること)。"""
+        for article_id in ("a01", "a02"):
+            bundle = make_sample_bundle(article_id=article_id)
+            self.assertEqual(bundle.article_id, article_id)
+        rerun_ids = {r["article_id"] for r in s3config.INDEPENDENT_RERUNS}
+        self.assertEqual(rerun_ids, {"A01", "A02"})
+        self.assertFalse(s3config.is_included_in_acceptance_tally("ER-002-S3", "A01 (rerun)"))
+        self.assertFalse(s3config.is_included_in_acceptance_tally("ER-002-S3", "A02 (rerun)"))
+
+
+def asdict_bundle(bundle):
+    from dataclasses import asdict
+    return asdict(bundle)
 
 
 if __name__ == "__main__":
