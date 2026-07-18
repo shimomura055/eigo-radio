@@ -63,6 +63,7 @@ def make_script(body_words=200, sub1_words=60, sub2_words=60, final_words=40,
 def make_qa_dict(plan, **overrides):
     elements = common.build_expected_elements(plan)
     base = {
+        "assessment_status": "conclusive", "inconclusive_reason": None,
         "transcript": plan.full_text,
         "element_counts": {k: 1 for k, _ in elements},
         "body_dropped": False, "body_dropped_evidence": [],
@@ -338,6 +339,67 @@ class TTSContentAttemptTests(unittest.TestCase):
         self.assertEqual(result.status, "OK")
         self.assertEqual(result.accepted_attempt, 1, "API障害はtts_content_attemptを増やさない")
         self.assertGreaterEqual(result.attempts[0].tts_api_retry_count, 1)
+
+
+# ============================================================
+# ER-002-S2-C2 追加: normalize_pcm(ER-001B-6/9/10と同一のピーク正規化)
+# ============================================================
+class NormalizePcmTests(unittest.TestCase):
+    """ER-002-S2で発見した実装漏れ(_call_tts_with_retryへ正規化を追加した際に
+    見つかった)の専用回帰テスト。"""
+
+    def _peak(self, pcm_bytes):
+        import array
+        samples = array.array("h", pcm_bytes)
+        return max(abs(s) for s in samples) if samples else 0
+
+    def test_scales_to_target_peak(self):
+        import array
+        # peak=10000 -> 目標倍率(0.7*32767)/10000 ≈ 2.29倍で、3.0倍の上限にはかからない
+        samples = array.array("h", [5000, -10000, 2500, -7500])
+        raw = samples.tobytes()
+        normalized = common.normalize_pcm(raw, target_peak=0.7)
+        expected_peak = int(10000 * min((0.7 * 32767) / 10000, 3.0))
+        self.assertLessEqual(abs(self._peak(normalized) - expected_peak), 1)
+
+    def test_scale_capped_at_3x_for_very_quiet_audio(self):
+        import array
+        # peak=100 -> 素の目標倍率は (0.7*32767)/100 ≈ 229倍だが、3.0倍に制限される
+        samples = array.array("h", [100, -50, 30])
+        raw = samples.tobytes()
+        normalized = common.normalize_pcm(raw, target_peak=0.7)
+        normalized_samples = array.array("h", normalized)
+        self.assertEqual(normalized_samples[0], 300)  # 100 * 3.0 = 300 (上限適用)
+
+    def test_all_silence_returns_unchanged(self):
+        import array
+        raw = array.array("h", [0, 0, 0, 0]).tobytes()
+        normalized = common.normalize_pcm(raw, target_peak=0.7)
+        self.assertEqual(normalized, raw)
+
+    def test_empty_input_returns_unchanged(self):
+        self.assertEqual(common.normalize_pcm(b""), b"")
+
+    def test_output_stays_within_int16_range_no_overflow(self):
+        import array
+        samples = array.array("h", [32767, -32768, 100])
+        raw = samples.tobytes()
+        normalized = common.normalize_pcm(raw, target_peak=0.9)
+        for v in array.array("h", normalized):
+            self.assertTrue(-32768 <= v <= 32767)
+
+    def test_applied_automatically_inside_tts_retry_call(self):
+        """_call_tts_with_retry経由でtts_call_fnの生PCMが正規化されることを確認。"""
+        import array
+        quiet_pcm = array.array("h", [100, -100, 50]).tobytes()
+
+        def tts_fn(prompt):
+            return quiet_pcm
+
+        pcm, _retries, ok, _err = common._call_tts_with_retry(tts_fn, "prompt", max_retry=0, sleep_fn=None)
+        self.assertTrue(ok)
+        self.assertNotEqual(pcm, quiet_pcm, "正規化により生PCMから値が変化しているはず")
+        self.assertEqual(self._peak(pcm), 300)  # 100 * 3.0上限
 
 
 # ============================================================
@@ -677,6 +739,73 @@ class QAReevaluationTests(unittest.TestCase):
 
 
 # ============================================================
+# ER-002-S2-P0: assessment_status/inconclusive_reason(自己申告)の扱い
+# 実APIを呼ぶ前にモックで検証する。
+# ============================================================
+class SelfReportedAssessmentStatusTests(unittest.TestCase):
+    def setUp(self):
+        self.script = make_script()
+        self.plan = common.build_narration_plan(self.script)
+
+    def test_self_reported_inconclusive_with_clean_fields_triggers_reevaluation(self):
+        """フィールド上は問題なしでも、モデルがassessment_status="inconclusive"と
+        自己申告した場合は判定不能として同じ音声を再評価することを確認。"""
+        calls = {"n": 0}
+
+        def qa_fn(prompt, wav):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return make_qa_json(self.plan, assessment_status="inconclusive",
+                                     inconclusive_reason="background noise made one word unclear")
+            return make_qa_json(self.plan)  # 2回目: conclusive・クリーン
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "passed")
+        self.assertEqual(len(outcome.attempts), 2)
+        self.assertEqual(outcome.attempts[0].outcome, "inconclusive")
+        self.assertIn("embedded_self_reported_inconclusive", outcome.attempts[0].reasons)
+
+    def test_self_report_conclusive_alone_does_not_grant_pass(self):
+        """「conclusiveという自己申告だけで合格にしない」: assessment_status=
+        "conclusive"でも、要素欠落が実際にあれば不合格になることを確認。"""
+        def qa_fn(prompt, wav):
+            return make_qa_json(self.plan, assessment_status="conclusive", element_counts={
+                **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "point_two": 0})
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "conclusive_fail")
+
+    def test_explicit_defect_fails_regardless_of_inconclusive_self_report(self):
+        """「明確な音声不良が検出された場合は、assessment_statusにかかわらず不合格に
+        する」: assessment_status="inconclusive"と自己申告していても、要素欠落を
+        実際に検出していればconclusive_failとして扱い、再評価しないことを確認。"""
+        calls = {"n": 0}
+
+        def qa_fn(prompt, wav):
+            calls["n"] += 1
+            return make_qa_json(self.plan, assessment_status="inconclusive",
+                                 inconclusive_reason="not fully sure, but title seems off",
+                                 element_counts={
+                                     **{k: 1 for k, _ in common.build_expected_elements(self.plan)}, "title": 0})
+
+        outcome = common.evaluate_qa_for_audio(self.plan, b"dummy-audio-bytes", qa_fn,
+                                                 max_qa_eval_attempts=2, max_api_retry=0)
+        self.assertEqual(outcome.final_outcome, "conclusive_fail")
+        self.assertEqual(len(outcome.attempts), 1, "明確な不具合検出は自己申告にかかわらず再評価しない")
+        self.assertEqual(calls["n"], 1)
+
+    def test_missing_assessment_status_is_treated_as_inconclusive(self):
+        """assessment_statusフィールド自体が欠落している場合、勝手に"conclusive"
+        扱いにしない(fail-closed)ことを確認。"""
+        raw = make_qa_dict(self.plan)
+        del raw["assessment_status"]
+        classified = common.classify_qa_result(raw, self.plan)
+        self.assertTrue(classified["self_reported_inconclusive"])
+
+
+# ============================================================
 # ER-002-S1.1 追加 9: TTS_CONTENT_FAILUREとQA_INCONCLUSIVEの分離集計
 # ============================================================
 class FailureClassificationTests(unittest.TestCase):
@@ -739,6 +868,80 @@ class UserEvaluationSchemaTests(unittest.TestCase):
         config = {"experiment_id": "E", "article_id": "a05", "genre": "g", "topic_or_source": "s", "voice": "Aoede"}
         outcome = runner.run_article(config, script_fn, tts_fn, qa_fn)
         self.assertEqual(outcome.manifest["user_evaluation"]["status"], "pending_user_listening")
+
+
+# ============================================================
+# ER-002-S2以降 追加: 内容評価の原因分類 / トピック候補の診断専用項目
+# ============================================================
+class ContentEvaluationFailureClassificationTests(unittest.TestCase):
+    def test_default_classification_is_all_unset(self):
+        classification = common.default_content_evaluation_failure_classification()
+        for key in ("primary_classification", "voice_as_primary_cause", "structure_as_primary_cause",
+                    "dynamics_as_primary_cause", "script_as_primary_cause", "script_cause_status",
+                    "generalization_note"):
+            self.assertIsNone(classification[key])
+        self.assertEqual(classification["user_observations"], [])
+        self.assertEqual(classification["not_actioned_pending_further_evidence"], [])
+
+    def test_can_record_topic_interest_low_as_presented(self):
+        """A04の実際の訂正内容(話者・構造・Dynamics3・台本のいずれも主因ではない)を
+        このスキーマへ記録できることを確認する。ER-002-S2-C2の訂正により、
+        分類名は"題材そのものに編集可能性がない"という意味にならないよう
+        TOPIC_INTEREST_LOW_AS_PRESENTED(今回提示された形での関心の低さ)を使う。"""
+        classification = common.default_content_evaluation_failure_classification()
+        classification.update({
+            "primary_classification": "TOPIC_INTEREST_LOW_AS_PRESENTED",
+            "voice_as_primary_cause": False,
+            "structure_as_primary_cause": False,
+            "dynamics_as_primary_cause": False,
+            "script_as_primary_cause": False,
+            "script_cause_status": "not_supported_by_current_evidence",
+            "surface_news_interest": "low",
+            "editorial_angle_potential": "possible",
+            "alternative_angle_not_tested": True,
+            "script_failure_confirmed": False,
+            "editorial_hypotheses": common.build_untested_editorial_hypotheses(
+                ["a hypothetical alternative angle"]),
+        })
+        self.assertFalse(any([
+            classification["voice_as_primary_cause"],
+            classification["structure_as_primary_cause"],
+            classification["dynamics_as_primary_cause"],
+            classification["script_as_primary_cause"],
+        ]))
+        self.assertEqual(classification["primary_classification"], "TOPIC_INTEREST_LOW_AS_PRESENTED")
+        self.assertTrue(classification["alternative_angle_not_tested"])
+        self.assertFalse(classification["script_failure_confirmed"])
+        self.assertTrue(all(h["untested"] and h["result"] is None for h in classification["editorial_hypotheses"]))
+
+
+class TopicDiagnosticsSchemaTests(unittest.TestCase):
+    def test_default_diagnostics_are_unset_and_marked_excluded(self):
+        diagnostics = common.default_topic_candidate_diagnostics()
+        for field in common.TOPIC_DIAGNOSTIC_FIELDS:
+            self.assertIsNone(diagnostics[field])
+        self.assertTrue(diagnostics["diagnostic_only"])
+        self.assertTrue(diagnostics["excluded_from_scoring"])
+
+    def test_diagnostic_fields_never_overlap_scoring_fields(self):
+        """診断専用項目とトピック選定スコア項目が別集合であることを確認する
+        (将来、診断項目が誤ってスコア計算へ混入することへの回帰防止)。"""
+        overlap = set(common.TOPIC_DIAGNOSTIC_FIELDS) & set(common.TOPIC_SCORING_FIELDS)
+        self.assertEqual(overlap, set())
+
+    def test_diagnostics_do_not_affect_a_scoring_function(self):
+        """診断項目を候補データへ混ぜても、スコア項目だけを合計する処理には
+        一切影響しないことを確認する(選定順位計算からの分離を保証)。"""
+        candidate_without_diagnostics = {field: 5 for field in common.TOPIC_SCORING_FIELDS}
+        candidate_with_diagnostics = dict(candidate_without_diagnostics)
+        candidate_with_diagnostics.update(common.default_topic_candidate_diagnostics())
+        candidate_with_diagnostics["surprise_level"] = "low"
+        candidate_with_diagnostics["novelty_type"] = "regulatory"
+
+        def total_score(candidate):
+            return sum(candidate[field] for field in common.TOPIC_SCORING_FIELDS)
+
+        self.assertEqual(total_score(candidate_without_diagnostics), total_score(candidate_with_diagnostics))
 
 
 # ============================================================

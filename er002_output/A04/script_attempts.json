@@ -1,0 +1,18 @@
+{
+  "status": "OK",
+  "accepted_attempt": 1,
+  "max_attempts": 2,
+  "attempts": [
+    {
+      "attempt_number": 1,
+      "word_count": 415,
+      "word_count_status": "within_acceptable_range",
+      "structure_valid": true,
+      "structure_errors": []
+    }
+  ],
+  "prompt_version": "er002-script-adapter-v1",
+  "prompt_sha256": "5aa3d19f80b4657106a46f4c6f9c2c7595b590a621a9c2a9a34e45b99677d1c3",
+  "model": "gpt-5.6-terra",
+  "prompt_text": "You are writing a script for a short English-language audio news segment aimed at Japanese learners of English (intermediate level). This is for LISTENING ONLY - the audience cannot see any images, charts, or screens, so nothing in the script may depend on something being shown visually.\n\nTOPIC:\nMeta removed its \"Muse Image\" Instagram AI feature within days of launch after privacy backlash over using public photos as AI-image references.\n\nFACTS (do not add any factual claim - name, number, date, or event - that is not present here):\nVERIFIED FACTS:\n- Meta launched an AI image feature called Muse Image during the week of July 7, 2026.\n- The feature allowed users to reference photos from public Instagram accounts when generating AI images.\n- Meta announced on July 10, 2026 that the public-Instagram-reference part of the feature was no longer available.\n- Users and SAG-AFTRA (the performers' union) criticized the feature over privacy, consent, and the possibility of creating unauthorized digital likenesses of people.\n- Meta did not remove the entire Muse Image system; only the specific public-Instagram-reference function was removed.\n\nGENERAL KNOWLEDGE CONTEXT (background only, do not present as breaking facts):\n- Instagram is a widely used photo/video-sharing app owned by Meta.\n- SAG-AFTRA is a major U.S. labor union representing actors and other performers, which has been active in AI-likeness disputes.\n\nWrite a script with exactly this structure:\n1. A short attention-grabbing title (not a full sentence, no ending punctuation).\n2. An opening/body section: several short paragraphs (plain sentences, no headings) that introduce and explain the story in a way that is fully understandable by ear alone.\n3. A short heading in the exact pattern \"Today's <2-3 word topic-appropriate noun phrase> Points\" (choose the noun phrase based on this specific story - do not reuse a generic placeholder word).\n4. Exactly two distinct discussion points under that heading, each with its own short sub-heading and 1-3 short paragraphs. The two points MUST cover clearly different aspects of the story (not the same idea reworded) - for example one point might explain what happened and why it matters, and the other might explain what could happen next or a different angle entirely.\n5. A final section headed exactly \"In One Line\" containing a short one-sentence summary of the body content (not a summary of the two points), plus 1-3 additional short closing sentences.\n\nTarget length for the WHOLE script (title + body + both points + In One Line, combined) is 380-420 English words. Do not go below 320 or above 480 words under any circumstance.\n\nDo not include any stage directions, acting notes, or instructions about how to perform the narration - only the words to be spoken. Do not reference images, charts, screens, or anything the listener would need to see.\n\nReturn ONLY valid JSON, no other text, in exactly this shape:\n{\n  \"title\": \"...\",\n  \"body_paragraphs\": [\"...\", \"...\"],\n  \"points_heading\": \"Today's ... Points\",\n  \"point_one_heading\": \"...\",\n  \"point_one_paragraphs\": [\"...\", \"...\"],\n  \"point_two_heading\": \"...\",\n  \"point_two_paragraphs\": [\"...\", \"...\"],\n  \"in_one_line_paragraphs\": [\"...\", \"...\"]\n}"
+}

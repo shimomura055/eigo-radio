@@ -34,6 +34,7 @@
 
 from __future__ import annotations
 
+import array
 import hashlib
 import io
 import json
@@ -342,6 +343,23 @@ def assemble_audio(pcm_chunks: list[bytes], sample_rate: int = SAMPLE_RATE,
     return audio, pause_positions
 
 
+NORMALIZE_TARGET_PEAK = 0.7  # ER-001B-6/9/10と同一値
+
+
+def normalize_pcm(pcm_bytes: bytes, target_peak: float = NORMALIZE_TARGET_PEAK) -> bytes:
+    """個々のTTS応答チャンクをピーク基準で正規化する(ER-001B-6/9/10と同一実装。
+    チャンク結合・Dynamics3適用より前に、各チャンクへ個別に適用する)。"""
+    samples = array.array("h", pcm_bytes)
+    if not samples:
+        return pcm_bytes
+    peak = max(abs(s) for s in samples)
+    if peak == 0:
+        return pcm_bytes
+    scale = min((target_peak * 32767) / peak, 3.0)
+    normalized = array.array("h", (max(-32768, min(32767, int(s * scale))) for s in samples))
+    return normalized.tobytes()
+
+
 def pcm_to_wav_bytes(pcm_bytes: bytes, sample_rate: int = SAMPLE_RATE) -> bytes:
     buf = io.BytesIO()
     with wave.open(buf, "wb") as w:
@@ -441,6 +459,8 @@ REQUIRED ELEMENTS (JSON key -> exact text). Each must be spoken exactly once, in
 
 Listen to the audio and return ONLY valid JSON, no other text, in exactly this shape:
 {{
+  "assessment_status": "conclusive",
+  "inconclusive_reason": null,
   "element_counts": {{"title": 1, "today_points_heading": 1, "point_one": 1, "subheading1": 1, "point_two": 1, "subheading2": 1, "in_one_line": 1}},
   "body_dropped": false, "body_dropped_evidence": [],
   "body_duplicated": false, "body_duplicated_evidence": [],
@@ -450,6 +470,7 @@ Listen to the audio and return ONLY valid JSON, no other text, in exactly this s
   "notes": "brief explanation in English"
 }}
 
+"assessment_status": "conclusive" if you were able to confidently judge every criterion below from the audio; "inconclusive" if audio quality, ambiguity, unclear speech, or any other reason prevented a confident judgment on one or more criteria below (in that case, briefly explain why in "inconclusive_reason"; otherwise leave it null). Note that answering "conclusive" here does NOT by itself mean the audio passes - every criterion below is still checked independently.
 Where "element_counts" gives, for each key above, how many times that exact text is spoken as its own distinct element (0 = missing, 1 = correct, 2+ = duplicated).
 "body_dropped"/"body_dropped_evidence": true and the missing sentence(s) if any part of the body text is missing.
 "body_duplicated"/"body_duplicated_evidence": true and the repeated sentence(s) if any body sentence is spoken twice.
@@ -477,6 +498,8 @@ Listen to the audio and:
 
 Return ONLY valid JSON, no other text, in exactly this shape:
 {{
+  "assessment_status": "conclusive",
+  "inconclusive_reason": null,
   "transcript": "...",
   "element_counts": {{"title": 1, "today_points_heading": 1, "point_one": 1, "subheading1": 1, "point_two": 1, "subheading2": 1, "in_one_line": 1}},
   "body_dropped": false, "body_dropped_evidence": [],
@@ -485,7 +508,9 @@ Return ONLY valid JSON, no other text, in exactly this shape:
   "section_order_changed": false, "observed_section_order": {json.dumps(expected_order, ensure_ascii=False)},
   "extra_unscripted_speech": false, "extra_unscripted_speech_evidence": [],
   "notes": "brief explanation in English"
-}}"""
+}}
+
+"assessment_status": "conclusive" if you were able to confidently judge every criterion above from the audio; "inconclusive" if audio quality, ambiguity, unclear speech, or any other reason prevented a confident judgment on one or more criteria above (in that case, briefly explain why in "inconclusive_reason"; otherwise leave it null). Note that answering "conclusive" here does NOT by itself mean the audio passes - every criterion above is still checked independently."""
 
 
 # ============================================================
@@ -556,6 +581,13 @@ def classify_qa_result(raw_result: dict, plan: NarrationPlan) -> dict:
     reasons = [k for k, c in element_checks.items() if c["status"] != "ok"]
     reasons += [k for k, v in scalar_checks.items() if v is not False]
 
+    # S2-P0: assessment_status(モデルの自己申告)。"conclusive"以外(inconclusive・
+    # 欠落・不正な値)はすべて自己申告としての判定不能扱いにする(fail-closed)。
+    # 「conclusiveという自己申告だけで合格にしない」= passedの計算には使わない
+    # (passedは上のelement_all_ok/scalar_all_cleanのみで決まる)。
+    assessment_status = raw_result.get("assessment_status")
+    self_reported_inconclusive = assessment_status != "conclusive"
+
     return {
         "element_checks": element_checks,
         "scalar_checks": scalar_checks,
@@ -569,6 +601,9 @@ def classify_qa_result(raw_result: dict, plan: NarrationPlan) -> dict:
         "expected_text": plan.full_text,
         "transcript": raw_result.get("transcript"),
         "notes": raw_result.get("notes"),
+        "assessment_status": assessment_status,
+        "inconclusive_reason": raw_result.get("inconclusive_reason"),
+        "self_reported_inconclusive": self_reported_inconclusive,
         "passed": passed,
         "reasons": reasons,
     }
@@ -648,11 +683,14 @@ def call_qa_with_retry(
 def _call_tts_with_retry(
     tts_call_fn: Callable[[str], bytes], prompt: str, max_retry: int, sleep_fn: Optional[Callable[[float], None]]
 ):
+    """tts_call_fnは生のPCMバイト列を返す想定。ここでER-001B-6/9/10と同じ
+    ピーク正規化(normalize_pcm)をチャンク単位に適用してから返す(呼び出し側の
+    tts_call_fn実装で正規化を意識する必要がない)。"""
     last_error = None
     for attempt in range(max_retry + 1):
         try:
             pcm = tts_call_fn(prompt)
-            return pcm, attempt, True, None
+            return normalize_pcm(pcm), attempt, True, None
         except Exception as e:
             last_error = str(e)
             if sleep_fn:
@@ -734,7 +772,10 @@ def evaluate_qa_for_audio(
 
         embedded_classified = classify_qa_result(embedded_outcome.raw_result, plan)
         if not embedded_classified["passed"]:
-            # 有効な形式で不具合を検出できた = 判定不能ではなく確定的な不合格。再評価しない。
+            # 有効な形式で不具合を検出できた = 判定不能ではなく確定的な不合格。
+            # assessment_statusの自己申告にかかわらず不合格として扱い、再評価しない
+            # (「明確な音声不良が検出された場合は、assessment_statusにかかわらず
+            # 不合格にする」)。
             attempts.append(QAEvaluationAttemptRecord(
                 qa_evaluation_attempt_number=qa_attempt, outcome="conclusive_fail",
                 reasons=embedded_classified["reasons"],
@@ -747,6 +788,20 @@ def evaluate_qa_for_audio(
                 total_embedded_qa_api_retry_count=total_embedded_retry,
                 total_grounded_qa_api_retry_count=total_grounded_retry,
             )
+
+        if embedded_classified["self_reported_inconclusive"]:
+            # 構造化フィールド上は不具合が見当たらないが、モデル自身が
+            # "inconclusive"と自己申告した場合は判定不能として再評価する
+            # (「conclusiveという自己申告だけで合格にしない」の裏返しとして、
+            # inconclusiveの自己申告は無視せず尊重する)。
+            attempts.append(QAEvaluationAttemptRecord(
+                qa_evaluation_attempt_number=qa_attempt, outcome="inconclusive",
+                reasons=["embedded_self_reported_inconclusive"],
+                embedded_qa_api_retry_count=embedded_outcome.api_retry_count,
+                grounded_qa_api_retry_count=0,
+                embedded_classified=embedded_classified,
+            ))
+            continue
 
         grounded_outcome = call_qa_with_retry(
             qa_call_fn, build_grounded_qa_prompt(plan), wav_bytes, max_retry=max_api_retry, sleep_fn=sleep_fn)
@@ -776,6 +831,16 @@ def evaluate_qa_for_audio(
                 total_embedded_qa_api_retry_count=total_embedded_retry,
                 total_grounded_qa_api_retry_count=total_grounded_retry,
             )
+
+        if grounded_classified["self_reported_inconclusive"]:
+            attempts.append(QAEvaluationAttemptRecord(
+                qa_evaluation_attempt_number=qa_attempt, outcome="inconclusive",
+                reasons=["grounded_self_reported_inconclusive"],
+                embedded_qa_api_retry_count=embedded_outcome.api_retry_count,
+                grounded_qa_api_retry_count=grounded_outcome.api_retry_count,
+                embedded_classified=embedded_classified, grounded_classified=grounded_classified,
+            ))
+            continue
 
         aggregated = aggregate_qa(embedded_classified, grounded_classified)
         if aggregated["disagreements"]:
@@ -1263,3 +1328,88 @@ def mark_user_evaluation_completed(evaluation: dict, **fields) -> dict:
     updated.update(fields)
     updated["status"] = "completed"
     return updated
+
+
+# ============================================================
+# ブロック15: 内容評価の原因分類(content_interest等の低評価の原因切り分け)
+# ============================================================
+# ER-002-S2のA04(technology)で両サンプルとも content_interest="no" と
+# なった際、原因が台本・話者・構造・Dynamics3ではなく、トピック自体の
+# 内在的な関心の低さだったと確認されたことを踏まえて用意するスキーマ。
+# 「話者や台本の作り方が悪かったからではない」ことを構造的に記録し、
+# 誤って共通プロンプトや話者選定を変更する判断に短絡させないための項目。
+#
+# 1件の結果だけでジャンル全体へ一般化しない・スコアリングへ反映しない、
+# という運用上の注意点はコードでは強制できないため、
+# generalization_note / not_actioned_pending_further_evidence として
+# 明示的に記録に残す設計にしている。
+#
+# ER-002-S2-C2での訂正: primary_classificationの例を"TOPIC_INTRINSIC_INTEREST_LOW"
+# から"TOPIC_INTEREST_LOW_AS_PRESENTED"へ変更した。「題材そのものに編集可能性が
+# 一切ない」という意味ではなく、「今回提示された切り口・構成では関心が低かった」
+# という意味に限定するため。surface_news_interest/editorial_angle_potential/
+# alternative_angle_not_tested/script_failure_confirmedと、未検証の編集仮説を
+# 記録するeditorial_hypothesesを追加した。
+def default_content_evaluation_failure_classification() -> dict:
+    return {
+        "primary_classification": None,  # 例: "TOPIC_INTEREST_LOW_AS_PRESENTED"
+        "voice_as_primary_cause": None,
+        "structure_as_primary_cause": None,
+        "dynamics_as_primary_cause": None,
+        "script_as_primary_cause": None,
+        "script_cause_status": None,  # 例: "not_supported_by_current_evidence"
+        "surface_news_interest": None,          # low / medium / high
+        "editorial_angle_potential": None,       # absent / possible / strong
+        "alternative_angle_not_tested": None,    # bool
+        "script_failure_confirmed": None,        # bool
+        "editorial_hypotheses": [],  # build_untested_editorial_hypotheses()で構築
+        "user_observations": [],
+        "not_actioned_pending_further_evidence": [],
+        "generalization_note": None,
+    }
+
+
+def build_untested_editorial_hypotheses(hypotheses: list[str]) -> list[dict]:
+    """未検証の編集仮説のリストを、それぞれuntested=True/result=Noneの
+    構造化エントリへ変換する(実際に台本へ適用・検証したものではないことを
+    明示する)。"""
+    return [{"hypothesis": h, "untested": True, "result": None} for h in hypotheses]
+
+
+# ============================================================
+# ブロック16: トピック候補の診断専用項目(S3以降。選定順位には使わない)
+# ============================================================
+# 以下は記事の合否・トピック選定スコア(topic_candidates.jsonのscores/
+# total_score)には一切使用しない「診断専用」の記録項目。将来、同種の
+# 分析(意外性の高低・結末の予測可能性・影響範囲・題材の新しさの種類等)を
+# 体系的に蓄積するために用意するが、現時点では選定ロジックへ組み込まない。
+TOPIC_DIAGNOSTIC_FIELDS = [
+    "surprise_level",                 # low / medium / high
+    "outcome_predictability",         # low / medium / high
+    "impact_scope",                   # narrow / medium / broad
+    "audience_relevance",             # narrow / medium / broad
+    "novelty_type",                   # technical / business / social / regulatory / mixed
+    "editorial_interest_hypothesis",  # string
+    "surface_news_interest",          # low / medium / high / null (ER-002-S2-C2で追加)
+    "editorial_angle_potential",      # absent / possible / strong / null (ER-002-S2-C2で追加)
+]
+
+# トピック選定に実際に使うスコア項目(topic_candidates.jsonの"scores"キー)。
+# TOPIC_DIAGNOSTIC_FIELDSとは明確に別集合であることをテストで確認する。
+TOPIC_SCORING_FIELDS = [
+    "clear_hook",
+    "two_point_fit",
+    "general_user_impact",
+    "audio_only_comprehensibility",
+    "source_reliability",
+    "fact_stability",
+]
+
+
+def default_topic_candidate_diagnostics() -> dict:
+    """候補記録へ付与できる診断専用の項目。selection_method/total_scoreの
+    計算コードパスへは一切渡さないこと。"""
+    diagnostics = {field: None for field in TOPIC_DIAGNOSTIC_FIELDS}
+    diagnostics["diagnostic_only"] = True
+    diagnostics["excluded_from_scoring"] = True
+    return diagnostics

@@ -1,0 +1,198 @@
+{
+  "experiment_id": "ER-002-S2",
+  "article_id": "A04",
+  "genre": "technology",
+  "purpose": "ER-002-S1/S1.1で実装した共通実験基盤を実APIへ接続し、1記事(A04・テクノロジー)についてトピック選定→共通台本生成→AoedeとCharon両話者への実TTS/実QA→Dynamics3→A/B匿名化までの一連のフローが機能するかを確認するスモークテスト。品質の最終判定ではない。",
+  "code_state_at_s2_start": {
+    "commit_hash": "c3585f7407fbdf71f6906ecb9eaa83edd13863b2",
+    "commit_subject": "feat: ER-002-S1/S1.1の共通実験基盤を追加",
+    "branch": "main",
+    "note": "ER-002-S1/S1.1をコミット・プッシュした直後のコミット。S2-P0〜P7の変更(er002_common.pyへのassessment_status追加、er002_script_adapter.py/er002_gemini_client.py新規追加、er002_common.pyへのnormalize_pcm追加を含む)はこのコミットの後に行った。"
+  },
+  "topic_selection_ref": "topic_selection.json (selected_candidate_id: candidate_2, total_score: 30/30)",
+  "script_ref": {
+    "file": "script_en.json",
+    "word_count": 415,
+    "expected_text_sha256": "c154e0764a4d1d5c613eb204d703f4f6bc92633d724c0395ef2f4781d15d8f2b",
+    "generation_attempts": 1,
+    "shared_across_voices": true
+  },
+  "voices": {
+    "aoede": {
+      "status": "OK",
+      "tts_content_attempts": 1,
+      "accepted_attempt": 1,
+      "qa_evaluation_attempts_on_accepted": 1,
+      "word_metrics": {
+        "word_count": 415,
+        "target_min": 380,
+        "target_max": 420,
+        "accept_min": 320,
+        "accept_max": 480,
+        "within_target": true,
+        "status": "within_acceptable_range"
+      },
+      "duration_metrics": {
+        "duration_seconds": 187.633,
+        "warn_band_min_seconds": 130,
+        "warn_band_max_seconds": 200,
+        "within_warn_band": true,
+        "is_hard_gate": false
+      },
+      "effective_wpm": 132.71,
+      "dynamics_metrics_c0": {
+        "duration_seconds": 187.633,
+        "sample_count": 4503189,
+        "sample_rate": 24000,
+        "peak_dbfs": -3.1,
+        "rms_dbfs": -22.12,
+        "integrated_lufs_approx": -22.03,
+        "loudness_range_approx_lu": 4.81,
+        "crest_factor_db": 19.02,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "dynamics_metrics_c1": {
+        "duration_seconds": 187.633,
+        "sample_count": 4503189,
+        "sample_rate": 24000,
+        "peak_dbfs": -1.47,
+        "rms_dbfs": -22.15,
+        "integrated_lufs_approx": -22.03,
+        "loudness_range_approx_lu": 2.84,
+        "crest_factor_db": 20.68,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "dynamics_loudness_matching": {
+        "target_lufs": -22.03,
+        "compressed_lufs_before_gain": -24.33,
+        "desired_gain_db": 2.304,
+        "peak_ceiling_db": -1.0,
+        "max_gain_allowed_by_peak_db": 2.778,
+        "applied_fixed_gain_db": 2.304,
+        "peak_ceiling_prioritized": false,
+        "final_peak_dbfs": -1.47,
+        "final_lufs_approx": -22.03,
+        "loudness_shortfall_lu": 0.0,
+        "within_0_3_lu_target": true
+      },
+      "dynamics_applied_once": true,
+      "final_audio": {
+        "tts_content_attempt_number": 1,
+        "sample_rate": 24000,
+        "raw_c0_pcm_sha256": "bec177a30215352280312501a27144fa445fb4058bff8d140defd9abe6ae3782",
+        "note": "S1/S1.1では実音声を生成していないため、この参照はモックTTS呼び出しで得られたバイト列のsha256のみ(ファイル未保存)。実運用時はここにWAVファイルパスとsha256を記録する。"
+      },
+      "user_evaluation_status": "pending_user_listening"
+    },
+    "charon": {
+      "status": "OK",
+      "tts_content_attempts": 1,
+      "accepted_attempt": 1,
+      "qa_evaluation_attempts_on_accepted": 1,
+      "word_metrics": {
+        "word_count": 415,
+        "target_min": 380,
+        "target_max": 420,
+        "accept_min": 320,
+        "accept_max": 480,
+        "within_target": true,
+        "status": "within_acceptable_range"
+      },
+      "duration_metrics": {
+        "duration_seconds": 184.913,
+        "warn_band_min_seconds": 130,
+        "warn_band_max_seconds": 200,
+        "within_warn_band": true,
+        "is_hard_gate": false
+      },
+      "effective_wpm": 134.66,
+      "dynamics_metrics_c0": {
+        "duration_seconds": 184.913,
+        "sample_count": 4437909,
+        "sample_rate": 24000,
+        "peak_dbfs": -3.1,
+        "rms_dbfs": -21.36,
+        "integrated_lufs_approx": -21.57,
+        "loudness_range_approx_lu": 4.3,
+        "crest_factor_db": 18.26,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "dynamics_metrics_c1": {
+        "duration_seconds": 184.913,
+        "sample_count": 4437909,
+        "sample_rate": 24000,
+        "peak_dbfs": -1.22,
+        "rms_dbfs": -21.34,
+        "integrated_lufs_approx": -21.57,
+        "loudness_range_approx_lu": 2.76,
+        "crest_factor_db": 20.12,
+        "clipping_sample_count": 0,
+        "clipping_detected": false
+      },
+      "dynamics_loudness_matching": {
+        "target_lufs": -21.57,
+        "compressed_lufs_before_gain": -23.45,
+        "desired_gain_db": 1.882,
+        "peak_ceiling_db": -1.0,
+        "max_gain_allowed_by_peak_db": 2.101,
+        "applied_fixed_gain_db": 1.882,
+        "peak_ceiling_prioritized": false,
+        "final_peak_dbfs": -1.22,
+        "final_lufs_approx": -21.57,
+        "loudness_shortfall_lu": 0.0,
+        "within_0_3_lu_target": true
+      },
+      "dynamics_applied_once": true,
+      "final_audio": {
+        "tts_content_attempt_number": 1,
+        "sample_rate": 24000,
+        "raw_c0_pcm_sha256": "7416901673af6e83247529497f415bacabb481d694bd20372511c1fcc47baffa",
+        "note": "S1/S1.1では実音声を生成していないため、この参照はモックTTS呼び出しで得られたバイト列のsha256のみ(ファイル未保存)。実運用時はここにWAVファイルパスとsha256を記録する。"
+      },
+      "user_evaluation_status": "pending_user_listening"
+    }
+  },
+  "api_usage_summary": {
+    "script_generation_api_calls": 1,
+    "tts_content_calls_total": 6,
+    "tts_content_calls_by_voice": {
+      "aoede": 3,
+      "charon": 3
+    },
+    "tts_api_communication_retries": 0,
+    "embedded_qa_evaluation_calls_total": 2,
+    "embedded_qa_evaluation_calls_by_voice": {
+      "aoede": 1,
+      "charon": 1
+    },
+    "grounded_qa_evaluation_calls_total": 2,
+    "grounded_qa_evaluation_calls_by_voice": {
+      "aoede": 1,
+      "charon": 1
+    },
+    "qa_api_communication_retries": 0,
+    "topic_research_api_calls": 1,
+    "note": "すべて実API呼び出し(Gemini TTS/QA、OpenAI script/topic research)。両話者ともTTSコンテンツ試行1回・QA評価1回で技術検品を通過したため、想定していた最大呼び出し数(最大3コンテンツ試行×最大2QA評価)は消費していない。"
+  },
+  "ab_bundle": {
+    "files": [
+      "er002_a04_sample_1.wav",
+      "er002_a04_sample_2.wav"
+    ],
+    "files_dir": "er002_output/A04/ab/ (Git追跡対象外、*.wav)",
+    "mapping_file": "er002_output/A04/er002_A04_ab_mapping.json (Git追跡対象外、*_ab_mapping.json)",
+    "mapping_disclosed_in_this_report": false,
+    "filename_reveals_speaker": false,
+    "metadata_reveals_speaker": false,
+    "presentation_order_randomized": true,
+    "user_evaluation_schema_file": "er002_output/A04/ab/user_evaluation_ab.json"
+  },
+  "status": "MACHINE_QA_PASSED_USER_EVALUATION_COMPLETED",
+  "status_note": "両音声(Aoede/Charon)とも技術検品(embedded+grounded QA)を通過し、ユーザーがA/B匿名化済みの両サンプルを聴取・評価した。両サンプルともcontent_interest=noだったが、原因は「今回提示された切り口・構成では関心が低かった」こと(TOPIC_INTEREST_LOW_AS_PRESENTED)であり、話者・構造・Dynamics3・台本のいずれも主因ではないと切り分け済み(詳細はer002_output/A04/ab/user_evaluation_ab.jsonのcontent_evaluation_failure_classification参照)。これは技術的な生成品質の失敗ではなく、この記事の話者適合や台本品質を否定する結果でもない。題材そのものに編集可能性が無いという意味でもなく、未検証の代替切り口(editorial_hypotheses)を記録済み。",
+  "content_evaluation_summary_ref": "er002_output/A04/ab/user_evaluation_ab.json",
+  "generated_at": "2026-07-17T23:13:09.032652+00:00",
+  "content_evaluation_completed_at": "2026-07-18T00:00:00+00:00"
+}
