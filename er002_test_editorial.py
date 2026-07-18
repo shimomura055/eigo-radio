@@ -563,5 +563,36 @@ class ModelResponsibilityAndFreezeTests(unittest.TestCase):
         self.assertEqual(freeze_v1.EXPERIMENT_VERSION, "ER-002-v1.0")
 
 
+# ============================================================
+# 補足: テキストのみのGemini QA呼び出し配線(実API未使用、モッククライアント)
+# ============================================================
+class QaTextCallFnWiringTests(unittest.TestCase):
+    def test_make_qa_text_call_fn_sends_text_only_no_audio_part(self):
+        import er002_gemini_client as gclient
+
+        class FakeResponse:
+            text = '{"ok": true}'
+
+        class FakeModels:
+            def __init__(self):
+                self.last_call = None
+
+            def generate_content(self, **kwargs):
+                self.last_call = kwargs
+                return FakeResponse()
+
+        class FakeClient:
+            def __init__(self):
+                self.models = FakeModels()
+
+        fake_client = FakeClient()
+        qa_text_call_fn = gclient.make_qa_text_call_fn(client=fake_client)
+        result = qa_text_call_fn("hello prompt")
+
+        self.assertEqual(result, '{"ok": true}')
+        self.assertEqual(fake_client.models.last_call["contents"], "hello prompt")
+        self.assertEqual(fake_client.models.last_call["model"], common.QA_MODEL_NAME)
+
+
 if __name__ == "__main__":
     unittest.main()

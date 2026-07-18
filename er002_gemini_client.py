@@ -64,7 +64,7 @@ def make_tts_call_fn(voice_name: str, client: genai.Client = None):
 
 
 def make_qa_call_fn(client: genai.Client = None):
-    """qa_call_fn(prompt, wav_bytes)->strを返す(embedded/grounded共通)。"""
+    """qa_call_fn(prompt, wav_bytes)->strを返す(embedded/grounded共通、音声を伴う技術検品用)。"""
     client = client or make_client()
 
     def qa_call_fn(prompt: str, wav_bytes: bytes) -> str:
@@ -76,3 +76,22 @@ def make_qa_call_fn(client: genai.Client = None):
         return resp.text
 
     return qa_call_fn
+
+
+def make_qa_text_call_fn(client: genai.Client = None):
+    """qa_call_fn(prompt)->strを返す(音声を伴わないテキストのみのQA呼び出し用。
+    ER-002-v1.1Aのアングル評価・Editorial Brief検品・編集品質検品はいずれも
+    台本テキスト/構造化データを評価するだけで音声を扱わないため、
+    make_qa_call_fn(音声付き)とは別に用意する)。同一のQAモデル
+    (er002_common.QA_MODEL_NAME)・同一のJSON応答形式を使う。"""
+    client = client or make_client()
+
+    def qa_text_call_fn(prompt: str) -> str:
+        resp = client.models.generate_content(
+            model=common.QA_MODEL_NAME,
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json"),
+        )
+        return resp.text
+
+    return qa_text_call_fn
