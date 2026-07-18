@@ -406,6 +406,222 @@ class FactCheckerIndependenceTests(unittest.TestCase):
         self.assertNotIn("if verdict", src.lower())
 
 
+def make_valid_fact_check_json(verdict="PASS"):
+    return json.dumps({
+        "verdict": verdict,
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": ["テスト検証済み事項"],
+        "sources": ["https://example.com/source"],
+        "notes": "テスト用の注記",
+    })
+
+
+class FactCheckerWebSearchRequiredGateTests(unittest.TestCase):
+    """補完1: fact checkerでもWeb検索の実使用を必須とする。"""
+
+    def test_zero_search_calls_marks_fact_check_web_search_not_used(self):
+        def make_checker_fn():
+            def checker_fn():
+                resp = make_fake_response(make_valid_fact_check_json(), search_call_count=0)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        parsed, status, attempts, model_id, response_id, search_usage, sources = r3.run_fact_checker_with_gates(
+            make_checker_fn)
+        self.assertEqual(status, "FACT_CHECK_WEB_SEARCH_NOT_USED")
+        self.assertIsNone(parsed)
+
+    def test_fact_check_web_search_not_used_retry_max_one(self):
+        call_count = {"n": 0}
+
+        def make_checker_fn():
+            call_count["n"] += 1
+            attempt = call_count["n"]
+
+            def checker_fn():
+                search_count = 0 if attempt == 1 else 1
+                resp = make_fake_response(make_valid_fact_check_json(), search_call_count=search_count)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        parsed, status, attempts, model_id, response_id, search_usage, sources = r3.run_fact_checker_with_gates(
+            make_checker_fn)
+        self.assertEqual(status, "FACT_CHECK_COMPLETED")
+        self.assertEqual(call_count["n"], 2)
+
+    def test_fact_check_never_exceeds_max_attempts_on_zero_search(self):
+        call_count = {"n": 0}
+
+        def make_checker_fn():
+            call_count["n"] += 1
+
+            def checker_fn():
+                resp = make_fake_response(make_valid_fact_check_json(), search_call_count=0)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        r3.run_fact_checker_with_gates(make_checker_fn)
+        self.assertLessEqual(call_count["n"], r3.MAX_FACT_CHECK_ATTEMPTS)
+
+    def test_writer_body_not_touched_by_fact_check_gate(self):
+        # run_fact_checker_with_gatesはwriter記事本文を引数に取らない・
+        # 参照しない(再生成しないことの構造的な裏付け)。
+        params = list(inspect.signature(r3.run_fact_checker_with_gates).parameters)
+        self.assertNotIn("raw_text", params)
+        self.assertNotIn("article_text", params)
+
+
+class FactCheckerSchemaValidationTests(unittest.TestCase):
+    """補完2: fact checkerのStructured OutputをJSON解析・スキーマ検証する。"""
+
+    def test_valid_json_parses_and_validates(self):
+        parsed = r3.parse_and_validate_fact_check_output(make_valid_fact_check_json("REVIEW_REQUIRED"))
+        self.assertEqual(parsed["verdict"], "REVIEW_REQUIRED")
+        self.assertEqual(
+            set(parsed.keys()),
+            {"verdict", "contradictions", "unsupported_specific_claims",
+             "verified_claims_summary", "sources", "notes"},
+        )
+
+    def test_broken_json_raises_schema_error(self):
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output("これはJSONではありません{")
+
+    def test_missing_required_field_raises_schema_error(self):
+        payload = json.loads(make_valid_fact_check_json())
+        del payload["notes"]
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output(json.dumps(payload))
+
+    def test_wrong_type_field_raises_schema_error(self):
+        payload = json.loads(make_valid_fact_check_json())
+        payload["sources"] = "not a list"
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output(json.dumps(payload))
+
+    def test_non_string_list_item_raises_schema_error(self):
+        payload = json.loads(make_valid_fact_check_json())
+        payload["contradictions"] = [123]
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output(json.dumps(payload))
+
+    def test_invalid_verdict_value_raises_schema_error(self):
+        payload = json.loads(make_valid_fact_check_json())
+        payload["verdict"] = "MAYBE"
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output(json.dumps(payload))
+
+    def test_verdict_enum_matches_schema_definition(self):
+        enum_values = set(r3.FACT_CHECK_JSON_SCHEMA["schema"]["properties"]["verdict"]["enum"])
+        self.assertEqual(enum_values, set(r3.FACT_CHECK_VERDICTS))
+        self.assertEqual(enum_values, {"PASS", "REVIEW_REQUIRED", "FAIL"})
+
+    def test_top_level_non_object_raises_schema_error(self):
+        with self.assertRaises(r3.FactCheckSchemaError):
+            r3.parse_and_validate_fact_check_output(json.dumps(["not", "an", "object"]))
+
+    def test_parse_failure_retries_once_then_succeeds(self):
+        call_count = {"n": 0}
+
+        def make_checker_fn():
+            call_count["n"] += 1
+            attempt = call_count["n"]
+
+            def checker_fn():
+                text = "壊れたJSON{" if attempt == 1 else make_valid_fact_check_json()
+                resp = make_fake_response(text, search_call_count=1)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        parsed, status, attempts, model_id, response_id, search_usage, sources = r3.run_fact_checker_with_gates(
+            make_checker_fn)
+        self.assertEqual(status, "FACT_CHECK_COMPLETED")
+        self.assertEqual(call_count["n"], 2)
+        self.assertEqual(parsed["verdict"], "PASS")
+
+    def test_parse_failure_twice_yields_fact_check_technical_failed(self):
+        def make_checker_fn():
+            def checker_fn():
+                resp = make_fake_response("壊れたJSON{", search_call_count=1)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        parsed, status, attempts, model_id, response_id, search_usage, sources = r3.run_fact_checker_with_gates(
+            make_checker_fn)
+        self.assertEqual(status, "FACT_CHECK_TECHNICAL_FAILED")
+        self.assertIsNone(parsed)
+
+    def test_unparseable_output_never_treated_as_pass(self):
+        def make_checker_fn():
+            def checker_fn():
+                resp = make_fake_response("壊れたJSON{", search_call_count=1)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        parsed, status, attempts, model_id, response_id, search_usage, sources = r3.run_fact_checker_with_gates(
+            make_checker_fn)
+        self.assertNotEqual(status, "FACT_CHECK_COMPLETED")
+        self.assertIsNone(parsed)
+        for detail in attempts:
+            self.assertNotEqual(detail.get("verdict"), "PASS")
+
+    def test_never_exceeds_max_attempts_on_parse_failure(self):
+        call_count = {"n": 0}
+
+        def make_checker_fn():
+            call_count["n"] += 1
+
+            def checker_fn():
+                resp = make_fake_response("壊れたJSON{", search_call_count=1)
+                usage = r3.extract_web_search_usage(resp)
+                sources = r3.extract_sources(resp)
+                return resp.output_text, resp.model, resp.id, usage, sources
+            return checker_fn
+
+        r3.run_fact_checker_with_gates(make_checker_fn)
+        self.assertLessEqual(call_count["n"], r3.MAX_FACT_CHECK_ATTEMPTS)
+
+
+class FactCheckGateDoesNotAffectWriterSideTests(unittest.TestCase):
+    """補完の適用範囲確認: writerプロンプト・モデル・Web検索設定・テーマ・
+    2 Points構造ゲートを変更していないことを確認する。"""
+
+    def test_writer_model_and_reasoning_effort_unchanged(self):
+        self.assertEqual(r3.WRITER_MODEL, "gpt-5.6-sol")
+        self.assertEqual(r3.WRITER_REASONING_EFFORT, "high")
+
+    def test_writer_prompt_path_unchanged(self):
+        self.assertEqual(
+            r3.R3_WRITER_PROMPT_PATH,
+            "er002_v1_2m_restore_briefs/writer_prompt_template_r3.txt",
+        )
+
+    def test_writer_content_attempt_budget_unchanged(self):
+        self.assertEqual(r3.MAX_CONTENT_ATTEMPTS, 2)
+
+    def test_structure_gate_still_uses_r2_validator(self):
+        gate_source = inspect.getsource(r3.run_writer_with_gates)
+        self.assertIn("restore_r2.validate_point_structure", gate_source)
+
+    def test_fact_check_gate_is_separate_function_from_writer_gate(self):
+        self.assertIsNot(r3.run_fact_checker_with_gates, r3.run_writer_with_gates)
+        writer_source = inspect.getsource(r3.run_writer_with_gates)
+        self.assertNotIn("FACT_CHECK", writer_source)
+
+
 class R2ArtifactsUnchangedTests(unittest.TestCase):
     """要求26: R2成果物が変更されない。"""
 

@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 
@@ -276,3 +277,136 @@ def make_fact_checker_fn(
     fact_checker_fn.uses_web_search_tool = True
     fact_checker_fn.uses_structured_output = True
     return fact_checker_fn
+
+
+# ============================================================
+# ブロック4: fact checker出力のスキーマ検証 + Web検索必須ゲート
+# ============================================================
+# writerの本文(記事)は、fact checkerがどのような結果であっても一切
+# 再生成しない。ここで行う再試行は、fact checker自身の技術的な失敗
+# (検索未使用・JSON解析/スキーマ不適合)に対する再試行であり、記事の
+# 内容不満による再生成ではない。
+
+class FactCheckSchemaError(ValueError):
+    """fact checkerの出力がJSONとして解析できない、またはスキーマ要件
+    (必須フィールド・型・verdictの3値制約)を満たさない場合。"""
+
+
+FACT_CHECK_VERDICTS = ("PASS", "REVIEW_REQUIRED", "FAIL")
+
+_FACT_CHECK_REQUIRED_FIELD_TYPES = {
+    "verdict": str,
+    "contradictions": list,
+    "unsupported_specific_claims": list,
+    "verified_claims_summary": list,
+    "sources": list,
+    "notes": str,
+}
+_FACT_CHECK_STRING_LIST_FIELDS = (
+    "contradictions", "unsupported_specific_claims", "verified_claims_summary", "sources",
+)
+
+
+def parse_and_validate_fact_check_output(raw_text: str) -> dict:
+    """fact checkerの出力テキストをJSONとして解析し、必須フィールド・型・
+    verdictの3値制約を検証する。解析不能・スキーマ不適合の場合は例外を
+    送出するのみで、PASS等の結果として扱うことは一切ない。"""
+    try:
+        parsed = json.loads(raw_text)
+    except (json.JSONDecodeError, TypeError) as e:
+        raise FactCheckSchemaError(f"JSON解析に失敗しました: {e}") from e
+
+    if not isinstance(parsed, dict):
+        raise FactCheckSchemaError("トップレベルがJSONオブジェクトではありません")
+
+    for field_name, expected_type in _FACT_CHECK_REQUIRED_FIELD_TYPES.items():
+        if field_name not in parsed:
+            raise FactCheckSchemaError(f"必須フィールド'{field_name}'がありません")
+        if not isinstance(parsed[field_name], expected_type):
+            raise FactCheckSchemaError(
+                f"'{field_name}'の型が不正です(期待: {expected_type.__name__})")
+
+    for list_field in _FACT_CHECK_STRING_LIST_FIELDS:
+        if not all(isinstance(item, str) for item in parsed[list_field]):
+            raise FactCheckSchemaError(f"'{list_field}'の要素は全て文字列である必要があります")
+
+    if parsed["verdict"] not in FACT_CHECK_VERDICTS:
+        raise FactCheckSchemaError(
+            f"verdictは{FACT_CHECK_VERDICTS}のいずれかである必要があります(実際: {parsed['verdict']!r})")
+
+    return parsed
+
+
+MAX_FACT_CHECK_ATTEMPTS = 2  # 初回 + (Web検索未使用 または JSON解析/スキーマ不適合)時の技術再試行1回のみ
+
+
+def run_fact_checker_with_gates(
+    make_fact_checker_fn: Callable[[], Callable],
+    max_attempts: int = MAX_FACT_CHECK_ATTEMPTS,
+    sleep_fn: Optional[Callable[[float], None]] = None,
+):
+    """writer本文の再生成には一切関与しない。(1) fact checker自身がWeb検索
+    ツールを1回も呼ばなかった場合、(2) fact checkerの出力がJSONとして解析
+    できない、またはスキーマ要件を満たさない場合、のいずれかであれば、
+    同一条件で最大1回だけ技術再試行する。2回目も失敗すれば、それ以上は
+    再試行しない。
+
+    戻り値: (parsed_result, final_status, attempts_detail, model_id,
+             response_id, search_usage, sources)
+    final_status: "FACT_CHECK_COMPLETED" / "FACT_CHECK_WEB_SEARCH_NOT_USED" /
+                  "FACT_CHECK_TECHNICAL_FAILED"
+    parsed_resultはFACT_CHECK_COMPLETED時のみ辞書(verdict/contradictions/
+    unsupported_specific_claims/verified_claims_summary/sources/notesを
+    含む)、それ以外は必ずNone。
+
+    FACT_CHECK_WEB_SEARCH_NOT_USEDおよびFACT_CHECK_TECHNICAL_FAILEDと
+    なった記事は、STRUCTURE_INVALID等と同様にユーザー品質評価から除外
+    する(呼び出し側のレビュー生成処理が担う)。
+    """
+    attempts_detail = []
+
+    for attempt in range(1, max_attempts + 1):
+        fact_checker_fn = make_fact_checker_fn()
+        try:
+            raw_text, model_id, response_id, search_usage, sources = fact_checker_fn()
+        except Exception as e:
+            attempts_detail.append({
+                "fact_check_attempt": attempt, "status": "FACT_CHECK_TECHNICAL_FAILED",
+                "error": f"{type(e).__name__}: {e}", "raw_text": None,
+            })
+            if attempt < max_attempts:
+                if sleep_fn:
+                    sleep_fn(2)
+                continue
+            return None, "FACT_CHECK_TECHNICAL_FAILED", attempts_detail, None, None, None, None
+
+        if search_usage["web_search_call_count"] == 0:
+            attempts_detail.append({
+                "fact_check_attempt": attempt, "status": "FACT_CHECK_WEB_SEARCH_NOT_USED",
+                "search_usage": search_usage, "sources": sources,
+                "raw_text": raw_text, "model": model_id, "response_id": response_id,
+            })
+            if attempt < max_attempts:
+                continue
+            return None, "FACT_CHECK_WEB_SEARCH_NOT_USED", attempts_detail, model_id, response_id, search_usage, sources
+
+        try:
+            parsed_result = parse_and_validate_fact_check_output(raw_text)
+        except FactCheckSchemaError as e:
+            attempts_detail.append({
+                "fact_check_attempt": attempt, "status": "FACT_CHECK_TECHNICAL_FAILED",
+                "error": str(e), "search_usage": search_usage, "sources": sources,
+                "raw_text": raw_text, "model": model_id, "response_id": response_id,
+            })
+            if attempt < max_attempts:
+                continue
+            return None, "FACT_CHECK_TECHNICAL_FAILED", attempts_detail, model_id, response_id, search_usage, sources
+
+        attempts_detail.append({
+            "fact_check_attempt": attempt, "status": "FACT_CHECK_COMPLETED",
+            "verdict": parsed_result["verdict"], "search_usage": search_usage, "sources": sources,
+            "raw_text": raw_text, "model": model_id, "response_id": response_id,
+        })
+        return parsed_result, "FACT_CHECK_COMPLETED", attempts_detail, model_id, response_id, search_usage, sources
+
+    return None, "FACT_CHECK_TECHNICAL_FAILED", attempts_detail, None, None, None, None
