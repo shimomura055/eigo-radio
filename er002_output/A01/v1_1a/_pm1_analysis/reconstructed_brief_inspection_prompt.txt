@@ -1,0 +1,54 @@
+You are inspecting an EDITORIAL BRIEF that was already selected by a separate scoring process. You did NOT select it - your job is only to independently re-verify it before it is frozen and passed to script generation.
+
+EDITORIAL BRIEF:
+{
+  "central_tension_or_question": "Who should be highlighted in the comeback story: the players who scored or the player who created the chances?",
+  "opening_mode": "direct_question",
+  "concrete_opening": "What did Reuters say Lionel Messi did in Argentina's two key attacking moments?",
+  "opening_fact_ids": [
+    "F05"
+  ],
+  "hypothetical_disclosure_required": false,
+  "point_one_editorial_role": "human_or_concrete_detail",
+  "point_one_core_claim": "According to Reuters, Messi assisted Enzo Fernandez's equalizer and supplied the cross leading to the winning goal.",
+  "point_one_fact_ids": [
+    "F05"
+  ],
+  "point_two_editorial_role": "counterpoint_or_tension",
+  "point_two_core_claim": "Fernandez and Martinez were the players who scored Argentina's two goals, even as Reuters credited Messi with creating the two key actions.",
+  "point_two_fact_ids": [
+    "F03",
+    "F05"
+  ],
+  "non_obvious_takeaway": "The reported account separates the goal scorers from Messi's role in creating both decisive attacking actions.",
+  "listener_payoff": "Listeners learn that a match report can tell different parts of the same play: who created an opportunity and who finished it.",
+  "in_one_line_target": "Reuters credited Messi with creating the equalizer and the winning move, while Fernandez and Martinez scored the goals.",
+  "fact_support_map": [
+    {
+      "fact_id": "F03",
+      "used_for": "The identities of Argentina's two goal scorers."
+    },
+    {
+      "fact_id": "F05",
+      "used_for": "Reuters' description of Messi's assist and cross."
+    }
+  ]
+}
+
+VALID FACT IDS: ['F01', 'F02', 'F03', 'F04', 'F05']
+
+Check independently:
+1. schema_valid: does the brief contain all required fields with plausible, non-empty values?
+2. fact_ids_valid: does every fact ID referenced anywhere in the brief (opening_fact_ids, point_one_fact_ids, point_two_fact_ids, fact_support_map) appear in VALID FACT IDS, with none empty where a concrete claim is being made?
+3. roles_distinct: are point_one_editorial_role and point_two_editorial_role different values?
+4. claims_distinct: are point_one_core_claim and point_two_core_claim substantively different claims (not the same idea reworded)?
+
+Return ONLY valid JSON, no other text, in exactly this shape:
+{
+  "schema_valid": true,
+  "fact_ids_valid": true,
+  "roles_distinct": true,
+  "claims_distinct": true,
+  "overall_status": "pass",
+  "evidence": "brief explanation of your checks"
+}

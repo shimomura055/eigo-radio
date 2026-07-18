@@ -1,0 +1,114 @@
+You are checking a finished script against the EDITORIAL BRIEF it was supposed to follow, and against the CLAIM STRENGTH ESCALATION categories below. You did not write the script or the brief.
+
+EDITORIAL BRIEF:
+{
+  "central_tension_or_question": "Who should be highlighted in the comeback story: the players who scored or the player who created the chances?",
+  "opening_mode": "direct_question",
+  "concrete_opening": "What did Reuters say Lionel Messi did in Argentina's two key attacking moments?",
+  "opening_fact_ids": [
+    "F05"
+  ],
+  "hypothetical_disclosure_required": false,
+  "point_one_editorial_role": "human_or_concrete_detail",
+  "point_one_core_claim": "According to Reuters, Messi assisted Enzo Fernandez's equalizer and supplied the cross leading to the winning goal.",
+  "point_one_fact_ids": [
+    "F05"
+  ],
+  "point_two_editorial_role": "counterpoint_or_tension",
+  "point_two_core_claim": "Fernandez and Martinez were the players who scored Argentina's two goals, even as Reuters credited Messi with creating the two key actions.",
+  "point_two_fact_ids": [
+    "F03",
+    "F05"
+  ],
+  "non_obvious_takeaway": "The reported account separates the goal scorers from Messi's role in creating both decisive attacking actions.",
+  "listener_payoff": "Listeners learn that a match report can tell different parts of the same play: who created an opportunity and who finished it.",
+  "in_one_line_target": "Reuters credited Messi with creating the equalizer and the winning move, while Fernandez and Martinez scored the goals.",
+  "fact_support_map": [
+    {
+      "fact_id": "F03",
+      "used_for": "The identities of Argentina's two goal scorers."
+    },
+    {
+      "fact_id": "F05",
+      "used_for": "Reuters' description of Messi's assist and cross."
+    }
+  ]
+}
+
+SCRIPT TEXT:
+The Creators and Finishers
+
+What did Reuters say Lionel Messi did in Argentina's two key attacking moments?
+
+Reuters said Messi provided the assist for Enzo Fernandez's equalizer. It also said he supplied the cross leading to Lautaro Martinez's winning goal.
+
+An assist names the player who sets up a goal. A cross leading to a goal points to an earlier action in the same attack. Neither description changes the names of the players who finished.
+
+This is why the report offers more than a score. It asks listeners to separate the final touch from the actions that made that touch possible. In this story, the question is not who mattered more. It is what each player did.
+
+Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026. The result advanced Argentina to the final against Spain.
+
+Today's Comeback Story Points
+
+Point One
+
+Messi's Creating Role
+
+According to Reuters, Messi was involved in both of Argentina's key attacking moments. He provided the assist when Enzo Fernandez equalized. He then supplied the cross leading to Lautaro Martinez's winning goal.
+
+Reuters therefore gives Messi a clear creating role. The report does not say that he scored either goal. Instead, it connects him to the pass for the equalizer and to the cross before the winner. That wording helps listeners hear the path of each attack, not only its final result.
+
+For a comeback story, that is an important detail. The player who starts or shapes a move can be central even when another player completes it.
+
+Point Two
+
+The Finishing Names
+
+Fernandez and Martinez were the players who scored Argentina's two goals. Fernandez equalized, and Martinez scored the winning goal in the 92nd minute.
+
+Their names answer a different question: who finished the attacks? In a match report, goal scorers and chance creators may be different players. Here, Reuters connected Messi to two earlier actions while identifying Fernandez and Martinez as the scorers.
+
+That separation keeps a listener from treating every part of a scoring move as the same role. The equalizer and the winner each have a creator-side description and a scorer-side description.
+
+In One Line
+
+Reuters credited Messi with creating the equalizer and the winning move, while Fernandez and Martinez scored the goals.
+
+The report is not only about a 2-1 win. It is also about how language divides an attacking move into creation and finishing.
+
+Listen for both parts: the player who makes the chance and the player who completes it.
+
+CLAIM STRENGTH ESCALATION CATEGORIES (flag any place the script states something MORE strongly than the brief/facts support, in any of these directions): ['proposed_or_planned -> decided_or_finalized', 'default_or_optional -> mandatory', 'partial_or_limited -> total', 'may_or_could -> will', 'some -> all', 'concern_or_correlation -> proven_causation']
+
+Check all of the following and answer each with true/false (or, for hypothetical_is_disclosed, null if the brief's opening_mode was not "hypothetical"):
+- brief_alignment: does the script follow the brief's central_tension_or_question, opening, and both point roles/claims?
+- opening_is_specific: is the opening a concrete moment/question, not a generic topic summary?
+- opening_is_grounded: is the opening's factual content consistent with the brief's opening_fact_ids (or, if hypothetical, clearly marked as such)?
+- hypothetical_is_disclosed: if opening_mode is "hypothetical", does the script clearly signal this to the listener? (null if not applicable)
+- central_tension_present: does the script maintain the central tension/question as a throughline?
+- point_one_role_fulfilled / point_two_role_fulfilled: does each point actually do its assigned editorial job?
+- point_claims_are_distinct: are the two points' core claims substantively different (not overlapping/redundant)?
+- point_redundancy_detected: true if Point One and Point Two restate the same idea
+- narrative_coherence_present: does the script build a throughline/cause-effect narrative rather than a flat list of facts?
+- fact_enumeration_dominates: true if the script reads mainly as a sequence of disconnected facts
+- non_obvious_takeaway_landed: does the ending deliver the brief's non_obvious_takeaway?
+- listener_payoff_present: does the listener clearly get something (insight/reframing) by the end?
+- ungrounded_claims: list any claim, number, quote, psychological state, or scene NOT supported by the brief's cited facts (empty list if none)
+- claim_strength_changed: list any escalation matching the categories above, each as {"category": "...", "original": "...", "escalated_to": "..."} (empty list if none)
+- overstatement_or_dramatization: true if the script uses emotionally exaggerated language not warranted by the facts
+
+overall_status: "pass" only if brief_alignment is true, no redundancy/enumeration/overstatement/ungrounded-claims/escalation issues were found, and both points fulfill their roles. Otherwise "fail".
+
+evidence is MANDATORY: give a short justification (a dict or string) referencing the specific parts of the script that led to your judgments. Do not return this field empty.
+
+Return ONLY valid JSON, no other text, in exactly this shape:
+{
+  "brief_alignment": true, "opening_is_specific": true, "opening_is_grounded": true,
+  "hypothetical_is_disclosed": null, "central_tension_present": true,
+  "point_one_role_fulfilled": true, "point_two_role_fulfilled": true,
+  "point_claims_are_distinct": true, "point_redundancy_detected": false,
+  "narrative_coherence_present": true, "fact_enumeration_dominates": false,
+  "non_obvious_takeaway_landed": true, "listener_payoff_present": true,
+  "ungrounded_claims": [], "claim_strength_changed": [], "overstatement_or_dramatization": false,
+  "overall_status": "pass", "evidence": "brief explanation"
+}

@@ -613,6 +613,8 @@ class EditorialQualityOutcome:
     reasons: list
     attempts: list  # list[EditorialQualityAttemptRecord]
     total_api_retry_count: int = 0
+    fact_registry_sha256: Optional[str] = None  # v1.1B: 実際に渡したfact registryのハッシュ
+    failure_classification: Optional[str] = None  # v1.1B: BRIEF_ALIGNMENT_FAILURE / UNGROUNDED_CLAIMS_FAILURE / OTHER_EDITORIAL_QUALITY_FAILURE
 
 
 def evaluate_editorial_quality(
@@ -674,6 +676,354 @@ def evaluate_editorial_quality(
     return EditorialQualityOutcome(
         final_outcome="inconclusive", reasons=["editorial_quality_inconclusive_after_max_attempts"],
         attempts=attempts, total_api_retry_count=total_api_retry,
+    )
+
+
+# ============================================================
+# ブロック6b: 編集品質検品 v1.1B(ER-002-v1.1B-I1)
+# ============================================================
+# v1.1AのPM1事後分析(ER-002-v1.1A-PM1)で判明した不具合を修正する:
+# v1.1Aのbuild_editorial_quality_promptは検証済み事実(verified facts)の
+# 本文を一度もQAへ渡しておらず、Editorial Briefのfact_id欄(セクション単位の
+# 「支持事実」指定に過ぎない)があたかも台本全体の許可リストであるかの
+# ように扱われていた。その結果、真実で検証済みの主張までもが
+# "ungrounded_claims_present"として誤って不合格にされていた
+# (F01/F02/F04はBriefに一度も引用されておらず、F03は引用されていたが
+# その原文が一度もQAに渡っていなかった)。
+#
+# v1.1Aの関数・定数(build_editorial_quality_prompt/validate_editorial_
+# quality_fields/classify_editorial_quality/evaluate_editorial_quality等)は
+# 一切変更しない。ここでは新しい"_v1_1b"版を追加するだけであり、アングル
+# 生成・アングル評価・Editorial Briefスキーマ・Brief検品・台本生成・
+# モデル・再試行上限は変更しない。
+
+EDITORIAL_QUALITY_REQUIRED_FIELDS_V1_1B = EDITORIAL_QUALITY_REQUIRED_FIELDS + [
+    "factual_grounding_status", "brief_alignment_status",
+    "claim_grounding_results", "brief_alignment_issues",
+]
+
+CLAIM_GROUNDING_VERDICTS = ("grounded", "ungrounded", "ambiguous")
+GROUNDING_STATUS_VALUES = ("pass", "fail", "inconclusive")
+
+EDITORIAL_QUALITY_PROMPT_TEMPLATE_V1_1B = """You are checking a finished script against the EDITORIAL BRIEF it was supposed to follow, against the VERIFIED FACT REGISTRY it may draw on, and against the CLAIM STRENGTH ESCALATION categories below. You did not write the script or the brief.
+
+VERIFIED FACT REGISTRY (fact_id -> fact_text). This is the authoritative grounding source for every factual claim in the script:
+{fact_registry_block}
+
+EDITORIAL BRIEF:
+{brief_block}
+
+SCRIPT TEXT:
+{script_text}
+
+FACTUAL GROUNDING vs BRIEF ALIGNMENT CONTRACT (read carefully - this governs how you must judge the script):
+- The VERIFIED FACT REGISTRY above, not the brief's fact ID fields, is the authoritative grounding source for all factual claims in the script.
+- The brief's opening_fact_ids / point_one_fact_ids / point_two_fact_ids / fact_support_map describe which facts the brief's author INTENDED to use for those specific sections. They are NOT the complete list of facts the script is allowed to use anywhere in its text.
+- A claim must NOT be marked ungrounded merely because its supporting fact ID is absent from the brief's fact ID fields. Check it against the VERIFIED FACT REGISTRY instead.
+- Factual grounding (is this claim true according to the registry?) and Editorial Brief alignment (does the script follow the brief's assigned structure/roles/claims?) are two SEPARATE judgments. Do not let one influence the other.
+- A claim can be factually supported by the registry but still be misaligned with the brief (e.g. it belongs in a different point, or dilutes the brief's intended focus). That is a brief_alignment issue, not an ungrounded claim - never report it as ungrounded.
+
+CLAIM STRENGTH ESCALATION CATEGORIES (flag any place the script states something MORE strongly than the facts support, in any of these directions): {escalation_categories}
+
+Check all of the following and answer each with true/false (or, for hypothetical_is_disclosed, null if the brief's opening_mode was not "hypothetical"):
+- brief_alignment: does the script follow the brief's central_tension_or_question, opening, and both point roles/claims?
+- opening_is_specific: is the opening a concrete moment/question, not a generic topic summary?
+- opening_is_grounded: is the opening's factual content consistent with the VERIFIED FACT REGISTRY (or, if hypothetical, clearly marked as such)?
+- hypothetical_is_disclosed: if opening_mode is "hypothetical", does the script clearly signal this to the listener? (null if not applicable)
+- central_tension_present: does the script maintain the central tension/question as a throughline?
+- point_one_role_fulfilled / point_two_role_fulfilled: does each point actually do its assigned editorial job?
+- point_claims_are_distinct: are the two points' core claims substantively different (not overlapping/redundant)?
+- point_redundancy_detected: true if Point One and Point Two restate the same idea
+- narrative_coherence_present: does the script build a throughline/cause-effect narrative rather than a flat list of facts?
+- fact_enumeration_dominates: true if the script reads mainly as a sequence of disconnected facts
+- non_obvious_takeaway_landed: does the ending deliver the brief's non_obvious_takeaway?
+- listener_payoff_present: does the listener clearly get something (insight/reframing) by the end?
+- claim_strength_changed: list any escalation matching the categories above, each as {{"category": "...", "original": "...", "escalated_to": "..."}} (empty list if none)
+- overstatement_or_dramatization: true if the script uses emotionally exaggerated language not warranted by the facts
+
+FACTUAL GROUNDING (judge against the VERIFIED FACT REGISTRY only, never against the brief's fact ID fields):
+- claim_grounding_results: for EVERY discrete factual claim, number, quote, or scene in the script (not just ones you suspect are wrong), list an entry {{"claim_text": "...", "claim_location": "...", "verdict": "grounded" | "ungrounded" | "ambiguous", "supporting_fact_ids": ["F0x", ...], "rationale": "..."}}. verdict="grounded" requires at least one supporting_fact_id from the registry whose fact_text actually supports the claim. verdict="ambiguous" is for claims that are plausible but you cannot confirm or deny against the registry. rationale is mandatory for every entry.
+- ungrounded_claims: the claim_text of every entry above with verdict="ungrounded" (empty list if none). This must exactly match claim_grounding_results - kept only for backward compatibility with older readers.
+- factual_grounding_status: "pass" only if every claim_grounding_results entry has verdict="grounded". "fail" if at least one entry is "ungrounded" or "ambiguous". Never base this on the brief's fact ID fields.
+
+BRIEF ALIGNMENT (judge against the EDITORIAL BRIEF only; never treat a factually-grounded claim as a brief_alignment problem unless it actually conflicts with the brief's structure/roles/claims):
+- brief_alignment_issues: list any claim or passage that is factually fine but misaligned with the brief (wrong point, off the central tension, dilutes the assigned role, etc.), each as {{"claim_or_passage": "...", "issue": "...", "rationale": "..."}} (empty list if none).
+- brief_alignment_status: "pass" only if brief_alignment is true and brief_alignment_issues is empty. "fail" if brief_alignment is false or brief_alignment_issues is non-empty.
+
+overall_status: "pass" only if factual_grounding_status is "pass" AND brief_alignment_status is "pass" AND no redundancy/enumeration/overstatement/escalation issues were found AND both points fulfill their roles. Otherwise "fail".
+
+evidence is MANDATORY: give a short justification (a dict or string) referencing the specific parts of the script that led to your overall judgment. Do not return this field empty.
+
+Return ONLY valid JSON, no other text, in exactly this shape:
+{{
+  "brief_alignment": true, "opening_is_specific": true, "opening_is_grounded": true,
+  "hypothetical_is_disclosed": null, "central_tension_present": true,
+  "point_one_role_fulfilled": true, "point_two_role_fulfilled": true,
+  "point_claims_are_distinct": true, "point_redundancy_detected": false,
+  "narrative_coherence_present": true, "fact_enumeration_dominates": false,
+  "non_obvious_takeaway_landed": true, "listener_payoff_present": true,
+  "claim_strength_changed": [], "overstatement_or_dramatization": false,
+  "claim_grounding_results": [
+    {{"claim_text": "...", "claim_location": "...", "verdict": "grounded", "supporting_fact_ids": ["F01"], "rationale": "..."}}
+  ],
+  "ungrounded_claims": [],
+  "factual_grounding_status": "pass",
+  "brief_alignment_issues": [],
+  "brief_alignment_status": "pass",
+  "overall_status": "pass", "evidence": "brief explanation"
+}}"""
+
+
+def build_fact_registry_block(fact_registry: dict) -> str:
+    return json.dumps(
+        [{"fact_id": fid, "fact_text": fact_registry[fid]} for fid in sorted(fact_registry.keys())],
+        ensure_ascii=False, indent=2,
+    )
+
+
+def fact_registry_fully_present_in_prompt(prompt: str, fact_registry: dict) -> bool:
+    """回帰防止用ユーティリティ: 渡されたfact_registryの全fact_textが実際に
+    プロンプト文字列内へ(部分一致で)含まれているかを検証する。
+    ER-002-v1.1A-PM1で発見された『検証済み事実の本文が一度もQAプロンプトへ
+    渡っていない』不具合の再発を防ぐためのガードとして、テストから使う。"""
+    return all(fact_text in prompt for fact_text in fact_registry.values())
+
+
+def build_editorial_quality_prompt_v1_1b(script: dict, brief: dict, fact_registry: dict) -> str:
+    plan = common.build_narration_plan(script)
+    escalation_categories = [
+        f"{e['from_label']} -> {e['to_label']}" for e in CLAIM_STRENGTH_ESCALATION_TAXONOMY
+    ]
+    return EDITORIAL_QUALITY_PROMPT_TEMPLATE_V1_1B.format(
+        fact_registry_block=build_fact_registry_block(fact_registry),
+        brief_block=json.dumps(brief, ensure_ascii=False, indent=2),
+        script_text=plan.full_text,
+        escalation_categories=escalation_categories,
+    )
+
+
+def validate_editorial_quality_fields_v1_1b(parsed: dict, valid_fact_ids: set) -> dict:
+    """v1.1Aの必須フィールド検査に加え、factual_grounding_status/
+    brief_alignment_status/claim_grounding_results/brief_alignment_issues の
+    内部整合性を検査する(ER-002-v1.1B-I1のセクション4)。矛盾を検出したら
+    EditorialQualityParseErrorを送出し、呼び出し側でinconclusive(同一台本を
+    1回だけ再評価)として扱う。v1.1Aのvalidate_editorial_quality_fieldsは
+    変更しない別関数。"""
+    missing = [f for f in EDITORIAL_QUALITY_REQUIRED_FIELDS_V1_1B if f not in parsed]
+    if missing:
+        raise EditorialQualityParseError(f"編集品質検品応答(v1.1B)に必須フィールドが欠落: {missing}")
+    if not parsed.get("evidence"):
+        raise EditorialQualityParseError("編集品質検品応答にevidenceがありません")
+
+    factual_status = parsed.get("factual_grounding_status")
+    brief_status = parsed.get("brief_alignment_status")
+    if factual_status not in GROUNDING_STATUS_VALUES:
+        raise EditorialQualityParseError(f"不正なfactual_grounding_status: {factual_status!r}")
+    if brief_status not in GROUNDING_STATUS_VALUES:
+        raise EditorialQualityParseError(f"不正なbrief_alignment_status: {brief_status!r}")
+
+    claim_results = parsed.get("claim_grounding_results")
+    if not isinstance(claim_results, list):
+        raise EditorialQualityParseError("claim_grounding_resultsがリストではありません")
+
+    ungrounded_from_claims = []
+    for entry in claim_results:
+        if not isinstance(entry, dict):
+            raise EditorialQualityParseError("claim_grounding_resultsの要素がオブジェクトではありません")
+        required_claim_fields = ["claim_text", "claim_location", "verdict", "supporting_fact_ids", "rationale"]
+        missing_claim_fields = [f for f in required_claim_fields if f not in entry]
+        if missing_claim_fields:
+            raise EditorialQualityParseError(f"claim_grounding_results要素にフィールド欠落: {missing_claim_fields}")
+        if not entry.get("rationale"):
+            raise EditorialQualityParseError("claim_grounding_results要素にrationaleがありません")
+
+        verdict = entry.get("verdict")
+        if verdict not in CLAIM_GROUNDING_VERDICTS:
+            raise EditorialQualityParseError(f"不正なverdict: {verdict!r}")
+
+        supporting_ids = entry.get("supporting_fact_ids", [])
+        if not isinstance(supporting_ids, list):
+            raise EditorialQualityParseError("supporting_fact_idsがリストではありません")
+        unknown_ids = [fid for fid in supporting_ids if fid not in valid_fact_ids]
+        if unknown_ids:
+            raise EditorialQualityParseError(f"存在しないfact_idがsupporting_fact_idsに含まれています: {unknown_ids}")
+
+        if verdict == "grounded" and not supporting_ids:
+            raise EditorialQualityParseError(
+                f"verdict=groundedなのにsupporting_fact_idsが空です: {entry.get('claim_text')!r}")
+
+        if verdict == "ungrounded":
+            ungrounded_from_claims.append(entry["claim_text"])
+
+    reported_ungrounded = parsed.get("ungrounded_claims")
+    if not isinstance(reported_ungrounded, list):
+        raise EditorialQualityParseError("ungrounded_claimsがリストではありません")
+    if set(reported_ungrounded) != set(ungrounded_from_claims):
+        raise EditorialQualityParseError(
+            "ungrounded_claimsとclaim_grounding_resultsのungrounded判定が一致しません: "
+            f"ungrounded_claims={reported_ungrounded} claim_grounding_results由来={ungrounded_from_claims}")
+
+    has_grounding_issue = any(e["verdict"] in ("ungrounded", "ambiguous") for e in claim_results)
+    if factual_status == "pass" and has_grounding_issue:
+        raise EditorialQualityParseError("factual_grounding_status=passなのにungrounded/ambiguousなclaimがあります")
+    if factual_status == "fail" and not has_grounding_issue:
+        raise EditorialQualityParseError("factual_grounding_status=failなのに問題となるclaimが一件もありません")
+
+    brief_issues = parsed.get("brief_alignment_issues")
+    if not isinstance(brief_issues, list):
+        raise EditorialQualityParseError("brief_alignment_issuesがリストではありません")
+    for entry in brief_issues:
+        if not isinstance(entry, dict):
+            raise EditorialQualityParseError("brief_alignment_issuesの要素がオブジェクトではありません")
+        required_issue_fields = ["claim_or_passage", "issue", "rationale"]
+        missing_issue_fields = [f for f in required_issue_fields if f not in entry]
+        if missing_issue_fields:
+            raise EditorialQualityParseError(f"brief_alignment_issues要素にフィールド欠落: {missing_issue_fields}")
+        if not entry.get("rationale"):
+            raise EditorialQualityParseError("brief_alignment_issues要素にrationaleがありません")
+
+    # factual_grounding_statusとbrief_alignment_statusが混同されていないか:
+    # 各statusは自分自身の証拠集合(claim_grounding_resultsのungrounded/
+    # ambiguous、brief_alignment_issues)にのみ基づいていなければならない。
+    if brief_status == "pass" and brief_issues:
+        raise EditorialQualityParseError("brief_alignment_status=passなのにbrief_alignment_issuesが空ではありません")
+    if brief_status == "fail" and not brief_issues and parsed.get("brief_alignment") is not False:
+        raise EditorialQualityParseError(
+            "brief_alignment_status=failなのにbrief_alignment_issuesもbrief_alignment=falseもありません"
+            "(factual_grounding_statusとの混同の疑い)")
+
+    return parsed
+
+
+def classify_editorial_quality_v1_1b(result: dict) -> dict:
+    """v1.1B: factual_grounding_statusとbrief_alignment_statusをそれぞれ
+    独立した必要条件として要求する。事実性はpassだがBrief整合性がfailの
+    場合はfailure_classificationをBRIEF_ALIGNMENT_FAILUREとし、
+    UNGROUNDED_CLAIMS_FAILUREにはしない(ER-002-v1.1B-I1のセクション5)。
+    v1.1Aのclassify_editorial_qualityは変更しない別関数。"""
+    danger_flags = {
+        "point_redundancy_detected": result.get("point_redundancy_detected") is True,
+        "fact_enumeration_dominates": result.get("fact_enumeration_dominates") is True,
+        "overstatement_or_dramatization": result.get("overstatement_or_dramatization") is True,
+        "claim_strength_changed_present": bool(result.get("claim_strength_changed")),
+    }
+    required_true = {
+        "brief_alignment": result.get("brief_alignment") is True,
+        "opening_is_specific": result.get("opening_is_specific") is True,
+        "opening_is_grounded": result.get("opening_is_grounded") is True,
+        "central_tension_present": result.get("central_tension_present") is True,
+        "point_one_role_fulfilled": result.get("point_one_role_fulfilled") is True,
+        "point_two_role_fulfilled": result.get("point_two_role_fulfilled") is True,
+        "point_claims_are_distinct": result.get("point_claims_are_distinct") is True,
+        "narrative_coherence_present": result.get("narrative_coherence_present") is True,
+        "non_obvious_takeaway_landed": result.get("non_obvious_takeaway_landed") is True,
+        "listener_payoff_present": result.get("listener_payoff_present") is True,
+    }
+    hyp = result.get("hypothetical_is_disclosed")
+    hypothetical_ok = hyp is True or hyp is None
+
+    factual_status = result.get("factual_grounding_status")
+    brief_status = result.get("brief_alignment_status")
+    claim_results = result.get("claim_grounding_results", [])
+    ungrounded_count = sum(1 for e in claim_results if e.get("verdict") == "ungrounded")
+    ambiguous_count = sum(1 for e in claim_results if e.get("verdict") == "ambiguous")
+
+    reasons = [k for k, v in required_true.items() if not v]
+    reasons += [k for k, v in danger_flags.items() if v]
+    if not hypothetical_ok:
+        reasons.append("hypothetical_is_disclosed_false")
+    if factual_status != "pass":
+        reasons.append("factual_grounding_failed")
+    if brief_status != "pass":
+        reasons.append("brief_alignment_failed")
+    if ungrounded_count:
+        reasons.append("ungrounded_claims_present")
+    if ambiguous_count:
+        reasons.append("ambiguous_claims_present")
+
+    passed = (
+        result.get("overall_status") == "pass"
+        and factual_status == "pass"
+        and brief_status == "pass"
+        and ungrounded_count == 0
+        and ambiguous_count == 0
+        and not reasons
+    )
+
+    if passed:
+        failure_classification = None
+    elif factual_status != "pass":
+        failure_classification = "UNGROUNDED_CLAIMS_FAILURE"
+    elif brief_status != "pass":
+        failure_classification = "BRIEF_ALIGNMENT_FAILURE"
+    else:
+        failure_classification = "OTHER_EDITORIAL_QUALITY_FAILURE"
+
+    return {"passed": passed, "reasons": reasons, "raw": result, "failure_classification": failure_classification}
+
+
+def evaluate_editorial_quality_v1_1b(
+    prompt: str,
+    qa_call_fn: Callable[[str], str],
+    valid_fact_ids: set,
+    fact_registry_sha256: Optional[str] = None,
+    max_eval_attempts: int = MAX_EDITORIAL_QUALITY_EVAL_ATTEMPTS,
+    max_api_retry: int = common.MAX_QA_API_RETRY,
+    sleep_fn: Optional[Callable[[float], None]] = None,
+) -> "EditorialQualityOutcome":
+    """evaluate_editorial_quality(v1.1A)と同じ状態遷移(inconclusive→同一
+    台本を1回だけ再評価、conclusive_fail→再評価せず次の台本生成試行へ)を
+    維持しつつ、v1.1Bのvalidate/classify関数を使う。再試行上限
+    (max_eval_attempts/max_api_retry)はv1.1Aと同一の値を渡すこと。"""
+    attempts: list[EditorialQualityAttemptRecord] = []
+    total_api_retry = 0
+
+    for attempt in range(1, max_eval_attempts + 1):
+        outcome = common.call_qa_with_retry(
+            lambda p, _wav: qa_call_fn(p), prompt, b"", max_retry=max_api_retry, sleep_fn=sleep_fn)
+        total_api_retry += outcome.api_retry_count
+
+        if outcome.parse_failed or outcome.raw_result is None:
+            attempts.append(EditorialQualityAttemptRecord(
+                attempt_number=attempt, outcome="inconclusive",
+                reasons=["qa_unavailable_or_unparseable"], api_retry_count=outcome.api_retry_count,
+            ))
+            continue
+
+        try:
+            parsed = validate_editorial_quality_fields_v1_1b(outcome.raw_result, valid_fact_ids)
+        except EditorialQualityParseError as e:
+            attempts.append(EditorialQualityAttemptRecord(
+                attempt_number=attempt, outcome="inconclusive",
+                reasons=[str(e)], api_retry_count=outcome.api_retry_count,
+            ))
+            continue
+
+        classified = classify_editorial_quality_v1_1b(parsed)
+        if classified["passed"]:
+            attempts.append(EditorialQualityAttemptRecord(
+                attempt_number=attempt, outcome="passed", reasons=[],
+                api_retry_count=outcome.api_retry_count,
+            ))
+            return EditorialQualityOutcome(
+                final_outcome="passed", reasons=[], attempts=attempts,
+                total_api_retry_count=total_api_retry, fact_registry_sha256=fact_registry_sha256,
+                failure_classification=None,
+            )
+        else:
+            attempts.append(EditorialQualityAttemptRecord(
+                attempt_number=attempt, outcome="conclusive_fail", reasons=classified["reasons"],
+                api_retry_count=outcome.api_retry_count,
+            ))
+            return EditorialQualityOutcome(
+                final_outcome="conclusive_fail", reasons=classified["reasons"], attempts=attempts,
+                total_api_retry_count=total_api_retry, fact_registry_sha256=fact_registry_sha256,
+                failure_classification=classified["failure_classification"],
+            )
+
+    return EditorialQualityOutcome(
+        final_outcome="inconclusive", reasons=["editorial_quality_inconclusive_after_max_attempts"],
+        attempts=attempts, total_api_retry_count=total_api_retry, fact_registry_sha256=fact_registry_sha256,
     )
 
 

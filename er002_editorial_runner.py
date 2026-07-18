@@ -123,6 +123,7 @@ class ScriptStageAttemptRecord:
     editorial_quality_outcome: Optional[str] = None  # "passed"/"conclusive_fail"/"inconclusive"/None
     editorial_quality_reasons: list = field(default_factory=list)
     editorial_quality_api_retry_count: int = 0
+    editorial_quality_failure_classification: Optional[str] = None  # v1.1B: BRIEF_ALIGNMENT_FAILURE等(v1.1Aではnullのまま)
 
 
 @dataclass
@@ -141,11 +142,20 @@ def run_script_stage_with_quality_gate(
     max_script_attempts: int = MAX_SCRIPT_CONTENT_ATTEMPTS,
     max_gen_api_retry: int = common.MAX_TTS_API_RETRY,
     sleep_fn: Optional[Callable[[float], None]] = None,
+    quality_evaluate_fn: Callable[..., Any] = ec.evaluate_editorial_quality,
 ) -> ScriptStageOutcome:
     """確定的な編集品質不合格(conclusive_fail)の場合は再評価せず次の台本
     生成試行へ進む。編集品質評価が解析不能なままmax_eval_attempts回続いた
     場合(inconclusive)も、同様に次の台本生成試行へ進む(台本自体を
-    作り直す。同じ不完全な評価を繰り返さない)。"""
+    作り直す。同じ不完全な評価を繰り返さない)。
+
+    quality_evaluate_fnはデフォルトでec.evaluate_editorial_quality(v1.1A)を
+    そのまま使うため、この引数を渡さない既存のv1.1A呼び出しの挙動は一切
+    変わらない。ER-002-v1.1B-I1では、fact registryを束縛したクロージャ
+    (例: lambda prompt, call_fn, sleep_fn=None: ec.evaluate_editorial_
+    quality_v1_1b(prompt, call_fn, valid_fact_ids=..., sleep_fn=sleep_fn))
+    を注入することで、アングル生成・Brief・台本生成側のコードは一切
+    変更せずに編集品質検品だけをv1.1Bへ切り替える。"""
     attempts: list[ScriptStageAttemptRecord] = []
 
     for attempt in range(1, max_script_attempts + 1):
@@ -178,7 +188,7 @@ def run_script_stage_with_quality_gate(
             continue
 
         quality_prompt = quality_prompt_builder(script, brief)
-        quality_outcome = ec.evaluate_editorial_quality(quality_prompt, quality_call_fn, sleep_fn=sleep_fn)
+        quality_outcome = quality_evaluate_fn(quality_prompt, quality_call_fn, sleep_fn=sleep_fn)
 
         record = ScriptStageAttemptRecord(
             attempt_number=attempt, structural_valid=True, word_count=wc,
@@ -186,6 +196,7 @@ def run_script_stage_with_quality_gate(
             editorial_quality_outcome=quality_outcome.final_outcome,
             editorial_quality_reasons=quality_outcome.reasons,
             editorial_quality_api_retry_count=quality_outcome.total_api_retry_count,
+            editorial_quality_failure_classification=getattr(quality_outcome, "failure_classification", None),
         )
         attempts.append(record)
 
@@ -259,6 +270,7 @@ def run_editorial_article_pipeline(
     valid_fact_ids: set,
     tts_call_fn: Optional[Callable[[dict], Any]] = None,
     sleep_fn: Optional[Callable[[float], None]] = None,
+    quality_evaluate_fn: Callable[..., Any] = ec.evaluate_editorial_quality,
 ) -> EditorialArticlePipelineOutcome:
     angle_stage = run_angle_stage(
         angle_generation_fn, angle_eval_call_fn, angle_eval_prompt_builder, valid_fact_ids, sleep_fn=sleep_fn)
@@ -277,7 +289,8 @@ def run_editorial_article_pipeline(
 
     script_write_fn = script_write_fn_factory(brief)
     script_stage = run_script_stage_with_quality_gate(
-        script_write_fn, brief, quality_prompt_builder, quality_call_fn, sleep_fn=sleep_fn)
+        script_write_fn, brief, quality_prompt_builder, quality_call_fn, sleep_fn=sleep_fn,
+        quality_evaluate_fn=quality_evaluate_fn)
     if script_stage.status != "OK":
         return EditorialArticlePipelineOutcome(
             status="FAILED_SCRIPT_STAGE", article_id=article_id, angle_stage=angle_stage,

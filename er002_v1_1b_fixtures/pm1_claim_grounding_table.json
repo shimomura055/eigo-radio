@@ -1,0 +1,197 @@
+{
+  "analysis_id": "ER-002-v1.1A-PM1",
+  "target_run": "ER-002-v1.1A-S1 / A01",
+  "note_ja": "オフライン事後分析。新規API呼び出し・プロンプト変更・コード変更は一切行っていない。既存の manifest.json / raw_responses.json / editorial_brief.json / v1_1a_fixed_facts.json のみを参照し、build_editorial_quality_prompt() をそのまま(無変更のまま)呼び出してプロンプトを再構成して突合した。",
+  "claims": [
+    {
+      "atomic_claim_id": "C1_opponent",
+      "atomic_claim_label_ja": "対戦相手(England)",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "Argentina came from behind to defeat England 2-1",
+        "attempt_2": "Opponent was England"
+      },
+      "claim_location": "Body, paragraph 4 (orienting/context sentence, both attempts)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F01"
+      ],
+      "supporting_fact_text": "Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C2_score",
+      "atomic_claim_label_ja": "スコア(2-1)",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "Argentina came from behind to defeat England 2-1",
+        "attempt_2": "Score was 2-1"
+      },
+      "claim_location": "Body, paragraph 4 (both attempts)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F01"
+      ],
+      "supporting_fact_text": "Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C3_semifinal_stage",
+      "atomic_claim_label_ja": "準決勝という大会段階",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "World Cup semifinal on July 15, 2026",
+        "attempt_2": "Event was a World Cup semifinal"
+      },
+      "claim_location": "Body, paragraph 4 (both attempts)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F01"
+      ],
+      "supporting_fact_text": "Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C4_date",
+      "atomic_claim_label_ja": "日付(2026年7月15日)",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "World Cup semifinal on July 15, 2026",
+        "attempt_2": "Date was July 15, 2026"
+      },
+      "claim_location": "Body, paragraph 4 (both attempts)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F01"
+      ],
+      "supporting_fact_text": "Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C5_england_scorer",
+      "atomic_claim_label_ja": "イングランド得点者(Anthony Gordon)",
+      "script_attempt_number": [
+        1
+      ],
+      "claim_text": {
+        "attempt_1": "Anthony Gordon scored England's opening goal",
+        "attempt_2": null
+      },
+      "claim_location": "Body, paragraph 4 (attempt 1 only; attempt 2's script omits Gordon's name and the QA model did not separately flag it, though the underlying fact F02 is still unreferenced by the Brief in attempt 2 as well)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F02"
+      ],
+      "supporting_fact_text": "Anthony Gordon scored England's opening goal.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C6_final_opponent",
+      "atomic_claim_label_ja": "決勝の相手(Spain)",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "Argentina then advanced to the World Cup final against Spain",
+        "attempt_2": "Argentina advanced to a final against Spain"
+      },
+      "claim_location": "Body paragraph 4 AND 'In One Line' closing section (both attempts restate this in the final line)",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F04"
+      ],
+      "supporting_fact_text": "Argentina advanced to the World Cup final against Spain.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": false,
+      "referenced_elsewhere_in_brief": false,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "input_assembly_defect"
+    },
+    {
+      "atomic_claim_id": "C7_goal_minute",
+      "atomic_claim_label_ja": "決勝点の時間(92分)",
+      "script_attempt_number": [
+        1,
+        2
+      ],
+      "claim_text": {
+        "attempt_1": "Martinez scored the winning goal in the 92nd minute",
+        "attempt_2": "The winning goal was in the 92nd minute"
+      },
+      "claim_location": "Point Two section (both attempts) — this is the ONE claim that sits inside a Brief-designated section",
+      "qa_reason": "ungrounded_claims_present",
+      "expected_supporting_fact_ids": [
+        "F03"
+      ],
+      "supporting_fact_text": "Enzo Fernandez equalized for Argentina, and Lautaro Martinez scored the winning goal in the 92nd minute.",
+      "exists_in_verified_fact_registry": true,
+      "included_in_actual_quality_check_payload": false,
+      "referenced_by_opening_fact_ids": false,
+      "referenced_by_point_one_fact_ids": false,
+      "referenced_by_point_two_fact_ids": true,
+      "referenced_elsewhere_in_brief": true,
+      "actual_grounding_status": "grounded",
+      "discrepancy_type": "mixed",
+      "note_ja": "F03のfact_idはBriefのpoint_two_fact_idsとfact_support_mapに存在するが、fact_support_mapのused_for注記は『Argentinaの2得点者の氏名』のみで『92分』という時間情報には触れていない。かつQAプロンプトにはF03の原文自体が一度も渡っていない(fact_idラベルとused_for一文のみ)。そのため、fact_idが引用されているにもかかわらず、QAモデルは時間情報の真偽を判定する材料を持たなかった。"
+    }
+  ],
+  "summary": {
+    "total_atomic_claims_checked": 7,
+    "claims_existing_in_verified_registry_as_true": 7,
+    "claims_fabricated_or_false": 0,
+    "claims_included_in_actual_qa_payload_as_fact_text": 0,
+    "claims_referenced_by_brief_fact_id_fields": 1,
+    "claims_not_referenced_anywhere_in_brief": 6
+  }
+}
