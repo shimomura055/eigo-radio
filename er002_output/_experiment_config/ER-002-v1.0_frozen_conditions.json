@@ -1,0 +1,110 @@
+{
+  "experiment_version": "ER-002-v1.0",
+  "frozen_at": "2026-07-18T01:55:11.596514+00:00",
+  "topic_research_prompt": {
+    "version": "er002-topic-adapter-v1",
+    "sha256": "5deb8c3edbc517cc60e9dcb7d15e7dfb4a33e39d3d1adef2e51fd1e4122798de"
+  },
+  "script_generation_prompt": {
+    "version": "er002-script-adapter-v1",
+    "sha256": "b92063b38a7faad8055e8856e6855a5cd71e0767109639a737573b8119b13979"
+  },
+  "tts_common_style_prefix": {
+    "version": "er002-style-prefix-v1 (care point表現修正版、ER-002-S1)",
+    "sha256": "b8847b8b6ec9595b75ce255d99449a6f09e3b3d20a3796ae5a98a6ca270af7f8"
+  },
+  "qa_prompt_and_schema": {
+    "version": "er002-qa-schema-v2",
+    "schema_fields": [
+      "assessment_status",
+      "inconclusive_reason",
+      "element_counts",
+      "body_dropped",
+      "body_dropped_evidence",
+      "body_duplicated",
+      "body_duplicated_evidence",
+      "unauthorized_paraphrase",
+      "unauthorized_paraphrase_evidence",
+      "section_order_changed",
+      "observed_section_order",
+      "extra_unscripted_speech",
+      "extra_unscripted_speech_evidence",
+      "notes"
+    ],
+    "schema_fields_sha256": "830f45495ca6a38552e8898864a1687d2ea8351a39447b7bfb93bf9fd4bb97d0",
+    "sample_embedded_prompt_sha256": "3940284b50339953ac01b5f567c3a23b9d8890d70552bb506d395b3ed7ea0140",
+    "sample_grounded_prompt_sha256": "fd075f53d7511da732d1d3985e8d8c81b8949d006c2894469e90c63371251175",
+    "sample_input_note": "ハッシュは固定サンプル台本(_FREEZE_SAMPLE_SCRIPT、実記事ではない)から生成したプロンプトに対するもの。実記事ごとにプロンプト文字列自体は変化するが、スキーマ契約(schema_fields)とテンプレート構造は固定。"
+  },
+  "dynamics3": {
+    "version": "er002-dynamics3-v1 (ER-001B-8で確定・不変)",
+    "params": {
+      "type": "soft_knee_compressor",
+      "threshold_percentile": 60,
+      "ratio": 8.0,
+      "knee_db": 6.0,
+      "attack_ms": 5.0,
+      "release_ms": 200.0,
+      "gain_smoothing_ms": 8.0
+    },
+    "peak_ceiling_db": -1.0,
+    "loudness_match_target_lu": 0.3,
+    "sha256": "34b39ef1c524e4281fca4c5d1aa23ae3c8c4b72594807a1303cd8ff6575bd89d"
+  },
+  "word_count_conditions": {
+    "version": "er002-wordcount-v1",
+    "conditions": {
+      "target_min": 380,
+      "target_max": 420,
+      "accept_min": 320,
+      "accept_max": 480,
+      "duration_warn_min_seconds": 130,
+      "duration_warn_max_seconds": 200
+    },
+    "sha256": "7ce9cb36145bd0f5a29fb1cafae6fa930e6ebbd020b5bc6618fe1657dd5d3533"
+  },
+  "retry_conditions": {
+    "version": "er002-retry-v1",
+    "conditions": {
+      "max_script_attempts": 2,
+      "max_tts_content_attempts": 3,
+      "max_qa_evaluation_attempts": 2,
+      "max_tts_api_retry": 2,
+      "max_qa_api_retry": 5
+    },
+    "sha256": "dee67389098ad24216c99d9ccc8109eb8133a9b0e4ac5427208132c18b3730e9"
+  },
+  "voice_assignment": {
+    "version": "er002-s3-voice-assignment-v1",
+    "assignment": {
+      "A01": [
+        "Aoede"
+      ],
+      "A02": [
+        "Charon"
+      ],
+      "A03": [
+        "Aoede"
+      ],
+      "A06": [
+        "Charon"
+      ],
+      "A04": [
+        "Aoede",
+        "Charon"
+      ],
+      "A05": [
+        "Aoede",
+        "Charon"
+      ]
+    },
+    "sha256": "57d6658a85afd72e529522ea8edf9383fbf758fe5ce255f5abd5b4638dec17a3"
+  },
+  "ab_anonymization": {
+    "version": "er002-ab-anonymization-v2",
+    "filename_pattern_sample": "er002_SAMPLE_ARTICLE_sample_1.wav",
+    "mapping_keyed_by": "anonymized filename (not abstract sample_N label)",
+    "consistency_enforced_by": "er002_ab_anonymize.validate_ab_bundle_filename_consistency",
+    "sha256": "97511aa5c020d4e12141e37071a4903fb134b50319d4838886b3bf85f2beb81f"
+  }
+}

@@ -91,3 +91,37 @@ def save_mapping_table(mapping: dict, path: str) -> None:
 def load_mapping_table(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+class ABFilenameConsistencyError(ValueError):
+    pass
+
+
+def validate_ab_bundle_filename_consistency(bundle: dict, article_id: str, expected_sample_count: int) -> None:
+    """ER-002-S2-C2で発生した大文字小文字不一致(手動リネームにより実ファイルと
+    対応表のarticle_idの大文字小文字がずれた)の再発防止。
+
+    - files / filename_mapping / user_evaluations のキー集合が文字列として
+      完全一致すること(大文字小文字含む)
+    - filesの各キーが、article_id・1..expected_sample_countから機械的に
+      導出したファイル名(anonymized_filename)と過不足なく一致すること
+      (sample_1・sample_2それぞれちょうど1つずつ存在することを含む)
+    いずれかが崩れていれば例外を送出する(fail-closed。不一致のまま
+    ファイルを書き出させない)。"""
+    files_keys = set(bundle["files"].keys())
+    mapping_keys = set(bundle["filename_mapping"].keys())
+    eval_keys = set(bundle["user_evaluations"].keys())
+
+    if not (files_keys == mapping_keys == eval_keys):
+        raise ABFilenameConsistencyError(
+            "A/Bバンドルのファイル名(files/filename_mapping/user_evaluations)が"
+            f"一致していません: files={sorted(files_keys)}, "
+            f"filename_mapping={sorted(mapping_keys)}, user_evaluations={sorted(eval_keys)}"
+        )
+
+    expected_filenames = {anonymized_filename(article_id, n) for n in range(1, expected_sample_count + 1)}
+    if files_keys != expected_filenames:
+        raise ABFilenameConsistencyError(
+            f"A/Bバンドルのファイル名がsample_1..sample_{expected_sample_count}と"
+            f"一致していません: 実際={sorted(files_keys)}, 期待={sorted(expected_filenames)}"
+        )

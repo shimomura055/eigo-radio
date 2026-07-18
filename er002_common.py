@@ -41,6 +41,7 @@ import json
 import re
 import wave
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any, Callable, Optional
 
 import numpy as np
@@ -1293,6 +1294,26 @@ UNTRACKED_ARTIFACT_NAME_HINTS = [
 # ============================================================
 # ブロック14: ユーザー評価スキーマ(記事/サンプル単位、A/B追加項目)
 # ============================================================
+# ER-002-S3-P0で追加: content_interestが"no"の場合に、その主因を固定選択肢
+# から1つ選べるcontent_interest_primary_reasonと、自由記述の
+# content_interest_notesを追加した。この追加はユーザー評価の記録拡張で
+# あり、記事選定や技術検品の合否条件を変更するものではない。
+CONTENT_INTEREST_PRIMARY_REASONS = [
+    "topic_itself_low_interest",
+    "outcome_too_predictable",
+    "impact_scope_too_narrow",
+    "too_much_background",
+    "editorial_angle_weak",
+    "two_points_not_compelling",
+    "other",
+]
+
+
+def is_valid_content_interest_primary_reason(value) -> bool:
+    """None(content_interestがyes/neutralの場合、または未回答)も許可する。"""
+    return value is None or value in CONTENT_INTEREST_PRIMARY_REASONS
+
+
 def default_user_evaluation() -> dict:
     """記事(またはA/Bの1サンプル)単位のユーザー評価の初期値。
     生成直後は常にstatus="pending_user_listening"で始まる。"""
@@ -1301,6 +1322,8 @@ def default_user_evaluation() -> dict:
         "listened_to_end": None,             # bool | null
         "wants_more_topics": None,           # bool | null
         "content_interest": None,            # "yes" / "neutral" / "no" | null
+        "content_interest_primary_reason": None,  # CONTENT_INTEREST_PRIMARY_REASONSのいずれか | null
+        "content_interest_notes": None,      # 自由記述 | null
         "voice_fit": None,                   # bool | null
         "structure_issue": {"present": None, "notes": None},
         "dynamics_issue": {"present": None, "notes": None},
@@ -1413,3 +1436,89 @@ def default_topic_candidate_diagnostics() -> dict:
     diagnostics["diagnostic_only"] = True
     diagnostics["excluded_from_scoring"] = True
     return diagnostics
+
+
+# ============================================================
+# ブロック17: トピック選定の固定順序(採点→選定確定→診断記録。ER-002-S3-P0)
+# ============================================================
+# 固定順序:
+#   1. TOPIC_SCORING_FIELDSだけで候補を採点
+#   2. 選定記事を確定
+#   3. スコア・選定結果・タイムスタンプを保存
+#   4. 選定確定後、選定記事だけにTOPIC_DIAGNOSTIC_FIELDSを記録
+#   5. 診断値を理由に記事を差し替えない(score_candidates/lock_selectionは
+#      診断値を一切参照しない構造になっているため、構造的に不可能)
+#   6. 診断値を台本生成プロンプトへ渡さない(diagnostics_applied_to_script_prompt
+#      は常にFalseで固定し、台本生成関数の引数にも診断dictを渡さない設計とする)
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def score_candidates(candidates: list[dict]) -> dict:
+    """候補ごとにTOPIC_SCORING_FIELDSだけを使って合計点を計算する。
+    候補dict中にTOPIC_DIAGNOSTIC_FIELDSが含まれていても一切参照しない
+    (TOPIC_SCORING_FIELDS以外のキーにはアクセスしない)。"""
+    scores = {}
+    for c in candidates:
+        candidate_scores = {f: c["scores"][f] for f in TOPIC_SCORING_FIELDS}
+        scores[c["candidate_id"]] = {
+            "scores": candidate_scores,
+            "total_score": sum(candidate_scores.values()),
+        }
+    return scores
+
+
+def lock_selection(scores: dict) -> str:
+    """最高得点の候補IDを返す(選定確定)。同点はcandidate_idの昇順で先頭を採用する
+    (タイブレークの具体的な優先順位は候補データ側の別項目で扱う想定であり、
+    ここでは決定的な順序であることのみを保証する)。"""
+    return max(sorted(scores.keys()), key=lambda cid: scores[cid]["total_score"])
+
+
+@dataclass
+class TopicSelectionLifecycleResult:
+    scores: dict
+    selected_candidate_id: str
+    scoring_completed_at: str
+    selection_locked_at: str
+    diagnostics_recorded_at: Optional[str]
+    diagnostics_by_candidate: dict
+    diagnostics_applied_to_scoring: bool = False
+    diagnostics_applied_to_script_prompt: bool = False
+
+
+def run_topic_selection_lifecycle(
+    candidates: list[dict],
+    diagnostics_fn: Optional[Callable[[str], dict]] = None,
+    now_fn: Optional[Callable[[], str]] = None,
+) -> TopicSelectionLifecycleResult:
+    """1)採点 2)選定確定 3)タイムスタンプ記録 4)選定記事だけに診断値を記録、
+    という固定順序をコード上で強制する。diagnostics_fnは選定確定
+    (selected_candidate_idの決定)より後にしか呼び出されない。
+    diagnostics_applied_to_scoring/diagnostics_applied_to_script_promptは
+    常にFalseを返す(この関数の戻り値を選定・台本生成のどちらにも
+    フィードバックしないことを示す固定値)。"""
+    now_fn = now_fn or _now_iso
+
+    scores = score_candidates(candidates)
+    scoring_completed_at = now_fn()
+
+    selected_id = lock_selection(scores)
+    selection_locked_at = now_fn()
+
+    diagnostics_by_candidate = {c["candidate_id"]: None for c in candidates}
+    diagnostics_recorded_at = None
+    if diagnostics_fn is not None:
+        diagnostics_by_candidate[selected_id] = diagnostics_fn(selected_id)
+        diagnostics_recorded_at = now_fn()
+
+    return TopicSelectionLifecycleResult(
+        scores=scores,
+        selected_candidate_id=selected_id,
+        scoring_completed_at=scoring_completed_at,
+        selection_locked_at=selection_locked_at,
+        diagnostics_recorded_at=diagnostics_recorded_at,
+        diagnostics_by_candidate=diagnostics_by_candidate,
+        diagnostics_applied_to_scoring=False,
+        diagnostics_applied_to_script_prompt=False,
+    )

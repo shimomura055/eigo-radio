@@ -27,6 +27,9 @@ import numpy as np
 import er002_ab_anonymize as ab
 import er002_common as common
 import er002_runner as runner
+import er002_s3_config as s3config
+import er002_script_adapter as script_adapter
+import er002_v1_freeze as freeze
 
 
 # ============================================================
@@ -582,6 +585,72 @@ class ABAnonymizationTests(unittest.TestCase):
 
 
 # ============================================================
+# ER-002-S3-P0 追加: A/Bファイル名の回帰テスト
+# ER-002-S2で発生した大文字小文字不一致(article_id="A04"で生成した
+# ファイル名を手動でarticle_id="a04"相当へリネームしたが、対応表側は
+# 更新し忘れた)の再発防止。
+# ============================================================
+class ABFilenameConsistencyRegressionTests(unittest.TestCase):
+    def setUp(self):
+        self.entries = [{"voice": "Aoede"}, {"voice": "Charon"}]
+        self.wav_bytes_by_label = {"Aoede": make_wav_bytes(500), "Charon": make_wav_bytes(500)}
+
+    def test_bundle_files_and_mapping_and_evaluations_match_exactly(self):
+        """実際に作成された匿名音声ファイル名と、対応表・評価スキーマに記録された
+        ファイル名が(大文字小文字を含めて)完全一致することを確認。"""
+        bundle = runner.build_ab_bundle("a04", self.entries, self.wav_bytes_by_label, seed=1)
+        self.assertEqual(set(bundle["files"].keys()), set(bundle["filename_mapping"].keys()))
+        self.assertEqual(set(bundle["files"].keys()), set(bundle["user_evaluations"].keys()))
+
+    def test_case_sensitivity_is_preserved_end_to_end(self):
+        """article_idの大文字小文字がfiles/filename_mapping全体で一貫していること
+        (article_id="A04"のような大文字混じりでも、全キーが同じ大文字小文字で
+        揃うことを確認)。"""
+        bundle = runner.build_ab_bundle("A04", self.entries, self.wav_bytes_by_label, seed=1)
+        for filename in bundle["files"]:
+            self.assertIn("A04", filename)
+            self.assertNotIn("a04", filename)
+        self.assertEqual(set(bundle["files"].keys()), set(bundle["filename_mapping"].keys()))
+
+    def test_mapping_never_references_nonexistent_file(self):
+        """存在しないファイル名を対応表へ保存しない: 一部の話者の音声データが
+        まだ無い状態でbuild_ab_bundleを呼ぶと、不完全なsample_1/sample_2の組を
+        files/対応表へ書き出す前にfail-closedで例外になることを確認する
+        (「片方の話者しかない中途半端なA/Bバンドル」を黙って作らない)。"""
+        partial_wav_bytes_by_label = {"Aoede": make_wav_bytes(500)}  # Charon分が未生成
+        with self.assertRaises(ab.ABFilenameConsistencyError):
+            runner.build_ab_bundle("a04", self.entries, partial_wav_bytes_by_label, seed=1)
+
+    def test_exactly_one_sample_1_and_one_sample_2(self):
+        bundle = runner.build_ab_bundle("a04", self.entries, self.wav_bytes_by_label, seed=1)
+        self.assertEqual(bundle["files"].keys() & {"er002_a04_sample_1.wav"}, {"er002_a04_sample_1.wav"})
+        self.assertEqual(bundle["files"].keys() & {"er002_a04_sample_2.wav"}, {"er002_a04_sample_2.wav"})
+        self.assertEqual(len(bundle["files"]), 2)
+
+    def test_validation_raises_on_manually_broken_mapping(self):
+        """検証関数自体が、意図的に壊した(大文字小文字を変えた)対応表を
+        不合格にできることを確認する。"""
+        bundle = runner.build_ab_bundle("a04", self.entries, self.wav_bytes_by_label, seed=1)
+        broken = dict(bundle)
+        broken["filename_mapping"] = {
+            k.replace("a04", "A04"): v for k, v in bundle["filename_mapping"].items()
+        }
+        with self.assertRaises(ab.ABFilenameConsistencyError):
+            ab.validate_ab_bundle_filename_consistency(broken, "a04", expected_sample_count=2)
+
+    def test_write_ab_bundle_files_round_trip_matches_on_disk(self):
+        """実際にディスクへ書き出し、Windows等の大文字小文字を区別しない
+        ファイルシステム上でも、文字列としてのファイル名一致を検証できることを
+        確認する(os.listdirが返す実際の名前で照合するため、OS側の大文字小文字
+        の丸めがあればここで検出される)。"""
+        bundle = runner.build_ab_bundle("a04", self.entries, self.wav_bytes_by_label, seed=1)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            written = runner.write_ab_bundle_files(bundle, tmpdir)
+            self.assertEqual(set(written), set(bundle["files"].keys()))
+            self.assertEqual(set(os.listdir(tmpdir)), set(bundle["files"].keys()))
+
+
+# ============================================================
 # ER-002-S1.1 追加 1〜3: Git追跡方針
 # (JSON成果物は追跡対象、音声・A/B対応表・元記事全文キャッシュは除外)
 # ============================================================
@@ -1030,6 +1099,185 @@ class RunnerIntegrationTests(unittest.TestCase):
         self.assertEqual(tts_called["n"], 0, "台本が確定する前にTTSを呼んではいけない")
         self.assertEqual(qa_called["n"], 0)
         self.assertEqual(len(outcome.manifest["script_run"]["attempts"]), 2)
+
+
+# ============================================================
+# ER-002-S3-P0 追加: 診断項目の記録順序(採点→選定確定→診断記録)
+# ============================================================
+class TopicSelectionLifecycleTests(unittest.TestCase):
+    def setUp(self):
+        self.candidates = [
+            {"candidate_id": "c1", "scores": {f: 3 for f in common.TOPIC_SCORING_FIELDS}},
+            {"candidate_id": "c2", "scores": {f: 5 for f in common.TOPIC_SCORING_FIELDS}},
+            {"candidate_id": "c3", "scores": {f: 4 for f in common.TOPIC_SCORING_FIELDS}},
+        ]
+
+    def test_selection_uses_only_scoring_fields(self):
+        """要求1: TOPIC_SCORING_FIELDSだけで候補を採点することを確認
+        (c2が最高得点=15のため選定されるはず)。"""
+        result = common.run_topic_selection_lifecycle(self.candidates)
+        self.assertEqual(result.selected_candidate_id, "c2")
+        self.assertEqual(result.scores["c2"]["total_score"], 5 * len(common.TOPIC_SCORING_FIELDS))
+
+    def test_diagnostics_recorded_after_selection_locked(self):
+        """要求2: 診断項目が選定確定後に記録されることを、呼び出し順序で確認する
+        (diagnostics_fnが呼ばれる時点で、selected_candidate_idが既に確定している)。"""
+        call_order = []
+
+        def diagnostics_fn(candidate_id):
+            call_order.append(("diagnostics_fn_called", candidate_id))
+            return common.default_topic_candidate_diagnostics()
+
+        result = common.run_topic_selection_lifecycle(self.candidates, diagnostics_fn=diagnostics_fn)
+        self.assertEqual(len(call_order), 1)
+        self.assertEqual(call_order[0][1], result.selected_candidate_id)
+        # タイムスタンプの順序も採点完了→選定確定→診断記録の順であること
+        self.assertLessEqual(result.scoring_completed_at, result.selection_locked_at)
+        self.assertLessEqual(result.selection_locked_at, result.diagnostics_recorded_at)
+
+    def test_diagnostics_only_recorded_for_selected_candidate(self):
+        """診断項目は選定記事だけで良い(非選定候補はnullのまま)。"""
+        def diagnostics_fn(candidate_id):
+            return common.default_topic_candidate_diagnostics()
+
+        result = common.run_topic_selection_lifecycle(self.candidates, diagnostics_fn=diagnostics_fn)
+        for cid, diag in result.diagnostics_by_candidate.items():
+            if cid == result.selected_candidate_id:
+                self.assertIsNotNone(diag)
+            else:
+                self.assertIsNone(diag)
+
+    def test_diagnostics_do_not_change_selection(self):
+        """要求3: 診断項目がスコアを変更しないことを確認する。診断値をどう
+        埋めても(diagnostics_fnの中身に関わらず)選定結果・スコアは同じ。"""
+        result_a = common.run_topic_selection_lifecycle(self.candidates, diagnostics_fn=None)
+        result_b = common.run_topic_selection_lifecycle(
+            self.candidates, diagnostics_fn=lambda cid: {"surprise_level": "high"})
+        self.assertEqual(result_a.selected_candidate_id, result_b.selected_candidate_id)
+        self.assertEqual(result_a.scores, result_b.scores)
+
+    def test_applied_flags_always_false(self):
+        result = common.run_topic_selection_lifecycle(self.candidates, diagnostics_fn=lambda cid: {})
+        self.assertFalse(result.diagnostics_applied_to_scoring)
+        self.assertFalse(result.diagnostics_applied_to_script_prompt)
+
+    def test_diagnostics_not_referenced_by_script_prompt_builder(self):
+        """要求4: 診断項目が台本生成プロンプトへ含まれないことを確認する。
+        script_adapter.build_prompt()はtopic/factsだけを受け取り、診断値
+        (surprise_level等)を引数として受け付けない設計であることを、実際の
+        シグネチャと生成結果の両方で確認する。"""
+        import inspect
+        sig = inspect.signature(script_adapter.build_prompt)
+        param_names = set(sig.parameters.keys())
+        for diagnostic_field in common.TOPIC_DIAGNOSTIC_FIELDS:
+            self.assertNotIn(diagnostic_field, param_names)
+
+        topic_package = {"topic": "Sample topic.", "facts": "VERIFIED FACTS:\n- fact one."}
+        prompt = script_adapter.build_prompt(topic_package)
+        for diagnostic_field in common.TOPIC_DIAGNOSTIC_FIELDS:
+            self.assertNotIn(diagnostic_field, prompt)
+
+
+# ============================================================
+# ER-002-S3-P0 追加: content_interest_primary_reasonの許可値検証
+# ============================================================
+class ContentInterestPrimaryReasonTests(unittest.TestCase):
+    def test_valid_values_accepted(self):
+        for value in common.CONTENT_INTEREST_PRIMARY_REASONS:
+            self.assertTrue(common.is_valid_content_interest_primary_reason(value))
+        self.assertTrue(common.is_valid_content_interest_primary_reason(None))
+
+    def test_invalid_value_rejected(self):
+        self.assertFalse(common.is_valid_content_interest_primary_reason("not_a_real_reason"))
+
+    def test_default_evaluation_includes_new_fields(self):
+        evaluation = common.default_user_evaluation()
+        self.assertIn("content_interest_primary_reason", evaluation)
+        self.assertIn("content_interest_notes", evaluation)
+        self.assertIsNone(evaluation["content_interest_primary_reason"])
+        self.assertIsNone(evaluation["content_interest_notes"])
+
+    def test_ab_evaluation_also_includes_new_fields(self):
+        evaluation = common.default_ab_user_evaluation()
+        self.assertIn("content_interest_primary_reason", evaluation)
+        self.assertIn("content_interest_notes", evaluation)
+
+
+# ============================================================
+# ER-002-S3-P0 追加: S3バッチ構成・受入集計からの除外
+# ============================================================
+class S3BatchConfigTests(unittest.TestCase):
+    def test_six_articles_eight_voice_slots(self):
+        self.assertEqual(s3config.total_article_count(), 6)
+        self.assertEqual(s3config.total_voice_slot_count(), 8)
+
+    def test_batch_membership_matches_spec(self):
+        flat = {a["article_id"]: a for a in s3config.flatten_s3_batches()}
+        self.assertEqual(flat["A01"]["batch"], "B1")
+        self.assertEqual(flat["A01"]["voices"], ["Aoede"])
+        self.assertEqual(flat["A02"]["batch"], "B1")
+        self.assertEqual(flat["A02"]["voices"], ["Charon"])
+        self.assertEqual(flat["A03"]["batch"], "B2")
+        self.assertEqual(flat["A06"]["batch"], "B2")
+        self.assertEqual(flat["A04"]["batch"], "B3")
+        self.assertEqual(set(flat["A04"]["voices"]), {"Aoede", "Charon"})
+        self.assertEqual(flat["A05"]["batch"], "B3")
+        self.assertEqual(set(flat["A05"]["voices"]), {"Aoede", "Charon"})
+
+    def test_s2_a04_excluded_from_s3_tally(self):
+        self.assertFalse(s3config.is_included_in_acceptance_tally("ER-002-S2", "A04"))
+
+    def test_s3_a04_is_included_in_tally(self):
+        """S2のA04とは別に、S3で新規選定するA04は集計対象であること。"""
+        self.assertTrue(s3config.is_included_in_acceptance_tally("ER-002-S3", "A04"))
+
+    def test_a01_a02_reruns_excluded_from_tally(self):
+        rerun_ids = {r["article_id"] for r in s3config.INDEPENDENT_RERUNS}
+        self.assertEqual(rerun_ids, {"A01", "A02"})
+        for rerun in s3config.INDEPENDENT_RERUNS:
+            self.assertFalse(rerun["included_in_acceptance_tally"])
+        self.assertFalse(s3config.is_included_in_acceptance_tally("ER-002-S3", "A01 (rerun)"))
+        self.assertFalse(s3config.is_included_in_acceptance_tally("ER-002-S3", "A02 (rerun)"))
+        # 初回のA01・A02自体は通常どおり集計対象
+        self.assertTrue(s3config.is_included_in_acceptance_tally("ER-002-S3", "A01"))
+        self.assertTrue(s3config.is_included_in_acceptance_tally("ER-002-S3", "A02"))
+
+
+# ============================================================
+# ER-002-S3-P0 追加: ER-002-v1.0の条件凍結・ハッシュ保存
+# ============================================================
+class FrozenConditionsTests(unittest.TestCase):
+    def test_experiment_version_is_v1_0(self):
+        self.assertEqual(freeze.EXPERIMENT_VERSION, "ER-002-v1.0")
+
+    def test_all_nine_condition_categories_present_with_hashes(self):
+        frozen = freeze.build_frozen_conditions()
+        expected_categories = [
+            "topic_research_prompt", "script_generation_prompt", "tts_common_style_prefix",
+            "qa_prompt_and_schema", "dynamics3", "word_count_conditions",
+            "retry_conditions", "voice_assignment", "ab_anonymization",
+        ]
+        for category in expected_categories:
+            self.assertIn(category, frozen)
+            category_data = frozen[category]
+            # sha256(64文字hex)がどこかのキーに存在すること
+            found_hash = category_data.get("sha256") or category_data.get("schema_fields_sha256")
+            self.assertIsNotNone(found_hash, f"{category}にsha256が見つかりません")
+            self.assertEqual(len(found_hash), 64)
+
+    def test_hashes_are_reproducible(self):
+        frozen_a = freeze.build_frozen_conditions()
+        frozen_b = freeze.build_frozen_conditions()
+        self.assertEqual(frozen_a["dynamics3"]["sha256"], frozen_b["dynamics3"]["sha256"])
+        self.assertEqual(
+            frozen_a["script_generation_prompt"]["sha256"], frozen_b["script_generation_prompt"]["sha256"])
+        self.assertEqual(
+            frozen_a["tts_common_style_prefix"]["sha256"], frozen_b["tts_common_style_prefix"]["sha256"])
+
+    def test_voice_assignment_matches_s3_config(self):
+        frozen = freeze.build_frozen_conditions()
+        expected = {a["article_id"]: a["voices"] for a in s3config.flatten_s3_batches()}
+        self.assertEqual(frozen["voice_assignment"]["assignment"], expected)
 
 
 if __name__ == "__main__":

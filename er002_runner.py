@@ -360,22 +360,35 @@ def build_ab_bundle(
     識別キーを合わせること)。
 
     戻り値: {"files": {匿名ファイル名: メタデータ除去済みWAVバイト列, ...},
+             "filename_mapping": {匿名ファイル名: 実際の話者情報, ...}
+                                  (filesに実際に存在するファイル名だけを含む。
+                                  ER-002-S2-C2で判明した「対応表に存在しない
+                                  ファイル名が載る」事故の再発防止),
              "mapping_path": 対応表の保存先(output_dir指定時のみ、
                               *_ab_mapping.jsonなのでGit追跡対象外),
              "presentation": ABPresentation,
-             "user_evaluations": {匿名ファイル名: A/B評価スキーマ初期値}}
+             "user_evaluations": {匿名ファイル名: A/B評価スキーマ初期値}
+                                  (filesと同じキー集合)}
+
+    filename_mapping / files / user_evaluations の3つは、必ず同一のループ内で
+    同一のfilename変数から構築しており、キー集合が完全一致することを
+    validate_ab_bundle_filename_consistency()で検証できる(ER-002-S2で発生した
+    大文字小文字不一致の再発防止)。
     """
     presentation = ab.build_ab_presentation(article_id, entries, seed=seed)
 
     files = {}
+    filename_mapping = {}
     user_evaluations = {}
     for sample_num, label in enumerate(presentation.order, start=1):
         entry = presentation.mapping[label]
         key = entry.get("voice") or entry.get("id")
         raw_bytes = wav_bytes_by_label.get(key)
         filename = ab.anonymized_filename(article_id, sample_num)
-        if raw_bytes is not None:
-            files[filename] = ab.strip_wav_metadata(raw_bytes)
+        if raw_bytes is None:
+            continue  # 実データが無いエントリはfiles/対応表/評価スキーマのいずれにも含めない
+        files[filename] = ab.strip_wav_metadata(raw_bytes)
+        filename_mapping[filename] = dict(entry)
         user_evaluations[filename] = common.default_ab_user_evaluation()
 
     speaker_names = [str(e.get("voice", "")) for e in entries if e.get("voice")]
@@ -387,12 +400,37 @@ def build_ab_bundle(
     if output_dir is not None:
         os.makedirs(output_dir, exist_ok=True)
         mapping_path = os.path.join(output_dir, f"er002_{article_id}_ab_mapping.json")
-        ab.save_mapping_table(presentation.mapping, mapping_path)
+        ab.save_mapping_table(filename_mapping, mapping_path)
 
-    return {
+    bundle = {
         "files": files,
+        "filename_mapping": filename_mapping,
         "mapping_path": mapping_path,
         "presentation": presentation,
         "filename_leak_findings": leak_findings,
         "user_evaluations": user_evaluations,
     }
+    ab.validate_ab_bundle_filename_consistency(bundle, article_id, expected_sample_count=len(entries))
+    return bundle
+
+
+def write_ab_bundle_files(bundle: dict, ab_dir: str) -> list[str]:
+    """A/Bバンドルの匿名化ファイルを実際にディスクへ書き出し、書き出し後に
+    ディレクトリを読み直してbundle["files"]のキーと文字列として完全一致する
+    (大文字小文字を含む)ことを検証する。ER-002-S2で手動リネームにより
+    対応表とファイル名が食い違った事故の再発防止(この関数を使えば手動
+    リネームの余地がない)。"""
+    os.makedirs(ab_dir, exist_ok=True)
+    for filename, wav_bytes in bundle["files"].items():
+        with open(os.path.join(ab_dir, filename), "wb") as f:
+            f.write(wav_bytes)
+
+    on_disk = set(os.listdir(ab_dir))
+    expected = set(bundle["files"].keys())
+    missing = expected - on_disk
+    if missing:
+        raise ValueError(
+            f"書き出したはずのファイルがディスク上に見つかりません(大文字小文字の"
+            f"不一致等が疑われます): {missing}"
+        )
+    return sorted(expected)
