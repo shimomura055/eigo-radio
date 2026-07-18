@@ -1,0 +1,102 @@
+{
+  "topic_id": "A01",
+  "topic_label": "World Cup semifinal (Argentina vs England)",
+  "note_ja": "既存F01〜F05(er002_output/A01/v1_1a_fixed_facts.json)の事実本文は意味変更していない。出典情報のみ、既存source_refs.jsonの再利用と、F04(決勝進出先)のみ不足していた出典を再照合して追加した。",
+  "fact_registry": [
+    {
+      "fact_id": "F01",
+      "fact_text": "Argentina defeated England 2-1 in the World Cup semifinal on July 15, 2026.",
+      "source_title": "Argentina is back in the World Cup final after a thrilling semifinal win over England",
+      "source_url": "https://www.npr.org/2026/07/15/nx-s1-5893895/2026-world-cup-fifa-argentina-england-semifinal",
+      "source_type": "reputable_media",
+      "retrieved_at": "2026-07-18",
+      "verification_status": "VERIFIED",
+      "notes": "既存source_refs.json記載のFIFA公式・AP・Reutersでも一致。今回追加のNPR記事でも試合結果・日付が一致することを再確認した(cross_source_confirmation)。"
+    },
+    {
+      "fact_id": "F02",
+      "fact_text": "Anthony Gordon scored England's opening goal.",
+      "source_title": "Soccer-Holders Argentina beat England 2-1 to set up World Cup final against Spain",
+      "source_url": "https://www.investing.com/news/world-news/soccerholders-argentina-beat-england-21-to-set-up-world-cup-final-against-spain-4794442",
+      "source_type": "reputable_media",
+      "retrieved_at": "2026-07-16",
+      "verification_status": "VERIFIED",
+      "notes": "既存source_refs.json記載のReuters配信記事(investing.com転載)に基づく。"
+    },
+    {
+      "fact_id": "F03",
+      "fact_text": "Enzo Fernandez equalized for Argentina, and Lautaro Martinez scored the winning goal in the 92nd minute.",
+      "source_title": "Argentina is back in the World Cup final after a thrilling semifinal win over England",
+      "source_url": "https://www.npr.org/2026/07/15/nx-s1-5893895/2026-world-cup-fifa-argentina-england-semifinal",
+      "source_type": "reputable_media",
+      "retrieved_at": "2026-07-18",
+      "verification_status": "VERIFIED",
+      "notes": "既存Reuters配信記事と、今回追加のNPR記事(『Lautaro Martinez's header in stoppage time being the game-winning goal』)の双方で得点経過が一致(cross_source_confirmation)。"
+    },
+    {
+      "fact_id": "F04",
+      "fact_text": "Argentina advanced to the World Cup final against Spain.",
+      "source_title": "Argentina to face Spain in the World Cup final: What to know",
+      "source_url": "https://abcnews.com/GMA/Culture/argentina-face-spain-world-cup-final/story?id=134757662",
+      "source_type": "reputable_media",
+      "retrieved_at": "2026-07-18",
+      "verification_status": "VERIFIED",
+      "notes": "既存source_refs.jsonの3件では決勝の相手(スペイン)が明示されていなかったため、出典情報のみを本工程で再照合した(事実本文は変更していない)。NPR・FOX Sports・CNN・ABC News・Yahoo Sportsの複数の信頼できる報道で決勝カード(Argentina vs Spain, 2026年7月19日, MetLife Stadium)が一致。"
+    },
+    {
+      "fact_id": "F05",
+      "fact_text": "Lionel Messi provided the assist for the equalizer and the cross leading to the winning goal, according to Reuters.",
+      "source_title": "Argentina is back in the World Cup final after a thrilling semifinal win over England",
+      "source_url": "https://www.npr.org/2026/07/15/nx-s1-5893895/2026-world-cup-fifa-argentina-england-semifinal",
+      "source_type": "reputable_media",
+      "retrieved_at": "2026-07-18",
+      "verification_status": "VERIFIED",
+      "notes": "既存Reuters配信記事(この事実の帰属元そのもの)に加え、今回追加のNPR記事(『Lionel Messi assisted both goals』)でも同内容が独立して確認できた(cross_source_confirmation)。"
+    }
+  ],
+  "checklist_coverage_ja": {
+    "対戦相手": "F01(England)",
+    "スコア": "F01(2-1)",
+    "大会段階": "F01(World Cup semifinal)",
+    "日付": "F01(July 15, 2026)",
+    "得点経過": "F02(Gordon先制)+F03(Fernandez同点、Martinez決勝点)",
+    "92分の決勝点": "F03",
+    "決勝進出先": "F04(Spain)"
+  },
+  "source_manifest": [
+    {
+      "outlet": "FIFA (official)",
+      "type": "primary",
+      "url": "https://www.fifa.com/en/articles/tuchel-kane-react-semi-final"
+    },
+    {
+      "outlet": "Reuters (via investing.com)",
+      "type": "reputable_media",
+      "url": "https://www.investing.com/news/world-news/soccerholders-argentina-beat-england-21-to-set-up-world-cup-final-against-spain-4794442"
+    },
+    {
+      "outlet": "Associated Press",
+      "type": "reputable_media",
+      "url": "https://apnews.com/article/344d7a925c02a444cb5c51d9d0d9c4b7"
+    },
+    {
+      "outlet": "NPR",
+      "type": "reputable_media",
+      "url": "https://www.npr.org/2026/07/15/nx-s1-5893895/2026-world-cup-fifa-argentina-england-semifinal"
+    },
+    {
+      "outlet": "ABC News",
+      "type": "reputable_media",
+      "url": "https://abcnews.com/GMA/Culture/argentina-face-spain-world-cup-final/story?id=134757662"
+    }
+  ],
+  "verification_summary": {
+    "total_facts": 5,
+    "verified": 5,
+    "partially_verified": 0,
+    "unverified": 0
+  },
+  "generation_ready": true,
+  "unresolved_items": [],
+  "fact_registry_sha256": "85c18d8c4f59a90b9763452f900ff270c88c9acd8a80b4e595cb13d3942d0b31"
+}

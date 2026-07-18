@@ -1,0 +1,32 @@
+{
+  "stage_id": "ER-002-v1.2M-D1",
+  "base_experiment_version": "ER-002-v1.2M-JA",
+  "p0_frozen_conditions_overall_sha256": "afbb804980e3ba4e1d5119773f72e35fc768ae31c924a7a8c4c109a09a116c6e",
+  "p0_frozen_conditions_unchanged": true,
+  "note_ja": "P0で凍結した阪神マスター・original_request・最小生成プロンプト・structured output schema・最小事実QA・PASS/REVIEW_REQUIRED/FAIL規則・モデル参照先・文字数非ゲート方針・記事ごと1回生成方針・旧Editorial Brief工程不使用方針は変更していない(sha256一致で確認)。",
+  "batch_manifest_path": "er002_v1_2m_fact_registry/batch_manifest.json",
+  "batch_manifest_sha256": "7d5965e1f66385c4ac9b55a45ac56b5001a495627a5ca36630fa7e1c8baef7e9",
+  "batch_summary": {
+    "total_articles": 7,
+    "generation_ready_count": 7,
+    "source_verification_failed_count": 0,
+    "all_generation_ready": true
+  },
+  "structured_output_smoke_test": {
+    "result_path": "er002_v1_2m_smoke_test/smoke_test_result.json",
+    "result_sha256": "0650552cfa75b102004478e519828370ed328a59afba8a2df8c0008cb59a9821",
+    "structured_output_supported": true,
+    "fallback_used": false,
+    "structural_validation": "OK"
+  },
+  "api_usage": {
+    "web_search_and_info_gathering": 10,
+    "structured_output_smoke_generation": 1,
+    "fallback_smoke_generation": 0,
+    "fact_qa": 0,
+    "other": 0,
+    "note_ja": "Web検索10回(A01のF04補強1回、A02のF06補強1回、ADD01〜ADD05の新規事実収集8回)。structured_output_smoke_generation=1(架空トピックのみ、本番7記事のトピック・事実は一切使用していない)。fallback_smoke_generation=0(structured outputが受理されたため不要だった)。fact_qa=0(このスモークテストの対象外)。本番7記事の本文生成回数=0。"
+  },
+  "production_article_generation_count": 0,
+  "tts_call_count": 0
+}
