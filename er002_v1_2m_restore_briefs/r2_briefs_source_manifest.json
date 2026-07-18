@@ -1,0 +1,47 @@
+{
+  "briefs": {
+    "A01": {
+      "brief_path": "er002_v1_2m_restore_briefs/A01_concise_brief.txt",
+      "sha256": "4635e7f6d1234b18c2aab8d594eab1e1c8cff5ea2f5b404e88495163b121ab05",
+      "source": "ER-002-v1.2M-R1で凍結済みのconcise brief(ユーザー指定文面)をそのまま再使用。変更していない。",
+      "status": "READY"
+    },
+    "A02": {
+      "brief_path": null,
+      "sha256": null,
+      "source": "D1のfact_registry(A02.json)のtopic_labelおよびJ1のinput_manifest.jsonのtopic_label_enはいずれも英語の短いラベル(\"UK nighttime social-media setting for 16-17 year olds\")のみで、A01/ADD05のような日本語の文単位のconcise briefが過去に一度も正式記録されていない。英語ラベルをそのまま使うと言語が混在し、日本語ネイティブなプロンプト設計の前提が崩れる。翻訳・再要約は禁止されているため、新規のbrief文を作成せず、BRIEF_SOURCE_MISSINGとして扱う。",
+      "status": "BRIEF_SOURCE_MISSING"
+    },
+    "ADD01": {
+      "brief_path": "er002_v1_2m_restore_briefs/ADD01_concise_brief.txt",
+      "sha256": "043b0dd51d2913fb4cd2adc8150d97f3bababe4171d560f5a9c9d5f6d63795f0",
+      "source": "P0で凍結済みのoriginal_request.txt(sha256凍結済み)内の該当箇条書きを、文字列を一切変更せずそのまま抽出して使用(・記号のみ除去)。",
+      "status": "READY"
+    },
+    "ADD02": {
+      "brief_path": "er002_v1_2m_restore_briefs/ADD02_concise_brief.txt",
+      "sha256": "33b3781760001dc59167a20f9732822aee610d5c633d982b977a3f9c57e4724a",
+      "source": "P0で凍結済みのoriginal_request.txt内の該当箇条書きをそのまま抽出。",
+      "status": "READY"
+    },
+    "ADD03": {
+      "brief_path": "er002_v1_2m_restore_briefs/ADD03_concise_brief.txt",
+      "sha256": "8b418fa3263f507ec25a1b431f1ad3243a4aaa2b0ffae89bfd1d6b116f54257c",
+      "source": "P0で凍結済みのoriginal_request.txt内の該当箇条書きをそのまま抽出。",
+      "status": "READY"
+    },
+    "ADD04": {
+      "brief_path": "er002_v1_2m_restore_briefs/ADD04_concise_brief.txt",
+      "sha256": "aa6764e699d161398270112e827e3a54d9c7b5e166360f44e8ec02e13474eab7",
+      "source": "P0で凍結済みのoriginal_request.txt内の該当箇条書きをそのまま抽出。",
+      "status": "READY"
+    },
+    "ADD05": {
+      "brief_path": "er002_v1_2m_restore_briefs/ADD05_concise_brief.txt",
+      "sha256": "a114876f01520871e9cf4ab34cd6c7d08acb121afe48861607ed0f328f0b209d",
+      "source": "ER-002-v1.2M-R1で凍結済みのconcise brief(ユーザー指定文面)をそのまま再使用。変更していない。",
+      "status": "READY"
+    }
+  },
+  "selection_rationale_ja": "A01・ADD05はR1で既に凍結済みのconcise briefをそのまま再使用した(変更なし)。ADD01〜ADD04は、D1・J1のmanifestに記録されていたのは英語の短いトピックラベルのみで、A01/ADD05と同じ『日本語の文単位の短い説明』に相当する記録がなかった。一方、P0で凍結済みのoriginal_request.txt(ユーザー自身が記述し、sha256を固定済み)には、この4記事に対応する日本語の一文説明が元々存在していたため、これを最優先の『既存の元トピック説明』として、文字列を一切変更せずそのまま使用した(re-summarizeしていない)。A02については、original_request.txtにもD1/J1のmanifestにも日本語の文単位の説明が一度も存在せず、英語ラベルの翻訳・新規作成は禁止事項に抵触するため、BRIEF_SOURCE_MISSINGとした。"
+}
