@@ -1,0 +1,265 @@
+{
+  "experiment_version": "ER-002-v1.2M-JA",
+  "base_experiment_version": "ER-002-v1.1B",
+  "frozen_at": "2026-07-18T06:32:52.580861+00:00",
+  "note": "ER-002-v1.0・v1.1A・v1.1Bの凍結条件・コード・実行成果物は変更していない。ここにはv1.2M-JA(ルール中心編集工程を使わない最小指示型生成方式)の条件のみを記録する。",
+  "masters": {
+    "hanshin_ja_master_path": "er002_v1_2m_masters/hanshin_ja_master.txt",
+    "hanshin_ja_master_sha256": "5f4fe54f8a6b64fc80af5ed80e76fe0a9ccbbb1c082ef71f310b5303433abcb1",
+    "original_request_path": "er002_v1_2m_masters/original_request.txt",
+    "original_request_sha256": "58efd24727df9222b790ae8a189a7551151aaae76a092d67d19b2daf64b0fe04",
+    "encoding": "utf-8",
+    "newline": "LF",
+    "bom": false,
+    "final_newline_policy": "single_trailing_newline_only",
+    "frozen_at_commit": "71a20742203baf57a0bfc1826e194de7522ca4b5"
+  },
+  "generation_prompt": {
+    "version": "er002-ja-master-imitation-v1",
+    "template_sha256": "75fce918af9162ff71e0d2ad377d996494894bd10622cc62c332ae30011994ac",
+    "evaluation_reasons": [
+      "全体の概要を面白く展開",
+      "今日の虎ポイントで、別切口でも解説",
+      "一言で表すなら、でサマリー",
+      "聞き手があきない設計"
+    ],
+    "evaluation_reasons_sha256": "ca6984d456ad0ae97ac19d58887306719b04f3c57ca15bf66f7663341a4c93e3",
+    "json_shape_fallback_instruction_sha256": "3e1b9532da85b113df02d1d013aeb3a119b0ba79dd7393d80b1e788b75c3d62a",
+    "note": "過去6トピック一覧・過去記事本文はプロンプトへ含めない。依頼文全文からの動的抽出も行わず、評価理由は固定文言として凍結する。"
+  },
+  "structured_output_schema": {
+    "schema": {
+      "name": "ja_master_imitation_article",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "point_one": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "string"
+              },
+              "paragraphs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "heading",
+              "paragraphs"
+            ],
+            "additionalProperties": false
+          },
+          "point_two": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "string"
+              },
+              "paragraphs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "heading",
+              "paragraphs"
+            ],
+            "additionalProperties": false
+          },
+          "one_line_summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "point_one",
+          "point_two",
+          "one_line_summary"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    },
+    "sha256": "53b836a7c74a4fba706d1c9657bb1b74bf65db306d86cf7fbb0a54f4b050d5b2",
+    "required_fields": [
+      "title",
+      "body",
+      "point_one",
+      "point_two",
+      "one_line_summary"
+    ]
+  },
+  "fact_qa": {
+    "version": "er002-ja-master-imitation-fact-qa-v1",
+    "template_sha256": "68e84fe370b274151f03bf18c823f28d14798c058225900299015c3125cfddcb",
+    "required_fields": [
+      "contradicts_verified_facts",
+      "unsupported_specific_claims",
+      "evidence"
+    ],
+    "required_fields_sha256": "0eac301c85dfb2cd88f2143baecb09a92db78c701dc4e75bc8879aead57ac135",
+    "judged_only": [
+      "contradicts_verified_facts",
+      "unsupported_specific_claims"
+    ],
+    "never_judges": [
+      "面白さ",
+      "勢い",
+      "アングルの良し悪し",
+      "Pointの価値",
+      "In One Lineの印象",
+      "narrative coherence",
+      "listener payoff",
+      "続きを聞きたいか"
+    ]
+  },
+  "verdict_rules": {
+    "rules": {
+      "PASS": "明確な事実矛盾なし かつ 未確認の具体的主張なし",
+      "REVIEW_REQUIRED": "確認済み事実に見当たらない具体的主張がある(明確な矛盾とまでは断定できない)",
+      "FAIL": "確認済み事実と明確に矛盾する",
+      "on_review_required_or_fail": "再生成しない(記録のみ)"
+    },
+    "sha256": "63efd4976439dbd4bd3e7b58a3ed4560f2a05255b20af4ec9d74dd5fb8482f4f"
+  },
+  "model_config": {
+    "generation_model_ref": "er002_script_adapter.MODEL_WRITE",
+    "generation_model_value": "gpt-5.6-terra",
+    "fact_qa_model_ref": "er002_common.QA_MODEL_NAME",
+    "fact_qa_model_value": "gemini-3-flash-preview",
+    "note": "モデル名は既存定義を参照するのみで、このファイルへ重複してハードコードしない(値は記録用の参照コピー)。temperature等は既存アダプターのデフォルトを使用し、新規パラメータを追加しない。"
+  },
+  "retry_rules": {
+    "conditions": {
+      "content_generation_attempts_per_article": 1,
+      "max_generation_api_retry": 2,
+      "max_generation_parse_retry": 1,
+      "max_fact_qa_eval_attempts": 2,
+      "max_fact_qa_api_retry": 5,
+      "regeneration_on_content_dissatisfaction": false,
+      "regeneration_on_review_required_or_fail": false
+    },
+    "sha256": "c0c11af3905cee12078c89d89c9b6685e399ea48be913b6c74eba2fce36b9233"
+  },
+  "target_articles_and_scope": {
+    "target_articles": [
+      {
+        "article_id": "A01",
+        "topic": "World Cup semifinal"
+      },
+      {
+        "article_id": "A02",
+        "topic": "UK nighttime social-media setting"
+      },
+      {
+        "article_id": "ADD01",
+        "topic": "Tokuryu case broker"
+      },
+      {
+        "article_id": "ADD02",
+        "topic": "Imperial House Law reform"
+      },
+      {
+        "article_id": "ADD03",
+        "topic": "Strait of Hormuz 20% charge withdrawal"
+      },
+      {
+        "article_id": "ADD04",
+        "topic": "Akutagawa and Naoki prizes"
+      },
+      {
+        "article_id": "ADD05",
+        "topic": "Elder-to-elder caregiving"
+      }
+    ],
+    "target_articles_sha256": "c53dcd5ec4ec65571a1ad3dd8d7421a9c580d3bcd53d7ece5818e34ebadb66bd",
+    "excluded_stages": [
+      "editorial_angle_generation",
+      "editorial_angle_scoring",
+      "editorial_brief",
+      "editorial_role_enum",
+      "editorial_quality_llm_gate",
+      "narrative_quality_auto_pass_fail",
+      "multi_script_auto_selection",
+      "content_dissatisfaction_regeneration",
+      "web_search",
+      "topic_retrieval",
+      "fact_registry_auto_collection",
+      "pdf_fact_extraction",
+      "approved_article_fact_extraction",
+      "tts",
+      "audio_qa",
+      "dynamics3"
+    ],
+    "excluded_stages_sha256": "d459d7ac149a039a49919c7b2694fafa044c24670cf141e59f9e1b019949759d",
+    "character_count_policy": {
+      "used_as_pass_fail_gate": false,
+      "recorded_fields": [
+        "total_characters",
+        "characters_excluding_whitespace_and_markdown",
+        "ratio_to_master"
+      ]
+    }
+  },
+  "benchmark": {
+    "source_status": {
+      "status": "SOURCE_PDF_COPIED",
+      "expected_source_path": "/mnt/data/ER-001_口調比較_6トピック_v0.1.pdf",
+      "mnt_data_accessible": false,
+      "found_via_local_filename_search": true,
+      "local_source_path_found": "C:/Users/tensh/Downloads/ER-001_口調比較_6トピック_v0.1.pdf",
+      "copied_to": "er002_v1_2m_benchmarks/source/ER-001_口調比較_6トピック_v0.1.pdf",
+      "source_sha256": "89585132e8d1faaa9ce3d3d9c6f3781e0c23d946db8c94f3b876e9b4c966df02",
+      "copy_sha256": "89585132e8d1faaa9ce3d3d9c6f3781e0c23d946db8c94f3b876e9b4c966df02",
+      "sha256_match": true,
+      "size_bytes": 489127,
+      "benchmark_body_imported": false,
+      "blocks_p0": false,
+      "note_ja": "本文抽出はP0の対象外。左側(阪神マスター+最小依頼から得た当時の初回生成結果)を正式な再現性基準として扱い、右側(表現の勢いを調整した版)は基準として使用しない、という位置づけのみをこのP0で記録する(セクション6参照)。PDF本体はGit追跡方針が既存リポジトリで判断できないため、sha256と状態ファイルのみコミットし、PDF本体はコミットしない。"
+    },
+    "positioning": {
+      "note_ja": "PDF(ER-001_口調比較_6トピック_v0.1.pdf)左側・右側の位置づけを記録する。本文抽出・生成入力への混入はP0では行わない(セクション5・12参照)。",
+      "left_column": {
+        "role": "APPROVED_BENCHMARK",
+        "description": "阪神日本語マスターと最小限の依頼から得られた当時の初回生成結果。ユーザーが内容・切り口・構成をOK品として確認済み。",
+        "used_as": "ER-002-v1.2M-JAの正式な再現性基準"
+      },
+      "right_column": {
+        "role": "EXPRESSION_ADJUSTED_VARIANT",
+        "description": "ユーザーが表現の勢いをわずかに調整した版。左側と大きな品質差はなく、わずかに良い程度。",
+        "used_as": "正式な合否基準・追加マスター・生成ロジックとしては使用しない"
+      },
+      "generation_input_policy": {
+        "left_column_body_passed_to_model": false,
+        "right_column_body_passed_to_model": false,
+        "textual_match_required": false,
+        "same_metaphor_required": false,
+        "same_heading_wording_required": false
+      },
+      "new_generation_user_evaluation_classes": [
+        "ACCEPT",
+        "LIGHT_EDIT_NEEDED",
+        "REWRITE_REQUIRED"
+      ],
+      "usable_result_classes": [
+        "ACCEPT",
+        "LIGHT_EDIT_NEEDED"
+      ]
+    }
+  }
+}

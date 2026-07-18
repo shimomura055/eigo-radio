@@ -1,0 +1,22 @@
+{
+  "note_ja": "PDF(ER-001_口調比較_6トピック_v0.1.pdf)左側・右側の位置づけを記録する。本文抽出・生成入力への混入はP0では行わない(セクション5・12参照)。",
+  "left_column": {
+    "role": "APPROVED_BENCHMARK",
+    "description": "阪神日本語マスターと最小限の依頼から得られた当時の初回生成結果。ユーザーが内容・切り口・構成をOK品として確認済み。",
+    "used_as": "ER-002-v1.2M-JAの正式な再現性基準"
+  },
+  "right_column": {
+    "role": "EXPRESSION_ADJUSTED_VARIANT",
+    "description": "ユーザーが表現の勢いをわずかに調整した版。左側と大きな品質差はなく、わずかに良い程度。",
+    "used_as": "正式な合否基準・追加マスター・生成ロジックとしては使用しない"
+  },
+  "generation_input_policy": {
+    "left_column_body_passed_to_model": false,
+    "right_column_body_passed_to_model": false,
+    "textual_match_required": false,
+    "same_metaphor_required": false,
+    "same_heading_wording_required": false
+  },
+  "new_generation_user_evaluation_classes": ["ACCEPT", "LIGHT_EDIT_NEEDED", "REWRITE_REQUIRED"],
+  "usable_result_classes": ["ACCEPT", "LIGHT_EDIT_NEEDED"]
+}

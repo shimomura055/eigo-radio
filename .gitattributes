@@ -1,0 +1,7 @@
+# ER-002-v1.2M-P0: マスター・依頼文は正本として文字列を一切変更してはならない
+# (改行コード変換も含む)。core.autocrlf=trueがWindowsでのcheckout時に
+# LF->CRLF変換を行ってしまうと、凍結sha256(LF前提で計算)と実際のファイル
+# 内容が一致しなくなり、改ざんが無いのにMasterIntegrityErrorで停止して
+# しまう。-textでこの2ファイルだけ改行変換を完全に無効化する。
+er002_v1_2m_masters/hanshin_ja_master.txt -text
+er002_v1_2m_masters/original_request.txt -text

@@ -1,0 +1,21 @@
+{
+  "experiment_version": "ER-002-v1.1B",
+  "status": "CLOSED_RULE_CENTRIC_EDITORIAL_APPROACH_ENDED",
+  "closure_id": "ER-002-v1.1B-CLOSE",
+  "acceptance_result": "NOT_ACCEPTED",
+  "reason": "A01匿名A/B比較(sample_1=ER-002-v1.0, sample_2=ER-002-v1.1B revised)で、v1.1B側がuser_acceptance=rejected、improvement_over_original=much_worseとなったため。編集品質QAの事実入力契約修正(v1.1B-I1)自体は技術的に機能した(factual_grounding_status/brief_alignment_status/overall_statusはいずれもpass)が、機械的な編集品質合格が、ユーザーが実際に感じる記事の面白さ・題材の劇的な核を伝えられているかを予測できなかった。",
+  "failure_classification": {
+    "primary": "EDITORIAL_PROXY_OPTIMIZATION_FAILURE",
+    "machine_editorial_quality_passed": true,
+    "machine_pass_predicted_user_interest": false
+  },
+  "evidence_refs": [
+    "er002_output/A01/v1_1b_c1/user_evaluation.json",
+    "er002_output/A01/v1_1b_c1/provenance.json",
+    "er002_output/A01/v1_1b_c1/manifest.json",
+    "er002_output/A01/v1_1b_q1/q1_results.json"
+  ],
+  "downstream_decision": "ルール・スコア・Editorial Briefによる編集アングル選定方式(v1.1A/v1.1B系)を打ち切り、承認済み阪神日本語マスターを単一の手本として使う最小指示型の生成方式(ER-002-v1.2M-JA)へ移行する。",
+  "note": "この記録はER-002-v1.1A・ER-002-v1.1Bの既存成果物・凍結条件・コード・履歴(er002_editorial_common.py, er002_editorial_runner.py, er002_v1_1a_freeze.py, er002_v1_1b_freeze.py等)を上書き・変更するものではない。旧工程のコードは削除せず、v1.1A・v1.1Bの実験証跡として保持する。ステータスの追記のみ。",
+  "recorded_at": "2026-07-19"
+}
