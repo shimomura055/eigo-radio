@@ -1,0 +1,114 @@
+{
+  "experiment_version": "ER-002-v1.2M-R4",
+  "git_head": {
+    "head": "34d1db5c0e9de210879454a802c46ea0a5476a3c"
+  },
+  "tracked_files_clean": {
+    "unstaged_modified_tracked_files": [],
+    "staged_uncommitted_files": [],
+    "clean": true
+  },
+  "frozen_file_integrity": {
+    "er002_v1_2m_masters/hanshin_ja_master.txt": {
+      "committed_sha256": "5f4fe54f8a6b64fc80af5ed80e76fe0a9ccbbb1c082ef71f310b5303433abcb1",
+      "working_tree_sha256": "5f4fe54f8a6b64fc80af5ed80e76fe0a9ccbbb1c082ef71f310b5303433abcb1",
+      "match": true
+    },
+    "er002_v1_2m_restore_briefs/writer_prompt_template_r3.txt": {
+      "committed_sha256": "2d762f716090b1d649163a855ef8ec6808de525867719e9d364877c0ef2f0bba",
+      "working_tree_sha256": "2d762f716090b1d649163a855ef8ec6808de525867719e9d364877c0ef2f0bba",
+      "match": true
+    },
+    "er002_v1_2m_restore_briefs/length_instruction_suffix_r4.txt": {
+      "committed_sha256": "b6fc9f7318a73f6fbe95616106c82eb657855d84d229b3a31de1e6a1a54195f8",
+      "working_tree_sha256": "b6fc9f7318a73f6fbe95616106c82eb657855d84d229b3a31de1e6a1a54195f8",
+      "match": true
+    },
+    "er002_v1_2m_restore_briefs/writer_prompt_template_r4_lb.txt": {
+      "committed_sha256": "5d49266aa9a7af03e873d1c4d48a039577c41a39d89e73533c11bb5f6b3e031c",
+      "working_tree_sha256": "5d49266aa9a7af03e873d1c4d48a039577c41a39d89e73533c11bb5f6b3e031c",
+      "match": true
+    },
+    "all_match": true
+  },
+  "master_length_and_bounds": {
+    "master_spoken_text_char_count": 697,
+    "lower_bound": 592,
+    "upper_bound": 802,
+    "count_status": "COUNT_OK",
+    "user_reported_master_char_count": 915,
+    "measurement_difference_note_ja": "ユーザー報告値(915字)と自動計測値は測定対象・方法が異なる可能性がある(自動計測はcitation annotation除去+Markdown記号除去+NFKC正規化+空白除去後の文字数)。差異がある場合はR4完了報告で明示する。",
+    "ok": true
+  },
+  "condition_l_diff_from_r3": {
+    "starts_with_r3_message": true,
+    "diff_is_exactly_length_suffix": true,
+    "ok": true
+  },
+  "condition_lb_length_matches_l": {
+    "length_suffix_present_in_lb": true,
+    "bounds_present_in_lb": true,
+    "ok": true
+  },
+  "model_and_reasoning": {
+    "writer_model": "gpt-5.6-sol",
+    "writer_reasoning_effort": "high",
+    "fact_checker_model": "gpt-5.6-sol",
+    "fact_checker_reasoning_effort": "high",
+    "writer_ok": true,
+    "fact_checker_ok": true,
+    "ok": true
+  },
+  "responses_api_and_web_search": {
+    "writer_uses_responses_api": true,
+    "checker_uses_responses_api": true,
+    "writer_has_web_search_tool": true,
+    "checker_has_web_search_tool": true,
+    "writer_search_query_not_fixed_by_app": true,
+    "checker_search_query_not_fixed_by_app": true,
+    "ok": true
+  },
+  "no_structured_output_for_writer": {
+    "writer_response_format_absent": true,
+    "ok": true
+  },
+  "structure_gate_reused": {
+    "technical_gate_does_not_check_structure": true,
+    "diagnostics_uses_r2_validator": true,
+    "ok": true
+  },
+  "no_retry_on_length_or_structure": {
+    "technical_gate_only_checks_technical_failure": true,
+    "ok": true
+  },
+  "writer_input_composition": {
+    "forbidden_markers_found": [],
+    "ok": true
+  },
+  "editorial_pipeline_not_imported": {
+    "forbidden_imports_found": [],
+    "ok": true
+  },
+  "tts_not_referenced": {
+    "ok": true
+  },
+  "target_scope": {
+    "topics": {
+      "A01": "2026年ワールドカップ準決勝のイングランド対アルゼンチン",
+      "A02": "英国の未成年向け夜間SNS設定",
+      "ADD03": "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応"
+    },
+    "topic_count": 3,
+    "ok": true
+  },
+  "regression_tests": {
+    "tests_run": 154,
+    "failures": 0,
+    "errors": 0,
+    "ok": true
+  },
+  "planned_tts_call_count": 0,
+  "planned_old_editorial_brief_pipeline_call_count": 0,
+  "planned_structure_or_length_regeneration_count": 0,
+  "overall_status": "R4_PREFLIGHT_PASSED"
+}

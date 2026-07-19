@@ -1,0 +1,35 @@
+**📱「午前0時、スマホは消えない。でも“やめられない仕掛け”は眠りにつく」**
+
+英国政府が打ち出したのは、16歳と17歳に向けた夜間SNS設定だ。
+
+午前0時から6時まで、通知やプッシュ機能を初期設定で停止。
+
+さらに動画の自動再生や、次々と投稿を差し出す個人向け推薦フィードも、時間帯を問わず最初からオフにする。
+
+深夜、枕元で画面が光る。
+
+「誰かが投稿した」
+
+「もう一本だけ見たい」
+
+そんな小さな呼び鈴を、先に黙らせようという試みだ。
+
+ただし、完全な利用禁止ではない。本人が望めば設定を変更できる。
+
+英国は「取り上げる」のではなく、まず安全側に設定し、自分で解除しない限り誘惑が強くならない環境をつくろうとしている。施行は2027年春の見通しだ。([gov.uk](https://www.gov.uk/government/news/new-social-media-curfews-and-crackdown-on-addictive-features-to-better-protect-16-and-17-year-olds-online))
+
+### ⭐ 16歳で突然、無防備にしない
+
+英国では16歳未満へのSNS提供禁止も2027年春に予定されている。
+
+そこで生じるのが、16歳になった瞬間に強い推薦機能へさらされる「保護の崖」だ。今回の設定は、大人へ近づく時期にも段階的な安全網を残す考え方である。([gov.uk](https://www.gov.uk/government/news/new-social-media-curfews-and-crackdown-on-addictive-features-to-better-protect-16-and-17-year-olds-online))
+
+### ⭐ 効くかどうかは「解除の手間」次第
+
+政府の実証研究には309家庭が参加し、夜間制限などを試した。睡眠や集中への好影響が報告された一方、年齢詐称、別端末、他人のアカウント、VPNによる回避は残る。([gov.uk](https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk))
+
+**一言で表すなら……**
+
+「英国が設置するのはネットの門限ではなく、深夜の無限スクロールへ向かう道に置かれた、小さな赤信号だ。」
+
+---
