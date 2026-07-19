@@ -66,8 +66,12 @@ def load_translator_prompt_template_p1b(path: str = TRANSLATOR_PROMPT_TEMPLATE_P
 
 
 def build_translator_user_message_p1b(approved_japanese_article: str, template: Optional[str] = None) -> str:
+    """テンプレート中には{テーマ表現}等、モデルへの指示としての文字通り
+    の中括弧書きが複数含まれるため、.format()ではなく単一プレース
+    ホルダーだけを対象にした.replace()を使う(他の中括弧を誤って
+    置換対象にしないため)。"""
     template = template if template is not None else load_translator_prompt_template_p1b()
-    return template.format(approved_japanese_article=approved_japanese_article)
+    return template.replace("{approved_japanese_article}", approved_japanese_article)
 
 
 # make_translator_fnはP1の実体をそのまま使う(Web検索なし・Structured
