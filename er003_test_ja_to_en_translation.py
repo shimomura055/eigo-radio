@@ -387,6 +387,153 @@ class DifficultyMetricsTests(unittest.TestCase):
             er003.parse_and_validate_difficulty_output(payload)
 
 
+class SentenceSplitterParagraphAwareTests(unittest.TestCase):
+    """ER-003-P2A: 文分割の根本原因修正の回帰テスト。段落境界を保持し、
+    カーリークォート・略語・小数点を正しく扱う。"""
+
+    def test_does_not_merge_across_blank_line_paragraphs(self):
+        text = "First paragraph with no ending punctuation\n\nSecond paragraph starts here."
+        sentences = er003.split_sentences(text)
+        self.assertEqual(len(sentences), 2)
+        self.assertEqual(sentences[0], "First paragraph with no ending punctuation")
+
+    def test_punctuationless_paragraph_is_its_own_unit(self):
+        text = "England 1–2 Argentina\n\nAt 39, the captain provided two assists that night."
+        sentences = er003.split_sentences(text)
+        self.assertEqual(sentences[0], "England 1–2 Argentina")
+        self.assertEqual(sentences[1], "At 39, the captain provided two assists that night.")
+
+    def test_splits_after_period_before_closing_curly_quote(self):
+        text = 'He said, “This is a test.” Then he left the room.'
+        sentences = er003.split_sentences(text)
+        self.assertEqual(len(sentences), 2)
+        self.assertTrue(sentences[0].endswith('”'))
+        self.assertEqual(sentences[1], "Then he left the room.")
+
+    def test_curly_quote_paragraph_does_not_merge_with_neighbors(self):
+        text = (
+            "But the results suggest defaults can guide people’s choices.\n\n"
+            "“What the UK is trying to switch off is not the glow of the smartphone, "
+            "but the endless current of scrolling that carries teenagers right up to bedtime.”\n\n"
+            "This midnight speed bump sits somewhere between a strict ban and a complete hands-off approach."
+        )
+        sentences = er003.split_sentences(text)
+        self.assertEqual(len(sentences), 3)
+        for s in sentences:
+            self.assertLessEqual(er003.compute_word_count(s), 32)
+
+    def test_am_abbreviation_not_split(self):
+        sentences = er003.split_sentences("It would run from midnight to 6 a.m. That is late.")
+        self.assertEqual(len(sentences), 2)
+        self.assertTrue(sentences[0].endswith("a.m."))
+
+    def test_pm_abbreviation_not_split(self):
+        sentences = er003.split_sentences("Restrictions ran from 9 p.m. to 7 a.m. daily.")
+        self.assertEqual(len(sentences), 1)
+
+    def test_us_abbreviation_not_split(self):
+        sentences = er003.split_sentences("On July 13, U.S. President Trump made an announcement.")
+        self.assertEqual(len(sentences), 1)
+
+    def test_decimal_not_split(self):
+        sentences = er003.split_sentences("That is roughly 4.9 billion yen. It matters.")
+        self.assertEqual(len(sentences), 2)
+        self.assertTrue(sentences[0].endswith("4.9 billion yen."))
+
+    def test_currency_amount_not_split(self):
+        sentences = er003.split_sentences("Brent closed at 84 dollars and 73 cents. It rose overnight.")
+        self.assertEqual(len(sentences), 2)
+
+    def test_colon_introduced_quote_paragraphs_not_merged(self):
+        text = (
+            "The message changed overnight from:\n\n"
+            "“If you want to pass through, pay 20 percent,”\n\n"
+            "to:\n\n"
+            "“Invest in the United States instead.”\n\n"
+            "Within just 24 hours, everything changed."
+        )
+        sentences = er003.split_sentences(text)
+        self.assertEqual(len(sentences), 5)
+
+    def test_question_mark_splits(self):
+        sentences = er003.split_sentences("Did the markets breathe a sigh of relief? Only partly.")
+        self.assertEqual(len(sentences), 2)
+
+    def test_exclamation_mark_splits(self):
+        sentences = er003.split_sentences("What a game! Nobody expected this.")
+        self.assertEqual(len(sentences), 2)
+
+    def test_closing_bracket_after_terminal_mark_recognized(self):
+        sentences = er003.split_sentences("This happened (in July). Then this happened.")
+        self.assertEqual(len(sentences), 2)
+
+    def test_hyphenated_word_count_unchanged(self):
+        self.assertEqual(er003.compute_word_count("digital switch-off period"), 3)
+
+    def test_contraction_word_count_unchanged(self):
+        self.assertEqual(er003.compute_word_count("wouldn't couldn't didn't"), 3)
+
+    def test_avg_exactly_19_is_pass_boundary(self):
+        sentence = " ".join(["word"] * 19) + "."
+        metrics = er003.compute_sentence_metrics(sentence)
+        self.assertEqual(metrics["avg_words_per_sentence"], 19.0)
+
+    def test_avg_19_01_is_fail_boundary(self):
+        s1 = " ".join(["word"] * 20) + "."
+        s2 = " ".join(["word"] * 19) + "."
+        metrics = er003.compute_sentence_metrics(f"{s1} {s2}")
+        self.assertGreater(metrics["avg_words_per_sentence"], 19.00)
+
+    def test_longest_32_is_pass_boundary(self):
+        sentence = " ".join(["word"] * 32) + "."
+        metrics = er003.compute_sentence_metrics(sentence)
+        self.assertEqual(metrics["longest_sentence_word_count"], 32)
+
+    def test_longest_33_is_fail_boundary(self):
+        sentence = " ".join(["word"] * 33) + "."
+        metrics = er003.compute_sentence_metrics(sentence)
+        self.assertEqual(metrics["longest_sentence_word_count"], 33)
+
+
+class SavedB2ArticleRecomputeRegressionTests(unittest.TestCase):
+    """ER-003-P2A: 保存済みB2版3記事(P2で実際に生成された本文)を、
+    修正後のsplit_sentencesで再計測しても、32語超の文が残らないことを
+    確認する回帰テスト。APIは一切呼ばない。"""
+
+    def _recompute(self, topic_id):
+        import er003_b2_adapter as b2
+        path = f"er003_output/p2/{topic_id}/b2_version_raw.md"
+        if not os.path.exists(path):
+            self.skipTest(f"{path}が見つかりません")
+        with open(path, encoding="utf-8") as f:
+            raw = f.read()
+        return b2.compute_b2_sentence_metrics(raw)
+
+    def test_a01_recompute_has_no_sentence_over_32(self):
+        metrics = self._recompute("A01")
+        self.assertEqual(metrics["sentences_over_32_word_count"], 0)
+
+    def test_a02_recompute_has_no_sentence_over_32(self):
+        metrics = self._recompute("A02")
+        self.assertEqual(metrics["sentences_over_32_word_count"], 0)
+
+    def test_add03_recompute_has_no_sentence_over_32(self):
+        metrics = self._recompute("ADD03")
+        self.assertEqual(metrics["sentences_over_32_word_count"], 0)
+
+    def test_a01_recompute_passes_both_metrics(self):
+        metrics = self._recompute("A01")
+        self.assertEqual(metrics["overall_status"], "B2_SENTENCE_METRICS_PASS")
+
+    def test_a02_recompute_passes_both_metrics(self):
+        metrics = self._recompute("A02")
+        self.assertEqual(metrics["overall_status"], "B2_SENTENCE_METRICS_PASS")
+
+    def test_add03_recompute_passes_both_metrics(self):
+        metrics = self._recompute("ADD03")
+        self.assertEqual(metrics["overall_status"], "B2_SENTENCE_METRICS_PASS")
+
+
 class NoOtherApiCallsTests(unittest.TestCase):
     """要求39-40: TTSを呼ばない。Key Words・概要生成をしない。"""
 

@@ -450,21 +450,129 @@ def make_difficulty_assessment_fn(
 # ============================================================
 # ブロック7: 決定的な文章指標(LLMに数えさせず、Pythonで計測する)
 # ============================================================
+# ER-003-P2A: 文分割の根本原因修正。
+# 旧実装は改行(段落境界)をすべて単一の空白へ潰してから正規表現で
+# 分割していたため、(1) 終端記号を持たない行(例: 太字だけのスコア行
+# "**England 1-2 Argentina**")が次の段落と連結される、(2) 文末記号の
+# 直後にカーリークォート(スマートクォート " " ' ')が続く場合に
+# 分割対象として認識されない(旧正規表現は直前が[.!?]であることを
+# 要求するが、実際には[.!?]の直後にクォート文字が挟まるため)、という
+# 2つの問題があった。実際に、B2版のIn One Line引用文を含む段落が、
+# 前後の段落と連結されて30〜59語の「1文」として誤計測されていた。
+#
+# 修正: 段落単位(空行区切り)でまず分割し、段落をまたいで文を連結しない。
+# 各段落内では、終端記号(.!?)の直後に閉じクォート・閉じ括弧が続いても
+# 正しく文境界として認識する。既知の略語(a.m./p.m./U.S.等)と小数点は
+# 誤って分割しない。終端記号を持たない段落(見出し直後の単独行等)は、
+# それ自体を1つの独立した単位として扱う。
 _WORD_RE = re.compile(r"[A-Za-z][A-Za-z'-]*")
-_SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z\"'])")
 
 READING_SPEEDS_WPM = (130, 145, 160)
+
+_PARAGRAPH_SPLIT_RE = re.compile(r"\n\s*\n+")
+_TRAILING_CLOSERS = "\"'’”)]"
+_OPEN_QUOTES = "\"'‘“"
+_SENTENCE_END_CHARS = ".!?"
+
+# 直前の数文字がこれらの略語(主に人名・地名・組織名の前に置かれる
+# 敬称・国名略語)で終わる場合、その直後のピリオドでは大文字が続いても
+# 分割しない(例: "U.S. President"は分割してはならない)。時刻表現の
+# a.m./p.m.等はここに含めない。大文字続きか小文字続きかで下の
+# split_paragraph_into_sentencesが妥当な判断をするため。
+_ABBREVIATIONS = (
+    "u.s.", "u.k.", "mr.", "mrs.", "ms.", "dr.", "prof.", "st.", "jr.", "sr.",
+)
 
 
 def compute_word_count(plain_text: str) -> int:
     return len(_WORD_RE.findall(plain_text))
 
 
-def split_sentences(plain_text: str) -> list:
-    normalized = re.sub(r"\s+", " ", plain_text.strip())
+def split_into_paragraphs(text: str) -> list:
+    """空行(1つ以上の空白のみの行を含む連続改行)で段落に分割する。"""
+    return [p.strip() for p in _PARAGRAPH_SPLIT_RE.split(text.strip()) if p.strip()]
+
+
+def _is_protected_abbreviation(normalized: str, index: int) -> bool:
+    """indexのピリオドが、既知の敬称・国名略語の末尾であればTrueを返す
+    (その位置では、直後が大文字続きであっても分割しない)。略語の直前が
+    英字の場合は、通常の単語の末尾がたまたま略語文字列と一致しただけ
+    (例: "test."の末尾"st.")とみなし、保護対象にしない(単語境界判定)。"""
+    preceding = normalized[max(0, index - 8):index + 1].lower()
+    for abbr in _ABBREVIATIONS:
+        if preceding.endswith(abbr):
+            match_start = index + 1 - len(abbr)
+            if match_start <= 0 or not normalized[match_start - 1].isalpha():
+                return True
+    return False
+
+
+def _is_decimal_point(normalized: str, index: int) -> bool:
+    """indexのピリオドが、数字に挟まれた小数点であればTrueを返す
+    (この場合、直後が空白でないため通常は分割候補にすらならないが、
+    念のため明示的に保護する)。"""
+    n = len(normalized)
+    return (0 < index < n - 1
+            and normalized[index - 1].isdigit() and normalized[index + 1].isdigit())
+
+
+def split_paragraph_into_sentences(paragraph: str) -> list:
+    """1段落内だけを対象に文分割する(段落境界を越えて連結しない)。
+    文末記号の直後に空白が続く場合のみ分割候補とし、続く文字が大文字・
+    数字・開き引用符であれば実際に分割する(小文字が続く場合は、時刻
+    表現(a.m./p.m.)などの略語直後とみなし分割しない)。既知の敬称・
+    国名略語(U.S.等)は、直後が大文字であっても常に分割しない。"""
+    normalized = re.sub(r"\s+", " ", paragraph.strip())
     if not normalized:
         return []
-    return [s.strip() for s in _SENTENCE_SPLIT_RE.split(normalized) if s.strip()]
+    sentences = []
+    current_start = 0
+    n = len(normalized)
+    i = 0
+    while i < n:
+        ch = normalized[i]
+        if ch in _SENTENCE_END_CHARS:
+            if ch == "." and (_is_protected_abbreviation(normalized, i) or _is_decimal_point(normalized, i)):
+                i += 1
+                continue
+            j = i + 1
+            while j < n and normalized[j] in _TRAILING_CLOSERS:
+                j += 1
+            if j >= n:
+                sentences.append(normalized[current_start:j].strip())
+                current_start = j
+                i = j
+                continue
+            if normalized[j] == " ":
+                k = j
+                while k < n and normalized[k] == " ":
+                    k += 1
+                looks_like_new_sentence = (
+                    k >= n or normalized[k].isupper() or normalized[k].isdigit()
+                    or normalized[k] in _OPEN_QUOTES
+                )
+                if looks_like_new_sentence:
+                    sentences.append(normalized[current_start:j].strip())
+                    current_start = k
+                    i = k
+                    continue
+        i += 1
+    if current_start < n:
+        remainder = normalized[current_start:].strip()
+        if remainder:
+            sentences.append(remainder)
+    return [s for s in sentences if s]
+
+
+def split_sentences(plain_text: str) -> list:
+    """段落境界を保持し、段落をまたいで文を連結しない。終端記号を持たない
+    段落(見出し直後の単独行等)は、それ自体を1つの独立した単位として
+    扱う。"""
+    all_sentences = []
+    for paragraph in split_into_paragraphs(plain_text):
+        sentences = split_paragraph_into_sentences(paragraph)
+        all_sentences.extend(sentences if sentences else [paragraph])
+    return all_sentences
 
 
 def compute_sentence_metrics(plain_text: str) -> dict:
