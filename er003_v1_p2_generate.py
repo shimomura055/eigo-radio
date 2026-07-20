@@ -99,9 +99,7 @@ def adapt_article(topic_id: str) -> dict:
     recorder = RecordingClient(make_real_client())
 
     def make_adapter_factory():
-        def factory():
-            return b2.make_b2_adapter_fn(user_message, client=recorder)
-        return factory
+        return b2.make_b2_adapter_fn(user_message, client=recorder)
 
     raw_text, status, attempts, model_id, response_id, search_usage, sources = b2.run_b2_adapter_structure_gate(
         make_adapter_factory, sleep_fn=time.sleep)
