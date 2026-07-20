@@ -1,0 +1,27 @@
+{
+  "corrected_by": "ER-003-P2A",
+  "reason": "ER-003-P2A: split_sentences()が段落境界(空行)とカーリークォートを正しく扱えず、実在しない長文(A02=59語, ADD03=37語)を計測していた。段落認識型のsentence splitterへ修正し、保存済みB2本文をAPI再実行なしで再計測した。B2本文自体は無変更(sha256で確認済み)。",
+  "splitter_fix_commit": "b9d701a",
+  "api_calls_made": 0,
+  "b2_body_text_modified": false,
+  "natural_english_source_modified": false,
+  "official_metrics_field": "sentence_metrics_recalculated.json (per-article) / sentence_metrics (in *_run_summary.json, post-P2A)",
+  "superseded_metrics_field": "sentence_metrics.json (per-article, kept unmodified as audit record) / sentence_metrics_pre_p2a_superseded (in *_run_summary.json)",
+  "per_article_verdict_change": [
+    {
+      "topic_id": "A01",
+      "pre_p2a_overall_status": "B2_SENTENCE_METRICS_PASS",
+      "official_overall_status": "B2_SENTENCE_METRICS_PASS"
+    },
+    {
+      "topic_id": "A02",
+      "pre_p2a_overall_status": "B2_SENTENCE_METRICS_FAIL",
+      "official_overall_status": "B2_SENTENCE_METRICS_PASS"
+    },
+    {
+      "topic_id": "ADD03",
+      "pre_p2a_overall_status": "B2_SENTENCE_METRICS_FAIL",
+      "official_overall_status": "B2_SENTENCE_METRICS_PASS"
+    }
+  ]
+}

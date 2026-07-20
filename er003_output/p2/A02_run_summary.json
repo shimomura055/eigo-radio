@@ -1,0 +1,63 @@
+{
+  "topic_id": "A02",
+  "topic": "英国の未成年向け夜間SNS設定",
+  "adapter_status": "TRANSLATION_STRUCTURE_PASS",
+  "content_attempt_count": 1,
+  "structure_retry_count": 0,
+  "first_attempt_status": "TRANSLATION_STRUCTURE_PASS",
+  "first_attempt_structure_reasons": [],
+  "structure_check": {
+    "status": "TRANSLATION_STRUCTURE_PASS",
+    "reasons": [],
+    "todays_points_heading": "Today's Late-Night Scrolling Points",
+    "point_one_heading": "Point One: A Nighttime Pause Proved More Practical Than a Total Ban",
+    "point_two_heading": "Point Two: Even Optional Defaults Can Change Behavior",
+    "in_one_line_present": true
+  },
+  "sentence_metrics": {
+    "total_word_count_including_headings": 435,
+    "total_word_count_body_only": 396,
+    "total_sentence_count": 33,
+    "avg_words_per_sentence": 12.0,
+    "avg_words_per_sentence_status": "PASS",
+    "longest_sentence_word_count": 28,
+    "longest_sentence_status": "PASS",
+    "sentences_over_32_word_count": 0,
+    "sentences_at_or_under_19_ratio": 0.9394,
+    "estimated_reading_time_minutes": {
+      "130_wpm_minutes": 3.35,
+      "145_wpm_minutes": 3.0,
+      "160_wpm_minutes": 2.72
+    },
+    "overall_status": "B2_SENTENCE_METRICS_PASS"
+  },
+  "fidelity_qa_status": "COMPLETED",
+  "fidelity_qa_verdict": "PASS",
+  "difficulty_qa_status": "COMPLETED",
+  "difficulty_qa_verdict": "PASS",
+  "estimated_cefr": "B2",
+  "included_in_review": true,
+  "sentence_metrics_pre_p2a_superseded": {
+    "total_word_count_including_headings": 435,
+    "total_word_count_body_only": 396,
+    "total_sentence_count": 30,
+    "avg_words_per_sentence": 13.2,
+    "avg_words_per_sentence_status": "PASS",
+    "longest_sentence_word_count": 59,
+    "longest_sentence_status": "FAIL",
+    "sentences_over_32_word_count": 2,
+    "sentences_at_or_under_19_ratio": 0.9,
+    "estimated_reading_time_minutes": {
+      "130_wpm_minutes": 3.35,
+      "145_wpm_minutes": 3.0,
+      "160_wpm_minutes": 2.72
+    },
+    "overall_status": "B2_SENTENCE_METRICS_FAIL"
+  },
+  "sentence_metrics_correction": {
+    "corrected_by": "ER-003-P2A",
+    "reason": "ER-003-P2A: split_sentences()が段落境界(空行)とカーリークォートを正しく扱えず、実在しない長文(A02=59語, ADD03=37語)を計測していた。段落認識型のsentence splitterへ修正し、保存済みB2本文をAPI再実行なしで再計測した。B2本文自体は無変更(sha256で確認済み)。",
+    "official_metrics_source": "sentence_metrics_recalculated.json",
+    "superseded_metrics_source": "sentence_metrics.json (audit record, unmodified)"
+  }
+}
