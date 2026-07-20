@@ -107,6 +107,13 @@ _HEADING_RE = re.compile(r"(?m)^(#{1,6})[ \t]+(.*)$")
 _BULLET_LINE_RE = re.compile(r"(?m)^[ \t]*[-*+][ \t]+")
 _NON_ENGLISH_CHAR_RE = re.compile(r"[぀-ヿ一-鿿＀-￯]")
 
+# ER-003-P2C: 概要はPodcastへ一緒に入っていく語り口にするため、第一文は
+# ナレーターとリスナーを含む"We"を主語にした"We'll look at ..."で始める
+# (ASCII/typographicどちらのアポストロフィも同一扱い)。教材紹介の
+# ような"This episode ..."的な開始表現は禁止する。
+REQUIRED_OPENING_RE = re.compile(r"^We['’]ll look at\b")
+FORBIDDEN_OPENING_PREFIXES = ("This episode", "This lesson", "This story", "In this episode", "The episode")
+
 
 def _ends_with_terminal_punctuation_heuristic(text: str) -> bool:
     stripped = text.strip()
@@ -182,10 +189,21 @@ def validate_summary_structure(raw_text: str) -> dict:
             reasons.append("概要本文が途中で切れている可能性がある(終端記号なし)")
             ok = False
 
+    opening_ok = True
+    if sentences:
+        first_sentence = sentences[0]
+        opening_ok = bool(REQUIRED_OPENING_RE.match(first_sentence))
+        if not opening_ok:
+            reasons.append(
+                f"第一文が'We'll look at ...'(教材紹介的な'This episode ...'等は不可)で"
+                f"始まっていない(実際の書き出し: {first_sentence[:40]!r})")
+            ok = False
+
     return {
         "status": "B2_SUMMARY_STRUCTURE_PASS" if ok else "B2_SUMMARY_STRUCTURE_INVALID",
         "reasons": reasons,
         "heading_present": len(heading_matches) == 1,
+        "opening_ok": opening_ok,
         "body": body,
         "word_count": word_count,
         "sentence_count": sentence_count,

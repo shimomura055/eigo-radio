@@ -19,8 +19,16 @@ import er003_ja_to_en_translation as er003
 
 def make_body(sentence_word_counts, word="word"):
     """各要素をそのままの語数を持つ1文とし、段落(空行区切り)として
-    連結する(section 8のBefore You Listen固定構造と同じ配置)。"""
-    sentences = [" ".join([word] * n) + "." for n in sentence_word_counts]
+    連結する(section 8のBefore You Listen固定構造と同じ配置)。ER-003-
+    P2Cの第一文開始要件を満たすため、先頭文は'We'll look at'(3語)で
+    始め、残りをpadding語で埋めて指定語数ちょうどにする。"""
+    sentences = []
+    for i, n in enumerate(sentence_word_counts):
+        if i == 0:
+            pad = n - 3
+            sentences.append("We'll look at " + " ".join([word] * pad) + "." if pad > 0 else "We'll look at.")
+        else:
+            sentences.append(" ".join([word] * n) + ".")
     return "## Before You Listen\n\n" + "\n\n".join(sentences)
 
 
@@ -200,6 +208,76 @@ class StructureLengthGateTests(unittest.TestCase):
     def test_metrics_saves_word_count_including_heading_separately(self):
         metrics = s.compute_summary_metrics(GOOD_SUMMARY)
         self.assertGreater(metrics["total_word_count_including_heading"], metrics["word_count"])
+
+
+class OpeningSentenceRequirementTests(unittest.TestCase):
+    """要求4-13(ER-003-P2C): 第一文は'We'll look at ...'で始まる
+    Podcast調の語り口を必須とし、'This episode ...'的な教材紹介の
+    開始表現は不合格とする。"""
+
+    def _body(self, opening, rest_words=20):
+        return "## Before You Listen\n\n" + opening + " " + " ".join(["word"] * rest_words) + "."
+
+    def test_heading_detected_exactly_once(self):
+        result = s.validate_summary_structure(GOOD_SUMMARY)
+        self.assertTrue(result["heading_present"])
+
+    def test_ascii_apostrophe_we_ll_look_at_passes_opening_check(self):
+        text = self._body("We'll look at a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertTrue(result["opening_ok"])
+
+    def test_typographic_apostrophe_we_ll_look_at_passes_opening_check(self):
+        text = self._body("We’ll look at a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertTrue(result["opening_ok"])
+
+    def test_this_episode_opening_fails(self):
+        text = self._body("This episode covers a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+        self.assertEqual(result["status"], "B2_SUMMARY_STRUCTURE_INVALID")
+
+    def test_this_lesson_opening_fails(self):
+        text = self._body("This lesson covers a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+
+    def test_this_story_opening_fails(self):
+        text = self._body("This story covers a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+
+    def test_in_this_episode_opening_fails(self):
+        text = self._body("In this episode we cover a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+
+    def test_the_episode_opening_fails(self):
+        text = self._body("The episode covers a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+
+    def test_we_will_discuss_does_not_match_required_pattern(self):
+        # "We"で始まっていても、固定パターン"We'll look at"と一致しなければ不合格
+        text = self._body("We will discuss a topic,", rest_words=20)
+        result = s.validate_summary_structure(text)
+        self.assertFalse(result["opening_ok"])
+
+    def test_second_sentence_not_fixed_still_passes_if_other_conditions_met(self):
+        # 第二文は固定文言でなくてよい(Listen for.../Pay attention to...等)
+        for second in ("Listen for how it ends.", "Pay attention to the key moment.",
+                       "As you listen, notice the outcome."):
+            text = ("## Before You Listen\n\nWe'll look at " + " ".join(["word"] * 10)
+                    + ". " + second)
+            result = s.validate_summary_structure(text)
+            self.assertTrue(result["opening_ok"], msg=second)
+
+    def test_forbidden_opening_prefixes_constant_matches_spec(self):
+        self.assertEqual(
+            s.FORBIDDEN_OPENING_PREFIXES,
+            ("This episode", "This lesson", "This story", "In this episode", "The episode"),
+        )
 
 
 class RetryAndSaveTests(unittest.TestCase):
