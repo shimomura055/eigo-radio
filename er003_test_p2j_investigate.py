@@ -128,10 +128,16 @@ class SavedArtifactConsistencyTests(unittest.TestCase):
         fresh = inv_mod.build_inventory()
         with open("er003_output/p2j/ER-003-P2J_test_inventory.json", encoding="utf-8") as f:
             saved = json.load(f)
-        # evidenceのcommit hash等、実行のたびに変わり得ない項目のみ比較する
+        # p2h/p2iは固定モジュールリストによる過去時点のスナップショットで
+        # あり、時間が経っても変化しない(厳密一致で比較してよい)。
         self.assertEqual(fresh["p2h"]["collected"], saved["p2h"]["collected"])
         self.assertEqual(fresh["p2i"]["collected"], saved["p2i"]["collected"])
-        self.assertEqual(fresh["current_head"]["collected"], saved["current_head"]["collected"])
+        # current_headはglob探索による「今この瞬間」の値であり、後続の
+        # 開発ステージ(例: ER-003-P2K)が新たなer0*_test_*.pyを追加する
+        # たびに増え続ける。保存済みJSONはP2J完了時点のスナップショット
+        # でしかないため、ここでは「保存値を下回っていない
+        # (テストが失われていない)」ことだけを検証する。
+        self.assertGreaterEqual(fresh["current_head"]["collected"], saved["current_head"]["collected"])
         self.assertEqual(fresh["classification"], saved["classification"])
         self.assertEqual(fresh["p2i_final_test_verdict"], saved["p2i_final_test_verdict"])
 
@@ -140,8 +146,9 @@ class SavedArtifactConsistencyTests(unittest.TestCase):
         fresh_run = inv_mod.build_current_run_record(fresh_inv)
         with open("er003_output/p2j/ER-003-P2J_current_test_run.json", encoding="utf-8") as f:
             saved = json.load(f)
-        self.assertEqual(fresh_run["collected"], saved["collected"])
-        self.assertEqual(fresh_run["passed"], saved["passed"])
+        # current_headと同じ理由でincreasing-onlyの比較にする。
+        self.assertGreaterEqual(fresh_run["collected"], saved["collected"])
+        self.assertGreaterEqual(fresh_run["passed"], saved["passed"])
         self.assertEqual(fresh_run["p2i_targeted_collected"], saved["p2i_targeted_collected"])
 
     def test_saved_current_run_shows_zero_failures(self):
