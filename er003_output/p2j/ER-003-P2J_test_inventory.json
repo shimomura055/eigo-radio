@@ -1,0 +1,85 @@
+{
+  "p2h": {
+    "commit": "70d8b0b",
+    "command": "python -m unittest \\\n  er002_test_common er002_test_editorial er002_test_editorial_v1_1b \\\n  er002_test_ja_master_imitation er002_test_v1_2m_d1 \\\n  er002_test_ja_free_markdown_restore er002_test_ja_free_markdown_restore_r2 \\\n  er002_test_ja_web_research_r3 er002_test_ja_web_research_r4 \\\n  er002_test_ja_article_generation er003_test_ja_to_en_translation \\\n  er003_test_ja_to_en_translation_p1b er003_test_natural_source er003_test_b2_adapter \\\n  er003_test_b2_summary er003_test_b2_summary_p2c er003_test_b2_key_words \\\n  er003_test_key_words_strategy_compare er003_test_key_words_research10 \\\n  er003_test_key_words_min_unit er003_test_p2h_analyze_user_scores",
+    "scope": "手動列挙: er002_test_*.py全10件 + 当時存在したer003_test_*.py全11件(p2i_production除く)",
+    "collected": 1032,
+    "passed": 1032,
+    "skipped": 0,
+    "deselected": 0,
+    "evidence": [
+      "session transcript line 7458: 'Ran 1032 tests in 2.927s' / 'OK'",
+      "session transcript line 7479: 'Ran 1032 tests in 2.837s' / 'OK' (P2H commit#3直前の再実行)",
+      "現在HEAD(eca31984a525)で同一command再実行結果: ['...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................', '----------------------------------------------------------------------', 'Ran 1032 tests in 2.921s', '', 'OK']"
+    ]
+  },
+  "p2i": {
+    "commit": "eca3198",
+    "command": "python -m unittest discover -s . -p \"er003_test_*.py\"",
+    "scope": "glob discover: er003_test_*.py のみ(er002_test_*.pyを一切含まない)",
+    "collected": 660,
+    "passed": 660,
+    "skipped": 0,
+    "deselected": 0,
+    "evidence": [
+      "本セッション内でのBashツール実行結果(このP2J調査より前、P2I完了報告時点)",
+      "P2I時点のer003_test_*.py 12ファイルのみを固定リストで再収集: 660件(本P2J自身が追加するer003_test_p2j_investigate.pyは含まない)"
+    ]
+  },
+  "current_head": {
+    "commit": "eca31984a5259a39d630a370fda000d80efb002b",
+    "canonical_command": "python -m unittest discover -s . -p \"er0*_test_*.py\"",
+    "collected": 1117,
+    "passed": 1117,
+    "failed": 0,
+    "skipped": 0,
+    "deselected": 0
+  },
+  "classification": [
+    "DIFFERENT_TEST_SCOPE",
+    "COUNTING_METHOD_DIFFERENCE"
+  ],
+  "p2i_final_test_verdict": "PASS",
+  "detail": {
+    "er002_test_files_now": {
+      "er002_test_common": 99,
+      "er002_test_editorial": 31,
+      "er002_test_editorial_v1_1b": 23,
+      "er002_test_ja_article_generation": 40,
+      "er002_test_ja_free_markdown_restore": 33,
+      "er002_test_ja_free_markdown_restore_r2": 31,
+      "er002_test_ja_master_imitation": 31,
+      "er002_test_ja_web_research_r3": 51,
+      "er002_test_ja_web_research_r4": 72,
+      "er002_test_v1_2m_d1": 27
+    },
+    "er003_test_files_now": {
+      "er003_test_b2_adapter": 42,
+      "er003_test_b2_key_words": 78,
+      "er003_test_b2_summary": 72,
+      "er003_test_b2_summary_p2c": 25,
+      "er003_test_ja_to_en_translation": 74,
+      "er003_test_ja_to_en_translation_p1b": 50,
+      "er003_test_key_words_min_unit": 75,
+      "er003_test_key_words_research10": 67,
+      "er003_test_key_words_strategy_compare": 60,
+      "er003_test_natural_source": 12,
+      "er003_test_p2h_analyze_user_scores": 39,
+      "er003_test_p2i_production": 66,
+      "er003_test_p2j_investigate": 19
+    },
+    "er002_total_now": 438,
+    "er003_total_now": 679,
+    "er003_total_at_p2h_era": 594,
+    "er003_total_at_p2i_era": 660,
+    "reconciliation_arithmetic": {
+      "p2h_1032_equals_er002_438_plus_er003_at_p2h_594": true,
+      "p2i_660_equals_er003_at_p2i_era": true,
+      "combined_now_equals_er002_plus_er003_now": true,
+      "delta_660_minus_1032": -372,
+      "delta_explained_by_missing_er002_scope": -438,
+      "delta_explained_by_new_p2i_tests": 66,
+      "net_check": true
+    }
+  }
+}
