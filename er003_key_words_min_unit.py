@@ -333,12 +333,18 @@ _STRING_FIELDS = ("display_phrase", "source_span", "source_sentence", "ja_gloss"
                   "normalization_note", "selection_reason", "listening_difficulty_reason")
 
 
-def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str) -> dict:
+def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str,
+                                 expected_item_count: int = RESEARCH_ITEM_COUNT) -> dict:
     """runtimeメタデータ付与後のselectionを決定的に検証する。比較・
     監査のための判定のみを行い、項目の追加・修正・入れ替えは一切
     行わない。article_id/strategy_idはruntime付与値を前提とし、model
     の自己申告には一切依存しない(P2Fのarticle_id誤記問題を構造的に
-    回避する)。"""
+    回避する)。
+
+    expected_item_countはP2Gの研究版(10件)がデフォルトだが、この
+    hard requirement判定ロジック自体はitem数に依存しないため、ER-003-
+    P2Iの本番版(5件)validatorからもそのまま再利用できるよう引数化
+    している。"""
     reasons = []
     ok = True
     item_reasons: list = []
@@ -347,8 +353,8 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
     if not isinstance(items, list):
         return {"status": "KEY_WORDS_STRUCTURE_INVALID", "reasons": ["'items'が配列でない"], "item_reasons": []}
 
-    if len(items) != RESEARCH_ITEM_COUNT:
-        reasons.append(f"itemsが{RESEARCH_ITEM_COUNT}件でない(実際: {len(items)}件)")
+    if len(items) != expected_item_count:
+        reasons.append(f"itemsが{expected_item_count}件でない(実際: {len(items)}件)")
         ok = False
 
     plain_article = er003.article_gen.strip_markdown_symbols(b2_article_text)
@@ -430,9 +436,9 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
         if this_item_reasons:
             ok = False
 
-    if ranks and (sorted(r for r in ranks if isinstance(r, int)) != list(range(1, RESEARCH_ITEM_COUNT + 1))
+    if ranks and (sorted(r for r in ranks if isinstance(r, int)) != list(range(1, expected_item_count + 1))
                  or len(ranks) != len(set(ranks))):
-        reasons.append(f"rankが1〜{RESEARCH_ITEM_COUNT}の重複・欠番なしの並びでない(実際: {ranks})")
+        reasons.append(f"rankが1〜{expected_item_count}の重複・欠番なしの並びでない(実際: {ranks})")
         ok = False
 
     if len(display_phrases) != len(set(display_phrases)):
