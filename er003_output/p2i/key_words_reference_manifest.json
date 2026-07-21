@@ -1,0 +1,52 @@
+{
+  "decision_id": "ER-003-P2I",
+  "production_selection_strategy": "L",
+  "production_selection_strategy_name": "Listening Blocker Ranking",
+  "production_item_count": 5,
+  "adoption_basis": "Top5同点(L=24/U=24, 30点満点)後の、標準運用上の説明可能性によるtie-break。スコアでの勝利ではない。",
+  "articles": {
+    "A01": {
+      "approved_key_words_path": "er003_output/p2i/A01/key_words_approved.json",
+      "approved_reading_copy_path": "er003_output/p2i/A01/key_words_approved_reading_copy.md",
+      "approval_metadata_path": "er003_output/p2i/A01/key_words_approval.json",
+      "approved_key_words_sha256": "3e6dcb9c531a8014fc70cfffa4af10af1a74b6da753e08d5d066cfd5a3fc1c45"
+    },
+    "A02": {
+      "approved_key_words_path": "er003_output/p2i/A02/key_words_approved.json",
+      "approved_reading_copy_path": "er003_output/p2i/A02/key_words_approved_reading_copy.md",
+      "approval_metadata_path": "er003_output/p2i/A02/key_words_approval.json",
+      "approved_key_words_sha256": "65945292991be71135ca4fdbbe8468bd5fdb521a38a7a47837c55be205b2be10"
+    },
+    "ADD03": {
+      "approved_key_words_path": "er003_output/p2i/ADD03/key_words_approved.json",
+      "approved_reading_copy_path": "er003_output/p2i/ADD03/key_words_approved_reading_copy.md",
+      "approval_metadata_path": "er003_output/p2i/ADD03/key_words_approval.json",
+      "approved_key_words_sha256": "9ed8960ab8a4407db630a9e7996611610d73ac76d3685d901e2a5fd424c66396"
+    }
+  },
+  "future_tts_source": "本ステージ(P2I)ではTTSは実行しない。将来のKey Words TTSは、articles.*.approved_reading_copy_pathのファイルを入力とする。",
+  "personalization_candidate": {
+    "strategy_id": "U",
+    "strategy_name": "Observed Learner Profile",
+    "status": "NOT_ADOPTED_RETAINED_AS_FUTURE_PERSONALIZATION_CANDIDATE",
+    "note": "標準方式としては不採用だが、Top5評価はLと同点(24/30)であり、将来の学習者プロファイル別パーソナライズ機能の候補として保持する。"
+  },
+  "excluded_candidate": {
+    "strategy_id": "P",
+    "strategy_name": "Difficulty Portfolio",
+    "status": "EXCLUDED_FROM_STANDARD_CANDIDATES",
+    "note": "Top5・Total双方の評価で他方式に劣ったため、標準方式候補から除外する。"
+  },
+  "experimental_evidence": {
+    "note": "以下は標準方式決定に至る過程の実験的証跡であり、削除・上書きは行わない。本番運用の参照元はP2Iの承認済み成果物のみである。",
+    "ER-003-P2D": "er003_output/p2d",
+    "ER-003-P2E": "er003_output/p2e",
+    "ER-003-P2F": "er003_output/p2f",
+    "ER-003-P2G": "er003_output/p2g",
+    "ER-003-P2H": "er003_output/p2h"
+  },
+  "production_code": {
+    "prompt_template": "er003_v1_translator_briefs/b2_key_words_production_l_prompt_template.txt",
+    "selector_and_validator_module": "er003_key_words_production.py"
+  }
+}
