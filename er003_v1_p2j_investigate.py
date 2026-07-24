@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import glob
 import json
+import re
 import subprocess
 import sys
 import unittest
@@ -56,6 +57,113 @@ P2I_REPORTED_COUNT = 660
 # 同じ理由で固定リストとして持つ(本P2J自身のer003_test_p2j_investigate.py
 # は含まない)。
 P2I_ERA_ER003_MODULES = P2H_ERA_ER003_MODULES + ["er003_test_p2i_production"]
+
+# ============================================================
+# ブロック1b: 履歴監査用の凍結定数・helper(ER-003-P2Lで追加)
+# ============================================================
+# ER-003-P2Jが完了した時点(commit eca31984a525、ER-003-P2K以前)で
+# ER-003-P2J_test_inventory.json / ER-003-P2J_current_test_run.jsonへ
+# 実際に保存された値。以後どれだけ新しいtest fileが追加されても、この
+# 数値そのものは書き換えない(過去の証拠として固定する)。P2H(1032)・
+# P2I(660)と同じ扱い。
+P2J_CURRENT_HEAD_REPORTED_COUNT = 1117
+
+# ER-003-P2Jの'classification'フィールドが取り得る値(P2Jの元spec
+# section 6に列挙されたもの)。履歴監査は、保存済みJSONの値がこの集合に
+# 含まれるかだけを検証し、現在の値と再計算して比較しない。
+CLASSIFICATION_ENUM = (
+    "DIFFERENT_TEST_SCOPE",
+    "REPORTING_ERROR_P2H",
+    "REPORTING_ERROR_P2I",
+    "TEST_COLLECTION_CHANGED_INTENTIONALLY",
+    "TESTS_MISSING_OR_NOT_COLLECTED",
+    "COUNTING_METHOD_DIFFERENCE",
+    "INSUFFICIENT_EVIDENCE",
+)
+
+# 'p2i_final_test_verdict'フィールドが取り得る値。
+VERDICT_ENUM = ("PASS", "FAIL", "CONDITIONAL", "INCONCLUSIVE")
+
+P2J_INVENTORY_PATH = "er003_output/p2j/ER-003-P2J_test_inventory.json"
+P2J_CURRENT_RUN_PATH = "er003_output/p2j/ER-003-P2J_current_test_run.json"
+
+
+def load_saved_inventory(path: str = P2J_INVENTORY_PATH) -> dict:
+    """保存済みinventory JSONをそのまま読み込む(再計算しない)。
+    履歴監査テストは、このファイルの内容そのものを検証対象とする。"""
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_saved_current_run(path: str = P2J_CURRENT_RUN_PATH) -> dict:
+    """保存済みcurrent_test_run JSONをそのまま読み込む(再計算しない)。"""
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+# P2H/P2Iはmodel schema上"failed"を持たない(手動列挙command実行時点で
+# 全件成功が確認されているため)。current_headのみ"failed"を持つ。
+_REQUIRED_COUNT_FIELDS_P2H_P2I = ("collected", "passed", "skipped", "deselected")
+_REQUIRED_COUNT_FIELDS_CURRENT_HEAD = ("collected", "passed", "failed", "skipped", "deselected")
+_COMMIT_HASH_RE = re.compile(r"^[0-9a-f]{7,40}$")
+
+
+def _is_non_negative_int(value) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+def validate_saved_inventory_schema(data: dict) -> dict:
+    """保存済みinventory JSONの構造・型・enumだけを検証する。現在の
+    live件数とは一切比較しない(ER-003-P2Lで、履歴監査と現行回帰の
+    責務を分離するために追加)。"""
+    reasons = []
+
+    for section in ("p2h", "p2i", "current_head"):
+        if section not in data or not isinstance(data[section], dict):
+            reasons.append(f"'{section}'セクションがない、またはオブジェクトでない")
+    if reasons:
+        return {"ok": False, "reasons": reasons}
+
+    for section, required_fields in (
+        ("p2h", _REQUIRED_COUNT_FIELDS_P2H_P2I),
+        ("p2i", _REQUIRED_COUNT_FIELDS_P2H_P2I),
+        ("current_head", _REQUIRED_COUNT_FIELDS_CURRENT_HEAD),
+    ):
+        sect = data[section]
+        for field in required_fields:
+            if field not in sect:
+                reasons.append(f"{section}.{field}がない")
+            elif not _is_non_negative_int(sect[field]):
+                reasons.append(f"{section}.{field}が非負整数でない(実際: {sect[field]!r})")
+
+    for section in ("p2h", "p2i", "current_head"):
+        commit_value = data[section].get("commit")
+        if not isinstance(commit_value, str) or not _COMMIT_HASH_RE.match(commit_value):
+            reasons.append(f"{section}.commitがcommit hash形式でない(実際: {commit_value!r})")
+
+    for section, cmd_field in (("p2h", "command"), ("p2i", "command"), ("current_head", "canonical_command")):
+        cmd_value = data[section].get(cmd_field)
+        if not isinstance(cmd_value, str) or not cmd_value.strip():
+            reasons.append(f"{section}.{cmd_field}が空文字列、または文字列でない")
+
+    for section in ("p2h", "p2i"):
+        scope_value = data[section].get("scope")
+        if not isinstance(scope_value, str) or not scope_value.strip():
+            reasons.append(f"{section}.scopeが空文字列、または文字列でない")
+
+    classification = data.get("classification")
+    if not isinstance(classification, list) or not classification:
+        reasons.append("classificationが空、または配列でない")
+    else:
+        for c in classification:
+            if c not in CLASSIFICATION_ENUM:
+                reasons.append(f"classificationに未知の値: {c!r}")
+
+    verdict = data.get("p2i_final_test_verdict")
+    if verdict not in VERDICT_ENUM:
+        reasons.append(f"p2i_final_test_verdictが不正: {verdict!r}")
+
+    return {"ok": len(reasons) == 0, "reasons": reasons}
 
 
 def count_tests_in_suite(suite: unittest.TestSuite) -> int:

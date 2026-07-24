@@ -3,8 +3,20 @@
 # ER-003-P2J: テスト件数差異の調査・回帰テスト証跡の正式化のテスト
 # ============================================================
 # 調査スクリプト(er003_v1_p2j_investigate.py)の決定的な集計ロジックが
-# 正しいこと、および保存済み成果物(inventory/current_test_run)が現在の
-# 実測値と一致することを検証する。API呼び出しは一切行わない。
+# 正しいことを検証する。API呼び出しは一切行わない。
+#
+# 責務分離(ER-003-P2Lで明確化):
+#   - HistoricalRecordIntegrityTestsは、保存済みP2J成果物(過去時点の
+#     スナップショット)の内部整合性だけを検証する。現在のlive実測値
+#     とは一切比較しない(historical countとcurrent countの大小比較は
+#     行わない)。保存された過去の数値(P2H:1032、P2I:660、
+#     P2J current_head:1117)はfrozen定数として厳密一致で検証し、
+#     現在の値へ書き換えることも想定しない。
+#   - 現在の回帰品質(現在HEADで実際にテストが通るか)は、
+#     run_project_regression.py(canonical entry point)の実行結果
+#     だけが証跡になる。本テストファイルはそれを代替しない。
+#   詳細はTESTING.mdの「Historical test evidence」/
+#   「Current project-wide regression」を参照。
 #
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er003_test_p2j_investigate -v
@@ -44,11 +56,15 @@ class CollectionCountTests(unittest.TestCase):
         """er002側はP2H以降ファイル数が変化していない固定値として検証する。"""
         self.assertEqual(inv_mod.collect_count("er002_test_*.py"), 438)
 
-    def test_er003_only_pattern_at_least_p2i_era_count(self):
-        """er003側は本テストファイル自身を含むため増え続ける。P2I時点の
-        660件を下回らないことのみを固定的に検証する(自己参照による
-        数値の陳腐化を避ける)。"""
-        self.assertGreaterEqual(inv_mod.collect_count("er003_test_*.py"), inv_mod.P2I_REPORTED_COUNT)
+    def test_er003_only_pattern_still_includes_all_p2i_era_files(self):
+        """er003側は本テストファイル自身を含むため件数は増え続ける。
+        件数のしきい値比較(ER-003-P2Lで廃止対象と判定)ではなく、P2I
+        完了時点に存在した各fileが今も個別に存在するかを直接確認する。
+        これなら「重要なfileを消して無関係なfileを足す」ケースを
+        件数だけでは見逃さない。"""
+        files_now = set(glob.glob("er003_test_*.py"))
+        for module in inv_mod.P2I_ERA_ER003_MODULES:
+            self.assertIn(f"{module}.py", files_now, msg=module)
 
     def test_combined_equals_sum_of_er002_and_er003(self):
         er002 = inv_mod.collect_count("er002_test_*.py")
@@ -120,42 +136,186 @@ class ReconciliationArithmeticTests(unittest.TestCase):
         self.assertEqual(current["skipped"], 0)
 
 
-class SavedArtifactConsistencyTests(unittest.TestCase):
-    """保存済みJSON成果物が、現在の実測値と一致することを検証する
-    (ドリフト検出)。"""
+class HistoricalRecordIntegrityTests(unittest.TestCase):
+    """ER-003-P2L: P2J成果物(過去時点のスナップショット)の内部整合性
+    だけを検証する。現在のlive実測値とは一切比較しない。
 
-    def test_inventory_json_matches_freshly_built_inventory(self):
-        fresh = inv_mod.build_inventory()
-        with open("er003_output/p2j/ER-003-P2J_test_inventory.json", encoding="utf-8") as f:
-            saved = json.load(f)
-        # p2h/p2iは固定モジュールリストによる過去時点のスナップショットで
-        # あり、時間が経っても変化しない(厳密一致で比較してよい)。
-        self.assertEqual(fresh["p2h"]["collected"], saved["p2h"]["collected"])
-        self.assertEqual(fresh["p2i"]["collected"], saved["p2i"]["collected"])
-        # current_headはglob探索による「今この瞬間」の値であり、後続の
-        # 開発ステージ(例: ER-003-P2K)が新たなer0*_test_*.pyを追加する
-        # たびに増え続ける。保存済みJSONはP2J完了時点のスナップショット
-        # でしかないため、ここでは「保存値を下回っていない
-        # (テストが失われていない)」ことだけを検証する。
-        self.assertGreaterEqual(fresh["current_head"]["collected"], saved["current_head"]["collected"])
-        self.assertEqual(fresh["classification"], saved["classification"])
-        self.assertEqual(fresh["p2i_final_test_verdict"], saved["p2i_final_test_verdict"])
+    保証すること: 必須セクション/フィールドの存在、値の型、commit hash
+    形式、command/scopeの非空性、classification/verdictのenum妥当性、
+    そして「保存された過去の数値が書き換えられていないこと」
+    (immutability、frozen定数との厳密一致)。
 
-    def test_current_run_json_matches_fresh_build(self):
-        fresh_inv = inv_mod.build_inventory()
-        fresh_run = inv_mod.build_current_run_record(fresh_inv)
-        with open("er003_output/p2j/ER-003-P2J_current_test_run.json", encoding="utf-8") as f:
-            saved = json.load(f)
-        # current_headと同じ理由でincreasing-onlyの比較にする。
-        self.assertGreaterEqual(fresh_run["collected"], saved["collected"])
-        self.assertGreaterEqual(fresh_run["passed"], saved["passed"])
-        self.assertEqual(fresh_run["p2i_targeted_collected"], saved["p2i_targeted_collected"])
+    保証しないこと: 現在のtest件数が過去以上/以下/一致であること。
+    現在の回帰品質はrun_project_regression.py(canonical entry)だけが
+    証跡になる(TESTING.mdの「Historical test evidence」/
+    「Current project-wide regression」の区別を参照)。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.inventory = inv_mod.load_saved_inventory()
+        cls.current_run = inv_mod.load_saved_current_run()
+
+    # --- 必須セクション/フィールドの存在 ---
+
+    def test_inventory_has_required_top_level_sections(self):
+        for key in ("p2h", "p2i", "current_head", "classification", "p2i_final_test_verdict", "detail"):
+            self.assertIn(key, self.inventory, msg=key)
+
+    def test_p2h_and_p2i_sections_are_not_confused(self):
+        """p2hセクションにp2i固有の情報が、p2iセクションにp2h固有の情報が
+        紛れ込んでいないことを、それぞれのcommit/scope文字列の内容から
+        確認する。"""
+        self.assertIn("70d8b0b", self.inventory["p2h"]["commit"])
+        self.assertIn("eca3198", self.inventory["p2i"]["commit"])
+        self.assertNotEqual(self.inventory["p2h"]["scope"], self.inventory["p2i"]["scope"])
+
+    def test_current_run_has_required_fields(self):
+        for key in ("commit", "canonical_collection_command", "canonical_test_command",
+                   "collected", "passed", "failed", "skipped", "deselected",
+                   "p2i_targeted_command", "p2i_targeted_collected", "p2i_targeted_passed"):
+            self.assertIn(key, self.current_run, msg=key)
+
+    # --- 構造/型/enum検証(validate_saved_inventory_schema) ---
+
+    def test_saved_inventory_passes_schema_validation(self):
+        result = inv_mod.validate_saved_inventory_schema(self.inventory)
+        self.assertTrue(result["ok"], msg=result["reasons"])
+
+    def test_schema_validation_rejects_missing_section(self):
+        broken = {k: v for k, v in self.inventory.items() if k != "current_head"}
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("current_head" in r for r in result["reasons"]))
+
+    def test_schema_validation_rejects_missing_field(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        del broken["p2h"]["collected"]
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("p2h.collected" in r for r in result["reasons"]))
+
+    def test_schema_validation_rejects_negative_count(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["current_head"]["failed"] = -1
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("current_head.failed" in r for r in result["reasons"]))
+
+    def test_schema_validation_rejects_non_int_count(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["p2i"]["collected"] = "660"
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+
+    def test_schema_validation_rejects_malformed_commit_hash(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["p2h"]["commit"] = "not-a-hash!"
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("p2h.commit" in r for r in result["reasons"]))
+
+    def test_schema_validation_rejects_empty_command(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["p2i"]["command"] = ""
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+
+    def test_schema_validation_rejects_empty_scope(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["p2h"]["scope"] = "   "
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+
+    def test_schema_validation_rejects_unknown_classification(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["classification"] = ["NOT_A_REAL_CLASSIFICATION"]
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+
+    def test_schema_validation_rejects_unknown_verdict(self):
+        import copy
+        broken = copy.deepcopy(self.inventory)
+        broken["p2i_final_test_verdict"] = "MAYBE"
+        result = inv_mod.validate_saved_inventory_schema(broken)
+        self.assertFalse(result["ok"])
+
+    def test_schema_validation_raises_on_malformed_json_file(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+            f.write("{not valid json")
+            path = f.name
+        try:
+            with self.assertRaises(json.JSONDecodeError):
+                inv_mod.load_saved_inventory(path)
+        finally:
+            import os
+            os.remove(path)
+
+    # --- 分類・判定の妥当性(enumメンバーシップのみ、値の再計算はしない) ---
+
+    def test_classification_is_within_enum(self):
+        for c in self.inventory["classification"]:
+            self.assertIn(c, inv_mod.CLASSIFICATION_ENUM)
+
+    def test_classification_includes_different_test_scope(self):
+        self.assertIn("DIFFERENT_TEST_SCOPE", self.inventory["classification"])
+
+    def test_verdict_is_within_enum(self):
+        self.assertIn(self.inventory["p2i_final_test_verdict"], inv_mod.VERDICT_ENUM)
+
+    def test_verdict_is_pass(self):
+        self.assertEqual(self.inventory["p2i_final_test_verdict"], "PASS")
+
+    # --- immutability: 保存された過去の数値は凍結定数と厳密一致する
+    #     (現在のlive件数とは一切比較しない) ---
+
+    def test_p2h_collected_matches_frozen_historical_value(self):
+        self.assertEqual(self.inventory["p2h"]["collected"], inv_mod.P2H_REPORTED_COUNT)
+
+    def test_p2i_collected_matches_frozen_historical_value(self):
+        self.assertEqual(self.inventory["p2i"]["collected"], inv_mod.P2I_REPORTED_COUNT)
+
+    def test_current_head_collected_matches_frozen_p2j_snapshot(self):
+        """current_headはP2J完了時点(commit eca3198直後)のスナップ
+        ショットとして保存されたものであり、以後のステージ(P2K等)が
+        テストを追加しても、この保存値自体は書き換えない。"""
+        self.assertEqual(self.inventory["current_head"]["collected"], inv_mod.P2J_CURRENT_HEAD_REPORTED_COUNT)
+
+    def test_current_run_collected_matches_frozen_p2j_snapshot(self):
+        self.assertEqual(self.current_run["collected"], inv_mod.P2J_CURRENT_HEAD_REPORTED_COUNT)
+
+    def test_p2i_targeted_collected_matches_frozen_value(self):
+        """er003_test_p2i_production.py自体はP2I完了以降変更されて
+        いないため、その項目数(66)は不変のはずである。"""
+        self.assertEqual(self.current_run["p2i_targeted_collected"], 66)
 
     def test_saved_current_run_shows_zero_failures(self):
-        with open("er003_output/p2j/ER-003-P2J_current_test_run.json", encoding="utf-8") as f:
-            saved = json.load(f)
-        self.assertEqual(saved["failed"], 0)
-        self.assertEqual(saved["skipped"], 0)
+        self.assertEqual(self.current_run["failed"], 0)
+        self.assertEqual(self.current_run["skipped"], 0)
+
+    # --- 責務分離そのものの検証: このクラスはlive件数を一切参照しない ---
+
+    def test_this_test_class_never_calls_build_inventory_or_collect_count(self):
+        """履歴監査テストが、現在のlive件数を再計算する関数
+        (build_inventory/collect_count/build_current_run_record)を
+        一切呼んでいないことを、このクラス自身のソースコードから確認
+        する(責務分離の構造的な保証)。このアサーション自身のメソッドは
+        除外して調べる(禁止関数名を文字列として列挙しているため)。"""
+        import inspect
+        forbidden_calls = ("build_inventory(", "collect_count(", "build_current_run_record(")
+        for name, method in inspect.getmembers(HistoricalRecordIntegrityTests, predicate=inspect.isfunction):
+            if name == "test_this_test_class_never_calls_build_inventory_or_collect_count":
+                continue
+            method_source = inspect.getsource(method)
+            for forbidden in forbidden_calls:
+                self.assertNotIn(forbidden, method_source, msg=f"{name}: {forbidden}")
 
 
 if __name__ == "__main__":

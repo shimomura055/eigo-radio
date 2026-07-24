@@ -47,3 +47,20 @@ Project-wide regression:
 - 手動列挙commandを正式なproject-wide regressionの証跡として再利用すること
 
 個別タスク用のtargeted test(特定のテストファイル・特定のTestCaseのみを対象とする実行)は、開発中の早期失敗検出として引き続き使ってよい。ただし、それは「project-wide regression」ではなく、targeted testsとして明示すること。
+
+## Historical test evidence vs. current project-wide regression(ER-003-P2L)
+
+過去のテスト件数調査(例: `er003_output/p2j/`のER-003-P2J成果物)と、現在の回帰テストは、明確に別の責務を持つ。
+
+```text
+Historical test evidence:
+Validates the internal consistency and immutability of past test-run records.
+It must not compare historical counts with the current collected count.
+
+Current project-wide regression:
+Run `python run_project_regression.py`.
+This is the only evidence for the current HEAD's project-wide regression status.
+```
+
+- **Historical test evidence**(例: `er003_test_p2j_investigate.py`の`HistoricalRecordIntegrityTests`)は、保存済みJSON成果物が当時の記録として内部矛盾なく保存されているか(必須フィールドの存在、値の型、commit hash形式、command/scopeの非空性、enum妥当性)だけを検証する。保存された過去の数値(例: P2H=1032件、P2I=660件、P2J完了時点のcurrent_head=1117件)は、以後どれだけテストファイルが増えても書き換えない。**現在のlive集計件数と比較すること自体を行わない**(`==`・`>=`・`<=`のいずれも使わない)。件数の増減だけでtest消失やコード品質を判定しようとしない。
+- **Current project-wide regression**(`python run_project_regression.py`)だけが、現在HEADの回帰品質の証跡になる。過去の記録との突き合わせは行わない。
