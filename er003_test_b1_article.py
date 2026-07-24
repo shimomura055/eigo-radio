@@ -7,6 +7,8 @@
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er003_test_b1_article -v
 
+import json
+import os
 import shutil
 import tempfile
 import unittest
@@ -17,6 +19,8 @@ import er003_b1_article as b1
 import er003_b2_adapter as b2
 import er003_ja_to_en_translation as er003
 import er003_ja_to_en_translation_p1b as p1b
+
+B1_OUTPUT_DIR = "er003_output/b1_p1/A01"
 
 GOOD_B1_TEXT = (
     "# Title\n\n"
@@ -299,6 +303,73 @@ class InputIsolationTests(unittest.TestCase):
 
     def test_only_one_topic_id_defined(self):
         self.assertEqual(b1.TOPIC_ID, "A01")
+
+
+@unittest.skipUnless(os.path.exists(f"{B1_OUTPUT_DIR}/generation_metadata.json"),
+                     "real API output not present in this environment")
+class RealArtifactIntegrationTests(unittest.TestCase):
+    """実API実行済み成果物(A01・1回のみ)の内部整合性を検証する
+    (実APIは呼ばない、保存済みファイルの読み込みのみ)。"""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(f"{B1_OUTPUT_DIR}/generation_metadata.json", encoding="utf-8") as f:
+            cls.metadata = json.load(f)
+        with open(f"{B1_OUTPUT_DIR}/b1_metrics.json", encoding="utf-8") as f:
+            cls.metrics = json.load(f)
+        with open(f"{B1_OUTPUT_DIR}/b1_article_raw.md", encoding="utf-8") as f:
+            cls.raw_text = f.read()
+        with open(f"{B1_OUTPUT_DIR}/b1_article_for_review.md", encoding="utf-8") as f:
+            cls.review_text = f.read()
+
+    def test_exactly_one_api_call_recorded(self):
+        self.assertEqual(self.metadata["api_call_count"], 1)
+        self.assertEqual(self.metadata["auto_regeneration_count"], 0)
+
+    def test_no_web_search_used(self):
+        self.assertFalse(self.metadata["web_search_tool_used"])
+
+    def test_record_status_is_prototype_not_approved(self):
+        self.assertEqual(self.metadata["record_status"], "PROTOTYPE")
+        self.assertEqual(self.metadata["approval_status"], "NOT_APPROVED")
+
+    def test_source_master_unchanged_across_run(self):
+        self.assertTrue(self.metadata["source_master_unchanged"])
+        self.assertEqual(self.metadata["natural_english_source_sha256_before"],
+                         self.metadata["natural_english_source_sha256_after"])
+
+    def test_b2_body_not_used_as_input(self):
+        self.assertFalse(self.metadata["b2_body_used_as_input"])
+
+    def test_model_field_matches_expected(self):
+        self.assertTrue(self.metadata["model_field_matches_expected"])
+        self.assertEqual(self.metadata["actual_response_model_field"], b1.B1_MODEL)
+
+    def test_raw_and_review_copies_are_byte_identical(self):
+        self.assertEqual(self.raw_text, self.review_text)
+
+    def test_structure_passed(self):
+        self.assertEqual(self.metrics["structure_status"], "TRANSLATION_STRUCTURE_PASS")
+        self.assertTrue(self.metrics["point_one_present"])
+        self.assertTrue(self.metrics["point_two_present"])
+        self.assertTrue(self.metrics["in_one_line_present"])
+
+    def test_machine_checks_all_pass(self):
+        self.assertEqual(self.metadata["machine_checks"]["status"], "ALL_CHECKS_PASS")
+
+    def test_no_total_word_count_hard_limit_enforced(self):
+        """総語数のhard limitを設けていないこと(実データでも該当
+        フィールドが存在しないことを確認する)。"""
+        self.assertNotIn("total_word_count_status", self.metrics)
+        self.assertGreater(self.metrics["total_word_count_including_headings"], 0)
+
+    def test_master_exports_are_byte_identical_to_approved_sources(self):
+        with open(f"{B1_OUTPUT_DIR}/master_ja_approved.md", encoding="utf-8") as f:
+            exported_ja = f.read()
+        with open(f"{B1_OUTPUT_DIR}/master_en_natural_source_approved.md", encoding="utf-8") as f:
+            exported_en = f.read()
+        self.assertEqual(exported_ja, b1.load_japanese_master())
+        self.assertEqual(exported_en, b1.load_natural_english_source())
 
 
 if __name__ == "__main__":
