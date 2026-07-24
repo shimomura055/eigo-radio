@@ -8,7 +8,10 @@
 #   .venv/Scripts/python.exe -m unittest er003_test_b1_p2 -v
 
 import json
+import os
 import unittest
+
+B1_P2_OUTPUT_DIR = "er003_output/b1_p2/A01"
 
 import er003_b1_p2_keywords as bk
 import er003_b1_p2_preview as bp
@@ -362,6 +365,67 @@ class PreviewMachineChecksTests(unittest.TestCase):
         self.assertEqual(result["status"], "SOME_CHECKS_FAILED")
         self.assertEqual(result["per_pattern"]["C"]["status"], "SOME_CHECKS_FAILED")
         self.assertEqual(result["per_pattern"]["A"]["status"], "ALL_CHECKS_PASS")
+
+
+class CandidatesMarkdownTests(unittest.TestCase):
+
+    def test_markdown_has_three_labeled_sections_in_order(self):
+        parsed = {"patterns": [make_good_pattern(p) for p in ("A", "B", "C")]}
+        md = bp.build_candidates_markdown(parsed)
+        idx_a = md.index("Pattern A — Story / Drama")
+        idx_b = md.index("Pattern B — Comprehension / Structure")
+        idx_c = md.index("Pattern C — Keyword Salience")
+        self.assertLess(idx_a, idx_b)
+        self.assertLess(idx_b, idx_c)
+
+    def test_markdown_contains_full_pattern_text(self):
+        parsed = {"patterns": [make_good_pattern(p) for p in ("A", "B", "C")]}
+        md = bp.build_candidates_markdown(parsed)
+        self.assertEqual(md.count(GOOD_PATTERN_TEXT), 3)
+
+
+@unittest.skipUnless(os.path.exists(f"{B1_P2_OUTPUT_DIR}/keywords_selected.json"),
+                     "real API output not present in this environment")
+class RealArtifactIntegrationTests(unittest.TestCase):
+    """実API実行済み成果物(A01・selector1回+preview1回)の内部整合性を
+    検証する(実APIは呼ばない、保存済みファイルの読み込みのみ)。"""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(f"{B1_P2_OUTPUT_DIR}/keywords_selected.json", encoding="utf-8") as f:
+            cls.selected = json.load(f)
+        with open(f"{B1_P2_OUTPUT_DIR}/keywords_runtime_metadata.json", encoding="utf-8") as f:
+            cls.kw_metadata = json.load(f)
+        with open(f"{B1_P2_OUTPUT_DIR}/listening_preview_metadata.json", encoding="utf-8") as f:
+            cls.preview_metadata = json.load(f)
+
+    def test_selector_api_call_count_is_1(self):
+        self.assertEqual(self.kw_metadata["api_call_count"], 1)
+        self.assertEqual(self.kw_metadata["auto_regeneration_count"], 0)
+
+    def test_selector_strategy_is_l_and_source_level_is_b1(self):
+        self.assertEqual(self.selected["strategy_id"], "L")
+        self.assertEqual(self.selected["source_level"], "B1")
+        self.assertEqual(len(self.selected["items"]), 5)
+
+    def test_selector_used_b1_article_not_b2(self):
+        self.assertIn("b1_p1", self.kw_metadata["b1_article_path"])
+
+    def test_preview_api_call_count_is_1(self):
+        self.assertEqual(self.preview_metadata["api_call_count"], 1)
+        self.assertEqual(self.preview_metadata["auto_regeneration_count"], 0)
+
+    def test_preview_no_web_search(self):
+        self.assertFalse(self.preview_metadata["web_search_tool_used"])
+
+    def test_preview_machine_checks_recorded(self):
+        self.assertIn(self.preview_metadata["machine_checks"]["status"],
+                      ("ALL_CHECKS_PASS", "SOME_CHECKS_FAILED"))
+        self.assertEqual(self.preview_metadata["machine_checks"]["pattern_count"], 3)
+
+    def test_record_status_prototype_not_approved(self):
+        self.assertEqual(self.preview_metadata["record_status"], "PROTOTYPE")
+        self.assertEqual(self.preview_metadata["approval_status"], "NOT_APPROVED")
 
 
 if __name__ == "__main__":

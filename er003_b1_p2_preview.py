@@ -255,3 +255,24 @@ def run_preview_machine_checks(parsed: dict, selected_ranks: list, b1_article_te
         "pattern_ids_present": sorted(p["pattern_id"] for p in patterns),
         "per_pattern": per_pattern,
     }
+
+
+# ============================================================
+# ブロック4: ユーザー比較用markdown(section 12の形式をそのまま使う)
+# ============================================================
+_PATTERN_LABELS = {
+    "A": "Pattern A — Story / Drama",
+    "B": "Pattern B — Comprehension / Structure",
+    "C": "Pattern C — Keyword Salience",
+}
+
+
+def build_candidates_markdown(parsed: dict) -> str:
+    by_id = {p["pattern_id"]: p for p in parsed["patterns"]}
+    lines = []
+    for pattern_id in PATTERN_IDS:
+        lines.append(f"## {_PATTERN_LABELS[pattern_id]}")
+        lines.append("")
+        lines.append(by_id[pattern_id]["text"])
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
