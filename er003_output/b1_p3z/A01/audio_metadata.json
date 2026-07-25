@@ -1,0 +1,283 @@
+{
+  "management_id": "ER-003-B1-P3Z",
+  "article_id": "A01",
+  "record_status": "PROTOTYPE",
+  "approval_status": "NOT_APPROVED",
+  "source_files": {
+    "ja_before_marker": {
+      "path": "er003_output/b1_p3y/A01/components/ja_before_marker.wav",
+      "sha256": "8a57f4a115a18d13cacce84b757bcc18d3924a9cdcb56f5fd7caaf3941dd6ef2",
+      "duration_seconds": 6.52
+    },
+    "en_shot_on_target_trimmed": {
+      "path": "er003_output/b1_p3y/A01/components/en_shot_on_target_trimmed.wav",
+      "sha256": "82a4b01ea4dc466b72190f91b350df69f2ab340438a04c096d5452b1201f418b",
+      "duration_seconds": 1.231
+    },
+    "ja_after_marker": {
+      "path": "er003_output/b1_p3y/A01/components/ja_after_marker.wav",
+      "sha256": "ef1f9a873d0398742e458896da22e2731fa53a4f5210d96094317984a02e0d4f",
+      "duration_seconds": 3.631
+    }
+  },
+  "silence_detection_method": "p3u.find_speech_bounds (window_ms=20.0, silence_rms_threshold=0.02), 9パターン全てで同一条件",
+  "measured_existing_silence": {
+    "ja_before_marker_trailing_seconds": 0.32,
+    "en_leading_seconds": 0.08,
+    "en_trailing_seconds": 0.08,
+    "ja_after_marker_leading_seconds": 0.0
+  },
+  "design_note": "en_shot_on_target_trimmed.wav自体の前後安全余白(P3Uで設定済み、各0.08秒)は固定し、変更しない。目標の実効間隔は、ja_before_markerの末尾無音とja_after_markerの先頭無音だけを調整して達成する。",
+  "gap_tolerance_seconds": 0.03,
+  "dynamics3_params": {
+    "type": "soft_knee_compressor",
+    "threshold_percentile": 60,
+    "ratio": 8.0,
+    "knee_db": 6.0,
+    "attack_ms": 5.0,
+    "release_ms": 200.0,
+    "gain_smoothing_ms": 8.0
+  },
+  "sample_rate": 24000,
+  "channels": 1,
+  "patterns": [
+    {
+      "no": "01",
+      "gap_before_seconds": 0.2,
+      "gap_after_seconds": 0.2,
+      "filename": "01_A01_gap_before_0p2s_after_0p2s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.2,
+      "measured_gap_after_seconds": 0.2,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/01_A01_gap_before_0p2s_after_0p2s_dynamics3.wav",
+      "final_sha256": "6da069ddd9b5d12d33163f3b1f6032eaed281619a5262eaeabc80a11bae502d0",
+      "duration_seconds": 11.302,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.12,
+        "achieved_trailing_seconds": 0.12,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.12,
+        "achieved_leading_seconds": 0.12,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "02",
+      "gap_before_seconds": 0.2,
+      "gap_after_seconds": 0.3,
+      "filename": "02_A01_gap_before_0p2s_after_0p3s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.2,
+      "measured_gap_after_seconds": 0.3,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/02_A01_gap_before_0p2s_after_0p3s_dynamics3.wav",
+      "final_sha256": "01bdd78150ab577d6a8f10e89b991c8cac1b6cc86d1deccf8724a5525eb47be3",
+      "duration_seconds": 11.402,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.12,
+        "achieved_trailing_seconds": 0.12,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.22,
+        "achieved_leading_seconds": 0.22,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "03",
+      "gap_before_seconds": 0.2,
+      "gap_after_seconds": 0.4,
+      "filename": "03_A01_gap_before_0p2s_after_0p4s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.2,
+      "measured_gap_after_seconds": 0.4,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/03_A01_gap_before_0p2s_after_0p4s_dynamics3.wav",
+      "final_sha256": "54bb9eb3e432a99e488a288a7f935ce842bdf24194347ecc2791e64b5e21a92a",
+      "duration_seconds": 11.502,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.12,
+        "achieved_trailing_seconds": 0.12,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.32,
+        "achieved_leading_seconds": 0.32,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "04",
+      "gap_before_seconds": 0.3,
+      "gap_after_seconds": 0.2,
+      "filename": "04_A01_gap_before_0p3s_after_0p2s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.3,
+      "measured_gap_after_seconds": 0.2,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/04_A01_gap_before_0p3s_after_0p2s_dynamics3.wav",
+      "final_sha256": "b43b25929e513eadc4efe40985a3ac6f532e686f719ea9d0c37fe967c54503cb",
+      "duration_seconds": 11.402,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.22,
+        "achieved_trailing_seconds": 0.22,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.12,
+        "achieved_leading_seconds": 0.12,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "05",
+      "gap_before_seconds": 0.3,
+      "gap_after_seconds": 0.3,
+      "filename": "05_A01_gap_before_0p3s_after_0p3s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.3,
+      "measured_gap_after_seconds": 0.3,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/05_A01_gap_before_0p3s_after_0p3s_dynamics3.wav",
+      "final_sha256": "35492dc27faa2b04aaa743b23d7c89440364ffc3085409b942486a724fb69fc5",
+      "duration_seconds": 11.502,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.22,
+        "achieved_trailing_seconds": 0.22,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.22,
+        "achieved_leading_seconds": 0.22,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "06",
+      "gap_before_seconds": 0.3,
+      "gap_after_seconds": 0.4,
+      "filename": "06_A01_gap_before_0p3s_after_0p4s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.3,
+      "measured_gap_after_seconds": 0.4,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/06_A01_gap_before_0p3s_after_0p4s_dynamics3.wav",
+      "final_sha256": "89ac525c4ae0719f14fd138803ca713cbc6a9fdb9bb5254a81d9e3b3d0e1ad56",
+      "duration_seconds": 11.602,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.22,
+        "achieved_trailing_seconds": 0.22,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.32,
+        "achieved_leading_seconds": 0.32,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "07",
+      "gap_before_seconds": 0.4,
+      "gap_after_seconds": 0.2,
+      "filename": "07_A01_gap_before_0p4s_after_0p2s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.4,
+      "measured_gap_after_seconds": 0.2,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/07_A01_gap_before_0p4s_after_0p2s_dynamics3.wav",
+      "final_sha256": "d14b9353ab8b49ac023361820f106c599c6bd252217c269ea1326bfbf8938afa",
+      "duration_seconds": 11.502,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.32,
+        "achieved_trailing_seconds": 0.32,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.12,
+        "achieved_leading_seconds": 0.12,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "08",
+      "gap_before_seconds": 0.4,
+      "gap_after_seconds": 0.3,
+      "filename": "08_A01_gap_before_0p4s_after_0p3s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.4,
+      "measured_gap_after_seconds": 0.3,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/08_A01_gap_before_0p4s_after_0p3s_dynamics3.wav",
+      "final_sha256": "85f36d5f56b4c01adadfc60cf2ee6652926194cddbf57bdc802e0dd15ed2c0fd",
+      "duration_seconds": 11.602,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.32,
+        "achieved_trailing_seconds": 0.32,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.22,
+        "achieved_leading_seconds": 0.22,
+        "speech_content_unchanged": true
+      }
+    },
+    {
+      "no": "09",
+      "gap_before_seconds": 0.4,
+      "gap_after_seconds": 0.4,
+      "filename": "09_A01_gap_before_0p4s_after_0p4s_dynamics3.wav",
+      "status": "OK",
+      "measured_gap_before_seconds": 0.4,
+      "measured_gap_after_seconds": 0.4,
+      "within_tolerance_before": true,
+      "within_tolerance_after": true,
+      "final_path": "er003_output/b1_p3z/A01/final/09_A01_gap_before_0p4s_after_0p4s_dynamics3.wav",
+      "final_sha256": "efdab7372515c89ee26ae2df2ee9edfd861db9f342d0f6bc89f5d78e475b4465",
+      "duration_seconds": 11.702,
+      "clipping_detected": false,
+      "dynamics3_applied": true,
+      "before_adjustment": {
+        "target_trailing_seconds": 0.32,
+        "achieved_trailing_seconds": 0.32,
+        "speech_content_unchanged": true
+      },
+      "after_adjustment": {
+        "target_leading_seconds": 0.32,
+        "achieved_leading_seconds": 0.32,
+        "speech_content_unchanged": true
+      }
+    }
+  ],
+  "new_tts_calls_made": 0,
+  "mfa_reruns_made": 0,
+  "pattern_a_full_generated": false,
+  "b1_body_generated": false
+}
