@@ -1,0 +1,82 @@
+{
+  "stage": "ER-003-B1-P4D",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "19742016e27f9820bc1910a6f5d2227357695202"
+  },
+  "pattern_a_source": {
+    "path": "er003_output/b1_p2/A01/listening_preview_raw.md",
+    "sha256": "5b986705e6a55163bcc6cb6ab92a2d3a6be1970ab1b8c7adebd67ba2732aa500",
+    "char_count": 277
+  },
+  "used_forms": [
+    "shot on target", "take players off", "a narrow lead", "close the door to the final", "stoppage time"
+  ],
+  "marker_replacement": {
+    "marker_token": "目印",
+    "count": 5,
+    "used_form_residue_all_zero": true
+  },
+  "reading_normalization": {
+    "implementation": "SudachiPy(Dictionary().create(), 既定split mode)によるtokenize。品詞大分類が「補助記号」のtokenはsurfaceをそのまま保持し(読みの割り当てがない記号類、実機確認済み: 「―」のreading_formは実際の読みではない汎用ラベル「キゴウ」を返すため)、それ以外はreading_form(カタカナ)をUnicodeオフセット-0x60でひらがな化(長音記号「ー」はこの変換対象外、原文のまま保持)。語句別の例外辞書・人手修正は一切なし。",
+    "tokenizer": "sudachipy.Dictionary().create()(隔離MFA環境 mfa_tool/envs/mfa 内で実行、アプリ本体.venvには追加していない)",
+    "helper_script": "er003_b1_p4d_sudachi_tokenize_helper.py",
+    "full_hiragana_script_path": "er003_output/b1_p4d/A01/source/pattern_a_full_hiragana.txt",
+    "full_hiragana_script_sha256": "fb9ea8c9ef6740fd83fe905199d987609b2eba9e8ec79b6c3437dee17493bd5b",
+    "reading_map_path": "er003_output/b1_p4d/A01/source/reading_map.json",
+    "reading_map_token_count": 119
+  },
+  "static_verification": {
+    "reconstruction_matches": true,
+    "unconvertible_token_count": 0,
+    "ascii_letter_count": 0,
+    "arabic_numeral_count": 0,
+    "kanji_count": 0,
+    "katakana_letter_count": 0,
+    "marker_hiragana_count": 5,
+    "sentence_count_matches": true,
+    "punctuation_sequence_matches": true,
+    "all_passed": true
+  },
+  "key_expressions_pre_tts": {
+    "last_few_minutes": {"source": "最後の数分", "expected": "さいごのすうふん", "present": true},
+    "defend": {"source": "守備を固め", "expected": "しゅびをかため", "present": true, "forbidden_form_present": false},
+    "narrow_lead": {"source": "わずかなリード", "expected": "わずかなりーど", "present": true}
+  },
+  "japanese_instruction": "次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。(P3Y以降無変更。Voice=Aoede, Emotional + Connected, Level 2, speed number指定なし, solo narration)",
+  "tts_generation": {
+    "call_count": 1,
+    "retry_count": 0,
+    "raw_path": "er003_output/b1_p4d/A01/preview/raw/A01_preview_full_hiragana_with_markers.wav",
+    "raw_sha256": "f376a7cd31eb01e3e1e80a09b783cd2a2fd23c7938d2d9694d5c2d505f069866",
+    "duration_seconds": 32.171,
+    "decode_ok": true,
+    "clipping_detected": false
+  },
+  "asr": {
+    "transcript_path": "er003_output/b1_p4d/A01/asr/asr_transcript.txt",
+    "reading_normalized_path": "er003_output/b1_p4d/A01/asr/asr_reading_normalized.txt",
+    "ja_char_ratio": 0.9305,
+    "is_japanese": true,
+    "no_unintended_english": true,
+    "marker_occurrence_total": 5,
+    "marker_occurrence_total_is_five": true,
+    "content_similarity_ratio": 0.9366,
+    "similarity_ok": true
+  },
+  "key_expressions_asr": {
+    "last_few_minutes": {"present": true},
+    "defend": {"present": true, "forbidden_form_present": false},
+    "narrow_lead": {"present": true}
+  },
+  "scope_confirmation": {
+    "mfa_executed": 0,
+    "english_tts_calls": 0,
+    "marker_replaced_with_english": 0,
+    "dynamics3_applied": 0,
+    "b1_body_generated": 0,
+    "combined_audio_generated": 0,
+    "push": "not performed"
+  }
+}
