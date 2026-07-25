@@ -1,0 +1,77 @@
+{
+  "management_id": "ER-003-B1-P4",
+  "article_id": "A01",
+  "record_status": "PROTOTYPE",
+  "approval_status": "NOT_APPROVED",
+  "status": "STOPPED",
+  "stop_phase": "Step7-content-check",
+  "stop_reason": "raw Listening Preview音声の生成直後の内容確認(MFAへ進む前のゲート)で、5マーカーのうち少なくとも1件(close the door to the finalに対応するカタカナマーカー)が、日本語カタカナではなく英語のまま発話されていることを確認したため。指示section19の停止条件(5マーカーのいずれかが欠落・重複・別語化)に該当する。",
+  "fallback_to_alternative_methods": false,
+  "pattern_a_full_generated_for_mfa_purpose_only": false,
+  "b1_body_generated": false,
+  "new_english_tts_calls_made": 0,
+  "mfa_reruns_made": 0,
+  "instruction_diff_note": "日本語Preview用instructionは、P3Yで確認済みの言語指定1行のみ変更のものをそのまま使用した(section5参照)。今回追加のinstruction変更は行っていない。",
+  "japanese_style_prefix_first_line": "次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。",
+  "english_style_prefix_unchanged": true,
+  "source": {
+    "pattern_a_source_path": "er003_output/b1_p2/A01/listening_preview_raw.md",
+    "pattern_a_source_sha256": "5b986705e6a55163bcc6cb6ab92a2d3a6be1970ab1b8c7adebd67ba2732aa500",
+    "b1_article_source_path": "er003_output/b1_p1/A01/b1_article_raw.md",
+    "b1_article_source_sha256": "3a01120e0df0fb119b31dcc33b3a5d9342dc79dedec40880a1516add990da533",
+    "keywords_source_path": "er003_output/b1_p2/A01/keywords_selected.json",
+    "keywords_source_sha256": "665e0b845f10375d2ec812630e9cbd2603918ec1a0b0ed11950e1b92d90e8002"
+  },
+  "marker_map": [
+    {
+      "rank": 3, "canonical_english": "shot on target", "used_form": "shot on target",
+      "japanese_gloss_used": "枠内シュート", "katakana_marker": "ショット・オン・ターゲット",
+      "appearance_order": 1
+    },
+    {
+      "rank": 2, "canonical_english": "take a player off", "used_form": "take players off",
+      "japanese_gloss_used": "選手を交代で下げる", "katakana_marker": "テイク・プレイヤーズ・オフ",
+      "appearance_order": 2
+    },
+    {
+      "rank": 5, "canonical_english": "narrow lead", "used_form": "a narrow lead",
+      "japanese_gloss_used": "わずかなリード", "katakana_marker": "ア・ナロー・リード",
+      "appearance_order": 3
+    },
+    {
+      "rank": 4, "canonical_english": "close the door to", "used_form": "close the door to the final",
+      "japanese_gloss_used": "アルゼンチンの決勝への道を閉ざすこと", "katakana_marker": "クローズ・ザ・ドア・トゥ・ザ・ファイナル",
+      "appearance_order": 4
+    },
+    {
+      "rank": 1, "canonical_english": "stoppage time", "used_form": "stoppage time",
+      "japanese_gloss_used": "アディショナルタイム", "katakana_marker": "ストッページ・タイム",
+      "appearance_order": 5
+    }
+  ],
+  "preview_ja_tts": {
+    "path": "er003_output/b1_p4/A01/preview/raw/preview_ja_with_5_markers.wav",
+    "sha256": "96f28995ad7dac9b4ede81c8ecc58aace80087e49fc8e3250dcf86e30f5bd7c8",
+    "duration_seconds": 43.651,
+    "clipping_detected": false,
+    "call_count": 1,
+    "retry_count": 0,
+    "tts_model": "gemini-2.5-pro-preview-tts",
+    "voice": "Aoede"
+  },
+  "content_check": {
+    "diagnostic_method": "Azure STT continuous recognition (ja-JP, start_continuous_recognition), 診断用途のみ、境界決定には未使用",
+    "diagnostic_tool_note": "当初はp3u.get_word_timestamps_via_azure_stt(recognize_once()ベース)を使ったが、複数文・40秒超の音声では最初の1文しか認識されないことが判明したため、本ステージ専用の連続認識版(get_full_text_via_azure_stt_continuous)を新規実装して使用した。",
+    "ja_char_ratio": 0.8492,
+    "is_japanese": true,
+    "all_markers_present_once": false,
+    "marker_checks": [
+      {"katakana_marker": "ショット・オン・ターゲット", "present_once": true},
+      {"katakana_marker": "テイク・プレイヤーズ・オフ", "present_once": true},
+      {"katakana_marker": "ア・ナロー・リード", "present_once": true},
+      {"katakana_marker": "クローズ・ザ・ドア・トゥ・ザ・ファイナル", "present_once": false, "note": "認識結果に英語の生テキスト'close the door to the final'がそのまま出現しており、対応するカタカナは検出できなかった。TTSが英語のまま発話した可能性が高い(P3Xで確認済みの、TTSが日本語原稿の一部を英語で発話する既知の故障モードと同じ傾向)。"},
+      {"katakana_marker": "ストッページ・タイム", "present_once": false, "note": "認識結果は'ストップページタイム'(「プ」が1文字多い)。TTSの発音差か、ASRの誤認識かは切り分けられていない(参考情報として記録するのみで、単独では停止判断の決め手にはしていない)。"}
+    ],
+    "recognized_text_ja_JP": "前半は激しい接触と緊張が続き、両チームとも枠内シュートショット、オンターゲットを記録できないまま静かな均衡が保たれます。後半に試合が動くと、イングランドは選手を交代で下げるテイクプレイヤーズオフという決断で守備を固め、わずかなリードアナローリードを守ろうとします。アルゼンチンの結晶への道を閉ざすことclose the door to the finalが現実になりそうなその時、メッシが流れを変え、ついにアディショナルタイムストップページタイムへ。最後の数分、寒気と痛みの境目で何が起きるのでしょうか。"
+  }
+}
