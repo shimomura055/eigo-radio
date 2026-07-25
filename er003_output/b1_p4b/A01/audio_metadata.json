@@ -1,0 +1,36 @@
+{
+  "stage": "ER-003-B1-P4B",
+  "status": "STOPPED",
+  "phase": "chunk_generation",
+  "stopped_at_chunk_id": "05",
+  "reason": "chunk05の内容確認(診断用ASR)が、2回連続で「合図」を検出できず失敗しました",
+  "static_check": {
+    "all_passed": true,
+    "chunk_count": 6,
+    "marker_chunk_count": 5,
+    "normal_chunk_count": 1,
+    "reconstruction_matches": true
+  },
+  "chunk_results_summary": [
+    {"chunk_id": "01", "chunk_type": "marker", "used_form": "shot on target", "status": "OK", "attempts_used": 1, "final_sha256": "6b94d32cbdc0dcd0b5abb98e93659f8eb9ad5be9f5fe96456e069187f17adc23", "duration_seconds": 9.491},
+    {"chunk_id": "02", "chunk_type": "marker", "used_form": "take players off", "status": "OK", "attempts_used": 1, "final_sha256": "bd0469d78fd3e622efd5e3f3962fb9273c6b8e8f89f8490c420c45e99d4b1a2b", "duration_seconds": 6.971},
+    {"chunk_id": "03", "chunk_type": "marker", "used_form": "a narrow lead", "status": "OK", "attempts_used": 1, "final_sha256": "ae5fae1aff4f7e51f45b5bdfdebaca8b4d726b738544af359eb7609ce158878a", "duration_seconds": 3.571},
+    {"chunk_id": "04", "chunk_type": "marker", "used_form": "close the door to the final", "status": "OK", "attempts_used": 2, "final_sha256": "5351e0ede026eefbd967f2f4ce73946a2341b6428d6d0c1f64652f22012cff2b", "duration_seconds": 6.451,
+      "attempt_1_content_check_failed": {"recognized": "アルゼンチンの結晶への道を閉ざすこと。会津が現実になりそうなその時。", "marker_count_in_recognized": 0}},
+    {"chunk_id": "05", "chunk_type": "marker", "used_form": "stoppage time", "status": "STOPPED", "attempts_used": 2,
+      "attempt_1": {"recognized": "メッシが流れを変え、ついにアディショナルタイムアイズ。", "marker_count_in_recognized": 0, "sha256": "f8b74ca39085756ede338e871c69925f8efae64a1395e5278a1f39482fc534c5"},
+      "attempt_2": {"recognized": "メッシが流れを変え、ついにアディショナルタイム。会津へ。", "marker_count_in_recognized": 0, "sha256": "eb71cb24c3fff1f73256ff7639ac69f34027ef3c70b21832ca8cac2b0684a9b3"}},
+    {"chunk_id": "06", "chunk_type": "normal", "status": "NOT_ATTEMPTED", "reason": "chunk05が失敗したため、後続chunkの生成は行っていない"}
+  ],
+  "not_performed": [
+    "MFA alignment(全chunk)",
+    "英語Key Phrase音声生成(4件の新規TTS)",
+    "marker置換(全chunk)",
+    "chunk結合",
+    "Dynamics3適用",
+    "B1本文生成",
+    "Preview+本文の結合音声生成"
+  ],
+  "pattern_a_change": 0,
+  "note_on_regeneration": "診断のため、chunk1-5生成ステップを2回実行した(1回目はrun()経由でchunk05到達時に停止、2回目は原因調査のためstep単体を再実行)。ディスク上に残っているchunk01-05のwavは、いずれも直近(2回目)の実行結果であり、内容(日本語かどうか・marker検出結果)は1回目と同一パターンだった。"
+}
