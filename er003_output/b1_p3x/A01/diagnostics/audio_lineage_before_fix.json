@@ -1,0 +1,100 @@
+{
+  "management_id": "ER-003-B1-P3X",
+  "article_id": "A01",
+  "purpose": "P3W(er003_v1_b1_p3w_generate.py)が生成・保存した各音声ファイルの、生成順・参照関係・実内容を、修正を試みる前の状態としてそのまま記録する。",
+  "note": "本ステージはStep 2A(raw日本語音声がそもそも英語)に該当すると判定し、切り出し・結合の再構築(Step 5)へは進まず停止した。そのため audio_lineage_after_fix.json は作成していない(root_cause_report.md参照)。",
+  "generation_order": [
+    {
+      "step": "P3W Step3 attempt 1(初回TTS呼び出し)",
+      "output_path": "er003_output/b1_p3w/A01/raw/ja_with_spoken_marker.wav (当時)",
+      "sha256_at_time": "f3856d4283c95c557f8e63425894cd7bc177d0d674a6b833c82289bc8a3432da",
+      "surviving_copy": "mfa_tool/fresh_marker_corpus/test_fresh.wav (P3W診断時にcpコマンドで複製したもの。元ファイルは後述の理由で上書きされ現存しない)",
+      "current_sha256_of_surviving_copy": "f3856d4283c95c557f8e63425894cd7bc177d0d674a6b833c82289bc8a3432da",
+      "duration_seconds": 11.491,
+      "content_check_result": "英語(ja-JP指定でも英語の音として認識される)。日本語ではない。",
+      "recognized_text_en_paraphrase": "the first half brought cracking contact and attends atmosphere with both teams failing to register a shot on target, a shattered mutual silent equilibrium"
+    },
+    {
+      "step": "P3W Step3 attempt 2(スクリプト再実行による意図しない2回目のTTS呼び出し。P3W完了報告で開示済み)",
+      "output_path": "er003_output/b1_p3w/A01/raw/ja_with_spoken_marker.wav (attempt1を上書き)",
+      "sha256_at_time": "56349635d1fe8f49d29f88aacf62676e13ef99cad3bada9c1fdeeff99632c1cb",
+      "current_sha256": "56349635d1fe8f49d29f88aacf62676e13ef99cad3bada9c1fdeeff99632c1cb",
+      "duration_seconds": 10.811,
+      "content_check_result": "英語(ja-JP指定でも英語の音として認識される。en-US指定では流暢な英文として認識される)。日本語ではない。",
+      "recognized_text_en_US": "the first half is marked by intense physical contact and a sense of tension with both teams unable to register a shot on goal leading to a quiet stalemate"
+    }
+  ],
+  "current_files": {
+    "ja_with_spoken_marker_raw": {
+      "path": "er003_output/b1_p3w/A01/raw/ja_with_spoken_marker.wav",
+      "sha256": "56349635d1fe8f49d29f88aacf62676e13ef99cad3bada9c1fdeeff99632c1cb",
+      "duration_seconds": 10.811,
+      "sample_rate": 24000,
+      "channels": 1,
+      "expected_content": "マーカーを含む日本語全文",
+      "actual_content": "英語(日本語ではない)",
+      "matches_expectation": false
+    },
+    "ja_before_marker_component": {
+      "path": "er003_output/b1_p3w/A01/components/ja_before_marker.wav",
+      "sha256": "2df5fd0937df5ba9ce83b084917ebb95eda272730d7e4d4928b1c756dee5f528",
+      "duration_seconds": 5.79,
+      "sample_rate": 24000,
+      "channels": 1,
+      "expected_content": "文頭から「枠内シュート」までの日本語",
+      "actual_content": "英語(raw/ja_with_spoken_marker.wavの[0, 5.79)秒をそのまま切り出したもの。切り出し処理自体は正しいが、切り出し元raw音声が既に英語であるため結果も英語になっている)",
+      "matches_expectation": false,
+      "recognized_text": "the first half is marked by intense physical contact and a sense of tension with"
+    },
+    "en_shot_on_target_trimmed_component": {
+      "path": "er003_output/b1_p3w/A01/components/en_shot_on_target_trimmed.wav",
+      "sha256": "82a4b01ea4dc466b72190f91b350df69f2ab340438a04c096d5452b1201f418b",
+      "duration_seconds": 1.231,
+      "sample_rate": 24000,
+      "channels": 1,
+      "source_path": "er003_output/b1_p3u/A01/components/en_shot_on_target_trimmed.wav",
+      "source_sha256": "82a4b01ea4dc466b72190f91b350df69f2ab340438a04c096d5452b1201f418b",
+      "sha256_matches_source": true,
+      "expected_content": "shot on targetのみ",
+      "actual_content": "shot on target(期待通り。P3Uの正規成果物からのコピーで内容は正しい)",
+      "matches_expectation": true,
+      "recognized_text": "shot on target"
+    },
+    "ja_after_marker_component": {
+      "path": "er003_output/b1_p3w/A01/components/ja_after_marker.wav",
+      "sha256": "865a22f6707aaf28114013f78a769ebfd644b6574fcfff7f56d975124cace800",
+      "duration_seconds": 4.101,
+      "sample_rate": 24000,
+      "channels": 1,
+      "expected_content": "「を記録できないまま」以降の日本語",
+      "actual_content": "英語(raw/ja_with_spoken_marker.wavの[6.71, 末尾)秒をそのまま切り出したもの。切り出し処理自体は正しいが、切り出し元raw音声が既に英語であるため結果も英語になっている)",
+      "matches_expectation": false,
+      "recognized_text": "to register a shot on goal leading to a quiet stalemate"
+    },
+    "final_raw": {
+      "path": "er003_output/b1_p3w/A01/final/A01_b1_mfa_marker_replacement_raw.wav",
+      "sha256": "df78dad94577b1e8ae6419d6ce1be37ffee0911e02bc7e256ed89551653a3dee",
+      "duration_seconds": 11.3619,
+      "sample_rate": 24000,
+      "channels": 1,
+      "concat_input_order": [
+        "ja_before_marker_component(英語)",
+        "0.12秒無音",
+        "en_shot_on_target_trimmed_component(英語、正しい)",
+        "0.12秒無音",
+        "ja_after_marker_component(英語)"
+      ],
+      "expected_content": "日本語前半+英語+日本語後半",
+      "actual_content": "英語+英語+英語(結合処理自体は正しく3コンポーネントを指示通りの順で連結しているが、日本語であるべき2コンポーネントが既に英語であるため全体が英語になっている)",
+      "matches_expectation": false
+    },
+    "final_dynamics3": {
+      "path": "er003_output/b1_p3w/A01/final/A01_b1_mfa_marker_replacement_dynamics3.wav",
+      "sha256": "bc480e77948315c135f1338a06fb9634d078e79bdd3bcc8fe8f44213e3aa7a86",
+      "duration_seconds": 11.3619,
+      "sample_rate": 24000,
+      "channels": 1,
+      "note": "final_rawにDynamics3を1回適用したもの。Dynamics3は音量調整のみで音声内容(言語)を変更する処理ではなく、finalが英語なのはfinal_raw時点で既に英語だったことがそのまま引き継がれているため。Dynamics3自体に問題はない。"
+    }
+  }
+}

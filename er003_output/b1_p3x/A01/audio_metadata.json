@@ -1,0 +1,82 @@
+{
+  "management_id": "ER-003-B1-P3X",
+  "article_id": "A01",
+  "record_status": "PROTOTYPE",
+  "approval_status": "NOT_APPROVED",
+  "status": "STOPPED",
+  "stop_phase": "Step 2A",
+  "stop_reason": "raw/ja_with_spoken_marker.wav(P3Wの成果物)自体が、TTS応答の時点で既に英語であり、正常な日本語sourceが存在しないため。切り出し・結合(Step 5)へは進んでいない。",
+  "fallback_to_new_tts": false,
+  "new_tts_calls_made": 0,
+  "code_bug_found": false,
+  "code_bug_note": "er003_b1_p3w_audio.py / er003_v1_b1_p3w_generate.pyのlineageを追跡した結果、切り出し(frame範囲)・結合順・境界無音長・sha256整合はいずれも指示通り正しく動作していることを確認した。根本原因はコード側ではなく、Gemini TTSが該当プロンプトに対して英語音声を生成したことにある。詳細はroot_cause_report.md参照。",
+  "diagnosed_files": {
+    "ja_with_spoken_marker_raw": {
+      "path": "er003_output/b1_p3w/A01/raw/ja_with_spoken_marker.wav",
+      "sha256": "56349635d1fe8f49d29f88aacf62676e13ef99cad3bada9c1fdeeff99632c1cb",
+      "duration_seconds": 10.811,
+      "expected_language": "ja",
+      "actual_language": "en",
+      "match": false
+    },
+    "ja_before_marker_component": {
+      "path": "er003_output/b1_p3w/A01/components/ja_before_marker.wav",
+      "sha256": "2df5fd0937df5ba9ce83b084917ebb95eda272730d7e4d4928b1c756dee5f528",
+      "duration_seconds": 5.79,
+      "expected_language": "ja",
+      "actual_language": "en",
+      "match": false
+    },
+    "en_shot_on_target_trimmed_component": {
+      "path": "er003_output/b1_p3w/A01/components/en_shot_on_target_trimmed.wav",
+      "sha256": "82a4b01ea4dc466b72190f91b350df69f2ab340438a04c096d5452b1201f418b",
+      "duration_seconds": 1.231,
+      "expected_language": "en",
+      "actual_language": "en",
+      "match": true,
+      "matches_p3u_source_sha256": true
+    },
+    "ja_after_marker_component": {
+      "path": "er003_output/b1_p3w/A01/components/ja_after_marker.wav",
+      "sha256": "865a22f6707aaf28114013f78a769ebfd644b6574fcfff7f56d975124cace800",
+      "duration_seconds": 4.101,
+      "expected_language": "ja",
+      "actual_language": "en",
+      "match": false
+    },
+    "final_raw": {
+      "path": "er003_output/b1_p3w/A01/final/A01_b1_mfa_marker_replacement_raw.wav",
+      "sha256": "df78dad94577b1e8ae6419d6ce1be37ffee0911e02bc7e256ed89551653a3dee",
+      "duration_seconds": 11.3619,
+      "expected_language": "ja+en+ja",
+      "actual_language": "en+en+en",
+      "match": false
+    },
+    "final_dynamics3": {
+      "path": "er003_output/b1_p3w/A01/final/A01_b1_mfa_marker_replacement_dynamics3.wav",
+      "sha256": "bc480e77948315c135f1338a06fb9634d078e79bdd3bcc8fe8f44213e3aa7a86",
+      "duration_seconds": 11.3619,
+      "note": "final_rawにDynamics3適用後。Dynamics3自体に問題はなく、raw時点の英語化がそのまま引き継がれている"
+    }
+  },
+  "surviving_first_generation_copy": {
+    "path": "mfa_tool/fresh_marker_corpus/test_fresh.wav",
+    "sha256": "f3856d4283c95c557f8e63425894cd7bc177d0d674a6b833c82289bc8a3432da",
+    "duration_seconds": 11.491,
+    "note": "P3Wの1回目TTS呼び出し結果の診断用複製。こちらも独立して英語であることを確認済み(2回とも英語化)。",
+    "actual_language": "en"
+  },
+  "reference_known_good_ja_file": {
+    "path": "er003_output/b1_p3t/A01/raw/ja_full_sentence.wav",
+    "sha256": "a239ef34a7623be6c82d9d7994647f18df0423d684e13c3e990ebe8d559b19bd",
+    "actual_language": "ja",
+    "note": "対照確認用。診断ツール自体が正しく日本語を認識できることを確認するために使用。"
+  },
+  "pattern_a_full_generated": false,
+  "b1_body_generated": false,
+  "diagnostics_files": {
+    "audio_lineage_before_fix": "er003_output/b1_p3x/A01/diagnostics/audio_lineage_before_fix.json",
+    "content_check": "er003_output/b1_p3x/A01/diagnostics/content_check.md"
+  },
+  "root_cause_report": "er003_output/b1_p3x/A01/root_cause_report.md"
+}
