@@ -34,3 +34,10 @@ er002_output/**/_tmp/
 # 除外方針と同じ理由。容量・著作権の観点。sha256・状態記録(benchmark_source_
 # status.json)は追跡対象とする)
 er002_v1_2m_benchmarks/source/*.pdf
+
+# ER-003-B1-P3W: MFA(Montreal Forced Aligner)専用環境。アプリ本体の
+# production依存関係(.venv/pyproject等)とは完全に分離した、micromamba
+# root prefix + isolated env + 音響/辞書モデル本体一式。サイズが大きく
+# アプリの再現性に不要なため追跡対象外(名称・versionはメタデータJSON/MDへ
+# 記録し、そちらは追跡対象とする)。
+mfa_tool/
