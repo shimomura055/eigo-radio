@@ -63,12 +63,14 @@ _CHUNK_END_ANCHORS = [
 ]
 
 
-def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
+def build_chunk_plan(pattern_a_text: str, used_forms: list[dict], marker_token: str = MARKER_TOKEN) -> list[dict]:
     """Pattern A本文を、既存の句読点位置で6つのchunkへ分割する。
     語句・順序・句読点は一切変更しない(既存アンカー文字列での単純な
     スライスのみ)。各chunkについて、含まれるused_form(0または1件)を
-    特定し、marker chunkの場合はTTS用テキスト(used_formを「合図」へ
-    置換したもの)を構築する。"""
+    特定し、marker chunkの場合はTTS用テキスト(used_formをmarker_token
+    へ置換したもの)を構築する。marker_tokenを省略した場合は、この
+    ステージ(P4B)のデフォルト「合図」を使う(後続ステージが別の
+    marker語で同じ分割ロジックを再利用できるようにするための引数)。"""
     pos = 0
     raw_chunks = []
     for anchor in _CHUNK_END_ANCHORS:
@@ -96,7 +98,7 @@ def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
             uf = matched[0]
             if source_text.count(uf["used_form"]) != 1:
                 raise ValueError(f"chunk{i}内でused_form{uf['used_form']!r}の出現数が1ではありません")
-            tts_text = source_text.replace(uf["used_form"], MARKER_TOKEN, 1)
+            tts_text = source_text.replace(uf["used_form"], marker_token, 1)
             plan.append({
                 "chunk_id": f"{i:02d}",
                 "chunk_type": "marker",
@@ -104,7 +106,7 @@ def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
                 "tts_text": tts_text,
                 "canonical_english": uf["canonical_english"],
                 "used_form": uf["used_form"],
-                "marker_count_in_tts_text": tts_text.count(MARKER_TOKEN),
+                "marker_count_in_tts_text": tts_text.count(marker_token),
                 "order": i,
                 "contains_last_few_minutes": contains_last_few_minutes,
             })
@@ -116,7 +118,7 @@ def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
                 "tts_text": source_text,
                 "canonical_english": None,
                 "used_form": None,
-                "marker_count_in_tts_text": source_text.count(MARKER_TOKEN),
+                "marker_count_in_tts_text": source_text.count(marker_token),
                 "order": i,
                 "contains_last_few_minutes": contains_last_few_minutes,
             })
@@ -124,9 +126,10 @@ def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
     return plan
 
 
-def verify_chunk_plan_static(chunk_plan: list[dict], pattern_a_text: str) -> dict:
+def verify_chunk_plan_static(chunk_plan: list[dict], pattern_a_text: str, marker_token: str = MARKER_TOKEN) -> dict:
     """TTS呼び出し前の静的検証(section7)。1つでも満たさない場合は
-    呼び出し側でTTSを呼ばず停止する。"""
+    呼び出し側でTTSを呼ばず停止する。marker_tokenを省略した場合は、
+    このステージ(P4B)のデフォルト「合図」を使う。"""
     reconstructed_source = "".join(c["source_text"] for c in chunk_plan)
     reconstruction_matches = reconstructed_source == pattern_a_text
 
@@ -140,13 +143,13 @@ def verify_chunk_plan_static(chunk_plan: list[dict], pattern_a_text: str) -> dic
         if c["chunk_type"] == "marker":
             used_form_in_source_count = c["source_text"].count(c["used_form"])
             used_form_in_tts_count = c["tts_text"].count(c["used_form"])
-            marker_count = c["tts_text"].count(MARKER_TOKEN)
+            marker_count = c["tts_text"].count(marker_token)
             ok = (used_form_in_source_count == 1 and used_form_in_tts_count == 0
                   and marker_count == 1 and ascii_count == 0)
         else:
             used_form_in_source_count = None
             used_form_in_tts_count = None
-            marker_count = c["tts_text"].count(MARKER_TOKEN)
+            marker_count = c["tts_text"].count(marker_token)
             ok = (marker_count == 0 and ascii_count == 0)
         if not ok:
             all_ok = False
@@ -158,7 +161,7 @@ def verify_chunk_plan_static(chunk_plan: list[dict], pattern_a_text: str) -> dic
         })
 
     marker_chunk_count_is_five = len(marker_chunks) == 5
-    total_marker_count = sum(c["tts_text"].count(MARKER_TOKEN) for c in marker_chunks)
+    total_marker_count = sum(c["tts_text"].count(marker_token) for c in marker_chunks)
     total_marker_count_is_five = total_marker_count == 5
 
     all_used_forms = [c["used_form"] for c in marker_chunks]

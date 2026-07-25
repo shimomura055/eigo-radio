@@ -1,0 +1,68 @@
+{
+  "stage": "ER-003-B1-P4C",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "53122ca981a54a4532314a4fbd8f5066d68fd50b"
+  },
+  "pattern_a_source": {
+    "path": "er003_output/b1_p2/A01/listening_preview_raw.md",
+    "note": "P4Bで承認済みPattern Aのsource_hashesと同一であることを確認済み(Pattern A変更0)"
+  },
+  "marker_spec": {
+    "adopted": "目印",
+    "rejected": ["合図", "キーワード挿入位置", "キーワード挿入位置1/2...", "合図1/2...", "英語表現のカタカナ読み"],
+    "token_sequence_verified_via": "sudachipy(MFAが内部で使用するtokenizer)を、5つのmarker chunk文脈全てで個別に実行し、常に単一token「目印」であることを実機確認済み(推測ではない)"
+  },
+  "static_check": {
+    "all_passed": true,
+    "chunk_count": 6,
+    "marker_chunk_count": 5,
+    "normal_chunk_count": 1,
+    "reconstruction_matches": true,
+    "total_marker_count": 5,
+    "used_form_residue_in_any_tts_text": "all zero"
+  },
+  "chunks": [
+    {"chunk_id": "01", "chunk_type": "marker", "used_form": "shot on target", "sha256": "2137fb46580cd28b140da5f19bdc303c4cd3ed7a6acd7dff151c7f84efcf5ea6", "duration_seconds": 8.931, "content_check_passed": true, "mfa_marker_start_seconds": 5.1, "mfa_marker_end_seconds": 5.61, "mfa_preceding_token": "シュート", "mfa_following_token": "を"},
+    {"chunk_id": "02", "chunk_type": "marker", "used_form": "take players off", "sha256": "a3a21600af9b279fb26e8225a3cf44fa12fbb62821af405a972b25a05dbfe1fa", "duration_seconds": 8.371, "content_check_passed": true, "mfa_marker_start_seconds": 5.12, "mfa_marker_end_seconds": 5.71, "mfa_preceding_token": "下げる", "mfa_following_token": "と"},
+    {"chunk_id": "03", "chunk_type": "marker", "used_form": "a narrow lead", "sha256": "0eac745fe5fec1793083ae8c21f6f6a5cb851881b7b1346d24e98f6852ba6bfa", "duration_seconds": 3.611, "content_check_passed": true, "mfa_marker_start_seconds": 1.67, "mfa_marker_end_seconds": 2.27, "mfa_preceding_token": "リード", "mfa_following_token": "を"},
+    {"chunk_id": "04", "chunk_type": "marker", "used_form": "close the door to the final", "sha256": "2c93b129668f39d0ae566f92a0a212a98a096a5b18f79674f872fb3ebde3ce39", "duration_seconds": 6.771, "content_check_passed": true, "mfa_marker_start_seconds": 3.42, "mfa_marker_end_seconds": 4.02, "mfa_preceding_token": "こと", "mfa_following_token": "が"},
+    {"chunk_id": "05", "chunk_type": "marker", "used_form": "stoppage time", "sha256": "85018b116ab035c1061c317ad8512a0818f8e777c83e0e04b50a7cadeefa717a", "duration_seconds": 4.531, "content_check_passed": true, "mfa_marker_start_seconds": 3.57, "mfa_marker_end_seconds": 4.22, "mfa_preceding_token": "タイム", "mfa_following_token": "へ"},
+    {"chunk_id": "06", "chunk_type": "normal", "used_form": null, "sha256": "110742e73aa5710a2f0a012eea7fffe2062ad29e1440ad515e3bed70eea5e03d", "duration_seconds": 5.371, "content_check_passed": true, "contains_last_few_minutes": true, "last_few_minutes_present_in_asr": true}
+  ],
+  "english_key_phrases": [
+    {"chunk_id": "01", "used_form": "shot on target", "reused": true, "source_path": "er003_output/b1_p3u/A01/components/en_shot_on_target_trimmed.wav", "duration_seconds": 1.231},
+    {"chunk_id": "02", "used_form": "take players off", "reused": false, "duration_seconds": 1.431},
+    {"chunk_id": "03", "used_form": "a narrow lead", "reused": false, "duration_seconds": 1.011},
+    {"chunk_id": "04", "used_form": "close the door to the final", "reused": false, "duration_seconds": 2.331},
+    {"chunk_id": "05", "used_form": "stoppage time", "reused": false, "duration_seconds": 1.291}
+  ],
+  "measured_gaps": {
+    "target_before_seconds": 0.40,
+    "target_after_seconds": 0.30,
+    "tolerance_seconds": 0.03,
+    "per_marker": [
+      {"chunk_id": "01", "gap_before": 0.40, "gap_after": 0.30, "within_tolerance_before": true, "within_tolerance_after": true},
+      {"chunk_id": "02", "gap_before": 0.40, "gap_after": 0.30, "within_tolerance_before": true, "within_tolerance_after": true},
+      {"chunk_id": "03", "gap_before": 0.40, "gap_after": 0.30, "within_tolerance_before": true, "within_tolerance_after": true},
+      {"chunk_id": "04", "gap_before": 0.40, "gap_after": 0.30, "within_tolerance_before": true, "within_tolerance_after": true},
+      {"chunk_id": "05", "gap_before": 0.40, "gap_after": 0.30, "within_tolerance_before": true, "within_tolerance_after": true}
+    ]
+  },
+  "inter_chunk_boundary_gaps": [
+    {"between_chunk": "01->02", "measured_gap_seconds": 0.48, "exceeds_1.0s_threshold": false},
+    {"between_chunk": "02->03", "measured_gap_seconds": 0.48, "exceeds_1.0s_threshold": false},
+    {"between_chunk": "03->04", "measured_gap_seconds": 0.40, "exceeds_1.0s_threshold": false},
+    {"between_chunk": "04->05", "measured_gap_seconds": 0.64, "exceeds_1.0s_threshold": false},
+    {"between_chunk": "05->06", "measured_gap_seconds": 0.50, "exceeds_1.0s_threshold": false}
+  ],
+  "final_preview": {
+    "raw": {"path": "er003_output/b1_p4c/A01/preview/final/A01_b1_listening_preview_raw.wav", "sha256": "0b513f6362f31fb21d8dd75167e77d3019cf246c75a3ae3bdea471bef0e54395", "duration_seconds": 42.331, "clipping_detected": false},
+    "dynamics3": {"path": "er003_output/b1_p4c/A01/preview/final/A01_b1_listening_preview_dynamics3.wav", "sha256": "f0ed4eef90ec1943a758fbb79432980ef1d0dca5653dd916f97c32029ece125e", "duration_seconds": 42.331, "clipping_detected": false, "peak_dbfs": -1.28, "integrated_lufs_approx": -19.79},
+    "dynamics3_applied_count": 1
+  },
+  "not_performed": ["B1本文生成", "Preview+本文の結合音声生成"],
+  "pattern_a_change": 0,
+  "mejirushi_residue_in_final_audio": "final段階では各chunkの目印区間が英語Componentへ完全置換されているため、機械的な残存確認は各chunkのtts_text上で静的に0を確認済み(source: chunk_plan.json)。final音声自体への聴覚的な残存有無はユーザー試聴が必要"
+}
