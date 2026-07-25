@@ -1,0 +1,103 @@
+{
+  "management_id": "ER-003-B1-P3U",
+  "article_id": "A01",
+  "record_status": "PROTOTYPE",
+  "approval_status": "NOT_APPROVED",
+  "reused_existing_audio": {
+    "ja_full_sentence_path": "er003_output/b1_p3t/A01/raw/ja_full_sentence.wav",
+    "ja_full_sentence_sha256": "a239ef34a7623be6c82d9d7994647f18df0423d684e13c3e990ebe8d559b19bd",
+    "en_shot_on_target_path": "er003_output/b1_p3t/A01/raw/en_shot_on_target.wav",
+    "en_shot_on_target_sha256": "43b36de218b8a625e00821a816bc820ab7e803bee94ae04ae2335580162a313c",
+    "new_tts_calls_made": 0
+  },
+  "alignment_method": "Azure Cognitive Services Speech SDK (Speech-to-Text, ja-JP, Detailed output, word-level timestamps)",
+  "alignment_result": {
+    "shuuto_start_seconds": 4.91,
+    "shuuto_end_seconds": 5.35,
+    "wo_start_seconds": 5.35,
+    "gap_seconds": 0.0,
+    "boundary_seconds": 5.35,
+    "to_confidence": 0.9734655,
+    "wo_confidence": 0.97264874,
+    "previous_wrong_cut_seconds": 3.16,
+    "difference_from_previous_wrong_cut_seconds": 2.19
+  },
+  "en_trim": {
+    "raw_duration_seconds": 3.691,
+    "raw_leading_silence_seconds": 0.16,
+    "raw_trailing_silence_seconds": 2.46,
+    "trimmed_duration_seconds": 1.231,
+    "leading_margin_retained_seconds": 0.08,
+    "trailing_margin_retained_seconds": 0.08
+  },
+  "en_trim_safety_margin_seconds": 0.08,
+  "boundary_pause_seconds": 0.12,
+  "boundary_pause_count": 2,
+  "join_order": [
+    "ja_before_keyword",
+    "en_shot_on_target_trimmed",
+    "ja_after_keyword"
+  ],
+  "components": {
+    "ja_before_keyword_path": "er003_output/b1_p3u/A01/components/ja_before_keyword.wav",
+    "ja_before_keyword_duration_seconds": 5.35,
+    "en_shot_on_target_trimmed_path": "er003_output/b1_p3u/A01/components/en_shot_on_target_trimmed.wav",
+    "en_shot_on_target_trimmed_duration_seconds": 1.231,
+    "ja_after_keyword_path": "er003_output/b1_p3u/A01/components/ja_after_keyword.wav",
+    "ja_after_keyword_duration_seconds": 3.101
+  },
+  "dynamics3_applied": true,
+  "dynamics3_params": {
+    "type": "soft_knee_compressor",
+    "threshold_percentile": 60,
+    "ratio": 8.0,
+    "knee_db": 6.0,
+    "attack_ms": 5.0,
+    "release_ms": 200.0,
+    "gain_smoothing_ms": 8.0
+  },
+  "loudness_matching": {
+    "target_lufs": -18.69,
+    "compressed_lufs_before_gain": -19.76,
+    "desired_gain_db": 1.074,
+    "peak_ceiling_db": -1.0,
+    "max_gain_allowed_by_peak_db": 2.939,
+    "applied_fixed_gain_db": 1.074,
+    "peak_ceiling_prioritized": false,
+    "final_peak_dbfs": -2.87,
+    "final_lufs_approx": -18.69,
+    "loudness_shortfall_lu": 0.0,
+    "within_0_3_lu_target": true
+  },
+  "raw_path": "er003_output/b1_p3u/A01/final/A01_b1_exact_boundary_insert_raw.wav",
+  "final_path": "er003_output/b1_p3u/A01/final/A01_b1_exact_boundary_insert_dynamics3.wav",
+  "final_path_format_note": "MP3エンコーダ(ffmpeg/pydub)がこの環境に存在しないため、WAVのまま保存した(ER-003-B1-P3R/P3S/P3Tと同一の判断)。",
+  "sample_rate": 24000,
+  "channels": 1,
+  "metrics_raw": {
+    "duration_seconds": 9.922,
+    "sample_count": 238126,
+    "sample_rate": 24000,
+    "peak_dbfs": -3.1,
+    "rms_dbfs": -18.96,
+    "integrated_lufs_approx": -18.69,
+    "loudness_range_approx_lu": 1.26,
+    "crest_factor_db": 15.86,
+    "clipping_sample_count": 0,
+    "clipping_detected": false
+  },
+  "metrics_final": {
+    "duration_seconds": 9.922,
+    "sample_count": 238126,
+    "sample_rate": 24000,
+    "peak_dbfs": -2.87,
+    "rms_dbfs": -19.04,
+    "integrated_lufs_approx": -18.69,
+    "loudness_range_approx_lu": 0.69,
+    "crest_factor_db": 16.17,
+    "clipping_sample_count": 0,
+    "clipping_detected": false
+  },
+  "final_duration_seconds": 9.922,
+  "final_sha256": "f06e02a819dfdd0177b5d8d19a709babf076173261bc9db626cdc7ef3419def2"
+}
