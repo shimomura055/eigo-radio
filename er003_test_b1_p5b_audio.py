@@ -9,23 +9,69 @@
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er003_test_b1_p5b_audio -v
 
+import io
 import unittest
+import wave
 
 import er003_b1_p5b_audio as p5b
 
 
 class CheckGoogleCloudTtsAvailabilityTests(unittest.TestCase):
 
-    def test_real_check_reports_unavailable_with_reason(self):
-        # このプロジェクトの実行環境には、GCP認証情報が一切存在しない
-        # (GOOGLE_APPLICATION_CREDENTIALS未設定、~/.config/gcloud無し、
-        # gcloud CLI無しを実機確認済み)。パッケージはインストール済みの
-        # ため、DefaultCredentialsErrorで不可と判定されるはず。
+    def test_real_check_reports_available_after_adc_login(self):
+        # ER-003-B1-P5B-GCPの時点で、ユーザーがgcloud auth application-
+        # default loginを実行済み。list_voices(読み取り専用、課金なし)
+        # で実際にADC認証情報を取得できることを確認する。
         result = p5b.check_google_cloud_tts_availability()
-        self.assertFalse(result["available"])
+        self.assertTrue(result["available"], msg=result)
         self.assertTrue(result["package_installed"])
-        self.assertEqual(result["error_type"], "DefaultCredentialsError")
-        self.assertIsNotNone(result["reason"])
+        self.assertTrue(result["voice_available"], msg="ja-JP-Neural2-Bが見つかりません")
+        self.assertIn("ja-JP-Neural2-B", result["available_voices_for_language"])
+
+
+class ExtractPcmFromGoogleWavResponseTests(unittest.TestCase):
+    """実API呼び出しを行わず、合成のWAVコンテナ構造(実機smoke testで
+    RIFF/WAVEヘッダー付きと確認済み)をsyntheticなWAVバイト列で検証する。"""
+
+    def _build_synthetic_wav(self, framerate=24000, channels=1, sampwidth=2, pcm_samples=b"\x01\x00\x02\x00\x03\x00"):
+        buf = io.BytesIO()
+        with wave.open(buf, "wb") as w:
+            w.setnchannels(channels)
+            w.setsampwidth(sampwidth)
+            w.setframerate(framerate)
+            w.writeframes(pcm_samples)
+        return buf.getvalue()
+
+    def test_extracts_pcm_and_format_from_riff_wav(self):
+        wav_bytes = self._build_synthetic_wav()
+        self.assertEqual(wav_bytes[:4], b"RIFF")
+        self.assertEqual(wav_bytes[8:12], b"WAVE")
+        result = p5b.extract_pcm_from_google_wav_response(wav_bytes)
+        self.assertEqual(result["framerate"], 24000)
+        self.assertEqual(result["channels"], 1)
+        self.assertEqual(result["sampwidth"], 2)
+        self.assertEqual(result["pcm"], b"\x01\x00\x02\x00\x03\x00")
+
+    def test_extracted_pcm_excludes_header_bytes(self):
+        wav_bytes = self._build_synthetic_wav()
+        result = p5b.extract_pcm_from_google_wav_response(wav_bytes)
+        self.assertNotIn(b"RIFF", result["pcm"])
+        self.assertNotIn(b"WAVE", result["pcm"])
+
+
+class MakeGoogleTtsCallFnFormatValidationTests(unittest.TestCase):
+
+    def test_raises_on_unexpected_sample_rate(self):
+        # tts_call_fn内の形式チェック相当のロジックを、extract関数の
+        # 出力に対して直接検証する(実APIは呼ばない)。
+        wav_bytes = io.BytesIO()
+        with wave.open(wav_bytes, "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(16000)  # 想定外のframerate
+            w.writeframes(b"\x00\x00")
+        result = p5b.extract_pcm_from_google_wav_response(wav_bytes.getvalue())
+        self.assertNotEqual(result["framerate"], 24000)
 
 
 class CheckAwsPollyAvailabilityTests(unittest.TestCase):

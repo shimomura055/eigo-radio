@@ -1,0 +1,84 @@
+{
+  "stage": "ER-003-B1-P5B-GCP",
+  "management_id": "ER-003-B1-P5B-GCP",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "0fe94eb24b07fabb1e6fe0d4ee088df1347fa4ad"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p5b_gcp/A01/instruction/ER-003-B1-P5B-GCP_instruction.md",
+    "sha256": "80c2f129a6b59ad3847789502837be548b85905abe30b6be05b60bc25f784aa8",
+    "deviations_from_instruction": "なし"
+  },
+  "adc_check": {
+    "credentials_obtained": true,
+    "api_reachable": true,
+    "voice_ja_jp_neural2_b_present": true,
+    "quota_project_id": "ikiiki-health-log",
+    "permission_errors": "なし"
+  },
+  "input": {
+    "p4d_hiragana_script_path": "er003_output/b1_p4d/A01/source/pattern_a_full_hiragana.txt",
+    "p4d_hiragana_script_sha256_full": "fb9ea8c9ef6740fd83fe905199d987609b2eba9e8ec79b6c3437dee17493bd5b",
+    "matches_p5a_input": true,
+    "sent_text_sha256_matches_input": true
+  },
+  "generation": {
+    "voice_name": "ja-JP-Neural2-B",
+    "language_code": "ja-JP",
+    "audio_encoding": "LINEAR16",
+    "total_tts_calls_this_stage": 3,
+    "smoke_test_calls": 2,
+    "smoke_test_purpose": "audio_content応答形式(RIFF/WAVEヘッダー有無、framerate/channels/sampwidth)の実機検証。入力はいずれも短い単語「テスト」",
+    "main_generation_calls": 1,
+    "main_generation_input": "pattern_a_full_hiragana.txt(P4D/P5Aと完全同一)",
+    "technical_retry_count": 0,
+    "raw_wav_path": "er003_output/b1_p5b_gcp/A01/raw/A01_p5b_google_ja-JP-Neural2-B.wav",
+    "raw_wav_sha256": "3ee5ef711fca71fa3cf01aa07cf7c756721885a84b4e539eb22d6e3bf8c0fbdc",
+    "duration_seconds": 37.548,
+    "sample_rate": 24000,
+    "channels": 1,
+    "clipping_detected": false,
+    "decode_ok": true
+  },
+  "asr": {
+    "transcript_path": "er003_output/b1_p5b_gcp/A01/asr/asr_transcript.txt",
+    "reading_normalized_path": "er003_output/b1_p5b_gcp/A01/asr/asr_reading_normalized.txt",
+    "ja_char_ratio": 0.9388,
+    "is_japanese": true,
+    "no_unintended_english": true,
+    "marker_occurrence_total": 5,
+    "marker_occurrence_total_is_five": true,
+    "content_similarity_ratio": 0.9062,
+    "similarity_ok": true
+  },
+  "target_phrase_results": {
+    "せんしゅをこうたいでさげる": true,
+    "めじるしというけつだんで": false,
+    "しゅびをかため": true,
+    "わずかなりーど": true,
+    "さいごのすうふん": true,
+    "なにがおきる": false
+  },
+  "nani_ga_okiru_diagnostic": {
+    "correct_present": false,
+    "wrong_present": false,
+    "note": "「なにがおきる」「なんがおきる」いずれの表記もASR上検出されず。実際のASR認識は「南が起きる」(みなみがおきる)。試聴による確認が必須"
+  },
+  "target_phrase_2_diagnostic_note": "「めじるしというけつだんで」は、ASRが「めじるしというけつだん」と「でしゅびをかため」の間に句点を挿入したため、厳密な部分文字列としては不一致。ただし形態素列自体(せんしゅ/を/こうたい/で/さげる/めじるし/という/けつだん/で/しゅび/を/かため)はすべて連続して存在しており、語句の脱落ではなくASRの区切り方の癖である可能性が高い(断定はしない)",
+  "machine_qa_pass": false,
+  "machine_qa_note": "機械QAは2項目(めじるしというけつだんで、なにがおきる)で厳密一致しなかったため、無条件合格とはしていない。いずれも試聴による確認が必須の箇所として明示する。機械QA結果は原稿忠実性・自然さの承認を意味しない。",
+  "scope_confirmation": {
+    "chunk_split_used": false,
+    "mfa_executed": 0,
+    "dynamics3_applied": 0,
+    "english_component_replacement": 0,
+    "amazon_polly_setup": 0,
+    "azure_alternate_voice": 0,
+    "gemini_regeneration": 0,
+    "b1_body_generated": 0,
+    "secrets_logged": 0,
+    "push": "not performed"
+  }
+}

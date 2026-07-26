@@ -1,26 +1,33 @@
 # ============================================================
 # er003_b1_p5b_audio.py
-# ER-003-B1-P5B: Google Cloud TTS／Amazon Polly比較検証
+# ER-003-B1-P5B / P5B-GCP: Google Cloud TTS／Amazon Polly比較検証
 # ============================================================
-# P5AではAzure Speech(ja-JP-NanamiNeural)のみ実行できた。本ステージでは
-# Google Cloud Text-to-SpeechとAmazon Polly Neuralの利用可否を、実際の
-# APIクライアント呼び出し(読み取り専用、課金の生じない操作)で確認する。
-# いずれの認証情報も本実行環境には一切存在しないため(後述)、音声合成
-# 呼び出し自体は実行していない。合成用コードは、実際の応答形式(特に
-# Google Cloud TTSのLINEAR16レスポンスにWAVヘッダーが含まれるか等)を
-# 実機で検証していない状態で書くと、この project 全体の「常に実証済みの
-# 事実にのみ基づく」という方針に反するため、認証情報が用意された時点で
-# 実装・検証する。
+# P5AではAzure Speech(ja-JP-NanamiNeural)のみ実行できたが、ユーザー試聴で
+# 不合格(不自然さ、「なにがおきる」→「なんがおきる」)となった。P5Bでは
+# Google Cloud TTS・Amazon Pollyの利用可否のみ確認し(いずれも認証情報
+# 未整備で音声合成は未実行)、P5B-GCPで、ユーザーがADCログインを行った
+# 後、Google Cloud TTSのみ実際に音声合成を実行する。
+#
+# Google Cloud TTSのLINEAR16応答形式(audio_content内にRIFF/WAVEヘッダー
+# 付きの完全なWAVファイルが入っているか)は、認証情報が用意された段階で
+# 実機smoke testにより検証済み(推測ではない: first 4 bytes=b'RIFF',
+# framerate=24000, channels=1, sampwidth=2を実機確認)。
 #
 # 再利用するもの(再実装しない):
 #   - er003_b1_p5a_audio.load_p4d_input/load_p4d_marked_text/
 #     asr_reading_normalize
 #   - er003_b1_p4d_audio.check_full_text_content
 #   - er003_b1_p4_audio.get_full_text_via_azure_stt_continuous
-#   - er002_common.SAMPLE_RATE/measure_metrics/read_wav_float
+#   - er002_common.SAMPLE_RATE/measure_metrics/read_wav_float/
+#     pcm_to_wav_bytes/_call_tts_with_retry(Gemini/Azureと同一の
+#     tts_call_fn(text)->bytes(生PCM)インターフェースで再利用)
 
 from __future__ import annotations
 
+import io
+import wave
+
+import er002_common as common
 import er003_b1_p5a_audio as p5a
 
 ARTICLE_ID = "A01"
@@ -55,13 +62,17 @@ def check_google_cloud_tts_availability(voice_name: str = GOOGLE_VOICE_NAME, lan
         }
 
     try:
+        import google.auth
         client = texttospeech.TextToSpeechClient()
         response = client.list_voices(language_code=language_code)
         voice_names = [v.name for v in response.voices]
+        creds, _ = google.auth.default()
+        quota_project_id = getattr(creds, "quota_project_id", None)
         return {
             "available": True, "package_installed": True,
             "voice_requested": voice_name, "voice_available": voice_name in voice_names,
             "available_voices_for_language": voice_names,
+            "quota_project_id": quota_project_id,
         }
     except Exception as e:
         return {
@@ -109,6 +120,53 @@ def check_aws_polly_availability(voice_id: str = AWS_POLLY_VOICE_ID, region_name
                 "リージョン(例: ap-northeast-1)を指定する、のいずれも必要です。"
             ),
         }
+
+
+def extract_pcm_from_google_wav_response(audio_content: bytes) -> dict:
+    """Google Cloud TTS(LINEAR16)のaudio_content(RIFF/WAVEヘッダー付き
+    完全なWAVファイルであることを実機smoke testで確認済み)から、
+    waveモジュールでヘッダーを取り除いた生PCMフレームを抽出する。
+    APIを呼ばない純粋関数として切り出し、合成音声のWAVヘッダー構造
+    そのものを単体テストできるようにしている。"""
+    with wave.open(io.BytesIO(audio_content)) as w:
+        return {
+            "framerate": w.getframerate(), "channels": w.getnchannels(),
+            "sampwidth": w.getsampwidth(), "pcm": w.readframes(w.getnframes()),
+        }
+
+
+def make_google_tts_call_fn(voice_name: str = GOOGLE_VOICE_NAME, language_code: str = GOOGLE_LANGUAGE_CODE):
+    """tts_call_fn(text)->bytes(生PCM、24kHz/16bit/mono)を返す。
+    Gemini/Azure用tts_call_fnと同一インターフェースにすることで、
+    common._call_tts_with_retry/pcm_to_wav_bytesをそのまま再利用する。"""
+    from google.cloud import texttospeech
+
+    client = texttospeech.TextToSpeechClient()
+    voice = texttospeech.VoiceSelectionParams(language_code=language_code, name=voice_name)
+    audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.LINEAR16)
+
+    def tts_call_fn(text: str) -> bytes:
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+        response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+
+        extracted = extract_pcm_from_google_wav_response(response.audio_content)
+        framerate, channels, sampwidth = extracted["framerate"], extracted["channels"], extracted["sampwidth"]
+
+        if framerate != common.SAMPLE_RATE or channels != 1 or sampwidth != 2:
+            raise RuntimeError(
+                f"Google Cloud TTSの応答形式が想定外です: framerate={framerate}(期待{common.SAMPLE_RATE}), "
+                f"channels={channels}(期待1), sampwidth={sampwidth}(期待2)"
+            )
+
+        tts_call_fn.last_response_metadata = {
+            "framerate": framerate, "channels": channels, "sampwidth": sampwidth,
+            "voice_name": voice_name, "language_code": language_code,
+            "audio_encoding": "LINEAR16",
+        }
+        return extracted["pcm"]
+
+    tts_call_fn.last_response_metadata = None
+    return tts_call_fn
 
 
 def check_nani_ga_okiru(hiragana_normalized_text: str) -> dict:
