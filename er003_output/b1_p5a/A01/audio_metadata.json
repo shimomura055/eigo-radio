@@ -1,0 +1,75 @@
+{
+  "stage": "ER-003-B1-P5A",
+  "management_id": "ER-003-B1-P5A",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "0004141cd664e872287dccc67595d7032d2dfe29"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p5a/A01/instruction/ER-003-B1-P5A_instruction.md",
+    "sha256": "3930297c96abc9565a90e6088260cfecc551e6cd5345abdcdb471c8b6eb5d7f7",
+    "deviations_from_instruction": "なし"
+  },
+  "input": {
+    "p4d_hiragana_script_path": "er003_output/b1_p4d/A01/source/pattern_a_full_hiragana.txt",
+    "p4d_hiragana_script_sha256": "fb9ea8c9ef6740fd83fe905199d987609b2eba9e8ec79b6c3437dee17493bd5b",
+    "note": "P4D生成時と完全に同一のファイル、内容変更なし(sha256一致を機械確認済み)"
+  },
+  "engine_availability": {
+    "google_cloud_tts": {"available": false, "reason": "google-cloud-texttospeech未インストール、GOOGLE_APPLICATION_CREDENTIALS未設定"},
+    "azure_speech": {"available": true, "reason": null},
+    "amazon_polly": {"available": false, "reason": "boto3未インストール、AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY未設定"}
+  },
+  "candidates_executed": ["azure_speech"],
+  "candidates_not_executed": ["google_cloud_tts", "amazon_polly"],
+  "azure_speech": {
+    "voice_name": "ja-JP-NanamiNeural",
+    "region_env_var": "SPEECH_REGION",
+    "call_count": 1,
+    "retry_count": 0,
+    "sent_text_sha256": "fb9ea8c9ef6740fd83fe905199d987609b2eba9e8ec79b6c3437dee17493bd5b",
+    "sent_text_matches_p4d_input": true,
+    "raw_wav_path": "er003_output/b1_p5a/A01/azure_ja-JP-NanamiNeural/raw/A01_p5a_azure_ja-JP-NanamiNeural.wav",
+    "raw_wav_sha256": "15b013033d4962c32a01c1cd4175f87a96617f69155ea495fefb8083413a0c93",
+    "duration_seconds": 38.975,
+    "clipping_detected": false,
+    "decode_ok": true,
+    "asr_transcript_path": "er003_output/b1_p5a/A01/azure_ja-JP-NanamiNeural/asr/asr_transcript.txt",
+    "asr_reading_normalized_path": "er003_output/b1_p5a/A01/azure_ja-JP-NanamiNeural/asr/asr_reading_normalized.txt",
+    "content_check": {
+      "ja_char_ratio": 0.9444,
+      "is_japanese": true,
+      "no_unintended_english": true,
+      "marker_occurrence_total": 5,
+      "marker_occurrence_total_is_five": true,
+      "content_similarity_ratio": 0.8989,
+      "similarity_ok": true
+    },
+    "target_phrase_results": {
+      "せんしゅをこうたいでさげる": true,
+      "めじるしというけつだんで": true,
+      "しゅびをかため": true,
+      "わずかなりーど": true,
+      "さいごのすうふん": true
+    }
+  },
+  "google_cloud_tts_status": "NOT_EXECUTED",
+  "amazon_polly_status": "NOT_EXECUTED",
+  "scope_confirmation": {
+    "chunk_split_used": false,
+    "english_component_replacement": 0,
+    "mfa_executed": 0,
+    "dynamics3_applied": 0,
+    "speed_pitch_adjustment": 0,
+    "style_specification": 0,
+    "ssml_pronunciation_fix": 0,
+    "per_word_exception_dictionary": 0,
+    "gemini_tts_regeneration": 0,
+    "final_preview_generated": 0,
+    "b1_body_generated": 0,
+    "production_engine_decided": false,
+    "push": "not performed"
+  },
+  "machine_qa_note": "機械QA合格(target_phrase_results全てtrue、content_similarity_ratio 0.8989)は、原稿忠実性の承認を意味しない。ASR結果と実際の音声が食い違う可能性があるため、最終判断はユーザー試聴による。"
+}

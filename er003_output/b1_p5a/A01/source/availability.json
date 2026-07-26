@@ -1,0 +1,20 @@
+{
+  "google_cloud_tts": {
+    "available": false,
+    "package_installed": false,
+    "credentials_present": false,
+    "reason": "google-cloud-texttospeechパッケージが未インストール、かつGOOGLE_APPLICATION_CREDENTIALSが.envに未設定です。利用するには、(1) `pip install google-cloud-texttospeech`、(2) GCPサービスアカウントキー(JSON)の発行とGOOGLE_APPLICATION_CREDENTIALSへのパス設定、(3) Text-to-Speech APIの有効化が必要です。"
+  },
+  "azure_speech": {
+    "available": true,
+    "package_installed": true,
+    "credentials_present": true,
+    "reason": null
+  },
+  "amazon_polly": {
+    "available": false,
+    "package_installed": false,
+    "credentials_present": false,
+    "reason": "boto3パッケージが未インストール、かつAWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEYが.envに未設定です。利用するには、(1) `pip install boto3`、(2) AWS IAMユーザーの発行とアクセスキー設定、(3) Amazon Polly(neural engine, Kazuha voice対応リージョン)への権限付与が必要です。"
+  }
+}
