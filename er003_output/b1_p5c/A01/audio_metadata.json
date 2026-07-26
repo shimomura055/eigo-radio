@@ -1,0 +1,87 @@
+{
+  "stage": "ER-003-B1-P5C",
+  "management_id": "ER-003-B1-P5C",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "8193e0bcb9cca8bd0b0e4f5b573fd7d020e5f4dd"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p5c/A01/instruction/ER-003-B1-P5C_instruction.md",
+    "sha256": "f75bff6a948119aba7fa25206b71c503422745d7d2bbf9bf789274a7c5f3b414",
+    "deviations_from_instruction": "なし"
+  },
+  "p5b_rejection_reason": [
+    "日本語音声の品質が極めて低い",
+    "いわゆる機械音声に聞こえる",
+    "「何が」が「なんが」と発話された"
+  ],
+  "input": {
+    "source": "P4Dが保存済みの「英語used form5件を目印へ置換した直後・全文ひらがな化する前」の漢字かな交じり原稿をそのまま再利用(新規作成なし)",
+    "path": "er003_output/b1_p4d/A01/source/pattern_a_with_markers.txt",
+    "sha256_full": "a28f3cf892fce482d27b5c512be1a260ca305c286c7f6625fd68aff9a4193cd8",
+    "sent_text_sha256_matches_input": true
+  },
+  "marker_replacement_verification": {
+    "reconstruction_matches_pattern_a": true,
+    "used_form_residue_all_zero": true,
+    "marker_count": 5,
+    "marker_count_is_five": true,
+    "kanji_count": 63,
+    "not_hiragana_converted": true,
+    "kanji_target_phrase_presence_in_source": {
+      "何が起きる": true,
+      "選手を交代で下げる": true,
+      "目印という決断で": true,
+      "守備を固め": true,
+      "最後の数分": true,
+      "わずかなリード": true
+    },
+    "all_passed": true
+  },
+  "only_condition_difference_vs_p5b": "入力の表記(全文ひらがな→漢字かな交じり)のみ。voice(ja-JP-Neural2-B)、language_code(ja-JP)、audio_encoding(LINEAR16)、TTS呼び出し実装(er003_b1_p5b_audio.make_google_tts_call_fn)、SSML/話速/pitch/音量指定なし、chunk分割なし、いずれもP5B-GCPと完全同一",
+  "generation": {
+    "voice_name": "ja-JP-Neural2-B",
+    "language_code": "ja-JP",
+    "audio_encoding": "LINEAR16",
+    "tts_calls_this_stage": 1,
+    "technical_retry_count": 0,
+    "raw_wav_path": "er003_output/b1_p5c/A01/raw/A01_p5c_google_kanji_kana_ja-JP-Neural2-B.wav",
+    "raw_wav_sha256": "5f07a5eaca8bf301ff935faa20d142c56d11a63ac0ac873273b9ee47f625f8db",
+    "duration_seconds": 37.472,
+    "sample_rate": 24000,
+    "channels": 1,
+    "clipping_detected": false,
+    "decode_ok": true
+  },
+  "asr": {
+    "transcript_path": "er003_output/b1_p5c/A01/asr/asr_transcript.txt"
+  },
+  "kanji_target_phrase_results": {
+    "何が起きる": true,
+    "選手を交代で下げる": true,
+    "目印という決断で": true,
+    "守備を固め": true,
+    "最後の数分": false,
+    "わずかなリード": true,
+    "目印_count": 5
+  },
+  "kanji_target_phrase_5_diagnostic_note": "「最後の数分」がASR上「最後のカズフン」と認識された(数分の「数」を「かず」と読んだ可能性、またはASR側の誤認識の可能性、いずれも断定しない)",
+  "comparison_with_p5b_hiragana": "P5B(全文ひらがな)では「めじるしというけつだんで」がASR上句点混入で不一致、「なにがおきる」は「みなみがおきる」と誤認識。P5C(漢字かな交じり)では「選手を交代で下げる目印という決断で守備を固め」が一切の欠落なく連続して検出され、「何が起きる」も文字列としてそのまま検出された。「最後の数分」のみ新たな不一致(数の読み)が見られた",
+  "machine_qa_pass": false,
+  "machine_qa_note": "6対象句中5件は一致、1件(最後の数分)不一致。機械QAは無条件合格としていない。ASR結果のみで品質・自然さ・原稿忠実性を承認していない",
+  "scope_confirmation": {
+    "chunk_split_used": false,
+    "amazon_polly_setup": 0,
+    "azure_regeneration": 0,
+    "gemini_regeneration": 0,
+    "full_hiragana_used": false,
+    "word_level_reading_fix": 0,
+    "ssml_phoneme": 0,
+    "marker_scheme_changed": 0,
+    "mfa_executed": 0,
+    "dynamics3_applied": 0,
+    "b1_body_generated": 0,
+    "push": "not performed"
+  }
+}
