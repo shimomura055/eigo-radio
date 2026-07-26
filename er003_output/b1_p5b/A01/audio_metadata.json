@@ -1,0 +1,53 @@
+{
+  "stage": "ER-003-B1-P5B",
+  "management_id": "ER-003-B1-P5B",
+  "status": "OK",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "ffe9cc90746e69f38488fe0a7e2c215360c5101f"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p5b/A01/instruction/ER-003-B1-P5B_instruction.md",
+    "sha256": "c76ad29938346f827bb390edaa02d3ea6a8fd89d003f595afed4834a72da6c7c",
+    "deviations_from_instruction": "なし(音声合成呼び出し自体が両エンジンとも認証情報未整備のため未実行)"
+  },
+  "input": {
+    "p4d_hiragana_script_path": "er003_output/b1_p4d/A01/source/pattern_a_full_hiragana.txt",
+    "p4d_hiragana_script_sha256_full": "fb9ea8c9ef6740fd83fe905199d987609b2eba9e8ec79b6c3437dee17493bd5b",
+    "matches_p5a_input": true
+  },
+  "azure_p5a_rejection_reason": [
+    "全体が自然な日本語読み上げになっていない",
+    "「何が起きる」を「なんがおきる」と発音した"
+  ],
+  "engine_availability": {
+    "google_cloud_tts": {
+      "available": false,
+      "package_installed": true,
+      "error_type": "DefaultCredentialsError",
+      "reason": "Application Default Credentials未設定。GCPサービスアカウントキー発行+GOOGLE_APPLICATION_CREDENTIALS設定、またはgcloud auth application-default login、およびText-to-Speech API有効化が必要"
+    },
+    "amazon_polly": {
+      "available": false,
+      "package_installed": true,
+      "error_type": "NoCredentialsError",
+      "reason": "AWS認証情報未設定。IAMユーザー発行+polly:SynthesizeSpeech/polly:DescribeVoices権限付与、アクセスキー設定(AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY)、リージョン指定(例: ap-northeast-1)が必要"
+    }
+  },
+  "candidates_executed": [],
+  "candidates_not_executed": ["google_cloud_tts", "amazon_polly"],
+  "packages_installed_this_stage": ["google-cloud-texttospeech==2.37.0", "boto3==1.43.56"],
+  "note_on_synthesis_code": "認証情報が両エンジンとも利用不可のため、実際の音声合成呼び出しコードは今回実装していない。特にGoogle Cloud TTSのLINEAR16レスポンス形式(WAVヘッダーの有無)は、認証情報なしには実機検証できないため、推測でコードを書くことを避けた(プロジェクト全体の「実証済みの事実にのみ基づく」方針に従う)。",
+  "scope_confirmation": {
+    "chunk_split_used": false,
+    "audio_generated": 0,
+    "mfa_executed": 0,
+    "dynamics3_applied": 0,
+    "gemini_regeneration": 0,
+    "azure_regeneration": 0,
+    "production_engine_decided": false,
+    "secrets_created": 0,
+    "secrets_logged": 0,
+    "push": "not performed"
+  }
+}

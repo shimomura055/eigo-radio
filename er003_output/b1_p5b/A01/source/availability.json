@@ -1,0 +1,16 @@
+{
+  "google_cloud_tts": {
+    "available": false,
+    "package_installed": true,
+    "error_type": "DefaultCredentialsError",
+    "error_message": "Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.",
+    "reason": "Application Default Credentials(ADC)が見つかりません。利用するには、(1) GCPサービスアカウントキー(JSON)を発行し環境変数GOOGLE_APPLICATION_CREDENTIALSにそのファイルパスを設定する、または(2) `gcloud auth application-default login`でADCを設定する、(3) 対象GCPプロジェクトでCloud Text-to-Speech APIを有効化する、のいずれかが必要です。"
+  },
+  "amazon_polly": {
+    "available": false,
+    "package_installed": true,
+    "error_type": "NoCredentialsError",
+    "error_message": "Unable to locate credentials",
+    "reason": "AWS認証情報が見つかりません。利用するには、(1) AWS IAMユーザー(または既存ロール)を用意し、polly:SynthesizeSpeech(および利用可否確認用のpolly:DescribeVoices)権限を付与する、(2) アクセスキーを発行して環境変数AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEYへ設定する(または~/.aws/credentialsにprofileを設定する)、(3) Kazuha(neural engine)が利用可能なリージョン(例: ap-northeast-1)を指定する、のいずれも必要です。"
+  }
+}
