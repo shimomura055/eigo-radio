@@ -1,0 +1,84 @@
+{
+  "stage": "ER-003-B1-P6A",
+  "management_id": "ER-003-B1-P6A",
+  "status": "STOPPED",
+  "phase": "marker_replacement",
+  "stopped_at_chunk_id": "03",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "e2b75b757cd5e1b821c4c1113fa6687bfe6e44a7"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p6a/A01/instruction/ER-003-B1-P6A_instruction.md",
+    "sha256": "39b6cd787795213926e24d1ad1c35ff5b09dd1ffabca7dec32805680fe67e1fa",
+    "deviations_from_instruction": "なし(想定外の技術的停止であり、指示からの逸脱ではない)"
+  },
+  "honpen_audit": {
+    "target_implementation": "er002_common.py (build_narration_plan/run_tts_content_attempts/assemble_audio/apply_dynamics3_once)、er002_runner.run_article",
+    "split_unit": "記事の構造境界のみ(タイトル+本文段落 / Points見出し+Point One+Point Two / In One Line見出し+段落)。文中・読点での追加分割はしない",
+    "chunk_count": 3,
+    "sentence_level_split": false,
+    "priority": "構造境界(見出し)優先。句読点・呼吸位置は分割基準に使っていない",
+    "per_chunk_independence": "各chunkは共通style_prefix+そのchunkのテキストだけをプロンプトとして完全独立にTTS呼び出し(run_tts_content_attempts内)。前後文脈の追加共有・session/seed/temperature制御は一切ない",
+    "continuity_instruction": "COMMON_BASE_INSTRUCTION(全chunk共通)に「Treat the narration as one continuous program, even when it is generated in separate sections.」という一文が含まれている。この行はJAPANESE_STYLE_PREFIX(P3Y以降採用、言語指定1行以外無変更)にもそのまま残っている",
+    "voice_level": "Aoede、Emotional+Connected、Level2、speed指定なし(共通style_prefix、記事非依存)",
+    "connection": "各chunkのPCMをcommon.normalize_pcm(ピーク基準0.7)で個別正規化した後、chunk間にcommon.SECTION_JOIN_PAUSE_SECONDS(0.8秒)の無音を機械的に挿入するだけ。crossfadeなし、chunk先頭・末尾のtrimなし、DC offset除去処理は確認できず",
+    "dynamics3_application": "結合後の全体波形(tts_result.accepted_audio)へ common.apply_dynamics3_once を1回だけ適用(er002_runner.run_article内)",
+    "approved_production_example": "本ステージ実行時点で、日本語B1本文の本編音声は実際には未生成(ER-003-B1-P3RはPreview生成失敗のためB1本文TTS call数=0で停止)。ここでいう「本編」は、ER-001B-9/10以来ER-002の英語記事ナレーションで繰り返し採用・承認されてきた共通基盤(er002_common.py)そのものであり、日本語B1本文固有の実運用実績ではない。この点は解釈上の前提として明示する"
+  },
+  "diff_vs_p4c": {
+    "chunk_count": {"honpen": 3, "p4c": 6},
+    "split_position": {"honpen": "構造境界(見出し)", "p4c": "文および読点(1marker=1chunkに強制分割)"},
+    "sentence_mid_split": {"honpen": false, "p4c": true},
+    "markers_per_chunk": {"honpen": "該当なし(marker概念自体がない)", "p4c": "最大1"},
+    "inter_chunk_silence": {"honpen": "固定0.8秒(SECTION_JOIN_PAUSE_SECONDS)", "p4c": "追加無音なし、各chunk本来の自然な無音のみ(実測0.40〜0.64秒)"},
+    "crossfade": {"honpen": "なし", "p4c": "なし"},
+    "dynamics3_order": {"honpen": "結合後1回", "p4c": "結合後1回(同一方針)"},
+    "voice_level": {"honpen": "Aoede/Emotional+Connected/Level2", "p4c": "Aoede/Emotional+Connected/Level2(同一)"},
+    "user_evaluation": {"honpen": "ER-002系で複数記事にわたり承認実績あり(日本語B1本文そのものへの適用実績はなし)", "p4c": "不合格(声色差・抑揚不自然・close the door to the final周辺の分断)"}
+  },
+  "preview_split": {
+    "chunk_count": 4,
+    "split_basis": "Pattern A原文の文境界(「。」)のみ。P4B/P4Cのような読点での追加分割はしない",
+    "chunks": [
+      {"chunk_id": "01", "used_forms": ["shot on target"], "marker_count": 1},
+      {"chunk_id": "02", "used_forms": ["take players off", "a narrow lead"], "marker_count": 2},
+      {"chunk_id": "03", "used_forms": ["close the door to the final", "stoppage time"], "marker_count": 2},
+      {"chunk_id": "04", "used_forms": [], "marker_count": 0}
+    ],
+    "total_marker_count": 5
+  },
+  "generation": {
+    "tts_calls": 4,
+    "technical_retries": 0,
+    "all_chunks_content_check_passed": true,
+    "per_chunk_similarity_ratio": {"01": 0.9897, "02": 1.0, "03": 0.9153, "04": 0.92}
+  },
+  "mfa": {
+    "chunks_aligned": ["01", "02", "03"],
+    "all_marker_spans_found": true,
+    "spans_summary": {
+      "01": [{"used_form": "shot on target", "start": 5.34, "end": 5.86}],
+      "02": [{"used_form": "take players off", "start": 5.07, "end": 5.55}, {"used_form": "a narrow lead", "start": 8.71, "end": 9.27}],
+      "03": [{"used_form": "close the door to the final", "start": 3.37, "end": 3.96}, {"used_form": "stoppage time", "start": 10.29, "end": 10.83}]
+    }
+  },
+  "marker_replacement": {
+    "chunk_01": {"status": "OK", "measured_gap_before": 0.40, "measured_gap_after": 0.30},
+    "chunk_02": {"status": "OK", "note": "2 markerとも正常に置換、実測値は本文参照"},
+    "chunk_03": {
+      "status": "STOPPED",
+      "reason": "2件目のmarker(stoppage time)より後のJA区間(「へ。」、約0.221秒)が短く発話音量も非常に小さいため、find_speech_bounds(RMS閾値0.02)が発話区間を検出できなかった",
+      "evidence": "実測: セグメント長5303サンプル(0.221秒)、全20msウィンドウの最大RMS=0.00119(閾値0.02の約1/17)。MFA(音響モデルによる強制アライメント)は「へ」を10.86-10.89秒に検出しているが、RMSエネルギーベースのfind_speech_boundsでは検出不能"
+    }
+  },
+  "not_reached": ["chunk04以降の置換(未実施、chunk03停止のため到達せず)", "4chunk結合(0.8秒無音)", "Dynamics3適用", "最終Preview生成", "最終ASR診断"],
+  "scope_confirmation": {
+    "amazon_polly": 0,
+    "azure_google_reverification": 0,
+    "b1_body_changed": 0,
+    "word_level_exception_dictionary": 0,
+    "new_english_key_phrase": 0,
+    "push": "not performed"
+  }
+}
