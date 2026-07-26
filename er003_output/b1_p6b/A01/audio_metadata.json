@@ -1,0 +1,76 @@
+{
+  "stage": "ER-003-B1-P6B",
+  "management_id": "ER-003-B1-P6B",
+  "status": "STAGE1_COMPLETE_AWAITING_USER_CONFIRMATION",
+  "git": {
+    "branch": "main",
+    "head_before_this_stage_commit": "3fde1db2cd513727dc8f26f365152fdb10810fa7"
+  },
+  "instruction": {
+    "saved_path": "er003_output/b1_p6b/A01/instruction/ER-003-B1-P6B_instruction.md",
+    "sha256": "a2e59fd3a94f6d69307d7c64afaae21572f70a693fbb97d70c059867d3e016ee",
+    "deviations_from_instruction": "なし。指示section2「最初に日本語接続を評価し、合格した場合のみ英語置換へ進む」に従い、Stage2(marker置換・英語挿入)は実行せず、Stage1完了時点でユーザー確認待ちとしている"
+  },
+  "p6a_rejection_reason": [
+    "shot on targetの挿入位置で日本語助詞「を」が不自然に分断された",
+    "chunk01とchunk02の声質が異なり、接続が不自然だった"
+  ],
+  "macrochunk_construction": {
+    "chunk_count": 2,
+    "split_anchor": "を守ろうとします。(P6Aの4chunk用アンカーのうち1つを再利用)",
+    "macrochunk_a": {"sentences": "第1文+第2文", "used_forms": ["shot on target", "take players off", "a narrow lead"]},
+    "macrochunk_b": {"sentences": "第3文+第4文", "used_forms": ["close the door to the final", "stoppage time"]}
+  },
+  "generation_conditions": {
+    "voice": "Aoede", "level": "Emotional+Connected/Level2", "speed_number": "指定なし",
+    "tts_calls": 2, "technical_retries": 0,
+    "dynamics3_applied_stage1": false,
+    "same_as_p6a": true,
+    "continuity_instruction_present": "Treat the narration as one continuous program, even when it is generated in separate sections.(P6Aと同一instruction、変更なし)"
+  },
+  "stage1_results": {
+    "macrochunk_01": {
+      "wav_path": "er003_output/b1_p6b/A01/stage1/macrochunks/macrochunk01_ja.wav",
+      "sha256": "32ddeda53554e7b2ddb664e80696b9503a51186e03a7c936d83c22d0000a26e2",
+      "duration_seconds": 22.451, "clipping_detected": false, "call_count": 1,
+      "content_check": {"marker_count_in_recognized": 3, "expected_marker_count": 3, "marker_ok": true, "content_similarity_ratio": 0.9806, "passed": true}
+    },
+    "macrochunk_02": {
+      "wav_path": "er003_output/b1_p6b/A01/stage1/macrochunks/macrochunk02_ja.wav",
+      "sha256": "9e08377735762f449fbf5b5700bce3992fec1224c83acbdf48ff59d5a713427d",
+      "duration_seconds": 14.411, "clipping_detected": false, "call_count": 1,
+      "content_check": {"marker_count_in_recognized": 2, "expected_marker_count": 2, "marker_ok": true, "content_similarity_ratio": 0.9286, "passed": true}
+    },
+    "connected_variants": {
+      "0p8s": {"pause_seconds": 0.8, "is_honpen_standard": true, "path": "er003_output/b1_p6b/A01/stage1/connected/A01_stage1_connected_pause_0p8s.wav", "sha256": "fa716d3a11fb4840de98f912c267b29d38550de6a5dac7421d04162c51b5df71", "duration_seconds": 37.662, "clipping_detected": false},
+      "0p4s": {"pause_seconds": 0.4, "is_honpen_standard": false, "path": "er003_output/b1_p6b/A01/stage1/connected/A01_stage1_connected_pause_0p4s.wav", "sha256": "c953ad102a243cf66101c6bf7ab20c99a6bbbdff9da1bb713f8f45df82d22129", "duration_seconds": 37.262, "clipping_detected": false},
+      "0p6s": {"pause_seconds": 0.6, "is_honpen_standard": false, "path": "er003_output/b1_p6b/A01/stage1/connected/A01_stage1_connected_pause_0p6s.wav", "sha256": "7856759be466c4c79911742b0d1416bd76acd32b1d35e5a6713f9022152d5a3f", "duration_seconds": 37.462, "clipping_detected": false}
+    }
+  },
+  "kanji_target_phrase_check": {
+    "選手を交代で下げる": "macrochunk01のASR結果に完全な形で存在",
+    "という決断で": "macrochunk01のASR結果に完全な形で存在",
+    "守備を固め": "macrochunk01のASR結果に完全な形で存在",
+    "わずかなリード": "macrochunk01のASR結果に完全な形で存在",
+    "最後の数分": "macrochunk02のASR結果に存在",
+    "何が起きるのでしょうか": "macrochunk02のASR結果に存在"
+  },
+  "stage2_status": "NOT_EXECUTED",
+  "stage2_reason": "指示section2/7/16の明記通り、Stage1はユーザー試聴による合格確認が必要。機械QAはあくまで診断情報であり、音質・声質の連続性を承認するものではないため、Stage2(marker置換・英語挿入)はユーザー確認前に実行していない",
+  "stage2_code_readiness": {
+    "implemented": true,
+    "verified_via": "既存のP6A chunk03実データ(RMSベースfind_speech_boundsが検出失敗した実例)を使った回帰テストで、MFA境界のみを使う新方式が問題なく動作することを実証済み(新規TTS/MFA呼び出しなし)",
+    "key_design_change": "adjust_trailing_silence/adjust_leading_silenceへ渡すspeech_end/speech_start引数を、RMS検出(p3u.find_speech_bounds)ではなく、MFAが返すpreceding_token_end_seconds/following_token_start_secondsから直接算出する"
+  },
+  "machine_qa_pass": true,
+  "machine_qa_note": "機械QA(TTS call数2回、原稿対応、marker合計5件、重点語句保持、decode/clipping)は全て合格。ただし機械QA合格は音質・声質連続性の承認を意味しない",
+  "scope_confirmation": {
+    "amazon_polly": 0,
+    "azure_google_reverification": 0,
+    "reverted_to_4chunk_or_6chunk": false,
+    "full_hiragana": false,
+    "b1_body_changed": 0,
+    "new_english_key_phrase": 0,
+    "push": "not performed"
+  }
+}

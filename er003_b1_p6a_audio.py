@@ -113,15 +113,19 @@ KANJI_TARGET_PHRASES = (
 )
 
 
-def build_chunk_plan(pattern_a_text: str, used_forms: list[dict]) -> list[dict]:
-    """Pattern A原文を、既存の文境界(「。」)で4つのchunkへ分割する。
-    語句・順序・句読点は一切変更しない(既存アンカー文字列での単純な
-    スライスのみ、P4B/P4Cと同じ検証済みアンカーの一部を再利用)。
-    1chunkに0〜2件のused_formを許容する(P4B/P4Cは1chunk=1markerに
-    限定していたが、本ステージは文境界を優先するためこの制約を外す)。"""
+def build_chunk_plan(pattern_a_text: str, used_forms: list[dict], chunk_end_anchors: list[str] = None) -> list[dict]:
+    """Pattern A原文を、既存の文境界(「。」)でchunkへ分割する。語句・
+    順序・句読点は一切変更しない(既存アンカー文字列での単純なスライス
+    のみ、P4B/P4Cと同じ検証済みアンカーの一部を再利用)。1chunkに0件
+    以上のused_formを許容する(P4B/P4Cは1chunk=1markerに限定していたが、
+    本ステージは文境界を優先するためこの制約を外す)。chunk_end_anchors
+    を省略した場合はP6Aの4chunk用アンカーを使う(後続ステージが同じ
+    分割ロジックを別のアンカー(例: P6Bの2-Macrochunk)で再利用できる
+    ようにするための引数、既定挙動は変更しない)。"""
+    anchors = chunk_end_anchors if chunk_end_anchors is not None else _CHUNK_END_ANCHORS
     pos = 0
     raw_chunks = []
-    for anchor in _CHUNK_END_ANCHORS:
+    for anchor in anchors:
         idx = pattern_a_text.index(anchor, pos)
         end = idx + len(anchor)
         raw_chunks.append(pattern_a_text[pos:end])
