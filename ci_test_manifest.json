@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "description": "AUTO-001 CIテスト分類manifest。ファイル名に'test'を含むリポジトリルート直下の.pyファイルは、必ずincludeかexcludeのいずれか一方にだけ登録しなければならない(重複登録・未分類は共にrunnerが検証時に失敗させる)。excluded_test_idsは、includeされたファイル内の特定のテストメソッドだけを個別に除外するための追加ルールで、AUTO-001-03A/03Bの実行検証で判明した『製品コードの不具合ではないが、クリーンなCI環境では構造的に成功しない』テストを対象とする。",
+  "candidate_scan_pattern": "リポジトリルート直下の*.pyファイルのうち、ファイル名(大文字小文字を区別しない)に'test'を含むもの全て。サブディレクトリは走査しない。",
+  "ci_standard_glob_convention": "er0*_test_*.py (includeされている10ファイルが従う命名規則。参考情報であり、runnerの未分類判定はcandidate_scan_patternの方を用いる)",
+  "include": [
+    { "path": "er002_test_common.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_editorial.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_editorial_v1_1b.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
+    { "path": "er002_test_ja_article_generation.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_ja_free_markdown_restore.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_ja_free_markdown_restore_r2.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_ja_master_imitation.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
+    { "path": "er002_test_ja_web_research_r3.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_ja_web_research_r4.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
+    { "path": "er002_test_v1_2m_d1.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
+    { "path": "auto001_test_ci_runner.py", "reason": "scripts/run_ci_tests.py(このrunner自身)の単体テスト。外部APIを呼ばず、tempdir上のfixtureだけで完結する。" }
+  ],
+  "exclude": [
+    { "path": "test_api.py", "reason": "モジュールレベルで実OpenAI APIを呼ぶ疎通確認スクリプト。importするだけで課金・ネットワークアクセスが発生する。" },
+    { "path": "generate_test.py", "reason": "実APIを使う記事生成の本番/実験runner。回帰テストではなく生成物を作るためのツール。" },
+    { "path": "tts_test.py", "reason": "実Gemini-TTS APIを呼ぶ音声生成スクリプト。APIキー必須、音声ファイルを生成する。" },
+    { "path": "tts_test_azure.py", "reason": "実Azure AI Speech APIを呼ぶ音声生成スクリプト。APIキー必須、音声ファイルを生成する。" },
+    { "path": "tts_test_openai.py", "reason": "実OpenAI TTS APIを呼ぶ音声生成スクリプト。APIキー必須、音声ファイルを生成する。" },
+    { "path": "tts_style_test.py", "reason": "tts_test.py相当のロジックを再利用し実API呼び出しを行う比較ハーネス。" }
+  ],
+  "excluded_test_ids": [
+    {
+      "test_id": "er002_test_ja_master_imitation.PdfBenchmarkStatusTests.test_pdf_copy_sha256_matches_source",
+      "reason": "クリーンチェックアウトには対象成果物(ベンチマークPDF、.gitignoreにより追跡対象外)が存在しない。製品コードの失敗ではなく、ローカル実験成果物の保全確認を目的とするテストであり、CI標準セットとは目的が異なる。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象成果物をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er002_test_v1_2m_d1.V1_1A_UncommittedArtifactsUntouchedTests.test_v1_1a_files_still_exist_and_are_valid_json",
+      "reason": "クリーンチェックアウトには対象成果物(er002_output/A01/v1_1a/配下、git未追跡)が存在しない。製品コードの失敗ではなく、ローカル実験成果物の保全確認を目的とするテストであり、CI標準セットとは目的が異なる。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象成果物をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er002_test_editorial_v1_1b.V1_1A_UntouchedTests.test_a01_v1_1a_run_artifacts_on_disk_unchanged_since_pm1",
+      "reason": "Windows実行環境のgit設定(core.autocrlf=true)により、.gitattributesで-text指定されていない対象ファイル(er002_output/A01/v1_1a_fixed_facts.json)がチェックアウト時にLF→CRLF変換され、凍結済みsha256と一致しなくなる。製品コードの不具合ではなく、Windows固有のチェックアウト設定に起因する可能性が高い。",
+      "exclusion_type": "PLATFORM_NEWLINE_DIFFERENCE",
+      "platform": "win32",
+      "duration": "TEMPORARY",
+      "follow_up_id": "AUTO-001-FU-002",
+      "release_condition": ".gitattributesによる改行方針が正式に定義される、またはハッシュ対象の正規化方針が決定され、WindowsとLinux双方で同じ期待値になることが確認される。後続のLinux GitHub Actions導入時、このテストIDは除外対象から外れて実行されるため、Linuxでも失敗する場合はプラットフォーム差異という仮説自体が誤りであり、別途調査が必要になる。"
+    }
+  ]
+}
