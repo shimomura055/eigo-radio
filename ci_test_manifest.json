@@ -45,12 +45,12 @@
     },
     {
       "test_id": "er002_test_editorial_v1_1b.V1_1A_UntouchedTests.test_a01_v1_1a_run_artifacts_on_disk_unchanged_since_pm1",
-      "reason": "Windows実行環境のgit設定(core.autocrlf=true)により、.gitattributesで-text指定されていない対象ファイル(er002_output/A01/v1_1a_fixed_facts.json)がチェックアウト時にLF→CRLF変換され、凍結済みsha256と一致しなくなる。製品コードの不具合ではなく、Windows固有のチェックアウト設定に起因する可能性が高い。",
-      "exclusion_type": "PLATFORM_NEWLINE_DIFFERENCE",
-      "platform": "win32",
-      "duration": "TEMPORARY",
-      "follow_up_id": "AUTO-001-FU-002",
-      "release_condition": ".gitattributesによる改行方針が正式に定義される、またはハッシュ対象の正規化方針が決定され、WindowsとLinux双方で同じ期待値になることが確認される。後続のLinux GitHub Actions導入時、このテストIDは除外対象から外れて実行されるため、Linuxでも失敗する場合はプラットフォーム差異という仮説自体が誤りであり、別途調査が必要になる。"
+      "reason": "このテストはer002_output/A01/v1_1a/_pm1_analysis/artifact_sha256.json(6ファイル分のsha256記録)を記載順に検証する。1番目のエントリ(er002_output/A01/v1_1a_fixed_facts.json)はGit追跡対象だが、Windows実行環境のgit設定(core.autocrlf=true)により.gitattributesで-text指定されていないためチェックアウト時にLF→CRLF変換され、凍結済みsha256と一致しなくなる(AUTO-001-FU-002として2026-07-27にLinux GitHub Actionsで検証済み: Linuxではこの1番目のエントリのsha256比較自体は一致し、CRLF起因の不一致は発生しないことを確認した)。しかし2〜4番目のエントリ(er002_output/A01/v1_1a/editorial_brief.json, manifest.json, raw_responses.json)はいずれもGit管理外のローカル実験成果物であり、クリーンチェックアウトには存在しないため、CRLF問題の有無に関わらずFileNotFoundErrorで失敗する(Linux GitHub Actions run 30247789518で実際に確認)。したがってこのテストは全プラットフォームで構造的に成功し得ない。製品コードの動作確認ではなく、ローカル成果物の変更検知を目的とするテストであり、ファイル全体ではなくこのテストIDだけを除外する。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象成果物(editorial_brief.json, manifest.json, raw_responses.json)をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。あわせて1番目のエントリ(v1_1a_fixed_facts.json)のWindows改行コード差異(AUTO-001-FU-002)についても、.gitattributesによる改行方針の正式定義またはハッシュ対象の正規化方針の決定により解消しておくことが望ましい(AUTO-001-FU-002はLinux確認により事実関係は解明済みだが、Windows側の恒久対応自体は本除外の解除条件とは別に残る)。"
     }
   ]
 }

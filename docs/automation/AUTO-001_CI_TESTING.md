@@ -207,6 +207,60 @@ Windows固有の`.venv-ci\Scripts\python.exe`は使用しない。ワークフ�
 * `permissions: contents: read`のみ
 * 使用する外部Actionは`actions/checkout`・`actions/setup-python`のみで、いずれも完全なcommit SHAで固定し、対応するリリースタグをコメントで記録している(取得元: `https://api.github.com/repos/<owner>/<repo>/releases/latest`および`/git/refs/tags/<tag>`、確認日2026-07-27)
 
-### 未検証・要確認事項(AUTO-001-FU-002)
+### 未検証・要確認事項(AUTO-001-FU-002、AUTO-001-04Bで解明)
 
-AUTO-001-03Bで`er002_test_editorial_v1_1b.py`の1テストを`platform: "win32"`としてWindows限定で除外した(改行コード起因のsha256不一致、follow-up: `AUTO-001-FU-002`)。このワークフローがLinux runner上で初めて実行される際、このテストIDは除外対象から外れて**実行される**。Linuxで成功するかどうかは、AUTO-001-04Bで実際にpushして確認するまで未確定である。Linuxでも失敗した場合は「Windows固有の問題」という仮説自体が誤りであり、`ci_test_manifest.json`の当該除外エントリを含めて再調査が必要になる。
+AUTO-001-03Bでは`er002_test_editorial_v1_1b.py`の1テストを`platform: "win32"`としてWindows限定で除外していた(改行コード起因のsha256不一致、follow-up: `AUTO-001-FU-002`)。AUTO-001-04Bで初めてこのブランチをGitHubへpushし、Linux runner上で実行した結果、このテストIDが実行され、**`FileNotFoundError`で失敗した**(詳細は§17参照)。原因を調査した結果、AUTO-001-04B-R1でこの分類は誤りだったと判明し、修正した。
+
+---
+
+## 17. Linux初回CI結果とテスト分類の修正(AUTO-001-04B / AUTO-001-04B-R1)
+
+### 17.1 Linux初回CI(AUTO-001-04B)の結果
+
+初回push(commit `aca5610`)によるLinux CI実行(run [30247789518](https://github.com/shimomura055/eigo-radio/actions/runs/30247789518))は以下の通り。
+
+| ステップ | 結果 |
+|---|---|
+| Checkout | 成功 |
+| Set up Python 3.12 | 成功 |
+| Show pip version | 成功 |
+| Install CI dependencies(`requirements-ci.txt`) | 成功 |
+| Check installed dependencies(`pip check`) | 成功 |
+| Run CI tests | **失敗** |
+| Verify no tracked file changes | 未実行(前段が失敗したためスキップ) |
+
+依存関係のインストールと`pip check`はLinux上でも成功し、`requirements-ci.txt`の再現性が確認できた。テスト実行(463件収集後実行)のうち、唯一失敗したのは以下のテストだった。
+
+* テストID: `er002_test_editorial_v1_1b.V1_1A_UntouchedTests.test_a01_v1_1a_run_artifacts_on_disk_unchanged_since_pm1`
+* エラー: `FileNotFoundError`
+* 不足ファイル: `er002_output/A01/v1_1a/editorial_brief.json`
+
+### 17.2 原因調査(AUTO-001-04B-R1)
+
+このテストIDは、AUTO-001-03Bで既にWindows限定除外(`AUTO-001-FU-002`、`PLATFORM_NEWLINE_DIFFERENCE`)として登録していたテストと**同一のテストID**だった。詳しく調べると、このテストは`er002_output/A01/v1_1a/_pm1_analysis/artifact_sha256.json`に記録された6ファイル分のsha256を記載順に検証するループになっており、次のように2つの独立した問題を含んでいた。
+
+1. **1番目のエントリ**(`er002_output/A01/v1_1a_fixed_facts.json`、Git追跡対象): Windows実行環境の`git`設定(`core.autocrlf=true`)により、`.gitattributes`で`-text`指定されていないためチェックアウト時にLF→CRLF変換され、Windowsでは凍結済みsha256と不一致になっていた。**Linux CIではこの1番目のエントリのsha256比較は一致し、CRLF起因の不一致は発生しないことを確認できた**(`AUTO-001-FU-002`の仮説を裏付ける結果)。
+2. **2〜4番目のエントリ**(`editorial_brief.json`, `manifest.json`, `raw_responses.json`): これら3ファイルはGit管理外のローカル実験成果物であり、クリーンチェックアウトには一切存在しない。Linux CIではCRLF問題を通過した後、この2番目のエントリで`FileNotFoundError`が発生した。
+
+結論として、このテストは**Windows固有の問題ではなく、全プラットフォームで構造的に成功し得ない**(2〜4番目のエントリが恒久的にクリーン環境で存在しないため)。`ci_test_manifest.json`の当該エントリを、`PLATFORM_NEWLINE_DIFFERENCE`/`win32`/`TEMPORARY`から、既存の2件と同じ`LOCAL_ARTIFACT_REQUIRED`/`ALL`/`PERMANENT`(follow-up: `AUTO-001-FU-001`)へ修正した。
+
+### 17.3 同種テストの監査結果
+
+上記の修正にあたり、`*Unchanged*`/`*Untouched*`系のテストクラス全て(`V1_0_UntouchedTests`、`FactCheckerUnchangedFromR3Tests`、`J1ArtifactsUnchangedTests`、`R1ArtifactsUnchangedTests`、`R2ArtifactsUnchangedTests`、`FactCheckerUnchangedTests`、`WriterConditionsUnchangedFromR3Tests`、`R3ArtifactsUnchangedTests`、`A01FactMeaningUnchangedTests`、`MasterSha256UnchangedTests`)を監査したが、他に構造的にCI実行不能なテストは見つからなかった。該当するテストはいずれも、(a) `os.path.exists`+`skipTest`で正しくガードされているか、(b) 参照先がGit追跡対象のファイルであることを個別に確認した。
+
+### 17.4 除外はPASSではないこと
+
+`excluded_test_ids`による除外は、そのテストが「成功した」ことを意味しない。`scripts/run_ci_tests.py`は除外したテストIDを実行対象から外し、実行結果の集計(`testsRun`/`passed`等)にも含めない。除外はあくまで「クリーンなCI環境では判定不能・実行不能」という区分であり、対象テストの妥当性そのものを保証するものではない。
+
+### 17.5 修正後の期待件数
+
+修正後、`excluded_test_ids`は3件全てが`platform: "ALL"`(常時除外)となり、Windows限定除外は0件になった。そのため、**WindowsとLinuxの期待件数は同一**になる(AUTO-001-04A策定時点で想定していた「Windows 461件・Linux 462件」という差分は解消された)。
+
+| 環境 | 収集 | 常時除外 | プラットフォーム限定除外 | 実行 |
+|---|---|---|---|---|
+| Windows | 465 | 3 | 0 | 462 |
+| Linux | 465 | 3 | 0 | 462 |
+
+### 17.6 AUTO-001-FU-002の状態
+
+`AUTO-001-FU-002`(Windows改行コード問題の仮説)は、Linux CIにより**事実関係としては確認・裏付けが取れた**(Linuxでは該当エントリのsha256比較が一致する)。しかし、このテストID自体は`AUTO-001-FU-001`(ローカル成果物依存)として恒久的に除外されるため、`AUTO-001-FU-002`単体の解消(Windows側の改行コード対応)はCI合否には直接影響しない。将来`editorial_brief.json`等をfixture化してこのテストIDの除外を解除する場合は、`AUTO-001-FU-002`の対応(`.gitattributes`の改行方針整備等)も合わせて必要になる。
