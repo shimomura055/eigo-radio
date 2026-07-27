@@ -168,4 +168,45 @@ python3.12 -m venv .venv-ci
 
 ## 15. GitHub Actions導入は次Stageであること
 
-今回のAUTO-001-03Bでは、GitHub Actionsワークフローは作成していない。`scripts/run_ci_tests.py`は、ローカル実行と将来のGitHub Actions実行の両方で同じコマンドが使えるように設計されているが、`.github/workflows/*.yml`の追加、GitHub Secretsの登録、PR時の自動起動等は次Stage(AUTO-001-04以降)で扱う。
+AUTO-001-03Bの時点では、GitHub Actionsワークフローは作成していなかった。`scripts/run_ci_tests.py`は、ローカル実行と将来のGitHub Actions実行の両方で同じコマンドが使えるように設計されている。
+
+---
+
+## 16. GitHub Actionsワークフロー(AUTO-001-04A、ローカル実装のみ・未検証)
+
+`.github/workflows/ci-test.yml`として、AUTO-001-04Aで最小構成のワークフローファイルを作成した。**この時点ではGitHubへpushしておらず、GitHub Actions上での実行確認は行っていない。** 実際のLinux runner上での動作確認・push・実行結果の確認はAUTO-001-04Bで行う。
+
+### トリガー
+
+* `push`: ブランチ`automation/AUTO-001-clean`のみ
+* `pull_request`: ベースブランチ`main`のみ
+* `main`ブランチへの直接pushはトリガーにしていない
+
+### 実行環境
+
+* `ubuntu-latest`、Python `3.12`(明示指定、`3.x`のような曖昧指定はしていない)
+* 複数OS・複数Pythonバージョンのmatrixは使用していない
+
+### Linuxでの実行コマンド
+
+```bash
+python -m pip --version
+python -m pip install -r requirements-ci.txt
+python -m pip check
+python scripts/run_ci_tests.py
+```
+
+Windows固有の`.venv-ci\Scripts\python.exe`は使用しない。ワークフロー内のPythonは`actions/setup-python`が用意するシステムPythonをそのまま使う(GitHub Actions上では専用venvを作らない)。
+
+### Secrets・環境変数
+
+このワークフローはGitHub Secretsを一切使用・参照しない。`OPENAI_API_KEY`等の環境変数もワークフロー側では設定しない。ダミーの`OPENAI_API_KEY`は、AUTO-001-03Bで実装済みの通り`scripts/run_ci_tests.py`が子プロセス内だけで自動的に設定する(§14参照)。ワークフロー側で本物・ダミーいずれのAPIキーも設定する必要はない。
+
+### 権限・外部Action
+
+* `permissions: contents: read`のみ
+* 使用する外部Actionは`actions/checkout`・`actions/setup-python`のみで、いずれも完全なcommit SHAで固定し、対応するリリースタグをコメントで記録している(取得元: `https://api.github.com/repos/<owner>/<repo>/releases/latest`および`/git/refs/tags/<tag>`、確認日2026-07-27)
+
+### 未検証・要確認事項(AUTO-001-FU-002)
+
+AUTO-001-03Bで`er002_test_editorial_v1_1b.py`の1テストを`platform: "win32"`としてWindows限定で除外した(改行コード起因のsha256不一致、follow-up: `AUTO-001-FU-002`)。このワークフローがLinux runner上で初めて実行される際、このテストIDは除外対象から外れて**実行される**。Linuxで成功するかどうかは、AUTO-001-04Bで実際にpushして確認するまで未確定である。Linuxでも失敗した場合は「Windows固有の問題」という仮説自体が誤りであり、`ci_test_manifest.json`の当該除外エントリを含めて再調査が必要になる。
