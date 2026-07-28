@@ -115,18 +115,14 @@ class RealTemplateStructuralSyncTests(unittest.TestCase):
         self.assertEqual(unexpected, set(), msg=f"テンプレートの構造がvalidatorの契約とずれています: {unexpected}")
 
     def test_real_template_flags_empty_required_sections(self):
-        # 既知の限界: 「変更区分」は`- サービス仕様変更：`のようなラベル付き
-        # 空欄骨組みを持つため、ラベル文字自体が実質内容として判定され
-        # MISSING_REQUIRED_CONTENTでは検知されない(値が空でもラベルが
-        # 「実質内容あり」に見える)。このvalidatorはセクション単位の
-        # 汎用的な空欄判定を行う設計であり、「変更区分」内部の3小項目を
-        # 個別解析する仕様にはしていない(AUTO-001-05-01の実装報告に既知の
-        # 限界として記録済み)。したがって本テストでは「変更区分」を対象外
-        # として扱う。
+        # AUTO-001-05-01-R1: 「変更区分」の固定ラベルだけの未記入状態も
+        # 実際に不合格として検知されることを、実テンプレートに対して
+        # 直接検証する(AC-R1-06)。「受入条件」は説明欠落の別コードで
+        # 報告されるため対象外とする。
         text = TEMPLATE_PATH.read_text(encoding="utf-8")
         result = validate_issue_body(text)
         flagged_sections = {e.section for e in result.errors if e.code == "MISSING_REQUIRED_CONTENT"}
-        expected = REQUIRED_SUBSTANTIVE_HEADINGS - {"受入条件", "変更区分"}
+        expected = REQUIRED_SUBSTANTIVE_HEADINGS - {"受入条件"}
         self.assertTrue(expected.issubset(flagged_sections), msg=flagged_sections)
 
 
@@ -420,6 +416,83 @@ class AcceptanceCriteriaErrorTests(unittest.TestCase):
     def test_description_html_comment_only(self):
         result = validate_issue_body(build_body(content={"受入条件": "- [ ] AC-01: <!-- 後で書く -->"}))
         self.assertIn("ACCEPTANCE_CRITERION_DESCRIPTION_MISSING", error_codes(result))
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-05-01-R1: 「変更区分」の固定ラベルと実質的な値の区別
+# ---------------------------------------------------------------------------
+
+class ChangeScopeTests(unittest.TestCase):
+
+    def test_labels_only_is_invalid(self):
+        content = "- サービス仕様変更：\n- リポジトリ運用仕様変更：\n- 実装方法だけの変更："
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_labels_and_html_comment_only_is_invalid(self):
+        content = (
+            "- サービス仕様変更：<!-- 記入してください -->\n"
+            "- リポジトリ運用仕様変更：<!-- 記入してください -->\n"
+            "- 実装方法だけの変更：<!-- 記入してください -->"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_labels_and_whitespace_only_is_invalid(self):
+        content = "- サービス仕様変更：   \n- リポジトリ運用仕様変更：\n- 実装方法だけの変更："
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_all_none_is_invalid(self):
+        content = "- サービス仕様変更：なし\n- リポジトリ運用仕様変更：なし\n- 実装方法だけの変更：なし"
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_single_category_with_content_is_valid(self):
+        content = "- サービス仕様変更：なし\n- リポジトリ運用仕様変更：なし\n- 実装方法だけの変更：validatorを新規実装する"
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertNotIn("変更区分", [e.section for e in result.errors])
+
+    def test_one_applicable_rest_none_is_valid(self):
+        content = (
+            "- サービス仕様変更：なし\n"
+            "- リポジトリ運用仕様変更：該当。Issue本文の機械判定契約を追加する\n"
+            "- 実装方法だけの変更：なし"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertNotIn("変更区分", [e.section for e in result.errors])
+
+    def test_multiple_categories_with_content_is_valid(self):
+        content = (
+            "- サービス仕様変更：なし\n"
+            "- リポジトリ運用仕様変更：該当。Issue本文の機械判定契約を追加する\n"
+            "- 実装方法だけの変更：validatorを新規実装する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertNotIn("変更区分", [e.section for e in result.errors])
+
+    def test_labels_only_crlf_is_invalid(self):
+        content = "- サービス仕様変更：\n- リポジトリ運用仕様変更：\n- 実装方法だけの変更："
+        text = build_body(content={"変更区分": content}).replace("\n", "\r\n")
+        result = validate_issue_body(text)
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_default_valid_body_change_scope_still_passes(self):
+        # 既存のDEFAULT_CONTENT(サービス仕様変更：なし/リポジトリ運用仕様変更：あり/
+        # 実装方法だけの変更：いいえ)は、この修正後も引き続き合格すること。
+        result = validate_issue_body(build_body())
+        self.assertEqual(result.status, ValidationStatus.PASS, msg=result.errors)
+
+
+class ChangeScopeRealTemplateSyncTests(unittest.TestCase):
+    """実テンプレートの固定ラベル表記とvalidatorの定数が一致し続けることを保証する。"""
+
+    def test_real_template_change_scope_labels_match_constants(self):
+        from scripts.issue_preflight_validator import CHANGE_SCOPE_LABELS
+
+        text = TEMPLATE_PATH.read_text(encoding="utf-8")
+        for label in CHANGE_SCOPE_LABELS:
+            self.assertIn(f"- {label}：", text, msg=f"テンプレートに固定ラベル「{label}：」が見つかりません")
 
 
 # ---------------------------------------------------------------------------

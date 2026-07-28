@@ -71,6 +71,17 @@ assert REQUIRED_SUBSTANTIVE_HEADINGS.isdisjoint(NONE_ALLOWED_HEADINGS)
 
 MANAGEMENT_ID_HEADING = "管理ID"
 ACCEPTANCE_CRITERIA_HEADING = "受入条件"
+CHANGE_SCOPE_HEADING = "変更区分"
+
+# 「変更区分」内の固定ラベル(テンプレート実体に合わせた正式な表記)。
+# `.github/ISSUE_TEMPLATE/agent_task.md` を変更する場合はこの一覧も
+# 同時に更新すること(auto001_test_issue_preflight_validator.pyの
+# ChangeScopeRealTemplateSyncTestsで実テンプレートとの整合を検証する)。
+CHANGE_SCOPE_LABELS: tuple[str, ...] = (
+    "サービス仕様変更",
+    "リポジトリ運用仕様変更",
+    "実装方法だけの変更",
+)
 
 # 管理IDの正式な形式(厳密)。例: AUTO-001-05-01, ER-003-B1-P4C
 MANAGEMENT_ID_STRICT_RE = re.compile(r"^[A-Z][A-Z0-9]*-\d{3}(?:-[A-Z0-9]+)*$")
@@ -83,6 +94,9 @@ _AC_LOOSE_HINT_RE = re.compile(r"AC-\d+")
 
 _HEADING_LINE_RE = re.compile(r"^## (\S.*)$")
 _FENCE_RE = re.compile(r"^(```|~~~)")
+
+# 「変更区分」の1行(例: `- サービス仕様変更：なし`)からラベルと値を取り出す。
+_CHANGE_SCOPE_LINE_RE = re.compile(r"^-\s*(.+?)\s*[：:]\s*(.*)$")
 
 _TOKEN_STRIP_CHARS = "`'\"“”‘’.,()（）[]「」『』、。:：;；!！?？*_~ \t"
 
@@ -328,6 +342,8 @@ def _classify_content(raw_lines: list[str]) -> _ContentKind:
 def _validate_section_content(sections: dict[str, list[str]]) -> list[ValidationError]:
     errors: list[ValidationError] = []
     for heading, raw_lines in sections.items():
+        if heading == CHANGE_SCOPE_HEADING:
+            continue  # 専用の_validate_change_scopeが判定する(固定ラベルとの区別が必要なため)
         kind = _classify_content(raw_lines)
         if heading in REQUIRED_SUBSTANTIVE_HEADINGS:
             if kind is not _ContentKind.CONTENT:
@@ -342,6 +358,47 @@ def _validate_section_content(sections: dict[str, list[str]]) -> list[Validation
                     section=heading,
                 ))
     return errors
+
+
+# ---------------------------------------------------------------------------
+# 変更区分検証
+#
+# 「変更区分」はテンプレート自体が固定ラベル付きの空欄骨組み
+# (`- サービス仕様変更：`等)を含むため、汎用の_classify_contentだけでは
+# 「ラベル文字がある=実質内容あり」と誤判定してしまう(ラベルの値部分が
+# 空でも、ラベル自体の文字列に実在の文字が含まれるため)。
+# この関数は、既知の固定ラベル行については「：」より後ろの値だけを
+# 判定対象にし、ラベル文字自体は実質内容としてカウントしない。
+# 固定ラベル以外の行(自由記述の残りテキスト)は、汎用のなし/空欄判定を
+# 適用したうえで実質内容として扱う。
+# ---------------------------------------------------------------------------
+
+def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationError]:
+    raw_lines = sections.get(CHANGE_SCOPE_HEADING)
+    if raw_lines is None:
+        return []  # 見出し自体が無い/重複している場合は既にMISSING_HEADING等で報告済み
+
+    label_values: list[str] = []
+    residual_lines: list[str] = []
+    for line in raw_lines:
+        m = _CHANGE_SCOPE_LINE_RE.match(line.strip())
+        if m and m.group(1) in CHANGE_SCOPE_LABELS:
+            label_values.append(m.group(2))
+        else:
+            residual_lines.append(line)
+
+    has_specified_label = any(_classify_content([v]) is _ContentKind.CONTENT for v in label_values)
+    if has_specified_label:
+        return []
+    if _classify_content(residual_lines) is _ContentKind.CONTENT:
+        return []
+
+    return [ValidationError(
+        "MISSING_REQUIRED_CONTENT",
+        f"「{CHANGE_SCOPE_HEADING}」に実質的な値が記載された分類がありません"
+        "(各項目が空欄・HTMLコメントのみ・「なし」のいずれかのままです)。",
+        section=CHANGE_SCOPE_HEADING,
+    )]
 
 
 # ---------------------------------------------------------------------------
@@ -477,6 +534,7 @@ def _run_validation(text: str) -> list[ValidationError]:
 
     sections = _extract_section_raw_lines(spec_lines, scan)
     content_errors = _validate_section_content(sections)
+    change_scope_errors = _validate_change_scope(sections)
     management_id_errors = _validate_management_id(sections)
     ac_errors = _validate_acceptance_criteria(sections)
 
@@ -484,6 +542,7 @@ def _run_validation(text: str) -> list[ValidationError]:
         *marker_errors,
         *heading_errors,
         *content_errors,
+        *change_scope_errors,
         *management_id_errors,
         *ac_errors,
     ]
