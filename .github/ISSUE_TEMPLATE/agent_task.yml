@@ -1,0 +1,124 @@
+name: "AI実装タスク (Agent Task)"
+description: "Claude Codeなどのコーディングエージェントに実装を依頼するためのタスクを登録します。"
+title: "[AUTO-XXX] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 記入前の注意
+
+        * このフォームは、ユーザーまたはタスク作成エージェントが**Claude Codeへ渡す実装タスク**を一定の形式で登録するためのものです。
+        * **APIキー・パスワード・トークン・個人情報などの機微情報を記載しないでください。**
+        * このフォームには「AIにmainへの直接pushや自動マージを許可する」項目はありません。実装後のcommit・push・Pull Request作成の扱いは、別途リポジトリの運用ルール（`CLAUDE.md`等）に従います。
+        * このフォームの入力によってラベルが自動付与されることはありません（ラベル付与は人間、または別途定義された仕組みが行います）。
+        * 通常のバグ報告・要望など、AI実装タスクではないIssueは、このフォームを使わずに通常のIssue作成（Blank issue等）を利用してください。
+
+  - type: input
+    id: management_id
+    attributes:
+      label: 管理ID
+      description: |
+        このタスクを識別する管理IDです。既存の命名規則に従ってください。
+        例: `AUTO-001-02`、`ER-003-B1`
+      placeholder: "例: AUTO-001-02"
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: 背景・現在の問題
+      description: なぜこのタスクが必要か、現在何が問題になっているかを記載してください。
+      placeholder: "例: 現在〇〇の処理が手動で行われており、△△という問題が発生している。"
+    validations:
+      required: false
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的
+      description: このタスクで達成したいゴールを記載してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: 期待動作
+      description: 実装後にシステムがどう振る舞うべきか、できるだけ具体例を交えて記載してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: 非対象範囲
+      description: |
+        今回のタスクで**扱わないこと**を明記してください。実装スコープの暴走を防ぐための必須項目です。
+        例: 「ER-002の記事生成ロジック自体は変更しない」「新規外部API接続は行わない」
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: 受入条件
+      description: |
+        実装完了とみなすための条件を列挙してください。**各条件に`AC-01`のような一意な条件IDを付けてください。**
+        レビュー時に条件IDごとの判定（PASS/FAIL/NOT_VERIFIED/HUMAN_REVIEW）が記録されます。
+      placeholder: |
+        AC-01: ○○コマンドを実行した際にエラーが発生しないこと
+        AC-02: △△ファイルが正しい形式で生成されること
+    validations:
+      required: true
+
+  - type: textarea
+    id: test_perspective
+    attributes:
+      label: テスト観点
+      description: どのようなテストで検証するかを記載してください（既存の回帰テストの対象か、個別のtargeted testsか等）。
+    validations:
+      required: true
+
+  - type: textarea
+    id: human_confirmation_items
+    attributes:
+      label: 人間による確認が必要な項目
+      description: |
+        AIだけで判断させず、人間の確認・承認を必須とする項目を記載してください。
+        該当項目が無い場合は「なし」と明記してください。
+      placeholder: "例: 生成される音声の自然さは人間が試聴して確認する。該当なしの場合は「なし」と記入。"
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: リスク・注意点
+      description: 想定される副作用、注意すべき点があれば記載してください。
+    validations:
+      required: false
+
+  - type: input
+    id: related_issues
+    attributes:
+      label: 関連IssueまたはPull Request
+      description: "関連する既存のIssue/PRがあれば`#123`形式で記載してください。"
+      placeholder: "例: #123, #124"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: service_spec_change
+    attributes:
+      label: サービス仕様変更の可能性
+      description: |
+        このタスクの実装によって、サービス仕様（ユーザーから見た挙動）が変わる可能性があるかを選択してください。
+        判断がつかない場合は「不明・要判断」を選んでください。
+      options:
+        - "なし"
+        - "あり"
+        - "不明・要判断"
+    validations:
+      required: true

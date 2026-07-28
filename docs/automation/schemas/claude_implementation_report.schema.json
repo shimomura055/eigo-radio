@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/automation/schemas/claude_implementation_report.schema.json",
+  "title": "Claude Code Implementation Report",
+  "description": "Claude Codeが実装完了時にPRへ添付する構造化報告のスキーマ。この文書に含まれる全ての内容はClaude Code自身による自己申告(self-report)であり、CIによる独立実行やOpenAIレビューによる独立検証を経たものではない。独立検証の有無は openai_review_result.schema.json 側の independently_verified / based_on_self_report_only フィールドで別途評価される。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "self_reported",
+    "management_id",
+    "issue_number",
+    "branch",
+    "head_commit",
+    "implementation_status",
+    "summary",
+    "changed_files",
+    "acceptance_criteria",
+    "tests_executed",
+    "tests_not_executed",
+    "assumed_working_not_verified",
+    "human_confirmation_items",
+    "risks",
+    "incomplete_items",
+    "external_api_calls",
+    "git_state"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "本スキーマのバージョン(セマンティックバージョニング)。",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "self_reported": {
+      "type": "boolean",
+      "const": true,
+      "description": "この報告全体がClaude Codeによる自己申告であり、第三者による独立検証ではないことを示す固定値。"
+    },
+    "management_id": {
+      "type": "string",
+      "description": "対応するIssue Formの管理IDと一致させる。",
+      "minLength": 1
+    },
+    "issue_number": {
+      "type": ["integer", "null"],
+      "description": "対応するGitHub Issue番号。不明な場合はnull。"
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "head_commit": {
+      "type": "string",
+      "description": "実装完了時点のHEADコミットSHA。",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "implementation_status": {
+      "type": "string",
+      "enum": ["COMPLETE", "PARTIAL", "BLOCKED", "FAILED"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "change_type", "purpose", "service_spec_impact"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "change_type": {
+            "type": "string",
+            "enum": ["added", "modified", "deleted", "renamed"]
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "service_spec_impact": {
+            "type": "string",
+            "description": "このファイル変更がサービス仕様(ユーザーから見た挙動)に影響するか。",
+            "enum": ["NONE", "POSSIBLE", "YES", "UNKNOWN"]
+          }
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "description": "Issue Formの受入条件欄で定義された条件ID(例: AC-01)ごとの結果。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "criterion_id",
+          "result",
+          "rationale",
+          "evidence_type",
+          "related_files",
+          "related_tests",
+          "unverified_reason"
+        ],
+        "properties": {
+          "criterion_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "NOT_VERIFIED", "HUMAN_REVIEW"]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_type": {
+            "type": "string",
+            "enum": ["TEST", "DIFF", "FILE_INSPECTION", "EXECUTION_LOG", "SELF_REPORT", "NONE"]
+          },
+          "related_files": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "related_tests": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "unverified_reason": {
+            "type": ["string", "null"],
+            "description": "resultがNOT_VERIFIEDまたはHUMAN_REVIEWの場合、未確認・要人間確認の理由を記載。それ以外の場合はnull。"
+          }
+        }
+      }
+    },
+    "tests_executed": {
+      "type": "array",
+      "description": "実際に実行したテストのみを記載する(追加しただけで未実行のものは含めない)。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "command",
+          "result",
+          "exit_code",
+          "duration_seconds",
+          "summary",
+          "evidence",
+          "external_api_used"
+        ],
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "enum": ["PASSED", "FAILED", "NOT_RUN", "BLOCKED"]
+          },
+          "exit_code": {
+            "type": ["integer", "null"]
+          },
+          "duration_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "string",
+            "description": "ログの該当箇所、出力の要約など。"
+          },
+          "external_api_used": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "tests_not_executed": {
+      "type": "array",
+      "description": "追加したが実行していないテスト、または実行できなかったテスト。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "reason"],
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "assumed_working_not_verified": {
+      "type": "array",
+      "description": "実行・確認していないが、コードの構造上動作すると推測している項目。推測に過ぎないことを明示するための独立フィールド。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "reason"],
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "human_confirmation_items": {
+      "type": "array",
+      "description": "人間による確認が必要な項目。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "risks": {
+      "type": "array",
+      "description": "既知のリスク・注意点。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "incomplete_items": {
+      "type": "array",
+      "description": "未完了事項。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "external_api_calls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "details"],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "実装・テスト過程で実行した外部API呼び出しの合計回数。"
+        },
+        "details": {
+          "type": "array",
+          "description": "呼び出した外部APIごとの目的・回数の説明。countが0の場合は空配列。",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "git_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commits", "pushed", "pr_created", "pr_number", "main_changed"],
+      "properties": {
+        "commits": {
+          "type": "array",
+          "description": "今回の実装で作成したcommitのSHA一覧。",
+          "items": { "type": "string" }
+        },
+        "pushed": {
+          "type": "boolean"
+        },
+        "pr_created": {
+          "type": "boolean"
+        },
+        "pr_number": {
+          "type": ["integer", "null"]
+        },
+        "main_changed": {
+          "type": "boolean",
+          "description": "mainブランチへ直接変更を加えたか。trueの場合は運用ルール違反の可能性があるため、レビュー側は必ず確認すること。"
+        }
+      }
+    }
+  }
+}
