@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/automation/schemas/openai_review_result.schema.json",
+  "title": "OpenAI Review Result",
+  "description": "OpenAI等のLLMレビューアが、claude_implementation_report.schema.json に基づくClaude Codeの自己申告を独立に評価した結果のスキーマ。判定ルール: (1)必須受入条件にFAILがあればCHANGES_REQUIRED。(2)必須受入条件が証拠不足ならCHANGES_REQUIREDまたはHUMAN_REVIEW。(3)主観判断(音声の自然さ・感情表現・聴きやすさ・記事の面白さ・デザインの好み・事業仕様変更・UXの主観評価・実機/ブラウザ操作確認・証拠のない動作報告等)が必要ならHUMAN_REVIEW。(4)テスト未実行をPASSにしない。(5)Claude Codeの自己申告だけを独立確認済みとしない。(6)サービス仕様変更が疑われる場合はHUMAN_REVIEW。(7)すべての必須受入条件が確認でき、人間確認項目がなければPASS。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "management_id",
+    "issue_number",
+    "pr_number",
+    "head_commit",
+    "overall_verdict",
+    "summary",
+    "review_id",
+    "reviewed_at",
+    "acceptance_criteria",
+    "test_evidence",
+    "human_judgement_required",
+    "flags_for_human"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "management_id": {
+      "type": "string",
+      "description": "claude_implementation_report.schema.json の management_id と一致させる。",
+      "minLength": 1
+    },
+    "issue_number": {
+      "type": ["integer", "null"]
+    },
+    "pr_number": {
+      "type": "integer"
+    },
+    "head_commit": {
+      "type": "string",
+      "description": "レビュー対象としたPRのHEADコミットSHA。claude_implementation_report.schema.json の head_commit と一致することを想定。",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "overall_verdict": {
+      "type": "string",
+      "enum": ["PASS", "CHANGES_REQUIRED", "HUMAN_REVIEW"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_id": {
+      "type": "string",
+      "description": "このレビュー実行を一意に識別するID(CIのrun ID等)。",
+      "minLength": 1
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "レビュー実行日時(ISO 8601)。"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "description": "Issue Formの受入条件(criterion_id)ごとの独立判定。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "criterion_id",
+          "verdict",
+          "rationale",
+          "evidence_source",
+          "independently_verified",
+          "based_on_self_report_only",
+          "human_review_required",
+          "undecidable_reason"
+        ],
+        "properties": {
+          "criterion_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verdict": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "UNVERIFIABLE", "HUMAN_REVIEW"]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_source": {
+            "type": "string",
+            "description": "根拠の取得元。",
+            "enum": [
+              "CLAUDE_REPORT",
+              "CI_LOG",
+              "DIFF_INSPECTION",
+              "INDEPENDENT_TEST_RUN",
+              "PR_DESCRIPTION",
+              "ISSUE_DESCRIPTION",
+              "OTHER"
+            ]
+          },
+          "independently_verified": {
+            "type": "boolean",
+            "description": "Claude Codeの自己申告以外の手段(diff・CIログ・独立再実行等)で確認したか。"
+          },
+          "based_on_self_report_only": {
+            "type": "boolean",
+            "description": "Claude Codeの自己申告のみに基づく判定か。"
+          },
+          "human_review_required": {
+            "type": "boolean"
+          },
+          "undecidable_reason": {
+            "type": ["string", "null"],
+            "description": "verdictがUNVERIFIABLEの場合、判定不能の理由を必ず記載する。それ以外はnull。"
+          }
+        }
+      }
+    },
+    "test_evidence": {
+      "type": "object",
+      "description": "テスト証拠の評価。Claude Codeの自己申告と独立確認の区別を機械的に判定できるようにする。",
+      "additionalProperties": false,
+      "required": [
+        "has_test_execution_report",
+        "has_exit_code",
+        "independently_rerun_in_ci",
+        "based_on_self_report_only",
+        "tests_not_executed",
+        "human_confirmation_required"
+      ],
+      "properties": {
+        "has_test_execution_report": {
+          "type": "boolean",
+          "description": "テスト実行報告(tests_executed)が存在するか。"
+        },
+        "has_exit_code": {
+          "type": "boolean",
+          "description": "exit codeが報告されているか。"
+        },
+        "independently_rerun_in_ci": {
+          "type": "boolean",
+          "description": "CI等でOpenAIレビューとは独立に再実行されているか。"
+        },
+        "based_on_self_report_only": {
+          "type": "boolean",
+          "description": "Claude Codeの自己申告だけに基づくか。"
+        },
+        "tests_not_executed": {
+          "type": "boolean",
+          "description": "必要なテストが未実行のままか。"
+        },
+        "human_confirmation_required": {
+          "type": "boolean",
+          "description": "人間による確認(試聴・目視・操作等)が必要か。"
+        }
+      }
+    },
+    "human_judgement_required": {
+      "type": "array",
+      "description": "自動PASSにしてはならない主観判断項目のリスト。該当なしの場合は空配列。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category", "description"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "AUDIO_NATURALNESS",
+              "EMOTIONAL_EXPRESSION",
+              "LISTENABILITY",
+              "ARTICLE_INTERESTINGNESS",
+              "DESIGN_PREFERENCE",
+              "SERVICE_SPEC_CHANGE",
+              "SUBJECTIVE_UX",
+              "REQUIRES_DEVICE_OR_BROWSER_OPERATION",
+              "UNSUPPORTED_CLAIM",
+              "OTHER"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "flags_for_human": {
+      "type": "array",
+      "description": "人間へ伝えるべき注意事項の要約(自由記述)。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "overall_verdict": { "const": "PASS" } },
+        "required": ["overall_verdict"]
+      },
+      "then": {
+        "properties": {
+          "human_judgement_required": { "maxItems": 0 },
+          "acceptance_criteria": {
+            "items": {
+              "properties": { "verdict": { "const": "PASS" } }
+            }
+          },
+          "test_evidence": {
+            "properties": {
+              "tests_not_executed": { "const": false },
+              "based_on_self_report_only": { "const": false },
+              "human_confirmation_required": { "const": false }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

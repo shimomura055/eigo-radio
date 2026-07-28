@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0.0",
+  "self_reported": true,
+  "management_id": "AUTO-999-DEMO01",
+  "issue_number": 999,
+  "branch": "automation/AUTO-999-DEMO01",
+  "head_commit": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+  "implementation_status": "COMPLETE",
+  "summary": "架空タスク。demo_batch_runner.py に --dry-run オプションを追加し、実際のファイル書き込みを行わずに処理計画のみを標準出力へ表示できるようにした。",
+  "changed_files": [
+    {
+      "path": "demo_batch_runner.py",
+      "change_type": "modified",
+      "purpose": "--dry-run オプションを追加し、指定時はファイル書き込み処理をスキップして計画のみ出力するようにした",
+      "service_spec_impact": "NONE"
+    },
+    {
+      "path": "demo_test_batch_runner.py",
+      "change_type": "added",
+      "purpose": "--dry-run オプションの単体テストを追加した",
+      "service_spec_impact": "NONE"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "criterion_id": "AC-01",
+      "result": "PASS",
+      "rationale": "--dry-run指定時にファイル書き込みが発生しないことをテストで確認した",
+      "evidence_type": "TEST",
+      "related_files": ["demo_batch_runner.py"],
+      "related_tests": ["demo_test_batch_runner.py::test_dry_run_skips_write"],
+      "unverified_reason": null
+    },
+    {
+      "criterion_id": "AC-02",
+      "result": "PASS",
+      "rationale": "--dry-run未指定時は従来通りファイルが書き込まれることを既存テストで確認した",
+      "evidence_type": "TEST",
+      "related_files": ["demo_batch_runner.py"],
+      "related_tests": ["demo_test_batch_runner.py::test_normal_run_writes_file"],
+      "unverified_reason": null
+    },
+    {
+      "criterion_id": "AC-03",
+      "result": "NOT_VERIFIED",
+      "rationale": "大量データ(10万件規模)投入時の処理性能は未計測",
+      "evidence_type": "NONE",
+      "related_files": [],
+      "related_tests": [],
+      "unverified_reason": "大量データのテスト用データセットを用意できず、実行環境の時間的余裕もなかったため未検証"
+    }
+  ],
+  "tests_executed": [
+    {
+      "command": "python -m unittest demo_test_batch_runner.py",
+      "result": "PASSED",
+      "exit_code": 0,
+      "duration_seconds": 1.2,
+      "summary": "3 tests run, all passed",
+      "evidence": "Ran 3 tests in 1.234s\n\nOK",
+      "external_api_used": false
+    }
+  ],
+  "tests_not_executed": [
+    {
+      "description": "大量データ(10万件規模)投入時のパフォーマンステスト",
+      "reason": "テスト用データセットが用意できておらず、実行環境にも時間的余裕がなかったため"
+    }
+  ],
+  "assumed_working_not_verified": [
+    {
+      "description": "Windows環境でも--dry-runが同様に機能すると考えている",
+      "reason": "コード上OS依存処理を含まないため動作すると推測しているが、Windows実機では未確認"
+    }
+  ],
+  "human_confirmation_items": [
+    "--dry-run実行時に標準出力へ表示されるメッセージが、実運用者にとって分かりやすい文言になっているかは人間が確認してください"
+  ],
+  "risks": [
+    "--dry-runのログ出力が大量になる場合、標準出力が読みにくくなる可能性がある"
+  ],
+  "incomplete_items": [],
+  "external_api_calls": {
+    "count": 0,
+    "details": []
+  },
+  "git_state": {
+    "commits": ["a1b2c3d4e5f60718293a4b5c6d7e8f9012345678"],
+    "pushed": true,
+    "pr_created": true,
+    "pr_number": 999,
+    "main_changed": false
+  }
+}
