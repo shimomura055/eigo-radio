@@ -14,7 +14,41 @@
     { "path": "er002_test_ja_web_research_r3.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
     { "path": "er002_test_ja_web_research_r4.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット。" },
     { "path": "er002_test_v1_2m_d1.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
-    { "path": "auto001_test_ci_runner.py", "reason": "scripts/run_ci_tests.py(このrunner自身)の単体テスト。外部APIを呼ばず、tempdir上のfixtureだけで完結する。" }
+    { "path": "auto001_test_ci_runner.py", "reason": "scripts/run_ci_tests.py(このrunner自身)の単体テスト。外部APIを呼ばず、tempdir上のfixtureだけで完結する。" },
+    { "path": "er003_test_b1_article.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_b1_p2.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_b1_p3r_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTSを行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_b1_p3s_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTSを行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_b1_p3t_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTSを行わないunittest.TestCase(合成データ・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_b1_p3u_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実Azure STT結果をハードコード定数として使用し、実呼び出しは行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p3v_capability.py", "reason": "AUTO-001-04D-R1で静的監査済み。google-genai SDKの型定義を静的に確認するのみで、実TTS・実API呼び出しは行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p3w_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。MFA成果物依存テスト(ParseRealSmokeTestTextgridTests)はos.path.exists+skipTestで正しくガード済み。それ以外は純粋なロジック/合成データテスト。" },
+    { "path": "er003_test_b1_p3y_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS・実MFA呼び出しを行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p3z_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS・実MFA呼び出しを行わないunittest.TestCase(無音調整ロジックのみ)。" },
+    { "path": "er003_test_b1_p4_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS・実MFA呼び出しを行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p4a_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS呼び出しを行わないunittest.TestCase(静的監査ロジックのみ)。" },
+    { "path": "er003_test_b1_p4b_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS・実MFA呼び出しを行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p4c_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS・実MFA呼び出しを行わないunittest.TestCase。" },
+    { "path": "er003_test_b1_p4d_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。SudachiTokenizeIntegrationTests.test_real_pattern_a_full_pipeline_matches_expected_key_expressionsのみmfa_tool/への実subprocess呼び出しを含むためexcluded_test_idsで個別除外。それ以外はmarker置換・ひらがな変換等の静的ロジックのみ。" },
+    { "path": "er003_test_b1_p5a_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。AzureTtsCallFnIntegrationTests(実Azure呼び出し)、CheckEngineAvailabilityTests.test_azure_speech_available_in_this_environment(要.env認証情報)、AsrReadingNormalizeTests(要mfa_tool/)の3件のみexcluded_test_idsで個別除外。それ以外(入力読込・ハッシュ検証・対象句チェック等)は安全。" },
+    { "path": "er003_test_b1_p5b_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。CheckGoogleCloudTtsAvailabilityTests(要ADCログイン)、CheckAwsPollyAvailabilityTests.test_real_check_reports_unavailable_with_reason(boto3経由の実呼び出し経路)の2件のみexcluded_test_idsで個別除外。WAV解析・対象句チェック等の合成データテストは安全。" },
+    { "path": "er003_test_b1_p5c_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS呼び出しを行わないunittest.TestCase(入力読込・ハッシュ検証・marker置換の静的QAのみ)。" },
+    { "path": "er003_test_b1_p6a_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実TTS呼び出しを行わないunittest.TestCase(chunk分割・静的検証ロジックのみ)。" },
+    { "path": "er003_test_b1_p6b_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。Chunk03RegressionSpliceTests.test_mfa_boundary_approach_succeeds_where_rms_failedのみ未追跡のchunk03_ja.wavをガードなしに読み込むためexcluded_test_idsで個別除外。それ以外(MfaAnchorSampleTests等)はtracked成果物・純粋計算のみ。" },
+    { "path": "er003_test_b2_adapter.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTS・Web検索を行わないunittest.TestCase。1件(test_p1b_review_untouched)はos.path.exists+skipTestで正しくガード済み。" },
+    { "path": "er003_test_b2_key_words.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(TTS/API不参照の静的アサーション含む)。" },
+    { "path": "er003_test_b2_summary.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(TTS/API不参照の静的アサーション含む)。" },
+    { "path": "er003_test_b2_summary_p2c.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(既存tracked成果物の読込と決定的な再計算のみ)。" },
+    { "path": "er003_test_ja_to_en_translation.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTS・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_ja_to_en_translation_p1b.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTS・Web検索を行わないunittest.TestCase。1件(test_p1_review_markdown_untouched)はos.path.exists+skipTestで正しくガード済み。" },
+    { "path": "er003_test_key_words_min_unit.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_key_words_research10.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_key_words_strategy_compare.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_natural_source.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTS・Web検索を行わないunittest.TestCase。未追跡成果物を参照する3件はos.path.exists+skipTestで正しくガード済み。" },
+    { "path": "er003_test_p2h_analyze_user_scores.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase。生成物はtempfile.mkdtemp()上のみに書き込み、リポジトリを汚染しない。" },
+    { "path": "er003_test_p2i_production.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
+    { "path": "er003_test_p2j_investigate.py", "reason": "AUTO-001-04D-R1で静的監査済み。API呼び出しを行わないunittest.TestCase。frozen数値比較はtracked JSON成果物基準であり、AUTO-001併合(er0*_test_*.pyパターン外のファイル追加)の影響を受けない。" },
+    { "path": "er003_test_p2k_regression_entry.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase。canonical entry point(run_project_regression.py)のDEFAULT_PATTERN='er0*_test_*.py'はAUTO-001の新規ファイルとは無関係。" }
   ],
   "exclude": [
     { "path": "test_api.py", "reason": "モジュールレベルで実OpenAI APIを呼ぶ疎通確認スクリプト。importするだけで課金・ネットワークアクセスが発生する。" },
@@ -51,6 +85,159 @@
       "duration": "PERMANENT",
       "follow_up_id": "AUTO-001-FU-001",
       "release_condition": "対象成果物(editorial_brief.json, manifest.json, raw_responses.json)をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。あわせて1番目のエントリ(v1_1a_fixed_facts.json)のWindows改行コード差異(AUTO-001-FU-002)についても、.gitattributesによる改行方針の正式定義またはハッシュ対象の正規化方針の決定により解消しておくことが望ましい(AUTO-001-FU-002はLinux確認により事実関係は解明済みだが、Windows側の恒久対応自体は本除外の解除条件とは別に残る)。"
+    },
+    {
+      "test_id": "er003_test_b1_p4d_audio.SudachiTokenizeIntegrationTests.test_real_pattern_a_full_pipeline_matches_expected_key_expressions",
+      "reason": "er003_b1_p4d_audio.sudachi_tokenize()が、subprocess.run([p3w.MFA_MICROMAMBA_EXE, 'run', '-p', p3w.MFA_ENV_PREFIX, 'python', ...])によりmfa_tool/(.gitignore対象、micromamba root prefix + SudachiPy導入済みの隔離環境)を実行する統合テスト。クリーンCIチェックアウトにはmfa_tool/自体が存在しないため、標準CI環境では構造的に実行できない。",
+      "exclusion_type": "LOCAL_TOOLCHAIN_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-003",
+      "release_condition": "mfa_tool/相当のSudachiPy実行環境を再現可能かつ安全なCI fixture/専用環境として正式導入する、またはsudachi_tokenize()の呼び出しをモック化した純粋関数テストへ分離する。"
+    },
+    {
+      "test_id": "er003_test_b1_p5a_audio.AsrReadingNormalizeTests.test_real_sudachi_pipeline_normalizes_kanji_text",
+      "reason": "er003_b1_p4d_audio.sudachi_tokenize()経由でmfa_tool/(.gitignore対象の隔離環境)への実subprocess呼び出しを行う統合テスト。上記SudachiTokenizeIntegrationTestsと同一の依存関係。",
+      "exclusion_type": "LOCAL_TOOLCHAIN_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-003",
+      "release_condition": "mfa_tool/相当のSudachiPy実行環境を再現可能かつ安全なCI fixture/専用環境として正式導入する、またはsudachi_tokenize()の呼び出しをモック化した純粋関数テストへ分離する。"
+    },
+    {
+      "test_id": "er003_test_b1_p5a_audio.AzureTtsCallFnIntegrationTests.test_minimal_real_call_returns_pcm_and_metadata",
+      "reason": "p5a.make_azure_tts_call_fn()がazure.cognitiveservices.speechを無条件importし、実際にAzure Speech APIへ短文合成(実課金対象)を要求する統合テスト。実credentials(SPEECH_KEY/SPEECH_REGION)と外部ネットワーク接続の両方が必要であり、標準CIではSecrets不使用・外部通信禁止のため実行できない。",
+      "exclusion_type": "EXTERNAL_SERVICE_DEPENDENCY",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-004",
+      "release_condition": "実サービスを呼ばないモック/fake/contract testへ再設計する、または標準CIとは分離された明示的な手動実行環境で運用する。標準CIへSecretsを導入して実行可能にすることは想定しない。"
+    },
+    {
+      "test_id": "er003_test_b1_p5a_audio.CheckEngineAvailabilityTests.test_azure_speech_available_in_this_environment",
+      "reason": "開発機の.env(.gitignore対象)にSPEECH_KEY/SPEECH_REGIONが設定済みであることを前提に、result['azure_speech']['available']がTrueであることをassertする。クリーンCIには.envが存在せずazure-cognitiveservices-speechパッケージもrequirements-ci.txt未収録のため、標準CIでは常にFalseとなりテストが失敗する。",
+      "exclusion_type": "EXTERNAL_SERVICE_DEPENDENCY",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-004",
+      "release_condition": "開発環境固有の可用性を確認するテストと、常にプラットフォーム非依存で成立するべき構造テスト(他のCheckEngineAvailabilityTestsの各ケース)を明確に分離する。標準CIへSecretsを導入して実行可能にすることは想定しない。"
+    },
+    {
+      "test_id": "er003_test_b1_p5b_audio.CheckGoogleCloudTtsAvailabilityTests.test_real_check_reports_available_after_adc_login",
+      "reason": "開発機でgcloud auth application-default loginを実行済みであることを前提に、Google Cloud TTSのlist_voices(読み取り専用)への実呼び出しが成功することをassertする統合テスト。ADC(Application Default Credentials)は標準CIに存在せず、外部ネットワーク接続も必要。",
+      "exclusion_type": "EXTERNAL_SERVICE_DEPENDENCY",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-004",
+      "release_condition": "実サービスを呼ばないモック/fake/contract testへ再設計する、または標準CIとは分離された明示的な手動実行環境で運用する。標準CIへSecretsを導入して実行可能にすることは想定しない。"
+    },
+    {
+      "test_id": "er003_test_b1_p5b_audio.CheckAwsPollyAvailabilityTests.test_real_check_reports_unavailable_with_reason",
+      "reason": "boto3経由でAWS Pollyへの読み取り専用呼び出し経路(認証情報なしでNoCredentialsErrorを捕捉する設計)を通る統合テスト。認証情報が無い場合に実際にネットワーク接続を試みるかどうかは静的解析だけでは断定できず、runnerのネットワーク遮断機構(接続試行を検出した場合runner全体を失敗させる safety net)に抵触するリスクを避けるため、安全側に倒して除外する。",
+      "exclusion_type": "EXTERNAL_SERVICE_DEPENDENCY",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-004",
+      "release_condition": "boto3クライアントが実際にネットワーク接続を試みないことを実機で確認できた場合、またはモック化した契約テストへ再設計した場合に解除を再検討する。標準CIへSecretsを導入して実行可能にすることは想定しない。"
+    },
+    {
+      "test_id": "er003_test_b1_p6b_audio.Chunk03RegressionSpliceTests.test_mfa_boundary_approach_succeeds_where_rms_failed",
+      "reason": "er003_output/b1_p6a/A01/preview/ja_chunks/chunk03_ja.wav(git未追跡、git ls-filesで0件確認済み)をos.path.exists等のガードなしに直接読み込む回帰テスト。クリーンチェックアウトには当該wavファイルが存在しない。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象wavファイルをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する(既存のTextGridと同様、対象wavも成果物としてtracked化する案が有力)。"
+    },
+    {
+      "test_id": "er003_test_b2_summary.P2AOfficialRecordTests.test_b2_body_text_untouched_by_p2a",
+      "reason": "er003_b2_summary.B2_INPUT_PATHS(実装モジュール側の辞書定数、テストファイル自身には文字列リテラルなし)を経由してer003_output/p2/{A01,A02,ADD03}/b2_version_raw.mdを順に読み込む。3件ともgit ls-filesで追跡対象外と確認済み(A01が辞書の先頭のためA01でFileNotFoundErrorになり、A02/ADD03には到達しない)。os.path.exists等のガードなし。AUTO-001-04D-R1のStage2静的監査では、実装モジュール側のパス定数を経由する間接参照を見落としており、実際のCI実行によって初めて判明した。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象3ファイル(b2_version_raw.md)をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_b2_summary_p2c.ApprovalMetadataTests.test_b2_body_sha256_unchanged",
+      "reason": "上記test_b2_body_text_untouched_by_p2aと同一のer003_b2_summary.B2_INPUT_PATHS経由の間接参照。同じくA01のer003_output/p2/A01/b2_version_raw.mdでFileNotFoundError。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "対象3ファイル(b2_version_raw.md)をCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A01DiffTests.test_a01_diff_is_exactly_two_headings",
+      "reason": "er003_natural_source.P1B_RAW_ARTICLE_PATHS(実装モジュール側の辞書定数)を経由してns.load_p1b_raw_article('A01')がer003_output/p1b/A01/translated_en_raw.mdを読み込む。git ls-filesで追跡対象外と確認済み。ガードなし。AUTO-001-04D-R1のStage2静的監査では実装モジュール側のパス定数を経由する間接参照を見落としており、実際のCI実行によって初めて判明した。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A01DiffTests.test_a01_point_one_heading_changed_to_creator",
+      "reason": "上記test_a01_diff_is_exactly_two_headingsと同一のP1B_RAW_ARTICLE_PATHS['A01']経由の間接参照。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A01DiffTests.test_a01_point_two_heading_changed_to_attack",
+      "reason": "上記test_a01_diff_is_exactly_two_headingsと同一のP1B_RAW_ARTICLE_PATHS['A01']経由の間接参照。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A01DiffTests.test_a01_title_intro_body_unchanged",
+      "reason": "上記test_a01_diff_is_exactly_two_headingsと同一のP1B_RAW_ARTICLE_PATHS['A01']経由の間接参照。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A02Add03IdenticalTests.test_a02_identical_to_p1b_raw",
+      "reason": "P1B_RAW_ARTICLE_PATHS['A02']経由でer003_output/p1b/A02/translated_en_raw.mdを読み込む間接参照。git ls-filesで追跡対象外と確認済み。ガードなし。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.A02Add03IdenticalTests.test_add03_identical_to_p1b_raw",
+      "reason": "P1B_RAW_ARTICLE_PATHS['ADD03']経由でer003_output/p1b/ADD03/translated_en_raw.mdを読み込む間接参照。git ls-filesで追跡対象外と確認済み。ガードなし。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.SavedArtifactTests.test_a02_metadata_carries_forward_qa_notes",
+      "reason": "P1B_RAW_ARTICLE_PATHS['A02']経由でer003_output/p1b/A02/translated_en_raw.mdを読み込む間接参照。git ls-filesで追跡対象外と確認済み。ガードなし。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
+    },
+    {
+      "test_id": "er003_test_natural_source.SavedArtifactTests.test_approval_metadata_has_sha256_and_edits",
+      "reason": "P1B_RAW_ARTICLE_PATHS['A01']経由でer003_output/p1b/A01/translated_en_raw.mdを読み込む間接参照。git ls-filesで追跡対象外と確認済み。ガードなし。同クラスの他メソッド(test_p1b_raw_article_not_overwritten等)はos.path.exists+skipTestで正しくガードされているが、本メソッドにはガードがない。",
+      "exclusion_type": "LOCAL_ARTIFACT_REQUIRED",
+      "platform": "ALL",
+      "duration": "PERMANENT",
+      "follow_up_id": "AUTO-001-FU-001",
+      "release_condition": "er003_output/p1b/{A01,A02,ADD03}/translated_en_raw.mdをCI fixtureとして正式に追跡する、またはテストをクリーン環境対応へ再設計する。"
     }
   ]
 }

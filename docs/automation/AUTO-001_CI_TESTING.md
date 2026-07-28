@@ -264,3 +264,95 @@ AUTO-001-03Bでは`er002_test_editorial_v1_1b.py`の1テストを`platform: "win
 ### 17.6 AUTO-001-FU-002の状態
 
 `AUTO-001-FU-002`(Windows改行コード問題の仮説)は、Linux CIにより**事実関係としては確認・裏付けが取れた**(Linuxでは該当エントリのsha256比較が一致する)。しかし、このテストID自体は`AUTO-001-FU-001`(ローカル成果物依存)として恒久的に除外されるため、`AUTO-001-FU-002`単体の解消(Windows側の改行コード対応)はCI合否には直接影響しない。将来`editorial_brief.json`等をfixture化してこのテストIDの除外を解除する場合は、`AUTO-001-FU-002`の対応(`.gitattributes`の改行方針整備等)も合わせて必要になる。
+
+---
+
+## 18. ER-003テストのCI統合(AUTO-001-04D-R1)
+
+### 18.1 背景
+
+PR #1マージ後、ローカル`main`がER-003関連57コミットとAUTO-001基盤の両方を含む状態になった。AUTO-001-03B時点の`ci_test_manifest.json`はER-003側のテストファイルをまだ知らず、CI実行時に「未分類のtest候補ファイル34件」として検証エラーになった。AUTO-001-04D-R1は、この34件を監査・分類し、安全なテストだけをCI実行対象へ統合する作業である。
+
+### 18.2 監査の2段階構成(重要な教訓)
+
+最初の静的監査(コードを実行せず、目視・grepのみで判定する段階)は、**テストファイル自身に書かれた文字列リテラルのパス**を中心に行った。この段階では34件全てが「ファイル単位ではinclude可能」と判定され、実際に外部API・実TTS・実MFA呼び出しを含む7件のテストIDだけを個別除外候補とした。
+
+しかし、分類確定後に実際に`scripts/run_ci_tests.py`をクリーンな`.venv-ci`で実行したところ、**静的監査では見つからなかった10件の新規エラー**(`FileNotFoundError`)が発生した。原因は、テストファイル自身にはパス文字列が書かれておらず、テストが呼び出す**実装モジュール側の辞書定数**(`er003_natural_source.P1B_RAW_ARTICLE_PATHS`、`er003_b2_summary.B2_INPUT_PATHS`)を経由して、Git管理外の成果物ファイルを間接的に読み込んでいたためである。
+
+この経験から得られた教訓:
+
+* **静的監査(テストファイル内の直接参照のgrep)だけでは、テスト対象コードの安全性を確定できない。**
+* 実装モジュール側のパス定数・fixture・setUp経由の間接参照は、テストファイル自身のgrepでは見つからない。
+* そのため、分類は「静的監査」と「クリーンな`.venv-ci`での実際の実行確認」の**両方**に基づいて初めて確定する。分類後は必ず実際にCIを実行し、新たなエラーが出ないことを確認すること。
+
+### 18.3 新設した`exclusion_type`(AUTO-001-04D-R1-P2)
+
+既存の`LOCAL_ARTIFACT_REQUIRED`/`PLATFORM_NEWLINE_DIFFERENCE`/`OTHER`では、ER-003側で新たに見つかった除外理由を正確に表現できなかったため、以下2種類を追加した(`scripts/run_ci_tests.py`の`_VALID_EXCLUSION_TYPES`が唯一のsource of truth)。
+
+#### `LOCAL_TOOLCHAIN_REQUIRED`
+
+Git管理外または標準CI環境に存在しない、ローカル専用のツールチェーン・実行環境・外部コマンドへの`subprocess`呼び出しを必要とするテスト。例: `mfa_tool/`(micromamba root prefix + SudachiPy隔離環境)、MFA(Montreal Forced Aligner)本体。
+
+**解除条件**: 必要なツールチェーンを再現可能かつ安全なCI fixture/専用環境として正式導入する、またはsubprocess呼び出しをモック化した純粋関数テストへ分離する。
+
+#### `EXTERNAL_SERVICE_DEPENDENCY`
+
+実外部サービス(Azure Speech、Google Cloud TTS、AWS Polly等)への接続、外部サービス用SDK、実認証情報(`.env`内のクラウド認証情報等)、ログイン状態(gcloud ADCログイン等)のいずれかを必要とするテスト。
+
+**解除条件**: 実サービスを呼ばないモック/fake/contract testへ再設計する、または標準CIとは分離された明示的な手動実行環境で運用する。
+
+**重要**: この分類は「Secretsを与えれば標準CIで実行してよい」という意味では**ない**。標準CIは引き続き、Secrets不使用・実外部API不使用・外部ネットワーク接続禁止の方針を維持する。
+
+### 18.4 テストID単位で除外した17件
+
+ファイル全体を`exclude`にはせず、以下17件だけを`excluded_test_ids`で個別除外した(該当ファイル内の他のテストは引き続きCI実行対象)。
+
+**`LOCAL_TOOLCHAIN_REQUIRED`(2件、`mfa_tool/`依存)**
+
+* `er003_test_b1_p4d_audio.SudachiTokenizeIntegrationTests.test_real_pattern_a_full_pipeline_matches_expected_key_expressions`
+* `er003_test_b1_p5a_audio.AsrReadingNormalizeTests.test_real_sudachi_pipeline_normalizes_kanji_text`
+
+**`EXTERNAL_SERVICE_DEPENDENCY`(4件、実外部API・実認証情報依存)**
+
+* `er003_test_b1_p5a_audio.AzureTtsCallFnIntegrationTests.test_minimal_real_call_returns_pcm_and_metadata`
+* `er003_test_b1_p5a_audio.CheckEngineAvailabilityTests.test_azure_speech_available_in_this_environment`
+* `er003_test_b1_p5b_audio.CheckGoogleCloudTtsAvailabilityTests.test_real_check_reports_available_after_adc_login`
+* `er003_test_b1_p5b_audio.CheckAwsPollyAvailabilityTests.test_real_check_reports_unavailable_with_reason`
+
+**`LOCAL_ARTIFACT_REQUIRED`(11件、Git管理外のローカル成果物依存)**
+
+* `er003_test_b1_p6b_audio.Chunk03RegressionSpliceTests.test_mfa_boundary_approach_succeeds_where_rms_failed`(直接参照。`chunk03_ja.wav`未追跡)
+* `er003_test_b2_summary.P2AOfficialRecordTests.test_b2_body_text_untouched_by_p2a`(間接参照。`er003_b2_summary.B2_INPUT_PATHS`経由、`b2_version_raw.md`未追跡)
+* `er003_test_b2_summary_p2c.ApprovalMetadataTests.test_b2_body_sha256_unchanged`(同上)
+* `er003_test_natural_source.A01DiffTests`の4メソッド(間接参照。`er003_natural_source.P1B_RAW_ARTICLE_PATHS`経由、`translated_en_raw.md`未追跡)
+* `er003_test_natural_source.A02Add03IdenticalTests`の2メソッド(同上)
+* `er003_test_natural_source.SavedArtifactTests`の2メソッド(同上。同クラスの他メソッドは`skipTest`ガード済みだがこの2件のみガードなし)
+
+follow-upはいずれも既存の`AUTO-001-FU-001`(ローカル成果物依存の解消)へ追加登録した。**除外は「PASSした」ことを意味しない**(§17.4と同じ原則)。
+
+### 18.5 34ファイルの分類方針(確定)
+
+* 34ファイルは**ファイル単位では全てinclude可能**(実装コードの構造上、外部API・subprocessの呼び出しは全てテストメソッド内に限定されており、モジュールレベルでの危険な実行は無い)。
+* ただし、上記17件のテストIDには環境依存(ローカルツールチェーン・実外部サービス・ローカル成果物)があり、個別除外が必要である。
+* 最終的な分類の妥当性は、静的監査(このセクション§18.2前段)と、クリーンな`.venv-ci`での実行確認(§18.2後段)の**両方**で担保されている。「34ファイル全て無条件に安全」という単純化した理解はしないこと。
+
+### 18.6 AUTO-001-04D-R1後の期待件数(Windows)
+
+`scripts/run_ci_tests.py`の集計結果(サマリdict)は`testsRun`/`failures`/`errors`/`skipped`/`wasSuccessful`の5キーのみで構成される(コード上のsource of truth: `scripts/run_ci_tests.py`内の`summary`辞書生成箇所)。「成功件数」に相当する独立したキーは存在しない。`testsRun`はPythonの`unittest.TestResult.testsRun`そのものであり、**skipされたテストも含めて加算される**(skipは`testsRun`の内訳であり、加算対象外の別集計ではない)。
+
+| 項目 | 件数 |
+|---|---|
+| test候補ファイル | 51 |
+| include | 45 |
+| exclude(ファイル単位) | 6 |
+| 収集テストメソッド数 | 1593 |
+| テストID単位除外(常時、実行対象外) | 20(既存3件 + 今回17件) |
+| testsRun(1593件収集から20件を実行対象外とした残り) | 1573 |
+| うちskipped(testsRunの内訳、加算ではない) | 14 |
+| failures | 0 |
+| errors | 0 |
+| wasSuccessful | True |
+
+正確な言い方: **1593件収集し、20件をテストID単位で実行対象外とし、残り1573件を`testsRun`として処理した。そのうち14件は`os.path.exists`+`skipTest`ガードにより正常にskipされ、failuresは0件・errorsも0件だったため、suite全体は成功(`wasSuccessful=True`)した。** 「1573件成功」という表現は使わない(そのような集計値はrunner自身が出力していないため)。
+
+Linux側の期待件数は未検証(AUTO-001-04Bと同様、GitHub Actions実行時に別途確認が必要)。
