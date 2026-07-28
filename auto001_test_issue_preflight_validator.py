@@ -484,6 +484,85 @@ class ChangeScopeTests(unittest.TestCase):
         self.assertEqual(result.status, ValidationStatus.PASS, msg=result.errors)
 
 
+class ChangeScopeFreeformFallbackTests(unittest.TestCase):
+    """AUTO-001-05-01-R2: 固定3区分に属さない自由記述を合格材料にしないことの検証。"""
+
+    def test_empty_labels_with_unrelated_freeform_text_is_invalid(self):
+        content = (
+            "- サービス仕様変更：\n"
+            "- リポジトリ運用仕様変更：\n"
+            "- 実装方法だけの変更：\n"
+            "\n"
+            "あとで検討する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_all_none_with_unrelated_freeform_text_is_invalid(self):
+        content = (
+            "- サービス仕様変更：なし\n"
+            "- リポジトリ運用仕様変更：なし\n"
+            "- 実装方法だけの変更：なし\n"
+            "\n"
+            "補足があります"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_unknown_custom_label_with_value_is_invalid(self):
+        content = (
+            "- サービス仕様変更：\n"
+            "- リポジトリ運用仕様変更：\n"
+            "- 実装方法だけの変更：\n"
+            "- その他の変更：何かを変更する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_same_line_value_on_formal_label_is_valid(self):
+        content = (
+            "- サービス仕様変更：なし\n"
+            "- リポジトリ運用仕様変更：Issue本文の検証契約を追加する\n"
+            "- 実装方法だけの変更：validatorを追加する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertNotIn("変更区分", [e.section for e in result.errors])
+
+    def test_indented_continuation_lines_attached_to_formal_label_is_valid(self):
+        content = (
+            "- サービス仕様変更：なし\n"
+            "- リポジトリ運用仕様変更：\n"
+            "  Issue本文の検証契約を追加する。\n"
+            "  不正なIssueではClaudeを起動しない。\n"
+            "- 実装方法だけの変更：validatorを追加する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertNotIn("変更区分", [e.section for e in result.errors])
+
+    def test_non_indented_line_immediately_after_labels_not_counted(self):
+        # 空行を挟まなくても、非インデント行はどの区分の継続行にもならない
+        content = (
+            "- サービス仕様変更：\n"
+            "- リポジトリ運用仕様変更：\n"
+            "- 実装方法だけの変更：\n"
+            "あとで検討する"
+        )
+        result = validate_issue_body(build_body(content={"変更区分": content}))
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+    def test_empty_labels_with_unrelated_freeform_text_crlf_is_invalid(self):
+        content = (
+            "- サービス仕様変更：\n"
+            "- リポジトリ運用仕様変更：\n"
+            "- 実装方法だけの変更：\n"
+            "\n"
+            "あとで検討する"
+        )
+        text = build_body(content={"変更区分": content}).replace("\n", "\r\n")
+        result = validate_issue_body(text)
+        self.assertIn(("MISSING_REQUIRED_CONTENT", "変更区分"), [(e.code, e.section) for e in result.errors])
+
+
 class ChangeScopeRealTemplateSyncTests(unittest.TestCase):
     """実テンプレートの固定ラベル表記とvalidatorの定数が一致し続けることを保証する。"""
 

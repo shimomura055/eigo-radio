@@ -367,36 +367,65 @@ def _validate_section_content(sections: dict[str, list[str]]) -> list[Validation
 # (`- サービス仕様変更：`等)を含むため、汎用の_classify_contentだけでは
 # 「ラベル文字がある=実質内容あり」と誤判定してしまう(ラベルの値部分が
 # 空でも、ラベル自体の文字列に実在の文字が含まれるため)。
-# この関数は、既知の固定ラベル行については「：」より後ろの値だけを
-# 判定対象にし、ラベル文字自体は実質内容としてカウントしない。
-# 固定ラベル以外の行(自由記述の残りテキスト)は、汎用のなし/空欄判定を
-# 適用したうえで実質内容として扱う。
+#
+# AUTO-001-05-01-R2: 当初は「既知の固定ラベルに一致しない残り行」を
+# 無条件に合格材料として扱うフォールバックを持っていたが、これは
+# 3つの正式区分のいずれにも属さない自由記述(例: 本文末尾の無関係な
+# 補足、「その他の変更」のような非正式ラベル)で合格してしまう抜け道
+# になっていた。そのため、このフォールバックは完全に廃止し、値として
+# 数えるのは次の2種類だけに限定する。
+#   (a) 正式な固定ラベルと同じ行に書かれた値
+#   (b) 正式な固定ラベル行(または同じラベルへの継続行)に直後で連続し、
+#       かつ行頭に半角スペースまたはタブでインデントされている継続行
+#       (Markdownのリスト項目としての字下げによる構造的な関連付け)
+# 空行、非インデント行、未知のラベル行はいずれも継続関係を断ち切り、
+# 以後の行は次に正式ラベル行が現れるまでどの区分にも属さない
+# (安全側: 曖昧な場合は合格材料に含めない)。
 # ---------------------------------------------------------------------------
+
+_CHANGE_SCOPE_INDENT_RE = re.compile(r"^[ \t]")
+
 
 def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationError]:
     raw_lines = sections.get(CHANGE_SCOPE_HEADING)
     if raw_lines is None:
         return []  # 見出し自体が無い/重複している場合は既にMISSING_HEADING等で報告済み
 
-    label_values: list[str] = []
-    residual_lines: list[str] = []
+    label_value_lines: dict[str, list[str]] = {label: [] for label in CHANGE_SCOPE_LABELS}
+    current_label: Optional[str] = None
+
     for line in raw_lines:
+        if not line.strip():
+            current_label = None  # 空行は継続関係を断ち切る
+            continue
+
         m = _CHANGE_SCOPE_LINE_RE.match(line.strip())
         if m and m.group(1) in CHANGE_SCOPE_LABELS:
-            label_values.append(m.group(2))
-        else:
-            residual_lines.append(line)
+            label = m.group(1)
+            label_value_lines[label].append(m.group(2))
+            current_label = label
+            continue
 
-    has_specified_label = any(_classify_content([v]) is _ContentKind.CONTENT for v in label_values)
+        if current_label is not None and _CHANGE_SCOPE_INDENT_RE.match(line):
+            # インデントされた継続行だけを、直前の正式ラベルへ構造的に関連付ける
+            label_value_lines[current_label].append(line.strip())
+            continue
+
+        # 未知のラベル行・非インデントの無関係行はどの区分にも属さない
+        current_label = None
+
+    has_specified_label = any(
+        _classify_content(values) is _ContentKind.CONTENT
+        for values in label_value_lines.values()
+    )
     if has_specified_label:
-        return []
-    if _classify_content(residual_lines) is _ContentKind.CONTENT:
         return []
 
     return [ValidationError(
         "MISSING_REQUIRED_CONTENT",
         f"「{CHANGE_SCOPE_HEADING}」に実質的な値が記載された分類がありません"
-        "(各項目が空欄・HTMLコメントのみ・「なし」のいずれかのままです)。",
+        "(各項目が空欄・HTMLコメントのみ・「なし」のいずれか、または正式な区分に"
+        "構造的に関連付けられていない記述のみです)。",
         section=CHANGE_SCOPE_HEADING,
     )]
 
