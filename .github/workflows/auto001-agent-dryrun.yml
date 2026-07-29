@@ -1,0 +1,70 @@
+name: AUTO-001 Agent Planner Dry-Run
+
+# AUTO-001-05-02A: read-only dry-run。
+# GitHubのIssue/ラベル/コメント/branch/commit/PRのいずれも変更しない。
+# Claude Code / Anthropic API / OpenAI API / GitHub Appは一切起動しない。
+
+on:
+  issues:
+    types:
+      - labeled
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "dry-run対象のIssue番号(read-only)"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: auto001-agent-issue-${{ github.event.issue.number || inputs.issue_number || 'unknown' }}
+  cancel-in-progress: false
+
+jobs:
+  dry_run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Fetch target issue (workflow_dispatch only, read-only)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          case "$ISSUE_NUMBER_INPUT" in
+            ''|*[!0-9]*)
+              echo "issue_numberが正の整数ではありません: $ISSUE_NUMBER_INPUT" >&2
+              exit 1
+              ;;
+          esac
+          gh api "repos/${{ github.repository }}/issues/${ISSUE_NUMBER_INPUT}" > issue_api.json
+
+      - name: Run planner dry-run (issues:labeled)
+        if: github.event_name == 'issues'
+        run: |
+          python -m scripts.issue_agent_planner \
+            --trigger "issues:labeled" \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --machine-json-path planner_result.json \
+            --summary-path "$GITHUB_STEP_SUMMARY"
+
+      - name: Run planner dry-run (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -m scripts.issue_agent_planner \
+            --trigger "workflow_dispatch" \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --issue-json-path issue_api.json \
+            --machine-json-path planner_result.json \
+            --summary-path "$GITHUB_STEP_SUMMARY"
