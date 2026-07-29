@@ -16,6 +16,7 @@
     { "path": "er002_test_v1_2m_d1.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
     { "path": "auto001_test_ci_runner.py", "reason": "scripts/run_ci_tests.py(このrunner自身)の単体テスト。外部APIを呼ばず、tempdir上のfixtureだけで完結する。" },
     { "path": "auto001_test_issue_preflight_validator.py", "reason": "scripts/issue_preflight_validator.py(AUTO-001-05-01のIssue preflight validator)の単体テスト。GitHub API・Anthropic API・外部ネットワークを一切呼ばず、文字列fixtureだけで完結する。" },
+    { "path": "auto001_test_issue_agent_planner.py", "reason": "scripts/issue_agent_planner.py(AUTO-001-05-02Aの状態遷移planner)と.github/workflows/auto001-agent-dryrun.ymlの単体・静的テスト。GitHub API・Anthropic API・外部ネットワークを一切呼ばず、正規化済みfixtureとtempdir上のCLI呼び出しだけで完結する(read-only dry-run、GitHubへの実書き込みなし)。" },
     { "path": "er003_test_b1_article.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
     { "path": "er003_test_b1_p2.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・Web検索を行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
     { "path": "er003_test_b1_p3r_audio.py", "reason": "AUTO-001-04D-R1で静的監査済み。実API・実TTSを行わないunittest.TestCase(モック・既存tracked成果物の読込のみ)。" },
