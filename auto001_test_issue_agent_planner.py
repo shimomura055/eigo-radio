@@ -11,6 +11,8 @@ import contextlib
 import io
 import json
 import re
+import subprocess
+import sys
 import tempfile
 import unittest
 import uuid
@@ -339,6 +341,35 @@ class InputSafetyTests(unittest.TestCase):
                 self.assertIsInstance(result, PlannerResult)
                 self.assertIn(result.decision, (Decision.WOULD_BLOCK_PREFLIGHT, Decision.WOULD_START))
 
+    def test_management_id_violation_never_echoes_raw_input(self):
+        # AC-R1-07: 管理ID形式違反でも、入力された実際の値(またはそこから
+        # 抽出された候補文字列)をplanner出力へ一切含めない。
+        for snippet in MALICIOUS_SNIPPETS:
+            with self.subTest(snippet=snippet):
+                body = build_body(content={"管理ID": snippet})
+                result = plan(make_input(issue_body=body))
+                self.assertEqual(result.decision, Decision.WOULD_BLOCK_PREFLIGHT, msg=result.errors)
+                human = result.to_human_text()
+                machine_text = json.dumps(result.to_machine_dict(), ensure_ascii=False)
+                comment = result.planned_comment or ""
+                for text in (human, machine_text, comment):
+                    self.assertNotIn(snippet, text)
+                for e in result.errors:
+                    self.assertNotIn(snippet, e.get("message", ""))
+
+    def test_acceptance_criteria_line_violation_never_echoes_raw_input(self):
+        # AC-R1-07相当: 受入条件の形式違反行でも、記載された実際の行内容を
+        # planner出力へ含めない。
+        for snippet in MALICIOUS_SNIPPETS:
+            with self.subTest(snippet=snippet):
+                body = build_body(content={"受入条件": f"AC-01 {snippet}"})
+                result = plan(make_input(issue_body=body))
+                self.assertEqual(result.decision, Decision.WOULD_BLOCK_PREFLIGHT, msg=result.errors)
+                human = result.to_human_text()
+                machine_text = json.dumps(result.to_machine_dict(), ensure_ascii=False)
+                for text in (human, machine_text):
+                    self.assertNotIn(snippet, text)
+
     def test_malicious_labels_are_treated_as_opaque_strings(self):
         for snippet in MALICIOUS_SNIPPETS:
             with self.subTest(snippet=snippet):
@@ -614,6 +645,188 @@ class CliTests(unittest.TestCase):
             self.assertEqual(result_data["issue_number"], 7)
             self.assertEqual(result_data["decision"], "WOULD_START")
 
+    def test_preflight_violation_via_cli_exit_code_zero(self):
+        # AC-R1-01 / 7.1: preflight不合格でも、実際のCLI経路がexit code 0で終了し、
+        # machine JSON・human outputの両方が生成されること。
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            body = build_body(drop={"目的"})
+            event = {
+                "action": "labeled",
+                "label": {"name": AGENT_READY_LABEL},
+                "issue": {
+                    "number": 10, "state": "open",
+                    "labels": [{"name": AGENT_READY_LABEL}], "body": body,
+                },
+            }
+            event_path = self._write_json(tmpdir, "event.json", event)
+            machine_path = str(tmpdir / "result.json")
+
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                code = planner_main([
+                    "--trigger", "issues:labeled",
+                    "--event-json-path", event_path,
+                    "--machine-json-path", machine_path,
+                ])
+            self.assertEqual(code, 0)
+            stdout_text = buf.getvalue()
+            self.assertIn("WOULD_BLOCK_PREFLIGHT", stdout_text)  # human outputが生成されている
+            result_data = json.loads(Path(machine_path).read_text(encoding="utf-8"))
+            self.assertEqual(result_data["decision"], "WOULD_BLOCK_PREFLIGHT")
+            self.assertTrue(Path(machine_path).exists())  # machine JSONが生成されている
+
+    def test_internal_error_distinct_from_preflight_violation(self):
+        # AC-R1-02 / 7.2: 内部エラー(bodyが文字列以外)は、実際のCLI経路で
+        # 非ゼロ終了し、preflight不合格(exit code 0)とは区別されること。
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            event = {
+                "action": "labeled",
+                "label": {"name": AGENT_READY_LABEL},
+                "issue": {
+                    "number": 11, "state": "open",
+                    "labels": [{"name": AGENT_READY_LABEL}], "body": 12345,
+                },
+            }
+            event_path = self._write_json(tmpdir, "event.json", event)
+
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                code = planner_main([
+                    "--trigger", "issues:labeled",
+                    "--event-json-path", event_path,
+                ])
+            self.assertEqual(code, 2)
+            self.assertNotEqual(code, 0)
+
+    def test_marker_across_sections_not_leaked_via_stdout_machine_json_or_summary(self):
+        # AC-R1-04 / AC-R1-05 / AC-R1-06 / 7.4: 一意マーカーを管理ID(不正形式)・
+        # 現在の問題・受入条件・Markdown code block(参考資料)へ含めても、
+        # stdout・machine JSON・Job Summaryファイルのいずれにも出現しないこと。
+        marker = f"UNIQUE-CLI-MARKER-{uuid.uuid4().hex}"
+        body = build_body(content={
+            "管理ID": marker,
+            "現在の問題": f"問題の説明。{marker}",
+            "受入条件": f"- [ ] AC-01: {marker}を含む条件",
+            "参考資料": f"```\n{marker}\n```",
+        })
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            event = {
+                "action": "labeled",
+                "label": {"name": AGENT_READY_LABEL},
+                "issue": {
+                    "number": 55, "state": "open",
+                    "labels": [{"name": AGENT_READY_LABEL}], "body": body,
+                },
+            }
+            event_path = self._write_json(tmpdir, "event.json", event)
+            machine_path = str(tmpdir / "result.json")
+            summary_path = str(tmpdir / "summary.md")
+
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                code = planner_main([
+                    "--trigger", "issues:labeled",
+                    "--event-json-path", event_path,
+                    "--machine-json-path", machine_path,
+                    "--summary-path", summary_path,
+                ])
+            self.assertEqual(code, 0)
+            stdout_text = buf.getvalue()
+            machine_text = Path(machine_path).read_text(encoding="utf-8")
+            summary_text = Path(summary_path).read_text(encoding="utf-8")
+
+            result_data = json.loads(machine_text)
+            self.assertEqual(result_data["decision"], "WOULD_BLOCK_PREFLIGHT", msg=result_data["errors"])
+
+            self.assertNotIn(marker, stdout_text)
+            self.assertNotIn(marker, machine_text)
+            self.assertNotIn(marker, summary_text)
+
+
+# ---------------------------------------------------------------------------
+# AC-R1-03 / 7.3: workflowが実際に使うsubprocess起動形式
+# (`python -m scripts.issue_agent_planner`)そのものの検証。
+# CliTestsはmain()をプロセス内で直接呼ぶだけなので、パッケージimportや
+# `-m`起動固有の問題(scripts/__init__.py欠落等)は別プロセスでしか検知できない。
+# ---------------------------------------------------------------------------
+
+class ModuleInvocationSubprocessTests(unittest.TestCase):
+
+    def _run_module(self, args: list[str]) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [sys.executable, "-m", "scripts.issue_agent_planner", *args],
+            cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=30,
+        )
+
+    def test_normal_case_via_module_invocation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            event = {
+                "action": "labeled", "label": {"name": AGENT_READY_LABEL},
+                "issue": {
+                    "number": 21, "state": "open",
+                    "labels": [{"name": AGENT_READY_LABEL}], "body": VALID_BODY,
+                },
+            }
+            event_path = tmpdir / "event.json"
+            event_path.write_text(json.dumps(event, ensure_ascii=False), encoding="utf-8")
+            machine_path = tmpdir / "result.json"
+
+            r = self._run_module([
+                "--trigger", "issues:labeled",
+                "--event-json-path", str(event_path),
+                "--machine-json-path", str(machine_path),
+            ])
+            self.assertEqual(r.returncode, 0, msg=r.stderr)
+            data = json.loads(machine_path.read_text(encoding="utf-8"))
+            self.assertEqual(data["decision"], "WOULD_START")
+
+    def test_preflight_violation_via_module_invocation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            body = build_body(drop={"目的"})
+            event = {
+                "action": "labeled", "label": {"name": AGENT_READY_LABEL},
+                "issue": {
+                    "number": 22, "state": "open",
+                    "labels": [{"name": AGENT_READY_LABEL}], "body": body,
+                },
+            }
+            event_path = tmpdir / "event.json"
+            event_path.write_text(json.dumps(event, ensure_ascii=False), encoding="utf-8")
+            machine_path = tmpdir / "result.json"
+
+            r = self._run_module([
+                "--trigger", "issues:labeled",
+                "--event-json-path", str(event_path),
+                "--machine-json-path", str(machine_path),
+            ])
+            self.assertEqual(r.returncode, 0, msg=r.stderr)
+            data = json.loads(machine_path.read_text(encoding="utf-8"))
+            self.assertEqual(data["decision"], "WOULD_BLOCK_PREFLIGHT")
+
+    def test_malformed_json_via_module_invocation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            event_path = tmpdir / "event.json"
+            event_path.write_text("{not valid json", encoding="utf-8")
+
+            r = self._run_module([
+                "--trigger", "issues:labeled",
+                "--event-json-path", str(event_path),
+            ])
+            self.assertEqual(r.returncode, 2, msg=r.stderr)
+
+    def test_missing_input_file_via_module_invocation(self):
+        r = self._run_module([
+            "--trigger", "issues:labeled",
+            "--event-json-path", "does/not/exist/event.json",
+        ])
+        self.assertEqual(r.returncode, 2, msg=r.stderr)
+
 
 # ---------------------------------------------------------------------------
 # 16.9 workflow静的検査
@@ -709,6 +922,100 @@ class WorkflowStaticTests(unittest.TestCase):
 
     def test_calls_planner_module_read_only(self):
         self.assertIn("scripts.issue_agent_planner", self.text)
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-05-02A-R1 7.5: Issue本文・タイトルがshellへ直接展開されないことの
+# 専用回帰テスト。単純な"body"文字列の不在チェックだけに頼らず、禁止パターンを
+# 個別に明示して検査する(AC-R1-08)。
+# ---------------------------------------------------------------------------
+
+class WorkflowShellSafetyTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.text = WORKFLOW_PATH.read_text(encoding="utf-8")
+
+    def test_no_issue_body_expression(self):
+        self.assertNotIn("github.event.issue.body", self.text)
+        self.assertNotIn("${{ github.event.issue.body }}", self.text)
+
+    def test_no_issue_title_expression(self):
+        self.assertNotIn("github.event.issue.title", self.text)
+        self.assertNotIn("${{ github.event.issue.title }}", self.text)
+
+    def test_no_body_or_title_assigned_to_env_var(self):
+        for line in self.text.splitlines():
+            if re.match(r"^\s*\w+:\s*\$\{\{", line):
+                self.assertNotIn("issue.body", line)
+                self.assertNotIn("issue.title", line)
+
+    def test_no_eval(self):
+        self.assertNotIn("eval ", self.text)
+        self.assertNotIn("eval(", self.text)
+        self.assertNotIn("eval\t", self.text)
+
+    def test_no_source_of_issue_derived_file(self):
+        self.assertNotRegex(self.text, r"(?m)^\s*source\s+")
+        self.assertNotIn("source issue_api.json", self.text)
+        self.assertNotIn("source $GITHUB_EVENT_PATH", self.text)
+
+    def test_body_string_not_present_anywhere_in_workflow(self):
+        # Issue本文がshell scriptの生成材料・変数名・コメントいずれとしても
+        # 使われていないことを、"body"という文字列自体の不在で確認する。
+        self.assertNotIn("body", self.text.lower())
+
+    def test_python_reads_event_and_issue_json_as_data_files(self):
+        # $GITHUB_EVENT_PATH・issue_api.jsonは、いずれもPythonへファイルパス
+        # として渡されるだけであり、shell内で内容を展開・実行しない。
+        self.assertIn('--event-json-path "$GITHUB_EVENT_PATH"', self.text)
+        self.assertIn("--issue-json-path issue_api.json", self.text)
+        self.assertIn("> issue_api.json", self.text)  # ファイルへリダイレクトするだけ
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-05-02A-R1 7.6: `gh api`のread-only認証の静的検査(AC-R1-09, AC-R1-10)。
+# ---------------------------------------------------------------------------
+
+class GhApiReadOnlyAuthTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.text = WORKFLOW_PATH.read_text(encoding="utf-8")
+
+    def test_gh_api_lines_never_specify_write_method(self):
+        gh_api_lines = [line for line in self.text.splitlines() if "gh api" in line]
+        self.assertTrue(gh_api_lines, "gh apiの呼び出しが見つかりません")
+        for line in gh_api_lines:
+            self.assertNotRegex(line, r"-X\s*(POST|PATCH|PUT|DELETE)")
+            self.assertNotRegex(line, r"--method[= ]\s*(POST|PATCH|PUT|DELETE)")
+
+    def test_no_write_http_methods_anywhere(self):
+        for forbidden in (
+            "-X POST", "-X PATCH", "-X PUT", "-X DELETE",
+            "--method POST", "--method PATCH", "--method PUT", "--method DELETE",
+        ):
+            self.assertNotIn(forbidden, self.text)
+
+    def test_gh_token_explicitly_set_for_fetch_step(self):
+        self.assertIn("GH_TOKEN: ${{ github.token }}", self.text)
+
+    def test_token_value_never_echoed(self):
+        for line in self.text.splitlines():
+            lower = line.lower()
+            if "echo" in lower:
+                self.assertNotIn("gh_token", lower)
+                self.assertNotIn("github.token", lower)
+
+    def test_no_continue_on_error_masking_fetch_failure(self):
+        self.assertNotIn("continue-on-error", self.text)
+
+    def test_no_always_or_failure_override_on_dependent_steps(self):
+        # 取得ステップが失敗した場合、後続ステップは(デフォルト挙動どおり)
+        # 実行されないこと。always()/failure()での上書きがあると、
+        # 取得失敗時にもplannerが実行され得てしまう。
+        self.assertNotIn("always()", self.text)
+        self.assertNotIn("failure()", self.text)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,14 @@ GitHub API・Anthropic API・その他の外部通信を一切呼び出さずに
 
 このモジュール自体はGitHubへの書き込み(ラベル変更・コメント投稿・Issue編集・
 branch作成・commit・push・PR作成)を一切行わない。
+
+AUTO-001-05-02A-R1: Issue本文・タイトル・管理ID欄・受入条件欄は未信頼入力として
+扱う。preflight validator(scripts/issue_preflight_validator.py)自身のエラー
+メッセージは、契約違反の種類によっては入力値の一部を短く引用することがあるが
+(既存validatorの公開契約は変更しない)、planner側の出力(stdout・機械向け
+JSON・Job Summary・投稿予定コメント概要)には、その引用を一切含めない。
+`_sanitize_validation_errors()`が、validatorのエラーコードごとに固定された
+安全な文言へ変換したうえでのみ、結果へ含める。
 """
 
 from __future__ import annotations
@@ -29,7 +37,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from scripts.issue_preflight_validator import ValidationStatus, validate_issue_body
+from scripts.issue_preflight_validator import CANONICAL_HEADINGS, ValidationStatus, validate_issue_body
 
 # ---------------------------------------------------------------------------
 # 既知の状態ラベル(source of truth)
@@ -69,6 +77,60 @@ class Decision(str, Enum):
 
 class PlannerInputError(Exception):
     """正規化(normalize_github_event)に失敗した場合に送出する。呼び出し側はINTERNAL_ERRORとして扱う。"""
+
+
+# ---------------------------------------------------------------------------
+# preflightエラーの安全化(AUTO-001-05-02A-R1)
+#
+# validatorのエラーコードごとに固定された安全な文言だけをplanner出力へ含める。
+# Issue本文由来の値(管理ID欄の実際の値、受入条件の実際の説明文、行内容の
+# 引用等)は、validatorのエラーメッセージに含まれていてもここで完全に破棄する。
+# 未知のエラーコード(将来validator側に追加された場合)も、汎用の安全な
+# 文言へfallbackし、決して元のmessageをそのまま通過させない。
+# ---------------------------------------------------------------------------
+
+_SAFE_PREFLIGHT_ERROR_MESSAGES: dict[str, str] = {
+    "MARKER_START_MISSING": "開始マーカー(AGENT_TASK_SPEC_START)が見つかりません。",
+    "MARKER_START_DUPLICATE": "開始マーカーが複数回出現しています。1件だけにしてください。",
+    "MARKER_END_MISSING": "終了マーカー(AGENT_TASK_SPEC_END)が見つかりません。",
+    "MARKER_END_DUPLICATE": "終了マーカーが複数回出現しています。1件だけにしてください。",
+    "MARKER_ORDER_INVALID": "終了マーカーが開始マーカーより前(または同じ位置)にあります。",
+    "MISSING_HEADING": "必須の見出しが見つかりません。正式な12見出しを過不足なく記載してください。",
+    "DUPLICATE_HEADING": "見出しが重複しています。各見出しは1回だけにしてください。",
+    "HEADING_ORDER_INVALID": "見出しの順序が正式な順序と一致していません。",
+    "MISSING_REQUIRED_CONTENT": (
+        "必須セクションに実質的な内容が記載されていません"
+        "(「なし」を許容しないセクションは実質的な内容が必須です)。"
+    ),
+    "INVALID_MANAGEMENT_ID": "管理IDを、指定された形式(例: AUTO-001-05-01)で1件だけ記載してください。",
+    "AMBIGUOUS_MANAGEMENT_ID": "管理IDらしき記載が複数あり一意に判定できません。指定された形式で1件だけ記載してください。",
+    "ACCEPTANCE_CRITERIA_MISSING": "受入条件が1件も見つかりません。`- [ ] AC-01: 説明`の形式で記載してください。",
+    "ACCEPTANCE_CRITERION_FORMAT": "受入条件の記載形式が`- [ ] AC-01: 説明`と一致していません。",
+    "ACCEPTANCE_CRITERION_DESCRIPTION_MISSING": "受入条件に実質的な説明が記載されていません。",
+    "ACCEPTANCE_CRITERION_DUPLICATE_ID": "受入条件IDが重複しています。各IDは1件だけにしてください。",
+    "ACCEPTANCE_CRITERION_SEQUENCE_INVALID": "受入条件IDはAC-01から1ずつの連番にしてください。",
+    "INTERNAL_ERROR": "preflight validator自体が内部エラーを検出しました。",
+}
+
+_GENERIC_PREFLIGHT_FALLBACK_MESSAGE = "preflight契約違反が検出されました(詳細はこのdry-run出力には含まれません)。"
+
+_CANONICAL_SECTION_NAMES = frozenset(CANONICAL_HEADINGS)
+
+
+def _sanitize_validation_errors(errors) -> list[dict[str, Optional[str]]]:
+    """validatorのValidationErrorの列を、Issue本文由来の値を一切含まない
+    固定文言のdict列へ変換する。code・section(既知の見出し名の固定語彙のみ)
+    だけは元の値を保持し、messageは常にこのモジュール内の固定文言に置き換える。
+    """
+    sanitized: list[dict[str, Optional[str]]] = []
+    for e in errors:
+        section = e.section if e.section in _CANONICAL_SECTION_NAMES else None
+        sanitized.append({
+            "code": e.code,
+            "section": section,
+            "message": _SAFE_PREFLIGHT_ERROR_MESSAGES.get(e.code, _GENERIC_PREFLIGHT_FALLBACK_MESSAGE),
+        })
+    return sanitized
 
 
 # ---------------------------------------------------------------------------
@@ -177,13 +239,19 @@ def _result(
     )
 
 
-def _build_preflight_violation_comment(validation) -> str:
+def _build_preflight_violation_comment(sanitized_errors: list[dict[str, Optional[str]]]) -> str:
+    """安全化済みのエラー(_sanitize_validation_errorsの出力)だけからコメント概要を組み立てる。
+    validatorの元のto_human_text()は(Issue本文由来の引用を含み得るため)使わない。
+    """
     lines = [
         "[dry-run] preflight不合格時にIssueへ投稿予定のコメント概要です。"
         "このStageでは実際には投稿していません。",
         "",
-        validation.to_human_text(),
+        f"不合格: {len(sanitized_errors)}件の契約違反が見つかりました。",
     ]
+    for i, e in enumerate(sanitized_errors, start=1):
+        where = f"[{e['section']}] " if e.get("section") else ""
+        lines.append(f"  {i}. {where}{e['message']} (code={e['code']})")
     return "\n".join(lines)
 
 
@@ -202,7 +270,7 @@ def _plan_inner(input_: PlannerInput) -> PlannerResult:
     elif input_.trigger == TriggerType.WORKFLOW_DISPATCH.value:
         pass
     else:
-        raise ValueError(f"未知のtriggerです: {input_.trigger!r}")
+        raise ValueError("未知のtriggerです。")
 
     # 3. 状態異常(安全側で開始不可)
     if not input_.is_open:
@@ -230,11 +298,12 @@ def _plan_inner(input_: PlannerInput) -> PlannerResult:
         )
 
     if validation.status is ValidationStatus.CONTRACT_VIOLATION:
+        sanitized_errors = _sanitize_validation_errors(validation.errors)
         return _result(
             input_, Decision.WOULD_BLOCK_PREFLIGHT, applicable=True, preflight_valid=False,
             planned_remove=(AGENT_READY_LABEL,), planned_add=(AGENT_BLOCKED_LABEL,),
-            planned_comment=_build_preflight_violation_comment(validation),
-            errors=[e.to_dict() for e in validation.errors],
+            planned_comment=_build_preflight_violation_comment(sanitized_errors),
+            errors=sanitized_errors,
             reason="preflight_contract_violation",
         )
 
@@ -242,7 +311,7 @@ def _plan_inner(input_: PlannerInput) -> PlannerResult:
     # validator自体の故障。plannerとしても内部エラーとして区別する(risk4)。
     return _result(
         input_, Decision.INTERNAL_ERROR, applicable=True, preflight_valid=None,
-        errors=[e.to_dict() for e in validation.errors],
+        errors=_sanitize_validation_errors(validation.errors),
         reason="preflight_validator_internal_error",
     )
 
@@ -257,9 +326,14 @@ def plan(input_: PlannerInput) -> PlannerResult:
     try:
         return _plan_inner(input_)
     except Exception as exc:  # noqa: BLE001 - 内部エラーとして状態化するために意図的に広く捕捉する
+        # 例外のstr()/repr()は埋め込まない(入力由来の値を含み得るため)。
+        # 例外の型名だけは、planner自身のコードから決まる安全な情報である。
         return _result(
             input_, Decision.INTERNAL_ERROR, applicable=False,
-            errors=[{"code": "INTERNAL_ERROR", "message": f"planner内部で例外が発生しました: {exc!r}"}],
+            errors=[{
+                "code": "INTERNAL_ERROR",
+                "message": f"planner内部で予期しない例外が発生しました({type(exc).__name__})。",
+            }],
             reason="internal_exception",
         )
 
@@ -277,21 +351,21 @@ def _require_dict(value: Any, what: str) -> dict:
 def _extract_issue_number(issue_obj: dict) -> int:
     number = issue_obj.get("number")
     if isinstance(number, bool) or not isinstance(number, int):
-        raise PlannerInputError(f"issue.numberが整数ではありません: {number!r}")
+        raise PlannerInputError("issue.numberが整数ではありません。")
     return number
 
 
 def _extract_is_open(issue_obj: dict) -> bool:
     state = issue_obj.get("state")
     if state not in ("open", "closed"):
-        raise PlannerInputError(f"issue.stateがopen/closedのいずれでもありません: {state!r}")
+        raise PlannerInputError("issue.stateがopen/closedのいずれでもありません。")
     return state == "open"
 
 
 def _extract_current_labels(issue_obj: dict) -> tuple[str, ...]:
     labels_raw = issue_obj.get("labels")
     if not isinstance(labels_raw, list):
-        raise PlannerInputError(f"issue.labelsがリストではありません: {type(labels_raw).__name__}")
+        raise PlannerInputError("issue.labelsがリストではありません。")
     names: list[str] = []
     for entry in labels_raw:
         if isinstance(entry, dict) and isinstance(entry.get("name"), str):
@@ -299,7 +373,7 @@ def _extract_current_labels(issue_obj: dict) -> tuple[str, ...]:
         elif isinstance(entry, str):
             names.append(entry)
         else:
-            raise PlannerInputError(f"issue.labelsの要素形式が不正です: {entry!r}")
+            raise PlannerInputError("issue.labelsの要素形式が不正です。")
     return tuple(names)
 
 
@@ -335,7 +409,7 @@ def normalize_github_event(
     if trigger == TriggerType.ISSUES_LABELED.value:
         action = event_payload.get("action")
         if action != "labeled":
-            raise PlannerInputError(f"issues:labeled triggerなのにaction='{action}'です(想定外)。")
+            raise PlannerInputError("issues:labeled triggerなのに想定外のactionです。")
         label_obj = event_payload.get("label")
         if not isinstance(label_obj, dict) or not isinstance(label_obj.get("name"), str):
             raise PlannerInputError("labeledイベントにlabel.nameがありません。")
@@ -345,7 +419,7 @@ def normalize_github_event(
         added_label = None
         issue_obj = _require_dict(issue_payload, "issue_payload")
     else:
-        raise PlannerInputError(f"未知のtriggerです: {trigger!r}")
+        raise PlannerInputError("未知のtriggerです。")
 
     issue_number = _extract_issue_number(issue_obj)
     is_open = _extract_is_open(issue_obj)
@@ -405,7 +479,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         )
         result = plan(planner_input)
     except (OSError, json.JSONDecodeError, PlannerInputError) as exc:
-        result = _internal_error_result(f"planner入力の準備に失敗しました: {exc!r}")
+        # exc自体のstr()/repr()は埋め込まない(入力ファイルの内容の断片を含み得るため)。
+        result = _internal_error_result(f"planner入力の準備に失敗しました({type(exc).__name__})。")
 
     machine_dict = result.to_machine_dict()
     human_text = result.to_human_text()
