@@ -588,7 +588,7 @@ def _run_bash_script_strict(script: str, env: dict) -> subprocess.CompletedProce
     try:
         return subprocess.run(
             ["bash", "--noprofile", "--norc", "-eo", "pipefail", script_path],
-            cwd=str(REPO_ROOT), env=env, capture_output=True, text=True, timeout=30,
+            cwd=str(REPO_ROOT), env=env, capture_output=True, text=True, encoding="utf-8", timeout=30,
         )
     finally:
         Path(script_path).unlink()
