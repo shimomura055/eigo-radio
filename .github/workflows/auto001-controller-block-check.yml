@@ -1,0 +1,759 @@
+name: AUTO-001 Controller App Block Check
+
+# AUTO-001-05-03-03B: Controller GitHub App(eigo-radio-auto-controller)を使い、
+# plannerが算出した固定write planだけを実行して、preflight不合格の指定Issueを
+# agent:ready -> agent:blocked へ安全に遷移させ、契約違反を説明する管理コメント
+# (managed comment)を1件だけ作成・更新する、手動実行専用workflow。
+#
+# このworkflowはClaude Codeを起動しない。Issue本文/タイトル編集・close/reopen・
+# assignee/milestone変更・branch作成・commit・push・PR作成・repository label
+# 変更・コメント削除のいずれも行わない。`issues:labeled`イベントへはまだ
+# 接続しない(workflow_dispatch専用)。
+#
+# managed commentの本文は、plannerのdry-run専用文言(planned_comment)を一切
+# 使わず、scripts.controller_block_writer.build_canonical_block_comment()が
+# preflight validatorのサニタイズ済みerrorsだけから決定的に組み立てる。
+#
+# write APIは次の4種類だけを使う。
+#   POST   /repos/{owner}/{repo}/issues/{issue_number}/labels
+#   DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/agent%3Aready
+#   POST   /repos/{owner}/{repo}/issues/{issue_number}/comments
+#   PATCH  /repos/{owner}/{repo}/issues/comments/{comment_id}
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "ラベル遷移(agent:ready -> agent:blocked)の対象Issue番号"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: auto001-controller-block-check-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  block_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate issue_number input format
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          case "$ISSUE_NUMBER_INPUT" in
+            ''|*[!0-9]*)
+              echo "issue_numberが正の整数ではありません: $ISSUE_NUMBER_INPUT" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Verify required configuration is present
+        id: config_check
+        env:
+          CLIENT_ID_VALUE: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          PRIVATE_KEY_VALUE: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+        run: |
+          set -u
+          client_id_present=false
+          private_key_present=false
+          if [ -n "${CLIENT_ID_VALUE:-}" ]; then client_id_present=true; fi
+          if [ -n "${PRIVATE_KEY_VALUE:-}" ]; then private_key_present=true; fi
+          unset CLIENT_ID_VALUE PRIVATE_KEY_VALUE
+
+          if line=$(python -m scripts.controller_token_check check-config \
+            --client-id-present "$client_id_present" \
+            --private-key-present "$private_key_present"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::設定検査に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # 標準GITHUB_TOKEN(issues: read)による読み取り専用フェッチ。preflight
+      # 再評価・repository label前提確認・書き込み直前確認・write後の検証は、
+      # すべてこのGET専用の読み取りだけで行い、Controller App tokenは実際の
+      # write API呼び出し(POST/DELETE/PATCH)にだけ渡す。
+      - name: Fetch issue and comments, classify precondition
+        id: precondition
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_snapshot.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "state=NEEDS_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::初期Issue取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if http_code=$(curl -sS -o comments_snapshot.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "state=NEEDS_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::初期コメント取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_block_writer compute-current-errors \
+            --issue-response-file issue_snapshot.json \
+            --output-path current_errors.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+          if [ "$status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "state=NEEDS_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::preflight再評価に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_block_writer classify-precondition \
+            --issue-response-file issue_snapshot.json \
+            --comments-response-file comments_snapshot.json \
+            --current-errors-path current_errors.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          state=$(echo "$line" | grep -oP 'PRECONDITION_STATE=\K\S+' || echo "NEEDS_WRITE")
+          before_ready=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
+          before_blocked=$(echo "$line" | grep -oP 'BLOCKED_PRESENT=\K\S+' || echo "NA")
+          comment_count=$(echo "$line" | grep -oP 'MANAGED_COMMENT_COUNT=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "state=${state}" >> "$GITHUB_OUTPUT"
+          echo "before_ready=${before_ready}" >> "$GITHUB_OUTPUT"
+          echo "before_blocked=${before_blocked}" >> "$GITHUB_OUTPUT"
+          echo "comment_count=${comment_count}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::事前状態判定でwrite不可と判定されました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Run planner and check exact block plan
+        id: check_plan
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        run: |
+          set -u
+          if line=$(python -m scripts.issue_agent_planner \
+            --trigger workflow_dispatch \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --issue-json-path issue_snapshot.json \
+            --machine-json-path planner_result.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          if plan_line=$(python -m scripts.controller_block_writer check-plan \
+            --planner-json-path planner_result.json); then
+            plan_status=0
+          else
+            plan_status=$?
+          fi
+          echo "$plan_line"
+
+          if [ "$status" -ne 0 ]; then
+            reason_code="INTERNAL_ERROR"
+          else
+            reason_code=$(echo "$plan_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$reason_code" ]; then
+              reason_code="INTERNAL_ERROR"
+            fi
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ] || [ "$plan_status" -ne 0 ]; then
+            echo "::error::plannerの計画が期待するwrite planと一致しません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Verify repository has the agent:blocked label (read-only)
+        id: check_repo_label
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE' || steps.precondition.outputs.state == 'COMMENT_UPDATE_REQUIRED'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/labels/agent%3Ablocked"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::repository label確認の通信に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-repo-label-status \
+            --http-status "$http_code"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::repositoryにagent:blockedラベルが存在しません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Re-fetch issue and comments immediately before write
+        id: check_state_unchanged
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE' || steps.precondition.outputs.state == 'COMMENT_UPDATE_REQUIRED'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_pre_write.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前確認のIssue取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if http_code=$(curl -sS -o comments_pre_write.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前確認のコメント取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-state-unchanged \
+            --before-response-file issue_snapshot.json \
+            --current-response-file issue_pre_write.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+          if [ "$status" -ne 0 ]; then
+            reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$reason_code" ]; then
+              reason_code="INTERNAL_ERROR"
+            fi
+            echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+            echo "::error::planner評価時点から状態ラベルが変化しています(reason_code=${reason_code})"
+            exit 1
+          fi
+
+          if comment_line=$(python -m scripts.controller_block_writer check-comment-state \
+            --comments-response-file comments_pre_write.json \
+            --current-errors-path current_errors.json); then
+            comment_status=0
+          else
+            comment_status=$?
+          fi
+          echo "$comment_line"
+
+          comment_reason=$(echo "$comment_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$comment_reason" ]; then
+            comment_reason="INTERNAL_ERROR"
+          fi
+          comment_state=$(echo "$comment_line" | grep -oP 'MANAGED_COMMENT_STATE=\K\S+' || echo "NA")
+          comment_id=$(echo "$comment_line" | grep -oP 'COMMENT_ID=\K\S+' || echo "")
+
+          if [ "$comment_status" -ne 0 ]; then
+            echo "reason_code=${comment_reason}" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前のmanaged comment再確認に失敗しました(reason_code=${comment_reason})"
+            exit 1
+          fi
+
+          # NEEDS_WRITE経路ではコメントが無いことを、COMMENT_UPDATE_REQUIRED
+          # 経路ではprecondition時点と同一のcomment_id・STALE状態のままである
+          # ことを期待する。想定外の変化はSTATE_CHANGED_BEFORE_WRITEとする。
+          expected_state="${{ steps.precondition.outputs.state }}"
+          if [ "$expected_state" = "NEEDS_WRITE" ] && [ "$comment_state" != "NONE" ]; then
+            echo "reason_code=STATE_CHANGED_BEFORE_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前にmanaged commentの状態が変化しています(reason_code=STATE_CHANGED_BEFORE_WRITE)"
+            exit 1
+          fi
+          if [ "$expected_state" = "COMMENT_UPDATE_REQUIRED" ] && [ "$comment_state" != "STALE" ]; then
+            echo "reason_code=STATE_CHANGED_BEFORE_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前にmanaged commentの状態が変化しています(reason_code=STATE_CHANGED_BEFORE_WRITE)"
+            exit 1
+          fi
+
+          echo "reason_code=NONE" >> "$GITHUB_OUTPUT"
+          echo "comment_action=$([ "$comment_state" = "NONE" ] && echo CREATE || echo UPDATE)" >> "$GITHUB_OUTPUT"
+          echo "comment_id=${comment_id}" >> "$GITHUB_OUTPUT"
+
+      # AC対応: 対象repositoryだけに限定し、Issues: writeだけを要求する。
+      # tokenの自動失効を無効化する入力はここでは指定しない(既定で自動失効する)。
+      - name: Generate Controller App write token
+        id: app_write_token
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE' || steps.precondition.outputs.state == 'COMMENT_UPDATE_REQUIRED'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-issues: write
+
+      - name: Add agent:blocked label and verify
+        id: add_and_verify
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          APP_TOKEN: ${{ steps.app_write_token.outputs.token }}
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if add_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d '{"labels":["agent:blocked"]}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/labels"); then
+            add_curl_status=0
+          else
+            add_curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$add_curl_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::add label APIの通信に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if add_line=$(python -m scripts.controller_block_writer check-add-blocked-http-status \
+            --http-status "$add_http_code"); then
+            add_status=0
+          else
+            add_status=$?
+          fi
+          echo "$add_line"
+
+          if [ "$add_status" -ne 0 ]; then
+            add_reason=$(echo "$add_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$add_reason" ]; then
+              add_reason="WRITE_ADD_BLOCKED_FAILED"
+            fi
+            echo "reason_code=${add_reason}" >> "$GITHUB_OUTPUT"
+            echo "::error::agent:blocked追加に失敗しました(reason_code=${add_reason})"
+            exit 1
+          fi
+
+          if verify_http_code=$(curl -sS -o issue_after_add.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            verify_curl_status=0
+          else
+            verify_curl_status=$?
+          fi
+
+          if [ "$verify_curl_status" -ne 0 ] || [ "$verify_http_code" != "200" ]; then
+            echo "reason_code=WRITE_VERIFICATION_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::add後の再取得に失敗しました(reason_code=WRITE_VERIFICATION_FAILED)"
+            exit 1
+          fi
+
+          if verify_line=$(python -m scripts.controller_block_writer verify-blocked-present \
+            --response-file issue_after_add.json); then
+            verify_status=0
+          else
+            verify_status=$?
+          fi
+          echo "$verify_line"
+
+          verify_reason=$(echo "$verify_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$verify_reason" ]; then
+            verify_reason="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${verify_reason}" >> "$GITHUB_OUTPUT"
+
+          if [ "$verify_status" -ne 0 ]; then
+            echo "::error::add後の検証に失敗しました(reason_code=${verify_reason})"
+            exit 1
+          fi
+
+      - name: Create or update managed comment and verify
+        id: comment_write
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE' || steps.precondition.outputs.state == 'COMMENT_UPDATE_REQUIRED'
+        env:
+          APP_TOKEN: ${{ steps.app_write_token.outputs.token }}
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if render_line=$(python -m scripts.controller_block_writer render-comment-body \
+            --current-errors-path current_errors.json \
+            --output-path comment_body.json); then
+            render_status=0
+          else
+            render_status=$?
+          fi
+          echo "$render_line"
+          if [ "$render_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::comment本文の生成に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          comment_action="${{ steps.check_state_unchanged.outputs.comment_action }}"
+          comment_id="${{ steps.check_state_unchanged.outputs.comment_id }}"
+
+          if [ "$comment_action" = "CREATE" ]; then
+            if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+              -X POST \
+              -H "Authorization: token ${APP_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Content-Type: application/json" \
+              -d @comment_body.json \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+              write_curl_status=0
+            else
+              write_curl_status=$?
+            fi
+          else
+            if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+              -X PATCH \
+              -H "Authorization: token ${APP_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              -H "Content-Type: application/json" \
+              -d @comment_body.json \
+              "https://api.github.com/repos/${{ github.repository }}/issues/comments/${comment_id}"); then
+              write_curl_status=0
+            else
+              write_curl_status=$?
+            fi
+          fi
+          unset APP_TOKEN
+          rm -f comment_body.json
+
+          if [ "$write_curl_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::comment write APIの通信に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if [ "$comment_action" = "CREATE" ]; then
+            if status_line=$(python -m scripts.controller_block_writer check-comment-create-http-status \
+              --http-status "$write_http_code"); then
+              write_status=0
+            else
+              write_status=$?
+            fi
+          else
+            if status_line=$(python -m scripts.controller_block_writer check-comment-update-http-status \
+              --http-status "$write_http_code"); then
+              write_status=0
+            else
+              write_status=$?
+            fi
+          fi
+          echo "$status_line"
+
+          if [ "$write_status" -ne 0 ]; then
+            write_reason=$(echo "$status_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$write_reason" ]; then
+              write_reason="COMMENT_CREATE_FAILED"
+            fi
+            echo "reason_code=${write_reason}" >> "$GITHUB_OUTPUT"
+            echo "::error::managed commentの書き込みに失敗しました(reason_code=${write_reason})"
+            exit 1
+          fi
+
+          if verify_http_code=$(curl -sS -o comments_after_write.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+            verify_curl_status=0
+          else
+            verify_curl_status=$?
+          fi
+
+          if [ "$verify_curl_status" -ne 0 ] || [ "$verify_http_code" != "200" ]; then
+            echo "reason_code=COMMENT_VERIFICATION_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::comment書き込み後の再取得に失敗しました(reason_code=COMMENT_VERIFICATION_FAILED)"
+            exit 1
+          fi
+
+          if verify_line=$(python -m scripts.controller_block_writer verify-managed-comment \
+            --comments-response-file comments_after_write.json \
+            --current-errors-path current_errors.json); then
+            verify_status=0
+          else
+            verify_status=$?
+          fi
+          echo "$verify_line"
+
+          verify_reason=$(echo "$verify_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$verify_reason" ]; then
+            verify_reason="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${verify_reason}" >> "$GITHUB_OUTPUT"
+
+          if [ "$verify_status" -ne 0 ]; then
+            echo "::error::managed comment検証に失敗しました(reason_code=${verify_reason})"
+            exit 1
+          fi
+
+      - name: Remove agent:ready label
+        id: remove_label
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          APP_TOKEN: ${{ steps.app_write_token.outputs.token }}
+        run: |
+          set -u
+          if remove_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -X DELETE \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/labels/agent%3Aready"); then
+            remove_curl_status=0
+          else
+            remove_curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$remove_curl_status" -ne 0 ]; then
+            echo "reason_code=WRITE_PARTIAL" >> "$GITHUB_OUTPUT"
+            echo "::error::remove label APIの通信に失敗しました(reason_code=WRITE_PARTIAL)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-remove-http-status \
+            --http-status "$remove_http_code"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::agent:ready削除に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Evaluate final state
+        id: evaluate_final
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE' || steps.precondition.outputs.state == 'COMMENT_UPDATE_REQUIRED'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_final.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=WRITE_PARTIAL" >> "$GITHUB_OUTPUT"
+            echo "::error::最終状態取得(Issue)に失敗しました(reason_code=WRITE_PARTIAL)"
+            exit 1
+          fi
+
+          if http_code=$(curl -sS -o comments_final.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=WRITE_PARTIAL" >> "$GITHUB_OUTPUT"
+            echo "::error::最終状態取得(コメント)に失敗しました(reason_code=WRITE_PARTIAL)"
+            exit 1
+          fi
+
+          require_transition=$([ "${{ steps.precondition.outputs.state }}" = "NEEDS_WRITE" ] && echo true || echo false)
+          before_file="issue_pre_write.json"
+
+          if line=$(python -m scripts.controller_block_writer evaluate-final-state \
+            --before-response-file "$before_file" \
+            --after-response-file issue_final.json \
+            --after-comments-file comments_final.json \
+            --current-errors-path current_errors.json \
+            --require-label-transition "$require_transition"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          blocked_present=$(echo "$line" | grep -oP 'BLOCKED_PRESENT=\K\S+' || echo "NA")
+          ready_present=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
+          unrelated_preserved=$(echo "$line" | grep -oP 'UNRELATED_PRESERVED=\K\S+' || echo "NA")
+          comment_ok=$(echo "$line" | grep -oP 'COMMENT_OK=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "blocked_present=${blocked_present}" >> "$GITHUB_OUTPUT"
+          echo "ready_present=${ready_present}" >> "$GITHUB_OUTPUT"
+          echo "unrelated_preserved=${unrelated_preserved}" >> "$GITHUB_OUTPUT"
+          echo "comment_ok=${comment_ok}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::最終状態が成功条件を満たしていません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Publish job summary (fixed non-secret fields only)
+        if: always()
+        env:
+          PRECONDITION_REASON: ${{ steps.precondition.outputs.reason_code }}
+          PRECONDITION_STATE: ${{ steps.precondition.outputs.state }}
+          BEFORE_READY: ${{ steps.precondition.outputs.before_ready }}
+          BEFORE_BLOCKED: ${{ steps.precondition.outputs.before_blocked }}
+          BEFORE_COMMENT_COUNT: ${{ steps.precondition.outputs.comment_count }}
+          PLAN_REASON: ${{ steps.check_plan.outputs.reason_code }}
+          LABEL_REASON: ${{ steps.check_repo_label.outputs.reason_code }}
+          STATE_REASON: ${{ steps.check_state_unchanged.outputs.reason_code }}
+          COMMENT_ACTION: ${{ steps.check_state_unchanged.outputs.comment_action }}
+          TOKEN_OUTCOME: ${{ steps.app_write_token.outcome }}
+          ADD_REASON: ${{ steps.add_and_verify.outputs.reason_code }}
+          COMMENT_WRITE_REASON: ${{ steps.comment_write.outputs.reason_code }}
+          REMOVE_REASON: ${{ steps.remove_label.outputs.reason_code }}
+          FINAL_REASON: ${{ steps.evaluate_final.outputs.reason_code }}
+          FINAL_BLOCKED: ${{ steps.evaluate_final.outputs.blocked_present }}
+          FINAL_READY: ${{ steps.evaluate_final.outputs.ready_present }}
+          FINAL_UNRELATED: ${{ steps.evaluate_final.outputs.unrelated_preserved }}
+          FINAL_COMMENT_OK: ${{ steps.evaluate_final.outputs.comment_ok }}
+        run: |
+          token_reason="NONE"
+          if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
+            token_reason="AUTH_TOKEN_FAILED"
+          fi
+
+          write_outcome="NONE"
+          for candidate in \
+            "${PRECONDITION_REASON:-}" \
+            "${PLAN_REASON:-}" \
+            "${LABEL_REASON:-}" \
+            "${STATE_REASON:-}" \
+            "$token_reason" \
+            "${ADD_REASON:-}" \
+            "${COMMENT_WRITE_REASON:-}" \
+            "${REMOVE_REASON:-}" \
+            "${FINAL_REASON:-}"
+          do
+            if [ -n "$candidate" ] && [ "$candidate" != "NONE" ]; then
+              write_outcome="$candidate"
+              break
+            fi
+          done
+
+          rm -f issue_snapshot.json comments_snapshot.json current_errors.json \
+                issue_pre_write.json comments_pre_write.json issue_after_add.json \
+                comment_body.json comments_after_write.json \
+                planner_result.json issue_final.json comments_final.json
+
+          {
+            echo "## AUTO-001-05-03-03B Controller App block/comment write結果"
+            echo ""
+            echo "- Issue番号: ${{ inputs.issue_number }}"
+            echo "- planner判定: reason_code=${PRECONDITION_REASON:-NONE} precondition_state=${PRECONDITION_STATE:-NA} plan_reason=${PLAN_REASON:-NONE}"
+            echo "- write outcome: ${write_outcome}"
+            echo "- 書き込み前: agent:readyあり=${BEFORE_READY:-NA} agent:blockedあり=${BEFORE_BLOCKED:-NA} managed comment件数=${BEFORE_COMMENT_COUNT:-NA}"
+            echo "- comment action: ${COMMENT_ACTION:-NA}"
+            echo "- blocked add outcome: reason_code=${ADD_REASON:-NONE}"
+            echo "- comment write outcome: reason_code=${COMMENT_WRITE_REASON:-NONE}"
+            echo "- ready remove outcome: reason_code=${REMOVE_REASON:-NONE}"
+            echo "- 最終状態: agent:blockedあり=${FINAL_BLOCKED:-NA} agent:readyあり=${FINAL_READY:-NA} 無関係ラベル保持=${FINAL_UNRELATED:-NA} managed comment一致=${FINAL_COMMENT_OK:-NA}"
+            echo "- code/branch/PR変更: なし"
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"

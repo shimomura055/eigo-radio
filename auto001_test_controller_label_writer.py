@@ -692,7 +692,7 @@ def _run_bash_script_in_dir(script: str, env: dict, cwd: Path) -> subprocess.Com
     try:
         return subprocess.run(
             ["bash", "--noprofile", "--norc", "-eo", "pipefail", script_path],
-            cwd=str(cwd), env=env, capture_output=True, text=True, timeout=30,
+            cwd=str(cwd), env=env, capture_output=True, text=True, encoding="utf-8", timeout=30,
         )
     finally:
         Path(script_path).unlink()
@@ -701,6 +701,11 @@ def _run_bash_script_in_dir(script: str, env: dict, cwd: Path) -> subprocess.Com
 def _base_env(tmpdir: Path) -> dict:
     env = dict(os.environ)
     env["PYTHONPATH"] = str(REPO_ROOT)
+    # ネストしたpython呼び出し(scripts.issue_agent_planner等)のstdoutを常に
+    # UTF-8で出力させる。Windowsではロケール既定(例: cp932)でエンコードされ、
+    # 日本語を含む出力をUTF-8として復号する側(subprocess.run側)で
+    # UnicodeDecodeErrorになることがあるため。
+    env["PYTHONUTF8"] = "1"
     output_path = tmpdir / "github_output.txt"
     output_path.write_text("", encoding="utf-8")
     env["GITHUB_OUTPUT"] = str(output_path)
