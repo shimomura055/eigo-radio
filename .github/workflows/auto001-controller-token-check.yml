@@ -105,71 +105,105 @@ jobs:
           repositories: ${{ github.event.repository.name }}
           permission-issues: read
 
+      # AUTO-001-05-03-02-R1: config_checkと同型のcommand substitution+$?を
+      # `if`文で保護し、非ゼロ終了時でもGITHUB_OUTPUTへreason_codeを確実に
+      # 保存してからstepをFailureにする(AC-11関連の既知不具合修正)。
       - name: Query token repository scope (read-only)
         id: repo_scope
         env:
           APP_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
-          set -uo pipefail
+          set -u
           resp_file="$(mktemp)"
           trap 'rm -f "$resp_file"' EXIT
-          http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
+
+          if http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
             -H "Authorization: token ${APP_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/installation/repositories")
-          curl_status=$?
+            "https://api.github.com/installation/repositories"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
           unset APP_TOKEN
+
           if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
             echo "reason_code=REPOSITORY_SCOPE_QUERY_FAILED" >> "$GITHUB_OUTPUT"
             echo "::error::repositoryスコープ取得に失敗しました(reason_code=REPOSITORY_SCOPE_QUERY_FAILED)"
             exit 1
           fi
-          line=$(python -m scripts.controller_token_check repo-scope \
+
+          if line=$(python -m scripts.controller_token_check repo-scope \
             --response-file "$resp_file" \
-            --expected-full-name "${{ github.repository }}")
-          status=$?
+            --expected-full-name "${{ github.repository }}"); then
+            status=0
+          else
+            status=$?
+          fi
           echo "$line"
-          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+')
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
           repo_count=$(echo "$line" | grep -oP 'REPOSITORY_COUNT=\K\S+' || echo "NA")
           matched=$(echo "$line" | grep -oP 'MATCHED=\K\S+' || echo "NA")
           echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
           echo "repository_count=${repo_count}" >> "$GITHUB_OUTPUT"
           echo "matched=${matched}" >> "$GITHUB_OUTPUT"
+
           if [ "$status" -ne 0 ]; then
             echo "::error::repositoryスコープ検証に失敗しました(reason_code=${reason_code})"
             exit 1
           fi
 
+      # AUTO-001-05-03-02-R1: repo_scopeと同型のcommand substitution+$?を
+      # `if`文で保護し、非ゼロ終了時でもGITHUB_OUTPUTへreason_codeを確実に
+      # 保存してからstepをFailureにする(AC-11関連の既知不具合修正)。
       - name: Read target issue (read-only)
         id: issue_read
         env:
           APP_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
-          set -uo pipefail
+          set -u
           resp_file="$(mktemp)"
           trap 'rm -f "$resp_file"' EXIT
-          http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
+
+          if http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
             -H "Authorization: token ${APP_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}")
-          curl_status=$?
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
           unset APP_TOKEN
+
           if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
             echo "reason_code=ISSUE_READ_FAILED" >> "$GITHUB_OUTPUT"
             echo "::error::Issue readに失敗しました(reason_code=ISSUE_READ_FAILED)"
             exit 1
           fi
-          line=$(python -m scripts.controller_token_check issue-read \
+
+          if line=$(python -m scripts.controller_token_check issue-read \
             --response-file "$resp_file" \
-            --expected-issue-number "${{ inputs.issue_number }}")
-          status=$?
+            --expected-issue-number "${{ inputs.issue_number }}"); then
+            status=0
+          else
+            status=$?
+          fi
           echo "$line"
-          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+')
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
           issue_matched=$(echo "$line" | grep -oP 'ISSUE_NUMBER_MATCHED=\K\S+' || echo "NA")
           echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
           echo "issue_number_matched=${issue_matched}" >> "$GITHUB_OUTPUT"
+
           if [ "$status" -ne 0 ]; then
             echo "::error::Issue read検証に失敗しました(reason_code=${reason_code})"
             exit 1
@@ -182,27 +216,58 @@ jobs:
           CONFIG_OUTCOME: ${{ steps.config_check.outcome }}
           TOKEN_OUTCOME: ${{ steps.app_token.outcome }}
           SCOPE_REASON: ${{ steps.repo_scope.outputs.reason_code }}
+          SCOPE_OUTCOME: ${{ steps.repo_scope.outcome }}
           SCOPE_COUNT: ${{ steps.repo_scope.outputs.repository_count }}
           SCOPE_MATCHED: ${{ steps.repo_scope.outputs.matched }}
           ISSUE_REASON: ${{ steps.issue_read.outputs.reason_code }}
+          ISSUE_OUTCOME: ${{ steps.issue_read.outcome }}
           ISSUE_MATCHED: ${{ steps.issue_read.outputs.issue_number_matched }}
         run: |
-          # AUTO-001-05-03-02-R1: 設定検査が失敗し、その結果としてtoken生成が
-          # skippedになった場合に「reason_code=NONE」と表示されないようにする。
+          # AUTO-001-05-03-02-R1: 後続stepがskippedになった場合でも
+          # reason_code=NONEと表示しないよう、最初に失敗した段階
+          # (upstream_failure_stage)を判定し、後続stepのskip理由を
+          # 固定reason codeへ変換する。
+          upstream_failure_stage="NONE"
+          if [ "${CONFIG_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="CONFIG"
+          elif [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="TOKEN"
+          elif [ "${SCOPE_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="SCOPE"
+          fi
+
           token_reason="NONE"
           if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
             token_reason="TOKEN_GENERATION_FAILED"
-          elif [ "${TOKEN_OUTCOME:-}" = "skipped" ] && [ "${CONFIG_OUTCOME:-}" = "failure" ]; then
+          elif [ "${TOKEN_OUTCOME:-}" = "skipped" ] && [ "$upstream_failure_stage" = "CONFIG" ]; then
             token_reason="TOKEN_GENERATION_SKIPPED_CONFIG_FAILURE"
           fi
+
+          scope_reason="${SCOPE_REASON:-NONE}"
+          if [ "${SCOPE_OUTCOME:-}" = "skipped" ]; then
+            case "$upstream_failure_stage" in
+              CONFIG) scope_reason="REPOSITORY_SCOPE_SKIPPED_CONFIG_FAILURE" ;;
+              TOKEN) scope_reason="REPOSITORY_SCOPE_SKIPPED_TOKEN_FAILURE" ;;
+            esac
+          fi
+
+          issue_reason="${ISSUE_REASON:-NONE}"
+          if [ "${ISSUE_OUTCOME:-}" = "skipped" ]; then
+            case "$upstream_failure_stage" in
+              CONFIG) issue_reason="ISSUE_READ_SKIPPED_CONFIG_FAILURE" ;;
+              TOKEN) issue_reason="ISSUE_READ_SKIPPED_TOKEN_FAILURE" ;;
+              SCOPE) issue_reason="ISSUE_READ_SKIPPED_SCOPE_FAILURE" ;;
+            esac
+          fi
+
           {
             echo "## AUTO-001-05-03-02 Controller App token read-only疎通チェック"
             echo ""
             echo "- read-only疎通チェックです。GitHub上のIssue/ラベル/コメント/branch/commit/push/PRのいずれも変更していません。"
             echo "- 設定検査: reason_code=${CONFIG_REASON:-NONE}"
             echo "- token生成: outcome=${TOKEN_OUTCOME:-not_run} reason_code=${token_reason}"
-            echo "- repositoryスコープ検証: reason_code=${SCOPE_REASON:-NONE} 対象repository件数=${SCOPE_COUNT:-NA} 現在のrepositoryと一致=${SCOPE_MATCHED:-NA}"
-            echo "- Issue read検証: reason_code=${ISSUE_REASON:-NONE} issue番号一致=${ISSUE_MATCHED:-NA}"
+            echo "- repositoryスコープ検証: reason_code=${scope_reason} 対象repository件数=${SCOPE_COUNT:-NA} 現在のrepositoryと一致=${SCOPE_MATCHED:-NA}"
+            echo "- Issue read検証: reason_code=${issue_reason} issue番号一致=${ISSUE_MATCHED:-NA}"
             echo "- GitHubへの書き込み: 実施していません(read-only APIのみ使用、tokenはjob終了時に自動失効)"
             echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           } >> "$GITHUB_STEP_SUMMARY"
