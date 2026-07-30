@@ -207,19 +207,45 @@ jobs:
           echo "$plan_line"
 
           if [ "$status" -ne 0 ]; then
-            reason_code="INTERNAL_ERROR"
-          else
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::plannerの実行に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+          if [ "$plan_status" -ne 0 ]; then
             reason_code=$(echo "$plan_line" | grep -oP 'REASON_CODE=\K\S+' || true)
             if [ -z "$reason_code" ]; then
               reason_code="INTERNAL_ERROR"
             fi
-          fi
-          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
-
-          if [ "$status" -ne 0 ] || [ "$plan_status" -ne 0 ]; then
+            echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
             echo "::error::plannerの計画が期待するwrite planと一致しません(reason_code=${reason_code})"
             exit 1
           fi
+
+          # writer進行条件: validate_issue_body()を直接呼び出して得たerrors
+          # (current_errors.json、precondition stepで算出済み)と、plannerの
+          # machine_dict.errorsが、要素数・順序・code/section/message・重複を
+          # 含めて完全一致することを検証する。一致しない場合、App token生成・
+          # ラベルwrite・コメントwriteのいずれも行わない。
+          if match_line=$(python -m scripts.controller_block_writer check-errors-match \
+            --current-errors-path current_errors.json \
+            --planner-json-path planner_result.json); then
+            match_status=0
+          else
+            match_status=$?
+          fi
+          echo "$match_line"
+
+          if [ "$match_status" -ne 0 ]; then
+            match_reason=$(echo "$match_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$match_reason" ]; then
+              match_reason="PREFLIGHT_RESULT_MISMATCH"
+            fi
+            echo "reason_code=${match_reason}" >> "$GITHUB_OUTPUT"
+            echo "::error::direct validatorとplannerのerrorsが一致しません(reason_code=${match_reason})"
+            exit 1
+          fi
+
+          echo "reason_code=NONE" >> "$GITHUB_OUTPUT"
 
       - name: Verify repository has the agent:blocked label (read-only)
         id: check_repo_label

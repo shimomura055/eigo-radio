@@ -41,10 +41,11 @@ from scripts.controller_block_writer import (
     check_block_plan_matches_expected,
     check_comment_create_http_status,
     check_comment_update_http_status,
+    check_errors_match_current,
     classify_managed_comments,
     classify_precondition,
     compute_comment_fingerprint,
-    compute_current_preflight_errors,
+    compute_current_preflight_result,
     evaluate_final_state,
     extract_comment_fingerprint,
     extract_comments_from_response,
@@ -56,6 +57,21 @@ from scripts.controller_block_writer import (
 REPO_ROOT = Path(__file__).resolve().parent
 WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "auto001-controller-block-check.yml"
 TEST_ISSUE_NUMBER = "6"
+
+
+def _current_errors(body: str) -> Optional[list]:
+    """テストのfixture構築専用: direct validatorのerrorsだけを取り出す
+    (statusは通常CONTRACT_VIOLATIONを想定するfixtureでだけ使う)。"""
+    return compute_current_preflight_result(body)[1]
+
+
+def _write_current_errors_file(path: Path, issue_body: str) -> None:
+    """`compute-current-errors`が書き出す{"status":.., "errors":..}形式を、
+    実際にissue_bodyをvalidatorへかけた結果からそのまま再現して書き出す
+    (workflow本体が使うファイル形式とテストのfixtureを一致させるため)。"""
+    status, errors = compute_current_preflight_result(issue_body)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"status": status, "errors": errors}, f, ensure_ascii=False)
 
 VALID_ISSUE_BODY = build_body()
 INVALID_ISSUE_BODY = "不十分な本文"
@@ -142,13 +158,16 @@ class ExtractCommentsFromResponseTests(unittest.TestCase):
 # compute_current_preflight_errors
 # ---------------------------------------------------------------------------
 
-class ComputeCurrentPreflightErrorsTests(unittest.TestCase):
+class ComputeCurrentPreflightResultTests(unittest.TestCase):
 
-    def test_valid_body_returns_none(self):
-        self.assertIsNone(compute_current_preflight_errors(VALID_ISSUE_BODY))
+    def test_valid_body_is_pass_with_no_errors(self):
+        status, errors = compute_current_preflight_result(VALID_ISSUE_BODY)
+        self.assertEqual(status, "PASS")
+        self.assertIsNone(errors)
 
-    def test_invalid_body_returns_sanitized_errors(self):
-        errors = compute_current_preflight_errors(INVALID_ISSUE_BODY)
+    def test_invalid_body_is_contract_violation_with_sanitized_errors(self):
+        status, errors = compute_current_preflight_result(INVALID_ISSUE_BODY)
+        self.assertEqual(status, "CONTRACT_VIOLATION")
         self.assertIsNotNone(errors)
         self.assertGreaterEqual(len(errors), 1)
         for e in errors:
@@ -157,7 +176,7 @@ class ComputeCurrentPreflightErrorsTests(unittest.TestCase):
     def test_raw_input_never_appears_in_sanitized_message(self):
         marker = "UNIQUE-RAW-MARKER-XYZ"
         body = build_body(content={"管理ID": marker})
-        errors = compute_current_preflight_errors(body)
+        _status, errors = compute_current_preflight_result(body)
         rendered = json.dumps(errors, ensure_ascii=False)
         self.assertNotIn(marker, rendered)
 
@@ -271,14 +290,14 @@ class ClassifyPreconditionTests(unittest.TestCase):
         self.body = build_canonical_block_comment(SAMPLE_ERRORS)
 
     def test_ready_only_needs_write(self):
-        outcome = classify_precondition(["agent:ready"], [], None)
+        outcome = classify_precondition(["agent:ready"], [], "CONTRACT_VIOLATION", None)
         self.assertTrue(outcome.ok)
         self.assertIsNone(outcome.reason_code)
         self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
 
     def test_blocked_with_matching_comment_is_noop(self):
         comments = [_comment(1, self.body)]
-        outcome = classify_precondition(["agent:blocked"], comments, SAMPLE_ERRORS)
+        outcome = classify_precondition(["agent:blocked"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
         self.assertTrue(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.NOOP_ALREADY_APPLIED)
 
@@ -286,45 +305,64 @@ class ClassifyPreconditionTests(unittest.TestCase):
         fp = compute_comment_fingerprint(SAMPLE_ERRORS)
         stale_body = self.body.replace(fp, "0" * 64)
         comments = [_comment(1, stale_body)]
-        outcome = classify_precondition(["agent:blocked"], comments, SAMPLE_ERRORS)
+        outcome = classify_precondition(["agent:blocked"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
         self.assertTrue(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.COMMENT_UPDATE_REQUIRED)
         self.assertEqual(outcome.detail["COMMENT_ID"], 1)
 
     def test_ready_and_blocked_is_partial_state(self):
-        outcome = classify_precondition(["agent:ready", "agent:blocked"], [], SAMPLE_ERRORS)
+        outcome = classify_precondition(
+            ["agent:ready", "agent:blocked"], [], "CONTRACT_VIOLATION", SAMPLE_ERRORS
+        )
         self.assertFalse(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.WRITE_PARTIAL_STATE_DETECTED)
 
     def test_blocked_with_no_comment_is_partial_state(self):
-        outcome = classify_precondition(["agent:blocked"], [], SAMPLE_ERRORS)
+        outcome = classify_precondition(["agent:blocked"], [], "CONTRACT_VIOLATION", SAMPLE_ERRORS)
         self.assertFalse(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.WRITE_PARTIAL_STATE_DETECTED)
 
     def test_blocked_with_conflicting_other_label_needs_write(self):
-        outcome = classify_precondition(["agent:blocked", "agent:review"], [], SAMPLE_ERRORS)
+        outcome = classify_precondition(
+            ["agent:blocked", "agent:review"], [], "CONTRACT_VIOLATION", SAMPLE_ERRORS
+        )
         self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
 
-    def test_blocked_only_current_errors_none_is_internal_error(self):
-        # 現在の本文が(何らかの理由で)preflightを通過している、または
+    def test_blocked_only_internal_error_status_is_internal_error(self):
         # validator自体が内部エラーの場合、fingerprint比較ができないため
-        # 安全に停止する。
-        outcome = classify_precondition(["agent:blocked"], [], None)
+        # 安全に停止する(PREFLIGHT_NOW_PASSESとは区別する)。
+        outcome = classify_precondition(["agent:blocked"], [], "INTERNAL_ERROR", None)
         self.assertFalse(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.INTERNAL_ERROR)
 
+    def test_blocked_only_pass_status_is_preflight_now_passes(self):
+        # Issue本文が修正済みでerrors 0件(PASS)の場合、03Bは復帰処理を担当
+        # しないため、token生成・write一切なしで安全に終了する。
+        outcome = classify_precondition(["agent:blocked"], [], "PASS", None)
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_NOW_PASSES)
+        self.assertEqual(outcome.detail["PRECONDITION_STATE"], "PREFLIGHT_NOW_PASSES")
+
+    def test_preflight_now_passes_even_with_existing_matching_comment(self):
+        # 本文修正後にblocked/commentが残っていても、03Bはそれらを自動削除
+        # しない(このテストはclassify_precondition自体がPASSを最優先で
+        # 判定し、comment状態を一切参照しないことを確認する)。
+        comments = [_comment(1, self.body)]
+        outcome = classify_precondition(["agent:blocked"], comments, "PASS", None)
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_NOW_PASSES)
+
     def test_duplicate_comment_propagates_even_for_blocked_state(self):
         comments = [_comment(1, self.body), _comment(2, self.body)]
-        outcome = classify_precondition(["agent:blocked"], comments, SAMPLE_ERRORS)
+        outcome = classify_precondition(["agent:blocked"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
         self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_DUPLICATE)
 
     def test_ownership_mismatch_propagates(self):
         comments = [_comment(1, self.body, "spoofer")]
-        outcome = classify_precondition(["agent:blocked"], comments, SAMPLE_ERRORS)
+        outcome = classify_precondition(["agent:blocked"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
         self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_OWNERSHIP_MISMATCH)
 
     def test_before_booleans_always_present(self):
-        outcome = classify_precondition(["agent:ready"], [], None)
+        outcome = classify_precondition(["agent:ready"], [], "CONTRACT_VIOLATION", None)
         self.assertEqual(outcome.detail["READY_PRESENT"], "true")
         self.assertEqual(outcome.detail["BLOCKED_PRESENT"], "false")
 
@@ -392,6 +430,66 @@ class CheckBlockPlanMatchesExpectedTests(unittest.TestCase):
 
     def test_not_a_dict_is_response_validation_failed(self):
         outcome = check_block_plan_matches_expected(["not", "a", "dict"])
+        self.assertEqual(outcome.reason_code, ReasonCode.RESPONSE_VALIDATION_FAILED)
+
+
+# ---------------------------------------------------------------------------
+# check_errors_match_current: NEEDS_WRITE経路のwriter進行条件
+# ---------------------------------------------------------------------------
+
+class CheckErrorsMatchCurrentTests(unittest.TestCase):
+
+    def test_exact_match_passes(self):
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        planner_result = _planner_dict(errors=list(SAMPLE_ERRORS))
+        outcome = check_errors_match_current(current_result, planner_result)
+        self.assertTrue(outcome.ok)
+
+    def test_element_count_mismatch_rejected(self):
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        planner_result = _planner_dict(errors=[SAMPLE_ERRORS[0]])
+        outcome = check_errors_match_current(current_result, planner_result)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_order_mismatch_rejected(self):
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        planner_result = _planner_dict(errors=list(reversed(SAMPLE_ERRORS)))
+        outcome = check_errors_match_current(current_result, planner_result)
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_code_mismatch_rejected(self):
+        altered = [dict(SAMPLE_ERRORS[0], code="DIFFERENT_CODE"), SAMPLE_ERRORS[1]]
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        outcome = check_errors_match_current(current_result, _planner_dict(errors=altered))
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_section_mismatch_rejected(self):
+        altered = [SAMPLE_ERRORS[0], dict(SAMPLE_ERRORS[1], section="別の見出し")]
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        outcome = check_errors_match_current(current_result, _planner_dict(errors=altered))
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_message_mismatch_rejected(self):
+        altered = [SAMPLE_ERRORS[0], dict(SAMPLE_ERRORS[1], message="異なるメッセージ。")]
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        outcome = check_errors_match_current(current_result, _planner_dict(errors=altered))
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_duplicate_entry_mismatch_rejected(self):
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        duplicated = [SAMPLE_ERRORS[0], SAMPLE_ERRORS[0]]
+        outcome = check_errors_match_current(current_result, _planner_dict(errors=duplicated))
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_current_status_not_contract_violation_rejected(self):
+        current_result = {"status": "PASS", "errors": None}
+        outcome = check_errors_match_current(current_result, _planner_dict())
+        self.assertEqual(outcome.reason_code, ReasonCode.PREFLIGHT_RESULT_MISMATCH)
+
+    def test_planner_errors_not_a_list_is_response_validation_failed(self):
+        current_result = {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+        outcome = check_errors_match_current(current_result, _planner_dict(errors="not-a-list"))
         self.assertEqual(outcome.reason_code, ReasonCode.RESPONSE_VALIDATION_FAILED)
 
 
@@ -570,12 +668,13 @@ class CliTests(unittest.TestCase):
                 "--output-path", str(out_path),
             ])
             self.assertEqual(code, 0)
-            self.assertIn("HAS_ERRORS=true", out)
+            self.assertIn("PREFLIGHT_STATUS=CONTRACT_VIOLATION", out)
             data = json.loads(out_path.read_text(encoding="utf-8"))
-            self.assertIsInstance(data, list)
-            self.assertGreaterEqual(len(data), 1)
+            self.assertEqual(data["status"], "CONTRACT_VIOLATION")
+            self.assertIsInstance(data["errors"], list)
+            self.assertGreaterEqual(len(data["errors"]), 1)
 
-    def test_compute_current_errors_valid_body_writes_null(self):
+    def test_compute_current_errors_valid_body_writes_pass_status(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmpdir = Path(tmp)
             issue_path = _write_json(tmpdir, "issue.json", _issue_response(["agent:ready"], body=VALID_ISSUE_BODY))
@@ -585,21 +684,22 @@ class CliTests(unittest.TestCase):
                 "--output-path", str(out_path),
             ])
             self.assertEqual(code, 0)
-            self.assertIn("HAS_ERRORS=false", out)
-            self.assertIsNone(json.loads(out_path.read_text(encoding="utf-8")))
+            self.assertIn("PREFLIGHT_STATUS=PASS", out)
+            data = json.loads(out_path.read_text(encoding="utf-8"))
+            self.assertEqual(data["status"], "PASS")
+            self.assertIsNone(data["errors"])
 
     def test_classify_precondition_cli(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmpdir = Path(tmp)
             issue_path = _write_json(tmpdir, "issue.json", _issue_response(["agent:ready"]))
             comments_path = _write_json(tmpdir, "comments.json", [])
-            errors_path = tmpdir / "errors.json"
-            errors_path.write_text("null", encoding="utf-8")
+            errors_path = _write_json(tmpdir, "errors.json", {"status": "PASS", "errors": None})
             code, out = self._run_cli([
                 "classify-precondition",
                 "--issue-response-file", issue_path,
                 "--comments-response-file", comments_path,
-                "--current-errors-path", str(errors_path),
+                "--current-errors-path", errors_path,
             ])
             self.assertEqual(code, 0)
             self.assertIn("PRECONDITION_STATE=NEEDS_WRITE", out)
@@ -610,10 +710,57 @@ class CliTests(unittest.TestCase):
             code, out = self._run_cli(["check-plan", "--planner-json-path", path])
             self.assertEqual(code, 0)
 
+    def test_check_errors_match_cli_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            current_path = _write_json(
+                tmpdir, "current.json", {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+            )
+            planner_path = _write_json(tmpdir, "planner.json", _planner_dict(errors=list(SAMPLE_ERRORS)))
+            code, out = self._run_cli([
+                "check-errors-match",
+                "--current-errors-path", current_path,
+                "--planner-json-path", planner_path,
+            ])
+            self.assertEqual(code, 0)
+            self.assertIn("REASON_CODE=NONE", out)
+
+    def test_check_errors_match_cli_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            current_path = _write_json(
+                tmpdir, "current.json", {"status": "CONTRACT_VIOLATION", "errors": list(SAMPLE_ERRORS)}
+            )
+            planner_path = _write_json(tmpdir, "planner.json", _planner_dict(errors=[SAMPLE_ERRORS[0]]))
+            code, out = self._run_cli([
+                "check-errors-match",
+                "--current-errors-path", current_path,
+                "--planner-json-path", planner_path,
+            ])
+            self.assertEqual(code, 1)
+            self.assertIn("REASON_CODE=PREFLIGHT_RESULT_MISMATCH", out)
+
+    def test_classify_precondition_preflight_now_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            issue_path = _write_json(tmpdir, "issue.json", _issue_response(["agent:blocked"]))
+            comments_path = _write_json(tmpdir, "comments.json", [])
+            errors_path = _write_json(tmpdir, "errors.json", {"status": "PASS", "errors": None})
+            code, out = self._run_cli([
+                "classify-precondition",
+                "--issue-response-file", issue_path,
+                "--comments-response-file", comments_path,
+                "--current-errors-path", errors_path,
+            ])
+            self.assertEqual(code, 0)
+            self.assertIn("REASON_CODE=PREFLIGHT_NOW_PASSES", out)
+
     def test_render_comment_body_never_prints_body(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmpdir = Path(tmp)
-            errors_path = _write_json(tmpdir, "errors.json", SAMPLE_ERRORS)
+            errors_path = _write_json(
+                tmpdir, "errors.json", {"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS}
+            )
             out_path = tmpdir / "body.json"
             code, out = self._run_cli([
                 "render-comment-body", "--current-errors-path", errors_path,
@@ -633,13 +780,12 @@ class CliTests(unittest.TestCase):
             raw["body"] = "SECRET-BODY-MARKER"
             issue_path = _write_json(tmpdir, "issue.json", raw)
             comments_path = _write_json(tmpdir, "comments.json", [])
-            errors_path = tmpdir / "errors.json"
-            errors_path.write_text("null", encoding="utf-8")
+            errors_path = _write_json(tmpdir, "errors.json", {"status": "PASS", "errors": None})
             code, out = self._run_cli([
                 "classify-precondition",
                 "--issue-response-file", issue_path,
                 "--comments-response-file", comments_path,
-                "--current-errors-path", str(errors_path),
+                "--current-errors-path", errors_path,
             ])
             self.assertNotIn("SECRET-TITLE-MARKER", out)
             self.assertNotIn("SECRET-BODY-MARKER", out)
@@ -774,6 +920,15 @@ class WorkflowStaticTests(unittest.TestCase):
 
     def test_calls_controller_block_writer_module(self):
         self.assertIn("scripts.controller_block_writer", self.text)
+
+    def test_calls_errors_match_gate_before_token_generation(self):
+        # writer進行条件: direct validator errorsとplanner machine_dict.errors
+        # の完全一致判定が、check_planステップ(app_write_token生成より前)で
+        # 呼ばれていること。
+        self.assertIn("scripts.controller_block_writer check-errors-match", self.text)
+        errors_match_pos = self.text.index("scripts.controller_block_writer check-errors-match")
+        token_gen_pos = self.text.index("Generate Controller App write token")
+        self.assertLess(errors_match_pos, token_gen_pos)
 
     def test_reuses_existing_planner_module(self):
         self.assertIn("scripts.issue_agent_planner", self.text)
@@ -949,7 +1104,7 @@ class PreconditionSubprocessTests(unittest.TestCase):
         # commentのfingerprintは、実際にINVALID_ISSUE_BODYをvalidatorへ
         # かけたときのerrors(SAMPLE_ERRORSという無関係な固定値ではない)から
         # 計算しなければ、workflow側が再計算するfingerprintと一致しない。
-        errors = compute_current_preflight_errors(INVALID_ISSUE_BODY)
+        errors = _current_errors(INVALID_ISSUE_BODY)
         body_text = build_canonical_block_comment(errors)
         issue_body = json.dumps(_issue_response(["agent:blocked"], body=INVALID_ISSUE_BODY))
         comments_body = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
@@ -968,6 +1123,19 @@ class PreconditionSubprocessTests(unittest.TestCase):
         )
         self.assertNotEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(outputs.get("reason_code"), "WRITE_PARTIAL_STATE_DETECTED")
+
+    def test_blocked_with_body_now_passing_is_preflight_now_passes(self):
+        # Issue本文が修正されerrorsが0件になった場合。token生成なし・
+        # blocked追加なし・コメント作成/更新なし・ready削除なしで、
+        # 既存のblocked/commentも自動削除しない(03Bは復帰処理を担当しない)。
+        issue_body = json.dumps(_issue_response(["agent:blocked"], body=VALID_ISSUE_BODY))
+        result, outputs = self._run(
+            curl_exit_code=0, curl_http_code="200",
+            issue_body_curl_body=issue_body, comments_curl_body="[]",
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "PREFLIGHT_NOW_PASSES")
+        self.assertEqual(outputs.get("state"), "PREFLIGHT_NOW_PASSES")
 
     def test_api_failure_is_internal_error(self):
         result, outputs = self._run(
@@ -1019,7 +1187,7 @@ class CheckPlanSubprocessTests(unittest.TestCase):
     def setUp(self):
         self.script = _extract_block_step("check_plan")
 
-    def _run(self, *, issue_labels: list[str], issue_body: str):
+    def _run(self, *, issue_labels: list[str], issue_body: str, current_errors_override: dict | None = None):
         with tempfile.TemporaryDirectory() as tmp:
             tmpdir = Path(tmp)
             env = _base_env(tmpdir)
@@ -1030,6 +1198,14 @@ class CheckPlanSubprocessTests(unittest.TestCase):
                 json.dumps(_issue_response(issue_labels, body=issue_body), ensure_ascii=False),
                 encoding="utf-8",
             )
+            if current_errors_override is not None:
+                with open(tmpdir / "current_errors.json", "w", encoding="utf-8") as f:
+                    json.dump(current_errors_override, f, ensure_ascii=False)
+            else:
+                # precondition stepが実際に書き出すのと同じ内容(同一bodyを
+                # direct validatorへかけた結果)を再現する。通常はplannerが
+                # 独自に再計算するerrorsと一致する。
+                _write_current_errors_file(tmpdir / "current_errors.json", issue_body)
             result = _run_bash_script_in_dir(self.script, env, tmpdir)
             outputs = _parse_github_output(tmpdir / "github_output.txt")
             return result, outputs
@@ -1038,6 +1214,21 @@ class CheckPlanSubprocessTests(unittest.TestCase):
         result, outputs = self._run(issue_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY)
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(outputs.get("reason_code"), "NONE")
+
+    def test_errors_mismatch_with_direct_validator_is_rejected(self):
+        # direct validator(current_errors.json)とplannerが独自に再計算する
+        # errorsが一致しない場合、writer進行条件を満たさずPREFLIGHT_RESULT_
+        # MISMATCHとなり、token生成・write系stepへ進まない。
+        mismatched = {
+            "status": "CONTRACT_VIOLATION",
+            "errors": [{"code": "FAKE_MISMATCHED_CODE", "section": None, "message": "テスト用の不一致データ。"}],
+        }
+        result, outputs = self._run(
+            issue_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            current_errors_override=mismatched,
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "PREFLIGHT_RESULT_MISMATCH")
 
     def test_ready_with_valid_passing_body_is_rejected(self):
         # preflight合格(WOULD_START)はWOULD_BLOCK_PREFLIGHTではないため拒否する。
@@ -1098,9 +1289,7 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
                 json.dumps(_issue_response(before_labels, body=issue_body), ensure_ascii=False),
                 encoding="utf-8",
             )
-            errors = compute_current_preflight_errors(issue_body)
-            with open(tmpdir / "current_errors.json", "w", encoding="utf-8") as f:
-                json.dump(errors, f, ensure_ascii=False)
+            _write_current_errors_file(tmpdir / "current_errors.json", issue_body)
             script = _extract_block_step(
                 "check_state_unchanged",
                 {"${{ steps.precondition.outputs.state }}": precondition_state},
@@ -1133,7 +1322,7 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
         self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
 
     def test_needs_write_unexpected_comment_appearing_fails(self):
-        body_text = build_canonical_block_comment(compute_current_preflight_errors(INVALID_ISSUE_BODY))
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
         comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
         result, outputs = self._run(
             before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
@@ -1145,7 +1334,7 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
         self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
 
     def test_comment_update_required_still_stale_passes_with_update_action(self):
-        errors = compute_current_preflight_errors(INVALID_ISSUE_BODY)
+        errors = _current_errors(INVALID_ISSUE_BODY)
         fp = compute_comment_fingerprint(errors)
         stale_body = build_canonical_block_comment(errors).replace(fp, "0" * 64)
         comments = json.dumps([{"id": 42, "body": stale_body, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
@@ -1225,7 +1414,7 @@ class CommentWriteSubprocessTests(unittest.TestCase):
             env["APP_TOKEN"] = "dummy-app-write-token"
             env["GH_READ_TOKEN"] = "dummy-read-token"
             with open(tmpdir / "current_errors.json", "w", encoding="utf-8") as f:
-                json.dump(SAMPLE_ERRORS, f, ensure_ascii=False)
+                json.dump({"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS}, f, ensure_ascii=False)
             script = _extract_block_step("comment_write", {
                 "${{ steps.check_state_unchanged.outputs.comment_action }}": comment_action,
                 "${{ steps.check_state_unchanged.outputs.comment_id }}": comment_id,
@@ -1324,9 +1513,7 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
                 json.dumps(_issue_response(before_labels, body=before_body), ensure_ascii=False),
                 encoding="utf-8",
             )
-            errors = compute_current_preflight_errors(before_body)
-            with open(tmpdir / "current_errors.json", "w", encoding="utf-8") as f:
-                json.dump(errors, f, ensure_ascii=False)
+            _write_current_errors_file(tmpdir / "current_errors.json", before_body)
             script = _extract_block_step(
                 "evaluate_final",
                 {"${{ steps.precondition.outputs.state }}": precondition_state},
@@ -1339,7 +1526,7 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
             return result, outputs
 
     def test_needs_write_success(self):
-        body_text = build_canonical_block_comment(compute_current_preflight_errors(INVALID_ISSUE_BODY))
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
         comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
         result, outputs = self._run(
             before_labels=["agent:ready"], before_body=INVALID_ISSUE_BODY,
@@ -1351,7 +1538,7 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
         self.assertEqual(outputs.get("reason_code"), "WRITE_SUCCEEDED")
 
     def test_needs_write_partial_when_ready_remains(self):
-        body_text = build_canonical_block_comment(compute_current_preflight_errors(INVALID_ISSUE_BODY))
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
         comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
         result, outputs = self._run(
             before_labels=["agent:ready"], before_body=INVALID_ISSUE_BODY,
@@ -1363,7 +1550,7 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
         self.assertEqual(outputs.get("reason_code"), "WRITE_PARTIAL")
 
     def test_comment_update_required_success(self):
-        body_text = build_canonical_block_comment(compute_current_preflight_errors(INVALID_ISSUE_BODY))
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
         comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
         result, outputs = self._run(
             before_labels=["agent:blocked"], before_body=INVALID_ISSUE_BODY,

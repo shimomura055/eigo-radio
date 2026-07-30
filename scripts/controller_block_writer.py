@@ -54,7 +54,7 @@ __all__ = [
     "CheckOutcome",
     "MANAGED_COMMENT_MARKER",
     "MANAGED_COMMENT_AUTHOR_LOGIN",
-    "compute_current_preflight_errors",
+    "compute_current_preflight_result",
     "compute_comment_fingerprint",
     "build_canonical_block_comment",
     "extract_comment_fingerprint",
@@ -62,6 +62,7 @@ __all__ = [
     "classify_managed_comments",
     "classify_precondition",
     "check_block_plan_matches_expected",
+    "check_errors_match_current",
     "check_add_blocked_http_status",
     "verify_blocked_present_after_add",
     "check_comment_create_http_status",
@@ -94,6 +95,8 @@ class ReasonCode(str, Enum):
     MANAGED_COMMENT_OWNERSHIP_MISMATCH = "MANAGED_COMMENT_OWNERSHIP_MISMATCH"
     WRITE_SUCCEEDED = "WRITE_SUCCEEDED"
     COMMENT_UPDATED = "COMMENT_UPDATED"
+    PREFLIGHT_RESULT_MISMATCH = "PREFLIGHT_RESULT_MISMATCH"
+    PREFLIGHT_NOW_PASSES = "PREFLIGHT_NOW_PASSES"
     RESPONSE_VALIDATION_FAILED = "RESPONSE_VALIDATION_FAILED"
     INTERNAL_ERROR = "INTERNAL_ERROR"
 
@@ -142,15 +145,24 @@ _REQUIRED_ERROR_KEYS = frozenset({"code", "section", "message"})
 # Issueに対して独立に再評価するためにvalidatorを直接呼び出す)
 # ---------------------------------------------------------------------------
 
-def compute_current_preflight_errors(issue_body: str) -> Optional[list[dict]]:
-    """現在のIssue本文をpreflight validatorへ直接かけ、サニタイズ済みerrorsを
-    返す。contract violation以外(合格・internal error)の場合はNoneを返す
-    (呼び出し側が安全に停止する)。
+def compute_current_preflight_result(issue_body: str) -> tuple[str, Optional[list[dict]]]:
+    """現在のIssue本文をpreflight validatorへ直接かけ、(status, errors)を返す。
+
+    status is one of "CONTRACT_VIOLATION" / "PASS" / "INTERNAL_ERROR"。
+    errorsはstatus=="CONTRACT_VIOLATION"の場合だけサニタイズ済みリスト、
+    それ以外はNone。
+
+    "PASS"(errors 0件、本文が修正済み)と"INTERNAL_ERROR"(validator自体の
+    故障)を区別することで、blocked状態のIssueに対して
+    `PREFLIGHT_NOW_PASSES`(復帰は03Bの対象外、書き込みなしで安全終了)と
+    真の内部エラーとを取り違えないようにする。
     """
     result = validate_issue_body(issue_body)
-    if result.status is not ValidationStatus.CONTRACT_VIOLATION:
-        return None
-    return _sanitize_validation_errors(result.errors)
+    if result.status is ValidationStatus.CONTRACT_VIOLATION:
+        return "CONTRACT_VIOLATION", _sanitize_validation_errors(result.errors)
+    if result.status is ValidationStatus.PASS:
+        return "PASS", None
+    return "INTERNAL_ERROR", None
 
 
 def _is_valid_sanitized_error(entry: Any) -> bool:
@@ -282,18 +294,26 @@ def classify_managed_comments(comments: Sequence[dict], expected_fingerprint: st
 def classify_precondition(
     current_labels: Sequence[str],
     comments: Sequence[dict],
+    current_status: str,
     current_errors: Optional[list[dict]],
 ) -> CheckOutcome:
-    """`current_errors`は`compute_current_preflight_errors()`の結果。
+    """`current_status`/`current_errors`は`compute_current_preflight_result()`
+    の結果。
 
     * agent:ready と agent:blocked が両方存在する -> PARTIAL_STATE_DETECTED
     * agent:blocked が存在し、agent:ready が存在せず、他の競合ラベルも無い場合:
+        - current_status=="PASS"(Issue本文が修正済みでerrors 0件)
+          -> PREFLIGHT_NOW_PASSES(復帰は03Bの対象外。token生成・write一切
+          なしで安全に終了する。既存のblockedラベル・commentは削除しない)
+        - current_status!="CONTRACT_VIOLATION"(validator自体の内部エラー等)
+          -> INTERNAL_ERROR
         - managed commentが0件 -> 想定外の部分状態としてPARTIAL_STATE_DETECTED
         - managed commentが1件かつcanonical一致 -> NOOP_ALREADY_APPLIED
         - managed commentが1件かつ不一致(古い) -> COMMENT_UPDATE_REQUIRED
         - managed commentが2件以上/author不一致 -> それぞれの固定reason code
     * それ以外(agent:readyのみを含む) -> NEEDS_WRITE
-      (後段のplanner厳密一致判定で、書き込み対象外なら安全に拒否される)
+      (後段のplanner厳密一致判定・errors完全一致判定で、書き込み対象外なら
+      安全に拒否される)
     """
     labels = set(current_labels)
     ready = AGENT_READY_LABEL in labels
@@ -312,8 +332,15 @@ def classify_precondition(
         )
 
     if blocked and not ready and not other_conflicts:
-        if current_errors is None:
-            return CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {**base_detail, "PRECONDITION_STATE": "NA"})
+        if current_status == "PASS":
+            return CheckOutcome(
+                True, ReasonCode.PREFLIGHT_NOW_PASSES,
+                {**base_detail, "PRECONDITION_STATE": "PREFLIGHT_NOW_PASSES"},
+            )
+        if current_status != "CONTRACT_VIOLATION" or current_errors is None:
+            return CheckOutcome(
+                False, ReasonCode.INTERNAL_ERROR, {**base_detail, "PRECONDITION_STATE": "NA"}
+            )
 
         expected_fp = compute_comment_fingerprint(current_errors)
         comment_outcome = classify_managed_comments(comments, expected_fp)
@@ -391,6 +418,34 @@ def check_block_plan_matches_expected(planner_result: Any) -> CheckOutcome:
     if matches:
         return CheckOutcome(True, None, {})
     return CheckOutcome(False, ReasonCode.WRITE_PLAN_REJECTED, {})
+
+
+def check_errors_match_current(current_result: dict, planner_result: Any) -> CheckOutcome:
+    """初回NEEDS_WRITE経路限定のwriter進行条件: `validate_issue_body()`を
+    直接呼び出して得たerrors(`current_result`、`compute_current_preflight_result()`
+    の"status"/"errors"を保持する辞書)と、plannerのmachine_dict.errorsが、
+    要素数・順序・code/section/message・重複を含めて完全一致することを検証
+    する。一致しない場合、App token生成・ラベルwrite・コメントwriteのいずれ
+    も行わない(呼び出し側でこの関数の結果をgateとして使う)。
+    """
+    if not isinstance(current_result, dict):
+        return CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
+    if not isinstance(planner_result, dict):
+        return CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
+
+    planner_errors = planner_result.get("errors")
+    if not isinstance(planner_errors, list):
+        return CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
+
+    if current_result.get("status") != "CONTRACT_VIOLATION":
+        return CheckOutcome(False, ReasonCode.PREFLIGHT_RESULT_MISMATCH, {})
+    current_errors = current_result.get("errors")
+    if not isinstance(current_errors, list):
+        return CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
+
+    if list(current_errors) == list(planner_errors):
+        return CheckOutcome(True, None, {})
+    return CheckOutcome(False, ReasonCode.PREFLIGHT_RESULT_MISMATCH, {})
 
 
 # ---------------------------------------------------------------------------
@@ -514,13 +569,24 @@ def _comments_from_file_or_none(path: str) -> Optional[list[dict]]:
     return extract_comments_from_response(_load_json_file(path))
 
 
-def _errors_from_file(path: str) -> Optional[list[dict]]:
+def _load_current_result(path: str) -> tuple[str, Optional[list[dict]]]:
+    """`compute-current-errors`が書き出した{"status":.., "errors":..}形式を
+    読み込む。"""
     raw = _load_json_file(path)
-    if raw is None:
-        return None
-    if not isinstance(raw, list):
-        raise ValueError("current-errors-pathの内容がリストまたはnullではありません")
-    return raw
+    if not isinstance(raw, dict) or "status" not in raw or "errors" not in raw:
+        raise ValueError("current-errors-pathの内容が想定形式({status, errors})ではありません")
+    status = raw["status"]
+    errors = raw["errors"]
+    if errors is not None and not isinstance(errors, list):
+        raise ValueError("current-errors-pathのerrorsがリストまたはnullではありません")
+    return status, errors
+
+
+def _errors_only_or_none(path: str) -> Optional[list[dict]]:
+    """書き込み系step(NEEDS_WRITE/COMMENT_UPDATE_REQUIRED経路、既に
+    CONTRACT_VIOLATIONであることが上流で確定済み)から使う簡易アクセサ。"""
+    _status, errors = _load_current_result(path)
+    return errors
 
 
 def _bool_arg(value: str) -> bool:
@@ -546,6 +612,13 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     p_plan = sub.add_parser("check-plan", help="planner契約の厳密一致判定(WOULD_BLOCK_PREFLIGHT)")
     p_plan.add_argument("--planner-json-path", required=True)
+
+    p_errors_match = sub.add_parser(
+        "check-errors-match",
+        help="direct validator errorsとplanner machine_dict.errorsの完全一致判定(NEEDS_WRITE経路限定)",
+    )
+    p_errors_match.add_argument("--current-errors-path", required=True)
+    p_errors_match.add_argument("--planner-json-path", required=True)
 
     p_comment_state = sub.add_parser("check-comment-state", help="managed commentの現在状態を判定")
     p_comment_state.add_argument("--comments-response-file", required=True)
@@ -590,10 +663,13 @@ def main(argv: Optional[list[str]] = None) -> int:
             if not isinstance(body, str):
                 outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
             else:
-                errors = compute_current_preflight_errors(body)
+                status, errors = compute_current_preflight_result(body)
                 with open(args.output_path, "w", encoding="utf-8") as f:
-                    json.dump(errors, f, ensure_ascii=False)
-                outcome = CheckOutcome(True, None, {"HAS_ERRORS": "true" if errors is not None else "false"})
+                    json.dump({"status": status, "errors": errors}, f, ensure_ascii=False)
+                if status == "INTERNAL_ERROR":
+                    outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {"PREFLIGHT_STATUS": status})
+                else:
+                    outcome = CheckOutcome(True, None, {"PREFLIGHT_STATUS": status})
 
         elif args.command == "classify-precondition":
             labels = _labels_from_file_or_none(args.issue_response_file)
@@ -601,19 +677,24 @@ def main(argv: Optional[list[str]] = None) -> int:
             if labels is None or comments is None:
                 outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
             else:
-                current_errors = _errors_from_file(args.current_errors_path)
-                outcome = classify_precondition(labels, comments, current_errors)
+                current_status, current_errors = _load_current_result(args.current_errors_path)
+                outcome = classify_precondition(labels, comments, current_status, current_errors)
 
         elif args.command == "check-plan":
             planner_result = _load_json_file(args.planner_json_path)
             outcome = check_block_plan_matches_expected(planner_result)
+
+        elif args.command == "check-errors-match":
+            current_result = _load_json_file(args.current_errors_path)
+            planner_result = _load_json_file(args.planner_json_path)
+            outcome = check_errors_match_current(current_result, planner_result)
 
         elif args.command == "check-comment-state":
             comments = _comments_from_file_or_none(args.comments_response_file)
             if comments is None:
                 outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
             else:
-                current_errors = _errors_from_file(args.current_errors_path)
+                current_errors = _errors_only_or_none(args.current_errors_path)
                 if current_errors is None:
                     outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {})
                 else:
@@ -641,7 +722,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             if comments is None:
                 outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
             else:
-                current_errors = _errors_from_file(args.current_errors_path)
+                current_errors = _errors_only_or_none(args.current_errors_path)
                 if current_errors is None:
                     outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {})
                 else:
@@ -655,7 +736,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             if before_labels is None or after_labels is None or after_comments is None:
                 outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
             else:
-                current_errors = _errors_from_file(args.current_errors_path)
+                current_errors = _errors_only_or_none(args.current_errors_path)
                 if current_errors is None:
                     outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {})
                 else:
@@ -666,7 +747,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                     )
 
         elif args.command == "render-comment-body":
-            current_errors = _errors_from_file(args.current_errors_path)
+            current_errors = _errors_only_or_none(args.current_errors_path)
             if current_errors is None:
                 outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {})
             else:
