@@ -50,25 +50,42 @@ jobs:
               ;;
           esac
 
+      # AUTO-001-05-03-02-R1: GitHub Actionsの既定shell(`bash --noprofile --norc
+      # -eo pipefail {0}`)は、このstepの1行目より前からerrexit(-e)が有効になって
+      # いる。そのため`line=$(python ...)`をそのまま代入すると、pythonが非ゼロで
+      # 終了した瞬間にstepがそこで即終了し、続く`status=$?`の取得やreason_codeの
+      # GITHUB_OUTPUTへの保存が実行されない(run 30510639443で実際に発生し、
+      # Job Summaryがreason_code=NONEになった)。コマンド置換の失敗を`if`の条件
+      # 部分で判定することで、-eによる即時終了を避けつつ終了コードを確実に
+      # 取得する。
       - name: Verify required configuration is present
         id: config_check
         env:
           CLIENT_ID_VALUE: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
           PRIVATE_KEY_VALUE: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
         run: |
-          set -uo pipefail
+          set -u
           client_id_present=false
           private_key_present=false
           if [ -n "${CLIENT_ID_VALUE:-}" ]; then client_id_present=true; fi
           if [ -n "${PRIVATE_KEY_VALUE:-}" ]; then private_key_present=true; fi
           unset CLIENT_ID_VALUE PRIVATE_KEY_VALUE
-          line=$(python -m scripts.controller_token_check check-config \
+
+          if line=$(python -m scripts.controller_token_check check-config \
             --client-id-present "$client_id_present" \
-            --private-key-present "$private_key_present")
-          status=$?
+            --private-key-present "$private_key_present"); then
+            status=0
+          else
+            status=$?
+          fi
           echo "$line"
-          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+')
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
           echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
           if [ "$status" -ne 0 ]; then
             echo "::error::設定検査に失敗しました(reason_code=${reason_code})"
             exit 1
@@ -162,6 +179,7 @@ jobs:
         if: always()
         env:
           CONFIG_REASON: ${{ steps.config_check.outputs.reason_code }}
+          CONFIG_OUTCOME: ${{ steps.config_check.outcome }}
           TOKEN_OUTCOME: ${{ steps.app_token.outcome }}
           SCOPE_REASON: ${{ steps.repo_scope.outputs.reason_code }}
           SCOPE_COUNT: ${{ steps.repo_scope.outputs.repository_count }}
@@ -169,9 +187,13 @@ jobs:
           ISSUE_REASON: ${{ steps.issue_read.outputs.reason_code }}
           ISSUE_MATCHED: ${{ steps.issue_read.outputs.issue_number_matched }}
         run: |
+          # AUTO-001-05-03-02-R1: 設定検査が失敗し、その結果としてtoken生成が
+          # skippedになった場合に「reason_code=NONE」と表示されないようにする。
           token_reason="NONE"
           if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
             token_reason="TOKEN_GENERATION_FAILED"
+          elif [ "${TOKEN_OUTCOME:-}" = "skipped" ] && [ "${CONFIG_OUTCOME:-}" = "failure" ]; then
+            token_reason="TOKEN_GENERATION_SKIPPED_CONFIG_FAILURE"
           fi
           {
             echo "## AUTO-001-05-03-02 Controller App token read-only疎通チェック"
