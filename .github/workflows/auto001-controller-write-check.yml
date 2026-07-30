@@ -24,8 +24,12 @@ permissions:
   contents: read
   issues: read
 
+# AUTO-001-05-03-03C: この統合workflow(auto001-controller-integrated.yml)の
+# writer_start/writer_blockと、AUTO-001-05-03-03B(auto001-controller-block-check.yml)
+# との並行書き込みを防ぐため、Controller書き込みworkflow間で共通の
+# concurrency namespace(repository+Issue番号)を使用する。
 concurrency:
-  group: auto001-controller-write-check-${{ inputs.issue_number }}
+  group: auto001-controller-write-${{ github.repository }}-${{ inputs.issue_number }}
   cancel-in-progress: false
 
 jobs:
