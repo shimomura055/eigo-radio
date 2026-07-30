@@ -1572,5 +1572,74 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
         self.assertEqual(outputs.get("reason_code"), "WRITE_PARTIAL")
 
 
+_SUMMARY_ENV_KEYS = (
+    "PRECONDITION_REASON", "PRECONDITION_STATE", "BEFORE_READY", "BEFORE_BLOCKED",
+    "BEFORE_COMMENT_COUNT", "PLAN_REASON", "LABEL_REASON", "STATE_REASON",
+    "COMMENT_ACTION", "TOKEN_OUTCOME", "ADD_REASON", "COMMENT_WRITE_REASON",
+    "REMOVE_REASON", "FINAL_REASON", "FINAL_BLOCKED", "FINAL_READY",
+    "FINAL_UNRELATED", "FINAL_COMMENT_OK",
+)
+
+
+class SummarySubprocessTests(unittest.TestCase):
+    """"Publish job summary" step(id: summary)の実end-to-end検証。upstream
+    stepsの出力を模したenv変数を与え、GITHUB_STEP_SUMMARYへ正しいwrite
+    outcomeが出力されること、このstep自体は与えたreason_codeの内容に
+    関わらず常にexit 0で終了すること(if: always()の意図通り、summary
+    step自身の実行結果が先行stepの失敗を上書きしない設計であることの
+    傍証)を確認する。credential・raw入力は一切使用しない。
+    """
+
+    def setUp(self):
+        self.script = _extract_block_step("summary")
+
+    def _run(self, **env_overrides):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            env = _base_env(tmpdir)
+            for key in _SUMMARY_ENV_KEYS:
+                env[key] = ""
+            env.update(env_overrides)
+            summary_path = tmpdir / "step_summary.md"
+            summary_path.write_text("", encoding="utf-8")
+            env["GITHUB_STEP_SUMMARY"] = str(summary_path)
+            env["GITHUB_SERVER_URL"] = "https://github.com"
+            env["GITHUB_REPOSITORY"] = EXPECTED_FULL_NAME
+            env["GITHUB_RUN_ID"] = "12345"
+            result = _run_bash_script_in_dir(self.script, env, tmpdir)
+            summary_text = summary_path.read_text(encoding="utf-8")
+            return result, summary_text
+
+    def test_preflight_now_passes_shown_and_step_succeeds(self):
+        # precondition stepがPREFLIGHT_NOW_PASSESで成功終了し、後続の
+        # token生成・write系stepはすべてskipされた(outputsが空)状態を模す。
+        result, summary_text = self._run(PRECONDITION_REASON="PREFLIGHT_NOW_PASSES")
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("write outcome: PREFLIGHT_NOW_PASSES", summary_text)
+
+    def test_preflight_result_mismatch_shown_and_step_succeeds(self):
+        # precondition stepはNEEDS_WRITEで成功し、check_plan stepが
+        # PREFLIGHT_RESULT_MISMATCHで失敗、後続はすべてskipされた状態を模す。
+        result, summary_text = self._run(
+            PRECONDITION_REASON="NONE", PLAN_REASON="PREFLIGHT_RESULT_MISMATCH",
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("write outcome: PREFLIGHT_RESULT_MISMATCH", summary_text)
+        # NONEやINTERNAL_ERRORへ置換されていないこと。
+        self.assertNotIn("write outcome: NONE", summary_text)
+        self.assertNotIn("write outcome: INTERNAL_ERROR", summary_text)
+
+    def test_no_upstream_reason_falls_back_to_none(self):
+        result, summary_text = self._run()
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("write outcome: NONE", summary_text)
+
+    def test_summary_never_leaks_credentials_or_raw_input(self):
+        result, summary_text = self._run(PRECONDITION_REASON="PREFLIGHT_NOW_PASSES")
+        for forbidden in ("APP_TOKEN", "ghs_", "-----BEGIN", "Authorization"):
+            self.assertNotIn(forbidden, summary_text)
+            self.assertNotIn(forbidden, result.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()

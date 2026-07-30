@@ -719,6 +719,7 @@ jobs:
           fi
 
       - name: Publish job summary (fixed non-secret fields only)
+        id: summary
         if: always()
         env:
           PRECONDITION_REASON: ${{ steps.precondition.outputs.reason_code }}
