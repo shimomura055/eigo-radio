@@ -16,7 +16,8 @@
     { "path": "er002_test_v1_2m_d1.py", "reason": "外部APIを呼ばないunittest.TestCase。CI標準セット(1テストメソッドのみexcluded_test_idsで個別除外)。" },
     { "path": "auto001_test_ci_runner.py", "reason": "scripts/run_ci_tests.py(このrunner自身)の単体テスト。外部APIを呼ばず、tempdir上のfixtureだけで完結する。" },
     { "path": "auto001_test_issue_preflight_validator.py", "reason": "scripts/issue_preflight_validator.py(AUTO-001-05-01のIssue preflight validator)の単体テスト。GitHub API・Anthropic API・外部ネットワークを一切呼ばず、文字列fixtureだけで完結する。" },
-    { "path": "auto001_test_issue_agent_planner.py", "reason": "scripts/issue_agent_planner.py(AUTO-001-05-02Aの状態遷移planner)と.github/workflows/auto001-agent-dryrun.ymlの単体・静的テスト。GitHub API・Anthropic API・外部ネットワークを一切呼ばず、正規化済みfixtureとtempdir上のCLI呼び出しだけで完結する(read-only dry-run、GitHubへの実書き込みなし)。" }
+    { "path": "auto001_test_issue_agent_planner.py", "reason": "scripts/issue_agent_planner.py(AUTO-001-05-02Aの状態遷移planner)と.github/workflows/auto001-agent-dryrun.ymlの単体・静的テスト。GitHub API・Anthropic API・外部ネットワークを一切呼ばず、正規化済みfixtureとtempdir上のCLI呼び出しだけで完結する(read-only dry-run、GitHubへの実書き込みなし)。" },
+    { "path": "auto001_test_controller_token_check.py", "reason": "scripts/controller_token_check.py(AUTO-001-05-03-02のController App token read-only疎通チェック純粋処理)と.github/workflows/auto001-controller-token-check.ymlの単体・静的テスト。GitHub App・GitHub API・外部ネットワークを一切呼ばず、tempdir上のJSON fixtureとCLI呼び出しだけで完結する(read-only疎通、GitHubへの実書き込みなし)。" }
   ],
   "exclude": [
     { "path": "test_api.py", "reason": "モジュールレベルで実OpenAI APIを呼ぶ疎通確認スクリプト。importするだけで課金・ネットワークアクセスが発生する。" },
