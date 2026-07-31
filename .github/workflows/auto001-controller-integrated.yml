@@ -211,7 +211,14 @@ jobs:
           fi
           echo "$plan_block_line"
 
-          out=$(python - "$plan_start_ok" "$plan_block_ok" <<'PY'
+          # planner_result.jsonの読み込み・判定処理自体の失敗(ファイル欠落・
+          # JSON解析失敗・必須キー欠落)を、他のstep(precondition等)と同じ
+          # 「command substitutionをifで保護してから$?を確認する」パターンで
+          # 検出する。素の`out=$(...)`のままだと、既定shell(bash -eo pipefail)
+          # 下でpythonが例外送出した瞬間にstepがそこで即終了し、後続の
+          # reason_code保存やGITHUB_OUTPUTへの書き込みが一切行われない
+          # (AUTO-001-05-03-02-R1で確認済みの構文的既知問題と同型)。
+          if out=$(python - "$plan_start_ok" "$plan_block_ok" <<'PY'
           import json
           import sys
 
@@ -251,13 +258,46 @@ jobs:
           print(f"error_fingerprint={error_fingerprint}")
           print("contract_version=AUTO-001-05-03-03C-writer-v1")
           PY
-          )
+          ); then
+            classify_status=0
+          else
+            classify_status=$?
+          fi
+
+          if [ "$classify_status" -ne 0 ]; then
+            echo "::error::planner_result.jsonの読み込みまたは判定処理に失敗しました(status=${classify_status})。writerは実行しません。"
+            exit 1
+          fi
+
           echo "$out"
           echo "$out" >> "$GITHUB_OUTPUT"
 
+          # decisionが「そもそも書き込みを意図しない」既知の値
+          # (NOT_APPLICABLE / WOULD_BLOCK_STATE)の場合だけを成功終了とする。
+          # WOULD_START / WOULD_BLOCK_PREFLIGHT(=writerへ進む意図)なのに
+          # 直前のcheck-planが厳密一致で拒否した場合(writer_action=NONEの
+          # まま)は、契約不一致という異常事態であり、成功扱いにはしない。
+          # INTERNAL_ERRORおよびそれ以外の未知のdecision文字列も同様に失敗
+          # とする。
           decision_value=$(echo "$out" | grep -oP '^decision=\K.*')
-          if [ "$decision_value" = "INTERNAL_ERROR" ]; then
-            echo "::error::plannerがINTERNAL_ERRORを返しました。writerは実行しません。"
+          writer_action_value=$(echo "$out" | grep -oP '^writer_action=\K.*')
+
+          fail=false
+          case "$decision_value" in
+            NOT_APPLICABLE|WOULD_BLOCK_STATE)
+              ;;
+            WOULD_START|WOULD_BLOCK_PREFLIGHT)
+              if [ "$writer_action_value" != "START" ] && [ "$writer_action_value" != "BLOCK" ]; then
+                fail=true
+              fi
+              ;;
+            *)
+              fail=true
+              ;;
+          esac
+
+          if [ "$fail" = "true" ]; then
+            echo "::error::plannerのdecisionが未知か、writerの厳密契約に一致しません(decision=${decision_value} writer_action=${writer_action_value})。writerは実行しません。"
             exit 1
           fi
 

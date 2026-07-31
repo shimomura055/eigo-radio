@@ -547,6 +547,11 @@ class ClassifyStepFixtureTests(unittest.TestCase):
         self.assertEqual(output.get("error_count"), "1")
         self.assertNotEqual(output.get("error_fingerprint"), "NONE")
 
+    # -----------------------------------------------------------------
+    # Success, write無し: plannerが「そもそも書き込みを意図しない」と
+    # 判定した既知の状態(NOT_APPLICABLE / WOULD_BLOCK_STATE)。
+    # -----------------------------------------------------------------
+
     def test_not_applicable_yields_writer_action_none_and_success(self):
         fixture = self._fixture(
             decision="NOT_APPLICABLE", applicable=False, preflight_valid=None,
@@ -565,6 +570,15 @@ class ClassifyStepFixtureTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertEqual(output.get("writer_action"), "NONE")
 
+    # -----------------------------------------------------------------
+    # Failure, write無し: plannerがWOULD_START/WOULD_BLOCK_PREFLIGHT
+    # (=書き込みを意図)と判定したにもかかわらず、check-planによる
+    # exact契約一致が取れない場合。NOT_APPLICABLE/WOULD_BLOCK_STATEとは
+    # 異なり、これは異常事態であり成功扱いにしない(AUTO-001-05-03-03C-R1
+    # 監査での修正: 修正前はここがwriter_action=NONEのままexit 0の
+    # Successだった)。
+    # -----------------------------------------------------------------
+
     def test_internal_error_yields_writer_action_none_and_step_failure(self):
         fixture = self._fixture(
             decision="INTERNAL_ERROR", applicable=False, preflight_valid=None,
@@ -576,29 +590,155 @@ class ClassifyStepFixtureTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 1)
         self.assertEqual(output.get("writer_action"), "NONE")
 
-    def test_would_start_with_extra_planned_label_is_rejected(self):
+    def test_would_start_with_extra_planned_label_is_a_failure(self):
         # plannerが本来出さないはずの、余分なラベルを含む計画(改ざん・不具合
-        # 想定)はcheck-planが厳密一致で拒否し、writer_actionはNONEのまま。
+        # 想定)はcheck-planが厳密一致で拒否する。decision自体はWOULD_START
+        # (=書き込み意図)のため、writer_action=NONEのまま黙ってSuccess終了
+        # してはならず、stepをFailureにする。
         fixture = self._fixture(planned_add_labels=["agent:working", "extra:label"])
         proc, output = self._run(fixture)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(proc.returncode, 1, proc.stderr)
         self.assertEqual(output.get("writer_action"), "NONE")
+        self.assertEqual(output.get("decision"), "WOULD_START")
 
-    def test_would_block_preflight_with_zero_errors_is_rejected(self):
+    def test_would_block_preflight_with_zero_errors_is_a_failure(self):
         fixture = self._fixture(
             decision="WOULD_BLOCK_PREFLIGHT", preflight_valid=False,
             planned_add_labels=["agent:blocked"], errors=[],
             reason="preflight_contract_violation",
         )
         proc, output = self._run(fixture)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(proc.returncode, 1, proc.stderr)
         self.assertEqual(output.get("writer_action"), "NONE")
 
-    def test_unknown_decision_string_is_rejected(self):
+    def test_unknown_decision_string_is_a_failure(self):
         fixture = self._fixture(decision="SOMETHING_ELSE")
         proc, output = self._run(fixture)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(proc.returncode, 1, proc.stderr)
         self.assertEqual(output.get("writer_action"), "NONE")
+
+    def test_would_block_preflight_missing_add_label_is_a_failure(self):
+        # planned_add_labelsが空(=agent:blockedが計画されていない)WOULD_
+        # BLOCK_PREFLIGHTも、check-planの厳密一致で拒否されFailureになる。
+        fixture = self._fixture(
+            decision="WOULD_BLOCK_PREFLIGHT", preflight_valid=False,
+            planned_add_labels=[],
+            errors=[{"code": "MISSING_HEADING", "section": None, "message": "x"}],
+            reason="preflight_contract_violation",
+        )
+        proc, output = self._run(fixture)
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        self.assertEqual(output.get("writer_action"), "NONE")
+
+    def test_missing_planner_result_file_is_a_failure_with_no_output_written(self):
+        # planner_result.json自体が存在しない(plannerの前段step失敗等)場合、
+        # GITHUB_OUTPUTには何も書き込まれない(=needs.plan.outputs.*は空文字列
+        # となり、writer jobのif条件は'START'/'BLOCK'いずれにも一致しない)。
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            script = _extract_step_run_lines(
+                WORKFLOW_PATH.read_text(encoding="utf-8"), "classify",
+            )
+            env = _base_env(tmpdir)
+            proc = _run_bash_script_in_dir(script, env, tmpdir)
+            output = _parse_github_output(tmpdir / "github_output.txt")
+        self.assertEqual(proc.returncode, 1)
+        self.assertEqual(output, {})
+
+    def test_malformed_planner_result_json_is_a_failure_with_no_output_written(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            (tmpdir / "planner_result.json").write_text("{not valid json", encoding="utf-8")
+            script = _extract_step_run_lines(
+                WORKFLOW_PATH.read_text(encoding="utf-8"), "classify",
+            )
+            env = _base_env(tmpdir)
+            proc = _run_bash_script_in_dir(script, env, tmpdir)
+            output = _parse_github_output(tmpdir / "github_output.txt")
+        self.assertEqual(proc.returncode, 1)
+        self.assertEqual(output, {})
+
+    def test_planner_result_missing_required_key_is_a_failure_with_no_output_written(self):
+        # decision等の必須キーが欠落したJSON(構造は正しいが不完全)も、
+        # 読み込み・判定処理自体の失敗としてFailureになる。
+        fixture = {"issue_number": 1}
+        with tempfile.TemporaryDirectory() as tmp:
+            proc = _run_classify_step(Path(tmp), fixture)
+            output = _parse_github_output(Path(tmp) / "github_output.txt")
+        self.assertEqual(proc.returncode, 1)
+        self.assertEqual(output, {})
+
+
+# ---------------------------------------------------------------------------
+# Failure経路でtoken生成・write stepがSkippedとなることの証拠。
+#
+# writer_start/writer_blockはそれぞれ`if: needs.plan.outputs.writer_action
+# == 'START'` / `== 'BLOCK'`でjob全体がgateされている
+# (WorkflowStaticTests.test_writer_jobs_gated_on_exact_writer_actionで
+# 確認済み)。ClassifyStepFixtureTestsの各Failureケースはいずれも
+# writer_action="NONE"(または$GITHUB_OUTPUT自体が空)であり、'START'/'BLOCK'
+# のどちらとも一致しないため、このgateによってjob自体が実行されない
+# (Skipped)。job自体が実行されなければ、job内のController App token生成
+# step・write stepも実行されない。このクラスは、その論理的連鎖の前提
+# (gate文言の存在とFailureケースの出力値)を1箇所にまとめて再確認する。
+# ---------------------------------------------------------------------------
+
+class FailurePathSkipsTokenAndWriteTests(unittest.TestCase):
+
+    def test_writer_job_gate_expressions_are_exact_string_equality(self):
+        text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertIn("if: needs.plan.outputs.writer_action == 'START'", text)
+        self.assertIn("if: needs.plan.outputs.writer_action == 'BLOCK'", text)
+        # 'NONE'や空文字列と誤って一致するような緩い条件(!=禁止ラベル方式等)
+        # ではないことを確認する。
+        self.assertNotIn("writer_action != 'NONE'", text)
+
+    def test_no_step_level_override_bypasses_the_job_level_gate(self):
+        # job自体がgateされている以上、job内の個別stepに`if: always()`が
+        # あってもjobそのものが起動しなければ実行されない。ただし「Publish
+        # job summary」stepは、03A/03Bと同じく`if: always()`で常に実行され
+        # Job Summaryを記録する設計であり、write APIやtoken生成を一切行わない
+        # ためこれは許容する。ここではtoken生成step・write step側(summary
+        # stepより前の部分)に、job-level gateを無視して単独実行され得る
+        # ような`always()`が付いていないことだけを確認する。
+        text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        writer_start_block = text.split("  writer_start:")[1].split("  writer_block:")[0]
+        writer_block_block = text.split("  writer_block:")[1]
+        for block in (writer_start_block, writer_block_block):
+            pre_summary = block.split("- name: Publish job summary")[0]
+            self.assertNotIn("if: always()", pre_summary)
+            self.assertNotIn("if: failure()", pre_summary)
+
+    def test_contract_mismatch_fixture_yields_writer_action_not_in_start_or_block(self):
+        fixtures = [
+            {
+                "issue_number": 4, "decision": "WOULD_START", "applicable": True,
+                "preflight_valid": True, "current_labels": ["agent:ready"],
+                "planned_remove_labels": ["agent:ready"],
+                "planned_add_labels": ["agent:working", "extra:label"],
+                "planned_comment": None, "errors": [], "reason": "preflight_pass",
+            },
+            {
+                "issue_number": 5, "decision": "WOULD_BLOCK_PREFLIGHT", "applicable": True,
+                "preflight_valid": False, "current_labels": ["agent:ready"],
+                "planned_remove_labels": ["agent:ready"], "planned_add_labels": ["agent:blocked"],
+                "planned_comment": None, "errors": [], "reason": "preflight_contract_violation",
+            },
+            {
+                "issue_number": 6, "decision": "INTERNAL_ERROR", "applicable": False,
+                "preflight_valid": None, "current_labels": [],
+                "planned_remove_labels": [], "planned_add_labels": [], "planned_comment": None,
+                "errors": [{"code": "INTERNAL_ERROR", "section": None, "message": "x"}],
+                "reason": "cli_setup_error",
+            },
+        ]
+        for fixture in fixtures:
+            with self.subTest(decision=fixture["decision"]):
+                with tempfile.TemporaryDirectory() as tmp:
+                    proc = _run_classify_step(Path(tmp), fixture)
+                    output = _parse_github_output(Path(tmp) / "github_output.txt")
+                self.assertEqual(proc.returncode, 1)
+                self.assertNotIn(output.get("writer_action"), ("START", "BLOCK"))
 
 
 # ---------------------------------------------------------------------------
