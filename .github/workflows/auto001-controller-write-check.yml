@@ -26,6 +26,18 @@ on:
         description: "ラベル遷移(agent:ready -> agent:working)の対象Issue番号"
         required: true
         type: number
+      # AUTO-001-05-03-03C-R4: 空のcontract_versionをworkflow_dispatchの
+      # 直接手動実行とみなす経路は、統合workflow自身をworkflow_dispatchした
+      # 場合にも元イベント名がworkflow_dispatchになり得るため区別できず、
+      # contract_versionが欠落した統合呼び出しを誤って直接手動実行として
+      # 許可してしまう余地があった。この曖昧さを無くすため、workflow_dispatch
+      # 自体にも固定sentinel値をdefaultとして持つ入力を追加し、直接手動実行を
+      # 明示的な値で識別する(空文字列を許可経路として扱わない)。
+      contract_version:
+        description: "直接手動実行の固定契約バージョン。通常は変更しない。"
+        required: true
+        type: string
+        default: "AUTO-001-05-03-03A-direct-v1"
   # AUTO-001-05-03-03C-R2: 呼び出し元はauto001-controller-integrated.ymlの
   # writer_startジョブだけを想定する。呼び出し元の全secretsを一括継承する
   # 指定(inherit)は使わず、Controller
@@ -79,19 +91,23 @@ jobs:
       # 'workflow_call'にはならない。そのため`if: github.event_name ==
       # 'workflow_call'`という条件では、統合workflow経由の呼び出しを
       # 一切検出できず、このstep自体が常にskipされてしまう(AUTO-001-05-03-
-      # 03C-R2の既知の不具合)。
+      # 03C-R2の既知の不具合)。このstepは常に評価対象とする。
       #
-      # このstepは常に評価対象とし、`inputs.contract_version`の有無を
-      # 先に判定してから経路を分類する。
-      #   1. contract_versionが空でない
-      #      -> 統合workflow経由(caller eventがissues/workflow_dispatch
-      #         いずれでも該当)。固定期待値と厳密一致することを確認する。
-      #         不一致ならtoken生成前にFailureとする。
-      #   2. contract_versionが空 かつ 元イベントがworkflow_dispatch
-      #      -> このworkflow自身への直接手動実行(既存経路)。続行する。
-      #   3. contract_versionが空 かつ 元イベントがworkflow_dispatch以外
-      #      -> 呼び出し契約が欠落した想定外の経路。token生成前にFailure
-      #         とする。
+      # AUTO-001-05-03-03C-R4: 空のcontract_versionを「workflow_dispatch
+      # なら直接手動実行」とみなす経路(R3時点の実装)には、統合workflow
+      # 自体をworkflow_dispatchで手動起動した場合にも元イベント名が
+      # workflow_dispatchになり得るため、contract_versionが欠落した統合
+      # 呼び出しを誤って直接手動実行として許可してしまう曖昧さが残っていた。
+      # これを解消するため、workflow_dispatch.inputs.contract_versionへ
+      # 固定sentinel値(既定値`AUTO-001-05-03-03A-direct-v1`)を追加し、
+      # 空文字列を一切許可経路として扱わない。判定は次の2種類の既知
+      # sentinelだけを許可する:
+      #   1. "AUTO-001-05-03-03C-writer-v1"(統合workflow経由。caller event
+      #      がissues/workflow_dispatchいずれでも該当)
+      #   2. "AUTO-001-05-03-03A-direct-v1"(このworkflow自身への直接手動
+      #      実行。caller eventがworkflow_dispatch以外なら不正な使用として
+      #      Failureとする)
+      #   それ以外(空文字列・未知の値)はすべてFailureとする。
       # エラーメッセージにはcontract_versionの実値を一切含めない。
       - name: Verify contract_version (reusable call) or allow direct manual invocation
         id: verify_contract_version
@@ -100,18 +116,27 @@ jobs:
           CALLER_EVENT_NAME: ${{ github.event_name }}
         run: |
           set -u
-          expected="AUTO-001-05-03-03C-writer-v1"
-          if [ -n "${CONTRACT_VERSION_VALUE:-}" ]; then
-            if [ "$CONTRACT_VERSION_VALUE" != "$expected" ]; then
+          integrated="AUTO-001-05-03-03C-writer-v1"
+          direct="AUTO-001-05-03-03A-direct-v1"
+
+          case "${CONTRACT_VERSION_VALUE:-}" in
+            "$integrated")
+              ;;
+            "$direct")
+              if [ "${CALLER_EVENT_NAME:-}" != "workflow_dispatch" ]; then
+                echo "::error::直接手動実行用の契約が不正なイベントで使用されました。token生成前に停止します。"
+                exit 1
+              fi
+              ;;
+            "")
+              echo "::error::呼び出し契約versionが欠落しています。token生成前に停止します。"
+              exit 1
+              ;;
+            *)
               echo "::error::呼び出し元のcontract_versionが想定外です。token生成前に停止します。"
               exit 1
-            fi
-          elif [ "${CALLER_EVENT_NAME:-}" = "workflow_dispatch" ]; then
-            :
-          else
-            echo "::error::呼び出し契約versionが欠落しています。token生成前に停止します。"
-            exit 1
-          fi
+              ;;
+          esac
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

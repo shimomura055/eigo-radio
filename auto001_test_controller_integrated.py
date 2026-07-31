@@ -635,9 +635,18 @@ class WriteOrderRegressionTests(unittest.TestCase):
 # ---------------------------------------------------------------------------
 
 class CalledWriterContractVersionGateTests(unittest.TestCase):
+    """AUTO-001-05-03-03C-R4: 空のcontract_versionを一切許可経路として
+    扱わず、統合workflow用の固定sentinel("AUTO-001-05-03-03C-writer-v1")と
+    各writer自身の直接手動実行用sentinel("...-03A-direct-v1" /
+    "...-03B-direct-v1")の、既知の2種類だけを許可する。caller eventは、
+    統合workflow自身が`issues:labeled`または`workflow_dispatch`のどちらで
+    起動されたかを表す(called workflow内のgithub.event_nameがその値の
+    まま伝播するため、これがテストのCALLER_EVENT_NAMEに相当する)。"""
 
-    EXPECTED = "AUTO-001-05-03-03C-writer-v1"
-    TAMPERED = "tampered-version"
+    INTEGRATED = "AUTO-001-05-03-03C-writer-v1"
+    DIRECT_A = "AUTO-001-05-03-03A-direct-v1"
+    DIRECT_B = "AUTO-001-05-03-03B-direct-v1"
+    UNKNOWN = "bogus-version"
 
     def _run(
         self, path: Path, *, caller_event_name: str, contract_version_value: str | None,
@@ -655,76 +664,144 @@ class CalledWriterContractVersionGateTests(unittest.TestCase):
             return _run_bash_script_in_dir(script, env, Path(tmp))
 
     # -----------------------------------------------------------------
-    # R3必須テストの1〜7(03A/03Bの両方に適用)。caller eventは、統合
-    # workflow自身が`issues:labeled`または`workflow_dispatch`のどちらで
-    # 起動されたかを表す(called workflow内のgithub.event_nameがその値の
-    # まま伝播するため、これがテストのCALLER_EVENT_NAMEに相当する)。
+    # R4必須テスト1〜9(03A/03Bそれぞれの直接sentinelを使って両方に適用)。
     # -----------------------------------------------------------------
 
-    def _assert_matrix(self, path: Path):
-        with self.subTest(case="1_issues_match"):
-            proc = self._run(path, caller_event_name="issues", contract_version_value=self.EXPECTED)
+    def _assert_matrix(self, path: Path, *, own_direct: str):
+        with self.subTest(case="1_integrated_version_issues"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=self.INTEGRATED)
             self.assertEqual(proc.returncode, 0, proc.stderr)
 
-        with self.subTest(case="2_issues_mismatch"):
-            proc = self._run(path, caller_event_name="issues", contract_version_value=self.TAMPERED)
-            self.assertEqual(proc.returncode, 1)
-            self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+        with self.subTest(case="2_integrated_version_workflow_dispatch"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=self.INTEGRATED,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
 
-        with self.subTest(case="3_issues_empty"):
+        with self.subTest(case="3_direct_version_workflow_dispatch"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=own_direct,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+
+        with self.subTest(case="4_direct_version_issues"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=own_direct)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("不正なイベント", proc.stdout + proc.stderr)
+
+        with self.subTest(case="5_direct_version_unknown_event"):
+            proc = self._run(path, caller_event_name="schedule", contract_version_value=own_direct)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("不正なイベント", proc.stdout + proc.stderr)
+
+        with self.subTest(case="6_empty_workflow_dispatch"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=None,
+            )
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("契約versionが欠落", proc.stdout + proc.stderr)
+
+        with self.subTest(case="7_empty_issues"):
             proc = self._run(path, caller_event_name="issues", contract_version_value=None)
             self.assertEqual(proc.returncode, 1)
             self.assertIn("契約versionが欠落", proc.stdout + proc.stderr)
 
-        with self.subTest(case="4_workflow_dispatch_match"):
+        with self.subTest(case="8_unknown_version_workflow_dispatch"):
             proc = self._run(
-                path, caller_event_name="workflow_dispatch", contract_version_value=self.EXPECTED,
-            )
-            self.assertEqual(proc.returncode, 0, proc.stderr)
-
-        with self.subTest(case="5_workflow_dispatch_mismatch"):
-            proc = self._run(
-                path, caller_event_name="workflow_dispatch", contract_version_value=self.TAMPERED,
+                path, caller_event_name="workflow_dispatch", contract_version_value=self.UNKNOWN,
             )
             self.assertEqual(proc.returncode, 1)
-            self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+            self.assertIn("想定外です", proc.stdout + proc.stderr)
 
-        with self.subTest(case="6_workflow_dispatch_empty_direct_manual_allowed"):
-            proc = self._run(
-                path, caller_event_name="workflow_dispatch", contract_version_value=None,
-            )
-            self.assertEqual(proc.returncode, 0, proc.stderr)
-
-        with self.subTest(case="7_unknown_event_empty"):
-            proc = self._run(path, caller_event_name="schedule", contract_version_value=None)
+        with self.subTest(case="9_unknown_version_issues"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=self.UNKNOWN)
             self.assertEqual(proc.returncode, 1)
-            self.assertIn("契約versionが欠落", proc.stdout + proc.stderr)
+            self.assertIn("想定外です", proc.stdout + proc.stderr)
 
     def test_03a_gate_matrix(self):
-        self._assert_matrix(WRITE_CHECK_PATH)
+        self._assert_matrix(WRITE_CHECK_PATH, own_direct=self.DIRECT_A)
 
     def test_03b_gate_matrix(self):
-        self._assert_matrix(BLOCK_CHECK_PATH)
+        self._assert_matrix(BLOCK_CHECK_PATH, own_direct=self.DIRECT_B)
 
     # -----------------------------------------------------------------
-    # 9. private key・contract_version実値がログへ出力されないこと
+    # 10・11. 相手writerの直接sentinelを渡した場合はFailureになること
+    # (03Aへ03B用sentinel、03Bへ03A用sentinel)。
+    # -----------------------------------------------------------------
+
+    def test_10_03b_direct_sentinel_rejected_by_03a(self):
+        proc = self._run(
+            WRITE_CHECK_PATH, caller_event_name="workflow_dispatch", contract_version_value=self.DIRECT_B,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("想定外です", proc.stdout + proc.stderr)
+
+    def test_11_03a_direct_sentinel_rejected_by_03b(self):
+        proc = self._run(
+            BLOCK_CHECK_PATH, caller_event_name="workflow_dispatch", contract_version_value=self.DIRECT_A,
+        )
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("想定外です", proc.stdout + proc.stderr)
+
+    # -----------------------------------------------------------------
+    # 13. private key・contract_version実値がログへ出力されないこと
     # -----------------------------------------------------------------
 
     def test_03a_failure_messages_never_echo_actual_contract_version_value(self):
+        # 未知versionによるFailure(case 8/9)と、直接sentinelを不正なイベント
+        # で使ったFailure(case 4/5)の両方で、渡された実値そのものが
+        # ログへ出力されないことを確認する。
         for caller_event, cv in (
-            ("issues", self.TAMPERED), ("workflow_dispatch", self.TAMPERED),
+            ("issues", self.UNKNOWN), ("workflow_dispatch", self.UNKNOWN), ("issues", self.DIRECT_A),
         ):
             proc = self._run(WRITE_CHECK_PATH, caller_event_name=caller_event, contract_version_value=cv)
-            combined = proc.stdout + proc.stderr
-            self.assertNotIn(self.TAMPERED, combined)
+            self.assertNotIn(cv, proc.stdout + proc.stderr)
 
     def test_03b_failure_messages_never_echo_actual_contract_version_value(self):
         for caller_event, cv in (
-            ("issues", self.TAMPERED), ("workflow_dispatch", self.TAMPERED),
+            ("issues", self.UNKNOWN), ("workflow_dispatch", self.UNKNOWN), ("issues", self.DIRECT_B),
         ):
             proc = self._run(BLOCK_CHECK_PATH, caller_event_name=caller_event, contract_version_value=cv)
-            combined = proc.stdout + proc.stderr
-            self.assertNotIn(self.TAMPERED, combined)
+            self.assertNotIn(cv, proc.stdout + proc.stderr)
+
+    # -----------------------------------------------------------------
+    # 14. workflow_dispatchに正しいdefaultが設定されていること
+    # -----------------------------------------------------------------
+
+    def test_03a_workflow_dispatch_has_correct_default_sentinel(self):
+        text = WRITE_CHECK_PATH.read_text(encoding="utf-8")
+        m = re.search(
+            r"contract_version:\n"
+            r"        description: [^\n]+\n"
+            r"        required: true\n"
+            r"        type: string\n"
+            r"        default: \"AUTO-001-05-03-03A-direct-v1\"\n",
+            text,
+        )
+        self.assertIsNotNone(m)
+
+    def test_03b_workflow_dispatch_has_correct_default_sentinel(self):
+        text = BLOCK_CHECK_PATH.read_text(encoding="utf-8")
+        m = re.search(
+            r"contract_version:\n"
+            r"        description: [^\n]+\n"
+            r"        required: true\n"
+            r"        type: string\n"
+            r"        default: \"AUTO-001-05-03-03B-direct-v1\"\n",
+            text,
+        )
+        self.assertIsNotNone(m)
+
+    # -----------------------------------------------------------------
+    # 15. 統合workflowが統合version(03A/03B自身の直接sentinelではない)
+    # だけを渡すこと。
+    # -----------------------------------------------------------------
+
+    def test_integrated_workflow_never_passes_a_direct_sentinel(self):
+        text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertNotIn(self.DIRECT_A, text)
+        self.assertNotIn(self.DIRECT_B, text)
+        self.assertIn(self.INTEGRATED, text)
 
     # -----------------------------------------------------------------
     # 8. すべてのFailureでApp token生成とwrite stepが到達不能であること。
@@ -753,10 +830,10 @@ class CalledWriterContractVersionGateTests(unittest.TestCase):
         # 値の受け渡しでは検証できないため、双方のソースの固定文字列リテラル
         # が一致していることを静的に確認する)。
         integrated_text = WORKFLOW_PATH.read_text(encoding="utf-8")
-        self.assertIn(f'print("contract_version={self.EXPECTED}")', integrated_text)
+        self.assertIn(f'print("contract_version={self.INTEGRATED}")', integrated_text)
         for path in (WRITE_CHECK_PATH, BLOCK_CHECK_PATH):
             text = path.read_text(encoding="utf-8")
-            self.assertIn(f'expected="{self.EXPECTED}"', text)
+            self.assertIn(f'integrated="{self.INTEGRATED}"', text)
 
 
 # ---------------------------------------------------------------------------
