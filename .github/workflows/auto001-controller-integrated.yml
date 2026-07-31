@@ -53,6 +53,16 @@ name: AUTO-001 Controller App Integrated Write
 # 評価されるため、4経路(03A手動・03B手動・統合→03A・統合→03B)すべてで
 # 自動的に共有される。統合workflow側のwriter_start/writer_blockには別の
 # concurrencyブロックを追加しない(namespaceの分岐・二重定義を避けるため)。
+#
+# AUTO-001-05-03-03C-R5: job output(needs.plan.outputs.issue_number)は
+# GitHub Actions上では常に文字列型だが、03A/03Bのworkflow_call.inputs.
+# issue_numberはtype: numberで宣言されている。この型不一致により、
+# writer_start/writer_block呼び出し(uses:)がrunner起動前に(job/step/ログ
+# を一切残さず)失敗する既知の不具合があった(Run 30669056610で確認)。
+# 対策として、plan jobのclassify stepでissue_numberが厳密な正の整数文字列
+# (空文字列・0以下・小数・数字以外を全て拒否)であることを確認してから
+# 出力し、writer_start/writer_blockの`with:`側ではfromJSON()でnumber型へ
+# 明示的に変換してから03A/03Bへ渡す。
 
 on:
   issues:
@@ -224,6 +234,7 @@ jobs:
           # (AUTO-001-05-03-02-R1で確認済みの構文的既知問題と同型)。
           if out=$(python - "$plan_start_ok" "$plan_block_ok" <<'PY'
           import json
+          import re
           import sys
 
           plan_start_ok = sys.argv[1] == "true"
@@ -240,6 +251,20 @@ jobs:
           planned_add = d["planned_add_labels"]
           planned_remove = d["planned_remove_labels"]
 
+          # AUTO-001-05-03-03C-R5: reusable writer(03A/03B)の
+          # workflow_call.inputs.issue_numberはtype: numberで宣言されている。
+          # job outputは常に文字列であるため、ここで厳密な正の整数文字列で
+          # あることを確認してから$GITHUB_OUTPUTへ書き出す(空文字列・0以下・
+          # 小数・数字以外を全てここでfail-closedに拒否し、writerを一切
+          # 起動しない)。呼び出し側(統合workflowのwriter_start/
+          # writer_block)は、この検証済み文字列をfromJSON()でnumber型へ
+          # 変換してから03A/03Bへ渡す。
+          issue_number_str = str(issue_number)
+          if not re.fullmatch(r"[1-9][0-9]*", issue_number_str):
+              raise SystemExit(
+                  f"issue_numberが正の整数ではありません: {issue_number_str!r}",
+              )
+
           writer_action = "NONE"
           if decision == "WOULD_START" and plan_start_ok:
               writer_action = "START"
@@ -251,7 +276,7 @@ jobs:
               from scripts.controller_block_writer import compute_comment_fingerprint
               error_fingerprint = compute_comment_fingerprint(errors)
 
-          print(f"issue_number={issue_number}")
+          print(f"issue_number={issue_number_str}")
           print(f"decision={decision}")
           print(f"applicable={json.dumps(applicable)}")
           print(f"reason_code={reason}")
@@ -351,7 +376,7 @@ jobs:
       issues: read
     uses: ./.github/workflows/auto001-controller-write-check.yml
     with:
-      issue_number: ${{ needs.plan.outputs.issue_number }}
+      issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}
       contract_version: ${{ needs.plan.outputs.contract_version }}
     secrets:
       AUTO001_CONTROLLER_APP_PRIVATE_KEY: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
@@ -374,7 +399,7 @@ jobs:
       issues: read
     uses: ./.github/workflows/auto001-controller-block-check.yml
     with:
-      issue_number: ${{ needs.plan.outputs.issue_number }}
+      issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}
       contract_version: ${{ needs.plan.outputs.contract_version }}
     secrets:
       AUTO001_CONTROLLER_APP_PRIVATE_KEY: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
