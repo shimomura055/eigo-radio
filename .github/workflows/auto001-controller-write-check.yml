@@ -72,21 +72,44 @@ jobs:
       contents: read
       issues: read
     steps:
-      # AUTO-001-05-03-03C-R2: workflow_call経由の場合だけ、呼び出し元の
-      # plan jobが確定したcontract_versionが固定期待値と一致することを、
-      # Controller App token生成より前に確認する。workflow_dispatch(手動
-      # 実行)ではinputs.contract_versionは未定義のためこのstepは無条件で
-      # skipし、既存の手動経路の挙動・step順序を変えない。
-      - name: Verify caller contract_version matches expected (workflow_call only)
+      # AUTO-001-05-03-03C-R3: reusable workflow内の`github`contextは
+      # caller workflowに関連付けられるため、統合workflow経由でこの
+      # workflowが呼び出された場合でも`github.event_name`は統合workflow側
+      # の元イベント名(issues または workflow_dispatch)のままであり、
+      # 'workflow_call'にはならない。そのため`if: github.event_name ==
+      # 'workflow_call'`という条件では、統合workflow経由の呼び出しを
+      # 一切検出できず、このstep自体が常にskipされてしまう(AUTO-001-05-03-
+      # 03C-R2の既知の不具合)。
+      #
+      # このstepは常に評価対象とし、`inputs.contract_version`の有無を
+      # 先に判定してから経路を分類する。
+      #   1. contract_versionが空でない
+      #      -> 統合workflow経由(caller eventがissues/workflow_dispatch
+      #         いずれでも該当)。固定期待値と厳密一致することを確認する。
+      #         不一致ならtoken生成前にFailureとする。
+      #   2. contract_versionが空 かつ 元イベントがworkflow_dispatch
+      #      -> このworkflow自身への直接手動実行(既存経路)。続行する。
+      #   3. contract_versionが空 かつ 元イベントがworkflow_dispatch以外
+      #      -> 呼び出し契約が欠落した想定外の経路。token生成前にFailure
+      #         とする。
+      # エラーメッセージにはcontract_versionの実値を一切含めない。
+      - name: Verify contract_version (reusable call) or allow direct manual invocation
         id: verify_contract_version
-        if: github.event_name == 'workflow_call'
         env:
           CONTRACT_VERSION_VALUE: ${{ inputs.contract_version }}
+          CALLER_EVENT_NAME: ${{ github.event_name }}
         run: |
           set -u
           expected="AUTO-001-05-03-03C-writer-v1"
-          if [ "${CONTRACT_VERSION_VALUE:-}" != "$expected" ]; then
-            echo "::error::呼び出し元のcontract_versionが想定外です。token生成前に停止します。"
+          if [ -n "${CONTRACT_VERSION_VALUE:-}" ]; then
+            if [ "$CONTRACT_VERSION_VALUE" != "$expected" ]; then
+              echo "::error::呼び出し元のcontract_versionが想定外です。token生成前に停止します。"
+              exit 1
+            fi
+          elif [ "${CALLER_EVENT_NAME:-}" = "workflow_dispatch" ]; then
+            :
+          else
+            echo "::error::呼び出し契約versionが欠落しています。token生成前に停止します。"
             exit 1
           fi
 

@@ -486,7 +486,9 @@ class PlanWriterBoundaryTests(unittest.TestCase):
         ):
             text = path.read_text(encoding="utf-8")
             names = _extract_step_names(text, job_key)
-            verify_idx = names.index("Verify caller contract_version matches expected (workflow_call only)")
+            verify_idx = names.index(
+                "Verify contract_version (reusable call) or allow direct manual invocation",
+            )
             token_idx = names.index("Generate Controller App write token")
             self.assertLess(verify_idx, token_idx)
             self.assertEqual(verify_idx, 0, "contract_version確認は先頭stepであるべき")
@@ -574,21 +576,21 @@ class WriteOrderRegressionTests(unittest.TestCase):
         "Publish job summary (fixed non-secret fields only)",
     ]
 
+    CONTRACT_STEP_NAME = "Verify contract_version (reusable call) or allow direct manual invocation"
+
     def test_03a_step_order_is_contract_version_then_validate_then_common_sequence(self):
-        # AUTO-001-05-03-03C-R2: 先頭に「Verify caller contract_version
-        # matches expected (workflow_call only)」が追加された(workflow_call
-        # 経由の場合だけ有効。workflow_dispatchでは無条件skipされ既存の
-        # 手動経路の挙動は変わらない)。それ以降のstep順序・step名は
+        # AUTO-001-05-03-03C-R3: 先頭stepは常に評価対象(if:による無条件skip
+        # は行わない。AUTO-001-05-03-03C-R2時点の`if: github.event_name ==
+        # 'workflow_call'`は、called workflow内のgithub contextがcaller
+        # workflowに関連付けられ`workflow_call`には決してならないという
+        # 既知の問題があったため撤去した)。それ以降のstep順序・step名は
         # AUTO-001-05-03-03A時点から一切変更していない。
         names = _extract_step_names(
             WRITE_CHECK_PATH.read_text(encoding="utf-8"), "write_check",
         )
         self.assertEqual(
             names,
-            [
-                "Verify caller contract_version matches expected (workflow_call only)",
-                "Checkout", "Set up Python 3.12", "Validate issue_number input format",
-            ]
+            [self.CONTRACT_STEP_NAME, "Checkout", "Set up Python 3.12", "Validate issue_number input format"]
             + self.COMMON_START_STEPS,
         )
 
@@ -598,32 +600,33 @@ class WriteOrderRegressionTests(unittest.TestCase):
         )
         self.assertEqual(
             names,
-            [
-                "Verify caller contract_version matches expected (workflow_call only)",
-                "Checkout", "Set up Python 3.12", "Validate issue_number input format",
-            ]
+            [self.CONTRACT_STEP_NAME, "Checkout", "Set up Python 3.12", "Validate issue_number input format"]
             + self.COMMON_BLOCK_STEPS,
         )
 
-    def test_03a_contract_version_step_is_skipped_for_workflow_dispatch(self):
+    def test_03a_contract_version_step_has_no_event_name_gate(self):
+        # AUTO-001-05-03-03C-R3: このstep自体には`if:`条件が無く、常に
+        # 評価される(経路の分類はstep内部のshellロジックで行う)。
         text = WRITE_CHECK_PATH.read_text(encoding="utf-8")
         m = re.search(
-            r"- name: Verify caller contract_version matches expected \(workflow_call only\)\n"
+            r"- name: " + re.escape(self.CONTRACT_STEP_NAME) + r"\n"
             r"        id: verify_contract_version\n"
-            r"        if: github\.event_name == 'workflow_call'\n",
+            r"        env:\n",
             text,
         )
         self.assertIsNotNone(m)
+        self.assertNotIn("if: github.event_name == 'workflow_call'", text)
 
-    def test_03b_contract_version_step_is_skipped_for_workflow_dispatch(self):
+    def test_03b_contract_version_step_has_no_event_name_gate(self):
         text = BLOCK_CHECK_PATH.read_text(encoding="utf-8")
         m = re.search(
-            r"- name: Verify caller contract_version matches expected \(workflow_call only\)\n"
+            r"- name: " + re.escape(self.CONTRACT_STEP_NAME) + r"\n"
             r"        id: verify_contract_version\n"
-            r"        if: github\.event_name == 'workflow_call'\n",
+            r"        env:\n",
             text,
         )
         self.assertIsNotNone(m)
+        self.assertNotIn("if: github.event_name == 'workflow_call'", text)
 
 
 # ---------------------------------------------------------------------------
@@ -634,42 +637,115 @@ class WriteOrderRegressionTests(unittest.TestCase):
 class CalledWriterContractVersionGateTests(unittest.TestCase):
 
     EXPECTED = "AUTO-001-05-03-03C-writer-v1"
+    TAMPERED = "tampered-version"
 
-    def _run(self, path: Path, *, contract_version_value: str | None):
+    def _run(
+        self, path: Path, *, caller_event_name: str, contract_version_value: str | None,
+    ):
         script = _extract_step_run_lines(
             path.read_text(encoding="utf-8"), "verify_contract_version",
         )
         with tempfile.TemporaryDirectory() as tmp:
             env = _base_env(Path(tmp))
+            env["CALLER_EVENT_NAME"] = caller_event_name
             if contract_version_value is not None:
                 env["CONTRACT_VERSION_VALUE"] = contract_version_value
+            else:
+                env.pop("CONTRACT_VERSION_VALUE", None)
             return _run_bash_script_in_dir(script, env, Path(tmp))
 
-    def test_03a_matching_contract_version_passes(self):
-        proc = self._run(WRITE_CHECK_PATH, contract_version_value=self.EXPECTED)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+    # -----------------------------------------------------------------
+    # R3必須テストの1〜7(03A/03Bの両方に適用)。caller eventは、統合
+    # workflow自身が`issues:labeled`または`workflow_dispatch`のどちらで
+    # 起動されたかを表す(called workflow内のgithub.event_nameがその値の
+    # まま伝播するため、これがテストのCALLER_EVENT_NAMEに相当する)。
+    # -----------------------------------------------------------------
 
-    def test_03a_mismatched_contract_version_fails_before_any_write(self):
-        proc = self._run(WRITE_CHECK_PATH, contract_version_value="tampered-version")
-        self.assertEqual(proc.returncode, 1)
-        self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+    def _assert_matrix(self, path: Path):
+        with self.subTest(case="1_issues_match"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=self.EXPECTED)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
 
-    def test_03a_missing_contract_version_fails(self):
-        proc = self._run(WRITE_CHECK_PATH, contract_version_value=None)
-        self.assertEqual(proc.returncode, 1)
+        with self.subTest(case="2_issues_mismatch"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=self.TAMPERED)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
 
-    def test_03b_matching_contract_version_passes(self):
-        proc = self._run(BLOCK_CHECK_PATH, contract_version_value=self.EXPECTED)
-        self.assertEqual(proc.returncode, 0, proc.stderr)
+        with self.subTest(case="3_issues_empty"):
+            proc = self._run(path, caller_event_name="issues", contract_version_value=None)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("契約versionが欠落", proc.stdout + proc.stderr)
 
-    def test_03b_mismatched_contract_version_fails_before_any_write(self):
-        proc = self._run(BLOCK_CHECK_PATH, contract_version_value="tampered-version")
-        self.assertEqual(proc.returncode, 1)
-        self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+        with self.subTest(case="4_workflow_dispatch_match"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=self.EXPECTED,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
 
-    def test_03b_missing_contract_version_fails(self):
-        proc = self._run(BLOCK_CHECK_PATH, contract_version_value=None)
-        self.assertEqual(proc.returncode, 1)
+        with self.subTest(case="5_workflow_dispatch_mismatch"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=self.TAMPERED,
+            )
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+
+        with self.subTest(case="6_workflow_dispatch_empty_direct_manual_allowed"):
+            proc = self._run(
+                path, caller_event_name="workflow_dispatch", contract_version_value=None,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+
+        with self.subTest(case="7_unknown_event_empty"):
+            proc = self._run(path, caller_event_name="schedule", contract_version_value=None)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("契約versionが欠落", proc.stdout + proc.stderr)
+
+    def test_03a_gate_matrix(self):
+        self._assert_matrix(WRITE_CHECK_PATH)
+
+    def test_03b_gate_matrix(self):
+        self._assert_matrix(BLOCK_CHECK_PATH)
+
+    # -----------------------------------------------------------------
+    # 9. private key・contract_version実値がログへ出力されないこと
+    # -----------------------------------------------------------------
+
+    def test_03a_failure_messages_never_echo_actual_contract_version_value(self):
+        for caller_event, cv in (
+            ("issues", self.TAMPERED), ("workflow_dispatch", self.TAMPERED),
+        ):
+            proc = self._run(WRITE_CHECK_PATH, caller_event_name=caller_event, contract_version_value=cv)
+            combined = proc.stdout + proc.stderr
+            self.assertNotIn(self.TAMPERED, combined)
+
+    def test_03b_failure_messages_never_echo_actual_contract_version_value(self):
+        for caller_event, cv in (
+            ("issues", self.TAMPERED), ("workflow_dispatch", self.TAMPERED),
+        ):
+            proc = self._run(BLOCK_CHECK_PATH, caller_event_name=caller_event, contract_version_value=cv)
+            combined = proc.stdout + proc.stderr
+            self.assertNotIn(self.TAMPERED, combined)
+
+    # -----------------------------------------------------------------
+    # 8. すべてのFailureでApp token生成とwrite stepが到達不能であること。
+    # この確認stepは常にjobの先頭step(WriteOrderRegressionTests側で
+    # 順序確認済み)であり、GitHub Actionsの既定shell(-eo pipefail)の下で
+    # このstepがexit 1すれば、`if:`条件を持たない後続step(Checkout等)を
+    # 含め、job全体が直ちに失敗として停止し、以降のtoken生成stepを含む
+    # 一切のstepへは到達しない。ここでは、このstepが実際にjobの唯一の
+    # 先頭step(他のいかなるstepよりも前)であることを再確認し、その事実に
+    # よってFailure時のtoken/write未到達が保証されることの根拠とする。
+    # -----------------------------------------------------------------
+
+    def test_03a_gate_is_the_single_first_step_before_any_write_capable_step(self):
+        names = _extract_step_names(WRITE_CHECK_PATH.read_text(encoding="utf-8"), "write_check")
+        self.assertEqual(names[0], "Verify contract_version (reusable call) or allow direct manual invocation")
+        self.assertNotIn("Generate Controller App write token", names[:1])
+
+    def test_03b_gate_is_the_single_first_step_before_any_write_capable_step(self):
+        names = _extract_step_names(BLOCK_CHECK_PATH.read_text(encoding="utf-8"), "block_check")
+        self.assertEqual(names[0], "Verify contract_version (reusable call) or allow direct manual invocation")
+        self.assertNotIn("Generate Controller App write token", names[:1])
 
     def test_integrated_plan_job_contract_version_literal_matches_03a_03b_expectation(self):
         # plan jobが出力するcontract_versionの固定文字列が、03A/03Bが期待する
