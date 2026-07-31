@@ -41,7 +41,6 @@ from pathlib import Path
 
 from auto001_test_controller_label_writer import _base_env, _run_bash_script_in_dir
 from auto001_test_controller_token_check import (
-    EXPECTED_FULL_NAME,
     _extract_step_run_lines,
     _parse_github_output,
 )
@@ -123,6 +122,43 @@ def _extract_step_names(text: str, job_key: str) -> list[str]:
     return names
 
 
+def _extract_job_block(text: str, job_key: str) -> str:
+    """`  <job_key>:`行から、次の2-space indentのjob key行またはEOFまでの
+    範囲を、そのままの行(2-space indent自身も含む)で返す。job単位の
+    `uses:`/`with:`/`secrets:`/`permissions:`/`concurrency:`等を、他job分と
+    混同せず個別に検査するための最小限のブロック抽出。YAML parserは使わず
+    (実CIのrequirements-ci.txtにpyyaml依存が無いため)、既存の
+    `_extract_step_names`と同じ行ベースの境界判定方式を用いる。"""
+    lines = text.splitlines()
+    job_marker = f"  {job_key}:"
+    start = next((i for i, line in enumerate(lines) if line == job_marker), None)
+    if start is None:
+        raise AssertionError(f"job {job_key} が見つかりません")
+    end = next(
+        (i for i in range(start + 1, len(lines))
+         if re.match(r"^  \S+:", lines[i])),
+        len(lines),
+    )
+    return "\n".join(lines[start:end])
+
+
+def _extract_mapping_block(block: str, key: str, *, indent: int) -> str | None:
+    """`block`内の`<indent space>key:`行から、より深いindentが続く限りの
+    行を連結して返す(単純な `key: value` 単一行mappingにも対応するため、
+    値がインラインで同じ行にある場合はその行1行を返す)。"""
+    lines = block.splitlines()
+    marker_indent = " " * indent
+    start = next(
+        (i for i, line in enumerate(lines) if line == f"{marker_indent}{key}:"), None,
+    )
+    if start is None:
+        return None
+    end = start + 1
+    while end < len(lines) and (lines[end].startswith(marker_indent + "  ") or not lines[end].strip()):
+        end += 1
+    return "\n".join(lines[start:end])
+
+
 def _run_classify_step(tmpdir: Path, planner_result: dict) -> "subprocess.CompletedProcess":
     (tmpdir / "planner_result.json").write_text(
         json.dumps(planner_result, ensure_ascii=False), encoding="utf-8",
@@ -185,36 +221,35 @@ class WorkflowStaticTests(unittest.TestCase):
         self.assertIn("if: needs.plan.outputs.writer_action == 'START'", self.text)
         self.assertIn("if: needs.plan.outputs.writer_action == 'BLOCK'", self.text)
 
-    def test_create_github_app_token_appears_exactly_twice_pinned(self):
-        matches = re.findall(
-            r"uses: actions/create-github-app-token@([0-9a-f]+) # (v\S+)", self.text,
-        )
-        self.assertEqual(len(matches), 2)
-        for sha, tag in matches:
-            self.assertEqual(len(sha), 40)
-            self.assertEqual(tag, "v3.2.0")
+    # -----------------------------------------------------------------
+    # AUTO-001-05-03-03C-R2: writer_start/writer_blockはAUTO-001-05-03-03A/
+    # 03Bをreusable workflowとして呼び出すだけであり、write本体(token生成・
+    # write API呼び出し等)を一切複製しない。以下は、それらが統合workflow
+    # ファイル自身には一切存在しないことを確認する(存在していればR2の
+    # 目的である「大量複製の除去」が達成できていないことを意味する)。
+    # -----------------------------------------------------------------
 
-    def test_app_token_permission_is_issues_write_only(self):
-        self.assertEqual(self.text.count("permission-issues: write"), 2)
-        for forbidden in (
-            "permission-contents:", "permission-pull-requests:", "permission-actions:",
-            "permission-administration:", "permission-workflows:", "permission-issues: read",
-        ):
+    def test_create_github_app_token_not_present_in_integrated_workflow(self):
+        self.assertNotIn("create-github-app-token", self.text)
+
+    def test_no_write_http_methods_in_integrated_workflow(self):
+        for forbidden in ("-X POST", "-X DELETE", "-X PATCH", "-X PUT"):
             self.assertNotIn(forbidden, self.text)
 
-    def test_token_scoped_to_current_repository_only(self):
-        self.assertEqual(
-            self.text.count("owner: ${{ github.repository_owner }}"), 2,
-        )
-        self.assertEqual(
-            self.text.count("repositories: ${{ github.event.repository.name }}"), 2,
-        )
+    def test_no_secrets_inherit_anywhere(self):
+        self.assertNotIn("secrets: inherit", self.text)
+
+    def test_only_one_secret_name_referenced(self):
+        referenced = set(re.findall(r"secrets\.(\w+)", self.text))
+        self.assertEqual(referenced, {"AUTO001_CONTROLLER_APP_PRIVATE_KEY"})
+
+    def test_client_id_variable_not_referenced_in_integrated_workflow(self):
+        # client-idはrepository variableとして呼び出し先(03A/03B)で自動的に
+        # 参照できるため、統合workflow側では一切参照しない。
+        self.assertNotIn("AUTO001_CONTROLLER_APP_CLIENT_ID", self.text)
 
     def test_does_not_disable_token_revocation(self):
         self.assertNotIn("skip-token-revoke", self.text)
-
-    def test_app_token_not_in_job_wide_env(self):
-        self.assertNotIn("\nenv:\n  APP_TOKEN", self.text)
 
     def test_no_issue_body_or_title_expression(self):
         self.assertNotIn("issue.body", self.text)
@@ -241,34 +276,146 @@ class WorkflowStaticTests(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, lower)
 
-    def test_no_comment_delete_api(self):
-        # commentへのDELETEメソッドが一切登場しないことを確認する
-        # (label削除のDELETEは許可対象。comments系URLに対するDELETEが無いことを
-        # 個別に確認する)。
-        for m in re.finditer(r"-X DELETE[\s\S]{0,400}?\"https://api\.github\.com[^\"]*\"", self.text):
-            self.assertNotIn("/comments", m.group(0))
-
-    def test_write_endpoints_allowlist(self):
-        # label POST/DELETEはwriter_start/writer_blockそれぞれで1回ずつ(計2回)、
-        # comments POST/PATCHはwriter_blockでのみ登場する。
-        self.assertEqual(self.text.count("-X POST"), 3)  # label x2 + comment create x1
-        self.assertEqual(self.text.count("-X DELETE"), 2)  # agent:ready remove x2
-        self.assertEqual(self.text.count("-X PATCH"), 1)  # comment update x1
-        self.assertNotIn("-X PUT", self.text)
-
     def test_no_automatic_retry_or_rollback(self):
         lower = self.text.lower()
         for forbidden in ("for i in 1 2 3", "retry", "until curl", "while true"):
             self.assertNotIn(forbidden, lower)
-        # 部分失敗時に直前のadd/writeを取り消す「補償的DELETE/PATCH」が無いこと
-        # (agent:ready削除・comment更新以外に、writeロールバック目的のAPI呼び出しは
-        # 実装しない)。
         self.assertNotIn("rollback", lower)
         self.assertNotIn("compensat", lower)
 
     def test_no_raw_response_body_printed(self):
         for forbidden in ("cat issue_", "cat planner_result.json", "cat comments_"):
             self.assertNotIn(forbidden, self.text)
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-05-03-03C-R2: writer_start/writer_blockが、実装本体を複製せず
+# 03A/03Bをreusable workflowとして正しく呼び出していることの静的検査。
+# ---------------------------------------------------------------------------
+
+class ReusableWorkflowDelegationTests(unittest.TestCase):
+    """YAML parserは使わず(実CIのrequirements-ci.txtにpyyaml依存が無いため)、
+    既存の`_extract_step_names`と同じ行ベースのブロック抽出方式で検査する。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.integrated_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        cls.write_check_text = WRITE_CHECK_PATH.read_text(encoding="utf-8")
+        cls.block_check_text = BLOCK_CHECK_PATH.read_text(encoding="utf-8")
+
+    @staticmethod
+    def _on_block(text: str) -> str:
+        m = re.search(r"^on:\n((?:.*\n)*?)(?=^permissions:)", text, flags=re.MULTILINE)
+        assert m is not None, "on:ブロックが見つかりません"
+        return m.group(1)
+
+    def test_writer_start_uses_exactly_03a(self):
+        block = _extract_job_block(self.integrated_text, "writer_start")
+        self.assertIn(
+            "\n    uses: ./.github/workflows/auto001-controller-write-check.yml\n", "\n" + block + "\n",
+        )
+        self.assertNotIn("\n    steps:\n", "\n" + block)
+
+    def test_writer_block_uses_exactly_03b(self):
+        block = _extract_job_block(self.integrated_text, "writer_block")
+        self.assertIn(
+            "\n    uses: ./.github/workflows/auto001-controller-block-check.yml\n", "\n" + block + "\n",
+        )
+        self.assertNotIn("\n    steps:\n", "\n" + block)
+
+    def test_writer_jobs_pass_only_issue_number_and_contract_version(self):
+        for job_key in ("writer_start", "writer_block"):
+            block = _extract_job_block(self.integrated_text, job_key)
+            with_block = _extract_mapping_block(block, "with", indent=4)
+            self.assertIsNotNone(with_block, f"{job_key}にwith:が見つかりません")
+            keys = re.findall(r"^      (\w+):", with_block, flags=re.MULTILINE)
+            self.assertEqual(set(keys), {"issue_number", "contract_version"})
+            self.assertIn("issue_number: ${{ needs.plan.outputs.issue_number }}", with_block)
+            self.assertIn("contract_version: ${{ needs.plan.outputs.contract_version }}", with_block)
+
+    def test_writer_jobs_pass_exactly_one_explicit_secret(self):
+        for job_key in ("writer_start", "writer_block"):
+            block = _extract_job_block(self.integrated_text, job_key)
+            secrets_block = _extract_mapping_block(block, "secrets", indent=4)
+            self.assertIsNotNone(secrets_block, f"{job_key}にsecrets:が見つかりません")
+            keys = re.findall(r"^      (\w+):", secrets_block, flags=re.MULTILINE)
+            self.assertEqual(keys, ["AUTO001_CONTROLLER_APP_PRIVATE_KEY"])
+            self.assertIn(
+                "AUTO001_CONTROLLER_APP_PRIVATE_KEY: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}",
+                secrets_block,
+            )
+
+    def test_writer_jobs_permissions_are_read_only(self):
+        for job_key in ("writer_start", "writer_block"):
+            block = _extract_job_block(self.integrated_text, job_key)
+            perm_block = _extract_mapping_block(block, "permissions", indent=4)
+            self.assertIsNotNone(perm_block, f"{job_key}にpermissions:が見つかりません")
+            entries = dict(re.findall(r"^      (\w+): (\w+)$", perm_block, flags=re.MULTILINE))
+            self.assertEqual(entries, {"contents": "read", "issues": "read"})
+
+    def test_writer_jobs_declare_no_own_concurrency_block(self):
+        # 03A/03B自身のtop-level concurrencyブロックだけがnamespaceの
+        # 唯一の定義元であることを保証するため、呼び出し側job(writer_start/
+        # writer_block)にconcurrencyキー自体が無いことを確認する
+        # (二重定義・namespace分岐を防ぐ)。
+        for job_key in ("writer_start", "writer_block"):
+            block = _extract_job_block(self.integrated_text, job_key)
+            self.assertNotIn("\n    concurrency:", "\n" + block)
+
+    def test_03a_declares_both_workflow_dispatch_and_workflow_call(self):
+        on_block = self._on_block(self.write_check_text)
+        self.assertIn("  workflow_dispatch:\n", on_block)
+        self.assertIn("  workflow_call:\n", on_block)
+        self.assertEqual(on_block.count("issue_number:"), 2)
+        self.assertEqual(on_block.count("type: number"), 2)
+        self.assertIn("contract_version:", on_block)
+        self.assertIn("type: string", on_block)
+
+    def test_03b_declares_both_workflow_dispatch_and_workflow_call(self):
+        on_block = self._on_block(self.block_check_text)
+        self.assertIn("  workflow_dispatch:\n", on_block)
+        self.assertIn("  workflow_call:\n", on_block)
+        self.assertEqual(on_block.count("issue_number:"), 2)
+        self.assertEqual(on_block.count("type: number"), 2)
+        self.assertIn("contract_version:", on_block)
+        self.assertIn("type: string", on_block)
+
+    def test_03a_workflow_call_declares_exactly_one_required_secret(self):
+        on_block = self._on_block(self.write_check_text)
+        self.assertEqual(on_block.count("AUTO001_CONTROLLER_APP_PRIVATE_KEY"), 1)
+        m = re.search(
+            r"    secrets:\n      AUTO001_CONTROLLER_APP_PRIVATE_KEY:\n(?:.*\n)*?        required: true\n",
+            on_block,
+        )
+        self.assertIsNotNone(m)
+
+    def test_03b_workflow_call_declares_exactly_one_required_secret(self):
+        on_block = self._on_block(self.block_check_text)
+        self.assertEqual(on_block.count("AUTO001_CONTROLLER_APP_PRIVATE_KEY"), 1)
+        m = re.search(
+            r"    secrets:\n      AUTO001_CONTROLLER_APP_PRIVATE_KEY:\n(?:.*\n)*?        required: true\n",
+            on_block,
+        )
+        self.assertIsNotNone(m)
+
+    def test_03a_and_03b_never_use_secrets_inherit(self):
+        self.assertNotIn("secrets: inherit", self.write_check_text)
+        self.assertNotIn("secrets: inherit", self.block_check_text)
+
+    def test_client_id_var_referenced_but_not_passed_as_workflow_call_input(self):
+        # vars(repository variable)はreusable workflow呼び出し時も自動的に
+        # 参照できるため、workflow_call.inputsへ含める必要が無い。既存の
+        # `vars.AUTO001_CONTROLLER_APP_CLIENT_ID`参照は03A/03B側に残り、
+        # client_idという名前のinputは統合workflow側にもworkflow_call.inputs
+        # にも一切登場しない。
+        self.assertIn("vars.AUTO001_CONTROLLER_APP_CLIENT_ID", self.write_check_text)
+        self.assertIn("vars.AUTO001_CONTROLLER_APP_CLIENT_ID", self.block_check_text)
+        for on_block in (
+            self._on_block(self.write_check_text), self._on_block(self.block_check_text),
+        ):
+            self.assertNotIn("client_id", on_block)
+        self.assertNotIn("client_id", self.integrated_text)
+        self.assertNotIn("client-id", self.integrated_text)
 
 
 # ---------------------------------------------------------------------------
@@ -308,7 +455,9 @@ class PlanWriterBoundaryTests(unittest.TestCase):
         self.assertIn("contract_version", referenced)
 
     def test_plan_job_body_never_passes_raw_issue_or_errors_full_text(self):
-        plan_block = self.text.split("  writer_start:")[0]
+        # `plan:`job自身の本体だけを対象にする(ファイル先頭のheaderコメントは
+        # 対象外)。
+        plan_block = _extract_job_block(self.text, "plan")
         self.assertNotIn("issue_snapshot", plan_block)
         self.assertNotIn("comments_snapshot", plan_block)
         # errorsの中身(message全文)をGITHUB_OUTPUTへ書き出していないこと。
@@ -316,28 +465,31 @@ class PlanWriterBoundaryTests(unittest.TestCase):
         self.assertNotIn('errors[', plan_block)
 
     def test_plan_job_never_generates_app_token(self):
-        plan_block = self.text.split("  writer_start:")[0]
+        plan_block = _extract_job_block(self.text, "plan")
         self.assertNotIn("create-github-app-token", plan_block)
         self.assertNotIn("AUTO001_CONTROLLER_APP_PRIVATE_KEY", plan_block)
         self.assertNotIn("AUTO001_CONTROLLER_APP_CLIENT_ID", plan_block)
 
-    def test_only_writer_jobs_generate_app_token(self):
-        writer_start_block = self.text.split("  writer_start:")[1].split("  writer_block:")[0]
-        writer_block_block = self.text.split("  writer_block:")[1]
-        self.assertIn("create-github-app-token", writer_start_block)
-        self.assertIn("create-github-app-token", writer_block_block)
+    def test_no_job_in_integrated_workflow_generates_app_token_directly(self):
+        # AUTO-001-05-03-03C-R2: token生成はAUTO-001-05-03-03A/03B
+        # (auto001-controller-write-check.yml / auto001-controller-block-check.yml)
+        # 側に1箇所ずつだけ実装されており、統合workflow自身(plan/writer_start/
+        # writer_block)のいずれのjobにも直接のtoken生成stepは存在しない。
+        self.assertNotIn("create-github-app-token", self.text)
 
-    def test_writer_jobs_verify_contract_version_before_any_other_step(self):
-        for job_key in ("writer_start", "writer_block"):
-            names = _extract_step_names(self.text, job_key)
-            self.assertEqual(names[0], "Verify plan/writer contract_version matches expected")
-            # このstepより前にtoken生成やcurlが無いこと(tokenへ辿り着く前段の
-            # 最初のgateであること)。
-            job_marker = f"  {job_key}:"
-            start = self.text.index(f"\n{job_marker}\n")
-            first_step_idx = self.text.index("- name: Verify plan/writer contract_version", start)
-            prelude = self.text[start:first_step_idx]
-            self.assertNotIn("create-github-app-token", prelude)
+    def test_called_writers_verify_contract_version_before_token_generation(self):
+        # AUTO-001-05-03-03A/03B側で、contract_version確認stepが
+        # token生成stepより前にあることを確認する(統合workflow経由での
+        # 呼び出し時、token生成前に契約versionを確認するという契約境界)。
+        for path, job_key in (
+            (WRITE_CHECK_PATH, "write_check"), (BLOCK_CHECK_PATH, "block_check"),
+        ):
+            text = path.read_text(encoding="utf-8")
+            names = _extract_step_names(text, job_key)
+            verify_idx = names.index("Verify caller contract_version matches expected (workflow_call only)")
+            token_idx = names.index("Generate Controller App write token")
+            self.assertLess(verify_idx, token_idx)
+            self.assertEqual(verify_idx, 0, "contract_version確認は先頭stepであるべき")
 
 
 # ---------------------------------------------------------------------------
@@ -365,14 +517,18 @@ class ConcurrencyNamespaceTests(unittest.TestCase):
         self.assertTrue(group.startswith(self.GROUP_TEMPLATE_PREFIX))
         self.assertIn("${{ inputs.issue_number }}", group)
 
-    def test_integrated_writer_jobs_use_shared_namespace(self):
+    def test_integrated_workflow_has_no_write_concurrency_group_of_its_own(self):
+        # AUTO-001-05-03-03C-R2: writer_start/writer_blockはconcurrencyを
+        # 自前で宣言しない(ReusableWorkflowDelegationTests参照)。統合
+        # workflowファイル全体を見ても、`group: auto001-controller-write-`
+        # というwrite namespace用のgroup定義行は一切登場しない(03A/03B側に
+        # だけ1箇所ずつ定義され、それがwriter_start/writer_block呼び出し時にも
+        # 評価されるため、統合workflow側で重複定義するとnamespace分岐のリスク
+        # になる)。ファイル名自体に含まれる"auto001-controller-write-check.yml"
+        # という文字列(`uses:`行やコメント中の言及)は許可対象であり、
+        # 判定対象から除く。
         text = WORKFLOW_PATH.read_text(encoding="utf-8")
-        groups = re.findall(r"group: (auto001-controller-write-\$\{\{.+\})", text)
-        # writer_start, writer_blockの2箇所
-        self.assertEqual(len(groups), 2)
-        for group in groups:
-            self.assertTrue(group.startswith(self.GROUP_TEMPLATE_PREFIX))
-            self.assertIn("${{ needs.plan.outputs.issue_number }}", group)
+        self.assertNotIn("group: auto001-controller-write-", text)
 
     def test_cancel_in_progress_false_everywhere(self):
         for path in (WRITE_CHECK_PATH, BLOCK_CHECK_PATH, WORKFLOW_PATH):
@@ -418,57 +574,113 @@ class WriteOrderRegressionTests(unittest.TestCase):
         "Publish job summary (fixed non-secret fields only)",
     ]
 
-    def test_03a_step_order_is_validate_then_common_sequence(self):
+    def test_03a_step_order_is_contract_version_then_validate_then_common_sequence(self):
+        # AUTO-001-05-03-03C-R2: 先頭に「Verify caller contract_version
+        # matches expected (workflow_call only)」が追加された(workflow_call
+        # 経由の場合だけ有効。workflow_dispatchでは無条件skipされ既存の
+        # 手動経路の挙動は変わらない)。それ以降のstep順序・step名は
+        # AUTO-001-05-03-03A時点から一切変更していない。
         names = _extract_step_names(
             WRITE_CHECK_PATH.read_text(encoding="utf-8"), "write_check",
         )
         self.assertEqual(
             names,
-            ["Checkout", "Set up Python 3.12", "Validate issue_number input format"]
+            [
+                "Verify caller contract_version matches expected (workflow_call only)",
+                "Checkout", "Set up Python 3.12", "Validate issue_number input format",
+            ]
             + self.COMMON_START_STEPS,
         )
 
-    def test_03b_step_order_is_validate_then_common_sequence(self):
+    def test_03b_step_order_is_contract_version_then_validate_then_common_sequence(self):
         names = _extract_step_names(
             BLOCK_CHECK_PATH.read_text(encoding="utf-8"), "block_check",
         )
         self.assertEqual(
             names,
-            ["Checkout", "Set up Python 3.12", "Validate issue_number input format"]
+            [
+                "Verify caller contract_version matches expected (workflow_call only)",
+                "Checkout", "Set up Python 3.12", "Validate issue_number input format",
+            ]
             + self.COMMON_BLOCK_STEPS,
         )
 
-    def test_writer_start_step_order_matches_03a_common_sequence(self):
-        names = _extract_step_names(WORKFLOW_PATH.read_text(encoding="utf-8"), "writer_start")
-        self.assertEqual(
-            names,
-            ["Verify plan/writer contract_version matches expected", "Checkout", "Set up Python 3.12"]
-            + self.COMMON_START_STEPS,
+    def test_03a_contract_version_step_is_skipped_for_workflow_dispatch(self):
+        text = WRITE_CHECK_PATH.read_text(encoding="utf-8")
+        m = re.search(
+            r"- name: Verify caller contract_version matches expected \(workflow_call only\)\n"
+            r"        id: verify_contract_version\n"
+            r"        if: github\.event_name == 'workflow_call'\n",
+            text,
         )
+        self.assertIsNotNone(m)
 
-    def test_writer_block_step_order_matches_03b_common_sequence(self):
-        names = _extract_step_names(WORKFLOW_PATH.read_text(encoding="utf-8"), "writer_block")
-        self.assertEqual(
-            names,
-            ["Verify plan/writer contract_version matches expected", "Checkout", "Set up Python 3.12"]
-            + self.COMMON_BLOCK_STEPS,
+    def test_03b_contract_version_step_is_skipped_for_workflow_dispatch(self):
+        text = BLOCK_CHECK_PATH.read_text(encoding="utf-8")
+        m = re.search(
+            r"- name: Verify caller contract_version matches expected \(workflow_call only\)\n"
+            r"        id: verify_contract_version\n"
+            r"        if: github\.event_name == 'workflow_call'\n",
+            text,
         )
+        self.assertIsNotNone(m)
 
-    def test_writer_start_invokes_same_cli_subcommands_in_order_as_03a(self):
-        pattern = re.compile(r"scripts\.controller_label_writer (\S+)")
-        a_calls = pattern.findall(WRITE_CHECK_PATH.read_text(encoding="utf-8"))
-        integrated_calls = pattern.findall(
-            WORKFLOW_PATH.read_text(encoding="utf-8").split("  writer_start:")[1].split("  writer_block:")[0]
-        )
-        self.assertEqual(integrated_calls, a_calls)
 
-    def test_writer_block_invokes_same_cli_subcommands_in_order_as_03b(self):
-        pattern = re.compile(r"scripts\.controller_block_writer (\S+)")
-        b_calls = pattern.findall(BLOCK_CHECK_PATH.read_text(encoding="utf-8"))
-        integrated_calls = pattern.findall(
-            WORKFLOW_PATH.read_text(encoding="utf-8").split("  writer_block:")[1]
+# ---------------------------------------------------------------------------
+# AUTO-001-05-03-03C-R2: called writer(03A/03B)がcontract version不一致で
+# token生成前に停止することのsubprocess検証。
+# ---------------------------------------------------------------------------
+
+class CalledWriterContractVersionGateTests(unittest.TestCase):
+
+    EXPECTED = "AUTO-001-05-03-03C-writer-v1"
+
+    def _run(self, path: Path, *, contract_version_value: str | None):
+        script = _extract_step_run_lines(
+            path.read_text(encoding="utf-8"), "verify_contract_version",
         )
-        self.assertEqual(integrated_calls, b_calls)
+        with tempfile.TemporaryDirectory() as tmp:
+            env = _base_env(Path(tmp))
+            if contract_version_value is not None:
+                env["CONTRACT_VERSION_VALUE"] = contract_version_value
+            return _run_bash_script_in_dir(script, env, Path(tmp))
+
+    def test_03a_matching_contract_version_passes(self):
+        proc = self._run(WRITE_CHECK_PATH, contract_version_value=self.EXPECTED)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
+    def test_03a_mismatched_contract_version_fails_before_any_write(self):
+        proc = self._run(WRITE_CHECK_PATH, contract_version_value="tampered-version")
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+
+    def test_03a_missing_contract_version_fails(self):
+        proc = self._run(WRITE_CHECK_PATH, contract_version_value=None)
+        self.assertEqual(proc.returncode, 1)
+
+    def test_03b_matching_contract_version_passes(self):
+        proc = self._run(BLOCK_CHECK_PATH, contract_version_value=self.EXPECTED)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+
+    def test_03b_mismatched_contract_version_fails_before_any_write(self):
+        proc = self._run(BLOCK_CHECK_PATH, contract_version_value="tampered-version")
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("token生成前に停止", proc.stdout + proc.stderr)
+
+    def test_03b_missing_contract_version_fails(self):
+        proc = self._run(BLOCK_CHECK_PATH, contract_version_value=None)
+        self.assertEqual(proc.returncode, 1)
+
+    def test_integrated_plan_job_contract_version_literal_matches_03a_03b_expectation(self):
+        # plan jobが出力するcontract_versionの固定文字列が、03A/03Bが期待する
+        # 固定文字列と一致していること(この値はGitHub Actions上の実際の
+        # 値の受け渡しでは検証できないため、双方のソースの固定文字列リテラル
+        # が一致していることを静的に確認する)。
+        integrated_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertIn(f'print("contract_version={self.EXPECTED}")', integrated_text)
+        for path in (WRITE_CHECK_PATH, BLOCK_CHECK_PATH):
+            text = path.read_text(encoding="utf-8")
+            self.assertIn(f'expected="{self.EXPECTED}"', text)
 
 
 # ---------------------------------------------------------------------------

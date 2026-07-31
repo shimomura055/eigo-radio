@@ -3,12 +3,19 @@ name: AUTO-001 Controller App Block Check
 # AUTO-001-05-03-03B: Controller GitHub App(eigo-radio-auto-controller)を使い、
 # plannerが算出した固定write planだけを実行して、preflight不合格の指定Issueを
 # agent:ready -> agent:blocked へ安全に遷移させ、契約違反を説明する管理コメント
-# (managed comment)を1件だけ作成・更新する、手動実行専用workflow。
+# (managed comment)を1件だけ作成・更新するworkflow。
+#
+# AUTO-001-05-03-03C-R2: 従来の手動workflow_dispatch経路に加え、このworkflow
+# 自体をreusable workflow(workflow_call)としても呼び出せるようにした。
+# auto001-controller-integrated.ymlのwriter_blockジョブは、この書き込み本体
+# を統合workflow側へ複製せず、`uses: ./.github/workflows/auto001-controller-block-check.yml`
+# で直接このworkflowを呼び出す。write step・reason code・managed comment契約・
+# token生成位置・API endpoint allowlistは、呼び出し経路(workflow_dispatch/
+# workflow_call)に関わらず完全に同一である。
 #
 # このworkflowはClaude Codeを起動しない。Issue本文/タイトル編集・close/reopen・
 # assignee/milestone変更・branch作成・commit・push・PR作成・repository label
-# 変更・コメント削除のいずれも行わない。`issues:labeled`イベントへはまだ
-# 接続しない(workflow_dispatch専用)。
+# 変更・コメント削除のいずれも行わない。
 #
 # managed commentの本文は、plannerのdry-run専用文言(planned_comment)を一切
 # 使わず、scripts.controller_block_writer.build_canonical_block_comment()が
@@ -27,15 +34,36 @@ on:
         description: "ラベル遷移(agent:ready -> agent:blocked)の対象Issue番号"
         required: true
         type: number
+  # AUTO-001-05-03-03C-R2: 呼び出し元はauto001-controller-integrated.ymlの
+  # writer_blockジョブだけを想定する。呼び出し元の全secretsを一括継承する
+  # 指定(inherit)は使わず、Controller
+  # App private keyだけを呼び出し元から明示的に受け取る(client-idは
+  # repository variableとして呼び出し先でも自動的に参照できるため、
+  # inputs/secretsのいずれにも含めない)。
+  workflow_call:
+    inputs:
+      issue_number:
+        description: "ラベル遷移(agent:ready -> agent:blocked)の対象Issue番号"
+        required: true
+        type: number
+      contract_version:
+        description: "呼び出し元のplan/writer契約バージョン。token生成前に固定期待値と一致することを確認する。"
+        required: true
+        type: string
+    secrets:
+      AUTO001_CONTROLLER_APP_PRIVATE_KEY:
+        description: "Controller GitHub App(eigo-radio-auto-controller)のprivate key。"
+        required: true
 
 permissions:
   contents: read
   issues: read
 
-# AUTO-001-05-03-03C: この統合workflow(auto001-controller-integrated.yml)の
-# writer_start/writer_blockと、AUTO-001-05-03-03A(auto001-controller-write-check.yml)
-# との並行書き込みを防ぐため、Controller書き込みworkflow間で共通の
-# concurrency namespace(repository+Issue番号)を使用する。
+# AUTO-001-05-03-03C-R2: この値は、auto001-controller-integrated.ymlの
+# writer_start/writer_blockからの呼び出し、AUTO-001-05-03-03A
+# (auto001-controller-write-check.yml)のworkflow_dispatch/workflow_call、
+# およびこのworkflow自身のworkflow_dispatchの、合計4経路すべてで
+# 完全に同一の文字列テンプレートを使う(呼び出し経路によって分岐しない)。
 concurrency:
   group: auto001-controller-write-${{ github.repository }}-${{ inputs.issue_number }}
   cancel-in-progress: false
@@ -48,6 +76,24 @@ jobs:
       contents: read
       issues: read
     steps:
+      # AUTO-001-05-03-03C-R2: workflow_call経由の場合だけ、呼び出し元の
+      # plan jobが確定したcontract_versionが固定期待値と一致することを、
+      # Controller App token生成より前に確認する。workflow_dispatch(手動
+      # 実行)ではinputs.contract_versionは未定義のためこのstepは無条件で
+      # skipし、既存の手動経路の挙動・step順序を変えない。
+      - name: Verify caller contract_version matches expected (workflow_call only)
+        id: verify_contract_version
+        if: github.event_name == 'workflow_call'
+        env:
+          CONTRACT_VERSION_VALUE: ${{ inputs.contract_version }}
+        run: |
+          set -u
+          expected="AUTO-001-05-03-03C-writer-v1"
+          if [ "${CONTRACT_VERSION_VALUE:-}" != "$expected" ]; then
+            echo "::error::呼び出し元のcontract_versionが想定外です。token生成前に停止します。"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
