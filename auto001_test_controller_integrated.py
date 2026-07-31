@@ -324,13 +324,20 @@ class ReusableWorkflowDelegationTests(unittest.TestCase):
         self.assertNotIn("\n    steps:\n", "\n" + block)
 
     def test_writer_jobs_pass_only_issue_number_and_contract_version(self):
+        # AUTO-001-05-03-03C-R5: job outputは常に文字列型だが、03A/03Bの
+        # workflow_call.inputs.issue_numberはtype: numberで宣言されている
+        # (IssueNumberTypeContractTests参照)。この型不一致を解消するため、
+        # issue_numberだけはfromJSON()でnumber型へ明示変換してから渡す
+        # (contract_versionはstring型のままなので変換しない)。
         for job_key in ("writer_start", "writer_block"):
             block = _extract_job_block(self.integrated_text, job_key)
             with_block = _extract_mapping_block(block, "with", indent=4)
             self.assertIsNotNone(with_block, f"{job_key}にwith:が見つかりません")
             keys = re.findall(r"^      (\w+):", with_block, flags=re.MULTILINE)
             self.assertEqual(set(keys), {"issue_number", "contract_version"})
-            self.assertIn("issue_number: ${{ needs.plan.outputs.issue_number }}", with_block)
+            self.assertIn(
+                "issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}", with_block,
+            )
             self.assertIn("contract_version: ${{ needs.plan.outputs.contract_version }}", with_block)
 
     def test_writer_jobs_pass_exactly_one_explicit_secret(self):
@@ -416,6 +423,301 @@ class ReusableWorkflowDelegationTests(unittest.TestCase):
             self.assertNotIn("client_id", on_block)
         self.assertNotIn("client_id", self.integrated_text)
         self.assertNotIn("client-id", self.integrated_text)
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-05-03-03C-R5: needs.plan.outputs.issue_number(常に文字列)と
+# 03A/03Bのworkflow_call.inputs.issue_number(type: number)の型不一致対策。
+#
+# Run 30669056610では、writer_block(reusable workflow呼び出し)がrunner
+# 起動前に(job/step/ログを一切残さず)失敗し、run全体がFailureになった。
+# GitHub REST API(read-only, 認証無し)でjobs/check-runsを確認したところ、
+# planジョブ(success)とwriter_start(skipped、0 step)の2件しか存在せず、
+# writer_blockはjobとしてすら現れなかった(skippedとして現れるwriter_start
+# とは異なる)。これは、`if:`条件が真になった直後、`with:`の型検証で
+# reusable workflow呼び出し自体がdispatchされる前に失敗したことと整合する。
+#
+# 対策は2段構え:
+#   (1) plan jobのclassify stepで、issue_numberが厳密な正の整数文字列
+#       (`^[1-9][0-9]*$`)であることを確認してから$GITHUB_OUTPUTへ書き出す。
+#   (2) writer_start/writer_blockの`with:`側で、その文字列をfromJSON()で
+#       number型に変換してから03A/03Bへ渡す。
+#
+# (1)が必要な理由: GitHub Actionsの`type: number`はJSONの数値型であること
+# だけを検査する構文チェックであり、0・負数・小数はいずれも構文的には有効な
+# JSON数値であるため、(2)のfromJSON()だけでは「業務上不正な」issue_number
+# (0以下・小数)を検出できない。空文字列・数字以外の文字列は(2)の時点で
+# fromJSON自体が例外を送出するが、その失敗はplan job自身ではなく呼び出し先
+# job側の型検証タイミングで起こるため、(1)がなければ本Issueと同種の
+# 「runner起動前の無言failure」を再発し得る。
+# ---------------------------------------------------------------------------
+
+class IssueNumberTypeContractTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.integrated_text = WORKFLOW_PATH.read_text(encoding="utf-8")
+        cls.write_check_text = WRITE_CHECK_PATH.read_text(encoding="utf-8")
+        cls.block_check_text = BLOCK_CHECK_PATH.read_text(encoding="utf-8")
+
+    @staticmethod
+    def _actions_from_json(value: str):
+        """GitHub Actionsの`fromJSON()`関数は、文字列をJSONとして解釈し、
+        対応するデータ型の値を返す(公式ドキュメントに明記された動作)。
+        `json.loads`はこれと同一の解釈規則(RFC 8259準拠のJSONパーサ)を
+        持つため、実runner無しでの近似的な式評価検査として使う。"""
+        return json.loads(value)
+
+    def _fixture(self, **overrides) -> dict:
+        base = {
+            "issue_number": 12,
+            "decision": "WOULD_START",
+            "applicable": True,
+            "preflight_valid": True,
+            "current_labels": ["agent:ready"],
+            "planned_remove_labels": ["agent:ready"],
+            "planned_add_labels": ["agent:working"],
+            "planned_comment": None,
+            "errors": [],
+            "reason": "preflight_pass",
+        }
+        base.update(overrides)
+        return base
+
+    def _run(self, fixture: dict):
+        with tempfile.TemporaryDirectory() as tmp:
+            proc = _run_classify_step(Path(tmp), fixture)
+            output = _parse_github_output(Path(tmp) / "github_output.txt")
+            return proc, output
+
+    # -----------------------------------------------------------------
+    # 静的検査: with:側がfromJSON()でnumber型へ変換していること
+    # (03A/03Bそれぞれで個別に確認する)。
+    # -----------------------------------------------------------------
+
+    def test_writer_start_with_block_converts_issue_number_via_fromjson(self):
+        block = _extract_job_block(self.integrated_text, "writer_start")
+        with_block = _extract_mapping_block(block, "with", indent=4)
+        self.assertIsNotNone(with_block)
+        self.assertIn(
+            "issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}", with_block,
+        )
+        self.assertIn("uses: ./.github/workflows/auto001-controller-write-check.yml", block)
+
+    def test_writer_block_with_block_converts_issue_number_via_fromjson(self):
+        block = _extract_job_block(self.integrated_text, "writer_block")
+        with_block = _extract_mapping_block(block, "with", indent=4)
+        self.assertIsNotNone(with_block)
+        self.assertIn(
+            "issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}", with_block,
+        )
+        self.assertIn("uses: ./.github/workflows/auto001-controller-block-check.yml", block)
+
+    def test_contract_version_is_not_wrapped_in_fromjson(self):
+        # contract_versionはworkflow_call.inputsでtype: stringのままであり
+        # (03A/03B側は変更していない)、fromJSON()で包む必要が無い。
+        for job_key in ("writer_start", "writer_block"):
+            block = _extract_job_block(self.integrated_text, job_key)
+            with_block = _extract_mapping_block(block, "with", indent=4)
+            self.assertIn(
+                "contract_version: ${{ needs.plan.outputs.contract_version }}", with_block,
+            )
+            self.assertNotIn("fromJSON(needs.plan.outputs.contract_version)", with_block)
+
+    # -----------------------------------------------------------------
+    # 必須テスト1・2: "12"(文字列)がnumberの12として03A/03Bへ渡ることを、
+    # 実際のclassify step出力 + fromJSON相当の式評価の両方で確認する。
+    # -----------------------------------------------------------------
+
+    def test_1_valid_issue_number_reaches_03a_as_number_12(self):
+        proc, output = self._run(self._fixture(issue_number=12, decision="WOULD_START"))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(output.get("issue_number"), "12")
+        self.assertEqual(output.get("writer_action"), "START")
+        converted = self._actions_from_json(output["issue_number"])
+        self.assertEqual(converted, 12)
+        self.assertIsInstance(converted, int)
+        self.assertIn(
+            "issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}",
+            _extract_mapping_block(
+                _extract_job_block(self.integrated_text, "writer_start"), "with", indent=4,
+            ),
+        )
+
+    def test_2_valid_issue_number_reaches_03b_as_number_12(self):
+        proc, output = self._run(
+            self._fixture(
+                issue_number=12, decision="WOULD_BLOCK_PREFLIGHT", preflight_valid=False,
+                planned_add_labels=["agent:blocked"],
+                errors=[{"code": "MISSING_HEADING", "section": None, "message": "x"}],
+                reason="preflight_contract_violation",
+            ),
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(output.get("issue_number"), "12")
+        self.assertEqual(output.get("writer_action"), "BLOCK")
+        converted = self._actions_from_json(output["issue_number"])
+        self.assertEqual(converted, 12)
+        self.assertIsInstance(converted, int)
+        self.assertIn(
+            "issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}",
+            _extract_mapping_block(
+                _extract_job_block(self.integrated_text, "writer_block"), "with", indent=4,
+            ),
+        )
+
+    # -----------------------------------------------------------------
+    # 必須テスト3〜7: fail-closed行列。classify stepが不正なissue_numberを
+    # 検出し、$GITHUB_OUTPUTへ何も書き出さずにFailureすること。
+    # -----------------------------------------------------------------
+
+    def test_3_to_7_invalid_issue_number_values_fail_closed(self):
+        cases = {
+            "3_empty_string": "",
+            "4_non_numeric": "abc",
+            "5_decimal": "12.5",
+            "6_zero": "0",
+            "7_negative": "-1",
+        }
+        for case_name, bad_value in cases.items():
+            with self.subTest(case=case_name, issue_number=bad_value):
+                proc, output = self._run(self._fixture(issue_number=bad_value))
+                self.assertEqual(proc.returncode, 1, proc.stderr)
+                self.assertEqual(output, {})
+                self.assertNotIn("writer_action", output)
+
+    def test_boundary_valid_positive_integers_pass(self):
+        for good_value in (1, 9, 10, 100, 999999):
+            with self.subTest(issue_number=good_value):
+                proc, output = self._run(self._fixture(issue_number=good_value))
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                self.assertEqual(output.get("issue_number"), str(good_value))
+
+    def test_leading_zero_issue_number_is_rejected(self):
+        # JSONの数値リテラルとしては無効だが、文字列型として渡ってきた場合
+        # (例: 上流のバグでゼロ埋めされた場合)も、先頭ゼロは正の整数の正規
+        # 表現ではないため拒否する。
+        proc, output = self._run(self._fixture(issue_number="007"))
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        self.assertEqual(output, {})
+
+    # -----------------------------------------------------------------
+    # fromJSON()自身の意味論確認: GitHub Actionsの`type: number`は構文的な
+    # JSON数値検査に過ぎず、0・負数・小数はいずれも構文的には有効なJSON数値
+    # であるため、fromJSON()を通すだけでは業務ルール(正の整数)を検証でき
+    # ない。これが、classify step側での明示的な正規表現検査(regex
+    # `^[1-9][0-9]*$`)が別途必要な理由である。
+    # -----------------------------------------------------------------
+
+    def test_fromjson_alone_would_not_reject_business_invalid_numbers(self):
+        for value, expected in (("0", 0), ("-1", -1), ("12.5", 12.5)):
+            with self.subTest(value=value):
+                self.assertEqual(self._actions_from_json(value), expected)
+
+    def test_fromjson_alone_rejects_syntactically_invalid_strings(self):
+        for value in ("", "abc"):
+            with self.subTest(value=value):
+                with self.assertRaises(json.JSONDecodeError):
+                    self._actions_from_json(value)
+
+    # -----------------------------------------------------------------
+    # 必須テスト8: contract_versionの固定値は本修正で変化しない。
+    # -----------------------------------------------------------------
+
+    def test_8_contract_version_literal_unchanged_by_this_fix(self):
+        proc, output = self._run(self._fixture())
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(output.get("contract_version"), "AUTO-001-05-03-03C-writer-v1")
+
+    # -----------------------------------------------------------------
+    # 必須テスト9・10: STARTはwriter_start(03A)だけ、BLOCKはwriter_block
+    # (03B)だけを呼ぶこと(相互排他)。
+    # -----------------------------------------------------------------
+
+    def test_9_start_action_matches_only_writer_start_gate(self):
+        proc, output = self._run(self._fixture(issue_number=12, decision="WOULD_START"))
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(output.get("writer_action"), "START")
+        self.assertNotEqual(output.get("writer_action"), "BLOCK")
+        self.assertIn("if: needs.plan.outputs.writer_action == 'START'", self.integrated_text)
+
+    def test_10_block_action_matches_only_writer_block_gate(self):
+        proc, output = self._run(
+            self._fixture(
+                issue_number=12, decision="WOULD_BLOCK_PREFLIGHT", preflight_valid=False,
+                planned_add_labels=["agent:blocked"],
+                errors=[{"code": "MISSING_HEADING", "section": None, "message": "x"}],
+                reason="preflight_contract_violation",
+            ),
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(output.get("writer_action"), "BLOCK")
+        self.assertNotEqual(output.get("writer_action"), "START")
+        self.assertIn("if: needs.plan.outputs.writer_action == 'BLOCK'", self.integrated_text)
+
+    # -----------------------------------------------------------------
+    # 必須テスト11: NONE(applicable無し)またはissue_number起因のplan
+    # Failureでは、writer_start/writer_blockのどちらも起動条件を満たさない。
+    # -----------------------------------------------------------------
+
+    def test_11_none_decision_and_bad_issue_number_failure_trigger_neither_writer(self):
+        # NONE系: 正常終了だがwriter_action=NONE。
+        proc, output = self._run(
+            self._fixture(
+                issue_number=12, decision="NOT_APPLICABLE", applicable=False, preflight_valid=None,
+                planned_remove_labels=[], planned_add_labels=[], reason="label_not_agent_ready",
+            ),
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertNotIn(output.get("writer_action"), ("START", "BLOCK"))
+
+        # Failure系: 本修正で追加したissue_number検証によるFailure。
+        proc, output = self._run(self._fixture(issue_number="abc"))
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        self.assertNotIn(output.get("writer_action"), ("START", "BLOCK"))
+
+    # -----------------------------------------------------------------
+    # 必須テスト12: Failure時にsecret・token・writeへ進まないこと。
+    # classify stepがFailureした場合、$GITHUB_OUTPUTには何も書き込まれない
+    # ため、needs.plan.outputs.writer_action は('START'/'BLOCK'いずれとも
+    # 一致しない)空文字列になり、writer_start/writer_blockのjob自体が
+    # 起動しない(WorkflowStaticTests.test_writer_jobs_gated_on_exact_writer_action
+    # で確認済みのgate式による)。加えて、plan job自身がstep失敗によりjob
+    # 全体としてもFailureになるため、`needs: plan`を持つwriter_start/
+    # writer_blockはGitHub Actionsの既定動作としてもSkipされる(依存job
+    # 失敗時の既定skip)。
+    # -----------------------------------------------------------------
+
+    def test_12_invalid_issue_number_failure_leaves_no_output_for_downstream_gate(self):
+        for bad_value in ("", "abc", "12.5", "0", "-1"):
+            with self.subTest(issue_number=bad_value):
+                proc, output = self._run(self._fixture(issue_number=bad_value))
+                self.assertEqual(proc.returncode, 1)
+                self.assertEqual(output, {})
+                self.assertIsNone(output.get("writer_action"))
+                self.assertIsNone(output.get("contract_version"))
+
+    # -----------------------------------------------------------------
+    # 必須テスト13: 03A/03Bのworkflow_dispatch直接手動経路は、本修正の
+    # 影響を受けず、依然としてtype: numberのまま(統合workflow経由の
+    # `with:`だけを変更し、03A/03B自身のinputs宣言は変更していない)。
+    # -----------------------------------------------------------------
+
+    def test_13_direct_workflow_dispatch_paths_still_declare_number_type(self):
+        for text in (self.write_check_text, self.block_check_text):
+            m = re.search(
+                r"  workflow_dispatch:\n    inputs:\n      issue_number:\n"
+                r"(?:        .+\n)*?        type: number\n",
+                text,
+            )
+            self.assertIsNotNone(m, "workflow_dispatch.inputs.issue_numberはtype: numberのまま")
+
+    def test_13_write_check_and_block_check_files_unchanged_by_this_fix(self):
+        # 対象範囲は統合workflowとそのテストだけであり、03A/03B自身の
+        # ファイルは変更しない(fromJSON変換・issue_number検証はすべて
+        # 呼び出し側で完結する)。
+        self.assertNotIn("fromJSON", self.write_check_text)
+        self.assertNotIn("fromJSON", self.block_check_text)
 
 
 # ---------------------------------------------------------------------------
