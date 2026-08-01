@@ -1,0 +1,277 @@
+name: AUTO-001 Implementer Launcher Dry-Run
+
+# AUTO-001-06-01: `agent:working`ラベルが付与されたIssueについて、
+# Implementer(将来のClaude Code起動等)を実際に起動してよいかをread-only
+# で判定し、契約正常な場合に決定的なtask bundle(JSON)を生成するdry-run。
+#
+# このworkflowは、Claude Code・Implementer App・Controller App・GitHub App
+# のいずれも起動・接続しない。標準GITHUB_TOKEN(contents: read / issues: read)
+# だけを使い、write API(POST/PATCH/PUT/DELETE)は一切呼ばない。Issue本文/
+# タイトル/ラベル/branch/commit/PRのいずれも変更しない。
+#
+# 重複起動判定(WOULD_BLOCK_DUPLICATE)は、branch命名・PR紐付け・実装開始
+# markerの契約が未確定なため、v1では到達不能な予約値として定義するに
+# 留める(scripts/implementer_launcher.py参照。推測で実装しない)。
+#
+# Issue本文は取得直後にファイルへ保存し、Python側だけがファイル経由で
+# 読み取る。shell変数・command substitution・GITHUB_OUTPUT・環境変数・
+# Job Summaryへ本文全文を流さない(scripts/implementer_launcher.pyが
+# task bundle生成・再取得整合性検査を担い、このworkflow自身はcurlによる
+# GET呼び出しとstep間のファイル受け渡しだけを行う)。
+
+on:
+  issues:
+    types:
+      - labeled
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "起動可否をread-onlyで判定する対象Issue番号"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: auto001-implementer-launcher-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number || 'unknown' }}
+  cancel-in-progress: false
+
+jobs:
+  launcher_dry_run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # AUTO-001-05-03-03C-R5で確立したfail-closed検証を再利用する
+      # (scripts.implementer_launcher.parse_positive_integer_strictと
+      # 同一の正規表現。空文字列・0・負数・小数・数字以外・先頭ゼロを
+      # すべて拒否する)。shell側とPython側で別々の正規表現を持たない。
+      - name: Validate issue_number input format (workflow_dispatch only)
+        id: validate_issue_number
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          set -u
+          if python -m scripts.implementer_launcher validate-issue-number "$ISSUE_NUMBER_INPUT"; then
+            :
+          else
+            echo "::error::issue_numberが正の整数ではありません(空文字列・0・負数・小数・先頭ゼロは不可): $ISSUE_NUMBER_INPUT"
+            exit 1
+          fi
+
+      # 標準GITHUB_TOKEN(issues: read)によるread-only GETだけを使う。
+      # issues:labeledの場合も、イベントpayloadに埋め込まれた情報を信用
+      # せず、判定直前のIssue現在状態をGitHub APIから取得する。
+      - name: Fetch target issue (read-only)
+        id: fetch_issue
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          TARGET_ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_snapshot.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${TARGET_ISSUE_NUMBER}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "decision=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "reason_code=RESPONSE_VALIDATION_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::対象Issueの取得に失敗しました(reason_code=RESPONSE_VALIDATION_FAILED)"
+            exit 1
+          fi
+          echo "target_issue_number=${TARGET_ISSUE_NUMBER}" >> "$GITHUB_OUTPUT"
+
+          # issue_body_sha256は固定長(64桁hex)の短い安全な値であり、本文
+          # そのものではないため出力してよい(本文自体はここでは読み取らない
+          # ままPythonへ渡す。sha256計算のためだけにファイルを1回読む)。
+          body_sha256=$(python -c "import hashlib, json; d = json.load(open('issue_snapshot.json', encoding='utf-8')); print(hashlib.sha256((d.get('body') or '').encode('utf-8')).hexdigest())")
+          echo "issue_body_sha256=${body_sha256}" >> "$GITHUB_OUTPUT"
+
+      # scripts.implementer_launcher.classify()を呼び出す。Issue本文は
+      # issue_snapshot.jsonファイル経由でのみPythonへ渡され、shell側では
+      # 一切読み取らない。decision/reason_codeという固定語彙の短い値だけを
+      # GITHUB_OUTPUTへ書き出す。
+      - name: Classify launch decision (read-only)
+        id: classify
+        run: |
+          set -u
+          args=(
+            classify
+            --trigger "${{ github.event_name == 'issues' && 'issues:labeled' || 'workflow_dispatch' }}"
+            --issue-response-file issue_snapshot.json
+            --expected-issue-number "${{ steps.fetch_issue.outputs.target_issue_number }}"
+            --machine-json-path classify_result.json
+            --fields-json-path task_fields.json
+          )
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            args+=(--event-json-path "$GITHUB_EVENT_PATH")
+          fi
+
+          if line=$(python -m scripts.implementer_launcher "${args[@]}"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          decision=$(python -c "import json; print(json.load(open('classify_result.json'))['decision'])")
+          reason_code=$(python -c "import json; print(json.load(open('classify_result.json'))['reason_code'])")
+          error_count=$(python -c "import json; print(len(json.load(open('classify_result.json'))['errors']))")
+          echo "decision=${decision}" >> "$GITHUB_OUTPUT"
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "error_count=${error_count}" >> "$GITHUB_OUTPUT"
+
+          # scripts.implementer_launcher classifyの終了コードは、
+          # decision=INTERNAL_ERRORの場合だけ非ゼロになる契約(main()参照)。
+          # NOT_APPLICABLE/WOULD_BLOCK_STATE/WOULD_BLOCK_CONTRACT/
+          # WOULD_LAUNCHはいずれも正常な確定判定であり、job/stepをFailure
+          # にしない。
+          if [ "$status" -ne 0 ]; then
+            echo "::error::launcher判定に失敗しました(decision=${decision} reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # 出力確定前の再取得。WOULD_LAUNCHの場合だけ実行する。
+      - name: Re-fetch target issue immediately before bundle output (read-only)
+        id: refetch_issue
+        if: steps.classify.outputs.decision == 'WOULD_LAUNCH'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          TARGET_ISSUE_NUMBER: ${{ steps.fetch_issue.outputs.target_issue_number }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_recheck.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${TARGET_ISSUE_NUMBER}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "recheck_ok=false" >> "$GITHUB_OUTPUT"
+            echo "reason_code=RESPONSE_VALIDATION_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::出力確定前の再取得に失敗しました(reason_code=RESPONSE_VALIDATION_FAILED)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.implementer_launcher check-recheck \
+            --before-response-file issue_snapshot.json \
+            --after-response-file issue_recheck.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || echo "INTERNAL_ERROR")
+          if [ "$status" -ne 0 ]; then
+            echo "recheck_ok=false" >> "$GITHUB_OUTPUT"
+            echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+            echo "::error::出力確定前にIssueの状態が変化しました(reason_code=${reason_code})。task bundleは発行しません。"
+            exit 1
+          fi
+          echo "recheck_ok=true" >> "$GITHUB_OUTPUT"
+          echo "reason_code=NONE" >> "$GITHUB_OUTPUT"
+
+      # 再取得整合性検査に合格した場合だけ、決定的なtask bundleを生成する。
+      - name: Build task bundle (read-only, deterministic JSON)
+        id: build_bundle
+        if: steps.classify.outputs.decision == 'WOULD_LAUNCH' && steps.refetch_issue.outputs.recheck_ok == 'true'
+        run: |
+          set -u
+          if line=$(python -m scripts.implementer_launcher build-bundle \
+            --after-response-file issue_recheck.json \
+            --fields-json-path task_fields.json \
+            --repository "${{ github.repository }}" \
+            --generated-from-main-sha "${{ github.sha }}" \
+            --launcher-decision "${{ steps.classify.outputs.decision }}" \
+            --launcher-reason-code "${{ steps.classify.outputs.reason_code }}" \
+            --output-path task_bundle.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          bundle_sha256=$(echo "$line" | grep -oP 'BUNDLE_SHA256=\K\S+' || echo "")
+          echo "bundle_sha256=${bundle_sha256}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "bundle_built=false" >> "$GITHUB_OUTPUT"
+            echo "::error::task bundleの生成に失敗しました"
+            exit 1
+          fi
+          echo "bundle_built=true" >> "$GITHUB_OUTPUT"
+
+      # artifact upload先はGitHub Actionsの内部ストレージであり、repository
+      # へのwriteではない。task bundle生成に成功した場合だけ実行する。
+      - name: Upload task bundle artifact
+        if: steps.build_bundle.outputs.bundle_built == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: auto001-task-bundle-${{ steps.fetch_issue.outputs.target_issue_number }}
+          path: task_bundle.json
+          retention-days: 14
+
+      - name: Publish job summary (fixed non-secret fields only)
+        id: summary
+        if: always()
+        env:
+          TRIGGER: ${{ github.event_name }}
+          TARGET_ISSUE_NUMBER: ${{ steps.fetch_issue.outputs.target_issue_number }}
+          ISSUE_BODY_SHA256: ${{ steps.fetch_issue.outputs.issue_body_sha256 }}
+          DECISION: ${{ steps.classify.outputs.decision }}
+          REASON_CODE: ${{ steps.classify.outputs.reason_code }}
+          ERROR_COUNT: ${{ steps.classify.outputs.error_count }}
+          RECHECK_OK: ${{ steps.refetch_issue.outputs.recheck_ok }}
+          RECHECK_REASON: ${{ steps.refetch_issue.outputs.reason_code }}
+          BUNDLE_BUILT: ${{ steps.build_bundle.outputs.bundle_built }}
+          BUNDLE_SHA256: ${{ steps.build_bundle.outputs.bundle_sha256 }}
+        run: |
+          management_id="NA"
+          if [ -f task_fields.json ]; then
+            management_id=$(python -c "import json; print(json.load(open('task_fields.json')).get('management_id', 'NA'))" 2>/dev/null || echo "NA")
+          fi
+
+          rm -f issue_snapshot.json issue_recheck.json task_fields.json classify_result.json task_bundle.json
+
+          {
+            echo "## AUTO-001-06-01 Implementer Launcher dry-run結果"
+            echo ""
+            echo "- trigger: ${TRIGGER}"
+            echo "- Issue番号: ${TARGET_ISSUE_NUMBER:-NA}"
+            echo "- decision: ${DECISION:-NA}"
+            echo "- reason_code: ${REASON_CODE:-NA}"
+            echo "- 契約違反件数: ${ERROR_COUNT:-NA}"
+            echo "- management ID: ${management_id}"
+            echo "- issue_body_sha256: ${ISSUE_BODY_SHA256:-NA}"
+            echo "- 再取得整合性検査: ok=${RECHECK_OK:-NA} reason_code=${RECHECK_REASON:-NA}"
+            echo "- schema_version: AUTO-001-TASK-BUNDLE-V1"
+            echo "- task bundle生成: ${BUNDLE_BUILT:-false}"
+            echo "- task bundle sha256: ${BUNDLE_SHA256:-NA}"
+            echo "- WOULD_BLOCK_DUPLICATE: v1では未実装(到達不能な予約値)"
+            echo "- Controller App token: 生成していません"
+            echo "- Implementer App token: 生成していません"
+            echo "- GitHub write: 行っていません(ラベル・comment・本文・branch・commit・PRのいずれも変更なし)"
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"

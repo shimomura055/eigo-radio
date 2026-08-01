@@ -386,11 +386,12 @@ def _validate_section_content(sections: dict[str, list[str]]) -> list[Validation
 _CHANGE_SCOPE_INDENT_RE = re.compile(r"^[ \t]")
 
 
-def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationError]:
-    raw_lines = sections.get(CHANGE_SCOPE_HEADING)
-    if raw_lines is None:
-        return []  # 見出し自体が無い/重複している場合は既にMISSING_HEADING等で報告済み
-
+def _parse_change_scope_label_values(raw_lines: list[str]) -> dict[str, list[str]]:
+    """変更区分セクションの生行から、正式ラベルごとの値行を構造的に抽出する。
+    `_validate_change_scope`とLauncher向けの`extract_task_fields`(本ファイル
+    下部)が、この関数を共有することでパースロジックの重複・divergenceを
+    避ける。
+    """
     label_value_lines: dict[str, list[str]] = {label: [] for label in CHANGE_SCOPE_LABELS}
     current_label: Optional[str] = None
 
@@ -414,6 +415,16 @@ def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationErr
         # 未知のラベル行・非インデントの無関係行はどの区分にも属さない
         current_label = None
 
+    return label_value_lines
+
+
+def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationError]:
+    raw_lines = sections.get(CHANGE_SCOPE_HEADING)
+    if raw_lines is None:
+        return []  # 見出し自体が無い/重複している場合は既にMISSING_HEADING等で報告済み
+
+    label_value_lines = _parse_change_scope_label_values(raw_lines)
+
     has_specified_label = any(
         _classify_content(values) is _ContentKind.CONTENT
         for values in label_value_lines.values()
@@ -434,6 +445,19 @@ def _validate_change_scope(sections: dict[str, list[str]]) -> list[ValidationErr
 # 管理ID検証
 # ---------------------------------------------------------------------------
 
+def _management_id_candidates(raw_lines: list[str]) -> list[str]:
+    """管理ID欄の生行から、ID形状トークンの候補一覧(重複除去・昇順)を
+    抽出する。`_validate_management_id`とLauncher向けの`extract_task_fields`
+    (本ファイル下部)が、この関数を共有することでパースロジックの重複・
+    divergenceを避ける。呼び出し元で`_classify_content(raw_lines) is
+    _ContentKind.CONTENT`を確認済みであることを前提とする。
+    """
+    text = _strip_html_comments("\n".join(raw_lines))
+    tokens = [t.strip(_TOKEN_STRIP_CHARS) for t in re.split(r"\s+", text)]
+    tokens = [t for t in tokens if t]
+    return sorted({t for t in tokens if _ID_SHAPE_RE.match(t)})
+
+
 def _validate_management_id(sections: dict[str, list[str]]) -> list[ValidationError]:
     raw_lines = sections.get(MANAGEMENT_ID_HEADING)
     if raw_lines is None:
@@ -442,9 +466,7 @@ def _validate_management_id(sections: dict[str, list[str]]) -> list[ValidationEr
     if _classify_content(raw_lines) is not _ContentKind.CONTENT:
         return []  # 空欄等はMISSING_REQUIRED_CONTENTが既に報告する
 
-    tokens = [t.strip(_TOKEN_STRIP_CHARS) for t in re.split(r"\s+", text)]
-    tokens = [t for t in tokens if t]
-    candidates = sorted({t for t in tokens if _ID_SHAPE_RE.match(t)})
+    candidates = _management_id_candidates(raw_lines)
 
     if not candidates:
         return [ValidationError(
@@ -597,6 +619,197 @@ def validate_issue_body(text: str) -> ValidationResult:
     if errors:
         return ValidationResult(status=ValidationStatus.CONTRACT_VIOLATION, errors=errors)
     return ValidationResult(status=ValidationStatus.PASS, errors=[])
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-06-01: Launcher向けpublic抽出API
+#
+# 目的: Implementer Launcher(scripts/implementer_launcher.py)が、task
+# bundle生成のためにIssue本文の各セクション内容を必要とする。validatorが
+# 既に持つ見出し・セクション解析(`_scan_headings`/`_extract_section_raw_lines`
+# 等)を、独立した第二のパーサーとして再実装せず、この関数からだけ再利用する。
+#
+# 契約:
+# * `extract_task_fields(text)`は、`validate_issue_body(text)`を内部で
+#   自ら呼び出し、`ValidationStatus.PASS`の場合にだけ`ExtractedTaskFields`
+#   を返す。PASS以外(CONTRACT_VIOLATION・INTERNAL_ERROR)の場合は常に
+#   `None`を返す(呼び出し側が事前にPASSを確認しているかどうかに関わらず、
+#   この関数自身がfail-closedに保証する)。
+# * 例外を送出しない。
+# * 既存のpublic関数(`validate_issue_body`等)のシグネチャ・返り値は
+#   一切変更しない。
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class AcceptanceCriterionField:
+    """受入条件1件分の構造化表現。"""
+
+    id: str
+    description: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {"id": self.id, "description": self.description}
+
+
+@dataclass(frozen=True)
+class ExtractedTaskFields:
+    """PASS済みのIssue本文から抽出した、Launcher向けの構造化フィールド。
+
+    `extract_task_fields()`だけがこの型のインスタンスを生成する。各文字列
+    フィールドはHTMLコメントを除去したうえで前後の空白を取り除いた値であり、
+    本文中の改行そのものは変更しない(見出し内の複数行はそのまま連結する)。
+    """
+
+    management_id: str
+    current_problem: str
+    cause_hypotheses: str
+    purpose: str
+    expected_behavior: str
+    non_goals: str
+    acceptance_criteria: tuple[AcceptanceCriterionField, ...]
+    test_perspectives: tuple[str, ...]
+    risks: tuple[str, ...]
+    human_confirmation_items: str
+    change_classification: dict[str, str]
+    reference_materials: str
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "management_id": self.management_id,
+            "current_problem": self.current_problem,
+            "cause_hypotheses": self.cause_hypotheses,
+            "purpose": self.purpose,
+            "expected_behavior": self.expected_behavior,
+            "non_goals": self.non_goals,
+            "acceptance_criteria": [ac.to_dict() for ac in self.acceptance_criteria],
+            "test_perspectives": list(self.test_perspectives),
+            "risks": list(self.risks),
+            "human_confirmation_items": self.human_confirmation_items,
+            "change_classification": dict(self.change_classification),
+            "reference_materials": self.reference_materials,
+        }
+
+
+def _extract_acceptance_criteria_fields(
+    sections: dict[str, list[str]],
+) -> Optional[list[AcceptanceCriterionField]]:
+    """`_validate_acceptance_criteria`が認める`- [ ] AC-XX: 説明`形式の行
+    だけを対象に、出現順を維持したまま構造化する。呼び出し元は事前に
+    `validate_issue_body()`がPASSであることを確認済みという前提だが、
+    本関数自身も想定外の形状に遭遇した場合はfail-closedに`None`を返す
+    (独自の緩い解析を追加しない)。
+    """
+    raw_lines = sections.get(ACCEPTANCE_CRITERIA_HEADING)
+    if raw_lines is None:
+        return None
+
+    result: list[AcceptanceCriterionField] = []
+    for line in raw_lines:
+        if not line.strip():
+            continue
+        m = _AC_STRICT_LINE_RE.match(line)
+        if not m:
+            return None
+        digits, desc = m.group(1), m.group(2)
+        if len(digits) != 2:
+            return None
+        description = _strip_html_comments(desc).strip()
+        if not description:
+            return None
+        result.append(AcceptanceCriterionField(id=f"AC-{digits}", description=description))
+
+    if not result:
+        return None
+
+    ids = [ac.id for ac in result]
+    if len(ids) != len(set(ids)):
+        return None
+    ints_in_order = [int(ac_id.split("-")[1]) for ac_id in ids]
+    if ints_in_order != list(range(1, len(ints_in_order) + 1)):
+        return None
+
+    return result
+
+
+def extract_task_fields(text: str) -> Optional[ExtractedTaskFields]:
+    """PASS済みのIssue本文から、Launcher向けの構造化フィールドを抽出する。
+
+    `validate_issue_body(text).status`が`ValidationStatus.PASS`でない
+    場合は、常に`None`を返す(呼び出し側の事前確認の有無に関わらず、この
+    関数自身がfail-closedに保証する)。例外は送出しない。
+    """
+    try:
+        result = validate_issue_body(text)
+        if result.status is not ValidationStatus.PASS:
+            return None
+
+        normalized = _normalize_newlines(text)
+        lines = normalized.split("\n")
+        fence_mask_full = _fence_mask(lines)
+
+        start_idx, end_idx, marker_errors = _validate_markers(lines, fence_mask_full)
+        if start_idx is None or end_idx is None or marker_errors:
+            return None
+
+        spec_lines = lines[start_idx + 1:end_idx]
+        spec_fence_mask = _fence_mask(spec_lines)
+        spec_comment_mask = _comment_mask(spec_lines, spec_fence_mask)
+        heading_mask = [a or b for a, b in zip(spec_fence_mask, spec_comment_mask)]
+
+        scan = _scan_headings(spec_lines, heading_mask)
+        if _validate_headings(scan):
+            return None
+
+        sections = _extract_section_raw_lines(spec_lines, scan)
+        if set(sections.keys()) != set(CANONICAL_HEADINGS):
+            return None
+
+        management_id_raw = sections.get(MANAGEMENT_ID_HEADING)
+        if management_id_raw is None or _classify_content(management_id_raw) is not _ContentKind.CONTENT:
+            return None
+        candidates = _management_id_candidates(management_id_raw)
+        if len(candidates) != 1 or not MANAGEMENT_ID_STRICT_RE.match(candidates[0]):
+            return None
+        management_id = candidates[0]
+
+        acceptance_criteria = _extract_acceptance_criteria_fields(sections)
+        if acceptance_criteria is None:
+            return None
+
+        change_scope_raw = sections.get(CHANGE_SCOPE_HEADING, [])
+        label_value_lines = _parse_change_scope_label_values(change_scope_raw)
+        change_classification = {
+            label: _strip_html_comments("\n".join(values)).strip()
+            for label, values in label_value_lines.items()
+        }
+
+        def joined(heading: str) -> str:
+            return _strip_html_comments("\n".join(sections[heading])).strip()
+
+        def as_lines(heading: str) -> tuple[str, ...]:
+            """複数項目になり得るセクション(テスト観点・リスク)を、
+            HTMLコメント除去後の非空行ごとに1要素とする配列へ構造化する
+            (行の内容自体は変更しない。箇条書き記号の除去等は行わない)。
+            """
+            text = _strip_html_comments("\n".join(sections[heading]))
+            return tuple(line.strip() for line in text.split("\n") if line.strip())
+
+        return ExtractedTaskFields(
+            management_id=management_id,
+            current_problem=joined("現在の問題"),
+            cause_hypotheses=joined("原因に関する仮説"),
+            purpose=joined("目的"),
+            expected_behavior=joined("期待動作・決定事項"),
+            non_goals=joined("非対象範囲"),
+            acceptance_criteria=tuple(acceptance_criteria),
+            test_perspectives=as_lines("テスト観点"),
+            risks=as_lines("リスク"),
+            human_confirmation_items=joined("人間確認事項"),
+            change_classification=change_classification,
+            reference_materials=joined("参考資料"),
+        )
+    except Exception:  # noqa: BLE001 - fail-closedにNoneを返すため広く捕捉する
+        return None
 
 
 # ---------------------------------------------------------------------------

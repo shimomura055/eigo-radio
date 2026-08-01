@@ -18,6 +18,7 @@ from scripts.issue_preflight_validator import (
     REQUIRED_SUBSTANTIVE_HEADINGS,
     START_MARKER,
     ValidationStatus,
+    extract_task_fields,
     validate_issue_body,
 )
 
@@ -699,6 +700,114 @@ class OutputContractTests(unittest.TestCase):
         error_result = validate_issue_body(None)  # type: ignore[arg-type]
         statuses = {pass_result.status, violation_result.status, error_result.status}
         self.assertEqual(statuses, {ValidationStatus.PASS, ValidationStatus.CONTRACT_VIOLATION, ValidationStatus.INTERNAL_ERROR})
+
+
+# ---------------------------------------------------------------------------
+# AUTO-001-06-01: extract_task_fields() (Launcher向けpublic抽出API)
+# ---------------------------------------------------------------------------
+
+class ExtractTaskFieldsTests(unittest.TestCase):
+
+    def test_pass_body_returns_all_fields(self):
+        body = build_body()
+        fields = extract_task_fields(body)
+        self.assertIsNotNone(fields)
+        d = fields.to_dict()
+        self.assertEqual(d["management_id"], DEFAULT_CONTENT["管理ID"])
+        self.assertEqual(d["purpose"], DEFAULT_CONTENT["目的"])
+        self.assertEqual(d["expected_behavior"], DEFAULT_CONTENT["期待動作・決定事項"])
+        self.assertEqual(d["non_goals"], DEFAULT_CONTENT["非対象範囲"])
+        self.assertEqual(d["test_perspectives"], [DEFAULT_CONTENT["テスト観点"]])
+        self.assertEqual(d["current_problem"], DEFAULT_CONTENT["現在の問題"])
+        self.assertEqual(d["cause_hypotheses"], DEFAULT_CONTENT["原因に関する仮説"])
+        self.assertEqual(d["risks"], [DEFAULT_CONTENT["リスク"]])
+        self.assertEqual(d["human_confirmation_items"], DEFAULT_CONTENT["人間確認事項"])
+        self.assertEqual(d["reference_materials"], DEFAULT_CONTENT["参考資料"])
+
+    def test_contract_violation_body_returns_none(self):
+        body = build_body(content={"目的": ""})
+        self.assertEqual(validate_issue_body(body).status, ValidationStatus.CONTRACT_VIOLATION)
+        self.assertIsNone(extract_task_fields(body))
+
+    def test_internal_error_input_returns_none(self):
+        self.assertIsNone(extract_task_fields(None))  # type: ignore[arg-type]
+
+    def test_acceptance_criteria_preserve_order_and_structure(self):
+        body = build_body(content={
+            "受入条件": "- [ ] AC-01: 一つ目\n- [ ] AC-02: 二つ目\n- [ ] AC-03: 三つ目",
+        })
+        fields = extract_task_fields(body)
+        self.assertIsNotNone(fields)
+        ac_dicts = [ac.to_dict() for ac in fields.acceptance_criteria]
+        self.assertEqual(ac_dicts, [
+            {"id": "AC-01", "description": "一つ目"},
+            {"id": "AC-02", "description": "二つ目"},
+            {"id": "AC-03", "description": "三つ目"},
+        ])
+
+    def test_change_classification_has_exactly_the_three_fixed_labels(self):
+        fields = extract_task_fields(build_body())
+        self.assertIsNotNone(fields)
+        self.assertEqual(
+            set(fields.change_classification.keys()),
+            {"サービス仕様変更", "リポジトリ運用仕様変更", "実装方法だけの変更"},
+        )
+
+    def test_change_classification_values_extracted(self):
+        fields = extract_task_fields(build_body())
+        self.assertIsNotNone(fields)
+        self.assertEqual(fields.change_classification["リポジトリ運用仕様変更"], "あり")
+        self.assertEqual(fields.change_classification["実装方法だけの変更"], "いいえ")
+
+    def test_html_comment_only_optional_section_is_empty_string(self):
+        body = build_body(content={"人間確認事項": "<!-- 内部メモ -->なし"})
+        fields = extract_task_fields(body)
+        self.assertIsNotNone(fields)
+        self.assertEqual(fields.human_confirmation_items, "なし")
+
+    def test_risks_and_test_perspectives_are_line_arrays(self):
+        body = build_body(content={
+            "リスク": "1件目のリスク\n2件目のリスク",
+            "テスト観点": "観点A\n観点B\n観点C",
+        })
+        fields = extract_task_fields(body)
+        self.assertIsNotNone(fields)
+        self.assertEqual(fields.risks, ("1件目のリスク", "2件目のリスク"))
+        self.assertEqual(fields.test_perspectives, ("観点A", "観点B", "観点C"))
+
+    def test_single_line_risk_is_a_one_element_array(self):
+        fields = extract_task_fields(build_body())
+        self.assertIsNotNone(fields)
+        self.assertEqual(fields.risks, ("なし",))
+
+    def test_ambiguous_management_id_body_is_contract_violation_and_returns_none(self):
+        body = build_body(content={"管理ID": "AUTO-001-05-01 AUTO-001-05-02"})
+        self.assertEqual(validate_issue_body(body).status, ValidationStatus.CONTRACT_VIOLATION)
+        self.assertIsNone(extract_task_fields(body))
+
+    def test_deterministic_across_calls(self):
+        body = build_body()
+        first = extract_task_fields(body).to_dict()
+        second = extract_task_fields(body).to_dict()
+        self.assertEqual(first, second)
+
+    def test_does_not_mutate_input_string(self):
+        body = build_body()
+        original = str(body)
+        extract_task_fields(body)
+        self.assertEqual(body, original)
+
+    def test_existing_validate_issue_body_unaffected_by_new_api(self):
+        # extract_task_fields()の追加が、既存のvalidate_issue_body()の
+        # 判定結果に一切影響しないことを確認する(公開契約の非破壊)。
+        body = build_body(content={"目的": ""})
+        before = validate_issue_body(body)
+        extract_task_fields(body)
+        after = validate_issue_body(body)
+        self.assertEqual(before.status, after.status)
+        self.assertEqual(
+            [e.to_dict() for e in before.errors], [e.to_dict() for e in after.errors],
+        )
 
 
 if __name__ == "__main__":
