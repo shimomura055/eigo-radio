@@ -54,6 +54,7 @@ __all__ = [
     "CheckOutcome",
     "MANAGED_COMMENT_MARKER",
     "MANAGED_COMMENT_AUTHOR_LOGIN",
+    "COMMENT_ACTION_BY_STATE",
     "compute_current_preflight_result",
     "compute_comment_fingerprint",
     "build_canonical_block_comment",
@@ -61,6 +62,7 @@ __all__ = [
     "extract_comments_from_response",
     "classify_managed_comments",
     "classify_precondition",
+    "check_comment_state_unchanged_before_write",
     "check_block_plan_matches_expected",
     "check_errors_match_current",
     "check_add_blocked_http_status",
@@ -123,6 +125,16 @@ class CheckOutcome:
 
 REQUIRED_PLANNED_REMOVE: tuple[str, ...] = (AGENT_READY_LABEL,)
 REQUIRED_PLANNED_ADD: tuple[str, ...] = (AGENT_BLOCKED_LABEL,)
+
+# AUTO-001-05-03-03C-R6: managed commentのstate(NONE/MATCHES/STALE)から
+# comment_actionを決定的に導出する固定対応表。DUPLICATE/OWNERSHIP_MISMATCH
+# はこの表に含めず、常にfail-closedな別経路(comment_outcome.ok == False)
+# として扱う。
+COMMENT_ACTION_BY_STATE: dict[str, str] = {
+    "NONE": "CREATE",
+    "MATCHES": "NOOP",
+    "STALE": "UPDATE",
+}
 
 MANAGED_COMMENT_MARKER = "<!-- AUTO-001:preflight-block:v1 -->"
 MANAGED_COMMENT_AUTHOR_LOGIN = "eigo-radio-auto-controller[bot]"
@@ -311,9 +323,27 @@ def classify_precondition(
         - managed commentが1件かつcanonical一致 -> NOOP_ALREADY_APPLIED
         - managed commentが1件かつ不一致(古い) -> COMMENT_UPDATE_REQUIRED
         - managed commentが2件以上/author不一致 -> それぞれの固定reason code
-    * それ以外(agent:readyのみを含む) -> NEEDS_WRITE
+    * agent:ready が存在し、agent:blocked が存在せず、他の競合ラベルも無い
+      場合(AUTO-001-05-03-03C-R6): PRECONDITION_STATE は常にNEEDS_WRITE
+      (ラベル遷移は常に必要)だが、current_status/current_errorsが利用できる
+      場合はmanaged comment状態も合わせて分類し、detailへ
+      MANAGED_COMMENT_STATE/MANAGED_COMMENT_COUNT/COMMENT_ACTION
+      (NONE->CREATE, MATCHES->NOOP, STALE->UPDATE)を含める。managed comment
+      が2件以上/author不一致の場合は、blocked分岐と同様にtoken生成前に
+      Failureとする。current_status/current_errorsが利用できない場合
+      (現状の呼び出し元では起こり得ないが、後段のplanner厳密一致判定・
+      errors完全一致判定に安全に委譲するため)は、従来通りmanaged comment
+      状態を分類せずNEEDS_WRITEだけを返す。
+    * それ以外(agent:ready かつ他の競合ラベルが同時に存在する等) -> NEEDS_WRITE
       (後段のplanner厳密一致判定・errors完全一致判定で、書き込み対象外なら
       安全に拒否される)
+
+    重要: PRECONDITION_STATEという全体状態だけからcomment_actionを推測しては
+    ならない(NEEDS_WRITEは「ラベル遷移が必要」ことだけを意味し、managed
+    commentの有無・一致状態とは独立である)。呼び出し側は、この関数が返す
+    MANAGED_COMMENT_STATE/MANAGED_COMMENT_COUNT/COMMENT_IDを、書き込み直前に
+    再取得した状態と`check_comment_state_unchanged_before_write()`で比較し、
+    実際に変化した場合だけSTATE_CHANGED_BEFORE_WRITEとする。
     """
     labels = set(current_labels)
     ready = AGENT_READY_LABEL in labels
@@ -375,7 +405,87 @@ def classify_precondition(
             },
         )
 
+    if ready and not blocked and not other_conflicts:
+        if current_status != "CONTRACT_VIOLATION" or current_errors is None:
+            # 従来通り: managed comment状態を分類できないため分類を試みず、
+            # 後段のplanner厳密一致判定・errors完全一致判定に委ねる。
+            return CheckOutcome(True, None, {**base_detail, "PRECONDITION_STATE": "NEEDS_WRITE"})
+
+        expected_fp = compute_comment_fingerprint(current_errors)
+        comment_outcome = classify_managed_comments(comments, expected_fp)
+        if not comment_outcome.ok:
+            return CheckOutcome(
+                comment_outcome.ok, comment_outcome.reason_code,
+                {**base_detail, "PRECONDITION_STATE": "NEEDS_WRITE", **comment_outcome.detail},
+            )
+
+        comment_state = comment_outcome.detail.get("MANAGED_COMMENT_STATE")
+        comment_count = comment_outcome.detail.get("MANAGED_COMMENT_COUNT", 0)
+        detail = {
+            **base_detail,
+            "PRECONDITION_STATE": "NEEDS_WRITE",
+            "MANAGED_COMMENT_STATE": comment_state,
+            "MANAGED_COMMENT_COUNT": comment_count,
+            "COMMENT_ACTION": COMMENT_ACTION_BY_STATE[comment_state],
+        }
+        if "COMMENT_ID" in comment_outcome.detail:
+            detail["COMMENT_ID"] = comment_outcome.detail["COMMENT_ID"]
+        return CheckOutcome(True, None, detail)
+
     return CheckOutcome(True, None, {**base_detail, "PRECONDITION_STATE": "NEEDS_WRITE"})
+
+
+# ---------------------------------------------------------------------------
+# 1b. 書き込み直前のmanaged comment再確認: precondition時点の状態との比較
+# ---------------------------------------------------------------------------
+
+def check_comment_state_unchanged_before_write(
+    precondition_comment_state: str,
+    precondition_comment_count: int,
+    precondition_comment_id: Optional[int],
+    comments: Sequence[dict],
+    expected_fingerprint: str,
+) -> CheckOutcome:
+    """precondition時点で確定したmanaged comment状態(state/count/comment_id)
+    と、書き込み直前に再取得したcommentsから導出した現在の状態を比較する。
+
+    * 再取得結果自体がDUPLICATE/OWNERSHIP_MISMATCHの場合、precondition時点の
+      状態によらず常にそのままFailureとして伝播する(自動修復しない)。
+    * state・count・comment_idの3つがすべて一致していれば、その状態から
+      決定的にCOMMENT_ACTIONを導出する(NONE->CREATE, MATCHES->NOOP,
+      STALE->UPDATE)。
+    * 3つのいずれかが変化していた場合だけSTATE_CHANGED_BEFORE_WRITEとする
+      (PRECONDITION_STATEのような全体状態だけからは判定しない)。
+    """
+    after_outcome = classify_managed_comments(comments, expected_fingerprint)
+    if not after_outcome.ok:
+        return after_outcome
+
+    after_state = after_outcome.detail.get("MANAGED_COMMENT_STATE")
+    after_count = after_outcome.detail.get("MANAGED_COMMENT_COUNT")
+    after_id = after_outcome.detail.get("COMMENT_ID")
+
+    if (
+        after_state != precondition_comment_state
+        or after_count != precondition_comment_count
+        or after_id != precondition_comment_id
+    ):
+        return CheckOutcome(
+            False, ReasonCode.STATE_CHANGED_BEFORE_WRITE,
+            {
+                "MANAGED_COMMENT_STATE": after_state if after_state is not None else "NA",
+                "MANAGED_COMMENT_COUNT": after_count if after_count is not None else 0,
+            },
+        )
+
+    detail = {
+        "MANAGED_COMMENT_STATE": after_state,
+        "MANAGED_COMMENT_COUNT": after_count,
+        "COMMENT_ACTION": COMMENT_ACTION_BY_STATE[after_state],
+    }
+    if after_id is not None:
+        detail["COMMENT_ID"] = after_id
+    return CheckOutcome(True, None, detail)
 
 
 # ---------------------------------------------------------------------------
@@ -512,6 +622,10 @@ def evaluate_final_state(
 
     comment_outcome = classify_managed_comments(after_comments, expected_fingerprint)
     comment_ok = comment_outcome.ok and comment_outcome.detail.get("MANAGED_COMMENT_STATE") == "MATCHES"
+    # AUTO-001-05-03-03C-R6: NOOP経路(comment write APIを呼ばない)でも、
+    # 最終状態評価はcanonical一致のcommentが正確に1件あることを再確認する
+    # ("comment最終確認"を省略しない)。件数はjob summaryへの表示用に含める。
+    final_comment_count = comment_outcome.detail.get("MANAGED_COMMENT_COUNT", 0)
 
     if require_label_transition:
         blocked_present = AGENT_BLOCKED_LABEL in after_set
@@ -526,6 +640,7 @@ def evaluate_final_state(
             "READY_PRESENT": "true" if ready_present else "false",
             "UNRELATED_PRESERVED": "true" if unrelated_preserved else "false",
             "COMMENT_OK": "true" if comment_ok else "false",
+            "MANAGED_COMMENT_COUNT": final_comment_count,
         }
         ok = (
             blocked_present and not ready_present and not other_conflicts
@@ -541,6 +656,7 @@ def evaluate_final_state(
         "READY_PRESENT": "true" if AGENT_READY_LABEL in after_set else "false",
         "UNRELATED_PRESERVED": "true" if unchanged else "false",
         "COMMENT_OK": "true" if comment_ok else "false",
+        "MANAGED_COMMENT_COUNT": final_comment_count,
     }
     ok = unchanged and comment_ok
     if ok:
@@ -624,6 +740,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     p_comment_state.add_argument("--comments-response-file", required=True)
     p_comment_state.add_argument("--current-errors-path", required=True)
 
+    p_comment_unchanged = sub.add_parser(
+        "check-comment-state-unchanged",
+        help="書き込み直前に再取得したmanaged comment状態がprecondition時点から"
+        "変化していないか検証し、変化していなければcomment_actionを決定する",
+    )
+    p_comment_unchanged.add_argument("--comments-response-file", required=True)
+    p_comment_unchanged.add_argument("--current-errors-path", required=True)
+    p_comment_unchanged.add_argument("--precondition-comment-state", required=True)
+    p_comment_unchanged.add_argument("--precondition-comment-count", required=True, type=int)
+    p_comment_unchanged.add_argument("--precondition-comment-id", default="")
+
     p_add_status = sub.add_parser("check-add-blocked-http-status")
     p_add_status.add_argument("--http-status", type=int, required=True)
 
@@ -700,6 +827,27 @@ def main(argv: Optional[list[str]] = None) -> int:
                 else:
                     expected_fp = compute_comment_fingerprint(current_errors)
                     outcome = classify_managed_comments(comments, expected_fp)
+
+        elif args.command == "check-comment-state-unchanged":
+            comments = _comments_from_file_or_none(args.comments_response_file)
+            if comments is None:
+                outcome = CheckOutcome(False, ReasonCode.RESPONSE_VALIDATION_FAILED, {})
+            else:
+                current_errors = _errors_only_or_none(args.current_errors_path)
+                if current_errors is None:
+                    outcome = CheckOutcome(False, ReasonCode.INTERNAL_ERROR, {})
+                else:
+                    expected_fp = compute_comment_fingerprint(current_errors)
+                    precondition_id = (
+                        int(args.precondition_comment_id) if args.precondition_comment_id else None
+                    )
+                    outcome = check_comment_state_unchanged_before_write(
+                        args.precondition_comment_state,
+                        args.precondition_comment_count,
+                        precondition_id,
+                        comments,
+                        expected_fp,
+                    )
 
         elif args.command == "check-add-blocked-http-status":
             outcome = check_add_blocked_http_status(args.http_status)

@@ -40,6 +40,7 @@ from scripts.controller_block_writer import (
     check_add_blocked_http_status,
     check_block_plan_matches_expected,
     check_comment_create_http_status,
+    check_comment_state_unchanged_before_write,
     check_comment_update_http_status,
     check_errors_match_current,
     classify_managed_comments,
@@ -366,6 +367,145 @@ class ClassifyPreconditionTests(unittest.TestCase):
         self.assertEqual(outcome.detail["READY_PRESENT"], "true")
         self.assertEqual(outcome.detail["BLOCKED_PRESENT"], "false")
 
+    # -----------------------------------------------------------------
+    # AUTO-001-05-03-03C-R6: readyのみ(blocked不在)経路でも、managed
+    # comment状態を分類し、PRECONDITION_STATEはNEEDS_WRITEのまま維持しつつ
+    # comment_actionを正しく導出する(Run 30676777164の誤検出の根本原因の
+    # 単体テスト)。
+    # -----------------------------------------------------------------
+
+    def test_ready_only_with_no_comment_is_needs_write_with_create_action(self):
+        outcome = classify_precondition(["agent:ready"], [], "CONTRACT_VIOLATION", SAMPLE_ERRORS)
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
+        self.assertEqual(outcome.detail["MANAGED_COMMENT_STATE"], "NONE")
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "CREATE")
+
+    def test_ready_only_with_matching_comment_is_needs_write_with_noop_action(self):
+        # Run 30676777164の再現: agent:readyのみ・managed commentがcanonical
+        # 一致(MATCHES)。修正前はこの分岐がcomment状態を一切見ずNEEDS_WRITEを
+        # 返し、workflow側で「NEEDS_WRITE=comment無しのはず」という誤った
+        # 前提によりSTATE_CHANGED_BEFORE_WRITEに誤検出されていた。
+        comments = [_comment(1, self.body)]
+        outcome = classify_precondition(["agent:ready"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
+        self.assertTrue(outcome.ok)
+        self.assertIsNone(outcome.reason_code)
+        self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
+        self.assertEqual(outcome.detail["MANAGED_COMMENT_STATE"], "MATCHES")
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "NOOP")
+        self.assertEqual(outcome.detail["COMMENT_ID"], 1)
+
+    def test_ready_only_with_stale_comment_is_needs_write_with_update_action(self):
+        fp = compute_comment_fingerprint(SAMPLE_ERRORS)
+        stale_body = self.body.replace(fp, "0" * 64)
+        comments = [_comment(1, stale_body)]
+        outcome = classify_precondition(["agent:ready"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
+        self.assertEqual(outcome.detail["MANAGED_COMMENT_STATE"], "STALE")
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "UPDATE")
+        self.assertEqual(outcome.detail["COMMENT_ID"], 1)
+
+    def test_ready_only_duplicate_comment_fails_closed(self):
+        comments = [_comment(1, self.body), _comment(2, self.body)]
+        outcome = classify_precondition(["agent:ready"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_DUPLICATE)
+
+    def test_ready_only_ownership_mismatch_fails_closed(self):
+        comments = [_comment(1, self.body, "some-spoofer")]
+        outcome = classify_precondition(["agent:ready"], comments, "CONTRACT_VIOLATION", SAMPLE_ERRORS)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_OWNERSHIP_MISMATCH)
+
+    def test_ready_only_without_current_errors_keeps_legacy_needs_write(self):
+        # current_errorsが利用できない(現状の呼び出し元では起こらない)場合は
+        # 従来通りmanaged comment状態を分類しない(既存のtest_ready_only_needs_write
+        # と同じ契約を、他のcurrent_status値でも維持する)。
+        outcome = classify_precondition(["agent:ready"], [_comment(1, self.body)], "PASS", None)
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
+        self.assertNotIn("MANAGED_COMMENT_STATE", outcome.detail)
+
+
+# ---------------------------------------------------------------------------
+# check_comment_state_unchanged_before_write (AUTO-001-05-03-03C-R6)
+# ---------------------------------------------------------------------------
+
+class CheckCommentStateUnchangedBeforeWriteTests(unittest.TestCase):
+    """precondition時点の状態(state/count/comment_id)と、書き込み直前に
+    再取得した状態を比較する純粋関数の単体テスト。真の状態変化(state・
+    count・comment_idのいずれか)だけをSTATE_CHANGED_BEFORE_WRITEとして
+    拒否し、それ以外は一致した状態から決定的にcomment_actionを導出する
+    ことを検証する。
+    """
+
+    def setUp(self):
+        self.body = build_canonical_block_comment(SAMPLE_ERRORS)
+        self.fp = compute_comment_fingerprint(SAMPLE_ERRORS)
+
+    def test_none_unchanged_yields_create(self):
+        outcome = check_comment_state_unchanged_before_write("NONE", 0, None, [], self.fp)
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "CREATE")
+
+    def test_matches_unchanged_yields_noop(self):
+        outcome = check_comment_state_unchanged_before_write(
+            "MATCHES", 1, 1, [_comment(1, self.body)], self.fp,
+        )
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "NOOP")
+        self.assertEqual(outcome.detail["COMMENT_ID"], 1)
+
+    def test_stale_unchanged_yields_update(self):
+        stale_body = self.body.replace(self.fp, "0" * 64)
+        outcome = check_comment_state_unchanged_before_write(
+            "STALE", 1, 1, [_comment(1, stale_body)], self.fp,
+        )
+        self.assertTrue(outcome.ok)
+        self.assertEqual(outcome.detail["COMMENT_ACTION"], "UPDATE")
+        self.assertEqual(outcome.detail["COMMENT_ID"], 1)
+
+    def test_none_to_matches_is_state_changed(self):
+        outcome = check_comment_state_unchanged_before_write(
+            "NONE", 0, None, [_comment(1, self.body)], self.fp,
+        )
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.STATE_CHANGED_BEFORE_WRITE)
+
+    def test_matches_to_none_is_state_changed(self):
+        outcome = check_comment_state_unchanged_before_write("MATCHES", 1, 1, [], self.fp)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.STATE_CHANGED_BEFORE_WRITE)
+
+    def test_matches_with_different_comment_id_is_state_changed(self):
+        # state/countは一致(MATCHES, 1件)だがcomment_idが変化している
+        # ケース(削除+再作成で同じcanonical本文の別commentに置き換わった等)。
+        outcome = check_comment_state_unchanged_before_write(
+            "MATCHES", 1, 1, [_comment(2, self.body)], self.fp,
+        )
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.STATE_CHANGED_BEFORE_WRITE)
+
+    def test_stale_to_matches_is_state_changed(self):
+        outcome = check_comment_state_unchanged_before_write(
+            "STALE", 1, 1, [_comment(1, self.body)], self.fp,
+        )
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.STATE_CHANGED_BEFORE_WRITE)
+
+    def test_duplicate_at_refetch_fails_regardless_of_precondition_state(self):
+        comments = [_comment(1, self.body), _comment(2, self.body)]
+        outcome = check_comment_state_unchanged_before_write("NONE", 0, None, comments, self.fp)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_DUPLICATE)
+
+    def test_ownership_mismatch_at_refetch_fails_regardless_of_precondition_state(self):
+        comments = [_comment(1, self.body, "some-spoofer")]
+        outcome = check_comment_state_unchanged_before_write("NONE", 0, None, comments, self.fp)
+        self.assertFalse(outcome.ok)
+        self.assertEqual(outcome.reason_code, ReasonCode.MANAGED_COMMENT_OWNERSHIP_MISMATCH)
+
 
 # ---------------------------------------------------------------------------
 # check_block_plan_matches_expected
@@ -579,6 +719,7 @@ class EvaluateFinalStateTests(unittest.TestCase):
         )
         self.assertTrue(outcome.ok)
         self.assertEqual(outcome.reason_code, ReasonCode.WRITE_SUCCEEDED)
+        self.assertEqual(outcome.detail["MANAGED_COMMENT_COUNT"], 1)
 
     def test_needs_write_ready_still_present_is_partial(self):
         outcome = evaluate_final_state(
@@ -647,6 +788,73 @@ class EvaluateFinalStateTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# AUTO-001-05-03-03C-R6: classify_precondition -> check_comment_state_
+# unchanged_before_write -> evaluate_final_stateの純粋関数群を実際にその順
+# で連結実行するend-to-endテスト。個々の関数は他クラスで単体検証済みのため、
+# ここでは関数間の連結だけを対象とする。
+# ---------------------------------------------------------------------------
+
+class FullDecisionPipelineEndToEndTests(unittest.TestCase):
+
+    def _pipeline(self, *, initial_comments, final_comments):
+        errors = _current_errors(INVALID_ISSUE_BODY)
+        fp = compute_comment_fingerprint(errors)
+
+        pre = classify_precondition(["agent:ready"], initial_comments, "CONTRACT_VIOLATION", errors)
+        self.assertTrue(pre.ok, pre.detail)
+        self.assertEqual(pre.detail["PRECONDITION_STATE"], "NEEDS_WRITE")
+
+        # 競合の無い正常系では、書き込み直前の再取得はprecondition時点と
+        # 同じmanaged comment状態を返す。
+        unchanged = check_comment_state_unchanged_before_write(
+            pre.detail["MANAGED_COMMENT_STATE"], pre.detail["MANAGED_COMMENT_COUNT"],
+            pre.detail.get("COMMENT_ID"), initial_comments, fp,
+        )
+        self.assertTrue(unchanged.ok, unchanged.detail)
+
+        final = evaluate_final_state(
+            before_labels=["agent:ready"], after_labels=["agent:blocked"],
+            after_comments=final_comments, expected_fingerprint=fp,
+            require_label_transition=True,
+        )
+        return pre, unchanged, final
+
+    def test_e3_initial_create_path_reaches_write_succeeded(self):
+        # E3: comment未作成の初回CREATE経路の回帰。
+        errors = _current_errors(INVALID_ISSUE_BODY)
+        _pre, unchanged, final = self._pipeline(
+            initial_comments=[],
+            final_comments=[_comment(1, build_canonical_block_comment(errors))],
+        )
+        self.assertEqual(unchanged.detail["COMMENT_ACTION"], "CREATE")
+        self.assertTrue(final.ok, final.detail)
+        self.assertEqual(final.reason_code, ReasonCode.WRITE_SUCCEEDED)
+
+    def test_noop_path_reaches_write_succeeded_without_any_comment_change(self):
+        # Run 30676777164の再発防止: agent:readyのみ・managed commentが既に
+        # canonical一致(MATCHES)の場合でも、誤ってSTATE_CHANGED_BEFORE_WRITE
+        # にならず、comment write APIを呼ばずにWRITE_SUCCEEDEDへ到達する。
+        errors = _current_errors(INVALID_ISSUE_BODY)
+        existing = [_comment(1, build_canonical_block_comment(errors))]
+        _pre, unchanged, final = self._pipeline(initial_comments=existing, final_comments=existing)
+        self.assertEqual(unchanged.detail["COMMENT_ACTION"], "NOOP")
+        self.assertTrue(final.ok, final.detail)
+        self.assertEqual(final.reason_code, ReasonCode.WRITE_SUCCEEDED)
+
+    def test_stale_path_reaches_write_succeeded_after_update(self):
+        errors = _current_errors(INVALID_ISSUE_BODY)
+        fp = compute_comment_fingerprint(errors)
+        stale_body = build_canonical_block_comment(errors).replace(fp, "0" * 64)
+        _pre, unchanged, final = self._pipeline(
+            initial_comments=[_comment(1, stale_body)],
+            final_comments=[_comment(1, build_canonical_block_comment(errors))],
+        )
+        self.assertEqual(unchanged.detail["COMMENT_ACTION"], "UPDATE")
+        self.assertTrue(final.ok, final.detail)
+        self.assertEqual(final.reason_code, ReasonCode.WRITE_SUCCEEDED)
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -703,6 +911,64 @@ class CliTests(unittest.TestCase):
             ])
             self.assertEqual(code, 0)
             self.assertIn("PRECONDITION_STATE=NEEDS_WRITE", out)
+
+    def test_check_comment_state_unchanged_cli_matches_yields_noop(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            body = build_canonical_block_comment(SAMPLE_ERRORS)
+            comments_path = _write_json(
+                tmpdir, "comments.json",
+                [{"id": 7, "body": body, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}],
+            )
+            errors_path = _write_json(
+                tmpdir, "errors.json", {"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS},
+            )
+            code, out = self._run_cli([
+                "check-comment-state-unchanged",
+                "--comments-response-file", comments_path,
+                "--current-errors-path", errors_path,
+                "--precondition-comment-state", "MATCHES",
+                "--precondition-comment-count", "1",
+                "--precondition-comment-id", "7",
+            ])
+            self.assertEqual(code, 0)
+            self.assertIn("COMMENT_ACTION=NOOP", out)
+
+    def test_check_comment_state_unchanged_cli_detects_state_change(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            comments_path = _write_json(tmpdir, "comments.json", [])
+            errors_path = _write_json(
+                tmpdir, "errors.json", {"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS},
+            )
+            code, out = self._run_cli([
+                "check-comment-state-unchanged",
+                "--comments-response-file", comments_path,
+                "--current-errors-path", errors_path,
+                "--precondition-comment-state", "MATCHES",
+                "--precondition-comment-count", "1",
+                "--precondition-comment-id", "7",
+            ])
+            self.assertEqual(code, 1)
+            self.assertIn("REASON_CODE=STATE_CHANGED_BEFORE_WRITE", out)
+
+    def test_check_comment_state_unchanged_cli_empty_precondition_id_means_none(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            comments_path = _write_json(tmpdir, "comments.json", [])
+            errors_path = _write_json(
+                tmpdir, "errors.json", {"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS},
+            )
+            code, out = self._run_cli([
+                "check-comment-state-unchanged",
+                "--comments-response-file", comments_path,
+                "--current-errors-path", errors_path,
+                "--precondition-comment-state", "NONE",
+                "--precondition-comment-count", "0",
+                "--precondition-comment-id", "",
+            ])
+            self.assertEqual(code, 0)
+            self.assertIn("COMMENT_ACTION=CREATE", out)
 
     def test_check_plan_cli(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1070,6 +1336,32 @@ def _fake_curl_multi(*, default: dict, **method_configs: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _fake_curl_with_method_log(log_path: Path, *, get_body: str) -> str:
+    """全HTTPメソッドを常にHTTP 200・`get_body`で成功させつつ、実際に呼ばれた
+    メソッド名(POST/PATCH/GET等、`-X`未指定時はGET)を`log_path`へ1行ずつ
+    追記する`curl`のbash関数スタブ。NOOP経路がPOST/PATCHを一切呼ばないことを、
+    `--http-status`スタブの有無ではなく実際の呼び出し履歴から確認するために使う。
+    """
+    return (
+        "curl() {\n"
+        '  local method="GET"\n'
+        '  local out_file=""\n'
+        '  local prev=""\n'
+        '  for arg in "$@"; do\n'
+        '    if [ "$prev" = "-X" ]; then method="$arg"; fi\n'
+        '    if [ "$prev" = "-o" ]; then out_file="$arg"; fi\n'
+        '    prev="$arg"\n'
+        "  done\n"
+        f"  echo \"$method\" >> {_bash_single_quote(str(log_path))}\n"
+        '  if [ -n "$out_file" ]; then\n'
+        f"    printf '%s' {_bash_single_quote(get_body)} > \"$out_file\"\n"
+        "  fi\n"
+        "  printf '%s' 200\n"
+        "  return 0\n"
+        "}\n"
+    )
+
+
 class PreconditionSubprocessTests(unittest.TestCase):
 
     def setUp(self):
@@ -1275,12 +1567,20 @@ class CheckRepoLabelSubprocessTests(unittest.TestCase):
 
 
 class CheckStateUnchangedSubprocessTests(unittest.TestCase):
-
-    def setUp(self):
-        self.script = _extract_block_step("check_state_unchanged")
+    """AUTO-001-05-03-03C-R6: 「Re-fetch issue and comments immediately before
+    write」stepが、precondition時点のmanaged comment状態(state/count/
+    comment_id)と書き込み直前の再取得結果を比較し、3つすべてが一致する場合
+    だけcomment_actionを決定的に導出する(NONE->CREATE, MATCHES->NOOP,
+    STALE->UPDATE)こと、およびいずれかが真に変化した場合だけ
+    STATE_CHANGED_BEFORE_WRITEとすることを検証する。Run 30676777164の
+    誤検出(agent:readyのみ・comment MATCHESという正常系をSTATE_CHANGED_
+    BEFORE_WRITEと誤判定していた)の再発防止テストを兼ねる。
+    """
 
     def _run(self, *, before_labels, issue_body, issue_curl_body, comments_curl_body,
-              curl_exit_code=0, curl_http_code="200", precondition_state="NEEDS_WRITE"):
+              curl_exit_code=0, curl_http_code="200", precondition_state="NEEDS_WRITE",
+              precondition_comment_state="NONE", precondition_comment_count="0",
+              precondition_comment_id=""):
         with tempfile.TemporaryDirectory() as tmp:
             tmpdir = Path(tmp)
             env = _base_env(tmpdir)
@@ -1292,7 +1592,12 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
             _write_current_errors_file(tmpdir / "current_errors.json", issue_body)
             script = _extract_block_step(
                 "check_state_unchanged",
-                {"${{ steps.precondition.outputs.state }}": precondition_state},
+                {
+                    "${{ steps.precondition.outputs.state }}": precondition_state,
+                    "${{ steps.precondition.outputs.comment_state }}": precondition_comment_state,
+                    "${{ steps.precondition.outputs.comment_count }}": precondition_comment_count,
+                    "${{ steps.precondition.outputs.comment_id }}": precondition_comment_id,
+                },
             )
             combined = _fake_curl_by_output_file(
                 issue_curl_body, comments_curl_body, curl_exit_code, curl_http_code
@@ -1301,37 +1606,55 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
             outputs = _parse_github_output(tmpdir / "github_output.txt")
             return result, outputs
 
-    def test_needs_write_unchanged_passes_with_create_action(self):
+    # -----------------------------------------------------------------
+    # 必須テスト1〜3: precondition時点の状態と再取得結果が一致する場合、
+    # その状態からcomment_actionを正しく導出する(readyのみ経路)。
+    # -----------------------------------------------------------------
+
+    def test_1_ready_only_none_to_none_passes_with_create_action(self):
         result, outputs = self._run(
             before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
             issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
             comments_curl_body="[]",
             precondition_state="NEEDS_WRITE",
+            precondition_comment_state="NONE", precondition_comment_count="0", precondition_comment_id="",
         )
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(outputs.get("comment_action"), "CREATE")
 
-    def test_needs_write_state_changed_fails(self):
-        result, outputs = self._run(
-            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
-            issue_curl_body=json.dumps(_issue_response(["agent:blocked"], body=INVALID_ISSUE_BODY)),
-            comments_curl_body="[]",
-            precondition_state="NEEDS_WRITE",
-        )
-        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
-        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
-
-    def test_needs_write_unexpected_comment_appearing_fails(self):
+    def test_2_ready_only_matches_to_matches_passes_with_noop_action(self):
         body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
-        comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        comments = json.dumps([{"id": 7, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
         result, outputs = self._run(
             before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
             issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
             comments_curl_body=comments,
             precondition_state="NEEDS_WRITE",
+            precondition_comment_state="MATCHES", precondition_comment_count="1", precondition_comment_id="7",
         )
-        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
-        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("comment_action"), "NOOP")
+        self.assertEqual(outputs.get("comment_id"), "7")
+
+    def test_3_ready_only_stale_to_stale_passes_with_update_action(self):
+        errors = _current_errors(INVALID_ISSUE_BODY)
+        fp = compute_comment_fingerprint(errors)
+        stale_body = build_canonical_block_comment(errors).replace(fp, "0" * 64)
+        comments = json.dumps([{"id": 9, "body": stale_body, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="STALE", precondition_comment_count="1", precondition_comment_id="9",
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("comment_action"), "UPDATE")
+        self.assertEqual(outputs.get("comment_id"), "9")
+
+    # -----------------------------------------------------------------
+    # 既存回帰: blocked状態のcomment修復経路(COMMENT_UPDATE_REQUIRED)。
+    # -----------------------------------------------------------------
 
     def test_comment_update_required_still_stale_passes_with_update_action(self):
         errors = _current_errors(INVALID_ISSUE_BODY)
@@ -1343,10 +1666,118 @@ class CheckStateUnchangedSubprocessTests(unittest.TestCase):
             issue_curl_body=json.dumps(_issue_response(["agent:blocked"], body=INVALID_ISSUE_BODY)),
             comments_curl_body=comments,
             precondition_state="COMMENT_UPDATE_REQUIRED",
+            precondition_comment_state="STALE", precondition_comment_count="1", precondition_comment_id="42",
         )
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(outputs.get("comment_action"), "UPDATE")
         self.assertEqual(outputs.get("comment_id"), "42")
+
+    def test_needs_write_label_state_changed_fails(self):
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:blocked"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body="[]",
+            precondition_state="NEEDS_WRITE",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+
+    # -----------------------------------------------------------------
+    # 必須テスト9〜12: precondition時点の状態と再取得結果が食い違う場合
+    # (真の状態変化)だけをSTATE_CHANGED_BEFORE_WRITEとして拒否する。
+    # PRECONDITION_STATE(NEEDS_WRITE)という全体状態だけからは判定しない
+    # ことの直接的な証拠(Run 30676777164の誤検出の再発防止)。
+    # -----------------------------------------------------------------
+
+    def test_9_none_to_matches_is_state_changed(self):
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
+        comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="NONE", precondition_comment_count="0", precondition_comment_id="",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+
+    def test_10_matches_to_none_is_state_changed(self):
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body="[]",
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="MATCHES", precondition_comment_count="1", precondition_comment_id="7",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+
+    def test_11_matches_to_different_comment_id_is_state_changed(self):
+        # 同じcanonical本文に一致する別のcomment(削除+再作成等)への
+        # すり替わりは、MANAGED_COMMENT_STATEだけを見れば両方MATCHESの
+        # ままだが、comment_idが変化しているため真の状態変化として拒否する
+        # (state/countの一致だけでcomment_actionを決定してはならないことの
+        # 直接的な証拠)。
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
+        comments = json.dumps([{"id": 99, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="MATCHES", precondition_comment_count="1", precondition_comment_id="7",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+
+    def test_12_stale_to_matches_is_state_changed(self):
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
+        comments = json.dumps([{"id": 9, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="STALE", precondition_comment_count="1", precondition_comment_id="9",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "STATE_CHANGED_BEFORE_WRITE")
+
+    # -----------------------------------------------------------------
+    # 必須テスト13・14: 書き込み直前の再取得時点でmanaged commentが重複/
+    # author不一致になっていた場合、precondition時点の状態によらず常に
+    # Failureとする(自動修復しない)。
+    # -----------------------------------------------------------------
+
+    def test_13_duplicate_appearing_before_write_fails(self):
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
+        comments = json.dumps([
+            {"id": 1, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}},
+            {"id": 2, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}},
+        ])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="NONE", precondition_comment_count="0", precondition_comment_id="",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "MANAGED_COMMENT_DUPLICATE")
+
+    def test_14_ownership_mismatch_appearing_before_write_fails(self):
+        body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
+        comments = json.dumps([{"id": 1, "body": body_text, "user": {"login": "some-spoofer"}}])
+        result, outputs = self._run(
+            before_labels=["agent:ready"], issue_body=INVALID_ISSUE_BODY,
+            issue_curl_body=json.dumps(_issue_response(["agent:ready"], body=INVALID_ISSUE_BODY)),
+            comments_curl_body=comments,
+            precondition_state="NEEDS_WRITE",
+            precondition_comment_state="NONE", precondition_comment_count="0", precondition_comment_id="",
+        )
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "MANAGED_COMMENT_OWNERSHIP_MISMATCH")
 
     def test_api_failure_is_internal_error(self):
         result, outputs = self._run(
@@ -1469,6 +1900,92 @@ class CommentWriteSubprocessTests(unittest.TestCase):
         result, _outputs = self._run(comment_action="CREATE", get_body=self._matching_comment_response())
         self.assertNotIn(MANAGED_COMMENT_MARKER, result.stdout)
 
+    def test_create_reports_write_api_executed(self):
+        result, outputs = self._run(comment_action="CREATE", get_body=self._matching_comment_response())
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("write_api_outcome"), "EXECUTED")
+
+    def test_update_reports_write_api_executed(self):
+        result, outputs = self._run(
+            comment_action="UPDATE", comment_id="42", get_body=self._matching_comment_response()
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("write_api_outcome"), "EXECUTED")
+
+    # -----------------------------------------------------------------
+    # 必須テスト4〜8: comment_action=NOOPの場合、comment write API
+    # (POST/PATCHのどちらも)を一切呼ばず、最終comment確認(GET+検証)は
+    # 省略しない。件数・comment IDは変化しない。
+    # -----------------------------------------------------------------
+
+    def _run_noop(self, *, comment_id="7", get_body):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmpdir = Path(tmp)
+            log_path = tmpdir / "curl_calls.log"
+            env = _base_env(tmpdir)
+            env["APP_TOKEN"] = "dummy-app-write-token"
+            env["GH_READ_TOKEN"] = "dummy-read-token"
+            with open(tmpdir / "current_errors.json", "w", encoding="utf-8") as f:
+                json.dump({"status": "CONTRACT_VIOLATION", "errors": SAMPLE_ERRORS}, f, ensure_ascii=False)
+            script = _extract_block_step("comment_write", {
+                "${{ steps.check_state_unchanged.outputs.comment_action }}": "NOOP",
+                "${{ steps.check_state_unchanged.outputs.comment_id }}": comment_id,
+            })
+            fake_curl = _fake_curl_with_method_log(log_path, get_body=get_body)
+            combined = fake_curl + "\n" + script
+            result = _run_bash_script_in_dir(combined, env, tmpdir)
+            outputs = _parse_github_output(tmpdir / "github_output.txt")
+            methods_called = log_path.read_text(encoding="utf-8").split() if log_path.exists() else []
+            return result, outputs, methods_called
+
+    def test_4_noop_never_calls_post(self):
+        result, _outputs, methods_called = self._run_noop(
+            comment_id="7", get_body=self._matching_comment_response(),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertNotIn("POST", methods_called)
+
+    def test_5_noop_never_calls_patch(self):
+        result, _outputs, methods_called = self._run_noop(
+            comment_id="7", get_body=self._matching_comment_response(),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertNotIn("PATCH", methods_called)
+
+    def test_noop_reports_write_api_skipped(self):
+        result, outputs, _methods_called = self._run_noop(
+            comment_id="7", get_body=self._matching_comment_response(),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "NONE")
+        self.assertEqual(outputs.get("write_api_outcome"), "SKIPPED")
+
+    def test_7_noop_final_comment_count_is_one(self):
+        # _matching_comment_response()は正確に1件のcanonical一致commentを
+        # 返す(verify-managed-commentがそれをMATCHESとして確認する)。
+        result, outputs, _methods_called = self._run_noop(
+            comment_id="7", get_body=self._matching_comment_response(),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "NONE")
+
+    def test_8_noop_keeps_same_comment_id(self):
+        body_text = build_canonical_block_comment(SAMPLE_ERRORS)
+        get_body = json.dumps([{"id": 7, "body": body_text, "user": {"login": MANAGED_COMMENT_AUTHOR_LOGIN}}])
+        result, outputs, _methods_called = self._run_noop(comment_id="7", get_body=get_body)
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "NONE")
+
+    def test_noop_with_comment_now_missing_fails_final_verification(self):
+        # NOOPの場合も最終comment確認を省略しない: 万一(直前確認と本stepの
+        # 間で)commentが消えていた場合はCOMMENT_VERIFICATION_FAILEDとして
+        # 検出できる。
+        result, outputs, methods_called = self._run_noop(comment_id="7", get_body="[]")
+        self.assertNotEqual(result.returncode, 0, msg=result.stderr)
+        self.assertEqual(outputs.get("reason_code"), "COMMENT_VERIFICATION_FAILED")
+        self.assertNotIn("POST", methods_called)
+        self.assertNotIn("PATCH", methods_called)
+
 
 class RemoveLabelSubprocessTests(unittest.TestCase):
 
@@ -1536,6 +2053,7 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, msg=result.stderr)
         self.assertEqual(outputs.get("reason_code"), "WRITE_SUCCEEDED")
+        self.assertEqual(outputs.get("final_comment_count"), "1")
 
     def test_needs_write_partial_when_ready_remains(self):
         body_text = build_canonical_block_comment(_current_errors(INVALID_ISSUE_BODY))
@@ -1575,9 +2093,9 @@ class EvaluateFinalSubprocessTests(unittest.TestCase):
 _SUMMARY_ENV_KEYS = (
     "PRECONDITION_REASON", "PRECONDITION_STATE", "BEFORE_READY", "BEFORE_BLOCKED",
     "BEFORE_COMMENT_COUNT", "PLAN_REASON", "LABEL_REASON", "STATE_REASON",
-    "COMMENT_ACTION", "TOKEN_OUTCOME", "ADD_REASON", "COMMENT_WRITE_REASON",
+    "COMMENT_ACTION", "COMMENT_WRITE_API", "TOKEN_OUTCOME", "ADD_REASON", "COMMENT_WRITE_REASON",
     "REMOVE_REASON", "FINAL_REASON", "FINAL_BLOCKED", "FINAL_READY",
-    "FINAL_UNRELATED", "FINAL_COMMENT_OK",
+    "FINAL_UNRELATED", "FINAL_COMMENT_OK", "FINAL_COMMENT_COUNT",
 )
 
 
@@ -1639,6 +2157,27 @@ class SummarySubprocessTests(unittest.TestCase):
         for forbidden in ("APP_TOKEN", "ghs_", "-----BEGIN", "Authorization"):
             self.assertNotIn(forbidden, summary_text)
             self.assertNotIn(forbidden, result.stdout)
+
+    def test_noop_comment_action_and_skipped_write_api_shown(self):
+        # AUTO-001-05-03-03C-R6: comment_action=NOOPおよびcomment write API
+        # がSkippedであったことを、Summaryから明示的に確認できる。
+        result, summary_text = self._run(
+            PRECONDITION_REASON="NONE", COMMENT_ACTION="NOOP", COMMENT_WRITE_API="SKIPPED",
+            FINAL_REASON="WRITE_SUCCEEDED", FINAL_COMMENT_OK="true", FINAL_COMMENT_COUNT="1",
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("comment action: NOOP", summary_text)
+        self.assertIn("comment write API: SKIPPED", summary_text)
+        self.assertIn("managed comment件数(最終)=1", summary_text)
+
+    def test_create_comment_action_and_executed_write_api_shown(self):
+        result, summary_text = self._run(
+            PRECONDITION_REASON="NONE", COMMENT_ACTION="CREATE", COMMENT_WRITE_API="EXECUTED",
+            FINAL_REASON="WRITE_SUCCEEDED", FINAL_COMMENT_OK="true", FINAL_COMMENT_COUNT="1",
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("comment action: CREATE", summary_text)
+        self.assertIn("comment write API: EXECUTED", summary_text)
 
 
 if __name__ == "__main__":
