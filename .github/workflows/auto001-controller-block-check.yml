@@ -268,12 +268,33 @@ jobs:
           state=$(echo "$line" | grep -oP 'PRECONDITION_STATE=\K\S+' || echo "NEEDS_WRITE")
           before_ready=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
           before_blocked=$(echo "$line" | grep -oP 'BLOCKED_PRESENT=\K\S+' || echo "NA")
-          comment_count=$(echo "$line" | grep -oP 'MANAGED_COMMENT_COUNT=\K\S+' || echo "NA")
+          # AUTO-001-05-03-03C-R6: managed comment件数はcomment_idの整数比較を
+          # 書き込み直前確認stepで安全に行うため、値が得られない場合は"NA"では
+          # なく整数の"0"をfallbackとする。
+          comment_count=$(echo "$line" | grep -oP 'MANAGED_COMMENT_COUNT=\K\S+' || echo "0")
+          # AUTO-001-05-03-03C-R6: classify-preconditionがMANAGED_COMMENT_STATE
+          # を明示的に返さない分岐(blocked分岐はPRECONDITION_STATE自体が
+          # comment状態を1:1で表す、あるいはmanaged comment未分類のNEEDS_WRITE
+          # fallback)では、既存のPRECONDITION_STATEから同値を導出する
+          # (COMMENT_UPDATE_REQUIRED=STALE、ALREADY_APPLIED=MATCHES、
+          # それ以外はNONE)。これにより、書き込み直前確認stepは経路によらず
+          # 常にcomment_state/comment_count/comment_idの3つを比較できる。
+          comment_state=$(echo "$line" | grep -oP 'MANAGED_COMMENT_STATE=\K\S+' || true)
+          if [ -z "$comment_state" ]; then
+            case "$state" in
+              COMMENT_UPDATE_REQUIRED) comment_state="STALE" ;;
+              ALREADY_APPLIED) comment_state="MATCHES" ;;
+              *) comment_state="NONE" ;;
+            esac
+          fi
+          comment_id=$(echo "$line" | grep -oP 'COMMENT_ID=\K\S+' || echo "")
           echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
           echo "state=${state}" >> "$GITHUB_OUTPUT"
           echo "before_ready=${before_ready}" >> "$GITHUB_OUTPUT"
           echo "before_blocked=${before_blocked}" >> "$GITHUB_OUTPUT"
           echo "comment_count=${comment_count}" >> "$GITHUB_OUTPUT"
+          echo "comment_state=${comment_state}" >> "$GITHUB_OUTPUT"
+          echo "comment_id=${comment_id}" >> "$GITHUB_OUTPUT"
 
           if [ "$status" -ne 0 ]; then
             echo "::error::事前状態判定でwrite不可と判定されました(reason_code=${reason_code})"
@@ -442,9 +463,24 @@ jobs:
             exit 1
           fi
 
-          if comment_line=$(python -m scripts.controller_block_writer check-comment-state \
+          # AUTO-001-05-03-03C-R6: precondition時点で確定したmanaged comment
+          # 状態(state/count/comment_id)と、いま再取得した状態を比較し、
+          # 3つすべてが一致していればその状態から決定的にcomment_actionを
+          # 導出する(NONE->CREATE, MATCHES->NOOP, STALE->UPDATE)。
+          # PRECONDITION_STATE(NEEDS_WRITE/COMMENT_UPDATE_REQUIRED)という
+          # 全体状態だけからcomment_actionを推測しない(Run 30676777164で、
+          # agent:readyのみ・managed commentがcanonical一致(MATCHES)という
+          # 正常なNOOPケースを、NEEDS_WRITEは常にcomment無しのはずという
+          # 誤った前提でSTATE_CHANGED_BEFORE_WRITEに誤検出していた既知の
+          # 不具合の修正)。managed commentの重複・author不一致は、
+          # precondition時点の状態によらず常にそのままFailureとして伝播する
+          # (自動修復しない)。
+          if comment_line=$(python -m scripts.controller_block_writer check-comment-state-unchanged \
             --comments-response-file comments_pre_write.json \
-            --current-errors-path current_errors.json); then
+            --current-errors-path current_errors.json \
+            --precondition-comment-state "${{ steps.precondition.outputs.comment_state }}" \
+            --precondition-comment-count "${{ steps.precondition.outputs.comment_count }}" \
+            --precondition-comment-id "${{ steps.precondition.outputs.comment_id }}"); then
             comment_status=0
           else
             comment_status=$?
@@ -455,32 +491,17 @@ jobs:
           if [ -z "$comment_reason" ]; then
             comment_reason="INTERNAL_ERROR"
           fi
-          comment_state=$(echo "$comment_line" | grep -oP 'MANAGED_COMMENT_STATE=\K\S+' || echo "NA")
+          comment_action=$(echo "$comment_line" | grep -oP 'COMMENT_ACTION=\K\S+' || echo "")
           comment_id=$(echo "$comment_line" | grep -oP 'COMMENT_ID=\K\S+' || echo "")
 
           if [ "$comment_status" -ne 0 ]; then
             echo "reason_code=${comment_reason}" >> "$GITHUB_OUTPUT"
-            echo "::error::書き込み直前のmanaged comment再確認に失敗しました(reason_code=${comment_reason})"
-            exit 1
-          fi
-
-          # NEEDS_WRITE経路ではコメントが無いことを、COMMENT_UPDATE_REQUIRED
-          # 経路ではprecondition時点と同一のcomment_id・STALE状態のままである
-          # ことを期待する。想定外の変化はSTATE_CHANGED_BEFORE_WRITEとする。
-          expected_state="${{ steps.precondition.outputs.state }}"
-          if [ "$expected_state" = "NEEDS_WRITE" ] && [ "$comment_state" != "NONE" ]; then
-            echo "reason_code=STATE_CHANGED_BEFORE_WRITE" >> "$GITHUB_OUTPUT"
-            echo "::error::書き込み直前にmanaged commentの状態が変化しています(reason_code=STATE_CHANGED_BEFORE_WRITE)"
-            exit 1
-          fi
-          if [ "$expected_state" = "COMMENT_UPDATE_REQUIRED" ] && [ "$comment_state" != "STALE" ]; then
-            echo "reason_code=STATE_CHANGED_BEFORE_WRITE" >> "$GITHUB_OUTPUT"
-            echo "::error::書き込み直前にmanaged commentの状態が変化しています(reason_code=STATE_CHANGED_BEFORE_WRITE)"
+            echo "::error::書き込み直前にmanaged commentの状態が変化しているか、不正です(reason_code=${comment_reason})"
             exit 1
           fi
 
           echo "reason_code=NONE" >> "$GITHUB_OUTPUT"
-          echo "comment_action=$([ "$comment_state" = "NONE" ] && echo CREATE || echo UPDATE)" >> "$GITHUB_OUTPUT"
+          echo "comment_action=${comment_action}" >> "$GITHUB_OUTPUT"
           echo "comment_id=${comment_id}" >> "$GITHUB_OUTPUT"
 
       # AC対応: 対象repositoryだけに限定し、Issues: writeだけを要求する。
@@ -585,85 +606,93 @@ jobs:
           GH_READ_TOKEN: ${{ github.token }}
         run: |
           set -u
-          if render_line=$(python -m scripts.controller_block_writer render-comment-body \
-            --current-errors-path current_errors.json \
-            --output-path comment_body.json); then
-            render_status=0
-          else
-            render_status=$?
-          fi
-          echo "$render_line"
-          if [ "$render_status" -ne 0 ]; then
-            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
-            echo "::error::comment本文の生成に失敗しました(reason_code=INTERNAL_ERROR)"
-            exit 1
-          fi
-
           comment_action="${{ steps.check_state_unchanged.outputs.comment_action }}"
           comment_id="${{ steps.check_state_unchanged.outputs.comment_id }}"
 
-          if [ "$comment_action" = "CREATE" ]; then
-            if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
-              -X POST \
-              -H "Authorization: token ${APP_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              -H "Content-Type: application/json" \
-              -d @comment_body.json \
-              "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
-              write_curl_status=0
+          # AUTO-001-05-03-03C-R6: 既存のmanaged commentがcanonical内容と
+          # 既に一致している(comment_action=NOOP)場合、comment本文の再生成・
+          # POST・PATCHのいずれも一切行わない。ラベル遷移(blocked追加・
+          # ready削除)は本stepの前後で独立に進む。NOOPの場合もcomment最終
+          # 確認(このstep末尾の再取得+verify-managed-comment)は省略しない。
+          if [ "$comment_action" != "NOOP" ]; then
+            if render_line=$(python -m scripts.controller_block_writer render-comment-body \
+              --current-errors-path current_errors.json \
+              --output-path comment_body.json); then
+              render_status=0
             else
-              write_curl_status=$?
+              render_status=$?
             fi
-          else
-            if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
-              -X PATCH \
-              -H "Authorization: token ${APP_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              -H "Content-Type: application/json" \
-              -d @comment_body.json \
-              "https://api.github.com/repos/${{ github.repository }}/issues/comments/${comment_id}"); then
-              write_curl_status=0
+            echo "$render_line"
+            if [ "$render_status" -ne 0 ]; then
+              echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+              echo "::error::comment本文の生成に失敗しました(reason_code=INTERNAL_ERROR)"
+              exit 1
+            fi
+
+            if [ "$comment_action" = "CREATE" ]; then
+              if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+                -X POST \
+                -H "Authorization: token ${APP_TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                -H "Content-Type: application/json" \
+                -d @comment_body.json \
+                "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/comments"); then
+                write_curl_status=0
+              else
+                write_curl_status=$?
+              fi
             else
-              write_curl_status=$?
+              if write_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+                -X PATCH \
+                -H "Authorization: token ${APP_TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                -H "Content-Type: application/json" \
+                -d @comment_body.json \
+                "https://api.github.com/repos/${{ github.repository }}/issues/comments/${comment_id}"); then
+                write_curl_status=0
+              else
+                write_curl_status=$?
+              fi
+            fi
+            rm -f comment_body.json
+
+            if [ "$write_curl_status" -ne 0 ]; then
+              echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+              echo "::error::comment write APIの通信に失敗しました(reason_code=INTERNAL_ERROR)"
+              exit 1
+            fi
+
+            if [ "$comment_action" = "CREATE" ]; then
+              if status_line=$(python -m scripts.controller_block_writer check-comment-create-http-status \
+                --http-status "$write_http_code"); then
+                write_status=0
+              else
+                write_status=$?
+              fi
+            else
+              if status_line=$(python -m scripts.controller_block_writer check-comment-update-http-status \
+                --http-status "$write_http_code"); then
+                write_status=0
+              else
+                write_status=$?
+              fi
+            fi
+            echo "$status_line"
+
+            if [ "$write_status" -ne 0 ]; then
+              write_reason=$(echo "$status_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+              if [ -z "$write_reason" ]; then
+                write_reason="COMMENT_CREATE_FAILED"
+              fi
+              echo "reason_code=${write_reason}" >> "$GITHUB_OUTPUT"
+              echo "::error::managed commentの書き込みに失敗しました(reason_code=${write_reason})"
+              exit 1
             fi
           fi
           unset APP_TOKEN
-          rm -f comment_body.json
-
-          if [ "$write_curl_status" -ne 0 ]; then
-            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
-            echo "::error::comment write APIの通信に失敗しました(reason_code=INTERNAL_ERROR)"
-            exit 1
-          fi
-
-          if [ "$comment_action" = "CREATE" ]; then
-            if status_line=$(python -m scripts.controller_block_writer check-comment-create-http-status \
-              --http-status "$write_http_code"); then
-              write_status=0
-            else
-              write_status=$?
-            fi
-          else
-            if status_line=$(python -m scripts.controller_block_writer check-comment-update-http-status \
-              --http-status "$write_http_code"); then
-              write_status=0
-            else
-              write_status=$?
-            fi
-          fi
-          echo "$status_line"
-
-          if [ "$write_status" -ne 0 ]; then
-            write_reason=$(echo "$status_line" | grep -oP 'REASON_CODE=\K\S+' || true)
-            if [ -z "$write_reason" ]; then
-              write_reason="COMMENT_CREATE_FAILED"
-            fi
-            echo "reason_code=${write_reason}" >> "$GITHUB_OUTPUT"
-            echo "::error::managed commentの書き込みに失敗しました(reason_code=${write_reason})"
-            exit 1
-          fi
+          echo "write_api_outcome=$([ "$comment_action" = "NOOP" ] && echo SKIPPED || echo EXECUTED)" >> "$GITHUB_OUTPUT"
 
           if verify_http_code=$(curl -sS -o comments_after_write.json -w '%{http_code}' \
             -H "Authorization: token ${GH_READ_TOKEN}" \
@@ -805,11 +834,13 @@ jobs:
           ready_present=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
           unrelated_preserved=$(echo "$line" | grep -oP 'UNRELATED_PRESERVED=\K\S+' || echo "NA")
           comment_ok=$(echo "$line" | grep -oP 'COMMENT_OK=\K\S+' || echo "NA")
+          final_comment_count=$(echo "$line" | grep -oP 'MANAGED_COMMENT_COUNT=\K\S+' || echo "NA")
           echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
           echo "blocked_present=${blocked_present}" >> "$GITHUB_OUTPUT"
           echo "ready_present=${ready_present}" >> "$GITHUB_OUTPUT"
           echo "unrelated_preserved=${unrelated_preserved}" >> "$GITHUB_OUTPUT"
           echo "comment_ok=${comment_ok}" >> "$GITHUB_OUTPUT"
+          echo "final_comment_count=${final_comment_count}" >> "$GITHUB_OUTPUT"
 
           if [ "$status" -ne 0 ]; then
             echo "::error::最終状態が成功条件を満たしていません(reason_code=${reason_code})"
@@ -829,6 +860,7 @@ jobs:
           LABEL_REASON: ${{ steps.check_repo_label.outputs.reason_code }}
           STATE_REASON: ${{ steps.check_state_unchanged.outputs.reason_code }}
           COMMENT_ACTION: ${{ steps.check_state_unchanged.outputs.comment_action }}
+          COMMENT_WRITE_API: ${{ steps.comment_write.outputs.write_api_outcome }}
           TOKEN_OUTCOME: ${{ steps.app_write_token.outcome }}
           ADD_REASON: ${{ steps.add_and_verify.outputs.reason_code }}
           COMMENT_WRITE_REASON: ${{ steps.comment_write.outputs.reason_code }}
@@ -838,6 +870,7 @@ jobs:
           FINAL_READY: ${{ steps.evaluate_final.outputs.ready_present }}
           FINAL_UNRELATED: ${{ steps.evaluate_final.outputs.unrelated_preserved }}
           FINAL_COMMENT_OK: ${{ steps.evaluate_final.outputs.comment_ok }}
+          FINAL_COMMENT_COUNT: ${{ steps.evaluate_final.outputs.final_comment_count }}
         run: |
           token_reason="NONE"
           if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
@@ -874,11 +907,12 @@ jobs:
             echo "- planner判定: reason_code=${PRECONDITION_REASON:-NONE} precondition_state=${PRECONDITION_STATE:-NA} plan_reason=${PLAN_REASON:-NONE}"
             echo "- write outcome: ${write_outcome}"
             echo "- 書き込み前: agent:readyあり=${BEFORE_READY:-NA} agent:blockedあり=${BEFORE_BLOCKED:-NA} managed comment件数=${BEFORE_COMMENT_COUNT:-NA}"
-            echo "- comment action: ${COMMENT_ACTION:-NA}"
+            echo "- comment action: ${COMMENT_ACTION:-NA} (CREATE/NOOP/UPDATE)"
+            echo "- comment write API: ${COMMENT_WRITE_API:-NA} (EXECUTED=POST/PATCH実行 / SKIPPED=NOOPのため未実行)"
             echo "- blocked add outcome: reason_code=${ADD_REASON:-NONE}"
             echo "- comment write outcome: reason_code=${COMMENT_WRITE_REASON:-NONE}"
             echo "- ready remove outcome: reason_code=${REMOVE_REASON:-NONE}"
-            echo "- 最終状態: agent:blockedあり=${FINAL_BLOCKED:-NA} agent:readyあり=${FINAL_READY:-NA} 無関係ラベル保持=${FINAL_UNRELATED:-NA} managed comment一致=${FINAL_COMMENT_OK:-NA}"
+            echo "- 最終状態: agent:blockedあり=${FINAL_BLOCKED:-NA} agent:readyあり=${FINAL_READY:-NA} 無関係ラベル保持=${FINAL_UNRELATED:-NA} managed comment一致=${FINAL_COMMENT_OK:-NA} managed comment件数(最終)=${FINAL_COMMENT_COUNT:-NA}"
             echo "- code/branch/PR変更: なし"
             echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           } >> "$GITHUB_STEP_SUMMARY"
