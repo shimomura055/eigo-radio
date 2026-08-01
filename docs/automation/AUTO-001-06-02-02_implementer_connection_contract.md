@@ -62,7 +62,7 @@ task bundleを受け取った人間が、Claude Codeへ渡す直前に作成す�
 
 `docs/automation/schemas/implementer_plan_result.schema.json`
 
-Claude Codeがコード変更前に返す機械可読JSON。`additionalProperties: false`、全21 field必須。MVP-1.5のplan resultは「受理され、計画が完了した」場合の形だけを表現する(拒否系は§8のValidationResultでのみ表現し、plan resultとしては表現しない)。
+Claude Codeがコード変更前に返す機械可読JSON。`additionalProperties: false`、全22 field必須。MVP-1.5のplan resultは「受理され、計画が完了した」場合の形だけを表現する(拒否系は§8のValidationResultでのみ表現し、plan resultとしては表現しない)。
 
 | field | 型/制約 |
 |---|---|
