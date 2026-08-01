@@ -123,6 +123,14 @@ exec_{logical_task_keyの先頭12文字}_a{attempt番号}_{8〜32文字の英数
 - 自動生成機能は実装していない(生成主体は人間、またはMVP-1.5より後で導入されるツール)。
 - task bundle本体には一切含めない(AUTO-001-06-01の決定性を壊さない)。
 
+### attemptの単調増加について
+
+- `attempt`はschema上「1以上の整数」としてのみ制約されている(§2)。
+- 想定運用は、同一`logical_task_key`に対する再試行のたびに、人間が1、2、3…と手動で増加させることである。
+- MVP-1.5には永続的なexecution record store が存在しないため、ある`attempt`の値が本当に「その`logical_task_key`における前回の値より大きい」ことを機械的に保証する手段はない。単調増加は**運用上の約束であり、コードによる強制ではない**。
+- `attempt`は再試行回数を表す識別情報の一部にすぎず、それ自体は重複起動防止(duplicate detection、§8参照)の機構ではない。
+- この制約は、将来execution record store(実行履歴を永続化する仕組み)を導入する際に解決すべき候補の1つとして記録する。
+
 ---
 
 ## 6. prohibited_paths / prohibited_operations とpolicy検査
@@ -145,8 +153,11 @@ envelope.prohibited_operationsの配列順序は辞書順(Pythonの文字列比�
 `proposed_changed_files[].path`が`prohibited_paths`のいずれかのglob patternに一致した場合、`validate_plan_result()`は`REJECTED_POLICY`を返す。
 
 - 外部ライブラリを追加せず、Python標準ライブラリの`fnmatch.fnmatchcase()`を使用する(`fnmatch.fnmatch()`ではなくcase版を使うのは、`fnmatch()`が`os.path.normcase()`でOS依存の大文字小文字正規化を行うため、Windows上のテスト実行とLinux上のGitHub Actions実行とで判定結果が変わってしまうことを避けるため)。
-- Windows区切り文字(`\`)とPOSIX区切り文字(`/`)は、比較前に両方とも`/`へ正規化する。
+- path separator(区切り文字)は、比較前にWindows(`\`)・POSIX(`/`)いずれも`/`へ正規化する。
+- 大文字小文字は`fnmatchcase()`によりcase-sensitiveに扱う(OSのデフォルト規則に依存しない)。
 - パストラバーサル対策として、正規化後のpathを`/`で分割し、`..`という要素が1つでも含まれる場合は、`prohibited_paths`との一致とは無関係に無条件で`REJECTED_POLICY`(`POLICY_PATH_TRAVERSAL`)とする。
+
+**glob照合の既知の限界(MVP-1.5)**: `fnmatch`は一般的なglobライブラリ(shellのglobや`pathlib.Path.glob`等)と異なり、`*`がpath separatorを含めて任意の文字列に一致する(`fnmatch.translate('*')`は`.*`相当になる)。すなわち`fnmatch`の内部では`*`と`**`が区別されず、どちらを書いても実質的に「区切りをまたいで何にでも一致する」パターンとして扱われる。一般的なglob実装が持つ「`*`は単一階層のみ、`**`は複数階層(再帰的)に一致する」という厳密な階層意味は、本契約の`prohibited_paths`では**保証されない**。これはMVP-1.5における既知の限界であり、コードの挙動を変更する対応は行っていない。運用上は、`prohibited_paths`に書いたパターンが意図より広く一致する可能性があることを踏まえて設計・レビューする必要がある。
 
 ---
 
@@ -195,6 +206,8 @@ ACCEPTED, REJECTED_SCHEMA, REJECTED_HASH, REJECTED_SOURCE, REJECTED_POLICY
 
 `REJECTED_DUPLICATE`はAUTO-001-06-02-01の監査で候補として提示したが、本タスクの指示により**予約値としても追加していない**(`Decision.WOULD_BLOCK_DUPLICATE`のような未到達enumメンバーとしての存在すら持たせない)。これはLauncherの設計方針とは異なる、本タスク固有の意図的な決定である。
 
+**duplicate detection(重複起動防止)について明記する**: MVP-1.5では、重複起動防止の実処理は一切実装していない。`ConnectionDecision`のenumに`REJECTED_DUPLICATE`が存在しないことはその直接的な帰結である。`logical_task_key`・`execution_id`・`attempt`はあくまで「同一タスク・同一試行を識別するための情報」であり、これらのfieldが存在すること自体は重複起動を検出・防止する機構ではない(例えば同じ`task_bundle_sha256`に対して複数のenvelope/execution_idを人間が並行して作成すること自体を防ぐ仕組みはない)。二重実行の回避は、現時点では完全に人間の運用(同じタスクに対して複数の実行を同時に走らせない、という人間の注意)に依存している。Implementerの自動起動へ進む場合は、本タスクとは別のタスクで、重複起動防止の実処理を設計・実装する必要がある。
+
 ---
 
 ## 9. 既存schemaとの関係
@@ -235,7 +248,10 @@ ACCEPTED, REJECTED_SCHEMA, REJECTED_HASH, REJECTED_SOURCE, REJECTED_POLICY
 - 汎用的な`format`検証(date-time以外のformat、例: `uri`、`email`)
 - `multipleOf`
 - 文字列の`maxLength`
+- 配列内オブジェクトの特定subfieldだけを対象とした一意性制約(例: `proposed_changed_files[].path`の重複禁止)。JSON Schemaの`uniqueItems`はitem(オブジェクト全体)の完全一致しか判定できず、`path`というsubfieldだけを取り出した一意性は表現できない。
 - 正式なJSON Schemaの`$schema`/`$id`解決やmeta-schema検証
+
+**`proposed_changed_files`のpath一意性についての補足**: `implementer_plan_result.schema.json`の`proposed_changed_files`は、`description`内に「path重複禁止」という契約を文章で明記しているが、これはJSON Schemaの構造的な制約(`uniqueItems`等)としては表現していない。実際の重複検知は、`scripts/implementer_connection_contract.py`の`_validate_plan_result_schema()`内でPythonコードとして追加実装している(`SCHEMA_CHANGED_FILES_DUPLICATE_PATH`)。つまり本契約は「schemaファイルの説明文」と「Pythonバリデータの追加制約」の組み合わせによって実現されており、schemaファイル単体(を将来`jsonschema`等の汎用ライブラリで読み込んだ場合)だけではpath重複を検出できない。これは実装不良ではなく、**意図したschema/validator間の差異**である。
 
 `docs/automation/schemas/implementer_execution_envelope.schema.json`・`implementer_plan_result.schema.json`自体は正式なJSON Schema(draft 2020-12)の構文で記述しており、将来`jsonschema`ライブラリ等で読み込むこと自体は可能だが、本タスクのPythonバリデータはこれらのファイルを実行時に読み込んで解釈する汎用インタプリタではなく、**同じ内容を意味的に一致させて手書きしたもの**である(`SchemaJsonFilesShapeTests`で、schemaファイルの`required`集合とPythonバリデータの`_ENVELOPE_REQUIRED_FIELDS`/`_PLAN_RESULT_REQUIRED_FIELDS`が一致することだけを確認しており、両者の完全な意味的同一性を機械的に保証するものではない)。
 
@@ -258,4 +274,35 @@ ACCEPTED, REJECTED_SCHEMA, REJECTED_HASH, REJECTED_SOURCE, REJECTED_POLICY
 
 - `scripts/implementer_launcher.py`・`.github/workflows/*`・既存2schema(`claude_implementation_report.schema.json`/`openai_review_result.schema.json`)は変更していない。
 - 本モジュールはGitHubへの読み書き、Claude Code/Implementerの起動、git操作(worktree/branch/commit/push)を一切行わない。受け取ったdictを検証し、結果を返すだけの純粋関数群である。
-- 実運用時のenvelope/plan result(具体的なIssue番号を含むもの)はcommit対象としない。commitするのはexampleファイル(`AUTO-999-DEMO01`という架空のmanagement ID)だけである。
+
+### commitしない実ファイル
+
+リポジトリへ**commitしないもの**:
+
+- 実際のGitHub Issueから生成されたtask bundle(`task_bundle.json`実体)
+- 実際のexecution envelope(具体的なIssue番号・repository・base_sha等を含むもの)
+- 実際のplan result(具体的な実装計画・変更予定ファイルを含むもの)
+- 実際の`execution_id`を含む実行成果物一般
+- 実行ログ
+
+commit対象となるのは、schema(`docs/automation/schemas/*.schema.json`)・example(`docs/automation/examples/*.example.json`、架空のmanagement ID `AUTO-999-DEMO01`を用いたもの)・設計文書・validator(`scripts/implementer_connection_contract.py`)・test(`auto001_test_implementer_connection_contract.py`)・`ci_test_manifest.json`だけである。
+
+---
+
+## 13. 公式フルテストrunnerの確認状況
+
+### 事実
+
+- `python scripts/run_ci_tests.py`を実行したところ、manifest検証エラーで停止した。
+- エラー内容: `除外指定されたテストIDが収集結果に存在しません(存在しないテストIDが登録されている可能性があります): er002_test_ja_master_imitation.PdfBenchmarkStatusTests.test_pdf_copy_sha256_matches_source`
+- 本タスクの変更を一切含まない別worktree(`eigo-radio-auto-001-clean`)でも、同一worktreeで同じコマンドを実行したところ、**文言が完全に一致するエラー**が発生した。
+- `scripts/run_ci_tests.py`の内部関数(`load_manifest`・`validate_manifest_structure`・`discover_candidate_files`・`classify_files`・`collect_test_ids`)を、上記エラーが発生する`compute_exclusions`より手前まで個別にread-only実行したところ、新規テストファイル`auto001_test_implementer_connection_contract.py`は収集処理で76個のテストIDとして認識された(全体の収集テストID数916件のうちの76件)。
+- AUTO-001関連の`auto001_test_*.py`9ファイルを`python -m unittest`で合同実行した結果、906件全てが成功した(exit code 0)。
+- `ci_test_manifest.json`ベースの公式フルテストrunnerが、`er002_test_*.py`(ER-002)等を含む全体スイートとして成功することは、**ローカル環境では未確認のまま**である。
+
+### 未確認の仮説
+
+- 上記manifest検証エラーの原因は、PDFベンチマークの生成物(何らかのローカルファイル)がこの環境に存在しないことである可能性がある。
+- ただし、この原因の特定・調査自体は本タスク(AUTO-001-06-02-02)の対象範囲外であり、実施していない。
+
+「既存環境要因であることが確定した」とは判断していない。上記はあくまで、本タスクの変更が原因ではないことを示す再現性の確認と、未確認のまま残る事実・仮説の区別である。
