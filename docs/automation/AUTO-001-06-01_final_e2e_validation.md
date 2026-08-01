@@ -200,6 +200,17 @@ E1(`30692533142`)・E5(`30693118017`)ではannotationsは0件(`upload-artifact`�
 
 `writer_start`/`writer_block`のいずれも実行されなかった(=Controller App tokenを一切生成せず、ラベル・comment書き込みへ一切進まなかった)ことを確認した。これは、付与されたラベルが`agent:ready`ではなく`agent:working`であるため、既存plannerがNOT_APPLICABLEと判定し、Launcherの動作とは独立して安全に非適用終了したことを示す。既存Controller関連workflowファイル自体にも、`origin/main`との差分がないことをAUTO-001-06-01実装時・PRレビュー時の双方で確認済み(再掲)。
 
+同じく`issues:labeled`をsubscribeする`AUTO-001 Agent Planner Dry-Run`(`auto001-agent-dryrun.yml`)についても、E2・E4と同時に起動した実際のRunを本ドキュメント作成時に個別に確認した(事実)。
+
+| Issue / 対応Launcher Run | Agent Planner Dry-Run Run ID | job | conclusion |
+|---|---|---|---|
+| #18(E2と同時) | `30692582974` | `dry_run` | `success` |
+| #19(E4と同時) | `30692937327` | `dry_run` | `success` |
+
+`AUTO-001 Agent Planner Dry-Run`はread-only workflowであり、`Controller Integrated Write`のような`writer_start`/`writer_block`に相当する書き込み系jobはこのworkflow定義自体に存在しない(=「skipされた」のではなく、そもそも書き込み系jobが定義されていない)。両Runとも`dry_run`ジョブ内の`Run planner dry-run (issues:labeled)`stepのみが実行・成功し、他のstepは(`workflow_dispatch`専用のため)skipされた。
+
+以上より、Launcherの実GitHub E2E期間中(E1〜E5)を通じて、Issue #18・#19に対する label・comment・body・state・branch・commit・PRのいずれへのwriteも、Launcher自身からはもちろん、偶発的に同時起動した既存の`Controller Integrated Write`・`Agent Planner Dry-Run`のいずれからも発生していないことを確認した。
+
 ---
 
 ## 9. 標準CI成功の記録
@@ -237,8 +248,10 @@ AUTO-001-06-01は、ローカル実装・単体テスト・静的監査・PR標�
 - artifact発行制御(WOULD_LAUNCH時のみ発行、それ以外は0件を事実確認)
 - Controller App token・Implementer App tokenの非生成
 - 既存Controller関連workflow(Integrated Write・Agent Planner Dry-Run)への副作用なし
-- GitHub write(label・comment・本文・branch・commit・PR)が一切発生していないこと(Issue comments 0件を事実確認)
+- GitHub write(label・comment・本文(body)・state・branch・commit・PR)が一切発生していないこと(Issue comments 0件を事実確認)
 - 標準CI成功
+
+Issue状態(state)についての補足: Issue #19がopenからclosedへ変化したのは、E5(`workflow_dispatch`によるNOT_APPLICABLE/ISSUE_CLOSED判定)を実行する前に、ユーザーがGitHub UI上で意図的に行ったfixture操作(Close後の非適用判定を検証するための手順)であり、Launcher workflowによるstate変更ではない。Issue #18はE1〜E5を通じてOpenのまま維持されている。Issue #19はユーザー操作によってClosedとなった後、その状態に対してLauncherがNOT_APPLICABLE / ISSUE_CLOSEDを返したのみであり、Launcher自身がstateを変更した事実はない。
 
 ---
 
