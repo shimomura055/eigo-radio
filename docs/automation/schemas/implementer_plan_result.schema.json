@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/automation/schemas/implementer_plan_result.schema.json",
+  "title": "Implementer Plan Result (MVP-1.5)",
+  "description": "半自動MVP-1.5において、Claude Codeがimplementer_execution_envelope.schema.jsonとtask bundle(AUTO-001-TASK-BUNDLE-V1)を受け取った後、コード変更前に返す機械可読な計画結果。本schemaは『受理されaccepted・計画が完了した(ACCEPTED / PLAN_COMPLETED / HUMAN_APPROVAL_REQUIRED)』場合の形だけを表現する。拒否系(schema不一致・hash不一致・source不一致・policy違反)はplan resultとしては表現せず、scripts.implementer_connection_contract.ValidationResultだけで表現する。claude_implementation_report.schema.json(実装完了後の自己申告)とは役割が異なり、既存schemaの必須fieldを変更・削除しない。人間承認が行われるまで、このplan resultに基づくコード変更・git操作・GitHub writeは一切行われない。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "execution_id",
+    "attempt",
+    "logical_task_key",
+    "management_id",
+    "input_task_bundle_sha256",
+    "input_base_sha",
+    "connection_decision",
+    "execution_status",
+    "next_action",
+    "summary",
+    "current_problem_understanding",
+    "implementation_plan",
+    "proposed_changed_files",
+    "proposed_test_plan",
+    "prohibited_change_detected",
+    "missing_information",
+    "unresolved_items",
+    "risks",
+    "human_confirmation_items",
+    "generated_at",
+    "self_reported"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "execution_id": {
+      "type": "string",
+      "description": "対応するexecution envelope.execution_idと一致する必要がある。",
+      "pattern": "^exec_[0-9a-f]{12}_a[1-9][0-9]*_[A-Za-z0-9]{8,32}$"
+    },
+    "attempt": {
+      "type": "integer",
+      "description": "対応するexecution envelope.attemptと一致する必要がある。",
+      "minimum": 1
+    },
+    "logical_task_key": {
+      "type": "string",
+      "description": "対応するexecution envelope.logical_task_keyと一致する必要がある。",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "management_id": {
+      "type": "string",
+      "description": "対応するexecution envelope.management_idと一致する必要がある。",
+      "minLength": 1
+    },
+    "input_task_bundle_sha256": {
+      "type": "string",
+      "description": "Claude Codeが実際に読み取ったtask bundleのSHA-256(自己申告echo)。envelope.task_bundle_sha256と一致する必要がある。",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "input_base_sha": {
+      "type": "string",
+      "description": "Claude Codeが実際に前提としたbase SHA(自己申告echo)。envelope.base_shaと一致する必要がある。",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "connection_decision": {
+      "type": "string",
+      "const": "ACCEPTED",
+      "description": "MVP-1.5のplan resultは受理された場合のみ存在するため固定値。拒否系はValidationResultで表現する。"
+    },
+    "execution_status": {
+      "type": "string",
+      "const": "PLAN_COMPLETED",
+      "description": "MVP-1.5ではIMPLEMENTING以降のstatusを使用しないため固定値。"
+    },
+    "next_action": {
+      "type": "string",
+      "const": "HUMAN_APPROVAL_REQUIRED",
+      "description": "MVP-1.5では計画提示後、必ず人間承認を要求する固定値。"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_problem_understanding": {
+      "type": "string",
+      "description": "Claude Codeが理解した問題の再記述。task bundle.task.current_problemとの乖離を人間が目視確認するための項目。",
+      "minLength": 1
+    },
+    "implementation_plan": {
+      "type": "array",
+      "description": "実装計画の手順(順序付き)。",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "proposed_changed_files": {
+      "type": "array",
+      "description": "変更を計画しているファイルの一覧(まだ変更していない)。pathの重複は禁止。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "change_type", "purpose", "service_spec_impact"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "change_type": {
+            "type": "string",
+            "enum": ["added", "modified", "deleted", "renamed"]
+          },
+          "purpose": { "type": "string", "minLength": 1 },
+          "service_spec_impact": {
+            "type": "string",
+            "enum": ["NONE", "POSSIBLE", "YES", "UNKNOWN"]
+          }
+        }
+      }
+    },
+    "proposed_test_plan": {
+      "type": "array",
+      "description": "実装後に実行を計画しているテストの一覧(まだ実行していない)。",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "prohibited_change_detected": {
+      "type": "boolean",
+      "const": false,
+      "description": "計画がenvelope.prohibited_paths/prohibited_operationsに抵触すると判断した場合、Claude Codeはplan resultを提示せず処理を止めるべきであるため、plan resultとして提示される場合は常にfalseである。"
+    },
+    "missing_information": {
+      "type": "array",
+      "description": "計画立案にあたって不足していた情報。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "unresolved_items": {
+      "type": "array",
+      "description": "未解決事項。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "risks": {
+      "type": "array",
+      "description": "既知のリスク。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "human_confirmation_items": {
+      "type": "array",
+      "description": "人間による確認が必要な項目。該当なしの場合は空配列。",
+      "items": { "type": "string" }
+    },
+    "generated_at": {
+      "type": "string",
+      "description": "このplan resultを生成した日時。UTC(Z終端)のRFC3339のみを許容する。",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+      "examples": ["2026-08-01T12:00:00Z"]
+    },
+    "self_reported": {
+      "type": "boolean",
+      "const": true,
+      "description": "claude_implementation_report.schema.jsonのself_reportedと同じ意味。この計画結果全体がClaude Codeの自己申告であり、独立検証を経ていないことを示す固定値。"
+    }
+  }
+}

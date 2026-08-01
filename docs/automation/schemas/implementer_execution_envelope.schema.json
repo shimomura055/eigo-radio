@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/automation/schemas/implementer_execution_envelope.schema.json",
+  "title": "Implementer Execution Envelope (MVP-1.5)",
+  "description": "AUTO-001-TASK-BUNDLE-V1(scripts.implementer_launcher)を人間経由でClaude Codeへ渡す半自動MVP-1.5のための、実行ごとのmetadata(execution envelope)。task bundle本体とは別JSONであり、task bundleのbyte決定性には一切影響しない。MVP-1.5ではstop_pointはPLAN_ONLY固定であり、Claude Codeはコード変更・git操作・GitHub write・実装のためのworktree/branch作成を一切行わず、入力検査と実装計画(implementer_plan_result.schema.json)の提示だけを行う。本schemaはdocs/automation/AUTO-001-06-02-02_implementer_connection_contract.mdに記載のPythonバリデータ(scripts/implementer_connection_contract.py)のサブセット実装に対応する契約であり、正式なJSON Schemaの全機能(($ref, oneOf/anyOf, patternProperties等)を実装するものではない。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "logical_task_key",
+    "execution_id",
+    "attempt",
+    "repository",
+    "base_sha",
+    "issue_number",
+    "management_id",
+    "task_bundle_schema_version",
+    "task_bundle_sha256",
+    "task_bundle_file",
+    "prohibited_paths",
+    "prohibited_operations",
+    "timeout_seconds",
+    "stop_point",
+    "expected_output",
+    "human_approval_required"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "本schemaのバージョン(セマンティックバージョニング)。",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "logical_task_key": {
+      "type": "string",
+      "description": "repository・issue_number・management_id・task_bundle_sha256から決定的に生成される、同一タスクを識別するキー(sha256 hex, 64桁小文字)。生成規則はbuild_logical_task_key()およびAUTO-001-06-02-02設計文書§7を正とする。",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "execution_id": {
+      "type": "string",
+      "description": "1回の実行試行を識別する値。'exec_' + logical_task_keyの先頭12文字(hex) + '_a' + attempt番号 + '_' + 8〜32文字の英数字サフィックスで構成する。task bundle本体には含めない。",
+      "pattern": "^exec_[0-9a-f]{12}_a[1-9][0-9]*_[A-Za-z0-9]{8,32}$"
+    },
+    "attempt": {
+      "type": "integer",
+      "description": "同一logical_task_key内での試行回数(1から開始)。",
+      "minimum": 1
+    },
+    "repository": {
+      "type": "string",
+      "description": "task bundle.source.repositoryと一致する必要がある(owner/repo形式)。",
+      "pattern": "^[^/\\s]+/[^/\\s]+$"
+    },
+    "base_sha": {
+      "type": "string",
+      "description": "envelope作成時に改めて取得したorigin/mainのフルSHA(40桁)。task bundleのgenerated_from_main_shaをそのまま信用しない。",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "issue_number": {
+      "type": "integer",
+      "description": "task bundle.source.issue_numberと一致する必要がある。",
+      "minimum": 1
+    },
+    "management_id": {
+      "type": "string",
+      "description": "task bundle.task.management_idと一致する必要がある。",
+      "minLength": 1
+    },
+    "task_bundle_schema_version": {
+      "type": "string",
+      "const": "AUTO-001-TASK-BUNDLE-V1",
+      "description": "scripts.implementer_launcher.TASK_BUNDLE_SCHEMA_VERSIONと一致する固定値。"
+    },
+    "task_bundle_sha256": {
+      "type": "string",
+      "description": "task_bundle_fileが指すファイルの実際のbyte列から計算したSHA-256(64桁小文字hex)。",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "task_bundle_file": {
+      "type": "string",
+      "const": "task_bundle.json",
+      "description": "task bundle本体のファイル名(固定)。"
+    },
+    "prohibited_paths": {
+      "type": "array",
+      "description": "proposed_changed_files.pathと突き合わせるglob pattern(fnmatch互換)の一覧。Windows/POSIXの区切り差は検証時に正規化する。",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "prohibited_operations": {
+      "type": "array",
+      "description": "MVP-1.5でClaude Codeが実行してはならない操作の一覧。値は固定enumの部分集合。配列は辞書順(Pythonの文字列比較順)で並んでいることを追加のPython検査で要求する(JSON Schema自体には順序制約の表現がないため)。",
+      "items": {
+        "type": "string",
+        "enum": [
+          "AMEND",
+          "BRANCH_CREATE",
+          "BRANCH_DELETE",
+          "COMMENT_WRITE",
+          "CREDENTIAL_MODIFICATION",
+          "FILE_WRITE",
+          "FORCE_PUSH",
+          "GIT_COMMIT",
+          "GIT_PUSH",
+          "GIT_STAGE",
+          "ISSUE_WRITE",
+          "LABEL_WRITE",
+          "MAIN_DIRECT_CHANGE",
+          "MERGE",
+          "PR_CREATE",
+          "REBASE",
+          "SECRET_ACCESS",
+          "WORKFLOW_DISPATCH",
+          "WORKTREE_CREATE",
+          "WORKTREE_DELETE"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    },
+    "stop_point": {
+      "type": "string",
+      "const": "PLAN_ONLY",
+      "description": "MVP-1.5では計画提示までで停止する固定値。将来のMVPで他の値(AFTER_COMMIT_BEFORE_PUSH等)を追加する可能性があるが、v1では未定義かつ未使用。"
+    },
+    "expected_output": {
+      "type": "string",
+      "const": "PLAN_RESULT_JSON",
+      "description": "MVP-1.5でClaude Codeが返すべき成果物の種別を示す固定値。"
+    },
+    "human_approval_required": {
+      "type": "boolean",
+      "const": true,
+      "description": "MVP-1.5では常にtrue固定(人間承認前のコード変更を禁止する契約そのもの)。"
+    }
+  }
+}
