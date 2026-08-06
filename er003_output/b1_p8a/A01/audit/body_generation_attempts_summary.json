@@ -1,0 +1,30 @@
+{
+  "round1": {
+    "attempts": 3,
+    "result": "FAILED_ALL_ATTEMPTS",
+    "per_attempt_outcome": [
+      "conclusive_fail",
+      "conclusive_fail",
+      "conclusive_fail"
+    ],
+    "per_attempt_reasons": [
+      [
+        "unauthorized_paraphrase"
+      ],
+      [
+        "unauthorized_paraphrase"
+      ],
+      [
+        "unauthorized_paraphrase"
+      ]
+    ],
+    "notes": "embedded/grounded QA are minor spoken naturalizations (Argentina->Argentine captain, omitted substitute, 15->15th, digit score read as words), not content omission/duplication/reordering. Full detail relayed to user in chat."
+  },
+  "round2": {
+    "attempts": 3,
+    "result": "OK",
+    "accepted_attempt": 3,
+    "notes": "User explicitly authorized a second round of up to 3 fresh attempts after round1 failure. Succeeded on the 3rd attempt of this round (embedded+grounded QA both passed). Per-attempt QA transcript detail for round2 was not persisted to a file (only final accepted_attempt/status), unlike round1 which was fully captured in chat."
+  },
+  "total_real_tts_content_attempts_across_both_rounds": 6
+}
