@@ -2,6 +2,15 @@
 
 **ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
 
+## 訂正(2026-08-06)
+
+P7Cの英語Component前ポーズにズレがあるバグが見つかり修正された
+(詳細: `er003_output/b1_p7c/A01/audio_validation.md`冒頭の訂正記事)。
+これに伴い、本ステージのPreviewファイルが差し替わったため、統合版を
+修正後のPreviewで作り直した。**B1本編音声は無変更のまま再利用**して
+おり、新規TTS callは発生していない。本文以下のsha256・durationは
+修正後の値に更新済み。
+
 ## 1. 検証目的
 
 P7Cでユーザー合格済みのPreview完成版と、同じB1エピソード(A01)の本編
@@ -14,9 +23,9 @@ P7Cでユーザー合格済みのPreview完成版と、同じB1エピソード(A
 | 項目 | 値 |
 |---|---|
 | path | `er003_output/b1_p7c/A01/A01_p7c_gemini31_english_replaced_dynamics3.wav` |
-| sha256(P7C記録時) | `cf12636c7eb6071a0af22c82cdf49c2fbce8ff33ad226a0a1f35e0e95c2eab37` |
-| sha256(P8A読み込み時) | `cf12636c7eb6071a0af22c82cdf49c2fbce8ff33ad226a0a1f35e0e95c2eab37`(**完全一致**) |
-| duration | 44.055秒 |
+| sha256(P7C修正後の記録値) | `111788d635637be7d4edb38d2c45784a5d929144cbf7e68e5e1e3b31c0671168` |
+| sha256(P8A読み込み時) | `111788d635637be7d4edb38d2c45784a5d929144cbf7e68e5e1e3b31c0671168`(**完全一致**) |
+| duration | 44.845秒(P7C修正により旧44.055秒から変化) |
 | モデル | gemini-3.1-flash-tts-preview |
 
 ## 3. Previewを再生成・再加工していない証拠
@@ -179,34 +188,40 @@ Preview末尾の発話終了点、本編先頭の発話開始点それぞれの�
 
 ## 11. Preview・本編の音量診断
 
+**P7C修正後の値。**
+
 | 指標 | Preview | 本編 | 統合後全体 |
 |---|---|---|---|
-| duration | 44.055秒 | 150.033秒 | 193.848秒 |
-| peak | 0.854 | 0.887 | 0.886 |
-| RMS(全体) | 0.0915 | 0.0820 | 0.0843 |
+| duration | 44.845秒 | 150.033秒 | 194.638秒 |
+| peak | 0.860 | 0.887 | 0.887 |
+| RMS(全体) | 0.0910 | 0.0820 | 0.0842 |
 | clipping | 検出なし | 検出なし | 検出なし |
-| 発話区間 | 0.260〜43.355秒 | 0.340〜149.653秒 | 0.260〜193.468秒 |
-| 末尾3秒RMS | 0.0845 | 0.0773 | 0.0773 |
-| 先頭3秒RMS | 0.0943 | 0.0964 | 0.0943 |
+| 発話区間 | 0.260〜44.145秒 | 0.340〜149.653秒 | 0.260〜194.258秒 |
+| 末尾3秒RMS | 0.0848 | 0.0773 | 0.0773 |
+| 先頭3秒RMS | 0.0947 | 0.0964 | 0.0947 |
 
-PreviewのRMS(0.0915)と本編のRMS(0.0820)の差は約1.0dB相当であり、
+PreviewのRMS(0.0910)と本編のRMS(0.0820)の差は約0.9dB相当であり、
 大きな音量差ではないと考えられるが、**今回は自動補正を行っていない**
 (指示section11の明記通り、補正はユーザー試聴後の別タスク)。
 
 ## 12. 全体試聴版の場所
 
+**P7C修正後のPreviewを使って作り直した版。**
+
 | 項目 | 値 |
 |---|---|
 | path | `er003_output/b1_p8a/A01/assembled/A01_p8a_preview_plus_main_full_listening.wav` |
-| sha256 | `280ba011854047f230b7cb1f208cca8f4b2efe04722eab8fe80fc4f62a6f4a15` |
-| duration | 193.848秒(約3分14秒) |
+| sha256 | `304be3b822cc92bb2942db00c5dfdc3cda4aba6af18fa265936fd54d29440b8b` |
+| duration | 194.638秒(約3分15秒) |
 
 ## 13. 接続確認clipの場所
+
+**P7C修正後のPreviewを使って作り直した版。**
 
 | 項目 | 値 |
 |---|---|
 | path | `er003_output/b1_p8a/A01/clips/A01_p8a_preview_to_main_transition_clip.wav` |
-| sha256 | `d88634abdd23013be421b1df1a5e015682b369021cd3be98b9d33e70f82dd5fc` |
+| sha256 | `302c2ce98c10834217d1ee71a57d5f1eaaa8862a08193823faaea587f44ba0aa` |
 | duration | 25.0秒(Preview末尾10秒+本編先頭15秒、指示section12の推奨値通り) |
 
 **注意**: 全ての`.wav`ファイルは`.gitignore`によりリポジトリには
@@ -215,9 +230,9 @@ PreviewのRMS(0.0915)と本編のRMS(0.0820)の差は約1.0dB相当であり、
 
 ## 14. 全体duration
 
-**193.848秒(約3分14秒)** = Preview(44.055秒)+ 接続無音(0.80秒、
-Preview側の末尾無音として含まれる)+ 本編(150.033秒-本編先頭の元々の
-無音0.34秒分)。
+**194.638秒(約3分15秒)** = Preview(44.845秒、P7C修正後)+ 接続無音
+(0.80秒、Preview側の末尾無音として含まれる)+ 本編(150.033秒-本編
+先頭の元々の無音0.34秒分)。
 
 ## 15. 機械QA結果
 
@@ -263,10 +278,9 @@ Preview側の末尾無音として含まれる)+ 本編(150.033秒-本編先頭�
 
 ## 17. テスト結果
 
-- `er003_test_b1_p8a_audio.py`(新規8件、合成データのみ): 全合格
+- `er003_test_b1_p8a_audio.py`(8件、合成データのみ): 全合格
 - プロジェクト全体回帰テスト(`run_project_regression.py`、
-  er0*_test_*.py全探索): **1596件全合格、回帰なし**(P7C時点1588件+
-  今回8件)
+  er0*_test_*.py全探索): P7C修正反映後の時点で**1598件全合格、回帰なし**
 
 ## 18. 再実行方法
 
@@ -294,9 +308,13 @@ combined_result = p8a.concatenate_preview_and_body(
   差し替え可否・許容範囲については、今後同様の事象が起きた場合の
   運用方針をあらかじめ相談しておくとよい**(指示書の上限3回を毎回
   超えてよいかは今回の個別判断であり、恒久ルールではない)。
-- PreviewのRMS(0.0915)と本編のRMS(0.0820)には約1.0dB相当の差が
+- PreviewのRMS(0.0910)と本編のRMS(0.0820)には約0.9dB相当の差が
   ある。今回は自動補正していないため、ユーザー試聴で気になる場合は
   別タスクとして音量差の調整を検討する必要がある。
+- **(訂正)** 初版はP7Cの無音間隔バグの影響を受けたPreviewを使用して
+  いたため、本ステージも修正後のPreviewで統合版を作り直した(本編
+  音声は無変更のまま再利用、新規TTSなし)。詳細は本報告書冒頭の
+  訂正記事を参照。
 - 接続点のクリック/二重音の有無は、サンプル振幅の診断(section9末尾)
   では良好だったが、最終的には聴感でのみ判断できる。
 - 本編は6回目の試行でようやく合格しており、Gemini TTSの発話上の
@@ -324,11 +342,12 @@ combined_result = p8a.concatenate_preview_and_body(
 
 ---
 
-## ユーザーへの確認事項
+## ユーザーへの確認事項(訂正版)
 
-以下の統合試聴版をご確認ください。
+**P7Cの無音間隔バグ修正により、ファイルが差し替わっています。** 以下の
+統合試聴版をご確認ください。
 
-- [A01_p8a_preview_plus_main_full_listening.wav](assembled/A01_p8a_preview_plus_main_full_listening.wav)(全体、193.848秒)
+- [A01_p8a_preview_plus_main_full_listening.wav](assembled/A01_p8a_preview_plus_main_full_listening.wav)(全体、194.638秒)
 - [A01_p8a_preview_to_main_transition_clip.wav](clips/A01_p8a_preview_to_main_transition_clip.wav)(接続部確認用、25秒)
 
 指示section14の項目、特に以下を重点的にご確認ください。

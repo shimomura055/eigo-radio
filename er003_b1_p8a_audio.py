@@ -47,7 +47,8 @@ import er003_b1_p7c_audio as p7c
 ARTICLE_ID = "A01"
 
 PREVIEW_PATH = "er003_output/b1_p7c/A01/A01_p7c_gemini31_english_replaced_dynamics3.wav"
-PREVIEW_EXPECTED_SHA256 = "cf12636c7eb6071a0af22c82cdf49c2fbce8ff33ad226a0a1f35e0e95c2eab37"
+# 2026-08-06: P7Cの無音間隔バグ修正後の値(旧: cf12636c...)。
+PREVIEW_EXPECTED_SHA256 = "111788d635637be7d4edb38d2c45784a5d929144cbf7e68e5e1e3b31c0671168"
 
 B1_ARTICLE_SOURCE_PATH = p3r.B1_ARTICLE_SOURCE_PATH  # er003_output/b1_p1/A01/b1_article_raw.md
 VOICE_NAME = p3r.VOICE_NAME  # "Aoede"(Previewと同一話者、本編は別モデルだがvoice名は共通)
