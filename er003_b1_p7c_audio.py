@@ -238,7 +238,24 @@ def remove_markers_and_insert_components(
                       "abs_start_seconds": seg_start_sample / sample_rate})
 
     # Step 2: 各segmentへ、MFA由来の隣接token境界を基準に前後無音を調整する。
+    #
+    # 重要: 各中間segment(segments[1]〜segments[n-1])は、「前のmarkerの
+    # 後(leading)」と「次のmarkerの前(trailing)」の両方から1回ずつ
+    # 調整される。segments[i]["abs_start_seconds"]はStep1で元の(未加工の)
+    # ja_samples上の絶対時刻として一度だけ計算されているため、この基準が
+    # 有効なのは、そのsegmentがまだ変更されていない間だけである。
+    # trailing調整(末尾側)はsegmentの先頭を変更しないが、leading調整
+    # (先頭側)はsegmentの先頭にpadding/trimを行い、以後samples配列の
+    # インデックスが元のabs_start_seconds基準とズレる。そのため、
+    # 「全segmentのtrailing調整を先に済ませてから、全segmentのleading
+    # 調整を行う」という2パスに分離しなければならない(逆順や同一
+    # segment内での交互実行は、後段の調整が前段でズレた配列に対して
+    # 誤ったspeech_end/start_sampleを適用することになり、無音長が
+    # 大きく崩れる)。
     silence_adjustments = []
+
+    # Pass 1: 全segmentのtrailing(英語直前)調整。abs_start_secondsは
+    # まだ誰にも変更されていないsegments[i]に対して有効。
     for i, span in enumerate(spans):
         seg_before = segments[i]
         speech_end_sample = p6b.mfa_anchor_sample(span["preceding_end_seconds"], seg_before["abs_start_seconds"], sample_rate)
@@ -247,6 +264,11 @@ def remove_markers_and_insert_components(
         silence_adjustments.append({"marker_id": span["marker_id"], "side": "trailing_before_english",
                                      "segment_index": i, "speech_end_sample": speech_end_sample, **info})
 
+    # Pass 2: 全segmentのleading(英語直後)調整。leadingはsegmentの
+    # 先頭側だけを変更し、Pass1のtrailing調整はsegmentの末尾側だけを
+    # 変更しているため、互いの基準(abs_start_seconds起点のサンプル
+    # 位置)を壊さない。
+    for i, span in enumerate(spans):
         seg_after = segments[i + 1]
         speech_start_sample = p6b.mfa_anchor_sample(span["following_start_seconds"], seg_after["abs_start_seconds"], sample_rate)
         adjusted, info = p3z.adjust_leading_silence(seg_after["samples"], sample_rate, speech_start_sample, GAP_AFTER_TARGET_SECONDS)

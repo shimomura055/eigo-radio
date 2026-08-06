@@ -2,6 +2,40 @@
 
 **ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
 
+## 訂正(2026-08-06、初版公開後にユーザー指摘で発覚)
+
+初版のP7C成果物には、英語Component前の無音間隔(目標0.40秒)が実際には
+**marker_2/3/4で約0.15秒しかない**という不具合があった。ユーザーが
+実際に試聴し「ポーズが短く感じる」と指摘したことで発覚した。
+
+**原因**: `remove_markers_and_insert_components`内で、5箇所のmarkerを
+順番に処理する際、ある日本語segmentに対して「前のmarkerの後ろ側
+(leading)調整」と「次のmarkerの前側(trailing)調整」を交互の順序で
+適用していた。leading調整がsegmentの先頭にpadding/trimを行うため、
+その後に行うtrailing調整が、既にズレたサンプル位置を基準に計算されて
+しまっていた。
+
+**なぜテストで検出できなかったか**: 元のテストは「調整の前後で発話
+内容が壊れていないか(`speech_content_unchanged`)」「達成値が目標と
+一致するか(`achieved_trailing/leading_seconds`)」という自己参照的な
+指標のみを確認しており、これらはズレた基準点に対しても内部的に整合
+していたため、バグを検出できなかった。
+
+**修正内容**: 全segmentの「trailing(英語前)調整」を先に一括で行い、
+その後に全segmentの「leading(英語後)調整」を一括で行う2パス方式へ
+変更した(trailing調整はsegmentの末尾側のみ、leading調整は先頭側のみを
+変更するため、この順序であれば互いの基準を壊さない)。既存のP7A raw・
+既存の英語Componentから再スプライスしただけで、**新規TTS callは発生
+していない**。
+
+**再発防止**: 既知の値(tone値)を使い、完成音声内での実際の出現位置
+から独立に間隔を逆算するテスト
+(`RemoveMarkersAndInsertComponentsAbsolutePositionTests`)を追加した。
+このテストは修正前のコードに対して実際に失敗することを確認済み。
+
+以下の本文は、**修正後の値**に更新済み(section10・16・17)。修正前の
+節の記述のうち数値以外の設計意図の説明は無変更。
+
 ## 1. 検証目的
 
 P7Aでユーザーが合格と判断した日本語marker入りraw音声内の5箇所の「目印」
@@ -151,20 +185,33 @@ Step1)、RMSによる再検出や範囲拡張は一切行っていない。無�
 
 ## 10. 英語前後間隔の実測値
 
-| marker | used form | 前(英語前) | 後(英語後) | 許容差内 |
+**この節は訂正後の値(修正版)。** 構成上の計算値(`achieved_*_seconds`、
+サンプル数ベースの厳密値)と、それとは独立にRMSベースで実音声を
+直接スキャンして再測定した値の両方を示す。
+
+| marker | used form | 構成上の値(前/後) | 独立再測定値(前/後、RMS走査) | 許容差内 |
 |---|---|---|---|---|
-| marker_1 | shot on target | 0.400秒 | 0.300秒 | 合格 |
-| marker_2 | take players off | 0.400秒 | 0.300秒 | 合格 |
-| marker_3 | a narrow lead | 0.400秒 | 0.300秒 | 合格 |
-| marker_4 | close the door to the final | 0.400秒 | 0.300秒 | 合格 |
-| marker_5 | stoppage time | 0.400秒 | 0.300秒 | 合格 |
+| marker_1 | shot on target | 0.400秒 / 0.300秒 | 0.455秒 / 0.300秒 | 合格 |
+| marker_2 | take players off | 0.400秒 / 0.300秒 | 0.445秒 / 0.350秒 | 合格 |
+| marker_3 | a narrow lead | 0.400秒 / 0.300秒 | 0.455秒 / 0.300秒 | 合格 |
+| marker_4 | close the door to the final | 0.400秒 / 0.300秒 | 0.450秒 / 0.305秒 | 合格 |
+| marker_5 | stoppage time | 0.400秒 / 0.300秒 | 0.450秒 / 0.300秒 | 合格 |
+
+独立再測定値は、5ms窓・RMS閾値0.01でComponentの前後を直接走査する、
+構成ロジックとは別の方法で求めた(誤って自己整合してしまう心配がない)。
+構成上の値との差(約0.05秒)は、走査方法の閾値・窓幅によるもので、
+5marker全てでほぼ均一に現れている。修正前は marker_2/3/4 が
+0.145〜0.155秒(目標を大きく下回る)、marker_1/5が0.455/0.560秒
+(逆にばらつく)という**不均一な**パターンだったのに対し、修正後は
+5marker全てが0.44〜0.46秒の**均一な**範囲に収まっており、これは
+バグが解消されたことを示す一貫した証拠である。
 
 実効間隔は、英語Componentを`tight_speech_only`(`p3u.find_speech_bounds`
 で検出した可聴音区間のみを抽出、保存時の安全マージンを除去)してから
 挿入し、日本語側は`p3z.adjust_trailing_silence`/`adjust_leading_silence`
 にMFA由来のサンプル位置を渡して正確に0.40秒/0.30秒へ調整しているため、
 「見かけ上の配置時刻」ではなく可聴音同士の実効間隔として仕様値と厳密に
-一致する(指示section9の定義通り)。
+一致する設計(指示section9の定義通り)。
 
 ## 11. 日本語助詞保持QA
 
@@ -239,12 +286,17 @@ target」の不一致(false)により、機械的なfidelity判定は不合格
 
 ## 13. ASR診断
 
-Azure STT(ja-JP、連続認識)による完成版候補の全文:
+**修正版に対して再実施したASR結果。** Azure STT(ja-JP、連続認識)に
+よる完成版候補の全文:
 
-> 前半は激しい接触と緊張が続き、両チームとも枠内シュートシャットon targetを記録できないまま静かな均衡が保たれます。後半に試合が動くと、イングランドは選手を交代で下げるtake players offという決断で守備を固め、わずかなread A narrow leadを守ろうとします。アルゼンチンの結晶への道を閉ざすこと。close the door to the finalが現実になりそうなその時。メッシが流れを変え、ついにアディショナルタイム。stoppage time。最後の数分。寒気と痛みの境目で何が起きるのでしょうか。
+> 前半は激しい接触と緊張が続き、両チームとも枠内シュートシャットon targetを記録できないまま静かな均衡が保たれます。後半に試合が動くと、イングランドは選手を交代で下げるtake players offという決断で守備を固め、わずかなリードA narrow leadを守ろうとします。アルゼンチンの結晶への道を閉ざすこと。close the door to the finalが現実になりそうなその時。メッシが流れを変え、ついにアディショナルタイム。stoppage time。最後の数分、寒気と痛みの境目で何が起きるのでしょうか。
 
 「決勝→結晶」「歓喜→寒気」は、このプロジェクトで繰り返し確認されて
-いる既知のASR側同音異義語パターンと一致する。
+いる既知のASR側同音異義語パターンと一致する。「シャットon target」
+「へ」未検出も修正前と同一パターンで再現しており、**間隔バグの修正が
+これらのASR側の癖に影響していないこと**(=これらはバグではなく
+ASR側の限界である可能性が高いという元の判断が、無音間隔を正しく
+直した後も変わらないこと)を追加で裏付けている。
 
 ## 14. Dynamics 3適用箇所
 
@@ -254,19 +306,23 @@ Azure STT(ja-JP、連続認識)による完成版候補の全文:
 
 ## 15. Dynamics 3適用前音声の場所
 
+**修正版。**
+
 | 項目 | 値 |
 |---|---|
 | path | `er003_output/b1_p7c/A01/assembled/A01_p7c_pre_dynamics3.wav` |
-| sha256 | `ac7728f3822339bc38e62933ec0cf866e9dd4c5e1c2ad5e7d23668758f96d3ce` |
-| duration | 44.055秒 |
+| sha256 | `fcd95db2c2a2a2133655443d6c89d59bd7fec94c812b8daa490a866c23a8f87d` |
+| duration | 44.845秒(修正前44.055秒。marker_2/3/4の前間隔が正しく0.40秒へ拡がったことによる差分) |
 
 ## 16. 完成版候補の場所
+
+**修正版。**
 
 | 項目 | 値 |
 |---|---|
 | path | `er003_output/b1_p7c/A01/A01_p7c_gemini31_english_replaced_dynamics3.wav` |
-| sha256 | `cf12636c7eb6071a0af22c82cdf49c2fbce8ff33ad226a0a1f35e0e95c2eab37` |
-| duration | 44.055秒 |
+| sha256 | `111788d635637be7d4edb38d2c45784a5d929144cbf7e68e5e1e3b31c0671168` |
+| duration | 44.845秒 |
 | clipping | 検出なし |
 | decode | 正常 |
 
@@ -274,16 +330,18 @@ Azure STT(ja-JP、連続認識)による完成版候補の全文:
 
 ## 17. 5件の境界確認clipの場所
 
+**修正版(sha256は更新、長さはcontext window固定のため修正前と同じ)。**
+
 各clipは、英語Component前後それぞれ約1.2秒の日本語文脈を含む(境界
 segmentが1.2秒未満の場合はsegment全体)。
 
-| marker | used form | path | 長さ |
-|---|---|---|---|
-| marker_1 | shot on target | `er003_output/b1_p7c/A01/clips/marker_1_shot_on_target.wav` | 3.471秒 |
-| marker_2 | take players off | `er003_output/b1_p7c/A01/clips/marker_2_take_players_off.wav` | 3.671秒 |
-| marker_3 | a narrow lead | `er003_output/b1_p7c/A01/clips/marker_3_a_narrow_lead.wav` | 3.251秒 |
-| marker_4 | close the door to the final | `er003_output/b1_p7c/A01/clips/marker_4_close_the_door_to_the_final.wav` | 4.271秒 |
-| marker_5 | stoppage time | `er003_output/b1_p7c/A01/clips/marker_5_stoppage_time.wav` | 3.531秒 |
+| marker | used form | path | sha256 | 長さ |
+|---|---|---|---|---|
+| marker_1 | shot on target | `er003_output/b1_p7c/A01/clips/marker_1_shot_on_target.wav` | `fbc14cb022b7ac72df06fd084e821e5826d75ff9085dffaa4a0562bc67397260`(修正前と同一、この区間はバグの影響を受けていない) | 3.471秒 |
+| marker_2 | take players off | `er003_output/b1_p7c/A01/clips/marker_2_take_players_off.wav` | `736e121f0f110a3de3d1ab02e451fe99cca19ce55b1cead6539b5620d222031e` | 3.671秒 |
+| marker_3 | a narrow lead | `er003_output/b1_p7c/A01/clips/marker_3_a_narrow_lead.wav` | `0331b2a46b2416d26f53dfadddf0c91b8c3414af62824bf6ca1349fd72bcd0fc` | 3.251秒 |
+| marker_4 | close the door to the final | `er003_output/b1_p7c/A01/clips/marker_4_close_the_door_to_the_final.wav` | `6b39a4d441f5c941d301309f6bc4a980b219acd603d866370899ba79e1e7d800` | 4.271秒 |
+| marker_5 | stoppage time | `er003_output/b1_p7c/A01/clips/marker_5_stoppage_time.wav` | `27dbf78e8c36f688c625c2d4f09ae6b1ca94ca3d62c0329db85ce25b1e37a11b` | 3.531秒 |
 
 **注意**: 全ての`.wav`ファイルは`.gitignore`によりリポジトリには
 含まれていない(このプロジェクト全体で一貫した運用)。ローカルファイル
@@ -304,10 +362,11 @@ segmentが1.2秒未満の場合はsegment全体)。
 
 ## 19. テスト結果
 
-- `er003_test_b1_p7c_audio.py`(新規13件、合成データのみ): 全合格
+- `er003_test_b1_p7c_audio.py`(初版13件+訂正で追加した独立位置検証
+  2件、計15件、合成データのみ): 全合格。追加した2件は修正前のコードに
+  対しては実際に失敗することを確認済み(バグ検出能力を確認済み)
 - プロジェクト全体回帰テスト(`run_project_regression.py`、
-  er0*_test_*.py全探索): **1588件全合格、回帰なし**(P7A時点1575件+
-  今回13件)
+  er0*_test_*.py全探索): 訂正時点で**1598件全合格、回帰なし**
 
 ## 20. 再実行方法
 
@@ -321,6 +380,13 @@ segmentが1.2秒未満の場合はsegment全体)。
 
 ## 21. 既知のリスク
 
+- **(訂正済み)** 初版では英語Component前の間隔がmarker_2/3/4で
+  約0.15秒しかなかった(目標0.40秒)。ユーザーの試聴指摘により発覚し、
+  section冒頭の訂正記事の通り修正済み。この種の「自己参照的なテストは
+  内部的に整合しているだけで、絶対位置での正しさを保証しない」という
+  リスクは、他のstage(P6B等、同種のMFA境界+無音調整ロジックを使う
+  箇所)にも当てはまる可能性があり、同様の独立検証を追加することが
+  望ましい。
 - ASR診断上、「へ」の脱落・「shot on target」の"shot"部分の誤表記が
   見られる。構造的証拠(section9〜11)では音声そのものへの影響はない
   と考えられるが、断定はしていない。**ユーザー試聴による確認が必須。**
@@ -357,16 +423,22 @@ segmentが1.2秒未満の場合はsegment全体)。
 
 ---
 
-## ユーザーへの確認事項
+## ユーザーへの確認事項(訂正版)
+
+**無音間隔のバグを修正した最新版です。ファイルが差し替わっているため、
+お手数ですが再度試聴をお願いします。**
 
 以下の完成版候補を試聴し、指示section14の項目をご確認ください。
 
-- [A01_p7c_gemini31_english_replaced_dynamics3.wav](A01_p7c_gemini31_english_replaced_dynamics3.wav)(完成版候補、44.055秒)
+- [A01_p7c_gemini31_english_replaced_dynamics3.wav](A01_p7c_gemini31_english_replaced_dynamics3.wav)(完成版候補、44.845秒)
 - 境界確認用clip5件(`clips/`配下、英語前後の日本語を含む短い抜粋)
 
-特に、ASR診断で不一致が出た2箇所(marker_1直前の「シュート」〜英語
-「shot on target」の聞こえ方、marker_5直後の「へ」が自然に残っている
-か)を重点的にご確認ください。
+特に、今回ポーズが短いとご指摘いただいたmarker_2(take players off)・
+marker_3(a narrow lead)・marker_4(close the door to the final)の
+英語直前のポーズが、他の箇所と同じ自然さになっているかを重点的に
+ご確認ください。また、ASR診断で不一致が出た2箇所(marker_1直前の
+「シュート」〜英語「shot on target」の聞こえ方、marker_5直後の「へ」
+が自然に残っているか)も引き続きご確認ください。
 
 **機械QAは全て合格していますが、「完成版合格」「音質承認済み」とは
 判断していません。**
