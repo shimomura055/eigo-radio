@@ -9,6 +9,7 @@ import unittest
 import numpy as np
 
 import er003_b1_p9a_audio as p9a
+import er003_v1_b1_p9a_r1_generate as p9a_r1_gen
 
 
 def _tone_stereo(n_samples: int, value: float = 0.3) -> "np.ndarray":
@@ -166,6 +167,20 @@ class NarrationTextConstantsV2Tests(unittest.TestCase):
         self.assertEqual([kp["english"] for kp in p9a.KEY_PHRASES],
                           ["shot on target", "take players off", "a narrow lead",
                            "close the door to the final", "stoppage time"])
+
+
+class Insert1BoundaryRegressionTests(unittest.TestCase):
+    """notification2挿入①の直前語境界が"argentina"の終了時刻(70.629997、
+    誤り)に戻っていないことを確認する回帰テスト。"England 1-2 Argentina"は
+    TTSで"England one, Argentina two"の語順で発話されるため、正しい直前語
+    は"two"であり、その終了時刻は70.960である(MFAで語順を修正して再検証
+    済み)。"""
+
+    def test_boundary_is_end_of_two_not_end_of_argentina(self):
+        self.assertAlmostEqual(
+            p9a_r1_gen.INSERT1_PRECEDING_WORD_END_SECONDS, 70.960, places=3)
+        self.assertNotAlmostEqual(
+            p9a_r1_gen.INSERT1_PRECEDING_WORD_END_SECONDS, 70.629997, places=2)
 
 
 if __name__ == "__main__":

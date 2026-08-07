@@ -2,6 +2,55 @@
 
 **ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
 
+## 0. 追加修正(ユーザー試聴後の不具合修正)
+
+ユーザーから、notification2挿入①("Today's Match-Turning Points"直前)の
+直前で、"England 1–2 Argentina"の読み上げ中に"two"が切れて効果音が
+始まってしまうとの報告があった。
+
+**原因**: "England 1–2 Argentina"は、TTSでは実際には"England one,
+Argentina two"という語順で発話されていた(スコア表記を自然な読み上げ
+語順に並べ替えて発話する挙動)。しかし挿入位置を特定したMFAの整列では、
+書字通りの語順"England 1 2 Argentina"を書き起こしとして使っており、
+実際の発話語順と一致しなかったため、"1"/"2"という辞書に無い数字トークン
+の整列が乱れ、"argentina"の終了時刻(70.630秒)を誤って直前語の終了時刻
+として採用していた。実際の直前語は"two"で、その終了時刻は70.960秒
+だった(正しい語順"England one Argentina two"でMFAを再実行し特定、
+ASR・波形エネルギーの両方で裏付け済み)。
+
+**修正**: 挿入①の直前語終了時刻を70.629997秒→**70.960秒**に修正。
+`er003_v1_b1_p9a_r1_generate.py`に定数
+`INSERT1_PRECEDING_WORD_END_SECONDS = 70.960`として明示し、この値が
+誤った旧値に戻らないことを確認する回帰テスト
+(`Insert1BoundaryRegressionTests`)を追加した。
+
+**改善**: "two"が完全に発話された後で効果音が始まるようになった
+(ASRで"Argentina 2"がフレーズ全体として認識されることを確認)。
+
+**影響範囲**: この修正はnotification2挿入①の1箇所のみ。全体
+durationは245.952秒→**246.282秒**(+0.330秒、直前語境界が0.330秒
+後ろへ移動した分)。他の編集箇所(内部無音短縮、挿入②、タイトル除去)は
+無変更。
+
+**再検証結果**:
+- 単体テスト: 14件中14件合格(新規追加1件含む)
+- プロジェクト全体回帰テスト: 1623件全合格
+- ASR診断: 挿入①前後の区間で"Argentina 2. Today is."(=Argentina two.
+  Today's...)を確認、"two"の欠落なし
+
+**完成音声(修正後)**:
+| 項目 | 値 |
+|---|---|
+| path(WAV) | `er003_output/b1_p9a/A01/assembled/English_Your_Way_A01_r2.wav` |
+| sha256(WAV) | `2f581bcf88d64307298da28cb01bd4929b8e5dcd248682150482b60abe0791a2` |
+| path(MP3) | `er003_output/b1_p9a/A01/assembled/English_Your_Way_A01_r2.mp3` |
+| sha256(MP3) | `d1d48c93d0fbf243a210c7f33c1e2378c83fbb48f926912f5ac31f170aba0b89` |
+| duration | 246.282秒(約4分6秒) |
+
+**注意**: 以下セクション(1〜13)は修正前(旧gap_end値70.629997)の
+記述のまま残しているが、上記0節の修正が最新かつ有効な内容である。
+duration等の数値は上記0節の値を優先すること。
+
 ## 1. 対応内容
 
 ユーザーから2件の追加指示に対応した。

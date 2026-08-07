@@ -27,6 +27,15 @@ import er003_b1_p9a_audio as p9a
 OUT_DIR = "er003_output/b1_p9a/A01"
 SR = p9a.TARGET_SAMPLE_RATE
 
+# notification2挿入①("Today's Match-Turning Points"直前)の直前語終了時刻。
+# "England 1-2 Argentina"はTTSで"England one, Argentina two"の語順で
+# 発話されており、直前語は"argentina"ではなく"two"(語順が入れ替わって
+# いるため、文字列の見た目の並び通りにMFAをかけると誤った境界になる)。
+# 正しい語順"England one Argentina two"でMFA再整列して得た値
+# (ユーザー報告により発覚、旧値70.629997は"argentina"の終了時刻で、
+# "two"を効果音が途中で切ってしまっていた)。
+INSERT1_PRECEDING_WORD_END_SECONDS = 70.960
+
 
 def load_all_sources_v2() -> dict:
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
@@ -58,7 +67,8 @@ def load_all_sources_v2() -> dict:
     body_after_insert2 = insert2_result["result"]
 
     insert1_result = p9a.insert_sound_at_internal_gap(
-        body_after_insert2, body_sr, gap_end_seconds=70.629997, gap_start_seconds=72.480003,
+        body_after_insert2, body_sr, gap_end_seconds=INSERT1_PRECEDING_WORD_END_SECONDS,
+        gap_start_seconds=72.480003,
         sound_samples=notification2_mono, pause_before_seconds=0.5, pause_after_seconds=0.4)
     body_after_insert1 = insert1_result["result"]
 
