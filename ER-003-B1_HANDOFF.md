@@ -309,10 +309,21 @@ P9Aの完成版に対し、ユーザーから10項目の修正指示があった
   新規ダウンロード**、日本語MFAは既にあったが英語は未導入だった。
   RMSは使わずMFA境界のみ、本文内容は無変更)
 - Outro音量をIntroの調整後RMSに一致させるよう再設計
-- 完成版: `er003_output/b1_p9a/A01/assembled/English_Your_Way_A01_r1.wav`
-  (258.4秒≒約4分18秒、ローカルのみ)
-- 詳細レポート: `er003_output/b1_p9a/A01/audio_validation_r1.md`
-- プロジェクト全体回帰テスト1618件全合格
+
+**追加修正(同日、ユーザーから2件の追加指摘)**:
+1. "In One Line"セクション内、"...through the gap."と"Argentina will
+   now..."の間にMFA実測2.18秒の異常な無音(P8A生成の本編音声に内在、
+   同一音声内の他の段落区切りは約0.68秒)。`trim_internal_gap()`を
+   新設し0.68秒へ短縮、前後の発話内容は無変更
+2. Outro音量がIntroに合わせた後も大きいとの指摘。「聴感上2/3」に
+   相当する追加gain(約-5.85dB、経験則: 10dBで聴感ラウドネス2倍/半分)
+   をIntro基準の音量へさらに適用(最終RMS 0.04433)
+
+- 完成版(最新): `er003_output/b1_p9a/A01/assembled/English_Your_Way_A01_r1.wav`
+  (256.9秒≒約4分17秒、ローカルのみ、sha256`f20b80df...`)
+- 詳細レポート: `er003_output/b1_p9a/A01/audio_validation_r1.md`(追加
+  修正の内容は冒頭の「追加修正」セクション参照)
+- プロジェクト全体回帰テスト1620件全合格
 
 **ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
 
