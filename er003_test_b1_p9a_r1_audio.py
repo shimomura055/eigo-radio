@@ -81,6 +81,34 @@ class TrimTitleFromBodyTests(unittest.TestCase):
         self.assertAlmostEqual(result["info"]["achieved_leading_seconds"], 0.05, places=6)
 
 
+class TrimInternalGapTests(unittest.TestCase):
+    def test_shortens_gap_and_preserves_both_sides(self):
+        sr = 1000
+        before = np.full(300, 0.6)  # "...through the gap."
+        gap = np.zeros(2180)  # 異常な無音(2.18秒相当)
+        after = np.full(400, 0.4)  # "Argentina will now..."
+        full = np.concatenate([before, gap, after])
+
+        result = p9a.trim_internal_gap(full, sr, gap_end_seconds=0.3, gap_start_seconds=2.48,
+                                        target_gap_seconds=0.68)
+        trimmed = result["trimmed"]
+
+        self.assertTrue(result["info"]["before_content_unchanged"])
+        self.assertTrue(result["info"]["after_content_unchanged"])
+        self.assertEqual(int(np.sum(trimmed == 0.6)), 300)
+        self.assertEqual(int(np.sum(trimmed == 0.4)), 400)
+        # 新しい無音区間はちょうどtarget_gap_seconds分だけ
+        expected_len = 300 + int(round(0.68 * sr)) + 400
+        self.assertEqual(len(trimmed), expected_len)
+
+    def test_original_gap_seconds_reported_correctly(self):
+        sr = 1000
+        full = np.concatenate([np.full(100, 0.5), np.zeros(2180), np.full(100, 0.5)])
+        result = p9a.trim_internal_gap(full, sr, gap_end_seconds=0.1, gap_start_seconds=2.28,
+                                        target_gap_seconds=0.68)
+        self.assertAlmostEqual(result["info"]["original_gap_seconds"], 2.18, places=6)
+
+
 class NarrationTextConstantsV2Tests(unittest.TestCase):
     def test_v2_texts_match_user_instruction_verbatim(self):
         self.assertEqual(p9a.PODCAST_NAME_TEXT_V2, "Welcome to English Your Way.")

@@ -270,6 +270,34 @@ def trim_title_from_body(body_samples: "np.ndarray", sample_rate: int, first_wor
 
 
 # ============================================================
+# 本編内部の異常に長い無音区間の短縮(MFA境界のみを根拠にする)
+# ============================================================
+def trim_internal_gap(body_samples: "np.ndarray", sample_rate: int, gap_end_seconds: float,
+                       gap_start_seconds: float, target_gap_seconds: float) -> dict:
+    """本編音声の途中(先頭・末尾ではない)にある無音区間を、その直前の
+    単語の終了時刻(gap_end_seconds)と直後の単語の開始時刻
+    (gap_start_seconds、いずれもMFAで特定済み)を基準に、
+    target_gap_secondsへ短縮する。前後の発話内容は一切変更しない。"""
+    before_end_sample = int(round(gap_end_seconds * sample_rate))
+    after_start_sample = int(round(gap_start_seconds * sample_rate))
+    before_part = body_samples[:before_end_sample]
+    after_part = body_samples[after_start_sample:]
+    new_gap = np.zeros(int(round(target_gap_seconds * sample_rate)), dtype=body_samples.dtype)
+    trimmed = np.concatenate([before_part, new_gap, after_part])
+    original_gap_seconds = gap_start_seconds - gap_end_seconds
+    return {
+        "trimmed": trimmed,
+        "info": {
+            "original_gap_seconds": round(original_gap_seconds, 4),
+            "target_gap_seconds": target_gap_seconds,
+            "before_content_unchanged": bool(np.array_equal(trimmed[:before_end_sample], before_part)),
+            "after_content_unchanged": bool(np.array_equal(
+                trimmed[before_end_sample + len(new_gap):], after_part)),
+        },
+    }
+
+
+# ============================================================
 # Key Phrasesブロック組み立て(番号→英語→日本語→英語)
 # ============================================================
 def build_key_phrase_block(number_word_samples: "np.ndarray", english_component_samples: "np.ndarray",

@@ -33,11 +33,23 @@ def load_all_sources_v2() -> dict:
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
     outro = p9a.load_and_resample_to_target(p9a.OUTRO_MP3_PATH)
 
-    # Full Story: 既存のbody_dynamics3.wavからタイトルを除去した版を使用
-    # (MFA英語モデルで特定した本文第1文の開始位置=4.86秒、元の先頭無音と
-    # 同じ0.17秒の自然な間だけ残す。本文の内容・速度・話者は無変更)。
+    # Full Story: 既存のbody_dynamics3.wavから (1) "In One Line"内の異常に
+    # 長い無音(約2.18秒、"...through the gap."と"Argentina will now..."
+    # の間)を短縮し、(2) タイトルを除去した版を使用する。
+    #
+    # 順序が重要: どちらの処理も元のbody_dynamics3.wav上の絶対時刻
+    # (MFA特定済み)を基準にするため、時系列で後ろにある編集(2.18秒の
+    # 無音短縮、約139秒地点)を先に行い、その後で前方の編集(タイトル
+    # 除去、約4.86秒地点)を行う。逆順だとタイトル除去でインデックスが
+    # 前方にずれ、後段の絶対時刻指定が無効になる。
     body_full, body_sr, _, _ = common.read_wav_float(p9a.BODY_PATH)
-    trim_result = p9a.trim_title_from_body(body_full, body_sr, first_word_start_seconds=4.86,
+
+    gap_fix_result = p9a.trim_internal_gap(
+        body_full, body_sr, gap_end_seconds=138.949997, gap_start_seconds=141.130005,
+        target_gap_seconds=0.68)  # 0.68秒は同一音声内の他の段落区切り(half./neither間)の実測値
+    body_gap_fixed = gap_fix_result["trimmed"]
+
+    trim_result = p9a.trim_title_from_body(body_gap_fixed, body_sr, first_word_start_seconds=4.86,
                                             natural_leading_seconds=0.17)
     body_mono = trim_result["trimmed"]
 
@@ -63,6 +75,7 @@ def load_all_sources_v2() -> dict:
         "intro": intro, "notification": notification, "outro": outro,
         "preview_mono": preview_mono, "body_mono": body_mono, "narration": narration,
         "key_phrase_components": key_phrase_components, "body_title_trim_info": trim_result["info"],
+        "body_gap_fix_info": gap_fix_result["info"],
     }
 
 
@@ -88,6 +101,19 @@ def apply_gain_and_convert_v2(sources: dict) -> dict:
     result["outro"] = gain_to_rms(sources["outro"]["samples"], intro_final_rms, "outro")
     gain_report["outro"]["matched_to"] = "intro_post_gain_rms"
     gain_report["outro"]["intro_post_gain_rms"] = round(intro_final_rms, 5)
+
+    # ユーザーからの追加指示: Introと合わせた後も「まだ大きい」との指摘。
+    # 「人間の聴覚的に2/3くらいまで下げたい」に対応するため、聴感上の
+    # 音量(ラウドネス)がおよそ2/3になる追加のgainを適用する。目安として
+    # 広く使われる経験則(10dBの変化で聴感上のラウドネスがおよそ2倍/半分
+    # になる)に基づき、2/3のラウドネス比に相当する-5.85dB
+    # (線形gain換算で約0.510倍)をIntro基準の音量へさらに掛け合わせる。
+    perceptual_two_thirds_gain = 0.5099396125390767  # 10*log2(2/3) dB ≒ -5.85dB
+    result["outro"] = result["outro"] * perceptual_two_thirds_gain
+    gain_report["outro"]["perceptual_two_thirds_additional_gain"] = perceptual_two_thirds_gain
+    gain_report["outro"]["perceptual_two_thirds_additional_db"] = -5.8496
+    gain_report["outro"]["rms_after_perceptual_adjust"] = round(p9a.rms(result["outro"]), 5)
+    gain_report["outro"]["peak_after_perceptual_adjust"] = round(p9a.peak(result["outro"]), 5)
 
     result["preview"] = p9a.mono_24k_to_stereo_target(sources["preview_mono"])  # 無加工
     result["body"] = p9a.mono_24k_to_stereo_target(sources["body_mono"])  # タイトル除去のみ、内容は無加工
@@ -169,6 +195,8 @@ def run() -> dict:
 
     with open(f"{OUT_DIR}/audit/gain_report_r1.json", "w", encoding="utf-8") as f:
         json.dump(parts["gain_report"], f, ensure_ascii=False, indent=2)
+    with open(f"{OUT_DIR}/audit/body_gap_fix_info.json", "w", encoding="utf-8") as f:
+        json.dump(sources["body_gap_fix_info"], f, ensure_ascii=False, indent=2)
     with open(f"{OUT_DIR}/audit/body_title_trim_info.json", "w", encoding="utf-8") as f:
         json.dump(sources["body_title_trim_info"], f, ensure_ascii=False, indent=2)
 
