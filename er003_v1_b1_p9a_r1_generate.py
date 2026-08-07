@@ -33,27 +33,40 @@ def load_all_sources_v2() -> dict:
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
     outro = p9a.load_and_resample_to_target(p9a.OUTRO_MP3_PATH)
 
-    # Full Story: 既存のbody_dynamics3.wavから (1) "In One Line"内の異常に
-    # 長い無音(約2.18秒、"...through the gap."と"Argentina will now..."
-    # の間)を短縮し、(2) タイトルを除去した版を使用する。
+    # Full Story: 既存のbody_dynamics3.wavへ、以下4つの編集を順に適用する。
+    #   (1) "In One Line"内の異常に長い無音(約2.18秒)を0.68秒へ短縮
+    #   (2) "In One Line"見出し直前にnotification2.wavを挿入
+    #   (3) "Today's Match-Turning Points"見出し直前にnotification2.wavを挿入
+    #   (4) 冒頭のタイトルを除去
     #
-    # 順序が重要: どちらの処理も元のbody_dynamics3.wav上の絶対時刻
-    # (MFA特定済み)を基準にするため、時系列で後ろにある編集(2.18秒の
-    # 無音短縮、約139秒地点)を先に行い、その後で前方の編集(タイトル
-    # 除去、約4.86秒地点)を行う。逆順だとタイトル除去でインデックスが
-    # 前方にずれ、後段の絶対時刻指定が無効になる。
+    # 順序が重要: いずれも元のbody_dynamics3.wav上の絶対時刻(MFA特定済み)
+    # を基準にするため、時系列で後ろにある編集から順に適用する
+    # (gap_fix[約139秒] → insert2[約131秒] → insert1[約71秒] →
+    # title_trim[約4.86秒])。逆順で適用すると、前方の編集でインデックス
+    # がずれ、後段の絶対時刻指定が無効になる。
     body_full, body_sr, _, _ = common.read_wav_float(p9a.BODY_PATH)
+    notification2_mono = p9a.load_mono_at_rate(p9a.NOTIFICATION2_WAV_PATH, body_sr)
 
     gap_fix_result = p9a.trim_internal_gap(
         body_full, body_sr, gap_end_seconds=138.949997, gap_start_seconds=141.130005,
         target_gap_seconds=0.68)  # 0.68秒は同一音声内の他の段落区切り(half./neither間)の実測値
-    body_gap_fixed = gap_fix_result["trimmed"]
+    body_after_gap_fix = gap_fix_result["trimmed"]
 
-    trim_result = p9a.trim_title_from_body(body_gap_fixed, body_sr, first_word_start_seconds=4.86,
+    insert2_result = p9a.insert_sound_at_internal_gap(
+        body_after_gap_fix, body_sr, gap_end_seconds=131.149994, gap_start_seconds=132.449997,
+        sound_samples=notification2_mono, pause_before_seconds=0.5, pause_after_seconds=0.4)
+    body_after_insert2 = insert2_result["result"]
+
+    insert1_result = p9a.insert_sound_at_internal_gap(
+        body_after_insert2, body_sr, gap_end_seconds=70.629997, gap_start_seconds=72.480003,
+        sound_samples=notification2_mono, pause_before_seconds=0.5, pause_after_seconds=0.4)
+    body_after_insert1 = insert1_result["result"]
+
+    trim_result = p9a.trim_title_from_body(body_after_insert1, body_sr, first_word_start_seconds=4.86,
                                             natural_leading_seconds=0.17)
     body_mono = trim_result["trimmed"]
 
-    preview_mono, preview_sr, _, _ = common.read_wav_float(f"{OUT_DIR}/narration/preview_japanese_only.wav")
+    preview_mono, preview_sr, _, _ = common.read_wav_float(f"{OUT_DIR}/narration/preview_japanese_only_short.wav")
     assert preview_sr == common.SAMPLE_RATE and body_sr == common.SAMPLE_RATE
 
     narration_names = ("welcome", "topic_intro", "japanese_title", "preview_intro", "point_explanation",
@@ -76,6 +89,7 @@ def load_all_sources_v2() -> dict:
         "preview_mono": preview_mono, "body_mono": body_mono, "narration": narration,
         "key_phrase_components": key_phrase_components, "body_title_trim_info": trim_result["info"],
         "body_gap_fix_info": gap_fix_result["info"],
+        "body_insert1_info": insert1_result["info"], "body_insert2_info": insert2_result["info"],
     }
 
 
@@ -189,16 +203,20 @@ def run() -> dict:
     parts = apply_gain_and_convert_v2(sources)
     assembled = assemble_v2(parts)
 
-    out_path = f"{OUT_DIR}/assembled/English_Your_Way_A01_r1.wav"
+    out_path = f"{OUT_DIR}/assembled/English_Your_Way_A01_r2.wav"
     common.write_wav_float(out_path, assembled, SR, 2)
     metrics = common.measure_metrics(assembled[:, 0], SR)
 
-    with open(f"{OUT_DIR}/audit/gain_report_r1.json", "w", encoding="utf-8") as f:
+    with open(f"{OUT_DIR}/audit/gain_report_r2.json", "w", encoding="utf-8") as f:
         json.dump(parts["gain_report"], f, ensure_ascii=False, indent=2)
     with open(f"{OUT_DIR}/audit/body_gap_fix_info.json", "w", encoding="utf-8") as f:
         json.dump(sources["body_gap_fix_info"], f, ensure_ascii=False, indent=2)
     with open(f"{OUT_DIR}/audit/body_title_trim_info.json", "w", encoding="utf-8") as f:
         json.dump(sources["body_title_trim_info"], f, ensure_ascii=False, indent=2)
+    with open(f"{OUT_DIR}/audit/body_insert1_notification2_info.json", "w", encoding="utf-8") as f:
+        json.dump(sources["body_insert1_info"], f, ensure_ascii=False, indent=2)
+    with open(f"{OUT_DIR}/audit/body_insert2_notification2_info.json", "w", encoding="utf-8") as f:
+        json.dump(sources["body_insert2_info"], f, ensure_ascii=False, indent=2)
 
     return {
         "status": "OK", "out_path": out_path, "duration_seconds": round(len(assembled) / SR, 4),

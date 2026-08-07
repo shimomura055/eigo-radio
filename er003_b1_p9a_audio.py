@@ -70,6 +70,7 @@ BODY_PATH = "er003_output/b1_p8a/A01/body_raw/A01_b1_body_dynamics3.wav"
 INTRO_MP3_PATH = "C:/Users/tensh/sound/Intro.mp3"
 NOTIFICATION_MP3_PATH = "C:/Users/tensh/sound/notification.mp3"
 OUTRO_MP3_PATH = "C:/Users/tensh/sound/outro.mp3"
+NOTIFICATION2_WAV_PATH = "C:/Users/tensh/sound/notification2.wav"
 
 # ------------------------------------------------------------
 # 新規ナレーション原稿(内容は一切変更しない、指示された文言そのまま)
@@ -293,6 +294,54 @@ def trim_internal_gap(body_samples: "np.ndarray", sample_rate: int, gap_end_seco
             "before_content_unchanged": bool(np.array_equal(trimmed[:before_end_sample], before_part)),
             "after_content_unchanged": bool(np.array_equal(
                 trimmed[before_end_sample + len(new_gap):], after_part)),
+        },
+    }
+
+
+# ============================================================
+# 外部音源をbody(mono, 24kHz)の音声内部の指定位置へ挿入する
+# (MFA境界のみを根拠にする。前後の発話内容は変更しない)
+# ============================================================
+def load_mono_at_rate(path: str, target_sr: int) -> "np.ndarray":
+    """外部音源(mp3/wav)を、bodyと同じmono・sample_rateへ変換して
+    読み込む(top-level partsで使うstereo/48kHz変換とは別の、本編内部
+    への挿入専用の読み込み経路)。"""
+    data, sr = sf.read(path, always_2d=True)
+    mono = data.mean(axis=1)
+    if sr != target_sr:
+        from math import gcd
+        g = gcd(sr, target_sr)
+        up, down = target_sr // g, sr // g
+        mono = resample_poly(mono, up, down)
+    return mono
+
+
+def insert_sound_at_internal_gap(body_samples: "np.ndarray", sample_rate: int, gap_end_seconds: float,
+                                  gap_start_seconds: float, sound_samples: "np.ndarray",
+                                  pause_before_seconds: float, pause_after_seconds: float) -> dict:
+    """本編音声の途中(MFAで特定済みの単語境界の間)に、外部音源
+    (sound_samples、既にbodyと同じsample_rate/monoへ変換済みのもの)を
+    挿入する。前後の発話内容は一切変更しない。挿入する音源自体の内容・
+    長さは変更しない(gainやtrimは行わない、そのまま使う)。"""
+    before_end_sample = int(round(gap_end_seconds * sample_rate))
+    after_start_sample = int(round(gap_start_seconds * sample_rate))
+    before_part = body_samples[:before_end_sample]
+    after_part = body_samples[after_start_sample:]
+    pause_before = np.zeros(int(round(pause_before_seconds * sample_rate)), dtype=body_samples.dtype)
+    pause_after = np.zeros(int(round(pause_after_seconds * sample_rate)), dtype=body_samples.dtype)
+    sound = sound_samples.astype(body_samples.dtype)
+
+    result = np.concatenate([before_part, pause_before, sound, pause_after, after_part])
+    inserted_len = len(pause_before) + len(sound) + len(pause_after)
+    return {
+        "result": result,
+        "info": {
+            "gap_end_seconds": gap_end_seconds, "gap_start_seconds": gap_start_seconds,
+            "original_gap_seconds": round(gap_start_seconds - gap_end_seconds, 4),
+            "pause_before_seconds": pause_before_seconds, "pause_after_seconds": pause_after_seconds,
+            "sound_duration_seconds": round(len(sound) / sample_rate, 4),
+            "before_content_unchanged": bool(np.array_equal(result[:before_end_sample], before_part)),
+            "after_content_unchanged": bool(np.array_equal(result[before_end_sample + inserted_len:], after_part)),
         },
     }
 

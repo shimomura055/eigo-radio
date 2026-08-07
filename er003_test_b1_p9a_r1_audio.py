@@ -54,6 +54,49 @@ class BuildKeyPhraseBlockTests(unittest.TestCase):
         self.assertEqual(block.shape[1], 2)
 
 
+class InsertSoundAtInternalGapTests(unittest.TestCase):
+    def test_preserves_before_and_after_content(self):
+        sr = 1000
+        before = np.full(300, 0.6)
+        gap = np.zeros(1850)
+        after = np.full(400, 0.4)
+        full = np.concatenate([before, gap, after])
+        sound = np.full(670, 0.99)  # notification2相当
+
+        result = p9a.insert_sound_at_internal_gap(
+            full, sr, gap_end_seconds=0.3, gap_start_seconds=2.15,
+            sound_samples=sound, pause_before_seconds=0.5, pause_after_seconds=0.4)
+
+        self.assertTrue(result["info"]["before_content_unchanged"])
+        self.assertTrue(result["info"]["after_content_unchanged"])
+        self.assertEqual(int(np.sum(result["result"] == 0.6)), 300)
+        self.assertEqual(int(np.sum(result["result"] == 0.4)), 400)
+        self.assertEqual(int(np.sum(result["result"] == 0.99)), 670)
+
+    def test_sound_appears_between_before_and_after(self):
+        sr = 1000
+        full = np.concatenate([np.full(100, 0.6), np.zeros(1000), np.full(100, 0.4)])
+        sound = np.full(50, 0.99)
+        result = p9a.insert_sound_at_internal_gap(
+            full, sr, gap_end_seconds=0.1, gap_start_seconds=1.1,
+            sound_samples=sound, pause_before_seconds=0.5, pause_after_seconds=0.4)
+        flat = result["result"].tolist()
+        idx_before_end = max(i for i, v in enumerate(flat) if v == 0.6)
+        idx_sound_start = flat.index(0.99)
+        idx_after_start = min(i for i, v in enumerate(flat) if v == 0.4)
+        self.assertLess(idx_before_end, idx_sound_start)
+        self.assertLess(idx_sound_start, idx_after_start)
+
+    def test_reports_sound_duration(self):
+        sr = 1000
+        full = np.concatenate([np.full(100, 0.6), np.zeros(1000), np.full(100, 0.4)])
+        sound = np.full(670, 0.99)
+        result = p9a.insert_sound_at_internal_gap(
+            full, sr, gap_end_seconds=0.1, gap_start_seconds=1.1,
+            sound_samples=sound, pause_before_seconds=0.5, pause_after_seconds=0.4)
+        self.assertAlmostEqual(result["info"]["sound_duration_seconds"], 0.67, places=6)
+
+
 class TrimTitleFromBodyTests(unittest.TestCase):
     def test_removes_only_prefix_keeps_body_unchanged(self):
         sr = 1000
