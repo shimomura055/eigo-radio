@@ -251,6 +251,43 @@ sha256`111788d6...`、統合版は`304be3b8...`。**
 なっているか、Preview→本編の移行の自然さ、0.8秒の間隔の長さ、音量差・声質差が
 気にならないかを重点確認してもらう。まだ試聴結果を受け取っていない。
 
+## 13. ER-003-B1-P9A(2026-08-07実施、ユーザー試聴待ち)
+
+ER-003-B1シリーズを飛び越えて、番組パッケージング(英語学習Podcast
+「English Your Way」の完成版音声)を作成する新規指示があった。
+Preview(P7C修正後)・Full Story(P8Aの本編)は無加工のまま再利用し、
+新規TTSは発生させていない。
+
+- Intro/notification(効果音、2回使用)/Outroは`C:\Users\tensh\sound\`
+  配下の既存mp3をそのまま使用(soundfileでデコード、
+  scipy.signal.resample_polyで48kHz/stereoへ内容・速度・ピッチを
+  変えずリサンプリングのみ)
+- 新規生成は5点のみ: 番組名"English Your Way."/記事タイトル(英語:
+  b1_article_raw.mdのタイトル、日本語: 既存承認済みマスター記事
+  `master_ja_approved.md`のタイトルをそのまま使用)/セクション案内
+  "Here's a quick preview."・"Now, the full story."
+  英語は2.5 Pro+ENGLISH_STYLE_PREFIX(英語Key Phrase Componentと同じ
+  経路)、日本語タイトルは3.1+JAPANESE_STYLE_PREFIX(Previewと同じ
+  経路)
+- 全10パートを指定順序・指定ポーズで接続(Intro→番組名→タイトル
+  英日→効果音→Preview案内→Preview→効果音→Full Story案内→本編→
+  Outro)。Preview・本編はgainも無加工、それ以外の新規素材だけを
+  両者の平均RMSへ近づけるスカラー音量調整(Dynamics3等の圧縮は不使用)
+- 完成版: `er003_output/b1_p9a/A01/assembled/English_Your_Way_A01.wav`
+  (234.6秒≒約3分55秒、48kHz stereo、ローカルのみ)
+- 詳細レポート: `er003_output/b1_p9a/A01/audio_validation.md`
+- 新規依存として`soundfile`パッケージを`.venv`へpip install(mp3
+  デコード用。requirements-ci.txt等の正式反映は未実施、CI対象の
+  curated listには本ステージのテストファイルは含まれていない)
+- プロジェクト全体回帰テスト1610件全合格
+
+**ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
+
+**次にやること**: ユーザーが完成版を試聴し、特に新規ナレーション5点の
+声質がPreview/本編から浮いていないか、日本語タイトル選定の妥当性、
+音量バランス、全体のテンポ・長さが「毎日複数記事を聞く」用途として
+適切かを確認してもらう。まだ試聴結果を受け取っていない。
+
 ## 5. このプロジェクト全体で守るべきルール(必ず継続すること)
 
 - **CLAUDE.mdの説明順序**: 1)何が問題だったか 2)何を変更したか
