@@ -366,9 +366,30 @@ P7Cの無音バグの教訓を踏まえ、**時系列で後ろから前へ**の�
 
 **ステータス: `PROTOTYPE / NOT_APPROVED`(ユーザー試聴前)**
 
+### 15.1 追加修正: notification2挿入①の"two"欠落バグ(2026-08-07)
+
+ユーザー試聴で、"England 1–2 Argentina"読み上げ中に"two"が切れて
+notification2の効果音が始まってしまうと報告された。
+
+**原因**: "England 1–2 Argentina"はTTSで"England one, Argentina two"の
+語順で発話されるが、挿入位置特定のMFAは書字通りの語順("England 1 2
+Argentina")を書き起こしとして使っており、数字トークン"1"/"2"が辞書に
+無いため整列が乱れ、"argentina"の終了時刻(70.630秒)を誤って直前語の
+境界として採用していた。実際の直前語は"two"で、正しい語順で再整列した
+結果、終了時刻は70.960秒だった(ASR・波形エネルギーでも裏付け済み)。
+
+**修正**: `er003_v1_b1_p9a_r1_generate.py`の
+`INSERT1_PRECEDING_WORD_END_SECONDS`を70.629997→70.960へ修正。旧値へ
+戻らないことを確認する回帰テスト`Insert1BoundaryRegressionTests`を追加。
+単体テスト14件・全体回帰1623件、全合格。
+
+- 完成版(修正後): `English_Your_Way_A01_r2.wav`
+  (246.282秒、sha256`2f581bcf...`)
+- commit: `d2aa9e6`(fix: notification2挿入①の"two"欠落バグ修正)
+
 **次にやること**: ユーザーが最新版(Artifactリンク経由)を試聴し、
-notification2の挿入位置・タイミング、短縮版Previewの分かりやすさを
-確認してもらう。まだ試聴結果を受け取っていない。
+修正後のnotification2挿入①、notification2挿入②、短縮版Previewの
+分かりやすさを確認してもらう。まだ試聴結果を受け取っていない。
 
 ## 5. このプロジェクト全体で守るべきルール(必ず継続すること)
 
