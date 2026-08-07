@@ -84,6 +84,48 @@ PREVIEW_INTRO_TEXT = "Here's a quick preview."
 FULL_STORY_INTRO_TEXT = "Now, the full story."
 
 # ------------------------------------------------------------
+# 2026-08-07 修正版(v2)で変更・追加された原稿
+# ------------------------------------------------------------
+PODCAST_NAME_TEXT_V2 = "Welcome to English Your Way."
+TOPIC_INTRO_TEXT_V2 = f"Today's topic is {ENGLISH_TITLE_TEXT}."
+POINT_EXPLANATION_TEXT = "ポイント解説"
+KEY_PHRASES_INTRO_TEXT = "Here are today's key phrases."
+NUMBER_WORDS = ("One.", "Two.", "Three.", "Four.", "Five.")
+
+# 日本語のみPreview(英語Key Phraseを含まない、既存Preview原稿から
+# 英語挿入部分を除いた自然な日本語の流れ)。既存の日本語のみPreview
+# 音声はこのプロジェクトのどこにも存在しなかったため新規作成した
+# (調査結果はER-003-B1-P9A-R1報告書参照)。
+JAPANESE_ONLY_PREVIEW_TEXT = (
+    "前半は激しい接触と緊張が続き、両チームとも枠内シュートを記録できないまま、"
+    "静かな均衡が保たれます。後半に試合が動くと、イングランドは選手を交代で下げる"
+    "という決断で守備を固め、わずかなリードを守ろうとします。アルゼンチンの決勝への"
+    "道を閉ざすことが現実になりそうなその時、メッシが流れを変え、ついにアディショナル"
+    "タイムへ。最後の数分、歓喜と痛みの境目で何が起きるのでしょうか。"
+)
+
+# 5つのKey Phrase(番号→英語→日本語→英語)。英語音声は既存のP7C
+# Componentをそのまま再利用する(新規TTSなし)。日本語は意味の要約
+# (Pattern A本文で既に使われている表現と同一、新規の訳語は作らない)。
+KEY_PHRASES = (
+    {"number": "One", "english": "shot on target", "japanese": "枠内シュート",
+     "english_component_path": "er003_output/b1_p3u/A01/components/en_shot_on_target_trimmed.wav"},
+    {"number": "Two", "english": "take players off", "japanese": "選手を交代で下げる",
+     "english_component_path": "er003_output/b1_p4c/A01/preview/en_components/02_take_a_player_off.wav"},
+    {"number": "Three", "english": "a narrow lead", "japanese": "わずかなリード",
+     "english_component_path": "er003_output/b1_p4c/A01/preview/en_components/03_narrow_lead.wav"},
+    {"number": "Four", "english": "close the door to the final", "japanese": "決勝への道を閉ざす",
+     "english_component_path": "er003_output/b1_p7c/A01/components/new_close_the_door_to_the_final.wav"},
+    {"number": "Five", "english": "stoppage time", "japanese": "アディショナルタイム",
+     "english_component_path": "er003_output/b1_p4c/A01/preview/en_components/05_stoppage_time.wav"},
+)
+
+# Key Phrasesセクション専用のポーズ(指示section6、Preview/本文より短め、
+# ただし区切りが明確に聞き取れる程度)。
+KEY_PHRASE_INTERNAL_PAUSE_SECONDS = 0.4  # 番号→英語→日本語→英語、各区切り
+KEY_PHRASE_BLOCK_END_PAUSE_SECONDS = 0.8  # 各キーフレーズの最後(2回目の英語)の後
+
+# ------------------------------------------------------------
 # 話者設定(既存経路の再利用。新規style/instructionは作らない)
 # ------------------------------------------------------------
 VOICE_NAME = p4c.VOICE_NAME  # "Aoede"
@@ -185,6 +227,64 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         "sha256": sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
     }
+
+
+# ============================================================
+# ASR検証付き生成(2026-08-07: "Now, the full story."/"ポイント解説"で
+# 実際に発生した、TTSが指定テキストと無関係な内容を返す現象への対策。
+# 生成のたびにASRで内容を確認し、一致するまで再試行する。RMS/波形の
+# 診断とは別に、内容そのものの検証として使う)。
+# ============================================================
+def generate_narration_snippet_verified(text: str, language: str, out_path: str,
+                                         expected_substring: str, max_attempts: int = 6) -> dict:
+    import er003_b1_p4_audio as p4
+    asr_language = "en-US" if language == "en" else "ja-JP"
+    attempts_log = []
+    for attempt in range(1, max_attempts + 1):
+        r = generate_narration_snippet(text, language, out_path)
+        if r.get("status") != "OK":
+            attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            continue
+        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language=asr_language)
+        verified = asr_text is not None and expected_substring.lower() in asr_text.lower()
+        attempts_log.append({"attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
+                              "asr_text": asr_text, "verified": verified})
+        if verified:
+            return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}
+    return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
+            "attempts_log": attempts_log}
+
+
+# ============================================================
+# Full Story冒頭のタイトル除去(MFA境界のみを根拠にする。RMSは使わない)
+# ============================================================
+def trim_title_from_body(body_samples: "np.ndarray", sample_rate: int, first_word_start_seconds: float,
+                          natural_leading_seconds: float) -> dict:
+    """本編音声先頭のタイトル部分を、本文第1文の最初の単語の開始時刻
+    (MFAで特定済み)を基準に除去する。本文の内容は一切変更しない
+    (adjust_leading_silenceのspeech_content_unchangedで保証)。"""
+    import er003_b1_p3z_audio as p3z
+    speech_start_sample = int(round(first_word_start_seconds * sample_rate))
+    trimmed, info = p3z.adjust_leading_silence(body_samples, sample_rate, speech_start_sample, natural_leading_seconds)
+    return {"trimmed": trimmed, "info": info}
+
+
+# ============================================================
+# Key Phrasesブロック組み立て(番号→英語→日本語→英語)
+# ============================================================
+def build_key_phrase_block(number_word_samples: "np.ndarray", english_component_samples: "np.ndarray",
+                            japanese_meaning_samples: "np.ndarray", sample_rate: int) -> "np.ndarray":
+    """英語Componentは`tight_speech_only`で見かけ上の無音を除去済みの
+    ものを渡す想定(1回目・2回目とも同じ音声を再利用する)。入力は
+    (n, 2)のstereo配列を想定し、無音もstereo形状で作る。"""
+    pause = silence_stereo(KEY_PHRASE_INTERNAL_PAUSE_SECONDS, sample_rate)
+    block_end_pause = silence_stereo(KEY_PHRASE_BLOCK_END_PAUSE_SECONDS, sample_rate)
+    return np.concatenate([
+        number_word_samples, pause,
+        english_component_samples, pause,
+        japanese_meaning_samples, pause,
+        english_component_samples, block_end_pause,
+    ])
 
 
 # ============================================================
