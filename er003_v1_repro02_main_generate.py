@@ -226,6 +226,171 @@ def stage_d_generate_key_phrase_components() -> dict:
     return {"status": "OK" if all_ok else "STOPPED", "results": results}
 
 
+# ------------------------------------------------------------
+# Stage E: 全体組み立て(A01/A02最終仕様の19パート構成を再利用)
+# ------------------------------------------------------------
+SR = p9a.TARGET_SAMPLE_RATE
+PREVIEW_PATH = f"{OUT_DIR}/narration/preview_japanese_only.wav"  # ユーザー承認済み、無変更
+FULL_STORY_EDITED_PATH = f"{OUT_DIR}/narration/full_story_edited.wav"
+
+ADD03_KEY_PHRASES = (
+    {"number": "One", "used_form": "blockade", "japanese": "海上封鎖",
+     "component_path": f"{OUT_DIR}/key_phrase_components/kp_1_blockade.wav"},
+    {"number": "Two", "used_form": "be in place", "japanese": "実施中である",
+     "component_path": f"{OUT_DIR}/key_phrase_components/kp_2_be_in_place.wav"},
+    {"number": "Three", "used_form": "freedom of navigation", "japanese": "航行の自由",
+     "component_path": f"{OUT_DIR}/key_phrase_components/kp_3_freedom_of_navigation.wav"},
+    {"number": "Four", "used_form": "tollbooth", "japanese": "料金所",
+     "component_path": f"{OUT_DIR}/key_phrase_components/kp_4_tollbooth.wav"},
+    {"number": "Five", "used_form": "smell of gunpowder", "japanese": "火薬のにおい",
+     "component_path": f"{OUT_DIR}/key_phrase_components/kp_5_smell_of_gunpowder.wav"},
+)
+
+
+def load_all_sources() -> dict:
+    intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
+    notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
+    outro = p9a.load_and_resample_to_target(p9a.OUTRO_MP3_PATH)
+
+    preview_mono, preview_sr, _, _ = common.read_wav_float(PREVIEW_PATH)
+    body_mono, body_sr, _, _ = common.read_wav_float(FULL_STORY_EDITED_PATH)
+    assert preview_sr == common.SAMPLE_RATE and body_sr == common.SAMPLE_RATE
+
+    narration = {}
+    for name in SERVICE_LEVEL_NARRATION_NAMES:
+        mono, sr, _, _ = common.read_wav_float(f"{A01_NARRATION_DIR}/{name}.wav")
+        assert sr == common.SAMPLE_RATE
+        narration[name] = mono
+    for name in ("topic_intro", "japanese_title", "meaning_1", "meaning_2", "meaning_3", "meaning_4", "meaning_5"):
+        mono, sr, _, _ = common.read_wav_float(f"{OUT_DIR}/narration/{name}.wav")
+        assert sr == common.SAMPLE_RATE
+        narration[name] = mono
+
+    key_phrase_components = {}
+    for kp in ADD03_KEY_PHRASES:
+        mono, sr, _, _ = common.read_wav_float(kp["component_path"])
+        key_phrase_components[kp["number"]] = p9a.p7c.tight_speech_only(mono, sr)
+
+    return {
+        "intro": intro, "notification": notification, "outro": outro,
+        "preview_mono": preview_mono, "body_mono": body_mono, "narration": narration,
+        "key_phrase_components": key_phrase_components,
+    }
+
+
+def apply_gain_and_convert(sources: dict) -> dict:
+    """PreviewとBody(本編)は無加工のまま基準とする。Intro/notification/
+    新規ナレーションは平均RMSへ。OutroはIntroの調整後RMSへ合わせる
+    (A01 R1で確立した一般的な方法。A01固有の「聴感2/3」追加調整は適用
+    しない)。"""
+    target_rms = (p9a.rms(sources["preview_mono"]) + p9a.rms(sources["body_mono"])) / 2
+    gain_report = {"target_rms": round(target_rms, 5)}
+
+    def gain_to_rms(data, target, label):
+        gain = p9a.compute_gain_for_target_rms(data, target)
+        gained = data * gain
+        gain_report[label] = {"gain": round(float(gain), 4), "rms_before": round(p9a.rms(data), 5),
+                              "rms_after": round(p9a.rms(gained), 5), "peak_after": round(p9a.peak(gained), 5)}
+        return gained
+
+    result = {}
+    result["intro"] = gain_to_rms(sources["intro"]["samples"], target_rms, "intro")
+    result["notification"] = gain_to_rms(sources["notification"]["samples"], target_rms, "notification")
+
+    intro_final_rms = p9a.rms(result["intro"])
+    result["outro"] = gain_to_rms(sources["outro"]["samples"], intro_final_rms, "outro")
+    gain_report["outro"]["matched_to"] = "intro_post_gain_rms"
+    gain_report["outro"]["intro_post_gain_rms"] = round(intro_final_rms, 5)
+
+    result["preview"] = p9a.mono_24k_to_stereo_target(sources["preview_mono"])  # 無加工(ユーザー承認済み)
+    result["body"] = p9a.mono_24k_to_stereo_target(sources["body_mono"])  # 編集済み、内容は無加工
+
+    for name, mono in sources["narration"].items():
+        gained = gain_to_rms(mono, target_rms, name)
+        result[name] = p9a.mono_24k_to_stereo_target(gained)
+
+    key_phrase_stereo = {}
+    for number, mono in sources["key_phrase_components"].items():
+        gained = gain_to_rms(mono, target_rms, f"key_phrase_en_{number}")
+        key_phrase_stereo[number] = p9a.mono_24k_to_stereo_target(gained)
+    result["key_phrase_components"] = key_phrase_stereo
+
+    gain_report["preview"] = {"gain": 1.0, "note": "無加工(ユーザー承認済み音声を保持)"}
+    gain_report["body"] = {"gain": 1.0, "note": "編集(notification2挿入・タイトル除去)のみ、内容・gainは無加工"}
+    result["gain_report"] = gain_report
+    return result
+
+
+def build_key_phrase_blocks(parts: dict) -> list:
+    blocks = []
+    for kp in ADD03_KEY_PHRASES:
+        num_key = f"num_{kp['number'].lower()}"
+        meaning_key = f"meaning_{ADD03_KEY_PHRASES.index(kp) + 1}"
+        block = p9a.build_key_phrase_block(
+            parts[num_key], parts["key_phrase_components"][kp["number"]], parts[meaning_key], SR)
+        blocks.append(block)
+    return blocks
+
+
+def assemble(parts: dict) -> "np.ndarray":
+    key_phrase_blocks = build_key_phrase_blocks(parts)
+
+    pieces = [
+        parts["intro"],
+        p9a.silence_stereo(0.0),
+        parts["welcome"],
+        p9a.silence_stereo(0.5),
+        parts["topic_intro"],
+        p9a.silence_stereo(0.65),
+        parts["japanese_title"],
+        p9a.silence_stereo(0.5),
+        parts["notification"],
+        p9a.silence_stereo(0.4),
+        parts["preview_intro"],
+        p9a.silence_stereo(0.65),
+        parts["point_explanation"],
+        p9a.silence_stereo(0.5),
+        parts["preview"],
+        p9a.silence_stereo(0.5),
+        parts["notification"],
+        p9a.silence_stereo(0.4),
+        parts["key_phrases_intro"],
+        p9a.silence_stereo(0.5),
+    ]
+    for block in key_phrase_blocks:
+        pieces.append(block)
+    pieces += [
+        parts["notification"],
+        p9a.silence_stereo(0.4),
+        parts["full_story_intro"],
+        p9a.silence_stereo(0.7),
+        parts["body"],
+        p9a.silence_stereo(0.5),
+        parts["outro"],
+    ]
+    return np.ascontiguousarray(np.concatenate(pieces, axis=0))
+
+
+def stage_e_assemble() -> dict:
+    os.makedirs(f"{OUT_DIR}/assembled", exist_ok=True)
+    sources = load_all_sources()
+    parts = apply_gain_and_convert(sources)
+    assembled = assemble(parts)
+
+    out_path = f"{OUT_DIR}/assembled/English_Your_Way_ADD03.wav"
+    common.write_wav_float(out_path, assembled, SR, 2)
+    metrics = common.measure_metrics(assembled[:, 0], SR)
+
+    with open(f"{OUT_DIR}/audit/gain_report.json", "w", encoding="utf-8") as f:
+        json.dump(parts["gain_report"], f, ensure_ascii=False, indent=2)
+
+    return {
+        "status": "OK", "out_path": out_path, "duration_seconds": round(len(assembled) / SR, 4),
+        "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
+        "sample_rate": SR, "channels": 2,
+    }
+
+
 if __name__ == "__main__":
     r = stage_a_generate_body_audio()
     print("stage_a status:", r["status"])
