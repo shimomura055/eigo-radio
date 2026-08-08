@@ -1,12 +1,12 @@
 {
   "data_kind": "ALGORITHM_TEST_ONLY_NOT_PRODUCTION",
-  "note": "本文由来ではない、Rule3(固定表現保持)検証専用の合成fixture。承認済みKey Phraseとして製品成果物には使用しない。",
+  "note": "本文由来ではない、Rule3/4(over-minimization検証)専用の合成fixture。承認済みKey Phraseとして製品成果物には使用しない。",
   "canonicalization_version": "ER-003-KP-02",
   "model": "gpt-5.6-sol",
   "reasoning_effort": "high",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-sol",
-  "response_id": "resp_0f77399d27b87f2f006a76b10ebc30819aaa541fa8b7438112",
+  "response_id": "resp_0d1a55d779f0276f006a76b11909448199bc2c9751fad0269a",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -18,9 +18,9 @@
         "items": [
           {
             "rank": 1,
-            "key_phrase": "a lot of",
-            "changed_from_display_phrase": false,
-            "reasoning": "数量を表す固定表現で、冠詞と前置詞を含む全体が自然な最小十分単位です。限定詞の削除や語の復元は不要です。",
+            "key_phrase": "urge to watch",
+            "changed_from_display_phrase": true,
+            "reasoning": "先頭の「the」は文脈限定のため除去し、「to」の目的を明確にするためsource_spanから「watch」を復元しました。単独でも「見たい衝動」という意味が十分に伝わる自然な単位です。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -33,9 +33,9 @@
           },
           {
             "rank": 2,
-            "key_phrase": "a number of",
+            "key_phrase": "a struggle to pay",
             "changed_from_display_phrase": false,
-            "reasoning": "数量を表す固定表現であり、「a」を含む全体で自然な学習単位になります。既に単独で理解できるため変更しません。",
+            "reasoning": "「a」は可算名詞「struggle」に必要であり、句全体で自然な学習単位です。source_span内に追加すべき語もないため、display_phraseを維持しました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -48,9 +48,9 @@
           },
           {
             "rank": 3,
-            "key_phrase": "at the same time",
-            "changed_from_display_phrase": false,
-            "reasoning": "時点の一致を表す固定表現で、「the」を含む全体が必要十分な単位です。文脈限定語や不足語はありません。",
+            "key_phrase": "risk of losing jobs",
+            "changed_from_display_phrase": true,
+            "reasoning": "先頭の「the」は本文中の特定のリスクを示す文脈限定語であり、除去しても意味と自然さが保たれます。「risk of losing jobs」で再利用可能な学習単位として十分です。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -63,24 +63,9 @@
           },
           {
             "rank": 4,
-            "key_phrase": "on the other hand",
+            "key_phrase": "pressure to resign",
             "changed_from_display_phrase": false,
-            "reasoning": "対比を導く固定表現で、すべての構成語が表現の一部です。文頭の大文字へ戻す必要はなく、表示形を維持します。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
-          },
-          {
-            "rank": 5,
-            "key_phrase": "the same as",
-            "changed_from_display_phrase": false,
-            "reasoning": "同一・同等を表す比較表現で、「the」と「as」を含む全体が自然な最小十分単位です。削除や復元は不要です。",
+            "reasoning": "何に対する圧力かを「to resign」が明確にしており、単独で自然かつ十分に理解できる表現です。不要な文脈限定語もないため変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -94,7 +79,7 @@
         ]
       },
       "model": "gpt-5.6-sol",
-      "response_id": "resp_0f77399d27b87f2f006a76b10ebc30819aaa541fa8b7438112"
+      "response_id": "resp_0d1a55d779f0276f006a76b11909448199bc2c9751fad0269a"
     }
   ]
 }

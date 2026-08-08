@@ -1,24 +1,33 @@
 # ============================================================
 # er003_key_words_canonicalization.py
-# ER-003-KP-01: Key Phrase境界正規化(Pedagogical Phrase Canonicalization)
+# ER-003-KP-01/KP-02: Key Phrase境界正規化(Pedagogical Phrase Canonicalization)
 # ============================================================
 # 方式L(Listening Blocker Ranking)は「どの表現を選ぶか」を決める工程で
 # あり、この工程は変更しない。本モジュールは、方式Lが選んだ後の
-# display_phraseを、意味・文法的なまとまりを壊さずに、他の文脈でも
-# 再利用可能な最小の自然な学習単位(key_phrase)へ正規化する、独立した
+# display_phraseを、意味・文法的なまとまりを壊さずに、学習教材として
+# 提示するのに最も自然な学習単位(key_phrase)へ正規化する、独立した
 # 後段工程を実装する。
 #
-# 正規化の判断(冠詞・限定詞を削るかどうか)は、単純な正規表現や品詞
-# ブラックリストでは行わない。LLM(方式Lの選定と同一モデル設定)による
-# 個別文脈判断に委ね、本モジュールの決定的validatorは構造的な安全性
-# (key_phraseが空でない、display_phrase内の連続部分文字列である、
-# 1〜5語である、有限助動詞を含まない)のみを検査する。
+# 2026-08-08(ER-003-KP-02)追記: 当初(KP-01)は「最小の再利用可能単位」を
+# 目標にしていたが、"the urge to"→"urge to"のように、display_phraseを
+# 削った結果、単独で聞くと意味が欠けた断片になる事例が見つかった。
+# 目標を「最小」から「最小十分(Minimal Sufficient Unit)」へ修正した:
+# 1〜5語の範囲で、意味理解に必要な語(source_span内に存在するものに
+# 限る)は復元してよい。「短いほど良い」という最適化にはしない。
+#
+# 正規化の判断(冠詞・限定詞を削るか、逆にsource_spanから語を復元するか)
+# は、単純な正規表現や品詞ブラックリストでは行わない。LLM(方式Lの選定と
+# 同一モデル設定)による個別文脈判断に委ね、本モジュールの決定的
+# validatorは構造的な安全性(key_phraseが空でない、source_span内の連続
+# 部分文字列である、1〜5語である、有限助動詞を含まない)のみを検査する。
 #
 # データモデル:
 #   source_span      … 方式Lが本文中で特定した原文span(方式L選定結果の
-#                       そのままの値、この工程では変更しない)
+#                       そのままの値、この工程では変更しない)。
+#                       canonicalizationはこのspanの範囲内でのみ語を
+#                       復元できる(spanの外や本文にない語は生成しない)。
 #   display_phrase   … 方式L選定時点でのcanonical_english(正規化前の
-#                       候補、この工程の入力)
+#                       候補、この工程の入力の出発点)
 #   key_phrase       … この工程が正規化した、教材表示用の学習単位
 #   used_form        … 実際に音声・Key Phrasesセクション等で使用する
 #                       表現。現段階ではkey_phraseと同一値を採用する
@@ -30,7 +39,10 @@
 #   - er003_key_words_min_unit.DISPLAY_PHRASE_MIN_WORDS/MAX_WORDS/
 #     _FINITE_AUX_WORDS相当の判定基準(値のみ再利用、関数は本モジュール
 #     専用に定義しなおす。入力フィールド名がdisplay_phraseではなく
-#     key_phraseであるため)
+#     key_phraseであるため)。この1〜5語の範囲自体はKP-02でも変更しない
+#     (根拠: er003_key_words_min_unit.pyのP2G「display_phraseを1〜5語の
+#     最小学習単位へ強制し、完全文・節を拒否する」という決定。変更した
+#     のは「範囲内でどこまで削るか」の目標であり、範囲そのものではない)
 
 from __future__ import annotations
 
@@ -43,13 +55,14 @@ import er003_key_words_min_unit as p2g
 import er003_key_words_production as prod
 import er003_ja_to_en_translation as er003
 
-CANONICALIZATION_VERSION = "ER-003-KP-01"
+CANONICALIZATION_VERSION = "ER-003-KP-02"
 
 # 方式L選定と同一のモデル設定を再利用する(新しいモデル選定は行わない)。
 SELECTOR_MODEL = prod.SELECTOR_MODEL
 SELECTOR_REASONING_EFFORT = prod.SELECTOR_REASONING_EFFORT
-DEVELOPER_MESSAGE = ("英語学習教材のKey Phrase境界を、意味を保ったまま"
-                     "最小の自然な学習単位へ正規化してください。")
+DEVELOPER_MESSAGE = ("英語学習教材のKey Phrase境界を、1〜5語の範囲で"
+                     "意味理解に必要十分な自然な学習単位(最小十分)へ"
+                     "正規化してください。短いほど良いわけではありません。")
 
 PROMPT_TEMPLATE_PATH = "er003_v1_translator_briefs/b1_p2_keywords_canonicalization_prompt_template.txt"
 
@@ -61,6 +74,10 @@ QA_FIELDS = (
     "qa_reusable_other_context",
     "qa_traceable_contiguous_span",
     "qa_listening_blocker_value_preserved",
+    # 2026-08-08(ER-003-KP-02)追加: 過剰短縮を検出するための3項目。
+    "qa_standalone_comprehensibility",
+    "qa_not_over_minimized",
+    "qa_context_sufficiency",
 )
 
 _ITEM_SCHEMA_PROPERTIES = {
@@ -192,25 +209,36 @@ def _contains_finite_auxiliary(text: str) -> bool:
 
 def _is_contiguous_substring(needle: str, haystack: str) -> bool:
     """空白正規化・大小文字を無視した連続部分文字列判定
-    (Rule 5: display_phrase内に存在しない別の辞書形を生成していないかの
-    構造的チェック。冠詞を削るべきかどうかの意味判断はしない)。"""
+    (Rule 7: source_spanに存在しない別の辞書形を生成していないかの
+    構造的チェック。冠詞を削る・語を復元するかどうかの意味判断はしない)。"""
     return _normalize_for_match(needle) in _normalize_for_match(haystack)
 
 
-def validate_canonicalization_item(key_phrase: str, display_phrase: str) -> dict:
-    """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除の
-    要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
-    (a) 空文字、(b) display_phraseに存在しない文字列の捏造、
-    (c) 1〜5語の範囲外、(d) 有限助動詞混入、の4種類のみ。"""
+def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str) -> dict:
+    """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
+    語の復元の要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
+    (a) 空文字、(b) source_spanにもdisplay_phraseにも存在しない文字列の
+    捏造、(c) 1〜5語の範囲外、(d) 有限助動詞混入、の4種類のみ。
+
+    2026-08-08(ER-003-KP-02): key_phraseがdisplay_phraseと完全一致する
+    場合(無変更)は常に安全とみなす。display_phrase自体は方式Lの選定
+    時点で既に確立された値であり(例: A01の"take a player off"は元の
+    source_span"took off players"の語順を変えた正規化形で、文字列としては
+    一致しない)、無変更であればcanonicalization工程が新たに何かを捏造した
+    ことにはならない。変更する場合は、source_span(本文中の元のspan、
+    display_phraseより広い範囲から語を復元できる)内の連続部分文字列で
+    あることを要求する(Rule7)。"""
     reasons = []
     if not isinstance(key_phrase, str) or not key_phrase.strip():
         reasons.append("key_phraseが空、または文字列でない")
         return {"ok": False, "reasons": reasons}
 
-    if not _is_contiguous_substring(key_phrase, display_phrase):
+    unchanged = _normalize_for_match(key_phrase) == _normalize_for_match(display_phrase)
+    if not unchanged and not _is_contiguous_substring(key_phrase, source_span):
         reasons.append(
-            f"key_phrase({key_phrase!r})がdisplay_phrase({display_phrase!r})内の連続部分文字列でない"
-            "(Rule5: 本文に存在しない別の辞書形を勝手に生成しない)")
+            f"key_phrase({key_phrase!r})がdisplay_phraseと一致せず、"
+            f"source_span({source_span!r})内の連続部分文字列でもない"
+            "(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)")
 
     word_count = _word_count(key_phrase)
     if word_count < KEY_PHRASE_MIN_WORDS or word_count > KEY_PHRASE_MAX_WORDS:
@@ -254,6 +282,7 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
     display_phrase_by_rank = {
         it["rank"]: (it.get("display_phrase") or it.get("canonical_english")) for it in original_items
     }
+    source_span_by_rank = {it["rank"]: it.get("source_span", "") for it in original_items}
 
     for i, item in enumerate(items):
         this_reasons = []
@@ -274,7 +303,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
                 this_reasons.append(f"{field}が不正(実際: {item[field]!r})")
 
         display_phrase = display_phrase_by_rank.get(item.get("rank"), "")
-        structural = validate_canonicalization_item(item["key_phrase"], display_phrase)
+        source_span = source_span_by_rank.get(item.get("rank"), "")
+        structural = validate_canonicalization_item(item["key_phrase"], display_phrase, source_span)
         this_reasons.extend(structural["reasons"])
 
         if this_reasons:
