@@ -20,12 +20,14 @@ import os
 import er002_common as common
 import er003_b1_p3r_audio as p3r
 import er003_b1_p8a_audio as p8a
+import er003_b1_p9a_audio as p9a
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
 BODY_OUT_DIR = f"er003_output/b1_p8a/{ARTICLE_ID}"
 
 B1_ARTICLE_PATH = f"er003_output/b1_p1/{ARTICLE_ID}/b1_article_raw.md"
+BODY_DYNAMICS3_PATH = f"{BODY_OUT_DIR}/body_raw/{ARTICLE_ID}_b1_body_dynamics3.wav"
 
 ENGLISH_TITLE_TEXT = "UK Plans Midnight Social Media Break for Teenagers"
 # 承認済み日本語マスター(master_ja_approved.md)のタイトル行から、絵文字・
@@ -33,6 +35,24 @@ ENGLISH_TITLE_TEXT = "UK Plans Midnight Social Media Break for Teenagers"
 # と同じ抽出方針)。
 JAPANESE_TITLE_TEXT = "午前0時、SNSに“おやすみ”――英国が夜更かしスクロールへ静かな消灯"
 JAPANESE_TITLE_SOURCE_PATH = f"er003_output/b1_p1/{ARTICLE_ID}/master_ja_approved.md"
+
+# MFA(english_mfa、mfa_tool/a02_body_output/A02_body.TextGrid)+ASR
+# (scratch_a02_seg1/2.wav)で特定した境界(絶対時刻、元のBODY_DYNAMICS3_PATH
+# 基準)。ASRで前後の発話内容が数字・時刻の語順ズレなく一致することを
+# 確認済み(A01のスコア読み上げ問題の教訓を踏まえた確認)。
+TITLE_END_SECONDS = 4.130  # "...Teenagers"(タイトル)の終了
+BODY_FIRST_WORD_START_SECONDS = 4.670  # "At"(本文第1文)の開始
+NATURAL_LEADING_SECONDS = 0.250  # 元音声冒頭(タイトル"UK"開始前)の自然な無音
+
+# notification2挿入①: "...watch just one more video."の後、
+# "Today's Late-Night Scrolling Points"見出しの前
+INSERT1_GAP_END_SECONDS = 79.960
+INSERT1_GAP_START_SECONDS = 81.290
+
+# notification2挿入②: "...influence people's choices."の後、
+# "In One Line"見出しの前
+INSERT2_GAP_END_SECONDS = 146.260
+INSERT2_GAP_START_SECONDS = 147.560
 
 
 def stage_a_generate_body_audio() -> dict:
@@ -75,6 +95,48 @@ def stage_a_generate_body_audio() -> dict:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
     return {"status": "OK", "metadata": metadata}
+
+
+def stage_b_edit_body_audio() -> dict:
+    """Full Story音声へ、notification2挿入2箇所+タイトル除去の計3編集を
+    適用する。A01の教訓に従い、時系列で後ろの編集から先に適用する
+    (insert2[約147秒] → insert1[約81秒] → title_trim[約4秒])。"""
+    os.makedirs(f"{OUT_DIR}/audit", exist_ok=True)
+    body_full, body_sr, _, _ = common.read_wav_float(BODY_DYNAMICS3_PATH)
+    notification2_mono = p9a.load_mono_at_rate(p9a.NOTIFICATION2_WAV_PATH, body_sr)
+
+    insert2_result = p9a.insert_sound_at_internal_gap(
+        body_full, body_sr, gap_end_seconds=INSERT2_GAP_END_SECONDS, gap_start_seconds=INSERT2_GAP_START_SECONDS,
+        sound_samples=notification2_mono, pause_before_seconds=0.5, pause_after_seconds=0.4)
+    body_after_insert2 = insert2_result["result"]
+
+    insert1_result = p9a.insert_sound_at_internal_gap(
+        body_after_insert2, body_sr, gap_end_seconds=INSERT1_GAP_END_SECONDS, gap_start_seconds=INSERT1_GAP_START_SECONDS,
+        sound_samples=notification2_mono, pause_before_seconds=0.5, pause_after_seconds=0.4)
+    body_after_insert1 = insert1_result["result"]
+
+    trim_result = p9a.trim_title_from_body(
+        body_after_insert1, body_sr, first_word_start_seconds=BODY_FIRST_WORD_START_SECONDS,
+        natural_leading_seconds=NATURAL_LEADING_SECONDS)
+    body_final = trim_result["trimmed"]
+
+    out_path = f"{OUT_DIR}/narration/full_story_edited.wav"
+    os.makedirs(f"{OUT_DIR}/narration", exist_ok=True)
+    common.write_wav_float(out_path, body_final, body_sr, 1)
+
+    info = {
+        "article_id": ARTICLE_ID,
+        "insert2_info": insert2_result["info"],
+        "insert1_info": insert1_result["info"],
+        "title_trim_info": trim_result["info"],
+        "out_path": out_path,
+        "sha256": p8a.sha256_file(out_path),
+        "duration_seconds": round(len(body_final) / body_sr, 4),
+    }
+    with open(f"{OUT_DIR}/audit/full_story_edit_info.json", "w", encoding="utf-8") as f:
+        json.dump(info, f, ensure_ascii=False, indent=2, default=str)
+
+    return {"status": "OK", "info": info}
 
 
 if __name__ == "__main__":
