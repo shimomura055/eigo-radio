@@ -1,12 +1,12 @@
 {
   "data_kind": "ALGORITHM_TEST_ONLY_NOT_PRODUCTION",
   "note": "本文由来ではない、Rule3(固定表現保持)検証専用の合成fixture。承認済みKey Phraseとして製品成果物には使用しない。",
-  "canonicalization_version": "ER-003-KP-02",
+  "canonicalization_version": "ER-003-KP-02-R1",
   "model": "gpt-5.6-sol",
   "reasoning_effort": "high",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-sol",
-  "response_id": "resp_0f77399d27b87f2f006a76b10ebc30819aaa541fa8b7438112",
+  "response_id": "resp_0d577712a85ebc57006a76b3ead020819a979d88989fe8a857",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -20,7 +20,8 @@
             "rank": 1,
             "key_phrase": "a lot of",
             "changed_from_display_phrase": false,
-            "reasoning": "数量を表す固定表現で、冠詞と前置詞を含む全体が自然な最小十分単位です。限定詞の削除や語の復元は不要です。",
+            "normalization_reason": "none",
+            "reasoning": "「a lot of」は冠詞を含む固定表現であり、単独でも自然な最小十分の学習単位です。冠詞を削ると表現が壊れるため、変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -29,13 +30,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 2,
             "key_phrase": "a number of",
             "changed_from_display_phrase": false,
-            "reasoning": "数量を表す固定表現であり、「a」を含む全体で自然な学習単位になります。既に単独で理解できるため変更しません。",
+            "normalization_reason": "none",
+            "reasoning": "「a number of」は冠詞を含めて「多数の」を表す固定表現であり、現在の形が自然な最小十分単位です。冠詞は文脈限定語ではないため削除しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -44,13 +48,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 3,
             "key_phrase": "at the same time",
             "changed_from_display_phrase": false,
-            "reasoning": "時点の一致を表す固定表現で、「the」を含む全体が必要十分な単位です。文脈限定語や不足語はありません。",
+            "normalization_reason": "none",
+            "reasoning": "「at the same time」は限定詞を含む固定表現で、単独でも意味と用法が明確です。「the」を削ると自然な表現ではなくなるため、そのまま維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -59,13 +66,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 4,
             "key_phrase": "on the other hand",
             "changed_from_display_phrase": false,
-            "reasoning": "対比を導く固定表現で、すべての構成語が表現の一部です。文頭の大文字へ戻す必要はなく、表示形を維持します。",
+            "normalization_reason": "none",
+            "reasoning": "「on the other hand」は対比を示す固定表現であり、4語全体が自然な学習単位です。「the」などを削ると固定表現が壊れるため変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -74,13 +84,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 5,
             "key_phrase": "the same as",
             "changed_from_display_phrase": false,
-            "reasoning": "同一・同等を表す比較表現で、「the」と「as」を含む全体が自然な最小十分単位です。削除や復元は不要です。",
+            "normalization_reason": "none",
+            "reasoning": "「the same as」は比較関係を表す固定表現であり、単独提示に適した最小十分単位です。「the」や「as」を削ると意味または文法機能が失われるため変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -89,12 +102,14 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           }
         ]
       },
       "model": "gpt-5.6-sol",
-      "response_id": "resp_0f77399d27b87f2f006a76b10ebc30819aaa541fa8b7438112"
+      "response_id": "resp_0d577712a85ebc57006a76b3ead020819a979d88989fe8a857"
     }
   ]
 }

@@ -9,6 +9,7 @@
       "used_form": "opt out",
       "japanese_gloss": "参加・適用を断る",
       "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -18,10 +19,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "句動詞として単独で自然かつ意味が完結しており、機能語のoutも必要なため、そのまま維持します。"
+      "reasoning": "句動詞として単独で自然に成立し、「制度・設定などから離脱する」という意味も十分に理解できるため、変更しません。"
     },
     {
       "rank": 2,
@@ -32,6 +35,7 @@
       "used_form": "covered apps",
       "japanese_gloss": "規制対象のアプリ",
       "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -41,10 +45,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「規則などの適用対象となるアプリ」という意味の自然な名詞句で、単独でも十分に理解可能です。"
+      "reasoning": "「規制・制度の適用対象となるアプリ」という意味の自然な名詞句であり、不要な文脈限定語もないため、そのまま保持します。"
     },
     {
       "rank": 3,
@@ -55,6 +61,7 @@
       "used_form": "urge to watch",
       "japanese_gloss": "～したい衝動",
       "changed_from_display_phrase": true,
+      "normalization_reason": "restore_semantic_complement",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -64,10 +71,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "文脈限定的なtheを除き、display_phraseでは欠けていた行為の内容watchをsource_spanから復元しました。「見たい衝動」という意味が単独で完結します。"
+      "reasoning": "「the urge to」だけでは何をしたい衝動なのかが欠けるため、source_spanから意味上必要なwatchを復元しました。同時に、単独の学習単位には不要な文脈限定詞theを除いています。"
     },
     {
       "rank": 4,
@@ -78,6 +87,7 @@
       "used_form": "personalized feed",
       "japanese_gloss": "個人向けに選ばれた投稿欄",
       "changed_from_display_phrase": false,
+      "normalization_reason": "inherit_selection_normalization",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -87,10 +97,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "自然で再利用可能な名詞句として既に完結しています。display_phraseで行われた単数形・小文字への正規化を維持します。"
+      "reasoning": "display_phraseは既に単数形・小文字へ学習用に正規化されており、自然で再利用可能な名詞句として十分に成立するため、その形を維持します。"
     },
     {
       "rank": 5,
@@ -101,6 +113,7 @@
       "used_form": "digital switch-off period",
       "japanese_gloss": "デジタル利用の停止時間帯",
       "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -110,13 +123,15 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "デジタルサービスを停止する時間帯を表す自然で意味の完結した名詞句です。語を削るとListening Blockerとしての具体性が失われるため、そのまま維持します。"
+      "reasoning": "デジタルサービスを停止する時間帯という中心的な意味を過不足なく表す自然な名詞句です。語を削ると施策の種類や期間という意味が失われるため、そのまま保持します。"
     }
   ],
   "overall_status": "PASS",
   "article_id": "A02",
-  "canonicalization_version": "ER-003-KP-02"
+  "canonicalization_version": "ER-003-KP-02-R1"
 }

@@ -55,7 +55,7 @@ import er003_key_words_min_unit as p2g
 import er003_key_words_production as prod
 import er003_ja_to_en_translation as er003
 
-CANONICALIZATION_VERSION = "ER-003-KP-02"
+CANONICALIZATION_VERSION = "ER-003-KP-02-R1"
 
 # 方式L選定と同一のモデル設定を再利用する(新しいモデル選定は行わない)。
 SELECTOR_MODEL = prod.SELECTOR_MODEL
@@ -78,12 +78,33 @@ QA_FIELDS = (
     "qa_standalone_comprehensibility",
     "qa_not_over_minimized",
     "qa_context_sufficiency",
+    # 2026-08-08(ER-003-KP-02-R1)追加: 意味保持を明示的に評価する2項目。
+    # "the risk of losing jobs"→"losing jobs"のように、riskという意味の
+    # 核(意味役割: risk/possibility/obligation/pressure/attempt/refusal等)
+    # を丸ごと落とす短縮を、特定語のブラックリストではなく意味的判定で
+    # 検出する。
+    "qa_core_meaning_preserved",
+    "qa_no_semantic_role_loss",
+)
+
+# canonicalizationがdisplay_phraseに対して行った変換の種類(監査用、
+# 固定enum)。既存の方式L選定時点のnormalization_type(P2G、"lemma"/
+# "verb_base"等)と同じ思想の、canonicalization工程専用の分類。
+NORMALIZATION_REASONS = (
+    "none",  # 無変更(display_phraseがそのままkey_phrase)
+    "remove_contextual_determiner",  # the/a/an/this/that等の文脈限定詞を除去
+    "restore_semantic_complement",  # 意味理解に必要な語をsource_spanから復元(例: watch)
+    "inherit_selection_normalization",  # 無変更だが、方式L選定時点で既に
+                                        # lemma化・時制正規化・phrasal verb整理等が
+                                        # 行われている(例: take a player off)
+    "other",
 )
 
 _ITEM_SCHEMA_PROPERTIES = {
     "rank": {"type": "integer"},
     "key_phrase": {"type": "string"},
     "changed_from_display_phrase": {"type": "boolean"},
+    "normalization_reason": {"type": "string", "enum": list(NORMALIZATION_REASONS)},
     "reasoning": {"type": "string"},
     **{field: {"type": "string", "enum": list(QA_VERDICTS)} for field in QA_FIELDS},
 }
@@ -302,6 +323,9 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
             if item[field] not in QA_VERDICTS:
                 this_reasons.append(f"{field}が不正(実際: {item[field]!r})")
 
+        if item["normalization_reason"] not in NORMALIZATION_REASONS:
+            this_reasons.append(f"normalization_reasonが不正(実際: {item['normalization_reason']!r})")
+
         display_phrase = display_phrase_by_rank.get(item.get("rank"), "")
         source_span = source_span_by_rank.get(item.get("rank"), "")
         structural = validate_canonicalization_item(item["key_phrase"], display_phrase, source_span)
@@ -422,6 +446,7 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
             "used_form": canon["key_phrase"],
             "japanese_gloss": original.get("ja_gloss") or original.get("japanese_gloss"),
             "changed_from_display_phrase": canon["changed_from_display_phrase"],
+            "normalization_reason": canon["normalization_reason"],
             "qa": qa,
             "qa_overall_status": "REVIEW_REQUIRED" if item_review_required else "PASS",
             "reasoning": canon["reasoning"],

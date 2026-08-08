@@ -1,6 +1,6 @@
 {
   "article_id": "A01",
-  "canonicalization_version": "ER-003-KP-02",
+  "canonicalization_version": "ER-003-KP-02-R1",
   "record_status": "PROTOTYPE",
   "approval_status": "NOT_APPROVED",
   "model": "gpt-5.6-sol",
@@ -8,25 +8,24 @@
   "b1_article_path": "er003_output/b1_p1/A01/b1_article_raw.md",
   "b1_article_sha256": "a5bdf3b81bc691d8e5cb077e45d15d4d259b2487cf28542c287b241ac1239253",
   "source_selection_path": "er003_output/b1_p2/A01/keywords_runtime_metadata.json",
-  "final_status": "CANONICALIZATION_REVIEW_REQUIRED",
+  "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-sol",
-  "response_id": "resp_0e78d43937715ebb006a76b0e5b660819aab4567b6841d6f34",
+  "response_id": "resp_087d6303bdf2c348006a76b3b36d14819aa79152cfa1d1a98f",
   "attempts_detail": [
     {
       "attempt": 1,
-      "status": "CANONICALIZATION_REVIEW_REQUIRED",
+      "status": "CANONICALIZATION_PASS",
       "reasons": [],
       "item_reasons": [],
-      "items_requiring_review": [
-        2
-      ],
+      "items_requiring_review": [],
       "parsed": {
         "items": [
           {
             "rank": 1,
             "key_phrase": "stoppage time",
             "changed_from_display_phrase": false,
-            "reasoning": "サッカーで「アディショナルタイム」を表す自然で完結した用語であり、追加・削除は不要です。",
+            "normalization_reason": "none",
+            "reasoning": "「stoppage time」はサッカーの追加時間を表す、単独で自然かつ十分な名詞句です。文脈限定語もなく、変更は不要です。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -35,28 +34,34 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 2,
             "key_phrase": "take a player off",
             "changed_from_display_phrase": false,
-            "reasoning": "「選手を交代で下げる」という意味が単独で明確になる、既に適切に基本形化された学習単位です。本文の took off players へ戻す必要はありません。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "本文の語形・語順は方式Lで既に「take a player off」に整理されており、選手を交代で下げるという意味が明確な学習単位です。句動詞のoffと目的語を含む現在の形を維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
             "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "FAIL",
+            "qa_traceable_contiguous_span": "PASS",
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 3,
             "key_phrase": "shot on target",
             "changed_from_display_phrase": false,
-            "reasoning": "サッカーで「枠内シュート」を表す自然な名詞句です。source_spanの不定冠詞は既に適切に除かれており、現在の形で最小十分です。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "方式Lで冠詞を含まない再利用可能な用語に既に整理されています。「枠内シュート」という中心的な意味に必要なon targetを保持しているため、変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -65,13 +70,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 4,
             "key_phrase": "close the door to",
             "changed_from_display_phrase": false,
-            "reasoning": "「～への道・可能性を閉ざす」という意味を構成する自然な表現パターンです。the finalは記事固有の補語であり、5語以内で復元する必要もありません。",
+            "normalization_reason": "none",
+            "reasoning": "「～への道を閉ざす」を表す再利用可能な構文単位で、末尾のtoは意味を構成する前置詞です。本文固有の補語「the final」は追加せず、5語以内で比喩的な中心義を保つ現在の形を維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -80,13 +88,16 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           },
           {
             "rank": 5,
             "key_phrase": "narrow lead",
             "changed_from_display_phrase": false,
-            "reasoning": "「わずかなリード」を表す自然で完結した名詞句であり、文脈限定語も残っていません。",
+            "normalization_reason": "none",
+            "reasoning": "「わずかなリード」を表す自然で十分な名詞句です。形容詞narrowが担う重要な意味も保持されており、変更は不要です。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -95,12 +106,14 @@
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS"
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS"
           }
         ]
       },
       "model": "gpt-5.6-sol",
-      "response_id": "resp_0e78d43937715ebb006a76b0e5b660819aab4567b6841d6f34"
+      "response_id": "resp_087d6303bdf2c348006a76b3b36d14819aa79152cfa1d1a98f"
     }
   ]
 }

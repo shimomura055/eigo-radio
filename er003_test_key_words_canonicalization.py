@@ -109,9 +109,9 @@ class ValidateCanonicalizationResponseTests(unittest.TestCase):
     def _good_response(self):
         return {
             "items": [
-                {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+                {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
                  "reasoning": "先頭のtheは文脈限定のみで学習単位に不要なため除去した。", **_good_qa()},
-                {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+                {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
                  "reasoning": "既に最小の自然な単位である。", **_good_qa()},
             ]
         }
@@ -172,9 +172,9 @@ class ValidateCanonicalizationResponseTests(unittest.TestCase):
 class MergeCanonicalizationResultTests(unittest.TestCase):
     def test_merge_preserves_source_span_and_sets_used_form(self):
         canon_items = [
-            {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+            {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
              "reasoning": "R", **_good_qa()},
-            {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+            {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
              "reasoning": "R2", **_good_qa()},
         ]
         merged = kc.merge_canonicalization_result(GOOD_ITEMS, canon_items)
@@ -191,16 +191,16 @@ class MergeCanonicalizationResultTests(unittest.TestCase):
         self.assertFalse(by_rank[2]["changed_from_display_phrase"])
 
     def test_used_form_always_equals_key_phrase_at_this_stage(self):
-        canon_items = [{"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+        canon_items = [{"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
                         "reasoning": "R", **_good_qa()}]
         merged = kc.merge_canonicalization_result([GOOD_ITEMS[0]], canon_items)
         self.assertEqual(merged["items"][0]["used_form"], merged["items"][0]["key_phrase"])
 
     def test_all_pass_qa_yields_pass_overall_status(self):
         canon_items = [
-            {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+            {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
              "reasoning": "R", **_good_qa()},
-            {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+            {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
              "reasoning": "R2", **_good_qa()},
         ]
         merged = kc.merge_canonicalization_result(GOOD_ITEMS, canon_items)
@@ -212,9 +212,9 @@ class MergeCanonicalizationResultTests(unittest.TestCase):
         qa_with_fail = _good_qa()
         qa_with_fail["qa_listening_blocker_value_preserved"] = "FAIL"
         canon_items = [
-            {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+            {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
              "reasoning": "R", **qa_with_fail},
-            {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+            {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
              "reasoning": "R2", **_good_qa()},
         ]
         merged = kc.merge_canonicalization_result(GOOD_ITEMS, canon_items)
@@ -231,9 +231,9 @@ class RunCanonicalizationGateFakeClientTests(unittest.TestCase):
     def _good_raw_text(self):
         return json.dumps({
             "items": [
-                {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+                {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
                  "reasoning": "R", **_good_qa()},
-                {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+                {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
                  "reasoning": "R2", **_good_qa()},
             ]
         })
@@ -325,9 +325,9 @@ class RunCanonicalizationGateFakeClientTests(unittest.TestCase):
     def test_fabricated_phrase_response_is_invalid_after_retries(self):
         bad_raw = json.dumps({
             "items": [
-                {"rank": 1, "key_phrase": "desire for", "changed_from_display_phrase": True,
+                {"rank": 1, "key_phrase": "desire for", "normalization_reason": "none", "changed_from_display_phrase": True,
                  "reasoning": "R", **_good_qa()},
-                {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+                {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
                  "reasoning": "R2", **_good_qa()},
             ]
         })
@@ -358,9 +358,9 @@ class RunCanonicalizationGateFakeClientTests(unittest.TestCase):
         qa_with_fail["qa_listening_blocker_value_preserved"] = "FAIL"
         raw = json.dumps({
             "items": [
-                {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+                {"rank": 1, "key_phrase": "urge to", "normalization_reason": "none", "changed_from_display_phrase": True,
                  "reasoning": "R", **qa_with_fail},
-                {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+                {"rank": 2, "key_phrase": "opt out", "normalization_reason": "none", "changed_from_display_phrase": False,
                  "reasoning": "R2", **_good_qa()},
             ]
         })
@@ -422,19 +422,19 @@ class RealArtifactIntegrationTests(unittest.TestCase):
                          "real API output not present in this environment")
     def test_a01_five_existing_items_have_unchanged_values(self):
         """A01は方式L選定時点で既に最小単位化済みのため、canonicalization
-        工程を通しても5件とも「値」は変化しないはず(回帰確認)。KP-02時点
-        では、rank2("take a player off")がsource_spanとの文字列不一致
-        (時制正規化のため)を理由にqa_traceable_contiguous_spanがFAILと
-        自己申告され、REVIEW_REQUIREDとなることを許容する(値自体は
-        正しく無変更)。"""
+        工程を通しても5件とも値・ステータスとも無変更・全PASSのはず
+        (ER-003-KP-02-R1でtraceability定義を修正し、REVIEW_REQUIREDの
+        誤検出[take a player offがsource_spanと文字列不一致なのは
+        方式L選定時点の正規化によるものであり問題ではない]を解消した)。"""
         with open("er003_output/b1_p2/A01/keywords_canonicalized.json", encoding="utf-8") as f:
             data = json.load(f)
         self.assertEqual(len(data["items"]), 5)
+        self.assertEqual(data["overall_status"], "PASS")
         for item in data["items"]:
             self.assertEqual(item["key_phrase"], item["display_phrase"],
                              f"rank {item['rank']}が意図せず変更されている: {item}")
             self.assertFalse(item["changed_from_display_phrase"])
-        self.assertIn(data["overall_status"], ("PASS", "REVIEW_REQUIRED"))
+            self.assertEqual(item["qa_overall_status"], "PASS")
 
     @unittest.skipUnless(os.path.exists("er003_output/b1_p2/A02/keywords_canonicalized.json"),
                          "real API output not present in this environment")
@@ -499,6 +499,11 @@ class RealArtifactIntegrationTests(unittest.TestCase):
         risk_item = by_display["the risk of losing jobs"]
         self.assertIn("losing", risk_item["key_phrase"].lower())
         self.assertIn("jobs", risk_item["key_phrase"].lower())
+        # ER-003-KP-02-R1の核: "risk"という意味の核(risk/possibility等の
+        # 意味役割)を落として"losing jobs"にしてはいけない(Meaning
+        # Preservation Rule)。
+        self.assertIn("risk", risk_item["key_phrase"].lower(),
+                      f"意味の核'risk'が失われている: {risk_item}")
 
         # 既に必要十分な形は無変更のはず
         pressure_item = by_display["pressure to resign"]

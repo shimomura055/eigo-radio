@@ -9,6 +9,7 @@
       "used_form": "urge to watch",
       "japanese_gloss": null,
       "changed_from_display_phrase": true,
+      "normalization_reason": "restore_semantic_complement",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -18,10 +19,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "先頭の「the」は文脈限定のため除去し、「to」の目的を明確にするためsource_spanから「watch」を復元しました。単独でも「見たい衝動」という意味が十分に伝わる自然な単位です。"
+      "reasoning": "「urge to」だけでは衝動の対象が欠けるため、source_spanから「watch」を復元しました。同時に文脈限定的な「the」を除き、単独で自然な最小十分の単位にしています。"
     },
     {
       "rank": 2,
@@ -32,6 +35,7 @@
       "used_form": "a struggle to pay",
       "japanese_gloss": null,
       "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -41,10 +45,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「a」は可算名詞「struggle」に必要であり、句全体で自然な学習単位です。source_span内に追加すべき語もないため、display_phraseを維持しました。"
+      "reasoning": "名詞句として「支払うのが困難なこと」を自然に表す最小十分な単位です。「a」を削ると動詞用法にも解釈でき、元の用法が不明確になるため保持します。"
     },
     {
       "rank": 3,
@@ -55,6 +61,7 @@
       "used_form": "risk of losing jobs",
       "japanese_gloss": null,
       "changed_from_display_phrase": true,
+      "normalization_reason": "remove_contextual_determiner",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -64,10 +71,12 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "先頭の「the」は本文中の特定のリスクを示す文脈限定語であり、除去しても意味と自然さが保たれます。「risk of losing jobs」で再利用可能な学習単位として十分です。"
+      "reasoning": "文脈限定的な「the」のみを除きました。「risk of」を保持しているため、「失職のリスク」という中心的な意味役割は失われていません。"
     },
     {
       "rank": 4,
@@ -78,6 +87,7 @@
       "used_form": "pressure to resign",
       "japanese_gloss": null,
       "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -87,13 +97,15 @@
         "qa_listening_blocker_value_preserved": "PASS",
         "qa_standalone_comprehensibility": "PASS",
         "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS"
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "何に対する圧力かを「to resign」が明確にしており、単独で自然かつ十分に理解できる表現です。不要な文脈限定語もないため変更しません。"
+      "reasoning": "「辞任を求める圧力」という中心的意味と補語を備え、単独で自然に理解できる最小十分な単位です。削除すべき文脈限定語もありません。"
     }
   ],
   "overall_status": "PASS",
   "data_kind": "ALGORITHM_TEST_ONLY_NOT_PRODUCTION",
-  "canonicalization_version": "ER-003-KP-02"
+  "canonicalization_version": "ER-003-KP-02-R1"
 }
