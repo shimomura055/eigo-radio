@@ -139,6 +139,97 @@ def stage_b_edit_body_audio() -> dict:
     return {"status": "OK", "info": info}
 
 
+# ------------------------------------------------------------
+# サービス共通ナレーションの再利用元(A01)。内容が記事非依存のため、
+# 新規TTSを行わず、既存の確立済み音声(ASR確認済み)をそのまま使う
+# (指示section5「サービス共通文言と記事固有文言を分離する」に対応)。
+# ------------------------------------------------------------
+A01_NARRATION_DIR = "er003_output/b1_p9a/A01/narration"
+SERVICE_LEVEL_NARRATION_NAMES = (
+    "welcome",  # "Welcome to English Your Way."
+    "preview_intro",  # "Here's a quick preview."
+    "point_explanation",  # "ポイント解説"
+    "key_phrases_intro",  # "Here are today's key phrases."
+    "full_story_intro",  # "Now, the full story."
+    "num_one", "num_two", "num_three", "num_four", "num_five",
+)
+
+# A02固有の新規ナレーション原稿(内容は変更しない)
+TOPIC_INTRO_TEXT = f"Today's topic is {ENGLISH_TITLE_TEXT}."
+KEY_PHRASE_MEANINGS = {
+    1: "参加・適用を断る",       # opt out
+    2: "規制対象のアプリ",       # covered apps
+    3: "見たいという衝動",       # urge to watch(ER-003-KP-02-R1で確定)
+    4: "個人向けに選ばれた投稿欄",  # personalized feed
+    5: "デジタル利用の停止時間帯",  # digital switch-off period
+}
+_MEANING_ASR_SUBSTRINGS = {1: "断る", 2: "アプリ", 3: "衝動", 4: "投稿欄", 5: "停止時間帯"}
+
+# 2026-08-08発見: generate_narration_snippet_verified(A01実装、変更不可)は
+# expected_substringの部分一致のみを検証するため、"デジタル利用の停止
+# 時間帯"を生成させたところ、ASRが目的の文言を含みつつもその後に全く
+# 無関係な内容(「ポイント。ワン。日中はいくらでも使える時間帯を設けよう…」
+# 等、28.8秒に渡る創作された生活習慣アドバイス)を連ねて返す事例が発生した
+# (A01の"Now, the full story."と同種のhallucination)。部分一致だけでは
+# この種の「目的の文言を含むが後ろに余計な内容が続く」ケースを検出できない
+# ため、ASR文字数が期待文字数を大きく超えていないかも追加で検証する
+# strict版のverified生成をこのスクリプト側に追加する(A01専用モジュールは
+# 変更しない)。
+def generate_narration_snippet_verified_strict(
+    text: str, language: str, out_path: str, expected_substring: str,
+    max_attempts: int = 6, max_extra_chars: int = 15,
+) -> dict:
+    import er003_b1_p4_audio as p4
+    asr_language = "en-US" if language == "en" else "ja-JP"
+    max_len = len(text) + max_extra_chars
+    attempts_log = []
+    for attempt in range(1, max_attempts + 1):
+        r = p9a.generate_narration_snippet(text, language, out_path)
+        if r.get("status") != "OK":
+            attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            continue
+        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language=asr_language)
+        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
+        length_ok = asr_text is not None and len(asr_text) <= max_len
+        verified = substring_ok and length_ok
+        attempts_log.append({
+            "attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
+            "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,
+            "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok, "verified": verified,
+        })
+        if verified:
+            return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}
+    return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証(内容+長さ)に合格しませんでした",
+           "attempts_log": attempts_log}
+
+
+def stage_c_generate_new_narrations() -> dict:
+    """A02固有の新規ナレーション(topic_intro/japanese_title/meaning_1-5)
+    を、内容一致+長さ妥当性のstrict ASR検証付きで生成する。サービス共通
+    文言はA01の既存音声をそのまま参照するため、ここでは生成しない。"""
+    narration_dir = f"{OUT_DIR}/narration"
+    os.makedirs(narration_dir, exist_ok=True)
+    results = {}
+
+    jobs = [
+        ("topic_intro", TOPIC_INTRO_TEXT, "en", "Midnight Social Media Break"),
+        ("japanese_title", JAPANESE_TITLE_TEXT, "ja", "夜更かし"),
+    ]
+    for i in range(1, 6):
+        jobs.append((f"meaning_{i}", KEY_PHRASE_MEANINGS[i], "ja", _MEANING_ASR_SUBSTRINGS[i]))
+
+    for name, text, language, expected_substring in jobs:
+        out_path = f"{narration_dir}/{name}.wav"
+        result = generate_narration_snippet_verified_strict(text, language, out_path, expected_substring)
+        results[name] = result
+
+    with open(f"{OUT_DIR}/audit/new_narrations_result.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2, default=str)
+
+    all_ok = all(r.get("status") == "OK" for r in results.values())
+    return {"status": "OK" if all_ok else "STOPPED", "results": results}
+
+
 if __name__ == "__main__":
     r = stage_a_generate_body_audio()
     print("stage_a status:", r["status"])
