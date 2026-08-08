@@ -230,6 +230,109 @@ def stage_c_generate_new_narrations() -> dict:
     return {"status": "OK" if all_ok else "STOPPED", "results": results}
 
 
+# ER-003-KP-02-R1で確定したA02の英語Key Phrase(used_form)。A01のような
+# 既存流用元がないため、全件新規TTS生成が必要。
+KEY_PHRASES_USED_FORM = {
+    1: "opt out",
+    2: "covered apps",
+    3: "urge to watch",
+    4: "personalized feed",
+    5: "digital switch-off period",
+}
+
+
+# P9A-R1で"Now, the full story."に実際に効果があった対症療法(声・
+# モデルは変えず、instructionだけ「そのまま読み上げてください」という
+# 最小限のものへ差し替える)と同一の考え方。ENGLISH_STYLE_PREFIX(記事
+# 本文からの抜粋を番組の一部として読む前提の長い指示)を、文脈のない
+# 短い単独フレーズに使うと、モデルが無関係な内容へ迷い込みやすいことが
+# 分かっている(A01の"Now, the full story."、今回の"opt out"で実際に
+# 発生: "Don't get into this mindset of letting your mess..."等の
+# 完全に無関係な内容が生成された)。
+MINIMAL_INSTRUCTION_PREFIX = (
+    "Speak the following text aloud naturally and clearly, in a warm podcast "
+    "announcer voice. Do not add, omit, or change any words.\n\n"
+)
+
+
+def generate_english_component_minimal_instruction(text: str, out_path: str) -> dict:
+    prompt = MINIMAL_INSTRUCTION_PREFIX + text
+    call_fn = p9a._make_english_call_fn()
+    pcm, retries, ok, err = common._call_tts_with_retry(
+        call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
+    if not ok:
+        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
+    samples_raw = common.pcm_bytes_to_float_mono(pcm)
+    import er003_b1_p3u_audio as p3u
+    trimmed, trim_info = p3u.trim_english_keyword_silence(samples_raw, common.SAMPLE_RATE)
+    if trimmed is None:
+        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+    common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
+    metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+    return {
+        "status": "OK", "text": text, "path": out_path, "model": p9a.ENGLISH_MODEL_NAME,
+        "voice": p9a.VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
+        "sha256": p8a.sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
+        "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
+        "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+    }
+
+
+def generate_key_phrase_component_verified(text: str, out_path: str, max_attempts: int = 6) -> dict:
+    """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
+    それでも合格しない場合のみ、minimal instructionへフォールバックする
+    (声・モデルは変えない、テキストも変えない)。"""
+    import er003_b1_p4_audio as p4
+    standard = generate_narration_snippet_verified_strict(text, "en", out_path, text, max_extra_chars=10,
+                                                           max_attempts=max_attempts)
+    if standard.get("status") == "OK":
+        standard["fallback_used"] = False
+        return standard
+
+    fallback_attempts = []
+    for attempt in range(1, max_attempts + 1):
+        r = generate_english_component_minimal_instruction(text, out_path)
+        if r.get("status") != "OK":
+            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            continue
+        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
+        substring_ok = asr_text is not None and text.lower() in asr_text.lower()
+        length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
+        verified = substring_ok and length_ok
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "verified": verified})
+        if verified:
+            r["asr_verified"] = True
+            r["asr_text"] = asr_text
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = standard.get("attempts_log")
+            r["fallback_attempts_log"] = fallback_attempts
+            return r
+    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
+           "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+
+
+def stage_d_generate_key_phrase_components() -> dict:
+    """A02の英語Key Phrase Component5件を、英語Component用の確立済み経路
+    (ENGLISH_STYLE_PREFIX+Aoede+gemini-2.5-pro-preview-tts、A01のshot on
+    target等と同一設定)でstrict ASR検証付き生成する。標準経路で合格しない
+    場合のみ、"Now, the full story."と同じminimal instructionへ
+    フォールバックする(声・モデル・テキストは変えない)。"""
+    components_dir = f"{OUT_DIR}/key_phrase_components"
+    os.makedirs(components_dir, exist_ok=True)
+    results = {}
+    for i in range(1, 6):
+        text = KEY_PHRASES_USED_FORM[i]
+        out_path = f"{components_dir}/kp_{i}_{text.replace(' ', '_')}.wav"
+        result = generate_key_phrase_component_verified(text, out_path)
+        results[i] = result
+
+    with open(f"{OUT_DIR}/audit/key_phrase_components_result.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2, default=str)
+
+    all_ok = all(r.get("status") == "OK" for r in results.values())
+    return {"status": "OK" if all_ok else "STOPPED", "results": results}
+
+
 if __name__ == "__main__":
     r = stage_a_generate_body_audio()
     print("stage_a status:", r["status"])
