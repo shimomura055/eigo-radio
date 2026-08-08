@@ -224,17 +224,26 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str) -> dict
 
 
 def validate_canonicalization_response(parsed: dict, original_items: list) -> dict:
-    """itemsの件数・rank整合、各itemの構造的安全性を検査する。QA verdict
-    フィールド(qa_*)がFAILであること自体は不合格の理由にしない
-    (LLM自身の自己申告として記録・保存するのみで、人間確認の材料と
-    する)。"""
+    """itemsの件数・rank整合、各itemの構造的安全性を検査する。
+
+    ステータスは3段階(2026-08-08、ER-003-KP-01ユーザー受入時の修正で導入):
+      - CANONICALIZATION_PASS: 構造validator合格 かつ QA6項目すべてPASS
+      - CANONICALIZATION_REVIEW_REQUIRED: 構造validator合格 かつ QAに
+        1件以上FAILがある(自動採用しない。人間確認後に採用可能とする)
+      - CANONICALIZATION_INVALID: 構造validator不合格
+
+    QA verdictフィールド(qa_*)のFAILは、それ自体を構造不合格の理由には
+    しない(REVIEW_REQUIREDへ倒す)。"""
     reasons = []
     item_reasons = []
     ok = True
+    has_qa_fail = False
+    items_requiring_review = []
 
     items = parsed.get("items")
     if not isinstance(items, list):
-        return {"status": "CANONICALIZATION_INVALID", "reasons": ["'items'が配列でない"], "item_reasons": []}
+        return {"status": "CANONICALIZATION_INVALID", "reasons": ["'items'が配列でない"], "item_reasons": [],
+                "items_requiring_review": []}
 
     expected_ranks = sorted(it["rank"] for it in original_items)
     actual_ranks = sorted(it.get("rank") for it in items if isinstance(it, dict))
@@ -271,11 +280,22 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         if this_reasons:
             item_reasons.append({"index": i, "rank": item.get("rank"), "reasons": this_reasons})
             ok = False
+        elif any(item[field] == "FAIL" for field in QA_FIELDS):
+            has_qa_fail = True
+            items_requiring_review.append(item.get("rank"))
+
+    if not ok:
+        status = "CANONICALIZATION_INVALID"
+    elif has_qa_fail:
+        status = "CANONICALIZATION_REVIEW_REQUIRED"
+    else:
+        status = "CANONICALIZATION_PASS"
 
     return {
-        "status": "CANONICALIZATION_PASS" if ok else "CANONICALIZATION_INVALID",
+        "status": status,
         "reasons": reasons,
         "item_reasons": item_reasons,
+        "items_requiring_review": items_requiring_review,
     }
 
 
@@ -326,11 +346,16 @@ def run_canonicalization_gate(
         validation = validate_canonicalization_response(parsed, original_items)
         attempts_detail.append({
             "attempt": attempt, "status": validation["status"], "reasons": validation["reasons"],
-            "item_reasons": validation["item_reasons"], "raw_text": raw_text, "parsed": parsed,
-            "model": model_id, "response_id": response_id,
+            "item_reasons": validation["item_reasons"],
+            "items_requiring_review": validation["items_requiring_review"],
+            "raw_text": raw_text, "parsed": parsed, "model": model_id, "response_id": response_id,
         })
-        if validation["status"] == "CANONICALIZATION_PASS":
-            return parsed, "CANONICALIZATION_PASS", attempts_detail, model_id, response_id
+        # PASS/REVIEW_REQUIREDはいずれも構造validator合格であり、自動
+        # 再試行はしない(REVIEW_REQUIREDは人間確認後に採用する運用のため、
+        # 再試行しても解決しない)。再試行するのはCANONICALIZATION_INVALID
+        # (構造不適合)のときだけ。
+        if validation["status"] in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+            return parsed, validation["status"], attempts_detail, model_id, response_id
         if attempt < max_attempts:
             continue
         return parsed, "CANONICALIZATION_INVALID", attempts_detail, model_id, response_id
@@ -342,13 +367,22 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
     """source_span/display_phrase(選定結果、無変更)と、key_phrase/
     used_form/QA/reasoning(この工程の出力)を1つのproduction artifactへ
     まとめる。used_formは現段階ではkey_phraseと同一値(将来TTS都合等で
-    分岐する場合のための独立フィールドとして保持する)。"""
+    分岐する場合のための独立フィールドとして保持する)。
+
+    項目ごとのqa_overall_status(PASS/REVIEW_REQUIRED)、全体の
+    overall_status(全項目PASSならPASS、1件でもFAILがあればREVIEW_
+    REQUIRED)を付与する。REVIEW_REQUIRED項目は自動採用せず、人間確認後に
+    採用する運用とする(構造的には既にvalidを通過済み)。"""
     canon_by_rank = {it["rank"]: it for it in canonicalization_items}
     merged_items = []
+    any_review_required = False
     for original in sorted(original_items, key=lambda it: it["rank"]):
         rank = original["rank"]
         canon = canon_by_rank[rank]
         display_phrase = original.get("display_phrase") or original.get("canonical_english")
+        qa = {field: canon[field] for field in QA_FIELDS}
+        item_review_required = any(v == "FAIL" for v in qa.values())
+        any_review_required = any_review_required or item_review_required
         merged_items.append({
             "rank": rank,
             "source_span": original.get("source_span", ""),
@@ -358,7 +392,11 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
             "used_form": canon["key_phrase"],
             "japanese_gloss": original.get("ja_gloss") or original.get("japanese_gloss"),
             "changed_from_display_phrase": canon["changed_from_display_phrase"],
-            "qa": {field: canon[field] for field in QA_FIELDS},
+            "qa": qa,
+            "qa_overall_status": "REVIEW_REQUIRED" if item_review_required else "PASS",
             "reasoning": canon["reasoning"],
         })
-    return {"items": merged_items}
+    return {
+        "items": merged_items,
+        "overall_status": "REVIEW_REQUIRED" if any_review_required else "PASS",
+    }

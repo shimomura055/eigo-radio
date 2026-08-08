@@ -118,13 +118,28 @@ class ValidateCanonicalizationResponseTests(unittest.TestCase):
         result = kc.validate_canonicalization_response(response, GOOD_ITEMS)
         self.assertEqual(result["status"], "CANONICALIZATION_INVALID")
 
-    def test_qa_fail_verdict_does_not_by_itself_invalidate(self):
-        """qa_*がFAILであること自体は不合格理由にしない(自己申告として
-        記録するのみ)。構造的に安全であればPASSのまま扱う。"""
+    def test_qa_fail_verdict_yields_review_required_not_invalid(self):
+        """qa_*が1件でもFAILの場合、構造validatorが合格していても自動
+        PASSにはせず、REVIEW_REQUIREDとして扱う(2026-08-08ユーザー受入
+        時の修正、自動再試行は不要・人間確認後に採用可能とする)。"""
         response = self._good_response()
         response["items"][0]["qa_listening_blocker_value_preserved"] = "FAIL"
         result = kc.validate_canonicalization_response(response, GOOD_ITEMS)
-        self.assertEqual(result["status"], "CANONICALIZATION_PASS")
+        self.assertEqual(result["status"], "CANONICALIZATION_REVIEW_REQUIRED")
+        self.assertEqual(result["items_requiring_review"], [1])
+
+    def test_qa_all_pass_across_all_items_yields_pass(self):
+        result = kc.validate_canonicalization_response(self._good_response(), GOOD_ITEMS)
+        self.assertEqual(result["items_requiring_review"], [])
+
+    def test_structural_failure_takes_precedence_over_qa_fail(self):
+        """同じ項目で構造違反とQA FAILが両方あっても、ステータスは
+        INVALID(構造不合格が優先)。"""
+        response = self._good_response()
+        response["items"][0]["key_phrase"] = "desire for"  # Rule5違反
+        response["items"][0]["qa_listening_blocker_value_preserved"] = "FAIL"
+        result = kc.validate_canonicalization_response(response, GOOD_ITEMS)
+        self.assertEqual(result["status"], "CANONICALIZATION_INVALID")
 
 
 class MergeCanonicalizationResultTests(unittest.TestCase):
@@ -153,6 +168,33 @@ class MergeCanonicalizationResultTests(unittest.TestCase):
                         "reasoning": "R", **_good_qa()}]
         merged = kc.merge_canonicalization_result([GOOD_ITEMS[0]], canon_items)
         self.assertEqual(merged["items"][0]["used_form"], merged["items"][0]["key_phrase"])
+
+    def test_all_pass_qa_yields_pass_overall_status(self):
+        canon_items = [
+            {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+             "reasoning": "R", **_good_qa()},
+            {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+             "reasoning": "R2", **_good_qa()},
+        ]
+        merged = kc.merge_canonicalization_result(GOOD_ITEMS, canon_items)
+        self.assertEqual(merged["overall_status"], "PASS")
+        for item in merged["items"]:
+            self.assertEqual(item["qa_overall_status"], "PASS")
+
+    def test_one_qa_fail_yields_review_required_overall_and_item_status(self):
+        qa_with_fail = _good_qa()
+        qa_with_fail["qa_listening_blocker_value_preserved"] = "FAIL"
+        canon_items = [
+            {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+             "reasoning": "R", **qa_with_fail},
+            {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+             "reasoning": "R2", **_good_qa()},
+        ]
+        merged = kc.merge_canonicalization_result(GOOD_ITEMS, canon_items)
+        by_rank = {it["rank"]: it for it in merged["items"]}
+        self.assertEqual(merged["overall_status"], "REVIEW_REQUIRED")
+        self.assertEqual(by_rank[1]["qa_overall_status"], "REVIEW_REQUIRED")
+        self.assertEqual(by_rank[2]["qa_overall_status"], "PASS")
 
 
 class RunCanonicalizationGateFakeClientTests(unittest.TestCase):
@@ -282,6 +324,43 @@ class RunCanonicalizationGateFakeClientTests(unittest.TestCase):
         self.assertEqual(status, "CANONICALIZATION_INVALID")
 
 
+    def test_qa_fail_response_returns_review_required_without_retry(self):
+        """QA FAILを含む応答は、構造的には合格のためREVIEW_REQUIREDで
+        即座に確定し、自動再試行はしない(再試行しても解決しないため)。"""
+        qa_with_fail = _good_qa()
+        qa_with_fail["qa_listening_blocker_value_preserved"] = "FAIL"
+        raw = json.dumps({
+            "items": [
+                {"rank": 1, "key_phrase": "urge to", "changed_from_display_phrase": True,
+                 "reasoning": "R", **qa_with_fail},
+                {"rank": 2, "key_phrase": "opt out", "changed_from_display_phrase": False,
+                 "reasoning": "R2", **_good_qa()},
+            ]
+        })
+        call_count = {"n": 0}
+
+        class FakeResponse:
+            model = kc.SELECTOR_MODEL
+            output_text = raw
+            id = "resp_fake_review"
+
+        class CountingClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    call_count["n"] += 1
+                    return FakeResponse()
+
+        def make_factory():
+            return kc.make_canonicalization_fn("dummy", client=CountingClient())
+
+        parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(
+            make_factory, GOOD_ITEMS, max_attempts=2)
+        self.assertEqual(status, "CANONICALIZATION_REVIEW_REQUIRED")
+        self.assertEqual(call_count["n"], 1, "REVIEW_REQUIREDは自動再試行してはならない")
+        self.assertEqual(len(attempts), 1)
+
+
 class NoBlacklistOrHardcodeImplementationTests(unittest.TestCase):
     """Rule7: 個別語句ハードコード('urge to'専用例外等)や、記事のみの
     ブラックリスト実装で解決していないことの構造的な保証。"""
@@ -315,10 +394,12 @@ class RealArtifactIntegrationTests(unittest.TestCase):
         with open("er003_output/b1_p2/A01/keywords_canonicalized.json", encoding="utf-8") as f:
             data = json.load(f)
         self.assertEqual(len(data["items"]), 5)
+        self.assertEqual(data["overall_status"], "PASS")
         for item in data["items"]:
             self.assertEqual(item["key_phrase"], item["display_phrase"],
                              f"rank {item['rank']}が意図せず変更されている: {item}")
             self.assertFalse(item["changed_from_display_phrase"])
+            self.assertEqual(item["qa_overall_status"], "PASS")
 
     @unittest.skipUnless(os.path.exists("er003_output/b1_p2/A02/keywords_canonicalized.json"),
                          "real API output not present in this environment")
@@ -326,6 +407,7 @@ class RealArtifactIntegrationTests(unittest.TestCase):
         with open("er003_output/b1_p2/A02/keywords_canonicalized.json", encoding="utf-8") as f:
             data = json.load(f)
         self.assertEqual(len(data["items"]), 5)
+        self.assertEqual(data["overall_status"], "PASS")
         by_rank = {it["rank"]: it for it in data["items"]}
 
         urge_item = next(it for it in data["items"] if it["display_phrase"] == "the urge to")
