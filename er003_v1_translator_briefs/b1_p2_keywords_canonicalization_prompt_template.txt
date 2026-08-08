@@ -1,0 +1,31 @@
+以下は、英語ポッドキャストのKey Phrase候補です。各候補は、初回リスニングの理解を止める可能性が高い表現として、本文中から既に選ばれています(Listening Blocker Ranking、この工程では変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、意味・文法的なまとまりを壊さずに、学習教材として提示するのに最も自然で、他の文脈でも再利用できる最小の単位(key_phrase)へ正規化することです。
+
+厳守すること:
+
+1. 最小の再利用可能単位: 意味・用法を保った状態で、別の文脈でも再利用可能な最小の自然な英語表現にしてください。
+2. 文脈限定語(the, a, an, this, that, these, those, 所有限定詞など)がkey_phraseの先頭・末尾にある場合、それがこの文脈だけで必要な限定なのか評価してください。ただし機械的に削除してはいけません。削除するかどうかは、その表現が持つ意味・自然さを保てるかで判断してください。
+3. 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+4. 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, urge to, depend on, lead to, in charge of)は、不用意に削除しないでください。
+5. key_phraseは、原則としてdisplay_phrase内に連続した文字列として存在しなければなりません。display_phraseに存在しない別の辞書形を、勝手に生成してはいけません。
+6. 短くすることで、Listening Blockerとしての意味・難しさ・学習価値が失われる場合は、短縮しないでください(例: digital switch-off periodをswitch offへ変更しない)。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: display_phrase内の連続した文字列として追跡可能か
+- qa_listening_blocker_value_preserved: Listening Blockerとしての学習価値を維持しているか
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください。
+
+Listening Blocker Ranking(どの表現を選ぶか)自体はこの工程の対象外です。5件の順位・選定そのものは変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+{article_text}
+
+【Key Phrase候補(JSON)】
+{items_json}

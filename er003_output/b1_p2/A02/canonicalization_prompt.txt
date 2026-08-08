@@ -1,0 +1,104 @@
+以下は、英語ポッドキャストのKey Phrase候補です。各候補は、初回リスニングの理解を止める可能性が高い表現として、本文中から既に選ばれています(Listening Blocker Ranking、この工程では変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、意味・文法的なまとまりを壊さずに、学習教材として提示するのに最も自然で、他の文脈でも再利用できる最小の単位(key_phrase)へ正規化することです。
+
+厳守すること:
+
+1. 最小の再利用可能単位: 意味・用法を保った状態で、別の文脈でも再利用可能な最小の自然な英語表現にしてください。
+2. 文脈限定語(the, a, an, this, that, these, those, 所有限定詞など)がkey_phraseの先頭・末尾にある場合、それがこの文脈だけで必要な限定なのか評価してください。ただし機械的に削除してはいけません。削除するかどうかは、その表現が持つ意味・自然さを保てるかで判断してください。
+3. 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+4. 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, urge to, depend on, lead to, in charge of)は、不用意に削除しないでください。
+5. key_phraseは、原則としてdisplay_phrase内に連続した文字列として存在しなければなりません。display_phraseに存在しない別の辞書形を、勝手に生成してはいけません。
+6. 短くすることで、Listening Blockerとしての意味・難しさ・学習価値が失われる場合は、短縮しないでください(例: digital switch-off periodをswitch offへ変更しない)。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: display_phrase内の連続した文字列として追跡可能か
+- qa_listening_blocker_value_preserved: Listening Blockerとしての学習価値を維持しているか
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください。
+
+Listening Blocker Ranking(どの表現を選ぶか)自体はこの工程の対象外です。5件の順位・選定そのものは変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+# UK Plans Midnight Social Media Break for Teenagers
+
+At midnight, social media may soon start telling teenagers in the UK, “Goodnight.”
+
+On July 15, the British government announced a planned digital switch-off period for 16- and 17-year-olds. It would run from midnight until 6 a.m.
+
+During these hours, covered apps would be unavailable under the standard settings. Notifications would pause, and autoplay would be switched off. Autoplay is the feature that starts each new video automatically.
+
+Personalized feeds would also stop during this period. These feeds suggest content and encourage users to continue scrolling.
+
+The measures are expected to begin in spring 2027.
+
+However, this would not be a complete ban. Teenagers aged 16 and 17 could change the settings and opt out.
+
+This raises an obvious question. Would everyone simply turn the restrictions off?
+
+Perhaps some would. But the plan focuses on changing the standard experience rather than giving strict orders. To open an app overnight, users would need to stop and actively change the setting.
+
+The government hopes this small extra step will slow the urge to watch “just one more” video.
+
+## Today's Late-Night Scrolling Points
+
+### Point One: A Nighttime Pause Was More Practical Than a Total Ban
+
+A trial involving 309 families tested three different approaches. Nighttime restrictions ran from 9 p.m. until 7 a.m.
+
+Families found this approach the easiest to manage. They also reported the most regular improvements in sleep.
+
+However, some teenagers moved their screen time to just before or after the restricted hours. This shows that nighttime limits cannot make the wider problem disappear by themselves.
+
+### Point Two: Even Optional Settings Can Change Behavior
+
+Ofcom carried out a separate experiment with children. One setting stopped apps from recommending harmful content.
+
+When this was the standard setting, about seven in ten children kept it. When no choice was already selected, only about half chose the safer setting.
+
+The setting was not required. Still, the results suggest that standard settings can strongly influence people’s choices.
+
+## In One Line
+
+**The UK wants to switch off not the smartphone’s light, but the endless scrolling that keeps teenagers awake.**
+
+This midnight limit stands between a strict ban and doing nothing. Its success will depend on how many teenagers leave it unchanged and simply go to sleep.
+
+【Key Phrase候補(JSON)】
+[
+  {
+    "rank": 1,
+    "display_phrase": "opt out",
+    "source_span": "opt out",
+    "source_sentence": "Teenagers aged 16 and 17 could change the settings and opt out."
+  },
+  {
+    "rank": 2,
+    "display_phrase": "covered apps",
+    "source_span": "covered apps",
+    "source_sentence": "During these hours, covered apps would be unavailable under the standard settings."
+  },
+  {
+    "rank": 3,
+    "display_phrase": "the urge to",
+    "source_span": "the urge to watch",
+    "source_sentence": "The government hopes this small extra step will slow the urge to watch “just one more” video."
+  },
+  {
+    "rank": 4,
+    "display_phrase": "personalized feed",
+    "source_span": "Personalized feeds",
+    "source_sentence": "Personalized feeds would also stop during this period."
+  },
+  {
+    "rank": 5,
+    "display_phrase": "digital switch-off period",
+    "source_span": "digital switch-off period",
+    "source_sentence": "On July 15, the British government announced a planned digital switch-off period for 16- and 17-year-olds."
+  }
+]
