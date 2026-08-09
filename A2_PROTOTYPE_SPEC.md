@@ -31,7 +31,7 @@ A2-03→A2-STRUCT-02の一連の検証で得られた言語仕様の**現時点�
 | 構文単純化 | SVO中心、関係詞節は原則回避、分詞構文を避ける、複雑な受動態を避ける、完了形等の複雑な構造は必要最小限 | `PROTOTYPE` | ER-003-A2-01〜03 |
 | 語彙の一般方針 | A2として可能な範囲で平易な一般語を優先する(**数値上限は設けない**、下記「不採用」参照) | `PROTOTYPE` | ER-003-A2-STRUCT-02 |
 | **Spoken-first** | 主語を早く出す、動詞を早く出す、長い前置詞句・名詞句を文頭に置きすぎない、文末まで聞かないと意味が確定しない構造を避ける。自然な英語らしさを優先し、厳格なsyntax validatorにはしない(style / generation principleとして運用) | **`ADOPTED`**(A2の継続仕様) | ER-003-A2-STRUCT-02 |
-| 1文1数字 | 数字は原則1文1つ。年齢範囲・スコア・時間帯等、1つの意味単位として結合している表現は例外 | `PROTOTYPE`(継続検証中。日付表記の扱いは[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-18で未決定) | ER-003-A2-03 |
+| 1文1数字 | 数字は原則1文1つ。年齢範囲・スコア・時間帯・**日付(月+日+年)**等、1つの意味単位として結合している表現は例外 | `PROTOTYPE`(継続。日付を例外に含める方針は確定したが、checker実装[`er003_a2_article.py`の`_EXEMPT_NUMBER_PATTERNS`]は未着手、[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-18) | ER-003-A2-03、ER-003-A2-STRUCT-02 |
 
 ## 不採用とした項目(A2-03で検証したが採用しない)
 
@@ -52,12 +52,29 @@ A2-03→A2-STRUCT-02の一連の検証で得られた言語仕様の**現時点�
 
 ## 構造支援候補(言語仕様とは別枠)
 
-構造支援(Full Storyブロック分割+日本語signpost、簡易Listening
-Questions)は、A2の**言語仕様**とは別の検討軸として
-[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-13/OPEN-14で管理する。
-Candidate A(ブロック分割+signpost)はER-003-A2-STRUCT-02でA02の
-プロトタイプを作成済み(`PROTOTYPE_BUILT / UNDER_EVALUATION`)。
-Candidate B(Listening Questions)は未着手のまま。
+構造支援(Full Story分割+日本語コメント、簡易Listening Questions)は、
+A2の**言語仕様**とは別の検討軸として[OPEN_ITEMS.md](OPEN_ITEMS.md)の
+OPEN-13/OPEN-14で管理する。Candidate A(Full Story分割+日本語コメント)
+はER-003-A2-STRUCT-02でA02のプロトタイプを確定版まで作成済み
+(`PROTOTYPE_BUILT / UNDER_EVALUATION`、11パート構成: Preview→Key
+Phrases→Comment1→Full Story Part1→Comment2→Full Story Part2→
+Comment3→Point One→Point Two→Comment4→In One Line)。詳細は
+[ER-003-A2-STRUCT-02_A02_PROTOTYPE.md](ER-003-A2-STRUCT-02_A02_PROTOTYPE.md)
+を参照。Candidate B(Listening Questions)は未着手のまま。
+
+**一般化の際の役割フレームワーク**(他記事へ適用する場合、文言では
+なく役割のみを再利用する):
+
+| コメント | 役割名 | 機能 | 長さ目安 |
+|---|---|---|---|
+| Comment 1 | Listening Focus | 次の英語で何を聞くかを示す(答えは言わない) | 原則1文 |
+| Comment 2 | Mid-story Recovery + Next Question | Part 1の重要点を1点回収し、Part 2への問いを提示 | 1〜2文 |
+| Comment 3 | Story Meaning + Bridge to Points | Full Story全体の論点を整理し、Pointsへの橋渡し | 2〜3文 |
+| Comment 4 | Point Recovery + Bridge to In One Line | Points の意味を回収し、In One Lineへつなぐ | 2〜3文 |
+
+**Full Story分割位置の優先順位**(機械的な均等分割はしない):
+①意味上の転換点 ②時系列上の転換点 ③問題→例外 ④発表→反応
+⑤What happened→What happened next / Why it matters
 
 ## まだ全く仕様が存在しない項目(CEFR-A2全20項目監査より、A2-01〜03で未着手のもの)
 
