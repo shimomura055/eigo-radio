@@ -8,8 +8,11 @@
 
 | ID | 内容 | 状態 | 種類 | Blocking | 次Action |
 |---|---|---|---|---|---|
-| OPEN-01 | CEFR-A2の正式仕様(語彙・文長・語数等、全20項目)が一切存在しない | `TBD` | 仕様未決 | Blocking(A2制作開始前に必須) | ユーザーがA2仕様を新規決定する。既存B1/B2の値をそのままコピーしない |
-| OPEN-02 | A2の生成元(Natural English Sourceから独立生成 vs B1/B2からの派生簡略化)が、ユーザー依頼文言と公式decision recordで矛盾 | `UNDER_REVIEW` | 仕様矛盾 | Blocking(A2制作開始前に必須) | ユーザーが方針を決定。[ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md) 4節参照 |
+| OPEN-01 | CEFR-A2の正式仕様(語彙・文長・語数等、全20項目)が一切存在しない | `UNDER_REVIEW`(暫定仕様での検証開始、ER-003-A2-01) | 仕様未決 | Blocking(CURRENT_SPECへ正式反映するまでは音声化・量産着手不可) | ユーザーがA2暫定仕様の3記事テキストを確認し、DECIDEDとするかどうか判断する。[ER-003-A2-01_TEXT_VERIFICATION.md](ER-003-A2-01_TEXT_VERIFICATION.md)参照 |
+| OPEN-02 | A2の生成元(Natural English Sourceから独立生成 vs B1/B2からの派生簡略化)が、ユーザー依頼文言と公式decision recordで矛盾 | `DECIDED`(ER-003-A2-01実行分については独立生成を採用、恒久方針としての確定はユーザー判断待ち) | 仕様矛盾 | Non-blocking(今回は独立生成で実施し、矛盾は解消せず併記) | ER-003-A2-01では独立生成方式を採用したことをユーザーへ明示。恒久的な方針決定はユーザーに委ねる |
+| OPEN-13 | ER-003-A2-STRUCT-01: Full Storyブロック分割+日本語signpost挿入 | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | A2本文評価後、必要と判断されれば実装検討(今回は未実装) |
+| OPEN-14 | ER-003-A2-STRUCT-01: Full Story前の簡易Listening Questions(2問程度) | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | 同上 |
+| OPEN-15 | A2暫定仕様のテキストで、B1の承認済みKey Phrase相当語(tollbooth/smell of gunpowder/freedom of navigation/urge to watchの一部)が本文から消えている | `UNDER_REVIEW` | 情報損失懸念 | Non-blocking(後段のKey Phrase選定に影響する可能性) | A2本文でのKey Phrase選定時に、これらの語が本文に残っているか改めて確認する |
 | OPEN-03 | CEFR-B2の音声化(Preview/Key Phrase/Full Story/Podcast組み立て)が一度も実施されていない | `TBD` | 未着手 | Non-blocking(B1公開には影響しない) | 着手するかどうか・いつ着手するかをユーザーが判断 |
 | OPEN-04 | `used_form`/`key_phrase`の100%重複 | `DECIDED`(整理しない方針は確定済み) | 技術的負債 | Non-blocking | 実際に分ける必要が生じるまで対応しない(意図的放置) |
 | OPEN-05 | 短文TTS hallucinationの根本原因(モデル側の挙動)が未解明 | `UNDER_REVIEW` | 技術的負債 | Non-blocking(strict検証+fallbackで運用上は吸収済み) | 発生時にstrict検証+fallbackで対応を継続。原因調査は優先度低 |
