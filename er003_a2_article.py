@@ -183,6 +183,66 @@ def compute_a2_grammar_vocab_heuristics(raw_text: str) -> dict:
 
 
 # ============================================================
+# ブロック3-2: セクション別語数(Full Story vs Points)
+# ER-003-A2-02: 「Pointsが本文の代替にならないこと」を計測で確認するため、
+# Full Story(タイトル〜Today's...Points見出し直前)とPoints
+# (Point One〜Point Two本文、In One Line手前まで)を分離して計測する。
+# ============================================================
+_SECTION_HEADING_RE = re.compile(r"(?m)^(#{1,3})[ \t]+(.*)$")
+_SECTION_TODAYS_POINTS_RE = re.compile(r"^Today's\s+(.+?)\s+Points$")
+_SECTION_IN_ONE_LINE_RE = re.compile(r"^In One Line$")
+
+
+def split_article_sections(raw_text: str) -> dict:
+    """Full Story(タイトル+Introduction、Today's...Points見出しの手前まで)、
+    Points(Today's...Points見出しの直後からIn One Line見出しの手前まで、
+    Point One/Point Twoの小見出し・本文を含む)、In One Lineの3区間へ
+    分割する。構造妥当性の判定はp1b.validate_p1b_structureに委ねる
+    (本関数は妥当な構造であることを前提としたテキスト抽出のみ行う)。"""
+    headings = [
+        {"level": len(m.group(1)), "text": m.group(2).strip(), "start": m.start(), "end": m.end()}
+        for m in _SECTION_HEADING_RE.finditer(raw_text)
+    ]
+
+    todays_idx = next(
+        (i for i, h in enumerate(headings) if h["level"] == 2 and _SECTION_TODAYS_POINTS_RE.match(h["text"])), None)
+    in_one_line_idx = next(
+        (i for i, h in enumerate(headings) if h["level"] == 2 and _SECTION_IN_ONE_LINE_RE.match(h["text"])), None)
+
+    if todays_idx is None or in_one_line_idx is None:
+        return {"full_story": raw_text, "points": "", "in_one_line": "", "section_split_valid": False}
+
+    full_story_text = raw_text[:headings[todays_idx]["start"]].strip()
+    points_text = raw_text[headings[todays_idx]["end"]:headings[in_one_line_idx]["start"]].strip()
+    in_one_line_text = raw_text[headings[in_one_line_idx]["end"]:].strip()
+
+    return {
+        "full_story": full_story_text,
+        "points": points_text,
+        "in_one_line": in_one_line_text,
+        "section_split_valid": True,
+    }
+
+
+def compute_section_word_counts(raw_text: str) -> dict:
+    sections = split_article_sections(raw_text)
+    full_story_words = er003.compute_word_count(article_gen.strip_markdown_symbols(sections["full_story"]))
+    points_words = er003.compute_word_count(article_gen.strip_markdown_symbols(sections["points"]))
+    in_one_line_words = er003.compute_word_count(article_gen.strip_markdown_symbols(sections["in_one_line"]))
+    total = full_story_words + points_words + in_one_line_words
+    return {
+        "full_story_word_count": full_story_words,
+        "points_word_count": points_words,
+        "in_one_line_word_count": in_one_line_words,
+        "full_story_to_points_ratio": (
+            round(full_story_words / points_words, 2) if points_words else None
+        ),
+        "full_story_share_of_total": round(full_story_words / total, 3) if total else None,
+        "section_split_valid": sections["section_split_valid"],
+    }
+
+
+# ============================================================
 # ブロック4: 機械チェック(評価不能になる不備だけを確認する)
 # ============================================================
 _HEADING_PRESENT_RE = re.compile(r"(?m)^#{1,6}[ \t]")

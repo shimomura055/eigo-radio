@@ -12,7 +12,8 @@
 | OPEN-02 | A2の生成元(Natural English Sourceから独立生成 vs B1/B2からの派生簡略化)が、ユーザー依頼文言と公式decision recordで矛盾 | `DECIDED`(ER-003-A2-01実行分については独立生成を採用、恒久方針としての確定はユーザー判断待ち) | 仕様矛盾 | Non-blocking(今回は独立生成で実施し、矛盾は解消せず併記) | ER-003-A2-01では独立生成方式を採用したことをユーザーへ明示。恒久的な方針決定はユーザーに委ねる |
 | OPEN-13 | ER-003-A2-STRUCT-01: Full Storyブロック分割+日本語signpost挿入 | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | A2本文評価後、必要と判断されれば実装検討(今回は未実装) |
 | OPEN-14 | ER-003-A2-STRUCT-01: Full Story前の簡易Listening Questions(2問程度) | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | 同上 |
-| OPEN-15 | A2暫定仕様のテキストで、B1の承認済みKey Phrase相当語(tollbooth/smell of gunpowder/freedom of navigation/urge to watchの一部)が本文から消えている | `UNDER_REVIEW` | 情報損失懸念 | Non-blocking(後段のKey Phrase選定に影響する可能性) | A2本文でのKey Phrase選定時に、これらの語が本文に残っているか改めて確認する |
+| OPEN-15 | [訂正・ER-003-A2-02] B1承認済みKey Phraseの語そのものがA2本文に残るかは要件にしない。A2 Key PhraseはA2本文確定後に本文から改めて選定する(方針確定) | `DECIDED` | 方針整理 | Non-blocking | 対応不要。当初「B1 Key Phrase語の消失」を問題視していたが、これは誤った懸念設定だったと整理した。実際の問題は主要fact自体がFull StoryからPointsへ流出していたことであり、これはER-003-A2-02で解消(下記OPEN-16参照) |
+| OPEN-16 | A2-01でFull Storyの情報比重が崩れていた(3記事ともFull Story語数シェアが12.5〜29%まで低下、B1は49〜62%)。ER-003-A2-02のprompt改訂(情報削減を目的化しない、Full Storyに主要factを必須化)で3記事ともFull Story比重をB1同等(52〜65%)まで回復したことを確認済み | `DECIDED`(A2-02として確定、ただしCURRENT_SPECへの正式反映はユーザー承認待ち) | 検証結果 | Non-blocking | ユーザーがA2-02本文を確認し、DECIDEDとしてCURRENT_SPECへ反映するか判断する |
 | OPEN-03 | CEFR-B2の音声化(Preview/Key Phrase/Full Story/Podcast組み立て)が一度も実施されていない | `TBD` | 未着手 | Non-blocking(B1公開には影響しない) | 着手するかどうか・いつ着手するかをユーザーが判断 |
 | OPEN-04 | `used_form`/`key_phrase`の100%重複 | `DECIDED`(整理しない方針は確定済み) | 技術的負債 | Non-blocking | 実際に分ける必要が生じるまで対応しない(意図的放置) |
 | OPEN-05 | 短文TTS hallucinationの根本原因(モデル側の挙動)が未解明 | `UNDER_REVIEW` | 技術的負債 | Non-blocking(strict検証+fallbackで運用上は吸収済み) | 発生時にstrict検証+fallbackで対応を継続。原因調査は優先度低 |
