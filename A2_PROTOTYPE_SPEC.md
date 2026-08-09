@@ -55,12 +55,15 @@ A2-03→A2-STRUCT-02の一連の検証で得られた言語仕様の**現時点�
 構造支援(Full Story分割+日本語コメント、簡易Listening Questions)は、
 A2の**言語仕様**とは別の検討軸として[OPEN_ITEMS.md](OPEN_ITEMS.md)の
 OPEN-13/OPEN-14で管理する。Candidate A(Full Story分割+日本語コメント)
-はER-003-A2-STRUCT-02でA02のプロトタイプを確定版まで作成済み
+はER-003-A2-STRUCT-02/03でA02のプロトタイプを完成済み
 (`PROTOTYPE_BUILT / UNDER_EVALUATION`、11パート構成: Preview→Key
 Phrases→Comment1→Full Story Part1→Comment2→Full Story Part2→
-Comment3→Point One→Point Two→Comment4→In One Line)。詳細は
-[ER-003-A2-STRUCT-02_A02_PROTOTYPE.md](ER-003-A2-STRUCT-02_A02_PROTOTYPE.md)
-を参照。Candidate B(Listening Questions)は未着手のまま。
+Comment3→Point One→Point Two→Comment4→In One Line)。設計根拠は
+[ER-003-A2-STRUCT-02_A02_PROTOTYPE.md](ER-003-A2-STRUCT-02_A02_PROTOTYPE.md)、
+Preview〜In One Lineを通した1本の統合台本は
+[ER-003-A2-STRUCT-03_A02_INTEGRATED_SCRIPT.md](ER-003-A2-STRUCT-03_A02_INTEGRATED_SCRIPT.md)
+(QAは[ER-003-A2-STRUCT-03_REPORT.md](ER-003-A2-STRUCT-03_REPORT.md))を参照。
+Candidate B(Listening Questions)は未着手のまま。
 
 **一般化の際の役割フレームワーク**(他記事へ適用する場合、文言では
 なく役割のみを再利用する):
