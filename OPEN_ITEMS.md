@@ -31,6 +31,21 @@
 | OPEN-11 | A02・ADD03も`user_quality_status: PASS`だが`publication_status`は`NOT_APPROVED`のまま(品質OKと公開承認は別判断) | `UNDER_REVIEW` | 公開判断待ち | Non-blocking | ユーザーが公開判断を行うタイミングで確定 |
 | OPEN-12 | `ER-003-B1_HANDOFF.md`が旧運用のまま(仕様・経緯を大量に含む29KB超のファイル)で、新ルール(直近作業再開専用)に未準拠 | `TBD` | 運用移行未完了 | Non-blocking | 次回以降の更新時に新フォーマットへ段階的に移行(今回は大規模書き換えを行わない) |
 
+## Cross-level(A2/B1/B2共通)候補 — ER-003-CROSSLEVEL-AUDIO-01
+
+以下はA2-AUDIO-01のユーザー試聴Feedbackから抽出した、**A2固有ではなく
+番組全体(A2/B1/B2)に共通する編集・音声品質の候補**。A02試作へのみ反映
+済みで、B1/B2の既存完成音声は一括再生成していない。いずれも
+`DECIDED`ではなく、ユーザーが[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)
+の試聴版を確認した後に採否を判断する。
+
+| ID | 内容 | 状態 | 種類 | Blocking | 次Action |
+|---|---|---|---|---|---|
+| OPEN-23 | Preview共通原則: 後続本文で聞かせたい具体的な答え・詳細な数字・結論・重要な転換点を、Previewで先に日本語で全部言わない。ニュースの全体テーマ・問題意識・聞く価値を示すことに限定する | `CANDIDATE / USER_DIRECTION_CONFIRMED` | 編集原則候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02新Previewを試聴し、原則としてDECIDEDへ昇格するか判断する。昇格した場合も既存B1/B2完成記事のPreviewは自動的に差し替えず、今後の新規生成時から適用する |
+| OPEN-24 | Key Phrase語末音素品質: 自然さを保ったまま、語末の子音・音素が脱落せず単語として知覚できる品質を求める(例: "feed"の語末/d/)。TTS instructionでの改善余地、trim安全マージンの影響、ASR/forced alignmentによる量産時の機械検出可能性を調査中 | `UNDER_INVESTIGATION` | 音声品質候補(A2/B1/B2共通) | Non-blocking | A02のKey Phrase 4試作(instruction調整+trim余白0.08→0.15秒)を試聴し、改善が体感できるか判断する。ASRベースの機械検出は現状の強み(語彙レベル一致)では検知不能と判明(調査結果は[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)参照)。forced alignment(MFA)による音素長・音素レベルQAは将来候補として記録するが、今回は実装しない |
+| OPEN-25 | 「ポイント解説」後のポーズを現行0.5秒から+0.2秒(0.7秒)へ。現状、この値はB1組立スクリプト(`er003_v1_repro01_main_generate.py`等)ごとにハードコードされており、共通定数として一元化されていない | `CANDIDATE / TO_BE_LISTENED` | 番組テンポ候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02試作(0.7秒反映済み)を試聴し採否判断。採用時も既存B1/B2完成音声は一括再生成せず、値の一元化(共通定数化)は別途検討する |
+| OPEN-26 | Outro音楽レベルを、人間聴覚上「現状の約4/5(80%)」程度に下げる。単純な振幅0.8倍ではなく、心理音響の経験則(10dBの増減で知覚音量が倍/半分)に基づき約-3.2dB(振幅×0.693)を追加減衰する候補で試作済み | `CANDIDATE / TO_BE_LISTENED` | 音量候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02試作のOutroを試聴し、体感4/5に近いか判断。既存B1/B2完成音声のOutroは差し替えていない |
+
 ## 参照元
 
 [CURRENT_SPEC.md](CURRENT_SPEC.md)、[DECISION_LOG.md](DECISION_LOG.md)、
