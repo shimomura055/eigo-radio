@@ -25,7 +25,7 @@
 
 | 項目 | CEFR-A2 | CEFR-B1 | CEFR-B2 |
 |---|---|---|---|
-| status | `TBD` | `DECIDED` | `DECIDED`(テキストのみ。音声化は[OPEN_ITEMS](OPEN_ITEMS.md)参照) |
+| status | `TBD`(詳細候補は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)、全体はまだ`PROTOTYPE`) | `DECIDED` | `DECIDED`(テキストのみ。音声化は[OPEN_ITEMS](OPEN_ITEMS.md)参照) |
 | vocabulary | `TBD` | 定性的指示のみ("mostly common, everyday vocabulary... a B1 learner already knows")、wordlist参照コードなし | 定性的指示のみ("主に一般的なB2以下の語彙")、wordlist参照コードなし |
 | 平均文長 | `TBD` | ≤15語(`B1_TARGET_AVG_WORDS_PER_SENTENCE`、**診断のみ、gateではない**) | ≤19語(`B2_MAX_AVG_WORDS_PER_SENTENCE`、**実際のgate**) |
 | 最長文 | `TBD` | 24語(`B1_MAX_SENTENCE_WORD_COUNT`、診断のみ) | 32語(`B2_MAX_SENTENCE_WORD_COUNT`、実際のgate) |
