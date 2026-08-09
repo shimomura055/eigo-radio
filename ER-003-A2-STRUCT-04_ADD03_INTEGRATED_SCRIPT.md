@@ -66,6 +66,10 @@ That rule is part of international law. It protects freedom of navigation. This 
 
 Trump dropped the toll, but oil traders will not relax until ships can pass safely.
 
+The toll is gone, but real danger remains in the strait.
+
+Traders still worry more about safety than about cost.
+
 ---
 
 ## 付録: パート対応表
@@ -82,7 +86,7 @@ Trump dropped the toll, but oil traders will not relax until ships can pass safe
 | 8 | Point One | 英語(A2-03本文、無変更) |
 | 9 | Point Two | 英語(A2-03本文、無変更) |
 | 10 | Comment 4 | 日本語(Point Recovery + Bridge to In One Line) |
-| 11 | In One Line | 英語(A2-03本文、無変更) |
+| 11 | In One Line | 英語(中心1文=A2-03本文・無変更、ER-003-A2-STRUCT-05で補足2文を追加) |
 
 分割位置・分割理由・QAの詳細は
 [ER-003-A2-STRUCT-04_REPORT.md](ER-003-A2-STRUCT-04_REPORT.md)を参照。

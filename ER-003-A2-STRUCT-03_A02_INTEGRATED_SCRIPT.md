@@ -68,6 +68,10 @@ Children did not have to keep it. Still, the first setting changed what many chi
 
 The UK hopes more teenagers will keep the night setting and simply go to sleep.
 
+This is not a full ban; teenagers can still turn it off.
+
+But even a simple first setting can change what people do.
+
 ---
 
 ## 付録: パート対応表
@@ -84,7 +88,7 @@ The UK hopes more teenagers will keep the night setting and simply go to sleep.
 | 8 | Point One | 英語(A2-03本文、無変更) |
 | 9 | Point Two | 英語(A2-03本文、無変更) |
 | 10 | Comment 4 | 日本語(Point Recovery + Bridge to In One Line) |
-| 11 | In One Line | 英語(A2-03本文、無変更) |
+| 11 | In One Line | 英語(中心1文=A2-03本文・無変更、ER-003-A2-STRUCT-05で補足2文を追加) |
 
 詳細な設計根拠・QA・一般化フレームは
 [ER-003-A2-STRUCT-03_REPORT.md](ER-003-A2-STRUCT-03_REPORT.md)を参照。

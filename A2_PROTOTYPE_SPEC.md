@@ -25,6 +25,7 @@ A2-03→A2-STRUCT-02の一連の検証で得られた言語仕様の**現時点�
 | 生成元 | Natural English Sourceから独立生成(B1/B2/A2の過去バージョン本文は入力に使わない) | `PROTOTYPE`(恒久方針としての確定はユーザー判断待ち、[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-02) | ER-003-A2-01〜03 |
 | 情報量 | 総語数を意図的に削らない。B1と同等程度の主要情報量を保持してよい | `PROTOTYPE` | ER-003-A2-02 |
 | Full Storyの役割 | Full Storyだけでニュースの核心が分かる。Point One/Twoは深掘り・背景・意味付けの役割とし、Full Storyの代替にしない | `PROTOTYPE` | ER-003-A2-02 |
+| In One Lineの構成 | 「In One Line」という見出しは**中心となる1文要約**を指す語であり、セクション全体を1文に限定するものではない。中心1文の後に、A2言語仕様(平均11語以下・最長18語以下・spoken-first等)を満たす**英語の短い補足を2文程度**置き、B1相当のセクション密度に戻す。補足文は新規factを追加せず、Full Story/Pointsの既出情報のみを使う。中心1文を単純に言い換えるだけの補足にはしない | `PROTOTYPE` | ER-003-A2-STRUCT-05 |
 | 平均文長 | 11語以下 | `PROTOTYPE` | ER-003-A2-01〜03 |
 | 最長文 | 18語以下 | `PROTOTYPE` | ER-003-A2-01〜03 |
 | 1文1メッセージ | 原則1文1メッセージ | `PROTOTYPE` | ER-003-A2-01〜03 |
