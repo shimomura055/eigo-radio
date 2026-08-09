@@ -8,7 +8,9 @@
 
 | ID | 内容 | 状態 | 種類 | Blocking | 次Action |
 |---|---|---|---|---|---|
-| OPEN-01 | CEFR-A2の正式仕様(語彙・文長・語数等、全20項目)が一切存在しない | `UNDER_REVIEW`(暫定仕様での検証開始、ER-003-A2-01) | 仕様未決 | Blocking(CURRENT_SPECへ正式反映するまでは音声化・量産着手不可) | ユーザーがA2暫定仕様の3記事テキストを確認し、DECIDEDとするかどうか判断する。[ER-003-A2-01_TEXT_VERIFICATION.md](ER-003-A2-01_TEXT_VERIFICATION.md)参照 |
+| OPEN-01 | CEFR-A2の正式仕様(語彙・文長・語数等、全20項目)が一切存在しない | `PROTOTYPE / UNDER_REVIEW`(ER-003-A2-01→A2-02→A2-03と3段階で暫定仕様を検証中) | 仕様未決 | Blocking(CURRENT_SPECへ正式反映するまでは音声化・量産着手不可) | ユーザーがA2-03の3記事テキストを確認し、DECIDEDとするかどうか判断する。[ER-003-A2-03_LISTENING_SIMPLIFICATION.md](ER-003-A2-03_LISTENING_SIMPLIFICATION.md)参照 |
+| OPEN-17 | ER-003-A2-03の新規語彙ルール(A2超一般語を記事全体で最大5語)が、prompt指示だけでは安定して達成できなかった(3記事とも実測10〜16語、目標の2〜3倍)。正式CEFR-A2 wordlistが存在しないため判定はLLM semantic QA(補助的手法)による近似 | `UNDER_REVIEW` | 検証結果・未解決 | Blocking(この語彙ルールをCURRENT_SPECへ`DECIDED`として反映する前に要判断) | ユーザーが実測結果(語のリストと理由)を確認し、(a)上限を緩和する、(b)QA結果を用いた反復修正の仕組みを別途新設する、(c)目安・目標値として運用する、のいずれかを選ぶ。安易な追加実装は先行させない |
+| OPEN-18 | ER-003-A2-03の1文1数字ルールは、3記事中2記事(A01・A02)で違反0件、ADD03で1件(日付"July 13, 2026"を2つの数字として検出)が残った。日付(月+日+年)を1つの数字表現として例外扱いすべきかは、ユーザー指定の例外リストに含まれておらず未決定 | `UNDER_REVIEW` | 仕様の曖昧点 | Non-blocking | ユーザーが日付形式を例外リストへ追加するか判断する |
 | OPEN-02 | A2の生成元(Natural English Sourceから独立生成 vs B1/B2からの派生簡略化)が、ユーザー依頼文言と公式decision recordで矛盾 | `DECIDED`(ER-003-A2-01実行分については独立生成を採用、恒久方針としての確定はユーザー判断待ち) | 仕様矛盾 | Non-blocking(今回は独立生成で実施し、矛盾は解消せず併記) | ER-003-A2-01では独立生成方式を採用したことをユーザーへ明示。恒久的な方針決定はユーザーに委ねる |
 | OPEN-13 | ER-003-A2-STRUCT-01: Full Storyブロック分割+日本語signpost挿入 | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | A2本文評価後、必要と判断されれば実装検討(今回は未実装) |
 | OPEN-14 | ER-003-A2-STRUCT-01: Full Story前の簡易Listening Questions(2問程度) | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | 同上 |

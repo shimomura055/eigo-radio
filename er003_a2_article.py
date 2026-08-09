@@ -243,6 +243,177 @@ def compute_section_word_counts(raw_text: str) -> dict:
 
 
 # ============================================================
+# ブロック3-3: ER-003-A2-03 語彙QA(LLMによるsemantic QA、正式CEFR-A2
+# wordlistがリポジトリに存在しないため補助的に使用する)。
+# ============================================================
+A2_VOCAB_QA_PROMPT_TEMPLATE_PATH = "er003_v1_translator_briefs/a2_vocab_qa_prompt_template.txt"
+
+A2_VOCAB_QA_JSON_SCHEMA = {
+    "name": "a2_vocabulary_qa",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "a2_common_word_count": {"type": "integer"},
+            "beyond_a2_general": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"word": {"type": "string"}, "reason": {"type": "string"}},
+                    "required": ["word", "reason"], "additionalProperties": False,
+                },
+            },
+            "proper_nouns": {"type": "array", "items": {"type": "string"}},
+            "specialist_exceptions": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"word": {"type": "string"}, "reason": {"type": "string"}},
+                    "required": ["word", "reason"], "additionalProperties": False,
+                },
+            },
+            "uncertain": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"word": {"type": "string"}, "reason": {"type": "string"}},
+                    "required": ["word", "reason"], "additionalProperties": False,
+                },
+            },
+            "method_note": {"type": "string"},
+        },
+        "required": ["a2_common_word_count", "beyond_a2_general", "proper_nouns",
+                     "specialist_exceptions", "uncertain", "method_note"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+_A2_VOCAB_QA_REQUIRED_FIELD_TYPES = {
+    "a2_common_word_count": int,
+    "beyond_a2_general": list,
+    "proper_nouns": list,
+    "specialist_exceptions": list,
+    "uncertain": list,
+    "method_note": str,
+}
+
+
+class A2VocabQaSchemaError(ValueError):
+    pass
+
+
+def parse_and_validate_a2_vocab_qa_output(raw_text: str) -> dict:
+    import json as _json
+    try:
+        parsed = _json.loads(raw_text)
+    except (_json.JSONDecodeError, TypeError) as e:
+        raise A2VocabQaSchemaError(f"JSON解析に失敗しました: {e}") from e
+    if not isinstance(parsed, dict):
+        raise A2VocabQaSchemaError("トップレベルがJSONオブジェクトではありません")
+    for field_name, expected_type in _A2_VOCAB_QA_REQUIRED_FIELD_TYPES.items():
+        if field_name not in parsed:
+            raise A2VocabQaSchemaError(f"必須フィールド'{field_name}'がありません")
+        if not isinstance(parsed[field_name], expected_type):
+            raise A2VocabQaSchemaError(f"'{field_name}'の型が不正です(期待: {expected_type.__name__})")
+    return parsed
+
+
+def load_a2_vocab_qa_prompt_template(path: str = A2_VOCAB_QA_PROMPT_TEMPLATE_PATH) -> str:
+    return er003.restore.load_text_file(path)
+
+
+def build_a2_vocab_qa_prompt(article_text: str, template: Optional[str] = None) -> str:
+    template = template if template is not None else load_a2_vocab_qa_prompt_template()
+    return template.replace("{article_text}", article_text)
+
+
+def make_a2_vocab_qa_fn(prompt: str, client: Optional[Any] = None,
+                         model: str = A2_MODEL, reasoning_effort: str = A2_REASONING_EFFORT):
+    if client is None:
+        from dotenv import load_dotenv
+        load_dotenv()
+        from openai import OpenAI
+        client = OpenAI()
+
+    def fn():
+        response = client.responses.create(
+            model=model,
+            reasoning={"effort": reasoning_effort},
+            text={"format": {"type": "json_schema", **A2_VOCAB_QA_JSON_SCHEMA}},
+            input=prompt,
+        )
+        text = getattr(response, "output_text", None)
+        if not text or not text.strip():
+            raise er003.restore.GenerationEmptyOrBrokenError("A2語彙QA応答が空です")
+        return text, response.model, response.id
+
+    fn.model = model
+    fn.reasoning_effort = reasoning_effort
+    fn.uses_web_search_tool = False
+    fn.uses_structured_output = True
+    return fn
+
+
+def article_text_for_vocab_qa(raw_text: str) -> str:
+    """タイトル・見出し行を除いた本文(Full Story+Points+In One Line)を
+    語彙QAの対象として抽出する。"""
+    body_only = strip_heading_lines(raw_text)
+    return article_gen.strip_markdown_symbols(body_only)
+
+
+# ============================================================
+# ブロック3-4: ER-003-A2-03 数字QA(1文1数字の原則、正規表現ベース)
+# ============================================================
+_NUMBER_TOKEN_RE = re.compile(
+    r"\$\d[\d,]*(?:\.\d+)?|\d[\d,]*(?:\.\d+)?\s*(?:percent|%)|\d[\d,]*(?:\.\d+)?\s*billion|"
+    r"\b\d{4}\b|\b\d+(?:st|nd|rd|th)\b|\d[\d,]*(?:\.\d+)?",
+    re.IGNORECASE,
+)
+# 「1つの数字表現」として許容する結合パターン(分割を強制しない)
+_EXEMPT_NUMBER_PATTERNS = (
+    re.compile(r"\b\d{1,2}\s+and\s+\d{1,2}\b"),           # "16 and 17"
+    re.compile(r"\b\d+[–\-]\d+\b"),                        # "2–1" / "2-1"
+    re.compile(r"\b\d{1,2}(?::\d{2})?\s*(?:a\.m\.|p\.m\.)?\s*(?:to|until|-)\s*"
+               r"\d{1,2}(?::\d{2})?\s*(?:a\.m\.|p\.m\.)?\b", re.IGNORECASE),  # "9 p.m. to 7 a.m."
+    re.compile(r"\bmidnight\s+to\s+\d{1,2}\s*(?:a\.m\.|p\.m\.)?\b", re.IGNORECASE),  # "midnight to 6 a.m."
+)
+
+
+def compute_number_per_sentence_report(raw_text: str) -> dict:
+    """文ごとに数字表現の出現回数を数える。結合が自然な例外パターンに
+    完全一致する部分は1個の数字表現として扱う(過剰分割検知を防ぐ)。
+    見出し・タイトルは対象外(本文のみ)。"""
+    body_only_raw = strip_heading_lines(raw_text)
+    plain_body_only = article_gen.strip_markdown_symbols(body_only_raw)
+    sentences = er003.split_sentences(plain_body_only)
+
+    per_sentence = []
+    for s in sentences:
+        remaining = s
+        exempt_hits = 0
+        for pat in _EXEMPT_NUMBER_PATTERNS:
+            matches = pat.findall(remaining)
+            exempt_hits += len(pat.findall(remaining))
+            remaining = pat.sub(" ", remaining)
+        other_numbers = _NUMBER_TOKEN_RE.findall(remaining)
+        total_number_expressions = exempt_hits + len(other_numbers)
+        if total_number_expressions > 0:
+            per_sentence.append({
+                "sentence": s,
+                "number_expression_count": total_number_expressions,
+                "exempt_combined_count": exempt_hits,
+            })
+
+    multi_number_sentences = [d for d in per_sentence if d["number_expression_count"] > 1]
+    return {
+        "sentences_with_numbers": len(per_sentence),
+        "sentences_with_multiple_numbers": len(multi_number_sentences),
+        "multi_number_sentence_detail": multi_number_sentences,
+        "per_sentence_detail": per_sentence,
+    }
+
+
+# ============================================================
 # ブロック4: 機械チェック(評価不能になる不備だけを確認する)
 # ============================================================
 _HEADING_PRESENT_RE = re.compile(r"(?m)^#{1,6}[ \t]")
