@@ -14,13 +14,13 @@
 |---|---|---|---|---|---|---|---|---|---|
 | A01 | CEFR-B2 | PASS | PASS(自動QA合格。ユーザーによる本文単独の明示承認記録なし) | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | A01 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS(r2が最終版) | NOT_REVIEWED(部分的な「修正箇所承認」は複数あるが、最終r2版の通し試聴OKは未記録) | NOT_APPROVED |
-| A01 | CEFR-A2 | TBD | TBD | TBD | TBD | TBD | TBD | NOT_REVIEWED | NOT_APPROVED |
+| A01 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(新規、Cross-level原則反映) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(294.2秒、clippingなし) | NOT_REVIEWED(ER-003-CROSSLEVEL-AUDIO-02、2026-08-10生成、ユーザー未試聴) | NOT_APPROVED |
 | A02 | CEFR-B2 | PASS | PASS(自動QA合格。ユーザーによる本文単独の明示承認記録なし) | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | A02 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS | **PASS**(ER-003-REPRO-01、2026-08-08) | NOT_APPROVED |
-| A02 | CEFR-A2 | TBD | TBD | TBD | TBD | TBD | TBD | NOT_REVIEWED | NOT_APPROVED |
+| A02 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(ER-003-CROSSLEVEL-AUDIO-01でCross-level原則反映版へ更新) | PROTOTYPE_BUILT(B1流用5件中1件を語末音素試作へ差替) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(309.9秒、clippingなし) | NOT_REVIEWED(ER-003-A2-AUDIO-01でユーザー試聴し概ね良好Feedback→ER-003-CROSSLEVEL-AUDIO-01で反映版を再生成、この反映版は未試聴) | NOT_APPROVED |
 | ADD03 | CEFR-B2 | あり(日本語下書きのみ、英語台本なし) | 該当なし | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | ADD03 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS | **PASS**(ER-003-REPRO-FINAL、2026-08-09。meaning_3はASR homophone ambiguityとして人間確認済み、TTS音声は正常) | NOT_APPROVED |
-| ADD03 | CEFR-A2 | TBD | TBD | TBD | TBD | TBD | TBD | NOT_REVIEWED | NOT_APPROVED |
+| ADD03 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(新規、Cross-level原則反映) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(327.4秒、clippingなし) | NOT_REVIEWED(ER-003-CROSSLEVEL-AUDIO-02、2026-08-10生成、ユーザー未試聴) | NOT_APPROVED |
 
 ## 補足
 

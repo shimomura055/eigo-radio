@@ -14,7 +14,7 @@
 | OPEN-20 | [ER-003-A2-STRUCT-02] 固有名詞のtoken数・密度を意図的に下げる一般ルール | `REJECTED / NO_FURTHER_ACTION` | 検証結果・却下 | Non-blocking(対応不要) | 対応不要。A01では固有名詞が減った一方、ADD03ではTrumpを明示的主語にした結果増加し、「誰が何をしたかを明確にする」「referentを明確にする」「spoken-firstにする」という別の分かりやすさ要求と競合することが判明。数量目標・密度目標は設けず、記事理解上の必要性で通常の編集判断により決める |
 | OPEN-18 | [訂正・ER-003-A2-STRUCT-02] ER-003-A2-03の1文1数字ルールで、ADD03の日付"July 13, 2026"が2つの数字として検出されていた件 | `DECIDED`(原則整理のみ、checker実装は未着手) | 仕様の曖昧点・整理済み | Non-blocking | 対応不要(原則面)。「月+日+年」の日付表記は年齢範囲・スコア・時間帯と同様に1つの日付情報として扱う方針が確定した([DECISION_LOG.md](DECISION_LOG.md))。`er003_a2_article.py`の`_EXEMPT_NUMBER_PATTERNS`への正規表現追加は、今回のスコープでは実施しない(必要になった時点で対応) |
 | OPEN-02 | A2の生成元(Natural English Sourceから独立生成 vs B1/B2からの派生簡略化)が、ユーザー依頼文言と公式decision recordで矛盾 | `DECIDED`(ER-003-A2-01実行分については独立生成を採用、恒久方針としての確定はユーザー判断待ち) | 仕様矛盾 | Non-blocking(今回は独立生成で実施し、矛盾は解消せず併記) | ER-003-A2-01では独立生成方式を採用したことをユーザーへ明示。恒久的な方針決定はユーザーに委ねる |
-| OPEN-13 | ER-003-A2-STRUCT-01 Candidate A: Full Story分割+日本語コメント(Comment1〜4)による構造支援。11パート構成。3記事とも統合台本まで完成、**A02は音声プロトタイプまで完成**(ER-003-A2-AUDIO-01、310.4秒、機械QA合格) | `PROTOTYPE_BUILT / UNDER_EVALUATION`(A02は音声レベルで検証済み。A01/ADD03はテキストのみ) | 構造支援候補 | Non-blocking | ユーザーがA02の音声プロトタイプ([ER-003-A2-AUDIO-01_REPORT.md](ER-003-A2-AUDIO-01_REPORT.md)、Artifact試聴)を確認し、ADOPTED/REJECTEDを判断する。ADOPTEDの場合、A01/ADD03への音声適用→A2速度最適化(別Task)→自動一般化コードの順で進める |
+| OPEN-13 | ER-003-A2-STRUCT-01 Candidate A: Full Story分割+日本語コメント(Comment1〜4)による構造支援。11パート構成。**3記事(A01/A02/ADD03)とも音声プロトタイプまで完成**(A02: ER-003-A2-AUDIO-01→CROSSLEVEL-AUDIO-01再試作。A01/ADD03: ER-003-CROSSLEVEL-AUDIO-02で初回音声化、294.2秒/327.4秒、機械QA合格) | `PROTOTYPE_BUILT / UNDER_EVALUATION`(3記事とも音声レベルで検証済み) | 構造支援候補 | Non-blocking | ユーザーが3記事分の音声プロトタイプ([ER-003-A2-AUDIO-01_REPORT.md](ER-003-A2-AUDIO-01_REPORT.md)、[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)、[ER-003-CROSSLEVEL-AUDIO-02_REPORT.md](ER-003-CROSSLEVEL-AUDIO-02_REPORT.md))を確認し、ADOPTED/REJECTEDを判断する。ADOPTEDの場合、A2速度最適化(別Task)→自動一般化コードの順で進める |
 | OPEN-21 | ER-003-A2-AUDIO-01の機械QAで2箇所、ASRの数字表記ゆれ(Comment3「2つ」→「二つ」、Point Two"seven in ten"→"7 in 10")を検出。TTS内容自体は正常と判断したが、最終確認はユーザー試聴に委ねている | `UNDER_REVIEW` | 要ユーザー試聴確認 | Non-blocking | ユーザーが該当箇所(約192秒・242秒付近)を試聴し、TTS音声が正常かどうか最終確認する |
 | OPEN-22 | 共有診断関数`er003_b1_p4_audio.get_full_text_via_azure_stt_continuous`のデフォルト`timeout_seconds=90.0`が、長尺音声(5分超)では不十分で、timeout時にエラーを返さず部分結果を正常として返してしまう制限を確認。呼び出し側で`timeout_seconds`を大きく指定することで回避したが、関数自体の挙動は未修正 | `TBD` | 技術的負債 | Non-blocking(呼び出し側で回避済み) | 同種の長尺音声を診断する機会が今後増えた場合、関数側のtimeout処理(タイムアウトと正常終了を明確に区別する)を修正するか検討する。今回は共有モジュールを変更していない |
 | OPEN-14 | ER-003-A2-STRUCT-01: Full Story前の簡易Listening Questions(2問程度) | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | 同上 |
@@ -30,21 +30,26 @@
 | OPEN-10 | A01(CEFR-B1)の「エピソード全体の最終承認」が未取得(`publication_status: NOT_APPROVED`のまま) | `UNDER_REVIEW` | 公開判断待ち | Non-blocking(A02・ADD03の作業には影響しない) | ユーザーがA01最終版(r2)を通しで試聴し、公開可否を判断 |
 | OPEN-11 | A02・ADD03も`user_quality_status: PASS`だが`publication_status`は`NOT_APPROVED`のまま(品質OKと公開承認は別判断) | `UNDER_REVIEW` | 公開判断待ち | Non-blocking | ユーザーが公開判断を行うタイミングで確定 |
 | OPEN-12 | `ER-003-B1_HANDOFF.md`が旧運用のまま(仕様・経緯を大量に含む29KB超のファイル)で、新ルール(直近作業再開専用)に未準拠 | `TBD` | 運用移行未完了 | Non-blocking | 次回以降の更新時に新フォーマットへ段階的に移行(今回は大規模書き換えを行わない) |
+| OPEN-27 | ER-003-CROSSLEVEL-AUDIO-02で発見: `scripts/run_ci_tests.py`(公式CI回帰テストランナー)が、リポジトリ直下の6ファイル(`er003_test_b1_p7a_audio.py`/`er003_test_b1_p7c_audio.py`/`er003_test_b1_p8a_audio.py`/`er003_test_b1_p9a_audio.py`/`er003_test_b1_p9a_r1_audio.py`/`er003_test_key_words_canonicalization.py`)が`ci_test_manifest.json`のinclude/excludeに未登録であるためmanifest検証エラーで起動できない状態だった(いずれも本セッションで新規作成したファイルではなく、既存commit時点から未登録) | `TBD` | 技術的負債・CI回帰不能 | Blocking(公式CIランナーでの全体回帰テストが実行不能) | 6ファイルを`ci_test_manifest.json`のinclude(またはexclude)へ登録する必要がある。本ステージでは原因調査のみ行い、manifestは変更していない(共有CI設定の無断変更を避けるため)。今回は代替として該当モジュールの個別`unittest`実行とpy_compileでの構文確認のみ実施(詳細は[ER-003-CROSSLEVEL-AUDIO-02_REPORT.md](ER-003-CROSSLEVEL-AUDIO-02_REPORT.md)参照) |
+| OPEN-28 | ER-003-CROSSLEVEL-AUDIO-02で発見: 方式L選定+Canonicalizationが機械的に生成したjapanese_gloss(例: ADD03 blockade→「封鎖、通行遮断」)が、読点区切りの複数言い換えを含む場合、単独ナレーションとしてTTS→ASR往復検証で安定して認識されない(6回とも別の同音異義語へ誤認識)。ナレーション用テキストのみ、実績のある単一語(「海上封鎖」等)へ手動で差し替えて回避した。Canonicalizationの正式出力(`keywords_canonicalized.json`)自体は変更していない | `TBD` | 品質パターン・未一般化 | Non-blocking(個別記事で回避済み) | 「ナレーション表示用グロス」と「Canonicalization正式グロス」を分離するフィールドを設けるか、Canonicalizationのプロンプト側で「単独音声ナレーションとして自然な1つの言い換え」を優先する指示を追加するか、量産時に同種の事象が増えた段階で検討する(今回は個別記事での手動回避に留め、方式自体は変更しない) |
 
-## Cross-level(A2/B1/B2共通)候補 — ER-003-CROSSLEVEL-AUDIO-01
+## Cross-level(A2/B1/B2共通)候補 — ER-003-CROSSLEVEL-AUDIO-01/02
 
 以下はA2-AUDIO-01のユーザー試聴Feedbackから抽出した、**A2固有ではなく
-番組全体(A2/B1/B2)に共通する編集・音声品質の候補**。A02試作へのみ反映
-済みで、B1/B2の既存完成音声は一括再生成していない。いずれも
-`DECIDED`ではなく、ユーザーが[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)
-の試聴版を確認した後に採否を判断する。
+番組全体(A2/B1/B2)に共通する編集・音声品質の候補**。ER-003-CROSSLEVEL-
+AUDIO-02でA01・ADD03のA2音声プロトタイプにも同一原則を適用し、3記事目
+までの再現性を確認した(記事ごとの文言・数値は個別、原則・数値定数は
+共通)。B1/B2の既存完成音声は一括再生成していない。いずれも
+`DECIDED`ではなく、ユーザーが[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)・
+[ER-003-CROSSLEVEL-AUDIO-02_REPORT.md](ER-003-CROSSLEVEL-AUDIO-02_REPORT.md)
+の試聴版(A01/A02/ADD03の3記事分)を確認した後に採否を判断する。
 
 | ID | 内容 | 状態 | 種類 | Blocking | 次Action |
 |---|---|---|---|---|---|
-| OPEN-23 | Preview共通原則: 後続本文で聞かせたい具体的な答え・詳細な数字・結論・重要な転換点を、Previewで先に日本語で全部言わない。ニュースの全体テーマ・問題意識・聞く価値を示すことに限定する | `CANDIDATE / USER_DIRECTION_CONFIRMED` | 編集原則候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02新Previewを試聴し、原則としてDECIDEDへ昇格するか判断する。昇格した場合も既存B1/B2完成記事のPreviewは自動的に差し替えず、今後の新規生成時から適用する |
-| OPEN-24 | Key Phrase語末音素品質: 自然さを保ったまま、語末の子音・音素が脱落せず単語として知覚できる品質を求める(例: "feed"の語末/d/)。TTS instructionでの改善余地、trim安全マージンの影響、ASR/forced alignmentによる量産時の機械検出可能性を調査中 | `UNDER_INVESTIGATION` | 音声品質候補(A2/B1/B2共通) | Non-blocking | A02のKey Phrase 4試作(instruction調整+trim余白0.08→0.15秒)を試聴し、改善が体感できるか判断する。ASRベースの機械検出は現状の強み(語彙レベル一致)では検知不能と判明(調査結果は[ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)参照)。forced alignment(MFA)による音素長・音素レベルQAは将来候補として記録するが、今回は実装しない |
-| OPEN-25 | 「ポイント解説」後のポーズを現行0.5秒から+0.2秒(0.7秒)へ。現状、この値はB1組立スクリプト(`er003_v1_repro01_main_generate.py`等)ごとにハードコードされており、共通定数として一元化されていない | `CANDIDATE / TO_BE_LISTENED` | 番組テンポ候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02試作(0.7秒反映済み)を試聴し採否判断。採用時も既存B1/B2完成音声は一括再生成せず、値の一元化(共通定数化)は別途検討する |
-| OPEN-26 | Outro音楽レベルを、人間聴覚上「現状の約4/5(80%)」程度に下げる。単純な振幅0.8倍ではなく、心理音響の経験則(10dBの増減で知覚音量が倍/半分)に基づき約-3.2dB(振幅×0.693)を追加減衰する候補で試作済み | `CANDIDATE / TO_BE_LISTENED` | 音量候補(A2/B1/B2共通) | Non-blocking | ユーザーがA02試作のOutroを試聴し、体感4/5に近いか判断。既存B1/B2完成音声のOutroは差し替えていない |
+| OPEN-23 | Preview共通原則: 後続本文で聞かせたい具体的な答え・詳細な数字・結論・重要な転換点を、Previewで先に日本語で全部言わない。ニュースの全体テーマ・問題意識・聞く価値を示すことに限定する | `CANDIDATE / USER_DIRECTION_CONFIRMED` | 編集原則候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも同原則で新Previewを再設計し、旧Previewとの重複解消を確認済み(3記事で再現)。ユーザーが3記事分を試聴し、原則としてDECIDEDへ昇格するか判断する。昇格した場合も既存B1/B2完成記事のPreviewは自動的に差し替えず、今後の新規生成時から適用する |
+| OPEN-24 | Key Phrase語末音素品質: 自然さを保ったまま、語末の子音・音素が脱落せず単語として知覚できる品質を求める(例: "feed"の語末/d/)。TTS instructionでの改善余地、trim安全マージンの影響、ASR/forced alignmentによる量産時の機械検出可能性を調査中 | `UNDER_INVESTIGATION` | 音声品質候補(A2/B1/B2共通) | Non-blocking | A01・ADD03の語末が停止音/摩擦音で終わるKey Phrase計7件(A01の4件+ADD03の3件)にも同一instructionを適用し、7件中7件で末尾エネルギー波形上の二次ピークを確認(A02の1件と合わせ計8件で再現性を確認)。それでも改善の知覚は未確認、ASRベースの機械検出も引き続き検知不能(調査結果は両REPORT参照)。forced alignment(MFA)による音素長・音素レベルQAは将来候補として記録するが、今回は実装しない |
+| OPEN-25 | 「ポイント解説」後のポーズを現行0.5秒から+0.2秒(0.7秒)へ。現状、この値はB1組立スクリプト(`er003_v1_repro01_main_generate.py`等)ごとにハードコードされており、共通定数として一元化されていない | `CANDIDATE / TO_BE_LISTENED` | 番組テンポ候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも0.7秒を適用(3記事で再現)。ユーザーが3記事分を試聴し採否判断。採用時も既存B1/B2完成音声は一括再生成せず、値の一元化(共通定数化)は別途検討する |
+| OPEN-26 | Outro音楽レベルを、人間聴覚上「現状の約4/5(80%)」程度に下げる。単純な振幅0.8倍ではなく、心理音響の経験則(10dBの増減で知覚音量が倍/半分)に基づき約-3.2dB(振幅×0.693)を追加減衰する候補で試作済み | `CANDIDATE / TO_BE_LISTENED` | 音量候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも同一係数を適用(3記事で再現)。ユーザーが3記事分のOutroを試聴し、体感4/5に近いか判断。既存B1/B2完成音声のOutroは差し替えていない |
 
 ## 参照元
 
