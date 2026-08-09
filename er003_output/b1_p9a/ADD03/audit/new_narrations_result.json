@@ -155,7 +155,9 @@
     ]
   },
   "meaning_3": {
-    "status": "PROVISIONALLY_ACCEPTED_REQUIRES_HUMAN_REVIEW",
+    "status": "ACCEPTED_AFTER_HUMAN_REVIEW",
+    "classification": "ASR_HOMOPHONE_AMBIGUITY",
+    "classification_note": "TTS hallucination(無関係な内容の生成)ではない。TTS音声自体は正常で、strict verifier(ASRベース)が「航行」「高校」という同一読み(こうこう)の同音異義語を取り違えたために不合格と判定されていたもの。ER-003-REPRO-FINALにてユーザーが実音声を試聴し、問題なし(PASS)と確定した。",
     "text": "航行の自由",
     "language": "ja",
     "path": "er003_output/b1_p9a/ADD03/narration/meaning_3.wav",
@@ -230,7 +232,8 @@
         "verified": false
       }
     ],
-    "review_note": "strict verifier(部分一致)は6回とも不合格だったが、ASR結果2件が「高校の自由」(こうこうのじゆう)で完全一致しており、これは「航行の自由」(こうこうのじゆう)と同じ読みの同音異義語である可能性が高い。TTSの発音自体は「こうこうのじゆう」で安定していると推定されるが、断定はせず、ユーザー試聴での確認が必要な項目として保持する。6回目(最後)の生成音声をそのまま使用する。"
+    "review_note": "strict verifier(部分一致)は6回とも不合格だったが、ASR結果2件が「高校の自由」(こうこうのじゆう)で完全一致しており、これは「航行の自由」(こうこうのじゆう)と同じ読みの同音異義語である可能性が高いと判断した。6回目(最後)の生成音声をそのまま使用する。",
+    "human_review_outcome": "ER-003-REPRO-FINAL(2026-08-09)にてユーザーがADD03全体を試聴し、本項目を含めPASSと判定。TTS音声は正常、strict verifierの不合格はASR側の同音異義語誤認識が原因だったことが確定した。"
   },
   "meaning_4": {
     "status": "OK",
