@@ -1,5 +1,16 @@
 # ER-003-B1 引き継ぎドキュメント(新チャット用)
 
+> **[ER-PM-001、2026-08-09追記] 本文書の役割について**
+> このファイルは今後、**直近の作業再開用**(現在地・直近完了Task・作業中
+> Task・次Action・blocker・最新commit)としてのみ使用する。仕様の一次
+> 情報源としては扱わない — 現在のサービス仕様は[CURRENT_SPEC.md](CURRENT_SPEC.md)、
+> 決定理由は[DECISION_LOG.md](DECISION_LOG.md)、過去の試行錯誤は
+> [HISTORY_INDEX.md](HISTORY_INDEX.md)を参照すること。まずは
+> [PROJECT_INDEX.md](PROJECT_INDEX.md)から辿ることを推奨する。
+> 以下の本文(2026-07-27作成、P3〜P6系の詳細な経緯)は**過去の作業ログ
+> として保持**するが、新規更新時は上記の軽量フォーマットへ段階的に
+> 移行する([OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-12参照)。
+
 作成日: 2026-07-27
 直前のHEAD: `90d7bb9`(ER-003-B1-P6B Stage1、未push)
 
