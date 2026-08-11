@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-09**
+**最終更新: 2026-08-10**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -48,8 +48,12 @@ AUDIO-02でA01・ADD03のA2音声プロトタイプにも同一原則を適用�
 |---|---|---|---|---|---|
 | OPEN-23 | Preview共通原則: 後続本文で聞かせたい具体的な答え・詳細な数字・結論・重要な転換点を、Previewで先に日本語で全部言わない。ニュースの全体テーマ・問題意識・聞く価値を示すことに限定する | `CANDIDATE / USER_DIRECTION_CONFIRMED` | 編集原則候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも同原則で新Previewを再設計し、旧Previewとの重複解消を確認済み(3記事で再現)。ユーザーが3記事分を試聴し、原則としてDECIDEDへ昇格するか判断する。昇格した場合も既存B1/B2完成記事のPreviewは自動的に差し替えず、今後の新規生成時から適用する |
 | OPEN-24 | Key Phrase語末音素品質: 自然さを保ったまま、語末の子音・音素が脱落せず単語として知覚できる品質を求める(例: "feed"の語末/d/)。TTS instructionでの改善余地、trim安全マージンの影響、ASR/forced alignmentによる量産時の機械検出可能性を調査中 | `UNDER_INVESTIGATION` | 音声品質候補(A2/B1/B2共通) | Non-blocking | A01・ADD03の語末が停止音/摩擦音で終わるKey Phrase計7件(A01の4件+ADD03の3件)にも同一instructionを適用し、7件中7件で末尾エネルギー波形上の二次ピークを確認(A02の1件と合わせ計8件で再現性を確認)。それでも改善の知覚は未確認、ASRベースの機械検出も引き続き検知不能(調査結果は両REPORT参照)。forced alignment(MFA)による音素長・音素レベルQAは将来候補として記録するが、今回は実装しない |
-| OPEN-25 | 「ポイント解説」後のポーズを現行0.5秒から+0.2秒(0.7秒)へ。現状、この値はB1組立スクリプト(`er003_v1_repro01_main_generate.py`等)ごとにハードコードされており、共通定数として一元化されていない | `CANDIDATE / TO_BE_LISTENED` | 番組テンポ候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも0.7秒を適用(3記事で再現)。ユーザーが3記事分を試聴し採否判断。採用時も既存B1/B2完成音声は一括再生成せず、値の一元化(共通定数化)は別途検討する |
-| OPEN-26 | Outro音楽レベルを、人間聴覚上「現状の約4/5(80%)」程度に下げる。単純な振幅0.8倍ではなく、心理音響の経験則(10dBの増減で知覚音量が倍/半分)に基づき約-3.2dB(振幅×0.693)を追加減衰する候補で試作済み | `CANDIDATE / TO_BE_LISTENED` | 音量候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも同一係数を適用(3記事で再現)。ユーザーが3記事分のOutroを試聴し、体感4/5に近いか判断。既存B1/B2完成音声のOutroは差し替えていない |
+| OPEN-25 | 「ポイント解説」後のポーズを現行0.5秒から+0.2秒(0.7秒)へ。現状、この値はB1組立スクリプト(`er003_v1_repro01_main_generate.py`等)ごとにハードコードされており、共通定数として一元化されていない。ER-003-CROSSLEVEL-AUDIO-03で追加提案: Point One→Point Two、In One Line→Outroのポーズも0.5秒→0.8秒(+0.3秒)へ | `CANDIDATE / TO_BE_LISTENED` | 番組テンポ候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも0.7秒を適用(3記事で再現)。Point One→Two・In One Line→Outroの0.8秒案は次回assemble候補として記録のみ(今回未反映)。ユーザーが試聴し採否判断。採用時も既存B1/B2完成音声は一括再生成せず、値の一元化(共通定数化)は別途検討する |
+| OPEN-26 | Outro音楽レベルを、人間聴覚上「現状の約4/5(80%)」程度に下げる。単純な振幅0.8倍ではなく、心理音響の経験則(10dBの増減で知覚音量が倍/半分)に基づき約-3.2dB(振幅×0.693)を追加減衰する候補で試作済み。ER-003-CROSSLEVEL-AUDIO-03で追加提案: v2版からさらに同じ考え方で約0.8倍(Introから見た複合比率0.64、約-6.44dB、振幅×0.4765)を試作 | `CANDIDATE / TO_BE_LISTENED` | 音量候補(A2/B1/B2共通) | Non-blocking | A01・ADD03でも同一係数を適用(3記事で再現)。v3(さらに減衰)候補をArtifactで比較試聴可能([ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md)参照)。既存B1/B2完成音声のOutroは差し替えていない |
+| OPEN-29 | Key Phraseのcontextual prosody品質: 音素は正しく読めていても、フレーズ単体では意味に合わない強勢・イントネーションになることがある(例: A01 "Come on"/"Go ahead"が命令・許可の口語義に聞こえる)。文脈グラウンディングinstruction(本文中の意味・用法を明示)で改善候補を試作、durationが短縮(より落ち着いた発話の状況証拠)したが知覚的改善は未確認 | `UNDER_INVESTIGATION` | 音声品質候補(A2/B1/B2共通、Key Phraseを持つ全レベル) | Non-blocking | 既存の語末音素QA(segmental accuracy)とは独立した軸(contextual prosody)として管理する。ユーザーが[比較Artifact](https://claude.ai/code/artifact/83ed1162-bd31-4e8c-952d-2d16f76bcdbd)を試聴し改善を確認できるか判断。Brent crude oilの"oil"も同種の可能性があるが未確定 |
+| OPEN-30 | 英語ナレーションのsegment単位生成で、共有instruction(`er002_common.COMMON_BASE_INSTRUCTION`/`POINT_LABEL_FIDELITY_RULE`)の「見出しを明確に読み上げる」指示が、本文に見出しテキストを含めていないsegment(In One Line等)で幻覚的な見出し発話を引き起こすことがある(確率的、ADD03のIn One Lineで実際に発生、A01/A02では未発生)。修正候補instruction(見出しは本文に実在する場合のみ発話)を試作し3/3で再現なしを確認 | `CANDIDATE / TO_BE_LISTENED` | 音声品質候補(A2/B1/B2共通、segment単位生成の全箇所) | Non-blocking | `ER-003-LANGUAGE-ROUTING`として管理。language routing誤りではなくinstruction scope漏れと判明。ユーザーが修正版を試聴し採否判断。共有凍結モジュール(`er002_common.py`)は変更せず、呼び出し側での追加instructionのみで対応する方針 |
+| OPEN-31 | A2英文のnaturalness: A2化(短文化・spoken-first等)の結果、文法的には正しいが英語として非慣用的/やや不自然な表現が一部残っている(例: A01 "sent the ball across the front of goal"、ADD03のBrent原油価格段落の時系列flashback構造)。3記事監査でSHOULD_REVISE5件・OPTIONAL6件を検出 | `UNDER_REVIEW` | 品質候補(A2固有) | Non-blocking | `ER-003-A2-SCRIPT-QA`として管理。詳細一覧は[ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md)11-12節参照。本文へは未反映、ユーザー判断待ち |
+| OPEN-32 | A2英語音声の読み上げ速度: 明示的なspeed parameter・post-processing time-stretchはB1/B2/A2いずれも未実装(既存監査ER-003-A2-00で確認済み)。実測の結果、A2平均WPM(約150)がB1平均WPM(約137)より速いという逆転現象を確認。A2のみ0.9倍(≒B1と同程度)を試作したが、prompt指示ではオーバーシュートし約1.61倍(狙いの逆方向)に減速しすぎた | `UNDER_INVESTIGATION` | 速度候補(A2固有、B1/B2は現状維持で確定) | Non-blocking | `ER-003-A2-SPEED`として管理。次の一手はより弱い減速instructionの再試作、またはpitchを保持する高品質time-stretchとの比較。`levels.py`(別の無関係なレガシー番組の設定、wpm105-115)を誤って参照しないよう引き続き注意 |
 
 ## 参照元
 
