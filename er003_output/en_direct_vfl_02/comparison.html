@@ -1,0 +1,212 @@
+<title>VFL Cross-topic Stress Test: A01 &amp; ADD03</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --bg-panel: #ffffff; --ink: #23241f; --ink-soft: #5b5c54;
+    --border: #e0ded4; --accent: #35507a; --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f; --review: #a6740a; --fail: #b23b3b;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+    --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+    --pass: #5fbf85; --review: #d9a441; --fail: #e2716b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+      --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+      --pass: #5fbf85; --review: #d9a441; --fail: #e2716b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page-head { margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0.35rem 0 0.5rem; text-wrap: balance; }
+  .subhead { color: var(--ink-soft); font-size: 0.93rem; max-width: 74ch; }
+  .article-section { margin-bottom: 3rem; }
+  .article-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem; }
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 900px) { .cols-2 { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .panel-head { padding: 1.1rem 1.3rem 0.9rem; border-bottom: 1px solid var(--border); }
+  .version-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .article-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0.65rem; text-wrap: balance; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .badge { font-family: var(--mono); font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-soft); white-space: nowrap; }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .article-body { padding: 1.1rem 1.3rem 1.5rem; font-family: var(--serif); font-size: 0.93rem; }
+  .article-body h2 { font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 1.3rem 0 0.45rem; font-weight: 600; }
+  .article-body h3 { font-family: var(--sans); font-size: 0.98rem; font-weight: 700; margin: 1rem 0 0.35rem; color: var(--accent); }
+  .article-body p { margin: 0.55rem 0; }
+  .article-body strong { color: var(--ink); }
+  .one-line { margin-top: 0.9rem; padding: 0.7rem 0.9rem; background: var(--accent-soft); border-radius: 8px; font-style: italic; font-size: 0.9rem; }
+  section.block { margin-top: 2.75rem; }
+  .block-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .block-note { color: var(--ink-soft); font-size: 0.86rem; margin-bottom: 1.2rem; max-width: 76ch; }
+  table.qa-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
+  table.qa-table th, table.qa-table td { padding: 0.65rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.qa-table th { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); background: var(--accent-soft); }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 15%; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+  .fact-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+  .fact-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.5rem; color: var(--pass); }
+  .fact-card ul { margin: 0; padding-left: 1.1rem; }
+  .fact-card li { margin-bottom: 0.4rem; font-size: 0.87rem; }
+  .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.5rem; }
+  .meta-strip b { color: var(--ink); font-weight: 600; }
+  footer.page-foot { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-EN-DIRECT-VFL-02 &middot; Cross-topic Stress Test</div>
+    <h1>A01 (World Cup) &amp; ADD03 (Hormuz oil) &mdash; VFL articles</h1>
+    <div class="subhead">Each generated once, independently, from a Verified Fact Ledger with no writer web search. Read the VFL articles first — the current-production Natural English Source and QA results are below.</div>
+  </header>
+
+  <div class="article-section">
+    <div class="article-label">A01 &middot; VFL English Article</div>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="article-title">England Saw the Final&mdash;Then Messi Opened the Door</div>
+        <div class="meta-row">
+          <span class="badge">354 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+          <span class="badge status-pass">Ledger: compliant</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>England could almost see the World Cup final.</p>
+        <p>At Atlanta Stadium on 15 July, the 2026 FIFA World Cup semifinal began at 15:00 local time, with England facing Argentina in Match 102.</p>
+        <p>The first half offered tension without release: <strong>0-0 at the break</strong>, every attack feeling like a question neither side could yet answer.</p>
+        <p>Then, in the 55th minute, England found one.</p>
+        <p>Harry Kane&rsquo;s long ball started the move, Morgan Rogers sent a low cross in from the right, and Anthony Gordon met it at the far side.</p>
+        <p><strong>England 1-0 Argentina.</strong></p>
+        <p>For half an hour, that single goal stood between England and the final. The clock moved toward 90. Argentina kept searching.</p>
+        <p>In the 85th minute, the door finally opened.</p>
+        <p>From a short-corner sequence, Lionel Messi rolled the ball sideways to Enzo Fern&aacute;ndez, who struck right-footed from outside the penalty area.</p>
+        <p><strong>1-1.</strong></p>
+        <p>Extra time appeared to be waiting. But the match had one more turn.</p>
+        <p>In second-half stoppage time, Alexis Mac Allister hit the post. Messi recovered the ball and delivered a right-footed cross to the far side. Lautaro Mart&iacute;nez&mdash;introduced in the 81st minute&mdash;rose to meet it.</p>
+        <p><strong>90+2 minutes. Argentina 2-1 England.</strong></p>
+        <p>One header changed everything. Argentina advanced to the final; England were sent to the third-place match.</p>
+        <h2>Two Defining Angles</h2>
+        <h3>Argentina's pressure was written across the numbers</h3>
+        <p>The score was close, but Argentina held the statistical edge: <strong>15 shots to England's five</strong>, five shots on target to two, and an xG of 1.47 against 0.46.</p>
+        <p>FIFA's possession classification gave Argentina 56.5 percent and England 35.2 percent, with 8.2 percent in contest. Argentina also completed 549 of 610 passes, compared with England's 293 of 353.</p>
+        <h3>Messi decided the semifinal without scoring</h3>
+        <p>Messi did not put his own name on the scoresheet. He put his signature on both Argentine goals.</p>
+        <p>His pass created Fern&aacute;ndez's equalizer; his cross supplied Lautaro's winner. At <strong>39 years and 21 days</strong>, he became the oldest outfield player to appear in a World Cup semifinal and was named FIFA's Superior Player of the Match.</p>
+        <h2>In One Line&hellip;</h2>
+        <div class="one-line">England touched the door to the final&mdash;but Argentina, guided twice by Messi, turned the key at the very last moment.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-section">
+    <div class="article-label">ADD03 &middot; VFL English Article</div>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="article-title">&ldquo;Twenty Percent&mdash;Then Never Mind&rdquo;: Hormuz Fee Reversal Fails to Calm Oil</div>
+        <div class="meta-row">
+          <span class="badge">418 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+          <span class="badge status-pass">Ledger: compliant</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>For a little more than a day, one number hung over the Strait of Hormuz: <strong>20%</strong>.</p>
+        <p>On July 13 at 10:16 a.m. EDT, U.S. President Donald Trump said the United States would seek reimbursement at that rate on &ldquo;all cargo&rdquo; moving through the strait, framing it as payment for the cost of providing safety and security. He added that work on the procedures and system would begin immediately.</p>
+        <p>The announcement sounded forceful. The mechanism, however, was almost entirely blank.</p>
+        <p>There was no stated collector, payer, valuation method, currency, exemption system, enforcement process, or legal basis. Even the base to which the 20% would apply was unspecified. This was therefore a proposal&mdash;not an implemented toll.</p>
+        <p>Still, the number was large enough to make markets imagine the bill.</p>
+        <p>If 20% were applied to cargo value, a VLCC carrying about two million barrels at roughly $85 Brent would hold around $170 million in crude. Twenty percent would equal about <strong>$34 million</strong>; another expert estimate put it near $32 million. Those were scenarios, not actual charges.</p>
+        <p>On July 13, Brent settled at $83.30, up $7.29, or 9.59%. Reuters linked the jump to concerns surrounding a planned U.S. maritime blockade of Iran and energy shipments through Hormuz&mdash;not to the proposed fee alone.</p>
+        <p>Then came the reversal.</p>
+        <p>At 11:04 a.m. EDT on July 14&mdash;about 24 hours and 48 minutes after the original post&mdash;Trump said the 20% reimbursement plan would be replaced by Gulf trade and investment deals with the United States. Later, he told reporters that nobody should charge ships for passage and that he disliked the idea of fees, while maintaining that America's protective burden was unfair.</p>
+        <p>The market briefly exhaled&mdash;but did not relax.</p>
+        <p>Brent initially trimmed its gain after the announcement, then returned close to its earlier elevated level. It ultimately settled at <strong>$84.73</strong>, up $1.43, or 1.7%, as blockade, attacks, and tanker-safety concerns persisted.</p>
+        <h2>What Matters Beyond the Headline</h2>
+        <h3>A Dramatic Percentage Was Never a Complete Policy</h3>
+        <p>The 20% figure dominated attention, but the missing architecture mattered just as much. Without a defined calculation or collection framework, any precise cost claim remained hypothetical.</p>
+        <h3>The Market Was Pricing a Wider Danger</h3>
+        <p>Removing one proposed fee did not remove the other risks surrounding Hormuz. That helps explain why the initial relief faded and why Brent's daily settlement still rose.</p>
+        <p>There was also a legal and diplomatic backdrop: at its 137th session, the IMO Council reaffirmed that passage through the strait should remain free of tolls and charges under international law and IMO conventions, with nondiscriminatory, unobstructed transit guaranteed. The record does not establish that this caused Trump's reversal.</p>
+        <h2>In One Line</h2>
+        <div class="one-line">The 20% proposal vanished quickly, but the anxiety did not: markets were watching the strait, not merely the fee.</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Reference: current A-method Natural English Source</div>
+    <div class="block-note">For comparison only &mdash; these are the existing production Natural English Source texts (Japanese-first, translated), not part of this experiment's outcome.</div>
+    <div class="cols-2">
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">A01 &middot; existing Natural English Source</div></div>
+        <div class="article-body" style="font-size: 0.85rem;">
+          <p><strong>Five Minutes from the Final&mdash;Then the Champions Made Time Their Ally</strong></p>
+          <p>July 15, 2026, in Atlanta. England and Argentina renewed their storied rivalry in a match that delivered an ending no one could have imagined after such a quiet first half.</p>
+          <p>Then, in the 55th minute, the deadlock was broken. Rogers sent in the cross, Gordon met it, and England took the lead.</p>
+          <p>But in the 85th minute, Messi found Enzo Fern&aacute;ndez, who unleashed a thunderous strike to make it 1&ndash;1. Then came stoppage time. Messi delivered a cross from the right, and substitute Lautaro Mart&iacute;nez powered home the header.</p>
+          <p><strong>England 1&ndash;2 Argentina</strong></p>
+          <p>&hellip;(word count: 340)</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">ADD03 &middot; existing Natural English Source</div></div>
+        <div class="article-body" style="font-size: 0.85rem;">
+          <p><strong>The 20% Toll Vanished Overnight&mdash;But the Oil Market Is Still on Edge</strong></p>
+          <p>On July 13, 2026, U.S. President Donald Trump announced a plan to collect 20 percent of the value of all cargo passing through the strait&mdash;a fee, he said, for keeping the vital waterway secure.</p>
+          <p>But just one day later, the plan was withdrawn.&hellip; Brent crude had surged roughly 10 percent the previous day&hellip; Even so, Brent closed on July 14 at 84 dollars and 73 cents, up around 2 percent and at its highest level in a month.</p>
+          <p>&hellip;(word count: 407)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Fact QA outcome</div>
+    <div class="cols-2">
+      <div class="fact-card">
+        <h4>A01 &mdash; PASS</h4>
+        <ul>
+          <li>Score, scorers, minutes, assist chain, added time all confirmed against FIFA official match report and Post Match Statistics Report.</li>
+          <li>Match statistics (15 shots to 5, not the "14" that caused the first attempt's FAIL) now match the most authoritative FIFA source.</li>
+          <li>No contradictions or unsupported claims found.</li>
+        </ul>
+      </div>
+      <div class="fact-card">
+        <h4>ADD03 &mdash; PASS</h4>
+        <ul>
+          <li>July 13 &rarr; July 14 chronology preserved correctly throughout (announcement, Brent settle, reversal, Brent settle).</li>
+          <li>$34M/$32M cost estimates explicitly framed as hypothetical scenarios, not actual charges.</li>
+          <li>Article explicitly declines to claim the IMO statement caused Trump's reversal ("The record does not establish that this caused...").</li>
+          <li>No contradictions or unsupported claims found.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Ledger deviation &amp; retry record</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Article</th><th>Ledger facts</th><th>Verification</th><th>Writer retries</th><th>Fact check</th><th>Ledger deviation</th></tr></thead>
+      <tbody>
+        <tr><td class="axis-name">A01</td><td>30 drafted</td><td>30 VERIFIED / 0 AMBIGUOUS / 0 REJECTED</td><td>0</td><td>PASS</td><td>0 deviations</td></tr>
+        <tr><td class="axis-name">ADD03</td><td>12 drafted</td><td>12 VERIFIED / 0 AMBIGUOUS / 0 REJECTED</td><td>0</td><td>PASS</td><td>0 deviations</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-EN-DIRECT-VFL-02 &middot; generated 2026-08-12 &middot; this is the corrected re-run after a prompt-construction bug in Run 1 was found and fixed (see report for details) &middot; full records in er003_output/en_direct_vfl_02/
+  </footer>
+</div>

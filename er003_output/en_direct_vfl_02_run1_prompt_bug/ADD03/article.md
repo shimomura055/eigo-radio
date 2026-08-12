@@ -1,0 +1,47 @@
+# 🌊 “A 20% Shock—Then a Fast Retreat: Hormuz Sends Markets on a Wild Ride”
+
+For roughly one day, one of the world’s most sensitive maritime routes became the center of a dramatic policy reversal.
+
+On July 13, 2026, U.S. President Donald Trump proposed that the United States receive **20% of the value of all cargo passing through the Strait of Hormuz**, describing the payment as reimbursement for American safety and security protection.
+
+The number was clear.
+
+The mechanism was not.
+
+The statement did not specify who would collect the charge, what legal authority would support it, how cargo would be valued, or when collection might begin. It was a proposed policy—not an already operational transit fee.
+
+At the same time, another message was moving through the market: the United States was preparing to resume a maritime blockade involving vessels entering or leaving Iranian ports and coastal areas, while continuing to support ships not covered by the blockade.
+
+In other words:
+
+**The 20% proposal concerned all cargo. The blockade concerned Iran-related maritime traffic.**
+
+They were separate measures, but together they intensified uncertainty around the strait.
+
+Oil markets reacted sharply.
+
+Brent crude ended July 13 at **$83.30 a barrel**, up **$7.29, or 9.59%**. The rise was reported in the context of renewed supply fears surrounding the blockade and energy shipments through Hormuz—not as a response to the 20% proposal alone.
+
+Then came the reversal.
+
+On July 14, Trump said the proposed charge would be replaced by U.S.-focused trade and investment agreements with Gulf countries, effectively withdrawing the 20% plan. The blockade against Iran, however, remained in place.
+
+## Key Currents to Watch
+
+### ⭐ The Retreat Removed One Risk—Not the Entire Storm
+
+Brent climbed as much as 4.6% to an intraday high of **$87.08** on July 14 before reports of the withdrawal helped narrow its gains.
+
+But oil did not finish the day lower. Brent closed at **$84.73**, still up **1.7%** from the previous session.
+
+The fee proposal faded. The broader geopolitical and supply concerns did not.
+
+### ⭐ The Legal and Diplomatic Question Never Disappeared
+
+The IMO Council had reaffirmed that passage through the Strait of Hormuz should remain free from transit charges or fees under international law and IMO conventions.
+
+It did not issue a ruling declaring Trump’s proposal illegal. Still, its position highlighted how difficult any such charge could be to translate from political language into a workable system.
+
+## 🌊 In One Line…
+
+**A 20% proposal rattled the route, its withdrawal calmed part of the surge—but the waters around Hormuz remained far from still.**
