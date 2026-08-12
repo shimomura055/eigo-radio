@@ -4,7 +4,7 @@ Social media in the UK may soon say “goodnight” at midnight.
 
 The British government shared a new plan on July 15. It is for people aged 16 and 17. The government calls it a digital switch-off period. It would run from midnight to 6 a.m.
 
-During that time, apps under the plan would not open at first. This first setting is called a default. Notifications would stop. Autoplay would stop too. This tool starts the next video on its own.
+During that time, apps under the plan would be switched off by default. This first setting is called a default. Notifications would stop. Autoplay would stop too. This tool starts the next video on its own.
 
 The apps would also stop feeds that pick posts for each person. These feeds can keep people scrolling for a long time.
 

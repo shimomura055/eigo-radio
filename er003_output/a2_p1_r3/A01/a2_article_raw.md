@@ -8,7 +8,7 @@ The first half was quiet, but both teams fought hard.
 Neither team had a shot on target before half-time.
 
 England went ahead in the 55th minute.  
-Rogers sent the ball across the front of goal.  
+Rogers crossed the ball into the box.  
 Gordon got to the ball and scored.
 
 England had not reached a World Cup final since 1966.  
@@ -19,8 +19,8 @@ He passed to Enzo Fernández.
 Enzo hit a very hard shot into the goal.  
 The score was now 1–1.
 
-The referee then added more time.  
-Messi sent the ball across goal from the right.  
+The game went into added time.  
+Messi crossed the ball from the right.  
 Lautaro Martínez put it into the goal with his head.  
 Lautaro had started the game on the bench.
 

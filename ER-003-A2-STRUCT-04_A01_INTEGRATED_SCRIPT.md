@@ -26,7 +26,7 @@ The first half was quiet, but both teams fought hard.
 Neither team had a shot on target before half-time.
 
 England went ahead in the 55th minute.
-Rogers sent the ball across the front of goal.
+Rogers crossed the ball into the box.
 Gordon got to the ball and scored.
 
 England had not reached a World Cup final since 1966.
@@ -43,8 +43,8 @@ He passed to Enzo Fernández.
 Enzo hit a very hard shot into the goal.
 The score was now 1–1.
 
-The referee then added more time.
-Messi sent the ball across goal from the right.
+The game went into added time.
+Messi crossed the ball from the right.
 Lautaro Martínez put it into the goal with his head.
 Lautaro had started the game on the bench.
 
@@ -111,9 +111,9 @@ The two teams chose different paths, and this decided the game.
 | 1 | Preview | 日本語(既存承認版、無変更) |
 | 2 | Key Phrases | プレースホルダー(A2正式選定は別Task) |
 | 3 | Comment 1 | 日本語(Listening Focus) |
-| 4 | Full Story Part 1 | 英語(A2-03本文、無変更、87語) |
+| 4 | Full Story Part 1 | 英語(ER-003-A2-SCRIPT-FINAL-01でOPEN-31候補(1)を反映、85語) |
 | 5 | Comment 2 | 日本語(Mid-story Recovery + Next Question) |
-| 6 | Full Story Part 2 | 英語(A2-03本文、無変更、106語) |
+| 6 | Full Story Part 2 | 英語(ER-003-A2-SCRIPT-FINAL-01でOPEN-31候補(2)(3)を反映、104語) |
 | 7 | Comment 3 | 日本語(Story Meaning + Bridge to Points) |
 | 8 | Point One | 英語(A2-03本文、無変更) |
 | 9 | Point Two | 英語(A2-03本文、無変更) |

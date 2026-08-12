@@ -369,14 +369,78 @@
 - **内容**: A01のFull Story Part2にある"The referee then added more
   time."を、サッカー放送で標準的に使われる用語"added time"を用いた
   "The game went into added time."へ修正する
-- **状態**: `DECIDED`(方針確定。完成音声への反映は次回A01 assemble時)
+- **状態**: `DECIDED / APPLIED`(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で
+  最終台本へ反映済み。音声への反映は次回A01 assemble時)
 - **採用理由**: "added more time"は理解可能だが放送英語としてやや
   一般的すぎる。代替候補"extra time"はサッカーでは「延長戦」という
   別概念を指すため不採用、"added time"はロスタイムを指す正確な標準
   用語のため採用
 - **比較した選択肢**: 現状維持 / "The referee added extra time." / "The game went into added time."
 - **却下理由("extra time")**: 意味が変わってしまうリスク(延長戦との混同)
-- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 9節
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 9節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
+- **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
+
+## A01 script修正: "Rogers sent the ball across the front of goal." → "Rogers crossed the ball into the box."
+
+- **日付**: 2026-08-12
+- **内容**: A01のFull Story Part1にある直訳的で不自然な表現を、実際の
+  サッカー実況で標準的に使われる"cross the ball into the box"を用いた
+  表現へ修正する
+- **状態**: `DECIDED / APPLIED`(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で
+  最終台本へ反映済み。音声への反映は次回A01 assemble時)
+- **採用理由**: 事実関係(誰が・どこへ・どうボールを送ったか)は変えず、
+  放送英語として自然な言い回しへ改善。A2文長制約(18語以下)にも適合
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 11節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
+- **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
+
+## A01 script修正: "Messi sent the ball across goal from the right." → "Messi crossed the ball from the right."
+
+- **日付**: 2026-08-12
+- **内容**: 上記と同種の不自然な表現を、同じく"cross"を用いた自然な
+  表現へ修正する
+- **状態**: `DECIDED / APPLIED`(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で
+  最終台本へ反映済み。音声への反映は次回A01 assemble時)
+- **採用理由**: 上記と同様。"from the right"というPoint Oneでの記述
+  ("He helped Lautaro with a good ball from the right.")との整合性も
+  維持される
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 11節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
+- **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
+
+## A02 script修正: "apps under the plan would not open at first" → "apps under the plan would be switched off by default"
+
+- **日付**: 2026-08-12
+- **内容**: A02のFull Story Part1にある、誤読リスク(「起動できない」と
+  誤解される恐れ)のある表現を、"switched off by default"(初期設定で
+  オフになっている)へ修正する
+- **状態**: `DECIDED / APPLIED`(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で
+  最終台本へ反映済み。音声への反映は次回A02 assemble時)
+- **採用理由**: 意味誤読リスクの解消。Natural English Source
+  (`er003_output/a2_p1_r3/A02/master_en_natural_source_approved.md`)
+  の該当箇所"covered apps would be unavailable by default"と照合し、
+  「対象アプリはdefaultで利用不可(オフ)になる」という原意と一致する
+  ことを確認した上で採用(意味を変更する修正ではなく、原意を正確に
+  反映する修正と判定)
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 11節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
+- **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
+
+## ADD03 script修正: Brent原油価格段落の時系列flashback構造を解消
+
+- **日付**: 2026-08-12
+- **内容**: ADD03のFull Story Part2にある、7/14の出来事→7/13への回想→
+  7/14の出来事、という時系列が前後する構成を、7/13→7/14の実時系列順
+  へ並べ替える。あわせて重複していた「価格が下落した」旨の記述
+  (旧文中2箇所)を1箇所へ統合し、"on July 13"/"July 14"という明示的な
+  日付参照を追加した
+- **状態**: `DECIDED / APPLIED`(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で
+  最終台本へ反映済み。音声への反映は次回ADD03 assemble時)
+- **採用理由**: A2レベルの聞き手にとって時系列の前後が理解負荷になる
+  ため。新しい事実は追加していない(既存文の並べ替え・日付明示・
+  重複表現の統合のみ)。Natural English Source
+  (`er003_output/a2_p1_r3/ADD03/master_en_natural_source_approved.md`)
+  との整合を確認済み(「7/13に急騰・$87超のintraday高値」「fee撤回後に
+  高値から反落」「7/14終値$84.73・前日比+2%・月間最高値」という
+  事実関係は維持)
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 11節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
 - **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
 
 ## 参照元

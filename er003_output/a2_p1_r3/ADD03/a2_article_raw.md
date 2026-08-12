@@ -6,11 +6,9 @@ Trump dropped the fee one day later. Gulf countries would make trade deals with 
 
 The plan became very different in only 24 hours. First, the message was, "Pay to pass." Then it was, "Invest in the United States."
 
-Oil prices fell after Trump dropped the plan. But oil traders still worried about the strait.
+Brent crude oil rose by about 10 percent on July 13. People worried about more fighting between the United States and Iran. The planned fee also helped push the price up. Brent reached its highest price that day, above $87 a barrel.
 
-The day before, Brent crude oil rose by about 10 percent. People worried about more fighting between the United States and Iran. The planned fee also helped push the price up.
-
-Brent then fell from its highest price that day. That price was above $87 a barrel. On July 14, Brent still ended the day higher. It closed at $84.73 a barrel. The price was about 2 percent higher than the day before. It was also Brent's highest price in a month.
+After the fee was dropped, Brent fell back from that high. But oil traders still worried about the strait. Even so, Brent still ended July 14 higher. It closed at $84.73 a barrel. The price was about 2 percent higher than the day before. It was also Brent's highest price in a month.
 
 The fee was gone, but the danger was not. A blockade against Iran-linked ships was still in place. The blockade tried to stop those ships from moving through the area. Military attacks also continued.
 
