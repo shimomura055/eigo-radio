@@ -1,0 +1,185 @@
+<title>ADD03 Listening-first: V / L / L2 Length Comparison</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --bg-panel: #ffffff; --ink: #23241f; --ink-soft: #5b5c54;
+    --border: #e0ded4; --accent: #35507a; --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f; --highlight: #c65b1f;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+    --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+    --pass: #5fbf85; --highlight: #e0975a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+      --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+      --pass: #5fbf85; --highlight: #e0975a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page-head { margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0.35rem 0 0.5rem; text-wrap: balance; }
+  .subhead { color: var(--ink-soft); font-size: 0.93rem; max-width: 74ch; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 1100px) { .cols { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .panel-head { padding: 1rem 1.15rem 0.8rem; border-bottom: 1px solid var(--border); }
+  .version-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .article-title { font-family: var(--serif); font-size: 1.02rem; font-weight: 600; margin: 0.3rem 0 0.6rem; text-wrap: balance; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .badge { font-family: var(--mono); font-size: 0.66rem; padding: 0.18rem 0.5rem; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-soft); white-space: nowrap; }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .article-body { padding: 1rem 1.15rem 1.4rem; font-family: var(--serif); font-size: 0.87rem; }
+  .article-body h2 { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 1.1rem 0 0.4rem; font-weight: 600; }
+  .article-body h3 { font-family: var(--sans); font-size: 0.9rem; font-weight: 700; margin: 0.9rem 0 0.3rem; color: var(--accent); }
+  .article-body p { margin: 0.5rem 0; }
+  .article-body strong { color: var(--highlight); }
+  .one-line { margin-top: 0.8rem; padding: 0.6rem 0.8rem; background: var(--accent-soft); border-radius: 8px; font-style: italic; font-size: 0.84rem; }
+  section.block { margin-top: 2.75rem; }
+  .block-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .block-note { color: var(--ink-soft); font-size: 0.86rem; margin-bottom: 1.2rem; max-width: 76ch; }
+  table.qa-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
+  table.qa-table th, table.qa-table td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.qa-table th { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); background: var(--accent-soft); }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 15%; }
+  table.qa-table td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+  .fact-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+  .fact-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.5rem; color: var(--pass); }
+  .fact-card ul { margin: 0; padding-left: 1.1rem; }
+  .fact-card li { margin-bottom: 0.4rem; font-size: 0.87rem; }
+  .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.5rem; }
+  .meta-strip b { color: var(--ink); font-weight: 600; }
+  footer.page-foot { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-SPOKEN-FIRST-01-R1 &middot; ADD03 Length Correction</div>
+    <h1>Version V / L / L2 &mdash; length-corrected listening-first</h1>
+    <div class="subhead">V is the original VFL article. L was the first listening-first pass (numbers simplified, but +13% longer). L2 keeps L's number treatment while removing explanatory content that wasn't in V. Read all three, then check the length and QA data below.</div>
+  </header>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version V &middot; as-is</div>
+        <div class="article-title">"Twenty Percent—Then Never Mind"</div>
+        <div class="meta-row"><span class="badge">418 words</span><span class="badge status-pass">PASS</span></div>
+      </div>
+      <div class="article-body">
+        <p>For roughly one day, one of the world's most sensitive maritime routes became the center of a dramatic policy reversal.</p>
+        <p>On July 13, 2026, U.S. President Donald Trump proposed that the United States receive <strong>20% of the value of all cargo</strong> passing through the Strait of Hormuz, describing the payment as reimbursement for American safety and security protection.</p>
+        <p>The number was clear. The mechanism was not.</p>
+        <p>The statement did not specify who would collect the charge, what legal authority would support it, how cargo would be valued, or when collection might begin. It was a proposed policy&mdash;not an already operational transit fee.</p>
+        <p>At the same time, another message was moving through the market: the United States was preparing to resume a maritime blockade involving vessels entering or leaving Iranian ports and coastal areas.</p>
+        <p>Oil markets reacted sharply. Brent crude ended July 13 at <strong>$83.30</strong> a barrel, up <strong>$7.29, or 9.59%</strong>. The rise was reported in the context of renewed supply fears&mdash;not as a response to the 20% proposal alone.</p>
+        <p>Then came the reversal. On July 14, Trump said the proposed charge would be replaced by U.S.-focused trade and investment agreements with Gulf countries. The blockade against Iran, however, remained in place.</p>
+        <h2>Key Currents to Watch</h2>
+        <h3>The Retreat Removed One Risk&mdash;Not the Entire Storm</h3>
+        <p>Brent climbed as much as <strong>4.6%</strong> to an intraday high of <strong>$87.08</strong> on July 14 before reports of the withdrawal helped narrow its gains. Brent closed at <strong>$84.73</strong>, still up <strong>1.7%</strong>.</p>
+        <h3>The Legal and Diplomatic Question Never Disappeared</h3>
+        <p>The IMO Council had reaffirmed that passage through the Strait of Hormuz should remain free from transit charges under international law and IMO conventions.</p>
+        <h2>In One Line&hellip;</h2>
+        <div class="one-line">A 20% proposal rattled the route, its withdrawal calmed part of the surge&mdash;but the waters around Hormuz remained far from still.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version L &middot; listening-first (pass 1)</div>
+        <div class="article-title">"Twenty Percent—Then Never Mind"</div>
+        <div class="meta-row"><span class="badge">472 words (+13%)</span><span class="badge status-pass">PASS</span></div>
+      </div>
+      <div class="article-body">
+        <p>For just over a day, one number hung over the Strait of Hormuz: <strong>20 percent</strong>.</p>
+        <p>On July 13, U.S. President Donald Trump proposed that the United States seek reimbursement at that rate on &ldquo;all cargo&rdquo; moving through the strait. He described it as payment for the cost of providing safety and security. He also said work on the procedures would begin immediately.</p>
+        <p>But the announcement gave a rate&mdash;not a working system. It did not identify who would collect the money or who would pay. It did not explain how cargo would be valued, what currency would be used, or how exemptions and enforcement would work. It also gave no legal basis.</p>
+        <p>One scenario assumed a tanker carrying about two million barrels, with oil at about 85 dollars a barrel. The estimated charge would be about <strong>34 million dollars</strong> for one tanker&mdash;a hypothetical calculation, not an actual charge.</p>
+        <p>On July 13, Brent crude settled at about <strong>83 dollars</strong> a barrel, up <strong>nearly 10 percent</strong>. Reuters linked the jump to concerns about a planned U.S. maritime blockade of Iran&mdash;not to the proposed fee alone.</p>
+        <p>The following day, July 14, Trump said the proposed 20 percent reimbursement would be replaced by Gulf trade and investment deals. Later, he told reporters that nobody should charge ships for passage, while continuing to argue that America's burden was unfair.</p>
+        <p>Oil briefly eased, then returned close to its earlier elevated level, settling at about <strong>85 dollars</strong> a barrel, finishing the day higher.</p>
+        <h2>What Matters Beyond the Headline</h2>
+        <h3>A Dramatic Percentage Was Not a Complete Policy</h3>
+        <p>The proposed 20 percent rate captured attention. But nearly every practical detail was missing. The proposal sounded immediate, but it never became an implemented toll.</p>
+        <h3>The Market Was Pricing a Wider Danger</h3>
+        <p>Removing the proposed fee did not remove the other risks surrounding Hormuz. There was also a legal and diplomatic backdrop: the IMO Council reaffirmed that passage should remain free of tolls under international law. However, the record does not establish that the IMO position caused Trump's reversal.</p>
+        <h2>In One Line</h2>
+        <div class="one-line">The 20 percent proposal disappeared quickly, but the anxiety remained: markets were watching the strait, not just the fee.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version L2 &middot; length-corrected</div>
+        <div class="article-title">"Twenty Percent—Then Never Mind"</div>
+        <div class="meta-row"><span class="badge">355 words (&minus;15% vs V)</span><span class="badge status-pass">PASS</span><span class="badge status-pass">Ledger: compliant</span></div>
+      </div>
+      <div class="article-body">
+        <p>For just over a day, one number hung over the Strait of Hormuz: <strong>20 percent</strong>.</p>
+        <p>On July 13, President Donald Trump said the United States would seek reimbursement of 20 percent on &ldquo;all cargo&rdquo; moving through the strait, as payment for providing safety and security. He said work on the procedures would begin immediately.</p>
+        <p>The announcement sounded forceful, but the mechanism was almost entirely blank. How the reimbursement would be calculated, collected, or enforced remained unexplained&mdash;including what the 20 percent would apply to. This was a proposal, not an implemented toll.</p>
+        <p>Still, the number was large enough to make markets imagine the bill.</p>
+        <p>One scenario assumed a tanker carrying about two million barrels, with oil at about 85 dollars a barrel. If 20 percent were applied to the cargo's value, the estimated charge would be about <strong>34 million dollars</strong> for one tanker. That was hypothetical, not an actual charge.</p>
+        <p>On July 13, Brent settled at about 83 dollars a barrel, up nearly 10 percent. Reuters linked the jump to a planned U.S. maritime blockade of Iran and concerns over energy shipments through Hormuz&mdash;not to the proposed fee alone.</p>
+        <p>Then came the reversal.</p>
+        <p>On July 14, Trump said the 20-percent plan would be replaced by Gulf trade and investment deals with the United States. Later, he told reporters that nobody should charge ships for passage through Hormuz and that he disliked fees, while maintaining that America's protective burden was unfair.</p>
+        <p>Oil briefly eased after the announcement, but the relief did not last.</p>
+        <p>Brent soon returned close to its earlier elevated level. It settled at about <strong>85 dollars a barrel</strong>, finishing higher as blockade, attacks, and tanker-safety concerns persisted.</p>
+        <h2>What Matters Beyond the Headline</h2>
+        <h3>A Dramatic Percentage Was Never a Complete Policy</h3>
+        <p>The 20-percent figure dominated attention, but a rate was not a policy. Without a defined calculation or collection framework, any precise cost estimate remained hypothetical. The proposal sounded immediate, yet it never became an implemented toll.</p>
+        <h3>The Market Was Pricing a Wider Danger</h3>
+        <p>Removing the proposed fee did not remove the other risks surrounding Hormuz. Blockade fears, attacks, and tanker-safety concerns remained. That helps explain why the initial relief faded and Brent still finished higher.</p>
+        <h2>In One Line</h2>
+        <div class="one-line">The 20 percent proposal vanished quickly, but the anxiety did not: markets were watching the strait, not merely the fee.</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Length comparison</div>
+    <div class="block-note">Soft target for L2: 375&ndash;418 words (90&ndash;100% of Version V). L2 came in at 355 words &mdash; slightly under the soft target floor, not over it. No forced padding was applied to hit the target range, per the instruction to avoid unnatural cuts or additions for the sake of a number.</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Version</th><th class="num">Total words</th><th class="num">vs V</th><th class="num">vs L</th><th class="num">Intro/Full Story</th><th class="num">Point One</th><th class="num">Point Two</th><th class="num">In One Line</th></tr></thead>
+      <tbody>
+        <tr><td class="axis-name">V</td><td class="num">418</td><td class="num">baseline</td><td class="num">&minus;</td><td class="num">299</td><td class="num">25</td><td class="num">76</td><td class="num">18</td></tr>
+        <tr><td class="axis-name">L</td><td class="num">472</td><td class="num">+13.0%</td><td class="num">baseline</td><td class="num">334</td><td class="num">39</td><td class="num">81</td><td class="num">18</td></tr>
+        <tr><td class="axis-name">L2</td><td class="num">355</td><td class="num">&minus;15.1%</td><td class="num">&minus;24.8%</td><td class="num">268</td><td class="num">36</td><td class="num">32</td><td class="num">19</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Fact QA outcome (Version L2)</div>
+    <div class="cols" style="grid-template-columns: 1fr 1fr;">
+      <div class="fact-card">
+        <h4>Fact Checker &mdash; PASS</h4>
+        <ul>
+          <li>No contradictions, no unsupported claims (7 web search calls).</li>
+          <li>Rounded figures and the $34M scenario framing independently confirmed as accurate.</li>
+        </ul>
+      </div>
+      <div class="fact-card">
+        <h4>Ledger Deviation &mdash; LEDGER_COMPLIANT</h4>
+        <ul>
+          <li>0 deviations. Dropping the IMO/legal paragraph from the narrative did not remove it from the Ledger — it simply wasn't surfaced in this compressed version.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-SPOKEN-FIRST-01-R1 &middot; generated 2026-08-13 &middot; full records in er003_output/spoken_first_01_r1/ADD03/
+  </footer>
+</div>
