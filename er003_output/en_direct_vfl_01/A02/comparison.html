@@ -1,0 +1,251 @@
+<title>A02 VFL Comparison: Original B / Run-1 / Run-2</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --bg-panel: #ffffff;
+    --ink: #23241f;
+    --ink-soft: #5b5c54;
+    --border: #e0ded4;
+    --accent: #35507a;
+    --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f;
+    --review: #a6740a;
+    --fail: #b23b3b;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+    --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+    --pass: #5fbf85; --review: #d9a441; --fail: #e2716b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+      --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+      --pass: #5fbf85; --review: #d9a441; --fail: #e2716b;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page-head { margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0.35rem 0 0.5rem; text-wrap: balance; }
+  .subhead { color: var(--ink-soft); font-size: 0.93rem; max-width: 70ch; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 1180px) { .cols { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .panel-head { padding: 1rem 1.15rem 0.8rem; border-bottom: 1px solid var(--border); }
+  .version-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .article-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; margin: 0.3rem 0 0.65rem; text-wrap: balance; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .badge { font-family: var(--mono); font-size: 0.68rem; padding: 0.2rem 0.5rem; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-soft); white-space: nowrap; }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .badge.status-review { color: var(--review); border-color: currentColor; }
+  .badge.status-fail { color: var(--fail); border-color: currentColor; }
+  .article-body { padding: 1.1rem 1.15rem 1.4rem; font-family: var(--serif); font-size: 0.91rem; }
+  .article-body h2 { font-family: var(--sans); font-size: 0.73rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 1.2rem 0 0.45rem; font-weight: 600; }
+  .article-body h3 { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.35rem; color: var(--accent); }
+  .article-body p { margin: 0.55rem 0; }
+  .article-body strong { color: var(--ink); }
+  .one-line { margin-top: 0.9rem; padding: 0.7rem 0.85rem; background: var(--accent-soft); border-radius: 8px; font-style: italic; font-size: 0.88rem; }
+  section.block { margin-top: 2.75rem; }
+  .block-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .block-note { color: var(--ink-soft); font-size: 0.86rem; margin-bottom: 1.2rem; max-width: 74ch; }
+  table.qa-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
+  table.qa-table th, table.qa-table td { padding: 0.65rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.qa-table th { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); background: var(--accent-soft); }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 14%; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+  .fact-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+  .fact-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.5rem; }
+  .fact-card.fail h4 { color: var(--fail); }
+  .fact-card.pass h4 { color: var(--pass); }
+  .fact-card ul { margin: 0; padding-left: 1.1rem; }
+  .fact-card li { margin-bottom: 0.4rem; font-size: 0.87rem; }
+  .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.5rem; }
+  .meta-strip b { color: var(--ink); font-weight: 600; }
+  footer.page-foot { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-EN-DIRECT-VFL-01 &middot; A02 Comparison Artifact</div>
+    <h1>Original B / VFL Run-1 / VFL Run-2 — full-text comparison</h1>
+    <div class="subhead">Same topic, same style instructions, same length target. Run-1 and Run-2 were generated independently from the same Verified Fact Ledger, without letting the writer search the web itself. Read the three articles first — QA results are below.</div>
+  </header>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Original B</div>
+        <div class="article-title">&ldquo;At Midnight, Britain Wants the Infinite Scroll to Blink First&rdquo;</div>
+        <div class="meta-row">
+          <span class="badge">410 words</span>
+          <span class="badge status-fail">Fact check: FAIL</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>It is 11:59 p.m.</p>
+        <p>A teenager watches one clip. Then another. The feed promises that the <em>next</em> video will be even better.</p>
+        <p>Midnight arrives&mdash;and, under Britain&rsquo;s new plan, the app changes its tone.</p>
+        <p>Notifications fall silent. The overnight social-media curfew switches on. Autoplay stops doing the deciding, while personalised feeds lose their automatic grip.</p>
+        <div class="one-line" style="margin: 0.9rem 0;">&ldquo;The phone stays. But the digital night goes quiet.&rdquo;</div>
+        <p>Announced on July 15, 2026, the UK government&rsquo;s plan would place 16- and 17-year-olds into default social-media restrictions from midnight until 6 a.m. Features designed to prolong scrolling, including autoplay and personalised recommendation feeds, would also be disabled automatically.</p>
+        <p>This is not a locked bedroom door.</p>
+        <p>Older teenagers would remain free to change the settings themselves.</p>
+        <p>The distinction matters because Britain is planning a much firmer rule for younger children: social-media services are expected to be unavailable to under-16s. The new measures are expected to begin in spring 2027.</p>
+        <h2>The Two Big Signals from Britain's Digital Bedtime</h2>
+        <h3>The Default May Matter More Than the Ban</h3>
+        <p>Because teenagers can opt out, critics may dismiss the curfew as easy to escape. But defaults quietly influence behaviour. Ofcom research found that children were more likely to retain safer settings when those settings were selected automatically.</p>
+        <h3>Better Sleep Does Not Mean the Problem Disappears</h3>
+        <p>A government-backed pilot involving 309 families tested a stricter 9 p.m.-to-7 a.m. curfew. Families reported that it was the easiest restriction to manage and produced the clearest sleep benefits. Many even continued it voluntarily.</p>
+        <p>Yet teenagers adapted. Some rushed to use apps before the cut-off, returned early in the morning or switched devices.</p>
+        <h2>In One Sentence</h2>
+        <div class="one-line">&ldquo;Britain is not taking the phone from older teenagers&mdash;it is making endless scrolling knock before entering the night.&rdquo;</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">VFL Run-1</div>
+        <div class="article-title">Britain's Midnight Reset: A Quieter Social Media Night for Older Teens</div>
+        <div class="meta-row">
+          <span class="badge">409 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+          <span class="badge status-pass">Ledger: compliant</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>Midnight arrives. A phone lights up.</p>
+        <p>One alert becomes another, one video rolls into the next, and bedtime quietly slips away.</p>
+        <p>The UK government is planning a new response&mdash;not by locking every door, but by changing which doors are open by default.</p>
+        <p>As of 12 August 2026, the proposal has not yet taken effect. Subject to parliamentary approval, the changes are expected to begin around spring 2027.</p>
+        <p>Under the plan, social media services would automatically apply nighttime protections for users aged 16 and 17 between midnight and 6 a.m. Alerts and push notifications would be muted during that six-hour window.</p>
+        <p>But this is not an unchangeable curfew. Users would be able to alter the settings, and the government has not said that social media must become completely inaccessible overnight.</p>
+        <p>The plan also reaches beyond bedtime. Autoplay and personalised feeds would be switched off by default for 16- and 17-year-olds throughout the day&mdash;not only between midnight and 6 a.m.</p>
+        <p>In other words, the proposal is not simply saying: &ldquo;Put the phone away.&rdquo; It is asking whether the phone should work quite so hard to pull young people back in.</p>
+        <h2>Two points worth watching</h2>
+        <h3>The pilot offers a clue&mdash;but not proof</h3>
+        <p>A 2026 qualitative pilot involved 309 households with young people aged 13 to 17. They were divided by preference among a control group and three interventions.</p>
+        <p>The 81 households assigned to the night-curfew group were asked to block selected social media apps from 9 p.m. to 7 a.m. Of those, 53 reported full compliance, 23 reported minor changes, and five did not comply.</p>
+        <p>Participants described this curfew as the easiest of the three interventions to fit into daily routines. They also reported more consistent sleep-related improvements.</p>
+        <p>Still, the research was small, self-selected and based mainly on personal reports. It suggests possibilities; it does not prove cause and effect.</p>
+        <h3>A quieter night does not necessarily mean less screen time</h3>
+        <p>Many participants reported little major change in daytime social media use. Instead, activity sometimes moved elsewhere: heavier use before the restriction began, early-morning checking after 7 a.m., or switching to television and games.</p>
+        <p>A nighttime setting may rearrange attention rather than erase it. The final details&mdash;including precisely which services will be covered&mdash;are still to come.</p>
+        <h2>In one line&hellip;</h2>
+        <div class="one-line">Britain is not proposing a permanent lock on social media, but a midnight pause: quieter defaults, fewer automatic pulls, and a little more space before the next scroll.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">VFL Run-2</div>
+        <div class="article-title">&ldquo;A Quieter Feed After Midnight&rdquo;: Britain's Planned Night Settings for Teens</div>
+        <div class="meta-row">
+          <span class="badge">393 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+          <span class="badge status-pass">Ledger: compliant</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>As of August 12, 2026, Britain&rsquo;s new nighttime social-media settings are still a plan&mdash;not a rule already in force. Parliamentary approval is required, and government materials say the changes are expected to begin around spring 2027.</p>
+        <p>The target is specific: users aged 16 and 17 on covered social-media services.</p>
+        <p>From midnight to 6 a.m., a default nighttime restriction would switch on, including muted alerts and push notifications.</p>
+        <p>But this is not an unbreakable curfew. The protective settings would activate automatically, while teens could change them.</p>
+        <p>In other words, the phone does not suddenly become a brick at midnight.</p>
+        <p>The proposal is closer to putting a speed bump in front of the endless scroll: fewer digital taps on the shoulder during the night. The final details of which services are covered will come later.</p>
+        <h2>Two Points Behind the Settings</h2>
+        <h3>Nighttime quiet is only one layer</h3>
+        <p>Another part of the plan operates all day.</p>
+        <p>Autoplay and personalised feeds would be off by default for 16- and 17-year-olds&mdash;not merely between midnight and 6 a.m. Those settings could also be changed by the user.</p>
+        <p>That distinction matters. One measure softens the night. The other reduces the app&rsquo;s ability to keep choosing and playing the next thing, regardless of the hour.</p>
+        <h3>The pilot was a clue&mdash;not a verdict</h3>
+        <p>A 2026 qualitative pilot involved 309 households in total across four groups. It was not 309 participants testing a night curfew.</p>
+        <p>The 81 households in the night-curfew group were assigned an intervention blocking selected social apps from 9 p.m. to 7 a.m.&mdash;a different schedule and approach from the planned policy. Reported adherence was 53 complete, 23 with minor changes and five non-compliant.</p>
+        <p>Among the three interventions, participants described the night curfew as the easiest to fit into everyday routines. They also reported the most consistent sleep-related improvements in that group. Many households said they had kept some modified form of curfew afterward.</p>
+        <p>Still, the research was small, self-selected and qualitative. It did not prove cause and effect.</p>
+        <p>Many participants also reported little change in daytime social-media use: scrolling sometimes moved earlier, surged before the cutoff, resumed after 7 a.m., or gave way to television and games.</p>
+        <h2>In One Sentence</h2>
+        <div class="one-line">Britain is not planning to confiscate the night; it is planning to make social media quieter by default&mdash;while leaving older teens able to reach for the controls.</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Fact QA outcome</div>
+    <div class="block-note">Independent fact-checker verdicts, all using live web search, separate from the writer call.</div>
+    <div class="cols">
+      <div class="fact-card fail">
+        <h4>Original B &mdash; FAIL</h4>
+        <ul>
+          <li>Framed autoplay/personalised-feed shutoff as midnight-triggered; official sources disable those features at all times, independent of the curfew window.</li>
+          <li>Presented 309 households as the night-curfew trial group; 309 was the total pilot enrollment across 4 groups, with only 81 in the night-restriction arm.</li>
+        </ul>
+      </div>
+      <div class="fact-card pass">
+        <h4>VFL Run-1 &mdash; PASS</h4>
+        <ul>
+          <li>Explicitly states autoplay/feeds apply "throughout the day&mdash;not only between midnight and 6 a.m."</li>
+          <li>Explicitly scopes 309 as the full pilot population and 81 as the night-curfew subgroup, with the 53/23/5 compliance breakdown.</li>
+          <li>No contradictions or unsupported claims found by the independent checker.</li>
+        </ul>
+      </div>
+      <div class="fact-card pass">
+        <h4>VFL Run-2 &mdash; PASS</h4>
+        <ul>
+          <li>Explicitly states autoplay/feeds apply "not merely between midnight and 6 a.m.&hellip;regardless of the hour."</li>
+          <li>Explicitly states "It was not 309 participants testing a night curfew," then gives the correct 81-household subgroup and compliance breakdown.</li>
+          <li>No contradictions or unsupported claims found by the independent checker.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Quality QA &mdash; 9 axes</div>
+    <div class="block-note">Run-1 and Run-2 vs. the original B version. Judgment calls are grounded in the text and fact-check evidence above.</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Axis</th><th>Original B</th><th>VFL Run-1</th><th>VFL Run-2</th></tr></thead>
+      <tbody>
+        <tr><td class="axis-name">1. Fact accuracy</td><td>FAIL, 2 contradictions</td><td>PASS</td><td>PASS</td></tr>
+        <tr><td class="axis-name">2. Meaning precision</td><td>Two scope errors that change what a listener would believe</td><td>Scope explicitly correct on both prior error points</td><td>Scope explicitly correct, even more directly addressed ("It was not 309 participants testing a night curfew")</td></tr>
+        <tr><td class="axis-name">3. Grammar</td><td>Clean</td><td>Clean</td><td>Clean</td></tr>
+        <tr><td class="axis-name">4. Idiomaticity</td><td>Natural, literary flourish</td><td>Natural, similar energy to Original B</td><td>Natural, slightly more measured</td></tr>
+        <tr><td class="axis-name">5. News narration naturalness</td><td>Dramatized opening scene not tied to sourced facts</td><td>Similar scene-setting opening, but never attaches a specific claim to the scene</td><td>More directly expository from the first line; reads closer to straight news copy</td></tr>
+        <tr><td class="axis-name">6. Editorial engagement</td><td>Strong hook</td><td>Comparable hook and pacing to Original B</td><td>Solid hook, slightly more restrained than Run-1</td></tr>
+        <tr><td class="axis-name">7. Master-style transfer</td><td>Short dramatic beats echoing the master's rhythm</td><td>Similar short-line rhythm maintained</td><td>Short declarative sentences maintained; one-line close lands cleanly</td></tr>
+        <tr><td class="axis-name">8. Point differentiation</td><td>Trial practicality vs. default psychology</td><td>Evidence quality ("clue, not proof") vs. displacement effect</td><td>Curfew vs. all-day autoplay/feed restriction (a distinction made possible by the Ledger's explicit scope fact) vs. evidence quality</td></tr>
+        <tr><td class="axis-name">9. Downstream (B1/A2) suitability</td><td>Would need correction before safe reuse</td><td>Clean, fact-checked, ready to evaluate as a Source candidate</td><td>Clean, fact-checked, ready to evaluate as a Source candidate</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Generation conditions</div>
+    <div class="meta-strip">
+      <span><b>Fact Ledger</b>: 19 facts drafted, 18 VERIFIED / 1 AMBIGUOUS / 0 REJECTED after independent verification</span>
+    </div>
+    <div class="meta-strip">
+      <span><b>Writer</b> model: gpt-5.6-sol</span>
+      <span>reasoning: high</span>
+      <span>web search: none (Ledger-only input)</span>
+      <span>Run-1 retries: 0</span>
+      <span>Run-2 retries: 0</span>
+    </div>
+    <div class="meta-strip">
+      <span><b>Fact checker</b> web_search calls: Run-1 = 6, Run-2 = 10</span>
+      <span>Ledger deviation check: 0 deviations in both runs</span>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-EN-DIRECT-VFL-01 &middot; generated 2026-08-12 &middot; full records in er003_output/en_direct_vfl_01/A02/
+  </footer>
+</div>
