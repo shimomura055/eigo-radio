@@ -1,0 +1,273 @@
+name: AUTO-001 Controller App Token Read-Only Check
+
+# AUTO-001-05-03-02: Controller GitHub App(eigo-radio-auto-controller)の
+# installation tokenをread-onlyで疎通確認するための、手動実行専用workflow。
+#
+# このworkflowはGitHub上のIssue/ラベル/コメント/branch/commit/push/PRの
+# いずれも変更しない。Claude Code / Anthropic API / OpenAI APIは一切
+# 起動しない。GET以外のGitHub REST APIエンドポイントを呼び出さない
+# (installation token自体の生成・自動失効というOAuth機構は例外として
+# actions/create-github-app-tokenへ委譲する)。
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue read疎通確認の対象Issue番号(read-only)"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto001-controller-token-check-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  read_only_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate issue_number input format
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          case "$ISSUE_NUMBER_INPUT" in
+            ''|*[!0-9]*)
+              echo "issue_numberが正の整数ではありません: $ISSUE_NUMBER_INPUT" >&2
+              exit 1
+              ;;
+          esac
+
+      # AUTO-001-05-03-02-R1: GitHub Actionsの既定shell(`bash --noprofile --norc
+      # -eo pipefail {0}`)は、このstepの1行目より前からerrexit(-e)が有効になって
+      # いる。そのため`line=$(python ...)`をそのまま代入すると、pythonが非ゼロで
+      # 終了した瞬間にstepがそこで即終了し、続く`status=$?`の取得やreason_codeの
+      # GITHUB_OUTPUTへの保存が実行されない(run 30510639443で実際に発生し、
+      # Job Summaryがreason_code=NONEになった)。コマンド置換の失敗を`if`の条件
+      # 部分で判定することで、-eによる即時終了を避けつつ終了コードを確実に
+      # 取得する。
+      - name: Verify required configuration is present
+        id: config_check
+        env:
+          CLIENT_ID_VALUE: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          PRIVATE_KEY_VALUE: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+        run: |
+          set -u
+          client_id_present=false
+          private_key_present=false
+          if [ -n "${CLIENT_ID_VALUE:-}" ]; then client_id_present=true; fi
+          if [ -n "${PRIVATE_KEY_VALUE:-}" ]; then private_key_present=true; fi
+          unset CLIENT_ID_VALUE PRIVATE_KEY_VALUE
+
+          if line=$(python -m scripts.controller_token_check check-config \
+            --client-id-present "$client_id_present" \
+            --private-key-present "$private_key_present"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::設定検査に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # AC-05/AC-06: 現行の安定版release v3.2.0 に対応するfull-length commit SHA。
+      # client-idはRepository Variable、private-keyはRepository Secretから取得する。
+      # 対象repositoryを現在のrepositoryだけへ限定し、Issues:readへ制限する。
+      # tokenの自動失効を無効化する入力はここでは指定しない(既定でjob終了時に自動失効する)。
+      - name: Generate Controller App installation token
+        id: app_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-issues: read
+
+      # AUTO-001-05-03-02-R1: config_checkと同型のcommand substitution+$?を
+      # `if`文で保護し、非ゼロ終了時でもGITHUB_OUTPUTへreason_codeを確実に
+      # 保存してからstepをFailureにする(AC-11関連の既知不具合修正)。
+      - name: Query token repository scope (read-only)
+        id: repo_scope
+        env:
+          APP_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          set -u
+          resp_file="$(mktemp)"
+          trap 'rm -f "$resp_file"' EXIT
+
+          if http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/installation/repositories"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=REPOSITORY_SCOPE_QUERY_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::repositoryスコープ取得に失敗しました(reason_code=REPOSITORY_SCOPE_QUERY_FAILED)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_token_check repo-scope \
+            --response-file "$resp_file" \
+            --expected-full-name "${{ github.repository }}"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          repo_count=$(echo "$line" | grep -oP 'REPOSITORY_COUNT=\K\S+' || echo "NA")
+          matched=$(echo "$line" | grep -oP 'MATCHED=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "repository_count=${repo_count}" >> "$GITHUB_OUTPUT"
+          echo "matched=${matched}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::repositoryスコープ検証に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # AUTO-001-05-03-02-R1: repo_scopeと同型のcommand substitution+$?を
+      # `if`文で保護し、非ゼロ終了時でもGITHUB_OUTPUTへreason_codeを確実に
+      # 保存してからstepをFailureにする(AC-11関連の既知不具合修正)。
+      - name: Read target issue (read-only)
+        id: issue_read
+        env:
+          APP_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          set -u
+          resp_file="$(mktemp)"
+          trap 'rm -f "$resp_file"' EXIT
+
+          if http_code=$(curl -sS -o "$resp_file" -w '%{http_code}' \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=ISSUE_READ_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::Issue readに失敗しました(reason_code=ISSUE_READ_FAILED)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_token_check issue-read \
+            --response-file "$resp_file" \
+            --expected-issue-number "${{ inputs.issue_number }}"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          issue_matched=$(echo "$line" | grep -oP 'ISSUE_NUMBER_MATCHED=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "issue_number_matched=${issue_matched}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Issue read検証に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Publish job summary (fixed non-secret fields only)
+        if: always()
+        env:
+          CONFIG_REASON: ${{ steps.config_check.outputs.reason_code }}
+          CONFIG_OUTCOME: ${{ steps.config_check.outcome }}
+          TOKEN_OUTCOME: ${{ steps.app_token.outcome }}
+          SCOPE_REASON: ${{ steps.repo_scope.outputs.reason_code }}
+          SCOPE_OUTCOME: ${{ steps.repo_scope.outcome }}
+          SCOPE_COUNT: ${{ steps.repo_scope.outputs.repository_count }}
+          SCOPE_MATCHED: ${{ steps.repo_scope.outputs.matched }}
+          ISSUE_REASON: ${{ steps.issue_read.outputs.reason_code }}
+          ISSUE_OUTCOME: ${{ steps.issue_read.outcome }}
+          ISSUE_MATCHED: ${{ steps.issue_read.outputs.issue_number_matched }}
+        run: |
+          # AUTO-001-05-03-02-R1: 後続stepがskippedになった場合でも
+          # reason_code=NONEと表示しないよう、最初に失敗した段階
+          # (upstream_failure_stage)を判定し、後続stepのskip理由を
+          # 固定reason codeへ変換する。
+          upstream_failure_stage="NONE"
+          if [ "${CONFIG_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="CONFIG"
+          elif [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="TOKEN"
+          elif [ "${SCOPE_OUTCOME:-}" = "failure" ]; then
+            upstream_failure_stage="SCOPE"
+          fi
+
+          token_reason="NONE"
+          if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
+            token_reason="TOKEN_GENERATION_FAILED"
+          elif [ "${TOKEN_OUTCOME:-}" = "skipped" ] && [ "$upstream_failure_stage" = "CONFIG" ]; then
+            token_reason="TOKEN_GENERATION_SKIPPED_CONFIG_FAILURE"
+          fi
+
+          scope_reason="${SCOPE_REASON:-NONE}"
+          if [ "${SCOPE_OUTCOME:-}" = "skipped" ]; then
+            case "$upstream_failure_stage" in
+              CONFIG) scope_reason="REPOSITORY_SCOPE_SKIPPED_CONFIG_FAILURE" ;;
+              TOKEN) scope_reason="REPOSITORY_SCOPE_SKIPPED_TOKEN_FAILURE" ;;
+            esac
+          fi
+
+          issue_reason="${ISSUE_REASON:-NONE}"
+          if [ "${ISSUE_OUTCOME:-}" = "skipped" ]; then
+            case "$upstream_failure_stage" in
+              CONFIG) issue_reason="ISSUE_READ_SKIPPED_CONFIG_FAILURE" ;;
+              TOKEN) issue_reason="ISSUE_READ_SKIPPED_TOKEN_FAILURE" ;;
+              SCOPE) issue_reason="ISSUE_READ_SKIPPED_SCOPE_FAILURE" ;;
+            esac
+          fi
+
+          {
+            echo "## AUTO-001-05-03-02 Controller App token read-only疎通チェック"
+            echo ""
+            echo "- read-only疎通チェックです。GitHub上のIssue/ラベル/コメント/branch/commit/push/PRのいずれも変更していません。"
+            echo "- 設定検査: reason_code=${CONFIG_REASON:-NONE}"
+            echo "- token生成: outcome=${TOKEN_OUTCOME:-not_run} reason_code=${token_reason}"
+            echo "- repositoryスコープ検証: reason_code=${scope_reason} 対象repository件数=${SCOPE_COUNT:-NA} 現在のrepositoryと一致=${SCOPE_MATCHED:-NA}"
+            echo "- Issue read検証: reason_code=${issue_reason} issue番号一致=${ISSUE_MATCHED:-NA}"
+            echo "- GitHubへの書き込み: 実施していません(read-only APIのみ使用、tokenはjob終了時に自動失効)"
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "execution_id": "exec_8df2d401b694_a1_demo0001",
+  "attempt": 1,
+  "logical_task_key": "8df2d401b694c2b6e09be7701adfe0e64462ef415cb6e8494556a5a134cfe032",
+  "management_id": "AUTO-999-DEMO01",
+  "input_task_bundle_sha256": "502fe472a1c8e683872deb33dcc45fe6f865824c88b5c28c0a91ba1e24fcb0ba",
+  "input_base_sha": "012330a6c340bcd9ae30f006f2e51df44332bb81",
+  "connection_decision": "ACCEPTED",
+  "execution_status": "PLAN_COMPLETED",
+  "next_action": "HUMAN_APPROVAL_REQUIRED",
+  "summary": "demo_batch_runner.pyへ--dry-runオプションを追加する計画。ファイル書き込みはまだ行っていない。",
+  "current_problem_understanding": "demo_batch_runner.pyには書き込み前に計画内容を確認する手段が無く、誤った書き込みを事前に防げない。",
+  "implementation_plan": [
+    "demo_batch_runner.pyの書き込み処理箇所を特定する",
+    "--dry-runオプションを追加し、指定時は書き込みをスキップして計画内容を標準出力するよう変更する",
+    "demo_test_batch_runner.pyへ--dry-run指定時の単体テストを追加する"
+  ],
+  "proposed_changed_files": [
+    {
+      "path": "demo_batch_runner.py",
+      "change_type": "modified",
+      "purpose": "--dry-runオプションを追加し、指定時は書き込みをスキップして計画のみ出力するようにする",
+      "service_spec_impact": "NONE"
+    },
+    {
+      "path": "demo_test_batch_runner.py",
+      "change_type": "added",
+      "purpose": "--dry-runオプションの単体テストを追加する",
+      "service_spec_impact": "NONE"
+    }
+  ],
+  "proposed_test_plan": [
+    "python -m unittest demo_test_batch_runner.py"
+  ],
+  "prohibited_change_detected": false,
+  "missing_information": [],
+  "unresolved_items": [],
+  "risks": [
+    "--dry-runのログ出力が大量になる場合、標準出力が読みにくくなる可能性がある"
+  ],
+  "human_confirmation_items": [
+    "--dry-run実行時に標準出力へ表示されるメッセージが実運用者にとって分かりやすい文言になっているか確認してください"
+  ],
+  "generated_at": "2026-08-01T12:00:00Z",
+  "self_reported": true
+}

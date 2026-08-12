@@ -1,0 +1,405 @@
+name: AUTO-001 Controller App Integrated Write
+
+# AUTO-001-05-03-03C: 検証済みのread-only planner(scripts.issue_agent_planner)と
+# Controller GitHub App writer(scripts.controller_label_writer /
+# scripts.controller_block_writer)を、issues:labeledの実イベントへ安全に統合する。
+# agent:readyが追加された正常Issueはagent:ready -> agent:workingへ、preflight
+# 不合格の不正Issueはagent:ready -> agent:blocked(+managed comment)へ遷移する。
+#
+# このworkflowはClaude Codeプロセスを起動しない。branch作成・commit・push・
+# Pull Request作成のいずれも行わない。issues:labeledで追加されたラベルが
+# agent:ready以外の場合はNOT_APPLICABLEとして成功終了し、Controller App tokenの
+# 生成・GitHubへの書き込みを一切行わない。
+#
+# job構成:
+#   plan          -- 標準GITHUB_TOKEN(read-only、contents:read / issues:read)
+#                     だけを使い、scripts.issue_agent_plannerで状態遷移を判定
+#                     する。Controller App tokenはこのjobでは一切生成しない。
+#   writer_start  -- planがexact `WOULD_START`契約
+#                     (planned_remove=[agent:ready], planned_add=[agent:working])
+#                     を確認した場合だけ実行する。
+#   writer_block  -- planがexact `WOULD_BLOCK_PREFLIGHT`契約
+#                     (planned_remove=[agent:ready], planned_add=[agent:blocked],
+#                     errors 1件以上)を確認した場合だけ実行する。
+#
+# AUTO-001-05-03-03C-R2: writer_start/writer_blockは、書き込み本体(事前状態
+# 判定・planner/direct validator再実行・repository label前提確認・書き込み
+# 直前再確認・Controller App token生成・write API呼び出し・最終状態評価)を
+# 一切持たない。代わりに、実証済みのAUTO-001-05-03-03A
+# (auto001-controller-write-check.yml)/03B(auto001-controller-block-check.yml)
+# を`uses: ./.github/workflows/...`でreusable workflowとしてそのまま呼び出す。
+# 03A/03Bロジックの複製はしない(呼び出すだけ)。書き込み順序・reason code・
+# managed comment契約・token生成位置・API endpoint allowlistは、
+# workflow_dispatch(手動)経路とworkflow_call(統合)経路で完全に同一である
+# (03A/03Bのファイル自体に1箇所だけ実装されている)。
+#
+# plan job -> writer jobへ`with:`経由で渡すのは、サニタイズ済みのスカラー値
+# (issue_number / contract_version)だけであり、Issue本文・raw APIレスポンス・
+# comment本文・secret・tokenのいずれも渡さない。呼び出されたworkflow(03A/03B)
+# は、この値を「実行するかどうか」「契約versionが期待通りか」の判定にだけ使い、
+# 実際の書き込み判断は自分自身が再取得したIssue/コメントと自分自身が再実行した
+# planner/direct validatorの結果だけを根拠にする(plan jobの判定を無条件には
+# 信用しない)。
+#
+# secretは全件一括継承(inherit)を使わず、`AUTO001_CONTROLLER_APP_PRIVATE_KEY`だけを
+# writer_start/writer_blockから03A/03Bへ明示的に渡す。Client IDはrepository
+# variableであり、呼び出し先でも自動的に参照できるため渡さない。
+#
+# 既存のread-only dry-run workflow(auto001-agent-dryrun.yml)は変更しない。
+# 03A/03Bのworkflow_dispatch手動経路も維持する(復旧・再検証用)。repository+
+# Issue番号で構成される共有concurrency namespaceは、03A/03Bそれぞれの
+# workflowファイル自身のtop-level concurrencyブロックに1箇所だけ定義されて
+# おり、workflow_dispatch/workflow_callのどちらで起動されても同じブロックが
+# 評価されるため、4経路(03A手動・03B手動・統合→03A・統合→03B)すべてで
+# 自動的に共有される。統合workflow側のwriter_start/writer_blockには別の
+# concurrencyブロックを追加しない(namespaceの分岐・二重定義を避けるため)。
+#
+# AUTO-001-05-03-03C-R5: job output(needs.plan.outputs.issue_number)は
+# GitHub Actions上では常に文字列型だが、03A/03Bのworkflow_call.inputs.
+# issue_numberはtype: numberで宣言されている。この型不一致により、
+# writer_start/writer_block呼び出し(uses:)がrunner起動前に(job/step/ログ
+# を一切残さず)失敗する既知の不具合があった(Run 30669056610で確認)。
+# 対策として、plan jobのclassify stepでissue_numberが厳密な正の整数文字列
+# (空文字列・0以下・小数・数字以外を全て拒否)であることを確認してから
+# 出力し、writer_start/writer_blockの`with:`側ではfromJSON()でnumber型へ
+# 明示的に変換してから03A/03Bへ渡す。
+
+on:
+  issues:
+    types:
+      - labeled
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "手動再検証の対象Issue番号(復旧・再検証用。自動経路と同じplanner・writerを通る)"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: auto001-agent-integrated-plan-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number || 'unknown' }}
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------
+  # plan: 標準GITHUB_TOKEN(read-only)だけを使う事前判定job。
+  # Controller App tokenは生成しない。
+  # ---------------------------------------------------------------------
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      issue_number: ${{ steps.classify.outputs.issue_number }}
+      decision: ${{ steps.classify.outputs.decision }}
+      applicable: ${{ steps.classify.outputs.applicable }}
+      reason_code: ${{ steps.classify.outputs.reason_code }}
+      writer_action: ${{ steps.classify.outputs.writer_action }}
+      planned_add_label: ${{ steps.classify.outputs.planned_add_label }}
+      planned_remove_label: ${{ steps.classify.outputs.planned_remove_label }}
+      error_count: ${{ steps.classify.outputs.error_count }}
+      error_fingerprint: ${{ steps.classify.outputs.error_fingerprint }}
+      contract_version: ${{ steps.classify.outputs.contract_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate issue_number input format (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          case "$ISSUE_NUMBER_INPUT" in
+            ''|*[!0-9]*)
+              echo "issue_numberが正の整数ではありません: $ISSUE_NUMBER_INPUT" >&2
+              exit 1
+              ;;
+          esac
+
+      # workflow_dispatch入力と、実際に取得できたIssueの番号が一致することを
+      # ここで確認する(Issue番号不一致をController App token生成前に検出する)。
+      - name: Fetch target issue and verify issue number (workflow_dispatch only, read-only)
+        if: github.event_name == 'workflow_dispatch'
+        id: fetch_issue
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_api.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${ISSUE_NUMBER_INPUT}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "::error::対象Issueの取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_token_check issue-read \
+            --response-file issue_api.json \
+            --expected-issue-number "$ISSUE_NUMBER_INPUT"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::取得したIssueの番号がinputs.issue_numberと一致しません"
+            exit 1
+          fi
+
+      - name: Run planner (issues:labeled)
+        if: github.event_name == 'issues'
+        run: |
+          set -u
+          if python -m scripts.issue_agent_planner \
+            --trigger "issues:labeled" \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --machine-json-path planner_result.json; then
+            status=0
+          else
+            status=$?
+          fi
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+            echo "::error::plannerが想定外の終了コードで終了しました(status=${status})"
+            exit 1
+          fi
+
+      - name: Run planner (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -u
+          if python -m scripts.issue_agent_planner \
+            --trigger "workflow_dispatch" \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --issue-json-path issue_api.json \
+            --machine-json-path planner_result.json; then
+            status=0
+          else
+            status=$?
+          fi
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+            echo "::error::plannerが想定外の終了コードで終了しました(status=${status})"
+            exit 1
+          fi
+
+      # plannerのdecision/labelsが、writerが受理する2種類の契約
+      # (WOULD_START, WOULD_BLOCK_PREFLIGHT)のどちらか正確に一致する場合だけ
+      # writer_actionを設定する。実際の一致判定は既存モジュールの
+      # check_planner_plan_matches_expected() / check_block_plan_matches_expected()
+      # へ委譲し、ここでは再実装しない。ここから先へ渡すのはサニタイズ済みの
+      # スカラー値だけであり、Issue本文・raw APIレスポンス・errorsの生メッセージ
+      # 全文は含めない(errorsはcode/section/messageの固定文言のみを含む安全な
+      # 構造化データであり、Issue本文由来の引用は含まない)。
+      - name: Determine writer_action from planner result (sanitized outputs only)
+        id: classify
+        run: |
+          set -u
+          if plan_start_line=$(python -m scripts.controller_label_writer check-plan \
+            --planner-json-path planner_result.json); then
+            plan_start_ok=true
+          else
+            plan_start_ok=false
+          fi
+          echo "$plan_start_line"
+
+          if plan_block_line=$(python -m scripts.controller_block_writer check-plan \
+            --planner-json-path planner_result.json); then
+            plan_block_ok=true
+          else
+            plan_block_ok=false
+          fi
+          echo "$plan_block_line"
+
+          # planner_result.jsonの読み込み・判定処理自体の失敗(ファイル欠落・
+          # JSON解析失敗・必須キー欠落)を、他のstep(precondition等)と同じ
+          # 「command substitutionをifで保護してから$?を確認する」パターンで
+          # 検出する。素の`out=$(...)`のままだと、既定shell(bash -eo pipefail)
+          # 下でpythonが例外送出した瞬間にstepがそこで即終了し、後続の
+          # reason_code保存やGITHUB_OUTPUTへの書き込みが一切行われない
+          # (AUTO-001-05-03-02-R1で確認済みの構文的既知問題と同型)。
+          if out=$(python - "$plan_start_ok" "$plan_block_ok" <<'PY'
+          import json
+          import re
+          import sys
+
+          plan_start_ok = sys.argv[1] == "true"
+          plan_block_ok = sys.argv[2] == "true"
+
+          with open("planner_result.json", encoding="utf-8") as f:
+              d = json.load(f)
+
+          decision = d["decision"]
+          applicable = d["applicable"]
+          issue_number = d["issue_number"]
+          reason = d["reason"]
+          errors = d["errors"]
+          planned_add = d["planned_add_labels"]
+          planned_remove = d["planned_remove_labels"]
+
+          # AUTO-001-05-03-03C-R5: reusable writer(03A/03B)の
+          # workflow_call.inputs.issue_numberはtype: numberで宣言されている。
+          # job outputは常に文字列であるため、ここで厳密な正の整数文字列で
+          # あることを確認してから$GITHUB_OUTPUTへ書き出す(空文字列・0以下・
+          # 小数・数字以外を全てここでfail-closedに拒否し、writerを一切
+          # 起動しない)。呼び出し側(統合workflowのwriter_start/
+          # writer_block)は、この検証済み文字列をfromJSON()でnumber型へ
+          # 変換してから03A/03Bへ渡す。
+          issue_number_str = str(issue_number)
+          if not re.fullmatch(r"[1-9][0-9]*", issue_number_str):
+              raise SystemExit(
+                  f"issue_numberが正の整数ではありません: {issue_number_str!r}",
+              )
+
+          writer_action = "NONE"
+          if decision == "WOULD_START" and plan_start_ok:
+              writer_action = "START"
+          elif decision == "WOULD_BLOCK_PREFLIGHT" and plan_block_ok:
+              writer_action = "BLOCK"
+
+          error_fingerprint = "NONE"
+          if writer_action == "BLOCK":
+              from scripts.controller_block_writer import compute_comment_fingerprint
+              error_fingerprint = compute_comment_fingerprint(errors)
+
+          print(f"issue_number={issue_number_str}")
+          print(f"decision={decision}")
+          print(f"applicable={json.dumps(applicable)}")
+          print(f"reason_code={reason}")
+          print(f"writer_action={writer_action}")
+          print(f"planned_add_label={planned_add[0] if len(planned_add) == 1 else 'NONE'}")
+          print(f"planned_remove_label={planned_remove[0] if len(planned_remove) == 1 else 'NONE'}")
+          print(f"error_count={len(errors)}")
+          print(f"error_fingerprint={error_fingerprint}")
+          print("contract_version=AUTO-001-05-03-03C-writer-v1")
+          PY
+          ); then
+            classify_status=0
+          else
+            classify_status=$?
+          fi
+
+          if [ "$classify_status" -ne 0 ]; then
+            echo "::error::planner_result.jsonの読み込みまたは判定処理に失敗しました(status=${classify_status})。writerは実行しません。"
+            exit 1
+          fi
+
+          echo "$out"
+          echo "$out" >> "$GITHUB_OUTPUT"
+
+          # decisionが「そもそも書き込みを意図しない」既知の値
+          # (NOT_APPLICABLE / WOULD_BLOCK_STATE)の場合だけを成功終了とする。
+          # WOULD_START / WOULD_BLOCK_PREFLIGHT(=writerへ進む意図)なのに
+          # 直前のcheck-planが厳密一致で拒否した場合(writer_action=NONEの
+          # まま)は、契約不一致という異常事態であり、成功扱いにはしない。
+          # INTERNAL_ERRORおよびそれ以外の未知のdecision文字列も同様に失敗
+          # とする。
+          decision_value=$(echo "$out" | grep -oP '^decision=\K.*')
+          writer_action_value=$(echo "$out" | grep -oP '^writer_action=\K.*')
+
+          fail=false
+          case "$decision_value" in
+            NOT_APPLICABLE|WOULD_BLOCK_STATE)
+              ;;
+            WOULD_START|WOULD_BLOCK_PREFLIGHT)
+              if [ "$writer_action_value" != "START" ] && [ "$writer_action_value" != "BLOCK" ]; then
+                fail=true
+              fi
+              ;;
+            *)
+              fail=true
+              ;;
+          esac
+
+          if [ "$fail" = "true" ]; then
+            echo "::error::plannerのdecisionが未知か、writerの厳密契約に一致しません(decision=${decision_value} writer_action=${writer_action_value})。writerは実行しません。"
+            exit 1
+          fi
+
+      - name: Publish job summary (fixed non-secret fields only)
+        if: always()
+        env:
+          ISSUE_NUMBER: ${{ steps.classify.outputs.issue_number }}
+          DECISION: ${{ steps.classify.outputs.decision }}
+          APPLICABLE: ${{ steps.classify.outputs.applicable }}
+          REASON_CODE: ${{ steps.classify.outputs.reason_code }}
+          WRITER_ACTION: ${{ steps.classify.outputs.writer_action }}
+          PLANNED_ADD: ${{ steps.classify.outputs.planned_add_label }}
+          PLANNED_REMOVE: ${{ steps.classify.outputs.planned_remove_label }}
+          ERROR_COUNT: ${{ steps.classify.outputs.error_count }}
+          CONTRACT_VERSION: ${{ steps.classify.outputs.contract_version }}
+        run: |
+          rm -f issue_api.json planner_result.json
+          {
+            echo "## AUTO-001-05-03-03C planner判定結果"
+            echo ""
+            echo "- trigger: ${{ github.event_name }}"
+            echo "- Issue番号: ${ISSUE_NUMBER:-NA}"
+            echo "- decision: ${DECISION:-NA}"
+            echo "- applicable: ${APPLICABLE:-NA}"
+            echo "- reason_code: ${REASON_CODE:-NA}"
+            echo "- writer_action: ${WRITER_ACTION:-NA} (START=agent:working経路 / BLOCK=agent:blocked経路 / NONE=writer不起動)"
+            echo "- 計画中のラベル変更: 削除=${PLANNED_REMOVE:-NA} 追加=${PLANNED_ADD:-NA}"
+            echo "- 契約違反件数: ${ERROR_COUNT:-NA}"
+            echo "- contract_version: ${CONTRACT_VERSION:-NA}"
+            echo "- Controller App token: このjobでは生成していません(標準GITHUB_TOKENのread-onlyだけを使用)"
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------
+  # writer_start: planがexact WOULD_START契約を確認した場合だけ、
+  # AUTO-001-05-03-03A(auto001-controller-write-check.yml)をreusable
+  # workflowとして呼び出す。書き込み本体(事前状態判定・planner再実行・
+  # 計画一致確認・repository label前提確認・書き込み直前再確認・
+  # Controller App token生成・agent:working追加・agent:ready削除・
+  # 最終状態評価)は03A側に1箇所だけ実装されており、ここでは複製しない。
+  # ---------------------------------------------------------------------
+  writer_start:
+    needs: plan
+    if: needs.plan.outputs.writer_action == 'START'
+    permissions:
+      contents: read
+      issues: read
+    uses: ./.github/workflows/auto001-controller-write-check.yml
+    with:
+      issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}
+      contract_version: ${{ needs.plan.outputs.contract_version }}
+    secrets:
+      AUTO001_CONTROLLER_APP_PRIVATE_KEY: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+
+  # ---------------------------------------------------------------------
+  # writer_block: planがexact WOULD_BLOCK_PREFLIGHT契約を確認した場合
+  # だけ、AUTO-001-05-03-03B(auto001-controller-block-check.yml)を
+  # reusable workflowとして呼び出す。書き込み本体(事前状態判定・
+  # direct validator再評価・planner再実行・errors完全一致確認・
+  # repository label前提確認・書き込み直前再確認・Controller App token
+  # 生成・agent:blocked追加・managed comment CREATE/UPDATE・
+  # agent:ready削除・最終状態評価)は03B側に1箇所だけ実装されており、
+  # ここでは複製しない。
+  # ---------------------------------------------------------------------
+  writer_block:
+    needs: plan
+    if: needs.plan.outputs.writer_action == 'BLOCK'
+    permissions:
+      contents: read
+      issues: read
+    uses: ./.github/workflows/auto001-controller-block-check.yml
+    with:
+      issue_number: ${{ fromJSON(needs.plan.outputs.issue_number) }}
+      contract_version: ${{ needs.plan.outputs.contract_version }}
+    secrets:
+      AUTO001_CONTROLLER_APP_PRIVATE_KEY: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}

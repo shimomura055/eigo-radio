@@ -1,0 +1,612 @@
+name: AUTO-001 Controller App Label Write Check
+
+# AUTO-001-05-03-03A: Controller GitHub App(eigo-radio-auto-controller)を使い、
+# plannerが算出した固定write planだけを実行して、指定Issueを
+# agent:ready -> agent:working へ安全に遷移させるworkflow。
+#
+# AUTO-001-05-03-03C-R2: 従来の手動workflow_dispatch経路に加え、このworkflow
+# 自体をreusable workflow(workflow_call)としても呼び出せるようにした。
+# auto001-controller-integrated.ymlのwriter_startジョブは、この書き込み本体
+# を統合workflow側へ複製せず、`uses: ./.github/workflows/auto001-controller-write-check.yml`
+# で直接このworkflowを呼び出す。write step・reason code・token生成位置・
+# API endpoint allowlistは、呼び出し経路(workflow_dispatch/workflow_call)に
+# 関わらず完全に同一である。
+#
+# このworkflowはClaude Codeを起動しない。Issueコメント投稿・Issue本文/
+# タイトル編集・close/reopen・assignee/milestone変更・branch作成・commit・
+# push・PR作成・repository label作成/更新/削除のいずれも行わない。
+# write APIは次の2種類だけを使う。
+#   POST   /repos/{owner}/{repo}/issues/{issue_number}/labels
+#   DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/agent%3Aready
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "ラベル遷移(agent:ready -> agent:working)の対象Issue番号"
+        required: true
+        type: number
+      # AUTO-001-05-03-03C-R4: 空のcontract_versionをworkflow_dispatchの
+      # 直接手動実行とみなす経路は、統合workflow自身をworkflow_dispatchした
+      # 場合にも元イベント名がworkflow_dispatchになり得るため区別できず、
+      # contract_versionが欠落した統合呼び出しを誤って直接手動実行として
+      # 許可してしまう余地があった。この曖昧さを無くすため、workflow_dispatch
+      # 自体にも固定sentinel値をdefaultとして持つ入力を追加し、直接手動実行を
+      # 明示的な値で識別する(空文字列を許可経路として扱わない)。
+      contract_version:
+        description: "直接手動実行の固定契約バージョン。通常は変更しない。"
+        required: true
+        type: string
+        default: "AUTO-001-05-03-03A-direct-v1"
+  # AUTO-001-05-03-03C-R2: 呼び出し元はauto001-controller-integrated.ymlの
+  # writer_startジョブだけを想定する。呼び出し元の全secretsを一括継承する
+  # 指定(inherit)は使わず、Controller
+  # App private keyだけを呼び出し元から明示的に受け取る(client-idは
+  # repository variableとして呼び出し先でも自動的に参照できるため、
+  # inputs/secretsのいずれにも含めない)。
+  workflow_call:
+    inputs:
+      issue_number:
+        description: "ラベル遷移(agent:ready -> agent:working)の対象Issue番号"
+        required: true
+        type: number
+      contract_version:
+        description: "呼び出し元のplan/writer契約バージョン。token生成前に固定期待値と一致することを確認する。"
+        required: true
+        type: string
+    secrets:
+      AUTO001_CONTROLLER_APP_PRIVATE_KEY:
+        description: "Controller GitHub App(eigo-radio-auto-controller)のprivate key。"
+        required: true
+
+permissions:
+  contents: read
+  issues: read
+
+# AUTO-001-05-03-03C-R2: この値は、auto001-controller-integrated.ymlの
+# writer_start/writer_blockからの呼び出し、AUTO-001-05-03-03B
+# (auto001-controller-block-check.yml)のworkflow_dispatch/workflow_call、
+# およびこのworkflow自身のworkflow_dispatchの、合計4経路すべてで
+# 完全に同一の文字列テンプレートを使う(呼び出し経路によって分岐しない)。
+# reusable workflow呼び出し時も、この workflow自身のtop-level concurrency
+# ブロックが評価される(GitHub Actionsの仕様上、呼び出し元jobではなく
+# 呼び出されたworkflow自身の定義が適用される)ため、ここに1箇所だけ
+# 定義すれば4経路すべてで共有される。
+concurrency:
+  group: auto001-controller-write-${{ github.repository }}-${{ inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  write_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      # AUTO-001-05-03-03C-R3: reusable workflow内の`github`contextは
+      # caller workflowに関連付けられるため、統合workflow経由でこの
+      # workflowが呼び出された場合でも`github.event_name`は統合workflow側
+      # の元イベント名(issues または workflow_dispatch)のままであり、
+      # 'workflow_call'にはならない。そのため`if: github.event_name ==
+      # 'workflow_call'`という条件では、統合workflow経由の呼び出しを
+      # 一切検出できず、このstep自体が常にskipされてしまう(AUTO-001-05-03-
+      # 03C-R2の既知の不具合)。このstepは常に評価対象とする。
+      #
+      # AUTO-001-05-03-03C-R4: 空のcontract_versionを「workflow_dispatch
+      # なら直接手動実行」とみなす経路(R3時点の実装)には、統合workflow
+      # 自体をworkflow_dispatchで手動起動した場合にも元イベント名が
+      # workflow_dispatchになり得るため、contract_versionが欠落した統合
+      # 呼び出しを誤って直接手動実行として許可してしまう曖昧さが残っていた。
+      # これを解消するため、workflow_dispatch.inputs.contract_versionへ
+      # 固定sentinel値(既定値`AUTO-001-05-03-03A-direct-v1`)を追加し、
+      # 空文字列を一切許可経路として扱わない。判定は次の2種類の既知
+      # sentinelだけを許可する:
+      #   1. "AUTO-001-05-03-03C-writer-v1"(統合workflow経由。caller event
+      #      がissues/workflow_dispatchいずれでも該当)
+      #   2. "AUTO-001-05-03-03A-direct-v1"(このworkflow自身への直接手動
+      #      実行。caller eventがworkflow_dispatch以外なら不正な使用として
+      #      Failureとする)
+      #   それ以外(空文字列・未知の値)はすべてFailureとする。
+      # エラーメッセージにはcontract_versionの実値を一切含めない。
+      - name: Verify contract_version (reusable call) or allow direct manual invocation
+        id: verify_contract_version
+        env:
+          CONTRACT_VERSION_VALUE: ${{ inputs.contract_version }}
+          CALLER_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -u
+          integrated="AUTO-001-05-03-03C-writer-v1"
+          direct="AUTO-001-05-03-03A-direct-v1"
+
+          case "${CONTRACT_VERSION_VALUE:-}" in
+            "$integrated")
+              ;;
+            "$direct")
+              if [ "${CALLER_EVENT_NAME:-}" != "workflow_dispatch" ]; then
+                echo "::error::直接手動実行用の契約が不正なイベントで使用されました。token生成前に停止します。"
+                exit 1
+              fi
+              ;;
+            "")
+              echo "::error::呼び出し契約versionが欠落しています。token生成前に停止します。"
+              exit 1
+              ;;
+            *)
+              echo "::error::呼び出し元のcontract_versionが想定外です。token生成前に停止します。"
+              exit 1
+              ;;
+          esac
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate issue_number input format
+        env:
+          ISSUE_NUMBER_INPUT: ${{ inputs.issue_number }}
+        run: |
+          case "$ISSUE_NUMBER_INPUT" in
+            ''|*[!0-9]*)
+              echo "issue_numberが正の整数ではありません: $ISSUE_NUMBER_INPUT" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Verify required configuration is present
+        id: config_check
+        env:
+          CLIENT_ID_VALUE: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          PRIVATE_KEY_VALUE: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+        run: |
+          set -u
+          client_id_present=false
+          private_key_present=false
+          if [ -n "${CLIENT_ID_VALUE:-}" ]; then client_id_present=true; fi
+          if [ -n "${PRIVATE_KEY_VALUE:-}" ]; then private_key_present=true; fi
+          unset CLIENT_ID_VALUE PRIVATE_KEY_VALUE
+
+          if line=$(python -m scripts.controller_token_check check-config \
+            --client-id-present "$client_id_present" \
+            --private-key-present "$private_key_present"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::設定検査に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # 標準GITHUB_TOKEN(issues: read)による読み取り専用フェッチ。plannerへの
+      # 入力・repository label前提確認・書き込み直前確認・write後の検証は、
+      # すべてこのGET専用の読み取りだけで行い、Controller App tokenは
+      # 実際のwrite API呼び出し(POST/DELETE)にだけ渡す。
+      - name: Fetch current issue state and classify precondition
+        id: precondition
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_snapshot.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "state=NEEDS_WRITE" >> "$GITHUB_OUTPUT"
+            echo "::error::初期Issue取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer classify-precondition \
+            --response-file issue_snapshot.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          state=$(echo "$line" | grep -oP 'PRECONDITION_STATE=\K\S+' || echo "NEEDS_WRITE")
+          before_ready=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
+          before_working=$(echo "$line" | grep -oP 'WORKING_PRESENT=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "state=${state}" >> "$GITHUB_OUTPUT"
+          echo "before_ready=${before_ready}" >> "$GITHUB_OUTPUT"
+          echo "before_working=${before_working}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::事前状態判定でwrite不可と判定されました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Run planner and check exact write plan
+        id: check_plan
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        run: |
+          set -u
+          if line=$(python -m scripts.issue_agent_planner \
+            --trigger workflow_dispatch \
+            --event-json-path "$GITHUB_EVENT_PATH" \
+            --issue-json-path issue_snapshot.json \
+            --machine-json-path planner_result.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          if plan_line=$(python -m scripts.controller_label_writer check-plan \
+            --planner-json-path planner_result.json); then
+            plan_status=0
+          else
+            plan_status=$?
+          fi
+          echo "$plan_line"
+
+          if [ "$status" -ne 0 ]; then
+            # planner自体がINTERNAL_ERROR(decision=INTERNAL_ERROR)で終了した場合。
+            reason_code="INTERNAL_ERROR"
+          else
+            reason_code=$(echo "$plan_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$reason_code" ]; then
+              reason_code="INTERNAL_ERROR"
+            fi
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ] || [ "$plan_status" -ne 0 ]; then
+            echo "::error::plannerの計画が期待するwrite planと一致しません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Verify repository has the agent:working label (read-only)
+        id: check_repo_label
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/labels/agent%3Aworking"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::repository label確認の通信に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-repo-label-status \
+            --http-status "$http_code"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::repositoryにagent:workingラベルが存在しません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Re-fetch issue immediately before write
+        id: check_state_unchanged
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_pre_write.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::書き込み直前確認のIssue取得に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-state-unchanged \
+            --before-response-file issue_snapshot.json \
+            --current-response-file issue_pre_write.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::planner評価時点から状態ラベルが変化しています(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      # AC対応: 対象repositoryだけに限定し、Issues: writeだけを要求する。
+      # tokenの自動失効を無効化する入力はここでは指定しない(既定で自動失効する)。
+      - name: Generate Controller App write token
+        id: app_write_token
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AUTO001_CONTROLLER_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AUTO001_CONTROLLER_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-issues: write
+
+      - name: Add agent:working label and verify
+        id: add_and_verify
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          APP_TOKEN: ${{ steps.app_write_token.outputs.token }}
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if add_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d '{"labels":["agent:working"]}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/labels"); then
+            add_curl_status=0
+          else
+            add_curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$add_curl_status" -ne 0 ]; then
+            echo "reason_code=INTERNAL_ERROR" >> "$GITHUB_OUTPUT"
+            echo "::error::add label APIの通信に失敗しました(reason_code=INTERNAL_ERROR)"
+            exit 1
+          fi
+
+          if add_line=$(python -m scripts.controller_label_writer check-add-http-status \
+            --http-status "$add_http_code"); then
+            add_status=0
+          else
+            add_status=$?
+          fi
+          echo "$add_line"
+
+          if [ "$add_status" -ne 0 ]; then
+            add_reason=$(echo "$add_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+            if [ -z "$add_reason" ]; then
+              add_reason="INTERNAL_ERROR"
+            fi
+            echo "reason_code=${add_reason}" >> "$GITHUB_OUTPUT"
+            echo "::error::agent:working追加に失敗しました(reason_code=${add_reason})"
+            exit 1
+          fi
+
+          if verify_http_code=$(curl -sS -o issue_after_add.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            verify_curl_status=0
+          else
+            verify_curl_status=$?
+          fi
+
+          if [ "$verify_curl_status" -ne 0 ] || [ "$verify_http_code" != "200" ]; then
+            echo "reason_code=WRITE_VERIFICATION_FAILED" >> "$GITHUB_OUTPUT"
+            echo "::error::add後の再取得に失敗しました(reason_code=WRITE_VERIFICATION_FAILED)"
+            exit 1
+          fi
+
+          if verify_line=$(python -m scripts.controller_label_writer verify-working-present \
+            --response-file issue_after_add.json); then
+            verify_status=0
+          else
+            verify_status=$?
+          fi
+          echo "$verify_line"
+
+          verify_reason=$(echo "$verify_line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$verify_reason" ]; then
+            verify_reason="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${verify_reason}" >> "$GITHUB_OUTPUT"
+
+          if [ "$verify_status" -ne 0 ]; then
+            echo "::error::add後の検証に失敗しました(reason_code=${verify_reason})"
+            exit 1
+          fi
+
+      - name: Remove agent:ready label
+        id: remove_label
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          APP_TOKEN: ${{ steps.app_write_token.outputs.token }}
+        run: |
+          set -u
+          if remove_http_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -X DELETE \
+            -H "Authorization: token ${APP_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}/labels/agent%3Aready"); then
+            remove_curl_status=0
+          else
+            remove_curl_status=$?
+          fi
+          unset APP_TOKEN
+
+          if [ "$remove_curl_status" -ne 0 ]; then
+            echo "reason_code=WRITE_PARTIAL" >> "$GITHUB_OUTPUT"
+            echo "::error::remove label APIの通信に失敗しました(reason_code=WRITE_PARTIAL)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer check-remove-http-status \
+            --http-status "$remove_http_code"); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::agent:ready削除に失敗しました(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Evaluate final state
+        id: evaluate_final
+        if: steps.precondition.outputs.state == 'NEEDS_WRITE'
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          if http_code=$(curl -sS -o issue_final.json -w '%{http_code}' \
+            -H "Authorization: token ${GH_READ_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ inputs.issue_number }}"); then
+            curl_status=0
+          else
+            curl_status=$?
+          fi
+
+          if [ "$curl_status" -ne 0 ] || [ "$http_code" != "200" ]; then
+            echo "reason_code=WRITE_PARTIAL" >> "$GITHUB_OUTPUT"
+            echo "::error::最終状態取得に失敗しました(reason_code=WRITE_PARTIAL)"
+            exit 1
+          fi
+
+          if line=$(python -m scripts.controller_label_writer evaluate-final-state \
+            --before-response-file issue_pre_write.json \
+            --after-response-file issue_final.json); then
+            status=0
+          else
+            status=$?
+          fi
+          echo "$line"
+
+          reason_code=$(echo "$line" | grep -oP 'REASON_CODE=\K\S+' || true)
+          if [ -z "$reason_code" ]; then
+            reason_code="INTERNAL_ERROR"
+          fi
+          working_present=$(echo "$line" | grep -oP 'WORKING_PRESENT=\K\S+' || echo "NA")
+          ready_present=$(echo "$line" | grep -oP 'READY_PRESENT=\K\S+' || echo "NA")
+          unrelated_preserved=$(echo "$line" | grep -oP 'UNRELATED_PRESERVED=\K\S+' || echo "NA")
+          echo "reason_code=${reason_code}" >> "$GITHUB_OUTPUT"
+          echo "working_present=${working_present}" >> "$GITHUB_OUTPUT"
+          echo "ready_present=${ready_present}" >> "$GITHUB_OUTPUT"
+          echo "unrelated_preserved=${unrelated_preserved}" >> "$GITHUB_OUTPUT"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::error::最終状態が成功条件を満たしていません(reason_code=${reason_code})"
+            exit 1
+          fi
+
+      - name: Publish job summary (fixed non-secret fields only)
+        if: always()
+        env:
+          PRECONDITION_REASON: ${{ steps.precondition.outputs.reason_code }}
+          PRECONDITION_STATE: ${{ steps.precondition.outputs.state }}
+          BEFORE_READY: ${{ steps.precondition.outputs.before_ready }}
+          BEFORE_WORKING: ${{ steps.precondition.outputs.before_working }}
+          PLAN_REASON: ${{ steps.check_plan.outputs.reason_code }}
+          LABEL_REASON: ${{ steps.check_repo_label.outputs.reason_code }}
+          STATE_REASON: ${{ steps.check_state_unchanged.outputs.reason_code }}
+          TOKEN_OUTCOME: ${{ steps.app_write_token.outcome }}
+          ADD_VERIFY_REASON: ${{ steps.add_and_verify.outputs.reason_code }}
+          REMOVE_REASON: ${{ steps.remove_label.outputs.reason_code }}
+          FINAL_REASON: ${{ steps.evaluate_final.outputs.reason_code }}
+          FINAL_WORKING_PRESENT: ${{ steps.evaluate_final.outputs.working_present }}
+          FINAL_READY_PRESENT: ${{ steps.evaluate_final.outputs.ready_present }}
+          FINAL_UNRELATED_PRESERVED: ${{ steps.evaluate_final.outputs.unrelated_preserved }}
+        run: |
+          token_reason="NONE"
+          if [ "${TOKEN_OUTCOME:-}" = "failure" ]; then
+            token_reason="AUTH_TOKEN_FAILED"
+          fi
+
+          write_outcome="NONE"
+          for candidate in \
+            "${PRECONDITION_REASON:-}" \
+            "${PLAN_REASON:-}" \
+            "${LABEL_REASON:-}" \
+            "${STATE_REASON:-}" \
+            "$token_reason" \
+            "${ADD_VERIFY_REASON:-}" \
+            "${REMOVE_REASON:-}" \
+            "${FINAL_REASON:-}"
+          do
+            if [ -n "$candidate" ] && [ "$candidate" != "NONE" ]; then
+              write_outcome="$candidate"
+              break
+            fi
+          done
+
+          rm -f issue_snapshot.json issue_pre_write.json issue_after_add.json issue_final.json planner_result.json
+
+          {
+            echo "## AUTO-001-05-03-03A Controller App label write結果"
+            echo ""
+            echo "- Issue番号: ${{ inputs.issue_number }}"
+            echo "- planner判定: reason_code=${PRECONDITION_REASON:-NONE} precondition_state=${PRECONDITION_STATE:-NA} plan_reason=${PLAN_REASON:-NONE}"
+            echo "- write outcome: ${write_outcome}"
+            echo "- 書き込み前: agent:readyあり=${BEFORE_READY:-NA} agent:workingあり=${BEFORE_WORKING:-NA}"
+            echo "- add outcome: reason_code=${ADD_VERIFY_REASON:-NONE}"
+            echo "- remove outcome: reason_code=${REMOVE_REASON:-NONE}"
+            echo "- 最終状態: agent:workingあり=${FINAL_WORKING_PRESENT:-NA} agent:readyあり=${FINAL_READY_PRESENT:-NA} 無関係ラベル保持=${FINAL_UNRELATED_PRESERVED:-NA}"
+            echo "- コメント投稿: なし"
+            echo "- code/branch/PR変更: なし"
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
