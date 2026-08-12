@@ -1,7 +1,7 @@
 # PROJECT_INDEX — eigo-radio プロジェクト知識の入口
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-09**
+**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
 
 このファイルは、プロジェクトについて何かを知りたいときに「まずどこを見るか」を
 示す入口です。個別レポート・commit・Git履歴を毎回横断監査しなくても、
@@ -12,7 +12,8 @@
 | 知りたいこと | 正式参照先 |
 |---|---|
 | 現在のサービス仕様(番組構成、Preview/Key Phrase/Full Story等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) |
-| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節(B1/B2は確定仕様)。A2は全体`PROTOTYPE`のため詳細は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md) |
+| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節・CEFR-A2構造・音声仕様節(A2/B1/B2とも`DECIDED`、2026-08-12〜)。検証の経緯・却下案は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)(`HISTORICAL`) |
+| A2/B1/B2共通の音声品質原則(Preview原則、Key Phrase発音、Pause、Outro等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Cross-level仕様節 |
 | Key Phrase仕様(方式L、Canonicalization等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Key Phrase節 |
 | TTS仕様(model/voice/single call等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Preview/Full Story節 |
 | 音声組み立て・編集順序・MFA/ASR運用 | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Audio Assembly / QA節 |

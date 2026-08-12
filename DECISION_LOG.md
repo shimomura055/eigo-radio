@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-09**
+**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
 
 確定した意思決定と、その理由・根拠を記録する。個別のDecision Record原本
 (`er003_output/p2i/ER-003-P2I_decision_record.md`等)は削除せず、本ファイルは
@@ -241,6 +241,143 @@
 - **却下理由(即時のchecker実装)**: この整理のためだけに数字QAロジックの改修を今回は行わない(小規模な変更ではあるが、他の優先事項がある中で今回のスコープには含めない)
 - **根拠レポート**: [ER-003-A2-03_LISTENING_SIMPLIFICATION.md](ER-003-A2-03_LISTENING_SIMPLIFICATION.md) 9節、[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-18
 - **影響するCURRENT_SPEC項目**: A2言語仕様(→[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)、1文1数字の例外定義)
+
+## ER-003-A2-SPEC-FREEZE-01: A2言語・構造仕様をPROTOTYPEからDECIDEDへ昇格
+
+- **日付**: 2026-08-12
+- **内容**: ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05で検証してきたA2の
+  言語方針(Natural English Source独立生成、総語数を削らない、平均文長
+  11語以下・最長18語以下、1文1メッセージ、SVO中心・関係詞節/分詞構文/
+  複雑な受動態を避ける、Spoken-first、Simple AND Natural要件)と構造仕様
+  (11パート構造、Comment1〜4の役割、Full Story分割優先順位、In One Line
+  =中心1文+補足2文)を、`PROTOTYPE`から`DECIDED`へ正式に昇格した
+- **状態**: `DECIDED`
+- **採用理由**: ER-003-A2-AUDIO-AB-01でA02の完成候補(A/B比較)をユーザーが
+  試聴し、全体としてOKと判断。個別に検証してきた言語・構造方針が音声
+  完成候補として統合的に成立することを確認できた
+- **比較した選択肢**: 個別reportに仕様を分散させたまま運用を続ける vs
+  CURRENT_SPECへ正式反映し一次参照先を一本化する
+- **却下理由(分散運用継続)**: 過去に決定事項がhandoffや個別reportへ
+  埋もれ、Project Managementの機能不全を招いた教訓があるため
+- **根拠レポート**: [ER-003-A2-SPEC-FREEZE-01_REPORT.md](ER-003-A2-SPEC-FREEZE-01_REPORT.md)
+- **影響するCURRENT_SPEC項目**: CEFR(A2/B1/B2比較)、CEFR-A2 構造・音声仕様
+
+## ER-003-A2-SPEC-FREEZE-01: A2英語ナレーション速度を約135 WPM目安として採用
+
+- **日付**: 2026-08-12
+- **内容**: A2の英語ニュースナレーション(Full Story/Points/In One Line)
+  の速度目安として約135 WPMを採用する。hard constraintではなく目安とし、
+  自然なprosodyを優先する。B1/B2は現行速度を維持し、新たなWPM targetは
+  設けない
+- **状態**: `DECIDED`(目安として)
+- **採用理由**: ER-003-A2-AUDIO-AB-01でA02の速度A版(指定なし、平均約
+  155 WPM)/B版(約135 WPM目安)を生成しユーザーが試聴、B版を採用可と判断
+- **比較した選択肢**: 速度指定なし(A版) vs 約135 WPM目安(B版)。倍率
+  固定案(現行速度の0.9倍)も検討したが、B1自体のWPMが記事により139〜143と
+  幅があるため倍率ではなく絶対値の目安として採用
+- **却下理由(倍率固定・0.9x)**: 記事構成差の影響を受けやすく、絶対値
+  target(約135)の方が運用しやすいと判断
+- **根拠レポート**: [ER-003-A2-AUDIO-AB-01_REPORT.md](ER-003-A2-AUDIO-AB-01_REPORT.md)
+- **commit**: `e0e9a8d`
+- **影響するCURRENT_SPEC項目**: CEFR-A2 構造・音声仕様 > A2英語ナレーション速度、B1/B2音声速度
+
+## Cross-level: Preview原則をA2/B1/B2共通仕様として採用
+
+- **日付**: 2026-08-12(原則試作はER-003-CROSSLEVEL-AUDIO-01、2026-08-09)
+- **内容**: Previewはニュース全体のテーマ・問題意識・聞く価値・問いを
+  示すことに限定し、後続本文の具体的な答え・詳細な数字・重要な転換点や
+  結論を先出ししない、という原則をA2固有ではなくA2/B1/B2共通仕様として
+  正式採用する
+- **状態**: `DECIDED`
+- **採用理由**: A01/A02/ADD03の3記事でこの原則に沿ってPreviewを再設計し、
+  Comment1/2との情報重複解消を確認。ユーザーがA/B比較・3記事分の試聴を
+  経て方向性を承認
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)、[ER-003-CROSSLEVEL-AUDIO-02_REPORT.md](ER-003-CROSSLEVEL-AUDIO-02_REPORT.md)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Preview原則
+- **注意**: 既存B1/B2完成音声のPreviewは今回遡って差し替えない。今後の新規生成時から適用する
+
+## Cross-level: Key Phrase発音品質の3条件をA2/B1/B2共通仕様として採用
+
+- **日付**: 2026-08-12
+- **内容**: Key Phraseの発音品質を(1) Meaning/contextual prosody、
+  (2) Phoneme integrity(語末音素保持)、(3) Phrase grouping(単語ごとに
+  分断しない)の3条件を同時に満たすものと定義し、A2/B1/B2共通の品質原則
+  として採用する。個別単語への場当たり的パッチではなく、この共通原則で
+  生成する
+- **状態**: `DECIDED`
+- **採用理由**: "Come on"/"Go ahead"/"Brent crude oil"で3条件を同時に
+  満たす統合instructionを試作し、A02のKey Phrase 5件(personalized feedは
+  既承認版を維持)へ適用。ユーザーがA/B完成候補内で試聴し承認
+- **比較した選択肢**: 語末音素対策(segmental accuracy)のみを品質基準と
+  する現状維持 vs 意味prosody・phrase一体感を含めた3条件へ拡張
+- **却下理由(現状維持)**: 語末音素が正しくても、意味に合わない
+  イントネーション(例: "Go ahead"が許可の意味に聞こえる)は別の問題として
+  残ることが判明したため
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-04_REPORT.md](ER-003-CROSSLEVEL-AUDIO-04_REPORT.md)、[ER-003-A2-AUDIO-AB-01_REPORT.md](ER-003-A2-AUDIO-AB-01_REPORT.md)
+- **commit**: `c061ae9`, `e0e9a8d`
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Key Phrase発音品質(3条件)
+
+## Cross-level: 英語見出しは見出しテキストを実際にTTS inputへ含める方式を採用
+
+- **日付**: 2026-08-12
+- **内容**: Point One/Point Two/In One Line等の英語見出しは、見出し
+  文字列そのものをTTS inputへ渡して発話させる。見出しテキストを含めず
+  instructionだけで「見出しを言うように」指示する方式は使用しない
+- **状態**: `DECIDED`
+- **採用理由**: ADD03のIn One Lineで、見出しテキストを本文に含めずに
+  生成した結果、モデルが指示に反応して見出しを不安定に(日本語風に
+  聞こえる形で)発話する事象が発生。見出しテキストを実際に含める方式
+  (Point One/Twoで既に問題が起きていなかった方式と同一)へ統一したところ、
+  3回中3回で安定した正しい発話を確認
+- **比較した選択肢**: 見出しを発話しないよう指示で抑制する(誤った初期
+  対応、ER-003-CROSSLEVEL-AUDIO-03で一度採用したが後に訂正) vs 見出し
+  テキストを実際に含める(最終採用)
+- **却下理由(発話抑制)**: In One Lineは本来読み上げるべき見出しであり、
+  「発話させない」ことは要件に反する誤った対応だった
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-04_REPORT.md](ER-003-CROSSLEVEL-AUDIO-04_REPORT.md)
+- **影響するCURRENT_SPEC項目**: CEFR-A2構造・音声仕様 > In One Line見出しのTTS、Cross-level仕様 > 英語見出しのTTS方式
+
+## Cross-level: Pause値(0.7秒/0.8秒)をA2/B1/B2共通仕様として採用
+
+- **日付**: 2026-08-12
+- **内容**: 「ポイント解説」→Preview間を0.7秒、Point One→Point Two間を
+  0.8秒、In One Line→Outro間を0.8秒とする。A2 Comment前後の1.0秒(英→日)・
+  0.8秒(日→英)は無変更で維持する
+- **状態**: `DECIDED`
+- **採用理由**: A02のA/B完成候補でユーザーが試聴し承認
+- **根拠レポート**: [ER-003-A2-AUDIO-AB-01_REPORT.md](ER-003-A2-AUDIO-AB-01_REPORT.md)
+- **commit**: `e0e9a8d`
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > ポーズ各項目
+- **注意**: 現状は記事ごとの組立スクリプトへ個別にハードコードされており、共通定数への一元化はまだ行っていない([OPEN_ITEMS.md](OPEN_ITEMS.md)参照)
+
+## Cross-level: Outro音量の心理音響ベース減衰方針を採用
+
+- **日付**: 2026-08-12
+- **内容**: Outro音量を、単純な振幅比の変更ではなく心理音響上の知覚音量
+  ベースの計算(10dBの変化で知覚音量が倍/半分になるという経験則)で
+  段階的に減衰する方針を、A2/B1/B2共通のmix ruleとして採用する
+- **状態**: `DECIDED`(方針として)
+- **採用理由**: A02のA/B完成候補でユーザーが試聴し承認
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-01_REPORT.md](ER-003-CROSSLEVEL-AUDIO-01_REPORT.md)〜[04](ER-003-CROSSLEVEL-AUDIO-04_REPORT.md)、[ER-003-A2-AUDIO-AB-01_REPORT.md](ER-003-A2-AUDIO-AB-01_REPORT.md)
+- **commit**: `e0e9a8d`
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Outro音量
+- **注意**: 既存B1/B2完成音声のOutroは今回遡って差し替えない
+
+## A01 script修正: "The referee then added more time." → "The game went into added time."
+
+- **日付**: 2026-08-12
+- **内容**: A01のFull Story Part2にある"The referee then added more
+  time."を、サッカー放送で標準的に使われる用語"added time"を用いた
+  "The game went into added time."へ修正する
+- **状態**: `DECIDED`(方針確定。完成音声への反映は次回A01 assemble時)
+- **採用理由**: "added more time"は理解可能だが放送英語としてやや
+  一般的すぎる。代替候補"extra time"はサッカーでは「延長戦」という
+  別概念を指すため不採用、"added time"はロスタイムを指す正確な標準
+  用語のため採用
+- **比較した選択肢**: 現状維持 / "The referee added extra time." / "The game went into added time."
+- **却下理由("extra time")**: 意味が変わってしまうリスク(延長戦との混同)
+- **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 9節
+- **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
 
 ## 参照元
 

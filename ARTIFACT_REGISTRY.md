@@ -1,7 +1,7 @@
 # ARTIFACT_REGISTRY — 記事×CEFRレベルの成果物完成状態
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-09**
+**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
 
 記事×CEFRレベルごとの成果物完成状態を一覧化する。値はすべて監査証拠
 (commit・manifest・report)に基づく。**推測で埋めた値はない。** 不明な
@@ -14,13 +14,13 @@
 |---|---|---|---|---|---|---|---|---|---|
 | A01 | CEFR-B2 | PASS | PASS(自動QA合格。ユーザーによる本文単独の明示承認記録なし) | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | A01 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS(r2が最終版) | NOT_REVIEWED(部分的な「修正箇所承認」は複数あるが、最終r2版の通し試聴OKは未記録) | NOT_APPROVED |
-| A01 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(新規、Cross-level原則反映) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(294.2秒、clippingなし) | NOT_REVIEWED(ER-003-CROSSLEVEL-AUDIO-02、2026-08-10生成、ユーザー未試聴) | NOT_APPROVED |
+| A01 | CEFR-A2 | PASS(A2-03独立生成) | PASS(A2-03確定版。ただし"The referee then added more time."→"The game went into added time."の修正が未反映、[DECISION_LOG.md](DECISION_LOG.md)参照) | PROTOTYPE_BUILT(Cross-level原則反映、ただしPause 0.8秒・Outro最新減衰・Key Phrase 3条件発音・In One Line見出し修正は未反映のER-003-CROSSLEVEL-AUDIO-02版のまま) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格。3条件発音方式は未適用) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(294.2秒、clippingなし)。**再assemble要**(Cross-level最新仕様=Pause0.8秒/Outro最新減衰/Key Phrase3条件/In One Line見出し修正が未反映) | NOT_REVIEWED | NOT_APPROVED |
 | A02 | CEFR-B2 | PASS | PASS(自動QA合格。ユーザーによる本文単独の明示承認記録なし) | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | A02 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS | **PASS**(ER-003-REPRO-01、2026-08-08) | NOT_APPROVED |
-| A02 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(ER-003-CROSSLEVEL-AUDIO-01でCross-level原則反映版へ更新) | PROTOTYPE_BUILT(B1流用5件中1件を語末音素試作へ差替) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(309.9秒、clippingなし) | NOT_REVIEWED(ER-003-A2-AUDIO-01でユーザー試聴し概ね良好Feedback→ER-003-CROSSLEVEL-AUDIO-01で反映版を再生成、この反映版は未試聴) | NOT_APPROVED |
+| A02 | CEFR-A2 | PASS(A2-03独立生成) | PASS(A2-03確定版、修正保留中の項目なし) | PASS(Cross-level原則反映済み、ER-003-CROSSLEVEL-AUDIO-01) | PASS(3条件発音方式を5件へ適用済み、ER-003-A2-AUDIO-AB-01) | PASS(機械QA合格、hallucinationなし、In One Line見出し修正済み) | **PASS**(A/B版とも最新Cross-level仕様を全反映、310.5秒[A]/329.3秒[B]、clippingなし) | **PASS**(ER-003-A2-AUDIO-AB-01、2026-08-12。「A2の完成候補は全体としてOK」、B版=約135WPMを速度方針として採用) | NOT_APPROVED |
 | ADD03 | CEFR-B2 | あり(日本語下書きのみ、英語台本なし) | 該当なし | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | ADD03 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS | **PASS**(ER-003-REPRO-FINAL、2026-08-09。meaning_3はASR homophone ambiguityとして人間確認済み、TTS音声は正常) | NOT_APPROVED |
-| ADD03 | CEFR-A2 | PASS(A2-03独立生成) | PROTOTYPE_BUILT(構造支援11パート統合台本) | PROTOTYPE_BUILT(新規、Cross-level原則反映) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(327.4秒、clippingなし) | NOT_REVIEWED(ER-003-CROSSLEVEL-AUDIO-02、2026-08-10生成、ユーザー未試聴) | NOT_APPROVED |
+| ADD03 | CEFR-A2 | PASS(A2-03独立生成) | PASS(A2-03確定版) | PROTOTYPE_BUILT(Cross-level原則反映、ただしPause 0.8秒・Outro最新減衰・Key Phrase 3条件発音・In One Line見出し修正は未反映のER-003-CROSSLEVEL-AUDIO-02版のまま) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格。3条件発音方式は未適用) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(327.4秒、clippingなし)。**再assemble要**(A01と同じくCross-level最新仕様が未反映) | NOT_REVIEWED | NOT_APPROVED |
 
 ## 補足
 

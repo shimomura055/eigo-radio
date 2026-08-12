@@ -1,22 +1,22 @@
-# A2_PROTOTYPE_SPEC — CEFR-A2 言語仕様候補(プロトタイプ)
+# A2_PROTOTYPE_SPEC — CEFR-A2 言語仕様候補(検証履歴)
 
-**管理ID: ER-003-A2-01〜A2-03、ER-003-A2-STRUCT-02**
-**最終更新: 2026-08-09**
-**ステータス: 文書全体が`PROTOTYPE`。個々の項目の状態(ADOPTED/REJECTED/PROTOTYPE継続)は表内で明示する。**
+**管理ID: ER-003-A2-01〜A2-03、ER-003-A2-STRUCT-02〜05**
+**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01でCURRENT_SPECへ移管)**
+**ステータス: `HISTORICAL`(検証記録として保持)。現在仕様の一次参照先は[CURRENT_SPEC.md](CURRENT_SPEC.md)。**
 
-## この文書の位置づけ
+## この文書の位置づけ(2026-08-12更新)
 
-CEFR-A2は現時点で**全体としてまだ`DECIDED`ではない**([CURRENT_SPEC.md](CURRENT_SPEC.md)の
-CEFR節を参照。同ファイルには確定仕様のみを書くというルール上、A2の
-詳細な検証経緯・候補・却下項目はここにまとめる)。本文書はA2-01→A2-02→
-A2-03→A2-STRUCT-02の一連の検証で得られた言語仕様の**現時点の候補**を
-整理したものであり、CURRENT_SPECへの正式昇格(DECIDED化)はユーザーの
-別途承認を要する。
+**2026-08-12(ER-003-A2-SPEC-FREEZE-01)時点で、本文書の「維持する項目」
+はすべて[CURRENT_SPEC.md](CURRENT_SPEC.md)の「CEFR-A2 構造・音声仕様」
+節・CEFR比較表へ`DECIDED`として正式移管済み。** 今後、A2の**現在仕様**を
+知りたい場合はCURRENT_SPEC.mdを見ること。本文書はA2-01→A2-02→A2-03→
+A2-STRUCT-02〜05の**検証過程**(どう試行し、何を採用/却下したか)を
+記録した履歴文書として保持する。新しい仕様変更はここではなくCURRENT_SPEC
+とDECISION_LOGへ記録する。
 
-**正式なCURRENT_SPECとの混同防止**: 表内の「ADOPTED」は「今後のA2生成
-方針として採用する」という意味であり、CEFR-B1/B2のようにCURRENT_SPECへ
-`DECIDED`として記載された確定仕様と同列ではない。A2全体がPrototype段階
-である間は、この文書がA2言語仕様の一次参照先となる。
+**正式なCURRENT_SPECとの混同防止**: 以下の表は移管前の検証時点の記録
+であり、移管後もそのまま保持する(削除しない)。現在値・現在の状態は
+必ずCURRENT_SPEC.mdを一次情報源として確認すること。
 
 ## 維持する項目(A2-01〜A2-03を通じて有効と確認済み)
 
