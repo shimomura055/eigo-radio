@@ -1,0 +1,419 @@
+<title>A02 English Source A/B Comparison</title>
+<style>
+  :root {
+    --bg: #f6f5f1;
+    --bg-panel: #ffffff;
+    --ink: #23241f;
+    --ink-soft: #5b5c54;
+    --border: #e0ded4;
+    --accent: #35507a;
+    --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f;
+    --review: #a6740a;
+    --fail: #b23b3b;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b;
+    --bg-panel: #1f2024;
+    --ink: #eceae3;
+    --ink-soft: #a3a299;
+    --border: #35363b;
+    --accent: #7ea1cf;
+    --accent-soft: #232a34;
+    --pass: #5fbf85;
+    --review: #d9a441;
+    --fail: #e2716b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b;
+      --bg-panel: #1f2024;
+      --ink: #eceae3;
+      --ink-soft: #a3a299;
+      --border: #35363b;
+      --accent: #7ea1cf;
+      --accent-soft: #232a34;
+      --pass: #5fbf85;
+      --review: #d9a441;
+      --fail: #e2716b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  header.page-head {
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    margin: 0.35rem 0 0.5rem;
+    text-wrap: balance;
+  }
+  .subhead { color: var(--ink-soft); font-size: 0.95rem; max-width: 62ch; }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 860px) {
+    .cols { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-head {
+    padding: 1.1rem 1.3rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .version-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .article-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0.3rem 0 0.7rem;
+    text-wrap: balance;
+  }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .badge.status-review { color: var(--review); border-color: currentColor; }
+  .badge.status-fail { color: var(--fail); border-color: currentColor; }
+
+  .article-body {
+    padding: 1.3rem 1.3rem 1.6rem;
+    font-family: var(--serif);
+    font-size: 0.97rem;
+  }
+  .article-body h2 {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 1.4rem 0 0.5rem;
+    font-weight: 600;
+  }
+  .article-body h3 {
+    font-family: var(--sans);
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin: 1.1rem 0 0.4rem;
+    color: var(--accent);
+  }
+  .article-body p { margin: 0.65rem 0; }
+  .article-body strong { color: var(--ink); }
+  .one-line {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    font-style: italic;
+  }
+  .footnote { font-family: var(--sans); font-size: 0.7rem; color: var(--ink-soft); }
+  .cite-link { font-family: var(--sans); font-size: 0.72rem; color: var(--accent); text-decoration: none; }
+  .cite-link:hover { text-decoration: underline; }
+
+  section.block { margin-top: 2.75rem; }
+  .block-title {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .block-note { color: var(--ink-soft); font-size: 0.88rem; margin-bottom: 1.2rem; max-width: 70ch; }
+
+  table.qa-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.88rem;
+  }
+  table.qa-table th, table.qa-table td {
+    padding: 0.75rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.qa-table th {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--accent-soft);
+  }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 15%; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+
+  .fact-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .fact-card h4 {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 0.6rem;
+  }
+  .fact-card.fail h4 { color: var(--fail); }
+  .fact-card.review h4 { color: var(--review); }
+  .fact-card ul { margin: 0; padding-left: 1.2rem; }
+  .fact-card li { margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+  .meta-strip {
+    display: flex; flex-wrap: wrap; gap: 1.1rem;
+    font-family: var(--mono); font-size: 0.75rem; color: var(--ink-soft);
+    margin-top: 0.6rem;
+  }
+  .meta-strip b { color: var(--ink); font-weight: 600; }
+
+  footer.page-foot {
+    margin-top: 3.5rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-EN-DIRECT-AB-01 &middot; A02 Comparison Artifact</div>
+    <h1>Version A / Version B — Full-text comparison</h1>
+    <div class="subhead">Same topic (A02, UK teen nighttime social-media rules), two generation conditions. Read both in full before checking the QA tables below.</div>
+  </header>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version A</div>
+        <div class="article-title">Midnight Means Goodnight: The UK's Quiet Plan to Curb Late-Night Scrolling</div>
+        <div class="meta-row">
+          <span class="badge">418 words</span>
+          <span class="badge status-review">Fidelity QA: REVIEW_REQUIRED</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>At midnight, social media may soon start saying &ldquo;goodnight&rdquo; to teenagers in the UK.</p>
+        <p>On July 15, the British government announced plans to introduce a <strong>digital switch-off period</strong> for 16- and 17-year-olds, running from midnight to 6 a.m.</p>
+        <p>During those hours, covered apps would be unavailable by default, and notifications would be paused. Autoplay&mdash;the feature that keeps videos coming one after another&mdash;would also be switched off, along with the personalized recommendation feeds designed to keep users scrolling endlessly.</p>
+        <p>The new measures are expected to take effect in the spring of 2027.</p>
+        <p>But this would not be a locked gate.</p>
+        <p>Teenagers aged 16 and 17 would still be able to change the settings and opt out.</p>
+        <p>So, wouldn&rsquo;t everyone simply turn the restrictions off?</p>
+        <p>Perhaps. But the UK&rsquo;s strategy is less about issuing commands and more about shaping the <strong>default experience</strong>. To open an app in the middle of the night, users would first have to pause and actively choose to override the setting.</p>
+        <p>In other words, the plan is to place a small speed bump in front of that automatic urge to watch &ldquo;just one more.&rdquo;</p>
+
+        <h2>Today's Late-Night Scrolling Points</h2>
+        <h3>Point One: A Nighttime Pause Proved More Practical Than a Total Ban</h3>
+        <p>In a trial involving 309 families, nighttime restrictions from 9 p.m. to 7 a.m. were considered the easiest of three approaches to manage. They also produced the most consistent reports of improved sleep.</p>
+        <p>However, some teenagers simply shifted their screen time to just before or after the restricted hours. So closing off the night does not automatically make the wider problem disappear.</p>
+
+        <h3>Point Two: Even Optional Defaults Can Change Behavior</h3>
+        <p>In a separate experiment by Ofcom, around seven in ten children kept a setting that prevented harmful content from being recommended when it was selected by default.</p>
+        <p>When no option was preselected, that figure fell to around half.</p>
+        <p>The setting was not mandatory. But the results suggest that defaults alone can be powerful enough to change the direction of people&rsquo;s choices.</p>
+
+        <h2>In One Line</h2>
+        <div class="one-line">&ldquo;What the UK is trying to switch off is not the glow of the smartphone, but the endless current of scrolling that carries teenagers right up to bedtime.&rdquo;</div>
+        <p>This midnight speed bump sits somewhere between a strict ban and a complete hands-off approach. Its success will not be measured by how many teenagers change the setting, but by how many more nights they leave it untouched&mdash;and simply go to sleep.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version B</div>
+        <div class="article-title">&ldquo;At Midnight, Britain Wants the Infinite Scroll to Blink First&rdquo;</div>
+        <div class="meta-row">
+          <span class="badge">410 words</span>
+          <span class="badge status-fail">Fact check: FAIL</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>It is 11:59 p.m.</p>
+        <p>A teenager watches one clip. Then another. The feed promises that the <em>next</em> video will be even better.</p>
+        <p>Midnight arrives&mdash;and, under Britain&rsquo;s new plan, the app changes its tone.</p>
+        <p>Notifications fall silent. The overnight social-media curfew switches on. Autoplay stops doing the deciding, while personalised feeds lose their automatic grip.</p>
+        <p>In other words:</p>
+        <div class="one-line" style="margin: 0.9rem 0;">&ldquo;The phone stays. But the digital night goes quiet.&rdquo;</div>
+        <p>Announced on July 15, 2026, the UK government&rsquo;s plan would place 16- and 17-year-olds into default social-media restrictions from midnight until 6 a.m. Features designed to prolong scrolling, including autoplay and personalised recommendation feeds, would also be disabled automatically. <a class="cite-link" href="https://www.gov.uk/government/news/new-social-media-curfews-and-crackdown-on-addictive-features-to-better-protect-16-and-17-year-olds-online">[gov.uk]</a></p>
+        <p>This is not a locked bedroom door.</p>
+        <p>Older teenagers would remain free to change the settings themselves. The policy is therefore less of a compulsory bedtime and more of a deliberate pause&mdash;one that asks users to make an active choice before returning to the feed.</p>
+        <p>The distinction matters because Britain is planning a much firmer rule for younger children: social-media services are expected to be unavailable to under-16s. The government says the overnight settings for older teenagers are intended to prevent a sudden &ldquo;cliff edge&rdquo; in protection when a child turns 16. The new measures are expected to begin in spring 2027, subject to parliamentary approval and implementation. <a class="cite-link" href="https://www.gov.uk/government/consultations/growing-up-in-the-online-world-a-national-consultation/outcome/growing-up-in-the-online-world-children-and-young-peoples-summary">[gov.uk]</a></p>
+
+        <h2>The Two Big Signals from Britain's Digital Bedtime</h2>
+        <h3>The Default May Matter More Than the Ban</h3>
+        <p>Because teenagers can opt out, critics may dismiss the curfew as easy to escape.</p>
+        <p>But defaults quietly influence behaviour. Ofcom research found that children were more likely to retain safer settings when those settings were selected automatically. The British approach is betting that a small barrier&mdash;opening the menu and consciously switching protection off&mdash;may be enough to interrupt an automatic habit. <a class="cite-link" href="https://www.ofcom.org.uk/online-safety/safety-technology/protective-defaults-for-social-media-platforms">[ofcom.org.uk]</a></p>
+
+        <h3>Better Sleep Does Not Mean the Problem Disappears</h3>
+        <p>A government-backed pilot involving 309 families tested a stricter 9 p.m.-to-7 a.m. curfew. Families reported that it was the easiest restriction to manage and produced the clearest sleep benefits. Many even continued it voluntarily. <a class="cite-link" href="https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk">[gov.uk]</a></p>
+        <p>Yet teenagers adapted. Some rushed to use apps before the cut-off, returned early in the morning or switched devices. Daytime use often remained unchanged.</p>
+        <p>So the curfew may calm the night without defeating the algorithm.</p>
+
+        <h2>In One Sentence</h2>
+        <div class="one-line">&ldquo;Britain is not taking the phone from older teenagers&mdash;it is making endless scrolling knock before entering the night.&rdquo;</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Fact QA detail</div>
+    <div class="block-note">Independent fact-checker verdicts, both using live web search, separate from the writer call. PASS / REVIEW_REQUIRED / FAIL scale.</div>
+
+    <div class="cols">
+      <div>
+        <div class="fact-card review">
+          <h4>Version A &mdash; REVIEW_REQUIRED</h4>
+          <ul>
+            <li><strong>Meaning change:</strong> &ldquo;During those hours&rdquo; extends grammatically to autoplay/personalised-feed shutoff, implying those features are midnight-limited too; the Japanese source left that scope ambiguous.</li>
+            <li><strong>Meaning change:</strong> &ldquo;produced&rdquo; reads as a slightly stronger causal claim than the Japanese &ldquo;most consistent reports.&rdquo;</li>
+            <li><strong>Unsupported addition:</strong> &ldquo;some teenagers&rdquo; names an actor the Japanese source left unspecified.</li>
+            <li>Core numbers, dates, and the two Points' central claims are preserved.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="fact-card fail">
+          <h4>Version B &mdash; FAIL</h4>
+          <ul>
+            <li><strong>Contradiction:</strong> frames autoplay/personalised-feed shutoff as triggered "at midnight," but official sources disable those features by default independent of the midnight&ndash;6a.m. window.</li>
+            <li><strong>Contradiction:</strong> "309 families" is presented as the night-curfew trial group; 309 was the total pilot enrollment across four conditions, and only 81 were in the night-restriction group.</li>
+            <li><strong>Unsupported claim:</strong> frames the Ofcom default effect as evidence it "may be enough to interrupt an automatic habit" &mdash; Ofcom's own study doesn't extend to real-world nighttime habits.</li>
+            <li><strong>Unsupported claim:</strong> "produced the clearest sleep benefits" reads as a firmer causal claim than the underlying small, self-selected qualitative pilot supports.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Quality QA &mdash; 9 axes, side by side</div>
+    <div class="block-note">Judgment calls below are grounded in the text and fact-check evidence above. Final call on which approach to carry forward is the user's, not this table's.</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead>
+        <tr><th>Axis</th><th>Version A</th><th>Version B</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="axis-name">1. Fact accuracy</td>
+          <td>REVIEW_REQUIRED, no outright contradictions with source.</td>
+          <td>FAIL &mdash; two contradictions with primary sources (timing of feature shutoff; 309 vs. 81 sample size).</td>
+        </tr>
+        <tr>
+          <td class="axis-name">2. Meaning precision</td>
+          <td>Two subtle phrasing-level shifts (scope ambiguity, causal strength), flagged but not source-contradicting.</td>
+          <td>Two errors that change what a listener would believe is true, not just phrasing nuance.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">3. Grammar</td>
+          <td>Clean, native-level.</td>
+          <td>Clean, native-level. No difference observed.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">4. Idiomaticity</td>
+          <td>Natural, measured.</td>
+          <td>Natural, with more literary flourish ("blink first," "knock before entering the night").</td>
+        </tr>
+        <tr>
+          <td class="axis-name">5. News narration naturalness</td>
+          <td>Reads as straightforward news copy throughout.</td>
+          <td>Opens with a dramatized scene ("It is 11:59 p.m. A teenager watches one clip...") not present in the source facts &mdash; vivid, but a narrative liberty rather than a reported fact.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">6. Editorial engagement</td>
+          <td>Solid hook, steady build.</td>
+          <td>Stronger opening hook and a punchier thesis line, closer to the master's short-line rhythm.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">7. Master-style transfer</td>
+          <td>Overview &rarr; two angled points &rarr; one-line close, in conventional paragraph rhythm.</td>
+          <td>Same structure, but short dramatic beats ("Midnight arrives&mdash;", "It is 11:59 p.m.") echo the master's clipped-sentence rhythm more closely.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">8. Point differentiation</td>
+          <td>Point One = trial practicality; Point Two = default psychology. Clearly distinct angles.</td>
+          <td>Same two angles, reordered (default psychology first). Equally distinct.</td>
+        </tr>
+        <tr>
+          <td class="axis-name">9. Downstream (B1/A2) suitability</td>
+          <td>Already used as the approved Natural English Source basis for B1/A2 in production.</td>
+          <td>Would need the two factual errors corrected and re-verified before it could safely feed B1/A2 &mdash; using it as-is risks carrying inaccuracies downstream.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Generation conditions</div>
+    <div class="meta-strip">
+      <span><b>Version A</b> source: er003_output/p1b/A02/natural_source_approved.md (existing, unmodified)</span>
+    </div>
+    <div class="meta-strip">
+      <span><b>Version B</b> model: gpt-5.6-sol</span>
+      <span>reasoning: high</span>
+      <span>API: responses.create</span>
+      <span>web_search calls (writer): 3</span>
+      <span>web_search calls (fact checker): 6</span>
+      <span>content attempts: 1 (no retry)</span>
+      <span>developer message: "英語の記事を作成してください。"</span>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-EN-DIRECT-AB-01 &middot; generated 2026-08-12 &middot; full prompt/response records in er003_output/en_direct_ab_01/A02/
+  </footer>
+</div>
