@@ -48,20 +48,31 @@
 
 ## 4. 何がまだOPENか
 
-[OPEN_ITEMS.md](OPEN_ITEMS.md)に2件を残した。
+**注意: 以下は「A2/Cross-level仕様に直接関係するOPEN項目」のみを
+指す。[OPEN_ITEMS.md](OPEN_ITEMS.md)全体のOPEN項目数はこれより多い
+(6節参照)。**
 
-- **OPEN-31**: A2英文のnaturalness。A01の"added more time"→"added
-  time"修正はDECISION_LOGで方針確定済みだが、台本への反映(および
-  他記事の残りのSHOULD_REVISE候補4件の判断)はまだ
+A2/Cross-level関連でDECIDEDへ昇格しなかったのはOPEN-31・OPEN-34の2件。
+
+- **OPEN-31**: A2英文のnaturalness。3記事でSHOULD_REVISE**5件**
+  (A01×3、A02×1、ADD03×1)を検出、いずれも台本未反映。うちA01の
+  "added more time"→"added time"の1件のみDECISION_LOGで修正方針が
+  確定(反映はまだ)。残り4件(A01×2、A02×1、ADD03×1)は未判断
 - **OPEN-34**(新規): A01・ADD03の完成音声が、今回DECIDEDへ昇格した
   Cross-level最新仕様(Pause 0.8秒・Outro最新減衰・Key Phrase 3条件
   発音・In One Line見出し修正・約135 WPM)をまだ反映していない
   (ER-003-CROSSLEVEL-AUDIO-02時点のバージョンのまま)。次回のA01/ADD03
   assemble時に反映する
 
-その他、Cross-levelとは無関係の既存の技術的負債(CI manifest未登録
-ファイル=OPEN-27、Canonicalizationグロスのナレーション不安定パターン=
-OPEN-28等)は今回のスコープ外のため変更していない。
+**プロジェクト全体のOPEN項目数**: [OPEN_ITEMS.md](OPEN_ITEMS.md)全体では
+`TBD`/`UNDER_REVIEW`状態の項目が計13件ある。内訳はOPEN-31・OPEN-34
+(A2/Cross-level関連、上記の2件)と、それ以外の11件
+(OPEN-03/05/06/07/09/10/11/12/22/27/28。CI manifest未登録=OPEN-27、
+Canonicalizationグロス不安定=OPEN-28、公開承認待ち=OPEN-10/11等、
+A2/Cross-levelとは無関係の既存技術的負債・公開判断待ち)。今回の
+整理でDECIDED/CLOSEDへ解決したのはA2/Cross-level関連の13件
+(OPEN-01/02/13/16/21/23〜26/29/30/32/33)のみであり、上記11件は
+今回のスコープ外のため変更していない。
 
 ## 5. Source of Truth更新一覧
 
