@@ -1,0 +1,231 @@
+<title>ADD03 Listening-first: Version V vs Version L</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --bg-panel: #ffffff; --ink: #23241f; --ink-soft: #5b5c54;
+    --border: #e0ded4; --accent: #35507a; --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f; --highlight: #c65b1f;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+    --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+    --pass: #5fbf85; --highlight: #e0975a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+      --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+      --pass: #5fbf85; --highlight: #e0975a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page-head { margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0.35rem 0 0.5rem; text-wrap: balance; }
+  .subhead { color: var(--ink-soft); font-size: 0.93rem; max-width: 74ch; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .panel-head { padding: 1.1rem 1.3rem 0.9rem; border-bottom: 1px solid var(--border); }
+  .version-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .article-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; margin: 0.3rem 0 0.65rem; text-wrap: balance; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .badge { font-family: var(--mono); font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-soft); white-space: nowrap; }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .article-body { padding: 1.1rem 1.3rem 1.5rem; font-family: var(--serif); font-size: 0.93rem; }
+  .article-body h2 { font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 1.3rem 0 0.45rem; font-weight: 600; }
+  .article-body h3 { font-family: var(--sans); font-size: 0.98rem; font-weight: 700; margin: 1rem 0 0.35rem; color: var(--accent); }
+  .article-body p { margin: 0.55rem 0; }
+  .article-body strong { color: var(--highlight); }
+  .one-line { margin-top: 0.9rem; padding: 0.7rem 0.9rem; background: var(--accent-soft); border-radius: 8px; font-style: italic; font-size: 0.9rem; }
+  section.block { margin-top: 2.75rem; }
+  .block-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .block-note { color: var(--ink-soft); font-size: 0.86rem; margin-bottom: 1.2rem; max-width: 76ch; }
+  table.qa-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.83rem; }
+  table.qa-table th, table.qa-table td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.qa-table th { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); background: var(--accent-soft); }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 15%; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+  .fact-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+  .fact-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.5rem; color: var(--pass); }
+  .fact-card ul { margin: 0; padding-left: 1.1rem; }
+  .fact-card li { margin-bottom: 0.4rem; font-size: 0.87rem; }
+  .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.5rem; }
+  .meta-strip b { color: var(--ink); font-weight: 600; }
+  .tag { display: inline-block; font-family: var(--mono); font-size: 0.62rem; padding: 0.1rem 0.4rem; border-radius: 5px; margin-right: 0.3rem; }
+  .tag.anchor { background: #d7e6d3; color: #2f5230; }
+  .tag.supporting { background: #e6e0d3; color: #6b5a2f; }
+  .tag.dispensable { background: #e6d3d3; color: #6b2f2f; }
+  :root[data-theme="dark"] .tag.anchor, @media (prefers-color-scheme: dark) { .tag.anchor { background: #2a3d2a; color: #9fd39a; } .tag.supporting { background: #3d3626; color: #d9c896; } .tag.dispensable { background: #3d2626; color: #d99696; } }
+  footer.page-foot { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-SPOKEN-FIRST-01 &middot; ADD03 Listening-first</div>
+    <h1>Version V (as-is) vs Version L (listening-first rewrite)</h1>
+    <div class="subhead">Same Verified Fact Ledger, no new research. Read both versions first — which one would be easier to follow by ear alone? Number treatment and QA are below.</div>
+  </header>
+
+  <div class="cols">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version V &middot; as-is</div>
+        <div class="article-title">"Twenty Percent—Then Never Mind": Hormuz Fee Reversal Fails to Calm Oil</div>
+        <div class="meta-row">
+          <span class="badge">418 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>For roughly one day, one of the world's most sensitive maritime routes became the center of a dramatic policy reversal.</p>
+        <p>On July 13, 2026, U.S. President Donald Trump proposed that the United States receive <strong>20% of the value of all cargo passing through the Strait of Hormuz</strong>, describing the payment as reimbursement for American safety and security protection.</p>
+        <p>The number was clear. The mechanism was not.</p>
+        <p>The statement did not specify who would collect the charge, what legal authority would support it, how cargo would be valued, or when collection might begin. It was a proposed policy&mdash;not an already operational transit fee.</p>
+        <p>At the same time, another message was moving through the market: the United States was preparing to resume a maritime blockade involving vessels entering or leaving Iranian ports and coastal areas, while continuing to support ships not covered by the blockade.</p>
+        <p>Oil markets reacted sharply.</p>
+        <p>Brent crude ended July 13 at <strong>$83.30</strong> a barrel, up <strong>$7.29, or 9.59%</strong>. The rise was reported in the context of renewed supply fears surrounding the blockade and energy shipments through Hormuz&mdash;not as a response to the 20% proposal alone.</p>
+        <p>Then came the reversal.</p>
+        <p>On July 14, Trump said the proposed charge would be replaced by U.S.-focused trade and investment agreements with Gulf countries, effectively withdrawing the 20% plan. The blockade against Iran, however, remained in place.</p>
+        <h2>Key Currents to Watch</h2>
+        <h3>The Retreat Removed One Risk&mdash;Not the Entire Storm</h3>
+        <p>Brent climbed as much as <strong>4.6%</strong> to an intraday high of <strong>$87.08</strong> on July 14 before reports of the withdrawal helped narrow its gains.</p>
+        <p>But oil did not finish the day lower. Brent closed at <strong>$84.73</strong>, still up <strong>1.7%</strong> from the previous session.</p>
+        <h3>The Legal and Diplomatic Question Never Disappeared</h3>
+        <p>The IMO Council had reaffirmed that passage through the Strait of Hormuz should remain free from transit charges or fees under international law and IMO conventions.</p>
+        <h2>In One Line&hellip;</h2>
+        <div class="one-line">A 20% proposal rattled the route, its withdrawal calmed part of the surge&mdash;but the waters around Hormuz remained far from still.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="version-tag">Version L &middot; listening-first</div>
+        <div class="article-title">"Twenty Percent—Then Never Mind": Hormuz Fee Reversal Fails to Calm Oil</div>
+        <div class="meta-row">
+          <span class="badge">472 words</span>
+          <span class="badge status-pass">Fact check: PASS</span>
+          <span class="badge status-pass">Ledger: compliant</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <p>For just over a day, one number hung over the Strait of Hormuz: <strong>20 percent</strong>.</p>
+        <p>On July 13, U.S. President Donald Trump proposed that the United States seek reimbursement at that rate on &ldquo;all cargo&rdquo; moving through the strait. He described it as payment for the cost of providing safety and security. He also said work on the procedures would begin immediately.</p>
+        <p>But the announcement gave a rate&mdash;not a working system.</p>
+        <p>It did not identify who would collect the money or who would pay. It did not explain how cargo would be valued, what currency would be used, or how exemptions and enforcement would work. It also gave no legal basis. Most importantly, it did not say what the 20 percent would be calculated from.</p>
+        <p>So this was a proposed reimbursement, not an implemented fee.</p>
+        <p>Still, the potential cost looked enormous. One scenario assumed a tanker carrying about two million barrels, with oil at about 85 dollars a barrel. If the proposed 20 percent were applied to the cargo's value, the estimated charge would be about <strong>34 million dollars</strong> for one tanker.</p>
+        <p>That was only a hypothetical calculation. It was not an actual charge.</p>
+        <p>On July 13, Brent crude settled at about <strong>83 dollars</strong> a barrel, up <strong>nearly 10 percent</strong>. Reuters linked the jump to concerns about a planned U.S. maritime blockade of Iran and energy shipments through Hormuz&mdash;not to the proposed fee alone.</p>
+        <p>Then came the reversal.</p>
+        <p>The following day, July 14, Trump said the proposed 20 percent reimbursement would be replaced by Gulf trade and investment deals with the United States.</p>
+        <p>Later, he told reporters that nobody should charge ships for passage through Hormuz. He said he did not like the idea of fees, while continuing to argue that America's burden of protecting the strait was unfair.</p>
+        <p>Oil briefly eased after the announcement. But the relief did not last.</p>
+        <p>Brent soon returned close to its earlier elevated level. It settled at about <strong>85 dollars</strong> a barrel, finishing the day higher as concerns about the blockade, attacks, and tanker safety continued.</p>
+        <h2>What Matters Beyond the Headline</h2>
+        <h3>A Dramatic Percentage Was Not a Complete Policy</h3>
+        <p>The proposed 20 percent rate captured attention. But nearly every practical detail was missing.</p>
+        <p>Without a clear method for calculating and collecting the money, any precise estimate remained hypothetical. The proposal sounded immediate, but it never became an implemented toll.</p>
+        <h3>The Market Was Pricing a Wider Danger</h3>
+        <p>Removing the proposed fee did not remove the other risks surrounding Hormuz. That helps explain why Brent's initial relief faded and why prices still finished higher.</p>
+        <p>There was also a legal and diplomatic backdrop. The IMO Council reaffirmed that passage through the strait should remain free of tolls and charges under international law and IMO conventions. It also said transit must remain nondiscriminatory and unobstructed for all ships.</p>
+        <p>However, the record does not establish that the IMO position caused Trump's reversal.</p>
+        <h2>In One Line</h2>
+        <div class="one-line">The 20 percent proposal disappeared quickly, but the anxiety remained: markets were watching the strait, not just the fee.</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Number treatment table</div>
+    <div class="block-note">Every number that appears in Version V, classified by importance and precision need, with the listening-first treatment actually applied in Version L.</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Original (Version V)</th><th>Class</th><th>Exactness</th><th>Listening-first treatment</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>20%</td><td><span class="tag anchor">ANCHOR</span></td><td>EXACT_REQUIRED</td><td>Kept as "20 percent" throughout</td><td>Central number linking proposal and reversal</td></tr>
+        <tr><td>24 hours 48 minutes</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>"just over a day later"</td><td>Speed of reversal matters; minute-level precision doesn't</td></tr>
+        <tr><td>July 13</td><td><span class="tag anchor">ANCHOR</span></td><td>EXACT_REQUIRED</td><td>Kept as "On July 13"</td><td>Fixes the proposal date before the reversal</td></tr>
+        <tr><td>10:16 a.m. EDT</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>APPROXIMATE_OK</td><td>Dropped, folded into "On July 13"</td><td>Minute-level timestamp adds nothing to policy understanding</td></tr>
+        <tr><td>about two million barrels</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Kept as "about two million barrels"</td><td>Sets the scale of the scenario</td></tr>
+        <tr><td>roughly $85 Brent</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Kept as "about 85 dollars a barrel"</td><td>Price assumption behind the scenario</td></tr>
+        <tr><td>around $170 million</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Dropped (intermediate step)</td><td>Redundant with the final $34M figure; two large numbers back to back overloads listening</td></tr>
+        <tr><td>$34 million</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Kept as "about 34 million dollars," explicitly hypothetical</td><td>Main concrete example of the scale of the proposal</td></tr>
+        <tr><td>near $32 million</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>APPROXIMATE_OK</td><td>Dropped entirely</td><td>Near-duplicate of $34M; two close dollar figures confuse by ear</td></tr>
+        <tr><td>$83.30</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Rounded to "about 83 dollars"</td><td>Core fact is the size of the jump, not the exact cents</td></tr>
+        <tr><td>up $7.29</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>DIRECTION_ONLY</td><td>Dropped, merged into "nearly 10 percent"</td><td>Duplicates the percentage; dollar+percent together overloads</td></tr>
+        <tr><td>9.59%</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Rounded to "nearly 10 percent"</td><td>Scale of market alarm; decimal precision unnecessary</td></tr>
+        <tr><td>July 14</td><td><span class="tag anchor">ANCHOR</span></td><td>EXACT_REQUIRED</td><td>Kept as "the following day, July 14"</td><td>Fixes the reversal date after July 13</td></tr>
+        <tr><td>11:04 a.m. EDT</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>APPROXIMATE_OK</td><td>Dropped, folded into "the following day"</td><td>Minute-level timestamp not needed once day-order is clear</td></tr>
+        <tr><td>$84.73</td><td><span class="tag supporting">SUPPORTING</span></td><td>APPROXIMATE_OK</td><td>Rounded to "about 85 dollars"</td><td>Shows price stayed high after reversal; exact cents unnecessary</td></tr>
+        <tr><td>up $1.43</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>DIRECTION_ONLY</td><td>Dropped, merged into "finished higher"</td><td>Duplicates 1.7%; redundant with the settlement figure</td></tr>
+        <tr><td>1.7%</td><td><span class="tag supporting">SUPPORTING</span></td><td>DIRECTION_ONLY</td><td>Direction only: "finished higher"</td><td>What matters is that it stayed up, not the precise rate</td></tr>
+        <tr><td>137th session</td><td><span class="tag dispensable">DISPENSABLE</span></td><td>EXACT_REQUIRED</td><td>Dropped entirely</td><td>Session number is an identifier, not news content, for a listening audience</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Fact QA outcome (Version L)</div>
+    <div class="cols">
+      <div class="fact-card">
+        <h4>Fact Checker &mdash; PASS</h4>
+        <ul>
+          <li>No contradictions, no unsupported claims (14 web search calls, cross-checked against Reuters, IMO, and the Trump post archive).</li>
+          <li>Rounded figures ("about 83 dollars," "nearly 10 percent," "about 85 dollars") independently confirmed as fair roundings of $83.30/9.59%/$84.73.</li>
+          <li>$34M scenario explicitly kept hypothetical; the article never claims it as an actual charge.</li>
+        </ul>
+      </div>
+      <div class="fact-card">
+        <h4>Ledger Deviation &mdash; LEDGER_COMPLIANT</h4>
+        <ul>
+          <li>0 deviations. No facts outside the Verified Fact Ledger were introduced.</li>
+          <li>July 13 &rarr; July 14 order preserved throughout; no causal claims added beyond what the Ledger supports.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Listening-first QA &mdash; 9 axes</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Axis</th><th>Version V</th><th>Version L</th></tr></thead>
+      <tbody>
+        <tr><td class="axis-name">1. Listening ease</td><td>Multiple close dollar/percent pairs require re-processing on a single listen</td><td>Each figure appears once, without a nearby near-duplicate</td></tr>
+        <tr><td class="axis-name">2. Number density</td><td>15 distinct numeric tokens</td><td>~8 distinct numeric tokens; duplicated dollar/percent pairs merged</td></tr>
+        <tr><td class="axis-name">3. Number necessity</td><td>Includes several numbers (session count, exact minute, near-duplicate dollar estimate) that add precision without adding meaning for a listener</td><td>Every remaining number does identifiable work (anchors the topic, sets scale, or shows direction)</td></tr>
+        <tr><td class="axis-name">4. Cognitive load</td><td>Listener must hold $83.30/$7.29/9.59% simultaneously, then $84.73/$1.43/1.7% later</td><td>Listener holds one rounded price and one rounded rate per day, not three overlapping figures</td></tr>
+        <tr><td class="axis-name">5. Narrative clarity</td><td>Clear but numerically dense at the "what changed" stage</td><td>Same events, same order, easier to track "what happened &rarr; what changed &rarr; why it matters"</td></tr>
+        <tr><td class="axis-name">6. Editorial engagement</td><td>Strong ("The number was clear. The mechanism was not.")</td><td>Preserved almost verbatim; same short-sentence rhythm and hook</td></tr>
+        <tr><td class="axis-name">7. Master-style transfer</td><td>Short declarative beats maintained</td><td>Same beats maintained ("So this was a proposed reimbursement, not an implemented fee." / "That was only a hypothetical calculation.")</td></tr>
+        <tr><td class="axis-name">8. Fact accuracy</td><td>PASS (VFL-02)</td><td>PASS (this experiment), 0 Ledger deviations</td></tr>
+        <tr><td class="axis-name">9. Downstream suitability</td><td>Usable, but denser than B1/A2 narration typically wants</td><td>Numerically lighter while keeping every anchor fact &mdash; a closer match to spoken narration needs</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Generation conditions</div>
+    <div class="meta-strip">
+      <span><b>Base</b>: existing VFL Version V (er003_output/en_direct_vfl_02/ADD03/article.md), no new research</span>
+      <span><b>Verified Fact Ledger</b>: reused as-is, 12 facts</span>
+    </div>
+    <div class="meta-strip">
+      <span><b>Classification</b> model: gpt-5.6-sol, reasoning: high, 18 numbers classified</span>
+      <span><b>Rewrite</b> model: gpt-5.6-sol, reasoning: high, web search: none, retries: 0</span>
+      <span><b>Fact checker</b> web_search calls: 14</span>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-SPOKEN-FIRST-01 &middot; generated 2026-08-13 &middot; full records in er003_output/spoken_first_01/ADD03/
+  </footer>
+</div>
