@@ -1,0 +1,498 @@
+<title>A02 CEFR-Direct: 3-Level x 3-Variation Comparison</title>
+<style>
+:root {
+  --paper: #f3f4f0;
+  --ink: #1f2624;
+  --ink-soft: #545e5a;
+  --rule: #d8dcd4;
+  --card: #fdfdfb;
+  --accent: #3c5c52;
+  --accent-soft: #e2e9e2;
+  --a2: #4d7c5f;
+  --a2-bg: #e5efe6;
+  --b1: #a8710f;
+  --b1-bg: #f5ead2;
+  --b2: #3d4f8c;
+  --b2-bg: #e3e6f4;
+  --master: #6b6357;
+  --master-bg: #ece8de;
+  --pass: #2f6b4f;
+  --pass-bg: #e2eee5;
+  --review: #a8710f;
+  --review-bg: #f5ead2;
+  --fail: #a13d3d;
+  --fail-bg: #f6e3e1;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+    --b2: #9aa8e0; --b2-bg: #232a48; --master: #b8b0a0; --master-bg: #2a2721;
+    --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+    --fail: #e08a8a; --fail-bg: #3a2020;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+  --b2: #9aa8e0; --b2-bg: #232a48; --master: #b8b0a0; --master-bg: #2a2721;
+  --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+  --fail: #e08a8a; --fail-bg: #3a2020;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --a2: #4d7c5f; --a2-bg: #e5efe6; --b1: #a8710f; --b1-bg: #f5ead2;
+  --b2: #3d4f8c; --b2-bg: #e3e6f4; --master: #6b6357; --master-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  line-height: 1.65; margin: 0;
+}
+.wrap { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+header.top { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.eyebrow {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+  font-weight: 600; margin: 0 0 0.6rem;
+}
+h1 { font-size: 1.75rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 0; }
+nav.jump {
+  display: flex; gap: 0.6rem; margin-top: 1.2rem; flex-wrap: wrap;
+}
+nav.jump a {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem;
+  text-decoration: none; padding: 0.35rem 0.9rem; border-radius: 999px;
+  border: 1px solid var(--rule); color: var(--ink); font-weight: 600;
+}
+nav.jump a.a2 { border-color: var(--a2); color: var(--a2); }
+nav.jump a.b1 { border-color: var(--b1); color: var(--b1); }
+nav.jump a.b2 { border-color: var(--b2); color: var(--b2); }
+nav.jump a.x { border-color: var(--accent); color: var(--accent); }
+
+section.level { margin-top: 3.5rem; }
+.level-head { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 1.5rem; }
+.level-badge {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-weight: 800;
+  font-size: 1.4rem; padding: 0.15rem 0.7rem; border-radius: 6px;
+}
+.level-badge.a2 { background: var(--a2-bg); color: var(--a2); }
+.level-badge.b1 { background: var(--b1-bg); color: var(--b1); }
+.level-badge.b2 { background: var(--b2-bg); color: var(--b2); }
+.level-head h2 { font-size: 1.1rem; margin: 0; color: var(--ink-soft); font-weight: 500; }
+
+.article-card {
+  background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+  padding: 1.8rem 2.1rem; margin-bottom: 1.4rem;
+}
+.article-label {
+  display: inline-block; font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase;
+  font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 3px; margin-bottom: 1rem;
+}
+.article-label.master { background: var(--master-bg); color: var(--master); }
+.article-label.v { background: var(--accent-soft); color: var(--accent); }
+.article-card p { margin: 0 0 0.85rem; }
+.article-card p:last-child { margin-bottom: 0; }
+.wc-note {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem;
+  color: var(--ink-soft); float: right; font-variant-numeric: tabular-nums;
+}
+
+.data-block { margin-top: 2.2rem; font-family: -apple-system, "Segoe UI", sans-serif; }
+.data-block h3 {
+  font-size: 0.85rem; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--ink-soft); border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.4rem; margin: 1.8rem 0 0.8rem;
+}
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.7rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; white-space: nowrap; }
+.badge.pass { background: var(--pass-bg); color: var(--pass); }
+.badge.review { background: var(--review-bg); color: var(--review); }
+.badge.fail { background: var(--fail-bg); color: var(--fail); }
+.badge.compliant { background: var(--pass-bg); color: var(--pass); }
+.badge.deviation { background: var(--review-bg); color: var(--review); }
+
+section.cross { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--rule); }
+section.cross h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); }
+
+footer.meta {
+  margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft);
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">ER-003-CEFR-DIRECT-01 &middot; A02 3-Level &times; 3-Variation Direct Difficulty Test</p>
+    <h1>Britain's Midnight Reset — 本文のみ、難易度指示だけでのCEFRレベル差検証</h1>
+    <p class="sub">English Master(制約なし)を基準に、Reader Profile / Listening&#8211;Cognitive Load / English Master Distance の3方式でA2・B1・B2を生成。Point One/Two/In One Lineは今回対象外。</p>
+    <nav class="jump">
+      <a class="a2" href="#a2">A2 Comparison</a>
+      <a class="b1" href="#b1">B1 Comparison</a>
+      <a class="b2" href="#b2">B2 Comparison</a>
+      <a class="x" href="#cross">Cross-level</a>
+    </nav>
+  </header>
+
+  <!-- ============ A2 ============ -->
+  <section class="level" id="a2">
+    <div class="level-head"><span class="level-badge a2">A2</span><h2>English Master &middot; Variation 1 &middot; Variation 2 &middot; Variation 3</h2></div>
+
+    <div class="article-card">
+      <span class="article-label master">English Master</span><span class="wc-note">198 words</span>
+      <p>At midnight, the phone may still be beside the bed.</p>
+      <p>But under the UK government's plan, it could become a much quieter companion.</p>
+      <p>Britain is preparing new default social media protections for 16- and 17-year-olds. From midnight to 6 a.m., covered services would apply nighttime restrictions, including the muting of alerts and push notifications.</p>
+      <p>The idea is simple:</p>
+      <p>"Let the night feel like night again."</p>
+      <p>This is not a blanket, unchangeable social media ban. The protections would switch on automatically, but users would be able to alter the settings themselves.</p>
+      <p>That distinction matters.</p>
+      <p>The government is not proposing to seize control of teenagers' phones for six hours. Instead, it wants the starting position to change—from platforms constantly inviting young people back in, to a quieter default that requires a conscious choice to override.</p>
+      <p>And for now, this remains a plan, not an active rule.</p>
+      <p>As of August 12, 2026, the changes had not yet taken effect. Parliamentary approval is still required, with the government expecting implementation to begin around spring 2027.</p>
+      <p>So the screen is not going dark tonight.</p>
+      <p>But Britain is preparing to ask a much bigger question: when midnight arrives, should social media still be designed to keep calling?</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 1</span><span class="wc-note">239 words</span>
+      <p>At midnight, one more video can easily become ten. A quick check of a message can turn into another hour of scrolling.</p>
+      <p>The UK government wants social media to respond differently at that moment.</p>
+      <p>Under its planned rules, users aged 16 and 17 would receive default nighttime protections from midnight to 6 a.m. During those six hours, social media alerts and push notifications would be muted. A default limit on nighttime use would also apply.</p>
+      <p>In other words, the apps would stop calling so loudly in the middle of the night.</p>
+      <p>But this is not a locked digital curfew.</p>
+      <p>The settings would switch on automatically, but young users could change them. Social media would not necessarily become completely unavailable until morning. The plan is closer to putting a quiet setting in place first—and then allowing the user to decide whether to remove it.</p>
+      <p>That difference matters.</p>
+      <p>Instead of asking teenagers to search through menus and turn protections on, the safer setting would become the starting point.</p>
+      <p>The change is also not in force yet. As of August 12, 2026, it remains a government plan that needs parliamentary approval. Government documents say the new rules are expected to begin around spring 2027.</p>
+      <p>The final details of which social media services will be covered are still to come.</p>
+      <p>For now, the direction is clear: when the clock reaches midnight, the government wants the endless call of social media to become a little easier to ignore.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 2</span><span class="wc-note">261 words</span>
+      <p>At midnight, a phone lights up.</p>
+      <p>One message. Then another alert. Then one more video.</p>
+      <p>The UK government wants to make that night-time pull quieter for 16- and 17-year-olds.</p>
+      <p>Under its plan, social media services covered by the new rules would turn on night protections by default from midnight to 6 a.m. Alerts and push notifications would be muted during these six hours.</p>
+      <p>But this is not a complete, unchangeable ban.</p>
+      <p>The settings would turn on automatically, but young users could change them. The final details about which services will be covered have also not yet been decided.</p>
+      <p>A separate UK pilot tested a stronger kind of night rule. The full pilot included 309 households in four groups. In one group, 81 households were assigned a rule that blocked selected social media apps from 9 p.m. to 7 a.m.</p>
+      <p>Among the three types of limits tested, families said the night rule was the easiest to fit into daily life. People in that group also reported earlier bedtimes, faster sleep, and feeling more awake the next day.</p>
+      <p>However, the study was small and was based mainly on what families said. It did not prove that a night rule caused better sleep.</p>
+      <p>The pilot rule and the government plan are also different. The pilot used an access block from 9 p.m. to 7 a.m. The planned policy uses default protections from midnight to 6 a.m., and users can change the settings.</p>
+      <p>As of August 12, 2026, the policy is still only a plan. It needs approval from Parliament, and the government expects the changes to begin around spring 2027.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 3</span><span class="wc-note">191 words</span>
+      <p>At midnight, a phone may still be next to a teenager's bed.</p>
+      <p>But under a new UK government plan, the phone could become much quieter.</p>
+      <p>The government is planning new social media settings for 16- and 17-year-olds. From midnight to 6 a.m., covered social media services would use nighttime limits by default. Alerts and push notifications would be muted during these six hours.</p>
+      <p>The idea is simple:</p>
+      <p>"Give the night some quiet time."</p>
+      <p>This would not be a strict social media ban. The settings would turn on automatically, but young users could change them.</p>
+      <p>This difference is important.</p>
+      <p>The plan would not make social media completely impossible to use at night. Instead, quiet would become the normal setting. A young person would need to choose to change it.</p>
+      <p>The rules are also not active yet.</p>
+      <p>As of August 12, 2026, they were still only a government plan. Parliament must approve the new rules before they can begin. The government expects the changes to start around spring 2027.</p>
+      <p>So phones will not suddenly become silent tonight.</p>
+      <p>But the UK is preparing to ask an important question: should social media keep calling young people back after midnight?</p>
+    </div>
+
+    <div class="data-block">
+      <h3>10-axis Difficulty QA</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Axis</th><th>English Master</th><th>Variation 1</th><th>Variation 2</th><th>Variation 3</th></tr></thead>
+        <tbody>
+          <tr><td>1. Naturalness</td><td>Native adult journalism</td><td>Natural, plain, adult</td><td>Natural、やや説明的(pilot列挙)</td><td>自然な作り直し、翻訳調なし</td></tr>
+          <tr><td>2. Listening ease</td><td>中(結び文が長い)</td><td>易しい、1文1情報</td><td>易しいがpilot部で長い</td><td>易しい、コンパクト</td></tr>
+          <tr><td>3. Vocabulary burden</td><td>高(companion/override/invitation比喩)</td><td>低〜中</td><td>低〜中</td><td>低</td></tr>
+          <tr><td>4. Sentence-processing burden</td><td>中〜高(結び文)</td><td>低</td><td>低〜中(pilot部で複文)</td><td>低</td></tr>
+          <tr><td>5. Abstractness</td><td>中〜高(比喩)</td><td>低〜中("calling so loudly"は保持)</td><td>低(具体的なpilot数値中心)</td><td>低〜中</td></tr>
+          <tr><td>6. Amount of inference required</td><td>中</td><td>低</td><td>低</td><td>低</td></tr>
+          <tr><td>7. Narrative clarity</td><td>高</td><td>高</td><td>高(ただし本文/Point境界が曖昧、G節参照)</td><td>高</td></tr>
+          <tr><td>8. Editorial engagement</td><td>高(結びの問いかけ)</td><td>中〜高</td><td>中(pilot列挙で報告書調に)</td><td>中〜高(結びの問いかけを保持)</td></tr>
+          <tr><td>9. Adult-news feel</td><td>強い</td><td>強い</td><td>強いが調査ブリーフ寄り</td><td>強い</td></tr>
+          <tr><td>10. Fact accuracy</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge pass">PASS</span></td><td><span class="badge pass">PASS</span>(ただしG節の範囲逸脱あり)</td><td><span class="badge pass">PASS</span></td>
+        </tbody>
+      </table></div>
+
+      <h3>Fact Safety</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 1</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 3</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Metrics(参考値)</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th class="num">Words</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td class="num">198</td><td class="num">14</td><td class="num">14.3</td><td class="num">27</td></tr>
+          <tr><td>Variation 1</td><td class="num">239</td><td class="num">18</td><td class="num">13.3</td><td class="num">27</td></tr>
+          <tr><td>Variation 2</td><td class="num">261</td><td class="num">22</td><td class="num">12.0</td><td class="num">23</td></tr>
+          <tr><td>Variation 3</td><td class="num">191</td><td class="num">17</td><td class="num">11.4</td><td class="num">20</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ B1 ============ -->
+  <section class="level" id="b1">
+    <div class="level-head"><span class="level-badge b1">B1</span><h2>English Master &middot; Variation 1 &middot; Variation 2 &middot; Variation 3</h2></div>
+
+    <div class="article-card">
+      <span class="article-label master">English Master</span><span class="wc-note">198 words</span>
+      <p>At midnight, the phone may still be beside the bed.</p>
+      <p>But under the UK government's plan, it could become a much quieter companion.</p>
+      <p>Britain is preparing new default social media protections for 16- and 17-year-olds. From midnight to 6 a.m., covered services would apply nighttime restrictions, including the muting of alerts and push notifications.</p>
+      <p>The idea is simple:</p>
+      <p>"Let the night feel like night again."</p>
+      <p>This is not a blanket, unchangeable social media ban. The protections would switch on automatically, but users would be able to alter the settings themselves.</p>
+      <p>That distinction matters.</p>
+      <p>The government is not proposing to seize control of teenagers' phones for six hours. Instead, it wants the starting position to change—from platforms constantly inviting young people back in, to a quieter default that requires a conscious choice to override.</p>
+      <p>And for now, this remains a plan, not an active rule.</p>
+      <p>As of August 12, 2026, the changes had not yet taken effect. Parliamentary approval is still required, with the government expecting implementation to begin around spring 2027.</p>
+      <p>So the screen is not going dark tonight.</p>
+      <p>But Britain is preparing to ask a much bigger question: when midnight arrives, should social media still be designed to keep calling?</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 1</span><span class="wc-note">250 words</span>
+      <p>At midnight, a phone can suddenly feel very loud.</p>
+      <p>One alert appears. Then another. A quick check becomes ten more minutes of scrolling.</p>
+      <p>The UK government is planning a new response for 16- and 17-year-olds:</p>
+      <p>"After midnight, social media should become quieter by default."</p>
+      <p>Under the plan, covered social media services would automatically apply nighttime restrictions from midnight to 6 a.m. Alerts and push notifications would also be muted during those six hours.</p>
+      <p>But this is not a locked digital curfew.</p>
+      <p>Young users would be able to change the settings themselves. The proposal is designed as a default protection—something that is already switched on unless the user chooses otherwise—not an unchangeable ban.</p>
+      <p>That difference matters.</p>
+      <p>The government is not simply trying to place a wall between teenagers and social media. It is putting a small pause into the night: fewer signals from the screen, and fewer invitations to return to an app.</p>
+      <p>Picture the moment.</p>
+      <p>The clock reaches midnight. The phone does not disappear. The internet does not shut down. But the usual stream of notifications becomes quiet.</p>
+      <p>The message is simple:</p>
+      <p>"Nothing is demanding your attention right now."</p>
+      <p>As of August 12, 2026, however, this remains a plan rather than a rule already in force. Parliamentary approval is still required, and the government expects the changes to begin around spring 2027.</p>
+      <p>So the setting has not yet reached teenagers' phones. The next question is whether a quieter default will change nighttime habits—or whether young users will simply switch it off.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 2</span><span class="wc-note">256 words</span>
+      <p>It is after midnight. The room is dark, but a phone screen is still bright. One alert arrives, then another. Going to sleep can wait for "just one more check."</p>
+      <p>The UK government wants to change what happens by default in that moment.</p>
+      <p>Under its planned rules, social media services covered by the policy would apply a default nighttime restriction to users aged 16 and 17. It would run from midnight to 6 a.m. During those six hours, social media alerts and push notifications would be muted.</p>
+      <p>At first, this may sound like a strict digital curfew.</p>
+      <p>But it is not a complete ban.</p>
+      <p>The protective settings would turn on automatically, but 16- and 17-year-olds would be able to change them. The plan does not mean that social media would become completely unavailable at midnight. Instead, the safer nighttime setting would become the starting choice.</p>
+      <p>The age group also matters. The plan is for 16- and 17-year-olds, not all minors. It would apply to social media services covered by the new rules, but the final details about those services have not yet been decided.</p>
+      <p>There is another important pause in this story: the system is not in force yet.</p>
+      <p>As of August 12, 2026, it remains a government plan. The new rules still need approval from Parliament. If they receive that approval, the government expects the changes to begin around spring 2027.</p>
+      <p>So, for now, no switch has been turned. The next question is whether changing the default setting can change late-night habits—even when young users can still turn that setting off.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 3</span><span class="wc-note">170 words</span>
+      <p>At midnight, a teenager's phone may still be beside the bed.</p>
+      <p>But under a new UK government plan, it may become much quieter.</p>
+      <p>The government plans to introduce nighttime social media settings for 16- and 17-year-olds. From midnight to 6 a.m., covered services would use nighttime restrictions by default. These would include muting alerts and push notifications.</p>
+      <p>The message is simple:</p>
+      <p>"Night should be a time to switch off."</p>
+      <p>However, this would not be a complete social media ban. The settings would turn on automatically, but young users could change them.</p>
+      <p>In other words, the government does not plan to make teenagers' phones unusable at night. It wants quiet settings to become the normal starting point, instead of allowing notifications to keep calling users back.</p>
+      <p>The plan is also not in force yet.</p>
+      <p>As of August 12, 2026, it still needed approval from Parliament. The government expects the changes to begin around spring 2027.</p>
+      <p>So nothing changes tonight. But the UK is preparing to make nighttime social media a little less difficult to ignore.</p>
+    </div>
+
+    <div class="data-block">
+      <h3>10-axis Difficulty QA</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Axis</th><th>English Master</th><th>Variation 1</th><th>Variation 2</th><th>Variation 3</th></tr></thead>
+        <tbody>
+          <tr><td>1. Naturalness</td><td>Native adult journalism</td><td>良好、場面描写がやや文学的</td><td>良好、"pause in this story"等やや文学的</td><td>良好、明快な語り直し</td></tr>
+          <tr><td>2. Listening ease</td><td>中</td><td>中〜易(ただし38語文1つ)</td><td>中〜易</td><td>易しい</td></tr>
+          <tr><td>3. Vocabulary burden</td><td>中〜高</td><td>中("invitations to return"等)</td><td>中("gentle barrier"相当語彙)</td><td>低〜中</td></tr>
+          <tr><td>4. Sentence-processing burden</td><td>中〜高</td><td>中(最大38語の1文あり)</td><td>中</td><td>低〜中</td></tr>
+          <tr><td>5. Abstractness</td><td>高</td><td>中</td><td>中</td><td>低〜中</td></tr>
+          <tr><td>6. Amount of inference required</td><td>中〜高</td><td>中</td><td>中</td><td>低〜中</td></tr>
+          <tr><td>7. Narrative clarity</td><td>高</td><td>高</td><td>高</td><td>高</td></tr>
+          <tr><td>8. Editorial engagement</td><td>高</td><td>中〜高</td><td>高(引用断片の演出)</td><td>中</td></tr>
+          <tr><td>9. Adult-news feel</td><td>強い</td><td>強い</td><td>強い</td><td>強い</td></tr>
+          <tr><td>10. Fact accuracy</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge pass">PASS</span></td><td><span class="badge review">REVIEW_REQUIRED</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Fact Safety</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 1</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 3</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Metrics(参考値)</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th class="num">Words</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td class="num">198</td><td class="num">14</td><td class="num">14.3</td><td class="num">27</td></tr>
+          <tr><td>Variation 1</td><td class="num">250</td><td class="num">21</td><td class="num">12.0</td><td class="num">38</td></tr>
+          <tr><td>Variation 2</td><td class="num">256</td><td class="num">21</td><td class="num">12.3</td><td class="num">24</td></tr>
+          <tr><td>Variation 3</td><td class="num">170</td><td class="num">14</td><td class="num">12.3</td><td class="num">22</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ B2 ============ -->
+  <section class="level" id="b2">
+    <div class="level-head"><span class="level-badge b2">B2</span><h2>English Master &middot; Variation 1 &middot; Variation 2 &middot; Variation 3</h2></div>
+
+    <div class="article-card">
+      <span class="article-label master">English Master</span><span class="wc-note">198 words</span>
+      <p>At midnight, the phone may still be beside the bed.</p>
+      <p>But under the UK government's plan, it could become a much quieter companion.</p>
+      <p>Britain is preparing new default social media protections for 16- and 17-year-olds. From midnight to 6 a.m., covered services would apply nighttime restrictions, including the muting of alerts and push notifications.</p>
+      <p>The idea is simple:</p>
+      <p>"Let the night feel like night again."</p>
+      <p>This is not a blanket, unchangeable social media ban. The protections would switch on automatically, but users would be able to alter the settings themselves.</p>
+      <p>That distinction matters.</p>
+      <p>The government is not proposing to seize control of teenagers' phones for six hours. Instead, it wants the starting position to change—from platforms constantly inviting young people back in, to a quieter default that requires a conscious choice to override.</p>
+      <p>And for now, this remains a plan, not an active rule.</p>
+      <p>As of August 12, 2026, the changes had not yet taken effect. Parliamentary approval is still required, with the government expecting implementation to begin around spring 2027.</p>
+      <p>So the screen is not going dark tonight.</p>
+      <p>But Britain is preparing to ask a much bigger question: when midnight arrives, should social media still be designed to keep calling?</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 1</span><span class="wc-note">249 words</span>
+      <p>At 12:01 a.m., a phone lights up beside the bed.</p>
+      <p>A new post. A fresh alert. One more reason to keep scrolling.</p>
+      <p>Under a plan from the UK government, that familiar midnight invitation could soon become much quieter for 16- and 17-year-olds.</p>
+      <p>The proposal would apply a default night-time restriction to social media from midnight until 6 a.m. During those six hours, alerts and push notifications would be muted.</p>
+      <p>At first glance, it sounds like a digital curfew.</p>
+      <p>But there is an important distinction.</p>
+      <p>This is not a compulsory, unbreakable ban. The protective settings would switch on automatically, but young users would be allowed to change them.</p>
+      <p>In other words, the government is not planning to lock the door. It wants closing the door to become the starting position.</p>
+      <p>The idea is simple: when the screen stops calling for attention, putting the phone down may become a little easier.</p>
+      <p>However, the change is not yet in force. As of August 12, 2026, it remains a government plan and still requires parliamentary approval. The government expects the new rules to begin taking effect around spring 2027.</p>
+      <p>The final details of which social media services will be covered are also due to be set out later.</p>
+      <p>So Britain's proposed approach is less like a hard command to "log off now" and more like turning down the volume of social media during the quietest hours of the night.</p>
+      <p>The question is whether that small amount of friction will be enough to change what happens after midnight.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 2</span><span class="wc-note">265 words</span>
+      <p>At 11:59 p.m., the screen is still glowing.</p>
+      <p>"One more video."</p>
+      <p>"One more message."</p>
+      <p>"One more quick look."</p>
+      <p>Then midnight arrives—and under a new British government plan, social media could become much quieter for 16- and 17-year-olds.</p>
+      <p>The proposal would introduce a default night-time restriction from midnight until 6 a.m. During those six hours, social media alerts and push notifications would also be muted.</p>
+      <p>In other words, the phone would stop calling for attention just when sleep is supposed to begin.</p>
+      <p>But this is not a locked door.</p>
+      <p>The protective settings would switch on automatically, but young users would be able to change them. So the plan is not a complete or unchangeable social media ban. It is more like a gentle barrier placed in the path of late-night scrolling.</p>
+      <p>The idea appears simple:</p>
+      <p>"Make rest the default—and make endless scrolling the active choice."</p>
+      <p>However, the change has not yet taken effect. As of August 12, 2026, it remains a government plan and still requires parliamentary approval. Government materials suggest that the new settings could begin to appear around spring 2027.</p>
+      <p>That leaves an important gap between the policy on paper and life behind the screen.</p>
+      <p>A default setting may create a moment to pause. But users can change it, habits can move to another time, and a silent phone does not automatically mean an early night.</p>
+      <p>Britain is therefore preparing more than a technical adjustment. It is testing whether a small change in the digital environment can influence one of the strongest modern habits: the urge to keep scrolling when the day should already be over.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">Variation 3</span><span class="wc-note">197 words</span>
+      <p>At midnight, the phone may still be beside the bed.</p>
+      <p>But under the UK government's plan, it could become a much quieter companion.</p>
+      <p>Britain is preparing new default social media protections for 16- and 17-year-olds. From midnight to 6 a.m., covered services would apply nighttime restrictions, including muted alerts and push notifications.</p>
+      <p>The idea is simple:</p>
+      <p>"Let the night feel like night again."</p>
+      <p>This is not a complete, unchangeable ban on social media. The protections would turn on automatically, but users would still be able to change the settings themselves.</p>
+      <p>That difference matters.</p>
+      <p>The government is not proposing to take control of teenagers' phones for six hours. Instead, it wants to change the default—from platforms constantly inviting young people back, to a quieter setting that requires a conscious choice to change.</p>
+      <p>And for now, this remains a plan, not an active rule.</p>
+      <p>As of August 12, 2026, the changes had not yet taken effect. Parliamentary approval is still required, and the government expects the changes to begin around spring 2027.</p>
+      <p>So the screen is not going dark tonight.</p>
+      <p>But Britain is preparing to ask a much bigger question: when midnight arrives, should social media still be designed to keep calling?</p>
+    </div>
+
+    <div class="data-block">
+      <h3>10-axis Difficulty QA</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Axis</th><th>English Master</th><th>Variation 1</th><th>Variation 2</th><th>Variation 3</th></tr></thead>
+        <tbody>
+          <tr><td>1. Naturalness</td><td>Native adult journalism</td><td>自然、慣用表現豊か</td><td>自然、エッセイ的</td><td>Masterとほぼ同一</td></tr>
+          <tr><td>2. Listening ease</td><td>中(結び文が長い)</td><td>中</td><td>中〜やや低(結びが抽象的)</td><td>中(=Master)</td></tr>
+          <tr><td>3. Vocabulary burden</td><td>高</td><td>高("lock the door"比喩、"turning down the volume")</td><td>高("gentle barrier"、"technical adjustment")</td><td>高(=Master)</td></tr>
+          <tr><td>4. Sentence-processing burden</td><td>高(結び文)</td><td>中〜高</td><td>高(最大31語、抽象的結び文)</td><td>高(=Master)</td></tr>
+          <tr><td>5. Abstractness</td><td>高</td><td>中〜高</td><td>高(意図的に抽象度を許容)</td><td>高</td></tr>
+          <tr><td>6. Amount of inference required</td><td>高</td><td>中〜高</td><td>高</td><td>高</td></tr>
+          <tr><td>7. Narrative clarity</td><td>高</td><td>高</td><td>高</td><td>高</td></tr>
+          <tr><td>8. Editorial engagement</td><td>高</td><td>高</td><td>高(3連の引用断片演出)</td><td>高(=Master)</td></tr>
+          <tr><td>9. Adult-news feel</td><td>強い</td><td>強い</td><td>強い</td><td>強い</td></tr>
+          <tr><td>10. Fact accuracy</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge pass">PASS</span>(Ledger: 下記参照)</td><td><span class="badge review">REVIEW_REQUIRED</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Fact Safety</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 1</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>Variation 2</td><td><span class="badge pass">PASS</span></td><td><span class="badge deviation">LEDGER_DEVIATION</span>(MINOR 1件)</td><td>0</td></tr>
+          <tr><td>Variation 3</td><td><span class="badge review">REVIEW_REQUIRED</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Metrics(参考値)</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th class="num">Words</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len</th></tr></thead>
+        <tbody>
+          <tr><td>English Master</td><td class="num">198</td><td class="num">14</td><td class="num">14.3</td><td class="num">27</td></tr>
+          <tr><td>Variation 1</td><td class="num">249</td><td class="num">20</td><td class="num">12.6</td><td class="num">32</td></tr>
+          <tr><td>Variation 2</td><td class="num">265</td><td class="num">17</td><td class="num">15.8</td><td class="num">31</td></tr>
+          <tr><td>Variation 3</td><td class="num">197</td><td class="num">14</td><td class="num">14.2</td><td class="num">25</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ Cross-level ============ -->
+  <section class="cross" id="cross">
+    <h2>Cross-level Comparison(Variation別 B2&rarr;B1&rarr;A2の差の明確さ)</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Variation</th><th>B2&rarr;B1差</th><th>B1&rarr;A2差</th><th>Overall</th></tr></thead>
+      <tbody>
+        <tr><td>V1 Reader Profile</td><td>SOMEWHAT CLEAR</td><td>WEAK</td><td>SOMEWHAT CLEAR</td></tr>
+        <tr><td>V2 Listening/Cognitive Load</td><td>SOMEWHAT CLEAR</td><td>SOMEWHAT CLEAR<br><span class="sans" style="font-size:0.75rem;color:var(--ink-soft)">(A2版のPoint情報前倒しにより比較が一部混線、G節参照)</span></td><td>SOMEWHAT CLEAR</td></tr>
+        <tr><td>V3 English Master Distance</td><td>CLEAR</td><td>CLEAR</td><td>CLEAR<br><span class="sans" style="font-size:0.75rem;color:var(--ink-soft)">(ただしB2版はMasterとほぼ同一化、下記参照)</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer class="meta">
+    ER-003-CEFR-DIRECT-01 &middot; A02(英国SNS規制) 3-Level &times; 3-Variation Direct Difficulty Test &middot;
+    生成: er003_v1_cefr_direct_01_generate.py
+  </footer>
+</div>
