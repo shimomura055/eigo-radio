@@ -1,0 +1,193 @@
+<title>Listening-first Cross-topic: A01 & A02</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --bg-panel: #ffffff; --ink: #23241f; --ink-soft: #5b5c54;
+    --border: #e0ded4; --accent: #35507a; --accent-soft: #eef2f7;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: "Inter", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --pass: #2f7a4f; --highlight: #c65b1f;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+    --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+    --pass: #5fbf85; --highlight: #e0975a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181b; --bg-panel: #1f2024; --ink: #eceae3; --ink-soft: #a3a299;
+      --border: #35363b; --accent: #7ea1cf; --accent-soft: #232a34;
+      --pass: #5fbf85; --highlight: #e0975a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page-head { margin-bottom: 2.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); margin: 0.35rem 0 0.5rem; text-wrap: balance; }
+  .subhead { color: var(--ink-soft); font-size: 0.93rem; max-width: 74ch; }
+  .article-section { margin-bottom: 3rem; }
+  .article-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.6rem; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .panel-head { padding: 1.1rem 1.3rem 0.9rem; border-bottom: 1px solid var(--border); }
+  .version-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .article-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; margin: 0.3rem 0 0.65rem; text-wrap: balance; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .badge { font-family: var(--mono); font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-soft); white-space: nowrap; }
+  .badge.status-pass { color: var(--pass); border-color: currentColor; }
+  .article-body { padding: 1.1rem 1.3rem 1.5rem; font-family: var(--serif); font-size: 0.91rem; }
+  .article-body h2 { font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 1.3rem 0 0.45rem; font-weight: 600; }
+  .article-body h3 { font-family: var(--sans); font-size: 0.98rem; font-weight: 700; margin: 1rem 0 0.35rem; color: var(--accent); }
+  .article-body p { margin: 0.55rem 0; }
+  .article-body strong { color: var(--highlight); }
+  .one-line { margin-top: 0.9rem; padding: 0.7rem 0.9rem; background: var(--accent-soft); border-radius: 8px; font-style: italic; font-size: 0.9rem; }
+  section.block { margin-top: 2.75rem; }
+  .block-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .block-note { color: var(--ink-soft); font-size: 0.86rem; margin-bottom: 1.2rem; max-width: 76ch; }
+  table.qa-table { width: 100%; border-collapse: collapse; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.85rem; }
+  table.qa-table th, table.qa-table td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.qa-table th { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); background: var(--accent-soft); }
+  table.qa-table tr:last-child td { border-bottom: none; }
+  table.qa-table td.axis-name { font-weight: 600; width: 15%; }
+  table.qa-table td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; }
+  .fact-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; }
+  .fact-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; margin: 0 0 0.5rem; color: var(--pass); }
+  .fact-card ul { margin: 0; padding-left: 1.1rem; }
+  .fact-card li { margin-bottom: 0.4rem; font-size: 0.87rem; }
+  footer.page-foot { margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--border); font-size: 0.76rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="eyebrow">ER-003-SPOKEN-FIRST-02 &middot; A01 &amp; A02 Cross-topic</div>
+    <h1>Listening-first applied to sports (A01) and policy (A02)</h1>
+    <div class="subhead">Same principles as ADD03's Listening-first pass, no length target given to the model this time &mdash; the goal was to observe where each genre naturally lands. Read Base and Listening-first first; length/QA data is below.</div>
+  </header>
+
+  <div class="article-section">
+    <div class="article-label">A01 &middot; Base (VFL, 354 words) &rarr; Listening-first (275 words, &minus;22%)</div>
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">Base</div><div class="meta-row"><span class="badge">354 words</span></div></div>
+        <div class="article-body" style="font-size: 0.85rem;">
+          <p>England could almost see the World Cup final. At Atlanta Stadium on 15 July, the 2026 FIFA World Cup semifinal began at 15:00 local time&hellip; 0-0 at the break&hellip; 55th minute, Rogers&rsquo; cross, Gordon&hellip; England 1-0.</p>
+          <p>85th minute, short-corner, Messi to Fern&aacute;ndez&hellip; 1-1. 90+2 minutes, Mac Allister hit the post, Messi&rsquo;s cross, Lautaro&rsquo;s header&hellip; Argentina 2-1 England.</p>
+          <p><strong>15 shots to England&rsquo;s five, five shots on target to two, xG 1.47 against 0.46&hellip; possession 56.5% / 35.2% / 8.2% contested&hellip; 549 of 610 passes vs 293 of 353&hellip;</strong> Messi assisted both goals, 39 years and 21 days, oldest outfield player, Player of the Match.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">Listening-first</div><div class="meta-row"><span class="badge">275 words</span><span class="badge status-pass">PASS</span><span class="badge status-pass">Ledger: compliant</span></div></div>
+        <div class="article-body">
+          <p>England were minutes away from the World Cup final.</p>
+          <p>On 15 July at Atlanta Stadium, England faced Argentina in a 2026 FIFA World Cup semifinal.</p>
+          <p>The first half ended goalless. <strong>0-0.</strong></p>
+          <p>Then, in the 55th minute, England broke through. Harry Kane&rsquo;s long ball started the move. Morgan Rogers sent a low cross in from the right, and Anthony Gordon met it at the far side.</p>
+          <p><strong>England 1-0 Argentina.</strong></p>
+          <p>That lead lasted for half an hour.</p>
+          <p>Then, in the 85th minute, Lionel Messi played the ball sideways from a short-corner move. Enzo Fern&aacute;ndez struck from outside the penalty area with his right foot.</p>
+          <p><strong>1-1.</strong></p>
+          <p>Extra time seemed close. But Argentina had one more attack.</p>
+          <p>Alexis Mac Allister hit the post. Messi recovered the ball and crossed with his right foot toward the far side. Substitute Lautaro Mart&iacute;nez rose to meet it with his head.</p>
+          <p>It was 90+2&mdash;two minutes into second-half stoppage time.</p>
+          <p><strong>Argentina 2-1 England.</strong></p>
+          <p>Argentina were through to the final. England were heading to the third-place match.</p>
+          <h2>Two Defining Angles</h2>
+          <h3>Argentina's pressure showed in one clear number</h3>
+          <p>The score stayed close. The shot count did not. Argentina had 15 shots. England had five.</p>
+          <p>The wider statistical picture also favored Argentina. England came close to protecting their lead, but Argentina kept pushing until the final minutes.</p>
+          <h3>Messi decided the semifinal without scoring</h3>
+          <p>Messi did not score. But he assisted both Argentina goals. His pass set up Fern&aacute;ndez's equalizer. His cross created Lautaro's winner.</p>
+          <p>At 39 years and 21 days, Messi became the oldest outfield player to appear in a World Cup semifinal. FIFA also named him the Superior Player of the Match.</p>
+          <h2>In One Line&hellip;</h2>
+          <div class="one-line">England could see the final&mdash;but in stoppage time, Messi opened the door for Argentina.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-section">
+    <div class="article-label">A02 &middot; Base (VFL Run-1, 409 words) &rarr; Listening-first (423 words, +3%)</div>
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">Base (Run-1)</div><div class="meta-row"><span class="badge">409 words</span></div></div>
+        <div class="article-body" style="font-size: 0.85rem;">
+          <p>Midnight arrives. A phone lights up&hellip; As of 12 August 2026, the proposal has not yet taken effect&hellip; spring 2027. Between midnight and 6 a.m. Alerts and push notifications would be muted during that six-hour window.</p>
+          <p>Autoplay and personalised feeds would be switched off by default&hellip; throughout the day&mdash;not only between midnight and 6 a.m.</p>
+          <p>A 2026 qualitative pilot involved 309 households with young people aged 13 to 17&hellip; The 81 households assigned to the night-curfew group&hellip; 9 p.m. to 7 a.m. Of those, 53 reported full compliance, 23 reported minor changes, and five did not comply.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="version-tag">Listening-first</div><div class="meta-row"><span class="badge">423 words</span><span class="badge status-pass">PASS</span><span class="badge status-pass">Ledger: compliant</span></div></div>
+        <div class="article-body">
+          <p>Midnight arrives. A phone lights up.</p>
+          <p>One alert leads to another. One video rolls into the next. Bedtime quietly slips away.</p>
+          <p>The UK government is planning a new response. It would not lock every door. Instead, it would change which doors are open by default.</p>
+          <p>As of 12 August 2026, the plan has not taken effect. Subject to parliamentary approval, the changes are expected to begin around spring 2027.</p>
+          <p>The plan covers social media users aged 16 and 17. From midnight to 6 a.m., nighttime protections would switch on automatically. Alerts and push notifications would be muted.</p>
+          <p>But this would not be an unchangeable curfew. Users could alter the settings. And the government has not said that social media must become completely inaccessible overnight.</p>
+          <p>There is also a separate, all-day change. Autoplay and personalised feeds would be off by default&mdash;not just overnight.</p>
+          <p>So the proposal is not simply saying: &ldquo;Put the phone away.&rdquo; It is asking whether the phone should work quite so hard to pull young people back in.</p>
+          <h2>Two points worth watching</h2>
+          <h3>The pilot offers a clue&mdash;but not proof</h3>
+          <p>A qualitative pilot conducted in 2026 involved about 300 households overall. Each included a young person aged 13 to 17 and a parent or guardian.</p>
+          <p>Families joined a control group or one of three intervention groups, based on their preferences.</p>
+          <p>Roughly 80 households were assigned to the night-curfew group. The intervention asked families to block selected social media apps from 9 p.m. until 7 the next morning.</p>
+          <p>Most reported following the rule fully. Some made minor changes, and a few did not comply. Their digital use was not independently monitored.</p>
+          <p>Among the three approaches tested, participants described the night curfew as the easiest to fit into daily life. They also reported the most consistent sleep-related improvements, including earlier bedtimes and feeling more alert the next day.</p>
+          <p>But this was a relatively small, self-selected study based mainly on personal reports. It points to possibilities. It does not prove cause and effect.</p>
+          <h3>A quieter night may not mean less screen time</h3>
+          <p>Many participants reported little major change in daytime social media use.</p>
+          <p>Instead, some activity moved. Young people used social media more before the restriction began, checked again after it ended, or switched to television and games.</p>
+          <p>That difference matters.</p>
+          <p>A nighttime setting may rearrange attention rather than erase it. And the planned policy is less rigid than the pilot's access block: it would use default protections that 16- and 17-year-olds could change.</p>
+          <p>The final details, including exactly which services will be covered, are still to come.</p>
+          <h2>In one line&hellip;</h2>
+          <div class="one-line">Britain is not proposing a permanent lock on social media, but a midnight pause: quieter defaults, fewer automatic pulls, and a little more space before the next scroll.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-title">Fact QA outcome</div>
+    <div class="cols">
+      <div class="fact-card">
+        <h4>A01 &mdash; PASS</h4>
+        <ul>
+          <li>15 web search calls, 0 contradictions. Score, scorers, minutes, assist chain, shot count (15-5) all confirmed against FIFA official sources.</li>
+          <li>Dropping xG/possession/pass-completion did not remove any fact the checker flagged as necessary &mdash; the remaining "15 shots to five" anchor was independently verified as accurate and sufficient.</li>
+        </ul>
+      </div>
+      <div class="fact-card">
+        <h4>A02 &mdash; PASS</h4>
+        <ul>
+          <li>6 web search calls, 0 contradictions. 309/81 rounding to "about 300"/"roughly 80" and the 53/23/5 compliance breakdown rounded to "most/some/a few" were both independently confirmed as fair.</li>
+          <li>The all-day vs. overnight distinction for autoplay/feeds (the original ERROR-1 issue) remains correctly stated.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Length across all three genres</div>
+    <div class="block-note">No length target was given to the model in this round &mdash; these are the word counts the Listening-first principles converged on naturally.</div>
+    <div class="table-scroll">
+    <table class="qa-table">
+      <thead><tr><th>Article</th><th>Genre</th><th class="num">Base words</th><th class="num">Listening-first words</th><th class="num">Difference</th></tr></thead>
+      <tbody>
+        <tr><td class="axis-name">A01</td><td>Sports</td><td class="num">354</td><td class="num">275</td><td class="num">&minus;79 (&minus;22%)</td></tr>
+        <tr><td class="axis-name">A02</td><td>Policy / SNS</td><td class="num">409</td><td class="num">423</td><td class="num">+14 (+3%)</td></tr>
+        <tr><td class="axis-name">ADD03</td><td>Economy</td><td class="num">418</td><td class="num">355 (L2)</td><td class="num">&minus;63 (&minus;15%)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    ER-003-SPOKEN-FIRST-02 &middot; generated 2026-08-13 &middot; full records in er003_output/spoken_first_02/
+  </footer>
+</div>
