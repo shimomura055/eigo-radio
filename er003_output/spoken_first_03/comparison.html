@@ -1,0 +1,273 @@
+<title>A02 Point Balance Test — Before / After</title>
+<style>
+:root {
+  --paper: #f6f3ec;
+  --ink: #24211c;
+  --ink-soft: #56514a;
+  --rule: #ddd6c7;
+  --accent: #8a3324;
+  --accent-soft: #f1e4dd;
+  --pass: #2f6b4f;
+  --pass-bg: #e6efe8;
+  --mono: #6b6355;
+  --card: #fffdf8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1b1815;
+    --ink: #ece7dc;
+    --ink-soft: #b9b2a4;
+    --rule: #3a352c;
+    --accent: #e08b6f;
+    --accent-soft: #332420;
+    --pass: #7fcf9e;
+    --pass-bg: #1e2f24;
+    --mono: #9b9384;
+    --card: #221e19;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1b1815;
+  --ink: #ece7dc;
+  --ink-soft: #b9b2a4;
+  --rule: #3a352c;
+  --accent: #e08b6f;
+  --accent-soft: #332420;
+  --pass: #7fcf9e;
+  --pass-bg: #1e2f24;
+  --mono: #9b9384;
+  --card: #221e19;
+}
+:root[data-theme="light"] {
+  --paper: #f6f3ec;
+  --ink: #24211c;
+  --ink-soft: #56514a;
+  --rule: #ddd6c7;
+  --accent: #8a3324;
+  --accent-soft: #f1e4dd;
+  --pass: #2f6b4f;
+  --pass-bg: #e6efe8;
+  --mono: #6b6355;
+  --card: #fffdf8;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+header.top {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.eyebrow {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 0.6rem;
+}
+h1 {
+  font-size: 1.85rem;
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+  font-weight: 700;
+}
+.sub {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin: 0;
+}
+.stagelabel {
+  display: inline-block;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+.stagelabel.before { background: var(--accent-soft); color: var(--accent); }
+.stagelabel.after { background: var(--pass-bg); color: var(--pass); }
+.article-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 2.2rem 2.4rem;
+  margin-bottom: 3rem;
+}
+.article-card h2 {
+  font-size: 1.4rem;
+  margin: 0 0 1.2rem;
+  text-wrap: balance;
+}
+.article-card h3 {
+  font-size: 1.05rem;
+  margin: 1.6rem 0 0.5rem;
+  color: var(--accent);
+}
+.article-card p { margin: 0 0 0.9rem; }
+.article-card .oneline { margin-top: 1.6rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.wc-tag {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  color: var(--mono);
+  letter-spacing: 0.03em;
+  float: right;
+}
+section.data { font-family: -apple-system, "Segoe UI", sans-serif; }
+section.data h2 {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.5rem;
+  margin: 2.8rem 0 1rem;
+}
+.table-scroll { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-bottom: 0.5rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+}
+th {
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+td.num { text-align: right; }
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 3px;
+  background: var(--pass-bg);
+  color: var(--pass);
+  letter-spacing: 0.03em;
+}
+.note { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.6rem; }
+footer.meta {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  color: var(--mono);
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">ER-003-SPOKEN-FIRST-03 · A02 Point Balance Test</p>
+    <h1>Britain's Midnight Reset — Point One / Point Two 圧縮比較</h1>
+    <p class="sub">Base: SPOKEN-FIRST-02 Listening-first版(423語) → After: Point圧縮版(285語)。本編・In One Lineは維持。</p>
+  </header>
+
+  <span class="stagelabel before">Before — Listening-first (423 words)</span>
+  <div class="article-card">
+    <h2>Britain's Midnight Reset: A Quieter Social Media Night for Older Teens</h2>
+    <p>Midnight arrives. A phone lights up.</p>
+    <p>One alert leads to another. One video rolls into the next. Bedtime quietly slips away.</p>
+    <p>The UK government is planning a new response. It would not lock every door. Instead, it would change which doors are open by default.</p>
+    <p>As of 12 August 2026, the plan has not taken effect. Subject to parliamentary approval, the changes are expected to begin around spring 2027.</p>
+    <p>The plan covers social media users aged 16 and 17. From midnight to 6 a.m., nighttime protections would switch on automatically. Alerts and push notifications would be muted.</p>
+    <p>But this would not be an unchangeable curfew. Users could alter the settings. And the government has not said that social media must become completely inaccessible overnight.</p>
+    <p>There is also a separate, all-day change. Autoplay and personalised feeds would be off by default—not just overnight.</p>
+    <p>So the proposal is not simply saying:</p>
+    <p>"Put the phone away."</p>
+    <p>It is asking whether the phone should work quite so hard to pull young people back in.</p>
+
+    <h3>⭐ The pilot offers a clue—but not proof <span class="wc-tag">144 words</span></h3>
+    <p>A qualitative pilot conducted in 2026 involved about 300 households overall. Each included a young person aged 13 to 17 and a parent or guardian.</p>
+    <p>Families joined a control group or one of three intervention groups, based on their preferences.</p>
+    <p>Roughly 80 households were assigned to the night-curfew group. The intervention asked families to block selected social media apps from 9 p.m. until 7 the next morning.</p>
+    <p>Most reported following the rule fully. Some made minor changes, and a few did not comply. Their digital use was not independently monitored.</p>
+    <p>Among the three approaches tested, participants described the night curfew as the easiest to fit into daily life. They also reported the most consistent sleep-related improvements, including earlier bedtimes and feeling more alert the next day.</p>
+    <p>But this was a relatively small, self-selected study based mainly on personal reports. It points to possibilities. It does not prove cause and effect.</p>
+
+    <h3>⭐ A quieter night may not mean less screen time <span class="wc-tag">85 words</span></h3>
+    <p>Many participants reported little major change in daytime social media use.</p>
+    <p>Instead, some activity moved. Young people used social media more before the restriction began, checked again after it ended, or switched to television and games.</p>
+    <p>That difference matters.</p>
+    <p>A nighttime setting may rearrange attention rather than erase it. And the planned policy is less rigid than the pilot's access block: it would use default protections that 16- and 17-year-olds could change.</p>
+    <p>The final details, including exactly which services will be covered, are still to come.</p>
+
+    <p class="oneline"><strong>In one line…</strong><br>Britain is not proposing a permanent lock on social media, but a midnight pause: quieter defaults, fewer automatic pulls, and a little more space before the next scroll.</p>
+  </div>
+
+  <span class="stagelabel after">After — Point Balance (285 words)</span>
+  <div class="article-card">
+    <h2>Britain's Midnight Reset: A Quieter Social Media Night for Older Teens</h2>
+    <p>Midnight arrives. A phone lights up.</p>
+    <p>One alert leads to another. One video rolls into the next. Bedtime quietly slips away.</p>
+    <p>The UK government is planning a new response. It would not lock every door. Instead, it would change which doors are open by default.</p>
+    <p>As of 12 August 2026, the plan has not taken effect. Subject to parliamentary approval, the changes are expected to begin around spring 2027.</p>
+    <p>The plan covers social media users aged 16 and 17. From midnight to 6 a.m., nighttime protections would switch on automatically. Alerts and push notifications would be muted.</p>
+    <p>But this would not be an unchangeable curfew. Users could alter the settings. And the government has not said that social media must become completely inaccessible overnight.</p>
+    <p>There is also a separate, all-day change. Autoplay and personalised feeds would be off by default—not just overnight.</p>
+    <p>So the proposal is not simply saying:</p>
+    <p>"Put the phone away."</p>
+    <p>It is asking whether the phone should work quite so hard to pull young people back in.</p>
+
+    <h3>⭐ The pilot offers a clue—but not proof <span class="wc-tag">47 words</span></h3>
+    <p>In the pilot, participants described the night curfew as the easiest of the three interventions to manage, and reported the most consistent sleep improvements. But the study was small, self-selected, and based mainly on personal reports. The findings are promising signals—not proof of cause and effect.</p>
+
+    <h3>⭐ A quieter night may not mean less screen time <span class="wc-tag">44 words</span></h3>
+    <p>Participants often reported little change in daytime social media use. Some used it more before the restriction or after it ended; others switched to television or games. A nighttime setting may therefore shift screen use across hours or media, rather than make it disappear.</p>
+
+    <p class="oneline"><strong>In one line…</strong><br>Britain is not proposing a permanent lock on social media, but a midnight pause: quieter defaults, fewer automatic pulls, and a little more space before the next scroll.</p>
+  </div>
+
+  <section class="data">
+    <h2>Length Comparison</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Section</th><th class="num">Before</th><th class="num">After</th><th class="num">Diff</th></tr></thead>
+        <tbody>
+          <tr><td>Intro / Full Story</td><td class="num">166</td><td class="num">166</td><td class="num">0</td></tr>
+          <tr><td>Point One</td><td class="num">144</td><td class="num">47</td><td class="num">−97</td></tr>
+          <tr><td>Point Two</td><td class="num">85</td><td class="num">44</td><td class="num">−41</td></tr>
+          <tr><td>In One Line</td><td class="num">28</td><td class="num">28</td><td class="num">0</td></tr>
+          <tr><td><strong>Total</strong></td><td class="num"><strong>423</strong></td><td class="num"><strong>285</strong></td><td class="num"><strong>−138</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Point One / Point Two ともに目標範囲(30–60語)内。本編・In One Lineは無変更。</p>
+
+    <h2>Fact Safety</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Fact Checker</td><td><span class="badge">PASS</span></td><td>矛盾0件・未裏付け具体的claim 0件(Web検索6回)</td></tr>
+          <tr><td>Ledger Deviation Check</td><td><span class="badge">LEDGER_COMPLIANT</span></td><td>逸脱0件</td></tr>
+          <tr><td>技術的再試行</td><td>0回</td><td>初回生成でSTRUCTURE_PASS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="meta">
+    ER-003-SPOKEN-FIRST-03 · A02 Point Balance Test · 生成: er003_v1_spoken_first_03_generate.py
+  </footer>
+</div>
