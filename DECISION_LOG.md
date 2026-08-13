@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-13(ER-003-SPOKEN-FIRST-03)**
 
 確定した意思決定と、その理由・根拠を記録する。個別のDecision Record原本
 (`er003_output/p2i/ER-003-P2I_decision_record.md`等)は削除せず、本ファイルは
@@ -442,6 +442,42 @@
   事実関係は維持)
 - **根拠レポート**: [ER-003-CROSSLEVEL-AUDIO-03_REPORT.md](ER-003-CROSSLEVEL-AUDIO-03_REPORT.md) 11節、[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)
 - **影響するCURRENT_SPEC項目**: (個別記事の本文修正、CURRENT_SPEC仕様そのものへの影響なし)
+
+## ER-003-SPOKEN-FIRST-03: Point Balance(Point One/TwoはA02で40〜50語が機能。全ジャンル一律ルール化はしない)
+
+- **日付**: 2026-08-13
+- **内容**: SPOKEN-FIRST-02のA02で、Point One(144語)が本編
+  (166語)とほぼ同等の長さになり、「本文とは別の切り口を短く示す」
+  というPointの役割から外れ、実質的に"第二の本編"になっていた問題を
+  是正する設計判断を検証・確定する。判断の核心は「PointがK-1-1/K-1-2
+  の役割(本編と同程度の情報量を持たせない、本編の再説明ではなく
+  別の切り口・示唆を短く示す)を果たしているか」という**役割・比重
+  基準**であり、固定語数ルールではない
+- **状態**: `VALIDATED(A02単独検証) / NOT_YET_GENERALIZED`
+  (ユーザー・レビュー承認済み。A01・ADD03等への横展開、Production
+  仕様(CURRENT_SPEC.md)への組み込みはまだ行っていない)
+- **採用理由**: A02のPoint One/Twoを、目標30〜60語(許容25〜70語)の
+  範囲でVerified Fact Ledgerの範囲内のみを使い圧縮した結果、
+  Point One=47語・Point Two=44語に自然収束し、核心メッセージを
+  保持したまま本編とのバランスが改善した(Fact Checker `PASS`、
+  Ledger Deviation `LEDGER_COMPLIANT`、技術的再試行0回)。本編
+  (166語)・In One Line(28語)は完全無変更で、Point削減の埋め合わせ
+  としての本編延長も発生しなかった
+- **比較した選択肢**: (該当なし。単一のPoint圧縮方式のみ試行し
+  best-of選択は行っていない)
+- **却下理由**: (該当なし)
+- **今回確定していない事項(誤読防止のため明記)**:
+  「各Pointを必ず40〜50語にする」という固定ルールにはしない。
+  40〜50語という実測値はA02(1記事1ジャンル)での目標範囲内収束
+  結果にすぎず、他ジャンルへ機械的に適用してよいという意味ではない。
+  A01のように元々Point One=37語・Point Two=60語で「第二の本編」化
+  が起きていない記事まで機械的に圧縮する対象ではない
+- **根拠レポート**: [ER-003-SPOKEN-FIRST-03_REPORT.md](ER-003-SPOKEN-FIRST-03_REPORT.md)(特にK節「検証済みの設計判断」)、[ER-003-SPOKEN-FIRST-02_REPORT.md](ER-003-SPOKEN-FIRST-02_REPORT.md)(問題発見の経緯)
+- **commit**: `a1fcc2c`(生成・報告)、(本記録commitは送付メッセージ参照)
+- **影響するCURRENT_SPEC項目**: (個別記事A02の実験的圧縮版のみ。
+  CURRENT_SPEC.mdへの反映は未実施。次回横展開検証(A01・ADD03)の
+  結果を踏まえて判断する→[OPEN_ITEMS.md](OPEN_ITEMS.md)へ追加要否は
+  次段階で検討)
 
 ## 参照元
 
