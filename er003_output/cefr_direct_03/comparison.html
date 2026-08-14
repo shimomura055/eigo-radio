@@ -1,0 +1,347 @@
+<title>A01 / ADD03 CEFR Direct Cross-Genre Validation</title>
+<style>
+:root {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --a2: #4d7c5f; --a2-bg: #e5efe6; --b1: #a8710f; --b1-bg: #f5ead2;
+  --b2: #3d4f8c; --b2-bg: #e3e6f4; --orig: #6b6357; --orig-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1; --sport: #8a3324; --sport-bg: #f1e4dd;
+  --econ: #2c5f6f; --econ-bg: #dfeef2;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+    --b2: #9aa8e0; --b2-bg: #232a48; --orig: #b8b0a0; --orig-bg: #2a2721;
+    --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+    --fail: #e08a8a; --fail-bg: #3a2020; --sport: #e08b6f; --sport-bg: #332420;
+    --econ: #8fc7d9; --econ-bg: #16292e;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+  --b2: #9aa8e0; --b2-bg: #232a48; --orig: #b8b0a0; --orig-bg: #2a2721;
+  --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+  --fail: #e08a8a; --fail-bg: #3a2020; --sport: #e08b6f; --sport-bg: #332420;
+  --econ: #8fc7d9; --econ-bg: #16292e;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --a2: #4d7c5f; --a2-bg: #e5efe6; --b1: #a8710f; --b1-bg: #f5ead2;
+  --b2: #3d4f8c; --b2-bg: #e3e6f4; --orig: #6b6357; --orig-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1; --sport: #8a3324; --sport-bg: #f1e4dd;
+  --econ: #2c5f6f; --econ-bg: #dfeef2;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; line-height: 1.65; margin: 0; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+header.top { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.eyebrow { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+h1 { font-size: 1.65rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 0; }
+nav.jump { display: flex; gap: 0.6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+nav.jump a { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; text-decoration: none; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
+nav.jump a.sport { border-color: var(--sport); color: var(--sport); }
+nav.jump a.econ { border-color: var(--econ); color: var(--econ); }
+nav.jump a.x { border-color: var(--accent); color: var(--accent); }
+
+section.genre { margin-top: 3.5rem; }
+.genre-head { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 1.5rem; }
+.genre-badge { font-family: -apple-system, "Segoe UI", sans-serif; font-weight: 800; font-size: 1.2rem; padding: 0.15rem 0.7rem; border-radius: 6px; }
+.genre-badge.sport { background: var(--sport-bg); color: var(--sport); }
+.genre-badge.econ { background: var(--econ-bg); color: var(--econ); }
+.genre-head h2 { font-size: 1rem; margin: 0; color: var(--ink-soft); font-weight: 500; }
+
+.article-card { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 1.8rem 2.1rem; margin-bottom: 1.4rem; }
+.article-label { display: inline-block; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 3px; margin-bottom: 1rem; }
+.article-label.orig { background: var(--orig-bg); color: var(--orig); }
+.article-label.b2 { background: var(--b2-bg); color: var(--b2); }
+.article-label.b1 { background: var(--b1-bg); color: var(--b1); }
+.article-label.a2 { background: var(--a2-bg); color: var(--a2); }
+.article-card h3.title { font-size: 1.1rem; margin: 0 0 1rem; text-wrap: balance; }
+.article-card h4.pt { font-size: 0.92rem; color: var(--accent); margin: 1.4rem 0 0.4rem; }
+.article-card p { margin: 0 0 0.85rem; }
+.article-card p:last-child { margin-bottom: 0; }
+.wc-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--ink-soft); float: right; font-variant-numeric: tabular-nums; }
+
+.data-block { margin-top: 2.2rem; font-family: -apple-system, "Segoe UI", sans-serif; }
+.data-block h3 { font-size: 0.85rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; margin: 1.8rem 0 0.8rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; white-space: nowrap; }
+.badge.pass { background: var(--pass-bg); color: var(--pass); }
+.badge.review { background: var(--review-bg); color: var(--review); }
+.badge.fail { background: var(--fail-bg); color: var(--fail); }
+.badge.compliant { background: var(--pass-bg); color: var(--pass); }
+.badge.deviation { background: var(--review-bg); color: var(--review); }
+
+section.cross { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--rule); }
+section.cross h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); }
+.note-small { font-size: 0.74rem; color: var(--ink-soft); }
+
+footer.meta { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">ER-003-CEFR-DIRECT-03 &middot; A01 / ADD03 CEFR Direct Cross-Genre Validation</p>
+    <h1>Variation 2完全記事版の他ジャンル横展開 — Sports / Economy</h1>
+    <p class="sub">ER-003-CEFR-DIRECT-02でA02について確立したB2/B1/A2改1のDirect Generation方式を、A01(サッカー)・ADD03(ホルムズ海峡/原油)へ展開。Originalは既存VFL-02最終版を比較基準としてのみ使用(writer入力には未使用)。</p>
+    <nav class="jump">
+      <a class="sport" href="#a01">A01 Sports</a>
+      <a class="econ" href="#add03">ADD03 Economy</a>
+      <a class="x" href="#cross">Cross-Genre Summary</a>
+    </nav>
+  </header>
+
+  <!-- ============ A01 ============ -->
+  <section class="genre" id="a01">
+    <div class="genre-head"><span class="genre-badge sport">A01</span><h2>Sports — England vs Argentina, 2026 World Cup Semifinal</h2></div>
+
+    <div class="article-card">
+      <span class="article-label orig">Original(既存VFL-02最終版、参照専用)</span><span class="wc-note">~230 words(本文相当)</span>
+      <h3 class="title">England Saw the Final—Then Messi Opened the Door</h3>
+      <p>England could almost see the World Cup final.</p>
+      <p>At Atlanta Stadium on 15 July, the 2026 FIFA World Cup semifinal began at 15:00 local time, with England facing Argentina in Match 102.</p>
+      <p>The first half offered tension without release: <strong>0-0 at the break</strong>, every attack feeling like a question neither side could yet answer.</p>
+      <p>Then, in the 55th minute, England found one. Harry Kane's long ball started the move, Morgan Rogers sent a low cross in from the right, and Anthony Gordon met it at the far side.</p>
+      <p><strong>England 1-0 Argentina.</strong></p>
+      <p>For half an hour, that single goal stood between England and the final. The clock moved toward 90. Argentina kept searching.</p>
+      <p>In the 85th minute, the door finally opened. From a short-corner sequence, Lionel Messi rolled the ball sideways to Enzo Fernández, who struck right-footed from outside the penalty area.</p>
+      <p><strong>1-1.</strong> Extra time appeared to be waiting. But the match had one more turn.</p>
+      <p>In second-half stoppage time, Alexis Mac Allister hit the post. Messi recovered the ball and delivered a right-footed cross to the far side. Lautaro Martínez—introduced in the 81st minute—rose to meet it.</p>
+      <p><strong>90+2 minutes. Argentina 2-1 England.</strong> One header changed everything.</p>
+      <p class="note-small">(Point One/Two/In One Line全文は<code>er003_output/en_direct_vfl_02/A01/article.md</code>参照。ここではMain Story相当部分のみ抜粋表示)</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label b2">B2 V2</span><span class="wc-note">318 words</span>
+      <h3 class="title">🏆 England Came Close—Then Messi Opened the Door for Argentina</h3>
+      <p>For most of the afternoon in Atlanta, England appeared to have found a path to the World Cup final.</p>
+      <p>The 2026 semifinal kicked off at 3 p.m. local time on July 15. England and Argentina entered half-time at 0-0, with neither side able to break through.</p>
+      <p>Then, in the 55th minute, England struck.</p>
+      <p>Morgan Rogers sent a low cross from the right, and Anthony Gordon met it at the far side to give England a 1-0 lead.</p>
+      <p>For a while, the message seemed clear:</p>
+      <p>"Protect this lead, and the final is yours."</p>
+      <p>But Argentina kept pushing—and Lionel Messi kept looking for an opening.</p>
+      <p>In the 85th minute, a short corner reached Messi. He moved the ball across to Enzo Fernández, who fired a right-footed shot from outside the penalty area. The score was suddenly 1-1.</p>
+      <p>Extra time appeared to be waiting.</p>
+      <p>Argentina had other plans.</p>
+      <p>In second-half stoppage time, Alexis Mac Allister hit the post. Messi recovered the ball and delivered a right-footed cross toward the far side. Lautaro Martínez, who had entered as a substitute in the 81st minute, rose to meet it with his head.</p>
+      <p>The clock showed 90+2.</p>
+      <p>The scoreboard showed: <strong>England 1–2 Argentina</strong></p>
+      <p>In a matter of minutes, England's place in the final disappeared. Argentina completed the comeback and advanced to face Spain, while England moved into the third-place match against France.</p>
+      <h4 class="pt">### Messi decided the game without scoring <span class="wc-note">41 words</span></h4>
+      <p>Messi did not put the ball in the net, but he assisted both Argentine goals and was named Player of the Match. At 39 years and 21 days, he also became the oldest outfield player ever to appear in a World Cup semifinal.</p>
+      <h4 class="pt">### The late comeback had been building <span class="wc-note">37 words</span></h4>
+      <p>Argentina finished with 15 shots, while England managed five. The expected-goals figures also favored Argentina, 1.47 to 0.46. Those numbers do not guarantee a result, but they suggest that Argentina's late pressure was more than a sudden burst of luck.</p>
+      <p><strong>In one line…</strong> England could almost touch the final, but Messi found two late openings—and Argentina walked through the door.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label b1">B1 V2</span><span class="wc-note">322 words &middot; Ledger逸脱あり(下記K節参照)</span>
+      <h3 class="title">One Lead, Two Late Blows: Argentina Break England's Heart</h3>
+      <p>England were only minutes away from the World Cup final.</p>
+      <p>Then Argentina changed the entire story.</p>
+      <p>The 2026 FIFA World Cup semi-final, Match 102, kicked off at 3 p.m. local time on July 15 at Atlanta Stadium. England faced Argentina, with a place in the final at stake.</p>
+      <p>The first half ended without a goal. Both teams went into the break with the score at 0-0.</p>
+      <p>The game finally opened up in the 55th minute. Morgan Rogers sent a low cross from the right, and Anthony Gordon met it at the far side. England were ahead 1-0, and the final suddenly looked close.</p>
+      <p>For the next half-hour, that single goal separated the teams.</p>
+      <p>But in the 85th minute, Argentina found a way back. After a short corner, Lionel Messi moved the ball across to Enzo Fernández. The midfielder struck with his right foot from outside the penalty area and made it 1-1.</p>
+      <p>The biggest moment was still to come.</p>
+      <p>In second-half added time, Alexis Mac Allister hit the post. Messi recovered the ball and delivered a right-footed cross toward the far side. Lautaro Martínez, who had entered as a substitute in the 81st minute, rose to meet it with his head.</p>
+      <p>The ball went in at 90+2.</p>
+      <p><strong>England 1–2 Argentina.</strong></p>
+      <p>Argentina had turned the semi-final around with two late goals. They moved into the final against Spain, while England were sent to the third-place match against France.</p>
+      <h4 class="pt">### Messi did not score, but he wrote the ending <span class="wc-note">34 words</span></h4>
+      <p>Both Argentina goals came from Messi's passes. At 39 years and 21 days, he became the oldest field player to appear in a World Cup semi-final. FIFA also named him the official Player of the Match.</p>
+      <h4 class="pt">### The numbers show Argentina's growing pressure <span class="wc-note">39 words</span></h4>
+      <p>Argentina took 15 shots during the match, while England managed five. Argentina also had more of the ball and spent more time finding space in the final third. The late comeback was dramatic, but it did not appear from nowhere.</p>
+      <p><strong>In one line…</strong> England could see the final, but Messi found two late openings—and Argentina walked through the last one.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label a2">A2 V2 改1</span><span class="wc-note">317 words</span>
+      <h3 class="title">Argentina Strike Late to Break England's World Cup Dream</h3>
+      <p>England were only a few minutes away from the World Cup final.</p>
+      <p>Then Argentina changed everything.</p>
+      <p>The two teams met in the 2026 FIFA World Cup semi-final on July 15. The match started at 3 p.m. local time at Atlanta Stadium.</p>
+      <p>The first half ended without a goal. Both teams went into half-time with the score at 0-0.</p>
+      <p>England made the first move in the 55th minute. Morgan Rogers sent a low cross from the right side. Anthony Gordon met the ball at the far side and scored.</p>
+      <p>England led 1-0.</p>
+      <p>For the next 30 minutes, England held on to that lead. A place in the final was getting closer.</p>
+      <p>But Argentina did not stop.</p>
+      <p>In the 85th minute, Argentina used a short corner. Lionel Messi passed the ball across to Enzo Fernández. The midfielder shot from outside the penalty area and scored with his right foot.</p>
+      <p>It was now 1-1.</p>
+      <p>Then came the final blow.</p>
+      <p>In second-half stoppage time, at 90+2, Alexis Mac Allister hit the post. Messi collected the ball and sent a right-footed cross to the far side.</p>
+      <p>Lautaro Martínez rose and headed the ball into the goal. He had entered the match as a substitute in the 81st minute.</p>
+      <p>Argentina had turned the match around.</p>
+      <p>The final score was: <strong>England 1–2 Argentina</strong></p>
+      <p>Argentina moved on to face Spain in the World Cup final. England will play France in the third-place match.</p>
+      <h4 class="pt">### Messi Won the Match Without Scoring <span class="wc-note">34 words</span></h4>
+      <p>Messi did not score, but he created both Argentina goals. At 39 years and 21 days old, he also became the oldest outfield player in a World Cup semi-final. FIFA named him Player of the Match.</p>
+      <h4 class="pt">### The Numbers Show Argentina's Pressure <span class="wc-note">37 words</span></h4>
+      <p>The score was close, but the match numbers show a wider difference. Argentina had 15 shots, while England had five. FIFA's possession figures were 56.5 percent for Argentina and 35.2 percent for England. Another 8.2 percent was listed as "in contest."</p>
+      <p><strong>In one line…</strong> England could almost see the final, but Messi opened the door—and Lautaro sent Argentina through it.</p>
+    </div>
+
+    <div class="data-block">
+      <h3>A01 Fact Safety</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+        <tbody>
+          <tr><td>B2 V2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>B1 V2</td><td><span class="badge pass">PASS</span></td><td><span class="badge deviation">LEDGER_DEVIATION</span>(MAJOR 3件)</td><td>0</td></tr>
+          <tr><td>A2 V2 改1</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note-small">B1 V2の3件のMAJOR逸脱はすべてPoint Two("The numbers show Argentina's growing pressure")に集中。詳細はレポートK節参照。</p>
+
+      <h3>A01 Point / Length Analysis</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th class="num">Main Story</th><th class="num">Point One</th><th class="num">Point Two</th><th class="num">In One Line</th><th class="num">Total</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len</th></tr></thead>
+        <tbody>
+          <tr><td>B2 V2</td><td class="num">222</td><td class="num">41</td><td class="num">37</td><td class="num">18</td><td class="num">318</td><td class="num">23</td><td class="num">14.2</td><td class="num">27</td></tr>
+          <tr><td>B1 V2</td><td class="num">231</td><td class="num">34</td><td class="num">39</td><td class="num">18</td><td class="num">322</td><td class="num">26</td><td class="num">12.7</td><td class="num">20</td></tr>
+          <tr><td>A2 V2 改1</td><td class="num">229</td><td class="num">34</td><td class="num">37</td><td class="num">17</td><td class="num">317</td><td class="num">32</td><td class="num">10.1</td><td class="num">24</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ ADD03 ============ -->
+  <section class="genre" id="add03">
+    <div class="genre-head"><span class="genre-badge econ">ADD03</span><h2>Economy / Geopolitics — Hormuz 20% Fee Reversal</h2></div>
+
+    <div class="article-card">
+      <span class="article-label orig">Original(既存VFL-02最終版、参照専用)</span><span class="wc-note">~260 words(本文相当)</span>
+      <h3 class="title">"Twenty Percent—Then Never Mind": Hormuz Fee Reversal Fails to Calm Oil</h3>
+      <p>For a little more than a day, one number hung over the Strait of Hormuz: <strong>20%</strong>.</p>
+      <p>On July 13 at 10:16 a.m. EDT, U.S. President Donald Trump said the United States would seek reimbursement at that rate on "all cargo" moving through the strait, framing it as payment for the cost of providing safety and security. He added that work on the procedures and system would begin immediately.</p>
+      <p>The announcement sounded forceful. The mechanism, however, was almost entirely blank.</p>
+      <p>There was no stated collector, payer, valuation method, currency, exemption system, enforcement process, or legal basis. Even the base to which the 20% would apply was unspecified. This was therefore a proposal—not an implemented toll.</p>
+      <p>Still, the number was large enough to make markets imagine the bill. If 20% were applied to cargo value, a VLCC carrying about two million barrels at roughly $85 Brent would hold around $170 million in crude. Twenty percent would equal about <strong>$34 million</strong>; another expert estimate put it near $32 million. Those were scenarios, not actual charges.</p>
+      <p>On July 13, Brent settled at $83.30, up $7.29, or 9.59%.</p>
+      <p>Then came the reversal. At 11:04 a.m. EDT on July 14—about 24 hours and 48 minutes after the original post—Trump said the 20% reimbursement plan would be replaced by Gulf trade and investment deals with the United States.</p>
+      <p>Brent ultimately settled at <strong>$84.73</strong>, up $1.43, or 1.7%, as blockade, attacks, and tanker-safety concerns persisted.</p>
+      <p class="note-small">(Point One/Two/In One Line全文は<code>er003_output/en_direct_vfl_02/ADD03/article.md</code>参照。ここではMain Story相当部分のみ抜粋表示)</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label b2">B2 V2</span><span class="wc-note">383 words</span>
+      <h3 class="title">A 20% Strait Fee Appears—Then Disappears, but Oil Markets Stay on Edge</h3>
+      <p>For roughly one day, one of the world's most important shipping routes faced a striking new question:</p>
+      <p>Would cargo passing through the Strait of Hormuz suddenly come with a 20% charge?</p>
+      <p>On July 13, 2026, US President Donald Trump said the United States would seek reimbursement equal to 20% on all cargo moving through the strait. He presented the plan as a way to recover the cost of providing security and protection there.</p>
+      <p>However, the proposal raised more questions than it answered.</p>
+      <p>It did not explain who would collect the money, who would be legally required to pay, how cargo would be valued, or how the charge would be enforced. In other words, the rate was announced, but the system behind it was not.</p>
+      <p>Then came a sharp reversal.</p>
+      <p>On July 14, about 25 hours after the original post, Trump said the 20% reimbursement plan would be replaced by trade and investment deals between Gulf countries and the United States. He described the change as the result of productive discussions with Middle Eastern leaders.</p>
+      <p>Later that day, he told reporters that nobody should charge ships for using the Strait of Hormuz and said he did not like the idea of such fees.</p>
+      <p>The oil market reacted—but it did not simply relax.</p>
+      <p>After the reversal was announced, Brent crude futures briefly reduced their gains. Soon afterward, however, prices returned to nearly their earlier high levels. At one point, Brent was above $85 a barrel and around 2.6% higher.</p>
+      <p>It finally settled at $84.73, up 1.7% for the day. Continuing concerns about attacks, a maritime blockade, and tanker safety remained in the market, showing that removing one threat did not remove the wider tension.</p>
+      <h4 class="pt">### Point One: The legal line was already clear <span class="wc-note">42 words</span></h4>
+      <p>At its 137th meeting, the IMO Council reaffirmed that ships using the strait for international navigation should face no tolls or charges. Coastal arrangements must protect non-discriminatory and unimpeded transit. However, there is no confirmed evidence that this position caused Trump's reversal.</p>
+      <h4 class="pt">### Point Two: Why 20% sounded so large <span class="wc-note">42 words</span></h4>
+      <p>No calculation method was announced. But if 20% were applied to cargo value, a tanker carrying about two million barrels at roughly $85 each could face a theoretical charge of around $34 million for one voyage. That was only an estimate—not an actual bill.</p>
+      <p><strong>In one line…</strong> The 20% fee disappeared almost as quickly as it arrived, but the market's message was clear: the deeper risks around the Strait of Hormuz had not gone away.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label b1">B1 V2</span><span class="wc-note">396 words &middot; Ledger逸脱あり(下記K節参照)</span>
+      <h3 class="title">A 20% Strait Charge Disappears—but Oil Markets Stay on Alert</h3>
+      <p>For about one day, ships passing through the Strait of Hormuz faced the possibility of a major new cost.</p>
+      <p>On July 13, 2026, US President Donald Trump said the United States would seek repayment equal to 20% of all cargo moving through the strait. He presented the plan as a way to recover the cost of providing security there. He also said work on the system would begin immediately.</p>
+      <p>However, it was still only a proposal. The announcement did not explain who would collect the money, who would pay it, or how the 20% would be calculated. It also gave no details about exemptions, payment currency, enforcement, or legal authority.</p>
+      <p>Then the plan changed.</p>
+      <p>About 25 hours after the first post, Trump said the charge would be replaced by trade and investment deals between Gulf countries and the United States. He said the decision followed productive talks with Middle Eastern leaders.</p>
+      <p>Later that day, Trump told reporters that nobody should charge ships for passing through the strait. He also said he did not like the idea of such a fee. <strong>The 20% plan was therefore dropped before a collection system was created.</strong></p>
+      <p>Oil markets reacted, but not in a simple straight line.</p>
+      <p>On July 13, Brent crude futures rose nearly 10% and settled at $83.30 a barrel. Reuters linked the wider rise to military tension, a planned US naval blockade against Iran, and fears about energy shipments through the strait—not to the fee proposal alone.</p>
+      <p>After the reversal on July 14, Brent briefly reduced its gains. It soon returned close to its earlier high level. Brent finally settled at $84.73, up 1.7% for the day. The fee had disappeared, but concerns about attacks, the blockade, and tanker safety remained.</p>
+      <h4 class="pt">### Point One: A possible bill worth tens of millions <span class="wc-note">44 words</span></h4>
+      <p>If the 20% rate had applied to cargo value, a large tanker carrying about two million barrels at roughly $85 each would hold around $170 million in oil. The possible charge could then reach about $34 million. Another estimate was about $32 million. These were examples, not real bills.</p>
+      <h4 class="pt">### Point Two: International rules point in another direction <span class="wc-note">49 words</span></h4>
+      <p>In a separate decision, the IMO Council said passage through the Strait of Hormuz should remain free from tolls and charges under international law and IMO conventions. It also called for equal and unblocked passage for all ships. There is no confirmed evidence that this decision caused Trump's reversal.</p>
+      <p><strong>In one line…</strong> The 20% charge lasted only about a day, but the market's message was clear: removing one risk does not calm prices when several other dangers remain.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label a2">A2 V2 改1</span><span class="wc-note">392 words</span>
+      <h3 class="title">The 20% Strait Fee Was Dropped, but Oil Prices Stayed High</h3>
+      <p>For one day, a new payment plan shook the oil market.</p>
+      <p>On July 13, US President Donald Trump said the United States would seek a 20% payment on all cargo passing through the Strait of Hormuz.</p>
+      <p>He said the money would help pay back the cost of US safety and security work in the area. He also said work on the plan would start at once.</p>
+      <p>But one big question had no answer:</p>
+      <p>"Twenty percent of what?"</p>
+      <p>The announcement did not explain how the payment would be calculated. It also did not say who would collect it, who would pay it, or how the United States would enforce it.</p>
+      <p>So, this was a proposal. It was not an active fee.</p>
+      <p>Then, on July 14, Trump changed course.</p>
+      <p>He said the 20% plan would be replaced by trade and investment deals between Gulf countries and the United States. He said the change came after productive talks with Middle Eastern leaders.</p>
+      <p>Later that day, Trump told reporters that no one should charge ships for using the strait. He also said he did not like the idea of such a fee.</p>
+      <p>The oil market moved quickly, but not in a straight line.</p>
+      <p>On July 13, Brent oil futures jumped nearly 10%. They ended trading at $83.30 a barrel. Reports linked the rise to several worries, including a planned US sea blockade against Iran and possible problems for energy shipments.</p>
+      <p>After Trump dropped the fee plan on July 14, Brent's gains became smaller for a short time. But prices soon returned to high levels. Brent ended the day at $84.73, up 1.7%.</p>
+      <p>The market still had other fears. These included attacks, the sea blockade, and the safety of oil tankers.</p>
+      <h4 class="pt">### Point One: A Very Large Possible Bill <span class="wc-note">46 words</span></h4>
+      <p>If the 20% rate had been placed on the value of the oil, the cost could have been huge. One example used a tanker carrying about two million barrels. Its oil was worth about $170 million, making 20% about $34 million. This was only an estimate, not a real bill.</p>
+      <h4 class="pt">### Point Two: International Rules Point the Other Way <span class="wc-note">48 words</span></h4>
+      <p>The International Maritime Organization had already confirmed that ships using the Strait of Hormuz should not face tolls or fees. It said all ships should have free and equal passage under international law and IMO rules. However, there is no confirmed evidence that this directly caused Trump's change.</p>
+      <p><strong>In one line…</strong> The 20% payment plan disappeared in about a day, but the oil market's deeper fear about security in the Strait of Hormuz remained.</p>
+    </div>
+
+    <div class="data-block">
+      <h3>ADD03 Fact Safety</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+        <tbody>
+          <tr><td>B2 V2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+          <tr><td>B1 V2</td><td><span class="badge pass">PASS</span></td><td><span class="badge deviation">LEDGER_DEVIATION</span>(MINOR 2件)</td><td>0</td></tr>
+          <tr><td>A2 V2 改1</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note-small">B1 V2の2件のMINOR逸脱は、太字強調箇所「dropped before a collection system was created」と結び「The 20% charge lasted only about a day」。詳細はレポートK節参照。</p>
+
+      <h3>ADD03 Point / Length Analysis</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Version</th><th class="num">Main Story</th><th class="num">Point One</th><th class="num">Point Two</th><th class="num">In One Line</th><th class="num">Total</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len</th></tr></thead>
+        <tbody>
+          <tr><td>B2 V2</td><td class="num">272</td><td class="num">42</td><td class="num">42</td><td class="num">27</td><td class="num">383</td><td class="num">23</td><td class="num">16.8</td><td class="num">31</td></tr>
+          <tr><td>B1 V2</td><td class="num">278</td><td class="num">44</td><td class="num">49</td><td class="num">25</td><td class="num">396</td><td class="num">28</td><td class="num">14.2</td><td class="num">29</td></tr>
+          <tr><td>A2 V2 改1</td><td class="num">276</td><td class="num">46</td><td class="num">48</td><td class="num">22</td><td class="num">392</td><td class="num">30</td><td class="num">13.2</td><td class="num">23</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ============ Cross-Genre Summary ============ -->
+  <section class="cross" id="cross">
+    <h2>Cross-Genre Summary(A01 / ADD03 / A02参考値)</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Article</th><th>Original→B2</th><th>B2→B1</th><th>B1→A2</th><th>B2→A2</th><th>B1専用英文の実用価値</th></tr></thead>
+      <tbody>
+        <tr><td>A01(Sports)</td><td>CLOSE</td><td>WEAK〜SOMEWHAT CLEAR</td><td>SOMEWHAT CLEAR</td><td>CLEAR</td><td><strong>NO</strong>(B1版のみMAJOR逸脱3件)</td></tr>
+        <tr><td>ADD03(Economy)</td><td>CLOSE</td><td>SOMEWHAT CLEAR</td><td>CLEAR</td><td>CLEAR</td><td><strong>UNCERTAIN〜NO</strong>(B1版のみMINOR逸脱2件)</td></tr>
+        <tr><td>A02(既存結果、参考)</td><td>CLOSE</td><td>SOMEWHAT CLEAR</td><td>SOMEWHAT CLEAR〜CLEAR</td><td>SOMEWHAT CLEAR</td><td><strong>UNCERTAIN〜NO</strong>(B1版がFact Checker FAIL)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">A02の数値はER-003-CEFR-DIRECT-02の結果(新規生成なし、参考値)。3ジャンルすべてで、Fact SafetyはB2・A2改1が無傷(PASS・LEDGER_COMPLIANT)である一方、B1 V2だけが何らかの問題(FAIL/Ledger逸脱)を起こしている。詳細はレポートG・K節参照。</p>
+  </section>
+
+  <footer class="meta">
+    ER-003-CEFR-DIRECT-03 &middot; A01(サッカー)・ADD03(ホルムズ海峡/原油) CEFR Direct Cross-Genre Validation &middot;
+    生成: er003_v1_cefr_direct_03_generate.py
+  </footer>
+</div>

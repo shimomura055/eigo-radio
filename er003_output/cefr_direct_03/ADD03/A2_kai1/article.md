@@ -1,0 +1,41 @@
+# The 20% Strait Fee Was Dropped, but Oil Prices Stayed High
+
+For one day, a new payment plan shook the oil market.
+
+On July 13, US President Donald Trump said the United States would seek a 20% payment on all cargo passing through the Strait of Hormuz.
+
+He said the money would help pay back the cost of US safety and security work in the area. He also said work on the plan would start at once.
+
+But one big question had no answer:
+
+“Twenty percent of what?”
+
+The announcement did not explain how the payment would be calculated. It also did not say who would collect it, who would pay it, or how the United States would enforce it.
+
+So, this was a proposal. It was not an active fee.
+
+Then, on July 14, Trump changed course.
+
+He said the 20% plan would be replaced by trade and investment deals between Gulf countries and the United States. He said the change came after productive talks with Middle Eastern leaders.
+
+Later that day, Trump told reporters that no one should charge ships for using the strait. He also said he did not like the idea of such a fee.
+
+The oil market moved quickly, but not in a straight line.
+
+On July 13, Brent oil futures jumped nearly 10%. They ended trading at $83.30 a barrel. Reports linked the rise to several worries, including a planned US sea blockade against Iran and possible problems for energy shipments.
+
+After Trump dropped the fee plan on July 14, Brent’s gains became smaller for a short time. But prices soon returned to high levels. Brent ended the day at $84.73, up 1.7%.
+
+The market still had other fears. These included attacks, the sea blockade, and the safety of oil tankers.
+
+### Point One: A Very Large Possible Bill
+
+If the 20% rate had been placed on the value of the oil, the cost could have been huge. One example used a tanker carrying about two million barrels. Its oil was worth about $170 million, making 20% about $34 million. This was only an estimate, not a real bill.
+
+### Point Two: International Rules Point the Other Way
+
+The International Maritime Organization had already confirmed that ships using the Strait of Hormuz should not face tolls or fees. It said all ships should have free and equal passage under international law and IMO rules. However, there is no confirmed evidence that this directly caused Trump’s change.
+
+## In one line…
+
+The 20% payment plan disappeared in about a day, but the oil market’s deeper fear about security in the Strait of Hormuz remained.
