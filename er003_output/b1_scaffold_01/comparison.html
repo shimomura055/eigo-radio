@@ -1,0 +1,201 @@
+<title>A02 B1 Supported Natural English Prototype</title>
+<style>
+:root {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --b1: #a8710f; --b1-bg: #f5ead2; --b2: #3d4f8c; --b2-bg: #e3e6f4;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --b1: #d9a94c; --b1-bg: #332a15; --b2: #9aa8e0; --b2-bg: #232a48;
+    --support: #b79ee0; --support-bg: #2b2438;
+    --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+    --fail: #e08a8a; --fail-bg: #3a2020;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --b1: #d9a94c; --b1-bg: #332a15; --b2: #9aa8e0; --b2-bg: #232a48;
+  --support: #b79ee0; --support-bg: #2b2438;
+  --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+  --fail: #e08a8a; --fail-bg: #3a2020;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --b1: #a8710f; --b1-bg: #f5ead2; --b2: #3d4f8c; --b2-bg: #e3e6f4;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; line-height: 1.65; margin: 0; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+header.top { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.eyebrow { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+h1 { font-size: 1.65rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 0; }
+
+.script-flow { margin-top: 2.5rem; }
+.part { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 1.4rem 1.9rem; margin-bottom: 0.9rem; position: relative; }
+.part.support { border-left: 4px solid var(--support); }
+.part.news { border-left: 4px solid var(--b2); }
+.part-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+.part-label .name { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 700; }
+.part.support .name { color: var(--support); }
+.part.news .name { color: var(--b2); }
+.part-label .wc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.part p { margin: 0 0 0.7rem; }
+.part p:last-child { margin-bottom: 0; }
+.kp-list { list-style: none; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", sans-serif; }
+.kp-list li { padding: 0.5rem 0; border-bottom: 1px dashed var(--rule); display: flex; gap: 0.8rem; align-items: baseline; }
+.kp-list li:last-child { border-bottom: none; }
+.kp-rank { color: var(--support); font-weight: 700; min-width: 1.2rem; }
+.kp-en { font-family: Georgia, serif; font-weight: 700; }
+.kp-arrow { color: var(--ink-soft); }
+.kp-ja { color: var(--ink); }
+.point-heading { font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+
+.data-block { margin-top: 3rem; font-family: -apple-system, "Segoe UI", sans-serif; }
+.data-block h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); border-bottom: 2px solid var(--rule); padding-bottom: 0.5rem; margin: 2.5rem 0 1rem; }
+.data-block h3 { font-size: 0.85rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; margin: 1.8rem 0 0.8rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; white-space: nowrap; }
+.badge.pass { background: var(--pass-bg); color: var(--pass); }
+.badge.review { background: var(--review-bg); color: var(--review); }
+.badge.fail { background: var(--fail-bg); color: var(--fail); }
+.badge.compliant { background: var(--pass-bg); color: var(--pass); }
+.badge.deviation { background: var(--fail-bg); color: var(--fail); }
+.verdict { font-weight: 800; }
+.verdict.yes { color: var(--pass); }
+.verdict.uncertain { color: var(--review); }
+.verdict.no { color: var(--fail); }
+.note-small { font-size: 0.74rem; color: var(--ink-soft); }
+
+footer.meta { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">ER-003-B1-SCAFFOLD-01 &middot; A02 B1 Supported Natural English Prototype</p>
+    <h1>Britain's Midnight Reset — B2本文 + B1 Listening Support</h1>
+    <p class="sub">ニュース本文(Full Story Part1/Part2/Point One/Point Two/In One Line)はER-003-CEFR-DIRECT-02のB2 V2版と一字一句同一。B1固有の要素はPreview・Comment1-4(易しいSupport英語)とKey Phrases(English→Japanese→English)のみ。</p>
+  </header>
+
+  <div class="script-flow">
+    <div class="part support">
+      <div class="part-label"><span class="name">1. Preview</span><span class="wc">49 words</span></div>
+      <p>Britain is considering new social media protections for older teenagers. The central issue is what these protections could change in real life. An earlier test offers useful context, but its findings need careful reading. As you listen, ask: What can the test show, and what can it not prove?</p>
+    </div>
+
+    <div class="part support">
+      <div class="part-label"><span class="name">2. Key Phrases</span><span class="wc">5 items, E→J→E</span></div>
+      <ul class="kp-list">
+        <li><span class="kp-rank">1</span><span class="kp-en">by default</span><span class="kp-arrow">→</span><span class="kp-ja">初期設定で</span><span class="kp-arrow">→</span><span class="kp-en">by default</span></li>
+        <li><span class="kp-rank">2</span><span class="kp-en">curfew</span><span class="kp-arrow">→</span><span class="kp-ja">利用禁止時間</span><span class="kp-arrow">→</span><span class="kp-en">curfew</span></li>
+        <li><span class="kp-rank">3</span><span class="kp-en">cross the finish line</span><span class="kp-arrow">→</span><span class="kp-ja">完了する、成立に至る</span><span class="kp-arrow">→</span><span class="kp-en">cross the finish line</span></li>
+        <li><span class="kp-rank">4</span><span class="kp-en">pilot</span><span class="kp-arrow">→</span><span class="kp-ja">試験的な調査</span><span class="kp-arrow">→</span><span class="kp-en">pilot</span></li>
+        <li><span class="kp-rank">5</span><span class="kp-en">personalised feeds</span><span class="kp-arrow">→</span><span class="kp-ja">個人向けに選ばれた投稿欄</span><span class="kp-arrow">→</span><span class="kp-en">personalised feeds</span></li>
+      </ul>
+    </div>
+
+    <div class="part support">
+      <div class="part-label"><span class="name">3. Comment 1 — Listening Focus</span><span class="wc">17 words</span></div>
+      <p>Listen for what would happen automatically at night and what young users could still choose to do.</p>
+    </div>
+
+    <div class="part news">
+      <div class="part-label"><span class="name">4. Full Story Part 1(B2共通・無変更)</span><span class="wc">88 words</span></div>
+      <p>At midnight, the screen would not be seized, and social media apps would not necessarily disappear. Instead, the UK government wants the digital world to become quieter by default.</p>
+      <p>Under the planned rules, users aged 16 and 17 would receive additional protection settings on covered social media services. From midnight until 6 a.m., a default night restriction would apply, including the muting of alerts and push notifications.</p>
+      <p>The word <strong>"default"</strong> matters. This would not be an unchangeable curfew. The settings would switch on automatically, but young users could change them.</p>
+    </div>
+
+    <div class="part support">
+      <div class="part-label"><span class="name">5. Comment 2 — Mid-story Recovery + Next Question</span><span class="wc">24 words</span></div>
+      <p>The night setting would turn on automatically, but users could change it. What other settings would change by default, and when would they apply?</p>
+    </div>
+
+    <div class="part news">
+      <div class="part-label"><span class="name">6. Full Story Part 2(B2共通・無変更)</span><span class="wc">128 words</span></div>
+      <p>And the plan does not stop at bedtime.</p>
+      <p>Autoplay and personalised feeds would also be turned off by default for 16- and 17-year-olds. Unlike the night setting, these protections would apply throughout the day. Users would still be able to switch them back on.</p>
+      <p>In other words, there are two clocks at work: overnight protections designed to reduce late-night interruptions, and all-day settings aimed at features that keep content flowing.</p>
+      <p>The government intends to cover the same range of platforms as its planned social media restrictions for children under 16. However, the final definitions and exceptions for services have not yet been confirmed.</p>
+      <p>The plan has not crossed the finish line. As of 12 August 2026, it still requires parliamentary approval. If approved, the government expects the changes to begin around spring 2027.</p>
+    </div>
+
+    <div class="part support">
+      <div class="part-label"><span class="name">7. Comment 3 — Story Meaning + Bridge to Points</span><span class="wc">39 words</span></div>
+      <p>This plan is not a complete social media ban for 16- and 17-year-olds. It would turn on extra protection settings automatically, but young users could still change them. Next, we will look at what these changes may mean in practice.</p>
+    </div>
+
+    <div class="part news">
+      <div class="part-label"><span class="name">8. Point One(B2共通・無変更)</span><span class="wc">55 words</span></div>
+      <p class="point-heading">The pilot is a clue, not a crystal ball</p>
+      <p>A separate 2026 pilot provides context, not a forecast. The whole study involved 309 households with young people aged 13 to 17, while 81 households were in the night-curfew group. Participants described that curfew as the easiest intervention to manage and reported the most consistent sleep-related improvements. The findings were self-reported, not proof of cause and effect.</p>
+    </div>
+
+    <div class="part news">
+      <div class="part-label"><span class="name">9. Point Two(B2共通・無変更)</span><span class="wc">49 words</span></div>
+      <p class="point-heading">A quieter night may not mean less screen time</p>
+      <p>Many participants in the night-curfew group reported little change in daytime social media use. Some concentrated their scrolling before the restriction, returned early in the morning, or moved to television and games. The main shift may therefore be <strong>when</strong> screens are used, rather than how much they are used.</p>
+    </div>
+
+    <div class="part support">
+      <div class="part-label"><span class="name">10. Comment 4 — Point Recovery + Bridge to In One Line</span><span class="wc">38 words &middot; Ledger逸脱あり</span></div>
+      <p>So, this pilot gives us context, not a prediction. People reported better sleep, but many changed when they used screens rather than how much they used them. With that in mind, here is the story in one line.</p>
+    </div>
+
+    <div class="part news">
+      <div class="part-label"><span class="name">11. In One Line(B2共通・無変更)</span><span class="wc">31 words</span></div>
+      <p>Britain is not proposing a midnight padlock, but a default pause: fewer digital nudges at night, less automatic content throughout the day, and the final choice still left with the user.</p>
+    </div>
+  </div>
+
+  <div class="data-block">
+    <h2>F. Support QA(10観点)</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>観点</th><th>評価</th></tr></thead>
+      <tbody>
+        <tr><td>1. Support English ease</td><td>高い。全パート短い宣言文中心、比喩・慣用表現なし</td></tr>
+        <tr><td>2. First-listen comprehensibility</td><td>高い。平易な語彙・明快な構文</td></tr>
+        <tr><td>3. Listening guidance quality</td><td>良好。C1は焦点提示、C2は次への問い、C3はPointを伏せたまま橋渡し</td></tr>
+        <tr><td>4. Recovery effectiveness</td><td>C2は簡潔に機能。C4は要点回収を狙ったが、下記の逸脱を招いた</td></tr>
+        <tr><td>5. Transition clarity</td><td>良好。各Commentが次のセクションへ明確に接続</td></tr>
+        <tr><td>6. Support brevity</td><td>良好。全Support(17〜49語)がニュース本文(88〜128語)より明確に短い</td></tr>
+        <tr><td>7. Support naturalness</td><td>良好。ナビゲーター口調が自然、教材調ではない</td></tr>
+        <tr><td>8. Adult tone</td><td>維持されている</td></tr>
+        <tr><td>9. No new Fact</td><td>Comment 4のみ例外(下記G節)。他4パートは新規Factなし</td></tr>
+        <tr><td>10. No over-explanation</td><td>良好。本文の長いparaphraseは発生していない</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">PreviewのFact Checkでは、「Britain is considering」という表現がやや弱い(政策は既に正式発表済みで「検討中」ではない)と指摘されたが、明確な矛盾ではないためPASS。</p>
+
+    <h2>G. Fact Safety</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Check</th><th>対象</th><th>結果</th></tr></thead>
+      <tbody>
+        <tr><td>Support Fact Check</td><td>Preview+Comment1-4(結合)</td><td><span class="badge pass">PASS</span>(矛盾0件)</td></tr>
+        <tr><td>Support Ledger Deviation Check</td><td>Preview+Comment1-4(結合)</td><td><span class="badge deviation">LEDGER_DEVIATION</span>(MAJOR 1件、Comment 4)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">該当箇所: "So, this pilot gives us context, not a prediction. People reported better sleep, but many changed when they used screens rather than how much they used them." — 睡眠改善・利用時間帯の移動は、Ledger上は午後9時〜午前7時のnight-curfew群(パイロット全体の一部)に限定される報告だが、Comment 4は"this pilot"/"People"として調査全体・一般的な人々の結果であるかのように述べている。詳細はレポートG節参照。</p>
+  </div>
+
+  <footer class="meta">
+    ER-003-B1-SCAFFOLD-01 &middot; A02(英国SNS規制) B1 Supported Natural English Prototype &middot;
+    生成: er003_v1_b1_scaffold_01_generate.py
+  </footer>
+</div>
