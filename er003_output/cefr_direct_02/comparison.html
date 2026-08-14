@@ -1,0 +1,292 @@
+<title>A02 V2 Full-Article CEFR Calibration</title>
+<style>
+:root {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --a2: #4d7c5f; --a2-bg: #e5efe6; --b1: #a8710f; --b1-bg: #f5ead2;
+  --b2: #3d4f8c; --b2-bg: #e3e6f4; --master: #6b6357; --master-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+    --b2: #9aa8e0; --b2-bg: #232a48; --master: #b8b0a0; --master-bg: #2a2721;
+    --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+    --fail: #e08a8a; --fail-bg: #3a2020;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --a2: #8fc39f; --a2-bg: #1c2c22; --b1: #d9a94c; --b1-bg: #332a15;
+  --b2: #9aa8e0; --b2-bg: #232a48; --master: #b8b0a0; --master-bg: #2a2721;
+  --pass: #7fcf9e; --pass-bg: #1b3025; --review: #d9a94c; --review-bg: #332a15;
+  --fail: #e08a8a; --fail-bg: #3a2020;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --a2: #4d7c5f; --a2-bg: #e5efe6; --b1: #a8710f; --b1-bg: #f5ead2;
+  --b2: #3d4f8c; --b2-bg: #e3e6f4; --master: #6b6357; --master-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5; --review: #a8710f; --review-bg: #f5ead2;
+  --fail: #a13d3d; --fail-bg: #f6e3e1;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; line-height: 1.65; margin: 0; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+header.top { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.eyebrow { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+h1 { font-size: 1.7rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 0; }
+nav.jump { display: flex; gap: 0.6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+nav.jump a { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; text-decoration: none; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
+nav.jump a.b2 { border-color: var(--b2); color: var(--b2); }
+nav.jump a.b1 { border-color: var(--b1); color: var(--b1); }
+nav.jump a.a2 { border-color: var(--a2); color: var(--a2); }
+nav.jump a.x { border-color: var(--accent); color: var(--accent); }
+
+section.level { margin-top: 3.5rem; }
+.level-head { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 1.5rem; }
+.level-badge { font-family: -apple-system, "Segoe UI", sans-serif; font-weight: 800; font-size: 1.2rem; padding: 0.15rem 0.7rem; border-radius: 6px; }
+.level-badge.a2 { background: var(--a2-bg); color: var(--a2); }
+.level-badge.b1 { background: var(--b1-bg); color: var(--b1); }
+.level-badge.b2 { background: var(--b2-bg); color: var(--b2); }
+.level-badge.master { background: var(--master-bg); color: var(--master); }
+.level-head h2 { font-size: 1rem; margin: 0; color: var(--ink-soft); font-weight: 500; }
+
+.article-card { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 1.8rem 2.1rem; margin-bottom: 1.4rem; }
+.article-label { display: inline-block; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 3px; margin-bottom: 1rem; }
+.article-label.master { background: var(--master-bg); color: var(--master); }
+.article-label.v { background: var(--accent-soft); color: var(--accent); }
+.article-card h3.title { font-size: 1.15rem; margin: 0 0 1rem; text-wrap: balance; }
+.article-card h4.pt { font-size: 0.95rem; color: var(--accent); margin: 1.4rem 0 0.4rem; }
+.article-card p { margin: 0 0 0.85rem; }
+.article-card p:last-child { margin-bottom: 0; }
+.wc-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--ink-soft); float: right; font-variant-numeric: tabular-nums; }
+
+.data-block { margin-top: 2.2rem; font-family: -apple-system, "Segoe UI", sans-serif; }
+.data-block h3 { font-size: 0.85rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem; margin: 1.8rem 0 0.8rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; white-space: nowrap; }
+.badge.pass { background: var(--pass-bg); color: var(--pass); }
+.badge.review { background: var(--review-bg); color: var(--review); }
+.badge.fail { background: var(--fail-bg); color: var(--fail); }
+.badge.compliant { background: var(--pass-bg); color: var(--pass); }
+
+section.cross { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--rule); }
+section.cross h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); }
+.note-small { font-size: 0.74rem; color: var(--ink-soft); }
+
+footer.meta { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">ER-003-CEFR-DIRECT-02 &middot; A02 V2 Full-Article Difficulty Calibration</p>
+    <h1>Britain's Midnight Reset — Variation 2完全記事版によるCEFR較正</h1>
+    <p class="sub">Main Story + Point One + Point Two + In One Lineを含む完全記事構成。B2 V2 / B1 V2 / A2 V2 Original / A2 V2 改1(Cognitive Load Reduction) / A2 V2 改2(Conceptual Rebuilding)の5版。</p>
+    <nav class="jump">
+      <a class="b2" href="#b2">B2 V2</a>
+      <a class="b1" href="#b1">B1 V2</a>
+      <a class="a2" href="#a2">A2(3版)</a>
+      <a class="x" href="#cross">Cross-level / Calibration</a>
+    </nav>
+  </header>
+
+  <section class="level" id="master">
+    <div class="level-head"><span class="level-badge master">Master</span><h2>English Master(参照基準・既存固定版、本文のみ)</h2></div>
+    <div class="article-card">
+      <span class="article-label master">English Master(既存固定版、参照専用)</span><span class="wc-note">198 words</span>
+      <p>At midnight, the phone may still be beside the bed.</p>
+      <p>But under the UK government's plan, it could become a much quieter companion.</p>
+      <p>Britain is preparing new default social media protections for 16- and 17-year-olds. From midnight to 6 a.m., covered services would apply nighttime restrictions, including the muting of alerts and push notifications.</p>
+      <p>The idea is simple:</p>
+      <p>"Let the night feel like night again."</p>
+      <p>This is not a blanket, unchangeable social media ban. The protections would switch on automatically, but users would be able to alter the settings themselves.</p>
+      <p>That distinction matters.</p>
+      <p>The government is not proposing to seize control of teenagers' phones for six hours. Instead, it wants the starting position to change—from platforms constantly inviting young people back in, to a quieter default that requires a conscious choice to override.</p>
+      <p>And for now, this remains a plan, not an active rule.</p>
+      <p>As of August 12, 2026, the changes had not yet taken effect. Parliamentary approval is still required, with the government expecting implementation to begin around spring 2027.</p>
+      <p>So the screen is not going dark tonight.</p>
+      <p>But Britain is preparing to ask a much bigger question: when midnight arrives, should social media still be designed to keep calling?</p>
+      <p class="note-small">(ER-003-CEFR-DIRECT-01で生成した本文のみの固定版。今回は再生成せず、writer入力にも使用していない。参照表示のみ。)</p>
+    </div>
+  </section>
+
+  <!-- ============ B2 ============ -->
+  <section class="level" id="b2">
+    <div class="level-head"><span class="level-badge b2">B2 V2</span><h2>Listening / Cognitive Load方式</h2></div>
+    <div class="article-card">
+      <span class="article-label v">B2 V2</span><span class="wc-note">348 words</span>
+      <h3 class="title">Britain Plans to Turn Down the Social Media Noise at Night</h3>
+      <p>At midnight, the screen would not be seized, and social media apps would not necessarily disappear. Instead, the UK government wants the digital world to become quieter by default.</p>
+      <p>Under the planned rules, users aged 16 and 17 would receive additional protection settings on covered social media services. From midnight until 6 a.m., a default night restriction would apply, including the muting of alerts and push notifications.</p>
+      <p>The word <strong>"default"</strong> matters. This would not be an unchangeable curfew. The settings would switch on automatically, but young users could change them.</p>
+      <p>And the plan does not stop at bedtime.</p>
+      <p>Autoplay and personalised feeds would also be turned off by default for 16- and 17-year-olds. Unlike the night setting, these protections would apply throughout the day. Users would still be able to switch them back on.</p>
+      <p>In other words, there are two clocks at work: overnight protections designed to reduce late-night interruptions, and all-day settings aimed at features that keep content flowing.</p>
+      <p>The government intends to cover the same range of platforms as its planned social media restrictions for children under 16. However, the final definitions and exceptions for services have not yet been confirmed.</p>
+      <p>The plan has not crossed the finish line. As of 12 August 2026, it still requires parliamentary approval. If approved, the government expects the changes to begin around spring 2027.</p>
+      <h4 class="pt">### The pilot is a clue, not a crystal ball <span class="wc-note">52 words</span></h4>
+      <p>A separate 2026 pilot provides context, not a forecast. The whole study involved 309 households with young people aged 13 to 17, while 81 households were in the night-curfew group. Participants described that curfew as the easiest intervention to manage and reported the most consistent sleep-related improvements. The findings were self-reported, not proof of cause and effect.</p>
+      <h4 class="pt">### A quieter night may not mean less screen time <span class="wc-note">49 words</span></h4>
+      <p>Many participants in the night-curfew group reported little change in daytime social media use. Some concentrated their scrolling before the restriction, returned early in the morning, or moved to television and games. The main shift may therefore be <strong>when</strong> screens are used, rather than how much they are used.</p>
+      <p><strong>In one line…</strong> Britain is not proposing a midnight padlock, but a default pause: fewer digital nudges at night, less automatic content throughout the day, and the final choice still left with the user.</p>
+    </div>
+  </section>
+
+  <!-- ============ B1 ============ -->
+  <section class="level" id="b1">
+    <div class="level-head"><span class="level-badge b1">B1 V2</span><h2>Listening / Cognitive Load方式</h2></div>
+    <div class="article-card">
+      <span class="article-label v">B1 V2</span><span class="wc-note">326 words</span>
+      <h3 class="title">When the Night Goes Quiet: UK Plans New Social Media Settings for Teenagers</h3>
+      <p>At midnight, a teenager's phone would not suddenly become useless. But social media could become much quieter.</p>
+      <p>The UK government plans to introduce new default settings for 16- and 17-year-olds. On social media services covered by the planned rules, night restrictions would apply from midnight until 6 a.m.</p>
+      <p>During those six hours, alerts and push notifications would be muted by default. However, this is not a complete and unchangeable ban. The settings would turn on automatically, but young users could change them.</p>
+      <p>The plan also includes another type of protection. Autoplay and personalised feeds would be switched off by default for the same age group. These settings would apply throughout the day, not only during the night.</p>
+      <p>In simple terms, the government wants the first setting to be the quieter choice. A teenager could still change it, but the app would no longer begin by automatically pulling them toward the next video, post or late-night alert.</p>
+      <p>However, the rules are still only a plan. As of August 12, 2026, they have not taken effect. Parliamentary approval is needed, and the government expects the changes to begin around spring 2027. The final details about which services will be covered will come later.</p>
+      <h4 class="pt">### What a separate pilot suggests <span class="wc-note">55 words</span></h4>
+      <p>A completed study involved 309 households across four groups. Of these, 81 were assigned to a stronger 9 p.m.-to-7 a.m. social media curfew. Participants reported that it was the easiest of the three interventions to manage and showed the most consistent sleep improvements. However, the study was small, self-selected and mainly based on personal reports.</p>
+      <h4 class="pt">### The clock may move the habit, not remove it <span class="wc-note">47 words</span></h4>
+      <p>Many pilot participants said their daytime social media use changed little. Some used apps heavily before the curfew, returned early in the morning, or moved to television and games. This suggests that a night restriction may change when screen use happens without necessarily reducing total screen time.</p>
+      <p><strong>In one line…</strong> The UK is not planning to lock social media away at night. It is planning to make quiet, less attention-grabbing settings the starting point for older teenagers.</p>
+    </div>
+  </section>
+
+  <!-- ============ A2 (3 versions, near each other) ============ -->
+  <section class="level" id="a2">
+    <div class="level-head"><span class="level-badge a2">A2 (3版)</span><h2>Original / 改1(Cognitive Load Reduction) / 改2(Conceptual Rebuilding)</h2></div>
+
+    <div class="article-card">
+      <span class="article-label v">A2 V2 Original</span><span class="wc-note">337 words</span>
+      <h3 class="title">After Midnight, the Phone May Go Quiet: The UK's New Teen Social Media Plan</h3>
+      <p>Midnight. A phone is still bright. Then its social media alerts go silent.</p>
+      <p>That is the kind of change the UK government is planning for 16- and 17-year-olds.</p>
+      <p>On social media services covered by the proposed rules, a night limit would turn on automatically from midnight to 6 a.m. Alerts and push notifications would be muted during these six hours.</p>
+      <p>But this is <strong>not a hard, unchangeable ban</strong>. Young users would be able to change the settings. The plan also does not say that every social media app must become impossible to open at night.</p>
+      <p>The government is planning two other settings for the same age group. Autoplay—the feature that starts the next video by itself—would be off by default. Personalised feeds, where an app chooses posts for each user, would also be off.</p>
+      <p>These two settings would apply all day, not only at night. Users could switch them back on.</p>
+      <p>The exact list of social media services and any exceptions has not yet been decided.</p>
+      <p>As of August 12, 2026, these changes are still only a plan. The UK Parliament must approve the new rules. If that happens, the government expects the changes to start around spring 2027.</p>
+      <h4 class="pt">### A useful clue: Night rules may fit family life <span class="wc-note">55 words</span></h4>
+      <p>A separate one-month pilot looked at 309 UK households with young people aged 13 to 17. One group, with 81 households, was asked to try a social media access block from 9 p.m. to 7 a.m. Among three limits tested, participants said this was the easiest to fit into daily life. This group also reported the clearest sleep improvements.</p>
+      <h4 class="pt">### An important warning: Screen time can move <span class="wc-note">55 words</span></h4>
+      <p>The pilot cannot prove that the curfew caused these changes. Families chose to join, groups were based on their wishes, and app use was not checked directly. Many in the curfew group said daytime use stayed similar. Some used social media more before 9 p.m. or after 7 a.m.; others moved to television or games.</p>
+      <p><strong>In one line…</strong> The UK is not planning to lock older teens out of social media after midnight—it is planning quieter default settings, which users can change, if Parliament approves the rules.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">A2 V2 改1 — Cognitive Load Reduction</span><span class="wc-note">342 words</span>
+      <h3 class="title">When the Pings Stop: Britain Plans Night Settings for 16- and 17-Year-Olds</h3>
+      <p>Late at night, one small sound can pull a person back to their phone.</p>
+      <p>"Ping."</p>
+      <p>A new message. A new video. One more look.</p>
+      <p>The UK government wants to make the night quieter for social media users aged 16 and 17.</p>
+      <p>Under the plan, covered social media services would use a night limit from midnight to 6 a.m. This would be the default setting. In other words, it would turn on automatically.</p>
+      <p>During these six hours, alerts and push notifications would be muted.</p>
+      <p>However, this is not a complete ban on social media. It does not mean that every app will become impossible to use. Young users will also be able to change the setting.</p>
+      <p>The plan has another part that works all day, not only at night.</p>
+      <p>Autoplay would be off by default. This feature normally starts the next video by itself. Personalised feeds would also be off. These feeds choose posts and videos for each user.</p>
+      <p>Users would be able to turn these features back on.</p>
+      <p>The exact social media services covered by the new rules are not yet final. The government plans to give more details later.</p>
+      <p>The most important word is "plan."</p>
+      <p>As of August 12, 2026, these changes are not yet in force. They still need approval from Parliament. If approved, the government expects the changes to begin around spring 2027.</p>
+      <h4 class="pt">### A separate pilot gives an early clue <span class="wc-note">53 words</span></h4>
+      <p>In a separate 2026 study, 309 households joined four groups. The night-curfew group had 81 households and was assigned a stronger 9 p.m.-to-7 a.m. access block. Among the three limits tested, participants said this one was easiest to fit into family life. Families also reported earlier bedtimes and feeling more awake the next day.</p>
+      <h4 class="pt">### A quieter night may not mean less screen time <span class="wc-note">45 words</span></h4>
+      <p>Many people in the pilot said their daytime social media use changed little. Some used it more before the curfew or after 7 a.m. Others moved to TV or games. The study was small and mainly used self-reports, so it gives a clue, not proof.</p>
+      <p><strong>In one line…</strong> Britain is planning a quieter default, not a hard night-time ban, for 16- and 17-year-olds. If Parliament agrees, the change may begin in spring 2027.</p>
+    </div>
+
+    <div class="article-card">
+      <span class="article-label v">A2 V2 改2 — Conceptual Rebuilding</span><span class="wc-note">277 words</span>
+      <h3 class="title">UK Plans Quieter Social Media Nights for 16- and 17-Year-Olds</h3>
+      <p>The phone may still be in your hand. But after midnight, it may become much quieter.</p>
+      <p>The UK government plans new social media settings for people aged 16 and 17. From midnight to 6 a.m., night-time limits will be on automatically. Alerts and push messages will be silent during these six hours.</p>
+      <p>This is not a complete social media ban. Young users will be able to change the settings themselves.</p>
+      <p>There will also be protection during the day. Autoplay will be off, so videos will not start by themselves. Personalised feeds will also be off. This means apps will not automatically choose a special feed for each user. Again, users can change these settings.</p>
+      <p>The final list of social media services is not ready yet. The government will give more details later.</p>
+      <p>As of 12 August 2026, these rules are still only a plan. Parliament must approve them first. If it does, the government expects the changes to start around spring 2027.</p>
+      <h4 class="pt">### A separate pilot gave an early clue <span class="wc-note">49 words</span></h4>
+      <p>A different UK pilot studied 309 households with young people aged 13 to 17. It had four groups. The night group included 81 households and was given a 9 p.m. to 7 a.m. app block. Participants reported that this was easier to manage than the other tested limits. They also reported better sleep.</p>
+      <h4 class="pt">### Less night use may not mean less screen time <span class="wc-note">46 words</span></h4>
+      <p>The pilot did not prove that a night block improves sleep for everyone. The study was small, and it mainly used reports from families. Some young people used social media more before the block, returned early in the morning, or moved to television and games instead.</p>
+      <p><strong>In one line…</strong> The UK wants social media to become quieter at night for older teenagers—but the plan is a changeable safety setting, not a locked door.</p>
+    </div>
+  </section>
+
+  <!-- ============ Cross-level / Calibration / QA data ============ -->
+  <section class="cross" id="cross">
+    <h2>H. Cross-level Difficulty(B2 → B1 → A2 Original)</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>軸</th><th>B2 V2</th><th>B1 V2</th><th>A2 V2 Original</th></tr></thead>
+      <tbody>
+        <tr><td>1. Naturalness</td><td>高、比喩豊か("two clocks"、"crystal ball")</td><td>良好、比喩は控えめ</td><td>自然、平易で直接的</td></tr>
+        <tr><td>2. Listening ease</td><td>中</td><td>中〜易</td><td>易しい</td></tr>
+        <tr><td>3. Vocabulary burden</td><td>高</td><td>中</td><td>低〜中</td></tr>
+        <tr><td>4. Sentence-processing burden</td><td>中〜高(コロン構文あり)</td><td>中</td><td>低〜中</td></tr>
+        <tr><td>5. Abstractness</td><td>高</td><td>中</td><td>低</td></tr>
+        <tr><td>6. Amount of inference required</td><td>中〜高</td><td>中</td><td>低〜中</td></tr>
+        <tr><td>7. Narrative clarity</td><td>高</td><td>高</td><td>高</td></tr>
+        <tr><td>8. Editorial engagement</td><td>高</td><td>中〜高</td><td>中〜高</td></tr>
+        <tr><td>9. Adult-news feel</td><td>強い</td><td>強い</td><td>強い</td></tr>
+        <tr><td>10. Fact accuracy</td><td><span class="badge pass">PASS</span></td><td><span class="badge fail">FAIL</span>(K節参照)</td><td><span class="badge pass">PASS</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">評価: B2&rarr;B1 = SOMEWHAT CLEAR(語彙・抽象度の差はあるが文構造は近い)、B1&rarr;A2 Original = SOMEWHAT CLEAR〜CLEAR(具体性・直接性の差は明確、ただし総語数はA2の方がやや多い)。Overall = SOMEWHAT CLEAR。</p>
+
+    <h2>I. A2 Calibration(Original → 改1 → 改2)</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>評価観点</th><th>A2 改1(Cognitive Load Reduction)</th><th>A2 改2(Conceptual Rebuilding)</th></tr></thead>
+      <tbody>
+        <tr><td>難易度は下がったか</td><td>下がった。1文1情報化が明確(例: Autoplay/feedsの説明を4つの短文に分解)</td><td>下がった。概念の提示自体を圧縮・単純化(Main Storyが157語とOriginalの197語より大幅に短い)</td></tr>
+        <tr><td>自然さを失ったか</td><td>失っていない。擬音"Ping."等でむしろ物語性を維持</td><td>ほぼ失っていない。やや機能的だが不自然ではない</td></tr>
+        <tr><td>Adult-news feelを失ったか</td><td>失っていない</td><td>3版中もっとも平易だが、教材調・子供向けとまでは言えない(結びの比喩は維持)</td></tr>
+        <tr><td>情報を削りすぎたか</td><td>削りすぎていない。Originalと同等の内容を保持</td><td>軽微な圧縮あり: 「autoplay/feedsが夜間だけでなく終日適用される」という対比説明がOriginal/改1より弱い("protection during the day"とのみ、"not only at night"の明示的対比が無い)</td></tr>
+        <tr><td>Listening easeは改善したか</td><td>改善(平均文長13.0→10.5語、文数26→33、1文あたりの情報量が減少)</td><td>改善(平均文長13.0→10.7語)。ただし改1と同程度で、改1よりさらに易しいと機械的に断定はできない</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">仮説「Original &gt; 改1 &gt; 改2」は部分的に支持: 改1・改2とも明確にOriginalより負荷が下がった。改1と改2のどちらがより易しいかは、平均文長がほぼ同一(10.5 vs 10.7)であり、本データからは明確に判定できない。</p>
+
+    <h2>J. Point / Length Analysis</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Version</th><th class="num">Main Story</th><th class="num">Point One</th><th class="num">Point Two</th><th class="num">In One Line</th><th class="num">Total</th><th class="num">Sentences</th><th class="num">Avg len</th><th class="num">Max len*</th></tr></thead>
+      <tbody>
+        <tr><td>B2 V2</td><td class="num">216</td><td class="num">52</td><td class="num">49</td><td class="num">31</td><td class="num">348</td><td class="num">25</td><td class="num">14.2</td><td class="num">31</td></tr>
+        <tr><td>B1 V2</td><td class="num">197</td><td class="num">55</td><td class="num">47</td><td class="num">27</td><td class="num">326</td><td class="num">25</td><td class="num">13.2</td><td class="num">26</td></tr>
+        <tr><td>A2 Original</td><td class="num">197</td><td class="num">55</td><td class="num">55</td><td class="num">30</td><td class="num">337</td><td class="num">26</td><td class="num">13.0</td><td class="num">48*</td></tr>
+        <tr><td>A2 改1</td><td class="num">221</td><td class="num">53</td><td class="num">45</td><td class="num">23</td><td class="num">342</td><td class="num">33</td><td class="num">10.5</td><td class="num">18</td></tr>
+        <tr><td>A2 改2</td><td class="num">157</td><td class="num">49</td><td class="num">46</td><td class="num">25</td><td class="num">277</td><td class="num">26</td><td class="num">10.7</td><td class="num">25</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">*A2 Originalのmax=48は、太字(**)直前で文分割が失敗した計測ツールの既知の制約によるもので、実際の最長文はもっと短い(詳細はレポートF節参照)。全版でPoint One・Point Twoは目標30〜60語の範囲内。A2改2の総語数277語のみsoft range(280〜420語)をわずかに下回るが、Main Storyの圧縮によるもので不自然な削除ではない。</p>
+
+    <h2>K. Fact Safety</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Version</th><th>Fact Check</th><th>Ledger Deviation</th><th>技術的再試行</th></tr></thead>
+      <tbody>
+        <tr><td>B2 V2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        <tr><td>B1 V2</td><td><span class="badge fail">FAIL</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        <tr><td>A2 Original</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        <tr><td>A2 改1</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+        <tr><td>A2 改2</td><td><span class="badge pass">PASS</span></td><td><span class="badge compliant">LEDGER_COMPLIANT</span></td><td>0</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note-small">B1 V2のFAILの詳細分析(他4版とほぼ同一の記述パターンにも関わらず本版のみFAILとなった根拠)はレポートK節を参照。</p>
+  </section>
+
+  <footer class="meta">
+    ER-003-CEFR-DIRECT-02 &middot; A02(英国SNS規制) V2 Full-Article Difficulty Calibration &middot;
+    生成: er003_v1_cefr_direct_02_generate.py
+  </footer>
+</div>
