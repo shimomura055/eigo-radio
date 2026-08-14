@@ -1,0 +1,130 @@
+<title>A02 B1 Supported Natural English — Audio Prototype</title>
+<style>
+:root {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --news: #3d4f8c; --news-bg: #e3e6f4;
+  --kp: #a8710f; --kp-bg: #f5ead2;
+  --pass: #2f6b4f; --pass-bg: #e2eee5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --support: #b79ee0; --support-bg: #2b2438;
+    --news: #9aa8e0; --news-bg: #232a48;
+    --kp: #d9a94c; --kp-bg: #332a15;
+    --pass: #7fcf9e; --pass-bg: #1b3025;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --support: #b79ee0; --support-bg: #2b2438;
+  --news: #9aa8e0; --news-bg: #232a48;
+  --kp: #d9a94c; --kp-bg: #332a15;
+  --pass: #7fcf9e; --pass-bg: #1b3025;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --news: #3d4f8c; --news-bg: #e3e6f4;
+  --kp: #a8710f; --kp-bg: #f5ead2;
+  --pass: #2f6b4f; --pass-bg: #e2eee5;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; line-height: 1.6; margin: 0; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+.eyebrow { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+h1 { font-size: 1.65rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 1.8rem; }
+
+.player-card { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1.6rem 1.8rem; margin-bottom: 2.5rem; }
+.player-card audio { width: 100%; }
+.player-meta { display: flex; gap: 1.5rem; margin-top: 1rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--ink-soft); flex-wrap: wrap; }
+.player-meta strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); border-bottom: 2px solid var(--rule); padding-bottom: 0.5rem; margin: 2.5rem 0 1rem; }
+
+.timeline { list-style: none; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.88rem; }
+.timeline li { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); }
+.timeline li:last-child { border-bottom: none; }
+.tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 3px; flex-shrink: 0; min-width: 4.2rem; text-align: center; }
+.tag.support { background: var(--support-bg); color: var(--support); }
+.tag.news { background: var(--news-bg); color: var(--news); }
+.part-name { flex: 1; }
+.part-dur { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: 0.82rem; }
+
+.kp-list { list-style: none; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", sans-serif; }
+.kp-list li { padding: 0.5rem 0; border-bottom: 1px dashed var(--rule); display: flex; gap: 0.8rem; align-items: baseline; }
+.kp-list li:last-child { border-bottom: none; }
+.kp-rank { color: var(--kp); font-weight: 700; min-width: 1.2rem; }
+.kp-en { font-family: Georgia, serif; font-weight: 700; }
+.kp-arrow { color: var(--ink-soft); }
+
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; background: var(--pass-bg); color: var(--pass); }
+.note-small { font-size: 0.78rem; color: var(--ink-soft); font-family: -apple-system, "Segoe UI", sans-serif; }
+
+footer.meta { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">ER-003-B1-SCAFFOLD-AUDIO-01 &middot; A02 Audio Prototype</p>
+  <h1>Britain's Midnight Reset — B1 Supported Natural English(音声版)</h1>
+  <p class="sub">ニュース本文(紫以外のパート)はB2 V2版と一字一句共通。Preview/Comment(紫)だけが易しいSupport英語。全11パート、ASR検証合格分のみを使用。</p>
+
+  <div class="player-card">
+    <audio controls preload="none" src="data:audio/mpeg;base64,__AUDIO_B64__"></audio>
+    <div class="player-meta">
+      <span>総尺: <strong>4分21秒</strong></span>
+      <span>11パート + Key Phrases(5件)</span>
+      <span>ポーズ: 各パート間0.5秒</span>
+    </div>
+  </div>
+
+  <h2>Timeline</h2>
+  <ul class="timeline">
+    <li><span class="tag support">Support</span><span class="part-name">1. Preview</span><span class="part-dur">19.6s</span></li>
+    <li><span class="tag support">Support</span><span class="part-name">2. Key Phrases(5件)</span><span class="part-dur">33.2s</span></li>
+    <li><span class="tag support">Support</span><span class="part-name">3. Comment 1 — Listening Focus</span><span class="part-dur">6.2s</span></li>
+    <li><span class="tag news">News(B2)</span><span class="part-name">4. Full Story Part 1</span><span class="part-dur">40.0s</span></li>
+    <li><span class="tag support">Support</span><span class="part-name">5. Comment 2 — Mid-story Recovery</span><span class="part-dur">9.0s</span></li>
+    <li><span class="tag news">News(B2)</span><span class="part-name">6. Full Story Part 2</span><span class="part-dur">55.2s</span></li>
+    <li><span class="tag support">Support</span><span class="part-name">7. Comment 3 — Story Meaning + Bridge</span><span class="part-dur">16.2s</span></li>
+    <li><span class="tag news">News(B2)</span><span class="part-name">8. Point One</span><span class="part-dur">28.8s</span></li>
+    <li><span class="tag news">News(B2)</span><span class="part-name">9. Point Two</span><span class="part-dur">22.1s</span></li>
+    <li><span class="tag support">Support</span><span class="part-name">10. Comment 4 — Point Recovery + Bridge</span><span class="part-dur">13.8s</span></li>
+    <li><span class="tag news">News(B2)</span><span class="part-name">11. In One Line</span><span class="part-dur">12.3s</span></li>
+  </ul>
+
+  <h2>Key Phrases(English → Japanese → English)</h2>
+  <ul class="kp-list">
+    <li><span class="kp-rank">1</span><span class="kp-en">by default</span><span class="kp-arrow">→</span>初期設定で<span class="kp-arrow">→</span><span class="kp-en">by default</span></li>
+    <li><span class="kp-rank">2</span><span class="kp-en">curfew</span><span class="kp-arrow">→</span>利用禁止時間<span class="kp-arrow">→</span><span class="kp-en">curfew</span></li>
+    <li><span class="kp-rank">3</span><span class="kp-en">cross the finish line</span><span class="kp-arrow">→</span>完了する、成立に至る<span class="kp-arrow">→</span><span class="kp-en">cross the finish line</span></li>
+    <li><span class="kp-rank">4</span><span class="kp-en">pilot</span><span class="kp-arrow">→</span>試験的な調査<span class="kp-arrow">→</span><span class="kp-en">pilot</span></li>
+    <li><span class="kp-rank">5</span><span class="kp-en">personalised feeds</span><span class="kp-arrow">→</span>個人向けに選ばれた投稿欄<span class="kp-arrow">→</span><span class="kp-en">personalised feeds</span></li>
+  </ul>
+
+  <h2>Fact Safety(Support部分)</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Check</th><th>結果</th></tr></thead>
+    <tbody>
+      <tr><td>Support Fact Checker</td><td><span class="badge">PASS</span>(矛盾0件)</td></tr>
+      <tr><td>Support Ledger Deviation Check</td><td><span class="badge">LEDGER_COMPLIANT</span>(逸脱0件)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note-small">ニュース本文自体はER-003-CEFR-DIRECT-02(B2 V2)で検証済みのため、今回は対象外。全11パートすべて、TTS生成→ASR検証(内容一致+長さ)→合格確認を経てから組み立てに使用した。</p>
+
+  <footer class="meta">
+    ER-003-B1-SCAFFOLD-AUDIO-01 &middot; A02(英国SNS規制) B1 Supported Natural English Audio Prototype &middot;
+    生成: er003_v1_b1_scaffold_audio_01_generate.py
+  </footer>
+</div>
