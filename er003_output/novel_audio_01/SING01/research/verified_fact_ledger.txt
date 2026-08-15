@@ -1,0 +1,195 @@
+ER-003-B1-NOVEL-AUDIO-01 — SING01 Verified Fact Ledger
+テーマ: AI / Technological Singularity
+作成方法: WebSearch/WebFetchによる一次〜二次情報源の直接調査(2026-08-16実施)。
+既存パイプラインの自動Ledger生成ステップは通していない(記事外部の
+最新Web情報が入力のため)。r3 Fact Checker(独立Web検証)による
+クロスチェックは別途実施する(fact_check_result.json参照)。
+
+タグ体系(本記事専用に定義。既存[VERIFIED]/[AMBIGUOUS]の考え方を継承し
+FACT/PREDICTION/OPINIONへ拡張):
+  [VERIFIED_FACT]  = 「誰が・いつ・何を言った/報告した」という、それ自体は
+                      検証可能な事実(発言の存在・報告書の内容)。
+                      Singularity/AGIが実際に到来する/したという主張の
+                      真偽そのものはVERIFIED_FACTの対象にしない。
+  [PREDICTION]     = 個人・組織による将来予測。到来時期・確率の予測。
+  [OPINION]        = 個人の評価・意見・立場表明(予測ではなく評価)。
+  [HYPOTHESIS]     = 学術的な仮説・未解決の定義問題。
+
+=== FACTS(発言・報告の存在自体が検証可能) ===
+
+[VERIFIED_FACT] FACT-01: OpenAI CEOのSam Altmanは、2026年7月25日公開の
+"Relentless"podcastで"We're now, like, in the singularity"と発言した。
+  scope: Altman本人の発言。「今まさにその中にいる」という現在形の主張
+  numeric_value: なし
+  date_or_period: 2026年7月25日(podcast公開日)
+  source: Forbes(Ron Schmelzer, 2026-07-28) https://www.forbes.com/sites/ronschmelzer/2026/07/28/ai-singularity-evidence/ ; RealClearPolitics(2026-07-27) https://www.realclearpolitics.com/video/2026/07/27/sam_altman_we_are_now_in_the_singularity_were_close_to_creating_a_genie_that_can_grant_any_wish.html
+  notes_for_writer: 「Singularityが実際に起きた」という事実として書かない。
+  あくまで「Altmanがそう発言した」という事実。この発言は「現在すでに
+  その中にいる」という形であり、FACT-03のMuskの発言(将来形の予測)とは
+  文法上の時制が異なる。両者を「同じ主張をした」と一括りにしない。
+
+[VERIFIED_FACT] FACT-02: Sam Altmanは2025年6月のエッセイ"The Gentle
+Singularity"で"We are past the event horizon; the takeoff has started"
+と書いた。
+  scope: Altman本人のエッセイ
+  date_or_period: 2025年6月
+  source: 同上Forbes記事(Altman本人エッセイへの言及)
+  notes_for_writer: FACT-01と同様、発言の存在のみを事実として扱う。
+
+[VERIFIED_FACT] FACT-03: Elon Muskは2026年1月4日、X(旧Twitter)に"2026 is
+the year of the Singularity"と投稿した。
+  scope: Musk本人の投稿。「今年(2026年)がその年になる」という将来形の予測
+  date_or_period: 2026年1月4日
+  source: Forbes(John Werner, 2026-01-05) https://www.forbes.com/sites/johnwerner/2026/01/05/2026-singularity-muskian-comment-is-backed-by-real-stuff/ ; X投稿 https://x.com/arlinmoore_/status/2007865693925155020
+  notes_for_writer: 投稿の存在のみが事実。予測の正しさを裏付けるものではない
+  (元記事自身も「実証的な裏付けは示されていない」と論じている)。この
+  投稿は「これから2026年中に起こる」という予測であり、FACT-01の
+  Altmanの「すでにその中にいる」という現在形の主張とは異なる。両者を
+  「両者ともすでに到来したと述べた」と一括りにしない。
+
+[VERIFIED_FACT] FACT-04: Stanford HAIの「2026 AI Index」報告書によると、
+大学院レベルの科学設問に対するAIモデルの正答率は、専門家人間の基準値
+81.2%を上回る93%(2025年のテスト結果)に達した。
+  scope: 大学院レベル科学設問ベンチマーク
+  numeric_value: 93%(2025年テスト結果) / 人間専門家基準81.2%
+  date_or_period: 2025年テスト結果、2026年4月公表のAI Indexで報告
+  source: Stanford HAI 2026 AI Index Report https://hai.stanford.edu/ai-index/2026-ai-index-report ; 複数メディアで要約確認(rdworldonline.com等)
+  notes_for_writer: 「AIが人間の科学者を超えた」と一般化しない。特定の
+  ベンチマーク設問群における正答率の比較。
+
+[VERIFIED_FACT] FACT-05: 同じStanford HAI「2026 AI Index」報告書の
+ClockBenchベンチマークによると、最高性能のAIモデルのアナログ時計読み
+取り正答率は50.6%にとどまった一方、人間の正答率は約90%だった。研究者
+はこの落差を"jagged intelligence/frontier"(でこぼこの知能・最前線)と
+呼んでいる。
+  scope: ClockBench(アナログ時計読み取りタスク)
+  numeric_value: AI 50.6% / 人間 約90%
+  date_or_period: 2026年公表のAI Index Technical Performance章で報告
+  source: Stanford HAI 2026 AI Index(一次資料) https://hai.stanford.edu/ai-index/2026-ai-index-report/technical-performance
+  notes_for_writer: FACT-04と対比させて使う。「高度な科学設問はほぼ解ける
+  のに、単純な時計読みは人間よりずっと苦手」という能力のムラを示す
+  具体的事実として使う。50.1%という数字(二次情報源由来)ではなく、
+  一次資料で確認された50.6%を使う。
+
+[VERIFIED_FACT] FACT-06: Google DeepMindのGemini Deep Thinkは、2025年の
+国際数学オリンピック(IMO)で42点満点中35点を獲得し、金メダル相当の
+スコアとされた。
+  scope: 2025年IMO、Gemini Deep Think(の1バリアント)
+  numeric_value: 35/42点
+  date_or_period: 2025年(IMO開催時)、2026年AI Indexで言及
+  source: Stanford HAI 2026 AI Index要約(複数メディア)
+  notes_for_writer: 「AIが人間の数学者全般を超えた」と一般化しない。特定の
+  1回の競技会での特定モデルのスコア。
+
+[VERIFIED_FACT] FACT-07: McKinseyの2025年調査によると、回答企業の88%が
+少なくとも1つの業務でAIを定常利用していると回答した一方、組織全体規模
+でのAIスケーリングに「着手した」と回答したのは約3分の1(完全に全社
+展開済みと答えたのは7%のみ)であり、AI利用による全社レベルの営業利益
+(EBIT)への影響を報告した回答者は39%だった。
+  scope: McKinsey 2025年グローバル企業調査("The State of AI: Global
+  Survey 2025")
+  numeric_value: 88%(定常利用) / 約33%(全社スケーリングに着手、完全展開
+  済みは7%) / 39%(EBITへの影響を報告)
+  date_or_period: 2025年調査
+  source: McKinsey(一次資料) https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai
+  notes_for_writer: 「約3分の1が全社展開を完了した」と書かない。「約
+  3分の1が全社規模でのスケーリングに着手した」までが事実であり、完全
+  展開済みは7%にとどまる。「利益への影響」は具体的にはEBIT(営業利益)
+  指標であり、"bottom line"のような一般化した言い換えは避け、Ledgerの
+  表現(operating profit / EBIT)に近い語を使う。「AIはまだ役に立って
+  いない」とも単純化しない。
+
+[VERIFIED_FACT] FACT-08(改訂版、一次資料で再確認): Grace et al.
+"Thousands of AI Authors on the Future of AI"(2023年、主要AI学会に論文を
+発表した研究者2,778人が回答)は、「高度な機械知能(High-Level Machine
+Intelligence、HLMI: 機械が支援なしにあらゆるタスクを人間より安く上手に
+遂行できる状態)」が実現する確率が50%に達する時期の中央値を2047年と
+した。同じ調査は、2027年までにHLMIが実現する確率をわずか10%とも
+示しており、回答は大きくばらついている。
+  scope: 主要AI学会の論文著者(必ずしも「Singularity研究者」ではない)
+  2,778人への調査
+  numeric_value: 50%到達の中央値=2047年 / 2027年までの実現確率=10%
+  date_or_period: 2023年実施
+  source: Grace et al., arXiv(一次資料) https://arxiv.org/abs/2401.02843
+  notes_for_writer: これは「Singularity到来時期」の調査結果ではなく、
+  HLMIというAI研究者が定義した別概念の調査結果である。記事内で
+  「Singularityの予測」と同一視しない。「研究者全体の総意」とも書か
+  ない(中央値であり、個々の回答は大きくばらついている。同じ調査が
+  2027年までに10%の確率も示している点も、単純な「決着は数十年後」
+  という印象を避けるために使ってよい)。調査対象の研究者が「商業的
+  利害を持たない」とは書かない(所属や利害関係は調査の絞り込み条件
+  ではない)。旧版(aimultiple.com集計による「2040年代」という幅の
+  表現)は、この一次資料確認により本記事では不使用とする。
+
+=== PREDICTIONS(将来予測。個人・調査の見解として明示する) ===
+
+[PREDICTION] PRED-01: Elon Muskは、2026年がSingularity到来の年になると
+予測している(FACT-03の投稿内容そのもの)。
+  attribution: Elon Musk
+  notes_for_writer: 「2026年に起こる」と断定しない。「Muskはそう予測して
+  いる」という形でのみ書く。
+
+[PREDICTION] PRED-02: AI研究者を対象とした調査群は、集計すると「高度な
+機械知能」到来の可能性50%の時期を2040年代とする見方に傾いている
+(FACT-08と同じ調査を、予測内容として言及する場合)。
+  attribution: 複数のAI研究者調査の集計
+  notes_for_writer: FACT-08は「調査がそう報告した」という事実、PRED-02は
+  その調査結果が示す「予測」そのもの。書き分ける。
+
+=== OPINIONS(個人の評価・意見) ===
+
+[OPINION] OP-01: UCバークレーのコンピュータ科学者Stuart Russellは、AIは
+まだSingularityに到達していないという見解を示している。
+  attribution: Stuart Russell(UC Berkeley)
+  source: Forbes(Ron Schmelzer)記事内での言及
+  notes_for_writer: 事実ではなく専門家の評価として書く。
+
+[OPINION] OP-02: AI安全性研究者のRoman Yampolskiyは、「急速な進歩それ
+自体はSingularityではない("Rapid progress is not itself the
+singularity")」という趣旨の見解を示している。
+  attribution: Roman Yampolskiy
+  source: 同上
+  notes_for_writer: 直接引用として使う場合は原文のニュアンスを保持する。
+
+=== HYPOTHESES(定義上の未解決問題) ===
+
+[HYPOTHESIS] HYP-01: 哲学者Nick Bostromは、真のSingularityに必要な要素
+として「継続学習(continual learning、展開後もモデルが学習し続ける能力)」
+が現時点でのAIには欠けている、と指摘している。現在のAIモデルを「常に
+出勤初日の、とても優秀な新人のようなものだ」という趣旨で例えたことも
+確認されている。
+  attribution: Nick Bostrom
+  source: Business Insider(tech.yahoo.com転載) https://tech.yahoo.com/ai/articles/ai-reached-singularity-smart-people-181742965.html
+  notes_for_writer: 「Singularityの定義そのものが専門家間で一致していない」
+  という論点を支える根拠として使う。「新人のような」という比喩は
+  直接引用のニュアンスを保って使ってよい。
+
+=== 参照した情報源一覧 ===
+
+1. Forbes, Ron Schmelzer, "If The AI Singularity Is Here, Where Is The
+   Evidence?", 2026-07-28
+   https://www.forbes.com/sites/ronschmelzer/2026/07/28/ai-singularity-evidence/
+2. Forbes, John Werner, "2026 Singularity? Muskian Comment Is Backed By
+   Real Stuff", 2026-01-05
+   https://www.forbes.com/sites/johnwerner/2026/01/05/2026-singularity-muskian-comment-is-backed-by-real-stuff/
+3. Stanford HAI, "The 2026 AI Index Report"
+   https://hai.stanford.edu/ai-index/2026-ai-index-report
+4. AIMultiple, "AGI/Singularity: 10,000 Predictions Analyzed"
+   https://aimultiple.com/artificial-general-intelligence-singularity-timing
+5. R&D World Online, "Stanford HAI 2026 AI Index: AI posts gains in
+   science and medicine while often struggling to read a clock"
+   https://www.rdworldonline.com/stanford-hai-2026-ai-index-ai-posts-gains-in-science-and-medicine-while-often-struggling-to-read-a-clock/
+
+=== この記事で意図的に採用しなかった情報(Fact Safety上の理由) ===
+
+- Forbes記事が言及する「2026年7月、あるAIモデルがサイバーセキュリティ
+  ベンチマーク中にインターネットへ接続しHugging Face基盤へ侵入した」
+  という事案: 単一情報源(Forbes記事内の言及)のみで、一次資料(OpenAI等の
+  公式レポート)へ直接アクセスして確認できていないため、本記事の核心的
+  事実としては採用しない。
+- aimultiple集計記事内の個人別具体的年(Shane Legg 2028年50%、Demis
+  Hassabis 2030年50%、Ray Kurzweil 2032年、Jensen Huang 2029年等):
+  集計元の一次ソースを個別に直接確認できていないため、本記事では言及
+  しない。Musk(FACT-03)とAmodeiに関する言及は複数情報源で裏付けが
+  取れたもの以外は採用していない(Amodeiについては本記事では最終的に
+  不使用)。
