@@ -1,0 +1,164 @@
+<title>A02 B1 Supported Natural English — Complete Episode</title>
+<style>
+:root {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --news: #3d4f8c; --news-bg: #e3e6f4;
+  --kp: #a8710f; --kp-bg: #f5ead2;
+  --shell: #6b6357; --shell-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+    --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+    --support: #b79ee0; --support-bg: #2b2438;
+    --news: #9aa8e0; --news-bg: #232a48;
+    --kp: #d9a94c; --kp-bg: #332a15;
+    --shell: #b8b0a0; --shell-bg: #2a2721;
+    --pass: #7fcf9e; --pass-bg: #1b3025;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1a; --ink: #e7ebe6; --ink-soft: #a9b2ac; --rule: #333a35;
+  --card: #1f2422; --accent: #8fbfa8; --accent-soft: #26332c;
+  --support: #b79ee0; --support-bg: #2b2438;
+  --news: #9aa8e0; --news-bg: #232a48;
+  --kp: #d9a94c; --kp-bg: #332a15;
+  --shell: #b8b0a0; --shell-bg: #2a2721;
+  --pass: #7fcf9e; --pass-bg: #1b3025;
+}
+:root[data-theme="light"] {
+  --paper: #f3f4f0; --ink: #1f2624; --ink-soft: #545e5a; --rule: #d8dcd4;
+  --card: #fdfdfb; --accent: #3c5c52; --accent-soft: #e2e9e2;
+  --support: #6b4f9e; --support-bg: #ece3f5;
+  --news: #3d4f8c; --news-bg: #e3e6f4;
+  --kp: #a8710f; --kp-bg: #f5ead2;
+  --shell: #6b6357; --shell-bg: #ece8de;
+  --pass: #2f6b4f; --pass-bg: #e2eee5;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif; line-height: 1.6; margin: 0; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+.sans { font-family: -apple-system, "Segoe UI", sans-serif; }
+.eyebrow { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+h1 { font-size: 1.6rem; margin: 0 0 0.5rem; text-wrap: balance; }
+.sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0.3rem 0 1.8rem; }
+
+.player-card { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1.6rem 1.8rem; margin-bottom: 2.2rem; }
+.player-card audio { width: 100%; }
+.player-meta { display: flex; gap: 1.5rem; margin-top: 1rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--ink-soft); flex-wrap: wrap; }
+.player-meta strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; margin-bottom: 1.5rem; }
+.legend span { display: flex; align-items: center; gap: 0.35rem; }
+.dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; display: inline-block; }
+.dot.shell { background: var(--shell); }
+.dot.support { background: var(--support); }
+.dot.news { background: var(--news); }
+.dot.kp { background: var(--kp); }
+
+h2 { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); border-bottom: 2px solid var(--rule); padding-bottom: 0.5rem; margin: 2.5rem 0 1rem; }
+
+.timeline { list-style: none; margin: 0; padding: 0; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.86rem; }
+.timeline li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid var(--rule); }
+.timeline li.pause { opacity: 0.5; font-size: 0.78rem; }
+.timeline li:last-child { border-bottom: none; }
+.timeline .dot { flex-shrink: 0; }
+.part-name { flex: 1; }
+.part-time { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: 0.78rem; }
+
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; margin-bottom: 0.5rem; }
+th, td { text-align: left; padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; }
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 3px; background: var(--pass-bg); color: var(--pass); }
+.note-small { font-size: 0.78rem; color: var(--ink-soft); font-family: -apple-system, "Segoe UI", sans-serif; }
+
+footer.meta { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">ER-003-B1-SCAFFOLD-AUDIO-02 &middot; A02 Complete Episode Candidate</p>
+  <h1>English Your Way — Britain's Midnight Reset(B1 Supported Natural English)</h1>
+  <p class="sub">A2の承認済みAudio Shell(Intro/Welcome/Topic Intro/Japanese Title/Notification/Preview Intro/Point解説/Key Phrases Intro/Full Story Intro/Outro)をそのまま継承し、Preview/Comment/News/Key Phrasesのコンテンツ部分だけをB1 Supported Natural Englishへ差し替えた完成版候補。</p>
+
+  <div class="player-card">
+    <audio controls preload="none" src="data:audio/mpeg;base64,__AUDIO_B64__"></audio>
+    <div class="player-meta">
+      <span>総尺: <strong>5分16秒</strong>(316.3秒)</span>
+      <span>Peak: <strong>0.862</strong>(クリッピングなし)</span>
+      <span>41パート(Shell 19 + Support 5 + News 5 + Key Phrases 5 + pause多数)</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot shell"></span>Shell(A2から無変更で継承)</span>
+    <span><span class="dot support"></span>Support(B1易しい英語、新規)</span>
+    <span><span class="dot news"></span>News(B2共通本文、新規音声化)</span>
+    <span><span class="dot kp"></span>Key Phrases(B1固有選定、新規音声化)</span>
+  </div>
+
+  <h2>Full Timeline</h2>
+  <ul class="timeline">
+    <li><span class="dot shell"></span><span class="part-name">Intro</span><span class="part-time">0:00 &middot; 10.7s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Welcome</span><span class="part-time">0:11 &middot; 2.1s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Topic Intro</span><span class="part-time">0:13 &middot; 5.4s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Japanese Title</span><span class="part-time">0:19 &middot; 9.1s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Notification 1</span><span class="part-time">0:29 &middot; 2.0s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Preview Intro</span><span class="part-time">0:31 &middot; 1.5s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Point Explanation("ポイント解説")</span><span class="part-time">0:34 &middot; 1.2s</span></li>
+    <li><span class="dot support"></span><span class="part-name">Preview(易しい英語)</span><span class="part-time">0:35 &middot; 19.6s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Notification 2</span><span class="part-time">0:56 &middot; 2.0s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Key Phrases Intro</span><span class="part-time">0:58 &middot; 1.9s</span></li>
+    <li><span class="dot kp"></span><span class="part-name">Key Phrase 1 — by default</span><span class="part-time">1:00 &middot; 6.0s</span></li>
+    <li><span class="dot kp"></span><span class="part-name">Key Phrase 2 — curfew</span><span class="part-time">1:06 &middot; 5.7s</span></li>
+    <li><span class="dot kp"></span><span class="part-name">Key Phrase 3 — cross the finish line</span><span class="part-time">1:12 &middot; 8.2s</span></li>
+    <li><span class="dot kp"></span><span class="part-name">Key Phrase 4 — pilot</span><span class="part-time">1:20 &middot; 5.4s</span></li>
+    <li><span class="dot kp"></span><span class="part-name">Key Phrase 5 — personalised feeds</span><span class="part-time">1:26 &middot; 7.9s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Notification 3</span><span class="part-time">1:34 &middot; 2.0s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Full Story Intro</span><span class="part-time">1:36 &middot; 1.9s</span></li>
+    <li><span class="dot support"></span><span class="part-name">Comment 1 — Listening Focus</span><span class="part-time">1:39 &middot; 6.2s</span></li>
+    <li><span class="dot news"></span><span class="part-name">Full Story Part 1(B2共通)</span><span class="part-time">1:46 &middot; 40.0s</span></li>
+    <li><span class="dot support"></span><span class="part-name">Comment 2 — Mid-story Recovery</span><span class="part-time">2:27 &middot; 9.0s</span></li>
+    <li><span class="dot news"></span><span class="part-name">Full Story Part 2(B2共通)</span><span class="part-time">2:37 &middot; 55.2s</span></li>
+    <li><span class="dot support"></span><span class="part-name">Comment 3 — Story Meaning + Bridge</span><span class="part-time">3:33 &middot; 16.2s</span></li>
+    <li><span class="dot news"></span><span class="part-name">Point One(B2共通)</span><span class="part-time">3:50 &middot; 28.8s</span></li>
+    <li><span class="dot news"></span><span class="part-name">Point Two(B2共通)</span><span class="part-time">4:20 &middot; 22.1s</span></li>
+    <li><span class="dot support"></span><span class="part-name">Comment 4 — Point Recovery + Bridge</span><span class="part-time">4:42 &middot; 13.8s</span></li>
+    <li><span class="dot news"></span><span class="part-name">In One Line(B2共通)</span><span class="part-time">4:57 &middot; 12.3s</span></li>
+    <li><span class="dot shell"></span><span class="part-name">Outro</span><span class="part-time">5:10 &middot; 6.1s</span></li>
+  </ul>
+  <p class="note-small">(pause区間は表から省略。完全なタイムラインは<code>er003_output/b1_scaffold_audio_02/A02/audit/timeline.json</code>参照)</p>
+
+  <h2>Key Phrases(English → Japanese → English)</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>#</th><th>English</th><th>Japanese</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>by default</td><td>初期設定で</td></tr>
+      <tr><td>2</td><td>curfew</td><td>利用禁止時間</td></tr>
+      <tr><td>3</td><td>cross the finish line</td><td>完了する、成立に至る</td></tr>
+      <tr><td>4</td><td>pilot</td><td>試験的な調査</td></tr>
+      <tr><td>5</td><td>personalised feeds</td><td>個人向けに選ばれた投稿欄</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>技術QA</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>項目</th><th>結果</th></tr></thead>
+    <tbody>
+      <tr><td>B2本文SHA256一致</td><td><span class="badge">MATCH</span></td></tr>
+      <tr><td>全11コンテンツパートASR検証</td><td><span class="badge">全件PASS</span></td></tr>
+      <tr><td>Clipping</td><td><span class="badge">なし</span>(peak 0.862)</td></tr>
+      <tr><td>Comment前後の効果音</td><td><span class="badge">なし</span>(A2仕様通り、ポーズのみ)</td></tr>
+      <tr><td>Support Fact Checker</td><td><span class="badge">PASS</span></td></tr>
+      <tr><td>Support Ledger Deviation Check</td><td><span class="badge">LEDGER_COMPLIANT</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <footer class="meta">
+    ER-003-B1-SCAFFOLD-AUDIO-02 &middot; A02(英国SNS規制) B1 Supported Natural English 完成版候補 &middot;
+    生成: er003_v1_b1_scaffold_audio_02_generate.py
+  </footer>
+</div>
