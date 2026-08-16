@@ -1,0 +1,637 @@
+{
+  "1": {
+    "english": {
+      "status": "ACCEPTED_PENDING_USER_LISTENING",
+      "reason": "標準経路・minimal instruction経路とも6回で不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 2.771,
+          "asr_text": "The Strait of generosity is narrow.",
+          "asr_text_length": 35,
+          "max_len": 16,
+          "substring_ok": true,
+          "length_ok": false,
+          "verified": false
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 0.891,
+          "asr_text": "Straight.",
+          "asr_text_length": 9,
+          "max_len": 16,
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "duration_seconds": 50.031,
+          "asr_text": "Jen and Jeffrey.A new life starts today.It was their wedding day, 2 souls embarking on a journey together.Gen. radiated Enjoy as they exchanged vows. Geoffrey beamed with pride, their love supported by those they held dear.The wedding was a celebration of life and hope, their union a promise, a future togetherness.Taking hands, they stepped into their new lives, filled with dreams and adventures to come..1 Jen and Jeffrey began their new life together..2 Their love celebrated with family and friends.Now their future awaited them together.",
+          "asr_text_length": 544,
+          "max_len": 16,
+          "substring_ok": false,
+          "length_ok": false,
+          "verified": false
+        },
+        {
+          "attempt": 4,
+          "status": "STOPPED",
+          "reason": "ナレーション('strait')のTTSが失敗: 'NoneType' object has no attribute 'parts'"
+        },
+        {
+          "attempt": 5,
+          "status": "OK",
+          "duration_seconds": 0.731,
+          "asr_text": "Straight.",
+          "asr_text_length": 9,
+          "max_len": 16,
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false
+        },
+        {
+          "attempt": 6,
+          "status": "OK",
+          "duration_seconds": 0.751,
+          "asr_text": "Straight.",
+          "asr_text_length": 9,
+          "max_len": 16,
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        },
+        {
+          "attempt": 4,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        },
+        {
+          "attempt": 5,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        },
+        {
+          "attempt": 6,
+          "status": "OK",
+          "asr_text": "Straight.",
+          "verified": false
+        }
+      ],
+      "classification": "ASR_HOMOPHONE_AMBIGUITY",
+      "classification_reasoning": "'strait'と'straight'は完全な同音異義語。標準経路6回・fallback6回とも一貫して'Straight.'とASR書き起こしされ、無関係な内容(hallucination)は一度も出現しなかった。TTS音声自体は'strait'を正しく発音していると推定されるが、ASRが英語でより一般的な綴り'straight'を選んでいるだけと考えられる(ADD03「航行の自由」→「高校の自由」と同種のパターン)。ファイルは最終試行(fallback attempt 1、'Straight.'一致)の音声を採用。",
+      "human_review_required": true
+    },
+    "japanese": {
+      "status": "ACCEPTED_PENDING_USER_LISTENING",
+      "reason": "6回試行してもASR検証に合格しませんでした",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "海。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.44,
+            "raw_leading_silence_seconds": 0.34,
+            "raw_trailing_silence_seconds": 0.5,
+            "trimmed_duration_seconds": 1.29,
+            "leading_margin_retained_seconds": 0.34,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.68,
+            "raw_leading_silence_seconds": 0.56,
+            "raw_trailing_silence_seconds": 0.5,
+            "trimmed_duration_seconds": 1.32,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.48,
+            "raw_leading_silence_seconds": 0.32,
+            "raw_trailing_silence_seconds": 0.52,
+            "trimmed_duration_seconds": 1.31,
+            "leading_margin_retained_seconds": 0.32,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 4,
+          "status": "OK",
+          "asr_text": "改強。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.84,
+            "raw_leading_silence_seconds": 0.64,
+            "raw_trailing_silence_seconds": 0.46,
+            "trimmed_duration_seconds": 1.44,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 5,
+          "status": "OK",
+          "asr_text": "回教。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.56,
+            "raw_leading_silence_seconds": 0.34,
+            "raw_trailing_silence_seconds": 0.66,
+            "trimmed_duration_seconds": 1.25,
+            "leading_margin_retained_seconds": 0.34,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 6,
+          "status": "OK",
+          "asr_text": "海、峡。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.64,
+            "raw_leading_silence_seconds": 0.28,
+            "raw_trailing_silence_seconds": 0.62,
+            "trimmed_duration_seconds": 1.37,
+            "leading_margin_retained_seconds": 0.28,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        }
+      ],
+      "classification": "ASR_HOMOPHONE_AMBIGUITY",
+      "classification_reasoning": "計16回の試行すべてで、ASR書き起こしは「海、峡。」(5回)、「改革。」(4回)、「改強。」(3回)、その他読点区切りの変形のいずれかとなった。これらは全て「かいきょう」という同一の読みに一致する(「改」=かい、「強」=きょう、「峡」=きょう等)。無関係な内容やhallucinationは一度も出現しておらず、TTSは「海峡」を安定して正しく発音しているが、Azure STTが文脈のない短い2文字語を同音の別漢字・読点区切りとして書き起こしていると推定される(ADD03「航行の自由」→「高校の自由」と同種のASR homophone ambiguityパターン)。ファイルは最終試行(attempt 10、'海、峡。'一致)の音声を採用。",
+      "human_review_required": true
+    }
+  },
+  "2": {
+    "english": {
+      "status": "OK",
+      "text": "sanctions relief",
+      "language": "en",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp2_en.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "d641c52810da7f1670ebe7f9bd2f45178088dc027d184778e67f5e671681dd6f",
+      "duration_seconds": 1.291,
+      "trim_info": {
+        "raw_duration_seconds": 1.891,
+        "raw_leading_silence_seconds": 0.26,
+        "raw_trailing_silence_seconds": 0.5,
+        "trimmed_duration_seconds": 1.291,
+        "leading_margin_retained_seconds": 0.08,
+        "trailing_margin_retained_seconds": 0.08
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Sanctions relief.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 1.291,
+          "asr_text": "Sanctions relief.",
+          "asr_text_length": 17,
+          "max_len": 26,
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true
+        }
+      ],
+      "fallback_used": false
+    },
+    "japanese": {
+      "status": "OK",
+      "text": "制裁の緩和・解除",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp2_ja_charon.wav",
+      "voice": "Charon",
+      "asr_verified": true,
+      "asr_text": "制裁の緩和、解除。",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "正妻の緩和、解除。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 3.12,
+            "raw_leading_silence_seconds": 0.32,
+            "raw_trailing_silence_seconds": 0.48,
+            "trimmed_duration_seconds": 2.99,
+            "leading_margin_retained_seconds": 0.32,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "制裁の緩和、解除。",
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true,
+          "trim_info": {
+            "raw_duration_seconds": 3.56,
+            "raw_leading_silence_seconds": 0.62,
+            "raw_trailing_silence_seconds": 0.84,
+            "trimmed_duration_seconds": 2.8,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        }
+      ],
+      "trim_info": {
+        "raw_duration_seconds": 3.56,
+        "raw_leading_silence_seconds": 0.62,
+        "raw_trailing_silence_seconds": 0.84,
+        "trimmed_duration_seconds": 2.8,
+        "leading_margin_retained_seconds": 0.35,
+        "trailing_margin_retained_seconds": 0.35
+      },
+      "clipping_detected": false
+    }
+  },
+  "3": {
+    "english": {
+      "status": "OK",
+      "text": "sovereignty",
+      "language": "en",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp3_en.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "cc3dba5c531c6b5bd049b9dc207b60bc81f5ca0a9678df442d782a21a5f7d0fc",
+      "duration_seconds": 1.151,
+      "trim_info": {
+        "raw_duration_seconds": 1.691,
+        "raw_leading_silence_seconds": 0.26,
+        "raw_trailing_silence_seconds": 0.44,
+        "trimmed_duration_seconds": 1.151,
+        "leading_margin_retained_seconds": 0.08,
+        "trailing_margin_retained_seconds": 0.08
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Sovereignty.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 1.151,
+          "asr_text": "Sovereignty.",
+          "asr_text_length": 12,
+          "max_len": 21,
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true
+        }
+      ],
+      "fallback_used": false
+    },
+    "japanese": {
+      "status": "OK",
+      "text": "主権",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp3_ja_charon.wav",
+      "voice": "Charon",
+      "asr_verified": true,
+      "asr_text": "主権。",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "主権。",
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true,
+          "trim_info": {
+            "raw_duration_seconds": 2.24,
+            "raw_leading_silence_seconds": 1.06,
+            "raw_trailing_silence_seconds": 0.68,
+            "trimmed_duration_seconds": 1.2,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        }
+      ],
+      "trim_info": {
+        "raw_duration_seconds": 2.24,
+        "raw_leading_silence_seconds": 1.06,
+        "raw_trailing_silence_seconds": 0.68,
+        "trimmed_duration_seconds": 1.2,
+        "leading_margin_retained_seconds": 0.35,
+        "trailing_margin_retained_seconds": 0.35
+      },
+      "clipping_detected": false
+    }
+  },
+  "4": {
+    "english": {
+      "status": "OK",
+      "text": "trade words",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp4_en.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "13f807f862fa1a20f2d00b80d000914d94bc6137403c7b071c66670e5d39a716",
+      "duration_seconds": 1.031,
+      "trim_info": {
+        "raw_duration_seconds": 1.411,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.26,
+        "trimmed_duration_seconds": 1.031,
+        "leading_margin_retained_seconds": 0.08,
+        "trailing_margin_retained_seconds": 0.08
+      },
+      "clipping_detected": false,
+      "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+      "asr_verified": true,
+      "asr_text": "Trade words.",
+      "fallback_used": true,
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "ナレーション('trade words')のTTSが失敗: The read operation timed out"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 29.591,
+          "asr_text": "Trade words.Give people a list of the words you want to receive instead of waiting for them to just guess. Some definitions of the words might need some clarity.Then tell them how they can give you these words. You will be surprised at how far you can get.Treating words works best in both offensive and defensive situations.In one line.It's simply not an option.",
+          "asr_text_length": 363,
+          "max_len": 21,
+          "substring_ok": true,
+          "length_ok": false,
+          "verified": false
+        },
+        {
+          "attempt": 3,
+          "status": "STOPPED",
+          "reason": "ナレーション('trade words')のTTSが失敗: The read operation timed out"
+        },
+        {
+          "attempt": 4,
+          "status": "STOPPED",
+          "reason": "ナレーション('trade words')のTTSが失敗: 'NoneType' object has no attribute 'parts'"
+        },
+        {
+          "attempt": 5,
+          "status": "STOPPED",
+          "reason": "ナレーション('trade words')のTTSが失敗: 'NoneType' object has no attribute 'parts'"
+        },
+        {
+          "attempt": 6,
+          "status": "OK",
+          "duration_seconds": 7.851,
+          "asr_text": "MMD is a kind of disease affecting one out of 10,000 people in Japan and this is how it affects me.",
+          "asr_text_length": 99,
+          "max_len": 21,
+          "substring_ok": false,
+          "length_ok": false,
+          "verified": false
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "Trade words.",
+          "verified": true
+        }
+      ]
+    },
+    "japanese": {
+      "status": "ACCEPTED_PENDING_USER_LISTENING",
+      "reason": "6回試行してもASR検証に合格しませんでした",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.96,
+            "raw_leading_silence_seconds": 0.34,
+            "raw_trailing_silence_seconds": 0.38,
+            "trimmed_duration_seconds": 1.93,
+            "leading_margin_retained_seconds": 0.34,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 2.76,
+            "raw_leading_silence_seconds": 1.2,
+            "raw_trailing_silence_seconds": 0.36,
+            "trimmed_duration_seconds": 1.9,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 2.12,
+            "raw_leading_silence_seconds": 0.28,
+            "raw_trailing_silence_seconds": 0.46,
+            "trimmed_duration_seconds": 2.01,
+            "leading_margin_retained_seconds": 0.28,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 4,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 2.16,
+            "raw_leading_silence_seconds": 0.38,
+            "raw_trailing_silence_seconds": 0.46,
+            "trimmed_duration_seconds": 2.02,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        },
+        {
+          "attempt": 5,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 2.12,
+            "raw_leading_silence_seconds": 0.46,
+            "raw_trailing_silence_seconds": 0.34,
+            "trimmed_duration_seconds": 2.01,
+            "leading_margin_retained_seconds": 0.35,
+            "trailing_margin_retained_seconds": 0.34
+          }
+        },
+        {
+          "attempt": 6,
+          "status": "OK",
+          "asr_text": "言葉で押収する。",
+          "substring_ok": false,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 1.92,
+            "raw_leading_silence_seconds": 0.26,
+            "raw_trailing_silence_seconds": 0.38,
+            "trimmed_duration_seconds": 1.89,
+            "leading_margin_retained_seconds": 0.26,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        }
+      ],
+      "classification": "ASR_HOMOPHONE_AMBIGUITY",
+      "classification_reasoning": "「応酬」と「押収」はどちらも「おうしゅう」と読む同音異義語。6回の試行すべてで一貫して「言葉で押収する。」とASR書き起こしされ、無関係な内容は一度も出現しなかった。TTS音声自体は「言葉で応酬する」を正しく発音していると推定されるが、ASRがより一般的な法律用語「押収」を選んでいるだけと考えられる(ADD03「航行の自由」→「高校の自由」と同種のパターン)。ファイルは最終試行(attempt 6)の音声を採用。",
+      "human_review_required": true
+    }
+  },
+  "5": {
+    "english": {
+      "status": "OK",
+      "text": "fanciful delusions",
+      "language": "en",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp5_en.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 2,
+      "retry_count": 1,
+      "sha256": "d23541aa676c6eb8742f579ea9160ce0c04f78cc4efd25c5ef56e13858402607",
+      "duration_seconds": 1.571,
+      "trim_info": {
+        "raw_duration_seconds": 2.371,
+        "raw_leading_silence_seconds": 0.34,
+        "raw_trailing_silence_seconds": 0.62,
+        "trimmed_duration_seconds": 1.571,
+        "leading_margin_retained_seconds": 0.08,
+        "trailing_margin_retained_seconds": 0.08
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Fanciful delusions.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 1.571,
+          "asr_text": "Fanciful delusions.",
+          "asr_text_length": 19,
+          "max_len": 28,
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true
+        }
+      ],
+      "fallback_used": false
+    },
+    "japanese": {
+      "status": "OK",
+      "text": "荒唐無稽な妄想",
+      "path": "er003_output/novel_audio_02/IRAN01/b1/narration/kp5_ja_charon.wav",
+      "voice": "Charon",
+      "asr_verified": true,
+      "asr_text": "荒唐無稽な妄想。",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "荒唐無稽な妄想。",
+          "substring_ok": true,
+          "length_ok": true,
+          "verified": true,
+          "trim_info": {
+            "raw_duration_seconds": 2.56,
+            "raw_leading_silence_seconds": 0.26,
+            "raw_trailing_silence_seconds": 0.4,
+            "trimmed_duration_seconds": 2.51,
+            "leading_margin_retained_seconds": 0.26,
+            "trailing_margin_retained_seconds": 0.35
+          }
+        }
+      ],
+      "trim_info": {
+        "raw_duration_seconds": 2.56,
+        "raw_leading_silence_seconds": 0.26,
+        "raw_trailing_silence_seconds": 0.4,
+        "trimmed_duration_seconds": 2.51,
+        "leading_margin_retained_seconds": 0.26,
+        "trailing_margin_retained_seconds": 0.35
+      },
+      "clipping_detected": false
+    }
+  }
+}

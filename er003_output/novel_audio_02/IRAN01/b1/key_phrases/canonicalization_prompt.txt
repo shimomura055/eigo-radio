@@ -1,0 +1,108 @@
+以下は、英語ポッドキャストのKey Phrase候補です。各候補は、初回リスニングの理解を止める可能性が高い表現として、本文中から既に選ばれています(Listening Blocker Ranking、この工程では変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、学習教材として提示するのに最も自然な学習単位(key_phrase)へ正規化することです。**目標は「できるだけ短くすること」ではなく、「1〜5語の範囲で、意味理解に必要十分な自然な単位にすること」です(最小十分、Minimal Sufficient Unit)。**
+
+**最重要の前提: display_phraseは、既に方式L選定の時点で、時制の基本形化・単数複数の整理・語順の学習用整理などの正規化を経ています(例: 本文の"took off players"を"take a player off"という基本形へ、"Personalized feeds"を"personalized feed"という単数形へ、といった正規化が既に行われています)。この正規化は正しい前提として扱い、理由なくsource_span(本文の生の文字列)の時制・単数複数・大文字小文字・語順へ戻さないでください。**
+
+判断の優先順位は次のとおりです。**まず「display_phraseは既にそのままで自然で、単独で聞いても意味が分かる、最小十分な単位か?」を自問してください。YESであれば、key_phraseはdisplay_phraseと完全に同じにして、一切変更しないでください。** 変更してよいのは、以下の2つの具体的な理由がある場合のみです。
+
+1. 文脈限定語の除去: display_phraseの先頭・末尾に、この記事の文脈だけで必要な限定語(the, a, an, this, that, these, those, 所有限定詞など)が残っており、それを除いても意味・自然さが保てる場合。
+2. 意味理解に必要な語の復元: display_phraseが既に削りすぎていて、単独で聞いたときに「何をする/何に対する」が欠けて意味が抽象的になる場合、source_span(本文中の元のspan)から**必要最小限の語だけ**を復元する。例: source_spanが"the urge to watch"で、display_phraseが"the urge to"の場合、"to"だけでは「何をしたい衝動か」が欠けるため、"urge to watch"(sourceに存在する"watch"を復元)を優先する。ただし記事固有の情報まで必要以上に抱え込まない(例: "urge to watch just one more video"のようにsource_sentence全体に近い長さまで復元するのは不可)。
+
+この2つのいずれにも該当しない場合(display_phraseが既に自然な最小十分の単位である場合)は、**時制・単複・語順・大文字小文字を含め、一切変更しないでください。** "本文により忠実な形に戻す"という理由だけでの変更は禁止です。
+
+その他の規則:
+
+- 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+- 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, depend on, lead to, in charge of, urge to watch)は、不用意に削除しないでください。
+- key_phraseは、原則としてdisplay_phraseと同じか、display_phraseから文脈限定語を除いた形か、source_span内に連続した文字列として存在する形、のいずれかでなければなりません。source_spanにも本文にもdisplay_phraseにも存在しない別の辞書形を、勝手に生成してはいけません。
+- 短くする、または語を復元しないことで、Listening Blockerとしての意味・難しさ・学習価値が失われる場合は、そのままにしないでください(例: digital switch-off periodをswitch offへ変更しない)。
+
+**Meaning Preservation Rule(意味保持の原則、最重要): display_phraseからさらに語を削る場合、その削除によって中心的な意味・文法機能・Listening Blockerとなった理由が失われていないか、必ず明示的に確認してください。** 特に、意味の核を担う語(例: risk, possibility, obligation, pressure, attempt, refusal のような、リスク・可能性・義務・圧力・試み・拒否といった意味役割を表す語)を削ると、残った部分だけでは全く別の意味になることがあります。例: "the risk of losing jobs"から"the"を除くのはよいですが、"risk of"や"risk"自体を落として"losing jobs"にしてはいけません("失業すること"という意味に変わってしまい、「リスク」という中心的な意味が失われるためです)。これは特定の単語のリストで機械的に判定するのではなく、その都度「この語を削ると意味が変わるか」を考えて判断してください。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する(この場合、display_phrase自体が方式L選定時点で既に確立された正規化形であるため、source_spanとの文字列表記の違い[時制・単数複数・語順等]を理由にFAILにしないでください)、(b) key_phraseがsource_span内の連続した文字列として存在する。
+- qa_listening_blocker_value_preserved: Listening Blockerとしての学習価値を維持しているか
+- qa_standalone_comprehensibility: このkey_phraseをKey Phrasesセクションで単独提示した際、学習者が何を意味する表現なのか十分に理解できるか
+- qa_not_over_minimized: source_spanから語を削りすぎたことで、意味が抽象化・不完全化していないか(削りすぎていなければPASS)
+- qa_context_sufficiency: source_span内の語を1〜5語制限内で追加保持することで、より自然で理解しやすい学習単位になる余地を検討したか(検討した上で現在の形が適切ならPASS)
+- qa_core_meaning_preserved: display_phrase(またはsource_span)が持っていた中心的な意味が、key_phraseでも保持されているか(Meaning Preservation Rule参照)
+- qa_no_semantic_role_loss: risk/possibility/obligation/pressure/attempt/refusalのような意味役割を表す語を削ったことで、その意味役割そのものが消えていないか(消えていなければPASS)
+
+normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が方式L選定時点で既にlemma化・時制正規化・phrasal verb整理等を経ている)/ "other"(その他、reasoningで説明)。
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください(特に、source_spanから語を復元した場合、または削った場合はその理由を明記してください)。
+
+Listening Blocker Ranking(どの表現を選ぶか)自体はこの工程の対象外です。5件の順位・選定そのものは変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+# Hormuz: Trump Talks Territory as Iran and Oman Draw a Route Back
+
+Two very different stories are now competing over the Strait of Hormuz.
+
+One is loud and political.
+
+On August 12, President Donald Trump claimed on Truth Social that the United States had “total control” of the strait and might “keep it.” Two days later, at a rally in New York, he joked that he might declare the waterway US territory in the near future.
+
+Those statements did not establish American ownership. Iran also rejected them. Deputy Foreign Minister Kazem Gharibabadi said the strait could not be seized “by tweet” and described Trump’s claims as “fanciful delusions.”
+
+But while Washington and Tehran traded words about control, a more practical development was taking place on the water.
+
+On August 15, Iranian state media reported that Iran and Oman had agreed on a **shipping route map** for the strait. The announcement came from Iranian Foreign Ministry spokesman Esmail Baghaei, following technical discussions under a memorandum signed on June 18.
+
+Under the reported arrangement, ships entering the strait would use a route closer to Iran, while departing vessels would travel closer to Oman.
+
+This is not a full reopening. The announcement did not settle transit fees or security arrangements, which are expected to be discussed separately. Iran’s foreign minister has also said that fully reopening the strait would require sanctions relief and war compensation from the United States.
+
+For now, the gap between a map and normal traffic remains enormous. Before the war, about 130 ships crossed the strait each day. By August, that number had fallen to only a few.
+
+### Point One: “Control” has more than one meaning
+
+Trump is using “control” as a political and military claim. Iran is answering with the language of sovereignty. Iran and Oman, meanwhile, are addressing the practical question of where ships should sail. These ideas sound similar, but they describe very different kinds of power.
+
+### Point Two: A narrow passage with a global price tag
+
+Before the war, roughly one-fifth of the world’s crude oil supply passed through Hormuz. Brent crude has risen about 20% since the conflict began, reaching the high $80s per barrel in early August. A technical map may sound modest, but the energy market is listening closely.
+
+## In one line…
+
+**At Hormuz, the microphone says “control,” but the map says “not yet”: a route is taking shape, while a true reopening remains out of reach.**
+
+【Key Phrase候補(JSON)】
+[
+  {
+    "rank": 1,
+    "display_phrase": "strait",
+    "source_span": "strait",
+    "source_sentence": "Deputy Foreign Minister Kazem Gharibabadi said the strait could not be seized “by tweet” and described Trump’s claims as “fanciful delusions.”"
+  },
+  {
+    "rank": 2,
+    "display_phrase": "sanctions relief",
+    "source_span": "sanctions relief",
+    "source_sentence": "Iran’s foreign minister has also said that fully reopening the strait would require sanctions relief and war compensation from the United States."
+  },
+  {
+    "rank": 3,
+    "display_phrase": "sovereignty",
+    "source_span": "sovereignty",
+    "source_sentence": "Iran is answering with the language of sovereignty."
+  },
+  {
+    "rank": 4,
+    "display_phrase": "trade words",
+    "source_span": "traded words",
+    "source_sentence": "But while Washington and Tehran traded words about control, a more practical development was taking place on the water."
+  },
+  {
+    "rank": 5,
+    "display_phrase": "fanciful delusions",
+    "source_span": "fanciful delusions",
+    "source_sentence": "Deputy Foreign Minister Kazem Gharibabadi said the strait could not be seized “by tweet” and described Trump’s claims as “fanciful delusions.”"
+  }
+]
