@@ -168,11 +168,15 @@ Pointの具体的な内容(答え)を先に言ってはいけません。新し�
 ください。易しい英語で2〜3文にしてください。"""
 
 COMMENT_4_ROLE = """あなたはPodcastのナビゲーターです。リスナーはPoint One・Point Twoを
-すでに聞き終わり、これからIn One Line(結びの一文)を聞きます。その間に流す、
+すでに聞き終わり、これからIn One Line(結びのまとめ)を聞きます。その間に流す、
 Comment 4(役割: Point Recovery + Bridge to In One Line)を書いてください。
 
 役割: 2つのPointの意味を軽く回収し、In One Lineへつなぎます。Pointの内容を
-再説明しすぎないでください。2〜3文にしてください。"""
+再説明しすぎないでください。2〜3文にしてください。
+
+注意: In One Lineの実際のsentence数は記事により異なります(1文とは限り
+ません)。「一文で」「one sentenceで」「一言で」等、sentence数を断定する
+表現は使わないでください。"""
 
 PREVIEW_ROLE = """あなたはPodcastの冒頭を担当するナビゲーターです。これからリスナーは、
 このエピソードのニュース本文(Preview・Key Phrasesに続いてMain Story・Points・
