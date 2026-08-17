@@ -137,12 +137,12 @@ RESEARCHER_PROMPT_TEMPLATE = """今回のテーマについて、Webで調査し
 3. 信頼できる二次資料
 一次Sourceで確認できるFactを、二次Sourceだけで確定しないでください。
 
-【今回、特に構造化して含めるべきFact】
+【特に注意して構造化すべき観点(今回のテーマに当てはまる場合のみ)】
 
-1. Overnight curfew: 対象年齢、午前0時から午前6時までの時間帯、その時間帯に何が制限されるか、notificationsとの関係
-2. Autoplay / personalised feeds: default-offの対象年齢、午前0時から午前6時に限定されるのか、それともcurfewとは別の時間非依存の制度項目なのか。この点はGOV.UKのpress releaseだけでなく、関連するFact sheetページも探して確認し、時間的scopeを明確にしてください。曖昧なSourceしかない場合は、より明確な一次Sourceを追加で検索してください。それでも確定できない場合は、断定せずambiguityフィールドへその旨を明記してください。
-3. Pilot sample: 309という数字が何を指すか(全体の参加者数か、特定の介入群の人数か)、参加者が何グループへ配分されたか、night-curfew群(午後9時から午前7時)との関係。night-curfew群の正確な人数が一次資料で直接確認できる場合のみ、その数字をnumeric_valueとして確定してください。一次資料で確認できない場合は、推測で数字を作らず、numeric_valueをnullにしてambiguityへ「一次資料で個別群のサンプルサイズを確認できなかった」旨を記録してください。
-4. Trial outcomes: 「最も運用しやすかった」「睡眠が改善した」「継続した」「利用時間がずれた」等について、観察・報告なのか、相関なのか、Source自身が因果関係を主張しているのかを、causal_strengthで区別してください。Sourceより強い因果表現(caused/produced/proved等)を後工程のwriterが使わないよう、causal_strengthとnotes_for_writerで明示してください。
+1. 対象範囲: 年齢・人数・期間・地域等、Factが適用される範囲(scope)を数値の母集団と混同せずに特定する
+2. 制度・仕様の適用条件: default設定なのか常時適用なのか、変更・例外が認められるか等、時間的・条件的scopeを明確にする。一次資料内で表現が揺れている場合は、より明確な一次Sourceを追加で検索する。それでも確定できない場合は、断定せずambiguityフィールドへその旨を明記する
+3. 数値の内訳: ある数字が全体を指すのか、特定のサブグループ・条件を指すのかを明確にする。一次資料で直接確認できる場合のみnumeric_valueとして確定し、確認できない場合は推測で数字を作らず、numeric_valueをnullにしてambiguityへその旨を記録する
+4. 観察・相関・因果の区別: 変化・効果・傾向等について、観察・報告なのか、相関なのか、Source自身が因果関係を主張しているのかを、causal_strengthで区別する。Sourceより強い因果表現(caused/produced/proved等)を後工程のwriterが使わないよう、causal_strengthとnotes_for_writerで明示する
 
 【出力形式】
 各Factについて、fact_id・claim・subject・date_or_period・scope・conditions・numeric_value・

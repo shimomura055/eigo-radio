@@ -1,0 +1,86 @@
+{
+  "checked_date": "2026-08-17",
+  "currency": "USD",
+  "prices": [
+    {
+      "provider": "openai",
+      "service": "Responses API",
+      "model": "gpt-5.6-sol",
+      "tier": "Standard",
+      "meter": "input_tokens",
+      "price": 5.00,
+      "unit": "per 1,000,000 tokens",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE"
+    },
+    {
+      "provider": "openai",
+      "service": "Responses API",
+      "model": "gpt-5.6-sol",
+      "tier": "Standard",
+      "meter": "cached_input_tokens",
+      "price": 0.50,
+      "unit": "per 1,000,000 tokens",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE"
+    },
+    {
+      "provider": "openai",
+      "service": "Responses API",
+      "model": "gpt-5.6-sol",
+      "tier": "Standard",
+      "meter": "output_tokens",
+      "price": 30.00,
+      "unit": "per 1,000,000 tokens",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE"
+    },
+    {
+      "provider": "openai",
+      "service": "web_search tool",
+      "model": "N/A (tool, all models)",
+      "tier": "Standard",
+      "meter": "web_search_call",
+      "price": 10.00,
+      "unit": "per 1,000 calls (search content tokens separately billed at model input rate)",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE",
+      "note": "Search content tokens are already counted within the response's input_tokens and billed at the model's standard input rate; this meter covers only the per-call tool-use fee."
+    },
+    {
+      "provider": "gemini",
+      "service": "Generative Language API (generateContent)",
+      "model": "gemini-2.5-pro-preview-tts",
+      "tier": "Standard",
+      "meter": "input_tokens",
+      "price": 1.00,
+      "unit": "per 1,000,000 tokens (text)",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE"
+    },
+    {
+      "provider": "gemini",
+      "service": "Generative Language API (generateContent)",
+      "model": "gemini-2.5-pro-preview-tts",
+      "tier": "Standard",
+      "meter": "output_tokens",
+      "price": 20.00,
+      "unit": "per 1,000,000 tokens (audio output)",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "confidence": "OFFICIAL_SOURCE"
+    },
+    {
+      "provider": "azure",
+      "service": "Speech Services - Speech to Text",
+      "model": "real-time transcription (S0/S1 standard tier)",
+      "tier": "Standard",
+      "meter": "audio_hour",
+      "price": 1.00,
+      "unit": "per hour of audio processed",
+      "region": "japanwest",
+      "source_url": "https://prices.azure.com/api/retail/prices",
+      "confidence": "OFFICIAL_SOURCE",
+      "note": "Retrieved via Azure's official Retail Prices API. The API's retail meter for this tier is labeled 'S1' rather than the Azure Portal's 'S0' label; Microsoft has historically used both labels for the same standard real-time STT tier, and no separate 'S0'-labeled real-time meter exists in the price list. Free tier (F0) confirmed at $0.00/hour, 5 hours/month included, in the same query."
+    }
+  ]
+}

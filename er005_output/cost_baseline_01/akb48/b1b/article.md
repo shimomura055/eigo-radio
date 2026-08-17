@@ -1,0 +1,39 @@
+# AKB48’s “好きish” Keeps One Star at the Center—and Welcomes a New Face
+
+AKB48’s next single brings together two different moments: a center who is building history, and a 14-year-old member entering the main lineup for the first time.
+
+The group’s 68th single, **“好きish”**—read as *Sukisshu*—is scheduled for release on August 19, 2026.
+
+At the center is 19th-generation member Momoka Ito.
+
+Ito was the sole center of the previous single, **“Nagori Zakura.”** It was her first time leading an AKB48 title track. Now, she will take the same position again.
+
+One center. Two singles in a row.
+
+AKB48 says this is the first time in 12 years that the same member has served as the sole center for two straight singles.
+
+But the spotlight is not only on the center.
+
+Saki Kondo, a 20th-generation trainee, has joined the 16-member title-track lineup. This is her first selection for an AKB48 single’s main song.
+
+Kondo is 14 and is currently the youngest member of AKB48. However, she is not the youngest member ever selected for an AKB48 title track.
+
+That difference is important.
+
+This single is not simply about one member staying in the center. It also introduces a new name to the group’s main stage.
+
+Ito’s story continues.
+
+Kondo’s story begins.
+
+### ⭐ Why the word “sole” matters
+
+The official record is very specific. Ito is the first member in 12 years to be the sole center for two singles in a row. The last was Mayu Watanabe in 2014, with “Labrador Retriever” and “Kokoro no Placard.”
+
+### ⭐ The title matches this moment
+
+The “ish” in “好きish” gives the meaning of “maybe I like you” or “something like love.” The title carries a feeling of uncertainty. Yet Ito’s position looks stronger, while Kondo is taking an exciting first step.
+
+## In one line…
+
+**“好きish” keeps Momoka Ito in the center of the picture, while 14-year-old Saki Kondo enters the frame for the first time.** One record continues, and a new chapter quietly opens.

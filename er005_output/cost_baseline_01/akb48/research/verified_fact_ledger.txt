@@ -1,0 +1,99 @@
+ER-005-COST-BASELINE-01 — COST-ARTICLE-01 (AKB48) Verified Fact Ledger(A2/B1共通Source of Truth)
+テーマ: AKB48 68thシングル『好きish』(2026年8月19日発売)。伊藤百花の2作連続センター
+(2014年渡辺麻友以来12年ぶり)と、20期研究生・近藤沙樹(14歳)の初選抜。
+作成方法: OpenAI Responses API(gpt-5.6-sol、web_search tool)によるResearcher+独立
+Verificationの2段階(er003_v1_en_direct_vfl_01_generate.pyのResearch Pipelineを、
+UK social-media-curfew固有のhard-code除去により topic非依存化した上で使用。
+ER-005-COST-BASELINE-01 R1での修正、詳細はDECISION_LOG/報告書参照)。
+Research実施日時: 2026-08-17
+情報cutoff: 2026-08-17時点で確認できる公式発表・公式サイト情報を採用対象とする。
+
+【Verification結果】
+Researcherが収集した15 Fact(F01-F15)のうち、14 factが独立Web検索によりVERIFIED、
+1 fact(F14: 過去の最年少選抜記録に関する反例)がAMBIGUOUS(正確な日数計算の基準日が
+論文レベルで確認できないための留保、反例としての結論自体は成立)。REJECTEDはなし。
+
+選定angle: 19期生・伊藤百花が前作『名残り桜』に続き2作連続で単独センターを務め、これは
+2014年の渡辺麻友以来12年ぶりの記録である。同じシングルで、20期研究生・近藤沙樹(14歳)が
+初めて表題曲の選抜メンバーに入った。「グループを長く牽引してきたメンバーが記録を作ると同時に、
+最年少メンバーが新しく加わる」という世代の橋渡しを中心ストーリーとする。
+
+タグ体系:
+  [CONFIRMED_FACT] = 独立した複数の情報源で裏付けられる事実
+  [OFFICIAL_ANNOUNCEMENT] = AKB48公式サイト・公式リリースによる一次発表
+  number_classification: ANCHOR(記事の核) / SUPPORTING(補助) / DISPENSABLE(省略可)
+  exactness_requirement: EXACT_REQUIRED(正確な数字を保持) / APPROXIMATE_OK(丸め可) /
+    DIRECTION_ONLY(方向性のみで良い)
+
+=== 中心Fact ===
+
+[OFFICIAL_ANNOUNCEMENT] FACT-01: AKB48の68枚目シングルのタイトルは『好きish』
+(読み: すきっしゅ)で、2026年8月19日発売予定である。
+  source: AKB48公式サイト(2026年8月17日時点で発売前)
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED(発売日・通算番号は記事の骨格情報)
+  notes_for_writer: 2026年8月17日時点では「発売された」ではなく「発売予定」と書く。
+
+[OFFICIAL_ANNOUNCEMENT] FACT-02: 表題曲のセンターは19期生・伊藤百花で、前作67thシングル
+『名残り桜』(伊藤にとって表題曲初センター)に続く2作連続の単独センターである。
+  source: AKB48公式サイト
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED
+
+[OFFICIAL_ANNOUNCEMENT] FACT-03: 同一メンバーによる2作連続単独センターは、2014年に
+渡辺麻友が36th『ラブラドール・レトリバー』(2014年5月21日発売)・37th『心のプラカード』
+(2014年8月27日発売)で務めて以来、12年ぶりとAKB48公式が発表している。
+  source: AKB48公式サイト(68thシングル選抜発表)
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED(「12年ぶり」という間隔そのものが記事の核心)
+  notes_for_writer: これは「2作連続センター」一般ではなく「2作連続の“単独”センター」という
+  記録の範囲であることを保つ。
+
+[OFFICIAL_ANNOUNCEMENT] FACT-04: 20期研究生・近藤沙樹が、本作『好きish』で初めて
+AKB48シングル表題曲の選抜メンバー(全16人)に入った。
+  source: AKB48公式サイト(68thシングル選抜発表)
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED
+
+[OFFICIAL_ANNOUNCEMENT] FACT-05: 近藤沙樹は2012年2月23日生まれで、選抜発表時・
+発売予定日のいずれの時点でも14歳である。AKB48公式は近藤を「AKB48最年少・14才」と
+表現している。
+  source: AKB48公式サイト(メンバープロフィール、選抜発表)
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED
+
+[CONFIRMED_FACT] FACT-06: 「AKB48最年少・14才」は現役メンバー内での最年少を指し、
+AKB48公式は近藤を「AKB48史上最年少の選抜入り」とは表現していない。過去には、AKB48
+10thシングル『大声ダイヤモンド』で松井珠理奈が11歳228日、また元AKB48の奥真奈美が
+『BINGO!』で11歳237日(AMBIGUOUS: 基準日の取り方により237日/238日との計算差あり、
+反例としての結論自体は複数の独立Sourceが一致)で、それぞれ近藤より若く選抜入りしている。
+  source: 松井珠理奈公式プロフィール、ORICON・日刊スポーツ等(奥真奈美について)
+  number_classification: SUPPORTING
+  exactness_requirement: EXACT_REQUIRED(誤った最上級表現を防ぐための制約情報)
+  notes_for_writer: 「AKB48史上最年少で初選抜」という表現は使わない。「現役AKB48で
+  最年少の14歳」「グループ史上では最年少ではない」という区別を必ず保つ。過去の最年少
+  記録の正確な日数(11歳237日/238日)は精密には確定していないため、本文では日数の
+  精密比較まではしない。
+
+=== 補助Fact ===
+
+[OFFICIAL_ANNOUNCEMENT] FACT-07: タイトル『好きish』の「ish」は「～っぽい」「～かも」を
+意味し、公式は「好きっぽい・たぶん好き・好きかも」というニュアンスと説明している。
+  source: AKB48公式サイト
+  number_classification: SUPPORTING(数値なし)
+  exactness_requirement: DIRECTION_ONLY
+
+[OFFICIAL_ANNOUNCEMENT] FACT-08: 表題曲選抜メンバーは16人(伊藤百花・近藤沙樹を含む)。
+  source: AKB48公式サイト
+  number_classification: DISPENSABLE
+  exactness_requirement: APPROXIMATE_OK(「16人の選抜メンバー」程度の言及で十分)
+
+[OFFICIAL_ANNOUNCEMENT] FACT-09: パッケージは初回限定盤TYPE-A〜Cの3形態、通常盤、
+Official Shop盤を合わせ計5形態が予定されている。
+  source: AKB48公式サイト
+  number_classification: DISPENSABLE
+  exactness_requirement: APPROXIMATE_OK
+
+【この記事で使わない、または確認できなかった情報】
+- 近藤沙樹の日数単位での歴代最年少との精密な日数差(基準日がSource間で一致しないため)
+- 選抜16人全員の個別プロフィール
