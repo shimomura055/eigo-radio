@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01-R1、Residual SoT Cleanup)**
+**最終更新: 2026-08-18(ER-005-TTS-CLEAN-COST-AUDIT-01、AKB48 A2 Key Phrase ASR障害をOPEN-43として登録)**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -76,6 +76,7 @@ ER-003-CROSSLEVEL-AUDIO-02時点のバージョンのままで、上記の最新
 | OPEN-40 | `er003_audio_tts_asr_safety.py`(TTS/ASR共通安全部品)は、ER-003-A2-B1-N3-01/FIX-01で新規発見・実装したnormalization処理(curly quote正規化、Markdown太字除去、数字表記ゆれ吸収、Key Phrase複合語対応、日本語数字表記ゆれ等)の一部を含んでいない。これらは現状N3専用スクリプト(`er003_v1_n3_01_tts_generate.py`)内にとどまっており、**Production共通モジュールへは未統合** | `TBD` | 実装統合未完了 | Non-blocking(N3記事では個別スクリプト内で機能している) | 今後同種のnormalizationが必要な記事が増えた段階で、共通モジュールへの統合を検討する。先回りでの統合作業は今回のスコープに含めない |
 | OPEN-41 | Household A2の本番article.md(`er003_output/n3_01/household/a2/article.md`)は、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)で再生成したものではない。内容の方向性(ethylene/moisture軸を維持)は一致しているが、生成経路が異なる。**訂正(2026-08-17)**: 本番article.mdのFact Checker状態は`PASS`ではなく`REVIEW_REQUIRED`(Point Two周辺の精度指摘、記録の上で許容判断済み。→[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)) | `TBD` | 本番成果物と仕様の不一致 | Non-blocking(Ledger Deviation CheckはLEDGER_COMPLIANT。Fact CheckerはREVIEW_REQUIREDだが今回の修正対象外の精度指摘のみ) | 将来Household記事の音声・記事を更新する機会があれば、正式採用済みのA2_KAI1_INSTRUCTIONで再生成することを検討する。今回のFreezeでは強制しない |
 | OPEN-42 | B2は2026-08-17付で`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`となった(ER-003-B1-B2-SCOPE-FIX-01 Decision B)。廃止ではなく将来拡張候補として保持している | `TBD` | Product Strategy待ち | Non-blocking | B2を将来のLaunch対象へ再追加するかは、External Pilot(A2/B1)の結果とProduct Strategyの判断を経てから検討する。現時点で着手・優先度付けは行わない |
+| OPEN-43 | ER-005-COST-BASELINE-01のAKB48 A2テーマで、Key Phrase音声10本(英語5+日本語5)全てが、標準経路(6回)・fallback経路(6回)とも全attemptでAzure ASRの文字起こしが空文字列を返し、STOPPEDとなった(ER-005-TTS-CLEAN-COST-AUDIT-01で発見)。同記事の他segmentで見られたhomophone系の誤認識(非空だが不一致な文字起こし)とは異なる失敗signatureであり、TTS自体は音声を生成できている(output tokenが計測されている)。Azure側のクォータ/レート制限的な問題か、Key Phraseのような短い音声(1〜2秒)に対するリアルタイムASRの認識信頼性の限界かは、既存ログ(Azureの詳細エラーコードを含まない)からは確定できない | `TBD`(原因未確定) | 未解決の障害・原因調査待ち | Non-blocking(該当記事はCost計測目的であり本番公開対象ではない。ただし本番でKey Phraseのような短い音声に同種の問題が起きる場合はUser体験に影響しうる) | Azure側の詳細エラーログ取得方法の確認、または短い音声clipに対するASR検証方式の再現実験により原因を切り分ける。原因確定まではCLOSEDにしない |
 
 ## 参照元
 
