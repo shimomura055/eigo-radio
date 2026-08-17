@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01-R1、SoT内部整合性クリーンアップ)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -586,7 +586,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
   - Household: Core logic = **BETTER_PRESERVED**(旧版の"Fruit usually goes in low humidity..."という二分法を1回目の生成で回避し、ethylene放出/水分保持という仕組みを基本ルールとして提示。A2 ease・adult toneに副作用なし)
   - Health: Core logic = **SAME**(lifespan/healthspanの区別、observational study/非causationの説明を維持。副作用なし)
   - Hanshin: Core logic = **SAME**(元々シンプルなジャンルで、新しい段落による過剰な分析トーン化は見られず)
-  - 3記事とも Fact Checker `PASS`、Ledger Deviation Check `LEDGER_COMPLIANT`(0件)。Writer/Fact Checker/Ledger Deviation Checkの呼び出し回数は変更前と同一(新しいLLM監査工程を追加していない)
+  - 3記事とも Fact Checker `PASS`、Ledger Deviation Check `LEDGER_COMPLIANT`(0件)。Writer/Fact Checker/Ledger Deviation Checkの呼び出し回数は変更前と同一(新しいLLM監査工程を追加していない)。**この`PASS`は、本Decisionの検証用にVerify-01で単発生成した`root_fix_01_regression/`配下のregressionテキストに対する結果である。本番article.md(特にHousehold A2)には未反映であり、本番article.mdのFact QA状態はこの`PASS`と同一ではない**(→[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)、2026-08-17 SoT Consistency Cleanupで区別を明記)
 - **根拠レポート**: ER-003-N3-RCA-01完了報告、ER-003-N3-ROOT-FIX-01完了報告、ER-003-N3-ROOT-FIX-VERIFY-01完了報告
 - **影響するCURRENT_SPEC項目**: CEFR-A2 構造・音声仕様 > Core Explanatory Logic Preservation
 - **未実施事項(誤読防止のため明記)**: 今回のFreezeは仕様・prompt原則の正式反映のみ。既存記事(Hanshin/Health/Householdの本番article.md・音声)への遡及適用・再生成は行っていない。Household A2の本番article.mdは、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、今回正式採用したA2_KAI1_INSTRUCTIONで再生成したものではない(→[OPEN_ITEMS.md](OPEN_ITEMS.md))

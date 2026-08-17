@@ -1,7 +1,7 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01-R1、SoT内部整合性クリーンアップ)**
 
 このファイルには、**現在正式に採用されている仕様だけ**を書く。経緯・
 比較検討・却下案は書かない(→[DECISION_LOG.md](DECISION_LOG.md)/
@@ -16,9 +16,9 @@
 
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| サービス名 | English Your Way | `DECIDED` | ER-003-B1-P9A系 | 2026-08-07 |
+| サービス名 | English Your Way | `DECIDED`(2026-08-17再確認: 現行B1コード`er003_v1_sing01_voice01_generate.py`のWelcomeナレーション文言"Welcome to English Your Way."で継続使用を確認、改称の証拠なし) | ER-003-B1-P9A系 | 2026-08-07 |
 | 対象ユーザー | 日本語話者の英語学習者(リスニング中心) | `DECIDED` | ER-003-B1系 | 2026-08-07 |
-| 番組構成(19パート) | Intro→Welcome→Topic Intro→Japanese Title→notification1→Preview Intro→Point解説→Preview→notification2→Key Phrases Intro→Key Phrase×5→notification3→Full Story Intro→Full Story→Outro | `DECIDED` | ER-003-REPRO-01/02(A02・ADD03で再現確認済み) | 2026-08-09 |
+| 番組構成(19パート) | `HISTORICAL`(P-series、Point構造導入前のシェル)。Intro→Welcome→Topic Intro→Japanese Title→notification1→Preview Intro→Point解説→Preview→notification2→Key Phrases Intro→Key Phrase×5→notification3→Full Story Intro→Full Story→Outro。**Comment 1〜4・Point One/Two・Point Notification・In One Lineを含んでおらず、現行の11-part content構造+Point Notification/Voice構成とは一致しない。** 現行の全体構成は本ファイル内の複数箇所(CEFR-A2/B1構造・音声仕様節の11パート構造、B1 Voice構成節、Cross-level仕様節のPoint Notification/pause各項目)に分散して記載されており、単一の更新済みN-part一覧はまだ存在しない(2026-08-17 SoT Consistency Cleanupで判明、統合は今回のスコープ外) | ER-003-REPRO-01/02(A02・ADD03で再現確認済み、ただしPoint構造導入前) | 2026-08-09(`HISTORICAL`化: 2026-08-17) |
 | Key Phrasesセクション構成 | 番号→英語→日本語訳→英語(反復) | `DECIDED` | ER-003-B1-P9A系 | 2026-08-07 |
 
 ## CEFR(A2 / B1 / B2 比較)
@@ -51,7 +51,7 @@ Natural English本文の言語方針)は、現行B1のNews本文設計の参照�
 | 数字・金額・日付・% | 原則1文1数字。年齢範囲・スコア・時間帯・日付(月+日+年)は1つの意味単位として例外扱い | CEFR別の簡略化ルールなし(音声制作段階のMFA/ASR対応のみ) | 同左 |
 | 専門語 | 規定なし(B1に準ずる想定) | 理解に必要なら保持可 | 理解に不可欠なら残してよい |
 | タイトル | 固定構造(`# Title`)のみ、CEFR別の語数・語彙制限なし | 固定構造(`# Title`)のみ、CEFR別の語数・語彙制限なし | 同左 |
-| 生成元 | Natural English Sourceから独立生成(B1/B2本文を入力にしない) | Natural English Sourceから独立生成 | Natural English Sourceから独立生成 |
+| 生成元 | `HISTORICAL`表記に注意: 「Natural English Source」はP-series(A01/A02/ADD03)のマスターテキスト経由の生成方式を指す。N3以降の新規記事(Hanshin/Health/Household等)は、Natural English Sourceという中間master textの段階を経ず、**Verified Fact Ledgerから直接**A2 Writerを1回呼び出して生成する(B1/B2本文を入力にしない、という原則自体はP-series/N3とも共通)。詳細はB1節「News本文の生成方式」を参照 | Natural English Sourceから独立生成(P-series) | Natural English Sourceから独立生成(P-series) |
 | Spoken-first | `ADOPTED`。主語・動詞を早く出す、長い前置詞句・名詞句を文頭に置きすぎない、文末まで聞かないと意味が確定しない構造を避ける。厳格なsyntax validatorにはしない(style原則として運用) | 規定なし | 規定なし |
 | Full Storyの役割 | Full Storyだけでニュースの核心が分かる。Point One/Twoは深掘り・背景・意味付けとし、Full Storyの代替にしない | 規定なし(Full Story=本編そのもの) | 規定なし |
 | 本文品質要件 | **Simple AND Natural**(平易さと自然さを両立、どちらかを犠牲にしない) | 規定なし | 規定なし |
@@ -91,9 +91,30 @@ B1は、A2のように専用の簡略英文を新たに生成する設計を**Pr
 にはしない**。News本文はB2相当のNatural Englishと完全共通化し、B1固有の
 体験はSupport(Preview/Comment1-4)の言語・分量・役割だけで作る。
 
+**「B1/B2共通化」の意味について — 要確認(2026-08-17 SoT Consistency
+Cleanupで判明)**: ER-003-B1-A2-SPEC-FREEZE-01の指示文言は「B1はB2と
+自然英語本文を完全共通化する」「B1/B2で同一のNews Englishを使用する」
+というbyte-for-byte共有に読める表現だった。しかし、実際に検証済みの
+`B1_B_DIRECT_INSTRUCTION`(N3のB1本文生成に使われている実際のprompt)
+自身は、"The result should sound **clearly easier to follow while
+listening than a B2 news story**, while still sounding like real adult
+news English"と明記しており、**B1本文をB2記事より聞き取りやすくする
+ことを明示的な生成目標としている**。これは「B1とB2が一字一句同じ
+テキストを共有する」という意味ではなく、「B1専用の機械的な語彙置換
+simplificationは行わないが、B1-B自体の診断的原則(Clause Density等)に
+よって、結果としてB2よりいくらか聞き取りやすい自然な英語になる」と
+いう意味に近い。また、N3以降のパイプラインでは記事ごとに独立した
+「B2」生成段階そのものが存在しないため(下記「News本文の生成方式」)、
+「B1とB2が同一である」ことを実際に比較・確認できる対象(別個に生成
+されたB2テキスト)が存在しない。**この食い違いは既存Decisionからは
+一意に解消できないため、下表では「B1専用の簡略化rewriteをしない」
+という、より狭く確認可能な部分のみをDECIDEDとして記載し、「B2と
+完全に同一のテキストを共有する」という強い主張はDECIDEDとしない。**
+どちらの理解が意図に近いか、ユーザー確認をお願いしたい。
+
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| 基本方針 | B1のNews本文(Full Story Part1/2・Point One・Point Two・In One Line)はB2相当のNatural Englishと完全共通化する。B1専用の簡略化rewriteは行わない。B1の難易度差はSupportの言語(easy English)と役割だけで作る | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系(Support English化)、ER-003-A2-B1-N3-01(B1-B Direct Generation方式)、ER-003-B1-A2-SPEC-FREEZE-01 | 2026-08-17 |
+| 基本方針 | B1のNews本文(Full Story Part1/2・Point One・Point Two・In One Line)は、**B1専用の簡略化rewriteを行わない**(A2のような別レベル向け簡略化書き換えはしない)。B1の難易度差はSupportの言語(easy English)と役割だけで作る。**「B2と完全に同一のテキストを共有する」という主張は`NEEDS_CONFIRMATION`**(上記注記を参照。実際のB1-B生成instructionは「B2よりいくらか聞き取りやすいこと」を明示目標としており、B2と一字一句同一とは限らない) | `DECIDED`(簡略化rewriteをしない、という部分のみ)。B2との関係の厳密な同一性は`NEEDS_CONFIRMATION` | ER-003-B1-NOVEL-AUDIO-01系(Support English化)、ER-003-A2-B1-N3-01(B1-B Direct Generation方式、`B1_B_DIRECT_INSTRUCTION`の実文言) | 2026-08-17 |
 | News本文の生成方式 | 現行パイプライン(N3以降)では、Verified Fact Ledgerから直接1回のWriter呼び出しでNatural English本文を生成する(「B1-B Direct Generation」)。B2を別段階として先に生成し、それをB1へ流用する旧来の2段階パイプラインは、N3以降の新規記事では使用していない。過去のP-series記事(A01/A02/ADD03)ではCEFR-B2が別途独立生成されているが、これは旧アーキテクチャの記録であり、新規記事のNews本文生成方式ではない | `DECIDED`(N3以降の方式として) | ER-003-A2-B1-N3-01(3ジャンル横展開で採用・検証) | 2026-08-17 |
 | B1-B Direction Control原則 | 診断的原則であり、新しいhard ruleは追加しない: Clause Density(1文1主要アイデア+限定的な補足情報)、Long-distance Dependency(長い挿入節は分割)、Abstract Noun Chains(名詞化表現は聞き取りを妨げる場合のみ動詞化、機械的ルール化しない)、Logical Flow(必要な箇所のみ明示的接続詞)、Concept Density(新概念を詰め込みすぎない)、Passage Rebuilding(同じFact/Story Coreから自由に構成し直してよいが、Ledgerにない事実・因果・意図・評価を追加しない)。禁止する新規hard rule: 1文語数上限、CEFR外語彙禁止、受動態禁止、1文1事実の強制。平均文長は診断記録のみで、gateとして強制しない | `DECIDED` | ER-003-A2-B1-N3-01 §7-9 | 2026-08-17 |
 
@@ -177,7 +198,7 @@ B1は、A2のように専用の簡略英文を新たに生成する設計を**Pr
 | 選定方式 | Strategy L (Listening Blocker Ranking) | `DECIDED` | ER-003-P2I(commit `e33f227`) | 2026-07-xx |
 | 件数 | 5件/記事 | `DECIDED` | ER-003-P2I | 2026-07-xx |
 | 語数範囲 | 1〜5語(`key_phrase`) | `DECIDED` | ER-003-KP-02-R1(commit `5a94db0`) | 2026-08-08 |
-| 選定元 | 各記事自身のCEFR-B1本文(承認済み) | `DECIDED` | ER-003-REPRO-01-KP(commit `46aa2e8`) | 2026-08-08 |
+| 選定元 | `HISTORICAL`表記に注意: 「各記事自身のCEFR-B1本文」は、A2が存在する前の単一レベル(B1のみ)時代の記述。**現行はレベルごとに、そのレベル自身の最終確定本文から独立選定する**(A2はA2最終本文から、B1はB1最終本文から。CEFR-A2構造・音声仕様節「Key Phrase選定(A2)」、B1 Key Phrase節を参照)。他レベルのKey Phraseを機械的に流用しない、という原則自体はP-series/現行とも共通 | `DECIDED` | ER-003-REPRO-01-KP(commit `46aa2e8`、当時はB1のみ)。現行の per-level選定はER-003-CROSSLEVEL-AUDIO-02(A2)・ER-003-B1-NOVEL-AUDIO-01系(B1) | 2026-08-08(per-level化: 2026-08-10前後) |
 | 後処理 | Pedagogical Phrase Canonicalization(`source_span`→`display_phrase`→`key_phrase`→`used_form`) | `DECIDED` | ER-003-KP-01(commit `e607d26`) | 2026-08-08 |
 | Canonicalization原則 | 「最小」ではなく「最小十分」 | `DECIDED` | ER-003-KP-02(commit `8856264`) | 2026-08-08 |
 | QAモデル | 3状態(`CANONICALIZATION_PASS`/`REVIEW_REQUIRED`/`INVALID`)、11 QAフィールド | `DECIDED` | ER-003-KP-01→KP-02→KP-02-R1 | 2026-08-08 |
@@ -187,12 +208,19 @@ B1は、A2のように専用の簡略英文を新たに生成する設計を**Pr
 
 ## Preview
 
+**適用範囲の注意(2026-08-17追記)**: 本節は**A2、および旧P-series B1**の
+Preview仕様を記す。**現行B1(Support-based Natural English)のPreviewは
+本節と異なり、平易な英語・Charon voice**である(B1 Support節を参照)。
+本節を「A2/B1共通のPreview実装仕様」と読まないこと(Cross-level仕様節の
+「Preview原則」は言語・voiceによらない編集原則であり、本節の技術仕様
+[言語・TTS model・voice]とは別レイヤー)。
+
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| 言語 | 日本語のみ | `DECIDED` | ER-003-B1-P9A-R1(英語Key Phrase埋め込み方式は不採用) | 2026-08-07 |
+| 言語 | 日本語のみ(A2、および旧P-series B1) | `DECIDED` | ER-003-B1-P9A-R1(英語Key Phrase埋め込み方式は不採用) | 2026-08-07 |
 | TTS model | `gemini-3.1-flash-tts-preview` | `DECIDED` | ER-003-B1-P7A(commit `b4f871f`) | 2026-08-06 |
 | 採用理由 | 旧モデル(2.5)で「激しい」→「げきせつな」等の誤読が発生し、3.1で解消を確認 | `DECIDED` | ER-003-B1-P7A | 2026-08-06 |
-| voice | Aoede | `DECIDED` | ER-003-B1-P7A以降 | 2026-08-06 |
+| voice | Aoede(A2、および旧P-series B1)。**現行B1はCharon**(B1 Voice構成節を参照) | `DECIDED` | ER-003-B1-P7A以降 | 2026-08-06 |
 | 生成方式 | 単一TTS call(chunk分割なし) | `DECIDED` | ER-003-B1-P7A | 2026-08-06 |
 | Key Phrase埋め込み | しない(Full Story側のみで扱う) | `DECIDED` | ER-003-B1-P9A-R1以降 | 2026-08-07 |
 | モデル分離 | Preview(3.1)とFull Story(2.5)の設定を分離、片方の変更が他方に波及しない設計 | `DECIDED`、`ModelIsolationTests`で固定確認済み | ER-003-B1-P8A | 2026-08-07 |
@@ -200,11 +228,19 @@ B1は、A2のように専用の簡略英文を新たに生成する設計を**Pr
 
 ## Full Story
 
+**適用範囲の注意(2026-08-17追記)**: 「chunk構成(3chunk)」はP-seriesの
+パイプライン(単一のFull StoryをTTS 1呼び出し内で3分割生成)を指す
+`HISTORICAL`情報。N3以降はFull Story Part1/Part2をそれぞれ独立した
+1回のWriter/TTS呼び出しで生成し、3chunk分割は行わない。TTS model
+(`gemini-2.5-pro-preview-tts`)・voice(Aoede)は、N3のFull Story Part1/2・
+Point One/Two・In One Line(=News Content)でも同一の値が使われており、
+この2項目はP-series/N3を通じて現在も有効。
+
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| TTS model | `gemini-2.5-pro-preview-tts` | `DECIDED`(凍結仕様) | ER-003-B1-P4D〜P8A | 2026-08-06以前 |
-| voice | Aoede | `DECIDED` | 同上 | 同上 |
-| chunk構成 | 3chunk | `DECIDED`(凍結仕様) | ER-003-B1-P4D〜P8A | 同上 |
+| TTS model | `gemini-2.5-pro-preview-tts` | `DECIDED`(凍結仕様、N3のNews Contentでも継続使用を確認) | ER-003-B1-P4D〜P8A | 2026-08-06以前 |
+| voice | Aoede(News Content。B1のNavigator/Support要素はCharon、B1 Voice構成節を参照) | `DECIDED` | 同上 | 同上 |
+| chunk構成 | `HISTORICAL`(P-series専用、3chunk)。N3以降はPart1/Part2をそれぞれ単一呼び出しで生成し、chunk分割はしない | `DECIDED`(P-seriesの凍結仕様として) | ER-003-B1-P4D〜P8A | 同上 |
 | 内容QA retry | 3試行1セット(`run_tts_content_attempts`) | `DECIDED` | ER-003-B1-P8A系 | 2026-08-07 |
 | 短文ナレーション生成 | 前後文脈のない短いフレーズは専用の最小限instructionで生成 | `DECIDED` | ER-003-B1-P9A-R1(commit `d41e4fe`) | 2026-08-07 |
 | strict ASR検証 | 部分一致 + ASR文字数上限(期待文字数+少数の余裕)の両方を確認 | `DECIDED` | A02 meaning_5発見を機に追加 | 2026-08-08 |
