@@ -8,17 +8,15 @@ Many refrigerators offer two settings: **high humidity** and **low humidity**. E
 
 High humidity keeps the drawer more closed. This helps hold water around the food. It is useful for vegetables, especially leafy greens. These vegetables lose water quickly. When that happens, they become dry and wilt.
 
-Low humidity allows more air to move through the drawer. This is important for fruit.
+Low humidity allows more air to move through the drawer.
 
-As fruit becomes ripe, it gives off a natural gas called **ethylene**. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner.
+As some fruit becomes ripe, it gives off a natural gas called **ethylene**. If this gas stays around other produce, it can speed up spoiling. That produce may go bad sooner.
 
-A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer.
+So here is the real rule. Foods that release a lot of ethylene often do better in low humidity, because the open vent lets the gas escape. Foods that lose water easily often do better in high humidity, because the closed drawer keeps the moisture in.
 
-So the basic rule is simple:
+Apples and pears release ethylene, so low humidity can help the gas escape. Leafy greens lose water easily, so high humidity can help them stay fresh.
 
-**Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity.**
-
-It is a small change. But it gives each type of food the environment it needs.
+**It is not a perfect fruit-versus-vegetable rule.** Each food's own behavior decides the best drawer.
 
 ### The slider is really a small air door
 
@@ -26,8 +24,8 @@ Think of the humidity control as a door for air. Low humidity opens the way for 
 
 ### Some produce should skip the refrigerator
 
-Not every fruit or vegetable belongs in a crisper drawer. Iowa State University Extension says tomatoes, bananas, potatoes, sweet potatoes, onions, and garlic are not well suited to refrigerator storage. These foods are recommended for storage at room temperature instead.
+Not every fruit or vegetable belongs in a crisper drawer. Iowa State University Extension says tomatoes and bananas are better kept at room temperature, such as on a counter. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration, either. They prefer a cool, dry spot instead — that is not always the same as a warm kitchen counter.
 
 ## In one line…
 
-**Give leafy greens a closed, humid space, and give fruit an open path for its gas.** The right drawer can mean less wilting, slower spoilage, and produce that stays useful for longer.
+**Give leafy greens a closed, humid space, and give ethylene-releasing fruit like apples an open path for its gas.** The right drawer can mean less wilting, slower spoilage, and produce that stays useful for longer.

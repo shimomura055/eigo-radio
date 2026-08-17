@@ -1,0 +1,8 @@
+{
+  "fix": "RCA-C: leaked 'In One Line' fragment after Japanese title",
+  "method": "Strict content-equality regeneration (position+tight length check), 10 attempts logged in fix01_audio_regenerate_results.json under household_a2_japanese_title",
+  "outcome": "Attempt 10's audio was saved to japanese_title.wav and is clean: ASR (re-verified separately) = \"冷蔵庫の野菜室。二つの設定を使い分けると食品が長持ちする。\" with zero extra trailing content.",
+  "why_marked_STOPPED_by_the_strict_checker": "The strict checker's own normalize_ja() did not account for Japanese digit/kanji-numeral ASR rendering variance: canonical text uses the digit '2つ', but ASR transcribed the spoken number as kanji '二つ'. This caused 6 of 10 attempts (1,3,6,7,8,10) -- all of which were actually clean, leak-free takes -- to be wrongly rejected as non-matching. Only attempts 2, 5, and 6-variant hallucinations (massive unrelated content) and attempt 4 (which reproduced the original 'In one.' leak) were genuine failures.",
+  "verification_after_manual_recheck": {"duration_seconds": 5.7, "sample_rate": 24000, "peak": 0.6999, "clipping": false, "asr_text": "冷蔵庫の野菜室。二つの設定を使い分けると食品が長持ちする。", "leaked_content": false},
+  "regression_note": "The strict verification helper (generate_charon_ja_strict in this session's fix script) should compose a Japanese digit<->kanji-numeral normalization step, mirroring the English tts_safe_number_words_en pattern already used elsewhere in this pipeline, before promoting this stricter check to a shared module."
+}
