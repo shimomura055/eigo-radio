@@ -196,9 +196,13 @@ def _make_japanese_call_fn(client=None):
 
 
 def generate_narration_snippet(text: str, language: str, out_path: str,
-                                tts_call_fn=None, sleep_function=None) -> dict:
+                                tts_call_fn=None, sleep_function=None,
+                                safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS) -> dict:
     """language: 'en' または 'ja'。既存の確立済みinstruction/モデル/voiceを
-    そのまま使う(新規styleは作らない)。"""
+    そのまま使う(新規styleは作らない)。safety_margin_secondsの既定値は
+    従来通り(p3u.EN_TRIM_SAFETY_MARGIN_SECONDS=0.08秒)。呼び出し側で
+    明示的に指定した場合のみ変更される(ER-003-N3-ROOT-FIX-01: Key
+    Phrase専用に0.20秒を渡す呼び出しを追加、他segmentは無変更)。"""
     if language == "en":
         style_prefix, model_name = ENGLISH_STYLE_PREFIX, ENGLISH_MODEL_NAME
         call_fn = tts_call_fn or _make_english_call_fn()
@@ -216,7 +220,8 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         return {"status": "STOPPED", "reason": f"ナレーション({text!r})のTTSが失敗: {err}"}
 
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
-    trimmed, trim_info = p3u.trim_english_keyword_silence(samples_raw, common.SAMPLE_RATE)
+    trimmed, trim_info = p3u.trim_english_keyword_silence(
+        samples_raw, common.SAMPLE_RATE, safety_margin_seconds=safety_margin_seconds)
     if trimmed is None:
         return {"status": "STOPPED", "reason": f"ナレーション({text!r})に発話区間を検出できませんでした"}
 

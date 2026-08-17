@@ -103,8 +103,6 @@ Treat the narration as one continuous program, even when it is generated in sepa
 
 Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
 
-Clearly say "In One Line" before reading the final section.
-
 Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
 
 """
@@ -128,6 +126,20 @@ Do not shout, force emotion, exaggerate feelings that are not present in the scr
 # ER-002-S1で採用する修正版(ER-001B-7B時点の記事非依存の文言に統一)。
 # er001b9/er001b10にあった "before the first care point and ... second
 # care point" という老老介護由来の表現は使わない。
+#
+# ER-003-N3-ROOT-FIX-01(2026-08-17)で opt-in 化。この指示は「番組全体を
+# 1回のTTS呼び出しで読み上げ、台本内にPoint One/Point Two/In One Line
+# というラベル文字列そのものが読み上げ対象として含まれる」旧方式のために
+# 書かれたもの。現行のセグメント単位生成(Key Phrase・Title・Comment等を
+# それぞれ独立したTTS呼び出しで生成する方式)では、渡すテキストに
+# これらのラベル文字列が含まれることはなく、この指示はどの現行呼び出し
+# にとっても不要。それにもかかわらずbuild_style_prefix/
+# build_japanese_style_prefixの既定で全呼び出しに無条件付与されていた
+# ため、モデルがこの指示文自体を読み上げてしまう(instruction leakage)
+# 事例が2件確認された(Health B1 Key Phrase「modeled differences」、
+# Household A2 Japanese Title)。今後、真にこの指示が必要な一括生成方式
+# を実装する場合は、build_style_prefix(include_point_label_fidelity=True)
+# のように呼び出し側で明示的に有効化すること。
 POINT_LABEL_FIDELITY_RULE = """Read every title, section heading, point label, and subsection heading exactly as written.
 Clearly say "Point One" before the first point and "Point Two" before the second point.
 Clearly say "In One Line" before the final section.
@@ -171,8 +183,15 @@ def assert_no_genre_leakage(text: str, extra_terms: Optional[list[str]] = None) 
     assert not found, f"共通演技指示に記事固有語が含まれています: {found}"
 
 
-def build_style_prefix() -> str:
-    prefix = COMMON_BASE_INSTRUCTION + LEVEL2_INSTRUCTION + POINT_LABEL_FIDELITY_RULE
+def build_style_prefix(include_point_label_fidelity: bool = False) -> str:
+    """include_point_label_fidelity=Trueは、台本内にPoint One/Point Two/
+    In One Lineというラベル文字列そのものを読み上げる必要がある、番組
+    全体を1回のTTS呼び出しで読み上げる旧方式の呼び出し専用。現行の
+    セグメント単位生成では既定のFalseのまま使うこと(ER-003-N3-ROOT-
+    FIX-01: instruction leakage対策)。"""
+    prefix = COMMON_BASE_INSTRUCTION + LEVEL2_INSTRUCTION
+    if include_point_label_fidelity:
+        prefix += POINT_LABEL_FIDELITY_RULE
     assert_no_wpm_specification(prefix)
     assert_no_genre_leakage(prefix)
     return prefix

@@ -21,6 +21,7 @@ import numpy as np
 
 import er002_common as common
 import er003_b1_p3r_audio as p3r
+import er003_b1_p3u_audio as p3u
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
 
@@ -180,13 +181,14 @@ _MEANING_ASR_SUBSTRINGS = {1: "断る", 2: "アプリ", 3: "衝動", 4: "投稿�
 def generate_narration_snippet_verified_strict(
     text: str, language: str, out_path: str, expected_substring: str,
     max_attempts: int = 6, max_extra_chars: int = 15,
+    safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
 ) -> dict:
     import er003_b1_p4_audio as p4
     asr_language = "en-US" if language == "en" else "ja-JP"
     max_len = len(text) + max_extra_chars
     attempts_log = []
     for attempt in range(1, max_attempts + 1):
-        r = p9a.generate_narration_snippet(text, language, out_path)
+        r = p9a.generate_narration_snippet(text, language, out_path, safety_margin_seconds=safety_margin_seconds)
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
@@ -257,7 +259,9 @@ MINIMAL_INSTRUCTION_PREFIX = (
 )
 
 
-def generate_english_component_minimal_instruction(text: str, out_path: str) -> dict:
+def generate_english_component_minimal_instruction(
+    text: str, out_path: str, safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
+) -> dict:
     prompt = MINIMAL_INSTRUCTION_PREFIX + text
     call_fn = p9a._make_english_call_fn()
     pcm, retries, ok, err = common._call_tts_with_retry(
@@ -265,8 +269,8 @@ def generate_english_component_minimal_instruction(text: str, out_path: str) -> 
     if not ok:
         return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
-    import er003_b1_p3u_audio as p3u
-    trimmed, trim_info = p3u.trim_english_keyword_silence(samples_raw, common.SAMPLE_RATE)
+    trimmed, trim_info = p3u.trim_english_keyword_silence(
+        samples_raw, common.SAMPLE_RATE, safety_margin_seconds=safety_margin_seconds)
     if trimmed is None:
         return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
@@ -280,20 +284,34 @@ def generate_english_component_minimal_instruction(text: str, out_path: str) -> 
     }
 
 
+# ER-003-N3-ROOT-FIX-01(2026-08-17): Key Phrase英語音声専用のhead
+# safety margin。follow-up timeの/f/のような無声摩擦音は振幅が小さく、
+# 母音onset前提の既定0.08秒(p3u.EN_TRIM_SAFETY_MARGIN_SECONDS)では
+# 語頭が一部trimされる実例が確認された。Key Phraseは全体の音声尺への
+# 影響が小さいため、0.20秒(約2.5倍)へ拡大する。この定数はKey Phrase
+# 生成専用であり、他segment(Preview/Comment/Title等、p9a.
+# generate_narration_snippetの他の呼び出し元)には波及しない。
+KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
+
+
 def generate_key_phrase_component_verified(text: str, out_path: str, max_attempts: int = 6) -> dict:
     """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
     それでも合格しない場合のみ、minimal instructionへフォールバックする
-    (声・モデルは変えない、テキストも変えない)。"""
+    (声・モデルは変えない、テキストも変えない)。head safety marginは
+    Key Phrase専用にKEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS(0.20秒)を
+    使う(ER-003-N3-ROOT-FIX-01)。"""
     import er003_b1_p4_audio as p4
-    standard = generate_narration_snippet_verified_strict(text, "en", out_path, text, max_extra_chars=10,
-                                                           max_attempts=max_attempts)
+    standard = generate_narration_snippet_verified_strict(
+        text, "en", out_path, text, max_extra_chars=10, max_attempts=max_attempts,
+        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
 
     fallback_attempts = []
     for attempt in range(1, max_attempts + 1):
-        r = generate_english_component_minimal_instruction(text, out_path)
+        r = generate_english_component_minimal_instruction(
+            text, out_path, safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue

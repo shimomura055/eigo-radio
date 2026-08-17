@@ -67,17 +67,25 @@ _ORIGINAL_LANGUAGE_LINE = "TTS the following complete story in natural, engaging
 _JAPANESE_LANGUAGE_LINE = "次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。"
 
 
-def build_japanese_style_prefix() -> str:
+def build_japanese_style_prefix(include_point_label_fidelity: bool = False) -> str:
     """採用済みの共通instruction(er002_common.COMMON_BASE_INSTRUCTION+
-    LEVEL2_INSTRUCTION+POINT_LABEL_FIDELITY_RULE)のうち、言語指定の
-    先頭1行だけを日本語読み上げ用の文言へ差し替える。それ以外の行は
-    一切変更しない(LEVEL2_INSTRUCTION/POINT_LABEL_FIDELITY_RULEは
-    無変更のまま再利用)。"""
+    LEVEL2_INSTRUCTION)のうち、言語指定の先頭1行だけを日本語読み上げ用
+    の文言へ差し替える。それ以外の行は一切変更しない(LEVEL2_INSTRUCTION
+    は無変更のまま再利用)。
+
+    include_point_label_fidelity=Trueは、台本内にPoint One/Point Two/
+    In One Lineというラベル文字列そのものを読み上げる必要がある、番組
+    全体を1回のTTS呼び出しで読み上げる旧方式の呼び出し専用。現行の
+    セグメント単位生成(Key Phrase・Japanese Title・Comment等)では既定
+    のFalseのまま使うこと(ER-003-N3-ROOT-FIX-01: instruction leakage
+    対策。common.build_style_prefixと同じ責務分離)。"""
     base = common.COMMON_BASE_INSTRUCTION
     if not base.startswith(_ORIGINAL_LANGUAGE_LINE):
         raise ValueError("COMMON_BASE_INSTRUCTIONの先頭行が想定と異なります(言語指定行の置換対象を特定できません)")
     ja_base = _JAPANESE_LANGUAGE_LINE + base[len(_ORIGINAL_LANGUAGE_LINE):]
-    prefix = ja_base + common.LEVEL2_INSTRUCTION + common.POINT_LABEL_FIDELITY_RULE
+    prefix = ja_base + common.LEVEL2_INSTRUCTION
+    if include_point_label_fidelity:
+        prefix += common.POINT_LABEL_FIDELITY_RULE
     common.assert_no_wpm_specification(prefix)
     common.assert_no_genre_leakage(prefix)
     return prefix

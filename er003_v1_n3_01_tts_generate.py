@@ -63,12 +63,81 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
     return r
 
 
+# ER-003-N3-ROOT-FIX-01(2026-08-17): A2の短い日本語Key Phrase訳
+# (meaning_N)も、B1のkp_ja_charonと同じ「短いフレーズ+長いJAPANESE_
+# STYLE_PREFIX」の組み合わせで、voice01.generate_charon_japaneseと同種
+# のinstruction leakageに晒されうる(標準経路はvoice=Aoede、
+# c.generate_narration_snippet_verified_strict=repro01の同名関数の
+# エイリアス)。voice01側に追加したのと同じ考え方のfallbackを、A2の
+# Aoede経路にも用意する。
+_A2_JA_MINIMAL_INSTRUCTION_PREFIX = (
+    "次の文章だけを、翻訳・言い換え・追加をせず、自然で温かいpodcastの"
+    "ナレーターの声でそのまま読み上げてください。\n\n"
+)
+
+
+def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
+    import er002_common as common
+    import er003_b1_p3u_audio as p3u
+    import er003_b1_p9a_audio as p9a
+    prompt = _A2_JA_MINIMAL_INSTRUCTION_PREFIX + text
+    call_fn = p9a._make_japanese_call_fn()
+    pcm, retries, ok, err = common._call_tts_with_retry(
+        call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
+    if not ok:
+        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
+    samples_raw = common.pcm_bytes_to_float_mono(pcm)
+    trimmed, trim_info = p3u.trim_english_keyword_silence(samples_raw, common.SAMPLE_RATE)
+    if trimmed is None:
+        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+    common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
+    metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+    return {"status": "OK", "text": text, "path": out_path, "trim_info": trim_info,
+            "clipping_detected": metrics["clipping_detected"], "instruction": "minimal (not JAPANESE_STYLE_PREFIX)"}
+
+
+def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
+                                        max_extra_chars: int = 40, max_attempts: int = 6) -> dict:
+    """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
+    instructionへフォールバックする(声・モデルは変えない)。
+    ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
+    leakage対策。"""
+    import er003_b1_p4_audio as p4
+    standard = c.generate_narration_snippet_verified_strict(
+        text, "ja", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
+    if standard.get("status") == "OK":
+        standard["fallback_used"] = False
+        return standard
+
+    max_len = len(text) + max_extra_chars
+    fallback_attempts = []
+    for attempt in range(1, max_attempts + 1):
+        r = _generate_a2_japanese_minimal_instruction(text, out_path)
+        if r.get("status") != "OK":
+            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            continue
+        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
+        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
+        length_ok = asr_text is not None and len(asr_text) <= max_len
+        verified = substring_ok and length_ok
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "verified": verified})
+        if verified:
+            r["asr_verified"] = True
+            r["asr_text"] = asr_text
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = standard.get("attempts_log")
+            r["fallback_attempts_log"] = fallback_attempts
+            return r
+    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
+            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+
+
 def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                               max_extra_chars: int = 40, max_attempts: int = 6) -> dict:
     placeholder_safe = tts_safe_ja(text)
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
-    r = c.generate_narration_snippet_verified_strict(
-        tts_input, "ja", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
+    r = generate_a2_japanese_with_fallback(
+        tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)

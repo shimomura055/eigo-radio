@@ -57,11 +57,27 @@ class BuildJapaneseStylePrefixTests(unittest.TestCase):
         diff = p3y.build_instruction_diff()
         self.assertEqual(diff["changed_lines"][0]["after"], p3y._JAPANESE_LANGUAGE_LINE)
 
-    def test_level2_and_point_label_rule_unchanged(self):
-        """LEVEL2_INSTRUCTION/POINT_LABEL_FIDELITY_RULEはer002_commonから
-        無変更のまま連結されていることを確認する。"""
+    def test_level2_instruction_unchanged(self):
+        """LEVEL2_INSTRUCTIONはer002_commonから無変更のまま連結されて
+        いることを確認する。"""
         prefix = p3y.build_japanese_style_prefix()
         self.assertIn(common.LEVEL2_INSTRUCTION, prefix)
+
+    def test_point_label_fidelity_rule_excluded_by_default(self):
+        """ER-003-N3-ROOT-FIX-01: instruction leakage対策。POINT_LABEL_
+        FIDELITY_RULE(Point One/Point Two/In One Lineという構成ラベル
+        文字列を読み上げさせる指示)は、現行のセグメント単位生成では
+        不要かつ漏れの原因となるため、既定では含まれないことを確認する。"""
+        prefix = p3y.build_japanese_style_prefix()
+        self.assertNotIn(common.POINT_LABEL_FIDELITY_RULE, prefix)
+        self.assertNotIn("Point One", prefix)
+        self.assertNotIn("Point Two", prefix)
+        self.assertNotIn("In One Line", prefix)
+
+    def test_point_label_fidelity_rule_included_when_opted_in(self):
+        """真に一括生成方式でPoint/In One Lineの読み上げが必要な場合は、
+        明示的にinclude_point_label_fidelity=Trueで有効化できること。"""
+        prefix = p3y.build_japanese_style_prefix(include_point_label_fidelity=True)
         self.assertIn(common.POINT_LABEL_FIDELITY_RULE, prefix)
 
     def test_japanese_prefix_does_not_contain_original_language_line(self):

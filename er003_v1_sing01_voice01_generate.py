@@ -91,11 +91,47 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
             "attempts_log": attempts_log}
 
 
+# ER-003-N3-ROOT-FIX-01(2026-08-17): 短い単独の日本語フレーズ(Key
+# Phraseの日本語訳・語句)にJAPANESE_STYLE_PREFIX(長い演技指示、約1800
+# 文字)を使うと、モデルが指示文自体を読み上げてしまう事例が高頻度で
+# 確認された(POINT_LABEL_FIDELITY_RULE除去後も、Health B1「modeled
+# differences」で5回中5回再現。同じ検証で、文単位の長さを持つJapanese
+# Titleは0回中5回で再現せず — 短いフレーズに固有の問題と判明)。
+# 英語Key Phraseに既存のMINIMAL_INSTRUCTION_PREFIX(repro01、"Speak the
+# following text aloud naturally...")と同じ考え方を、日本語の短い
+# フレーズにも適用する。
+MINIMAL_INSTRUCTION_PREFIX_JA = (
+    "次の文章だけを、翻訳・言い換え・追加をせず、自然で温かいpodcastの"
+    "ナレーターの声でそのまま読み上げてください。\n\n"
+)
+
+
+def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> dict:
+    prompt = MINIMAL_INSTRUCTION_PREFIX_JA + text
+    call_fn = p7a.make_tts_call_fn_for_model(p9a.JAPANESE_MODEL_NAME, CHARON)
+    pcm, retries, ok, err = common._call_tts_with_retry(
+        call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
+    if not ok:
+        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
+    samples_raw = common.pcm_bytes_to_float_mono(pcm)
+    trimmed, trim_info = p3u.trim_english_keyword_silence(
+        samples_raw, common.SAMPLE_RATE, safety_margin_seconds=SAFETY_MARGIN)
+    if trimmed is None:
+        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+    common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
+    metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+    return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
+            "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
+            "instruction": "minimal (not JAPANESE_STYLE_PREFIX)"}
+
+
 def generate_charon_japanese(text: str, out_path: str, expected_substring: str, max_attempts: int = 6) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、
     voiceだけCharonへ差し替える(p9a.generate_narration_snippetは
-    voice固定のため直接組み立てる)。"""
+    voice固定のため直接組み立てる)。標準経路がmax_attempts回で合格
+    しない場合、minimal instructionへフォールバックする(声・モデルは
+    変えない、テキストも変えない。ER-003-N3-ROOT-FIX-01)。"""
     max_len = len(text) + 15
     attempts_log = []
     for attempt in range(1, max_attempts + 1):
@@ -124,9 +160,30 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
                     "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
-                    "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"]}
-    return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log}
+                    "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
+                    "fallback_used": False}
+
+    fallback_attempts = []
+    for attempt in range(1, max_attempts + 1):
+        r = generate_charon_japanese_minimal_instruction(text, out_path)
+        if r.get("status") != "OK":
+            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            continue
+        asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
+        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
+        length_ok = asr_text is not None and len(asr_text) <= max_len
+        verified = substring_ok and length_ok
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+                                   "substring_ok": substring_ok, "length_ok": length_ok, "verified": verified})
+        if verified:
+            r["asr_verified"] = True
+            r["asr_text"] = asr_text
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = attempts_log
+            r["fallback_attempts_log"] = fallback_attempts
+            return r
+    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
+            "standard_attempts_log": attempts_log, "fallback_attempts_log": fallback_attempts}
 
 
 def main():
