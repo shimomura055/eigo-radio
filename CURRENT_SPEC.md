@@ -1,7 +1,7 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01-R1、SoT内部整合性クリーンアップ)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
 
 このファイルには、**現在正式に採用されている仕様だけ**を書く。経緯・
 比較検討・却下案は書かない(→[DECISION_LOG.md](DECISION_LOG.md)/
@@ -23,20 +23,27 @@
 
 ## CEFR(A2 / B1 / B2 比較)
 
-**注意(2026-08-17追記、ER-003-B1-A2-SPEC-FREEZE-01)**: 下表のCEFR-B1列は、
-A01/A02/ADD03(P-series)で使われた初期の「B1専用簡略英文」設計を記録した
-ものであり、**現在のProduction標準ではない**。B1の現行正式仕様は、本文
-(Full Story/Point One/Two/In One Line)をB2相当のNatural English(簡略化
-しない)で統一し、Support(Preview/Comment1-4)の言語・分量だけでB1体験を
-作る設計へ更新された(下記「B1(Support-based Natural English)」節を参照)。
-下表のCEFR-B1列は`HISTORICAL`として保持し、既存のP-series記事(A01/A02/
-ADD03のCEFR-B1)の記録としてのみ有効とする。CEFR-B2列(簡略化しない
-Natural English本文の言語方針)は、現行B1のNews本文設計の参照元として
-引き続き有効。
+**注意(2026-08-17追記、ER-003-B1-A2-SPEC-FREEZE-01/SCOPE-FIX-01)**: 下表の
+CEFR-B1列は、A01/A02/ADD03(P-series)で使われた初期の「B1専用簡略英文」
+設計を記録したものであり、**現在のProduction標準ではない**。B1の現行
+正式仕様は、Verified Fact LedgerからB1専用Writerで独立生成した
+natural spoken news English(B2と同一テキストではなく、B2よりlistening
+loadを下げつつA2ほど強くは簡略化しない独自の本文)+Support
+(Preview/Comment1-4)の言語・役割で作る設計へ更新された(下記
+「B1(独立生成Natural Spoken News English)」節を参照)。下表のCEFR-B1列は
+`HISTORICAL`として保持し、既存のP-series記事(A01/A02/ADD03のCEFR-B1)の
+記録としてのみ有効とする。
 
-| 項目 | CEFR-A2 | CEFR-B1(`HISTORICAL`、P-series専用) | CEFR-B2 |
+**LAUNCH_SCOPE(2026-08-17、ER-003-B1-B2-SCOPE-FIX-01)**: 初期Launchの
+対象レベルは**A2/B1の2レベル**であり、**CEFR-B2は`OUT_OF_INITIAL_SCOPE`**
+(初期サービス中核から外す。廃止ではなく、future expansion candidate /
+internal comparison・reference / historical experiment・referenceという
+位置づけへ変更。詳細はDECISION_LOGの該当Decisionを参照)。下表のCEFR-B2列は、
+研究・比較参照用の記録として保持する。
+
+| 項目 | CEFR-A2(`LAUNCH_SCOPE: IN`) | CEFR-B1(`HISTORICAL`、P-series専用。現行B1仕様は下記節を参照。`LAUNCH_SCOPE: IN`) | CEFR-B2(`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`) |
 |---|---|---|---|
-| status | `DECIDED`(2026-08-12、ER-003-A2-SPEC-FREEZE-01。詳細経緯は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)) | `DECIDED` | `DECIDED`(テキストのみ。音声化は[OPEN_ITEMS](OPEN_ITEMS.md)参照) |
+| status | `DECIDED`(2026-08-12、ER-003-A2-SPEC-FREEZE-01。詳細経緯は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)) | `DECIDED` | `DECIDED`(テキストのみ。初期Launch対象外。音声化は[OPEN_ITEMS](OPEN_ITEMS.md)参照) |
 | vocabulary | 可能な範囲で平易な一般語を優先(定性的方針)。**厳密なCEFR語彙数上限・wordlistは意図的に設けない**(正式wordlist不在でLLM判定が不安定なため、数値ルール化は`REJECTED`) | 定性的指示のみ("mostly common, everyday vocabulary... a B1 learner already knows")、wordlist参照コードなし | 定性的指示のみ("主に一般的なB2以下の語彙")、wordlist参照コードなし |
 | 平均文長 | 11語以下(生成方針。B1/B2同様、機械的gateとしては未実装) | ≤15語(`B1_TARGET_AVG_WORDS_PER_SENTENCE`、**診断のみ、gateではない**) | ≤19語(`B2_MAX_AVG_WORDS_PER_SENTENCE`、**実際のgate**) |
 | 最長文 | 18語以下(生成方針) | 24語(`B1_MAX_SENTENCE_WORD_COUNT`、診断のみ) | 32語(`B2_MAX_SENTENCE_WORD_COUNT`、実際のgate) |
@@ -85,37 +92,25 @@ ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05・ER-003-A2-SPEC-FREEZE-01(2026-08-
 | Key Phrase選定(A2) | A2最終本文から改めて選定する(B1 Key Phraseの機械的流用はしない)。方式は既存のStrategy L(Listening Blocker Ranking)+Canonicalization+minimum sufficient+semantic safeguardsをそのまま使用(A2専用の新方式は作らない) | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-02(A01/ADD03で新規選定を実施) | 2026-08-10 |
 | Core Explanatory Logic Preservation | A2生成指示(`A2_KAI1_INSTRUCTION`)へ追加した原則:「Preserve the core explanatory logic and decision rule established by the Verified Fact Ledger. You may simplify wording, sentence structure, examples, and presentation order, but do not replace the Ledger's underlying mechanism or decision rule with an easier shortcut, category, causal explanation, or rule of thumb that the Ledger does not support or explicitly rejects. Simplify how the listener understands the idea, not what the idea means.」語彙・文構造・具体例・提示順序の簡略化は許容するが、Ledgerが規定した判断軸・仕組みを、Ledgerが支持しない/明示的に否定するショートカット・分類・因果関係・経験則へ置き換えない。ジャンル固有の具体例(例: Household記事のfruit/vegetable)はこの一般原則のprompt本文へhard-codeしない | `DECIDED` | ER-003-N3-ROOT-FIX-01(instruction追加)、ER-003-N3-ROOT-FIX-VERIFY-01(3ジャンル検証、ユーザー承認) | 2026-08-17 |
 
-## B1(Support-based Natural English) — 2026-08-17新設
+## B1(独立生成Natural Spoken News English) — 2026-08-17新設、2026-08-17確定(SCOPE-FIX-01)
 
-B1は、A2のように専用の簡略英文を新たに生成する設計を**Production標準
-にはしない**。News本文はB2相当のNatural Englishと完全共通化し、B1固有の
-体験はSupport(Preview/Comment1-4)の言語・分量・役割だけで作る。
-
-**「B1/B2共通化」の意味について — 要確認(2026-08-17 SoT Consistency
-Cleanupで判明)**: ER-003-B1-A2-SPEC-FREEZE-01の指示文言は「B1はB2と
-自然英語本文を完全共通化する」「B1/B2で同一のNews Englishを使用する」
-というbyte-for-byte共有に読める表現だった。しかし、実際に検証済みの
-`B1_B_DIRECT_INSTRUCTION`(N3のB1本文生成に使われている実際のprompt)
-自身は、"The result should sound **clearly easier to follow while
-listening than a B2 news story**, while still sounding like real adult
-news English"と明記しており、**B1本文をB2記事より聞き取りやすくする
-ことを明示的な生成目標としている**。これは「B1とB2が一字一句同じ
-テキストを共有する」という意味ではなく、「B1専用の機械的な語彙置換
-simplificationは行わないが、B1-B自体の診断的原則(Clause Density等)に
-よって、結果としてB2よりいくらか聞き取りやすい自然な英語になる」と
-いう意味に近い。また、N3以降のパイプラインでは記事ごとに独立した
-「B2」生成段階そのものが存在しないため(下記「News本文の生成方式」)、
-「B1とB2が同一である」ことを実際に比較・確認できる対象(別個に生成
-されたB2テキスト)が存在しない。**この食い違いは既存Decisionからは
-一意に解消できないため、下表では「B1専用の簡略化rewriteをしない」
-という、より狭く確認可能な部分のみをDECIDEDとして記載し、「B2と
-完全に同一のテキストを共有する」という強い主張はDECIDEDとしない。**
-どちらの理解が意図に近いか、ユーザー確認をお願いしたい。
+**B1/B2関係の確定(2026-08-17、ER-003-B1-B2-SCOPE-FIX-01でユーザーDecision)**:
+前回のSoT Consistency Cleanupで`NEEDS_CONFIRMATION`としていたB1/B2の
+関係は、以下の通り確定した。**B1はB2と同一テキストを共有しない。**
+B1は、Verified Fact LedgerからB1専用のWriterで独立して英文を生成する
+(A2と対称的な関係。同じLedgerを共有し、別々のWriterで独立生成する
+という点でA2/B1は同格)。既存の`B1_B_DIRECT_INSTRUCTION`の思想
+(natural spoken news English、adult tone、A2ほど強く簡略化しない、
+B2相当の難しい英文よりListening Loadを下げる、Clause Density/Concept
+Density/Long-distance Dependencyを抑える、hardなCEFR語彙・文長制限は
+設けない)を、そのままB1 News本文の正式仕様とする。「B1 = B2本文 +
+Support」という理解は誤りであり、正式には採用しない。
 
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| 基本方針 | B1のNews本文(Full Story Part1/2・Point One・Point Two・In One Line)は、**B1専用の簡略化rewriteを行わない**(A2のような別レベル向け簡略化書き換えはしない)。B1の難易度差はSupportの言語(easy English)と役割だけで作る。**「B2と完全に同一のテキストを共有する」という主張は`NEEDS_CONFIRMATION`**(上記注記を参照。実際のB1-B生成instructionは「B2よりいくらか聞き取りやすいこと」を明示目標としており、B2と一字一句同一とは限らない) | `DECIDED`(簡略化rewriteをしない、という部分のみ)。B2との関係の厳密な同一性は`NEEDS_CONFIRMATION` | ER-003-B1-NOVEL-AUDIO-01系(Support English化)、ER-003-A2-B1-N3-01(B1-B Direct Generation方式、`B1_B_DIRECT_INSTRUCTION`の実文言) | 2026-08-17 |
-| News本文の生成方式 | 現行パイプライン(N3以降)では、Verified Fact Ledgerから直接1回のWriter呼び出しでNatural English本文を生成する(「B1-B Direct Generation」)。B2を別段階として先に生成し、それをB1へ流用する旧来の2段階パイプラインは、N3以降の新規記事では使用していない。過去のP-series記事(A01/A02/ADD03)ではCEFR-B2が別途独立生成されているが、これは旧アーキテクチャの記録であり、新規記事のNews本文生成方式ではない | `DECIDED`(N3以降の方式として) | ER-003-A2-B1-N3-01(3ジャンル横展開で採用・検証) | 2026-08-17 |
+| 基本方針 | B1のNews本文(Full Story Part1/2・Point One・Point Two・In One Line)は、Verified Fact LedgerからB1専用のWriterで独立生成する。目標は: natural spoken news English、adult tone、A2ほど強く簡略化しない、B2相当の難しい英文よりlisteningで追いやすい、Clause Density/Concept Density/Long-distance Dependency等を抑える。hardなCEFR語彙制限・文長制限は設けない。B1の難易度差は、この独立生成された本文自体と、Supportの言語(easy English)・役割の両方で作る(Supportだけで難易度差を作るのではない) | `DECIDED` | ER-003-B1-B2-SCOPE-FIX-01(ユーザーDecision)、ER-003-A2-B1-N3-01(`B1_B_DIRECT_INSTRUCTION`の実装・検証) | 2026-08-17 |
+| A2との関係 | A2とB1は同一のVerified Fact Ledgerを共有するが、別Writerでそれぞれ独立生成する。B1は自然なニュース英語を維持しながらB2相当よりListening Loadを下げる。A2はCognitive Load Reductionをより強く適用し、one idea at a timeへの再構成等を行う。両者ともLedgerのFact/Core Logic(A2 Core Explanatory Logic Preservationと同じ原則)を維持する | `DECIDED` | ER-003-B1-B2-SCOPE-FIX-01 | 2026-08-17 |
+| News本文の生成方式 | Verified Fact Ledgerから直接1回のWriter呼び出しでNatural English本文を生成する(「B1-B Direct Generation」)。B2を別段階として先に生成し、それをB1へ流用する旧来の2段階パイプラインは使用しない。過去のP-series記事(A01/A02/ADD03)ではCEFR-B2が別途独立生成されているが、これは旧アーキテクチャの記録であり、新規記事のNews本文生成方式ではない | `DECIDED` | ER-003-A2-B1-N3-01(3ジャンル横展開で採用・検証) | 2026-08-17 |
 | B1-B Direction Control原則 | 診断的原則であり、新しいhard ruleは追加しない: Clause Density(1文1主要アイデア+限定的な補足情報)、Long-distance Dependency(長い挿入節は分割)、Abstract Noun Chains(名詞化表現は聞き取りを妨げる場合のみ動詞化、機械的ルール化しない)、Logical Flow(必要な箇所のみ明示的接続詞)、Concept Density(新概念を詰め込みすぎない)、Passage Rebuilding(同じFact/Story Coreから自由に構成し直してよいが、Ledgerにない事実・因果・意図・評価を追加しない)。禁止する新規hard rule: 1文語数上限、CEFR外語彙禁止、受動態禁止、1文1事実の強制。平均文長は診断記録のみで、gateとして強制しない | `DECIDED` | ER-003-A2-B1-N3-01 §7-9 | 2026-08-17 |
 
 ### B1 Support(Preview / Comment 1-4)
@@ -286,4 +281,6 @@ ER-003-A2-B1-N3-01完了報告(3ジャンル横展開: Hanshin/Health/Household)
 ER-003-A2-B1-N3-01-FIX-01完了報告、ER-003-N3-RCA-01完了報告、
 ER-003-N3-ROOT-FIX-01完了報告(Key Phrase trim margin・TTS instruction責務分離・A2 Core Logic Preservation)、
 ER-003-N3-ROOT-FIX-VERIFY-01完了報告(3ジャンルでのA2 Core Logic Preservation検証)、
+ER-003-B1-A2-SPEC-FREEZE-01-R1完了報告(SoT内部整合性クリーンアップ)、
+ER-003-B1-B2-SCOPE-FIX-01完了報告(B1生成仕様確定・B2 Launch Scope整理)、
 [DECISION_LOG.md](DECISION_LOG.md)

@@ -1,7 +1,7 @@
 # PROJECT_INDEX — eigo-radio プロジェクト知識の入口
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、Launch対象レベル明記)**
 
 このファイルは、プロジェクトについて何かを知りたいときに「まずどこを見るか」を
 示す入口です。個別レポート・commit・Git履歴を毎回横断監査しなくても、
@@ -12,9 +12,10 @@
 | 知りたいこと | 正式参照先 |
 |---|---|
 | 現在のサービス仕様(番組構成、Preview/Key Phrase/Full Story等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) |
-| B1の現行仕様(Support-based Natural English、Voice構成、Key Phrase等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の「B1(Support-based Natural English)」節(2026-08-17〜、`DECIDED`)。**CEFR比較表のB1列は`HISTORICAL`(P-series専用)であり現行仕様ではない** |
+| **現在のLaunch対象レベル** | **A2 / B1の2レベル**(`LAUNCH_SCOPE: IN`)。**B2は`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`**(廃止ではなく、future expansion candidate / internal comparison・reference / historical experiment・referenceとして保持)。詳細は[CURRENT_SPEC.md](CURRENT_SPEC.md)のCEFR節冒頭`LAUNCH_SCOPE`注記、[DECISION_LOG.md](DECISION_LOG.md)のER-003-B1-B2-SCOPE-FIX-01 Decision Bを参照(2026-08-17) |
+| B1の現行仕様(独立生成Natural Spoken News English、Voice構成、Key Phrase等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の「B1(独立生成Natural Spoken News English)」節(2026-08-17〜、`DECIDED`。B1はB2と同一テキストを共有せず、同一LedgerからB1専用Writerで独立生成する)。**CEFR比較表のB1列は`HISTORICAL`(P-series専用)であり現行仕様ではない** |
 | A2の現行仕様(Core Explanatory Logic Preservation含む) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR-A2構造・音声仕様節 |
-| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節・CEFR-A2構造・音声仕様節(A2は`DECIDED`。CEFR比較表のB1列・B2列はP-series記事の`HISTORICAL`記録)。検証の経緯・却下案は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)(`HISTORICAL`) |
+| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節・CEFR-A2構造・音声仕様節(A2は`DECIDED`。CEFR比較表のB1列・B2列はP-series記事の`HISTORICAL`記録。B2は`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`の参照情報)。検証の経緯・却下案は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)(`HISTORICAL`) |
 | サービス仕様と実装Hardeningの違い | サービス仕様(番組の聞こえ方・記事の作られ方)は[CURRENT_SPEC.md](CURRENT_SPEC.md)本体、実装Hardening(TTS/ASRの内部実装の堅牢化、サービス仕様は不変)は[CURRENT_SPEC.md](CURRENT_SPEC.md)の「Audio Implementation Detail」節+[DECISION_LOG.md](DECISION_LOG.md)の`[Implementation Hardening]`区分エントリを参照。両者は混同しない |
 | A2/B1/B2共通の音声品質原則(Preview原則、Key Phrase発音、Pause、Outro等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Cross-level仕様節 |
 | Key Phrase仕様(方式L、Canonicalization等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Key Phrase節 |

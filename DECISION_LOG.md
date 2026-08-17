@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01-R1、SoT内部整合性クリーンアップ)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -613,6 +613,28 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **根拠レポート**: ER-003-N3-ROOT-FIX-01完了報告(caller監査表・leakage regression実測ログ含む)
 - **運用コストの実測**: 標準経路が既に成功しているケースには呼び出し増なし。標準経路が不合格を繰り返すケースでのみ、fallback分のTTS/ASR呼び出しが追加発生する(実測: 1トライアルあたり1〜5回)
 - **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > TTS style instruction責務分離、短いJapanese phraseのminimal instruction fallback
+
+## [サービス・生成仕様] ER-003-B1-B2-SCOPE-FIX-01 Decision A: B1はB2共通本文ではなく、LedgerからB1用英文を独立生成する
+
+- **日付**: 2026-08-17
+- **内容**: ER-003-B1-A2-SPEC-FREEZE-01-R1で`NEEDS_CONFIRMATION`としていたB1/B2関係を確定する。B1はB2と同一テキストを共有しない。B1は、Verified Fact LedgerからB1専用のWriterで独立して英文を生成する。目標は: natural spoken news English、adult tone、A2ほど強く簡略化しない、B2相当の難しい英文よりlisteningで追いやすい、Clause Density/Concept Density/Long-distance Dependency等を抑える、hardなCEFR語彙制限・文長制限は設けない。既存の`B1_B_DIRECT_INSTRUCTION`の思想をそのままB1本文の正式仕様とする。「B1 = B2本文 + Support」という理解は採用しない
+- **状態**: `DECIDED`
+- **採用理由**: (1) N3で実際に採用・検証した方式(B1-B Direct Generation)と一致する。(2) 実際に検証済みの`B1_B_DIRECT_INSTRUCTION`の文言("clearly easier to follow while listening than a B2 news story")と一致する。(3) B1として自然さを保ちつつListening Loadを下げられる。(4) B2という中間生成物が不要になり、生成・QA工程が1本化できる
+- **比較した選択肢**: (a) B1=B2本文をそのまま流用+Supportで差別化(FREEZE-01時点の暫定記述)、(b) B1=Verified LedgerからB1専用Writerで独立生成(採用)
+- **却下理由(a)**: 実際の検証・実装(`B1_B_DIRECT_INSTRUCTION`)と一致しない。N3パイプラインには比較対象となる独立したB2生成段階自体が存在せず、「B2と同一」を実際に検証する手段がない
+- **根拠レポート**: ER-003-A2-B1-N3-01(`B1_B_DIRECT_INSTRUCTION`の実装・3ジャンル検証)、ER-003-B1-A2-SPEC-FREEZE-01-R1(NEEDS_CONFIRMATION提起)、ER-003-B1-B2-SCOPE-FIX-01(本Decisionでのユーザー確定)
+- **影響するCURRENT_SPEC項目**: 「B1(独立生成Natural Spoken News English)」節一式(基本方針、A2との関係、News本文の生成方式)
+
+## [サービス・Scope仕様] ER-003-B1-B2-SCOPE-FIX-01 Decision B: Initial Launch levelはA2/B1の2つとする
+
+- **日付**: 2026-08-17
+- **内容**: 初期Launchの対象レベルを**A2/B1の2レベル**に絞る。CEFR-B2は初期サービス中核から外し、`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`とする。これはB2の廃止を意味しない。B2は今後、future expansion candidate / internal comparison・reference / historical experiment・referenceという位置づけで保持する。B2は初期External Pilot対象外、初期Production article generation対象外、初期UI/level selection対象外、初期Cost Baselineの必須対象外とする
+- **状態**: `DECIDED`
+- **採用理由**: (1) A2/B1が現在最も検証が進んでいる(N3-01の3ジャンル横展開・ROOT-FIX-01/VERIFY-01等)。(2) B2を初期Launchに含めると、記事生成・音声・QA・UI・External Pilot・運用コストのすべてが増える。(3) 初期の価値検証(External Pilotでの体験成立確認)には2レベルで十分。(4) B2は将来、必要になった時点で拡張可能な設計になっている(同一Ledgerからの独立Writer生成という構造はA2/B1と共通のため、B2追加時も既存アーキテクチャを再利用できる)
+- **比較した選択肢**: (a) A2/B1/B2の3レベルで初期Launch、(b) A2/B1の2レベルで初期Launch、B2は将来拡張候補として保持(採用)
+- **却下理由(a)**: 3レベル同時Launchは記事生成・音声制作・QA・UI設計・External Pilot設計・運用コストのいずれも増加させ、初期の価値検証を遅らせる。B2は現時点でテキストのみ生成済みで音声化が一度も実施されていない([OPEN_ITEMS.md](OPEN_ITEMS.md)参照)ため、初期Launchに含めると新たな検証範囲が発生する
+- **根拠レポート**: ER-003-B1-B2-SCOPE-FIX-01(ユーザーDecision)
+- **影響するCURRENT_SPEC項目**: CEFR比較表・冒頭の`LAUNCH_SCOPE`注記、[PROJECT_INDEX.md](PROJECT_INDEX.md)のLaunch対象レベル、[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)のB2行への注記
 
 ## 参照元
 

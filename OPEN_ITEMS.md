@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01-R1、SoT内部整合性クリーンアップ)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -20,7 +20,7 @@
 | OPEN-14 | ER-003-A2-STRUCT-01: Full Story前の簡易Listening Questions(2問程度) | `CANDIDATE / NOT_ADOPTED` | 構造支援候補 | Non-blocking | 同上 |
 | OPEN-15 | [訂正・ER-003-A2-02] B1承認済みKey Phraseの語そのものがA2本文に残るかは要件にしない。A2 Key PhraseはA2本文確定後に本文から改めて選定する(方針確定) | `DECIDED` | 方針整理 | Non-blocking | 対応不要。当初「B1 Key Phrase語の消失」を問題視していたが、これは誤った懸念設定だったと整理した。実際の問題は主要fact自体がFull StoryからPointsへ流出していたことであり、これはER-003-A2-02で解消(下記OPEN-16参照) |
 | OPEN-16 | ~~A2-01でFull Storyの情報比重が崩れていた件~~ | `DECIDED / CLOSED`(2026-08-12) | 検証結果→CURRENT_SPEC反映済み | 対応不要 | 「Full Storyだけでニュースの核心が分かる」原則として[CURRENT_SPEC.md](CURRENT_SPEC.md)へ正式反映済み |
-| OPEN-03 | CEFR-B2の音声化(Preview/Key Phrase/Full Story/Podcast組み立て)が一度も実施されていない | `TBD` | 未着手 | Non-blocking(B1公開には影響しない) | 着手するかどうか・いつ着手するかをユーザーが判断 |
+| OPEN-03 | CEFR-B2の音声化(Preview/Key Phrase/Full Story/Podcast組み立て)が一度も実施されていない | `TBD`(2026-08-17: B2は`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`のため、初期Launchの必須事項ではないことが確定。ER-003-B1-B2-SCOPE-FIX-01参照) | 未着手 | Non-blocking(初期Launch対象外のため、A2/B1のLaunchには影響しない) | External Pilot・Product Strategyを経て、B2をLaunch対象へ再追加するかを判断してから着手する(下記OPEN-42参照) |
 | OPEN-04 | `used_form`/`key_phrase`の100%重複 | `DECIDED`(整理しない方針は確定済み) | 技術的負債 | Non-blocking | 実際に分ける必要が生じるまで対応しない(意図的放置) |
 | OPEN-05 | 短文TTS hallucinationの根本原因(モデル側の挙動)が未解明 | `UNDER_REVIEW` | 技術的負債 | Non-blocking(strict検証+fallbackで運用上は吸収済み) | 発生時にstrict検証+fallbackで対応を継続。原因調査は優先度低 |
 | OPEN-06 | ASR homophone ambiguityを機械的に判別する手段が未実装(同音異義語リスト等) | `TBD` | 技術的負債 | Non-blocking(human reviewフローで運用上は吸収済み) | 次に同種の事象が実際に発生してから検討(先回り実装はしない) |
@@ -70,11 +70,12 @@ ER-003-CROSSLEVEL-AUDIO-02時点のバージョンのままで、上記の最新
 | ID | 内容 | 状態 | 種類 | Blocking | 次Action |
 |---|---|---|---|---|---|
 | OPEN-36 | External User Validation: B1(Support-based Natural English)・A2(Core Logic Preservation含む)とも、生成→Fact QA→機械QA(ASR/波形解析等)までは完了している。**用語の区別に注意**: [PROJECT_INDEX.md](PROJECT_INDEX.md)の定義上「ユーザー」はプロジェクト責任者(本プロジェクトのオーナー)を指し、「実際の学習者ユーザー」(番組の想定視聴者)とは別人格。N3-01の3ジャンルについては、[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)の`user_quality_status`が3記事とも`NOT_REVIEWED`のままであり、**プロジェクト責任者自身による通し試聴もまだ記録されていない**(開発側の機械QA・波形解析等の技術的検証のみ完了)。そのため「実際の学習者でB1/A2体験が成立するか」というExternal User Validationは、プロジェクト責任者自身の試聴より前段階の、さらに先の未検証事項である | `TBD` | 外部検証待ち | Non-blocking(機械QAは完了、プロジェクト責任者試聴・External Pilotは別途) | まずプロジェクト責任者によるN3-01音声の試聴・`user_quality_status`更新を行い、その後にExternal Pilotのタイミング・設計を判断する |
-| OPEN-37 | B1のNews本文について、B1専用簡略化rewriteをしないという設計は内部検証で採用済みだが、**「B2と完全に同一のテキストを共有する」という理解が正しいかは`NEEDS_CONFIRMATION`**(→CURRENT_SPEC.md「B1(Support-based Natural English)」節の要確認注記を参照。実際のB1-B生成instructionは「B2よりいくらか聞き取りやすいこと」を明示目標としている)。この点が確定した後、実際の学習者がSupportだけの支援でNews本文を理解できるかはExternal Pilotで未確認 | `TBD`(B1/B2関係の定義自体も要確認) | 外部検証待ち+仕様定義待ち | Non-blocking | まずCURRENT_SPEC.mdのNEEDS_CONFIRMATION注記についてユーザー判断を仰ぎ、定義確定後にOPEN-36と合わせてExternal Pilotで確認する |
+| OPEN-37 | ~~B1のNews本文がB2と完全同一テキストを共有するかは`NEEDS_CONFIRMATION`~~ | `DECIDED / CLOSED`(2026-08-17、ER-003-B1-B2-SCOPE-FIX-01) | 仕様未決→解消 | 対応不要 | B1はB2と同一テキストを共有せず、Verified Fact LedgerからB1専用Writerで独立生成する、とユーザーDecisionで確定([DECISION_LOG.md](DECISION_LOG.md) Decision A、[CURRENT_SPEC.md](CURRENT_SPEC.md)「B1(独立生成Natural Spoken News English)」節)。実際の学習者がB1本文+Supportを理解できるかというExternal Pilot確認自体は、引き続き未実施(→OPEN-36) |
 | OPEN-38 | 短いJapanese phraseへのminimal instruction fallback(ER-003-N3-ROOT-FIX-01)は、標準経路が不合格を繰り返す短いKey Phrase等で追加のTTS/ASR呼び出しを発生させる。実測では1トライアルあたり1〜5回のfallback呼び出しが必要だった。頻繁にfallbackが発生する場合、標準経路(短いフレーズへ長いstyle instructionをそのまま使う設計)自体の見直し余地がある | `UNDER_REVIEW` | 技術的負債・監視事項 | Non-blocking(fallbackで運用上は吸収済み) | 今後の記事生成でfallback発生率を継続観察し、頻発するようなら標準経路の指示設計そのものを見直す |
 | OPEN-39 | A2 Core Explanatory Logic Preservation(ER-003-N3-ROOT-FIX-01)は、Householdで実際に見つかった「conceptual oversimplification」(正しい判断軸を誤った近似ルールへ置換する)という失敗パターンへの発生源対策。3ジャンルでの単発検証では有効性を確認したが、今後さらに記事数・ジャンルが増えた際に同種の問題が別の形で再発しないかは継続監視が必要。Fact Checker/Ledger Deviation Checkは文単位の正確性を見るのみで、記事全体の判断軸一致までは検証していないことに変わりはない(クロスレベル一貫性チェックは今回意図的に未導入) | `UNDER_REVIEW` | 品質パターン・監視事項 | Non-blocking | 今後の新規記事(N4以降)でHousehold型の失敗パターンが再発しないか、生成のたびに確認する。頻発する場合はクロスレベル一貫性チェック(ER-003-N3-ROOT-FIX-01検討時に却下したOption B)の追加を再検討する |
 | OPEN-40 | `er003_audio_tts_asr_safety.py`(TTS/ASR共通安全部品)は、ER-003-A2-B1-N3-01/FIX-01で新規発見・実装したnormalization処理(curly quote正規化、Markdown太字除去、数字表記ゆれ吸収、Key Phrase複合語対応、日本語数字表記ゆれ等)の一部を含んでいない。これらは現状N3専用スクリプト(`er003_v1_n3_01_tts_generate.py`)内にとどまっており、**Production共通モジュールへは未統合** | `TBD` | 実装統合未完了 | Non-blocking(N3記事では個別スクリプト内で機能している) | 今後同種のnormalizationが必要な記事が増えた段階で、共通モジュールへの統合を検討する。先回りでの統合作業は今回のスコープに含めない |
-| OPEN-41 | Household A2の本番article.md(`er003_output/n3_01/household/a2/article.md`)は、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)で再生成したものではない。内容の方向性(ethylene/moisture軸を維持)は一致しているが、生成経路が異なる | `TBD` | 本番成果物と仕様の不一致 | Non-blocking(内容自体はFact Checker PASS済み) | 将来Household記事の音声・記事を更新する機会があれば、正式採用済みのA2_KAI1_INSTRUCTIONで再生成することを検討する。今回のFreezeでは強制しない |
+| OPEN-41 | Household A2の本番article.md(`er003_output/n3_01/household/a2/article.md`)は、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)で再生成したものではない。内容の方向性(ethylene/moisture軸を維持)は一致しているが、生成経路が異なる。**訂正(2026-08-17)**: 本番article.mdのFact Checker状態は`PASS`ではなく`REVIEW_REQUIRED`(Point Two周辺の精度指摘、記録の上で許容判断済み。→[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)) | `TBD` | 本番成果物と仕様の不一致 | Non-blocking(Ledger Deviation CheckはLEDGER_COMPLIANT。Fact CheckerはREVIEW_REQUIREDだが今回の修正対象外の精度指摘のみ) | 将来Household記事の音声・記事を更新する機会があれば、正式採用済みのA2_KAI1_INSTRUCTIONで再生成することを検討する。今回のFreezeでは強制しない |
+| OPEN-42 | B2は2026-08-17付で`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`となった(ER-003-B1-B2-SCOPE-FIX-01 Decision B)。廃止ではなく将来拡張候補として保持している | `TBD` | Product Strategy待ち | Non-blocking | B2を将来のLaunch対象へ再追加するかは、External Pilot(A2/B1)の結果とProduct Strategyの判断を経てから検討する。現時点で着手・優先度付けは行わない |
 
 ## 参照元
 
