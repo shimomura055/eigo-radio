@@ -1,7 +1,7 @@
 # ARTIFACT_REGISTRY — 記事×CEFRレベルの成果物完成状態
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-12(ER-003-A2-SCRIPT-FINAL-01)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
 
 記事×CEFRレベルごとの成果物完成状態を一覧化する。値はすべて監査証拠
 (commit・manifest・report)に基づく。**推測で埋めた値はない。** 不明な
@@ -35,6 +35,26 @@
 | ADD03 | CEFR-B2 | あり(日本語下書きのみ、英語台本なし) | 該当なし | N/A | N/A | 未生成 | 未生成 | NOT_REVIEWED | NOT_APPROVED |
 | ADD03 | CEFR-B1 | PASS | PASS | PASS | PASS(5件) | PASS | PASS | **PASS**(ER-003-REPRO-FINAL、2026-08-09。meaning_3はASR homophone ambiguityとして人間確認済み、TTS音声は正常) | NOT_APPROVED |
 | ADD03 | CEFR-A2 | PASS(A2-03独立生成) | **PASS**(2026-08-12、ER-003-A2-SCRIPT-FINAL-01で最終台本確定。旧OPEN-31の1件(Brent原油価格段落の時系列flashback構造)を7/13→7/14の実時系列順へ再構成、新規事実の追加なし、Naturalness QA PASS。[DECISION_LOG.md](DECISION_LOG.md)参照) | PROTOTYPE_BUILT(Cross-level原則反映、ただしPause 0.8秒・Outro最新減衰・Key Phrase 3条件発音・In One Line見出し修正は未反映のER-003-CROSSLEVEL-AUDIO-02版のまま) | PROTOTYPE_BUILT(方式L+Canonicalizationで新規選定5件、機械QA合格。3条件発音方式は未適用。**「Brent crude oil」キーフレーズの根拠文は台本確定後も文言としてそのまま残存**) | PROTOTYPE_BUILT(機械QA合格、hallucinationなし) | PROTOTYPE_BUILT(327.4秒、clippingなし)。**再assemble要**(A01と同じくCross-level最新仕様が未反映[OPEN-34]、**かつ2026-08-12のscript確定により台本と不一致[OPEN-35]**) | NOT_REVIEWED | NOT_APPROVED |
+
+## N3-01: 3ジャンル横展開検証(Hanshin/Health/Household、B1-B/A2、2026-08-17更新)
+
+以下は、Support-based Natural English設計(現行B1正式仕様)・B1-B Direct
+Generation・A2 Core Explanatory Logic Preservationを使った、P-seriesとは
+別系統の記事群。**PROTOTYPE / N-INCREASE VALIDATION**という位置づけで
+制作され、CURRENT_SPEC.mdの現行B1/A2仕様の検証根拠になっている。
+
+| Article | Level | Ledger/Fact QA | Full Audio | Root Cause Fix適用状況 | User Quality | Publication |
+|---|---|---|---|---|---|---|
+| Hanshin | B1-B | PASS/LEDGER_COMPLIANT | 完成(clippingなし) | ROOT-FIX-01のコード変更(trim margin・instruction分離)後、**本番音声は未再生成**(コード変更は今後の新規生成から適用) | NOT_REVIEWED(開発者試聴のみ、外部ユーザー未検証) | NOT_APPROVED |
+| Hanshin | A2 | PASS/LEDGER_COMPLIANT | 完成(clippingなし) | 同上。加えてA2 Core Logic Preservation原則は単発regression生成でのみ検証済み(`root_fix_01_regression/hanshin_a2_sidecheck/`)、本番article.mdへの反映は未実施(副作用なしの確認のみが目的だったため) | NOT_REVIEWED | NOT_APPROVED |
+| Health | B1-B | PASS/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01でkp4_ja_charon「modeled differences」のinstruction leakageを修正・再assemble済み | 同上(コード変更後の本番再生成は未実施) | NOT_REVIEWED | NOT_APPROVED |
+| Health | A2 | PASS/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01でkp4_en「follow-up time」の頭切れを修正・再assemble済み | 同上 | NOT_REVIEWED | NOT_APPROVED |
+| Household | B1-B | PASS/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01時点から内容変更なし | 対象外(A2固有の不具合だったためB1-Bは無変更) | NOT_REVIEWED | NOT_APPROVED |
+| Household | A2 | PASS(Point Two周辺の精度指摘はREVIEW_REQUIREDとして記録・許容判断済み)/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01でJapanese title のinstruction leakageとfruit/vegetable二分法を手動編集で修正・再assemble済み | **本番article.mdはFIX-01の手動編集版のまま。ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)による再生成は未実施**(→[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-41) | NOT_REVIEWED | NOT_APPROVED |
+
+**Artifact URL**(開発者向け試聴用、非公開): Hanshin/Health/Householdの
+各テーマ比較ページ(詳細はER-003-A2-B1-N3-01完了報告・FIX-01完了報告を
+参照)。
 
 ## 補足
 

@@ -1,7 +1,13 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-13(ER-003-SPOKEN-FIRST-03)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
+
+**区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
+(番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
+Hardening」(実装の堅牢化。サービス仕様は変えず、コードの安全性・
+再発防止のみを目的とするもの)を区別して記載する。各エントリの見出しに
+区分を明記する。
 
 確定した意思決定と、その理由・根拠を記録する。個別のDecision Record原本
 (`er003_output/p2i/ER-003-P2I_decision_record.md`等)は削除せず、本ファイルは
@@ -478,6 +484,135 @@
   CURRENT_SPEC.mdへの反映は未実施。次回横展開検証(A01・ADD03)の
   結果を踏まえて判断する→[OPEN_ITEMS.md](OPEN_ITEMS.md)へ追加要否は
   次段階で検討)
+
+## [サービス・生成仕様] ER-003-B1-NOVEL-AUDIO-01系: B1をSupport-based Natural Englishへ再設計
+
+- **日付**: 2026-08-14頃(複数タスクにまたがる、ER-003-B1-A2-SPEC-FREEZE-01で正式反映)
+- **内容**: B1のNews本文(Full Story/Point One/Two/In One Line)専用の簡略化rewriteを行う旧来の設計をやめ、B2相当のNatural English本文を共通で使い、B1固有の体験はSupport(Preview/Comment1-4を平易な英語で提供)と役割設計だけで作る方式へ移行した。あわせてVoice role(Charon=Navigator/Support、Aoede=News Content)を再配置し、A2由来の日本語spoken text(Title/Preview/Comment等)をB1から除去し英語化した
+- **状態**: `DECIDED`
+- **採用理由**: B1専用の簡略化英文を別途生成すると、A2との差別化が「難易度の異なる2つのNews本文」という設計になり、Ledgerに忠実な単一のNatural English本文という一貫性が失われる。Support(言語・役割)だけで難易度体験を作る方が、記事本文の事実表現を1つに保ちやすい
+- **比較した選択肢**: B1専用の簡略化本文を維持する vs News本文をB2と共通化しSupportだけで差別化する
+- **却下理由(B1専用簡略化本文の維持)**: 本文を2種類(A2向け簡略・B1向け簡略)+Support言語という組み合わせが増え、Fact Ledgerとの整合確認箇所が増える。ユーザー判断によりSupport-based設計を採用
+- **根拠レポート**: ER-003-B1-NOVEL-AUDIO-01系タスク一式(Support English化・Voice role再配置・日本語残存要素の英語化)
+- **影響するCURRENT_SPEC項目**: B1(Support-based Natural English)節一式
+
+## [サービス・生成仕様] ER-003-A2-B1-N3-01: B1-B Direct Generationを採用し、B2の別段階生成を廃止
+
+- **日付**: 2026-08-16
+- **内容**: B1-A(B2から派生させる方式)とB1-B(Verified Fact Ledgerから1回のWriter呼び出しで直接Natural English本文を生成する方式)を4版比較した上で、B1-B Direct Generationを採用した。以後、B1/A2とも同一のVerified Fact Ledgerから、それぞれ独立したWriter呼び出しで生成し、B2を別段階として生成するステップはN3以降の新規記事では行わない
+- **状態**: `DECIDED`
+- **採用理由**: B1-B Direct Generationは、B2を経由する方式より生成段階が少なく、Fact Ledgerとの整合確認箇所も1本化できる。4版diagnostic比較でB1-Bが採用可能な品質と判定された
+- **比較した選択肢**: B1-A(B2派生) vs B1-B(Ledgerから直接生成)
+- **却下理由(B1-A)**: B2という中間生成物を介するぶん、生成・QA工程が増える
+- **根拠レポート**: B1-A/B1-B新規生成・4版diagnostic metrics測定・4版比較Artifact作成の各タスク完了報告
+- **影響するCURRENT_SPEC項目**: B1(Support-based Natural English) > News本文の生成方式
+
+## [サービス・生成仕様] B1 Key Phraseの提示順序をEnglish→Japanese→Englishに確定(英英説明は不採用)
+
+- **日付**: 2026-08-14頃
+- **内容**: B1のKey Phraseも、A2と同じEnglish→Japanese→English(反復)の提示順序を正式仕様とする。英英説明(English-only definition)方式は採用しない
+- **状態**: `DECIDED`
+- **採用理由**: 難語の英英説明はそれ自体が新しい理解負荷になり、Support-based B1の「本文理解のためのListening Navigation」という目的に反する。section長文化も避けられる
+- **比較した選択肢**: English→Japanese→English(反復) vs English-onlyの説明的Key Phrase提示
+- **却下理由(English-only説明)**: 意味理解の確実性より難語説明の負荷が優先されてしまう
+- **根拠レポート**: ER-003-B1-NOVEL-AUDIO-01系
+- **影響するCURRENT_SPEC項目**: B1 Key Phrase節
+
+## [サービス・生成仕様] ER-003-POINT-NOTIFICATION-01: Point One/Two専用Notificationと無言のPoint番号ラベル
+
+- **日付**: 2026-08-14頃
+- **内容**: Point One/Twoの直前に専用のNotification音(既存のKey Phrase/Full Story Notificationとは別音源)を挿入し、Point番号("Point One."等)は音声で明言しない設計を採用。あわせてNotification直後に追加の余白を入れない(音源自体の余韻をそのまま使う)方式へ修正した
+- **状態**: `DECIDED`
+- **採用理由**: 構造(Notification)と意味(semantic heading)を分離することで、機械的な番号読み上げより自然な聞こえ方になる
+- **根拠レポート**: ER-003-POINT-NOTIFICATION-01完了報告、追加調整(Point Notification直後のpause除去)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Point Notification、Point semantic heading
+
+## [サービス・生成仕様] Point semantic headingは記事生成プロンプトの`###`見出しをそのまま使う
+
+- **日付**: 2026-08-14頃(A2)、B1はVoice再配置と同時期
+- **内容**: Point One/Twoの本文直前に置くsemantic headingは、追加のLLM呼び出しで別途生成せず、記事生成プロンプトが既に返している`###`見出し(装飾記号のみ`clean_heading()`で除去)をそのまま使う
+- **状態**: `DECIDED`
+- **採用理由**: 記事生成の時点で既に2つの`###`見出しを要求しているため、これがそのままsemantic headingとして使える。追加呼び出し・追加コストが不要
+- **根拠レポート**: ER-003-A2-POINT-HEADING-AUDIO-01完了報告(発見の経緯)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Point semantic heading
+
+## [サービス・生成仕様] ER-003-A2-B1-N3-01: Point Balanceの目標範囲(30-60語/許容25-70語)を3ジャンルで検証、hard capへは昇格させない
+
+- **日付**: 2026-08-17
+- **内容**: ER-003-SPOKEN-FIRST-03でA02単独検証にとどまっていたPoint Balanceの目標範囲(目標30〜60語、許容25〜70語)を、Sports(Hanshin)・Health・Household の3ジャンルへ横展開した。3ジャンルとも、Fact Ledgerの範囲内でPointを圧縮した結果、目標範囲内に自然収束することを確認した
+- **状態**: `VALIDATED across Sports/Health/Household`(hard capへの変更はしない)
+- **採用理由**: 3ジャンルでの再現性が確認できたことで、単一記事の偶然の結果ではないという確信度が上がった。ただし、目標範囲を機械的なhard capにすると、記事によって自然に収まる長さが異なる可能性を無視することになるため、診断的な目安の位置づけを維持する
+- **比較した選択肢**: 診断的目安のまま維持する vs 機械的なhard capへ格上げする
+- **却下理由(hard cap化)**: 3ジャンルでの成功は「範囲内に収まりやすい」ことを示すが、「収まらなければならない」ことまでは示さない。ユーザー指示により、勝手にhard ruleへ変更しないことを明示的に維持
+- **根拠レポート**: ER-003-A2-B1-N3-01完了報告(cross-level分析節)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Point Balance(長さの扱い)
+
+## [サービス・生成仕様] ER-003-A2-B1-N3-01: Spoken-first Number TreatmentをA2/B1共通仕様として正式化
+
+- **日付**: 2026-08-17
+- **内容**: Fact Ledgerはexact factを保持しつつ、spoken narrative側では精度自体に意味のない数字を丸め・概数化・方向化してよいという方針を、Importance(ANCHOR/SUPPORTING/DISPENSABLE)・Exactness(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)という2軸の分類として明文化し、A2/B1共通仕様として採用した
+- **状態**: `DECIDED`
+- **採用理由**: 過度な小数精度の読み上げはListening easeを損なう。一方でスコア・日付・研究結果等、精度自体が意味を持つ数字までは丸めない、という線引きを明示する必要があった
+- **根拠レポート**: ER-003-A2-B1-N3-01完了報告 §14
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Spoken-first Number Treatment
+
+## [サービス・生成仕様] ER-003-A2-B1-N3-01: Fact Safety(Verified Fact Ledger→Fact Checker→Ledger Deviation Check)をA2/B1共通標準として正式化
+
+- **日付**: 2026-08-17
+- **内容**: 記事ごとに1つのVerified Fact Ledgerを作成し、A2/B1双方がそこから生成される。生成後は独立Fact Checker(web検索付き)とLedger Deviation Checkの2段QAを標準として実施する
+- **状態**: `DECIDED`
+- **採用理由**: A2/B1で個別に取材・Ledger作成すると、同じ記事の中でA2とB1が異なる事実関係を語るリスクが生じる。単一Ledger共有によりこれを防ぐ
+- **根拠レポート**: ER-003-A2-B1-N3-01完了報告
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Fact Safety(共通)
+
+## [サービス・生成仕様] ER-003-A2-B1-N3-01: 3ジャンル(Sports/Health/Household)横展開によるジャンル再現性の確認
+
+- **日付**: 2026-08-17
+- **内容**: 仮Fixしていた A2/B1 の一連の仕様(B1-B Direct Generation、Support scaffold、Point Notification、semantic heading、Voice分離、difficulty差)が、スポーツ(阪神-広島戦)・健康(観察研究記事)・生活実用(冷蔵庫のクリスパードロワー)という3つの異なるジャンルで、追加の構造変更なしに機能することを確認した
+- **状態**: `DECIDED`(validation evidenceとして記録)
+- **採用理由**: 単一ジャンル(SNS規制記事等)での検証だけでは、他ジャンルへの一般化可能性が担保されない。3ジャンル展開により、構造面の再現性を実証した
+- **根拠レポート**: ER-003-A2-B1-N3-01完了報告
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > ジャンル再現性
+
+## [サービス・生成仕様] ER-003-N3-ROOT-FIX-01 / VERIFY-01: A2 Core Explanatory Logic Preservationを正式仕様へ採用
+
+- **日付**: 2026-08-17
+- **内容**: A2生成指示(`A2_KAI1_INSTRUCTION`)へ、「Verified Fact Ledgerが規定する中心的な説明ロジック・判断ルールを保持すること。語彙・文構造・具体例・提示順序は簡略化してよいが、Ledgerの仕組み・判断ルールを、Ledgerが支持しない/明示的に否定するショートカット・分類・因果関係・経験則へ置き換えないこと」という原則を追加した。ジャンル固有の具体例(Household記事のfruit/vegetable等)はこの一般原則のprompt本文へhard-codeしない
+- **状態**: `DECIDED`
+- **採用理由**: ER-003-N3-RCA-01のRoot Cause Analysisで、Household A2記事が「果物は低湿度、野菜は高湿度」という、Ledgerが明示的に否定するfruit/vegetable二分法を"基本ルール"として提示してしまっていたことが判明した。原因は、A2のCognitive Load Reductionが「正しいが複雑な判断軸」を「簡単だが別物の近似ルール」へ置換してしまうリスクであり、既存のFact Checkerは文単位の正確性は見ていても記事全体の判断軸までは見ていなかった(旧Household A2は実際にFact Checker PASSしていた)。この原因に対する発生源側の対策として、A2生成指示自体へ軸維持の原則を追加した
+- **比較した選択肢**: (a) A2生成指示への原則追加(発生源対策)、(b) A2/B1間のクロスレベル一貫性チェックを新設(検出強化、追加LLM呼び出しが発生)、(c) 人間レビューゲートの追加(検出強化、量産と相性が悪い)
+- **却下理由(b・c)**: 今回は「工程を重くせず発生源で再発率を下げる」ことを優先し、新しいLLM監査工程・人手工程は追加しないという方針のもとで、最小コストの(a)を採用した。(b)(c)は将来的な再発時の追加検討候補として保持する
+- **検証根拠(ER-003-N3-ROOT-FIX-VERIFY-01)**: 既存Ledger・既存B1-Bを固定し、新しいA2_KAI1_INSTRUCTIONで3ジャンルを各1回だけ単発生成(best-of禁止)した結果:
+  - Household: Core logic = **BETTER_PRESERVED**(旧版の"Fruit usually goes in low humidity..."という二分法を1回目の生成で回避し、ethylene放出/水分保持という仕組みを基本ルールとして提示。A2 ease・adult toneに副作用なし)
+  - Health: Core logic = **SAME**(lifespan/healthspanの区別、observational study/非causationの説明を維持。副作用なし)
+  - Hanshin: Core logic = **SAME**(元々シンプルなジャンルで、新しい段落による過剰な分析トーン化は見られず)
+  - 3記事とも Fact Checker `PASS`、Ledger Deviation Check `LEDGER_COMPLIANT`(0件)。Writer/Fact Checker/Ledger Deviation Checkの呼び出し回数は変更前と同一(新しいLLM監査工程を追加していない)
+- **根拠レポート**: ER-003-N3-RCA-01完了報告、ER-003-N3-ROOT-FIX-01完了報告、ER-003-N3-ROOT-FIX-VERIFY-01完了報告
+- **影響するCURRENT_SPEC項目**: CEFR-A2 構造・音声仕様 > Core Explanatory Logic Preservation
+- **未実施事項(誤読防止のため明記)**: 今回のFreezeは仕様・prompt原則の正式反映のみ。既存記事(Hanshin/Health/Householdの本番article.md・音声)への遡及適用・再生成は行っていない。Household A2の本番article.mdは、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、今回正式採用したA2_KAI1_INSTRUCTIONで再生成したものではない(→[OPEN_ITEMS.md](OPEN_ITEMS.md))
+
+## [Implementation Hardening] ER-003-N3-ROOT-FIX-01: English Key Phrase trim safety marginを0.20秒へ拡大(Key Phrase専用)
+
+- **日付**: 2026-08-17
+- **内容**: 英語Key Phrase音声生成のhead safety marginを0.08秒から0.20秒へ拡大した。共有関数のデフォルト値は変更せず、Key Phrase生成関数(`repro01.generate_key_phrase_component_verified`)だけが新しいmargin値を明示的に指定する設計とし、他segment(Preview/Comment/Title等)には一切波及しない
+- **状態**: `DECIDED`(Audio実装詳細、サービス仕様の変更ではない)
+- **採用理由**: "follow-up time"のようなKey Phraseで、無声摩擦音(/f/等)の語頭が無音判定の閾値付近にあり、既定の0.08秒marginでは実際に語頭が一部trimされる実例を波形解析で確認した。0.08秒では不足する実例が確認された一方、全Key Phraseの間合いを必要以上に長くしないため、0.35秒ではなく0.20秒(約2.5倍)を採用した
+- **比較した選択肢**: (a) 全Key Phrase一律で0.20秒、(b) 語頭が無声摩擦音の単語だけ拡大、(c) 無音判定アルゴリズム自体を二段階しきい値へ再設計
+- **却下理由(b・c)**: (b)は判定ロジックの追加実装が必要で複雑化する。(c)は共有の無音判定関数(他の多数の音声生成でも使われている)の改修になり、影響確認の負荷が大きい。今回は開発コスト・既存資産への影響が最も小さい(a)を採用
+- **根拠レポート**: ER-003-N3-ROOT-FIX-01完了報告(波形解析による検証含む)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > English Key Phrase trim safety margin
+
+## [Implementation Hardening] ER-003-N3-ROOT-FIX-01: TTS style instructionの責務分離+短いJapanese phraseへのminimal instruction fallback
+
+- **日付**: 2026-08-17
+- **内容**: 共通style instruction(`er002_common.py`の`POINT_LABEL_FIDELITY_RULE`)が、Point One/Point Two/In One Lineという構成ラベル文字列を無条件に読み上げさせる指示を含んでいた。これは番組全体を1回のTTS呼び出しで読む旧方式のために書かれたもので、現行のセグメント単位生成では不要かつ、モデルが指示文自体を読み上げてしまう(instruction leakage)原因になっていた。全参照箇所を監査した上で、共通instructionからこの指示を既定で除外し(opt-inパラメータ化)、必要な一括生成呼び出し元がもしあれば明示的に有効化できる設計へ変更した。あわせて、検証の結果この対策だけでは短い単独の日本語フレーズ(Key Phrase訳等)へのinstruction leakageが解消しないことが判明したため、英語Key Phraseに既存のminimal instruction fallbackと同じ考え方を日本語の短いフレーズにも拡張した
+- **状態**: `DECIDED`(Audio実装詳細、サービス仕様の変更ではない)
+- **採用理由**: 実測で、POINT_LABEL_FIDELITY_RULE除去後も、短い日本語フレーズ("モデルで推定した差")で5/5回leakageが再現した一方、同程度の長さの文(Household日本語タイトル)では0/5回だった。これにより、脆弱性は「短いフレーズに長いstyle instructionを渡すこと」自体にあると判明し、英語で既に実証済みのfallbackパターンを日本語へ拡張することが最小コストの対策と判断した
+- **比較した選択肢**: (a) 共通instructionの責務分離のみ、(b) (a)+日本語minimal instruction fallback、(c) Cross-level consistency用の新規LLM監査工程
+- **却下理由(a単独)**: 実測で不十分と判明したため、(b)まで実施した。(c)は新しい監査工程を追加しない方針のため見送り
+- **根拠レポート**: ER-003-N3-ROOT-FIX-01完了報告(caller監査表・leakage regression実測ログ含む)
+- **運用コストの実測**: 標準経路が既に成功しているケースには呼び出し増なし。標準経路が不合格を繰り返すケースでのみ、fallback分のTTS/ASR呼び出しが追加発生する(実測: 1トライアルあたり1〜5回)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > TTS style instruction責務分離、短いJapanese phraseのminimal instruction fallback
 
 ## 参照元
 

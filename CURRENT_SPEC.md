@@ -1,7 +1,7 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
 
 このファイルには、**現在正式に採用されている仕様だけ**を書く。経緯・
 比較検討・却下案は書かない(→[DECISION_LOG.md](DECISION_LOG.md)/
@@ -23,7 +23,18 @@
 
 ## CEFR(A2 / B1 / B2 比較)
 
-| 項目 | CEFR-A2 | CEFR-B1 | CEFR-B2 |
+**注意(2026-08-17追記、ER-003-B1-A2-SPEC-FREEZE-01)**: 下表のCEFR-B1列は、
+A01/A02/ADD03(P-series)で使われた初期の「B1専用簡略英文」設計を記録した
+ものであり、**現在のProduction標準ではない**。B1の現行正式仕様は、本文
+(Full Story/Point One/Two/In One Line)をB2相当のNatural English(簡略化
+しない)で統一し、Support(Preview/Comment1-4)の言語・分量だけでB1体験を
+作る設計へ更新された(下記「B1(Support-based Natural English)」節を参照)。
+下表のCEFR-B1列は`HISTORICAL`として保持し、既存のP-series記事(A01/A02/
+ADD03のCEFR-B1)の記録としてのみ有効とする。CEFR-B2列(簡略化しない
+Natural English本文の言語方針)は、現行B1のNews本文設計の参照元として
+引き続き有効。
+
+| 項目 | CEFR-A2 | CEFR-B1(`HISTORICAL`、P-series専用) | CEFR-B2 |
 |---|---|---|---|
 | status | `DECIDED`(2026-08-12、ER-003-A2-SPEC-FREEZE-01。詳細経緯は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)) | `DECIDED` | `DECIDED`(テキストのみ。音声化は[OPEN_ITEMS](OPEN_ITEMS.md)参照) |
 | vocabulary | 可能な範囲で平易な一般語を優先(定性的方針)。**厳密なCEFR語彙数上限・wordlistは意図的に設けない**(正式wordlist不在でLLM判定が不安定なため、数値ルール化は`REJECTED`) | 定性的指示のみ("mostly common, everyday vocabulary... a B1 learner already knows")、wordlist参照コードなし | 定性的指示のみ("主に一般的なB2以下の語彙")、wordlist参照コードなし |
@@ -72,6 +83,49 @@ ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05・ER-003-A2-SPEC-FREEZE-01(2026-08-
 | B1/B2音声速度 | 現行の自然な読み上げ速度を維持。明示的なWPM targetは新設しない | `DECIDED` | ER-003-A2-SPEC-FREEZE-01(ユーザー判断) | 2026-08-12 |
 | Naturalness QAフロー | `A2生成 → 独立したNaturalness QA(Grammar/Idiomaticity/News narration naturalness/Meaning preservation/A2 suitability/Spoken-firstの6観点) → 必要箇所のみ修正 → re-QA`。判定は`PASS`/`REVISE`/`HUMAN_REVIEW`の3状態。生成モデル自身への自己確認にはしない(生成とQAを分離する) | `DECIDED`(方針として。大規模自動実装はまだ) | ER-003-CROSSLEVEL-AUDIO-04、ER-003-A2-SPEC-FREEZE-01 | 2026-08-12 |
 | Key Phrase選定(A2) | A2最終本文から改めて選定する(B1 Key Phraseの機械的流用はしない)。方式は既存のStrategy L(Listening Blocker Ranking)+Canonicalization+minimum sufficient+semantic safeguardsをそのまま使用(A2専用の新方式は作らない) | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-02(A01/ADD03で新規選定を実施) | 2026-08-10 |
+| Core Explanatory Logic Preservation | A2生成指示(`A2_KAI1_INSTRUCTION`)へ追加した原則:「Preserve the core explanatory logic and decision rule established by the Verified Fact Ledger. You may simplify wording, sentence structure, examples, and presentation order, but do not replace the Ledger's underlying mechanism or decision rule with an easier shortcut, category, causal explanation, or rule of thumb that the Ledger does not support or explicitly rejects. Simplify how the listener understands the idea, not what the idea means.」語彙・文構造・具体例・提示順序の簡略化は許容するが、Ledgerが規定した判断軸・仕組みを、Ledgerが支持しない/明示的に否定するショートカット・分類・因果関係・経験則へ置き換えない。ジャンル固有の具体例(例: Household記事のfruit/vegetable)はこの一般原則のprompt本文へhard-codeしない | `DECIDED` | ER-003-N3-ROOT-FIX-01(instruction追加)、ER-003-N3-ROOT-FIX-VERIFY-01(3ジャンル検証、ユーザー承認) | 2026-08-17 |
+
+## B1(Support-based Natural English) — 2026-08-17新設
+
+B1は、A2のように専用の簡略英文を新たに生成する設計を**Production標準
+にはしない**。News本文はB2相当のNatural Englishと完全共通化し、B1固有の
+体験はSupport(Preview/Comment1-4)の言語・分量・役割だけで作る。
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| 基本方針 | B1のNews本文(Full Story Part1/2・Point One・Point Two・In One Line)はB2相当のNatural Englishと完全共通化する。B1専用の簡略化rewriteは行わない。B1の難易度差はSupportの言語(easy English)と役割だけで作る | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系(Support English化)、ER-003-A2-B1-N3-01(B1-B Direct Generation方式)、ER-003-B1-A2-SPEC-FREEZE-01 | 2026-08-17 |
+| News本文の生成方式 | 現行パイプライン(N3以降)では、Verified Fact Ledgerから直接1回のWriter呼び出しでNatural English本文を生成する(「B1-B Direct Generation」)。B2を別段階として先に生成し、それをB1へ流用する旧来の2段階パイプラインは、N3以降の新規記事では使用していない。過去のP-series記事(A01/A02/ADD03)ではCEFR-B2が別途独立生成されているが、これは旧アーキテクチャの記録であり、新規記事のNews本文生成方式ではない | `DECIDED`(N3以降の方式として) | ER-003-A2-B1-N3-01(3ジャンル横展開で採用・検証) | 2026-08-17 |
+| B1-B Direction Control原則 | 診断的原則であり、新しいhard ruleは追加しない: Clause Density(1文1主要アイデア+限定的な補足情報)、Long-distance Dependency(長い挿入節は分割)、Abstract Noun Chains(名詞化表現は聞き取りを妨げる場合のみ動詞化、機械的ルール化しない)、Logical Flow(必要な箇所のみ明示的接続詞)、Concept Density(新概念を詰め込みすぎない)、Passage Rebuilding(同じFact/Story Coreから自由に構成し直してよいが、Ledgerにない事実・因果・意図・評価を追加しない)。禁止する新規hard rule: 1文語数上限、CEFR外語彙禁止、受動態禁止、1文1事実の強制。平均文長は診断記録のみで、gateとして強制しない | `DECIDED` | ER-003-A2-B1-N3-01 §7-9 | 2026-08-17 |
+
+### B1 Support(Preview / Comment 1-4)
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| 対象要素 | Preview、Comment 1〜4を平易な英語で提供する | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系 | 2026-08-17 |
+| Support Englishの難易度目標 | B1本文と同等の難易度は目指さない。目的はNatural English本文を理解するためのListening Navigationであり、Support自体を新しい学習課題にしない。原則: first-listenで理解しやすい、one simple idea at a time、familiar everyday wording、compressed/abstract explanationを避ける、adult tone維持 | `DECIDED` | 同上 | 2026-08-17 |
+| Comment役割(C1〜C4) | A2で確立した役割をそのまま維持し、言語だけをJapanese→easy Englishへ変更する。C1: Listening Focus。C2: Mid-story Recovery + Next Question。C3: Story Meaning + Bridge to Points(Point One/Twoの具体的見出し・答えは先出ししない)。C4: Point Recovery + Bridge to In One Line(「英語一文でまとめます」等、In One Lineの文数を断定する表現は使わない) | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系、ER-003-CROSSLEVEL-AUDIO-01(C3/C4の役割定義はA2と共通起源)、ER-003-A2-B1-N3-01(3ジャンルで再現確認) | 2026-08-17 |
+
+### B1 Key Phrase
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| 提示順序 | English → Japanese → English(反復)を正式仕様とする。英英説明(English-only definition)へは変更しない | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系、ER-003-A2-B1-N3-01(3ジャンルで再現) | 2026-08-17 |
+| 採用理由 | 難語の英英説明はそれ自体が新しい理解負荷になる、section長文化を防ぐ、意味理解の確実性を優先するため | `DECIDED` | 同上 | 2026-08-17 |
+| 選定方式 | Strategy L(Listening Blocker Ranking)+ Canonicalization。B1本文確定後、B1自身の本文から選定する(A2 Key Phraseの流用はしない) | `DECIDED` | Key Phrase節と共通方針 | 2026-08-17 |
+
+### B1 Voice構成
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| Navigator/Support(Charon) | Welcome、Topic intro、Preview intro/Preview、Key Phrases intro/番号/日本語訳、Full Story intro、Comment 1〜4、Outro | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01-VOICE系(module: `er003_v1_sing01_voice01_generate.py`)、ER-003-A2-B1-N3-01(3ジャンルで再現確認) | 2026-08-17 |
+| News Content(Aoede) | Full Story Part1/2、Point One/Twoのsemantic heading・本文、In One Line、Key Phrase英語Component | `DECIDED` | 同上 | 2026-08-17 |
+| 検証範囲 | 上記配置は、`er003_v1_sing01_voice01_generate.py`(Voice役割再配置モジュール)およびER-003-A2-B1-N3-01での3ジャンル(Sports/Health/Household)横展開で実際に生成・音声確認済みの最新配置を記載している。過去の暫定版(labels_v2/labels_fixなど中間試作)は反映していない | `DECIDED` | 同上 | 2026-08-17 |
+
+### B1日本語使用範囲
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| 原則 | Key Phraseの日本語訳のみ日本語を使用する。Title・Preview・Comment・section narration等へA2由来の日本語spoken textを残さない。A2 Audio Shellの「役割」(Comment役割、Point構造等)は継承するが、A2固有の日本語spoken textそのものは継承しない | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系(日本語残存Shell要素の英語化) | 2026-08-17 |
 
 ## Cross-level仕様(A2/B1/B2共通)
 
@@ -92,10 +146,29 @@ ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05・ER-003-A2-SPEC-FREEZE-01(2026-08-
 | ポーズ(A2 Comment、日本語→英語) | 0.8秒 | `DECIDED` | 同上 | 2026-08-12 |
 | Comment前後の効果音 | 専用効果音は入れない(ポーズのみ) | `DECIDED` | ER-003-A2-AUDIO-01以降、無変更 | 2026-08-12 |
 | Outro音量 | 最新の減衰方針(Introへのgain matching後、心理音響ベースの追加減衰を2段適用、単純な振幅比ではなく人間聴覚上のバランスを優先)を共通mix ruleとして採用。既存B1/B2完成音声は一括再生成しない | `DECIDED`(方針として) | ER-003-CROSSLEVEL-AUDIO-01〜04、ER-003-A2-AUDIO-AB-01、ER-003-A2-SPEC-FREEZE-01 | 2026-08-12 |
+| Point Notification | Point OneとPoint Twoの直前に、専用のNotification音(`universfield-new-notification-07-210334.mp3`、既存のKey Phrase/Full Story Notificationとは別音源、A2/B1共通)を挿入する。Point番号を音声で明言しない(「Point One.」「第一に」等は不使用)。Notification→semantic heading→本文の順で、Notification直後に追加の余白は入れない(Notification音源自体の余韻をそのまま使う) | `DECIDED` | ER-003-POINT-NOTIFICATION-01、ER-003-A2-B1-N3-01(Sports/Health/Householdで無修正のまま安定動作を確認) | 2026-08-17 |
+| Point semantic heading | Point One/Twoの本文直前に、その回答・視点を要約する短い見出し(記事生成プロンプトが返す`###`見出しをそのまま使用、追加のLLM呼び出しは不要)を置く。見出し文字列は実際にTTS inputへ含めて発話させる(英語見出しのTTS方式と同じ考え方)。B1は見出し・本文ともAoede、A2も見出し・本文とも既存の単一Aoede構成を維持する | `DECIDED` | ER-003-A2-POINT-HEADING-AUDIO-01(A2)、ER-003-B1-NOVEL-AUDIO-01-VOICE系(B1)、ER-003-A2-B1-N3-01(3ジャンルで再現) | 2026-08-17 |
+| Point Balance(長さの扱い) | 目標30〜60語、許容25〜70語を**診断的な目安**として使う。hard capにはしない。PointをMain Storyの反復("第二の本編")にせず、別角度・背景・意味・示唆を短く示す、という役割基準を優先判断とする | `VALIDATED across Sports/Health/Household`(hard ruleへの昇格はしない) | ER-003-SPOKEN-FIRST-03(A02単独で検証)、ER-003-A2-B1-N3-01(3ジャンルでこの目標範囲内に自然収束することを確認、hard capとしては未採用のまま) | 2026-08-17 |
+| Spoken-first Number Treatment | Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する | `DECIDED` | ER-003-A2-B1-N3-01 §14(A2/B1双方へ適用、3ジャンルで運用確認) | 2026-08-17 |
+| Fact Safety(共通) | Verified Fact Ledger(記事ごとに1つ、A2/B1で共有)→独立Fact Checker(web検索付き、`PASS`/`REVIEW_REQUIRED`)→Ledger Deviation Check(`LEDGER_COMPLIANT`/`LEDGER_DEVIATION`)の3段構成を、A2/B1双方の標準QAとして使う。Supportは新しいFactを追加しない。特に scope expansion・causal strengthening・policy/pilotの混同・unsupported comparison・invented connectionを避ける。Fact CheckerがREVIEW_REQUIREDを返した場合、無限に再生成せず、内容をそのまま記録した上で許容判断を下してよい(記事固有の判断として記録に残す) | `DECIDED` | ER-003-A2-B1-N3-01、ER-003-N3-ROOT-FIX-01/VERIFY-01 | 2026-08-17 |
+| ジャンル再現性 | 上記のScaffold役割・Point Notification・semantic heading・Voice分離・difficulty区別・Full Audio組み立て・Fact Safetyの一式が、Sports(Hanshin)・Health(Small Habits, Longer Lives)・Everyday Practical(Household crisper drawer)の3ジャンルで無修正のまま機能することを確認した | `DECIDED`(validation evidenceとして) | ER-003-A2-B1-N3-01 | 2026-08-17 |
 
 これらのポーズ・共通定数は、現状B1組立スクリプト側で記事ごとに
 個別定義されている(一元化された共通定数モジュールはまだない)。
 共通定数化そのものは今回のスコープに含めない([OPEN_ITEMS.md](OPEN_ITEMS.md)参照)。
+
+### Audio Implementation Detail(実装詳細、サービス仕様ではない)
+
+以下はAudio生成パイプラインの実装詳細であり、番組の聞こえ方・サービス
+仕様そのものを変更するものではない。理由・比較検討は[DECISION_LOG.md](DECISION_LOG.md)の
+「Implementation Hardening」区分を参照。
+
+| 項目 | 現在値 | 根拠Decision |
+|---|---|---|
+| English Key Phrase trim safety margin | 0.20秒(Key Phrase専用。他segment=Preview/Comment/Title等は既存の0.08秒のまま、他segmentへは波及していない) | ER-003-N3-ROOT-FIX-01 |
+| TTS style instruction責務分離 | 共通style instructionに、Point One/Point Two/In One Lineを読み上げさせる指示(`POINT_LABEL_FIDELITY_RULE`)を無条件に含めない(既定で除外、必要な一括生成呼び出し元だけが明示的に有効化できるopt-in設計)。現行コードベースにfull-program一括TTS呼び出し元は存在しない | ER-003-N3-ROOT-FIX-01 |
+| 短いJapanese phraseのminimal instruction fallback | 標準経路(JAPANESE_STYLE_PREFIXを使った生成)が既定回数不合格の場合、最小限instructionへ自動フォールバックする(英語Key Phraseに既存の仕組みと同じ考え方を日本語の短いフレーズにも拡張)。標準経路が成功している場合は追加呼び出しなし。標準経路が不合格を繰り返す場合のみ、fallback分のTTS/ASR呼び出しが追加発生する | ER-003-N3-ROOT-FIX-01 |
+| TTS/ASR normalization共通部品 | `er003_audio_tts_asr_safety.py`をAudio共通安全部品として位置づける。ただし2026-08-17時点で、ER-003-A2-B1-N3-01/FIX-01で発見・実装した個別のnormalization処理(curly quote正規化、Markdown太字除去、数字表記ゆれ吸収、Key Phrase複合語対応等)の一部は、まだこの共通モジュールへ統合されておらず、N3専用スクリプト(`er003_v1_n3_01_tts_generate.py`)内に留まっている。**未統合**(→[OPEN_ITEMS.md](OPEN_ITEMS.md)) | ER-003-A2-B1-N3-01、ER-003-A2-B1-N3-01-FIX-01 |
 
 ## Key Phrase
 
@@ -172,4 +245,9 @@ ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05・ER-003-A2-SPEC-FREEZE-01(2026-08-
 [ER-003-CROSSLEVEL-AUDIO-04_REPORT.md](ER-003-CROSSLEVEL-AUDIO-04_REPORT.md)、
 [ER-003-A2-AUDIO-AB-01_REPORT.md](ER-003-A2-AUDIO-AB-01_REPORT.md)、
 [ER-003-A2-SPEC-FREEZE-01_REPORT.md](ER-003-A2-SPEC-FREEZE-01_REPORT.md)、
+ER-003-B1-NOVEL-AUDIO-01系レポート(Support English化・Voice役割再配置)、
+ER-003-A2-B1-N3-01完了報告(3ジャンル横展開: Hanshin/Health/Household)、
+ER-003-A2-B1-N3-01-FIX-01完了報告、ER-003-N3-RCA-01完了報告、
+ER-003-N3-ROOT-FIX-01完了報告(Key Phrase trim margin・TTS instruction責務分離・A2 Core Logic Preservation)、
+ER-003-N3-ROOT-FIX-VERIFY-01完了報告(3ジャンルでのA2 Core Logic Preservation検証)、
 [DECISION_LOG.md](DECISION_LOG.md)

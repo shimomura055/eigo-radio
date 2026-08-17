@@ -1,7 +1,7 @@
 # PROJECT_INDEX — eigo-radio プロジェクト知識の入口
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01)**
 
 このファイルは、プロジェクトについて何かを知りたいときに「まずどこを見るか」を
 示す入口です。個別レポート・commit・Git履歴を毎回横断監査しなくても、
@@ -12,7 +12,10 @@
 | 知りたいこと | 正式参照先 |
 |---|---|
 | 現在のサービス仕様(番組構成、Preview/Key Phrase/Full Story等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) |
-| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節・CEFR-A2構造・音声仕様節(A2/B1/B2とも`DECIDED`、2026-08-12〜)。検証の経緯・却下案は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)(`HISTORICAL`) |
+| B1の現行仕様(Support-based Natural English、Voice構成、Key Phrase等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の「B1(Support-based Natural English)」節(2026-08-17〜、`DECIDED`)。**CEFR比較表のB1列は`HISTORICAL`(P-series専用)であり現行仕様ではない** |
+| A2の現行仕様(Core Explanatory Logic Preservation含む) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR-A2構造・音声仕様節 |
+| CEFR A2/B1/B2の条件(語彙・文長・語数等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の CEFR節・CEFR-A2構造・音声仕様節(A2は`DECIDED`。CEFR比較表のB1列・B2列はP-series記事の`HISTORICAL`記録)。検証の経緯・却下案は[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)(`HISTORICAL`) |
+| サービス仕様と実装Hardeningの違い | サービス仕様(番組の聞こえ方・記事の作られ方)は[CURRENT_SPEC.md](CURRENT_SPEC.md)本体、実装Hardening(TTS/ASRの内部実装の堅牢化、サービス仕様は不変)は[CURRENT_SPEC.md](CURRENT_SPEC.md)の「Audio Implementation Detail」節+[DECISION_LOG.md](DECISION_LOG.md)の`[Implementation Hardening]`区分エントリを参照。両者は混同しない |
 | A2/B1/B2共通の音声品質原則(Preview原則、Key Phrase発音、Pause、Outro等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Cross-level仕様節 |
 | Key Phrase仕様(方式L、Canonicalization等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Key Phrase節 |
 | TTS仕様(model/voice/single call等) | [CURRENT_SPEC.md](CURRENT_SPEC.md) の Preview/Full Story節 |
@@ -86,6 +89,8 @@
 | `A04`(ER-002) | Meta "Muse Image" AI機能撤去に関する技術記事。現行3記事とは**無関係** | 現行記事群の一部だと誤認しないこと |
 | `user_quality_status` | 試聴品質の合否 | `publication_status`(公開可否) |
 | `Dynamics3` | ER-002で使用していたダイナミックレンジ圧縮処理。**現行ER-003のB1組み立てでは明示的に不使用**(scalar RMS gainのみ、`er003_b1_p9a_audio.py`にコメントで明記) | ER-003でも使われていると誤認しないこと |
+| `B1-A` / `B1-B` | B1のNews本文生成方式を比較した際の試作ラベル。B1-A=B2から派生させる方式(不採用)、B1-B=Verified Fact Ledgerから直接生成する方式(採用、現行方式)。**現行仕様は単に「B1」と呼び、B1-Bというラベルはコード内の実装名として残る** | B1-A/B1-Bという用語自体を現行の公式な番組レベル名だと誤認しないこと(公式には`CEFR-B1`) |
+| 記事ID `Hanshin`/`Health`/`Household`(N3-01) | ER-003-A2-B1-N3-01で新規制作した3ジャンル横展開検証用の記事(PROTOTYPE / N-INCREASE VALIDATION)。P-seriesの`A01`/`A02`/`ADD03`とは別の記事群 | P-series記事群と同一の完成度・承認状態だと誤認しないこと(N3記事は開発者試聴のみ、外部ユーザー未検証) |
 
 今後の文書では、単独の`B1`/`B2`だけで意味が曖昧になる場合、必ず
 `CEFR-B1`/`Batch-B1`のように明示する。

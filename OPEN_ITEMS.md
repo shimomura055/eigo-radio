@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-12(ER-003-A2-SPEC-FREEZE-01反映)**
+**最終更新: 2026-08-17(ER-003-B1-A2-SPEC-FREEZE-01反映)**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -61,6 +61,20 @@ ER-003-CROSSLEVEL-AUDIO-02時点のバージョンのままで、上記の最新
 | OPEN-31 | ~~A2英文のnaturalness(SHOULD_REVISE5件)~~ | `DECIDED / CLOSED`(2026-08-12) | 品質候補→台本確定済み | 対応不要 | ER-003-A2-SCRIPT-FINAL-01で5件すべてを最終台本(`er003_output/a2_p1_r3/{article}/a2_article_raw.md`および各`ER-003-A2-STRUCT-0X_{article}_INTEGRATED_SCRIPT.md`)へ反映し、6観点Naturalness QA(3記事ともPASS)を実施済み。内訳: **A01**(3件)— (1)"Rogers sent the ball across the front of goal."→"Rogers crossed the ball into the box."(採用済み) (2)"Messi sent the ball across goal from the right."→"Messi crossed the ball from the right."(採用済み) (3)"The referee then added more time."→"The game went into added time."(採用済み)。**A02**(1件)— "apps under the plan would not open at first"→"apps under the plan would be switched off by default"(採用済み。Natural English Sourceの"covered apps would be unavailable by default"と意味一致を確認した上で採用)。**ADD03**(1件)— Brent原油価格段落を7/13→7/14の実時系列順へ再構成(採用済み、新規事実の追加なし)。詳細は[ER-003-A2-SCRIPT-FINAL-01_REPORT.md](ER-003-A2-SCRIPT-FINAL-01_REPORT.md)、決定理由は[DECISION_LOG.md](DECISION_LOG.md)。音声への反映は下記OPEN-35を参照 |
 | OPEN-34 | A01・ADD03のA2完成音声が、CURRENT_SPECへ正式反映済みのCross-level最新仕様(Pause 0.8秒・Outro最新減衰・Key Phrase 3条件発音・In One Line見出し修正・約135 WPM速度目安)を反映していない(ER-003-CROSSLEVEL-AUDIO-02時点のバージョンのまま) | `TBD` | 再assemble待ち | Non-blocking | 次回A01/ADD03のA2音声assemble時に、CURRENT_SPECの最新仕様一式を反映する。あわせて下記OPEN-35(台本確定によるscript変更)・Key Phrase 3条件発音方式(A01: Come on/Go ahead等)も反映する |
 | OPEN-35 | ER-003-A2-SCRIPT-FINAL-01(2026-08-12)でA01・A02・ADD03のA2台本本文(OPEN-31の5件)を確定・変更したが、**3記事とも音声は未再生成**。既存の完成音声(A01/ADD03=`crosslevel_audio_02`、A02=`a2_audio_ab_01`)は旧台本の内容のまま。**ユーザーDecision(2026-08-12): 音声最新化は実施する方針で確定済みだが、夜間にまとめて処理したいため、日中は意図的に保留中。** | `TBD` | 再assemble待ち(script変更、意図的保留中) | Non-blocking(次回各記事のA2音声assemble前に反映要) | 次回A01/A02/ADD03のA2音声assemble時に、`er003_output/a2_p1_r3/{article}/a2_article_raw.md`の最新版(確定済み台本)から音声を再生成する。A01・ADD03は上記OPEN-34(Cross-level仕様反映)とあわせて1回のassembleで両方を反映するのが効率的。A02は既にCross-level最新仕様を反映済み(ER-003-A2-AUDIO-AB-01)のため、台本変更分のみの差分再生成で足りる可能性が高い。夜間バッチ実行のタイミングはユーザー指示待ち |
+
+## B1/A2 SPEC-FREEZE以降の既知の限界・継続監視事項(ER-003-B1-A2-SPEC-FREEZE-01、2026-08-17)
+
+仕様Freezeは「未決事項が消えた」ことを意味しない。以下は正式仕様化した
+上でなお残る既知の限界・継続監視事項として明示的に残す。
+
+| ID | 内容 | 状態 | 種類 | Blocking | 次Action |
+|---|---|---|---|---|---|
+| OPEN-36 | External User Validation: B1(Support-based Natural English)・A2(Core Logic Preservation含む)とも、内部検証(生成→Fact QA→機械QA→開発者/ユーザー試聴)は完了しているが、実際の学習者ユーザーでB1/A2の体験(理解できるか、Support量が適切か、難易度差を体感できるか)が成立するかは未検証 | `TBD` | 外部検証待ち | Non-blocking(内部検証は完了、External Pilot自体は別途計画) | External Pilotのタイミング・設計はユーザーが判断 |
+| OPEN-37 | B1のNews本文をB2と完全共通化する設計(B1専用簡略化rewriteをしない)は、内部検証では採用方針だが、実際の学習者がSupportだけの支援でNatural English本文を理解できるかはExternal Pilotで未確認 | `TBD` | 外部検証待ち | Non-blocking | OPEN-36と合わせてExternal Pilotで確認する |
+| OPEN-38 | 短いJapanese phraseへのminimal instruction fallback(ER-003-N3-ROOT-FIX-01)は、標準経路が不合格を繰り返す短いKey Phrase等で追加のTTS/ASR呼び出しを発生させる。実測では1トライアルあたり1〜5回のfallback呼び出しが必要だった。頻繁にfallbackが発生する場合、標準経路(短いフレーズへ長いstyle instructionをそのまま使う設計)自体の見直し余地がある | `UNDER_REVIEW` | 技術的負債・監視事項 | Non-blocking(fallbackで運用上は吸収済み) | 今後の記事生成でfallback発生率を継続観察し、頻発するようなら標準経路の指示設計そのものを見直す |
+| OPEN-39 | A2 Core Explanatory Logic Preservation(ER-003-N3-ROOT-FIX-01)は、Householdで実際に見つかった「conceptual oversimplification」(正しい判断軸を誤った近似ルールへ置換する)という失敗パターンへの発生源対策。3ジャンルでの単発検証では有効性を確認したが、今後さらに記事数・ジャンルが増えた際に同種の問題が別の形で再発しないかは継続監視が必要。Fact Checker/Ledger Deviation Checkは文単位の正確性を見るのみで、記事全体の判断軸一致までは検証していないことに変わりはない(クロスレベル一貫性チェックは今回意図的に未導入) | `UNDER_REVIEW` | 品質パターン・監視事項 | Non-blocking | 今後の新規記事(N4以降)でHousehold型の失敗パターンが再発しないか、生成のたびに確認する。頻発する場合はクロスレベル一貫性チェック(ER-003-N3-ROOT-FIX-01検討時に却下したOption B)の追加を再検討する |
+| OPEN-40 | `er003_audio_tts_asr_safety.py`(TTS/ASR共通安全部品)は、ER-003-A2-B1-N3-01/FIX-01で新規発見・実装したnormalization処理(curly quote正規化、Markdown太字除去、数字表記ゆれ吸収、Key Phrase複合語対応、日本語数字表記ゆれ等)の一部を含んでいない。これらは現状N3専用スクリプト(`er003_v1_n3_01_tts_generate.py`)内にとどまっており、**Production共通モジュールへは未統合** | `TBD` | 実装統合未完了 | Non-blocking(N3記事では個別スクリプト内で機能している) | 今後同種のnormalizationが必要な記事が増えた段階で、共通モジュールへの統合を検討する。先回りでの統合作業は今回のスコープに含めない |
+| OPEN-41 | Household A2の本番article.md(`er003_output/n3_01/household/a2/article.md`)は、ER-003-A2-B1-N3-01-FIX-01時点の手動編集版のままであり、ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)で再生成したものではない。内容の方向性(ethylene/moisture軸を維持)は一致しているが、生成経路が異なる | `TBD` | 本番成果物と仕様の不一致 | Non-blocking(内容自体はFact Checker PASS済み) | 将来Household記事の音声・記事を更新する機会があれば、正式採用済みのA2_KAI1_INSTRUCTIONで再生成することを検討する。今回のFreezeでは強制しない |
 
 ## 参照元
 
