@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01-R1、Residual SoT Cleanup)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -489,7 +489,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 - **日付**: 2026-08-14頃(複数タスクにまたがる、ER-003-B1-A2-SPEC-FREEZE-01で正式反映)
 - **内容**: B1のNews本文(Full Story/Point One/Two/In One Line)専用の簡略化rewriteを行う旧来の設計をやめ、B2相当のNatural English本文を共通で使い、B1固有の体験はSupport(Preview/Comment1-4を平易な英語で提供)と役割設計だけで作る方式へ移行した。あわせてVoice role(Charon=Navigator/Support、Aoede=News Content)を再配置し、A2由来の日本語spoken text(Title/Preview/Comment等)をB1から除去し英語化した
-- **状態**: `DECIDED`
+- **状態**: `SUPERSEDED`(2026-08-17、`ER-003-B1-B2-SCOPE-FIX-01` Decision Aにより後継。B1のNews本文はB2と共通化せず、Verified Fact LedgerからB1専用Writerで独立生成する方式へ移行済み。本Decisionは当時の設計判断の記録として保持)
 - **採用理由**: B1専用の簡略化英文を別途生成すると、A2との差別化が「難易度の異なる2つのNews本文」という設計になり、Ledgerに忠実な単一のNatural English本文という一貫性が失われる。Support(言語・役割)だけで難易度体験を作る方が、記事本文の事実表現を1つに保ちやすい
 - **比較した選択肢**: B1専用の簡略化本文を維持する vs News本文をB2と共通化しSupportだけで差別化する
 - **却下理由(B1専用簡略化本文の維持)**: 本文を2種類(A2向け簡略・B1向け簡略)+Support言語という組み合わせが増え、Fact Ledgerとの整合確認箇所が増える。ユーザー判断によりSupport-based設計を採用

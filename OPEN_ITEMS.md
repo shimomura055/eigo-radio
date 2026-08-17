@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
+**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01-R1、Residual SoT Cleanup)**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -13,7 +13,7 @@
 | OPEN-19 | [ER-003-A2-STRUCT-02] 抽象語を「誰が何をしたか」という具体的行動表現へ優先的に変換する一般ルール | `REJECTED_AS_GENERAL_RULE` | 検証結果・却下 | Non-blocking(対応不要) | 対応不要。具体化で分かりやすくなるケースはあったが、無理な変換で意味関係が見えにくくなる・説明が長くなるケースもあり、「抽象=悪、具体=良」という一方向ルールにはしないとユーザーが判断。記事・文脈ごとに自然な方を選ぶ通常の編集判断へ委ねる |
 | OPEN-20 | [ER-003-A2-STRUCT-02] 固有名詞のtoken数・密度を意図的に下げる一般ルール | `REJECTED / NO_FURTHER_ACTION` | 検証結果・却下 | Non-blocking(対応不要) | 対応不要。A01では固有名詞が減った一方、ADD03ではTrumpを明示的主語にした結果増加し、「誰が何をしたかを明確にする」「referentを明確にする」「spoken-firstにする」という別の分かりやすさ要求と競合することが判明。数量目標・密度目標は設けず、記事理解上の必要性で通常の編集判断により決める |
 | OPEN-18 | [訂正・ER-003-A2-STRUCT-02] ER-003-A2-03の1文1数字ルールで、ADD03の日付"July 13, 2026"が2つの数字として検出されていた件 | `DECIDED`(原則整理のみ、checker実装は未着手) | 仕様の曖昧点・整理済み | Non-blocking | 対応不要(原則面)。「月+日+年」の日付表記は年齢範囲・スコア・時間帯と同様に1つの日付情報として扱う方針が確定した([DECISION_LOG.md](DECISION_LOG.md))。`er003_a2_article.py`の`_EXEMPT_NUMBER_PATTERNS`への正規表現追加は、今回のスコープでは実施しない(必要になった時点で対応) |
-| OPEN-02 | ~~A2の生成元が矛盾~~ | `DECIDED / CLOSED`(2026-08-12) | 仕様矛盾→解消 | 対応不要 | Natural English Sourceからの独立生成を恒久方針として確定([CURRENT_SPEC.md](CURRENT_SPEC.md)) |
+| OPEN-02 | ~~A2の生成元が矛盾~~ | `DECIDED / CLOSED`(2026-08-12) | 仕様矛盾→解消 | 対応不要 | Natural English Sourceからの独立生成は、当時(P-series、2026-08-12時点)のDecisionであり恒久方針ではない。N3-01以降はVerified Fact Ledgerからのdirect generation方式へ移行済み([CURRENT_SPEC.md](CURRENT_SPEC.md)、[DECISION_LOG.md](DECISION_LOG.md)の`ER-003-A2-B1-N3-01`系Decision参照) |
 | OPEN-13 | ~~ER-003-A2-STRUCT-01 Candidate A(11パート構造)~~ | `DECIDED / CLOSED`(2026-08-12) | 構造支援候補→正式採用 | 対応不要 | 11パート構造・Comment役割・Full Story分割優先順位を[CURRENT_SPEC.md](CURRENT_SPEC.md)へ正式反映。A02はER-003-A2-AUDIO-AB-01でユーザー試聴・承認済み。A01/ADD03は音声プロトタイプ完成済みだが、最新Cross-level仕様の反映(→OPEN-34)が必要 |
 | OPEN-21 | ~~ER-003-A2-AUDIO-01のASR数字表記ゆれ2箇所~~ | `DECIDED / CLOSED`(2026-08-12) | 要ユーザー試聴確認→解消 | 対応不要 | 同じ内容を含むA02完成候補をER-003-A2-AUDIO-AB-01でユーザーが試聴し「全体としてOK」と承認。TTS内容は正常と確定 |
 | OPEN-22 | 共有診断関数`er003_b1_p4_audio.get_full_text_via_azure_stt_continuous`のデフォルト`timeout_seconds=90.0`が、長尺音声(5分超)では不十分で、timeout時にエラーを返さず部分結果を正常として返してしまう制限を確認。呼び出し側で`timeout_seconds`を大きく指定することで回避したが、関数自体の挙動は未修正 | `TBD` | 技術的負債 | Non-blocking(呼び出し側で回避済み) | 同種の長尺音声を診断する機会が今後増えた場合、関数側のtimeout処理(タイムアウトと正常終了を明確に区別する)を修正するか検討する。今回は共有モジュールを変更していない |
