@@ -1,0 +1,66 @@
+{
+  "checked_date": "2026-08-18",
+  "gemini_3_5_flash_lite": {
+    "test_timestamp_utc": "2026-08-18T12:2X:XXZ",
+    "model_version_returned": "gemini-3.5-flash-lite",
+    "generation_success": true,
+    "grounding_invoked": true,
+    "web_search_queries": ["current date today"],
+    "grounding_chunks_count": 1,
+    "usage_metadata": {
+      "prompt_token_count": 18,
+      "candidates_token_count": 24,
+      "total_token_count": 42,
+      "source": "OFFICIAL_API_RESPONSE"
+    },
+    "latency_seconds": 1.64,
+    "pricing": {
+      "input_per_1m": 0.30,
+      "output_per_1m": 2.50,
+      "grounding_free_requests_per_month": 5000,
+      "grounding_overage_per_1000_requests": 14.00,
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "checked_date": "2026-08-18"
+    },
+    "marginal_cost_this_call": {
+      "token_cost_usd": 0.0000654,
+      "grounding_requests_used": 1,
+      "grounding_marginal_charge_usd": 0.0,
+      "note": "grounding request within the 5,000/month free allowance shared across Gemini 3.x models -> usage > 0 / marginal charge = $0"
+    }
+  },
+  "deepseek_v4_flash": {
+    "test_timestamp_utc": "2026-08-18T12:20:50Z",
+    "peak_or_offpeak_at_test_time": "OFF_PEAK",
+    "model_returned": "deepseek-v4-flash",
+    "endpoint": "https://api.deepseek.com (OpenAI-compatible /chat/completions)",
+    "generation_success": true,
+    "usage_metadata": {
+      "prompt_tokens": 90,
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 90,
+      "completion_tokens": 8,
+      "reasoning_tokens": 6,
+      "total_tokens": 98,
+      "source": "OFFICIAL_API_RESPONSE"
+    },
+    "latency_seconds": 1.64,
+    "pricing": {
+      "input_cache_hit_per_1m": {"off_peak": 0.007, "peak": 0.014},
+      "input_cache_miss_per_1m": {"off_peak": 0.22, "peak": 0.44},
+      "output_per_1m": {"off_peak": 0.66, "peak": 1.32},
+      "peak_hours_utc": ["01:00-04:00", "06:00-10:00"],
+      "source_url": "https://api-docs.deepseek.com/quick_start/pricing",
+      "checked_date": "2026-08-18"
+    },
+    "actual_execution_cost_usd": 0.0000251,
+    "expected_production_night_cost_usd_offpeak": 0.0000251,
+    "hypothetical_peak_cost_usd_same_usage": 0.0000503,
+    "note": "Test ran during off-peak (12:20 UTC), so Actual Execution Cost and Expected Production Night Cost are identical for this sample. Peak figure shown for reference only.",
+    "search_capability": {
+      "built_in_web_search": false,
+      "source": "https://api-docs.deepseek.com/guides/function_calling and https://api-docs.deepseek.com/",
+      "finding": "DeepSeek API (OpenAI/Anthropic-compatible chat/completions endpoint) has no first-party web search, grounding, or retrieval tool. Only generic function/tool calling is available, requiring the caller to implement and execute any search backend itself. Web search exists only in DeepSeek's consumer chat product, not the API."
+    }
+  }
+}
