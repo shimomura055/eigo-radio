@@ -244,6 +244,102 @@ def run_stage_a2_tavily_search(queries: list[str]) -> dict:
     return result
 
 
+def run_stage_a2_perplexity_search(queries: list[str]) -> dict:
+    api_key = os.getenv("PERPLEXITY_API_KEY")
+    if not api_key:
+        return {"provider": "perplexity", "status": "CREDENTIAL_REQUIRED"}
+
+    raw_results_by_query = {}
+    all_candidates = []
+    for q in queries:
+        t0 = time.time()
+        with cl.logging_context("parenting_search_layer", "perplexity_search"):
+            resp = requests.post(
+                "https://api.perplexity.ai/search",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json={"query": q, "max_results": 10},
+                timeout=30,
+            )
+            elapsed = round(time.time() - t0, 3)
+            success = resp.status_code == 200
+            data = resp.json() if success else {}
+            cl.record({
+                "provider": "perplexity", "api": "search", "attempt_number": 1,
+                "success": success, "elapsed_seconds": elapsed,
+                "usage_source": "OFFICIAL_API_RESPONSE" if success else "N/A_FAILED_CALL",
+                "http_status": resp.status_code,
+                "billed_requests": 1 if success else 0,
+                "results_returned": len(data.get("results", [])) if success else 0,
+                "query": q,
+            })
+        raw_results_by_query[q] = data.get("results", []) if success else []
+        for r in raw_results_by_query[q]:
+            all_candidates.append({
+                "title": r.get("title"),
+                "url": r.get("url"),
+                "source": urlparse(r.get("url", "")).netloc,
+                "published_date": r.get("last_updated"),
+                "snippet": (r.get("snippet") or "")[:500],
+                "query_that_found_it": q,
+                "provider": "perplexity",
+                "relevance_score": None,  # Perplexity Search APIはresult順序のみ、明示的なscoreフィールドなし
+                "result_rank_in_query": None,
+                "primary_source_likelihood": _classify_primary_source_likelihood(r.get("url", "")),
+            })
+        for rank, c in enumerate(all_candidates[-len(raw_results_by_query[q]):], start=1):
+            c["result_rank_in_query"] = rank
+
+    with open(f"{OUT_DIR}/perplexity/stage_a2_raw_results.json", "w", encoding="utf-8") as f:
+        json.dump(raw_results_by_query, f, ensure_ascii=False, indent=2, default=str)
+
+    # --- Dedup(機械的のみ: URL完全一致のみを対象) ---
+    seen: dict[str, int] = {}
+    deduped = []
+    for c in all_candidates:
+        key = _normalize_url(c["url"])
+        if key in seen:
+            deduped[seen[key]]["also_found_by_queries"] = deduped[seen[key]].get(
+                "also_found_by_queries", []) + [c["query_that_found_it"]]
+            continue
+        seen[key] = len(deduped)
+        c["duplicate_group"] = key
+        deduped.append(c)
+
+    raw_count = len(all_candidates)
+    deduped_count = len(deduped)
+
+    # --- 20件上限(relevance/freshness/source qualityのみで機械的に削減)。
+    # Perplexityにはscoreがないため、result_rank_in_query(結果内の出現順、値が小さいほど上位)
+    # とprimary_source_likelihoodのみを機械的な基準として用いる。
+    source_rank = {"高": 2, "中": 1, "低": 0}
+    capped = sorted(
+        deduped,
+        key=lambda c: (source_rank.get(c["primary_source_likelihood"], 0),
+                        -(c.get("result_rank_in_query") or 99)),
+        reverse=True,
+    )
+    truncated_for_pool_cap = len(capped) > MAX_CANDIDATE_POOL
+    capped = capped[:MAX_CANDIDATE_POOL]
+    for i, c in enumerate(capped, start=1):
+        c["candidate_id"] = f"PPX-{i:03d}"
+
+    result = {
+        "provider": "perplexity",
+        "status": "OK",
+        "queries_used": queries,
+        "raw_candidate_count": raw_count,
+        "deduped_candidate_count": deduped_count,
+        "pool_capped_at": MAX_CANDIDATE_POOL,
+        "truncated_for_pool_cap": truncated_for_pool_cap,
+        "candidate_pool": capped,
+    }
+    with open(f"{OUT_DIR}/perplexity/stage_a2_candidate_pool.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+    print(f"[Stage A2/Perplexity] raw={raw_count} deduped={deduped_count} "
+          f"pool={len(capped)} truncated_for_cap={truncated_for_pool_cap}")
+    return result
+
+
 # ============================================================
 # Stage A3: Topic Selector (Luna, web_search不使用、providerごとに1回)
 # ============================================================
@@ -383,3 +479,8 @@ if __name__ == "__main__":
         tavily_pool = run_stage_a2_tavily_search(plan["used_queries"])
         if tavily_pool.get("status") == "OK":
             run_stage_a3_topic_selection("tavily", tavily_pool["candidate_pool"])
+    elif target == "perplexity":
+        os.makedirs(f"{OUT_DIR}/perplexity", exist_ok=True)
+        ppx_pool = run_stage_a2_perplexity_search(plan["used_queries"])
+        if ppx_pool.get("status") == "OK":
+            run_stage_a3_topic_selection("perplexity", ppx_pool["candidate_pool"])

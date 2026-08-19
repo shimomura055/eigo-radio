@@ -1,0 +1,8 @@
+{
+  "test_query": "test connectivity check",
+  "http_status": 200,
+  "endpoint": "https://api.perplexity.ai/search",
+  "result_fields_observed": ["id", "results[].title", "results[].url", "results[].snippet", "results[].last_updated"],
+  "published_date_present_in_basic_result": true,
+  "note": "Minimal 1-query, max_results=1 connectivity check. Unlike Tavily (published_date always null in the earlier check), Perplexity's last_updated field was populated. Not counted as part of Stage A2 (uses the Stage A1 query plan). Cost: 1 request at $5/1,000 request flat fee."
+}
