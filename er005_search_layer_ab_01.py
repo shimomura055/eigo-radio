@@ -348,6 +348,11 @@ TOPIC_SELECTOR_DEVELOPER_MESSAGE = (
     "根拠として、Service Policyに基づきTopicを選定してください。あなた自身はWeb検索を行いません"
     "(検索ツールは与えられていません)。Candidate Poolにない情報を追加で捏造しないでください。"
     "内部の思考過程は出力せず、観測可能な評価結果とEditorial rationaleのみを出力してください。"
+    "候補データに`date`と`last_updated`が別々に含まれる場合、`date`は出版日候補、"
+    "`last_updated`はコンテンツの更新日・クロール日候補であり、出版日そのものではありません。"
+    "`date`が欠損していて`last_updated`しかない候補については、freshness評価の中で"
+    "「出版日は未確認、last updatedのみ取得」であることを明示し、last_updatedを出版日として"
+    "断定しないでください。"
 )
 
 TOPIC_SELECTOR_PROMPT_TEMPLATE = """【ユーザー入力】
@@ -366,6 +371,127 @@ TOPIC_SELECTOR_PROMPT_TEMPLATE = """【ユーザー入力】
 2. 本気で検討した上位3〜5件をShortlistとして選んでください。
 3. Shortlistから最終的に1件をFinal Selectionとして選び、選定理由を記載してください。
 4. Shortlistから落とした主要候補についても、簡潔な理由を残してください。"""
+
+
+# ============================================================
+# ER-005-SEARCH-LAYER-OPT-01: Perplexity multi-query最適化
+# ============================================================
+# API仕様確認結果(docs.perplexity.ai/api-reference/search-post、2026-08-19取得):
+# - queryはstring配列を受理する(公式ドキュメントに配列長上限の明記なし)。
+# - ただし max_results はrequest全体で1-20(default 10)であり、query配列の
+#   要素数に応じて自動的にスケールしない(5 query + max_results=20を実測した
+#   ところ、合計20件が返り、5件×20=100件にはならないことを確認済み)。
+#   そのため、複数queryを1 requestへ束ねるほど、1 queryあたりの実質的な
+#   raw result深さは薄くなる(この点は品質比較の章で正直に報告する)。
+# - date(出版日候補)とlast_updated(更新日候補)は別フィールドで、dateは
+#   欠損することがある(実測で確認済み)。
+# - 日付フィルタ: search_after_date_filter/search_before_date_filter(MM/DD/YYYY)。
+PERPLEXITY_DATE_FILTER_AFTER = "01/01/2023"  # 既存query文字列内の"2023..2025"と揃えた単一設定
+
+
+def run_stage_a2_perplexity_search_multiquery(queries: list[str], query_batches: list[list[str]]) -> dict:
+    api_key = os.getenv("PERPLEXITY_API_KEY")
+    if not api_key:
+        return {"provider": "perplexity_multiquery", "status": "CREDENTIAL_REQUIRED"}
+
+    raw_results_by_batch = []
+    all_candidates = []
+    for batch in query_batches:
+        t0 = time.time()
+        with cl.logging_context("parenting_search_layer", "perplexity_search_multiquery"):
+            resp = requests.post(
+                "https://api.perplexity.ai/search",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json={
+                    "query": batch,
+                    "max_results": 20,
+                    "search_after_date_filter": PERPLEXITY_DATE_FILTER_AFTER,
+                },
+                timeout=30,
+            )
+            elapsed = round(time.time() - t0, 3)
+            success = resp.status_code == 200
+            data = resp.json() if success else {}
+            cl.record({
+                "provider": "perplexity", "api": "search_multiquery", "attempt_number": 1,
+                "success": success, "elapsed_seconds": elapsed,
+                "usage_source": "OFFICIAL_API_RESPONSE" if success else "N/A_FAILED_CALL",
+                "http_status": resp.status_code,
+                "billed_requests": 1 if success else 0,
+                "queries_in_batch": len(batch),
+                "results_returned": len(data.get("results", [])) if success else 0,
+                "query_batch": batch,
+            })
+        results = data.get("results", []) if success else []
+        raw_results_by_batch.append({"query_batch": batch, "results": results})
+        for rank, r in enumerate(results, start=1):
+            all_candidates.append({
+                "title": r.get("title"),
+                "url": r.get("url"),
+                "source": urlparse(r.get("url", "")).netloc,
+                "date": r.get("date"),  # 出版日候補(欠損あり)
+                "last_updated": r.get("last_updated"),  # 更新日候補(publication dateとして扱わない)
+                "snippet": (r.get("snippet") or "")[:500],
+                # multi-queryのresponseは1 requestに束ねた全queryの結果が単一のflat配列で
+                # 返り、どのqueryが個々の結果を生んだかを示すAPI側の帰属情報が無いため、
+                # 「この結果はこのbatch内のどのqueryかは特定不可」という正直な形で記録する。
+                "query_batch_that_found_it": batch,
+                "provider": "perplexity_multiquery",
+                "relevance_score": None,
+                "result_rank_in_batch": rank,
+                "primary_source_likelihood": _classify_primary_source_likelihood(r.get("url", "")),
+            })
+
+    with open(f"{OUT_DIR}/perplexity_multiquery/stage_a2_raw_results.json", "w", encoding="utf-8") as f:
+        json.dump(raw_results_by_batch, f, ensure_ascii=False, indent=2, default=str)
+
+    # --- Dedup(機械的のみ: URL完全一致のみを対象。旧6-request版と同一ロジック) ---
+    seen: dict[str, int] = {}
+    deduped = []
+    for c in all_candidates:
+        key = _normalize_url(c["url"])
+        if key in seen:
+            deduped[seen[key]]["also_found_in_batches"] = deduped[seen[key]].get(
+                "also_found_in_batches", []) + [c["query_batch_that_found_it"]]
+            continue
+        seen[key] = len(deduped)
+        c["duplicate_group"] = key
+        deduped.append(c)
+
+    raw_count = len(all_candidates)
+    deduped_count = len(deduped)
+
+    # --- 20件上限(旧版と同一ロジック: primary_source_likelihood → 結果内順位のみ) ---
+    source_rank = {"高": 2, "中": 1, "低": 0}
+    capped = sorted(
+        deduped,
+        key=lambda c: (source_rank.get(c["primary_source_likelihood"], 0),
+                        -(c.get("result_rank_in_batch") or 99)),
+        reverse=True,
+    )
+    truncated_for_pool_cap = len(capped) > MAX_CANDIDATE_POOL
+    capped = capped[:MAX_CANDIDATE_POOL]
+    for i, c in enumerate(capped, start=1):
+        c["candidate_id"] = f"PPXM-{i:03d}"
+
+    result = {
+        "provider": "perplexity_multiquery",
+        "status": "OK",
+        "queries_used": queries,
+        "query_batches": query_batches,
+        "request_count": len(query_batches),
+        "date_filter_applied": {"search_after_date_filter": PERPLEXITY_DATE_FILTER_AFTER},
+        "raw_candidate_count": raw_count,
+        "deduped_candidate_count": deduped_count,
+        "pool_capped_at": MAX_CANDIDATE_POOL,
+        "truncated_for_pool_cap": truncated_for_pool_cap,
+        "candidate_pool": capped,
+    }
+    with open(f"{OUT_DIR}/perplexity_multiquery/stage_a2_candidate_pool.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+    print(f"[Stage A2/Perplexity-multiquery] requests={len(query_batches)} raw={raw_count} "
+          f"deduped={deduped_count} pool={len(capped)} truncated_for_cap={truncated_for_pool_cap}")
+    return result
 
 
 def topic_selector_schema():
@@ -427,7 +553,8 @@ def run_stage_a3_topic_selection(provider: str, candidate_pool: list[dict]) -> d
     client = vfl01.get_client()
     pool_for_prompt = [
         {k: c[k] for k in ("candidate_id", "title", "url", "source", "published_date",
-                            "snippet", "primary_source_likelihood") if k in c}
+                            "date", "last_updated", "snippet", "primary_source_likelihood")
+         if k in c}
         for c in candidate_pool
     ]
     prompt = TOPIC_SELECTOR_PROMPT_TEMPLATE.format(
@@ -484,3 +611,10 @@ if __name__ == "__main__":
         ppx_pool = run_stage_a2_perplexity_search(plan["used_queries"])
         if ppx_pool.get("status") == "OK":
             run_stage_a3_topic_selection("perplexity", ppx_pool["candidate_pool"])
+    elif target == "perplexity_multiquery":
+        os.makedirs(f"{OUT_DIR}/perplexity_multiquery", exist_ok=True)
+        qs = plan["used_queries"]
+        batches = [qs[:5], qs[5:]]  # Request 1: query1-5, Request 2: query6(仕様3章の指定通り)
+        ppxm_pool = run_stage_a2_perplexity_search_multiquery(qs, batches)
+        if ppxm_pool.get("status") == "OK":
+            run_stage_a3_topic_selection("perplexity_multiquery", ppxm_pool["candidate_pool"])
