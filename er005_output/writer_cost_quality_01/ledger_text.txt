@@ -1,0 +1,124 @@
+ER-005-WRITER-COST-QUALITY-01 Verified Fact Ledger
+(ER-005-RESEARCH-MODEL-AB-01のLuna版Evidence Pack/VFLをそのまま再フォーマットしたもの。
+ 新しいFactの追加・削除は行っていない)
+
+注記: 本Ledgerは、number_classification(ANCHOR/SUPPORTING/DISPENSABLE)および
+exactness_requirement(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)の個別タグを
+含まない(Evidence Pack型Research Layerの標準schemaにこの分類が含まれないため)。
+Spoken-first原則(数字の扱い、A〜E)は編集判断として適用し、タグ参照前提のF/Gは
+該当なしとして扱うこと。
+
+=== Fact一覧 ===
+
+[F1] 本研究は、3〜6歳の就学前児童を対象に、親子関係の近さ（closeness）と葛藤（conflict）が、screen timeを介して内在化・外在化行動問題とどのように時間的に関連するかを縦断的に検討した。
+  causal_strength: 研究目的・仮説の記述であり、因果効果の確定ではない
+  scope: 3〜6歳の子どもとその母親
+  source: S1/E1(Abstract; 1 Introduction; 2.3 Research questions)
+
+[F2] 最終分析サンプルは、中国安徽省阜陽市の子ども532人で、質問票は主な養育者である母親が回答した。男児は289人（54.3%）、女児は243人（45.7%）で、平均年齢は3.99歳（SD=0.85）だった。
+  numeric_value: n=532; 男児289人（54.3%）; 女児243人（45.7%）; 平均年齢3.99歳（SD=0.85）
+  numeric_scope: 最終分析サンプル
+  causal_strength: 記述統計
+  ambiguity: 本文の年齢分布表には3歳198人、4歳150人、5歳184人が記載され、6歳の人数は記載されていない。
+  scope: 最終分析サンプル
+  source: S1/E2(3.1 Participant and procedures; Table 1)
+
+[F3] 調査は3時点で実施され、T1は619人、T2は588人、T3は532人だった。各時点の間隔は4か月で、全期間の脱落は87人（14.1%）だった。
+  numeric_value: T1 n=619; T2 n=588; T3 n=532; 脱落87人（14.1%）; 4か月間隔
+  numeric_scope: 3波の縦断調査
+  causal_strength: 時間的順序を検討できる縦断的関連分析
+  scope: 中国安徽省阜陽市の子どもと母親を対象とした3波の縦断調査
+  source: S1/E3(3.1 Participant and procedures; 4.1 Common method bias control; 5 Discussion; 6 Implications and limitations)
+
+[F4] 親子関係はChild-Parent Relationship Scale（CPRS）の中国語改訂版で測定された。Closenessは7項目、Conflictは8項目で、母親が1〜5の5件法で評定した。得点が高いほど、認知された情緒的な近さまたは関係上の葛藤が高いことを示す。
+  numeric_value: Closeness 7項目; Conflict 8項目; 5件法（1〜5）; Cronbach's α=0.882（Closeness）、0.895（Conflict）
+  numeric_scope: 本研究サンプルにおける測定
+  causal_strength: 測定方法・内的一貫性の記述
+  scope: 本研究サンプルにおける母親による評定
+  source: S1/E4(3.2.1 Assessment of parent–child relationship)
+
+[F5] 子どものscreen timeは養育者報告の2項目で測定され、平日と週末の1日平均時間から全体の1日平均screen timeを算出した。
+  numeric_value: 平均screen time=(平日平均×5＋週末平均×2)/7
+  numeric_scope: 全体の1日平均screen time
+  causal_strength: 測定方法の記述
+  scope: 対象児
+  source: S1/E5(3.2.2 Assessment of screen time; 6 Implications and limitations)
+
+[F6] 行動問題はStrengths and Difficulties Questionnaire（SDQ）で測定された。外在化行動問題はHyperactivity/InattentionとConduct Problems、内在化行動問題はEmotional SymptomsとPeer Problemsで構成された。
+  numeric_value: 各下位尺度5項目; 3件法（1〜3）; Cronbach's α=0.891（外在化）、0.853（内在化）
+  numeric_scope: 本研究サンプルにおける測定
+  causal_strength: 測定方法の記述
+  scope: 対象児の行動問題
+  source: S1/E6(3.2.3 Assessment of behavioral problems; 6 Implications and limitations)
+
+[F7] 葛藤的な親子関係は、後のscreen timeを有意に正に予測した。一方、親密な親子関係からscreen timeへの経路は有意ではなかった。
+  numeric_value: Conflict→ST: β=0.208, SE=0.058, p<0.001, 95% CI [0.094, 0.322]; Closeness→ST: β=0.006, SE=0.048, p>0.05, 95% CI [-0.088, 0.100]
+  numeric_scope: 構造方程式モデルの標準化直接効果
+  causal_strength: 縦断的関連。因果効果の確定ではない
+  ambiguity: 表では時点を経路名に明記していないが、Abstract・DiscussionではT1の親子関係とT2のscreen timeとして説明されている。
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E7(Table 3; 4.5 Mediated effect test; 5 Discussion)
+
+[F8] screen timeは、内在化行動問題および外在化行動問題と有意な正の関連を示した。
+  numeric_value: ST→IBP: β=0.148, SE=0.070, p<0.05, 95% CI [0.011, 0.285]; ST→EBP: β=0.149, SE=0.068, p<0.05, 95% CI [0.016, 0.282]
+  numeric_scope: 構造方程式モデルの標準化直接効果
+  causal_strength: 縦断的関連。因果効果の確定ではない
+  ambiguity: 4.5の本文では同じ経路についてp<0.001と記載されており、Table 3のp<0.05との不一致がある。
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E8(Table 3; 4.5 Mediated effect test; 6 Implications and limitations)
+
+[F9] 葛藤的な親子関係は、内在化行動問題および外在化行動問題と正に関連した。
+  numeric_value: Conflict→IBP: β=0.476, SE=0.089, p<0.001, 95% CI [0.302, 0.650]; Conflict→EBP: β=0.273, SE=0.079, p<0.05, 95% CI [0.118, 0.428]
+  numeric_scope: 構造方程式モデルの標準化直接効果
+  causal_strength: 縦断的関連。因果効果の確定ではない
+  ambiguity: 4.5の本文ではConflict→EBPについてp<0.001と記載されているが、Table 3ではp<0.05と記載されている。
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E9(Table 3; 4.4 Associations between parent–child relationship and behavioral problems; 4.5 Mediated effect test)
+
+[F10] 親密な親子関係は、内在化行動問題および外在化行動問題と負に関連した。
+  numeric_value: Closeness→IBP: β=-0.157, SE=0.070, p<0.001, 95% CI [-0.294, -0.020]; Closeness→EBP: β=-0.213, SE=0.068, p<0.001, 95% CI [-0.346, -0.080]
+  numeric_scope: 構造方程式モデルの標準化直接効果
+  causal_strength: 縦断的関連。因果効果の確定ではない
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E10(Table 3; 4.4 Associations between parent–child relationship and behavioral problems; 5.3)
+
+[F11] screen timeは、葛藤的な親子関係と内在化・外在化行動問題の関連を部分的に媒介したと報告された。
+  numeric_value: Conflict→ST→IBP: β=0.031, p<0.05; Conflict→ST→EBP: β=0.031, p<0.05
+  numeric_scope: 構造方程式モデルの間接効果
+  causal_strength: 媒介モデル上の縦断的関連。因果媒介の確定ではない
+  ambiguity: Table 3では間接効果の95% CIが、IBPで[-0.026, 0.088]、EBPで[-0.022, 0.084]と記載され、いずれも0を含む一方、p<0.05と記載されている。本文と表の統計的記載に不一致がある。
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E11(Table 3; 4.5 Mediated effect test; Abstract; 5.1 Discussion)
+
+[F12] 親密な親子関係については、screen timeを介した有意な媒介効果は確認されなかった。
+  numeric_value: Closeness→ST→IBP: β=-0.001, p>0.05, 95% CI [-0.017, 0.015]; Closeness→ST→EBP: β=-0.001, p>0.05, 95% CI [-0.015, 0.018]
+  numeric_scope: 構造方程式モデルの間接効果
+  causal_strength: 媒介モデル上の縦断的関連。因果媒介の確定ではない
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E11(Table 3; 4.5 Mediated effect test; Abstract; 5.1 Discussion)
+
+[F13] 部分媒介モデルは完全媒介モデルより適合が有意に良く、最終モデルの適合度はRMSEA=0.057、CFI=0.950、TLI=0.917、SRMR=0.028だった。
+  numeric_value: Δχ²(2)=15.30, p<0.001; 最終モデルχ²(7)=19.27, p<0.05; RMSEA=0.057, 90% CI [0.028, 0.089]; CFI=0.950; TLI=0.917; SRMR=0.028
+  numeric_scope: 最終構造方程式モデル
+  causal_strength: モデル適合度の評価であり、因果性を示すものではない
+  scope: 最終分析サンプル532人の構造方程式モデル
+  source: S1/E12(4.4 Associations between parent–child relationship and behavioral problems)
+
+[F14] 著者らは、主要なアウトカムと媒介変数のベースライン水準をモデルに含めなかったため、間接効果が純粋な発達過程ではなく、構成概念の事前水準を部分的に反映している可能性があると述べている。
+  causal_strength: 因果解釈には制約がある。時間的順序は検討できるが、因果効果を確定できない
+  scope: 本研究の媒介分析
+  source: S1/E13(6 Implications and limitations)
+
+[F15] 研究の主な限界として、短期縦断であること、単一地域のサンプルであること、クラスや学校内の入れ子構造を明示的にモデル化していないこと、主要変数が母親という単一回答者による報告であることが挙げられている。
+  numeric_value: 3波; 各波4か月間隔; 脱落87人（14.1%）
+  numeric_scope: 研究デザイン全体
+  causal_strength: 研究結果の外的妥当性・因果推論に関する制約
+  scope: 中国安徽省阜陽市の幼児と母親を対象とした研究デザイン全体
+  source: S1/E14(3.1 Participant and procedures; 4.1 Common method bias control; 6 Implications and limitations)
+
+[F16] 本論文はFrontiers in PsychologyのMedia Psychologyセクションに掲載されたOriginal Researchである。著者はXiaojun Ling、Mengqi Li、Jiahui Sunで、2026年5月25日に掲載された。
+  numeric_value: 掲載日2026-05-25; Volume 17; 記事番号1794353; DOI 10.3389/fpsyg.2026.1794353
+  numeric_scope: 論文情報
+  causal_strength: 書誌情報
+  scope: 論文情報
+  source: S1/E15(記事冒頭; Summary; Citation; Copyright information)
