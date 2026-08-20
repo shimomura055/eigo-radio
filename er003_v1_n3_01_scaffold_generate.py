@@ -44,9 +44,45 @@ THEMES = gen.THEMES
 # ============================================================
 _HEADING_DECORATION_RE = re.compile(r"^[\W_]+\s*")
 
+# ER-005-E2E-TTS-ANALYSIS-FIX-01(2026-08-21)で発見: ER-003-POINT-
+# NOTIFICATION-01(CURRENT_SPEC.md、DECIDED)は「Point One./Point Two.」
+# という番号の読み上げをNotification音で置き換える決定だが、Writerが
+# 生成する### semantic headingに"Point One: "のような番号ラベルの
+# 語がそのまま残っていることがあり、_HEADING_DECORATION_RE(先頭の記号・
+# 装飾のみ除去)ではこの語自体は除去できない。その結果、番号ラベル入りの
+# 見出しがTTSへそのまま渡り、B1のpoint_one_heading/point_two_headingが
+# ASR検証に8回とも失敗する実例が見つかった(TTSが"Point One:"を安定して
+# 読み上げず、検証がすり抜けなかったため運良く発覚したに過ぎない)。
+# clean_heading側でこのラベルそのものも除去する(表示用H3見出し自体は
+# 変更しない。TTS入力に渡す前の値のみを加工する)。
+_POINT_NUMBER_LABEL_RE = re.compile(
+    r"^\s*(Point\s+(One|Two|1|2)|第(一|二)に)\s*[:：,、\-–—.]?\s*", flags=re.IGNORECASE)
+
 
 def clean_heading(raw: str) -> str:
-    return _HEADING_DECORATION_RE.sub("", raw).strip()
+    no_decoration = _HEADING_DECORATION_RE.sub("", raw).strip()
+    return _POINT_NUMBER_LABEL_RE.sub("", no_decoration).strip()
+
+
+# ER-005-E2E-TTS-ANALYSIS-FIX-01 Part D: clean_heading側の除去に加えて、
+# 実際にTTSへ渡す直前(Script Assembly / pre-TTS)でも独立した機械的
+# チェックを行う。LLM(Writer)の出力内容やclean_headingの実装に依存
+# せず、この文字列が万一残っていた場合はTTS API呼び出し自体を行わず
+# 例外で止める「最後の砦」。Point見出し・Point本文の4segment
+# (point_one_heading/point_two_heading/point_one/point_two)の
+# TTS入力テキストに対して呼び出す。
+_POINT_NUMBER_LABEL_ANYWHERE_RE = re.compile(
+    r"Point\s+(One|Two|1|2)\b|第(一|二)に", flags=re.IGNORECASE)
+
+
+def assert_no_point_number_label(text: str, segment_name: str) -> None:
+    m = _POINT_NUMBER_LABEL_ANYWHERE_RE.search(text)
+    if m:
+        raise RuntimeError(
+            f"[ER-003-POINT-NOTIFICATION-01違反] segment={segment_name!r} のTTS入力テキストに"
+            f"Point番号ラベル({m.group(0)!r})が含まれています。Point番号はNotification音で"
+            f"表現する仕様のため、この文字列をTTSへ渡してはいけません。TTS呼び出しを中止します。"
+            f"\nテキスト: {text!r}")
 
 
 def split_article_text(text: str) -> dict:

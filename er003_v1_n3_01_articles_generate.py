@@ -97,6 +97,14 @@ COMMON_BLOCK_TEMPLATE = """以下は、私が良いと評価している日本�
 1. Title(#見出し)
 2. Main Story(本文、複数段落)
 3. ポイント部分: Markdownの「###」見出しをちょうど2つ置いてください(Point One相当、Point Two相当)
+   【重要・見出しテキストの制約】この「###」見出しの文字列自体には、
+   "Point One"・"Point Two"・"Point 1"・"Point 2"・「第一に」・「第二に」
+   といった番号ラベルを含めないでください。番号は本文の音声化時に
+   専用のNotification音で表現する仕様(ER-003-POINT-NOTIFICATION-01)
+   のため、見出しはその内容だけを短く言い表すフレーズにしてください
+   (良い例: "A pattern, not a final cause" / 悪い例: "Point Two: A
+   pattern, not a final cause")。1つ目・2つ目という並び順そのものは
+   見出しの登場順で伝わるため、ラベルとして書く必要はありません。
 4. In One Line相当の結び(「## In one line…」のような見出しの後に1〜2文の結び)
 
 【Main Storyの役割(重要)】

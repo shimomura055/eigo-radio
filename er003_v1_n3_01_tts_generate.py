@@ -87,7 +87,10 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
     if not ok:
         return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
-    trimmed, trim_info = p3u.trim_english_keyword_silence(samples_raw, common.SAMPLE_RATE)
+    # ER-005-E2E-TTS-ANALYSIS-FIX-01: 他のA2 fallback経路と揃えて
+    # NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS(0.35秒)を明示的に使う。
+    trimmed, trim_info = p3u.trim_english_keyword_silence(
+        samples_raw, common.SAMPLE_RATE, safety_margin_seconds=p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS)
     if trimmed is None:
         return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
@@ -282,6 +285,9 @@ def generate_b1_segments(theme: dict) -> dict:
 
     for name in ("point_one_heading", "point_two_heading"):
         text = parts[name]
+        # ER-005-E2E-TTS-ANALYSIS-FIX-01 Part D: Point番号ラベルが万一
+        # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
+        sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、semantic heading)...")
         results[name] = point_headings.generate(
             tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
@@ -292,6 +298,8 @@ def generate_b1_segments(theme: dict) -> dict:
         ("point_one", parts["point_one_body"]), ("point_two", parts["point_two_body"]),
         ("in_one_line", parts["in_one_line"]),
     ):
+        if name in ("point_one", "point_two"):
+            sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文)...")
         results[name] = news_tail_fix.generate_news_narration_wide_margin(
             tts_safe_news_en(text), f"{narration_dir}/{name}.wav")
@@ -356,6 +364,9 @@ def generate_a2_segments(theme: dict) -> dict:
 
     for name in ("point_one_heading", "point_two_heading"):
         text = parts[name]
+        # ER-005-E2E-TTS-ANALYSIS-FIX-01 Part D: Point番号ラベルが万一
+        # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
+        sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading)...")
         results[name] = c.generate_english_segment_with_fallback(
             tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
@@ -369,6 +380,8 @@ def generate_a2_segments(theme: dict) -> dict:
         ("point_two", parts["point_two_body"], first_words(parts["point_two_body"])),
         ("in_one_line", parts["in_one_line"], first_words(parts["in_one_line"])),
     ):
+        if name in ("point_one", "point_two"):
+            sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文)...")
         results[name] = c.generate_english_segment_with_fallback(tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub)
         results[name]["canonical_text"] = text

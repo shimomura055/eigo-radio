@@ -181,7 +181,13 @@ _MEANING_ASR_SUBSTRINGS = {1: "断る", 2: "アプリ", 3: "衝動", 4: "投稿�
 def generate_narration_snippet_verified_strict(
     text: str, language: str, out_path: str, expected_substring: str,
     max_attempts: int = 6, max_extra_chars: int = 15,
-    safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
+    # ER-005-E2E-TTS-ANALYSIS-FIX-01: 既定をEN_TRIM_SAFETY_MARGIN_SECONDS
+    # (0.08秒)からNARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS(0.35秒、B1の
+    # news_tail_fix経路と同じ実績値)へ引き上げる。Key Phrase呼び出し
+    # (generate_key_phrase_component_verified)は従来通り
+    # KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDSを明示的に渡しており、この
+    # 既定値変更の影響を受けない。
+    safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
 ) -> dict:
     import er003_b1_p4_audio as p4
     asr_language = "en-US" if language == "en" else "ja-JP"
@@ -260,7 +266,14 @@ MINIMAL_INSTRUCTION_PREFIX = (
 
 
 def generate_english_component_minimal_instruction(
-    text: str, out_path: str, safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
+    text: str, out_path: str,
+    # ER-005-E2E-TTS-ANALYSIS-FIX-01: generate_narration_snippet_verified_
+    # strictと同じ理由で既定をNARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS
+    # へ引き上げる。generate_key_phrase_component_verifiedのfallback呼び
+    # 出しはKEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDSを明示的に渡すため
+    # 無影響。generate_english_segment_with_fallback(A2英語segmentの
+    # fallback経路)は明示指定していないため、この既定値変更で救われる。
+    safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
 ) -> dict:
     prompt = MINIMAL_INSTRUCTION_PREFIX + text
     call_fn = p9a._make_english_call_fn()

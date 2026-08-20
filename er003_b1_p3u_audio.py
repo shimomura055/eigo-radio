@@ -57,6 +57,20 @@ BOUNDARY_PAUSE_SECONDS = 0.12
 # 50-100ms範囲内の固定値)。
 EN_TRIM_SAFETY_MARGIN_SECONDS = 0.08
 
+# ER-005-E2E-TTS-ANALYSIS-FIX-01(2026-08-21)で発見: A2の本文系segment
+# (Preview/Comment/Full Story/Point One・Two/In One Line/Topic Introなど、
+# er003_v1_repro01_main_generate.generate_narration_snippet_verified_strict
+# を既定マージンのまま使う経路)で、無声破裂音で終わる語(例:
+# "...cause and effect."の"effect"語末/kt/)がEN_TRIM_SAFETY_MARGIN_SECONDS
+# (0.08秒)では末尾trimで一部削られる実例が見つかった。ASR一致検証は
+# テキスト内容の一致のみを見ており、末尾数十msの音の欠落は検出できない
+# ため、この種の欠落は既存の検証をすり抜ける。B1側は既にnews_tail_fix.
+# generate_news_narration_wide_margin経由でLONG_FORM_TRIM_SAFETY_MARGIN_
+# SECONDS(0.35秒)を使っており同じ問題が起きていない。同じ実績値をA2の
+# 既定マージンにも適用し、語末単位の個別対症療法ではなく経路全体を
+# 底上げする。
+NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS = 0.35
+
 _SPEECH_WINDOW_MS = 20.0
 _SPEECH_SILENCE_RMS_THRESHOLD = 0.02
 

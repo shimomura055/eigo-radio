@@ -11,15 +11,15 @@
 
 ## 完了報告の最上段(17章の必須回答)
 
-1. **B1 TTS + Audio QA Clean Costはいくらか**: 概算 **約42.9円**(1 segmentにつき1回で成功した場合の理論値。方法論はF章参照。実測不能なため按分による概算)
-2. **B1 Actual Costはいくらか**: **131.556円**(実測、retry/fallbackを全て含む)
-3. **B1の1episode総Costはいくらか**: **141.415円**(前段9.859円 + TTS/ASR 131.556円)
-4. **A2 TTS + Audio QA Clean Costはいくらか**: 概算 **約20.1円**
-5. **A2 Actual Costはいくらか**: **86.156円**(実測)
-6. **A2の1episode総Costはいくらか**: **96.463円**(前段10.307円 + TTS/ASR 86.156円)
-7. **16円TargetをB1/A2それぞれ達成したか**: **どちらも達成できなかった**。B1は目標の約8.8倍、A2は約6.0倍。12章の判定基準(FAIL: >18円)に照らすと、**両Levelとも明確なFAIL**(Clean Cost理論値だけで比較してもB1約52.8円・A2約30.4円で、リトライを完全に無くせたとしてもFAILを脱しない水準)
-8. **retry/fallback wasteはいくら発生したか**: 概算でB1約88.7円、A2約66.1円(実測ActualからCleanの概算値を差し引いた分)。加えて、本タスク実行中に発見した設定不備(ディレクトリ未作成)により1回分のB1実行がクラッシュし、94.184円が完全に無駄になった(これは測定用のretry/fallbackとは別枠の、こちらの作業ミスによる損失として区別して報告する)
-9. **重大なAudio QA Failureはあったか**: **あった**。B1・A2の両方で、Point One/Two見出し("Point One:"/"Point Two:"で始まる文言)の読み上げが、production既存の8回リトライ機構を使い切っても一度もASR検証に合格しなかった(下記E章)。これは既存の3テーマ(Hanshin/Health/Household)では一度も踏んだことのない、今回初めて発見された入力パターンである。他にも複数のsegmentでASR検証が不合格になったが、それらの多くは音声自体の誤りというより検証ロジックの誤検知(false negative)である可能性が高いことをF章で詳述する
+1. **B1 TTS + Audio QA Clean Costはいくらか**: **約37.97円**(TTS約25.58円+ASR約12.39円。「全23segmentが1回で成功した場合」の実測ベース再計算値。※2026-08-21修正: 旧報告の「約42.9円」は`segment数/TTS呼び出し数`による単純按分で、実測に基づかない不当な概算だったため撤回。方法論はF章・[ER-005-E2E-TTS-ANALYSIS-FIX-01報告書](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md)参照)
+2. **B1 Actual Costはいくらか**: **131.547円**(実測、retry/fallbackを全て含む。従来通り)
+3. **B1の1episode総Costはいくらか**: **141.406円**(前段9.859円 + TTS/ASR 131.547円)
+4. **A2 TTS + Audio QA Clean Costはいくらか**: **約35.56円**(TTS約23.68円+ASR約11.87円。※上記と同じ理由で旧報告の「約20.1円」を撤回)
+5. **A2 Actual Costはいくらか**: **86.148円**(実測)
+6. **A2の1episode総Costはいくらか**: **96.455円**(前段10.307円 + TTS/ASR 86.148円)
+7. **16円TargetをB1/A2それぞれ達成したか**: **どちらも達成できなかった**。修正後のClean Cost実測ベース値で比較しても、B1(約37.97円)・A2(約35.56円)とも12章の判定基準(FAIL: >18円)を超えており、**両Levelとも明確なFAIL**(Clean Cost同士がほぼ同水準である点は、後述の「segment分割数自体のCost影響は限定的」という既存知見と整合する)
+8. **retry/fallback wasteはいくら発生したか**: **B1 約93.58円(TTS 63.28円+ASR 30.31円)、A2 約50.59円(TTS 35.35円+ASR 15.24円)**(実測ActualからClean実測値を差し引いた分。※旧報告の按分ベース概算「B1約88.7円・A2約66.1円」を撤回し置き換え)。加えて、本タスク実行中に発見した設定不備(ディレクトリ未作成)により1回分のB1実行がクラッシュし、94.175円が完全に無駄になった(これは測定用のretry/fallbackとは別枠の、こちらの作業ミスによる損失として区別して報告する)
+9. **重大なAudio QA Failureはあったか**: **あった**。B1・A2の両方で、Point One/Two見出し("Point One:"/"Point Two:"で始まる文言)の読み上げが、production既存のリトライ機構を使い切っても一度もASR検証に合格しなかった(下記E章)。※2026-08-21修正: 下記D章に記載していた「既存3テーマでは一度も踏んだことのない、今回初めて発見された重大な新発見」という記述は誤り。`CURRENT_SPEC.md`の`ER-003-POINT-NOTIFICATION-01`(DECIDED)により、Point番号("Point One."等)はNotification音で表現し読み上げない仕様が既に確定していたにもかかわらず、本タスクの前段(ER-005-WRITER-COST-QUALITY-01)でこの仕様確認を怠り、Writerに"Point One:"ラベル入りの見出しを生成させたことが根本原因。TTSモデル固有の新しいバグではなく、**既存仕様との照合漏れ(spec compliance gap)**である。詳細と再発防止策は[ER-005-E2E-TTS-ANALYSIS-FIX-01報告書](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md)Part Dを参照。他にも複数のsegmentでASR検証が不合格になったが、それらの多くは音声自体の誤りというより検証ロジックの誤検知(false negative)である可能性が高いことをF章で詳述する
 10. **Number Treatmentタグ欠落は実害を起こしたか**: **明確な実害は確認されなかった**。唯一の数値関連の不一致(A2 point_oneの"two"対"2")は、TTS側の読み間違いではなく、比較検証ロジック側の正規化不整合によるfalse negativeと判断される(下記G章)。`NUMBER_TAG_REQUIRED_FOR_PRODUCTION`としての報告は不要と判断する
 11. **OPEN-43と同種Failureは再現したか**: **再現しなかった**。OPEN-43は「Key Phrase 10本全てが空文字列のASR書き起こしでSTOPPED」という特有のfailure signatureだが、今回発生したKey Phrase失敗(B1 KP4日本語、A2 KP2日本語)はいずれも**非空・内容のある(ただし不一致な)ASR書き起こし**であり、OPEN-43の定義する障害パターンとは異なる。OPEN-43はUNDER_REVIEWのまま維持し、CLOSEしていない
 12. **ユーザー試聴が必要なArtifactはどこか**: **[Screen Time Episode Review](https://claude.ai/code/artifact/75e2178f-1c4e-48ee-81b6-b476a6ff3c09)**(B1/A2完成音声のプレーヤーと、segment別の自動QA結果一覧)
@@ -59,7 +59,9 @@
 
 ---
 
-## D. 重大な新発見: "Point One:"/"Point Two:" 見出しの読み上げ失敗
+## D. "Point One:"/"Point Two:" 見出しの読み上げ失敗(2026-08-21修正: 仕様違反として再分類)
+
+> **本節は2026-08-21に修正した。** 元の記述は、この失敗を「既存3テーマでは一度も踏んだことのない、今回初めて発見された重大な新発見」としていたが、これは誤りだった。`CURRENT_SPEC.md`(`ER-003-POINT-NOTIFICATION-01`、DECIDED)には、Point番号("Point One."等)を読み上げず専用のNotification音で表現するという仕様が既に確定していた。本タスクの前段であるER-005-WRITER-COST-QUALITY-01でこの既存仕様を確認せずWriterへ見出し生成を指示したため、"Point One:"ラベルを含む見出しが生成され、それがそのままTTSへ渡った。つまりこれは**TTSモデル側の新しい欠陥ではなく、既存の確定仕様とWriter出力・Script Assemblyとの照合が漏れていた(spec propagation/validation gap)ことによる、防げたはずの不具合**である。根本原因の分析・再発防止策(Writer生成契約の明文化+TTS前の機械的検証)は[ER-005-E2E-TTS-ANALYSIS-FIX-01報告書](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md)Part Dに記載し、既に対応済み。以下は元の記述(観測事実としては変更なし、解釈のみ上記の通り訂正)。
 
 B1・A2の両方で、`### Point One: ...`/`### Point Two: ...`という、Writerが生成したH3見出し(先頭に"Point One:"/"Point Two:"という語をそのまま含む形式)を音声化する際、**既存の8回リトライ機構(標準経路4回+minimal instruction経路4回、またはA2側は標準6回+fallback6回)を使い切っても、一度もASR検証に合格しなかった**。
 
@@ -108,29 +110,33 @@ D章の見出し問題とは別に、以下の不合格segmentは、ASR書き起
 
 Gemini TTS単価: `gemini-2.5-pro-preview-tts`/`gemini-3.1-flash-tts-preview`とも$1.00/1M input token(text)+$20.00/1M output token(audio、25 token/秒)、Standard tier(2026-08-20、ai.google.dev公式ドキュメントで確認)。Azure STT単価: $1.00/時間(既存pricing_snapshot.json、japanwest region)。
 
-### F-2. Clean Cost(概算、方法論の開示)
+### F-2. Clean Cost(2026-08-21修正: 按分法を撤回し実測ベースへ置き換え)
 
-**重要な制約**: 本タスクではproduction側の`generate_b1_segments`/`generate_a2_segments`関数を無変更のまま再利用したため、コストログの`stage`フィールドがsegment名を保持しない(呼び出し元でsegmentごとの`cl.logging_context()`ラップを行わなかったため)。このため、「どのsegmentが何回目の試行で成功したか」をログから機械的に特定できず、**真のClean Cost(全segmentが1回で成功した場合のコスト)は正確には算出できない**。
+> **本節は2026-08-21に全面的に修正した。** 元の方法論(「全segment数」÷「実際のGemini TTS呼び出し総数」という按分比率を実測Actual Costへ乗じる)は、実際にretryされたsegmentの長さ・TTS/ASRそれぞれの課金体系の違い・segmentごとの試行回数のばらつきを一切反映しない不当な近似であり、ユーザーの指摘([ER-005-E2E-TTS-ANALYSIS-FIX-01](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md)発端)を受けて撤回した。旧方法論による「約42.9円(B1)/約20.1円(A2)」という値、および「23件超への分割そのものがCost超過の主因」という結論は、いずれも**実測に基づかない誤った推計**だったため、本報告書の正式な値としては扱わない。
 
-そこで、以下の按分法による概算を用いた: 「全segment数」÷「実際のGemini TTS呼び出し総数」の比率を、実測Actual Costへ乗じる(1 segmentあたり平均1回で成功したと仮定した場合の理論値)。
+以下は、既存ログ(`tts_generation_results.json`の各segment試行記録、`raw_usage_log.jsonl`)のみを用いた実測ベースの再計算値。詳細な算出方法・segment別内訳・再構築の限界(復元できなかった情報の明示)は、[ER-005-E2E-TTS-ANALYSIS-FIX-01報告書](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md) Part Aを参照。
 
-| Level | Segment数 | Gemini呼び出し数 | 按分比率 | Clean Cost概算(円) | Waste概算(円) |
-|---|---|---|---|---:|---:|
-| B1 | 23 | 77 | 0.299 | 約42.9円 | 約88.7円 |
-| A2 | 24 | 122 | 0.197 | 約20.1円 | 約66.1円 |
+| 項目 | B1 TTS | B1 ASR | B1計 | A2 TTS | A2 ASR | A2計 |
+|---|---:|---:|---:|---:|---:|---:|
+| Clean Cost(1segmentにつき1回で成功したと仮定) | 25.58円 | 12.39円 | **37.97円** | 23.68円 | 11.87円 | **35.56円** |
+| Retry-Fallback Waste(実測Actual − Clean) | 63.28円 | 30.31円 | **93.58円** | 35.35円 | 15.24円 | **50.59円** |
+| = Production-path Actual(実測、従来のActual Costと同一) | 88.85円 | 42.70円 | **131.55円** | 59.04円 | 27.11円 | **86.15円** |
 
-**この概算の重要な含意**: Clean Cost概算だけを見ても、B1は約42.9円、A2は約20.1円であり、**リトライを完全にゼロにできたとしても、B1は12章のFAIL基準(>18円)を大きく超える**。A2のClean Cost単体(20.1円)は僅かにFAIL圏内だが、前段コスト(10.307円)を加えると30.4円となり、これも大きくFAILを超える。
+**この実測値の重要な含意**: Clean Cost実測値だけを見ても、B1は約37.97円、A2は約35.56円であり、**リトライを完全にゼロにできても両Levelとも12章のFAIL基準(>18円)を超える**。加えて、B1・A2のClean Cost同士がほぼ同水準(37.97円 vs 35.56円、B1の方がsegment数は1つ少ないにもかかわらずほぼ同額)である点は、既存知見「segment分割数自体によるCost影響は限定的」と整合する。
 
-**根本的なコスト構造**: Gemini TTSの出力単価($20/1M token audio=25 token/秒あたり)から逆算すると、1エピソード(約5.5分=330秒)の音声を1回で生成しきった場合の理論下限は、330秒×(20/25/1,000,000)ドル/token×1,000,000token/25秒 ≒ $0.264(≒42円)程度になる(実測のB1 Clean Cost概算42.9円とほぼ一致)。**これは、B1が23回の個別TTS呼び出しに分割されており、各呼び出しに固有の入力prompt(instruction文言)分のtoken課金が23回分積み重なることが主因であり、単にretryを減らすだけでは16円目標に到達できない構造的な問題である。**
+**B1がA2よりActual Costが高い理由(実測に基づく説明)**: B1(77回のGemini TTS呼び出し)がA2(122回)よりActual Costが高い(131.55円 vs 86.15円)のは、呼び出し回数ではなく**課金対象の音声総尺**が理由である。B1の実測billed audio合計は約976.1秒、A2は約653.4秒で、B1の方が49%多い。segment別のtracked試行記録を突き合わせると、B1のWasteの大半は少数の高額segmentに集中している: `full_story_part2`が6回ともASR検証に不合格となり毎回約50秒(合計約309秒)の音声を生成し直し、`kp5_ja`("association"の日本語meaning、短いフレーズのはずが)2回にわたり約130秒前後の無関係な内容を生成する暴走(hallucination)を起こした(3回目でようやく2.8秒の正常な音声に収束)。この2segmentだけでB1のtracked音声尺(約872秒)の過半を占める。一方A2のWasteは、`400 INVALID_ARGUMENT`("Model tried to generate text...")という即時失敗(課金対象データがログに残らない、音声を生成する前の拒否とみられる)が122回中38回(31%、B1は77回中12回=16%)と高頻度に発生しており、**回数は多いが1回あたりの課金は小さい失敗が積み重なっている**。つまり「どの長さのsegmentを、どの経路で、何回生成・ASRしたか」がCost差を生んでいるという仮説は実測で支持され、「23件超への分割そのものが主因」という旧報告の結論は撤回する。
 
-### F-3. 1episode総Cost(11章)
+### F-3. 1episode総Cost(11章、2026-08-21修正)
 
 | 工程 | B1 | A2 |
 |---|---:|---:|
 | 前段(Topic Selection + Research + Writer + Support) | 9.859円 | 10.307円 |
-| TTS + Audio QA(Actual、実測) | 131.556円 | 86.156円 |
-| **1episode総Cost(Actual)** | **141.415円** | **96.463円** |
-| (参考)TTS+ASRをClean Cost概算で置き換えた場合 | 約52.8円 | 約30.4円 |
+| TTS + Audio QA(Actual、実測) | 131.547円 | 86.148円 |
+| **1episode総Cost(Actual)** | **141.406円** | **96.455円** |
+| Clean Cost実測値(TTS+ASR) | **37.97円** | **35.56円** |
+| (参考)前段+Clean Cost実測値 | 約47.8円 | 約45.9円 |
+
+※旧報告にあった「TTS+ASRをClean Cost概算で置き換えた場合(約52.8円/約30.4円)」の行は、F-2で撤回した按分法に基づく数値だったため削除した。
 
 ---
 
@@ -151,7 +157,7 @@ Gemini TTS単価: `gemini-2.5-pro-preview-tts`/`gemini-3.1-flash-tts-preview`と
 | B1 | 141.415円 | **FAIL**(>18円を大幅に超過) |
 | A2 | 96.463円 | **FAIL**(同上) |
 
-Clean Cost概算(理論上の最良ケース)で比較しても、B1(約52.8円)・A2(約30.4円)ともFAIL基準を超えており、**現行のTTS Architecture(1エピソードを20件超の個別TTS呼び出しへ分割する構成)のままでは、リトライ削減だけで16円目標へ到達することは構造的に難しい**。
+Clean Cost実測値(理論上の最良ケース、2026-08-21修正: 按分法から実測ベースへ置き換え)で比較しても、B1(約37.97円)・A2(約35.56円)ともFAIL基準を超えている。ただしF-2章の実測が示す通り、その主因は「20件超への分割」という構造そのものではなく、**特定segment(長文の複数回リトライ、短いKey Phraseの暴走的hallucination)の突発的なコスト集中**である。リトライ削減・暴走検知の強化だけで16円目標に到達できるかは本タスクの範囲外だが、少なくとも「分割数を減らす」方向の対策だけでは、Clean Cost実測値(37.97円/35.56円)自体が既にFAIL基準を超えているため不十分である。
 
 さらに13章の規定通り、Costの結果とは独立に、D章で報告した"Point One:"/"Point Two:"見出しの読み上げ失敗は、コストの多寡によらずProduction PASSの判断を妨げる重大な音声品質上の懸念であり、**ユーザーによる試聴確認が必須**である。
 
