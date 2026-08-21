@@ -36,10 +36,12 @@
 
 ## B. 完成音声
 
-| Level | 再生時間 | サンプルレート | Clipping |
+| Level | 再生時間(初回実行時) | サンプルレート | Clipping |
 |---|---|---|---|
 | B1 | 5:34(333.994秒) | 48kHz/2ch | 検出されず |
 | A2 | 5:35(334.529秒) | 48kHz/2ch | 検出されず |
+
+※2026-08-21追記: [ER-005-E2E-TTS-ANALYSIS-FIX-01](ER-005-E2E-TTS-ANALYSIS-FIX-01_report.md)のPart C・E修正(A2語尾切れ対策・B1 Key Phrase訳語修正)を反映し、B1は336.384秒・A2は333.899秒へ更新済み(いずれもclipping未検出)。試聴Artifactは更新後の音声。
 
 **試聴Artifact**: [Screen Time Episode Review](https://claude.ai/code/artifact/75e2178f-1c4e-48ee-81b6-b476a6ff3c09)(96kbps MP3、B1/A2両方のプレーヤー+segment別自動QA結果を掲載)
 

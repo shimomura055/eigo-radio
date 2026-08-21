@@ -2,7 +2,7 @@
 
 **タスク**: Cost再分析・末尾音切れ調査・Point Notification再発防止
 **実行日**: 2026-08-21
-**前提**: [ER-005-E2E-TTS-COST-QUALITY-01](ER-005-E2E-TTS-COST-QUALITY-01_report.md)(B1/A2のE2E TTS Cost計測)の事後修正・追加調査タスク。既存ログ(`raw_usage_log.jsonl`/`tts_generation_results.json`/`run_summary_tts.json`/segment音声ファイル)のみを用いて再分析し、新規の有料API呼び出しは**Part C・Part Eの音声再生成を除き行っていない**(詳細は各章・末尾「未完了・要確認事項」を参照)。
+**前提**: [ER-005-E2E-TTS-COST-QUALITY-01](ER-005-E2E-TTS-COST-QUALITY-01_report.md)(B1/A2のE2E TTS Cost計測)の事後修正・追加調査タスク。既存ログ(`raw_usage_log.jsonl`/`tts_generation_results.json`/`run_summary_tts.json`/segment音声ファイル)のみを用いて再分析し、新規の有料API呼び出しは**Part C(A2 `point_two`/`point_one`の検証用再生成)・Part E(B1 `kp3_ja`/`kp4_ja`の訳語修正音声再生成)の計4segment分のみ**、ユーザー承認を得た上で実施した(想定通り小規模)。いずれも実際に修正版の本番`narration/`ファイルへ反映し、Assembly(既存音声ファイルの再結合のみ、追加API呼び出しなし)を再実行して完成episodeへ反映済み。試聴Artifactも更新済み。**試聴Artifact**: [Screen Time Episode Review](https://claude.ai/code/artifact/75e2178f-1c4e-48ee-81b6-b476a6ff3c09)
 
 ---
 
@@ -21,7 +21,7 @@
 11. **B1がA2よりCostが高い定量的理由**: 呼び出し回数(B1 77回 < A2 122回)ではなく、**課金対象の音声総尺**(B1約976.1秒 > A2約653.4秒、49%多い)が主因。B1のWasteは少数の高額segment(`full_story_part2`の6回連続ASR不合格=約309秒、`kp5_ja`の2回のhallucination暴走=約260秒超)に集中している。詳細はPart A参照
 12. **segment分割数のCost影響の実測結果と、既存の「分割影響は限定的」という知見との整合性**: 整合する。Clean Cost実測値はB1(37.97円)・A2(35.56円)でほぼ同水準であり、B1の方がsegment数が1つ少ないにもかかわらずClean Costはむしろ高い。分割数そのものではなく、特定segmentの突発的なリトライ・hallucinationがCost差の主因(Part A参照)
 13. **"effect"語尾切れの原因段階**: **TTS生成後のtrim(無音除去)処理**。標準生成・ASR検証はいずれも正常(ASRは"...cause and effect."を全文正しく書き起こしている)。trim処理の末尾安全マージンが0.08秒と薄く、無声破裂音("effect"語尾の/kt/)の低振幅な区間を無音とみなして削った可能性が高い。詳細と波形分析はPart C参照
-14. **一般化した修正内容とregression結果 / Point One・Two再発防止の証拠 / Key Phrase訳語修正箇所 / CURRENT_SPEC変更有無**: 修正内容はPart C・D・Eに詳述。**trim安全マージンの拡大・Point番号ラベル検証・Key Phrase訳語修正はいずれもコード上は実装・単体テスト済みだが、実音声での正式なregeneration・regression確認は本報告執筆時点で未実施**(有料API呼び出しを伴うため、実行前にユーザー確認を得る方針。末尾「未完了・要確認事項」参照)。CURRENT_SPEC.mdは変更していない(ER-003-POINT-NOTIFICATION-01の既存決定はそのまま維持し、それを守るための実装側の修正のみ行った)。
+14. **一般化した修正内容とregression結果 / Point One・Two再発防止の証拠 / Key Phrase訳語修正箇所 / CURRENT_SPEC変更有無**: 修正内容はPart C・D・Eに詳述。**trim安全マージンの拡大とKey Phrase訳語修正は、ユーザー承認を得た上で実際にA2 `point_two`・B1 `kp3_ja`/`kp4_ja`を再生成して実音声で確認済み**(Part C-6・E-4)。"effect"語尾は波形分析で自然な減衰への変化を確認、Key Phrase 2件は正しい訳語("内在化問題"/"外在化問題")で正常に生成され、いずれも本番`narration/`ファイルへ反映しAssembly再実行・Artifact更新まで完了。regression確認したA2 `point_one`は、trim変更とは無関係な既知のASR数字正規化false negative(旧報告E章で既に指摘済み)により従来通り不合格だったが、trim変更による新規の異常は確認されなかった。Point番号ラベル検証は単体テストで確認済み(実際のTTS呼び出しは行っていない、Part D-4参照)。CURRENT_SPEC.mdは変更していない(ER-003-POINT-NOTIFICATION-01の既存決定はそのまま維持し、それを守るための実装側の修正のみ行った)。
 
 ---
 
@@ -157,9 +157,15 @@ ASR検証は**テキスト内容の一致のみ**を確認しており、音声�
 
 **tempo/pauseへの影響について**: Assembly側は各segmentの後に既に0.4〜1.0秒のpauseを明示的に挿入しており、マージンの拡大分(0.08秒→0.35秒、差分0.27秒)はこの既存pauseに吸収される形になるため、聞感上の不自然な間や間延びを生む可能性は低いと判断した(ただし実音声での確認は未実施、下記「未完了事項」参照)。
 
-### C-6. 未検証事項(実音声での確認が必要)
+### C-6. 実音声での検証結果(修正後の再生成、完了)
 
-コード修正・単体テスト(正規表現・定数の動作確認)は完了しているが、**実際にTTSを再実行して"effect"の欠けが解消されたことを確認する作業、および他segmentへのregression確認は未実施**。これには新規の有料TTS+ASR API呼び出しが必要なため、Part Aの方針(「追加のAPI呼び出しが必要な場合は自動で課金しない」)に従い、実行前にユーザーに確認する。詳細は本報告末尾を参照。
+ユーザー承認を得て、修正後のtrim安全マージン(0.35秒)でA2 `point_two`(該当segment)と`point_one`(regression確認用)を実際に再生成した。
+
+**`point_two`(修正対象)**: `status: OK`(1回で成功)、`trailing_margin_retained_seconds: 0.35`(新しいマージン値が適用されていることを確認)。末尾波形を10ms単位のRMSで再分析した結果、修正前は末尾がRMS約17(無音でない値)で不自然に途切れていたのに対し、**修正後は"effect"語尾の破裂音バースト(15.37〜15.42秒付近)の後、複数の低エネルギー区間(closure/burst)を経て、最後の約90ms(15.70〜15.79秒)は安定した低RMS(2〜8)へ自然に減衰してからクリップが終わっている**。これは無声破裂音の発音が完了してから切れている波形パターンであり、修正前の「発音途中で切れている」パターンとは明確に異なる。ASR書き起こしも引き続き"...cause and effect."を完全な単語として認識(`asr_verified: true`)。この音声を本番`narration/point_two.wav`へ反映し、Assemblyを再実行して完成episode・試聴Artifactへ反映済み。
+
+**`point_one`(regression確認)**: `status: STOPPED`(標準経路・minimal instruction経路とも6回で不合格)。ただし不合格の理由はtrim変更とは無関係で、旧報告E章で既に指摘済みの既知の問題(ASR書き起こしが"two opposite roads"を"2 opposite roads"と数字表記で書き起こし、canonical textの綴り"two"と一致しないfalse negative)がそのまま再現したのみだった。この不合格パターンは元の生産実行時(`run_summary_tts.json`でも`point_one: STOPPED`)と同一であり、**trim安全マージンの拡大による新規の異常・regressionは確認されなかった**。この結果は既存の本番`point_one.wav`(元の生産実行の成果物)をそのまま使い続けることとし、上書きしていない。
+
+B1側の長文segment・Key Phraseは、既に`news_tail_fix`(0.35秒)・Key Phrase専用(0.20秒)の広いマージンを使っており今回のデフォルト値変更の影響を受けないため、追加のregression確認は行っていない。
 
 ---
 
@@ -262,9 +268,16 @@ internalizing problems, externalizing problems)は、字面から自然っぽく
 
 **`tts_generation_results.json`(既存の生成ログ)は意図的に変更していない**。これは「実際に何が生成されたか」という監査記録であり、修正後の値で書き換えると当時の事実を歪めることになるため。
 
-### E-4. 未実施事項(実音声の修正)
+### E-4. 実音声での修正結果(完了)
 
-上記(2)のテキスト修正は、**次回このデータで音声を生成し直した際に正しい訳語が読み上げられること**を保証するものであり、**既に生成済みのB1音声(`narration/kp3_ja_charon.wav`/`kp4_ja_charon.wav`、および組み立て済みepisode)には旧い誤った訳語("内向化問題"/"外向化問題")がそのまま音声として残っている**。この2segmentの音声を正しい訳語で再生成するには新規の有料TTS+ASR API呼び出しが必要なため、Part C同様、実行前にユーザーに確認する(末尾参照)。
+ユーザー承認を得て、上記(2)の修正後テキストでB1 `kp3_ja`(内在化問題)・`kp4_ja`(外在化問題)を実際に再生成した。
+
+| segment | 結果 | ASR書き起こし |
+|---|---|---|
+| `kp3_ja` | `status: OK`(5.86秒) | 「内在課問題。感情や心の内側に現れやすい問題。」("化"を同音の"課"と書き起こすASR側の誤認識のみ。実際の発話内容は正しい訳語と判断) |
+| `kp4_ja` | `status: OK`(4.81秒) | 「外在化問題。行動として、外に現れやすい問題。」(完全一致) |
+
+いずれも本番`narration/kp3_ja_charon.wav`/`kp4_ja_charon.wav`へ反映し、Assemblyを再実行して完成episode・試聴Artifactへ反映済み。**旧い誤った訳語("内向化問題"/"外向化問題")の音声は、本番ファイルとしてはもう残っていない**(このタスクの過程で生成した検証用ファイルは`b1b/narration_fix_verify/`に保存済み)。
 
 ---
 
@@ -277,10 +290,10 @@ internalizing problems, externalizing problems)は、字面から自然っぽく
 | Point: Point番号ラベル0件を証明する自動テスト | Part D-4のassert_no_point_number_label()表 | 完了(単体テスト) |
 | Point: Notification→見出し→本文の順序維持確認 | `timeline.json`のsegment順序を無変更で確認 | 完了 |
 | 末尾音: 標準生成 vs 組み立て後の音声比較 | Part C-2(10ms単位RMS比較、完全一致) | 完了 |
-| 末尾音: 修正前後の"effect"segment比較 | ー | **未実施(要有料API確認)** |
-| 末尾音: 他segmentへのregression確認 | ー | **未実施(要有料API確認)** |
-| Key Phrase: 訳語修正箇所 | Part E-3 | 完了(テキストのみ) |
-| Key Phrase: 修正後音声の確認 | ー | **未実施(要有料API確認)** |
+| 末尾音: 修正前後の"effect"segment比較 | Part C-6(波形分析、自然な減衰への変化を確認) | 完了 |
+| 末尾音: 他segmentへのregression確認 | Part C-6(A2 `point_one`、trim起因の新規異常なし) | 完了 |
+| Key Phrase: 訳語修正箇所 | Part E-3 | 完了(テキスト+音声) |
+| Key Phrase: 修正後音声の確認 | Part E-4(`kp3_ja`/`kp4_ja`再生成、ASR確認) | 完了 |
 
 ---
 
@@ -290,11 +303,6 @@ internalizing problems, externalizing problems)は、字面から自然っぽく
 
 ---
 
-## 未完了・要確認事項(ユーザー確認が必要)
+## 完了後の状態
 
-以下は、コード修正・データ修正・単体テストまでは完了しているが、**実音声での最終確認には新規の有料TTS(+ASR)API呼び出しが必要**なため、Part Aの方針(「追加のAPI呼び出しが必要な場合は自動で課金しない」)に従い、実行前に確認する。
-
-1. **Part C: A2 `point_two`segmentの再生成**(trim安全マージン拡大の効果を実音声で確認。想定コスト: 数円程度、1segment分のTTS+ASR)。加えて、他segment(特にB1側は元々広いマージンのため影響なし、A2の他segmentへのregression確認)を数件追加確認する場合は追加コストが発生する
-2. **Part E: B1 Key Phrase 3・4の日本語meaning音声再生成**(`kp3_ja`/`kp4_ja`を正しい訳語「内在化問題」「外在化問題」で読み上げ直す。想定コスト: 数円程度、2segment分。過去にkp4_ja(旧訳語)が6回リトライしていた経緯があるため、同程度のリトライが発生する可能性がある)
-
-いずれも小規模(合計で数十円程度を想定)だが、実行前にご確認をお願いします。
+Part C・Eの実音声修正はユーザー承認を得て完了した(2026-08-21)。使用した有料API呼び出しは、A2 `point_two`・`point_one`(regression確認)、B1 `kp3_ja`・`kp4_ja`の4segment分のみ(小規模)。Assembly(既存音声ファイルの再結合のみ、追加API呼び出しなし)を再実行し、完成episode(`b1b/assembled/`・`a2/assembled/`)・MP3(`mp3/`)・試聴Artifact([Screen Time Episode Review](https://claude.ai/code/artifact/75e2178f-1c4e-48ee-81b6-b476a6ff3c09))へ反映済み。B1音声長は336.384秒(修正前333.994秒、+2.39秒、Key Phrase訳語がやや長くなったこと・trim margin拡大が理由)、A2音声長は333.899秒(修正前334.529秒、-0.63秒)で、いずれもclipping未検出。
