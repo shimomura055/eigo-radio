@@ -1,0 +1,81 @@
+{
+  "results": [
+    {
+      "segment": "pool_benches/b1/point_two",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "ratio": 0.9833,
+      "should_pass_at_attempt1": false,
+      "would_stop_retry_immediately": true,
+      "reason": "固有名詞らしき語にのみ音訳差がある(retryでは解決しない可能性が高い): [{'type': 'replace', 'canonical': 'triangeln', 'asr': 'triangle', 'entity_like': True}]"
+    },
+    {
+      "segment": "pool_benches/b1/kp2_english",
+      "classification": "NORMALIZED_MATCH",
+      "ratio": 1.0,
+      "should_pass_at_attempt1": true,
+      "would_stop_retry_immediately": true,
+      "reason": "表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致"
+    },
+    {
+      "segment": "pool_benches/a2/full_story_part2",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "ratio": 0.9848,
+      "should_pass_at_attempt1": false,
+      "would_stop_retry_immediately": false,
+      "reason": "固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '', 'asr': 're', 'entity_like': False}, {'type': 'replace', 'canonical': 'street', 'asr': 'st', 'entity_like': False}]"
+    },
+    {
+      "segment": "pool_benches/a2/point_two",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "ratio": 0.9574,
+      "should_pass_at_attempt1": false,
+      "would_stop_retry_immediately": true,
+      "reason": "固有名詞らしき語にのみ音訳差がある(retryでは解決しない可能性が高い): [{'type': 'replace', 'canonical': 'malmo', 'asr': 'malma', 'entity_like': True}, {'type': 'replace', 'canonical': 'triangeln', 'asr': 'triangle', 'entity_like': True}]"
+    },
+    {
+      "segment": "pool_subscriptions/b1/comment_2",
+      "classification": "NORMALIZED_MATCH",
+      "ratio": 1.0,
+      "should_pass_at_attempt1": true,
+      "would_stop_retry_immediately": true,
+      "reason": "表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致"
+    },
+    {
+      "segment": "pool_subscriptions/a2/full_story_part2",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "ratio": 0.9805,
+      "should_pass_at_attempt1": false,
+      "would_stop_retry_immediately": false,
+      "reason": "数字/否定の不一致を検出: numbers=[('', '8')] negation=[]"
+    },
+    {
+      "segment": "pool_startups/b1/kp3_english",
+      "classification": "NORMALIZED_MATCH",
+      "ratio": 1.0,
+      "should_pass_at_attempt1": true,
+      "would_stop_retry_immediately": true,
+      "reason": "複合語の分かち書き・ハイフン位置の差のみ(空白除去後に一致)"
+    },
+    {
+      "segment": "pool_startups/a2/full_story_part1",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "ratio": 0.9885,
+      "should_pass_at_attempt1": false,
+      "would_stop_retry_immediately": false,
+      "reason": "数字/否定の不一致を検出: numbers=[('', '1')] negation=[]"
+    },
+    {
+      "segment": "pool_startups/a2/kp3_english",
+      "classification": "NORMALIZED_MATCH",
+      "ratio": 1.0,
+      "should_pass_at_attempt1": true,
+      "would_stop_retry_immediately": true,
+      "reason": "複合語の分かち書き・ハイフン位置の差のみ(空白除去後に一致)"
+    }
+  ],
+  "summary": {
+    "n_pass_attempt1": 4,
+    "n_uncertain": 2,
+    "n_still_mismatch": 3
+  }
+}

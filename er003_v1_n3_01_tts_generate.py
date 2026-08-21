@@ -34,6 +34,12 @@ import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
+import er005_cost_logger as cl
+
+# ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
+# cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
+# cl.segment_context()が_CONTEXT辞書を書き換えるだけで何もログしないため、
+# 生成ロジック・retry回数・音声出力には一切影響しない。
 
 JAPANESE_TITLES = {
     "hanshin": "早い先制、そして危なげない勝利。阪神が広島に8対1で完勝",
@@ -295,14 +301,16 @@ def generate_b1_segments(theme: dict) -> dict:
 
     topic_intro_text = f"Today's topic is {parts['title']}."
     print(f"[N3-TTS][{theme_id}/b1b] topic_intro生成(Charon)...")
-    results["topic_intro"] = voice01.generate_charon_english(
-        tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav")
+    with cl.segment_context("topic_intro"):
+        results["topic_intro"] = voice01.generate_charon_english(
+            tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav")
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon)...")
-        results[name] = voice01.generate_charon_english(
-            tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
+        with cl.segment_context(name):
+            results[name] = voice01.generate_charon_english(
+                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
         results[name]["canonical_text"] = text
 
     for name in ("point_one_heading", "point_two_heading"):
@@ -311,8 +319,9 @@ def generate_b1_segments(theme: dict) -> dict:
         # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
         sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、semantic heading)...")
-        results[name] = point_headings.generate(
-            tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
+        with cl.segment_context(name):
+            results[name] = point_headings.generate(
+                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
         results[name]["canonical_text"] = text
 
     for name, text in (
@@ -323,8 +332,9 @@ def generate_b1_segments(theme: dict) -> dict:
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文)...")
-        results[name] = news_tail_fix.generate_news_narration_wide_margin(
-            tts_safe_news_en(text), f"{narration_dir}/{name}.wav")
+        with cl.segment_context(name):
+            results[name] = news_tail_fix.generate_news_narration_wide_margin(
+                tts_safe_news_en(text), f"{narration_dir}/{name}.wav")
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
@@ -334,10 +344,12 @@ def generate_b1_segments(theme: dict) -> dict:
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
         print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 英語Component生成(Aoede): {used_form!r}...")
-        en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+        with cl.segment_context(f"kp{rank}_english"):
+            en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
         print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 日本語meaning生成(Charon、reading-safety): {ja_gloss!r}...")
-        ja_r = generate_charon_japanese_with_reading_safety(
-            ja_gloss, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss))
+        with cl.segment_context(f"kp{rank}_japanese"):
+            ja_r = generate_charon_japanese_with_reading_safety(
+                ja_gloss, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss))
         kp_results[rank] = {"english": en_r, "japanese": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -368,21 +380,24 @@ def generate_a2_segments(theme: dict) -> dict:
 
     topic_intro_text = f"Today's topic is {parts['title']}."
     print(f"[N3-TTS][{theme_id}/a2] topic_intro生成(Aoede、A2既存単一Voice)...")
-    results["topic_intro"] = c.generate_english_segment_with_fallback(
-        tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav",
-        first_words(parts["title"], 3), max_extra_chars=30)
+    with cl.segment_context("topic_intro"):
+        results["topic_intro"] = c.generate_english_segment_with_fallback(
+            tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav",
+            first_words(parts["title"], 3), max_extra_chars=30)
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     ja_title = JAPANESE_TITLES[theme_id]
     print(f"[N3-TTS][{theme_id}/a2] japanese_title生成: {ja_title!r}...")
-    results["japanese_title"] = generate_a2_japanese_with_reading_safety(
-        ja_title, f"{narration_dir}/japanese_title.wav", expected_substring_ja(ja_title), max_extra_chars=30)
+    with cl.segment_context("japanese_title"):
+        results["japanese_title"] = generate_a2_japanese_with_reading_safety(
+            ja_title, f"{narration_dir}/japanese_title.wav", expected_substring_ja(ja_title), max_extra_chars=30)
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(日本語)...")
-        results[name] = generate_a2_japanese_with_reading_safety(
-            text, f"{narration_dir}/{name}.wav", expected_substring_ja(text))
+        with cl.segment_context(name):
+            results[name] = generate_a2_japanese_with_reading_safety(
+                text, f"{narration_dir}/{name}.wav", expected_substring_ja(text))
 
     for name in ("point_one_heading", "point_two_heading"):
         text = parts[name]
@@ -390,9 +405,10 @@ def generate_a2_segments(theme: dict) -> dict:
         # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
         sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading)...")
-        results[name] = c.generate_english_segment_with_fallback(
-            tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
-            first_words(text, 3), max_extra_chars=20)
+        with cl.segment_context(name):
+            results[name] = c.generate_english_segment_with_fallback(
+                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                first_words(text, 3), max_extra_chars=20)
         results[name]["canonical_text"] = text
 
     for name, text, sub in (
@@ -405,7 +421,8 @@ def generate_a2_segments(theme: dict) -> dict:
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文)...")
-        results[name] = c.generate_english_segment_with_fallback(tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub)
+        with cl.segment_context(name):
+            results[name] = c.generate_english_segment_with_fallback(tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub)
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
@@ -415,10 +432,12 @@ def generate_a2_segments(theme: dict) -> dict:
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
         print(f"[N3-TTS][{theme_id}/a2] Key Phrase {rank} 英語Component生成(Aoede): {used_form!r}...")
-        en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+        with cl.segment_context(f"kp{rank}_english"):
+            en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
         print(f"[N3-TTS][{theme_id}/a2] meaning_{i}生成(日本語): {ja_gloss!r}...")
-        ja_r = generate_a2_japanese_with_reading_safety(
-            ja_gloss, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss), max_extra_chars=30)
+        with cl.segment_context(f"kp{rank}_japanese_meaning"):
+            ja_r = generate_a2_japanese_with_reading_safety(
+                ja_gloss, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss), max_extra_chars=30)
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}

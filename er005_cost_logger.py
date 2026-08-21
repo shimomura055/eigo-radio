@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 _LOG_PATH: Optional[str] = None
-_CONTEXT = {"theme": None, "stage": None}
+_CONTEXT = {"theme": None, "stage": None, "segment": None}
 _ATTEMPT_COUNTERS: dict[tuple, int] = {}
 _INSTALLED = False
 
@@ -51,8 +51,24 @@ def logging_context(theme: str, stage: str):
         _CONTEXT["stage"] = prev["stage"]
 
 
+# ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
+# logging_context()の内側で使うことを想定した追加タグ(theme/stageは変更しない)。
+# cl.install()が呼ばれていない通常の本番実行(このcontext managerを呼び出す
+# コード自体が無ければ何もしない)には一切影響しない、純粋加算的な変更。
+@contextmanager
+def segment_context(segment: str):
+    """このwith블록内の全API callにsegmentタグを追加で付与する。
+    logging_context()と併用する(themeやstageは変更しない)。"""
+    prev = _CONTEXT["segment"]
+    _CONTEXT["segment"] = segment
+    try:
+        yield
+    finally:
+        _CONTEXT["segment"] = prev
+
+
 def _next_attempt(provider: str, api: str) -> int:
-    key = (_CONTEXT["theme"], _CONTEXT["stage"], provider, api)
+    key = (_CONTEXT["theme"], _CONTEXT["stage"], _CONTEXT["segment"], provider, api)
     _ATTEMPT_COUNTERS[key] = _ATTEMPT_COUNTERS.get(key, 0) + 1
     return _ATTEMPT_COUNTERS[key]
 
@@ -63,6 +79,7 @@ def record(entry: dict) -> None:
     base = {
         "theme": _CONTEXT["theme"],
         "stage": _CONTEXT["stage"],
+        "segment": _CONTEXT["segment"],
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
     base.update(entry)

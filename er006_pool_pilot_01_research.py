@@ -37,7 +37,24 @@ EVIDENCE_PACK_DEVELOPER_MESSAGE = (
     "各SourceのAccess statusがpaywalled/summary-onlyの場合、そのSourceから拾えるEvidenceは"
     "「二次要約からの引用」であることが分かる形にしてください(ambiguityフィールド等へ明記)。"
     "各Evidenceは、それが支える具体的なFact categoryが分かる形にし、可能な限りsource_location"
-    "(section/paragraph等)を残してください。"
+    "(section/paragraph等)を残してください。\n\n"
+    "【ER-006-RESEARCH-GATE-01: Source Quality Gate】\n"
+    "各Sourceについて、source_tierを以下から選んでください: PRIMARY(当事者一次資料・公式"
+    "発表)、GOVERNMENT_OR_INSTITUTIONAL(政府・公的機関)、ACADEMIC(査読付き学術論文)、"
+    "NEWS_REPORTING(信頼性の高い一次報道)、TERTIARY_AGGREGATOR(Wikipedia等の三次情報・"
+    "まとめサイト)、OTHER。\n"
+    "具体的な日付・who/when/where・因果関係の断定・個別事例(Critical Fact)を含むEvidenceの"
+    "source_tierがTERTIARY_AGGREGATORの場合、そのEvidenceのambiguityフィールドに必ず"
+    "「三次情報源のみに基づく個別事実であり、一次情報での裏付けが未確認」と明記してください。"
+    "一般的な背景説明・定義・広く知られた概念の紹介であれば、TERTIARY_AGGREGATORでも"
+    "ambiguityへの明記は不要です(個別の日付・因果・具体的事例に限定した措置です)。\n\n"
+    "【ER-006-FRESHNESS-GATE-01: Conditional Freshness Gate】\n"
+    "このTopicが法律・規制・政府制度・policy・訴訟・現行ルール(現時点で有効かどうかがFactの"
+    "意味を左右する制度)を含む場合のみ、該当するSourceのpublication_dateが取得可能な最新の"
+    "ものかどうかを確認し、該当Evidenceのambiguityフィールドに「制度・規則の現行性は"
+    "publication_date時点のものであり、その後の改廃は別途確認が必要」等、現行性に関する"
+    "留保を明記してください。それ以外の一般的なEvergreen Topicでは、この留保の記載は"
+    "不要です。"
 )
 
 EVIDENCE_PACK_PROMPT_TEMPLATE = """【対象Topic】
@@ -75,10 +92,16 @@ def evidence_pack_schema():
             "doi": {"type": ["string", "null"]},
             "primary_or_corroborating": {"type": "string"},
             "access_status": {"type": "string"},
+            # ER-006-RESEARCH-GATE-01(Source Quality Gate)で追加。
+            "source_tier": {
+                "type": "string",
+                "enum": ["PRIMARY", "GOVERNMENT_OR_INSTITUTIONAL", "ACADEMIC",
+                          "NEWS_REPORTING", "TERTIARY_AGGREGATOR", "OTHER"],
+            },
         },
         "required": ["source_id", "title", "url", "source_type", "publication_date",
                       "authors_or_organization", "journal_or_venue", "doi",
-                      "primary_or_corroborating", "access_status"],
+                      "primary_or_corroborating", "access_status", "source_tier"],
         "additionalProperties": False,
     }
     evidence_item = {

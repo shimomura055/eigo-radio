@@ -31,6 +31,7 @@ USD_JPY = 160.0
 LOG_PATH = "er006_output/pool_pilot_01/raw_usage_log.jsonl"
 
 LUNA_IN, LUNA_CACHED, LUNA_OUT = 0.20, 0.02, 1.20
+SOL_IN, SOL_CACHED, SOL_OUT = 5.00, 0.50, 30.00
 GEMINI_IN, GEMINI_OUT = 1.00, 20.00
 AZURE_HOUR = 1.00
 SEARCH_PER_1K = 10.00
@@ -54,7 +55,17 @@ def record_cost_usd(r: dict) -> tuple[float, float]:
         ct = r.get("cached_input_tokens") or 0
         ot = r.get("output_tokens") or 0
         billable_in = max(it - ct, 0)
-        cost = (billable_in / 1_000_000) * LUNA_IN + (ct / 1_000_000) * LUNA_CACHED + (ot / 1_000_000) * LUNA_OUT
+        # ER-006-POOL-PREPROD-HARDENING-01で発見: raw_usage_logのmodel_idを見ると、
+        # Writer段階は全てgpt-5.6-sol(本番Fact Checker、web_search対応)であり、
+        # Support段階もscaffold/key phrase生成の大半がSolだった(Luna専用と誤って
+        # 決め打ちしていた)。model_id別に単価を分岐する(以前はLuna単価固定で
+        # 計算しており、Sol呼び出し分のCostを約25倍過小評価していた)。
+        model_id = r.get("model_id") or ""
+        if "sol" in model_id:
+            in_price, cached_price, out_price = SOL_IN, SOL_CACHED, SOL_OUT
+        else:
+            in_price, cached_price, out_price = LUNA_IN, LUNA_CACHED, LUNA_OUT
+        cost = (billable_in / 1_000_000) * in_price + (ct / 1_000_000) * cached_price + (ot / 1_000_000) * out_price
         search_calls = r.get("web_search_call_count") or 0
         search_cost = (search_calls / 1000) * SEARCH_PER_1K
         return cost, search_cost
