@@ -39,10 +39,18 @@ import er006_model_routing_contract_01 as routing
 
 THEMES = gen.THEMES
 
-# ER-006-MODEL-ROUTING-CONTRACT-01: B1/A2 Support(Comment/Preview/Key Phrase
-# 選定・正規化含む)はApproved Model(Luna)をSSOTから明示指定する。
-_B1_SUPPORT_MODEL = routing.require_model("B1_SUPPORT", routing.SUPPORT_MODEL)
-_A2_SUPPORT_MODEL = routing.require_model("A2_SUPPORT", routing.SUPPORT_MODEL)
+# ER-006-MODEL-ROUTING-CONTRACT-01 / 追補(SSOT迂回防止): B1/A2 Support
+# (Comment/Preview/Key Phrase選定・正規化含む)はApproved Model(Luna)をSSOTから
+# 明示指定する。モジュール変数へ事前計算せず、呼び出しの都度この関数を経由させる
+# ことで、各API call直前にfail-closed検証が実行される。
+
+
+def _b1_support_model() -> str:
+    return routing.require_model("B1_SUPPORT", routing.SUPPORT_MODEL)
+
+
+def _a2_support_model() -> str:
+    return routing.require_model("A2_SUPPORT", routing.SUPPORT_MODEL)
 
 
 # ============================================================
@@ -177,7 +185,11 @@ def get_client():
 # Key Phrase選定(article_idを動的に渡すための薄いwrapper)
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
-                              model: str = None) -> dict:
+                              process: str = None) -> dict:
+    """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
+    渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
+    このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
+    場合はbk.make_selector_fnの既定値(Sol系譜)のまま、後方互換を保つ。"""
     os.makedirs(out_dir, exist_ok=True)
     template = bk.load_prompt_template()
     user_message = bk.build_user_message(article_text, template=template)
@@ -185,6 +197,7 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
         f.write(user_message)
 
     def make_selector_factory():
+        model = routing.require_model(process, routing.SUPPORT_MODEL) if process else None
         return bk.make_selector_fn(user_message, model=model)
 
     parsed, status, attempts, model_id, response_id = prod.run_production_selection_gate(
@@ -209,7 +222,9 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
 
 
 def run_key_phrase_canonicalization(article_text: str, original_items: list, out_dir: str, article_id: str,
-                                     model: str = None) -> dict:
+                                     process: str = None) -> dict:
+    """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
+    CONTRACT-01追補)。"""
     template = kc.load_prompt_template()
     user_message = kc.build_user_message(original_items, article_text, template=template)
     with open(f"{out_dir}/canonicalization_prompt.txt", "w", encoding="utf-8") as f:
@@ -217,8 +232,8 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
 
     def make_factory():
         kwargs = {}
-        if model is not None:
-            kwargs["model"] = model
+        if process is not None:
+            kwargs["model"] = routing.require_model(process, routing.SUPPORT_MODEL)
         return kc.make_canonicalization_fn(user_message, **kwargs)
 
     parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(make_factory, original_items)
@@ -241,11 +256,13 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
 
 
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
-                     model: str = None) -> dict:
-    sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, model=model)
+                     process: str = None) -> dict:
+    """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
+    CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。"""
+    sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process)
     if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
         return {"selection": sel, "canonicalization": None}
-    canon = run_key_phrase_canonicalization(article_text, sel["original_items"], out_dir, article_id, model=model)
+    canon = run_key_phrase_canonicalization(article_text, sel["original_items"], out_dir, article_id, process=process)
     return {"selection": sel, "canonicalization": canon}
 
 
@@ -255,28 +272,28 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
 def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dict:
     print(f"[N3-SCAFFOLD] B1 Comment 1生成開始({out_dir})...")
     c1_context = f"【Full Story Part 1(これから聞く本文)】\n{parts['part1']}"
-    c1 = b1s.run_support_text(client, b1s.COMMENT_1_ROLE, c1_context, model=_B1_SUPPORT_MODEL)
+    c1 = b1s.run_support_text(client, b1s.COMMENT_1_ROLE, c1_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 2生成開始({out_dir})...")
     c2_context = f"【Full Story Part 1(聞き終えた本文)】\n{parts['part1']}\n\n【Full Story Part 2(これから聞く本文)】\n{parts['part2']}"
-    c2 = b1s.run_support_text(client, b1s.COMMENT_2_ROLE, c2_context, model=_B1_SUPPORT_MODEL)
+    c2 = b1s.run_support_text(client, b1s.COMMENT_2_ROLE, c2_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 3生成開始({out_dir})...")
     c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
                   f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
                   f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}")
-    c3 = b1s.run_support_text(client, b1s.COMMENT_3_ROLE, c3_context, model=_B1_SUPPORT_MODEL)
+    c3 = b1s.run_support_text(client, b1s.COMMENT_3_ROLE, c3_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 4生成開始({out_dir})...")
     c4_context = (f"【Point One(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
                   f"【Point Two(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}")
-    c4 = b1s.run_support_text(client, b1s.COMMENT_4_ROLE, c4_context, model=_B1_SUPPORT_MODEL)
+    c4 = b1s.run_support_text(client, b1s.COMMENT_4_ROLE, c4_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Preview生成開始({out_dir})...")
     preview_prompt_role = b1s.PREVIEW_ROLE.format(
         comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
     preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
-    preview = b1s.run_support_text(client, preview_prompt_role, preview_context, model=_B1_SUPPORT_MODEL)
+    preview = b1s.run_support_text(client, preview_prompt_role, preview_context, model=_b1_support_model())
 
     results = {"preview": preview, "comment_1": c1, "comment_2": c2, "comment_3": c3, "comment_4": c4}
     os.makedirs(out_dir, exist_ok=True)
@@ -293,28 +310,28 @@ def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dic
 def run_a2_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dict:
     print(f"[N3-SCAFFOLD] A2 Comment 1生成開始({out_dir})...")
     c1_context = f"【Full Story Part 1(これから聞く本文、英語)】\n{parts['part1']}"
-    c1 = a2gen.run_support_text(client, a2gen.COMMENT_1_ROLE, c1_context, model=_A2_SUPPORT_MODEL)
+    c1 = a2gen.run_support_text(client, a2gen.COMMENT_1_ROLE, c1_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 2生成開始({out_dir})...")
     c2_context = f"【Full Story Part 1(聞き終えた本文)】\n{parts['part1']}\n\n【Full Story Part 2(これから聞く本文)】\n{parts['part2']}"
-    c2 = a2gen.run_support_text(client, a2gen.COMMENT_2_ROLE, c2_context, model=_A2_SUPPORT_MODEL)
+    c2 = a2gen.run_support_text(client, a2gen.COMMENT_2_ROLE, c2_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 3生成開始({out_dir})...")
     c3_role = A2_COMMENT_3_ROLE_N3.format(
         point_one_heading=parts["point_one_heading"], point_two_heading=parts["point_two_heading"])
     c3_context = f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}"
-    c3 = a2gen.run_support_text(client, c3_role, c3_context, model=_A2_SUPPORT_MODEL)
+    c3 = a2gen.run_support_text(client, c3_role, c3_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 4生成開始({out_dir})...")
     c4_context = (f"【Point One(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
                   f"【Point Two(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}")
-    c4 = a2gen.run_support_text(client, a2gen.COMMENT_4_ROLE, c4_context, model=_A2_SUPPORT_MODEL)
+    c4 = a2gen.run_support_text(client, a2gen.COMMENT_4_ROLE, c4_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Preview生成開始({out_dir})...")
     preview_prompt_role = a2gen.PREVIEW_ROLE.format(
         comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
     preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
-    preview = a2gen.run_support_text(client, preview_prompt_role, preview_context, model=_A2_SUPPORT_MODEL)
+    preview = a2gen.run_support_text(client, preview_prompt_role, preview_context, model=_a2_support_model())
 
     results = {"preview": preview, "comment_1": c1, "comment_2": c2, "comment_3": c3, "comment_4": c4}
     os.makedirs(out_dir, exist_ok=True)
@@ -345,8 +362,8 @@ def run_theme_scaffold(client, theme: dict) -> dict:
 
         kp_dir = f"{out_dir}/key_phrases"
         article_id = f"N3_{theme_id}_{label}"
-        kp_model = _B1_SUPPORT_MODEL if label == "b1b" else _A2_SUPPORT_MODEL
-        kp = run_key_phrases(article_text, kp_dir, article_id, source_level, model=kp_model)
+        kp_process = "B1_SUPPORT" if label == "b1b" else "A2_SUPPORT"
+        kp = run_key_phrases(article_text, kp_dir, article_id, source_level, process=kp_process)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[N3-SCAFFOLD] {theme_id}/{label}: key phrase status={kp_status}")
 

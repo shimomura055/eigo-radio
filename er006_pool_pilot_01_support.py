@@ -120,8 +120,8 @@ def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str)
 
             kp_dir = f"{level_out_dir}/key_phrases"
             article_id = f"ER006_{theme_id}_{label}"
-            kp_model = routing.require_model("B1_SUPPORT" if label == "b1b" else "A2_SUPPORT", routing.SUPPORT_MODEL)
-            kp = sc.run_key_phrases(article_text, kp_dir, article_id, source_level, model=kp_model)
+            kp_process = "B1_SUPPORT" if label == "b1b" else "A2_SUPPORT"
+            kp = sc.run_key_phrases(article_text, kp_dir, article_id, source_level, process=kp_process)
             kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
 
             fc = run_support_fact_check(client, support, article_text, ledger_text)
