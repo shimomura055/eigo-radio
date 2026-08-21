@@ -41,7 +41,9 @@ def generate(text: str, out_path: str, max_attempts: int = 8) -> dict:
         use_minimal = attempt > 4
         call_fn = gclient.make_tts_call_fn(AOEDE)
         if use_minimal:
-            prompt = repro01.MINIMAL_INSTRUCTION_PREFIX + text
+            # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
+            # Structured Separationを適用する。
+            prompt = p4c.build_tts_prompt(text, repro01.MINIMAL_INSTRUCTION_PREFIX)
             instruction_type = "minimal_fallback"
         else:
             prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)

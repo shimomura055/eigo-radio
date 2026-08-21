@@ -1,7 +1,7 @@
 # OPEN_ITEMS — 未確定事項・技術的負債
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-18(ER-005-TTS-CLEAN-COST-AUDIT-01、AKB48 A2 Key Phrase ASR障害をOPEN-43として登録)**
+**最終更新: 2026-08-21(ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01、OPEN-05・OPEN-06を更新)**
 
 検討中・候補・未確定仕様・技術的負債を記録する。確定済み仕様は書かない
 (→[CURRENT_SPEC.md](CURRENT_SPEC.md))。
@@ -22,8 +22,8 @@
 | OPEN-16 | ~~A2-01でFull Storyの情報比重が崩れていた件~~ | `DECIDED / CLOSED`(2026-08-12) | 検証結果→CURRENT_SPEC反映済み | 対応不要 | 「Full Storyだけでニュースの核心が分かる」原則として[CURRENT_SPEC.md](CURRENT_SPEC.md)へ正式反映済み |
 | OPEN-03 | CEFR-B2の音声化(Preview/Key Phrase/Full Story/Podcast組み立て)が一度も実施されていない | `TBD`(2026-08-17: B2は`LAUNCH_SCOPE: OUT_OF_INITIAL_SCOPE`のため、初期Launchの必須事項ではないことが確定。ER-003-B1-B2-SCOPE-FIX-01参照) | 未着手 | Non-blocking(初期Launch対象外のため、A2/B1のLaunchには影響しない) | External Pilot・Product Strategyを経て、B2をLaunch対象へ再追加するかを判断してから着手する(下記OPEN-42参照) |
 | OPEN-04 | `used_form`/`key_phrase`の100%重複 | `DECIDED`(整理しない方針は確定済み) | 技術的負債 | Non-blocking | 実際に分ける必要が生じるまで対応しない(意図的放置) |
-| OPEN-05 | 短文TTS hallucinationの根本原因(モデル側の挙動)が未解明 | `UNDER_REVIEW` | 技術的負債 | Non-blocking(strict検証+fallbackで運用上は吸収済み) | 発生時にstrict検証+fallbackで対応を継続。原因調査は優先度低 |
-| OPEN-06 | ASR homophone ambiguityを機械的に判別する手段が未実装(同音異義語リスト等) | `TBD` | 技術的負債 | Non-blocking(human reviewフローで運用上は吸収済み) | 次に同種の事象が実際に発生してから検討(先回り実装はしない) |
+| OPEN-05 | 短文TTS hallucination・`INVALID_ARGUMENT`の根本原因(モデル側の挙動)が未解明。**2026-08-21更新**: ER-005-AUDIO-VALIDATION-ROBUSTNESS-02で、style instruction(読み上げ対象外の話し方指示)をTTSモデルが読み上げ対象の本文と混同する「instruction leakage」が強く疑われる状況証拠を得た(hallucination音声がstyle instruction文面をほぼ逐語的に含んでいた実例を確認)。緩和策としてStructured Separation(instructionとtextを明示的delimiterで分離、`ER-005-AUDIO-INSTRUCTION-SEPARATION-01`)をProduction Baselineとして採用し、Controlled Testで技術的失敗率9/18→0/18の改善を確認した。**ただし、これはproviderの内部挙動に対する緩和策であり、Geminiモデル側の確定的な誘発条件そのものは未解明のまま**。「完全解決」ではなく「現時点で最も安定したBaselineの採用」という位置づけで、本項目は`UNDER_REVIEW`のまま維持する(Structured Separation採用後もinstruction leakageが再発しないか、今後の量産で監視を続ける) | `UNDER_REVIEW`(provider behavior監視継続。Production blockerではない) | 技術的負債・provider挙動 | Non-blocking(Structured Separation採用+strict検証+fallbackで運用上は緩和済み) | Structured Separation採用後の量産で再発有無を監視する。Gemini側の公式仕様・ドキュメントに変化があれば再評価する(`system_instruction`フィールドの正式TTS対応等) |
+| OPEN-06 | ASR homophone ambiguityを機械的に判別する手段が未実装(同音異義語リスト等)。**2026-08-21更新**: ER-005-AUDIO-VALIDATION-ROBUSTNESS-02/ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01で、短い日本語segment(Key Phrase・gloss等)向けに、個別語のリストに依存しない一般的な発音(読み)ベースのValidation(`PHONETIC_MATCH`、`ER-005-JA-SHORT-ASR-PHONETIC-01`)をProductionへ実装・反映した。既知の同音異義語ケース(内向化/内効果、鏡像/京三等)に加え、fixture外の未知データでも正しく機能することを確認済み。**対象は短いsegment(30文字以下)のみ**であり、長文Narration全体の同音異義語判別は依然として未対応 | `DECIDED`(短いsegment向けの一般的な発音ベース判定として実装済み。長文Narrationは対象外のまま`TBD`) | 技術的負債→大部分解消 | Non-blocking | 長文Narrationへの同種の判別が必要になった場合は、別途スコープを切って検討する(今回のPHONETIC_MATCHは長文への無条件適用を明示的に禁止している) |
 | OPEN-07 | 正式なLUFS masteringが未導入(現状はscalar RMS基準の簡易調整のみ) | `TBD` | 技術的負債 | Non-blocking | 音質改善の必要が生じた際に検討 |
 | OPEN-08 | ADD03初回Full Story生成(1回目3試行不合格分)の詳細ログが失われている(`stage_a_generate_body_audio`のバグ、2回目実行分からは修正済み) | `HISTORICAL`(バグ自体は修正済み) | 記録欠落 | Non-blocking | 再発防止は完了。過去分の復元は行わない |
 | OPEN-09 | Dynamics3不使用の決定について、比較検討の詳細記録(なぜscalar RMSを選んだかの根拠レポート)が見当たらない | `TBD` | 記録欠落 | Non-blocking | 発見時に追記。現時点では推測で埋めない |

@@ -22,6 +22,99 @@ def _real_pattern_a_and_used_forms():
     return pattern_a["text"], pattern_a["used_forms"]
 
 
+class StructuredSeparationTests(unittest.TestCase):
+    """ER-005-AUDIO-INSTRUCTION-SEPARATION-01(DECIDED, CURRENT_SPEC.md):
+    build_tts_prompt()がstyle instructionとspoken textを明示的に分離し、
+    かつどちらの内容も一切変更しないことを確認する回帰テスト。"""
+
+    def test_style_prefix_content_fully_preserved(self):
+        style_prefix = "Speak the following text aloud naturally and clearly.\n\n"
+        prompt = p4c.build_tts_prompt("some text", style_prefix)
+        self.assertIn(style_prefix.strip(), prompt)
+
+    def test_spoken_text_content_fully_preserved_verbatim(self):
+        text = "A closer parent-child relationship was linked with fewer behavior problems."
+        prompt = p4c.build_tts_prompt(text, "Style guidance.\n\n")
+        self.assertIn(text, prompt)
+
+    def test_style_and_text_are_delimited(self):
+        prompt = p4c.build_tts_prompt("BODY_TEXT_MARKER", "STYLE_MARKER")
+        self.assertIn("STYLE INSTRUCTIONS", prompt)
+        self.assertIn("TEXT TO SPEAK", prompt)
+        style_section_end = prompt.index("END STYLE INSTRUCTIONS")
+        text_section_start = prompt.index("TEXT TO SPEAK (speak")
+        # spoken textのマーカーは、STYLE区間の終わりより後に現れること
+        # (=本文がSTYLE区間の外側、TEXT TO SPEAK区間の中にあることの確認)
+        body_pos = prompt.index("BODY_TEXT_MARKER")
+        self.assertGreater(body_pos, style_section_end)
+        self.assertGreater(body_pos, text_section_start)
+
+    def test_does_not_instruct_model_to_speak_style_section(self):
+        prompt = p4c.build_tts_prompt("text", "style")
+        self.assertIn("do not speak", prompt.lower())
+
+    def test_japanese_text_preserved_verbatim(self):
+        text = "内在化問題・感情や心の内側に表れやすい問題"
+        prompt = p4c.build_tts_prompt(text, "日本語のstyle instruction")
+        self.assertIn(text, prompt)
+
+    def test_empty_style_prefix_does_not_crash(self):
+        prompt = p4c.build_tts_prompt("text only", "")
+        self.assertIn("text only", prompt)
+
+
+class FallbackPathsUseStructuredSeparationTests(unittest.TestCase):
+    """ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01 section 6: fallback pathも
+    standard pathと同じStructured Separation契約を使うことを、実際の
+    production関数のソースコードを検査して確認する(「本文とstyle
+    instructionを直接文字列連結している」という抜け穴が新たに生まれて
+    いないことの回帰テスト)。"""
+
+    def _assert_uses_build_tts_prompt_not_raw_concat(self, module_name, func_name):
+        import importlib
+        import inspect
+        mod = importlib.import_module(module_name)
+        src = inspect.getsource(getattr(mod, func_name))
+        self.assertIn("build_tts_prompt(", src,
+                       f"{module_name}.{func_name} does not appear to call build_tts_prompt()")
+
+    def test_a2_japanese_minimal_instruction_fallback(self):
+        self._assert_uses_build_tts_prompt_not_raw_concat(
+            "er003_v1_n3_01_tts_generate", "_generate_a2_japanese_minimal_instruction")
+
+    def test_english_component_minimal_instruction_fallback(self):
+        self._assert_uses_build_tts_prompt_not_raw_concat(
+            "er003_v1_repro01_main_generate", "generate_english_component_minimal_instruction")
+
+    def test_charon_japanese_minimal_instruction_fallback(self):
+        self._assert_uses_build_tts_prompt_not_raw_concat(
+            "er003_v1_sing01_voice01_generate", "generate_charon_japanese_minimal_instruction")
+
+    def test_charon_japanese_standard_path(self):
+        self._assert_uses_build_tts_prompt_not_raw_concat(
+            "er003_v1_sing01_voice01_generate", "generate_charon_japanese")
+
+    def test_charon_english_standard_and_fallback(self):
+        self._assert_uses_build_tts_prompt_not_raw_concat(
+            "er003_v1_sing01_voice01_generate", "generate_charon_english")
+
+    def test_point_headings_standard_and_fallback(self):
+        import importlib
+        mod = importlib.import_module("er003_v1_sing01_point_headings_aoede")
+        import inspect
+        src = inspect.getsource(mod.generate)
+        self.assertIn("build_tts_prompt(", src)
+
+    def test_p9a_generate_narration_snippet_both_languages(self):
+        # 英語・日本語どちらの分岐もbuild_tts_prompt()を通ることを確認
+        # (以前は日本語分岐だけ直接連結していた抜け穴)。
+        import inspect
+        import er003_b1_p9a_audio as p9a
+        src = inspect.getsource(p9a.generate_narration_snippet)
+        self.assertEqual(src.count("p4c.build_tts_prompt("), 2,
+                          "expected both the 'en' and 'ja' branches to call p4c.build_tts_prompt()")
+
+
 class ChunkPlanReuseTests(unittest.TestCase):
 
     def test_build_chunk_plan_with_mejirushi_marker(self):

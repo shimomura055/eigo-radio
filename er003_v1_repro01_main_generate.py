@@ -23,6 +23,7 @@ import er002_common as common
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p3r_audio as p3r
 import er003_b1_p3u_audio as p3u
+import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
 
@@ -287,7 +288,9 @@ def generate_english_component_minimal_instruction(
     # fallback経路)は明示指定していないため、この既定値変更で救われる。
     safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
 ) -> dict:
-    prompt = MINIMAL_INSTRUCTION_PREFIX + text
+    # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
+    # Separationを適用する。
+    prompt = p4c.build_tts_prompt(text, MINIMAL_INSTRUCTION_PREFIX)
     call_fn = p9a._make_english_call_fn()
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)

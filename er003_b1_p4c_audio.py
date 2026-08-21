@@ -76,7 +76,28 @@ CONTENT_SIMILARITY_THRESHOLD = 0.5
 
 
 def build_tts_prompt(text: str, style_prefix: str) -> str:
-    return style_prefix + text
+    """TTSへ渡す最終プロンプトを組み立てる。ER-005-AUDIO-INSTRUCTION-
+    SEPARATION-01(DECIDED、CURRENT_SPEC.md)により、style_prefix
+    (話し方の指示、読み上げ対象外)とtext(実際に読み上げる本文)を、
+    明示的なdelimiterで区切るStructured Separation構造を使う。
+
+    style_prefix・textの中身はどちらも一切変更しない(意味・語数・
+    要求内容は不変。変更するのは区切り方のみ)。この関数は現行
+    production TTS経路(B1/A2、英語/日本語、standard/fallbackの主要
+    呼び出し元)が共有する唯一の入力組み立て地点であり、ここを変更する
+    ことで個別経路ごとの実装漏れを防ぐ(ER-005-AUDIO-VALIDATION-
+    ROBUSTNESS-02のControlled Testで検証済みの構造をそのまま採用)。"""
+    return (
+        "The message below has two clearly separated sections.\n\n"
+        "=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, "
+        "it only describes how to perform the reading in the next section) ===\n"
+        f"{style_prefix.strip()}\n"
+        "=== END STYLE INSTRUCTIONS ===\n\n"
+        "=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — "
+        "do not speak anything from the STYLE INSTRUCTIONS section above) ===\n"
+        f"{text}\n"
+        "=== END TEXT TO SPEAK ==="
+    )
 
 
 def _reference_text_for_chunk(chunk: dict) -> str:

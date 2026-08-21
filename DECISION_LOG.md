@@ -636,6 +636,35 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **根拠レポート**: ER-003-B1-B2-SCOPE-FIX-01(ユーザーDecision)
 - **影響するCURRENT_SPEC項目**: CEFR比較表・冒頭の`LAUNCH_SCOPE`注記、[PROJECT_INDEX.md](PROJECT_INDEX.md)のLaunch対象レベル、[ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md)のB2行への注記
 
+## [Implementation Hardening] ER-005-AUDIO-INSTRUCTION-SEPARATION-01: TTS style instructionとspoken textのStructured Separationを正式採用
+
+- **管理ID**: `ER-005-AUDIO-INSTRUCTION-SEPARATION-01`
+- **日付**: 2026-08-21
+- **状態**: `DECIDED` / `CURRENT_SPEC`(Audio実装詳細、サービス仕様の変更ではない)
+- **内容**: Gemini TTSへ渡す入力(`er003_b1_p4c_audio.build_tts_prompt(text, style_prefix)`)で、style instruction(話し方の指示)とspoken text(実際に読み上げる本文)を、`=== STYLE INSTRUCTIONS (do not speak) ===`/`=== TEXT TO SPEAK ===`という明示的なdelimiterで区切る構造(Structured Separation)を、現行production TTS経路(B1/A2、英語/日本語、standard/fallback双方)の標準方式として採用した。既存のこの共有関数を経由しない直接文字列連結(`style_prefix + text`)が2箇所(`er003_b1_p9a_audio.generate_narration_snippet`の日本語分岐、`er003_v1_sing01_voice01_generate.generate_charon_japanese`の標準経路)で見つかり、あわせて`build_tts_prompt()`経由へ統一した
+- **何を変えたか**: TTSへ渡す入力の「区切り方」のみ。共有関数`build_tts_prompt()`を1箇所変更することで、これを呼び出す全経路(B1: `voice01.generate_charon_english/generate_charon_japanese`、`news_tail_fix.generate_news_narration_wide_margin`、`point_headings.generate`。A2/共通: `p9a.generate_narration_snippet`経由の`repro01.generate_narration_snippet_verified_strict`、`repro01.generate_key_phrase_component_verified`、`repro01.generate_english_component_minimal_instruction`、A2日本語fallback)へ一括反映した
+- **何を変えていないか**: style instruction本文(内容・語数・意味)、speaker指定、voice、tone、pacing要求、narration character、spoken text本文(内容・語数・意味)は一切変更していない。Gemini公式`system_instruction`フィールドへの置き換えは行っていない(次項参照)
+- **検証根拠(ER-005-AUDIO-VALIDATION-ROBUSTNESS-02のControlled Test)**: 過去に問題が確認された5segment(A2 `topic_intro`/`point_one`/`full_story_part1`、B1 Key Phrase 5英語・日本語)を対象に、Current方式とStructured Separation方式を同一style instruction・同一spoken textで比較した(各方式合計18回)。Current正常生成4/18(22.2%)、Structured正常生成13/18(72.2%)。技術的失敗(`INVALID_ARGUMENT`・応答parts欠落・500 INTERNAL)は、Current 9/18(50%)からStructured 0/18(0%)へ改善。Structured側で成功した全13件は、ASR検証(EXACT_MATCH)・音声長のいずれも正常範囲内であることを確認した。ユーザー試聴Artifact([Instruction Separation A/B Test](https://claude.ai/code/artifact/24309532-42d8-46f1-9e43-4116afb4c311))でAudio Style(自然さ・落ち着き・ニュースらしさ・話者の印象・テンポ・聞きやすさ)を確認いただいた上で、本Decisionを確定した
+- **留保(重要)**: 試行数は各条件2〜5回と小規模であり、この検証だけでGemini TTSのinstruction leakage問題の**確定的な誘発条件を特定した**とは記録しない。「現時点で最も安定したProduction Baselineとして採用」という位置づけであり、「完全解決」ではない。誘発条件そのものは未解明のまま[OPEN_ITEMS.md](OPEN_ITEMS.md)で監視を継続する
+- **比較した選択肢**: (a) 現状維持(単純連結)、(b) Gemini公式`system_instruction`フィールドで分離、(c) 単一`contents`文字列内を明示的delimiterで区切るStructured Separation(採用)
+- **却下理由(b)**: Google公式ドキュメント(ai.google.dev/gemini-api/docs/speech-generation)にTTSでの`system_instruction`対応記載がなく、実機テストでも同一リクエストから`system_instruction`だけを外すと成功するのに対し、指定すると2/2で`500 INTERNAL`エラーになることを確認した。技術的に不安定/非対応と判断し不採用とした。将来Google側の公式仕様が変更された場合は別タスクで再評価する。現在の実装を今回の判断だけでsystem_instruction方式へ勝手に置き換えないこと
+- **根拠レポート**: ER-005-AUDIO-VALIDATION-ROBUSTNESS-02完了報告(Controlled Test実測データ)、ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01完了報告(Production適用範囲監査・regression test)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > TTS Instruction/Spoken Text分離(Structured Separation)
+
+## [Implementation Hardening] ER-005-JA-SHORT-ASR-PHONETIC-01: 短い日本語segmentの発音ベースASR Validationを正式採用
+
+- **管理ID**: `ER-005-JA-SHORT-ASR-PHONETIC-01`
+- **日付**: 2026-08-21
+- **状態**: `DECIDED` / `CURRENT_SPEC`(Audio実装詳細、サービス仕様の変更ではない)
+- **内容**: 短い日本語segment(Japanese Key Phrase・gloss/meaning等、30文字以下)のASR検証に、漢字表記の完全一致だけに依存しない発音(読み)ベースの判定を追加した。`er003_audio_tts_asr_safety.validate_japanese_short_segment_match()`が、EXACT_MATCH/NORMALIZED_MATCH/PHONETIC_MATCH/TRUE_CONTENT_MISMATCH/ASR_UNCERTAINの5分類を返す。PHONETIC_MATCH(pykakasiによる読み変換が完全一致)は採用しTTS retryしない。TRUE_CONTENT_MISMATCH(数字・否定語の不一致、または読みが大きく異なる)はTTS retry候補のまま。ASR_UNCERTAIN(読みが近いが完全一致ではない中間ケース)は、TTSが誤っていると断定せず既存audioを保持したまま既存fallback/reviewへ委ねる
+- **何を変えたか**: `er003_v1_sing01_voice01_generate.generate_charon_japanese`(B1、standard/fallback双方)、`er003_v1_repro01_main_generate.generate_narration_snippet_verified_strict`(language="ja"の場合、A2共有)、`er003_v1_n3_01_tts_generate.generate_a2_japanese_with_fallback`(A2 fallback)の検証ロジックへ、既存の完全一致/部分一致チェックが不合格の場合の**追加の採用条件**として組み込んだ。既存の合格ケースを壊す変更ではない(既存チェックが通れば従来通り即採用)
+- **何を変えていないか**: 数字の実質的な違い・否定の有無・主要語の欠落・明らかに異なる発音・無関係な発話・hallucinationはPHONETIC_MATCHで吸収しない(hard-fail条件として維持)。長文Narrationへの適用範囲拡大は行っていない(30文字以下のみ)。個別専門用語のwhitelist(1対1のハードコード)は主方式にしていない
+- **検証根拠**: ER-005-AUDIO-WASTE-REDUCTION-01のfixture(内向化問題/内効果問題、外向化問題/外交化問題等、鏡像/京三・恭三、行動上の問題/公道上の問題)全件でPHONETIC_MATCHとして正しく採用されることを確認。数字違い・否定語違い・無関係内容・空ASR・長文への誤適用は全てFAILすることをunit testで確認(negative test)。加えて、ER-005-AUDIO-VALIDATION-ROBUSTNESS-02のControlled Testで得た、fixtureに含まれない未知のASR誤認識パターン(「関連・相関」に対する「関連創刊」「関連、創建」等10件)でも、8/10が正しくEXACT_MATCH/PHONETIC_MATCHと判定され、明らかに無関係な1件・曖昧な2件はそれぞれ正しくTRUE_CONTENT_MISMATCH/ASR_UNCERTAINに分類されることを確認した(fixture外データでの追加検証)
+- **比較した選択肢**: (a) 現状維持(漢字表記完全一致のみ)、(b) 個別専門用語ごとのwhitelist(「内向化→内効果ならPASS」等の1対1登録)、(c) 発音(読み)ベースの一般的な検証ロジック(採用)
+- **却下理由(b)**: 新しい専門用語が出るたびに個別登録が必要になり、量産(新テーマ・新記事)に向かない。一般的な読み・発音正規化で吸収できない特殊ケースだけを将来的な限定fallback候補として扱う方針とし、(b)を主方式にはしない
+- **根拠レポート**: ER-005-AUDIO-WASTE-REDUCTION-01完了報告、ER-005-AUDIO-VALIDATION-ROBUSTNESS-02完了報告、ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01完了報告(Production適用範囲・regression test)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > 短い日本語segmentのASR検証: 発音ベースPhonetic Validation
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

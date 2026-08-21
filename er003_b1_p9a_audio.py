@@ -211,7 +211,10 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
     elif language == "ja":
         style_prefix, model_name = JAPANESE_STYLE_PREFIX, JAPANESE_MODEL_NAME
         call_fn = tts_call_fn or _make_japanese_call_fn()
-        prompt = style_prefix + text
+        # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: 英語分岐と同じ
+        # build_tts_prompt()経由にする(以前は直接連結しており、
+        # 日本語だけStructured Separationが適用されない抜け穴だった)。
+        prompt = p4c.build_tts_prompt(text, style_prefix)
     else:
         raise ValueError(f"unsupported language: {language}")
 

@@ -79,8 +79,11 @@ _A2_JA_MINIMAL_INSTRUCTION_PREFIX = (
 def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
     import er002_common as common
     import er003_b1_p3u_audio as p3u
+    import er003_b1_p4c_audio as p4c
     import er003_b1_p9a_audio as p9a
-    prompt = _A2_JA_MINIMAL_INSTRUCTION_PREFIX + text
+    # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
+    # Separationを適用する。
+    prompt = p4c.build_tts_prompt(text, _A2_JA_MINIMAL_INSTRUCTION_PREFIX)
     call_fn = p9a._make_japanese_call_fn()
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)

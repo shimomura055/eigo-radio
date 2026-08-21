@@ -57,7 +57,9 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
                                   "reason": str(err) if not ok else "発話区間検出失敗",
                                   "instruction_type": instruction_type})
             call_fn2 = gclient.make_tts_call_fn(CHARON)
-            prompt2 = repro01.MINIMAL_INSTRUCTION_PREFIX + text
+            # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
+            # Structured Separationを適用する。
+            prompt2 = p4c.build_tts_prompt(text, repro01.MINIMAL_INSTRUCTION_PREFIX)
             pcm2, retries2, ok2, err2 = common._call_tts_with_retry(
                 call_fn2, prompt2, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
             instruction_type = "minimal_fallback"
@@ -116,7 +118,9 @@ MINIMAL_INSTRUCTION_PREFIX_JA = (
 
 
 def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> dict:
-    prompt = MINIMAL_INSTRUCTION_PREFIX_JA + text
+    # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路もStructured
+    # Separationを適用する(instruction内容・text内容は無変更)。
+    prompt = p4c.build_tts_prompt(text, MINIMAL_INSTRUCTION_PREFIX_JA)
     call_fn = p7a.make_tts_call_fn_for_model(p9a.JAPANESE_MODEL_NAME, CHARON)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
@@ -145,7 +149,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
     attempts_log = []
     for attempt in range(1, max_attempts + 1):
         call_fn = p7a.make_tts_call_fn_for_model(p9a.JAPANESE_MODEL_NAME, CHARON)
-        prompt = p9a.JAPANESE_STYLE_PREFIX + text
+        # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: build_tts_prompt()経由
+        # にする(以前は直接連結、Structured Separationの抜け穴だった)。
+        prompt = p4c.build_tts_prompt(text, p9a.JAPANESE_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         if not ok:

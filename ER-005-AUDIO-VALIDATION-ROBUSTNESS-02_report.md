@@ -184,7 +184,7 @@ Controlled Test(Part A)で実施したGemini TTS呼び出しは36回(5segment×�
 10. 個別専門用語whitelistを主方式としていない: **確認済み**(Part B-2、ハードコード不在をunit testで確認)
 11. 過去failure fixtureでbefore/afterを確認: **完了**(Part B-2・D)
 12. Waste削減額をTTS/ASR別に提示: **完了**(Part D、Part Aは反映前のため対象外)
-13. 新規API Costを明示: **完了**(Part E、約9.3円)
+13. 新規API Costを明示: **完了**(Part E、推定約41.3円。2026-08-21訂正: 当初この行にPart E修正前の古い値(約9.3円)が残っていたが、Part Eの実測音声長ベースの推定値(約41.3円)に統一した)
 14. CURRENT_SPECのサービス仕様は変更していない: **確認済み**
 
 ---
