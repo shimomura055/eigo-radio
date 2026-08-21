@@ -50,6 +50,7 @@ from scipy.signal import resample_poly
 
 import er002_common as common
 import er002_gemini_client as gclient
+import er003_audio_tts_asr_safety as safety
 import er003_b1_p3u_audio as p3u
 import er003_b1_p4c_audio as p4c
 import er003_b1_p7a_audio as p7a
@@ -224,6 +225,12 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         samples_raw, common.SAMPLE_RATE, safety_margin_seconds=safety_margin_seconds)
     if trimmed is None:
         return {"status": "STOPPED", "reason": f"ナレーション({text!r})に発話区間を検出できませんでした"}
+
+    # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長音声を
+    # ASR実行前に検知して破棄する。
+    anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, language)
+    if anomaly["is_anomaly"]:
+        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly}
 
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)

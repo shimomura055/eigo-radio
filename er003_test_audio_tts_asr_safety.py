@@ -265,6 +265,60 @@ class AsrValidationMatrixTests(unittest.TestCase):
         r = safety.validate_asr_match(expected, asr)
         self.assertFalse(r["passed"])
 
+    # ER-005-AUDIO-WASTE-REDUCTION-01: 数字表記(綴り数字↔算用数字)の同値化
+    def test_digit_and_spelled_number_match(self):
+        # B1 full_story_part2の実例: tts_safe側は"2"、ASRは"two"のまま
+        expected = "finally they looked at 2 types"
+        asr = "finally they looked at two types of behavior problems"
+        r = safety.validate_asr_match(expected, asr)
+        self.assertTrue(r["passed"])
+        self.assertEqual(r["verdict"], safety.NORMALIZED_MATCH)
+
+    def test_different_number_value_still_fails(self):
+        # 数字の同値化は「同じ数字の異なる表記」のみを吸収し、
+        # 値そのものが違う数字は引き続きFAILさせる
+        expected = "finally they looked at 2 types"
+        asr = "finally they looked at three types of behavior problems"
+        r = safety.validate_asr_match(expected, asr)
+        self.assertFalse(r["passed"])
+
+
+class DurationAnomalyDetectionTests(unittest.TestCase):
+    """ER-005-AUDIO-WASTE-REDUCTION-01: TTS hallucination(異常長音声)の
+    ASR実行前の早期検知。閾値は実測E2Eログでcalibrationしたもの
+    (see ER-005-AUDIO-WASTE-REDUCTION-01_report.md Part B)。"""
+
+    def test_real_hallucination_kp5_ja_detected(self):
+        # B1 kp5_japanese実例: 「関連・相関」(5文字)が136.96秒/127.96秒
+        for dur in (136.96, 127.96):
+            r = safety.detect_duration_anomaly(dur, "関連・相関", "ja")
+            self.assertTrue(r["is_anomaly"])
+
+    def test_real_hallucination_kp5_en_detected(self):
+        # B1 kp5_english実例: "association"(1語)が17.331秒
+        r = safety.detect_duration_anomaly(17.331, "association", "en")
+        self.assertTrue(r["is_anomaly"])
+
+    def test_normal_short_ja_key_phrase_not_flagged(self):
+        # kp5_japaneseの正常な3回目の試行(2.76秒)
+        r = safety.detect_duration_anomaly(2.76, "関連・相関", "ja")
+        self.assertFalse(r["is_anomaly"])
+
+    def test_normal_long_form_english_not_flagged(self):
+        # B1 full_story_part2の正常な実測値(122語、55.93秒)
+        text = " ".join(["word"] * 122)
+        r = safety.detect_duration_anomaly(55.93, text, "en")
+        self.assertFalse(r["is_anomaly"])
+
+    def test_normal_short_en_key_phrase_not_flagged(self):
+        r = safety.detect_duration_anomaly(2.19, "significantly predict", "en")
+        self.assertFalse(r["is_anomaly"])
+
+    def test_reason_message_present_on_anomaly(self):
+        r = safety.detect_duration_anomaly(100.0, "association", "en")
+        self.assertTrue(r["is_anomaly"])
+        self.assertIn("秒", r["reason"])
+
 
 if __name__ == "__main__":
     unittest.main()

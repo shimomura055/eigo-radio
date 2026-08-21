@@ -53,6 +53,13 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
             samples_raw = common.pcm_bytes_to_float_mono(pcm)
             trimmed, trim_info = p3u.trim_english_keyword_silence(
                 samples_raw, common.SAMPLE_RATE, safety_margin_seconds=LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS)
+            # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる
+            # 異常長音声を、ASR実行前に検知して破棄する。
+            if trimmed is not None:
+                anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
+                if anomaly["is_anomaly"]:
+                    trimmed = None
+                    err = anomaly["reason"]
         else:
             trimmed, trim_info = None, None
 

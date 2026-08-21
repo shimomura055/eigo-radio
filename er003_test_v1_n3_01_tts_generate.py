@@ -1,0 +1,41 @@
+# ============================================================
+# er003_test_v1_n3_01_tts_generate.py
+# ER-005-AUDIO-WASTE-REDUCTION-01: first_words()のハイフン複合語対策
+# ============================================================
+# A2 point_oneで実際に発生した偽陰性("parent-child"がASR側では
+# "parent child"と書き起こされ、substring検証が常に不一致になる)への
+# 回帰テスト。
+
+import unittest
+
+import er003_v1_n3_01_tts_generate as tts
+
+
+class FirstWordsHyphenHandlingTests(unittest.TestCase):
+    def test_hyphenated_compound_becomes_space_separated(self):
+        # 実例: A2 point_one_body
+        text = ("A closer parent-child relationship was linked with fewer "
+                "behavior problems.")
+        result = tts.first_words(text)
+        self.assertEqual(result, "A closer parent child")
+
+    def test_result_matches_asr_style_transcription(self):
+        text = "A closer parent-child relationship was linked with fewer behavior problems."
+        sub = tts.first_words(text)
+        asr_text = ("A closer parent child relationship was linked with fewer "
+                     "behavior problems, but closeness did not significantly "
+                     "predict later screen time.")
+        self.assertIn(sub.lower(), asr_text.lower())
+
+    def test_non_hyphenated_text_unaffected(self):
+        text = "The main result was clear in its direction."
+        self.assertEqual(tts.first_words(text), "The main result was")
+
+    def test_number_word_conversion_still_applied(self):
+        # 既存の数字変換(two -> 2)が、ハイフン処理の追加後も維持されている
+        text = "Two closer relationships were measured over time."
+        self.assertEqual(tts.first_words(text), "2 closer relationships were")
+
+
+if __name__ == "__main__":
+    unittest.main()

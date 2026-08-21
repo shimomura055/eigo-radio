@@ -93,6 +93,11 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
         samples_raw, common.SAMPLE_RATE, safety_margin_seconds=p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS)
     if trimmed is None:
         return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+    # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長音声を
+    # ASR実行前に検知して破棄する。
+    anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "ja")
+    if anomaly["is_anomaly"]:
+        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly}
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {"status": "OK", "text": text, "path": out_path, "trim_info": trim_info,
@@ -157,7 +162,13 @@ def first_words(text: str, n: int = 4) -> str:
     # 綴られた小さな数もTTS入力側と同じく算用数字へ変換する(Household
     # themeのa2 topic_introで実際に発生した偽陰性: "Two"のままだと
     # TTS入力側で変換済みの"2"というASR書き起こしと一致しなかった)。
-    safe = tts_safe_number_words_en(tts_safe_en(text))
+    # ER-005-AUDIO-WASTE-REDUCTION-01(2026-08-21)で発見: ハイフン複合語
+    # ("parent-child")もASRはハイフンなしの分かち書き("parent child")で
+    # 書き起こすことが多く、canonical text側にハイフンが残っていると
+    # 常に不一致になる(A2 point_oneで実際に毎回発生し、無関係なTTS再
+    # 生成を招いていたことを確認済み)。ハイフンをスペースへ置き換えて
+    # から先頭n語を取る(語の欠落・置換ではなく表記統一のみ)。
+    safe = tts_safe_number_words_en(tts_safe_en(text)).replace("-", " ")
     words = safe.strip().split()
     cleaned = [w.strip(_EN_STRIP_PUNCT) for w in words[:n]]
     return " ".join(w for w in cleaned if w)

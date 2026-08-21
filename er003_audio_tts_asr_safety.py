@@ -106,6 +106,58 @@ def looks_self_referential(text: str) -> bool:
 
 
 # ============================================================
+# B1. 異常長音声(hallucination)の早期検知
+# ============================================================
+# ER-005-AUDIO-WASTE-REDUCTION-01(2026-08-21)で発見: TTSモデルが与えた
+# テキストを読み上げず、無関係な内容(多くの場合、渡したstyle instruction
+# 自体のパラフレーズ・翻訳)を生成する"instruction leakage"型hallucination
+# が発生すると、音声長が本来の想定を大きく超える(実例: 数秒で読める
+# はずの短いKey Phraseが100秒超になった)。この種の異常は、ASRを実行する
+# 前に音声長だけで機械的に検知できる。
+#
+# 閾値は、今回のE2E実測ログにおける「正常に生成された(hallucinationで
+# ない)attempt」の実測sec/word(英語)・sec/character(日本語)の最大値
+# (英語 約1.10 sec/word、日本語 約0.55 sec/char、いずれも短いKey Phrase
+# で固定オーバーヘッドの影響が大きい場合の値)に、十分な安全マージンを
+# 掛けたもの。実測hallucination(kp5_en 17.33秒=17.3 sec/word、kp5_ja
+# 136.96秒/127.96秒=27.4/25.6 sec/char)とは10倍以上の差があり、閾値の
+# 微調整だけで正常な生成を誤って弾くリスクは低いと判断した。
+EN_MAX_SEC_PER_WORD = 1.5
+JA_MAX_SEC_PER_CHAR = 1.2
+EN_FIXED_OVERHEAD_SECONDS = 4.0
+JA_FIXED_OVERHEAD_SECONDS = 3.0
+
+
+def estimate_max_reasonable_duration_seconds(text: str, language: str) -> float:
+    """テキストの語数(英語)・文字数(日本語)から、正常な発話であれば
+    まず超えないはずの音声長の上限を見積もる。閾値は意図的に緩く
+    (かなり遅い発話でも正常判定されるように)設定しており、正常な発話
+    速度のばらつきを誤検知しないことを優先する。"""
+    text = text or ""
+    if language == "ja":
+        return len(text) * JA_MAX_SEC_PER_CHAR + JA_FIXED_OVERHEAD_SECONDS
+    word_count = max(1, len(text.split()))
+    return word_count * EN_MAX_SEC_PER_WORD + EN_FIXED_OVERHEAD_SECONDS
+
+
+def detect_duration_anomaly(raw_duration_seconds: float, text: str, language: str) -> dict:
+    """生成直後(ASR実行前)に呼び出す。異常に長い音声(hallucinationの
+    疑い)を検知した場合、ASRへ送らずこの時点で当該attemptを破棄できる
+    ようにするための判定結果を返す。"""
+    max_reasonable = estimate_max_reasonable_duration_seconds(text, language)
+    is_anomaly = raw_duration_seconds > max_reasonable
+    return {
+        "is_anomaly": is_anomaly,
+        "raw_duration_seconds": raw_duration_seconds,
+        "max_reasonable_seconds": round(max_reasonable, 2),
+        "reason": (f"生成音声長({raw_duration_seconds:.2f}秒)が、テキスト量から見積もった"
+                   f"妥当な上限({max_reasonable:.2f}秒)を超えています。TTSモデルが指示文の"
+                   f"パラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこの"
+                   f"attemptを破棄します。") if is_anomaly else "正常範囲内",
+    }
+
+
+# ============================================================
 # B. TTS生成のfallbackオーケストレーション
 # ============================================================
 
@@ -163,9 +215,32 @@ _BRITISH_AMERICAN_SUFFIX_RULES = [
     ("our", "or"),
 ]
 
+# ER-005-AUDIO-WASTE-REDUCTION-01(2026-08-21)で発見: TTS入力側の
+# tts_safe_number_words_en()は綴り数字(two〜twelve)を算用数字(2〜12)へ
+# 変換してからTTSへ渡すが、この変換はTTSモデルの発音を安定させるためだけの
+# ものであり、canonical_textやASR検証用の期待テキストには適用されない
+# 場合がある。一方、Azure STTは口頭で発話された小さな数字を綴りのまま
+# ("two")書き起こすことが多い。結果、TTS入力側の期待テキストに変換後の
+# "2"が残っていると、正しく読み上げられた音声でも常に不一致になる
+# (B1 full_story_part2で実際に6回連続で発生し、全て無意味な再生成に
+# つながっていたことを確認済み)。これは「数字そのものの違い」を見逃す
+# 過剰正規化ではなく、「同じ数字の異なる表記」を吸収する処理である
+# (値が異なる数字同士は一致させない=数字の欠落・置換は引き続き検知する)。
+_NUMBER_WORD_TO_DIGIT = {
+    "one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6",
+    "seven": "7", "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
+}
+
+
+def _numeric_form(w: str) -> str:
+    return _NUMBER_WORD_TO_DIGIT.get(w, w)
+
 
 def _words_equivalent(a: str, b: str) -> bool:
     if a == b:
+        return True
+    if _numeric_form(a) == _numeric_form(b) and (a in _NUMBER_WORD_TO_DIGIT or b in _NUMBER_WORD_TO_DIGIT
+                                                   or a.isdigit() or b.isdigit()):
         return True
     for uk_suffix, us_suffix in _BRITISH_AMERICAN_SUFFIX_RULES:
         if a.endswith(uk_suffix) and b.endswith(us_suffix) and a[:-len(uk_suffix)] == b[:-len(us_suffix)]:
@@ -253,3 +328,44 @@ def validate_asr_match(expected_text: str, asr_text, n: int = 6, asr_error: str 
                    reason="no matching subsequence found even after spelling normalization "
                           "(word omission, addition, number/negation difference, or unrelated content)")
     return result
+
+
+# ============================================================
+# D. Production Telemetry(統一Attempt Ledgerスキーマ、提案・オプトイン)
+# ============================================================
+# ER-005-AUDIO-WASTE-REDUCTION-01(2026-08-21)で発見: 現行の各生成関数
+# (p9a.generate_narration_snippet/voice01.generate_charon_*/repro01.
+# generate_key_phrase_component_verified 等)は、それぞれ独自のattempt
+# 辞書形式でログを書いており(attempts_log/standard_attempts_log+
+# fallback_attempts_log/call_count+retry_countの3variant)、
+# segment単位のCost・音声秒数を完全には復元できない箇所があった
+# (B1のpoint_one_heading/point_two_headingは音声長が一切保存されて
+# いなかった)。
+#
+# ここでは、今後の生成関数が「追加」で使える統一スキーマを提案する
+# (既存の各生成関数のattempts_log自体を置き換える大規模改修は今回の
+# スコープ外。呼び出し側が任意でnew_attempt_record()を使い、既存の
+# attempts_logへ1件追記する形で段階的に導入できる)。
+def new_attempt_record(
+    *, episode_id: str, level: str, segment_name: str, attempt_number: int,
+    path: str,  # "standard" | "fallback" | "minimal_instruction" 等
+    tts_model: str = None, tts_input_tokens: int = None, tts_output_tokens: int = None,
+    generated_audio_seconds: float = None, tts_cost_jpy: float = None,
+    asr_audio_seconds: float = None, asr_cost_jpy: float = None, asr_transcript: str = None,
+    validation_result: str = None,  # "PASS" | "FAIL" | "DURATION_ANOMALY" | "TTS_ERROR" 等
+    failure_reason: str = None,
+    retry_decision: str = None,  # "retry_tts" | "no_retry_minor_diff" | "retry_asr_only" | "stop_human_review" 等
+) -> dict:
+    """1回のTTS(+ASR)試行を表す統一レコードを1件生成する。値が不明な
+    フィールドはNoneのまま残し(推測で埋めない)、既存のattempts_log
+    エントリへ追記する形で使うことを想定する。"""
+    return {
+        "episode_id": episode_id, "level": level, "segment_name": segment_name,
+        "attempt_number": attempt_number, "path": path,
+        "tts_model": tts_model, "tts_input_tokens": tts_input_tokens,
+        "tts_output_tokens": tts_output_tokens, "generated_audio_seconds": generated_audio_seconds,
+        "tts_cost_jpy": tts_cost_jpy, "asr_audio_seconds": asr_audio_seconds,
+        "asr_cost_jpy": asr_cost_jpy, "asr_transcript": asr_transcript,
+        "validation_result": validation_result, "failure_reason": failure_reason,
+        "retry_decision": retry_decision,
+    }

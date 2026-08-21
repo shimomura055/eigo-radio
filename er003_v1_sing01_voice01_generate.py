@@ -73,6 +73,15 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
                                       "instruction_type": instruction_type})
                 continue
 
+        # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長
+        # 音声を、ASR実行前に検知して破棄する(kp5_en実例: association
+        # という1語が17秒超の無関係な内容になった)。
+        anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
+        if anomaly["is_anomaly"]:
+            attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": anomaly["reason"],
+                                  "instruction_type": instruction_type, "duration_anomaly": anomaly})
+            continue
+
         common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
         asr_text, asr_err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
         match = safety.validate_asr_match(text, asr_text, n=min(6, max(1, len(text.split()))), asr_error=asr_err)
@@ -147,6 +156,14 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
             samples_raw, common.SAMPLE_RATE, safety_margin_seconds=SAFETY_MARGIN)
         if trimmed is None:
             attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": "発話区間検出失敗"})
+            continue
+        # ER-005-AUDIO-WASTE-REDUCTION-01: hallucination(指示文の
+        # パラフレーズ等、無関係な内容の生成)を疑わせる異常長音声を、
+        # ASR実行前に検知して破棄する(kp5_ja実例: 数秒のはずが100秒超)。
+        anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "ja")
+        if anomaly["is_anomaly"]:
+            attempts_log.append({"attempt": attempt, "status": "STOPPED",
+                                  "reason": anomaly["reason"], "duration_anomaly": anomaly})
             continue
         common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
         asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
