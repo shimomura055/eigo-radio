@@ -344,10 +344,13 @@ def build_writer_prompt(master_full_text: str, verified_ledger_text: str) -> str
     )
 
 
-def run_writer_no_search(client, user_message: str) -> dict:
-    """Web検索toolを渡さない(tools引数を省略するだけで実現でき、技術的障害はなかった)。"""
+def run_writer_no_search(client, user_message: str, model: str = MODEL) -> dict:
+    """Web検索toolを渡さない(tools引数を省略するだけで実現でき、技術的障害はなかった)。
+    modelはER-006-MODEL-ROUTING-CONTRACT-01以降、呼び出し側がSSOT
+    (er006_model_routing_contract_01)経由で明示指定できる(未指定時は
+    モジュール既定のMODEL)。"""
     response = client.responses.create(
-        model=MODEL,
+        model=model,
         reasoning={"effort": REASONING_EFFORT},
         input=[
             {"role": "developer", "content": WRITER_DEVELOPER_MESSAGE},
@@ -360,11 +363,11 @@ def run_writer_no_search(client, user_message: str) -> dict:
     return {"raw_text": text, "model": response.model, "response_id": response.id}
 
 
-def run_writer_with_technical_retry(client, user_message: str, max_attempts: int = 2) -> dict:
+def run_writer_with_technical_retry(client, user_message: str, max_attempts: int = 2, model: str = MODEL) -> dict:
     attempts = []
     for attempt in range(1, max_attempts + 1):
         try:
-            result = run_writer_no_search(client, user_message)
+            result = run_writer_no_search(client, user_message, model=model)
         except Exception as e:
             attempts.append({"attempt": attempt, "status": "TECHNICAL_FAILED", "error": f"{type(e).__name__}: {e}"})
             if attempt < max_attempts:
@@ -435,10 +438,10 @@ LEDGER_DEVIATIONとしてください。すべてLedgerの範囲内であれば�
 overall_statusをLEDGER_COMPLIANTとしてください。"""
 
 
-def run_deviation_check(client, verified_ledger_text: str, article_text: str) -> dict:
+def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL) -> dict:
     prompt = DEVIATION_PROMPT_TEMPLATE.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
     response = client.responses.create(
-        model=MODEL,
+        model=model,
         reasoning={"effort": REASONING_EFFORT},
         text={"format": {"type": "json_schema", **DEVIATION_JSON_SCHEMA}},
         input=[

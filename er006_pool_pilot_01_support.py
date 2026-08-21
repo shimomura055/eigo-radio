@@ -16,6 +16,7 @@ import time
 
 import er005_cost_logger as cl
 import er003_v1_n3_01_scaffold_generate as sc
+import er006_model_routing_contract_01 as routing
 
 SUPPORT_FACT_CHECK_DEVELOPER_MESSAGE = (
     "あなたはeigo-radioのSupport Content Fact Checkerです。生成されたSupport"
@@ -85,7 +86,8 @@ def run_support_fact_check(client, support: dict, article_text: str, ledger_text
         article_text=article_text, ledger_text=ledger_text,
     )
     resp = client.responses.create(
-        model="gpt-5.6-luna", reasoning={"effort": "medium"},
+        model=routing.require_model("SUPPORT_FACT_CHECK", routing.SUPPORT_FACT_CHECK_MODEL),
+        reasoning={"effort": "medium"},
         text={"format": {"type": "json_schema", **support_fact_check_schema()}},
         input=[{"role": "developer", "content": SUPPORT_FACT_CHECK_DEVELOPER_MESSAGE},
                {"role": "user", "content": prompt}],
@@ -118,7 +120,8 @@ def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str)
 
             kp_dir = f"{level_out_dir}/key_phrases"
             article_id = f"ER006_{theme_id}_{label}"
-            kp = sc.run_key_phrases(article_text, kp_dir, article_id, source_level)
+            kp_model = routing.require_model("B1_SUPPORT" if label == "b1b" else "A2_SUPPORT", routing.SUPPORT_MODEL)
+            kp = sc.run_key_phrases(article_text, kp_dir, article_id, source_level, model=kp_model)
             kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
 
             fc = run_support_fact_check(client, support, article_text, ledger_text)

@@ -665,6 +665,55 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **根拠レポート**: ER-005-AUDIO-WASTE-REDUCTION-01完了報告、ER-005-AUDIO-VALIDATION-ROBUSTNESS-02完了報告、ER-005-AUDIO-ROBUSTNESS-SPEC-FIX-01完了報告(Production適用範囲・regression test)
 - **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > 短い日本語segmentのASR検証: 発音ベースPhonetic Validation
 
+## [Implementation Hardening] ER-006-MODEL-ROUTING-CONTRACT-01: Production Model RoutingをLunaへ統一・Fail-Closed契約化
+
+- **管理ID**: `ER-006-MODEL-ROUTING-CONTRACT-01`
+- **日付**: 2026-08-22
+- **状態**: `DECIDED` / `CURRENT_SPEC`(Model Routingの実装契約、B1/A2構造やSupport内容等のサービス仕様の変更ではない)
+- **監査で判明した経緯**: B1/A2 Writer・Writer Fact Check・Deviation Check・B1/A2
+  Support(Comment/Preview/Key Phrase選定・正規化)は、コード上は元々(ER-002/003時代
+  から一貫して)`gpt-5.6-sol`を使う設計だった(`er002_ja_free_markdown_restore.
+  WRITER_MODEL = "gpt-5.6-sol"`という単一のhardcoded literalへ、Writer/Support/Key
+  Phrase Selector等の全チェーンが連鎖的に依存)。`gpt-5.6-luna`は元々Query
+  Planning/Topic Selection(`gather_topic.py`のMODEL_SEARCH)専用として設計されており、
+  Writer/Support系をLunaにするという明文化された決定は、`CURRENT_SPEC.md`・
+  `DECISION_LOG.md`のどちらにも存在しなかった(ER-005-WRITER/SUPPORT-COST-QUALITY-01
+  はLunaでの品質同等性を検証しない前提の未検証な試験提案だった)。ER-006-POOL-PILOT-
+  COST-ROOTFIX-01でこれを「Sol混入」と呼んだのは不正確で、正しくは「Cost集計スクリプト
+  がLuna単価を誤って適用していた」バグと、「Writer/Support系Model RoutingをLunaへ
+  正式決定するかどうかがこれまで未決だった」という2つの別の問題だった
+- **今回のユーザー決定**: Writer(B1/A2)・Writer Fact Check・Support(B1/A2、Key
+  Phrase選定・正規化含む)・Support Fact Checkの4工程は、ER-005での方針に整合させる
+  形で`gpt-5.6-luna`をApproved Modelとして正式に固定する。Solはこれら工程では使用禁止
+  とし、Fail-Closed契約(規定外modelが渡された場合はAPI call前に例外を送出、model
+  未指定もFAIL)を適用する。Research系(Evidence Pack/VFL/Verification)・Query
+  Planning・Topic SelectionはLunaのまま変更なし
+- **何を変えたか**: [er006_model_routing_contract_01.py](er006_model_routing_contract_01.py)
+  にProcess別Approved Model/ProviderのSingle Source of Truthと`require_model()`/
+  `require_provider()`(fail-closed validator)を新設。production到達可能な各呼び出し
+  箇所([er003_v1_n3_01_articles_generate.py](er003_v1_n3_01_articles_generate.py)の
+  Writer/Fact Check/Deviation Check、[er003_v1_n3_01_scaffold_generate.py]
+  (er003_v1_n3_01_scaffold_generate.py)のB1/A2 Support・Key Phrase選定・正規化、
+  [er006_pool_pilot_01_research.py](er006_pool_pilot_01_research.py)のEvidence
+  Pack/VFL/Verification/Exception Search、[er006_pool_pilot_01_support.py]
+  (er006_pool_pilot_01_support.py)のSupport Fact Check)へ、SSOT経由の明示的な
+  `model=`指定を追加した
+- **何を変えていないか**: 各leaf関数(`vfl01.run_writer_no_search`等)自体の既定値
+  (`MODEL`、Sol系譜)はそのまま残し、`model`引数を追加しただけ(後方互換)。この
+  既定値を使う他の呼び出し元(Translation pipeline・過去のCEFR/spoken-first等の実験
+  タスク、30件以上)はSolのまま変更していない(今回のスコープ外。過度な大規模
+  refactorを避けるため、共有root定数自体は変更せず、production到達可能な呼び出し
+  箇所だけへ明示的にoverrideを注入する方式を採った)
+- **品質検証状況(重要な留保)**: LunaがSolと同等の記事・Support品質を出せるかは、
+  本タスクでは検証していない。次回以降のPool topic生成・既存テーマ(hanshin/health/
+  household)再生成時の実際の出力で確認が必要
+- **Cost影響**: 6episode(ER-006 Pool Pilot)のHistorical Actual Spend(実際に支払った
+  金額、¥2,639.6)は書き換えない。Counterfactual(今回のApproved Routingだった場合の
+  理論値)は¥883.8で、差額¥1,755.8がSol使用による超過コストだった
+- **根拠レポート**: ER-006-MODEL-ROUTING-CONTRACT-01完了報告(Model監査・
+  Fail-Closed契約実装・Regression/Static Audit test・Cost再計算)
+- **影響するCURRENT_SPEC項目**: Model Routing Contract(新設セクション)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

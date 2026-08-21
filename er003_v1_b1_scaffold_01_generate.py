@@ -204,13 +204,16 @@ Comment 1・Comment 2は以下の通りです。これらと重複する内容�
 {comment_2}"""
 
 
-def run_support_text(client, role_instruction: str, context_block: str, max_attempts: int = 2) -> dict:
+def run_support_text(client, role_instruction: str, context_block: str, max_attempts: int = 2,
+                      model: str = MODEL) -> dict:
+    """modelはER-006-MODEL-ROUTING-CONTRACT-01以降、呼び出し側がSSOT経由で
+    明示指定できる(未指定時はモジュール既定のMODEL)。"""
     prompt = build_support_prompt(role_instruction, context_block)
     attempts = []
     for attempt in range(1, max_attempts + 1):
         try:
             response = client.responses.create(
-                model=MODEL,
+                model=model,
                 reasoning={"effort": REASONING_EFFORT},
                 input=[
                     {"role": "developer", "content": SUPPORT_DEVELOPER_MESSAGE},

@@ -57,10 +57,15 @@ def build_user_message(approved_b1_article: str, template: Optional[str] = None)
     return template.replace("{approved_b1_article}", approved_b1_article)
 
 
-def make_selector_fn(user_message: str, client: Optional[Any] = None):
+def make_selector_fn(user_message: str, client: Optional[Any] = None, model: str = None):
     """P2I production selectorの実体(model/reasoning_effort/
-    developer_message/schema)をそのまま再利用する。"""
-    return prod.make_production_selector_fn(user_message, client=client)
+    developer_message/schema)をそのまま再利用する。modelを明示指定した
+    場合はそちらを使う(ER-006-MODEL-ROUTING-CONTRACT-01、未指定時は
+    prod.make_production_selector_fnの既定値)。"""
+    kwargs = {"client": client}
+    if model is not None:
+        kwargs["model"] = model
+    return prod.make_production_selector_fn(user_message, **kwargs)
 
 
 # P2Iのruntime metadata付与・hard requirement validatorをそのまま再利用する。

@@ -25,11 +25,20 @@ import er002_ja_web_research_r3 as r3
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_spoken_first_01_r1_generate as sf1r1
+import er006_model_routing_contract_01 as routing
 
 load_dotenv()
 
 MODEL = vfl01.MODEL
 REASONING_EFFORT = vfl01.REASONING_EFFORT
+
+# ER-006-MODEL-ROUTING-CONTRACT-01: B1/A2 Writer・Writer Fact Check・
+# Deviation CheckはApproved Model(Luna)をSSOTから明示指定し、API call
+# 直前にfail-closedで検証する。このMODULE_MODELは上のMODEL(Sol系譜)とは
+# 独立しており、run_one_pattern()はこちらだけを使う(MODELは他の目的で
+# 参照されている可能性があるため変更しない)。
+_WRITER_MODEL = routing.require_model("B1_WRITER", routing.WRITER_MODEL)
+_WRITER_FACT_CHECK_MODEL = routing.require_model("WRITER_FACT_CHECK", routing.WRITER_FACT_CHECK_MODEL)
 
 POINT_TARGET_LOWER = 30
 POINT_TARGET_UPPER = 60
@@ -256,8 +265,8 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
         f.write(prompt)
 
-    print(f"[N3-01][{theme_id}] {label}: writer呼び出し開始...")
-    writer_result = vfl01.run_writer_with_technical_retry(client, prompt)
+    print(f"[N3-01][{theme_id}] {label}: writer呼び出し開始(model={_WRITER_MODEL})...")
+    writer_result = vfl01.run_writer_with_technical_retry(client, prompt, model=_WRITER_MODEL)
     with open(f"{out_dir}/audit/writer_attempts.json", "w", encoding="utf-8") as f:
         json.dump(writer_result["attempts"], f, ensure_ascii=False, indent=2, default=str)
 
@@ -289,7 +298,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     fc_prompt = r3.build_fact_check_prompt(topic, article_text, [])
 
     def make_fc_fn():
-        return r3.make_fact_checker_fn(fc_prompt)
+        return r3.make_fact_checker_fn(fc_prompt, model=_WRITER_FACT_CHECK_MODEL)
 
     fc_result, fc_status, fc_attempts, fc_model, fc_response_id, fc_search_usage, fc_sources = \
         r3.run_fact_checker_with_gates(make_fc_fn, sleep_fn=time.sleep)
@@ -305,8 +314,8 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/fact_check_attempts.json", "w", encoding="utf-8") as f:
         json.dump(fc_attempts, f, ensure_ascii=False, indent=2, default=str)
 
-    print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始...")
-    deviation_result = vfl01.run_deviation_check(client, verified_ledger_text, article_text)
+    print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始(model={_WRITER_MODEL})...")
+    deviation_result = vfl01.run_deviation_check(client, verified_ledger_text, article_text, model=_WRITER_MODEL)
     print(f"[N3-01][{theme_id}] {label}: deviation overall_status={deviation_result['parsed']['overall_status']} "
           f"deviations={len(deviation_result['parsed']['deviations'])}")
     with open(f"{out_dir}/ledger_deviation.json", "w", encoding="utf-8") as f:

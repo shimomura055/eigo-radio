@@ -18,6 +18,7 @@ import requests
 
 import er005_cost_logger as cl
 import er003_v1_en_direct_vfl_01_generate as vfl01
+import er006_model_routing_contract_01 as routing
 
 SERVICE_POLICY = (
     "eigo-radioの記事候補として、最新性・ニュース価値・信頼性に加え、エンターテインメント性、"
@@ -147,7 +148,7 @@ def run_stage_b2_evidence_pack(theme_id: str, out_dir: str, title: str, sources:
         title=title, sources_json=json.dumps(sources, ensure_ascii=False, indent=2))
     with cl.logging_context(theme_id, "research_evidence_pack"):
         resp = client.responses.create(
-            model="gpt-5.6-luna",
+            model=routing.require_model("EVIDENCE_PACK", routing.RESEARCH_MODEL),
             reasoning={"effort": "medium"},
             text={"format": {"type": "json_schema", **evidence_pack_schema()}},
             input=[
@@ -236,7 +237,7 @@ def run_stage_b3_vfl(theme_id: str, out_dir: str, title: str, evidence_pack: dic
     )
     with cl.logging_context(theme_id, "research_vfl"):
         resp = client.responses.create(
-            model="gpt-5.6-luna",
+            model=routing.require_model("VFL", routing.RESEARCH_MODEL),
             reasoning={"effort": "medium"},
             text={"format": {"type": "json_schema", **vfl_schema()}},
             input=[
@@ -311,7 +312,7 @@ def run_stage_b4_verification(theme_id: str, out_dir: str, vfl: dict, evidence_p
     )
     with cl.logging_context(theme_id, "research_verification"):
         resp = client.responses.create(
-            model="gpt-5.6-luna",
+            model=routing.require_model("VERIFICATION", routing.RESEARCH_MODEL),
             reasoning={"effort": "medium"},
             text={"format": {"type": "json_schema", **verification_schema()}},
             input=[
@@ -343,6 +344,7 @@ def run_exception_search(theme_id: str, out_dir: str, queries: list) -> dict:
     if len(queries) > 2:
         raise ValueError("Exception Searchは最大2 requestまで(仕様15章)")
 
+    routing.require_provider("EXCEPTION_SEARCH", "perplexity")
     all_results = []
     for q_batch in queries:
         t0 = time.time()

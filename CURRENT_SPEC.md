@@ -264,6 +264,37 @@ Point One/Two・In One Line(=News Content)でも同一の値が使われてお�
 | 最終人間試聴 | 機械QA全合格でも「完成」「量産再現性合格」とは判断せず、必ずユーザー試聴を経る | `DECIDED` | 全ステージで一貫 | - |
 | 量産再現性判定 | A. 量産候補として採用可能(A02・ADD03の2記事連続成功に基づく)。ただし完全自動化ではなく最終人間試聴を必須ゲートとして維持 | `DECIDED` | ER-003-REPRO-FINAL(commit `c4a762c`) | 2026-08-09 |
 
+## Model Routing Contract
+
+Single Source of Truth: [er006_model_routing_contract_01.py](er006_model_routing_contract_01.py)
+(`PROCESS_MODEL_MAP`/`PROCESS_PROVIDER_MAP`、`require_model()`/`require_provider()`)。
+
+| Process | Approved Model/Provider | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| Query Planning | GPT-5.6 Luna | `DECIDED` | ER-005以前から(gather_topic.py) | - |
+| Topic Selection | GPT-5.6 Luna | `DECIDED` | ER-005以前から | - |
+| Evidence Pack / VFL / Verification | GPT-5.6 Luna | `DECIDED` | ER-006-POOL-PILOT-01(新規構築時から) | 2026-08-21 |
+| Exception Search | Perplexity Search API | `DECIDED` | ER-006-POOL-PILOT-01 | 2026-08-21 |
+| B1 Writer / A2 Writer(Deviation Check含む) | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
+| Writer Fact Check | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
+| B1 Support / A2 Support(Key Phrase選定・正規化含む) | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
+| Support Fact Check | GPT-5.6 Luna | `DECIDED` | ER-005-SUPPORT-COST-QUALITY-01系実装をER-006 Pool Pilotで採用、ER-006-MODEL-ROUTING-CONTRACT-01で正式契約化 | 2026-08-22 |
+| TTS | Gemini `gemini-2.5-pro-preview-tts` | `DECIDED` | プロジェクト全体方針 | - |
+| ASR / Audio QA | Azure Speech-to-Text | `DECIDED` | プロジェクト全体方針 | - |
+
+**Fail-Closed契約**: 上記いずれの工程も、規定外Model/Providerが指定された場合、または
+Model未指定でSDK defaultへ落ちる場合は、API call実行前に`ModelContractViolation`を
+送出する(fallbackとして高価なmodelへ自動昇格しない)。Regression test:
+[er006_model_routing_contract_01_test.py](er006_model_routing_contract_01_test.py)、
+Static audit: [er006_model_routing_contract_01_static_audit.py](er006_model_routing_contract_01_static_audit.py)。
+
+**適用範囲の注記**: Writer/Support系のSSOT配線は、production到達可能な呼び出し箇所
+(N3/Pool pipeline: `er003_v1_n3_01_articles_generate.py`・
+`er003_v1_n3_01_scaffold_generate.py`・`er006_pool_pilot_01_*.py`)にのみ適用した。
+Translation pipeline・CEFR/spoken-first系の過去の実験タスク等、この契約の対象外と
+した箇所は、既存のSol既定値のまま変更していない(該当箇所は
+ER-006-MODEL-ROUTING-CONTRACT-01完了報告のAudit一覧を参照)。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、
