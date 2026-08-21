@@ -30,6 +30,7 @@ import er003_b1_p4c_audio as p4c
 import er003_b1_p9a_audio as p9a
 import er003_audio_tts_asr_safety as safety
 import er003_v1_repro01_main_generate as repro01
+import er006_preprod_hardening_01_validation as audio_validation
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -43,6 +44,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
     max_len = len(text) + max_extra_chars
     attempts_log = []
+    classification_history = []
     for attempt in range(1, max_attempts + 1):
         call_fn = p9a._make_english_call_fn()
         prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
@@ -76,11 +78,14 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
             common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
 
         asr_text, asr_err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
-        match = safety.validate_asr_match(text, asr_text, n=6, asr_error=asr_err)
+        # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: safety.validate_asr_match
+        # から正規化+6分類+Protected Check+retry guardrail方式へ切り替え。
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified = match["passed"] and length_ok
+        verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
+            text, asr_text, classification_history)
+        verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                              "instruction_type": instruction_type, "asr_verdict": match["verdict"],
+                              "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "length_ok": length_ok, "verified": verified,
                               "trim_info": trim_info})
         if verified:
@@ -89,6 +94,14 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
                     "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"]}
+        if stop_retrying:
+            metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
+            return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "asr_verified": False,
+                    "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
+                    "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
+                    "clipping_detected": metrics["clipping_detected"],
+                    "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
+                              f"(最終classification={cls.classification})"}
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
             "attempts_log": attempts_log}
 

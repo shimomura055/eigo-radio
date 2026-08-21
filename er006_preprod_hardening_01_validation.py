@@ -14,11 +14,15 @@
 # 自動PASSしない(TRUE_CONTENT_MISMATCH)。(a)のみで説明できる場合のみ
 # NORMALIZED_MATCHとして扱う。
 #
-# **本番のretry loop(voice01.py / news_tail_fix.py / point_headings.py /
-# repro01.py / crosslevel_audio_02_common.py)へはまだ配線していない。**
-# これらは全テーマ(hanshin/health/household含む)で共有される既存モジュールで、
-# 配線変更はretry回数・PASS/FAIL判定という生成結果そのものに影響するため、
-# 別途ユーザー確認の上で配線する対象として切り分けている。
+# ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01で、英語(language=="en")の
+# retry loop(voice01.py::generate_charon_english、news_tail_fix.py、
+# point_headings_aoede.py、repro01.py::generate_narration_snippet_verified_
+# strict/generate_key_phrase_component_verified、crosslevel_audio_02_
+# common.py::generate_english_segment_with_fallback)へ配線済み(下記の
+# evaluate_attempt()がその統一エントリポイント)。これらは全テーマ
+# (hanshin/health/household含む)で共有される既存モジュール。日本語
+# (language=="ja")の経路は既存のphonetic_verdict方式のまま未変更
+# (このvalidatorは英語専用のため)。
 from __future__ import annotations
 
 import difflib
@@ -281,3 +285,31 @@ def should_stop_retrying(attempt_results: list[ClassificationResult], max_same_s
     if any(r.should_pass for r in recent):
         return False  # 通常は呼ばれる前にPASS確定しているはずだが念のため
     return True
+
+
+# ------------------------------------------------------------
+# Production wiring用ヘルパー(ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01で
+# 実際のretry loopへ配線した際に使う統一エントリポイント)
+# ------------------------------------------------------------
+def evaluate_attempt(canonical_text: str, asr_text: str, prior_results: list,
+                      max_same_signature: int = 3) -> tuple[bool, bool, "ClassificationResult"]:
+    """1回のTTS attemptの評価結果を返す。
+    prior_resultsは呼び出し側がループの外で初期化し、毎回このリストへ
+    追記していく(同一segment内の履歴、standard/fallback別に分けて渡すこと)。
+
+    戻り値: (verified, stop_retrying, classification)
+      verified=True        → このattemptをそのまま採用してよい(retry不要)
+      stop_retrying=True   → PASSはしないが、これ以上retryしても改善しない
+                              (ASR_VALIDATION_UNCERTAIN、同一signatureが
+                              max_same_signature回連続)。直前に書き込み済みの
+                              audioをそのまま採用し、STATUS="ASR_VALIDATION_
+                              UNCERTAIN"として返すこと(STOPPEDとは区別する)。
+      それ以外              → 通常通りretryを継続する。
+    """
+    result = classify_asr_match(canonical_text, asr_text)
+    prior_results.append(result)
+    if result.should_pass:
+        return True, False, result
+    if not result.should_retry and should_stop_retrying(prior_results, max_same_signature=max_same_signature):
+        return False, True, result
+    return False, False, result

@@ -26,6 +26,7 @@ import er003_b1_p3u_audio as p3u
 import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
+import er006_preprod_hardening_01_validation as audio_validation
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -191,37 +192,62 @@ def generate_narration_snippet_verified_strict(
     # 既定値変更の影響を受けない。
     safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
 ) -> dict:
+    # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
+    # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
+    # 固有名詞以外の内容語差は一致率に関わらずPASSさせない一方、発音区別
+    # 符号・ハイフン・序数・英米綴り等の表記差だけならPASSする)。同一
+    # signatureがmax_same_signature回連続した場合はretryを打ち切り、
+    # status="ASR_VALIDATION_UNCERTAIN"として直前のaudioをそのまま返す
+    # (STOPPEDとは区別し、Human Review対象として扱う)。日本語(ja)は
+    # 既存のphonetic_verdict方式を維持する(このvalidatorは英語専用の
+    # ため)。
     import er003_b1_p4_audio as p4
     asr_language = "en-US" if language == "en" else "ja-JP"
     max_len = len(text) + max_extra_chars
     attempts_log = []
+    classification_history = []
     for attempt in range(1, max_attempts + 1):
         r = p9a.generate_narration_snippet(text, language, out_path, safety_margin_seconds=safety_margin_seconds)
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
         asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language=asr_language)
-        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified = substring_ok and length_ok
         phonetic_verdict = None
-        if language == "ja" and not verified:
-            # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
-            # (Key Phrase meaning等)については発音ベースの一致も採用条件
-            # にする。textが長い場合はvalidate_japanese_short_segment_
-            # match自身がASR_UNCERTAINを返し何も変わらないため、language
-            # =="ja"であれば無条件に呼んでよい。
-            phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
-            phonetic_verdict = phonetic["verdict"]
-            verified = verified or phonetic["passed"]
+        stop_retrying = False
+        audio_classification = None
+        if language == "en":
+            verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
+                text, asr_text, classification_history)
+            verified = verified_content and length_ok
+            audio_classification = cls.classification
+            substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
+        else:
+            substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
+            verified = substring_ok and length_ok
+            if not verified:
+                # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
+                # (Key Phrase meaning等)については発音ベースの一致も採用条件
+                # にする。textが長い場合はvalidate_japanese_short_segment_
+                # match自身がASR_UNCERTAINを返し何も変わらないため、language
+                # =="ja"であれば無条件に呼んでよい。
+                phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
+                phonetic_verdict = phonetic["verdict"]
+                verified = verified or phonetic["passed"]
         attempts_log.append({
             "attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
             "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,
             "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok,
-            "phonetic_verdict": phonetic_verdict, "verified": verified,
+            "phonetic_verdict": phonetic_verdict, "audio_classification": audio_classification,
+            "verified": verified,
         })
         if verified:
             return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}
+        if stop_retrying:
+            return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
+                    "attempts_log": attempts_log,
+                    "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
+                              f"(最終classification={audio_classification})"}
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証(内容+長さ)に合格しませんでした",
            "attempts_log": attempts_log}
 
@@ -342,6 +368,7 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
         return standard
 
     fallback_attempts = []
+    fallback_classification_history = []
     for attempt in range(1, max_attempts + 1):
         r = generate_english_component_minimal_instruction(
             text, out_path, safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
@@ -349,16 +376,28 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
         asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
-        substring_ok = asr_text is not None and text.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
-        verified = substring_ok and length_ok
-        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "verified": verified})
+        verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
+            text, asr_text, fallback_classification_history)
+        verified = verified_content and length_ok
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+                                   "audio_classification": cls.classification, "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
+            return r
+        if stop_retrying:
+            r["status"] = "ASR_VALIDATION_UNCERTAIN"
+            r["asr_verified"] = False
+            r["asr_text"] = asr_text
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = standard.get("attempts_log")
+            r["fallback_attempts_log"] = fallback_attempts
+            r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
+                            f"(最終classification={cls.classification})")
             return r
     return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
