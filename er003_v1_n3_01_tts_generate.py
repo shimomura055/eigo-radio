@@ -128,7 +128,15 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified = substring_ok and length_ok
-        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "verified": verified})
+        phonetic_verdict = None
+        if not verified:
+            # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segmentは
+            # 発音ベースの一致も採用条件にする。
+            phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
+            phonetic_verdict = phonetic["verdict"]
+            verified = verified or phonetic["passed"]
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+                                   "phonetic_verdict": phonetic_verdict, "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

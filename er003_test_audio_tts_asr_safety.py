@@ -320,5 +320,95 @@ class DurationAnomalyDetectionTests(unittest.TestCase):
         self.assertIn("秒", r["reason"])
 
 
+class JapaneseShortSegmentPhoneticMatchTests(unittest.TestCase):
+    """ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segmentの発音
+    ベース検証。全て実際のER-005 E2Eログで観測されたcanonical/ASRペア
+    (Waste Reduction-01のfixture)を使った回帰テスト。"""
+
+    # --- 実際に観測されたASR誤認識(内容は正しい、表記のみ違う) ---
+    def test_naikouka_vs_naikouka_homophone_kanji(self):
+        r = safety.validate_japanese_short_segment_match("内向化問題", "内効果問題")
+        self.assertEqual(r["verdict"], safety.PHONETIC_MATCH_JA)
+        self.assertTrue(r["passed"])
+
+    def test_gaikouka_vs_various_homophone_kanji(self):
+        for asr_variant in ("外交化問題", "外交下問題", "外交課問題"):
+            with self.subTest(asr=asr_variant):
+                r = safety.validate_japanese_short_segment_match("外向化問題", asr_variant)
+                self.assertEqual(r["verdict"], safety.PHONETIC_MATCH_JA)
+                self.assertTrue(r["passed"])
+
+    def test_kyouzou_vs_homophone_name_like_kanji(self):
+        for asr_variant in ("京三", "恭三"):
+            with self.subTest(asr=asr_variant):
+                r = safety.validate_japanese_short_segment_match("鏡像", asr_variant)
+                self.assertEqual(r["verdict"], safety.PHONETIC_MATCH_JA)
+                self.assertTrue(r["passed"])
+
+    def test_koudou_vs_koudou_homophone(self):
+        r = safety.validate_japanese_short_segment_match("行動上の問題", "公道上の問題")
+        self.assertEqual(r["verdict"], safety.PHONETIC_MATCH_JA)
+        self.assertTrue(r["passed"])
+
+    def test_corrected_term_naizaika_homophone_from_regen(self):
+        # ER-005-E2E-TTS-ANALYSIS-FIX-01での実際の再生成結果
+        r = safety.validate_japanese_short_segment_match("内在化問題", "内在課問題")
+        self.assertEqual(r["verdict"], safety.PHONETIC_MATCH_JA)
+        self.assertTrue(r["passed"])
+
+    def test_exact_orthographic_match_still_works(self):
+        r = safety.validate_japanese_short_segment_match("外在化問題", "外在化問題")
+        self.assertEqual(r["verdict"], safety.EXACT_MATCH_JA)
+        self.assertTrue(r["passed"])
+
+    # --- 個別whitelistではなく一般ロジックであることの確認 ---
+    def test_no_hardcoded_pair_list(self):
+        import inspect
+        src = inspect.getsource(safety.validate_japanese_short_segment_match)
+        self.assertNotIn("内向化", src)
+        self.assertNotIn("鏡像", src)
+
+    # --- 必ずFAILすべきケース(過剰許容の禁止) ---
+    def test_different_number_fails(self):
+        r = safety.validate_japanese_short_segment_match("2つの問題", "3つの問題")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
+    def test_negation_difference_fails(self):
+        r = safety.validate_japanese_short_segment_match("問題である", "問題ではない")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
+    def test_unrelated_content_fails(self):
+        r = safety.validate_japanese_short_segment_match("内向化問題", "関連・相関")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
+    def test_antonym_like_close_reading_does_not_pass(self):
+        # 内向化(naikouka)/外向化(gaikouka)は読みが近いが意味は正反対。
+        # PASSはしないが、機械的な断定もしない(ASR_UNCERTAINでレビューへ)。
+        r = safety.validate_japanese_short_segment_match("内向化問題", "外向化問題")
+        self.assertFalse(r["passed"])
+        self.assertIn(r["verdict"], (safety.TRUE_CONTENT_MISMATCH_JA, safety.ASR_UNCERTAIN_JA))
+
+    def test_empty_asr_fails(self):
+        r = safety.validate_japanese_short_segment_match("内向化問題", "")
+        self.assertFalse(r["passed"])
+
+    def test_none_asr_fails(self):
+        r = safety.validate_japanese_short_segment_match("内向化問題", None)
+        self.assertFalse(r["passed"])
+
+    def test_asr_error_fails(self):
+        r = safety.validate_japanese_short_segment_match("内向化問題", "内向化問題", asr_error="timeout")
+        self.assertFalse(r["passed"])
+
+    def test_long_text_is_out_of_scope_not_silently_passed(self):
+        long_text = "これは非常に長い日本語のナレーション本文であり、この関数の対象外であるべきものです" * 2
+        r = safety.validate_japanese_short_segment_match(long_text, long_text)
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.ASR_UNCERTAIN_JA)
+
+
 if __name__ == "__main__":
     unittest.main()

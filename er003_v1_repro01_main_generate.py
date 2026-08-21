@@ -203,10 +203,21 @@ def generate_narration_snippet_verified_strict(
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified = substring_ok and length_ok
+        phonetic_verdict = None
+        if language == "ja" and not verified:
+            # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
+            # (Key Phrase meaning等)については発音ベースの一致も採用条件
+            # にする。textが長い場合はvalidate_japanese_short_segment_
+            # match自身がASR_UNCERTAINを返し何も変わらないため、language
+            # =="ja"であれば無条件に呼んでよい。
+            phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
+            phonetic_verdict = phonetic["verdict"]
+            verified = verified or phonetic["passed"]
         attempts_log.append({
             "attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
             "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,
-            "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok, "verified": verified,
+            "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok,
+            "phonetic_verdict": phonetic_verdict, "verified": verified,
         })
         if verified:
             return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}

@@ -169,9 +169,15 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
         asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified = substring_ok and length_ok
+        # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
+        # (Key Phrase・gloss等)については、漢字表記の完全一致だけでなく
+        # 発音(読み)ベースの一致も採用条件にする(内向化↔内効果等の
+        # ASR側同音誤認識でTTSを無駄に再生成しないため)。
+        phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err2)
+        verified = (substring_ok and length_ok) or phonetic["passed"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                              "substring_ok": substring_ok, "length_ok": length_ok, "verified": verified,
+                              "substring_ok": substring_ok, "length_ok": length_ok,
+                              "phonetic_verdict": phonetic["verdict"], "verified": verified,
                               "trim_info": trim_info})
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
@@ -189,9 +195,11 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
         asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified = substring_ok and length_ok
+        phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err2)
+        verified = (substring_ok and length_ok) or phonetic["passed"]
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "substring_ok": substring_ok, "length_ok": length_ok, "verified": verified})
+                                   "substring_ok": substring_ok, "length_ok": length_ok,
+                                   "phonetic_verdict": phonetic["verdict"], "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

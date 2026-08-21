@@ -369,3 +369,139 @@ def new_attempt_record(
         "validation_result": validation_result, "failure_reason": failure_reason,
         "retry_decision": retry_decision,
     }
+
+
+# ============================================================
+# E. 日本語短語segmentの発音ベース検証(ER-005-AUDIO-VALIDATION-ROBUSTNESS-02)
+# ============================================================
+# ER-005-AUDIO-WASTE-REDUCTION-01で発見した「内向化問題→内効果問題」
+# 「行動上→公道上」等は、TTSの発音ミスではなく、短く文脈のない日本語
+# 専門用語をAzure STTが同音の一般語へ書き起こしたものである可能性が
+# 高いことを確認済み。これらは漢字表記こそ違うが、発音(読み)は同一
+# であることをpykakasi(かな/ローマ字変換)で裏付けた上で、Key Phrase・
+# glossのような「非常に短い」日本語segmentに限定してPHONETIC_MATCHを
+# 導入する。長文Narration全体には適用しない(過剰な一般化を避ける)。
+#
+# 個別専門用語のwhitelist(「内向化→内効果ならPASS」のような1対1登録)
+# は主方式にしない。一般的な読み変換で吸収できない特殊ケースは
+# ASR_UNCERTAINへ分類し、既存audioを保持したままレビューへ回す
+# (即TTS再生成しない)。
+
+EXACT_MATCH_JA = "EXACT_MATCH"
+NORMALIZED_MATCH_JA = "NORMALIZED_MATCH"
+PHONETIC_MATCH_JA = "PHONETIC_MATCH"
+TRUE_CONTENT_MISMATCH_JA = "TRUE_CONTENT_MISMATCH"
+ASR_UNCERTAIN_JA = "ASR_UNCERTAIN"
+
+# 発音一致とみなす下限(かな読み列のSequenceMatcher ratio)。1.0未満を
+# 許容する余地は用意するが、今回はまず「完全一致のみPHONETIC_MATCH」
+# という厳格な既定値から始める(過剰許容の禁止を優先)。中間の値は
+# ASR_UNCERTAINとして人手レビューへ回す。
+_PHONETIC_EXACT_THRESHOLD = 1.0
+_PHONETIC_UNCERTAIN_THRESHOLD = 0.85
+
+# 日本語のごく短いsegment(Key Phrase・gloss等)にのみ適用する上限文字数。
+# 長文Narrationへの誤適用を防ぐガード。
+JAPANESE_SHORT_SEGMENT_MAX_CHARS = 30
+
+_JP_PUNCTUATION_RE = re.compile(r"[、。・「」『』\s]")
+_NEGATION_MARKERS_JA = ("ない", "じゃない", "ではない", "でない", "せず", "未", "非", "無", "なく")
+
+
+def _kakasi_reading(text: str) -> str:
+    """日本語テキストをローマ字読みへ変換する(pykakasi、遅延import)。
+    数字はアラビア数字のまま残るため、数字違いは読み比較でも検知できる。"""
+    import pykakasi
+    kks = pykakasi.kakasi()
+    return "".join(item["hepburn"] for item in kks.convert(text))
+
+
+def _extract_numbers_ja(text: str) -> set:
+    """算用数字のみを抽出する。漢数字の単独文字(一〜九)は、短い固有名詞
+    的な語(例: ASRの誤認識"京三"の"三")に偶然含まれることがあり、実際
+    に数字を意味しない場合との判別が難しいため、今回の対象(Key Phrase・
+    glossのような短いsegment、大きな漢数字表記の出現頻度が低い)では
+    誤検知リスクの方が高いと判断し対象外とする(過剰な一般化を避ける、
+    指示section11の方針)。canonical側が算用数字で数を表す場合(本
+    プロジェクトのTTS入力正規化との整合)を主対象とする。"""
+    return set(re.findall(r"\d+", text))
+
+
+def _has_negation_ja(text: str) -> bool:
+    return any(marker in text for marker in _NEGATION_MARKERS_JA)
+
+
+def validate_japanese_short_segment_match(canonical_text: str, asr_text, asr_error: str = None) -> dict:
+    """非常に短い日本語segment(Key Phrase・gloss等)専用の検証。長文
+    Narrationには使わないこと(JAPANESE_SHORT_SEGMENT_MAX_CHARSを超える
+    場合はNotImplementedErrorではなくASR_UNCERTAINへフォールバックし、
+    呼び出し側が誤用に気付けるようreasonへ明記する)。
+
+    判定順序(過剰正規化の禁止を優先、Bチームの既存方針を踏襲):
+      1. asr_error/空文字 -> TRUE_CONTENT_MISMATCH(PASSにしない)
+      2. 数字集合が異なる -> TRUE_CONTENT_MISMATCH(発音が近くても不採用)
+      3. 否定語の有無が異なる -> TRUE_CONTENT_MISMATCH
+      4. 文字列完全一致(句読点等の記号のみ除去) -> EXACT_MATCH
+      5. 上記が同じでも表記だけ違う(将来の既存正規化拡張余地) -> NORMALIZED_MATCH
+      6. 読み(ローマ字)が完全一致 -> PHONETIC_MATCH
+      7. 読みの類似度が中間(0.85以上1.0未満) -> ASR_UNCERTAIN
+      8. それ以外 -> TRUE_CONTENT_MISMATCH
+    """
+    result = {
+        "canonical_text": canonical_text, "asr_text": asr_text,
+    }
+    if len(canonical_text or "") > JAPANESE_SHORT_SEGMENT_MAX_CHARS:
+        result.update(verdict=ASR_UNCERTAIN_JA, passed=False,
+                       reason=f"canonical_textが{JAPANESE_SHORT_SEGMENT_MAX_CHARS}文字を超えており、"
+                              "この関数の対象(非常に短いsegment)外です。誤用の可能性があります。")
+        return result
+    if asr_error:
+        result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
+                       reason=f"ASR/API error — PASS禁止: {asr_error}")
+        return result
+    if not asr_text:
+        result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
+                       reason="ASR text is empty/None — PASS禁止")
+        return result
+
+    c_norm = _JP_PUNCTUATION_RE.sub("", canonical_text)
+    a_norm = _JP_PUNCTUATION_RE.sub("", asr_text)
+
+    c_numbers = _extract_numbers_ja(c_norm)
+    a_numbers = _extract_numbers_ja(a_norm)
+    if c_numbers != a_numbers:
+        result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
+                       reason=f"数字が一致しません(canonical={c_numbers or 'なし'}, asr={a_numbers or 'なし'})")
+        return result
+
+    if _has_negation_ja(c_norm) != _has_negation_ja(a_norm):
+        result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
+                       reason="否定表現の有無が一致しません")
+        return result
+
+    if c_norm == a_norm:
+        result.update(verdict=EXACT_MATCH_JA, passed=True, reason="記号除去後に完全一致")
+        return result
+
+    c_reading = _kakasi_reading(c_norm)
+    a_reading = _kakasi_reading(a_norm)
+    result["canonical_reading"] = c_reading
+    result["asr_reading"] = a_reading
+
+    if c_reading == a_reading:
+        result.update(verdict=PHONETIC_MATCH_JA, passed=True,
+                       reason="漢字表記は異なるが、読み(発音)が完全一致")
+        return result
+
+    import difflib
+    ratio = difflib.SequenceMatcher(None, c_reading, a_reading).ratio()
+    result["reading_similarity_ratio"] = round(ratio, 3)
+    if ratio >= _PHONETIC_UNCERTAIN_THRESHOLD:
+        result.update(verdict=ASR_UNCERTAIN_JA, passed=False,
+                       reason=f"読みが近い(類似度{ratio:.2f})が完全一致ではないため、機械的にはPASSと"
+                              "断定しない。既存audioを保持したままレビュー対象とすることを推奨します。")
+        return result
+
+    result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
+                   reason=f"読みが大きく異なります(類似度{ratio:.2f})")
+    return result
