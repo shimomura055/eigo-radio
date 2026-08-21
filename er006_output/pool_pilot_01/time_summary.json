@@ -1,0 +1,48 @@
+{
+  "pool_benches": {
+    "research_total_sec": 68.68,
+    "writer_b1_sec": 274.06,
+    "writer_a2_sec": 246.83,
+    "support_b1_sec": 101.99,
+    "support_a2_sec": 118.55,
+    "tts_b1_sec": 660.19,
+    "tts_a2_sec": 1538.05,
+    "assemble_b1_sec": null,
+    "assemble_a2_sec": null,
+    "stage_sum_sec_CLEAN_RUN_ONLY": 3012.4,
+    "stage_sum_min_CLEAN_RUN_ONLY": 50.2,
+    "observed_wall_clock_span_sec": 10260.3,
+    "observed_wall_clock_span_min": 171.0
+  },
+  "pool_subscriptions": {
+    "research_total_sec": 74.37,
+    "writer_b1_sec": 143.19,
+    "writer_a2_sec": 188.49,
+    "support_b1_sec": 102.44,
+    "support_a2_sec": 125.32,
+    "tts_b1_sec": 537.88,
+    "tts_a2_sec": 1354.07,
+    "assemble_b1_sec": 1.98,
+    "assemble_a2_sec": 2.0,
+    "stage_sum_sec_CLEAN_RUN_ONLY": 2529.7,
+    "stage_sum_min_CLEAN_RUN_ONLY": 42.2,
+    "observed_wall_clock_span_sec": 12047.8,
+    "observed_wall_clock_span_min": 200.8
+  },
+  "pool_startups": {
+    "research_total_sec": 74.34,
+    "writer_b1_sec": 201.74,
+    "writer_a2_sec": 200.68,
+    "support_b1_sec": 93.27,
+    "support_a2_sec": 101.43,
+    "tts_b1_sec": 451.57,
+    "tts_a2_sec": 1402.3,
+    "assemble_b1_sec": 2.13,
+    "assemble_a2_sec": 2.18,
+    "stage_sum_sec_CLEAN_RUN_ONLY": 2529.6,
+    "stage_sum_min_CLEAN_RUN_ONLY": 42.2,
+    "observed_wall_clock_span_sec": 13814.1,
+    "observed_wall_clock_span_min": 230.2
+  },
+  "_note": "stage_sum_*_CLEAN_RUN_ONLYは各ステージの最終(採用された)実行分のみの合計で、Article-specific Rewriteで破棄された1回目のResearch/Writer実行時間や、手動でのraw_sources.json修正作業時間、OpenAI API支出上限による中断待ち時間は含まない。observed_wall_clock_span_*は生ログの最初〜最後のtimestamp差(実測)だが、本Pilotでは「Topic1を先に単独でチェックポイント検証してからTopic2・3をまとめて処理」したため、3トピックの厳密な逐次(1トピックずつ完全に独立)処理ではない区間を含み、かつAPI支出上限による中断(ユーザー対応待ち)も含まれる。したがって今後の18トピック分の所要時間見積もりには、observed_wall_clock_spanよりstage_sum(CLEAN_RUN_ONLY)を基準にする方が妥当と考えられる。"
+}

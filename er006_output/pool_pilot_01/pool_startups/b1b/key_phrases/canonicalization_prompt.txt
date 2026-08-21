@@ -1,0 +1,110 @@
+以下は、英語ポッドキャストのKey Phrase候補です。各候補は、初回リスニングの理解を止める可能性が高い表現として、本文中から既に選ばれています(Listening Blocker Ranking、この工程では変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、学習教材として提示するのに最も自然な学習単位(key_phrase)へ正規化することです。**目標は「できるだけ短くすること」ではなく、「1〜5語の範囲で、意味理解に必要十分な自然な単位にすること」です(最小十分、Minimal Sufficient Unit)。**
+
+**最重要の前提: display_phraseは、既に方式L選定の時点で、時制の基本形化・単数複数の整理・語順の学習用整理などの正規化を経ています(例: 本文の"took off players"を"take a player off"という基本形へ、"Personalized feeds"を"personalized feed"という単数形へ、といった正規化が既に行われています)。この正規化は正しい前提として扱い、理由なくsource_span(本文の生の文字列)の時制・単数複数・大文字小文字・語順へ戻さないでください。**
+
+判断の優先順位は次のとおりです。**まず「display_phraseは既にそのままで自然で、単独で聞いても意味が分かる、最小十分な単位か?」を自問してください。YESであれば、key_phraseはdisplay_phraseと完全に同じにして、一切変更しないでください。** 変更してよいのは、以下の2つの具体的な理由がある場合のみです。
+
+1. 文脈限定語の除去: display_phraseの先頭・末尾に、この記事の文脈だけで必要な限定語(the, a, an, this, that, these, those, 所有限定詞など)が残っており、それを除いても意味・自然さが保てる場合。
+2. 意味理解に必要な語の復元: display_phraseが既に削りすぎていて、単独で聞いたときに「何をする/何に対する」が欠けて意味が抽象的になる場合、source_span(本文中の元のspan)から**必要最小限の語だけ**を復元する。例: source_spanが"the urge to watch"で、display_phraseが"the urge to"の場合、"to"だけでは「何をしたい衝動か」が欠けるため、"urge to watch"(sourceに存在する"watch"を復元)を優先する。ただし記事固有の情報まで必要以上に抱え込まない(例: "urge to watch just one more video"のようにsource_sentence全体に近い長さまで復元するのは不可)。
+
+この2つのいずれにも該当しない場合(display_phraseが既に自然な最小十分の単位である場合)は、**時制・単複・語順・大文字小文字を含め、一切変更しないでください。** "本文により忠実な形に戻す"という理由だけでの変更は禁止です。
+
+その他の規則:
+
+- 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+- 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, depend on, lead to, in charge of, urge to watch)は、不用意に削除しないでください。
+- key_phraseは、原則としてdisplay_phraseと同じか、display_phraseから文脈限定語を除いた形か、source_span内に連続した文字列として存在する形、のいずれかでなければなりません。source_spanにも本文にもdisplay_phraseにも存在しない別の辞書形を、勝手に生成してはいけません。
+- 短くする、または語を復元しないことで、Listening Blockerとしての意味・難しさ・学習価値が失われる場合は、そのままにしないでください(例: digital switch-off periodをswitch offへ変更しない)。
+
+**Meaning Preservation Rule(意味保持の原則、最重要): display_phraseからさらに語を削る場合、その削除によって中心的な意味・文法機能・Listening Blockerとなった理由が失われていないか、必ず明示的に確認してください。** 特に、意味の核を担う語(例: risk, possibility, obligation, pressure, attempt, refusal のような、リスク・可能性・義務・圧力・試み・拒否といった意味役割を表す語)を削ると、残った部分だけでは全く別の意味になることがあります。例: "the risk of losing jobs"から"the"を除くのはよいですが、"risk of"や"risk"自体を落として"losing jobs"にしてはいけません("失業すること"という意味に変わってしまい、「リスク」という中心的な意味が失われるためです)。これは特定の単語のリストで機械的に判定するのではなく、その都度「この語を削ると意味が変わるか」を考えて判断してください。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する(この場合、display_phrase自体が方式L選定時点で既に確立された正規化形であるため、source_spanとの文字列表記の違い[時制・単数複数・語順等]を理由にFAILにしないでください)、(b) key_phraseがsource_span内の連続した文字列として存在する。
+- qa_listening_blocker_value_preserved: Listening Blockerとしての学習価値を維持しているか
+- qa_standalone_comprehensibility: このkey_phraseをKey Phrasesセクションで単独提示した際、学習者が何を意味する表現なのか十分に理解できるか
+- qa_not_over_minimized: source_spanから語を削りすぎたことで、意味が抽象化・不完全化していないか(削りすぎていなければPASS)
+- qa_context_sufficiency: source_span内の語を1〜5語制限内で追加保持することで、より自然で理解しやすい学習単位になる余地を検討したか(検討した上で現在の形が適切ならPASS)
+- qa_core_meaning_preserved: display_phrase(またはsource_span)が持っていた中心的な意味が、key_phraseでも保持されているか(Meaning Preservation Rule参照)
+- qa_no_semantic_role_loss: risk/possibility/obligation/pressure/attempt/refusalのような意味役割を表す語を削ったことで、その意味役割そのものが消えていないか(消えていなければPASS)
+
+normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が方式L選定時点で既にlemma化・時制正規化・phrasal verb整理等を経ている)/ "other"(その他、reasoningで説明)。
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください(特に、source_spanから語を復元した場合、または削った場合はその理由を明記してください)。
+
+Listening Blocker Ranking(どの表現を選ぶか)自体はこの工程の対象外です。5件の順位・選定そのものは変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+# Growth Now, Profit Later: When the Startup Race Makes Sense
+
+For some startups, profit is not the first finish line.
+
+They spend heavily to gain users, enter markets, and grow faster than competitors. This can look dangerous. But when a company has a real network effect, speed may have a clear economic purpose.
+
+Research by Michael Katz and Carl Shapiro in 1985 explained the basic idea. A product may become more valuable to each user as more people use it.
+
+That can start a powerful cycle.
+
+More users create more value. More value attracts more users. An early lead may then build into a lasting advantage. In these markets, even the product with the best technology does not always win. Starting late can become a growing problem.
+
+Pete Flint of NFX argued in 2020 that companies with genuine network effects may have good reasons to choose growth before profit. Some markets can become “winner-take-most” races. After reaching critical mass, a company may also have a chance to move from losses to profit.
+
+But there is a trap hidden inside the word “growth.”
+
+A rising customer count does not prove that a strong network is forming. NFX presents Groupon as a warning. Its fast expansion hid the loss of merchants and sellers that could not be sustained.
+
+The article also points to some direct-to-consumer companies in mattresses, shoes, and meal kits. They used blitzscaling-style growth without strong network effects or other clear defenses. Several later faced lower-value funding rounds and investor losses.
+
+In other words, speed can build a fortress—or simply make a weak business burn money faster.
+
+### Speed needs a dashboard
+
+NFX suggests annual growth of three to five times after product-market fit at the Seed or Series A stage. Later, growth should work together with efficient customer acquisition. Useful checks include the Rule of 40 and recovering customer acquisition costs within about three to six months.
+
+### The market is asking harder questions
+
+NFX notes that private equity acquisitions rose from 4% of relevant transactions in 2008 to 11% in 2019. This does not prove a complete return to profit, but it signals greater interest in efficiency. A 2020 *Business Horizons* paper by Kuratko, Holt, and Neubert also critically examined blitzscaling.
+
+## In one line…
+
+“Growth before profit makes sense when every new user strengthens the business. Without that engine, speed may only help the problems arrive sooner.”
+
+【Key Phrase候補(JSON)】
+[
+  {
+    "rank": 1,
+    "display_phrase": "network effect",
+    "source_span": "network effect",
+    "source_sentence": "But when a company has a real network effect, speed may have a clear economic purpose."
+  },
+  {
+    "rank": 2,
+    "display_phrase": "critical mass",
+    "source_span": "critical mass",
+    "source_sentence": "After reaching critical mass, a company may also have a chance to move from losses to profit."
+  },
+  {
+    "rank": 3,
+    "display_phrase": "blitzscaling",
+    "source_span": "blitzscaling",
+    "source_sentence": "A 2020 Business Horizons paper by Kuratko, Holt, and Neubert also critically examined blitzscaling."
+  },
+  {
+    "rank": 4,
+    "display_phrase": "winner-take-most",
+    "source_span": "winner-take-most",
+    "source_sentence": "Some markets can become “winner-take-most” races."
+  },
+  {
+    "rank": 5,
+    "display_phrase": "burn money",
+    "source_span": "burn money",
+    "source_sentence": "In other words, speed can build a fortress—or simply make a weak business burn money faster."
+  }
+]

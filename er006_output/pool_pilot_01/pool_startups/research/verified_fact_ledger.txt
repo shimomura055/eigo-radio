@@ -1,0 +1,97 @@
+ER-006-POOL-PILOT-01 Verified Fact Ledger: Why Do Some Startups Chase Growth Before Profit?
+(Evidence Pack型Research Layerで生成。新しいFactの追加・削除は行っていない)
+
+注記1: 本Ledgerは、number_classification(ANCHOR/SUPPORTING/DISPENSABLE)および
+exactness_requirement(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)の個別タグを
+含まない。Spoken-first原則(数字の扱い、A〜E)は編集判断として適用すること。
+
+注記2: 各Factの[source: ...]行には、著者/組織・発表年・掲載誌を明記している。
+記事内で出典に触れる場合は、この行に書かれた情報の範囲内で正確に引用すること
+(書かれていない詳細を一般知識から補わない)。
+
+=== Source一覧 ===
+
+[SRC-001] Network externalities, competition, and compatibility (foundational network-effects economics) — Katz, M.L.; Shapiro, C. (1985) [access_status: SUMMARY_VIA_SECONDARY_EXPLAINER_ONLY_PAYWALLED_FULL_TEXT]
+[SRC-002] The New Rules of Growth vs. Profitability — Pete Flint, NFX (2020-04) [access_status: FULL_TEXT_ACCESSIBLE]
+[SRC-003] Blitzscaling: The good, the bad, and the ugly — Kuratko, D.F.; Holt, H.L.; Neubert, E. (2020) [access_status: CITATION_ONLY_FULL_TEXT_INACCESSIBLE]
+
+=== Fact一覧 ===
+
+[VF-001] ネットワーク外部性がある市場では、同じ製品・サービスを利用する他の利用者が増えることで、個々の利用者が得る便益や製品価値が高まる場合がある。
+  causal_strength: 理論上のメカニズムの説明。個別企業についての実証的因果関係ではない。
+  ambiguity: 二次要約由来で、原著本文は未確認。
+  scope: 同一製品・サービスの利用者、通信ネットワーク、ハードウェア／ソフトウェア・プラットフォーム
+  source: SRC-001/E-001-02 — Katz, M.L.; Shapiro, C. (1985) (fetched_extractionのCore conceptの説明)
+
+[VF-002] ネットワーク効果のある市場では、初期の利用者数や人気がさらなる価値と利用を生み、初期のリードが持続的な競争優位へ累積する可能性がある。
+  causal_strength: 自己強化的な競争メカニズムに関する理論的説明。個別企業の成功を予測する強い実証因果ではない。
+  ambiguity: 二次要約由来で、原文未確認。市場ごとの効果の強さは示されていない。
+  scope: ネットワーク効果のある通信ネットワーク、ハードウェア／ソフトウェア・プラットフォーム市場
+  source: SRC-001/E-001-03 — Katz, M.L.; Shapiro, C. (1985) (fetched_extractionのsystems competitionに関する段落)
+
+[VF-003] NFXの記事は、真正なネットワーク効果を持つ企業では、winner-take-mostの動態や規模に対する収益逓増が生じ得るため、クリティカルマス到達後に赤字から黒字へ転換できる可能性があると説明している。
+  causal_strength: 記事が提示する経済的ロジック。一般企業に対する実証的な因果推定ではない。
+  scope: 真正なネットワーク効果を持つ企業
+  source: SRC-002/E-002-01 — Pete Flint, NFX (2020-04) (fetched_extraction冒頭)
+
+[VF-004] ネットワーク効果のある市場では、技術的に最良の製品が必ずしも勝つとは限らず、初期の後れも不利に累積する可能性がある。
+  causal_strength: 理論的な競争メカニズム。個別市場での勝者を確定する実証証拠ではない。
+  ambiguity: 二次要約由来で、原文未確認。
+  scope: ネットワーク効果のある製品・システム
+  source: SRC-001/E-001-03 — Katz, M.L.; Shapiro, C. (1985) (fetched_extractionのsystems competitionに関する段落)
+
+[VF-005] NFXの記事は、プロダクト・マーケット・フィット後のSeed／Series A段階では年3〜5倍の積極的成長を想定し、Series B／Cでは成長と効率的な顧客獲得チャネルの両立、後期では利益性への段階的移行を提案している。
+  numeric_value: 年3〜5倍
+  numeric_scope: Seed／Series A段階の成長目標
+  causal_strength: 著者による実務的提案。普遍的な成功条件や実証的因果関係ではない。
+  scope: 記事が想定するスタートアップの資金調達ステージ
+  source: SRC-002/E-002-07 — Pete Flint, NFX (2020-04) (fetched_extraction末尾のstage-based framework)
+
+[VF-006] NFXの記事は、ソフトウェア企業のベンチマークとしてRule of 40を紹介し、売上成長率と利益率の合計が40%を超えることを目指すと説明している。
+  numeric_value: 40%
+  numeric_scope: 売上成長率＋利益率の合計に関する目安
+  causal_strength: ベンチマークおよび記事の市場解釈。企業価値を因果的に決定する研究結果ではない。
+  ambiguity: 公式の政府・規制基準ではなく、記事が紹介する業界上の目安。
+  scope: ソフトウェア企業、特に上場企業の評価に関する記事の説明
+  source: SRC-002/E-002-02 — Pete Flint, NFX (2020-04) (fetched_extraction中盤のRule of 40に関する記述)
+
+[VF-007] NFXの記事によると、顧客獲得コストと顧客生涯価値の回収期間が3〜6か月未満であることは、健全なユニットエコノミクスの兆候とされ、大規模な成長投資を正当化しやすくする。
+  numeric_value: 3〜6か月未満
+  numeric_scope: CAC／LTVのペイバック期間
+  causal_strength: 健全性を判断するための実務的指標。投資継続と利益化の因果を実証した基準ではない。
+  scope: 成長投資を検討する企業のユニットエコノミクス
+  source: SRC-002/E-002-03 — Pete Flint, NFX (2020-04) (fetched_extraction中盤のCAC/LTV paybackに関する記述)
+
+[VF-008] 記事が引用する市場構造データでは、プライベートエクイティによる買収が関連取引全体に占める割合は、2008年の4%から2019年の11%へ上昇した。
+  numeric_value: 4%から11%
+  numeric_scope: プライベートエクイティ買収が関連取引全体に占める割合
+  causal_strength: 観察された割合の変化。利益性重視への市場変化を直接証明する因果データではない。
+  ambiguity: 取引の母集団、データソース、取引件数などの詳細は提示されていない。
+  scope: 記事が定義する「relevant transactions」
+  source: SRC-002/E-002-04 — Pete Flint, NFX (2020-04) (fetched_extraction中盤のmarket-structure data point)
+
+[VF-009] NFXの記事は、Grouponを、急速な拡大が持続不可能な加盟店・販売者の離脱を覆い隠した失敗例として提示している。
+  causal_strength: 記事によるケース解釈。急成長が離脱を直接引き起こしたと確定する比較研究ではない。
+  ambiguity: 離脱率、損失額、比較対象などは示されていない。
+  scope: Groupon
+  source: SRC-002/E-002-05 — Pete Flint, NFX (2020-04) (fetched_extractionのRisk / cautionary examples部分)
+
+[VF-010] NFXの記事は、ネットワーク効果やその他の防御可能性を欠く一部のDTC企業が、ブリッツスケーリング型の急成長を行った結果、複数企業でダウンラウンドや投資家損失につながったと論じている。
+  causal_strength: 記事によるケース解釈。急成長が結果を直接引き起こしたと確定する比較研究ではない。
+  ambiguity: 対象企業数、ダウンラウンドの規模、投資家損失額、比較対象は示されていない。
+  scope: 記事が例示するマットレス、靴、ミールキットなどの一部DTC企業
+  source: SRC-002/E-002-05 — Pete Flint, NFX (2020-04) (fetched_extractionのRisk / cautionary examples部分)
+
+[VF-011] 記事は、過剰な資本の利用可能性が、効率性や利益を高めるインセンティブを弱め、経営上の弱点を見えにくくする可能性があると注意喚起している。
+  causal_strength: 記事の因果仮説。具体的な識別戦略や定量検証は示されていない。
+  ambiguity: 「過剰な資本」の定義や効果の規模は不明。
+  scope: 豊富な資本にアクセスできるスタートアップ
+  source: SRC-002/E-002-06 — Pete Flint, NFX (2020-04) (fetched_extraction末尾付近のcapital availabilityに関する記述)
+
+[VF-012] ブリッツスケーリングは、効率性より速度を優先して極めて急速な成長を意図的に追求する経営アプローチとして、査読付きの学術論文で批判的に検討されている。
+  numeric_value: 63(1), 109-119
+  numeric_scope: 掲載誌の巻号・頁
+  causal_strength: 論文のテーマと存在を確認する情報。具体的な効果やリスクに関する本文の結論は確認できない。
+  ambiguity: 全文にアクセスできず、具体的な研究結果や結論は確認されていない。
+  scope: ブリッツスケーリングを行う企業・経営アプローチ
+  source: SRC-003/E-003-01 — Kuratko, D.F.; Holt, H.L.; Neubert, E. (2020) (fetched_extraction全体および末尾のアクセス注記)
