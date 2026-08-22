@@ -136,15 +136,27 @@ _WORD_RE = re.compile(r"[^\W\d_]+", re.UNICODE)
 
 
 def capitalized_flags(text: str) -> set[str]:
-    """原文で(文頭以外に)大文字始まりだったトークン(正規化後の小文字形)の集合。
-    固有名詞らしさの粗い判定に使う。"""
+    """原文で大文字始まりだったトークン(正規化後の小文字形)の集合。
+    固有名詞らしさの粗い判定に使う。
+
+    ER-006-AUDIO-RETRY-CASCADE-PROD-01(2026-08-22)で修正: 従来は
+    「文頭(語index 0)の大文字化は情報にならない」として一律除外していたが、
+    実際のfailure実例("Ottoni and colleagues' 2016 study..."のように、
+    引用の学術者名がsegmentの先頭に来るケース)で、この一律除外により
+    真正の固有名詞がentity_tokensへ入らず、TRUE_CONTENT_MISMATCH(retry
+    対象)のまま扱われてしまう不具合を確認した。文頭語のうち、小文字化
+    した形が既知の一般語(_STOPWORDS、"The"/"It"/"This"等)である場合のみ
+    除外し、それ以外の文頭大文字語(固有名詞である可能性が高い)は通常
+    位置の語と同様にentity候補として扱う。個別固有名詞のwhitelistでは
+    なく、既存の_STOPWORDS(閉じた既知集合)を再利用した一般対策。"""
     words = _WORD_RE.findall(text)
     flags = set()
     for i, w in enumerate(words):
-        if i == 0:
-            continue  # 文頭の大文字化は情報にならない
-        if w[0].isupper():
-            flags.add(strip_diacritics(w.lower()))
+        if not w[0].isupper():
+            continue
+        if i == 0 and w.lower() in _STOPWORDS:
+            continue  # 文頭の一般語(The/It/This等)は大文字化が情報にならない
+        flags.add(strip_diacritics(w.lower()))
     return flags
 
 

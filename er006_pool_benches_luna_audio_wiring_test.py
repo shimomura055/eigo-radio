@@ -35,12 +35,19 @@ def run():
             failures.append(f"{filename}: audio_validationがimportされていない")
 
     print("\n=== 配線確認: evaluate_attempt()が実際に呼ばれている ===")
+    # ER-006-AUDIO-RETRY-CASCADE-PROD-01(2026-08-22)以降、直接の
+    # audio_validation.evaluate_attempt()呼び出しは、drop-in互換の
+    # secondary_asr.evaluate_attempt_with_cascade()(内部でval.
+    # evaluate_attempt()を必ず呼ぶ、cascade_enabled=False時は完全に
+    # 同一挙動)へ置き換わっている。どちらの呼び出し形でも配線済みと
+    # みなす。
     for filename in WIRED_FILES:
         text = open(filename, encoding="utf-8").read()
-        n_calls = len(re.findall(r"audio_validation\.evaluate_attempt\(", text))
+        n_calls = (len(re.findall(r"audio_validation\.evaluate_attempt\(", text))
+                   + len(re.findall(r"secondary_asr\.evaluate_attempt_with_cascade\(", text)))
         ok = n_calls >= 1
         status = "OK" if ok else "FAIL"
-        print(f"[{status}] {filename}: evaluate_attempt呼び出し {n_calls}件")
+        print(f"[{status}] {filename}: evaluate_attempt(_with_cascade)呼び出し {n_calls}件")
         if not ok:
             failures.append(f"{filename}: evaluate_attempt()が呼ばれていない")
 

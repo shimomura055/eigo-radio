@@ -29,6 +29,8 @@ import er003_b1_p9a_audio as p9a
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
+import er006_pronunciation_ledger_01 as pronun_ledger
+import er006_secondary_asr_01 as secondary_asr
 
 AOEDE = "Aoede"
 SAFETY_MARGIN = 0.35
@@ -69,8 +71,10 @@ def generate(text: str, out_path: str, max_attempts: int = 8) -> dict:
         # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 正規化+6分類+
         # Protected Check+retry guardrail方式へ切り替え。
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
-            text, asr_text, classification_history)
+        ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+            text, asr_text, classification_history, out_path, language="en-US",
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "asr_text": asr_text, "audio_classification": cls.classification,
                               "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type})

@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import time
 import wave
@@ -106,81 +107,171 @@ def get_full_text_via_azure_stt_with_phrase_list(
 
 
 # ============================================================
-# Retry Architecture: Primary(OpenAI mini) -> Secondary(Azure+Phrase
-# List) -> それでも不一致の場合のみTTS retry候補
+# ER-006-AUDIO-RETRY-CASCADE-PROD-01: Production Cascade
+# Gemini TTS(1回) -> Primary#1 -> Primary#2 -> Secondary#1(+Phrase List)
+# -> Secondary#2(+Phrase List) -> Human Review
+# 同一音声に対して複数回ASRだけをやり直す(TTSは再生成しない)。
 # ============================================================
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as val
 
-FEATURE_FLAG_SECONDARY_ASR_ENABLED = False  # Production defaultはOFF(タスク仕様§18)
+FEATURE_FLAG_SECONDARY_ASR_ENABLED = False  # Production defaultはOFF(タスク仕様§15)
+
+# SSOT: Cascadeの試行回数上限・Phrase List設定(タスク仕様§11-12)
+CASCADE_CONFIG = {
+    "max_primary_attempts": 2,
+    "max_secondary_attempts": 2,
+    "phrase_list_weight": None,  # AzureのPhraseListGrammarはper-phrase重み設定APIを
+                                  # 現行SDKでは公開していないため、既定(均等)を使う。
+                                  # 将来SDKが対応した場合はここへ重み値を設定する。
+}
+
+# Cost Guard(タスク仕様§13): 1 segmentあたりの累積コストがこれを超えたら
+# Fail-closedでCascadeを打ち切り、Human Reviewへ送る(異常な費用膨張防止)。
+COST_GUARD_MAX_USD_PER_SEGMENT = 0.05
 
 
-def evaluate_with_secondary_cascade(
-    canonical_text: str, wav_path: str, language: str = "en-US",
-    ledger_phrases: Optional[list[str]] = None, prior_results: Optional[list] = None,
-    secondary_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+def is_entity_like_mismatch(result: "val.ClassificationResult") -> bool:
+    """classify_asr_matchの結果が、固有名詞らしき語のみの音訳差による
+    ASR_VALIDATION_UNCERTAINかどうかを判定する。数字・否定・通常の内容語
+    差は対象外(それらはprotected_checkで既にTRUE_CONTENT_MISMATCHになる
+    ため、ここへは到達しない)。"""
+    if result.classification != "ASR_VALIDATION_UNCERTAIN":
+        return False
+    diffs = result.protected.content_word_diffs
+    return bool(diffs) and all(d["entity_like"] for d in diffs)
+
+
+HUMAN_REVIEW_LOG_PATH = "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"
+
+
+def _log_human_review(detail: dict) -> None:
+    os.makedirs(os.path.dirname(HUMAN_REVIEW_LOG_PATH), exist_ok=True)
+    record = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "canonical_text": detail["canonical_text"],
+        "wav_path": detail["wav_path"],
+        "steps": detail["steps"],
+        "cost_guard_triggered": detail["cost_guard_triggered"],
+        "final_status": detail["final_status"],
+    }
+    with open(HUMAN_REVIEW_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+
+
+def evaluate_attempt_with_cascade(
+    canonical_text: str, asr_text: Optional[str], prior_results: list,
+    wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
+    max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+) -> tuple[bool, bool, "val.ClassificationResult"]:
+    """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
+    と同じ(verified, stop_retrying, classification)のタプルを返す
+    (既存呼び出し元のコードをほぼ変更せずに差し替えられる)。
+    Cascadeが起動してHuman Review行きになった場合、詳細(§14の一覧項目)を
+    HUMAN_REVIEW_LOG_PATHへ追記する。"""
+    detail = evaluate_attempt_with_cascade_detail(
+        canonical_text, asr_text, prior_results, wav_path, language=language,
+        ledger_phrases=ledger_phrases, max_same_signature=max_same_signature,
+        cascade_enabled=cascade_enabled)
+    if detail["human_review_required"]:
+        _log_human_review(detail)
+    return detail["verified"], detail["stop_retrying"], detail["classification"]
+
+
+def evaluate_attempt_with_cascade_detail(
+    canonical_text: str, asr_text: Optional[str], prior_results: list,
+    wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
+    max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
 ) -> dict:
-    """§12-13のRetry Architectureを実装する。
-    1. Primary(OpenAI mini経由のrouting.transcribe)を実行
-    2. PASS/NORMALIZED_MATCHなら即終了
-    3. UNCERTAIN/MISMATCHならSecondary(Azure+Phrase List)を実行
-       (secondary_enabled=Falseならここで打ち切り、Primary結果のみ返す)
-    4. 両者が同じ内容差を示す場合のみretry_recommended=True
-       (どちらか一方だけの不一致では原則retryしない、固有名詞だけの
-       表記差はASR_UNCERTAIN/Human Reviewへ)
-    """
-    prior_results = prior_results if prior_results is not None else []
+    """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
+    その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
+    再生成せず同じ音声に対してCascade(Primary#2 -> Secondary#1 ->
+    Secondary#2)を追加実行する。cascade_enabled=Falseなら既存のval.
+    evaluate_attempt()と完全に同じ挙動(後方互換、Production既定)。
 
-    primary_text, primary_err = routing.transcribe(wav_path, language=language)
-    primary_cls = val.classify_asr_match(canonical_text, primary_text) if primary_text is not None else None
+    戻り値のdictには、Human Review用に全stepのtranscriptを保持する
+    (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
+    """
+    verified, stop_retrying, cls = val.evaluate_attempt(
+        canonical_text, asr_text, prior_results, max_same_signature=max_same_signature)
+
+    steps = [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
+              "classification": cls.classification}]
+    cumulative_cost_usd = 0.0
 
     result = {
-        "primary": {"provider": "openai_asr", "text": primary_text, "error": primary_err,
-                     "classification": primary_cls.classification if primary_cls else "TTS_FAILURE"},
-        "secondary": None,
-        "final_status": None,
-        "retry_recommended": False,
-        "reason": "",
+        "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
+        "cascade_invoked": False, "steps": steps, "final_status": cls.classification,
+        "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
+        "cost_guard_triggered": False,
     }
 
-    if primary_cls is not None and primary_cls.should_pass:
-        result["final_status"] = primary_cls.classification
-        result["reason"] = "Primary ASRでPASS、Secondaryは呼ばない"
+    if verified or not cascade_enabled or not is_entity_like_mismatch(cls):
+        # 固有名詞由来でない不一致(数字・否定・通常内容語の差等)は、既存の
+        # blind TTS retryへ委ねる(Cascadeの対象外、§8の限定条件を守る)。
         return result
 
-    if not secondary_enabled:
-        result["final_status"] = primary_cls.classification if primary_cls else "TTS_FAILURE"
-        result["retry_recommended"] = primary_cls.should_retry if primary_cls else True
-        result["reason"] = "Secondary ASR機能フラグOFFのため、Primary結果のみで判定(既存の単一ASR retry方針を維持)"
+    result["cascade_invoked"] = True
+
+    # --- Primary #2(同じ音声、TTSは再生成しない) ---
+    text_p2, err_p2 = routing.transcribe(wav_path, language=language)
+    cost_guess = 0.000002  # OpenAI mini ASRの概算単価(1呼び出しあたり数十秒の音声で1円未満)
+    cumulative_cost_usd += cost_guess
+    cls_p2 = val.classify_asr_match(canonical_text, text_p2) if text_p2 is not None else None
+    steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
+                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
+    if cls_p2 is not None and cls_p2.should_pass:
+        result["verified"] = True
+        result["stop_retrying"] = False
+        result["final_status"] = cls_p2.classification
+        result["classification"] = cls_p2
         return result
 
-    # Secondaryを実行(Phrase List付き、Ledger登録語のcanonical spellingを渡す)
-    import er003_b1_p4_audio as p4
-    lang_secondary = language if language.startswith("en") else language  # 同じlanguageで呼ぶ
-    secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
-        wav_path, language=lang_secondary, phrases=ledger_phrases)
-    secondary_cls = val.classify_asr_match(canonical_text, secondary_text) if secondary_text is not None else None
-    result["secondary"] = {"provider": "azure", "text": secondary_text, "error": secondary_err,
-                             "classification": secondary_cls.classification if secondary_cls else "TTS_FAILURE",
-                             "phrase_list_used": bool(ledger_phrases)}
-
-    if secondary_cls is not None and secondary_cls.should_pass:
-        result["final_status"] = secondary_cls.classification
-        result["reason"] = "PrimaryはFAIL/UNCERTAINだったが、Secondary(Azure)でPASS"
-        return result
-
-    # 両方ともPASSしなかった場合: 同じ内容差(同じsignature)かどうかで判断
-    primary_sig = val.signature(canonical_text, primary_text) if primary_text else None
-    secondary_sig = val.signature(canonical_text, secondary_text) if secondary_text else None
-    same_signature = primary_sig is not None and primary_sig == secondary_sig
-
-    if same_signature and primary_cls.classification == "TRUE_CONTENT_MISMATCH":
-        result["final_status"] = "TRUE_CONTENT_MISMATCH"
-        result["retry_recommended"] = True
-        result["reason"] = "両ASRが同じ内容差を一貫して示しており、TTS自体の発話が疑わしいためretry候補"
-    else:
+    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
+        result["cost_guard_triggered"] = True
+        result["human_review_required"] = True
         result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
-        result["retry_recommended"] = False
-        result["reason"] = ("両ASRの結果が一致しない、または固有名詞のtransliteration差にとどまるため、"
-                             "TTS再生成はせずHuman Review対象とする")
+        return result
+
+    # --- Secondary #1(Azure + Phrase List) ---
+    text_s1, err_s1 = get_full_text_via_azure_stt_with_phrase_list(
+        wav_path, language=language, phrases=ledger_phrases)
+    cumulative_cost_usd += 0.00001  # Azure概算単価(1秒あたり約$0.00028、数十秒想定)
+    cls_s1 = val.classify_asr_match(canonical_text, text_s1) if text_s1 is not None else None
+    steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
+                   "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE",
+                   "phrase_list_used": bool(ledger_phrases)})
+    if cls_s1 is not None and cls_s1.should_pass:
+        result["verified"] = True
+        result["stop_retrying"] = False
+        result["final_status"] = cls_s1.classification
+        result["classification"] = cls_s1
+        return result
+
+    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
+        result["cost_guard_triggered"] = True
+        result["human_review_required"] = True
+        result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
+        return result
+
+    # --- Secondary #2(Azure + Phrase List、同じ音声を再度) ---
+    text_s2, err_s2 = get_full_text_via_azure_stt_with_phrase_list(
+        wav_path, language=language, phrases=ledger_phrases)
+    cumulative_cost_usd += 0.00001
+    cls_s2 = val.classify_asr_match(canonical_text, text_s2) if text_s2 is not None else None
+    steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
+                   "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE",
+                   "phrase_list_used": bool(ledger_phrases)})
+    if cls_s2 is not None and cls_s2.should_pass:
+        result["verified"] = True
+        result["stop_retrying"] = False
+        result["final_status"] = cls_s2.classification
+        result["classification"] = cls_s2
+        return result
+
+    # --- 4 step全て不一致 -> Human Review(TTSは再生成しない、§9の通り
+    # 固有名詞だけの表記差ではretryしない) ---
+    result["human_review_required"] = True
+    result["stop_retrying"] = True
+    result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
     return result

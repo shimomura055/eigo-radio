@@ -34,6 +34,8 @@ import er003_v1_a2_audio_02_generate as audio02
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
+import er006_pronunciation_ledger_01 as pronun_ledger
+import er006_secondary_asr_01 as secondary_asr
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -68,8 +70,10 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             continue
         asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
-            text, asr_text, fallback_classification_history)
+        ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+            text, asr_text, fallback_classification_history, out_path, language="en-US",
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification, "verified": verified})

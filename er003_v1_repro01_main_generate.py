@@ -28,6 +28,8 @@ import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
+import er006_pronunciation_ledger_01 as pronun_ledger
+import er006_secondary_asr_01 as secondary_asr
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -217,8 +219,10 @@ def generate_narration_snippet_verified_strict(
         stop_retrying = False
         audio_classification = None
         if language == "en":
-            verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
-                text, asr_text, classification_history)
+            ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+            verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+                text, asr_text, classification_history, out_path, language=asr_language,
+                ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
             verified = verified_content and length_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
@@ -377,8 +381,10 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
             continue
         asr_text, err = routing.transcribe(out_path, language="en-US")
         length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
-        verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
-            text, asr_text, fallback_classification_history)
+        ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+            text, asr_text, fallback_classification_history, out_path, language="en-US",
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification, "verified": verified})

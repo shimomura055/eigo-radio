@@ -5,139 +5,227 @@
 from __future__ import annotations
 
 import er006_asr_provider_routing_01 as routing
+import er006_preprod_hardening_01_validation as val
 import er006_secondary_asr_01 as secondary
 
 
-def test_primary_pass_skips_secondary():
+def test_cascade_disabled_matches_plain_evaluate_attempt():
+    # cascade_enabled=False(既定)なら、val.evaluate_attempt()と完全に
+    # 同じ挙動になること(後方互換)。
+    canon = "The bench was tilted in March."
+    asr = "The bench was tilted in March."
+    prior = []
+    r = secondary.evaluate_attempt_with_cascade_detail(
+        canon, asr, prior, "dummy.wav", cascade_enabled=False)
+    assert r["verified"] is True
+    assert r["cascade_invoked"] is False
+    print("PASS: test_cascade_disabled_matches_plain_evaluate_attempt")
+
+
+def test_non_entity_mismatch_does_not_trigger_cascade():
+    # 数字が変わっている等、固有名詞由来でない不一致はCascade対象外
+    # (blind TTS retryへ委ねる、§8の限定条件)。
     orig_transcribe = routing.transcribe
-    orig_secondary = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"n": 0}
+
+    def fake_transcribe(*a, **k):
+        calls["n"] += 1
+        return "SHOULD NOT BE CALLED", None
+
+    routing.transcribe = fake_transcribe
+    try:
+        canon = "The study followed 2 groups of participants."
+        asr = "The study followed 3 groups of participants."
+        prior = []
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", cascade_enabled=True)
+        assert r["cascade_invoked"] is False
+        assert calls["n"] == 0, "数字違いのmismatchでCascadeのPrimary#2を呼んではならない"
+    finally:
+        routing.transcribe = orig_transcribe
+    print("PASS: test_non_entity_mismatch_does_not_trigger_cascade")
+
+
+def test_entity_like_mismatch_triggers_primary_2():
+    orig_transcribe = routing.transcribe
+    calls = {"n": 0}
+
+    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
+        calls["n"] += 1
+        return "A Tony and colleagues published a study.", None  # 依然不一致
+
+    routing.transcribe = fake_transcribe
+    try:
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."  # 固有名詞のみの差
+        prior = []
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", cascade_enabled=True)
+        assert r["cascade_invoked"] is True
+        assert calls["n"] == 1, "Primary#2が1回呼ばれるはず"
+        assert any(s["step"] == "primary_2" for s in r["steps"])
+    finally:
+        routing.transcribe = orig_transcribe
+    print("PASS: test_entity_like_mismatch_triggers_primary_2")
+
+
+def test_primary_2_pass_stops_cascade_before_secondary():
+    orig_transcribe = routing.transcribe
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     calls = {"secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "The bench was tilted in March.", None
+        return "Ottoni and colleagues published a study.", None  # Primary#2で正しく認識
 
-    def fake_secondary(*args, **kwargs):
+    def fake_secondary(*a, **k):
         calls["secondary"] += 1
         return "SHOULD NOT BE CALLED", None
 
     routing.transcribe = fake_transcribe
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
-        r = secondary.evaluate_with_secondary_cascade(
-            "The bench was tilted in March.", "dummy.wav", secondary_enabled=True)
-        assert r["final_status"] in ("EXACT_MATCH", "NORMALIZED_MATCH")
-        assert calls["secondary"] == 0, "PrimaryがPASSならSecondaryは呼ばれないはず"
-        assert r["secondary"] is None
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."
+        prior = []
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", cascade_enabled=True)
+        assert r["verified"] is True
+        assert calls["secondary"] == 0, "Primary#2でPASSしたらSecondaryは呼ばれないはず"
     finally:
         routing.transcribe = orig_transcribe
-        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary
-    print("PASS: test_primary_pass_skips_secondary")
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_primary_2_pass_stops_cascade_before_secondary")
 
 
-def test_secondary_disabled_by_flag_stays_primary_only():
+def test_full_cascade_all_fail_routes_to_human_review():
     orig_transcribe = routing.transcribe
-    orig_secondary = secondary.get_full_text_via_azure_stt_with_phrase_list
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"primary": 0, "secondary": 0}
+
+    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
+        calls["primary"] += 1
+        return "A Tony and colleagues published a study.", None
+
+    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
+        calls["secondary"] += 1
+        return "Otoni and colleagues published a study.", None  # 依然不一致(固有名詞のみ)
+
+    routing.transcribe = fake_transcribe
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."
+        prior = []
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True)
+        assert calls["primary"] == 1, "Primary#2は1回のみ"
+        assert calls["secondary"] == 2, "Secondary#1・#2の2回呼ばれるはず"
+        assert r["human_review_required"] is True
+        assert r["verified"] is False
+        assert r["final_status"] == "ASR_VALIDATION_UNCERTAIN"
+        step_names = [s["step"] for s in r["steps"]]
+        assert step_names == ["primary_1", "primary_2", "secondary_1", "secondary_2"]
+    finally:
+        routing.transcribe = orig_transcribe
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_full_cascade_all_fail_routes_to_human_review")
+
+
+def test_secondary_1_pass_stops_before_secondary_2():
+    orig_transcribe = routing.transcribe
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     calls = {"secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "A completely different sentence.", None
+        return "A Tony and colleagues published a study.", None
 
-    def fake_secondary(*args, **kwargs):
+    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
         calls["secondary"] += 1
-        return "irrelevant", None
+        return "Ottoni and colleagues published a study.", None  # Secondary#1でPASS
 
     routing.transcribe = fake_transcribe
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
-        r = secondary.evaluate_with_secondary_cascade(
-            "The bench was tilted in March.", "dummy.wav", secondary_enabled=False)
-        assert calls["secondary"] == 0, "feature flag OFFならSecondaryは絶対呼ばれないはず"
-        assert r["secondary"] is None
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."
+        prior = []
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True)
+        assert r["verified"] is True
+        assert calls["secondary"] == 1, "Secondary#1でPASSしたら#2は呼ばれないはず"
     finally:
         routing.transcribe = orig_transcribe
-        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary
-    print("PASS: test_secondary_disabled_by_flag_stays_primary_only")
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_secondary_1_pass_stops_before_secondary_2")
 
 
-def test_secondary_pass_after_primary_uncertain():
+def test_is_entity_like_mismatch_excludes_number_diffs():
+    canon = "The study followed 2 groups of participants."
+    asr = "The study followed 3 groups of participants."
+    cls = val.classify_asr_match(canon, asr)
+    assert secondary.is_entity_like_mismatch(cls) is False
+    print("PASS: test_is_entity_like_mismatch_excludes_number_diffs")
+
+
+def test_is_entity_like_mismatch_true_for_proper_noun_only():
+    canon = "Ottoni and colleagues published a study in 2016."
+    asr = "A Tony and colleagues published a study in 2016."
+    cls = val.classify_asr_match(canon, asr)
+    assert cls.classification == "ASR_VALIDATION_UNCERTAIN"
+    assert secondary.is_entity_like_mismatch(cls) is True
+    print("PASS: test_is_entity_like_mismatch_true_for_proper_noun_only")
+
+
+def test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review():
+    import os
+    orig_log_path = secondary.HUMAN_REVIEW_LOG_PATH
+    tmp_log = "er006_output/_test_human_review_queue_tmp.jsonl"
+    secondary.HUMAN_REVIEW_LOG_PATH = tmp_log
+    if os.path.exists(tmp_log):
+        os.remove(tmp_log)
     orig_transcribe = routing.transcribe
-    orig_secondary = secondary.get_full_text_via_azure_stt_with_phrase_list
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "Malmo's Triangle station had a tilted bench.", None  # 固有名詞の音訳差のみ
+        return "A Tony and colleagues published a study.", None
 
     def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
-        return "Malmö's Triangeln station had a tilted bench.", None  # Phrase Listで正確に認識
+        return "Otoni and colleagues published a study.", None
 
     routing.transcribe = fake_transcribe
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
-        r = secondary.evaluate_with_secondary_cascade(
-            "Malmö's Triangeln station had a tilted bench.", "dummy.wav",
-            ledger_phrases=["Malmö", "Triangeln"], secondary_enabled=True)
-        assert r["secondary"] is not None
-        assert r["final_status"] in ("EXACT_MATCH", "NORMALIZED_MATCH")
-        assert r["reason"].startswith("PrimaryはFAIL")
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."
+        prior = []
+        verified, stop_retrying, cls = secondary.evaluate_attempt_with_cascade(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True)
+        assert verified is False
+        assert stop_retrying is True
+        assert cls.classification == "ASR_VALIDATION_UNCERTAIN"
+        assert os.path.exists(tmp_log), "Human Review queueへログが書かれるはず"
+        with open(tmp_log, encoding="utf-8") as f:
+            import json
+            record = json.loads(f.readline())
+        assert record["canonical_text"] == canon
+        assert len(record["steps"]) == 4
     finally:
         routing.transcribe = orig_transcribe
-        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary
-    print("PASS: test_secondary_pass_after_primary_uncertain")
-
-
-def test_both_asr_agree_on_true_mismatch_recommends_retry():
-    orig_transcribe = routing.transcribe
-    orig_secondary = secondary.get_full_text_via_azure_stt_with_phrase_list
-
-    # 両方のASRが同じ、canonicalと明確に異なる内容を返す(数字が変わっている)
-    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "The study followed 3 groups of participants.", None
-
-    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
-        return "The study followed 3 groups of participants.", None
-
-    routing.transcribe = fake_transcribe
-    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
-    try:
-        r = secondary.evaluate_with_secondary_cascade(
-            "The study followed 2 groups of participants.", "dummy.wav", secondary_enabled=True)
-        assert r["final_status"] == "TRUE_CONTENT_MISMATCH"
-        assert r["retry_recommended"] is True
-    finally:
-        routing.transcribe = orig_transcribe
-        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary
-    print("PASS: test_both_asr_agree_on_true_mismatch_recommends_retry")
-
-
-def test_asr_disagree_on_proper_noun_does_not_recommend_retry():
-    orig_transcribe = routing.transcribe
-    orig_secondary = secondary.get_full_text_via_azure_stt_with_phrase_list
-
-    # PrimaryとSecondaryが違う誤認識をする(固有名詞のtransliteration差、
-    # 内容自体は変わっていない) -> 一貫した"同じ内容差"ではないため、
-    # TTS retryは推奨しない(Human Review対象)。
-    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "A Tony and colleagues looked at three neighborhoods.", None
-
-    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
-        return "O'Toole and colleagues looked at three neighborhoods.", None
-
-    routing.transcribe = fake_transcribe
-    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
-    try:
-        r = secondary.evaluate_with_secondary_cascade(
-            "Ottoni and colleagues looked at three neighborhoods.", "dummy.wav", secondary_enabled=True)
-        assert r["retry_recommended"] is False, "固有名詞だけの表記差でTTS retryを推奨してはならない"
-        assert r["final_status"] == "ASR_VALIDATION_UNCERTAIN"
-    finally:
-        routing.transcribe = orig_transcribe
-        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary
-    print("PASS: test_asr_disagree_on_proper_noun_does_not_recommend_retry")
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+        secondary.HUMAN_REVIEW_LOG_PATH = orig_log_path
+        if os.path.exists(tmp_log):
+            os.remove(tmp_log)
+    print("PASS: test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review")
 
 
 if __name__ == "__main__":
-    test_primary_pass_skips_secondary()
-    test_secondary_disabled_by_flag_stays_primary_only()
-    test_secondary_pass_after_primary_uncertain()
-    test_both_asr_agree_on_true_mismatch_recommends_retry()
-    test_asr_disagree_on_proper_noun_does_not_recommend_retry()
+    test_cascade_disabled_matches_plain_evaluate_attempt()
+    test_non_entity_mismatch_does_not_trigger_cascade()
+    test_entity_like_mismatch_triggers_primary_2()
+    test_primary_2_pass_stops_cascade_before_secondary()
+    test_full_cascade_all_fail_routes_to_human_review()
+    test_secondary_1_pass_stops_before_secondary_2()
+    test_is_entity_like_mismatch_excludes_number_diffs()
+    test_is_entity_like_mismatch_true_for_proper_noun_only()
+    test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review()
     print("ALL TESTS PASSED")
