@@ -788,6 +788,30 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、実装
   アーキテクチャ層の変更のみ)
 
+## ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01(2026-08-22)
+
+- **Decision**: 1 Topic(B1+A2 pair)のExpected Production Costは
+  **¥111.17/pairを正とする**(ER-006-AUDIO-COST-PILOT-02の¥106.4、
+  ER-006-AUDIO-RETRY-CASCADE-PROD-01の¥113.0はいずれも今後参照しない)
+- **根拠**: ¥106.4はPronunciation Research/Secondary ASR Cascade費用を
+  一切含んでいなかった(その時点で未実装)。¥113.0はその費用を含めたが
+  「Cascade発動1.3回/topic」という根拠不明の仮定を使っており、実測
+  (3 topic・6 curated segment中2回発動)より高く見積もっていた。今回、
+  Clean Cost(¥65.14)・Expected Waste(¥46.03、TTS/ASR retry実測1.68倍+
+  Pronunciation Research実測cache miss率+Secondary ASR保守的estimate)を
+  分離して再構築し、¥111.17/pairへ収束させた
+- **併せて決定**: Validatorの数値正規化(cardinal/comma/decimal/percent/
+  currency/ordinal third以降)を一般化する。ただし"first"・"second"は
+  副詞用法との曖昧性が高いため対象外とする(実際に既存fixtureで誤PASSの
+  回帰を検出したため)。序数接尾辞の除去は月名直後の日付文脈のみに限定
+  する(従来の無条件除去は"28"と"28th"を誤って同一視する実バグだった)
+- **未決定のまま保留**: Secondary ASR Cascadeの発動率(1回/topic、
+  ESTIMATE)はランダムサンプルでの検証待ち。Production default化の
+  判断もOPEN-48から継続保留
+- **根拠レポート**: ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01完了報告
+- **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、Validator/
+  原価計算ロジックのみの変更)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

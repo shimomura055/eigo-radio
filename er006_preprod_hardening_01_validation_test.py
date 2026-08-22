@@ -52,6 +52,36 @@ POSITIVE_FIXTURES = [
         "canonical": "Next, we will look at this issue from 2 more angles.",
         "asr": "Next, we will look at this issue from two more angles.",
     },
+    {
+        # ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01(2026-08-22)、実際にPublic
+        # Benches Boavida segmentでAzure Secondary ASR(Phrase List付き)が
+        # 固有名詞自体は正しく認識したにもかかわらず、"28"を"twenty-eight"と
+        # 綴ったためsegment全体がFAILしていた実例。数値正規化の一般化により解消。
+        "name": "cardinal number 28 <-> twenty-eight (benches Boavida segment, real Azure Secondary ASR output)",
+        "canonical": "A separate review by Boavida and colleagues in 2023 examined 28 articles published from 2020 to 2023.",
+        "asr": "A separate review by Boavida and colleagues in 2023 examined twenty-eight articles published from 2020 to 2023.",
+    },
+    {"name": "larger cardinal 125 <-> one hundred twenty-five",
+     "canonical": "The survey collected 125 responses.",
+     "asr": "The survey collected one hundred twenty-five responses."},
+    {"name": "year 2023 <-> two thousand twenty-three (standard cardinal reading)",
+     "canonical": "The report was published in 2023.",
+     "asr": "The report was published in two thousand twenty-three."},
+    {"name": "comma thousands separator 1,000 <-> 1000",
+     "canonical": "The venue holds 1,000 people.",
+     "asr": "The venue holds 1000 people."},
+    {"name": "percent 28% <-> twenty-eight percent",
+     "canonical": "Prices rose by 28% last year.",
+     "asr": "Prices rose by twenty-eight percent last year."},
+    {"name": "currency $5 <-> five dollars",
+     "canonical": "The ticket costs $5.",
+     "asr": "The ticket costs five dollars."},
+    {"name": "decimal 2.5 <-> two point five",
+     "canonical": "The average score was 2.5.",
+     "asr": "The average score was two point five."},
+    {"name": "ordinal word <-> digit ordinal (third <-> 3rd, not cardinal)",
+     "canonical": "This is the third time we've seen this pattern.",
+     "asr": "This is the 3rd time we've seen this pattern."},
 ]
 
 # ER-006-ASR-VALIDATION-RESIDUAL-02(2026-08-22)で方針変更: "St."略記
@@ -100,6 +130,35 @@ NEGATIVE_FIXTURES = [
     {"name": "may misheard as May 1st (startups full_story_part1)",
      "canonical": "a company with a true network effect may first run at a loss",
      "asr": "a company with a true network effect May 1st run at a loss"},
+    # ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01(2026-08-22): 数値正規化の
+    # 一般化で絶対に吸収してはいけない安全fixture(タスク仕様§4に対応)。
+    {"name": "three != 3:00 (time-format artifact, digit value differs)",
+     "canonical": "They looked at three nearby neighborhoods.",
+     "asr": "They looked at 3:00 nearby neighborhoods."},
+    {"name": "28 != 28th (cardinal vs ordinal, real bug found and fixed this task)",
+     "canonical": "The study included 28 articles.",
+     "asr": "The study included 28th articles."},
+    {"name": "5 != $5 (currency marker must not be dropped)",
+     "canonical": "The fee is 5.",
+     "asr": "The fee is $5."},
+    {"name": "5 != 5% (percent marker must not be dropped)",
+     "canonical": "The rate is 5.",
+     "asr": "The rate is 5%."},
+    {"name": "1.5 != 15 (decimal point must not be silently removed)",
+     "canonical": "The score was 1.5.",
+     "asr": "The score was 15."},
+    {"name": "year 2023 != 2024 (cardinal normalization must not blur distinct years)",
+     "canonical": "It happened in 2023.",
+     "asr": "It happened in 2024."},
+    {"name": "28 != 2,016 people (comma-number normalization must not mask an inserted/different quantity)",
+     "canonical": "It happened in 2016.",
+     "asr": "It happened in 2,016 people."},
+    {"name": "percent value changed (28% != 30%, must not be masked by percent-marker normalization)",
+     "canonical": "Prices rose by 28% last year.",
+     "asr": "Prices rose by 30% last year."},
+    {"name": "unit dropped (5 dollars != 5, currency word absence must be caught)",
+     "canonical": "The ticket costs five dollars.",
+     "asr": "The ticket costs five."},
 ]
 
 

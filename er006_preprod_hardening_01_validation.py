@@ -62,25 +62,165 @@ _STREET_SUFFIX_EXPANSIONS = [
 ]
 _STREET_SUFFIX_RES = [(full, re.compile(r"\b" + abbr + r"\b")) for full, abbr in _STREET_SUFFIX_EXPANSIONS]
 
-# ER-006-ASR-VALIDATION-RESIDUAL-02: 小さな数(2〜12)の綴り⇔算用数字の
-# 表記差を吸収する。tts_generate.py::tts_safe_number_words_en()が既に
-# TTS入力側だけ算用数字("two"→"2")へ変換しているのは、Azure ASRが
-# 口頭の小さな数を算用数字へ書き起こす傾向を前提にした対策だった。
-# 実際にPilotで確認したところ、OpenAI gpt-4o-mini-transcribeは逆に
-# 綴りのまま("2"と発話された内容を"two"と)書き起こすことがあり
-# (実例: Public Benches B1 comment_3、"two more angles"→TTS入力"2 more
-# angles"→OpenAI ASR "two more angles"で、canonical側の"2"とASR側の
-# "two"がprotected_checkの数字チェックで不一致判定されていた)、
-# ASRプロバイダ次第でどちらの表記になるか変わる。値そのものが変わって
-# いない限り、2〜12の綴り/算用数字は同じ数として吸収してよい
-# (逆に"three"→"3:00"のような桁区切り記号混入は、正規化後も
-# トークン数が変わる(3 00の2トークン)ため、この吸収の対象にならず
-# 引き続きnumber_mismatchとして検出される)。
-_EN_NUMBER_WORDS = {
-    "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
-    "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
+# ============================================================
+# ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01: 数値正規化の一般化
+# ============================================================
+# 従来は2〜12の単語のみをbareで算用数字へ変換していた(ER-006-ASR-
+# VALIDATION-RESIDUAL-02)。実際にPublic Benches Boavida segmentで
+# "28"(canonical)と"twenty-eight"(Azure ASR)という、値は同じだが
+# 表記が異なるだけの差でsegment全体がTRUE_CONTENT_MISMATCHになる
+# 事例を確認したため、cardinal numberの綴り⇔算用数字変換を一般化する。
+#
+# 安全設計の核心: 「表記が違うだけで値(意味)が同じ」場合のみ吸収し、
+# 「表記は数字っぽいが値や意味が違う」場合は絶対に吸収しない。
+#   - 桁が変わる(three→3:00)・単位が付く(5→5%, 5→$5)・序数と基数が
+#     入れ替わる(28→28th)場合は、後段の`_is_number()`が別トークンだと
+#     判定できるよう、値の変換とは別に区別可能な形へ正規化する
+#     (%/$/小数点は英数字マーカーへ変換して残し、後段の記号除去で
+#     消えないようにする。詳細はnormalize_numeric()内のコメント参照)。
+#   - 序数語(third)は基数(3)ではなく序数表記(3rd)へ変換し、基数と
+#     混同しない。
+#   - 日付の序数接尾辞除去(March 4th→March 4)は、月名が直前にある
+#     場合のみに限定する(過去は"28th"のようにmonth文脈でなくても
+#     一律で"28"へ変換されてしまっており、"28 ≠ 28th"という意味の
+#     違いを見逃す実バグだった。今回修正)。
+_ONES = {
+    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+    "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
+    "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19,
 }
-_EN_NUMBER_WORD_RE = re.compile(r"\b(" + "|".join(_EN_NUMBER_WORDS.keys()) + r")\b", flags=re.IGNORECASE)
+_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70,
+         "eighty": 80, "ninety": 90}
+_SCALES = {"hundred": 100, "thousand": 1000, "million": 1000000}
+_NUM_WORD_VOCAB = set(_ONES) | set(_TENS) | set(_SCALES) | {"and"}
+
+# "first"・"second"は、序数(「1番目」)としてだけでなく、"may first run"
+# (=「まず最初に」という副詞)・discourse connector("first, ...second, ...")
+# のような、数とは無関係な非常に高頻度な用法があるため、意図的に対象から
+# 除外する(実際に"a company...may first run at a loss"という副詞用法が、
+# 誤って"May 1st"と一致してしまう実回帰を検出したため)。third以降は
+# 副詞的用法の頻度が大きく下がるため対象に含める。
+_ORDINAL_WORDS = {
+    "third": "3rd", "fourth": "4th", "fifth": "5th",
+    "sixth": "6th", "seventh": "7th", "eighth": "8th", "ninth": "9th", "tenth": "10th",
+    "eleventh": "11th", "twelfth": "12th", "thirteenth": "13th", "fourteenth": "14th",
+    "fifteenth": "15th", "sixteenth": "16th", "seventeenth": "17th", "eighteenth": "18th",
+    "nineteenth": "19th", "twentieth": "20th", "thirtieth": "30th",
+}
+_ORDINAL_WORD_RE = re.compile(r"\b(" + "|".join(_ORDINAL_WORDS.keys()) + r")\b", re.IGNORECASE)
+
+_MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august",
+           "september", "october", "november", "december")
+_DATE_ORDINAL_RE = re.compile(r"\b(" + "|".join(_MONTHS) + r")\s+(\d{1,2})(st|nd|rd|th)\b", re.IGNORECASE)
+
+
+def _words_to_number(words: list[str]) -> int | None:
+    """word列(小文字、"and"含む)を1つの整数へ変換する。数値語列として
+    不正な場合はNoneを返す(呼び出し側は元の語をそのまま残すこと)。"""
+    total = 0
+    current = 0
+    seen_any = False
+    for w in words:
+        if w == "and":
+            continue
+        if w in _ONES:
+            current += _ONES[w]
+            seen_any = True
+        elif w in _TENS:
+            current += _TENS[w]
+            seen_any = True
+        elif w == "hundred":
+            current = current * 100 if current else 100
+            seen_any = True
+        elif w in ("thousand", "million"):
+            scale = _SCALES[w]
+            total += (current if current else 1) * scale
+            current = 0
+            seen_any = True
+        else:
+            return None
+    return total + current if seen_any else None
+
+
+def _convert_cardinal_words(text: str) -> str:
+    """text中のcardinal number word列(2語以上の組み合わせ、または
+    hundred/thousand/millionを含む1語)を算用数字へ変換する。
+    "one"は代名詞("the right one"等)としての使用頻度が高く曖昧なため、
+    単独で出現した場合は変換しない(2語以上の並びの一部としてのみ変換
+    対象、例: "one hundred")。"""
+    text = re.sub(r"(?<=[a-zA-Z])-(?=[a-zA-Z])", " ", text)
+    tokens = text.split()
+    lower_tokens = [t.lower() for t in tokens]
+    out = []
+    i = 0
+    while i < len(tokens):
+        if lower_tokens[i] in _NUM_WORD_VOCAB:
+            j = i
+            while j < len(tokens) and lower_tokens[j] in _NUM_WORD_VOCAB:
+                j += 1
+            seq = lower_tokens[i:j]
+            if len(seq) == 1 and seq[0] == "one":
+                out.append(tokens[i])
+                i += 1
+                continue
+            val = _words_to_number(seq)
+            if val is None or (len(seq) == 1 and val < 2):
+                out.append(tokens[i])
+                i += 1
+                continue
+            out.append(str(val))
+            i = j
+        else:
+            out.append(tokens[i])
+            i += 1
+    return " ".join(out)
+
+
+def _convert_ordinal_words(text: str) -> str:
+    """序数の綴り(third)を算用数字+序数接尾辞(3rd)へ変換する。基数(3)
+    へは変換しない(序数と基数を混同すると"28 ≠ 28th"の区別が壊れる)。"""
+    return _ORDINAL_WORD_RE.sub(lambda m: _ORDINAL_WORDS[m.group(0).lower()], text)
+
+
+def normalize_numeric(text: str) -> str:
+    """数値表記の意味同一な差(綴り⇔算用数字・桁区切りカンマ・小数点・
+    パーセント・通貨・序数)を吸収する一方、桁や単位が変わる差は区別
+    可能なまま残す。戻り値はさらにnormalize_text()の一般記号除去
+    ([^a-z0-9]+をスペース化)を通ることを前提とする。%/$/小数点は、
+    その除去ステップで消えてしまわないよう英数字のみのマーカー文字列
+    (xdollarx/xpercentx/xdecimalpointx)へ変換しておく(除去後も
+    "5"と"5xdollarx"のように異なるtokenのまま残り、5≠$5を保つ)。"""
+    t = text.lower()
+    # 0. 単語末尾に直接くっついた句読点(three.やfive,のような、文末や
+    #    読点で頻発する形)を切り離す。_convert_cardinal_words()は
+    #    空白区切りでtokenを取るため、句読点が単語へ付着したままだと
+    #    "three."が語彙辞書の"three"と一致せず、数値語の並びが途中で
+    #    途切れてしまう実バグがあった(例: "two thousand twenty-three."が
+    #    "2020 three."になってしまっていた)。数字と数字の間の"."(小数点)
+    #    は対象外にする(それは後段のstep 5で別途処理する)。
+    t = re.sub(r"(?<=[a-z])([.,;:!?])", r" \1", t)
+    # 1. 通貨記号(前置$)を、後段の通貨語処理と同じ形へ寄せる。
+    t = re.sub(r"\$\s*(\d+(?:\.\d+)?)", r"\1 dollars", t)
+    # 2. 桁区切りカンマの除去(1,000 -> 1000。3桁区切りの位置のみ対象、
+    #    誤って無関係な数字列を結合しないよう桁数を限定する)。
+    t = re.sub(r"(?<=\d),(?=\d{3}\b)", "", t)
+    # 3. cardinal数値語 -> 算用数字。
+    t = _convert_cardinal_words(t)
+    # 4. 通貨語(N dollars/dollar) -> マーカー。
+    t = re.sub(r"\b(\d+(?:\.\d+)?)\s+dollars?\b", r"\1xdollarx", t)
+    t = re.sub(r"\$\s*(\d+(?:\.\d+)?)", r"\1xdollarx", t)
+    # 5. 小数点(digit point digit / digit.digit) -> マーカー。
+    t = re.sub(r"\b(\d+)\s+point\s+(\d+)\b", r"\1xdecimalpointx\2", t)
+    t = re.sub(r"(\d+)\.(\d+)", r"\1xdecimalpointx\2", t)
+    # 6. パーセント(N percent / N%) -> マーカー。
+    t = re.sub(r"\b(\d+(?:xdecimalpointx\d+)?)\s*(?:percent|per cent)\b", r"\1xpercentx", t)
+    t = re.sub(r"(\d+(?:xdecimalpointx\d+)?)\s*%", r"\1xpercentx", t)
+    # 7. 序数語 -> 算用数字+序数接尾辞(基数へは変換しない)。
+    t = _convert_ordinal_words(t)
+    # 8. 日付文脈(月名直後)の序数接尾辞のみ除去。月名が無い"28th"等は
+    #    そのまま残り、"28"(基数)と区別され続ける。
+    t = _DATE_ORDINAL_RE.sub(r"\1 \2", t)
+    return t
 
 
 _NEGATION_WORDS = {
@@ -88,8 +228,6 @@ _NEGATION_WORDS = {
     "cannot", "cant", "wont", "isnt", "arent", "wasnt", "werent", "doesnt", "dont",
     "didnt", "hasnt", "havent", "hadnt", "wouldnt", "shouldnt", "couldnt", "without",
 }
-
-_ORDINAL_RE = re.compile(r"\b(\d+)(st|nd|rd|th)\b")
 
 
 def strip_diacritics(text: str) -> str:
@@ -110,8 +248,7 @@ def normalize_text(text: str) -> str:
     t = t.replace("—", "-").replace("–", "-")
     t = t.replace("’", "'").replace("‘", "'")
     t = t.replace("“", '"').replace("”", '"')
-    t = _ORDINAL_RE.sub(r"\1", t)
-    t = _EN_NUMBER_WORD_RE.sub(lambda m: _EN_NUMBER_WORDS[m.group(1).lower()], t)
+    t = normalize_numeric(t)
     for full, abbr_re in _STREET_SUFFIX_RES:
         t = abbr_re.sub(full, t)
     t = re.sub(r"[^a-z0-9]+", " ", t)  # ハイフン/複合語分かち書き差もここで吸収
