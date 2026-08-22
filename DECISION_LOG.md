@@ -812,6 +812,130 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、Validator/
   原価計算ロジックのみの変更)
 
+## ER-006-AUDIO-COST-SPEC-FIX-01(2026-08-22)
+
+**管理ID: ER-006-AUDIO-COST-SPEC-FIX-01**
+
+過去4タスク(AUDIO-COST-PILOT-02/PRONUNCIATION-LEDGER-SECONDARY-ASR-01/
+AUDIO-RETRY-CASCADE-PROD-01/VALIDATOR-NUMERIC-COST-RECONCILE-01)で行った
+実装アーキテクチャ決定を、SSOT(CURRENT_SPEC.md「Audio Production
+Pipeline」節新設、OPEN_ITEMS.md、Model Routing Contract)へ正式に固定した。
+本タスク自体は新規のAPI呼び出し・新規実装を行っていない
+(ドキュメント統合+Drift Prevention Static Audit追加のみ)。以下8件を
+正式Decisionとして記録する。
+
+**Decision 1 — Model Routing: B1/A2 Writer・Support系はLuna**
+- 内容: Writer/Writer Fact Check/Support/Support Fact CheckのApproved
+  ModelをGPT-5.6 Lunaとする(既存Decision、ER-006-MODEL-ROUTING-CONTRACT-01
+  で確定済み)
+- Supersedes: ER-002/003時代のgpt-5.6-sol既定値
+- 根拠タスク: ER-006-MODEL-ROUTING-CONTRACT-01、ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01(Audio面での再検証)
+- 本タスクでの扱い: 既存Decisionの再確認・CURRENT_SPEC Model Routing Contract表の日付整合のみ、内容変更なし
+
+**Decision 2 — Gemini TTS Batch API採用(方式として)**
+- 内容: Gemini TTSの呼び出し方式は、Standard同期呼び出しではなくBatch
+  API(`client.batches.create()`)をProduction標準として採用する
+- 根拠: Batch APIは英語`gemini-2.5-pro-preview-tts`・日本語
+  `gemini-3.1-flash-tts-preview`とも実機で完走確認済み(50%オフ)。
+  ユーザーによるHuman Review試聴で、StandardとBatchの間に品質差が
+  ないことを確認済み(voice/style/Structured Separation/spoken text/
+  TTS model自体は無変更、実装方式のみの変更でありサービス仕様変更では
+  ない)
+- **重要な実装状況の明記**: 本Decisionは採用「方針」の確定であり、
+  実際のProduction TTS生成6箇所(`er003_v1_crosslevel_audio_02_common.py`等)
+  への配線は本タスクでは実施していない(スコープ外の新規実装)。
+  現状は全てStandard呼び出しのまま。配線実装は別タスクとして
+  OPEN-50で追跡する
+- Supersedes: Standard呼び出しのみを前提としていた過去の暗黙の前提
+- 根拠タスク: ER-006-AUDIO-COST-OPTIMIZATION-01(実機検証)、
+  ER-006-AUDIO-COST-SPEC-FIX-01(方針の正式化・実装ギャップの明記)
+
+**Decision 3 — Primary ASR: 英語はOpenAI gpt-4o-mini-transcribe**
+- 内容: 英語ASRのPrimaryを、Azure Speech-to-TextからOpenAI
+  `gpt-4o-mini-transcribe`へ切り替える。日本語はAzureのまま維持する。
+  SSOTは`er006_asr_provider_routing_01.py`(fail-closed、未登録言語は例外)
+- 根拠: 同一トピック実測でSTOPPED数7→3件、attempt数110→79(-28%)、
+  Audio実費¥306→¥199/pair(-35.1%)、誤って内容誤りをPASSさせたケース0件
+- Supersedes: Azureを英語ASR Primaryとする旧構成
+- 根拠タスク: ER-006-AUDIO-COST-PILOT-02
+
+**Decision 4 — Master Audio Store採用**
+- 内容: 固定/完全一致で再利用可能な音声は`er006_master_audio_store_01.py`
+  経由で生成・キャッシュし、無条件の毎回TTS再生成をしない
+- 根拠: 言語・レベル・voice・TTS model・style instruction hash・
+  canonical text hash・processing version・sample rate等をキーとする
+  ことで、条件不一致audioの誤再利用を防ぎつつ固定segmentの重複生成を
+  避けられる
+- Supersedes: 固定ナレーションを含め毎回無条件でTTS呼び出しを行っていた旧実装
+- 根拠タスク: ER-006-AUDIO-COST-PILOT-02(最小実装・Production配線)
+
+**Decision 5 — Validatorの数値正規化を一般化**
+- 内容: cardinal number・桁区切りカンマ・小数点・パーセント・通貨・
+  序数(third以降)の表記ゆれを、個別記事のwhitelistではなく一般規則で
+  吸収する。ただし数値が異なる・時刻表記artifact・序数と基数の取り違え・
+  記号欠落・年の違い・否定の有無の違いは絶対に吸収しない
+- 根拠: Public Benches Boavida segment("28"↔"twenty-eight")・
+  Subscriptions full_story_part2("Eighth"↔"8th")の実際のFalse NGを解消。
+  検証中に「28」と「28th」を誤って同一視する序数接尾辞除去の実バグを
+  発見・修正(月名直後の日付文脈のみに限定する安全な形へ変更)
+- Supersedes: 個別ケースのみ対応していた旧Validator(街路名等の
+  限定的な略語吸収のみ)
+- 根拠タスク: ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01
+
+**Decision 6 — Pronunciation Ledger採用(ASR側配線)**
+- 内容: 固有名詞発音情報をPerplexity経由で事前取得しcacheする
+  Pronunciation Ledgerを、Secondary ASRのPhrase List(`ledger_phrases`)
+  経由でProduction 6箇所へ配線する。cache hitの場合は再調査しない。
+  Perplexityクエリを機械的に「1トピック1リクエスト」へまとめない
+  (品質低下を実測で確認したため)
+- **実装状況の明記**: TTS生成側への発音ヒント注入
+  (`augment_style_prefix_with_pronunciation()`)は基盤として保持するが、
+  最難関ケース"Ottoni"のA/B検証で確実な改善効果を実証できなかった
+  (mixed/負の結果)ため、Production TTS生成への強制配線は見送っている
+- Supersedes: 発音情報を一切事前取得しない旧実装
+- 根拠タスク: ER-006-PRONUNCIATION-LEDGER-SECONDARY-ASR-01、
+  ER-006-AUDIO-RETRY-CASCADE-PROD-01(ASR側配線)
+
+**Decision 7 — 固有名詞ASR不確実性はASR再検証を優先、TTS即時再生成を禁止**
+- 内容: 固有名詞のASR不一致が疑われる場合、OpenAI Primary#1→Primary#2→
+  Azure Secondary+Phrase List#1→Secondary#2→Human Reviewの順でASR側の
+  再検証を先に尽くし、この過程を経ずにGemini TTSを即座に再生成する
+  古い経路を禁止する。TTS再生成は真の内容誤り・数値/日付の意味的な違い・
+  否定の違い・重要語の欠落追加・TTS技術的失敗・Human Review確定後の
+  実音声誤りに限定する
+- 根拠: 3 Topic実測で6対象segment中4件がPrimary ASR単体でPASS
+  (旧構成では6〜12回試行のSTOPPEDだった箇所)。true content誤PASSは
+  0件、new savings実測+¥128.4
+- Supersedes: 「Primary ASR FAIL→即Gemini TTS再生成」という旧retry方針
+- 根拠タスク: ER-006-AUDIO-RETRY-CASCADE-PROD-01
+
+**Decision 8 — Cost定義4区分をSSOT化**
+- 内容: Historical Actual(実際に支払われた金額)/Clean Production Cost
+  (全工程初回成功時の理論下限、¥65.14/pair)/Expected Conditional Waste
+  (Primary#2・Secondary ASR・Pronunciation Research・TTS retry等の
+  条件付き追加費用の期待値、¥46.03/pair)/Expected Production Cost
+  (Clean+Waste、¥111.17/pair)の4区分を、今後のER-006+報告の共通言語
+  とする。Expected Production Costは推定を含む進化中のbaselineであり、
+  恒久固定値ではない
+- Supersedes: ER-006-AUDIO-COST-PILOT-02の¥106.4/pair、
+  ER-006-AUDIO-RETRY-CASCADE-PROD-01の¥113.0/pair(いずれも今後参照しない)
+- 根拠タスク: ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01(再構築)、
+  ER-006-AUDIO-COST-SPEC-FIX-01(用語定義自体のSSOT化)
+
+**Drift Prevention(Static Audit)**: 上記Decision中、機械的に検証可能な
+部分(旧Azure英語Primary直接呼び出しの不在、旧Validator直接呼び出しの
+不在、旧retry loop [ASR不確実性からの即時TTS再生成] の不在、Master
+Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
+経路から無視されていないこと)は、新規作成した
+[er006_audio_cost_spec_fix_01_static_audit.py](er006_audio_cost_spec_fix_01_static_audit.py)
+で全件PASSを確認した(2026-08-22時点)。Batch API配線(Decision 2の実装
+ギャップ)のみ、既知GAPとして明示的にassertion対象外で状況報告する
+設計とした(誤って「配線済み」と偽装しないため)。
+
+- **根拠レポート**: ER-006-AUDIO-COST-SPEC-FIX-01完了報告
+- **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節(新設)、
+  「Model Routing Contract」節のTTS/ASR行
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

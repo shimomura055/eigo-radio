@@ -39,6 +39,15 @@ SUPPORT_FACT_CHECK_MODEL = "gpt-5.6-luna"
 # Approved Provider(非OpenAI)
 # ------------------------------------------------------------
 EXCEPTION_SEARCH_PROVIDER = "perplexity"
+# ER-006-AUDIO-COST-SPEC-FIX-01(2026-08-22)以降: Gemini TTS呼び出し方式は
+# Batch API(client.batches.create())がApproved Production方式として確定
+# している(50%コスト減、Human Review試聴でStandardとの品質差なしを確認済み)。
+# ただしTTS_MODEL定数自体はmodel名(gemini-2.5-pro-preview-tts)のみを表し、
+# Standard(client.models.generate_content())/Batch(client.batches.create())
+# のどちらで呼ぶかは表現していない。実際のProduction call site(6箇所、
+# er003_v1_crosslevel_audio_02_common.py等)は現時点で全てStandard呼び出し
+# のままであり、Batchへの配線は未実装(詳細はCURRENT_SPEC.md「Audio
+# Production Pipeline」節、OPEN_ITEMS.mdのOPEN-50を参照)。
 TTS_MODEL = "gemini-2.5-pro-preview-tts"
 # ER-006-AUDIO-COST-PILOT-02(2026-08-22)以降: 日本語ASRはAzureのまま
 # だが、英語ASRはPilotとしてOpenAI gpt-4o-mini-transcribeへ切り替えた

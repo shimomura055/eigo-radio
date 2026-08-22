@@ -1,7 +1,7 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01、B1生成仕様確定・B2 Launch Scope整理)**
+**最終更新: 2026-08-22(ER-006-AUDIO-COST-SPEC-FIX-01、Audio Production Pipeline節新設・Model Routing Contract TTS/ASR行更新)**
 
 このファイルには、**現在正式に採用されている仕様だけ**を書く。経緯・
 比較検討・却下案は書かない(→[DECISION_LOG.md](DECISION_LOG.md)/
@@ -265,6 +265,51 @@ Point One/Two・In One Line(=News Content)でも同一の値が使われてお�
 | 最終人間試聴 | 機械QA全合格でも「完成」「量産再現性合格」とは判断せず、必ずユーザー試聴を経る | `DECIDED` | 全ステージで一貫 | - |
 | 量産再現性判定 | A. 量産候補として採用可能(A02・ADD03の2記事連続成功に基づく)。ただし完全自動化ではなく最終人間試聴を必須ゲートとして維持 | `DECIDED` | ER-003-REPRO-FINAL(commit `c4a762c`) | 2026-08-09 |
 
+## Audio Production Pipeline(ER-006、Pool/N3 Production基盤)
+
+ER-006の一連のタスク(AUDIO-COST-OPTIMIZATION-01→AUDIO-COST-PILOT-02→
+PRONUNCIATION-LEDGER-SECONDARY-ASR-01→AUDIO-RETRY-CASCADE-PROD-01→
+VALIDATOR-NUMERIC-COST-RECONCILE-01)で決定・実装したAudio生成
+パイプラインの実装アーキテクチャを、本節でProduction標準として正式化
+する。**番組の聞こえ方・言語仕様(voice/style/spoken text/TTS model)は
+一切変更しない**(実装方式のみの変更、Cross-level仕様節の内容と矛盾
+しない)。本節はDrift Prevention(将来のcommitが気づかず古い実装へ
+後退しないようにする)を主目的とし、実装状況を機械的に確認する
+Static Audit: [er006_audio_cost_spec_fix_01_static_audit.py](er006_audio_cost_spec_fix_01_static_audit.py)。
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| Gemini TTS実装方式(Batch API) | **採用方針としてはBatch API(`client.batches.create()`)をProduction標準として確定**(Standard同期呼び出しの約50%コストで完走確認済み、Human Review試聴でStandardとの品質差なしを確認済み)。**ただし実装は未配線**: 実際のProduction TTS生成6箇所(下記「Production TTS/ASR call site一覧」参照)は、いずれも現時点でStandard同期呼び出し(`gclient.make_tts_call_fn()` → `client.models.generate_content()`)のままであり、Batch呼び出しが使われているのはA/Bテスト用の使い捨てscript(`er006_batch_ab_01_generate.py`)のみである。Batch配線の実装は本タスク(ER-006-AUDIO-COST-SPEC-FIX-01)のスコープ外の新規実装作業であり、[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-50として追跡する | `DECIDED(方式)` / `NOT_WIRED(実装)` | ER-006-AUDIO-COST-OPTIMIZATION-01(50%オフ完走確認)、ER-006-AUDIO-COST-SPEC-FIX-01(ユーザーによるHuman Review品質確認の反映、実装ギャップの明文化) | 2026-08-22 |
+| Batch Failure Handling | Batch APIを実際に配線する際は、jobレベルの成功(`batch.state == SUCCEEDED`)を個別segmentの成功と同一視してはならない。batch応答内の各itemごとのエラーを個別に確認し、失敗したitemのみを再試行対象とする(batch全体を無条件に再投入しない)。**Batch自体が未配線のため、本項目は次回のBatch配線実装タスクが従うべき設計方針としてここに記録する(現時点で稼働しているコードはない)** | `DECIDED(実装方針として)` | ER-006-AUDIO-COST-SPEC-FIX-01 | 2026-08-22 |
+| Master Audio Store | 固定/完全一致で再利用可能な音声(Welcome/Outro等の共通ナレーション、Key Phrase英語Component等)は、[er006_master_audio_store_01.py](er006_master_audio_store_01.py)経由で生成・再利用する。Keyは言語・レベル(nullable)・speaker voice・TTS model・style instruction hash/version・instruction path・canonical text hash(sha256)・processing version・sample rate/channelsの組で構成し、条件が一致しない音声を誤って再利用しない。B1/A2ともsegment生成の最上流(`generate_b1_segments()`/`generate_a2_segments()`)で`ensure_all_shared_narration_b1()`/`ensure_all_shared_narration_a2()`を呼び、Storeのlookupを経由しない無条件の毎回TTS再生成をしない | `DECIDED` | ER-006-AUDIO-COST-PILOT-02(最小実装・配線) | 2026-08-22 |
+| Primary ASR Routing | 英語=OpenAI `gpt-4o-mini-transcribe`(Primary)、日本語=Azure Speech STT(維持)。言語別構成のSSOTは[er006_asr_provider_routing_01.py](er006_asr_provider_routing_01.py)(`ASR_ROUTING`/`require_asr_route()`/`transcribe()`)であり、Production leaf pathはこのSSOT経由で呼び出す(未登録言語はfail-closedで例外送出、暗黙のAzureへのfallbackは禁止)。**旧`er006_model_routing_contract_01.py`の`ASR_PROVIDER`定数(`"azure"`固定)は、実際のASR呼び出し経路からは参照されておらず、本Routing SSOTが正である**(Model Routing Contract節を参照) | `DECIDED` | ER-006-AUDIO-COST-PILOT-02(実測: STOPPED 7→3件、attempt数110→79、Audio実費¥306→¥199/pair) | 2026-08-22 |
+| Validator(数値正規化含む一般化仕様) | [er006_preprod_hardening_01_validation.py](er006_preprod_hardening_01_validation.py)の`classify_asr_match()`/`normalize_text()`/`normalize_numeric()`を、全Production Audio QAの標準Validatorとして固定する。安全に吸収してよい表記ゆれ: street/St.等のUSPS通り種別略語(canonical側テキストを基準に判定、Saint固有名詞との曖昧性はcanonical-anchored設計で解消)、綴り数字↔算用数字(cardinal)、桁区切りカンマ、小数点、パーセント記号、通貨記号、序数(third以降。first/secondは副詞用法との曖昧性のため対象外)、日付文脈直後の序数接尾辞のみ。**絶対にPASSさせてはならない差**(regression test固定): 数値が異なる(2≠3等)、時刻表記artifact(three≠3:00)、序数と基数の取り違え(28≠28th)、通貨/パーセント記号の欠落(5≠$5、5≠5%)、年の違い(2023≠2024)、否定の有無の違い。Regression fixture: [er006_preprod_hardening_01_validation_test.py](er006_preprod_hardening_01_validation_test.py)(POSITIVE/AMBIGUOUS/NEGATIVE、計32件、2026-08-22時点で全PASS確認済み) | `DECIDED` | ER-006-AUDIO-COST-PILOT-02(street/St.方針転換)、ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01(数値正規化の一般化、序数バグ修正) | 2026-08-22 |
+| Pronunciation Ledger | 固有名詞の発音情報(Perplexity調査結果)を[er006_pronunciation_ledger_01.py](er006_pronunciation_ledger_01.py)でsurface+entity_typeをキーにcacheする。cache hitの場合は再調査(Perplexity再クエリ)を行わない。Perplexityへのクエリは、機械的に「1トピック1リクエスト」へまとめてはならない(個別/少数クエリのほうが品質が高いことを実測で確認済み、まとめるとconfidence low・hint空欄になる劣化を確認)。**Production配線範囲の明確化**: 現在Productionへ配線されているのは、Ledgerから取得した発音候補をSecondary ASRのPhrase List(`ledger_phrases`)へ渡す経路のみ(下記TTS Pronunciation Hintは未配線、次項参照) | `DECIDED(ASR側配線)` | ER-006-PRONUNCIATION-LEDGER-SECONDARY-ASR-01、ER-006-AUDIO-RETRY-CASCADE-PROD-01(Production 6箇所への配線) | 2026-08-22 |
+| TTS Pronunciation Hint | [er006_pronunciation_tts_injection_01.py](er006_pronunciation_tts_injection_01.py)の`augment_style_prefix_with_pronunciation()`(発音ヒントをmeta/style instructionへ注入、読み上げ対象のspoken text本文自体は一切変更しない設計)は、Production基盤として保持する。個別語のphonetic respelling/whitelistは基本方式にしない。**ただし現時点でProduction 6箇所のTTS生成呼び出しには未配線**(A/Bテスト用script`er006_pronunciation_ab_01_run.py`でのみ使用実績あり)。理由: 最難関ケース"Ottoni"でのA/B検証(ER-006-PRONUNCIATION-LEDGER-SECONDARY-ASR-01)で、TTS発音ヒント注入の確実な改善効果を実証できなかった(mixed/負の結果)ため、Production TTS生成への強制配線は見送っている。基盤としては維持しつつ、配線判断は追加検証待ちの状態を正直に記録する(→[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-47) | `DECIDED(基盤として保持)` / `NOT_WIRED(TTS生成側)` | ER-006-PRONUNCIATION-LEDGER-SECONDARY-ASR-01(A/B検証、mixed/負の結果) | 2026-08-22 |
+| ASR-first Retry Policy(固有名詞ASR不確実性) | 固有名詞のASR不一致が疑われる場合、**TTSを即座に再生成しない**。以下の順序でASR側の再検証を先に尽くす: ①OpenAI Primary ASR #1 → ②Primary #2(必要時) → ③Azure Secondary ASR + Phrase List #1(entity-like mismatch検出時のみ) → ④Secondary #2(必要時) → ⑤それでも未解決ならHuman Review行き。実装は[er006_secondary_asr_01.py](er006_secondary_asr_01.py)の`evaluate_attempt_with_cascade()`(`CASCADE_CONFIG`: max_primary_attempts=2, max_secondary_attempts=2)。「Primary ASR FAIL→即Gemini TTS再生成」という旧経路への後退を禁止する | `DECIDED` | ER-006-AUDIO-RETRY-CASCADE-PROD-01(Production 6箇所へ配線、3 Topic実測でtrue content誤PASS 0件、new savings+¥128.4) | 2026-08-22 |
+| TTS Retry条件(絞り込み) | TTS音声の再生成(regenerate)は、以下に該当する場合のみ行う: 真の内容誤り(true content mismatch)、数値/年/日付の意味的な違い、否定の有無の違い、重要語の欠落・追加、TTS技術的失敗(hallucination・INVALID_ARGUMENT等)、Human Reviewで実際の音声誤りと確認された場合。**固有名詞のASR表記ゆれのみを理由とした繰り返しTTS再生成は行わない**(上記ASR-first Retry Policyでのre-verificationを先に尽くす) | `DECIDED` | ER-006-AUDIO-RETRY-CASCADE-PROD-01 | 2026-08-22 |
+| Human Review Route | Cascadeを尽くしても未解決の固有名詞/ASR不確実性ケースは、API呼び出しを重ねてSTOPPEDにし続けるのではなく、Human Review queueへ送る。Queueは最低限以下を保持する: canonical text、audio、発音メタデータ(Pronunciation Ledgerのhint)、Primary ASR transcripts、Secondary ASR transcripts、判定理由(classification/reason)。ログ実装: `HUMAN_REVIEW_LOG_PATH`(`er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl`) | `DECIDED` | ER-006-AUDIO-RETRY-CASCADE-PROD-01 | 2026-08-22 |
+| Production TTS/ASR call site一覧 | `er003_v1_crosslevel_audio_02_common.py`、`er003_v1_repro01_main_generate.py`(2箇所)、`er003_v1_sing01_news_tail_fix.py`、`er003_v1_sing01_point_headings_aoede.py`、`er003_v1_sing01_voice01_generate.py`、`er003_v1_n3_01_tts_generate.py`の計6ファイルが、本節のASR Routing/Validator/Pronunciation Ledger(ASR側)/ASR-first Retry Policyを実際に配線しているProduction leaf pathである。Legacy/experimental script(A/Bテスト用`er006_batch_ab_01_generate.py`・`er006_pronunciation_ab_01_run.py`等)はProduction scope外であり、上記経路とは区別する | `DECIDED`(範囲の明確化) | ER-006-AUDIO-COST-SPEC-FIX-01(Static Audit対象範囲の確定) | 2026-08-22 |
+
+### Cost定義(Audio Production)
+
+ER-006以降のAudio Cost報告は、以下4区分を共通言語として使う
+(過去の報告で「実費」「想定コスト」等の曖昧な語を単一の数字として
+混同していた反省を踏まえる、ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01
+で初めて明確化)。
+
+| 用語 | 定義 | 現在の基準値(1 Topic=B1+A2 pair) | 備考 |
+|---|---|---|---|
+| Historical Actual | 実際に支払われた金額(過去ログの実測合計そのもの) | ログごとに異なる(単一の固定値なし) | `er005_cost_logger.py`の`raw_usage_log.jsonl`から集計 |
+| Clean Production Cost | 全工程が初回attemptで成功した場合に必要な費用(retry・研究・Cascade等の追加費用を一切含まない理論下限) | ¥65.14/pair | ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01で再構築 |
+| Expected Conditional Waste | 条件付きで発生しうる追加費用の期待値(Primary ASR #2、Secondary ASR Cascade、Pronunciation Research、TTS retry等) | ¥46.03/pair | 実測1.68倍のTTS/ASR retry・Pronunciation Research実測cache miss率・Secondary ASR保守的estimateを合成 |
+| Expected Production Cost | Clean Production Cost + Expected Conditional Waste | ¥111.17/pair | **この値はestimateを含む進化中のbaselineであり、恒久的な固定値ではない**。特にSecondary ASR Cascade発動率(1回/topic、ESTIMATE)はランダムサンプル未検証のまま(→[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-49) |
+
+**過去の報告値との関係**: ER-006-AUDIO-COST-PILOT-02の¥106.4/pairと
+ER-006-AUDIO-RETRY-CASCADE-PROD-01の¥113.0/pairは、いずれも今後
+参照しない(前者はPronunciation/Cascade費用未計上、後者は根拠の薄い
+仮定「1.3回/topic」を使用していた)。¥111.17/pairが現時点の正である。
+
 ## Model Routing Contract
 
 Single Source of Truth: [er006_model_routing_contract_01.py](er006_model_routing_contract_01.py)
@@ -280,8 +325,8 @@ Single Source of Truth: [er006_model_routing_contract_01.py](er006_model_routing
 | Writer Fact Check | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
 | B1 Support / A2 Support(Key Phrase選定・正規化含む) | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
 | Support Fact Check | GPT-5.6 Luna | `DECIDED` | ER-005-SUPPORT-COST-QUALITY-01系実装をER-006 Pool Pilotで採用、ER-006-MODEL-ROUTING-CONTRACT-01で正式契約化 | 2026-08-22 |
-| TTS | Gemini `gemini-2.5-pro-preview-tts` | `DECIDED` | プロジェクト全体方針 | - |
-| ASR / Audio QA | Azure Speech-to-Text | `DECIDED` | プロジェクト全体方針 | - |
+| TTS | Gemini `gemini-2.5-pro-preview-tts`。呼び出し方式はBatch API(`client.batches.create()`)がApproved方式だが、**実際のProduction call siteは全てStandard(`client.models.generate_content()`)のまま、Batch未配線**(詳細はAudio Production Pipeline節「Gemini TTS実装方式」、OPEN-50参照) | `DECIDED(model/方式)` / `NOT_WIRED(Batch配線)` | プロジェクト全体方針(model)、ER-006-AUDIO-COST-SPEC-FIX-01(Batch方式の正式化・実装ギャップの明文化) | 2026-08-22 |
+| ASR / Audio QA | **英語=OpenAI `gpt-4o-mini-transcribe`(Primary)、日本語=Azure Speech-to-Text(維持)**。SSOTは[er006_asr_provider_routing_01.py](er006_asr_provider_routing_01.py)(`ASR_ROUTING`/`require_asr_route()`)であり、本Routing Contractの`ASR_PROVIDER`定数(`"azure"`固定)は既存test互換のためのみ残す未配線の値である(詳細はAudio Production Pipeline節「Primary ASR Routing」) | `DECIDED` | ER-006-AUDIO-COST-PILOT-02、ER-006-AUDIO-COST-SPEC-FIX-01(Contract表への反映) | 2026-08-22 |
 
 **Fail-Closed契約**: 上記いずれの工程も、規定外Model/Providerが指定された場合、または
 Model未指定でSDK defaultへ落ちる場合は、API call実行前に`ModelContractViolation`を
@@ -317,4 +362,10 @@ ER-003-N3-ROOT-FIX-01完了報告(Key Phrase trim margin・TTS instruction責務
 ER-003-N3-ROOT-FIX-VERIFY-01完了報告(3ジャンルでのA2 Core Logic Preservation検証)、
 ER-003-B1-A2-SPEC-FREEZE-01-R1完了報告(SoT内部整合性クリーンアップ)、
 ER-003-B1-B2-SCOPE-FIX-01完了報告(B1生成仕様確定・B2 Launch Scope整理)、
+ER-006-AUDIO-COST-OPTIMIZATION-01完了報告(Batch/Master Audio/ASR代替の調査)、
+ER-006-AUDIO-COST-PILOT-02完了報告(ASR Provider Routing・Master Audio最小実装)、
+ER-006-PRONUNCIATION-LEDGER-SECONDARY-ASR-01完了報告(発音Ledger・Secondary ASR)、
+ER-006-AUDIO-RETRY-CASCADE-PROD-01完了報告(Cascade Production配線)、
+ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01完了報告(Validator一般化・Cost再構築)、
+ER-006-AUDIO-COST-SPEC-FIX-01完了報告(本節・Model Routing Contract更新のSSOT統合)、
 [DECISION_LOG.md](DECISION_LOG.md)
