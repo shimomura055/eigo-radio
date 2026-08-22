@@ -43,6 +43,46 @@ BR_AM_SPELLING_PAIRS = [
     ("labelled", "labeled"), ("modelling", "modeling"),
 ]
 
+# ER-006-ASR-VALIDATION-RESIDUAL-02: 英語の住所・地理表現でよく使われる
+# 標準的な省略形(USPSの通り種別略語に代表される、閉じた既知の集合)。
+# ASRが"street"を"St."のように省略形へ書き起こすことが実際に複数回
+# (street furniture、full_story_part1等)観測されている。この略語class
+# 自体は一般的でよく知られたものであり、個別記事・個別語の特例
+# (whitelist)ではない。normalize_text()内でBR_AM_SPELLING_PAIRSと同じ
+# 方式(両側を同じ正規化関数へ通す)で吸収するため、「canonical側が
+# 完全形streetで、ASR側だけがst.と省略した」場合に両者が同じ正規化後
+# トークンへ揃う。"St."は"Saint"の略でもあり得るが、その場合はcanonical
+# 側が"saint"であって"street"ではなく、このmapはstreet→st方向にしか
+# 定義していないため誤って吸収されない(Saint側の語がstへ変換される
+# ことはない)。
+_STREET_SUFFIX_EXPANSIONS = [
+    ("street", "st"), ("avenue", "ave"), ("road", "rd"), ("boulevard", "blvd"),
+    ("drive", "dr"), ("lane", "ln"), ("court", "ct"), ("place", "pl"),
+    ("square", "sq"), ("terrace", "terr"), ("highway", "hwy"), ("parkway", "pkwy"),
+]
+_STREET_SUFFIX_RES = [(full, re.compile(r"\b" + abbr + r"\b")) for full, abbr in _STREET_SUFFIX_EXPANSIONS]
+
+# ER-006-ASR-VALIDATION-RESIDUAL-02: 小さな数(2〜12)の綴り⇔算用数字の
+# 表記差を吸収する。tts_generate.py::tts_safe_number_words_en()が既に
+# TTS入力側だけ算用数字("two"→"2")へ変換しているのは、Azure ASRが
+# 口頭の小さな数を算用数字へ書き起こす傾向を前提にした対策だった。
+# 実際にPilotで確認したところ、OpenAI gpt-4o-mini-transcribeは逆に
+# 綴りのまま("2"と発話された内容を"two"と)書き起こすことがあり
+# (実例: Public Benches B1 comment_3、"two more angles"→TTS入力"2 more
+# angles"→OpenAI ASR "two more angles"で、canonical側の"2"とASR側の
+# "two"がprotected_checkの数字チェックで不一致判定されていた)、
+# ASRプロバイダ次第でどちらの表記になるか変わる。値そのものが変わって
+# いない限り、2〜12の綴り/算用数字は同じ数として吸収してよい
+# (逆に"three"→"3:00"のような桁区切り記号混入は、正規化後も
+# トークン数が変わる(3 00の2トークン)ため、この吸収の対象にならず
+# 引き続きnumber_mismatchとして検出される)。
+_EN_NUMBER_WORDS = {
+    "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
+    "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
+}
+_EN_NUMBER_WORD_RE = re.compile(r"\b(" + "|".join(_EN_NUMBER_WORDS.keys()) + r")\b", flags=re.IGNORECASE)
+
+
 _NEGATION_WORDS = {
     "not", "no", "never", "none", "nobody", "nothing", "nowhere", "neither", "nor",
     "cannot", "cant", "wont", "isnt", "arent", "wasnt", "werent", "doesnt", "dont",
@@ -58,7 +98,11 @@ def strip_diacritics(text: str) -> str:
 
 
 def normalize_text(text: str) -> str:
-    """発音上区別できない表記差のみを吸収する(単語の置き換えは行わない)。"""
+    """発音上区別できない表記差、および閉じた既知集合の標準的な省略形
+    (通り種別略語等、_STREET_SUFFIX_EXPANSIONS参照)のみを吸収する。
+    任意の単語の置き換えは行わない(BR_AM_SPELLING_PAIRS・略語展開とも、
+    どちらも「同じ語の別表記」という閉じた既知集合に限定している点で
+    従来方針を維持している)。"""
     t = (text or "").lower()
     t = strip_diacritics(t)
     for br, am in BR_AM_SPELLING_PAIRS:
@@ -67,6 +111,9 @@ def normalize_text(text: str) -> str:
     t = t.replace("’", "'").replace("‘", "'")
     t = t.replace("“", '"').replace("”", '"')
     t = _ORDINAL_RE.sub(r"\1", t)
+    t = _EN_NUMBER_WORD_RE.sub(lambda m: _EN_NUMBER_WORDS[m.group(1).lower()], t)
+    for full, abbr_re in _STREET_SUFFIX_RES:
+        t = abbr_re.sub(full, t)
     t = re.sub(r"[^a-z0-9]+", " ", t)  # ハイフン/複合語分かち書き差もここで吸収
     t = re.sub(r"\s+", " ", t).strip()
     return t

@@ -767,6 +767,27 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 - **根拠レポート**: ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01完了報告
 - **影響するCURRENT_SPEC項目**: QA/Human Review > ASR一致と発音品質の関係(新設)
 
+## ER-006-AUDIO-COST-PILOT-02(2026-08-22)
+
+- **Decision**: 音声パイプラインのASR Provider Routingを、**英語=OpenAI
+  gpt-4o-mini-transcribe(Primary)、日本語=Azure Speech STT(維持)**の
+  言語別構成でPilot導入する(SSOT: `er006_asr_provider_routing_01.py`)。
+  Fail-closed設計(未登録言語は例外送出、暗黙fallback禁止)
+- **根拠**: 同一トピックでの実測比較で、STOPPED数が7件→3件、TTS+ASR
+  attempt総数が110→79(-28%)、Audio実費が¥306→¥199/pair(-35.1%)。
+  誤って内容誤りをPASSさせたケースは0件
+- **Validator方針変更**: street/St.のような通り種別略語(USPS標準の
+  閉じた既知集合)は、canonical側テキストを基準に安全吸収する方針へ
+  転換した(ER-006-POOL-PREPROD-HARDENING-01時点の「Saint曖昧性を
+  理由に吸収しない」という以前の判断を上書き。canonical-anchored設計
+  によりSaint/Streetの曖昧性は解消できることを確認したため)
+- **未決定のまま保留**: Gemini TTS Batch API採用の可否(Human Review
+  Artifact試聴待ち)。固有名詞"Ottoni"のASR認識限界への対応方針
+  (発音辞書登録等は未着手)。量産再開の可否
+- **根拠レポート**: ER-006-AUDIO-COST-PILOT-02完了報告
+- **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、実装
+  アーキテクチャ層の変更のみ)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

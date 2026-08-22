@@ -88,6 +88,48 @@ def to_tts_safe_japanese_fraction_reading(text: str) -> str:
     return _JP_FRACTION_RE.sub(lambda m: f"{m.group(1)}ぶんの{m.group(2)}", text or "")
 
 
+# ============================================================
+# A1. Key Phrase日本語glossの辞書的項変数記法(placeholder)検出
+# ============================================================
+# ER-006-KP5-CANONICAL-BUG-01(2026-08-22)で発見: 2つの目的語を取る
+# 英語Key Phrase(例: "associate with")のjapanese_glossを生成する際、
+# LLMが辞書の見出し語定義でよく使われる項変数記法(例:
+# 「〜を…と結びつける」)をそのまま出力することがある。「〜」「…」は
+# いずれも実際には発話されない記号であり、この記法のままcanonical_text
+# としてTTS/ASR比較へ渡すと、実際にどう発話させても原理的に一致し
+# ようがない不良segmentになる(該当例: Public Benches B1 kp5_ja、
+# 全12回のattemptがTRUE_CONTENT_MISMATCH/ASR_VALIDATION_UNCERTAIN)。
+#
+# 「〜」は先頭位置であれば(例:「～によって」のような接続パターン)
+# 除去しても文法的に成立する場合があり、tts_safe_ja()側で既に対応
+# 済み。一方、この関数が対象とするのは「文中に残った」項変数記法で
+# あり、機械的な削除では文法が壊れる(例:「〜を…と結びつける」から
+# 記号だけ削ると「をと結びつける」という非文になる)。そのため、この
+# 関数は「削除して当座を凌ぐ」のではなく、TTS呼び出し自体を行う前に
+# 検出してブロックする(呼び出し側でSTOPPED扱いとし、gloss自体の
+# 再生成・手動修正を促す)ためのゲートとして使う。
+#
+# スコープは意図的にKey Phrase日本語gloss呼び出し経路に限定する
+# (Full Story等の長尺ナレーションで「…」が正当な間・余韻として使われる
+# 可能性まで一律に禁止しない)。「短く自然な日本語グロス」という既存の
+# プロンプト指示自体がこの記法を想定しておらず、実例でも他の4件の
+# gloss(例:「その場を立ち去る」)はいずれも項変数記法を使っていない
+# ため、gloss文脈でこれらの記号が現れるケースは事実上すべて不良出力と
+# みなしてよい。
+_GLOSS_PLACEHOLDER_CHARS = ("〜", "～", "…")  # U+301C WAVE DASH / U+FF5E FULLWIDTH TILDE / U+2026 HORIZONTAL ELLIPSIS
+
+
+def detect_gloss_placeholder_notation(text: str) -> dict:
+    """Key Phrase日本語glossに、辞書的な項変数記法(「〜を…と結びつける」型)が
+    残っていないかを検出する。文字列中のどの位置であっても対象記号が
+    1つでも含まれていればhas_placeholder=Trueを返す(mid-string分は
+    安全に自動削除できないため、呼び出し側でTTS呼び出し前にブロックする
+    こと)。"""
+    text = text or ""
+    found = [ch for ch in _GLOSS_PLACEHOLDER_CHARS if ch in text]
+    return {"has_placeholder": bool(found), "found_chars": found, "text": text}
+
+
 # 自己言及的・指示文的に見えるためTTSモデルが「これはナレーション対象の
 # 台本ではなく自分への指示文だ」と誤解しやすいパターン。厳密な検出は
 # 困難なため、簡易ヒューリスティックとしてのみ提供する(判定を過信せず、

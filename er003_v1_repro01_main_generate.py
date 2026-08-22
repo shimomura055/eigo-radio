@@ -26,6 +26,7 @@ import er003_b1_p3u_audio as p3u
 import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
+import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
 
 ARTICLE_ID = "A02"
@@ -201,7 +202,6 @@ def generate_narration_snippet_verified_strict(
     # (STOPPEDとは区別し、Human Review対象として扱う)。日本語(ja)は
     # 既存のphonetic_verdict方式を維持する(このvalidatorは英語専用の
     # ため)。
-    import er003_b1_p4_audio as p4
     asr_language = "en-US" if language == "en" else "ja-JP"
     max_len = len(text) + max_extra_chars
     attempts_log = []
@@ -211,7 +211,7 @@ def generate_narration_snippet_verified_strict(
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language=asr_language)
+        asr_text, err = routing.transcribe(out_path, language=asr_language)
         length_ok = asr_text is not None and len(asr_text) <= max_len
         phonetic_verdict = None
         stop_retrying = False
@@ -375,7 +375,7 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
+        asr_text, err = routing.transcribe(out_path, language="en-US")
         length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
         verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
             text, asr_text, fallback_classification_history)

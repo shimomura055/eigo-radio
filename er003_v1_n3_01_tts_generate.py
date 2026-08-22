@@ -35,6 +35,8 @@ import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
+import er006_asr_provider_routing_01 as routing
+import er006_audio_cost_pilot_02_shared_narration as shared_narration
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
@@ -61,6 +63,17 @@ def load_text(path: str) -> str:
 def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                                    max_attempts: int = 6) -> dict:
     placeholder_safe = tts_safe_ja(text)
+    # ER-006-KP5-CANONICAL-BUG-01: 先頭以外に残った項変数記法(「〜」「…」等)は
+    # 機械的に削除すると文法が壊れるため、TTS呼び出し自体を行わずSTOPPEDで
+    # 止める(gloss自体の再生成・手動修正が必要であることを明示する)。
+    placeholder_check = safety.detect_gloss_placeholder_notation(placeholder_safe)
+    if placeholder_check["has_placeholder"]:
+        return {
+            "status": "STOPPED",
+            "reason": f"canonical_textに未発話のplaceholder記号が残っています: {placeholder_check['found_chars']}",
+            "canonical_text": text,
+            "placeholder_check": placeholder_check,
+        }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     r = voice01.generate_charon_japanese(tts_input, out_path, expected_substring, max_attempts=max_attempts)
     r["canonical_text"] = text
@@ -119,7 +132,6 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
     leakage対策。"""
-    import er003_b1_p4_audio as p4
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
     if standard.get("status") == "OK":
@@ -133,7 +145,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
+        asr_text, err = routing.transcribe(out_path, language="ja-JP")
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified = substring_ok and length_ok
@@ -160,6 +172,18 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
 def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                               max_extra_chars: int = 40, max_attempts: int = 6) -> dict:
     placeholder_safe = tts_safe_ja(text)
+    # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
+    # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
+    # comment/Key Phrase meaning等、いずれもLLMが生成する短い日本語text
+    # であり、辞書的な項変数記法が正当に必要になるケースはない)。
+    placeholder_check = safety.detect_gloss_placeholder_notation(placeholder_safe)
+    if placeholder_check["has_placeholder"]:
+        return {
+            "status": "STOPPED",
+            "reason": f"canonical_textに未発話のplaceholder記号が残っています: {placeholder_check['found_chars']}",
+            "canonical_text": text,
+            "placeholder_check": placeholder_check,
+        }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     r = generate_a2_japanese_with_fallback(
         tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
@@ -257,7 +281,12 @@ def tts_safe_kp_en(text: str) -> str:
 
 
 def tts_safe_ja(text: str) -> str:
-    return text.lstrip("～").replace("’", "'")
+    # ER-006-KP5-CANONICAL-BUG-01: 先頭のtilde placeholderは、実際に使われて
+    # いる文字がU+FF5E(全角チルダ「～」)とU+301C(波ダッシュ「〜」)の
+    # どちらであっても除去する(見た目がほぼ同じため、生成元によって
+    # どちらが使われるかが揺れる。従来はU+FF5Eのみを対象にしており、
+    # U+301Cを使う出力(kp5_ja等)を取りこぼしていた)。
+    return text.lstrip("～〜").replace("’", "'")
 
 
 _JA_KANJI_NUMERALS = set("一二三四五六七八九十百千万億〇")
@@ -296,6 +325,12 @@ def generate_b1_segments(theme: dict) -> dict:
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/b1_support_texts.json")
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
+
+    # ER-006-MASTER-AUDIO-STORE-01: 完全固定segment(welcome等)をMaster
+    # Audio Store経由で取得する。既にStoreにmasterがあればTTSを呼ばず
+    # narration_dirへコピーするだけ(_charon suffix、既存のcopy_b1_shared_
+    # assets()と互換な命名)。
+    shared_narration.ensure_all_shared_narration_b1(narration_dir)
 
     results = {}
 
@@ -343,9 +378,10 @@ def generate_b1_segments(theme: dict) -> dict:
         rank = item["rank"]
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
-        print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 英語Component生成(Aoede): {used_form!r}...")
+        print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 英語Component生成(Aoede、Master Audio Store経由): {used_form!r}...")
         with cl.segment_context(f"kp{rank}_english"):
-            en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+            en_r = shared_narration.ensure_key_phrase_english_component(
+                tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
         print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 日本語meaning生成(Charon、reading-safety): {ja_gloss!r}...")
         with cl.segment_context(f"kp{rank}_japanese"):
             ja_r = generate_charon_japanese_with_reading_safety(
@@ -375,6 +411,11 @@ def generate_a2_segments(theme: dict) -> dict:
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/a2_support_texts.json")
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
+
+    # ER-006-MASTER-AUDIO-STORE-01: B1と同じMasterAudioKey(level=None)を
+    # 使うため、generate_b1_segments()が先に実行済みであれば、ここでは
+    # TTSを一切呼ばずStoreからコピーするだけになる。
+    shared_narration.ensure_all_shared_narration_a2(narration_dir)
 
     results = {}
 
@@ -431,9 +472,10 @@ def generate_a2_segments(theme: dict) -> dict:
         rank = item["rank"]
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
-        print(f"[N3-TTS][{theme_id}/a2] Key Phrase {rank} 英語Component生成(Aoede): {used_form!r}...")
+        print(f"[N3-TTS][{theme_id}/a2] Key Phrase {rank} 英語Component生成(Aoede、Master Audio Store経由): {used_form!r}...")
         with cl.segment_context(f"kp{rank}_english"):
-            en_r = repro01.generate_key_phrase_component_verified(tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+            en_r = shared_narration.ensure_key_phrase_english_component(
+                tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
         print(f"[N3-TTS][{theme_id}/a2] meaning_{i}生成(日本語): {ja_gloss!r}...")
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
             ja_r = generate_a2_japanese_with_reading_safety(

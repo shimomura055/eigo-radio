@@ -28,6 +28,7 @@ import er003_b1_p4c_audio as p4c
 import er003_b1_p7a_audio as p7a
 import er003_b1_p9a_audio as p9a
 import er003_v1_repro01_main_generate as repro01
+import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
@@ -87,7 +88,7 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
             continue
 
         common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
-        asr_text, asr_err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US")
+        asr_text, asr_err = routing.transcribe(out_path, language="en-US")
         # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: safety.validate_asr_match
         # (word-subsequence一致)から、正規化+6分類+Protected Check+同一
         # signature retry guardrail方式へ切り替える。
@@ -186,7 +187,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
                                   "reason": anomaly["reason"], "duration_anomaly": anomaly})
             continue
         common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
-        asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
+        asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
         # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
@@ -212,7 +213,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err2 = p4.get_full_text_via_azure_stt_continuous(out_path, language="ja-JP")
+        asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
         substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
         phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err2)

@@ -32,6 +32,7 @@ import er003_a2_article as a2
 import er003_b1_p9a_audio as p9a
 import er003_v1_a2_audio_02_generate as audio02
 import er003_v1_repro01_main_generate as repro01
+import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
@@ -57,7 +58,6 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         standard["fallback_used"] = False
         return standard
 
-    import er003_b1_p4_audio as p4
     max_len = len(text) + max_extra_chars
     fallback_attempts = []
     fallback_classification_history = []
@@ -66,7 +66,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = p4.get_full_text_via_azure_stt_continuous(out_path, language="en-US", timeout_seconds=300.0)
+        asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified_content, stop_retrying, cls = audio_validation.evaluate_attempt(
             text, asr_text, fallback_classification_history)
@@ -233,7 +233,17 @@ def load_all_sources(config: dict) -> dict:
 
     narration = {}
     for name in SERVICE_LEVEL_NARRATION_NAMES:
-        mono, sr, _, _ = common.read_wav_float(f"{A01_NARRATION_DIR}/{name}.wav")
+        # ER-006-MASTER-AUDIO-STORE-01: Master Audio Store経由の生成
+        # (er006_audio_cost_pilot_02_shared_narration.ensure_all_shared_
+        # narration_a2)が済んでいるテーマは、記事固有narration_dir配下に
+        # 既にこの名前のファイルが存在する(B1と完全に同じmasterを共有
+        # するため、drift無し)。存在すればそちらを優先し、無い場合のみ
+        # 従来通りA01_NARRATION_DIR(記事非依存の共有元)を使う。既存の
+        # 他テーマ(hanshin/health/household等)は従来通りA01_NARRATION_DIR
+        # を使い続けるため挙動は変わらない。
+        local_path = f"{narration_dir}/{name}.wav"
+        source_path = local_path if os.path.exists(local_path) else f"{A01_NARRATION_DIR}/{name}.wav"
+        mono, sr, _, _ = common.read_wav_float(source_path)
         assert sr == common.SAMPLE_RATE
         narration[name] = mono
     for name in ("topic_intro", "japanese_title"):

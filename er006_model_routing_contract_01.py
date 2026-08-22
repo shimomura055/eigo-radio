@@ -40,6 +40,16 @@ SUPPORT_FACT_CHECK_MODEL = "gpt-5.6-luna"
 # ------------------------------------------------------------
 EXCEPTION_SEARCH_PROVIDER = "perplexity"
 TTS_MODEL = "gemini-2.5-pro-preview-tts"
+# ER-006-AUDIO-COST-PILOT-02(2026-08-22)以降: 日本語ASRはAzureのまま
+# だが、英語ASRはPilotとしてOpenAI gpt-4o-mini-transcribeへ切り替えた
+# (require_provider("ASR", ...)はこのモジュール内では単一値の汎用チェック
+# であり、言語別の使い分けをモデル化していない。かつ実際の本番ASR呼び出し
+# 経路からrequire_provider("ASR", ...)は呼ばれていない=このチェック自体
+# 未配線のままである)。実際に配線済みで言語別routingをFail-closedに強制
+# するSSOTは er006_asr_provider_routing_01.py::ASR_ROUTING / require_asr_
+# route() であり、ASRのrouting判断はそちらを正とする。ASR_PROVIDER定数は
+# 既存test(er006_model_routing_contract_01_test.py)との後方互換のため
+# "azure"のまま残す。
 ASR_PROVIDER = "azure"
 
 # 監査用: 工程名 -> Approved Model/Providerの対応表(regression/static audit testが使う)

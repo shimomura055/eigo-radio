@@ -43,26 +43,50 @@ POSITIVE_FIXTURES = [
         "canonical": "blitzscaling",
         "asr": "Blitz scaling.",
     },
+    {
+        # ER-006-ASR-VALIDATION-RESIDUAL-02(2026-08-22)、Pool Benches Pilot-02実測。
+        # tts_safe_number_words_en()がTTS入力側だけ"two"→"2"へ変換しているため、
+        # canonical(=TTS入力後のtext)は"2"だが、OpenAI gpt-4o-mini-transcribeは
+        # 綴りのまま"two"と書き起こした。値は変わっていないので吸収してよい。
+        "name": "spelled/digit small number (benches/b1/comment_3, OpenAI ASR spells out '2' as 'two')",
+        "canonical": "Next, we will look at this issue from 2 more angles.",
+        "asr": "Next, we will look at this issue from two more angles.",
+    },
 ]
 
-# "St." abbreviation artifact(street→St.、ASRの表記揺れ)は、canonical側の
-# "street"が固有名詞ではない(小文字・一般名詞)ため、本Validatorの設計上は
-# 意図的にTRUE_CONTENT_MISMATCH(retry対象)のまま残す。"st"は"saint"の略記
-# である可能性もあり、機械的に安全とは断定できないため。これは
-# ASR_VALIDATION_UNCERTAIN Guardrail(3回連続で改善しなければretry停止)で
-# 別途吸収する設計とし、Validator単体では過度に許容しない。
+# ER-006-ASR-VALIDATION-RESIDUAL-02(2026-08-22)で方針変更: "St."略記
+# artifact(street→St.)は、当初(ER-006-POOL-PREPROD-HARDENING-01時点)は
+# "st"が"saint"の略記である可能性を排除できないとしてTRUE_CONTENT_MISMATCH
+# のまま残していたが、実際にはこの曖昧さはcanonical側テキストを基準に
+# 判定すれば解消できる: normalize_text()の略語展開はcanonical側が明示的に
+# "street"(一般名詞)である場合の"st"のみを対象にしており(_STREET_SUFFIX_
+# EXPANSIONS参照)、canonical側が"Saint"(固有名詞、例: "St. Louis")の
+# ケースでは"saint"という語自体が展開対象に含まれないため発火しない。
+# つまりStreet/Saintの曖昧性はcanonical textが常に正解を握っており、
+# 機械的にも安全に判定できる。個別記事のwhitelistではなく、USPS通り
+# 種別略語という閉じた既知集合への一般対策として実装した
+# (詳細はER-006-AUDIO-COST-PILOT-02完了報告参照)。
 AMBIGUOUS_FIXTURES = [
     {
         "name": "St. abbreviation ASR punctuation artifact (benches/a2/full_story_part2, excerpt)",
         "canonical": "So, the bench debate is not only about street furniture.",
         "asr": "So the bench debate is not only about St. furniture.",
-        "expected": "TRUE_CONTENT_MISMATCH",
+        "expected": "NORMALIZED_MATCH",
+    },
+    {
+        "name": "St. as Saint abbreviation must NOT be absorbed (canonical says saint, not street)",
+        "canonical": "The event took place near Saint Louis, not far from the river.",
+        "asr": "The event took place near St. Louis, not far from the river.",
+        "expected": "ASR_VALIDATION_UNCERTAIN",
     },
 ]
 
 NEGATIVE_FIXTURES = [
     {"name": "number changed 2->3", "canonical": "The study followed 2 groups of participants.",
      "asr": "The study followed 3 groups of participants."},
+    {"name": "number changed two->three, spelled form (must not be masked by digit/word equivalence)",
+     "canonical": "The study followed two groups of participants.",
+     "asr": "The study followed three groups of participants."},
     {"name": "year changed 2025->2024", "canonical": "The rule was vacated in 2025.",
      "asr": "The rule was vacated in 2024."},
     {"name": "negation flipped can->cannot", "canonical": "Users can cancel the plan at any time.",
@@ -91,7 +115,7 @@ def run():
         if not ok:
             failures.append(fx["name"])
 
-    print("\n=== AMBIGUOUS fixtures (意図的にretry対象/Review対象のまま残すことを確認) ===")
+    print("\n=== AMBIGUOUS fixtures (吸収してよいものと、してはいけないものを区別できることを確認) ===")
     for fx in AMBIGUOUS_FIXTURES:
         r = classify_asr_match(fx["canonical"], fx["asr"])
         ok = r.classification == fx["expected"]

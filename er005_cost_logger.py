@@ -248,13 +248,62 @@ def _patch_azure() -> None:
     _wrap_asr_function(p4, "get_full_text_via_azure_stt_continuous")
 
 
+# ============================================================
+# OpenAI ASR(gpt-4o-mini-transcribe): ER-006-ASR-OPENAI-PILOT-01
+# ============================================================
+def _patch_openai_asr() -> None:
+    """client.audio.transcriptions.create()をclassレベルでpatchする
+    (_patch_openai()と同じ方式)。Primary ASRがEnglishでOpenAIへ
+    切り替わったPilotでも、Gemini/Azure同様provider/model/usageが
+    raw_usage_log.jsonlへ直接記録されるようにする。"""
+    from openai.resources.audio import transcriptions as transcriptions_module
+
+    original_create = transcriptions_module.Transcriptions.create
+
+    def patched_create(self, *args, **kwargs):
+        attempt = _next_attempt("openai_asr", "audio.transcriptions.create")
+        t0 = time.time()
+        model_id = kwargs.get("model")
+        try:
+            response = original_create(self, *args, **kwargs)
+        except Exception as exc:
+            record({
+                "provider": "openai_asr", "api": "audio.transcriptions.create",
+                "model_id": model_id, "attempt_number": attempt,
+                "success": False, "error": str(exc)[:500],
+                "elapsed_seconds": round(time.time() - t0, 3),
+                "usage_source": "N/A_FAILED_CALL",
+            })
+            raise
+        usage = getattr(response, "usage", None)
+        usage_dict = {}
+        if usage is not None:
+            usage_dict = {
+                "input_tokens": getattr(usage, "input_tokens", None),
+                "output_tokens": getattr(usage, "output_tokens", None),
+                "total_tokens": getattr(usage, "total_tokens", None),
+            }
+        record({
+            "provider": "openai_asr", "api": "audio.transcriptions.create",
+            "model_id": model_id, "locale": kwargs.get("language"),
+            "attempt_number": attempt, "success": True,
+            "elapsed_seconds": round(time.time() - t0, 3),
+            "usage_source": "OFFICIAL_API_RESPONSE",
+            **usage_dict,
+        })
+        return response
+
+    transcriptions_module.Transcriptions.create = patched_create
+
+
 def install(log_path: str) -> None:
-    """3プロバイダ全てにpatchを適用する。プロセス内で1回だけ実行する。"""
+    """4プロバイダ全てにpatchを適用する。プロセス内で1回だけ実行する。"""
     global _INSTALLED
     init_logger(log_path)
     if _INSTALLED:
         return
     _patch_openai()
+    _patch_openai_asr()
     _patch_gemini()
     _patch_azure()
     _INSTALLED = True
