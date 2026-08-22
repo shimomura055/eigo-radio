@@ -38,6 +38,19 @@
 | 19 | Sleep Trackers: Useful Data or One More Score to Ignore? | 睡眠トラッカーは役立つデータか、それとも気にしない数字が増えるだけか | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 20 | "Someone Just Bought This": What Online Shops Want You to Feel | 「今、誰かが購入しました」表示でネットショップが狙うこと | 買い物・お金・サービス設計 | `PLANNED` | `PLANNED` | `PLANNED` |
 
+## ユーザー最終確認Artifact
+
+No.1〜3の最終採用Candidate(script+audio)を、Topicごとにまとめた
+試聴用ページ。Production差分・Provenanceは
+[ER-006-POOL-ADOPTION-AUDIT-01_diff.md](ER-006-POOL-ADOPTION-AUDIT-01_diff.md)
+を参照。
+
+| No. | Topic | Review Artifact |
+|---|---|---|
+| 1 | Public Benches | https://claude.ai/code/artifact/31c9ac90-75a6-4742-89c2-3d2590d30662 |
+| 2 | Subscriptions | https://claude.ai/code/artifact/3a5ad42b-d06e-4016-b830-a90df63e732d |
+| 3 | Startups | https://claude.ai/code/artifact/aeaf4fee-c82d-45e4-b02f-f3f7dbc7ccd0 |
+
 ## 経緯・注記
 
 - No.1〜3は、ER-006-POOL-PILOT-01(2026-08-22以前)でTopic Selectionを
