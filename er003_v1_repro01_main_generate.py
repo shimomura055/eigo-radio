@@ -27,6 +27,7 @@ import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
 import er006_asr_provider_routing_01 as routing
+import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -208,8 +209,17 @@ def generate_narration_snippet_verified_strict(
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []
+    # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Standard同期呼び出し
+    # (client.models.generate_content)からGemini Batch API
+    # (client.batches.create)へ実行方式を切り替える。model/voiceは
+    # p9a.generate_narration_snippet()の既定(_make_english_call_fn/
+    # _make_japanese_call_fn)と同一値をそのまま使い、tts_call_fn引数
+    # 経由で差し込む(声・モデル・instruction・spoken textは無変更)。
+    batch_model_name = p9a.ENGLISH_MODEL_NAME if language == "en" else p9a.JAPANESE_MODEL_NAME
+    batch_call_fn = batch_wiring.make_batch_tts_call_fn(batch_model_name, p9a.VOICE_NAME, output_path=out_path)
     for attempt in range(1, max_attempts + 1):
-        r = p9a.generate_narration_snippet(text, language, out_path, safety_margin_seconds=safety_margin_seconds)
+        r = p9a.generate_narration_snippet(text, language, out_path, tts_call_fn=batch_call_fn,
+                                            safety_margin_seconds=safety_margin_seconds)
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
@@ -321,7 +331,9 @@ def generate_english_component_minimal_instruction(
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
     prompt = p4c.build_tts_prompt(text, MINIMAL_INSTRUCTION_PREFIX)
-    call_fn = p9a._make_english_call_fn()
+    # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
+    # p9a._make_english_call_fn()と同一のENGLISH_MODEL_NAME/VOICE_NAMEを使う)。
+    call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:

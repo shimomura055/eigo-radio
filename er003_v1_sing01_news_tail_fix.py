@@ -31,6 +31,7 @@ import er003_b1_p9a_audio as p9a
 import er003_audio_tts_asr_safety as safety
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
+import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -49,7 +50,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
     attempts_log = []
     classification_history = []
     for attempt in range(1, max_attempts + 1):
-        call_fn = p9a._make_english_call_fn()
+        # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
+        # p9a._make_english_call_fn()と同一)。
+        call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
         prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)

@@ -11,12 +11,12 @@
 # scriptは対象外、下記PRODUCTION_AUDIO_FILES参照)。
 #
 # 重要: このscriptは「古い経路が残っていないか」の否定確認(FAILすべき
-# でない)と、「未配線のまま残っている既知gap」の状況報告(現時点では
-# 意図的にFAILの状態を正直に記録する)の両方を含む。後者はassertion
-# failureにはせず、KNOWN_GAPとして明示的に区別して出力する
-# (ER-006-AUDIO-COST-SPEC-FIX-01タスク仕様の「honest reporting」要求に
-# 対応するため。詳細はCURRENT_SPEC.md「Audio Production Pipeline」節・
-# OPEN_ITEMS.mdのOPEN-50を参照)。
+# でない)を中心とする。Gemini TTS Batch配線チェックは、当初
+# (ER-006-AUDIO-COST-SPEC-FIX-01時点)は「未配線のまま残っている既知gap」
+# の状況報告のみでassertion対象外だったが、
+# ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01(2026-08-22)でProduction 6経路
+# への実配線が完了したため、正式なassertion対象へ昇格した
+# (check_batch_tts_wiring()参照)。
 from __future__ import annotations
 
 import re
@@ -42,6 +42,7 @@ SOL_CHECK_FILES = PRODUCTION_AUDIO_FILES + [
     "er006_proper_noun_extraction_01.py",
     "er006_master_audio_store_01.py",
     "er006_pronunciation_tts_injection_01.py",
+    "er006_batch_tts_wiring_01.py",
 ]
 
 OLD_AZURE_ENGLISH_PRIMARY_MARKER = "get_full_text_via_azure_stt_continuous"
@@ -55,6 +56,19 @@ SHARED_NARRATION_MARKERS = [
 ]
 BATCH_CREATE_MARKER = "batches.create"
 STANDARD_TTS_MARKER = "make_tts_call_fn"
+BATCH_WIRING_MARKER = "batch_wiring.make_batch_tts_call_fn("
+OLD_STANDARD_CALL_FN_PATTERNS = [
+    "gclient.make_tts_call_fn(",
+    "_make_english_call_fn()",
+    "_make_japanese_call_fn()",
+    "p7a.make_tts_call_fn_for_model(",
+]
+
+
+def _code_only(text: str) -> str:
+    """コメント行(行頭#)を除いた実コードのみを返す。説明コメント中の
+    関数名言及を誤検出しないための前処理。"""
+    return "\n".join(line for line in text.splitlines() if not line.strip().startswith("#"))
 
 
 def _read(filename: str) -> str:
@@ -187,28 +201,43 @@ def check_pronunciation_route_not_ignored() -> list[str]:
     return failures
 
 
-def report_tts_batch_wiring_gap() -> None:
-    """(b、既知gapとして状況報告のみ・assertion failureにはしない):
-    Gemini TTS Batch APIをProduction標準として採用する、というDecisionは
-    確定している(CURRENT_SPEC.md「Audio Production Pipeline」節参照)。
-    しかし実際のProduction 6ファイルのTTS生成呼び出しは、いずれも
-    Standard同期呼び出し(gclient.make_tts_call_fn() -> client.models.
-    generate_content())のままであり、Batch(client.batches.create())への
-    配線は未実装である。これは新しいドリフトではなく、以前から続く
-    既知の未実装事項であり、OPEN_ITEMS.mdのOPEN-50として追跡する。
-    このタスク(ER-006-AUDIO-COST-SPEC-FIX-01)のスコープは仕様SSOTの
-    整合であり、新規のBatch配線実装は§13により明示的にスコープ外の
-    ため、ここでは正直な状態報告のみ行い、AssertionErrorは送出しない。"""
-    print("\n=== 既知GAP報告(assertion対象外、OPEN-50で追跡): Gemini TTS Batch配線 ===")
+def check_batch_tts_wiring() -> list[str]:
+    """(b) ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01(2026-08-22)でProduction
+    6ファイルへのGemini Batch API配線が完了したため、以前は[GAP]報告
+    のみだったこのチェックを正式なassertionへ昇格する。確認する内容:
+    (1) 各ファイルの実コード(コメント除く)に、Standard専用のcall_fn
+        構築(gclient.make_tts_call_fn/_make_english_call_fn()/
+        _make_japanese_call_fn()/p7a.make_tts_call_fn_for_model)が
+        直接残っていないこと(Standard-onlyの経路への後退がないこと。
+        er006_batch_tts_wiring_01.make_batch_tts_call_fn自体は内部で
+        client.batches.createを呼ぶだけで上記関数は呼ばないため、
+        drop-in配線後は当然ゼロになる)
+    (2) Production 6ファイル全体で、少なくとも1箇所は
+        er006_batch_tts_wiring_01.make_batch_tts_call_fn(を経由している
+        こと(er003_v1_crosslevel_audio_02_common.pyのように、自身は
+        call_fnを直接構築せずrepro01の既に配線済みの関数を再利用する
+        だけのファイルは、直接の言及がなくても正常とみなす設計のため、
+        個別ファイルごとではなく6ファイル全体での「最低1箇所」を見る)
+    """
+    failures = []
+    any_batch_wiring_found = False
     for filename in PRODUCTION_AUDIO_FILES:
-        text = _read(filename)
-        uses_standard = STANDARD_TTS_MARKER in text
-        uses_batch = BATCH_CREATE_MARKER in text
-        print(f"[GAP] {filename}: Standard呼び出し(make_tts_call_fn)使用={uses_standard}, "
-              f"Batch呼び出し(batches.create)使用={uses_batch}")
-    print("[GAP] 結論: Batch APIはApproved Production方式として確定済みだが、"
-          "実際のTTS生成call siteへの配線は未実装(現状は全てStandard)。"
-          "新規実装は本タスクのスコープ外、OPEN-50で追跡。")
+        code_only = _code_only(_read(filename))
+        for pattern in OLD_STANDARD_CALL_FN_PATTERNS:
+            found = pattern in code_only
+            status = "FAIL" if found else "OK"
+            print(f"[{status}] {filename}: Standard専用call_fn構築 '{pattern}' 不使用(実コード、コメント除く)")
+            if found:
+                failures.append(f"{filename}: Standard専用のcall_fn構築 '{pattern}' が実コードに残存(Batch未経由)")
+        if BATCH_WIRING_MARKER in code_only:
+            any_batch_wiring_found = True
+
+    status = "OK" if any_batch_wiring_found else "FAIL"
+    print(f"[{status}] Production 6ファイル全体で'{BATCH_WIRING_MARKER}'呼び出しが"
+          f"少なくとも1箇所確認できる={any_batch_wiring_found}")
+    if not any_batch_wiring_found:
+        failures.append("Production 6ファイルのいずれにもBatch call_fn構築(make_batch_tts_call_fn)が見つからない")
+    return failures
 
 
 def run():
@@ -224,17 +253,18 @@ def run():
     failures += check_no_sol_model()
     print()
     failures += check_pronunciation_route_not_ignored()
-
-    report_tts_batch_wiring_gap()
+    print()
+    failures += check_batch_tts_wiring()
 
     print("\n=== 静的に確認不能な項目(runtime telemetryでのみ確認可能) ===")
     print("[N/A] Secondary ASR Cascadeの実効性・発動率(OPEN-48/49): 実運用ログでのみ測定可能")
     print("[N/A] Pronunciation Research cache-hit率(OPEN-49): 実運用ログでのみ測定可能")
     print("[N/A] Master Audio Storeの実際の再利用率: reuse_telemetry.jsonlの運用蓄積でのみ測定可能")
+    print("[N/A] Batch job実際のcost削減率(実測): raw_usage_log.jsonlの運用蓄積でのみ測定可能")
 
     if failures:
         raise AssertionError(f"{len(failures)}件のstatic audit checkが失敗した:\n" + "\n".join(f"  - {f}" for f in failures))
-    print(f"\nOK: Drift Prevention static audit 全チェックPASS(既知GAP=Batch配線は別途OPEN-50で追跡、assertion対象外)")
+    print(f"\nOK: Drift Prevention static audit 全チェックPASS(Batch配線チェックもassertion対象、既知GAPなし)")
 
 
 if __name__ == "__main__":

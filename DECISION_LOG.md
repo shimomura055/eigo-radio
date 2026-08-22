@@ -841,14 +841,32 @@ Pipeline」節新設、OPEN_ITEMS.md、Model Routing Contract)へ正式に固定
   ないことを確認済み(voice/style/Structured Separation/spoken text/
   TTS model自体は無変更、実装方式のみの変更でありサービス仕様変更では
   ない)
-- **重要な実装状況の明記**: 本Decisionは採用「方針」の確定であり、
-  実際のProduction TTS生成6箇所(`er003_v1_crosslevel_audio_02_common.py`等)
-  への配線は本タスクでは実施していない(スコープ外の新規実装)。
-  現状は全てStandard呼び出しのまま。配線実装は別タスクとして
-  OPEN-50で追跡する
+- **実装状況の更新(2026-08-22、ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01)**:
+  当初(ER-006-AUDIO-COST-SPEC-FIX-01時点)は採用「方針」の確定のみで、
+  実際のProduction TTS生成6箇所は全てStandard呼び出しのままだった
+  (OPEN-50として記録)。ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01で、
+  新設した`er006_batch_tts_wiring_01.py`(既存のtts_call_fn(prompt)->bytes
+  という呼び出し形状を保つdrop-in Batch factory、fail-closed設計・
+  Standardへの暗黙fallbackなし)を、Production 6ファイルの全call site
+  (`er003_v1_repro01_main_generate.py`・`er003_v1_sing01_news_tail_fix.py`・
+  `er003_v1_sing01_point_headings_aoede.py`・`er003_v1_sing01_voice01_
+  generate.py`・`er003_v1_n3_01_tts_generate.py`。
+  `er003_v1_crosslevel_audio_02_common.py`はrepro01の関数を再利用する
+  だけのため直接変更なしで自動的にBatch経由になる)へ配線した。
+  1 Batch job = 1 itemの設計(item数に関わらずBatch料金割引は
+  per-request適用のため、コスト効果は完全に得られる)。既存の
+  ASR-first Retry Cascade・Validator・Master Audio Storeは無変更
+  (TTS呼び出しの中身だけをStandardからBatchへ差し替えるdrop-in
+  replacement)。item単位の成功/API error/empty result/invalid audio/
+  missing responseの5分類・cost telemetry(`er005_cost_logger`統合)も
+  実装済み。Static Audit(`er006_audio_cost_spec_fix_01_static_audit.py`)
+  でStandard専用call_fn構築が実コードに残っていないことをassertion
+  化して確認。OPEN-50はこの範囲でResolvedへ更新(TTS Pronunciation
+  Hint配線は今回のスコープ外のまま、OPEN-47で継続)
 - Supersedes: Standard呼び出しのみを前提としていた過去の暗黙の前提
 - 根拠タスク: ER-006-AUDIO-COST-OPTIMIZATION-01(実機検証)、
-  ER-006-AUDIO-COST-SPEC-FIX-01(方針の正式化・実装ギャップの明記)
+  ER-006-AUDIO-COST-SPEC-FIX-01(方針の正式化・実装ギャップの明記)、
+  ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01(Production実配線)
 
 **Decision 3 — Primary ASR: 英語はOpenAI gpt-4o-mini-transcribe**
 - 内容: 英語ASRのPrimaryを、Azure Speech-to-TextからOpenAI
@@ -929,12 +947,50 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 経路から無視されていないこと)は、新規作成した
 [er006_audio_cost_spec_fix_01_static_audit.py](er006_audio_cost_spec_fix_01_static_audit.py)
 で全件PASSを確認した(2026-08-22時点)。Batch API配線(Decision 2の実装
-ギャップ)のみ、既知GAPとして明示的にassertion対象外で状況報告する
-設計とした(誤って「配線済み」と偽装しないため)。
+ギャップ)のみ、当時は既知GAPとして明示的にassertion対象外で状況報告
+する設計とした(誤って「配線済み」と偽装しないため)。**2026-08-22
+追記(ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01)**: Batch配線の実装完了に
+伴い、このチェックも正式なassertion対象へ昇格させた(詳細は下記
+新規Decision参照)。
 
 - **根拠レポート**: ER-006-AUDIO-COST-SPEC-FIX-01完了報告
 - **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節(新設)、
   「Model Routing Contract」節のTTS/ASR行
+
+## ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01(2026-08-22)
+
+**管理ID: ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01**
+
+- **Decision**: ER-006-AUDIO-COST-SPEC-FIX-01のDecision 2(Gemini TTS
+  Batch API採用)を、実際のProduction TTS生成6経路へ実配線した
+  (詳細は上記Decision 2の実装状況追記を参照)。加えて、CURRENT_SPEC.md
+  「QA / Human Review」節に残っていた「Azure STTを全内容確認・境界
+  検証に使用」という旧ASR記述を、現行の言語別Routing仕様(英語Primary
+  =OpenAI `gpt-4o-mini-transcribe`、日本語=Azure、Azureは英語Secondary
+  としても使用、最終判断はASR単独では行わない)へ整合させた
+- **根拠**: 実装ギャップ(OPEN-50)の解消。新設`er006_batch_tts_wiring_01.py`
+  は既存のtts_call_fn(prompt)->bytesという呼び出し形状を保つdrop-in
+  replacementとして設計し、ASR-first Retry Cascade・Validator・Master
+  Audio Store・spoken text・voice・style instructionは一切変更していない
+  (実行方式のみの変更)
+- **設計判断の明記**: タスク仕様では「複数segmentをまとめて投入」する
+  グループ投入も許容されていたが(実装方法は過度に指定しないとの前提)、
+  既存6ファイルの1segmentずつのretry loop制御フローを書き換える大規模
+  リファクタリングは、Production安定性優先の方針(CLAUDE.md)に照らして
+  リスクが高いと判断し、今回は1 Batch job = 1 itemのdrop-in方式を
+  主たる配線方式として採用した。Gemini Batch APIの料金割引(50%オフ)は
+  job内item数に関わらずper-request適用されるため、この設計でも
+  コスト削減効果は完全に得られる。複数item一括投入用のAPI
+  (`submit_batch_multi`/`wait_for_batch_multi`)は同モジュール内に将来の
+  最適化余地として用意したが、今回はいずれの本番ファイルからも呼ばれて
+  いない
+- **未決定のまま保留**: Secondary ASR Cascade default ON化(OPEN-48から
+  継続)。TTS Pronunciation Hint配線(Ottoni検証で効果不明確だったため、
+  今回のBatch配線と同時に有効化しない、OPEN-47/OPEN-50から継続)
+- **根拠レポート**: ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告
+- **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節の
+  「Gemini TTS実装方式」行(NOT_WIRED→WIRED)、「Model Routing Contract」
+  節のTTS行、「QA / Human Review」節のASR記述
 
 ## 参照元
 

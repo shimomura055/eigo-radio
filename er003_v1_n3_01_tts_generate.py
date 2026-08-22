@@ -37,6 +37,7 @@ import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
 import er006_asr_provider_routing_01 as routing
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
+import er006_batch_tts_wiring_01 as batch_wiring
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
@@ -103,7 +104,9 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
     prompt = p4c.build_tts_prompt(text, _A2_JA_MINIMAL_INSTRUCTION_PREFIX)
-    call_fn = p9a._make_japanese_call_fn()
+    # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
+    # (声・モデルはp9a._make_japanese_call_fn()と同一)。
+    call_fn = batch_wiring.make_batch_tts_call_fn(p9a.JAPANESE_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:

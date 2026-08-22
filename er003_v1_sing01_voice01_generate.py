@@ -20,15 +20,14 @@ from __future__ import annotations
 import json
 
 import er002_common as common
-import er002_gemini_client as gclient
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p3u_audio as p3u
 import er003_b1_p4_audio as p4
 import er003_b1_p4c_audio as p4c
-import er003_b1_p7a_audio as p7a
 import er003_b1_p9a_audio as p9a
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
+import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -47,7 +46,9 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
     attempts_log = []
     classification_history = []
     for attempt in range(1, max_attempts + 1):
-        call_fn = gclient.make_tts_call_fn(CHARON)
+        # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
+        # (声・モデルはgclient.make_tts_call_fn(CHARON)と同一)。
+        call_fn = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, CHARON, output_path=out_path)
         prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
@@ -61,7 +62,7 @@ def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> 
             attempts_log.append({"attempt": attempt, "status": "STOPPED",
                                   "reason": str(err) if not ok else "発話区間検出失敗",
                                   "instruction_type": instruction_type})
-            call_fn2 = gclient.make_tts_call_fn(CHARON)
+            call_fn2 = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, CHARON, output_path=out_path)
             # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
             # Structured Separationを適用する。
             prompt2 = p4c.build_tts_prompt(text, repro01.MINIMAL_INSTRUCTION_PREFIX)
@@ -140,7 +141,9 @@ def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> di
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路もStructured
     # Separationを適用する(instruction内容・text内容は無変更)。
     prompt = p4c.build_tts_prompt(text, MINIMAL_INSTRUCTION_PREFIX_JA)
-    call_fn = p7a.make_tts_call_fn_for_model(p9a.JAPANESE_MODEL_NAME, CHARON)
+    # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
+    # (声・モデルはp7a.make_tts_call_fn_for_modelと同一)。
+    call_fn = batch_wiring.make_batch_tts_call_fn(p9a.JAPANESE_MODEL_NAME, CHARON, output_path=out_path)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
@@ -167,7 +170,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
     max_len = len(text) + 15
     attempts_log = []
     for attempt in range(1, max_attempts + 1):
-        call_fn = p7a.make_tts_call_fn_for_model(p9a.JAPANESE_MODEL_NAME, CHARON)
+        # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
+        # (声・モデルはp7a.make_tts_call_fn_for_modelと同一)。
+        call_fn = batch_wiring.make_batch_tts_call_fn(p9a.JAPANESE_MODEL_NAME, CHARON, output_path=out_path)
         # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: build_tts_prompt()経由
         # にする(以前は直接連結、Structured Separationの抜け穴だった)。
         prompt = p4c.build_tts_prompt(text, p9a.JAPANESE_STYLE_PREFIX)
