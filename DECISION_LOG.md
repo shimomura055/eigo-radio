@@ -992,6 +992,35 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   「Gemini TTS実装方式」行(NOT_WIRED→WIRED)、「Model Routing Contract」
   節のTTS行、「QA / Human Review」節のASR記述
 
+## ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01(2026-08-22)
+
+**管理ID: ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01**
+
+- **Decision**: Pool型(Evergreen)記事の生成対象となる20 Topicの正式
+  母集団を、ユーザー承認のもと[POOL_TOPIC_MASTER.md](POOL_TOPIC_MASTER.md)
+  として新規制定した。No.1〜3(Public Benches/Subscriptions/Startups)は
+  既存生成物と一致することを確認の上で編入。No.4〜6(Supermarket
+  Shuffle/Cafes/Delivery Tracking)を次回Production対象として確定した
+- **背景**: ER-006-POOL-ADOPTION-N4N6-PRODUCTION-01で、「20 Topicリスト
+  の一次資料をリポジトリから特定する」という前提が実際には満たされて
+  いない(No.1〜3はTopic Selectionを意図的にスキップして手動選定された
+  Pilot用の3件であり、20件全体を記録したファイルは一度も存在しな
+  かった)ことが判明し、名前の推測・新規作成をせずSTOPして報告した。
+  今回、ユーザーが残り17件を含む20件全体を新たに確定・承認したことで
+  このSTOP条件が解消した
+- **Topic Selection routingとの関係**: No.4〜6は、通常のTopic Selection
+  Production Model(GPT-5.6 Luna)を再実行せず、ユーザーが本Master
+  リストから直接指定した。これは既存のTopic Selection Routing Contract
+  (`er006_model_routing_contract_01.py`の`TOPIC_SELECTOR_MODEL`)を
+  変更するものではなく、「今回はユーザー指定という特別な選定経路を
+  使った」という1回限りの記録であり、No.7以降の新規選定が必要になった
+  場合は通常通りLuna Topic Selectionを使う
+- **重複SSOT回避**: 20件のリスト本文はPOOL_TOPIC_MASTER.md 1箇所にのみ
+  記録し、他ファイル(本Decision含む)へは複製しない
+- **根拠レポート**: ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01完了報告
+- **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、新規SSOT
+  ファイルPOOL_TOPIC_MASTER.mdの制定のみ)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

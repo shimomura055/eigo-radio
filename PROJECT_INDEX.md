@@ -1,7 +1,7 @@
 # PROJECT_INDEX — eigo-radio プロジェクト知識の入口
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01-R1、Residual SoT Cleanup)**
+**最終更新: 2026-08-22(ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01、POOL_TOPIC_MASTER.md参照追加)**
 
 このファイルは、プロジェクトについて何かを知りたいときに「まずどこを見るか」を
 示す入口です。個別レポート・commit・Git履歴を毎回横断監査しなくても、
@@ -24,6 +24,7 @@
 | なぜその仕様になったか(採用理由・比較した選択肢) | [DECISION_LOG.md](DECISION_LOG.md) |
 | 未確定事項・技術的負債・Blocking issue | [OPEN_ITEMS.md](OPEN_ITEMS.md) |
 | 各記事×CEFRレベルの完成状況(スクリプト/音声/試聴/公開) | [ARTIFACT_REGISTRY.md](ARTIFACT_REGISTRY.md) |
+| Pool Topic(Evergreen記事)20件の母集団・生成状況 | [POOL_TOPIC_MASTER.md](POOL_TOPIC_MASTER.md) |
 | 過去に何を試して何が採用/却下されたか | [HISTORY_INDEX.md](HISTORY_INDEX.md) |
 | 現在の作業場所・直近のTask・次にやること | [ER-003-B1_HANDOFF.md](ER-003-B1_HANDOFF.md)(役割は「直近の作業再開用」のみ、仕様の一次情報源ではない) |
 | 用語の意味・紛らわしい表記の区別 | 本ファイルの[用語集](#用語集terminology)節 |
