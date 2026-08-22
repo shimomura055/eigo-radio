@@ -259,6 +259,7 @@ Point One/Two・In One Line(=News Content)でも同一の値が使われてお�
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
 | ASR診断 | Azure STT(`en-US`/`ja-JP`)を全内容確認・境界検証に使用。決定はASRだけで下さない | `DECIDED` | プロジェクト全体方針 | - |
+| ASR一致と発音品質の関係 | ASR transcript一致(EXACT_MATCH/NORMALIZED_MATCH等)は「書き起こしテキストが正しい」ことの確認であり、「人間が聞いて自然・正確な発音である」ことの証明ではない。ASR一致=発音品質PASSと**扱わない**(ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: Key Phrase "hostile architecture"でASRは正しく書き起こしていたが、ユーザー試聴では語頭/h/が/p/様に聞こえるという実例で確認。詳細は[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-44) | `DECIDED` | ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01 | 2026-08-22 |
 | hallucination対応 | strict検証+minimal instruction fallbackで自動検出・自動吸収(A02で2件実績)。**根本原因は未解明のまま** | `DECIDED`(運用方針)、原因は`UNDER_REVIEW`ではなく未解明のまま保留 | ER-003-REPRO-01-MAIN | 2026-08-08 |
 | ASR homophone ambiguity対応 | strict検証が規定回数不合格でも、TTS自体が正常な可能性がある場合はretryを打ち切り、`PROVISIONALLY_ACCEPTED_REQUIRES_HUMAN_REVIEW`→ユーザー試聴後`ACCEPTED_AFTER_HUMAN_REVIEW`という2段階の人間確認フローを使う | `DECIDED`(ADD03 meaning_3で初適用・確定) | ER-003-REPRO-02-MAIN/FINAL | 2026-08-09 |
 | 最終人間試聴 | 機械QA全合格でも「完成」「量産再現性合格」とは判断せず、必ずユーザー試聴を経る | `DECIDED` | 全ステージで一貫 | - |

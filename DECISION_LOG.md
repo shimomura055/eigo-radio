@@ -714,6 +714,59 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
   Fail-Closed契約実装・Regression/Static Audit test・Cost再計算)
 - **影響するCURRENT_SPEC項目**: Model Routing Contract(新設セクション)
 
+## [Implementation Hardening] ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: Audio ValidationのProduction配線・ASR一致と発音品質の分離・Luna品質確認
+
+- **管理ID**: `ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01`
+- **日付**: 2026-08-22
+- **状態**: `DECIDED` / `CURRENT_SPEC`(Audio実装詳細・Model Routing運用、B1/A2構造等の
+  サービス仕様変更ではない)
+- **内容1(Audio Validation配線)**: ER-006-POOL-PREPROD-HARDENING-01で実装済み
+  だった、ASR比較の正規化+6分類(EXACT_MATCH/NORMALIZED_MATCH/HIGH_SIMILARITY_
+  SAFE/ASR_VALIDATION_UNCERTAIN/TRUE_CONTENT_MISMATCH/TTS_FAILURE)+Protected
+  Check+同一signature retry guardrailを、英語(language=="en")のProduction
+  retry loopへ配線した(`er006_preprod_hardening_01_validation.evaluate_
+  attempt()`が統一エントリポイント)。対象: `er003_v1_sing01_voice01_
+  generate.py::generate_charon_english`、`er003_v1_sing01_news_tail_fix.py`、
+  `er003_v1_sing01_point_headings_aoede.py`、`er003_v1_repro01_main_
+  generate.py::generate_narration_snippet_verified_strict/generate_key_
+  phrase_component_verified`、`er003_v1_crosslevel_audio_02_common.py::
+  generate_english_segment_with_fallback`。新status`ASR_VALIDATION_
+  UNCERTAIN`を追加し、同一signatureが3回連続で改善しない場合はretryを
+  打ち切り直前のaudioを保持する(STOPPEDとは区別、Human Review対象)。実際の
+  Public Benches Luna版生成で、A2 point_twoがこの新statusで正しく打ち切られる
+  ことを確認した。日本語(ja)経路は既存のphonetic_verdict方式のまま無変更
+- **内容2(ASR一致と発音品質の原則)**: Key Phrase "hostile architecture"の
+  ユーザーHuman Review報告(語頭/h/が/p/様に聞こえる)を、既存生成物の
+  forensic調査(canonical text→TTS input→raw音声振幅エンベロープ→assembled
+  音声との定量比較→ASR transcript)により調査した。ASRは全サンプルで正しく
+  "Hostile architecture."と書き起こしていたが、raw音声の振幅エンベロープには
+  母音遷移部で最大2.3〜4.7倍(20ms窓)という急峻な立ち上がりがあり、これは
+  Assembly処理(resampling/gain)由来ではなくraw TTS生成時点で既に存在する
+  ことをcross-correlationによる実測で確認した。別の/h/開始語でも同程度の
+  急峻さを確認し、hostile固有ではなく短いKey Phrase発話の一般的なTTS特性で
+  ある可能性が高いと判断(個別whitelist化はしていない)。この調査結果を
+  踏まえ、「ASR transcript一致は発音品質PASSの証明ではない」という原則を
+  [CURRENT_SPEC.md](CURRENT_SPEC.md)のQA/Human Review節へ正式に明文化した。
+  振幅エンベロープの急峻さを検出する新しいAudio Validation(将来候補)は
+  今回実装していない(詳細は[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-44、
+  `UNDER_REVIEW`のまま)
+- **内容3(Luna品質の実地確認)**: Public Benches(既存の確定済みEvidence
+  Pack/VFL/Verification/Ledgerを再利用、Researchは再実行せず)のB1/A2を
+  Model Routing Contract(全工程Luna、Sol call 0件を実測で確認)で新規生成し、
+  旧Sol版と比較した。B1: Writer Fact Check PASS・Ledger完全準拠(Sol版は
+  MINOR 1件)。A2: Fact Check REVIEW_REQUIRED(矛盾ではなく未確認の詳細3件)・
+  Ledger MINOR 2件(Sol版は完全準拠)。総じて明確な品質劣化は確認されな
+  かったが、A2でSol版よりわずかに逸脱が増えた点は留保として記録する。
+  Audio面はSTOPPED/UNCERTAIN数がSol版(4件)よりLuna版(7件STOPPED+1件
+  UNCERTAIN)で増えたが、個別調査の結果、原因はLuna特有の品質問題ではなく
+  Azure ASRの表記揺れ(street→St.、three→3:00等)や既知のMalmö/Triangeln
+  固有名詞音訳差であり、比較対象のSol版でも同種の事象が確認されている
+- **Cost影響**: Writer+Support実費は約16分の1に削減(Sol版はRewrite込みで
+  約¥766、Luna版は単一passで約¥47)。Audio実費はSTOPPED増加により若干上昇
+  したが、総額は約65%削減(詳細は完了報告参照)
+- **根拠レポート**: ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01完了報告
+- **影響するCURRENT_SPEC項目**: QA/Human Review > ASR一致と発音品質の関係(新設)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

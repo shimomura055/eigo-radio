@@ -25,6 +25,9 @@ tts_gen.JAPANESE_TITLES.update({
     "pool_benches": "公共のベンチ、なぜ今見直されているのか",
     "pool_subscriptions": "なぜ契約は簡単で、解約は難しいのか",
     "pool_startups": "なぜ一部のスタートアップは利益より成長を優先するのか",
+    # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: Luna版比較runは
+    # theme_idを分けてCost/Log集計を独立させる(内容はpool_benchesと同一)。
+    "pool_benches_luna": "公共のベンチ、なぜ今見直されているのか",
 })
 
 
