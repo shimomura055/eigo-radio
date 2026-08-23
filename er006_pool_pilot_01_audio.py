@@ -28,6 +28,11 @@ tts_gen.JAPANESE_TITLES.update({
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: Luna版比較runは
     # theme_idを分けてCost/Log集計を独立させる(内容はpool_benchesと同一)。
     "pool_benches_luna": "公共のベンチ、なぜ今見直されているのか",
+    # ER-006-POOL-N4-N6-PRODUCTION-01: POOL_TOPIC_MASTER.mdのNo.4-6を
+    # 現行Production仕様で新規生成する。
+    "pool_n4_supermarket": "スーパーの商品棚は、なぜ何度も場所が変わるのか",
+    "pool_n5_cafes": "カフェは「一日中居る客」をどう考え始めているのか",
+    "pool_n6_delivery": "配送状況を何度も確認したくなる不思議",
 })
 
 

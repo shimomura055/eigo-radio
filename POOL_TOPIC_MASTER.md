@@ -20,7 +20,7 @@
 | 1 | Why Are More Cities Rethinking Public Benches? | なぜ都市は公共ベンチを見直し始めているのか | 街・空間・移動 | `GENERATED` | `PENDING` | `PENDING` |
 | 2 | Why Do Companies Make Subscriptions So Easy to Start—and Hard to Stop? | なぜサブスクは始めるのは簡単で、やめるのは難しいのか | 買い物・お金・サービス設計 | `GENERATED` | `PENDING` | `PENDING` |
 | 3 | Why Do Some Startups Chase Growth Before Profit? | なぜ一部のスタートアップは利益より先に成長を追うのか | 仕事・会社・デジタル習慣 | `GENERATED` | `PENDING` | `PENDING` |
-| 4 | The Supermarket Shuffle: Why Shelves Keep Moving | スーパーの商品棚は、なぜ何度も場所が変わるのか | 買い物・お金・サービス設計 | `TO_BE_GENERATED` | `PLANNED` | `PLANNED` |
+| 4 | The Supermarket Shuffle: Why Shelves Keep Moving | スーパーの商品棚は、なぜ何度も場所が変わるのか | 買い物・お金・サービス設計 | `GENERATED` | `PENDING` | `PENDING` |
 | 5 | Cafes Are Rethinking the All-Day Customer | カフェは「一日中居る客」をどう考え始めているのか | 街・空間・移動 | `TO_BE_GENERATED` | `PLANNED` | `PLANNED` |
 | 6 | The Strange Pull of Delivery Tracking | 配送状況を何度も確認したくなる不思議 | 日常心理・軽い健康 | `TO_BE_GENERATED` | `PLANNED` | `PLANNED` |
 | 7 | Assigned Desks Are Back in Some Offices | 一部の職場で「固定席」が戻ってきている | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
@@ -50,6 +50,7 @@ No.1〜3の最終採用Candidate(script+audio)を、Topicごとにまとめた
 | 1 | Public Benches | https://claude.ai/code/artifact/31c9ac90-75a6-4742-89c2-3d2590d30662 |
 | 2 | Subscriptions | https://claude.ai/code/artifact/3a5ad42b-d06e-4016-b830-a90df63e732d |
 | 3 | Startups | https://claude.ai/code/artifact/aeaf4fee-c82d-45e4-b02f-f3f7dbc7ccd0 |
+| 4 | Supermarket Shuffle | https://claude.ai/code/artifact/441e2f85-9c27-4cb6-99b0-a3014df788f4 |
 
 ## 経緯・注記
 

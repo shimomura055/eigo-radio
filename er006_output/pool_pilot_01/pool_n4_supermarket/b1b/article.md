@@ -1,0 +1,31 @@
+# 🛒 The Supermarket Shelf Shuffle: Why the Aisles Keep Moving
+
+A supermarket is not just a place where products wait for shoppers. It is also a carefully planned map.
+
+That map often changes. A 2025 trade article says stores regularly update their layouts to make the shop feel fresh, guide customer movement, highlight seasonal offers, and encourage impulse buying.
+
+But a new layout can also support healthier shopping.
+
+In a 2021 study published in *PLoS Medicine*, Vogel and colleagues followed six discount supermarkets in the UK. Three stores changed their layout, while three similar stores acted as comparison stores.
+
+The changes were practical. The fruit and vegetable area became larger and moved closer to the entrance. Frozen vegetables were moved to a more visible aisle. Sweets were removed from displays near the checkouts and replaced with non-food items and water.
+
+The results showed a clear change in the sales mix. After three months, fruit and vegetable sales rose by 1.71 standard deviations, equal to about 6,170 portions per store each week. After six months, the increase reached 2.42 standard deviations, or about 9,820 portions per store each week.
+
+Snack sales fell by 1.05 standard deviations after three months. That was about 1,359 fewer portions per store each week. At six months, snack sales were still lower, but the result was not statistically significant.
+
+There was also an important limit. Total sales for the whole store did not change significantly. The new layout appeared to change what people bought, rather than how much the store sold overall.
+
+A related survey of 150 women found that fruit and vegetable purchases increased in households using the intervention stores, while they decreased in comparison households. However, the study did not find a significant effect on snack purchases.
+
+### The shelf can shape the shopping mood
+
+A 2023 field study in Greece looked at 205 supermarket shoppers. It reported links between store layout, atmosphere, shoppers’ feelings, and impulse buying. This does not prove that one shelf move causes a purchase. It shows that the shopping environment can be part of the decision-making process.
+
+### Rearrangement can be driven by data
+
+Some shelf changes are more than a visual refresh. A 2022 study proposed using transaction data to decide which products should share an aisle and how much space each section should receive. Its stated goal was to maximize impulse buying. In its evaluation, the method performed more consistently than simple manual changes and other existing approaches, though it was not a direct test in real stores.
+
+## In one line…
+
+Supermarket shelves keep moving because space is never neutral: it can make healthier products easier to notice, or make impulse buying easier to trigger.
