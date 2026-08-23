@@ -9,6 +9,13 @@ CONFIG = {
         "b1": {"dir": "er006_output/pool_pilot_01/pool_n4_supermarket/b1b", "stopped": []},
         "a2": {"dir": "er006_output/pool_pilot_01/pool_n4_supermarket/a2", "stopped": ["comment_2"]},
     },
+    "n5_cafes": {
+        "title_en": "Cafes Are Rethinking the All-Day Customer",
+        "title_ja": "カフェは「一日中居る客」をどう考え始めているのか",
+        "no": 5,
+        "b1": {"dir": "er006_output/pool_pilot_01/pool_n5_cafes/b1b", "stopped": ["full_story_part1", "full_story_part2"]},
+        "a2": {"dir": "er006_output/pool_pilot_01/pool_n5_cafes/a2", "stopped": []},
+    },
 }
 
 def load(path):

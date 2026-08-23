@@ -5,6 +5,8 @@ data = json.load(open("er006_output/pool_pilot_01/adoption_audit_01/review_data_
 MP3_MAP = {
     ("n4_supermarket", "b1"): "er006_output/pool_pilot_01/human_review_mp3_n4n6/n4_supermarket_b1b.mp3",
     ("n4_supermarket", "a2"): "er006_output/pool_pilot_01/human_review_mp3_n4n6/n4_supermarket_a2.mp3",
+    ("n5_cafes", "b1"): "er006_output/pool_pilot_01/human_review_mp3_n4n6/n5_cafes_b1b.mp3",
+    ("n5_cafes", "a2"): "er006_output/pool_pilot_01/human_review_mp3_n4n6/n5_cafes_a2.mp3",
 }
 
 
@@ -143,7 +145,7 @@ footer {{ margin-top:2.5rem; font-size:0.72rem; color:var(--ink-soft); text-alig
 
 
 os.makedirs("er006_output/pool_pilot_01/adoption_audit_01/review_html_n4n6", exist_ok=True)
-titles = {"n4_supermarket": "Supermarket Shuffle"}
+titles = {"n4_supermarket": "Supermarket Shuffle", "n5_cafes": "Cafes All-Day Customer"}
 for topic_key, td in data.items():
     page = build_page(topic_key, td, titles[topic_key])
     path = f"er006_output/pool_pilot_01/adoption_audit_01/review_html_n4n6/{topic_key}.html"

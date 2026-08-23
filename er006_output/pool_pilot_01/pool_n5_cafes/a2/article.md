@@ -1,0 +1,39 @@
+# ☕ The Café Seat Debate: When a Customer Also Becomes a Worker
+
+A café is no longer only a place for coffee and conversation.
+
+For some people, it is also a place to work. They buy a drink, open a laptop, and stay for many hours. Researchers call these people **customer-workers**: customers who also work in the café.
+
+A 2021 study looked at this change in London. The researchers studied 38 third places. They made 52 visits, interviewed 27 customers and 12 service providers, and also looked at 55 media sources.
+
+The study found four kinds of third place.
+
+**Archetypal places** try to stop people from working. They may not offer Wi-Fi. They may play loud music or use less comfortable chairs.
+
+**Status Quo places** do not clearly choose between workers and social customers. Because of this, clashes between the two groups can be strong.
+
+**Compromise places** try to welcome both groups. But they can have trouble making their rules work every day.
+
+The fourth kind is the **Productive Third Place**, or PTP. These cafés clearly welcome customer-workers. They offer reliable Wi-Fi, enough power outlets, useful furniture, and controlled noise. They may also offer daily deals.
+
+The study says these customers can bring value. They may use seats during quiet hours. They may also make the café look active and lively.
+
+But not every café wants this model.
+
+Coffee Intelligence reported a different choice by The Barn, a Berlin coffee chain. At its Neukölln shop, laptop users occupied more than 70 percent of the seats for long periods. The café reported that sales fell by 25 percent before its policy change.
+
+The Barn then introduced a one-hour limit for laptop users. On some busy days, it could ban laptop use completely.
+
+So, cafés are moving in two directions. Some are changing the whole space to welcome people who work. Others are protecting seat turnover with time limits.
+
+### Space is also a business message
+
+A café’s design tells customers what kind of place it wants to be. No Wi-Fi sends one message. Good furniture and enough power send another. These choices are not only about comfort. They help define the café’s target customers.
+
+### The hard part is choosing clearly
+
+The research does not say that customer-workers are always good or always bad. The result depends on the café’s plan. A clear choice may reduce conflict, while an unclear policy may leave both workers and social customers unhappy.
+
+## In one line…
+
+The café of the future may not ask, “Do laptops belong here?” It may ask, “What kind of café do we want to become?”
