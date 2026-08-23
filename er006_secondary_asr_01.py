@@ -115,7 +115,10 @@ def get_full_text_via_azure_stt_with_phrase_list(
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as val
 
-FEATURE_FLAG_SECONDARY_ASR_ENABLED = False  # Production defaultはOFF(タスク仕様§15)
+FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01。
+                                            # 旧OFF状態はOPEN-48で「追加検証待ち」としていたが、
+                                            # 同タスクでB1/A2 Sweenyケースとも実音声でCascadeが
+                                            # 正しく動作することを確認済みのため有効化した
 
 # SSOT: Cascadeの試行回数上限・Phrase List設定(タスク仕様§11-12)
 CASCADE_CONFIG = {

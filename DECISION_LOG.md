@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-17(ER-003-B1-B2-SCOPE-FIX-01-R1、Residual SoT Cleanup)**
+**最終更新: 2026-08-24(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -1049,6 +1049,44 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   ER-006-POOL-N4-N6-PRODUCTION-01完了報告(本Decisionの一部として
   統合報告)、ER-006-PRODUCTION-THROUGHPUT-GATE-01完了報告
 - **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更)
+
+## ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01(2026-08-24)
+
+- **Decision 1(数式Validator正式採用)**: 前タスク(ER-006-GATE-
+  CALIBRATION-ASR-CASCADE-MATH-VALIDATOR-01)で実装した数式表記正規化
+  (Markdown italic変数表記、`=`/`<`/`>`/`×`/数字間`x`、Unicode上付き
+  指数・ASCIIキャレット指数、規則的な単数形/複数形吸収)を、Production
+  標準Validatorの正式仕様として採用する。Regression fixtureは既存32件+
+  新規23件=**計55件、全PASSを再確認**した上で採用した
+- **Decision 2(ASR Secondary Cascade Production ON)**: `er006_secondary_
+  asr_01.py`の`FEATURE_FLAG_SECONDARY_ASR_ENABLED`を`False`→`True`へ
+  変更し、Production既定でCascadeを有効化した。前タスクで発見・修正した
+  「A2側の複数形差がCascade対象外条件を誤って満たしてしまう」バグの
+  修正後、実No.6 Sweeny音声(B1/A2)でCascadeがPrimary#1→#2→Secondary#1→
+  #2→Human Reviewの順で正しく動作し、TTS再生成0件を確認した上で有効化
+  した。全Production call site 6箇所は`cascade_enabled=secondary_asr.
+  FEATURE_FLAG_SECONDARY_ASR_ENABLED`という形でモジュール定数を呼び出し
+  時に参照するため、この1箇所の変更のみで全call siteへ反映される
+- **Decision 3(Research Coverage GateはProduction未配線のまま据え置き)**:
+  No.1(Public Benches)・No.2(Subscriptions)の較正後Gate判定
+  `MORE_RESEARCH_REQUIRED`を、既存Research/Ledger/完成記事/Fact Check/
+  Ledger Deviation Checkのみで追加検証した結果、8 missing_items中
+  TRUE_COVERAGE_GAPは0件、FALSE_POSITIVE 7件、BORDERLINE 1件と判定した。
+  No.1はGateへ渡していたtitleがpre-Writer working title(POOL_TOPIC_
+  MASTER.md記載)であり、Writerが実際に採用した最終タイトルと異なって
+  いたことが根本原因(実際の最終タイトルで再実行するとCOVERAGE_PASSへ
+  反転することを確認、新規Researchなし)。No.2は最終タイトルで再実行
+  してもMORE_RESEARCH_REQUIREDのままであり、「因果的『なぜ』を問う
+  Topicで、記事が実際には行動効果Evidenceを主張せず概念的な説明に
+  留める」パターンへの較正が前タスクでは不足していたことが判明した。
+  この2点により、Gate単体の判定精度はまだProduction基準に達していないと
+  判断し、**Production配線は行わない**(タスク仕様Part A-3で明示的に
+  禁止されている通り、ユーザー指示なしに配線しない)
+- **根拠レポート**: ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01
+  完了報告
+- **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節の
+  Validator項(55件へ更新、数式表記・複数形吸収を追加記載)、ASR-first
+  Retry Policy項(`FEATURE_FLAG_SECONDARY_ASR_ENABLED=True`へ更新)
 
 ## 参照元
 
