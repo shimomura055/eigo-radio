@@ -113,6 +113,99 @@ _MONTHS = ("january", "february", "march", "april", "may", "june", "july", "augu
            "september", "october", "november", "december")
 _DATE_ORDINAL_RE = re.compile(r"\b(" + "|".join(_MONTHS) + r")\s+(\d{1,2})(st|nd|rd|th)\b", re.IGNORECASE)
 
+# ============================================================
+# ER-006-GATE-CALIBRATION-ASR-CASCADE-MATH-VALIDATOR-01: 数式表記の正規化
+# ============================================================
+# No.6 A2 Point One("2 × 10⁻¹⁶"のような科学的記数法)で、TTS音声自体は
+# 正しく("2 times 10 to the minus 16th")読み上げているにもかかわらず、
+# canonical側のUnicode上付き文字(⁻¹⁶等)がnormalize_text()の一般記号
+# 除去([^a-z0-9]+のスペース化)で情報ごと失われ(桁・符号が消える)、
+# ASR側の綴り("...to the minus 16th")と比較不能になっていた実例を
+# 確認した。安全設計の核心は数値正規化と同じ: 「表記が違うだけで意味
+# (底・符号・指数の値)が同じ」場合のみ吸収し、指数の桁・符号が異なる
+# 場合は絶対に吸収しない。xdollarx等と同じマーカー方式で、底(base)と
+# 指数の符号・値を独立したtokenとして保持したまま比較する。
+_SUPERSCRIPT_TRANSLATE = str.maketrans({
+    "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7",
+    "⁸": "8", "⁹": "9", "⁻": "-", "⁺": "+",
+})
+# "10⁻¹⁶"・"10¹⁶"のような、数字に直接続くUnicode上付き文字列(符号+桁)。
+_SUPERSCRIPT_EXPONENT_RE = re.compile(r"(\d+)([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)")
+# "10^-16"・"10^16"のような、ASCII表記のキャレット指数(ASRが記号のまま
+# 書き起こす場合が実際に観測されている)。
+_CARET_EXPONENT_RE = re.compile(r"(\d+)\^(-?)(\d+)")
+# 話し言葉側: "10 to the minus/negative 16(th)?"(負の指数)。"minus"/
+# "negative"どちらの語も同じ意味で使われる(実際のASR書き起こしで両方
+# 観測済み)。序数接尾辞の有無を問わず、底と指数の桁だけを取り出す。
+_SPOKEN_NEGATIVE_EXPONENT_RE = re.compile(
+    r"\b(\d+)\s+to\s+the\s+(?:minus|negative)\s+(\d+)(?:st|nd|rd|th)?\b", re.IGNORECASE)
+# 話し言葉側: "10 to the 16th"のような正の指数(minusを伴わない)。
+# 上のnegative版を先に適用してから使うため、ここへ到達する時点でminus
+# 付きは既にマーカー化済み。
+_SPOKEN_POSITIVE_EXPONENT_RE = re.compile(
+    r"\b(\d+)\s+to\s+the\s+(\d+)(?:st|nd|rd|th)?\b", re.IGNORECASE)
+
+
+def _normalize_superscript_exponents_early(text: str) -> str:
+    """canonical/ASR両側で使われる記号ベースの指数表記(Unicode上付き文字、
+    ASCIIキャレット"^")を、xexpx(正)/xexpnegx(負)マーカーへ変換する。
+    **normalize_text()のstrip_diacritics()より前に呼ぶこと**:
+    strip_diacritics()のNFKD分解は上付き数字を通常の数字へ分解してしまい
+    (例: "10⁻¹⁶"→"10−16")、「元々上付きだった」という情報(=指数で
+    あるという情報)自体が失われ、この関数が呼ばれる前にもう検出できなく
+    なる実バグを確認したため、あえてstrip_diacritics()より前段の専用
+    ステップとして分離した(キャレット表記はASCII文字でNFKD分解の影響を
+    受けないが、実装を1箇所にまとめるため同じ関数・同じタイミングで
+    処理する)。マーカーはxdollarx等と同じ設計思想で、底・符号・桁を
+    独立したtokenとして保持したまま比較する(10⁻¹⁶と10⁻⁶・10¹⁶を
+    区別可能なまま残す)。"""
+    def _repl_superscript(m: "re.Match") -> str:
+        base = m.group(1)
+        ascii_sup = m.group(2).translate(_SUPERSCRIPT_TRANSLATE)
+        neg = ascii_sup.startswith("-")
+        digits = ascii_sup.lstrip("+-")
+        if not digits.isdigit():
+            return m.group(0)  # 数字化できない場合は変更しない(安全側)
+        marker = "xexpnegx" if neg else "xexpx"
+        return f"{base}{marker}{digits}"
+
+    def _repl_caret(m: "re.Match") -> str:
+        base, sign, digits = m.group(1), m.group(2), m.group(3)
+        marker = "xexpnegx" if sign == "-" else "xexpx"
+        return f"{base}{marker}{digits}"
+
+    text = _SUPERSCRIPT_EXPONENT_RE.sub(_repl_superscript, text)
+    text = _CARET_EXPONENT_RE.sub(_repl_caret, text)
+    return text
+
+
+_DIGIT_X_DIGIT_RE = re.compile(r"(?<=\d)\s*x\s*(?=\d)", re.IGNORECASE)
+
+
+def _normalize_spoken_exponents(text: str) -> str:
+    """ASR側(話し言葉)の"N to the (minus/negative) M(th)?"を、
+    _normalize_superscript_exponents_early()と同じxexpx/xexpnegx
+    マーカーへ変換する。cardinal/ordinal語の変換より後に呼ぶことで、
+    "ten to the minus sixteenth"のように綴られた場合も、先に数字化
+    されてから拾える。さらに、数式でよく使われる記号を、ASR側の話し言葉
+    と綴りが揃うよう共通の語へ変換する:
+      "×" / 数字に挟まれた"x"(掛け算記号のASR書き起こしとして実際に
+        観測された) -> " times "
+      "="(等号) / "is equal to" -> "equals"
+      "<"(不等号) -> " less than "、">"(不等号) -> " greater than "
+    (これをしないと、例えば"*b* = 0.90"の"="は後段の記号除去でただ
+    消えるだけなのに対し、ASR側の"b equals 0.90"は"equals"という語が
+    残ってしまい、意味が同じでも一致しなくなる。"<"/">"も同様)。"""
+    text = _SPOKEN_NEGATIVE_EXPONENT_RE.sub(r"\1xexpnegx\2", text)
+    text = _SPOKEN_POSITIVE_EXPONENT_RE.sub(r"\1xexpx\2", text)
+    text = text.replace("×", " times ")
+    text = _DIGIT_X_DIGIT_RE.sub(" times ", text)
+    text = re.sub(r"\b(?:is|was)\s+equal\s+to\b", "equals", text)
+    text = text.replace("=", " equals ")
+    text = text.replace("<", " less than ")
+    text = text.replace(">", " greater than ")
+    return text
+
 
 def _words_to_number(words: list[str]) -> int | None:
     """word列(小文字、"and"含む)を1つの整数へ変換する。数値語列として
@@ -220,6 +313,14 @@ def normalize_numeric(text: str) -> str:
     # 8. 日付文脈(月名直後)の序数接尾辞のみ除去。月名が無い"28th"等は
     #    そのまま残り、"28"(基数)と区別され続ける。
     t = _DATE_ORDINAL_RE.sub(r"\1 \2", t)
+    # 9. 数式の指数表記(ASR側の"to the (minus) N(th)?"という話し言葉、
+    #    および"×"記号)を、底・符号・桁を保ったままマーカー化する。
+    #    cardinal/ordinal語の変換(手順3・7)より後に置くことで、
+    #    "ten to the minus sixteenth"のように綴られた場合も先に数字化
+    #    されてから拾える。canonical側のUnicode上付き文字は、strip_diacritics()
+    #    によるNFKD分解で情報が失われる前に、normalize_text()の先頭で
+    #    既にマーカー化済み(_normalize_superscript_exponents_early参照)。
+    t = _normalize_spoken_exponents(t)
     return t
 
 
@@ -242,6 +343,12 @@ def normalize_text(text: str) -> str:
     どちらも「同じ語の別表記」という閉じた既知集合に限定している点で
     従来方針を維持している)。"""
     t = (text or "").lower()
+    # strip_diacritics()のNFKD分解はUnicode上付き数字/マイナスを通常の
+    # 数字へ分解してしまい、「上付きだった」という指数情報自体が失われる
+    # (例: "10⁻¹⁶"→"10−16")。そうなるとxexpx/xexpnegxマーカーへ変換する
+    # 手がかりが消えてしまうため、strip_diacritics()より前のこの時点で
+    # 先にマーカー化しておく。
+    t = _normalize_superscript_exponents_early(t)
     t = strip_diacritics(t)
     for br, am in BR_AM_SPELLING_PAIRS:
         t = t.replace(br, am)
@@ -319,6 +426,26 @@ def _is_number(tok: str) -> bool:
     return tok.isdigit()
 
 
+def _singularize_simple(word: str) -> str | None:
+    """規則的な複数形のみを単数形へ変換する(不規則複数形は対象外)。
+    誤って無関係な短い語を同一視しないよう、長さと語尾の形を厳格に絞る。
+    Noneは「この語は規則複数形として扱えない」を意味する(安全側)。"""
+    if len(word) > 4 and word.endswith("es") and word[:-2].endswith(("s", "x", "z", "ch", "sh")):
+        return word[:-2]  # matches -> match, boxes -> box
+    if len(word) > 4 and word.endswith("s") and not word.endswith("ss"):
+        return word[:-1]  # results -> result
+    return None
+
+
+def _is_benign_plural_pair(a: str, b: str) -> bool:
+    """"result"/"results"のような、規則的な単数形・複数形の揺れのみの語対を
+    判定する。ASR側が複数形/単数形をどちらで書き起こすかは意味内容の誤りを
+    示さない(cancelling/canceling等の綴り差と同種の、表記上の揺れ)。"""
+    if a == b:
+        return True
+    return _singularize_simple(a) == b or _singularize_simple(b) == a
+
+
 def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                      entity_tokens: set[str] | None = None) -> ProtectedCheckResult:
     entity_tokens = entity_tokens or set()
@@ -345,6 +472,13 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
         canon_content = [t for t in canon_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
         asr_content = [t for t in asr_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
         if canon_content or asr_content:
+            if (len(canon_content) == len(asr_content)
+                    and all(_is_benign_plural_pair(c, a) for c, a in zip(canon_content, asr_content))):
+                # 規則的な単数形/複数形の揺れのみ(例: "result"/"results")。
+                # BR/AM綴り差等と同種の表記上の揺れとみなし、content_word_diffs
+                # へは追加しない(内容誤りではないため、後段のcascade判定を
+                # 無関係な複数形差でブロックしない)。
+                continue
             if canon_content != asr_content:
                 # canonical側の内容語が全て「原文で大文字始まりだった語(固有名詞らしい語)」
                 # なら entity_like=True とする(ASR側がどう書き起こすかは問わない。
