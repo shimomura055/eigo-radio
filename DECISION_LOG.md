@@ -1021,6 +1021,35 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更、新規SSOT
   ファイルPOOL_TOPIC_MASTER.mdの制定のみ)
 
+## ER-006-POOL-ADOPTION-AUDIT-01 / ER-006-POOL-N4-N6-PRODUCTION-01 / ER-006-PRODUCTION-THROUGHPUT-GATE-01(2026-08-23)
+
+**管理ID: ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01(3区分まとめて記録)**
+
+- **Decision(Adoption Audit)**: 既存3記事の最終採用Candidateを確定した。
+  Public Benches=script Luna版+audio ASR-Pilot-02版(parts.json完全一致
+  確認済み)、Subscriptions/Startups=唯一存在する原初版(Sol Writer)。
+  Script/Audio一致確認では、送信テキストと正式scriptの完全一致(既知の
+  安全な正規化除く)を確認した一方、6segmentが機械ASR検証未合格のまま
+  assembled音声に含まれていることを検出し、ユーザー確認Artifactで
+  明示的に警告した。詳細は[ER-006-POOL-ADOPTION-AUDIT-01_diff.md](ER-006-POOL-ADOPTION-AUDIT-01_diff.md)
+- **Decision(N4-N6 Production)**: No.4〜6を現行Production仕様(Luna
+  Writer/Support/FactCheck、Gemini Batch TTS、OpenAI English Primary
+  ASR、Azure Japanese ASR、現行Validator、Master Audio Store)で通し
+  生成した。実在の学術論文・トレード記事をWebSearch/WebFetchで収集し
+  Ledgerへ組み込んだ。Sol呼び出し0件、Standard TTS呼び出し0件を確認
+- **Decision(Throughput Gate)**: No.4単独・No.5+No.6の2 lane並列実行
+  の実測から、Gemini Batch TTSが総所要時間の83〜96%を占める支配的
+  ボトルネックであることを確認した。20 Topic/day判定は`AT_RISK`
+  (4〜5 lane並列の実測なし、Human Review所要時間未計測のため)。
+  詳細は[ER-006-PRODUCTION-THROUGHPUT-GATE-01_report.md](ER-006-PRODUCTION-THROUGHPUT-GATE-01_report.md)
+- **未決定のまま保留**: No.4〜6の最終採用判断(ユーザー試聴待ち、
+  OPEN-53)、4〜5 lane並列実行の実測(OPEN-51)、Key Phrase Selectorの
+  retry loop追加要否(OPEN-52)
+- **根拠レポート**: ER-006-POOL-ADOPTION-AUDIT-01_diff.md、
+  ER-006-POOL-N4-N6-PRODUCTION-01完了報告(本Decisionの一部として
+  統合報告)、ER-006-PRODUCTION-THROUGHPUT-GATE-01完了報告
+- **影響するCURRENT_SPEC項目**: なし(サービス仕様は無変更)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
