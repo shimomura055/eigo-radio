@@ -16,6 +16,13 @@ CONFIG = {
         "b1": {"dir": "er006_output/pool_pilot_01/pool_n5_cafes/b1b", "stopped": ["full_story_part1", "full_story_part2"]},
         "a2": {"dir": "er006_output/pool_pilot_01/pool_n5_cafes/a2", "stopped": []},
     },
+    "n6_delivery": {
+        "title_en": "The Strange Pull of Delivery Tracking",
+        "title_ja": "配送状況を何度も確認したくなる不思議",
+        "no": 6,
+        "b1": {"dir": "er006_output/pool_pilot_01/pool_n6_delivery/b1b", "stopped": ["full_story_part1"]},
+        "a2": {"dir": "er006_output/pool_pilot_01/pool_n6_delivery/a2", "stopped": ["full_story_part1", "point_one"]},
+    },
 }
 
 def load(path):

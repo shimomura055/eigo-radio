@@ -22,7 +22,7 @@
 | 3 | Why Do Some Startups Chase Growth Before Profit? | なぜ一部のスタートアップは利益より先に成長を追うのか | 仕事・会社・デジタル習慣 | `GENERATED` | `PENDING` | `PENDING` |
 | 4 | The Supermarket Shuffle: Why Shelves Keep Moving | スーパーの商品棚は、なぜ何度も場所が変わるのか | 買い物・お金・サービス設計 | `GENERATED` | `PENDING` | `PENDING` |
 | 5 | Cafes Are Rethinking the All-Day Customer | カフェは「一日中居る客」をどう考え始めているのか | 街・空間・移動 | `GENERATED` | `PENDING` | `PENDING` |
-| 6 | The Strange Pull of Delivery Tracking | 配送状況を何度も確認したくなる不思議 | 日常心理・軽い健康 | `TO_BE_GENERATED` | `PLANNED` | `PLANNED` |
+| 6 | The Strange Pull of Delivery Tracking | 配送状況を何度も確認したくなる不思議 | 日常心理・軽い健康 | `GENERATED` | `PENDING` | `PENDING` |
 | 7 | Assigned Desks Are Back in Some Offices | 一部の職場で「固定席」が戻ってきている | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 8 | The Airport Line That Starts Before It Needs To | まだ並ぶ必要がないのに、空港の搭乗列ができる理由 | 街・空間・移動 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 9 | Smaller Menus, Faster Choices? | メニューを減らすと、客は選びやすくなるのか | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
@@ -52,6 +52,7 @@ No.1〜3の最終採用Candidate(script+audio)を、Topicごとにまとめた
 | 3 | Startups | https://claude.ai/code/artifact/aeaf4fee-c82d-45e4-b02f-f3f7dbc7ccd0 |
 | 4 | Supermarket Shuffle | https://claude.ai/code/artifact/441e2f85-9c27-4cb6-99b0-a3014df788f4 |
 | 5 | Cafes All-Day Customer | https://claude.ai/code/artifact/519d6d3a-00d6-457a-bfbb-9674b7e0a8d5 |
+| 6 | Delivery Tracking Pull | https://claude.ai/code/artifact/b9403185-9af7-4aac-9b3e-1c286cabfc4e |
 
 ## 経緯・注記
 
