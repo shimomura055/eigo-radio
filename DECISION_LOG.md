@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-24(ER-006-RESEARCH-COVERAGE-GATE-DEFER-01)**
+**最終更新: 2026-08-24(ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01 Part B)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -1120,6 +1120,25 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   データの一次情報)
 - **影響するCURRENT_SPEC項目**: なし(Production仕様として未追加のまま、
   今回も追加しない)
+
+## ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01 Part B(2026-08-24)
+
+- **Decision**: No.2(Subscriptions)A2 comment_3の「やめにくくする」が「やめにくかする」寄りに
+  聞こえた問題は、**TTS固有の偶発的発音ゆれ**と判定する。特定の音韻パターン(「くく」の連続
+  音節等)に起因する一般化可能な問題ではないため、テキスト書き換え・「くく」の表記変更・
+  No.2専用whitelistのいずれも行わず、**音声の再生成のみ**で対応する
+- **根拠**: canonical text・TTS入力とも正しく、reading-safety処理による変更もなかった。実際の
+  生成音声のAzure ASR書き起こしは「やめにくかする」であり、主観的な聞き取り誤りではなく音声
+  自体に実際のゆれがあったことをまず確認した。次に、同一canonical textを本番と同じ生成関数で
+  4回再生成したところ、4回とも正しく「やめにくくする」と発音・認識され、再現しなかった
+  (再現率0/4)。これにより、構造的・音韻的に不可避な問題ではなく、単発の生成ゆれだったと
+  結論づけた
+- **副次的発見**: A2の長い(30文字超)Comment/Support segmentの検証は「先頭数文字一致+文字数
+  許容範囲」のみを見ており、文中の一部だけが別の音へ変わっても検出できない設計上のgapが
+  ある(短いsegment向けのPHONETIC_MATCH等は30文字以下のみ対象)。今回は1件のみの発見のため、
+  新規Validator実装は見送り、OPEN-57へ記録した
+- **根拠レポート**: ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01完了報告
+- **影響するCURRENT_SPEC項目**: なし(既存の短いsegment向け検証方式・Validator仕様は無変更)
 
 ## 参照元
 
