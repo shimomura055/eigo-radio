@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-24(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01)**
+**最終更新: 2026-08-24(ER-006-RESEARCH-COVERAGE-GATE-DEFER-01)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -1087,6 +1087,39 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節の
   Validator項(55件へ更新、数式表記・複数形吸収を追加記載)、ASR-first
   Retry Policy項(`FEATURE_FLAG_SECONDARY_ASR_ENABLED=True`へ更新)
+
+## ER-006-RESEARCH-COVERAGE-GATE-DEFER-01(2026-08-24)
+
+- **Decision**: Research Coverage Gateを、現時点ではProductionへ導入
+  **しない**。`DEFERRED / PROMISING_BUT_MORE_DATA_NEEDED`として将来の
+  織り込み候補に位置づけ、実装・較正の成果は温存する
+- **背景**: ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01で
+  No.1(Public Benches)・No.2(Subscriptions)の較正後Gate判定を追加
+  検証した結果、TRUE_COVERAGE_GAP 0件、FALSE_POSITIVE 7件、BORDERLINE
+  1件と、過検知が実運用水準に対してなお残っていることが判明した。
+  一方、Gate実費は約¥0.31/topic、Clean Cost増加は約0.48%(基準値
+  ¥65.14/pair)と、コスト面の障壁自体は小さいことも確認済み
+- **見送りの理由**: (1) No.4型のResearch不足をWriter前に検知できる
+  可能性は確認済みで、Gateという仕組み自体の有用性は否定されていない、
+  (2) しかし残る較正課題(①Gateへ渡すtitleの入力契約[pre-Writer working
+  titleと実際の最終タイトルの乖離]、②因果的タイトルでも記事本文は
+  概念説明に留める正当な編集パターンへの対応)の解消には追加の開発・
+  検証時間が必要、(3) 現段階ではExternal/User Validation(実際の
+  学習者・プロジェクト責任者による試聴)を優先すべきであり、Gate較正へ
+  追加の開発時間を割かない、とユーザーが判断した
+- **今回実施しなかったこと**: Gate promptの追加調整、新規backtest、
+  Production配線、新規API call、No.7以降の記事生成(いずれもタスク
+  仕様の非対象事項として明示的に除外)
+- **再検討Trigger**: (a) 今後のProductionでNo.4型のResearch不足→Writer
+  再生成が複数回発生する、(b) Additional Research/Writer Costが再び
+  大きくなる、(c) External/User Validation後、量産フェーズへ移行する、
+  (d) Topic生成数が増え、Gate評価用サンプルが自然に蓄積する。いずれか
+  発生時に、OPEN-54記載の残課題への対応から再開する
+- **根拠レポート**: OPEN_ITEMS.md OPEN-54(本Decisionにより正式化)、
+  ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01完了報告(検証
+  データの一次情報)
+- **影響するCURRENT_SPEC項目**: なし(Production仕様として未追加のまま、
+  今回も追加しない)
 
 ## 参照元
 
