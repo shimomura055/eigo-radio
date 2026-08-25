@@ -1,0 +1,138 @@
+[
+  {
+    "label": "5-1a increase->decrease(No.4 LONG中間)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-1b customers->retailers相当(No.5 MEDIUM、'places'->'chains')",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-2a 25->15相当(No.4 LONG、150->140 women)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-2b 70%->17%相当(standard deviations値の変更、1.71->1.17)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-3a did not->did(No.4 LONG、'did not find a significant effect'->'did find a significant effect')",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-3b no clear effect反転相当(No.4 LONG、'did not change significantly'->'did change significantly')",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-4 中間の1段落(3文)を丸ごと削除(No.4 LONG)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-5 canonicalにない一文を中間へ追加(No.4 LONG)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-6 文頭6語+文末6語のみ一致、中間は無関係な内容に総入れ替え(No.4 LONG)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-7a Sweeny->Sweeney(ASR表記ゆれ、entity-likeでCascade対象になるべき)",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "should_pass": false,
+    "should_retry": false,
+    "is_entity_like": true,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-7b Ottoni->A Tony(実際に観測されたASR誤認識パターン、entity-like)",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "should_pass": false,
+    "should_retry": false,
+    "is_entity_like": true,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-8a Sweeny(canonical)->実在の別人名Johnson(全く別の実在姓)",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "should_pass": false,
+    "should_retry": false,
+    "is_entity_like": true,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-8b Ottoni(canonical)->実在の別姓Martinez",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "should_pass": false,
+    "should_retry": false,
+    "is_entity_like": true,
+    "verdict_ok": true
+  },
+  {
+    "label": "5-8c Boavida(canonical)->実在の別都市名Barcelona(地名文脈で置換、地理的に別物)",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "should_pass": false,
+    "should_retry": false,
+    "is_entity_like": true,
+    "verdict_ok": true
+  },
+  {
+    "label": "6-short: N6_SHORT 'powerless'->'powerful'(反対語、短いsegment)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "6-medium: N5_MEDIUM 'discourage'->'encourage'(反対語、中程度segment)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  },
+  {
+    "label": "6-long: N4_LONG 'increased'->'decreased'(反対語、長いsegment、全体に対する語数比率は最小)",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "should_retry": true,
+    "is_entity_like": false,
+    "verdict_ok": true
+  }
+]
