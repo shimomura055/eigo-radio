@@ -55,6 +55,50 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
+# ============================================================
+# ER-008-N7-CONTENT-AUDIO-QA-02: Key Phrase 音声の一般整合性check
+# ============================================================
+# No.7 B1のrank2("compare poorly with")で実際に発生した不整合が根本原因:
+# 日本語glossのTTS生成がcanonical text中の未発話placeholder記号「〜」に
+# よりSTOPPEDとなったが、assembly側はそれに気づかず、diskに残っていた
+# 前回実行(別のKey Phraseセット)のkp2_ja_charon.wavをそのまま読み込んで
+# 使ってしまっていた(表示上のphrase/glossと実音声が食い違う)。
+# tts_generation_results.json(このrunで書かれる診断ファイル)に、今回
+# 使おうとしているrankの英語/日本語Componentが実際にOK(またはHuman
+# Review対象として許容されるASR_VALIDATION_UNCERTAIN)で生成されたことが
+# 記録されているかを、assembly直前に必ず確認する。記録が無い/ファイルが
+# 無いテーマ(このJSONを書かない旧pipeline)は対象外とし、何もしない
+# (後方互換、既存テーマへの影響なし)。
+KEY_PHRASE_AUDIO_SAFE_STATUSES = ("OK", "ASR_VALIDATION_UNCERTAIN")
+
+
+def verify_key_phrase_audio_integrity(out_dir: str, level: str, kp_items: list, japanese_key: str) -> None:
+    result_path = f"{out_dir}/audit/tts_generation_results.json"
+    if not os.path.exists(result_path):
+        return
+    kp_results = (load_json(result_path) or {}).get("key_phrases")
+    if not kp_results:
+        return
+    problems = []
+    for item in kp_items:
+        rank = item["rank"]
+        entry = kp_results.get(str(rank))
+        if entry is None:
+            continue
+        en_status = (entry.get("english") or {}).get("status")
+        ja_status = (entry.get(japanese_key) or {}).get("status")
+        if en_status is not None and en_status not in KEY_PHRASE_AUDIO_SAFE_STATUSES:
+            problems.append(f"{level} rank{rank} english status={en_status}")
+        if ja_status is not None and ja_status not in KEY_PHRASE_AUDIO_SAFE_STATUSES:
+            problems.append(f"{level} rank{rank} {japanese_key} status={ja_status}")
+    if problems:
+        raise RuntimeError(
+            "Key Phrase音声の生成が今回の実行で失敗しており、diskに残った古い"
+            "音声ファイルをそのままassemblyへ使ってしまう恐れがあります"
+            f"(ER-008-N7-CONTENT-AUDIO-QA-02)。該当箇所: {problems}。該当"
+            "Key Phraseの音声を再生成してから再度assemblyを実行してください。")
+
+
 def copy_b1_shared_assets(narration_dir: str) -> None:
     for name in B1_SHARED_NAMES:
         dst = f"{narration_dir}/{name}"
@@ -112,6 +156,7 @@ def load_b1_sources(theme: dict) -> dict:
 
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
+    verify_key_phrase_audio_integrity(out_dir, "B1", kp_items, "japanese")
     key_phrase_components, key_phrase_meanings = {}, {}
     for item in kp_items:
         rank = item["rank"]
@@ -291,6 +336,7 @@ def load_a2_sources(theme: dict) -> dict:
 
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
+    verify_key_phrase_audio_integrity(out_dir, "A2", kp_items, "japanese_meaning")
     for i in range(1, len(kp_items) + 1):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/meaning_{i}.wav")
         assert sr == common.SAMPLE_RATE
@@ -369,6 +415,14 @@ def apply_a2_gain(sources: dict) -> dict:
     return result
 
 
+# ER-008-N7-CONTENT-AUDIO-QA-02 Part B: ユーザー確認の上、A2の番号読み上げ
+# →Key Phrase本体の間だけ、既存のKEY_PHRASE_INTERNAL_PAUSE_SECONDS(0.4秒)
+# より0.1秒長くする(B1は変更しない、= p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDS
+# のまま)。将来Middle再開時にA2のKey Phraseをそのまま使う仕様のため、
+# Middleもこの値を自動的に継承する。
+A2_KEY_PHRASE_NUMBERING_PAUSE_SECONDS = p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDS + 0.1
+
+
 def build_a2_key_phrase_blocks(parts: dict) -> list:
     num_names = ["num_one", "num_two", "num_three", "num_four", "num_five"]
     blocks = []
@@ -377,7 +431,8 @@ def build_a2_key_phrase_blocks(parts: dict) -> list:
         num_key = num_names[i]
         meaning_key = f"meaning_{i + 1}"
         block = p9a.build_key_phrase_block(
-            parts[num_key], parts["key_phrase_components"][rank], parts[meaning_key], SR)
+            parts[num_key], parts["key_phrase_components"][rank], parts[meaning_key], SR,
+            numbering_pause_seconds=A2_KEY_PHRASE_NUMBERING_PAUSE_SECONDS)
         blocks.append(block)
     return blocks
 

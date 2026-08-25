@@ -1422,6 +1422,102 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   接続とKey Phrase pause差は、Baseline自体に元からある挙動として
   確認されたが、対応方針はユーザー判断待ちのため仕様変更はしていない
 
+## ER-008-N7-CONTENT-AUDIO-QA-02(2026-08-26)
+
+- **Decision**: No.7正式Baselineのユーザー試聴で見つかった5点を調査し、
+  影響がPilotに閉じない2件のバグ(共有ProductionコードのValidator gap、
+  Key Phrase音声のstaleファイル使用)を修正した。No.7自体はB1 Key
+  Phrase 2の音声/gloss修正、A2 Key Phrase pauseの+0.1秒変更(B1は無変更)
+  を適用。Evidence Density(spoken layerでの固有名詞・数字の扱い)は
+  Production Promptへ未配線と判明したが、大規模なPrompt再設計は行わず
+  提案のみでSTOPした。読み上げ速度は今回測定のみで変更していない
+- **Part A: B1 Key Phrase不整合のroot cause**: 表示上は"compare poorly
+  with"/"〜より見劣りする..."で正しかったが、実音声は2つの独立したバグの
+  複合で食い違っていた。(1) 日本語glossの"〜"(項変数記法、ER-006-KP5-
+  CANONICAL-BUG-01の既存検出ロジックが意図通り検出)によりTTS生成が
+  STOPPEDし、diskに残っていた前回実行(別のKey Phraseセット)の古い
+  音声がassembly時にそのまま使われていた。(2) 英語Componentの実音声は
+  "with"が脱落した"Compare poorly"だったが、ASR一致判定
+  (`er006_preprod_hardening_01_validation.py::classify_asr_match`)の
+  「冠詞等のstopwordを除いた内容語だけを比較する」近道処理が、意味を
+  持つ前置詞"with"も冠詞と同列にstopword扱いしていたため誤って
+  NORMALIZED_MATCH判定していた(Validator gap)。修正: glossを
+  "他と比べて見劣りする／他より劣る"へ書き換え、対象のstopword集合を
+  冠詞(a/an/the)のみへ絞り込み、kp2の英語/日本語を実際に再生成し
+  (両方とも正しい内容をASRで再確認済み)、B1を再組み立てした
+- **Part A: 一般整合性checkの追加**: `er003_v1_n3_01_assemble.py`の
+  `load_b1_sources()`/`load_a2_sources()`へ`verify_key_phrase_audio_
+  integrity()`を追加。assembly直前に、今回の実行のtts_generation_
+  results.jsonで各Key Phraseの英語/日本語生成が実際にOK
+  (またはASR_VALIDATION_UNCERTAIN)だったかを確認し、STOPPED等の失敗が
+  あれば明示的なエラーで停止する(diskに残った古い音声を黙って使う
+  ことを防ぐ)。診断ファイルを書かない旧テーマ・別pipelineには影響
+  しない(後方互換)
+- **Part B: A2 Key Phrase pause**: ユーザー決定により、A2の番号読み上げ
+  →Key Phrase本体の間だけ0.4秒→0.5秒(+0.1秒)へ変更(B1は0.4秒のまま
+  無変更)。`er003_b1_p9a_audio.py::build_key_phrase_block()`へ
+  `numbering_pause_seconds`引数を追加(既定None=既存動作、後方互換)。
+  実WAV計測(No.7 A2 5件平均): 修正前は約0.41〜0.47秒、修正後は
+  約0.51〜0.57秒(いずれも数字→英語間の実測、無音区間+pause定数+
+  trim後の頭無音の合計)。将来Middle再開時はA2のKey Phraseをそのまま
+  使う仕様(下記Part C-2参照)のため、この値も自動的に継承される
+- **Part C: A2 Point One見出しの発音問題**: Point見出しもASR全文検証の
+  対象であることを確認(`generate_english_segment_with_fallback`経由)。
+  元音声は標準経路(ENGLISH_STYLE_PREFIX)がGemini側の一時的な500エラー
+  で6回とも失敗し、fallbackの"minimal instruction"経路で生成された
+  ものだった。OpenAI Primary ASRは"A desk can feel like a place..."と
+  正しく書き起こし(NORMALIZED_MATCHでPASS)たが、Azure Secondary ASR
+  で同じ音声を再確認すると"A desk can feel LITHA."と全く異なる書き起こし
+  になった。Secondary ASR cascadeはPrimaryがmismatchを返した場合のみ
+  起動する設計のため、Primaryが(内容的には正しい語を)書き起こして
+  しまうこの種の発音品質問題は、既存の検証フローでは検知できない
+  (ASRでは検知困難な発音品質問題、Validator側のバグではなく構造的
+  限界)。同じ経路で再生成した候補は、今回は標準経路が成功し、
+  Primary/Secondary両方で完全一致の書き起こしを得た。試聴Artifactに
+  原音声と候補を並べて掲載し、採用可否はユーザー判断とする(自動置換
+  はしていない)
+- **Part D-1: Evidence Compression Production配線状態**: `NOT_WIRED`。
+  実際のProduction Writer Prompt(`er003_v1_n3_01_articles_generate.py`
+  の`B1_B_DIRECT_INSTRUCTION`/`A2_KAI1_INSTRUCTION`/`build_common_
+  block`)には、"Evidence Compression"や固有名詞・研究者名・企業名を
+  spoken layerで削減する指示は一切存在しない。唯一近い規定は
+  「Spoken-first原則(数字の扱い)」だが、これは「Fact Ledgerの数字を
+  恣意的に削らない」ことを明示しており、むしろ逆方向の原則である。
+  過去のNo.7 Full Story延長タスクで使った"Evidence Compression"という
+  言葉は、その場限りの手動編集方針であり、正式なProduction仕様
+  (CURRENT_SPEC.md)にも一切記載がない
+- **Part D-2/D-3: No.7の固有名詞・数字監査**: Full Story+Point One/Two
+  中の主な固有名詞(Scotiabank・iCapital Network・Bisnow・Gensler・
+  Korn Ferry・CBRE)は、いずれも「その名前を聞くこと自体がStory理解を
+  改善する」基準を満たさず`COMPRESS`(Bisnow・Bisnowのイベント名は
+  さらに弱く`REMOVE_FROM_SPOKEN`)。一方、87%/74%・80%/67%(Point One)、
+  20%/「パンデミック前の2倍」(B1 Part2)、56%/40%・2023/2024・
+  2026(Point Two)は、比較の核心そのものであり`KEEP`。改善案(最小、
+  未実装): Production Promptへ「固有名詞(企業・研究機関・出版物名)は、
+  その名前自体がStory理解に必要でない限りspoken scriptへ出さず、
+  『ある調査』『複数の企業』等の一般化表現に置き換える」という1文を
+  追加する案を提示するに留め、実際のPrompt改修は行っていない
+  (大規模なPrompt再設計は今回のスコープ外、ユーザー判断待ち)
+- **Part E: 読み上げ速度実測**: TTS Prompt・API呼び出しのいずれにも
+  話速指定は存在しないことを確認(`er002_common.py::assert_no_wpm_
+  specification()`により数値WPM指定が混入しないことをbuild時に
+  assertで保証済み、Gemini API呼び出しにも`speaking_rate`等のパラメータ
+  は渡していない)。A2/B1でスタイル指示文自体は完全に同一(レベル間の
+  速度差指定は無し)。実測(実発話区間ベース、無音除外): A2平均
+  138.8WPM(中央値142.3、Story平均152.55、Point平均118.55)、B1平均
+  151.4WPM(中央値152.1、Story平均148.6、Point平均124.05)。過去に
+  言及した135WPM案等は、正式採用された仕様ではなく現状の実測基準
+  として扱っていない。今回は速度変更を行っていない
+- **今回実施しなかったこと**: Middle再開、No.8生成、A2/B1読み上げ速度
+  変更、Full Story length rule追加、Research Coverage Gate再開、ASR
+  provider変更、TTS model変更、Evidence Density Prompt改修の実装
+- **根拠レポート**: ER-008-N7-CONTENT-AUDIO-QA-02完了報告、比較試聴
+  Artifact(https://claude.ai/code/artifact/de5ca386-8f04-470d-926b-edcb579a58d7)
+- **影響するCURRENT_SPEC項目**: なし。Key Phrase pauseの数値・Evidence
+  Density方針・読み上げ速度はいずれも正式仕様化されておらず、今回も
+  CURRENT_SPECへの追加は行っていない(pause変更は実装済みだがNo.7限定の
+  検証、方針としての正式採用は別途判断)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

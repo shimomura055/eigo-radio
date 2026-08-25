@@ -515,56 +515,118 @@
       "english": {
         "status": "OK",
         "text": "compare poorly with",
-        "language": "en",
         "path": "er006_output/pool_pilot_01/pool_n7_assigned_desks/b1b/narration/kp2_en.wav",
         "model": "gemini-2.5-pro-preview-tts",
         "voice": "Aoede",
         "call_count": 1,
         "retry_count": 0,
-        "sha256": "99be1eaa36cf24320cb31b0f409e6809220f54fc6ce5cacee807cac327676cf5",
-        "duration_seconds": 1.511,
+        "sha256": "6068cd9b6a29cee50431ae3c92b8fdddb540ffdf2c47e280b6a1ddabc0c51317",
+        "duration_seconds": 1.871,
         "trim_info": {
-          "raw_duration_seconds": 1.611,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.26,
-          "trimmed_duration_seconds": 1.511,
+          "raw_duration_seconds": 2.251,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.52,
+          "trimmed_duration_seconds": 1.871,
           "leading_margin_retained_seconds": 0.2,
           "trailing_margin_retained_seconds": 0.2
         },
         "clipping_detected": false,
+        "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
         "asr_verified": true,
-        "asr_text": "Compare poorly",
-        "attempts_log": [
+        "asr_text": "compare poorly with",
+        "fallback_used": true,
+        "standard_attempts_log": [
           {
             "attempt": 1,
             "status": "OK",
-            "duration_seconds": 1.511,
+            "duration_seconds": 1.751,
             "asr_text": "Compare poorly",
             "asr_text_length": 14,
             "max_len": 29,
             "substring_ok": null,
             "length_ok": true,
             "phonetic_verdict": null,
-            "audio_classification": "NORMALIZED_MATCH",
+            "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+            "verified": false
+          },
+          {
+            "attempt": 2,
+            "status": "OK",
+            "duration_seconds": 1.611,
+            "asr_text": "Compare poorly",
+            "asr_text_length": 14,
+            "max_len": 29,
+            "substring_ok": null,
+            "length_ok": true,
+            "phonetic_verdict": null,
+            "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+            "verified": false
+          },
+          {
+            "attempt": 3,
+            "status": "OK",
+            "duration_seconds": 1.651,
+            "asr_text": "Compare poorly.",
+            "asr_text_length": 15,
+            "max_len": 29,
+            "substring_ok": null,
+            "length_ok": true,
+            "phonetic_verdict": null,
+            "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+            "verified": false
+          }
+        ],
+        "fallback_attempts_log": [
+          {
+            "attempt": 1,
+            "status": "OK",
+            "asr_text": "compare poorly with",
+            "audio_classification": "EXACT_MATCH",
             "verified": true
           }
         ],
-        "fallback_used": false,
         "reused": false,
         "master_audio_id": "07827369529379062cd83110",
         "cache_miss_reason": "no_existing_master"
       },
       "japanese": {
-        "status": "STOPPED",
-        "reason": "canonical_textに未発話のplaceholder記号が残っています: ['〜']",
-        "canonical_text": "〜より見劣りする／〜に比べて劣る",
-        "placeholder_check": {
-          "has_placeholder": true,
-          "found_chars": [
-            "〜"
-          ],
-          "text": "より見劣りする／〜に比べて劣る"
-        }
+        "status": "OK",
+        "text": "他と比べて見劣りする／他より劣る",
+        "path": "er006_output/pool_pilot_01/pool_n7_assigned_desks/b1b/narration/kp2_ja_charon.wav",
+        "voice": "Charon",
+        "asr_verified": true,
+        "asr_text": "他と比べて見劣りする。他より劣る。",
+        "attempts_log": [
+          {
+            "attempt": 1,
+            "status": "OK",
+            "asr_text": "他と比べて見劣りする。他より劣る。",
+            "length_ok": true,
+            "audio_classification": "NORMALIZED_MATCH",
+            "verified": true,
+            "trim_info": {
+              "raw_duration_seconds": 4.4,
+              "raw_leading_silence_seconds": 0.36,
+              "raw_trailing_silence_seconds": 0.42,
+              "trimmed_duration_seconds": 4.32,
+              "leading_margin_retained_seconds": 0.35,
+              "trailing_margin_retained_seconds": 0.35
+            }
+          }
+        ],
+        "trim_info": {
+          "raw_duration_seconds": 4.4,
+          "raw_leading_silence_seconds": 0.36,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 4.32,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "clipping_detected": false,
+        "fallback_used": false,
+        "canonical_text": "他と比べて見劣りする／他より劣る",
+        "tts_input_text_after_reading_safety": "他と比べて見劣りする／他より劣る",
+        "reading_safety_changed_text": false
       }
     },
     "3": {

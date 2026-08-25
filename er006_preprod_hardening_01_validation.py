@@ -544,12 +544,21 @@ def classify_asr_match(canonical_text: str, asr_text: str,
                                      should_pass=True, should_retry=False,
                                      reason="複合語の分かち書き・ハイフン位置の差のみ(空白除去後に一致)")
 
-    # 冠詞等のstopwordを除いた内容語だけを despace して比較する版。
+    # 冠詞(a/an/the)だけを除いた内容語を despace して比較する版。
     # 短いKey Phrase(例: canonical="a wide-scale empirical study" vs
-    # asr="Widescale empirical study.")でstopwordの有無自体が表記差の対象外
+    # asr="Widescale empirical study.")で冠詞の有無自体が表記差の対象外
     # であるケースを吸収する。
-    canon_content_only = [t for t in tokenize(canonical_text) if t not in _STOPWORDS]
-    asr_content_only = [t for t in tokenize(asr_text) if t not in _STOPWORDS]
+    # ER-008-N7-CONTENT-AUDIO-QA-02で発見: ここで_STOPWORDS全体(with/by/
+    # from/as等の前置詞も含む)を使うと、"compare poorly with"のような
+    # 前置詞で終わる短いKey Phraseで、実際には"with"が欠落した音声
+    # ("Compare poorly")が、"with"がstopwordとして両側から消えることで
+    # 誤ってNORMALIZED_MATCH判定されてしまう(実際の欠落語を見逃す
+    # Validator gap)。この despace shortcutは冠詞のみを対象とし、
+    # 意味を持つ前置詞・接続詞は_STOPWORDSに含まれていてもここでは
+    # 除去しない(articles_onlyへ限定)。
+    articles_only = {"a", "an", "the"}
+    canon_content_only = [t for t in tokenize(canonical_text) if t not in articles_only]
+    asr_content_only = [t for t in tokenize(asr_text) if t not in articles_only]
     if "".join(canon_content_only) == "".join(asr_content_only) and canon_content_only:
         return ClassificationResult("NORMALIZED_MATCH", 1.0, ProtectedCheckResult(passed=True),
                                      should_pass=True, should_retry=False,

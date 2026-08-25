@@ -170,6 +170,10 @@ def build():
     b1_data, b1_kp = load_level("b1b")
     a2_b64 = load_b64("a2")
     b1_b64 = load_b64("b1")
+    with open(f"{SCRATCH}/n7_qa02_point_one_orig_b64.txt", encoding="ascii") as f:
+        point_one_orig_b64 = f.read()
+    with open(f"{SCRATCH}/n7_qa02_point_one_candidate_b64.txt", encoding="ascii") as f:
+        point_one_candidate_b64 = f.read()
 
     # 実際の再生順(build_a2_timeline/build_b1_timelineと同じ順序):
     # Preview -> Key Phrases -> Comment 1 -> Full Story Part 1 -> Comment 2 ->
@@ -195,9 +199,8 @@ def build():
     <h1>Assigned Desks Are Back in Some Offices</h1>
     <p class="sub">No.7 regenerated from the official, Fixed A2/B1 Production spec &mdash;
     no Shared Point Blueprint, no cross-level comment anchoring, no Full Story length
-    adjustment, no Key Phrase pause adjustment. This is what Production actually produces
-    today, used to check whether issues seen during Middle/Bridge exploration were real
-    baseline behavior or artifacts of that exploration.</p>
+    adjustment. B1 Key Phrase 2 was corrected (see below) and A2's Key Phrase pause was
+    widened by 0.1s per user decision; everything else matches official Production.</p>
     <div class="legend">
       <span><i class="dot a2"></i>A2 &mdash; plain English + Japanese</span>
       <span><i class="dot b1"></i>B1 &mdash; natural adult English</span>
@@ -212,25 +215,52 @@ def build():
       <span class="tag">A2</span>
       <h2>{esc(a2_data["title"])}</h2>
       <p class="desc">Full story, Points, and In One Line in English; Preview and Comments in
-      Japanese. Official A2 Production spec, no Blueprint/comment-anchor/length/pause
-      adjustments.</p>
+      Japanese. Official A2 Production spec. Key Phrase numbering&rarr;phrase pause widened
+      by 0.1s (ER-008-N7-CONTENT-AUDIO-QA-02 Part B).</p>
       <audio controls preload="none" src="data:audio/mpeg;base64,{a2_b64}"></audio>
-      <p class="dur">5:30 &middot; official A2 pipeline (baseline reset)</p>
+      <p class="dur">5:30 &middot; official A2 pipeline (+0.1s Key Phrase pause)</p>
     </div>
     <div class="col b1">
       <span class="tag">B1</span>
       <h2>{esc(b1_data["title"])}</h2>
       <p class="desc">Full episode in natural adult English, Preview and Comments included.
-      Official B1 Production spec, no Blueprint/comment-anchor/length/pause adjustments.</p>
+      Official B1 Production spec. Key Phrase 2 ("compare poorly with") audio/gloss corrected
+      (ER-008-N7-CONTENT-AUDIO-QA-02 Part A).</p>
       <audio controls preload="none" src="data:audio/mpeg;base64,{b1_b64}"></audio>
-      <p class="dur">5:14 &middot; official B1 pipeline (baseline reset)</p>
+      <p class="dur">5:17 &middot; official B1 pipeline (Key Phrase 2 fixed)</p>
+    </div>
+  </section>
+
+  <section class="script-section">
+    <h3 class="section-title">A2 Point One Heading &mdash; Pronunciation Candidate</h3>
+    <p class="desc" style="margin-bottom:1rem;">User feedback: "feel" onward sounded unnatural
+    in the original. RCA: the original audio was generated via the minimal-instruction fallback
+    path (the standard path failed 6 times on transient Gemini server errors) and OpenAI's
+    Primary ASR transcribed it as correct text despite the actual audio being garbled &mdash;
+    confirmed by re-transcribing with Azure Secondary ASR, which heard "A desk can feel LITHA."
+    A freshly regenerated candidate (standard path succeeded this time) transcribes cleanly on
+    both Primary and Secondary ASR. Not yet swapped into the B1/A2 episodes above &mdash; your
+    call on whether the candidate sounds better.</p>
+    <div class="script-row">
+      <div class="script-card a2">
+        <span class="src">Original (currently in A2 episode)</span>
+        <div class="heading">"A desk can feel like a place"</div>
+        <audio controls preload="none" src="data:audio/mpeg;base64,{point_one_orig_b64}"></audio>
+        <p style="margin:.5rem 0 0;font-size:.8rem;color:var(--ink-soft);">Azure Secondary ASR heard: "A desk can feel LITHA."</p>
+      </div>
+      <div class="script-card a2">
+        <span class="src">Regenerated candidate</span>
+        <div class="heading">"A desk can feel like a place"</div>
+        <audio controls preload="none" src="data:audio/mpeg;base64,{point_one_candidate_b64}"></audio>
+        <p style="margin:.5rem 0 0;font-size:.8rem;color:var(--ink-soft);">Azure Secondary ASR heard: "A desk can feel like a place." (exact match)</p>
+      </div>
     </div>
   </section>
 
   {sections_html}
 
   <footer class="page">
-    Generated 2026-08-25 (ER-008-N7-BASELINE-RESET-AND-MIDDLE-DEFER-01) &middot;
+    Updated 2026-08-26 (ER-008-N7-CONTENT-AUDIO-QA-02) &middot;
     DEV/VALIDATION run using synchronous TTS (not the Gemini Batch API used in Production)
     &middot; No Shared Point Blueprint, no comment anchor, no Story length adjustment, no
     Key Phrase pause adjustment &mdash; this reflects official Production behavior as-is,

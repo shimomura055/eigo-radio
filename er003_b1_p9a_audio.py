@@ -365,14 +365,24 @@ def insert_sound_at_internal_gap(body_samples: "np.ndarray", sample_rate: int, g
 # Key Phrasesブロック組み立て(番号→英語→日本語→英語)
 # ============================================================
 def build_key_phrase_block(number_word_samples: "np.ndarray", english_component_samples: "np.ndarray",
-                            japanese_meaning_samples: "np.ndarray", sample_rate: int) -> "np.ndarray":
+                            japanese_meaning_samples: "np.ndarray", sample_rate: int,
+                            numbering_pause_seconds: float = None) -> "np.ndarray":
     """英語Componentは`tight_speech_only`で見かけ上の無音を除去済みの
     ものを渡す想定(1回目・2回目とも同じ音声を再利用する)。入力は
-    (n, 2)のstereo配列を想定し、無音もstereo形状で作る。"""
+    (n, 2)のstereo配列を想定し、無音もstereo形状で作る。
+
+    numbering_pause_seconds: 番号読み上げ→Key Phrase本体(1回目)の間だけの
+    pauseを個別に指定する(ER-008-N7-CONTENT-AUDIO-QA-02 Part B: A2は
+    ユーザー指定で+0.1秒、B1は既存値のまま)。Noneの場合は既定の
+    KEY_PHRASE_INTERNAL_PAUSE_SECONDSを使う(後方互換、既存呼び出し元は
+    無変更)。それ以外の区切り(英語→日本語→英語)は今回変更しない。"""
+    numbering_pause = silence_stereo(
+        numbering_pause_seconds if numbering_pause_seconds is not None else KEY_PHRASE_INTERNAL_PAUSE_SECONDS,
+        sample_rate)
     pause = silence_stereo(KEY_PHRASE_INTERNAL_PAUSE_SECONDS, sample_rate)
     block_end_pause = silence_stereo(KEY_PHRASE_BLOCK_END_PAUSE_SECONDS, sample_rate)
     return np.concatenate([
-        number_word_samples, pause,
+        number_word_samples, numbering_pause,
         english_component_samples, pause,
         japanese_meaning_samples, pause,
         english_component_samples, block_end_pause,
