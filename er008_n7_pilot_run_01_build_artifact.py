@@ -26,7 +26,17 @@ B1 = {
     "point_one_body": "Workers\u2019 daily experience may be part of the story. Korn Ferry points to complaints about hot-desking: less appeal than working from home, unwanted closeness to unfamiliar colleagues, and less predictable workspaces.\n\nIn Gensler data, assigned-seat workers reported belonging more often than workers without assigned seating: 87%, compared with 74%. They also reported effective focus more often: 80%, compared with 67%. These are associations, not proof that desks caused the difference. Against this background, some offices are bringing assigned desks back.",
     "point_two_heading": "A limited return, not a market reversal",
     "point_two_body": "The wider market tells a different story. In CBRE\u2019s 2024 survey, the share of companies with at least one desk per employee fell from 56% in 2023 to 40% in 2024.\n\nRespondents expected it to fall to about one-third by 2026. So assigned desks are returning in some places, but shared seating remains part of the wider office model.",
+    "full_story_part1": "After the pandemic, hot-desking became more common. In this system, workers are not given one personal desk. They choose an empty desk when they arrive.\n\nNow, in some offices, the desk map is changing again. Assigned desks are returning, and some workplaces are reducing their reliance on hot-desking.\n\nIt raises a simple question: after years of sharing, why are some workplaces choosing personal desks again?",
+    "full_story_part2": "A worker may once again have a regular place to sit each day. But this is not a full return across the office world. Some offices still use shared desks and flexible office space.\n\nThe result is a mixed picture. The personal desk is back in some places, while the shared desk remains part of the wider office model.",
 }
+
+B1_KEY_PHRASES = [
+    ("hot-desking", "\u5171\u6709\u30c7\u30b9\u30af\u5236\u3001\u30d5\u30ea\u30fc\u30a2\u30c9\u30ec\u30b9"),
+    ("market reversal", "\u5e02\u5834\u5168\u4f53\u306e\u53cd\u8ee2"),
+    ("unwanted closeness", "\u671b\u307e\u306a\u3044\u8fd1\u3055\u30fb\u8ddd\u96e2\u306e\u8fd1\u3055"),
+    ("mixed picture", "\u4e00\u69d8\u3067\u306f\u306a\u3044\u72b6\u6cc1\u3001\u8907\u96d1\u306a\u5168\u4f53\u50cf"),
+    ("quiet comeback", "\u9759\u304b\u306a\u5fa9\u6d3b\u3001\u76ee\u7acb\u305f\u306a\u3044\u518d\u767b\u5834"),
+]
 
 A2 = {
     "preview": "\u4eca\u56de\u306e\u30cb\u30e5\u30fc\u30b9\u306f\u3001\u4f1a\u793e\u306e\u6a5f\u306e\u4f7f\u3044\u65b9\u304c\u6539\u3081\u3066\u898b\u76f4\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u306b\u3064\u3044\u3066\u3067\u3059\u3002\u673a\u306e\u6c7a\u3081\u65b9\u306f\u3001\u8077\u5834\u3067\u306e\u5c45\u5834\u6240\u3084\u3001\u4ed5\u4e8b\u3078\u306e\u96c6\u4e2d\u306e\u3057\u3084\u3059\u3055\u306b\u3082\u95a2\u308f\u308a\u307e\u3059\u3002\u4e00\u65b9\u3067\u3001\u30aa\u30d5\u30a3\u30b9\u306e\u4f7f\u3044\u65b9\u306b\u306f\u3001\u5225\u306e\u8003\u3048\u65b9\u3082\u3042\u308a\u307e\u3059\u3002\u306a\u305c\u673a\u306e\u4f7f\u3044\u65b9\u304c\u898b\u76f4\u3055\u308c\u3001\u4f1a\u793e\u3054\u3068\u306b\u8003\u3048\u65b9\u304c\u5206\u304b\u308c\u3066\u3044\u308b\u306e\u3067\u3057\u3087\u3046\u304b\u3002\u805e\u304d\u7d42\u3048\u308b\u3053\u308d\u306b\u306f\u3001\u3053\u306e\u52d5\u304d\u306e\u80cc\u666f\u3068\u3001\u4eca\u306e\u30aa\u30d5\u30a3\u30b9\u304c\u62b1\u3048\u308b\u8ad6\u70b9\u304c\u5206\u304b\u308a\u307e\u3059\u3002",
@@ -38,7 +48,17 @@ A2 = {
     "point_one_body": "Gensler data shows why the change may matter. Among workers with assigned desks, 87% said they felt they belonged at work, compared with 74% without assigned desks. Also, 80% said they could focus well, compared with 67% in hot-desking settings. Korn Ferry says changing desks and nearby coworkers can make work less predictable. These findings help explain the return in some offices.",
     "point_two_heading": "A small change, not a full reversal",
     "point_two_body": "But the desk story is not moving in only one direction. CBRE found that companies with one desk or less for each worker fell from 56% in 2023 to 40% in 2024. In the same survey, 42% of organizations had more than 10% of their office space in flexible areas, up from 36%. Assigned desks are returning in some places, but flexible workspaces remain common overall.",
+    "full_story_part1": "For some office workers, the race for a desk may be ending.\n\nAfter the pandemic, many offices began using hot-desking. In this system, workers do not have their own desks. They use an empty desk when they arrive.",
+    "full_story_part2": "Now, some companies are changing this plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some parts of their offices.\n\nThe change is quiet. It is also limited. Not every office is returning to one desk for every worker.\n\nSo the office is facing a simple question:\n\nShould a desk belong to one person, or to whoever arrives first?",
 }
+
+A2_KEY_PHRASES = [
+    ("hot-desking", "共有デスク制"),
+    ("assigned desk", "割り当てられた専用デスク"),
+    ("full reversal", "全面的な方針転換"),
+    ("belong at work", "職場に居場所があると感じる"),
+    ("flexible workspace", "柔軟な共有型ワークスペース"),
+]
 
 CSS = """
 :root{
@@ -113,7 +133,13 @@ audio{width:100%;margin-bottom:.3rem;}
 .script-card.mid .src{background:var(--mid-soft);color:var(--mid-ink);}
 .script-card.b1 .src{background:var(--b1-soft);color:var(--b1-ink);}
 .script-card .heading{font-weight:600;margin:0 0 .3rem;}
-.script-card p{margin:0;color:var(--ink);}
+.script-card p{margin:0;color:var(--ink);white-space:pre-line;}
+.kp-list{list-style:decimal;margin:0;padding:0 0 0 1.3rem;}
+.kp-list li{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
+  padding:.4rem 0;border-bottom:1px dashed var(--line);}
+.kp-list li:last-child{border-bottom:none;}
+.kp-en{font-weight:600;}
+.kp-ja{color:var(--ink-soft);font-size:.82rem;text-align:right;white-space:nowrap;}
 
 footer.page{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);
   font-size:.78rem;color:var(--ink-soft);}
@@ -134,10 +160,13 @@ def script_card(cls, label_html, body_html, tag_text):
 </div>"""
 
 
-def section(title, key_heading, key_body, is_point=False, mid_source_1=None, mid_source_2=None):
+def section(title, key_heading, key_body, mid_from_a2=False):
+    """mid_from_a2=True: Middle列がA2側の文章を使うsegment(Full Story/
+    Point、本文はA2のまま採用)。False: Middle列がB1側を使うsegment
+    (Preview/Comment、B1 Supportをそのまま採用)。"""
     def cell(level_cls, data, tag_text, is_mid=False, src=None):
         heading_html = ""
-        if is_point and key_heading:
+        if key_heading:
             heading_html = f'<div class="heading">{esc(data[key_heading])}</div>'
         body = esc(data[key_body])
         actual_tag = tag_text
@@ -147,14 +176,31 @@ def section(title, key_heading, key_body, is_point=False, mid_source_1=None, mid
 
     a2_cell = cell("a2", A2, "A2")
     b1_cell = cell("b1", B1, "B1")
-    if is_point:
-        # Point系はA2側の文章をMiddleでも使う(本文はA2、Commentのみ入れ替え)
-        mid_data, mid_tag_src = A2, "a2"
-    else:
-        mid_data, mid_tag_src = B1, "b1"
+    mid_data, mid_tag_src = (A2, "a2") if mid_from_a2 else (B1, "b1")
     mid_cell = cell("mid", mid_data, "MIDDLE", is_mid=True, src=mid_tag_src)
     return f"""<div class="script-section">
   <h3 class="section-title">{title}</h3>
+  <div class="script-row">{a2_cell}{mid_cell}{b1_cell}</div>
+</div>"""
+
+
+def key_phrase_list_html(cls, phrases, tag_text):
+    items = "".join(
+        f'<li><span class="kp-en">{esc(en)}</span><span class="kp-ja">{esc(ja)}</span></li>'
+        for en, ja in phrases
+    )
+    return f"""<div class="script-card {cls} kp-card">
+  <span class="src">{tag_text}</span>
+  <ol class="kp-list">{items}</ol>
+</div>"""
+
+
+def key_phrase_section():
+    a2_cell = key_phrase_list_html("a2", A2_KEY_PHRASES, "A2")
+    mid_cell = key_phrase_list_html("mid", A2_KEY_PHRASES, "from A2")
+    b1_cell = key_phrase_list_html("b1", B1_KEY_PHRASES, "B1")
+    return f"""<div class="script-section">
+  <h3 class="section-title">Key Words / Key Phrases</h3>
   <div class="script-row">{a2_cell}{mid_cell}{b1_cell}</div>
 </div>"""
 
@@ -164,14 +210,20 @@ def build():
     a2_b64 = load_b64("a2")
     mid_b64 = load_b64("middle")
 
+    # 実際の再生順(build_b1_timeline/build_middle_timeline_and_assembleと同じ順序):
+    # Preview -> Key Phrases -> Comment 1 -> Full Story Part 1 -> Comment 2 ->
+    # Full Story Part 2 -> Comment 3 -> Point One -> Point Two -> Comment 4
     sections_html = "".join([
         section("Preview / Intro", None, "preview"),
+        key_phrase_section(),
         section("Comment 1", None, "comment_1"),
+        section("Full Story Part 1", None, "full_story_part1", mid_from_a2=True),
         section("Comment 2", None, "comment_2"),
+        section("Full Story Part 2", None, "full_story_part2", mid_from_a2=True),
         section("Comment 3", None, "comment_3"),
-        section("Point One", "point_one_heading", "point_one_body", is_point=True),
+        section("Point One", "point_one_heading", "point_one_body", mid_from_a2=True),
+        section("Point Two", "point_two_heading", "point_two_body", mid_from_a2=True),
         section("Comment 4", None, "comment_4"),
-        section("Point Two", "point_two_heading", "point_two_body", is_point=True),
     ])
 
     body = f"""<title>No.7 Desk Pilot</title>
