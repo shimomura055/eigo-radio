@@ -273,33 +273,6 @@ exactness_requirement(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)の個別タ�
 - 複数のFactを物語として自然にまとめてもかまいませんが、Fact同士の関係(誰が・何を・いつ・
   どの範囲で)を変えないでください
 
-【Shared Point Blueprint(重要、Point構造の共通設計)】
-以下は、A2版・B1版の両方が従うべきPoint One/Point Twoの意味構造です。
-文章・語数・表現は各レベルで自由に最適化してよいですが、以下のfact_idの
-Point所属(どちらのPointに属するか)だけは、A2/B1で絶対に変えないで
-ください(同じfact_idを別のPointへ移動させない)。
-
-[Point One] role: 一部の職場で固定席が戻る背景と、従業員の受け止め
-[Point One] common_claim(必ず維持する中心結論): 一部の職場では、ホットデスキングへの不満や、固定席のある環境で帰属感と集中を感じやすいという調査結果を背景に、固定席を戻す動きが見られる。
-[Point One] common_fact_ids(両レベル共通、必ずこのPointに置く): F-001, F-004, F-005, F-007
-[Point One] required_in_a2_fact_ids(A2でも省略しない): F-001, F-004, F-005
-[Point One] 上記以外のcommon_fact_idsは、A2の平易さのために省略してよい(ただしcommon_claimは維持すること)
-
-[Point Two] role: 固定席回帰の範囲を示す、企業全体の座席・オフィス運用の動向
-[Point Two] common_claim(必ず維持する中心結論): ただし、固定席への回帰は企業全体の流れを反転させたものではなく、共有席や柔軟なオフィス運用はなお広く残っている。
-[Point Two] common_fact_ids(両レベル共通、必ずこのPointに置く): F-008
-[Point Two] required_in_a2_fact_ids(A2でも省略しない): F-008
-[Point Two] 上記以外のcommon_fact_idsは、A2の平易さのために省略してよい(ただしcommon_claimは維持すること)
-
-[Point One -> Point Twoの関係]: 従業員の体験や不満が一部の職場での固定席回帰につながっているように見える一方、企業全体の座席運用を見ると、共有席・柔軟なスペースの流れは続いており、固定席回帰は限定的な動きである。
-
-【出力形式への追加(重要)】
-記事本文(Markdown)を書き終えたら、最後に、Point One・Point Twoそれぞれで実際に使ったfact_idを、以下の形式のfenced code blockで1つだけ追加してください(本文とは別に、記事の一番最後に置いてください。これは音声化されないメタデータです)。
-```json
-{"point_1_fact_ids_used": ["FACT-xxx", ...], "point_2_fact_ids_used": ["FACT-xxx", ...]}
-```
-実際に本文で言及・使用したfact_idだけを列挙してください(Blueprintに列挙されているが本文で使わなかったfact_idは含めないでください)。
-
 【難易度指示】
 Write this as an A2-level English news story for listening. The listener should be able to understand the main events and why they matter even if their English is still limited. Present information in a clear sequence, make relationships between events explicit, and avoid making the listener hold several ideas in mind at once. Use simple, natural English and explain difficult concepts in an everyday way. Rebuild difficult parts freely rather than trying to preserve sophisticated sentence structures or phrasing.
 

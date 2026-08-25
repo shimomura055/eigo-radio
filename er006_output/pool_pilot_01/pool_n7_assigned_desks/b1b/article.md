@@ -1,27 +1,27 @@
-# 🪑 Assigned Desks Are Quietly Returning to Some Offices
+# 🪑 The Office Desk Is Quietly Coming Back
 
-After the pandemic, hot-desking became more common. In this system, workers are not given one personal desk. They choose an empty desk when they arrive.
+The office is making room for an old idea: a desk that belongs to you.
 
-Now, in some offices, the desk map is changing again. Assigned desks are returning, and some workplaces are reducing their reliance on hot-desking.
+In some workplaces, assigned desks are returning. Companies are reducing their reliance on **hot-desking**, a system in which workers are not given a personal desk and use whichever desk is free.
 
-It raises a simple question: after years of sharing, why are some workplaces choosing personal desks again?
+Scotiabank and iCapital Network are among the companies connected to this quiet shift, according to reporting from Bisnow’s New York Office Conference.
 
-A worker may once again have a regular place to sit each day. But this is not a full return across the office world. Some offices still use shared desks and flexible office space.
+The change comes as employees express dissatisfaction with hot-desking. Korn Ferry points to several concerns. The office may compare poorly with a home workspace. Workers may sit close to unfamiliar colleagues. The daily work setting may also feel less predictable and less consistent.
 
-The result is a mixed picture. The personal desk is back in some places, while the shared desk remains part of the wider office model.
+Hot-desking has still grown since before the pandemic. A Korn Ferry discussion, citing Gensler data, put the share of employees using hot-desking at 20%—twice the pre-pandemic level.
 
-### Why a personal desk feels different
+Now, some employers are asking a different question: should every desk be shared?
 
-Workers’ daily experience may be part of the story. Korn Ferry points to complaints about hot-desking: less appeal than working from home, unwanted closeness to unfamiliar colleagues, and less predictable workspaces.
+For some offices, the answer is no. They are bringing back assigned seating, at least in selected workplaces. But this is not a full return to the old office. The wider market is still moving toward shared desks.
 
-In Gensler data, assigned-seat workers reported belonging more often than workers without assigned seating: 87%, compared with 74%. They also reported effective focus more often: 80%, compared with 67%. These are associations, not proof that desks caused the difference. Against this background, some offices are bringing assigned desks back.
+### A desk can shape the workday
 
-### A limited return, not a market reversal
+One reason the desk matters may be psychological, not practical. In Gensler data reported by Bisnow, 87% of workers with assigned desks reported a sense of belonging at work, compared with 74% of workers without assigned desks. The gap in reported ability to concentrate was also clear: 80% versus 67%. These figures show an association, not proof that assigned desks caused the difference.
 
-The wider market tells a different story. In CBRE’s 2024 survey, the share of companies with at least one desk per employee fell from 56% in 2023 to 40% in 2024.
+### A quiet return inside a bigger shift
 
-Respondents expected it to fall to about one-third by 2026. So assigned desks are returning in some places, but shared seating remains part of the wider office model.
+The broader office market is still built around sharing. CBRE found that the share of companies with one desk per employee, or more, fell from 56% in 2023 to 40% in 2024. Respondents expected the figure to reach about one-third by 2026. So the return of assigned desks is a selective adjustment, not a market-wide reversal.
 
 ## In one line…
 
-Assigned desks are making a quiet comeback, but the shared office has not disappeared.
+The assigned desk is not taking over the office again. It is reappearing as a quiet counter-move to hot-desking, while the wider workplace continues to share more desks.

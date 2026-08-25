@@ -1357,6 +1357,71 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: なし(Production採用の正式決定を今回も
   行っていないため、CURRENT_SPECへの反映はユーザーの試聴・判断後とする)
 
+## ER-008-N7-BASELINE-RESET-AND-MIDDLE-DEFER-01(2026-08-25)
+
+- **Decision**: No.7「Assigned Desks Are Back in Some Offices」を、Middle
+  Pilot検証(ER-008-N7-SHARED-POINT-BLUEPRINT-3LEVEL-PILOT-01/ER-008-N7-
+  MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01)以前の正式Fixed A2/B1
+  Production仕様だけを使ってB1/A2の2版として再生成した(Shared Point
+  Blueprint・comment anchor制約・Full Story延長処理・Key Phrase pause
+  調整のいずれも不使用)。Middle/Bridgeは`DEFERRED / FUTURE_CANDIDATE`
+  として正式に保留し、今回は生成しない
+- **背景**: Middle Pilot検証中に追加した複数の検証専用処理(Blueprint・
+  comment anchor・Story延長・Key Phrase pause trimming)が、No.7の
+  A2/B1本体にも影響していた。中間仕様を検討する前に、まず「素の正式
+  Production仕様で生成した場合に、指摘されていた問題(本文が短い・
+  本文とCommentの接続が不自然・Key Phraseのpauseが違う)が実際に
+  再現するか」を切り分ける必要があった
+- **実施内容**: Research(既存のVerified Fact Ledgerをそのまま再利用、
+  Blueprintに依存しないため未再実行)→Writer(`blueprint=None`で
+  `er006_pool_pilot_01_writer.py`を実行、既存Topicと完全に同一の挙動)
+  →Support(`blueprint=None`でComment 3/4のcomment anchor制約なし)→
+  TTS/ASR(検証速度優先で同期呼び出し、Batch API仕様は無変更)→Assembly、
+  を全て実行した。加えて、前タスクでB1側のKey Phrase読み込みに追加した
+  `tight_speech_only()`のtrimmingを、共有Productionファイル
+  ([er003_v1_n3_01_assemble.py](er003_v1_n3_01_assemble.py))から一旦
+  revertし、真の未修正Baseline挙動を計測した
+- **結果(3つの疑いのある問題を個別に検証)**:
+  1. **Full Story短さ問題**: 再現しなかった。BaselineのA2は
+     Part1=87語/Part2=92語(計179語)、B1はPart1=111語/Part2=78語
+     (計189語)で、いずれもNo.4〜6の実績レンジに近い。前回の
+     Part1=38語という極端な短さは、その回のPilot固有の生成結果
+     (単発の外れ値)であり、Baseline自体の構造的な問題ではないと判断
+  2. **B1本文→Comment 2接続の不自然さ**: 再現した。B1 Comment 2が
+     「are some companies moving away from shared desks?」と問いかけた
+     直後に、Full Story Part 2の冒頭が「Now, some employers are asking
+     a different question: should every desk be shared?」と、ほぼ同じ
+     論点を再度問いかけており、重複した疑問形の接続になっている
+  3. **Key Phrase pause差**: 再現した。番号読み上げ→Key Phrase本体の
+     実測間隔は、A2が約0.47秒、B1が約0.75秒(差約0.28秒)。原因は
+     ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01と同じ
+     (B1側の数字読み上げ音声・Key Phrase英語Component音声の両方に
+     元々の余白無音が多く残っている、既存の共有静的音声ファイル間の
+     差異)
+  Fact/Ledger Deviationは、A2=5件(MAJOR3件)・B1=1件(MAJOR1件)で、
+  No.4〜6の実績レンジ(総数1〜6件、MAJOR0〜2件)からA2のMAJOR数が
+  やや高いが、明確な逸脱とまでは言えない範囲だった
+- **STOPして新規対策を入れなかった項目**: 2.(B1本文→Comment接続)と
+  3.(Key Phrase pause差)はいずれもBaselineで再現することを確認した
+  時点でSTOPし、新しい修正は入れていない(タスク仕様の指示通り)。
+  今後、正式仕様として対応するかどうかは別途ユーザー判断とする
+- **Middle仕様の扱い**: `DEFERRED / FUTURE_CANDIDATE`として
+  OPEN_ITEMS.md OPEN-64に正式記録。基本方針(B1がベース、本文系のみA2、
+  Key PhraseもA2版を使う[前回Decisionから方針変更]、将来再開時の
+  必須検証項目8点)を記録した。Shared Point Blueprint実装自体は削除
+  せず、Production未採用・オプトインのまま保持する
+- **今回実施しなかったこと**: Middle版生成、Middle正式Level化、Shared
+  Point Blueprint Production採用、Full Story soft minimum追加、Key
+  Phrase pause新規統一、B1 Comment prompt修正、No.8生成、UI変更、
+  Pricing変更
+- **根拠レポート**: ER-008-N7-BASELINE-RESET-AND-MIDDLE-DEFER-01完了
+  報告、OPEN_ITEMS.md OPEN-64、比較試聴Artifact(B1/A2のみ、
+  https://claude.ai/code/artifact/de5ca386-8f04-470d-926b-edcb579a58d7)
+- **影響するCURRENT_SPEC項目**: なし。今回はNo.7を既存の正式仕様へ
+  戻しただけであり、CURRENT_SPEC自体への変更はない。B1本文→Comment
+  接続とKey Phrase pause差は、Baseline自体に元からある挙動として
+  確認されたが、対応方針はユーザー判断待ちのため仕様変更はしていない
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

@@ -1,19 +1,29 @@
-# 🪑 The Desk Is Back—but Not Everywhere
+# 🪑 The Office Desk Is Coming Back — But Only in Some Places
 
+## Main Story
 
+Walk into some offices today, and one old idea is quietly returning: the **assigned desk**.
 
-After the pandemic, many offices changed the way people used desks. Instead of keeping one desk for each worker, they began using hot-desking. In this system, a worker does not have a personal desk. They choose an empty desk when they arrive at the office. The desk may be different each day, depending on which seats are free. This means that workers may use different desks on different days. A worker’s desk is simply a place to sit during the day. The desk is not necessarily a personal space, and it may change from one day to the next.
+An assigned desk is kept for one worker. It is different from **hot-desking**. In a hot-desking office, workers do not have a fixed desk. They choose an empty desk when they arrive.
 
-Now, some companies are changing that plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some offices. This does not mean that hot-desking has ended everywhere. The change is quiet and limited. Assigned desks are returning in some offices, while companies are also reducing their dependence on empty desks. The old personal desk is returning in some places, but the shared desk has not disappeared.
+Hot-desking became more common than before the pandemic. It allowed companies to use desks as shared space. But some workers have not been happy with the system. They want a work area that feels more stable and predictable.
 
-### A desk can feel like a place to belong
+Now, some companies are changing their approach. Scotiabank and iCapital Network are among the companies bringing assigned desks back in some offices and teams.
 
-Gensler data shows why the change may matter. Among workers with assigned desks, 87% said they felt they belonged at work, compared with 74% without assigned desks. Also, 80% said they could focus well, compared with 67% in hot-desking settings. Korn Ferry says changing desks and nearby coworkers can make work less predictable. These findings help explain the return in some offices.
+The change is quiet. It is not a return to fixed desks everywhere. Instead, some companies are using different systems for different groups of workers.
 
-### A small change, not a full reversal
+The main choice is simple: should workers find a new desk each day, or should they have one place to return to?
 
-But the desk story is not moving in only one direction. CBRE found that companies with one desk or less for each worker fell from 56% in 2023 to 40% in 2024. In the same survey, 42% of organizations had more than 10% of their office space in flexible areas, up from 36%. Assigned desks are returning in some places, but flexible workspaces remain common overall.
+For now, both systems are being used. The assigned desk is coming back, but only in part of the office world.
+
+### A desk can feel like a place
+
+Gensler data, reported by Bisnow, found a link between assigned desks and positive feelings at work. About 87% of workers with assigned desks felt a sense of belonging, compared with 74% without them. Focus showed a similar gap: 80% versus 67%. This shows a connection, not proof that the desk caused the difference.
+
+### The larger trend still favors sharing
+
+The wider office trend has not fully changed. In a 2024 CBRE survey, the share of companies with at least one desk for each worker fell from 56% in 2023 to 40% in 2024. Respondents expected it to fall to about one third by 2026. So this is a selective return, not a full reversal.
 
 ## In one line…
 
-The personal desk is coming back for some workers, but the shared office is still here. For now, companies are choosing different desk plans for different workplaces.
+The assigned desk is quietly returning because some workers want a stable place to work. But across the wider office market, shared desks are still the larger trend.

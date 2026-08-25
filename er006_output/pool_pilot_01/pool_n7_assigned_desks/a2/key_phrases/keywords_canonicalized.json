@@ -2,8 +2,8 @@
   "items": [
     {
       "rank": 1,
-      "source_span": "hot-desking",
-      "source_sentence": "After the pandemic, many offices began using hot-desking.",
+      "source_span": "Hot-desking",
+      "source_sentence": "Hot-desking became more common than before the pandemic.",
       "display_phrase": "hot-desking",
       "key_phrase": "hot-desking",
       "used_form": "hot-desking",
@@ -24,42 +24,16 @@
         "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "そのままで意味が明確な自然な表現であり、文脈限定語も不足している意味要素もないため変更しない。"
+      "reasoning": "「hot-desking」は、それ自体で共有デスク制を表す自然な学習単位として成立している。文脈限定語も意味理解に必要な補完語もないため、変更しない。"
     },
     {
       "rank": 2,
-      "source_span": "assigned desks",
-      "source_sentence": "Scotiabank and iCapital Network are among the companies bringing back assigned desks in some parts of their offices.",
+      "source_span": "assigned desk",
+      "source_sentence": "An assigned desk is kept for one worker.",
       "display_phrase": "assigned desk",
       "key_phrase": "assigned desk",
       "used_form": "assigned desk",
-      "japanese_gloss": "割り当てられた専用デスク",
-      "changed_from_display_phrase": false,
-      "normalization_reason": "inherit_selection_normalization",
-      "qa": {
-        "qa_standalone_natural_unit": "PASS",
-        "qa_no_residual_context_word": "PASS",
-        "qa_meaning_or_usage_unchanged": "PASS",
-        "qa_reusable_other_context": "PASS",
-        "qa_traceable_contiguous_span": "PASS",
-        "qa_listening_blocker_value_preserved": "PASS",
-        "qa_standalone_comprehensibility": "PASS",
-        "qa_not_over_minimized": "PASS",
-        "qa_context_sufficiency": "PASS",
-        "qa_core_meaning_preserved": "PASS",
-        "qa_no_semantic_role_loss": "PASS"
-      },
-      "qa_overall_status": "PASS",
-      "reasoning": "display_phraseは本文の複数形から学習用に単数形へ既に正規化されており、そのままで自然かつ十分な名詞句である。assigned や desk を削ると、割り当てられた机という中心的な意味が失われるため変更しない。"
-    },
-    {
-      "rank": 3,
-      "source_span": "full reversal",
-      "source_sentence": "A small change, not a full reversal",
-      "display_phrase": "full reversal",
-      "key_phrase": "full reversal",
-      "used_form": "full reversal",
-      "japanese_gloss": "全面的な方針転換",
+      "japanese_gloss": "専用デスク／指定席",
       "changed_from_display_phrase": false,
       "normalization_reason": "none",
       "qa": {
@@ -76,18 +50,44 @@
         "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "そのままで「完全な反転・全面的な逆戻り」を表す自然な名詞句であり、記事固有の限定語を含まないため変更しない。"
+      "reasoning": "「assigned desk」は、特定の人に割り当てられた机を表す自然で再利用可能な名詞句である。限定語を追加・削除する必要がないため、そのまま保持する。"
+    },
+    {
+      "rank": 3,
+      "source_span": "a sense of belonging",
+      "source_sentence": "About 87% of workers with assigned desks felt a sense of belonging, compared with 74% without them.",
+      "display_phrase": "sense of belonging",
+      "key_phrase": "sense of belonging",
+      "used_form": "sense of belonging",
+      "japanese_gloss": "帰属意識",
+      "changed_from_display_phrase": false,
+      "normalization_reason": "inherit_selection_normalization",
+      "qa": {
+        "qa_standalone_natural_unit": "PASS",
+        "qa_no_residual_context_word": "PASS",
+        "qa_meaning_or_usage_unchanged": "PASS",
+        "qa_reusable_other_context": "PASS",
+        "qa_traceable_contiguous_span": "PASS",
+        "qa_listening_blocker_value_preserved": "PASS",
+        "qa_standalone_comprehensibility": "PASS",
+        "qa_not_over_minimized": "PASS",
+        "qa_context_sufficiency": "PASS",
+        "qa_core_meaning_preserved": "PASS",
+        "qa_no_semantic_role_loss": "PASS"
+      },
+      "qa_overall_status": "PASS",
+      "reasoning": "「sense of belonging」は、帰属意識を表すまとまりのある表現であり、先頭の「a」は文脈限定語として既に整理されている。冠詞を戻すと最小十分な学習単位を不必要に限定するため、表示形を維持する。"
     },
     {
       "rank": 4,
-      "source_span": "belonged at work",
-      "source_sentence": "Among workers with assigned desks, 87% said they felt they belonged at work, compared with 74% without assigned desks.",
-      "display_phrase": "belong at work",
-      "key_phrase": "belong at work",
-      "used_form": "belong at work",
-      "japanese_gloss": "職場に居場所があると感じる",
+      "source_span": "full reversal",
+      "source_sentence": "So this is a selective return, not a full reversal.",
+      "display_phrase": "full reversal",
+      "key_phrase": "full reversal",
+      "used_form": "full reversal",
+      "japanese_gloss": "完全な逆転／全面的な反転",
       "changed_from_display_phrase": false,
-      "normalization_reason": "inherit_selection_normalization",
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -102,16 +102,16 @@
         "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "display_phraseは本文の belonged から基本形へ既に正規化されており、「職場で帰属意識を持つ」という意味を単独で保つ自然な動詞句である。at work を削ると帰属の場面が失われるため、そのままにする。"
+      "reasoning": "「full reversal」は、完全な方針転換・逆転を表す自然な名詞句である。「full」は程度を示す意味上重要な語であり、削除せず表示形を維持する。"
     },
     {
       "rank": 5,
-      "source_span": "flexible workspaces",
-      "source_sentence": "Assigned desks are returning in some places, but flexible workspaces remain common overall.",
-      "display_phrase": "flexible workspace",
-      "key_phrase": "flexible workspace",
-      "used_form": "flexible workspace",
-      "japanese_gloss": "柔軟な共有型ワークスペース",
+      "source_span": "bringing assigned desks back",
+      "source_sentence": "Scotiabank and iCapital Network are among the companies bringing assigned desks back in some offices and teams.",
+      "display_phrase": "bring back",
+      "key_phrase": "bring back",
+      "used_form": "bring back",
+      "japanese_gloss": "復活させる／戻す",
       "changed_from_display_phrase": false,
       "normalization_reason": "inherit_selection_normalization",
       "qa": {
@@ -128,7 +128,7 @@
         "qa_no_semantic_role_loss": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "display_phraseは本文の複数形から学習用に単数形へ既に正規化されており、柔軟な働く空間を表す自然で再利用可能な名詞句である。flexible または workspace を削ると表現の中心的な意味が変わるため変更しない。"
+      "reasoning": "「bring back」は、何かを再び導入・復活させる句動詞として、目的語を伴わなくても学習単位として成立する。本文の「bringing assigned desks back」から方式Lで整理された句動詞形をそのまま採用し、粒子「back」も保持する。"
     }
   ],
   "overall_status": "PASS"
