@@ -116,7 +116,15 @@ def load_b1_sources(theme: dict) -> dict:
     for item in kp_items:
         rank = item["rank"]
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_en.wav")
-        key_phrase_components[rank] = mono
+        # ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01: A2側の
+        # load_a2_sources()は英語Componentへp7c.tight_speech_only()を
+        # 適用し、保存時のsafety margin込みの見かけ上の無音を除いてから
+        # KEY_PHRASE_INTERNAL_PAUSE_SECONDS(固定0.4秒)を挿入している
+        # (p9a.build_key_phrase_blockの設計、指示section9)。B1側はこの
+        # trimmingが抜けていたため、実際の可聴音間隔がA2よりmargin分
+        # 長くなっていた(実装漏れ、pause定数自体は元々A2/B1で同一)。
+        # A2と同じtrimmingをここでも適用し、体感pauseを揃える。
+        key_phrase_components[rank] = p9a.p7c.tight_speech_only(mono, sr)
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_ja_charon.wav")
         key_phrase_meanings[rank] = mono
 

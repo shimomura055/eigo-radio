@@ -1,16 +1,10 @@
 # 🪑 The Desk Is Back—but Not Everywhere
 
-For some office workers, the race for a desk may be ending.
 
-After the pandemic, many offices began using **hot-desking**. In this system, workers do not have their own desks. They use an empty desk when they arrive.
 
-Now, some companies are changing this plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some parts of their offices.
+After the pandemic, many offices changed the way people used desks. Instead of keeping one desk for each worker, they began using hot-desking. In this system, a worker does not have a personal desk. They choose an empty desk when they arrive at the office. The desk may be different each day, depending on which seats are free. This means that workers may use different desks on different days. A worker’s desk is simply a place to sit during the day. The desk is not necessarily a personal space, and it may change from one day to the next.
 
-The change is quiet. It is also limited. Not every office is returning to one desk for every worker.
-
-So the office is facing a simple question:
-
-Should a desk belong to one person, or to whoever arrives first?
+Now, some companies are changing that plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some offices. This does not mean that hot-desking has ended everywhere. The change is quiet and limited. Assigned desks are returning in some offices, while companies are also reducing their dependence on empty desks. The old personal desk is returning in some places, but the shared desk has not disappeared.
 
 ### A desk can feel like a place to belong
 

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 
 import er005_cost_logger as cl
@@ -223,6 +224,261 @@ JAPANESE_TITLE_JA = "一部の職場で「固定席」が戻ってきている"
 
 
 # ============================================================
+# Stage 6.5: A2 Full Story Part1/2の長さ補正(ER-008-N7-MIDDLE-SPEC-
+# STORY-BALANCE-KEYPHRASE-AUDIT-01 Part B)。No.4-7 Audit結果、A2の
+# Full Story総語数はNo.4=224語・No.5=300語・No.6=212語に対しNo.7=102語
+# (Part1=38語)と明確な外れ値だった。Evidence detailを増やすのではなく、
+# 状況説明・narrative transition・listener orientationで自然に補う
+# (Evidence Compression方針は維持、新しいFactは追加しない)。
+# ============================================================
+A2_STORY_EXPANSION_DEVELOPER_MESSAGE = (
+    "あなたはeigo-radioのA2記事Editorです。既存のA2記事のFull Story"
+    "Part 1・Part 2だけを、より自然な分量へ書き直します。新しいFactの"
+    "追加は禁止です。"
+)
+
+A2_STORY_EXPANSION_PROMPT_TEMPLATE = """【現在のA2記事全文(参考、書き換えるのはPart 1・Part 2のみ)】
+{article_text}
+
+【Verified Fact Ledger(これ以外のFactを追加しないこと)】
+{verified_ledger_text}
+
+【問題】
+上記記事のFull Story Part 1が38語、Part 2が64語と、他の同種トピック
+(通常Part 1・Part 2それぞれ100語前後、合計200語前後)と比べて明確に
+短すぎます。特にPart 1が短いため、日本語のPreview・Comment 1の存在感に
+対して英語本文が薄く感じられます。
+
+【あなたのタスク】
+Full Story Part 1・Part 2を書き直してください。目安として、Part 1は
+80〜110語程度、Part 2は80〜110語程度(合計160〜220語程度)を目指して
+ください(厳密な制約ではありません、自然さを優先してください)。
+
+【重要な制約】
+- 新しいFact(数字・固有名詞・調査結果等)をVerified Fact Ledgerの範囲
+  外から追加しないでください
+- 分量を増やす手段は、状況説明・具体的な情景描写・自然な話の展開
+  (narrative transition)・聞き手が話についていくための文脈提示に
+  限定してください。Evidence detailを水増しする(数字を繰り返す、
+  Ledgerの詳細を無理に増やす)のは禁止です
+- Title・Point One・Point Two・In One Lineの内容とは重複させないで
+  ください(Point One/TwoはFull Storyの後に別の切り口を提示する構成の
+  ため、Full Story側でPointの内容を先取りしないこと)
+- A2として平易な語彙・文構造を維持してください(既存のA2記事の難易度を
+  保つ)
+- Part 1とPart 2の意味の区切りは、現在のPart 1/Part 2の境界(パンデ
+  ミック後の状況説明がPart 1、一部企業が方針転換している具体的な動きが
+  Part 2)を維持してください
+
+【出力形式】
+以下の形式のJSONのみを出力してください。
+{{"full_story_part1": "...", "full_story_part2": "..."}}"""
+
+
+def run_a2_story_expansion_stage() -> dict:
+    import er003_v1_en_direct_vfl_01_generate as vfl01
+    import er006_model_routing_contract_01 as routing
+    import er003_v1_n3_01_scaffold_generate as sc
+
+    article_text = open(f"{OUT_DIR}/a2/article.md", encoding="utf-8").read()
+    ledger_text = open(f"{OUT_DIR}/research/verified_fact_ledger.txt", encoding="utf-8").read()
+    client = vfl01.get_client()
+    prompt = A2_STORY_EXPANSION_PROMPT_TEMPLATE.format(article_text=article_text, verified_ledger_text=ledger_text)
+
+    t0 = time.time()
+    with cl.logging_context(THEME_ID, "a2_story_expansion"):
+        response = client.responses.create(
+            model=routing.require_model("A2_WRITER", routing.WRITER_MODEL),
+            reasoning={"effort": "medium"},
+            text={"format": {"type": "json_schema", "name": "a2_story_expansion", "schema": {
+                "type": "object",
+                "properties": {"full_story_part1": {"type": "string"}, "full_story_part2": {"type": "string"}},
+                "required": ["full_story_part1", "full_story_part2"], "additionalProperties": False,
+            }, "strict": True}},
+            input=[{"role": "developer", "content": A2_STORY_EXPANSION_DEVELOPER_MESSAGE},
+                   {"role": "user", "content": prompt}],
+        )
+    elapsed = round(time.time() - t0, 1)
+    revised = json.loads(response.output_text)
+    print(f"[{THEME_ID}] A2 Story expansion完了。elapsed={elapsed}s "
+          f"input_tokens={response.usage.input_tokens} output_tokens={response.usage.output_tokens}")
+
+    os.makedirs(f"{OUT_DIR}/a2/audit", exist_ok=True)
+    with open(f"{OUT_DIR}/a2/audit/story_expansion_raw.json", "w", encoding="utf-8") as f:
+        json.dump({"prompt": prompt, "raw_text": response.output_text, "parsed": revised,
+                    "model": response.model, "response_id": response.id,
+                    "input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens},
+                   f, ensure_ascii=False, indent=2)
+
+    # article.md内のMain Story部分(Title直後から最初の###見出しの直前
+    # まで)をまるごと置き換える(split_article_text()内部の抽出ロジックと
+    # 同じ境界を使うことで、bold記号除去等による文字列不一致を避ける)。
+    parts = sc.split_article_text(article_text)  # 事前に構造(見出し2つ等)が正しいことを確認
+    title_match = sc.re.match(r"^#\s+(.+?)\s*\n", article_text)
+    h3_matches = list(sc.re.finditer(r"^###\s+(.+?)\s*$", article_text, flags=sc.re.MULTILINE))
+    intro_start = title_match.end() if title_match else 0
+    intro_end = h3_matches[0].start()
+    old_intro_text = article_text[intro_start:intro_end]
+    new_intro_text = f"\n{revised['full_story_part1'].strip()}\n\n{revised['full_story_part2'].strip()}\n\n"
+    new_article_text = article_text[:intro_start] + new_intro_text + article_text[intro_end:]
+    old_part1, old_part2 = parts["part1"], parts["part2"]
+
+    with open(f"{OUT_DIR}/a2/article.md", "w", encoding="utf-8") as f:
+        f.write(new_article_text)
+    new_parts = sc.split_article_text(new_article_text)
+    with open(f"{OUT_DIR}/a2/parts.json", "w", encoding="utf-8") as f:
+        json.dump(new_parts, f, ensure_ascii=False, indent=2)
+
+    def wc(t):
+        return len(re.findall(r"[A-Za-z][A-Za-z'’-]*", t))
+    print(f"  Part1: {wc(old_part1)}words -> {wc(new_parts['part1'])}words")
+    print(f"  Part2: {wc(old_part2)}words -> {wc(new_parts['part2'])}words")
+    return {"old_part1": old_part1, "old_part2": old_part2, "new_parts": new_parts,
+            "input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens,
+            "elapsed": elapsed}
+
+
+A2_STORY_FIX_DEVELOPER_MESSAGE = (
+    "あなたはeigo-radioのA2記事Editorです。Deviation Checkが指摘した"
+    "問題箇所だけを最小限修正します。分量(語数)はできるだけ維持して"
+    "ください。"
+)
+
+A2_STORY_FIX_PROMPT_TEMPLATE = """【現在のFull Story Part 1・Part 2】
+Part 1: {part1}
+
+Part 2: {part2}
+
+【Verified Fact Ledger】
+{verified_ledger_text}
+
+【Deviation Checkが指摘した問題(この箇所だけを修正する)】
+{deviation_issues}
+
+【あなたのタスク】
+指摘された箇所を、Ledgerの範囲内に収まるよう最小限修正してください。
+具体的には:
+- 「ホットデスキングが柔軟性を高める」「働く場所の感覚を変える」
+  「多くの労働者にとって」というような、Ledgerにない効果・一般化の
+  主張を削除するか、状況の描写(効果の主張ではなく、単に机が毎日
+  変わりうるという運用上の事実の描写)へ言い換えてください
+- 「オフィスの一部は割り当て席、別の一部は空席のまま」「企業ごとに
+  異なる方針を選んでいる」という一般化も、Ledgerが示す具体的な2社の
+  事例(Scotiabank、iCapital Network)の範囲を超えない表現へ言い換えて
+  ください
+- それ以外の文はそのまま維持してください(変更は最小限に)
+- 分量はPart1・Part2ともおおよそ現在の語数(Part1約100語、Part2約94語)
+  を維持してください
+
+【出力形式】
+{{"full_story_part1": "...", "full_story_part2": "..."}}"""
+
+
+def run_a2_story_fix_stage() -> dict:
+    import er003_v1_en_direct_vfl_01_generate as vfl01
+    import er006_model_routing_contract_01 as routing
+    import er003_v1_n3_01_scaffold_generate as sc
+
+    parts = json.load(open(f"{OUT_DIR}/a2/parts.json", encoding="utf-8"))
+    ledger_text = open(f"{OUT_DIR}/research/verified_fact_ledger.txt", encoding="utf-8").read()
+    deviations = json.load(open(f"{OUT_DIR}/a2/audit/story_expansion_deviation_recheck.json", encoding="utf-8"))
+    # Part1/2に該当する2件の指摘のみ抜粋する(Point One/Twoの既存指摘は対象外、無変更のまま)
+    target_quotes = ("This plan can make the office more flexible",
+                      "One part of an office may use assigned desks")
+    issues = [d for d in deviations["deviations"] if any(q in d["claim_in_article"] for q in target_quotes)]
+    issues_text = "\n".join(f"- {d['issue']} (該当箇所: {d['claim_in_article']})" for d in issues)
+
+    client = vfl01.get_client()
+    prompt = A2_STORY_FIX_PROMPT_TEMPLATE.format(
+        part1=parts["part1"], part2=parts["part2"], verified_ledger_text=ledger_text, deviation_issues=issues_text)
+
+    with cl.logging_context(THEME_ID, "a2_story_fix"):
+        response = vfl01.get_client().responses.create(
+            model=routing.require_model("A2_WRITER", routing.WRITER_MODEL),
+            reasoning={"effort": "medium"},
+            text={"format": {"type": "json_schema", "name": "a2_story_fix", "schema": {
+                "type": "object",
+                "properties": {"full_story_part1": {"type": "string"}, "full_story_part2": {"type": "string"}},
+                "required": ["full_story_part1", "full_story_part2"], "additionalProperties": False,
+            }, "strict": True}},
+            input=[{"role": "developer", "content": A2_STORY_FIX_DEVELOPER_MESSAGE},
+                   {"role": "user", "content": prompt}],
+        )
+    fixed = json.loads(response.output_text)
+    print(f"[{THEME_ID}] A2 Story fix完了。input_tokens={response.usage.input_tokens} "
+          f"output_tokens={response.usage.output_tokens}")
+
+    with open(f"{OUT_DIR}/a2/audit/story_fix_raw.json", "w", encoding="utf-8") as f:
+        json.dump({"prompt": prompt, "raw_text": response.output_text, "parsed": fixed,
+                    "model": response.model, "response_id": response.id}, f, ensure_ascii=False, indent=2)
+
+    article_text = open(f"{OUT_DIR}/a2/article.md", encoding="utf-8").read()
+    title_match = re.match(r"^#\s+(.+?)\s*\n", article_text)
+    h3_matches = list(re.finditer(r"^###\s+(.+?)\s*$", article_text, flags=re.MULTILINE))
+    intro_start = title_match.end() if title_match else 0
+    intro_end = h3_matches[0].start()
+    new_intro_text = f"\n{fixed['full_story_part1'].strip()}\n\n{fixed['full_story_part2'].strip()}\n\n"
+    new_article_text = article_text[:intro_start] + new_intro_text + article_text[intro_end:]
+    with open(f"{OUT_DIR}/a2/article.md", "w", encoding="utf-8") as f:
+        f.write(new_article_text)
+    new_parts = sc.split_article_text(new_article_text)
+    with open(f"{OUT_DIR}/a2/parts.json", "w", encoding="utf-8") as f:
+        json.dump(new_parts, f, ensure_ascii=False, indent=2)
+
+    def wc(t):
+        return len(re.findall(r"[A-Za-z][A-Za-z'’-]*", t))
+    print(f"  Part1: {wc(new_parts['part1'])}words  Part2: {wc(new_parts['part2'])}words")
+    return {"new_parts": new_parts}
+
+
+def run_a2_story_deviation_recheck_stage() -> dict:
+    import er003_v1_en_direct_vfl_01_generate as vfl01
+    import er006_model_routing_contract_01 as routing
+
+    article_text = open(f"{OUT_DIR}/a2/article.md", encoding="utf-8").read()
+    ledger_text = open(f"{OUT_DIR}/research/verified_fact_ledger.txt", encoding="utf-8").read()
+    client = vfl01.get_client()
+    with cl.logging_context(THEME_ID, "a2_story_deviation_recheck"):
+        result = vfl01.run_deviation_check(client, ledger_text, article_text,
+                                            model=routing.require_model("A2_WRITER", routing.WRITER_MODEL))
+    print(f"[{THEME_ID}] A2 Story修正後Deviation Recheck: "
+          f"overall_status={result['parsed']['overall_status']} deviations={len(result['parsed']['deviations'])}")
+    with open(f"{OUT_DIR}/a2/audit/story_expansion_deviation_recheck.json", "w", encoding="utf-8") as f:
+        json.dump(result["parsed"], f, ensure_ascii=False, indent=2)
+    return result["parsed"]
+
+
+def run_a2_story_tts_regenerate_stage() -> dict:
+    """full_story_part1/2のみを再生成する(既存segmentは変更しない、
+    同期TTSモード限定)。"""
+    import er003_v1_n3_01_tts_generate as tts_gen
+    import er003_v1_crosslevel_audio_02_common as c
+
+    parts = json.load(open(f"{OUT_DIR}/a2/parts.json", encoding="utf-8"))
+    narration_dir = f"{OUT_DIR}/a2/narration"
+    results = {}
+    enable_sync_tts_mode()
+    try:
+        for name, text in (("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"])):
+            sub = tts_gen.first_words(text)
+            print(f"[{THEME_ID}] a2/{name} 再生成開始(同期TTS)...")
+            with cl.logging_context(THEME_ID, "a2_story_retts_sync"), cl.segment_context(name):
+                results[name] = c.generate_english_segment_with_fallback(
+                    tts_gen.tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub)
+            results[name]["canonical_text"] = text
+            print(f"  {name}: status={results[name].get('status')}")
+    finally:
+        disable_sync_tts_mode()
+
+    tts_results = json.load(open(f"{OUT_DIR}/a2/audit/tts_generation_results.json", encoding="utf-8"))
+    for name in ("full_story_part1", "full_story_part2"):
+        tts_results["segments"][name] = results[name]
+    with open(f"{OUT_DIR}/a2/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
+        json.dump(tts_results, f, ensure_ascii=False, indent=2, default=str)
+    return results
+
+
+# ============================================================
 # Stage 6: TTS(同期モード、DEV/VALIDATION限定) + Assembly(B1/A2)
 # ============================================================
 def run_audio_stage() -> dict:
@@ -269,103 +525,47 @@ def run_audio_stage() -> dict:
 
 
 # ============================================================
-# Stage 7: Middle/Bridge組み立て(新規TTS無し。A2の本文系segment+B1の
-# Preview/Comment1-4を、既に生成済みの同期TTS音声のまま組み合わせる)。
-# er003_v1_n3_01_assemble.pyのB1 timeline構造(Charon Comment/Aoede本文の
-# 既存pause値)をそのまま踏襲し、本文側の音源だけをA2の音声へ差し替える。
-# Production側のassembleファイル自体は変更しない(このPilot専用関数として
-# 実装)。
+# Stage 7: Middle/Bridge組み立て(ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-
+# KEYPHRASE-AUDIT-01 Part Aで再定義: Middleは「基本B1、英語ニュース
+# 本文系[Full Story Part1/2・Point One/Two・In One Line]のみA2」)。
+# B1のtimeline構造(build_b1_timeline、既存pause値)・shell segment
+# (Welcome/Topic intro/Preview/Preview intro/Key phrases intro/Key
+# Phrase[B1側の英語phrase+日本語gloss]/Comment1-4/Outro)をそのまま
+# 全て使い、"b1_segments"辞書の7箇所(full_story_part1/2・point_one/two・
+# point_one/two_heading・in_one_line)だけをA2の同期TTS済み音声へ差し
+# 替える。新規TTS無し。Japanese titleはMiddleでは使わない(Middleで
+# 日本語が出るのはKey Phrase日本語glossのみ)。Production側の
+# er003_v1_n3_01_assemble.py自体は変更しない(Pilot専用関数)。
 # ============================================================
+MIDDLE_STORY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2",
+                               "point_one_heading", "point_one", "point_two_heading", "point_two",
+                               "in_one_line")
+
+
 def build_middle_timeline_and_assemble(theme: dict) -> dict:
     import er002_common as common
     import er003_b1_p9a_audio as p9a
     import er003_v1_n3_01_assemble as asm
 
-    out_dir_a2 = f"{theme['out_dir']}/a2"
-    out_dir_b1 = f"{theme['out_dir']}/b1b"
     out_dir_mid = f"{theme['out_dir']}/middle"
     os.makedirs(f"{out_dir_mid}/assembled", exist_ok=True)
     os.makedirs(f"{out_dir_mid}/audit", exist_ok=True)
 
-    a2_sources = asm.load_a2_sources(theme)
-    a2_parts = asm.apply_a2_gain(a2_sources)  # A2本文側の既存gain値をそのまま再利用
-    b1_sources = asm.load_b1_sources(theme)   # B1のraw(gain前)音源からPreview/Comment1-4のみ使う
+    b1_sources = asm.load_b1_sources(theme)
+    b1_parts = asm.apply_b1_gain(b1_sources)  # Middleは「基本B1」なので、B1の既存gain値をそのまま土台にする
+    a2_sources = asm.load_a2_sources(theme)   # A2のraw(gain前)音源からStory系7箇所だけを使う
 
-    # B1のPreview/Comment1-4を、A2のtarget_rms(a2_parts["gain_report"]["target_rms"])
-    # へ合わせ直す(新規TTSではなく、既存音声の音量調整のみ)。
-    target_rms = a2_parts["gain_report"]["target_rms"]
-    b1_comment_stereo = {}
-    for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
-        mono = b1_sources["b1_segments"][name]
+    target_rms = b1_parts["gain_report"]["target_rms"]
+    for name in MIDDLE_STORY_SEGMENT_NAMES:
+        mono = a2_sources["a2_segments"][name]
         gain = p9a.compute_gain_for_target_rms(mono, target_rms)
-        b1_comment_stereo[name] = p9a.mono_24k_to_stereo_target(mono * gain)
+        # B1の既存b1_parts["b1_segments"]を、A2音声(B1のtarget_rmsへ
+        # 合わせ直したもの)で上書きする。それ以外のkey(preview・
+        # comment_1-4)はB1の値のまま変更しない。
+        b1_parts["b1_segments"][name] = p9a.mono_24k_to_stereo_target(mono * gain)
 
-    # Welcome/Preview intro/Key phrases intro/Full story intro/Outroは、
-    # B1側のCharon版をtarget_rmsへ合わせ直して使う(voice一貫性のため)。
-    b1_shell_stereo = {}
-    for name in ("welcome", "preview_intro", "key_phrases_intro", "full_story_intro"):
-        mono = b1_sources["narration"][name]
-        gain = p9a.compute_gain_for_target_rms(mono, target_rms)
-        b1_shell_stereo[name] = p9a.mono_24k_to_stereo_target(mono * gain)
-    outro_gain = p9a.compute_gain_for_target_rms(b1_sources["outro"]["samples"], p9a.rms(a2_parts["intro"]))
-    outro_stereo = (b1_sources["outro"]["samples"] * outro_gain
-                     * asm.OUTRO_EXTRA_GAIN_LINEAR * asm.OUTRO_FURTHER_EXTRA_GAIN_LINEAR)
-
-    kp_blocks = asm.build_a2_key_phrase_blocks(a2_parts)  # ER-008推奨: A2 Key Phraseを流用
-    kp_labels = tuple(f"Key Phrase {i + 1}" for i in range(len(kp_blocks)))
-
-    seq = [
-        ("Intro", a2_parts["intro"]),
-        ("Welcome (Charon, B1)", b1_shell_stereo["welcome"]),
-        ("pause_0.5", p9a.silence_stereo(0.5)),
-        ("Topic intro (A2)", a2_parts["topic_intro"]),
-        ("pause_0.65", p9a.silence_stereo(0.65)),
-        ("Japanese title (A2)", a2_parts["japanese_title"]),
-        ("pause_0.5", p9a.silence_stereo(0.5)),
-        ("Notification 1", a2_parts["notification"]),
-        ("pause_0.4", p9a.silence_stereo(0.4)),
-        ("Preview intro (Charon, B1)", b1_shell_stereo["preview_intro"]),
-        ("pause_0.65", p9a.silence_stereo(0.65)),
-        ("Preview (Charon, B1)", b1_comment_stereo["preview"]),
-        ("pause_0.5", p9a.silence_stereo(0.5)),
-        ("Notification 2", a2_parts["notification"]),
-        ("pause_0.4", p9a.silence_stereo(0.4)),
-        ("Key phrases intro (Charon, B1)", b1_shell_stereo["key_phrases_intro"]),
-        ("pause_0.5", p9a.silence_stereo(0.5)),
-    ]
-    for label, block in zip(kp_labels, kp_blocks):
-        seq.append((label, block))
-    seq += [
-        ("Notification 3", a2_parts["notification"]),
-        ("pause_0.4", p9a.silence_stereo(0.4)),
-        ("Full story intro (Charon, B1)", b1_shell_stereo["full_story_intro"]),
-        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
-        ("Comment 1 (Charon, B1)", b1_comment_stereo["comment_1"]),
-        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
-        ("Full Story Part 1 (Aoede, A2)", a2_parts["a2_segments"]["full_story_part1"]),
-        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
-        ("Comment 2 (Charon, B1)", b1_comment_stereo["comment_2"]),
-        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
-        ("Full Story Part 2 (Aoede, A2)", a2_parts["a2_segments"]["full_story_part2"]),
-        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
-        ("Comment 3 (Charon, Bridge, B1)", b1_comment_stereo["comment_3"]),
-        ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
-        ("Point Notification (Point One cue)", a2_parts["point_notification"]),
-        ("Point One semantic heading (Aoede, A2)", a2_parts["a2_segments"]["point_one_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
-        ("Point One (Aoede, A2)", a2_parts["a2_segments"]["point_one"]),
-        ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
-        ("Point Notification (Point Two cue)", a2_parts["point_notification"]),
-        ("Point Two semantic heading (Aoede, A2)", a2_parts["a2_segments"]["point_two_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
-        ("Point Two (Aoede, A2)", a2_parts["a2_segments"]["point_two"]),
-        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
-        ("Comment 4 (Charon, B1)", b1_comment_stereo["comment_4"]),
-        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
-        ("In One Line (Aoede, A2)", a2_parts["a2_segments"]["in_one_line"]),
-        ("pause_0.8_in_one_line_to_outro", p9a.silence_stereo(asm.IN_ONE_LINE_TO_OUTRO_PAUSE_SECONDS)),
-        ("Outro (Charon, B1)", outro_stereo),
-    ]
+    seq = asm.build_b1_timeline(b1_parts)  # B1のtimeline構造・pause値をそのまま使う(Part C修正も反映)
+    # Japanese titleはB1のtimelineに元々存在しないため、追加の除去処理は不要。
 
     result = asm.assemble_with_timeline(seq)
     assembled = result["assembled"]
@@ -380,7 +580,11 @@ def build_middle_timeline_and_assemble(theme: dict) -> dict:
         "status": "OK", "out_path": out_path, "duration_seconds": result["total_duration_seconds"],
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
         "sample_rate": asm.SR, "channels": 2, "new_tts_calls": 0, "new_asr_calls": 0,
-        "reused_a2_segment_count": 12, "reused_b1_segment_count": 5,
+        "a2_sourced_segments": list(MIDDLE_STORY_SEGMENT_NAMES),
+        "b1_sourced_segments": ["intro", "welcome", "topic_intro", "notification", "preview_intro",
+                                  "preview", "key_phrases_intro", "key_phrase_1-5(en+ja)", "full_story_intro",
+                                  "comment_1", "comment_2", "comment_3", "point_notification",
+                                  "comment_4", "outro"],
     }
     with open(f"{out_dir_mid}/run_summary_assemble.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2, default=str)
@@ -409,5 +613,13 @@ if __name__ == "__main__":
     elif stage == "middle":
         theme = {"theme_id": THEME_ID, "out_dir": OUT_DIR}
         build_middle_timeline_and_assemble(theme)
+    elif stage == "story_expand":
+        run_a2_story_expansion_stage()
+    elif stage == "story_fix":
+        run_a2_story_fix_stage()
+    elif stage == "story_deviation_recheck":
+        run_a2_story_deviation_recheck_stage()
+    elif stage == "story_retts":
+        run_a2_story_tts_regenerate_stage()
     else:
         print(f"unknown stage: {stage}")

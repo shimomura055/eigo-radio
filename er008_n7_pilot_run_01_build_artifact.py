@@ -48,8 +48,8 @@ A2 = {
     "point_one_body": "Gensler data shows why the change may matter. Among workers with assigned desks, 87% said they felt they belonged at work, compared with 74% without assigned desks. Also, 80% said they could focus well, compared with 67% in hot-desking settings. Korn Ferry says changing desks and nearby coworkers can make work less predictable. These findings help explain the return in some offices.",
     "point_two_heading": "A small change, not a full reversal",
     "point_two_body": "But the desk story is not moving in only one direction. CBRE found that companies with one desk or less for each worker fell from 56% in 2023 to 40% in 2024. In the same survey, 42% of organizations had more than 10% of their office space in flexible areas, up from 36%. Assigned desks are returning in some places, but flexible workspaces remain common overall.",
-    "full_story_part1": "For some office workers, the race for a desk may be ending.\n\nAfter the pandemic, many offices began using hot-desking. In this system, workers do not have their own desks. They use an empty desk when they arrive.",
-    "full_story_part2": "Now, some companies are changing this plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some parts of their offices.\n\nThe change is quiet. It is also limited. Not every office is returning to one desk for every worker.\n\nSo the office is facing a simple question:\n\nShould a desk belong to one person, or to whoever arrives first?",
+    "full_story_part1": "After the pandemic, many offices changed the way people used desks. Instead of keeping one desk for each worker, they began using hot-desking. In this system, a worker does not have a personal desk. They choose an empty desk when they arrive at the office. The desk may be different each day, depending on which seats are free. This means that workers may use different desks on different days. A worker’s desk is simply a place to sit during the day. The desk is not necessarily a personal space, and it may change from one day to the next.",
+    "full_story_part2": "Now, some companies are changing that plan. Scotiabank and iCapital Network are among the companies bringing back assigned desks in some offices. This does not mean that hot-desking has ended everywhere. The change is quiet and limited. Assigned desks are returning in some offices, while companies are also reducing their dependence on empty desks. The old personal desk is returning in some places, but the shared desk has not disappeared.",
 }
 
 A2_KEY_PHRASES = [
@@ -196,8 +196,11 @@ def key_phrase_list_html(cls, phrases, tag_text):
 
 
 def key_phrase_section():
+    # ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01 Part A:
+    # MiddleはKey PhraseもB1の構造・英語phraseをそのまま使う(本文系
+    # [Full Story/Point/In One Line]のみA2)。
     a2_cell = key_phrase_list_html("a2", A2_KEY_PHRASES, "A2")
-    mid_cell = key_phrase_list_html("mid", A2_KEY_PHRASES, "from A2")
+    mid_cell = key_phrase_list_html("mid", B1_KEY_PHRASES, "from B1")
     b1_cell = key_phrase_list_html("b1", B1_KEY_PHRASES, "B1")
     return f"""<div class="script-section">
   <h3 class="section-title">Key Words / Key Phrases</h3>
@@ -234,11 +237,12 @@ def build():
     <h1>Assigned Desks Are Back in Some Offices</h1>
     <p class="sub">Three finished versions of the same No.7 episode, generated from one Shared
     Point Blueprint: the existing A2 level, the existing B1 level, and a new Middle/Bridge
-    version built by combining the A2 story with the B1 English support &mdash; with zero new
-    text-to-speech calls for Middle.</p>
+    version built on the B1 episode, with only the English news-story segments (Full Story,
+    Points, In One Line) swapped in from A2 &mdash; with zero new text-to-speech calls for
+    Middle.</p>
     <div class="legend">
       <span><i class="dot a2"></i>A2 &mdash; plain English + Japanese</span>
-      <span><i class="dot mid"></i>Middle &mdash; A2 story + B1 support</span>
+      <span><i class="dot mid"></i>Middle &mdash; B1 base, A2 story</span>
       <span><i class="dot b1"></i>B1 &mdash; natural adult English</span>
     </div>
   </header>
@@ -250,15 +254,17 @@ def build():
       <p class="desc">Full story, Points, and In One Line in English; Preview and Comments in
       Japanese. Existing A2 production spec, unchanged.</p>
       <audio controls preload="none" src="data:audio/mpeg;base64,{a2_b64}"></audio>
-      <p class="dur">~5:05 &middot; existing A2 pipeline</p>
+      <p class="dur">~5:28 &middot; existing A2 pipeline</p>
     </div>
     <div class="col mid">
       <span class="tag">Middle / Bridge</span>
       <h2>The Desk Is Back&mdash;but Not Everywhere</h2>
-      <p class="desc">A2's Full Story, Points, Key Phrases and In One Line, with B1's English
-      Preview and Comments 1&ndash;4 spliced in. No new audio was generated for this version.</p>
+      <p class="desc">Based on the full B1 episode (Title, Preview, Comments 1&ndash;4, Key
+      Phrases all from B1). Only Full Story Part 1/2, Point One/Two, and In One Line are
+      swapped in from A2. No new audio was generated for this version; Japanese only appears
+      in the Key Phrase glosses.</p>
       <audio controls preload="none" src="data:audio/mpeg;base64,{mid_b64}"></audio>
-      <p class="dur">~4:42 &middot; 0 new TTS/ASR calls</p>
+      <p class="dur">~5:09 &middot; 0 new TTS/ASR calls</p>
     </div>
     <div class="col b1">
       <span class="tag">B1</span>
@@ -266,17 +272,20 @@ def build():
       <p class="desc">Full episode in natural adult English, Preview and Comments included.
       Existing B1 production spec, unchanged.</p>
       <audio controls preload="none" src="data:audio/mpeg;base64,{b1_b64}"></audio>
-      <p class="dur">~5:04 &middot; existing B1 pipeline</p>
+      <p class="dur">~5:00 &middot; existing B1 pipeline</p>
     </div>
   </section>
 
   {sections_html}
 
   <footer class="page">
-    Generated 2026-08-25 &middot; DEV/VALIDATION run using synchronous TTS (not the Gemini Batch
-    API used in Production) &middot; Shared Point Blueprint: F-001/F-004/F-005/F-007 (Point One),
-    F-008 (Point Two, required in both levels) &middot; Middle column tags show which finished
-    level's audio each segment is taken from.
+    Updated 2026-08-25 (ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01) &middot;
+    DEV/VALIDATION run using synchronous TTS (not the Gemini Batch API used in Production)
+    &middot; Shared Point Blueprint: F-001/F-004/F-005/F-007 (Point One), F-008 (Point Two,
+    required in both levels) &middot; A2 Full Story was expanded (102&rarr;169 words) after
+    user feedback that Part 1 felt too short &middot; B1's Key Phrase pauses were tightened to
+    match A2's (a trimming step was missing for B1) &middot; Middle column tags show which
+    finished level's audio each segment is taken from.
   </footer>
 </div>
 """

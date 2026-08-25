@@ -1308,6 +1308,55 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: なし(Production採用の正式決定を今回
   行っていないため、CURRENT_SPECへの反映はユーザーの試聴・判断後とする)
 
+## ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01(2026-08-25)
+
+- **Decision**: Middleの仕様を「A2 storyをベースにB1 supportを足したもの」
+  から「B1をベースに、本文系7箇所(Full Story Part1/2、Point One/Two見出し
+  +本文、In One Line)だけをA2に差し替えたもの」へ再定義し、実装をこれに
+  合わせて作り直した。Key Phrase(英語phrase・構造)は今後B1のものを使う
+  (前タスクの「A2のKey Phraseを使う」という推奨を本タスクの仕様指示により
+  覆した)。Production採用の正式決定は今回も行わない(引き続きPilot段階)
+- **背景**: 前タスクで実装したMiddleは「A2ベースにB1のsupportを差し込む」
+  形だったが、ユーザーからMiddleは「基本B1、ニュース本文だけA2」という
+  逆方向の設計であるべきという指示があった。またNo.7のA2 Full Storyが
+  Part1=38語と短く、Middleにも影響することが判明した。加えてKey Phraseの
+  番号読み上げ→phraseの間のpauseがA2よりB1の方が長く感じるという指摘が
+  あった
+- **実施内容(3件)**:
+  1. Middle組み立てを`er003_v1_n3_01_assemble.py`の`build_b1_timeline()`
+     をそのまま使う形に全面書き換え。B1の`apply_b1_gain()`出力を土台に
+     Story系7箇所だけA2音源(B1のtarget_rmsへ再gain)へ差し替える方式とし、
+     独立した日本語タイトルsegmentは廃止(B1の構造に元々存在しないため)
+  2. No.4〜7のFull Story Part1/2語数を実測。No.4〜6はA2 212〜300語・
+     B1 224〜302語で安定していたのに対し、No.7はA2 102語(Part1=38語)・
+     B1 124語と突出して短く、構造的な問題ではなく単発の外れ値と判断。
+     Evidence(Fact)を増やさず、状況描写・つなぎ等の物語技法のみで
+     No.7 A2 Full StoryをPart1=99語/Part2=70語(計169語)へ拡張した。
+     拡張1回目でLedger未根拠の主張が2件混入したため、該当箇所のみを
+     指定した2回目の修正LLM呼び出しで是正し、Ledger Deviation件数を
+     拡張前と同じ4件(内容も同一カテゴリ)まで戻したことを確認した
+  3. Key Phraseのpause差の原因を実測で特定。B1側の音源読み込み
+     (`load_b1_sources()`)にA2側で既に行っていた`tight_speech_only()`
+     によるsafety margin無音のtrimmingが抜けており、体感pauseがB1で
+     0.600秒・A2で0.400秒と異なっていた(pause定数自体はA2/B1で完全に
+     同一、`IMPLEMENTATION_DIFF`)。共有ProductionファイルへA2と同じ
+     trimmingを追加して統一した(今後の全B1/Middle生成に影響する
+     恒久修正)
+- **結果**: No.7 A2/B1/Middleを全て再生成・再組み立てし、比較試聴
+  Artifactを更新した。新規有料呼び出しはLLM4件(story拡張・是正・
+  deviation再検証2件)とTTS/ASR各2件(該当2segmentのみ再生成)の計
+  約$0.05(¥8)。Middle自体は新規TTS/ASR 0件のまま。全体回帰テストは
+  1774/1775 PASS(既知のharness自己テストの1件のみ、影響なし)
+- **今回実施しなかったこと**: Middleの正式Level名称決定、UI追加、
+  Pricing変更、No.8生成、Full Story語数の下限をPromptへ機械的に
+  ハードコードすること(下限の目安はユーザーへの提案に留め、独断で
+  仕様化はしていない)
+- **根拠レポート**: ER-008-N7-MIDDLE-SPEC-STORY-BALANCE-KEYPHRASE-AUDIT-01
+  完了報告、比較試聴Artifact
+  (https://claude.ai/code/artifact/de5ca386-8f04-470d-926b-edcb579a58d7)
+- **影響するCURRENT_SPEC項目**: なし(Production採用の正式決定を今回も
+  行っていないため、CURRENT_SPECへの反映はユーザーの試聴・判断後とする)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
