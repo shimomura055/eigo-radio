@@ -1179,6 +1179,53 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   ASR-first Retry Policy(日本語)項(新設)・Production TTS/ASR call site一覧項、
   「Model Routing Contract」節のASR / Audio QA項
 
+## ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01(2026-08-25)
+
+- **Decision**: 日本語ASR Cascade配線直後にユーザーから指摘された2件の
+  問題を修正する。(A) `stop_retrying=True`(Cascadeを尽くしても未解決)
+  後もTTS再生成が続くbugを`er003_v1_sing01_voice01_generate.py`・
+  `er003_v1_n3_01_tts_generate.py`で修正、(B) 濁点/半濁点の有無だけが
+  異なる読みゆれ(「頃」のgoro/koro等)を`TRUE_CONTENT_MISMATCH`(即TTS
+  retry対象)ではなく`ASR_VALIDATION_UNCERTAIN`(Cascade対象)へ分類する
+  よう`er007_ja_asr_validator_01.py`を拡張する
+- **背景**: ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01のProduction
+  配線直後、ユーザーが「漢字読みの誤検知・ASR表記ゆれだけの場合にTTS
+  再生成へ進む経路が残っていないか」を確認するよう依頼した
+  (ER-007-JA-ASR-TTS-RETRY-PATH-CHECK-01)。調査の結果、実際にどちらも
+  該当することが判明した: 経路Aは、Cascade呼び出しを新規2箇所へ配線
+  する際、既存の正しい実装(`er003_v1_repro01_main_generate.py`)にある
+  `stop_retrying`短絡処理の移植漏れ。経路Bは、`is_entity_like_
+  mismatch_ja()`がカタカナ/acronymらしさのみをCascade対象基準にして
+  おり、「頃」をkakasi(形態素解析なしの規則ベース読み変換)が文脈なしで
+  連濁形「ごろ」と読んでしまう実例(実データsmoke testで発見)を拾え
+  なかったこと
+- **修正内容**: 経路Aは、`voice01.py`(標準/フォールバック両経路)・
+  `n3_01.py`(フォールバック経路)へ`if stop_retrying:`短絡処理を追加
+  (英語側`crosslevel_audio_02_common.py`の既存実装を参考)。経路Bは、
+  読みをひらがな変換後、Unicode NFD正規化で濁点/半濁点(結合文字)を
+  除去した「清音化」文字列同士の比較(`_reading_equal_allowing_
+  voicing()`)を新設し、一致すれば`phonetic_uncertain=True`として
+  Cascade対象に含めた。「頃」という文字列へのハードコードではなく、
+  一般的な清音化比較であることを、「頃」を含まない5組の合成ペア
+  (か/が、さ/ざ、た/だ、は/ば、は/ぱ)で直接検証した
+- **安全性の確認**: `phonetic_uncertain`はCascade対象への分類にのみ
+  影響し、`should_pass`を直接Trueにしない(既存設計、Part Bで変更して
+  いない)ため、たとえ意味の異なる語同士(例: 柿/鍵、清音化後に偶然
+  一致する既知のトレードオフとして発見・記録)を誤って拾っても、
+  誤PASSは構造的に起こりえない(Cascadeを尽くしてもHuman Reviewへ回る
+  だけ)。「漢字なら全部Cascade」になっていないことも、清音化しても
+  一致しない別読みの語(月のつき/がつ)がTRUE_CONTENT_MISMATCHのまま
+  残ることで確認した
+- **実測影響**: No.1〜6の既存96 Japanese segmentのうち、経路Bの誤分類で
+  実際に影響を受けていたのは2件(No.5・No.6のA2 preview、同一の
+  「ころ/頃」パターン)。経路Aは今回のCascade配線と同じセッション内で
+  発見・修正したため、実運用ログには影響が現れていない(worst-case
+  見積りのみ、詳細は完了報告Part E参照)
+- **根拠レポート**: ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01完了報告
+- **影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節の
+  Validator(日本語)項(濁点/半濁点許容の追加を反映)、ASR-first Retry
+  Policy(日本語)項(stop_retrying無視bug修正を反映)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

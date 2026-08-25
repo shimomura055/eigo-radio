@@ -67,10 +67,19 @@ class CollectionCountTests(unittest.TestCase):
             self.assertIn(f"{module}.py", files_now, msg=module)
 
     def test_combined_equals_sum_of_er002_and_er003(self):
-        er002 = inv_mod.collect_count("er002_test_*.py")
-        er003 = inv_mod.collect_count("er003_test_*.py")
+        """ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01(2026-08-25)で、er007_ja_
+        tts_retry_path_fix_test_01.pyが初めてer007プレフィックスの実
+        unittest.TestCaseを追加し、「combinedはer002+er003の合計と一致
+        する」というP2J investigation当時(er002/er003以外にtestを持つ
+        prefixが存在しなかった時点)の前提が崩れた。er00N prefixが今後も
+        増え続けることを前提に、実際に存在するprefix集合から動的に合計
+        する形へ一般化する(er002+er003の2項決め打ちをやめる)。"""
+        import re
+        files = glob.glob("er0*_test_*.py")
+        prefixes = sorted({m.group(1) for m in (re.match(r"(er0\d\d)_", f) for f in files) if m})
+        sum_by_prefix = sum(inv_mod.collect_count(f"{p}_test_*.py") for p in prefixes)
         combined = inv_mod.collect_count("er0*_test_*.py")
-        self.assertEqual(combined, er002 + er003)
+        self.assertEqual(combined, sum_by_prefix)
 
     def test_combined_pattern_does_not_match_non_er00_test_files(self):
         """test_api.py/generate_test.py/tts_test.py等は対象外であることの確認。"""
@@ -84,7 +93,10 @@ class CollectionCountTests(unittest.TestCase):
 class PerFileCountsTests(unittest.TestCase):
 
     def test_per_file_counts_sum_matches_pattern_discovery(self):
-        counts = inv_mod.per_file_counts(["er002_test_*.py", "er003_test_*.py"])
+        """test_combined_equals_sum_of_er002_and_er003と同じ理由
+        (ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01)で、対象patternをer002/er003
+        決め打ちから、実際に存在する全er0*_test_*.pyファイルへ一般化する。"""
+        counts = inv_mod.per_file_counts(["er0*_test_*.py"])
         self.assertEqual(sum(counts.values()), inv_mod.collect_count("er0*_test_*.py"))
 
     def test_p2i_production_present_in_er003_counts(self):

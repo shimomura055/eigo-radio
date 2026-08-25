@@ -165,6 +165,21 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
             return r
+        if stop_retrying:
+            # ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part A: Cascadeが尽きて
+            # 「これ以上retryしても解決しない」と判定した場合、TTSを再生成
+            # せずここで打ち切る(英語側generate_english_segment_with_
+            # fallback()と同じ契約)。従来はこの分岐がなく、attempt+1へ
+            # 進んで無駄なTTS再生成を繰り返していた(bug)。
+            r["status"] = "ASR_VALIDATION_UNCERTAIN"
+            r["asr_verified"] = False
+            r["asr_text"] = asr_text
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = standard.get("attempts_log")
+            r["fallback_attempts_log"] = fallback_attempts
+            r["reason"] = (f"ASR Cascadeを尽くしても解決せず、retryでの改善が見込めないため打ち切り"
+                           f"(最終classification={cls.classification})")
+            return r
     return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
             "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
 

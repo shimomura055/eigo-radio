@@ -13,8 +13,10 @@
 #      一致を個別に判定する(英語のProtected Checkと同じ「opcode単位で
 #      保護要素を見る」設計)
 #   4. 読みが完全一致するopcode差(漢字/ひらがな表記ゆれ等)は許容差、
-#      固有名詞らしいopcode差はentity_like(Cascade対象候補)、
-#      それ以外の実質的な差はTRUE_CONTENT_MISMATCHとして保護する
+#      固有名詞らしいopcode差(entity_like)・濁点/半濁点の有無だけが
+#      異なる読みゆれ(phonetic_uncertain、ER-007-JA-ASR-TTS-RETRY-
+#      PATH-FIX-01で追加)はいずれもCascade対象候補、それ以外の実質的な
+#      差はTRUE_CONTENT_MISMATCHとして保護する
 from __future__ import annotations
 
 import difflib
@@ -95,6 +97,45 @@ def _reading_equal(a: str, b: str) -> bool:
     return ra == rb
 
 
+def _hira_reading(text: str) -> str:
+    """ひらがな読みへ変換する(pykakasi、遅延import)。濁点/半濁点の
+    有無だけを比較したい場合(_reading_equal_allowing_voicing)に使う。
+    ローマ字(hepburn)は濁音行によって文字数が変わる(例: し->じは
+    'shi'[3文字]->'ji'[2文字])ため、1文字=1モーラで長さが揃う
+    ひらがなのほうが濁点差の比較に適する。"""
+    import pykakasi
+    kks = pykakasi.kakasi()
+    return "".join(item["hira"] for item in kks.convert(text))
+
+
+def _strip_voicing_marks(s: str) -> str:
+    """濁点(゛)・半濁点(゜)を取り除いた「清音化」文字列を返す。Unicodeの
+    濁音/半濁音かな(例: が)はNFD正規化で基底文字(か)+結合文字(濁点)へ
+    分解できるため、結合文字だけを取り除けば清音化できる。"""
+    nfd = unicodedata.normalize("NFD", s)
+    return "".join(ch for ch in nfd if not unicodedata.combining(ch))
+
+
+def _reading_equal_allowing_voicing(a: str, b: str) -> bool:
+    """濁点/半濁点(いわゆる連濁)の有無だけが異なる読みを許容した比較。
+    実例: canonical「聞き終わるころには」/ASR「聞き終わる頃には」で、
+    kakasiが文脈なしで「頃」を(本来「ころ」と読むべき箇所でも)連濁形の
+    「ごろ」と読んでしまうケース(_reading_equalでは検知できない)。
+    「頃」を清音化すると「ころ」となり、canonical側の「ころ」の清音化
+    結果と一致するため、ここで拾える。無関係な語同士の読みが清音化後に
+    偶然一致することは、通常の日本語語彙では極めて稀(数字・否定・
+    固有名詞ヒューリスティックによる保護は本チェックより先に評価される
+    ため、ここへ到達する時点でその種の差ではないことは確認済み)。"""
+    if not a or not b:
+        return False
+    try:
+        ra = _hira_reading(a)
+        rb = _hira_reading(b)
+    except Exception:
+        return False
+    return _strip_voicing_marks(ra) == _strip_voicing_marks(rb)
+
+
 _READING_CONTEXT_CHARS = 4  # 単独の漢字1文字は文脈なしでは正しい読みが
                              # 決まらない(例:「居」単独と「居る」の「居」
                              # は読みが変わる、「速」単独[そく]と「速い」
@@ -144,14 +185,26 @@ def protected_check_ja(canonical_norm: str, asr_norm: str) -> ProtectedCheckResu
             continue
 
         entity_like = _is_katakana_or_acronym(c_span) and _is_katakana_or_acronym(a_span)
+        # ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part B: 読みが完全一致は
+        # しないが、濁点/半濁点(連濁)の有無だけが異なる場合は、TTSの
+        # 内容誤りではなくkakasiの文脈依存読み判定の限界である可能性が
+        # 高い(「頃」を「ごろ」と読む等)。この場合はTRUE_CONTENT_MISMATCH
+        # として即TTS再生成させず、ASR_VALIDATION_UNCERTAINとしてCascade
+        # (追加ASR再確認)へ回す(entity_likeと同じ扱いだが、判定根拠は
+        # 別物として区別して記録する)。
+        phonetic_uncertain = _reading_equal_allowing_voicing(c_padded, a_padded)
         # 脱落(delete)・追加(insert)は、除去後に空になる側があるため
-        # entity_like判定の対象外(固有名詞の脱落/追加はentity_likeにしない、
-        # 英語Validatorのcontent_word_diffsと同じ扱い)。
+        # entity_like/phonetic_uncertain判定の対象外(固有名詞やphonetic
+        # ambiguityの脱落/追加はCascade対象にしない、英語Validatorの
+        # content_word_diffsと同じ扱い)。
         if tag != "replace":
             entity_like = False
+            phonetic_uncertain = False
 
         result.content_diffs.append({
-            "type": tag, "canonical": c_span, "asr": a_span, "entity_like": entity_like,
+            "type": tag, "canonical": c_span, "asr": a_span,
+            "entity_like": entity_like, "phonetic_uncertain": phonetic_uncertain,
+            "cascade_eligible": entity_like or phonetic_uncertain,
         })
 
     return result
@@ -185,8 +238,14 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
             "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,
             reason=f"数字/否定の不一致を検出: numbers={protected.number_mismatches} negation={protected.negation_mismatches}")
 
-    non_entity_diffs = [d for d in protected.content_diffs if not d["entity_like"]]
-    entity_only_diffs = [d for d in protected.content_diffs if d["entity_like"]]
+    # ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part B: Cascade(追加ASR再確認)
+    # へ回してよい差は、固有名詞・略語らしき表記ゆれ(entity_like)に加え、
+    # 濁点/半濁点の有無だけが異なる読みゆれ(phonetic_uncertain、「頃」の
+    # kakasi読み判定限界等)も含める。いずれも「TTSの意味内容は正しい
+    # 可能性が高いが、ASR側の表記・読み判定が不確実」というentity_likeと
+    # 同種の不確実性であり、即TTS再生成の対象にはしない。
+    non_cascade_diffs = [d for d in protected.content_diffs if not d["cascade_eligible"]]
+    cascade_eligible_diffs = [d for d in protected.content_diffs if d["cascade_eligible"]]
 
     # 注意: 文字単位diffのため、読みが同じでも生の文字重複率(ratio)が
     # 低くなることがある(例:「後半」と「公判」は同じ「こうはん」だが
@@ -194,21 +253,22 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
     # 差が実際に残っている場合」のhallucination検知にのみ使い、
     # content_diffsが空(=全ての差が読みで説明できた)の場合はratioに
     # 関わらずPHONETIC_MATCHとする。
-    if non_entity_diffs:
+    if non_cascade_diffs:
         if ratio < tts_failure_threshold:
             return ClassificationResultJA(
                 "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,
                 reason="全体類似度が著しく低く、TTS生成自体の異常(hallucination等)が疑われる")
         return ClassificationResultJA(
             "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,
-            reason=f"固有名詞・略語以外の内容に差がある(内容誤りの可能性): {non_entity_diffs}")
+            reason=f"固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): {non_cascade_diffs}")
 
-    if entity_only_diffs:
+    if cascade_eligible_diffs:
         c_reading = safety._kakasi_reading(c_norm)
         a_reading = safety._kakasi_reading(a_norm)
         return ClassificationResultJA(
             "ASR_VALIDATION_UNCERTAIN", ratio, protected, should_pass=False, should_retry=False,
-            reason=f"固有名詞・略語らしき語にのみ表記差がある(retryでは解決しない可能性が高い): {entity_only_diffs}",
+            reason=f"固有名詞・略語、または濁点/半濁点の有無だけが異なる読みゆれにのみ表記差がある"
+                   f"(retryでは解決しない可能性が高い): {cascade_eligible_diffs}",
             canonical_reading=c_reading, asr_reading=a_reading)
 
     # content_diffsが空 = 全ての差が読み一致(漢字/ひらがな/同音別表記等)
@@ -219,10 +279,13 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
 
 
 def is_entity_like_mismatch_ja(result: ClassificationResultJA) -> bool:
-    """classify_ja_asr_matchの結果が、固有名詞・略語らしき語のみの表記差に
-    よるASR_VALIDATION_UNCERTAINかどうかを判定する(英語版
-    is_entity_like_mismatch()と同じ役割)。"""
+    """classify_ja_asr_matchの結果が、Cascade(追加ASR再確認)対象に
+    してよいASR_VALIDATION_UNCERTAINかどうかを判定する(英語版
+    is_entity_like_mismatch()と同じ役割)。ER-007-JA-ASR-TTS-RETRY-
+    PATH-FIX-01時点で、固有名詞・略語らしき表記ゆれ(entity_like)だけで
+    なく、濁点/半濁点の有無だけが異なる読みゆれ(phonetic_uncertain)も
+    対象に含む(関数名は既存呼び出し元との互換のため変更していない)。"""
     if result.classification != "ASR_VALIDATION_UNCERTAIN":
         return False
     diffs = result.protected.content_diffs
-    return bool(diffs) and all(d["entity_like"] for d in diffs)
+    return bool(diffs) and all(d["cascade_eligible"] for d in diffs)

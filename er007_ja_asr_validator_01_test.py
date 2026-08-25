@@ -2,6 +2,8 @@
 # er007_ja_asr_validator_01_test.py
 # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01 Part D:
 # Positive/Negative fixture(実データ+構成データ)。
+# ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part C: 濁点/半濁点の有無だけが
+# 異なる読みゆれ(phonetic_uncertain)のPositive/境界fixtureを追加。
 # ============================================================
 from __future__ import annotations
 
@@ -66,6 +68,12 @@ NEGATIVE_FIXTURES = [
     {"name": "content word置換(増加->減少)",
      "canonical": "果物と野菜の購入が増加しました",
      "asr": "果物と野菜の購入が減少しました"},
+    {"name": "content word置換(増えた->減った、タスク仕様の明示ケース)",
+     "canonical": "利用者の数が増えたという結果でした",
+     "asr": "利用者の数が減ったという結果でした"},
+    {"name": "数字変更(15->50、タスク仕様の明示ケース)",
+     "canonical": "アンケートには15人が回答しました",
+     "asr": "アンケートには50人が回答しました"},
     {"name": "phrase omission(中間の一文を削除)",
      "canonical": "このニュースは、定期サービスをやめにくくする仕組みと、それを変えようとしたルールが裁判で取り消された流れを伝えています。次は、解約の負担を手続きの最初から最後まで見ていきます。",
      "asr": "このニュースは、定期サービスをやめにくくする仕組みを伝えています。次は、解約の負担を手続きの最初から最後まで見ていきます。"},
@@ -87,6 +95,85 @@ ENTITY_LIKE_FIXTURES = [
     {"name": "カタカナ固有名詞のASR表記ゆれ(スラッジ->スラッシ)",
      "canonical": "解約を難しくする壁は、「スラッジ」と考えられます。",
      "asr": "解約を難しくする壁は、「スラッシ」と考えられます。"},
+]
+
+# ------------------------------------------------------------
+# PHONETIC_UNCERTAIN(濁点/半濁点の有無だけが異なる読みゆれ、Cascade対象に
+# なるべき。ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part B)
+# ------------------------------------------------------------
+PHONETIC_UNCERTAIN_FIXTURES = [
+    {"name": "頃/ころ(実データ、verify_ja_cascade_production_on.pyのsmoke testで実際に発生した実例。"
+             "kakasiが「頃」を文脈なしで連濁形「ごろ」と読み、canonical側の「ころ」の読みと一致しなかった"
+             "ため旧実装ではTRUE_CONTENT_MISMATCH→即TTS retryになっていた)",
+     "canonical": ("今回のニュースは、結果を待っているときに、なぜ同じページを何度も開いてしまうのかという話です。"
+                   "結果がまだ分からない場面では、情報を確かめる行動が気になってくることがあります。"
+                   "研究を通して、こうした行動がどのような場面で起きやすいのかを見ていきます。"
+                   "聞き終わるころには、待っている間に確認したくなる理由について、どんなことが分かっているのかが分かります。"),
+     "asr": ("今回のニュースは、結果を待っているときに、なぜ同じページを何度も開いてしまうのか、という話です。"
+             "結果がまだわからない場面では、情報を確かめる行動が気になってくることがあります。"
+             "研究を通して、こうした行動がどのような場面で起きやすいのかを見ていきます。"
+             "聞き終わる頃には、待っている間に確認したくなる理由について、どんなことがわかっているのかがわかります。")},
+    {"name": "頃/ごろ(逆方向。kakasiの「頃」既定読みが元々「ごろ」のため、この向きは新規のvoicing"
+             "許容チェックを使わずとも既存のreading_equal(完全一致)でPHONETIC_MATCHになる確認用ケース)",
+     "canonical": "宿題が終わる頃に電話します。",
+     "asr": "宿題が終わるごろに電話します。"},
+]
+
+# ------------------------------------------------------------
+# PHONETIC_UNCERTAIN境界ケース(濁点許容チェックの一般性・安全性を確認する
+# 目的別の合成テスト。実在の「頃」に依存しないメカニズム自体の検証)
+# ------------------------------------------------------------
+def check_voicing_mechanism_generalization():
+    """_reading_equal_allowing_voicingが「頃」という文字列へのハードコード
+    ではなく、清音化(NFD分解+結合文字除去)による一般的な比較であることを、
+    「頃」を一切含まない合成ペアで直接確認する(か/が、さ/ざ、た/だ、は/ば、
+    は/ぱの5行)。"""
+    pairs_should_be_voicing_equal = [
+        ("かける", "がける"), ("さくら", "ざくら"), ("たいこ", "だいこ"),
+        ("はんこ", "ばんこ"), ("はんこ", "ぱんこ"),
+    ]
+    failures = []
+    for a, b in pairs_should_be_voicing_equal:
+        ok = javal._reading_equal_allowing_voicing(a, b)
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] _reading_equal_allowing_voicing({a!r}, {b!r}) = {ok} (期待: True)")
+        if not ok:
+            failures.append(f"{a}/{b}")
+    # 清音化しても一致しない(=無関係な語)場合はFalseのままである安全側の確認
+    unrelated_pairs = [("ねこ", "いぬ"), ("かける", "とめる")]
+    for a, b in unrelated_pairs:
+        ok = javal._reading_equal_allowing_voicing(a, b)
+        status = "OK" if not ok else "FAIL"
+        print(f"[{status}] _reading_equal_allowing_voicing({a!r}, {b!r}) = {ok} (期待: False)")
+        if ok:
+            failures.append(f"{a}/{b}(無関係語なのにTrueになった)")
+    return failures
+
+
+# ------------------------------------------------------------
+# PHONETIC_UNCERTAINの既知のトレードオフ(安全側であることの確認用。
+# 「意味は誤PASSしない(should_pass=Falseのまま)が、Cascadeへ余分に
+# 回ることがある」既知の限界を記録する。STOP条件[真の内容誤りの誤PASS]
+# には該当しないことをここで直接確認する)
+# ------------------------------------------------------------
+KNOWN_TRADEOFF_FIXTURES = [
+    {"name": "柿/鍵(清音化後にたまたま一致する、意味の異なる実在語同士。"
+             "should_pass=Falseのまま(誤PASSしない)が、TRUE_CONTENT_MISMATCHではなく"
+             "ASR_VALIDATION_UNCERTAIN(Cascade対象)になる既知のトレードオフ)",
+     "canonical": "テーブルの上には柿が置いてありました。",
+     "asr": "テーブルの上には鍵が置いてありました。"},
+]
+
+# ------------------------------------------------------------
+# PHONETIC_UNCERTAINが過剰適用されない境界確認(「漢字なら全部Cascade」に
+# なっていないことの確認。月の「つき」(名詞)/「がつ」(暦月の接尾)は
+# 清音化しても一致しない=別のモーラ構成のため、除外されて当然)
+# ------------------------------------------------------------
+NOT_PHONETIC_UNCERTAIN_FIXTURES = [
+    {"name": "月(つき/がつ、清音化しても一致しない別読みのため対象外。"
+             "「漢字の異読みなら何でもCascade」になっていないことの確認)",
+     "canonical": "夜空に浮かぶ丸いつきを見上げた。",
+     "asr": "夜空に浮かぶ丸い月を見上げた。"},
 ]
 
 
@@ -124,7 +211,45 @@ if __name__ == "__main__":
         if not ok:
             all_failures.append(fx["name"])
 
+    print("\n=== PHONETIC_UNCERTAIN fixtures (期待: TRUE_CONTENT_MISMATCHにならない=即TTS retryしない。"
+          "should_pass=True[即PASS]/False[Cascade対象]のどちらも許容し、TTS retryに落ちないことだけを確認する) ===")
+    for fx in PHONETIC_UNCERTAIN_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification != "TRUE_CONTENT_MISMATCH"
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== voicing許容メカニズムの一般性確認(「頃」専用ルールではないことの直接検証) ===")
+    all_failures += check_voicing_mechanism_generalization()
+
+    print("\n=== KNOWN_TRADEOFF fixtures (should_pass=Falseのまま=誤PASSしないことの確認。"
+          "TRUE_CONTENT_MISMATCHにはならずCascadeへ回る既知のトレードオフ) ===")
+    for fx in KNOWN_TRADEOFF_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.should_pass is False  # 誤PASSしないことだけを厳格に確認する(分類先は問わない)
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== NOT_PHONETIC_UNCERTAIN fixtures (「漢字なら全部Cascade」になっていないことの確認) ===")
+    for fx in NOT_PHONETIC_UNCERTAIN_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification == "TRUE_CONTENT_MISMATCH"
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    total = (len(POSITIVE_FIXTURES) + len(NEGATIVE_FIXTURES) + len(ENTITY_LIKE_FIXTURES)
+             + len(PHONETIC_UNCERTAIN_FIXTURES) + len(KNOWN_TRADEOFF_FIXTURES) + len(NOT_PHONETIC_UNCERTAIN_FIXTURES))
     if all_failures:
-        print(f"\n{len(all_failures)}件のfixtureが期待通りに分類されなかった: {all_failures}")
+        print(f"\n{len(all_failures)}件のfixture/checkが期待通りに分類されなかった: {all_failures}")
     else:
-        print(f"\nOK: 全{len(POSITIVE_FIXTURES)+len(NEGATIVE_FIXTURES)+len(ENTITY_LIKE_FIXTURES)}件のfixtureが期待通りに分類された")
+        print(f"\nOK: 全{total}件のfixture + voicingメカニズム一般性確認が期待通りに分類された")
