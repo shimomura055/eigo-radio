@@ -78,6 +78,11 @@ PROCESS_MODEL_MAP = {
     # Writer完成後の記事本文/Support/Key Phraseから、発音が自明でない
     # 固有名詞を抽出する工程。既存工程と同じLunaを使う(新規モデル追加なし)。
     "PROPER_NOUN_EXTRACTION": WRITER_MODEL,
+    # A2/B1 Point Structure Semantic Alignment(2026-08-25)で追加。Verified
+    # Fact LedgerからA2/B1 Writer呼び出し前にShared Point Blueprintを
+    # 生成する工程。B1/A2 Writerと同じ信頼度・同じLunaを使う(新規モデル
+    # 追加なし)。
+    "SHARED_POINT_BLUEPRINT": WRITER_MODEL,
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

@@ -1273,6 +1273,41 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: なし(実LLM検証前のため今回は追加
   しない、次段階完了後に正式仕様化を検討する)
 
+## ER-008-N7-SHARED-POINT-BLUEPRINT-3LEVEL-PILOT-01(2026-08-25)
+
+- **Decision**: Shared Point Blueprint機構(A2/B1 Point Structure
+  Semantic Alignment)を、新規Topic No.7「Assigned Desks Are Back in
+  Some Offices」で初めて実LLM・実音声で検証する。Production採用の
+  正式決定は行わない(タスク仕様通り、ユーザーが比較試聴Artifactを
+  聴取した後に別途判断する)
+- **背景**: 前タスクでBlueprint機構自体は実装済みだったが、実LLM
+  生成・実Writer/Comment生成・実音声による検証はまだ行われておらず、
+  「Blueprintの制約へLLMがどこまで従うか」という中心的な価値仮説が
+  未検証のままだった
+- **実施内容**: Research(実Web調査3件)→Evidence Pack/VFL(Fact
+  F-001〜F-012)→Shared Point Blueprint(実LLM初回生成)→A2/B1
+  Writer(Blueprint使用)→Fact Check/Ledger Deviation→Support
+  (B1 Comment 3/4はcomment_anchor使用)→TTS(今回のみ同期モード、
+  DEV/VALIDATION限定)→Assembly、を全て実際のAPI呼び出しで実行した。
+  加えて、B1/A2の既存完成音声を新規TTS無しで組み合わせる
+  「Middle/Bridge」音声組み立てをPilot専用スクリプトとして新規実装した
+- **結果**: Point Oneはfact_id完全一致、Point Twoは必須factで一致
+  (補助factの選択にA2がoptional_b1_fact_idを使う軽微な逸脱があったが
+  内容矛盾やネタバレは生じなかった)。B1 Comment 1〜4は全てA2本文へ
+  接続しても自然に成立することを確認した。Middle音声は新規TTS/ASR
+  0件で完成した。A2側2segment(preview/comment_1)は、ER-007で既に
+  開示済みのJA ASR「後」異読み限界により機械検証未合格のまま採用され
+  ており、人間による聴取確認が必要
+- **今回実施しなかったこと**: Production Level追加、Level名称決定、
+  UI変更、Subscription仕様決定、全既存Topicへの展開。CURRENT_SPECの
+  Production TTS標準(Batch API)は変更していない(同期TTSは今回限りの
+  DEV/VALIDATION実行)
+- **根拠レポート**: ER-008-N7-SHARED-POINT-BLUEPRINT-3LEVEL-PILOT-01
+  完了報告、OPEN_ITEMS.md OPEN-64、比較試聴Artifact
+  (https://claude.ai/code/artifact/de5ca386-8f04-470d-926b-edcb579a58d7)
+- **影響するCURRENT_SPEC項目**: なし(Production採用の正式決定を今回
+  行っていないため、CURRENT_SPECへの反映はユーザーの試聴・判断後とする)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
