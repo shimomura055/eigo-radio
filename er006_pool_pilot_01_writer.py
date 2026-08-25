@@ -17,6 +17,7 @@ import er005_cost_logger as cl
 import er003_v1_n3_01_articles_generate as gen
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
+import er008_shared_point_blueprint_01 as blueprint_mod
 
 
 def load_text(path: str) -> str:
@@ -25,9 +26,13 @@ def load_text(path: str) -> str:
 
 
 def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: str,
-                          ledger_path: str, out_dir: str) -> dict:
+                          ledger_path: str, out_dir: str, blueprint=None) -> dict:
+    """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint、
+    A2/B1 Point Structure Semantic Alignmentタスクで追加)を渡すと、両
+    Levelのpromptへ共通のPoint構造制約が挿入される。Noneの場合(既定)は
+    旧来の呼び出しと完全に同一の挙動になる(後方互換、既存Topicへの
+    影響なし)。"""
     verified_ledger_text = load_text(ledger_path)
-    common_block = gen.build_common_block(master_full_text, topic, verified_ledger_text)
 
     results = {}
     timing = {}
@@ -35,6 +40,12 @@ def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: st
         ("B1B", gen.B1_B_DIRECT_INSTRUCTION, f"{out_dir}/b1b", "writer_b1"),
         ("A2", gen.A2_KAI1_INSTRUCTION, f"{out_dir}/a2", "writer_a2"),
     ]:
+        blueprint_block = ""
+        if blueprint is not None:
+            level = "b1" if label == "B1B" else "a2"
+            blueprint_block = blueprint_mod.render_blueprint_for_writer(blueprint, level)
+        common_block = gen.build_common_block(master_full_text, topic, verified_ledger_text,
+                                               shared_point_blueprint_block=blueprint_block)
         prompt = gen.build_prompt(common_block, instruction)
         t0 = time.time()
         with cl.logging_context(theme_id, stage_tag):

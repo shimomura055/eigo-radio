@@ -99,7 +99,12 @@ def run_support_fact_check(client, support: dict, article_text: str, ledger_text
     }
 
 
-def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str) -> dict:
+def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str, blueprint=None) -> dict:
+    """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint、
+    A2/B1 Point Structure Semantic Alignmentタスクで追加)を渡すと、B1の
+    Comment 3・4がBlueprintのcomment_anchor制約に従って生成される
+    (A2側は変更しない、Blueprintは「共用されるB1 Support」向けの設計
+    のため)。Noneの場合(既定)は旧来の挙動と完全に同一(後方互換)。"""
     result = {}
     timing = {}
     for label, run_fn, source_level, stage_tag in [
@@ -116,7 +121,10 @@ def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str)
 
         t0 = time.time()
         with cl.logging_context(theme_id, stage_tag):
-            support = run_fn(client, parts, level_out_dir, article_text)
+            if label == "b1b" and blueprint is not None:
+                support = run_fn(client, parts, level_out_dir, article_text, blueprint=blueprint)
+            else:
+                support = run_fn(client, parts, level_out_dir, article_text)
 
             kp_dir = f"{level_out_dir}/key_phrases"
             article_id = f"ER006_{theme_id}_{label}"

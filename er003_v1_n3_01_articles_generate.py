@@ -26,6 +26,7 @@ import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_spoken_first_01_r1_generate as sf1r1
 import er006_model_routing_contract_01 as routing
+import er008_shared_point_blueprint_01 as blueprint_mod
 
 load_dotenv()
 
@@ -181,13 +182,21 @@ G. exactness_requirement: EXACT_REQUIREDと印のある数値(スコア・日付
   詳しく書き込まないでください
 - 複数のFactを物語として自然にまとめてもかまいませんが、Fact同士の関係(誰が・何を・いつ・
   どの範囲で)を変えないでください
-"""
+{shared_point_blueprint_block}"""
 
 
-def build_common_block(master_full_text: str, topic: str, verified_ledger_text: str) -> str:
+def build_common_block(master_full_text: str, topic: str, verified_ledger_text: str,
+                        shared_point_blueprint_block: str = "") -> str:
+    """shared_point_blueprint_blockは、A2/B1 Point Structure Semantic
+    Alignment(Shared Point Blueprint)導入タスクで追加したオプション引数。
+    空文字列(既定値)の場合は旧来のCOMMON_BLOCK_TEMPLATEと完全に同一
+    テキストになり、後方互換を保つ(Blueprint未使用のTopicへは一切
+    影響しない)。"""
+    block = f"\n{shared_point_blueprint_block}\n" if shared_point_blueprint_block else ""
     return COMMON_BLOCK_TEMPLATE.format(
         hanshin_master_full_text=master_full_text, topic=topic,
         verified_ledger_text=verified_ledger_text,
+        shared_point_blueprint_block=block,
     )
 
 
@@ -279,9 +288,19 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         print(f"[N3-01][{theme_id}] {label}: writer失敗 status={writer_result['status']}")
         return {"label": label, "status": writer_result["status"], "article_text": None}
 
-    article_text = writer_result["raw_text"].strip()
+    # Shared Point Blueprint導入タスク: Writer promptがBlueprintの
+    # fact_id利用申告(末尾の```json block)を要求している場合、article_text
+    # へ保存する前に抽出・除去する(split_article_text/TTS入力・既存の
+    # metrics計算等、下流処理を一切変更しないため)。Blueprint未使用の
+    # 呼び出し(既存Topic)ではこのblockが無いため、fact_usage_reportは
+    # 常にNoneになり、article_textはstrip()結果と完全に同一(後方互換)。
+    article_text, fact_usage_report = blueprint_mod.extract_trailing_metadata_block(
+        writer_result["raw_text"].strip())
     with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
         f.write(article_text)
+    if fact_usage_report is not None:
+        with open(f"{out_dir}/audit/fact_usage_report.json", "w", encoding="utf-8") as f:
+            json.dump(fact_usage_report, f, ensure_ascii=False, indent=2)
 
     metrics = compute_metrics(article_text)
     section_wc = sf1r1.section_word_counts(article_text)
@@ -337,19 +356,29 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "fact_status": fc_status, "fact_verdict": verdict,
         "ledger_status": deviation_result["parsed"]["overall_status"],
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
+        "fact_usage_report": fact_usage_report,
     }
 
 
-def run_theme(client, master_full_text: str, theme: dict) -> dict:
+def run_theme(client, master_full_text: str, theme: dict, blueprint=None) -> dict:
+    """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint)を
+    渡すと、A2/B1それぞれのprompt末尾へBlueprint制約が挿入される
+    (levelごとにrender_blueprint_for_writerでA2/B1向けの文言を分ける)。
+    Noneの場合(既定)は旧来の呼び出しと完全に同一の挙動になる。"""
     theme_id = theme["theme_id"]
     verified_ledger_text = load_text(theme["ledger_path"])
-    common_block = build_common_block(master_full_text, theme["topic"], verified_ledger_text)
 
     results = {}
     for label, instruction, out_dir in [
         ("B1B", B1_B_DIRECT_INSTRUCTION, f"{theme['out_dir']}/b1b"),
         ("A2", A2_KAI1_INSTRUCTION, f"{theme['out_dir']}/a2"),
     ]:
+        blueprint_block = ""
+        if blueprint is not None:
+            level = "b1" if label == "B1B" else "a2"
+            blueprint_block = blueprint_mod.render_blueprint_for_writer(blueprint, level)
+        common_block = build_common_block(master_full_text, theme["topic"], verified_ledger_text,
+                                           shared_point_blueprint_block=blueprint_block)
         prompt = build_prompt(common_block, instruction)
         result = run_one_pattern(client, theme_id, label, prompt, verified_ledger_text, theme["topic"], out_dir)
         results[label] = result

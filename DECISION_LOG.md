@@ -1226,6 +1226,53 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   Validator(日本語)項(濁点/半濁点許容の追加を反映)、ASR-first Retry
   Policy(日本語)項(stop_retrying無視bug修正を反映)
 
+## A2/B1 Point Structure Semantic Alignment(2026-08-25)
+
+- **Decision**: A2/B1のPoint One・Point Two間の意味的不整合(ER-008-A2-
+  STORY-B1-SUPPORT-COMPATIBILITY-AUDIT-01/OPEN-63で発見)を、生成後の
+  互換性Checkerで検出・修正するのではなく、**生成前の共通設計(Shared
+  Point Blueprint)をSingle Source of Truthとして防止する**方針を正式
+  採用する。A2・B1で文章・語数・全Factを完全共通化するのではなく、
+  「どのFactがどちらのPointに属するか」「各Pointの中心結論」という
+  意味構造だけを共通化し、表現・語彙・情報量は各CEFRレベルへ独立に
+  最適化されたままとする
+- **背景**: OPEN-63のAuditで、No.5(カフェ)・No.6(配達追跡)それぞれで、
+  A2 WriterとB1 Writerが同じVerified Fact Ledgerを見ながら独立に
+  Point One/Twoへfactを振り分けた結果、両者の間で内容が食い違う
+  (No.5: B1のPoint TwoがA2には無い主張[顧客労働者の価値]を中心に
+  据える、No.6: 同じ実験詳細がA2ではPoint One・B1ではPoint Twoに
+  配置される)ことが判明していた
+- **設計**: Verified Fact LedgerのFact(既存の`fact_id`をそのまま
+  再利用)を、Point 1/Point 2それぞれの`common_fact_ids`(両レベル
+  必須)・`optional_b1_fact_ids`(B1のみ可)・`comment_anchor`(共通
+  Commentが安全に参照できる範囲)等へ振り分けるBlueprintを、A2/B1
+  Writer呼び出し前に1回生成し、両Writerへ共通入力として渡す。
+  互換性の検証は、Writer/Comment自身が申告するfact_id利用状況
+  (応答末尾の軽量なfenced JSON block)とBlueprintの宣言を突き合わせる
+  **決定論的なStructural Validator**で行い、意味理解を要する新しい
+  Runtime LLM Checkerは追加しない
+- **実装**: [er008_shared_point_blueprint_01.py](er008_shared_point_blueprint_01.py)(Schema・prompt構築)・
+  [er008_point_blueprint_validator_01.py](er008_point_blueprint_validator_01.py)(Structural Validator)を新設し、
+  既存Writer/Support Pipeline(4ファイル)へ全てオプション引数として
+  配線した(Blueprint未指定時は既存Topicと完全に同一の挙動、既存
+  No.1〜6を含む全既存Topicへの影響ゼロを確認済み)
+- **検証範囲(重要な限定)**: fixture(18件、タスク仕様指定の6件含む)は
+  全PASS。No.4〜6については、既存Ledgerと実記事本文を手作業で突き
+  合わせた**後付けBlueprintによる机上Simulation**を行い、Validatorが
+  No.4を正しくPASSさせ、No.5・No.6の実際の不整合を正確に検出する
+  ことを確認した。**ただし、Blueprint生成・Writer/Comment生成の実LLM
+  呼び出しによる検証(承認が必要な新規有料API呼び出し)は今回実施して
+  いない**。「LLMが実際にBlueprintの制約へどこまで従うか」という
+  価値仮説の核心部分は、次段階の検証を待つ
+- **今回実施しなかったこと**: 有料Writer APIによる新規記事生成、
+  新規TTS/ASR生成、既存No.1〜6記事の一括再生成、新しいRuntime LLM
+  Checkerの追加、Production仕様(CURRENT_SPEC.md)への正式反映(実LLM
+  検証前のため時期尚早と判断)
+- **根拠レポート**: ER-008-POINT-BLUEPRINT-01完了報告、OPEN_ITEMS.md
+  OPEN-64(本Decisionにより新規記録)
+- **影響するCURRENT_SPEC項目**: なし(実LLM検証前のため今回は追加
+  しない、次段階完了後に正式仕様化を検討する)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

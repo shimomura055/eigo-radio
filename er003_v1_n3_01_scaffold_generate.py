@@ -36,6 +36,7 @@ import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_iran01_a2_generate as a2gen
 import er003_v1_n3_01_articles_generate as gen
 import er006_model_routing_contract_01 as routing
+import er008_shared_point_blueprint_01 as blueprint_mod
 
 THEMES = gen.THEMES
 
@@ -269,7 +270,25 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
 # ============================================================
 # B1 Scaffold(English Preview/Comment1-4)
 # ============================================================
-def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dict:
+_BLUEPRINT_COMMENT_SELF_REPORT_SUFFIX = (
+    "\n\n【重要・追加指示(Shared Point Blueprint)】このCommentは、A2/B1双方で共用される"
+    "可能性があります。上記のcomment_anchorの範囲だけを参照し、それ以外のFact"
+    "(まだ聞いていないPointの内容、B1限定の詳細情報)には触れないでください。"
+    "Comment本文を書き終えたら、最後に、実際に参照したfact_idを以下の形式のfenced "
+    "code blockで1つだけ追加してください(音声化されないメタデータです。無ければ"
+    "空配列でかまいません)。\n```json\n{\"referenced_fact_ids\": [\"FACT-xxx\", ...]}\n```"
+)
+
+
+def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str, blueprint=None) -> dict:
+    """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint、
+    A2/B1 Point Structure Semantic Alignmentタスクで追加)を渡すと、
+    Comment 3・4(Point構造を参照するComment)のcontextがBlueprintの
+    comment_anchorへ差し替えられ、fact_id自己申告(末尾fenced JSON block)
+    を要求する。Comment 1・2・PreviewはFull Story本文のみに依存する
+    ためBlueprintの対象外のまま変更しない(ER-008監査でもComment 1〜3の
+    大半は互換性ありと確認済み)。Noneの場合(既定)は旧来の挙動と完全に
+    同一(後方互換)。"""
     print(f"[N3-SCAFFOLD] B1 Comment 1生成開始({out_dir})...")
     c1_context = f"【Full Story Part 1(これから聞く本文)】\n{parts['part1']}"
     c1 = b1s.run_support_text(client, b1s.COMMENT_1_ROLE, c1_context, model=_b1_support_model())
@@ -279,15 +298,40 @@ def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dic
     c2 = b1s.run_support_text(client, b1s.COMMENT_2_ROLE, c2_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 3生成開始({out_dir})...")
-    c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
-                  f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
-                  f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}")
-    c3 = b1s.run_support_text(client, b1s.COMMENT_3_ROLE, c3_context, model=_b1_support_model())
+    if blueprint is not None:
+        c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
+                      f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
+                      f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}\n\n"
+                      f"{blueprint_mod.render_comment_anchor_block(blueprint, 'point_1')}")
+        c3_role = b1s.COMMENT_3_ROLE + _BLUEPRINT_COMMENT_SELF_REPORT_SUFFIX
+    else:
+        c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
+                      f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
+                      f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}")
+        c3_role = b1s.COMMENT_3_ROLE
+    c3 = b1s.run_support_text(client, c3_role, c3_context, model=_b1_support_model())
+    c3_clean_text, c3_fact_refs = blueprint_mod.extract_trailing_metadata_block(c3.get("text") or "")
+    if c3.get("text") is not None:
+        c3["text"] = c3_clean_text
+    if c3_fact_refs is not None:
+        c3["referenced_fact_ids"] = c3_fact_refs.get("referenced_fact_ids")
 
     print(f"[N3-SCAFFOLD] B1 Comment 4生成開始({out_dir})...")
-    c4_context = (f"【Point One(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
-                  f"【Point Two(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}")
-    c4 = b1s.run_support_text(client, b1s.COMMENT_4_ROLE, c4_context, model=_b1_support_model())
+    if blueprint is not None:
+        c4_context = (f"【Point One(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
+                      f"【Point Two(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}\n\n"
+                      f"{blueprint_mod.render_comment_anchor_block(blueprint, 'point_2')}")
+        c4_role = b1s.COMMENT_4_ROLE + _BLUEPRINT_COMMENT_SELF_REPORT_SUFFIX
+    else:
+        c4_context = (f"【Point One(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
+                      f"【Point Two(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}")
+        c4_role = b1s.COMMENT_4_ROLE
+    c4 = b1s.run_support_text(client, c4_role, c4_context, model=_b1_support_model())
+    c4_clean_text, c4_fact_refs = blueprint_mod.extract_trailing_metadata_block(c4.get("text") or "")
+    if c4.get("text") is not None:
+        c4["text"] = c4_clean_text
+    if c4_fact_refs is not None:
+        c4["referenced_fact_ids"] = c4_fact_refs.get("referenced_fact_ids")
 
     print(f"[N3-SCAFFOLD] B1 Preview生成開始({out_dir})...")
     preview_prompt_role = b1s.PREVIEW_ROLE.format(
