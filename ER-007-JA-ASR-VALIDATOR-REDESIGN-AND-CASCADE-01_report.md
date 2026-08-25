@@ -287,3 +287,67 @@ STOP条件(OpenAI miniの精度が明確に不十分/新Validatorが重大誤り
 
 完了後、Production call siteへの実配線可否についてユーザー確認を
 待つ形でSTOPする。
+
+## 追記(2026-08-25): Production配線完了
+
+上記報告後、ユーザーがAskUserQuestionで「配線する(推奨)」を選択し、
+Production配線を明示承認した。以下を実施した。
+
+### 配線内容
+
+1. **`er003_v1_repro01_main_generate.py`の`generate_narration_snippet_
+   verified_strict()`**: Japanese分岐(`language != "en"`)を、旧
+   `expected_substring`一致+`validate_japanese_short_segment_match()`
+   フォールバック方式から、`ja_secondary.evaluate_attempt_ja_with_
+   cascade()`呼び出しへ置き換えた。この関数はA2の`japanese_title`/
+   `meaning_1-5`(`stage_c_generate_new_narrations()`経由)を含む複数の
+   呼び出し元から使われる共通関数であるため、この1箇所の修正で複数segment
+   種別へ反映される
+2. **`er003_v1_sing01_voice01_generate.py`の`generate_charon_japanese()`**:
+   標準経路・minimal instructionフォールバック経路の両方を同様に置き換えた
+   (B1 Key Phrase日本語gloss)
+3. **`er003_v1_n3_01_tts_generate.py`の`generate_a2_japanese_with_
+   fallback()`**: フォールバック経路を同様に置き換えた(標準経路は
+   `repro01.generate_narration_snippet_verified_strict()`を内部で呼ぶため
+   1で対応済み)
+4. **`er006_asr_provider_routing_01.py`の`ASR_ROUTING["ja"]`**:
+   `{"provider": "azure", ...}`から`{"provider": "openai_asr", "model":
+   "gpt-4o-mini-transcribe"}`へ変更(Primary ASRを実際にOpenAIへ切替、
+   English側と同一構成に統一)
+5. **`er007_ja_secondary_asr_01.py`の`FEATURE_FLAG_JA_PRIMARY_OPENAI`**:
+   `False`から`True`へ変更(Cascade自体を有効化。Production call site 3
+   箇所は全てこのモジュール定数を`cascade_enabled`引数へ参照渡ししている
+   ため、この1箇所の変更で全call siteへ反映される)
+
+`er003_v1_crosslevel_audio_02_common.py`は、日本語専用の検証ロジックを
+自身で持たず(`generate_english_segment_with_fallback()`は英語専用、
+`generate_key_phrase_component_verified()`も英語専用)、日本語分岐は
+上記1の`repro01.generate_narration_snippet_verified_strict()`を再利用
+する形であるため、直接の変更は不要と確認した。
+
+### 配線後の検証
+
+- **regression suite**: `run_project_regression.py` 1753/1753 PASS
+  (配線前と同数、既知の1 harness自己テスト失敗[`er003_test_bad.py`の
+  意図的fail fixture]を除く)
+- **実音声smoke test**(`verify_ja_cascade_production_on.py`、新規TTSは
+  一切生成せず、既存No.6 Delivery B1(Key Phrase 1-5)・A2(preview/
+  comment_1-2)の実音声8件を使用): `routing.transcribe(language="ja-JP")`
+  がProduction call siteと同一の呼び出し方でOpenAI `gpt-4o-mini-
+  transcribe`を実際に呼び出すことを確認。8件中7件がEXACT_MATCH/
+  NORMALIZED_MATCHで即PASS、1件(A2 preview)は「聞き終わるころには」の
+  「ころ」がkakasiにより「頃」(rendaku読み)と異なる読みに解釈され
+  TRUE_CONTENT_MISMATCHとなった。これはPart Fで既知の限界として事前に
+  文書化していた事象そのものであり、影響方向も想定通り安全側(誤って
+  PASSするのではなく、不要なretryを1回消費するのみ)であることを実際の
+  Production経路で確認できた
+
+### CURRENT_SPEC.md / DECISION_LOG.md / OPEN_ITEMS.mdへの反映
+
+- CURRENT_SPEC.mdの「QA / Human Review」節ASR診断、「Audio Production
+  Pipeline」節Primary ASR Routing・Validator(日本語、新設)・
+  ASR-first Retry Policy(日本語、新設)・Production TTS/ASR call site
+  一覧、「Model Routing Contract」節ASR / Audio QAの各項を更新した
+- DECISION_LOGへ本Decisionを追加した(ER-007-JA-ASR-VALIDATOR-REDESIGN-
+  AND-CASCADE-01(2026-08-25))
+- OPEN-61を`TBD`から`RESOLVED`(Production配線完了)へ更新した

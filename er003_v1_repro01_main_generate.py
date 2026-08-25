@@ -31,6 +31,7 @@ import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er007_ja_secondary_asr_01 as ja_secondary
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -237,17 +238,15 @@ def generate_narration_snippet_verified_strict(
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
         else:
-            substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
-            verified = substring_ok and length_ok
-            if not verified:
-                # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
-                # (Key Phrase meaning等)については発音ベースの一致も採用条件
-                # にする。textが長い場合はvalidate_japanese_short_segment_
-                # match自身がASR_UNCERTAINを返し何も変わらないため、language
-                # =="ja"であれば無条件に呼んでよい。
-                phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
-                phonetic_verdict = phonetic["verdict"]
-                verified = verified or phonetic["passed"]
+            # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01: 旧prefix
+            # (substring)+phonetic方式から、英語と同じ思想の全文Validator+
+            # Cascade方式へ置き換える(protected_check_jaが数字・否定・
+            # 固有名詞らしさ・読みをopcode単位で個別に判定する)。
+            verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
+                text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+            verified = verified_content and length_ok
+            audio_classification = cls.classification
+            substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
         attempts_log.append({
             "attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
             "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,

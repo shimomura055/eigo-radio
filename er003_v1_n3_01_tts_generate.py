@@ -38,6 +38,7 @@ import er005_cost_logger as cl
 import er006_asr_provider_routing_01 as routing
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_batch_tts_wiring_01 as batch_wiring
+import er007_ja_secondary_asr_01 as ja_secondary
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
@@ -149,18 +150,14 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
         asr_text, err = routing.transcribe(out_path, language="ja-JP")
-        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        verified = substring_ok and length_ok
-        phonetic_verdict = None
-        if not verified:
-            # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segmentは
-            # 発音ベースの一致も採用条件にする。
-            phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err)
-            phonetic_verdict = phonetic["verdict"]
-            verified = verified or phonetic["passed"]
+        # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01: 旧prefix
+        # (substring)+phonetic方式から全文Validator+Cascade方式へ置き換える。
+        verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+        verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "phonetic_verdict": phonetic_verdict, "verified": verified})
+                                   "audio_classification": cls.classification, "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

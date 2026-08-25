@@ -17,10 +17,11 @@ import er003_b1_p4_audio as p4  # Azure STT呼び出し(既存の連続認識関
 import er005_cost_logger as cl
 import er007_ja_asr_validator_01 as javal
 
-FEATURE_FLAG_JA_PRIMARY_OPENAI = False  # Production既定はOFF(タスク仕様に
-                                          # 従い、本タスクの検証結果を報告した
-                                          # 上でユーザー判断を待つ。Part Fの
-                                          # 6条件を満たすまで無条件ON化しない)
+FEATURE_FLAG_JA_PRIMARY_OPENAI = True  # ER-007-JA-ASR-VALIDATOR-REDESIGN-
+                                         # AND-CASCADE-01: Part Fの6条件を
+                                         # 全て満たし、2026-08-25にユーザーが
+                                         # Production配線を明示承認したため
+                                         # ON化(Cascade自体も有効化)。
 
 CASCADE_CONFIG_JA = {
     "max_primary_attempts": 2,

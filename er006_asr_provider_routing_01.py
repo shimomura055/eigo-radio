@@ -7,12 +7,17 @@
 # 設計思想: Fail-closed、暗黙fallbackなし、呼び出し直前に必ずこの
 # モジュールを経由させる)。
 #
-# 今回のPilot構成(ユーザー確定、2026-08-22):
+# 構成(ユーザー確定、2026-08-22時点):
 #   English  -> OpenAI gpt-4o-mini-transcribe (Primary)
-#   Japanese -> Azure Speech STT (維持)
+#   Japanese -> Azure Speech STT
 # Secondary ASR(Azure併用によるambiguous時の二重確認)は今回
 # Production採用しない(評価のみ、ER-006-AUDIO-COST-OPTIMIZATION-01
 # 完了報告 §5参照)。
+#
+# ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01(2026-08-25)で
+# Japanese Primaryも OpenAI gpt-4o-mini-transcribe へ変更(English側と
+# 同一構成へ統一)。Secondary(ambiguous時のAzure確認)は
+# er007_ja_secondary_asr_01.FEATURE_FLAG_JA_PRIMARY_OPENAIで別途制御。
 
 from __future__ import annotations
 
@@ -24,7 +29,7 @@ import er003_b1_p4_audio as p4
 
 ASR_ROUTING = {
     "en": {"provider": "openai_asr", "model": "gpt-4o-mini-transcribe"},
-    "ja": {"provider": "azure", "model": "azure-speech-stt"},
+    "ja": {"provider": "openai_asr", "model": "gpt-4o-mini-transcribe"},
 }
 
 

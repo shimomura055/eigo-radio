@@ -28,6 +28,7 @@ import er003_b1_p9a_audio as p9a
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
+import er007_ja_secondary_asr_01 as ja_secondary
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -197,18 +198,18 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
             continue
         common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
         asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
-        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        # ER-005-AUDIO-VALIDATION-ROBUSTNESS-02: 短い日本語segment
-        # (Key Phrase・gloss等)については、漢字表記の完全一致だけでなく
-        # 発音(読み)ベースの一致も採用条件にする(内向化↔内効果等の
-        # ASR側同音誤認識でTTSを無駄に再生成しないため)。
-        phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err2)
-        verified = (substring_ok and length_ok) or phonetic["passed"]
+        # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01: 旧prefix+length
+        # (文頭一致+文字数)方式を廃止し、全文sequence比較+Protected Check
+        # (数字/否定/内容語/固有名詞)による新Validatorを使う。固有名詞・
+        # 略語らしき語のみの差はTTSを再生成せず、Cascade(Primary#2->
+        # Secondary Azure#1->#2)で同じ音声のASRだけをやり直す。
+        verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+        verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                              "substring_ok": substring_ok, "length_ok": length_ok,
-                              "phonetic_verdict": phonetic["verdict"], "verified": verified,
-                              "trim_info": trim_info})
+                              "length_ok": length_ok, "audio_classification": cls.classification,
+                              "verified": verified, "trim_info": trim_info})
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
@@ -223,13 +224,13 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
         asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
-        substring_ok = asr_text is not None and expected_substring.lower() in asr_text.lower()
         length_ok = asr_text is not None and len(asr_text) <= max_len
-        phonetic = safety.validate_japanese_short_segment_match(text, asr_text, asr_error=err2)
-        verified = (substring_ok and length_ok) or phonetic["passed"]
+        verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+        verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "substring_ok": substring_ok, "length_ok": length_ok,
-                                   "phonetic_verdict": phonetic["verdict"], "verified": verified})
+                                   "length_ok": length_ok, "audio_classification": cls.classification,
+                                   "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

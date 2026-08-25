@@ -1140,6 +1140,45 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **根拠レポート**: ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01完了報告
 - **影響するCURRENT_SPEC項目**: なし(既存の短いsegment向け検証方式・Validator仕様は無変更)
 
+## ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01(2026-08-25)
+
+- **Decision**: 日本語ASR検証を、旧「文頭2文字prefix一致+文字数チェック」方式から、
+  英語Validatorと同じ思想の全文Validator(`er007_ja_asr_validator_01.py`)+
+  Secondary Cascade(`er007_ja_secondary_asr_01.py`)へ置き換え、**Production 3箇所
+  (`er003_v1_repro01_main_generate.py`のJapanese分岐、`er003_v1_sing01_voice01_
+  generate.py`、`er003_v1_n3_01_tts_generate.py`)へ実配線した**。あわせて日本語
+  Primary ASRをAzure Speech STTからOpenAI `gpt-4o-mini-transcribe`へ切り替え、
+  英語と同一構成に統一した(`ASR_ROUTING["ja"]`、`FEATURE_FLAG_JA_PRIMARY_OPENAI=True`)
+- **背景**: ER-007-EVIDENCE-WORDCOUNT-JA-ASR-EFFECTIVENESS-AUDIT-01で、旧方式は
+  30文字を超えるsegment(A2のPreview/Comment等)に対し実質的な内容検証を行っておらず
+  (prefix一致+長さのみ)、6種類の誤り(内容の欠落・置換・数字誤り・否定反転等)全てが
+  検出をすり抜けることを、fixtureによるblind-spot testingで実証していた
+  (ER-007-EVIDENCE-WORDCOUNT-JA-ASR-EFFECTIVENESS-AUDIT-01完了報告)
+- **配線判断の根拠(Part Fの6条件、全て満たすことを確認済み)**: (1) 新Validatorが
+  実データ・fixture(20件)で6種類の誤りを全て検出、(2) 新Cascadeが真の内容誤りを
+  救済しないことを6件のmock testで確認、(3) OpenAI mini日本語ASR品質がAzureと
+  「比較可能、明確な劣化なし」(n=14実音声、13/14が同等以上)、(4) cost/latency
+  projectionが大幅改善(-82%/-70%、96 segmentシミュレーション、実測価格ベース)、
+  (5) fixtureが全種類の既知の誤りパターンを網羅、(6) STOP条件(品質不足・誤検知過多・
+  誤PASS発生・cost/latency悪化)いずれにも該当しなかった
+- **既知の残存限界(受容済み)**: kakasi(形態素解析器なし、規則ベース)は孤立漢字の
+  異読み分岐(「頃」のgoro/koro、「後」のあと/のち等)を、diff span前後4文字の文脈
+  パディングでも完全には解消できない場合がある。実データ96 segment中約3件
+  (約3.1%)で発生を確認したが、影響方向は常にfalse positive(安全側: 不要なretryが
+  発生するのみで、誤ってPASSすることはない)。配線後のProduction smoke test
+  (`verify_ja_cascade_production_on.py`、既存音声・実OpenAI ASR呼び出し)でも同種の
+  1件を実際に再現し、既知の限界どおりの挙動(TRUE_CONTENT_MISMATCHとして検出され
+  retry対象になるのみ)であることを確認した
+- **非対象事項(今回変更しなかったこと)**: 日本語segmentの分割・再設計、TTS
+  モデル変更、第3のASR provider追加、No.7以降の記事生成、Evidence Compression
+  仕様の再調整、Research Coverage Gateの再検討、英語Validator・Writer仕様の変更
+- **根拠レポート**: ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01完了報告、
+  OPEN_ITEMS.md OPEN-61
+- **影響するCURRENT_SPEC項目**: 「QA / Human Review」節のASR診断項、「Audio
+  Production Pipeline」節のPrimary ASR Routing項・Validator(日本語)項(新設)・
+  ASR-first Retry Policy(日本語)項(新設)・Production TTS/ASR call site一覧項、
+  「Model Routing Contract」節のASR / Audio QA項
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
