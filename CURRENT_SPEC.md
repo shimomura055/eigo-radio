@@ -264,6 +264,7 @@ Point One/Two・In One Line(=News Content)でも同一の値が使われてお�
 | ASR homophone ambiguity対応 | strict検証が規定回数不合格でも、TTS自体が正常な可能性がある場合はretryを打ち切り、`PROVISIONALLY_ACCEPTED_REQUIRES_HUMAN_REVIEW`→ユーザー試聴後`ACCEPTED_AFTER_HUMAN_REVIEW`という2段階の人間確認フローを使う | `DECIDED`(ADD03 meaning_3で初適用・確定) | ER-003-REPRO-02-MAIN/FINAL | 2026-08-09 |
 | 最終人間試聴 | 機械QA全合格でも「完成」「量産再現性合格」とは判断せず、必ずユーザー試聴を経る | `DECIDED` | 全ステージで一貫 | - |
 | 量産再現性判定 | A. 量産候補として採用可能(A02・ADD03の2記事連続成功に基づく)。ただし完全自動化ではなく最終人間試聴を必須ゲートとして維持 | `DECIDED` | ER-003-REPRO-FINAL(commit `c4a762c`) | 2026-08-09 |
+| Audio Validation Gate(Assembly直前の検証ゲート) | Production assembly(`er003_v1_n3_01_assemble.py::load_b1_sources`/`load_a2_sources`)は、実行直前に`verify_episode_audio_validation_gate()`で、そのrunの`tts_generation_results.json`に記録された全segment(Full Story/Point見出し・本文/Preview/Comment/In One Line/Key Phrase英日、ファイルに存在する全て)を検査する。各segmentはVALIDATED(status=OK)/HUMAN_APPROVED(ASR_VALIDATION_UNCERTAINだがcanonical_text一致の明示的承認記録あり、`record_human_approval()`で記録)/UNVALIDATED/STOPPEDへ正規化され、VALIDATED・HUMAN_APPROVED以外が1件でもあればepisode assembly全体を`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`として中止する。ファイルが存在するだけでは採用条件を満たさない(「とりあえず最後のWAVを使う」の禁止)。既存の`tts_generation_results.json`を正とし、新しいmanifestファイルは作らない(重複実装回避)。適用範囲は現行Production経路(本ファイルが読むtheme)のみ、legacy/experimental scriptは対象外 | `DECIDED`(`PRODUCTION_WIRED`) | ER-008-N7-CONTENT-AUDIO-QA-02(Key Phrase限定の原型`verify_key_phrase_audio_integrity`)、ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05(全segmentへ一般化・Production配線) | 2026-08-26 |
 
 ## Audio Production Pipeline(ER-006、Pool/N3 Production基盤)
 

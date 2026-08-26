@@ -1643,6 +1643,77 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   Secondary ASR必須化を追記、`PRODUCTION_WIRED`)。Evidence Compression
   ・Production Writer既定Promptは今回も変更していない
 
+## ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05(2026-08-26)
+
+- **Decision**: ユーザー承認済み(`APPROVED_FOR_PRODUCTION`)のAudio
+  Validation Gateを正式Productionへ配線した(`PRODUCTION_WIRED`)。
+  未検証・stale・STOPPEDの音声がassemblyされる問題を、Key Phrase限定
+  だった既存の仕組みを一般化して全segmentへ適用することで解消した。
+  Evidence Compressionは、方式C(Lossless Editor)のB1で増えたLedger
+  MAJOR逸脱1件ずつを精査し、いずれもBaselineの既存事項が重複計上
+  されただけ(`VALIDATOR_FALSE_POSITIVE`)と判定した。引き続き
+  `VALIDATED_CANDIDATE / USER_REVIEW_REQUIRED`のまま、Production
+  採用はしていない
+- **root cause**: 各TTS生成試行(`er003_b1_p9a_audio.py::generate_
+  narration_snippet`他)はASR内容検証の前に`write_wav_float()`で
+  無条件にファイルをdisk上書きするため、standard/fallbackとも全試行
+  が失敗して最終`STOPPED`になっても、最後の(未検証・却下された)
+  音声がそのままdiskに残る。Assembly側はファイルの存在だけで読み
+  込んでいたため、QA未合格音声がProduction episodeへ混入しうる状態
+  だった(No.6 Delivery・No.7 B1 Key Phrase 2で実例確認済み)
+- **新仕様の設計**: 新しいmanifestファイルは作らず、既存の`tts_
+  generation_results.json`(このrunの診断ファイル、既に全segment/Key
+  Phraseの生成結果を含む)を正とする単一のgateへ統合した(重複実装を
+  避ける)。各segmentをVALIDATED(status=OK)/HUMAN_APPROVED(ASR_
+  VALIDATION_UNCERTAINだがcanonical_text一致の明示的承認記録あり)/
+  UNVALIDATED/STOPPEDへ正規化し、`verify_episode_audio_validation_
+  gate()`がassembly直前に全segmentを検査する。VALIDATED・HUMAN_
+  APPROVED以外が1件でもあれば`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`
+  としてRuntimeErrorを送出し、assembly全体を中止する。Human Review
+  用に`record_human_approval()`(segment名+canonical_textのsha256+
+  承認日時を記録、textが変わったら承認は無効)を新設した。ファイルの
+  temp/atomic-rename分離(タスク仕様のPart C推奨設計)は、既存の
+  tts_generation_results.jsonベースのgateだけで受入テスト9件全てを
+  満たせることを確認できたため、大規模な生成関数リファクタリングは
+  見送り、gateによる防御を主とした
+- **受入テスト**: standard PASS/final STOPPEDでblock/retry途中status
+  でblock/current run STOPPEDならstale音声があってもblock(No.7 Key
+  Phrase実例の直接再現)/fallback Secondary不一致でblock/fallback
+  両ASR一致でPASS/Human Approved後はPASS/text変更後は旧承認が無効/
+  1segmentだけ未検証でepisode全体block/No.6実データfixtureでblock、
+  の10件全てPASS([er008_audio_validation_gate_05_test.py](er008_audio_validation_gate_05_test.py))
+- **重大な追加発見(Part H)**: 現行Production経路を持つ全12テーマ×2
+  レベル=24組を実際に新Gateで検査した結果、**22組が最低1segmentで
+  blocked状態**(pool_n4_supermarket/b1bとpool_n5_cafes/a2の2組のみ
+  現状クリーン)であることが判明した。既に組み立て済みのepisode wav
+  ファイル自体は無変更だが、今後これらのテーマを再assemblyしようと
+  した場合、新Gateにより明示的にブロックされる。No.7自体もfull_
+  story_part1・point_oneがHuman Approval記録の無いASR_VALIDATION_
+  UNCERTAINのままのため、次回音声タスク(A2 pause追加・Point One
+  差し替え等)で再assemblyする際は、該当segmentの再生成または明示
+  承認が必要になる
+- **Evidence Compression方式C MAJOR精査**: B1でBaseline(Ledger
+  MAJOR1件)→方式C(MAJOR2件)へ増加した点を1件ずつ精査した結果、
+  新たにMAJORとして挙げられた2文はいずれもBaselineから一字一句
+  変更されていない(byte単位で同一)ことを確認した。CBRE調査(F-008/
+  F-009)を「wider/broader office market」と一般化する、Baselineに
+  元々あった同一のscope越境が、Deviation Checkerの実行ごとの引用の
+  まとめ方が非決定的なために今回はより多くの独立レコードとして数え
+  られただけと判定した(`VALIDATOR_FALSE_POSITIVE`)。方式C自体の
+  Production候補評価は総合して肯定的(固有名詞削減・数字負荷削減・
+  Fact loss/追加なし・causal driftなし・英語は概ね自然)。一方、
+  "one report"のような出典主体を消した結果の曖昧な言い回しは改善
+  余地として新規記録した(OPEN-69)
+- **今回実施しなかったこと**: Evidence CompressionのProduction採用、
+  fallback根本再設計の実装(論点整理[OPEN-67]のみ)、既存22テーマの
+  一括是正、A2 Key Phrase pause追加・Point One音声差し替え・A2読み
+  上げ速度調整(次回音声タスクへ引継ぎ、OPEN-70)
+- **根拠レポート**: ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-
+  AUDIT-05完了報告、OPEN-65・OPEN-67・OPEN-68・OPEN-69・OPEN-70
+- **影響するCURRENT_SPEC項目**: Audio Validation Gateを新規項目として
+  「QA / Human Review」節へ追加(`DECIDED`/`PRODUCTION_WIRED`)。
+  Evidence Compression・Production Writer既定Promptは今回も無変更
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

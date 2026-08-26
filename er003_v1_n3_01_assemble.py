@@ -18,10 +18,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
 import sys
+import time
 
 import numpy as np
 
@@ -56,47 +58,100 @@ def load_json(path: str) -> dict:
 
 
 # ============================================================
-# ER-008-N7-CONTENT-AUDIO-QA-02: Key Phrase 音声の一般整合性check
+# ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05 Part B〜E:
+# Production全体向けの汎用Audio Validation Gate
 # ============================================================
-# No.7 B1のrank2("compare poorly with")で実際に発生した不整合が根本原因:
-# 日本語glossのTTS生成がcanonical text中の未発話placeholder記号「〜」に
-# よりSTOPPEDとなったが、assembly側はそれに気づかず、diskに残っていた
-# 前回実行(別のKey Phraseセット)のkp2_ja_charon.wavをそのまま読み込んで
-# 使ってしまっていた(表示上のphrase/glossと実音声が食い違う)。
-# tts_generation_results.json(このrunで書かれる診断ファイル)に、今回
-# 使おうとしているrankの英語/日本語Componentが実際にOK(またはHuman
-# Review対象として許容されるASR_VALIDATION_UNCERTAIN)で生成されたことが
-# 記録されているかを、assembly直前に必ず確認する。記録が無い/ファイルが
-# 無いテーマ(このJSONを書かない旧pipeline)は対象外とし、何もしない
-# (後方互換、既存テーマへの影響なし)。
-KEY_PHRASE_AUDIO_SAFE_STATUSES = ("OK", "ASR_VALIDATION_UNCERTAIN")
+# 由来: ER-008-N7-CONTENT-AUDIO-QA-02で、B1 Key Phrase rank2の日本語gloss
+# TTSがSTOPPEDになったにもかかわらず、assembly側がそれに気づかず、disk
+# に残っていた前回実行(別のKey Phraseセット)の古い音声をそのまま使って
+# しまう事故が実際に発生した。同種の事故はKey Phraseに限らず、全ての
+# segment(Full Story/Point/Preview/Comment/In One Line等)で理論上
+# 起こりうる(各TTS試行はASR検証前に無条件でファイルをdisk上書きする
+# ため)。ここでは、Key Phrase専用だった旧verify_key_phrase_audio_
+# integrity()を一般化し、tts_generation_results.json(このrunで書かれる
+# 診断ファイル、既に全segment/Key Phraseの生成結果を含んでいる)に
+# 記録された状態だけを正とする単一のgateへ統合する(重複実装を避ける、
+# Part F)。
+#
+# ステータス語彙: VALIDATED(status=OK、reused含む)/ HUMAN_APPROVED
+# (ASR_VALIDATION_UNCERTAINだが、canonical_textが変わっていない明示的
+# Human Review記録がある)/ UNVALIDATED(承認記録の無いASR_VALIDATION_
+# UNCERTAIN、または記録自体が無い)/ STOPPED。assembly許可はVALIDATED・
+# HUMAN_APPROVEDのみ(Part D)。1件でも許可条件を満たさなければ
+# EPISODE_BLOCKED_BY_AUDIO_VALIDATIONとしてRuntimeErrorを送出し、
+# assembly全体を中止する(Part E・G、「とりあえず最後のWAVを使う」の禁止)。
+#
+# tts_generation_results.jsonを書かない旧pipeline/legacy scriptは対象外
+# とし、何もしない(後方互換、Part H: 現行Production経路[本ファイル]
+# のみを対象とする)。
+AUDIO_GATE_ALLOWED_STATUSES = ("VALIDATED", "HUMAN_APPROVED")
 
 
-def verify_key_phrase_audio_integrity(out_dir: str, level: str, kp_items: list, japanese_key: str) -> None:
+def human_approval_path(out_dir: str) -> str:
+    return f"{out_dir}/audit/human_approved_segments.json"
+
+
+def record_human_approval(out_dir: str, segment_key: str, canonical_text: str, approved_by: str = "user") -> None:
+    """Human Reviewで実際に聴取しPASSと判断したsegmentを記録する。
+    canonical_textのsha256を保存し、後でtext自体が変わっていないかを
+    照合する(記事本文が変わった後に古い承認を誤って使い回さないため)。"""
+    path = human_approval_path(out_dir)
+    approvals = load_json(path) if os.path.exists(path) else {}
+    approvals[segment_key] = {
+        "canonical_text_sha256": hashlib.sha256((canonical_text or "").encode("utf-8")).hexdigest(),
+        "approved_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "approved_by": approved_by,
+    }
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(approvals, f, ensure_ascii=False, indent=2)
+
+
+def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
+    if entry is None:
+        return "UNVALIDATED"  # このrunに記録が無い(fail-closed)
+    status = entry.get("status")
+    if status == "OK":
+        return "VALIDATED"
+    if status == "ASR_VALIDATION_UNCERTAIN":
+        approval = approvals.get(segment_key)
+        if approval is not None:
+            canon = entry.get("canonical_text") or entry.get("text") or ""
+            if approval.get("canonical_text_sha256") == hashlib.sha256(canon.encode("utf-8")).hexdigest():
+                return "HUMAN_APPROVED"
+        return "UNVALIDATED"
+    if status == "STOPPED":
+        return "STOPPED"
+    return "UNVALIDATED"
+
+
+def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
     result_path = f"{out_dir}/audit/tts_generation_results.json"
     if not os.path.exists(result_path):
         return
-    kp_results = (load_json(result_path) or {}).get("key_phrases")
-    if not kp_results:
-        return
-    problems = []
-    for item in kp_items:
-        rank = item["rank"]
-        entry = kp_results.get(str(rank))
-        if entry is None:
-            continue
-        en_status = (entry.get("english") or {}).get("status")
-        ja_status = (entry.get(japanese_key) or {}).get("status")
-        if en_status is not None and en_status not in KEY_PHRASE_AUDIO_SAFE_STATUSES:
-            problems.append(f"{level} rank{rank} english status={en_status}")
-        if ja_status is not None and ja_status not in KEY_PHRASE_AUDIO_SAFE_STATUSES:
-            problems.append(f"{level} rank{rank} {japanese_key} status={ja_status}")
-    if problems:
+    data = load_json(result_path) or {}
+    approvals_path = human_approval_path(out_dir)
+    approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
+
+    blocked = []
+    for name, entry in (data.get("segments") or {}).items():
+        final = _segment_gate_status(entry, name, approvals)
+        if final not in AUDIO_GATE_ALLOWED_STATUSES:
+            blocked.append(f"{name}={final}")
+    for rank, kp in (data.get("key_phrases") or {}).items():
+        for sub_key, sub_entry in kp.items():
+            seg_key = f"kp{rank}_{sub_key}"
+            final = _segment_gate_status(sub_entry, seg_key, approvals)
+            if final not in AUDIO_GATE_ALLOWED_STATUSES:
+                blocked.append(f"{seg_key}={final}")
+
+    if blocked:
         raise RuntimeError(
-            "Key Phrase音声の生成が今回の実行で失敗しており、diskに残った古い"
-            "音声ファイルをそのままassemblyへ使ってしまう恐れがあります"
-            f"(ER-008-N7-CONTENT-AUDIO-QA-02)。該当箇所: {problems}。該当"
-            "Key Phraseの音声を再生成してから再度assemblyを実行してください。")
+            f"EPISODE_BLOCKED_BY_AUDIO_VALIDATION: {level}のepisode assemblyを中止し"
+            f"ました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありま"
+            f"せん: {blocked}。未検証・stale・STOPPEDの音声をそのまま完成扱いにする"
+            "ことは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-"
+            "MAJOR-AUDIT-05)。該当segmentを再生成するか、聴取確認の上でrecord_"
+            "human_approval()で明示的に承認してから再度assemblyを実行してください。")
 
 
 def copy_b1_shared_assets(narration_dir: str) -> None:
@@ -112,6 +167,7 @@ def copy_b1_shared_assets(narration_dir: str) -> None:
 def load_b1_sources(theme: dict) -> dict:
     out_dir = f"{theme['out_dir']}/b1b"
     narration_dir = f"{out_dir}/narration"
+    verify_episode_audio_validation_gate(out_dir, "B1")
     copy_b1_shared_assets(narration_dir)
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
@@ -156,7 +212,6 @@ def load_b1_sources(theme: dict) -> dict:
 
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
-    verify_key_phrase_audio_integrity(out_dir, "B1", kp_items, "japanese")
     key_phrase_components, key_phrase_meanings = {}, {}
     for item in kp_items:
         rank = item["rank"]
@@ -315,6 +370,7 @@ def build_b1_timeline(parts: dict) -> list:
 def load_a2_sources(theme: dict) -> dict:
     out_dir = f"{theme['out_dir']}/a2"
     narration_dir = f"{out_dir}/narration"
+    verify_episode_audio_validation_gate(out_dir, "A2")
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
@@ -336,7 +392,6 @@ def load_a2_sources(theme: dict) -> dict:
 
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
-    verify_key_phrase_audio_integrity(out_dir, "A2", kp_items, "japanese_meaning")
     for i in range(1, len(kp_items) + 1):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/meaning_{i}.wav")
         assert sr == common.SAMPLE_RATE
