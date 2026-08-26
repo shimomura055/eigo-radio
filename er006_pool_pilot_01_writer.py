@@ -26,12 +26,16 @@ def load_text(path: str) -> str:
 
 
 def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: str,
-                          ledger_path: str, out_dir: str, blueprint=None) -> dict:
+                          ledger_path: str, out_dir: str, blueprint=None,
+                          evidence_compression: bool = False) -> dict:
     """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint、
     A2/B1 Point Structure Semantic Alignmentタスクで追加)を渡すと、両
     Levelのpromptへ共通のPoint構造制約が挿入される。Noneの場合(既定)は
     旧来の呼び出しと完全に同一の挙動になる(後方互換、既存Topicへの
-    影響なし)。"""
+    影響なし)。evidence_compression=True(ER-008-TTS-FALLBACK-AND-
+    EVIDENCE-COMPRESSION-03 Part Bで追加、既定False)を渡すと、spoken
+    layerの固有名詞・数字を減らす追加方針がpromptへ挿入される
+    (script-only candidate生成専用、Production既定はFalseのまま無変更)。"""
     verified_ledger_text = load_text(ledger_path)
 
     results = {}
@@ -45,7 +49,8 @@ def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: st
             level = "b1" if label == "B1B" else "a2"
             blueprint_block = blueprint_mod.render_blueprint_for_writer(blueprint, level)
         common_block = gen.build_common_block(master_full_text, topic, verified_ledger_text,
-                                               shared_point_blueprint_block=blueprint_block)
+                                               shared_point_blueprint_block=blueprint_block,
+                                               evidence_compression=evidence_compression)
         prompt = gen.build_prompt(common_block, instruction)
         t0 = time.time()
         with cl.logging_context(theme_id, stage_tag):

@@ -182,21 +182,67 @@ G. exactness_requirement: EXACT_REQUIREDと印のある数値(スコア・日付
   詳しく書き込まないでください
 - 複数のFactを物語として自然にまとめてもかまいませんが、Fact同士の関係(誰が・何を・いつ・
   どの範囲で)を変えないでください
-{shared_point_blueprint_block}"""
+{shared_point_blueprint_block}{evidence_compression_block}"""
+
+
+# ============================================================
+# ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03 Part B: Evidence
+# Compression(script-only候補、opt-in)。Research/Evidence Pack/VFL/
+# Fact Checkは一切変更せず、spoken layer(実際に読み上げられる文章)
+# だけを対象に、理解に不要な固有名詞・数字を減らす方針を試す。
+# 既定(evidence_compression_block未指定=空文字列)ではCOMMON_BLOCK_
+# TEMPLATEと完全に同一で、Production Writerの挙動には一切影響しない。
+# ============================================================
+EVIDENCE_COMPRESSION_BLOCK = """
+【Evidence Compression(今回の記事にのみ適用する追加方針)】
+方針: "Evidence is thick backstage, light on air." Fact自体はVerified Fact
+Ledgerの範囲内で自由に参照してよく、Fact Checkのために裏側では厚く保持され
+ます。ただし、実際に読み上げられる文章(spoken script)では、理解に必要
+でない限り、以下を極力減らしてください:
+- 企業名・調査会社名・研究機関名・メディア名・イベント名
+- 研究が行われた年(記事全体で起きている出来事の時系列そのものに必要な
+  年は除く)
+- 聞き手の理解に不要なpercentage・sample size・方法論の詳細
+- 意味がほぼ重複する複数の近似した数値の並列(例: 2つの比較を両方とも
+  読み上げる必要が本当にあるか)
+
+固有名詞の判断基準: 「この名前を音声で聞くことで、リスナーの理解が実質的
+に改善するか」を基準にしてください。改善しない場合は、"a survey"
+"several companies" "one report" のように一般化してください。
+
+数字の判断基準: 数字を全て削除する必要はありません。ただし、1つのPoint
+の中で複数の数字が連続し、リスナーの注意が意味ではなく数値の記憶へ向いて
+しまう状態は避けてください。2つの比較数値の組を両方とも読み上げるより、
+"workers with assigned desks were more likely to report both belonging
+and better focus"のように、傾向を示す1文へ圧縮できないか検討してください。
+機械的な「数字は最大N個まで」のような硬いルールは今回課しません。
+
+一方、以下は削らずに残してください:
+- Storyの核心そのもの
+- 驚くべき規模・変化の大きさ(surprising scale)
+- トレンドの方向性
+- 因果関係の範囲(相関を因果と混同させない、Fact Checkの制約は継続)
+- 不確実性の表現(「関連が見られた」等、断定を避ける表現)
+- 読み手が誤解しないために必要な情報
+"""
 
 
 def build_common_block(master_full_text: str, topic: str, verified_ledger_text: str,
-                        shared_point_blueprint_block: str = "") -> str:
+                        shared_point_blueprint_block: str = "", evidence_compression: bool = False) -> str:
     """shared_point_blueprint_blockは、A2/B1 Point Structure Semantic
     Alignment(Shared Point Blueprint)導入タスクで追加したオプション引数。
-    空文字列(既定値)の場合は旧来のCOMMON_BLOCK_TEMPLATEと完全に同一
-    テキストになり、後方互換を保つ(Blueprint未使用のTopicへは一切
-    影響しない)。"""
+    evidence_compressionは、ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03
+    Part Bで追加したオプション引数(script-only candidate生成専用)。
+    いずれも既定値(""/False)の場合は旧来のCOMMON_BLOCK_TEMPLATEと完全に
+    同一テキストになり、後方互換を保つ(未使用のTopicへは一切影響しない、
+    Production既定は無変更)。"""
     block = f"\n{shared_point_blueprint_block}\n" if shared_point_blueprint_block else ""
+    ec_block = EVIDENCE_COMPRESSION_BLOCK if evidence_compression else ""
     return COMMON_BLOCK_TEMPLATE.format(
         hanshin_master_full_text=master_full_text, topic=topic,
         verified_ledger_text=verified_ledger_text,
         shared_point_blueprint_block=block,
+        evidence_compression_block=ec_block,
     )
 
 

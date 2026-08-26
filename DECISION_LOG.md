@@ -1518,6 +1518,60 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   CURRENT_SPECへの追加は行っていない(pause変更は実装済みだがNo.7限定の
   検証、方針としての正式採用は別途判断)
 
+## ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03(2026-08-26)
+
+- **Decision**: 2テーマを独立に扱った。TTS fallback(minimal instruction
+  fallback)は`INVESTIGATION`のまま、既存ログ解析中心で実態を調査し、
+  対策案の提示に留めてProduction改修はしていない(詳細OPEN-66)。
+  Evidence Compressionは、No.7を対象に実Writerでcandidate scriptを
+  script-only(TTS/ASR無し)で実際に生成し、`VALIDATED_CANDIDATE /
+  USER_REVIEW_REQUIRED`とした(詳細OPEN-65)。CURRENT_SPECのProduction
+  Writer仕様・TTS標準経路のいずれも変更していない
+- **TTS fallbackの主な発見**: (1) 導入経緯はcommit `a13d97c`
+  (2026-08-08、ER-003-REPRO-01-MAIN、短い孤立フレーズでの
+  hallucination対応)、CURRENT_SPEC.mdに`DECIDED`の正式仕様として記載
+  済みだが、当時の受入条件は実質n=2のhallucination事例のみで、
+  Gemini側の一時的障害(No.7のケース)は検証対象外だった。CURRENT_SPEC
+  自身が「根本原因は未解明のまま」と明記している。(2) standardと
+  fallbackの唯一の実質的な差はTTS instructionの文言で、fallbackは
+  prosody・感情の起伏に関する指示を一切持たない1文のみ。(3) 過去ログ
+  442 segment分析の結果、fallbackへ落ちるのは6.3%(28件)と稀だが、
+  発動した場合の帰結はOK 25%・ASR_VALIDATION_UNCERTAIN 11%・
+  **STOPPED(音声未生成)64%**であり、fallbackは「発動すればほぼ解決
+  する安全網」ではない。(4) No.7の6連続失敗は全て同一のGemini
+  `500 INTERNAL`エラーで、`LIKELY_PROVIDER_TRANSIENT`と判定できる
+  runtime evidenceがある一方、過去ログ全体はtimeout・応答パース失敗も
+  混在し`MIXED`。(5) 現行QAの弱点は、fallback経路のSecondary ASR
+  cascadeがPrimary ASRの「entity-likeな不一致」でのみ起動する設計の
+  ため、Primaryが見かけ上正しく書き起こしてしまう発音品質問題
+  (No.7 point_one_heading)を検知できないこと。推奨(未実装)は
+  Option 2「fallback発動時のみSecondary ASRを必須化」
+- **Evidence Compressionの主な発見**: `er003_v1_n3_01_articles_
+  generate.py::build_common_block()`へ`evidence_compression`引数
+  (既定False、Production挙動は無変更)を追加し、No.7でcandidateを
+  生成した。固有名詞(Scotiabank/iCapital Network/Bisnow/Gensler/
+  Korn Ferry/CBRE)は全sectionで0件まで削減され、Point Oneの4つの
+  比較%は1文の傾向表現へ圧縮、Point Twoの核心的な比較数値
+  (56%/40%・2023/2024/2026)は維持された。Fact Check verdictは
+  A2で変化なし、B1はREVIEW_REQUIRED→PASSへ改善した一方、**Ledger
+  Deviationは B1でbaseline1件→candidate6件(新規MAJOR3件)と悪化**
+  した。新規MAJOR逸脱には、元のcorrelational evidenceより踏み込んだ
+  因果的表現("...because some offices are questioning the human
+  cost of desk sharing")が含まれており、出典名を削っただけでなく
+  主張自体がやや強まった可能性がある。これは「出典名を消しただけで
+  Fact自体は安全」ではなく「Evidenceを削ったことで主張が強くなった」
+  側に近い事例として明示的に記録し、Production採用の判断材料とする
+- **今回実施しなかったこと**: TTS音声生成、A2速度変更、fallback
+  Production改修、ASR Primary/Secondary入れ替え、Evidence
+  Compression正式Production配線、Middle再開、No.8生成
+- **根拠レポート**: ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03
+  完了報告、OPEN-65・OPEN-66、比較Artifact
+  (https://claude.ai/code/artifact/33775f4c-6acb-4bc5-ad0f-6ed0b9959a06)
+- **影響するCURRENT_SPEC項目**: なし。`evidence_compression`引数は
+  既定Falseで実装したのみで、Production Writer仕様(CURRENT_SPEC.md)
+  への追加・変更はしていない。TTS fallbackの既存記載(244行目・263行目)
+  も今回は変更していない(調査結果を踏まえた改修は別タスクでの判断)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
