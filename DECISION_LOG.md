@@ -1833,6 +1833,74 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: 「Validator(日本語)」行へ助数詞「つ」
   数字正規化を追記(`DECIDED`)
 
+## ER-008-DIRECTIONAL-FACT-PRECHECK-08(2026-08-26)
+
+- **Decision**: 前タスク(ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-
+  NORMALIZATION-07)で発見したB1 Point Two Fact誤り(more/fewer型の
+  比較方向反転)を踏まえ、OPEN-72が指摘した「script対Source Factの
+  比較方向を機械的に検知する汎用Validator」の本格実装は行わず、
+  実ユーザー検証対象(当面No.7)向けの軽量・rule-based・新規LLM call
+  なしの暫定チェックとして`er008_directional_fact_precheck_08.py`を
+  実装し、Production記事生成経路(`run_one_pattern()`)へ既定Trueで
+  配線した(`PRODUCTION_WIRED`、暫定策)。OPEN-72自体は削除せず
+  `DEFERRED / AFTER USER VALIDATION`として維持する
+- **設計**: Part B必須12カテゴリ(more/fewer、higher/lower、increase/
+  decrease、rise/fall、up/down、at least/at most、above/below、
+  before/after、earlier/later、more than/less than、doubled/halved、
+  growth/decline)を、「magnitude(量の大小)」「temporal(時間の前後)」
+  の2軸へ統合した。個別カテゴリを独立に対比するのではなく2軸へ統合
+  することで、"increase"(Ledger側)と"rise"(script側)のような正しい
+  同義表現を、カテゴリの違いを理由に誤って「比較不能」とせず正しく
+  MATCH判定できる。各語には確度(high/low、2語以上のphraseや曖昧性の
+  低い語はhigh、bare "up"/"down"等はlow)とカテゴリ(trend/threshold)
+  を付与し、trend(increase/decrease等、同じ名前の量の時間変化)と
+  threshold(at least/at most等、基準値との大小関係)を独立に評価する
+  設計にした
+- **重要な実データ発見(false negative、正直に記録)**: 実装直後、
+  本タスクの発端となったNo.7 F-008(CBRE従業員・デスク比率)を実際の
+  VFL/Fact Ledgerデータで検証したところ、Fact LedgerとscriptをNumber-
+  anchorで自動対応付けするcross-artifact層(Ledger対script、VFLの
+  `claim`対`conditions`欄)では、**誤りだった旧B1本文をMATCH、修正済み
+  の正しい本文をPOTENTIAL_DIRECTION_REVERSALと判定し、正誤が完全に
+  逆転する**ことを発見した。原因は、「比率」とその逆数に近い量(従業員
+  1人あたりのデスク数)という、reciprocal(逆数)関係にある2つの主語を
+  行き来するFactに対し、表層的な語("以下"等)の比較だけでは対象の
+  違いを区別できないため。この発見を受け、trend/thresholdカテゴリを
+  分離した上で、thresholdカテゴリのみの衝突はcross-artifact層で
+  FAILへ格上げしない設計(`_downgrade_threshold_only_reversal()`)へ
+  変更し、少なくとも「誤って正しい本文をブロックする」false positive
+  は防いだ。ただし「誤った本文を見逃す」false negative(reciprocal-
+  quantity型Factを検知できない)は解消しておらず、既知の限界として
+  CURRENT_SPEC/OPEN-74へ明記した(隠さない)
+- **Part G/H受入テスト**: `compare_direction()`単体(対象が明確な2文の
+  直接比較)に対する23件のfixture(Part Hの10項目+trend/threshold
+  分離の追加検証+No.7実データ回帰テスト)は全てPASS。No.7旧B1 Point
+  Twoの誤り("one desk per employee or fewer")と正しいFact("at least
+  one desk per employee")の直接比較は正しくPOTENTIAL_DIRECTION_
+  REVERSALとして検知できる(対象=主語が明確な場合はrule-baseで確実に
+  機能することの証明)
+- **No.7実証**: No.7 B1/A2の実記事全体(article.md)に対して
+  `audit_article_directional_facts()`を実行した結果、意図しない
+  POTENTIAL_DIRECTION_REVERSAL(false positive)は0件、DIRECTION_
+  REVIEW_REQUIRED(WARN)が3件(いずれも「片方にのみ方向表現がある」
+  ケースで、実際の衝突ではない)。article生成の完成を誤ってブロック
+  しない設計であることを実データで確認した
+- **STOP条件の検討**: 「rule-basedでは安全に方向判定できない」に該当
+  するか検討した結果、GENERAL(非reciprocal)な直接比較方向反転
+  (Part G/Hの23件全て)については確実に機能するため全面STOPはせず、
+  reciprocal-quantity型Factという**特定の狭いFactタイプに限定した
+  既知の限界**として正直に報告する方針とした(Part D「false negative
+  懸念」の報告項目で対応)
+- **今回実施しなかったこと**: OPEN-72の本格対策(構造化comparator、
+  VFL生成段階での方向保証、他テーマ横断監査)、`assert_no_directional_
+  reversal()`gateの完成候補宣言プロセスへの明示的組み込み、A2速度A/B
+  (次タスクへ)
+- **根拠レポート**: ER-008-DIRECTIONAL-FACT-PRECHECK-08完了報告、
+  OPEN-71・OPEN-72・OPEN-74
+- **影響するCURRENT_SPEC項目**: 「QA / Human Review」節へ「Interim
+  directional fact precheck for user-validation phase」行を新規追加
+  (`DECIDED`/`PRODUCTION_WIRED`、暫定策と明記)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

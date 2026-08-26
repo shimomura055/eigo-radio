@@ -27,6 +27,7 @@ import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_n3_01_evidence_compression_editor as ec_editor
 import er003_v1_spoken_first_01_r1_generate as sf1r1
 import er006_model_routing_contract_01 as routing
+import er008_directional_fact_precheck_08 as dfp
 import er008_shared_point_blueprint_01 as blueprint_mod
 
 load_dotenv()
@@ -345,7 +346,8 @@ def compute_metrics(text: str) -> dict:
 
 
 def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
-                     topic: str, out_dir: str, apply_evidence_compression: bool = True) -> dict:
+                     topic: str, out_dir: str, apply_evidence_compression: bool = True,
+                     apply_directional_fact_precheck: bool = True) -> dict:
     """apply_evidence_compression(既定True、ER-008-EVIDENCE-COMPRESSION-
     PROD-AND-N7-AUDIO-06でProduction既定へ昇格): WriterがFact-safeな記事
     を生成した直後、Lossless Editor(方式C、er003_v1_n3_01_evidence_
@@ -449,6 +451,21 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/deviation_full_record.json", "w", encoding="utf-8") as f:
         json.dump({k: v for k, v in deviation_result.items() if k != "parsed"}, f, ensure_ascii=False, indent=2, default=str)
 
+    directional_precheck_status = None
+    if apply_directional_fact_precheck:
+        print(f"[N3-01][{theme_id}] {label}: 比較方向Fact事前チェック(暫定、"
+              f"ER-008-DIRECTIONAL-FACT-PRECHECK-08)開始...")
+        vfl_path = f"{os.path.dirname(out_dir)}/research/stage_b3_vfl.json"
+        directional_result = dfp.audit_article_directional_facts(
+            article_text, verified_ledger_text, vfl_path=vfl_path)
+        directional_precheck_status = directional_result["overall_status"]
+        with open(f"{out_dir}/audit/directional_fact_precheck.json", "w", encoding="utf-8") as f:
+            json.dump(directional_result, f, ensure_ascii=False, indent=2, default=str)
+        print(f"[N3-01][{theme_id}] {label}: 比較方向Fact事前チェック完了。"
+              f"overall_status={directional_precheck_status}"
+              + ("(POTENTIAL_DIRECTION_REVERSALあり、詳細はdirectional_fact_precheck.jsonを確認)"
+                 if directional_precheck_status == "POTENTIAL_DIRECTION_REVERSAL" else ""))
+
     return {
         "label": label, "status": "OK", "article_text": article_text,
         "metrics": metrics, "section_word_counts": section_wc, "length_report": length_report,
@@ -457,6 +474,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
         "fact_usage_report": fact_usage_report,
         "evidence_compression_applied": evidence_compression_applied,
+        "directional_fact_precheck_status": directional_precheck_status,
     }
 
 
