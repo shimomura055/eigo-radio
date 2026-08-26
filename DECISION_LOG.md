@@ -2004,6 +2004,58 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   processing time-stretch案)」行を新規追加(`VALIDATION_ONLY`、
   Production未配線と明記)
 
+## ER-008-A2-POSTPROCESS-SLOWDOWN-PROD-11(2026-08-26)
+
+- **Decision**: ER-008-A2-TIMESTRETCH-ABC-10でユーザーが試聴の上6%
+  time-stretchを正式採用したことを受け、Production A2音声パイプライン
+  へ配線した(`APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`)。新規
+  `er008_a2_postprocess_slowdown_01.py`(FFmpeg `atempo`、既定6%)を
+  作成し、`er003_v1_n3_01_tts_generate.py::generate_a2_segments()`の
+  A2英語7segment(point_one_heading/point_two_heading/full_story_
+  part1/full_story_part2/point_one/point_two/in_one_line)全てへ配線
+  した
+- **既存instructionとの関係(重要な設計判断)**: 実装の途中で、既存の
+  自然言語「わずかに遅く」instruction(`A2_ENGLISH_STYLE_PREFIX_
+  SLOWER`)を6% time-stretchへの置き換えとして除去しようとしたが、
+  これは誤りだったため撤回した。ユーザーが実際に試聴・承認した音声
+  (ER-008-A2-TIMESTRETCH-ABC-10)は「既存のinstructionで生成された
+  現行Production音声」に6% time-stretchを重ねたものであり、
+  instructionを除去した音声ではない。instruction単体の効果がsame-
+  text比較(ABC-09)で不安定だったことは、instructionを外してよい
+  理由にはならない(ユーザーが承認したのはinstruction込みの組み合わせ)。
+  この誤りは、trim_info不整合のバグ修正作業中に自分自身の実装ログを
+  見直す過程で発見し、ユーザーへの追加確認なしに撤回・修正した
+  (承認された仕様の逸脱であり、単純な実装バグと同種の扱いとした)
+- **trim_infoの不整合修正**: post-process(time-stretch)適用後も
+  `tts_generation_results.json`の`trim_info`/`duration_seconds`が
+  slowdown適用前の値のままになっていた(実際の最終音声ファイルとの
+  食い違い)ことに気付き、time-stretch比率で比例配分して実際の長さと
+  一致させる修正を`apply_a2_slowdown_postprocess()`へ組み込んだ
+- **post-process後ASR再検証とretry機構**: post-process後の音声を
+  実際にASRで再検証する設計にした結果、No.7実データでの初回実行時に
+  2/7 segment(`point_one`・`in_one_line`)で、slowdown**前**は正しく
+  ASR一致していたのに、slowdown**後**の音声だけがASR不一致になる
+  事象を発見した(語尾の単数/複数混同、文脈的な近縁語への誤認識等)。
+  これはtime-stretchが内容そのものを変えたのではなく、微妙なタイミング
+  変化がASRの認識精度をわずかに下げることがあるためと考えられる。
+  既存の「未検証音声を黙ってPASSさせない」という方針を踏まえ、
+  post-process後の再検証が不一致の場合は通常ペースから取り直す
+  (最大3回)retry機構を`generate_a2_segment_with_slowdown()`へ追加
+  した。No.7本番データへ適用した結果、初回不一致だった`point_one`は
+  1回のretryで解消し、最終的に7segment全てがstatus=OKとなった
+- **No.7実データへの反映**: 7segment全てを実際にこの新経路で再生成し、
+  実測減速率5.5〜6.0%(目標6%に近い)を確認、Audio Validation Gateを
+  実PASSでA2を再assemble(325.905秒)した。B1は完全に無変更のまま
+- **今回実施しなかったこと**: 他21テーマ(No.1〜6含む)への遡及適用
+  (必要になった時点で個別対応する既存方針[OPEN-68]を踏襲)、Middle
+  再開(現状DEFERREDのまま)、"_original.wav"の実際の再利用先の実装
+  (仕組みとしては用意したが、Middle自体が動いていないため未使用)
+- **根拠レポート**: ER-008-A2-POSTPROCESS-SLOWDOWN-PROD-11完了報告、
+  OPEN-75・OPEN-76
+- **影響するCURRENT_SPEC項目**: 「A2英語ナレーション速度(post-
+  processing time-stretch)」行を`VALIDATION_ONLY`→`DECIDED`
+  (`PRODUCTION_WIRED`)へ更新
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

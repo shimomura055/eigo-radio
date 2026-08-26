@@ -41,6 +41,8 @@ import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_batch_tts_wiring_01 as batch_wiring
 import er007_ja_secondary_asr_01 as ja_secondary
 import er003_b1_p9a_audio as p9a
+import er006_preprod_hardening_01_validation as en_validator
+import er008_a2_postprocess_slowdown_01 as a2_slowdown
 
 # ============================================================
 # ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06 Part G: A2英語のみ、
@@ -51,6 +53,17 @@ import er003_b1_p9a_audio as p9a
 # 常にENGLISH_STYLE_PREFIXそのまま=無変更)。fallback(minimal
 # instruction)経路にも渡さない(generate_english_segment_with_fallback
 # 側で明示的に除外済み)。
+#
+# **補足(2026-08-26、ER-008-A2-POSTPROCESS-SLOWDOWN-PROD-11)**:
+# ER-008-A2-SPEED-SAME-TEXT-ABC-09のsame-text比較で、この自然言語
+# instruction単体では安定した減速効果が出ない(B/CともAより速くなる)
+# ことが判明した。そのため下記のPOST-PROCESS(6% time-stretch)を
+# 追加したが、ユーザーが試聴・承認したER-008-A2-TIMESTRETCH-ABC-10の
+# 音声は「この既存instructionで生成された音声」に6% time-stretchを
+# 重ねたものであり、instructionを取り除いたものではない。従って
+# このinstructionはPOST-PROCESS方式と併用する形でProduction配線を
+# 継続する(単独では置き換えにならない、承認された組み合わせを正確に
+# 再現するため)。
 A2_SLOWER_PACE_INSTRUCTION = (
     "\nSpeak at a slightly slower, relaxed pace than natural adult narration, while "
     "keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses "
@@ -58,6 +71,120 @@ A2_SLOWER_PACE_INSTRUCTION = (
 )
 A2_ENGLISH_STYLE_PREFIX_SLOWER = p9a.ENGLISH_STYLE_PREFIX + A2_SLOWER_PACE_INSTRUCTION
 common.assert_no_wpm_specification(A2_ENGLISH_STYLE_PREFIX_SLOWER)
+
+# ============================================================
+# ER-008-A2-POSTPROCESS-SLOWDOWN-PROD-11: A2の「わずかに遅く」に、生成後
+# のpost-processing(FFmpeg pitch-preserving time-stretch、6%減速)を
+# 追加する。ER-008-A2-TIMESTRETCH-ABC-10でユーザーが試聴の上6%を正式
+# 採用した(採用対象は「既存のA2_ENGLISH_STYLE_PREFIX_SLOWER instruction
+# で生成された音声」+「6% time-stretch」の組み合わせであり、instruction
+# は引き続き使用する)。成功した音声にのみ後段でtime-stretchを適用する。
+# time-stretch前の音声は"{name}_original.wav"として保持し、Middle等で
+# 現状より速い読み上げが必要な場合にTTS再生成なしで再利用できるように
+# する(ユーザー承認時の指摘)。
+A2_SLOWDOWN_TARGET_SEGMENTS = (
+    "point_one_heading", "point_two_heading",
+    "full_story_part1", "full_story_part2", "point_one", "point_two", "in_one_line",
+)
+
+
+def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict) -> dict:
+    """generate_english_segment_with_fallback()が返した通常ペースの
+    結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
+    音声を実際にASRで再検証した上でresultを更新する。post-process後の
+    音声がASR不一致になった場合はstatus="STOPPED"とし、既存のAudio
+    Validation Gateが正しくブロックできるようにする(未検証音声を
+    黙ってPASS扱いにしない、という既存方針を維持)。"""
+    if result.get("status") != "OK":
+        return result  # 元々失敗している場合はslowdownを試みない
+
+    out_path = f"{narration_dir}/{name}.wav"
+    original_path = f"{narration_dir}/{name}_original.wav"
+    import shutil
+    shutil.copyfile(out_path, original_path)
+
+    stretch_info = a2_slowdown.apply_a2_slowdown(original_path, out_path)
+
+    asr_text, err = routing.transcribe(out_path, language="en-US")
+    if err:
+        result["status"] = "STOPPED"
+        result["reason"] = f"post-process(6%減速)後の音声でASR取得に失敗: {err}"
+        result["slowdown_info"] = stretch_info
+        return result
+
+    classification = en_validator.classify_asr_match(tts_input_text, asr_text)
+    result["original_path"] = original_path
+    result["slowdown_applied"] = True
+    result["slowdown_info"] = stretch_info
+    result["post_slowdown_asr_text"] = asr_text
+    result["post_slowdown_classification"] = classification.classification
+    # trim_info/duration_secondsはslowdown前の値のままだと実際の最終
+    # 音声(narration/{name}.wav)の長さと食い違う(過去のtaskで発見・
+    # 記録した既知のデータ不整合パターンを未然に防ぐ)。time-stretch比率
+    # で比例配分し、最終音声の実際の長さと一致させる。
+    stretch_ratio = stretch_info["dst_duration_seconds"] / stretch_info["src_duration_seconds"]
+    if result.get("trim_info"):
+        ti = result["trim_info"]
+        for key in ("raw_duration_seconds", "trimmed_duration_seconds",
+                    "leading_margin_retained_seconds", "trailing_margin_retained_seconds",
+                    "raw_leading_silence_seconds", "raw_trailing_silence_seconds"):
+            if key in ti and ti[key] is not None:
+                ti[key] = round(ti[key] * stretch_ratio, 3)
+    if result.get("duration_seconds") is not None:
+        result["duration_seconds"] = round(result["duration_seconds"] * stretch_ratio, 3)
+    if classification.should_pass:
+        result["asr_verified"] = True
+        result["asr_text"] = asr_text
+    else:
+        result["status"] = "STOPPED"
+        result["asr_verified"] = False
+        result["reason"] = (f"post-process(6%減速)後の音声がASR再検証で不一致: "
+                             f"classification={classification.classification}")
+    return result
+
+
+def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_substring: str,
+                                        max_extra_chars: int = 60, max_slowdown_attempts: int = 3,
+                                        style_prefix_override: str = None) -> dict:
+    """通常ペースでの生成(generate_english_segment_with_fallback、既存の
+    standard/fallback retry込み)→6% time-stretch→post-process後ASR
+    再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
+    なった場合は最大max_slowdown_attempts回、通常ペースから取り直す
+    (実運用で判明した既知の事象: time-stretch自体が稀に語尾の子音や
+    近縁語[例: "shared seating"→"hot-desking"のような文脈的な誤認識]の
+    ASR誤認識を誘発することがあり、取り直したTTSテイクでは再現しない
+    ことを確認済み。既存の他ステップと同じ「ASR不一致は即座に諦めず、
+    まず取り直す」という方針を踏襲する)。
+
+    style_prefix_override(既定None): ER-008-A2-TIMESTRETCH-ABC-10で
+    ユーザーが試聴・承認したのは「既存の`A2_ENGLISH_STYLE_PREFIX_SLOWER`
+    (自然言語の『わずかに遅く』instruction)で生成された現行Production
+    音声」に6% time-stretchを重ねたものであり、instruction単体を除去した
+    音声ではない。そのため、この関数を呼ぶ側は引き続き
+    `A2_ENGLISH_STYLE_PREFIX_SLOWER`を渡し、承認された組み合わせ
+    (instruction + 6% time-stretch)を正確に再現すること(instruction
+    自体の単独効果がsame-text比較[ABC-09]で不安定だったことは、
+    instructionを外してよい理由にはならない、ユーザーが実際に聴いて
+    承認したのはinstructionを含む音声である)。"""
+    narration_dir = out_path.rsplit("/", 1)[0]
+    name = out_path.rsplit("/", 1)[1].removesuffix(".wav")
+    slowdown_attempts_log = []
+    result = None
+    for attempt in range(1, max_slowdown_attempts + 1):
+        result = c.generate_english_segment_with_fallback(
+            tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
+            style_prefix_override=style_prefix_override)
+        if result.get("status") != "OK":
+            break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
+        result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
+        slowdown_attempts_log.append({
+            "attempt": attempt, "status": result.get("status"),
+            "post_slowdown_classification": result.get("post_slowdown_classification"),
+        })
+        if result.get("status") == "OK":
+            break
+    result["slowdown_attempts_log"] = slowdown_attempts_log
+    return result
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
@@ -479,11 +606,11 @@ def generate_a2_segments(theme: dict) -> dict:
         # ER-005-E2E-TTS-ANALYSIS-FIX-01 Part D: Point番号ラベルが万一
         # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
         sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading、わずかに遅く)...")
+        tts_input = tts_safe_number_words_en(tts_safe_en(text))
+        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading、わずかに遅く+6%減速)...")
         with cl.segment_context(name):
-            results[name] = c.generate_english_segment_with_fallback(
-                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
-                first_words(text, 3), max_extra_chars=20,
+            results[name] = generate_a2_segment_with_slowdown(
+                tts_input, f"{narration_dir}/{name}.wav", first_words(text, 3), max_extra_chars=20,
                 style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
         results[name]["canonical_text"] = text
 
@@ -496,11 +623,11 @@ def generate_a2_segments(theme: dict) -> dict:
     ):
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文、わずかに遅く)...")
+        tts_input = tts_safe_news_en(text)
+        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文、わずかに遅く+6%減速)...")
         with cl.segment_context(name):
-            results[name] = c.generate_english_segment_with_fallback(
-                tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub,
-                style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
+            results[name] = generate_a2_segment_with_slowdown(
+                tts_input, f"{narration_dir}/{name}.wav", sub, style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
