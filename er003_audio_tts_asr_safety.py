@@ -37,7 +37,10 @@
 
 from __future__ import annotations
 
+import json
+import os
 import re
+import time
 
 # ============================================================
 # A. TTS入力正規化(TTS呼び出し直前のみに適用する)
@@ -582,3 +585,172 @@ def validate_japanese_short_segment_match(canonical_text: str, asr_text, asr_err
     result.update(verdict=TRUE_CONTENT_MISMATCH_JA, passed=False,
                    reason=f"読みが大きく異なります(類似度{ratio:.2f})")
     return result
+
+
+# ============================================================
+# F. 日本語canonical textに残る外来語・制作内部ラベルの検出
+# ============================================================
+# ER-009-JA-FOREIGN-TOKEN-GATE-01(2026-08-26)で発見: No.4(pool_n4_
+# supermarket)のA2 comment_2のJapanese canonical textに、制作内部の
+# 章番号ラベル「Part 1」がリスナー向け日本語のまま残っていた
+# ("Part 1では、店が売り場の配置を変え…")。TTS自体は正しく「パート1」と
+# 発話していたが、Japanese ASRは文中の英字表記をローマ字のまま書き
+# 起こすことがほぼ無いため、canonical text側の「Part 1」とASR書き起こし
+# 「パート1」が構造的に一致し得ず、14回の試行(旧STOPPED時12回+今回2回)
+# 全てでHuman Review待ち(ASR_VALIDATION_UNCERTAIN)へ回っていた。
+#
+# 根本原因はASR/TTS側の技術的不具合ではなく、「制作都合の内部ラベルを
+# リスナー向け日本語にそのまま残した」という編集上の問題である。本節は、
+# 日本語canonical textに残る英字・数字混じりのトークンを、TTSへ渡す前に
+# 検出し、以下4分類のいずれかへ振り分ける(OPEN-72/ER-008-DIRECTIONAL-
+# FACT-PRECHECK-08と同じ「rule-based・軽量・確信が持てない場合は無理に
+# 自動判定しない」思想を踏襲する。新規LLM呼び出しは使わない):
+#
+#   1. NEEDS_JAPANESE_PARAPHRASE: 「Part 1」「Point 2」等、制作内部の
+#      segment名・章番号ラベルがそのまま残っているもの。自然な日本語
+#      (例:「物語の前半」)へ言い換えるべき
+#   2. READING_DICTIONARY: 定着した略語・固有名詞で、カタカナ読みが
+#      既に辞書(DEFAULT_JA_READING_DICTIONARY)に登録されているもの
+#      (機械的に対応可)
+#   3. ENGLISH_PRONUNCIATION: その記事のKey Phrase英語表現(used_form)
+#      そのものが含まれており、意図的に英語のまま発話させるべき箇所
+#      (呼び出し側がknown_key_phrase_termsを渡した場合のみ判定できる)
+#   4. HUMAN_REVIEW: 上記いずれにも機械的な確信を持って分類できない
+#      もの。既存のASR Cascade(human_review_queue.jsonl)と同じ思想で、
+#      無理に自動判定せず明示的にレビュー待ちとして記録する
+#
+# 過検知でProduction全体を止めないため、TTS呼び出し自体をブロックする
+# のはカテゴリ4(HUMAN_REVIEW)のみに限定する(既存のdetect_gloss_
+# placeholder_notation()と同じ「ブロック対象は確信が持てるケースに限定
+# する」設計)。カテゴリ1〜3は検出・記録に留め、生成そのものは止めない。
+FOREIGN_TOKEN_NEEDS_PARAPHRASE = "NEEDS_JAPANESE_PARAPHRASE"
+FOREIGN_TOKEN_READING_DICTIONARY = "READING_DICTIONARY"
+FOREIGN_TOKEN_ENGLISH_PRONUNCIATION = "ENGLISH_PRONUNCIATION"
+FOREIGN_TOKEN_HUMAN_REVIEW = "HUMAN_REVIEW"
+
+# 「英単語+数字/ローマ数字」の形をした制作内部ラベル。ASCII英数字の
+# 前後だけを見るnegative lookaround(Unicode \bは漢字/かなも「単語文字」
+# とみなすため使えない、というPython re の既知の落とし穴を回避する)。
+_INTERNAL_LABEL_WORDS = ("Part", "Point", "Comment", "Section", "Step", "Chapter")
+_INTERNAL_LABEL_RE = re.compile(
+    r"(?<![A-Za-z0-9])(?:" + "|".join(_INTERNAL_LABEL_WORDS) + r")\s*(?:[0-9]+|[IVXivx]+)(?![A-Za-z0-9])")
+
+# 日本語文中に残るLatin文字トークン(英単語・略語)を検出する。数字単独
+# ("2026"等、既存のtts_safe_number_words_en等で扱う体系)は対象外とし、
+# 英字を含むトークンのみを対象にする(過検知を避ける、モジュール全体の
+# 「過剰な一般化を避ける」方針を踏襲)。
+_LATIN_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9\-\.']*")
+
+# 定着した略語・固有名詞の小規模な読み方辞書(機械的に対応可能なものだけ。
+# 大規模語彙辞書は作らない=過剰な一般化を避ける)。キーは小文字で比較する。
+DEFAULT_JA_READING_DICTIONARY = {
+    "cm": "センチ", "kg": "キログラム", "km": "キロメートル", "kcal": "キロカロリー",
+    "ceo": "シーイーオー", "wi-fi": "ワイファイ", "cafe": "カフェ",
+}
+
+
+def _spans_overlap(span: tuple, other_spans: list) -> bool:
+    s, e = span
+    return any(s < e2 and s2 < e for s2, e2 in other_spans)
+
+
+def classify_foreign_tokens_in_japanese_text(text: str, known_key_phrase_terms=None,
+                                              reading_dictionary: dict = None) -> list:
+    """日本語canonical text(TTSへ渡す直前のもの)に残る英字・数字混じりの
+    トークンを検出し、上記4分類のいずれかへ振り分ける。
+
+    known_key_phrase_terms(既定None): その記事のKey Phrase英語表現
+    (used_form)のiterableを渡すと、canonical text中にその表現がそのまま
+    含まれる箇所を、意図的な英語発話(ENGLISH_PRONUNCIATION)として扱う。
+    渡さない場合はこの分類は行われない(該当箇所は他の分類・HUMAN_REVIEW
+    のいずれかへ回る)。
+
+    reading_dictionary(既定None): DEFAULT_JA_READING_DICTIONARYへ追加/
+    上書きする呼び出し側固有の読み方辞書(小文字キー)。
+
+    戻り値: 検出0件ならば空list。各検出は
+    {"token": str, "category": str, "reason": str} の形の辞書。
+    判定順序(重複検出を避けるため、先に確定した範囲は後段の判定から除外
+    する): 1) 制作内部ラベル -> 2) Key Phrase英語表現 -> 3) 読み方辞書/
+    HUMAN_REVIEW(残りのLatin文字トークン)。
+    """
+    text = text or ""
+    dictionary = dict(DEFAULT_JA_READING_DICTIONARY)
+    if reading_dictionary:
+        dictionary.update({k.lower(): v for k, v in reading_dictionary.items()})
+    kp_terms = sorted({t for t in (known_key_phrase_terms or []) if t}, key=len, reverse=True)
+
+    findings = []
+    claimed_spans = []
+
+    # 1) 制作内部ラベル(Part 1等)を最優先で検出する
+    for m in _INTERNAL_LABEL_RE.finditer(text):
+        findings.append({
+            "token": m.group(0), "category": FOREIGN_TOKEN_NEEDS_PARAPHRASE,
+            "reason": f"制作内部のsegment名/章番号ラベルがリスナー向け日本語に残っています: {m.group(0)!r}。"
+                      "リスナーが単独で理解できる自然な日本語(例:「物語の前半」)へ言い換えてください。",
+        })
+        claimed_spans.append(m.span())
+
+    # 2) その記事のKey Phrase英語表現がそのまま含まれる場合は意図的な英語発話
+    lower_text = text.lower()
+    for term in kp_terms:
+        term_lower = term.lower()
+        start = 0
+        while True:
+            idx = lower_text.find(term_lower, start)
+            if idx == -1:
+                break
+            span = (idx, idx + len(term_lower))
+            if not _spans_overlap(span, claimed_spans):
+                findings.append({
+                    "token": text[idx:idx + len(term_lower)], "category": FOREIGN_TOKEN_ENGLISH_PRONUNCIATION,
+                    "reason": f"この記事のKey Phrase英語表現そのものであり、意図的に英語で発話させる箇所です: "
+                              f"{text[idx:idx + len(term_lower)]!r}",
+                })
+                claimed_spans.append(span)
+            start = idx + 1
+
+    # 3) 残りのLatin文字トークンを、読み方辞書 or HUMAN_REVIEWへ振り分ける
+    for m in _LATIN_TOKEN_RE.finditer(text):
+        span = m.span()
+        if _spans_overlap(span, claimed_spans):
+            continue
+        token = m.group(0)
+        if token.lower() in dictionary:
+            findings.append({
+                "token": token, "category": FOREIGN_TOKEN_READING_DICTIONARY,
+                "reason": f"読み方辞書に登録済みの表記です(読み: {dictionary[token.lower()]})",
+            })
+        else:
+            findings.append({
+                "token": token, "category": FOREIGN_TOKEN_HUMAN_REVIEW,
+                "reason": f"日本語canonical text中の未対応の英字/記号表記です: {token!r}。"
+                          "機械的に「言い換え」「辞書対応」「意図的な英語発話」のいずれとも判定できないため、"
+                          "人による確認が必要です。",
+            })
+        claimed_spans.append(span)
+
+    return findings
+
+
+def foreign_token_gate_requires_stop(findings: list) -> bool:
+    """カテゴリ4(HUMAN_REVIEW)が1件でもあれば、TTS呼び出し自体を
+    ブロックすべきと判定する。カテゴリ1〜3だけでは生成をブロックしない。"""
+    return any(f.get("category") == FOREIGN_TOKEN_HUMAN_REVIEW for f in (findings or []))
+
+
+FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl"
+
+
+def log_foreign_token_human_review(canonical_text: str, wav_path: str, findings: list) -> None:
+    """既存のASR Cascade human_review_queue.jsonl(er007_ja_secondary_
+    asr_01.py::_log_human_review)と同じ思想・形式で、HUMAN_REVIEW判定を
+    記録する(TTS呼び出し自体は行わない)。"""
+    os.makedirs(os.path.dirname(FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH), exist_ok=True)
+    record = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "canonical_text": canonical_text, "wav_path": wav_path, "findings": findings,
+    }
+    with open(FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")

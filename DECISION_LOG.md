@@ -2056,6 +2056,106 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   processing time-stretch)」行を`VALIDATION_ONLY`→`DECIDED`
   (`PRODUCTION_WIRED`)へ更新
 
+## ER-009-JA-FOREIGN-TOKEN-GATE-01(2026-08-26)
+
+- **Decision**: Pool Topic No.4(pool_n4_supermarket)を最新のA2 6%
+  slowdown/Audio Validation Gate仕様へ揃える作業中、A2 comment_2が
+  ASR_VALIDATION_UNCERTAIN(Human Review待ち)のままGateをブロックして
+  いることが判明した。ユーザーが実際に音声を試聴し、原因を確認した上で
+  台本(comment_2)を修正・再生成することを承認し、あわせて同種の問題を
+  今後検出する仕組み(4分類ゲート)の新規実装を指示した。両方を実施し、
+  検出ロジックを`er003_audio_tts_asr_safety.py`(既存のTTS/ASR共通安全
+  部品モジュール)へ新設・Production配線した(`PRODUCTION_WIRED`)
+- **root cause**: A2 comment_2のJapanese canonical textに、制作内部の
+  章番号ラベル「Part 1」がリスナー向け日本語のまま残っていた
+  ("Part 1では、店が売り場の配置を変え…")。TTS自体は正しく「パート1」
+  と発話していたが、Japanese ASR(Primary OpenAI×2・Secondary Azure×2
+  の4段Cascade全て)は文中の英字表記をローマ字のまま書き起こすことが
+  ほぼ無いため、canonical text側の「Part 1」とASR書き起こし「パート1」
+  が構造的に一致し得ず、旧STOPPED時12回+今回2回の計14回の試行全てで
+  Human Review待ちへ回っていた。音声自体は正しく発話されており、
+  ASR/TTS側の技術的不具合ではなく、「制作都合の内部ラベルをリスナー
+  向け日本語にそのまま残した」という編集上の問題だったと判定した
+- **台本修正**: comment_2を「物語の前半では、店が売り場の配置を変え、
+  買い物客が最初に見る商品を変えたことを聞きました。では、その後、
+  商品の売れ方はどう変わったのでしょうか。」へ修正した(「Part 1」を
+  「物語の前半」へ言い換え、他の意味・情報・Fact内容は一切変更して
+  いない)。B1(`b1_support_texts.json`)は同種の内部ラベル漏れが無い
+  ことを確認済み(B1 Comment/Previewは日本語ではなくeasy Englishの
+  ため、そもそも対象外)。A2側の他のJapanese文言(preview/comment_1・
+  3・4/japanese_title/Key Phrase gloss5件)も同じ観点で確認し、他に
+  内部ラベルは見つからなかった
+- **新設ゲートの設計**: `classify_foreign_tokens_in_japanese_text()`
+  (rule-based、新規LLM呼び出しなし、OPEN-72/ER-008-DIRECTIONAL-FACT-
+  PRECHECK-08と同じ「確信が持てない場合は無理に自動判定しない」思想を
+  踏襲)を新設した。日本語canonical text中の英字・数字混じりのトークン
+  を、TTSへ渡す前に4分類へ振り分ける:
+  (1) `NEEDS_JAPANESE_PARAPHRASE` — 「Part 1」「Point 2」等の制作内部
+  segment名・章番号ラベル(ASCII英数字の前後だけを見るnegative
+  lookaroundで検出、Python re のUnicode `\b`が漢字/かなも「単語文字」と
+  みなす既知の落とし穴を回避)
+  (2) `READING_DICTIONARY` — `DEFAULT_JA_READING_DICTIONARY`(小規模な
+  組み込み辞書)に登録済みの定着した略語・固有名詞
+  (3) `ENGLISH_PRONUNCIATION` — 呼び出し側が渡した`known_key_phrase_
+  terms`(その記事のKey Phrase英語表現[used_form])そのものが含まれる
+  箇所。渡さない場合はこの分類は行われない
+  (4) `HUMAN_REVIEW` — 上記いずれにも機械的な確信を持って分類できない
+  もの。既存のASR Cascade human_review_queue.jsonlと同じ思想で、
+  `er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl`へ
+  明示的にレビュー待ちとして記録する
+  過検知でProduction全体を止めないため、TTS呼び出し自体をブロックする
+  のはカテゴリ4のみに限定した(既存の`detect_gloss_placeholder_
+  notation()`と同じ「ブロック対象は確信が持てるケースに限定する」設計)。
+  カテゴリ1〜3は検出・記録に留め、生成そのものは止めない
+- **配線**: `er003_v1_n3_01_tts_generate.py`の日本語TTS入口2箇所
+  (B1: `generate_charon_japanese_with_reading_safety()`、A2:
+  `generate_a2_japanese_with_reading_safety()`)の先頭、既存の
+  `detect_gloss_placeholder_notation()`チェックの直後へ追加した。A2側は
+  `generate_a2_japanese_with_fallback()`(標準+minimal instruction
+  fallbackの両方を内包)を呼び出す前の1箇所でチェックするため、2つの
+  経路を重複実装なしでカバーできる。既存のKey Phrase日本語gloss呼び出し
+  (B1 kp_ja_charon・A2 meaning_N、いずれも`generate_a2_segments()`/
+  `generate_b1_segments()`内)は、新設した`known_key_phrase_terms`
+  引数へ`[used_form]`を渡すよう更新し、Key Phrase自身の英語表現が
+  gloss中に現れてもHUMAN_REVIEWへ誤って回らないようにした
+- **受入テスト**: `er009_ja_foreign_token_gate_01_test_01.py`(13件、
+  全PASS)。No.4実例("Part 1"検出→NEEDS_JAPANESE_PARAPHRASE・修正後は
+  検出0件)、Point/Comment/Section/Step等のラベル変種、読み方辞書
+  ヒット(Wi-Fi)、Key Phrase表現の意図的な英語発話判定(渡す/渡さない
+  両ケース)、未知の外来語トークンのHUMAN_REVIEW判定、既存の助数詞・
+  年号・漢数字パターンでの誤検知が無いこと(OPEN-73実例を含む)、No.4
+  A2の他の全Japanese文言での誤検知が無いこと、B1/A2の日本語TTS入口が
+  HUMAN_REVIEW時に実際のTTS呼び出し前でSTOPPEDになることを確認した
+- **No.4実データへの適用**: 新設ゲートをNo.4 A2の全Japanese文言
+  (preview/comment_1〜4/japanese_title/Key Phrase gloss5件、計10件)へ
+  実行した結果、修正前はcomment_2の「Part 1」1件のみNEEDS_JAPANESE_
+  PARAPHRASEとして検出され、他9件は検出0件だった。comment_2修正後は
+  全10件で検出0件を確認した。修正後のcomment_2を実際に再生成した結果、
+  Primary ASRで一発一致(fallback不使用、`status=OK`)を確認し、A2の
+  全14 segmentがVALIDATED状態になったことを確認した上でAudio
+  Validation Gateを実PASSし、A2を再assemble(376.741秒、clipping無し)
+  した。B1(b1b)は無変更のままGate実PASSを再確認した
+- **既存回帰テストへの影響**: `run_project_regression.py`実行時、
+  `er003_test_p2j_investigate.py::CollectionCountTests::test_combined_
+  equals_sum_of_er002_and_er003`が1件failした(`1820 != 1757`)。原因を
+  切り分けたところ、本タスクの新規テストファイルを一時的に取り除いても
+  同じ失敗(`1807 != 1757`)が再現することを確認しており、**本タスクが
+  作った新規の退行ではなく、er007/er008系テストファイルが`er0XX_test_
+  *.py`(prefix直後に`_test_`が続く命名)ではなく`er0XX_<説明>_test_
+  NN.py`という別の命名規則を使うようになった時点から既に存在していた
+  当該meta-test(prefix別再集計ロジック)側の前提崩れ**と判定した。この
+  1件を除く1819件は全てPASS。本件は今回のスコープ外として着手せず、
+  Open Item化した(下記OPEN-77)
+- **今回実施しなかったこと**: 既存22テーマ全体への遡及適用(No.4以外は
+  未確認、OPEN-68の既存方針に準拠し必要になった時点で個別対応)、
+  `test_combined_equals_sum_of_er002_and_er003`自体の修正(pre-existing
+  かつ本タスクのスコープ外と判断、Open Item化のみ)
+- **根拠レポート**: ER-009-JA-FOREIGN-TOKEN-GATE-01完了報告、OPEN-77
+- **影響するCURRENT_SPEC項目**: Cross-level仕様節へ「日本語解説・
+  Comment文での制作内部ラベル禁止」を新規追加(`DECIDED`)。QA/Human
+  Review節へ「日本語canonical textの外来語/制作内部ラベル検出(4分類
+  ゲート)」を新規追加(`DECIDED`、`PRODUCTION_WIRED`)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

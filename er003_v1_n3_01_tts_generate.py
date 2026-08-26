@@ -209,7 +209,7 @@ def load_text(path: str) -> str:
 
 
 def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
-                                                   max_attempts: int = 6) -> dict:
+                                                   max_attempts: int = 6, known_key_phrase_terms=None) -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: 先頭以外に残った項変数記法(「〜」「…」等)は
     # 機械的に削除すると文法が壊れるため、TTS呼び出し自体を行わずSTOPPEDで
@@ -222,11 +222,27 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
             "canonical_text": text,
             "placeholder_check": placeholder_check,
         }
+    # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
+    # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する。
+    # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
+    # で止める(カテゴリ1〜3は検出・記録のみに留め、生成をブロックしない)。
+    foreign_token_findings = safety.classify_foreign_tokens_in_japanese_text(
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms)
+    if safety.foreign_token_gate_requires_stop(foreign_token_findings):
+        safety.log_foreign_token_human_review(text, out_path, foreign_token_findings)
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない"
+                      "外来語/記号表記が残っています(Human Review待ち)。",
+            "canonical_text": text, "foreign_token_findings": foreign_token_findings,
+        }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     r = voice01.generate_charon_japanese(tts_input, out_path, expected_substring, max_attempts=max_attempts)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)
+    if foreign_token_findings:
+        r["foreign_token_findings"] = foreign_token_findings
     return r
 
 
@@ -331,7 +347,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
 
 
 def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
-                                              max_extra_chars: int = 40, max_attempts: int = 6) -> dict:
+                                              max_extra_chars: int = 40, max_attempts: int = 6,
+                                              known_key_phrase_terms=None) -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
     # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
@@ -345,12 +362,30 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
             "canonical_text": text,
             "placeholder_check": placeholder_check,
         }
+    # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
+    # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する
+    # (この関数はgenerate_a2_japanese_with_fallback経由でminimal instruction
+    # fallbackも内包するため、ここで1回チェックすれば両経路をカバーできる)。
+    # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
+    # で止める(カテゴリ1〜3は検出・記録のみに留め、生成をブロックしない)。
+    foreign_token_findings = safety.classify_foreign_tokens_in_japanese_text(
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms)
+    if safety.foreign_token_gate_requires_stop(foreign_token_findings):
+        safety.log_foreign_token_human_review(text, out_path, foreign_token_findings)
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない"
+                      "外来語/記号表記が残っています(Human Review待ち)。",
+            "canonical_text": text, "foreign_token_findings": foreign_token_findings,
+        }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     r = generate_a2_japanese_with_fallback(
         tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)
+    if foreign_token_findings:
+        r["foreign_token_findings"] = foreign_token_findings
     return r
 
 
@@ -546,7 +581,8 @@ def generate_b1_segments(theme: dict) -> dict:
         print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 日本語meaning生成(Charon、reading-safety): {ja_gloss!r}...")
         with cl.segment_context(f"kp{rank}_japanese"):
             ja_r = generate_charon_japanese_with_reading_safety(
-                ja_gloss, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss))
+                ja_gloss, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss),
+                known_key_phrase_terms=[used_form])
         kp_results[rank] = {"english": en_r, "japanese": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -643,7 +679,8 @@ def generate_a2_segments(theme: dict) -> dict:
         print(f"[N3-TTS][{theme_id}/a2] meaning_{i}生成(日本語): {ja_gloss!r}...")
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
             ja_r = generate_a2_japanese_with_reading_safety(
-                ja_gloss, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss), max_extra_chars=30)
+                ja_gloss, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss), max_extra_chars=30,
+                known_key_phrase_terms=[used_form])
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}
