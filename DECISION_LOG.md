@@ -1901,6 +1901,55 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   directional fact precheck for user-validation phase」行を新規追加
   (`DECIDED`/`PRODUCTION_WIRED`、暫定策と明記)
 
+## ER-008-A2-SPEED-SAME-TEXT-ABC-09(2026-08-26)
+
+- **Decision**: No.7 A2の英語ナレーション速度について、A(現行Production
+  指示)・B(やや強めの減速指示)・C(Bよりもう一段強めの減速指示)を、
+  Full Story Part 1のみ・本文/voice/model/segment境界を完全固定した
+  same-text条件で比較生成した。**Production既定速度は今回変更しない**
+  (前回タスクは記事本文自体がMethod C適用で変わっており、WPM比較として
+  クリーンではなかったため、今回はその反省を踏まえた純粋比較のみを
+  目的とした)。3候補ともstandard path・fallback不使用でASR PASSした
+  が、**B・CともAより速い結果**(B: +11.2%、C: +2.0%)となり、意図した
+  減速方向とは逆だった。採用可否はユーザーの試聴判断へ委ねる
+- **same-text条件の担保**: 本文はNo.7 A2 `parts.json`のpart1と一字一句
+  同一であることを直接diffで確認した。model(`gemini-2.5-pro-preview-
+  tts`)・voice(`Aoede`)は`style_prefix_override`を通しても不変(コード
+  上、これらはstyle_prefix_overrideの有無に関わらず固定値として渡され
+  る設計であることを確認済み)。fallback回避は「fallbackへ自動遷移する
+  ラッパー関数を呼ばず、standard path関数(`generate_narration_snippet_
+  verified_strict`)を直接呼ぶ」という構造的な設計で保証した(事後
+  チェックではなく、fallbackへ物理的に到達し得ない呼び出し経路)
+- **実測結果**(active-speech WPM、word_count=70固定):
+  A=142.22 WPM(30.01s/29.53s active)、B=158.19 WPM(27.16s/26.55s)、
+  C=145.07 WPM(29.49s/28.95s)。3候補ともPrimary ASR一発PASS(A:
+  NORMALIZED_MATCH、B・C: EXACT_MATCH、retry 0回)
+- **STOP条件の該当判断**: タスク仕様Part Kの「Cでも速度差がほぼ出ない」
+  に該当すると判断した(C はAよりむしろ2%速く、B は11%速い。意図した
+  減速方向へは3候補とも動いていない)。ただし「same-text条件が崩れる」
+  「fallback発動」「B/Cで不自然なprosodyが明らか」「A/B/C以外のProd
+  仕様変更が必要」には該当しないため、実装・比較自体は完了させ、結果を
+  正直に提示した上でユーザー判断を仰ぐ方針とした(勝手にB/Cを再調整
+  したり追加trialを重ねたりはしていない、Part K「不要な再実行は禁止」)
+- **Artifact**: A/B/C音声・WPM・instruction差分を並べた試聴比較ページを
+  公開した(https://claude.ai/code/artifact/cc667002-0be4-4e02-a7df-
+  82f744eee0c9)。Claude側からの推奨候補は提示していない(仕様書Part I
+  「最終判断はユーザー」)
+- **OPEN-72/OPEN-74確認(Part J)**: 実施前に状態を確認し、OPEN-72は
+  `DEFERRED / AFTER USER VALIDATION`のまま(変更なし)、OPEN-74には
+  「補助的警告機能であり、Fact方向の安全性を保証するものではない」
+  という明記が不足していたため、OPEN_ITEMS.md/CURRENT_SPEC.mdへ追記
+  した(コードは変更していない、ドキュメントのみ)
+- **今回実施しなかったこと**: Production速度既定の変更、B/C以外の追加
+  候補生成、Writer/Editor/Fact Checkの再実行、Full Story Part 1以外の
+  segmentでのA/B/C比較(Part K「Full Story Part 1のみ3候補」に限定)
+- **根拠レポート**: ER-008-A2-SPEED-SAME-TEXT-ABC-09完了報告、
+  比較Artifact(上記URL)
+- **影響するCURRENT_SPEC項目**: 「A2英語ナレーション速度指示」行は
+  今回変更していない(Production既定は前タスクのA相当のまま)。
+  「Interim directional fact precheck for user-validation phase」行へ
+  「安全保証ではない」を明記(`DECIDED`のまま、内容のみ補強)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
