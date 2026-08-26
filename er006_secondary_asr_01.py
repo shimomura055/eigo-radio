@@ -166,16 +166,26 @@ def evaluate_attempt_with_cascade(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+    force_secondary: bool = False,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
     と同じ(verified, stop_retrying, classification)のタプルを返す
     (既存呼び出し元のコードをほぼ変更せずに差し替えられる)。
     Cascadeが起動してHuman Review行きになった場合、詳細(§14の一覧項目)を
-    HUMAN_REVIEW_LOG_PATHへ追記する。"""
+    HUMAN_REVIEW_LOG_PATHへ追記する。
+
+    force_secondary(ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-
+    COMPRESSION-AB-04 Part Cで追加、既定False)は、fallback(minimal
+    instruction)経由の音声にのみ使う想定の引数。Trueの場合、Primaryが
+    PASS(verified=True)であっても、Secondary ASRで1回だけ追加確認する
+    (No.7 point_one_headingで実際に起きた「Primaryは正しく書き起こし
+    たが実音声はSecondaryだと全く別物に聞こえる」誤PASSを防ぐため)。
+    standard path(force_secondary=False)の挙動・追加コストは一切変わ
+    らない。"""
     detail = evaluate_attempt_with_cascade_detail(
         canonical_text, asr_text, prior_results, wav_path, language=language,
         ledger_phrases=ledger_phrases, max_same_signature=max_same_signature,
-        cascade_enabled=cascade_enabled)
+        cascade_enabled=cascade_enabled, force_secondary=force_secondary)
     if detail["human_review_required"]:
         _log_human_review(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]
@@ -185,12 +195,19 @@ def evaluate_attempt_with_cascade_detail(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+    force_secondary: bool = False,
 ) -> dict:
     """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
     その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
     再生成せず同じ音声に対してCascade(Primary#2 -> Secondary#1 ->
     Secondary#2)を追加実行する。cascade_enabled=Falseなら既存のval.
     evaluate_attempt()と完全に同じ挙動(後方互換、Production既定)。
+
+    force_secondary=Trueの場合、Primaryが最初からPASSしたケースでも
+    (is_entity_like_mismatch判定を経由せず)Secondary ASRを1回だけ
+    追加で呼び、両方が一致した場合のみ最終的にverified=Trueとする
+    (Part C参照)。既存のcascade_enabled/entity-like判定によるルート
+    (Primary不一致時の4-step cascade)には一切影響しない。
 
     戻り値のdictには、Human Review用に全stepのtranscriptを保持する
     (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
@@ -208,6 +225,28 @@ def evaluate_attempt_with_cascade_detail(
         "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
         "cost_guard_triggered": False,
     }
+
+    if verified and force_secondary:
+        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
+        # Part C: fallback経由の音声はPrimaryがPASSしても無条件でSecondary
+        # を1回追加実行し、両方が一致した場合のみ最終的にPASSとする。
+        result["cascade_invoked"] = True
+        text_s_forced, err_s_forced = get_full_text_via_azure_stt_with_phrase_list(
+            wav_path, language=language, phrases=ledger_phrases)
+        cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced) if text_s_forced is not None else None
+        steps.append({"step": "secondary_forced", "provider": "azure", "text": text_s_forced,
+                       "classification": cls_s_forced.classification if cls_s_forced else "TTS_FAILURE",
+                       "phrase_list_used": bool(ledger_phrases)})
+        if cls_s_forced is not None and cls_s_forced.should_pass:
+            # Primary/Secondaryが一致 -> 従来どおりPASS
+            return result
+        # SecondaryがPrimaryのPASS判定に同意しない -> 無条件PASSさせない
+        result["verified"] = False
+        result["stop_retrying"] = False
+        result["human_review_required"] = True
+        result["final_status"] = cls_s_forced.classification if cls_s_forced else "TTS_FAILURE"
+        result["classification"] = cls_s_forced if cls_s_forced else cls
+        return result
 
     if verified or not cascade_enabled or not is_entity_like_mismatch(cls):
         # 固有名詞由来でない不一致(数字・否定・通常内容語の差等)は、既存の

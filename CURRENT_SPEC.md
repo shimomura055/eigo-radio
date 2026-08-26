@@ -241,7 +241,7 @@ Point One/Two・In One Line(=News Content)でも同一の値が使われてお�
 | 内容QA retry | 3試行1セット(`run_tts_content_attempts`) | `DECIDED` | ER-003-B1-P8A系 | 2026-08-07 |
 | 短文ナレーション生成 | 前後文脈のない短いフレーズは専用の最小限instructionで生成 | `DECIDED` | ER-003-B1-P9A-R1(commit `d41e4fe`) | 2026-08-07 |
 | strict ASR検証 | 部分一致 + ASR文字数上限(期待文字数+少数の余裕)の両方を確認 | `DECIDED` | A02 meaning_5発見を機に追加 | 2026-08-08 |
-| minimal instruction fallback | 標準経路が規定回数不合格の場合、最小限instructionへ自動フォールバック(短文ナレーション・英語Key Phrase Componentの両方に適用) | `DECIDED` | ER-003-REPRO-01-MAIN | 2026-08-08 |
+| minimal instruction fallback | 標準経路が規定回数(既定6回)不合格の場合、最小限instructionへ自動フォールバック(短文ナレーション・英語Key Phrase Componentの両方に適用)。**2026-08-26更新(ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04)**: fallback(minimal instruction)経由で生成された英語音声は、Primary ASRの結果に関係なくSecondary ASR(Azure)による確認を必須化した(`er006_secondary_asr_01.py::evaluate_attempt_with_cascade(force_secondary=True)`)。standard path側は無変更・追加コストなし。No.7 A2 point_one_headingで実際に発生した「Primaryは正常認識・Secondaryは全く別内容」という誤PASS事故の再発を防ぐ暫定対策(fallback自体の根本原因見直しはOPEN-66・OPEN-67参照、`DEFERRED / AFTER USER VALIDATION`) | `DECIDED`(fallback導入)、`PRODUCTION_WIRED`(Secondary ASR必須化、2026-08-26) | ER-003-REPRO-01-MAIN(導入)、ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04(Secondary必須化) | 2026-08-08(導入)、2026-08-26(Secondary必須化) |
 | Dynamics処理 | **不使用**(scalar gainのみ、compressorやDynamics3は使わない) | `DECIDED` | `er003_b1_p9a_audio.py`にコード内コメントで明記 | 2026-08-07 |
 
 ## Audio Assembly

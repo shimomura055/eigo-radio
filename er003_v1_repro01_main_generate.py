@@ -393,9 +393,14 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
         asr_text, err = routing.transcribe(out_path, language="en-US")
         length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
+        # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
+        # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
+        # path側は変更しない、追加コストはfallback発動時のみ)。
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, fallback_classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+            force_secondary=True)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification, "verified": verified})

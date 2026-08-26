@@ -176,6 +176,118 @@ def test_is_entity_like_mismatch_true_for_proper_noun_only():
     print("PASS: test_is_entity_like_mismatch_true_for_proper_noun_only")
 
 
+# ============================================================
+# ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
+# Part C: force_secondary(fallback経由音声のSecondary ASR必須化)のtest。
+# ============================================================
+def test_force_secondary_false_never_calls_secondary_even_if_primary_passes():
+    # standard path(force_secondary=既定False)は、Primary PASSならSecondary
+    # を一切呼ばない(追加コストゼロであることの直接確認)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "SHOULD NOT BE CALLED", None
+
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        canon = "A desk can feel like a place."
+        asr = "A desk can feel like a place."
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=False)
+        assert r["verified"] is True
+        assert calls["secondary"] == 0
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_force_secondary_false_never_calls_secondary_even_if_primary_passes")
+
+
+def test_force_secondary_true_primary_pass_secondary_pass_verified():
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+
+    def fake_secondary(*a, **k):
+        return "A desk can feel like a place.", None
+
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        canon = "A desk can feel like a place."
+        asr = "A desk can feel like a place."
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
+        assert r["verified"] is True
+        assert any(s["step"] == "secondary_forced" for s in r["steps"])
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_force_secondary_true_primary_pass_secondary_pass_verified")
+
+
+def test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed():
+    # fallback + Primary PASS + Secondary mismatch -> 自動PASSしない(C-3 #3)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+
+    def fake_secondary(*a, **k):
+        return "A desk can feel LITHA.", None  # Secondaryは全く違う内容
+
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        canon = "A desk can feel like a place."
+        asr = "A desk can feel like a place."  # Primaryは正常認識(誤PASSの実例を再現)
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
+        assert r["verified"] is False, "SecondaryがPrimaryのPASSに同意しない場合、自動PASSしてはならない"
+        assert r["human_review_required"] is True
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed")
+
+
+def test_force_secondary_true_primary_mismatch_preserves_existing_cascade():
+    # fallback + Primary mismatch(entity-like)-> 既存のCascade安全性を維持
+    # (force_secondary=Trueであっても、Primary不一致時の分岐は変更しない、C-3 #4)。
+    orig_transcribe = routing.transcribe
+
+    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
+        return "A Tony and colleagues published a study.", None  # Primary#2でも不一致のまま
+
+    routing.transcribe = fake_transcribe
+    try:
+        canon = "Ottoni and colleagues published a study."
+        asr = "A Tony and colleagues published a study."  # 固有名詞のみの差、Primaryはmismatch
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
+        assert r["cascade_invoked"] is True
+        assert any(s["step"] == "primary_2" for s in r["steps"]), \
+            "force_secondary=TrueでもPrimary不一致時は既存のPrimary#2経路を通るはず"
+        assert not any(s["step"] == "secondary_forced" for s in r["steps"])
+    finally:
+        routing.transcribe = orig_transcribe
+    print("PASS: test_force_secondary_true_primary_mismatch_preserves_existing_cascade")
+
+
+def test_no7_point_one_heading_fixture_caught_by_forced_secondary():
+    # No.7 A2 point_one_headingで実際に起きた事故の再現fixture: Primary(OpenAI)
+    # は正しく書き起こしたが、実音声はSecondary(Azure)だと全く別物に聞こえた
+    # (ER-008-N7-CONTENT-AUDIO-QA-02で実際に確認した実測値そのもの)。
+    # force_secondary=Trueなら、この誤PASSを素通りさせないことを確認する。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+
+    def fake_secondary(*a, **k):
+        return "A desk can feel LITHA.", None  # 実際にAzureが返した書き起こし
+
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        canon = "A desk can feel like a place"
+        asr = "A desk can feel like a place..."  # 実際にOpenAI Primaryが返した書き起こし
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
+        assert r["verified"] is False, "Primaryだけで素通りしてはならない(実際の事故の再発防止)"
+        assert any(s["step"] == "secondary_forced" for s in r["steps"]), "Secondaryまで到達しなければならない"
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_no7_point_one_heading_fixture_caught_by_forced_secondary")
+
+
 def test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review():
     import os
     orig_log_path = secondary.HUMAN_REVIEW_LOG_PATH
@@ -227,5 +339,10 @@ if __name__ == "__main__":
     test_secondary_1_pass_stops_before_secondary_2()
     test_is_entity_like_mismatch_excludes_number_diffs()
     test_is_entity_like_mismatch_true_for_proper_noun_only()
+    test_force_secondary_false_never_calls_secondary_even_if_primary_passes()
+    test_force_secondary_true_primary_pass_secondary_pass_verified()
+    test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed()
+    test_force_secondary_true_primary_mismatch_preserves_existing_cascade()
+    test_no7_point_one_heading_fixture_caught_by_forced_secondary()
     test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review()
     print("ALL TESTS PASSED")

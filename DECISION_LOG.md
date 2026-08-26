@@ -1572,6 +1572,77 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   への追加・変更はしていない。TTS fallbackの既存記載(244行目・263行目)
   も今回は変更していない(調査結果を踏まえた改修は別タスクでの判断)
 
+## ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04(2026-08-26)
+
+- **Decision**: ユーザー承認済みの暫定対策として、fallback(minimal
+  instruction)経由で生成された英語音声にSecondary ASR確認を必須化する
+  変更をProductionへ正式配線した(`PRODUCTION_WIRED`)。fallback自体の
+  根本再設計は`DEFERRED / AFTER USER VALIDATION`としてOPEN-67へ切り
+  出した。Evidence Compressionは、強化したFact safety制約のもとで
+  方式B(Compression-aware Writer)・方式C(Lossless Editor)をNo.7で
+  比較し、方式Cを推奨として`VALIDATED_CANDIDATE / USER_REVIEW_
+  REQUIRED`のまま記録した。CURRENT_SPECのProduction Writer既定Prompt
+  は変更していない
+- **fallback発動条件の確定**: 実コードを追跡し、Gemini 5xx/timeout/
+  応答異常はいずれも`_call_tts_with_retry`内の同一Exception捕捉で
+  扱われ、技術retry(既定1回)を経てそのTTS試行1回分の失敗として
+  outer loop(既定6回)で再試行されること、ASR content mismatch/
+  hallucinationは`classify_asr_match`のTRUE_CONTENT_MISMATCH/
+  TTS_FAILURE分類でretry対象になること、entity-likeな不一致のみが
+  Cascade(Primary#2→Secondary#1→Secondary#2)の対象になることを確認
+  した。「6回」は同一standard prompt・同一voiceでの6回独立したフレッシュ
+  TTS生成試行を意味し(ASR retryの回数ではない)、`max_attempts: int = 6`
+  が現在の唯一の設定値(topic単位のチューニング機構は無い)
+- **重大な追加発見(Part B)**: TTS生成の各試行は、ASR内容検証の前に
+  `write_wav_float()`で無条件に音声ファイルをdisk上書きしているため、
+  standard/fallbackとも全試行が尽きて最終的に`STOPPED`となった場合
+  でも、disk上には最後の(未検証・却下された)音声がそのまま残る。
+  Assembly側はtts_generation_results.jsonのstatusを一切確認せず
+  このファイルを読み込むため、**無人Production量産でfallbackも失敗
+  した場合、自動的には停止せず、未検証の音声を含んだままエピソードが
+  完成する**ことを、No.6 Deliveryの実例(手動再実行スクリプト
+  `resume_audio_n6.py`実行後もSTOPPEDのままだが完成済みwavが存在する)
+  で確認した。この一般的なリスクへの対策(Key Phrase以外の全segment
+  への適用)は今回のスコープ外とし、OPEN-67の一部として記録した
+- **Secondary ASR必須化の実装**: `er006_secondary_asr_01.py::
+  evaluate_attempt_with_cascade`/`evaluate_attempt_with_cascade_
+  detail`へ`force_secondary`引数(既定False)を追加。standard path
+  (`er003_v1_repro01_main_generate.py`の`generate_narration_
+  snippet_verified_strict`)は無変更・追加コストゼロ。fallback path
+  2箇所(`generate_key_phrase_component_verified`の内部fallbackループ、
+  `er003_v1_crosslevel_audio_02_common.py::generate_english_
+  segment_with_fallback`のfallbackループ)へ`force_secondary=True`を
+  配線し、PrimaryがPASSしてもSecondaryが同意しない限り自動PASSしない
+  ようにした。5件の受入テスト(standard無影響/両ASR一致でPASS/
+  Secondary不一致で自動PASS阻止/Primary不一致時の既存Cascade維持/
+  No.7実event fixture)を[er006_secondary_asr_01_test.py](er006_secondary_asr_01_test.py)
+  へ追加し全PASSを確認、CURRENT_SPEC.mdを更新した
+- **Evidence Compression 3方式比較**: 前回(ER-008-TTS-FALLBACK-AND-
+  EVIDENCE-COMPRESSION-03)発見したB1候補の因果表現drift対策として、
+  `EVIDENCE_COMPRESSION_BLOCK`へFact safety不変条件(相関→因果への
+  変換禁止・scope拡張禁止・hedging削除禁止等)を明示追加した。方式B
+  (Writer再生成)と、新規実装した方式C(Lossless Editor、Baseline
+  記事をそのまま渡し軽量編集のみ許可する新規opt-in経路、
+  `er008_evidence_compression_ab_04.py`)をNo.7で比較した結果、両方式
+  とも因果強化表現の新規混入は0件(drift再発なし)を確認した。方式C
+  は固有名詞削減の安定性が高く(全section・両levelで0件を達成)、
+  Ledger DeviationもBaseline水準に近く、A2はFact Check verdictが
+  PASSへ改善した。方式Bは実行ごとのばらつきが大きく(この回はA2で
+  固有名詞が一部残った)、B1のLedger Deviationが1件→6件へ悪化した。
+  **推奨は方式C**とした
+- **今回実施しなかったこと**: Evidence CompressionのProduction採用、
+  Evidence Compression音声生成、A2速度変更、A2 Point One音声差し替え、
+  A2 Key Phrase pause追加、Middle再開、No.8生成、Primary/Secondary
+  Provider入れ替え(※A2 Key Phrase pause追加・Point One修正音声・A2
+  slightly slower TTSは次の音声生成タスクで実施予定、Open Itemから
+  落とさない)
+- **根拠レポート**: ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-
+  COMPRESSION-AB-04完了報告、OPEN-65・OPEN-66・OPEN-67、比較Artifact
+  (https://claude.ai/code/artifact/29af88f0-2849-480b-830d-3381c556f812)
+- **影響するCURRENT_SPEC項目**: minimal instruction fallback(244行目、
+  Secondary ASR必須化を追記、`PRODUCTION_WIRED`)。Evidence Compression
+  ・Production Writer既定Promptは今回も変更していない
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

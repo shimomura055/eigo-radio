@@ -186,12 +186,21 @@ G. exactness_requirement: EXACT_REQUIREDと印のある数値(スコア・日付
 
 
 # ============================================================
-# ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03 Part B: Evidence
-# Compression(script-only候補、opt-in)。Research/Evidence Pack/VFL/
-# Fact Checkは一切変更せず、spoken layer(実際に読み上げられる文章)
-# だけを対象に、理解に不要な固有名詞・数字を減らす方針を試す。
-# 既定(evidence_compression_block未指定=空文字列)ではCOMMON_BLOCK_
-# TEMPLATEと完全に同一で、Production Writerの挙動には一切影響しない。
+# ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03/ER-008-FALLBACK-
+# TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04: Evidence
+# Compression(script-only候補、opt-in、Writer方式=Compression-aware
+# Writer)。Research/Evidence Pack/VFL/Fact Checkは一切変更せず、spoken
+# layer(実際に読み上げられる文章)だけを対象に、理解に不要な固有名詞・
+# 数字を減らす方針を試す。既定(evidence_compression_block未指定=空
+# 文字列)ではCOMMON_BLOCK_TEMPLATEと完全に同一で、Production Writer
+# の挙動には一切影響しない。
+#
+# AB-04追記: 初回検証(ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03)
+# のNo.7 B1 candidateで、出典名・数字を削った結果、元のcorrelational
+# evidenceより踏み込んだ因果的表現("...because some offices are
+# questioning the human cost of desk sharing"等)が新規に混入する
+# drift が実際に発生した。これを防ぐため、Fact safety不変条件を明示的な
+# 禁止リストとして追加した。
 # ============================================================
 EVIDENCE_COMPRESSION_BLOCK = """
 【Evidence Compression(今回の記事にのみ適用する追加方針)】
@@ -208,14 +217,17 @@ Ledgerの範囲内で自由に参照してよく、Fact Checkのために裏側�
 
 固有名詞の判断基準: 「この名前を音声で聞くことで、リスナーの理解が実質的
 に改善するか」を基準にしてください。改善しない場合は、"a survey"
-"several companies" "one report" のように一般化してください。
+"several companies" "one report" のように一般化してください。固有名詞を
+ゼロにすること自体は目的ではありません。
 
 数字の判断基準: 数字を全て削除する必要はありません。ただし、1つのPoint
 の中で複数の数字が連続し、リスナーの注意が意味ではなく数値の記憶へ向いて
 しまう状態は避けてください。2つの比較数値の組を両方とも読み上げるより、
 "workers with assigned desks were more likely to report both belonging
 and better focus"のように、傾向を示す1文へ圧縮できないか検討してください。
-機械的な「数字は最大N個まで」のような硬いルールは今回課しません。
+一方、トレンドの大きさ・方向そのものを理解するために必要な核心的な比較
+(例: 56% → 40% → 約1/3のような時系列を伴う比較)は必要に応じて残して
+ください。機械的な「数字は最大N個まで」のような硬いルールは今回課しません。
 
 一方、以下は削らずに残してください:
 - Storyの核心そのもの
@@ -224,6 +236,20 @@ and better focus"のように、傾向を示す1文へ圧縮できないか検�
 - 因果関係の範囲(相関を因果と混同させない、Fact Checkの制約は継続)
 - 不確実性の表現(「関連が見られた」等、断定を避ける表現)
 - 読み手が誤解しないために必要な情報
+
+【Fact safety(絶対に変更してはいけないもの、最優先)】
+Evidenceを減らす作業のなかで、以下を一切変更しないでください。数字や
+固有名詞を削った結果、埋め合わせるように主張を強めることは禁止します:
+- 相関(correlation)を因果(causation)へ変えないこと("was associated
+  with"を"causes"/"leads to"/"because"のような断定へ言い換えない)
+- 不確実性の表現(hedging)を削らないこと("a connection, not proof"の
+  ような限定は、具体的な数字・出典名を削ってもそのまま残すこと)
+- 主張が及ぶ範囲(scope)を広げないこと(「一部の企業」を「多くの企業」
+  「企業全体」のように広げない)
+- 比較の向き(どちらが大きい/多いか)を変えないこと
+- 否定の有無を変えないこと
+- 出来事の時系列の前後関係を変えないこと
+- 新しいFactや新しい因果関係を作り出さないこと
 """
 
 
