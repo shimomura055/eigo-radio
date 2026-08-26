@@ -1714,6 +1714,68 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   「QA / Human Review」節へ追加(`DECIDED`/`PRODUCTION_WIRED`)。
   Evidence Compression・Production Writer既定Promptは今回も無変更
 
+## ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06(2026-08-26)
+
+- **Decision**: Evidence Compression方式C(Lossless Editor)をユーザー
+  が正式採用し、Production Writerパイプラインへ配線した(`APPROVED_
+  FOR_PRODUCTION`→`PRODUCTION_WIRED`)。No.7 A2/B1を、この新Production
+  経路(方式C+既存Audio Validation Gate)で実際に再生成し、`USER
+  LISTENING READY`な完成候補音声とした。加えてA2のみ、(1) Key Phrase
+  番号→phrase間のポーズをさらに+0.1秒(累計+0.2秒)、(2) Point One
+  見出しの誤発音修正、(3) 自然言語による「わずかに遅く」ナレーション
+  指示、の3点を配線した(B1・Key Phraseの速度は無変更)
+- **方式Cの実装**: 新規`er003_v1_n3_01_evidence_compression_editor.py`
+  に`run_lossless_editor()`を実装し、`er003_v1_n3_01_articles_
+  generate.py::run_one_pattern()`内(Writer出力直後、Fact Check/
+  Ledger Deviation Checkの前)へ組み込んだ(`apply_evidence_
+  compression`引数、既定`True`)。Editorは「意味を保ったまま聴取負荷
+  を下げる」工程に限定し、Fact追加/削除・相関→因果・確信度強化・
+  hedging削除・scope拡張・比較/時間方向の変更・Point/Story構造変更を
+  明示的に禁止するprompt設計とした(過去3回のAB/精査タスクで確立
+  した不変条件リストを踏襲)。Method B(Compression-aware Writer、
+  `evidence_compression`引数)は既定Falseのまま完全に別経路として
+  維持した(混同防止のためdocstringへ明記)
+- **Safety Gate運用**: No.7実データでのSafety Gate確認として、
+  Writer出力直後の生原稿を`audit/pre_editor_article.md`へ保存し、
+  Editor適用後に新規発生したLedger Deviationを1件ずつこの生原稿と
+  突き合わせた。B1は8件中7件・A2は6件中大半がEditor適用前から存在
+  する内容(Writer自身の一般化傾向)で、Editor起因の新規driftは
+  「Korn Ferry says」→「One survey says」のような出典ラベルの言い
+  換え(既知のOPEN-69と同種、軽微)に留まり、新規の意味的driftは
+  確認されなかった
+- **音声再生成での実運用確認**: 大規模音声生成中、A2 assemblyが
+  `comment_4`の`STOPPED`によりAudio Validation Gateで実際に
+  ブロックされた(便宜的なHuman Approvalでのバイパスは行わず、原因
+  を精査)。原因は日本語ASRが正準テキストの漢数字「二つ」を常に
+  算用数字「2つ」として書き起こす決定論的な不一致で、6標準+6
+  fallback試行すべてが同一の`TRUE_CONTENT_MISMATCH`だった。
+  `a2_support_texts.json`の該当テキストを実際のASR書き起こし表記
+  (「2つ」)に合わせて修正し、該当segmentのみ再生成・ASR再検証
+  (`asr_verified: True`)した上でGateを正当に通過させた
+- **A2速度指示**: `er003_b1_p9a_audio.py`等4ファイルへ`style_prefix_
+  override`引数を新設し、A2の対象5区分(Full Story Part1/2・Point
+  One/Two・In One Line)へのみ`A2_ENGLISH_STYLE_PREFIX_SLOWER`
+  (数値WPM/speed指定なし、既存の感情・自然さ指示は維持したまま追記)
+  を適用した。fallback経路には適用しない設計とした。実測の結果、
+  平均WPMは138.8→141.5とむしろ微増し、単体での明確な減速効果は
+  確認できなかった。ただしMethod C適用+Writer新規生成でテキスト
+  自体が旧baselineと完全に異なるため単純比較はできず、タスク仕様
+  通り追加のprompt再調整はせずそのまま報告した(OPEN-32を訂正、
+  過去の「135WPM」記述は未実装だった)
+- **今回実施しなかったこと**: No.1〜6を含む既存22テーマへの方式C
+  遡及適用・再生成(OPEN-68の方針通り、必要になったテーマのみ個別
+  対応)、fallback根本再設計(OPEN-67、引き続き実ユーザー検証後まで
+  凍結)、"one report"表現の改善(OPEN-69、LOW優先度のまま)、Support
+  (Preview/Comment)への方式C効果の検証
+- **根拠レポート**: ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06
+  完了報告、OPEN-32・OPEN-65・OPEN-68・OPEN-69・OPEN-67、No.7完成
+  候補Artifact(https://claude.ai/code/artifact/de5ca386-8f04-470d-
+  926b-edcb579a58d7)
+- **影響するCURRENT_SPEC項目**: 「Evidence Compression(方式C、
+  Lossless Editor)」「A2 Key Phrase pause(番号→phrase間)」「A2英語
+  ナレーション速度指示」の3行を新規追加(いずれも`DECIDED`/
+  `PRODUCTION_WIRED`)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

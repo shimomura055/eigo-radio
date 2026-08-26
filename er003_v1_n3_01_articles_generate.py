@@ -24,6 +24,7 @@ from dotenv import load_dotenv
 import er002_ja_web_research_r3 as r3
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
+import er003_v1_n3_01_evidence_compression_editor as ec_editor
 import er003_v1_spoken_first_01_r1_generate as sf1r1
 import er006_model_routing_contract_01 as routing
 import er008_shared_point_blueprint_01 as blueprint_mod
@@ -344,7 +345,17 @@ def compute_metrics(text: str) -> dict:
 
 
 def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
-                     topic: str, out_dir: str) -> dict:
+                     topic: str, out_dir: str, apply_evidence_compression: bool = True) -> dict:
+    """apply_evidence_compression(既定True、ER-008-EVIDENCE-COMPRESSION-
+    PROD-AND-N7-AUDIO-06でProduction既定へ昇格): WriterがFact-safeな記事
+    を生成した直後、Lossless Editor(方式C、er003_v1_n3_01_evidence_
+    compression_editor.py)でspoken layerだけを軽量化する。Research/
+    Evidence Pack/VFL/Fact Ledger自体は変更しない。EditorはWriterでは
+    なく、意味を保ったまま聴取負荷を下げるだけの工程(禁止事項は
+    er003_v1_n3_01_evidence_compression_editor.py参照)。Editor適用後の
+    テキストに対してmetrics/Fact Check/Ledger Deviationを実行するため、
+    既存の安全確認プロセスがそのままEditor出力にも適用される。DEV/test
+    でOFFにしたい場合はFalseを渡す(Production既定はTrue)。"""
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
     with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
@@ -368,11 +379,27 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     # 常にNoneになり、article_textはstrip()結果と完全に同一(後方互換)。
     article_text, fact_usage_report = blueprint_mod.extract_trailing_metadata_block(
         writer_result["raw_text"].strip())
-    with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
-        f.write(article_text)
     if fact_usage_report is not None:
         with open(f"{out_dir}/audit/fact_usage_report.json", "w", encoding="utf-8") as f:
             json.dump(fact_usage_report, f, ensure_ascii=False, indent=2)
+
+    evidence_compression_applied = False
+    if apply_evidence_compression:
+        with open(f"{out_dir}/audit/pre_editor_article.md", "w", encoding="utf-8") as f:
+            f.write(article_text)
+        print(f"[N3-01][{theme_id}] {label}: Evidence Compression(Lossless Editor)呼び出し開始...")
+        editor_result = ec_editor.run_lossless_editor(
+            client, article_text, model=routing.require_model(_writer_process(label), routing.WRITER_MODEL))
+        with open(f"{out_dir}/audit/evidence_compression_editor_raw.json", "w", encoding="utf-8") as f:
+            json.dump(editor_result, f, ensure_ascii=False, indent=2, default=str)
+        if editor_result.get("raw_text"):
+            article_text = editor_result["raw_text"]
+            evidence_compression_applied = True
+        print(f"[N3-01][{theme_id}] {label}: Evidence Compression完了。"
+              f"response_id={editor_result.get('response_id')}")
+
+    with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+        f.write(article_text)
 
     metrics = compute_metrics(article_text)
     section_wc = sf1r1.section_word_counts(article_text)
@@ -429,6 +456,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "ledger_status": deviation_result["parsed"]["overall_status"],
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
         "fact_usage_report": fact_usage_report,
+        "evidence_compression_applied": evidence_compression_applied,
     }
 
 

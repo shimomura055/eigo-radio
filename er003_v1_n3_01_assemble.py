@@ -470,12 +470,14 @@ def apply_a2_gain(sources: dict) -> dict:
     return result
 
 
-# ER-008-N7-CONTENT-AUDIO-QA-02 Part B: ユーザー確認の上、A2の番号読み上げ
-# →Key Phrase本体の間だけ、既存のKEY_PHRASE_INTERNAL_PAUSE_SECONDS(0.4秒)
-# より0.1秒長くする(B1は変更しない、= p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDS
-# のまま)。将来Middle再開時にA2のKey Phraseをそのまま使う仕様のため、
-# Middleもこの値を自動的に継承する。
-A2_KEY_PHRASE_NUMBERING_PAUSE_SECONDS = p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDS + 0.1
+# ER-008-N7-CONTENT-AUDIO-QA-02 Part B(+0.1秒)→ER-008-EVIDENCE-
+# COMPRESSION-PROD-AND-N7-AUDIO-06 Part E(さらに+0.1秒、ユーザー確認
+# 済み)。A2の番号読み上げ→Key Phrase本体の間だけ、既存のKEY_PHRASE_
+# INTERNAL_PAUSE_SECONDS(0.4秒)より合計+0.2秒長くする(元Baseline比、
+# B1は変更しない、= p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDSのまま)。将来
+# Middle再開時にA2のKey Phraseをそのまま使う仕様のため、Middleもこの値を
+# 自動的に継承する。
+A2_KEY_PHRASE_NUMBERING_PAUSE_SECONDS = p9a.KEY_PHRASE_INTERNAL_PAUSE_SECONDS + 0.2
 
 
 def build_a2_key_phrase_blocks(parts: dict) -> list:

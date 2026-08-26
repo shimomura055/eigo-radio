@@ -198,14 +198,21 @@ def _make_japanese_call_fn(client=None):
 
 def generate_narration_snippet(text: str, language: str, out_path: str,
                                 tts_call_fn=None, sleep_function=None,
-                                safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS) -> dict:
+                                safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
+                                style_prefix_override: str = None) -> dict:
     """language: 'en' または 'ja'。既存の確立済みinstruction/モデル/voiceを
     そのまま使う(新規styleは作らない)。safety_margin_secondsの既定値は
     従来通り(p3u.EN_TRIM_SAFETY_MARGIN_SECONDS=0.08秒)。呼び出し側で
     明示的に指定した場合のみ変更される(ER-003-N3-ROOT-FIX-01: Key
-    Phrase専用に0.20秒を渡す呼び出しを追加、他segmentは無変更)。"""
+    Phrase専用に0.20秒を渡す呼び出しを追加、他segmentは無変更)。
+
+    style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
+    AND-N7-AUDIO-06 Part Gで追加): 指定するとENGLISH_STYLE_PREFIX/
+    JAPANESE_STYLE_PREFIXの代わりにこの文字列を使う(A2英語のみに
+    「わずかに遅く」の指示を追加するためのA2専用経路。声・モデル・
+    fallback経路は無変更、B1側はこの引数を渡さないため影響なし)。"""
     if language == "en":
-        style_prefix, model_name = ENGLISH_STYLE_PREFIX, ENGLISH_MODEL_NAME
+        style_prefix, model_name = style_prefix_override or ENGLISH_STYLE_PREFIX, ENGLISH_MODEL_NAME
         call_fn = tts_call_fn or _make_english_call_fn()
         prompt = p4c.build_tts_prompt(text, style_prefix)
     elif language == "ja":

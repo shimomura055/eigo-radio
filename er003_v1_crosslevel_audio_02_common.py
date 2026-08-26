@@ -53,9 +53,16 @@ tail_energy_profile = audio02._tail_energy_profile
 # 変えない)を、Key Phrase以外の英語ナレーションセグメントにも一般化して
 # 適用する(新しいinstructionを新設せず、既存の確立済み対症療法を再利用)。
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
-                                            max_extra_chars: int = 60, max_attempts: int = 6) -> dict:
+                                            max_extra_chars: int = 60, max_attempts: int = 6,
+                                            style_prefix_override: str = None) -> dict:
+    """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
+    AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
+    「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
+    渡さない — fallbackは既にprosody指示を持たない最小限の1文のみで、
+    速度指示を追加すると簡易fallbackがさらに平板になる恐れがあるため。"""
     standard = generate_narration_snippet_verified_strict(
-        text, "en", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
+        text, "en", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
+        style_prefix_override=style_prefix_override)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard

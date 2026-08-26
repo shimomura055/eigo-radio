@@ -196,6 +196,7 @@ def generate_narration_snippet_verified_strict(
     # KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDSを明示的に渡しており、この
     # 既定値変更の影響を受けない。
     safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
+    style_prefix_override: str = None,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -220,7 +221,8 @@ def generate_narration_snippet_verified_strict(
     batch_call_fn = batch_wiring.make_batch_tts_call_fn(batch_model_name, p9a.VOICE_NAME, output_path=out_path)
     for attempt in range(1, max_attempts + 1):
         r = p9a.generate_narration_snippet(text, language, out_path, tts_call_fn=batch_call_fn,
-                                            safety_margin_seconds=safety_margin_seconds)
+                                            safety_margin_seconds=safety_margin_seconds,
+                                            style_prefix_override=style_prefix_override)
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue

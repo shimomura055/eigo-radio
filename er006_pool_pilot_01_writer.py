@@ -27,15 +27,25 @@ def load_text(path: str) -> str:
 
 def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: str,
                           ledger_path: str, out_dir: str, blueprint=None,
-                          evidence_compression: bool = False) -> dict:
+                          evidence_compression: bool = False,
+                          apply_evidence_compression_editor: bool = True) -> dict:
     """blueprint(er008_shared_point_blueprint_01.SharedPointBlueprint、
     A2/B1 Point Structure Semantic Alignmentタスクで追加)を渡すと、両
     Levelのpromptへ共通のPoint構造制約が挿入される。Noneの場合(既定)は
     旧来の呼び出しと完全に同一の挙動になる(後方互換、既存Topicへの
-    影響なし)。evidence_compression=True(ER-008-TTS-FALLBACK-AND-
-    EVIDENCE-COMPRESSION-03 Part Bで追加、既定False)を渡すと、spoken
-    layerの固有名詞・数字を減らす追加方針がpromptへ挿入される
-    (script-only candidate生成専用、Production既定はFalseのまま無変更)。"""
+    影響なし)。
+
+    evidence_compression(既定False)は方式B(Compression-aware Writer、
+    ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03で試作、比較の結果
+    不採用)のscript-only検証専用引数。**方式Cとは別物**であり、既定Falseの
+    まま維持する(Production既定では使わない)。
+
+    apply_evidence_compression_editor(既定True、ER-008-EVIDENCE-
+    COMPRESSION-PROD-AND-N7-AUDIO-06でProduction既定へ昇格)が、ユーザー
+    採用済みの方式C(Lossless Editor)。gen.run_one_pattern()内で、Writer
+    出力に対しspoken layerだけを軽量化する(詳細はer003_v1_n3_01_
+    evidence_compression_editor.py)。DEV/testでOFFにしたい場合のみ
+    Falseを渡す。"""
     verified_ledger_text = load_text(ledger_path)
 
     results = {}
@@ -55,7 +65,8 @@ def run_writer_for_theme(client, master_full_text: str, theme_id: str, topic: st
         t0 = time.time()
         with cl.logging_context(theme_id, stage_tag):
             result = gen.run_one_pattern(client, theme_id, label, prompt, verified_ledger_text,
-                                          topic, level_out_dir)
+                                          topic, level_out_dir,
+                                          apply_evidence_compression=apply_evidence_compression_editor)
         timing[stage_tag] = round(time.time() - t0, 2)
         results[label] = result
 

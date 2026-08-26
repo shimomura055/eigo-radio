@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-luna",
-  "response_id": "resp_00f13175ced1f880006a8d8396873c87d09f2e80fe2be1fe8c",
+  "response_id": "resp_08eb14bb5bf1bebd006a8e7b5e2d2487d0a0b06f198d27f443",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -20,7 +20,7 @@
             "key_phrase": "hot-desking",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "専門的ですが、共有デスク運用を指す独立した自然な名詞表現であり、単独提示に適しています。意味理解に必要な語を追加・削除する必要はありません。",
+            "reasoning": "表示形のままで、特定の文脈に依存しない自然な学習単位です。ハイフン付きの表現全体で、共有デスク方式という意味を保持しています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -35,10 +35,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "compare poorly with",
+            "key_phrase": "find its way back",
             "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "比較対象を伴って「〜より劣る・うまくいかない」という意味を構成する自然な動詞句です。withを削ると比較の用法が失われるため、現状を維持します。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "display_phraseは本文の進行形を学習用に正規化した自然な基本形であり、本文の形へ戻す必要はありません。表現全体で「戻ってくる・復活する」という意味を保っています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -54,9 +54,9 @@
           {
             "rank": 3,
             "key_phrase": "sense of belonging",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "「所属感・帰属意識」を表す定型的な名詞句で、文脈限定の冠詞なしでも自然な学習単位として成立します。中心的な意味を担うbelongingを削る余地はありません。",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "remove_contextual_determiner",
+            "reasoning": "source_span先頭の冠詞「a」は文脈上の限定詞であり、除いても「帰属意識」という自然で再利用可能な意味単位になります。中心語であるsenseとbelongingは保持しています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -71,10 +71,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "show an association",
+            "key_phrase": "not proof of cause",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「関連性を示す」という意味を保つ自然な動詞句であり、associationが意味の核です。anを含む用法も表現の一部として自然で、追加の補語なしでも再利用できます。",
+            "reasoning": "表示形のままで、因果関係を証明するものではないという重要な否定を含む自然な学習単位です。「not」や「of cause」を削ると、データ解釈上の意味が変わります。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -89,10 +89,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "counter-move",
+            "key_phrase": "assigned seating",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「対抗策・反対方向の動き」を表す独立した名詞で、記事固有の限定語を含まない自然な単位です。これ以上短くすると中心的な意味そのものが失われます。",
+            "reasoning": "表示形のままで、固定された座席配置を表す自然な名詞句です。assignedとseatingを分けると中心的な意味が失われるため、そのまま保持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -108,7 +108,7 @@
         ]
       },
       "model": "gpt-5.6-luna",
-      "response_id": "resp_00f13175ced1f880006a8d8396873c87d09f2e80fe2be1fe8c"
+      "response_id": "resp_08eb14bb5bf1bebd006a8e7b5e2d2487d0a0b06f198d27f443"
     }
   ]
 }

@@ -26,6 +26,7 @@ import json
 import os
 import sys
 
+import er002_common as common
 import er003_audio_tts_asr_safety as safety
 import er003_v1_crosslevel_audio_02_common as c
 import er003_v1_n3_01_scaffold_generate as sc
@@ -39,6 +40,24 @@ import er006_asr_provider_routing_01 as routing
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_batch_tts_wiring_01 as batch_wiring
 import er007_ja_secondary_asr_01 as ja_secondary
+import er003_b1_p9a_audio as p9a
+
+# ============================================================
+# ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06 Part G: A2英語のみ、
+# 既存のemotion/prosody指示(ENGLISH_STYLE_PREFIX)はそのまま維持し、
+# 末尾に「わずかに遅く、自然に」という自然言語の追加指示だけを足す
+# (数値WPM指定・90%等のspeed factor指定はしない)。B1にはこの追加指示を
+# 一切渡さない(B1側の呼び出しはstyle_prefix_overrideを渡さないため、
+# 常にENGLISH_STYLE_PREFIXそのまま=無変更)。fallback(minimal
+# instruction)経路にも渡さない(generate_english_segment_with_fallback
+# 側で明示的に除外済み)。
+A2_SLOWER_PACE_INSTRUCTION = (
+    "\nSpeak at a slightly slower, relaxed pace than natural adult narration, while "
+    "keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses "
+    "or sound instructional.\n"
+)
+A2_ENGLISH_STYLE_PREFIX_SLOWER = p9a.ENGLISH_STYLE_PREFIX + A2_SLOWER_PACE_INSTRUCTION
+common.assert_no_wpm_specification(A2_ENGLISH_STYLE_PREFIX_SLOWER)
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は
@@ -460,11 +479,12 @@ def generate_a2_segments(theme: dict) -> dict:
         # ER-005-E2E-TTS-ANALYSIS-FIX-01 Part D: Point番号ラベルが万一
         # 残っていた場合、TTS API呼び出し自体を行わずここで止める。
         sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading)...")
+        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語、semantic heading、わずかに遅く)...")
         with cl.segment_context(name):
             results[name] = c.generate_english_segment_with_fallback(
                 tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
-                first_words(text, 3), max_extra_chars=20)
+                first_words(text, 3), max_extra_chars=20,
+                style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
         results[name]["canonical_text"] = text
 
     for name, text, sub in (
@@ -476,9 +496,11 @@ def generate_a2_segments(theme: dict) -> dict:
     ):
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文)...")
+        print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文、わずかに遅く)...")
         with cl.segment_context(name):
-            results[name] = c.generate_english_segment_with_fallback(tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub)
+            results[name] = c.generate_english_segment_with_fallback(
+                tts_safe_news_en(text), f"{narration_dir}/{name}.wav", sub,
+                style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
