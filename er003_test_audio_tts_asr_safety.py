@@ -361,6 +361,32 @@ class JapaneseShortSegmentPhoneticMatchTests(unittest.TestCase):
         self.assertEqual(r["verdict"], safety.EXACT_MATCH_JA)
         self.assertTrue(r["passed"])
 
+    # --- 助数詞「つ」直前の漢数字/算用数字ゆれ(ER-008-B1-POINT2-FACT-
+    # FIX-AND-JA-NUMERAL-NORMALIZATION-07、実データNo.7 A2 comment_4の
+    # ASR不一致[漢数字"二つ"をASRが常に"2つ"と書き起こす]に由来) ---
+    def test_kanji_counter_matches_digit_counter(self):
+        r = safety.validate_japanese_short_segment_match("二つの動き", "2つの動き")
+        self.assertTrue(r["passed"])
+        self.assertIn(r["verdict"], (safety.EXACT_MATCH_JA, safety.PHONETIC_MATCH_JA))
+
+    def test_kanji_counter_quantity_difference_still_fails(self):
+        # 同じ助数詞「つ」でも数量自体が異なれば従来通りFAILする
+        r = safety.validate_japanese_short_segment_match("二つの動き", "3つの動き")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
+    def test_kanji_number_without_tsu_not_normalized(self):
+        # 「二十」は助数詞「つ」正規化の対象外(一般化しすぎない)
+        r = safety.validate_japanese_short_segment_match("二十人ほど", "2人ほど")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
+    def test_different_counter_word_not_conflated(self):
+        # 「二回」(助数詞「回」)と「2つ」(助数詞「つ」)は混同しない
+        r = safety.validate_japanese_short_segment_match("二回説明した", "2つ説明した")
+        self.assertFalse(r["passed"])
+        self.assertEqual(r["verdict"], safety.TRUE_CONTENT_MISMATCH_JA)
+
     # --- 個別whitelistではなく一般ロジックであることの確認 ---
     def test_no_hardcoded_pair_list(self):
         import inspect

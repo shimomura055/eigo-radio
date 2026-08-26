@@ -458,6 +458,29 @@ def _kakasi_reading(text: str) -> str:
     return "".join(item["hepburn"] for item in kks.convert(text))
 
 
+_KANJI_COUNTER_DIGIT_MAP = {
+    "一": "1", "二": "2", "三": "3", "四": "4", "五": "5",
+    "六": "6", "七": "7", "八": "8", "九": "9",
+}
+# 助数詞「つ」の直前に来る単独漢数字(一〜九)だけを対象にした限定的な
+# 同値正規化(ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07)。
+# 「一つ/二つ/…/九つ」は常に「かず+つ」の形で数量そのものを表し、
+# _extract_numbers_ja()が単独漢数字を対象外にした理由(固有名詞的な語
+# 内での偶然の一致、例:"京三")とは性質が異なる——「つ」という助数詞の
+# 直前という文脈があるため、意味・読み・数量が完全に同じ表記ゆれとして
+# 安全に判別できる。「二十」「二回」「二人」等、「つ」が続かない漢数字は
+# 一切変換しない(それらは従来通り数字保護の対象外のまま=一般化しない)。
+_KANJI_COUNTER_RE = re.compile(r"[一二三四五六七八九](?=つ)")
+
+
+def normalize_kanji_counter_numerals_ja(text: str) -> str:
+    """助数詞「つ」の直前の単独漢数字だけを算用数字へ変換する
+    (例:"二つ"->"2つ"、"二十"や"二回"は対象外のまま変更しない)。"""
+    if not text:
+        return text
+    return _KANJI_COUNTER_RE.sub(lambda m: _KANJI_COUNTER_DIGIT_MAP[m.group(0)], text)
+
+
 def _extract_numbers_ja(text: str) -> set:
     """算用数字のみを抽出する。漢数字の単独文字(一〜九)は、短い固有名詞
     的な語(例: ASRの誤認識"京三"の"三")に偶然含まれることがあり、実際
@@ -465,7 +488,12 @@ def _extract_numbers_ja(text: str) -> set:
     glossのような短いsegment、大きな漢数字表記の出現頻度が低い)では
     誤検知リスクの方が高いと判断し対象外とする(過剰な一般化を避ける、
     指示section11の方針)。canonical側が算用数字で数を表す場合(本
-    プロジェクトのTTS入力正規化との整合)を主対象とする。"""
+    プロジェクトのTTS入力正規化との整合)を主対象とする。ただし
+    「一つ〜九つ」のような助数詞「つ」直前の漢数字だけは、文脈から
+    数量であることが確実なため、normalize_kanji_counter_numerals_ja()で
+    事前に算用数字へ揃えてから抽出する(ER-008-B1-POINT2-FACT-FIX-AND-
+    JA-NUMERAL-NORMALIZATION-07)。"""
+    text = normalize_kanji_counter_numerals_ja(text)
     return set(re.findall(r"\d+", text))
 
 
@@ -508,6 +536,13 @@ def validate_japanese_short_segment_match(canonical_text: str, asr_text, asr_err
 
     c_norm = _JP_PUNCTUATION_RE.sub("", canonical_text)
     a_norm = _JP_PUNCTUATION_RE.sub("", asr_text)
+    # 助数詞「つ」直前の漢数字(一〜九)だけを算用数字へ揃える。kakasiは
+    # "2つ"を"futatsu"ではなく"2tsu"と読むため、数字セット比較だけでなく
+    # ここで文字列自体を揃えておかないと、後段の完全一致判定・読み比較の
+    # 両方を素通りしてしまう(ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-
+    # NORMALIZATION-07)。
+    c_norm = normalize_kanji_counter_numerals_ja(c_norm)
+    a_norm = normalize_kanji_counter_numerals_ja(a_norm)
 
     c_numbers = _extract_numbers_ja(c_norm)
     a_numbers = _extract_numbers_ja(a_norm)

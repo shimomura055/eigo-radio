@@ -1776,6 +1776,63 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   ナレーション速度指示」の3行を新規追加(いずれも`DECIDED`/
   `PRODUCTION_WIRED`)
 
+## ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07(2026-08-26)
+
+- **Decision**: No.7 B1 Point Twoの"one desk per employee or fewer"を
+  `FACT_ERROR`(CBRE調査の実際の方向と完全に逆)と判定し、"at least one
+  desk per employee"へ修正した。同時に、A2 comment_4の「二つ」→「2つ」
+  というASR都合のcanonical text書き換え(前タスクの暫定対応)を見直し、
+  Validator側の限定的な同値正規化(助数詞「つ」直前の漢数字のみ)を
+  実装した上で、canonical textを自然な表記「二つ」へ復元した
+- **B1 Fact監査**: Evidence Pack(E-003-02)・Fact Ledger(F-008の`claim`
+  欄)・Fact Ledger検証ノートは全て正しい方向("ratio of 1.0:1 or less"
+  =従業員1人あたりデスク1台以上)を記録していたが、**VFL(F-008)自身の
+  `conditions`欄**が、同じFactの`claim`欄と逆方向の言い換え("従業員1人
+  につきデスク1台以下")になっていた。Writer出力の時点(Evidence
+  Compression Editor適用前の`pre_editor_article.md`)で既に"or fewer"が
+  存在しており、Editor由来ではなくWriter由来と判定した。同時に生成された
+  A2側は同じF-008から独立に正しい"at least one desk per employee"を
+  生成できていたため、単発のLLMサンプリング誤りであり、VFLの`conditions`
+  欄の逆方向記述が誘因になった可能性が高いと判断した
+- **Validatorが検知しなかった理由**: Fact Check(OpenAI web検索付き)は
+  自らCBRE公式ページを検索・取得したが、検証ノート自体が記事と同じ
+  逆方向の言い換え("従業員1人あたり1席以下の比率が…")をしてしまい、
+  誤り同士が一致してすり抜けた。Ledger Deviation Checkはscope拡張・
+  具体性追加型の逸脱検知を主眼としており、比較方向の反転そのものは
+  対象にしていないため検知しなかった。既存の音声側Validator
+  (`protected_check()`/`protected_check_ja()`)は「TTS音声がcanonical
+  scriptと一致するか」の層であり、canonical script自体が誤っている
+  ケースはそもそも対象範囲外であることを確認した(汎用的なscript対
+  Source Fact比較方向Validatorは今回新設せず、OPEN-72として記録するに
+  留めた。大規模Validator再設計は今回の非スコープ)
+- **B1修正の反映**: `point_two` segmentのみ音声を再生成(NORMALIZED_MATCH、
+  fallback不使用、初回試行でPASS)。Fact Checkを再実行し`REVIEW_REQUIRED`
+  →`PASS`へ改善、Ledger Deviationを再実行し8件→6件(Point Two関連の
+  新規逸脱なし、減少分はLLM実行ばらつきによるMINOR2件)。Audio
+  Validation Gateを実PASSでB1/A2を再assemble(バイパスなし)
+- **JA数字正規化**: `er007_ja_asr_validator_01.py`(長文用、31文字以上)
+  ・`er003_audio_tts_asr_safety.py`(短いsegment用)双方に、助数詞「つ」
+  の直前に来る単独漢数字(一〜九)だけを算用数字へ揃える限定的な同値
+  正規化(`normalize_kanji_counter_numerals_ja()`)を実装した。「二十」
+  「二回」等、助数詞「つ」が続かない漢数字は対象外のまま(既存の
+  `_extract_numbers_ja()`/`protected_check_ja()`が単独漢数字を数字保護
+  対象外としてきた設計思想[固有名詞的な語との誤判別リスク回避]を維持
+  しつつ、助数詞という文脈が明確な場合のみ限定的に拡張した)。この
+  過程で、OPEN-59が指摘していた「31文字以上のlong segmentは意味検証が
+  構造的に発動しない」という`MATERIAL_VALIDATION_GAP`が、2026-08-25の
+  ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01-WIRE-01で既に解消
+  済み(全文diff方式の`classify_ja_asr_match()`がProduction配線済み)
+  であることを、今回のNo.7実データ再生成で直接確認できたため、OPEN-59
+  を`RESOLVED`へ更新した
+- **今回実施しなかったこと**: VFL生成プロンプト自体への「`claim`と
+  `conditions`の方向統一」指示追加(No.7個別修正のみ)、他テーマ(No.1〜
+  6)への同種VFL方向不一致の横断監査、比較方向反転を検知する汎用
+  Validatorの新設(OPEN-72として記録)、A2速度A/B(次タスクへ)
+- **根拠レポート**: ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-
+  NORMALIZATION-07完了報告、OPEN-59・OPEN-71・OPEN-72・OPEN-73
+- **影響するCURRENT_SPEC項目**: 「Validator(日本語)」行へ助数詞「つ」
+  数字正規化を追記(`DECIDED`)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

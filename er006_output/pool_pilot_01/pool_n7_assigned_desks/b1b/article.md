@@ -34,7 +34,7 @@ One report found a link between assigned seating and two feelings: belonging and
 
 ### The wider office is still sharing
 
-A 2024 survey points in the other direction. The share of companies with one desk per employee or fewer fell from 56% in 2023 to 40% in 2024. Respondents expected it to reach about one-third by 2026. Desk sharing remains the wider pattern.
+A 2024 survey points in the other direction. The share of companies with at least one desk per employee fell from 56% in 2023 to 40% in 2024. Respondents expected it to reach about one-third by 2026. Desk sharing remains the wider pattern.
 
 ## In one line…
 

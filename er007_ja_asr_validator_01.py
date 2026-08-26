@@ -62,12 +62,19 @@ class ClassificationResultJA:
 def normalize_ja(text: str) -> str:
     """句読点・空白等の非発話記号のみを除去する(内容語は一切変更しない)。
     カーリー引用符はストレートへ、全角/半角の数字は正規化する。英字の
-    大文字/小文字は発話上の意味を持たないため吸収する(例:"INE"/"ine")。"""
+    大文字/小文字は発話上の意味を持たないため吸収する(例:"INE"/"ine")。
+    助数詞「つ」直前の単独漢数字(一〜九)だけは算用数字へ揃える(例:
+    "二つ"->"2つ")。「つ」という助数詞の直前という文脈があるため、
+    意味・読み・数量が完全に同じ表記ゆれとして安全に判別できる限定的な
+    正規化であり、「二十」「二回」等の一般の漢数字は対象外のまま変更
+    しない(ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、
+    safety.normalize_kanji_counter_numerals_ja()を再利用)。"""
     if not text:
         return ""
     t = unicodedata.normalize("NFKC", text)  # 全角英数字->半角、全角記号統一
     t = _PUNCT_RE.sub("", t)
     t = re.sub(r"[A-Za-z]+", lambda m: m.group(0).lower(), t)
+    t = safety.normalize_kanji_counter_numerals_ja(t)
     return t
 
 
