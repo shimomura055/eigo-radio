@@ -1950,6 +1950,60 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   「Interim directional fact precheck for user-validation phase」行へ
   「安全保証ではない」を明記(`DECIDED`のまま、内容のみ補強)
 
+## ER-008-A2-TIMESTRETCH-ABC-10(2026-08-26)
+
+- **Decision**: 前タスク(ER-008-A2-SPEED-SAME-TEXT-ABC-09)で自然言語の
+  TTS速度指示がsame-text条件下でも安定して機能しなかった(B/CともA
+  より速くなった)ことを受け、既存のNo.7 A2 Full Story Part 1完成音声
+  (新規TTS生成なし)に対し、FFmpegの`atempo`フィルタ(pitch-preserving
+  time-stretch)で3%/6%/9%の機械的な減速を適用し、0%(元音声)と
+  合わせて4条件を比較した。**ステータスは`VALIDATION_ONLY`**、
+  Production Audio Pipelineへは配線していない。採用可否はユーザーの
+  試聴判断へ委ねる
+- **手法**: `imageio-ffmpeg`パッケージが提供する静的FFmpegバイナリ
+  (7.1、`--enable-librubberband`付きだが今回はRubber Bandではなく
+  ffmpeg標準の`atempo`のみ使用、Part Iの「Rubber Band等は今回試さない」
+  に準拠)を使用。単純なsample-rate変更(pitchが下がる)は明示的に
+  使わず、`atempo=1/(1+slowdown/100)`で再生時間だけを伸ばした
+- **実測結果**(word_count=70固定、active-speech WPM):
+  A(0%)=147.7 WPM(28.89s)、B(3%目標)=143.5 WPM(実測減速2.96%、
+  29.75s)、C(6%目標)=139.4 WPM(実測5.96%、30.61s)、D(9%目標)=
+  135.6 WPM(実測8.95%、31.48s)。目標値と実測値の差は0.05〜0.04ポイント
+  と極めて小さく、自然言語Promptより大幅に予測可能・制御可能である
+  ことを確認した
+- **pitch維持確認**: 追加依存を増やさないため、numpy/scipyのみで
+  自己相関法による簡易F0(基本周波数)推定を実装した。元音声216.2Hz
+  に対し、3/6/9%いずれも214.3Hz(-0.9%)で実質不変だった。単純な
+  sample-rate変更であれば速度低下率とほぼ同じ割合(9%なら約8-9%)で
+  pitchも下がるはずであり、これが起きなかったことが、genuinely
+  pitch-preservingであることの直接的な証拠になる
+- **内容・品質確認**: 4条件ともPrimary ASR(OpenAI)で`NORMALIZED_MATCH`
+  となり、time-stretch処理による内容破損は確認されなかった。peak
+  level(0.699〜0.700)・RMS(0.0723〜0.0738)・クリッピング検出(全て
+  0サンプル)も4条件でほぼ同一であり、レベル面の異常は見られなかった。
+  ただし「声がこもる」「金属的」「子音の不自然さ」等の主観的な音質
+  劣化はASR/レベル測定では検知できないため、最終判断はユーザー試聴に
+  委ねた(Part E自体がそう明記している)
+- **Claudeからの提案**: 6%(C、約139 WPM)を、前タスクで参考範囲として
+  挙がっていた135〜140 WPM帯に収まること・time-stretch比率が控えめで
+  WSOLA系アルゴリズムの劣化リスクが小さいと見られることを根拠に、
+  検討の出発点として提示した。ただし決定はしていない(Part G「最終
+  決定はユーザー」)
+- **Artifact**: 0/3/6/9%の4条件を並べた試聴比較ページを公開した
+  (https://claude.ai/code/artifact/6efa0f4c-79a8-4d1e-a3ae-8c81d853a53d)。
+  公開後、埋め込み音声4件が実際にpublishされたファイルへ正しく含まれて
+  いることを直接検証した(前タスクでユーザーから「B/Cの音声が無いのでは」
+  という指摘を受けたため、今回は公開前後の検証を徹底した)
+- **今回実施しなかったこと**: Production Audio Pipelineへの配線
+  (`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`化は次タスク以降、
+  ユーザーが採用を決めた場合のみ)、Rubber Band等の別アルゴリズムでの
+  比較、Full Story Part 1以外のsegmentへの適用、新規TTS再生成
+- **根拠レポート**: ER-008-A2-TIMESTRETCH-ABC-10完了報告、OPEN-75、
+  比較Artifact(上記URL)
+- **影響するCURRENT_SPEC項目**: 「A2英語ナレーション速度(post-
+  processing time-stretch案)」行を新規追加(`VALIDATION_ONLY`、
+  Production未配線と明記)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
