@@ -35,6 +35,7 @@ import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er011_human_review_lock_01 as review_lock
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -54,6 +55,7 @@ def _try_entity_phonetic_corroboration(text: str, attempts_log: list) -> dict:
     return audio_validation.aggregate_entity_only_phonetic_corroboration(text, asr_texts)
 
 
+@review_lock.guarded_generate("en")
 def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: int = 6,
                                          max_extra_chars: int = 15) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ

@@ -32,6 +32,7 @@ import er007_ja_secondary_asr_01 as ja_secondary
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er011_human_review_lock_01 as review_lock
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -39,6 +40,7 @@ CHARON = "Charon"
 SAFETY_MARGIN = 0.35  # AUDIO-03/NOVEL-AUDIO-01のtail切れ修正と同じ値を継承
 
 
+@review_lock.guarded_generate("en")
 def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
@@ -161,6 +163,7 @@ def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> di
             "instruction": "minimal (not JAPANESE_STYLE_PREFIX)"}
 
 
+@review_lock.guarded_generate("ja")
 def generate_charon_japanese(text: str, out_path: str, expected_substring: str, max_attempts: int = 6) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、

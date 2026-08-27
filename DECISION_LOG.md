@@ -2284,6 +2284,134 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   「重要な日付・数字のTTS入力前チェック(検討したが今回は不採用)」の
   3項目を新規追加
 
+## ER-011-HUMAN-REVIEW-COST-GUARD-01(2026-08-27)
+
+- **Decision**: No.5(pool_n5_cafes)のB1修正作業中に発生した異常な
+  API消費事故を受け、Human Review Queueへ到達した(または繰り返し
+  STOPPEDになった)segmentへの機械的な再生成を、明示的な承認が無い
+  限りAPIレベルでブロックするReview Lock機構を新設し、Production
+  経路(英語側・日本語側の両方)へ正式配線した(`APPROVED_FOR_
+  PRODUCTION`→`PRODUCTION_WIRED`)
+- **root cause(監査で判明、2026-08-27深夜)**: `er009_pool_n5_b1_
+  fix_01.py`(No.5 full_story_part1/2の修正用に前タスクで作成した
+  薄い呼び出しスクリプト)を、full_story_part1がASR_VALIDATION_
+  UNCERTAIN(Human Review相当)・full_story_part2がSTOPPEDのまま
+  何度も手動再実行してしまい、full_story_part1でTTS 18回・ASR
+  59回、full_story_part2でTTS 12回という異常なAPI消費が発生した。
+  根本原因は2つ: (1) 呼び出し側スクリプトが`results["segments"]
+  [name] = r`で毎回結果を無条件に上書きし、過去の試行履歴・Human
+  Review到達状態を一切引き継がない設計だったこと、(2) Human Review
+  Queue(英語側`er006_output/audio_retry_cascade_prod_01/human_
+  review_queue.jsonl`、日本語側`er007_output/ja_asr_cascade_01/
+  human_review_queue.jsonl`)へ到達した後も、それを検知して新規
+  TTS/ASR呼び出しをブロックする仕組みがProduction経路のどこにも
+  存在しなかったこと
+- **設計(Part C: Review Lock状態)**: `er011_human_review_lock_01.py`
+  を新設し、narration wavパス(".../<theme>/<level>/narration/
+  <segment>.wav")から`(theme_id, level, segment_id)`を機械的に
+  導出するキー(`derive_segment_key()`)で、segment単位のlock状態
+  (`AUTO_PROCESSING`/`HUMAN_REVIEW_REQUIRED`/`HUMAN_APPROVED`/
+  `REGENERATE_APPROVED`/`RESOLVED`)を`{level_out_dir}/audit/
+  review_lock_state.json`(既存のtts_generation_results.json・
+  human_approved_segments.jsonと同じ置き場所の思想)で管理する。
+  既存の関数シグネチャ(`text, out_path, ...`)を一切変更せず、
+  out_pathから逆算する設計にしたことで、呼び出し元コードへの侵襲を
+  最小化した。`HUMAN_APPROVED`判定は、新規の並行実装を避けるため
+  既存の`record_human_approval()`(`er003_v1_n3_01_assemble.py`)を
+  そのまま流用する
+- **Part D(明示的解除)**: `approve_regenerate()`は対話的オペレー
+  ター操作でのみ呼ぶことを想定した独立APIとし、通常のTTS生成経路
+  からは絶対に到達しない設計にした。`REGENERATE_APPROVED`は次の
+  1回の呼び出しだけで自動的に消費され(結果に応じて`RESOLVED`または
+  `HUMAN_REVIEW_REQUIRED`へ遷移)、「同じスクリプトをもう一度実行
+  しただけ」では再解除されないことを受入テストで確認した。台本
+  (text)が変わった場合はSHA256ハッシュの不一致により自動的に新しい
+  バージョンとして扱われ、過去のlockは無効になる(既存の
+  `record_human_approval()`のtext変更時無効化と同じ設計思想)
+- **Part E(attempt history)**: 既存のtts_generation_results.json
+  (segment単位で上書きされる正)は一切変更せず、別ファイル
+  (`er011_output/attempt_history.jsonl`)へ追記型で記録する。
+  theme/level/segment/run_id/timestamp/TTS試行数/ASR呼び出し数/
+  累積値/Human Review到達有無/最終lock状態/所要時間を1呼び出し
+  あたり1行で記録する
+- **Part F(budget guard)**: 既存のTTS retry上限(max_attempts=
+  6〜8)を踏まえ、累積TTS試行数上限15・累積ASR呼び出し数上限60を
+  第二防衛線として設定した(第一防衛線はHUMAN_REVIEW_REQUIRED
+  到達時点での即時ブロック、高い閾値で形骸化させないよう実際の
+  事故[TTS18回/ASR59回]より確実に低い値にした)。`REGENERATE_
+  APPROVED`中であっても、この上限を超えた場合は強制的に
+  `HUMAN_REVIEW_REQUIRED`へ固定する
+- **Part G(queue重複防止)**: 英語・日本語両方の`_log_human_review()`
+  (`er006_secondary_asr_01.py`/`er007_ja_secondary_asr_01.py`)へ
+  `is_duplicate_queue_entry()`チェックを追加し、同一wav_path・同一
+  canonical_textのentryが既に存在する場合は新規追記しないようにした
+- **配線(Part J、英語側・日本語側両方)**: `guarded_generate(language)`
+  デコレータ(`(text, out_path, *args, **kwargs)`シグネチャ用)・
+  `guarded_generate_with_language_arg`デコレータ(`(text, language,
+  out_path, ...)`シグネチャ用、en/ja両方を1つの関数で扱う
+  `generate_narration_snippet_verified_strict`向け)を実装し、以下へ
+  適用した: 英語側`er003_v1_sing01_voice01_generate.py::generate_
+  charon_english`・`er003_v1_sing01_point_headings_aoede.py::
+  generate`・`er003_v1_sing01_news_tail_fix.py::generate_news_
+  narration_wide_margin`・`er003_v1_repro01_main_generate.py::
+  generate_key_phrase_component_verified`、日本語側`er003_v1_
+  sing01_voice01_generate.py::generate_charon_japanese`、両言語共通
+  `er003_v1_repro01_main_generate.py::generate_narration_snippet_
+  verified_strict`(A2/B1双方のstandard経路がこの関数を経由するため、
+  1箇所の配線で広くカバーできる)。fallback経路を持つ合成関数
+  (`er003_v1_crosslevel_audio_02_common.py::generate_english_
+  segment_with_fallback`・`er003_v1_n3_01_tts_generate.py::
+  generate_a2_japanese_with_fallback`)自体はデコレータで包まず
+  (standard経路の内部呼び出しが既にguardされているため二重guardに
+  なる)、代わりにstandard経路が`HUMAN_REVIEW_LOCKED`を返した場合に
+  fallbackへ進まないよう明示的な早期returnを追加した(fallbackは
+  未ガードの直接TTS/ASR呼び出しのため、ここを通過させるとLockの
+  意味が無くなる)
+- **既知の適用範囲外(意図的、正直に記録)**: A2 6% slowdown retry
+  (`generate_a2_segment_with_slowdown`、ER-008-A2-POSTPROCESS-
+  SLOWDOWN-PROD-11)は、内側の`generate_english_segment_with_
+  fallback()`が`status=OK`を返した直後に、post-process後のASR
+  再検証が別途不一致となり、同じ内側関数を最大3回まで正当に取り
+  直す既存の設計を持つ。当初`RESOLVED`状態もブロック対象にする設計
+  だったが、これが上記の既存の正当なretryを機械的に止めてしまう
+  ことを実装中に発見し撤回した(`RESOLVED`は監査用の記録に留め、
+  ブロックしない設計へ修正)。本Guardが防ぐべきは「Human Review・
+  繰り返し失敗への機械的再挑戦」であり、「一度成功したsegmentへの
+  正当な再挑戦」ではないと整理した
+- **実装中に発見したバグ(正直に記録)**: 初期実装では、out_pathが
+  既存の命名慣習(".../<theme>/<level>/narration/<segment>.wav")に
+  従わない場合(単体テストのダミーパス"dummy_out.wav"等)、theme/
+  level/segmentが空文字列に縮退し、複数の無関係な呼び出しが同じ
+  (ドライブルート直下の)store pathを共有してしまう実バグを、
+  既存回帰テスト(`er007_ja_tts_retry_path_fix_test_01.py`、2件の
+  test methodが同じダミーテキスト・パスを使う)の失敗で発見した。
+  `_has_valid_narration_layout()`を追加し、out_pathが規約に従わない
+  場合はReview Lock機構全体を無効化する(常にproceedし、store
+  読み書きも行わない)よう修正して解消した
+- **受入テスト(Part H、5ケース+補強4ケース)**: `er011_human_review_
+  lock_01_test_01.py`(9件、全PASS)。(1)Human Reviewへ到達→queue
+  登録→STOP、(2)同じsegment再実行→TTS/ASR call 0・既存状態を返す、
+  (3)明示的`approve_regenerate()`→初めて再生成可能、(4)再生成後
+  また失敗→再びlock(再承認なしでは解除されないことも確認)、
+  (5)queue重複なし、に加え、budget guard発火・derive_segment_keyの
+  Windows形式パス対応・台本変更時のlock無効化を追加確認した
+- **実データ検証**: No.5 full_story_part1の実際の事故シナリオを
+  再現するため、実際のProduction関数(`er003_v1_sing01_news_tail_
+  fix.py::generate_news_narration_wide_margin`、事故で実際に使われた
+  関数そのもの)に対し、事前にHUMAN_REVIEW_REQUIRED状態を模擬した
+  lockを与えた上で直接呼び出し、0.003秒で即座に`HUMAN_REVIEW_
+  LOCKED`が返る(実TTS/ASR API呼び出しが一切発生しない)ことを確認
+  した
+- **今回実施しなかったこと**: legacy/one-off script(P-series・
+  IRAN01・SING01等、既にHISTORICAL化済みの完成テーマ向けスクリプト)
+  からの直接呼び出しへの配線(現行Production経路[N3-01/pool_pilot_
+  01系]のみを対象とし、Part Hの既存方針[Audio Validation Gate等]
+  と同様、legacy scriptは対象外とした)
+- **根拠レポート**: ER-011-HUMAN-REVIEW-COST-GUARD-01完了報告
+- **影響するCURRENT_SPEC項目**: QA/Human Review節へ「Human Review
+  Cost Guard(Review Lock機構)」を新規追加(`DECIDED`、
+  `PRODUCTION_WIRED`)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

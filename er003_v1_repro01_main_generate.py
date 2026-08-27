@@ -32,6 +32,7 @@ import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er007_ja_secondary_asr_01 as ja_secondary
+import er011_human_review_lock_01 as review_lock
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -186,6 +187,7 @@ _MEANING_ASR_SUBSTRINGS = {1: "断る", 2: "アプリ", 3: "衝動", 4: "投稿�
 # ため、ASR文字数が期待文字数を大きく超えていないかも追加で検証する
 # strict版のverified生成をこのスクリプト側に追加する(A01専用モジュールは
 # 変更しない)。
+@review_lock.guarded_generate_with_language_arg
 def generate_narration_snippet_verified_strict(
     text: str, language: str, out_path: str, expected_substring: str,
     max_attempts: int = 6, max_extra_chars: int = 15,
@@ -370,6 +372,7 @@ def generate_english_component_minimal_instruction(
 KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
 
 
+@review_lock.guarded_generate("en")
 def generate_key_phrase_component_verified(text: str, out_path: str, max_attempts: int = 6) -> dict:
     """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
     それでも合格しない場合のみ、minimal instructionへフォールバックする

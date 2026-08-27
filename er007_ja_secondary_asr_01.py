@@ -32,6 +32,11 @@ HUMAN_REVIEW_LOG_PATH_JA = "er007_output/ja_asr_cascade_01/human_review_queue.js
 
 
 def _log_human_review(detail: dict) -> None:
+    import er011_human_review_lock_01 as review_lock  # 遅延import(循環import回避)
+    # ER-011-HUMAN-REVIEW-COST-GUARD-01 Part G: 同一segment・同一
+    # canonical_textのqueue重複投入を防ぐ。
+    if review_lock.is_duplicate_queue_entry(HUMAN_REVIEW_LOG_PATH_JA, detail["wav_path"], detail["canonical_text"]):
+        return
     os.makedirs(os.path.dirname(HUMAN_REVIEW_LOG_PATH_JA), exist_ok=True)
     record = {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),

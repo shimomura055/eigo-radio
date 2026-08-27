@@ -31,6 +31,7 @@ import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er011_human_review_lock_01 as review_lock
 
 AOEDE = "Aoede"
 SAFETY_MARGIN = 0.35
@@ -38,6 +39,7 @@ OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
 
 
+@review_lock.guarded_generate("en")
 def generate(text: str, out_path: str, max_attempts: int = 8) -> dict:
     max_len = len(text) + 15
     attempts_log = []

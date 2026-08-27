@@ -66,6 +66,13 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
+    if standard.get("status") == "HUMAN_REVIEW_LOCKED":
+        # ER-011-HUMAN-REVIEW-COST-GUARD-01: standard経路がReview Lockで
+        # ブロックされた場合、fallback(minimal instruction)経路へも
+        # 進まない(fallbackは未ガードの直接TTS/ASR呼び出しのため、ここで
+        # 通過させるとLockの意味が無くなる)。
+        standard["fallback_used"] = False
+        return standard
 
     max_len = len(text) + max_extra_chars
     fallback_attempts = []
