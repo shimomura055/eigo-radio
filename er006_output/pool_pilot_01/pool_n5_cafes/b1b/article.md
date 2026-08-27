@@ -8,7 +8,7 @@ A 2021 qualitative study by L. Mimoun and A. Gruen, published in the *Journal of
 
 The study places these businesses into four groups. Archetypal places discourage work. Status Quo places do not clearly choose between workers and social customers, and this is where conflict is described as strongest. Compromise places try to serve both groups but may struggle to enforce their rules. Productive Third Places, or PTPs, clearly target customer-workers and adapt the space for them.
 
-The other response is restriction. In a report published by *Coffee Intelligence* on April 28, 2026, The Barn introduced a one-hour laptop limit, or a full laptop ban on certain busy days. At its Neukölln store in Berlin, the café reported that laptop users occupied more than 70 percent of seats for long periods. It also reported a 25 percent loss in sales before the policy change.
+The other response is restriction. In a report published by *Coffee Intelligence* on April twenty eighth, 2026, The Barn introduced a one-hour laptop limit, or a full laptop ban on certain busy days. At its Neukölln store in Berlin, the café reported that laptop users occupied more than 70 percent of seats for long periods. It also reported a 25 percent loss in sales before the policy change.
 
 The Barn’s founder, Ralf Rüller, said the business wants to offer an excellent coffee experience. At the same time, he recognizes the demand from remote workers who want to work in cafés.
 

@@ -109,6 +109,44 @@ _ORDINAL_WORDS = {
 }
 _ORDINAL_WORD_RE = re.compile(r"\b(" + "|".join(_ORDINAL_WORDS.keys()) + r")\b", re.IGNORECASE)
 
+# ER-010-DATE-SPOKEN-FORM-POINT-FIX-01(2026-08-27)で発見: 複合序数
+# ("twenty eighth"/"twenty-eighth"のような、十の位の単語+一の位の序数語)
+# は、上記_ORDINAL_WORDS(単純序数のみ)にも_convert_cardinal_words()
+# (cardinal語のみ、"eighth"はvocabに含まれない)にも属さないため、
+# 単独では変換されない。normalize_numeric()の既存の順序(cardinal変換
+# [手順3]が先、ordinal変換[手順7]が後)では、"twenty"だけがcardinal変換で
+# 独立して"20"へ変換され、残った"eighth"がordinal変換で独立して"8th"へ
+# 変換され、"20 8th"という2つの無関係なtokenへ分裂してしまう実バグを、
+# No.5(pool_n5_cafes)B1 full_story_part2の日付発話形修正で発見した。
+# OPEN-58(複合基数のハイフン誤変換)と同じ教訓("tts_safe_number_words_
+# en()のような既存共有regexへの機械的な追加は事故を招きやすい")を踏まえ、
+# 汎用的な書き換えはせず、"十の位の単語+一の位の序数語"という閉じた
+# 具体的パターンのみを対象にした専用ステップを追加する(既存の
+# _DATE_ORDINAL_RE等、他の狭いスコープの日付・数値パターンと同じ設計
+# 方針)。"first"/"second"は_ORDINAL_WORDS側では副詞的用法との曖昧さを
+# 理由に除外されているが、"twenty first"のような複合形での副詞的誤用は
+# 実質的に存在しないため、この専用パターンでは含める。
+_ORDINAL_ONES = {
+    "first": ("1", "st"), "second": ("2", "nd"), "third": ("3", "rd"),
+    "fourth": ("4", "th"), "fifth": ("5", "th"), "sixth": ("6", "th"),
+    "seventh": ("7", "th"), "eighth": ("8", "th"), "ninth": ("9", "th"),
+}
+_COMPOUND_ORDINAL_RE = re.compile(
+    r"\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\s-]+"
+    r"(" + "|".join(_ORDINAL_ONES.keys()) + r")\b", re.IGNORECASE)
+
+
+def _convert_compound_ordinal_words(text: str) -> str:
+    """"twenty eighth"/"twenty-eighth" -> "28th"のような、十の位+一の位
+    序数語の複合形だけを対象にした変換(_convert_cardinal_words()・
+    _convert_ordinal_words()より先に呼ぶことで、両者が独立に一部だけ
+    変換してしまう分裂を防ぐ)。"""
+    def _repl(m: "re.Match") -> str:
+        tens_val = _TENS[m.group(1).lower()]
+        ones_digit, suffix = _ORDINAL_ONES[m.group(2).lower()]
+        return f"{tens_val + int(ones_digit)}{suffix}"
+    return _COMPOUND_ORDINAL_RE.sub(_repl, text)
+
 _MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august",
            "september", "october", "november", "december")
 _DATE_ORDINAL_RE = re.compile(r"\b(" + "|".join(_MONTHS) + r")\s+(\d{1,2})(st|nd|rd|th)\b", re.IGNORECASE)
@@ -297,6 +335,10 @@ def normalize_numeric(text: str) -> str:
     # 2. 桁区切りカンマの除去(1,000 -> 1000。3桁区切りの位置のみ対象、
     #    誤って無関係な数字列を結合しないよう桁数を限定する)。
     t = re.sub(r"(?<=\d),(?=\d{3}\b)", "", t)
+    # 2.5. 複合序数("twenty eighth"/"twenty-eighth"型)を、後続のcardinal/
+    #      ordinal変換(手順3・7)が独立に分裂させる前に1トークンへ変換する
+    #      (ER-010-DATE-SPOKEN-FORM-POINT-FIX-01)。
+    t = _convert_compound_ordinal_words(t)
     # 3. cardinal数値語 -> 算用数字。
     t = _convert_cardinal_words(t)
     # 4. 通貨語(N dollars/dollar) -> マーカー。
@@ -652,3 +694,196 @@ def evaluate_attempt(canonical_text: str, asr_text: str, prior_results: list,
     if not result.should_retry and should_stop_retrying(prior_results, max_same_signature=max_same_signature):
         return False, True, result
     return False, False, result
+
+
+# ============================================================
+# ER-010-ENTITY-PHONETIC-CORROBORATION-01: 固有名詞ASR表記揺れの
+# 軽量音韻類似度チェック
+# ============================================================
+# 背景(No.5 pool_n5_cafes B1 full_story_part1で発生): entity_only_diffs
+# (上記classify_asr_match、固有名詞らしき語のみの音訳差)はASR_VALIDATION_
+# UNCERTAIN(should_pass=False、retryしても改善しない)としてHuman Review
+# へ回る設計が既にある(is_entity_like_mismatch、er006_secondary_asr_01.py)。
+# しかし「自動PASSさせる」設計は無く、実際には正しく発話されている可能性が
+# 高い音声(例: "L. Mimoun and A. Gruen"という、英語ASRにとって馴染みの
+# 薄い研究者名)が、TTSを何度取り直しても解決しないままHuman Reviewに
+# 滞留する。
+#
+# 新しいresearch工程(発音資料の事前調査)は、全記事・全固有名詞への一律
+# コスト増になるため追加しない(過剰実装の回避)。代わりに、実際に
+# entity_only_diffsが発生した名前**だけ**を対象に、複数の独立したTTS
+# 取り直し(同じ音声の複数回文字起こしではなく、別々に生成されたTTS
+# takeそれぞれのASR結果)を比較し、以下の軽量な音韻類似度チェック
+# (pure Python、新規外部依存なし、日本語側の_reading_equal_allowing_
+# voicing()と同じ発想の英語版)で、明らかに同一固有名詞の音訳揺れだと
+# 判定できる場合のみ自動PASS相当として扱う。
+#
+# 設計上の要点(既存のprotected_check思想[数字/否定/内容語は絶対に
+# 見逃さない]を壊さないための保守的な制約):
+#   1. 各takeごとにentity_only_diffs(数字・否定・非固有名詞内容語の差が
+#      一切無い不一致)かどうかを個別に判定する。数字・否定・非固有名詞
+#      内容語の差を含むtakeは、そのtake単体を判断材料から除外するのみで
+#      (1回だけの無関係な不具合[語の脱落等]は対象entityの音韻評価とは
+#      別問題)、他の独立したtakeがentity-onlyで一貫していれば、その
+#      takeの証拠は引き続き使う(全体を一括拒否しない)。
+#   2. 同じcanonical entity spanについて、複数の独立したTTS take間で
+#      **異なる**ASR書き起こし候補が観測された場合のみ、標準的な閾値
+#      (soundex一致+文字列類似度0.5以上+文字数差2以内+語頭一致)で
+#      音韻類似度を判定する。同じ誤認識が繰り返し観測される場合は、
+#      「ASRのノイズ」ではなく「別の実在する固有名詞として安定して
+#      聞こえている」可能性を排除できないため、自動PASSしない
+#      (例: "Robert"→"Rupert"のような、無関係だが実在する別人名への
+#      置き換わりを拒否するための設計。この2語はsoundexが一致し文字列
+#      類似度も高いため、単発の判定だけでは区別できない)。
+#   3. 1回しか観測されていないentity spanについては、上記2の「異なる
+#      候補の多様性」による裏付けが無いため、より厳しい閾値(文字列
+#      類似度0.75以上+文字数差1以内)を要求する。
+#   4. 複数語からなるentity span(例: "Ralf Rüller")は、canonical/ASR
+#      両方の語数が一致する場合のみ語ごとに判定する(語数が異なる場合
+#      [例: "Neukölln"→"new Cologne"]は、既に別の単語への丸ごと置換
+#      である可能性が高いため対象外とし、Human Reviewのまま維持する)。
+#
+# **既知の限界(正直に記録)**: soundexベースの軽量チェックは、
+# "Robert"/"Rupert"のように無関係な既存の別名同士でもsoundexコードが
+# 一致するケースを完全には排除できない(上記2の多様性要件で緩和して
+# いるが、理論的に完全ではない)。本チェックはあくまで「retry・Human
+# Review滞留を減らすための補助的な最適化」であり、既存の必須プロセス
+# (最終的なユーザー試聴)がこの限界に対する最終的な安全網であり続ける
+# (CURRENT_SPEC.md「最終人間試聴」原則は本チェックの追加によっても
+# 一切変更しない)。
+ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED = "ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED"
+
+_SOUNDEX_CODES = {}
+for _ch in "BFPV":
+    _SOUNDEX_CODES[_ch] = "1"
+for _ch in "CGJKQSXZ":
+    _SOUNDEX_CODES[_ch] = "2"
+for _ch in "DT":
+    _SOUNDEX_CODES[_ch] = "3"
+_SOUNDEX_CODES["L"] = "4"
+for _ch in "MN":
+    _SOUNDEX_CODES[_ch] = "5"
+_SOUNDEX_CODES["R"] = "6"
+
+
+def soundex_en(word: str) -> str:
+    """標準的なSoundexアルゴリズム(pure Python、新規外部依存なし)。
+    英字以外は無視する(発音区別符号除去後の語を渡すことを想定)。"""
+    letters = re.sub(r"[^A-Za-z]", "", (word or "")).upper()
+    if not letters:
+        return ""
+    first = letters[0]
+    codes = []
+    prev = _SOUNDEX_CODES.get(first, "")
+    for ch in letters[1:]:
+        code = _SOUNDEX_CODES.get(ch, "")
+        if code and code != prev:
+            codes.append(code)
+        if ch not in "HW":  # H/Wは前の子音との「隣接」を切らない(標準仕様)
+            prev = code
+    return (first + "".join(codes) + "000")[:4]
+
+
+def _phonetic_pair_ok(a: str, b: str, *, strict: bool) -> bool:
+    """1語同士の音韻類似度判定。strict=Trueは単発観測(裏付け無し)向けの
+    厳しい閾値、strict=Falseは複数の異なる候補が観測された場合(多様性
+    そのものが裏付けになる)向けの標準閾値。"""
+    a, b = a.lower(), b.lower()
+    if a == b:
+        return True
+    if not a or not b or a[0] != b[0]:
+        return False
+    if soundex_en(a) != soundex_en(b):
+        return False
+    max_len_diff = 1 if strict else 2
+    min_ratio = 0.75 if strict else 0.5
+    if abs(len(a) - len(b)) > max_len_diff:
+        return False
+    return difflib.SequenceMatcher(None, a, b).ratio() >= min_ratio
+
+
+def _strip_short_tokens(span: str) -> str:
+    """"L."のような1〜2文字の頭文字・略語トークンを取り除く。difflibの
+    word-level diffは、ASR側で頭文字が直後の固有名詞と融合して書き起こ
+    される場合(例: "L. Mimoun"→"Elmi Moon")、canonical側のspan境界に
+    その頭文字を含めるかどうかが試行ごとに揺れる(実データで確認済み:
+    同じ"L. Mimoun"が、あるtakeでは"mimoun"単独、別のtakeでは"l mimoun"
+    という2語spanとして検出された)。この揺れによって同一固有名詞の証拠が
+    別々のspan keyへ分裂するのを防ぐため、grouping key算出時に短い
+    トークンを取り除く(全て短い場合は元のspanのまま返す=安全側)。"""
+    words = [w for w in span.split() if len(w) > 2]
+    return " ".join(words) if words else span
+
+
+def _span_phonetically_ok(canonical_words: list[str], asr_span: str, *, strict: bool) -> bool:
+    """canonical_words(既に短いトークンを除去済みの語列)と、ASR候補
+    spanの語数が一致する場合のみ語ごとに判定する。語数が一致しない場合は
+    「判定不能」を示すNoneではなくFalseを返す(呼び出し側でこの関数を
+    使う前に、比較可能なペアかどうかを別途確認すること)。"""
+    asr_words = asr_span.split()
+    if not canonical_words or len(canonical_words) != len(asr_words):
+        return False
+    return all(_phonetic_pair_ok(c, a, strict=strict) for c, a in zip(canonical_words, asr_words))
+
+
+def aggregate_entity_only_phonetic_corroboration(canonical_text: str, asr_texts: list[str]) -> dict:
+    """複数の独立したTTS take(asr_texts、それぞれ別のTTS生成に対する
+    Primary ASR書き起こし)を、同じcanonical_textに対して再分類し、
+    entity_only_diffsだけが原因の不一致が、音韻的に見て「同じ固有名詞の
+    ASR書き起こし揺れ」だと判定できるかを集約評価する。
+
+    新規TTS/ASR API呼び出しは一切行わない(既に得られたasr_textsを
+    classify_asr_match()で再分類するだけの、ローカルでの後処理)。
+
+    戻り値: {"accept": bool, "reason": str, "spans": {canonical_span: [asr候補,...]}}
+    """
+    if len(asr_texts) < 1:
+        return {"accept": False, "reason": "no attempts provided", "spans": {}}
+
+    spans: dict[str, set[str]] = {}
+    skipped_non_entity = 0
+    for asr_text in asr_texts:
+        cls = classify_asr_match(canonical_text, asr_text)
+        if cls.should_pass:
+            continue  # このtakeは既に合格しているので集約対象外(問題なし)
+        diffs = cls.protected.content_word_diffs
+        if not diffs or not all(d["entity_like"] for d in diffs):
+            # 固有名詞以外の差(数字・否定・通常内容語)を含むtakeは、この
+            # 機構の判断材料としては使わない(そのtakeだけを除外する)。
+            # ただし、他の独立したtakeがentity-onlyで一貫していれば、
+            # その別の1回の失敗を理由に全体を拒否はしない(1回だけの
+            # 無関係な不具合[語の脱落等]は、対象entityの音韻評価とは
+            # 別問題であり、そのentity自体の評価を無効にする理由には
+            # ならないため)。
+            skipped_non_entity += 1
+            continue
+        for d in diffs:
+            key = _strip_short_tokens(d["canonical"])
+            spans.setdefault(key, set()).add(d["asr"])
+
+    if not spans:
+        return {"accept": False,
+                "reason": f"no usable entity-only diffs across the given takes "
+                          f"(skipped {skipped_non_entity} take(s) with non entity-only mismatches)",
+                "spans": {}}
+
+    for canon_span, guesses in spans.items():
+        canon_words = canon_span.split()
+        # 頭文字融合等で語数が対応しない候補は「判定不能」として除外する
+        # (反証にも証拠にもしない)。全候補が語数不一致なら判断材料無し。
+        comparable = [g for g in guesses if len(g.split()) == len(canon_words)]
+        if not comparable:
+            return {"accept": False,
+                    "reason": f"no word-count-comparable candidates for {canon_span!r}: "
+                              f"candidates={sorted(guesses)}",
+                    "spans": {k: sorted(v) for k, v in spans.items()}}
+        strict = len(set(comparable)) < 2  # 単発観測(裏付け無し)は厳しい閾値
+        if not all(_span_phonetically_ok(canon_words, g, strict=strict) for g in comparable):
+            return {"accept": False,
+                    "reason": f"phonetic check failed for {canon_span!r}: candidates={sorted(guesses)}",
+                    "spans": {k: sorted(v) for k, v in spans.items()}}
+
+    return {"accept": True,
+            "reason": "all entity-only spans are phonetically consistent with the canonical spelling "
+                      "across independently generated takes",
+            "spans": {k: sorted(v) for k, v in spans.items()}}

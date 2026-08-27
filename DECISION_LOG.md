@@ -2156,6 +2156,134 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
   Review節へ「日本語canonical textの外来語/制作内部ラベル検出(4分類
   ゲート)」を新規追加(`DECIDED`、`PRODUCTION_WIRED`)
 
+## ER-010-ENTITY-PHONETIC-CORROBORATION-01 / ER-010-DATE-SPOKEN-FORM-POINT-FIX-01(2026-08-27)
+
+- **Decision**: No.5(pool_n5_cafes)B1の未解決2件(comment_4の意味
+  不整合、full_story_part1/2のSTOPPED)を解消した。(1) comment_4を
+  「方針の明確さ」テーマへ言い換え・再生成(OPEN-63対応)。(2) 固有
+  名詞ASR表記揺れの軽量音韻類似度チェック(entity phonetic
+  corroboration)を新規実装しfull_story_part1を解決。(3) 日付の
+  TTS誤読(full_story_part2)をpoint fixで解決し、副産物として発見した
+  複合序数正規化バグも修正した
+- **comment_4修正**: 「customers who work there may offer the café
+  more than their payment」(B1自身のpoint_two_bodyを要約した文だが、
+  A2 Point Two・B1自身のIn One Lineが共に「方針の明確さ」テーマで
+  締めており、この論点をどちらも引き継いでいなかった。OPEN-63で
+  既に指摘済み)を、「how clearly a café sets its policy can shape
+  whether both workers and social customers feel welcome」へ言い換えた
+  (point_two_body・in_one_line・A2側は無変更)。再生成・ASR再検証で
+  `status=OK`を確認
+- **full_story_part1のroot cause**: 研究者名"L. Mimoun and A. Gruen"
+  が英語ASRにとって馴染みの薄い固有名詞であり、現行Production Cascade
+  (`news_tail_fix.generate_news_narration_wide_margin`、Secondary ASR
+  Cascade込み)で正規の手順により再生成しても、`classify_asr_match()`
+  の既存entity_only_diffs判定(固有名詞らしき語のみの音訳差は
+  retryしても改善しないと判断してASR_VALIDATION_UNCERTAINへ)により
+  Human Review行きになっていた。既存ロジックには「retryを止める」
+  設計はあったが「自動PASSさせる」設計は無かった
+- **調査した対策(a): reactive発音資料調査**: 全記事・全固有名詞への
+  一律research工程は追加しないという方針のもと、実際に問題になった
+  "L. Mimoun and A. Gruen"についてのみ一度だけWeb検索を行い、実在の
+  著者名が"Laetitia Mimoun"・"Adèle Gruen"(2021年、Journal of Service
+  Research)であることを確認したが、信頼できる発音資料(音声・IPA表記等)
+  は見つからなかった。台本の"L. Mimoun and A. Gruen"という表記自体は
+  変更しなかった(スコープ外の台本変更を避けるため)
+- **採用した対策(b): 軽量音韻類似度チェック**: `er006_preprod_
+  hardening_01_validation.py`へ`soundex_en()`(標準的なSoundex
+  アルゴリズム、pure Python、新規外部依存なし)と
+  `aggregate_entity_only_phonetic_corroboration()`を新設した。複数の
+  独立したTTS take(同一canonical_textに対する別々の生成、同じ音声の
+  複数回文字起こしではない)で観測されたentity_only_diffsのASR書き
+  起こし候補を集約し、canonical綴りとの音韻類似度(soundex一致+文字列
+  類似度+文字数差+語頭一致)で「同一固有名詞の表記揺れ」と判定できる
+  場合のみ`ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED`として自動採用
+  する。保守的側に倒す設計(既存protected_check思想[数字/否定/内容語は
+  絶対に見逃さない]を壊さないため):
+  (1) 数字・否定・非固有名詞内容語の差を含むtakeは、そのtake単体を
+  判断材料から除外するのみに留める(全体を一括拒否しない。実データで、
+  1回のtakeに無関係な内容語差が混入していた場合でも、他の独立した
+  takeの証拠は引き続き使えることを確認した)
+  (2) 同じ誤認識が複数回**繰り返し**観測される場合(多様性の裏付けが
+  無い)は自動PASSしない。"Robert"→"Rupert"のような、soundexが一致し
+  文字列類似度も高いが実在する無関係な別人名への置き換わりを、単発の
+  判定だけでは区別できないことを検証で確認したため、この多様性要件で
+  緩和した
+  (3) 単発観測(裏付け無し)は、複数回観測(多様性の裏付けあり)より
+  厳しい閾値(文字列類似度0.75以上・文字数差1以内)を要求する
+  (4) canonical/ASR両方の語数が一致する候補のみを判定対象にする。
+  実データで、頭文字("L.")がASR側の書き起こしで直後の固有名詞と融合
+  し("L. Mimoun"→"Elmi Moon")、difflibのspan境界が試行ごとに揺れる
+  ことを発見したため、短い頭文字トークンを除いたgrouping keyで同一
+  固有名詞の証拠をまとめ、語数が対応しない候補は「判定不能」として
+  除外する(反証にも証拠にもしない)設計にした
+- **配線**: `er003_v1_sing01_news_tail_fix.py::generate_news_narration_
+  wide_margin()`(B1 Full Story等の長尺英語News本文生成)へ配線した。
+  entity-only mismatchの場合、既存のmax_attempts(6)上限内でretryを
+  継続し複数takeの証拠を集められるようにした(既存の「同一signature
+  连続で打ち切り」ロジックには影響しない、コスト上限は拡張していない)
+- **known limitation(正直に記録)**: soundexベースの軽量チェックは、
+  実在する別名同士の完全な区別を理論上保証しない(上記(2)の多様性
+  要件で緩和しているが、原理的に完全ではない)。本チェックはretry・
+  Human Review滞留を減らすための補助的最適化であり、既存の必須プロセス
+  (最終的なユーザー試聴)がこの限界に対する最終的な安全網であり続ける
+- **full_story_part2のroot cause確定**: `tts_safe_news_en()`(A2/B1
+  共通のTTS入力正規化)・`build_tts_prompt()`・Gemini Batch API呼び出し
+  経路のコードを実際に追跡し、"April 28, 2026"が一切変換されずTTSへ
+  渡っていることを確認した(前処理バグではない)。旧B1本文(digit表記
+  "April 28")・新表記("April twenty eighth")のいずれでも、12回中
+  多くの試行で"26"という一貫した誤読が観測され(新表記では6回中4回が
+  誤読、2回が正読)、ユーザー自身も実際に音声を聴取し「26に聞こえる」
+  ことを確認済みであることから、genuine TTS mispronunciationと結論した
+- **point fix**: `b1b/parts.json`(part2)・`b1b/article.md`の該当箇所
+  を"on April 28, 2026,"→"on April twenty eighth, 2026,"へ変更した
+  (事実・意味は無変更)。ユーザー提示の具体例"twenty-eighth, twenty
+  twenty-six"は、既存の`tts_safe_number_words_en()`(A2専用、ハイフン
+  複合数詞をOPEN-58と同じパターンで誤変換する)を実際に通してみたところ
+  "twenty-6"に壊れることを確認したため、ハイフンを使わない
+  "twenty eighth"へ変更し、年号は元々問題が無かった("2026"は12回全て
+  で正しく認識されていた)ため桁のまま残す形へ変更した(ユーザー提示の
+  具体例をそのまま採用せず、必要な範囲だけ安全な形へ調整した)
+- **副産物として発見した複合序数正規化バグ**: 上記の再生成で、6回中
+  2回(attempt1・6)が実際には正しく"28th"と発話されていたにも関わらず
+  TRUE_CONTENT_MISMATCHと誤判定されていることを発見した。原因は
+  `normalize_text()`の数値正規化パイプラインが、"twenty eighth"を
+  1つの複合序数として扱えず、独立したcardinal変換ステップが"twenty"を
+  "20"へ、独立したordinal変換ステップが"eighth"を"8th"へそれぞれ別々に
+  変換し、"20 8th"という無関係な2トークンへ分裂させていたことだった。
+  OPEN-58と同じ教訓(共有regexへの機械的な追加は事故を招きやすい)を
+  踏まえ、「十の位の単語+一の位の序数語」という閉じた具体的パターン
+  のみを対象にした専用ステップ`_convert_compound_ordinal_words()`を、
+  既存のcardinal/ordinal変換より先に実行する形で追加した(スペース・
+  ハイフン両方の区切りに対応)。バグ修正後、attempt6(既に実際に生成
+  済みの音声、新規API呼び出し無し)を再判定した結果、実際に`NORMALIZED_
+  MATCH`(should_pass=True)になることを確認し、その音声をそのまま
+  status=OKとして採用した(音声ファイルは無変更、判定記録のみ訂正)
+- **再発防止策の検討と不採用**: 「重要な日付・数字をTTS入力へ渡す前に
+  検出しHuman Review相当のフラグを立てる軽量チェック」を検討したが、
+  今回は実装を見送った(OPEN-78として記録)。理由: 発生条件(なぜこの
+  特定の日付表現でTTSが誤読するのか)が未解明のまま汎用検出ルールを
+  設計すると過検知/過剰実装のリスクが高く、今回の個別事象はpoint fix
+  で解決済みのため緊急性が低いと判断した
+- **受入テスト**: `er010_entity_phonetic_corroboration_01_test_01.py`
+  (22件、全PASS)。No.5実データ(Mimoun/Gruen/Ralf Rüller、頭文字融合
+  ノイズ、Robert/Rupert型の拒否確認、複合序数の各パターン)を含む
+- **No.5実データへの適用**: comment_4修正・再生成、full_story_part1を
+  新設した音韻類似度チェック経由で2回の試行で解決(実際にこの経路で
+  解決)、full_story_part2をバグ修正後の再判定で解決(新規TTS/ASR
+  呼び出し無し)。B1の全14 segmentがVALIDATEDとなり、Audio Validation
+  Gateを実PASSしB1を再assemble(366.774秒、clipping無し)した。A2は
+  無変更のままGate実PASSを再確認した。既存回帰テストは1841/1842 PASS
+  (残り1件はOPEN-77、本タスクと無関係のpre-existing test bug)
+- **今回実施しなかったこと**: 全記事・全固有名詞への一律発音資料調査
+  research工程の追加(コスト増回避、reactiveな個別対応のみ)、重要な
+  日付・数字の一般的なTTS入力前検出ゲートの実装(OPEN-78、Deferred)
+- **根拠レポート**: ER-010-ENTITY-PHONETIC-CORROBORATION-01/ER-010-
+  DATE-SPOKEN-FORM-POINT-FIX-01完了報告、OPEN-63(解消)・OPEN-78(新設)
+- **影響するCURRENT_SPEC項目**: QA/Human Review節へ「英語固有名詞ASR
+  表記揺れの軽量音韻類似度チェック」「複合序数の正規化バグ修正」
+  「重要な日付・数字のTTS入力前チェック(検討したが今回は不採用)」の
+  3項目を新規追加
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
