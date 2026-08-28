@@ -2458,6 +2458,28 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **量産への影響**: Case B(外国由来固有名詞)は引き続きHuman Reviewへ進む。ただしPronunciation Ledgerによるresearch結果の記事横断cache再利用(Perplexity再課金の回避)は既に本番配線済みのため、同一固有名詞の外部検索コストが繰り返し発生することは無い。Human Reviewの発生自体を無くすには、上記いずれかの設計オプションの実験的検証が別タスクとして必要
 - **状態**: `STOPPED_FOR_DESIGN_REVIEW`(ユーザー判断待ち。実装は行っていない)
 
+## ER-008-N8-HUMAN-APPROVAL-AND-PROPER-NOUN-PRONUNCIATION-SPEC-16(2026-08-28)
+
+- **目的**: (1) No.8でHuman Review待ちだった3 segment(A2 `preview`・A2 `point_one_heading`・B1 `point_two`)について、ユーザーが実際に試聴した結果を正式なHuman Approval記録へ反映しAssemble可能にする。(2) 固有名詞の発音判定基準を、「本人・原語としての厳密な発音」偏重から「eigo-radioが英語学習コンテンツであることを踏まえた、英語圏で実際に通用する発音」基準へ変更する
+- **経緯**: 前セッションで作成した[Gate Hold](https://claude.ai/code/artifact/a545159e-fe1f-4816-8b66-56e5af6dfd1d)アーティファクトで3 segmentの音声をユーザーへ提示。ユーザーが実際に試聴し、3件とも現状の音声のまま使用してよいと判断(`Kristie Tse`のみ、本人の唯一の厳密発音ではなく「seeに近い、英語圏で許容される発音」という理由での承認)
+- **Human Approval記録**(`er003_v1_n3_01_assemble.record_human_approval()`、新規TTS/ASR呼び出しなし):
+  | segment | out_dir | canonical_text_sha256(先頭12桁) | 承認理由 |
+  |---|---|---|---|
+  | `preview` | `.../a2` | 参照実装参照 | ユーザー試聴、そのままでOK |
+  | `point_one_heading` | `.../a2` | 参照実装参照 | ユーザー試聴、そのままでOK("A small wait can protect against a big fear") |
+  | `point_two` | `.../b1b` | 参照実装参照 | ユーザー試聴、`Kristie Tse`の`Tse`が"see"に近い発音で英語圏の許容発音候補に含まれると判断 |
+- **発見した既存バグとその修正**: 上記3件を承認記録した後にAudio Validation Gate(`verify_episode_audio_validation_gate`)を実行したところ、A2の2件(`preview`/`point_one_heading`)が承認記録があるにもかかわらずブロックされ続けることを発見した。原因調査の結果、`_segment_gate_status()`(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05で実装)が判定する`status`分岐に、後から実装されたER-011 Human Review Lockが書き込む`status=HUMAN_REVIEW_LOCKED`という値が存在せず、どの分岐にも一致しないため無条件で`UNVALIDATED`(未承認)へ落ちてしまうという、2つの機能間の統合漏れ(いずれも正しく動作していたが、組み合わせ時の考慮が漏れていた)と判明した。`er003_v1_n3_01_assemble.py::_segment_gate_status()`の承認確認分岐に`HUMAN_REVIEW_LOCKED`を`ASR_VALIDATION_UNCERTAIN`と同列で追加し、修正後に3件全てが`HUMAN_APPROVED`として正しく通過することを実データで確認した(Gate自体の強制無効化・bypassは一切行っていない。承認記録が無いsegmentは修正後も引き続きブロックされる設計のまま)
+- **固有名詞の発音判定基準の変更**(ユーザー承認、`APPROVED_FOR_PRODUCTION`): 新しい判定優先順位は (1) 本人自身の英語での発音 → (2) 公式プロフィール・所属組織・公式イベント等で確認できる英語発音 → (3) 信頼できる情報源で確認できる一般的な英語圏発音 → (4) 複数の英語圏発音が実際に認められる場合は許容発音集合として保持、の順。母語・原語における唯一の厳密発音との一致は今後必須条件にしない。**実装は行っていない**(現時点ではHuman Reviewでの人間の判断基準の変更のみ。Cascadeの自動判定ロジックへの組み込みは行っていない)
+- **No.8 Assemble結果**(`stage_assemble_a2`/`stage_assemble_b1`、新規TTS/ASR呼び出し0件):
+  - B1: `er006_output/pool_pilot_01/pool_n8_airport_line/b1b/assembled/English_Your_Way_B1B_POOL_N8_AIRPORT_LINE.wav`、318.155秒、clipping無し、peak 0.858
+  - A2: `er006_output/pool_pilot_01/pool_n8_airport_line/a2/assembled/English_Your_Way_A2_POOL_N8_AIRPORT_LINE.wav`、372.827秒、clipping無し、peak 0.770
+  - 完成音声(mp3変換版)をArtifactとして提供: https://claude.ai/code/artifact/d558fc26-3214-4987-9024-996bb9acbdef (Now Boarding)
+- **API call数・コスト**: TTS 0件、ASR 0件、Perplexity等の外部発音調査 0件(全てローカルのAssemble処理のみ)
+- **regression**: `_segment_gate_status()`変更に対する既存の専用テストファイルは無い(ER-008-15完了時点で確認済みの既存テストスイートに影響する変更ではない、Assembly gate関連のロジックのみの追加分岐)
+- **影響するCURRENT_SPEC項目**: 「固有名詞ASR不一致の自動PASS条件」に発音基準変更を追記、「Audio Validation Gate」に`HUMAN_REVIEW_LOCKED`対応バグ修正を追記
+- **OPEN-83への影響**: 判定基準の変更により今後Case B固有名詞がHuman Reviewへ進む頻度は下がる見込みだが、「外部発音根拠とTTS実音声を安全に自動照合する仕組み」自体は依然未実装のため、OPEN-83は`STOPPED_FOR_DESIGN_REVIEW`のまま維持。将来実装時は「唯一の原語発音」ではなく「許容される英語発音集合のいずれかとの一致」を判定対象にする旨をOPEN-83へ追記した
+- **状態**: 3件のHuman Approval・Audio Validation Gate通過・No.8 Assemble完了は`DECIDED`。固有名詞発音判定基準の変更は`APPROVED_FOR_PRODUCTION`(Cascadeの自動判定ロジックへの実装・テスト・Production経路でのruntime確認が完了するまでは`PRODUCTION_WIRED`としない)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

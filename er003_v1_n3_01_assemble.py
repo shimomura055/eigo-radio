@@ -112,7 +112,10 @@ def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
     status = entry.get("status")
     if status == "OK":
         return "VALIDATED"
-    if status == "ASR_VALIDATION_UNCERTAIN":
+    # "HUMAN_REVIEW_LOCKED"はER-011のHuman Review Lockが後から追加した
+    # status値で、record_human_approval()による承認確認の対象に含める
+    # (このgateがER-011より先に実装されており、当初は未対応だった)。
+    if status in ("ASR_VALIDATION_UNCERTAIN", "HUMAN_REVIEW_LOCKED"):
         approval = approvals.get(segment_key)
         if approval is not None:
             canon = entry.get("canonical_text") or entry.get("text") or ""
