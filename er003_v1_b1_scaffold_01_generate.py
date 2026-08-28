@@ -143,29 +143,38 @@ def build_support_prompt(role_instruction: str, context_block: str) -> str:
 英語の地の文だけを出力してください。見出し・箇条書き・引用符・Markdown記法は使わないでください。"""
 
 
-COMMENT_1_ROLE = """あなたはPodcastのナビゲーターです。これから、あるニュースのFull Story Part 1
-(本文前半、易しくない自然な英語)をリスナーが聞きます。その直前に流す、Comment 1
+COMMENT_1_ROLE = """あなたはPodcastのナビゲーターです。これから、あるニュースの本文の前半
+(易しくない自然な英語)をリスナーが聞きます。その直前に流す、Comment 1
 (役割: Listening Focus)を書いてください。
 
 役割: リスナーが次に何を聞けばよいか、注目点を示します。答え・結論を先に言っては
-いけません。原則1文の、非常に短いListening Focusにしてください。"""
+いけません。原則1文の、非常に短いListening Focusにしてください。
 
-COMMENT_2_ROLE = """あなたはPodcastのナビゲーターです。リスナーはFull Story Part 1(本文前半)を
-すでに聞き終わり、これからFull Story Part 2(本文後半)を聞きます。その間に流す、
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"・"Full Story"のような
+制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+
+COMMENT_2_ROLE = """あなたはPodcastのナビゲーターです。リスナーは本文の前半を
+すでに聞き終わり、これから本文の後半を聞きます。その間に流す、
 Comment 2(役割: Mid-story Recovery + Next Question)を書いてください。
 
-役割: Part 1で聞いた内容の核心を1点だけ短く回収し、Part 2で何を聞けばよいかという
+役割: 前半で聞いた内容の核心を1点だけ短く回収し、後半で何を聞けばよいかという
 問いを提示します。長いsummaryにしないでください。本文を英語で言い換え直して全部
-説明してはいけません。1〜2文にしてください。"""
+説明してはいけません。1〜2文にしてください。
 
-COMMENT_3_ROLE = """あなたはPodcastのナビゲーターです。リスナーはFull Story Part 1・Part 2
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"・"Full Story"のような
+制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+
+COMMENT_3_ROLE = """あなたはPodcastのナビゲーターです。リスナーは本文の前半・後半
 (本文全体)をすでに聞き終わり、これからPoint One・Point Two(補足の視点)を
 聞きます。その間に流す、Comment 3(役割: Story Meaning + Bridge to Points)を
 書いてください。
 
 役割: このニュース全体の意味を短く整理し、これから聞くPointへの橋渡しをします。
 Pointの具体的な内容(答え)を先に言ってはいけません。新しいFactを追加しないで
-ください。易しい英語で2〜3文にしてください。"""
+ください。易しい英語で2〜3文にしてください。
+
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"・"Full Story"のような
+制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
 
 COMMENT_4_ROLE = """あなたはPodcastのナビゲーターです。リスナーはPoint One・Point Twoを
 すでに聞き終わり、これからIn One Line(結びのまとめ)を聞きます。その間に流す、
@@ -176,7 +185,10 @@ Comment 4(役割: Point Recovery + Bridge to In One Line)を書いてくださ�
 
 注意: In One Lineの実際のsentence数は記事により異なります(1文とは限り
 ません)。「一文で」「one sentenceで」「一言で」等、sentence数を断定する
-表現は使わないでください。"""
+表現は使わないでください。
+
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"・"Full Story"のような
+制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
 
 PREVIEW_ROLE = """あなたはPodcastの冒頭を担当するナビゲーターです。これからリスナーは、
 このエピソードのニュース本文(Preview・Key Phrasesに続いてMain Story・Points・

@@ -632,8 +632,16 @@ FOREIGN_TOKEN_HUMAN_REVIEW = "HUMAN_REVIEW"
 # 前後だけを見るnegative lookaround(Unicode \bは漢字/かなも「単語文字」
 # とみなすため使えない、というPython re の既知の落とし穴を回避する)。
 _INTERNAL_LABEL_WORDS = ("Part", "Point", "Comment", "Section", "Step", "Chapter")
+# ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: 数字/ローマ数字だけでなく、
+# "Part One"/"Point Two"のような英単語表記の序数もラベルとして検出する
+# (元々は"Part 1"等の数字表記のみを対象にしていたが、CURRENT_SPECの
+# 見出し命名規則自体が"Point One"等の英単語表記も禁止していることと
+# 平仄を合わせる。日本語版・英語版の両方でこの拡張が有効になる)。
+_INTERNAL_LABEL_ORDINAL_WORDS = ("One", "Two", "Three", "Four", "Five",
+                                  "First", "Second", "Third", "Fourth", "Fifth")
 _INTERNAL_LABEL_RE = re.compile(
-    r"(?<![A-Za-z0-9])(?:" + "|".join(_INTERNAL_LABEL_WORDS) + r")\s*(?:[0-9]+|[IVXivx]+)(?![A-Za-z0-9])")
+    r"(?<![A-Za-z0-9])(?:" + "|".join(_INTERNAL_LABEL_WORDS) + r")\s*(?:[0-9]+|[IVXivx]+|"
+    + "|".join(_INTERNAL_LABEL_ORDINAL_WORDS) + r")(?![A-Za-z0-9])")
 
 # 日本語文中に残るLatin文字トークン(英単語・略語)を検出する。数字単独
 # ("2026"等、既存のtts_safe_number_words_en等で扱う体系)は対象外とし、
@@ -741,6 +749,48 @@ def foreign_token_gate_requires_stop(findings: list) -> bool:
 
 
 FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl"
+
+
+# ============================================================
+# ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: 英語canonical textの
+# 制作内部ラベル検出(日本語版[上記]の英語ミラー)
+# ============================================================
+# No.8のB1 Comment 2で、"In Part 2, what is American Airlines doing..."
+# という制作内部の構造ラベルがリスナー向け英語にそのまま出力される事故が
+# 発生した。上記の日本語版ガード(classify_foreign_tokens_in_japanese_
+# text)は日本語canonical text専用で、英語canonical textは対象外だった
+# ため検知できなかった。根本原因(Comment生成promptのcontextにPart 1/
+# Part 2という内部ラベルがそのまま含まれていたこと)はprompt側で別途
+# 修正済み(er003_v1_n3_01_scaffold_generate.py)だが、再発を防ぐ第二の
+# 防御線として、英語版の同種ガードを新設する。日本語版と同じ
+# _INTERNAL_LABEL_RE(Part/Point/Comment/Section/Step/Chapter + 数字/
+# ローマ数字)をそのまま再利用する(新しい正規表現・新規LLM呼び出しは
+# 追加しない、追加コスト0円)。日本語版と異なり、英語canonical textには
+# 「意図的な英語発話」のような救済分類が無いため、1件でも検出されれば
+# 無条件でブロックする(過検知リスクより、内部ラベル露出の実害の方が
+# 重いと判断)。
+def detect_internal_production_labels_in_english_text(text: str) -> list:
+    """英語canonical text(TTSへ渡す直前のもの)に、制作内部のsegment名/
+    章番号ラベル(Part 1・Point 2・Comment 3・Section 1等)がそのまま
+    残っていないかを検出する。戻り値: 検出0件ならば空list、各検出は
+    {"token": str, "reason": str} の形の辞書。"""
+    text = text or ""
+    findings = []
+    for m in _INTERNAL_LABEL_RE.finditer(text):
+        findings.append({
+            "token": m.group(0),
+            "reason": f"制作内部のsegment名/章番号ラベルがリスナー向け英語に残っています: {m.group(0)!r}。"
+                      "リスナーが単独で理解できる表現(例:\"the first half\"/\"what we just heard\")へ"
+                      "言い換えてください。",
+        })
+    return findings
+
+
+def english_internal_label_gate_requires_stop(findings: list) -> bool:
+    """1件でも検出されればTTS呼び出し自体をブロックすべきと判定する
+    (英語版には日本語版のような救済分類[ENGLISH_PRONUNCIATION等]が
+    無いため、日本語版より単純な全件ブロック設計)。"""
+    return bool(findings)
 
 
 def log_foreign_token_human_review(canonical_text: str, wav_path: str, findings: list) -> None:

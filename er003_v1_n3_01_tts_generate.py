@@ -43,6 +43,7 @@ import er006_batch_tts_wiring_01 as batch_wiring
 import er007_ja_secondary_asr_01 as ja_secondary
 import er003_b1_p9a_audio as p9a
 import er006_preprod_hardening_01_validation as en_validator
+import er006_secondary_asr_01 as secondary_asr
 import er008_a2_postprocess_slowdown_01 as a2_slowdown
 
 # ============================================================
@@ -72,6 +73,22 @@ A2_SLOWER_PACE_INSTRUCTION = (
 )
 A2_ENGLISH_STYLE_PREFIX_SLOWER = p9a.ENGLISH_STYLE_PREFIX + A2_SLOWER_PACE_INSTRUCTION
 common.assert_no_wpm_specification(A2_ENGLISH_STYLE_PREFIX_SLOWER)
+
+# ============================================================
+# ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 5-B: B1 Previewの
+# 話し方調整(ユーザー試聴・正式採用済み)。No.8 B1 Previewが他segmentより
+# 明確に速い(実測184.5 WPM相当)ことが判明したが、B1にはA2のような
+# segment別の速度差別化instructionが一切存在しなかった(現状調査で確認)。
+# A2と同じ「自然言語のみ、数値WPM指定はしない」方針を踏襲し、Preview
+# 専用の落ち着いた導入トーンを追加する(Full Story/Point/In One Line
+# 等の本文Aoede音声には適用しない、Previewのみの限定変更)。
+B1_PREVIEW_CALM_INSTRUCTION = (
+    "\nSpeak this introduction in a calm, clear, unhurried tone, giving the listener "
+    "time to take in what is coming, while keeping the delivery natural and "
+    "conversational (not slow or robotic).\n"
+)
+B1_PREVIEW_STYLE_PREFIX_CALM = p9a.ENGLISH_STYLE_PREFIX + B1_PREVIEW_CALM_INSTRUCTION
+common.assert_no_wpm_specification(B1_PREVIEW_STYLE_PREFIX_CALM)
 
 # ============================================================
 # ER-008-A2-POSTPROCESS-SLOWDOWN-PROD-11: A2の「わずかに遅く」に、生成後
@@ -133,9 +150,19 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
                 ti[key] = round(ti[key] * stretch_ratio, 3)
     if result.get("duration_seconds") is not None:
         result["duration_seconds"] = round(result["duration_seconds"] * stretch_ratio, 3)
-    if classification.should_pass:
+    # ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: No.8 A2 point_one_headingの
+    # 修復作業中に発見。post-process後の再検証はここまで`classification.
+    # should_pass`のみで判定しており、ER-008-ASR-VARIANT-HARDENING-AND-
+    # RETRY-15で導入したhomophone等価判定(is_homophone_candidate_mismatch、
+    # 例: wait/weight)がこの経路には配線されていなかった(Cascade側には
+    # 配線済みだったが、こちらは独立した再検証コードパスだったため)。
+    # 同じ既存判定関数をそのまま再利用し、新規ロジックは追加しない。
+    homophone_accepted = secondary_asr.is_homophone_candidate_mismatch(classification)
+    if classification.should_pass or homophone_accepted:
         result["asr_verified"] = True
         result["asr_text"] = asr_text
+        if homophone_accepted:
+            result["post_slowdown_homophone_accepted"] = True
     else:
         result["status"] = "STOPPED"
         result["asr_verified"] = False
@@ -146,7 +173,12 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
 
 def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 60, max_slowdown_attempts: int = 3,
-                                        style_prefix_override: str = None) -> dict:
+                                        style_prefix_override: str = None,
+                                        # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Point見出し/
+                                        # In One Line等、短文でpartial repetitionが目立ちやすい
+                                        # segmentのみ呼び出し側からTrueを渡す(既定Falseで
+                                        # full_story/point本文等の既存挙動には影響しない)。
+                                        disfluency_qa: bool = False) -> dict:
     """通常ペースでの生成(generate_english_segment_with_fallback、既存の
     standard/fallback retry込み)→6% time-stretch→post-process後ASR
     再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
@@ -174,7 +206,7 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     for attempt in range(1, max_slowdown_attempts + 1):
         result = c.generate_english_segment_with_fallback(
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
-            style_prefix_override=style_prefix_override)
+            style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
@@ -557,7 +589,11 @@ def generate_b1_segments(theme: dict) -> dict:
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon)...")
         with cl.segment_context(name):
             results[name] = voice01.generate_charon_english(
-                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav")
+                tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                style_prefix_override=(B1_PREVIEW_STYLE_PREFIX_CALM if name == "preview" else None),
+                # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Previewのみ対象
+                # (Comment1-4はまだ試作段階、正式採用はユーザー試聴後)。
+                disfluency_qa=(name == "preview"))
         results[name]["canonical_text"] = text
 
     for name in ("point_one_heading", "point_two_heading"):
@@ -581,7 +617,10 @@ def generate_b1_segments(theme: dict) -> dict:
         print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文)...")
         with cl.segment_context(name):
             results[name] = news_tail_fix.generate_news_narration_wide_margin(
-                tts_safe_news_en(text), f"{narration_dir}/{name}.wav")
+                tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
+                # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
+                # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
+                disfluency_qa=(name == "in_one_line"))
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
@@ -663,7 +702,7 @@ def generate_a2_segments(theme: dict) -> dict:
         with cl.segment_context(name):
             results[name] = generate_a2_segment_with_slowdown(
                 tts_input, f"{narration_dir}/{name}.wav", first_words(text, 3), max_extra_chars=20,
-                style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
+                style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER, disfluency_qa=True)
         results[name]["canonical_text"] = text
 
     for name, text, sub in (
@@ -679,7 +718,10 @@ def generate_a2_segments(theme: dict) -> dict:
         print(f"[N3-TTS][{theme_id}/a2] {name}生成(英語News本文、わずかに遅く+6%減速)...")
         with cl.segment_context(name):
             results[name] = generate_a2_segment_with_slowdown(
-                tts_input, f"{narration_dir}/{name}.wav", sub, style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER)
+                tts_input, f"{narration_dir}/{name}.wav", sub, style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
+                # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
+                disfluency_qa=(name == "in_one_line"))
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])

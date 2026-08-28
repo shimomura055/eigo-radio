@@ -36,6 +36,7 @@ import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
@@ -56,7 +57,10 @@ tail_energy_profile = audio02._tail_energy_profile
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
                                             max_extra_chars: int = 60,
                                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
-                                            style_prefix_override: str = None) -> dict:
+                                            style_prefix_override: str = None,
+                                            # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: 呼び出し側が
+                                            # 対象segment(Point見出し/In One Line等)でのみTrueを渡す。
+                                            disfluency_qa: bool = False) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -68,7 +72,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     には残り予算のみを渡す。"""
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
-        style_prefix_override=style_prefix_override)
+        style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -101,8 +105,12 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             force_secondary=True)
         verified = verified_content and length_ok
+        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+        verified = gate["verified"]
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "audio_classification": cls.classification, "verified": verified})
+                                   "audio_classification": cls.classification, "verified": verified,
+                                   "disfluency_checked": gate["disfluency_checked"],
+                                   "disfluency_evidence": gate.get("disfluency_evidence")})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

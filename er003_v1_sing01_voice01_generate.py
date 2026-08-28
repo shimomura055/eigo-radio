@@ -32,6 +32,7 @@ import er007_ja_secondary_asr_01 as ja_secondary
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
@@ -42,10 +43,30 @@ SAFETY_MARGIN = 0.35  # AUDIO-03/NOVEL-AUDIO-01のtail切れ修正と同じ値�
 
 @review_lock.guarded_generate("en")
 def generate_charon_english(text: str, out_path: str,
-                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
+                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+                             style_prefix_override: str = None,
+                             # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: B1 Previewなど
+                             # 短文でpartial repetitionが目立ちやすいsegmentのみ呼び出し側
+                             # からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
+                             disfluency_qa: bool = False) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
+    # ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: No.8のB1 Comment 2で
+    # "In Part 2, ..."という制作内部ラベルが英語canonical textへ残って
+    # いた事故を受け、TTS呼び出し前に検出する(発生源[Comment生成prompt
+    # のcontext]の修正[er003_v1_n3_01_scaffold_generate.py]に加える
+    # 第二の防御線、rule-based・追加API呼び出し無し)。本関数はA2/B1
+    # 双方のCharon英語音声で共通利用されるため、この位置での検出は
+    # 両レベルへ同時に適用される。
+    label_findings = safety.detect_internal_production_labels_in_english_text(text)
+    if safety.english_internal_label_gate_requires_stop(label_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに制作内部のsegment名/章番号ラベルが残っています"
+                      "(Human Review待ち): " + ", ".join(f["token"] for f in label_findings),
+            "canonical_text": text, "internal_label_findings": label_findings,
+        }
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
@@ -53,7 +74,7 @@ def generate_charon_english(text: str, out_path: str,
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはgclient.make_tts_call_fn(CHARON)と同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, CHARON, output_path=out_path)
-        prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
+        prompt = p4c.build_tts_prompt(text, style_prefix_override or p9a.ENGLISH_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix"
@@ -105,9 +126,13 @@ def generate_charon_english(text: str, out_path: str,
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
+        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+        verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
-                              "length_ok": length_ok, "verified": verified, "trim_info": trim_info})
+                              "length_ok": length_ok, "verified": verified, "trim_info": trim_info,
+                              "disfluency_checked": gate["disfluency_checked"],
+                              "disfluency_evidence": gate.get("disfluency_evidence")})
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,

@@ -31,6 +31,7 @@ import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 
 AOEDE = "Aoede"
@@ -40,7 +41,10 @@ NARRATION_DIR = f"{OUT_DIR}/narration"
 
 
 @review_lock.guarded_generate("en")
-def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
+def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+             # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Point見出しはPRODUCTION
+             # 承認済みのdisfluency QA対象segmentのため既定True。
+             disfluency_qa: bool = True) -> dict:
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
@@ -86,8 +90,12 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
+        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+        verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "asr_text": asr_text, "audio_classification": cls.classification,
-                              "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type})
+                              "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type,
+                              "disfluency_checked": gate["disfluency_checked"],
+                              "disfluency_evidence": gate.get("disfluency_evidence")})
         print(f"    attempt {attempt} ({instruction_type}): asr={asr_text!r} classification={cls.classification} length_ok={length_ok}")
         if verified:
             return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True,

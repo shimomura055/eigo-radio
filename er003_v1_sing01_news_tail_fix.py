@@ -34,6 +34,7 @@ import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
@@ -56,7 +57,11 @@ LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS = 0.35
 @review_lock.guarded_generate("en")
 def generate_news_narration_wide_margin(text: str, out_path: str,
                                          max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
-                                         max_extra_chars: int = 15) -> dict:
+                                         max_extra_chars: int = 15,
+                                         # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: In One Line等、
+                                         # 短文でpartial repetitionが目立ちやすいsegmentのみ呼び出し側
+                                         # からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
+                                         disfluency_qa: bool = False) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -106,10 +111,13 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
         verified = verified_content and length_ok
+        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+        verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "length_ok": length_ok, "verified": verified,
-                              "trim_info": trim_info})
+                              "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
+                              "disfluency_evidence": gate.get("disfluency_evidence")})
         if verified:
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text,

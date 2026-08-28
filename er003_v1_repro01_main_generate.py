@@ -32,6 +32,7 @@ import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er007_ja_secondary_asr_01 as ja_secondary
+import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 
 ARTICLE_ID = "A02"
@@ -199,6 +200,10 @@ def generate_narration_snippet_verified_strict(
     # 既定値変更の影響を受けない。
     safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
     style_prefix_override: str = None,
+    # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key Phrase/Point見出し/
+    # In One Line等、短文でpartial repetitionが目立ちやすいsegmentのみ
+    # 呼び出し側からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
+    disfluency_qa: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -239,6 +244,8 @@ def generate_narration_snippet_verified_strict(
                 text, asr_text, classification_history, out_path, language=asr_language,
                 ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
             verified = verified_content and length_ok
+            gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+            verified = gate["verified"]
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
         else:
@@ -257,6 +264,8 @@ def generate_narration_snippet_verified_strict(
             "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok,
             "phonetic_verdict": phonetic_verdict, "audio_classification": audio_classification,
             "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
+            "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
         })
         if verified:
             return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}
@@ -374,7 +383,10 @@ KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
 
 @review_lock.guarded_generate("en")
 def generate_key_phrase_component_verified(
-        text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
+        text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+        # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key PhraseはPRODUCTION
+        # 承認済みのdisfluency QA対象segmentのため既定True(A2/B1共通)。
+        disfluency_qa: bool = True) -> dict:
     """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
     それでも合格しない場合のみ、minimal instructionへフォールバックする
     (声・モデルは変えない、テキストも変えない)。head safety marginは
@@ -387,7 +399,7 @@ def generate_key_phrase_component_verified(
     import er003_b1_p4_audio as p4
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, text, max_extra_chars=10, max_attempts=max_attempts,
-        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
+        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -413,8 +425,12 @@ def generate_key_phrase_component_verified(
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             force_secondary=True)
         verified = verified_content and length_ok
+        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+        verified = gate["verified"]
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "audio_classification": cls.classification, "verified": verified})
+                                   "audio_classification": cls.classification, "verified": verified,
+                                   "disfluency_checked": gate["disfluency_checked"],
+                                   "disfluency_evidence": gate.get("disfluency_evidence")})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

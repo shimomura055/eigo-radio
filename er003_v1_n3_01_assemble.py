@@ -32,6 +32,7 @@ import er003_b1_p9a_audio as p9a
 import er003_v1_b1_scaffold_audio_03_generate as audio03
 import er003_v1_crosslevel_audio_02_common as c
 import er003_v1_n3_01_articles_generate as gen
+import er003_v1_n3_01_tts_generate as n3_tts
 
 SR = p9a.TARGET_SAMPLE_RATE
 POINT_NOTIFICATION_MP3_PATH = "C:/Users/tensh/eigo-radio/notification/universfield-new-notification-07-210334.mp3"
@@ -127,6 +128,33 @@ def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
     return "UNVALIDATED"
 
 
+def _segment_missing_mandatory_a2_slowdown(name: str, entry: dict, narration_dir: str = None) -> bool:
+    """ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 5-A: No.8
+    point_one_headingが、Human Review Lock経由で承認された結果、6%
+    time-stretchという必須post-processを一度も受けないままVALIDATED
+    扱いでAssembleへ到達していた事故を受けた恒久対策。
+
+    第一の証拠はtts_generation_results.jsonに記録された`slowdown_applied`
+    フィールド(新規生成経路[generate_a2_segment_with_slowdown]が必ず
+    記録する、最も明示的なevidence)。ただし横断調査で、No.8の他segment
+    (full_story_part1/2・point_one・point_two・point_two_heading・
+    in_one_line)は実際には6% slowdownを受けていた(`{name}_original.wav`
+    が現存する)にもかかわらず、当時これらを扱った「resume」系script
+    (既存fileから結果を引き継ぐ簡易script)がslowdown_appliedフィールド
+    自体を記録していなかったことが判明した(音声は正しいが、metadataだけ
+    が欠落している既存データの穴、新規バグではない)。この既存データを
+    誤ってblockしないよう、`{name}_original.wav`が実際に存在することを
+    第二の(やや弱いが独立した)evidenceとして受け入れる。新規生成経路は
+    常に両方の証拠を残すため、この緩和は既存データの後方互換のみに効く。"""
+    if name not in n3_tts.A2_SLOWDOWN_TARGET_SEGMENTS:
+        return False
+    if entry.get("slowdown_applied") is True:
+        return False
+    if narration_dir and os.path.exists(f"{narration_dir}/{name}_original.wav"):
+        return False
+    return True
+
+
 def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
     result_path = f"{out_dir}/audit/tts_generation_results.json"
     if not os.path.exists(result_path):
@@ -134,12 +162,15 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
     data = load_json(result_path) or {}
     approvals_path = human_approval_path(out_dir)
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
+    narration_dir = f"{out_dir}/narration"
 
     blocked = []
     for name, entry in (data.get("segments") or {}).items():
         final = _segment_gate_status(entry, name, approvals)
         if final not in AUDIO_GATE_ALLOWED_STATUSES:
             blocked.append(f"{name}={final}")
+        elif level == "A2" and _segment_missing_mandatory_a2_slowdown(name, entry, narration_dir):
+            blocked.append(f"{name}={final}(MISSING_MANDATORY_A2_SLOWDOWN)")
     for rank, kp in (data.get("key_phrases") or {}).items():
         for sub_key, sub_entry in kp.items():
             seg_key = f"kp{rank}_{sub_key}"
@@ -151,10 +182,12 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
         raise RuntimeError(
             f"EPISODE_BLOCKED_BY_AUDIO_VALIDATION: {level}のepisode assemblyを中止し"
             f"ました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありま"
-            f"せん: {blocked}。未検証・stale・STOPPEDの音声をそのまま完成扱いにする"
-            "ことは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-"
-            "MAJOR-AUDIT-05)。該当segmentを再生成するか、聴取確認の上でrecord_"
-            "human_approval()で明示的に承認してから再度assemblyを実行してください。")
+            f"せん、または必須post-processのevidenceがありません: {blocked}。未検証・"
+            "stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない"
+            "音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-"
+            "VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-"
+            "WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを"
+            "適用してから再度assemblyを実行してください。")
 
 
 def copy_b1_shared_assets(narration_dir: str) -> None:

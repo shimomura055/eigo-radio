@@ -28,6 +28,8 @@ import er003_v1_n3_01_evidence_compression_editor as ec_editor
 import er003_v1_spoken_first_01_r1_generate as sf1r1
 import er006_model_routing_contract_01 as routing
 import er008_directional_fact_precheck_08 as dfp
+import er008_point_overlap_qa_18 as overlap_qa
+import er008_point_regenerate_19 as point_regen
 import er008_shared_point_blueprint_01 as blueprint_mod
 
 load_dotenv()
@@ -345,6 +347,86 @@ def compute_metrics(text: str) -> dict:
             "avg_sentence_length": avg_len, "max_sentence_length": max_len}
 
 
+# ============================================================
+# ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 3: Point-only
+# regeneration(Point One/TwoがFull Storyの言い換えになっているsegmentだけ
+# を、記事全体を作り直さずに差し替える)
+# ============================================================
+# Point One/Twoの役割(CURRENT_SPEC.md「Full Storyの役割」節):
+# 「Full Storyだけでニュースの核心が分かる。Point One/Twoは深掘り・背景・
+# 意味付けとし、Full Storyの代替にしない」を英語化したもの。
+POINT_ROLE_SPEC_EN = (
+    "Point One and Point Two exist to go deeper than the Full Story: they add "
+    "background, interpretation, or meaning a listener would not get from the Full "
+    "Story alone. They must not simply restate or summarize the Full Story's core logic."
+)
+
+
+def split_common_sections_for_point_qa(article_text: str) -> dict | None:
+    """run_one_patternが生成するarticle_text(Title + Main Story + ###
+    Point見出し×2 + ## In one line、COMMON_BLOCK_TEMPLATE共通構造)から、
+    Full Story本文とPoint One/Twoの見出し・本文を抽出する。想定構造で
+    ない場合はNoneを返す(呼び出し側はQAをスキップする、既存のwriter
+    structure validator[restore_r2.validate_point_structure]が本来の
+    構造検証を別途担うため、ここでは新しいhard failureを追加しない)。"""
+    h3_matches = list(re.finditer(r"^###\s+(.+?)\s*$", article_text, flags=re.MULTILINE))
+    if len(h3_matches) != 2:
+        return None
+    title_match = re.match(r"^#\s+.+?\s*\n", article_text)
+    full_story_start = title_match.end() if title_match else 0
+    in_one_line_match = re.search(r"^##\s+In one line", article_text, flags=re.MULTILINE)
+    point_two_end = in_one_line_match.start() if in_one_line_match else len(article_text)
+    return {
+        "full_story": article_text[full_story_start:h3_matches[0].start()].strip(),
+        "point_one_heading": h3_matches[0].group(1).strip(),
+        "point_one_body": article_text[h3_matches[0].end():h3_matches[1].start()].strip(),
+        "point_two_heading": h3_matches[1].group(1).strip(),
+        "point_two_body": article_text[h3_matches[1].end():point_two_end].strip(),
+    }
+
+
+def run_point_overlap_qa_and_regenerate(client, article_text: str, verified_ledger_text: str,
+                                          model: str, reasoning_effort: str, out_dir: str) -> dict:
+    """Point One/TwoそれぞれについてFull Storyとの意味重複(lexical
+    overlap、暫定閾値0.40)をチェックし、flagされた場合のみPoint-only
+    regenerationを行う。Full Story・他方のPoint・Fact Checker/Ledger
+    Deviation Checkは変更しない(記事全体の再生成は行わない)。戻り値の
+    patched_article_textを、呼び出し側がその後のFact Checker/Deviation
+    Checkへそのまま渡す(regenerateされたPointも既存の安全確認プロセスを
+    通る)。"""
+    sections = split_common_sections_for_point_qa(article_text)
+    if sections is None:
+        return {"status": "SKIPPED", "reason": "想定構造(###見出し2つ)が見つからないためQAをスキップしました",
+                "patched_article_text": article_text}
+
+    patched_text = article_text
+    report = {}
+    for key, label_name, other_key in (("point_one", "Point One", "point_two_body"),
+                                         ("point_two", "Point Two", "point_one_body")):
+        body = sections[f"{key}_body"]
+        overlap = overlap_qa.flag_possible_paraphrase(body, sections["full_story"])
+        entry = {"before_overlap": overlap, "applied": False}
+        if overlap["flagged"]:
+            ng_reason = (f"Lexical overlap with Full Story = {overlap['overlap_ratio']} "
+                         f"(threshold {overlap['threshold']}), shared content words: {overlap['shared_words']}. "
+                         "This Point is likely restating the Full Story's logic instead of adding a new angle.")
+            regen_result = point_regen.regenerate_point_only(
+                client, label_name, body, sections["full_story"], sections[other_key],
+                verified_ledger_text, ng_reason, POINT_ROLE_SPEC_EN, model=model, reasoning_effort=reasoning_effort)
+            entry["regenerate_status"] = regen_result["status"]
+            entry["regenerate_attempts_count"] = len(regen_result.get("attempts") or [])
+            entry["regenerate_validation"] = regen_result.get("validation")
+            if regen_result["status"] == "OK":
+                patched_text = patched_text.replace(body, regen_result["new_text"], 1)
+                entry["applied"] = True
+                entry["new_text"] = regen_result["new_text"]
+        report[key] = entry
+
+    with open(f"{out_dir}/point_overlap_qa.json", "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2, default=str)
+    return {"status": "OK", "patched_article_text": patched_text, "report": report}
+
+
 def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
                      topic: str, out_dir: str, apply_evidence_compression: bool = True,
                      apply_directional_fact_precheck: bool = True) -> dict:
@@ -402,6 +484,23 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
 
     with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
         f.write(article_text)
+
+    print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA開始...")
+    point_qa_result = run_point_overlap_qa_and_regenerate(
+        client, article_text, verified_ledger_text,
+        model=routing.require_model(_writer_process(label), routing.WRITER_MODEL),
+        reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
+    point_overlap_qa_applied = False
+    if point_qa_result["status"] == "OK" and point_qa_result["patched_article_text"] != article_text:
+        article_text = point_qa_result["patched_article_text"]
+        point_overlap_qa_applied = True
+        with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+            f.write(article_text)
+        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QAでPointを再生成・差し替えました"
+              f"(詳細: {out_dir}/point_overlap_qa.json)")
+    else:
+        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA完了(差し替えなし)。"
+              f"status={point_qa_result['status']}")
 
     metrics = compute_metrics(article_text)
     section_wc = sf1r1.section_word_counts(article_text)
@@ -474,6 +573,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
         "fact_usage_report": fact_usage_report,
         "evidence_compression_applied": evidence_compression_applied,
+        "point_overlap_qa_applied": point_overlap_qa_applied,
         "directional_fact_precheck_status": directional_precheck_status,
     }
 

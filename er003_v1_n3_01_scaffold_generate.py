@@ -162,7 +162,7 @@ def split_article_text(text: str) -> dict:
 # A2 Comment 3: 今回のN3-01専用role(spec 25節: Point内容を多少
 # 先出ししてよい。B1のように機械的に重複削除しない)
 # ============================================================
-A2_COMMENT_3_ROLE_N3 = """あなたはPodcastのナビゲーターです。リスナーはFull Story Part 1・Part 2
+A2_COMMENT_3_ROLE_N3 = """あなたはPodcastのナビゲーターです。リスナーは本文の前半・後半
 (本文全体)をすでに聞き終わり、これからPoint One・Point Two(補足の視点)を
 聞きます。その間に流す、Comment 3(役割: Story Meaning + Bridge to Points)を
 日本語で書いてください。
@@ -290,22 +290,22 @@ def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str, bluepr
     大半は互換性ありと確認済み)。Noneの場合(既定)は旧来の挙動と完全に
     同一(後方互換)。"""
     print(f"[N3-SCAFFOLD] B1 Comment 1生成開始({out_dir})...")
-    c1_context = f"【Full Story Part 1(これから聞く本文)】\n{parts['part1']}"
+    c1_context = f"【これから聞く本文(前半)】\n{parts['part1']}"
     c1 = b1s.run_support_text(client, b1s.COMMENT_1_ROLE, c1_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 2生成開始({out_dir})...")
-    c2_context = f"【Full Story Part 1(聞き終えた本文)】\n{parts['part1']}\n\n【Full Story Part 2(これから聞く本文)】\n{parts['part2']}"
+    c2_context = f"【すでに聞いた本文(前半)】\n{parts['part1']}\n\n【これから聞く本文(後半)】\n{parts['part2']}"
     c2 = b1s.run_support_text(client, b1s.COMMENT_2_ROLE, c2_context, model=_b1_support_model())
 
     print(f"[N3-SCAFFOLD] B1 Comment 3生成開始({out_dir})...")
     if blueprint is not None:
-        c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
+        c3_context = (f"【本文(前半)】\n{parts['part1']}\n\n【本文(後半)】\n{parts['part2']}\n\n"
                       f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
                       f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}\n\n"
                       f"{blueprint_mod.render_comment_anchor_block(blueprint, 'point_1')}")
         c3_role = b1s.COMMENT_3_ROLE + _BLUEPRINT_COMMENT_SELF_REPORT_SUFFIX
     else:
-        c3_context = (f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}\n\n"
+        c3_context = (f"【本文(前半)】\n{parts['part1']}\n\n【本文(後半)】\n{parts['part2']}\n\n"
                       f"【これから聞くPointの見出しのみ(内容は伏せる)】\n"
                       f"Point One heading: {parts['point_one_heading']}\nPoint Two heading: {parts['point_two_heading']}")
         c3_role = b1s.COMMENT_3_ROLE
@@ -353,17 +353,17 @@ def run_b1_scaffold(client, parts: dict, out_dir: str, article_text: str, bluepr
 # ============================================================
 def run_a2_scaffold(client, parts: dict, out_dir: str, article_text: str) -> dict:
     print(f"[N3-SCAFFOLD] A2 Comment 1生成開始({out_dir})...")
-    c1_context = f"【Full Story Part 1(これから聞く本文、英語)】\n{parts['part1']}"
+    c1_context = f"【これから聞く本文(前半、英語)】\n{parts['part1']}"
     c1 = a2gen.run_support_text(client, a2gen.COMMENT_1_ROLE, c1_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 2生成開始({out_dir})...")
-    c2_context = f"【Full Story Part 1(聞き終えた本文)】\n{parts['part1']}\n\n【Full Story Part 2(これから聞く本文)】\n{parts['part2']}"
+    c2_context = f"【すでに聞いた本文(前半)】\n{parts['part1']}\n\n【これから聞く本文(後半)】\n{parts['part2']}"
     c2 = a2gen.run_support_text(client, a2gen.COMMENT_2_ROLE, c2_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 3生成開始({out_dir})...")
     c3_role = A2_COMMENT_3_ROLE_N3.format(
         point_one_heading=parts["point_one_heading"], point_two_heading=parts["point_two_heading"])
-    c3_context = f"【Full Story Part 1】\n{parts['part1']}\n\n【Full Story Part 2】\n{parts['part2']}"
+    c3_context = f"【本文(前半)】\n{parts['part1']}\n\n【本文(後半)】\n{parts['part2']}"
     c3 = a2gen.run_support_text(client, c3_role, c3_context, model=_a2_support_model())
 
     print(f"[N3-SCAFFOLD] A2 Comment 4生成開始({out_dir})...")
