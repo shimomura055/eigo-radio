@@ -32,7 +32,6 @@ import er003_audio_tts_asr_safety as safety
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
-import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er011_human_review_lock_01 as review_lock
@@ -42,21 +41,21 @@ NARRATION_DIR = f"{OUT_DIR}/narration"
 LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS = 0.35
 
 
-# ER-010-ENTITY-PHONETIC-CORROBORATION-01: 固有名詞由来のASR_VALIDATION_
-# UNCERTAINが、retryを重ねても解消しないまま(No.5 pool_n5_cafes B1
-# full_story_part1で実際に発生)Human Reviewへ滞留するのを緩和する。
-# この集約関数自体は新規TTS/ASR呼び出しを行わない(このループ内で既に
-# 得られた各attemptのasr_textをローカルで再分類・集約するだけ)。ただし
-# 呼び出し側(下記ループ)は、集約結果がまだ「複数の異なる誤認識」という
-# 裏付けを得られていない場合、既存のmax_attempts上限内で追加のTTS
-# attemptを試みることがある(既存の他の失敗理由と同じコスト上限のまま)。
-def _try_entity_phonetic_corroboration(text: str, attempts_log: list) -> dict:
-    asr_texts = [a["asr_text"] for a in attempts_log if a.get("asr_text")]
-    return audio_validation.aggregate_entity_only_phonetic_corroboration(text, asr_texts)
+# ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-2で撤去: 旧ER-010-ENTITY-
+# PHONETIC-CORROBORATION-01は、「複数の独立したTTS take同士のASR結果が
+# 音韻的に収束していること」だけを根拠に自動PASSしていた(_try_entity_
+# phonetic_corroboration -> aggregate_entity_only_phonetic_
+# corroboration)。No.8監査で、この収束は「その発音が本人・その固有名詞の
+# 正しい発音と一致している証拠にはならない」(ASR consensus ≠
+# pronunciation verification)と判明したため、この呼び出し元での自動PASS
+# 経路は撤去した。固有名詞のPASS判定は、共有Cascade
+# (er006_secondary_asr_01.evaluate_attempt_with_cascade_detail)側の
+# D-2'(Pronunciation Ledgerに基づく期待発音との比較)に一本化する。
 
 
 @review_lock.guarded_generate("en")
-def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: int = 6,
+def generate_news_narration_wide_margin(text: str, out_path: str,
+                                         max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                                          max_extra_chars: int = 15) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
@@ -118,53 +117,19 @@ def generate_news_narration_wide_margin(text: str, out_path: str, max_attempts: 
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"]}
         if stop_retrying:
-            corroboration = _try_entity_phonetic_corroboration(text, attempts_log)
-            if corroboration["accept"]:
-                metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
-                return {"status": "OK", "text": text, "path": out_path, "asr_verified": False, "asr_text": asr_text,
-                        "attempts_log": attempts_log, "instruction_type": instruction_type,
-                        "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
-                        "clipping_detected": metrics["clipping_detected"],
-                        "classification": audio_validation.ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED,
-                        "phonetic_corroboration": corroboration,
-                        "reason": "固有名詞らしき語の音訳差のみで、複数の独立したTTS takeを軽量な音韻類似度"
-                                  "チェックで集約評価した結果、同一固有名詞の表記揺れと判定し自動採用した"
-                                  "(ER-010-ENTITY-PHONETIC-CORROBORATION-01)"}
-            # ER-010-ENTITY-PHONETIC-CORROBORATION-01: 固有名詞由来のASR_
-            # VALIDATION_UNCERTAIN(is_entity_like_mismatch)は、複数の独立
-            # したTTS takeが揃わないと音韻類似度チェックが判断材料不足のまま
-            # (No.5 full_story_part1で実際に発生: 1回目のtakeだけでは
-            # 「異なる誤認識が複数回観測された」という多様性の裏付けが得られ
-            # ない)。この場合に限り、まだ試行回数に余裕があればここで
-            # 打ち切らずattemptを継続する(既存の「同一signatureが連続したら
-            # 打ち切る」という他の打ち切り理由には一切影響しない、Cost上限は
-            # 既存のmax_attempts=6のまま変わらない)。
-            entity_only = secondary_asr.is_entity_like_mismatch(cls)
-            if entity_only and attempt < max_attempts:
-                continue
+            # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
+            # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
+            # 基づく期待発音との比較)に一本化したため、ここでの追加retry・
+            # 追加corroborationは行わない(他7関数と同じ、即座に停止)。
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "asr_verified": False,
                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"],
-                    "phonetic_corroboration": corroboration,
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
-                              f"(最終classification={cls.classification}、音韻類似度チェックも不採用: "
-                              f"{corroboration['reason']})"}
-    corroboration = _try_entity_phonetic_corroboration(text, attempts_log)
-    if corroboration["accept"]:
-        metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
-        return {"status": "OK", "text": text, "path": out_path, "asr_verified": False,
-                "attempts_log": attempts_log, "trim_info": attempts_log[-1].get("trim_info") if attempts_log else None,
-                "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
-                "clipping_detected": metrics["clipping_detected"],
-                "classification": audio_validation.ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED,
-                "phonetic_corroboration": corroboration,
-                "reason": "固有名詞らしき語の音訳差のみで、複数の独立したTTS takeを軽量な音韻類似度チェックで"
-                          "集約評価した結果、同一固有名詞の表記揺れと判定し自動採用した"
-                          "(ER-010-ENTITY-PHONETIC-CORROBORATION-01)"}
+                              f"(最終classification={cls.classification})"}
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log, "phonetic_corroboration": corroboration}
+            "attempts_log": attempts_log}
 
 
 def tail_rms(path: str, ms: int = 10) -> float:

@@ -33,6 +33,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_articles_generate as gen
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er011_human_review_lock_01 as review_lock
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
@@ -293,11 +294,16 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
 
 
 def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
-                                        max_extra_chars: int = 40, max_attempts: int = 6) -> dict:
+                                        max_extra_chars: int = 40,
+                                        max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
-    leakage対策。"""
+    leakage対策。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
+    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
+    には残り予算のみを渡す。"""
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
     if standard.get("status") == "OK":
@@ -313,7 +319,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
 
     max_len = len(text) + max_extra_chars
     fallback_attempts = []
-    for attempt in range(1, max_attempts + 1):
+    fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
+    for attempt in range(1, fallback_budget + 1):
         r = _generate_a2_japanese_minimal_instruction(text, out_path)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
@@ -349,7 +356,9 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             r["reason"] = (f"ASR Cascadeを尽くしても解決せず、retryでの改善が見込めないため打ち切り"
                            f"(最終classification={cls.classification})")
             return r
-    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
+    return {"status": "STOPPED",
+            "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
+                      f"(合計上限{max_attempts}回)とも不合格",
             "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
 
 

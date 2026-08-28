@@ -190,7 +190,7 @@ _MEANING_ASR_SUBSTRINGS = {1: "断る", 2: "アプリ", 3: "衝動", 4: "投稿�
 @review_lock.guarded_generate_with_language_arg
 def generate_narration_snippet_verified_strict(
     text: str, language: str, out_path: str, expected_substring: str,
-    max_attempts: int = 6, max_extra_chars: int = 15,
+    max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, max_extra_chars: int = 15,
     # ER-005-E2E-TTS-ANALYSIS-FIX-01: 既定をEN_TRIM_SAFETY_MARGIN_SECONDS
     # (0.08秒)からNARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS(0.35秒、B1の
     # news_tail_fix経路と同じ実績値)へ引き上げる。Key Phrase呼び出し
@@ -373,12 +373,17 @@ KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
 
 
 @review_lock.guarded_generate("en")
-def generate_key_phrase_component_verified(text: str, out_path: str, max_attempts: int = 6) -> dict:
+def generate_key_phrase_component_verified(
+        text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
     """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
     それでも合格しない場合のみ、minimal instructionへフォールバックする
     (声・モデルは変えない、テキストも変えない)。head safety marginは
     Key Phrase専用にKEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS(0.20秒)を
-    使う(ER-003-N3-ROOT-FIX-01)。"""
+    使う(ER-003-N3-ROOT-FIX-01)。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
+    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
+    には残り予算のみを渡す。"""
     import er003_b1_p4_audio as p4
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, text, max_extra_chars=10, max_attempts=max_attempts,
@@ -389,7 +394,8 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
 
     fallback_attempts = []
     fallback_classification_history = []
-    for attempt in range(1, max_attempts + 1):
+    fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
+    for attempt in range(1, fallback_budget + 1):
         r = generate_english_component_minimal_instruction(
             text, out_path, safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
         if r.get("status") != "OK":
@@ -426,8 +432,10 @@ def generate_key_phrase_component_verified(text: str, out_path: str, max_attempt
             r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                             f"(最終classification={cls.classification})")
             return r
-    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
-           "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+    return {"status": "STOPPED",
+            "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
+                      f"(合計上限{max_attempts}回)とも不合格",
+            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
 
 
 def stage_d_generate_key_phrase_components() -> dict:

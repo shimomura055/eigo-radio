@@ -40,12 +40,18 @@ NARRATION_DIR = f"{OUT_DIR}/narration"
 
 
 @review_lock.guarded_generate("en")
-def generate(text: str, out_path: str, max_attempts: int = 8) -> dict:
+def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: 旧max_attempts=8
+    # 時代は「前半4回=標準prompt、後半4回=minimal instruction」という
+    # 固定分割だった。max_attempts=3では同じ固定しきい値(>4)だと
+    # minimal instructionへ一度も切り替わらなくなるため、総試行回数の
+    # 半分(端数切り上げ、最低1回は標準を試す)を基準に比率を維持する。
+    minimal_after = max(1, max_attempts // 2)
     for attempt in range(1, max_attempts + 1):
-        use_minimal = attempt > 4
+        use_minimal = attempt > minimal_after
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはgclient.make_tts_call_fn(AOEDE)と同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, AOEDE, output_path=out_path)

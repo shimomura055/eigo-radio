@@ -20,6 +20,8 @@ import time
 import wave
 from typing import Optional
 
+import requests
+
 import er005_cost_logger as cl
 
 
@@ -114,6 +116,9 @@ def get_full_text_via_azure_stt_with_phrase_list(
 # ============================================================
 import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as val
+import er006_pronunciation_ledger_01 as pronun_ledger
+import er006_pronunciation_research_01 as pronun_research
+import er008_asr_variant_hardening_15_homophone_en as homophone_en
 
 FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01。
                                             # 旧OFF状態はOPEN-48で「追加検証待ち」としていたが、
@@ -145,6 +150,64 @@ def is_entity_like_mismatch(result: "val.ClassificationResult") -> bool:
     return bool(diffs) and all(d["entity_like"] for d in diffs)
 
 
+def is_homophone_candidate_mismatch(result: "val.ClassificationResult") -> bool:
+    """ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J:
+    classify_asr_matchの結果が、CMU Pronouncing Dictionary上で発音が
+    完全一致する単一語の置換差(homophone_candidate)のみによる
+    ASR_VALIDATION_UNCERTAINかどうかを判定する(is_entity_like_mismatch
+    の同音異義語版)。"""
+    if result.classification != "ASR_VALIDATION_UNCERTAIN":
+        return False
+    diffs = result.protected.content_word_diffs
+    return bool(diffs) and all(d["homophone_candidate"] for d in diffs)
+
+
+HOMOPHONE_EQUIVALENT = "HOMOPHONE_EQUIVALENT"
+PROPER_NOUN_ENTITY_ARPABET_CONFIRMED = "PROPER_NOUN_ENTITY_ARPABET_CONFIRMED"
+
+# ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-2': Stage 2(Pronunciation
+# Ledger lookup/research)専用のentity_type。記事・文脈をまたいで同一
+# entityが確実にcache hitするよう、この経路では常にsource_context=""
+# (既定値)・entity_typeはこの固定値を使う(記事ごとの分類ゆれで
+# cache keyが割れるのを防ぐ)。
+_UNRESOLVED_ENTITY_TYPE = "cascade_unresolved_entity"
+
+
+def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
+    """D-2'(B): CMU辞書で安全に比較できない固有名詞spanについて、
+    Pronunciation Ledgerをcache確認(記事横断で再利用)し、無ければ
+    その場でresearch_pronunciations()を1回だけ呼び出して永続cacheする。
+
+    **重要**: この関数が返す情報は、Human Reviewパッケージを充実させる
+    ためだけに使う。IPA→ARPAbet変換等による自動PASSの根拠には一切
+    使わない(D-2'参照。外国語由来の固有名詞をARPAbetへ強制変換すると
+    音韻情報が失われ誤PASSのリスクがあるため)。lookup/research失敗時は
+    Noneを返し、呼び出し側は追加のTTS呼び出しを一切行わずHuman Reviewへ
+    進むこと(安全側)。"""
+    key = pronun_ledger.LedgerKey(surface=canonical_span, entity_type=_UNRESOLVED_ENTITY_TYPE, source_context="")
+    entry = pronun_ledger.lookup(key)
+    if entry is not None:
+        return entry
+    try:
+        research = pronun_research.research_pronunciations([{
+            "surface": canonical_span, "entity_type": "unknown",
+            "risk_reason": "ASR Cascade(Primary#1/#2, Secondary#1/#2)を尽くしても解決できなかった固有名詞",
+        }])
+    except requests.exceptions.RequestException:
+        # ネットワーク層の失敗のみを「lookup利用不可」として静かに扱う
+        # (安全側、TTS再生成はトリガーしない)。cost logger未初期化等の
+        # 呼び出し元設定不備はここで揉み消さず、そのまま例外を伝播させる
+        # (本番の各generate関数エントリポイントは既にcost loggerを
+        # 初期化済みである前提。他のASR/TTS呼び出しと同じ扱い)。
+        return None
+    if research.get("status") != "OK" or not research.get("items"):
+        return None
+    item = dict(research["items"][0])
+    item["sources"] = research.get("citations", [])
+    pronun_ledger.upsert(key, item)
+    return pronun_ledger.lookup(key)
+
+
 HUMAN_REVIEW_LOG_PATH = "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"
 
 
@@ -163,6 +226,12 @@ def _log_human_review(detail: dict) -> None:
         "steps": detail["steps"],
         "cost_guard_triggered": detail["cost_guard_triggered"],
         "final_status": detail["final_status"],
+        # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part K: 固有名詞
+        # (CMU辞書に無い外国由来名等)でHuman Reviewへ落ちた場合、
+        # Pronunciation Ledgerから得られたcanonical_spelling/expected_
+        # pronunciation_ipa/pronunciation_hint/confidence/sources等を
+        # そのまま添付する(「正しく聞こえますか?」だけを提示しない)。
+        "pronunciation_lookups": detail.get("pronunciation_lookups", {}),
     }
     with open(HUMAN_REVIEW_LOG_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
@@ -195,6 +264,62 @@ def evaluate_attempt_with_cascade(
     if detail["human_review_required"]:
         _log_human_review(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]
+
+
+def _case_a_entity_pass(cls_step: "val.ClassificationResult") -> bool:
+    """D-2'(A): このステップのASR結果が、entity_like差分の全構成語について
+    CMU Pronouncing Dictionaryの代表発音同士で完全一致するか判定する
+    (canonical綴りと直接比較するため、他ステップの結果は不要。1ステップ
+    だけで判定できる)。entity_like差分が無い場合はFalse。"""
+    entity_diffs = [d for d in cls_step.protected.content_word_diffs if d["entity_like"]]
+    if not entity_diffs:
+        return False
+    for d in entity_diffs:
+        match = homophone_en.entity_span_arpabet_match(d["canonical"], d["asr"])
+        if not (match.resolved and match.matched):
+            return False
+    return True
+
+
+def _step_alternate_pass(cls_step: "val.ClassificationResult") -> str | None:
+    """should_pass以外の経路でこのステップをPASS扱いにできるか判定する。
+    戻り値は採用したclassification名(PASS不可ならNone)。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15での再設計:
+      - homophone(wait/weight等): CMU辞書上の発音完全一致は、canonical
+        綴りとASR綴りを直接比較する強い根拠のため、このステップ単独で
+        判定してよい。
+      - 固有名詞Case A(Kristie/Christy等): 同じくCMU辞書上の代表発音
+        同士の完全一致で、canonical綴りと直接比較する強い根拠のため、
+        このステップ単独で判定してよい。
+      - 固有名詞Case B(CMU辞書に無い外国由来名、例: Tse)は、この関数
+        では絶対にPASSさせない(D-2'参照。ASR結果同士の収束は自動PASSの
+        根拠にしない)。Ledgerでの発音情報蓄積はHuman Reviewパッケージ
+        (Part K)の充実のみに使う。
+    """
+    # entity_like(固有名詞らしき大文字始まりの語)とhomophone_candidateは
+    # 独立に判定しているため、両方に該当する語(例: "Kristie"/"Christie"の
+    # ように固有名詞かつCMU辞書上も完全一致)もありうる。その場合は、より
+    # 情報量の多い固有名詞側のラベルを優先する(Human Reviewパッケージで
+    # 「名前として確認済み」と分かるようにするため)。
+    if is_entity_like_mismatch(cls_step) and _case_a_entity_pass(cls_step):
+        return PROPER_NOUN_ENTITY_ARPABET_CONFIRMED
+    if is_homophone_candidate_mismatch(cls_step):
+        return HOMOPHONE_EQUIVALENT
+    return None
+
+
+def _unresolved_entity_spans(cls_step: "val.ClassificationResult") -> list[str]:
+    """entity_like差分のうち、Case A(CMU辞書直接比較)で解決できなかった
+    canonical spanの一覧を返す(Case Bのlookup対象、Part K package用)。"""
+    spans = []
+    for d in cls_step.protected.content_word_diffs:
+        if not d["entity_like"]:
+            continue
+        match = homophone_en.entity_span_arpabet_match(d["canonical"], d["asr"])
+        if not (match.resolved and match.matched):
+            spans.append(d["canonical"])
+    return spans
 
 
 def evaluate_attempt_with_cascade_detail(
@@ -254,9 +379,22 @@ def evaluate_attempt_with_cascade_detail(
         result["classification"] = cls_s_forced if cls_s_forced else cls
         return result
 
-    if verified or not cascade_enabled or not is_entity_like_mismatch(cls):
-        # 固有名詞由来でない不一致(数字・否定・通常内容語の差等)は、既存の
-        # blind TTS retryへ委ねる(Cascadeの対象外、§8の限定条件を守る)。
+    cascade_eligible = is_entity_like_mismatch(cls) or is_homophone_candidate_mismatch(cls)
+    if verified or not cascade_enabled or not cascade_eligible:
+        # 固有名詞由来・homophone由来でない不一致(数字・否定・通常内容語の
+        # 差等)は、既存のblind TTS retryへ委ねる(Cascadeの対象外、§8の
+        # 限定条件を守る)。
+        return result
+
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: Primary#1の時点で既に
+    # homophone/固有名詞Case Aが判定できる場合、追加のASR呼び出し無しで
+    # PASSする(canonical綴りとASR綴りをCMU辞書経由で直接比較する強い
+    # 根拠のため、複数ステップの収束を待つ必要が無い。コストゼロ)。
+    immediate_label = _step_alternate_pass(cls)
+    if immediate_label:
+        result["verified"] = True
+        result["stop_retrying"] = False
+        result["final_status"] = immediate_label
         return result
 
     result["cascade_invoked"] = True
@@ -274,6 +412,14 @@ def evaluate_attempt_with_cascade_detail(
         result["final_status"] = cls_p2.classification
         result["classification"] = cls_p2
         return result
+    if cls_p2 is not None:
+        label = _step_alternate_pass(cls_p2)
+        if label:
+            result["verified"] = True
+            result["stop_retrying"] = False
+            result["final_status"] = label
+            result["classification"] = cls_p2
+            return result
 
     if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
         result["cost_guard_triggered"] = True
@@ -295,6 +441,14 @@ def evaluate_attempt_with_cascade_detail(
         result["final_status"] = cls_s1.classification
         result["classification"] = cls_s1
         return result
+    if cls_s1 is not None:
+        label = _step_alternate_pass(cls_s1)
+        if label:
+            result["verified"] = True
+            result["stop_retrying"] = False
+            result["final_status"] = label
+            result["classification"] = cls_s1
+            return result
 
     if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
         result["cost_guard_triggered"] = True
@@ -316,10 +470,35 @@ def evaluate_attempt_with_cascade_detail(
         result["final_status"] = cls_s2.classification
         result["classification"] = cls_s2
         return result
+    if cls_s2 is not None:
+        label = _step_alternate_pass(cls_s2)
+        if label:
+            result["verified"] = True
+            result["stop_retrying"] = False
+            result["final_status"] = label
+            result["classification"] = cls_s2
+            return result
 
     # --- 4 step全て不一致 -> Human Review(TTSは再生成しない、§9の通り
     # 固有名詞だけの表記差ではretryしない) ---
     result["human_review_required"] = True
     result["stop_retrying"] = True
     result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
+
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-2'(B): CMU辞書で解決
+    # できなかったentity_like固有名詞spanについて、Human Reviewパッケージ
+    # (Part K)を充実させるためだけにPronunciation Ledgerをlookup/research
+    # する(自動PASSの根拠には使わない。lookup失敗時も追加のTTS/ASR呼び
+    # 出しは一切発生しない)。is_entity_like_mismatch(cls)は最初のPrimary
+    # #1時点の判定を使う(canonical_textは全stepで共通のため、spanの
+    # 特定はPrimary#1の差分で十分)。
+    if is_entity_like_mismatch(cls):
+        unresolved_spans = _unresolved_entity_spans(cls)
+        pronunciation_lookups = {}
+        for span in unresolved_spans:
+            info = _resolve_unresolved_entity_for_review(span)
+            if info is not None:
+                pronunciation_lookups[span] = info
+        if pronunciation_lookups:
+            result["pronunciation_lookups"] = pronunciation_lookups
     return result

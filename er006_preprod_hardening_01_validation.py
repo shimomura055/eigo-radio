@@ -30,6 +30,8 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
+import er008_asr_variant_hardening_15_homophone_en as homophone_en
+
 # ------------------------------------------------------------
 # 正規化(ER-006-POOL-PILOT-COST-ROOTFIX-01のer006_cost_rootfix_01_text_
 # normalize.pyを土台に、word-level diff用へ拡張)
@@ -531,9 +533,19 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                 # TRUE_CONTENT_MISMATCH(retry対象)のままにする
                 # ("increase"→"decrease"のような対義語誤りを見逃さないため)。
                 entity_like = bool(canon_content) and set(canon_content).issubset(entity_tokens)
+                # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J:
+                # 単一語同士の置換差(wait/weight等)で、CMU Pronouncing
+                # Dictionaryの発音(ARPAbet)が完全一致する場合のみ
+                # homophone_candidateとする(削除/追加[canon_content/
+                # asr_contentのどちらかが空]は対象外、entity_likeと同様
+                # 比較可能な1語同士のみを対象にする)。
+                homophone_candidate = False
+                if len(canon_content) == 1 and len(asr_content) == 1:
+                    result_h = homophone_en.homophone_arpabet_equivalent(canon_content[0], asr_content[0])
+                    homophone_candidate = bool(result_h)
                 result.content_word_diffs.append({
                     "type": tag, "canonical": " ".join(canon_content), "asr": " ".join(asr_content),
-                    "entity_like": entity_like,
+                    "entity_like": entity_like, "homophone_candidate": homophone_candidate,
                 })
     return result
 
@@ -619,8 +631,16 @@ def classify_asr_match(canonical_text: str, asr_text: str,
                                      should_pass=False, should_retry=True,
                                      reason="全体類似度が著しく低く、TTS生成自体の異常(hallucination/missing speech)が疑われる")
 
-    non_entity_diffs = [d for d in protected.content_word_diffs if not d["entity_like"]]
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J: homophone_
+    # candidate(発音がCMU辞書上完全一致する単一語の置換差、wait/weight
+    # 等)も、entity_likeと同様に「即TTS retry」の対象からは除外する
+    # (即retryさせると、No.8 wait/weightのように音として正しい可能性が
+    # 高い音声を無駄に何度も作り直してしまうため)。
+    non_entity_diffs = [d for d in protected.content_word_diffs
+                         if not d["entity_like"] and not d["homophone_candidate"]]
     entity_only_diffs = [d for d in protected.content_word_diffs if d["entity_like"]]
+    homophone_only_diffs = [d for d in protected.content_word_diffs
+                             if d["homophone_candidate"] and not d["entity_like"]]
 
     if non_entity_diffs:
         # 固有名詞以外の内容語(動詞・形容詞・名詞等)の置換/欠落/追加は、
@@ -634,6 +654,12 @@ def classify_asr_match(canonical_text: str, asr_text: str,
         return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
                                      should_pass=False, should_retry=False,
                                      reason=f"固有名詞らしき語にのみ音訳差がある(retryでは解決しない可能性が高い): {entity_only_diffs}")
+
+    if homophone_only_diffs:
+        return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                     should_pass=False, should_retry=False,
+                                     reason=f"発音が完全一致する同音語らしき語にのみ差がある"
+                                            f"(retryでは解決しない可能性が高い): {homophone_only_diffs}")
 
     if ratio >= high_similarity_threshold:
         return ClassificationResult("HIGH_SIMILARITY_SAFE", ratio, protected,
@@ -787,13 +813,30 @@ def soundex_en(word: str) -> str:
 def _phonetic_pair_ok(a: str, b: str, *, strict: bool) -> bool:
     """1語同士の音韻類似度判定。strict=Trueは単発観測(裏付け無し)向けの
     厳しい閾値、strict=Falseは複数の異なる候補が観測された場合(多様性
-    そのものが裏付けになる)向けの標準閾値。"""
+    そのものが裏付けになる)向けの標準閾値。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-1で修正: 従来は先頭
+    文字の"綴り"が完全一致しない場合に即FAILしていたが(`a[0] != b[0]`)、
+    これは"Kristie"(k)と"Christy"(c)のように、綴りは異なっても英語では
+    同じ音(/k/)を表す組の実例(No.8監査)を誤って弾いていた。soundex_en()
+    が単語の残り部分では既にC/G/J/K/Q/S/X/Zを同じ子音グループ"2"として
+    扱っているのと同じ_SOUNDEX_CODESテーブルを、先頭文字の比較にも
+    再利用する(新規のテーブルを追加せず、既存の等価グループをそのまま
+    拡張する)。母音・H・Wのようにテーブルに無い文字は、`.get(ch, ch)`に
+    より従来通り文字そのもので比較され(=綴りが異なれば不一致のまま)、
+    無関係な母音同士まで緩めることはない。"""
     a, b = a.lower(), b.lower()
     if a == b:
         return True
-    if not a or not b or a[0] != b[0]:
+    if not a or not b:
         return False
-    if soundex_en(a) != soundex_en(b):
+    if _SOUNDEX_CODES.get(a[0].upper(), a[0]) != _SOUNDEX_CODES.get(b[0].upper(), b[0]):
+        return False
+    # soundex_en()自体は標準Soundex仕様通り先頭文字を常に生の文字で
+    # 残す(K623/C623のように、残りが同じ子音コードでも先頭文字の違いで
+    # 文字列としては不一致になる)。先頭文字の等価性は直前で確認済みの
+    # ため、ここでは残りのコード部分(位置1以降)だけを比較する。
+    if soundex_en(a)[1:] != soundex_en(b)[1:]:
         return False
     max_len_diff = 1 if strict else 2
     min_ratio = 0.75 if strict else 0.5

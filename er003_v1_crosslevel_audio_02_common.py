@@ -36,6 +36,7 @@ import er006_asr_provider_routing_01 as routing
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
+import er011_human_review_lock_01 as review_lock
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -53,13 +54,18 @@ tail_energy_profile = audio02._tail_energy_profile
 # 変えない)を、Key Phrase以外の英語ナレーションセグメントにも一般化して
 # 適用する(新しいinstructionを新設せず、既存の確立済み対症療法を再利用)。
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
-                                            max_extra_chars: int = 60, max_attempts: int = 6,
+                                            max_extra_chars: int = 60,
+                                            max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                                             style_prefix_override: str = None) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
     渡さない — fallbackは既にprosody指示を持たない最小限の1文のみで、
-    速度指示を追加すると簡易fallbackがさらに平板になる恐れがあるため。"""
+    速度指示を追加すると簡易fallbackがさらに平板になる恐れがあるため。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
+    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
+    には残り予算のみを渡す。"""
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override)
@@ -77,7 +83,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     max_len = len(text) + max_extra_chars
     fallback_attempts = []
     fallback_classification_history = []
-    for attempt in range(1, max_attempts + 1):
+    fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
+    for attempt in range(1, fallback_budget + 1):
         r = repro01.generate_english_component_minimal_instruction(text, out_path)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
@@ -113,8 +120,10 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                             f"(最終classification={cls.classification})")
             return r
-    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
-           "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+    return {"status": "STOPPED",
+            "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
+                      f"(合計上限{max_attempts}回)とも不合格",
+            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
 
 A01_NARRATION_DIR = repro01.A01_NARRATION_DIR  # "er003_output/b1_p9a/A01/narration"(サービス共通、記事非依存)
 SERVICE_LEVEL_NARRATION_NAMES = repro01.SERVICE_LEVEL_NARRATION_NAMES

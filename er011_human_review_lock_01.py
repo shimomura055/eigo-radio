@@ -66,6 +66,17 @@ from functools import wraps
 MAX_CUMULATIVE_TTS_ATTEMPTS = 15
 MAX_CUMULATIVE_ASR_CALLS = 60
 
+# ============================================================
+# ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: TTS retry上限
+# ============================================================
+# ユーザー正式決定(2026-08-28): 同一segmentのTTS生成総試行回数上限を
+# 3回とする(初回を含め最大3回、「初回+3 retry」ではない)。No.8
+# wait/weightのように、Validator側の問題やASR表記揺れが原因の場合、
+# 6回生成しても同じ結果を繰り返すだけで無駄という監査結果を受けた変更。
+# 全Production generate関数(er003_v1_repro01_main_generate.py等)の
+# max_attempts既定値はこの定数を参照する(SSOT、CURRENT_SPEC.md参照)。
+PRODUCTION_MAX_TTS_ATTEMPTS = 3
+
 VALID_STATES = ("AUTO_PROCESSING", "HUMAN_REVIEW_REQUIRED", "HUMAN_APPROVED",
                 "REGENERATE_APPROVED", "RESOLVED")
 
@@ -261,6 +272,26 @@ def record_outcome(out_path: str, text: str, language: str, result: dict, run_id
         else:
             reason = f"最終status={status}。{result.get('reason') or ''}".strip()
 
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part L: Human Review
+    # Lock発動後、attempts_log(実際のASR文字起こし等を含む試行履歴)が
+    # 空配列で上書きされ続けてしまう問題をNo.8監査で発見した(呼び出し
+    # 側スクリプトが結果を無条件に上書きするたび、_blocked_result()の
+    # 空attempts_logがtts_generation_results.json側の正しい履歴を
+    # 覆ってしまう)。record_outcome()はこの呼び出しで実際に得られた
+    # attempts_log/fallback_attempts_logをlock storeへ保存しておき、
+    # 以降ブロックされた呼び出しでも_blocked_result()がこれを復元して
+    # 返せるようにする(既存フィールドへの追加のみ、フォーマット破壊
+    # なし。過去に既に空配列で上書きされてしまった分の復元は対象外)。
+    last_attempts_log = attempts_log if isinstance(attempts_log, list) and attempts_log else None
+    if last_attempts_log is None:
+        extra = result.get("fallback_attempts_log")
+        if isinstance(extra, list) and extra:
+            last_attempts_log = extra
+    if last_attempts_log is None and text_matches_prior:
+        # このcallで新規試行が無かった場合(例: budget guard即発動等)、
+        # 直前までの履歴を保持する(空で上書きしない)。
+        last_attempts_log = prior.get("last_attempts_log")
+
     new_entry = {
         "state": new_state,
         "canonical_text_sha256": text_hash,
@@ -273,6 +304,7 @@ def record_outcome(out_path: str, text: str, language: str, result: dict, run_id
         "cumulative_tts_attempts": cumulative_tts,
         "cumulative_asr_calls": cumulative_asr,
         "budget_guard_triggered": budget_guard_triggered,
+        "last_attempts_log": last_attempts_log or [],
     }
     store[segment_id] = new_entry
     _save_store(level_out_dir, store)
@@ -343,7 +375,12 @@ def _blocked_result(check: dict, out_path: str) -> dict:
                    f"明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません"
                    f"(0 API call)。詳細: {check.get('reason')}"),
         "path": out_path, "asr_verified": False,
-        "locked_entry": locked, "attempts_log": [],
+        "locked_entry": locked,
+        # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part L: 過去にrecord_
+        # outcome()が保存した実際の試行履歴を復元する(record_outcome()側
+        # の修正より前にlockされたsegmentは"last_attempts_log"フィールド
+        # 自体が無いため、その場合のみ従来通り空配列になる)。
+        "attempts_log": locked.get("last_attempts_log") or [],
     }
 
 

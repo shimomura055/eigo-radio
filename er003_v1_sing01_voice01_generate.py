@@ -41,7 +41,8 @@ SAFETY_MARGIN = 0.35  # AUDIO-03/NOVEL-AUDIO-01のtail切れ修正と同じ値�
 
 
 @review_lock.guarded_generate("en")
-def generate_charon_english(text: str, out_path: str, max_attempts: int = 6) -> dict:
+def generate_charon_english(text: str, out_path: str,
+                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
@@ -164,13 +165,21 @@ def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> di
 
 
 @review_lock.guarded_generate("ja")
-def generate_charon_japanese(text: str, out_path: str, expected_substring: str, max_attempts: int = 6) -> dict:
+def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
+                              max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、
     voiceだけCharonへ差し替える(p9a.generate_narration_snippetは
     voice固定のため直接組み立てる)。標準経路がmax_attempts回で合格
     しない場合、minimal instructionへフォールバックする(声・モデルは
-    変えない、テキストも変えない。ER-003-N3-ROOT-FIX-01)。"""
+    変えない、テキストも変えない。ER-003-N3-ROOT-FIX-01)。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: 同一segmentの
+    TTS総試行回数(標準経路+fallback経路の合計)がmax_attempts回を
+    超えないよう、fallback経路には標準経路で実際に消費した試行回数を
+    差し引いた残り予算だけを渡す(標準・fallbackそれぞれが独立に
+    max_attempts回ずつ試行すると、合計で最大2×max_attempts回に達して
+    しまうため)。"""
     max_len = len(text) + 15
     attempts_log = []
     for attempt in range(1, max_attempts + 1):
@@ -232,7 +241,8 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
                               f"(最終classification={cls.classification})"}
 
     fallback_attempts = []
-    for attempt in range(1, max_attempts + 1):
+    fallback_budget = max(0, max_attempts - len(attempts_log))
+    for attempt in range(1, fallback_budget + 1):
         r = generate_charon_japanese_minimal_instruction(text, out_path)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
@@ -262,7 +272,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str, 
             r["reason"] = (f"ASR Cascadeを尽くしても解決せず、retryでの改善が見込めないため打ち切り"
                            f"(最終classification={cls.classification})")
             return r
-    return {"status": "STOPPED", "reason": f"標準経路・minimal instruction経路とも{max_attempts}回で不合格",
+    return {"status": "STOPPED",
+            "reason": f"標準経路{len(attempts_log)}回+fallback経路{len(fallback_attempts)}回"
+                      f"(合計上限{max_attempts}回)とも不合格",
             "standard_attempts_log": attempts_log, "fallback_attempts_log": fallback_attempts}
 
 

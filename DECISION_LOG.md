@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-24(ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01 Part B)**
+**最終更新: 2026-08-28(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15、TTS retry上限3回化・固有名詞/日本語表記ゆれ/英語homophoneのCascade改修)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -2411,6 +2411,52 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: QA/Human Review節へ「Human Review
   Cost Guard(Review Lock機構)」を新規追加(`DECIDED`、
   `PRODUCTION_WIRED`)
+
+## ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: TTS retry上限3回化+固有名詞/日本語表記ゆれ/英語homophoneのCascade改修(Implementation Hardening)
+
+- **日付**: 2026-08-28
+- **背景**: 前タスク(No.8 Human Review監査)で、Human Reviewへ落ちた3件(`Kristie Tse`人名/`ころ・頃`表記ゆれ/`wait・weight`同音異義語)がいずれも「音声不良」ではなく、Validator/Cascade側の機能不足が原因と判明した。加えて、ASR表記ゆれだけを理由に同一segmentを最大6回TTS再生成する既存仕様がCost/Delivery上不合理と判断された
+- **内容**(5点、状態は下記参照):
+  1. **TTS retry上限 6→3回**(ユーザー正式決定): `er011_human_review_lock_01.PRODUCTION_MAX_TTS_ATTEMPTS = 3`をSSOTとし、Production全8関数の`max_attempts`既定値を統一。standard+fallback 2段構成の4関数は、fallbackへ残り予算のみを渡すよう改修(合計が3回を超えないことをテストで確認)
+  2. **固有名詞ASR判定**: 「ASR結果同士の収束」を自動PASSの根拠にすることをやめ(ASR consensus ≠ pronunciation verification)、(A) CMU Pronouncing Dictionaryの代表発音がcanonical綴りと直接一致する場合のみコストゼロで自動PASS、(B) 辞書に無い外国由来名はPronunciation Ledgerへ実データを投入(cache miss時のみPerplexityで1回research、記事横断でcache再利用)するが、これは自動PASSの根拠にはせずHuman Reviewパッケージの充実のみに使う、という二分岐へ再設計した
+  3. **日本語表記ゆれ**: 濁点差の一律許容(`_reading_equal_allowing_voicing`)ではなく、「ASR側漢字spanが辞書上持ちうる正当な読み候補にcanonical期待読みが含まれるか」+「異なる2エンジン(OpenAI/Azure)以上の裏付け」を要求する`ORTHOGRAPHIC_VARIANT_CONFIRMED`を新設
+  4. **英語homophone**: CMU Pronouncing DictionaryのARPAbet完全一致を主根拠とする`HOMOPHONE_EQUIVALENT`を新設。Secondary側は「canonicalへ戻る」ことではなく「ARPAbet完全一致(canonical一致でも同じhomophoneでもよい)」を要求し、「他に問題が見つからなかった」という消極的PASSは禁止
+  5. **attempts_log保持**: Human Review Lock発動後にattempts_logが空配列で上書きされていたバグを修正(`last_attempts_log`)
+- **状態**: `DECIDED` / `VALIDATED`(2026-08-28修正: 前回報告で誤って`PRODUCTION_WIRED`としていたが、(a) commit/push未実施、(b) `wait/weight`はattempts_log消失バグにより実ログではなく合成データでの検証、(c) `Kristie Tse`はCase Bが未解決のままHuman Reviewへ残っている、という条件により`PRODUCTION_WIRED`の要件[実装完了・SoT反映・commit・push・Production配線・テストPASS・実データ確認・Production相当runtime evidence確認]を全ては満たしていないと判断し、`VALIDATED`へ訂正した。commit/push後、残課題が無いことを確認できた時点で改めて`PRODUCTION_WIRED`へ昇格する)
+- **採用理由**: No.8監査で発見した3件の根本原因(ASR consensusをpronunciation verificationの代わりに使っていた設計上の誤り、日本語の濁点一律許容、homophone対応の欠如、無駄なTTS retry)へ、量産(100記事規模)を見据えた最小限の修正で対応するため
+- **比較した選択肢と却下理由**(ユーザーとの複数回の設計レビューで変遷):
+  - 固有名詞: 当初「複数ASR結果同士の音韻的収束で自動PASS」を検討したが、「ASR同士が似た誤認識で一致することは、正しい発音と一致している証拠にはならない」との指摘で却下。次に「Ledgerの`expected_pronunciation_ipa`を静的IPA→ARPAbet対応表で変換して比較」を検討したが、「ARPAbetは英語音韻前提であり、外国語由来の音韻情報が変換時に失われ誤PASSしうる」との指摘で却下。最終的に「CMU辞書で両方が直接解決できる場合のみ自動PASS、それ以外は自動PASSせずLedgerは人間向け情報提供のみに使う」という二分岐へ収束
+  - Homophone: 当初「閉じたペアテーブルのみ」を検討したが、100記事規模での保守負荷・False Negative増大が懸念されたため、QCD比較の結果CMU Pronouncing Dictionary主体のハイブリッド方式(新規軽量dependency、pykakasiと同種の性質)へ変更
+  - 日本語表記ゆれ: 当初「4ステップが同じ表記へ収束したことをPASS根拠にする」設計だったが、「ASRが同じ漢字を何回書いたかは読みが正しい証拠にならない」との指摘で、辞書上の読み候補照合方式へ変更
+- **実装中に発見した事実**:
+  - `er003_v1_sing01_news_tail_fix.py::generate_news_narration_wide_margin`が、旧`ER-010-ENTITY-PHONETIC-CORROBORATION-01`(`aggregate_entity_only_phonetic_corroboration`、ASR結果同士の収束による自動PASS)を実際にlive productionへ配線しており、No.8 Kristie Tseケースはこの経路を実際に通っていたことが判明(監査時点では「配線されていない分析用関数」と認識していたが、実際には1関数で使われていた)。設計変更に合わせてこの経路を撤去した
+  - `_phonetic_pair_ok`(ER-010)の`a[0] != b[0]`(先頭文字の綴り完全一致要求)が、"Kristie"(k)/"Christy"(c)のような、綴りは異なるが同じ音(/k/)を表す組を誤って弾いていたバグを、既存の`_SOUNDEX_CODES`テーブル(C/G/J/K/Q/S/X/Zを同一グループとして扱う)を先頭文字比較にも再利用する形で修正。ただし今回の再設計により、この関数自体はlive cascadeのPASS判定には使われない(audit専用関数のまま)
+  - CMU Pronouncing Dictionaryに偶然"tse"というentryが存在し(無関係な理由、ARPAbet代表発音"T S IY1")、その1バリアント("S IY1")がASR誤認識候補"Sea"/"C"と一致してしまう実例を発見。固有名詞Case Aを「いずれかのバリアントが一致すれば可」ではなく「代表(先頭)バリアントの完全一致のみ」という、homophoneチェックより厳格な基準にした理由はこれ
+  - pykakasiが同梱する漢和辞書データ(`kanwadict4.db`)が、単漢字の正当な読み候補一覧をそのまま提供することを発見し、新規dependencyゼロで日本語側の読み候補照合を実装できた
+- **既知の限界(正直に記録)**: 「頃」のように単漢字として複数の読み(ころ/ごろ)が辞書上正当に登録されている文字は、テキストのみからは実際に発話された読みを完全には確定できない(OPEN-80)。異なる2エンジンの裏付けを要求することで緩和しているが、原理的な限界として残る
+- **Part M再validation結果**(既存音声を再TTSせず、記録済みASR文字起こしへ新ロジックを再適用):
+  - `ころ/頃`(A2 preview): 実際の記録済み4ステップASR結果で`ORTHOGRAPHIC_VARIANT_CONFIRMED`としてVALIDATED
+  - `Kristie Tse`(B1 point_two): 実際に記録された5回のCascade試行のうち、ASRが偶然"Tse"を正しく書き起こした1回のみ`PROPER_NOUN_ENTITY_ARPABET_CONFIRMED`でVALIDATED(残り4回はCase Aで解決できず、Pronunciation Ledgerの実データ[Perplexity research、記事横断cache済み]を伴ってHuman Reviewのまま)。**正直な留保**: 旧6回retry前提で記録された5取得分の再評価であり、新しい3回上限の下で新規に3回生成し直した場合に同じ結果(1/3が解決)になる保証はない(新規TTS生成はPart Mの禁止事項のため未検証)
+  - `wait/weight`(A2 point_one_heading): Human Review Lock発動時のattempts_log消失バグにより生ASR文字列が残っておらず、ユーザーの元タスク記述にある既知事実(「ASR: weight」)を仮定した合成データで`HOMOPHONE_EQUIVALENT`としてVALIDATED(実データでの裏付けは取れていない、OPEN-82)
+- **regression**: 既存の全テストファイル(`er006_preprod_hardening_01_validation_test.py`55件、`er006_secondary_asr_01_test.py`14件→19件、`er007_ja_asr_validator_01_test.py`30件、`er007_ja_secondary_asr_01_test.py`6件→9件、`er006_pronunciation_ledger_01_test.py`5件、`er011_human_review_lock_01_test_01.py`9件→13件、`er010_entity_phonetic_corroboration_01_test_01.py`22件)が全てPASS。新規`er008_asr_variant_hardening_15_homophone_en_test.py`(6件)も全てPASS
+- **API call数・コスト**: Perplexity research 1回(Kristie Tse、Part M再validation実行時に実施、記事横断でcache再利用されるため今後同一entityでの再課金は発生しない)。TTS/ASR APIの新規呼び出しは0件
+- **根拠レポート**: ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15完了報告
+- **影響するCURRENT_SPEC項目**: Audio Implementation Detail節へ「TTS生成の同一segment総試行回数上限」「固有名詞ASR不一致の自動PASS条件」「日本語表記ゆれのCascade内自動PASS条件」「英語homophoneのCascade内自動PASS条件」を新規追加
+
+### 継続セッション(同日2026-08-28): 固有名詞ASR不一致の量産仕様化を検討し、STOP
+
+- **依頼内容**: 上記(A)の「CMU辞書に無い固有名詞は常にHuman Review」という設計は、1日数十記事の量産では毎回Human Reviewが発生し不十分なため、「外部の信頼できる発音根拠(本人・公式情報源由来のIPA/音声等)を取得し、それを現在のTTS実音声と自動照合してAUTO PASSする」という正式フローへの格上げを検討した
+- **調査結果**: 既存コードベースを確認したが、TTS実音声を音素レベルで書き起こす機能(phonetic ASR)、外部参照音声とTTS音声を音響的に比較する機能、強制アライメント(forced alignment)のいずれも実装されていない。ASR層(`er006_asr_provider_routing_01`のOpenAI ASR、`er006_secondary_asr_01`のAzure STT)は単語単位の正書法テキストしか返さない。`er006_pronunciation_research_01.research_pronunciations()`(Perplexity)が返すのもテキストのIPA/カタカナ的ヒントであり、参照音声そのものではない。OPEN-80も「音声そのものを使った実発音確認(MFA等の強制アライメント)」を将来検討事項として明記しており、現時点で未着手であることと整合する
+- **判断: STOP**(タスク仕様§3の「実装上のSTOP条件」に従い、近似実装を行わずここで報告する)。「外部発音根拠 ↔ TTS実音声」を安全に自動照合する軽量な既存手段が無いため、Case B(CMU辞書に無い固有名詞)の自動PASS化は今回実装しない。検討した設計オプションと却下/保留理由:
+  1. **Azure Pronunciation Assessment API**(既存のAzure Speech SDK依存を流用可能): 音声とreference textを渡すと音素単位の一致度スコアを返す機能。ただし本来は「学習者の発音が指定localeの標準的な発音にどれだけ近いか」を測る用途であり、外国語由来の固有名詞のカスタムIPAをreferenceとして直接検証できる設計ではない。誤った基準で「一致」と判定するリスクがあり、採用前に個別の検証実験が必要
+  2. **外部参照音声(Forvo等)とTTS音声の音響的類似度比較**: 参照音声の取得・利用許諾、音響特徴量(MFCC等)によるDTW/類似度判定の実装・閾値調整が必要で、「軽量な追加実装」の範囲を超える新規パイプラインになる
+  3. **音素レベル強制アライメント(MFA等、OPEN-80が既に言及)**: 音響モデルを伴う本格的な新規依存であり、同じく軽量実装の範囲を超える
+  - いずれも「安全に比較できない方式を無理に近似しない」という原則、および「大規模Validator刷新はしない」という納期制約の両方に反するため、今回は採用しない
+- **今回実施した安全な範囲の改善**(自動PASS化とは無関係、Human Reviewの質向上のみ):
+  - `er006_pronunciation_research_01.py`のPerplexityプロンプトを改訂し、「本人・公式サイト・所属組織・公式イベント・信頼できるインタビュー等の一次情報源を優先する」指示を追加(取得したcitationsの信頼性が上がり、Human Reviewパッケージの質が上がる。自動PASSの判断には使わない)
+  - OPEN-80を「頃」個別の問題から「同一漢字表記に複数の正当な読みがある語全般(多読漢字)」の問題へ再定義(詳細はOPEN_ITEMS.md参照)。既存の`ころ/頃`AUTO PASS仕様(ORTHOGRAPHIC_VARIANT_CONFIRMED)は変更していない
+- **量産への影響**: Case B(外国由来固有名詞)は引き続きHuman Reviewへ進む。ただしPronunciation Ledgerによるresearch結果の記事横断cache再利用(Perplexity再課金の回避)は既に本番配線済みのため、同一固有名詞の外部検索コストが繰り返し発生することは無い。Human Reviewの発生自体を無くすには、上記いずれかの設計オプションの実験的検証が別タスクとして必要
+- **状態**: `STOPPED_FOR_DESIGN_REVIEW`(ユーザー判断待ち。実装は行っていない)
 
 ## 参照元
 

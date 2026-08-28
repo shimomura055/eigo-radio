@@ -223,5 +223,102 @@ class TextChangeInvalidatesLockTests(unittest.TestCase):
         self.assertEqual(result["status"], "OK")
 
 
+# ============================================================
+# ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B/L: regression
+# ============================================================
+class ProductionMaxAttemptsAndAttemptsLogTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp(prefix="er011_test_")
+        self.narration_dir = os.path.join(self.tmp_dir, "pool_test_theme", "a2", "narration")
+        os.makedirs(self.narration_dir, exist_ok=True)
+        self.out_path = os.path.join(self.narration_dir, "kp_1.wav").replace("\\", "/")
+        self.text = "Retry limit test segment."
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def test_production_max_tts_attempts_is_3(self):
+        self.assertEqual(review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, 3)
+
+    def test_key_phrase_fallback_budget_is_zero_when_standard_used_all_attempts(self):
+        # Part B: standard経路が既にmax_attempts(3)回を使い切っている場合、
+        # fallback経路は1回も追加で呼ばれてはならない(標準+fallback合計が
+        # 3回を超えないこと)。
+        import er003_v1_repro01_main_generate as repro01
+        orig_standard = repro01.generate_narration_snippet_verified_strict
+        orig_fallback = repro01.generate_english_component_minimal_instruction
+        fallback_calls = {"n": 0}
+
+        def fake_standard(text, language, out_path, expected_substring, **kwargs):
+            return {"status": "STOPPED", "reason": "3回不合格",
+                    "attempts_log": [{"attempt": i, "asr_text": "x"} for i in range(1, 4)]}
+
+        def fake_fallback(*a, **k):
+            fallback_calls["n"] += 1
+            raise AssertionError("standardで既に上限3回を使い切っているため、fallbackは1回も呼ばれてはならない")
+
+        repro01.generate_narration_snippet_verified_strict = fake_standard
+        repro01.generate_english_component_minimal_instruction = fake_fallback
+        try:
+            result = repro01.generate_key_phrase_component_verified(
+                "opt out", self.out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+            self.assertEqual(result["status"], "STOPPED")
+            self.assertEqual(fallback_calls["n"], 0)
+        finally:
+            repro01.generate_narration_snippet_verified_strict = orig_standard
+            repro01.generate_english_component_minimal_instruction = orig_fallback
+
+    def test_key_phrase_fallback_gets_remaining_budget_only(self):
+        # standardが1回だけ使った場合、fallbackの残り予算は2回(3-1)で
+        # あるべき(3+3=6回になってはならない)。
+        import er003_v1_repro01_main_generate as repro01
+        orig_standard = repro01.generate_narration_snippet_verified_strict
+        orig_fallback = repro01.generate_english_component_minimal_instruction
+        fallback_calls = {"n": 0}
+
+        def fake_standard(text, language, out_path, expected_substring, **kwargs):
+            return {"status": "STOPPED", "reason": "1回で不合格",
+                    "attempts_log": [{"attempt": 1, "asr_text": "x"}]}
+
+        def fake_fallback(*a, **k):
+            fallback_calls["n"] += 1
+            return {"status": "STOPPED", "reason": "fallbackも失敗"}
+
+        repro01.generate_narration_snippet_verified_strict = fake_standard
+        repro01.generate_english_component_minimal_instruction = fake_fallback
+        try:
+            repro01.generate_key_phrase_component_verified(
+                "opt out", self.out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+            self.assertEqual(fallback_calls["n"], 2, "fallbackはmax_attempts(3)-standard消費(1)=2回までのはず")
+        finally:
+            repro01.generate_narration_snippet_verified_strict = orig_standard
+            repro01.generate_english_component_minimal_instruction = orig_fallback
+
+    def test_attempts_log_preserved_after_human_review_lock(self):
+        # Part L: Human Review Lock発動後、_blocked_result()が返す
+        # attempts_logが空配列で上書きされず、record_outcome()時点の
+        # 実際の履歴(ASR文字起こし等)を保持していること。
+        real_attempts_log = [{"attempt": 1, "asr_text": "weight"}, {"attempt": 2, "asr_text": "weight"},
+                              {"attempt": 3, "asr_text": "weight"}]
+
+        def fn(text, out_path, *a, **k):
+            return {"status": "STOPPED", "reason": "3回試行しても不合格", "attempts_log": real_attempts_log}
+
+        review_lock.guarded_generate("en")(fn)(self.text, self.out_path)
+
+        level_out_dir = review_lock._level_out_dir_from_out_path(self.out_path)
+        entry = review_lock._load_store(level_out_dir)["kp_1"]
+        self.assertEqual(entry["state"], "HUMAN_REVIEW_REQUIRED")
+        self.assertEqual(entry["last_attempts_log"], real_attempts_log)
+
+        # 2回目呼び出し(ブロックされる)でも、実際の履歴が復元されること
+        # (従来は空配列[]で上書きされてしまっていた、No.8監査での発見)。
+        def fn_should_not_be_called(text, out_path, *a, **k):
+            raise AssertionError("ブロック中に呼ばれてはならない")
+        result2 = review_lock.guarded_generate("en")(fn_should_not_be_called)(self.text, self.out_path)
+        self.assertEqual(result2["status"], "HUMAN_REVIEW_LOCKED")
+        self.assertEqual(result2["attempts_log"], real_attempts_log)
+
+
 if __name__ == "__main__":
     unittest.main()
