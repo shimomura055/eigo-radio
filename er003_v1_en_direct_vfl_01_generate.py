@@ -391,8 +391,25 @@ def run_writer_with_technical_retry(client, user_message: str, max_attempts: int
 # ============================================================
 # Step 5: Ledger逸脱チェック(fact checkerとは別、Ledgerとの整合性のみ確認)
 # ============================================================
+# ER-009-N1-LEDGER-DEVIATION-RECALIBRATION-02: 旧v1判定(Ledger文言との
+# lexical/scope的な厳密一致を暗黙に重視)は、意味を変えないparaphrase・
+# A2/B1向け簡略化・Evidence間のbridge sentence・一般的な情景描写まで
+# MAJORとして誤検知していたことがNo.9実データで判明した(詳細は
+# DECISION_LOGのER-009-N1-LEDGER-DEVIATION-RECALIBRATION-02項目)。
+# v2は「10種類の意味上のFact差分のいずれかが明確にtrueの場合のみ
+# MAJOR」という基準に再設計し、No.9実データでの誤検知解消と、
+# 意図的に危険な9種のfixture(数値/主体/scope/因果/確信度/否定/比較/
+# 時期/新規主張の改変)全件のMAJOR検知維持を確認した上でProductionへ
+# 反映した(候補検証は`er009_ledger_deviation_recalibration_02.py`/
+# `er009_ledger_deviation_recalibration_02_test.py`)。
+DEVIATION_FLAG_KEYS = [
+    "changed_fact", "changed_scope", "changed_causality", "changed_certainty",
+    "changed_number", "changed_actor", "changed_negation", "changed_comparison",
+    "changed_time", "unsupported_new_claim",
+]
+
 DEVIATION_JSON_SCHEMA = {
-    "name": "ledger_deviation_check",
+    "name": "ledger_deviation_check_v2",
     "schema": {
         "type": "object",
         "properties": {
@@ -404,22 +421,43 @@ DEVIATION_JSON_SCHEMA = {
                         "claim_in_article": {"type": "string"},
                         "issue": {"type": "string"},
                         "severity": {"type": "string", "enum": ["MINOR", "MAJOR"]},
+                        "changed_fact": {"type": "boolean"},
+                        "changed_scope": {"type": "boolean"},
+                        "changed_causality": {"type": "boolean"},
+                        "changed_certainty": {"type": "boolean"},
+                        "changed_number": {"type": "boolean"},
+                        "changed_actor": {"type": "boolean"},
+                        "changed_negation": {"type": "boolean"},
+                        "changed_comparison": {"type": "boolean"},
+                        "changed_time": {"type": "boolean"},
+                        "unsupported_new_claim": {"type": "boolean"},
+                        "explanation": {"type": "string"},
                     },
-                    "required": ["claim_in_article", "issue", "severity"],
+                    "required": [
+                        "claim_in_article", "issue", "severity", "changed_fact", "changed_scope",
+                        "changed_causality", "changed_certainty", "changed_number", "changed_actor",
+                        "changed_negation", "changed_comparison", "changed_time",
+                        "unsupported_new_claim", "explanation",
+                    ],
                     "additionalProperties": False,
                 },
             },
-            "overall_status": {"type": "string", "enum": ["LEDGER_COMPLIANT", "LEDGER_DEVIATION"]},
         },
-        "required": ["deviations", "overall_status"],
+        "required": ["deviations"],
         "additionalProperties": False,
     },
     "strict": True,
 }
 
-DEVIATION_DEVELOPER_MESSAGE = "あなたはLedger整合性の検証担当です。記事の面白さは評価せず、Ledgerとの整合性だけを確認してください。"
+DEVIATION_DEVELOPER_MESSAGE = (
+    "あなたはLedger Fact Safetyの検証担当です。記事の面白さやスタイルは評価せず、"
+    "意味上のFactがVerified Fact Ledgerの範囲内に収まっているかだけを判定してください。"
+    "paraphrase・簡略化・語順変更・bridge sentence・文体の違いは、意味が変わらない限り"
+    "deviationとして報告しないでください。"
+)
 
-DEVIATION_PROMPT_TEMPLATE = """以下の記事本文が、Verified Fact Ledgerの範囲内に収まっているかを確認してください。
+DEVIATION_PROMPT_TEMPLATE = """以下の記事本文が、Verified Fact Ledgerが保証する「意味上のFact」の
+範囲内に収まっているかを、Fact Safetyの観点のみで確認してください。
 
 【Verified Fact Ledger】
 {verified_ledger_text}
@@ -427,15 +465,57 @@ DEVIATION_PROMPT_TEMPLATE = """以下の記事本文が、Verified Fact Ledger�
 【検証対象の記事】
 {article_text}
 
-以下を確認してください:
-- 記事中の具体的なFact(数字・日付・対象範囲・制度の適用条件等)が、Ledger内に存在するか
-- Ledgerのscope(誰が・いつ・どの範囲か)を記事が維持しているか
-- Ledgerに存在しない新規の具体的Factを記事が追加していないか
-- [AMBIGUOUS]印のFactを記事が断定していないか
+【判定対象は次の10種類の意味変化のみです】
+- changed_fact: Ledgerに存在しない、またはLedgerと矛盾する具体的事実を主張している
+- changed_scope: Ledgerが確認した対象(誰が・どこで・いつ・どの集団か)を超えて一般化・拡張している
+- changed_causality: 相関を因果に変えている、または因果の方向を変えている
+- changed_certainty: Ledgerでは仮説・自己申告・専門家の解釈にすぎないものを、断定的な事実であるかのように強めている
+- changed_number: 数値・割合・件数をLedgerと異なる値に変えている(単位の違いだけの言い換えは含まない)
+- changed_actor: 発言主体・調査主体をLedgerと異なる人物・組織にすり替えている
+- changed_negation: 肯定・否定を反転させている
+- changed_comparison: 比較の方向(より多い/少ない、より高い/低い等)を反転・変更している
+- changed_time: 時期・年代をLedgerと異なるものに変えている
+- unsupported_new_claim: Ledgerに全く存在しない新しい具体的主張を追加している
 
-Ledgerの範囲を超える具体的Factが1件でもあれば、deviationsへ記載し、overall_statusを
-LEDGER_DEVIATIONとしてください。すべてLedgerの範囲内であれば、deviationsを空配列にし、
-overall_statusをLEDGER_COMPLIANTとしてください。"""
+【deviationとして報告しないもの(許容範囲)】
+- 自然なparaphrase、A2/B1向けの平易な言い換え、語順変更、同義語への置換
+- 出典名を一般的な言い方(a report, a studyなど)に置き換えること自体
+- 意味を変えない軽いbridge sentence(異なるEvidence間をつなぐだけの文)
+- 明確な新規Factを伴わない一般的な情景描写(例: 支払い画面はレストランやカフェにもある、
+  という一般常識レベルの前置き)
+- Ledgerの特定の一文と一字一句一致しないが、同じ意味を保っている表現
+
+【判定ルール】
+- 上記10種類のいずれかが明確にtrueである場合のみ、severityをMAJORにしてください。
+- 10種類すべてがfalseなのにMAJORにすることは禁止です。
+- 意味はおおむね保っているが言い回しがやや粗い場合(出典に勝手な肩書きを補う、
+  自己申告の調査結果を断定的な行動として書く等)はMINORとして記録してください。
+- 判断に迷う場合は、「記事の主張がLedgerの主張とほぼ同じ意味を保っているか」を
+  最優先の基準にしてください。厳密な文言一致は求めません。
+- 各deviationについて、上記10種類のフラグ全てにtrue/falseを明示し、
+  explanationでどのフラグに基づいてその判定になったかを一言で説明してください。
+
+該当するdeviationがなければ、deviationsを空配列にしてください。"""
+
+
+def _apply_deviation_post_hoc_validation(raw_parsed: dict) -> dict:
+    """モデルがseverity=MAJORを返したが10種類のフラグが全てfalseの場合、
+    プロンプト違反とみなしMINORへ自動降格する。overall_statusは、この
+    降格処理後にMAJORが1件でも残るかどうかをプログラム側で再計算する
+    (モデルが自己申告するoverall_statusフィールドは使わない設計)。"""
+    deviations = []
+    for d in raw_parsed.get("deviations", []):
+        d = dict(d)
+        any_flag_true = any(bool(d.get(k)) for k in DEVIATION_FLAG_KEYS)
+        if d.get("severity") == "MAJOR" and not any_flag_true:
+            d["severity"] = "MINOR"
+            d["auto_downgraded"] = True
+            d["issue"] = f"[AUTO-DOWNGRADED: no fact-deviation flag true] {d.get('issue', '')}"
+        else:
+            d["auto_downgraded"] = False
+        deviations.append(d)
+    overall_status = "LEDGER_DEVIATION" if any(d["severity"] == "MAJOR" for d in deviations) else "LEDGER_COMPLIANT"
+    return {"deviations": deviations, "overall_status": overall_status}
 
 
 def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL) -> dict:
@@ -450,8 +530,10 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
         ],
     )
     text = response.output_text
-    parsed = json.loads(text)
-    return {"prompt": prompt, "raw_text": text, "parsed": parsed, "model": response.model, "response_id": response.id}
+    raw_parsed = json.loads(text)
+    parsed = _apply_deviation_post_hoc_validation(raw_parsed)
+    return {"prompt": prompt, "raw_text": text, "raw_parsed": raw_parsed, "parsed": parsed,
+            "model": response.model, "response_id": response.id}
 
 
 # ============================================================
