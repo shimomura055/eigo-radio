@@ -69,8 +69,18 @@ PROMPT_TEMPLATE = """次の固有名詞それぞれについて、英語ポッ�
 - pronunciation_hint(TTSのstyle instructionへそのまま渡せる、平易な英語の
   カタカナ的近似表記。例: "oh-TOH-nee"のような形式)
 - alternate_pronunciations(有力な別の読み方があれば)
-- confidence(high/medium/low、情報源の一致度に基づく)
-- ambiguity_note(読み方に曖昧さ・地域差がある場合の注記、無ければ空文字)
+- confidence(high/medium/low)。ER-008-N8-FINAL-PRODUCTION-HARDENING-23:
+  confidence="high"は、本人が実際に自分の名前を発音している音声(インタビュー
+  音声・動画・ポッドキャスト等)を情報源として確認できた場合のみ付けてください。
+  法廷/公聴会等のテキスト書き起こし(transcript)は、話者本人の発言内容は
+  伝えても発音そのものは伝えないため、音声ソースの代わりにはなりません。
+  一次情報源が音声ではなくテキスト書き起こしのみ、または二次情報源(辞書
+  サイト・一般的な言語パターンからの類推等)による場合は、confidenceを
+  "medium"以下にしてください。
+- ambiguity_note(読み方に曖昧さ・地域差がある場合の注記、無ければ空文字)。
+  情報源が音声ベースかテキストベースかを必ずここに明記してください
+  (例: 「本人の音声確認は見つからず、テキストの書き起こしと言語的類推に
+  基づく」)。
 """
 
 

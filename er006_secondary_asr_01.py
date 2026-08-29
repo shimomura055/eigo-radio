@@ -497,8 +497,21 @@ def evaluate_attempt_with_cascade_detail(
         pronunciation_lookups = {}
         for span in unresolved_spans:
             info = _resolve_unresolved_entity_for_review(span)
-            if info is not None:
-                pronunciation_lookups[span] = info
-        if pronunciation_lookups:
-            result["pronunciation_lookups"] = pronunciation_lookups
+            # ER-008-N8-FINAL-PRODUCTION-HARDENING-23: lookup/research失敗時に
+            # spanをそのまま省略すると、Human Reviewパッケージにその固有名詞の
+            # 発音情報が一切表示されない(「調べたが分からなかった」のか
+            # 「調べていない」のか区別がつかない)。ユーザーの新運用ルール
+            # (固有名詞のHuman Review依頼には必ずIPA/pronunciation guide/
+            # source/confidenceを添付し、確定不能ならその旨を明記する)に
+            # 従い、失敗時も明示的なunconfirmed markerを必ず残す。
+            pronunciation_lookups[span] = info if info is not None else {
+                "expected_pronunciation_ipa": "", "pronunciation_hint": "",
+                "confidence": "unconfirmed",
+                "ambiguity_note": (
+                    "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
+                    "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
+                    "IPA/pronunciation guideは確定できていません。"),
+                "sources": [],
+            }
+        result["pronunciation_lookups"] = pronunciation_lookups
     return result

@@ -453,6 +453,46 @@ def test_case_b_unresolved_entity_does_not_auto_pass_and_enriches_review():
     print("PASS: test_case_b_unresolved_entity_does_not_auto_pass_and_enriches_review")
 
 
+def test_case_b_unresolved_entity_research_failure_still_reports_unconfirmed():
+    # ER-008-N8-FINAL-PRODUCTION-HARDENING-23: Pronunciation Ledger lookup/
+    # researchが両方失敗した(Noneを返した)場合でも、そのspanをHuman Review
+    # パッケージから黙って省略してはならない。「調べたが確定できなかった」
+    # ことを明示するunconfirmed markerを必ず残す(ユーザーの新運用ルール:
+    # IPAが確定不能ならその旨を必ず表示する)。
+    orig_transcribe = routing.transcribe
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    orig_resolve = secondary._resolve_unresolved_entity_for_review
+
+    def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
+        return "Christy Tay links the behavior to anxiety.", None
+
+    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
+        return "Christy Tay links the behavior to anxiety.", None
+
+    def fake_resolve(canonical_span):
+        return None  # lookup/research両方失敗した体
+
+    routing.transcribe = fake_transcribe
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    secondary._resolve_unresolved_entity_for_review = fake_resolve
+    try:
+        canon = "Kristie Tse links the behavior to anxiety."
+        asr = "Christy Tay links the behavior to anxiety."
+        r = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
+        assert r["human_review_required"] is True
+        assert "kristie tse" in r.get("pronunciation_lookups", {}), \
+            "research失敗でもspanのentryを省略してはならない"
+        entry = r["pronunciation_lookups"]["kristie tse"]
+        assert entry["confidence"] == "unconfirmed"
+        assert entry["expected_pronunciation_ipa"] == ""
+        assert "確定できていません" in entry["ambiguity_note"]
+    finally:
+        routing.transcribe = orig_transcribe
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+        secondary._resolve_unresolved_entity_for_review = orig_resolve
+    print("PASS: test_case_b_unresolved_entity_research_failure_still_reports_unconfirmed")
+
+
 def test_ledger_cache_key_uses_empty_source_context_for_cross_article_reuse():
     # D-2': cache keyは記事をまたいで再利用できるよう、常にsource_
     # context=""(既定)を使うこと(記事固有の値を混ぜてcache keyを割らない)。
@@ -477,6 +517,7 @@ if __name__ == "__main__":
     test_force_secondary_true_primary_pass_secondary_pass_verified()
     test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed()
     test_force_secondary_true_primary_mismatch_preserves_existing_cascade()
+    test_case_b_unresolved_entity_research_failure_still_reports_unconfirmed()
     test_no7_point_one_heading_fixture_caught_by_forced_secondary()
     test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review()
     test_homophone_wait_weight_passes_without_human_review()
