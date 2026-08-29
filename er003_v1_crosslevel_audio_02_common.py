@@ -196,8 +196,14 @@ def generate_text_segments(config: dict) -> dict:
             result = generate_english_segment_with_fallback(
                 text, out_path, expected_substring, max_extra_chars=max_extra_chars)
         else:
+            # ER-008-N8-CLOSEOUT-GOVERNANCE-25: 旧max_attempts=6は、Production
+            # SSOT(review_lock.PRODUCTION_MAX_TTS_ATTEMPTS=3)を2倍上回る
+            # ハードコード値だった(横断loop監査で発見)。上限自体は有限で無限retryでは
+            # なかったが、他の全Production call siteと不整合だったため、明示的に
+            # SSOTを参照するよう修正する(挙動は「3回で打ち切り」へ変更)。
             result = generate_narration_snippet_verified_strict(
-                text, language, out_path, expected_substring, max_attempts=6, max_extra_chars=max_extra_chars)
+                text, language, out_path, expected_substring,
+                max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, max_extra_chars=max_extra_chars)
         results[name] = result
 
     os.makedirs(f"{config['out_dir']}/audit", exist_ok=True)

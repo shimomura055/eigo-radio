@@ -85,6 +85,19 @@ def record_cost(r: dict) -> tuple[float, float]:
     return 0.0, 0.0
 
 
+# ER-008-N8-CLOSEOUT-GOVERNANCE-25: ユーザー決定により、今後Claudeがユーザーへ
+# 提示するコストは円ベースを主表示とする(1 USD = 160円固定換算)。この値は
+# 既に`er006_pool_pilot_01_cost_time_compute.py`/`compute_topic_cost.py`が
+# 個別に使っていたレートと同一(そちらとの整合を取り、本モジュールを
+# 円換算のSSOTとする)。単価表・トークン集計ロジックそのものは変更しない。
+USD_TO_JPY = 160.0
+
+
+def usd_to_jpy(usd: float) -> float:
+    """USD建てのコストを円へ換算する(1 USD = 160円固定)。"""
+    return usd * USD_TO_JPY
+
+
 # ============================================================
 # KEPT (final, on-topic, quota-working) vs DISCARDED_OVERHEAD の分類
 # ============================================================
