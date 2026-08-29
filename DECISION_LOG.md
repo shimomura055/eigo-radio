@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-28(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15、TTS retry上限3回化・固有名詞/日本語表記ゆれ/英語homophoneのCascade改修)**
+**最終更新: 2026-08-29(ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20、B1 Comment 1-4話し方PRODUCTION_WIRED・No.8完成版再Assemble・B1 Comment 2内部ラベル未修正の発見修正・Point-only regenerationのFact fabricationリスク実証)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -2500,6 +2500,22 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **影響するCURRENT_SPEC項目**: 「Preview」節(A2 Preview長さ・B1 Preview話し方・B1 Comment話し方の3行追加)、「QA / Human Review」節(Disfluency QA・Point重複検知+regeneration・Comment内部ラベル二重防御・A2 slowdown invariant gateの4行追加)
 - **OPEN_ITEMSへの影響**: OPEN-86新設(B1 partial-word false start、量産前解決必須)。OPEN-83/84/85は状態変更なし(維持)
 - **状態**: 上記の通り項目ごとに異なる(`PRODUCTION_WIRED`5件、`OPEN`3件、No.8限定個別修正1件)
+
+## ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20(2026-08-29、Implementation Hardening)
+
+- **背景**: ER-19で`PRODUCTION_WIRED`とした項目のうち、B1 Comment 1-4話し方だけがユーザー試聴前の`TBD`のまま残っていた。ユーザーがCommentへもPreviewと同じcalm styleを正式採用すると決定したため、Production配線・No.8完成版への実反映・最終試聴Artifact作成までを行った
+- **内容**:
+  1. **B1 Comment 1-4話し方の正式採用・配線**: `er003_v1_n3_01_tts_generate.py::generate_b1_segments()`のpreview/comment_1〜4共通ループを、Previewのみ→全件へ`style_prefix_override=B1_PREVIEW_STYLE_PREFIX_CALM`・`disfluency_qa=True`を適用するよう変更(Full Story/Point/In One LineへはBody別loopのため波及しない)。定数コメント内の"this introduction"という限定的文言を"this"へ一般化(Comment再利用に合わせた文言修正のみ、instruction本文の実質的な意味は変更なし)。No.8実データで実際にpreview/comment_1〜4を再TTS・ASR再検証し、実測WPM: preview 154.5(旧184.5)/comment_1 181.8/comment_2 143.0/comment_3 148.6/comment_4 153.6を確認、全件でdisfluency_checked=true・flagged=false・asr_verified=trueを確認。**状態**: `PRODUCTION_WIRED`
+  2. **既承認6項目の再確認**: disfluency QA/Point overlap+regeneration/Comment内部ラベル二重防御/A2 slowdown invariant gate/B1 Preview calm style/A2 Preview短縮について、実装済み・正式Production経路から呼ばれる・設定が有効・テストPASS・runtime evidenceありの5条件を再確認した。結果は全て条件を満たしていたが、**Comment内部ラベル二重防御の項目で、前回(ER-19)の「A2/B1とも実データ0件確認」という報告に誤りを発見**(下記4を参照)
+  3. **Point-only regenerationのFact fabricationリスクを実データで確認**: No.8のPoint One(A2: overlap 0.4、B1: overlap 0.542、いずれも閾値0.40でflag)に対し、記事全体を再生成せず`run_point_overlap_qa_and_regenerate()`を直接呼び出すsurgicalな方法(`er008_n8_point_regen_and_verify_20.py`)でPoint-only regenerationを実行した。生成された新テキストは、いずれもFull Story/他方Pointとの重複は大きく改善した(B1: overlap 0.542→0.188/0.094)が、検証済みFact Ledgerに存在しない新規主張(「American Airlinesが順番外搭乗に罰則を導入」「United Airlinesが搭乗改善策を試験中」等)を含んでおり、後続のFact CheckerがA2/B1ともREVIEW_REQUIRED(unsupported_specific_claims 3〜5件)と判定した。ユーザーが指示した監視項目「新Factを追加していないか」がまさに実際に発生した実例であり、`regenerate_point_only()`の自動validation(overlap再チェックのみ、Fact Checkerは含まない)だけでは不十分であることが実データで判明した。この結果は採用せず、Point One/parts.json/article.mdを元のテキストへ差し戻し、Fact Checker(再実行)でPASS・Ledger Deviation CheckでLEDGER_COMPLIANT(0件)を再確認した。**状態**: `PRODUCTION_WIRED`(機構自体は維持)、`MONITORING`(恒久対策は未実装、実ユーザー検証中の監視対象として明記)
+  4. **Comment内部ラベル二重防御: ER-19報告の誤りを訂正**: 上記2の再確認作業中、No.8のB1 Comment 2 canonical text(`b1_support_texts.json`)に"In Part 2, what is American Airlines doing to manage this behavior?"という内部ラベルが**修正されないまま残っていた**ことを発見した。ER-19の報告(「No.8実データでComment 2[A2/B1とも]を再生成し検出0件を確認」)はA2側のみ正しく、B1側は実際には未修正だった(Validator自体は正しく機能しており、テキスト修正が漏れていた)。今回、Comment 1-4のcalm style適用に伴いcomment_2を実際に再生成した際、新Validatorが正しくこれを検出・STOPPEDでブロックしたことで発覚した。"In the second half, what is American Airlines doing to manage this behavior?"へ言い換え(A2 comment_2修正[No.4]と同じ、内部ラベルを一般的な時系列表現へ置き換えるだけの最小修正)、再生成してASR verified=true・disfluency flagged=falseを確認し、No.8完成版へ反映した。**状態**: `PRODUCTION_WIRED`(B1側の実データ不整合を修正済み)
+  5. **No.8完成版の再Assemble**: 上記の変更を反映するため、変更のあったsegmentのみ再TTS(A2: preview。B1: preview・comment_1〜4)し、他segment(point_two等、Human Review承認済みを含む)は既存の音声をそのまま再利用した上で、`stage_assemble_b1`/`stage_assemble_a2`を実行。Audio Validation Gate(A2 slowdown invariant gate含む)は両レベルともPASS。A2: duration 360.97秒・peak 0.854・clipping無し。B1: duration 327.51秒・peak 0.825・clipping無し。ユーザー最終試聴用Artifact(フルエピソード2本+変更segment6本の個別試聴)を作成: https://claude.ai/code/artifact/ddedda51-daee-44c4-9e3a-88212deb30b1 。**状態**: `USER_FINAL_REVIEW`
+- **regression**: `run_project_regression.py`実行、collected=1895・passed=1893・failed=2(ER-19と同一の、今回変更と無関係な既存の失敗2件のみ)
+- **API call数・コスト**: (a) No.8実B1 Comment 1-4+Preview再TTS 5回+ASR 5回、(b) No.8実A2 Preview再TTS 1回+ASR 1回(audit記録の再整合目的、テキスト不変のため実質再生成)、(c) Point-only regeneration LLM呼び出し2回(A2/B1、いずれも不採用)+Fact Checker再実行4回(regenerated版2回+revert後再確認2回)+Ledger Deviation Check再実行2回、(d) B1 comment_2修正の再TTS 1回+ASR 1回。いずれも数円〜数十円程度の少額、新規Providerの追加なし。faster-whisperによるdisfluency QAはローカルCPU処理のみで追加API課金は無し
+- **既知の限界(正直に記録)**: Point-only regenerationのFact安全性は自動化されておらず、今回のように生成物を人間(Claude)が個別に確認して差し戻す運用に依存している。恒久対策(再生成後にFact Checkerを自動実行し、REVIEW_REQUIRED/FAILなら自動的に差し戻すゲート)は今回実装していない
+- **影響するCURRENT_SPEC項目**: 「Preview」節(B1 Comment 1-4話し方をPRODUCTION_WIREDへ、A2 Preview長さにNo.8反映済み注記を追加)、「QA / Human Review」節(Point重複検知+regenerationにMONITORING注記追加、Comment内部ラベル二重防御に訂正注記追加)、「Audio Assembly」節(No.8完成版再Assemble行を新設)
+- **OPEN_ITEMSへの影響**: なし(OPEN-84/85/86は状態変更なしのまま維持、ユーザー指示通り)
+- **状態**: 上記の通り項目ごとに異なる(`PRODUCTION_WIRED`4件、`MONITORING`1件、`USER_FINAL_REVIEW`1件)
 
 ## 参照元
 

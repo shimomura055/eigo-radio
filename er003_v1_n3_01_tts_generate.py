@@ -79,12 +79,15 @@ common.assert_no_wpm_specification(A2_ENGLISH_STYLE_PREFIX_SLOWER)
 # 話し方調整(ユーザー試聴・正式採用済み)。No.8 B1 Previewが他segmentより
 # 明確に速い(実測184.5 WPM相当)ことが判明したが、B1にはA2のような
 # segment別の速度差別化instructionが一切存在しなかった(現状調査で確認)。
-# A2と同じ「自然言語のみ、数値WPM指定はしない」方針を踏襲し、Preview
-# 専用の落ち着いた導入トーンを追加する(Full Story/Point/In One Line
-# 等の本文Aoede音声には適用しない、Previewのみの限定変更)。
+# A2と同じ「自然言語のみ、数値WPM指定はしない」方針を踏襲し、落ち着いた
+# トーンを追加する(Full Story/Point/In One Line等の本文Aoede音声には
+# 適用しない)。
+# ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20: ユーザー
+# 正式決定により、同じstyle instructionをComment1-4にも適用対象拡大した
+# ため、"this introduction"という限定的な文言を汎用的な文言へ変更。
 B1_PREVIEW_CALM_INSTRUCTION = (
-    "\nSpeak this introduction in a calm, clear, unhurried tone, giving the listener "
-    "time to take in what is coming, while keeping the delivery natural and "
+    "\nSpeak this in a calm, clear, unhurried tone, giving the listener "
+    "time to take in what you are saying, while keeping the delivery natural and "
     "conversational (not slow or robotic).\n"
 )
 B1_PREVIEW_STYLE_PREFIX_CALM = p9a.ENGLISH_STYLE_PREFIX + B1_PREVIEW_CALM_INSTRUCTION
@@ -590,10 +593,11 @@ def generate_b1_segments(theme: dict) -> dict:
         with cl.segment_context(name):
             results[name] = voice01.generate_charon_english(
                 tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
-                style_prefix_override=(B1_PREVIEW_STYLE_PREFIX_CALM if name == "preview" else None),
-                # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Previewのみ対象
-                # (Comment1-4はまだ試作段階、正式採用はユーザー試聴後)。
-                disfluency_qa=(name == "preview"))
+                # ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20:
+                # Previewで採用済みのcalm/clear/unhurried style instructionを
+                # Comment1-4にも正式採用(ユーザー試聴・承認済み)。
+                style_prefix_override=B1_PREVIEW_STYLE_PREFIX_CALM,
+                disfluency_qa=True)
         results[name]["canonical_text"] = text
 
     for name in ("point_one_heading", "point_two_heading"):
