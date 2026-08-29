@@ -460,6 +460,65 @@ def run_point_overlap_qa_and_regenerate(client, article_text: str, verified_ledg
     return {"status": "OK", "patched_article_text": patched_text, "report": report}
 
 
+# ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22:
+# Point overlap NG時の正式暫定Production方式。Point-only regeneration
+# (Pointの一部だけを書き換える方式)はER-21で新Fact fabricationの実例が
+# あったためProduction自動経路から撤去済み(POINT_ONLY_REGENERATION_
+# ENABLED=False、上記参照)。代わりに、overlapがflagされた場合は記事
+# 全体をWriterから再生成する(最大2回)。Pointだけを差し替えないことで、
+# Full Story/Point One/Point Two/In One Line間の内部整合をWriterに
+# 保たせる。TTSより前(Assembleより前)の工程だけで完結するため、この
+# retryによるTTS/ASR追加費用は発生しない。再実行するのはWriter→
+# Evidence Compression→Point overlap QAの3工程のみ。Fact Checker・
+# Ledger Deviation Check・Directional Fact Precheckは、retryループが
+# 終わり最終的に採用が確定した記事に対して一度だけ実行する(Research/
+# Evidence Pack/VFL自体はWriterへの入力でありretry対象外)。2回retryして
+# もなおNGの場合は自動続行せず、status="NG_REVIEW_REQUIRED"を返し、
+# Fact Checker以降は実行しない(そのままではAssembleへ進めない)。
+POINT_OVERLAP_ARTICLE_RETRY_MAX = 2
+
+
+def _generate_and_compress_article(client, theme_id: str, label: str, prompt: str, out_dir: str,
+                                    apply_evidence_compression: bool, model: str) -> dict:
+    """Writer呼び出し+(有効な場合)Evidence Compression Editorまでを1回分
+    実行するヘルパー。run_one_patternの初回生成、およびPoint overlap NG
+    retry時の「記事全体再生成」の両方から共通で呼ばれる。"""
+    print(f"[N3-01][{theme_id}] {label}: writer呼び出し開始...")
+    writer_result = vfl01.run_writer_with_technical_retry(client, prompt, model=model)
+    with open(f"{out_dir}/audit/writer_attempts.json", "w", encoding="utf-8") as f:
+        json.dump(writer_result["attempts"], f, ensure_ascii=False, indent=2, default=str)
+
+    if writer_result["status"] != "STRUCTURE_PASS" or not writer_result.get("raw_text"):
+        print(f"[N3-01][{theme_id}] {label}: writer失敗 status={writer_result['status']}")
+        return {"status": writer_result["status"], "article_text": None}
+
+    article_text, fact_usage_report = blueprint_mod.extract_trailing_metadata_block(
+        writer_result["raw_text"].strip())
+    if fact_usage_report is not None:
+        with open(f"{out_dir}/audit/fact_usage_report.json", "w", encoding="utf-8") as f:
+            json.dump(fact_usage_report, f, ensure_ascii=False, indent=2)
+
+    evidence_compression_applied = False
+    if apply_evidence_compression:
+        with open(f"{out_dir}/audit/pre_editor_article.md", "w", encoding="utf-8") as f:
+            f.write(article_text)
+        print(f"[N3-01][{theme_id}] {label}: Evidence Compression(Lossless Editor)呼び出し開始...")
+        editor_result = ec_editor.run_lossless_editor(client, article_text, model=model)
+        with open(f"{out_dir}/audit/evidence_compression_editor_raw.json", "w", encoding="utf-8") as f:
+            json.dump(editor_result, f, ensure_ascii=False, indent=2, default=str)
+        if editor_result.get("raw_text"):
+            article_text = editor_result["raw_text"]
+            evidence_compression_applied = True
+        print(f"[N3-01][{theme_id}] {label}: Evidence Compression完了。"
+              f"response_id={editor_result.get('response_id')}")
+
+    with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+        f.write(article_text)
+
+    return {"status": "OK", "article_text": article_text, "fact_usage_report": fact_usage_report,
+            "evidence_compression_applied": evidence_compression_applied}
+
+
 def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
                      topic: str, out_dir: str, apply_evidence_compression: bool = True,
                      apply_directional_fact_precheck: bool = True) -> dict:
@@ -478,62 +537,65 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
         f.write(prompt)
 
-    print(f"[N3-01][{theme_id}] {label}: writer呼び出し開始...")
-    writer_result = vfl01.run_writer_with_technical_retry(
-        client, prompt, model=routing.require_model(_writer_process(label), routing.WRITER_MODEL))
-    with open(f"{out_dir}/audit/writer_attempts.json", "w", encoding="utf-8") as f:
-        json.dump(writer_result["attempts"], f, ensure_ascii=False, indent=2, default=str)
+    writer_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
+    gen = _generate_and_compress_article(client, theme_id, label, prompt, out_dir,
+                                          apply_evidence_compression, writer_model)
+    if gen["status"] != "OK":
+        return {"label": label, "status": gen["status"], "article_text": None}
+    article_text = gen["article_text"]
+    fact_usage_report = gen["fact_usage_report"]
+    evidence_compression_applied = gen["evidence_compression_applied"]
 
-    if writer_result["status"] != "STRUCTURE_PASS" or not writer_result.get("raw_text"):
-        print(f"[N3-01][{theme_id}] {label}: writer失敗 status={writer_result['status']}")
-        return {"label": label, "status": writer_result["status"], "article_text": None}
+    # ER-22: Point overlap NG時は記事全体をWriterから再生成する(最大
+    # POINT_OVERLAP_ARTICLE_RETRY_MAX回)。retry対象はWriter+Evidence
+    # Compression+overlap再チェックのみで、Fact Checker/Ledger Deviation
+    # はループの外(最終確定後)で一度だけ実行する。
+    overlap_retry_log = []
+    retry_attempt = 0
+    while True:
+        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA開始"
+              f"(retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
+        point_qa_result = run_point_overlap_qa_and_regenerate(
+            client, article_text, verified_ledger_text, model=writer_model,
+            reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
+        still_flagged = point_qa_result["status"] == "OK" and any(
+            entry["before_overlap"]["flagged"] for entry in point_qa_result.get("report", {}).values())
+        overlap_retry_log.append({
+            "attempt": retry_attempt, "qa_status": point_qa_result["status"], "flagged": still_flagged,
+            "report": point_qa_result.get("report")})
+        if not still_flagged or retry_attempt >= POINT_OVERLAP_ARTICLE_RETRY_MAX:
+            break
+        retry_attempt += 1
+        print(f"[N3-01][{theme_id}] {label}: Point overlap NG。記事全体をWriterから再生成します"
+              f"(article retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
+        gen = _generate_and_compress_article(client, theme_id, label, prompt, out_dir,
+                                              apply_evidence_compression, writer_model)
+        if gen["status"] != "OK":
+            print(f"[N3-01][{theme_id}] {label}: article retry中にwriterが失敗しました status={gen['status']}")
+            overlap_retry_log.append({"attempt": retry_attempt, "qa_status": "WRITER_FAILED_DURING_RETRY"})
+            break
+        article_text = gen["article_text"]
+        fact_usage_report = gen["fact_usage_report"]
+        evidence_compression_applied = gen["evidence_compression_applied"]
 
-    # Shared Point Blueprint導入タスク: Writer promptがBlueprintの
-    # fact_id利用申告(末尾の```json block)を要求している場合、article_text
-    # へ保存する前に抽出・除去する(split_article_text/TTS入力・既存の
-    # metrics計算等、下流処理を一切変更しないため)。Blueprint未使用の
-    # 呼び出し(既存Topic)ではこのblockが無いため、fact_usage_reportは
-    # 常にNoneになり、article_textはstrip()結果と完全に同一(後方互換)。
-    article_text, fact_usage_report = blueprint_mod.extract_trailing_metadata_block(
-        writer_result["raw_text"].strip())
-    if fact_usage_report is not None:
-        with open(f"{out_dir}/audit/fact_usage_report.json", "w", encoding="utf-8") as f:
-            json.dump(fact_usage_report, f, ensure_ascii=False, indent=2)
+    with open(f"{out_dir}/point_overlap_article_retry_log.json", "w", encoding="utf-8") as f:
+        json.dump(overlap_retry_log, f, ensure_ascii=False, indent=2, default=str)
 
-    evidence_compression_applied = False
-    if apply_evidence_compression:
-        with open(f"{out_dir}/audit/pre_editor_article.md", "w", encoding="utf-8") as f:
-            f.write(article_text)
-        print(f"[N3-01][{theme_id}] {label}: Evidence Compression(Lossless Editor)呼び出し開始...")
-        editor_result = ec_editor.run_lossless_editor(
-            client, article_text, model=routing.require_model(_writer_process(label), routing.WRITER_MODEL))
-        with open(f"{out_dir}/audit/evidence_compression_editor_raw.json", "w", encoding="utf-8") as f:
-            json.dump(editor_result, f, ensure_ascii=False, indent=2, default=str)
-        if editor_result.get("raw_text"):
-            article_text = editor_result["raw_text"]
-            evidence_compression_applied = True
-        print(f"[N3-01][{theme_id}] {label}: Evidence Compression完了。"
-              f"response_id={editor_result.get('response_id')}")
-
-    with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
-        f.write(article_text)
-
-    print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA開始...")
-    point_qa_result = run_point_overlap_qa_and_regenerate(
-        client, article_text, verified_ledger_text,
-        model=routing.require_model(_writer_process(label), routing.WRITER_MODEL),
-        reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
-    point_overlap_qa_applied = False
-    if point_qa_result["status"] == "OK" and point_qa_result["patched_article_text"] != article_text:
-        article_text = point_qa_result["patched_article_text"]
-        point_overlap_qa_applied = True
-        with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
-            f.write(article_text)
-        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QAでPointを再生成・差し替えました"
-              f"(詳細: {out_dir}/point_overlap_qa.json)")
-    else:
-        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA完了(差し替えなし)。"
-              f"status={point_qa_result['status']}")
+    point_overlap_qa_applied = False  # Point-only regeneration自体は撤去済み(常にFalse)
+    if overlap_retry_log[-1].get("flagged"):
+        print(f"[N3-01][{theme_id}] {label}: Point overlapが{POINT_OVERLAP_ARTICLE_RETRY_MAX}回の記事全体"
+              f"再生成後もNGのままでした。自動続行せずNG_REVIEW_REQUIREDとして報告します"
+              f"(Fact Checker以降は実行しません)。")
+        return {
+            "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+            "point_overlap_article_retry_attempts": retry_attempt,
+            "point_overlap_final_report": overlap_retry_log[-1].get("report"),
+            "evidence_compression_applied": evidence_compression_applied,
+            "fact_usage_report": fact_usage_report,
+            "point_overlap_qa_applied": point_overlap_qa_applied,
+        }
+    print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA完了(overlapなし、"
+          f"記事全体retry {retry_attempt}回で解消)。")
 
     metrics = compute_metrics(article_text)
     section_wc = sf1r1.section_word_counts(article_text)
@@ -607,6 +669,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "fact_usage_report": fact_usage_report,
         "evidence_compression_applied": evidence_compression_applied,
         "point_overlap_qa_applied": point_overlap_qa_applied,
+        "point_overlap_article_retry_attempts": retry_attempt,
         "directional_fact_precheck_status": directional_precheck_status,
     }
 

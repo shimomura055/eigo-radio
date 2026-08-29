@@ -463,6 +463,22 @@ _STOPWORDS = {
     "a", "an", "the", "and", "or", "but", "of", "in", "on", "at", "to", "for",
     "is", "are", "was", "were", "be", "been", "being", "it", "its", "this", "that",
     "these", "those", "as", "by", "with", "from", "so", "than", "then", "there",
+    # ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22: normalize_text()の
+    # `re.sub(r"[^a-z0-9]+", " ", t)`はアポストロフィも空白へ置換するため、
+    # 短縮形("they're"→"they re")は"re"部分だけが独立したtokenとして残る。
+    # canonical側が展開形("they are"等)の場合、"are"は既にstopwordだが、
+    # ASR側の短縮形の残骸("re")はstopword集合に無いため、内容の変化が
+    # 無いのにcontent_word_diffs(TRUE_CONTENT_MISMATCH)として検出されて
+    # しまうbugがNo.8 B1 full_story_part2("They are"→TTSが自然に
+    # "They're"と発話)で実際に発生した(3回中3回、ASR結果は毎回意味上
+    # 完全に同じだが機械的にretryが続き、最終的にSTOPPEDへ到達した)。
+    # "re"(are由来)は他の一般的な英単語と衝突する可能性が低いため安全に
+    # stopword化できる。"will"/"have"由来の"ll"/"ve"は、"will"/"have"
+    # 自体がstopwordではなく実質的な意味を持つ語のため、同じ対策では
+    # 直らず("we'll"→"we"+"ll" vs canonical"we"+"will"はreplace型diffに
+    # なる)、より広い契約形(contraction)対応の設計が別途必要(本修正の
+    # 対象外、実データでの発生は未確認のため今回は見送る)。
+    "re",
 }
 
 

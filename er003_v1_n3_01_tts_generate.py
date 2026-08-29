@@ -153,6 +153,17 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
                 ti[key] = round(ti[key] * stretch_ratio, 3)
     if result.get("duration_seconds") is not None:
         result["duration_seconds"] = round(result["duration_seconds"] * stretch_ratio, 3)
+    # ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22: sha256はslowdown前の
+    # 標準生成直後に一度だけ設定され、その後time-stretchでout_pathの中身が
+    # 差し替わってもここまで再計算されていなかった(duration_seconds/
+    # trim_infoは上で比例配分しているのに、sha256だけ取り残されていた)。
+    # ER-21で追加したAssemble Gateの`_segment_asset_hash_stale()`(記録済み
+    # sha256と実ファイルの突き合わせ)が、A2のslowdown対象segmentを再生成
+    # するたび必ずASSET_HASH_MISMATCHで誤ってblockしてしまうbugをNo.8実
+    # データ(full_story_part1/2の再生成)で発見した。post-process後の実際の
+    # ファイルでsha256を再計算する。
+    if result.get("sha256") is not None:
+        result["sha256"] = p9a.sha256_file(out_path)
     # ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: No.8 A2 point_one_headingの
     # 修復作業中に発見。post-process後の再検証はここまで`classification.
     # should_pass`のみで判定しており、ER-008-ASR-VARIANT-HARDENING-AND-
@@ -506,8 +517,29 @@ def tts_safe_paragraphs_en(text: str) -> str:
     return " ".join(p.strip() for p in text.split("\n\n") if p.strip())
 
 
+# ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22: No.8 B1 full_story_part1
+# ("Psychologist Stephen Reicher explains...")で、独立した4回のASR
+# (OpenAI Primary x2、Azure Secondary x2)全てが"Steven Reichert"に近い
+# 形で一貫して書き起こし、TTSが正しい発音で読み上げられていない疑いが
+# 強い(単発のASR誤認識なら4回とも同じ方向へ揺れることは考えにくい)。
+# 既存の固有名詞発音調査機構(Pronunciation Ledger research)により、
+# 正しい発音はIPA /ˈraɪkər/("RY-ker"、Star Trekの"Riker"と同じ発音、
+# 本人による発音訂正の記録あり、高確信度)と判明した。記事本文の表示用
+# 綴り(article.md/parts.json)は正しい"Stephen Reicher"のまま変更せず、
+# TTS入力・ASR比較対象のテキストにのみ、発音の近い実在の綴り"Riker"へ
+# 差し替える(ER-010の日付safe-reading["April 28"→"April twenty
+# eighth"]と同じ、表記と発話を分離する設計)。
+_EN_NAME_PRONUNCIATION_OVERRIDES = {"Reicher": "Riker"}
+_EN_NAME_PRONUNCIATION_RE = __import__("re").compile(
+    r"\b(" + "|".join(_EN_NAME_PRONUNCIATION_OVERRIDES.keys()) + r")\b")
+
+
+def tts_safe_name_pronunciation_en(text: str) -> str:
+    return _EN_NAME_PRONUNCIATION_RE.sub(lambda m: _EN_NAME_PRONUNCIATION_OVERRIDES[m.group(1)], text)
+
+
 def tts_safe_news_en(text: str) -> str:
-    return tts_safe_number_words_en(tts_safe_paragraphs_en(tts_safe_en(text)))
+    return tts_safe_name_pronunciation_en(tts_safe_number_words_en(tts_safe_paragraphs_en(tts_safe_en(text))))
 
 
 # Key Phrase英語Componentの既知の失敗パターン(Health themeで発見):

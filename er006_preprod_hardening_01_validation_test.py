@@ -138,6 +138,25 @@ POSITIVE_FIXTURES = [
 # 機械的にも安全に判定できる。個別記事のwhitelistではなく、USPS通り
 # 種別略語という閉じた既知集合への一般対策として実装した
 # (詳細はER-006-AUDIO-COST-PILOT-02完了報告参照)。
+# ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22: No.8 B1 full_story_part2の
+# 実データで発見した contraction(短縮形)バグ。"They are"をTTSが自然に
+# "They're"と発話し、ASRも正しく"They're"と書き起こしたにもかかわらず、
+# 3回中3回ともTRUE_CONTENT_MISMATCH判定になりretryが尽きてSTOPPEDに
+# なった(意味は完全に同じ)。原因はnormalize_text()がアポストロフィを
+# 空白に置換するため"they're"が"they"+"re"の2 tokenへ分かれ、"re"だけが
+# stopword集合に無く孤立したcontent_word_diffとして検出されていたこと。
+POSITIVE_FIXTURES.append({
+    "name": "contraction they're <-> they are (real No.8 B1 full_story_part2 bug)",
+    "canonical": "The gates are designed to check boarding passes automatically. They are also designed to control the pace of boarding.",
+    "asr": "The gates are designed to check boarding passes automatically. They're also designed to control the pace of boarding.",
+})
+POSITIVE_FIXTURES.append({
+    "name": "contraction we're <-> we are",
+    "canonical": "We are checking again tomorrow.",
+    "asr": "We're checking again tomorrow.",
+})
+
+
 AMBIGUOUS_FIXTURES = [
     {
         "name": "St. abbreviation ASR punctuation artifact (benches/a2/full_story_part2, excerpt)",
