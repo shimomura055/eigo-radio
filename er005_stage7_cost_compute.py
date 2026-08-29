@@ -34,6 +34,26 @@ GEMINI_IN = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "input_tokens")
 GEMINI_OUT = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "output_tokens")
 AZURE_HOUR = price_lookup("azure", None, "audio_hour")
 
+# ER-008-N8-FINAL-CLOSEOUT-24で発見: 本モジュールはER-005-COST-BASELINE-01
+# 当時(gpt-5.6-solのみ使用)のraw_usage_logを前提に、OPENAI_IN/OUT/CACHEDを
+# "gpt-5.6-sol"の単価に固定していた。ER-006-MODEL-ROUTING-CONTRACT-01以降、
+# Writer/Fact Checker/Deviation Check等はApproved Model(gpt-5.6-luna、
+# 入力$0.2/M・出力$1.2M、sol比で概ね1/25)へ切り替わったため、このモジュールを
+# sol以外のrecord(model_id="gpt-5.6-luna"等)へ流用すると、生成costがおよそ
+# 25倍過大になる(No.8/ER-23の過去のcost試算で実際にこの過大値が使われて
+# いたことをER-24監査で確認した)。record_cost()は各recordのmodel_idで
+# 都度価格を引き直すよう修正し、sol専用の値だったOPENAI_IN等は「model_id
+# フィールドが無い古いrecord」向けのfallbackとしてのみ残す(ER-005当時の
+# 呼び出し結果は変わらない、後方互換)。
+def _openai_prices_for_model(model_id: str | None):
+    if model_id:
+        in_p = price_lookup("openai", model_id, "input_tokens")
+        cached_p = price_lookup("openai", model_id, "cached_input_tokens")
+        out_p = price_lookup("openai", model_id, "output_tokens")
+        if in_p and out_p:
+            return in_p, cached_p or OPENAI_CACHED, out_p
+    return OPENAI_IN, OPENAI_CACHED, OPENAI_OUT
+
 
 def record_cost(r: dict) -> tuple[float, float]:
     """(generation_cost, search_tool_cost) をUSDで返す。失敗callはusageが無いので0。"""
@@ -44,10 +64,11 @@ def record_cost(r: dict) -> tuple[float, float]:
         input_tokens = r.get("input_tokens") or 0
         cached = r.get("cached_input_tokens") or 0
         output_tokens = r.get("output_tokens") or 0
+        in_price, cached_price, out_price = _openai_prices_for_model(r.get("model_id"))
         billable_input = max(input_tokens - cached, 0)
-        cost = (billable_input / 1_000_000) * OPENAI_IN["price"]
-        cost += (cached / 1_000_000) * OPENAI_CACHED["price"]
-        cost += (output_tokens / 1_000_000) * OPENAI_OUT["price"]
+        cost = (billable_input / 1_000_000) * in_price["price"]
+        cost += (cached / 1_000_000) * cached_price["price"]
+        cost += (output_tokens / 1_000_000) * out_price["price"]
         search_calls = r.get("web_search_call_count") or 0
         search_cost = (search_calls / 1000) * OPENAI_SEARCH["price"]
         return cost, search_cost
