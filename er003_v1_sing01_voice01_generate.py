@@ -138,7 +138,10 @@ def generate_charon_english(text: str, out_path: str,
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
                     "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
                     "instruction_type": instruction_type, "trim_info": trim_info,
-                    "clipping_detected": metrics["clipping_detected"]}
+                    "clipping_detected": metrics["clipping_detected"],
+                    # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
+                    "disfluency_checked": gate["disfluency_checked"],
+                    "disfluency_evidence": gate.get("disfluency_evidence")}
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "voice": CHARON,

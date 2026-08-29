@@ -100,7 +100,10 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         if verified:
             return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True,
                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
-                    "max_len": max_len}
+                    "max_len": max_len,
+                    # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
+                    "disfluency_checked": gate["disfluency_checked"],
+                    "disfluency_evidence": gate.get("disfluency_evidence")}
         if stop_retrying:
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "voice": AOEDE,
                     "asr_verified": False, "asr_text": asr_text, "attempts_log": attempts_log,

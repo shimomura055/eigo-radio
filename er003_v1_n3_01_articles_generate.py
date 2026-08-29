@@ -385,15 +385,39 @@ def split_common_sections_for_point_qa(article_text: str) -> dict | None:
     }
 
 
+# ER-008-N8-FINAL-QA-HARDENING-21 Item 6: Point-only regeneration
+# (er008_point_regenerate_19.regenerate_point_only)は、No.8の実データ
+# 検証でVerified Fact Ledgerに無い新しい主張("American Airlinesの搭乗
+# 順違反への罰則"等)を作り出す実例が確認された。Point-onlyの局所書き換え
+# はFull Story/他方のPoint/Fact Ledgerとの整合性チェックが薄く、Fact
+# Checker頼みの二段構えになってしまっていたため、Production自動経路
+# から外す(PRODUCTION_WIRED扱いを撤回、CURRENT_SPEC.md/DECISION_LOG.md
+# 参照)。
+#
+# 「記事全体Writerを再実行し、overlap QA、NGならretry最大2回、それでも
+# NGなら自動継続せずNG/REVIEW_REQUIREDとして報告する」という暫定
+# Production方式は、Writerの実測コスト(No.8実測: writer_a2単体で約$1.5、
+# 複数回のretryを含む)を踏まえると、overlap NG発生率次第では1記事あたり
+# コストが数倍に増える可能性があり、実装前にユーザー承認が必要な項目
+# として現時点ではSTOPしている(ER-008-N8-FINAL-QA-HARDENING-21 Item 6
+# 報告参照)。そのため、このflagがFalseの間は「NGを検出したら、本文は
+# 一切書き換えずreport上でNG/REVIEW_REQUIREDとして残す」という、暫定
+# 方式の中で追加コストが一切発生しない最も安全側のサブセットのみを実行
+# する(regenerate_point_only()自体は呼び出されない)。
+POINT_ONLY_REGENERATION_ENABLED = False
+
+
 def run_point_overlap_qa_and_regenerate(client, article_text: str, verified_ledger_text: str,
                                           model: str, reasoning_effort: str, out_dir: str) -> dict:
     """Point One/TwoそれぞれについてFull Storyとの意味重複(lexical
-    overlap、暫定閾値0.40)をチェックし、flagされた場合のみPoint-only
-    regenerationを行う。Full Story・他方のPoint・Fact Checker/Ledger
-    Deviation Checkは変更しない(記事全体の再生成は行わない)。戻り値の
-    patched_article_textを、呼び出し側がその後のFact Checker/Deviation
-    Checkへそのまま渡す(regenerateされたPointも既存の安全確認プロセスを
-    通る)。"""
+    overlap、暫定閾値0.40)をチェックする。POINT_ONLY_REGENERATION_ENABLED
+    がTrueの場合のみ、flagされたPointに対しPoint-only regenerationを行う
+    (現在は無効化されている、上記コメント参照)。Falseの間は検出のみ行い
+    (monitoring)、本文は変更しない。Full Story・他方のPoint・Fact
+    Checker/Ledger Deviation Checkは変更しない(記事全体の再生成は行わ
+    ない)。戻り値のpatched_article_textを、呼び出し側がその後のFact
+    Checker/Deviation Checkへそのまま渡す(regenerateされたPointも既存の
+    安全確認プロセスを通る)。"""
     sections = split_common_sections_for_point_qa(article_text)
     if sections is None:
         return {"status": "SKIPPED", "reason": "想定構造(###見出し2つ)が見つからないためQAをスキップしました",
@@ -410,16 +434,25 @@ def run_point_overlap_qa_and_regenerate(client, article_text: str, verified_ledg
             ng_reason = (f"Lexical overlap with Full Story = {overlap['overlap_ratio']} "
                          f"(threshold {overlap['threshold']}), shared content words: {overlap['shared_words']}. "
                          "This Point is likely restating the Full Story's logic instead of adding a new angle.")
-            regen_result = point_regen.regenerate_point_only(
-                client, label_name, body, sections["full_story"], sections[other_key],
-                verified_ledger_text, ng_reason, POINT_ROLE_SPEC_EN, model=model, reasoning_effort=reasoning_effort)
-            entry["regenerate_status"] = regen_result["status"]
-            entry["regenerate_attempts_count"] = len(regen_result.get("attempts") or [])
-            entry["regenerate_validation"] = regen_result.get("validation")
-            if regen_result["status"] == "OK":
-                patched_text = patched_text.replace(body, regen_result["new_text"], 1)
-                entry["applied"] = True
-                entry["new_text"] = regen_result["new_text"]
+            if not POINT_ONLY_REGENERATION_ENABLED:
+                entry["regenerate_status"] = "NG_REVIEW_REQUIRED"
+                entry["reason"] = (
+                    "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21で"
+                    "Production自動経路から外されている(新Fact fabricationの実例が"
+                    "あったため)。本文は変更せず、Human Reviewでの確認対象として"
+                    "記録するのみ。")
+            else:
+                regen_result = point_regen.regenerate_point_only(
+                    client, label_name, body, sections["full_story"], sections[other_key],
+                    verified_ledger_text, ng_reason, POINT_ROLE_SPEC_EN,
+                    model=model, reasoning_effort=reasoning_effort)
+                entry["regenerate_status"] = regen_result["status"]
+                entry["regenerate_attempts_count"] = len(regen_result.get("attempts") or [])
+                entry["regenerate_validation"] = regen_result.get("validation")
+                if regen_result["status"] == "OK":
+                    patched_text = patched_text.replace(body, regen_result["new_text"], 1)
+                    entry["applied"] = True
+                    entry["new_text"] = regen_result["new_text"]
         report[key] = entry
 
     with open(f"{out_dir}/point_overlap_qa.json", "w", encoding="utf-8") as f:

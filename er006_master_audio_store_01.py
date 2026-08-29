@@ -119,6 +119,13 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
             "status": "OK", "path": out_path, "reused": True,
             "master_audio_id": master_id, "cache_miss_reason": None,
         }
+        # ER-008-N8-FINAL-QA-HARDENING-21 Item 1/7: 以前はreused=Trueの
+        # 場合、statusとpathだけの最小限dictを返しており、生成時に記録した
+        # disfluency_checked等のQA証跡が再利用のたびに失われていた。この
+        # ためAssemble Gateの必須QA証跡チェックが、実際にはQA合格済みの
+        # 資産まで「証跡が無い」としてblockしてしまう(No.8 kp2の恒久修正
+        # 作業中に発見)。manifestに保存したqa_evidenceをここで復元する。
+        result.update(entry.get("qa_evidence") or {})
         _log_telemetry({
             "event": "reused", "master_audio_id": master_id, "out_path": out_path,
             "key": key.as_dict(),
@@ -134,6 +141,14 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         manifest[master_id] = {
             "audio_path": stored_path, "key": key.as_dict(),
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            # ER-008-N8-FINAL-QA-HARDENING-21 Item 1/7: 生成時のQA証跡を
+            # manifestへ保存し、以降のcache hit再利用でも失われないように
+            # する(reused=Trueの結果にも同じ証跡を復元できるようにする)。
+            "qa_evidence": {
+                "sha256": r.get("sha256"), "asr_verified": r.get("asr_verified"),
+                "asr_text": r.get("asr_text"), "disfluency_checked": r.get("disfluency_checked"),
+                "disfluency_evidence": r.get("disfluency_evidence"),
+            },
         }
         _save_manifest(manifest)
         _log_telemetry({

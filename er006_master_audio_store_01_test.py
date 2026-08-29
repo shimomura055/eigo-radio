@@ -73,6 +73,39 @@ def test_first_call_generates_second_call_reuses():
     print("PASS: test_first_call_generates_second_call_reuses")
 
 
+def test_reuse_carries_forward_qa_evidence():
+    # ER-008-N8-FINAL-QA-HARDENING-21 Item 1/7: No.8のkp2("uneven choice")
+    # 恒久修正で発見した実バグの回帰テスト。以前はreused=Trueの場合、
+    # status/pathだけの最小限dictを返しており、生成時のdisfluency_checked
+    # 等のQA証跡が2回目以降の参照(cache hit reuse)で失われ、Assemble
+    # Gateの必須QA証跡チェックがQA合格済みの資産まで誤ってblockして
+    # いた。qa_evidenceがmanifest経由でreused=True側にも復元されることを
+    # 確認する。
+    def run():
+        def fake_generate(out_path):
+            _write_dummy_wav(out_path)
+            return {"status": "OK", "sha256": "dummy_sha", "asr_verified": True,
+                    "asr_text": "uneven choice", "disfluency_checked": True,
+                    "disfluency_evidence": {"flagged": False, "repeats": []}}
+
+        key = store.MasterAudioKey(
+            language="en", speaker_voice="Aoede", tts_model_id="gemini-2.5-pro-preview-tts",
+            canonical_text="uneven choice", style_instruction_id="key_phrase_english_component")
+
+        r1 = store.get_or_generate(key, "er006_output/_test_master_audio_store_tmp/out1.wav", fake_generate)
+        assert r1["reused"] is False
+        assert r1["disfluency_checked"] is True
+
+        r2 = store.get_or_generate(key, "er006_output/_test_master_audio_store_tmp/out2.wav", fake_generate)
+        assert r2["reused"] is True
+        assert r2["disfluency_checked"] is True, "reuse時にQA証跡(disfluency_checked)が失われてはならない"
+        assert r2["disfluency_evidence"] == {"flagged": False, "repeats": []}
+        assert r2["asr_verified"] is True
+        assert r2["sha256"] == "dummy_sha"
+    _use_temp_store(run)
+    print("PASS: test_reuse_carries_forward_qa_evidence")
+
+
 def test_welcome_drift_resolved_across_b1_and_a2():
     # B1向け・A2向けで別々にWelcomeを生成しようとしても、level=Noneで
     # 同一Keyになるため、2回目はreuseされ、常に同一音声になる(drift

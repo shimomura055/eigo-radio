@@ -264,6 +264,25 @@ class SchemaValidatorTests(unittest.TestCase):
         item0 = next(r for r in result["item_reasons"] if r["index"] == 0)
         self.assertTrue(any("日本語" in reason for reason in item0["reasons"]))
 
+    def test_parenthetical_ja_gloss_detected(self):
+        # ER-008-N8-FINAL-QA-HARDENING-21 Item 2: No.8実例
+        # 「搭乗前に列に並ぶ人（俗称）」のような括弧書き補足は、音声だけで
+        # 読み上げられるja_glossとして不適切なため検知されなければならない。
+        items = make_items_10()
+        items[0] = dict(items[0])
+        items[0]["ja_gloss"] = "搭乗前に列に並ぶ人（俗称）"
+        result = r10.validate_research10_selection(make_selection("L", items=items), GOOD_ARTICLE, "L", "A02")
+        item0 = next(r for r in result["item_reasons"] if r["index"] == 0)
+        self.assertTrue(any("括弧書き" in reason for reason in item0["reasons"]))
+
+    def test_natural_ja_gloss_without_parenthetical_passes(self):
+        items = make_items_10()
+        items[0] = dict(items[0])
+        items[0]["ja_gloss"] = "ゲート前で早く並ぶ乗客を指す俗称"
+        result = r10.validate_research10_selection(make_selection("L", items=items), GOOD_ARTICLE, "L", "A02")
+        item0 = next((r for r in result["item_reasons"] if r["index"] == 0), None)
+        self.assertIsNone(item0)
+
     def test_strategy_p_default_2_per_category_passes(self):
         result = r10.validate_research10_selection(make_selection("P"), GOOD_ARTICLE, "P", "A02")
         self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS", msg=result)

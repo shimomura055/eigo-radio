@@ -117,6 +117,9 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
+            # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
+            r["disfluency_checked"] = gate["disfluency_checked"]
+            r["disfluency_evidence"] = gate.get("disfluency_evidence")
             return r
         if stop_retrying:
             r["status"] = "ASR_VALIDATION_UNCERTAIN"

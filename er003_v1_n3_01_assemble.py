@@ -128,6 +128,71 @@ def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
     return "UNVALIDATED"
 
 
+# ER-008-N8-FINAL-QA-HARDENING-21 Item 1: No.8完成版のA2 Key Phrase 2
+# ("uneven choice")で、disfluency QA(er008_disfluency_qa_18)は
+# PRODUCTION_WIREDと報告済みだったにもかかわらず、実際にAssembleへ採用
+# されたkp2_en.wavにはdisfluency QAが一度も適用されていなかった。
+#
+# 原因調査の結論: kp2_en.wavはdisfluency QAがgenerate_key_phrase_
+# component_verified()へ配線される前(commit bef70c1より約1日前)に
+# Master Audio Store経由で生成されたasset で、tts_generation_results.
+# jsonの記録もそのときのコード(disfluency_checkedフィールド自体が
+# 存在しない旧形式)のまま残っていた。disfluency QA配線後、この記事の
+# Assembleは同じ既存master(同一text/voice/model/style)をcache hit
+# として再利用し続け、また本Gateはstatus=="OK"しか見ていなかったため、
+# 「QA機能は実装済みだが、この特定assetには一度も適用されていない」
+# という状態を検知できなかった(該当segmentがresumeやcache経由で
+# 生成された場合も同様に発生し得る、A2 slowdown invariantと同型の
+# 「必須post-process証跡の欠落」問題)。
+#
+# 対策: disfluency QA対象として承認済みの短文high-riskセグメント
+# (Key Phrase英語/Point見出し/Preview・Comment・In One Line)については、
+# status=="OK"だけでなく、そのsegmentの記録に
+# disfluency_checked is True(top-level、後述の生成側修正で必ず記録
+# されるようになった)が無ければAssembleをブロックする。これにより、
+# QA配線前に作られた既存assetやresume/cache経由の取りこぼしは、
+# 「証跡が無い」という理由で機械的にfail-closedされ、再生成を強制する。
+#
+# 重要: disfluency QA(faster-whisper)は英語専用の仕組みであり、A2の
+# preview/comment_1-4は日本語音声(disfluency_checkedは常にFalseで
+# 記録される、設計上パス不能)。level別に対象segmentを分ける必要が
+# あり、level非依存の単一listにすると、A2側が恒久的にGateを通過
+# できなくなる(この実装ミスはNo.8実データでの検証中に発見・修正した)。
+DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL = {
+    "B1": ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
+           "in_one_line", "point_one_heading", "point_two_heading"),
+    "A2": ("in_one_line", "point_one_heading", "point_two_heading"),
+}
+
+
+def _segment_missing_mandatory_disfluency_qa(name: str, entry: dict, level: str) -> bool:
+    mandatory = DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL.get(level, ())
+    if name not in mandatory and not name.endswith("_english"):
+        return False
+    return entry.get("disfluency_checked") is not True
+
+
+# ER-008-N8-FINAL-QA-HARDENING-21 Item 7: 「validation recordだけで
+# 判断しない」という今回の要求への対応。tts_generation_results.jsonに
+# 記録されたsha256と、実際にnarration_dir上に存在するwavファイルの
+# sha256を突き合わせ、不一致ならstaleとしてブロックする。これは今回の
+# セッション自体がPoint-only regenerationの検証で行った「.bakから手動
+# でarticle.md/parts.jsonを復元する」といった、JSON記録とファイル実体が
+# 手動操作でズレるケースに対する一般的な安全網であり、disfluency QA
+# 以外の全post-process(6% slowdown・calm style等)にも等しく効く。
+def _segment_asset_hash_stale(entry: dict, narration_dir: str) -> bool:
+    recorded_sha256 = entry.get("sha256")
+    path = entry.get("path")
+    if not recorded_sha256 or not path:
+        return False
+    full_path = path if os.path.isabs(path) or os.path.exists(path) else f"{narration_dir}/{os.path.basename(path)}"
+    if not os.path.exists(full_path):
+        return False
+    with open(full_path, "rb") as f:
+        actual_sha256 = hashlib.sha256(f.read()).hexdigest()
+    return actual_sha256 != recorded_sha256
+
+
 def _segment_missing_mandatory_a2_slowdown(name: str, entry: dict, narration_dir: str = None) -> bool:
     """ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 5-A: No.8
     point_one_headingが、Human Review Lock経由で承認された結果、6%
@@ -169,14 +234,24 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
         final = _segment_gate_status(entry, name, approvals)
         if final not in AUDIO_GATE_ALLOWED_STATUSES:
             blocked.append(f"{name}={final}")
-        elif level == "A2" and _segment_missing_mandatory_a2_slowdown(name, entry, narration_dir):
+            continue
+        if level == "A2" and _segment_missing_mandatory_a2_slowdown(name, entry, narration_dir):
             blocked.append(f"{name}={final}(MISSING_MANDATORY_A2_SLOWDOWN)")
+        if _segment_missing_mandatory_disfluency_qa(name, entry, level):
+            blocked.append(f"{name}={final}(MISSING_MANDATORY_DISFLUENCY_QA)")
+        if _segment_asset_hash_stale(entry, narration_dir):
+            blocked.append(f"{name}={final}(ASSET_HASH_MISMATCH)")
     for rank, kp in (data.get("key_phrases") or {}).items():
         for sub_key, sub_entry in kp.items():
             seg_key = f"kp{rank}_{sub_key}"
             final = _segment_gate_status(sub_entry, seg_key, approvals)
             if final not in AUDIO_GATE_ALLOWED_STATUSES:
                 blocked.append(f"{seg_key}={final}")
+                continue
+            if _segment_missing_mandatory_disfluency_qa(seg_key, sub_entry, level):
+                blocked.append(f"{seg_key}={final}(MISSING_MANDATORY_DISFLUENCY_QA)")
+            if _segment_asset_hash_stale(sub_entry, narration_dir):
+                blocked.append(f"{seg_key}={final}(ASSET_HASH_MISMATCH)")
 
     if blocked:
         raise RuntimeError(

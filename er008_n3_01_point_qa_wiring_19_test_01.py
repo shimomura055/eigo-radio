@@ -83,27 +83,53 @@ class RunPointOverlapQaAndRegenerateTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.out_dir, ignore_errors=True)
 
-    def test_flags_and_regenerates_the_paraphrasing_point(self):
-        # Point One(SAMPLE_ARTICLE)はFull Storyの"missing a connection"ロジックを
-        # ほぼそのまま繰り返しているため、overlap_qaでflagされるはず。
-        client = FakeClient(["A genuinely different angle about airport culture and imitation."])
+    def test_flags_and_regenerates_the_paraphrasing_point_when_explicitly_enabled(self):
+        # ER-008-N8-FINAL-QA-HARDENING-21 Item 6: Point-only regenerationは
+        # No.8実データでFact fabricationを起こしたため既定でProduction
+        # 自動経路から外された(POINT_ONLY_REGENERATION_ENABLED=False)。
+        # 配線そのもの(regenerate_point_only呼び出し)は引き続き正しく
+        # 動くことを、明示的に有効化した状態で確認する。
+        gen.POINT_ONLY_REGENERATION_ENABLED = True
+        try:
+            # Point One(SAMPLE_ARTICLE)はFull Storyの"missing a connection"ロジックを
+            # ほぼそのまま繰り返しているため、overlap_qaでflagされるはず。
+            client = FakeClient(["A genuinely different angle about airport culture and imitation."])
+            result = gen.run_point_overlap_qa_and_regenerate(
+                client, SAMPLE_ARTICLE, "FACT-01: some ledger fact",
+                model="fake-model", reasoning_effort=None, out_dir=self.out_dir)
+            self.assertEqual(result["status"], "OK")
+            self.assertTrue(result["report"]["point_one"]["before_overlap"]["flagged"])
+            self.assertTrue(result["report"]["point_one"]["applied"])
+            self.assertIn("genuinely different angle", result["patched_article_text"])
+            self.assertNotIn("outweighs the minor cost of lining up", result["patched_article_text"])
+            # Full Story/Point Two/In One Lineは変更されていないこと
+            self.assertIn("Passengers have started lining up", result["patched_article_text"])
+            self.assertIn("distrust in how fairly boarding order", result["patched_article_text"])
+            self.assertIn("People queue early partly out of habit", result["patched_article_text"])
+            self.assertEqual(client.calls, 1)
+            # 監査ファイルが書き出されていること
+            with open(f"{self.out_dir}/point_overlap_qa.json", encoding="utf-8") as f:
+                audit = json.load(f)
+            self.assertTrue(audit["point_one"]["applied"])
+        finally:
+            gen.POINT_ONLY_REGENERATION_ENABLED = False
+
+    def test_default_disabled_flags_without_regenerating(self):
+        # ER-008-N8-FINAL-QA-HARDENING-21 Item 6の既定挙動: overlapは検出
+        # (monitoring)するが、regenerate_point_only()は一切呼ばれず、
+        # 本文も書き換えない。LLM呼び出し(client.calls)が発生しないことを
+        # もって「Production自動経路から外れている」ことを保証する。
+        self.assertFalse(gen.POINT_ONLY_REGENERATION_ENABLED)
+        client = FakeClient([])
         result = gen.run_point_overlap_qa_and_regenerate(
             client, SAMPLE_ARTICLE, "FACT-01: some ledger fact",
             model="fake-model", reasoning_effort=None, out_dir=self.out_dir)
         self.assertEqual(result["status"], "OK")
         self.assertTrue(result["report"]["point_one"]["before_overlap"]["flagged"])
-        self.assertTrue(result["report"]["point_one"]["applied"])
-        self.assertIn("genuinely different angle", result["patched_article_text"])
-        self.assertNotIn("outweighs the minor cost of lining up", result["patched_article_text"])
-        # Full Story/Point Two/In One Lineは変更されていないこと
-        self.assertIn("Passengers have started lining up", result["patched_article_text"])
-        self.assertIn("distrust in how fairly boarding order", result["patched_article_text"])
-        self.assertIn("People queue early partly out of habit", result["patched_article_text"])
-        self.assertEqual(client.calls, 1)
-        # 監査ファイルが書き出されていること
-        with open(f"{self.out_dir}/point_overlap_qa.json", encoding="utf-8") as f:
-            audit = json.load(f)
-        self.assertTrue(audit["point_one"]["applied"])
+        self.assertFalse(result["report"]["point_one"]["applied"])
+        self.assertEqual(result["report"]["point_one"]["regenerate_status"], "NG_REVIEW_REQUIRED")
+        self.assertEqual(client.calls, 0, "regenerate_point_only()経由のLLM呼び出しは発生してはならない")
+        self.assertEqual(result["patched_article_text"], SAMPLE_ARTICLE)
 
     def test_does_not_call_llm_when_no_point_is_flagged(self):
         # Point Twoは既にFull Storyと重複が低い(distrust/signalという新角度)ため、

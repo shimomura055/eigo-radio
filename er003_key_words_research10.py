@@ -222,6 +222,9 @@ _DATE_ONLY_RE = re.compile(
     re.IGNORECASE,
 )
 _JAPANESE_CHAR_RE = re.compile(r"[ぁ-んァ-ヶ一-龯]")
+# ER-008-N8-FINAL-QA-HARDENING-21 Item 2: 全角/半角括弧による補足書きを
+# 検知する(No.8実例:「搭乗前に列に並ぶ人（俗称）」)。
+_JA_GLOSS_PARENTHETICAL_RE = re.compile(r"[（(].+?[）)]")
 
 # 方式Pの「原則各カテゴリ2件」ルール: 実質カテゴリ数(otherを除く5種)で
 # 均等割りした値を上回るカテゴリの超過分項目には、substitution記録を必須とする。
@@ -381,6 +384,15 @@ def validate_research10_selection(parsed: dict, b2_article_text: str, expected_s
         if isinstance(ja_gloss, str) and ja_gloss.strip():
             if not _has_japanese_characters(ja_gloss):
                 this_item_reasons.append("日本語グロスに日本語文字が含まれない(英文の可能性)")
+                ok = False
+            # ER-008-N8-FINAL-QA-HARDENING-21 Item 2: ja_glossは音声のみで
+            # 読み上げられるため、「（俗称）」のような括弧書きの補足は
+            # 音声にすると不自然で、意味の理解も助けない(No.8実データで
+            # 発見)。プロンプト側の指示追加に加え、機械的にも検知する。
+            if _JA_GLOSS_PARENTHETICAL_RE.search(ja_gloss):
+                this_item_reasons.append(
+                    "日本語グロスに括弧書きの補足が含まれている(音声だけで意味が"
+                    "成立する自然な表現にすること)")
                 ok = False
 
         if this_item_reasons:

@@ -85,18 +85,25 @@ class AssembleGateNo8IncidentReproductionTests(unittest.TestCase):
         self.assertIn("point_one_heading", str(ctx.exception))
 
     def test_a2_gate_passes_when_slowdown_applied_is_true(self):
+        # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: point_one_heading/comment_1は
+        # disfluency QA必須segmentでもあるため、slowdown invariant単体を
+        # 検証するこのテストではdisfluency_checked: Trueも併せて与える。
         _write_results(self.out_dir, {
-            "point_one_heading": {"status": "OK", "canonical_text": "First point.", "slowdown_applied": True},
+            "point_one_heading": {"status": "OK", "canonical_text": "First point.", "slowdown_applied": True,
+                                   "disfluency_checked": True},
             "full_story_part1": {"status": "OK", "slowdown_applied": True},
-            "comment_1": {"status": "OK"},
+            "comment_1": {"status": "OK", "disfluency_checked": True},
         })
         asm.verify_episode_audio_validation_gate(self.out_dir, "A2")  # raiseしなければOK
 
     def test_b1_gate_does_not_apply_slowdown_invariant(self):
         # B1にはA2の6% slowdownという概念自体が存在しない(CURRENT_SPEC.md
         # 「B1にはこの追加指示を一切渡さない」)ため、B1レベルのgateは
-        # slowdown_appliedの有無を一切見ない。
-        _write_results(self.out_dir, {"point_one_heading": {"status": "OK", "canonical_text": "First point."}})
+        # slowdown_appliedの有無を一切見ない。disfluency QAはA2/B1共通の
+        # 必須項目のため、point_one_headingにはdisfluency_checked: Trueを
+        # 与える(ER-008-N8-FINAL-QA-HARDENING-21 Item 1)。
+        _write_results(self.out_dir, {"point_one_heading": {"status": "OK", "canonical_text": "First point.",
+                                                              "disfluency_checked": True}})
         asm.verify_episode_audio_validation_gate(self.out_dir, "B1")  # raiseしなければOK
 
     def test_human_approved_segment_missing_slowdown_is_still_blocked(self):

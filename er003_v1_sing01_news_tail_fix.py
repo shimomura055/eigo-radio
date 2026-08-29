@@ -123,7 +123,10 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text,
                     "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
-                    "clipping_detected": metrics["clipping_detected"]}
+                    "clipping_detected": metrics["clipping_detected"],
+                    # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
+                    "disfluency_checked": gate["disfluency_checked"],
+                    "disfluency_evidence": gate.get("disfluency_evidence")}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに

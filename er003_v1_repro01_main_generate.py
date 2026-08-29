@@ -268,7 +268,14 @@ def generate_narration_snippet_verified_strict(
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
         })
         if verified:
-            return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log}
+            # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: disfluency_checkedが
+            # attempts_logの中にしか記録されず、Assemble Gateがこの情報を
+            # 一切参照していなかったことがNo.8のkp2("uneven choice")取りこぼし
+            # の一因だった。asr_verified等と同じtop-levelへ昇格し、Gate側
+            # (_segment_missing_mandatory_disfluency_qa)が読めるようにする。
+            return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
+                    "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
+                    "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None}
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,
@@ -437,6 +444,10 @@ def generate_key_phrase_component_verified(
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
+            # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格(理由は
+            # standard経路側の同種修正コメントを参照)。
+            r["disfluency_checked"] = gate["disfluency_checked"]
+            r["disfluency_evidence"] = gate.get("disfluency_evidence")
             return r
         if stop_retrying:
             r["status"] = "ASR_VALIDATION_UNCERTAIN"
