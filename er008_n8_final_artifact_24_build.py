@@ -4,7 +4,11 @@
 # (音声をbase64 data URIとして埋め込む、一回限りのビルドスクリプト)
 # ============================================================
 import base64
+import html as html_lib
 import json
+import re
+
+import er003_v1_n3_01_articles_generate as gen
 
 BASE = "er006_output/pool_pilot_01/pool_n8_airport_line"
 OUT_HTML = ("C:/Users/tensh/AppData/Local/Temp/claude/C--Users-tensh-eigo-radio/"
@@ -16,8 +20,49 @@ def b64_audio(path: str) -> str:
         return base64.b64encode(f.read()).decode("ascii")
 
 
+def inline_md_to_html(text: str) -> str:
+    escaped = html_lib.escape(text)
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
+
+
+def paragraphs_html(text: str) -> str:
+    paras = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
+    return "\n".join(f"<p>{inline_md_to_html(p)}</p>" for p in paras)
+
+
+def build_script_html(article_path: str) -> str:
+    with open(article_path, encoding="utf-8") as f:
+        article_text = f.read()
+    title_match = re.match(r"^#\s+(.+?)\s*\n", article_text)
+    title = title_match.group(1) if title_match else ""
+    sections = gen.split_common_sections_for_point_qa(article_text)
+    in_one_line_match = re.search(r"^##\s+In one line[^\n]*\n+(.+)", article_text,
+                                   flags=re.MULTILINE | re.DOTALL)
+    in_one_line_text = in_one_line_match.group(1).strip() if in_one_line_match else ""
+    return f"""<details class="script">
+      <summary>スクリプトを表示</summary>
+      <div class="script-body">
+        <h4 class="script-title">{inline_md_to_html(title)}</h4>
+        {paragraphs_html(sections["full_story"])}
+        <div class="script-point">
+          <span class="point-label">Point One</span>
+          <p class="script-point-heading">{inline_md_to_html(sections["point_one_heading"])}</p>
+          {paragraphs_html(sections["point_one_body"])}
+        </div>
+        <div class="script-point">
+          <span class="point-label">Point Two</span>
+          <p class="script-point-heading">{inline_md_to_html(sections["point_two_heading"])}</p>
+          {paragraphs_html(sections["point_two_body"])}
+        </div>
+        <p class="script-in-one-line">{inline_md_to_html(in_one_line_text)}</p>
+      </div>
+    </details>"""
+
+
 a2_audio = b64_audio(f"{BASE}/a2/assembled/English_Your_Way_A2_POOL_N8_AIRPORT_LINE.mp3")
 b1_audio = b64_audio(f"{BASE}/b1b/assembled/English_Your_Way_B1B_POOL_N8_AIRPORT_LINE.mp3")
+a2_script_html = build_script_html(f"{BASE}/a2/article.md")
+b1_script_html = build_script_html(f"{BASE}/b1b/article.md")
 
 with open("er008_output/n8_location_compression_24_summary.json", encoding="utf-8") as f:
     loc_summary = json.load(f)
@@ -185,6 +230,62 @@ p {{ margin: 0 0 12px; }}
   color: var(--text-muted);
 }}
 audio {{ width: 100%; height: 40px; display: block; }}
+details.script {{ margin-top: 14px; }}
+details.script summary {{
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  user-select: none;
+  list-style: none;
+}}
+details.script summary::-webkit-details-marker {{ display: none; }}
+details.script summary::before {{ content: "▸ "; }}
+details.script[open] summary::before {{ content: "▾ "; }}
+.script-body {{
+  margin-top: 14px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+}}
+.script-body p {{ margin: 0 0 12px; }}
+.script-title {{
+  font-family: var(--font-display);
+  font-size: 16px;
+  margin: 0 0 14px;
+}}
+.script-point {{
+  margin: 16px 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--accent-soft);
+}}
+.point-label {{
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 2px 9px;
+  margin-bottom: 6px;
+}}
+.script-point-heading {{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  margin: 4px 0 8px !important;
+}}
+.script-in-one-line {{
+  font-style: italic;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px !important;
+}}
 .changed-list {{
   list-style: none;
   margin: 0;
@@ -282,6 +383,7 @@ footer.page {{
         <span class="player-stats">{a2_dur_fmt} &middot; peak {a2_peak:.2f} &middot; clipping なし</span>
       </div>
       <audio controls preload="none" src="data:audio/mpeg;base64,{a2_audio}"></audio>
+      {a2_script_html}
     </div>
     <div class="player-block">
       <div class="player-head">
@@ -289,6 +391,7 @@ footer.page {{
         <span class="player-stats">{b1_dur_fmt} &middot; peak {b1_peak:.2f} &middot; clipping なし</span>
       </div>
       <audio controls preload="none" src="data:audio/mpeg;base64,{b1_audio}"></audio>
+      {b1_script_html}
     </div>
   </section>
 
@@ -347,6 +450,7 @@ html = HTML_TEMPLATE.format(
     a2_dur_fmt=fmt_mmss(a2_dur), b1_dur_fmt=fmt_mmss(b1_dur),
     a2_peak=a2_peak, b1_peak=b1_peak,
     a2_audio=a2_audio, b1_audio=b1_audio,
+    a2_script_html=a2_script_html, b1_script_html=b1_script_html,
     generated_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
 )
 
