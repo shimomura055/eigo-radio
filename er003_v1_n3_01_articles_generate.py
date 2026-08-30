@@ -31,6 +31,7 @@ import er008_directional_fact_precheck_08 as dfp
 import er008_point_overlap_qa_18 as overlap_qa
 import er008_point_regenerate_19 as point_regen
 import er008_shared_point_blueprint_01 as blueprint_mod
+import er009_diagnostic_full_retry_modules_12 as diagnostic_mod
 
 load_dotenv()
 
@@ -389,6 +390,25 @@ POINT_ROLE_SPEC_EN = (
 )
 
 
+def build_diagnostic_retry_prompt(original_prompt: str, previous_article_text: str,
+                                   point_overlap: dict) -> str:
+    """Diagnostic section を含む retry prompt を build する。
+
+    前回の記事・Point overlap スコア・shared words・簡易診断を
+    NG例として prompt に追加する。Evidence/VFL固定で全文再生成させる。"""
+    sections = split_common_sections_for_point_qa(previous_article_text)
+    if sections is None:
+        return original_prompt
+
+    diagnostic_section, _ = diagnostic_mod.build_diagnostic_section(
+        sections["full_story"],
+        point_overlap["point_one"],
+        point_overlap["point_two"],
+    )
+
+    return original_prompt + "\n\n" + diagnostic_section
+
+
 def split_common_sections_for_point_qa(article_text: str) -> dict | None:
     """run_one_patternが生成するarticle_text(Title + Main Story + ###
     Point見出し×2 + ## In one line、COMMON_BLOCK_TEMPLATE共通構造)から、
@@ -573,10 +593,13 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     fact_usage_report = gen["fact_usage_report"]
     evidence_compression_applied = gen["evidence_compression_applied"]
 
-    # ER-22: Point overlap NG時は記事全体をWriterから再生成する(最大
-    # POINT_OVERLAP_ARTICLE_RETRY_MAX回)。retry対象はWriter+Evidence
-    # Compression+overlap再チェックのみで、Fact Checker/Ledger Deviation
-    # はループの外(最終確定後)で一度だけ実行する。
+    # ER-22 + ER-009-N1-DIAGNOSTIC-FULL-RETRY-PRODUCTION-WIRING-13:
+    # Point overlap NG時は記事全体をWriterから再生成する(最大
+    # POINT_OVERLAP_ARTICLE_RETRY_MAX回)。Diagnostic Full Retry により、
+    # retry時は前回の記事・overlap score・shared words・簡易診断を
+    # NG例として prompt へ追加し、Evidence/VFL固定で全文再生成させる。
+    # retry対象はWriter+Evidence Compression+overlap再チェックのみで、
+    # Fact Checker/Ledger Deviationはループの外(最終確定後)で一度だけ実行。
     overlap_retry_log = []
     retry_attempt = 0
     while True:
@@ -587,15 +610,31 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
             reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
         still_flagged = point_qa_result["status"] == "OK" and any(
             entry["before_overlap"]["flagged"] for entry in point_qa_result.get("report", {}).values())
-        overlap_retry_log.append({
+        log_entry = {
             "attempt": retry_attempt, "qa_status": point_qa_result["status"], "flagged": still_flagged,
-            "report": point_qa_result.get("report")})
+            "report": point_qa_result.get("report")}
+        overlap_retry_log.append(log_entry)
         if not still_flagged or retry_attempt >= POINT_OVERLAP_ARTICLE_RETRY_MAX:
             break
         retry_attempt += 1
-        print(f"[N3-01][{theme_id}] {label}: Point overlap NG。記事全体をWriterから再生成します"
+        print(f"[N3-01][{theme_id}] {label}: Point overlap NG。Diagnostic Full Retry により、"
+              f"診断情報を含む prompt で全文再生成します"
               f"(article retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
-        gen = _generate_and_compress_article(client, theme_id, label, prompt, out_dir,
+
+        # Diagnostic section を build
+        point_overlap_result = {
+            "point_one": point_qa_result["report"]["point_one"]["before_overlap"],
+            "point_two": point_qa_result["report"]["point_two"]["before_overlap"],
+        }
+        diagnostic_prompt = build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        log_entry["diagnostic_used"] = {
+            "point_one_score": point_overlap_result["point_one"]["overlap_ratio"],
+            "point_one_flagged": point_overlap_result["point_one"]["flagged"],
+            "point_two_score": point_overlap_result["point_two"]["overlap_ratio"],
+            "point_two_flagged": point_overlap_result["point_two"]["flagged"],
+        }
+
+        gen = _generate_and_compress_article(client, theme_id, label, diagnostic_prompt, out_dir,
                                               apply_evidence_compression, writer_model)
         if gen["status"] != "OK":
             print(f"[N3-01][{theme_id}] {label}: article retry中にwriterが失敗しました status={gen['status']}")
