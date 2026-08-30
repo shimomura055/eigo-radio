@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "both_points_pass": true,
+  "attempts_count": 2,
+  "writer_model": "gpt-5.6-luna",
+  "attempts": [
+    {
+      "attempt": 0,
+      "label": "initial",
+      "overlap": {
+        "point_one_ratio": 0.545,
+        "point_two_ratio": 0.519,
+        "flagged": true
+      },
+      "diagnosis_used": null,
+      "hooks_count": 0,
+      "jargon_count": 0
+    },
+    {
+      "attempt": 1,
+      "label": "retry1",
+      "overlap": {
+        "point_one_ratio": 0.25,
+        "point_two_ratio": 0.367,
+        "flagged": false
+      },
+      "diagnosis_used": {
+        "point_one": "shared content words with the Full Story: change, choices, default, different, fare, first, menus, more, near, payment, people, saw (+6 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places).",
+        "point_two": "shared content words with the Full Story: about, digital, guilt, more, percent, pressure, report, rutgers, said, screen, see, survey (+2 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places)."
+      },
+      "hooks_count": 1,
+      "jargon_count": 0
+    }
+  ],
+  "ledger_result": {
+    "deviations": [],
+    "overall_status": "LEDGER_COMPLIANT"
+  },
+  "fact_result": {
+    "status": "FACT_CHECK_COMPLETED",
+    "result": {
+      "verdict": "REVIEW_REQUIRED",
+      "contradictions": [],
+      "unsupported_specific_claims": [
+        "「高い最初の選択肢は店の収入を増やす」という表現は過度に一般化されている。Rutgersの記述は、高いデフォルト tip を提示したサービス提供者がより多くのチップを集めるという研究結果を紹介しているが、対象研究はレストランや店舗ではなく、アプリ型のランドリーサービスであり、店舗の売上・利益そのものを測定したものではない。([bloustein.rutgers.edu](https://bloustein.rutgers.edu/njspl-guilt-tipping-inflated-default-tip/))",
+        "「提案率が高すぎると、乗客は少ない額を入力する代わりにゼロを選んだ」という因果的な説明は、研究結果より一歩踏み込んでいる。研究は高いデフォルト提示で「クレジットカードのチップをゼロにする割合」が高まったことを示すが、個々の乗客が少額入力との比較で意図的にゼロを選んだ理由までは特定していない。([aeaweb.org](https://www.aeaweb.org/articles?id=10.1257%2Fapp.6.3.1&page=568&utm_source=openai))",
+        "「米国のレストランのチップが1970年代初頭の10〜15％から1990年代後半に約20％へ上昇した」という記述は、Rutgersの原文より広い。原文は「最も高級な店」での水準について述べており、米国のレストラン全体の代表値として確認できる内容ではない。なお、35％までのデジタル tip 提案があるという記述自体はRutgersのページにある。([bloustein.rutgers.edu](https://bloustein.rutgers.edu/njspl-guilt-tipping-inflated-default-tip/))",
+        "「現金のチップ瓶ではよりプライベートだった」という比較は、確認したRutgers資料が直接述べている内容ではない。同資料が確認しているのは、デジタル画面で従業員の前で tip の割合を選ぶことによる社会的圧力と、それを「guilt tipping」と呼ぶ説明である。([bloustein.rutgers.edu](https://bloustein.rutgers.edu/njspl-guilt-tipping-inflated-default-tip/))"
+      ],
+      "verified_claims_summary": [
+        "2014年の査読付き論文『Default Tips』は、13百万件を超えるニューヨーク市タクシーのクレジットカード利用乗車データを分析している。([aeaweb.org](https://www.aeaweb.org/articles?id=10.1257%2Fapp.6.3.1&page=568&utm_source=openai))",
+        "同研究では、約15ドルの境界をまたぐと、ある決済端末の提示が15ドル未満では2・3・4ドル、15ドル超では20・25・30％へ変わるため、近接した運賃を比較する回帰不連続デザインが用いられた。([gwern.net](https://gwern.net/doc/psychology/cognitive-bias/2014-haggag.pdf?utm_source=openai))",
+        "高い tip 提案は平均 tip 額を増やした一方、提示額が高い場合にはチップをまったく残さない乗客の割合も高まるという結果は、論文の要旨と結論に一致する。([aeaweb.org](https://www.aeaweb.org/articles?id=10.1257%2Fapp.6.3.1&page=568&utm_source=openai))",
+        "Popmenuの2026年調査について、米国の消費者の78％が tipping practices を「ridiculous」と回答し、44％が前年より tip を減らしたという数字は確認できる。調査は2026年3月15〜16日に、18歳以上の米国消費者1,000人を対象に実施された。([prnewswire.com](https://www.prnewswire.com/news-releases/fed-up-consumers-cut-tips-for-restaurants-grocery-delivery-hotels-taxisride-services-and-others-according-to-popmenus-latest-study-302736449.html))",
+        "記事が「これらは本人の回答であり、tip screenが変化の原因だと証明するものではない」と限定している点は妥当である。Popmenu調査は消費者の自己申告調査で、tip screenが前年より少ない tip の原因であることを因果的には検証していない。([prnewswire.com](https://www.prnewswire.com/news-releases/fed-up-consumers-cut-tips-for-restaurants-grocery-delivery-hotels-taxisride-services-and-others-according-to-popmenus-latest-study-302736449.html))",
+        "Rutgersの2022年記事は、高いデフォルト tip 提案が tip 額を増やす研究を紹介し、顧客満足度や再来店頻度への影響が小さいという別のフィールド実験の結果も紹介している。ただし、その研究対象はレストランではなくアプリ型ランドリーサービスである。([bloustein.rutgers.edu](https://bloustein.rutgers.edu/njspl-guilt-tipping-inflated-default-tip/))"
+      ],
+      "sources": [
+        "Haggag and Paci, “Default Tips,” American Economic Journal: Applied Economics, 2014。([aeaweb.org](https://www.aeaweb.org/articles?id=10.1257%2Fapp.6.3.1&page=568&utm_source=openai))",
+        "Rutgers New Jersey State Policy Lab, “Guilt Tipping and the Inflated Default Tip,” 2022。([bloustein.rutgers.edu](https://bloustein.rutgers.edu/njspl-guilt-tipping-inflated-default-tip/))",
+        "Alexander, Boone, and Lynn, “The Effects of Tip Recommendations on Customer Tipping, Satisfaction, Repatronage, and Spending,” Management Science。([pubsonline.informs.org](https://pubsonline.informs.org/doi/10.1287/mnsc.2019.3541?utm_source=openai))",
+        "Popmenuによる2026年調査の発表資料。([prnewswire.com](https://www.prnewswire.com/news-releases/fed-up-consumers-cut-tips-for-restaurants-grocery-delivery-hotels-taxisride-services-and-others-according-to-popmenus-latest-study-302736449.html))"
+      ],
+      "notes": "記事の中心であるニューヨーク市タクシー研究とPopmenuの数値は概ね確認できる。一方、タクシー研究の結果を「店舗の収入」や一般的なレストラン全体へ広げる表現、乗客の意図を説明する表現、現金チップ瓶とのプライバシー比較には追加の限定または根拠が必要なため、PASSではなくREVIEW_REQUIREDと判定する。"
+    },
+    "attempts": 1
+  }
+}
