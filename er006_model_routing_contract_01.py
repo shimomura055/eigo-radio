@@ -113,6 +113,36 @@ def require_model(process: str, model: str | None) -> str:
     return model
 
 
+# ------------------------------------------------------------
+# ER-009-N1-POINT-RETRY-ROUTING-GOVERNANCE-10: DEV/Trial向けRuntime Guard
+# ------------------------------------------------------------
+# require_model()はProduction call site(er003_v1_n3_01_articles_generate.py
+# 等)がinlineで直接埋め込む、無条件fail-closedの検証。DEV/Trialスクリプトは
+# 実験のため意図的に別modelを使いたい場合があるため、その場合だけ明示的な
+# override_reason(空文字列不可)を渡すことを条件に許可する薄いラッパーを
+# 別関数として用意する。requireModel自体の挙動(Production側)は変更しない。
+def require_model_or_override(process: str, model: str | None, override_reason: str | None = None) -> str:
+    """DEV/Trialスクリプト用。override_reasonを渡さない場合はrequire_model()と
+    完全に同じ(Approved Modelと不一致ならfail-closedでModelContractViolation)。
+    override_reasonへ空でない理由文字列を渡した場合のみ、Approved Model以外の
+    modelでも許可する(ただしmodel自体は必須で、Noneや空文字は許可しない)。
+    「DEV/Trialも正式Routingをデフォルトとし、別modelを使う実験をする場合のみ
+    明示的なoverrideを必要とする」という方針を実装したもの。"""
+    if process not in PROCESS_MODEL_MAP:
+        raise ModelContractViolation(
+            f"未知のprocess '{process}' はModel Routing Contractに定義されていません。")
+    if not model:
+        raise ModelContractViolation(
+            f"process '{process}' へmodelが指定されていません(override時も必須)。")
+    if not override_reason or not override_reason.strip():
+        return require_model(process, model)
+    approved = PROCESS_MODEL_MAP[process]
+    if model != approved:
+        print(f"[ModelRoutingContract][OVERRIDE] process '{process}': Approved Model '{approved}' "
+              f"の代わりに '{model}' を明示override(理由: {override_reason})で使用します。")
+    return model
+
+
 def require_provider(process: str, provider: str | None) -> str:
     """Provider(Perplexity/Gemini TTS/Azure ASR)版のrequire_model。"""
     if process not in PROCESS_PROVIDER_MAP:

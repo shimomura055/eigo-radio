@@ -42,8 +42,10 @@ REASONING_EFFORT = vfl01.REASONING_EFFORT
 # の引数へ直接`routing.require_model(...)`をinlineで埋め込む(モジュール変数へ
 # 事前計算して使い回さない)。これにより、call siteを見ればfail-closed検証を
 # 経由しているかがgrep一発で分かり、新しいcall siteがこれを経由せず追加された
-# 場合はstatic auditで検出できる。MODEL(上、Sol系譜)は他の目的で参照されている
-# 可能性があるため変更しない。
+# 場合はstatic auditで検出できる。上のMODEL変数自体はこのファイル内のAPI call
+# では一切使われていない(死んでいる)。ER-009-N1-POINT-RETRY-ROUTING-
+# GOVERNANCE-10(2026-08-30)時点でvfl01.MODELの参照元をrouting.WRITER_MODEL
+# (Luna)へ張り替え済みのため、現在はLuna系譜になっている(旧: Sol系譜)。
 
 
 def _writer_process(label: str) -> str:

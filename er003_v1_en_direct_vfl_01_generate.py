@@ -34,6 +34,7 @@ from dotenv import load_dotenv
 import er002_ja_web_research_r3 as r3
 import er002_ja_free_markdown_restore_r2 as restore_r2
 import er003_v1_en_direct_ab_01_generate as ab01
+import er006_model_routing_contract_01 as routing
 
 load_dotenv()
 
@@ -42,7 +43,18 @@ TOPIC = "英国の未成年向け夜間SNS設定"
 MASTER_PATH = "er002_v1_2m_masters/hanshin_ja_master.txt"
 OUT_DIR = "er003_output/en_direct_vfl_01/A02"
 
-MODEL = r3.WRITER_MODEL  # "gpt-5.6-sol"(Production writerと同一モデル、比較変数を増やさない)
+# ER-009-N1-POINT-RETRY-ROUTING-GOVERNANCE-10(2026-08-30)で修正: 以前は
+# r3.WRITER_MODEL(ER-002era、"gpt-5.6-sol"のhardcoded literalへ連鎖する
+# 古い参照)をそのまま使っており、「Production writerと同一モデル」という
+# コメント上の意図に反して、ER-006-MODEL-ROUTING-CONTRACT-01(2026-08-22、
+# WriterをLunaへ正式変更)に追従していなかった。このMODELはvfl01からimport
+# する多数のDEV/Trialスクリプト(cefr_direct/spoken_first/iran01/
+# b1_scaffold/en_direct_vfl_02/er009_n1系等)が`model=MODEL`として直接
+# 使うため、参照元をRouting SSOTへ張り替えることで全て一括で追従させる
+# (Production本体のer003_v1_n3_01_articles_generate.pyはこのMODEL変数を
+# API callへ使っておらず、常にrouting.require_model()を直接呼ぶため影響
+# 範囲外)。
+MODEL = routing.WRITER_MODEL  # "gpt-5.6-luna"(旧: r3.WRITER_MODEL = "gpt-5.6-sol")
 REASONING_EFFORT = r3.WRITER_REASONING_EFFORT  # "high"
 
 A_VERSION_WORD_COUNT = ab01.A_VERSION_WORD_COUNT  # 418(前回実験と同一基準)
