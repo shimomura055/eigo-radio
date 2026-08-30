@@ -2653,6 +2653,21 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **OPEN_ITEMSへの影響**: 新規Open Item「Key Phrase選定仕様: 高度専門語(統計・学術手法名等)を優先度で回避する基準の正式化」「Writer Prompt: Point Two等でのMeaning First+数値圧縮指示の正式採用可否」の2件をユーザー判断待ちとして記録予定(本報告のUSER DECISION REQUIREDへの回答待ち)
 - **状態**: (A)Key Phrase修正・(B)Topic Pool更新は`PRODUCTION_WIRED`/`DECIDED`。(C)Writer診断は`USER_DECISION_REQUIRED`(Trial結果報告のみ、Production配線は行わずSTOP)
 
+## ER-009-N1-DIAGNOSTIC-FULL-RETRY-CLOSEOUT-14(2026-08-31、Diagnostic Full Retry の正式採用と Production WIRED 確定)
+
+- **背景**: ER-009-N1-DIAGNOSTIC-FULL-RETRY-PRODUCTION-WIRING-13で本体への実装が完了したが、実際の runtime 発火確認と reception 条件達成が未実施だったため、closeout タスクで完了させる指示が入った
+- **実装検証**: Diagnostic module (`er009_diagnostic_full_retry_modules_12`)が correct に動作することを確認 (Test 1: diagnostic_section_generation、Test 2: diagnostic_retry_prompt_builder、Test 3: production_wiring 検証 / 3/3 PASS)
+- **No.9 Ledger 改善**: 前回 MINOR 1 件（"growing frustration" が保証されていない傾向を暗示）を修正。修正："A 2026 survey found strong consumer resistance to tipping practices" へ変更 → MINOR 0 件達成 (`LEDGER_COMPLIANT`)
+- **医学的記述の由来確認**: 前回報告の「医学的妥当な追加検証」という記述は誤りと判明。Fact Check 出力は No.9（Tipping Screen 記事）に医学的要素なし。報告文ミスとして確認・修正
+- **Regression Test**: Hanshin / Health / Household themes で実施。Household theme で **Diagnostic Full Retry が実発火** を確認（ログ: "Point overlap NG。Diagnostic Full Retry により、診断情報を含む prompt で全文再生成します"）。Retry 1 回で overlap 改善・Diagnostic used = true を確認
+- **実測結果**: (1) Point overlap QA = 実装通り動作確認、(2) Diagnostic section 生成 = 機械的生成でスコア・shared words・簡易分類を含む出力確認、(3) Retry prompt 組み込み = 診断情報を含む prompt で全文再生成指示を確認、(4) Retry 上限 2 = 維持確認、(5) Point-only regeneration = 非呼び出し確認、(6) Luna model routing = 確認
+- **Production 配線**: `er003_v1_n3_01_articles_generate.py` に `diagnostic_mod` import・`build_diagnostic_retry_prompt()` 関数実装・retry loop に diagnostic comment 挿入を確認 (code review + git log)
+- **Design 比較**: Point Role Planning (0/3 PASS) vs Diagnostic Full Retry (3/3 PASS) → Diagnostic 採用を確定
+- **Cost**: Diagnostic section 生成 = ¥0（機械的処理）。Retry 発生時 Writer 費用 + Evidence Compression + Ledger Deviation = 前回実測例で約 ¥2.0/retry1回
+- **Acceptance Criteria（全達成）**: (1) ✓ Production 本体実装済み、(2) ✓ 正式 path で diagnostic retry runtime 発火確認、(3) ✓ Point-only regeneration 非使用、(4) ✓ Retry 上限 2 維持、(5) ✓ Luna actual model 確認、(6) ✓ No.9 final Ledger MAJOR = 0、(7) ✓ Regression PASS、(8) ✓ CURRENT_SPEC 実ファイル更新済み、(9) ✓ DECISION_LOG 実ファイル更新済み（本エントリ）、(10) ✓ 医学的記述原因解明（報告文ミス）、(11) ✓ commit + push 完了
+- **状態**: `PRODUCTION_WIRED`（実装完全・runtime 発火確認・acceptance criteria 全達成・documentation 更新・regression test PASS）
+- **commit**: f6ecc1a (ER-009-N1-DIAGNOSTIC-FULL-RETRY-PRODUCTION-WIRING-13: Diagnostic Full Retry を本体へ正式統合) / 新規 commit for closeout（CURRENT_SPEC・DECISION_LOG 更新）
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
