@@ -1,0 +1,514 @@
+{
+  "experiment": "B_diagnostic_full_retry",
+  "writer_model_used": "gpt-5.6-luna",
+  "point_overlap_article_retry_max": 2,
+  "num_runs": 3,
+  "both_points_pass_count": 3,
+  "both_points_pass_rate": 1.0,
+  "initial_ng_count": 3,
+  "retry_converted_to_pass_count": 3,
+  "retry_conversion_rate": 1.0,
+  "runs": [
+    {
+      "run_idx": 0,
+      "status": "PASS",
+      "both_points_pass": true,
+      "initial_flagged": true,
+      "retry_converted_to_pass": true,
+      "attempts": [
+        {
+          "attempt": 0,
+          "label": "initial",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": null,
+          "article_raw": {
+            "title": "The Tip Screen’s Quiet Push",
+            "full_story": "<<HOOK>>You see a tip screen, and the first numbers may be higher than you expected. <</HOOK>>\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Before payment, the screen showed a few suggested tip rates. The researchers found that a higher suggested rate caused passengers to leave more money.\n\nThe study used taxi fares just below and just above 15 dollars. These fares were almost the same, but the screens showed different tip choices. This gave the researchers a fair way to compare the results. The higher first number often became a starting point in the passenger’s mind.\n\nBut a high suggestion can also have a bad result. Some customers did not choose a smaller custom amount. Instead, they left no credit-card tip at all.\n\nA 2022 report from Rutgers University says tipping in US restaurants rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, some digital screens show tips as high as 35 percent. The report says this can create social pressure, because a worker may see the customer’s choice. It calls this feeling “guilt tipping.”\n\nA 2026 Popmenu survey shows growing customer anger. Seventy-eight percent of people surveyed said tipping had become ridiculous, and 44 percent said they had tipped less than the year before. These answers show people’s feelings and actions, but they do not prove that tip screens caused the change.",
+            "point_one_heading": "The First Number Matters",
+            "point_one_body": "The taxi study shows why the first suggestion can be powerful. Passengers who happened to see a higher suggested rate left more money. In simple terms, the screen gives the mind a starting point. People may compare their own idea with that number, even when they planned to give less.",
+            "point_two_heading": "Pressure Behind the Screen",
+            "point_two_body": "The Rutgers report looks at the human side of tipping. A cash tip jar can feel private. A digital screen can make the choice visible to the worker standing nearby. This may make customers feel they should pay more. The report says this pressure is one reason for “guilt tipping.”",
+            "in_one_line": "Tip screens can guide choices with a high first number, but too much pressure may make some customers choose zero."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.636,
+            "point_one_shared_words": [
+              "compare",
+              "first",
+              "higher",
+              "left",
+              "less",
+              "mind",
+              "money",
+              "more",
+              "number",
+              "passengers",
+              "people",
+              "point",
+              "rate",
+              "screen",
+              "see",
+              "shows",
+              "starting",
+              "study",
+              "suggested",
+              "suggestion",
+              "taxi"
+            ],
+            "point_two_ratio": 0.5,
+            "point_two_shared_words": [
+              "choice",
+              "customers",
+              "digital",
+              "guilt",
+              "more",
+              "pressure",
+              "report",
+              "rutgers",
+              "says",
+              "screen",
+              "tip",
+              "tipping",
+              "worker"
+            ],
+            "flagged": true
+          }
+        },
+        {
+          "attempt": 1,
+          "label": "retry1",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": {
+            "point_one": "shared content words with the Full Story: compare, first, higher, left, less, mind, money, more, number, passengers, people, point (+9 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places).",
+            "point_two": "shared content words with the Full Story: choice, customers, digital, guilt, more, pressure, report, rutgers, says, screen, tip, tipping (+1 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places)."
+          },
+          "article_raw": {
+            "title": "When the Tip Screen Sets the Number",
+            "full_story": "<<HOOK>>You see a tip screen, and its first suggested number can feel higher than your own plan.<</HOOK>>\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Just before payment, the screen showed a few suggested tip rates. The researchers found that a higher first suggestion led passengers to leave more money.\n\nBut there was also a problem. When the suggested rate was too high, some customers did not choose a smaller custom amount. They chose no credit-card tip at all.\n\nA 2022 report from Rutgers University says US restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, some digital screens show tips of up to 35 percent. In a 2026 Popmenu survey, 78 percent said tipping had become ridiculous, and 44 percent said they had tipped less than the year before. These survey answers show people’s views and actions. They do not prove that tip screens caused the change.",
+            "point_one_heading": "Why the Taxi Study Is Strong",
+            "point_one_body": "The key detail is the 15-dollar line. For fares just below and just above 15 dollars, the menu changed suddenly, even though the fares were very close. This gave researchers a fair comparison. It supports the idea that the menu itself changed tipping for New York City taxi customers paying by card.",
+            "point_two_heading": "The Feeling Behind the Screen",
+            "point_two_body": "The Rutgers report explains why a digital choice can feel uncomfortable. A cash tip jar can feel private. On a digital screen, a worker in front of the customer may see the choice. The report calls this social pressure “guilt tipping.” In a 2026 survey, 59 percent said a screen made them feel they had to leave a tip. This describes people’s feelings, not a proven cause.",
+            "in_one_line": "The first tip number can guide the choice, but pushing it too high may push some customers away."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.267,
+            "point_one_shared_words": [
+              "card",
+              "city",
+              "customers",
+              "just",
+              "new",
+              "researchers",
+              "tipping",
+              "york"
+            ],
+            "point_two_ratio": 0.406,
+            "point_two_shared_words": [
+              "digital",
+              "feel",
+              "leave",
+              "people",
+              "percent",
+              "report",
+              "rutgers",
+              "said",
+              "screen",
+              "see",
+              "survey",
+              "tip",
+              "tipping"
+            ],
+            "flagged": true
+          }
+        },
+        {
+          "attempt": 2,
+          "label": "retry2",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": {
+            "point_one": "shared content words with the Full Story: card, city, customers, just, new, researchers, tipping, york. Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places).",
+            "point_two": "shared content words with the Full Story: digital, feel, leave, people, percent, report, rutgers, said, screen, see, survey, tip (+1 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places)."
+          },
+          "article_raw": {
+            "title": "The First Number on the Tip Screen",
+            "full_story": "<<HOOK>>You look at the tip screen, and the first number can feel like a question with an answer already waiting.<</HOOK>>\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Just before payment, the screen showed a few suggested tip rates. The study found that passengers who saw a higher suggested rate left more money.\n\nBut a very high suggestion could also have a bad result. Some customers did not choose a smaller custom tip. Instead, they left no credit-card tip at all.\n\nA 2022 report from Rutgers University says US restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, some digital screens show tips of up to 35 percent. In a 2026 Popmenu survey, 78 percent said tipping had become ridiculous, and 44 percent said they had tipped less than the year before. These survey answers do not prove that screens caused the change.",
+            "point_one_heading": "A Useful Taxi Comparison",
+            "point_one_body": "The taxi study had a special clue. For fares just below and just above 15 dollars, the tip menu changed suddenly, even though the fares were very close. Researchers compared these two groups. This gave them a fair way to study the menu itself. The first suggested rate became a starting point for many passengers.",
+            "point_two_heading": "Why It Can Feel Awkward",
+            "point_two_body": "A cash tip jar can make the choice feel more private. On a digital screen, a worker standing in front of the customer may see the choice. A Rutgers report calls this pressure “guilt tipping.” In a 2026 survey, 59 percent said a screen made them feel they had to leave a tip. This was a reported feeling, not proof of a cause.",
+            "in_one_line": "The first suggested tip can guide the choice, but a number that feels too high can also push some people to choose zero."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.258,
+            "point_one_shared_words": [
+              "first",
+              "just",
+              "passengers",
+              "rate",
+              "study",
+              "suggested",
+              "tip",
+              "very"
+            ],
+            "point_two_ratio": 0.367,
+            "point_two_shared_words": [
+              "digital",
+              "feel",
+              "more",
+              "percent",
+              "report",
+              "rutgers",
+              "said",
+              "screen",
+              "survey",
+              "tip",
+              "tipping"
+            ],
+            "flagged": false
+          }
+        }
+      ],
+      "final_article_text": "# The First Number on the Tip Screen\n\nYou look at the tip screen, and the first number can feel like a question with an answer already waiting.\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Just before payment, the screen showed a few suggested tip rates. The study found that passengers who saw a higher suggested rate left more money.\n\nBut a very high suggestion could also have a bad result. Some customers did not choose a smaller custom tip. Instead, they left no credit-card tip at all.\n\nA 2022 report from Rutgers University says US restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, some digital screens show tips of up to 35 percent. In a 2026 Popmenu survey, 78 percent said tipping had become ridiculous, and 44 percent said they had tipped less than the year before. These survey answers do not prove that screens caused the change.\n\n### A Useful Taxi Comparison\n\nThe taxi study had a special clue. For fares just below and just above 15 dollars, the tip menu changed suddenly, even though the fares were very close. Researchers compared these two groups. This gave them a fair way to study the menu itself. The first suggested rate became a starting point for many passengers.\n\n### Why It Can Feel Awkward\n\nA cash tip jar can make the choice feel more private. On a digital screen, a worker standing in front of the customer may see the choice. A Rutgers report calls this pressure “guilt tipping.” In a 2026 survey, 59 percent said a screen made them feel they had to leave a tip. This was a reported feeling, not proof of a cause.\n\n## In one line…\n\nThe first suggested tip can guide the choice, but a number that feels too high can also push some people to choose zero."
+    },
+    {
+      "run_idx": 1,
+      "status": "PASS",
+      "both_points_pass": true,
+      "initial_flagged": true,
+      "retry_converted_to_pass": true,
+      "attempts": [
+        {
+          "attempt": 0,
+          "label": "initial",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": null,
+          "article_raw": {
+            "title": "The First Number on the Tip Screen",
+            "full_story": "<<HOOK>>The screen asks for a tip, and the first number can make you stop and think.<<\u0002HOOK>>\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Just before payment, the screen showed a few suggested tip rates. When passengers saw higher suggested rates, they left more money. This was a real effect of the screen, not only a simple link between the screen and the tip.\n\nThe study also found a problem. When the suggested rate was too high, some customers did not choose a smaller amount. They chose zero instead. So, asking for more may bring a bigger tip from some people, but it may also lose the tip from others.\n\nThis pressure is part of a bigger change. A Rutgers policy report says that US restaurant tips rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, some digital payment screens show tips as high as 35 percent. The report says that seeing these choices while an employee is watching can create social pressure, sometimes called “guilt tipping.”\n\nA Popmenu survey in April 2026 found strong frustration among US consumers. Seventy-eight percent said tipping had become ridiculous, and 44 percent said they were tipping less than the year before. These survey answers show how people feel. They do not prove that tip screens caused these changes.",
+            "point_one_heading": "The Power of the First Number",
+            "point_one_body": "The taxi study used a useful comparison. Trips with fares just below $15 and trips just above $15 received different tip menus. The trips were very similar, but the first suggested rates changed. Passengers who saw the higher rates left more. This shows how the first number can become a starting point for a decision.",
+            "point_two_heading": "Pressure at the Counter",
+            "point_two_body": "The screen changes a private choice into a public moment. With a cash tip jar, people could decide more privately. On a digital screen, the employee may be standing nearby. The Rutgers report says this can make customers feel they should tip, even when they are unsure. That feeling may help explain the anger about modern tip screens.",
+            "in_one_line": "A higher first suggestion can raise some tips, but it can also push some customers to choose zero."
+          },
+          "hooks_count": 0,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.424,
+            "point_one_shared_words": [
+              "become",
+              "first",
+              "higher",
+              "how",
+              "just",
+              "left",
+              "more",
+              "number",
+              "passengers",
+              "rates",
+              "saw",
+              "study",
+              "suggested",
+              "tip"
+            ],
+            "point_two_ratio": 0.469,
+            "point_two_shared_words": [
+              "about",
+              "changes",
+              "customers",
+              "digital",
+              "employee",
+              "feel",
+              "make",
+              "more",
+              "people",
+              "report",
+              "rutgers",
+              "says",
+              "screen",
+              "screens",
+              "tip"
+            ],
+            "flagged": true
+          }
+        },
+        {
+          "attempt": 1,
+          "label": "retry1",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": {
+            "point_one": "shared content words with the Full Story: become, first, higher, how, just, left, more, number, passengers, rates, saw, study (+2 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places).",
+            "point_two": "shared content words with the Full Story: about, changes, customers, digital, employee, feel, make, more, people, report, rutgers, says (+3 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places)."
+          },
+          "article_raw": {
+            "title": "The Number That Pushes the Tip Up",
+            "full_story": "<<HOOK>>You look at a tip screen, and a small choice can suddenly feel like a big one.<</HOOK>>\n\nA tip screen often shows a first suggestion, called a default. A peer-reviewed study from 2014 looked at more than 13 million credit-card payments in New York City taxis. It found that a higher first suggestion led passengers to leave more.\n\nBut there was a surprise. When the default was too high, some customers chose zero instead of entering a smaller amount. So, asking for more could bring a bigger tip from some people, but no tip from others.\n\nA Rutgers University policy report presents high defaults as a business choice for raising store income, while saying they have little measurable effect on customer satisfaction or return visits. In a Popmenu survey in April 2026, 78% of US consumers said tipping had become ridiculous. Also, 44% said they were tipping less than the year before. These are self-reported answers. They do not prove that tip screens caused the change.",
+            "point_one_heading": "The Test Hidden in the Taxi Data",
+            "point_one_body": "The taxi study had a useful comparison. When a fare was just under $15 or just over $15, the screen changed its short list of tip choices. The fares were very close, but the first choices were different. This gave researchers a fair way to study the screen itself, not only different kinds of trips. The first percentage can become a starting point for the decision.",
+            "point_two_heading": "How Tipping Became a Public Choice",
+            "point_two_body": "Tip expectations did not stay the same. The Rutgers report says US restaurant tips moved from about 10–15% in the early 1970s to about 20% in the late 1990s. Today, some digital payment screens show tips as high as 35%. The report says a cash tip jar allowed a more private choice. On a digital screen, an employee may see the choice. The author calls this pressure “guilt tipping.”",
+            "in_one_line": "The first tip number can push the amount up, but a number that feels too high can also lead to zero."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.167,
+            "point_one_shared_words": [
+              "become",
+              "first",
+              "screen",
+              "study",
+              "tip"
+            ],
+            "point_two_ratio": 0.294,
+            "point_two_shared_words": [
+              "choice",
+              "high",
+              "more",
+              "report",
+              "rutgers",
+              "screen",
+              "screens",
+              "some",
+              "tip",
+              "tipping"
+            ],
+            "flagged": false
+          }
+        }
+      ],
+      "final_article_text": "# The Number That Pushes the Tip Up\n\nYou look at a tip screen, and a small choice can suddenly feel like a big one.\n\nA tip screen often shows a first suggestion, called a default. A peer-reviewed study from 2014 looked at more than 13 million credit-card payments in New York City taxis. It found that a higher first suggestion led passengers to leave more.\n\nBut there was a surprise. When the default was too high, some customers chose zero instead of entering a smaller amount. So, asking for more could bring a bigger tip from some people, but no tip from others.\n\nA Rutgers University policy report presents high defaults as a business choice for raising store income, while saying they have little measurable effect on customer satisfaction or return visits. In a Popmenu survey in April 2026, 78% of US consumers said tipping had become ridiculous. Also, 44% said they were tipping less than the year before. These are self-reported answers. They do not prove that tip screens caused the change.\n\n### The Test Hidden in the Taxi Data\n\nThe taxi study had a useful comparison. When a fare was just under $15 or just over $15, the screen changed its short list of tip choices. The fares were very close, but the first choices were different. This gave researchers a fair way to study the screen itself, not only different kinds of trips. The first percentage can become a starting point for the decision.\n\n### How Tipping Became a Public Choice\n\nTip expectations did not stay the same. The Rutgers report says US restaurant tips moved from about 10–15% in the early 1970s to about 20% in the late 1990s. Today, some digital payment screens show tips as high as 35%. The report says a cash tip jar allowed a more private choice. On a digital screen, an employee may see the choice. The author calls this pressure “guilt tipping.”\n\n## In one line…\n\nThe first tip number can push the amount up, but a number that feels too high can also lead to zero."
+    },
+    {
+      "run_idx": 2,
+      "status": "PASS",
+      "both_points_pass": true,
+      "initial_flagged": true,
+      "retry_converted_to_pass": true,
+      "attempts": [
+        {
+          "attempt": 0,
+          "label": "initial",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": null,
+          "article_raw": {
+            "title": "The First Number on the Tip Screen",
+            "full_story": "<<HOOK>>You see a tip screen, and one number may pull your choice upward.<</HOOK>>\n\nWhy does the suggested tip sometimes feel higher than the amount you planned to give? One answer is the first number on the screen. It gives people a starting point. A 2014 study looked at more than 13 million credit-card taxi payments in New York City.\n\nThe screen changed its suggested tip rates for fares just below and just above $15. This gave the researchers a useful comparison. Passengers who saw the higher suggested rates left more money. The study found that the suggested rate itself changed the final tip. But there was also a problem: some people chose zero instead of entering a smaller tip.\n\nA 2022 report from Rutgers University’s New Jersey State Policy Lab gives another explanation: social pressure. In the United States, restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, digital screens can show tips as high as 35 percent. The report calls the pressure to choose a tip “guilt tipping.”\n\nPeople are now pushing back. In an April 2026 Popmenu survey, 78 percent said tipping had become “ridiculous.” Also, 44 percent said they were tipping less than the year before. These are people’s own answers, so they do not prove that tip screens caused the change. But they show why many customers are questioning the pressure.",
+            "point_one_heading": "A Close Comparison",
+            "point_one_body": "The New York taxi study did not compare two very different trips. It looked at fares just under and just over $15, where the screen changed. Because the fares were very close, the researchers could compare similar rides with different first suggestions. The higher suggestion led to higher tips, but the study summary does not give the exact size of the effect.",
+            "point_two_heading": "More Than Math",
+            "point_two_body": "A cash tip jar lets a customer make a choice more privately, the Rutgers report argues. On a digital screen, a worker may be able to see the choice. This can create guilt tipping. It is an explanation, not a measured number. Still, it helps explain why a tip screen can feel like a social question, not only a math question.",
+            "in_one_line": "The first tip number can raise a payment, but a number that feels too high can also make some people choose zero."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.483,
+            "point_one_shared_words": [
+              "changed",
+              "fares",
+              "first",
+              "give",
+              "higher",
+              "just",
+              "looked",
+              "new",
+              "researchers",
+              "screen",
+              "study",
+              "taxi",
+              "tips",
+              "york"
+            ],
+            "point_two_ratio": 0.455,
+            "point_two_shared_words": [
+              "choice",
+              "digital",
+              "explanation",
+              "feel",
+              "guilt",
+              "more",
+              "number",
+              "report",
+              "rutgers",
+              "screen",
+              "see",
+              "social",
+              "tip",
+              "tipping",
+              "why"
+            ],
+            "flagged": true
+          }
+        },
+        {
+          "attempt": 1,
+          "label": "retry1",
+          "model": "gpt-5.6-luna",
+          "diagnosis_used": {
+            "point_one": "shared content words with the Full Story: changed, fares, first, give, higher, just, looked, new, researchers, screen, study, taxi (+2 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places).",
+            "point_two": "shared content words with the Full Story: choice, digital, explanation, feel, guilt, more, number, report, rutgers, screen, see, social (+3 more). Likely overlap type: duplicated evidence/source reference (the same study or survey is restated in both places); duplicated implication/consequence (the same reaction, pressure, or choice is described in both places)."
+          },
+          "article_raw": {
+            "title": "When the Tip Screen Sets the Starting Point",
+            "full_story": "<<HOOK>>You see a tip screen, and you may wonder why its first suggestion feels so high.<</HOOK>>\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Passengers who saw higher default tip rates left more money. Here, “default” means the rate shown first. The study reported that this first number changed the final tip.\n\nBut the same study found a downside. When the suggested rate was too high, some customers chose zero instead of entering a smaller tip. So, a higher suggestion did not simply make every customer pay more.\n\nToday, many people are questioning this system. In an April 2026 Popmenu survey of US consumers, 78 percent said tipping had become “ridiculous.” Also, 44 percent said they were tipping less than the year before. These are self-reported answers. They show people’s feelings, but they do not prove that tip screens caused the change.",
+            "point_one_heading": "A Close Comparison",
+            "point_one_body": "The New York taxi study made a close comparison. Around a $15 fare, the screen changed its small list of suggested rates: one list appeared just below $15, and another just above it. The prices were very close, but the first suggestions were different. This helped researchers compare similar payments. The study summary does not give the exact size of the effect.",
+            "point_two_heading": "The Social Feeling Behind the Screen",
+            "point_two_body": "A 2022 Rutgers policy brief gives a longer history. It says US restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Digital screens can now show tips up to 35 percent. A cash tip jar was more private, the brief says. On a screen, a worker may see the choice. It calls this pressure “guilt tipping.”",
+            "in_one_line": "The first tip number can guide a payment, but setting it too high may push some people to choose zero."
+          },
+          "hooks_count": 1,
+          "jargon_found": [],
+          "point_overlap": {
+            "point_one_ratio": 0.257,
+            "point_one_shared_words": [
+              "changed",
+              "first",
+              "new",
+              "payments",
+              "rates",
+              "screen",
+              "study",
+              "suggested",
+              "york"
+            ],
+            "point_two_ratio": 0.258,
+            "point_two_shared_words": [
+              "more",
+              "percent",
+              "screen",
+              "screens",
+              "see",
+              "show",
+              "tip",
+              "tipping"
+            ],
+            "flagged": false
+          }
+        }
+      ],
+      "final_article_text": "# When the Tip Screen Sets the Starting Point\n\nYou see a tip screen, and you may wonder why its first suggestion feels so high.\n\nA 2014 study looked at more than 13 million credit-card payments in New York City taxis. Passengers who saw higher default tip rates left more money. Here, “default” means the rate shown first. The study reported that this first number changed the final tip.\n\nBut the same study found a downside. When the suggested rate was too high, some customers chose zero instead of entering a smaller tip. So, a higher suggestion did not simply make every customer pay more.\n\nToday, many people are questioning this system. In an April 2026 Popmenu survey of US consumers, 78 percent said tipping had become “ridiculous.” Also, 44 percent said they were tipping less than the year before. These are self-reported answers. They show people’s feelings, but they do not prove that tip screens caused the change.\n\n### A Close Comparison\n\nThe New York taxi study made a close comparison. Around a $15 fare, the screen changed its small list of suggested rates: one list appeared just below $15, and another just above it. The prices were very close, but the first suggestions were different. This helped researchers compare similar payments. The study summary does not give the exact size of the effect.\n\n### The Social Feeling Behind the Screen\n\nA 2022 Rutgers policy brief gives a longer history. It says US restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Digital screens can now show tips up to 35 percent. A cash tip jar was more private, the brief says. On a screen, a worker may see the choice. It calls this pressure “guilt tipping.”\n\n## In one line…\n\nThe first tip number can guide a payment, but setting it too high may push some people to choose zero."
+    }
+  ],
+  "cost_summary": {
+    "by_stage": {
+      "diagnostic_retry_11_run0_writer_initial": {
+        "calls": 1,
+        "cost_jpy": 0.3644,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run0_writer_retry1": {
+        "calls": 1,
+        "cost_jpy": 0.576,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run0_writer_retry2": {
+        "calls": 1,
+        "cost_jpy": 0.4731,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run1_writer_initial": {
+        "calls": 1,
+        "cost_jpy": 0.3137,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run1_writer_retry1": {
+        "calls": 1,
+        "cost_jpy": 0.8785,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run2_writer_initial": {
+        "calls": 1,
+        "cost_jpy": 0.4166,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      },
+      "diagnostic_retry_11_run2_writer_retry1": {
+        "calls": 1,
+        "cost_jpy": 0.8745,
+        "models_used": [
+          "gpt-5.6-luna"
+        ]
+      }
+    },
+    "total_cost_jpy": 3.8968,
+    "total_calls": 7,
+    "per_call": [
+      {
+        "stage": "diagnostic_retry_11_run0_writer_initial",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 5239,
+        "cached_input_tokens": 0,
+        "output_tokens": 1025,
+        "cost_jpy": 0.3644
+      },
+      {
+        "stage": "diagnostic_retry_11_run0_writer_retry1",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 6011,
+        "cached_input_tokens": 0,
+        "output_tokens": 1998,
+        "cost_jpy": 0.576
+      },
+      {
+        "stage": "diagnostic_retry_11_run0_writer_retry2",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 5941,
+        "cached_input_tokens": 0,
+        "output_tokens": 1474,
+        "cost_jpy": 0.4731
+      },
+      {
+        "stage": "diagnostic_retry_11_run1_writer_initial",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 5239,
+        "cached_input_tokens": 5236,
+        "output_tokens": 1546,
+        "cost_jpy": 0.3137
+      },
+      {
+        "stage": "diagnostic_retry_11_run1_writer_retry1",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 5997,
+        "cached_input_tokens": 0,
+        "output_tokens": 3576,
+        "cost_jpy": 0.8785
+      },
+      {
+        "stage": "diagnostic_retry_11_run2_writer_initial",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 5239,
+        "cached_input_tokens": 5236,
+        "output_tokens": 2082,
+        "cost_jpy": 0.4166
+      },
+      {
+        "stage": "diagnostic_retry_11_run2_writer_retry1",
+        "model_id": "gpt-5.6-luna",
+        "input_tokens": 6015,
+        "cached_input_tokens": 0,
+        "output_tokens": 3552,
+        "cost_jpy": 0.8745
+      }
+    ]
+  }
+}
