@@ -116,15 +116,20 @@ def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
     # "HUMAN_REVIEW_LOCKED"はER-011のHuman Review Lockが後から追加した
     # status値で、record_human_approval()による承認確認の対象に含める
     # (このgateがER-011より先に実装されており、当初は未対応だった)。
-    if status in ("ASR_VALIDATION_UNCERTAIN", "HUMAN_REVIEW_LOCKED"):
+    # "STOPPED"(3回試行してもASR検証に合格しなかった場合の終端状態)も
+    # 同様に承認確認の対象に含める。ER-009-N1-LEDGER-DEVIATION-
+    # RECALIBRATION-02のAudio段階(2026-08-30)で、STOPPEDのみ承認確認
+    # 対象から漏れていたため(record_human_approval()自体はSTOPPEDを
+    # 想定して設計されていたが、この関数側の分岐がASR_VALIDATION_
+    # UNCERTAIN/HUMAN_REVIEW_LOCKEDしか見ていなかった)、ユーザー承認済み
+    # segmentがブロックされ続ける実バグとして発見・修正した。
+    if status in ("ASR_VALIDATION_UNCERTAIN", "HUMAN_REVIEW_LOCKED", "STOPPED"):
         approval = approvals.get(segment_key)
         if approval is not None:
             canon = entry.get("canonical_text") or entry.get("text") or ""
             if approval.get("canonical_text_sha256") == hashlib.sha256(canon.encode("utf-8")).hexdigest():
                 return "HUMAN_APPROVED"
-        return "UNVALIDATED"
-    if status == "STOPPED":
-        return "STOPPED"
+        return "STOPPED" if status == "STOPPED" else "UNVALIDATED"
     return "UNVALIDATED"
 
 
