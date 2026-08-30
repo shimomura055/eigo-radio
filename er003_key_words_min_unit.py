@@ -296,6 +296,16 @@ def _has_japanese_characters(text: str) -> bool:
     return bool(_JAPANESE_CHAR_RE.search(text or ""))
 
 
+# ER-009-N1-CONTENT-QUALITY-RECALIBRATION-03: ja_glossは音声のみで読み
+# 上げられるため、「（研究手法）」のような括弧書きの補足は音声にすると
+# 不自然で、意味の理解も助けない。この判定はER-008-N8-FINAL-QA-
+# HARDENING-21でer003_key_words_research10.py(研究比較用、A2/B1本番
+# 経路からは呼ばれない)にのみ実装されていたため、No.9で本番経路
+# (validate_min_unit_selection、A2/B1双方が共通利用)を素通りした。
+# 本番経路の共有ロジックへ移し、A2/B1双方に確実に適用する。
+_JA_GLOSS_PARENTHETICAL_RE = re.compile(r"[（(].+?[）)]")
+
+
 def validate_display_phrase_form(display_phrase: str) -> dict:
     """display_phraseが最小学習単位のhard requirementを満たすかを判定
     する。reasonsは不合格に直結する項目、warningsは記録のみで不合格に
@@ -430,6 +440,10 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
         if isinstance(ja_gloss, str) and ja_gloss.strip():
             if not _has_japanese_characters(ja_gloss):
                 this_item_reasons.append("日本語グロスに日本語文字が含まれない(英文の可能性)")
+            if _JA_GLOSS_PARENTHETICAL_RE.search(ja_gloss):
+                this_item_reasons.append(
+                    "日本語グロスに括弧書きの補足が含まれている(音声だけで意味が"
+                    "成立する自然な表現にすること)")
 
         if this_item_reasons or this_item_warnings:
             item_reasons.append({"index": i, "reasons": this_item_reasons, "warnings": this_item_warnings})

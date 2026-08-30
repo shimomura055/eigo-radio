@@ -25,13 +25,13 @@
 | 6 | The Strange Pull of Delivery Tracking | 配送状況を何度も確認したくなる不思議 | 日常心理・軽い健康 | `GENERATED` | `PENDING` | `PENDING` |
 | 7 | Assigned Desks Are Back in Some Offices | 一部の職場で「固定席」が戻ってきている | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 8 | The Airport Line That Starts Before It Needs To | まだ並ぶ必要がないのに、空港の搭乗列ができる理由 | 街・空間・移動 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 9 | Smaller Menus, Faster Choices? | メニューを減らすと、客は選びやすくなるのか | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 10 | Loyalty Points: A Small Reward That Changes How We Spend | 小さなポイント還元が、なぜ私たちの支出を変えるのか | 買い物・お金・サービス設計 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 11 | Smaller Homes, Bigger Cities | 大都市で「より小さな家」を選ぶ人が増えている背景 | 街・空間・移動 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 12 | The Notification Question: Why Apps Want Your Attention | アプリはなぜ通知をオンにしてほしいのか | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 13 | Staffed Checkouts Are Making a Comeback | 有人レジが再び増え始めている理由 | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 14 | When Progress Is Invisible, Waiting Feels Longer | 進み具合が見えないと、待ち時間が長く感じる | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 15 | How Reusable Bottles Became Part of Office Culture | マイボトルはどうして職場文化の一部になったのか | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 9 | Why Tip Screens Keep Asking for More | 会計画面がいつも「多め」のチップを提案してくる理由 | 買い物・お金・サービス設計 | `GENERATED` | `PENDING` | `PENDING` |
+| 10 | Smaller Menus, Faster Choices? | メニューを減らすと、客は選びやすくなるのか | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 11 | Loyalty Points: A Small Reward That Changes How We Spend | 小さなポイント還元が、なぜ私たちの支出を変えるのか | 買い物・お金・サービス設計 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 12 | Smaller Homes, Bigger Cities | 大都市で「より小さな家」を選ぶ人が増えている背景 | 街・空間・移動 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 13 | The Notification Question: Why Apps Want Your Attention | アプリはなぜ通知をオンにしてほしいのか | 仕事・会社・デジタル習慣 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 14 | Staffed Checkouts Are Making a Comeback | 有人レジが再び増え始めている理由 | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 15 | When Progress Is Invisible, Waiting Feels Longer | 進み具合が見えないと、待ち時間が長く感じる | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 16 | The Scent of a Hotel Lobby Is Not an Accident | ホテルのロビーの香りは、偶然ではない | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 17 | A Short Walk After Meals Is Getting More Attention | 食後の短い散歩が注目されている理由 | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 18 | A Busy Restaurant Just Feels More Trustworthy—But Why? | 混んでいるレストランの方が信頼できそうに感じるのはなぜか | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |

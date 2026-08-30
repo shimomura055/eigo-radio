@@ -326,6 +326,30 @@ class SchemaValidatorTests(unittest.TestCase):
         result = mu.validate_min_unit_selection(with_metadata(items), GOOD_ARTICLE)
         self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_INVALID")
 
+    def test_parenthetical_ja_gloss_fails(self):
+        # ER-009-N1-CONTENT-QUALITY-RECALIBRATION-03: No.9で「回帰不連続
+        # デザイン(研究手法)」のような括弧書き補足がA2/B1本番経路を
+        # 素通りした問題の回帰防止。
+        items = make_items_10()
+        items[0] = dict(items[0])
+        items[0]["ja_gloss"] = "回帰不連続デザイン(研究手法)"
+        result = mu.validate_min_unit_selection(with_metadata(items), GOOD_ARTICLE)
+        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_INVALID")
+
+    def test_fullwidth_parenthetical_ja_gloss_fails(self):
+        items = make_items_10()
+        items[0] = dict(items[0])
+        items[0]["ja_gloss"] = "回帰不連続デザイン（研究手法）"
+        result = mu.validate_min_unit_selection(with_metadata(items), GOOD_ARTICLE)
+        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_INVALID")
+
+    def test_plain_ja_gloss_without_parenthetical_passes(self):
+        items = make_items_10()
+        items[0] = dict(items[0])
+        items[0]["ja_gloss"] = "似た状況をわずかな違いで比べる分析方法"
+        result = mu.validate_min_unit_selection(with_metadata(items), GOOD_ARTICLE)
+        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS")
+
 
 class RetryAndSaveTests(unittest.TestCase):
     """要求(section 14): job毎にhard requirement理由のみ最大1回再試行。
