@@ -742,32 +742,47 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     print(f"[N3-01][{theme_id}] {label}: deviation overall_status={deviation_result['parsed']['overall_status']} "
           f"deviations={len(deviation_result['parsed']['deviations'])}")
 
-    # ER-010-NO9-PRODUCTION-INTEGRATION-FINAL-09: MAJOR検出時は記事全体を
-    # 再生成せず、局所Rewrite(最大MAX_REWRITE_ATTEMPTS回、Trial-08の設計を
-    # 踏襲)のみを行う。局所check windowもHook-aware判定で統一する。対象は
-    # MAJORのみ、MINORはそのまま記録するだけで対象外。
+    # ER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10: MAJOR検出時は記事全体を再生成
+    # せず、局所Rewriteのみを行う。局所Rewrite後は記事全体をLedger Deviation
+    # Checkerへ再投入し(Hook-aware)、そこで新たなMAJORが見つかった場合も
+    # 「一度直したから終了」とはせず、MAX_REWRITE_CYCLES回まで同じ局所
+    # Rewriteを繰り返す(cycle上限の根拠はer010_ledger_local_rewrite_09.py
+    # のMAX_REWRITE_CYCLES定義を参照)。対象はMAJORのみ、MINORは記録のみで
+    # 対象外。上限まで繰り返してもMAJORが残る場合はNG_REVIEW_REQUIREDとし、
+    # 無限ループや黙示的PASSは行わない。
     local_rewrite_results = []
+    local_rewrite_cycles = []
+    cycle = 0
+    previously_seen_claims = set()
+
+    def _run_check_window(window_text: str) -> dict:
+        r = vfl01.run_deviation_check(client, verified_ledger_text, window_text,
+                                       model=ledger_model, hook_aware=True)
+        return r["parsed"]
+
     major_items = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
-    if major_items:
-        print(f"[N3-01][{theme_id}] {label}: Ledger MAJOR {len(major_items)}件を検出。局所Rewrite開始...")
 
-        def _run_check_window(window_text: str) -> dict:
-            r = vfl01.run_deviation_check(client, verified_ledger_text, window_text,
-                                           model=ledger_model, hook_aware=True)
-            return r["parsed"]
+    while major_items and cycle < local_rewrite.MAX_REWRITE_CYCLES:
+        cycle += 1
+        newly_discovered_claims = [d["claim_in_article"] for d in major_items
+                                    if d["claim_in_article"] not in previously_seen_claims]
+        print(f"[N3-01][{theme_id}] {label}: Local Rewrite cycle {cycle}/"
+              f"{local_rewrite.MAX_REWRITE_CYCLES} - Ledger MAJOR {len(major_items)}件を検出"
+              f"({len(newly_discovered_claims)}件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...")
 
+        cycle_results = []
         sentences = local_rewrite.split_sentences(article_text)
         for idx, deviation in enumerate(major_items, start=1):
             target, location_method = local_rewrite.locate_target_sentence(
                 deviation["claim_in_article"], article_text)
             if target is None:
-                local_rewrite_results.append({
-                    "item_idx": idx, "original_ng_sentence": deviation["claim_in_article"],
+                cycle_results.append({
+                    "cycle": cycle, "item_idx": idx, "original_ng_sentence": deviation["claim_in_article"],
                     "issue": deviation["issue"], "explanation": deviation["explanation"],
                     "attempts": [], "final_text": None, "resolved": False,
                     "human_review_required": True, "location_method": "not_found",
                 })
-                print(f"[N3-01][{theme_id}] {label}: NG item {idx}: 対象文が特定できず"
+                print(f"[N3-01][{theme_id}] {label}: cycle {cycle} NG item {idx}: 対象文が特定できず"
                       f"human_review_required=Trueとして記録します。")
                 continue
             try:
@@ -779,13 +794,14 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
             r = local_rewrite.rewrite_ng_item(client, ledger_model, REASONING_EFFORT,
                                                verified_ledger_text, target, deviation,
                                                before_ctx, after_ctx, _run_check_window)
+            r["cycle"] = cycle
             r["item_idx"] = idx
             r["location_method"] = location_method
-            local_rewrite_results.append(r)
-            print(f"[N3-01][{theme_id}] {label}: NG item {idx}: resolved={r['resolved']} "
+            cycle_results.append(r)
+            print(f"[N3-01][{theme_id}] {label}: cycle {cycle} NG item {idx}: resolved={r['resolved']} "
                   f"human_review={r['human_review_required']} attempts={len(r['attempts'])}")
 
-        article_text = local_rewrite.apply_rewrites(article_text, local_rewrite_results)
+        article_text = local_rewrite.apply_rewrites(article_text, cycle_results)
         with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
             f.write(article_text)
 
@@ -806,12 +822,31 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         with open(f"{out_dir}/length_report.json", "w", encoding="utf-8") as f:
             json.dump(length_report, f, ensure_ascii=False, indent=2)
 
-        print(f"[N3-01][{theme_id}] {label}: 局所Rewrite後、Ledger Deviationを最終再判定(全文、1回)...")
+        print(f"[N3-01][{theme_id}] {label}: cycle {cycle} Local Rewrite後、Ledger全体を再判定...")
         deviation_result = vfl01.run_deviation_check(
             client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
-        print(f"[N3-01][{theme_id}] {label}: 最終deviation overall_status="
-              f"{deviation_result['parsed']['overall_status']} "
-              f"deviations={len(deviation_result['parsed']['deviations'])}")
+        recheck_major = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
+        print(f"[N3-01][{theme_id}] {label}: cycle {cycle} 再判定 overall_status="
+              f"{deviation_result['parsed']['overall_status']} MAJOR={len(recheck_major)}件")
+
+        previously_seen_claims |= {d["claim_in_article"] for d in major_items}
+        local_rewrite_results.extend(cycle_results)
+        local_rewrite_cycles.append({
+            "cycle": cycle,
+            "targeted_major_count": len(major_items),
+            "newly_discovered_claims": newly_discovered_claims,
+            "results": cycle_results,
+            "full_recheck_overall_status": deviation_result["parsed"]["overall_status"],
+            "full_recheck_major_count": len(recheck_major),
+            "full_recheck_remaining_major_claims": [d["claim_in_article"] for d in recheck_major],
+        })
+
+        major_items = recheck_major
+
+    cycle_exhausted = bool(major_items) and cycle >= local_rewrite.MAX_REWRITE_CYCLES
+    if cycle_exhausted:
+        print(f"[N3-01][{theme_id}] {label}: Local Rewrite cycle上限"
+              f"({local_rewrite.MAX_REWRITE_CYCLES}回)に達してもMAJORが残存しています。")
 
     with open(f"{out_dir}/ledger_deviation.json", "w", encoding="utf-8") as f:
         json.dump(deviation_result["parsed"], f, ensure_ascii=False, indent=2)
@@ -819,12 +854,14 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         json.dump({k: v for k, v in deviation_result.items() if k != "parsed"}, f, ensure_ascii=False, indent=2, default=str)
     with open(f"{out_dir}/audit/local_rewrite_results.json", "w", encoding="utf-8") as f:
         json.dump(local_rewrite_results, f, ensure_ascii=False, indent=2, default=str)
+    with open(f"{out_dir}/audit/local_rewrite_cycles.json", "w", encoding="utf-8") as f:
+        json.dump(local_rewrite_cycles, f, ensure_ascii=False, indent=2, default=str)
 
-    remaining_major = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
+    remaining_major = major_items
     any_human_review = any(r.get("human_review_required") for r in local_rewrite_results)
     if remaining_major or any_human_review:
-        print(f"[N3-01][{theme_id}] {label}: 局所Rewrite後もLedger MAJORが残存、または"
-              f"human_review_requiredな項目があります。自動続行せずNG_REVIEW_REQUIREDとして"
+        print(f"[N3-01][{theme_id}] {label}: Local Rewrite cycleを尽くしてもLedger MAJORが残存、"
+              f"またはhuman_review_requiredな項目があります。自動続行せずNG_REVIEW_REQUIREDとして"
               f"報告します(Directional Fact Precheck以降は実行しません)。")
         return {
             "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
@@ -833,6 +870,8 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
             "ledger_status": deviation_result["parsed"]["overall_status"],
             "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
             "local_rewrite_results": local_rewrite_results,
+            "local_rewrite_cycles": local_rewrite_cycles,
+            "local_rewrite_cycle_exhausted": cycle_exhausted,
             "fact_usage_report": fact_usage_report,
             "evidence_compression_applied": evidence_compression_applied,
             "point_overlap_qa_applied": point_overlap_qa_applied,
@@ -861,6 +900,8 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "ledger_status": deviation_result["parsed"]["overall_status"],
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
         "local_rewrite_results": local_rewrite_results,
+        "local_rewrite_cycles": local_rewrite_cycles,
+        "local_rewrite_cycle_exhausted": cycle_exhausted,
         "fact_usage_report": fact_usage_report,
         "evidence_compression_applied": evidence_compression_applied,
         "point_overlap_qa_applied": point_overlap_qa_applied,

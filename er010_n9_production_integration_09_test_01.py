@@ -252,9 +252,9 @@ def _fake_point_overlap_no_flag(*args, **kwargs):
     }}
 
 
-def _major_deviation_result():
+def _major_deviation_result_for(claim):
     return {"parsed": {"overall_status": "LEDGER_DEVIATION", "deviations": [
-        {"claim_in_article": "The tip rate always rises after screens appear.",
+        {"claim_in_article": claim,
          "issue": "certainty強化", "explanation": "一度限りの結果をalwaysへ一般化",
          "severity": "MAJOR", "changed_certainty": True, "changed_fact": False,
          "changed_scope": False, "changed_causality": False, "changed_number": False,
@@ -262,6 +262,10 @@ def _major_deviation_result():
          "changed_time": False, "unsupported_new_claim": False, "treated_as_hook": False,
          "auto_downgraded": False},
     ]}}
+
+
+def _major_deviation_result():
+    return _major_deviation_result_for("The tip rate always rises after screens appear.")
 
 
 def _compliant_deviation_result():
@@ -301,13 +305,64 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
         self.assertTrue(result["local_rewrite_results"][0]["resolved"])
         self.assertIn("In this study, the tip rate rose after screens appeared.", result["article_text"])
         self.assertNotIn("The tip rate always rises after screens appear.", result["article_text"])
+        self.assertEqual(len(result["local_rewrite_cycles"]), 1)
+        self.assertFalse(result["local_rewrite_cycle_exhausted"])
         # Hook-aware判定が使われたことを確認(全deviation呼び出しでhook_aware=Trueが渡されている)
         for call in deviation_mock.call_args_list:
             self.assertTrue(call.kwargs.get("hook_aware"))
 
-    def test_unresolved_major_after_rewrite_returns_ng_review_required_and_skips_directional_precheck(self):
+    def test_new_major_discovered_after_first_cycle_triggers_second_rewrite_cycle(self):
+        """ER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10の中心シナリオ: 初回MAJOR(本文)を
+        解消した後の全体再Checkで、修正対象ではなかった別の文(タイトル相当)が新規に
+        MAJORとして検出された場合、それを黙って残さず、cycle上限内で再度Local
+        Rewriteが発火し、最終的にPASSすることを確認する(実際のA2生成で観測された
+        「本文3件解消後にタイトルのAlwaysが新規MAJOR化した」事象の再現)。"""
         writer_mock = mock.Mock(return_value=_fake_writer_result(ARTICLE_WITH_MAJOR))
-        deviation_mock = mock.Mock(side_effect=[_major_deviation_result(), _major_deviation_result()])
+        deviation_mock = mock.Mock(side_effect=[
+            _major_deviation_result_for("The tip rate always rises after screens appear."),
+            _major_deviation_result_for("Researchers noticed a jump right around a key price point."),
+            _compliant_deviation_result(),
+        ])
+        rewrite_mock = mock.Mock(side_effect=[
+            {"original_ng_sentence": "The tip rate always rises after screens appear.",
+             "issue": "certainty強化", "explanation": "x", "flags": ["changed_certainty"],
+             "attempts": [{"attempt": 1, "text": "In this study, the tip rate rose after screens appeared.",
+                           "ledger_status": "LEDGER_COMPLIANT"}],
+             "final_text": "In this study, the tip rate rose after screens appeared.",
+             "resolved": True, "human_review_required": False},
+            {"original_ng_sentence": "Researchers noticed a jump right around a key price point.",
+             "issue": "certainty強化", "explanation": "y", "flags": ["changed_certainty"],
+             "attempts": [{"attempt": 1, "text": "In this study, researchers noticed a jump near a key price point.",
+                           "ledger_status": "LEDGER_COMPLIANT"}],
+             "final_text": "In this study, researchers noticed a jump near a key price point.",
+             "resolved": True, "human_review_required": False},
+        ])
+        with mock.patch.object(gen.vfl01, "run_writer_with_technical_retry", writer_mock), \
+             mock.patch.object(gen, "run_point_overlap_qa_and_regenerate", side_effect=_fake_point_overlap_no_flag), \
+             mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
+             mock.patch.object(gen.r3, "run_fact_checker_with_gates", return_value=_fake_fact_checker_gates()), \
+             mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.local_rewrite, "rewrite_ng_item", rewrite_mock):
+            result = gen.run_one_pattern(
+                client=object(), theme_id="t1", label="A2",
+                prompt="fake prompt", verified_ledger_text="FACT-01: some ledger fact",
+                topic="tip screens", out_dir=self.out_dir,
+                apply_evidence_compression=False, apply_directional_fact_precheck=False)
+
+        self.assertEqual(result["status"], "OK")
+        self.assertEqual(deviation_mock.call_count, 3)
+        self.assertEqual(len(result["local_rewrite_cycles"]), 2)
+        self.assertEqual(result["local_rewrite_cycles"][0]["targeted_major_count"], 1)
+        self.assertEqual(
+            result["local_rewrite_cycles"][1]["newly_discovered_claims"],
+            ["Researchers noticed a jump right around a key price point."])
+        self.assertIn("In this study, the tip rate rose after screens appeared.", result["article_text"])
+        self.assertIn("In this study, researchers noticed a jump near a key price point.", result["article_text"])
+        self.assertFalse(result["local_rewrite_cycle_exhausted"])
+
+    def test_cycle_limit_exhausted_returns_ng_review_required_and_skips_directional_precheck(self):
+        deviation_mock = mock.Mock(side_effect=[_major_deviation_result() for _ in range(4)])
+        writer_mock = mock.Mock(return_value=_fake_writer_result(ARTICLE_WITH_MAJOR))
         directional_mock = mock.Mock()
         with mock.patch.object(gen.vfl01, "run_writer_with_technical_retry", writer_mock), \
              mock.patch.object(gen, "run_point_overlap_qa_and_regenerate", side_effect=_fake_point_overlap_no_flag), \
@@ -329,6 +384,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
                 apply_evidence_compression=False, apply_directional_fact_precheck=True)
 
         self.assertEqual(result["status"], "NG_REVIEW_REQUIRED")
+        self.assertTrue(result["local_rewrite_cycle_exhausted"])
+        self.assertEqual(len(result["local_rewrite_cycles"]), local_rewrite.MAX_REWRITE_CYCLES)
+        self.assertEqual(deviation_mock.call_count, 1 + local_rewrite.MAX_REWRITE_CYCLES)
         directional_mock.assert_not_called()
         self.assertTrue(result["local_rewrite_results"][0]["human_review_required"])
 
@@ -350,9 +408,19 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
 
         self.assertEqual(result["status"], "OK")
         self.assertEqual(result["local_rewrite_results"], [])
+        self.assertEqual(result["local_rewrite_cycles"], [])
+        self.assertFalse(result["local_rewrite_cycle_exhausted"])
         rewrite_mock.assert_not_called()
         # deviation checkはinitialの1回のみ(局所Rewriteが発火しないので最終再判定は無い)
         self.assertEqual(deviation_mock.call_count, 1)
+
+
+class LocalRewriteCycleLimitBasisTests(unittest.TestCase):
+    def test_cycle_limit_reuses_existing_attempt_limit_basis(self):
+        """cycle上限は新規に発明した値ではなく、既存承認済みのMAX_REWRITE_ATTEMPTS
+        (Trial-08由来、文単位の試行上限)をそのまま適用したものであることを保証する
+        回帰テスト(ER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10)。"""
+        self.assertEqual(local_rewrite.MAX_REWRITE_CYCLES, local_rewrite.MAX_REWRITE_ATTEMPTS)
 
 
 if __name__ == "__main__":

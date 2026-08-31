@@ -27,6 +27,15 @@ import er003_v1_en_direct_vfl_01_generate as vfl01
 
 MAX_REWRITE_ATTEMPTS = 3
 
+# ER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10: 記事全体を再チェックし、新たな
+# MAJORが見つかった場合に再度Local Rewriteを行う「cycle」次元の上限。
+# 新しい上限値を独自に発明するのではなく、既存承認済みの文単位試行上限
+# MAX_REWRITE_ATTEMPTS(Trial-08由来、3回)を、記事全体cycleの次元にも
+# そのまま適用したもの(ユーザーがER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10で
+# 明示的に許可: 「既存上限の適用範囲整理で済むなら、その根拠を明示した
+# うえで進めてよい」)。文単位のRetry上限とは独立した別軸のカウンタ。
+MAX_REWRITE_CYCLES = MAX_REWRITE_ATTEMPTS
+
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z“\"])")
 
 

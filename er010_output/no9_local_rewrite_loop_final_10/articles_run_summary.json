@@ -1,0 +1,140 @@
+{
+  "B1B": {
+    "label": "B1B",
+    "status": "OK",
+    "metrics": {
+      "word_count": 360,
+      "sentence_count": 26,
+      "avg_sentence_length": 14.0,
+      "max_sentence_length": 39
+    },
+    "section_word_counts": {
+      "intro": 193,
+      "point_one": 56,
+      "point_two": 78,
+      "in_one_line": 33
+    },
+    "length_report": {
+      "intro": 193,
+      "point_one": 56,
+      "point_two": 78,
+      "in_one_line": 33,
+      "total": 360,
+      "point_one_within_target": true,
+      "point_one_within_tolerance": true,
+      "point_two_within_target": false,
+      "point_two_within_tolerance": false,
+      "total_within_soft_range": true
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 1,
+    "local_rewrite_results": [],
+    "local_rewrite_cycles": [],
+    "local_rewrite_cycle_exhausted": false,
+    "fact_usage_report": null,
+    "evidence_compression_applied": true,
+    "point_overlap_qa_applied": false,
+    "point_overlap_article_retry_attempts": 0,
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED"
+  },
+  "A2": {
+    "label": "A2",
+    "status": "OK",
+    "metrics": {
+      "word_count": 394,
+      "sentence_count": 29,
+      "avg_sentence_length": 13.8,
+      "max_sentence_length": 37
+    },
+    "section_word_counts": {
+      "intro": 252,
+      "point_one": 61,
+      "point_two": 59,
+      "in_one_line": 22
+    },
+    "length_report": {
+      "intro": 252,
+      "point_one": 61,
+      "point_two": 59,
+      "in_one_line": 22,
+      "total": 394,
+      "point_one_within_target": false,
+      "point_one_within_tolerance": true,
+      "point_two_within_target": true,
+      "point_two_within_tolerance": true,
+      "total_within_soft_range": true
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_results": [
+      {
+        "original_ng_sentence": "The rides were very similar.",
+        "issue": "Ledgerは、15ドルの閾値付近でメニューが変化したことと回帰不連続デザインの利用は保証しているが、乗車・取引が非常に類似していたという事実は確認していない。RDDの識別前提を確認済みの事実として追加している。",
+        "explanation": "研究の識別条件に関する未確認の具体的主張を追加している。",
+        "flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "The analysis compared rides with fares just below and just above the threshold.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "The analysis compared rides with fares just below and just above the threshold.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring"
+      }
+    ],
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 1,
+        "newly_discovered_claims": [
+          "The rides were very similar."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "The rides were very similar.",
+            "issue": "Ledgerは、15ドルの閾値付近でメニューが変化したことと回帰不連続デザインの利用は保証しているが、乗車・取引が非常に類似していたという事実は確認していない。RDDの識別前提を確認済みの事実として追加している。",
+            "explanation": "研究の識別条件に関する未確認の具体的主張を追加している。",
+            "flags": [
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "The analysis compared rides with fares just below and just above the threshold.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "The analysis compared rides with fares just below and just above the threshold.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "exact_substring"
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "fact_usage_report": null,
+    "evidence_compression_applied": true,
+    "point_overlap_qa_applied": false,
+    "point_overlap_article_retry_attempts": 0,
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED"
+  }
+}
