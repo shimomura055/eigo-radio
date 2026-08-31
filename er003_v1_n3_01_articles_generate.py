@@ -113,6 +113,30 @@ COMMON_BLOCK_TEMPLATE = """以下は、私が良いと評価している日本�
 
 阪神や野球固有の表現をコピーするのではなく、今回の題材に合う表現を使ってください。
 
+【Storytelling First(重要、ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06で正式採用)】
+Verified Fact LedgerのFactを登場順にただ読み上げないでください。まず、この記事で聞き手に
+どんな面白さを感じてほしいか・何を持ち帰ってほしいかを先に決めてください。そのうえで、
+Hook(導入)・Meaning(意味)・Evidence(裏付けとなる事実)・Interpretation(解釈)を、
+自然に聞けるひとつづきのspoken passageとして織り交ぜてください。Evidenceは物語を支える
+ために使うものであり、Evidence自体を記事の主役にしないでください。理解に必要な数字だけを
+使い、同じ傾向を示す複数の数字がLedgerにある場合は、それらを自然な言葉でまとめてください
+(下記のSpoken-first原則と矛盾しない範囲で行ってください)。調査結果を項目的に読み上げる
+「レポート調」「survey readout調」にはしないでください。Main Story / Point One /
+Point Two / In One Lineという記事構成、および下記のFact Ledger制約・Fact safetyは
+一切変更しません。
+
+【No Jargon(重要、learner-facing本文全体、ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06で正式採用)】
+Main Story・Point One・Point Two・In One Lineを含む記事本文全体で、聞いただけでは
+理解しにくい高度な専門用語・学術的な手法名(例: "regression discontinuity"のような
+統計・研究手法の名称)を、そのままの用語としては使わないでください。そのような手法名を
+聞かせる代わりに、研究者が実際に何と何を比較したのか、なぜその比較から判断できるのかを、
+平易で自然なspoken Englishで説明してください(例: "regression discontinuity"という
+手法名の代わりに、"the menu changed suddenly around a certain fare level, so
+researchers could compare very similar rides that saw different suggested tips"の
+ように、内容そのものを説明する)。この言い換えを行う際も、Factを変えない・因果を強めない・
+scope/certainty/比較の方向を変えないでください。これはKey Phrase選定基準(専門語回避、
+別仕様・別議論)とは別物で、本文全体の平易さに関する仕様です。
+
 【記事構成(重要)】
 以下の構成で書いてください:
 1. Title(#見出し)
