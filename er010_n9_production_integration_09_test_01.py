@@ -423,5 +423,45 @@ class LocalRewriteCycleLimitBasisTests(unittest.TestCase):
         self.assertEqual(local_rewrite.MAX_REWRITE_CYCLES, local_rewrite.MAX_REWRITE_ATTEMPTS)
 
 
+class FormattingNormalizationTests(unittest.TestCase):
+    """ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11: emoji・unnecessary bold削除"""
+
+    def test_normalize_removes_emoji_from_title(self):
+        """タイトルの絵文字削除"""
+        text = "# 💳 Why Tip Screens Ask for More"
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, "# Why Tip Screens Ask for More")
+
+    def test_normalize_removes_emoji_from_body(self):
+        """本文の絵文字削除（複数スペースも圧縮）"""
+        text = "This is a test. 💳 Here is more text."
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, "This is a test. Here is more text.")
+
+    def test_normalize_removes_unnecessary_bold(self):
+        """unnecessary bold削除"""
+        text = "This is **bold text** in the middle."
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, "This is bold text in the middle.")
+
+    def test_normalize_preserves_heading_structure(self):
+        """見出し構造の保持"""
+        text = "## Main Heading\n### Sub Heading"
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, text)
+
+    def test_normalize_removes_emoji_and_bold_together(self):
+        """emoji・bold両方の削除"""
+        text = "# 💳 Why **Tip** Screens Ask"
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, "# Why Tip Screens Ask")
+
+    def test_normalize_preserves_plain_text(self):
+        """プレーンテキストの保持"""
+        text = "This is a normal sentence without any formatting."
+        result = gen.normalize_article_formatting(text)
+        self.assertEqual(result, text)
+
+
 if __name__ == "__main__":
     unittest.main()

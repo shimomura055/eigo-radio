@@ -163,6 +163,12 @@ scope/certainty/比較の方向を変えないでください。これはKey Phr
    見出しの登場順で伝わるため、ラベルとして書く必要はありません。
 4. In One Line相当の結び(「## In one line…」のような見出しの後に1〜2文の結び)
 
+【Formatting requirements(ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11で正式採用)】
+記事本文・タイトルで以下を使用しないでください:
+- 絵文字(emoji)。タイトル先頭の 💳 などを含む、全ての絵文字を禁止します
+- 装飾目的の不要なMarkdown bold (`**...**`)。必要な正式Markdown構造(##・###・####の見出し)は維持してください
+本記事を含め、eigo-radioの完成記事フォーマットルールは、装飾を避けた平易で聞きやすい英文を基本とします。
+
 【Main Storyの役割(重要)】
 Main Storyでは、何が起きるのか・誰が対象か・どのような仕組みか・現在どういう状態か、という
 中心ストーリーの核心だけを伝えてください。以下は、Point One/Point Twoで扱うべき内容であり、
@@ -425,6 +431,33 @@ POINT_ROLE_SPEC_EN = (
 )
 
 
+def normalize_article_formatting(text: str) -> str:
+    """ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11: emoji・unnecessary bold削除。
+
+    削除対象：
+    - すべての絵文字（タイトル・本文）
+    - 装飾目的のMarkdown bold (**...**)。##/###などの見出し構造は維持。
+    """
+    # emoji削除（Unicode Emoji範囲）
+    import unicodedata
+    result = []
+    for char in text:
+        if unicodedata.category(char).startswith('So'):  # Symbol, Other (emoji)
+            continue
+        result.append(char)
+    text_no_emoji = "".join(result)
+
+    # 複数の連続スペースを1つに圧縮（emoji削除後の余分なスペース対策）
+    text_no_emoji = re.sub(r' +', ' ', text_no_emoji)
+
+    # 不必要なbold削除。ただし、見出しのすぐ後など必要な箇所は慎重に判定する
+    # **...** を削除するが、文脈を見て判定を分ける
+    # （今回はシンプルに全bold削除）
+    text_no_bold = re.sub(r'\*\*(.+?)\*\*', r'\1', text_no_emoji)
+
+    return text_no_bold
+
+
 def build_diagnostic_retry_prompt(original_prompt: str, previous_article_text: str,
                                    point_overlap: dict) -> str:
     """Diagnostic section を含む retry prompt を build する。
@@ -593,6 +626,10 @@ def _generate_and_compress_article(client, theme_id: str, label: str, prompt: st
             evidence_compression_applied = True
         print(f"[N3-01][{theme_id}] {label}: Evidence Compression完了。"
               f"response_id={editor_result.get('response_id')}")
+
+    # ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11: Formatting normalization
+    # (emoji・unnecessary bold削除)
+    article_text = normalize_article_formatting(article_text)
 
     with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
         f.write(article_text)
@@ -802,6 +839,10 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
                   f"human_review={r['human_review_required']} attempts={len(r['attempts'])}")
 
         article_text = local_rewrite.apply_rewrites(article_text, cycle_results)
+
+        # Formatting normalization (emoji・unnecessary bold削除)
+        article_text = normalize_article_formatting(article_text)
+
         with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
             f.write(article_text)
 

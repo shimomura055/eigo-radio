@@ -78,6 +78,8 @@ Rules:
 generic fact statement.
 7. Modify ONLY the flagged sentence or the minimum necessary range — do not change other text.
 8. Do NOT introduce a new fact or a different Ledger fact to change the subject.
+9. Do NOT add emoji (💳 or any other emoji) to the revised text. Do NOT add unnecessary Markdown \
+bold (**...**) formatting. Keep formatting clean and plain.
 
 Return ONLY the revised sentence(s), nothing else — no explanation, no quotation marks around it."""
 
