@@ -1,0 +1,218 @@
+{
+  "changed_number": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis",
+        "issue": "分析対象の件数がLedgerの「1,300万件超」から「3,000万件超」に変更されている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "changed_numberに該当する。Ledgerが保証するのは1,300万件超であり、3,000万件超というより強い数値は保証されていない。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_actor": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis",
+        "issue": "研究主体をHarvard Business Schoolのチームと特定しているが、Ledgerに記載されているのは著者名のみで、その所属や同校のチームであることは保証されていない。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない組織所属を補い、研究主体をHarvard Business Schoolのチームとしているため、changed_actorおよびunsupported_new_claimに該当する。取引件数、対象、因果方向はLedgerの範囲内。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_scope": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money",
+        "issue": "Ledgerが因果効果を確認しているのはニューヨーク市タクシーのクレジットカード取引のみであり、全米のレストランで直接確認されたという証拠はない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "ニューヨーク市タクシーでの結果を全米のレストランへ拡張し、Ledgerにないレストランでの因果効果を「直接確認済み」と断定しているため、対象範囲・因果性・確実性を変更した新規主張である。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_causality": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+        "issue": "The article attributes the historical rise in tipping rates directly to digital tip screens, but the Ledger reports only a descriptive historical trend and explicitly provides no evidence for this causal explanation.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "F-006 supports the percentages and periods but not their cause. Claiming that digital tip screens directly caused the increase introduces an unsupported causal explanation and presents it as certain.",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_certainty": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+        "issue": "Ledgerは、デジタル画面による社会的圧力を著者の議論として記載し、59％がチップを残す義務感を自己申告したとするのみである。記事はこれを、全顧客に生じる疑いのない因果効果へと強めている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": true,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "「cause」は著者のメカニズム説明・自己申告を因果関係に変更し、「proven beyond doubt」は確実性を過度に強めている。また「every customer」は対象を全顧客へ一般化し、実質100％というLedgerの59％と異なる割合を主張しているため、普遍的な因果効果という新規・矛盾する事実も追加している。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_negation": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "Ledgerが報告する効果を否定し、結果の方向を反転させている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は、より高い推奨チップ率を見た乗客が実際により多くチップを残したという因果効果を報告している。記事はこれを「多く残さなかった」「効果はなかった」と否定しており、事実・因果効果・否定・比較方向を反転させている。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_comparison": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+        "issue": "The comparison is reversed. The Ledger says passengers who saw higher suggested tip rates left more money.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004 reports that higher suggested rates led to more tipping; the article instead attributes more tipping to lower suggested rates.",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "changed_time": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+        "issue": "研究の発表年がLedgerの2014年ではなく2019年とされている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": false,
+        "explanation": "changed_timeに該当する。Ledgerでは同研究の掲載日は2014年7月1日であり、2019年という時期は一致しない。高い推奨率がより多いチップにつながったという因果的主張自体はF-004の範囲内。",
+        "auto_downgraded": false
+      }
+    ]
+  },
+  "unsupported_new_claim": {
+    "caught_as_major": true,
+    "expected_flag_true": true,
+    "overall_status": "LEDGER_DEVIATION",
+    "deviations": [
+      {
+        "claim_in_article": "male passengers tipped twice as much as female passengers when shown a higher suggested rate",
+        "issue": "Ledgerには男女別のチップ比較も「男性が女性の2倍」という比率も記載されていない。確認されているのは、高い推奨率を見た乗客全体がより多くチップを残したという結果のみである。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "未確認の男女別対象へ結果を拡張し、Ledgerにない「2倍」という具体的数値を伴う新規事実を追加している。",
+        "auto_downgraded": false
+      }
+    ]
+  }
+}

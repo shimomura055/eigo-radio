@@ -1,0 +1,409 @@
+{
+  "overall_status": "DIRECTION_REVIEW_REQUIRED",
+  "results": [
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "超え",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-002",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "より高い",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "多く",
+          "confidence": "low",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "高い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-004",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "conflicts": [
+        {
+          "axis": "magnitude",
+          "category": "threshold",
+          "reference_bucket": "low",
+          "candidate_bucket": "high",
+          "threshold_only": true
+        }
+      ],
+      "reason": "曖昧な表現同士で方向が逆に見えるが確度が低い: [{'axis': 'magnitude', 'category': 'threshold', 'reference_bucket': 'low', 'candidate_bucket': 'high', 'threshold_only': True}]",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "より低い",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "高い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "fact_id": "F-005",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "上昇",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-006",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低下",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-009",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "高い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-010",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "以前",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-011",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低下",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-012",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "fact_id": "F-013",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "以上",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低下",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低下",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "以上",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "fact_id": "F-015",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "以前",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F-016",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "numeric_value: 15ドル",
+      "script_sentence": "restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent by the late 1990s, and that today's digital screens can suggest tips as high as 35 percent.",
+      "shared_numbers": [
+        "15"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "numeric_value: 約10～15％から約20％",
+      "script_sentence": "restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent by the late 1990s, and that today's digital screens can suggest tips as high as 35 percent.",
+      "shared_numbers": [
+        "10",
+        "15",
+        "20"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "numeric_value: 35％まで",
+      "script_sentence": "restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent by the late 1990s, and that today's digital screens can suggest tips as high as 35 percent.",
+      "shared_numbers": [
+        "35"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "less than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "earlier",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "scope: 2026年米国消費者調査の回答者",
+      "script_sentence": "A survey released in 2026 found that 78 percent of respondents said tipping had become ridiculous, while 44 percent said they were tipping less than a year earlier.",
+      "shared_numbers": [
+        "2026"
+      ]
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "以上",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "numeric_scope: デジタルチップ付き注文の割合、およびフルサービスで20％以上を払った割合",
+      "script_sentence": "restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent by the late 1990s, and that today's digital screens can suggest tips as high as 35 percent.",
+      "shared_numbers": [
+        "20"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "less than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "earlier",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "scope: 2026年米国消費者調査の回答者",
+      "script_sentence": "A survey released in 2026 found that 78 percent of respondents said tipping had become ridiculous, while 44 percent said they were tipping less than a year earlier.",
+      "shared_numbers": [
+        "2026"
+      ]
+    }
+  ]
+}
