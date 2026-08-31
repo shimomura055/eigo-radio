@@ -1,7 +1,7 @@
 # PROJECT_INDEX — eigo-radio プロジェクト知識の入口
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-22(ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01、POOL_TOPIC_MASTER.md参照追加)**
+**最終更新: 2026-08-31(ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle[PROPOSED/VALIDATED/APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED]とDangling Reference Checkを正式導入。2026-08-22、ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01、POOL_TOPIC_MASTER.md参照追加)**
 
 このファイルは、プロジェクトについて何かを知りたいときに「まずどこを見るか」を
 示す入口です。個別レポート・commit・Git履歴を毎回横断監査しなくても、
@@ -28,6 +28,7 @@
 | 過去に何を試して何が採用/却下されたか | [HISTORY_INDEX.md](HISTORY_INDEX.md) |
 | 現在の作業場所・直近のTask・次にやること | [ER-003-B1_HANDOFF.md](ER-003-B1_HANDOFF.md)(役割は「直近の作業再開用」のみ、仕様の一次情報源ではない) |
 | 用語の意味・紛らわしい表記の区別 | 本ファイルの[用語集](#用語集terminology)節 |
+| 品質・Prompt改善提案のLifecycle(PROPOSED/VALIDATED/APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED)、Dangling Reference Check | 本ファイルの[仕様Lifecycle](#仕様lifecycle品質prompt改善提案の状態遷移2026-08-31新設er-010-n1-spec-lifecycle-production-gate-04)節 |
 
 ## この6文書＋HANDOFFの役割
 
@@ -67,6 +68,65 @@
 | `HISTORICAL` | 過去実績として残すが現行仕様ではない |
 
 「たぶん採用」「以前使った」「承認済みらしい」のような曖昧な状態表現は使わない。
+
+## 仕様Lifecycle(品質・Prompt改善提案の状態遷移、2026-08-31新設・ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04)
+
+上記の状態ラベルは仕様全般に共通の汎用ラベルである。これとは別に、
+**Trialを経てProduction Writer Prompt等へ新しい原則・ruleを追加する提案**
+(例: Meaning First、Storytelling First、No Jargon)については、以下の
+4段階Lifecycleを正式に適用する。
+
+| 状態 | 意味 | 変更できる人 |
+|---|---|---|
+| `PROPOSED` | 仕様候補。アイデア・改善案・Trial前。Productionコードへ実装してはならない | 誰でも提案可 |
+| `VALIDATED` | Trial/検証で有効性は確認済みだが、Production採用はまだ決まっていない | Claude Codeが検証結果として記録可(採用決定ではない) |
+| `APPROVED_FOR_PRODUCTION` | ユーザーが正式にProduction採用を決定した状態 | **ユーザーのみ**。Claude Codeが「Trial PASS」「技術的に妥当」等を理由に自己判断でこの状態へ進めてはならない |
+| `PRODUCTION_WIRED` | ユーザー承認済み仕様について、Production正式経路への実装・検証・SSOT更新等が完了した状態。単なる「コード実装済み」とは区別する | Claude Codeが下記12条件を確認の上で記録可 |
+
+**`PRODUCTION_WIRED`と判定するための必須条件(すべて満たすこと。1項目でも未確認なら`PRODUCTION_WIRED`としない)**:
+
+1. ユーザーが正式採用済み(`APPROVED_FOR_PRODUCTION`到達済み)
+2. Production正式初回経路へ実装済み
+3. retry/fallback/regeneration等の後続経路と仕様が整合している
+4. DEV/Trial専用scriptだけに存在する状態ではない
+5. Production正式pathでruntime発火を確認済み
+6. 必要なRegression/Validator/integration testがPASS
+7. actual model_id/routing等、必要なruntime evidenceを確認済み
+8. CURRENT_SPEC更新済み
+9. DECISION_LOG更新済み
+10. OPEN_ITEMSをclose/update済み
+11. 必要なGit commit/push/merge等の反映を確認済み
+12. ユーザー承認内容と実際のProduction behaviorが一致している
+
+`VALIDATED`のままTrial結果が良かったことを理由にClaude Codeが独断で
+`APPROVED_FOR_PRODUCTION`や`PRODUCTION_WIRED`へ進めることは禁止する。
+その場合は`VALIDATED`/`USER_DECISION_REQUIRED`としてSTOPし、
+[OPEN_ITEMS.md](OPEN_ITEMS.md)へユーザー判断待ちとして記録する。
+
+### Dangling Reference Check(Production wiring必須確認)
+
+Production code/Promptへ、新しい仕様名・原則・rule・前提を追加または
+参照する場合(自分のTaskに限らず、既存の定数・文字列の再利用も含む)、
+必ずその参照対象について以下を確認する。
+
+**必須確認**:
+- その仕様はユーザー承認済みか(`APPROVED_FOR_PRODUCTION`以上か)
+- Production正式初回経路に実装されているか
+- CURRENT_SPECに正式仕様として存在するか
+- retry/fallback/validator等の後段だけに孤立して存在していないか
+- DEV/Trial scriptの定義をProductionコードが暗黙参照していないか
+- Production初回経路と後続経路で、同じ仕様名が同じ意味を持っているか
+
+**FAIL例(実際に発生した事故、詳細は[ER-010-WRITER-PRINCIPLES-STATUS-AUDIT-03_REPORT.md](ER-010-WRITER-PRINCIPLES-STATUS-AUDIT-03_REPORT.md)参照)**:
+Diagnostic Full Retryの再生成promptに`Preserve Storytelling First.`
+`Preserve No Jargon.`という指示があったが、(1)初回Production Writerに
+Storytelling First/No Jargonが存在せず、(2)CURRENT_SPECに正式仕様として
+存在せず、(3)ユーザー承認もなかった。この状態は
+**Dangling Reference / Production Wiring FAIL**と判定する
+(追跡: [OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-95)。
+
+FAILと判定した場合、Claude Codeは参照を勝手に削除・実装・採用せず、
+`USER_DECISION_REQUIRED`としてSTOPし、OPEN_ITEMSへ記録する。
 
 ## 成果物の状態は2軸で分離する
 

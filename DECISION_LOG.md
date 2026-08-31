@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-29(ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-08-31(ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -17,6 +17,20 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
 
 ---
+
+## ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04: 仕様Lifecycle・Dangling Reference Checkの正式導入
+
+- **日付**: 2026-08-31
+- **内容**: 品質・Prompt改善提案(Trialを経てProduction Writer Prompt等へ新原則を追加する類の提案)について、`PROPOSED`→`VALIDATED`→`APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`の4段階Lifecycleと、`PRODUCTION_WIRED`と判定するための12必須条件、およびProduction code/Promptが新しい仕様名を参照する際の「Dangling Reference Check」を正式なProduction開発ルールとして導入した。記録先は[PROJECT_INDEX.md](PROJECT_INDEX.md)の「仕様Lifecycle」節(既存の「状態ラベル(全文書共通)」節に隣接)
+- **状態**: `DECIDED`(ユーザーが本ルールの内容・記録先ともに明示的に指示した運用ルール導入)
+- **採用理由**: ER-010-N1-WRITER-PRINCIPLES-STATUS-AUDIT-03で、Storytelling First/No Jargonという2つの原則が、正式なユーザー承認もProduction初回Writerへの実装も無いまま、Diagnostic Full Retryモジュール(`er009_diagnostic_full_retry_modules_12.py`)から`Preserve Storytelling First.`/`Preserve No Jargon.`として参照される「Dangling Reference」状態のままProduction配線されていたことが判明した。この事故の再発を防ぐには、(a)「Trialで良い結果が出た」ことと「Production採用が決定した」ことを明確に区別するLifecycle、(b)後段コードが前段に存在しない仕様を参照していないかを機械的に確認する手順、の両方が必要と判断した
+- **比較した選択肢**: (1)新規governance文書の作成、(2)既存[PROJECT_INDEX.md](PROJECT_INDEX.md)の「状態ラベル(全文書共通)」節の拡張
+- **却下理由(1)**: 新規文書はPROJECT_INDEXが担う「全文書共通ルールの一次参照先」という既存の役割と重複し、SSOT構造を複雑化させるため不採用。(2)を採用: 既にPROJECT_INDEXが状態ラベルの共通定義を持っており、そこへの自然な拡張と判断した
+- **既存記録との関係**: `PRODUCTION_WIRED`という語自体は本ルール導入以前から[CURRENT_SPEC.md](CURRENT_SPEC.md)/[DECISION_LOG.md](DECISION_LOG.md)内で運用上使われていた(例: Diagnostic Full Retry、Point Overlap Writer full retry等)。本ルールはその既存の運用を正式に定義するものであり、導入以前に`PRODUCTION_WIRED`と記録済みの個別項目を本ルールに照らして再監査・再判定することは今回のタスクの範囲外とする(既存記録はそのまま維持)
+- **Storytelling First/No Jargonの扱い**: 本タスクでは両原則の採用可否についてClaude Codeが判断・変更することはしない(`USER_DECISION_REQUIRED`のまま)。再発防止の追跡対象として[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-95へ新規記録した
+- **根拠レポート**: ER-010-WRITER-PRINCIPLES-STATUS-AUDIT-03(前提調査)、ER-010-SPEC-LIFECYCLE-PRODUCTION-GATE-04(本ルール導入)
+- **commit**: (本コミット)
+- **影響するCURRENT_SPEC項目**: なし(プロセスルールの導入のみ。個別のProduction Writer仕様は一切変更していない)
 
 ## ER-003-B1-P7A: Preview TTSモデルをgemini-3.1-flash-tts-previewへ
 
