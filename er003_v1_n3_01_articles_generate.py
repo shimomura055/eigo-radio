@@ -32,6 +32,7 @@ import er008_point_overlap_qa_18 as overlap_qa
 import er008_point_regenerate_19 as point_regen
 import er008_shared_point_blueprint_01 as blueprint_mod
 import er009_diagnostic_full_retry_modules_12 as diagnostic_mod
+import er010_ledger_local_rewrite_09 as local_rewrite
 
 load_dotenv()
 
@@ -136,6 +137,16 @@ researchers could compare very similar rides that saw different suggested tips"�
 ように、内容そのものを説明する)。この言い換えを行う際も、Factを変えない・因果を強めない・
 scope/certainty/比較の方向を変えないでください。これはKey Phrase選定基準(専門語回避、
 別仕様・別議論)とは別物で、本文全体の平易さに関する仕様です。
+
+【Evidence-bounded Interpretation(重要、ER-010-NO9-PRODUCTION-INTEGRATION-FINAL-09で正式採用)】
+本文中で解釈・示唆・締めの一言(Interpretation)を書く場合、その内容はVerified Fact Ledgerが
+確立したscope(対象範囲)・causality(因果の強さ)・certainty(確からしさ)を超えないでください。
+ある特定の集団(例: ある研究における特定の乗客)についての結果を、より広い集団(例: 企業全般・
+消費者全般)へ一般化しないでください。Ledgerが一度限り・特定条件下の結果としてしか示していない
+ことを、"always"/"every time"/「常に」「毎回」のような一般的な断定として書かないでください。
+ある解釈文がLedgerのscopeの範囲内に収まっているか確信が持てない場合は、より小さく安全な
+表現にするか、その一文自体を省いてください。Interpretation自体を禁止するものではなく、
+自然で面白い記事であることは引き続き優先してください。
 
 【記事構成(重要)】
 以下の構成で書いてください:
@@ -724,16 +735,109 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/fact_check_attempts.json", "w", encoding="utf-8") as f:
         json.dump(fc_attempts, f, ensure_ascii=False, indent=2, default=str)
 
-    print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始...")
+    print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始(Hook-aware)...")
+    ledger_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
     deviation_result = vfl01.run_deviation_check(
-        client, verified_ledger_text, article_text,
-        model=routing.require_model(_writer_process(label), routing.WRITER_MODEL))
+        client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
     print(f"[N3-01][{theme_id}] {label}: deviation overall_status={deviation_result['parsed']['overall_status']} "
           f"deviations={len(deviation_result['parsed']['deviations'])}")
+
+    # ER-010-NO9-PRODUCTION-INTEGRATION-FINAL-09: MAJOR検出時は記事全体を
+    # 再生成せず、局所Rewrite(最大MAX_REWRITE_ATTEMPTS回、Trial-08の設計を
+    # 踏襲)のみを行う。局所check windowもHook-aware判定で統一する。対象は
+    # MAJORのみ、MINORはそのまま記録するだけで対象外。
+    local_rewrite_results = []
+    major_items = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
+    if major_items:
+        print(f"[N3-01][{theme_id}] {label}: Ledger MAJOR {len(major_items)}件を検出。局所Rewrite開始...")
+
+        def _run_check_window(window_text: str) -> dict:
+            r = vfl01.run_deviation_check(client, verified_ledger_text, window_text,
+                                           model=ledger_model, hook_aware=True)
+            return r["parsed"]
+
+        sentences = local_rewrite.split_sentences(article_text)
+        for idx, deviation in enumerate(major_items, start=1):
+            target, location_method = local_rewrite.locate_target_sentence(
+                deviation["claim_in_article"], article_text)
+            if target is None:
+                local_rewrite_results.append({
+                    "item_idx": idx, "original_ng_sentence": deviation["claim_in_article"],
+                    "issue": deviation["issue"], "explanation": deviation["explanation"],
+                    "attempts": [], "final_text": None, "resolved": False,
+                    "human_review_required": True, "location_method": "not_found",
+                })
+                print(f"[N3-01][{theme_id}] {label}: NG item {idx}: 対象文が特定できず"
+                      f"human_review_required=Trueとして記録します。")
+                continue
+            try:
+                sidx = sentences.index(target)
+            except ValueError:
+                sidx = -1
+            before_ctx = sentences[sidx - 1] if 0 <= sidx - 1 else ""
+            after_ctx = sentences[sidx + 1] if 0 <= sidx and sidx + 1 < len(sentences) else ""
+            r = local_rewrite.rewrite_ng_item(client, ledger_model, REASONING_EFFORT,
+                                               verified_ledger_text, target, deviation,
+                                               before_ctx, after_ctx, _run_check_window)
+            r["item_idx"] = idx
+            r["location_method"] = location_method
+            local_rewrite_results.append(r)
+            print(f"[N3-01][{theme_id}] {label}: NG item {idx}: resolved={r['resolved']} "
+                  f"human_review={r['human_review_required']} attempts={len(r['attempts'])}")
+
+        article_text = local_rewrite.apply_rewrites(article_text, local_rewrite_results)
+        with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+            f.write(article_text)
+
+        # 局所Rewriteで本文が変わったため、metrics/length_reportを再計算し
+        # 上書きする(Rewrite前のword countがそのまま記録され続けるのを防ぐ)。
+        metrics = compute_metrics(article_text)
+        section_wc = sf1r1.section_word_counts(article_text)
+        length_report = {
+            **section_wc, "total": metrics["word_count"],
+            "point_one_within_target": POINT_TARGET_LOWER <= section_wc["point_one"] <= POINT_TARGET_UPPER,
+            "point_one_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_one"] <= POINT_TOLERANCE_UPPER,
+            "point_two_within_target": POINT_TARGET_LOWER <= section_wc["point_two"] <= POINT_TARGET_UPPER,
+            "point_two_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_two"] <= POINT_TOLERANCE_UPPER,
+            "total_within_soft_range": TOTAL_SOFT_LOWER <= metrics["word_count"] <= TOTAL_SOFT_UPPER,
+        }
+        with open(f"{out_dir}/metrics.json", "w", encoding="utf-8") as f:
+            json.dump(metrics, f, ensure_ascii=False, indent=2)
+        with open(f"{out_dir}/length_report.json", "w", encoding="utf-8") as f:
+            json.dump(length_report, f, ensure_ascii=False, indent=2)
+
+        print(f"[N3-01][{theme_id}] {label}: 局所Rewrite後、Ledger Deviationを最終再判定(全文、1回)...")
+        deviation_result = vfl01.run_deviation_check(
+            client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
+        print(f"[N3-01][{theme_id}] {label}: 最終deviation overall_status="
+              f"{deviation_result['parsed']['overall_status']} "
+              f"deviations={len(deviation_result['parsed']['deviations'])}")
+
     with open(f"{out_dir}/ledger_deviation.json", "w", encoding="utf-8") as f:
         json.dump(deviation_result["parsed"], f, ensure_ascii=False, indent=2)
     with open(f"{out_dir}/audit/deviation_full_record.json", "w", encoding="utf-8") as f:
         json.dump({k: v for k, v in deviation_result.items() if k != "parsed"}, f, ensure_ascii=False, indent=2, default=str)
+    with open(f"{out_dir}/audit/local_rewrite_results.json", "w", encoding="utf-8") as f:
+        json.dump(local_rewrite_results, f, ensure_ascii=False, indent=2, default=str)
+
+    remaining_major = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
+    any_human_review = any(r.get("human_review_required") for r in local_rewrite_results)
+    if remaining_major or any_human_review:
+        print(f"[N3-01][{theme_id}] {label}: 局所Rewrite後もLedger MAJORが残存、または"
+              f"human_review_requiredな項目があります。自動続行せずNG_REVIEW_REQUIREDとして"
+              f"報告します(Directional Fact Precheck以降は実行しません)。")
+        return {
+            "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+            "metrics": compute_metrics(article_text),
+            "fact_status": fc_status, "fact_verdict": verdict,
+            "ledger_status": deviation_result["parsed"]["overall_status"],
+            "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
+            "local_rewrite_results": local_rewrite_results,
+            "fact_usage_report": fact_usage_report,
+            "evidence_compression_applied": evidence_compression_applied,
+            "point_overlap_qa_applied": point_overlap_qa_applied,
+            "point_overlap_article_retry_attempts": retry_attempt,
+        }
 
     directional_precheck_status = None
     if apply_directional_fact_precheck:
@@ -756,6 +860,7 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         "fact_status": fc_status, "fact_verdict": verdict,
         "ledger_status": deviation_result["parsed"]["overall_status"],
         "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
+        "local_rewrite_results": local_rewrite_results,
         "fact_usage_report": fact_usage_report,
         "evidence_compression_applied": evidence_compression_applied,
         "point_overlap_qa_applied": point_overlap_qa_applied,

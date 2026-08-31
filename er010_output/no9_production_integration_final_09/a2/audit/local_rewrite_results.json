@@ -1,0 +1,68 @@
+[
+  {
+    "original_ng_sentence": "The rides were very similar, so the researchers could compare passengers who saw different menus.",
+    "issue": "Ledgerは回帰不連続デザインの利用を確認しているが、乗車内容が「非常に似ていた」という識別前提は確認していない。未確認の方法論的前提を事実として追加している。",
+    "explanation": "閾値前後の取引を比較したという事実を超えて、比較可能性を保証する新たな具体的前提を断定している。",
+    "flags": [
+      "changed_fact",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The researchers used the fare threshold to compare passengers who saw different menus.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "The researchers used the fare threshold to compare passengers who saw different menus.",
+    "resolved": true,
+    "human_review_required": false,
+    "item_idx": 1,
+    "location_method": "exact_substring"
+  },
+  {
+    "original_ng_sentence": "This is now a bigger issue in restaurants.",
+    "issue": "ニューヨーク市タクシーで確認された反応が、現在のレストランでより大きな問題になっていると一般化・比較している。Ledgerにはその比較や拡大傾向を示す事実はない。",
+    "explanation": "「レストランで」「現在」「より大きな問題」という対象・時期・比較を、Ledgerが保証する範囲を超えて追加している。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_comparison",
+      "changed_time",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "This issue also appears in restaurant tipping.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "This issue also appears in restaurant tipping.",
+    "resolved": true,
+    "human_review_required": false,
+    "item_idx": 2,
+    "location_method": "exact_substring"
+  },
+  {
+    "original_ng_sentence": "Today, some digital checkout screens show tips as high as 35 percent.",
+    "issue": "35％まで提示されるという内容自体はF-007にあるが、それが記事時点の「今日」も当てはまると時期を更新している。",
+    "explanation": "Ledgerが保証するのは2022年の政策ブリーフに基づく記述であり、2026年現在も続いているという時点情報は保証されていない。",
+    "flags": [
+      "changed_time"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Some digital checkout screens may show tips as high as 35 percent.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "Some digital checkout screens may show tips as high as 35 percent.",
+    "resolved": true,
+    "human_review_required": false,
+    "item_idx": 3,
+    "location_method": "exact_substring"
+  }
+]

@@ -530,14 +530,92 @@ def _apply_deviation_post_hoc_validation(raw_parsed: dict) -> dict:
     return {"deviations": deviations, "overall_status": overall_status}
 
 
-def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL) -> dict:
-    prompt = DEVIATION_PROMPT_TEMPLATE.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
+# ============================================================
+# Hook-aware判定(ER-010-NO9-PRODUCTION-INTEGRATION-FINAL-09で正式採用)
+# ============================================================
+# 由来: er009_writer_trial_diagnostic_05.py(Trial-05)のHOOK_CLAUSE設計を
+# そのまま踏襲。語りかけ・場面描写として機能し、Ledger内で既に確認済みの
+# 状況を会話的に言い換えているだけで、新しい具体的Factを追加していない
+# 一文に限り、changed_scope/changed_comparisonの2種類だけを緩和対象と
+# する。それ以外の8種類(changed_fact/changed_causality/changed_certainty/
+# changed_number/changed_actor/changed_negation/changed_time/
+# unsupported_new_claim)は、Hookであっても常に通常通り検査する。過去の
+# 危険Hook fixture 3種(不確実な確信度の強化・未検証Factの一般化・
+# 未検証の因果)は、通常判定・Hook-aware判定の両方でMAJORのまま検知される
+# ことをTrial-05実データで確認済み(偽陰性なし)。hook_awareは既定Falseで、
+# Production呼び出し側(er003_v1_n3_01_articles_generate.py)のみ明示的に
+# hook_aware=Trueを渡す(他の全DEV/Trial呼び出し元の挙動は無変更)。
+HOOK_CLAUSE = """【このRuleだけの追加ルール(Hook-aware判定)】
+- 以下をすべて満たす一文は「Hook」として扱い、changed_scope と changed_comparison の
+  2種類に限り、判定を緩和(明確な新規Factが伴わない限り報告しない)してよい。
+  a) rhetorical question・listenerへの語りかけ・場面描写・attention grabberとして
+     機能している
+  b) Ledger内で既に確認されている状況・選択肢を会話的に言い換えているだけである
+  c) 新しい具体的Factを追加していない
+- 上記2種類以外の8種類のフラグ(changed_fact, changed_causality, changed_certainty,
+  changed_number, changed_actor, changed_negation, changed_time,
+  unsupported_new_claim)は、その一文がHookであるかどうかに関わらず、常に通常通り
+  検査すること。Hookだから何を書いてもよいわけではない。
+- 「always」「every time」「never」等、Ledgerが一度限り・特定条件下の結果としてしか
+  確認していない事柄を一般的な断定に変える表現は、Hookであってもchanged_certaintyまたは
+  unsupported_new_claimとして報告すること。
+- 各deviationについて、この一文をHookとして緩和対象にしたかどうかをtreated_as_hookに
+  記録すること。Hookとして扱った上でなお他のフラグに該当しMAJOR/MINORにした場合は、
+  explanationにその理由を明記すること。"""
+
+HOOK_AWARE_DEVIATION_DEVELOPER_MESSAGE = DEVIATION_DEVELOPER_MESSAGE + (
+    " Hookとして機能する一文についてchanged_scope/changed_comparisonのみ判定を緩和して"
+    "よいが、それ以外のフラグは常に通常通り検査する。"
+)
+
+HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE = DEVIATION_PROMPT_TEMPLATE.replace(
+    "【判定ルール】", HOOK_CLAUSE + "\n\n【判定ルール】"
+)
+
+_HOOK_SCHEMA_PROPS = dict(DEVIATION_JSON_SCHEMA["schema"]["properties"]["deviations"]["items"]["properties"])
+_HOOK_SCHEMA_PROPS["treated_as_hook"] = {"type": "boolean"}
+_HOOK_SCHEMA_REQUIRED = list(
+    DEVIATION_JSON_SCHEMA["schema"]["properties"]["deviations"]["items"]["required"]
+) + ["treated_as_hook"]
+
+HOOK_AWARE_DEVIATION_JSON_SCHEMA = {
+    "name": "ledger_deviation_check_hook_aware_v1",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "deviations": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": _HOOK_SCHEMA_PROPS,
+                    "required": _HOOK_SCHEMA_REQUIRED,
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["deviations"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+
+def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL,
+                         hook_aware: bool = False) -> dict:
+    """hook_aware=True(既定False)で、Hook-aware判定(上記HOOK_CLAUSE)を
+    使う。Production(er003_v1_n3_01_articles_generate.py)のみ明示的に
+    hook_aware=Trueを渡す。既存のDEV/Trial呼び出し元は引数を渡していない
+    ため、挙動は従来のまま変わらない。"""
+    developer_message = HOOK_AWARE_DEVIATION_DEVELOPER_MESSAGE if hook_aware else DEVIATION_DEVELOPER_MESSAGE
+    prompt_template = HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE if hook_aware else DEVIATION_PROMPT_TEMPLATE
+    schema = HOOK_AWARE_DEVIATION_JSON_SCHEMA if hook_aware else DEVIATION_JSON_SCHEMA
+    prompt = prompt_template.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
     response = client.responses.create(
         model=model,
         reasoning={"effort": REASONING_EFFORT},
-        text={"format": {"type": "json_schema", **DEVIATION_JSON_SCHEMA}},
+        text={"format": {"type": "json_schema", **schema}},
         input=[
-            {"role": "developer", "content": DEVIATION_DEVELOPER_MESSAGE},
+            {"role": "developer", "content": developer_message},
             {"role": "user", "content": prompt},
         ],
     )
@@ -545,7 +623,7 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
     raw_parsed = json.loads(text)
     parsed = _apply_deviation_post_hoc_validation(raw_parsed)
     return {"prompt": prompt, "raw_text": text, "raw_parsed": raw_parsed, "parsed": parsed,
-            "model": response.model, "response_id": response.id}
+            "model": response.model, "response_id": response.id, "hook_aware": hook_aware}
 
 
 # ============================================================
