@@ -319,6 +319,58 @@ class ProductionMaxAttemptsAndAttemptsLogTests(unittest.TestCase):
         self.assertEqual(result2["status"], "HUMAN_REVIEW_LOCKED")
         self.assertEqual(result2["attempts_log"], real_attempts_log)
 
+    # ------------------------------------------------------------
+    # OPEN-105 (ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-
+    # RETRY-ACCOUNTING-FIX-19): nested guarded_generateの二重会計回帰テスト
+    # ------------------------------------------------------------
+    def test_nested_guarded_calls_do_not_double_count_attempts(self):
+        # generate_key_phrase_component_verified()相当(外側、guarded_
+        # generate)が、generate_narration_snippet_verified_strict()相当
+        # (内側、guarded_generate_with_language_arg)を直接呼ぶ実際の
+        # Production構造を、実デコレータ2枚を重ねて再現する。実TTS試行が
+        # 3回であれば、record_outcome()は1回だけ発火し
+        # cumulative_tts_attempts==3のはず(修正前は6になっていた)。
+        real_attempts_log = [{"attempt": i, "asr_text": "x"} for i in range(1, 4)]
+
+        @review_lock.guarded_generate_with_language_arg
+        def inner_standard(text, language, out_path, *a, **k):
+            return {"status": "STOPPED", "reason": "3回不合格", "attempts_log": real_attempts_log}
+
+        @review_lock.guarded_generate("en")
+        def outer_key_phrase(text, out_path, *a, **k):
+            standard = inner_standard(text, "en", out_path)
+            return {"status": "STOPPED", "reason": "標準経路3回とも不合格",
+                    "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": []}
+
+        result = outer_key_phrase(self.text, self.out_path)
+        self.assertEqual(result["status"], "STOPPED")
+
+        level_out_dir = review_lock._level_out_dir_from_out_path(self.out_path)
+        entry = review_lock._load_store(level_out_dir)["kp_1"]
+        self.assertEqual(entry["cumulative_tts_attempts"], 3,
+                          "実TTS試行3回はcumulative_tts_attempts=3として記録されるべき"
+                          "(ネストしたguardによる二重計上=6は不可)")
+
+    def test_nested_guarded_calls_inner_check_is_skipped_not_reevaluated(self):
+        # ネストした内側呼び出しでcheck_before_generation自体が再評価
+        # されず(=ロック状態に関わらず)fnへ素通しされることを確認する。
+        # 外側で既にproceed判定済みのため、内側で改めてブロックされては
+        # ならない。
+        inner_calls = {"n": 0}
+
+        @review_lock.guarded_generate_with_language_arg
+        def inner_standard(text, language, out_path, *a, **k):
+            inner_calls["n"] += 1
+            return {"status": "OK", "attempts_log": [{"attempt": 1, "asr_text": "x"}]}
+
+        @review_lock.guarded_generate("en")
+        def outer_key_phrase(text, out_path, *a, **k):
+            return inner_standard(text, "en", out_path)
+
+        result = outer_key_phrase(self.text, self.out_path)
+        self.assertEqual(inner_calls["n"], 1)
+        self.assertEqual(result["status"], "OK")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -409,20 +409,55 @@ def is_duplicate_queue_entry(queue_path: str, wav_path: str, canonical_text: str
     return False
 
 
+# ============================================================
+# OPEN-105 fix(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-
+# RETRY-ACCOUNTING-FIX-19): guarded_generate二重会計バグの修正
+# ============================================================
+# 発見(2026-09-01前タスク監査): generate_key_phrase_component_verified()
+# (@review_lock.guarded_generate("en"))が、内部で
+# generate_narration_snippet_verified_strict()
+# (@review_lock.guarded_generate_with_language_arg)を直接呼び出している。
+# 両方とも独立にcheck_before_generation()/record_outcome()を実行する
+# ため、実TTS試行3回の1回の論理的生成操作が、内側のrecord_outcome()で
+# cumulative_tts_attempts=3として記録された直後、外側のrecord_outcome()
+# が同じ3試行分をresult["standard_attempts_log"]経由で再度読み取り、
+# cumulative_tts_attempts=6として上書きしてしまっていた
+# (er011_output/attempt_history.jsonlの同一timestamp2エントリで確認済み)。
+#
+# generate_narration_snippet_verified_strict()は他の呼び出し元
+# (stage_c_generate_new_narrations()等)からも直接・単独で呼ばれるため、
+# そちらのデコレータ自体は残す必要がある。修正は「同一out_pathに対する
+# guarded呼び出しが既に進行中の場合、ネストした内側の呼び出しは
+# check_before_generation/record_outcomeを行わずfnへそのまま委譲する」
+# というreentrancy guardをデコレータ内部に追加する形で行う(呼び出し側の
+# コード・関数シグネチャ・fallback_budget計算等は一切変更しない)。
+_ACTIVE_GUARDED_OUT_PATHS: set[str] = set()
+
+
 def guarded_generate(language: str):
     """(text, out_path, *args, **kwargs) -> dict という共通シグネチャを
     持つ既存のTTS retry-loop関数(Cascade呼び出し元)へ、Review Lockの
     事前チェック・事後記録を追加するデコレータ。関数内部のロジックは
-    一切変更しない(呼び出しの前後をラップするだけ)。"""
+    一切変更しない(呼び出しの前後をラップするだけ)。
+
+    OPEN-105 fix: 同一out_pathに対して既に外側のguarded呼び出しが進行中
+    (ネストした2重guard)の場合、check_before_generation/record_outcomeを
+    スキップしfnへ直接委譲する(1回の論理的な生成操作=1回のrecordを保証)。"""
     def decorator(fn):
         @wraps(fn)
         def wrapper(text, out_path, *args, **kwargs):
+            if out_path in _ACTIVE_GUARDED_OUT_PATHS:
+                return fn(text, out_path, *args, **kwargs)
             check = check_before_generation(out_path, text, language)
             if not check["proceed"]:
                 return _blocked_result(check, out_path)
             run_id = str(uuid.uuid4())
             t0 = time.time()
-            result = fn(text, out_path, *args, **kwargs)
+            _ACTIVE_GUARDED_OUT_PATHS.add(out_path)
+            try:
+                result = fn(text, out_path, *args, **kwargs)
+            finally:
+                _ACTIVE_GUARDED_OUT_PATHS.discard(out_path)
             record_outcome(out_path, text, language, result, run_id=run_id,
                            duration_seconds=round(time.time() - t0, 2))
             return result
@@ -434,15 +469,23 @@ def guarded_generate_with_language_arg(fn):
     """(text, language, out_path, *args, **kwargs) -> dict という
     シグネチャを持つ関数(repro01.generate_narration_snippet_verified_
     strict等、1つの関数がen/ja両方を扱う)向けの変種。languageは実引数
-    から取得する(デコレータ引数として固定しない)。"""
+    から取得する(デコレータ引数として固定しない)。
+
+    OPEN-105 fix: guarded_generate()と同じreentrancy guardを適用する。"""
     @wraps(fn)
     def wrapper(text, language, out_path, *args, **kwargs):
+        if out_path in _ACTIVE_GUARDED_OUT_PATHS:
+            return fn(text, language, out_path, *args, **kwargs)
         check = check_before_generation(out_path, text, language)
         if not check["proceed"]:
             return _blocked_result(check, out_path)
         run_id = str(uuid.uuid4())
         t0 = time.time()
-        result = fn(text, language, out_path, *args, **kwargs)
+        _ACTIVE_GUARDED_OUT_PATHS.add(out_path)
+        try:
+            result = fn(text, language, out_path, *args, **kwargs)
+        finally:
+            _ACTIVE_GUARDED_OUT_PATHS.discard(out_path)
         record_outcome(out_path, text, language, result, run_id=run_id,
                        duration_seconds=round(time.time() - t0, 2))
         return result

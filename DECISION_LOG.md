@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -58,6 +58,135 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 - **Git**: 本Decisionに対応するcommit SHAは、本タスクの完了報告を参照。
 - **根拠**: 本セッションの実行ログ・diff実測(`diag_open104.py`/`diag_open104_b.py`スクラッチスクリプト)、`er010_output/no9_a2_keyphrase_audio_issues_103_104_17/`配下の実行ログ、`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/review_lock_state.json`。
+
+---
+
+## ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19: Key Phrase Minimal Instruction Trial(OPEN-103)・review lockネスト二重会計バグ修正(OPEN-105)
+
+### OPEN-103: Key Phrase英語音声 Minimal Instruction Trial
+
+- **日付**: 2026-09-01
+- **背景**: 前タスク(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18)の
+  監査で、Key Phrase英語標準経路が記事本文Full Story向けの約250語
+  instruction(`ENGLISH_STYLE_PREFIX = er002_common.build_style_prefix()`、
+  `COMMON_BASE_INSTRUCTION+LEVEL2_INSTRUCTION`)を1語〜短いphraseの
+  読み上げにそのまま使っていることが、No.9 kp2_en("default"、3回とも
+  duration anomalyでSTOPPED)の可能性の高いtriggerと判定された。今回、
+  ユーザー指示により、Key Phrase専用のMinimal instructionへ切り替えた
+  場合の実データ比較Trialを実施した(Production review lock・retry cap
+  は一切変更しない、隔離Trial)。
+- **Trial instructionの設計根拠**: 既存DECIDED仕様「Key Phrase発音品質
+  (3条件)」(本ファイル2026-08-12エントリ、CURRENT_SPEC.md該当行)の
+  (1)Meaning/contextual prosody (2)Phoneme integrity(語末音素保持)
+  (3)Phrase grouping(単語ごとに分断しない)を踏まえ、既にTrial実績のある
+  文言(`er003_v1_a2_audio_02_generate.TRIAL_CLARITY_INSTRUCTION_PREFIX`、
+  ER-003-CROSSLEVEL-AUDIO-01/04)と、既にProduction fallbackとして
+  承認済みの`repro01.MINIMAL_INSTRUCTION_PREFIX`の文言をそのまま踏襲し、
+  条件(3)相当の一文のみ新規に文章化して追加した(`er010_no9_keyphrase_
+  minimal_instruction_trial_19.py::MINIMAL_INSTRUCTION_TRIAL_PREFIX_V2`)。
+  条件(1)(記事文脈依存の意味prosody)は、単語単体のTrialでは記事文脈を
+  持たないため汎用instructionとして対応しておらず、既知の制約として
+  明記する。
+- **Trial結果(実TTS 2件、実ASR 2件、cascade validatorによる二次確認込み)**:
+  - `opt out`(A02実Production Key Phrase、過去にCurrent instruction標準
+    経路で完全に無関係な内容[65字/104字のhallucination]を生成した実
+    fixture): Minimal Trial版は1.091秒(anomaly閾値7.0秒の範囲内)、ASR
+    "Opt-out"、`er006_secondary_asr_01.evaluate_attempt_with_cascade`
+    (force_secondary=True、Production同一ロジック)で`verified=True`・
+    `classification=NORMALIZED_MATCH`を確認。**VALIDATED相当**(既存の
+    単純Minimal fallbackが達成していた成功と同等の内容正確性を、語末
+    音素・phrase grouping対策を追加した上でも維持)。
+  - `default`(No.9 kp2_en、今回最重要): Minimal Trial版は0.871秒
+    (anomaly閾値5.5秒の範囲内、duration anomaly自体は再発しなかった)。
+    ただしASRが"Dieselt"と書き起こし、Production同一のcascade
+    validatorで`verified=False`・`classification=TTS_FAILURE`
+    (content_word_diff: canonical="default"→asr="dieselt")と判定
+    された。**単発試行でREJECTED相当**(duration anomalyという当初の
+    失敗モードは解消したが、別の失敗モード[誤発音/hallucination型の
+    置換]が新たに観測された)。
+- **サンプル数の制約**: 各語1回のみの実行(タスク仕様のコスト抑制方針、
+  「大量Trialは不要」に従った)。特に`default`は1回の失敗のみを根拠に
+  しており、複数回実行すれば異なる結果になる可能性を否定できない
+  (STOP条件F「新しいquality issue発見」に該当するため、追加試行は
+  ユーザー判断を待たず自らは実施しなかった)。
+- **判定**: `USER_DECISION_REQUIRED`(`opt out`はVALIDATED相当だが、
+  `default`が単発試行でcontent-accuracy失敗を示したため、Minimal
+  instructionへのProduction全面切替を推奨できる状態ではない。
+  duration-anomaly型の問題は改善する可能性がある一方、別の発音精度
+  リスクを負う可能性があるというトレードオフを、ユーザー判断へ委ねる)。
+- **今回実施しなかったこと**: Production instruction(`ENGLISH_STYLE_
+  PREFIX`/`MINIMAL_INSTRUCTION_PREFIX`)の変更、fallback budget配分の
+  変更、retry cap・provider・voiceの変更、kp2_enのreview lock解除
+  (`approve_regenerate()`)、`default`への追加Trial試行。
+- **状態**: `USER_DECISION_REQUIRED`(OPEN-103は継続、Trial実施のみで
+  Production未反映)
+- **根拠**: `er010_no9_keyphrase_minimal_instruction_trial_19.py`、
+  `er010_output/no9_keyphrase_minimal_instruction_trial_19/trial_results.json`、
+  実音声`.../audio/kp_default_no9_a2.wav`・`.../audio/kp_opt_out_a02_repro.wav`
+
+### OPEN-105: guarded_generateネスト二重会計バグ(review lock)の修正
+
+- **日付**: 2026-09-01
+- **Root Cause確定**: `er003_v1_repro01_main_generate.py::generate_key_
+  phrase_component_verified()`(`@review_lock.guarded_generate("en")`)が、
+  内部で標準経路として`generate_narration_snippet_verified_strict()`
+  (`@review_lock.guarded_generate_with_language_arg`、他の呼び出し元
+  [`stage_c_generate_new_narrations()`等]からも単独で直接呼ばれるため、
+  このデコレータ自体は必要)を直接呼び出すネスト構造になっていた。
+  実TTS試行3回(すべてSTOPPED)の1回の論理的生成操作に対し、(1)内側の
+  `record_outcome()`がcumulative_tts_attempts=3として正しく記録した
+  直後、(2)外側の`record_outcome()`が`result.get("attempts_log") or
+  result.get("standard_attempts_log")`というfallback連鎖経由で同じ3
+  試行分を再度読み取り、cumulative_tts_attempts=6として上書きして
+  いた。`er011_output/attempt_history.jsonl`の同一timestamp(kp2_en/a2、
+  2026-09-01T11:21:05)の2エントリ(run_id違い、cumulative=3→6)で実
+  データ確認済み(前タスクの監査結果を引き継ぎ、今回Root Causeの機構を
+  最終確定した)。
+- **retry/fallback制御への実害の有無**: `fallback_budget = max(0,
+  max_attempts - len(standard.get("attempts_log") or []))`は、標準経路
+  呼び出しが直接返した生の結果dictの`attempts_log`をそのまま参照して
+  おり、review lock storeの`cumulative_tts_attempts`(二重会計される値)
+  は一切参照していない。よって単一呼び出し内のfallback予算配分は
+  この二重会計バグの影響を受けていない(タスク仕様§14のCase Cに相当:
+  standard 3回でmax_attempts=3を使い切る設計自体がfallback未到達の
+  原因であり、二重会計とは別問題)。一方、永続化される
+  `cumulative_tts_attempts`/`cumulative_asr_calls`は、複数run跨ぎの
+  `BUDGET_GUARD_TRIGGERED`(上限15回/60回)判定に使われるため、二重
+  会計が続いていた場合、本来より約2倍速くこの累積guardへ到達する
+  リスクがあった(kp2_enでは上限未到達のため今回実害なし)。
+- **Fix判定**: `record_outcome()`のdocstring・設計意図(「generate関数の
+  実行完了後に必ず呼ぶ」=1回の論理操作につき1回)から、「1 TTS call =
+  1 attempt」がSSOT意図として明確であり、純粋な実装バグとして修正した。
+- **修正内容**: `guarded_generate`/`guarded_generate_with_language_arg`
+  両デコレータへ、モジュール共有のreentrancy guard(`_ACTIVE_GUARDED_
+  OUT_PATHS`という module-level set)を追加した。同一out_pathに対する
+  外側のguarded呼び出しが進行中の場合、内側の呼び出しは
+  check_before_generation/record_outcomeを一切行わずfnへ直接委譲する。
+  呼び出し側(`generate_key_phrase_component_verified`本体・fallback
+  budget計算・他の呼び出し元)のコードは一切変更していない。他の
+  guarded_generate利用箇所4件(charon英語/日本語、point_headings、
+  news_tail_fix)は`generate_narration_snippet_verified_strict`を内部
+  呼び出ししておらず、同種のネスト構造を持たないことをgrepで確認済み
+  (影響範囲はgenerate_key_phrase_component_verified 1箇所のみ)。
+- **Regression**: 新規2件(`test_nested_guarded_calls_do_not_double_
+  count_attempts`・`test_nested_guarded_calls_inner_check_is_skipped_
+  not_reevaluated`、実デコレータ2枚を重ねて実際のネスト構造を再現)を
+  `er011_human_review_lock_01_test_01.py`へ追加、既存13件と合わせて
+  15件全PASS。関連する`er008_crosslevel_audio_02_tts_cap_25_test_01.py`
+  (1件)・`er010_n9_production_integration_09_test_01.py`(28件)も
+  PASSのまま(いずれもgenerate_narration_snippet_verified_strict/
+  review_lockをimportする既存test)。
+- **Runtime evidence**: `er003_v1_repro01_main_generate.generate_key_
+  phrase_component_verified()`本体を実際に呼び出し(TTS呼び出し自体を
+  強制失敗させ実API課金ゼロ)、修正後はcumulative_tts_attempts=3(修正
+  前の実データでは6)であることを一時ディレクトリ上のReview Lock
+  storeで確認した。
+- **状態**: `CLOSED`(純粋な実装バグ修正・regression・runtime evidence
+  すべて完了)
+- **根拠**: `er011_human_review_lock_01.py`(修正箇所)、
+  `er011_human_review_lock_01_test_01.py`(新規テスト2件)、
+  `er011_output/attempt_history.jsonl`(Root Cause実データ)
+- **影響するCURRENT_SPEC項目**: Human Review Cost Guard(Review Lock機構)
 
 ---
 
