@@ -943,7 +943,31 @@
         ],
         "reused": false,
         "master_audio_id": "bf30c22a8369833b7be4ad78",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "default.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "one_off_fixed_asset_override": {
+          "management_id": "ER-010-NO9-A2-ATTEMPT4-ONEOFF-FINAL-AUDIO-25",
+          "applied_at": "2026-09-01T21:05:36",
+          "override_type": "MACHINE_FAIL_HUMAN_APPROVED_ONEOFF",
+          "note": "元のstatus(HUMAN_REVIEW_LOCKED)・locked_entry・attempts_logはTrial 19/Mini-Trial 20-R2/本番3回のいずれも失敗だった正確な履歴としてそのまま保持する。本フィールドのみ追記。採用音声はTrial 21(ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21)のENGLISH_LOCK attempt=2(通しAttempt 4)。Trial 21内でもmachine validator上はTTS_FAILURE(ASR=\"デフォルト\"、日本語カタカナ表記)だったが、ユーザーが実際に試聴の上でNo.9 A2 kp2(\"default\")限定のone-off固定assetとして正式採用した。",
+          "source_trial_management_id": "ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21",
+          "source_audio_path": "er010_output/no9_keyphrase_english_lock_fallback_trial_21/audio/default_englishlock_attempt2.wav",
+          "source_sha256": "5cfeaaa4133ea9c7996b547c3a1558012838259b565d8d1ec9310c3aeaea05f0",
+          "adopted_kp2_en_sha256": "5cfeaaa4133ea9c7996b547c3a1558012838259b565d8d1ec9310c3aeaea05f0",
+          "trial21_machine_classification": "TTS_FAILURE",
+          "trial21_asr_text": "デフォルト",
+          "reverification_asr_text_before_adoption": "デフォルト",
+          "model": "gemini-2.5-pro-preview-tts",
+          "voice": "Aoede",
+          "duration_seconds": 1.151
+        }
       },
       "japanese_meaning": {
         "status": "OK",
