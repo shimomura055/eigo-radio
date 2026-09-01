@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2、No.9 A2正式Key Phrase5件[guilt tipping/default/push back/a catch/starting point]でMinimal instruction Mini-Trial[各語1回→NGのみ最大2回retry、最大3attempt]を実施。5件中4件[guilt tipping/push back/a catch/starting point]はAttempt 1でPASS[duration anomaly無し、Validator NORMALIZED_MATCH/EXACT_MATCH]。`default`は3attemptとも誤発音(FAIL)で再現性を確認: 前回Trialの英語内誤認識["Dieselt"]とは異なり、今回は3回とも発話言語自体が英語からずれた[デフォルト/デフォルト/默认]。duration anomaly自体は0件で解消したが、content accuracy失敗が形を変えて残存。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-01(ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21、Key Phrase「default」1語を対象に、量産候補retry仕様[Minimal instruction最大2attempt→NGならEnglish language lock付きMinimal最大2attempt、合計最大4attempt]を隔離Trial。4attemptすべて不合格(Minimal 2回=日本語カタカナ「デフォルト」、English Lock 1回目="defaut"[英字だが誤スペル]、English Lock 2回目=日本語カタカナへ逆戻り)。duration anomalyは4回とも無し(改善は維持)だが、content accuracy失敗(非英語発話)はEnglish lockを追加しても解消せず、Trial判定は`REJECTED`。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2、No.9 A2正式Key Phrase5件[guilt tipping/default/push back/a catch/starting point]でMinimal instruction Mini-Trial[各語1回→NGのみ最大2回retry、最大3attempt]を実施。5件中4件[guilt tipping/push back/a catch/starting point]はAttempt 1でPASS[duration anomaly無し、Validator NORMALIZED_MATCH/EXACT_MATCH]。`default`は3attemptとも誤発音(FAIL)で再現性を確認: 前回Trialの英語内誤認識["Dieselt"]とは異なり、今回は3回とも発話言語自体が英語からずれた[デフォルト/デフォルト/默认]。duration anomaly自体は0件で解消したが、content accuracy失敗が形を変えて残存。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -15,6 +15,33 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21: Key Phrase「default」のEnglish language lock fallback Trial(Minimal最大2→English Lock最大2)
+
+- **日付**: 2026-09-01
+- **区分**: Trial診断(Production instruction・review lock・retry budget・provider・voice・thresholdはいずれも無変更)
+- **背景**: 直前の[ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2](#er-010-no9-keyphrase-minimal-instruction-mini-trial-20-r2-no9-a2正式key-phrase5件のminimal-instruction-mini-trialbounded-retry)で、"default"はMinimal instructionでも3attemptとも誤発音(1〜2回目=日本語カタカナ「デフォルト」、3回目=中国語「默认」)で再現性を確認していた。duration anomaly自体はMinimal instructionで解消済みだったため、今回は量産candidate retry仕様として「Minimal instruction最大2attempt→NGならEnglish language lock付きMinimal最大2attempt(合計最大4attempt)」を`default`1語のみに対して隔離Trialし、Minimalの簡潔さは維持したままEnglish language lockが英語発音への回帰に有効かを検証した。
+- **実装**: `er010_no9_keyphrase_english_lock_fallback_trial_21.py`(新規)。Mini-Trial 20-R2と同じ非guarded関数(`p9a._make_english_call_fn()`、`p3u.trim_english_keyword_silence()`、`safety.detect_duration_anomaly()`、`secondary_asr.evaluate_attempt_with_cascade()`、`dq18.apply_disfluency_gate()`)をそのまま再利用し、review_lockの`guarded_generate`系デコレータ付き関数は一切呼ばないことでProduction review lock/retry countへの影響を遮断した。Minimal instruction本文は[Mini-Trial 20-R2](#er-010-no9-keyphrase-minimal-instruction-mini-trial-20-r2-no9-a2正式key-phrase5件のminimal-instruction-mini-trialbounded-retry)の`MINIMAL_INSTRUCTION_TRIAL_PREFIX_V2`を一字一句変更せず踏襲した。
+  - **Minimal instruction全文**: "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other commentary, and do not add, omit, or change any words. Say it as one natural phrase, not as separate words read one at a time. Make sure the very last sound of the phrase is actually spoken, not trailed off into silence, and do not over-emphasize or exaggerate any single sound."
+  - **English language lock追加文言(Minimal instruction全文の末尾に1文のみ追加)**: "Pronounce the phrase specifically as an English word or phrase, using English pronunciation throughout — not as a Japanese, Chinese, or other non-English reading of it."
+  - `p4c.build_tts_prompt()`のStructured Separation構造(STYLE INSTRUCTIONS節/TEXT TO SPEAK節)に従い、English lockもstyle_prefix側(読み上げ対象外の指示節)へ追加した。既存のfinal consonant保持・自然さ・1回のみ・commentary禁止・phrase一体感の各文言はEnglish Lock段でも一切削除・変更していない(AND、ORではなく追加)。
+- **Trial結果**: 4attemptすべて実行(Minimal 2回→2回ともNGのためEnglish Lock 2回へ移行、PASSは1件も無かったため4回目まで到達)。
+  | Attempt | 種別 | Duration | anomaly | ASR | Validator |
+  |---|---|---|---|---|---|
+  | 1 | Minimal | 1.091s | 無し | "デフォルト"(日本語カタカナ) | TTS_FAILURE |
+  | 2 | Minimal | 1.131s | 無し | "デフォルト"(日本語カタカナ) | TTS_FAILURE |
+  | 3 | English Lock | 1.071s | 無し | "defaut"(英字だが誤スペル) | TTS_FAILURE |
+  | 4 | English Lock | 1.151s | 無し | "デフォルト"(日本語カタカナ) | TTS_FAILURE |
+  - English Lock Attempt 1で初めてASRが英字表記("defaut")になったが、正しい綴り("default")ではなく、`length_ok`はTrueでも全体類似度に基づく`TTS_FAILURE`判定は変わらなかった。
+  - English Lock Attempt 2は日本語カタカナへ逆戻りしており、English lockを追加しても同じ非英語発話モードが再発した。
+  - 4attemptとも`duration_anomaly.is_anomaly=false`(1.0〜1.2秒、正常範囲内)。duration anomaly側の改善効果はMinimal instruction単体と同様に維持されている。
+- **仮説への結論**: English language lockのfallback追加は、`default`のcontent-accuracy失敗(非英語発話)を解消しなかった。4attempt中4attemptすべて不合格であり、STOP条件(English Lock 2attemptとも失敗)に該当したためここでTrialを終了した。
+- **STOP条件との照合**: 「English Lock 2attemptとも失敗」に該当 → Trial判定は`REJECTED`。新しい発音問題(pronunciation safeguard破壊)・hallucination/extra speechの新規発生は確認されず、既存safeguardの破壊は無かった。追加Trialは自ら実施せず、ここでSTOPした。
+- **Production影響**: 無し。Key Phrase instruction・retry構成・fallback budget・A2 Production Audio・review lock・Provider・voice・Validator閾値・B1・episode assemblyのいずれも変更していない。
+- **User Listening Artifact**: https://claude.ai/code/artifact/c7617694-6220-4258-808b-e22aee15f75a (4attemptすべての音声・source text・ASR・Validator結果を掲載)
+- **影響するOPEN_ITEMS**: OPEN-103(`USER_DECISION_REQUIRED`のまま維持。今回のTrialで「Minimal最大2→English Lock最大2」候補は`REJECTED`と判定されたため、対応方針の選択肢から除外)
 
 ---
 
