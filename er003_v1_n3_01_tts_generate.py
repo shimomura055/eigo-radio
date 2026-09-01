@@ -503,8 +503,19 @@ _EN_NUMBER_WORDS = {
     "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
     "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
 }
+# ER-010-NO9-TTS-NUMBER-WORDS-BUGFIX-AND-AUDIO-RETRY-16: `\b`は
+# ハイフン「-」を単語境界とみなすため、修正前は"Forty-four"のような
+# ハイフン複合数(20〜99台)の後半("four")だけを独立した数字語として
+# 誤マッチし、"Forty-4"のように前半と後半で表記が割れて壊れたtextを
+# 生成していた(No.9 A2/B1 point_twoのASR Validation偽陰性の真因、
+# DECISION_LOG.md参照)。直前の文字がハイフンの場合はマッチさせない
+# 否定後読み`(?<!-)`を追加し、ハイフン複合数は前半・後半とも変換せず
+# 綴りのまま残す(この関数の対象はあくまで独立した小さな数であり、
+# 複合数の同値判定はProduction ASR Validator側のnormalize_numeric()/
+# _convert_cardinal_words()が既に正しく担っているため、ここで複合数を
+# 部分的に壊さないことが唯一必要な修正)。
 _EN_NUMBER_WORD_RE = __import__("re").compile(
-    r"\b(" + "|".join(_EN_NUMBER_WORDS.keys()) + r")\b", flags=__import__("re").IGNORECASE)
+    r"(?<!-)\b(" + "|".join(_EN_NUMBER_WORDS.keys()) + r")\b", flags=__import__("re").IGNORECASE)
 
 
 def tts_safe_number_words_en(text: str) -> str:

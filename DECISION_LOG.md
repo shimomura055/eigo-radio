@@ -2960,6 +2960,62 @@ parts.json["point_two_body"](canonical)
 - OPEN-100 = `DEFERRED / NON-BLOCKING`(変更なし)。OPEN-101 = `RESOLVED / CLOSED`(変更なし、再openすべき新規lineage不整合は発見していない)。OPEN-102 = `USER_DECISION_REQUIRED`のまま(Root Cause欄のみ更新)。
 - A2/B1のepisode assembly・完成試聴は今回も未実施(診断のみのため)。
 
+## ER-010-NO9-TTS-NUMBER-WORDS-BUGFIX-AND-AUDIO-RETRY-16(2026-09-01、`tts_safe_number_words_en()`のRoot Cause修正・Production Audio再実行・No.9 B1完成)
+
+前task(ER-010-NO9-AUDIO-VALIDATOR-NORMALIZATION-DIAGNOSTIC-15)で特定したOPEN-102の真因(`tts_safe_number_words_en()`のハイフン複合数バグ、Case C: NORMALIZER_BUG)を、ユーザーが正式に修正承認。診断のみだった前taskと異なり、本taskはコード修正・回帰test・Production runtime再実行までを正式に実施する。
+
+### A. Root Cause(コードレベル最終確認)
+
+`er003_v1_n3_01_tts_generate.py`の`_EN_NUMBER_WORD_RE = re.compile(r"\b(two|three|...|twelve)\b", re.IGNORECASE)`が原因。正規表現の`\b`(単語境界)は「英数字/アンダースコア」と「それ以外」の間で成立し、ハイフン`-`は「それ以外」に分類されるため、`\b`はハイフンの両側でも成立してしまう。したがって"Forty-four"内の"four"は("Forty"に続く独立した語ではなく複合数の後半であるにもかかわらず)独立した数字語として`\bfour\b`にマッチし、"4"へ変換されていた("Forty"は辞書に無いため無変換のまま)。結果「前半は綴り・後半は算用数字」という壊れた表記("Forty-4")が生成され、この壊れたtextがTTS入力・ASR比較基準text(canonical_text)の両方に使われていた(`tts_safe_news_en()`経由)。percentが後続する場合も同じ壊れ方をする("Forty-four percent"→"Forty-4 percent")。大文字小文字は`re.IGNORECASE`によりどちらでも同じく誤変換される。単独数字語の変換自体・複合数を含まない文への影響は無い。
+
+### B. 修正内容
+
+正規表現に否定後読み`(?<!-)`を追加: `r"(?<!-)\b(two|...|twelve)\b"`。直前の文字がハイフンである場合はマッチ対象から除外する。これにより、ハイフン複合数の後半語("Forty-four"の"four"等)は変換されず、複合数全体が綴りのまま保持される。独立した数字語(文頭・スペース区切り等、直前がハイフンでない場合)は従来通り変換される。
+
+### C. hardcodeでないことの証拠
+
+3語("Forty-four"/"Seventy-eight"/"Thirty-six")を個別に特殊対応するのではなく、汎用の否定後読みルールとして実装した。`twenty-one`〜`ninety-nine`まで、十の位×一の位(2,3,4,6,7,8,9)の全組み合わせパターンで意図通り無変換のままであることをtestで確認済み(D節)。既存の正しい単独数字変換(two〜twelve単体)・序数・小数・通貨・句読点は無変更(非回帰、D節)。
+
+### D. Regression Test(`er003_test_v1_n3_01_tts_generate.py`、新規16 test、全PASS)
+
+`HyphenCompoundNumberWordsRegressionTests`(9 test): 複合数9パターン(twenty-one〜ninety-nine)の無変換確認、percent付き複合数(`Forty-four percent`/`forty-four%`等)の無変換確認、既存digit percent表記(`44%`/`44 percent`)への非影響確認、No.9実例に基づく文脈fixture3件の非破損確認、既存の単独数字変換(two〜twelve)の維持確認、序数・小数・通貨・句読点への非回帰確認。
+`ProductionValidatorIntegrationAfterHyphenFixTests`(3 test): 修正後の`tts_safe_news_en()`出力を実Production ASR Validator(`er006_preprod_hardening_01_validation.classify_asr_match`)へ実際に通し、"Forty-four percent"⇔ASR"44%"、"seventy-eight percent"⇔ASR"78 percent"、"thirty-six percent"⇔ASR"36%"がいずれも`NORMALIZED_MATCH`/`EXACT_MATCH`/`HIGH_SIMILARITY_SAFE`のいずれかへ分類されることを確認(修正前は`TRUE_CONTENT_MISMATCH`だった組み合わせ)。
+
+既存Validator自身のtest(`er006_preprod_hardening_01_validation_test.py`、57 fixture、POSITIVE/AMBIGUOUS/NEGATIVE全区分)も全PASSを再確認し、本修正によるValidator側への非回帰(STOP C非該当)を確認した。
+
+### E. Production Validator Integration確認(D節参照)
+
+D節の`ProductionValidatorIntegrationAfterHyphenFixTests`により、修正後のcanonical textが実Validatorで正しくASRのdigit-percent表記と一致することを確認済み。
+
+### F. Production Audio再実行(`er009_n1_production_integration_01.py audio`、正式`run_audio_stage()`実行)
+
+記事本文(`{a2,b1b}/parts.json`)は再生成せず、確定済みのProduction final articleをそのまま使用。既存のretry上限(`PRODUCTION_MAX_TTS_ATTEMPTS=3`)・Audio Validation Gate・review_lock機構は無変更のまま、修正後コードで正式Audio Stageを実行した。
+
+**A2 `point_two`**: 1回目の試行で`status=OK`、`audio_classification=NORMALIZED_MATCH`、`verified=true`。ASR文字起こし: `"...78% of respondents...44% said...66% in September 2025 to 59% in 2026...36% said..."`(数値・内容とも正規canonicalと一致)。`cumulative_tts_attempts=1`、`cumulative_asr_calls=1`(修正前は3回とも`STOPPED`)。
+
+**B1B `point_two`**: 同じく1回目の試行で`status=OK`、`audio_classification=NORMALIZED_MATCH`、`verified=true`。ASR文字起こし: `"...78% called tipping ridiculous, and 44%...66% in September 2025 to 59% in 2026. 36% chose..."`。`cumulative_tts_attempts=1`、`cumulative_asr_calls=1`。
+
+いずれも「壊れた"Forty-4"/"Seventy-8"/"Thirty-6"のようなtext」は一切生成されていないことを`review_lock_state.json`の実データで確認した(修正前診断で予測した「TTS音声自体は正しい可能性が高い」というfalse negative仮説が実証された形)。
+
+**B1B episode assembly**: `status=OK`、`duration_seconds=335.754`、`clipping_detected=False`。B1Bの全23 segmentが`review_lock_state.json`上ですべて`RESOLVED`となり、**No.9 B1は完成**した。
+
+**A2 episode assembly**: `RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION`(`kp2_english=UNVALIDATED`、`kp4_japanese_meaning=STOPPED`)により中止。詳細はG節。`point_two`自体は上記の通りPASS済みであり、この中止は`point_two`とは無関係な別の2件が原因。
+
+### G. A2で新たに判明した2件のBlocker(`point_two`・数字表記とは無関係、原因調査は未実施)
+
+**(1) Key Phrase 2("default")英語Component、`kp2_en`**: 今回のAudio Stage実行では**新規TTS/ASR呼び出しが一切発生しなかった**(`review_lock`が`HUMAN_REVIEW_LOCKED`として0 API callでブロック)。理由: このsegmentのcanonical text("default"のtts-safe変換後text)はハイフン複合数を含まず今回の修正で一切変化しないため、SHA256ハッシュが本日午前の実行時に記録された`STOPPED`ロックのハッシュと一致し続け、`review_lock`の設計通り「同一textへの機械的な再挑戦」として正しくブロックされた(既存仕様通りの正常動作、4回目の自動再試行防止が意図通り機能している)。ロックされている過去の記録は、生成音声長10.77秒/13.93秒/9.09秒(想定上限5.50秒を大幅超過)によるduration anomaly検知3連続。**今回の修正でこの現象が解消するかどうかは、ロックのため実際には検証できていない**。
+
+**(2) Key Phrase 4日本語meaning、`meaning_4`("a catch"の日本語gloss「落とし穴、ただし書き」)**: 今回**新規に6回試行し、6回とも`status=OK`(TTS生成は成功)だが`audio_classification=TRUE_CONTENT_MISMATCH`でASR検証不合格**(累積では本日午前の3回を含め計9回)。ASR文字起こしは一貫して「おとしあな ただしがき」(1回のみ「お年やな、ただしがき」)であり、これはcanonical「落とし穴、ただし書き」の読みとして一致しているように見えるにもかかわらずcontent mismatch判定となっている。`generate_a2_japanese_with_reading_safety`(reading-safety機構)が本来この種の表記ゆれを吸収する設計だが、本事例では吸収できていない可能性がある。**これは`point_two`・数字表記normalizationとは完全に無関係な、今回のAudio Stage再実行で偶然新たに発覚した別の問題**である。本taskの承認範囲は`tts_safe_number_words_en()`のbug fixに限定されており、この新規問題の原因調査・Prompt変更は一切行っていない(STOP G相当、新しいUser Decisionが必要と判断し報告のみに留める)。
+
+### H. OPEN-102/103/104更新・状態まとめ
+
+- **OPEN-102は`RESOLVED/CLOSED`とした**(`point_two`のNORMALIZER_BUGという当初スコープについて)。Root Cause修正・回帰test・Production runtime実証(A2/B1双方の`point_two`が1回目試行でPASS)まで確認できたため。
+- B1は`point_two`修正によりepisode assemblyまで成功し、**No.9 B1は完成**した。
+- A2は`point_two`自体は解決したが、無関係な新規2件(上記G節)によりepisode assemblyが引き続きblockedのため、**OPEN-103(Key Phrase 2 duration anomaly、再検証未了)・OPEN-104(Key Phrase 4日本語meaning、新規発見)として分離・新規追加**した。いずれも`USER_DECISION_REQUIRED`。
+- OPEN-100 = `DEFERRED / NON-BLOCKING`(変更なし)。OPEN-101 = `RESOLVED / CLOSED`(変更なし、再openすべき新規lineage不整合は発見していない)。
+- Production code変更は`tts_safe_number_words_en()`の正規表現1箇所のみ(ユーザー承認範囲内)。OPEN-103/OPEN-104に対する追加のコード変更・Prompt変更・原因調査は一切行っていない。
+- CURRENT_SPEC.mdは変更していない(`tts_safe_number_words_en()`の仕様[綴りの小さな数を算用数字へ変換]自体は変わっておらず、実装バグの修正のみのため新規spec化は不要と判断)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
