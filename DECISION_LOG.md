@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -58,6 +58,40 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 - **Git**: 本Decisionに対応するcommit SHAは、本タスクの完了報告を参照。
 - **根拠**: 本セッションの実行ログ・diff実測(`diag_open104.py`/`diag_open104_b.py`スクラッチスクリプト)、`er010_output/no9_a2_keyphrase_audio_issues_103_104_17/`配下の実行ログ、`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/review_lock_state.json`。
+
+---
+
+## ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18: No.9 B1音声のUser Approval・完成音声提示ルール再確認・OPEN-103 TTS payload監査
+
+- **日付**: 2026-09-01
+- **区分**: User Decision記録(①②) + Implementation Hardening(サービス仕様は変えないdiagnostic監査、コード変更なし)
+
+### ① No.9 B1完成音声のUser Approval
+- ユーザーが「B1音声はOK。承認。」と明示的に判定した。対象は`er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/assembled/English_Your_Way_B1B_POOL_N9_TIP_SCREENS.wav`(64,464,748 bytes、stereo 48kHz、335.75秒)。この音声は既存Production正式経路(`er003_v1_n3_01_tts_generate.py::generate_b1_segments()`→`er003_v1_n3_01_assemble.py`のB1組み立て)で生成・QA(ASR verified/disfluency gate)・assemblyまで完了済みであり、source article(`er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/parts.json`/`b1_support_texts.json`/`key_phrases/keywords_canonicalized.json`)と内容一致していることを本タスクで再確認した。
+- **状態**: `DECIDED`(ユーザー承認済み、No.9 B1は正式完成状態)。本タスクではB1の再生成・修正・再試行は一切行っていない。
+
+### ② 完成音声のユーザー確認提示ルール(Audio + Full Script)
+- ユーザーが「今後、完成音声の確認・試聴・承認が必要な場合は、必ず完成Audio + full scriptをセットで提示する」ことを標準運用として指示した。
+- **既存仕様との関係**: [CURRENT_SPEC.md](CURRENT_SPEC.md)の「試聴Artifact(ユーザー提示用ページ)仕様」節には、2026-08-29(ER-008-N8-CLOSEOUT-GOVERNANCE-25)付ですでに同趣旨の「全script掲載の必須化」が`DECIDED`として存在していた。ただし、直前のタスク(本タスクの前段でユーザーから「B1の音声はどこで聞けるの?」と聞かれた際に作成したAudio Artifact)はKey Phrase一覧のみを掲載し、既存仕様が求める全segment分のfull scriptを掲載していなかった。本User Decisionは、この既存仕様を(a)今回の欠落を機に再確認・再徹底し、(b)対象を「正式Artifact」だけでなく今回のような単発の試聴用リンクにも明示的に拡張するものと位置づける。新規ルールの新設ではなく、既存`DECIDED`仕様の適用範囲拡張として[CURRENT_SPEC.md](CURRENT_SPEC.md)の該当節へ追記した。
+- **是正**: 該当のB1試聴Artifact(`https://claude.ai/code/artifact/08ca3f13-edf8-46cc-bd68-eb5999f9ed93`)へ、実際にB1 assemblyが読み上げる全segment(Welcome〜In One Lineまで、`build_b1_timeline()`の実際の並び順)のscript全文を追記して再公開した(音声本体・Key Phrase内容は無変更)。
+- **状態**: `DECIDED`。[CURRENT_SPEC.md](CURRENT_SPEC.md)「試聴Artifact仕様」節へ適用範囲拡張を追記。
+
+### OPEN-103(Key Phrase 2「default」duration anomaly)TTS request payload監査
+前タスクの診断(Root Cause=PROVIDER_VARIANCE、証拠不足のため確定に至らず)を受け、実際にProviderへ送信された最終payload構造・instruction/text境界・attempt 1〜3の履歴を、read-onlyでコード・ログから追加監査した(新規TTS呼び出しは一切行っていない)。
+
+- **実際の呼び出し経路の確認**: `er003_v1_n3_01_tts_generate.py::generate_a2_segments()`→`er006_audio_cost_pilot_02_shared_narration.py::ensure_key_phrase_english_component()`→`er003_v1_repro01_main_generate.py::generate_key_phrase_component_verified()`(標準経路)→`generate_narration_snippet_verified_strict()`→`er003_b1_p9a_audio.py::generate_narration_snippet()`→`er003_b1_p4c_audio.py::build_tts_prompt()`でGeminiへの最終promptを組み立て、Batch API(`er006_batch_tts_wiring_01.py::make_batch_tts_call_fn()`)経由で送信。
+- **instruction/text境界**: `build_tts_prompt()`は`"=== STYLE INSTRUCTIONS (... do not speak this section aloud ...) === ... === TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else ...) === {text} === END TEXT TO SPEAK ==="`という明示的delimiter構造(Structured Separation、ER-005-AUDIO-INSTRUCTION-SEPARATION-01)を使っており、"default"という1語だけがTEXT TO SPEAKとして渡されている。delimiter自体の実装に境界の曖昧さは確認できなかった。
+- **新規判明した事実(1): instruction量とtext量の極端な不均衡**: kp2_en(標準経路)が使うstyle instruction(`ENGLISH_STYLE_PREFIX`=`er002_common.py::COMMON_BASE_INSTRUCTION+LEVEL2_INSTRUCTION`)は、フルストーリー本文のナレーション向けに書かれた約700語規模の演技指示("Create a natural emotional arc..."/"Carry the meaning naturally across sentence boundaries..."等)であり、読み上げ対象の"default"(1語)に対して比率が極端に大きい。このコード自身のコメント(`er003_v1_repro01_main_generate.py`)が、まさに同じ「長いENGLISH_STYLE_PREFIXを文脈のない短い単独フレーズに使うとモデルが無関係な内容へ迷い込みやすい」現象を、別テーマの実例(kp5_en 17.33秒、"opt out"のhallucination)として既に文書化しており、今回のkp2_en「default」もこれと同型のtrigger条件(重い演技指示 : 極小text の比率)に該当する。
+- **新規判明した事実(2): 既存の緩和策(minimal instruction fallback)が今回1回も実行されなかった**: `generate_key_phrase_component_verified()`は、まさに(1)の現象への対策として`generate_english_component_minimal_instruction()`(演技指示を持たない最小限instructionへの切替)というfallback経路をすでに実装済みだった。しかし`fallback_budget = max(0, max_attempts - len(standard.attempts_log))`という予算配分式(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B、standard+fallback合計をmax_attempts=3回に収める意図的な既存コスト管理)により、標準経路が3回ともduration anomalyでSTOPPEDした時点でfallback予算は0となり、この既存の緩和策はkp2_en「default」に対して**一度も試行されなかった**ことをログ(`review_lock_state.json`のkp2_en `last_attempts_log`、3件とも標準経路のみ)から確認した。
+- **新規判明した、OPEN-103とは別の問題(review_lock二重会計)**: `generate_key_phrase_component_verified()`(`@review_lock.guarded_generate("en")`)が内部で呼ぶ`generate_narration_snippet_verified_strict()`自体も`@review_lock.guarded_generate_with_language_arg`で二重にguardされているため、同一の3回の実TTS試行が`record_outcome()`により2回記録され、`er011_output/attempt_history.jsonl`のkp2_en(a2)に同一timestampで`cumulative_tts_attempts=3`→`cumulative_tts_attempts=6`という2エントリが残っていることを確認した(実際のTTS API呼び出し回数は3回のみで、6回ではない。二重に記録されるのは`cumulative_tts_attempts`等の会計値のみ)。`MAX_CUMULATIVE_TTS_ATTEMPTS=15`のため今回は実害無しだったが、この二重会計により本来より少ない実attempt数で`BUDGET_GUARD_TRIGGERED`(cumulative>15)へ到達しうる、review_lockの正確性に関わる別種のバグである。
+- **Root Cause再分類**: `TTS_INSTRUCTION_LEAK_LIKELY`(既存コードの過去実例と同型のinstruction:text不均衡が明確なtrigger候補として特定できたため、前回の「PROVIDER_VARIANCE、証拠不足」より一段具体的な分類へ更新)。ただし、これが「モデルの非決定的挙動」であること自体は変わらず(同一payloadで3回とも異なるduration)、`build_tts_prompt()`のdelimiter構造自体に実装バグは無い。
+- **STOP該当・今回実施しないこと**: 以下はいずれも新しいUser Decisionが必要な「新仕様判断」であり、本タスクでは一切変更していない(section 14/22の禁止事項どおり)。
+  1. Key Phrase等の極小textに対し、フルストーリー用の重いstyle instructionではなく最初からminimal instructionを使う、またはfallback用に独立予算を与えるという設計変更(STOP B/C相当)。
+  2. review_lock二重guardの解消(`generate_narration_snippet_verified_strict()`と`generate_key_phrase_component_verified()`のどちらのguardを残すか、または二重時のrecord_outcome側で重複除去するか、という実装判断。retry cap会計の挙動を変えるため、実施にはユーザー確認が必要と判断、STOP C/E相当)。
+- **OPEN_ITEMS反映**: OPEN-103の行を本監査結果で更新(状態は`USER_DECISION_REQUIRED`のまま)。review_lock二重会計は新規OPEN-105として追加した。
+
+- **根拠**: 本セッションのコード監査(`er003_v1_repro01_main_generate.py`/`er006_audio_cost_pilot_02_shared_narration.py`/`er003_b1_p9a_audio.py`/`er003_b1_p4c_audio.py`/`er002_common.py`/`er011_human_review_lock_01.py`/`er006_batch_tts_wiring_01.py`)、`er011_output/attempt_history.jsonl`、`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/review_lock_state.json`。
+- **Git**: 本Decisionに対応するcommit SHAは、本タスクの完了報告を参照。Production codeの変更は無し(SSOT文書のみ)。
 
 ---
 
