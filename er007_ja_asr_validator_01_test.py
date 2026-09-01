@@ -140,6 +140,47 @@ PHONETIC_UNCERTAIN_FIXTURES = [
 ]
 
 # ------------------------------------------------------------
+# WHOLE_TEXT_SCRIPT_MISMATCH(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17)
+# canonicalが漢字混じり・ASRが全文ひらがな書き起こしのケースで、文字単位
+# diffの局所padding窓が語境界からずれてしまい、実際には読みが一致(または
+# 濁点差のみ)なのにTRUE_CONTENT_MISMATCHへ落ちていた偽陰性の回帰確認。
+# TRUE_CONTENT_MISMATCHにならないことだけを確認する(should_pass True/
+# Falseどちらでも、Cascadeへ回るか即PASSかは許容する)。
+# ------------------------------------------------------------
+WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES = [
+    {"name": "実データNo.9 A2 Key Phrase 4 meaning_4(落とし穴、ただし書き/"
+             "おとしあな ただしがき。連濁「書き→がき」の1点差のみで6回連続"
+             "TRUE_CONTENT_MISMATCHだった実例、OPEN-104)",
+     "canonical": "落とし穴、ただし書き",
+     "asr": "おとしあな ただしがき"},
+    {"name": "合成ケース(別の漢字・別の連濁パターン、「書き」への"
+             "hardcodeでないことの確認: 「歯止め」→「はどめ」の全文ひらがな"
+             "ASR、連濁「はどめ」は元々清音「はとめ」ではなく「はどめ」が"
+             "正しい読みのため、これは全文完全一致[PHONETIC_MATCH]になる"
+             "べきケース)",
+     "canonical": "歯止め",
+     "asr": "はどめ"},
+    {"name": "合成ケース(「三日坊主」→「みっかぼうず」、複数箇所が漢字な"
+             "canonicalに対し全文ひらがなASRで一致するケース。「坊主→ぼうず」"
+             "の連濁のみが差)",
+     "canonical": "三日坊主",
+     "asr": "みっかぼうず"},
+]
+
+WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES = [
+    {"name": "全文ひらがなASRでも意味が異なれば引き続きTRUE_CONTENT_MISMATCH"
+             "(「落とし穴」→「お年やな」は連濁ではなく別の語、"
+             "実データNo.9 A2 meaning_4のattempt3)",
+     "canonical": "落とし穴、ただし書き",
+     "asr": "お年やな、ただしがき。"},
+    {"name": "合成ケース(全文ひらがなASRだが内容語が置換されている、"
+             "「落とし穴」→「持ち上げ穴」は連濁でも表記ゆれでもない別内容)",
+     "canonical": "落とし穴という表現",
+     "asr": "もちあげあなという表現"},
+]
+
+
+# ------------------------------------------------------------
 # PHONETIC_UNCERTAIN境界ケース(濁点許容チェックの一般性・安全性を確認する
 # 目的別の合成テスト。実在の「頃」に依存しないメカニズム自体の検証)
 # ------------------------------------------------------------
@@ -246,6 +287,30 @@ if __name__ == "__main__":
     print("\n=== voicing許容メカニズムの一般性確認(「頃」専用ルールではないことの直接検証) ===")
     all_failures += check_voicing_mechanism_generalization()
 
+    print("\n=== WHOLE_TEXT_SCRIPT_MISMATCH fixtures (期待: TRUE_CONTENT_MISMATCHにならない。"
+          "canonical=漢字混じり/ASR=全文ひらがなでの局所diff window不整合の回帰確認) ===")
+    for fx in WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification != "TRUE_CONTENT_MISMATCH"
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== WHOLE_TEXT_SCRIPT_MISMATCH NEGATIVE fixtures (期待: 全文ひらがなASRでも"
+          "真の内容誤りはTRUE_CONTENT_MISMATCHのまま=誤PASSしないことの確認) ===")
+    for fx in WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification == "TRUE_CONTENT_MISMATCH" and r.should_pass is False
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
     print("\n=== KNOWN_TRADEOFF fixtures (should_pass=Falseのまま=誤PASSしないことの確認。"
           "TRUE_CONTENT_MISMATCHにはならずCascadeへ回る既知のトレードオフ) ===")
     for fx in KNOWN_TRADEOFF_FIXTURES:
@@ -268,7 +333,8 @@ if __name__ == "__main__":
             all_failures.append(fx["name"])
 
     total = (len(POSITIVE_FIXTURES) + len(NEGATIVE_FIXTURES) + len(ENTITY_LIKE_FIXTURES)
-             + len(PHONETIC_UNCERTAIN_FIXTURES) + len(KNOWN_TRADEOFF_FIXTURES) + len(NOT_PHONETIC_UNCERTAIN_FIXTURES))
+             + len(PHONETIC_UNCERTAIN_FIXTURES) + len(KNOWN_TRADEOFF_FIXTURES) + len(NOT_PHONETIC_UNCERTAIN_FIXTURES)
+             + len(WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES) + len(WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES))
     if all_failures:
         print(f"\n{len(all_failures)}件のfixture/checkが期待通りに分類されなかった: {all_failures}")
     else:

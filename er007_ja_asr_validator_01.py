@@ -261,6 +261,49 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
     # content_diffsが空(=全ての差が読みで説明できた)の場合はratioに
     # 関わらずPHONETIC_MATCHとする。
     if non_cascade_diffs:
+        # ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17: protected_check_ja()の
+        # 文字単位SequenceMatcherは、canonicalが漢字混じり・ASRが全文ひらがな
+        # 書き起こしのケース(例: canonical「落とし穴、ただし書き」/ASR
+        # 「おとしあなただしがき」)で、両者に偶然共通するひらがな1〜数文字
+        # (と/し/た/だ/き等)だけが"equal"として拾われ、opcodeが不自然に
+        # 細かく分断される。この結果、各opcodeへ渡す前後4文字のpadding窓が
+        # canonical側とASR側で対応しない範囲を切り出してしまい(語境界が
+        # 全く別の位置にずれる)、本来は語末の連濁(例:「書き」の「かき」→
+        # 「がき」)だけの差でしかない箇所まで`_reading_equal`/
+        # `_reading_equal_allowing_voicing`の局所比較が偽陰性で失敗し、
+        # TRUE_CONTENT_MISMATCHへ落ちていた(No.9 A2 Key Phrase 4「a catch」
+        # 日本語meaningで実際に6回連続再現、DECISION_LOG.md参照)。
+        #
+        # 局所opcodeの分断に頼らず、正規化後の**全文**の読み(pykakasi)を
+        # 直接比較することで、この window不整合を回避する。数字・否定は
+        # このifへ到達する時点で既にprotected_check_ja()側でチェック済み
+        # (保護は一切弱めない)。全文読みが完全一致するケースは、既存の
+        # 「content_diffsが空ならPHONETIC_MATCH」ルール(下記)と同じ確信度
+        # のため即PASSとする。濁点/半濁点の有無だけが異なるケースは、単発の
+        # 局所phonetic_uncertain判定と同じ慎重さを保ち、即PASSにはせず
+        # 既存のCascade(追加ASR再確認)対象として扱う(「頃/ごろ」と同じ
+        # 設計方針の一般化であり、新しい許容基準ではない)。
+        whole_text_reading_equal = _reading_equal(c_norm, a_norm)
+        whole_text_voicing_equal = (not whole_text_reading_equal) and _reading_equal_allowing_voicing(c_norm, a_norm)
+        if whole_text_reading_equal or whole_text_voicing_equal:
+            c_reading = safety._kakasi_reading(c_norm)
+            a_reading = safety._kakasi_reading(a_norm)
+            whole_text_diff = {
+                "type": "whole_text_reading", "canonical": c_norm, "asr": a_norm,
+                "entity_like": False, "phonetic_uncertain": True, "cascade_eligible": True,
+            }
+            rescued = ProtectedCheckResultJA(passed=True, content_diffs=[whole_text_diff])
+            if whole_text_reading_equal:
+                return ClassificationResultJA(
+                    "PHONETIC_MATCH", ratio, rescued, should_pass=True, should_retry=False,
+                    reason="局所diffはcanonical(漢字)とASR(全ひらがな)の script差で分断されたが、"
+                           "正規化後の全文の読みは完全一致",
+                    canonical_reading=c_reading, asr_reading=a_reading)
+            return ClassificationResultJA(
+                "ASR_VALIDATION_UNCERTAIN", ratio, rescued, should_pass=False, should_retry=False,
+                reason="局所diffはscript差で分断されたが、正規化後の全文の読みは濁点/半濁点の有無を"
+                       "除き一致(retryでは解決しない可能性が高い、Cascadeで追加確認)",
+                canonical_reading=c_reading, asr_reading=a_reading)
         if ratio < tts_failure_threshold:
             return ClassificationResultJA(
                 "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,

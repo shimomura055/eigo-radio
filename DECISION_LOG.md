@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -15,6 +15,49 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17: OPEN-103/OPEN-104個別診断・OPEN-104実装バグ修正
+
+- **日付**: 2026-09-01
+- **区分**: Implementation Hardening(サービス仕様は変えず、実装バグの修正・診断のみ)
+- **背景**: 前タスク([ER-010-NO9-TTS-NUMBER-WORDS-BUGFIX-AND-AUDIO-RETRY-16](#))で`tts_safe_number_words_en()`のハイフン複合数バグを修正しNo.9 B1を完成させたが、A2は無関係な2件(OPEN-103: Key Phrase 2「default」のduration anomaly、OPEN-104: Key Phrase 4「a catch」日本語meaningのASR不合格)によりepisode assemblyが引き続きblockedのままだった。本タスクはこの2件を個別に診断し、既存Production仕様に対する実装バグであればRoot Cause修正・Regression・A2 Production Audio再実行・episode assemblyまで進め、新仕様判断が必要ならSTOPする、という方針で実施した。
+
+### A. OPEN-103(Key Phrase 2「default」duration anomaly)の診断結果
+- **確認した項目**: (1)`estimate_max_reasonable_duration_seconds()`(`er003_audio_tts_asr_safety.py`)の閾値計算式。1語のテキストに対し`1語×EN_MAX_SEC_PER_WORD(1.5秒)+EN_FIXED_OVERHEAD_SECONDS(4.0秒)=5.5秒`となり、実測されている閾値(5.50秒)と一致。計算バグなし。(2)TTS入力の組み立て(`er003_b1_p4c_audio.py::build_tts_prompt()`、Structured Separation)。style instructionとTEXT TO SPEAK section が明示的delimiterで分離されており、"default"というtext単体のみが読み上げ対象として渡されている実装であることをソース確認した。instruction leakageを起こしうる実装バグは無い。(3)実際に何を発話していたかを、保存音声・ASR文字起こしから確認しようとしたが、`er003_b1_p9a_audio.py::generate_narration_snippet()`はduration anomaly検知時、`common.write_wav_float()`(音声ファイル保存)より**前**に`status=STOPPED`を返して打ち切る実装であるため、異常発話そのものの音声は元々一切保存されない設計であることが判明した。現存する`kp2_en.wav`(waveform実測1.61秒)は、異常発生より前の別の正常な生成物であり、今回の3回の異常attemptの証拠ではない。ASR文字起こしも(duration anomaly検知時点でASRを呼ばない設計のため)存在しない。(4)3回の実測duration(10.77秒/13.93秒/9.09秒)に一貫したパターンが無く、決定的な固定の壊れ方(同一の余計な文を毎回読む等)を示していない。
+- **Root Cause分類**: 上記(1)〜(4)より、コード側に実装バグ(TTS_INSTRUCTION_LEAK/WRONG_INPUT_TEXT/WRONG_SEGMENT_ROUTING/DURATION_GATE_BUG/RETRY_STATE_BUG)を確認できなかった。**PROVIDER_VARIANCE**(Gemini TTSが短い孤立語"default"に対して非決定的に異常長の発話を生成する挙動)と分類する。[OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-05(短文TTS hallucination根本原因未解明)・OPEN-44(hostile architectureの/h/発音異常)と同種の「provider挙動、緩和策止まりで完全解決に至らない」カテゴリに位置づける。
+- **STOP A該当**: 本タスクのSTOP条件A(「OPEN-103が単なる実装bugではなくTTS provider variance/新仕様問題」)に該当するため、閾値変更・retry cap変更・prompt文言変更のいずれも行っていない。ロック状態(`HUMAN_REVIEW_REQUIRED`)もそのまま維持し、`approve_regenerate()`は呼んでいない。
+
+### B. OPEN-104(Key Phrase 4「a catch」日本語meaning、meaning_4)のRoot Cause特定
+- **raw diff**: canonical「落とし穴、ただし書き」に対し、実際に記録されている6回のASR文字起こしは一貫して「おとしあな ただしがき」(1回のみ「お年やな、ただしがき」という別の異表記)。
+- **normalized diff**(実際のProduction Validator`er007_ja_asr_validator_01.py::normalize_ja()`を直接実行して確認): canonical正規化後「落とし穴ただし書き」、ASR正規化後「おとしあなただしがき」。
+- **メカニズム**: `protected_check_ja()`が両者に対し文字単位`difflib.SequenceMatcher`を実行すると、canonical(漢字混じり)とASR(全文ひらがな)の間で偶然一致するひらがな数文字(と/し/た/だ/き)だけが"equal" opcodeとして拾われ、残りが"落→お"/"穴→あな"/"書→が"という3つの細切れなopcodeへ不自然に分断される(実際にdifflibを実行してopcode列を確認済み)。各opcodeの読み比較には前後4文字のpadding窓を使うが、この窓はcanonical側・ASR側で対応しない範囲を切り出してしまう(例:「書」→「が」のopcodeでは`c_padded`="穴ただし書き"、`a_padded`="なただしがき"となり、窓の開始位置が語境界的に対応していない)。この結果、局所`_reading_equal`/`_reading_equal_allowing_voicing`比較がいずれも失敗し、本来は語末の連濁(「書き」の読み「かき」→複合語内では「がき」)1点だけの差でしかない箇所まで`TRUE_CONTENT_MISMATCH`(内容誤りの可能性)へ分類されていた。実際、canonical・ASR双方の**全文**の読み(pykakasi)は"otoshianatadashikaki"/"otoshianatadashigaki"であり、差は1モーラの連濁(清濁)のみであることを直接確認した。
+- **Root Cause分類**: **NORMALIZER_BUG**(`protected_check_ja()`の文字単位diff+局所padding窓アルゴリズムが、canonical=漢字混じり・ASR=全文ひらがな書き起こしという script差の大きいケースで、語境界の対応を保証できない実装上の限界)。既存の日本語ASR Validatorはこのケースを想定した「頃/ごろ」型の局所voicing許容メカニズムを既に持っていたが、局所opcode単位でしか読みを比較しないため、opcode分断そのものが起きるケースには対応できていなかった。
+
+### C. OPEN-104の修正内容
+- `er007_ja_asr_validator_01.py::classify_ja_asr_match()`の`non_cascade_diffs`分岐へ、局所opcodeに頼らない**全文**の読み比較による安全網を追加した。正規化後の全文(`c_norm`/`a_norm`)を直接`_reading_equal()`/`_reading_equal_allowing_voicing()`(いずれも既存の「頃/ごろ」メカニズムで確立済みの関数、新規実装なし)へ渡し、(a)全文の読みが完全一致する場合は、既存の「content_diffsが空ならPHONETIC_MATCH」ルール(このファイルに元々ある確定ロジック)と同じ確信度として即PASS(`should_pass=True`)、(b)濁点/半濁点の有無だけが差となる場合は、既存の局所phonetic_uncertain(「頃/ごろ」)と同じ慎重さを保ち、即PASSにはせず`ASR_VALIDATION_UNCERTAIN`(Cascade[追加ASR再確認]対象)とする。いずれも既存2ルールをwhole-text scopeへ一般化したものであり、新しい許容基準を追加したものではない。数字・否定の保護(`protected.passed`チェック)はこの分岐へ到達する時点で既に通過済みのため、一切弱めていない。
+- **hardcodeでないことの証拠**: 「書き」という特定語への個別対応は一切行っていない。修正が汎用ルールであることを、別の漢字・別の連濁パターンを含む正の回帰fixture(「歯止め」→「はどめ」、「三日坊主」→「みっかぼうず」、いずれもmeaning_4とは無関係な合成データ)で確認した。
+- **Regression**: `er007_ja_asr_validator_01_test.py`に新規fixture群(`WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES`3件・`WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES`2件、うちmeaning_4の実データ1件を含む)を追加し、既存30件+新規5件=**全35件PASS**(既存fixtureへの回帰なし)。負のfixture(全文ひらがなASRでも内容語が真に置換されている合成ケース)が引き続き`TRUE_CONTENT_MISMATCH`のままであることも確認し、「全文ひらがなASRなら何でもPASS」という誤った一般化になっていないことを検証した。`run_project_regression.py`(全1998件)でも本修正による新規failureは0件(4件の既存failureはいずれも本修正と無関係、`git stash`で本修正前の状態に戻しても同一失敗であることを確認済み: `er003_test_bad`[意図的な負の確認用fixture]、`er003_test_p2j_investigate`のcollection count系2件[リポジトリ内ファイル増加によるカウントずれ]、`er007_ja_tts_retry_path_fix_test_01`のretry-path試験1件)。
+- **Production Validator再検証**: 実際に6回失敗した際の生ASRテキスト(「おとしあな ただしがき」)をそのまま使った回帰fixtureで、修正後は`ASR_VALIDATION_UNCERTAIN`(Cascade対象、`TRUE_CONTENT_MISMATCH`から離脱)になることを確認した。
+
+### D. review_lockとの整合性確認・meaning_4のみ承認
+- 本修正はmeaning_4のcanonical text自体を変更していない(Validator側のロジックのみ修正)ため、`er011_human_review_lock_01.py`のlock key(`SHA256(canonical_text)`)は変化せず、既存の`HUMAN_REVIEW_REQUIRED`ロックは自動的には解除されない(前タスクの`tts_safe_number_words_en()`修正時とは異なり、今回はTTS入力テキスト自体は不変のため)。`approve_regenerate()`のdocstringは「ユーザーの明示的な指示でのみ呼ぶこと」と明記しており、これは本タスクのSTOP C(「既存retry cap/review-lockを変更する必要がある」)に相当する判断点と整理し、Claude Codeの単独判断では呼び出さず、ユーザーへ明示確認した(AskUserQuestion)。ユーザーが承認したため、meaning_4のみ`review_lock.approve_regenerate()`を実行(kp2_en/OPEN-103には一切触れていない)。
+
+### E. Production A2 Audio再実行結果
+- 記事再生成は行わず、B1(既に完成済み)にも一切触れず、`er009_n1_production_integration_01.py`の既存Production関数(`generate_a2_segments()`/`stage_assemble_a2()`)をA2のみ直接呼び出す実行スクリプト(`er010_no9_a2_only_audio_rerun_17.py`)を新規作成して再実行した(既存関数のロジックは無変更、呼び出し範囲をA2のみへ絞っただけ)。
+- 1回目の再実行(`approve_regenerate()`前): 期待通りkp2_en/meaning_4とも0 API callでブロックされたまま(ロック状態・updated_atとも変化なし)、他の18segmentは正常にPASS。
+- `approve_regenerate()`後の2回目の再実行: **meaning_4が1回目の試行で`classification=NORMALIZED_MATCH`・`verified=true`でPASS**(この回はASRが偶然「落とし穴 ただし書き」と漢字で書き起こしたため、既存の表記正規化ルールのみで一致した。今回の修正[全文読み安全網]が実際に発動する「全文ひらがなASR」のケースそのものは、今回のライブ試行では再現しなかったが、修正の必要性・正しさ自体は前述Cの回帰fixtureで独立して確認済み)。meaning_4のロック状態は`RESOLVED`(final_status=OK)へ遷移した。
+- kp2_en(OPEN-103)は未変更のまま`HUMAN_REVIEW_REQUIRED`が継続し、A2 episode assemblyは`EPISODE_BLOCKED_BY_AUDIO_VALIDATION: kp2_english=UNVALIDATED`(のみ)で引き続き中止された。これは今回OPEN-103に一切手を付けていないことと完全に整合する、意図通りの結果。
+
+### F. OPEN-103/104の状態まとめ
+- **OPEN-104**: `RESOLVED / CLOSED`(`protected_check_ja()`のscript-mismatch window不整合バグについて。修正・Regression・Production runtime再検証まで完了)。
+- **OPEN-103**: `USER_DECISION_REQUIRED`のまま維持(Root Cause分類をPROVIDER_VARIANCEとして確定・記録。コード修正は行っていない)。
+- **OPEN-100/OPEN-101/OPEN-102**: 変更なし。
+- A2 episode assemblyの残Blocking要因はOPEN-103のみ。B1は前タスクより完成済みのまま変更なし。
+
+- **Git**: 本Decisionに対応するcommit SHAは、本タスクの完了報告を参照。
+- **根拠**: 本セッションの実行ログ・diff実測(`diag_open104.py`/`diag_open104_b.py`スクラッチスクリプト)、`er010_output/no9_a2_keyphrase_audio_issues_103_104_17/`配下の実行ログ、`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/review_lock_state.json`。
 
 ---
 
