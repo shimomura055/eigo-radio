@@ -420,13 +420,50 @@ KEY_PHRASE_TOTAL_MAX_ATTEMPTS = KEY_PHRASE_MINIMAL_MAX_ATTEMPTS + KEY_PHRASE_ENG
 # Productionからimportしない設計方針(Dangling Reference防止)のため、
 # 文字列としてここへ複製する。変更する場合はTrialを再実施のうえ
 # DECISION_LOG.mdへ記録すること(勝手な再設計は禁止)。
-KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX = (
+KEY_PHRASE_MINIMAL_INSTRUCTION_CORE_TEXT = (
     "Speak the following short phrase aloud naturally and clearly, in a warm podcast "
     "announcer voice, exactly once. Say only this phrase — do not add explanations, "
     "examples, introductions, or any other commentary, and do not add, omit, or change "
     "any words. Say it as one natural phrase, not as separate words read one at a time. "
     "Make sure the very last sound of the phrase is actually spoken, not trailed off "
     "into silence, and do not over-emphasize or exaggerate any single sound.\n\n"
+)
+
+# ============================================================
+# ER-010-NO9-FUNCTION-WORD-REDUCTION-PRODUCTION-WIRING-AND-A2-FINAL-27-R1
+# ============================================================
+# ユーザー正式決定(2026-09-02、Trial 26で検証・承認)。Key Phrase「a
+# catch」で冠詞"a"が独立した強勢語のように強く・長く発音される問題への
+# 対策として、function word(article等)を弱く・短く・非強勢で発音し、
+# 後続content wordへ自然につなげるという原則を、Key Phrase英語TTSの
+# 一般Production仕様として正式採用する。Trial 26で使用した文言を一字
+# 一句そのまま複製する(Trial専用モジュールer010_no9_a2_keyphrase_
+# article_reduction_trial_26.pyをProductionからimportしない設計方針
+# 踏襲、Dangling Reference防止)。「a catch」固有のhardcodeではなく、
+# article/function word全般への一般原則として記述する。既存の
+# KEY_PHRASE_MINIMAL_INSTRUCTION_CORE_TEXTは一切変更せず、末尾に追加
+# するだけ(KEY_PHRASE_ENGLISH_LANGUAGE_LOCK_SUFFIXと同じAND方式)。
+FUNCTION_WORD_REDUCTION_SUFFIX = (
+    "In natural spoken English, short function words such as articles "
+    "(\"a\", \"an\", \"the\") are usually spoken briefly and without stress, "
+    "connecting smoothly into the word that follows, while the main content "
+    "word carries the natural stress of the phrase. If the phrase contains "
+    "such a function word, keep it light and unstressed, and let it flow "
+    "naturally into the following word, rather than pronouncing it as its "
+    "own separate, stressed beat. Do not omit or drop the function word — "
+    "only make it light and unstressed, not silent, and do not let this "
+    "affect how clearly the rest of the phrase is spoken.\n\n"
+)
+
+# KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIXは実際にPrimary試行で使われる
+# 実効instructionであり、CORE_TEXT+FUNCTION_WORD_REDUCTION_SUFFIXで
+# ある。KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION(下記)はこの
+# KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIXを起点に構築されるため、
+# function-word reductionはPrimary(Minimal)・Fallback(English Lock)の
+# 両方に自動的に適用される(定義を分岐させない設計、Dangling Reference
+# 防止)。
+KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX = (
+    KEY_PHRASE_MINIMAL_INSTRUCTION_CORE_TEXT + FUNCTION_WORD_REDUCTION_SUFFIX
 )
 
 # ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21で検証・ユーザー

@@ -1086,19 +1086,58 @@
       "english": {
         "status": "OK",
         "path": "er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/kp4_en.wav",
-        "reused": true,
-        "master_audio_id": "aaa176ad782661323883f263",
-        "cache_miss_reason": null,
-        "sha256": "abb251e572c8dcaceb652b6b3525d1c4e3562a57adfe79c443a39c646ade2654",
+        "reused": false,
+        "master_audio_id": null,
+        "cache_miss_reason": "function_word_reduction_instruction_changed",
+        "sha256": "af535df811d49eb83997a1a80953f16dbf6dcc928c4b1ada607d1a81a888053d",
         "asr_verified": true,
-        "asr_text": "A catch.",
+        "asr_text": "a catch",
         "disfluency_checked": true,
         "disfluency_evidence": {
           "flagged": false,
           "repeats": [],
           "word_count": 2,
-          "transcript": "A  catch.",
+          "transcript": "A  cat.",
           "method": "faster_whisper_small_local_verbatim"
+        },
+        "function_word_reduction_wiring": {
+          "management_id": "ER-010-NO9-FUNCTION-WORD-REDUCTION-PRODUCTION-WIRING-AND-A2-FINAL-27-R1",
+          "note": "ER-010-NO9-A2-KEYPHRASE-ARTICLE-REDUCTION-DIAGNOSTIC-AND-TRIAL-26で検証・ユーザー承認済みのfunction-word/article reduction原則を、KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIXへ正式追加した後の実Production path(Trial専用scriptではない)から生成した音声。旧kp4_en.wavはbackupとして保持。",
+          "old_kp4_en_sha256": "abb251e572c8dcaceb652b6b3525d1c4e3562a57adfe79c443a39c646ade2654",
+          "old_kp4_en_backup_path": "er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/kp4_en_pre_wiring27_backup.wav",
+          "primary_instruction_type": "MINIMAL",
+          "fallback_used": false,
+          "model": "gemini-2.5-pro-preview-tts",
+          "voice": "Aoede",
+          "duration_seconds": 1.011,
+          "call_count": 1,
+          "envelope_analysis": {
+            "runs": [
+              {
+                "start_seconds": 0.21,
+                "end_seconds": 0.29,
+                "duration_seconds": 0.08,
+                "peak_rms": 0.202,
+                "mean_rms": 0.1333
+              },
+              {
+                "start_seconds": 0.33,
+                "end_seconds": 0.6,
+                "duration_seconds": 0.27,
+                "peak_rms": 0.1397,
+                "mean_rms": 0.0754
+              },
+              {
+                "start_seconds": 0.66,
+                "end_seconds": 0.81,
+                "duration_seconds": 0.15,
+                "peak_rms": 0.0793,
+                "mean_rms": 0.0563
+              }
+            ],
+            "peak_rms_overall": 0.202,
+            "num_runs": 3
+          }
         }
       },
       "japanese_meaning": {
