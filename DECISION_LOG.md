@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2、No.9 A2正式Key Phrase5件[guilt tipping/default/push back/a catch/starting point]でMinimal instruction Mini-Trial[各語1回→NGのみ最大2回retry、最大3attempt]を実施。5件中4件[guilt tipping/push back/a catch/starting point]はAttempt 1でPASS[duration anomaly無し、Validator NORMALIZED_MATCH/EXACT_MATCH]。`default`は3attemptとも誤発音(FAIL)で再現性を確認: 前回Trialの英語内誤認識["Dieselt"]とは異なり、今回は3回とも発話言語自体が英語からずれた[デフォルト/デフォルト/默认]。duration anomaly自体は0件で解消したが、content accuracy失敗が形を変えて残存。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -15,6 +15,63 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2: No.9 A2正式Key Phrase5件のMinimal instruction Mini-Trial(bounded retry)
+
+- **日付**: 2026-09-01
+- **区分**: Trial診断(Production instruction・review lock・retry budget・provider・voice・thresholdはいずれも無変更)
+- **背景**: 前回Trial([ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19](#))は"opt out"(別テーマの過去実例)と"default"の2語・各1回のみの単発Trialだった。今回はNo.9 A2の**正式Production Key Phrase5件すべて**(`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/key_phrases/keywords_canonicalized.json`から取得、置き換えなし)を対象に、各語まず1回生成しASR/Validator NGの語だけ最大2回まで(各語最大3attempt)retryするbounded Mini-Trialを実施した。目的は`default`の"Dieselt"誤発音が単発varianceだったのか再現性のある問題かの確認、および他4語での安全策維持の確認。
+
+### 対象Key Phrase5件(No.9 A2、Production正式)
+| # | Key Phrase | 日本語gloss | Production側の状態(このTrial実施前) |
+|---|---|---|---|
+| 1 | guilt tipping | 罪悪感からするチップ | OK(reused、master_audio_store) |
+| 2 | default | 初期設定の選択肢 | `HUMAN_REVIEW_REQUIRED`(3回ともduration anomaly: 10.77/13.93/9.09秒) |
+| 3 | push back | 反発する、抵抗する | OK(reused、master_audio_store) |
+| 4 | a catch | 落とし穴、ただし書き | OK(reused、master_audio_store) |
+| 5 | starting point | 判断の出発点、基準 | OK(reused、master_audio_store) |
+
+### Minimal instruction(Trial 19から無変更)
+```
+Speak the following short phrase aloud naturally and clearly, in a warm podcast
+announcer voice, exactly once. Say only this phrase — do not add explanations,
+examples, introductions, or any other commentary, and do not add, omit, or change
+any words. Say it as one natural phrase, not as separate words read one at a time.
+Make sure the very last sound of the phrase is actually spoken, not trailed off into
+silence, and do not over-emphasize or exaggerate any single sound.
+```
+既存DECIDED仕様「Key Phrase発音品質(3条件)」(CURRENT_SPEC.md)の(2)語末音素保持・(3)phrase一体感を文言化した部分は無変更のまま維持。
+
+### 実装(`er010_no9_keyphrase_minimal_instruction_minitrial_20_r2.py`、新規)
+Production review lock対象の関数(`generate_key_phrase_component_verified`・`generate_narration_snippet_verified_strict`、いずれも`review_lock.guarded_generate*`でguard済み)は一切呼ばない。その内部で実際に使われているのと同一の非guarded関数(`p9a._make_english_call_fn()`によるTTS呼び出し、`p3u.trim_english_keyword_silence()`、`safety.detect_duration_anomaly()`、`secondary_asr.evaluate_attempt_with_cascade()`、`dq18.apply_disfluency_gate()`)を直接組み合わせ、style instructionだけをMinimal instructionに差し替えた。各語につき「PASSしたら即終了、NGのときだけ次のattemptへ」のbounded loop(最大3attempt)を実装し、Production retry countや`er011_output/attempt_history.jsonl`には一切書き込まれないことを確認済み(review_lockモジュールを一切import経由で呼び出していない)。
+
+### Mini-Trial結果(実際に実行した5語・計7 TTS attempt)
+| Key Phrase | 結果 | 実行attempt数 | 詳細 |
+|---|---|---|---|
+| guilt tipping | **PASS(Attempt 1)** | 1 | duration 1.771s(anomaly無し)、ASR="guilt tipping"、`EXACT_MATCH`、disfluency flagged=false |
+| default | **FAIL(3attemptとも)** | 3 | 3回ともduration anomaly無し(1.2秒前後)だが、ASRが**英語ではなく他言語**として書き起こされた: Attempt1="デフォルト"(日本語カタカナ)、Attempt2="デフォルト"、Attempt3="默认"(中国語)。3回とも`TTS_FAILURE`(全体類似度が著しく低い) |
+| push back | **PASS(Attempt 1)** | 1 | duration 1.031s、ASR="Pushback"、`NORMALIZED_MATCH`(空白除去後一致) |
+| a catch | **PASS(Attempt 1)** | 1 | duration 1.111s、ASR="A catch."、`NORMALIZED_MATCH`、語末/tʃ/相当の破裂が聞き取れる書き起こし |
+| starting point | **PASS(Attempt 1)** | 1 | duration 1.311s、ASR="Starting point"、`NORMALIZED_MATCH` |
+
+**5件中4件PASS(Attempt 1)・1件(default)は3attemptともFAIL。total actual TTS calls=7(不要な2回目・3回目は、PASSした4語では一切実行していない)。duration anomaly=0件(前回Trial・Production標準経路で見られた10秒超の異常長は今回一度も再発しなかった)。hallucination的な無関係content生成も無し(3回とも"default"という1語相当の短い発話ではあった)。**
+
+### `default`の再現性についての結論
+前回Trial(単発)では"Dieselt"という**英語のなかでの**誤認識だったのに対し、今回3回とも**発話される言語自体が英語からずれる**(日本語カタカナ「デフォルト」→日本語カタカナ「デフォルト」→中国語「默认」)という、前回とは異なる、かつより深刻な失敗モードが3回中3回で再現した。これは「単発varianceだった」という解釈を否定し、**Minimal instructionへ切り替えても"default"という語単体は依然として安定してPASSしない**ことを示す。duration anomaly(異常に長い発話)は解消したが、content accuracy(正しい語を正しい言語で発話すること)の失敗が形を変えて残っている。
+
+### STOP条件との照合
+タスク仕様§21のSTOP条件A「同一Key Phraseが3attemptすべて明確な誤発音」に該当(`default`が3/3で誤発音、うち2回は言語自体が異なる)。このため、追加Trial(例: `default`の代替instruction文言を試す等)へは進まず、ここでSTOPする。
+
+### 他4語(guilt tipping/push back/a catch/starting point)への影響
+4語とも1回目でPASSし、既存の語末音素保持safeguard(a catchの語末/tʃ/、starting pointの語末/t/相当)がASR書き起こし上で維持されていることを確認した(主観的な自然さの最終判断はユーザーが音声を聞いて行う、機械判定のみでは自然さPASSとしない、という既存DECIDED仕様の運用方針通り)。この4語について新しい品質問題は発見していない。
+
+### コスト計測についての既知の制約
+このTrialは`er005_cost_logger.init_logger()`を呼び出し専用ログ(`er010_output/no9_keyphrase_minimal_instruction_minitrial_20_r2/cost_log_trial.jsonl`)へ分離したが、実行後同ファイルは0バイトだった。原因は、このTrialが使うTTS呼び出し関数(`p9a._make_english_call_fn()`)・ASR呼び出し関数がいずれも`er005_cost_logger`のcall-level fookを内部に持たない実装であり(grep確認済み、Production側もこの点は同じ)、`cl.logging_context()`でラップするだけでは個々のAPI呼び出しは記録されないため。実際に発生したAPI呼び出し回数は本Decisionの表(TTS 7回・primary ASR 7回、secondary/cascade ASRは`evaluate_attempt_with_cascade`の内部ロジックに応じ0〜数回)で代替把握している。金額自体は小さく(短い1語×7回、Trial 19と同水準)判断に影響しないため、今回はこの制約の記録のみに留め、独立した対応は行わない(OPEN-96と同種の既知の技術的負債パターン)。
+
+### OPEN-103への反映
+`USER_DECISION_REQUIRED`のまま維持。今回の結果を踏まえた選択肢はOPEN_ITEMS.mdへ記載。
 
 ---
 
