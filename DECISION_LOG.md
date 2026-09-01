@@ -2887,6 +2887,79 @@ Root Cause A.の結論に基づき、以下を**コード変更なし**で実施
 - No.9 A2/B1B article = Production正式candidateとして確定(Ledger MAJOR=0・Fact Checker FAILなし・Formatting適合・Point Overlap PASS)。
 - No.9 A2/B1B audio = TTS大部分完了・`point_two`(両level)と A2 Key Phrase 2のみHuman Review待ちのため、**完成episode(assembled)は今回とも未生成**。
 
+## ER-010-NO9-AUDIO-VALIDATOR-NORMALIZATION-DIAGNOSTIC-15(2026-09-01、OPEN-102の真のRoot Cause特定[Case C: NORMALIZER_BUG]・前回報告の訂正)
+
+### A. 目的・スコープ
+
+前回(ER-010-NO9-ARTICLE-AUDIO-PRODUCTION-WIRING-14)は、No.9 A2/B1B `point_two`のTTS/ASR検証失敗の主因を「canonical側の綴り数字("Seventy-eight percent"等)とASR側の数字表記("78%"等)の表記ゆれ」と推定して報告した。今回はこの推定を検証するため、新規Validator仕様の追加・再生成は一切行わず、既存Validator実装の実際の挙動をコード上・実データ上の両面から確認する**診断専用タスク**として実施した(Production code変更なし)。
+
+### B. 既存Validator実装の実態(2種類存在、混同注意)
+
+コードベースには数字/percent正規化を含むASR比較ロジックが**2種類**存在することを確認した。
+
+1. `er003_audio_tts_asr_safety.py::validate_asr_match()` — 英国/米国綴り差と2〜12の単語→算用数字のみを吸収する簡易版。**No.9のNews本文系(point_two含む)Production経路からは呼ばれていない**(grepで呼び出し元を確認、日本語短文検証等の別用途でのみ使用)。
+2. `er006_preprod_hardening_01_validation.py::classify_asr_match()` — 数字(cardinal/ordinal/複合序数)・パーセント(`percent`/`per cent`/`%`)・通貨・小数点・指数表記・英米綴り差・複合語分かち書き・冠詞差・stopword等を正規化した上で、6分類(`EXACT_MATCH`/`NORMALIZED_MATCH`/`HIGH_SIMILARITY_SAFE`/`ASR_VALIDATION_UNCERTAIN`/`TRUE_CONTENT_MISMATCH`/`TTS_FAILURE`)へ振り分ける本格版。**こちらがNo.9のPoint本文・Full Story等、News本文系Production経路で実際に使われているValidator**である。
+
+`classify_asr_match()`の`normalize_numeric()`(318〜368行)には、パーセント記号とpercentの同値化が明示的に実装されている:
+```python
+t = re.sub(r"\b(\d+(?:xdecimalpointx\d+)?)\s*(?:percent|per cent)\b", r"\1xpercentx", t)
+t = re.sub(r"(\d+(?:xdecimalpointx\d+)?)\s*%", r"\1xpercentx", t)
+```
+また綴り数字→算用数字変換(`_convert_cardinal_words()`)は2〜19だけでなく、tens(twenty〜ninety)・hundred/thousand/millionを含む任意の桁の綴り数字列を対象にしており、ハイフン複合語("seventy-eight"等)も冒頭でハイフンをスペースへ変換してから処理するため対応できる設計だった。既存test(`er006_preprod_hardening_01_validation_test.py`)にも`"percent 28% <-> twenty-eight percent"`という直接該当するテストケースが存在し、実装意図通りに動作することを確認した。
+
+### C. Production配線の確認(実行経路の追跡)
+
+`er003_v1_n3_01_tts_generate.py`が`er006_preprod_hardening_01_validation`を`en_validator`としてimportしており(45行)、No.9の`generate_a2_segments()`/`generate_b1_segments()`のPoint本文系処理から、以下の経路で`classify_asr_match()`へ到達することを確認した(A2/B1とも同一Validator、retryごとに同一関数を再利用、`point_two`専用の特別pathは存在しない・他のNews本文segment[point_one/full_story_part1/2/in_one_line]と共通処理):
+
+```
+parts.json["point_two_body"](canonical)
+  → tts_safe_news_en()  ※TTS入力構築とASR比較基準textの両方を兼ねる
+  → TTS生成
+  → ASR(routing.transcribe)
+  → secondary_asr.evaluate_attempt_with_cascade() 内部で classify_asr_match(canonical=tts_safe_news_en適用後text, asr_text)
+  → PASS/STOPPED判定
+```
+
+### D. 実データでの検証(read-onlyローカル診断、新規API呼び出しなし)
+
+`review_lock_state.json`に記録された実ASR文字起こし(A2/B1B `point_two`各3attempts)と、実際にParts.jsonから`tts_safe_news_en()`を通した後のcanonical textを、`classify_asr_match()`へそのまま渡して再現した。
+
+**発見(重要・前回報告を覆す)**: `tts_safe_news_en()`が内部で呼ぶ`tts_safe_number_words_en()`(`er003_v1_n3_01_tts_generate.py` 502〜513行、"two"〜"twelve"の綴り数字を算用数字へ変換するTTS入力安全化関数)の正規表現`\b(two|three|...|twelve)\b`が、ハイフン複合語の**後半だけ**に誤ってマッチしていた。ハイフンは`\b`(単語境界)として扱われるため、"Forty-**four**"の"four"、"Seventy-**eight**"の"eight"、"Thirty-**six**"の"six"がそれぞれ単独の数字語として誤検出され、算用数字へ部分変換されてしまう:
+
+| 入力 | `tts_safe_number_words_en()`出力(バグ) |
+|---|---|
+| `Forty-four` | `Forty-4` |
+| `Seventy-eight` | `Seventy-8` |
+| `Thirty-six` | `Thirty-6` |
+| `Twenty-two`/`Fifty-five`/`Eighty-eight`等も同様 | 同様に後半のみ数字化 |
+| `Twenty-one`/`Ninety-one`("one"は対象外) | 影響なし |
+
+この壊れた文字列(`Forty-4 percent`等)が、TTS入力・ASR比較基準textの**両方**として使われる。ASR比較の実行結果:
+
+- **A2 `point_two`(3 attempts共通)**: `content_word_diffs = [{"canonical": "forty 4xpercentx", "asr": "44xpercentx", "entity_like": False}]`。canonical側は"Forty-4 percent"→正規化で"40"と"4xpercentx"という**無関係な2 token**に分裂する一方、ASR側"44%"は正しく"44xpercentx"の1 tokenになるため、突き合わせ不能。→ `TRUE_CONTENT_MISMATCH`(ratio=0.9838)。
+- **B1B `point_two`(3 attempts共通)**: 同様の分裂が"Seventy-8"→`seventy 8xpercentx`と"Thirty-6"→`thirty 6xpercentx`の2箇所で発生(canonical側は"Seventy-eight"/"Thirty-six"の両方が対象)。加えて`US`(canonical)と`U.S.`(ASR句読点あり)のtoken数差も検出されたが、これは固有名詞的表記としてentity_like=Trueに分類され単独では非blocking。→ `TRUE_CONTENT_MISMATCH`(ratio=0.9204)。
+- **66%/59%(A2/B1B共通)は正しく吸収されていた**(canonicalが元々算用数字"66 percent"/"59 percent"のため、上記バグの影響を受けない)。**percent記号自体の同値化ロジックはA2/B1いずれの箇所でも一度も破綻していない**ことを確認した。
+
+### E. Root Cause分類
+
+**Case C: NORMALIZER_BUG** — ただし、バグの所在は「ASR Validator本体(`classify_asr_match`/`normalize_numeric`)」ではなく、その**手前でcanonical textを構築するTTS入力安全化関数`tts_safe_number_words_en()`**(同じ`er003_v1_n3_01_tts_generate.py`内、Production配線済み・全News本文segmentで共通使用)である。ASR Validator自体の数字/percent正規化ロジックは実装・配線とも意図通り正しく動作していることをB節のtest・C/D節の実データ双方で確認した。バグの影響範囲は「十の位の単語+一の位が2,3,4,6,7,8,9のいずれかである綴りハイフン複合数(21〜99のうち約8割)がTTS入力/ASR比較対象textに含まれる場合」全般に及ぶ(No.9固有ではない、既存の潜在バグ)。既存test(`er003_test_v1_n3_01_tts_generate.py`)には`first_words()`のハイフン複合語対策テストはあるが、`tts_safe_number_words_en()`自体のハイフン複合語ケースを検証するテストは存在しなかった(カバレッジの欠落)。
+
+### F. 前回報告(ER-010-NO9-ARTICLE-AUDIO-PRODUCTION-WIRING-14)の検証結果
+
+**誤っていた**。前回は「canonical側の綴り数字とASR側のdigit-percent表記の差が主因」と報告したが、今回の実データ検証により、percent記号とpercentの同値化・綴り数字と算用数字の同値化は**いずれも既存Validatorで正しく吸収されており**、実際の主因は無関係な別バグ(`tts_safe_number_words_en()`のハイフン複合語誤変換によるcanonical text自体の破損)だったと判明した。前回報告は表面的な観察(ASR文字起こしが"78%"のようなdigit-percent表記だった)からの推定であり、実際にnormalizer関数を実行して確認する検証を行っていなかったため誤った結論に至った。
+
+### G. Key Phrase "default"(A2 kp2_en)音声長異常の切り分け
+
+`point_two`とは無関係な別事象であることを確認した。`used_form="default"`(1単語)に対し、`detect_duration_anomaly()`の想定上限は`1語×1.5秒+4.0秒=5.50秒`。実際の生成音声長は3回とも10.77秒/13.93秒/9.09秒(想定上限の1.7〜2.5倍)で、いずれもduration anomaly検知によりASRへ送る前に破棄されている(3回ともASR自体は未実行、`cumulative_asr_calls=0`)。これはCURRENT_SPEC.mdに記載済みの既知のTTS instruction-paraphrase/hallucination失敗モード(短い1語Key Phraseで発生しやすい)に該当すると判断する。既存のduration anomaly検知機構は設計通り正しく動作しており、Validator側の不具合ではない。新しいKey Phrase仕様の追加は行っていない(今回のスコープ外)。
+
+### H. OPEN-102更新・状態まとめ
+
+- OPEN-102のRoot Causeを、前回の「数字表記ゆれの吸収漏れ(推定)」から、**「`tts_safe_number_words_en()`のハイフン複合語誤変換によるcanonical text破損(Case C、確認済み)」**へ訂正した。
+- 実際のASR文字起こし(3 attempts共通、A2/B1Bとも)は、数値・内容とも正規canonical textと完全に一致する内容を発話していると強く推定される(TTS自体が誤読している証拠はない。ASR側は"78%""44%"等、正しい数値を一貫して書き起こしている)。**音声そのものは正しい可能性が高いが、比較対象のcanonical textが壊れていたために誤ってfail-closedになった、false negativeの疑いが強い**。
+- ただし今回はProduction code変更禁止(診断専用)のため、`tts_safe_number_words_en()`の修正は実施していない。修正は新しいUser Decisionが必要(STOP G相当)。
+- OPEN-100 = `DEFERRED / NON-BLOCKING`(変更なし)。OPEN-101 = `RESOLVED / CLOSED`(変更なし、再openすべき新規lineage不整合は発見していない)。OPEN-102 = `USER_DECISION_REQUIRED`のまま(Root Cause欄のみ更新)。
+- A2/B1のepisode assembly・完成試聴は今回も未実施(診断のみのため)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
