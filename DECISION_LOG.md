@@ -2838,6 +2838,55 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - 新規のNumeric Compression・Point Prompt・Storytelling First変更等は今回も一切実装していない(OPEN-100 DEFERRED方針を遵守)。
 - **状態まとめ**: OPEN-100 = `DEFERRED / NON-BLOCKING`。OPEN-101 = `USER_DECISION_REQUIRED`(B1B音声生成のみBlocking、A2は非Blocking)。No.9 A2/B1 audio = 今回とも**未生成**(STOP条件A該当のため)。
 
+## ER-010-NO9-ARTICLE-AUDIO-PRODUCTION-WIRING-14(2026-09-01、OPEN-101 Root Cause特定・article/audio SSOT修復・No.9 A2/B1B正式Production Audio Stage実行・新規Audio QA課題[OPEN-102]発見)
+
+### A. OPEN-101 Root Cause調査
+
+前回セッション(ER-010-NO9-OPEN100-DEFER-AND-PRODUCTION-AUDIO-13)は、B1B article.mdとLedger Deviation Check対象本文の不一致(Case B)、およびProduction Audio正式入力先(`er006_output/pool_pilot_01/pool_n9_tip_screens/`)が2026-08-29時点の旧candidateのまま放置されている問題を発見したが、Root Causeの特定までは至らずSTOPしていた。今回、まずコードベース全体を調査しRoot Causeを特定した。
+
+- **調査対象**: `er009_n1_production_integration_01.py`(No.9専用Production driver)、`er006_pool_pilot_01_writer.py`(Writer Stage実装)、`er006_pool_pilot_01_support.py`(Support Stage実装)、`er003_v1_n3_01_articles_generate.py::run_one_pattern()`、`er010_no9_*.py`各diagnostic script(06/09/10/11版)。
+- **発見1**: `er009_n1_production_integration_01.py::run_writer_stage_baseline()`は、`er006_pool_pilot_01_writer.run_writer_for_theme(..., OUT_DIR, ...)`を呼び出し、`OUT_DIR = "er006_output/pool_pilot_01/pool_n9_tip_screens"`(正式Production Audio入力先と**同一ディレクトリ**)へ直接`gen.run_one_pattern()`の出力(article.md等)を書き込む設計だった。つまり、Writer StageとAudio Stageは元々**単一の共有ディレクトリ**を介して直結する設計であり、両者の間に別途promotion/copy工程は存在しない(存在しないことが仕様の欠陥ではなく、そもそも設計上不要という前提だった)。
+- **発見2**: 一方、ER-010-06〜12の全diagnostic検証scriptは`er010_no9_*.py`という命名規則で、`OUT_DIR = "er010_output/no9_..."`という**意図的に隔離された別ディレクトリ**へ出力していた(`grep`で全4本のOUT_DIR定義を確認、いずれも固有の`er010_output/...`パスで相互にも正式`OUT_DIR`とも重複しない)。これは、Storytelling First・Formatting禁止・Fact Checkerポリシー変更等の実験を、Production正式candidateを壊さずに検証するための、意図的かつ妥当な設計である。
+- **結論**: 問題は「promotion処理のバグ」ではなく、**diagnostic検証で確認した改善を、正式pathへ反映する運用そのものが一度も実行されていなかった**ことだった。正式pathは既に存在しており(`run_writer_stage_baseline()`を正式`OUT_DIR`に対して直接実行するだけ)、新規のpromotion機構を実装する必要はない。B1B特有のarticle.md/Ledger本文不一致(前回発見のCase B)も、この「正式pathが一度も実行されていない」状態が続く中でdiagnostic版のみを繰り返し実行・上書きしていたことに起因すると考えられる(diagnostic版内での厳密な原因特定は前回セッションの通り未確定のまま残るが、今回の対応=正式pathでの単一実行によって実務上解消する)。
+
+### B. 修復実施(article側)
+
+Root Cause A.の結論に基づき、以下を**コード変更なし**で実施した。
+
+1. `run_writer_stage_baseline()`と同一の呼び出し(`gen.run_one_pattern()`、prompt/instruction無変更)を、正式`OUT_DIR`に対してB1B・A2それぞれ個別に実行した(それぞれ単一の連続実行、既存の複数回再利用は行っていない)。
+   - B1B: 実行時間383.2秒。Ledger Deviation Check初回でMAJOR 1件検出→Local Rewrite cycle 1で解消、再チェックMAJOR=0(`LEDGER_COMPLIANT`)。Fact Checker verdict=`REVIEW_REQUIRED`(non-blocking advisory、OPEN-97方針通り)。Directional Fact Precheck=`DIRECTION_REVIEW_REQUIRED`(non-blocking、`POTENTIAL_DIRECTION_REVERSAL`ではない)。status=`OK`。
+   - A2: 実行時間471.1秒。Ledger Deviation Check初回でMAJOR 2件検出→Local Rewrite cycle 1で両方解消、MAJOR=0。Fact Checker verdict=`REVIEW_REQUIRED`。Directional Fact Precheck=`DIRECTION_REVIEW_REQUIRED`。status=`OK`。
+   - 両article.mdを目視確認し、emoji=0・太字Markdown(`**`)=0(OPEN-99方針通り)、Structure(Title/Main Story/Point One/Point Two/In One Line)すべて存在を確認。
+2. `run_support_stage_baseline()`相当(`sc.run_key_phrases`/`run_b1_scaffold`/`run_a2_scaffold`、コード変更なし)を実行し、新article.mdからparts.json・Preview/Comment1-4・Key Phrasesを再導出した。
+   - B1B Key Phrase選定が初回`KEY_WORDS_STRUCTURE_INVALID`(item_reasons: "source_spanがsource_sentence内に存在しない")となり、`run_key_phrases()`の設計上canonicalization工程がskipされた(`keywords_canonicalized.json`が未更新のまま旧版が残るリスク)。これはコード上`max_attempts=1`(リトライ機構なし)の一時的な構造検証不一致と判断し、**同一の`run_key_phrases()`をコード・prompt変更なしで1回だけ再実行**したところ、`KEY_WORDS_STRUCTURE_PASS`→`CANONICALIZATION_PASS`となり解消した(`keywords_canonicalized.json`更新済み)。
+   - A2のSupport Fact Check(Web検索なし、Article/Ledger突き合わせのみ)がverdict=`MINOR_FIX`(comment_3の可視性表現がやや広い言い換え、severity=MINOR)を1件報告。MINOR_FIXはrun_support_for_theme()の実装上blocking判定には使われておらず、advisoryとして記録するに留めた(article/support本文は変更していない)。
+3. **Source一致の機械確認**: `article.md`から`sc.split_article_text()`で独立に再導出したtitle/part1/part2/point_one_heading/point_one_body/point_two_heading/point_two_body/in_one_lineの正規化(空白畳み込み)SHA256[:16]ハッシュと、実際に保存されている`parts.json`(Audio Stageの実際の入力ファイル)の対応ハッシュを突き合わせた。**A2/B1Bとも全8項目で完全一致**を確認し、`er006_output/pool_pilot_01/pool_n9_tip_screens/audio_source_consistency_check.json`へ記録した。
+
+以上により、OPEN-101が懸念していた「article lineageの一意性」「Production保存先とAudio inputの一致」は解消したと判断し、OPEN_ITEMS.mdでOPEN-101を`RESOLVED/CLOSED`(lineage整合性の論点について)とした。
+
+### C. No.9 正式Production Audio Stage実行結果
+
+`er009_n1_production_integration_01.py::run_audio_stage()`(No.9専用、Standard同期TTSモード、Production Batch経路は不使用というユーザー既定指示に従う)を正式`OUT_DIR`に対して実行した。
+
+- B1B: TTS 13segment中12 `OK`、`point_two`のみ`STOPPED`。Key Phrase 5件は英語Component・日本語meaning含め全て`OK`。
+- A2: TTS 14segment中13 `OK`、`point_two`のみ`STOPPED`。Key Phrase 5件中4件`OK`、Key Phrase 2("default")の英語Componentのみ`STOPPED`(日本語meaningは`OK`)。
+- `point_two`の`STOPPED`理由(`review_lock_state.json`より): 3回の試行(`cumulative_tts_attempts=3`、既存の`PRODUCTION_MAX_TTS_ATTEMPTS=3`上限)とも`classification=TRUE_CONTENT_MISMATCH`。実際のASR文字起こし全文をcanonical本文と直接比較したところ、事実内容・数値(78%/44%/66%/59%/36%)は意味的にほぼ完全に一致しており、相違は主に数字の表記ゆれ(canonical側"Seventy-eight percent"等の綴り数字 vs ASR側"78%"等の digit-percent表記)と文境界付近の軽微な言い換えに限られていた。既存のTTS/ASR共通部品には数字表記ゆれ吸収機構があるとCURRENT_SPEC.mdに記載されているが、本segment(複数の数字を含む長文News本文)では吸収しきれず`TRUE_CONTENT_MISMATCH`に分類された可能性がある(Validator側の改善要否は新しい仕様判断であり、今回のスコープでは実施していない)。
+- A2 Key Phrase 2("default")の`STOPPED`理由: 3回とも生成音声長(10.77秒/13.93秒/9.09秒)がテキスト量からの想定範囲(5.50秒)を大きく超え、TTSモデルが指示文パラフレーズ/無関係内容を生成した疑いによりASRへ送らず破棄(duration anomaly検知、既存の安全機構が正しく動作)。
+- **Audio Validation Gate**(`er003_v1_n3_01_assemble.py::verify_episode_audio_validation_gate()`、ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05)が、B1のepisode assembly実行時に`point_two=STOPPED`を検知し、`RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION`で処理を中止した。これは「検証・stale・STOPPEDの音声をそのまま完成扱いにしない」という既存のfail-closed仕様通りの正常動作である。A2のassemblyはB1側で例外発生により未実行(A2も同一の`point_two=STOPPED`状態のため、実行すれば同じGateでblockされる可能性が高いが未検証)。
+- 既存仕様`PRODUCTION_MAX_TTS_ATTEMPTS=3`(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15、ユーザー正式決定、「4回目以降は絶対にTTS生成しない」)を尊重し、4回目の自動再試行は一切実施していない。
+
+### D. STOP判断とOPEN-102新規追加
+
+上記Cの結果は、指示書のSTOP D(「Audio QAでblocking failure」)に該当すると判断した。既存のHuman Review機構が対象segmentを正しく`HUMAN_REVIEW_REQUIRED`として記録しており、これはユーザーによる試聴・承認を経るべき既存の正常フローであるため、Claude Code側で(a) 4回目のTTS再試行、(b) Validatorの数字表記ゆれ吸収ロジックの変更、(c) 該当segmentを検証未了のまま完成扱いにする、のいずれも行っていない。この新規事項をOPEN_ITEMS.mdへ**OPEN-102**として新規追加した(Blocking: A2/B1双方のepisode assembly完成のみ。記事側・Support側・その他segmentは全てOK)。
+
+### E. 状態まとめ
+
+- OPEN-100 = `DEFERRED / NON-BLOCKING`(変更なし)。
+- OPEN-101 = `RESOLVED / CLOSED`(article/audio lineage整合性の論点について、2026-09-01)。
+- OPEN-102 = `USER_DECISION_REQUIRED`(2026-09-01新規、A2/B1双方のepisode assembly完成のみBlocking)。
+- No.9 A2/B1B article = Production正式candidateとして確定(Ledger MAJOR=0・Fact Checker FAILなし・Formatting適合・Point Overlap PASS)。
+- No.9 A2/B1B audio = TTS大部分完了・`point_two`(両level)と A2 Key Phrase 2のみHuman Review待ちのため、**完成episode(assembled)は今回とも未生成**。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

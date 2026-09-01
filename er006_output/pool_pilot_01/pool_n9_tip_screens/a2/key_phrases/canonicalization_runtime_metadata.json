@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-luna",
-  "response_id": "resp_06225c0dc7506c37006a935d0e49c487d09747da33229d4059",
+  "response_id": "resp_0f594529372dca1b006a9631650bfc87d08512f73db81959b8",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -17,10 +17,10 @@
         "items": [
           {
             "rank": 1,
-            "key_phrase": "regression discontinuity",
+            "key_phrase": "guilt tipping",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "確立した研究手法名であり、文脈限定語を含まない2語の自然な学習単位です。これ以上短くすると手法としての意味が失われます。",
+            "reasoning": "「guilt tipping」は、罪悪感によってチップを払うという意味を表す自然な名詞句で、限定詞を加除する必要もありません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -35,10 +35,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "guilt tipping",
+            "key_phrase": "default",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "記事内で提示された特徴的な表現で、限定語を伴わなくても意味を持つ自然な名詞句です。guiltまたはtippingのどちらかを削ると中心的な意味が変わります。",
+            "reasoning": "「default」は、ここではあらかじめ設定された選択肢・標準設定を指す独立した学習単位として十分自然です。source_spanにも追加すべき意味上の補完語はありません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -53,10 +53,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "happen to see",
+            "key_phrase": "push back",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "source_spanの過去形「happened」は方式Lで基本形化済みとみなし、「happen to see」を維持します。偶然〜するという構文の核が保たれており、目的語は文脈に応じて変わるため追加不要です。",
+            "reasoning": "「push back」は本文の「pushing back」から方式Lで基本形化された句動詞であり、そのまま保持します。against以下を加えなくても「抵抗する・反発する」という中心的意味は十分伝わります。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -71,10 +71,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "push back",
+            "key_phrase": "a catch",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "句動詞として自然に成立し、反発する・抵抗するという意味の核を持つ2語の学習単位です。文脈の「Customers are starting to」は表現本体ではないため保持しません。",
+            "reasoning": "「a catch」は、予想外の問題や落とし穴を表す自然な名詞句です。不定冠詞を残したほうがこの用法の自然な単位として提示しやすく、「catch」だけにすると意味の特定性が弱まります。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -89,10 +89,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "preset choice",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "文脈に依存する限定語を含まない自然な名詞句で、あらかじめ設定された選択肢という意味を十分に表します。これ以上削るとpresetまたはchoiceの意味役割が失われます。",
+            "key_phrase": "starting point",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "remove_contextual_determiner",
+            "reasoning": "source_spanの「a starting point」から文脈依存の不定冠詞「a」を除き、「starting point」とします。開始地点・出発点という中心的意味と自然な用法は保たれます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -108,7 +108,7 @@
         ]
       },
       "model": "gpt-5.6-luna",
-      "response_id": "resp_06225c0dc7506c37006a935d0e49c487d09747da33229d4059"
+      "response_id": "resp_0f594529372dca1b006a9631650bfc87d08512f73db81959b8"
     }
   ]
 }

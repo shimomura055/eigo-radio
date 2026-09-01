@@ -1,33 +1,41 @@
-# Why Tip Screens Keep Asking for More
+# When the Tip Screen Starts the Negotiation
 
-At a restaurant or in a taxi, payment can end with one question: “How much would you like to tip?”
+At the end of a taxi ride or a meal, the payment screen asks one small question:
 
-The screen often shows several choices first. These suggested rates may be higher than the amount the customer planned to give.
+“How much would you like to tip?”
 
-That first number can change the final decision.
+But the screen usually gives an answer first.
 
-In 2014, Haggag and Paci published a peer-reviewed study in the *American Economic Journal: Applied Economics*. They studied more than 13 million credit card payments in New York City taxis.
+It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision.
 
-Before payment, the screen showed a small menu of suggested tip rates. When the fare was just below or just above 15 dollars, the menu changed suddenly.
+A 2014 study by Kareem Haggag and Giovanni Paci looked at more than 13 million credit card taxi payments in New York City.
 
-This gave the researchers a useful comparison. They used a method called regression discontinuity. In simple terms, they compared rides that were almost the same, but showed different tip menus.
+The researchers found a useful natural test. For fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.
 
-The result was clear: passengers who happened to see higher suggested rates left more money. The first number on the screen became a starting point for their decision.
+Passengers who saw higher suggested rates left more money.
 
-But a high suggestion does not always bring a higher tip.
+This suggests that the number on the screen can become a starting point. People may begin with that number instead of their own first idea.
 
-When the suggested rate feels too high, some customers do not choose a smaller custom amount. Instead, they leave no tip on the credit card.
+But there was a catch.
 
-So the screen has two possible effects. It can guide some people toward a larger tip. But it can also make other people choose zero.
+When the suggested tip was too high, some customers did not simply choose a smaller amount. They chose zero.
 
-### The pressure is social, not only mathematical
+So a high default can raise the tip from some customers. But it can also push other customers away from tipping by card completely.
 
-A 2022 policy brief by Michael Lahr of Rutgers University says restaurant tipping in the United States rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s. Today, digital screens may show tips as high as 35 percent. With a cash tip jar, the choice was more private. On a screen, the worker may be watching. Lahr calls this feeling “guilt tipping.”
+### The screen makes a private choice public
+
+In the United States, restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s, according to a Rutgers policy brief.
+
+Digital payment screens can now show tips as high as 35 percent. Michael Lahr argues that this changes the feeling of the moment. With a cash tip jar, the choice could be more private. With a screen held by an employee, the customer may feel watched. He calls this pressure “guilt tipping.”
 
 ### Customers are starting to push back
 
-A Popmenu survey released on April 8, 2026, found that 78 percent of respondents said tipping had become ridiculous. Forty-four percent said they had reduced their tips from the year before. The share who felt they had to leave a tip fell from 66 percent in September 2025 to 59 percent in 2026. Also, 36 percent said they chose a custom amount instead of a preset choice.
+A 2026 Popmenu survey found that 78 percent of respondents said tipping had become unreasonable. Forty-four percent said they were tipping less than the year before.
+
+The feeling of “I must leave a tip” also fell, from 66 percent in September 2025 to 59 percent in 2026. And 36 percent said they chose a custom amount instead of a suggested rate.
+
+These are survey answers, not proof that the screen caused the change. But they show that many customers are becoming tired of being guided by the screen.
 
 ## In one line…
 
-A higher first number can increase a tip, but too much pressure can lead to no tip at all. The “suggested” tip is no longer just a choice—it is part of the checkout experience.
+A tip screen offers the first answer before you make your own choice. A higher number may bring in more money, but if it feels too high, some customers may choose nothing.

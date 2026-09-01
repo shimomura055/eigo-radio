@@ -1,0 +1,37 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "Rides just below and just above that price were very similar."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "Rides just below and just above that price were very similar, but passengers saw different first suggestions.",
+        "issue": "15ドルの閾値の上下の乗車が「非常によく似ていた」という比較はLedgerに記載・保証されておらず、回帰不連続デザインの識別仮定を確認済みの事実として補っている。",
+        "explanation": "Ledgerは閾値周辺の識別条件や仮定を未確認としており、乗車の類似性を具体的事実として追加するのは範囲外。",
+        "flags": [
+          "changed_fact",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "At fares just below and just above that price, passengers saw different default tip menus.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "At fares just below and just above that price, passengers saw different default tip menus.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "sentence_fallback(overlap=0.62)"
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]
