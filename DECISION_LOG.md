@@ -2814,6 +2814,30 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - Point Compression診断: `Case 2 SPEC_TOO_WEAK`、`USER_DECISION_REQUIRED`(新Open Itemとして追加、下記OPEN_ITEMS参照)。
 - 新規技術的負債(B1B audit trail不整合): 新Open Itemとして追加。
 
+## ER-010-NO9-OPEN100-DEFER-AND-PRODUCTION-AUDIO-13(2026-09-01、OPEN-100のDEFERRED正式記録・OPEN-101音声化前確認・No.9音声生成のSTOP判断)
+
+### A. OPEN-100(Point Two数字羅列問題)のUser Decision
+
+- **User Decision**: OPEN-100を一旦Open Itemとして保留する(`CLOSE`でも`REJECTED`でもなく`DEFERRED / NON-BLOCKING`)。理由: (1)過去にもTrialしており短期に単純解決できる問題ではない、(2)強いNumeric Compression(方式B)は過去にFact Safety上のcausal drift副作用が実証済み、(3)今後導入予定のEditorial Typeで記事構成が多様化し、survey/numeric-heavy記事の比率自体が限定される想定、(4)現時点でNo.9完成・音声化を止めて追加Trialするほどの優先度ではない。
+- **実施しなかったこと**: Numeric Compression追加・Point専用Prompt・Storytelling First変更・数字削除・Point書き直しはいずれも行っていない。Fact Checker advisory指摘を理由とした本文修正も行っていない。
+- **SSOT反映**: [OPEN_ITEMS.md](OPEN_ITEMS.md)のOPEN-100を`USER_DECISION_REQUIRED`→`DEFERRED / NON-BLOCKING`へ更新。次Actionとして「Editorial Type導入後、実際の発生率を見て再評価する」を明記。
+
+### B. OPEN-101(B1B audit trail不整合)の音声化前確認 — Case B判定
+
+音声生成前に、「どの本文がNo.9 B1Bの正式Production final candidateか」を確定する目的で、Writer output → Evidence Compression Editor output → Local Rewrite → final article artifact → audio generatorが読み込むsource articleの系譜を確認した。
+
+- **確認1(article.mdの書き込みタイミング)**: `er010_output/no9_formatting_production_and_fact_review_11/b1b/`内の各audit fileのmtimeを比較した結果、`article.md`(07:54:41)が`evidence_compression_editor_raw.json`(07:52:25)・`point_overlap_article_retry_log.json`(07:52:25)より約2分16秒遅く書き込まれていた。コード(`er003_v1_n3_01_articles_generate.py`)を再確認したところ、`article.md`への書き込みは`_generate_and_compress_article()`内(Point Overlap Retryループの一部)と、Local Rewrite Loop内(`major_items`が存在する場合のみ)の2箇所のみだが、B1Bの`local_rewrite_cycles.json`/`local_rewrite_results.json`は共に空配列であり、Local Rewrite Loopの本体は実行されていない(記録上MAJOR=0のため)。したがって、このタイムスタンプ差をコード読解のみで説明することはできなかった。
+- **確認2(内容の直接照合、今回新規実施)**: `ledger_deviation.json`が記録するMINOR指摘1件の`claim_in_article`("With a cash tip jar, the choice was comparatively private, one researcher argues. ... The researcher calls this "guilt tipping.")と、現在の`article.md`の対応箇所("A cash tip jar was relatively private... One policy brief calls this pressure "guilt tipping.")を字句レベルで直接比較したところ、**一致しなかった**。これは、Hook-aware Ledger Deviation Checkが実際に安全確認を行ったテキストと、現在`article.md`として保存されているテキストが異なる、という直接証拠である。
+- **確認3(Production Audio正式入力先の状態、今回新規発見)**: `er009_n1_production_integration_01.py::run_audio_stage()`(No.9のProduction Audio正式driver)が実際に読み込むディレクトリは`er006_output/pool_pilot_01/pool_n9_tip_screens/{a2,b1b}/article.md`であり、ここまで診断してきた`er010_output/no9_formatting_production_and_fact_review_11/`とは**別のディレクトリ**である。実際に中身を確認したところ、このディレクトリのA2/B1B `article.md`は2026-08-29 21:09/21:15時点のもの(タイトル・本文ともER-010-11版と全く異なる、おそらくER-009-N1-PRODUCTION-INTEGRATION-01のBaseline初回生成のまま)であり、ER-010-06版以降の一連の改善(Storytelling First/No Jargon/Formatting禁止/Fact Checker新方針等)が一切反映されていないことが判明した。
+- **判定**: 確認2・確認3の両方により、本項目は仕様書のCase A(記録上の問題のみ)ではなく**Case B**(「どの本文が正式final candidateなのか不明、またはaudio generatorが異なる本文を読み込む可能性がある」)に該当すると判定した。B1Bについては、`article.md`の実体自体が安全確認(Ledger Deviation Check)を経たテキストと一致しない可能性が具体的証拠で示されており、かつ、そもそもProduction Audio正式入力先には全く別の旧candidateが置かれたままだったため、**このままaudio generatorを実行すると、今回一連のセッションで安全性・品質を確認してきた本文とは異なる、3日前の旧candidateが音声化されてしまう**リスクが実際に存在した。
+- **A2との違い**: A2は同一の確認を行い、Point Overlap Retry自体が発火しておらず(Writer呼び出し1回のみ)、`ledger_deviation.json`の指摘も0件であるため、B1Bのような具体的な不一致の証拠は見つからなかった。ただし、A2についてもProduction Audio正式入力先(`er006_output/pool_pilot_01/pool_n9_tip_screens/a2/article.md`)が同様に2026-08-29時点の旧candidateのままである点は共通の課題として残る。
+
+### C. 音声生成のSTOP判断
+
+- 上記Case B判定により、指示書のSTOP条件A(「OPEN-101確認で、正式final article sourceが一意に確定できない」)に該当すると判断し、**今回はA2/B1いずれについてもProduction Audio生成を実施しなかった**。「勝手に本文を選ばない」という指示に従い、B1Bのどのテキスト(`article.md`実体/`evidence_compression_editor_raw.json`/再生成)を正式candidateとするかも、Production Audio正式入力先(`er006_output/pool_pilot_01/pool_n9_tip_screens/`)へどう反映するかも、Claude Codeの判断では決定・実行していない。
+- 新規のNumeric Compression・Point Prompt・Storytelling First変更等は今回も一切実装していない(OPEN-100 DEFERRED方針を遵守)。
+- **状態まとめ**: OPEN-100 = `DEFERRED / NON-BLOCKING`。OPEN-101 = `USER_DECISION_REQUIRED`(B1B音声生成のみBlocking、A2は非Blocking)。No.9 A2/B1 audio = 今回とも**未生成**(STOP条件A該当のため)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
