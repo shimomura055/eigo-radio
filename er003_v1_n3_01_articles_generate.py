@@ -772,6 +772,33 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     with open(f"{out_dir}/audit/fact_check_attempts.json", "w", encoding="utf-8") as f:
         json.dump(fc_attempts, f, ensure_ascii=False, indent=2, default=str)
 
+    # ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12(ユーザー正式Decision):
+    # Fact Checkerのverdict="REVIEW_REQUIRED"(確認できない具体的主張・解釈・
+    # certainty nuance等、fact_checker_prompt_template_r3.txt参照)は、原則
+    # non-blocking advisoryとして扱い、記事生成・QA工程を継続する(status=OKの
+    # 判定材料にしない)。指摘は最終artifact提示時に「Fact Checker参考指摘」
+    # として別途ユーザーへ提示する(fact_qa.jsonのcontradictions/
+    # unsupported_specific_claims/notesがその内容)。一方、verdict="FAIL"
+    # (信頼できる情報と明確に矛盾する場合のみ付与される)は、Ledger Deviation
+    # MAJORや Point overlap未解消と同様にblockingとして扱い、それ以降の
+    # 工程(Ledger逸脱チェック・Directional Fact Precheck)は実行せず
+    # NG_REVIEW_REQUIREDを返す。役割はLedger Deviation Checkerとは異なる
+    # (Ledgerは記事とVerified Fact Ledgerの整合性、Fact Checkerは独立Web
+    # 検索によるexternal factとの整合性)ため、判定を混同しない。
+    if verdict == "FAIL":
+        print(f"[N3-01][{theme_id}] {label}: fact checkerがFAIL(信頼できる情報と明確に矛盾)と"
+              f"判定しました。自動続行せずNG_REVIEW_REQUIREDとして報告します"
+              f"(ledger逸脱チェック以降は実行しません)。")
+        return {
+            "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+            "metrics": metrics, "section_word_counts": section_wc, "length_report": length_report,
+            "fact_status": fc_status, "fact_verdict": verdict, "fact_check_result": fc_result,
+            "fact_usage_report": fact_usage_report,
+            "evidence_compression_applied": evidence_compression_applied,
+            "point_overlap_qa_applied": point_overlap_qa_applied,
+            "point_overlap_article_retry_attempts": retry_attempt,
+        }
+
     print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始(Hook-aware)...")
     ledger_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
     deviation_result = vfl01.run_deviation_check(

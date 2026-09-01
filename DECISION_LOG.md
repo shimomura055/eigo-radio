@@ -2741,6 +2741,79 @@ Audio bypassの不在、Sol modelの不在、Pronunciation Ledgerが呼び出し
 - **今回実施しなかったこと**: 絵文字・太字Markdown再発(OPEN-99)への恒久対策の実装(prompt変更・自動Validator新設のいずれも)、Fact Checkerが指摘した3件のcausality/scope懸念に対するWriter prompt側の新ルール追加、Point Overlap NGを人工的に発生させるTrial、旧候補(ER-010-06版・09版)・Git保全済み2026-08-29版の上書き、他22テーマへの遡及適用。
 - **状態**: Local Rewrite Loopは`PRODUCTION_WIRED`(Loop化実装完了・cycle2分岐は回帰テストで実証済み・No.9新候補ではcycle1のみで収束)。Hook-aware Deviation Checker/Evidence-bounded Interpretationは引き続き`PRODUCTION_WIRED`(今回のNo.9新候補で追加runtime確認)。Diagnostic Full Retryは`PRODUCTION_WIRED`を維持(今回も自然発火なし、ユーザーが明示的に維持を再決定)。**No.9新候補(ER-010-10版)自体の採用可否は引き続き`USER_DECISION_REQUIRED`のまま**(Ledger MAJORはA2/B1Bとも0件まで到達したが、Fact Checker REVIEW_REQUIRED 3件の扱いと絵文字・太字再発[OPEN-99]への対応方針が未決定のため、No.9は最終ユーザーレビューへ出荷できる状態ではない)。
 
+## ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11(2026-09-01、Formatting禁止仕様のProduction正式反映・No.9新候補でLedger MAJOR=0達成。**本エントリは前回セッションの実装をSSOTへ事後反映するbackfillであり、次のER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12タスクの一環として追記した**)
+
+- **背景**: OPEN-99(絵文字・太字Markdown再発、既存QA gate範囲外)への対応として、`COMMON_BLOCK_TEMPLATE`・Local Rewrite Promptへ「絵文字・不要な太字禁止」指示を追加し、`normalize_article_formatting()`関数(emoji・bold削除、複数スペース圧縮)をWriter出力後・Evidence Compression後・Local Rewrite後の呼び出し経路(`_generate_and_compress_article()`内・Local Rewrite cycle内の計2箇所)へ配線した。
+- **回帰テスト**: `FormattingNormalizationTests`6件を`er010_n9_production_integration_09_test_01.py`へ追加(全PASS)。プロジェクト全体回帰27/27 PASS(コミットメッセージ記載の実行結果)。
+- **No.9新候補(`er010_output/no9_formatting_production_and_fact_review_11/`)runtime evidence**: `er006_pool_pilot_01_writer.run_writer_for_theme`経由でA2/B1Bを再生成。
+  - **A2**: 初回Hook-aware判定でLedger Deviation MAJOR1件を検出したが、Local Rewrite cycle1・Attempt1で解消し、全体再判定`LEDGER_COMPLIANT`(MAJOR/MINORとも0件)。Point Overlap QAは初回(retry 0/2)で通過。Fact Checker `REVIEW_REQUIRED`(指摘4件、詳細は次エントリのFact QA参照)。絵文字・太字は本文・タイトルとも0件を確認。
+  - **B1B**: 初回Point Overlap QAでNG(overlap 0.500/0.405)となり、Diagnostic Full Retryにより記事全体retry 1回で解消(retry後overlap 0.219/0.364)。Ledger Deviation `LEDGER_COMPLIANT`(MINOR1件、MAJOR0件、Local Rewrite Loop不発火)。Fact Checker `REVIEW_REQUIRED`(指摘2件、詳細は次エントリのFact QA参照)。絵文字・太字は本文・タイトルとも0件を確認。
+  - 絵文字・太字Markdownの再発(OPEN-99)は、prompt側の明示禁止+`normalize_article_formatting()`のfail-safe削除の二重対策により、この候補では再発しなかった。
+- **状態**: Formatting禁止仕様は`PRODUCTION_WIRED`(prompt側禁止指示+自動削除の二重対策、regression 6件PASSで確認)。No.9新候補(ER-010-11版)自体は、次エントリ(ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12)でFact Checker運用の新方針を適用した上で最終評価する。
+- **前回セッションの記録漏れ**: このコミット(`32be1c6`)はDECISION_LOG.md/OPEN_ITEMS.mdを更新せずに完了しており、OPEN-97/OPEN-99はER-010-10版時点の記述のまま取り残されていた。本backfillエントリと次エントリで、OPEN-97/OPEN-99をこのER-010-11版のruntime evidenceに基づいて正式に更新する。
+
+## ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12(2026-09-01、Fact Checker REVIEW_REQUIREDのnon-blocking advisory化・Production実装・No.9 Point解説の数字羅列問題の診断)
+
+### A. Fact Checker運用の正式変更(User Decision→Production実装)
+
+- **User Decision**: Fact Checkerの`verdict="REVIEW_REQUIRED"`(`fact_checker_prompt_template_r3.txt`定義=「確認できない具体的主張、解釈、引用風表現など(矛盾とまでは言えない)」)を、原則`USER_DECISION_REQUIRED`でSTOPさせず、non-blocking advisoryとして扱う。理由: Storytelling First等で一定の解釈・自由度を与える以上、研究が直接証明した範囲との境界には揺らぎが出る。それを全てNGにすると調査結果の読み上げに近い記事になりやすく、Rewrite回数・Cost・Latencyも増える。明確なFact error・unsupported number・actorの誤り・事実関係の逆転・強いunsupported causality・重大なscope distortion・安全性上重大な誤りは引き続きblocking。
+- **現状調査の結果**: `er003_v1_n3_01_articles_generate.py::run_one_pattern()`を精査した結果、従来の実装は`fact_verdict`(REVIEW_REQUIREDだけでなくFAILも含む)を`fact_qa.json`へ記録するのみで、記事のstatus判定(`OK`/`NG_REVIEW_REQUIRED`)には一切使っていなかったことが判明した。実質的にREVIEW_REQUIREDは既にnon-blockingだったが、**verdict="FAIL"(`fact_checker_prompt_template_r3.txt`定義=「信頼できる情報と明確に矛盾する」)であっても記事を自動的にblockする仕組みが存在しない実装漏れ**だった。「REVIEW_REQUIRED=non-blocking、FAIL=blocking」というユーザーDecisionの後半(明確なFact errorはblocking)を満たすには、この漏れの修正が必要と判断した。
+- **実装**: `run_one_pattern()`のFact Checker呼び出し直後に、`verdict == "FAIL"`の場合のみ`NG_REVIEW_REQUIRED`を返しLedger逸脱チェック以降を実行しない分岐を追加した(Ledger Deviation MAJOR残存・Point overlap未解消と同じfail-closedパターンを踏襲、新しい仕組みは発明していない)。REVIEW_REQUIRED/PASSは従来通りLedger逸脱チェックへ継続する。
+- **回帰テスト**: 新規`er010_no9_factcheck_policy_and_point_compression_diagnostic_12_test_01.py`(4件、モックのみ、実LLM呼び出しなし)。(1)REVIEW_REQUIRED→`status="OK"`かつLedger逸脱チェックが呼ばれることを確認、(2)PASS→同様に`status="OK"`(従来動作の非破壊確認)、(3)FAIL→`status="NG_REVIEW_REQUIRED"`かつLedger逸脱チェックが**呼ばれない**ことを確認、(4)FAIL時も`article_text`/`fact_check_result`が結果に保持されることを確認。全4件PASS。`run_project_regression.py`: 1988件収集・1984件PASS・4件失敗(いずれも既知・無関係の既存事象: `er003_test_bad.FixtureTests.test_case_0`、`er003_test_p2j_investigate`の件数整合3件、`er007_ja_tts_retry_path_fix_test_01`のTTS retryテスト1件。今回の変更による新規failureはゼロ)。
+- **役割の区別**: Fact Checkerは独立Web検索によるexternal factとの整合性判定、Ledger Deviation CheckerはVerified Fact Ledgerとの整合性判定であり、両者のMAJOR/blocking判定を混同しない。Fact Checker REVIEW_REQUIREDはLedger Deviation CheckerのMAJOR判定とは独立で、Local Rewrite Loopのトリガーにもならない(既存の意図的な設計、無変更)。
+- **最終提示仕様**: 今後、記事最終提示時にFact Checker参考指摘(`fact_qa.json`のcontradictions/unsupported_specific_claims/notes)を、記事本文とは別に、指摘箇所・理由・明確なFact errorか/scope・interpretation・certainty nuanceかを添えて提示する(学習者向け本文へは混ぜない、コード実装は不要でfact_qa.json自体が既にこの情報を保持している)。
+- **状態**: `APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`(Production実装完了・回帰テスト・runtime動作[No.9実データでのREVIEW_REQUIRED非block確認]まで確認済み)。
+
+### B. No.9(ER-010-11版候補)Fact Checker指摘の扱い
+
+最新No.9候補(`er010_output/no9_formatting_production_and_fact_review_11/`)のFact Checker指摘を実データで確認した(ER-010-10版時点の指摘とは記事本文が異なるため、指摘内容も一部異なる)。
+
+- **A2**(`verdict=REVIEW_REQUIRED`): (1)"guilt tipping"という語をMichael Lahr本人の命名として帰属している点(Rutgersレポート本文はNYT記者Christina Moralesの紹介経由の可能性)、(2)"Cash made the choice more private"という対比表現がRutgers資料で直接実証された主張ではない点、(3)"some passengers did not enter a smaller custom amount"が、研究が直接観察した「クレジットカード上のゼロチップ増加」を超えた具体化である点、(4)"The first number on the screen became a starting point"が、研究本文の「推奨額全体の効果分析」を「最初の番号」自体の効果に具体化している点。いずれも**attribution/interpretation/certainty nuance**であり、事実の逆転・unsupported numberではない。
+- **B1B**(`verdict=REVIEW_REQUIRED`): (1)「最初の数字が基準になる」というアンカリング心理メカニズム自体をHaggag and Paci論文が直接検証していない点(論文は推奨額全体の変更効果を比較したもので、メカニズムそのものは研究側も特定できないとしている)、(2)"Today, digital payment screens can show tips of up to 35 percent"という現在時制の主張が、確認できたRutgers 2022年ブリーフの2022年時点記述であり2026年現在の継続を裏付けていない点。いずれも**mechanism-overreach/scope・certainty nuance**。
+- **判定**: 両levelとも、ユーザーが正式決定した新方針(上記A節)における「blocking」基準(明確なFact error・unsupported number・actorの誤り・事実関係の逆転・強いunsupported causality・重大なscope distortion・安全性上重大な誤り)のいずれにも該当しない。全てnon-blocking advisoryとしてPASS扱いとし、この指摘だけを理由にNo.9をSTOPしない。最終提示時の参考情報として保持する。
+
+### C. OPEN-97/OPEN-99の整理
+
+- **OPEN-97**: 対象をER-010-11版候補へ更新する。この候補はA2 Ledger Deviation `LEDGER_COMPLIANT`(MAJOR/MINORとも0件)、B1B `LEDGER_COMPLIANT`(MINOR1件、MAJOR0件)、Point Overlap QA双方PASS、絵文字/bold双方0件、Fact Checker REVIEW_REQUIREDは上記B節の通り新方針でnon-blocking advisoryに分類される。他にblocking QAが残っていないため、Fact Checker REVIEW_REQUIREDだけを理由にOPEN-97を`USER_DECISION_REQUIRED`のまま維持しない。`RESOLVED / CLOSED`とする(旧候補[ER-010-06版・09版・10版]はいずれもsupersededのまま)。Directional Fact Precheckは両levelとも`DIRECTION_REVIEW_REQUIRED`のままだが、これは既存の「片方にのみ方向表現があり機械的判定不能」という既知の限界パターンに関する暫定チェックであり、Fact Checkerとは別問題として引き続き非blocking扱いを維持する(個別確認は今回実施していない、既存の設計上の性質として記録するのみ)。
+- **OPEN-99**: ER-010-11版で実装したFormatting禁止仕様(prompt側禁止指示+`normalize_article_formatting()`によるfail-safe自動削除)により、ER-010-11版のA2/B1B両候補で絵文字・太字Markdownの再発が確認されなかった(本文・タイトルとも0件)。回帰テスト6件もPASS。`RESOLVED / CLOSED`とする。
+
+### D. No.9 Point解説の数字羅列問題(Point Compression診断、今回は診断のみ・新仕様は実装しない)
+
+- **対象**: ER-010-11版候補のA2 Point Two("The pushback is growing")・B1B Point Two("Customers are pushing back")。A2で指摘された78%・44%・66%→59%・36%を各Stageで追跡した。
+- **Stage別pre/post比較(A2)**:
+  | Stage | Point Two本文の数字 | 変化 |
+  |---|---|---|
+  | Writer raw(`audit/pre_editor_article.md`) | 78%, 44%, 66%→59%, 36% (計5個) | — |
+  | Evidence Compression Editor input(同上、Editorへの入力はWriter raw) | 同上 | 変化なし |
+  | Evidence Compression Editor output(`audit/evidence_compression_editor_raw.json`) | 78%, 44%, 66%→59%, 36% (計5個、数値は不変) | 出典名のみ圧縮("Popmenu's 2026 survey"→"a 2026 survey")、数字は一切削減・統合されず |
+  | Point Overlap QA/Retry後 | retry 0回で通過(発火なし) | 該当なし |
+  | Local Rewrite前後 | Main Story内の1文("This question is now common outside taxis."→"...beyond taxis, including in some digital POS settings.")のみ対象、Point Twoは対象外 | Point Twoへの影響なし |
+  | Final(`article.md`) | 78%, 44%, 66%→59%, 36% (計5個) | Writer rawから完全に不変 |
+- **Stage別pre/post比較(B1B)**: Writer raw・Editor output・Finalのいずれでも、Point Two相当の段落に78%, 44%, 66%→59%, 36%(計5個)が一貫して残存することを確認した(語り口の細部はStageごとに異なる、後述の**データ整合性に関する注記**参照)。数値の個数・値そのものは、少なくともWriter raw時点とFinal時点の2点間で完全に一致しており、Numeric Compressionが実効した形跡はない。
+- **データ整合性に関する注記(正直に記録)**: B1B(ER-010-11版)では、`audit/evidence_compression_editor_raw.json`のraw_textと最終`article.md`のテキストが、タイトルを含め文章表現面で大きく異なっており(SequenceMatcher類似度0.15)、通常のEvidence Compression(spoken layerの軽微な軽量化のみ)で説明できる差ではなかった。一方、Point Two内の数字の個数・値(78%, 44%, 66%→59%, 36%)そのものは、`audit/pre_editor_article.md`(Writer raw)と最終`article.md`のいずれでも一致しており、本診断の結論(数字が一切圧縮されなかった)には影響しない。ただし、この文章表現面の不一致自体の原因はコード読解のみでは特定できず(`_generate_and_compress_article()`のarticle.md書き込みはeditor出力を直接書き込む単純な実装であり、コード上はraw_text=article.mdとなるはずだが、実際のoutputディレクトリではそうなっていない)、今回は原因不明のまま記録するに留める。A2側では同種の不一致は見られなかった(Point Overlap Retryが発火せずWriter呼び出しが1回のみだったA2に対し、B1BはRetryで2回Writer呼び出しが発生している点が唯一の構造的違い)。今回のタスク範囲(Point Compression診断)を超えるため、原因調査は別途のOpen Itemとして記録する(下記OPEN追加参照)。
+- **Ledger側の事実確認**: `er006_output/pool_pilot_01/pool_n9_tip_screens/research/verified_fact_ledger.txt`を確認した結果、78%/44%は[F-011]、66%→59%は[F-012]、36%は[F-013]という**3つの別々のFactとして最初から分離登録**されていた(それぞれ異なるnumeric_scope: 「チップ慣行への評価」「チップ削減行動」「チップを残す義務感の変化」「カスタム額選択の割合」)。さらに[F-011]は元は78%/44%/42%の3値、[F-013]は元は36%/32%/17%の3値であり、**WriterはこれらのうちF-011の42%・F-013の32%と17%を既に落として5値まで絞っている**(完全な数字羅列の読み上げではなく、一定の取捨選択は行われている)。また、Ledger冒頭の注記1に「本Ledgerはnumber_classification(ANCHOR/SUPPORTING/DISPENSABLE)およびexactness_requirement(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)の個別タグを含まない。Spoken-first原則(数字の扱い、A〜E)は編集判断として適用すること」と明記されており、Writerは構造化タグの支援なしに純粋な編集判断でこれらの数字を扱う必要があった。
+- **Numeric Compressionの正式仕様確認(Production Writer側=Storytelling First内の一文)**: `COMMON_BLOCK_TEMPLATE`(`er003_v1_n3_01_articles_generate.py`)のStorytelling First節に「理解に必要な数字だけを使い、**同じ傾向を示す複数の数字**がLedgerにある場合は、それらを自然な言葉でまとめてください」という一文がある。この一文は明示的に「同じ傾向を示す」数字のみを対象としており、[F-011]/[F-012]/[F-013]のように**異なる設問・異なる意味を持つ数字の羅列を減らす**ことは範囲外である(Ledger自身がこれらを別Factとして分離登録していることとも整合する)。
+- **Numeric Compressionの正式仕様確認(Evidence Compression Editor側)**: `er003_v1_n3_01_evidence_compression_editor.py::EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE`も同様に「近似・重複する数字の削減(意味が変わらない範囲で、複数の似た数値の並列を1つの傾向表現へ圧縮する。ただし56%→40%→約1/3のような、トレンドの大きさ・方向そのものを理解するために必要な核心的な比較は残す)」と定義されており、対象は「近似・重複」する同一trendの数字に限定される。[F-011]/[F-012]/[F-013]の5値は互いに異なる設問への回答割合であり、Editor自身の定義上も圧縮対象外である。この判定は実データでも確認された(Editorはこれら5値を一切変更せず、出典名の一般化のみを行った)。
+- **既存の「Point専用・より強いNumeric Compression指示」が未配線であることの発見**: `er003_v1_n3_01_articles_generate.py::EVIDENCE_COMPRESSION_BLOCK`(Writer側のオプション追加ブロック、方式B「Compression-aware Writer」)には、「1つのPointの中で複数の数字が連続し、リスナーの注意が意味ではなく数値の記憶へ向いてしまう状態は避けてください」という、**まさに今回observedされた問題を直接名指しした、より強い指示**が既に存在する。しかし、この指示は`build_common_block()`の`evidence_compression`引数(既定`False`)経由でのみ有効化され、`run_theme()`/`er006_pool_pilot_01_writer.run_writer_for_theme()`のいずれもこの引数を`True`で渡していないため、**No.9を含む現行Production Writer呼び出しでは一切使われていない**。ただし、これは単純な実装漏れではない: `run_writer_for_theme()`のdocstringに明記されている通り、方式B(EVIDENCE_COMPRESSION_BLOCK)は「ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03で試作、比較の結果不採用」であり、No.7 B1候補での実データ比較で、出典名・数字を削った結果、元のcorrelational evidenceより踏み込んだ因果的表現が新規混入するdriftが実際に発生したため、方式C(Evidence Compression Editor、現行採用)がユーザーによって正式に選ばれた経緯がある。つまり、「Pointの数字連続を直接防ぐ既存の強い指示」は存在するが、それは過去にFact safety上のリスク(causal drift)を理由に明示的に不採用とされたコードパスの中にある。
+- **Writer側Numeric Compression実効性**: `PARTIALLY_EFFECTIVE`。Ledgerの元データ(7値)から5値まで絞る選別は行われている(完全な無視ではない)。しかし、それら5値が異なる設問・異なる意味を持つ数字である場合の追加圧縮(自然な言葉への統合)は、現在の一文の指示範囲外であり機能しない。
+- **Evidence Compression Editor側Numeric Compression実効性**: `NOT_TRIGGERED`(対象外と判定、pre/post diffで数字は不変)。Editor自身の「近似・重複する数字」という定義に照らせば、この非発火は仕様通りの動作であり、Editorの不具合ではない。
+- **Storytelling FirstのPoint実効性**: `PARTIALLY_EFFECTIVE`。Main Story・Point One(guilt tipping・心理的圧力という解釈軸を中心に構成)は物語として機能しており、Storytelling Firstが明示的に禁止する「調査結果を項目的に読み上げるレポート調・survey readout調」には該当しない。一方、**Point Two(A2「The pushback is growing」・B1B「Customers are pushing back」)は、[N%が...と回答した]という文が4つ連続する構成そのものが、Storytelling Firstが名指しで禁止している「survey readout調」の典型例になっている**(締めの1文で軽い解釈を加えるのみ)。Main Story/Point Oneでは機能しているが、Point Two特有の失敗パターンとして正直に記録する。
+- **Root Cause分類(複数要因)**: 主として**Case D**(現行のNumeric Compression[Storytelling First一文・Editor定義とも]は「同じtrendの数字」のみを対象とし、Ledgerが異なるFactとして分離した数字は対象外と判定される、Ledgerの実データで確認)。加えて**Case F**(Storytelling FirstがPoint Two特有の「survey readout調」を実際には防げていない、本文実読で確認)。副次的に、より直接的にこの問題を防ぎうる既存の強い指示(EVIDENCE_COMPRESSION_BLOCK)が方式Bとして過去に不採用とされているため単純な**Case A(実装漏れ)とは性質が異なる**ことを明記する(過去のFact safety上の理由による意図的な不採用の裏返しであり、軽々に有効化すべきではない)。
+- **最終分類**: **Case 2: SPEC_TOO_WEAK**。現行採用中の仕組み(Storytelling First一文・Evidence Compression Editor)は意図通りに動作しているが、[F-011]/[F-012]/[F-013]のような「異なる意味を持つ複数の数字がPoint内で連続する」パターンを抑えるには対象範囲が狭すぎる。より強い指示(EVIDENCE_COMPRESSION_BLOCK相当)は存在するが、Fact safety上のリスクを理由に過去に不採用とされた経緯があるため、単純にオンへ戻すことは推奨しない。`USER_DECISION_REQUIRED`。
+- **今回実施しなかったこと(21節の禁止事項の遵守)**: 新Numeric Compression Prompt・Point専用Prompt・Editor仕様変更・Storytelling First変更・新しい数字上限・No.9再生成・API追加Trial・新Validator追加のいずれも実施していない。EVIDENCE_COMPRESSION_BLOCKの`evidence_compression=True`化も行っていない(方式Bは過去に不採用とされているため、再導入はユーザー判断が必要)。
+
+### E. 今回発見した副次的な技術的負債(Open Item化)
+
+- B1B(ER-010-11版)の`article.md`と、直近の`audit/evidence_compression_editor_raw.json`のraw_textが、コード読解上は一致するはずが実際には大きく異なっていた件(上記D節「データ整合性に関する注記」参照)。原因未特定。Point Overlap Article Retryが発火した記事(Writerが2回呼ばれるケース)特有の可能性があるが、今回のタスク範囲外のため深追いしていない。
+
+### 状態まとめ
+
+- Fact Checker運用変更: `APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`。
+- No.9(ER-010-11版)Fact Checker指摘: 全件PASS扱い(non-blocking advisory)。
+- OPEN-97: `RESOLVED / CLOSED`。OPEN-99: `RESOLVED / CLOSED`。
+- Point Compression診断: `Case 2 SPEC_TOO_WEAK`、`USER_DECISION_REQUIRED`(新Open Itemとして追加、下記OPEN_ITEMS参照)。
+- 新規技術的負債(B1B audit trail不整合): 新Open Itemとして追加。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
