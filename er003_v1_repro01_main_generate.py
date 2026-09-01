@@ -388,89 +388,124 @@ def generate_english_component_minimal_instruction(
 KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
 
 
+# ============================================================
+# ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22
+# ============================================================
+# ユーザー正式決定(2026-09-01、Trial-19→Mini-Trial-20-R2→Trial-21を
+# 経て採用)。英語Key Phrase Component生成のretry構成を、旧来の
+# 「標準経路(ENGLISH_STYLE_PREFIX、フルストーリー本文向けの長い演技
+# 指示)→不合格の場合のみminimal instructionへfallback、合計上限は
+# PRODUCTION_MAX_TTS_ATTEMPTS(3回)と共有」という構成から、
+# 「Minimal instruction(Primary、最大2回)→2回ともNGの場合のみEnglish
+# language lock付きMinimal(Fallback、最大2回)、合計最大4回」へ全面的に
+# 置き換える。旧構成(ENGLISH_STYLE_PREFIX起点の標準経路)は、この関数
+# 以外のsegment(Full Story/News/Point見出し等、
+# generate_narration_snippet_verified_strict/
+# generate_english_component_minimal_instruction/ENGLISH_STYLE_PREFIX/
+# MINIMAL_INSTRUCTION_PREFIXそのもの)には一切適用されない仕様変更で
+# あり、それらは無変更のまま残す。
+#
+# 合計最大4回は、CURRENT_SPEC.md「TTS生成の同一segment総試行回数上限」
+# (`review_lock.PRODUCTION_MAX_TTS_ATTEMPTS`=3、他7関数のSSOT)に対する
+# Key Phrase英語Component専用の明示的な例外(ユーザー正式決定、この
+# 関数のみに適用。PRODUCTION_MAX_TTS_ATTEMPTS定数自体・他7関数の
+# max_attempts既定値は変更しない)。
+KEY_PHRASE_MINIMAL_MAX_ATTEMPTS = 2
+KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS = 2
+KEY_PHRASE_TOTAL_MAX_ATTEMPTS = KEY_PHRASE_MINIMAL_MAX_ATTEMPTS + KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS  # 4
+
+# Trial(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-
+# ACCOUNTING-FIX-19→MINI-TRIAL-20-R2)で検証・ユーザー承認済みの文言を
+# 一字一句そのまま複製する。Trial専用モジュール(er010_no9_*.py)を
+# Productionからimportしない設計方針(Dangling Reference防止)のため、
+# 文字列としてここへ複製する。変更する場合はTrialを再実施のうえ
+# DECISION_LOG.mdへ記録すること(勝手な再設計は禁止)。
+KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX = (
+    "Speak the following short phrase aloud naturally and clearly, in a warm podcast "
+    "announcer voice, exactly once. Say only this phrase — do not add explanations, "
+    "examples, introductions, or any other commentary, and do not add, omit, or change "
+    "any words. Say it as one natural phrase, not as separate words read one at a time. "
+    "Make sure the very last sound of the phrase is actually spoken, not trailed off "
+    "into silence, and do not over-emphasize or exaggerate any single sound.\n\n"
+)
+
+# ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21で検証・ユーザー
+# 承認済みの文言を一字一句そのまま複製する。KEY_PHRASE_MINIMAL_
+# INSTRUCTION_PREFIXの末尾に追加するだけで、既存文言は一切置換しない
+# (AND、ORではない。final consonant/自然さ/1回のみ/phrase一体感の
+# 各pronunciation safeguardはFallbackでも維持される)。
+KEY_PHRASE_ENGLISH_LANGUAGE_LOCK_SUFFIX = (
+    "Pronounce the phrase specifically as an English word or phrase, "
+    "using English pronunciation throughout — not as a Japanese, Chinese, "
+    "or other non-English reading of it.\n\n"
+)
+KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION = KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX + KEY_PHRASE_ENGLISH_LANGUAGE_LOCK_SUFFIX
+
+
 @review_lock.guarded_generate("en")
-def generate_key_phrase_component_verified(
-        text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+def generate_key_phrase_component_verified(text: str, out_path: str,
         # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key PhraseはPRODUCTION
         # 承認済みのdisfluency QA対象segmentのため既定True(A2/B1共通)。
         disfluency_qa: bool = True) -> dict:
-    """まず標準経路(ENGLISH_STYLE_PREFIX)でstrict verified生成を試みる。
-    それでも合格しない場合のみ、minimal instructionへフォールバックする
-    (声・モデルは変えない、テキストも変えない)。head safety marginは
-    Key Phrase専用にKEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS(0.20秒)を
-    使う(ER-003-N3-ROOT-FIX-01)。
+    """Primary: Minimal instruction(KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+    で最大KEY_PHRASE_MINIMAL_MAX_ATTEMPTS(2)回まで試行する。2回とも
+    不合格の場合のみ、Fallback: Minimal instruction+English language lock
+    (KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)で最大KEY_PHRASE_ENGLISH_LOCK_
+    MAX_ATTEMPTS(2)回まで試行する(合計最大KEY_PHRASE_TOTAL_MAX_ATTEMPTS
+    =4回)。いずれかの段でverified=Trueになった時点で即座に返し、後続の
+    attemptは実行しない。声・モデル・head safety margin(KEY_PHRASE_TRIM_
+    SAFETY_MARGIN_SECONDS)・ASR Validator(cascade)・disfluency gateは
+    両段で共通(generate_narration_snippet_verified_strictをstyle_prefix_
+    overrideだけ差し替えて2回呼ぶ設計、コード重複を避けつつ両段とも
+    Production同一のASR/Cascade/disfluency実装を使う)。
 
-    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
-    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
-    には残り予算のみを渡す。"""
-    import er003_b1_p4_audio as p4
-    standard = generate_narration_snippet_verified_strict(
-        text, "en", out_path, text, max_extra_chars=10, max_attempts=max_attempts,
-        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa)
-    if standard.get("status") == "OK":
-        standard["fallback_used"] = False
-        return standard
+    review_lock: この関数自体が@guarded_generate("en")でguardされており、
+    内部で呼ぶgenerate_narration_snippet_verified_strict
+    (@guarded_generate_with_language_arg)は同一out_pathに対する
+    reentrancy guard(OPEN-105)により、外側の呼び出しが進行中の間は
+    check_before_generation/record_outcomeを行わずfnへ委譲される。
+    したがって、Primary/Fallback 2回の内部呼び出しがあっても
+    record_outcome()は最終的に外側で1回だけ発火し、二重会計は発生しない。"""
+    primary = generate_narration_snippet_verified_strict(
+        text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
+        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
+        style_prefix_override=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+    if primary.get("status") == "OK":
+        primary["fallback_used"] = False
+        primary["primary_instruction_type"] = "MINIMAL"
+        return primary
 
-    fallback_attempts = []
-    fallback_classification_history = []
-    fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
-    for attempt in range(1, fallback_budget + 1):
-        r = generate_english_component_minimal_instruction(
-            text, out_path, safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS)
-        if r.get("status") != "OK":
-            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
-            continue
-        asr_text, err = routing.transcribe(out_path, language="en-US")
-        length_ok = asr_text is not None and len(asr_text) <= len(text) + 10
-        ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
-        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
-        # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
-        # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
-        # path側は変更しない、追加コストはfallback発動時のみ)。
-        verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
-            text, asr_text, fallback_classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            force_secondary=True)
-        verified = verified_content and length_ok
-        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
-        verified = gate["verified"]
-        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "audio_classification": cls.classification, "verified": verified,
-                                   "disfluency_checked": gate["disfluency_checked"],
-                                   "disfluency_evidence": gate.get("disfluency_evidence")})
-        if verified:
-            r["asr_verified"] = True
-            r["asr_text"] = asr_text
-            r["fallback_used"] = True
-            r["standard_attempts_log"] = standard.get("attempts_log")
-            r["fallback_attempts_log"] = fallback_attempts
-            # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格(理由は
-            # standard経路側の同種修正コメントを参照)。
-            r["disfluency_checked"] = gate["disfluency_checked"]
-            r["disfluency_evidence"] = gate.get("disfluency_evidence")
-            return r
-        if stop_retrying:
-            r["status"] = "ASR_VALIDATION_UNCERTAIN"
-            r["asr_verified"] = False
-            r["asr_text"] = asr_text
-            r["fallback_used"] = True
-            r["standard_attempts_log"] = standard.get("attempts_log")
-            r["fallback_attempts_log"] = fallback_attempts
-            r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
-                            f"(最終classification={cls.classification})")
-            return r
-    return {"status": "STOPPED",
-            "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
-                      f"(合計上限{max_attempts}回)とも不合格",
-            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+    fallback = generate_narration_snippet_verified_strict(
+        text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS,
+        safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
+        style_prefix_override=KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)
+    fallback["fallback_used"] = True
+    fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
+    # record_outcome()のcumulative_tts_attempts集計は
+    # result["attempts_log"](ここではEnglish Lock段の実際の試行)に加え、
+    # result["fallback_attempts_log"]があれば長さを加算する設計(既存
+    # 実装、変更なし)。Minimal段の実際の試行をここへ入れることで、
+    # 「実TTS試行回数=cumulative_tts_attempts」を維持する。
+    fallback["fallback_attempts_log"] = primary.get("attempts_log")
+    # 監査・報告用の分かりやすい別名(record_outcome()は参照しない)。
+    fallback["minimal_attempts_log"] = primary.get("attempts_log")
+    fallback["english_lock_attempts_log"] = fallback.get("attempts_log")
+    if fallback.get("status") == "OK":
+        return fallback
+    fallback["reason"] = (f"Minimal instruction{KEY_PHRASE_MINIMAL_MAX_ATTEMPTS}回+"
+                          f"English language lock{KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS}回"
+                          f"(合計上限{KEY_PHRASE_TOTAL_MAX_ATTEMPTS}回)とも不合格。"
+                          f"{fallback.get('reason') or ''}").strip()
+    return fallback
 
 
 def stage_d_generate_key_phrase_components() -> dict:
-    """A02の英語Key Phrase Component5件を、英語Component用の確立済み経路
-    (ENGLISH_STYLE_PREFIX+Aoede+gemini-2.5-pro-preview-tts、A01のshot on
-    target等と同一設定)でstrict ASR検証付き生成する。標準経路で合格しない
-    場合のみ、"Now, the full story."と同じminimal instructionへ
-    フォールバックする(声・モデル・テキストは変えない)。"""
+    """A02の英語Key Phrase Component5件を、Aoede+gemini-2.5-pro-preview-tts
+    (A01のshot on target等と同一voice/model)でstrict ASR検証付き生成する。
+    Primary: Minimal instruction最大2回。Fallback: 2回ともNGの場合のみ
+    English language lock付きMinimal最大2回(合計最大4回、ユーザー正式
+    決定[ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22]、
+    詳細はgenerate_key_phrase_component_verified()docstring参照)。"""
     components_dir = f"{OUT_DIR}/key_phrase_components"
     os.makedirs(components_dir, exist_ok=True)
     results = {}

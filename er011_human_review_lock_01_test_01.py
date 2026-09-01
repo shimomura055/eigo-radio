@@ -240,59 +240,143 @@ class ProductionMaxAttemptsAndAttemptsLogTests(unittest.TestCase):
     def test_production_max_tts_attempts_is_3(self):
         self.assertEqual(review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, 3)
 
-    def test_key_phrase_fallback_budget_is_zero_when_standard_used_all_attempts(self):
-        # Part B: standard経路が既にmax_attempts(3)回を使い切っている場合、
-        # fallback経路は1回も追加で呼ばれてはならない(標準+fallback合計が
-        # 3回を超えないこと)。
+    # ------------------------------------------------------------
+    # ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22:
+    # 旧「標準経路(ENGLISH_STYLE_PREFIX)→minimal instruction fallback、
+    # 合計予算はmax_attempts(3)を共有」という構成を検証していた上記2件
+    # (test_key_phrase_fallback_budget_is_zero_when_standard_used_all_
+    # attempts/test_key_phrase_fallback_gets_remaining_budget_only)は、
+    # ユーザー正式決定によりgenerate_key_phrase_component_verified()の
+    # 内部構造そのものが「Minimal instruction(Primary、最大2回)→2回
+    # ともNGの場合のみEnglish language lock付きMinimal(Fallback、最大
+    # 2回)、合計最大4回」へ置き換わったため、新構造を検証するテストへ
+    # 差し替える(旧テストが検証していた「standardの消費数を引いた残り
+    # 予算をfallbackへ渡す」という設計自体が今回のユーザー決定で廃止
+    # されたため、そのまま残すと新実装との不整合になる)。
+    def test_key_phrase_english_lock_not_called_when_minimal_passes(self):
+        # Primary(Minimal)がattempt 1でPASSした場合、Fallback(English
+        # Lock)は1回も呼ばれてはならない(「不要なattemptは実行しない」)。
         import er003_v1_repro01_main_generate as repro01
-        orig_standard = repro01.generate_narration_snippet_verified_strict
-        orig_fallback = repro01.generate_english_component_minimal_instruction
-        fallback_calls = {"n": 0}
+        orig = repro01.generate_narration_snippet_verified_strict
+        calls = []
 
-        def fake_standard(text, language, out_path, expected_substring, **kwargs):
-            return {"status": "STOPPED", "reason": "3回不合格",
-                    "attempts_log": [{"attempt": i, "asr_text": "x"} for i in range(1, 4)]}
+        def fake(text, language, out_path, expected_substring, **kwargs):
+            calls.append(kwargs.get("style_prefix_override"))
+            return {"status": "OK", "attempts_log": [{"attempt": 1, "asr_text": text}]}
 
-        def fake_fallback(*a, **k):
-            fallback_calls["n"] += 1
-            raise AssertionError("standardで既に上限3回を使い切っているため、fallbackは1回も呼ばれてはならない")
-
-        repro01.generate_narration_snippet_verified_strict = fake_standard
-        repro01.generate_english_component_minimal_instruction = fake_fallback
+        repro01.generate_narration_snippet_verified_strict = fake
         try:
-            result = repro01.generate_key_phrase_component_verified(
-                "opt out", self.out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
-            self.assertEqual(result["status"], "STOPPED")
-            self.assertEqual(fallback_calls["n"], 0)
+            result = repro01.generate_key_phrase_component_verified("opt out", self.out_path)
+            self.assertEqual(result["status"], "OK")
+            self.assertEqual(result["fallback_used"], False)
+            self.assertEqual(result["primary_instruction_type"], "MINIMAL")
+            self.assertEqual(len(calls), 1, "Minimal instructionがPASSした時点でEnglish Lockは呼ばれてはならない")
+            self.assertEqual(calls[0], repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
         finally:
-            repro01.generate_narration_snippet_verified_strict = orig_standard
-            repro01.generate_english_component_minimal_instruction = orig_fallback
+            repro01.generate_narration_snippet_verified_strict = orig
 
-    def test_key_phrase_fallback_gets_remaining_budget_only(self):
-        # standardが1回だけ使った場合、fallbackの残り予算は2回(3-1)で
-        # あるべき(3+3=6回になってはならない)。
+    def test_key_phrase_english_lock_fires_only_after_minimal_max_attempts_ng(self):
+        # Minimal instructionがmax_attempts(2)回ともNGの場合のみ、
+        # English Lock instructionが呼ばれる。各段のstyle_prefix_
+        # override/max_attemptsが正しく渡ることを確認する。
         import er003_v1_repro01_main_generate as repro01
-        orig_standard = repro01.generate_narration_snippet_verified_strict
-        orig_fallback = repro01.generate_english_component_minimal_instruction
-        fallback_calls = {"n": 0}
+        orig = repro01.generate_narration_snippet_verified_strict
+        calls = []
 
-        def fake_standard(text, language, out_path, expected_substring, **kwargs):
-            return {"status": "STOPPED", "reason": "1回で不合格",
-                    "attempts_log": [{"attempt": 1, "asr_text": "x"}]}
+        def fake(text, language, out_path, expected_substring, **kwargs):
+            calls.append({"style_prefix_override": kwargs.get("style_prefix_override"),
+                          "max_attempts": kwargs.get("max_attempts")})
+            if kwargs.get("style_prefix_override") == repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX:
+                return {"status": "STOPPED", "reason": "Minimal 2回とも不合格",
+                        "attempts_log": [{"attempt": 1, "asr_text": "x"}, {"attempt": 2, "asr_text": "x"}]}
+            return {"status": "OK", "attempts_log": [{"attempt": 1, "asr_text": "default"}]}
 
-        def fake_fallback(*a, **k):
-            fallback_calls["n"] += 1
-            return {"status": "STOPPED", "reason": "fallbackも失敗"}
-
-        repro01.generate_narration_snippet_verified_strict = fake_standard
-        repro01.generate_english_component_minimal_instruction = fake_fallback
+        repro01.generate_narration_snippet_verified_strict = fake
         try:
-            repro01.generate_key_phrase_component_verified(
-                "opt out", self.out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
-            self.assertEqual(fallback_calls["n"], 2, "fallbackはmax_attempts(3)-standard消費(1)=2回までのはず")
+            result = repro01.generate_key_phrase_component_verified("default", self.out_path)
+            self.assertEqual(result["status"], "OK")
+            self.assertEqual(result["fallback_used"], True)
+            self.assertEqual(result["primary_instruction_type"], "ENGLISH_LOCK")
+            self.assertEqual(len(calls), 2, "Minimal(1呼び出し=最大2attempt内部ループ)+English Lock(1呼び出し)の計2回")
+            self.assertEqual(calls[0]["style_prefix_override"], repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+            self.assertEqual(calls[0]["max_attempts"], repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS)
+            self.assertEqual(calls[1]["style_prefix_override"], repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)
+            self.assertEqual(calls[1]["max_attempts"], repro01.KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS)
+            # 合計実TTS試行数がrecord_outcome()に正しく渡る2フィールド
+            # (attempts_log=English Lock分、fallback_attempts_log=Minimal分)。
+            self.assertEqual(len(result["attempts_log"]), 1)
+            self.assertEqual(len(result["fallback_attempts_log"]), 2)
         finally:
-            repro01.generate_narration_snippet_verified_strict = orig_standard
-            repro01.generate_english_component_minimal_instruction = orig_fallback
+            repro01.generate_narration_snippet_verified_strict = orig
+
+    def test_key_phrase_all_4_attempts_fail_reports_combined_reason(self):
+        # Minimal 2回+English Lock 2回、合計4回ともNGの場合、statusは
+        # OKにならず、合計試行数(4)がrecord_outcome()の集計対象2
+        # フィールドの合計と一致すること。
+        import er003_v1_repro01_main_generate as repro01
+        orig = repro01.generate_narration_snippet_verified_strict
+
+        def fake(text, language, out_path, expected_substring, **kwargs):
+            return {"status": "STOPPED", "reason": "不合格",
+                    "attempts_log": [{"attempt": 1, "asr_text": "x"}, {"attempt": 2, "asr_text": "x"}]}
+
+        repro01.generate_narration_snippet_verified_strict = fake
+        try:
+            result = repro01.generate_key_phrase_component_verified("default", self.out_path)
+            self.assertNotEqual(result["status"], "OK")
+            self.assertEqual(result["fallback_used"], True)
+            total = len(result["attempts_log"]) + len(result["fallback_attempts_log"])
+            self.assertEqual(total, repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)
+            self.assertIn("Minimal instruction2回", result["reason"])
+            self.assertIn("English language lock2回", result["reason"])
+        finally:
+            repro01.generate_narration_snippet_verified_strict = orig
+
+    def test_key_phrase_english_lock_instruction_is_additive_not_replacement(self):
+        # English lockはMinimal instruction全文を置換せず、末尾に追加
+        # するだけであること(pronunciation safeguard維持の前提)。
+        import er003_v1_repro01_main_generate as repro01
+        self.assertTrue(
+            repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION.startswith(repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX))
+        self.assertIn("English word or phrase", repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)
+        self.assertIn("do not add explanations", repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+        self.assertEqual(repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS, 4)
+        self.assertEqual(repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS, 2)
+        self.assertEqual(repro01.KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS, 2)
+
+    def test_key_phrase_review_lock_end_to_end_cumulative_count_and_second_call_blocked(self):
+        # 実際にreview_lockでguardされたgenerate_key_phrase_component_
+        # verified()本体(TTS/ASR部分のみモック)を呼び、Minimal 2回+
+        # English Lock 2回=合計4回がcumulative_tts_attemptsとして正しく
+        # 記録され(二重会計なし)、HUMAN_REVIEW_REQUIREDへ遷移すること、
+        # かつ2回目の呼び出しが0 API callでブロックされることを確認する。
+        import er003_v1_repro01_main_generate as repro01
+        orig = repro01.generate_narration_snippet_verified_strict
+        call_count = {"n": 0}
+
+        def fake(text, language, out_path, expected_substring, **kwargs):
+            call_count["n"] += 1
+            return {"status": "STOPPED", "reason": "不合格",
+                    "attempts_log": [{"attempt": 1, "asr_text": "x"}, {"attempt": 2, "asr_text": "x"}]}
+
+        repro01.generate_narration_snippet_verified_strict = fake
+        try:
+            result1 = repro01.generate_key_phrase_component_verified("default", self.out_path)
+            self.assertNotEqual(result1["status"], "OK")
+            self.assertEqual(call_count["n"], 2, "内部呼び出し(Minimal 1回+English Lock 1回)は2回のはず")
+
+            level_out_dir = review_lock._level_out_dir_from_out_path(self.out_path)
+            entry = review_lock._load_store(level_out_dir)["kp_1"]
+            self.assertEqual(entry["state"], "HUMAN_REVIEW_REQUIRED")
+            self.assertEqual(entry["cumulative_tts_attempts"], repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,
+                              "実TTS試行(Minimal2+EnglishLock2=4)がそのままcumulative_tts_attemptsになるべき"
+                              "(ネストguardによる二重会計が無いことの実証、OPEN-105と同種の確認)")
+
+            result2 = repro01.generate_key_phrase_component_verified("default", self.out_path)
+            self.assertEqual(result2["status"], "HUMAN_REVIEW_LOCKED")
+            self.assertEqual(call_count["n"], 2, "ロック中の2回目呼び出しはTTSを一切呼んではならない(0 API call)")
+        finally:
+            repro01.generate_narration_snippet_verified_strict = orig
 
     def test_attempts_log_preserved_after_human_review_lock(self):
         # Part L: Human Review Lock発動後、_blocked_result()が返す

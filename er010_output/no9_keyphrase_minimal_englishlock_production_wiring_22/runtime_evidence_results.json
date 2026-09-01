@@ -1,0 +1,89 @@
+{
+  "case_a": {
+    "case": "A_REAL_MINIMAL_PASS",
+    "text": "push back",
+    "status": "OK",
+    "fallback_used": false,
+    "primary_instruction_type": "MINIMAL",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Aoede",
+    "asr_text": "pushback",
+    "duration_seconds": 1.011,
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.031,
+        "asr_text": "推回",
+        "asr_text_length": 2,
+        "max_len": 19,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TTS_FAILURE",
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 1.011,
+        "asr_text": "pushback",
+        "asr_text_length": 8,
+        "max_len": 19,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "Pushback.",
+          "method": "faster_whisper_small_local_verbatim"
+        }
+      }
+    ],
+    "call_count": 1,
+    "retry_count": 0,
+    "review_lock_state": "RESOLVED",
+    "cumulative_tts_attempts": 2
+  },
+  "case_bc": {
+    "case": "BC_MOCKED_MINIMAL_FAIL_ENGLISH_LOCK_PASS",
+    "status": "OK",
+    "fallback_used": true,
+    "primary_instruction_type": "ENGLISH_LOCK",
+    "call_sequence": [
+      {
+        "stage": "MINIMAL",
+        "max_attempts": 2
+      },
+      {
+        "stage": "ENGLISH_LOCK",
+        "max_attempts": 2
+      }
+    ],
+    "minimal_attempts_log": [
+      {
+        "attempt": 1,
+        "asr_text": "wrong"
+      },
+      {
+        "attempt": 2,
+        "asr_text": "wrong"
+      }
+    ],
+    "english_lock_attempts_log": [
+      {
+        "attempt": 1,
+        "asr_text": "forced fallback probe"
+      }
+    ],
+    "review_lock_state": "RESOLVED",
+    "cumulative_tts_attempts": 3
+  }
+}
