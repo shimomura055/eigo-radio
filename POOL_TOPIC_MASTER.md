@@ -34,7 +34,7 @@
 | 15 | When Progress Is Invisible, Waiting Feels Longer | 進み具合が見えないと、待ち時間が長く感じる | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 16 | The Scent of a Hotel Lobby Is Not an Accident | ホテルのロビーの香りは、偶然ではない | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 17 | A Short Walk After Meals Is Getting More Attention | 食後の短い散歩が注目されている理由 | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
-| 18 | A Busy Restaurant Just Feels More Trustworthy—But Why? | 混んでいるレストランの方が信頼できそうに感じるのはなぜか | 店舗・食・サービス空間 | `PLANNED` | `PLANNED` | `PLANNED` |
+| 18 | Why Is It So Hard to Ignore a Notification? | 通知を無視するのが、なぜこんなに難しいのか | 日常心理・軽い健康 | `GENERATED`(A2完成、B1は記事/Support完成・音声のみOPEN-107でblocking。注記参照) | `PENDING` | `PENDING` |
 | 19 | Sleep Trackers: Useful Data or One More Score to Ignore? | 睡眠トラッカーは役立つデータか、それとも気にしない数字が増えるだけか | 日常心理・軽い健康 | `PLANNED` | `PLANNED` | `PLANNED` |
 | 20 | "Someone Just Bought This": What Online Shops Want You to Feel | 「今、誰かが購入しました」表示でネットショップが狙うこと | 買い物・お金・サービス設計 | `PLANNED` | `PLANNED` | `PLANNED` |
 
@@ -56,6 +56,26 @@ No.1〜3の最終採用Candidate(script+audio)を、Topicごとにまとめた
 
 ## 経緯・注記
 
+- **2026-09-02(ER-011-NO18-DISCOVERY-WHY-FULL-PRODUCTION-RUN-01)**: ユーザー指定により
+  No.18を「A Busy Restaurant Just Feels More Trustworthy—But Why?」(混んでいる
+  レストランの方が信頼できそうに感じるのはなぜか)から「Why Is It So Hard to
+  Ignore a Notification?」(通知を無視するのが、なぜこんなに難しいのか)へ差し替えた。
+  旧No.18(レストラン信頼感)は`PLANNED`のまま未生成(生成済み成果物は無く、
+  差し替えによる損失なし)だったため、ER-006-POOL-MASTER-ADOPTION-N4N6-RESUME-01で
+  No.9追加時に旧No.15(reusable bottles)を削除した前例と同じ扱いとし、20件という
+  総数を変えずこのリストから削除した(将来の追加候補として本注記にのみ記録し、
+  他ファイルへは複製しない)。なお通知をテーマとする既存No.13「The Notification
+  Question: Why Apps Want Your Attention」(アプリはなぜ通知をオンにしてほしいのか、
+  アプリ側の設計意図を扱う視点)は、今回のNo.18(利用者側が通知を無視しにくいと
+  感じる心理を扱う視点)とは切り口が異なる別テーマとして無変更のまま両立させる
+  (ユーザー確認済み、意図的な重複ではない)。No.18は本注記の直後の
+  エントリでNo.9までのProduction Wired仕様のみを使い正式生成した。
+  A2は完成(`English_Your_Way_A2_POOL_N18_NOTIFICATIONS.wav`、378.634秒、
+  `USER_FINAL_AUDIO_REVIEW_REQUIRED`)。B1は記事・Support・Key Phraseまで
+  完成したが、`in_one_line`segmentが新規TTS失敗モード(OPEN-107、"to be
+  opened"の"-ed"語尾脱落)によりepisode assembly未完成、`USER_DECISION_
+  REQUIRED`。詳細は[DECISION_LOG.md](DECISION_LOG.md) ER-011-NO18-
+  DISCOVERY-WHY-FULL-PRODUCTION-RUN-01参照。
 - No.1〜3は、ER-006-POOL-PILOT-01(2026-08-22以前)でTopic Selectionを
   意図的にスキップし(コスト0円)、Pilot用に手動選定された3トピック
   だった。当時、この3件が「20 Topic Masterの一次資料」として本

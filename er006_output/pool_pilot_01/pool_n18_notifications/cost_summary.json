@@ -1,0 +1,190 @@
+{
+  "usd_jpy_rate": 160.0,
+  "methodology": "全て実測usage(actual)。単価はer005_output/cost_baseline_01/pricing_snapshot.json(OFFICIAL_SOURCE/PROJECT_INTERNAL_RECORD、compute_topic_cost.pyと同一参照元)。TTS/ASRのretry/fallback判定は、本runのlogにsegment名が記録されているため実測(segment単位で2回目以降の呼び出しをretryとみなす。推定ではない)。Writer段階(writer_a2/writer_b1)はPoint overlap QA・Fact Checker・Ledger Deviation Checker・Local Rewrite Loopが同一logging_context内で呼ばれるため、この粒度ではArticle生成本体とQA系呼び出しを個別に分離できない(全てactual、合算のみ)。B1 Key Phrase retry(kp_retry補助script)はSupportに含む。",
+  "by_stage_category_usd": {
+    "research": 0.0155,
+    "writer_b1_incl_qa": 0.0269,
+    "writer_a2_incl_qa": 0.0391,
+    "support_b1": 0.0269,
+    "support_a2": 0.019,
+    "tts_b1": 0.1865,
+    "tts_a2": 0.2541
+  },
+  "by_stage_category_jpy": {
+    "research": 2.5,
+    "writer_b1_incl_qa": 4.3,
+    "writer_a2_incl_qa": 6.3,
+    "support_b1": 4.3,
+    "support_a2": 3.0,
+    "tts_b1": 29.8,
+    "tts_a2": 40.7
+  },
+  "call_counts": {
+    "research": 3,
+    "writer_b1_incl_qa": 4,
+    "writer_a2_incl_qa": 7,
+    "support_b1": 9,
+    "support_a2": 8,
+    "tts_b1": 54,
+    "tts_a2": 61
+  },
+  "audio_clean_vs_retry_usd": {
+    "a2_clean_usd": 0.1858,
+    "a2_retry_usd": 0.0683,
+    "b1_clean_usd": 0.1532,
+    "b1_retry_usd": 0.0333
+  },
+  "audio_clean_vs_retry_jpy": {
+    "a2_clean_jpy": 29.7,
+    "a2_retry_jpy": 10.9,
+    "b1_clean_jpy": 24.5,
+    "b1_retry_jpy": 5.3
+  },
+  "retry_segment_detail": {
+    "b1": [
+      {
+        "segment": "point_two",
+        "provider": "gemini",
+        "occurrence": 2,
+        "cost_usd": 0.015051
+      },
+      {
+        "segment": "point_two",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.000788
+      },
+      {
+        "segment": "in_one_line",
+        "provider": "gemini",
+        "occurrence": 2,
+        "cost_usd": 0.007785
+      },
+      {
+        "segment": "in_one_line",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.000423
+      },
+      {
+        "segment": "in_one_line",
+        "provider": "gemini",
+        "occurrence": 3,
+        "cost_usd": 0.007645
+      },
+      {
+        "segment": "in_one_line",
+        "provider": "openai_asr",
+        "occurrence": 3,
+        "cost_usd": 0.000419
+      },
+      {
+        "segment": "kp5_english",
+        "provider": "gemini",
+        "occurrence": 2,
+        "cost_usd": 0.001177
+      },
+      {
+        "segment": "kp5_english",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 4.3e-05
+      }
+    ],
+    "a2": [
+      {
+        "segment": "comment_1",
+        "provider": "gemini",
+        "occurrence": 2,
+        "cost_usd": 0.005571
+      },
+      {
+        "segment": "comment_1",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.000299
+      },
+      {
+        "segment": "point_one_heading",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 9.6e-05
+      },
+      {
+        "segment": "point_two_heading",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 9.2e-05
+      },
+      {
+        "segment": "full_story_part1",
+        "provider": "gemini",
+        "occurrence": 2,
+        "cost_usd": 0.027124
+      },
+      {
+        "segment": "full_story_part1",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.001411
+      },
+      {
+        "segment": "full_story_part1",
+        "provider": "gemini",
+        "occurrence": 3,
+        "cost_usd": 0.027244
+      },
+      {
+        "segment": "full_story_part1",
+        "provider": "openai_asr",
+        "occurrence": 3,
+        "cost_usd": 0.001415
+      },
+      {
+        "segment": "full_story_part1",
+        "provider": "openai_asr",
+        "occurrence": 4,
+        "cost_usd": 0.001455
+      },
+      {
+        "segment": "full_story_part2",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.00162
+      },
+      {
+        "segment": "point_one",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.001089
+      },
+      {
+        "segment": "point_two",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.000535
+      },
+      {
+        "segment": "in_one_line",
+        "provider": "openai_asr",
+        "occurrence": 2,
+        "cost_usd": 0.000369
+      }
+    ]
+  },
+  "total_usd": 0.568,
+  "total_jpy": 90.9,
+  "total_calls": 146,
+  "report_table_jpy": {
+    "Research": 2.5,
+    "Writer+QA/FactCheck/Rewrite (A2)": 6.3,
+    "Writer+QA/FactCheck/Rewrite (B1)": 4.3,
+    "Support (A2)": 3.0,
+    "Support (B1, incl. KP retry)": 4.3,
+    "A2 TTS+ASR (clean)": 29.7,
+    "A2 TTS+ASR (retry/fallback)": 10.9,
+    "B1 TTS+ASR (clean)": 24.5,
+    "B1 TTS+ASR (retry/fallback, incl. STOPPED in_one_line)": 5.3,
+    "TOTAL": 90.9
+  }
+}
