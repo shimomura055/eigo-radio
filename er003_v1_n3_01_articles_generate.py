@@ -33,6 +33,7 @@ import er008_point_regenerate_19 as point_regen
 import er008_shared_point_blueprint_01 as blueprint_mod
 import er009_diagnostic_full_retry_modules_12 as diagnostic_mod
 import er010_ledger_local_rewrite_09 as local_rewrite
+import er011_point_role_value_planning_01 as point_planning
 
 load_dotenv()
 
@@ -216,6 +217,19 @@ Point One・Point Twoを書く前に、まずMain Storyで既に説明した中�
   異なる役割を持たせてください)
 - Verified Fact Ledgerに無い新しいFactの追加(Point Balanceのための深掘りも、
   Ledgerの範囲内で行ってください)
+
+【Pointが実際に新しい価値を持つこと(重要、ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01で正式採用)】
+Point One・Point Twoは、Full Story・もう一方のPointと語彙が重複していなければ
+それでよいわけではありません。以下のようなPointは、たとえ語彙が違っていても
+禁止です:
+- 研究上の限界・一般化上の注意・免責事項だけで構成されるPoint(必要な留保
+  自体を書くことは禁止しませんが、それだけでPoint枠全体を使わないでください。
+  留保は、新しい価値を含む内容に添える補足として書いてください)
+- Full Storyの要約・言い換えに留まるPoint
+- もう一方のPointの要約・言い換えになっているPoint
+- 「だから何なのか」を説明できないPoint
+- 他のどんな記事にもほぼそのまま流用できる、この題材に固有ではない一般論
+- 新しい理解・解釈・意外性・具体的示唆のいずれも加えていないPoint
 
 Point One・Point Twoの長さの目標は、それぞれ30〜60語、許容範囲は25〜70語です(hard capでは
 ありません)。この範囲から外れる場合、なぜその長さが必要か、targetへ収めると何を失うかを、
@@ -538,17 +552,35 @@ def run_point_overlap_qa_and_regenerate(client, article_text: str, verified_ledg
         return {"status": "SKIPPED", "reason": "想定構造(###見出し2つ)が見つからないためQAをスキップしました",
                 "patched_article_text": article_text}
 
+    # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: 従来はPoint One/Two各々と
+    # Full Storyとのoverlapしか検査していなかった(Point One対Point Two自体
+    # は一度も評価されていなかった)。No.18のようにPoint One/TwoがFull
+    # Storyとは重複していなくても互いに同じ内容の場合を検知するため、
+    # Point One対Point Twoのoverlapも同じ閾値・同じ関数で追加検査する。
+    point_one_vs_two = overlap_qa.flag_possible_paraphrase(
+        sections["point_one_body"], sections["point_two_body"])
+    point_two_vs_one = overlap_qa.flag_possible_paraphrase(
+        sections["point_two_body"], sections["point_one_body"])
+
     patched_text = article_text
-    report = {}
+    report = {
+        "point_one_vs_point_two": point_one_vs_two,
+        "point_two_vs_point_one": point_two_vs_one,
+    }
     for key, label_name, other_key in (("point_one", "Point One", "point_two_body"),
                                          ("point_two", "Point Two", "point_one_body")):
         body = sections[f"{key}_body"]
         overlap = overlap_qa.flag_possible_paraphrase(body, sections["full_story"])
-        entry = {"before_overlap": overlap, "applied": False}
-        if overlap["flagged"]:
+        cross_point_overlap = point_one_vs_two if key == "point_one" else point_two_vs_one
+        entry = {"before_overlap": overlap, "cross_point_overlap": cross_point_overlap, "applied": False}
+        if overlap["flagged"] or cross_point_overlap["flagged"]:
             ng_reason = (f"Lexical overlap with Full Story = {overlap['overlap_ratio']} "
                          f"(threshold {overlap['threshold']}), shared content words: {overlap['shared_words']}. "
-                         "This Point is likely restating the Full Story's logic instead of adding a new angle.")
+                         f"Lexical overlap with the other Point = {cross_point_overlap['overlap_ratio']} "
+                         f"(threshold {cross_point_overlap['threshold']}), shared content words: "
+                         f"{cross_point_overlap['shared_words']}. "
+                         "This Point is likely restating the Full Story's logic, or the other Point's "
+                         "logic, instead of adding a new angle.")
             if not POINT_ONLY_REGENERATION_ENABLED:
                 entry["regenerate_status"] = "NG_REVIEW_REQUIRED"
                 entry["reason"] = (
@@ -657,7 +689,18 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
         f.write(prompt)
 
     writer_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
-    gen = _generate_and_compress_article(client, theme_id, label, prompt, out_dir,
+
+    # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Point One/Twoの本文を書く
+    # 前に、Verified Fact Ledgerに基づいてrole/new_listener_takeaway/
+    # evidence_anchor/why_it_matters/重複禁止事項を明示的に計画させ、その
+    # 計画をWriter promptへ挿入する(Point Role Planning)。
+    role_plan_result = point_planning.run_point_role_planning(
+        client, topic, verified_ledger_text, model=writer_model, reasoning_effort=REASONING_EFFORT)
+    with open(f"{out_dir}/audit/point_role_planning_initial.json", "w", encoding="utf-8") as f:
+        json.dump(role_plan_result, f, ensure_ascii=False, indent=2, default=str)
+    prompt_with_plan = prompt + "\n" + point_planning.build_role_planning_block(role_plan_result["parsed"])
+
+    gen = _generate_and_compress_article(client, theme_id, label, prompt_with_plan, out_dir,
                                           apply_evidence_compression, writer_model)
     if gen["status"] != "OK":
         return {"label": label, "status": gen["status"], "article_text": None}
@@ -675,36 +718,80 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     overlap_retry_log = []
     retry_attempt = 0
     while True:
-        print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA開始"
+        print(f"[N3-01][{theme_id}] {label}: Point-Full Story/Point-Point重複QA開始"
               f"(retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
         point_qa_result = run_point_overlap_qa_and_regenerate(
             client, article_text, verified_ledger_text, model=writer_model,
             reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
-        still_flagged = point_qa_result["status"] == "OK" and any(
-            entry["before_overlap"]["flagged"] for entry in point_qa_result.get("report", {}).values())
+        overlap_report = point_qa_result.get("report") or {}
+        lexical_flagged = point_qa_result["status"] == "OK" and any(
+            overlap_report.get(key, {}).get("before_overlap", {}).get("flagged")
+            for key in ("point_one", "point_two"))
+
+        # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Point Value QA
+        # (No.18 A2で発見された「重複はしていないが新しい価値も無い」
+        # Pointを検知する。lexical overlapとは独立した意味判定)。
+        # split_common_sections_for_point_qaが構造を認識できた場合のみ実行
+        # する(想定外構造の場合は既存のoverlap QA同様スキップし、後段の
+        # 構造検証[restore_r2.validate_point_structure]に委ねる)。
+        sections_for_value_qa = split_common_sections_for_point_qa(article_text)
+        value_qa_result = None
+        value_qa_flagged = False
+        if sections_for_value_qa is not None:
+            value_qa_result = point_planning.run_point_value_qa(
+                client, sections_for_value_qa["full_story"], sections_for_value_qa["point_one_body"],
+                sections_for_value_qa["point_two_body"], model=writer_model,
+                reasoning_effort=REASONING_EFFORT)
+            with open(f"{out_dir}/audit/point_value_qa_attempt{retry_attempt}.json", "w",
+                      encoding="utf-8") as f:
+                json.dump(value_qa_result, f, ensure_ascii=False, indent=2, default=str)
+            value_qa_flagged = value_qa_result["status"] == "NG"
+
+        still_flagged = lexical_flagged or value_qa_flagged
         log_entry = {
             "attempt": retry_attempt, "qa_status": point_qa_result["status"], "flagged": still_flagged,
-            "report": point_qa_result.get("report")}
+            "lexical_flagged": lexical_flagged, "value_qa_flagged": value_qa_flagged,
+            "report": overlap_report,
+            "value_qa_status": value_qa_result["status"] if value_qa_result else None,
+        }
         overlap_retry_log.append(log_entry)
         if not still_flagged or retry_attempt >= POINT_OVERLAP_ARTICLE_RETRY_MAX:
             break
         retry_attempt += 1
-        print(f"[N3-01][{theme_id}] {label}: Point overlap NG。Diagnostic Full Retry により、"
-              f"診断情報を含む prompt で全文再生成します"
+        print(f"[N3-01][{theme_id}] {label}: Point overlap/value QA NG"
+              f"(lexical={lexical_flagged}, value_qa={value_qa_flagged})。"
+              f"Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します"
               f"(article retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
 
-        # Diagnostic section を build
+        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)
         point_overlap_result = {
-            "point_one": point_qa_result["report"]["point_one"]["before_overlap"],
-            "point_two": point_qa_result["report"]["point_two"]["before_overlap"],
+            "point_one": overlap_report["point_one"]["before_overlap"],
+            "point_two": overlap_report["point_two"]["before_overlap"],
         }
         diagnostic_prompt = build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        if value_qa_flagged:
+            diagnostic_prompt = diagnostic_prompt + "\n\n" + point_planning.build_value_qa_diagnostic_note(
+                value_qa_result)
         log_entry["diagnostic_used"] = {
             "point_one_score": point_overlap_result["point_one"]["overlap_ratio"],
             "point_one_flagged": point_overlap_result["point_one"]["flagged"],
             "point_two_score": point_overlap_result["point_two"]["overlap_ratio"],
             "point_two_flagged": point_overlap_result["point_two"]["flagged"],
+            "point_one_vs_point_two_flagged": overlap_report.get("point_one_vs_point_two", {}).get("flagged"),
+            "value_qa_flagged": value_qa_flagged,
         }
+
+        # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Diagnostic Full Retryは
+        # 「必要な生成単位全体をLedgerから再生成する」既存方針に従い、Point
+        # Role Planningも記事全体と同じ単位として毎回再計画する(前回の計画を
+        # 使い回さない)。
+        role_plan_result = point_planning.run_point_role_planning(
+            client, topic, verified_ledger_text, model=writer_model, reasoning_effort=REASONING_EFFORT)
+        with open(f"{out_dir}/audit/point_role_planning_retry{retry_attempt}.json", "w",
+                  encoding="utf-8") as f:
+            json.dump(role_plan_result, f, ensure_ascii=False, indent=2, default=str)
+        diagnostic_prompt = diagnostic_prompt + "\n" + point_planning.build_role_planning_block(
+            role_plan_result["parsed"])
 
         gen = _generate_and_compress_article(client, theme_id, label, diagnostic_prompt, out_dir,
                                               apply_evidence_compression, writer_model)

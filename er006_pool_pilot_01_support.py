@@ -131,6 +131,14 @@ def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str,
             kp_process = "B1_SUPPORT" if label == "b1b" else "A2_SUPPORT"
             kp = sc.run_key_phrases(article_text, kp_dir, article_id, source_level, process=kp_process)
             kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
+            # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Key Phrase Set
+            # Redundancy QA(5件相互の意味重複)の結果も可視化する。上限まで
+            # retryしてもNGが残る場合はkp_statusも"NG_REVIEW_REQUIRED"へ
+            # 倒し、既存のREVIEW_REQUIRED運用(自動不採用・人間確認後に採用可)
+            # と同じ扱いにする。
+            kp_redundancy_status = (kp.get("redundancy_qa") or {}).get("status")
+            if kp.get("status") == "NG_REVIEW_REQUIRED":
+                kp_status = "NG_REVIEW_REQUIRED"
 
             fc = run_support_fact_check(client, support, article_text, ledger_text)
         timing[stage_tag] = round(time.time() - t0, 2)
@@ -145,6 +153,7 @@ def run_support_for_theme(client, theme_id: str, out_dir: str, ledger_text: str,
         result[label] = {
             "parts": parts, "support_statuses": {k: v.get("status") for k, v in support.items()},
             "key_phrases_status": kp_status,
+            "key_phrases_redundancy_status": kp_redundancy_status,
             "key_phrases_count": len((kp.get("canonicalization") or {}).get("merged", {}).get("items", []))
                                  if kp.get("canonicalization") else 0,
             "support_fact_check_verdict": fc["parsed"]["verdict"],

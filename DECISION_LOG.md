@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-02(ER-011-NO18-DISCOVERY-WHY-FULL-PRODUCTION-RUN-01、No.18「Why Is It So Hard to Ignore a Notification?」をDiscovery/Why型としてNo.9までのProduction Wired仕様のみで正式Production実行。A2は完成[378.634秒、USER_FINAL_AUDIO_REVIEW_REQUIRED]、B1は新規TTS失敗モード[OPEN-107、`USER_DECISION_REQUIRED`]によりepisode assembly未完成。詳細は本ファイル該当エントリ参照)。2026-09-02(ER-010-NO9-FINAL-APPROVAL-CLOSEOUT-AND-FULL-STATUS-AUDIT-28、ユーザーがNo.9 A2[354.162秒、function-word reduction版]・B1[335.754秒、既存承認維持]をいずれも最終承認。No.9関連management ID全24件をRepository横断監査し、Trial仕様・採用/却下/deferred仕様・修正bug・Open Item・one-off例外を完全棚卸しした結果、未処理USER_DECISION_REQUIRED・Dangling Reference・未配線APPROVED仕様は0件を確認(CURRENT_SPEC.mdの「Formatting禁止」行の記録漏れ1件のみ発見・補完、コード自体は既にPRODUCTION_WIRED済み)。OPEN-103は恒久課題[Gemini TTSの`default`誤発音]自体を`DEFERRED / NON-BLOCKING`のまま維持しつつA2側Blockingの解消を追記(恒久課題自体はCLOSEしない)。No.10以降のSSOT補助資料`ER-010_NO9_FINAL_CLOSEOUT.md`を新規作成。No.9 A2/B1を`FINAL USER APPROVED / CLOSED`、No.9開発全体を`CLOSED WITH DEFERRED OPEN ITEMS`[OPEN-100・OPEN-103恒久課題は意図的deferred維持]として正式close)。2026-09-02(ER-010-NO9-FUNCTION-WORD-REDUCTION-PRODUCTION-WIRING-AND-A2-FINAL-27-R1、Trial 26で検証したfunction-word/article reduction原則をユーザーが正式採用し、`KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX`(Primary)・`KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION`(Fallback、Minimalを起点に構築されるため自動適用)へProduction配線。Dangling Reference Check・既存27テスト回帰・新規9テストいずれも全PASS。実Production path(Trial専用scriptではない)から「a catch」+article fixture3件[a chance/an idea/the answer]+非function-word系既存Key Phrase3件[guilt tipping/push back/starting point]の計7件を生成し全件Attempt 1 PASS、article/function-wordを含まないKey Phraseへの悪影響は確認されず。「a catch」はduration 1.011秒・「a」区間0.08秒[旧0.28秒の約29%]まで短縮、`kp4_en.wav`を実際に差し替えNo.9 A2を再Assembly[354.162秒、clipping無し、Key Phrase 4は1回のみ想定位置]。`default`[kp2]・他Key Phrase[kp1/3/5]は無変更をsha256で確認、OPEN-103は無変更のまま。CURRENT_SPEC.mdへ正式追加・OPEN-106は`RESOLVED / CLOSED`。完成音声+全文script+「a catch」新旧比較のUser Listening Artifact提示、`USER_FINAL_AUDIO_REVIEW_REQUIRED`)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-ARTICLE-REDUCTION-DIAGNOSTIC-AND-TRIAL-26、No.9 A2 Key Phrase「a catch」の冠詞"a"が不自然に強く・長く発音されるとのユーザー試聴フィードバックを受け診断。現行Production Key Phrase Minimal instructionにfunction word[冠詞等]を弱く読む原則が存在しないことを既存仕様監査で確認[実装漏れではなく新規safeguard候補]。既存文言を一切変更せず末尾に一般原則を1文追加しただけの隔離Trialを実施し[「a catch」固有のhardcodeなし]、Attempt 1でmachine PASS。実測envelope解析で「a」区間が0.28秒→0.07秒[約1/4]・peak RMSがcatch本体を下回る関係へ好転・フレーズ全体が約34%短縮したことを客観確認。Current Production版とTrial版を並べたUser Listening Artifactを提示、Production一般仕様への正式採用は行わずOPEN_ITEMSで`USER_DECISION_REQUIRED`。`default`[OPEN-103]・Attempt 4 one-off固定assetは無変更)。2026-09-01(ER-010-NO9-A2-ATTEMPT4-ONEOFF-FINAL-AUDIO-25、ユーザー正式決定によりTrial 21 ENGLISH_LOCK attempt=2[通し4回目=「Attempt 4」]をNo.9 A2 `kp2_en`限定のone-off固定assetとして採用。machine validator上の`TTS_FAILURE`判定は書き換えず`one_off_fixed_asset_override`として追記、Production Episode Assembly Gateの既存承認メカニズム[`human_approved_segments.json`]で正式にunblock。ローカルdisfluency QA実施後、No.9 A2 episodeを実際にAssembly[355.002秒、clipping無し]し完成、完成音声+全文scriptのUser Listening Artifactを提示、ユーザーの最終試聴承認待ち。OPEN-103は恒久課題としては`DEFERRED / NON-BLOCKING`のまま、A2完成のBlockingは解消)。2026-09-01(ER-010-NO9-A2-DEFAULT-FIXED-ASSET-FINALIZATION-23-R1、`default`個別対応として新規TTS Trialなしで既存固定音声資産を探索。既存`kp2_en.wav`は実ASR再確認により「別のKey Phrase[Guilt tipping]との取り違え」と確定。No.9 A2/B1BのFull Story本文に地の文として"default"が登場する箇所を新規発見し、既にRESOLVED(B1Bはユーザー承認済み)のsegmentからfaster-whisper[ローカル無料]のword-level timestampで単語単位を切り出した候補3件を作成。いずれもローカルASRは"default"のみを検出する一方、Production ASRは短い誤認識語を文頭に付け足す既知のASR挙動が見られ、断定できないため人間の試聴判断に委ねる形でArtifact提示。Trial 21 Attempt 3/4は使用せず、新規TTSも行っていない。A2 Assemblyは未実施、OPEN-103は`USER_DECISION_REQUIRED`)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22、ユーザー正式決定「Minimal instruction最大2回→NGならEnglish language lock付きMinimal最大2回(合計最大4回)」をKey Phrase英語Component生成のProduction正式初回経路へ全面配線[`generate_key_phrase_component_verified()`書き換え、旧`ENGLISH_STYLE_PREFIX`標準経路起点の構成から離脱、他segmentのTTS retry上限3回は無変更]。Runtime evidence取得: 実TTS Case A["push back"、Minimal Attempt 2でPASS、fallback未使用]・境界モックCase B/C[Minimal 2回NG→English Lock即PASSへ実際に遷移、cumulative_tts_attempts=3で二重会計なし]。既存18テスト全PASS(新規5件追加)。`default`は個別例外として一般仕様から分離、OPEN-103は`DEFERRED / NON-BLOCKING`、Trial 21のEnglish Lock Attempt 1/2をNo.9限定fixed asset候補としてユーザーへ提示[未採用]。既存4件[kp1/3/4/5]は旧経路で既にRESOLVED済みのため無変更のまま)。2026-09-01(ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21、Key Phrase「default」1語を対象に、量産候補retry仕様[Minimal instruction最大2attempt→NGならEnglish language lock付きMinimal最大2attempt、合計最大4attempt]を隔離Trial。4attemptすべて不合格(Minimal 2回=日本語カタカナ「デフォルト」、English Lock 1回目="defaut"[英字だが誤スペル]、English Lock 2回目=日本語カタカナへ逆戻り)。duration anomalyは4回とも無し(改善は維持)だが、content accuracy失敗(非英語発話)はEnglish lockを追加しても解消せず、Trial判定は`REJECTED`。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2、No.9 A2正式Key Phrase5件[guilt tipping/default/push back/a catch/starting point]でMinimal instruction Mini-Trial[各語1回→NGのみ最大2回retry、最大3attempt]を実施。5件中4件[guilt tipping/push back/a catch/starting point]はAttempt 1でPASS[duration anomaly無し、Validator NORMALIZED_MATCH/EXACT_MATCH]。`default`は3attemptとも誤発音(FAIL)で再現性を確認: 前回Trialの英語内誤認識["Dieselt"]とは異なり、今回は3回とも発話言語自体が英語からずれた[デフォルト/デフォルト/默认]。duration anomaly自体は0件で解消したが、content accuracy失敗が形を変えて残存。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
+**最終更新: 2026-09-02(ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01、No.18で発見された3件の問題(Key Phraseの文脈依存人称表現・5件相互の意味重複・Pointが重複していなくても新しい価値を持たない場合がある)を、個別のNo.18修正ではなく汎用Production仕様として改善し、単体テスト26件追加(全125件PASS)、正規Production経路からNo.18を再生成(A2完成、B1はFact Checker FAILでNG_REVIEW_REQUIRED、既存policy通り)。OPEN-107はProductionと分離したDiagnostic Trialで原因範囲(完全な一文のprosodyに起因、断片は12/12正解・完全な一文は6件中2件で誤発音)を診断したが新Production仕様は未採用のままUSER_DECISION_REQUIRED。詳細は本ファイル該当エントリ参照)。2026-09-02(ER-011-NO18-DISCOVERY-WHY-FULL-PRODUCTION-RUN-01、No.18「Why Is It So Hard to Ignore a Notification?」をDiscovery/Why型としてNo.9までのProduction Wired仕様のみで正式Production実行。A2は完成[378.634秒、USER_FINAL_AUDIO_REVIEW_REQUIRED]、B1は新規TTS失敗モード[OPEN-107、`USER_DECISION_REQUIRED`]によりepisode assembly未完成。詳細は本ファイル該当エントリ参照)。2026-09-02(ER-010-NO9-FINAL-APPROVAL-CLOSEOUT-AND-FULL-STATUS-AUDIT-28、ユーザーがNo.9 A2[354.162秒、function-word reduction版]・B1[335.754秒、既存承認維持]をいずれも最終承認。No.9関連management ID全24件をRepository横断監査し、Trial仕様・採用/却下/deferred仕様・修正bug・Open Item・one-off例外を完全棚卸しした結果、未処理USER_DECISION_REQUIRED・Dangling Reference・未配線APPROVED仕様は0件を確認(CURRENT_SPEC.mdの「Formatting禁止」行の記録漏れ1件のみ発見・補完、コード自体は既にPRODUCTION_WIRED済み)。OPEN-103は恒久課題[Gemini TTSの`default`誤発音]自体を`DEFERRED / NON-BLOCKING`のまま維持しつつA2側Blockingの解消を追記(恒久課題自体はCLOSEしない)。No.10以降のSSOT補助資料`ER-010_NO9_FINAL_CLOSEOUT.md`を新規作成。No.9 A2/B1を`FINAL USER APPROVED / CLOSED`、No.9開発全体を`CLOSED WITH DEFERRED OPEN ITEMS`[OPEN-100・OPEN-103恒久課題は意図的deferred維持]として正式close)。2026-09-02(ER-010-NO9-FUNCTION-WORD-REDUCTION-PRODUCTION-WIRING-AND-A2-FINAL-27-R1、Trial 26で検証したfunction-word/article reduction原則をユーザーが正式採用し、`KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX`(Primary)・`KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION`(Fallback、Minimalを起点に構築されるため自動適用)へProduction配線。Dangling Reference Check・既存27テスト回帰・新規9テストいずれも全PASS。実Production path(Trial専用scriptではない)から「a catch」+article fixture3件[a chance/an idea/the answer]+非function-word系既存Key Phrase3件[guilt tipping/push back/starting point]の計7件を生成し全件Attempt 1 PASS、article/function-wordを含まないKey Phraseへの悪影響は確認されず。「a catch」はduration 1.011秒・「a」区間0.08秒[旧0.28秒の約29%]まで短縮、`kp4_en.wav`を実際に差し替えNo.9 A2を再Assembly[354.162秒、clipping無し、Key Phrase 4は1回のみ想定位置]。`default`[kp2]・他Key Phrase[kp1/3/5]は無変更をsha256で確認、OPEN-103は無変更のまま。CURRENT_SPEC.mdへ正式追加・OPEN-106は`RESOLVED / CLOSED`。完成音声+全文script+「a catch」新旧比較のUser Listening Artifact提示、`USER_FINAL_AUDIO_REVIEW_REQUIRED`)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-ARTICLE-REDUCTION-DIAGNOSTIC-AND-TRIAL-26、No.9 A2 Key Phrase「a catch」の冠詞"a"が不自然に強く・長く発音されるとのユーザー試聴フィードバックを受け診断。現行Production Key Phrase Minimal instructionにfunction word[冠詞等]を弱く読む原則が存在しないことを既存仕様監査で確認[実装漏れではなく新規safeguard候補]。既存文言を一切変更せず末尾に一般原則を1文追加しただけの隔離Trialを実施し[「a catch」固有のhardcodeなし]、Attempt 1でmachine PASS。実測envelope解析で「a」区間が0.28秒→0.07秒[約1/4]・peak RMSがcatch本体を下回る関係へ好転・フレーズ全体が約34%短縮したことを客観確認。Current Production版とTrial版を並べたUser Listening Artifactを提示、Production一般仕様への正式採用は行わずOPEN_ITEMSで`USER_DECISION_REQUIRED`。`default`[OPEN-103]・Attempt 4 one-off固定assetは無変更)。2026-09-01(ER-010-NO9-A2-ATTEMPT4-ONEOFF-FINAL-AUDIO-25、ユーザー正式決定によりTrial 21 ENGLISH_LOCK attempt=2[通し4回目=「Attempt 4」]をNo.9 A2 `kp2_en`限定のone-off固定assetとして採用。machine validator上の`TTS_FAILURE`判定は書き換えず`one_off_fixed_asset_override`として追記、Production Episode Assembly Gateの既存承認メカニズム[`human_approved_segments.json`]で正式にunblock。ローカルdisfluency QA実施後、No.9 A2 episodeを実際にAssembly[355.002秒、clipping無し]し完成、完成音声+全文scriptのUser Listening Artifactを提示、ユーザーの最終試聴承認待ち。OPEN-103は恒久課題としては`DEFERRED / NON-BLOCKING`のまま、A2完成のBlockingは解消)。2026-09-01(ER-010-NO9-A2-DEFAULT-FIXED-ASSET-FINALIZATION-23-R1、`default`個別対応として新規TTS Trialなしで既存固定音声資産を探索。既存`kp2_en.wav`は実ASR再確認により「別のKey Phrase[Guilt tipping]との取り違え」と確定。No.9 A2/B1BのFull Story本文に地の文として"default"が登場する箇所を新規発見し、既にRESOLVED(B1Bはユーザー承認済み)のsegmentからfaster-whisper[ローカル無料]のword-level timestampで単語単位を切り出した候補3件を作成。いずれもローカルASRは"default"のみを検出する一方、Production ASRは短い誤認識語を文頭に付け足す既知のASR挙動が見られ、断定できないため人間の試聴判断に委ねる形でArtifact提示。Trial 21 Attempt 3/4は使用せず、新規TTSも行っていない。A2 Assemblyは未実施、OPEN-103は`USER_DECISION_REQUIRED`)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22、ユーザー正式決定「Minimal instruction最大2回→NGならEnglish language lock付きMinimal最大2回(合計最大4回)」をKey Phrase英語Component生成のProduction正式初回経路へ全面配線[`generate_key_phrase_component_verified()`書き換え、旧`ENGLISH_STYLE_PREFIX`標準経路起点の構成から離脱、他segmentのTTS retry上限3回は無変更]。Runtime evidence取得: 実TTS Case A["push back"、Minimal Attempt 2でPASS、fallback未使用]・境界モックCase B/C[Minimal 2回NG→English Lock即PASSへ実際に遷移、cumulative_tts_attempts=3で二重会計なし]。既存18テスト全PASS(新規5件追加)。`default`は個別例外として一般仕様から分離、OPEN-103は`DEFERRED / NON-BLOCKING`、Trial 21のEnglish Lock Attempt 1/2をNo.9限定fixed asset候補としてユーザーへ提示[未採用]。既存4件[kp1/3/4/5]は旧経路で既にRESOLVED済みのため無変更のまま)。2026-09-01(ER-010-NO9-KEYPHRASE-ENGLISH-LOCK-FALLBACK-TRIAL-21、Key Phrase「default」1語を対象に、量産候補retry仕様[Minimal instruction最大2attempt→NGならEnglish language lock付きMinimal最大2attempt、合計最大4attempt]を隔離Trial。4attemptすべて不合格(Minimal 2回=日本語カタカナ「デフォルト」、English Lock 1回目="defaut"[英字だが誤スペル]、English Lock 2回目=日本語カタカナへ逆戻り)。duration anomalyは4回とも無し(改善は維持)だが、content accuracy失敗(非英語発話)はEnglish lockを追加しても解消せず、Trial判定は`REJECTED`。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINI-TRIAL-20-R2、No.9 A2正式Key Phrase5件[guilt tipping/default/push back/a catch/starting point]でMinimal instruction Mini-Trial[各語1回→NGのみ最大2回retry、最大3attempt]を実施。5件中4件[guilt tipping/push back/a catch/starting point]はAttempt 1でPASS[duration anomaly無し、Validator NORMALIZED_MATCH/EXACT_MATCH]。`default`は3attemptとも誤発音(FAIL)で再現性を確認: 前回Trialの英語内誤認識["Dieselt"]とは異なり、今回は3回とも発話言語自体が英語からずれた[デフォルト/デフォルト/默认]。duration anomaly自体は0件で解消したが、content accuracy失敗が形を変えて残存。Production instruction・review lock・retry budgetはいずれも無変更、OPEN-103は`USER_DECISION_REQUIRED`のまま維持)。2026-09-01(ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-TRIAL-AND-RETRY-ACCOUNTING-FIX-19、Key Phrase英語音声Minimal instruction Trial[OPEN-103、opt outはVALIDATED相当・defaultは単発試行でTTS_FAILURE]・review lockネスト二重会計バグ修正[OPEN-105、CLOSED])。2026-09-01(ER-010-NO9-B1-APPROVAL-AND-OPEN103-TTS-DIAGNOSTIC-18、No.9 B1音声のUser Approval記録・完成音声提示ルールの再確認・OPEN-103 TTS request payload監査)。2026-09-01(ER-010-NO9-A2-KEYPHRASE-AUDIO-ISSUES-103-104-17、OPEN-103/104個別診断・OPEN-104実装バグ修正)。2026-08-31(ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06、Storytelling First/No JargonをProduction初回Writerへ正式実装・Meaning First REJECTED確定・No.9新規再生成候補をProduction経路から取得。2026-08-31、ER-010-N1-SPEC-LIFECYCLE-PRODUCTION-GATE-04、仕様Lifecycle・Dangling Reference Checkの正式導入をDecisionとして記録。2026-08-29、ER-008-N8-FINAL-CLOSEOUT-24、地名/施設名CompressionのNo.8正式反映・Writer Point Balance prompt強化・cost計算モジュールの単価バグ修正・Stephen Reicher発音PASS確定)**
 
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -15,6 +15,283 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: No.18で発見された3件の問題を汎用Production仕様として改善(Key Phrase人称一般化・Key Phrase Set Redundancy QA・Point Role Planning+Point Value QA)、No.18を改善後仕様で再生成、OPEN-107 Diagnostic Trial実施
+
+- **日付**: 2026-09-02
+- **区分**: サービス・生成仕様の新規追加(Production Wired)。
+
+### 背景・目的
+
+前回(ER-011-NO18-DISCOVERY-WHY-FULL-PRODUCTION-RUN-01)のNo.18試聴で、
+ユーザーから以下3件の問題が指摘された。ユーザーは明示的に「No.18の
+特定語句やPointを直接書き換える対応は禁止」「個別ハードコードは禁止」
+とし、(1)現行仕様・実装を確認 (2)なぜ現行仕様がこのOutputを許したのか
+特定 (3)汎用仕様を変更 (4)テスト追加・実行 (5)正規Production経路から
+No.18を再生成 (6)出力を確認、という順序を明示的に指示した。本Decisionは
+この順序で実施した記録である。
+
+### A. Key Phrase: 文脈依存の人称表現(「catch their attention」「a piece
+of your attention」)
+
+**現行仕様確認**: 選定prompt(`b1_p2_keywords_l_prompt_template.txt`)には
+人称代名詞の扱いに関する指示が一切無かった。canonicalization prompt
+(`b1_p2_keywords_canonicalization_prompt_template.txt`)の「文脈限定語の
+除去」ルールは the/a/an/this/that/所有限定詞などを**除去(削除)**する
+ことしか指示しておらず、辞書的な一般形への**置換**は一度も指示していな
+かった。さらに、`validate_canonicalization_item()`のRule7(source_span内
+の連続部分文字列でなければ拒否)は、「their」→「someone's」のような
+置換を機械的に「捏造」として拒否する構造になっていた(仮にLLMが正しく
+一般化しても、既存validatorが弾く設計だった)。
+
+**原因**: 選定・canonicalizationいずれの段階にも、人称代名詞・所有格を
+一般化する指示が存在せず、かつ既存の構造的安全装置(Rule7)がこの種の
+正当な置換すら通さない設計になっていたこと。
+
+**変更**: `er003_key_words_canonicalization.py`へ、新しい変換カテゴリ
+`generalize_person_dependent_reference`を追加した。閉じた語彙集合
+(my/your/his/her/its/their/our/you/they/he/she/yourself/himself/herself/
+themselves/yours/theirs → one's/someone's/somebody's/someone/somebody/
+one/oneself)による**1対1のトークン置換のみ**を構造的に許可する
+`_is_valid_person_generalization()`を実装し、Rule7の例外パスとして
+`validate_canonicalization_item()`へ統合した(既存の挙動は
+`normalization_reason`を渡さない限り完全に無変更、既存43テスト全PASS
+で確認)。新QAフィールド`qa_person_reference_generalized`を追加。
+canonicalization promptへルール3として追加し、「特定の代名詞を含むこと
+自体が意味・用法に必要な場合は機械的に変換しない」という例外も明記した
+(機械的hard ruleにはしない)。単体テスト6件(`PersonReferenceGeneralizationTests`)
+で、正しい置換の許可・許可されていない置換先の拒否・reason不一致時の
+拒否・語数不一致時の拒否・無関係語変更時の拒否を確認。
+
+### B. Key Phrase: 5件相互の意味重複(「catch their attention」と
+「a piece of your attention」が同じ「注意を奪われる」概念)
+
+**現行仕様確認**: 既存QA(`er003_key_words_canonicalization.py`の
+QA_FIELDS)は各候補を個別にsource_span/display_phraseとの関係でのみ
+判定しており、5件相互の比較は一切行っていなかった。選定promptの優先
+順位「汎用性」は各候補単体の性質であり、候補同士の重複は評価しない。
+
+**原因**: 5件セット全体としての重複を評価するQA工程が、そもそも
+存在しなかったこと。
+
+**変更**: 新規モジュール`er011_key_phrase_set_redundancy_qa_01.py`を
+追加した。canonicalization完了後の5件について、意味(meaning)・使用
+場面(usage_context)・文法/構文上の学習価値(grammatical_teaching_value)・
+記事内で担う概念(conceptual_role)の4観点で、C(5,2)=10ペア全てを
+1回のLLM呼び出しで判定する。1つでも`is_near_duplicate=true`があれば
+`REDUNDANCY_NG`とし、`er003_v1_n3_01_scaffold_generate.py::run_key_phrases()`
+がKey Phrase選定(方式L)からやり直す(最大2回、`gen.POINT_OVERLAP_ARTICLE_RETRY_MAX`
+と同じ値をそのまま踏襲、新しい上限を独自に発明しない)。retry時は前回の
+重複ペアを選定promptへ診断メモとして追加する(`build_redundancy_diagnostic_note()`)。
+記事本文・Full Storyは対象外(選定+canonicalization+redundancy QAの
+3工程のみ再実行、既存のPoint Overlap記事全体retryとは独立)。単体テスト
+11件(`er011_test_key_phrase_set_redundancy_qa_01.py`)でプロンプト構築・
+構造validator・gate(技術失敗retry・NG時は再試行しない)を確認。
+
+### C. Point: 「重複しない」だけでなく「新しい価値」を要求する
+
+**現行仕様確認(ユーザー指示の実際の箇所調査)**:
+- Point Role Planning: 存在しない(過去のTrial `er009_n1_point_role_planning_11.py`
+  はA/B比較でDiagnostic Full Retryに敗れ[0/3 vs 3/3]不採用のまま、
+  Production未実装)。
+- Writer Prompt: `COMMON_BLOCK_TEMPLATE`の「Point One / Point Twoの役割」
+  節は、切り口/示唆/背景/心理/社会的含意/別の因果/実生活上の解釈/意味
+  づけを列挙するのみで、「留保・免責事項だけで構成してはいけない」
+  「新しい価値を加えなければならない」は一度も明示していなかった。
+- Point Overlap QA: `er008_point_overlap_qa_18.py`のlexical overlapは
+  Point各々とFull Storyとの語彙的重複のみを見る一方向指標であり、
+  Point One対Point Two自体は一度も評価されていなかった。「重複していない
+  が無価値」なPointを検知する仕組みは存在しなかった。
+- Retry/再生成処理: Diagnostic Full Retry(`er009_diagnostic_full_retry_modules_12.py`
+  + `run_one_pattern()`のretryループ)はlexical overlap flagのみを
+  トリガーとしていた。
+
+**原因**: (a) Writer promptが「重複しない」ことしか要求しておらず
+「価値を加える」ことを明示していなかった。(b) 既存QAが語彙的重複しか
+判定せず、意味的な「新しい価値」の有無・Point One対Point Two自体の
+重複を判定していなかった。No.18 A2のPoint Two(留保のみ構成)は、
+Point Oneとは異なる語彙を使っていたためlexical overlap QAを通過した。
+
+**変更**: 2段構成の一般仕様を追加した。
+
+1. **Point Role Planning**(新規モジュール`er011_point_role_value_planning_01.py::
+   run_point_role_planning()`): Full Article Writer呼び出しの直前に、
+   Verified Fact Ledgerに基づいてPoint One/Twoそれぞれの`role`/
+   `new_listener_takeaway`/`evidence_anchor`/`why_it_matters`/
+   `must_not_overlap_with_full_story`/`must_not_overlap_with_other_point`
+   を計画させる、小さな独立JSON schema呼び出し。既存のMarkdown出力型
+   Writerアーキテクチャは変更せず(大規模な構造変更のリスクを避ける)、
+   `build_role_planning_block()`で計画結果をWriter promptへ文字列として
+   挿入する設計にした。初回生成・Diagnostic Full Retryの各attemptで
+   毎回再計画する(前回の計画を使い回さない、既存のDiagnostic Full
+   Retry「生成単位全体をLedgerから再生成する」方針をPlanningにも適用)。
+2. **Point Value QA**(`run_point_value_qa()`): 生成後、実際のPoint本文
+   に対し独立したLLM呼び出しで6項目(`qa_not_caveat_only`/
+   `qa_not_full_story_paraphrase`/`qa_not_other_point_paraphrase`/
+   `qa_explains_why_it_matters`/`qa_specific_not_generic`/
+   `qa_adds_new_value`)を判定する。1件でもFAILなら`status="NG"`。
+3. **Point One対Point Twoのlexical overlap**を`run_point_overlap_qa_and_regenerate()`
+   へ追加(双方向、既存の`overlap_qa.flag_possible_paraphrase()`をその
+   まま再利用、新規関数は作らない)。
+4. 上記3つを`still_flagged = lexical_flagged or value_qa_flagged`として
+   既存のDiagnostic Full Retryループへ統合し、retry時はvalue QA NGの
+   理由(`build_value_qa_diagnostic_note()`)を既存の診断section直後に
+   追加する。`COMMON_BLOCK_TEMPLATE`本体にも「Pointが実際に新しい価値を
+   持つこと」節を追加し、6つの禁止パターンを明記した。
+
+単体テスト9件(`er011_test_point_role_value_planning_01.py`)でrole
+planningプロンプト構築・value QA判定・診断メモ生成を確認。既存の
+`run_one_pattern`統合テスト(3ファイル、計42件)を、新しい2呼び出しを
+mockするよう更新し全PASSを確認(既存の制御フロー検証の意図は変更せず、
+新規呼び出しの追加分だけをmockした)。
+
+### D. 正規Production経路からのNo.18再生成(実データ検証)
+
+既存のNo.18 research出力(`pool_n18_notifications`のverified_fact_ledger.txt
+等)をそのまま再利用し(Ledger自体は無変更)、新しい出力先
+`pool_n18_notifications_specfix_v2`で、改善後の`gen.run_one_pattern()`
+(Writer)→`support_mod.run_support_for_theme()`(Support/Key Phrase)を
+実際に呼び出した。旧No.18(`pool_n18_notifications`)は一切変更していない。
+
+**A2**: 初回候補でPoint Value QAは両Point PASS。lexical overlap
+(Point Two対Full Story=0.629)のみでflagされ、Diagnostic Full Retry
+(Point Role Planning再計画込み)が1回発火し解消(retry後: Point One
+overlap=0.273、Point Two overlap=0.321、Point One対Point Two=0.03/0.036、
+value QA両方PASS)。Fact Checker verdict=REVIEW_REQUIRED(non-blocking、
+5件の指摘、既知のPew精度論点等)。Ledger Deviation=LEDGER_COMPLIANT
+(MINOR 2件、MAJORなし、Local Rewrite不発火)。Key Phrase: canonicalization
+PASS、Set Redundancy QA=REDUNDANCY_PASS(10ペア全て重複なし)。
+
+**B1B**: **初回候補でPoint Value QAが実際にNGを検出した**(Point One
+が`qa_not_full_story_paraphrase`/`qa_adds_new_value`でFAIL、理由:
+「見えない努力」等の言い換えに留まり新しい事実・示唆がほとんど無い。
+このPoint Oneのlexical overlapは0.379で、旧閾値0.40未満のため**旧仕様
+ではPASSしていたはずの実例**)。Diagnostic Full Retry(Point Role
+Planning再計画込み)が1回発火し、retry後はlexical overlap・value QAとも
+全PASS(Point One overlap=0.25、Point Two overlap=0.122、Point One対
+Point Two=0.083/0.049)。Key Phrase: canonicalization PASS、Set
+Redundancy QA=REDUNDANCY_PASS。ただしFact Checker verdict=**FAIL**
+(blocking、既存ポリシー通りLedger Deviation以降は未実行)。指摘内容は
+(1)Pewの「約4割が不安・孤独・動揺」という記述の精度(実際は42%/25%/24%、
+いずれか56%、複数の解釈可能な表現、前回No.18でもREVIEW_REQUIREDとして
+指摘済みの既知論点)、(2)Skowronek研究を「laboratory tests」と表現した
+記述(Scientific Reports論文は参加者の通常の日常環境で実施されたと
+記載されており、"laboratory"という単語自体がFact Checkerに不整合と
+判定された)。既存のFact Checker policyに従い自動続行せずNG_REVIEW_REQUIRED
+としてstop。同一Production経路(`gen.run_one_pattern`、Fact Checkerは
+無変更)でB1Bのみ1回再試行したが、2回目の候補も別の理由でFact Checker
+FAIL(Pewの同一精度論点+Skowronek研究の実施環境記述の不整合、内容は
+1回目と異なるが同種の論点)となった。これはFact Checkerの既知の
+非決定性(OPEN-92、CURRENT_SPEC.md「Fact Safety」節)、または当該Pew
+統計の言語化そのものが構造的に精度を欠きやすい論点である可能性が高く、
+今回追加した3つの新仕様(Key Phrase・Point)とは無関係な既存の問題で
+あるため、本Decisionのスコープでは追加のPromptハードコード・Ledger
+書き換えは行わず、B1Bのshippable candidate取得は別タスクのフォロー
+アップとする(ユーザー確認事項として後述)。
+
+### E. OPEN-107(`opened`のTTS Diagnostic Trial、Productionと分離)
+
+`er011_open107_opened_tts_diagnostic_trial_01.py`で、No.18 B1原稿
+("Your phone does not have to be opened to become part of the task.")は
+一切変更せずPhase A(原因範囲の診断)・Phase B(回復策の評価)を実施した。
+model/voice/TTS instruction/trim方式は、実際にNo.18 B1 in_one_lineを
+生成したのと同一の値(`gemini-2.5-pro-preview-tts`/Aoede/`ENGLISH_STYLE_PREFIX`/
+trim margin 0.35秒)を使用。試行回数は各条件3回を事前確定(既存の
+content-attempt慣行を踏襲)。
+
+**Phase A結果**:
+| 条件 | 内容 | 結果 |
+|---|---|---|
+| 1 | "opened"単独 | 3/3 CORRECT_OPENED |
+| 2 | "be opened" | 3/3 CORRECT_OPENED |
+| 3 | "have to be opened" | 3/3 CORRECT_OPENED |
+| 4 | "does not have to be opened" | 3/3 CORRECT_OPENED |
+| 5/6 | 完全な一文(文脈なし) | 2/3 CORRECT、1/3 MISPRONOUNCED_OPEN |
+| 7 | 完全な一文+後続文(文脈あり) | 2/3 CORRECT、1/3 MISPRONOUNCED_OPEN |
+| 8 | 実Production関数で単独segment生成 | 1/1 CORRECT(attempt 1でPASS) |
+| 9 | 実際のNo.18本番実行データ(2文結合、再利用・追加課金なし) | 3/3 MISPRONOUNCED_OPEN(STOPPED) |
+
+**推定failure class**: 「前後の音との連結・弱化」(connected speech
+reduction)。断片(条件1-4、最長5語の"does not have to be opened"を
+含む)は12/12(100%)正解だったのに対し、完全な文法的な一文(条件5/6・7、
+主語+助動詞連鎖+受動不定詞+目的節を含む完全な文プロソディ)は6件中2件
+(約33%)で誤発音した。文脈(前後に別の文があるかどうか)・segment長
+自体は結果を有意に変えなかった(条件5/6と条件7がほぼ同率)。特定単語
+「opened」単独では一度も誤らなかったため、単語自体の発音問題ではない。
+
+**Phase B結果(回復策の評価、対象は条件5/6の完全な一文)**:
+| 回復策 | 結果 |
+|---|---|
+| segment短分割と再結合("Your phone does not have to be opened"のみを別呼び出し) | 2/2有効attempt中2/2 CORRECT_OPENED(1件は技術的呼び出し失敗、発音とは無関係) |
+| 語尾を明瞭に読むTTS instruction追加(AND方式、既存instruction削除なし) | 3/3 CORRECT_OPENED |
+| voice変更(Aoede→Charon) | 3/3 MISPRONOUNCED_OPEN(悪化、有効な回復策ではない) |
+
+**判定**: 有効そうな回復策の候補は「segment短分割」「語尾明瞭化TTS
+instruction」の2つ(小標本のため確定的ではない)。「voice変更」は
+無効。本Trialは診断・回復策候補の提示までであり、**新しいProduction
+仕様・例外処理は本Decisionでは追加しない**(ユーザー指示通り、Trial
+結果が出るまでは追加しない方針を遵守)。OPEN-107は`USER_DECISION_REQUIRED`
+のまま維持し、次項Fに候補を整理する。
+
+### F. Trial結果に基づくOPEN-107の選択肢(ユーザー確認事項)
+
+1. 「語尾を明瞭に読むTTS instruction」をKey Phraseのfunction-word
+   reductionと同じAND方式パターンで、in_one_line等の長文segment全般へ
+   汎用的に適用する候補として正式検討する(Phase B実測3/3 PASS、ただし
+   n=3のため統計的に確定的ではない)。
+2. 「完全な文プロソディで結ばれた長い一文」自体をTTS前に自動分割し、
+   分割後に結合する汎用機構を検討する(Phase B実測2/2 PASS、実装コスト
+   は上記1より高い)。
+3. 現状維持(既存の3回retry cascade任せ)とし、恒久課題としてOPEN-102/
+   103/104と同様`DEFERRED / NON-BLOCKING`で追跡する。
+
+### G. Production/Trialの実測Cost(分離集計、公式pricing snapshot使用)
+
+`er011_specfix_cost_compute_01.py`で、Production regeneration(Writer×2
+level+B1B retry1回)とTrialを別々に集計した。
+
+- **Production Writer regeneration**: writer_a2 13 calls ¥11.4、
+  writer_b1(初回+retry) 18 calls ¥15.1、**小計¥26.5(31 calls、実測)**
+- **Support(Key Phrase/Comment生成)**: **実測ログ欠落(unknown)**。
+  Support実行時にcost loggerの`cl.install()`呼び出しを行うスクリプトを
+  経由しなかったため、実際にAPI呼び出しは発生し正常に完了したが
+  usage/costのレコードが記録されていない(実装ミス、正直に記録する。
+  過去の同種Support実行[No.18初回実行、A2¥3.0/B1¥4.3]から参考規模は
+  推測できるが、これは今回のactualではないため合算しない)
+- **OPEN-107 Diagnostic Trial**: Phase A ¥9.5(29 calls)+Phase B ¥2.4
+  (6 calls)+ASR(untagged、正しく価格計算済み)¥0.6(32 calls)、
+  **小計¥12.4(67 calls、実測)**
+- Production/Trialのcostは明確に分離し、混同していない。Support分の
+  欠落は次回同種作業でのcl.install()呼び出し漏れ防止のteaching item
+  として記録する。
+
+### H. Git・関連ファイル
+
+変更ファイル: `er003_key_words_canonicalization.py`、
+`er003_v1_translator_briefs/b1_p2_keywords_canonicalization_prompt_template.txt`、
+`er003_v1_n3_01_scaffold_generate.py`、`er006_pool_pilot_01_support.py`、
+`er003_v1_n3_01_articles_generate.py`、新規`er011_key_phrase_set_redundancy_qa_01.py`、
+`er011_point_role_value_planning_01.py`、`er011_open107_opened_tts_diagnostic_trial_01.py`、
+`er011_no18_specfix_v2_production_run_01.py`、`er011_no18_specfix_v2_b1_retry_01.py`、
+`er011_specfix_cost_compute_01.py`、テスト`er003_test_key_words_canonicalization.py`
+(追加分)・`er011_test_key_phrase_set_redundancy_qa_01.py`・
+`er011_test_point_role_value_planning_01.py`、および既存3テストファイル
+の統合テストへのmock追加。個別ハードコードは無し(単体テストで確認済み、
+既存の`NoBlacklistOrHardcodeImplementationTests`も無変更のままPASS)。
+
+### 現在の状態
+
+- No.18 A2(specfix_v2): Writer/Support完成、Fact Checker REVIEW_REQUIRED
+  (non-blocking)、audio未生成(ユーザーがテキストを確認するまで生成しない)
+- No.18 B1(specfix_v2): Writer/Support完成もFact Checker FAIL(blocking)
+  でNG_REVIEW_REQUIRED、shippable candidate未取得(既存Fact Checker
+  policyに従いこのDecisionでは追加対応せず)
+- 旧No.18(`pool_n18_notifications`、A2完成audio・B1音声ブロック中)は
+  無変更のまま維持
+- OPEN-107は`USER_DECISION_REQUIRED`のまま(Trial結果で情報を追加、
+  新Production仕様は未採用)
 
 ---
 

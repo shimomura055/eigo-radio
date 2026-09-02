@@ -8,6 +8,7 @@
 
 1. 文脈限定語の除去: display_phraseの先頭・末尾に、この記事の文脈だけで必要な限定語(the, a, an, this, that, these, those, 所有限定詞など)が残っており、それを除いても意味・自然さが保てる場合。
 2. 意味理解に必要な語の復元: display_phraseが既に削りすぎていて、単独で聞いたときに「何をする/何に対する」が欠けて意味が抽象的になる場合、source_span(本文中の元のspan)から**必要最小限の語だけ**を復元する。例: source_spanが"the urge to watch"で、display_phraseが"the urge to"の場合、"to"だけでは「何をしたい衝動か」が欠けるため、"urge to watch"(sourceに存在する"watch"を復元)を優先する。ただし記事固有の情報まで必要以上に抱え込まない(例: "urge to watch just one more video"のようにsource_sentence全体に近い長さまで復元するのは不可)。
+3. 人称代名詞・所有格の一般化: display_phraseに、本文中の特定の人物・立場に依存した人称代名詞・所有格(my/your/his/her/their/our/its、you/they/he/she、yourself/himself/herself/themselves等)が含まれており、それが記事固有の誰か(例: この記事の「あなた」「彼ら」)を指しているに過ぎない場合、辞書の見出し語として使われる標準的な一般形(one's/someone's/somebody's、someone/somebody/one、oneself等、英語学習辞書がこの種の表現を掲載する際に使う慣例的な形)へ**置換**してください(削除ではありません)。例: "catch their attention"→"catch someone's attention"、"a piece of your attention"→"a piece of someone's attention"。**ただし、特定の代名詞を含むこと自体がその表現の意味・用法として必要な場合(例: 相互性を表すeach other、その記事の主題人物を指すことが表現の一部として本質的な場合、決まった一人称・二人称の慣用句など)は、機械的に一般形へ変換しないでください。** 変換すべきかどうか迷う場合は、reasoningでその判断根拠を説明した上で、より自然だと判断する側を選んでください。この置換は必ずnormalization_reason="generalize_person_dependent_reference"を使い、人称代名詞・所有格以外の語は一切変更しないでください(他の語も変えたい場合は、この置換とは別に理由2などを検討してください)。
 
 この2つのいずれにも該当しない場合(display_phraseが既に自然な最小十分の単位である場合)は、**時制・単複・語順・大文字小文字を含め、一切変更しないでください。** "本文により忠実な形に戻す"という理由だけでの変更は禁止です。
 
@@ -33,8 +34,9 @@
 - qa_context_sufficiency: source_span内の語を1〜5語制限内で追加保持することで、より自然で理解しやすい学習単位になる余地を検討したか(検討した上で現在の形が適切ならPASS)
 - qa_core_meaning_preserved: display_phrase(またはsource_span)が持っていた中心的な意味が、key_phraseでも保持されているか(Meaning Preservation Rule参照)
 - qa_no_semantic_role_loss: risk/possibility/obligation/pressure/attempt/refusalのような意味役割を表す語を削ったことで、その意味役割そのものが消えていないか(消えていなければPASS)
+- qa_person_reference_generalized: display_phraseに記事固有の人称代名詞・所有格が含まれる場合、それが上記ルール3に従って辞書的な一般形へ正しく置換されているか、または特定の代名詞を保持する必要性がreasoningで説明されているか(display_phraseに元々人称代名詞・所有格が含まれない場合は、該当なしとして常にPASS)
 
-normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が方式L選定時点で既にlemma化・時制正規化・phrasal verb整理等を経ている)/ "other"(その他、reasoningで説明)。
+normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "generalize_person_dependent_reference"(人称代名詞・所有格の一般化、上記ルール3)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が方式L選定時点で既にlemma化・時制正規化・phrasal verb整理等を経ている)/ "other"(その他、reasoningで説明)。
 
 changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください(特に、source_spanから語を復元した場合、または削った場合はその理由を明記してください)。
 

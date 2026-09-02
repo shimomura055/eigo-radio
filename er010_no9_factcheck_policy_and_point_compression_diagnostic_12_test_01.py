@@ -55,6 +55,31 @@ def _fake_fact_checker_gates_for(verdict):
             "FACT_CHECK_COMPLETED", [], "fake-model", "fake-response-id", None, [])
 
 
+# ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: run_one_patternはPoint Role
+# Planning(生成前)・Point Value QA(生成後)を新たに呼ぶようになったため、
+# Fact Checkerポリシー分岐の検証(このテストの本来の対象)には無関係な
+# この2つをmockする。
+_FAKE_ROLE_PLAN = {
+    "point_one": {f: "x" for f in ["role", "new_listener_takeaway", "evidence_anchor",
+                                    "why_it_matters", "must_not_overlap_with_full_story",
+                                    "must_not_overlap_with_other_point"]},
+    "point_two": {f: "y" for f in ["role", "new_listener_takeaway", "evidence_anchor",
+                                    "why_it_matters", "must_not_overlap_with_full_story",
+                                    "must_not_overlap_with_other_point"]},
+}
+
+
+def _fake_role_planning_result(*args, **kwargs):
+    return {"parsed": _FAKE_ROLE_PLAN, "model": "fake-model", "response_id": "fake-id", "prompt": "fake"}
+
+
+def _fake_value_qa_pass(*args, **kwargs):
+    per_point = {"point_one": {"ok": True, "fail_fields": [], "reasoning": "OK"},
+                 "point_two": {"ok": True, "fail_fields": [], "reasoning": "OK"}}
+    return {"status": "PASS", "per_point": per_point, "parsed": {}, "model": "fake-model",
+            "response_id": "fake-id", "prompt": "fake"}
+
+
 class FactCheckerPolicyTests(unittest.TestCase):
     def setUp(self):
         self.out_dir = tempfile.mkdtemp(prefix="er010_factcheck_policy_test_")
@@ -68,7 +93,10 @@ class FactCheckerPolicyTests(unittest.TestCase):
              mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
              mock.patch.object(gen.r3, "run_fact_checker_with_gates",
                                 return_value=_fake_fact_checker_gates_for(verdict)), \
-             mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock):
+             mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.point_planning, "run_point_role_planning",
+                                side_effect=_fake_role_planning_result), \
+             mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass):
             result = gen.run_one_pattern(
                 client=object(), theme_id="t1", label="A2",
                 prompt="fake prompt", verified_ledger_text="FACT-01: some ledger fact",

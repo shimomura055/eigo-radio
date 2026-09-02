@@ -75,7 +75,19 @@ No.1〜3の最終採用Candidate(script+audio)を、Topicごとにまとめた
   完成したが、`in_one_line`segmentが新規TTS失敗モード(OPEN-107、"to be
   opened"の"-ed"語尾脱落)によりepisode assembly未完成、`USER_DECISION_
   REQUIRED`。詳細は[DECISION_LOG.md](DECISION_LOG.md) ER-011-NO18-
-  DISCOVERY-WHY-FULL-PRODUCTION-RUN-01参照。
+  DISCOVERY-WHY-FULL-PRODUCTION-RUN-01参照。**2026-09-02追記
+  (ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01)**: No.18試聴で発見された
+  Key Phrase文脈依存人称表現・5件相互の意味重複・Point新規価値欠如の
+  3件を汎用Production仕様として改善し(No.18個別修正は禁止、記事固有
+  ハードコードなし)、改善後仕様からNo.18を`pool_n18_notifications_
+  specfix_v2`として再生成した(この行が指す元の`pool_n18_notifications`
+  自体は無変更のまま維持)。A2はWriter/Support完成(Fact Checker
+  REVIEW_REQUIRED、non-blocking)、音声は未生成(ユーザーのテキスト確認
+  待ち)。B1は2回の生成候補ともFact Checker`FAIL`(blocking、既存policy
+  通り、新規OPEN-108)でshippable candidate未取得。OPEN-107は
+  Productionと分離したDiagnostic Trialで原因範囲を診断したが新
+  Production仕様は未採用のまま。詳細は[DECISION_LOG.md](DECISION_LOG.md)
+  ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01参照。
 - No.1〜3は、ER-006-POOL-PILOT-01(2026-08-22以前)でTopic Selectionを
   意図的にスキップし(コスト0円)、Pilot用に手動選定された3トピック
   だった。当時、この3件が「20 Topic Masterの一次資料」として本

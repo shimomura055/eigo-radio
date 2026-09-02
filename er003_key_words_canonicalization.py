@@ -85,6 +85,14 @@ QA_FIELDS = (
     # 検出する。
     "qa_core_meaning_preserved",
     "qa_no_semantic_role_loss",
+    # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01追加: No.18で"catch their
+    # attention"/"a piece of your attention"のように、本文中の特定の人物
+    # (your/their等)に依存した文脈依存形がKey Phraseとしてそのまま採用
+    # された(単独では再利用しにくい)。display_phrase/key_phraseに
+    # 本文固有の人称代名詞・所有格が残っており、それが辞書的な一般形
+    # (one's/someone's等)へ正規化されていない、または特定の代名詞を
+    # 保持する必要性が説明されていない場合はFAILとする。
+    "qa_person_reference_generalized",
 )
 
 # canonicalizationがdisplay_phraseに対して行った変換の種類(監査用、
@@ -97,6 +105,11 @@ NORMALIZATION_REASONS = (
     "inherit_selection_normalization",  # 無変更だが、方式L選定時点で既に
                                         # lemma化・時制正規化・phrasal verb整理等が
                                         # 行われている(例: take a player off)
+    # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01追加: 本文固有の人称代名詞・
+    # 所有格(my/your/his/her/their/our/you/they等)を、辞書的な一般形
+    # (one's/someone's/oneself等)へ置換する場合に使う。「除去」
+    # (remove_contextual_determiner)とは異なり「置換」であることに注意。
+    "generalize_person_dependent_reference",
     "other",
 )
 
@@ -235,7 +248,60 @@ def _is_contiguous_substring(needle: str, haystack: str) -> bool:
     return _normalize_for_match(needle) in _normalize_for_match(haystack)
 
 
-def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str) -> dict:
+# ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: 人称代名詞・所有格の一般化
+# ============================================================
+# No.18の"catch their attention"/"a piece of your attention"は、本文の
+# 文脈(誰の注意か)に依存した人称形のまま採用されたKey Phraseだった。
+# 単独の学習教材として提示するKey Phraseは、原則として辞書的な一般形
+# (例: catch/grab someone's attention、in one's opinion)にすべきである。
+# ただし、記事のみのハードコード(「your」「their」専用の分岐)ではなく、
+# 閉じた語彙集合(一般的な人称代名詞・所有格とその辞書的一般形の対応表)
+# による構造的な置換のみを許可する。1対1のトークン置換のみを対象とし、
+# 語の削除は別カテゴリ(remove_contextual_determiner)の対象のまま
+# 変更しない。
+_PERSON_DEPENDENT_TO_GENERIC = {
+    "my": {"one's"},
+    "your": {"one's", "someone's", "somebody's"},
+    "his": {"one's", "someone's", "somebody's"},
+    "her": {"one's", "someone's", "somebody's"},
+    "its": {"one's"},
+    "their": {"one's", "someone's", "somebody's"},
+    "our": {"one's"},
+    "you": {"someone", "somebody", "one"},
+    "they": {"someone", "somebody", "one"},
+    "he": {"someone", "somebody", "one"},
+    "she": {"someone", "somebody", "one"},
+    "yourself": {"oneself"},
+    "himself": {"oneself"},
+    "herself": {"oneself"},
+    "themselves": {"oneself"},
+    "yours": {"one's"},
+    "theirs": {"one's"},
+}
+
+
+def _is_valid_person_generalization(key_phrase: str, display_phrase: str) -> bool:
+    """display_phraseとkey_phraseの語数が同じで、異なるトークンが全て
+    _PERSON_DEPENDENT_TO_GENERICで許可された1対1置換である場合のみTrueを
+    返す(該当なしはFalse。空変更[全トークン一致]もFalse、それは
+    'none'の対象であり本カテゴリの対象ではない)。"""
+    key_tokens = [t.lower() for t in p2g._WORD_TOKEN_RE.findall(key_phrase or "")]
+    display_tokens = [t.lower() for t in p2g._WORD_TOKEN_RE.findall(display_phrase or "")]
+    if len(key_tokens) != len(display_tokens) or not key_tokens:
+        return False
+    changed_any = False
+    for k_tok, d_tok in zip(key_tokens, display_tokens):
+        if k_tok == d_tok:
+            continue
+        allowed = _PERSON_DEPENDENT_TO_GENERIC.get(d_tok)
+        if not allowed or k_tok not in allowed:
+            return False
+        changed_any = True
+    return changed_any
+
+
+def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str,
+                                    normalization_reason: Optional[str] = None) -> dict:
     """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
     語の復元の要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
     (a) 空文字、(b) source_spanにもdisplay_phraseにも存在しない文字列の
@@ -256,10 +322,16 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_
 
     unchanged = _normalize_for_match(key_phrase) == _normalize_for_match(display_phrase)
     if not unchanged and not _is_contiguous_substring(key_phrase, source_span):
-        reasons.append(
-            f"key_phrase({key_phrase!r})がdisplay_phraseと一致せず、"
-            f"source_span({source_span!r})内の連続部分文字列でもない"
-            "(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)")
+        is_valid_person_generalization = (
+            normalization_reason == "generalize_person_dependent_reference"
+            and _is_valid_person_generalization(key_phrase, display_phrase)
+        )
+        if not is_valid_person_generalization:
+            reasons.append(
+                f"key_phrase({key_phrase!r})がdisplay_phraseと一致せず、"
+                f"source_span({source_span!r})内の連続部分文字列でもない"
+                "(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)"
+                "(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)")
 
     word_count = _word_count(key_phrase)
     if word_count < KEY_PHRASE_MIN_WORDS or word_count > KEY_PHRASE_MAX_WORDS:
@@ -328,7 +400,9 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
 
         display_phrase = display_phrase_by_rank.get(item.get("rank"), "")
         source_span = source_span_by_rank.get(item.get("rank"), "")
-        structural = validate_canonicalization_item(item["key_phrase"], display_phrase, source_span)
+        structural = validate_canonicalization_item(
+            item["key_phrase"], display_phrase, source_span,
+            normalization_reason=item.get("normalization_reason"))
         this_reasons.extend(structural["reasons"])
 
         if this_reasons:

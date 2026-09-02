@@ -37,6 +37,7 @@ import er003_v1_iran01_a2_generate as a2gen
 import er003_v1_n3_01_articles_generate as gen
 import er006_model_routing_contract_01 as routing
 import er008_shared_point_blueprint_01 as blueprint_mod
+import er011_key_phrase_set_redundancy_qa_01 as redundancy_qa
 
 THEMES = gen.THEMES
 
@@ -186,14 +187,21 @@ def get_client():
 # Key Phrase選定(article_idを動的に渡すための薄いwrapper)
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
-                              process: str = None) -> dict:
+                              process: str = None, diagnostic_note: str = None) -> dict:
     """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
     渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
     このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
-    場合はbk.make_selector_fnの既定値(Sol系譜)のまま、後方互換を保つ。"""
+    場合はbk.make_selector_fnの既定値(Sol系譜)のまま、後方互換を保つ。
+
+    diagnostic_note(ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01追加): 前回の
+    選定でKey Phrase Set Redundancy QA(er011_key_phrase_set_redundancy_qa_01.py)
+    がNGと判定した場合、その診断情報をprompt末尾へ追加して再選定させる
+    (記事固有のハードコードではなく、直前の判定結果をそのまま渡すだけ)。"""
     os.makedirs(out_dir, exist_ok=True)
     template = bk.load_prompt_template()
     user_message = bk.build_user_message(article_text, template=template)
+    if diagnostic_note:
+        user_message = user_message + "\n\n" + diagnostic_note
     with open(f"{out_dir}/keywords_selector_prompt.txt", "w", encoding="utf-8") as f:
         f.write(user_message)
 
@@ -256,15 +264,91 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
     return result
 
 
+def run_key_phrase_redundancy_qa(article_text: str, merged_items: list, out_dir: str, article_id: str,
+                                  process: str = None) -> dict:
+    """ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: canonicalization後の5件を
+    対象に、意味・使用場面・文法/構文上の学習価値・記事内で担う概念の
+    4観点で相互重複を判定する(processの意味は他のKey Phrase関数と同じ)。"""
+    user_message = redundancy_qa.build_user_message(merged_items, article_text)
+    with open(f"{out_dir}/keyphrase_redundancy_qa_prompt.txt", "w", encoding="utf-8") as f:
+        f.write(user_message)
+
+    def make_factory():
+        model = routing.require_model(process, routing.SUPPORT_MODEL) if process else routing.SUPPORT_MODEL
+        return redundancy_qa.make_redundancy_qa_fn(user_message, model=model)
+
+    ranks = [it["rank"] for it in merged_items]
+    parsed, status, attempts, model_id, response_id = redundancy_qa.run_redundancy_qa_gate(make_factory, ranks)
+    duplicate_pairs = attempts[-1].get("duplicate_pairs", []) if attempts else []
+    result = {
+        "article_id": article_id, "redundancy_qa_version": redundancy_qa.REDUNDANCY_QA_VERSION,
+        "status": status, "model_id": model_id, "response_id": response_id,
+        "duplicate_pairs": duplicate_pairs,
+        "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
+    }
+    with open(f"{out_dir}/keyphrase_redundancy_qa.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+    return result
+
+
+# ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: 5件相互の意味重複がNGだった
+# 場合、Key Phrase選定(方式L)からやり直す。記事本文は変更しないため、
+# Point Overlap QAの記事全体retryとは異なり、選定+canonicalization+
+# redundancy QAの3工程のみを再実行すれば足りる。上限はPoint Overlap
+# retry(POINT_OVERLAP_ARTICLE_RETRY_MAX=2)と同じ値をそのまま踏襲する
+# (新しい独自の上限を発明しない)。
+KEY_PHRASE_REDUNDANCY_RETRY_MAX = gen.POINT_OVERLAP_ARTICLE_RETRY_MAX
+
+
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
-    CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。"""
-    sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process)
-    if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
-        return {"selection": sel, "canonicalization": None}
-    canon = run_key_phrase_canonicalization(article_text, sel["original_items"], out_dir, article_id, process=process)
-    return {"selection": sel, "canonicalization": canon}
+    CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
+
+    ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: canonicalization成功後、
+    5件相互の意味重複QA(Key Phrase Set Redundancy QA)を実行する。NGの
+    場合は選定からやり直す(最大KEY_PHRASE_REDUNDANCY_RETRY_MAX回)。
+    上限まで再試行してもNGが残る場合は、既存のKey Phrase QAの人間確認
+    運用(REVIEW_REQUIRED = 自動不採用・人間確認後に採用可)にならい、
+    本文は変更せず"NG_REVIEW_REQUIRED"として報告する(黙示的な自動採用は
+    しない)。"""
+    redundancy_retry_log = []
+    diagnostic_note = None
+    for attempt in range(0, KEY_PHRASE_REDUNDANCY_RETRY_MAX + 1):
+        sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process,
+                                        diagnostic_note=diagnostic_note)
+        if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
+            return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
+                     "redundancy_retry_log": redundancy_retry_log}
+        canon = run_key_phrase_canonicalization(article_text, sel["original_items"], out_dir, article_id,
+                                                  process=process)
+        if canon["status"] not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": None,
+                     "redundancy_retry_log": redundancy_retry_log}
+
+        merged_items = canon["merged"]["items"]
+        redundancy = run_key_phrase_redundancy_qa(article_text, merged_items, out_dir, article_id, process=process)
+        redundancy_retry_log.append({"attempt": attempt, "status": redundancy["status"],
+                                      "duplicate_pairs": redundancy["duplicate_pairs"]})
+
+        if redundancy["status"] != "REDUNDANCY_NG":
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": redundancy,
+                     "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": attempt}
+
+        if attempt >= KEY_PHRASE_REDUNDANCY_RETRY_MAX:
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": redundancy,
+                     "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": attempt,
+                     "status": "NG_REVIEW_REQUIRED"}
+
+        items_by_rank = {it["rank"]: it for it in merged_items}
+        diagnostic_note = redundancy_qa.build_redundancy_diagnostic_note(
+            redundancy["duplicate_pairs"], items_by_rank)
+        print(f"[N3-01][{article_id}] Key Phrase Set Redundancy QA NG "
+              f"(重複ペア: {redundancy['duplicate_pairs']})。選定からやり直します"
+              f"(retry {attempt + 1}/{KEY_PHRASE_REDUNDANCY_RETRY_MAX})...")
+
+    # ループはreturnで抜けるため、ここへは到達しない想定
+    raise RuntimeError("run_key_phrases: 予期しないループ終了")
 
 
 # ============================================================

@@ -272,6 +272,31 @@ def _compliant_deviation_result():
     return {"parsed": {"overall_status": "LEDGER_COMPLIANT", "deviations": []}}
 
 
+# ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: run_one_patternはPoint Role
+# Planning(生成前)・Point Value QA(生成後)を新たに呼ぶようになったため、
+# Local Rewrite配線検証(このテストの本来の対象)には無関係なこの2つを
+# mockする。
+_FAKE_ROLE_PLAN = {
+    "point_one": {f: "x" for f in ["role", "new_listener_takeaway", "evidence_anchor",
+                                    "why_it_matters", "must_not_overlap_with_full_story",
+                                    "must_not_overlap_with_other_point"]},
+    "point_two": {f: "y" for f in ["role", "new_listener_takeaway", "evidence_anchor",
+                                    "why_it_matters", "must_not_overlap_with_full_story",
+                                    "must_not_overlap_with_other_point"]},
+}
+
+
+def _fake_role_planning_result(*args, **kwargs):
+    return {"parsed": _FAKE_ROLE_PLAN, "model": "fake-model", "response_id": "fake-id", "prompt": "fake"}
+
+
+def _fake_value_qa_pass(*args, **kwargs):
+    per_point = {"point_one": {"ok": True, "fail_fields": [], "reasoning": "OK"},
+                 "point_two": {"ok": True, "fail_fields": [], "reasoning": "OK"}}
+    return {"status": "PASS", "per_point": per_point, "parsed": {}, "model": "fake-model",
+            "response_id": "fake-id", "prompt": "fake"}
+
+
 class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
     def setUp(self):
         self.out_dir = tempfile.mkdtemp(prefix="er010_local_rewrite_test_")
@@ -286,6 +311,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
              mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
              mock.patch.object(gen.r3, "run_fact_checker_with_gates", return_value=_fake_fact_checker_gates()), \
              mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.point_planning, "run_point_role_planning",
+                                side_effect=_fake_role_planning_result), \
+             mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass), \
              mock.patch.object(gen.local_rewrite, "rewrite_ng_item", return_value={
                  "original_ng_sentence": "The tip rate always rises after screens appear.",
                  "issue": "certainty強化", "explanation": "x", "flags": ["changed_certainty"],
@@ -342,6 +370,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
              mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
              mock.patch.object(gen.r3, "run_fact_checker_with_gates", return_value=_fake_fact_checker_gates()), \
              mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.point_planning, "run_point_role_planning",
+                                side_effect=_fake_role_planning_result), \
+             mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass), \
              mock.patch.object(gen.local_rewrite, "rewrite_ng_item", rewrite_mock):
             result = gen.run_one_pattern(
                 client=object(), theme_id="t1", label="A2",
@@ -369,6 +400,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
              mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
              mock.patch.object(gen.r3, "run_fact_checker_with_gates", return_value=_fake_fact_checker_gates()), \
              mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.point_planning, "run_point_role_planning",
+                                side_effect=_fake_role_planning_result), \
+             mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass), \
              mock.patch.object(gen.dfp, "audit_article_directional_facts", directional_mock), \
              mock.patch.object(gen.local_rewrite, "rewrite_ng_item", return_value={
                  "original_ng_sentence": "The tip rate always rises after screens appear.",
@@ -399,6 +433,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
              mock.patch.object(gen.r3, "build_fact_check_prompt", return_value="fake-prompt"), \
              mock.patch.object(gen.r3, "run_fact_checker_with_gates", return_value=_fake_fact_checker_gates()), \
              mock.patch.object(gen.vfl01, "run_deviation_check", deviation_mock), \
+             mock.patch.object(gen.point_planning, "run_point_role_planning",
+                                side_effect=_fake_role_planning_result), \
+             mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass), \
              mock.patch.object(gen.local_rewrite, "rewrite_ng_item", rewrite_mock):
             result = gen.run_one_pattern(
                 client=object(), theme_id="t1", label="A2",

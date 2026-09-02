@@ -105,6 +105,68 @@ class ValidateCanonicalizationItemTests(unittest.TestCase):
         self.assertTrue(result["ok"], result["reasons"])
 
 
+class PersonReferenceGeneralizationTests(unittest.TestCase):
+    """ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: No.18で発見された
+    "catch their attention"/"a piece of your attention"のような文脈依存
+    人称代名詞・所有格を、閉じた語彙集合による1対1置換のみで辞書的な
+    一般形へ正規化することを構造的に許可する(記事固有のハードコードでは
+    ない)。"""
+
+    def test_accepts_their_to_someones_with_correct_reason(self):
+        result = kc.validate_canonicalization_item(
+            "catch someone's attention", "catch their attention", "catch their attention",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertTrue(result["ok"], result["reasons"])
+
+    def test_accepts_your_to_ones_with_correct_reason(self):
+        result = kc.validate_canonicalization_item(
+            "a piece of one's attention", "a piece of your attention", "a piece of your attention",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertTrue(result["ok"], result["reasons"])
+
+    def test_rejects_person_generalization_without_matching_reason(self):
+        """normalization_reasonが人称一般化でない場合は、従来通りRule7で
+        弾く(勝手な語の生成を許さない、既存の安全側の挙動を維持)。"""
+        result = kc.validate_canonicalization_item(
+            "catch someone's attention", "catch their attention", "catch their attention",
+            normalization_reason="none")
+        self.assertFalse(result["ok"])
+
+    def test_rejects_disallowed_generic_substitution(self):
+        """許可されていない置換先(閉じた集合の外)は、reasonが正しくても拒否する。"""
+        result = kc.validate_canonicalization_item(
+            "catch her attention", "catch their attention", "catch their attention",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertFalse(result["ok"])
+
+    def test_rejects_word_count_mismatch_even_with_correct_reason(self):
+        """このカテゴリは1対1置換のみを対象とし、語の削除・追加は対象外
+        (削除はremove_contextual_determinerの役割のまま)。"""
+        result = kc.validate_canonicalization_item(
+            "catch someone's", "catch their attention", "catch their attention",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertFalse(result["ok"])
+
+    def test_unrelated_word_changed_is_still_rejected(self):
+        """人称代名詞以外の語を変更した場合は、たとえreasonが人称一般化でも拒否する。"""
+        result = kc.validate_canonicalization_item(
+            "grab someone's attention", "catch their attention", "catch their attention",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertFalse(result["ok"])
+
+    def test_response_validator_passes_correct_generalization(self):
+        items = [{"rank": 1, "display_phrase": "catch their attention", "source_span": "catch their attention",
+                  "source_sentence": "Ads are designed to catch their attention."}]
+        response = {"items": [
+            {"rank": 1, "key_phrase": "catch someone's attention",
+             "normalization_reason": "generalize_person_dependent_reference",
+             "changed_from_display_phrase": True, "reasoning": "特定の人物への依存を一般形へ置換した。",
+             **_good_qa()},
+        ]}
+        result = kc.validate_canonicalization_response(response, items)
+        self.assertEqual(result["status"], "CANONICALIZATION_PASS", result)
+
+
 class ValidateCanonicalizationResponseTests(unittest.TestCase):
     def _good_response(self):
         return {
