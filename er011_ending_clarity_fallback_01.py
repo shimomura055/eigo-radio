@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import er003_b1_p9a_audio as p9a
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er003_v1_sing01_voice01_generate as voice01
 import er006_preprod_hardening_01_validation as en_validator
 import er011_human_review_lock_01 as review_lock
 
@@ -60,20 +61,35 @@ _INFLECTIONAL_SUFFIXES = ("ed", "ing", "es", "s", "en", "er", "est", "ly", "d")
 
 def _dropped_suffix_if_ending_loss(canonical_word: str, asr_word: str) -> str | None:
     c, a = canonical_word.lower(), asr_word.lower()
-    if not c or not a or c == a or not c.startswith(a):
+    if not c or not a or c == a:
         return None
-    dropped = c[len(a):]
-    if 0 < len(dropped) <= 3 and dropped in _INFLECTIONAL_SUFFIXES:
-        return dropped
+    if c.startswith(a):
+        dropped = c[len(a):]
+        if 0 < len(dropped) <= 3 and dropped in _INFLECTIONAL_SUFFIXES:
+            return dropped
+    # ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: 不規則複数形(子音+y -> ies、
+    # 例: study/studies)で語末の複数マーカーが脱落したケース。"studies"への
+    # hardcodeではなく、この綴り変化パターン一般(city/cities、party/parties
+    # 等も同様)を対象にする。
+    if c.endswith("ies") and len(c) > 3 and a == c[:-3] + "y":
+        return "ies"
     return None
 
 
 def detect_ending_loss_diffs(canonical_text: str, asr_text: str | None) -> list[dict]:
     """canonical_textとasr_textを比較し、「語末の屈折語尾が脱落した単語」の
     みを一般的に検出する(特定語へのhardcodeなし)。既存のclassify_asr_match
-    が既に計算済みのcontent_word_diffs(単一語同士のreplace型diffのみ)を
-    流用し、新しい比較ロジックは追加しない。固有名詞・同音語・複数語にまたが
-    る差分・ASRの単なる表記揺れは対象外(狭く安全側に絞る)。"""
+    が既に計算済みのcontent_word_diffsを流用し、新しい比較ロジックは追加
+    しない。固有名詞・同音語・ASRの単なる表記揺れは対象外(狭く安全側に絞る)。
+    ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: content_word_diffsの1件が
+    複数語にまたがるreplace(例: "studies suggest"->"study suggests"、隣接語の
+    grammatical agreementが連動して変化したように見えるケース)であっても、
+    canonical側とasr側の語数が一致する限り語単位で分解し、その中の少なくとも
+    1語が語尾脱落パターンに該当すれば検出する(単一語diffのみに限定していた
+    旧実装のgapを解消)。他の語位置が語尾脱落パターンに該当しなくても除外は
+    しない(fallback適用の可否はここで決めるだけで、最終採用は毎回ASR再検証
+    でgateされるため、trigger判定を広げても不正確な音声が採用される訳では
+    ない)。"""
     if not asr_text:
         return []
     classification = en_validator.classify_asr_match(canonical_text, asr_text)
@@ -83,11 +99,12 @@ def detect_ending_loss_diffs(canonical_text: str, asr_text: str | None) -> list[
             continue
         canon_words = diff.get("canonical", "").split()
         asr_words = diff.get("asr", "").split()
-        if len(canon_words) != 1 or len(asr_words) != 1:
+        if not canon_words or len(canon_words) != len(asr_words):
             continue
-        dropped = _dropped_suffix_if_ending_loss(canon_words[0], asr_words[0])
-        if dropped:
-            findings.append({"canonical_word": canon_words[0], "asr_word": asr_words[0], "dropped_suffix": dropped})
+        for canon_word, asr_word in zip(canon_words, asr_words):
+            dropped = _dropped_suffix_if_ending_loss(canon_word, asr_word)
+            if dropped:
+                findings.append({"canonical_word": canon_word, "asr_word": asr_word, "dropped_suffix": dropped})
     return findings
 
 
@@ -147,6 +164,55 @@ def generate_news_narration_with_ending_clarity_fallback(
 
     # fallbackも不合格 -> 既存のSTOP/NG処理へ(通常経路のnormal_resultを
     # そのまま権威ある失敗結果として返し、fallback試行の証跡のみ付加する)。
+    normal_result["ending_clarity_fallback_used"] = True
+    normal_result["ending_clarity_fallback_failed"] = True
+    normal_result["fallback_attempts_log"] = fallback_attempts_log
+    normal_result["ending_clarity_fallback_result_status"] = fallback_result.get("status")
+    return normal_result
+
+
+# ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: B1のComment(preview/comment_1-4)
+# はNews本文とは別のvoice01.generate_charon_english()経路で生成されており、
+# OPEN-107 Production配線(03)はNews本文loopのみを対象にしていたため、
+# comment_2("studies"の複数マーカー脱落)はEnding-Clarity fallbackへ到達
+# できなかった(配線漏れ)。generate_charon_english()はNews本文の core と
+# 異なりstyle_prefix_overrideを直接受け取れるため、p9a.ENGLISH_STYLE_PREFIX
+# のmonkeypatchは不要で、そのまま呼び出し引数へAND追加できる。設計方針は
+# News本文版と同一(review_lockは外側で1回だけ、内部2回は__wrapped__直接)。
+@review_lock.guarded_generate("en")
+def generate_charon_english_with_ending_clarity_fallback(
+        text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+        style_prefix_override: str | None = None, disfluency_qa: bool = False) -> dict:
+    core = voice01.generate_charon_english.__wrapped__
+
+    normal_result = core(text, out_path, max_attempts=max_attempts,
+                          style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
+    normal_result["ending_clarity_fallback_used"] = False
+    if normal_result.get("status") == "OK":
+        return normal_result
+
+    last_asr = _last_asr_text(normal_result)
+    ending_loss_diffs = detect_ending_loss_diffs(text, last_asr)
+    normal_result["ending_clarity_trigger_check"] = {"last_asr_text": last_asr,
+                                                       "ending_loss_diffs": ending_loss_diffs}
+    if not ending_loss_diffs:
+        return normal_result
+
+    base_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
+    fallback_prefix = base_prefix + ENDING_CLARITY_SUFFIX
+    fallback_result = core(text, out_path, max_attempts=FALLBACK_MAX_ATTEMPTS,
+                            style_prefix_override=fallback_prefix, disfluency_qa=disfluency_qa)
+
+    fallback_attempts_log = fallback_result.pop("attempts_log", []) or []
+    if fallback_result.get("status") == "OK":
+        fallback_result["ending_clarity_fallback_used"] = True
+        fallback_result["ending_clarity_trigger"] = ending_loss_diffs
+        fallback_result["ending_clarity_instruction_used"] = fallback_prefix
+        fallback_result["standard_attempts_log"] = normal_result.get("attempts_log")
+        fallback_result["fallback_attempts_log"] = fallback_attempts_log
+        fallback_result["instruction_type"] = "ending_clarity_fallback"
+        return fallback_result
+
     normal_result["ending_clarity_fallback_used"] = True
     normal_result["ending_clarity_fallback_failed"] = True
     normal_result["fallback_attempts_log"] = fallback_attempts_log

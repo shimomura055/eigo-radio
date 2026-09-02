@@ -633,9 +633,16 @@ def generate_b1_segments(theme: dict) -> dict:
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
-        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon)...")
+        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon、Ending-Clarity fallback配線済み)...")
         with cl.segment_context(name):
-            results[name] = voice01.generate_charon_english(
+            # ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: comment_2の
+            # "studies"->"study"(複数マーカー脱落)がOPEN-107 Ending-Clarity
+            # fallbackの対象になり得るのに、Comment segmentはNews本文loopと
+            # 別経路(voice01.generate_charon_english直接呼び出し)だったため
+            # fallbackへ到達できていなかった配線漏れを解消する。通常PASS時・
+            # 語尾脱落以外のNG時は挙動は従来と完全に同一(即座にcoreの結果を
+            # そのまま返すのみ)。
+            results[name] = ending_clarity.generate_charon_english_with_ending_clarity_fallback(
                 tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
                 # ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20:
                 # Previewで採用済みのcalm/clear/unhurried style instructionを

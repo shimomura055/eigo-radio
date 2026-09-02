@@ -11,6 +11,7 @@ import unittest
 
 import er003_b1_p9a_audio as p9a
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er003_v1_sing01_voice01_generate as voice01
 import er011_ending_clarity_fallback_01 as ending_clarity
 import er011_human_review_lock_01 as review_lock
 
@@ -43,6 +44,37 @@ class DetectEndingLossTests(unittest.TestCase):
         # "closed"は"opened"と語尾ではなく語幹自体が違うため、prefix関係が無く
         # 検出されない(単なるASR表記揺れ・内容誤りまでfallback対象にしない)。
         findings = ending_clarity.detect_ending_loss_diffs(CANONICAL_ENDING_LOSS_TEXT, ASR_UNRELATED_MISMATCH_TEXT)
+        self.assertEqual(findings, [])
+
+    # ------------------------------------------------------------
+    # ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: comment_2実データ
+    # ("studies"->"study")の回帰テスト。
+    # ------------------------------------------------------------
+    def test_detects_irregular_y_plural_suffix_drop_studies_case(self):
+        findings = ending_clarity.detect_ending_loss_diffs(
+            "The studies suggest that a phone can affect attention.",
+            "The study suggests that a phone can affect attention.")
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["canonical_word"], "studies")
+        self.assertEqual(findings[0]["asr_word"], "study")
+        self.assertEqual(findings[0]["dropped_suffix"], "ies")
+
+    def test_irregular_y_plural_generalizes_beyond_studies(self):
+        # "studies"へのhardcodeでは無いことを、別の子音+y複数形(city/cities)で
+        # 確認する。
+        findings = ending_clarity.detect_ending_loss_diffs(
+            "Several cities reported the same pattern.",
+            "Several city reported the same pattern.")
+        self.assertTrue(findings)
+        self.assertEqual(findings[0]["canonical_word"], "cities")
+        self.assertEqual(findings[0]["asr_word"], "city")
+
+    def test_added_ending_survey_to_surveys_is_not_ending_loss(self):
+        # comment_3実データ回帰: "survey"->"surveys"は語尾が"脱落"したのでは
+        # なく、存在しない語尾が"追加"されたケース(語尾脱落fallbackの対象外)。
+        findings = ending_clarity.detect_ending_loss_diffs(
+            "The studies and the survey suggest that a phone can affect people.",
+            "The studies and the surveys suggest that a phone can affect people.")
         self.assertEqual(findings, [])
 
 
@@ -259,6 +291,112 @@ class EndingClarityFallbackWiringTests(unittest.TestCase):
         self.assertEqual(len(calls), 1, "語尾脱落パターンが無い場合、fallbackは一切呼ばれてはならない")
         self.assertFalse(result["ending_clarity_fallback_used"])
         self.assertEqual(result["status"], "STOPPED")
+
+
+CANONICAL_COMMENT2_TEXT = ("The studies suggest that a phone can affect attention even when you do not "
+                            "check it. How does this pull appear in everyday life, especially for teenagers?")
+ASR_COMMENT2_ENDING_LOSS_TEXT = ("The study suggests that a phone can affect attention even when you do not "
+                                 "check it. How does this pull appear in everyday life, especially for teenagers?")
+
+
+class CharonEndingClarityFallbackWiringTests(unittest.TestCase):
+    """ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: B1 Comment segment
+    (voice01.generate_charon_english経路)向けfallback配線の受入テスト。
+    News本文版と同じ設計方針を、style_prefix_override直接引数版で確認する
+    (p9a.ENGLISH_STYLE_PREFIXのmonkeypatchは不要な設計)。"""
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp(prefix="er011_ec_charon_test_")
+        self.narration_dir = os.path.join(self.tmp_dir, "pool_test_theme", "b1b", "narration")
+        os.makedirs(self.narration_dir, exist_ok=True)
+        self.out_path = os.path.join(self.narration_dir, "comment_2.wav").replace("\\", "/")
+        self.style_prefix_override = "CALM_PREVIEW_STYLE_PREFIX_FOR_TEST"
+        self.original_core = voice01.generate_charon_english.__wrapped__
+
+    def tearDown(self):
+        voice01.generate_charon_english.__wrapped__ = self.original_core
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def _install_fake_core(self, fn):
+        voice01.generate_charon_english.__wrapped__ = fn
+
+    def test_normal_pass_does_not_trigger_fallback(self):
+        calls = []
+
+        def fake_core(text, out_path, max_attempts=3, style_prefix_override=None, disfluency_qa=False):
+            calls.append({"style_prefix_override": style_prefix_override})
+            return {"status": "OK", "asr_text": text, "attempts_log": [{"attempt": 1, "asr_text": text}]}
+
+        self._install_fake_core(fake_core)
+        result = ending_clarity.generate_charon_english_with_ending_clarity_fallback(
+            CANONICAL_COMMENT2_TEXT, self.out_path, style_prefix_override=self.style_prefix_override)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(result["status"], "OK")
+        self.assertFalse(result["ending_clarity_fallback_used"])
+
+    def test_ending_loss_ng_triggers_fallback_and_appends_to_existing_style_prefix(self):
+        # comment_2実データ相当: "studies"->"study"(複数マーカー脱落)で通常
+        # 経路が3回ともNG -> Ending-Clarity fallbackが発火し、既存の
+        # style_prefix_override(calm/clear/unhurried)を置換せずAND追加する
+        # ことを確認する。
+        calls = []
+
+        def fake_core(text, out_path, max_attempts=3, style_prefix_override=None, disfluency_qa=False):
+            calls.append({"style_prefix_override": style_prefix_override, "max_attempts": max_attempts})
+            if style_prefix_override and ending_clarity.ENDING_CLARITY_SUFFIX in style_prefix_override:
+                return {"status": "OK", "asr_text": text, "attempts_log": [{"attempt": 1, "asr_text": text}]}
+            return {"status": "STOPPED", "reason": "3回試行しても不合格",
+                    "attempts_log": [{"attempt": i, "asr_text": ASR_COMMENT2_ENDING_LOSS_TEXT}
+                                      for i in range(1, 4)]}
+
+        self._install_fake_core(fake_core)
+        result = ending_clarity.generate_charon_english_with_ending_clarity_fallback(
+            CANONICAL_COMMENT2_TEXT, self.out_path, style_prefix_override=self.style_prefix_override)
+
+        self.assertEqual(len(calls), 2, "通常呼び出し1回+fallback呼び出し1回のはず")
+        self.assertEqual(calls[0]["style_prefix_override"], self.style_prefix_override)
+        self.assertIn(ending_clarity.ENDING_CLARITY_SUFFIX, calls[1]["style_prefix_override"])
+        self.assertTrue(calls[1]["style_prefix_override"].startswith(self.style_prefix_override),
+                         "既存のcalm/clear/unhurried instructionを置換せずAND方式で追加している")
+        self.assertEqual(calls[1]["max_attempts"], ending_clarity.FALLBACK_MAX_ATTEMPTS)
+
+        self.assertEqual(result["status"], "OK")
+        self.assertTrue(result["ending_clarity_fallback_used"])
+        self.assertEqual(result["instruction_type"], "ending_clarity_fallback")
+
+    def test_non_ending_loss_ng_does_not_trigger_fallback(self):
+        # comment_3実データ相当("survey"->"surveys"、追加であり脱落ではない)
+        # ではfallbackを発火させない回帰確認。
+        calls = []
+
+        def fake_core(text, out_path, max_attempts=3, style_prefix_override=None, disfluency_qa=False):
+            calls.append(1)
+            return {"status": "ASR_VALIDATION_UNCERTAIN", "asr_text": text,
+                    "attempts_log": [{"attempt": 1, "asr_text": text.replace("survey", "surveys")}]}
+
+        self._install_fake_core(fake_core)
+        result = ending_clarity.generate_charon_english_with_ending_clarity_fallback(
+            "The studies and the survey suggest that a phone can affect people.",
+            self.out_path, style_prefix_override=self.style_prefix_override)
+        self.assertEqual(len(calls), 1, "語尾脱落パターンが無い場合、fallbackは一切呼ばれてはならない")
+        self.assertFalse(result["ending_clarity_fallback_used"])
+
+    def test_attempt_count_recorded_accurately_in_review_lock(self):
+        def fake_core(text, out_path, max_attempts=3, style_prefix_override=None, disfluency_qa=False):
+            if style_prefix_override and ending_clarity.ENDING_CLARITY_SUFFIX in style_prefix_override:
+                return {"status": "OK", "asr_text": text, "attempts_log": [{"attempt": 1, "asr_text": text}]}
+            return {"status": "STOPPED", "reason": "NG",
+                    "attempts_log": [{"attempt": 1, "asr_text": ASR_COMMENT2_ENDING_LOSS_TEXT},
+                                      {"attempt": 2, "asr_text": ASR_COMMENT2_ENDING_LOSS_TEXT}]}
+
+        self._install_fake_core(fake_core)
+        ending_clarity.generate_charon_english_with_ending_clarity_fallback(
+            CANONICAL_COMMENT2_TEXT, self.out_path, style_prefix_override=self.style_prefix_override)
+
+        level_out_dir = review_lock._level_out_dir_from_out_path(self.out_path)
+        entry = review_lock._load_store(level_out_dir)["comment_2"]
+        self.assertEqual(entry["cumulative_tts_attempts"], 3)
+        self.assertEqual(entry["state"], "RESOLVED")
 
 
 if __name__ == "__main__":
