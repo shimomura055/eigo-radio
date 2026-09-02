@@ -1,0 +1,121 @@
+{
+  "cases": {
+    "case1_studies_suggest": {
+      "canonical": "The studies suggest that a phone can affect attention even when you do not check it. How does this pull appear in everyday life, especially for teenagers?",
+      "asr": "The study suggests that a phone can affect attention even when you do not check it. How does this pull appear in everyday life, especially for teenagers?",
+      "source": "B1 comment_2 (open110_comment2_ending_clarity_runtime_evidence_04.json, attempt1-3全て同一)",
+      "classification": {
+        "diff": {
+          "index": 1,
+          "canonical_word": "studies",
+          "asr_word": "study",
+          "prev_word": "The",
+          "next_word": "suggest"
+        },
+        "expected_phoneme_boundary": "studies/z/ + suggest/s/",
+        "rule": "Pattern_A_sibilant_sequence",
+        "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": "低: canonical語からdropped接尾辞(-s/-es)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が歯擦音である場合のみ発火する。"
+      }
+    },
+    "case2_opened_to": {
+      "canonical": "Your phone does not have to be opened to become part of the task. In these studies, attention was pulled by the sound and affected by the silent device, which helps explain why ignoring a notification can feel harder than it looks.",
+      "asr": "Your phone does not have to be open to become part of the task. In these studies, attention was pulled by the sound and affected by the silent device, which helps explain why ignoring a notification can feel harder than it looks.",
+      "source": "OPEN-107 opened_tts_diagnostic_trial_01 cond7 attempt3(3回中1回)",
+      "classification": {
+        "diff": {
+          "index": 7,
+          "canonical_word": "opened",
+          "asr_word": "open",
+          "prev_word": "be",
+          "next_word": "to"
+        },
+        "expected_phoneme_boundary": "opened/d/ + to/t/",
+        "rule": "Pattern_B_stop_consonant_sequence",
+        "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": "低: canonical語からdropped接尾辞(-ed)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が同系列の破裂音である場合のみ発火する。"
+      }
+    },
+    "case3_survey_suggest": {
+      "canonical": "This story is not only about choosing to check a phone. The studies and the survey suggest that a phone can affect people even when they do not check it. Now, let's look more closely at what may be happening in these situations.",
+      "asr": "This story is not only about choosing to check a phone. The studies and the surveys suggest that a phone can affect people even when they do not check it. Now let's look more closely at what may be happening in these situations.",
+      "source": "OPEN-110 survey_diagnostic_04 cond1 attempt3(3回中1回)",
+      "classification": {
+        "diff": {
+          "index": 15,
+          "canonical_word": "survey",
+          "asr_word": "surveys",
+          "prev_word": "the",
+          "next_word": "suggest"
+        },
+        "expected_phoneme_boundary": "survey(+s) + suggest/s/",
+        "rule": "Pattern_C_resegmentation_added_consonant",
+        "new_judgment": "CONNECTED_SPEECH_RESEGMENTATION",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": "中: canonical語自体に追加された子音が、次語頭の歯擦音と同一種であることのみを根拠にしている。ASR語がcanonical語と無関係な別単語である可能性を完全には排除できないため、PASS_WITH_WARNING(blockingしないが警告は残す)候補とする。"
+      }
+    }
+  },
+  "negative_controls": {
+    "control1_unrelated_word_swap": {
+      "canonical": "The report shows clear evidence about the trend.",
+      "asr": "The report shows clear evidence about the trend today.",
+      "note": "文末に無関係な語が追加されただけ(歯擦音関連なし)。Pattern Cの条件(追加子音がs/esのみ、次語頭が歯擦音)を満たさないため非該当となるべき。",
+      "classification": {
+        "diff": {
+          "index": 8,
+          "canonical_word": null,
+          "asr_word": null,
+          "prev_word": "trend",
+          "next_word": null,
+          "length_mismatch": true
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": null
+      }
+    },
+    "control2_real_mispronunciation_same_length": {
+      "canonical": "The studies suggest a strong link between sleep and memory.",
+      "asr": "The stories suggest a strong link between sleep and memory.",
+      "note": "studies→storiesは語幹自体が別単語に変わっている(studie→storie)。dropped/added接尾辞ルールに該当せず、Pattern A/Cどちらにも該当しないべき(真のcontent mismatchとして従来通り扱われるべき)。",
+      "classification": {
+        "diff": {
+          "index": 1,
+          "canonical_word": "studies",
+          "asr_word": "stories",
+          "prev_word": "The",
+          "next_word": "suggest"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": "N/A(パターン非該当のため新判定を適用しない)"
+      }
+    },
+    "control3_survey_to_unrelated_plural": {
+      "canonical": "The survey shows useful results for parents.",
+      "asr": "The surveys show useful results for parents.",
+      "note": "「survey」→「surveys」だが次語が showsではなくshow(動詞も複数呼応で変化)であり、次語頭は歯擦音でない(sh-)。Pattern Cの'次語頭が歯擦音'条件を満たさないため非該当となるべき。",
+      "classification": {
+        "diff": {
+          "index": 1,
+          "canonical_word": "survey",
+          "asr_word": "surveys",
+          "prev_word": "The",
+          "next_word": "shows"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "old_judgment": "TRUE_CONTENT_MISMATCH",
+        "false_accept_risk": "N/A(パターン非該当のため新判定を適用しない)"
+      }
+    }
+  }
+}
