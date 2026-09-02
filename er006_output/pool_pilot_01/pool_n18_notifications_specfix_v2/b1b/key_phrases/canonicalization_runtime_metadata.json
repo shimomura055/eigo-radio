@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-luna",
-  "response_id": "resp_0a01ff6541cd9413006a97de89a28087d096696e81631a2258",
+  "response_id": "resp_001fe2ff80e60cfa006a97f0121f2887d09d388e9e61cc8b1f",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -17,10 +17,10 @@
         "items": [
           {
             "rank": 1,
-            "key_phrase": "attention capture",
+            "key_phrase": "pay a price",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「attention capture」は注意が自動的に引きつけられる現象を表す自然な名詞句で、単独提示に必要な補完語や限定詞はないため変更しない。",
+            "reasoning": "「pay a price」は固定的で自然な表現であり、冠詞 a も表現の一部なので削除しない。代償・不利益を被るという中心的な意味も単独で保持されている。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -36,10 +36,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "pay a price",
+            "key_phrase": "compete through its presence",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「pay a price」は代償を払うという意味の自然な慣用表現であり、冠詞を含めて表現の一部なので削除や変更はしない。",
+            "reasoning": "「compete through its presence」は、存在することによって競合するという意味を保つ自然な単位である。its は記事固有の人物を指す所有格ではなく、この文の phone/device を指しており、someone's などに置換すると意味が変わるため保持する。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -55,10 +55,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "powered-off smartphone",
+            "key_phrase": "stay on task",
             "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "「powered-off smartphone」は電源が切られたスマートフォンを示す十分に自然な名詞句で、意味理解に必要な語を欠いていないため変更しない。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "表示形は本文の staying on task を方式L選定時点で基本形 stay on task に正規化したものなので、そのまま採用する。「on task」を含めて、作業に集中し続けるという意味に必要十分である。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -74,10 +74,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "take up space",
+            "key_phrase": "cognitive control",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「take up space」は場所や注意などを占めるという意味を保つ自然な句動詞表現で、粒子の「up」を含めて提示する必要があるため変更しない。",
+            "reasoning": "「cognitive control」は認知制御を表す自然な名詞句で、文脈限定の冠詞を伴わなくても学習単位として成立する。中心的な専門概念を削らず、別の文脈でも再利用できる。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -96,7 +96,7 @@
             "key_phrase": "brain-wave signal",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「brain-wave signal」は脳波信号を表す自然な複合名詞句で、単独の学習単位として十分に理解可能なため変更しない。",
+            "reasoning": "「brain-wave signal」は脳波信号を指す自然で十分な名詞句であり、source_spanと同一なので変更しない。brain-wave または signal のいずれかを削ると、選定された専門的な意味が不完全になる。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -113,7 +113,7 @@
         ]
       },
       "model": "gpt-5.6-luna",
-      "response_id": "resp_0a01ff6541cd9413006a97de89a28087d096696e81631a2258"
+      "response_id": "resp_001fe2ff80e60cfa006a97f0121f2887d09d388e9e61cc8b1f"
     }
   ]
 }

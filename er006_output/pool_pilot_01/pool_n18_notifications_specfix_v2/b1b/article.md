@@ -12,7 +12,7 @@ Outside the lab, this pull is also part of daily life for many US teens. In a 20
 
 ### The hidden cost comes before the check
 
-The key shift is from behavior to effort. A person can keep their hands off the phone and still pay a price on the very trial when the sound appears. Responses were slower, and a brain-wave signal linked by the researchers to staying on task became larger. They interpret this pattern as automatic attention capture, not necessarily a deliberate choice to check.
+The key shift is from behavior to effort. A person can keep their hands off the phone and still pay a price on the very trial when the sound appears. Responses were slower, while a brain-wave signal associated with cognitive control became larger. The researchers interpreted this as a sign that staying on task required extra mental effort after the notification sound.
 
 ### A quiet phone can still take up space
 

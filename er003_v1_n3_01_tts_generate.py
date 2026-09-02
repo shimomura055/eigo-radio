@@ -33,6 +33,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_articles_generate as gen
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er011_ending_clarity_fallback_01 as ending_clarity
 import er011_human_review_lock_01 as review_lock
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
@@ -661,9 +662,13 @@ def generate_b1_segments(theme: dict) -> dict:
     ):
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文)...")
+        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文、Ending-Clarity fallback配線済み)...")
         with cl.segment_context(name):
-            results[name] = news_tail_fix.generate_news_narration_wide_margin(
+            # ER-011-NO18-OPEN107-PRODUCTION-WIRING-AND-FINAL-AUDIO-03: 通常TTS+
+            # 通常retryでも語尾脱落NGが続いたsegmentだけ、Ending-Clarity
+            # instructionへ一時的に切り替えて追加retryするfallbackをここで
+            # 配線する(通常経路自体はnews_tail_fix.py無変更のまま)。
+            results[name] = ending_clarity.generate_news_narration_with_ending_clarity_fallback(
                 tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
