@@ -1,0 +1,857 @@
+{
+  "input_article": "# The Notification You Hear Without Looking\n\nA phone does not need to light up in your hand to change a task. A sound may be enough. And in another study, even a silent phone on a desk was linked to lower attention.\n\nA study by Upshaw, Stevens, Ganis, and Zabelina, published in PLOS ONE on November 17, 2022, tested 73 college students. They worked through a letter task for 960 trials. In some trials, they heard a notification sound. In others, they heard a neutral sound. They did not look at or touch a phone.\n\nThe result was clear: responses were slower during trials with notification sounds. Brain recordings also showed a larger signal after those sounds. This happened even though the students kept working and did not check a screen.\n\nA second study by Skowronek, Seifert, and Lindberg was published in Scientific Reports on June 8, 2023. It tested 42 university students. Their phones were powered off, and no notifications arrived. The researchers compared a phone on the desk with a phone in another room.\n\nPerformance was lower when the phone stayed on the desk. The attention score averaged 99.71 on the desk, compared with 108.95 when the phone was away. Processing speed was 98.48 on the desk and 108.57 in another room.\n\nTogether, these studies show two different moments. A notification can affect a person during a task. A phone can also be linked to lower performance without making a sound.\n\n### The cost you cannot see\n\nDistraction is not always a visible choice. Someone can keep working and still spend more effort to stay with the task. The researchers read the slower responses and larger brain signal as a sign of that extra control. So a person who never checks the screen may still pay an attention cost.\n\n### Muting is not the same as absence\n\nA silent phone is not the same as no phone. The second study suggests that silencing alerts and moving the device may address different problems, although it did not test either action as a solution. The social side matters too: 72% of U.S. teens often or sometimes checked messages or notifications soon after waking. And 56% reported at least one of anxiety, loneliness, or upset when their phone was not nearby.\n\n## In one line…\n\nThese studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+  "fact_lines_F005_F006": {
+    "F-005": "[F-005] スマートフォンが机上にある条件では、別室に置いて不在にした条件より注意成績の平均値が低かった。机上にある条件は99.71、不在条件は108.95だった。",
+    "F-006": "[F-006] スマートフォンが机上にある条件では、別室に置いて不在にした条件より処理速度も低かった。机上にある条件は98.48、不在条件は108.57だった。"
+  },
+  "expected_deltas": {
+    "F-005": 9.240000000000009,
+    "F-006": 10.08999999999999
+  },
+  "original_values": {
+    "F-005": {
+      "metric": "attention score",
+      "low": 99.71,
+      "high": 108.95
+    },
+    "F-006": {
+      "metric": "processing speed",
+      "low": 98.48,
+      "high": 108.57
+    }
+  },
+  "precision_rule_text": "【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】\n\nThis rule applies AFTER each Pattern's own rule above has already decided which\nnumeric Facts to keep. First, decide whether a numeric value is worth retaining at\nall, following the Pattern-specific rule above. Then, for values you keep, decide how\nmuch precision the listener actually needs, following this rule. Do not conflate the\ntwo decisions.\n\nWhen a numeric value is worth keeping, preserve only as much precision as the\nlistener needs to understand its meaning.\n\nPrefer simpler rounded values when extra decimal precision does not materially\naffect:\n- the direction of the comparison\n- the magnitude that matters to the story\n- an important threshold\n- the interpretation of the evidence\n- the distinction between materially different values\n\nDo not remove decimals mechanically.\n\nKeep decimal precision when rounding would:\n- hide a meaningful difference\n- cross or obscure an important threshold\n- distort a small-scale measurement\n- change the interpretation\n- make two meaningfully different values appear equivalent\n- reduce factual fidelity in a way relevant to the listener\n\nWhen rounding is appropriate, use listener-friendly expressions such as \"about\",\n\"roughly\", \"nearly\", etc. where suitable.\n\nMost important: Rounding is NOT permission to merge separate facts, metrics,\ngroups, time points, survey questions, or experimental outcomes. Each retained\nnumeric expression must remain attributable to its original Fact / metric in the\nFact Ledger. Never combine separate Facts merely because their rounded values\nbecome numerically similar. Before rounding, verify that each numeric expression\ncan still be traced to a single, specific Fact / metric / group / time point /\nsurvey question. Do not combine numbers from different Facts or different\nmetrics (for example, an attention-score value and a processing-speed value)\ninto a single shared rounded expression, even if their rounded values happen to\nlook similar or identical.\n\nThe goal is not to remove decimal places. The goal is to use the least precision\nnecessary for accurate spoken understanding.\n\nThis is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as\n\"always drop decimals,\" \"always round to a whole number,\" \"always keep one decimal\nplace,\" or \"always use two significant figures.\" Decide based on what each specific\nnumber means in context.\n\nFor general guidance only (not a fixed instruction for this specific article):\ndecimal precision is more likely to matter for values such as small percentages\n(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),\nsub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),\nvalues near a meaningful threshold, or small differences that are themselves the\nfinding. These are illustrative examples of the general principle only, not\narticle-specific instructions.",
+  "runs_per_pattern": 3,
+  "runs": {
+    "pattern_a_precision_01": {
+      "run_id": "pattern_a_precision_01",
+      "pattern": "A",
+      "response_id": "resp_0e639db9e49c4da3006a99e82d747487d092a52418cc374f07",
+      "metrics": {
+        "word_count": 343,
+        "sentence_count": 29,
+        "avg_sentence_length": 11.8,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 7,
+      "f005_f006_area": {
+        "area_text": "In another study, even a silent phone on a desk was linked to lower attention. The attention score averaged about 100 on the desk, compared with about 109 when the phone was away. Processing speed was also lower on the desk than in another room. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "In another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score averaged about 100 on the desk, compared with about 109 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was also lower on the desk than in another room."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "100",
+          "109"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "100",
+          "109"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "100",
+          "109"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          100.0,
+          109.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 27,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 7
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 3,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_a_precision_02": {
+      "run_id": "pattern_a_precision_02",
+      "pattern": "A",
+      "response_id": "resp_068b1f19fe5f8e43006a99e8afaf7887d0aed101bf1654bb9e",
+      "metrics": {
+        "word_count": 351,
+        "sentence_count": 29,
+        "avg_sentence_length": 12.1,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 8,
+      "f005_f006_area": {
+        "area_text": "And in another study, even a silent phone on a desk was linked to lower attention. The attention score averaged about 100 on the desk, compared with 109 when the phone was away. Processing speed showed the same pattern: it was lower when the phone was on the desk. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "And in another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score averaged about 100 on the desk, compared with 109 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed showed the same pattern: it was lower when the phone was on the desk."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "100",
+          "109"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "100",
+          "109"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "100",
+          "109"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          100.0,
+          109.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 28,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 6
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 4,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_a_precision_03": {
+      "run_id": "pattern_a_precision_03",
+      "pattern": "A",
+      "response_id": "resp_0329c6ed1b0ef14f006a99e9471e5c87d0a35a76fe03a799cd",
+      "metrics": {
+        "word_count": 350,
+        "sentence_count": 29,
+        "avg_sentence_length": 12.1,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 9,
+      "f005_f006_area": {
+        "area_text": "In another study, even a silent phone on a desk was linked to lower attention. The attention score averaged about 100 on the desk, compared with about 109 when the phone was away. Processing speed was also lower on the desk. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "In another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score averaged about 100 on the desk, compared with about 109 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was also lower on the desk."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "100",
+          "109"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "100",
+          "109"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "100",
+          "109"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          100.0,
+          109.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 27,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 7
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 4,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_b_precision_01": {
+      "run_id": "pattern_b_precision_01",
+      "pattern": "B",
+      "response_id": "resp_03ed5a28bcc8c638006a99e9b9c88087d0b86384a18df17df9",
+      "metrics": {
+        "word_count": 347,
+        "sentence_count": 28,
+        "avg_sentence_length": 12.4,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 7,
+      "f005_f006_area": {
+        "area_text": "In another study, even a silent phone on a desk was linked to lower attention. Both attention and processing-speed scores were lower when the phone stayed on the desk. The attention score was 99.71 on the desk, compared with 108.95 when the phone was away. Processing speed was also lower on the desk than in another room. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "In another study, even a silent phone on a desk was linked to lower attention.",
+          "Both attention and processing-speed scores were lower when the phone stayed on the desk.",
+          "The attention score was 99.71 on the desk, compared with 108.95 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was also lower on the desk than in another room."
+        ],
+        "number_count": 2,
+        "sentence_count": 6,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "99.71",
+          "108.95"
+        ],
+        "decimal_numbers": [
+          "99.71",
+          "108.95"
+        ],
+        "whole_numbers": [],
+        "decimal_count": 2,
+        "whole_count": 0
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "108.95",
+          "99.71"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          99.71,
+          108.95
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": false,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 32,
+        "unchanged_sentences": 26,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 8
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 3,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_b_precision_02": {
+      "run_id": "pattern_b_precision_02",
+      "pattern": "B",
+      "response_id": "resp_05a94a8089737289006a99ea308ef487d0b6b135380c1e065f",
+      "metrics": {
+        "word_count": 348,
+        "sentence_count": 29,
+        "avg_sentence_length": 12.0,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 7,
+      "f005_f006_area": {
+        "area_text": "And in another study, even a silent phone on a desk was linked to lower attention. The attention score averaged about 100 on the desk, compared with about 109 when the phone was away. Processing speed was also lower on the desk than in another room. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "And in another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score averaged about 100 on the desk, compared with about 109 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was also lower on the desk than in another room."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "100",
+          "109"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "100",
+          "109"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "100",
+          "109"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          100.0,
+          109.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 28,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 6
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 4,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_b_precision_03": {
+      "run_id": "pattern_b_precision_03",
+      "pattern": "B",
+      "response_id": "resp_0ebe08e1e8ad4b8c006a99eaa8747087d0901849fccaa47547",
+      "metrics": {
+        "word_count": 347,
+        "sentence_count": 29,
+        "avg_sentence_length": 12.0,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 8,
+      "f005_f006_area": {
+        "area_text": "In another study, even a silent phone on a desk was linked to lower attention. The attention score averaged about 100 on the desk, compared with about 109 when the phone was away. Processing speed was also lower when the phone was on the desk. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "In another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score averaged about 100 on the desk, compared with about 109 when the phone was away.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was also lower when the phone was on the desk."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "100",
+          "109"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "100",
+          "109"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "100",
+          "109"
+        ],
+        "processing_numbers": [],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          100.0,
+          109.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": false
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": false
+          }
+        }
+      },
+      "has_trend_phrase": true,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 27,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 7
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 4,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_c_precision_01": {
+      "run_id": "pattern_c_precision_01",
+      "pattern": "C",
+      "response_id": "resp_0c90c2cbd91dd65a006a99eb1e9ec487d0aeb1703f4e95aff4",
+      "metrics": {
+        "word_count": 338,
+        "sentence_count": 29,
+        "avg_sentence_length": 11.7,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 8,
+      "f005_f006_area": {
+        "area_text": "And in another study, even a silent phone on a desk was linked to lower attention. The attention score was about 9 points lower on the desk. Processing speed was about 10 points lower there, too. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "And in another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score was about 9 points lower on the desk.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was about 10 points lower there, too."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "9",
+          "10"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "9",
+          "10"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "9"
+        ],
+        "processing_numbers": [
+          "10"
+        ],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          9.0,
+          10.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": true
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": true
+          }
+        }
+      },
+      "has_trend_phrase": false,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 28,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 6
+      },
+      "ledger_overall_status": "LEDGER_DEVIATION",
+      "ledger_deviation_count": 1,
+      "ledger_deviations": [
+        {
+          "claim_in_article": "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+          "issue": "第二の研究で確認されたのは実験中に通知が届かなかったことだけであり、端末が恒久的に「決して鳴らない」とは確認されていない。特定条件下の結果を「never」で一般化している。",
+          "severity": "MAJOR",
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false,
+          "explanation": "結論的なHookとして扱ったが、Hookでもcertaintyの緩和は認められないため、実験中の無通知を恒久的な「決して鳴らない」状態に変えた点をchanged_certaintyとした。",
+          "treated_as_hook": true,
+          "auto_downgraded": false
+        }
+      ],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 3,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_c_precision_02": {
+      "run_id": "pattern_c_precision_02",
+      "pattern": "C",
+      "response_id": "resp_0a3d6e3ad8406577006a99ebccaf4487d08d54ac4c9429db01",
+      "metrics": {
+        "word_count": 343,
+        "sentence_count": 28,
+        "avg_sentence_length": 12.2,
+        "max_sentence_length": 26
+      },
+      "number_count_total": 6,
+      "f005_f006_area": {
+        "area_text": "And in another study, even a silent phone on a desk was linked to lower attention. The attention score was about 9 points lower, and processing speed was about 10 points lower, when the phone stayed on the desk rather than in another room. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "And in another study, even a silent phone on a desk was linked to lower attention.",
+          "The attention score was about 9 points lower, and processing speed was about 10 points lower, when the phone stayed on the desk rather than in another room.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "The attention score was about 9 points lower, and processing speed was about 10 points lower, when the phone stayed on the desk rather than in another room."
+        ],
+        "number_count": 2,
+        "sentence_count": 4,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "9",
+          "10"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "9",
+          "10"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "10",
+          "9"
+        ],
+        "processing_numbers": [
+          "10",
+          "9"
+        ],
+        "shared_sentence_between_metrics": true,
+        "shared_numeric_tokens": [
+          "10",
+          "9"
+        ],
+        "possible_fact_merge_risk": true
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          9.0,
+          10.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": true
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": true
+          }
+        }
+      },
+      "has_trend_phrase": false,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 32,
+        "unchanged_sentences": 27,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 7
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 0,
+      "ledger_deviations": [],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "REVIEW_REQUIRED",
+      "fact_checker_unsupported_claim_count": 4,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    },
+    "pattern_c_precision_03": {
+      "run_id": "pattern_c_precision_03",
+      "pattern": "C",
+      "response_id": "resp_0c75e629d2f96211006a99ec47b11087d0a4717b2c5875d29b",
+      "metrics": {
+        "word_count": 334,
+        "sentence_count": 29,
+        "avg_sentence_length": 11.5,
+        "max_sentence_length": 25
+      },
+      "number_count_total": 6,
+      "f005_f006_area": {
+        "area_text": "In another study, even a silent phone on a desk was linked to lower attention. The average attention score was about 9 points lower on the desk. Processing speed was about 10 points lower. So a person who never checks the screen may still pay an attention cost. These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings.",
+        "attention_sentences": [
+          "In another study, even a silent phone on a desk was linked to lower attention.",
+          "The average attention score was about 9 points lower on the desk.",
+          "So a person who never checks the screen may still pay an attention cost.",
+          "These studies suggest a quiet lesson: attention can be pulled by a sound, or shared with a phone that never rings."
+        ],
+        "processing_sentences": [
+          "Processing speed was about 10 points lower."
+        ],
+        "number_count": 2,
+        "sentence_count": 5,
+        "mentions_attention": true,
+        "mentions_processing_speed": true
+      },
+      "precision_numbers": {
+        "all_numbers_raw": [
+          "9",
+          "10"
+        ],
+        "decimal_numbers": [],
+        "whole_numbers": [
+          "9",
+          "10"
+        ],
+        "decimal_count": 0,
+        "whole_count": 2
+      },
+      "fact_separation_check": {
+        "attention_numbers": [
+          "9"
+        ],
+        "processing_numbers": [
+          "10"
+        ],
+        "shared_sentence_between_metrics": false,
+        "shared_numeric_tokens": [],
+        "possible_fact_merge_risk": false
+      },
+      "numeric_accuracy": {
+        "numbers_found_in_area": [
+          9.0,
+          10.0
+        ],
+        "delta_matches": {
+          "F-005": {
+            "expected_delta": 9.24,
+            "matched_within_1_0": true
+          },
+          "F-006": {
+            "expected_delta": 10.09,
+            "matched_within_1_0": true
+          }
+        }
+      },
+      "has_trend_phrase": false,
+      "has_delta_expression": true,
+      "sentence_diff_stats": {
+        "baseline_sentence_count": 34,
+        "variant_sentence_count": 33,
+        "unchanged_sentences": 27,
+        "deleted_sentences": 0,
+        "added_sentences": 0,
+        "replaced_sentences": 7
+      },
+      "ledger_overall_status": "LEDGER_COMPLIANT",
+      "ledger_deviation_count": 2,
+      "ledger_deviations": [
+        {
+          "claim_in_article": "72% of U.S. teens often or sometimes checked messages or notifications soon after waking.",
+          "issue": "F-008は自己申告による調査回答だが、記事では「報告した」と明示せず、実際の行動であるかのように直接表現している。割合自体は一致しているため、意味上のずれは軽微。",
+          "severity": "MINOR",
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false,
+          "explanation": "自己申告の調査結果を、実測された行動の断定にやや強めているためchanged_certaintyのみtrue。",
+          "treated_as_hook": false,
+          "auto_downgraded": false
+        },
+        {
+          "claim_in_article": "Distraction is not always a visible choice.",
+          "issue": "F-003の「自動的・非自発的な注意捕捉」は研究者らの解釈であり、直接測定された事実ではない。記事の直後では研究者の解釈として説明されているものの、この一文単独では一般的事実として断定している。",
+          "severity": "MINOR",
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false,
+          "explanation": "研究者の解釈を無帰属で断定的に提示しているためchanged_certaintyがtrue。注意喚起のHookとして扱い、一般化に関するchanged_scopeは緩和してfalseとした。",
+          "treated_as_hook": true,
+          "auto_downgraded": false
+        }
+      ],
+      "fact_checker_status": "FACT_CHECK_COMPLETED",
+      "fact_checker_verdict": "PASS",
+      "fact_checker_unsupported_claim_count": 0,
+      "causal_markers_found": [],
+      "new_causal_markers_vs_baseline_input": []
+    }
+  }
+}
