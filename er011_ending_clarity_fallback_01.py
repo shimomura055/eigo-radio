@@ -2,6 +2,22 @@
 # er011_ending_clarity_fallback_01.py
 # ER-011-NO18-OPEN107-PRODUCTION-WIRING-AND-FINAL-AUDIO-03
 # ============================================================
+# **WITHDRAWN(ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-
+# WIRING-08、ユーザー正式決定)**: OPEN-107 Ending-Clarity fallbackは
+# Production仕様から撤回された。er003_v1_n3_01_tts_generate.py はもはや
+# 本moduleをimportせず、voice01.generate_charon_english /
+# news_tail_fix.generate_news_narration_wide_margin を直接呼び出す。
+# 代わりに、B1 Connected Speech Validator(er011_b1_connected_speech_
+# validator_01.py、classify_asr_match()へ配線済み)が「connected speech
+# として説明可能なASR差分は元々TTS誤発音として扱わない」という、より
+# 直接的な方式でOPEN-107/OPEN-110の対象ケース(studies suggest/opened
+# to/survey suggest)をカバーする。
+#
+# 本ファイルはhistorical recordとして削除せず残す(過去のTrial・
+# Production実績の記録、および内部関数自体の単体test
+# [er011_ending_clarity_fallback_01_test.py]は引き続きPASSする)。
+# 新規のProduction経路からは一切参照されない。
+# ============================================================
 # OPEN-107(ER-011-NO18-OPEN108-LEDGER-REFINE-AND-OPEN107-ENDING-FALLBACK-
 # TRIAL-02のTrack B)で、ユーザーがEnding-Clarity fallback(語尾・最終音素の
 # 明瞭さを既存instructionへAND方式で追加する、"opened"等へのhardcodeなしの

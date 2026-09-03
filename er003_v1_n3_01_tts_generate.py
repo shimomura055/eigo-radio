@@ -33,7 +33,6 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_articles_generate as gen
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
-import er011_ending_clarity_fallback_01 as ending_clarity
 import er011_human_review_lock_01 as review_lock
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
@@ -380,10 +379,14 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
-                                   "audio_classification": cls.classification, "verified": verified})
+                                   "audio_classification": cls.classification,
+                                   "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
+                                   "verified": verified})
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text
+            r["audio_classification"] = cls.classification
+            r["reading_resolver_info"] = getattr(cls, "reading_resolver_info", None)
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
@@ -633,16 +636,16 @@ def generate_b1_segments(theme: dict) -> dict:
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
-        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon、Ending-Clarity fallback配線済み)...")
+        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Charon、Connected Speech Validator配線済み)...")
         with cl.segment_context(name):
-            # ER-011-NO18-OPEN109-110-FINAL-CLOSEOUT-04: comment_2の
-            # "studies"->"study"(複数マーカー脱落)がOPEN-107 Ending-Clarity
-            # fallbackの対象になり得るのに、Comment segmentはNews本文loopと
-            # 別経路(voice01.generate_charon_english直接呼び出し)だったため
-            # fallbackへ到達できていなかった配線漏れを解消する。通常PASS時・
-            # 語尾脱落以外のNG時は挙動は従来と完全に同一(即座にcoreの結果を
-            # そのまま返すのみ)。
-            results[name] = ending_clarity.generate_charon_english_with_ending_clarity_fallback(
+            # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+            # OPEN-107 Ending-Clarity fallbackはユーザー正式決定によりProduction
+            # から撤去した。代わりに、classify_asr_match()内でconnected-speech
+            # パターン(歯擦音連続/破裂音連続/再分節)による再判定が働く
+            # (er011_b1_connected_speech_validator_01、Trial-07でVALIDATED)。
+            # ここでの呼び出し自体はvoice01.generate_charon_englishへの直接
+            # 呼び出しに戻し、fallback wrapperは経由しない。
+            results[name] = voice01.generate_charon_english(
                 tts_safe_number_words_en(tts_safe_en(text)), f"{narration_dir}/{name}.wav",
                 # ER-008-N8-FINAL-AUDIO-AND-REMAINING-PRODUCTION-WIRING-20:
                 # Previewで採用済みのcalm/clear/unhurried style instructionを
@@ -669,13 +672,12 @@ def generate_b1_segments(theme: dict) -> dict:
     ):
         if name in ("point_one", "point_two"):
             sc.assert_no_point_number_label(text, name)
-        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文、Ending-Clarity fallback配線済み)...")
+        print(f"[N3-TTS][{theme_id}/b1b] {name}生成(Aoede、News本文、Connected Speech Validator配線済み)...")
         with cl.segment_context(name):
-            # ER-011-NO18-OPEN107-PRODUCTION-WIRING-AND-FINAL-AUDIO-03: 通常TTS+
-            # 通常retryでも語尾脱落NGが続いたsegmentだけ、Ending-Clarity
-            # instructionへ一時的に切り替えて追加retryするfallbackをここで
-            # 配線する(通常経路自体はnews_tail_fix.py無変更のまま)。
-            results[name] = ending_clarity.generate_news_narration_with_ending_clarity_fallback(
+            # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+            # OPEN-107 Ending-Clarity fallbackはユーザー正式決定によりProduction
+            # から撤去した(news_tail_fix.py自体は無変更のまま直接呼び出す)。
+            results[name] = news_tail_fix.generate_news_narration_wide_margin(
                 tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。

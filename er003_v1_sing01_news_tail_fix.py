@@ -115,6 +115,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                              "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "length_ok": length_ok, "verified": verified,
                               "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
@@ -124,6 +125,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"],
+                    "audio_classification": cls.classification,
+                    "connected_speech_info": getattr(cls, "connected_speech_info", None),
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
                     "disfluency_evidence": gate.get("disfluency_evidence")}

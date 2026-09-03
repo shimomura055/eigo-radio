@@ -263,6 +263,8 @@ def generate_narration_snippet_verified_strict(
             "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,
             "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok,
             "phonetic_verdict": phonetic_verdict, "audio_classification": audio_classification,
+            "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
+            "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
             "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
@@ -274,6 +276,9 @@ def generate_narration_snippet_verified_strict(
             # の一因だった。asr_verified等と同じtop-levelへ昇格し、Gate側
             # (_segment_missing_mandatory_disfluency_qa)が読めるようにする。
             return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
+                    "audio_classification": audio_classification,
+                    "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
+                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None}
         if stop_retrying:

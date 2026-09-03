@@ -31,6 +31,7 @@ import unicodedata
 from dataclasses import dataclass, field
 
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
+import er011_b1_connected_speech_validator_01 as connected_speech
 
 # ------------------------------------------------------------
 # 正規化(ER-006-POOL-PILOT-COST-ROOTFIX-01のer006_cost_rootfix_01_text_
@@ -572,6 +573,9 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
 VALID_CLASSIFICATIONS = (
     "EXACT_MATCH", "NORMALIZED_MATCH", "HIGH_SIMILARITY_SAFE",
     "ASR_VALIDATION_UNCERTAIN", "TRUE_CONTENT_MISMATCH", "TTS_FAILURE",
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # B1 Connected Speech Validator(OPEN-107撤去に伴う正式採用)。
+    "CONNECTED_SPEECH_ACCEPT", "CONNECTED_SPEECH_PASS_WITH_WARNING",
 )
 
 
@@ -583,6 +587,12 @@ class ClassificationResult:
     should_pass: bool
     should_retry: bool
     reason: str
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # classification が CONNECTED_SPEECH_ACCEPT/CONNECTED_SPEECH_PASS_WITH_
+    # WARNING の場合のみ非Noneになる、判定根拠(rule/expected_phoneme_
+    # boundary/false_accept_risk)。既存呼び出し元は位置引数のみ使うため
+    # 末尾にdefault付きで追加し、後方互換を保つ。
+    connected_speech_info: dict | None = None
 
 
 def classify_asr_match(canonical_text: str, asr_text: str,
@@ -659,6 +669,26 @@ def classify_asr_match(canonical_text: str, asr_text: str,
                              if d["homophone_candidate"] and not d["entity_like"]]
 
     if non_entity_diffs:
+        # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+        # ASR文字列差分だけを根拠に即座にTRUE_CONTENT_MISMATCHとする前に、
+        # ユーザー正式承認済みの限定connected-speechパターン(歯擦音連続/
+        # 破裂音連続/語境界の再分節)で合理的に説明できるかを確認する
+        # (ER-011-CONNECTED-SPEECH-AND-A2-READING-TRIAL-07 Track AでVALIDATED
+        # 判定、パターンはこの3種以外へ拡張しない)。該当しない場合は、
+        # 従来通り無条件でTRUE_CONTENT_MISMATCHとする(fall through)。
+        cs = connected_speech.classify_connected_speech(canonical_text, asr_text)
+        if cs["new_judgment"] == "CONNECTED_SPEECH_ACCEPT":
+            return ClassificationResult(
+                "CONNECTED_SPEECH_ACCEPT", ratio, protected, should_pass=True, should_retry=False,
+                reason=f"connected speech(語境界の自然な弱化・融合)として説明可能: {cs['rule']} "
+                       f"({cs['expected_phoneme_boundary']})",
+                connected_speech_info=cs)
+        if cs["new_judgment"] == "CONNECTED_SPEECH_RESEGMENTATION":
+            return ClassificationResult(
+                "CONNECTED_SPEECH_PASS_WITH_WARNING", ratio, protected, should_pass=True, should_retry=False,
+                reason=f"語境界の自然な再分節として説明可能(blockingしないが警告を残す): {cs['rule']} "
+                       f"({cs['expected_phoneme_boundary']})",
+                connected_speech_info=cs)
         # 固有名詞以外の内容語(動詞・形容詞・名詞等)の置換/欠落/追加は、
         # 一致率が高くても自動PASSさせず、retry対象のTRUE_CONTENT_MISMATCHのままにする
         # (例: "increase"→"decrease"、重要語の欠落を見逃さないため)。
@@ -681,6 +711,27 @@ def classify_asr_match(canonical_text: str, asr_text: str,
         return ClassificationResult("HIGH_SIMILARITY_SAFE", ratio, protected,
                                      should_pass=True, should_retry=False,
                                      reason="内容語の差は無く、表記のみの軽微な揺れ")
+
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # Pattern C(再分節、例: survey->surveys)は、protected_check()の既存の
+    # _is_benign_plural_pair()吸収(規則的な単数/複数のゆれとして元々
+    # content_word_diffsへ計上しない設計)により、この最終fallback
+    # (content_word_diffsが空、ratioが閾値未満)へ到達することがある
+    # (実データ、OPEN-110 survey_diagnostic_04で確認)。ここでもconnected
+    # speechパターンを確認し、該当すればPASS_WITH_WARNINGとする。
+    cs_fallback = connected_speech.classify_connected_speech(canonical_text, asr_text)
+    if cs_fallback["new_judgment"] == "CONNECTED_SPEECH_RESEGMENTATION":
+        return ClassificationResult(
+            "CONNECTED_SPEECH_PASS_WITH_WARNING", ratio, protected, should_pass=True, should_retry=False,
+            reason=f"語境界の自然な再分節として説明可能(blockingしないが警告を残す): {cs_fallback['rule']} "
+                   f"({cs_fallback['expected_phoneme_boundary']})",
+            connected_speech_info=cs_fallback)
+    if cs_fallback["new_judgment"] == "CONNECTED_SPEECH_ACCEPT":
+        return ClassificationResult(
+            "CONNECTED_SPEECH_ACCEPT", ratio, protected, should_pass=True, should_retry=False,
+            reason=f"connected speech(語境界の自然な弱化・融合)として説明可能: {cs_fallback['rule']} "
+                   f"({cs_fallback['expected_phoneme_boundary']})",
+            connected_speech_info=cs_fallback)
 
     return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
                                  should_pass=False, should_retry=False,

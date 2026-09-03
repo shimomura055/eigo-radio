@@ -227,12 +227,29 @@ KNOWN_TRADEOFF_FIXTURES = [
 
 # ------------------------------------------------------------
 # PHONETIC_UNCERTAINが過剰適用されない境界確認(「漢字なら全部Cascade」に
-# なっていないことの確認。月の「つき」(名詞)/「がつ」(暦月の接尾)は
-# 清音化しても一致しない=別のモーラ構成のため、除外されて当然)
+# なっていないことの確認)。
+#
+# **2026-09-03追記(ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-
+# PRODUCTION-WIRING-08)**: 「月」(つき/がつ、清音化しても一致しない別読み)
+# は、voicing許容Cascade(このsectionが元々確認していた仕組み)の対象には
+# ならず、以前はTRUE_CONTENT_MISMATCHのまま(=誤ってCascade/自動PASSに
+# ならない)ことを確認するfixtureだった。しかし今回、A2専用のReading
+# Resolver(辞書候補+文脈からのLLM候補選択)をProduction配線した結果、
+# この「つき」/「月」は実際には辞書が持つ正当な多義語読みの一つであり、
+# 文脈(「夜空に浮かぶ丸い...を見上げた」)から見て「つき」という選択は
+# 誤りではなく正しい解決である。そのためNOT_PHONETIC_UNCERTAIN_FIXTURESの
+# 対象からは外し、Reading Resolverが実際に正しく解決できることを確認する
+# READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURESへ移した(「漢字なら何でも
+# Cascade」ではなく「辞書候補+文脈から正しく解決できる場合のみPASSする」
+# ことの確認に趣旨を変更)。
 # ------------------------------------------------------------
-NOT_PHONETIC_UNCERTAIN_FIXTURES = [
-    {"name": "月(つき/がつ、清音化しても一致しない別読みのため対象外。"
-             "「漢字の異読みなら何でもCascade」になっていないことの確認)",
+NOT_PHONETIC_UNCERTAIN_FIXTURES = []
+
+READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES = [
+    {"name": "月(つき/がつ、辞書の多義語候補+文脈からReading Resolverが"
+             "正しく「つき」を選択して解決できることの確認。"
+             "「漢字の異読みなら何でも自動PASS」ではなく、文脈に基づく正しい"
+             "選択の結果としてのみPASSすることを示す)",
      "canonical": "夜空に浮かぶ丸いつきを見上げた。",
      "asr": "夜空に浮かぶ丸い月を見上げた。"},
 ]
@@ -332,8 +349,19 @@ if __name__ == "__main__":
         if not ok:
             all_failures.append(fx["name"])
 
+    print("\n=== READING_RESOLVER_CORRECTLY_RESOLVES fixtures (辞書候補+文脈から"
+          "Reading Resolverが正しく解決できることの確認) ===")
+    for fx in READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification == "READING_RESOLVED_MATCH" and r.should_pass is True
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if not ok:
+            all_failures.append(fx["name"])
+
     total = (len(POSITIVE_FIXTURES) + len(NEGATIVE_FIXTURES) + len(ENTITY_LIKE_FIXTURES)
              + len(PHONETIC_UNCERTAIN_FIXTURES) + len(KNOWN_TRADEOFF_FIXTURES) + len(NOT_PHONETIC_UNCERTAIN_FIXTURES)
+             + len(READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES)
              + len(WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES) + len(WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES))
     if all_failures:
         print(f"\n{len(all_failures)}件のfixture/checkが期待通りに分類されなかった: {all_failures}")

@@ -27,11 +27,25 @@ from dataclasses import dataclass, field
 # 既存の短いsegment用検証(er003_audio_tts_asr_safety.py)が持つ
 # 読み変換・数字抽出・否定マーカー判定をそのまま再利用する(重複実装しない)。
 import er003_audio_tts_asr_safety as safety
+# ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+# A2専用のReading Resolver(辞書候補+限定LLM選択)。B1(英語Validator)側
+# には一切importされない。
+import er011_a2_reading_resolver_01 as reading_resolver
 
 VALID_CLASSIFICATIONS_JA = (
     "EXACT_MATCH", "NORMALIZED_MATCH", "PHONETIC_MATCH",
     "ASR_VALIDATION_UNCERTAIN", "TRUE_CONTENT_MISMATCH",
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08
+    "READING_RESOLVED_MATCH",
 )
+
+# ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+# Production既定はTrue(ユーザー正式承認済み)。既存の単体test
+# (classify_ja_asr_matchを純粋なローカル判定として呼ぶ、ネットワーク
+# 呼び出しを想定していないfixture)がPRODUCTION_MAX_TTS_ATTEMPTS等と
+# 同じ思想で明示的に無効化できるよう、モジュール定数として公開する
+# (secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED等と同じ設計)。
+FEATURE_FLAG_A2_READING_RESOLVER_ENABLED = True
 
 _PUNCT_RE = re.compile(r"[、。・「」『』（）()\s！？!?…—―‥～〜/／]")
 _KATAKANA_RE = re.compile(r"[゠-ヿ]+")
@@ -57,6 +71,11 @@ class ClassificationResultJA:
     reason: str
     canonical_reading: str = ""
     asr_reading: str = ""
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # classification が READING_RESOLVED_MATCH の場合のみ非None(候補一覧・
+    # 選択結果・呼び出し回数等、reading_resolver_01.resolve_reading_diff()
+    # の戻り値そのもの)。
+    reading_resolver_info: dict | None = None
 
 
 def normalize_ja(text: str) -> str:
@@ -304,6 +323,24 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
                 reason="局所diffはscript差で分断されたが、正規化後の全文の読みは濁点/半濁点の有無を"
                        "除き一致(retryでは解決しない可能性が高い、Cascadeで追加確認)",
                 canonical_reading=c_reading, asr_reading=a_reading)
+
+        # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+        # 全文の機械的な読み一致(上記whole_text_reading_equal等)でも
+        # 説明できない差が残った場合のみ、A2 Reading Resolver(差分箇所の
+        # 辞書候補+限定LLM選択)を試す(ER-011-CONNECTED-SPEECH-AND-A2-
+        # READING-TRIAL-07 Track BでVALIDATED判定)。resolved_matchが
+        # 厳密にTrueの場合のみPASSとし、それ以外(候補なし/LLM異常/
+        # 例外/不一致継続)は一切PASSさせず、既存のTRUE_CONTENT_MISMATCH
+        # 処理へfall throughする(fail-safe、ユーザー正式決定§2)。
+        if FEATURE_FLAG_A2_READING_RESOLVER_ENABLED:
+            resolver_result = reading_resolver.resolve_reading_diff(c_norm, a_norm)
+            if resolver_result["resolved_match"]:
+                return ClassificationResultJA(
+                    "READING_RESOLVED_MATCH", ratio, protected, should_pass=True, should_retry=False,
+                    reason=f"差分箇所を辞書候補+LLM候補選択で解決し、再比較の結果一致"
+                           f"(resolver_calls={resolver_result['resolver_calls']})",
+                    reading_resolver_info=resolver_result)
+
         if ratio < tts_failure_threshold:
             return ClassificationResultJA(
                 "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,
