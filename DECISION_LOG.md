@@ -1793,6 +1793,19 @@ Production review lock対象の関数(`generate_key_phrase_component_verified`�
 - **根拠レポート**: ER-003-N3-ROOT-FIX-01完了報告(波形解析による検証含む)
 - **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > English Key Phrase trim safety margin
 
+## [Implementation Hardening] ER-011-NO18-KEYPHRASE-TRIM-030-PRODUCTION-WIRING-12: English Key Phrase trim safety marginを0.30秒へ再拡大(0.20→0.30、A2/B1共通)
+
+- **日付**: 2026-09-03
+- **内容**: 英語Key Phrase音声生成のsafety margin(`KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS`、A2/B1で共通、leading/tail対称適用)を0.20秒から0.30秒へ拡大した。leading/trailingを分離する設計変更は行わず、既存の単一共通margin方式のまま値だけを変更した
+- **状態**: `PRODUCTION_WIRED`(Audio実装詳細、サービス仕様の変更ではない)
+- **採用理由**: 2026-08-17時点の0.20秒は、"follow-up time"のようなKey Phraseの**語頭**(head)無声摩擦音/f/の実例のみで検証された値であり、**語末**(tail)側は同じ値を対称に適用していただけで、語末での十分性は検証されていなかった。No.18 A2 Key Phrase 5「be powered off」で、語末の/f/がファイル終端まで高域(4kHz超)スペクトルエネルギーを保ったまま(自然な減衰が確認できないまま)切れている可能性を、ローカルWhisperの単語タイムスタンプ+10ms窓RMS/高域比解析で確認した(ER-011-NO18-A2-OFF-AND-ARTIFACT-DIAGNOSTIC-10)。0.30秒版を生成したところ、同じ解析で/f/の余韻が減衰してから終端することを確認し(ER-011-NO18-A2-KP5-TRIM-MARGIN-03-TRIAL-11)、ユーザーが両版を試聴のうえ0.30秒版を正式採用と判断した
+- **比較した選択肢**: (a) 0.20秒のまま変更しない、(b) 0.20→0.30秒(共通marginのまま拡大)、(c) leading/trailingを分離し、trailingだけ拡大する設計変更
+- **却下理由(a・c)**: (a)はユーザーが試聴の上、0.20秒版の語末が不自然と判断したため不採用。(c)は今回のTrialで確認できた問題はtrailing側のみだが、共通margin方式を分離する設計変更は影響範囲(既存の全Key Phrase生成呼び出し・テスト)が大きく、今回のスコープ外と判断し見送った(将来必要になった場合は別途Trial・User Decisionを経る)
+- **根拠レポート**: ER-011-NO18-A2-OFF-AND-ARTIFACT-DIAGNOSTIC-10(問題発見)、ER-011-NO18-A2-KP5-TRIM-MARGIN-03-TRIAL-11(0.30秒版の生成・音響比較・ユーザー試聴承認)、ER-011-NO18-KEYPHRASE-TRIM-030-PRODUCTION-WIRING-12(Production配線・A2/B1双方のruntime evidence・No.18 A2 kp5差し替え・再assembly)
+- **Production配線の詳細**: `er003_v1_repro01_main_generate.py::KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS`を0.20→0.30へ変更(A2/B1双方が同じ`generate_key_phrase_component_verified`を経由するため、今後の新規Key Phrase生成すべてに自動適用される)。ただしMaster Audio Store(`er006_master_audio_store_01.py`)のcache keyはtrim marginを含まないため、**既に生成済みでStoreにキャッシュされているKey Phraseは、明示的に再生成・昇格しない限り旧margin(0.20秒以前を含む)の音声を保持し続ける**(今回はNo.18 A2 kp5「be powered off」のみ、ユーザーが承認したTrial-11の実際の音声をMaster Audio Store・Production資産の両方へ昇格・差し替えた。他の既存Key Phraseは対象外、無変更)
+- **No.18への適用範囲**: A2のみ、Key Phrase 5「be powered off」の差し替え+A2再assembly。B1(pool_n18_notifications_specfix_v2/b1b)の完成音声・TTS・assemblyは無変更(ユーザー指示)
+- **影響するCURRENT_SPEC項目**: Cross-level仕様 > Audio Implementation Detail > English Key Phrase trim safety margin
+
 ## [Implementation Hardening] ER-003-N3-ROOT-FIX-01: TTS style instructionの責務分離+短いJapanese phraseへのminimal instruction fallback
 
 - **日付**: 2026-08-17

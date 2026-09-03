@@ -383,14 +383,24 @@ def generate_english_component_minimal_instruction(
     }
 
 
-# ER-003-N3-ROOT-FIX-01(2026-08-17): Key Phrase英語音声専用のhead
+# ER-003-N3-ROOT-FIX-01(2026-08-17): Key Phrase英語音声専用のhead/tail
 # safety margin。follow-up timeの/f/のような無声摩擦音は振幅が小さく、
 # 母音onset前提の既定0.08秒(p3u.EN_TRIM_SAFETY_MARGIN_SECONDS)では
 # 語頭が一部trimされる実例が確認された。Key Phraseは全体の音声尺への
-# 影響が小さいため、0.20秒(約2.5倍)へ拡大する。この定数はKey Phrase
-# 生成専用であり、他segment(Preview/Comment/Title等、p9a.
+# 影響が小さいため、0.08秒から0.20秒(約2.5倍)へ拡大した。この定数は
+# Key Phrase生成専用であり、他segment(Preview/Comment/Title等、p9a.
 # generate_narration_snippetの他の呼び出し元)には波及しない。
-KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.20
+#
+# ER-011-NO18-KEYPHRASE-TRIM-030-PRODUCTION-WIRING-12(2026-09-03、
+# ユーザー正式決定): 0.20秒はhead(語頭)側の実例のみで検証された値で
+# あり、tail(語末)側は同じ値を対称に適用していただけだった。No.18 A2
+# Key Phrase 5「be powered off」で、語末の無声摩擦音/f/がファイル終端
+# まで高域エネルギーを保ったまま(自然な減衰が確認できないまま)切れて
+# いる可能性がTrial-11(ER-011-NO18-A2-KP5-TRIM-MARGIN-03-TRIAL-11)の
+# 音響解析で確認され、0.30秒版で/f/が自然に減衰してから終端することを
+# ユーザーが試聴・承認したため、0.20秒から0.30秒へ正式に拡大する。
+# 比較検討の詳細・却下した代替案はDECISION_LOG.md該当エントリを参照。
+KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS = 0.30
 
 
 # ============================================================

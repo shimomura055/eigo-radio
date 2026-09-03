@@ -185,7 +185,7 @@ Support」という理解は誤りであり、正式には採用しない。
 
 | 項目 | 現在値 | 根拠Decision |
 |---|---|---|
-| English Key Phrase trim safety margin | 0.20秒(Key Phrase専用。他segment=Preview/Comment/Title等は既存の0.08秒のまま、他segmentへは波及していない) | ER-003-N3-ROOT-FIX-01 |
+| English Key Phrase trim safety margin | **0.30秒**(Key Phrase専用、A2/B1共通。2026-08-17に0.08→0.20秒、2026-09-03に0.20→0.30秒へユーザー正式決定のうえ拡大した。他segment[Preview/Comment/Title等]には波及しない。他segmentの既定値は0.08秒ではなく、2026-08-21のER-005-E2E-TTS-ANALYSIS-FIX-01でNARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS=0.35秒へ変更済み[本行は従来「0.08秒のまま」と誤って記載されていたstaleな記述を訂正]) | ER-003-N3-ROOT-FIX-01、ER-011-NO18-KEYPHRASE-TRIM-030-PRODUCTION-WIRING-12 |
 | TTS style instruction責務分離 | 共通style instructionに、Point One/Point Two/In One Lineを読み上げさせる指示(`POINT_LABEL_FIDELITY_RULE`)を無条件に含めない(既定で除外、必要な一括生成呼び出し元だけが明示的に有効化できるopt-in設計)。現行コードベースにfull-program一括TTS呼び出し元は存在しない | ER-003-N3-ROOT-FIX-01 |
 | 短いJapanese phraseのminimal instruction fallback | 標準経路(JAPANESE_STYLE_PREFIXを使った生成)が既定回数不合格の場合、最小限instructionへ自動フォールバックする(英語Key Phraseに既存の仕組みと同じ考え方を日本語の短いフレーズにも拡張)。標準経路が成功している場合は追加呼び出しなし。標準経路が不合格を繰り返す場合のみ、fallback分のTTS/ASR呼び出しが追加発生する | ER-003-N3-ROOT-FIX-01 |
 | TTS/ASR normalization共通部品 | `er003_audio_tts_asr_safety.py`をAudio共通安全部品として位置づける。ただし2026-08-17時点で、ER-003-A2-B1-N3-01/FIX-01で発見・実装した個別のnormalization処理(curly quote正規化、Markdown太字除去、数字表記ゆれ吸収、Key Phrase複合語対応等)の一部は、まだこの共通モジュールへ統合されておらず、N3専用スクリプト(`er003_v1_n3_01_tts_generate.py`)内に留まっている。**未統合**(→[OPEN_ITEMS.md](OPEN_ITEMS.md)) | ER-003-A2-B1-N3-01、ER-003-A2-B1-N3-01-FIX-01 |
