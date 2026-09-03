@@ -1,6 +1,7 @@
 # ============================================================
 # er003_v1_n3_01_evidence_compression_editor.py
 # ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06 Part A/B
+# ER-011-NO18-EVIDENCE-COMPRESSION-A-PRODUCTION-WIRING-AND-FINAL-CANDIDATE-AUDIO-21R
 # ============================================================
 # Evidence Compression 方式C(Lossless Editor)の正式Production実装。
 # 通常WriterがFact-safeな記事を生成した後、この関数がspoken layerだけを
@@ -15,8 +16,102 @@
 # ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05(方式CのB1
 # MAJOR逸脱1件ずつ精査、VALIDATOR_FALSE_POSITIVEと判定)→本タスクで
 # ユーザーが方式Cを正式採用、Production Writer pipelineへ配線。
+#
+# 2026-09-04追記(ER-011-NO18-EVIDENCE-COMPRESSION-A-PRODUCTION-WIRING-
+# AND-FINAL-CANDIDATE-AUDIO-21R): ER-011-NO18-A2-EVIDENCE-COMPRESSION-
+# ABC-*-TRIAL-18/19/20(3パターン比較・n=5再現性・Precision拡張)を経て
+# ユーザーが正式採用した「Pattern A: Representative Metric + Supporting
+# Trend」+「Listener-Friendly Numeric Precision」を、既存方式Cの許可
+# 編集リストへの追加ルールとしてProduction正式配線する。文言はTrial-18/
+# 19/20で検証済みのものと完全に同一(er011_no18_a2_evidence_compression_
+# extension_abc_trial_18.py::COMMON_PURPOSE_BLOCK_EN/PATTERN_A_BLOCK_JA、
+# er011_no18_a2_evidence_compression_abc_precision_extension_trial_20.py::
+# PRECISION_BLOCK_EN)を、No.18固有語を含まない一般Production仕様として
+# ここへ複製する(Trial定義への実行時依存は作らない、Dangling Reference
+# Check対応)。Pattern B/CはDEFERRED CANDIDATE/NOT REJECTEDのため未配線。
 
 from __future__ import annotations
+
+EVIDENCE_COMPRESSION_PURPOSE_BLOCK_EN = """【Compression Purpose Clarification -- applies to every pattern below】
+The purpose of Evidence Compression is not to reduce the number of digits for its own
+sake. It is to make sure that, once heard aloud, a listener can still follow the meaning
+of the Evidence. When, within the same study, survey, or comparison, multiple different
+Facts or metrics point in the same direction, and listing every individual number raises
+listening load, consider a way to keep the presence, meaning, and direction of comparison
+of each Fact while retaining only the minimum numbers necessary.
+
+Fact safety always takes priority over ease of listening."""
+
+PATTERN_A_REPRESENTATIVE_METRIC_SUPPORTING_TREND_BLOCK = """【追加ルール: Pattern A - Representative Metric + Supporting Trend】
+同一の研究・調査・比較の中で、複数の異なる指標が同じ方向の結果を示している場合:
+- すべての比較数値を列挙しなくてよい
+- リスナーが結果の大きさを理解するために、最も代表性・説明力の高い指標を1つ選び、
+  その指標の比較数値(絶対値)は保持してよい
+- その他の指標についても、Factとしては本文に残すこと。ただし具体的な数値は省略し、
+  "showed the same pattern" "was also lower" のようなtrend表現へ言い換えてよい
+- 補助的な指標のFact自体を削除しないこと
+- 2つ以上の異なるFactを、1つのFactであるかのように統合して書かないこと
+- 相関を因果へ強めないこと
+- 実際には「同じ傾向」と言えない指標同士を、同じ傾向として扱わないこと"""
+
+LISTENER_FRIENDLY_NUMERIC_PRECISION_BLOCK = """【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions."""
 
 EVIDENCE_COMPRESSION_EDITOR_DEVELOPER_MESSAGE = (
     "あなたはeigo-radioの記事Editorです。既に完成しているPodcast台本(Markdown)を、"
@@ -24,7 +119,7 @@ EVIDENCE_COMPRESSION_EDITOR_DEVELOPER_MESSAGE = (
     "変えることは禁止です。"
 )
 
-EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE = """【編集対象のPodcast台本(Markdown、そのまま編集してください)】
+_EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE_BASE = """【編集対象のPodcast台本(Markdown、そのまま編集してください)】
 {article_text}
 
 【編集方針: Evidence Compression(Lossless Editing)】
@@ -91,12 +186,32 @@ EditorはWriterではありません。「より良い記事に自由に書き�
 2つ、## In one lineの結び)で出力してください。説明文やコメントは付けず、
 編集後の記事本文だけを出力してください。"""
 
+_EC_FORBIDDEN_EDITS_MARKER = "【絶対に行ってはいけない編集(Fact safety、最優先)】"
+assert _EC_FORBIDDEN_EDITS_MARKER in _EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE_BASE, \
+    "Evidence Compression Editor Promptのmarkerが見つかりません(構造変更を検知)"
+
+_EC_PATTERN_A_PRECISION_INSERTION = (
+    EVIDENCE_COMPRESSION_PURPOSE_BLOCK_EN + "\n\n"
+    + PATTERN_A_REPRESENTATIVE_METRIC_SUPPORTING_TREND_BLOCK + "\n\n"
+    + LISTENER_FRIENDLY_NUMERIC_PRECISION_BLOCK + "\n\n"
+)
+
+EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE = _EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE_BASE.replace(
+    _EC_FORBIDDEN_EDITS_MARKER, _EC_PATTERN_A_PRECISION_INSERTION + _EC_FORBIDDEN_EDITS_MARKER)
+
 
 def run_lossless_editor(client, article_text: str, model: str) -> dict:
     """Baselineの記事本文(article_text)を渡し、Evidence Compression
     (方式C、Lossless Editing)を適用した編集後テキストを返す。
     Research/Evidence Pack/VFL/Fact Ledgerには一切触れない(article_text
-    のみを入出力とする)。"""
+    のみを入出力とする)。
+
+    2026-09-04(ER-011-NO18-EVIDENCE-COMPRESSION-A-PRODUCTION-WIRING-AND-
+    FINAL-CANDIDATE-AUDIO-21R): ユーザー正式採用のPattern A(Representative
+    Metric + Supporting Trend)+ Listener-Friendly Numeric Precisionが
+    EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATEへ常時組み込まれているため、
+    本関数のcall site(初回生成・Diagnostic Full Retryとも共通の
+    _generate_and_compress_article()経由)は変更不要。"""
     prompt = EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE.format(article_text=article_text)
     resp = client.responses.create(
         model=model,

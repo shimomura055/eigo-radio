@@ -1,0 +1,84 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Why a Notification Can Steal Focus Before You Check Your Phone
+
+Imagine you are working. Your phone makes a sound. You do not pick it up or even look at the screen. Still, the moment feels different. Research suggests that distraction may begin before you check.
+
+Two peer-reviewed studies help explain why. In a 2022 study, 73 university students completed a visual task while either a notification sound or an unrelated comparison sound played. They did not look at or touch a phone. Even so, the sound affected how they handled the task.
+
+A 2023 study examined a quieter situation. Forty-two university students took a concentration test with a powered-off smartphone on the desk or in another room. No notifications were received. This study also found a difference between the two settings.
+
+At first, this seems like a story about willpower. But the studies point to two separate pressures. One comes from the sound. The other comes from the device being part of the workspace. Together, they suggest that “not checking” is not the same as “not being affected.” The studies used specific tasks and university students, so they do not show that every phone affects every person in every situation.
+
+Outside the lab, this pull is also part of daily life for many US teens. In a 2018 survey of teens aged 13 to 17, 72% said they often or sometimes checked messages or notifications soon after waking. When their phone was not with them, 56% reported feeling anxious, lonely, upset, or some combination of these. A majority also said they felt a need to reply quickly to texts, social-media messages, or other notifications.
+
+### The hidden cost comes before the check
+
+The key shift is from behavior to effort. A person can keep their hands off the phone and still pay a price on the very trial when the sound appears. Responses were slower, while a brain-wave signal associated with cognitive control became larger. The researchers interpreted this as a sign that staying on task required extra mental effort after the notification sound.
+
+### A quiet phone can still take up space
+
+The second experiment did not compare a ringing phone with a silent phone. It compared a powered-off phone on the desk with that phone in another room. Attention scores were about 100 versus 109, and processing-speed scores were about 98 versus 109. For work or study, moving the device may address something that muting does not.
+
+## In one line...
+
+A notification may interrupt focus through its sound, while a silent phone may still compete through its presence. Protecting attention may involve not only resisting the urge to check, but also reducing the phone’s chance to enter the task.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "pay a price",
+    "japanese_gloss": "代償を払う／負担を受ける",
+    "source_sentence": "A person can keep their hands off the phone and still pay a price on the very trial when the sound appears."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "compete through its presence",
+    "japanese_gloss": "存在そのものによって注意と競合する",
+    "source_sentence": "A notification may interrupt focus through its sound, while a silent phone may still compete through its presence."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "stay on task",
+    "japanese_gloss": "作業に集中し続ける",
+    "source_sentence": "The researchers interpreted this as a sign that staying on task required extra mental effort after the notification sound."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "cognitive control",
+    "japanese_gloss": "認知制御",
+    "source_sentence": "Responses were slower, while a brain-wave signal associated with cognitive control became larger."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "brain-wave signal",
+    "japanese_gloss": "脳波信号",
+    "source_sentence": "Responses were slower, while a brain-wave signal associated with cognitive control became larger."
+  }
+]
