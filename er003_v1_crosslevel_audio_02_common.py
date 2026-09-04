@@ -57,6 +57,7 @@ tail_energy_profile = audio02._tail_energy_profile
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
                                             max_extra_chars: int = 60,
                                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+                                            standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
                                             style_prefix_override: str = None,
                                             # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: 呼び出し側が
                                             # 対象segment(Point見出し/In One Line等)でのみTrueを渡す。
@@ -67,11 +68,20 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     渡さない — fallbackは既にprosody指示を持たない最小限の1文のみで、
     速度指示を追加すると簡易fallbackがさらに平板になる恐れがあるため。
 
-    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
-    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
-    には残り予算のみを渡す。"""
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25(2026-09-04、
+    ユーザー正式決定): 標準経路にはstandard_attempts回(既定
+    PRODUCTION_STANDARD_TTS_ATTEMPTS=2)しか予算を与えない。旧設計
+    (標準経路にmax_attempts回すべてを使わせる)では、標準経路が
+    早期returnせず尽きた時点でfallback予算(`max_attempts -
+    len(attempts_log)`)が構造的に常に0になり、fallbackが実質的に発火
+    しない不具合があった。fallback側の予算計算式自体は変えず、標準
+    経路の消費量をstandard_attempts回に固定することで解決する
+    (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照。
+    このgenerate_english_segment_with_fallback自体はKey Phrase用の
+    generate_key_phrase_component_verified(独立した4回構成)とは無関係
+    — Key Phrase以外の英語ナレーションsegment専用)。"""
     standard = generate_narration_snippet_verified_strict(
-        text, "en", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
+        text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False

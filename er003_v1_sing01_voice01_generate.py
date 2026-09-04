@@ -197,23 +197,36 @@ def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> di
 
 @review_lock.guarded_generate("ja")
 def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
-                              max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
+                              max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+                              standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、
     voiceだけCharonへ差し替える(p9a.generate_narration_snippetは
-    voice固定のため直接組み立てる)。標準経路がmax_attempts回で合格
-    しない場合、minimal instructionへフォールバックする(声・モデルは
+    voice固定のため直接組み立てる)。標準経路がstandard_attempts回で
+    合格しない場合、minimal instructionへフォールバックする(声・モデルは
     変えない、テキストも変えない。ER-003-N3-ROOT-FIX-01)。
 
-    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: 同一segmentの
-    TTS総試行回数(標準経路+fallback経路の合計)がmax_attempts回を
-    超えないよう、fallback経路には標準経路で実際に消費した試行回数を
-    差し引いた残り予算だけを渡す(標準・fallbackそれぞれが独立に
-    max_attempts回ずつ試行すると、合計で最大2×max_attempts回に達して
-    しまうため)。"""
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25(2026-09-04、
+    ユーザー正式決定): 標準経路には常にstandard_attempts回(既定
+    PRODUCTION_STANDARD_TTS_ATTEMPTS=2)しか予算を与えない。以前は
+    「標準経路にmax_attempts回すべてを使わせ、fallbackには残り予算」
+    という設計(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B)だったが、
+    標準経路が早期returnせず最後まで回ると`len(attempts_log)==
+    max_attempts`になるため、fallback予算が構造的に常に0になり
+    minimal instructionが実質的に発火しない不具合があった(日本語側で
+    実Production incident 2件を確認)。fallback側の予算計算式自体は
+    変えず(`max_attempts - len(attempts_log)`)、標準経路の消費量を
+    standard_attempts回に固定することで、既定値では必ず
+    PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS(1)回分がfallbackへ残る。
+    max_attempts自体を6・10等へ明示的に大きくして呼び出す既存の呼び
+    出し元(共有shared segment・過去の個別対症療法script等)について
+    は、そちらのtotal予算を勝手に3へ縮小しない — standard_attemptsは
+    常に既定2のまま、fallback側がその差分(例: max_attempts=6なら
+    6-2=4回)を受け取る形で、fallbackが常に発火可能になるという不具合
+    修正の効果だけを及ぼす(該当しない別用途の総予算を変更しない)。"""
     max_len = len(text) + 15
     attempts_log = []
-    for attempt in range(1, max_attempts + 1):
+    for attempt in range(1, standard_attempts + 1):
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはp7a.make_tts_call_fn_for_modelと同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.JAPANESE_MODEL_NAME, CHARON, output_path=out_path)

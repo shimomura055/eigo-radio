@@ -341,17 +341,24 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
 
 def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 40,
-                                        max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS) -> dict:
+                                        max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+                                        standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
     leakage対策。
 
-    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B: standard経路+
-    fallback経路の合計試行回数がmax_attempts回を超えないよう、fallback
-    には残り予算のみを渡す。"""
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25(2026-09-04、
+    ユーザー正式決定): 標準経路にはstandard_attempts回(既定
+    PRODUCTION_STANDARD_TTS_ATTEMPTS=2)しか予算を与えない。旧設計
+    (標準経路にmax_attempts回すべてを使わせる)では、標準経路が
+    早期returnせず尽きた時点でfallback予算(`max_attempts -
+    len(attempts_log)`)が構造的に常に0になり、fallbackが実質的に発火
+    しない不具合があった。fallback側の予算計算式自体は変えず、標準
+    経路の消費量をstandard_attempts回に固定することで解決する
+    (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
     standard = c.generate_narration_snippet_verified_strict(
-        text, "ja", out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
+        text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard

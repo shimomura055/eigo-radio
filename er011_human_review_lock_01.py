@@ -77,7 +77,31 @@ MAX_CUMULATIVE_ASR_CALLS = 60
 # max_attempts既定値はこの定数を参照する(SSOT、CURRENT_SPEC.md参照)。
 PRODUCTION_MAX_TTS_ATTEMPTS = 3
 
-VALID_STATES = ("AUTO_PROCESSING", "HUMAN_REVIEW_REQUIRED", "HUMAN_APPROVED",
+# ============================================================
+# ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25 Part B: 内訳の固定
+# ============================================================
+# ユーザー正式決定(2026-09-04): 「標準経路+fallback経路合計でmax_attempts
+# 回」という設計(Part B、上記)は、標準経路のループが早期returnせずに
+# 最後まで回ると`len(attempts_log) == max_attempts`になるため、
+# fallback側の残り予算(`max_attempts - len(attempts_log)`)が構造的に
+# 常に0になり、minimal instruction fallbackが実質的に発火しない不具合を
+# 生んでいた(日本語側で2件の実Production incidentを確認、OPEN-103の
+# 英語Key Phrase側と同根)。内訳を明示的に固定し、標準経路には
+# PRODUCTION_STANDARD_TTS_ATTEMPTS回しか予算を与えないことで、必ず
+# PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS回分がfallbackへ残るようにする。
+# この2定数は「標準経路のみ・fallback経路を持たない」既存の呼び出し
+# (generate_narration_snippet_verified_strictの直接呼び出し等)には
+# 影響しない — 対象は標準+fallbackの2段構成を持つ関数
+# (generate_charon_japanese/generate_a2_japanese_with_fallback/
+# generate_english_segment_with_fallback)のみ。
+# Key Phrase英語Component専用の4回構成(KEY_PHRASE_MINIMAL_MAX_ATTEMPTS+
+# KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS、er003_v1_repro01_main_generate.py)
+# はこの定数を参照しない、既存の独立した正式仕様のまま(勝手に変更しない)。
+PRODUCTION_STANDARD_TTS_ATTEMPTS = 2
+PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS = 1
+assert PRODUCTION_STANDARD_TTS_ATTEMPTS + PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS == PRODUCTION_MAX_TTS_ATTEMPTS
+
+VALID_STATES =("AUTO_PROCESSING", "HUMAN_REVIEW_REQUIRED", "HUMAN_APPROVED",
                 "REGENERATE_APPROVED", "RESOLVED")
 
 # Part E: 追記型(append-only)attempt history。既存のtts_generation_
