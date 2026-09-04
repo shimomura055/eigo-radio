@@ -517,7 +517,18 @@ def load_a2_sources(theme: dict) -> dict:
     for item in kp_items:
         rank = item["rank"]
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_en.wav")
-        key_phrase_components[rank] = p9a.p7c.tight_speech_only(mono, sr)
+        # ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23:
+        # generation-time KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS(0.30秒、
+        # er003_v1_repro01_main_generate.py)で確保した終端marginを、
+        # ここでtight_speech_only()により再cropしていたため、No.18 A2
+        # kp5「be powered off」の語末/f/がmargin無しの状態でAssembleに
+        # 渡っていた(Trial-15で発見、ユーザー試聴・承認済み)。B1側は
+        # ER-008-N7-BASELINE-RESET-AND-MIDDLE-DEFER-01で既にこの再crop
+        # を行わない仕様(上のload_b1_sources()参照)であり、この変更で
+        # A2もB1と同じ「generation-time marginをそのままAssembleへ渡す」
+        # 仕様に揃う。tight_speech_only()の関数定義自体
+        # (er003_b1_p7c_audio.py)は他script参照があるため削除しない。
+        key_phrase_components[rank] = mono
 
     a2_segments = {}
     for name in ("comment_1", "comment_2", "comment_3", "comment_4", "full_story_part1", "full_story_part2",

@@ -26,6 +26,23 @@ import er006_master_audio_store_01 as store
 TTS_MODEL_EN = "gemini-2.5-pro-preview-tts"
 TTS_MODEL_JA = "gemini-3.1-flash-tts-preview"
 
+# ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23:
+# Key Phrase英語ComponentのMasterAudioKeyにtrim policyのversionを含める。
+# MasterAudioKey.EQUALITY_FIELDS(er006_master_audio_store_01.py)は
+# 生成時に使ったsafety marginそのものを識別子に含まないため、
+# repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDSを0.20→0.30秒へ変更
+# した後も、0.20秒時代に生成済みのMaster資産(2026-08-17〜09-02に
+# 生成された99件、いずれもaudio_processing_version="v1")が同一
+# style_instruction_id/version・同一テキストの新規リクエストに対して
+# そのままcache hitしてしまい、「現行仕様は0.30秒」という前提が
+# 静かに破られる恐れがあった(実際に全99件がこの状態だったことを本
+# タスクで確認)。style_instruction_versionへtrim policyのversionを
+# 含めることで、旧margin時代の資産とは異なるmaster_audio_idになり、
+# 自然にcache missとなって現行margin(0.30秒)で再生成される。
+# KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDSを今後変更する場合は、この
+# versionも必ず更新すること(さもないと同じ問題が再発する)。
+KEY_PHRASE_TRIM_POLICY_VERSION = "v2_margin030"
+
 # er003_v1_sing01_voice01_generate.py::jobs_english および
 # er003_v1_repro01_main_generate.py::SERVICE_LEVEL_NARRATION_NAMESの
 # コメントと完全一致させる(内容は無変更、既存確定文言をそのまま使う)。
@@ -85,7 +102,8 @@ def ensure_key_phrase_english_component(used_form_tts_safe: str, out_path: str) 
     key = store.MasterAudioKey(
         language="en", speaker_voice="Aoede", tts_model_id=TTS_MODEL_EN,
         canonical_text=used_form_tts_safe, level=None,
-        style_instruction_id="key_phrase_english_component", style_instruction_version="v1",
+        style_instruction_id="key_phrase_english_component",
+        style_instruction_version=KEY_PHRASE_TRIM_POLICY_VERSION,
     )
     return store.get_or_generate(
         key, out_path,
