@@ -4926,6 +4926,33 @@ D節の`ProductionValidatorIntegrationAfterHyphenFixTests`により、修正後�
 - Production code変更は`tts_safe_number_words_en()`の正規表現1箇所のみ(ユーザー承認範囲内)。OPEN-103/OPEN-104に対する追加のコード変更・Prompt変更・原因調査は一切行っていない。
 - CURRENT_SPEC.mdは変更していない(`tts_safe_number_words_en()`の仕様[綴りの小さな数を算用数字へ変換]自体は変わっておらず、実装バグの修正のみのため新規spec化は不要と判断)。
 
+## OPEN-112-A-FAMILY-4LAYER-PROMPT-DESIGN-TRIAL-05(2026-09-04、A Family Writer Promptの4層分離設計・No.18 Article-only Trial、VALIDATED)
+
+前task(OPEN-112-A-FAMILY-COMMON-DESIGN-AND-NO18-BOUNDARY-AUDIT-04)で作成した「Common Writing Contract / A Family Common Skeleton / Discovery-Why Focus Module / Article-specific Inputs」の4層設計を、実際のPrompt文言として組み立て、No.18のArticle-only Trial(A2・B1各1回)で動作検証することを、ユーザーが明示的に承認した。承認範囲はPrompt文言の具体的設計とTrial実施・評価までであり、Production採用・CURRENT_SPEC登録・News/Trend実装・Hookの独立slot化はいずれも今回のスコープ外(ユーザー承認内容に明記)。
+
+### A. 設計方針(リスク最小化)
+
+Layer1(Common Writing Contract)・Layer2(A Family Common Skeleton)に該当する既存文言は、`er003_v1_n3_01_articles_generate.COMMON_BLOCK_TEMPLATE`をそのままインポートして再利用し、一切書き写さなかった。新規追加はLayer3(Discovery/Why Focus Module、今回初めて明文化)の1ブロックのみとし、既存テンプレート中の1箇所(「【Spoken-first原則(数字の扱い)】」の直前)へ機械的に挿入した。Phase Aでdifflibにより、候補PromptがA2・B1いずれもbaseline(No.18 21R実行時の実`prompt.txt`)に対して「挿入1箇所のみ・削除0・置換0」であることを機械的に確認した(`baseline_prompt.replace(ANCHOR, block, 1) == candidate_prompt`による厳密な再構成一致テスト)。
+
+### B. Phase B: No.18 Article-only Trial(実Production関数`gen.run_one_pattern()`を無変更のまま呼び出し)
+
+Trial専用スクリプト`er011_open112_a_family_4layer_prompt_trial_05.py`を新規作成。既存の`er003_v1_n3_01_articles_generate.py`を含むProduction側ファイルは一切変更していない。出力先は新規Trial専用ディレクトリ(`er011_output/open112_a_family_4layer_prompt_trial_05/`)。
+
+A2・B1とも`status=OK`まで到達。両レベルともDiagnostic Full Retry(記事全体再生成)が1回発生した(A2: Point Value QA NGでPoint Twoが「Full Storyの言い換え」と判定→再生成で解消。B1: Point Overlap QA lexical NGで再生成→解消)。B1は追加でLedger Deviation Checkerが1件のMAJOR(「Clear response windows could ease it.」というLedgerにない対策効果の主張)を検出し、既存のLocal Rewrite機構で解消した(2回目の書き換えでLEDGER_COMPLIANT)。
+
+最終的にA2・B1とも`ledger_status=LEDGER_COMPLIANT`、Fact Checkerは両方`verdict=REVIEW_REQUIRED`(2026-09-01付ユーザー正式Decisionによりnon-blocking advisory、`FAIL`ではない)、Directional Fact Precheckは A2=`PASS`、B1=`DIRECTION_REVIEW_REQUIRED`(方向表現が片側にのみ存在する既知の非決定的パターンで`conflicts`は両件とも空、実際の逆転検知ではない)。使用モデルは両レベルとも`gpt-5.6-luna`(`routing.WRITER_MODEL`と一致、モデル不一致エラーなし)。
+
+### C. Trial固有の観察事項(ブロッキングではないが記録に値する)
+
+1. Fact Checkerの`unsupported_specific_claims`で、A2の「Two layers of distraction」という統合的な解釈フレーミングが「2研究を組み合わせた妥当な仮説だが、2層構造自体を直接検証した研究ではない」と指摘された。これは新設のDiscovery/Why Focus Moduleが「異なる角度をそれぞれ深掘りする」よう促した結果、Writerが統合的な解釈フレームを作った可能性がある。REVIEW_REQUIRED(non-blocking)に留まり、Ledger Deviation CheckerはLEDGER_COMPLIANTと判定しているため、STOPには該当しない。
+2. B1のPoint Two(81語)が長さ許容範囲(25-70語、hard capではない)を超えた。原因はLocal Rewrite機構の既存の限界(NGだった文をLedger準拠の代替文へ差し替える際、Point内の他文との重複を検査しない仕組み)であり、実際に最終文中でF-010(即時返信の必要性)の言及が2回近い形で残った。これは4層設計そのものの欠陥ではなく、既存Production機構(`er010_ledger_local_rewrite_09.py`)の既知の未対応ケースとして報告する(今回のスコープ外のため修正せず)。
+
+### D. Status判定
+
+`VALIDATED`(Production採用を意味しない)。MUST受入条件18項目はすべて満たした(4層責務の明文化、既存重要ルールの移動先確保、意図しない欠落・重複なし、No.18固有情報のLayer1-3への混入なし、物理構造維持、Main Story/Point役割維持、Point間の差別化、Fact Safety3段QA正常動作、Point Overlap/Value QA正常動作、Evidence Compression正常適用、model_id/routing確認、runtime evidence保存、Production無変更、新規Dangling Referenceなし)。SHOULD項目のうち「Prompt文言の不要な重複削減」は今回未着手(次段階の課題として報告)。
+
+Production Writerへの正式配線・CURRENT_SPEC登録・News/Trend実装・Hookの独立slot化はいずれも行っていない。詳細ログは`er011_output/open112_a_family_4layer_prompt_trial_05/`配下(`trial05_summary.json`、`audit/layer_mapping.json`、`audit/diff_{a2,b1b}.txt`、`{a2,b1b}_run01/`)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

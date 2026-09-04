@@ -1,0 +1,121 @@
+ER-006-POOL-PILOT-01 Verified Fact Ledger: Why Is It So Hard to Ignore a Notification?
+(Evidence Pack型Research Layerで生成。新しいFactの追加・削除は行っていない)
+
+注記1: 本Ledgerは、number_classification(ANCHOR/SUPPORTING/DISPENSABLE)および
+exactness_requirement(EXACT_REQUIRED/APPROXIMATE_OK/DIRECTION_ONLY)の個別タグを
+含まない。Spoken-first原則(数字の扱い、A〜E)は編集判断として適用すること。
+
+注記2: 各Factの[source: ...]行には、著者/組織・発表年・掲載誌を明記している。
+記事内で出典に触れる場合は、この行に書かれた情報の範囲内で正確に引用すること
+(書かれていない詳細を一般知識から補わない)。
+
+注記3(2026-09-02追加、OPEN-108/ER-011-NO18-OPEN108-LEDGER-REFINE-AND-OPEN107-ENDING-
+FALLBACK-TRIAL-02): No.18 B1のFact Checker FAIL(2回連続)を受け、本Ledger中の
+Pew Research Center関連記述(F-009, F-011)を実sourceの直接再確認に基づき精密化した。
+F-009は「約40%（約10人に4人）」という丸め表現を、実際の内訳(anxious 42% / lonely 25% /
+upset 24% / at least one of these 56%)に置き換えた。F-011(「依存症ではなく抗いにくい
+習慣」という報告書の位置づけ)は、実際の報告書本文に"addiction"/"habit"の語が一度も
+出現しないことを独立に2回確認したうえで削除した。F-002/F-003/F-005/F-006/F-007には、
+直接測定と著者解釈を混同しないためのwriter_guidance行を追加した。新しいFactの追加は
+行っていない(既存Factの数値精密化・不正確なFactの削除・解釈範囲の明確化のみ)。
+
+=== Source一覧 ===
+
+[SRC-001] The buzz that bugs you: The separate effects of ringing and vibrating alerts on cognitive control — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) DOI:10.1371/journal.pone.0277220 [access_status: FULL_TEXT_ACCESSIBLE]
+[SRC-002] The mere presence of a smartphone reduces basal attentional performance — Jeanette Skowronek, Andreas Seifert, Sven Lindberg (Paderborn University) (2023-06-08) DOI:10.1038/s41598-023-36256-4 [access_status: FULL_TEXT_ACCESSIBLE]
+[SRC-003] How Teens and Parents Navigate Screen Time and Device Distractions — Pew Research Center (Monica Anderson, Jingjing Jiang) (2018-08-22) [access_status: FULL_TEXT_ACCESSIBLE]
+
+=== Fact一覧 ===
+
+[F-001] スマートフォンの通知音が提示された試行では、ニュートラルな対照音が提示された試行より、参加者の反応が遅くなった。参加者は課題中にスマートフォンを見たり触ったりしていなかった。
+  numeric_value: 大学生73人
+  numeric_scope: 研究参加者数
+  causal_strength: 通知音を実験的に操作した条件比較であり、通知音が実験課題上の反応遅延を生じさせたという因果的方向性を支持する。ただし、遅延量の具体的数値は示されていない。
+  scope: 修正版Navon Letter課題における実験条件の比較
+  source: SRC-001/E-001-02 — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) in PLOS ONE (fetched_extraction; behavioral resultsの記述)
+
+[F-002] 通知音が提示された試行では、対照音よりN2事象関連電位の振幅が大きかった。研究では、この結果を、課題処理を続けるために追加の認知制御資源が動員された反応として説明している。
+  causal_strength: 音刺激を操作したEEG実験に基づき、通知音が追加の認知制御反応を引き起こしたという解釈を支持する。ただし、N2の意味づけには著者の解釈が含まれる。
+  ambiguity: 通知音への反応が反復的な連合学習によって形成されたという説明は著者の解釈であり、このEvidenceでは学習過程を直接検証した追加実験は確認できない。
+  writer_guidance(2026-09-02追加、OPEN-108 Ledger精密化): 直接測定されたのは反応時間の遅延とN2振幅の増大のみ。「自動的」「不随意的」という語で注意捕捉を断定しないこと。使う場合は必ず著者の解釈・説明である旨を明記すること。
+  scope: 通知音・対照音に対するEEG反応
+  source: SRC-001/E-001-03 — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) in PLOS ONE (fetched_extraction; EEG results・著者解釈の記述)
+
+[F-003] 研究では、通知音が自動的・非自発的に注意を捕捉し、課題を続けるために追加の認知制御努力を必要とする証拠として、行動結果とEEG結果を解釈している。
+  causal_strength: 行動・EEGの実験結果に基づく著者のメカニズム解釈。通知音が注意・制御資源に影響したことは支持されるが、日常の全通知行動への一般化は限定的。
+  ambiguity: 「人々が気が散ることを選んでいるのではない」という一般化は著者の解釈であり、日常の通知行動を直接測定した結果ではない。
+  writer_guidance(2026-09-02追加、OPEN-108 Ledger精密化): この項目全体が著者による解釈(interpretation)であり、直接測定された行動そのものではない。記事では「研究者らはこう解釈している」という形で書き、測定結果(F-001反応遅延・F-002 N2振幅)と解釈を混同して断定しないこと。
+  scope: SRC-001の実験参加者と実験課題
+  source: SRC-001/E-001-04 — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) in PLOS ONE (fetched_extraction; authors' interpretationの記述)
+
+[F-004] 通知音の認知制御への影響を調べた実験では、大学生73人が960試行・16ブロックの修正版Navon Letter課題を行った。
+  numeric_value: 大学生73人、960試行、16ブロック
+  numeric_scope: 参加者数・実験課題全体
+  causal_strength: 実験方法の記述。
+  scope: SRC-001の実験全体
+  source: SRC-001/E-001-01 — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) in PLOS ONE (fetched_extraction; 実験方法・参加者・刺激条件の記述)
+
+[F-005] スマートフォンが机上にある条件では、別室に置いて不在にした条件より注意成績の平均値が低かった。机上にある条件は99.71、不在条件は108.95だった。
+  numeric_value: 99.71 vs 108.95
+  numeric_scope: スマートフォン机上あり vs 別室で不在の注意成績平均値
+  causal_strength: スマートフォンの存在・不在を参加者内で操作した実験結果であり、端末の存在が注意成績を低下させたという因果的方向性を支持する。効果量や検定統計量は示されていない。
+  writer_guidance(2026-09-02追加、OPEN-108 Ledger精密化): この実験は「通知音が鳴る前」や「通知を予期する心理」を測定していない。両条件とも通知を受信せず(F-007参照)、電源オフの端末が机上にあるか別室にあるかだけを比較している。「音が鳴る前のコスト」のような予期的プロセスを示唆する表現をしないこと。
+  scope: d2-R注意テストにおける参加者内条件比較
+  source: SRC-002/E-002-02 — Jeanette Skowronek, Andreas Seifert, Sven Lindberg (Paderborn University) (2023-06-08) in Scientific Reports (Nature Portfolio), Vol. 13, Article 9363 (fetched_extraction; attention performance・processing speed・accuracy resultsの記述)
+
+[F-006] スマートフォンが机上にある条件では、別室に置いて不在にした条件より処理速度も低かった。机上にある条件は98.48、不在条件は108.57だった。
+  numeric_value: 98.48 vs 108.57
+  numeric_scope: スマートフォン机上あり vs 別室で不在の処理速度平均値
+  causal_strength: 端末の存在・不在を実験的に比較した結果であり、端末の存在が処理速度を低下させたという因果的方向性を支持する。
+  writer_guidance(2026-09-02追加、OPEN-108 Ledger精密化): F-005と同じく、予期的プロセス(音が鳴る前・通知を待つ心理など)を示唆する表現をしないこと。
+  scope: d2-R注意テストにおける参加者内条件比較
+  source: SRC-002/E-002-02 — Jeanette Skowronek, Andreas Seifert, Sven Lindberg (Paderborn University) (2023-06-08) in Scientific Reports (Nature Portfolio), Vol. 13, Article 9363 (fetched_extraction; attention performance・processing speed・accuracy resultsの記述)
+
+[F-007] スマートフォンの物理的存在による注意成績の差は、通知音や画面表示がなくても観察された。研究では、両条件で通知を受信せず、スマートフォンは電源オフだった。
+  numeric_value: 42人
+  numeric_scope: 研究参加者数
+  causal_strength: 通知を排除した条件で端末の存在を操作しているため、実際の通知とは区別された端末の存在の影響について因果的証拠を提供する。ただし、通知への反応そのものは測定していない。
+  ambiguity: 注意容量の一部が「万一に備えて」端末に向けられるという説明は、著者が提示した妥当な可能性のあるメカニズムであり、直接検証されたとは限らない。
+  writer_guidance(2026-09-02追加、OPEN-108 Ledger精密化): 「通知を受信していない」ことがこの実験の核心条件。記事で「音が鳴る前」「通知の予期」といった、通知の到来を前提にした表現をこの実験結果に結びつけないこと。
+  scope: 20～34歳の大学生42人による実験
+  source: SRC-002/E-002-03 — Jeanette Skowronek, Andreas Seifert, Sven Lindberg (Paderborn University) (2023-06-08) in Scientific Reports (Nature Portfolio), Vol. 13, Article 9363 (fetched_extraction; no-notification condition・authors' conclusionの記述)
+
+[F-008] 米国の13～17歳の10代を対象とした全国代表調査では、72%が、朝起きて他のことをあまりする前にメッセージや通知を確認することが「よくある」または「時々ある」と回答した。
+  numeric_value: 72%
+  numeric_scope: 朝起きてすぐにメッセージまたは通知を確認することがよくある／時々あると答えた10代
+  causal_strength: 調査回答に基づく記述的割合であり、通知の存在が確認行動を因果的に生じさせたことは示さない。
+  scope: 米国の13～17歳の10代743人を対象とした全国代表調査
+  source: SRC-003/E-003-02 — Pew Research Center (Monica Anderson, Jingjing Jiang) (2018-08-22) in Pew Research Center report (fetched_extraction; 72% morning-checking statistic)
+
+[F-009] 同じ調査では、携帯電話を手元に持っていないとき、10代の42%が不安を、25%が孤独を、24%が動揺を感じると回答した。これら3つの感情のうち少なくとも1つを回答した10代は56%だった。
+  numeric_value: 不安42% / 孤独25% / 動揺24% / いずれか1つ以上56%
+  numeric_scope: 携帯電話が手元にないときに感じる感情の種類別割合、および3感情のいずれか1つ以上を感じた割合
+  causal_strength: 自己申告調査による感情状態の記述であり、携帯電話の不在が感情を引き起こしたという因果関係は確定できない。
+  ambiguity: 42%/25%/24%は排他的なカテゴリではない(1人が複数の感情に回答している可能性がある)。3つの単純合計(91%)と「少なくとも1つ」の56%は異なる数値であり、混同しないこと。
+  writer_guidance(2026-09-02修正、OPEN-108 Ledger精密化): 旧版のLedgerは3感情を「約40%（約10人に4人）」と一つに丸めていたが、これは不正確(Pew公式報告の一次数値を2026-09-02に再確認: anxious 42%/lonely 25%/upset 24%/at least one of these 56%)。個別の感情に触れる場合は該当する単一の数値を使い、3感情をまとめて表現する場合は「約4割」ではなく56%を使うこと。
+  scope: 米国の13～17歳の10代743人を対象とした全国代表調査
+  source: SRC-003/E-003-03 — Pew Research Center, "How Teens and Parents Navigate Screen Time and Device Distractions" (Monica Anderson, Jingjing Jiang) (2018-08-22) (re-verified 2026-09-02 via direct fetch of pewresearch.org report page; 42% anxious / 25% lonely / 24% upset / 56% at least one of these)
+
+[F-010] 調査では、10代の多数派が、テキスト、ソーシャルメディアのメッセージ、その他の通知にすぐ返答する必要を感じると報告した。
+  numeric_scope: 10代の多数派
+  causal_strength: 調査で報告された認識・態度の記述であり、即時応答の必要感が通知設計や社会的要因のどれによって生じたかは示さない。
+  ambiguity: 「多数派」「多くの」の具体的割合は提示されたEvidenceに記載されていない。
+  scope: 米国の10代および10代の保護者に関するPew Research Center調査
+  source: SRC-003/E-003-04 — Pew Research Center (Monica Anderson, Jingjing Jiang) (2018-08-22) in Pew Research Center report (fetched_extraction; immediate-response・daily-frictionの記述)
+
+[F-011] ※2026-09-02、OPEN-108 Ledger精密化に伴い削除。
+  削除理由: 旧版は「Pew Research Centerの報告書は、ほとんどの10代が自分のスマートフォン利用を
+  『依存症』とは考えていない一方で、通知確認を習慣化し、抵抗しにくい日常的行動として位置づけて
+  いる」としていたが、実際のPew報告書本文(2018-08-22, "How Teens and Parents Navigate Screen
+  Time and Device Distractions")を2026-09-02に独立して2回再確認したところ、"addiction"
+  "addict" "habit" "habitual" のいずれの語も報告書中に一度も出現しないことが確認された。
+  これはResearch Layerの抽出段階(E-003-05)で生じた不正確な言い換え・非事実であり、単なる
+  「PASSさせるための削除」ではなく、一次資料との不一致を独立検証した結果としての削除である。
+  writer_guidance: 「依存症」「habit」「hard-to-resist」等の語をPew調査の枠組みとして記事内で
+  使わないこと。Pew由来で使えるのはF-008(72%朝の確認)、F-009(42%/25%/24%/56%の感情)、
+  F-010(即時返信の必要感、多数派)のみ。
+
+[F-012] 通知音による認知制御への影響を調べた研究は2022年11月17日にPLOS ONEで公表され、スマートフォンの物理的存在による注意成績への影響を調べた研究は2023年6月8日にScientific Reportsで公表された。
+  causal_strength: 出版メタデータの直接的記載。
+  scope: SRC-001およびSRC-002の出版メタデータ
+  source: SRC-001/E-001-05 — Joshua D. Upshaw, Carl E. Stevens Jr., Giorgio Ganis, Darya L. Zabelina (2022-11-17) in PLOS ONE (source metadata; title/authors/publication_date/journal/DOI)

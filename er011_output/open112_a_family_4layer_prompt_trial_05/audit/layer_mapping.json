@@ -1,0 +1,87 @@
+[
+  {
+    "segment": "マスター記事(阪神)によるスタイル参照導入文",
+    "layer": "1_common_writing_contract",
+    "reason": "全theme共通(hanshin/health/household/No.18)で同一文言が使われる、記事の書き方全体の参照指示"
+  },
+  {
+    "segment": "Storytelling First",
+    "layer": "1_common_writing_contract",
+    "reason": "ER-010-NO9-STORYTELLING-NOJARGON-PRODUCTION-WIRING-06でPRODUCTION_WIRED、Type非依存"
+  },
+  {
+    "segment": "No Jargon",
+    "layer": "1_common_writing_contract",
+    "reason": "同上。learner-facing本文全体が対象で、記事タイプに依存しない"
+  },
+  {
+    "segment": "Evidence-bounded Interpretation",
+    "layer": "1_common_writing_contract",
+    "reason": "ER-010-NO9-PRODUCTION-INTEGRATION-FINAL-09でPRODUCTION_WIRED、Type非依存"
+  },
+  {
+    "segment": "記事構成(Title/Main Story/###x2/In One Line、物理slot数)",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "Main Story/Point One/Point Two/In One Lineという4slotの物理構造そのもの。現行実装では全theme共通で適用されているが、概念上はA Family(Discovery+News/Trend)の骨格を定義するものであり、Skeleton層として扱う。Hookは独立slotとして存在しない(既知のギャップ、OPEN-112-04で報告済み。今回も独立slot化しない)"
+  },
+  {
+    "segment": "Formatting requirements(emoji・装飾bold禁止)",
+    "layer": "1_common_writing_contract",
+    "reason": "ER-010-NO9-FORMAT-PRODUCTION-AND-FACT-REVIEW-11でPRODUCTION_WIRED、記事構造に依存しない出力規則"
+  },
+  {
+    "segment": "Main Storyの役割(中心ストーリーの核心のみ、背景/補助数値/別角度解釈/deeper implicationsを入れない)",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "Main StoryというSkeleton slotの役割定義そのもの"
+  },
+  {
+    "segment": "Point One/Point Twoの役割(Point Balance原則、切り口/示唆/背景/心理/社会的含意等のリスト)",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "Point One/Two slotの役割定義。News/Trendでも同じ選択肢リストが転用可能(OPEN-112-04 10節で確認済み)"
+  },
+  {
+    "segment": "言い換えによる重複禁止 + 生成手順(推奨)",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "Main StoryとPointの意味的重複を禁止する、Skeleton構造上の制約(ER-008-N8-FINAL-CLOSEOUT-24)"
+  },
+  {
+    "segment": "Pointが実際に新しい価値を持つこと",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01で発見されたが、topic/ledger非依存の汎用ルールとして全theme共通で配線済み(コード確認済み、No.18固有語のhardcodeなし)"
+  },
+  {
+    "segment": "Point One/Twoの長さ目標(30-60/25-70語)、記事全体の長さ(280-420語)",
+    "layer": "2_a_family_common_skeleton",
+    "reason": "Skeleton各slotの分量ガイドライン"
+  },
+  {
+    "segment": "[NEW] Discovery/Why Focus Module",
+    "layer": "3_discovery_why_focus_module",
+    "reason": "現行Productionには存在しない新規ブロック。Discovery性は現在、Topic文面・Verified Fact Ledger・Point Role Planningの生成結果を通じて暗黙的にのみ発生しており、明文化されたprompt文言が存在しない。今回のTrialで初めて明文化し、既存の暗黙的挙動を壊さず補強できるかを検証する"
+  },
+  {
+    "segment": "Spoken-first原則(数字の扱い、A-G)",
+    "layer": "1_common_writing_contract",
+    "reason": "記事タイプに依存しない数字表現の編集原則"
+  },
+  {
+    "segment": "今回のFact源について + Fact Ledger使用上の制約",
+    "layer": "4_article_specific_inputs / 1_common_writing_contract",
+    "reason": "制約文言自体はCommon(Type非依存)。verified_ledger_textの中身(F-001〜F-012等)はArticle-specific Input"
+  },
+  {
+    "segment": "CEFR難易度指示(A2_KAI1_INSTRUCTION / B1_B_DIRECT_INSTRUCTION)",
+    "layer": "1_common_writing_contract",
+    "reason": "Editorial Type軸と直交する別軸(難易度軸)。全themeで共通のA2/B1指示文をそのまま使用"
+  },
+  {
+    "segment": "Point Role Planning block(role/new_listener_takeaway/evidence_anchor/why_it_matters/重複禁止の計画結果)",
+    "layer": "1_common_writing_contract",
+    "reason": "topic/verified_ledger_textを引数に取る汎用モジュール(er011_point_role_value_planning_01.py)。コード確認済み、No.18固有のhardcodeなし"
+  },
+  {
+    "segment": "Topic本文・Title・Verified Fact Ledger本体(F-001〜F-012等の具体的Fact・数値・出典)",
+    "layer": "4_article_specific_inputs",
+    "reason": "No.18固有の入力。Layer1〜3のいずれのコード・テキストにもhardcodeされていないことを確認済み"
+  }
+]
