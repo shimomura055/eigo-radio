@@ -18,6 +18,153 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## OPEN-112-DISCOVERY-4LAYER-FINAL-ADOPTION-READINESS-AND-OPEN114-REGISTER-07: OPEN-114正式登録・Discovery 4層仕様のProduction Adoption Readiness整理
+
+**日付**: 2026-09-05
+**区分**: (1)Implementation Hardening寄りの記録整備(OPEN-114登録自体はコード変更を伴わない)、(2)サービス・生成仕様の採否判断材料整理(Discovery 4層仕様、ただしコード実装は今回行わない)
+
+**内容**:
+News/Trend Synthesis設計へ進む前段として、以下2点を行った。コード変更・
+Production実装・新規Trial・記事再生成・音声生成はいずれも実施していない。
+
+**(1) OPEN-114正式登録**:
+OPEN-113 Trial-02(`er011_open113_local_rewrite_hierarchical_contract_
+trial_02.py`)以降、少なくとも3セッション(Trial-02、Trial-03
+`er011_open113_point_context_only_trial_03.py`、Production Wiring-04
+`er011_open113_production_wiring_regression_04.py`)にわたり独立に
+再観測されていた「Ledger Deviation Checkerが、同一または実質未変更の
+記事本文に対する再チェックで、一度MAJORと判定した箇所が再現しない、
+または前回COMPLIANTだった無関係箇所が一時的にMAJORになる」という
+判定揺れを、ユーザー指示により新規`OPEN-114`(Ledger Deviation
+Checker Judgment Variance)として[OPEN_ITEMS.md](OPEN_ITEMS.md)へ
+正式登録した。既存の類似現象OPEN-98(2026-08-31、ユーザー判断で
+`CLOSED/REMOVE`・独立追跡しない既知特性と決定済み)がクローズされた
+後もこの種の揺れが再発し続けているため、今回は独立Open Itemとして
+再追跡する。修正・原因調査は今回いずれも実施していない
+(`DEFERRED / NON-BLOCKING`)。
+
+**(2) Discovery 4層仕様のProduction Adoption Readiness整理**:
+OPEN-112-A-FAMILY-4LAYER-PROMPT-DESIGN-TRIAL-05(`VALIDATED`)・
+OPEN112_NO18_4LAYER_REVIEW_PACK_06.mdの内容を踏まえ、以下を整理した
+(すべてread-only、Prompt文言修正・追加Trial・Production実装は
+一切行っていない)。
+
+- **正式採用候補仕様の確定**: Layer 1(Common Writing Contract)・
+  Layer 2(A Family Common Skeleton、Hook独立slot化なし・物理構造
+  無変更)は既存Production正式仕様の再利用であり新規原則ではないと
+  再確認。今回の採用対象はLayer 3(Discovery/Why Focus Module、
+  `er011_open112_a_family_4layer_prompt_trial_05.py`内
+  `DISCOVERY_FOCUS_MODULE_BLOCK`の文言そのもの、Trial時から無改変)
+  と「責務分離構造」であることを明確化した。
+- **Trial-05の有効性**: Phase Aの機械的再構成一致テスト
+  (`baseline_prompt`のアンカー直前へブロックを1回挿入した文字列と
+  `candidate_prompt`が完全一致、`clean_single_insert_confirmed=true`)
+  により、実際の変更点がDiscovery Focus Moduleブロック1箇所の追加
+  のみであることを再確認した。Trial手続き自体の有効性に影響する
+  問題は見つからなかった。
+- **Title差分の原因確認**: レビュー資料の比較条件表で「変更していない
+  条件」にTitleが含まれていたが、`er011_open112_a_family_4layer_
+  prompt_trial_05.py::run_level()`が`gen.run_one_pattern()`へ渡す
+  引数はTopic(`TOPIC_JA`)とVerified Fact Ledgerのみで、Titleは
+  Main Story/Point One/Point Two/In One Lineと同じく毎回Writerが
+  生成する出力である(記事構成"Title/Main Story/###x2/In One Line"
+  はLayer 2 Skeletonの一部としてWriterへ渡され、固定入力としては
+  一切渡されていないことをコードで確認)。したがってBaseline/Trial
+  間のTitle差分は、Discovery Focus Module追加とは無関係な、独立2回
+  の生成runに伴う通常のWriter出力揺らぎ(本文の他の部分と同種の
+  現象)であり、Trial-05の単一変数実験としての妥当性を損なうもの
+  ではないと判定した。レビュー資料の当該行の「Topic/Title/Verified
+  Fact Ledgerが不変条件」という記述は不正確であり、正しくは
+  「不変条件はTopicとVerified Fact Ledgerのみ、Titleを含む本文全体は
+  Writerが都度生成する出力」である。
+- **解釈強化リスクとFact Safetyの関係**: Trial版でFact Checkerの
+  `REVIEW_REQUIRED`指摘件数がBaseline比で増加した(A2: 0→3件、B1:
+  3→5件)が、いずれもFact Checkerの`FAIL`(blocking)には至らず、
+  Ledger Deviation CheckerもFact逸脱としては1件(No.18 B1の既知
+  ケース、Local RewriteでLEDGER_COMPLIANTへ解消済み、OPEN-113で
+  対応済み)を除き検出していない。整理すると、(A)現行Fact Safetyで
+  blockingされた範囲は0件、(B)non-blocking advisoryとして残る範囲は
+  複数Evidenceを統合した解釈的記述(「2層」「2つの標的」等の
+  フレーミング、対策効果を示唆する一文)、(C)Ledger Deviation
+  Checkerが検出可能な範囲は個別Fact単位の逸脱のみで、複数Factをまたぐ
+  フレーミングの強弱はそもそも検出対象外、(D)この統合的解釈傾向は
+  Discovery/Why Focus Moduleが「なぜ」を掘り下げるよう指示している
+  ことに由来する未解決のリスクであり4層構造固有の性質、(E)現時点で
+  blockingや事実矛盾が発生していないため採用前のPrompt修正が技術的に
+  必須とまでは言えないが、(F)現行Fact Safety(Fact Checker advisory
+  + Ledger Deviation Checker blocking + Directional Fact Precheck)は
+  意図的にFact単位の安全性のみに範囲を絞った設計(OPEN-113 Trial-03の
+  FEASIBLE_BUT_RISKY判定と同じ設計思想)であり、フレーミングの強弱
+  自体を安全に運用できるかどうかは編集判断の問題として現行Fact
+  Safetyの対象外に残る。
+- **Production Wiring対象の特定(未実装)**: `er003_v1_n3_01_articles_
+  generate.py::run_one_pattern()`を読解した結果、Point Overlap/Value
+  QA NG時のDiagnostic Full Retry(`build_diagnostic_retry_prompt()`)
+  は、呼び出し元から渡された`prompt`引数の文字列をそのまま再利用する
+  設計であり、`gen.COMMON_BLOCK_TEMPLATE`から都度再構築する設計では
+  ないことを確認した。したがって、Discovery Focus Moduleの選択・
+  挿入を「初回prompt構築時の1箇所」(`er006_pool_pilot_01_writer.py::
+  run_writer_for_theme()`が`gen.build_common_block()`/`gen.build_
+  prompt()`を呼ぶ箇所に相当)に閉じ込めれば、Diagnostic Full Retryを
+  含む既存retry経路は構造的にModuleを保持し続けることが確認できた
+  (タスクが最も懸念していた「初回のみ入りRetryで欠落する」状態には
+  ならない設計)。一方、Local Rewrite(OPEN-113、文単位の個別修正)は
+  Discovery Moduleとは別系統のPoint context機構を使うため無関係。
+  実装対象になり得る箇所は最小限、`run_writer_for_theme()`と
+  `build_common_block()`/`COMMON_BLOCK_TEMPLATE`の間のみと特定した
+  (今回はコード変更していない)。
+- **editorial_type設計論点**: `er006_pool_pilot_01_writer.py::run_
+  writer_for_theme()`・`er003_v1_n3_01_articles_generate.py`のいずれ
+  にも`editorial_type`引数は現在も存在しない(grep再確認、OPEN-112の
+  既存監査結果と変化なし)。`build_common_block()`が既に
+  `shared_point_blueprint_block`/`evidence_compression`という、既定値
+  (""/False)なら旧来と完全に同一の挙動になるオプション引数パターンを
+  持っていることを確認し、同じパターン(既定""のDiscovery Moduleブロック
+  引数を追加し、editorial_typeに応じて呼び出し元で選択する)であれば、
+  Newsなど未実装のEditorial Typeに対しては既定""(モジュールなし)を
+  渡すだけで済み、存在しないNews Moduleへの参照を作らずに済む設計が
+  可能と判断した(あくまで設計上の見立てであり、今回は実装していない)。
+- **No.18 Trial結果の整理**: A2/B1とも4層Promptで生成可能、QA/Retry/
+  Fact Safety既存経路はいずれも正常に機能、Point役割分離は成立、
+  No.18固有FactのCommon混入なし、新Dangling Referenceなし、APIコスト
+  の重大悪化なし、Hook独立化なし、を再確認した。B1で発生したLocal
+  Rewrite重複はOPEN-113として別処理済み(`PRODUCTION_WIRED`)であり、
+  4層仕様採否の未解決問題としては残っていない。
+
+**Production Adoption Readiness判定**: `USER_DECISION_REQUIRED_WITH_
+RISK`(技術・仕様面では採用可能な状態にあるが、複数Evidenceを統合する
+解釈強化傾向という、ユーザーが明示的に判断すべき具体的trade-offが
+存在するため)。
+
+**Newsへのdangling reference**: 現時点でA Family/editorial_type/module
+selectorのいずれもコードに存在しないため、存在しないNews Focus
+Moduleへの参照は発生していない(確認のみ、実装なし)。
+
+**状態**: `USER_DECISION_RECORDED`(OPEN-114登録)/
+`USER_DECISION_REQUIRED_WITH_RISK`(Discovery 4層仕様、
+`APPROVED_FOR_PRODUCTION`・`PRODUCTION_WIRED`への変更は行っていない)
+**採用理由**: OPEN-114は、OPEN-98クローズ後も独立に複数回再現している
+既知特性をユーザー指示により追跡対象へ戻すもの。Discovery 4層仕様の
+Readiness判定は、Trial-05の`VALIDATED`という手続き上の結論と、解釈
+強化傾向という内容面のtrade-offを分離した上で、後者について
+ユーザー自身の採否判断を仰ぐ必要があると判断したもの。
+**比較した選択肢**: (Readiness区分について)A. READY_FOR_USER_
+PRODUCTION_DECISION(trade-offなしと扱う)は、Fact Checker
+REVIEW_REQUIRED増加という実測差分を無視することになるため不採用。
+C. NOT_READY(追加Trial必須)は、今回のTrial-05自体が技術的検証としては
+十分な結果を示しており、不足しているのはさらなるTrial結果ではなく
+ユーザー自身の編集判断であるため不採用。
+**根拠レポート**: 本エントリ、`OPEN112_NO18_4LAYER_REVIEW_PACK_06.md`
+(Trial-05内容比較)、`er011_open112_a_family_4layer_prompt_trial_05.py`
+(Phase A/Bコード)、`er003_v1_n3_01_articles_generate.py`(Diagnostic
+Full Retry・build_common_block確認)、`er006_pool_pilot_01_writer.py`
+(editorial_type不在確認)。
+**commit**: (本タスクはOPEN_ITEMS.md・DECISION_LOG.md更新のみ。コード
+変更なし)
+**影響するCURRENT_SPEC項目**: なし(今回CURRENT_SPEC.mdは変更していない)。
+
+---
+
 ## OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-AND-NO18-B1-REGEN-04: Point-context-only方式のProduction配線・No.18 B1再生成
 
 **日付**: 2026-09-05
