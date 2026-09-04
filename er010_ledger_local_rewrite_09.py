@@ -65,6 +65,34 @@ def locate_target_sentence(claim_in_article: str, article_text: str):
     return None, "not_found"
 
 
+# OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04: OPEN-113 Trial-03
+# (er011_open113_point_context_only_trial_03.py)でVALIDATEDとなった
+# 「対象文が属するPoint全体をRewriteモデルのcontextとして渡す」方式の
+# Production実装。見出し(#で始まる行)ごとに記事をsectionへ区切る単純な
+# 実装で、Point One/Twoに限定しない(Main Story/In One Line等、既存Local
+# Rewrite適用範囲内のどのsectionでも同一ロジックで扱える汎用実装とし、
+# 対象を勝手に拡張しない)。Trial-01のextract_section()と同一ロジックを
+# Production側へ直接移植したもので、Trial専用モジュールへの依存は持たない。
+def extract_point_context(article_text: str, target_sentence: str):
+    """target_sentenceが属する見出し区切りsection全文を返す。見つからない
+    場合はNone(呼び出し側でbefore/after contextへのfallbackを想定する)。"""
+    lines = article_text.splitlines()
+    sections, current = [], []
+    for line in lines:
+        if line.startswith("#"):
+            if current:
+                sections.append("\n".join(current).strip())
+            current = [line]
+        else:
+            current.append(line)
+    if current:
+        sections.append("\n".join(current).strip())
+    for sec in sections:
+        if target_sentence in sec:
+            return sec
+    return None
+
+
 REWRITE_SYSTEM_PROMPT = """You are a professional Writer fixing a fact deviation flagged by a \
 Ledger Deviation Checker, for a local, minimal rewrite (not a full regeneration).
 
@@ -83,49 +111,46 @@ bold (**...**) formatting. Keep formatting clean and plain.
 
 Return ONLY the revised sentence(s), nothing else — no explanation, no quotation marks around it."""
 
-REWRITE_ATTEMPT1_TEMPLATE = """[Verified Fact Ledger]
-{ledger_text}
+# OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04: 上記REWRITE_SYSTEM_PROMPT・
+# 各attemptの指示文(下記テンプレート内の英文)は一字一句変更しない。追加
+# するのは、対象文が属するPoint(またはsection)全文を「参考情報のみ」として
+# 提示する1ブロックのみで、新しいRuleは追加しない(Trial-03で検証済みの
+# POINT_CONTEXT_BLOCKをそのまま使用)。
+POINT_CONTEXT_BLOCK = """[The full Point this sentence belongs to — shown for reference only]
+{point_context}
 
-[Sentence flagged as a Ledger deviation]
-{ng_sentence}
+"""
 
-[Checker's issue]
-{issue}
+REWRITE_ATTEMPT1_TEMPLATE = (
+    "[Verified Fact Ledger]\n{ledger_text}\n\n"
+    + POINT_CONTEXT_BLOCK
+    + "[Sentence flagged as a Ledger deviation]\n{ng_sentence}\n\n"
+      "[Checker's issue]\n{issue}\n\n"
+      "Rewrite this sentence following the rules above. Return only the revised sentence."
+)
 
-Rewrite this sentence following the rules above. Return only the revised sentence."""
+REWRITE_ATTEMPT2_TEMPLATE = (
+    "[Verified Fact Ledger]\n{ledger_text}\n\n"
+    + POINT_CONTEXT_BLOCK
+    + "[Sentence still flagged after a first rewrite attempt]\n{ng_sentence}\n\n"
+      "[Checker's issue]\n{issue}\n\n"
+      "[Checker's explanation]\n{explanation}\n\n"
+      "[Flags the checker marked true]\n{flags}\n\n"
+      "Your previous rewrite still did not resolve this deviation. Rewrite it again, paying specific "
+      "attention to the flags above. Return only the revised sentence."
+)
 
-REWRITE_ATTEMPT2_TEMPLATE = """[Verified Fact Ledger]
-{ledger_text}
-
-[Sentence still flagged after a first rewrite attempt]
-{ng_sentence}
-
-[Checker's issue]
-{issue}
-
-[Checker's explanation]
-{explanation}
-
-[Flags the checker marked true]
-{flags}
-
-Your previous rewrite still did not resolve this deviation. Rewrite it again, paying specific \
-attention to the flags above. Return only the revised sentence."""
-
-REWRITE_ATTEMPT3_TEMPLATE = """[Verified Fact Ledger]
-{ledger_text}
-
-[Sentence still flagged after two rewrite attempts]
-{ng_sentence}
-
-[Checker's issue]
-{issue}
-
-This is the final attempt: use a Scope-safe fallback. Make the evidence's scope naturally explicit \
-in the sentence (choose whichever fits the sentence naturally, do not just mechanically prepend a \
-fixed phrase): "In this study...", "Among these passengers...", "In these taxi rides...", "The \
-study suggests...", "In this case...", or similar. Keep as much of the original meaning and \
-interest as possible. Return only the revised sentence."""
+REWRITE_ATTEMPT3_TEMPLATE = (
+    "[Verified Fact Ledger]\n{ledger_text}\n\n"
+    + POINT_CONTEXT_BLOCK
+    + "[Sentence still flagged after two rewrite attempts]\n{ng_sentence}\n\n"
+      "[Checker's issue]\n{issue}\n\n"
+      "This is the final attempt: use a Scope-safe fallback. Make the evidence's scope naturally "
+      "explicit in the sentence (choose whichever fits the sentence naturally, do not just "
+      "mechanically prepend a fixed phrase): \"In this study...\", \"Among these passengers...\", "
+      "\"In these taxi rides...\", \"The study suggests...\", \"In this case...\", or similar. Keep as "
+      "much of the original meaning and interest as possible. Return only the revised sentence."
+)
 
 
 def generate_rewrite(client, model: str, reasoning_effort: str, prompt: str) -> str:
@@ -141,18 +166,25 @@ def generate_rewrite(client, model: str, reasoning_effort: str, prompt: str) -> 
 
 
 def rewrite_ng_item(client, model: str, reasoning_effort: str, verified_ledger_text: str,
-                     ng_sentence: str, deviation: dict, before_ctx: str, after_ctx: str,
-                     run_check_window_fn) -> dict:
+                     point_context: str, ng_sentence: str, deviation: dict, before_ctx: str,
+                     after_ctx: str, run_check_window_fn) -> dict:
     """run_check_window_fn(window_text: str) -> dictで、少なくとも
     'overall_status'キー('LEDGER_COMPLIANT'/'LEDGER_DEVIATION')を返す
     呼び出し可能オブジェクトを渡す(呼び出し元がHook-aware判定を使うか
-    どうかを制御できるよう、判定ロジック自体はこの関数に埋め込まない)。"""
+    どうかを制御できるよう、判定ロジック自体はこの関数に埋め込まない)。
+
+    point_context: 対象文が属するPoint(またはsection)全文。
+    extract_point_context()で取得する(OPEN-113-POINT-CONTEXT-PRODUCTION-
+    WIRING-04)。見つからない場合、呼び出し側でbefore_ctx+ng_sentence+
+    after_ctx等へのfallback文字列を渡すことを想定し、この関数自身は
+    contextの取得方法に関与しない。"""
     flags_true = [k for k in vfl01.DEVIATION_FLAG_KEYS if deviation.get(k)]
     attempts = []
     accepted_text, accepted, human_review = None, False, False
 
     prompt1 = REWRITE_ATTEMPT1_TEMPLATE.format(
-        ledger_text=verified_ledger_text, ng_sentence=ng_sentence, issue=deviation["issue"])
+        ledger_text=verified_ledger_text, point_context=point_context, ng_sentence=ng_sentence,
+        issue=deviation["issue"])
     text1 = generate_rewrite(client, model, reasoning_effort, prompt1)
     check1 = run_check_window_fn(f"{before_ctx} {text1} {after_ctx}".strip())
     attempts.append({"attempt": 1, "text": text1, "ledger_status": check1["overall_status"]})
@@ -160,8 +192,9 @@ def rewrite_ng_item(client, model: str, reasoning_effort: str, verified_ledger_t
         accepted_text, accepted = text1, True
     else:
         prompt2 = REWRITE_ATTEMPT2_TEMPLATE.format(
-            ledger_text=verified_ledger_text, ng_sentence=text1, issue=deviation["issue"],
-            explanation=deviation["explanation"], flags=", ".join(flags_true) or "(none)")
+            ledger_text=verified_ledger_text, point_context=point_context, ng_sentence=text1,
+            issue=deviation["issue"], explanation=deviation["explanation"],
+            flags=", ".join(flags_true) or "(none)")
         text2 = generate_rewrite(client, model, reasoning_effort, prompt2)
         check2 = run_check_window_fn(f"{before_ctx} {text2} {after_ctx}".strip())
         attempts.append({"attempt": 2, "text": text2, "ledger_status": check2["overall_status"]})
@@ -169,7 +202,8 @@ def rewrite_ng_item(client, model: str, reasoning_effort: str, verified_ledger_t
             accepted_text, accepted = text2, True
         else:
             prompt3 = REWRITE_ATTEMPT3_TEMPLATE.format(
-                ledger_text=verified_ledger_text, ng_sentence=text2, issue=deviation["issue"])
+                ledger_text=verified_ledger_text, point_context=point_context, ng_sentence=text2,
+                issue=deviation["issue"])
             text3 = generate_rewrite(client, model, reasoning_effort, prompt3)
             check3 = run_check_window_fn(f"{before_ctx} {text3} {after_ctx}".strip())
             attempts.append({"attempt": 3, "text": text3, "ledger_status": check3["overall_status"]})

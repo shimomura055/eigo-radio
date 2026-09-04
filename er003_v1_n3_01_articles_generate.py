@@ -942,12 +942,25 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
                 sidx = -1
             before_ctx = sentences[sidx - 1] if 0 <= sidx - 1 else ""
             after_ctx = sentences[sidx + 1] if 0 <= sidx and sidx + 1 < len(sentences) else ""
+            # OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04(ユーザー正式採用、
+            # OPEN-113 Trial-03でVALIDATED): 対象文が属するPoint(またはsection)
+            # 全文をRewriteモデルへ参考contextとして渡す。既存のbefore/after
+            # context(check windowの範囲)・System Prompt・attempt escalation
+            # 文言・Retry上限・Ledger再チェック方法は一切変更しない。対象文の
+            # 所属section特定に失敗した稀なケースのみ、追加前の挙動(前後1文)へ
+            # fallbackする。
+            point_context = local_rewrite.extract_point_context(article_text, target)
+            point_context_found = point_context is not None
+            if point_context is None:
+                point_context = f"{before_ctx} {target} {after_ctx}".strip()
             r = local_rewrite.rewrite_ng_item(client, ledger_model, REASONING_EFFORT,
-                                               verified_ledger_text, target, deviation,
-                                               before_ctx, after_ctx, _run_check_window)
+                                               verified_ledger_text, point_context, target,
+                                               deviation, before_ctx, after_ctx, _run_check_window)
             r["cycle"] = cycle
             r["item_idx"] = idx
             r["location_method"] = location_method
+            r["point_context_found"] = point_context_found
+            r["point_context"] = point_context
             cycle_results.append(r)
             print(f"[N3-01][{theme_id}] {label}: cycle {cycle} NG item {idx}: resolved={r['resolved']} "
                   f"human_review={r['human_review_required']} attempts={len(r['attempts'])}")

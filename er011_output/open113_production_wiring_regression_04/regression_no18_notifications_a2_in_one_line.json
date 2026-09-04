@@ -1,0 +1,62 @@
+{
+  "fixture_id": "regression_no18_notifications_a2_in_one_line",
+  "label": "No.18 notifications A2「In one line」certainty softening(regression、単純ケース)",
+  "pre_article": "# Your Phone Does Not Need to Ring to Break Your Focus\n\nImagine you are reading, studying, or working.\n\nYour phone is on the desk. You do not touch it. You do not even look at the screen.\n\nThen comes a short notification sound.\n\nYou keep your eyes on your work. But your attention may already have moved.\n\nA study published in 2022 tested this idea with 73 university students. They completed a simple visual task many times. Some rounds included a phone notification sound. Other rounds included a neutral sound.\n\nThe students did not look at or touch a phone during the task.\n\nEven so, they answered more slowly after hearing the notification sound. A brain-wave signal was also larger. The researchers understood this as a sign that the students needed extra mental effort to keep working.\n\nIn other words, the sound seemed to catch their attention automatically. They did not make a clear decision to stop working. Their minds reacted first.\n\nBut the story does not end with sound.\n\nA second study, published in 2023, looked at a silent phone. Forty-two university students took a concentration test. Their phones were turned off, and no notification arrived.\n\nWhen the phone was on the desk, the average attention score was about 100. When the phone was moved to another room, it rose to about 109.\n\nTheir speed score showed a similar difference: about 98 with the phone on the desk, compared with about 109 when the phone was away.\n\nThe researchers found this lower performance even without a sound or a screen. They suggested that the phone’s presence may leave part of the mind ready for a possible message.\n\n### The habit begins before the first message\n\nThis may help explain why checking a phone can feel difficult to stop. In a 2018 survey, 72% of US teenagers said they often or sometimes checked messages or notifications soon after waking up. About four in ten said they felt worried, upset, or lonely when their phone was not nearby. A majority also felt they should reply quickly to messages.\n\nThese answers describe teenagers’ experiences. They do not prove that phones caused those feelings. But they show how closely phone checking can be tied to daily life.\n\n### A pattern, not a rule for everyone\n\nThe experiments involved university students, while the survey asked US teenagers. So these findings show a pattern in particular groups and conditions. They do not mean that every person loses focus every time a phone makes a sound. They also do not diagnose a medical addiction.\n\n## In one line…\n\nA notification can take a piece of your attention without being opened, and a silent phone may still matter before it rings. “I did not check it” does not always mean “it had no effect.”",
+  "item_results": [
+    {
+      "original_ng_sentence": "“I did not check it” does not always mean “it had no effect.”",
+      "issue": "通知を確認しなかった場合でも効果があり得るという結論自体はLedgerの実験結果に基づくが、「always」を用いて、特定の実験条件・参加者で確認された結果を一般的な判断規則へ広げている。Hookとして扱える一文でも、changed_certaintyは緩和されない。",
+      "explanation": "実験結果を一般的な断定へ拡張する「always」相当の表現。Hookのためchanged_scopeは報告対象外としたが、changed_certaintyは明確に該当する。",
+      "flags": [
+        "changed_certainty"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "text": "“I did not check it” may not mean “it had no effect.”",
+          "ledger_status": "LEDGER_COMPLIANT"
+        }
+      ],
+      "final_text": "“I did not check it” may not mean “it had no effect.”",
+      "resolved": true,
+      "human_review_required": false,
+      "location_method": "exact_substring",
+      "before_ctx": "They also do not diagnose a medical addiction. ## In one line… A notification can take a piece of your attention without being opened, and a silent phone may still matter before it rings.",
+      "after_ctx": "",
+      "point_context_found": true,
+      "point_context": "## In one line…\n\nA notification can take a piece of your attention without being opened, and a silent phone may still matter before it rings. “I did not check it” does not always mean “it had no effect.”"
+    }
+  ],
+  "new_article": "# Your Phone Does Not Need to Ring to Break Your Focus\n\nImagine you are reading, studying, or working.\n\nYour phone is on the desk. You do not touch it. You do not even look at the screen.\n\nThen comes a short notification sound.\n\nYou keep your eyes on your work. But your attention may already have moved.\n\nA study published in 2022 tested this idea with 73 university students. They completed a simple visual task many times. Some rounds included a phone notification sound. Other rounds included a neutral sound.\n\nThe students did not look at or touch a phone during the task.\n\nEven so, they answered more slowly after hearing the notification sound. A brain-wave signal was also larger. The researchers understood this as a sign that the students needed extra mental effort to keep working.\n\nIn other words, the sound seemed to catch their attention automatically. They did not make a clear decision to stop working. Their minds reacted first.\n\nBut the story does not end with sound.\n\nA second study, published in 2023, looked at a silent phone. Forty-two university students took a concentration test. Their phones were turned off, and no notification arrived.\n\nWhen the phone was on the desk, the average attention score was about 100. When the phone was moved to another room, it rose to about 109.\n\nTheir speed score showed a similar difference: about 98 with the phone on the desk, compared with about 109 when the phone was away.\n\nThe researchers found this lower performance even without a sound or a screen. They suggested that the phone’s presence may leave part of the mind ready for a possible message.\n\n### The habit begins before the first message\n\nThis may help explain why checking a phone can feel difficult to stop. In a 2018 survey, 72% of US teenagers said they often or sometimes checked messages or notifications soon after waking up. About four in ten said they felt worried, upset, or lonely when their phone was not nearby. A majority also felt they should reply quickly to messages.\n\nThese answers describe teenagers’ experiences. They do not prove that phones caused those feelings. But they show how closely phone checking can be tied to daily life.\n\n### A pattern, not a rule for everyone\n\nThe experiments involved university students, while the survey asked US teenagers. So these findings show a pattern in particular groups and conditions. They do not mean that every person loses focus every time a phone makes a sound. They also do not diagnose a medical addiction.\n\n## In one line…\n\nA notification can take a piece of your attention without being opened, and a silent phone may still matter before it rings. “I did not check it” may not mean “it had no effect.”",
+  "duplication_notes": [
+    {
+      "final_text": "“I did not check it” may not mean “it had no effect.”",
+      "other_point_sentences_count": 1
+    }
+  ],
+  "full_recheck_overall_status": "LEDGER_DEVIATION",
+  "full_recheck_major_count": 1,
+  "full_recheck_deviations": [
+    {
+      "claim_in_article": "The habit begins before the first message",
+      "issue": "朝起きてすぐ通知やメッセージを確認すること、通知確認が習慣的な行動であることはLedgerにあるが、その習慣が「最初のメッセージより前に始まる」という時間的関係は確認されていない。",
+      "severity": "MAJOR",
+      "changed_fact": true,
+      "changed_scope": false,
+      "changed_causality": false,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": false,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": true,
+      "unsupported_new_claim": true,
+      "explanation": "Ledgerにない具体的な時間関係を追加しているため。注意を引く見出しではあるが、単なる言い換えを超える新しい時間的主張なのでHookとしての緩和対象にはしない。",
+      "treated_as_hook": false,
+      "auto_downgraded": false
+    }
+  ],
+  "api_call_count": 3,
+  "all_point_context_found": true,
+  "elapsed_seconds": 96.1
+}

@@ -156,7 +156,7 @@ class RewriteNgItemTests(unittest.TestCase):
         deviation = {"issue": "certainty強化", "explanation": "one-time finding generalized",
                      "changed_certainty": True}
         result = local_rewrite.rewrite_ng_item(
-            fake_client, "fake-model", "medium", "LEDGER TEXT",
+            fake_client, "fake-model", "medium", "LEDGER TEXT", "POINT CONTEXT TEXT",
             "Tip rates always rise after screens appear.", deviation, "before.", "after.", check_fn)
         self.assertTrue(result["resolved"])
         self.assertFalse(result["human_review_required"])
@@ -173,7 +173,7 @@ class RewriteNgItemTests(unittest.TestCase):
         check_fn = mock.Mock(return_value={"overall_status": "LEDGER_DEVIATION"})
         deviation = {"issue": "certainty強化", "explanation": "explanation", "changed_certainty": True}
         result = local_rewrite.rewrite_ng_item(
-            fake_client, "fake-model", "medium", "LEDGER TEXT",
+            fake_client, "fake-model", "medium", "LEDGER TEXT", "POINT CONTEXT TEXT",
             "Tip rates always rise after screens appear.", deviation, "before.", "after.", check_fn)
         self.assertFalse(result["resolved"])
         self.assertTrue(result["human_review_required"])
@@ -187,12 +187,72 @@ class RewriteNgItemTests(unittest.TestCase):
         check_fn = mock.Mock(return_value={"overall_status": "LEDGER_COMPLIANT"})
         deviation = {"issue": "certainty強化", "explanation": "explanation", "changed_certainty": True}
         local_rewrite.rewrite_ng_item(
-            fake_client, "fake-model", "medium", "LEDGER TEXT",
+            fake_client, "fake-model", "medium", "LEDGER TEXT", "POINT CONTEXT TEXT",
             "Tip rates always rise.", deviation, "before.", "after.", check_fn)
         _, kwargs = fake_client.responses.create.call_args
         self.assertEqual(kwargs["input"][0]["content"], local_rewrite.REWRITE_SYSTEM_PROMPT)
         self.assertIn("Do NOT introduce a new fact", local_rewrite.REWRITE_SYSTEM_PROMPT)
         self.assertIn("Modify ONLY the flagged sentence", local_rewrite.REWRITE_SYSTEM_PROMPT)
+
+    def test_point_context_included_in_user_prompt_without_changing_system_prompt(self):
+        """OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04: point_contextはuser
+        message(prompt)側にのみ現れ、REWRITE_SYSTEM_PROMPT(developer message)
+        は一切変更されないことを保証する回帰テスト。"""
+        fake_client = mock.Mock()
+        fake_client.responses.create.return_value = self._fake_text_response("fixed sentence")
+        check_fn = mock.Mock(return_value={"overall_status": "LEDGER_COMPLIANT"})
+        deviation = {"issue": "certainty強化", "explanation": "explanation", "changed_certainty": True}
+        point_context = "### Some Point Heading\n\nA majority felt a need to reply quickly."
+        local_rewrite.rewrite_ng_item(
+            fake_client, "fake-model", "medium", "LEDGER TEXT", point_context,
+            "Tip rates always rise.", deviation, "before.", "after.", check_fn)
+        _, kwargs = fake_client.responses.create.call_args
+        self.assertEqual(kwargs["input"][0]["content"], local_rewrite.REWRITE_SYSTEM_PROMPT)
+        user_msg = kwargs["input"][1]["content"]
+        self.assertIn(point_context, user_msg)
+        self.assertIn("shown for reference only", user_msg)
+
+
+class ExtractPointContextTests(unittest.TestCase):
+    """OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04: 見出し区切りsection特定
+    ロジック(Main Story/Point One/Point Two/In One Lineを見出しレベルを
+    問わず同一ロジックで扱う)の回帰テスト。"""
+
+    ARTICLE = (
+        "# Title Here\n\n"
+        "Intro paragraph one. Intro paragraph two.\n\n"
+        "### Point One Heading\n\n"
+        "Point one sentence A. Point one sentence B.\n\n"
+        "### Point Two Heading\n\n"
+        "Point two sentence A. Point two sentence B.\n\n"
+        "## In one line...\n\n"
+        "Closing line here."
+    )
+
+    def test_finds_point_one_section(self):
+        ctx = local_rewrite.extract_point_context(self.ARTICLE, "Point one sentence B.")
+        self.assertIn("Point One Heading", ctx)
+        self.assertIn("Point one sentence A.", ctx)
+        self.assertIn("Point one sentence B.", ctx)
+        self.assertNotIn("Point two sentence A.", ctx)
+
+    def test_finds_point_two_section(self):
+        ctx = local_rewrite.extract_point_context(self.ARTICLE, "Point two sentence A.")
+        self.assertIn("Point Two Heading", ctx)
+        self.assertNotIn("Point one sentence A.", ctx)
+
+    def test_finds_main_story_section(self):
+        ctx = local_rewrite.extract_point_context(self.ARTICLE, "Intro paragraph two.")
+        self.assertIn("Title Here", ctx)
+        self.assertIn("Intro paragraph one.", ctx)
+
+    def test_finds_in_one_line_section(self):
+        ctx = local_rewrite.extract_point_context(self.ARTICLE, "Closing line here.")
+        self.assertIn("In one line", ctx)
+
+    def test_returns_none_when_not_found(self):
+        ctx = local_rewrite.extract_point_context(self.ARTICLE, "Sentence that does not exist anywhere.")
+        self.assertIsNone(ctx)
 
 
 class ApplyRewritesTests(unittest.TestCase):
