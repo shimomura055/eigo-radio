@@ -1,0 +1,296 @@
+............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................C:\Users\tensh\eigo-radio\er002_common.py:1118: RuntimeWarning: overflow encountered in square
+  z = np.array([np.mean(y[s:s + block] ** 2) for s in range(0, len(y) - block + 1, hop)])
+............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................F.....................................FF......
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+...........
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+.F..
+======================================================================
+FAIL: test_case_0 (er003_test_bad.FixtureTests.test_case_0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\AppData\Local\Temp\tmpww25ba2w\er003_test_bad.py", line 5, in test_case_0
+    self.assertTrue(False)
+    ~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (failures=1)
+......
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK
+..
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+....................................................................................................................................................................................................................................................................................................................
+======================================================================
+FAIL: test_combined_equals_sum_of_er002_and_er003 (er003_test_p2j_investigate.CollectionCountTests.test_combined_equals_sum_of_er002_and_er003)
+ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01(2026-08-25)で、er007_ja_
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er003_test_p2j_investigate.py", line 82, in test_combined_equals_sum_of_er002_and_er003
+    self.assertEqual(combined, sum_by_prefix)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2069 != 1799
+
+======================================================================
+FAIL: test_p2h_reported_count_matches_er002_plus_er003_at_that_time (er003_test_p2j_investigate.ReconciliationArithmeticTests.test_p2h_reported_count_matches_er002_plus_er003_at_that_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er003_test_p2j_investigate.py", line 119, in test_p2h_reported_count_matches_er002_plus_er003_at_that_time
+    self.assertEqual(detail["er002_total_now"] + detail["er003_total_at_p2h_era"],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     inv_mod.P2H_REPORTED_COUNT)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1037 != 1032
+
+======================================================================
+FAIL: test_p2i_reported_count_matches_er003_at_p2i_era (er003_test_p2j_investigate.ReconciliationArithmeticTests.test_p2i_reported_count_matches_er003_at_p2i_era)
+P2Iが報告した660は、P2I完了時点(commit eca3198)に存在した
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er003_test_p2j_investigate.py", line 128, in test_p2i_reported_count_matches_er003_at_p2i_era
+    self.assertEqual(detail["er003_total_at_p2i_era"], inv_mod.P2I_REPORTED_COUNT)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 665 != 660
+
+----------------------------------------------------------------------
+Ran 2069 tests in 43.048s
+
+FAILED (failures=3)
+[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er0*_test_*.py
+[run_project_regression] discovered 90 test file(s):
+  - er002_test_common.py
+  - er002_test_editorial.py
+  - er002_test_editorial_v1_1b.py
+  - er002_test_ja_article_generation.py
+  - er002_test_ja_free_markdown_restore.py
+  - er002_test_ja_free_markdown_restore_r2.py
+  - er002_test_ja_master_imitation.py
+  - er002_test_ja_web_research_r3.py
+  - er002_test_ja_web_research_r4.py
+  - er002_test_v1_2m_d1.py
+  - er003_test_audio_tts_asr_safety.py
+  - er003_test_b1_article.py
+  - er003_test_b1_p2.py
+  - er003_test_b1_p3r_audio.py
+  - er003_test_b1_p3s_audio.py
+  - er003_test_b1_p3t_audio.py
+  - er003_test_b1_p3u_audio.py
+  - er003_test_b1_p3v_capability.py
+  - er003_test_b1_p3w_audio.py
+  - er003_test_b1_p3y_audio.py
+  - er003_test_b1_p3z_audio.py
+  - er003_test_b1_p4_audio.py
+  - er003_test_b1_p4a_audio.py
+  - er003_test_b1_p4b_audio.py
+  - er003_test_b1_p4c_audio.py
+  - er003_test_b1_p4d_audio.py
+  - er003_test_b1_p5a_audio.py
+  - er003_test_b1_p5b_audio.py
+  - er003_test_b1_p5c_audio.py
+  - er003_test_b1_p6a_audio.py
+  - er003_test_b1_p6b_audio.py
+  - er003_test_b1_p7a_audio.py
+  - er003_test_b1_p7c_audio.py
+  - er003_test_b1_p8a_audio.py
+  - er003_test_b1_p9a_audio.py
+  - er003_test_b1_p9a_r1_audio.py
+  - er003_test_b1_scaffold_audio_01.py
+  - er003_test_b2_adapter.py
+  - er003_test_b2_key_words.py
+  - er003_test_b2_summary.py
+  - er003_test_b2_summary_p2c.py
+  - er003_test_ja_to_en_translation.py
+  - er003_test_ja_to_en_translation_p1b.py
+  - er003_test_key_words_canonicalization.py
+  - er003_test_key_words_min_unit.py
+  - er003_test_key_words_research10.py
+  - er003_test_key_words_strategy_compare.py
+  - er003_test_natural_source.py
+  - er003_test_p2h_analyze_user_scores.py
+  - er003_test_p2i_production.py
+  - er003_test_p2j_investigate.py
+  - er003_test_p2k_regression_entry.py
+  - er003_test_v1_n3_01_tts_generate.py
+  - er007_en_blindspot_test_01.py
+  - er007_ja_blindspot_test_01.py
+  - er007_ja_tts_retry_path_fix_test_01.py
+  - er007_openai_ja_asr_quality_test_01.py
+  - er007_openai_ja_asr_quality_test_02.py
+  - er008_a2_postprocess_slowdown_01_test_01.py
+  - er008_a2_slowdown_invariant_19_test_01.py
+  - er008_crosslevel_audio_02_tts_cap_25_test_01.py
+  - er008_directional_fact_precheck_08_test_01.py
+  - er008_disfluency_qa_18_test_01.py
+  - er008_internal_label_gate_18_test_01.py
+  - er008_listening_artifact_script_standard_25_test_01.py
+  - er008_n3_01_point_qa_wiring_19_test_01.py
+  - er008_n8_a2_slowdown_sha256_refresh_22_test_01.py
+  - er008_n8_cost_compute_pricing_fix_24_test_01.py
+  - er008_n8_cost_jpy_reporting_25_test_01.py
+  - er008_n8_evidence_compression_dates_22_test_01.py
+  - er008_n8_evidence_compression_locations_23_test_01.py
+  - er008_n8_fact_check_retry_cap_25_test_01.py
+  - er008_n8_point_overlap_article_retry_22_test_01.py
+  - er008_n8_point_prompt_strengthen_24_test_01.py
+  - er008_n8_qa_hardening_21_gate_test_01.py
+  - er008_n8_reicher_pronunciation_22_test_01.py
+  - er008_point_blueprint_validator_test_01.py
+  - er008_point_overlap_qa_18_test_01.py
+  - er008_point_regenerate_19_test_01.py
+  - er009_ja_foreign_token_gate_01_test_01.py
+  - er009_n1_diagnostic_full_retry_integration_test_13.py
+  - er009_n1_regression_test_14.py
+  - er010_entity_phonetic_corroboration_01_test_01.py
+  - er010_n9_production_integration_09_test_01.py
+  - er010_no9_factcheck_policy_and_point_compression_diagnostic_12_test_01.py
+  - er011_human_review_lock_01_test_01.py
+  - er011_no18_evidence_compression_a_precision_21r_test_01.py
+  - er011_no18_tight_speech_and_trim030_production_wiring_23_test_01.py
+  - er011_test_key_phrase_set_redundancy_qa_01.py
+  - er011_test_point_role_value_planning_01.py
+{
+  "akb48": {
+    "actual_total_usd": 5.039,
+    "clean_run_total_usd": 2.2104,
+    "retry_overhead_usd": 2.8286,
+    "retry_overhead_pct": 56.13,
+    "template_or_quota_overhead_usd": 3.2957
+  },
+  "parenting": {
+    "actual_total_usd": 4.7611,
+    "clean_run_total_usd": 2.8479,
+    "retry_overhead_usd": 1.9132,
+    "retry_overhead_pct": 40.18,
+    "template_or_quota_overhead_usd": 7.1081
+  }
+}
+[run_project_regression] collected 2069 test(s)
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point overlap/value QA NG(lexical=True, value_qa=False)。Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します(article retry 1/2)...
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 1/2)...
+[N3-01][t1] A2: Point overlap/value QA NG(lexical=True, value_qa=False)。Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します(article retry 2/2)...
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 2/2)...
+[N3-01][t1] A2: Point overlapが2回の記事全体再生成後もNGのままでした。自動続行せずNG_REVIEW_REQUIREDとして報告します(Fact Checker以降は実行しません)。
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point overlap/value QA NG(lexical=True, value_qa=False)。Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します(article retry 1/2)...
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 1/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 1回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 73, 'sentence_count': 6, 'avg_sentence_length': 12.2, 'max_sentence_length': 15} sections={'intro': 36, 'point_one': 11, 'point_two': 14, 'in_one_line': 12}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=PASS verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=NO_DEVIATION deviations=0
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 44, 'sentence_count': 5, 'avg_sentence_length': 8.8, 'max_sentence_length': 10} sections={'intro': 16, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=PASS verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_DEVIATION deviations=1
+[N3-01][t1] A2: Local Rewrite cycle 1/3 - Ledger MAJOR 1件を検出(1件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 1 NG item 1: resolved=False human_review=True attempts=3
+[N3-01][t1] A2: cycle 1 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 1 再判定 overall_status=LEDGER_DEVIATION MAJOR=1件
+[N3-01][t1] A2: Local Rewrite cycle 2/3 - Ledger MAJOR 1件を検出(0件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 2 NG item 1: 対象文が特定できずhuman_review_required=Trueとして記録します。
+[N3-01][t1] A2: cycle 2 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 2 再判定 overall_status=LEDGER_DEVIATION MAJOR=1件
+[N3-01][t1] A2: Local Rewrite cycle 3/3 - Ledger MAJOR 1件を検出(0件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 3 NG item 1: 対象文が特定できずhuman_review_required=Trueとして記録します。
+[N3-01][t1] A2: cycle 3 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 3 再判定 overall_status=LEDGER_DEVIATION MAJOR=1件
+[N3-01][t1] A2: Local Rewrite cycle上限(3回)に達してもMAJORが残存しています。
+[N3-01][t1] A2: Local Rewrite cycleを尽くしてもLedger MAJORが残存、またはhuman_review_requiredな項目があります。自動続行せずNG_REVIEW_REQUIREDとして報告します(Directional Fact Precheck以降は実行しません)。
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 44, 'sentence_count': 5, 'avg_sentence_length': 8.8, 'max_sentence_length': 10} sections={'intro': 16, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=PASS verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_DEVIATION deviations=1
+[N3-01][t1] A2: Local Rewrite cycle 1/3 - Ledger MAJOR 1件を検出(1件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 1 NG item 1: resolved=True human_review=False attempts=1
+[N3-01][t1] A2: cycle 1 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 1 再判定 overall_status=LEDGER_COMPLIANT MAJOR=0件
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 44, 'sentence_count': 5, 'avg_sentence_length': 8.8, 'max_sentence_length': 10} sections={'intro': 16, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=PASS verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_DEVIATION deviations=1
+[N3-01][t1] A2: Local Rewrite cycle 1/3 - Ledger MAJOR 1件を検出(1件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 1 NG item 1: resolved=True human_review=False attempts=1
+[N3-01][t1] A2: cycle 1 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 1 再判定 overall_status=LEDGER_DEVIATION MAJOR=1件
+[N3-01][t1] A2: Local Rewrite cycle 2/3 - Ledger MAJOR 1件を検出(1件は前cycleまでに未出現の新規MAJOR)。局所Rewrite開始...
+[N3-01][t1] A2: cycle 2 NG item 1: resolved=True human_review=False attempts=1
+[N3-01][t1] A2: cycle 2 Local Rewrite後、Ledger全体を再判定...
+[N3-01][t1] A2: cycle 2 再判定 overall_status=LEDGER_COMPLIANT MAJOR=0件
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 44, 'sentence_count': 5, 'avg_sentence_length': 8.8, 'max_sentence_length': 10} sections={'intro': 16, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=PASS verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 42, 'sentence_count': 5, 'avg_sentence_length': 8.4, 'max_sentence_length': 10} sections={'intro': 14, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=FACT_CHECK_COMPLETED verdict=FAIL
+[N3-01][t1] A2: fact checkerがFAIL(信頼できる情報と明確に矛盾)と判定しました。自動続行せずNG_REVIEW_REQUIREDとして報告します(ledger逸脱チェック以降は実行しません)。
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 42, 'sentence_count': 5, 'avg_sentence_length': 8.4, 'max_sentence_length': 10} sections={'intro': 14, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=FACT_CHECK_COMPLETED verdict=FAIL
+[N3-01][t1] A2: fact checkerがFAIL(信頼できる情報と明確に矛盾)と判定しました。自動続行せずNG_REVIEW_REQUIREDとして報告します(ledger逸脱チェック以降は実行しません)。
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 42, 'sentence_count': 5, 'avg_sentence_length': 8.4, 'max_sentence_length': 10} sections={'intro': 14, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=FACT_CHECK_COMPLETED verdict=PASS
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][t1] A2: writer呼び出し開始...
+[N3-01][t1] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][t1] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][t1] A2: metrics={'word_count': 42, 'sentence_count': 5, 'avg_sentence_length': 8.4, 'max_sentence_length': 10} sections={'intro': 14, 'point_one': 10, 'point_two': 9, 'in_one_line': 9}
+[N3-01][t1] A2: fact checker呼び出し開始...
+[N3-01][t1] A2: fact_check status=FACT_CHECK_COMPLETED verdict=REVIEW_REQUIRED
+[N3-01][t1] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][t1] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[run_project_regression] collected=2069 passed=2066 failed=3 errors=0 skipped=0

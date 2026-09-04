@@ -79,7 +79,13 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照。
     このgenerate_english_segment_with_fallback自体はKey Phrase用の
     generate_key_phrase_component_verified(独立した4回構成)とは無関係
-    — Key Phrase以外の英語ナレーションsegment専用)。"""
+    — Key Phrase以外の英語ナレーションsegment専用)。
+
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(2026-09-04、
+    ユーザー正式決定・上記25の方針を撤回): callerが渡すmax_attempts
+    によらず、対象Production経路は例外なくTOTAL3回上限に統一する
+    (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
+    max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)

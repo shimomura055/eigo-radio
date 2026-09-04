@@ -8,9 +8,17 @@
 # ユーザー正式決定)で、標準経路+minimal instruction fallback経路を持つ
 # 3関数(generate_charon_japanese/generate_a2_japanese_with_fallback/
 # generate_english_segment_with_fallback)の試行回数配分を「標準2回+
-# fallback1回=合計3回」へ固定した。本ファイルはその正式仕様の回帰確認
-# (Case A〜D、standard/fallback上限、Key Phrase専用4回構成への非干渉)
-# も合わせて持つ。
+# fallback1回=合計3回」へ固定した。
+#
+# ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(同日、
+# ユーザー正式決定・上記の一部方針を撤回): wiring-25では「callerが
+# max_attemptsに6・10等を渡す既存呼び出し元の総予算は縮小しない」
+# としていたが、これを撤回し、対象Production経路は例外なくTOTAL3回へ
+# クランプする(caller指定によらない)よう変更した。
+#
+# 本ファイルはその正式仕様の回帰確認(Case A〜D、standard/fallback上限、
+# caller指定max_attempts(6/10等)のTOTAL3への収束、Key Phrase専用
+# 4回構成への非干渉)も合わせて持つ。
 # ============================================================
 from __future__ import annotations
 
@@ -159,19 +167,30 @@ class VoiceCharonJapaneseStandard2Fallback1Tests(unittest.TestCase):
         self.assertLessEqual(len(result["fallback_attempts_log"]),
                               review_lock.PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS)
 
-    def test_larger_explicit_max_attempts_still_caps_standard_at_two_but_expands_fallback(self):
-        """既存の呼び出し元(例: er006_audio_cost_pilot_02_shared_narration.
-        ensure_fixed_japanese_segmentがmax_attempts=6を指定)がある場合でも、
-        標準経路は常にstandard_attempts(既定2)回のみで、差分(6-2=4回)は
-        fallbackへ回る。総予算6は変更しない(該当しない別用途を勝手に
-        3回へ縮小しない)一方、fallbackが常に0固定だった不具合は解消
-        される。"""
-        cascade_results = [(False, False, "TRUE_CONTENT_MISMATCH")] * 6
+    def test_larger_explicit_max_attempts_still_converges_to_total_three(self):
+        """ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(2026-09-04、
+        ユーザー正式決定・wiring-25の「総予算6は縮小しない」方針を撤回):
+        既存の呼び出し元(例: er006_audio_cost_pilot_02_shared_narration.
+        ensure_fixed_japanese_segmentがmax_attempts=6を指定、または
+        er003_v1_iran01_b1_kp_homophone_fix.pyがmax_attempts=10を指定)が
+        あっても、対象Production経路は例外なくTOTAL3回(標準2+fallback1)へ
+        クランプされる。"""
+        cascade_results = [(False, False, "TRUE_CONTENT_MISMATCH")] * 3
         mock_tts, result = _run_generate_charon_japanese(cascade_results, max_attempts=6)
 
-        self.assertEqual(mock_tts.call_count, 6)
+        self.assertEqual(mock_tts.call_count, 3, "max_attempts=6を渡してもTOTAL3でクランプされる")
         self.assertEqual(len(result["standard_attempts_log"]), 2)
-        self.assertEqual(len(result["fallback_attempts_log"]), 4)
+        self.assertEqual(len(result["fallback_attempts_log"]), 1)
+        self.assertEqual(result["status"], "STOPPED")
+
+    def test_max_attempts_ten_also_converges_to_total_three(self):
+        """er003_v1_iran01_b1_kp_homophone_fix.py実例(max_attempts=10)相当。"""
+        cascade_results = [(False, False, "TRUE_CONTENT_MISMATCH")] * 3
+        mock_tts, result = _run_generate_charon_japanese(cascade_results, max_attempts=10)
+
+        self.assertEqual(mock_tts.call_count, 3, "max_attempts=10を渡してもTOTAL3でクランプされる")
+        self.assertEqual(len(result["standard_attempts_log"]), 2)
+        self.assertEqual(len(result["fallback_attempts_log"]), 1)
         self.assertEqual(result["status"], "STOPPED")
 
 
@@ -245,10 +264,13 @@ class A2JapaneseFallbackStandard2Fallback1Tests(unittest.TestCase):
         self.assertEqual(result["status"], "STOPPED")
         self.assertEqual(len(realistic_attempts_log) + mock_min.call_count, 3, "総試行回数(標準2+fallback1)は3")
 
-    def test_larger_max_attempts_still_expands_fallback_not_standard(self):
-        """既存の呼び出し元(例: max_attempts=6)がある場合でも、標準経路は
-        常にstandard_attempts(既定2)回のみで、差分がfallbackへ回る
-        (総予算6は変更しないが、fallbackが0固定だった不具合は解消される)。"""
+    def test_larger_max_attempts_still_converges_to_total_three(self):
+        """ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(2026-09-04、
+        ユーザー正式決定・wiring-25の「総予算6は縮小しない」方針を撤回):
+        既存の呼び出し元(例: generate_a2_japanese_with_reading_safetyの
+        既定max_attempts=6)があっても、標準経路は常にstandard_attempts
+        (既定2)回のみ、fallbackはPRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS
+        (既定1)回のみへクランプされる(総予算6を維持しない)。"""
         realistic_attempts_log = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
         with mock.patch.object(n3.c, "generate_narration_snippet_verified_strict",
                                 return_value={"status": "STOPPED", "attempts_log": realistic_attempts_log}) as mock_std, \
@@ -260,7 +282,7 @@ class A2JapaneseFallbackStandard2Fallback1Tests(unittest.TestCase):
             result = n3.generate_a2_japanese_with_fallback("テスト文", "dummy.wav", "テス", max_attempts=6)
 
         self.assertEqual(mock_std.call_args.kwargs["max_attempts"], 2)
-        self.assertEqual(mock_min.call_count, 4, "6-2=4回がfallbackへ")
+        self.assertEqual(mock_min.call_count, 1, "max_attempts=6を渡してもfallbackは1回でクランプされる")
         self.assertEqual(result["status"], "STOPPED")
 
 
@@ -313,6 +335,26 @@ class EnglishSegmentFallbackStandard2Fallback1Tests(unittest.TestCase):
         self.assertEqual(mock_min.call_count, 1)
         self.assertEqual(result["status"], "STOPPED")
         self.assertEqual(len(realistic_attempts_log) + mock_min.call_count, 3, "総試行回数(標準2+fallback1)は3")
+
+    def test_larger_max_attempts_still_converges_to_total_three(self):
+        """ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26: 英語側
+        (Key Phrase以外)も、callerがmax_attempts=6等を渡してもTOTAL3へ
+        クランプされる。"""
+        realistic_attempts_log = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
+        with mock.patch.object(crosslevel_common, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "STOPPED", "attempts_log": realistic_attempts_log}) as mock_std, \
+             mock.patch.object(crosslevel_common.repro01, "generate_english_component_minimal_instruction",
+                                return_value={"status": "OK", "text": "test text", "path": "dummy.wav"}) as mock_min, \
+             mock.patch.object(crosslevel_common.routing, "transcribe", return_value=("test text", None)), \
+             mock.patch.object(crosslevel_common.pronun_ledger, "get_hint_for_text", return_value=[]), \
+             mock.patch.object(crosslevel_common.secondary_asr, "evaluate_attempt_with_cascade",
+                                return_value=(False, False, _fake_cls("TRUE_CONTENT_MISMATCH"))):
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "dummy.wav", "test", max_attempts=6)
+
+        self.assertEqual(mock_std.call_args.kwargs["max_attempts"], 2)
+        self.assertEqual(mock_min.call_count, 1, "max_attempts=6を渡してもfallbackは1回でクランプされる")
+        self.assertEqual(result["status"], "STOPPED")
 
     def test_human_review_locked_standard_never_reaches_fallback(self):
         """ER-011-HUMAN-REVIEW-COST-GUARD-01: standard経路がHuman Review

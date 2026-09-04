@@ -1,0 +1,127 @@
+{
+  "run_id": "final26-20260904T031439Z",
+  "timestamp_utc": "2026-09-04T03:22:40.439050+00:00",
+  "production_function": "er003_v1_sing01_voice01_generate.generate_charon_japanese",
+  "segment_input": {
+    "text": "これはテストです。",
+    "expected_substring": "テスト",
+    "out_path": "er011_output/final26_runtime_evidence_01/kp_evidence_charon.wav"
+  },
+  "tts_model": "gemini-3.1-flash-tts-preview",
+  "tts_voice": "Charon",
+  "asr_routing_module": "er003_v1_ja_secondary_asr_cascade (voice01.routing/ja_secondary)",
+  "azure_secondary_used": false,
+  "key_phrase_dedicated_path_used": false,
+  "controlled_input_note": "標準経路のstyle_prefixのみ、この実行中だけadversarial instructionへ一時差し替え(fallback側MINIMAL_INSTRUCTION_PREFIX_JAは無変更)。TTS/ASR呼び出し自体・fallback関数はすべて実本番のまま。",
+  "standard_attempts_log": [
+    {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "こんにちは、今日はいい天気ですね。",
+      "length_ok": true,
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "verified": false,
+      "trim_info": {
+        "raw_duration_seconds": 3.2,
+        "raw_leading_silence_seconds": 0.34,
+        "raw_trailing_silence_seconds": 0.34,
+        "trimmed_duration_seconds": 3.2,
+        "leading_margin_retained_seconds": 0.34,
+        "trailing_margin_retained_seconds": 0.34
+      }
+    },
+    {
+      "attempt": 2,
+      "status": "OK",
+      "asr_text": "こんにちは、今日はいい天気ですね。",
+      "length_ok": true,
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "verified": false,
+      "trim_info": {
+        "raw_duration_seconds": 2.96,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.32,
+        "trimmed_duration_seconds": 2.96,
+        "leading_margin_retained_seconds": 0.28,
+        "trailing_margin_retained_seconds": 0.32
+      }
+    }
+  ],
+  "fallback_attempts_log": [
+    {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "これはテストです。",
+      "length_ok": true,
+      "audio_classification": "EXACT_MATCH",
+      "verified": true
+    }
+  ],
+  "total_attempt_count": 3,
+  "fallback_used": true,
+  "final_status": "OK",
+  "asr_verified": true,
+  "raw_result": {
+    "status": "OK",
+    "text": "これはテストです。",
+    "path": "er011_output/final26_runtime_evidence_01/kp_evidence_charon.wav",
+    "voice": "Charon",
+    "trim_info": {
+      "raw_duration_seconds": 1.72,
+      "raw_leading_silence_seconds": 0.34,
+      "raw_trailing_silence_seconds": 0.38,
+      "trimmed_duration_seconds": 1.69,
+      "leading_margin_retained_seconds": 0.34,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "instruction": "minimal (not JAPANESE_STYLE_PREFIX)",
+    "asr_verified": true,
+    "asr_text": "これはテストです。",
+    "fallback_used": true,
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "こんにちは、今日はいい天気ですね。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 3.2,
+          "raw_leading_silence_seconds": 0.34,
+          "raw_trailing_silence_seconds": 0.34,
+          "trimmed_duration_seconds": 3.2,
+          "leading_margin_retained_seconds": 0.34,
+          "trailing_margin_retained_seconds": 0.34
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "こんにちは、今日はいい天気ですね。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 2.96,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.32,
+          "trimmed_duration_seconds": 2.96,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.32
+        }
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "これはテストです。",
+        "length_ok": true,
+        "audio_classification": "EXACT_MATCH",
+        "verified": true
+      }
+    ]
+  }
+}

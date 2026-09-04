@@ -218,12 +218,19 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
     変えず(`max_attempts - len(attempts_log)`)、標準経路の消費量を
     standard_attempts回に固定することで、既定値では必ず
     PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS(1)回分がfallbackへ残る。
-    max_attempts自体を6・10等へ明示的に大きくして呼び出す既存の呼び
-    出し元(共有shared segment・過去の個別対症療法script等)について
-    は、そちらのtotal予算を勝手に3へ縮小しない — standard_attemptsは
-    常に既定2のまま、fallback側がその差分(例: max_attempts=6なら
-    6-2=4回)を受け取る形で、fallbackが常に発火可能になるという不具合
-    修正の効果だけを及ぼす(該当しない別用途の総予算を変更しない)。"""
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(2026-09-04、
+    ユーザー正式決定・上記25の方針を撤回): wiring-25では「callerが
+    max_attemptsに6・10等を渡す既存呼び出し元(共有shared segment・
+    過去の個別対症療法script等)のtotal予算は縮小しない」としていたが、
+    これは対象Production経路(標準+fallbackの2段構成を持つ本関数)に
+    ついて「例外なくTOTAL3回上限に統一する」というユーザーの再確認済み
+    正式仕様と矛盾するため、今回撤回する。callerが何を渡しても、この
+    関数自身がmax_attemptsをPRODUCTION_MAX_TTS_ATTEMPTS(3)で上限
+    クランプすることで、fallback予算(`max_attempts - len(attempts_log)`)
+    が3を超えて発火する余地を構造的に無くす(共有shared segment
+    (ensure_fixed_japanese_segment)・過去の一回限りscript
+    (er003_v1_iran01_b1_kp_homophone_fix.py)を含め例外なし)。"""
+    max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     max_len = len(text) + 15
     attempts_log = []
     for attempt in range(1, standard_attempts + 1):

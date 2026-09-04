@@ -356,7 +356,14 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     len(attempts_log)`)が構造的に常に0になり、fallbackが実質的に発火
     しない不具合があった。fallback側の予算計算式自体は変えず、標準
     経路の消費量をstandard_attempts回に固定することで解決する
+    (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。
+
+    ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(2026-09-04、
+    ユーザー正式決定・上記25の方針を撤回): callerが渡すmax_attempts
+    (generate_a2_japanese_with_reading_safety経由で既定6等)によらず、
+    対象Production経路は例外なくTOTAL3回上限に統一する
     (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
+    max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars)
     if standard.get("status") == "OK":
