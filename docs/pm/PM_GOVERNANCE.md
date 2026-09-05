@@ -1,7 +1,7 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-05**
+**最終更新: 2026-09-05(PM-GOVERNANCE-TTS-MODE-CONFIRMATION-01でTTS方式明示・確認原則[7節]を追加)**
 
 **このファイルはPM運用規則(Gate・Closeout Check等)の正式SSOTである。**
 正式仕様(記事・音声・生成パイプラインそのものの仕様)は引き続き
@@ -121,6 +121,25 @@ Fact Safetyやoverclaim修正で安全になっても、記事の面白さ・分
 Storytelling・Entertainment性・ユーザー価値が明確に劣化していないかを
 確認する。「安全になったから成功」と自動判定しない。
 
+## 7. TTS方式(Batch API / Standard同期)の明示・確認原則
+
+- TTS生成を含むタスク定義(`docs/pm/ACTIVE_TASK.md`・Fableからsonnet-workerへの
+  委任文)には、使用するTTS方式(Batch API / Standard同期)を必ず明記する。
+  Production標準はBatch API(正本は`CURRENT_SPEC.md`「Gemini TTS実装方式
+  (Batch API)」であり、本ファイルへは全文を複製しない)。
+- タスク定義にTTS方式の明記がない場合、Fableは着手前に必ずユーザーへ確認する。
+  Sonnet/Opusは方式が不明なまま生成に着手せず、STOPしてFable経由でユーザーへ
+  確認を求める。
+- 方式の切り替え(Batch→Standard等)や1エピソード内での方式混在は、ユーザーの
+  明示承認がある場合に限り行い、Production忠実性への影響(Production経路と
+  異なる条件で得た結果である旨)・所要時間・コスト差を必ずReportへ記録する。
+  Production call site自体の変更はこの原則の対象外(別途Gate 3の対象)。
+- タスク着手前に、選択したTTS方式に応じたおおよその所要時間・コストの見込みを
+  ユーザーへ提示する。
+- 経緯: 2026-09-05、Trial-13(OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)
+  でタスク定義にTTS方式が明記されず、所要時間の見込み共有が漏れたことを受けた
+  ユーザー指示により新設。
+
 ---
 
 ## 変更履歴
@@ -139,3 +158,9 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   ユーザー指定の5件へ修正(既存3件に「`APPROVED_FOR_PRODUCTION`の取消しでは
   ないこと」「後続作業が未配線項目を誤って完了扱いしないこと」を追加)。
   既存A〜D節(現2〜3・4・6節)の内容自体は変更していない。
+- 2026-09-05(PM-GOVERNANCE-TTS-MODE-CONFIRMATION-01): 「7. TTS方式
+  (Batch API / Standard同期)の明示・確認原則」を新設。Trial-13
+  (OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)でTTS方式未明記により
+  所要時間の見込み共有が漏れたことを受けたユーザー指示により、タスク定義への
+  方式明記・未明記時のユーザー確認・混在時の記録・着手前の見込み提示を
+  正式化した(文書編集のみ、コード・Prompt変更なし)。
