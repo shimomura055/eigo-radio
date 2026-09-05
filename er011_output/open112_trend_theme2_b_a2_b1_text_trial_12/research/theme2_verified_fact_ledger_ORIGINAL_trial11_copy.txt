@@ -1,0 +1,208 @@
+OPEN-112-ENGAGEMENT-REFERENCE-CROSS-TOPIC-AB-TRIAL-11 Verified Fact Ledger
+Theme 2: 日本の若者(10代後半〜30代前半)の旅行スタイルにおける「スロー志向」の拡大と、
+実際の滞在日数とのギャップ(2026年9月時点)
+
+作成方法: 2026-09-05、Perplexity(model=sonar-pro、既存の承認済み呼び出しパターンを
+本Trial script内で再利用)で2回に分けて一次調査を実施し(一般調査+若者のスロー旅行に
+特化した追加調査)、同じsonar-proによる独立verification(別プロンプト・別検索)で
+主要15件を再照合した(生ログ: research/theme2_slow_travel_facts_raw.json、
+research/theme2_slow_travel_facts_supplemental_raw.json、
+research/theme2_slow_travel_facts_verification_raw.json)。
+
+注記1: 本Ledgerは今回のTrial専用に新規作成したものであり、Production Topic Master
+への正式追加ではない。
+
+注記2: evidence_strengthの区別はTheme 1と同じ基準を用いる。
+
+注記3(重要・central tension): 観光庁「令和7年版観光白書」は、政策的課題として
+「一人当たり旅行回数の増加や滞在長期化を図る必要がある」と明記しており(F-211)、
+これは裏を返せば「現時点では滞在が長期化していない」ことを政府自身が認めている
+ということである。実際、じゃらんリサーチセンターの調査では、秋の旅行意向者の
+宿泊日数は平均1.8泊・中央値2.0泊にとどまる(F-206)。一方、同じ調査で「1カ月休暇が
+取れたら1週間程度旅行したい」と答えた人が最多(24.1%)であり(F-205)、日本のZ世代
+男性では「ひとり旅」「趣味を深める旅行」への関心が最上位、海外旅行でもZ世代の
+約9割が「ツアー内の自由時間」を求め、うち約8割が半日以上を希望している(F-209、
+F-210)。つまり、若者の「もっとゆっくり、自分のペースで過ごしたい」という意識・
+願望ははっきりと確認できる一方、実際に測定されている行動(滞在日数)は依然として
+短いという、意識と実際の行動のギャップが本テーマの中心である。「名所巡りから
+ゆっくり滞在へ、行動として完全に移行した」と断定することは、Ledgerの支持する
+範囲を超える(overclaim)。また、Z世代女性では「有名な観光地を巡る」も44.7%と
+依然高く(F-208)、性別で傾向が異なる点も無視できない。
+
+=== Source一覧(主要なもの) ===
+[SRC-201] 国土交通省 観光庁「令和7年版観光白書(概要版)」(2025年1月調査ベース) [official_statistics]
+[SRC-202] じゃらんリサーチセンター(株式会社リクルート)「国内宿泊旅行ニーズ調査2024夏」
+  [company_official_announcement]
+[SRC-203] じゃらんリサーチセンター「国内宿泊旅行ニーズ調査2024秋」報告書
+  [company_official_announcement]
+[SRC-204] 日本交通公社(JTBF)「Z世代の暮らしと旅」(ライフスタイルと旅行に関する調査2025)
+  [reputable_media_reporting、JTBFの調査を報じたもの]
+[SRC-205] Travel Voice英語版「What kind of travel Japanese GenZ likes?」(2025-04-16、
+  JTBF調査の英語要約) [reputable_media_reporting]
+[SRC-206] Travel Voice英語版「More than 90% of Japanese Generation Z...want to travel
+  overseas this year」(Japan Tourism Agency調査の報道、2023年) [reputable_media_reporting]
+[SRC-207] リクルート「じゃらん観光国内宿泊旅行調査2025【旅行市場動向編】」(2025-07-30)
+  [company_official_announcement]
+[SRC-208] ヒルトン「2025年版グローバル・トレンド・レポート」日本語版リリース
+  (2024-09-30) [company_official_announcement]
+[SRC-209] やまとごころ「Z世代の最新旅行動向を世界33カ国で調査」紹介記事(2024-10-10)
+  [reputable_media_reporting — 独立検索では元の一次調査を直接確認できず、
+  COULD_NOT_CONFIRM]
+[SRC-210] 日本交通公社「JTBF旅行者調査〜日本人旅行者の動向・意識」(2022-03-08、
+  コロナ禍直後の分析) [industry_survey]
+
+=== Fact一覧 ===
+
+[F-201] ヒルトン「2025年版グローバル・トレンド・レポート」日本語版によれば、
+「スロー・トラベル」(現地文化に深く浸るゆったりした旅行スタイル)の人気上昇が
+明示されており、世界の旅行者の4分の1が文化学習体験を求め、子どもと旅行する層の
+65%(日本では31%)が家族のルーツ探求など文化的没入体験を重視していると報告
+されている。
+  number_or_stat: 世界の旅行者の25%が文化学習体験を求める。子連れ旅行者65%
+  (日本31%)が文化的没入体験を重視。
+  actor_or_organization: ヒルトン(Hilton)
+  evidence_strength: company_official_announcement(グローバル企業の自社調査レポート)
+  signal_direction: increasing
+  counter_signal_or_limitation: グローバル調査であり、日本の若年層(10代後半〜30代
+  前半)に特化した数値ではない。日本の対象読者は「子連れ旅行者」であり、本テーマの
+  対象年齢層と完全には一致しない。
+  time_window: 2024年調査・2025年トレンド予測
+  verification: CONFIRMED
+  source: SRC-208
+
+[F-202] 日本交通公社「Z世代の暮らしと旅」(ライフスタイルと旅行に関する調査2025)に
+よれば、男性29歳以下が好む旅行スタイルは「ひとり旅」25.2%・「趣味を深める旅行」
+24.3%が上位、女性29歳以下は「グルメ旅行」52.4%・「有名な観光地を巡る」44.7%が
+上位。「SNS映えする場所を巡る」は男性11.7%・女性22.3%で、女性でやや高い。
+  number_or_stat: 男性29歳以下: ひとり旅25.2%、趣味を深める旅行24.3%、SNS映え11.7%。
+  女性29歳以下: グルメ旅行52.4%、有名観光地巡り44.7%、SNS映え22.3%。
+  actor_or_organization: 日本交通公社(JTBF)
+  evidence_strength: reputable_media_reporting(JTBF調査を報じたTravel Voice記事、
+  複数媒体で同一数値を確認)
+  signal_direction: mixed
+  counter_signal_or_limitation: 女性29歳以下では「有名な観光地を巡る」が44.7%と
+  依然高く、「名所巡りからの脱却」は男女で一様ではない。男性でのみ「ひとり旅・
+  趣味没入」への傾斜がより明確。
+  time_window: 2025年調査
+  verification: CONFIRMED(2つの独立記事[JTBF系・Travel Voice英語版]で同一数値を
+  相互確認)
+  source: SRC-204, SRC-205
+
+[F-203] Travel Voice英語版が報じたJapan Tourism Agency調査によれば、海外旅行
+経験のある日本のZ世代の約90%が「ツアーに自由時間を組み込みたい」と回答し、その
+うち約80%が「半日以上の自由時間」を希望している。
+  number_or_stat: 自由時間を希望 約90%。うち半日以上を希望 約80%。
+  actor_or_organization: Japan Tourism Agency(観光庁)
+  evidence_strength: government_official_announcement(政府調査、メディア報道経由)
+  signal_direction: increasing
+  counter_signal_or_limitation: 「ツアー内の自由時間」への希望であり、必ずしも
+  「一つの場所への長期滞在」を意味しない。パッケージツアーの枠組み自体は前提と
+  している回答である点に注意。
+  time_window: 2022年末〜2023年時点の調査
+  verification: CONFIRMED
+  source: SRC-206
+
+[F-204] リクルート(じゃらんリサーチセンター)「国内宿泊旅行ニーズ調査2024夏」に
+よれば、1カ月休暇が取れた場合に希望する旅行日数は「1週間程度」が24.1%で最多、
+「2〜3泊程度」23.2%、「2週間程度」11.1%、「旅行には行かない」18.0%。
+  number_or_stat: 1週間程度24.1%、2〜3泊程度23.2%、2週間程度11.1%、行かない18.0%
+  actor_or_organization: じゃらんリサーチセンター(リクルート)
+  evidence_strength: company_official_announcement
+  signal_direction: increasing
+  counter_signal_or_limitation: あくまで「1カ月休暇が取れたら」という仮定条件下の
+  希望であり、実際に取得可能な休暇日数を反映した現実的な行動予測ではない。
+  time_window: 2024年夏調査
+  verification: CONFIRMED
+  source: SRC-202
+
+[F-205] 同じくじゃらんリサーチセンター「国内宿泊旅行ニーズ調査2024秋」報告書に
+よれば、秋の旅行意向者の宿泊日数は中央値2.0泊、平均値1.8泊。
+  number_or_stat: 中央値2.0泊、平均1.8泊
+  actor_or_organization: じゃらんリサーチセンター(リクルート)
+  evidence_strength: company_official_announcement
+  signal_direction: counter_signal
+  counter_signal_or_limitation: これはF-204(希望日数「1週間程度」が最多)との
+  ギャップを示す、本テーマで最も重要なcounter-signalである。「希望」と「実際の
+  行動」は同一調査シリーズ内でも大きく異なる。
+  time_window: 2024年秋調査
+  verification: CONFIRMED
+  source: SRC-203
+
+[F-206] 国土交通省・観光庁「令和7年版観光白書(概要版)」(2025年1月調査ベース)に
+よれば、国内宿泊旅行の実施率は10〜20代で高まっている一方、旅行回数は「行かない層」
+と「多く行く層」に二極化しており、旅行は「時間とお金に余裕がある時にするもの」との
+回答が最多。政策的課題として「一人当たり旅行回数の増加や滞在長期化を図る必要が
+ある」と明記されている。
+  number_or_stat: 二極化傾向、10〜20代の実施傾向上昇、70代は低下(具体的%は
+  本Ledgerでは未確定)。
+  actor_or_organization: 国土交通省 観光庁
+  evidence_strength: official_statistics(本Ledger中で最も強いevidence tier)
+  signal_direction: mixed
+  counter_signal_or_limitation: 「滞在長期化を図る必要がある」という記述自体が、
+  現時点では滞在が十分に長期化していないことを政府が認めている証拠である。
+  「若者の滞在は既に長期化した」という書き方は、この白書の記述と矛盾するため
+  避けること。
+  time_window: 2025年1月調査、令和7年版白書として公表
+  verification: CONFIRMED
+  source: SRC-201
+
+[F-207] やまとごころが紹介した、世界33カ国を対象とした旅行者調査(調査主体の
+一次資料は独立検索では直接特定できず)によれば、日本の旅行者の85%が「2024年の
+旅行では1〜4泊の短めの国内旅行をする可能性が高い」と回答し、ピークシーズンを
+外して旅行する傾向は47%だったとされる。
+  number_or_stat: 短期(1〜4泊)国内旅行の可能性85%、ピークを外す傾向47%
+  actor_or_organization: 不明(やまとごころ記事が引用する33カ国調査、一次資料未特定)
+  evidence_strength: reputable_media_reporting(ただし一次資料未確認のため
+  evidence tierを下げて扱う)
+  signal_direction: mixed
+  counter_signal_or_limitation: 独立検索でこの記事・数値の一次資料を直接確認
+  できなかった(verification: COULD_NOT_CONFIRM)。Writerはこの数値を使う場合、
+  「未確認」の留保を必ず付けるか、使用を避けること。ピークを外す時期選択の
+  「柔軟性47%」は、時間の使い方の自由度という意味で本テーマと緩やかに関連する。
+  time_window: 2024年調査
+  verification: COULD_NOT_CONFIRM(独立検索で一次資料に到達できず)
+  source: SRC-209
+
+[F-208] リクルート「じゃらん観光国内宿泊旅行調査2025」によれば、国内宿泊旅行の
+同行形態で最も多いのは「夫婦2人での旅行」25.6%、次いで「ひとり旅」18.0%。
+性・年代別では男性は「ひとり旅」の割合が高く、18〜29歳と50代では同行形態の
+トップになっている。
+  number_or_stat: ひとり旅全体18.0%(2位)。男性18〜29歳・50代でひとり旅が
+  同行形態トップ。
+  actor_or_organization: リクルート(じゃらんリサーチセンター)
+  evidence_strength: company_official_announcement
+  signal_direction: increasing
+  counter_signal_or_limitation: 「ひとり旅」は必ずしも「長期滞在」を意味しない。
+  週末の短期ひとり旅とも整合するため、単独では長期滞在志向の証拠として過大に
+  扱わないこと。
+  time_window: 2025年調査
+  verification: CONFIRMED
+  source: SRC-207
+
+[F-209] リクルート「じゃらん観光国内宿泊旅行調査2024【旅行市場動向編】」に
+よれば、国内宿泊旅行の現地消費額は、18〜29歳男性が平均31,300円で全性・年代の
+中で最も高い。
+  number_or_stat: 18〜29歳男性の現地消費額 平均31,300円(全体最高)
+  actor_or_organization: リクルート(じゃらんリサーチセンター)
+  evidence_strength: company_official_announcement
+  signal_direction: increasing
+  counter_signal_or_limitation: 現地消費額の高さは、移動中心の弾丸旅行よりも
+  現地での体験・飲食への支出を示唆するが、滞在日数そのものを直接示す指標では
+  ない。
+  time_window: 2023年実績、2024年公表
+  verification: CONFIRMED
+  source: SRC-209(注: 本Ledger内での便宜上の参照番号。原資料はF-209自体の
+  リクルート2024年調査)
+
+【今回のTrendの中心主張(central_claim、Writerへの直接指示ではなく、Ledger作成者による
+Trend Gate判定根拠のまとめ)】
+2026年9月時点、日本の若者(とくに男性)の間では、「ひとり旅」「趣味を深める旅行」
+「ツアー内の自由時間」といった、自分のペースでゆっくり過ごしたいという意識・
+願望の強まりが複数の独立した調査(JTBF、観光庁、Travel Voice、じゃらん)で確認
+できる。しかし、同じ調査群が示す実際の行動(平均宿泊日数1.8泊)は依然として短く、
+観光庁自身が「滞在長期化」を今後の政策課題として明記するほど、この願望は
+まだ十分に行動化していない。したがって本Trendは「名所巡りからゆっくり滞在へ、
+すでに完全に移行した」という単純な話ではなく、「意識としてのスロー志向の高まり」
+と「行動としての短期滞在の persistence(persistence=継続)」の間に広がる
+ギャップそのものである。また、この傾向は性別で異なり、女性29歳以下では
+依然として「有名な観光地を巡る」ことへの関心が高い(44.7%)。

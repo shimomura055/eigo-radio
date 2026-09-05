@@ -1,0 +1,281 @@
+{
+  "phase_a": {
+    "A_b1b": {
+      "baseline_len": 18451,
+      "candidate_len": 20955,
+      "op_counts": {
+        "equal": 2,
+        "insert": 1,
+        "delete": 0,
+        "replace": 0
+      },
+      "unexpected_op_count": 0,
+      "clean_single_insert_confirmed": true
+    },
+    "B_b1b": {
+      "baseline_len": 18451,
+      "candidate_len": 23654,
+      "op_counts": {
+        "equal": 2,
+        "insert": 1,
+        "delete": 0,
+        "replace": 0
+      },
+      "unexpected_op_count": 0,
+      "clean_single_insert_confirmed": true
+    }
+  },
+  "phase_b": {
+    "theme1_4day_workweek": {
+      "A": {
+        "label": "B1B",
+        "status": "OK",
+        "metrics": {
+          "word_count": 353,
+          "sentence_count": 27,
+          "avg_sentence_length": 13.6,
+          "max_sentence_length": 29
+        },
+        "section_word_counts": {
+          "intro": 197,
+          "point_one": 54,
+          "point_two": 74,
+          "in_one_line": 28
+        },
+        "length_report": {
+          "intro": 197,
+          "point_one": 54,
+          "point_two": 74,
+          "in_one_line": 28,
+          "total": 353,
+          "point_one_within_target": true,
+          "point_one_within_tolerance": true,
+          "point_two_within_target": false,
+          "point_two_within_tolerance": false,
+          "total_within_soft_range": true
+        },
+        "fact_status": "FACT_CHECK_COMPLETED",
+        "fact_verdict": "REVIEW_REQUIRED",
+        "ledger_status": "LEDGER_COMPLIANT",
+        "ledger_deviation_count": 0,
+        "local_rewrite_results": [],
+        "local_rewrite_cycles": [],
+        "local_rewrite_cycle_exhausted": false,
+        "fact_usage_report": null,
+        "evidence_compression_applied": true,
+        "point_overlap_qa_applied": false,
+        "point_overlap_article_retry_attempts": 0,
+        "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+        "elapsed_seconds": 158.0,
+        "variant": "A",
+        "theme_id": "theme1_4day_workweek",
+        "writer_model_actual": "gpt-5.6-luna"
+      },
+      "B": {
+        "label": "B1B",
+        "status": "OK",
+        "metrics": {
+          "word_count": 399,
+          "sentence_count": 32,
+          "avg_sentence_length": 12.8,
+          "max_sentence_length": 23
+        },
+        "section_word_counts": {
+          "intro": 241,
+          "point_one": 59,
+          "point_two": 64,
+          "in_one_line": 35
+        },
+        "length_report": {
+          "intro": 241,
+          "point_one": 59,
+          "point_two": 64,
+          "in_one_line": 35,
+          "total": 399,
+          "point_one_within_target": true,
+          "point_one_within_tolerance": true,
+          "point_two_within_target": false,
+          "point_two_within_tolerance": true,
+          "total_within_soft_range": true
+        },
+        "fact_status": "FACT_CHECK_COMPLETED",
+        "fact_verdict": "PASS",
+        "ledger_status": "LEDGER_COMPLIANT",
+        "ledger_deviation_count": 0,
+        "local_rewrite_results": [],
+        "local_rewrite_cycles": [],
+        "local_rewrite_cycle_exhausted": false,
+        "fact_usage_report": null,
+        "evidence_compression_applied": true,
+        "point_overlap_qa_applied": false,
+        "point_overlap_article_retry_attempts": 0,
+        "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+        "elapsed_seconds": 171.4,
+        "variant": "B",
+        "theme_id": "theme1_4day_workweek",
+        "writer_model_actual": "gpt-5.6-luna"
+      }
+    },
+    "theme2_slow_travel": {
+      "A": {
+        "label": "B1B",
+        "status": "NG_REVIEW_REQUIRED",
+        "point_overlap_article_retry_attempts": 2,
+        "point_overlap_final_report": {
+          "point_one_vs_point_two": {
+            "overlap_ratio": 0.049,
+            "shared_words": [
+              "nights",
+              "travel"
+            ],
+            "point_word_count": 41,
+            "story_word_count": 39,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "point_two_vs_point_one": {
+            "overlap_ratio": 0.051,
+            "shared_words": [
+              "nights",
+              "travel"
+            ],
+            "point_word_count": 39,
+            "story_word_count": 41,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "point_one": {
+            "before_overlap": {
+              "overlap_ratio": 0.317,
+              "shared_words": [
+                "about",
+                "also",
+                "among",
+                "famous",
+                "less",
+                "more",
+                "nights",
+                "personal",
+                "sightseeing",
+                "slow",
+                "survey",
+                "time",
+                "travel"
+              ],
+              "point_word_count": 41,
+              "story_word_count": 111,
+              "flagged": false,
+              "threshold": 0.4
+            },
+            "cross_point_overlap": {
+              "overlap_ratio": 0.049,
+              "shared_words": [
+                "nights",
+                "travel"
+              ],
+              "point_word_count": 41,
+              "story_word_count": 39,
+              "flagged": false,
+              "threshold": 0.4
+            },
+            "applied": false
+          },
+          "point_two": {
+            "before_overlap": {
+              "overlap_ratio": 0.462,
+              "shared_words": [
+                "answer",
+                "full",
+                "long",
+                "longer",
+                "month",
+                "nights",
+                "off",
+                "question",
+                "remain",
+                "short",
+                "show",
+                "stays",
+                "surveys",
+                "tourism",
+                "travel",
+                "trips",
+                "week",
+                "wish"
+              ],
+              "point_word_count": 39,
+              "story_word_count": 111,
+              "flagged": true,
+              "threshold": 0.4
+            },
+            "cross_point_overlap": {
+              "overlap_ratio": 0.051,
+              "shared_words": [
+                "nights",
+                "travel"
+              ],
+              "point_word_count": 39,
+              "story_word_count": 41,
+              "flagged": false,
+              "threshold": 0.4
+            },
+            "applied": false,
+            "regenerate_status": "NG_REVIEW_REQUIRED",
+            "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+          }
+        },
+        "evidence_compression_applied": true,
+        "fact_usage_report": null,
+        "point_overlap_qa_applied": false,
+        "elapsed_seconds": 202.1,
+        "variant": "A",
+        "theme_id": "theme2_slow_travel",
+        "writer_model_actual": "gpt-5.6-luna"
+      },
+      "B": {
+        "label": "B1B",
+        "status": "OK",
+        "metrics": {
+          "word_count": 332,
+          "sentence_count": 22,
+          "avg_sentence_length": 15.2,
+          "max_sentence_length": 32
+        },
+        "section_word_counts": {
+          "intro": 148,
+          "point_one": 81,
+          "point_two": 73,
+          "in_one_line": 30
+        },
+        "length_report": {
+          "intro": 148,
+          "point_one": 81,
+          "point_two": 73,
+          "in_one_line": 30,
+          "total": 332,
+          "point_one_within_target": false,
+          "point_one_within_tolerance": false,
+          "point_two_within_target": false,
+          "point_two_within_tolerance": false,
+          "total_within_soft_range": true
+        },
+        "fact_status": "FACT_CHECK_COMPLETED",
+        "fact_verdict": "REVIEW_REQUIRED",
+        "ledger_status": "LEDGER_COMPLIANT",
+        "ledger_deviation_count": 0,
+        "local_rewrite_results": [],
+        "local_rewrite_cycles": [],
+        "local_rewrite_cycle_exhausted": false,
+        "fact_usage_report": null,
+        "evidence_compression_applied": true,
+        "point_overlap_qa_applied": false,
+        "point_overlap_article_retry_attempts": 2,
+        "directional_fact_precheck_status": "PASS",
+        "elapsed_seconds": 302.8,
+        "variant": "B",
+        "theme_id": "theme2_slow_travel",
+        "writer_model_actual": "gpt-5.6-luna"
+      }
+    }
+  }
+}

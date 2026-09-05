@@ -1,0 +1,430 @@
+{
+  "new_fixtures": {
+    "a_trial13_kp3_ja": {
+      "canonical": "中央値は約2泊",
+      "asr": "中央値は約二泊。",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true,
+      "expected_pass": true,
+      "ok": true
+    },
+    "b_existing_tsu_pattern": {
+      "canonical": "では、この二つの動きについて、英語のまとめを聞いてみましょう。",
+      "asr": "では、この2つの動きについて、英語のまとめを聞いてみましょう。",
+      "classification": "EXACT_MATCH",
+      "should_pass": true,
+      "expected_pass": true,
+      "ok": true
+    },
+    "c1_different_quantity": {
+      "canonical": "中央値は約2泊",
+      "asr": "中央値は約三泊。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expected_pass": false,
+      "ok": true
+    },
+    "c2_digit_dropped": {
+      "canonical": "2泊",
+      "asr": "泊",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expected_pass": false,
+      "ok": true
+    },
+    "c3_proper_noun_kyouzou": {
+      "canonical": "京三さんに聞いた話です",
+      "asr": "京三さんに聞いた話です",
+      "classification": "EXACT_MATCH",
+      "should_pass": true,
+      "expected_pass": true,
+      "ok": true
+    },
+    "c4_proper_noun_ninomiya_not_miscoverted": {
+      "canonical": "二宮さんに聞いた話です。",
+      "asr": "二宮さんに聞いた話です",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true,
+      "expected_pass": true,
+      "ok": true
+    },
+    "c5_different_counter_kai_vs_tsu": {
+      "canonical": "この点については二回説明しました。",
+      "asr": "この点については2つ説明しました。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expected_pass": false,
+      "ok": true
+    },
+    "c6_nijuu_not_affected": {
+      "canonical": "参加者は二十人ほど集まりました。",
+      "asr": "参加者は2人ほど集まりました。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expected_pass": false,
+      "ok": true
+    },
+    "entity_norm_京三": {
+      "input": "京三",
+      "output": "京三",
+      "expected": "京三",
+      "ok": true
+    },
+    "entity_norm_二宮": {
+      "input": "二宮",
+      "output": "二宮",
+      "expected": "二宮",
+      "ok": true
+    },
+    "known_risk_yokkaichi": {
+      "input": "四日市に住んでいます。",
+      "output": "4日市に住んでいます。"
+    },
+    "known_regression_mikkabouzu": {
+      "canonical": "三日坊主",
+      "asr": "みっかぼうず",
+      "baseline_classification": "PHONETIC_MATCH",
+      "baseline_should_pass": true,
+      "candidate_classification": "TRUE_CONTENT_MISMATCH",
+      "candidate_should_pass": false,
+      "note": "「日」をClosed counter listに含めることで発生する実regression(詳細はREPORT参照)"
+    }
+  },
+  "regression": {
+    "POSITIVE_FIXTURES": [
+      {
+        "name": "完全一致(句読点のみ差、実データpool_benches japanese_title)",
+        "baseline_classification": "NORMALIZED_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "NORMALIZED_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "漢字/ひらがな表記ゆれ(いす/椅子、実データpreview)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "読点の有無(実データcomment_1)",
+        "baseline_classification": "NORMALIZED_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "NORMALIZED_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "同音異字(後半/公判、実データpool_benches_pilot_02 comment_2。旧方式でverified=trueだった実例。「こうはん」で完全同音)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "誰/だれの表記ゆれ(実データcomment_3)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "様々/さまざまの表記ゆれ(実データpreview)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "得ます/えますの表記ゆれ(実データcomment_3、pool_benches_luna)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "安全な数字表記差(全角/半角)",
+        "baseline_classification": "NORMALIZED_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "NORMALIZED_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "軽微なASR句読点挿入位置ゆれ(実データcomment_4)",
+        "baseline_classification": "NORMALIZED_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "NORMALIZED_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "助数詞「つ」直前の漢数字/算用数字ゆれ(二つ/2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、実データNo.7 A2 comment_4のASR不一致に由来)",
+        "baseline_classification": "NORMALIZED_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "EXACT_MATCH",
+        "candidate_should_pass": true,
+        "changed": true
+      }
+    ],
+    "NEGATIVE_FIXTURES": [
+      {
+        "name": "1文字/1音の誤り(実例: やめにくくする→やめにくかする)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "FTC->FCC(略語の置換、意味が変わる)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "数字変更(150->140)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "日付変更(2020年->2021年)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "否定反転(変えるために->変えないために)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "content word置換(増加->減少)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "content word置換(増えた->減った、タスク仕様の明示ケース)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "数字変更(15->50、タスク仕様の明示ケース)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "phrase omission(中間の一文を削除)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "phrase addition(無関係な一文を追加)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "long segment中間部変更(comment_3実データ土台、中間のFTC関連部分を別内容に差し替え)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "文頭・文末だけ一致して中間が異なる(対照テスト)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "助数詞つき漢数字の数量違い(二つ->3つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、同値正規化が数量そのものの違いまで許容しないことの確認)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "「二十」は助数詞「つ」正規化の対象外(二十->2、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、一般化しすぎていないことの確認)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "助数詞が異なると同値扱いしない(二回->2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、回と つ を混同しないことの確認)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      }
+    ],
+    "ENTITY_LIKE_FIXTURES": [
+      {
+        "name": "カタカナ固有名詞のASR表記ゆれ(スラッジ->スラッシ)",
+        "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+        "baseline_should_pass": false,
+        "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+        "candidate_should_pass": false,
+        "changed": false
+      }
+    ],
+    "PHONETIC_UNCERTAIN_FIXTURES": [
+      {
+        "name": "頃/ころ(実データ、verify_ja_cascade_production_on.pyのsmoke testで実際に発生した実例。kakasiが「頃」を文脈なしで連濁形「ごろ」と読み、canonical側の「ころ」の読みと一致しなかったため旧実装ではTRUE_CONTENT_MISMATCH→即TTS retryになっていた)",
+        "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+        "baseline_should_pass": false,
+        "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "頃/ごろ(逆方向。kakasiの「頃」既定読みが元々「ごろ」のため、この向きは新規のvoicing許容チェックを使わずとも既存のreading_equal(完全一致)でPHONETIC_MATCHになる確認用ケース)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      }
+    ],
+    "WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES": [
+      {
+        "name": "実データNo.9 A2 Key Phrase 4 meaning_4(落とし穴、ただし書き/おとしあな ただしがき。連濁「書き→がき」の1点差のみで6回連続TRUE_CONTENT_MISMATCHだった実例、OPEN-104)",
+        "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+        "baseline_should_pass": false,
+        "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "合成ケース(別の漢字・別の連濁パターン、「書き」へのhardcodeでないことの確認: 「歯止め」→「はどめ」の全文ひらがなASR、連濁「はどめ」は元々清音「はとめ」ではなく「はどめ」が正しい読みのため、これは全文完全一致[PHONETIC_MATCH]になるべきケース)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "PHONETIC_MATCH",
+        "candidate_should_pass": true,
+        "changed": false
+      },
+      {
+        "name": "合成ケース(「三日坊主」→「みっかぼうず」、複数箇所が漢字なcanonicalに対し全文ひらがなASRで一致するケース。「坊主→ぼうず」の連濁のみが差)",
+        "baseline_classification": "PHONETIC_MATCH",
+        "baseline_should_pass": true,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": true
+      }
+    ],
+    "WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES": [
+      {
+        "name": "全文ひらがなASRでも意味が異なれば引き続きTRUE_CONTENT_MISMATCH(「落とし穴」→「お年やな」は連濁ではなく別の語、実データNo.9 A2 meaning_4のattempt3)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      },
+      {
+        "name": "合成ケース(全文ひらがなASRだが内容語が置換されている、「落とし穴」→「持ち上げ穴」は連濁でも表記ゆれでもない別内容)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      }
+    ],
+    "KNOWN_TRADEOFF_FIXTURES": [
+      {
+        "name": "柿/鍵(清音化後にたまたま一致する、意味の異なる実在語同士。should_pass=Falseのまま(誤PASSしない)が、TRUE_CONTENT_MISMATCHではなくASR_VALIDATION_UNCERTAIN(Cascade対象)になる既知のトレードオフ)",
+        "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+        "baseline_should_pass": false,
+        "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+        "candidate_should_pass": false,
+        "changed": false
+      }
+    ],
+    "READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES": [
+      {
+        "name": "月(つき/がつ、辞書の多義語候補+文脈からReading Resolverが正しく「つき」を選択して解決できることの確認。「漢字の異読みなら何でも自動PASS」ではなく、文脈に基づく正しい選択の結果としてのみPASSすることを示す)",
+        "baseline_classification": "TRUE_CONTENT_MISMATCH",
+        "baseline_should_pass": false,
+        "candidate_classification": "TRUE_CONTENT_MISMATCH",
+        "candidate_should_pass": false,
+        "changed": false
+      }
+    ],
+    "er003_short_seg_fixtures": [
+      {
+        "name": "kanji_counter_matches_digit_counter(つ)",
+        "baseline_verdict": "EXACT_MATCH",
+        "baseline_passed": true,
+        "candidate_verdict": "EXACT_MATCH",
+        "candidate_passed": true,
+        "changed": false
+      },
+      {
+        "name": "kanji_counter_quantity_difference_still_fails(つ)",
+        "baseline_verdict": "TRUE_CONTENT_MISMATCH",
+        "baseline_passed": false,
+        "candidate_verdict": "TRUE_CONTENT_MISMATCH",
+        "candidate_passed": false,
+        "changed": false
+      },
+      {
+        "name": "naikouka_vs_naikouka_homophone_kanji",
+        "baseline_verdict": "PHONETIC_MATCH",
+        "baseline_passed": true,
+        "candidate_verdict": "PHONETIC_MATCH",
+        "candidate_passed": true,
+        "changed": false
+      },
+      {
+        "name": "exact_orthographic_match_still_works",
+        "baseline_verdict": "EXACT_MATCH",
+        "baseline_passed": true,
+        "candidate_verdict": "EXACT_MATCH",
+        "candidate_passed": true,
+        "changed": false
+      }
+    ]
+  },
+  "summary": {
+    "new_fixture_failures": [],
+    "regression_total": 39,
+    "regression_changed_count": 2
+  }
+}

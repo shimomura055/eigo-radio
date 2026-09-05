@@ -1,0 +1,18 @@
+[TRIAL-13][ASSEMBLE-ONLY] narration segment再生成をskipし、既存の検証済みwavファイルだけを使ってAssembly(stage_assemble_b1/stage_assemble_a2)のみを実行します(article.mdコピー・Support stage・generate_*_segmentsは呼びません)。
+[TRIAL-13][ASSEMBLE-ONLY] B1 Assemble GATE_BLOCKED: EPISODE_BLOCKED_BY_AUDIO_VALIDATION: B1のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['kp3_japanese=STOPPED', 'kp4_english=STOPPED', 'kp4_japanese=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_theme2_b_full_audio_trial_13.py", line 253, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_theme2_b_full_audio_trial_13.py", line 225, in main
+    summary = run_assemble_only_stage()
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_theme2_b_full_audio_trial_13.py", line 201, in run_assemble_only_stage
+    out["a2_assemble"] = asm.stage_assemble_a2(theme)
+                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_assemble.py", line 744, in stage_assemble_a2
+    common.write_wav_float(out_path, assembled, SR, 2)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er002_common.py", line 414, in write_wav_float
+    assert peak <= 1.0 + 1e-9, f"�o�͂ɃN���b�s���O�̋��ꂪ����܂�(peak={peak})"
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: �o�͂ɃN���b�s���O�̋��ꂪ����܂�(peak=1.0350188975890593)

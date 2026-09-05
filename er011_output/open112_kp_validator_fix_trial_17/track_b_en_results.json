@@ -1,0 +1,274 @@
+{
+  "new_fixtures": {
+    "a_trial13_kp4_en_approach1": {
+      "canonical": "point to",
+      "asr": "Point two.",
+      "classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "should_pass": true,
+      "rescues": [
+        {
+          "canonical_raw": "to",
+          "asr_raw": "two",
+          "canonical_converted": "to",
+          "asr_converted": "2"
+        }
+      ],
+      "ok": true
+    },
+    "a_trial13_kp4_en_approach2": {
+      "canonical": "point to",
+      "asr": "Point two.",
+      "classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "should_pass": true,
+      "rescues": [
+        {
+          "canonical_raw": "to",
+          "asr_raw": "two",
+          "canonical_converted": "to",
+          "asr_converted": "2"
+        }
+      ],
+      "ok": true
+    },
+    "b1_for_you_four_you_approach1": {
+      "canonical": "for you",
+      "asr": "four you",
+      "baseline_classification": "TRUE_CONTENT_MISMATCH",
+      "baseline_should_pass": false,
+      "candidate_classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "candidate_should_pass": true,
+      "rescues": [
+        {
+          "canonical_raw": "for",
+          "asr_raw": "four",
+          "canonical_converted": "for",
+          "asr_converted": "4"
+        }
+      ],
+      "ok": true
+    },
+    "b1_for_you_four_you_approach2": {
+      "canonical": "for you",
+      "asr": "four you",
+      "baseline_classification": "TRUE_CONTENT_MISMATCH",
+      "baseline_should_pass": false,
+      "candidate_classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "candidate_should_pass": true,
+      "rescues": [
+        {
+          "canonical_raw": "for",
+          "asr_raw": "four",
+          "canonical_converted": "for",
+          "asr_converted": "4"
+        }
+      ],
+      "ok": true
+    },
+    "b2_won_the_game_one_the_game_approach1": {
+      "canonical": "won the game",
+      "asr": "one the game",
+      "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+      "baseline_should_pass": false,
+      "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+      "candidate_should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "b2_won_the_game_one_the_game_approach2": {
+      "canonical": "won the game",
+      "asr": "one the game",
+      "baseline_classification": "ASR_VALIDATION_UNCERTAIN",
+      "baseline_should_pass": false,
+      "candidate_classification": "ASR_VALIDATION_UNCERTAIN",
+      "candidate_should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c1_point_to_point_three_approach1": {
+      "canonical": "point to",
+      "asr": "point three",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c1_point_to_point_three_approach2": {
+      "canonical": "point to",
+      "asr": "point three",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c2_two_nights_three_nights_approach1": {
+      "canonical": "two nights",
+      "asr": "three nights",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c2_two_nights_three_nights_approach2": {
+      "canonical": "two nights",
+      "asr": "three nights",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c3_canonical_has_number_asr_different_number_approach1": {
+      "canonical": "The study followed 2 groups of participants.",
+      "asr": "The study followed 3 groups of participants.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c3_canonical_has_number_asr_different_number_approach2": {
+      "canonical": "The study followed 2 groups of participants.",
+      "asr": "The study followed 3 groups of participants.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c4_digit_replaced_by_unrelated_nonhomophone_word_approach1": {
+      "canonical": "the answer was 9",
+      "asr": "the answer was mine",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c4_digit_replaced_by_unrelated_nonhomophone_word_approach2": {
+      "canonical": "the answer was 9",
+      "asr": "the answer was mine",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c5_similar_but_not_homophone_numbers_approach1": {
+      "canonical": "thirteen people attended",
+      "asr": "thirty people attended",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "c5_similar_but_not_homophone_numbers_approach2": {
+      "canonical": "thirteen people attended",
+      "asr": "thirty people attended",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "rescues": [],
+      "ok": true
+    },
+    "approach_diff_index_misalignment_risk": {
+      "canonical": "The article reviewed twenty eight studies, and it was written for you.",
+      "asr": "The article reviewed 28 studies, and it was written four you.",
+      "canon_tokens_post": [
+        "the",
+        "article",
+        "reviewed",
+        "28",
+        "studies",
+        "and",
+        "it",
+        "was",
+        "written",
+        "for",
+        "you"
+      ],
+      "canon_raw_pre": [
+        "the",
+        "article",
+        "reviewed",
+        "twenty",
+        "eight",
+        "studies",
+        "and",
+        "it",
+        "was",
+        "written",
+        "for",
+        "you"
+      ],
+      "misindexed_lookup": "written",
+      "expected_word_at_that_position": "for",
+      "approach1_classification": "TRUE_CONTENT_MISMATCH",
+      "approach1_should_pass": false,
+      "approach2_classification": "TRUE_CONTENT_MISMATCH",
+      "approach2_should_pass": false
+    }
+  },
+  "regression": {
+    "POSITIVE_FIXTURES": {
+      "approach1": {
+        "total": 29,
+        "changed_count": 0,
+        "changed": []
+      },
+      "approach2": {
+        "total": 29,
+        "changed_count": 0,
+        "changed": []
+      }
+    },
+    "AMBIGUOUS_FIXTURES": {
+      "approach1": {
+        "total": 2,
+        "changed_count": 0,
+        "changed": []
+      },
+      "approach2": {
+        "total": 2,
+        "changed_count": 0,
+        "changed": []
+      }
+    },
+    "NEGATIVE_FIXTURES": {
+      "approach1": {
+        "total": 28,
+        "changed_count": 0,
+        "changed": []
+      },
+      "approach2": {
+        "total": 28,
+        "changed_count": 0,
+        "changed": []
+      }
+    },
+    "CONNECTED_SPEECH_CASES": {
+      "approach1": {
+        "total": 3,
+        "changed_count": 0,
+        "changed": []
+      },
+      "approach2": {
+        "total": 3,
+        "changed_count": 0,
+        "changed": []
+      }
+    },
+    "CONNECTED_SPEECH_NEGATIVE_CONTROL": {
+      "approach1": {
+        "total": 3,
+        "changed_count": 0,
+        "changed": []
+      },
+      "approach2": {
+        "total": 3,
+        "changed_count": 0,
+        "changed": []
+      }
+    }
+  },
+  "summary": {
+    "new_fixture_failures": [],
+    "regression_total": 65,
+    "regression_changed_approach1": [],
+    "regression_changed_approach2": [],
+    "homophone_fixture_failures": []
+  }
+}
