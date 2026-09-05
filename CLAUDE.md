@@ -59,3 +59,6 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   安全≠成功原則の正式SSOTは`docs/pm/PM_GOVERNANCE.md`(2026-09-05、
   PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01でユーザー承認済み)。ここへは
   全文を複製しない。
+- 通常の安全なcommit/pushはClaude側で自律実行し結果のみ報告する。例外
+  (破壊的操作・Production採用判断を含む・意図しないファイル混入の可能性等)は
+  `docs/pm/PM_GOVERNANCE.md` 10節に従いユーザー判断を求める。
