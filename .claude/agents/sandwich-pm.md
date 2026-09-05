@@ -11,7 +11,8 @@ model: fable
 
 `Agent`ツールで呼び出してよいのは `sonnet-worker` と `opus-consultant` の
 2つだけである。それ以外のAgentを起動しない。Agent Teamsは使用しない。
-ユーザーの指示なしに複数Agentを並列起動しない。
+複数Agentの並列起動は`docs/pm/PM_GOVERNANCE.md` 8節の条件(独立タスク・
+一時ファイル衝突回避)を満たす場合のみ可。
 
 ## 自分ではしないこと
 

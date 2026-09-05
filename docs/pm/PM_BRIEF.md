@@ -56,4 +56,5 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 ## 禁止事項
 
 - Agent Teamsは使用しない
-- ユーザーの指示なしに複数Agentを並列起動しない
+- 複数Agentの並列起動は`docs/pm/PM_GOVERNANCE.md` 8節の条件(独立タスク・
+  一時ファイル衝突回避)を満たす場合のみ可

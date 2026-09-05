@@ -1,7 +1,8 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-05(PM-GOVERNANCE-TTS-MODE-CONFIRMATION-01でTTS方式明示・確認原則[7節]を追加)**
+**最終更新: 2026-09-05(PM-GOVERNANCE-PARALLEL-AGENT-POLICY-02でAgent並列起動の原則[8節]を追加。
+PM-GOVERNANCE-TTS-MODE-CONFIRMATION-01でTTS方式明示・確認原則[7節]を追加)**
 
 **このファイルはPM運用規則(Gate・Closeout Check等)の正式SSOTである。**
 正式仕様(記事・音声・生成パイプラインそのものの仕様)は引き続き
@@ -140,6 +141,25 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   でタスク定義にTTS方式が明記されず、所要時間の見込み共有が漏れたことを受けた
   ユーザー指示により新設。
 
+## 8. Agent並列起動の原則
+
+- 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の
+  ディレクトリ、Report、script、SSOT)が重ならず、相互依存のない独立タスクで
+  あれば、Fableの判断で複数sonnet-workerを並列起動してよい。
+- 並列時の必須条件:
+  1. `docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`は同時に1タスクだけが
+     使用する。他の並列タスクはこの2ファイルへ触れず、最終メッセージで
+     報告する(またはFableが委任文で明示的に割り当てる)。
+  2. Git操作を含むタスクは、並列タスクの生成物をstageしない
+     (ファイル名指定の`git add`のみ、`-A`禁止)。
+  3. 同一の管理ID・同一の出力先に対する並列起動は禁止する。
+  4. 各タスクのループ上限(Sonnet合計2回等)は管理IDごとに独立して数える。
+- Agent Teamsは引き続き不使用。opus-consultantの並列起動は行わない
+  (診断は1回限り)。
+- 経緯: 2026-09-05、Trial-13(OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)
+  稼働中にPM_GOVERNANCE明文化・Git反映を並行実施した際、ユーザーが原則を
+  (b)(独立タスクであればFable判断で並列起動可)へ緩和する決定をした。
+
 ---
 
 ## 変更履歴
@@ -164,3 +184,10 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   所要時間の見込み共有が漏れたことを受けたユーザー指示により、タスク定義への
   方式明記・未明記時のユーザー確認・混在時の記録・着手前の見込み提示を
   正式化した(文書編集のみ、コード・Prompt変更なし)。
+- 2026-09-05(PM-GOVERNANCE-PARALLEL-AGENT-POLICY-02): 「8. Agent並列起動の
+  原則」を新設。従来の「ユーザーの指示なしに複数Agentを並列起動しない」を、
+  対象ファイル・出力先が重ならない独立タスクであればFableの判断で並列起動
+  可へ緩和し、一時ファイル(`ACTIVE_TASK.md`/`RESULT_PACKET.md`)の衝突回避・
+  Git stage分離・同一管理ID/出力先への並列起動禁止・ループ上限の独立計算を
+  必須条件として明記した(文書編集のみ、コード・Prompt変更なし)。Trial-13
+  稼働中にPM_GOVERNANCE明文化を並行実施した実運用を受けたユーザー決定(b)。
