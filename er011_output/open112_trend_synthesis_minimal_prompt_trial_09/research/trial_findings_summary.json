@@ -1,0 +1,49 @@
+{
+  "theme": "us_iran_hormuz_prolonged_stalemate_2026-09",
+  "runs": {
+    "a2_run01": {
+      "final_status": "NG_REVIEW_REQUIRED",
+      "blocked_at": "point_overlap_value_qa",
+      "attempts": 3,
+      "trajectory": "attempt0: value_qa FAIL(qa_not_full_story_paraphrase, qa_adds_new_value) — Point TwoがSignalの列挙・Full Story言い換えに近い状態だった(既存Value QAが正しく検知)。attempt1: value_qa依然FAIL。attempt2: value_qa全項目PASSに到達したが、Point Two vs Full Storyのlexical overlap比が0.421(閾値0.40)で機械的にflaggedのまま、Point-only regeneration無効化(ER-008-N8-FINAL-QA-HARDENING-21)のためarticle retry上限(2回)到達でNG_REVIEW_REQUIRED。"
+    },
+    "a2_run02": {
+      "final_status": "OK(ただし複数段でREVIEW_REQUIRED)",
+      "note": "再現性確認のための追加実行(Loop Budget内)。attempt0はPoint overlap/value QA NG、attempt1(article retry1回)で解消しPASS。Fact Checker: REVIEW_REQUIRED(4件のunsupported/underspecified claim、うちF-005由来の「100個超の機雷」は未確認数量として明示検知)。Ledger Deviation: overall LEDGER_COMPLIANTだが、Point Two中に4件のMINOR deviationsを検出(全てchanged_causality/changed_certainty/unsupported_new_claim=true — 反証Signal無視ではなく、複数Signalを積み上げた因果的・確信度の誇張、いわゆるtrend overclaimパターンと一致)。Directional Fact Precheck: DIRECTION_REVIEW_REQUIRED(ただし手動作成Ledgerの注記文がsentence matcherに拾われた可能性が高く、Trend固有の新規Gapと断定はしない)。"
+    },
+    "b1b_run01": {
+      "final_status": "NG_REVIEW_REQUIRED",
+      "blocked_at": "fact_checker",
+      "attempts": 1,
+      "note": "Point overlap/value QAはarticle retry1回で解消(A2で見られたSignal列挙傾向はB1では顕在化しなかった)。Fact CheckerがFAIL: (1)Ledgerに記載した「9月1日(月曜)」という日付attributionが、Fact Checker自身の独立Web検索では8月31日(月)である可能性が高いと指摘(Ledger作成者[本Trial]側の日付照合ミス)。(2)F-005の「100個超の疑わしい機雷」という具体的個数が一次資料で確認できないと指摘。"
+    }
+  },
+  "must_criteria_evaluation": {
+    "1_trend_gate_ready": "PASS(事前Gate、生成結果に依存しない)",
+    "2_multiple_independent_signals_used": "PASS(3記事とも複数Signalを使用)",
+    "3_not_evidence_listing_article": "PARTIAL — Main Storyが2月〜9月の時系列をほぼ出来事順に辿る構成になっており、Focus Moduleの『まず変化そのものを提示』指示は末尾の要約文でのみ実現された。個々のSignalを出典名で列挙してはいないが、意図した『変化を先に提示する』構成には至っていない。",
+    "4_main_story_single_throughline": "PASS(ただし3の留保あり)",
+    "5_points_have_distinct_value": "PASS(Point Role Planningが意味ベースで異なる役割を割り当てており、最終的にValue QAも全項目PASS)",
+    "6_no_signal_a_vs_signal_b_listing": "a2_run01 attempt0でこの状態が実際に発生し、既存Value QAが正しく検知・attempt1以降で改善。最終的には回避されたが、初回生成では現実に起きた。",
+    "7_trend_strength_not_exceeding_evidence": "PARTIAL — Main Story/In One Lineレベルでは『mixed』を明示できていたが、Point Twoのcausality/certaintyがLedger範囲を超える例がa2_run02で4件検出された(すべてMINOR、Ledger Deviation Checkerが検知)。Prompt指示だけでは防ぎきれず、QAが実際に機能して初めて可視化された。",
+    "8_counter_signal_handled": "PASS(F-009/F-010の対立が3記事すべてで明示的に扱われ、専用セクションとして残った)",
+    "9_fact_ledger_scope_causality_certainty_not_exceeded": "PARTIAL(7と同じ理由でNOT fully met on first pass、QA経由で可視化)",
+    "10_fact_safety_3stage_qa_operated": "PASS(a2_run02で3段すべて実行・非自明な検知結果を得た)",
+    "11_point_overlap_qa_operated": "PASS",
+    "12_point_value_qa_operated": "PASS",
+    "13_evidence_compression_operated": "PASS(3記事とも適用)",
+    "14_cefr_requirements_met": "PASS(word_count・section長ともtarget/tolerance範囲内)",
+    "15_no_silent_unsupported_trend_claim": "PASS — 未対応のまま記事化された事例はなく、全てNG_REVIEW_REQUIRED/REVIEW_REQUIRED/MINOR deviationとして可視化された",
+    "16_actual_model_id_routing_confirmed": "PASS(gpt-5.6-luna、routing.require_model経由)",
+    "17_runtime_evidence_saved": "PASS(audit/*.json、raw_usage_log_trial09*.jsonl)",
+    "18_no_production_code_prompt_change": "PASS(Phase A clean_single_insert確認済み)",
+    "19_no_new_validator_added": "PASS",
+    "20_no_new_dangling_reference": "PASS(Topic Master非変更、既存ファイル非変更)"
+  },
+  "existing_qa_sufficiency_classification": {
+    "trend_overclaim_pattern": "A. EXISTING_QA_SUFFICIENT寄り — 専用のtrend_overclaimカテゴリは無いが、既存のchanged_causality/changed_certainty/unsupported_new_claimタグがa2_run02のPoint Two causal overclaim 4件全てを実際に検知した。ただしseverityが全てMINORに分類され、overall_statusはLEDGER_COMPLIANTのまま通過している点は、Trend Synthesisに適切な閾値か要検討(USER_DECISION_REQUIRED候補)。",
+    "point_lexical_overlap_threshold": "B/C寄り(PROMPT_TIGHTENING_MAY_BE_ENOUGH〜NEW_QA_MAY_BE_NEEDED) — 固定0.40の語彙重複比は、News/Trend記事のように固有名詞・事実語彙(mines/gas/capacity/navy/talks等)を共有せざるを得ない題材では、意味的に新しい価値を持つPointでも機械的にflagされやすい(a2の2回中2回でPoint Twoがこれにより最終的にNG判定または境界値)。Point-only regenerationが安全上の理由で無効化されているため、この閾値超過は記事全体の再生成コスト増に直結する。",
+    "ledger_curation_precision_risk": "Trend Synthesis用に人手でWebSearch結果を集約したLedgerには、実際に2件の精度誤り(日付の曜日照合ミス、未確認の具体的個数の記載)が入り込み、Fact Checkerの独立Web検索によってのみ検出された。単一出来事のLedgerより材料点数が多いTrend Ledgerほど、この種の誤りが混入しやすいという設計時の懸念(OPEN-112-NEWS-MODE-DESIGN-08 §10)が実際に再現された。"
+  },
+  "mode_boundary_reconfirmation": "3記事とも、単一日付に圧縮すると中心的主張(長期化する経済的消耗戦、かつ回復を巡る評価の対立)が失われる内容になっており、事前のTrend Gate判定(TREND_SYNTHESIS)は生成後も覆らなかった。"
+}

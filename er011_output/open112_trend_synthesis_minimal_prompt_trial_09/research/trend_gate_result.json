@@ -1,0 +1,46 @@
+{
+  "theme": "us_iran_hormuz_prolonged_stalemate_2026-09",
+  "evaluated_at": "2026-09-05",
+  "criteria": {
+    "1_independent_signals_2plus": {
+      "result": "PASS",
+      "evidence": "8個の独立Signal(S-1〜S-7, S-9)。同一出来事の重複報道ではなく、軍事発表・経済統計・民間分析・報道分析・政府高官発言という異なる方法論・異なる日付に基づく。"
+    },
+    "2_common_direction": {
+      "result": "PASS",
+      "evidence": "S-1〜S-7, S-9は『2月開戦→6月停戦→7月再崩壊→8-9月にかけての経済的消耗と外交的手詰まりの深化』という共通方向を示す。"
+    },
+    "3_temporal_or_structural_change": {
+      "result": "PASS",
+      "evidence": "2026年2月〜9月の約7か月間にわたる構造変化(戦争→停戦→再崩壊→長期膠着)であり、単なる『複数の出来事の寄せ集め』ではない。"
+    },
+    "4_counter_signal_confirmed": {
+      "result": "PASS",
+      "evidence": "S-8(F-009、米エネルギー長官の『開戦後最高値』主張)を明確なcounter-signalとして特定済み。"
+    },
+    "5_not_single_source_trend": {
+      "result": "PASS",
+      "evidence": "S-1〜S-9は最低8つの異なる情報源(CENTCOM/DoD集計、CNBC、NCRI、CBS、EIA、Eurasia Group、CNN)に基づく。単一ソースの言い換えではない。"
+    },
+    "6_evidence_strength_not_flattened": {
+      "result": "PASS",
+      "evidence": "Ledger内でofficial_statistics(F-010)/government_official_announcement(F-005, F-006, F-009)/advocacy_media(F-004)/private_analysis(F-007)/reputable_media_reporting(F-001, F-008)を明示的に区別。F-004には独立検証なしの留保を明記。"
+    }
+  },
+  "verdict": "TREND_READY",
+  "mode_determination_2question_test": {
+    "q1_single_origin_question": "Main Storyを『[日付]にXが起きた』という1文で書いても要点は失われないか? → NO(単一日付・単一出来事に圧縮すると、7か月間の構造変化と対立する評価の併存という中心的主張が失われる)",
+    "q2_aggregation_question": "いずれか1つのSignalを除いても中心的主張は大きく変わらないか? → YES(例: S-4[機雷除去]やS-6[Eurasia Group]を個別に除いても、『長期化する経済的消耗戦、かつ評価が対立している』という中心的主張は他のSignalで成立し続ける)",
+    "determination": "TREND_SYNTHESIS"
+  },
+  "duplication_check_vs_existing_topic_master": {
+    "compared_against": [
+      "topic_package_イラン_アメリカ_情勢_2026-07-14.py(中心主張: 停戦崩壊・封鎖再開の切迫)",
+      "topic_package_イラン戦争_2026-07-13.py"
+    ],
+    "state_change": "7月時点は『停戦が崩壊しつつあり封鎖が再開される』という切迫した単一場面。9月時点は『封鎖が数ヶ月継続し、経済的消耗戦としての膠着に移行し、回復を巡る評価が対立している』という異なる局面。",
+    "new_strong_signals_since_july": ["F-004(石油化学生産停止)", "F-005(機雷除去作戦)", "F-007(Eurasia Groupの時期後退)", "F-009(エネルギー長官の最高値主張)"],
+    "sufficient_time_elapsed": "約7-8週間(7月14日→9月2-4日)",
+    "verdict": "NOT_A_DUPLICATE(状態変化A・新しい強いSignal B・十分な期間経過Dのいずれも満たす)"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "theme": "us_iran_hormuz_prolonged_stalemate_2026-09",
+  "collected_at": "2026-09-05",
+  "collection_method": "WebSearch/WebFetch実施(本Trialで新規に実施した実際の情報収集。Production Web検索Researcherパイプラインは使用せず、人手キュレーションによりVerified Fact Ledgerへ整理した)",
+  "independent_signals": [
+    {
+      "signal_id": "S-1",
+      "label": "封鎖の実効性を巡る対立(4月)",
+      "facts": ["F-002"],
+      "signal_type": "military_enforcement_data",
+      "independent_of": ["S-2", "S-3", "S-4", "S-5", "S-6", "S-7"]
+    },
+    {
+      "signal_id": "S-2",
+      "label": "停戦→商船攻撃→封鎖再開のサイクル(6-7月)",
+      "facts": ["F-003"],
+      "signal_type": "diplomatic_military_sequence",
+      "independent_of": ["S-1", "S-3", "S-4", "S-5", "S-6", "S-7"]
+    },
+    {
+      "signal_id": "S-3",
+      "label": "イラン国内エネルギー生産能力の毀損(8月)",
+      "facts": ["F-004"],
+      "signal_type": "economic_production_data",
+      "independent_of": ["S-1", "S-2", "S-4", "S-5", "S-6", "S-7"],
+      "source_strength_flag": "advocacy_media(NCRI)、独立検証なし"
+    },
+    {
+      "signal_id": "S-4",
+      "label": "米海軍による機雷除去作戦(8月25日)",
+      "facts": ["F-005"],
+      "signal_type": "military_operation",
+      "independent_of": ["S-1", "S-2", "S-3", "S-5", "S-6", "S-7"]
+    },
+    {
+      "signal_id": "S-5",
+      "label": "外交交渉期限切れ・トランプ発言(8月18日前後)",
+      "facts": ["F-006"],
+      "signal_type": "diplomatic_statement",
+      "independent_of": ["S-1", "S-2", "S-3", "S-4", "S-6", "S-7"]
+    },
+    {
+      "signal_id": "S-6",
+      "label": "民間シンクタンクによる和平見通し後退(Eurasia Group)",
+      "facts": ["F-007"],
+      "signal_type": "private_risk_assessment",
+      "independent_of": ["S-1", "S-2", "S-3", "S-4", "S-5", "S-7"]
+    },
+    {
+      "signal_id": "S-7",
+      "label": "報道機関による『持続不可能な膠着』評価(CNN、9月4日)",
+      "facts": ["F-008"],
+      "signal_type": "media_analysis",
+      "independent_of": ["S-1", "S-2", "S-3", "S-4", "S-5", "S-6"]
+    },
+    {
+      "signal_id": "S-8 (counter-signal)",
+      "label": "米政権高官による『開戦後最高値』主張(Energy Secretary、9月2日)",
+      "facts": ["F-009"],
+      "signal_type": "government_official_statement",
+      "role": "counter_signal_to_S7",
+      "note": "S-7(膠着・持続不可能)と少なくとも表面的に対立する。同列の証拠として扱わず、対立自体を記事内に残すこと。"
+    },
+    {
+      "signal_id": "S-9",
+      "label": "EIA四半期統計による輸送量の大幅減少",
+      "facts": ["F-010"],
+      "signal_type": "official_statistics",
+      "note": "本Ledger中で最も強いevidence tier。ただしS-8とは集計期間(四半期 vs 単日)が異なるため単純比較不可。"
+    }
+  ],
+  "duplicate_single_event_check": "S-1〜S-9は、それぞれ異なる日付・異なる発表主体・異なる方法論(軍事発表/経済統計/民間分析/報道分析/政府高官発言)に基づいており、同一出来事の重複報道によって独立Signal数を水増ししていない。",
+  "independent_signal_count_excluding_counter_signal": 8
+}
