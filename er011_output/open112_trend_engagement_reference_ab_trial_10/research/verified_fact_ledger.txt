@@ -1,0 +1,132 @@
+OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10 Verified Fact Ledger
+テーマ: 米国・イラン紛争が「経済的消耗戦としての長期膠着状態」へ移行しつつあること
+(OPEN-112-TREND-SYNTHESIS-MINIMAL-PROMPT-TRIAL-09のLedgerをベースに、2026-09-05に
+Ledger Verificationを実施し、Trial-09のFact Checkerが指摘した2件の精度誤り
+[F-005の機雷個数、F-009の曜日/日付照合]を修正したもの。中心主張・対象期間・
+counter-signal構造はTrial-09と実質同一であり、A/B比較可能性を優先して維持する)
+
+注記1: 本Ledgerは今回のTrial専用に新規作成したものであり、Production Topic Master
+への正式追加ではない(§16によりTopic Master変更は禁止)。
+
+注記2: 各Factの[source]行に、可能な限り一次発表元(米政府当局・米企業・米軍)と、
+それを報じた媒体を区別して記載する。source_strength行には、公式統計/政府当局発表/
+独立系商用トラッキング会社分析/民間シンクタンク分析/政治的立場を持つ媒体報道、の
+いずれに該当するかを明記し、これらを同列の証拠として扱わないこと。
+
+注記3(重要・counter-signal): F-009(米エネルギー長官の「開戦後最高値」主張)に対し、
+F-010(EIA四半期統計)とF-012(独立系タンカー追跡会社による同日実績の直接反論)という
+2種類の独立した反証Signalが存在する。記事はこの対立を隠さず明示すること。
+
+注記4(Ledger Verification記録、2026-09-05実施): Trial-09でFact Checkerが指摘した
+以下2件を、追加のWeb検索・一次報道の再確認により修正した。
+  (a) F-009の日付: Trial-09では「9月1日(月曜)」としていたが、2026年のカレンダー上
+      9月1日は火曜日であり、8月31日が月曜日である。CNBC記事本文(2026-09-03の
+      Fortune記事による直接引用の確認)は「Monday, August 31」を指しており、
+      Chris Wright発言自体の報道日は2026-09-02(CNBCインタビュー)。日付を
+      「8月31日(月曜)」へ修正し、報道日と発言対象日を明確に分離して記載する。
+  (b) F-005の機雷個数: Trial-09では「100個以上の疑わしい機雷」という単一の数字を
+      複数出典の集約(Wikipedia経由)としてそのまま採用していたが、実際には出典に
+      よって数字が異なる(CENTCOM公式発表は具体的個数を明らかにしていない一方、
+      Axios経由の匿名米当局者情報は「200個以上のmine-like objectsを掃海、うち
+      実際の機雷は11個」という、質的に異なる区分[疑わしい物体の総数 vs 実際に
+      機雷と確認された数]を報じている)。この区別を明示せず「100個以上の機雷」と
+      単純化することは、確認された脅威の規模を過大に読める書き方だったため、
+      情報源ごとの数字の違いと不確実性を明示する形に修正した。
+
+=== Source一覧 ===
+
+[SRC-001] CNN, "The US wants to manage the stalemate in the Strait of Hormuz. Iran wants to break it" (2026-09-04) [reputable_media_reporting]
+[SRC-002] Wikipedia, "2026 United States naval blockade of Iran"(CENTCOM・BBC Verify・Lloyd's List・米国防総省発表等の集計記事、2026年9月時点版)[secondary_aggregation — 一次発表の集計であり、Wikipedia自体は一次資料ではない]
+[SRC-003] CNBC, "Energy Secretary Chris Wright tells CNBC more than 17 million barrels of oil transited Hormuz on Monday" (2026-09-02) [government_official_announcement、米エネルギー長官本人の発言をCNBCが報道]
+[SRC-004] NCRI(National Council of Resistance of Iran), "Iran News in Brief" (2026-08-25 / 2026-08-17 / 2026-08-18) [advocacy_media — イラン政府に批判的な在外反体制派系メディア。中立報道機関ではない点に留意]
+[SRC-005] CNBC, "Trump says no talks scheduled with Iran as he teases action in Hormuz Strait" (2026-08-18) [reputable_media_reporting、大統領本人発言の引用]
+[SRC-006] CBS News, "Trump threatens to bomb Oman with Iran war stuck in stalemate as 60-day negotiation period ends" (2026年8月下旬、正確な日付はCBS記事本文要確認) [reputable_media_reporting]
+[SRC-007] U.S. Energy Information Administration(米エネルギー情報局)四半期統計(Short-Term Energy Outlook経由) [official_statistics — 本Ledger中で最も強いevidence tier]
+[SRC-008] Eurasia Group(民間政治リスク分析会社)の分析コメント、複数メディア経由で報道 [formal_survey / private_analysis]
+[SRC-009] Fox News, "Inside the dangerous US mission that cleared Iran's mines from Hormuz shipping lanes"(Axios報道の引用を含む、2026年8月時点)[reputable_media_reporting — CENTCOM司令官Adm. Brad Cooperの公式発言引用と、匿名米当局者によるAxios向け発言の引用の両方を含み、この2つは確からしさの水準が異なる]
+[SRC-010] Al Jazeera, "Why Hormuz remains high risk for ships despite US claims of mine-clearing" (2026-08-26) [reputable_media_reporting]
+[SRC-011] Fortune, "U.S. energy secretary Chris Wright's oil numbers don't add up" (2026-09-03) [reputable_media_reporting — 独立系商用タンカー追跡会社共同創業者(Samir Madani, TankerTrackers.com)の名前入り分析コメントを引用]
+
+=== Fact一覧 ===
+
+[F-001] 今回の米国・イラン紛争は、2026年2月28日に米国とイスラエルがイランに対する空爆を開始したことに端を発する。
+  causal_strength: 出来事の起点としての時系列記述。9月時点の膠着状態そのものの直接証拠ではなく、Trend全体の背景情報。
+  scope: 紛争全体の起点
+  source: SRC-002(集約記事による時系列整理)
+
+[F-002] 米国は2026年4月13日にイラン封鎖を開始し、4月中に少なくとも29隻の船舶が米軍により拿捕・臨検対象となったと発表された一方、Lloyd's Listの集計では26隻以上の船舶が封鎖を回避して航行したと報じられた。
+  numeric_value: 拿捕・臨検対象 29隻(米側集計) vs 封鎖回避 26隻以上(Lloyd's List集計)
+  numeric_scope: 2026年4月13日〜4月22日ごろの期間
+  causal_strength: 複数の一次発表(米軍発表・Lloyd's List集計)の集約記事に基づく。二次集約を経由しているため、一次資料と数値が完全に一致しない可能性がある。
+  ambiguity: 「封鎖が有効に機能していたか」について、拿捕数の多さを強調する見方と、回避数の多さを強調する見方が同時に存在しており、この時点でも評価が分かれていた。
+  source: SRC-002
+
+[F-003] 2026年6月14日に米国とイランが停戦の覚書(memorandum of understanding)に合意し、6月18日に封鎖は一旦解除された。しかしイランが事前承認航路(米軍が安全と指定した航路)を外れた商船3隻を7月に攻撃したことを受け、7月14日に封鎖が再開された。
+  causal_strength: 停戦合意→商船攻撃→封鎖再開という複数時点の出来事の連鎖。この順序自体は複数情報源で一致している。7月14日の封鎖再開は、既存の別テーマ(topic_package_イラン_アメリカ_情勢_2026-07-14.py)の内容とも整合する。
+  scope: 2026年6月14日〜7月14日
+  source: SRC-002
+
+[F-004] 2026年8月22日、イラン国営石油化学会社の指示によりArvand石油化学が生産活動を停止した。同時期の報道では、イランは開戦以降、天然ガス生産能力の約2億3000万立方メートル/日相当を喪失したとされる。
+  numeric_value: 天然ガス生産能力 約2億3000万立方メートル/日相当の喪失(開戦からの累計)
+  causal_strength: NCRI(在外イラン反体制派系メディア)による報道であり、イラン政府に批判的な立場を持つ情報源である。数値の独立検証はできていない。
+  source_strength: advocacy_media(政治的立場を持つ情報源)として扱い、公式統計(F-010)や米政府当局発表(F-005、F-009)と同列の証拠として扱わないこと。
+  writer_guidance: この数値を記事で使う場合は「イラン反体制派系メディアの報道によれば」という留保を外さないこと。
+  source: SRC-004
+
+[F-005] 2026年8月中、米海軍はホルムズ海峡の交通分離帯(Traffic Separation Scheme)で機雷除去作戦を行った。CENTCOM司令官Adm. Brad Cooperは「国際航路上の機雷除去に成功した」と公式に述べたが、除去・発見した機雷の具体的個数は公式には明らかにしていない。一方、Axiosが報じた匿名の米当局者情報によれば、米軍は主要航路から200個以上の「機雷のような物体(mine-like objects)」を掃海し、そのうち実際に機雷と確認されたのは11個だったとされる。2026年8月25日付の海事情報センター(Joint Maritime Information Center)の勧告は、交通分離帯の内外で漂流機雷・未確認機雷の残存リスクを理由に、ホルムズ海峡の脅威レベルを引き続き「SEVERE(重大)」に据え置いている。
+  numeric_value: 掃海した「機雷のような物体」200個超(匿名当局者情報、Axios経由) のうち、実際に機雷と確認されたのは11個(同じ匿名当局者情報)。CENTCOM公式発表は具体的個数を非公表。
+  causal_strength: CENTCOM司令官本人の公式発言(個数への言及なし)と、匿名当局者によるAxiosへの発言(具体的個数を含むが、公式発表ではない)の2層構造。両者を同列の確からしさとして扱わないこと。
+  scope: ホルムズ海峡の交通分離帯(主要航路)
+  ambiguity: 「200個以上の物体」と「11個の実際の機雷」は異なる集合であり、「100個以上の機雷が見つかった」のように単純化して書くと、確認された脅威の規模を過大に伝えることになる。また、交通分離帯の外側や未確認区域には、漂流機雷を含む残存リスクが引き続き指摘されている(脅威レベルSEVERE継続)。
+  writer_guidance: 「機雷を除去した」という成果と、「除去された物のほとんどは機雷そのものではなかった可能性がある」「除去区域の外側にはなお不確実性が残る」という限定を、両方とも保持すること。
+  source: SRC-009, SRC-002(集約経由の従来報道), SRC-010(脅威レベル継続の裏付け)
+
+[F-006] 2026年8月18日、トランプ大統領はイランとの協議予定がないと述べ、ホルムズ海峡での追加的な行動を示唆した。8月末までとされていた60日間の交渉期限が過ぎても、両国間の合意は成立しなかった。
+  causal_strength: 大統領本人の発言に基づく直接的な記述。「協議予定なし」「行動示唆」は本人発言であり、実際に軍事行動が起きたことを意味しない。
+  ambiguity: 「行動を示唆した」の具体的内容は、参照した報道の範囲では明示されていない。
+  source: SRC-005, SRC-006
+
+[F-007] 民間政治リスク分析会社Eurasia Groupは、2026年9月までに和平合意が成立するという従来の見通しを撤回し、緊張緩和の時期予測を2026年末へ先送りしたと報じられている。
+  causal_strength: 民間シンクタンク1社による予測・分析であり、当事国政府の公式発表や独立した統計データではない。予測が外れる可能性がある。
+  source_strength: formal_survey / private_analysis(公式統計より弱いevidence tier)として扱う。
+  source: SRC-008
+
+[F-008] 2026年9月4日付のCNN報道は、約1か月続いた戦闘の小康状態がその週に終わり、地域が「危険で、持続不可能になりつつある」軍事的膠着状態へ引き戻されつつあると報じた。イランによるホルムズ海峡の妨害と、米国による経済的圧力は、双方にとって「ますます持続不可能になりつつある」と評価されている。
+  causal_strength: 報道機関による分析的な状況描写であり、「持続不可能」という評価自体はこの記事の解釈的表現である。直接測定された定量指標ではない。
+  ambiguity: 「持続不可能」がいつ・どのような形の変化(和平・更なる激化等)につながるかは、この記事単独では示されていない。
+  source: SRC-001
+
+[F-009] 2026年9月2日、米エネルギー長官Chris Wrightは、CNBCのインタビューで、8月31日(月曜)に1日あたり1700万バレルを超える原油がホルムズ海峡を通過したと述べ、これを開戦以降の最高値("wartime record")と表現したうえで、イランは海峡を妨害する能力を失いつつあると主張した。
+  numeric_value: 1日あたり1700万バレル超(2026年8月31日・月曜日の単日実績とされる)
+  numeric_scope: 発言対象日は2026年8月31日(月)。CNBCでの発言・報道日は2026年9月2日。
+  causal_strength: 米政権高官(エネルギー長官)本人の発言。政権の政策的立場を代表する発言であり、独立した第三者機関による測定ではない。単日の値であるため、これが持続的傾向かどうかはこのFact単独では判断できない。
+  counter_signal: これは本Trendに対する明確な反証Signalである。F-008(CNN報道の「持続不可能な膠着」という評価)と、少なくとも表面的に対立する。さらにF-010・F-012という2種類の独立した反論が存在する(下記参照)。
+  writer_guidance: この発言と、F-010の独立した四半期統計、およびF-012の独立系タンカー追跡会社による同日実績の直接反論を、同列の証拠として扱わないこと。これらの対立(政権発表の単日実績 vs 独立統計・独立トラッキングデータ)を記事内で明示し、どちらか一方が「正しい」と断定しないこと。
+  source: SRC-003
+
+[F-010] 米エネルギー情報局(EIA)の統計によれば、開戦前の2025年第4四半期にホルムズ海峡を通過した原油・石油製品は平均で1日あたり2040万〜2160万バレルだったが、2026年第2四半期には平均1日あたり490万バレルまで落ち込んだ。
+  numeric_value: 2025年第4四半期平均 2040万〜2160万バレル/日 → 2026年第2四半期平均 490万バレル/日
+  causal_strength: 米政府公式統計(EIA)による直接測定値。本Ledger中で最も強いevidence tier(official_statistics)に位置づける。
+  ambiguity: この統計は四半期平均であり、F-009が示す「8月31日単日1700万バレル」という最新の値とは集計期間(四半期 vs 単日)が異なる。2026年第3四半期(7〜9月)の確定統計は、参照した情報源の範囲では未公表。
+  source: SRC-007
+
+[F-011] イラン軍指導部は、米国がホルムズ海峡の管理方法を決める権利はないと述べている。過去には、イランの当局者がホルムズ海峡閉鎖時に「原油を1バレルも輸出できなかった」と主張した例があったが、この主張は同時期の海上データ(2026年5月時点で1日あたり26万バレルの輸出が確認された)と矛盾していたと報じられている。
+  causal_strength: イラン当局者の発言と、それを検証する独立した海上データの両方が存在する事例。
+  ambiguity: 当事国(イラン)発表の数値には、独立データと矛盾していた過去の例があることを示す。今回の紛争全体を通じて、当事国発表の数値は独立検証を要する。
+  source: SRC-002
+
+[F-012] 独立系の商用タンカー追跡会社TankerTrackers.comの共同創業者Samir Madaniは、F-009のWright発言(8月31日単日1700万バレル超)について、複数日にわたる積算量を1日分として合算した数値である可能性を指摘し、実際には同じ8月31日にアラビア海全域(ホルムズ海峡以外の経路も含む)から出た原油は約914万バレルにとどまったと述べた。この指摘は2026年9月3日付のFortune記事で報じられた。
+  numeric_value: Wright発言 1700万バレル超/日(8月31日単日) vs Madani(TankerTrackers.com)算出 約914万バレル(同じ8月31日、アラビア海全域・ホルムズ海峡以外の経路も含む合計)
+  causal_strength: 独立系商用トラッキング会社の共同創業者本人による、名前入りの分析コメント。政府発表でも、当事国発表でもない第三者算定値だが、営利企業の分析であり、政府統計(F-010)と同一の確からしさではない。
+  source_strength: 独立系商用トラッキング分析(government_official_announcementやofficial_statisticsより弱いが、advocacy_mediaより強いevidence tierとして扱う)。
+  ambiguity: MadaniとWrightの集計方法(対象範囲・期間の区切り方)が異なる可能性があり、どちらの算出方法がより正確かは、この情報源だけでは断定できない。
+  writer_guidance: 「Wrightの発表が誤りだった」と断定せず、「同じ日について、政権発表と独立系トラッキング会社の算出が大きく食い違っている」という対立自体を記述すること。
+  source: SRC-011
+
+【今回のTrendの中心主張(central_claim、Writerへの直接指示ではなく、Ledger作成者によるTrend Gate判定根拠のまとめ)】
+2026年2月末に始まった米国・イスラエルとイランの軍事衝突は、6月の停戦合意と7月の再崩壊を経て、
+9月時点では、封鎖・機雷・エネルギー損失・外交的手詰まりが数ヶ月にわたって積み重なる
+「長期化した経済的消耗戦」へ移行しつつある。ただし、どちらが優勢かについては、独立統計
+(F-010、四半期ベースの大幅な減少)・独立系トラッキング会社の反論(F-012、同日実績の
+大幅な食い違い)と、米政権高官の直近の発表(F-009、単日ベースの記録的回復)との間で
+評価が食い違っており、この対立自体がこの段階のTrendの重要な一部である。

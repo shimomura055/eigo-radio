@@ -1,0 +1,23 @@
+# The Iran Conflict: One Busy Day, and a War Still Stuck
+
+The most important change in the US-Iran conflict is not one dramatic strike. It is pressure piling up without a political way out.
+
+The conflict began on February 28, when the United States and Israel started airstrikes on Iran. A ceasefire memorandum was agreed on June 14, and the blockade was lifted four days later. But after Iran attacked three merchant ships outside approved routes in July, the blockade returned on July 14. The pause did not become a settlement.
+
+Since then, the conflict has become harder to describe as simply open or closed. Hormuz depends on military control and continuing risk. Reports also describe pressure on Iran’s energy sector, while diplomacy has produced no agreement. One report said a month-long lull had ended and the region was moving back toward a dangerous, increasingly unsustainable military stalemate.
+
+A forecast moved its estimate for easing from September to the end of the year. Together, these signals make the conflict look less like a short crisis and more like a long economic contest.
+
+Washington offers a different signal. The US says traffic may have recovered sharply on a recent day, and that Iran’s ability to disrupt the strait is weakening. That tension is central. The question is not only whether ships can move today, but whether that movement can last and lead to a political exit.
+
+### A record day is not a recovery yet
+
+US Energy Secretary Chris Wright cited more than 17 million barrels through Hormuz on August 31. That was a one-day government claim. EIA data show a second-quarter average of about 5 million barrels a day, versus about 20 to 22 million before the war. TankerTrackers estimated about 9.1 million for the wider Arabian Sea that day, including routes outside Hormuz. The periods and routes differ, so the peak neither proves lasting recovery nor proves Wright wrong.
+
+### The cost of keeping the corridor open
+
+Traffic can improve while the conflict stays stuck. The US says it cleared a major lane, but its official statement gave no total. A separate report counted more than 200 mine-like objects, with only 11 confirmed as mines, while the warning stayed SEVERE. An opposition-linked Iranian outlet reported a petrochemical shutdown and a loss of about 230 million cubic meters a day in gas capacity. Talks ended without agreement, and a private forecast moved easing to year-end. Pressure is active, but no political exit has appeared.
+
+## In one line...
+
+The conflict appears to be moving toward a longer, costlier economic stalemate, but confidence should remain measured because the traffic evidence is still mixed.
