@@ -1,0 +1,190 @@
+{
+  "label": "B1B",
+  "status": "OK",
+  "metrics": {
+    "word_count": 442,
+    "sentence_count": 33,
+    "avg_sentence_length": 13.5,
+    "max_sentence_length": 29
+  },
+  "section_word_counts": {
+    "intro": 0,
+    "point_one": 113,
+    "point_two": 116,
+    "in_one_line": 0
+  },
+  "length_report": {
+    "intro": 0,
+    "point_one": 113,
+    "point_two": 116,
+    "in_one_line": 0,
+    "total": 442,
+    "point_one_within_target": false,
+    "point_one_within_tolerance": false,
+    "point_two_within_target": false,
+    "point_two_within_tolerance": false,
+    "total_within_soft_range": false,
+    "sf1r1_section_word_counts_note": "sf1r1.section_word_counts()はrun03の5見出し構造を正確には解釈しない(「in one line」を含まない##見出し=Hook/Tension/Closingの内容をheader_skipとして集計から丸ごと落とす。intro/in_one_lineは常に0になる。point_one/point_twoの値自体はrun03が###見出しを常にちょうど2つ[Voice A/Voice Bのみ]しか使わない設計のため実測上は正しいが、Hook/Tension/Closingが欠落するため記事全体の内訳としては使えない)。参考値としてのみ残す。正確な内訳はfive_section_length_report.jsonを参照。"
+  },
+  "five_section_length_report": {
+    "hook": 80,
+    "voice_a": 113,
+    "voice_b": 116,
+    "tension": 85,
+    "closing": 48,
+    "total_of_five_sections": 442,
+    "headings": {
+      "hook": "The Question",
+      "voice_a": "One Voice: The Worker Who Needs a Steady Base",
+      "voice_b": "Another Voice: The Worker Who Needs Room to Move",
+      "tension": "Why They See It Differently",
+      "closing": "What This Tells Us"
+    },
+    "unexpected_preamble_before_first_heading": ""
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_results": [],
+  "local_rewrite_cycles": [],
+  "local_rewrite_cycle_exhausted": false,
+  "fact_usage_report": null,
+  "evidence_compression_applied": true,
+  "point_overlap_value_qa_monitoring": {
+    "qa_status": "OK",
+    "lexical_flagged": false,
+    "value_qa_flagged": false,
+    "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+    "voice_a_vs_hook": {
+      "overlap_ratio": 0.234,
+      "shared_words": [
+        "assigned",
+        "better",
+        "daily",
+        "desk",
+        "desks",
+        "familiar",
+        "morning",
+        "nearby",
+        "office",
+        "people",
+        "place",
+        "same",
+        "system",
+        "worker",
+        "workers"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 48,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_b_vs_hook": {
+      "overlap_ratio": 0.25,
+      "shared_words": [
+        "another",
+        "choosing",
+        "desk",
+        "let",
+        "light",
+        "nearby",
+        "need",
+        "office",
+        "people",
+        "person",
+        "room",
+        "simply",
+        "some",
+        "work",
+        "worker",
+        "workers"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 48,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_a_vs_voice_b": {
+      "overlap_ratio": 0.172,
+      "shared_words": [
+        "desk",
+        "home",
+        "more",
+        "nearby",
+        "office",
+        "people",
+        "real",
+        "someone",
+        "who",
+        "worker",
+        "workers"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 64,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_b_vs_voice_a": {
+      "overlap_ratio": 0.172,
+      "shared_words": [
+        "desk",
+        "home",
+        "more",
+        "nearby",
+        "office",
+        "people",
+        "real",
+        "someone",
+        "who",
+        "worker",
+        "workers"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 64,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "value_qa_status": "PASS",
+    "value_qa_result": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0a8026dce7dcb3c7006a9d3b055a9887d0a210971d0de4a16a",
+      "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nMonday morning. One person puts a bag under a familiar desk and opens a notebook. Across the room, another worker checks the light, the noise, and nearby people before choosing a place. Both are starting work in the same office.\n\nBut the daily routine is changing. Some companies are bringing back assigned desks, while others still let workers choose. The question is not simply which system is better. What does a desk need to do for the person using it?\n\n【Point One】\nThe familiar desk is more than a surface. It lets a worker who spends most of the week in the office begin without searching, keep papers nearby, and feel that the workplace has a place for them. When every desk has just been used by someone else, the morning can start with unease.\n\nPeople with assigned desks more often describe a stronger sense of belonging and better concentration. At the same time, about 37% of free-address workers in a survey said their seating tends to become fixed.\n\nThe office may call the system “free,” while daily life quietly builds a home base. Its real shape is decided by how people use it each day.\n\n【Point Two】\nSome workers need the room to change with the work. Quiet can support deep focus. A nearby group can help with collaboration. Another setting may suit light conversation or rest. Choosing a seat can also let someone follow their mood or step away from people for a while.\n\nThis is not simply a wish for less structure. The flexible-seat idea matters when the setting matches the task and the person’s state of mind. People who built a settled work area at home have sometimes been more open to a non-permanent office desk.\n\nThe real test is whether a worker can find focus, teamwork, conversation, or distance without losing the people or resources needed for the task.\n",
+      "parsed": {
+        "point_one": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": " assigned deskが、準備時間の短縮だけでなく所属感や集中、職場に自分の居場所がある感覚を生むと具体化している。さらに、フリーアドレスでも約37%の人の座席が実質固定化するという情報から、「自由」の制度と実際の利用のずれを示しており、Full Storyにはない理解を加えている。"
+        },
+        "point_two": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": "座席を選べることの価値を、単なる自由や柔軟性ではなく、集中・協働・会話・距離の確保など仕事の種類や心理状態との適合として説明している。自宅で定着した作業場所を持つ人ほど非固定席を受け入れやすいという示唆や、必要な人・資源へのアクセスを失わずに環境を変えられることを示し、具体的な判断基準を加えている。"
+        }
+      },
+      "per_point": {
+        "point_one": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": " assigned deskが、準備時間の短縮だけでなく所属感や集中、職場に自分の居場所がある感覚を生むと具体化している。さらに、フリーアドレスでも約37%の人の座席が実質固定化するという情報から、「自由」の制度と実際の利用のずれを示しており、Full Storyにはない理解を加えている。"
+        },
+        "point_two": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": "座席を選べることの価値を、単なる自由や柔軟性ではなく、集中・協働・会話・距離の確保など仕事の種類や心理状態との適合として説明している。自宅で定着した作業場所を持つ人ほど非固定席を受け入れやすいという示唆や、必要な人・資源へのアクセスを失わずに環境を変えられることを示し、具体的な判断基準を加えている。"
+        }
+      },
+      "status": "PASS"
+    }
+  },
+  "directional_fact_precheck_status": "PASS",
+  "elapsed_seconds": 256.2
+}

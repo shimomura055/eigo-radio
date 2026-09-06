@@ -89,6 +89,33 @@
 # run_voices_pattern_run03()で無変更のまま呼び出す。run01/run02の出力
 # (b1b_run01/・b1b_run02/配下、OUT_DIR直下のtracked済みファイル)は一切
 # 上書きしない。run03の新規出力は全てb1b_run03/配下に閉じ込める。
+#
+# ---- 追記(EDITORIAL-B-FAMILY-VOICES-TRIAL-04、Fableレビューによる差し戻し
+# 3回目=往復3回目(最終)、run04、2026-09-06) ----
+# run03に対するFableレビューで、5区切り構造・見出し・Voice Bの方向性・
+# Tension/Closingの狙いは達成と評価された一方、run02からの後退として次の
+# 2点が指摘された: (1) Hook後半が企業名(Amazon)・統計・パーセント
+# (「83%から55%」等)を含むトレンド要約に戻ってしまった。(2) Voice Aの
+# 第2段落が調査数値(87%/74%・80%/67%・37%等)の連続になり、"reported"
+# "showed the same pattern"といった分析調の文になった。これはrun02で
+# 守られていた「Voiceごとに数字は最大1つ・話し言葉で・人を主語に」という
+# 制約が、run03でのFocus Module全面書き直し時に明文化から抜け落ちたことが
+# 原因と判断した。そのため、Research/Verified Fact Ledger/選定した2 Voice/
+# 5区切り骨格(Hook→Voice A→Voice B→Tension→Closing、###見出し2つ+##見出し
+# 3つ)はrun03のまま一切変更せず、Focus Module Block内に「Hookは数字・企業名
+# なしの情景+問いのみ」「Voiceごとに数字は最大1つ・人を主語にした話し言葉」
+# という制約を明示的に追加/復元する。run01〜run03の出力(b1b_run01/・
+# b1b_run02/・b1b_run03/配下、OUT_DIR直下のtracked済みファイル)は一切
+# 上書きしない。run04の新規出力は全てb1b_run04/配下に閉じ込める。Writer
+# adapter(run_voices_pattern_run03、5区切りparser split_five_voice_
+# sections()含む)は無変更のまま関数名も含めてそのまま再利用する(呼び出す
+# 関数・引数・順序は完全に同一、テーマ・Research・Voice選定も無変更)。
+# Evidence Compression Editorが適用前(Writer生の出力)を保存する
+# audit/pre_editor_article.md は、gen._generate_and_compress_article()に
+# 既存で組み込まれている機能であり、本ファイル側の追加実装は不要と確認した
+# (run03のaudit/pre_editor_article.mdを実査し、"showed the same pattern"
+# 等の分析調表現がEditor由来かWriter由来かを事後diffで確認済み、詳細は
+# Report参照)。
 from __future__ import annotations
 
 import json
@@ -143,8 +170,11 @@ TOPIC_JA = (
 LABEL = "B1B"
 # EDITORIAL-B-FAMILY-VOICES-TRIAL-04: Fableレビューによる差し戻し2回目。
 # run01(b1b_run01/)・run02(b1b_run02/)は保持したまま、Focus Module
-# 全面改訂後(5区切り構造)の記事をrun03として別ディレクトリへ生成する。
-RUN_ID = "run03"
+# 全面改訂後(5区切り構造)の記事をrun03として別ディレクトリへ生成した。
+# EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run04(往復3回目・最終): 5区切り骨格・
+# adapterはrun03のまま、Focus Module Blockの制約だけを強化した記事を
+# run04として別ディレクトリへ生成する。
+RUN_ID = "run04"
 LEVEL_OUT_DIR = f"{OUT_DIR}/{LABEL.lower()}_{RUN_ID}"
 
 
@@ -386,8 +416,8 @@ def run_research_stage() -> None:
 # ============================================================
 ANCHOR = "【Spoken-first原則(数字の扱い)】"
 
-B_FAMILY_VOICES_FOCUS_MODULE_BLOCK = """【B Family Voices/Perspective Focus Module(EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03、\
-Fableレビューによる差し戻し2回目=往復2回目への対応、2026-09-06。Production未採用。\
+B_FAMILY_VOICES_FOCUS_MODULE_BLOCK = """【B Family Voices/Perspective Focus Module(EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run04、\
+Fableレビューによる差し戻し3回目=往復3回目(最終)への対応、2026-09-06。Production未採用。\
 この記事タイプ専用の骨格再定義)】
 この記事は、上記で説明されている「Main Story / Point One・Point Two / In One Line」という
 一般的な役割定義とは異なる、Voices/Perspective(実在する複数の立場を並立させ、その違いの
@@ -479,6 +509,38 @@ Hook("## The Question")は、これから複数の立場を紹介するテーマ
 "Monday morning. One employee walks straight to the same desk they used last week.
 Another checks the room and chooses a quiet seat near the window.")。
 
+【Hookに数字・企業名・トレンド要約を入れないこと(重要、run04からの追加指示)】
+run03のHookは、情景描写と問いは達成できていましたが、後半で「By September 2026, office
+seating is moving in both directions. Amazon returned its Seattle-area and Arlington
+headquarters to assigned desks... Across companies, assigned seating fell from 83% to 55%
+by 2024.」のように、企業名(固有名詞)・統計・パーセントを含む業界動向の要約へ戻って
+しまいました。これはrun01で既に禁止していた「トレンド要約」への逆戻りです。Hookは、情景の
+描写と、そこから生まれる問いだけで構成してください。企業名・統計・パーセント・「moving in
+both directions」のような業界全体の動向要約をHookに書かないでください。背景となる事実が
+どうしても必要な場合でも1文以内にとどめ、数字を使わずに書いてください(例:「一部の会社は
+席を決め直し、別の会社は自由席を続けている」程度の、数字を含まない一般的な書き方に
+とどめる)。Hookの目安は100語未満のままです。
+
+【Voice内の数字は最大1つ、必ずその人の実感に折り込むこと(重要、run04からの追加指示)】
+run03の1つ目のVoiceの第2段落は、「Workers with assigned desks reported a stronger sense of
+belonging in a study of more than 16,000 office workers: 87%, compared with 74%...」の
+ように、1つの段落に複数の数字(87%/74%・80%/67%・約6割・37%)が連続し、"reported"
+"showed the same pattern"のような分析調の文になりました。これはrun02で守られていた
+「Voiceごとに数字は最大1つ」というルールが、run03のFocus Module全面書き直し時に明文から
+落ちたことが原因です。以下のルールを、この記事全体を通して両方のVoiceに適用してください:
+- 1つのVoiceのセクション全体を通して、具体的な数字(パーセント・人数・比率等)は最大1つ
+  だけにしてください。複数の数字を並べたり比較したりしないでください。
+- その数字は、必ずその人/その立場の人々の実感・経験に折り込み、話し言葉で書いてください。
+  例えば、「and they are not alone — most people with a fixed desk say they feel they
+  belong」「about four in ten find they drift back to the same seat」のように、人を主語に
+  した自然な文にしてください(この文言自体をコピーせず、この記事のFactに合わせて新しく
+  書いてください)。
+- 「a study of more than 16,000」「reported」「showed the same pattern」「compared with」
+  のような、調査・比較を報告する文構造は使わないでください。
+- 2つ目のVoiceについても同じルールを適用してください。「In one 2025 street interview with
+  50 Japanese office workers, four in five supported...」のような調査主語文・複数比率の
+  提示ではなく、1つの数字だけを、その人たちの感じ方として話し言葉で書いてください。
+
 【2つ目のVoiceの見出しの役割(2つ目のVoice)】
 1つ目のVoiceとは異なる、もう1つの実在するstakeholder perspectiveを、同様にVerified
 Fact Ledgerの事実を用いて描いてください。2つのVoiceは、単に異なる数字・異なるデータを
@@ -522,9 +584,10 @@ Ledgerにない新しい因果関係・断定を創作しないでください(E
 Discovery/Why記事向けの目安でありこの記事には適用しません。
 
 【記事全体の長さについて(この記事専用、hard/soft gateなし)】
-記事全体の総語数は、280〜420語程度を観察用の目安としてよいですが、hard capでもsoft gate
-でもありません。長さを目安に合わせるための不自然な削除・水増しはせず、Voiceの人間らしい
-描写を削らないでください。
+記事全体の総語数は、350〜420語程度を観察用の目安としてよいですが、hard capでもsoft gate
+でもありません(run04での変更点: Hook・1つ目のVoiceの数値を1つに絞ることで自然に350語
+以上に収まると見込んでいますが、これも観察用の目安であり、長さを目安に合わせるための
+不自然な削除・水増しはせず、Voiceの人間らしい描写を削らないでください)。
 
 【禁止事項まとめ(この記事全体を通して)】
 - Reference Example由来の定型的な呼びかけ表現("Imagine...", "Picture...", "Think
@@ -532,7 +595,12 @@ Discovery/Why記事向けの目安でありこの記事には適用しません�
 - "Voice A"/"Voice B"/"Perspective A"のような固定ラベル・番号ラベル
 - 文の主語がEvidence(survey/report/data/study)になる文
 - Voiceのセクションへ第三者(設計者・コンサルタント・経営側)の視点を持ち込むこと
-- Voiceのセクション内で解決策・妥協案を提案すること"""
+- Voiceのセクション内で解決策・妥協案を提案すること
+- Hookに企業名・統計・パーセント・「moving in both directions」のような業界動向の
+  トレンド要約を入れること(run04からの追加)
+- 1つのVoiceのセクション内で具体的な数字を2つ以上使うこと、または「a study of...」
+  「reported」「showed the same pattern」「compared with」のような調査・比較を
+  報告する文構造を使うこと(run04からの追加)"""
 
 
 def build_candidate_template() -> str:
@@ -1262,27 +1330,29 @@ def run_writer_stage() -> dict:
     with open(ledger_path, encoding="utf-8") as f:
         verified_ledger_text = f.read()
 
-    # EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03: Phase A監査ファイルは
-    # LEVEL_OUT_DIR(b1b_run03/)配下へ出力し、run01/run02のOUT_DIR配下・
-    # b1b_run02/配下を一切上書きしない。
+    # EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run04(往復3回目・最終): Phase A監査
+    # ファイルはLEVEL_OUT_DIR(b1b_run04/)配下へ出力し、run01/run02/run03の
+    # OUT_DIR配下・b1b_run02/・b1b_run03/配下を一切上書きしない。5区切り
+    # 骨格・Writer adapter(run_voices_pattern_run03)はrun03のまま無変更で
+    # 再利用する(Focus Module Blockの制約強化のみがrun04の差分)。
     phase_a = run_phase_a(f"{LEVEL_OUT_DIR}/audit")
     if not phase_a["phase_a_pass"]:
         print("[TRIAL-04] Phase Aで意図しない差分を検出したため、Writerへ進まずSTOPします。")
         return {"phase_a": phase_a, "phase_b": None, "status": "STOP_PHASE_A_UNEXPECTED_DIFF"}
 
     client = vfl01.get_client()
-    # run03のcost logはrun01/run02の既存tracked cost logへ追記して混在させ
-    # ないよう、b1b_run03/配下の別ファイルへ出力する。
-    cl.install(f"{LEVEL_OUT_DIR}/raw_usage_log_trial04_writer_run03.jsonl")
+    # run04のcost logはrun01/run02/run03の既存tracked cost logへ追記して
+    # 混在させないよう、b1b_run04/配下の別ファイルへ出力する。
+    cl.install(f"{LEVEL_OUT_DIR}/raw_usage_log_trial04_writer_run04.jsonl")
     master_full_text = ab01.load_master_full_text()
 
     candidate_prompt = build_candidate_prompt(
         phase_a["candidate_template"], master_full_text, TOPIC_JA, verified_ledger_text,
         gen.B1_B_DIRECT_INSTRUCTION)
 
-    print(f"[TRIAL-04] Writer呼び出し開始(run_voices_pattern_run03、adapter経由)...")
+    print(f"[TRIAL-04] Writer呼び出し開始(run_voices_pattern_run03、adapter経由、run04出力)...")
     t0 = time.time()
-    with cl.logging_context(THEME_ID, "writer_b1b_run03"):
+    with cl.logging_context(THEME_ID, "writer_b1b_run04"):
         result = run_voices_pattern_run03(
             client, THEME_ID, LABEL, candidate_prompt, verified_ledger_text, TOPIC_JA, LEVEL_OUT_DIR)
     elapsed = time.time() - t0
@@ -1291,9 +1361,9 @@ def run_writer_stage() -> dict:
     with open(f"{LEVEL_OUT_DIR}/audit/candidate_prompt_used.txt", "w", encoding="utf-8") as f:
         f.write(candidate_prompt)
 
-    # run01/run02のtracked summaryファイルを上書きしないよう、run03専用の
-    # summaryファイル名をLEVEL_OUT_DIR配下に出力する。
-    with open(f"{LEVEL_OUT_DIR}/trial04_summary_run03.json", "w", encoding="utf-8") as f:
+    # run01/run02/run03のtracked summaryファイルを上書きしないよう、run04
+    # 専用のsummaryファイル名をLEVEL_OUT_DIR配下に出力する。
+    with open(f"{LEVEL_OUT_DIR}/trial04_summary_run04.json", "w", encoding="utf-8") as f:
         json.dump({k: v for k, v in result.items() if k != "article_text"}, f, ensure_ascii=False,
                    indent=2, default=str)
 

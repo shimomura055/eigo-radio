@@ -960,3 +960,283 @@ B1・Article-only、Focus Module修正[5区切り構造]の効果検証)。Produ
 採用は別途USER_DECISION_REQUIRED — NOT APPROVED_FOR_PRODUCTION, NOT
 PRODUCTION_WIRED。最終判定・Editorial条件のセルフチェックの合否判断は
 Fableに委ねる。
+
+## 12. Fableレビュー往復3回目(run04、2026-09-06、最終)
+
+管理ID: **EDITORIAL-B-FAMILY-VOICES-TRIAL-04**(Sonnet委任3回目=往復3回目、
+最終)。run03に対するユーザー評価(達成2点・後退2点)への対応。§1〜11
+(run01〜run03)は無変更で保持し、本節を追記する。Lane B専用タスクであり、
+Lane A・`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`には触れて
+いない。
+
+run03記事に対するユーザー評価: 5区切り構造・見出し・Voice Bの方向性・
+Tension/Closingの狙いは達成と評価された一方、run02からの後退として
+(1)Hook後半が企業名(Amazon)・統計・パーセント(「83%から55%」等)を含む
+トレンド要約に戻った、(2)Voice A第2段落が調査数値(87%/74%・80%/67%・
+37%等)の連続になり"reported"/"showed the same pattern"のような分析調の
+文になった、という2点の改善指示を受けた。
+
+### 12-1. Focus Module Block差分(原文)
+
+Research/Verified Fact Ledger/選定した2 Voice/5区切り骨格(##×3+###×2、
+`run_voices_pattern_run03`アダプタ・`split_five_voice_sections()`)は
+run03のまま一切変更していない。`B_FAMILY_VOICES_FOCUS_MODULE_BLOCK`
+(`er012_editorial_b_voices_trial_04.py`)へ以下の変更のみを加えた:
+
+1. タイトル行を「run03、Fableレビューによる差し戻し2回目=往復2回目」から
+   「run04、Fableレビューによる差し戻し3回目=往復3回目(最終)」へ更新。
+2. 【Hookの役割と書き方】節の直後に、新設【Hookに数字・企業名・トレンド
+   要約を入れないこと(重要、run04からの追加指示)】節を追加(原文):
+
+```
+【Hookに数字・企業名・トレンド要約を入れないこと(重要、run04からの追加指示)】
+run03のHookは、情景描写と問いは達成できていましたが、後半で「By September 2026, office
+seating is moving in both directions. Amazon returned its Seattle-area and Arlington
+headquarters to assigned desks... Across companies, assigned seating fell from 83% to 55%
+by 2024.」のように、企業名(固有名詞)・統計・パーセントを含む業界動向の要約へ戻って
+しまいました。これはrun01で既に禁止していた「トレンド要約」への逆戻りです。Hookは、情景の
+描写と、そこから生まれる問いだけで構成してください。企業名・統計・パーセント・「moving in
+both directions」のような業界全体の動向要約をHookに書かないでください。背景となる事実が
+どうしても必要な場合でも1文以内にとどめ、数字を使わずに書いてください(例:「一部の会社は
+席を決め直し、別の会社は自由席を続けている」程度の、数字を含まない一般的な書き方に
+とどめる)。Hookの目安は100語未満のままです。
+```
+
+3. その直後に、新設【Voice内の数字は最大1つ、必ずその人の実感に折り込む
+   こと(重要、run04からの追加指示)】節を追加(原文):
+
+```
+【Voice内の数字は最大1つ、必ずその人の実感に折り込むこと(重要、run04からの追加指示)】
+run03の1つ目のVoiceの第2段落は、「Workers with assigned desks reported a stronger sense of
+belonging in a study of more than 16,000 office workers: 87%, compared with 74%...」の
+ように、1つの段落に複数の数字(87%/74%・80%/67%・約6割・37%)が連続し、"reported"
+"showed the same pattern"のような分析調の文になりました。これはrun02で守られていた
+「Voiceごとに数字は最大1つ」というルールが、run03のFocus Module全面書き直し時に明文から
+落ちたことが原因です。以下のルールを、この記事全体を通して両方のVoiceに適用してください:
+- 1つのVoiceのセクション全体を通して、具体的な数字(パーセント・人数・比率等)は最大1つ
+  だけにしてください。複数の数字を並べたり比較したりしないでください。
+- その数字は、必ずその人/その立場の人々の実感・経験に折り込み、話し言葉で書いてください。
+  例えば、「and they are not alone — most people with a fixed desk say they feel they
+  belong」「about four in ten find they drift back to the same seat」のように、人を主語に
+  した自然な文にしてください(この文言自体をコピーせず、この記事のFactに合わせて新しく
+  書いてください)。
+- 「a study of more than 16,000」「reported」「showed the same pattern」「compared with」
+  のような、調査・比較を報告する文構造は使わないでください。
+- 2つ目のVoiceについても同じルールを適用してください。「In one 2025 street interview with
+  50 Japanese office workers, four in five supported...」のような調査主語文・複数比率の
+  提示ではなく、1つの数字だけを、その人たちの感じ方として話し言葉で書いてください。
+```
+
+4. 【記事全体の長さについて】節の目安を「280〜420語」から「350〜420語」へ
+   変更(hard/soft gateではないことは維持)。
+5. 【禁止事項まとめ】節の末尾へ、上記2点に対応する禁止事項2件
+   (「Hookに企業名・統計・パーセント・トレンド要約を入れること」
+   「1つのVoice内で数字を2つ以上使うこと、または調査・比較を報告する
+   文構造を使うこと」)を追加。
+
+全文は`er012_output/editorial_b_voices_trial_04/b1b_run04/audit/phase_a_
+b_family_voices_focus_module_block.txt`を参照。
+
+### 12-2. run04記事全文(原文、無編集、見出し込み)
+
+Evidence Compression後の最終版(Local Rewrite cycleは発生していない、
+Ledger MAJORが無かったため)。
+
+```markdown
+# The Office Desk Question in 2026: A Stable Base or Room to Move?
+
+## The Question
+
+Monday morning. One person puts a bag under a familiar desk and opens a notebook. Across the room, another worker checks the light, the noise, and nearby people before choosing a place. Both are starting work in the same office.
+
+But the daily routine is changing. Some companies are bringing back assigned desks, while others still let workers choose. The question is not simply which system is better. What does a desk need to do for the person using it?
+
+### One Voice: The Worker Who Needs a Steady Base
+
+The familiar desk is more than a surface. It lets a worker who spends most of the week in the office begin without searching, keep papers nearby, and feel that the workplace has a place for them. When every desk has just been used by someone else, the morning can start with unease.
+
+People with assigned desks more often describe a stronger sense of belonging and better concentration. At the same time, about 37% of free-address workers in a survey said their seating tends to become fixed.
+
+The office may call the system "free," while daily life quietly builds a home base. Its real shape is decided by how people use it each day.
+
+### Another Voice: The Worker Who Needs Room to Move
+
+Some workers need the room to change with the work. Quiet can support deep focus. A nearby group can help with collaboration. Another setting may suit light conversation or rest. Choosing a seat can also let someone follow their mood or step away from people for a while.
+
+This is not simply a wish for less structure. The flexible-seat idea matters when the setting matches the task and the person's state of mind. People who built a settled work area at home have sometimes been more open to a non-permanent office desk.
+
+The real test is whether a worker can find focus, teamwork, conversation, or distance without losing the people or resources needed for the task.
+
+## Why They See It Differently
+
+By 2026, the disagreement is about what a good workday must protect. One worker guards a known place, a way to settle, and control over belongings. Another guards choice: the setting for focus, teamwork, conversation, or distance.
+
+Amazon shows why answers can differ inside one company. Its Seattle-area and Arlington headquarters returned to assigned desks, while offices that had used hot desking before the pandemic kept it. The two sides are not measuring the same thing, and those offices did not begin from the same arrangement.
+
+## What This Tells Us
+
+The question now looks less like old versus new. It is about what workers ask the office to provide: a stable base, or room to change with the day. A desk policy is also a window into the kind of working day each person is trying to build.
+```
+
+保存先: `er012_output/editorial_b_voices_trial_04/b1b_run04/article.md`
+(Evidence Compression後の最終版。Compression前のWriter生の出力は
+`b1b_run04/audit/pre_editor_article.md`を参照、§12-6で差分を分析)。
+
+### 12-3. run03との差分表
+
+| 観点 | run03 | run04 |
+|---|---|---|
+| Hook本文 | "Monday morning, one worker walks straight to last week's desk... By September 2026, office seating is moving in both directions. Amazon returned its Seattle-area and Arlington headquarters to assigned desks... assigned seating fell from 83% to 55% by 2024."(情景の後、企業名・統計・パーセントを含むトレンド要約が続く) | "Monday morning. One person puts a bag under a familiar desk...Both are starting work in the same office. But the daily routine is changing. Some companies are bringing back assigned desks, while others still let workers choose."(情景+問いのみ。企業名・数字は0件、背景事実は1文のみで数字なし) |
+| Voice A内の数字の数 | 4件(87%対74%、80%対67%、about six in ten、about 37%) | **1件**(about 37%、話し言葉で"People with assigned desks more often describe a stronger sense of belonging and better concentration. At the same time, about 37%..."という人を主語にした文に折り込み) |
+| Voice B内の数字の数 | 2件(four in five supported、one in five did not、街頭インタビューの比率として提示) | **0件**(数字を使わず、"People who built a settled work area at home have sometimes been more open to a non-permanent office desk."のように話し言葉で表現) |
+| 調査主語文("a study of..."/"reported"/"showed the same pattern"/"compared with") | Voice Aに複数出現("reported a stronger sense of belonging in a study of more than 16,000...: 87%, compared with 74%"、Editorが追加した"showed the same pattern"含む) | **0件**(全文grep実測で確認、`reported`/`showed the same pattern`/`compared with`/`a study of`いずれも0件) |
+| Tensionでの背景事実(Amazon等)の扱い | Tensionには背景事実の言及なし(Amazon等はHook側に配置) | Amazon(Puget Sound/Arlington)の事例をHookからTensionへ移し、"why answers can differ inside one company"という両Voiceの前提の違いを説明する文脈で使用(Tensionでの横断参照はFocus Moduleが許容する範囲) |
+| 語数(five_section_length_report.json) | 全体454語(Hook 82/Voice A 132/Voice B 109/Tension 76/Closing 55) | 全体442語(Hook 80/Voice A 113/Voice B 116/Tension 85/Closing 48) |
+| Fact Checker unsupported_specific_claims | 4件 | **1件**(Voice Bの在宅ワーク→非固定席受容の因果関係、run01〜run03から継続する既知の論点) |
+| Ledger Deviation | LEDGER_COMPLIANT、MINOR 1件("had become fixed anyway"が強めた表現) | **LEDGER_COMPLIANT、deviations 0件** |
+| Directional Fact Precheck | DIRECTION_REVIEW_REQUIRED(3件中1件が方向語不明で機械判定不能) | **PASS**(比較方向を要する文自体が0件に減少) |
+
+### 12-4. 技術結果
+
+- **Phase A**: `clean_single_insert_confirmed=True`(`b1b_run04/audit/
+  phase_a_result.json`、baseline_len=5816、candidate_len=13664)。
+- **Writer**: 1回で`status=STRUCTURE_PASS`→`OK`(構造再試行なし、
+  `h3_count=2`、`writer_attempts.json`)。
+- **Point Overlap QA(monitoring、5区切り版)**: Voice A vs Hook=0.234、
+  Voice B vs Hook=0.250、Voice A vs Voice B=0.172、Voice B vs Voice A=
+  0.172(閾値0.40未満、いずれもflagged=False)。
+- **Point Value QA(monitoring、5区切り版)**: `value_qa_status=PASS`
+  (`point_overlap_value_qa_monitoring.json`)。
+- **Fact Checker**: verdict=**REVIEW_REQUIRED**(non-blocking、既存policy
+  通り)。contradictions=0件。unsupported_specific_claims 1件("People who
+  built a settled work area at home have sometimes been more open to a
+  non-permanent office desk."という因果関係の直接的な裏付け調査は独立
+  検索で確認できなかった。Ledger B-03[CNET Japan記事]に基づく記述だが、
+  この論点はrun01から継続して未確認のまま)。run03の4件から3件減少した。
+- **Ledger Deviation Checker**: overall_status=**LEDGER_COMPLIANT**、
+  deviations=**0件**(run03のMINOR 1件も解消)。Local Rewrite発火なし。
+- **Directional Fact Precheck**: overall_status=**PASS**、results=0件
+  (比較方向判定を要する"X%対Y%"のような文自体が本文から無くなったため、
+  run03のDIRECTION_REVIEW_REQUIREDから回復した)。
+- **語数**: 全体442語(Hook=80、Voice A=113、Voice B=116、Tension=85、
+  Closing=48、`b1b_run04/five_section_length_report.json`)。350〜420語
+  という観察用の目安をやや超えているが(+22語)、hard/soft gateではなく、
+  Voiceの人間らしい描写を削るための追加編集は行っていない。
+- **Cost**: OpenAI(gpt-5.6-luna、Point Role Planning・Writer・Evidence
+  Compression・Point Overlap/Value QA monitoring・Fact Checker[web_search
+  12回]・Ledger Deviation Check、計6 call)input 131,990 tokens
+  (うちcached 9,553)・output 20,877 tokens、pricing_snapshot.json単価
+  (input $0.20/1M、cached $0.02/1M、output $1.20/1M)で概算約$0.050。
+  Web Search fee($10/1,000 call×12回)を加算すると約$0.170。Perplexity
+  呼び出しなし(Research再利用のため)。**1記事あたり1ドル未満**、Cost
+  超過によるSTOPには該当しない。TTSは実行していない。
+
+### 12-5. Sonnet自身の受入条件セルフチェック(10項目、根拠引用付き、最終判定はFable)
+
+1. **Voiceが外側から説明された人物になっていないか**: 達成。Voice Aは
+   "The familiar desk is more than a surface."、Voice Bは"Some workers
+   need the room to change with the work."から始まり、"For [a/an] worker
+   who..."型の紹介文は検出されなかった。
+2. **Evidenceが脇役になっているか**: 達成(run03からの改善)。Voice Aの
+   数字は1件("about 37%")のみで、人を主語にした文("People with assigned
+   desks more often describe..."、"about 37% of free-address workers...
+   said their seating tends to become fixed")に折り込まれており、
+   Evidence紹介文の連続は解消された。
+3. **Hookに数字・企業名・トレンド要約が無いか(run04固有の受入条件)**:
+   達成。Hook全文をgrep実測した結果、数字("2026"はタイトルのみで本文
+   Hookセクションには0件)・企業名とも検出されなかった。背景事実は
+   "Some companies are bringing back assigned desks, while others still
+   let workers choose."の1文のみで数字を含まない。
+4. **Voice内の数字が最大1つか(run04固有の受入条件)**: 達成。Voice Aは
+   "about 37%"の1件のみ、Voice Bは0件(§12-3表参照、正規表現による全文
+   カウントで実測確認)。
+5. **調査主語文("a study of.../reported/showed the same pattern/compared
+   with")が排除されているか**: 達成。全文grep実測で4表現とも0件だった
+   (§12-3表参照)。
+6. **5区切り構造(Hook/Voice A/Voice B/Tension/Closing)が維持されている
+   か**: 達成。`split_five_voice_sections()`で正しく5見出しを抽出できた
+   (`five_section_length_report.json`)。
+7. **Tensionが独立したセクションか、新しい因果関係を創作していないか**:
+   達成。"## Why They See It Differently"の下で、Amazonの事例を「両者の
+   前提の違い」を説明する文脈でのみ使い(Ledger X-01の範囲内)、新しい
+   因果関係の創作は無い。
+8. **Closingが要約でなく「見方の変化」を示しているか**: 達成。"The
+   question now looks less like old versus new."という、Hookからの見方
+   の変化を示すフレーズから始まっている。
+9. **固定ラベル("Voice A"/"Voice B")が使われていないか**: 達成。見出しは
+   "One Voice: The Worker Who Needs a Steady Base"/"Another Voice: The
+   Worker Who Needs Room to Move"。
+10. **Fact Safety(Fact Checker/Ledger Deviation/Directional Precheck)が
+    run03より改善しているか**: 達成。contradictions=0件・Ledger
+    deviations=0件(run03は1件)・Directional PrecheckがPASSへ回復
+    (run03はDIRECTION_REVIEW_REQUIRED)・Fact Checker unsupported_
+    specific_claimsが4件→1件へ減少(§12-4参照)。
+
+**総括(Sonnet自身の見立て、最終判定はFable)**: run03で後退した2点
+(Hookのトレンド要約化、Voice Aの数値密度)はいずれも解消したと判断する。
+副次的に、Ledger Deviation・Directional Fact Precheck・Fact Checker
+unsupported_specific_claimsのいずれもrun03より改善しており、数値密度を
+下げたことがFact Safety機構全体の判定にも良い影響を与えた可能性がある
+(観察であり、因果関係の断定はしない)。語数はやや目安を超過している
+(442語、目安350〜420語)が、hard/soft gateではないため許容範囲と判断する。
+
+### 12-6. Evidence Compression Editor起因かWriter起因かの分析(pre_editor_article.md diff)
+
+`audit/pre_editor_article.md`(Writer生の出力、Evidence Compression適用前)
+と`article.md`(最終版)を機械的にdiffした結果、変更は以下2箇所のみだった:
+
+1. Voice A: `"36.8% of free-address workers in an ITmedia survey"` →
+   `"about 37% of free-address workers in a survey"`
+   (Editorが数値を丸め[36.8%→約37%]、出典名"ITmedia"を一般化した。
+   run03で観察された分析調フレーズの追加は今回は発生していない)。
+2. Tension: `"By September 2026, the disagreement..."` → `"By 2026, the
+   disagreement..."`(Editorが月情報を削り圧縮した、意味内容は不変)。
+
+**run03との比較(観察、断定しない)**: run03のEvidence Compression Editorは
+"Their reported ability to concentrate was 80%, compared with 67%."を
+"...showed the same pattern: 80%, compared with 67%."へ書き換え、Focus
+Moduleが禁止した分析調フレーズを追加した。この書き換えは、隣接する複数の
+"X%対Y%"比較ペア(87%対74%・80%対67%)を圧縮する際に、Production側の
+Pattern A許可リスト("Representative Metric + Supporting Trend")が例示する
+連結表現を適用したものと考えられる(§11-2参照)。run04ではWriterの時点で
+Voice Aの数字が1件("about 37%")のみとなり、隣接する比較ペア自体が存在
+しなくなったため、Editorが連結・比較のための分析調フレーズを挿入する
+契機が構造的に無くなった可能性がある。これは対策の**提案**にとどめ、
+Evidence Compression Editor(Production、無変更)側のprompt修正は本タスク
+の範囲外のため実装していない。
+
+### 12-7. Closeout分類案・USER_DECISION_REQUIRED(run04で新たに発見・確認された点)
+
+**Closeout分類案**: **VALIDATED**(範囲: Voice数2・B1・Article-only、
+5区切り構造+Hook/Voice数字制約を含むFocus Module再修正の効果検証。
+run03で指摘された2つの後退[Hookのトレンド要約化・Voice Aの数値密度]は
+いずれも解消し、副次的にLedger Deviation・Directional Fact Precheck・
+Fact Checker unsupported_specific_claimsも改善した。Production変更ゼロ、
+既存Fact Safety機構は無改造で正常動作)。ただし以下はUSER_DECISION_
+REQUIREDとして残る:
+
+1. Voice Bの"People who built a settled work area at home have sometimes
+   been more open to a non-permanent office desk."という因果関係が、
+   Fact Checkerで独立検索により確認できないままrun01から一貫して残存
+   している点(Ledger B-03に基づく記述だが、Evidence Compressionによる
+   一般化で独立検索の再現率が下がっている可能性がある、§12-4参照)。
+2. Evidence Compression EditorのPattern A許可リストが例示する"showed the
+   same pattern"という表現が、Voices記事タイプのFocus Moduleが明示的に
+   禁止したanalyst phrasingと文字列として一致する点(§11-2・§12-6)。
+   run04では数字密度を下げることで回避できたが、これは対症療法であり、
+   Voices記事タイプ専用にEvidence Compressionの許可編集リストへ例外を
+   設けるべきかどうかは未決のまま。
+3. 語数がやや目安(350〜420語)を超過した点(442語)を許容範囲とするか、
+   さらなる調整を求めるか。
+4. §8(run01)・§10-6(run02)・§11-7(run03)のUSER_DECISION_REQUIREDは、
+   本節の結果を踏まえてなお未決のまま残る(TOPIC_JAの変更範囲、Voice数
+   3以上の検討、Fact CheckerのWeb Search再現率、Evidence Compressionでの
+   時点情報の扱い)。
+
+Status(run04を含む本Reportの提案、Sonnet委任は本run04で上限[初回+修正1回
+=2回]に達したため、これ以上のSonnet再委任は行わない): **VALIDATED**
+(範囲: Voice数2・B1・Article-only、Focus Module修正[5区切り構造+Hook/
+Voice数字制約]の効果検証)。Production採用は別途USER_DECISION_REQUIRED —
+NOT APPROVED_FOR_PRODUCTION, NOT PRODUCTION_WIRED。最終判定・Editorial
+条件のセルフチェックの合否判断、および上記USER_DECISION_REQUIREDへの
+回答はFableおよび人間ユーザーに委ねる。
