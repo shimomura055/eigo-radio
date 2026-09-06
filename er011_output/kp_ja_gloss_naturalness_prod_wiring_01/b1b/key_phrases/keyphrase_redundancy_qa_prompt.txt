@@ -1,0 +1,88 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Young Japanese Travelers Want More Freedom, But Their Trips Are Still Short
+
+As of September 2026, travel surveys in Japan tell a story with two different speeds.
+
+Many younger travelers, especially men, seem to want more room for their own pace and interests. But the trips measured in surveys are still short.
+
+This contrast appears clearly when people imagine having more time. In one survey, the most common answer was about one week of travel if people could take a one-month vacation. About 24% chose that answer.
+
+But an autumn survey by the same research center asked about people considering a trip. Their planned stays averaged about 1.8 nights, with a median of about two nights.
+
+These were not the same question. One measured a wish under a special condition. The other measured a current travel plan. Together, they show a gap between the trip people imagine and the time they plan to spend.
+
+Japan’s Tourism White Paper also says the country needs more trips per person and longer stays. In other words, longer travel is still a policy goal, not a completed change in behavior.
+
+So this is not a simple story about famous sightseeing being replaced by slow travel. The clearer story is that attitudes are changing faster than travel schedules.
+
+### Slow travel is also about control
+
+Slow travel here may mean control over time, not simply more nights. Men aged 29 and under put solo travel at 25.2%, while hobby-focused travel showed a similar pattern. Separately, about 90% of Gen Z respondents wanted free time during an overseas tour, and about 80% wanted half a day or more. A short package does not have to be fully scheduled.
+
+### One youth market does not fit all
+
+“Young Japanese travelers” is too broad a label. For men aged 18 to 29, solo travel was the leading travel arrangement in another survey. But among women aged 29 and under, 44.7% were still interested in visiting famous tourist spots. Different groups may respond to different offers: flexible, interest-led plans for some, and landmark-focused trips for others.
+
+## In one line…
+
+Young travelers in Japan are showing a clearer wish for more self-directed travel, especially young men, but the evidence points to an emerging preference—not a completed shift to longer stays.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "two different speeds",
+    "japanese_gloss": "動き方が二つに分かれている",
+    "source_sentence": "As of September 2026, travel surveys in Japan tell a story with two different speeds."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "control over time",
+    "japanese_gloss": "時間を自分で決められること",
+    "source_sentence": "Slow travel here may mean control over time, not simply more nights."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "too broad a label",
+    "japanese_gloss": "ひとくくりにするには広すぎる呼び方",
+    "source_sentence": "“Young Japanese travelers” is too broad a label."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "self-directed travel",
+    "japanese_gloss": "自分で決める旅行",
+    "source_sentence": "Young travelers in Japan are showing a clearer wish for more self-directed travel, especially young men, but the evidence points to an emerging preference—not a completed shift to longer stays."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "not a completed shift",
+    "japanese_gloss": "まだ完全な転換ではない",
+    "source_sentence": "Young travelers in Japan are showing a clearer wish for more self-directed travel, especially young men, but the evidence points to an emerging preference—not a completed shift to longer stays."
+  }
+]

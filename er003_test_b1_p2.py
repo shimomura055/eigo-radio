@@ -127,6 +127,23 @@ class KeywordsPromptTests(unittest.TestCase):
         self.assertIn("数値", template)
         self.assertIn("穴埋め", template)
 
+    def test_template_contains_gloss_naturalness_guidance(self):
+        """KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01(2026-09-06、
+        ユーザー承認 選択肢a): 学習者向け平易さ・直訳調回避の具体的な
+        自然さ基準が選定Promptに存在することを確認する(診断Report
+        `KEYPHRASE-JA-GLOSS-NATURALNESS-DIAGNOSTIC-01_REPORT.md`が
+        指摘した「短く自然な」1語のみという薄さへの対策)。blacklist
+        化はしない(例示は最大1〜2語のみ、独立した禁止語リストの新設は
+        行わない)。"""
+        template = bk.load_prompt_template()
+        self.assertIn("聞いてすぐ意味を理解できる", template)
+        self.assertIn("直訳調", template)
+        self.assertIn("報道語", template)
+        # 既存の規約A/B(漢数字化・placeholder規則)を弱めていないことを
+        # 同じテスト内で再確認する。
+        self.assertIn("漢数字", template)
+        self.assertIn("使ってもかまいません", template)
+
     def test_template_does_not_contain_rule_c_short_function_word_wording(self):
         """規約C(短い機能語終端のKey Phrase回避、Trial-17 Track C)は
         ユーザー承認で不採用となったため、選定Promptへ追加しないこと

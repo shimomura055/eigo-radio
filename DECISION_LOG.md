@@ -1,7 +1,14 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01、
+**最終更新: 2026-09-06(KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01、
+ユーザーが2026-09-06に問題2(Key Phrase日本語glossの自然さ、選択肢a)を
+`APPROVED_FOR_PRODUCTION`と正式決定し、選定Prompt(`b1_p2_keywords_l_
+prompt_template.txt`)へ学習者向け自然さ基準2文・CURRENT_SPEC.md「QA /
+Human Review」節へ自然さ基準1項目を`PRODUCTION_WIRED`まで配線した。
+診断はタスク前提「new normal→新常態」が実データと異なる誤りだったこと
+を確認済み。詳細は該当エントリ・`KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-
+WIRING-01_REPORT.md`参照)。2026-09-06(KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01、
 ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した2件(Key
 Phrase日本語glossの表示用/TTS用分離[先頭・読点直後の「～」「〜」→
 「なになに」への決定論的規則変換、新フィールド`japanese_gloss_tts`を
@@ -5967,6 +5974,48 @@ Production Writerへの正式配線・CURRENT_SPEC登録・News/Trend実装・Ho
 **根拠レポート**: `KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01_REPORT.md`、`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-01_REPORT.md`、`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02_REPORT.md`、`OPEN-117-KEYPHRASE-TILDE-GATE-RECHECK-01_REPORT.md`
 
 **影響するCURRENT_SPEC項目**: Key Phrase > 日本語グロス(`ja_gloss`)のPrompt規約A/B(規約Bのgloss側「～」「〜」禁止を`WITHDRAWN`と追記)、Key Phrase日本語gloss 表示用/TTS用分離(新規行)、Key Phrase 数値placeholder型の回避(選定Prompt)(新規行)
+
+## KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01(2026-09-06、ユーザーが2026-09-06に問題2(Key Phrase日本語gloss自然さ、選択肢a)を`APPROVED_FOR_PRODUCTION`と正式決定し`PRODUCTION_WIRED`まで配線)
+
+**背景**: `KEYPHRASE-JA-GLOSS-NATURALNESS-DIAGNOSTIC-01_REPORT.md`(read-only診断)は、タスク依頼の前提「A2 Key Phrase "new normal"のglossが『新常態』となった」を実データ(`er011_output/open117_keyphrase_display_tts_separation_trial_02/`)で検証し、この前提が誤りであることを確認した。glossは選定時から一貫して「新しい当たり前」であり、「新常態」は`kp2_en`(英語Key Phrase Component)がTTSで日本語を発話しASRが誤って書き起こした、OPEN-117とは無関係な既存の英語TTS言語ロック不具合のASR文字起こしテキストとしてのみ出現していた。前提訂正の上で、依頼文の「問題クラス」自体(辞書的に正しいが硬い・直訳調・学習者に伝わりにくい訳語が生成されうる構造的リスク)を診断した結果、選定Prompt(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有、canonicalization工程は`japanese_gloss`を一切生成せずpass-throughのみ)には「短く自然な日本語グロス」という一語以外に、学習者向け平易さ・直訳調回避・硬い報道語/漢語回避の具体基準が無く、`er003_key_words_min_unit.py::validate_min_unit_selection()`(日本語文字を含むか/括弧書きを含まないか/空でないかの3点のみ判定)・Key Phrase Set Redundancy QA(5件相互の意味重複のみ判定)・Human Review基準(ASR一致・発音品質中心)のいずれも訳語の自然さを一切判定しない構造的空白(原因分類A[Prompt不足]+C[Validator形式チェックのみ]+D[Human Review明文基準なし]の複合)が確認された。既存corpus(重複除去397件)の機械的grep調査では、硬い漢語・報道語調の語彙による明確な悪化事例はほぼ確認されなかった(「効いていない」のではなく「そもそも判定軸が存在しない」ため、低頻度発生時に検知できないリスク)。ユーザーが選択肢a(選定Prompt1〜2文追加+Human Review基準1文追加。LLM追加QA・自然さValidator新設・blacklist・過去397件の一括再生成は不採用)を`APPROVED_FOR_PRODUCTION`と正式決定した。
+
+**実装内容1: 選定Prompt改訂**(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有): 既存の「選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。」の直後へ、新しいパラグラフとして以下の2文を追加した(原文一字一句):
+
+> 「日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。」
+
+例示語は「常態」「是正」の2語のみに限定し、独立した禁止語リスト(blacklist)は作らない(NGワード列挙を主対策にしないという方針どおり)。既存の規約A(漢数字化)・規約B(「…」等placeholder禁止、「～」「〜」は許容[KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01で許容済み])・数値placeholder型回避の1文はいずれも無変更のまま維持した。
+
+**実装内容2: Human Review基準追加**(`CURRENT_SPEC.md`「QA / Human Review」節): 新規行「Key Phrase日本語glossの自然さ(Human Review基準)」を追加し、以下の1項目を明文化した:
+
+> 「日本語glossが、自然で平易かつ学習者が直感的に理解できる表現か。意味が正しくても、不自然な直訳・過度に硬い表現・一般的でない訳語ならReview対象。」
+
+機械的Validator・blacklistは新設していない(人間の主観判断による基準のまま)。
+
+**retry/fallback整合の確認**: `er003_v1_n3_01_scaffold_generate.py::run_key_phrases()`は、Key Phrase Set Redundancy QAがNGの場合、`run_key_phrase_selection()`(内部で`bk.load_prompt_template()`を呼ぶ)を最大`KEY_PHRASE_REDUNDANCY_RETRY_MAX`(=2)回まで再実行する設計であり、選定retryの都度、改訂済みの同じPromptファイルを読み込むことをコード確認した(選定・retryとも同一の`PROMPT_TEMPLATE_PATH`定数を参照)。A2側(`er003_v1_iran01_a2_generate.py`ほか)も同じ`er003_b1_p2_keywords.py`の関数を再利用するため、A2/B1両方に同じ改訂が及ぶ。既存の安全装置(Redundancy QA retry上限・Human Review Lock・Audio Validation Gate)は一切変更・回避していない。
+
+**Regression**: `er003_test_b1_p2.py`へ新規単体テスト1件`test_template_contains_gloss_naturalness_guidance`を追加し(追加文言の主要語句の存在確認+既存の規約A/B文言[漢数字・「使ってもかまいません」]が維持されていることを同テスト内で再確認)、同ファイル49件全PASSを確認した。他のテストファイルはこのPromptファイルを直接参照していないことをgrep確認済み(影響範囲はこの1ファイルのみ)。
+
+**Runtime evidence**(2026-09-06、`er011_kp_ja_gloss_naturalness_prod_wiring_01.py`、`er011_output/kp_ja_gloss_naturalness_prod_wiring_01/`): Theme 2 B1・A2(いずれもTrial-12記事、`open112_trend_theme2_b_a2_b1_text_trial_12/{b1b,a2}_run01/article.md`)を入力に、Production正式経路(`sc.run_key_phrases`、無変更のProduction関数を直接呼び出し、選定→canonicalization→Key Phrase Set Redundancy QA、TTSは実行せずLLM呼び出しのみ)をそれぞれ1回実行した。B1は初回`KEY_WORDS_STRUCTURE_PASS`・`CANONICALIZATION_PASS`・`REDUNDANCY_PASS`。A2は初回選定でRedundancy QAがNG(「quiet split」と「new normal」の概念重複)となり、既存のretry機構が実際に発火して選定からやり直し(retry 1/2)、2回目で`REDUNDANCY_PASS`に到達した(既存retry機構の正常動作を実証)。
+
+**品質比較(直前配線KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01の出力との比較)**:
+
+B1(旧Prompt出力、`kp_display_tts_separation_prod_wiring_01/b1b/`): median→中央値、two different speeds→二つの異なる進み方、self-directed travel→自分主導の旅行、interest-led plans→興味に沿った計画、emerging preference→形成されつつある志向。
+
+B1(新Prompt出力、本タスク): two different speeds→動き方が二つに分かれている、control over time→時間を自分で決められること、too broad a label→ひとくくりにするには広すぎる呼び方、self-directed travel→自分で決める旅行、not a completed shift→まだ完全な転換ではない。
+
+A2(旧Prompt出力、`open117_keyphrase_display_tts_separation_trial_02/a2/`): median of 2 nights→宿泊数の中央値は二泊、new normal→新しい当たり前、at one's own pace→自分のペースで、month off→一か月の休み、not fully match→～と完全には一致しない。
+
+A2(新Prompt出力、本タスク): quiet split→目立たない分かれ、the new normal→新しい当たり前、hobby-focused travel→趣味を中心にした旅行、a full month off→丸一か月の休み、median→中央値。
+
+選定候補自体が試行ごとに変わる(LLMの非決定性)ため厳密な同一Key Phrase比較はN=1〜2件に限られるが、共通して選定された「self-directed travel」は旧Prompt「自分主導の旅行」(「主導」という硬めの漢語)から新Prompt「自分で決める旅行」(平易な言い切り)へ変化し、依頼文が懸念した方向性(硬い漢語を避ける)に沿う変化を確認した。「new normal」/「the new normal」は旧・新とも「新しい当たり前」で一致し、直前配線が既に自然だった訳語を新Promptでも損なっていないことを確認した。悪化事例(不自然な直訳化・硬化)は今回のサンプルでは確認されなかった。学習価値(意味の明確さ等)の劣化も確認されなかった。**遵守は確率的である**(Prompt文言による誘導であり決定的Validatorではないため、今回のような良好な結果が常に再現される保証はない)。
+
+**状態**: `PRODUCTION_WIRED`(選定Prompt改訂・Human Review基準追加とも)。OPEN-118として新規登録し即`RESOLVED / PRODUCTION_WIRED`(OPEN-117行にも本タスクへのクロスリファレンスを追記)。
+
+**今回実施しなかったこと**: LLM追加QA(canonicalization QAまたは選定QAへの自然さ判定項目の追加)、自然さ判定用の新規機械的Validator、個別NGワードのblacklist化、既存corpus(397件)の一括gloss再生成、個別語(「新常態」等)の手修正、TTS実行。LLM追加QA導入は、実データで悪化例が確認された場合の別Trialとして`USER_DECISION_REQUIRED`のまま残す。
+
+**根拠レポート**: `KEYPHRASE-JA-GLOSS-NATURALNESS-DIAGNOSTIC-01_REPORT.md`(前提訂正・診断)、`KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01_REPORT.md`(本配線)
+
+**影響するCURRENT_SPEC項目**: Key Phrase > Key Phrase日本語glossの自然さ基準(選定Prompt)(新規行)、QA / Human Review > Key Phrase日本語glossの自然さ(Human Review基準)(新規行)
 
 ## 参照元
 
