@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>OPEN-117 Tilde Gate Recheck — Audio Trial</title>
+<style>
+body { font-family: -apple-system, "Segoe UI", sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+.card { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.status-OK { color: #2f6b4f; font-weight: bold; }
+.status-STOPPED { color: #a83232; font-weight: bold; }
+.canonical { font-size: 1.1rem; font-weight: bold; }
+.asr { font-family: monospace; background: #f3f3f3; padding: 0.15rem 0.4rem; border-radius: 4px; }
+audio { width: 100%; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<h1>OPEN-117: 「～」のTTS実挙動確認(Trial-only、Production Batch API)</h1>
+<p>voice=Charon / model=gemini-3.1-flash-tts-preview(Batch) / ASR=Azure→OpenAI mini Cascade(Production標準経路)</p>
+
+<div class="card">
+  <div class="canonical">(a) ～を示す</div>
+  <div>単一の先頭「～」(U+FF5E、未加工のままTTSへ渡す)</div>
+  <div>結果: <span class="status-STOPPED">STOPPED</span>(3回とも TRUE_CONTENT_MISMATCH)</div>
+  <div>ASR例: <span class="asr">お、死滅。</span> / <span class="asr">推しミス</span> / <span class="asr">頭を閉めす。</span></div>
+  <audio controls src="trial/narration/a_single_leading_fullwidth_tilde.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="canonical">(b) ～を示す、～を指し示す (Trial-13 kp4_ja実gloss)</div>
+  <div>先頭+読点直後の2箇所に「～」。現行Productionではplaceholderゲートで即STOPPED(TTS未呼出)。
+  本Trialはゲートより手前の低レベル関数を直接呼び、仮にゲートが無かった場合の実挙動を確認。</div>
+  <div>結果: <span class="status-STOPPED">STOPPED</span>(3回とも TRUE_CONTENT_MISMATCH)</div>
+  <div>ASR例: <span class="asr">示す、指し示す</span>(標準2回とも同一、「を」を欠落) /
+  fallback: <span class="asr">お示す、お指し示す。</span></div>
+  <audio controls src="trial/narration/b_trial13_kp4_ja_full_gloss.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="canonical">(c) 何かを示す (対照)</div>
+  <div>placeholderを「何か」で解決した自然な日本語</div>
+  <div>結果: <span class="status-OK">OK</span>(1回目でNORMALIZED_MATCH)</div>
+  <div>ASR: <span class="asr">何かを示す。</span></div>
+  <audio controls src="trial/narration/c_control_replaced_with_nanika.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="canonical">(d) 〜を示す (対照、波ダッシュ U+301C)</div>
+  <div>(a)と同じ意味・位置だが文字コードのみ異なる</div>
+  <div>結果: <span class="status-STOPPED">STOPPED</span>(3回とも TRUE_CONTENT_MISMATCH)</div>
+  <div>ASR例: <span class="asr">私密</span> / <span class="asr">お、しめす。</span> /
+  fallback: <span class="asr">それをしめす。</span></div>
+  <audio controls src="trial/narration/d_control_wave_dash.wav"></audio>
+</div>
+
+<p>詳細JSON: <a href="results_open117.json">results_open117.json</a> /
+cost: <a href="cost_summary_open117.json">cost_summary_open117.json</a></p>
+</body>
+</html>

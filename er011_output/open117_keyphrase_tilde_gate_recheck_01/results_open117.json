@@ -1,0 +1,194 @@
+{
+  "a_single_leading_fullwidth_tilde": {
+    "status": "STOPPED",
+    "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "お、死滅。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 1.8,
+          "raw_leading_silence_seconds": 0.4,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 1.74,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "推しミス",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 1.6,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.5,
+          "trimmed_duration_seconds": 1.45,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "頭を閉めす。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false
+      }
+    ],
+    "case_id": "a_single_leading_fullwidth_tilde",
+    "input_text": "～を示す",
+    "note": "単一の先頭「～」(U+FF5E)。tts_safe_ja()を通せば本来lstripされる文字を、意図的に未加工のままTTSへ渡す。"
+  },
+  "b_trial13_kp4_ja_full_gloss": {
+    "status": "STOPPED",
+    "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "示す、指し示す",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 2.96,
+          "raw_leading_silence_seconds": 0.32,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 2.89,
+          "leading_margin_retained_seconds": 0.32,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "示す、指し示す",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 2.56,
+          "raw_leading_silence_seconds": 0.3,
+          "raw_trailing_silence_seconds": 0.4,
+          "trimmed_duration_seconds": 2.51,
+          "leading_margin_retained_seconds": 0.3,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "お示す、お指し示す。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false
+      }
+    ],
+    "case_id": "b_trial13_kp4_ja_full_gloss",
+    "input_text": "～を示す、～を指し示す",
+    "note": "Trial-13 kp4_ja(\"point to\")の実canonical gloss全体。先頭+読点直後の2箇所に「～」。現行Production経路ではdetect_gloss_placeholder_notation()でSTOPPEDになり、そもそもTTS呼び出しへ到達しない(このTrialはその手前の低レベル関数を直接呼び、仮にゲートが無かった場合にTTSが実際にどう読むかを確認する)。"
+  },
+  "c_control_replaced_with_nanika": {
+    "status": "OK",
+    "text": "何かを示す",
+    "path": "er011_output/open117_keyphrase_tilde_gate_recheck_01/trial/narration/c_control_replaced_with_nanika.wav",
+    "voice": "Charon",
+    "asr_verified": true,
+    "asr_text": "何かを示す。",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "何かを示す。",
+        "length_ok": true,
+        "audio_classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 1.68,
+          "raw_leading_silence_seconds": 0.22,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 1.61,
+          "leading_margin_retained_seconds": 0.22,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      }
+    ],
+    "trim_info": {
+      "raw_duration_seconds": 1.68,
+      "raw_leading_silence_seconds": 0.22,
+      "raw_trailing_silence_seconds": 0.42,
+      "trimmed_duration_seconds": 1.61,
+      "leading_margin_retained_seconds": 0.22,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "fallback_used": false,
+    "case_id": "c_control_replaced_with_nanika",
+    "input_text": "何かを示す",
+    "note": "対照: placeholderを「何か」で解決した自然な日本語(比較基準)。"
+  },
+  "d_control_wave_dash": {
+    "status": "STOPPED",
+    "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "私密",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 1.4,
+          "raw_leading_silence_seconds": 0.32,
+          "raw_trailing_silence_seconds": 0.48,
+          "trimmed_duration_seconds": 1.27,
+          "leading_margin_retained_seconds": 0.32,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "お、しめす。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 2.4,
+          "raw_leading_silence_seconds": 0.58,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 2.16,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.35
+        }
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "それをしめす。",
+        "length_ok": true,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false
+      }
+    ],
+    "case_id": "d_control_wave_dash",
+    "input_text": "〜を示す",
+    "note": "対照: (a)と同じ意味だが波ダッシュ(U+301C)を使用。Production側のdetect_gloss_placeholder_notation()/tts_safe_ja()はU+FF5E/U+301Cの両方を対象にしている(既存コード確認済み)。"
+  }
+}
