@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-GOVERNANCE-ADAPTIVE-REPORTING-06でユーザー向け
+**最終更新: 2026-09-06(PM-GOVERNANCE-LOCAL-FILE-LINK-RULE-07でユーザーへの
+試聴・閲覧依頼は`file:///C:/Users/tensh/eigo-radio/...`形式のURLで提示する
+ことを9-2へ追加)。2026-09-06(PM-GOVERNANCE-ADAPTIVE-REPORTING-06でユーザー向け
 報告フォーマットの5構造[現在の状態/未解決問題/次にやること/ユーザー判断/
 補足・技術詳細]を、固定必須から必要な項目だけを選ぶ候補セクション制
 [adaptive reporting]へ改訂[9節])。2026-09-06(PM-GOVERNANCE-REPORT-FORMAT-AND-AUTONOMOUS-GIT-05で
@@ -252,6 +254,11 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
 - ユーザーが追加詳細を求めた場合にのみ、補足・技術詳細を展開する。
 - Fable自身の説明が複雑になった場合は、最後に1行で「要するに」を付ける。
 - 可能なら、悪い例より良い例を優先して示す。
+- ユーザーへ試聴・閲覧を依頼するローカル成果物(音声player・html・音声
+  ファイル等)は、必ず `file:///C:/Users/tensh/eigo-radio/<相対パス>` 形式の
+  URL(Ctrl+クリックで開ける)で提示する。パスのみの記載や`SendUserFile`等
+  での送付は行わない(2026-09-06ユーザー指示)。sonnet-workerのReport/
+  RESULT_PACKETにも同形式で記載させる。
 
 本原則はFableのユーザー向け報告に適用する。Sonnet/OpusからFableへの報告
 (`RESULT_PACKET.md`・ER/OPEN Report)は従来どおり証跡・原文を省略せず詳細に
@@ -386,3 +393,11 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   全項目を出すと冗長で分かりづらいというユーザー判断により新設。情報を
   減らして隠す変更ではなく、不要なセクション表示を省略して読みやすく
   するもの。
+- 2026-09-06(PM-GOVERNANCE-LOCAL-FILE-LINK-RULE-07): 「9-2. PMとしての
+  説明原則」へ、ユーザーへ試聴・閲覧を依頼するローカル成果物(音声player・
+  html・音声ファイル等)は必ず`file:///C:/Users/tensh/eigo-radio/<相対パス>`
+  形式のURL(Ctrl+クリックで開ける)で提示し、パスのみの記載や
+  `SendUserFile`等での送付は行わない旨の箇条書きを追加した(sonnet-worker
+  のReport/RESULT_PACKETにも同形式で記載させる)。ユーザーのクライアントで
+  パス記載や`SendUserFile`では試聴用ファイルが開けなかったことを受けた
+  2026-09-06ユーザー指示による新設(文書編集のみ、コード・Prompt変更なし)。
