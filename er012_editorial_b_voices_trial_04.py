@@ -49,6 +49,17 @@
 # Bashでcommit)。
 #
 # 到達してよいStatus: REJECTED / VALIDATED / USER_DECISION_REQUIRED のみ。
+#
+# ---- 追記(EDITORIAL-B-FAMILY-VOICES-TRIAL-04、Fableレビューによる修正指示
+# 1回目、2026-09-06) ----
+# Fableレビュー(run01記事に対して)を踏まえ、Focus Module Block末尾に
+# (f)〜(k)の追加指示(Hook・語り口・主語構造・数字数・第三者視点排除・
+# 長さ)を追加し、Writer本体をrun02として1回だけ再生成する。Research/
+# Verified Fact Ledger/選定した2 Voice/骨格マッピングは変更しない。手で
+# 記事を書き換えない。run01の出力(b1b_run01/配下、OUT_DIR直下の
+# trial04_summary.json・raw_usage_log_trial04_writer.jsonl・audit/配下)は
+# 一切上書きしない。run02の新規出力は全てb1b_run02/配下に閉じ込める
+# (Phase A監査ファイル・cost log・summaryも含む)。
 from __future__ import annotations
 
 import json
@@ -99,7 +110,11 @@ TOPIC_JA = (
 )
 
 LABEL = "B1B"
-LEVEL_OUT_DIR = f"{OUT_DIR}/{LABEL.lower()}_run01"
+# EDITORIAL-B-FAMILY-VOICES-TRIAL-04: Fableレビューによる修正指示1回目。
+# run01(b1b_run01/)は保持したまま、Focus Module修正後の記事をrun02として
+# 別ディレクトリへ生成する。
+RUN_ID = "run02"
+LEVEL_OUT_DIR = f"{OUT_DIR}/{LABEL.lower()}_{RUN_ID}"
 
 
 # ============================================================
@@ -341,7 +356,8 @@ def run_research_stage() -> None:
 ANCHOR = "【Spoken-first原則(数字の扱い)】"
 
 B_FAMILY_VOICES_FOCUS_MODULE_BLOCK = """【B Family Voices/Perspective Focus Module(今回のTrialで修正する、\
-この記事タイプ専用の骨格再定義。EDITORIAL-B-FAMILY-VOICES-TRIAL-04、Production未採用)】
+この記事タイプ専用の骨格再定義。EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02\
+(Fableレビューによる修正指示1回目)、Production未採用)】
 この記事は、上記で説明されている「Main Story / Point One・Point Two / In One Line」という
 一般的な役割定義とは異なる、Voices/Perspective(実在する複数の立場を並立させ、その違いの
 奥にあるTensionを発見し、一段深い理解へ着地する)という別の記事タイプです。以下は、上記の
@@ -421,7 +437,40 @@ Fact Ledgerの事実を用いて描いてください。2つのVoiceは、単に
 は、Discovery/Why記事向けの目安であり、この記事のVoiceセクションはそれぞれの立場を
 十分に描くために、その目安を超えて構いません(Tensionを含む2つ目のVoiceセクションは
 さらに長くなることを想定しています)。目安の下限・上限に合わせるための不自然な削除・
-水増しはしないでください。長さを揃えるためにVoiceの人間らしい描写を削らないでください。"""
+水増しはしないでください。長さを揃えるためにVoiceの人間らしい描写を削らないでください。
+
+【Hook・語り口に関する追加指示(EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02、Fableレビューに
+よる修正指示1回目。以下は上記の指示への追加であり、置き換えではありません。前回(run01)
+の記事はHookがニュース/分析調で始まり、Evidenceの提示自体が文の主語になっている箇所が
+複数あり、Voice Bに第三者の視点が混入していたため、その3点を修正するための指示です)】
+Apply the following rules (f)-(k) in addition to everything above.
+
+(f) Open with a small, concrete everyday scene involving a person (arriving at the office,
+looking for a seat, unpacking, choosing where to sit today), then pose the question. Do not
+open with company trends, dates, or "two directions".
+
+(g) Inside each Voice, the grammatical subject of nearly every sentence must be the person or
+people of that Voice (what they do, feel, need, worry about). Never write sentences whose
+subject is a survey, report, analysis, study, or figure ("A survey found...", "One report
+described...", "The data show..."). Do not use analyst phrasing such as "This suggests
+that...", "showed the same pattern", "reported belonging".
+
+(h) Use at most one number per Voice, and fold it into the person's perspective in spoken form
+("and they are not alone — most people with a fixed desk say they feel they belong"; "about
+four in ten workers in free-address offices find they drift back to the same seat"). Keep
+exact figures only where the Verified Fact Ledger requires them; otherwise prefer "most",
+"about four in ten" over exact percentages. The Spoken-first原則(数字の扱い)below still
+applies in full.
+
+(i) Do not import third-party viewpoints (planners, consultants, management) into a worker's
+Voice. If a design idea matters, express it as what this worker wants or notices.
+
+(j) Tone target: light, conversational, human-centered, as if explaining to a friend; short
+sentences; no report vocabulary.
+
+(k) Length: aim for roughly 350-420 words in total; achieve this by removing survey-style
+sentences, not by cutting the human details. Tension and Closing may stay close to the
+previous run's length and content."""
 
 
 def build_candidate_template() -> str:
@@ -443,12 +492,15 @@ def build_candidate_prompt(candidate_template: str, master_full_text: str, topic
     return gen.build_prompt(common_block, instruction)
 
 
-def run_phase_a() -> dict:
-    os.makedirs(f"{OUT_DIR}/audit", exist_ok=True)
+def run_phase_a(audit_dir: str) -> dict:
+    # EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02: 監査ファイルの出力先を
+    # 呼び出し元から受け取るように変更(run01のOUT_DIR/audit/配下を上書き
+    # しないため、run02からはLEVEL_OUT_DIR/audit/配下を渡す)。
+    os.makedirs(audit_dir, exist_ok=True)
     candidate_template = build_candidate_template()
-    with open(f"{OUT_DIR}/audit/candidate_template.txt", "w", encoding="utf-8") as f:
+    with open(f"{audit_dir}/phase_a_candidate_template.txt", "w", encoding="utf-8") as f:
         f.write(candidate_template)
-    with open(f"{OUT_DIR}/audit/b_family_voices_focus_module_block.txt", "w", encoding="utf-8") as f:
+    with open(f"{audit_dir}/phase_a_b_family_voices_focus_module_block.txt", "w", encoding="utf-8") as f:
         f.write(B_FAMILY_VOICES_FOCUS_MODULE_BLOCK)
 
     reconstructed = gen.COMMON_BLOCK_TEMPLATE.replace(
@@ -456,7 +508,7 @@ def run_phase_a() -> dict:
     clean_single_insert = (reconstructed == candidate_template)
     result = {"clean_single_insert_confirmed": clean_single_insert,
               "baseline_len": len(gen.COMMON_BLOCK_TEMPLATE), "candidate_len": len(candidate_template)}
-    with open(f"{OUT_DIR}/audit/phase_a_result.json", "w", encoding="utf-8") as f:
+    with open(f"{audit_dir}/phase_a_result.json", "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     print(f"[TRIAL-04][Phase A] clean_single_insert_confirmed={clean_single_insert}")
     return {"result": result, "phase_a_pass": clean_single_insert, "candidate_template": candidate_template}
@@ -752,13 +804,18 @@ def run_writer_stage() -> dict:
     with open(ledger_path, encoding="utf-8") as f:
         verified_ledger_text = f.read()
 
-    phase_a = run_phase_a()
+    # EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02: Phase A監査ファイルは
+    # LEVEL_OUT_DIR(b1b_run02/)配下へ出力し、run01のOUT_DIR/audit/配下を
+    # 上書きしない。
+    phase_a = run_phase_a(f"{LEVEL_OUT_DIR}/audit")
     if not phase_a["phase_a_pass"]:
         print("[TRIAL-04] Phase Aで意図しない差分を検出したため、Writerへ進まずSTOPします。")
         return {"phase_a": phase_a, "phase_b": None, "status": "STOP_PHASE_A_UNEXPECTED_DIFF"}
 
     client = vfl01.get_client()
-    cl.install(f"{OUT_DIR}/raw_usage_log_trial04_writer.jsonl")
+    # run02のcost logはrun01のraw_usage_log_trial04_writer.jsonl(既存tracked
+    # ファイル)へ追記して混在させないよう、b1b_run02/配下の別ファイルへ出力する。
+    cl.install(f"{LEVEL_OUT_DIR}/raw_usage_log_trial04_writer_run02.jsonl")
     master_full_text = ab01.load_master_full_text()
 
     candidate_prompt = build_candidate_prompt(
@@ -767,7 +824,7 @@ def run_writer_stage() -> dict:
 
     print(f"[TRIAL-04] Writer呼び出し開始(run_voices_pattern、adapter経由)...")
     t0 = time.time()
-    with cl.logging_context(THEME_ID, "writer_b1b_run01"):
+    with cl.logging_context(THEME_ID, "writer_b1b_run02"):
         result = run_voices_pattern(
             client, THEME_ID, LABEL, candidate_prompt, verified_ledger_text, TOPIC_JA, LEVEL_OUT_DIR)
     elapsed = time.time() - t0
@@ -776,7 +833,9 @@ def run_writer_stage() -> dict:
     with open(f"{LEVEL_OUT_DIR}/audit/candidate_prompt_used.txt", "w", encoding="utf-8") as f:
         f.write(candidate_prompt)
 
-    with open(f"{OUT_DIR}/trial04_summary.json", "w", encoding="utf-8") as f:
+    # run01のOUT_DIR/trial04_summary.json(既存tracked)を上書きしないよう、
+    # run02専用のsummaryファイル名をLEVEL_OUT_DIR配下に出力する。
+    with open(f"{LEVEL_OUT_DIR}/trial04_summary_run02.json", "w", encoding="utf-8") as f:
         json.dump({k: v for k, v in result.items() if k != "article_text"}, f, ensure_ascii=False,
                    indent=2, default=str)
 

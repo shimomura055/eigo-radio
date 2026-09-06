@@ -430,3 +430,243 @@ PrecheckはPASSへ改善)。
 **Status: 本Reportの提案はVALIDATED(範囲限定の技術検証)、Production採用は
 別途USER_DECISION_REQUIRED — NOT APPROVED_FOR_PRODUCTION, NOT
 PRODUCTION_WIRED。最終判定・Editorial条件1〜8の合否判断はFableに委ねる。**
+
+---
+
+## 10. Fableレビュー修正1回目(run02、2026-09-06)
+
+管理ID: **EDITORIAL-B-FAMILY-VOICES-TRIAL-04**(Sonnet委任1回目に対するFable
+差し戻し、修正1回目)。§1〜9(run01)は無変更で保持し、本節を追記する。
+
+run01記事に対するFableレビュー結果: Voice選び・Tension・Closing・Fact
+Safetyは達成、TOPIC_JAの変更は範囲内としてFableが承認。一方で(1)Hookが
+ニュース/分析調("By September 2026, office seating is moving in two
+directions...")で人の情景から入っていない、(2)Evidenceが主語の文が4箇所
+以上("A survey of...found..."等)、(3)Voice Bに第三者(workplace planners)
+の視点が混入、(4)502語で長すぎる、という4点の修正指示を受けた。Tension・
+Closingは維持指示。
+
+### 10-1. Focus Module Block差分(原文)
+
+`er012_editorial_b_voices_trial_04.py`のみを修正(Research/Verified Fact
+Ledger/選定した2 Voice/骨格マッピングは無変更、記事本文の手作業書き換えは
+行っていない)。`B_FAMILY_VOICES_FOCUS_MODULE_BLOCK`の末尾へ、Fable指示の
+(f)〜(k)をそのまま英語で追加。ヘッダー行に`run02(Fableレビューによる修正
+指示1回目)`を追記。差分全文:
+
+```diff
+--- run01 (old)
++++ run02 (new)
+@@ ヘッダー行 @@
+-この記事タイプ専用の骨格再定義。EDITORIAL-B-FAMILY-VOICES-TRIAL-04、Production未採用)】
++この記事タイプ専用の骨格再定義。EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02
++(Fableレビューによる修正指示1回目)、Production未採用)】
+@@ ブロック末尾へ追加 @@
++
++【Hook・語り口に関する追加指示(EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run02、Fableレビューに
++よる修正指示1回目。以下は上記の指示への追加であり、置き換えではありません。前回(run01)
++の記事はHookがニュース/分析調で始まり、Evidenceの提示自体が文の主語になっている箇所が
++複数あり、Voice Bに第三者の視点が混入していたため、その3点を修正するための指示です)】
++Apply the following rules (f)-(k) in addition to everything above.
++
++(f) Open with a small, concrete everyday scene involving a person (arriving at the office,
++looking for a seat, unpacking, choosing where to sit today), then pose the question. Do not
++open with company trends, dates, or "two directions".
++
++(g) Inside each Voice, the grammatical subject of nearly every sentence must be the person or
++people of that Voice (what they do, feel, need, worry about). Never write sentences whose
++subject is a survey, report, analysis, study, or figure ("A survey found...", "One report
++described...", "The data show..."). Do not use analyst phrasing such as "This suggests
++that...", "showed the same pattern", "reported belonging".
++
++(h) Use at most one number per Voice, and fold it into the person's perspective in spoken form
++("and they are not alone — most people with a fixed desk say they feel they belong"; "about
++four in ten workers in free-address offices find they drift back to the same seat"). Keep
++exact figures only where the Verified Fact Ledger requires them; otherwise prefer "most",
++"about four in ten" over exact percentages. The Spoken-first原則(数字の扱い)below still
++applies in full.
++
++(i) Do not import third-party viewpoints (planners, consultants, management) into a worker's
++Voice. If a design idea matters, express it as what this worker wants or notices.
++
++(j) Tone target: light, conversational, human-centered, as if explaining to a friend; short
++sentences; no report vocabulary.
++
++(k) Length: aim for roughly 350-420 words in total; achieve this by removing survey-style
++sentences, not by cutting the human details. Tension and Closing may stay close to the
++previous run's length and content.
+```
+
+全文は`er012_output/editorial_b_voices_trial_04/b1b_run02/audit/phase_a_
+b_family_voices_focus_module_block.txt`(新、run02)と`er012_output/
+editorial_b_voices_trial_04/audit/b_family_voices_focus_module_block.txt`
+(旧、run01、無変更のまま保持)を参照。
+
+コード上の変更点(差分は上記に加え):
+- `LEVEL_OUT_DIR`をrun01固定から`RUN_ID`変数経由の`b1b_run02`へ変更
+  (`b1b_run01/`は無変更のまま保持)。
+- `run_phase_a()`の監査ファイル出力先を引数化し、run02では
+  `b1b_run02/audit/`配下(`phase_a_candidate_template.txt`等)へ出力する
+  ように変更。これによりrun01時代の`OUT_DIR/audit/`直下のファイル(tracked
+  済み)を上書きしない。
+- Writerのcost log出力先を`OUT_DIR/raw_usage_log_trial04_writer.jsonl`
+  (run01、tracked)から`b1b_run02/raw_usage_log_trial04_writer_run02.jsonl`
+  へ分離。
+- Summary出力先を`OUT_DIR/trial04_summary.json`(run01、tracked)から
+  `b1b_run02/trial04_summary_run02.json`へ分離。
+- 上記により、run02の新規出力は全て`b1b_run02/`配下に閉じ込められている
+  (`git status`で確認済み。run01・その他既存tracked出力への差分ゼロ)。
+
+### 10-2. run02記事全文(原文、無編集)
+
+```markdown
+# The Desk You Return To, or the Desk You Choose?
+
+Picture an employee arriving at the office. They put down a laptop, look across the room, and ask: "Where should I sit today?" In September 2026, some companies are bringing back assigned desks. Others are keeping hot desking, where workers choose a shared seat each day. So what should an office give people: a place that feels like theirs, or the freedom to choose a different place today?
+
+### The worker who needs a place to return to
+
+For an employee who spends most of the week in the office, a desk can feel like a small home base. They can keep papers nearby and return to a familiar place.
+
+Some workers described shared desks as a loss of personal space. They worried about used keyboards and other people's desks.
+
+In Japan, three part-time workers said changing seats made conversations with other departments easier. But having no personal place felt unsettling, and storing papers and personal items became difficult.
+
+Employees with assigned desks more often reported belonging and concentration in a survey. In another survey, about 37% of free-address workers said seating tends to become fixed.
+
+That hidden pull matters. A team zone, or a seat reserved when needed, may offer an anchor without making every desk permanent.
+
+### The worker who needs room to move
+
+For another employee, a desk is a choice, not a home base. They may want a quiet place for deep focus, a shared area for teamwork, or a spot for light conversation or rest. They can match the space to the task.
+
+Some workers liked changing their environment with their mood. Some valued moving away when they wanted distance from a workplace relationship.
+
+The three workers in another interview found it easier to talk with people from other departments when they changed seats. For this worker, movement helps control focus, contact, and distance through the day.
+
+These workers are not answering the same question. The first asks, "Where can I feel settled enough to belong and focus?" The second asks, "What kind of space and contact do I need today?"
+
+One protects continuity. The other manages change, collaboration, and distance. So the same shared floor can feel reassuring to one person and tiring to another. The seat is doing different work for each of them: it is either a place to return to or a way to shape the day.
+
+## In one line…
+
+The deeper question is not simply where desks are placed. It is what kind of control a worker needs over belonging, focus, and contact during the day.
+```
+
+保存先: `er012_output/editorial_b_voices_trial_04/b1b_run02/article.md`
+(Local Rewrite cycle 1回適用後の最終版。Evidence Compression前の版は
+`b1b_run02/audit/pre_editor_article.md`を参照)。
+
+### 10-3. run01との差分要約
+
+| 観点 | run01 | run02 |
+|---|---|---|
+| Hook | "By September 2026, office seating is moving in two directions."(企業動向の要約から開始) | "Picture an employee arriving at the office. They put down a laptop, look across the room, and ask: 'Where should I sit today?'"(人の情景+問いから開始) |
+| Evidence主語文("A survey found..."等) | 4箇所以上("A survey of more than 16,000 office workers found...", "In one survey, about 37 percent...", "In a survey of 50 Japanese office workers, 40 said...", "This suggests that opposition to hot desking...", "Concentration showed the same pattern") | **0箇所**(全文精査。数字を含む文でも主語は"Employees with assigned desks"「約37%のfree-address workers」のように人・人数が主語になっており、"survey"/"report"/"data"が主語の文は検出されなかった) |
+| 第三者視点の混入 | "Some workplace planners now describe areas for deep focus..."(Voice Bにplanner視点が混入) | **検出されず**(該当箇所は"They may want a quiet place for deep focus..."のように、この働き手自身が望むこととして書き換わっている) |
+| 数字の数(Voice毎) | 未整理(複数の具体的%が各Voiceに散在) | Voice A: 2件("three part-time workers"という人数表記+「約37%」の1件、うち統計的数字は37%の1件のみ)。Voice B: 1件("three workers"、Voice Aと同じ人数の再言及)。(h)の「1 Voice内で数字は最大1個」を統計的数字(%等)に限れば両Voiceとも達成、実在の当事者の人数(three)まで含めると厳密には超過しており、Fableの判断を仰ぐ点として下記10-4・10-5に記録する |
+| 語数 | 502語(Hook 72/Voice A 192/Voice B+Tension 198/Closing 40) | 403語(Hook 67/Voice A 129/Voice B+Tension 180/Closing 27)。目標350-420語の範囲内 |
+| Tension・Closing | 維持指示どおり | 内容の骨格(2つの問いの対比、"One protects continuity. The other manages change...")は概ね維持されている(Writerは1回のみ実行、手での維持・書き換えは行っていない) |
+
+### 10-4. 技術結果
+
+- **Phase A**: `clean_single_insert_confirmed=True`
+  (`er012_output/editorial_b_voices_trial_04/b1b_run02/audit/phase_a_
+  result.json`)。
+- **Writer**: 1回で`status=OK`。
+- **Point Overlap QA(monitoring)**: lexical overlap point_one_vs_point_two
+  =0.247、point_two_vs_point_one=0.229(閾値0.40未満、flagged=False)。
+- **Point Value QA(monitoring)**: PASS(2 Point×6項目すべてPASS)。
+- **Fact Checker**: verdict=**REVIEW_REQUIRED**(non-blocking、既存policy
+  通り)。contradictions=0件。unsupported_specific_claims 3件(run01の4件
+  から減少)、いずれも「独立検索でこの具体的な出典を再特定できなかった」
+  という同じ性質(日本の3名パートタイム労働者の発言、環境変化を好む労働者
+  の発言、共有デスクへの不満の発言)。run01と同様、Evidence Compressionに
+  よる出典名の一般化(Gensler→a survey、ITmedia MONOist→another survey、
+  TOKYO MX+/LinkedIn News/REAL VOICE→Some workers/another interview)が
+  原因と考えられる(`b1b_run02/audit/pre_editor_article.md`と比較して確認)。
+- **Ledger Deviation Checker**: 初回判定はLEDGER_DEVIATION(MAJOR 1件、
+  Hookの「Others are keeping **or expanding** hot desking」の「拡大して
+  いる」がLedgerに無い新規主張)。既存Local Rewrite機構(cycle 1/3、上限は
+  無改変)が1サイクルで解消し、再判定でoverall_status=**LEDGER_COMPLIANT**、
+  deviations=0件(`b1b_run02/audit/local_rewrite_cycles.json`)。
+- **Directional Fact Precheck**: overall_status=**PASS**。
+- **語数**: 全体403語(Hook=67、Voice A=129、Voice B+Tension=180、
+  Closing=27、`b1b_run02/length_report.json`)。(k)の目標350-420語の範囲内。
+- **Cost**: OpenAI(gpt-5.6-luna、Point Role Planning・Writer・Evidence
+  Compression・Point Overlap QA・Point Value QA・Fact Checker[web_search
+  10回]・Ledger Deviation Check・Local Rewrite 1件・再判定、計9 call)
+  input 132,428 tokens・output 22,320 tokens、pricing_snapshot.json単価
+  (input $0.20/1M、output $1.20/1M)で概算約$0.053。Web Search fee
+  ($10/1,000 call×10回)を加算すると約$0.153。Perplexity呼び出しなし
+  (Research再利用のため)。**1記事あたり1ドル未満**、Cost超過による
+  STOPには該当しない。TTSは実行していない。
+
+### 10-5. Sonnet自身のセルフチェック(条件1〜8、run02、根拠引用付き、最終判定はFable)
+
+1. **Voiceは実在するstakeholder perspectiveか**: 改善。「For an employee
+   who spends most of the week in the office, a desk can feel like a
+   small home base.」のように人の感覚から始まる文が増え、Evidence自体が
+   文の主語になる文は全文精査で検出されなかった(達成、根拠: 10-3表)。
+   ただし「a desk can feel like...」「movement helps control...」「The
+   seat is doing different work...」のように、人ではなく物・行為
+   (desk/movement/seat)が文法上の主語になっている文が複数残っており、
+   Fableが指摘した「Evidence主語」とは異なる種類だが、「ほぼ全ての文の
+   主語が人であるべき」という(g)の文字通りの基準には完全には届いていない
+   (部分的達成、この点はFableの判断を仰ぐ)。
+2. **Hookが人の情景から入っているか**: 達成。「Picture an employee
+   arriving at the office. They put down a laptop, look across the
+   room, and ask: 'Where should I sit today?'」は、企業動向ではなく
+   個人の具体的な動作から始まっている。**一方で、"Picture..."という
+   開始語は、既存の禁止定型表現"Imagine..."と意味的に同義の呼びかけで
+   あり、明示的に禁止されていた"Imagine.../Now look at..."等のカテゴリに
+   抵触する可能性がある。これは意図せず発生した副作用であり、手作業では
+   修正していない。USER_DECISION_REQUIREDとして下記に記録する**。
+3. **Evidence主語文が解消されたか**: 達成(10-3表参照、全文精査で0件)。
+4. **数字が1 Voiceあたり最大1個に抑えられているか**: 部分的達成。統計的
+   数字(%等)は各Voiceとも1個以下(Voice A「約37%」1個、Voice Bは0個)。
+   ただし実在の当事者の人数を表す「three part-time workers」
+   「The three workers」がVoice A・Bの双方に出現しており、これを数字と
+   数えると両Voiceとも1個を超える。この人数表記はVerified Fact Ledgerが
+   要求する固有の当事者情報(架空でない実在の3名)であり、(h)が念頭に
+   置いていた「調査統計の丸め」とは性質が異なると考えられるが、厳密な
+   「最大1個」基準には届いていない。Fableの判断を仰ぐ。
+5. **第三者視点の混入が解消されたか**: 達成(10-3表参照、
+   「workplace planners」等の第三者への言及は検出されず)。
+6. **トーン(light・conversational・human-centered)**: 改善。調査報告的な
+   文構造("A survey of...found...")が解消され、短い文・平易な語彙が
+   増えた。ただし4で述べた「a desk can feel like...」等、物を主語にした
+   やや説明的な文もなお残る。
+7. **Tension・Closingが維持されているか**: 維持指示どおり、Writerは1回
+   のみ実行し手作業での維持・書き換えは行っていない。Tensionの骨格
+   (「These workers are not answering the same question.」「One
+   protects continuity. The other manages...」)、Closingの骨格
+   (「The deeper question is not simply where desks are placed.」)は
+   run01と概ね同じ趣旨を保っている。
+8. **長さ(350-420語)**: 達成。403語(10-4参照)。
+
+**総括(Sonnet自身の見立て、最終判定はFable)**: Fableが指摘した4点のうち、
+(1)Hookの人の情景からの開始、(2)Evidence主語文の解消、(3)第三者視点の
+排除、(4)長さの短縮は、いずれも改善・達成したと判断する。一方で、意図せず
+副作用として、Hookの開始語"Picture..."が既存の禁止定型表現"Imagine..."と
+同カテゴリに当たる可能性がある点、および実在の当事者の人数表記(three)を
+厳密に「数字」として数えると(h)の「1 Voice最大1個」を超える点の2つが
+新たにUSER_DECISION_REQUIREDとして残る。
+
+### 10-6. USER_DECISION_REQUIRED(run02で新たに発見・確認された点)
+
+1. Hookの"Picture an employee arriving at the office..."が、既存の禁止
+   定型表現"Imagine.../Now look at..."と同じカテゴリ(呼びかけ型の
+   scene-setting opener)に当たるか。当たる場合、Focus Moduleへ
+   "Picture..."も明示的に禁止語として追加する必要があるか。
+2. 実在の当事者の人数表記(例: "three part-time workers")を、(h)の
+   「1 Voice最大1個」の対象に含めるべきか、それとも統計的数字とは区別し
+   除外してよいか。
+3. §8(run01)のUSER_DECISION_REQUIRED 1〜6は、本節の結果を踏まえてなお
+   未決のまま残る(TOPIC_JAの変更範囲、Voice数3以上の検討、Fact Checker
+   のWeb Search再現率、Evidence Compressionでの時点情報の扱い等)。
+
+Status(run02を含む本Reportの提案): 引き続き**VALIDATED**(範囲: Voice数2・
+B1・Article-only、Focus Module修正の効果検証)。Production採用は別途
+USER_DECISION_REQUIRED — NOT APPROVED_FOR_PRODUCTION, NOT
+PRODUCTION_WIRED。最終判定はFableに委ねる。

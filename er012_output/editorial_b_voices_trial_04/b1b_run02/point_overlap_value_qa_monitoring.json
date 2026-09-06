@@ -1,0 +1,205 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。",
+  "point_one_vs_point_two": {
+    "overlap_ratio": 0.247,
+    "shared_words": [
+      "another",
+      "base",
+      "changing",
+      "departments",
+      "desk",
+      "easier",
+      "employee",
+      "feel",
+      "home",
+      "other",
+      "people",
+      "place",
+      "return",
+      "seat",
+      "seats",
+      "shared",
+      "some",
+      "space",
+      "workers"
+    ],
+    "point_word_count": 77,
+    "story_word_count": 83,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "point_two_vs_point_one": {
+    "overlap_ratio": 0.229,
+    "shared_words": [
+      "another",
+      "base",
+      "changing",
+      "departments",
+      "desk",
+      "easier",
+      "employee",
+      "feel",
+      "home",
+      "other",
+      "people",
+      "place",
+      "return",
+      "seat",
+      "seats",
+      "shared",
+      "some",
+      "space",
+      "workers"
+    ],
+    "point_word_count": 83,
+    "story_word_count": 77,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "point_one": {
+    "before_overlap": {
+      "overlap_ratio": 0.143,
+      "shared_words": [
+        "assigned",
+        "desks",
+        "employee",
+        "like",
+        "office",
+        "people",
+        "place",
+        "seat",
+        "shared",
+        "some",
+        "workers"
+      ],
+      "point_word_count": 77,
+      "story_word_count": 41,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "cross_point_overlap": {
+      "overlap_ratio": 0.247,
+      "shared_words": [
+        "another",
+        "base",
+        "changing",
+        "departments",
+        "desk",
+        "easier",
+        "employee",
+        "feel",
+        "home",
+        "other",
+        "people",
+        "place",
+        "return",
+        "seat",
+        "seats",
+        "shared",
+        "some",
+        "space",
+        "workers"
+      ],
+      "point_word_count": 77,
+      "story_word_count": 83,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "applied": false
+  },
+  "point_two": {
+    "before_overlap": {
+      "overlap_ratio": 0.157,
+      "shared_words": [
+        "day",
+        "different",
+        "each",
+        "employee",
+        "people",
+        "place",
+        "seat",
+        "shared",
+        "some",
+        "today",
+        "what",
+        "where",
+        "workers"
+      ],
+      "point_word_count": 83,
+      "story_word_count": 41,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "cross_point_overlap": {
+      "overlap_ratio": 0.229,
+      "shared_words": [
+        "another",
+        "base",
+        "changing",
+        "departments",
+        "desk",
+        "easier",
+        "employee",
+        "feel",
+        "home",
+        "other",
+        "people",
+        "place",
+        "return",
+        "seat",
+        "seats",
+        "shared",
+        "some",
+        "space",
+        "workers"
+      ],
+      "point_word_count": 83,
+      "story_word_count": 77,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "applied": false
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_05cee592223579e4006a9d2c6aed7c87d089fb73436d9b0eed",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nPicture an employee arriving at the office. They put down a laptop, look across the room, and ask: “Where should I sit today?” In September 2026, some companies are bringing back assigned desks. Others are keeping or expanding hot desking, where workers choose a shared seat each day. So what should an office give people: a place that feels like theirs, or the freedom to choose a different place today?\n\n【Point One】\nFor an employee who spends most of the week in the office, a desk can feel like a small home base. They can keep papers nearby and return to a familiar place.\n\nSome workers described shared desks as a loss of personal space. They worried about used keyboards and other people’s desks.\n\nIn Japan, three part-time workers said changing seats made conversations with other departments easier. But having no personal place felt unsettling, and storing papers and personal items became difficult.\n\nEmployees with assigned desks more often reported belonging and concentration in a survey. In another survey, about 37% of free-address workers said seating tends to become fixed.\n\nThat hidden pull matters. A team zone, or a seat reserved when needed, may offer an anchor without making every desk permanent.\n\n【Point Two】\nFor another employee, a desk is a choice, not a home base. They may want a quiet place for deep focus, a shared area for teamwork, or a spot for light conversation or rest. They can match the space to the task.\n\nSome workers liked changing their environment with their mood. Some valued moving away when they wanted distance from a workplace relationship.\n\nThe three workers in another interview found it easier to talk with people from other departments when they changed seats. For this worker, movement helps control focus, contact, and distance through the day.\n\nThese workers are not answering the same question. The first asks, “Where can I feel settled enough to belong and focus?” The second asks, “What kind of space and contact do I need today?”\n\nOne protects continuity. The other manages change, collaboration, and distance. So the same shared floor can feel reassuring to one person and tiring to another. The seat is doing different work for each of them: it is either a place to return to or a way to shape the day.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "個人の居場所、所属感、集中、書類の保管といった具体的な不便や心理的効果を、調査結果や日本の事例で補っている。さらに、固定席と完全な自由席の中間としてチームゾーンや必要時の予約席を提案しており、Full Storyにはない設計上の示唆がある。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "席の移動を単なる自由度ではなく、集中・協働・会話・職場の人間関係との距離を一日の中で調整する手段として説明している。Point Oneの『定着できる居場所』とは異なる利用目的を明確にし、同じ共有フロアでも人によって快適さが変わる理由を具体化している。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "個人の居場所、所属感、集中、書類の保管といった具体的な不便や心理的効果を、調査結果や日本の事例で補っている。さらに、固定席と完全な自由席の中間としてチームゾーンや必要時の予約席を提案しており、Full Storyにはない設計上の示唆がある。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "席の移動を単なる自由度ではなく、集中・協働・会話・職場の人間関係との距離を一日の中で調整する手段として説明している。Point Oneの『定着できる居場所』とは異なる利用目的を明確にし、同じ共有フロアでも人によって快適さが変わる理由を具体化している。"
+      }
+    },
+    "status": "PASS"
+  }
+}
