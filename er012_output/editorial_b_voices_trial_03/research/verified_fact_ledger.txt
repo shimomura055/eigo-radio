@@ -1,0 +1,239 @@
+EDITORIAL-B-FAMILY-VOICES-TRIAL-03 — Verified Fact Ledger(Voices/Perspective用)
+テーマ: オフィスにおける「固定席(assigned desk)」復活の動き ― 個別企業の
+目立つ「復活」の物語と、業界全体の集計データが示す「デスク共有拡大」傾向が
+同時に存在するという状況。
+作成方法: Perplexity(sonar-pro)による2段階Research(Stage1: fact収集、
+Stage2: 独立な別クエリでのverification)。すべてのfactはStage2で
+CONFIRMED/PARTIALLY_CONFIRMEDのいずれか(COULD_NOT_CONFIRM/CONTRADICTEDは
+0件)。raw結果はresearch/raw_facts_research.json、
+research/raw_facts_verification.jsonを参照。
+情報cutoff: 2026年9月(Research実施日)時点で確認できた情報を採用。
+
+【選定されたPerspective(Voice)】
+このLedgerは2つのVoiceを軸に構成されている(選定理由の詳細は
+research/perspective_candidates.jsonおよびReport本体を参照):
+  VOICE_1 = 個別企業・ワークプレイスリーダーが、集中力・企業文化・
+    帰属意識を測定基準として、固定席へ回帰している、という立場
+  VOICE_2 = 不動産・ワークプレイス戦略の集計データが、コスト効率・
+    柔軟性・拡張性を測定基準として、業界全体としてはむしろデスク共有
+    (ホットデスキング)が拡大している、という立場
+この2つは「賛成/反対」の対称的なペアではなく、同じ現象を異なる測定基準
+(個別事例の従業員体験 vs 不動産ポートフォリオ全体の効率)で見ている、
+という点がTensionの核心である。
+
+タグ体系:
+  [VOICE_1_EVIDENCE] = Voice 1(固定席回帰派)を支える事実
+  [VOICE_2_EVIDENCE] = Voice 2(デスク共有拡大派)を支える事実
+  [CROSS_REFERENCE] = Tension段落で横断参照してよい背景事実
+  verification: Stage2独立verificationの判定(CONFIRMED/PARTIALLY_CONFIRMED)
+
+=== VOICE_1_EVIDENCE(固定席回帰: 集中力・文化・帰属意識) ===
+
+[VOICE_1_EVIDENCE] F-01: Amazonは2024年9月、シアトル近郊(Puget Sound、
+約8万人規模)とバージニア州アーリントン本社(約8千人規模)のオフィスで
+ホットデスキングをやめ、パンデミック前と同様に社員ごとに固定席を割り
+当てる方針を社員向けメモで示した。パンデミック前からホットデスキング
+だった欧州拠点などはこの変更の対象外で継続する。
+  actor: Amazon(Andy Jassy CEO名義の社内メモ)
+  number_or_stat: Puget Sound約8万人・Arlington約8千人規模で固定席復活
+  interest_or_stake: 本社勤務者の生産性・企業文化維持を重視する経営陣・
+  オフィス戦略の視点
+  evidence_strength: 大手メディア報道(Business Insider / Computing、
+  Amazon公式メモに基づく)
+  time_window: 2024年9月時点の方針発表
+  source: Business Insider / Computing
+  (https://www.businessinsider.com/amazon-axes-hot-desking-headquarters-seattle-arlington-rto-jassy-2024-9)
+  counter_or_limitation: パンデミック前から固定席だった拠点への「復元」で
+  あり、もともとホットデスキングだった欧州拠点は対象外(全社一律の方針
+  ではない)
+  verification: CONFIRMED
+
+[VOICE_1_EVIDENCE] F-02: Scotiabankのグローバル不動産・コーポレート
+サービス責任者Linda Foggieは、業界イベント(Bisnow主催)で「より多くの
+固定席、より少ないフレックス席へ、静かで確実なシフトが起きている」と
+発言した。
+  actor: Scotiabank(Linda Foggie、Global Head of Real Estate & Corporate
+  Services)
+  interest_or_stake: 大企業の不動産・ワークプレイス戦略責任者として、
+  コストと社員体験・文化の両立を図る立場
+  evidence_strength: 大手メディア報道(Bisnow)
+  time_window: 2026年6月時点の発言
+  source: Bisnow
+  (https://www.bisnow.com/news/new-york/office/assigned-seating-returns-to-office-135073)
+  counter_or_limitation: 本人も「全面的な固定席復活」ではなく「静かな
+  シフト」と位置づけている
+  verification: CONFIRMED
+
+[VOICE_1_EVIDENCE] F-03: Gensler(大手ワークプレイス設計コンサル)の
+共同議長は2026年、ホットデスキングには「隠れたコスト」があるとし、
+ハイブリッド勤務でも全面的なホットデスキングは必要なく、週3日以上
+オフィスに出社する社員には固定席を与えることでパフォーマンスの基盤に
+なると提言した。同社の約1.7万人対象の2026年グローバル調査では、
+オフィスが集中作業を支えていると感じる割合は、固定席の職場で80%、
+ホットデスク職場では67%にとどまった。ホットデスク環境の社員の60%は
+「自分専用の席が欲しい」と回答した。
+  actor: Gensler(共同議長のFortune/Allwork.Space寄稿、Gensler Research
+  Institute 2026 Global Workplace Survey)
+  number_or_stat: 集中作業を支える割合: 固定席80% vs ホットデスク67%/
+  ホットデスク環境の社員の60%が専用席を希望
+  interest_or_stake: オフィス設計・ワークプレイスコンサルとして、
+  柔軟性と安定性(特に集中力・帰属意識)の両立を重視する立場
+  evidence_strength: 業界調査(大手コンサル自社調査+大手メディア報道)
+  time_window: 2026年時点
+  source: Allwork.Space / Fortune / Gensler blog、Kokuyoワークスタイル
+  研究所note(日本語サマリー)
+  (https://allwork.space/2026/05/gensler-co-chair-warns-of-the-hidden-costs-of-hot-desking/,
+  https://note.com/kokuyo_wsrl/n/nce79aee3113b)
+  counter_or_limitation: 全員に固定席を推奨しているわけではなく、出社
+  頻度に応じた併用を提言している
+  verification: CONFIRMED
+
+[VOICE_1_EVIDENCE] F-04: 従業員側の調査でも固定席への支持は高い。英国
+リーズ大学の柔軟勤務研究では、インタビュー対象者の80%超が「他人と
+共有するより、自分に割り当てられたデスクを持ちたい」と回答した。
+Unispaceの2023年グローバル調査「Returning for Good」では、ホットデスク
+環境で働く回答者(全体の約半数)のうち、多く(報道により83~94%の幅で
+複数値が見られる)が「専用の固定席があればオフィスで過ごす時間を
+増やす」と回答し、カナダ版調査ではホットデスク中の従業員の79%が同様に
+回答した。
+  actor: Leeds University Business School(柔軟勤務研究)、Unispace
+  (グローバル職場調査)
+  number_or_stat: リーズ大学: 80%超が固定席を希望/Unispace: ホット
+  デスク経験者の83~94%(報道により幅あり)が固定席なら出社時間増、
+  カナダ版は79%
+  interest_or_stake: 従業員側の希望・出社意欲を代弁する調査
+  evidence_strength: 学術研究(リーズ大学)/業界調査(Unispace)
+  time_window: リーズ大学は2021年時点の調査、Unispaceは2023年調査
+  source: Leeds University
+  (https://www.leeds.ac.uk/news-business-economy/news/article/4934/flexible-working-revolution-remains-a-work-in-progress)、
+  Unispace / PR Newswire
+  counter_or_limitation: リーズ大学調査はパンデミック前後を含む英国
+  サンプル。Unispaceの具体的割合は報道間で83~94%と幅があり、単一の
+  数値には確定できない
+  verification: F-04前半(リーズ大学)はCONFIRMED、Unispace部分は
+  PARTIALLY_CONFIRMED(具体的%が報道間で揺れる。「約半数がホットデスク
+  環境で、その大多数が固定席なら出社意欲が高まる」という主旨と、
+  カナダ版の79%は独立確認できた)
+
+[VOICE_1_EVIDENCE] F-05: オフィスの座席管理サービスを提供するEnvoyは、
+自社プラットフォーム上のデータとして、permanent desk(固定席)の新規
+作成ペースが、ホットデスクの新規作成ペースを前年比で58%上回っている
+と報告した。
+  actor: Envoy(スペース管理プラットフォーム)
+  number_or_stat: 固定席作成の成長率がホットデスク作成の成長率を年率で
+  58%上回る
+  interest_or_stake: オフィス利用状況データから座席ポリシー動向を把握
+  したいテック企業・オフィスマネージャーの視点
+  evidence_strength: 民間分析(自社プラットフォームデータ)
+  time_window: 直近1年の年率比較(2025~2026年頃)
+  source: Envoyブログ / HR Morning
+  (https://envoy.com/space-management/hot-desking-a-flexible-work-offering-or-a-villain-of-the-modern-office)
+  counter_or_limitation: 同社サービス利用組織のデータであり、全市場を
+  代表する統計ではない可能性がある
+  verification: CONFIRMED
+
+=== VOICE_2_EVIDENCE(業界全体はデスク共有拡大: コスト効率・柔軟性) ===
+
+[VOICE_2_EVIDENCE] F-06: 不動産大手CBREのワークプレイス・プロジェクト
+ベンチマークデータによると、オフィスでassigned seating(固定席)を
+採用する企業の割合は2021年の83%から2024年には55%へ低下し、代わって
+ハイブリッドやdesk-sharingモデルが12%から36%へ増加した。
+  actor: CBRE(Global Workplace & Occupancy Insights)
+  number_or_stat: assigned seating採用企業: 2021年83%→2024年55%/
+  ハイブリッド・desk-sharing: 12%→36%
+  interest_or_stake: 不動産・オフィス戦略コンサルとして、スペース
+  効率・柔軟性・拡張性を測定基準とする立場
+  evidence_strength: 業界調査(大手不動産コンサル自社データ)
+  time_window: 2021~2024年のデータ推移
+  source: Facilities Dive / CBRE
+  (https://www.facilitiesdive.com/news/companies-shift-away-from-assigned-desks-large-private-offices-cbre/744354/)
+  counter_or_limitation: 企業側の設計方針・ベンチマーキングであり、
+  従業員の希望を直接測定したものではない
+  verification: CONFIRMED
+
+[VOICE_2_EVIDENCE] F-07: Gartnerの調査では、パンデミック後にオフィスへ
+戻る従業員の少なくとも4分の1に対し共有デスクを導入する予定だと回答した
+ビジネスリーダーが59%に上った。CBREのアジア太平洋調査では、事業会社の
+49%が今後3年でホットデスキングや活動ベースワーキングなど柔軟な
+スペース利用を拡大する計画を持つとされる。
+  actor: Gartner、CBRE Asia Pacific
+  number_or_stat: 従業員の25%以上に共有デスクを想定する経営者59%/
+  APAC企業の49%が柔軟スペース拡大を計画
+  interest_or_stake: ハイブリッドワークを前提に、スペース効率・拡張性
+  を優先したい不動産・経営戦略の視点
+  evidence_strength: 業界調査
+  time_window: 2023~2024年調査
+  source: PPAI(Gartner調査引用) / CBREプレスリリース
+  (https://www.ppai.org/media-hub/post-pandemic-practices-point-to-shared-office-desks/)
+  counter_or_limitation: 企業側の計画・意向を示すデータであり、実際の
+  導入状況や社員満足度とは乖離する可能性がある
+  verification: CONFIRMED
+
+[VOICE_2_EVIDENCE] F-08: 英国の職場調査データ(Leesman Lmi、職場満足度
+指標)を分析したMake Work Betterは、座席が固定された職場の平均Lmiが
+69.6であるのに対し、ホットデスク職場全体は68.2とやや低いものの、
+豊富なワークスペースのバラエティを備えたホットデスク職場ではLmiが
+72.8と最も高くなることを示した。
+  actor: Make Work Better(Leesman Lmiデータ分析)
+  number_or_stat: Lmiスコア: 固定席69.6/ホットデスク全体68.2/
+  バラエティ豊かなホットデスク72.8
+  interest_or_stake: 職場コンサルとして、設計次第でホットデスキングが
+  固定席以上の満足度を生み得ることを示したい立場
+  evidence_strength: 民間分析(職場満足度指標データの分析)
+  time_window: 最新波の職場調査(2024年頃)
+  source: Make Work Better
+  (https://www.makeworkbetter.info/p/are-hotdesks-always-hellish)
+  counter_or_limitation: Lmiスコアの差は小さく、「良ければ勝つ」という
+  条件付きの主張である
+  verification: CONFIRMED
+
+[VOICE_2_EVIDENCE] F-09: 日本ではフリーアドレス導入企業でも、実態として
+座席が固定席化している傾向が確認されている。パーソルファシリティ
+マネジメントの調査では、フリーアドレス利用者の36.8%が「席が固定化
+しがち」と回答した。一方オカムラの2025年調査(従業員100名以上の企業、
+経営層500人・ワーカー3,000人対象)では、68.1%の企業が固定席運用、
+フリーアドレス・グループアドレスは31.9%にとどまっている。
+  actor: パーソルファシリティマネジメント、オカムラ
+  number_or_stat: フリーアドレス利用者の36.8%が「席が固定化しがち」と
+  回答/日本企業の68.1%が固定席運用、31.9%がフリーアドレス系
+  interest_or_stake: 日本企業のオフィス戦略・人事が座席運用の実態を
+  把握したい視点
+  evidence_strength: 業界調査
+  time_window: パーソル調査は2024年、オカムラ調査は2025年
+  source: MONOist(https://monoist.itmedia.co.jp/mn/articles/2407/18/news024.html)、
+  オカムラ オフィスコラム
+  (https://www.okamura.co.jp/office/column/008474.html)
+  counter_or_limitation: パーソル調査対象はフリーアドレス導入企業の
+  社員に限定/オカムラ調査対象は従業員100名以上の企業に限定
+  verification: CONFIRMED
+
+=== CROSS_REFERENCE(Tension段落での横断参照用の背景事実) ===
+
+[CROSS_REFERENCE] F-10: Carrier Managementは2024年、パンデミック期に
+ハイブリッドワークとコスト削減のため広く採用されたホットデスキングに
+ついて、一部企業が「行き過ぎだと気づき、従業員に専用のデスクを再び
+与える方向に転換している」と報じた(複数企業の事例紹介)。
+  actor: Carrier Management(Bloomberg由来のトレンド紹介)
+  interest_or_stake: 経営層・人事向けに、人材確保の観点からホット
+  デスキング見直しの動きを紹介する立場
+  evidence_strength: 大手メディア報道
+  time_window: 2024年時点
+  source: Carrier Management
+  (https://www.carriermanagement.com/news/2024/06/27/263822.htm)
+  counter_or_limitation: 記事が紹介するのは一部企業の動きであり、全体
+  傾向としては別の調査(F-06/F-07)がデスク共有拡大を示す
+  verification: CONFIRMED
+
+【この記事で使わない、または確認できなかった情報】
+- 新入社員研修・メンタリングを理由に固定席を支持する日本のオフィス
+  設計会社(VIS)の分析は、単一ソースの一般的分析であり、具体的企業・
+  担当者名を伴わないため、本Trialの2 Voice選定からは除外した
+  (Perspective候補としては検討したが不採用、詳細はperspective_
+  candidates.json参照)
+- EU欧州委員会職員団体(Generation 2004)によるホットデスキング批判は、
+  PARTIALLY_CONFIRMEDにとどまり、対象が欧州公務員という特殊な組織
+  文脈であるため、本Trialの2 Voice選定からは除外した(同上)
+- Unispace調査の「92%」という具体的パーセンテージは、独立
+  verificationで83~94%という幅のある報道が見つかり単一の数値として
+  確定できなかったため、本文中で厳密な単一数値としては使用せず、
+  「多くが」「大多数が」等の丸めた表現にとどめること

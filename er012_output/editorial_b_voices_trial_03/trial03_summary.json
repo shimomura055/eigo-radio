@@ -1,0 +1,266 @@
+{
+  "label": "B1B",
+  "status": "OK",
+  "metrics": {
+    "word_count": 413,
+    "sentence_count": 31,
+    "avg_sentence_length": 13.7,
+    "max_sentence_length": 27
+  },
+  "section_word_counts": {
+    "intro": 48,
+    "point_one": 171,
+    "point_two": 167,
+    "in_one_line": 27
+  },
+  "length_report": {
+    "intro": 48,
+    "point_one": 171,
+    "point_two": 167,
+    "in_one_line": 27,
+    "total": 413,
+    "point_one_within_target": false,
+    "point_one_within_tolerance": false,
+    "point_two_within_target": false,
+    "point_two_within_tolerance": false,
+    "total_within_soft_range": true
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 2,
+  "local_rewrite_results": [],
+  "local_rewrite_cycles": [],
+  "local_rewrite_cycle_exhausted": false,
+  "fact_usage_report": null,
+  "evidence_compression_applied": true,
+  "point_overlap_value_qa_monitoring": {
+    "qa_status": "OK",
+    "lexical_flagged": false,
+    "value_qa_flagged": false,
+    "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。",
+    "point_one_vs_point_two": {
+      "overlap_ratio": 0.301,
+      "shared_words": [
+        "also",
+        "assigned",
+        "companies",
+        "compared",
+        "desk",
+        "desking",
+        "desks",
+        "flexible",
+        "focused",
+        "hot",
+        "more",
+        "office",
+        "offices",
+        "people",
+        "planned",
+        "points",
+        "said",
+        "seat",
+        "seats",
+        "survey",
+        "using",
+        "view",
+        "wide",
+        "work",
+        "workers"
+      ],
+      "point_word_count": 83,
+      "story_word_count": 95,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "point_two_vs_point_one": {
+      "overlap_ratio": 0.263,
+      "shared_words": [
+        "also",
+        "assigned",
+        "companies",
+        "compared",
+        "desk",
+        "desking",
+        "desks",
+        "flexible",
+        "focused",
+        "hot",
+        "more",
+        "office",
+        "offices",
+        "people",
+        "planned",
+        "points",
+        "said",
+        "seat",
+        "seats",
+        "survey",
+        "using",
+        "view",
+        "wide",
+        "work",
+        "workers"
+      ],
+      "point_word_count": 95,
+      "story_word_count": 83,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "point_one": {
+      "before_overlap": {
+        "overlap_ratio": 0.108,
+        "shared_words": [
+          "assigned",
+          "back",
+          "companies",
+          "company",
+          "desk",
+          "desks",
+          "office",
+          "some",
+          "workplace"
+        ],
+        "point_word_count": 83,
+        "story_word_count": 31,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "cross_point_overlap": {
+        "overlap_ratio": 0.301,
+        "shared_words": [
+          "also",
+          "assigned",
+          "companies",
+          "compared",
+          "desk",
+          "desking",
+          "desks",
+          "flexible",
+          "focused",
+          "hot",
+          "more",
+          "office",
+          "offices",
+          "people",
+          "planned",
+          "points",
+          "said",
+          "seat",
+          "seats",
+          "survey",
+          "using",
+          "view",
+          "wide",
+          "work",
+          "workers"
+        ],
+        "point_word_count": 83,
+        "story_word_count": 95,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "applied": false
+    },
+    "point_two": {
+      "before_overlap": {
+        "overlap_ratio": 0.137,
+        "shared_words": [
+          "assigned",
+          "companies",
+          "desk",
+          "desks",
+          "experience",
+          "industry",
+          "leaders",
+          "office",
+          "same",
+          "seating",
+          "sharing",
+          "space",
+          "what"
+        ],
+        "point_word_count": 95,
+        "story_word_count": 31,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "cross_point_overlap": {
+        "overlap_ratio": 0.263,
+        "shared_words": [
+          "also",
+          "assigned",
+          "companies",
+          "compared",
+          "desk",
+          "desking",
+          "desks",
+          "flexible",
+          "focused",
+          "hot",
+          "more",
+          "office",
+          "offices",
+          "people",
+          "planned",
+          "points",
+          "said",
+          "seat",
+          "seats",
+          "survey",
+          "using",
+          "view",
+          "wide",
+          "work",
+          "workers"
+        ],
+        "point_word_count": 95,
+        "story_word_count": 83,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "applied": false
+    },
+    "value_qa_status": "PASS",
+    "value_qa_result": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0cc6fdf6fd47f303006a9d1694e96c87d0b7c34ac773233502",
+      "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nBy September 2026, office seating is telling two stories at the same time.\n\nSome companies and workplace leaders are bringing back assigned desks. But industry surveys show desk sharing continuing to grow.\n\nSo what are we really measuring: the worker’s daily experience, or the company’s use of office space?\n\n【Point One】\nFor some companies, a desk is more than a place to sit. It is linked to focus, culture, and a feeling of belonging.\n\nOne major company showed this clearly in 2024. It planned to bring back assigned desks in two major office locations, serving about 80,000 and 8,000 people. But this was not a company-wide return. Offices that already used hot-desking, including some in Europe, were not part of the change.\n\nA bank’s real estate chief later described a “quiet shift” toward more assigned seats and fewer flexible seats. One workplace survey also reported that 80% of workers in assigned-seat offices felt their office supported focused work, compared with 67% in hot-desk offices. And 60% of people using hot desks said they wanted a desk of their own.\n\nThis points to a more selective answer. The survey suggested assigned desks for people who come to the office three or more days a week, rather than giving everyone a permanent seat. In this view, frequent users may need continuity, while less frequent users can keep a flexible arrangement.\n\n【Point Two】\nThe other view starts with the whole office portfolio. One industry survey found that the share of companies using assigned seating fell from 83% in 2021 to 55% in 2024. Desk-sharing models rose over the same period, from 12% to 36%. Another survey also found that 59% of business leaders planned shared desks for at least one-quarter of returning workers.\n\nThese figures measure space plans and future capacity. They do not directly measure how comfortable or focused workers feel each day. That is why they can rise while employee-focused evidence points in another direction.\n\nThe picture becomes more complicated still. One UK analysis found that fixed-seat workplaces had an average satisfaction score of 69.6, compared with 68.2 for hot-desking workplaces. But hot-desking offices with a wide variety of workspaces scored 72.8. And in Japan, 36.8% of people in flexible offices said seats often became informally fixed.\n\nThe label alone, then, does not tell the whole story. One side is counting adoption and efficiency. The other is asking what kind of work experience the design creates, and for whom.\n",
+      "parsed": {
+        "point_one": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": "指定席が集中・帰属意識を支える可能性、企業の具体例、利用頻度に応じて指定席とフリーアドレスを分ける提案を示しており、Full Storyの対立構図を具体化している。単なる留保や一般論ではなく、誰にどの座席方式が適するかという実用的な示唆を加えている。"
+        },
+        "point_two": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": "指定席・共有席の導入率、満足度、仕事空間の多様性、日本での『非公式な固定席』という具体的データを加え、利用率と従業員体験が一致しない理由を掘り下げている。座席方式の名称だけでは評価できず、空間の多様性や実際の使われ方を見る必要があるという新しい解釈を示している。"
+        }
+      },
+      "per_point": {
+        "point_one": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": "指定席が集中・帰属意識を支える可能性、企業の具体例、利用頻度に応じて指定席とフリーアドレスを分ける提案を示しており、Full Storyの対立構図を具体化している。単なる留保や一般論ではなく、誰にどの座席方式が適するかという実用的な示唆を加えている。"
+        },
+        "point_two": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": "指定席・共有席の導入率、満足度、仕事空間の多様性、日本での『非公式な固定席』という具体的データを加え、利用率と従業員体験が一致しない理由を掘り下げている。座席方式の名称だけでは評価できず、空間の多様性や実際の使われ方を見る必要があるという新しい解釈を示している。"
+        }
+      },
+      "status": "PASS"
+    }
+  },
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+  "elapsed_seconds": 149.6
+}
