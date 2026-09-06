@@ -1,0 +1,125 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.263,
+    "shared_words": [
+      "desk",
+      "desks",
+      "else",
+      "empty",
+      "keyboard",
+      "morning",
+      "papers",
+      "personal",
+      "same",
+      "simply",
+      "some",
+      "someone",
+      "things",
+      "used",
+      "yesterday"
+    ],
+    "point_word_count": 57,
+    "story_word_count": 42,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.132,
+    "shared_words": [
+      "assigned",
+      "desks",
+      "different",
+      "empty",
+      "feel",
+      "office",
+      "same",
+      "some",
+      "who"
+    ],
+    "point_word_count": 68,
+    "story_word_count": 42,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.175,
+    "shared_words": [
+      "belonging",
+      "desks",
+      "empty",
+      "need",
+      "people",
+      "place",
+      "same",
+      "some",
+      "space",
+      "work"
+    ],
+    "point_word_count": 57,
+    "story_word_count": 68,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.147,
+    "shared_words": [
+      "belonging",
+      "desks",
+      "empty",
+      "need",
+      "people",
+      "place",
+      "same",
+      "some",
+      "space",
+      "work"
+    ],
+    "point_word_count": 68,
+    "story_word_count": 57,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_01f10fb9ac4126a4006a9d50ff67dc87d09e2bf79fd105af9f",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEach morning, an employee walks into the office and looks for an empty desk. The chair may be different from yesterday, and the keyboard may have been used by someone else. Papers and personal things have nowhere to stay.\n\nSome companies are bringing back assigned desks. Others are keeping shared seating. The question is not simply which system is better. It is why the same office can feel completely different, depending on who is looking at it.\n\n【Point One】\nEvery morning, the first job is to find an empty desk. Yesterday, someone else may have used the keyboard. There is no drawer or corner for papers and personal things. The worker has to choose a place before starting work.\n\nA familiar desk would offer the same view, the same setup, and a calmer start. The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\n\nFor about 37 percent of people using hot desks, the seat tended to become fixed anyway. So even when every desk is open, some workers may keep returning to the same workable place.\n\n【Point Two】\nOn another part of the office floor, a workplace leader has to look at the whole space. On some days, many desks are empty. At the same time, people who come in still want to feel that they have a place with their team.\n\nThis person must explain space costs to senior leaders while also taking seriously the need for continuity and connection. The change was described as “a slow, quiet shift” toward more assigned seats and fewer flex seats.\n\nBut this is not a simple return to the past. The decision must cover people who come in often, people who come in sometimes, and teams that work in different ways. Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "冒頭はFull Storyの状況を一部繰り返すが、固定席が個人の集中・所有感・帰属意識を支える理由と、ホットデスク利用者の約37％が実質的に同じ席を使い続けるという具体的な示唆を加えている。したがって、従業員側から見た固定席の意味が深まり、新しい価値がある。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "Full Storyにはない、職場責任者がコスト効率とチームへの帰属感を同時に管理する視点を示し、出社頻度やチームごとの働き方に応じた難しさを具体化している。「単純な過去回帰ではない」という整理も、座席制度の判断が抱えるトレードオフを明確にする。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "冒頭はFull Storyの状況を一部繰り返すが、固定席が個人の集中・所有感・帰属意識を支える理由と、ホットデスク利用者の約37％が実質的に同じ席を使い続けるという具体的な示唆を加えている。したがって、従業員側から見た固定席の意味が深まり、新しい価値がある。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "Full Storyにはない、職場責任者がコスト効率とチームへの帰属感を同時に管理する視点を示し、出社頻度やチームごとの働き方に応じた難しさを具体化している。「単純な過去回帰ではない」という整理も、座席制度の判断が抱えるトレードオフを明確にする。"
+      }
+    },
+    "status": "PASS"
+  }
+}

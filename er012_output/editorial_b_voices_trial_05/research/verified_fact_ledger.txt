@@ -1,0 +1,213 @@
+EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01 — Verified Fact Ledger(Voices/Perspective用)
+
+テーマ: オフィスの座席運用(固定席かフリーアドレスか)をめぐって、実際にそこで
+働く人々・その運用を決める人々が、何を経験し、何を大切にし、何を必要とし、
+何に責任を持ち、何を心配しているかという stakeholder perspective の違い。
+
+作成方法: 本Ledgerは、EDITORIAL-B-FAMILY-VOICES-TRIAL-04で実施済みのResearch
+(Perplexity sonar-pro、Stage 1B: stakeholder視点のfact収集、Stage 2B: 独立
+verification)を再利用したものであり、新規のResearch API呼び出しは行っていない。
+raw結果は er012_output/editorial_b_voices_trial_04/research/raw_facts_
+research_stakeholder.json、raw_facts_verification_stakeholder.json(いずれも
+無変更のTrial-04資産)を参照。可読版は同ディレクトリの facts_research_
+stakeholder_readable.txt、facts_verification_stakeholder_readable.txt。
+全14 factのうち13件がCONFIRMED、1件(fact_008、TOKYO MX+街頭インタビュー)が
+PARTIALLY_CONFIRMED(街頭インタビューの賛否比率が記事に明記されていたにも
+かかわらず、Stage 1Bの要約が「比率は明示されていない」と書いてしまった点のみの
+食い違いで、賛否双方の発言内容そのものは独立に確認済み)。情報cutoff: 2026年9月
+(Research実施日)時点で確認できた情報を採用。
+
+【EDITORIAL-B-FAMILY-VOICES-TRIAL-05での変更点(Perspective選定)】
+Trial-04では VOICE_A=週の大半をオフィスで働き自分の場所を必要とする社員、
+VOICE_B=気分・業務に応じて座席を自由に選びたい社員、という2つの「個人の
+好み」を対比させていた。EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-
+CONTRACT-01のPerspective Diversity Check(research/perspective_map.md参照)
+では、この組み合わせは「対称的な好みの違い(固定席が好き/フリーアドレスが
+好き)」に近く、責任・制約・リスクの種類が異なる、より意味の違う2者を選び
+直すべきと判定した。そのため、Trial-05では VOICE_B を、個人の好みではなく
+組織全体のオフィス運用に責任を持つ「ワークプレイス戦略責任者」に変更した
+(Trial-04の元VOICE_Bだった「柔軟に座席を選びたい社員」候補は、本Ledgerでは
+不採用として下記【この記事で使わない情報】に記載する)。
+
+【選定されたVoice】(選定理由の詳細はresearch/perspective_map.md参照)
+  VOICE_A = 週の大半をオフィスで過ごし、自分の場所を必要としている社員。
+    固定席が持つ「所属感」「集中しやすさ」「一貫性」を、日々の個人的な感覚
+    として大切にしている。座席運用の決定権は持たない。
+  VOICE_B = 会社全体のオフィス空間の使い方・座席運用を決める職務を持つ、
+    ワークプレイス戦略責任者(実在の発言例: Scotiabank Global Head of Real
+    Estate & Corporate Services、Linda Foggie氏)。経営層へのコスト説明責任
+    と、出社頻度も働き方も異なる全社員のニーズに応える責任を、組織全体の
+    立場から負っている。
+この2つは「賛成/反対」の対称的なペアでも、「個人の好みA/B」でもない。
+VOICE_Aは一人の社員が毎日の感覚として経験していることであり、VOICE_Bは
+個人の好みではなく、コストの説明責任と全社員への責任を負う立場から見えて
+いることである。Tensionの核心は、「良い座席運用とは何か」という問い自体が、
+それぞれの立場によって測る対象(個人が毎日感じる所属感・集中か、組織として
+持続可能かどうか)が異なることにある。
+
+タグ体系:
+  [VOICE_A_EVIDENCE] = Voice A(自分の場所を必要とする社員)を支える事実
+  [VOICE_B_EVIDENCE] = Voice B(ワークプレイス戦略責任者)を支える事実
+  [CROSS_REFERENCE] = Tension段落・Hookで横断参照してよい背景事実
+  verification: Stage 2Bの独立verification判定(Trial-04で実施済み)
+
+=== VOICE_A_EVIDENCE(自分の場所を必要とする社員: 所属感・集中・一貫性) ===
+
+[VOICE_A_EVIDENCE] A-01(fact_001): オフィス設計会社Genslerが世界のオフィス
+勤務者1万6000人超を対象に行った調査によれば、固定席を持つ従業員は職場での
+「所属感」を感じる割合が高く(固定席あり87%、固定席なし74%)、「オフィスで
+集中できる」と答える割合も同様に高い(固定席あり80%、固定席なし67%)。
+調査対象者全体のうち約2割は固定席を持っておらず、そのうち約6割が「自分の
+席」を持ちたいと答えている。
+  source: Bisnow(Genslerの調査を引用)
+  (https://www.bisnow.com/news/new-york/office/assigned-seating-returns-to-office-135073)
+  counter_or_limitation: アンケートの自己申告データであり、業種や個社ごとの
+  違いは区別されていない
+  verification: CONFIRMED
+
+[VOICE_A_EVIDENCE] A-02(fact_003): ビジネス系ニュースメディアLinkedIn News
+の特集記事では、コロナ禍後に広がったホットデスキングについて、社員が
+「衛生面の懸念」と「パーソナルスペースの喪失」を理由に反発していると
+報じられている。他人が使った後の机やキーボードに座ることへの不安、私物を
+置けないことへのストレスが、具体的な不満として挙げられている。
+  source: LinkedIn News
+  (https://www.linkedin.com/news/story/companies-cool-on-hot-desking-6795058/)
+  counter_or_limitation: 発言者個人の実名は示されておらず、編集部が複数企業の
+  従業員から聞き取った内容を一般化して紹介したもの
+  verification: CONFIRMED
+
+[VOICE_A_EVIDENCE] A-03(fact_004): Forbesが2024年に世界の従業員600人超を
+対象に行った調査では、固定席を持たない従業員は自分の職場環境を「非人間的
+(impersonal)」「方向感覚を失う(disorienting)」「精神的に疲れる(mentally
+fatiguing)」と表現する傾向が強かった。この結果を受けて、Salesforceは
+主要部署で固定席を復活させ、GoogleやAmazonは完全な固定席ではないものの、
+チームごとに座席エリアを割り当てる「ゾーン制」を導入し、従業員に一貫性と
+安心感を提供しようとしている。
+  source: Forbes、LinkedIn掲載のワークプレイス分析記事
+  (https://www.linkedin.com/pulse/hot-desking-decline-why-employees-want-more-izkde)
+  counter_or_limitation: 企業名は具体的だが、従業員個々の生の発言は要約の形で
+  紹介されている
+  verification: CONFIRMED
+
+[VOICE_A_EVIDENCE] A-04(fact_006): ワークプレイス心理学者でWorkplace
+Unlimited創設者のナイジェル・オセランド博士は、ポッドキャスト「About
+Place」で、自身が関わった調査結果について「かなり驚くべき結果だったが、
+固定席が依然として高く評価されている」とコメントし、ホットデスキングが
+流行する中でも従業員の多くが自分の席を持つことに価値を感じていると述べた。
+  source: Forbes寄稿記事(Ryan Anderson)
+  (https://www.forbes.com/sites/ryananderson/2024/12/06/hot-desking-or-hot-mess-avoiding-the-pitfalls-of-unassigned-desking/)
+  counter_or_limitation: サンプル構成や業種の詳細は記事内で簡略化されている
+  verification: CONFIRMED
+
+[VOICE_A_EVIDENCE] A-05(fact_007): 日本のある企業が公開したインタビュー
+記事「REAL VOICE #05」では、フリーアドレス環境で働くパート社員3名(矢萩
+さん・齋藤さん・吉田さん)が、毎日違う席に座れることで他部署の人と話し
+やすくなったというメリットを認めつつも、「自分の席がないので落ち着かない」
+「資料や私物を置いておく場所に困る」と語っている。
+  source: note「REAL VOICE #05『フリーアドレスのオフィスの働きかた』」
+  (https://note.com/incpa/n/n1d9873e3a766)
+  counter_or_limitation: 特定企業内の少人数インタビューであり、一般化には
+  限界がある
+  verification: CONFIRMED
+
+[VOICE_A_EVIDENCE] A-06(fact_009): ITmedia MONOistが2024年に行った調査
+では、フリーアドレスで働いている回答者のうち36.8%が「席が固定化しがちだ」と
+回答した。制度としては自由に座席を選べるはずでも、資料や電源、同僚との
+位置関係などの理由から、実際には同じ席を使い続けて事実上の「自分の席」を
+作っている人が一定数いることを示している。
+  source: MONOist(ITmedia)
+  (https://monoist.itmedia.co.jp/mn/articles/2407/18/news024.html)
+  counter_or_limitation: 集計結果のみで、個々の自由記述までは紹介されて
+  いない
+  verification: CONFIRMED
+
+=== VOICE_B_EVIDENCE(ワークプレイス戦略責任者: コスト説明責任と全社員への責任) ===
+
+[VOICE_B_EVIDENCE] B-01(fact_005): Bisnowのイベントで、スコシアバンクの
+グローバル不動産・コーポレートサービス責任者リンダ・フォギー(Linda
+Foggie)は「静かに、固定席が増えフレックス席が減る方向へのシフトが起きて
+いる(There's a slow, quiet shift that's happening, back towards more
+assigned seating and less flex seating)」と発言した。彼女は、パンデミック
+後に導入されたホットデスキングやフレックス席が、ハイブリッドワーク下で
+従業員の所属感やチーム一体感を損ないうることを指摘し、企業がスペース
+効率だけでなく従業員の心理的ニーズも考慮して座席運用を再設計している
+必要があると説明した。
+  source: Bisnow
+  (https://www.bisnow.com/news/new-york/office/assigned-seating-returns-to-office-135073)
+  counter_or_limitation: 発言は自社だけでなく市場全体の傾向を述べたもので
+  あり、具体的な自社運用変更の詳細は記事中では限定的
+  verification: CONFIRMED
+
+[VOICE_B_EVIDENCE] B-02(fact_011): Ohio Society of Association
+Professionalsの記事では、CBREのワークプレイス・プロジェクト・ベンチ
+マーキングデータを引用し、固定席運用の企業比率がかつての83%から2024年
+には55%まで低下したと述べている。記事に登場するワークプレイス担当者
+たちは、ハイブリッドワークにより「多くの席が空いている」現実に直面し、
+スペースコスト削減の責任を負う一方で、社員が所属感と集中のために一定の
+固定席や「自分のゾーン」を必要としていることも理解しており、席数削減と
+割り当て方式の見直しを通じて両者のバランスを取ろうとしている。
+  source: Ohio Society of Association Professionals記事(CBREデータ引用)
+  (https://www.ohiosap.org/aws/OSAP/pt/sd/news_article/589660/_blank/layout_details/false)
+  counter_or_limitation: 具体的企業名・担当者名は一部しか示されず、コメント
+  は要約。統計はCBREのベンチマークデータに基づく
+  verification: CONFIRMED
+
+[VOICE_B_EVIDENCE] B-03(fact_010): ホットデスキング専門SaaSを提供する
+Desking.appのブログでは、コンサルタントが企業に対し、まず座席の利用状況を
+測定したうえで、毎日同じ場所で働きたい人と、たまに来るだけでどこでも
+よいという人の両方がいることを踏まえ、完全な固定席でも完全なフリー
+アドレスでもない、チームごとの半固定席のような中間的な運用を勧めている。
+  source: Desking.appブログ「Is Hot Desking Dead?」
+  (https://desking.app/is-hot-desking-dead/)
+  counter_or_limitation: 自社サービスを提供する立場からの意見であり、
+  商業的な視点を含む可能性がある
+  verification: CONFIRMED
+
+=== CROSS_REFERENCE(Hook・Tension段落での横断参照用の背景事実) ===
+
+[CROSS_REFERENCE] X-01(fact_002): AmazonのCEOアンディ・ジャシーは2024年
+9月の社内メモで、パンデミック前から固定席だった本社オフィス(シアトル
+近郊・バージニア州アーリントン)について、ホットデスキングをやめて固定
+席に戻す方針を示した。一方、パンデミック前からホットデスキングだった
+欧州などの拠点では、そのまま継続するとしている。
+  source: Business Insider
+  (https://www.businessinsider.com/amazon-axes-hot-desking-headquarters-seattle-arlington-rto-jassy-2024-9)
+  verification: CONFIRMED
+
+[CROSS_REFERENCE] X-02(fact_008): TOKYO MX+が2025年に行った街頭インタ
+ビューでは、日本の会社員50人に「オフィスのフリーアドレスはありか、なしか」
+を尋ねたところ、40人が「あり」、10人が「なし」と回答した。「あり」派から
+は「その日の気分で環境を変えられる」「人間関係から距離を取りたい時に席を
+変えられる」という声が、「なし」派からは「席探しが面倒」「チームが散って
+コミュニケーションが取りづらい」という声が、それぞれ具体的に紹介されて
+いる。
+  source: TOKYO MX+
+  (https://s.mxtv.jp/tokyomxplus/mx/article/202505210650/detail/)
+  counter_or_limitation: 街頭インタビューであり、質問設計やサンプルの
+  代表性には限界がある
+  verification: PARTIALLY_CONFIRMED(Stage 1Bの要約は「比率は明示されて
+  いない」としていたが、独立verificationで記事に40人・10人という具体的な
+  比率が明記されていることが判明した。この点のみが食い違いで、賛否双方の
+  発言内容そのものは独立に確認できた)
+
+【この記事で使わない、または確認できなかった情報】
+- fact_012(Carr Workplacesの12リーダー、「認知ゾーン」志向): Trial-04の
+  元VOICE_B候補(気分・業務に応じて座席を自由に選びたい社員)の主要根拠
+  だった。Trial-05のPerspective Diversity Checkにより、この候補は不採用と
+  なったため(research/perspective_map.md参照)、本Ledgerでは主要には使わ
+  ない。Tensionの背景として簡潔に触れる場合も、新しい第三のVoiceを作らない
+  ように注意すること。
+- fact_014(CNET Japan、在宅勤務でフリーアドレスへの抵抗感が薄れた例): 上記
+  と同じ理由(元VOICE_B候補の補助根拠)により不使用。加えて2020年時点の
+  記事であり、2025-2026年のハイブリッド勤務の前提とは異なる。
+- fact_013(オカムラ調査、固定席運用者がコロナ禍前の約8割から約6割へ減少):
+  日本国内の集計統計であり、いずれのVoiceの主要根拠にもしていない。Hookの
+  背景描写で数字を使わずに参照する程度は許容するが、新しい数字として本文へ
+  加えないこと。
+- 不動産・ワークプレイス戦略責任者のうち、Linda Foggie氏以外の実名個人
+  (facility担当者一般等)は、アグリゲートされた記述(fact_011のOhio
+  Society記事)にとどまり、独立した実名の発言としては確認できていない。
+  Voice Bの具体的な発言引用はfact_005(Linda Foggie氏)に限定すること。
+- 新人教育・メンタリングを担当するマネージャーの立場(Trial-04
+  candidate_D)は、独立した厚いEvidenceが見つからず、単一ソース(VIS)に
+  とどまるため、本Ledgerでも不採用のまま(想像で補わない)。

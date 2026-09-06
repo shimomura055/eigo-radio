@@ -1,0 +1,409 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/editorial_b_voices_trial_05/b1b_run01_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0ad939518cab8202006a9d4f6c970887d0ada6f0b6d3ee6935",
+        "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nThe search is part of the morning. No familiar drawer, screen, or corner is waiting. The worker starts in a space shaped by someone else. A free seat can feel less like freedom and more like a daily test.\n\nThe worry is practical: where do papers and personal things go? Is the desk and keyboard clean? Workers in one Japanese workplace said, “I cannot settle because I have no desk,” and, “I do not know where to put my papers and personal things.” For more than a third of people working this way, the flexible choice tends to become the same seat again and again. The need is a stable start, with enough continuity to focus and feel included.\n\n【Another Voice(Voice B)本文】\nAn empty desk still has to be explained. Linda Foggie, a global head of real estate and corporate services at a major bank, must weigh unused space against people who need to feel they belong. She also sees the risk that too much flex seating may weaken a team’s sense of being together.\n\nFoggie described a “slow, quiet shift” toward more assigned seats and fewer flex seats, or desks shared on different days. That is not a personal vote. Her decisions cover employees with different schedules and must be explained to senior leaders asking about space costs. She is protecting company resources and people’s sense of place.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "冒頭の具体的な情景と当事者の引用が中心で、数字も1つにとどまり経験描写の後に置かれています。一方、「The need is...」という語り手による要約と、匿名集団の傾向を説明する文が、当事者のPerspectiveから調査・分析的な記述へ戻しています。",
+            "quoted_evidence": "leak_narrator_analysis: “The need is a stable start, with enough continuity to focus and feel included.”\nleak_unknowable_analysis: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”\nleak_discovery_syntax: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”"
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "調査・数字を主語にした文はなく、Foggieの立場上の葛藤や「slow, quiet shift」が中心なのでEvidenceより人物の判断が残ります。ただし、語り手が彼女の判断の意味や動機を外側から解釈しており、本人のPerspectiveとしては分析が混入しています。",
+            "quoted_evidence": "leak_narrator_analysis: “That is not a personal vote.” / “She is protecting company resources and people’s sense of place.”\nleak_unknowable_analysis: “She is protecting company resources and people’s sense of place.”"
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_a",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "冒頭の具体的な情景と当事者の引用が中心で、数字も1つにとどまり経験描写の後に置かれています。一方、「The need is...」という語り手による要約と、匿名集団の傾向を説明する文が、当事者のPerspectiveから調査・分析的な記述へ戻しています。",
+            "quoted_evidence": "leak_narrator_analysis: “The need is a stable start, with enough continuity to focus and feel included.”\nleak_unknowable_analysis: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”\nleak_discovery_syntax: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”"
+          },
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis"
+            ],
+            "reasoning": "調査・数字を主語にした文はなく、Foggieの立場上の葛藤や「slow, quiet shift」が中心なのでEvidenceより人物の判断が残ります。ただし、語り手が彼女の判断の意味や動機を外側から解釈しており、本人のPerspectiveとしては分析が混入しています。",
+            "quoted_evidence": "leak_narrator_analysis: “That is not a personal vote.” / “She is protecting company resources and people’s sense of place.”\nleak_unknowable_analysis: “She is protecting company resources and people’s sense of place.”"
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/editorial_b_voices_trial_05/b1b_run01_attempt2",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_00b5f477001f54e7006a9d508e21b087d09be914eecb9b079e",
+        "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, the rule says, “Choose any desk.” But the worker still has to search for one. There is no drawer for papers or personal things.\n\nEmployees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings. Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.\n\nEven a free system can create a regular seat. About 37 percent of people in free-address offices said their seating tended to become fixed. The choice exists on paper, but a dependable place to focus may still be missing.\n\n【Another Voice(Voice B)本文】\nOn the other side of the office, Linda Foggie looks across the whole floor. As a workplace leader at a bank, she must reckon with a broader workplace reality: many desks may sit empty on some days, while people who come in may still want a sense of place and team connection.\n\nShe must explain space costs to senior leaders and answer for different ways of working. Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.\n\nFoggie described “a slow, quiet shift” toward more assigned seating and less flex seating. The pressure is to answer for both the empty floor and the people who use it.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "調査対象者や割合を主語にした報告文が入り、制度全般への含意も語り手がまとめている。数字は一つだけで経験描写の後に補助的に置かれているが、全体としては個人の声より調査結果の整理が強く残る。",
+            "quoted_evidence": "leak_evidence_subject: “About 37 percent of people in free-address offices said their seating tended to become fixed.”\nleak_narrator_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_unknowable_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_discovery_syntax: “Employees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings.” / “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.”\nleak_evidence_memorable: “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.” / “About 37 percent of people in free-address offices said their seating tended to become fixed.”"
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "調査・割合・具体的な数値はなく、Linda Foggieの役割と職場での葛藤が中心になっている。一方で、語り手が彼女の立場やプレッシャーを外側から要約し、机数と帰属意識の因果的な含意まで説明している。",
+            "quoted_evidence": "leak_narrator_analysis: “As a workplace leader at a bank, she must reckon with a broader workplace reality” / “The pressure is to answer for both the empty floor and the people who use it.”\nleak_unknowable_analysis: “Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.” / “The pressure is to answer for both the empty floor and the people who use it.”"
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_a",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "調査対象者や割合を主語にした報告文が入り、制度全般への含意も語り手がまとめている。数字は一つだけで経験描写の後に補助的に置かれているが、全体としては個人の声より調査結果の整理が強く残る。",
+            "quoted_evidence": "leak_evidence_subject: “About 37 percent of people in free-address offices said their seating tended to become fixed.”\nleak_narrator_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_unknowable_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_discovery_syntax: “Employees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings.” / “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.”\nleak_evidence_memorable: “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.” / “About 37 percent of people in free-address offices said their seating tended to become fixed.”"
+          },
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis"
+            ],
+            "reasoning": "調査・割合・具体的な数値はなく、Linda Foggieの役割と職場での葛藤が中心になっている。一方で、語り手が彼女の立場やプレッシャーを外側から要約し、机数と帰属意識の因果的な含意まで説明している。",
+            "quoted_evidence": "leak_narrator_analysis: “As a workplace leader at a bank, she must reckon with a broader workplace reality” / “The pressure is to answer for both the empty floor and the people who use it.”\nleak_unknowable_analysis: “Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.” / “The pressure is to answer for both the empty floor and the people who use it.”"
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 3,
+      "out_dir": "er012_output/editorial_b_voices_trial_05/b1b_run01_attempt3",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_089ed545047ce191006a9d5184940c87d0812e241b6f588a30",
+        "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, the first job is to find an empty desk. Yesterday, someone else may have used the keyboard. There is no drawer or corner for papers and personal things. The worker has to choose a place before starting work.\n\nA familiar desk would offer the same view, the same setup, and a calmer start. The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\n\nFor about 37 percent of people using hot desks, the seat tended to become fixed anyway. So even when every desk is open, some workers may keep returning to the same workable place.\n\n【Another Voice(Voice B)本文】\nOn another part of the office floor, a workplace leader has to look at the whole space. On some days, many desks are empty. At the same time, people who come in still want to feel that they have a place with their team.\n\nThis person must explain space costs to senior leaders while also taking seriously the need for continuity and connection. The change was described as “a slow, quiet shift” toward more assigned seats and fewer flex seats.\n\nBut this is not a simple return to the past. The decision must cover people who come in often, people who come in sometimes, and teams that work in different ways. Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "前半には空席や私物を置けない不便という具体的な経験がある一方、後半で37％という集計値を持ち込み、語り手が労働者のニーズを外側から解釈・一般化している。数字よりも、空席探しや個人空間を失う感覚の描写の方が印象に残るため、記憶に残る対象についてはPASSとした。",
+            "quoted_evidence": "leak_evidence_subject: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_numbers_foreground: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_narrator_analysis: \"The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\" / leak_unknowable_analysis: \"So even when every desk is open, some workers may keep returning to the same workable place.\" / leak_discovery_syntax: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\""
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "FAIL",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "数字や調査主体は登場しないが、「This person」や「The responsibility is to protect both」といった表現で、語り手がリーダーの立場や結論を外側から要約している。さらに、変化を受動的に「described」と報告し、未使用スペースと柔軟性のトレードオフを分析する構造になっている。",
+            "quoted_evidence": "leak_narrator_analysis: \"On another part of the office floor, a workplace leader has to look at the whole space.\" / leak_unknowable_analysis: \"Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\" / leak_discovery_syntax: \"The change was described as ‘a slow, quiet shift’ toward more assigned seats and fewer flex seats.\""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_a",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "前半には空席や私物を置けない不便という具体的な経験がある一方、後半で37％という集計値を持ち込み、語り手が労働者のニーズを外側から解釈・一般化している。数字よりも、空席探しや個人空間を失う感覚の描写の方が印象に残るため、記憶に残る対象についてはPASSとした。",
+            "quoted_evidence": "leak_evidence_subject: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_numbers_foreground: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_narrator_analysis: \"The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\" / leak_unknowable_analysis: \"So even when every desk is open, some workers may keep returning to the same workable place.\" / leak_discovery_syntax: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\""
+          },
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_unknowable_analysis",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "数字や調査主体は登場しないが、「This person」や「The responsibility is to protect both」といった表現で、語り手がリーダーの立場や結論を外側から要約している。さらに、変化を受動的に「described」と報告し、未使用スペースと柔軟性のトレードオフを分析する構造になっている。",
+            "quoted_evidence": "leak_narrator_analysis: \"On another part of the office floor, a workplace leader has to look at the whole space.\" / leak_unknowable_analysis: \"Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\" / leak_discovery_syntax: \"The change was described as ‘a slow, quiet shift’ toward more assigned seats and fewer flex seats.\""
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    }
+  ],
+  "total_attempts": 3,
+  "final_attempt_dir": "er012_output/editorial_b_voices_trial_05/b1b_run01_attempt3",
+  "final_result": {
+    "label": "B1B",
+    "status": "OK",
+    "metrics": {
+      "word_count": 490,
+      "sentence_count": 36,
+      "avg_sentence_length": 13.6,
+      "max_sentence_length": 28
+    },
+    "section_word_counts": {
+      "intro": 0,
+      "point_one": 110,
+      "point_two": 130,
+      "in_one_line": 0
+    },
+    "length_report": {
+      "intro": 0,
+      "point_one": 110,
+      "point_two": 130,
+      "in_one_line": 0,
+      "total": 490,
+      "point_one_within_target": false,
+      "point_one_within_tolerance": false,
+      "point_two_within_target": false,
+      "point_two_within_tolerance": false,
+      "total_within_soft_range": false,
+      "sf1r1_section_word_counts_note": "sf1r1.section_word_counts()はrun03の5見出し構造を正確には解釈しない(「in one line」を含まない##見出し=Hook/Tension/Closingの内容をheader_skipとして集計から丸ごと落とす。intro/in_one_lineは常に0になる。point_one/point_twoの値自体はrun03が###見出しを常にちょうど2つ[Voice A/Voice Bのみ]しか使わない設計のため実測上は正しいが、Hook/Tension/Closingが欠落するため記事全体の内訳としては使えない)。参考値としてのみ残す。正確な内訳はfive_section_length_report.jsonを参照。"
+    },
+    "five_section_length_report": {
+      "hook": 77,
+      "voice_a": 110,
+      "voice_b": 130,
+      "tension": 114,
+      "closing": 59,
+      "total_of_five_sections": 490,
+      "headings": {
+        "hook": "The Question",
+        "voice_a": "One Voice: The employee looking for a place",
+        "voice_b": "Another Voice: The person responsible for the whole office",
+        "tension": "Why They See It Differently",
+        "closing": "What This Tells Us"
+      },
+      "unexpected_preamble_before_first_heading": ""
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_results": [],
+    "local_rewrite_cycles": [],
+    "local_rewrite_cycle_exhausted": false,
+    "fact_usage_report": null,
+    "evidence_compression_applied": true,
+    "point_overlap_value_qa_monitoring": {
+      "qa_status": "OK",
+      "lexical_flagged": false,
+      "value_qa_flagged": false,
+      "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+      "voice_a_vs_hook": {
+        "overlap_ratio": 0.263,
+        "shared_words": [
+          "desk",
+          "desks",
+          "else",
+          "empty",
+          "keyboard",
+          "morning",
+          "papers",
+          "personal",
+          "same",
+          "simply",
+          "some",
+          "someone",
+          "things",
+          "used",
+          "yesterday"
+        ],
+        "point_word_count": 57,
+        "story_word_count": 42,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_b_vs_hook": {
+        "overlap_ratio": 0.132,
+        "shared_words": [
+          "assigned",
+          "desks",
+          "different",
+          "empty",
+          "feel",
+          "office",
+          "same",
+          "some",
+          "who"
+        ],
+        "point_word_count": 68,
+        "story_word_count": 42,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_a_vs_voice_b": {
+        "overlap_ratio": 0.175,
+        "shared_words": [
+          "belonging",
+          "desks",
+          "empty",
+          "need",
+          "people",
+          "place",
+          "same",
+          "some",
+          "space",
+          "work"
+        ],
+        "point_word_count": 57,
+        "story_word_count": 68,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_b_vs_voice_a": {
+        "overlap_ratio": 0.147,
+        "shared_words": [
+          "belonging",
+          "desks",
+          "empty",
+          "need",
+          "people",
+          "place",
+          "same",
+          "some",
+          "space",
+          "work"
+        ],
+        "point_word_count": 68,
+        "story_word_count": 57,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "value_qa_status": "PASS",
+      "value_qa_result": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_01f10fb9ac4126a4006a9d50ff67dc87d09e2bf79fd105af9f",
+        "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEach morning, an employee walks into the office and looks for an empty desk. The chair may be different from yesterday, and the keyboard may have been used by someone else. Papers and personal things have nowhere to stay.\n\nSome companies are bringing back assigned desks. Others are keeping shared seating. The question is not simply which system is better. It is why the same office can feel completely different, depending on who is looking at it.\n\n【Point One】\nEvery morning, the first job is to find an empty desk. Yesterday, someone else may have used the keyboard. There is no drawer or corner for papers and personal things. The worker has to choose a place before starting work.\n\nA familiar desk would offer the same view, the same setup, and a calmer start. The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\n\nFor about 37 percent of people using hot desks, the seat tended to become fixed anyway. So even when every desk is open, some workers may keep returning to the same workable place.\n\n【Point Two】\nOn another part of the office floor, a workplace leader has to look at the whole space. On some days, many desks are empty. At the same time, people who come in still want to feel that they have a place with their team.\n\nThis person must explain space costs to senior leaders while also taking seriously the need for continuity and connection. The change was described as “a slow, quiet shift” toward more assigned seats and fewer flex seats.\n\nBut this is not a simple return to the past. The decision must cover people who come in often, people who come in sometimes, and teams that work in different ways. Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\n",
+        "parsed": {
+          "point_one": {
+            "qa_not_caveat_only": "PASS",
+            "qa_not_full_story_paraphrase": "PASS",
+            "qa_not_other_point_paraphrase": "PASS",
+            "qa_explains_why_it_matters": "PASS",
+            "qa_specific_not_generic": "PASS",
+            "qa_adds_new_value": "PASS",
+            "reasoning": "冒頭はFull Storyの状況を一部繰り返すが、固定席が個人の集中・所有感・帰属意識を支える理由と、ホットデスク利用者の約37％が実質的に同じ席を使い続けるという具体的な示唆を加えている。したがって、従業員側から見た固定席の意味が深まり、新しい価値がある。"
+          },
+          "point_two": {
+            "qa_not_caveat_only": "PASS",
+            "qa_not_full_story_paraphrase": "PASS",
+            "qa_not_other_point_paraphrase": "PASS",
+            "qa_explains_why_it_matters": "PASS",
+            "qa_specific_not_generic": "PASS",
+            "qa_adds_new_value": "PASS",
+            "reasoning": "Full Storyにはない、職場責任者がコスト効率とチームへの帰属感を同時に管理する視点を示し、出社頻度やチームごとの働き方に応じた難しさを具体化している。「単純な過去回帰ではない」という整理も、座席制度の判断が抱えるトレードオフを明確にする。"
+          }
+        },
+        "per_point": {
+          "point_one": {
+            "ok": true,
+            "fail_fields": [],
+            "reasoning": "冒頭はFull Storyの状況を一部繰り返すが、固定席が個人の集中・所有感・帰属意識を支える理由と、ホットデスク利用者の約37％が実質的に同じ席を使い続けるという具体的な示唆を加えている。したがって、従業員側から見た固定席の意味が深まり、新しい価値がある。"
+          },
+          "point_two": {
+            "ok": true,
+            "fail_fields": [],
+            "reasoning": "Full Storyにはない、職場責任者がコスト効率とチームへの帰属感を同時に管理する視点を示し、出社頻度やチームごとの働き方に応じた難しさを具体化している。「単純な過去回帰ではない」という整理も、座席制度の判断が抱えるトレードオフを明確にする。"
+          }
+        },
+        "status": "PASS"
+      }
+    },
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+    "elapsed_seconds": 205.9,
+    "analytical_leakage_check": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_089ed545047ce191006a9d5184940c87d0812e241b6f588a30",
+      "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, the first job is to find an empty desk. Yesterday, someone else may have used the keyboard. There is no drawer or corner for papers and personal things. The worker has to choose a place before starting work.\n\nA familiar desk would offer the same view, the same setup, and a calmer start. The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\n\nFor about 37 percent of people using hot desks, the seat tended to become fixed anyway. So even when every desk is open, some workers may keep returning to the same workable place.\n\n【Another Voice(Voice B)本文】\nOn another part of the office floor, a workplace leader has to look at the whole space. On some days, many desks are empty. At the same time, people who come in still want to feel that they have a place with their team.\n\nThis person must explain space costs to senior leaders while also taking seriously the need for continuity and connection. The change was described as “a slow, quiet shift” toward more assigned seats and fewer flex seats.\n\nBut this is not a simple return to the past. The decision must cover people who come in often, people who come in sometimes, and teams that work in different ways. Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\n",
+      "parsed": {
+        "voice_a": {
+          "leak_evidence_subject": "FAIL",
+          "leak_numbers_foreground": "FAIL",
+          "leak_narrator_analysis": "FAIL",
+          "leak_unknowable_analysis": "FAIL",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "前半には空席や私物を置けない不便という具体的な経験がある一方、後半で37％という集計値を持ち込み、語り手が労働者のニーズを外側から解釈・一般化している。数字よりも、空席探しや個人空間を失う感覚の描写の方が印象に残るため、記憶に残る対象についてはPASSとした。",
+          "quoted_evidence": "leak_evidence_subject: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_numbers_foreground: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_narrator_analysis: \"The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\" / leak_unknowable_analysis: \"So even when every desk is open, some workers may keep returning to the same workable place.\" / leak_discovery_syntax: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\""
+        },
+        "voice_b": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "FAIL",
+          "leak_unknowable_analysis": "FAIL",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "数字や調査主体は登場しないが、「This person」や「The responsibility is to protect both」といった表現で、語り手がリーダーの立場や結論を外側から要約している。さらに、変化を受動的に「described」と報告し、未使用スペースと柔軟性のトレードオフを分析する構造になっている。",
+          "quoted_evidence": "leak_narrator_analysis: \"On another part of the office floor, a workplace leader has to look at the whole space.\" / leak_unknowable_analysis: \"Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\" / leak_discovery_syntax: \"The change was described as ‘a slow, quiet shift’ toward more assigned seats and fewer flex seats.\""
+        }
+      },
+      "flagged_items": [
+        {
+          "voice": "voice_a",
+          "fail_fields": [
+            "leak_evidence_subject",
+            "leak_numbers_foreground",
+            "leak_narrator_analysis",
+            "leak_unknowable_analysis",
+            "leak_discovery_syntax"
+          ],
+          "reasoning": "前半には空席や私物を置けない不便という具体的な経験がある一方、後半で37％という集計値を持ち込み、語り手が労働者のニーズを外側から解釈・一般化している。数字よりも、空席探しや個人空間を失う感覚の描写の方が印象に残るため、記憶に残る対象についてはPASSとした。",
+          "quoted_evidence": "leak_evidence_subject: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_numbers_foreground: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\" / leak_narrator_analysis: \"The need is not simply a love of furniture. It is a wish to keep personal space, focus, and a sense of belonging.\" / leak_unknowable_analysis: \"So even when every desk is open, some workers may keep returning to the same workable place.\" / leak_discovery_syntax: \"For about 37 percent of people using hot desks, the seat tended to become fixed anyway.\""
+        },
+        {
+          "voice": "voice_b",
+          "fail_fields": [
+            "leak_narrator_analysis",
+            "leak_unknowable_analysis",
+            "leak_discovery_syntax"
+          ],
+          "reasoning": "数字や調査主体は登場しないが、「This person」や「The responsibility is to protect both」といった表現で、語り手がリーダーの立場や結論を外側から要約している。さらに、変化を受動的に「described」と報告し、未使用スペースと柔軟性のトレードオフを分析する構造になっている。",
+          "quoted_evidence": "leak_narrator_analysis: \"On another part of the office floor, a workplace leader has to look at the whole space.\" / leak_unknowable_analysis: \"Too much unused space raises one problem. Too much flexibility may weaken belonging. The responsibility is to protect both.\" / leak_discovery_syntax: \"The change was described as ‘a slow, quiet shift’ toward more assigned seats and fewer flex seats.\""
+        }
+      ],
+      "any_flagged": true
+    }
+  }
+}

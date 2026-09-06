@@ -1,0 +1,114 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.161,
+    "shared_words": [
+      "choose",
+      "desk",
+      "desks",
+      "morning",
+      "offices",
+      "papers",
+      "people",
+      "still",
+      "system"
+    ],
+    "point_word_count": 56,
+    "story_word_count": 42,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.179,
+    "shared_words": [
+      "across",
+      "desks",
+      "empty",
+      "leave",
+      "looks",
+      "office",
+      "people",
+      "some",
+      "still",
+      "unused"
+    ],
+    "point_word_count": 56,
+    "story_word_count": 42,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.125,
+    "shared_words": [
+      "assigned",
+      "desks",
+      "more",
+      "people",
+      "place",
+      "seating",
+      "still"
+    ],
+    "point_word_count": 56,
+    "story_word_count": 56,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.125,
+    "shared_words": [
+      "assigned",
+      "desks",
+      "more",
+      "people",
+      "place",
+      "seating",
+      "still"
+    ],
+    "point_word_count": 56,
+    "story_word_count": 56,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_09335c4b06d42651006a9d4fe1c76c87d0a6ec6950dafc61b3",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEach morning, an employee arrives at the office and looks across the desks for one that is still empty. A bag goes under the chair. Yesterday’s keyboard may be today’s keyboard. There is nowhere to leave papers overnight. Some offices are assigning desks again, while others still let people choose. The question is not simply which system is better. It is why the same desk can mean comfort to one person and an unused cost to another.\n\n【Point One】\nEvery morning, the rule says, “Choose any desk.” But the worker still has to search for one. There is no drawer for papers or personal things.\n\nEmployees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings. Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.\n\nEven a free system can create a regular seat. About 37 percent of people in free-address offices said their seating tended to become fixed. The choice exists on paper, but a dependable place to focus may still be missing.\n\n【Point Two】\nOn the other side of the office, Linda Foggie looks across the whole floor. As a workplace leader at a bank, she sees many desks sitting empty on some days, while people who come in still want a sense of place and team connection.\n\nShe must explain space costs to senior leaders and answer for different ways of working. Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.\n\nFoggie described “a slow, quiet shift” toward more assigned seating and less flex seating. The pressure is to answer for both the empty floor and the people who use it.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "Full Storyにあった「席を探す」「私物を置けない」という状況を、従業員の不安、所属感・集中度、固定席化する割合（約37％）という具体的な証拠で掘り下げている。フリーアドレスでも実質的に席が固定化しうるという示唆があり、個人側にとっての意味が明確に加わっている。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "Full Storyの「空席によるコスト」と「固定席・フリーアドレスの違い」を、銀行の職場責任者が直面する説明責任や、所属感とスペース効率の両立という組織側の問題に具体化している。固定席回帰の静かな傾向も示しており、経営判断の背景という新しい視点を加えている。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "Full Storyにあった「席を探す」「私物を置けない」という状況を、従業員の不安、所属感・集中度、固定席化する割合（約37％）という具体的な証拠で掘り下げている。フリーアドレスでも実質的に席が固定化しうるという示唆があり、個人側にとっての意味が明確に加わっている。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "Full Storyの「空席によるコスト」と「固定席・フリーアドレスの違い」を、銀行の職場責任者が直面する説明責任や、所属感とスペース効率の両立という組織側の問題に具体化している。固定席回帰の静かな傾向も示しており、経営判断の背景という新しい視点を加えている。"
+      }
+    },
+    "status": "PASS"
+  }
+}

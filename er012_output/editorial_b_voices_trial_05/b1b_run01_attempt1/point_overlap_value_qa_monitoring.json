@@ -1,0 +1,110 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.158,
+    "shared_words": [
+      "desk",
+      "else",
+      "keyboard",
+      "morning",
+      "papers",
+      "people",
+      "someone",
+      "worker",
+      "workplace"
+    ],
+    "point_word_count": 57,
+    "story_word_count": 33,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.097,
+    "shared_words": [
+      "desk",
+      "desks",
+      "empty",
+      "people",
+      "sees",
+      "unused"
+    ],
+    "point_word_count": 62,
+    "story_word_count": 33,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.123,
+    "shared_words": [
+      "desk",
+      "feel",
+      "more",
+      "need",
+      "people",
+      "personal",
+      "space"
+    ],
+    "point_word_count": 57,
+    "story_word_count": 62,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.113,
+    "shared_words": [
+      "desk",
+      "feel",
+      "more",
+      "need",
+      "people",
+      "personal",
+      "space"
+    ],
+    "point_word_count": 62,
+    "story_word_count": 57,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_05c5921e481b9feb006a9d4f058b7887d0a21d29eb61de124f",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEach morning, an office worker checks which desks are empty. A bag goes under one. Papers stay in a case. The keyboard may have been used by someone else yesterday. On another floor, someone responsible for the workplace sees many unused desks. These are two scenes inside one question: should people have a desk of their own, or choose one each day?\n\n【Point One】\nThe search is part of the morning. No familiar drawer, screen, or corner is waiting. The worker starts in a space shaped by someone else. A free seat can feel less like freedom and more like a daily test.\n\nThe worry is practical: where do papers and personal things go? Is the desk and keyboard clean? Workers in one Japanese workplace said, “I cannot settle because I have no desk,” and, “I do not know where to put my papers and personal things.” For more than a third of people working this way, the flexible choice tends to become the same seat again and again. The need is a stable start, with enough continuity to focus and feel included.\n\n【Point Two】\nAn empty desk still has to be explained. Linda Foggie, a global head of real estate and corporate services at a major bank, must weigh unused space against people who need to feel they belong. She also sees the risk that too much flex seating may weaken a team’s sense of being together.\n\nFoggie described a “slow, quiet shift” toward more assigned seats and fewer flex seats, or desks shared on different days. That is not a personal vote. Her decisions cover employees with different schedules and must be explained to senior leaders asking about space costs. She is protecting company resources and people’s sense of place.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "Full Storyにあるフリーアドレスの状況を、書類や私物の置き場、衛生面、落ち着かなさという具体的な職場体験に掘り下げている。さらに、同じ席を選び続ける人が3分の1以上いるという情報や、安定した開始が集中と帰属意識に必要だという示唆を加えており、聞き手の理解を実質的に深めている。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "職場責任者の視点から、未使用スペースの削減と従業員の帰属意識・チームの一体感との具体的なトレードオフを示している。さらに、Linda Foggieが固定席を増やす方向への静かな変化を、従業員の勤務形態や経営陣へのコスト説明を踏まえて判断していると説明し、組織側の意思決定の意味を新たに加えている。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "Full Storyにあるフリーアドレスの状況を、書類や私物の置き場、衛生面、落ち着かなさという具体的な職場体験に掘り下げている。さらに、同じ席を選び続ける人が3分の1以上いるという情報や、安定した開始が集中と帰属意識に必要だという示唆を加えており、聞き手の理解を実質的に深めている。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "職場責任者の視点から、未使用スペースの削減と従業員の帰属意識・チームの一体感との具体的なトレードオフを示している。さらに、Linda Foggieが固定席を増やす方向への静かな変化を、従業員の勤務形態や経営陣へのコスト説明を踏まえて判断していると説明し、組織側の意思決定の意味を新たに加えている。"
+      }
+    },
+    "status": "PASS"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_00b5f477001f54e7006a9d508e21b087d09be914eecb9b079e",
+  "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, the rule says, “Choose any desk.” But the worker still has to search for one. There is no drawer for papers or personal things.\n\nEmployees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings. Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.\n\nEven a free system can create a regular seat. About 37 percent of people in free-address offices said their seating tended to become fixed. The choice exists on paper, but a dependable place to focus may still be missing.\n\n【Another Voice(Voice B)本文】\nOn the other side of the office, Linda Foggie looks across the whole floor. As a workplace leader at a bank, she must reckon with a broader workplace reality: many desks may sit empty on some days, while people who come in may still want a sense of place and team connection.\n\nShe must explain space costs to senior leaders and answer for different ways of working. Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.\n\nFoggie described “a slow, quiet shift” toward more assigned seating and less flex seating. The pressure is to answer for both the empty floor and the people who use it.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "reasoning": "調査対象者や割合を主語にした報告文が入り、制度全般への含意も語り手がまとめている。数字は一つだけで経験描写の後に補助的に置かれているが、全体としては個人の声より調査結果の整理が強く残る。",
+      "quoted_evidence": "leak_evidence_subject: “About 37 percent of people in free-address offices said their seating tended to become fixed.”\nleak_narrator_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_unknowable_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_discovery_syntax: “Employees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings.” / “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.”\nleak_evidence_memorable: “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.” / “About 37 percent of people in free-address offices said their seating tended to become fixed.”"
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "調査・割合・具体的な数値はなく、Linda Foggieの役割と職場での葛藤が中心になっている。一方で、語り手が彼女の立場やプレッシャーを外側から要約し、机数と帰属意識の因果的な含意まで説明している。",
+      "quoted_evidence": "leak_narrator_analysis: “As a workplace leader at a bank, she must reckon with a broader workplace reality” / “The pressure is to answer for both the empty floor and the people who use it.”\nleak_unknowable_analysis: “Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.” / “The pressure is to answer for both the empty floor and the people who use it.”"
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_a",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "調査対象者や割合を主語にした報告文が入り、制度全般への含意も語り手がまとめている。数字は一つだけで経験描写の後に補助的に置かれているが、全体としては個人の声より調査結果の整理が強く残る。",
+      "quoted_evidence": "leak_evidence_subject: “About 37 percent of people in free-address offices said their seating tended to become fixed.”\nleak_narrator_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_unknowable_analysis: “Even a free system can create a regular seat.” / “The choice exists on paper, but a dependable place to focus may still be missing.”\nleak_discovery_syntax: “Employees interviewed in Japan said they felt unsettled without their own desk and struggled to store their belongings.” / “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.”\nleak_evidence_memorable: “Workers with assigned desks were also more likely to say they felt they belonged at work and could concentrate.” / “About 37 percent of people in free-address offices said their seating tended to become fixed.”"
+    },
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis"
+      ],
+      "reasoning": "調査・割合・具体的な数値はなく、Linda Foggieの役割と職場での葛藤が中心になっている。一方で、語り手が彼女の立場やプレッシャーを外側から要約し、机数と帰属意識の因果的な含意まで説明している。",
+      "quoted_evidence": "leak_narrator_analysis: “As a workplace leader at a bank, she must reckon with a broader workplace reality” / “The pressure is to answer for both the empty floor and the people who use it.”\nleak_unknowable_analysis: “Too many assigned desks can leave space unused. Too many flexible desks can weaken belonging.” / “The pressure is to answer for both the empty floor and the people who use it.”"
+    }
+  ],
+  "any_flagged": true
+}

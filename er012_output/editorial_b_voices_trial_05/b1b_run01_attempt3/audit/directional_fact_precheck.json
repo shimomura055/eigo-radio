@@ -1,0 +1,56 @@
+{
+  "overall_status": "DIRECTION_REVIEW_REQUIRED",
+  "results": [
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "fell",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "マーキングデータを引用し、固定席運用の企業比率がかつての83%から2024年",
+      "script_sentence": "The share of companies using assigned seating fell from 83 percent to 55 percent by 2024, while workplace staff still faced many empty desks.",
+      "shared_numbers": [
+        "2024",
+        "83"
+      ]
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低下",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "fell",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "には55%まで低下したと述べている。記事に登場するワークプレイス担当者",
+      "script_sentence": "The share of companies using assigned seating fell from 83 percent to 55 percent by 2024, while workplace staff still faced many empty desks.",
+      "shared_numbers": [
+        "55"
+      ]
+    }
+  ]
+}

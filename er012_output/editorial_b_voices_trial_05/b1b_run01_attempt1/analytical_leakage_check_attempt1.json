@@ -1,0 +1,49 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0ad939518cab8202006a9d4f6c970887d0ada6f0b6d3ee6935",
+  "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nThe search is part of the morning. No familiar drawer, screen, or corner is waiting. The worker starts in a space shaped by someone else. A free seat can feel less like freedom and more like a daily test.\n\nThe worry is practical: where do papers and personal things go? Is the desk and keyboard clean? Workers in one Japanese workplace said, “I cannot settle because I have no desk,” and, “I do not know where to put my papers and personal things.” For more than a third of people working this way, the flexible choice tends to become the same seat again and again. The need is a stable start, with enough continuity to focus and feel included.\n\n【Another Voice(Voice B)本文】\nAn empty desk still has to be explained. Linda Foggie, a global head of real estate and corporate services at a major bank, must weigh unused space against people who need to feel they belong. She also sees the risk that too much flex seating may weaken a team’s sense of being together.\n\nFoggie described a “slow, quiet shift” toward more assigned seats and fewer flex seats, or desks shared on different days. That is not a personal vote. Her decisions cover employees with different schedules and must be explained to senior leaders asking about space costs. She is protecting company resources and people’s sense of place.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "冒頭の具体的な情景と当事者の引用が中心で、数字も1つにとどまり経験描写の後に置かれています。一方、「The need is...」という語り手による要約と、匿名集団の傾向を説明する文が、当事者のPerspectiveから調査・分析的な記述へ戻しています。",
+      "quoted_evidence": "leak_narrator_analysis: “The need is a stable start, with enough continuity to focus and feel included.”\nleak_unknowable_analysis: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”\nleak_discovery_syntax: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”"
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "調査・数字を主語にした文はなく、Foggieの立場上の葛藤や「slow, quiet shift」が中心なのでEvidenceより人物の判断が残ります。ただし、語り手が彼女の判断の意味や動機を外側から解釈しており、本人のPerspectiveとしては分析が混入しています。",
+      "quoted_evidence": "leak_narrator_analysis: “That is not a personal vote.” / “She is protecting company resources and people’s sense of place.”\nleak_unknowable_analysis: “She is protecting company resources and people’s sense of place.”"
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_a",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "冒頭の具体的な情景と当事者の引用が中心で、数字も1つにとどまり経験描写の後に置かれています。一方、「The need is...」という語り手による要約と、匿名集団の傾向を説明する文が、当事者のPerspectiveから調査・分析的な記述へ戻しています。",
+      "quoted_evidence": "leak_narrator_analysis: “The need is a stable start, with enough continuity to focus and feel included.”\nleak_unknowable_analysis: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”\nleak_discovery_syntax: “For more than a third of people working this way, the flexible choice tends to become the same seat again and again.”"
+    },
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis"
+      ],
+      "reasoning": "調査・数字を主語にした文はなく、Foggieの立場上の葛藤や「slow, quiet shift」が中心なのでEvidenceより人物の判断が残ります。ただし、語り手が彼女の判断の意味や動機を外側から解釈しており、本人のPerspectiveとしては分析が混入しています。",
+      "quoted_evidence": "leak_narrator_analysis: “That is not a personal vote.” / “She is protecting company resources and people’s sense of place.”\nleak_unknowable_analysis: “She is protecting company resources and people’s sense of place.”"
+    }
+  ],
+  "any_flagged": true
+}
