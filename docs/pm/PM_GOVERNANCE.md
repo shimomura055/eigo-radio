@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-GOVERNANCE-LOCAL-FILE-LINK-RULE-07でユーザーへの
+**最終更新: 2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01でTTS方式の
+決定基準を「正式リリース前=Standard同期/正式リリース後の実量産=Batch API」へ
+統一し7節を7-1〜7-3へ再編)。2026-09-06(PM-GOVERNANCE-LOCAL-FILE-LINK-RULE-07でユーザーへの
 試聴・閲覧依頼は`file:///C:/Users/tensh/eigo-radio/...`形式のURLで提示する
 ことを9-2へ追加)。2026-09-06(PM-GOVERNANCE-ADAPTIVE-REPORTING-06でユーザー向け
 報告フォーマットの5構造[現在の状態/未解決問題/次にやること/ユーザー判断/
@@ -139,14 +141,50 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
 
 ## 7. TTS方式(Batch API / Standard同期)の明示・確認原則
 
+### 7-1. 方式の決定基準(リリース前=Standard同期/リリース後の実量産=Batch API)
+
+【最重要ルール】TTS方式は「Production相当かどうか」ではなく「正式リリース前か、
+正式リリース後の実量産か」で決める。
+
+- **正式リリース前**: 原則すべて**Standard同期**を使用する。含む: DEV /
+  Trial / 診断 / Production相当テスト / 量産相当テスト / Production正式
+  経路を使ったruntime確認 / A2・B1等の完成候補生成 / Production wiring後の
+  実データ確認 / 回帰確認 / 少数・複数記事の量産模擬。ユーザーが
+  「Production相当で作って」「量産相当で確認して」「正式経路で生成して」と
+  指示しても、正式リリース前である限りTTSはStandard同期とする。これらの
+  表現を、TTS方式までBatchに合わせる指示とは解釈しない。
+- **正式リリース後**: 決済・配信その他の導線が整い、実ユーザー向け
+  サービスとして正式リリースされた後の実際の量産生成では**Batch API**を
+  使用する(正式リリース後の実量産における正式TTS方式。正本は
+  `CURRENT_SPEC.md`「Gemini TTS実装方式(Batch API)」であり、本ファイルへは
+  全文を複製しない)。
+- **重要な区別**: Production正式コード/Production正式経路とTTS実行方式は
+  別概念である。正式リリース前は「Production正式コード+Production正式
+  routing+Production正式Validator+Standard同期TTS」でruntime確認して
+  よい。Standard同期を使ったことだけを理由に「Production正式経路では
+  ない」と判断しない。「Production相当だからBatch」という誤解が起きない
+  よう、この基準を明記する。
+
+### 7-2. 例外(Batchを使ってよい場合と記録)
+
+正式リリース前でも、以下のいずれかに該当する場合に限りBatchを使ってよい。
+
+1. Batch API固有の挙動そのものの検証が目的である場合
+2. StandardとBatchの差異確認自体がテスト目的である場合
+3. ユーザーが明示的に「Batchで確認」と指定した場合
+4. FableがBatchでなければ検証目的を満たせないと判断した場合
+
+この場合、Batchを使う理由を簡潔にReportへ記録する。
+
+### 7-3. 明示・確認原則(既存)
+
 - TTS生成を含むタスク定義(`docs/pm/ACTIVE_TASK.md`・Fableからsonnet-workerへの
   委任文)には、使用するTTS方式(Batch API / Standard同期)を必ず明記する。
-  Production標準はBatch API(正本は`CURRENT_SPEC.md`「Gemini TTS実装方式
-  (Batch API)」であり、本ファイルへは全文を複製しない)。
+  既定は7-1のとおり、正式リリース前はStandard同期。
 - タスク定義にTTS方式の明記がない場合、Fableは着手前に必ずユーザーへ確認する。
   Sonnet/Opusは方式が不明なまま生成に着手せず、STOPしてFable経由でユーザーへ
   確認を求める。
-- 方式の切り替え(Batch→Standard等)や1エピソード内での方式混在は、ユーザーの
+- 方式の切り替え(Standard→Batch等)や1エピソード内での方式混在は、ユーザーの
   明示承認がある場合に限り行い、Production忠実性への影響(Production経路と
   異なる条件で得た結果である旨)・所要時間・コスト差を必ずReportへ記録する。
   Production call site自体の変更はこの原則の対象外(別途Gate 3の対象)。
@@ -155,6 +193,11 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
 - 経緯: 2026-09-05、Trial-13(OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)
   でタスク定義にTTS方式が明記されず、所要時間の見込み共有が漏れたことを受けた
   ユーザー指示により新設。
+- 経緯: 2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01)、Phase 2
+  (OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02)がBatchで長時間化した
+  (1件91〜167秒、retry発生時はさらに積み重なる)ことを受け、「正式リリース前は
+  原則Standard同期・正式リリース後の実量産はBatch API」という決定基準
+  (7-1)・例外(7-2)を新設した。
 
 ## 8. Agent並列起動の原則
 
@@ -401,3 +444,27 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   のReport/RESULT_PACKETにも同形式で記載させる)。ユーザーのクライアントで
   パス記載や`SendUserFile`では試聴用ファイルが開けなかったことを受けた
   2026-09-06ユーザー指示による新設(文書編集のみ、コード・Prompt変更なし)。
+- 2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01): 「7. TTS方式
+  (Batch API / Standard同期)の明示・確認原則」を7-1(方式の決定基準)・
+  7-2(例外)・7-3(明示・確認原則、既存内容)へ再編し、TTS方式は
+  「Production相当かどうか」ではなく「正式リリース前か、正式リリース後の
+  実量産か」で決めるという基準を新設した。正式リリース前(DEV/Trial/診断/
+  Production相当テスト/量産相当テスト/Production正式経路を使ったruntime
+  確認/A2・B1等の完成候補生成/Production wiring後の実データ確認/回帰確認/
+  少数・複数記事の量産模擬を含む)は原則すべてStandard同期を既定とし、
+  「Production相当で作って」等の指示をTTS方式までBatchに合わせる指示とは
+  解釈しないことを明記した。正式リリース後の実ユーザー向けサービスとしての
+  実際の量産生成はBatch API(正式方式)のまま維持し、旧「Production標準は
+  Batch API」という記述を「正式リリース後の実量産の正式方式」へ言い換えた。
+  Batchを使ってよい例外4点(Batch固有挙動の検証/Standard・Batch差異確認
+  自体がテスト目的/ユーザー明示指定/Fableが必要と判断)とその記録義務を
+  7-2として新設した。Production正式コード/Production正式経路とTTS実行
+  方式は別概念であり、正式リリース前でも「Production正式コード+
+  Production正式routing+Production正式Validator+Standard同期TTS」で
+  runtime確認してよいこと、Standard同期の使用だけを理由に「Production
+  正式経路ではない」と判断しないことを明記した。既存の7-3(タスク定義への
+  方式明記・未明記時のユーザー確認・切り替え混在時の記録・着手前の所要
+  時間/コスト見込み提示)は内容を維持した(文書編集のみ、コード・Prompt
+  変更なし)。2026-09-06、Phase 2(OPEN-117-KEYPHRASE-DISPLAY-TTS-
+  SEPARATION-TRIAL-02)がBatch APIの実測待ち時間(1件91〜167秒)により
+  長時間化したことを受けたユーザー決定。
