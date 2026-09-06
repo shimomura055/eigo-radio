@@ -1,0 +1,50 @@
+==== pos_new_normal_reused_attempt4 | canonical= new normal | kind= positive
+  baseline: primary_text='新常態' classification=TTS_FAILURE verified=False non_latin=True cascade_eligible_prod=False
+  cond_a: invoked=True verified=True final=NORMALIZED_MATCH secondary_text='New normal.'
+  cond_b: prompt_text='New Normal' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_new_normal_fresh | canonical= new normal | kind= positive
+  baseline: primary_text='新常態' classification=TTS_FAILURE verified=False non_latin=True cascade_eligible_prod=False
+  cond_a: invoked=True verified=True final=NORMALIZED_MATCH secondary_text='New normal.'
+  cond_b: prompt_text='New normal.' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_default_reused_attempt1 | canonical= default | kind= positive
+  baseline: primary_text='デフォルト' classification=TTS_FAILURE verified=False non_latin=True cascade_eligible_prod=False
+  cond_a: invoked=True verified=True final=NORMALIZED_MATCH secondary_text='Default.'
+  cond_b: prompt_text='Default' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_pos_work_life_balance | canonical= work-life balance | kind= positive
+  baseline: primary_text='Work-life balance' classification=NORMALIZED_MATCH verified=True non_latin=False cascade_eligible_prod=False
+  cond_a: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None
+  cond_b: prompt_text='Work-life balance.' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_pos_remote_work | canonical= remote work | kind= positive
+  baseline: primary_text='Remote work' classification=NORMALIZED_MATCH verified=True non_latin=False cascade_eligible_prod=False
+  cond_a: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None
+  cond_b: prompt_text='Remote work.' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_pos_subscription | canonical= subscription | kind= positive
+  baseline: primary_text='Subscription' classification=NORMALIZED_MATCH verified=True non_latin=False cascade_eligible_prod=False
+  cond_a: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None
+  cond_b: prompt_text='Subscription' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== pos_pos_cashless | canonical= cashless | kind= positive
+  baseline: primary_text='Káslis' classification=TTS_FAILURE verified=False non_latin=False cascade_eligible_prod=False
+  cond_a: invoked=False verified=False final=TTS_FAILURE secondary_text=None
+  cond_b: prompt_text='Cashless' classification=NORMALIZED_MATCH verified=True non_latin=False
+  cond_c: invoked=False verified=True final=NORMALIZED_MATCH secondary_text=None reused=None
+==== neg_ja_shinjoutai_vs_new_normal | canonical= new normal | kind= negative
+  baseline: primary_text='新状態' classification=TTS_FAILURE verified=False non_latin=True cascade_eligible_prod=False
+  cond_a: invoked=True verified=False final=TTS_FAILURE secondary_text='Xinjio Tai.'
+  cond_b: prompt_text='心状態' classification=TTS_FAILURE verified=False non_latin=True
+  cond_c: invoked=True verified=False final=TTS_FAILURE secondary_text='Xinjio Tai.' reused=True
+==== neg_ja_default_vs_default | canonical= default | kind= negative
+  baseline: primary_text='デフォルト' classification=TTS_FAILURE verified=False non_latin=True cascade_eligible_prod=False
+  cond_a: invoked=True verified=False final=TTS_FAILURE secondary_text='Defaulto.'
+  cond_b: prompt_text='デフォルト' classification=TTS_FAILURE verified=False non_latin=True
+  cond_c: invoked=True verified=False final=TTS_FAILURE secondary_text='Defaulto.' reused=True
+==== neg_en_new_formal_vs_new_normal | canonical= new normal | kind= negative
+  baseline: primary_text='new formal' classification=TRUE_CONTENT_MISMATCH verified=False non_latin=False cascade_eligible_prod=False
+  cond_a: invoked=False verified=False final=TRUE_CONTENT_MISMATCH secondary_text=None
+  cond_b: prompt_text='New formal.' classification=TRUE_CONTENT_MISMATCH verified=False non_latin=False
+  cond_c: invoked=False verified=False final=TRUE_CONTENT_MISMATCH secondary_text=None reused=None

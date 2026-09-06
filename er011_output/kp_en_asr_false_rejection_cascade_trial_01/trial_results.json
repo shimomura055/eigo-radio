@@ -1,0 +1,663 @@
+{
+  "non_latin_dominant_threshold": 0.5,
+  "en_asr_no_translate_prompt": "The audio is spoken in English. Transcribe it verbatim in English, exactly as spoken, using English spelling. Do not translate it, and do not write it in Japanese, Chinese, or any other language or script.",
+  "asr_model": "gpt-4o-mini-transcribe",
+  "items": [
+    {
+      "item_id": "pos_new_normal_reused_attempt4",
+      "canonical_text": "new normal",
+      "wav_path": "er011_output/kp_en_tts_rootcause_diagnostic_01/kp2_en_attempt4_english_lock_2_final.wav",
+      "wav_source": "reused_existing (KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01)",
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "new normal",
+        "wav_path": "er011_output/kp_en_tts_rootcause_diagnostic_01/kp2_en_attempt4_english_lock_2_final.wav",
+        "baseline": {
+          "primary_text": "新常態",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 3,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": true,
+          "secondary_text": "New normal.",
+          "secondary_error": null,
+          "secondary_classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "New Normal",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 9,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_new_normal_fresh",
+      "canonical_text": "new normal",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_new_normal_fresh.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "new normal",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_new_normal_fresh.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "09cb8faffe71fa944517bb0d4626be21091d3349dd2fcbf73e53bb82235ce411",
+        "duration_seconds": 1.471
+      },
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "new normal",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_new_normal_fresh.wav",
+        "baseline": {
+          "primary_text": "新常態",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 3,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": true,
+          "secondary_text": "New normal.",
+          "secondary_error": null,
+          "secondary_classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "New normal.",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 9,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_default_reused_attempt1",
+      "canonical_text": "default",
+      "wav_path": "er010_output/no9_keyphrase_minimal_instruction_minitrial_20_r2/audio/kp2_default_attempt1.wav",
+      "wav_source": "reused_existing (ER-010-NO9-KEYPHRASE-MINIMAL-INSTRUCTION-MINITRIAL-20-R2)",
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "default",
+        "wav_path": "er010_output/no9_keyphrase_minimal_instruction_minitrial_20_r2/audio/kp2_default_attempt1.wav",
+        "baseline": {
+          "primary_text": "デフォルト",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 5,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": true,
+          "secondary_text": "Default.",
+          "secondary_error": null,
+          "secondary_classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "Default",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 7,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_pos_work_life_balance",
+      "canonical_text": "work-life balance",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_work_life_balance.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "work-life balance",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_work_life_balance.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "40d2db054dcddf64009b405447412d78fb4df0bf6787b55377ff3b7a2892871c",
+        "duration_seconds": 2.011
+      },
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "work-life balance",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_work_life_balance.wav",
+        "baseline": {
+          "primary_text": "Work-life balance",
+          "primary_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 15,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "Work-life balance.",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 15,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_pos_remote_work",
+      "canonical_text": "remote work",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_remote_work.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "remote work",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_remote_work.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "5573b10688ee102e7fb306f185f2f317329e19dce88ffcc32ec5e6ecd0f27ae6",
+        "duration_seconds": 1.231
+      },
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "remote work",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_remote_work.wav",
+        "baseline": {
+          "primary_text": "Remote work",
+          "primary_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 10,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "Remote work.",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 10,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_pos_subscription",
+      "canonical_text": "subscription",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_subscription.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "subscription",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_subscription.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "a24dd761cfc30ba9c4542fad0cad5884666bf887e47b4005cbe5d9973ae55c3a",
+        "duration_seconds": 1.411
+      },
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "subscription",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_subscription.wav",
+        "baseline": {
+          "primary_text": "Subscription",
+          "primary_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 12,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "Subscription",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 12,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "pos_pos_cashless",
+      "canonical_text": "cashless",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_cashless.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "cashless",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_cashless.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "1a6194fe9aba45df50ca2435b6a2e7abd1f925045d47f045121a3bdf99c2b63f",
+        "duration_seconds": 1.411
+      },
+      "kind": "positive",
+      "evaluation": {
+        "canonical_text": "cashless",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_cashless.wav",
+        "baseline": {
+          "primary_text": "Káslis",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 6,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": false,
+          "verified": false,
+          "final_classification": "TTS_FAILURE"
+        },
+        "condition_b": {
+          "primary_prompt_text": "Cashless",
+          "primary_prompt_error": null,
+          "classification": "NORMALIZED_MATCH",
+          "verified": true,
+          "non_latin_info": {
+            "latin_chars": 8,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": true,
+          "final_classification": "NORMALIZED_MATCH"
+        }
+      }
+    },
+    {
+      "item_id": "neg_ja_shinjoutai_vs_new_normal",
+      "canonical_text": "new normal",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_shinjoutai.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "新常態",
+        "language": "ja",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_shinjoutai.wav",
+        "model": "gemini-3.1-flash-tts-preview",
+        "voice": "Aoede",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "fbb9e6feac0a25f12229aa0a2d1e49b3cc0a49db263ef18c685361bad26bbffd",
+        "duration_seconds": 0.94,
+        "trim_info": {
+          "raw_duration_seconds": 1.72,
+          "raw_leading_silence_seconds": 0.3,
+          "raw_trailing_silence_seconds": 0.64,
+          "trimmed_duration_seconds": 0.94,
+          "leading_margin_retained_seconds": 0.08,
+          "trailing_margin_retained_seconds": 0.08
+        },
+        "clipping_detected": false
+      },
+      "kind": "negative",
+      "negative_reason": "日本語TTSで「新常態」を発話(canonical=new normal)",
+      "evaluation": {
+        "canonical_text": "new normal",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_shinjoutai.wav",
+        "baseline": {
+          "primary_text": "新状態",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 3,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": true,
+          "secondary_text": "Xinjio Tai.",
+          "secondary_error": null,
+          "secondary_classification": "TTS_FAILURE",
+          "verified": false,
+          "final_classification": "TTS_FAILURE"
+        },
+        "condition_b": {
+          "primary_prompt_text": "心状態",
+          "primary_prompt_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 3,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": true,
+          "secondary_reused_from_condition_a": true,
+          "secondary_text": "Xinjio Tai.",
+          "secondary_classification": "TTS_FAILURE",
+          "verified": false,
+          "final_classification": "TTS_FAILURE"
+        }
+      }
+    },
+    {
+      "item_id": "neg_ja_default_vs_default",
+      "canonical_text": "default",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_default.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "デフォルト",
+        "language": "ja",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_default.wav",
+        "model": "gemini-3.1-flash-tts-preview",
+        "voice": "Aoede",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "c04faf9ad454e1548d3cebb36dce0f77bd3af3effab45027c2009ffc94906522",
+        "duration_seconds": 0.84,
+        "trim_info": {
+          "raw_duration_seconds": 1.92,
+          "raw_leading_silence_seconds": 0.9,
+          "raw_trailing_silence_seconds": 0.34,
+          "trimmed_duration_seconds": 0.84,
+          "leading_margin_retained_seconds": 0.08,
+          "trailing_margin_retained_seconds": 0.08
+        },
+        "clipping_detected": false
+      },
+      "kind": "negative",
+      "negative_reason": "日本語TTSで「デフォルト」を発話(canonical=default)",
+      "evaluation": {
+        "canonical_text": "default",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_default.wav",
+        "baseline": {
+          "primary_text": "デフォルト",
+          "primary_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 5,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": true,
+          "secondary_text": "Defaulto.",
+          "secondary_error": null,
+          "secondary_classification": "TTS_FAILURE",
+          "verified": false,
+          "final_classification": "TTS_FAILURE"
+        },
+        "condition_b": {
+          "primary_prompt_text": "デフォルト",
+          "primary_prompt_error": null,
+          "classification": "TTS_FAILURE",
+          "verified": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 5,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": true,
+          "secondary_reused_from_condition_a": true,
+          "secondary_text": "Defaulto.",
+          "secondary_classification": "TTS_FAILURE",
+          "verified": false,
+          "final_classification": "TTS_FAILURE"
+        }
+      }
+    },
+    {
+      "item_id": "neg_en_new_formal_vs_new_normal",
+      "canonical_text": "new normal",
+      "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_en_new_formal.wav",
+      "wav_source": "new_tts",
+      "tts_generation": {
+        "status": "OK",
+        "text": "new formal",
+        "path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_en_new_formal.wav",
+        "language": "en",
+        "instruction": "KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX (Production同一文言)",
+        "call_count": 1,
+        "retry_count": 0,
+        "sha256": "1d45c143e9a0b1889b26f97f30b1176e192f7aae58dfaf15210a0d55f45fc6b7",
+        "duration_seconds": 1.391
+      },
+      "kind": "negative",
+      "negative_reason": "英語TTSで別の語「new formal」を発話(canonical=new normal)",
+      "evaluation": {
+        "canonical_text": "new normal",
+        "wav_path": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_en_new_formal.wav",
+        "baseline": {
+          "primary_text": "new formal",
+          "primary_error": null,
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "cascade_eligible_in_production": false,
+          "non_latin_info": {
+            "latin_chars": 9,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_a": {
+          "invoked": false,
+          "verified": false,
+          "final_classification": "TRUE_CONTENT_MISMATCH"
+        },
+        "condition_b": {
+          "primary_prompt_text": "New formal.",
+          "primary_prompt_error": null,
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "non_latin_info": {
+            "latin_chars": 9,
+            "cjk_chars": 0,
+            "ratio_cjk": 0.0,
+            "is_non_latin_dominant": false,
+            "threshold": 0.5
+          }
+        },
+        "condition_c": {
+          "invoked": false,
+          "verified": false,
+          "final_classification": "TRUE_CONTENT_MISMATCH"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "positive_false_rejection_rate": {
+      "baseline": {
+        "n": 7,
+        "false_rejections": 4,
+        "false_rejection_rate": 0.571
+      },
+      "condition_a": {
+        "n": 7,
+        "false_rejections": 1,
+        "false_rejection_rate": 0.143
+      },
+      "condition_b": {
+        "n": 7,
+        "false_rejections": 0,
+        "false_rejection_rate": 0.0
+      },
+      "condition_c": {
+        "n": 7,
+        "false_rejections": 0,
+        "false_rejection_rate": 0.0
+      }
+    },
+    "negative_false_accepts": {
+      "baseline": [],
+      "condition_a": [],
+      "condition_b": [],
+      "condition_c": []
+    },
+    "positive_item_ids": [
+      "pos_new_normal_reused_attempt4",
+      "pos_new_normal_fresh",
+      "pos_default_reused_attempt1",
+      "pos_pos_work_life_balance",
+      "pos_pos_remote_work",
+      "pos_pos_subscription",
+      "pos_pos_cashless"
+    ],
+    "negative_item_ids": [
+      "neg_ja_shinjoutai_vs_new_normal",
+      "neg_ja_default_vs_default",
+      "neg_en_new_formal_vs_new_normal"
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01 試聴用Player</title>
+<style>
+body { font-family: sans-serif; max-width: 900px; margin: 2em auto; }
+h2 { border-bottom: 2px solid #ccc; margin-top: 2em; }
+.item { border: 1px solid #ddd; border-radius: 6px; padding: 1em; margin: 1em 0; }
+.canonical { font-weight: bold; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; margin-left: 0.5em; }
+.pos { background: #dff0d8; }
+.neg { background: #f2dede; }
+table { border-collapse: collapse; width: 100%; margin-top: 0.5em; font-size: 0.9em; }
+td, th { border: 1px solid #ccc; padding: 4px 8px; text-align: left; }
+</style>
+</head>
+<body>
+<h1>KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01</h1>
+<p>短い英語Key Phraseに対するPrimary ASR誤変換(非ラテン文字出力)への
+false rejection対策(a/b/c)の隔離Trial音声。全音声はTTS生成音声そのもの
+(TTSの発話内容がcanonicalと一致するかは実試聴で確認)。Production変更なし。</p>
+
+<h2>陽性(1) new normal (既存保全音声、KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01再利用)</h2>
+<div class="item">
+  <span class="canonical">canonical: "new normal"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_tts_rootcause_diagnostic_01/kp2_en_attempt4_english_lock_2_final.wav"></audio>
+  <p>baseline Primary ASR: 「新常態」(TTS_FAILURE) / (a) Secondary Azure: "New normal." → PASS / (b) prompt付きPrimary: "New Normal" → PASS</p>
+</div>
+
+<h2>陽性(2) new normal (新規生成)</h2>
+<div class="item">
+  <span class="canonical">canonical: "new normal"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_new_normal_fresh.wav"></audio>
+  <p>baseline Primary ASR: 「新常態」(TTS_FAILURE) / (a) Secondary Azure: "New normal." → PASS / (b) prompt付きPrimary: "New normal." → PASS</p>
+</div>
+
+<h2>陽性(3) default (既存Mini-Trial-20-R2音声再利用)</h2>
+<div class="item">
+  <span class="canonical">canonical: "default"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er010_output/no9_keyphrase_minimal_instruction_minitrial_20_r2/audio/kp2_default_attempt1.wav"></audio>
+  <p>baseline Primary ASR: 「デフォルト」(TTS_FAILURE) / (a) Secondary Azure: "Default." → PASS / (b) prompt付きPrimary: "Default" → PASS</p>
+</div>
+
+<h2>陽性(4) work-life balance</h2>
+<div class="item">
+  <span class="canonical">canonical: "work-life balance"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_work_life_balance.wav"></audio>
+  <p>baseline Primary ASR: "Work-life balance" → NORMALIZED_MATCH(元々合格、問題なし)</p>
+</div>
+
+<h2>陽性(5) remote work</h2>
+<div class="item">
+  <span class="canonical">canonical: "remote work"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_remote_work.wav"></audio>
+  <p>baseline Primary ASR: "Remote work" → NORMALIZED_MATCH(元々合格、問題なし)</p>
+</div>
+
+<h2>陽性(6) subscription</h2>
+<div class="item">
+  <span class="canonical">canonical: "subscription"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_subscription.wav"></audio>
+  <p>baseline Primary ASR: "Subscription" → NORMALIZED_MATCH(元々合格、問題なし)</p>
+</div>
+
+<h2>陽性(7) cashless</h2>
+<div class="item">
+  <span class="canonical">canonical: "cashless"</span><span class="tag pos">陽性</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/pos_cashless.wav"></audio>
+  <p>baseline Primary ASR: "Káslis"(ラテン文字だが誤表記、TTS_FAILURE) / (a)は非ラテン文字主体でないため不発動、REJECTのまま /
+  (b) prompt付きPrimary: "Cashless" → PASS</p>
+</div>
+
+<h2>陰性対照(i-1) 日本語TTSで「新常態」を発話(canonical=new normal)</h2>
+<div class="item">
+  <span class="canonical">canonical: "new normal"(実際の発話は日本語「新常態」)</span><span class="tag neg">陰性対照</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_shinjoutai.wav"></audio>
+  <p>baseline Primary ASR: 「新状態」(TTS_FAILURE、reject維持) / (a) Secondary Azure: "Xinjio Tai." → 依然REJECT(false accept無し) /
+  (b) prompt付きPrimary: 「心状態」→ 依然REJECT(false accept無し)</p>
+</div>
+
+<h2>陰性対照(i-2) 日本語TTSで「デフォルト」を発話(canonical=default)</h2>
+<div class="item">
+  <span class="canonical">canonical: "default"(実際の発話は日本語「デフォルト」)</span><span class="tag neg">陰性対照</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_default.wav"></audio>
+  <p>baseline Primary ASR: 「デフォルト」(TTS_FAILURE、reject維持) / (a) Secondary Azure: "Defaulto." → 依然REJECT(false accept無し) /
+  (b) prompt付きPrimary: 「デフォルト」→ 依然REJECT(false accept無し)</p>
+</div>
+
+<h2>陰性対照(ii) 英語TTSで別の語「new formal」を発話(canonical=new normal)</h2>
+<div class="item">
+  <span class="canonical">canonical: "new normal"(実際の発話は英語「new formal」)</span><span class="tag neg">陰性対照</span>
+  <audio controls src="file:///C:/Users/tensh/eigo-radio/er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_en_new_formal.wav"></audio>
+  <p>baseline Primary ASR: "new formal"(TRUE_CONTENT_MISMATCH、reject維持) / 非ラテン文字でないため(a)不発動 /
+  (b) prompt付きPrimary: "New formal." → 依然REJECT(false accept無し)</p>
+</div>
+
+<h2>詳細データ</h2>
+<p>全項目の生raw ASR出力・分類結果は <code>er011_output/kp_en_asr_false_rejection_cascade_trial_01/trial_results.json</code> 参照。</p>
+</body>
+</html>
