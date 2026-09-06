@@ -101,13 +101,31 @@ class KeywordsPromptTests(unittest.TestCase):
         template = bk.load_prompt_template()
         self.assertIn("漢数字", template)
 
-    def test_template_contains_gloss_rule_b_placeholder_prohibition(self):
-        """規約B(gloss側)。日本語グロスにプレースホルダー記号
-        (「～」「〜」「…」)を使わない指示が存在することを確認する。"""
+    def test_template_contains_gloss_rule_b_ellipsis_prohibition_only(self):
+        """KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06、
+        ユーザー承認)により、規約B(gloss側)の「～」「〜」禁止は撤回された
+        (表示用/TTS用分離、TTS用フィールドはcanonicalization工程が
+        japanese_glossから決定論的に導出するため、選定Prompt側では
+        もう「～」「〜」を禁止する必要がない)。「…」の禁止は維持する。"""
         template = bk.load_prompt_template()
         self.assertIn("日本語グロス", template)
-        for placeholder_char in ("～", "〜", "…"):
-            self.assertIn(placeholder_char, template)
+        self.assertIn("…", template)
+        # 「～」「〜」は撤回対象だが、許可文言("使ってもかまいません")の
+        # 中に文字自体は残るため、許可文言そのものが存在することを確認する
+        # (単純な文字の有無ではなく、禁止から許可への転換を確認する)。
+        self.assertIn("使ってもかまいません", template)
+        self.assertNotIn(
+            "日本語グロスには「～」「〜」「…」のようなプレースホルダー記号を一切使わないでください",
+            template)
+
+    def test_template_contains_numeric_placeholder_avoidance_rule(self):
+        """KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01 仕様B: 数値の
+        穴埋めを必要とする不完全な句・glossを選ばない指示が選定Promptに
+        存在することを確認する(数値placeholder型はTTS変換の対象外の
+        ままGateでブロックし続けるため、選定側で回避を誘導する)。"""
+        template = bk.load_prompt_template()
+        self.assertIn("数値", template)
+        self.assertIn("穴埋め", template)
 
     def test_template_does_not_contain_rule_c_short_function_word_wording(self):
         """規約C(短い機能語終端のKey Phrase回避、Trial-17 Track C)は

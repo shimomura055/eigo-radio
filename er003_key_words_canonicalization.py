@@ -151,6 +151,41 @@ KEY_PHRASE_MAX_WORDS = p2g.DISPLAY_PHRASE_MAX_WORDS
 _FINITE_AUX_WORDS = p2g._FINITE_AUX_WORDS
 _WORD_TOKEN_RE = p2g._WORD_TOKEN_RE
 
+# ============================================================
+# KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06、ユーザーが
+# 2026-09-06に`APPROVED_FOR_PRODUCTION`と決定した表示用/TTS用gloss分離仕様)
+# ============================================================
+# `japanese_gloss`(選定Promptが生成する表示用gloss)は、辞書的な表記として
+# 自然な範囲であれば「～」「〜」を含んでよい(Prompt規約B改訂、
+# b1_p2_keywords_l_prompt_template.txt参照)。しかしTTS(音声合成)は
+# 「～」「〜」を実際の記号として不安定に読み上げてしまう
+# (OPEN-117-KEYPHRASE-TILDE-GATE-RECHECK-01で実証済み)。この関数は、
+# 表示用glossから、決定論的な規則変換のみでTTS読み上げ用テキストを導出する
+# (LLMは使わない)。
+#
+# 変換対象は「文頭、または読点「、」の直後にある「～」「〜」」のみ
+# (verb+目的語省略型のplaceholder、例: 「～を示す」)。それ以外の位置の
+# 「～」「〜」(例: 数値placeholder型「ソロ旅行を～％とする」、範囲表記
+# 「中～高強度」)、および「…」は一切変換しない。これらは変換せずに
+# `er003_audio_tts_asr_safety.detect_gloss_placeholder_notation`ゲートへ
+# そのまま渡し、既存どおりTTS呼び出し前にブロックさせる(ゲートを弱める
+# 変更ではない、OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-01/-02で
+# Trial検証済みの規則をそのままProductionへ移植したもの)。
+_LEADING_TILDE_RE = re.compile(r"(?:^|(?<=、))[～〜]")
+
+# TTS読み上げ用の言い換え語。「～」「〜」1文字をこの語で置換する
+# (例: 「～を示す」→「なになにを示す」)。
+_TILDE_TTS_REPLACEMENT = "なになに"
+
+
+def convert_display_gloss_to_tts_text(display_gloss: Optional[str]) -> str:
+    """表示用gloss(japanese_gloss)から、TTS読み上げ用テキスト
+    (japanese_gloss_tts)を決定論的な規則変換だけで導出する。文頭・読点
+    直後の「～」「〜」だけを「なになに」へ置換し、それ以外は無変更で
+    返す(display_gloss自体に「～」「〜」「…」が全く含まれない場合は
+    display_glossとの完全一致になる)。"""
+    return _LEADING_TILDE_RE.sub(_TILDE_TTS_REPLACEMENT, display_gloss or "")
+
 
 def load_prompt_template(path: str = PROMPT_TEMPLATE_PATH) -> str:
     return er003.restore.load_text_file(path)
@@ -508,6 +543,7 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         rank = original["rank"]
         canon = canon_by_rank[rank]
         display_phrase = original.get("display_phrase") or original.get("canonical_english")
+        japanese_gloss = original.get("ja_gloss") or original.get("japanese_gloss")
         qa = {field: canon[field] for field in QA_FIELDS}
         item_review_required = any(v == "FAIL" for v in qa.values())
         any_review_required = any_review_required or item_review_required
@@ -518,7 +554,12 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
             "display_phrase": display_phrase,
             "key_phrase": canon["key_phrase"],
             "used_form": canon["key_phrase"],
-            "japanese_gloss": original.get("ja_gloss") or original.get("japanese_gloss"),
+            # 表示用(辞書的な「～」「〜」表記を許容、既存フィールド、無変更)。
+            "japanese_gloss": japanese_gloss,
+            # KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06)で
+            # 新規追加: TTS読み上げ用(文頭・読点直後の「～」「〜」のみ
+            # 「なになに」へ決定論的に変換、それ以外は表示用と同一)。
+            "japanese_gloss_tts": convert_display_gloss_to_tts_text(japanese_gloss),
             "changed_from_display_phrase": canon["changed_from_display_phrase"],
             "normalization_reason": canon["normalization_reason"],
             "qa": qa,

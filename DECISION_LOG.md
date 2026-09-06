@@ -1,7 +1,23 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03、Fable↔Sonnetレビュー往復上限を「Sonnet合計最大2回」から「初回+最大3回(合計最大4回)」へ変更し、FableのEditorial/PM Gatekeeper原則を`docs/pm/PM_GOVERNANCE.md`11節へ新設した。詳細は本ファイル該当エントリ参照)。2026-09-06(OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02、
+**最終更新: 2026-09-06(KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01、
+ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した2件(Key
+Phrase日本語glossの表示用/TTS用分離[先頭・読点直後の「～」「〜」→
+「なになに」への決定論的規則変換、新フィールド`japanese_gloss_tts`を
+`keywords_canonicalized.json`へ追加]・数値placeholder型glossの選定側
+回避)をProduction正式初回経路へ`PRODUCTION_WIRED`まで配線した。選定
+Prompt規約Bのgloss側「～」「〜」禁止を撤回(`WITHDRAWN`、「…」禁止・
+key_phrase側規約は維持)。Theme 2 B1(Trial-12記事)でProduction正式経路
+のRuntime evidenceを取得し、「なになに」変換の実発火(TTS Standard同期、
+attempt2でPHONETIC_MATCH)・数値placeholder型のgateブロック(TTS API
+呼び出し0件)・`model_id=gemini-3.1-flash-tts-preview`・
+`tts_execution_mode=STANDARD`・表示用/TTS用両フィールドのartifact保存を
+確認した。新規単体テスト18件PASS、プロジェクト全体回帰2103件中2100
+PASS(残り3件は既知の無関係failure、git stashで確認済み)。OPEN-117は
+`RESOLVED / PRODUCTION_WIRED`。詳細は本ファイル該当エントリ・
+`KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01_REPORT.md`参照)。
+2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03、Fable↔Sonnetレビュー往復上限を「Sonnet合計最大2回」から「初回+最大3回(合計最大4回)」へ変更し、FableのEditorial/PM Gatekeeper原則を`docs/pm/PM_GOVERNANCE.md`11節へ新設した。詳細は本ファイル該当エントリ参照)。2026-09-06(OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02、
 Phase 2としてTheme 2 A2/B1のKey Phrase選定〜完成音声Assemblyまでを
 Production正式経路+Trialアダプタ(Production変更なし)で確認。分離方式の核
 (先頭/読点直後「～」→「なになに」変換)はA2 rank5で`VALIDATED`実証も、
@@ -5921,6 +5937,36 @@ Production Writerへの正式配線・CURRENT_SPEC登録・News/Trend実装・Ho
 **根拠レポート**: `ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-02_REPORT.md`、`ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-03_REPORT.md`
 
 **影響するCURRENT_SPEC項目**: Audio Production Pipeline > Validator(数値正規化含む一般化仕様)・Validator(日本語)、Key Phrase > 日本語グロス(`ja_gloss`)のPrompt規約A/B(新規行)
+
+## KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06、ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した2件[Key Phrase日本語glossの表示用/TTS用分離・数値placeholder型の選定側回避]を`PRODUCTION_WIRED`まで配線)
+
+**背景**: OPEN-117のPhase 1/2 Trial(`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-01/-02_REPORT.md`)・`OPEN-117-KEYPHRASE-TILDE-GATE-RECHECK-01_REPORT.md`で、Key Phrase日本語glossの「表示用の辞書的表記」(「～を示す」)と「TTS読み上げ用テキスト」(「なになにを示す」)を分離する方式(先頭・読点直後の「～」「〜」→「なになに」への決定論的規則変換)が有効であることをTrial adapterで実証済みだった。ユーザーが2026-09-06にこの分離方式(仕様A)と、数値placeholder型glossをTTS側で救済せず選定側で回避誘導する方式(仕様B)を`APPROVED_FOR_PRODUCTION`と正式決定し、Production正式初回経路への配線を指示した。
+
+**仕様A(表示用/TTS用分離)の実装**:
+1. **選定Prompt改訂**(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有): 既存の規約Bのうち、gloss側の「日本語グロスには「～」「〜」「…」のようなプレースホルダー記号を一切使わないでください」という一文を撤回(`WITHDRAWN`)し、「日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません…ただし「…」のようなプレースホルダー記号はこれまでどおり使わないでください」へ書き換えた。規約A(漢数字化)は無変更。canonicalization prompt(`b1_p2_keywords_canonicalization_prompt_template.txt`)側のkey_phrase(英語)に対する「～」「〜」「…」禁止も無変更(gloss側のみの改訂であり、`japanese_gloss`はcanonicalization工程では生成されないため、この工程への変更は不要と判断した)。
+2. **Schema拡張**(`er003_key_words_canonicalization.py`): 新規関数`convert_display_gloss_to_tts_text(display_gloss)`を追加(正規表現`_LEADING_TILDE_RE = re.compile(r"(?:^|(?<=、))[～〜]")`で「なになに」へ置換、それ以外の位置の「～」「〜」・「…」は無変換、LLM不使用)。`merge_canonicalization_result()`が返すitemへ、既存`japanese_gloss`(表示用、無変更)に加えて新フィールド`japanese_gloss_tts`(TTS用、`convert_display_gloss_to_tts_text(japanese_gloss)`の結果)を追加した。
+3. **TTS呼び出し**(`er003_v1_n3_01_tts_generate.py`、B1/A2両方の正式経路): 新規関数`resolve_key_phrase_ja_gloss_tts(item)`を追加(`japanese_gloss_tts`フィールドが存在すればそれを使い、存在しない旧artifact[本仕様配線前に生成された`keywords_canonicalized.json`]の場合は表示用`japanese_gloss`から同じ規則でその場導出するfallback、`japanese_gloss_tts_fallback_derived`として記録)。`generate_b1_segments()`/`generate_a2_segments()`のKey Phrase日本語meaning生成部を、`generate_charon_japanese_with_reading_safety()`/`generate_a2_japanese_with_reading_safety()`へ渡すテキストを`ja_gloss`(表示用)から`ja_gloss_tts`(TTS用、`resolve_key_phrase_ja_gloss_tts()`の戻り値)へ変更し、`expected_substring_ja()`もTTS用テキストから計算するよう変更した。表示用`japanese_gloss`は結果dictへ`display_gloss`として追加記録するのみで、TTSへは一切渡らない。
+4. **既存gate**(`er003_audio_tts_asr_safety.detect_gloss_placeholder_notation`)・**既存の`tts_safe_ja()`のlstrip処理**は無変更。むしろ、従来は先頭の単一「～」を`tts_safe_ja()`のlstripが黙って削除し(「～を示す」→「を示す」という、裸の助詞から始まる不安定なTTS入力になっていた、OPEN-117-KEYPHRASE-TILDE-GATE-RECHECK-01で判明した約50%規模の潜在失敗率の根本原因)、変換後は「なになにを示す」という安定した入力になるため、lstripは実質的にno-opとなる(副作用として品質改善)。
+
+**仕様B(数値placeholder型の選定側回避)の実装**: 選定Prompt(`b1_p2_keywords_l_prompt_template.txt`)へ「『ソロ旅行を～％とする』のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください」という1文を追加した。数値placeholder型は「なになに」変換規則の対象外(文中位置のため無変換)のまま、既存の`detect_gloss_placeholder_notation`ゲートが引き続きTTS呼び出し前にブロックする(ゲート自体は無変更、緩和していない)。canonicalization promptは`japanese_gloss`を生成しないため変更不要と判断した。
+
+**Master Audio Store確認**: 英語Key Phrase Component(`ensure_key_phrase_english_component`)は`canonical_text=used_form`(英語のみ)をキーに使っており、コード再確認の結果、日本語gloss分離の影響を一切受けないことを確認した。日本語Key Phrase glossはMaster Audio Store非対象(`generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`はStore経由ではなく都度生成、review_lockのみでguard)のため、cache identity設計との矛盾はない。
+
+**retry/fallback/regeneration整合**: 選定retry(Key Phrase Set Redundancy QA、最大2回)は選定Prompt自体を経由するため仕様A/Bとも自動的に一貫する。TTS標準/fallback retry cascade(`generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`内部)は`japanese_gloss_tts`を受け取ってから動作するため一貫している。review_lock・Assembly側Audio Validation Gateは無変更。
+
+**表示側確認**: player.html等の記事表示コンポーネントで`japanese_gloss`を表示に使う既存Production固定コンポーネントは存在しない(表示は各Trial/Reportスクリプトが都度生成するため、表示用フィールドをそのまま使い続けられることをコード確認した)。
+
+**Regression**: 新規単体テスト18件追加(`er003_test_key_words_canonicalization.py`: `convert_display_gloss_to_tts_text`9件+`merge_canonicalization_result`の`japanese_gloss_tts`出力3件、`er003_test_v1_n3_01_tts_generate.py`: `resolve_key_phrase_ja_gloss_tts`5件、`er003_test_b1_p2.py`: 選定Prompt規約B撤回確認1件[既存1件を置換]+規約B新設1件)、いずれもPASS。既存Key Phrase canonicalization・選定Prompt・TTS生成の既存テスト全PASS(無変化)。プロジェクト全体regression(`run_project_regression.py`、collected=2103)は2100 PASS・3 failed、残り3件は本タスク変更ファイルを`git stash`で除去したbaselineでも同一の3件が再現する既知の無関係failure(`er003_test_p2j_investigate`のOPEN-77既知meta-test集計バグ[今回はテスト総数増加により3件目が新たに発現、テスト数を数える仕組み自体の構造的な問題でありOPEN-117関連の変更内容とは無関係]、`er003_test_bad.FixtureTests.test_case_0`は回帰harness自体の意図的self-check fixture)であることを確認済み。
+
+**Runtime evidence**(2026-09-06、TTS Standard同期、`er011_output/kp_display_tts_separation_prod_wiring_01/`): Theme 2 B1(Trial-12記事`open112_trend_theme2_b_a2_b1_text_trial_12/b1b_run01/article.md`)を入力に、Production正式経路(`sc.run_key_phrases`→選定・canonicalization・Key Phrase Set Redundancy QA、いずれも無変更のProduction関数を直接呼び出し)を1回実行。結果は全てPASS(選定`KEY_WORDS_STRUCTURE_PASS`・canonicalization`CANONICALIZATION_PASS`・redundancy QA`REDUNDANCY_PASS`)。選定された5件は「～」「〜」を含む表示用glossが無かった(`natural_conversion_fired_in_selection=false`)ため、既知gloss「～と完全には一致しない」(Phase 2 TrialでA2 rank5として実際に選定された値)を同じProduction関数経路(`resolve_key_phrase_ja_gloss_tts`→`generate_charon_japanese_with_reading_safety`)へ直接投入し、TTS用テキスト「なになにと完全には一致しない」への変換発火とTTS生成(attempt1はASRが「〜と完全には一致しない」と記号読みしてTRUE_CONTENT_MISMATCHだったが、attempt2で「何々と完全には一致しない」とPHONETIC_MATCH・verified=true)を実証した。数値placeholder型の既知gloss「ソロ旅行を～％とする」(Phase 2 TrialでB1 rank2として実際に選定された値)は、変換規則の対象外の位置に「～」が残るため無変換のまま`detect_gloss_placeholder_notation`ゲートでSTOPPED(TTS API呼び出し自体が発生していないことをwavファイル未生成で確認)した。`raw_usage_log.jsonl`(`er005_cost_logger`の公式記録)から、TTS API呼び出し7件全てで`model_id=gemini-3.1-flash-tts-preview`・`tts_execution_mode=STANDARD`を確認した。選定5件全てのcanonicalization artifact(`keywords_canonicalized.json`)に`japanese_gloss`(表示用)と`japanese_gloss_tts`(TTS用)の両方が保存されていることを確認した。API呼び出し総数18件(選定/canonicalization/redundancy QA各1件+TTS7件+ASR相応数)、小規模スコープのため費用は少額。
+
+**状態**: `PRODUCTION_WIRED`(仕様A・仕様Bとも)。OPEN-117は`RESOLVED / PRODUCTION_WIRED`へ更新(日本語gloss自然さの主観評価[サブタスクC]は別Open Item候補として結果待ちのまま維持)。
+
+**今回実施しなかったこと**: 数値placeholder型の変換規則拡張(ゲート・変換対象範囲は無変更のまま)、Batch TTSの使用、Theme 2の完成episode音声再実行(Key Phrase単体のTTS/ASR evidenceのみ取得、Assembly・完成音声化は範囲外)、既存artifact(旧`keywords_canonicalized.json`)の一括再生成(fallback導出により後方互換は確保済み、遡及的な音声再生成は別タスクの判断)。
+
+**根拠レポート**: `KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01_REPORT.md`、`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-01_REPORT.md`、`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02_REPORT.md`、`OPEN-117-KEYPHRASE-TILDE-GATE-RECHECK-01_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: Key Phrase > 日本語グロス(`ja_gloss`)のPrompt規約A/B(規約Bのgloss側「～」「〜」禁止を`WITHDRAWN`と追記)、Key Phrase日本語gloss 表示用/TTS用分離(新規行)、Key Phrase 数値placeholder型の回避(選定Prompt)(新規行)
 
 ## 参照元
 

@@ -169,5 +169,49 @@ class ProductionValidatorIntegrationAfterHyphenFixTests(unittest.TestCase):
             ("EXACT_MATCH", "NORMALIZED_MATCH", "HIGH_SIMILARITY_SAFE"))
 
 
+class ResolveKeyPhraseJaGlossTtsTests(unittest.TestCase):
+    """KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01: Key Phrase日本語
+    glossのTTS用フィールド解決(新規artifact=japanese_gloss_ttsをそのまま
+    使う、旧artifact=フィールド欠落時はjapanese_glossから同じ規則で
+    その場導出する後方互換fallback)。"""
+
+    def test_uses_japanese_gloss_tts_field_when_present(self):
+        item = {"japanese_gloss": "～を示す", "japanese_gloss_tts": "なになにを示す"}
+        text, used_fallback = tts.resolve_key_phrase_ja_gloss_tts(item)
+        self.assertEqual(text, "なになにを示す")
+        self.assertFalse(used_fallback)
+
+    def test_falls_back_to_derived_conversion_when_field_missing(self):
+        # 分離仕様配線前の旧artifact(japanese_gloss_ttsフィールド自体が
+        # 存在しない)を模擬する。
+        item = {"japanese_gloss": "～を示す"}
+        text, used_fallback = tts.resolve_key_phrase_ja_gloss_tts(item)
+        self.assertEqual(text, "なになにを示す")
+        self.assertTrue(used_fallback)
+
+    def test_falls_back_and_leaves_non_placeholder_gloss_unchanged(self):
+        item = {"japanese_gloss": "その場を立ち去る"}
+        text, used_fallback = tts.resolve_key_phrase_ja_gloss_tts(item)
+        self.assertEqual(text, "その場を立ち去る")
+        self.assertTrue(used_fallback)
+
+    def test_present_but_none_field_is_treated_as_missing_and_falls_back(self):
+        # dict.get()がNoneを返すケース(キーはあるが値がNone)は、
+        # 空文字のTTSテキストを採用せず、表示用glossからの導出を優先する。
+        item = {"japanese_gloss": "～を示す", "japanese_gloss_tts": None}
+        text, used_fallback = tts.resolve_key_phrase_ja_gloss_tts(item)
+        self.assertEqual(text, "なになにを示す")
+        self.assertTrue(used_fallback)
+
+    def test_empty_string_tts_field_is_respected_as_present(self):
+        # 空文字は「フィールドが存在し、値が空」であり、Noneとは区別する
+        # (通常のProduction出力では発生しないが、dict.get()の契約どおり
+        # 「フィールドが存在すればそれを使う」を明示的に検証する)。
+        item = {"japanese_gloss": "～を示す", "japanese_gloss_tts": ""}
+        text, used_fallback = tts.resolve_key_phrase_ja_gloss_tts(item)
+        self.assertEqual(text, "")
+        self.assertFalse(used_fallback)
+
+
 if __name__ == "__main__":
     unittest.main()

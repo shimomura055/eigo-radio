@@ -28,6 +28,7 @@ import sys
 
 import er002_common as common
 import er003_audio_tts_asr_safety as safety
+import er003_key_words_canonicalization as kwc
 import er003_v1_crosslevel_audio_02_common as c
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_articles_generate as gen
@@ -253,6 +254,27 @@ def load_json(path: str) -> dict:
 def load_text(path: str) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
+
+
+# KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06): Key Phrase
+# 日本語glossは、表示用(japanese_gloss、辞書的な「～」表記を許容)と
+# TTS読み上げ用(japanese_gloss_tts、文頭・読点直後の「～」「〜」のみ
+# 「なになに」へ変換済み)の2フィールドに分離されている
+# (er003_key_words_canonicalization.merge_canonicalization_result参照)。
+# TTS呼び出しには必ずjapanese_gloss_tts側を渡す(表示用フィールドは
+# TTSへ渡さない)。既存artifact(japanese_gloss_tts列が存在しない、
+# 分離仕様配線前のkeywords_canonicalized.json)との後方互換のため、
+# フィールドが欠落している場合は表示用glossから同じ規則変換で
+# その場で導出する(フォールバック、無音の値変化ではなくログで明示する)。
+def resolve_key_phrase_ja_gloss_tts(item: dict) -> tuple:
+    """(tts_text, used_fallback)を返す。used_fallback=Trueは、
+    japanese_gloss_ttsフィールドが存在せず、japanese_glossから規則変換で
+    その場導出したことを示す(古いartifact向けの後方互換パス)。"""
+    tts_text = item.get("japanese_gloss_tts")
+    if tts_text is not None:
+        return tts_text, False
+    derived = kwc.convert_display_gloss_to_tts_text(item.get("japanese_gloss"))
+    return derived, True
 
 
 def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
@@ -704,15 +726,23 @@ def generate_b1_segments(theme: dict) -> dict:
         rank = item["rank"]
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
+        ja_gloss_tts, ja_gloss_tts_fallback = resolve_key_phrase_ja_gloss_tts(item)
         print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 英語Component生成(Aoede、Master Audio Store経由): {used_form!r}...")
         with cl.segment_context(f"kp{rank}_english"):
             en_r = shared_narration.ensure_key_phrase_english_component(
                 tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
-        print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 日本語meaning生成(Charon、reading-safety): {ja_gloss!r}...")
+        print(f"[N3-TTS][{theme_id}/b1b] Key Phrase {rank} 日本語meaning生成(Charon、reading-safety): "
+              f"表示用={ja_gloss!r} TTS用={ja_gloss_tts!r}"
+              f"{' (japanese_gloss_tts欠落のため表示用から導出、後方互換fallback)' if ja_gloss_tts_fallback else ''}...")
         with cl.segment_context(f"kp{rank}_japanese"):
+            # KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01: TTSへは
+            # japanese_gloss_tts(TTS用テキスト)のみを渡す。表示用
+            # japanese_glossはTTSへ渡らない。
             ja_r = generate_charon_japanese_with_reading_safety(
-                ja_gloss, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss),
+                ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_charon.wav", expected_substring_ja(ja_gloss_tts),
                 known_key_phrase_terms=[used_form])
+        ja_r["display_gloss"] = ja_gloss
+        ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -805,15 +835,22 @@ def generate_a2_segments(theme: dict) -> dict:
         rank = item["rank"]
         used_form = item["used_form"]
         ja_gloss = item["japanese_gloss"]
+        ja_gloss_tts, ja_gloss_tts_fallback = resolve_key_phrase_ja_gloss_tts(item)
         print(f"[N3-TTS][{theme_id}/a2] Key Phrase {rank} 英語Component生成(Aoede、Master Audio Store経由): {used_form!r}...")
         with cl.segment_context(f"kp{rank}_english"):
             en_r = shared_narration.ensure_key_phrase_english_component(
                 tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
-        print(f"[N3-TTS][{theme_id}/a2] meaning_{i}生成(日本語): {ja_gloss!r}...")
+        print(f"[N3-TTS][{theme_id}/a2] meaning_{i}生成(日本語): 表示用={ja_gloss!r} TTS用={ja_gloss_tts!r}"
+              f"{' (japanese_gloss_tts欠落のため表示用から導出、後方互換fallback)' if ja_gloss_tts_fallback else ''}...")
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
+            # KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01: TTSへは
+            # japanese_gloss_tts(TTS用テキスト)のみを渡す。表示用
+            # japanese_glossはTTSへ渡らない。
             ja_r = generate_a2_japanese_with_reading_safety(
-                ja_gloss, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss), max_extra_chars=30,
-                known_key_phrase_terms=[used_form])
+                ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", expected_substring_ja(ja_gloss_tts),
+                max_extra_chars=30, known_key_phrase_terms=[used_form])
+        ja_r["display_gloss"] = ja_gloss
+        ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
 
     all_status = {k: v.get("status") for k, v in results.items()}
