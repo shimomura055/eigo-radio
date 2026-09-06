@@ -47,8 +47,9 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 
 ## ループ上限(サンドイッチ運用)
 
-- Sonnetへの委任は合計最大2回(初回+修正1回)
-- Fableからsonnet-workerへの差し戻しは最大1回
+- Sonnetへの委任は1管理IDあたり初回+Fableからの修正・再生成指示最大3回
+  (合計最大4回)。1回で足りれば1回で止める(詳細は
+  `docs/pm/PM_GOVERNANCE.md` 11節)
 - Opusは診断目的で最大1回まで
 - Opus診断の後、Sonnetを自動的に再実行しない
 - 上記いずれかの上限に到達したら`USER_DECISION_REQUIRED`としてSTOPする

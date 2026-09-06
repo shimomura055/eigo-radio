@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02、
+**最終更新: 2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03、Fable↔Sonnetレビュー往復上限を「Sonnet合計最大2回」から「初回+最大3回(合計最大4回)」へ変更し、FableのEditorial/PM Gatekeeper原則を`docs/pm/PM_GOVERNANCE.md`11節へ新設した。詳細は本ファイル該当エントリ参照)。2026-09-06(OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02、
 Phase 2としてTheme 2 A2/B1のKey Phrase選定〜完成音声Assemblyまでを
 Production正式経路+Trialアダプタ(Production変更なし)で確認。分離方式の核
 (先頭/読点直後「～」→「なになに」変換)はA2 rank5で`VALIDATED`実証も、
@@ -24,6 +24,25 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## PM-FABLE-SONNET-REVIEW-LOOP-03: Fable↔Sonnetレビュー往復上限を2回→3回へ変更、FableのGatekeeper原則を明文化
+
+**日付**: 2026-09-06
+**区分**: PM運用ルール(サービス・生成仕様そのものではなく、Fable↔Sonnet間のレビュー往復回数運用)
+
+**内容**: Fable↔Sonnetのレビュー往復上限を「Sonnet委任は合計最大2回(初回+修正1回)」から「初回+Fableが必要と判断した場合の修正・再生成指示最大3回(1管理IDあたりSonnet実行は合計最大4回)」へ恒久的に変更した。対象は今後の通常の実装・Trial・記事生成・品質改善タスク。目的はユーザー意図とのズレをFableが吸収すること・軽微なズレで毎回ユーザーへ差し戻さないこと・ユーザーへ提示する前に完成度を上げること・FableのPM/Editorial Gate機能を強化することの4点。守ること8項目(3回使い切ることを目的にしない/1回で十分なら1回で止める/`USER_DECISION_REQUIRED`をSonnetだけで解決しない/仕様変更・Production採用判断はユーザーへ戻す/新しい仕様候補を勝手に追加しない/STOP条件該当時は往復回数が残っていてもSTOPする/同一問題を意味なく反復しない/QCD上、追加往復の価値が低い場合は早めにユーザーへ報告する)を明記し、あわせて「Fableは単なる受取役ではなく、Sonnet成果物をユーザー意図・受入条件と照合するEditorial/PM Gatekeeperとして動き、ズレがあればユーザーへ出す前にSonnetへ修正指示を返す」ことをGate 7の補足として明文化した。`docs/pm/PM_GOVERNANCE.md`「11節」新設、`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節・`docs/pm/PM_BRIEF.md`「ループ上限」節・`.claude/agents/sandwich-pm.md`(手順4・6・上限到達時)を整合させた。Opus診断1回上限・Agent Teams不使用・Agent並列起動の原則(8節)は変更していない。
+
+**採用理由**: 2026-09-06、Lane B(EDITORIAL-B-FAMILY-VOICES-TRIAL-03)でユーザー意図とのズレが生じたことを受け、Fableが往復の中で軽微なズレを吸収し、ユーザーへ提示する前に完成度を上げられるようにする目的でユーザーが決定した。
+
+**根拠レポート**: なし(PM運用ルールの文書改訂のみ、Trial実行なし)。
+
+**状態**: 文書化完了、Productionコード・Prompt変更なし。
+
+**commit**: 本タスクのcommit(hashはcommit後にGitHub上で確認可能)。
+
+**影響するCURRENT_SPEC項目**: なし。
 
 ---
 
@@ -85,8 +104,7 @@ Batch」という誤解を防止する目的も含む。
 
 **状態**: 文書化完了、Productionコード・Prompt変更なし。
 
-**commit**: 本タスクのcommit(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01、
-2026-09-06、hashはcommit後にGitHub上で確認可能)。
+**commit**: `15ea97c`(2026-09-06)。
 
 **影響するCURRENT_SPEC項目**: 「Gemini TTS実装方式(Batch API)」行・
 「TTS」行(いずれも注記追加のみ、既存文は無変更)。

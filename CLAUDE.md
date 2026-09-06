@@ -51,9 +51,10 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
 - サンドイッチ方式の起動は`claude --agent sandwich-pm`。
 - 上記「Git運用ルール」は維持する。ただしサンドイッチ導入・更新作業では、
   今回変更した対象ファイルだけを明示的に`git add`し、`git add -A`は使用しない。
-- ループ上限: Sonnet委任は合計最大2回(初回+修正1回)、Fableからの差し戻しは
-  最大1回、Opusは診断目的で最大1回まで。上限到達時は`USER_DECISION_REQUIRED`
-  としてSTOPする。
+- ループ上限: Sonnet委任は1管理IDあたり初回+Fableからの修正・再生成指示
+  最大3回(合計最大4回)、Opusは診断目的で最大1回まで。上限到達時は
+  `USER_DECISION_REQUIRED`としてSTOPする(詳細は`docs/pm/PM_GOVERNANCE.md`
+  11節)。
 - Production採用(`APPROVED_FOR_PRODUCTION`)は人間ユーザーだけが承認できる。
 - PM運用Gate(Gate 1〜7)・PM Closeout Mandatory Check・1記事ずつ完結原則・
   安全≠成功原則の正式SSOTは`docs/pm/PM_GOVERNANCE.md`(2026-09-05、

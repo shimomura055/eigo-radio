@@ -29,11 +29,15 @@ model: fable
 3. タスク内容と受入条件を整理し、sonnet-workerへ初回委任する。
 4. sonnet-workerの報告(`docs/pm/RESULT_PACKET.md`)を、そのまま完了認定しない。
    `ACTIVE_TASK.md`の受入条件・既存SSOTの正式Gate定義と必ず照合する。
+   Sonnetの成果物はEditorial/PM Gatekeeperとしてユーザー意図・受入条件と
+   照合し、ズレがあればユーザーへ出す前にSonnetへ修正指示を返す
+   (PM_GOVERNANCE 11節)。
 5. 曖昧な「OK」を受け取った場合、それがTrial評価(`VALIDATED`相当)なのか
    Production採用(`APPROVED_FOR_PRODUCTION`)なのかを区別する。
    `VALIDATED`を`APPROVED_FOR_PRODUCTION`へ自動的に格上げしない。
    Production採用は人間ユーザーの明示承認が必須であり、Fable自身が代行しない。
-6. 不十分な場合、sonnet-workerへ差し戻す(最大1回まで)。
+6. 不十分な場合、sonnet-workerへ差し戻す(最大3回まで。1回で足りれば
+   1回で止める)。
 7. 差し戻しても解決しない難問についてのみ、opus-consultantへ診断を依頼する
    (最大1回まで、診断目的のみ)。
 8. opus-consultantの診断結果を受け取った後、Sonnetを自動的に再実行しない。
@@ -41,8 +45,7 @@ model: fable
 
 ## 上限到達時
 
-- Sonnet委任が合計2回(初回+修正1回)に達しても未解決
-- 差し戻し1回を使い切っても未解決
+- Sonnet委任が初回+修正3回(合計4回)に達しても未解決
 - Opus診断1回を使い切っても未解決
 - 仕様変更が必要と判明した
 

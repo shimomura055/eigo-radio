@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01でTTS方式の
+**最終更新: 2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03でFable↔Sonnetレビュー
+往復上限を「Sonnet合計最大2回」から「初回+最大3回(合計最大4回)」へ変更し、
+FableのEditorial/PM Gatekeeper原則を明文化した新設11節を追加)。2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01でTTS方式の
 決定基準を「正式リリース前=Standard同期/正式リリース後の実量産=Batch API」へ
 統一し7節を7-1〜7-3へ再編)。2026-09-06(PM-GOVERNANCE-LOCAL-FILE-LINK-RULE-07でユーザーへの
 試聴・閲覧依頼は`file:///C:/Users/tensh/eigo-radio/...`形式のURLで提示する
@@ -48,8 +50,7 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
 - **opus-consultant**: 読み取り専用の診断(原因・選択肢・影響範囲)を行う。
   実装・編集・Git・Production採用判断をしない。診断後にSonnetを
   自動再実行しない。
-- ループ上限(Sonnet合計2回・差し戻し1回・Opus1回)は`CLAUDE.md`が正本であり、
-  ここでは参照のみ行う。
+- ループ上限は11節を正本とする(`CLAUDE.md`・`PM_BRIEF.md`は参照のみ)。
 
 ## 2. PM Gate 1〜7
 
@@ -215,7 +216,7 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   2. Git操作を含むタスクは、並列タスクの生成物をstageしない
      (ファイル名指定の`git add`のみ、`-A`禁止)。
   3. 同一の管理ID・同一の出力先に対する並列起動は禁止する。
-  4. 各タスクのループ上限(Sonnet合計2回等)は管理IDごとに独立して数える。
+  4. 各タスクのループ上限(11節)は管理IDごとに独立して数える。
 - Agent Teamsは引き続き不使用。opus-consultantの並列起動は行わない
   (診断は1回限り)。
 - 経緯: 2026-09-05、Trial-13(OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)
@@ -350,6 +351,46 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   ボトルネックになっていたことを受けたユーザー方針確定
   (PM-GOVERNANCE-REPORT-FORMAT-AND-AUTONOMOUS-GIT-05)。
 
+## 11. Fable↔Sonnetレビュー往復の上限とGatekeeper原則
+
+**管理ID: PM-FABLE-SONNET-REVIEW-LOOP-03(2026-09-06ユーザー決定)**
+
+Fable↔Sonnetのレビュー往復上限を、従来の「Sonnet委任は合計最大2回
+(初回+修正1回)」から「初回+Fableが必要と判断した場合の修正・再生成
+指示最大3回(1管理IDあたりSonnet実行は合計最大4回)」へ変更する。この
+上限は今後の通常の実装・Trial・記事生成・品質改善タスクに恒久的に適用する。
+
+**意味**: 初回Sonnet成果物の後、Fableが必要と判断した場合、最大3回まで
+FableからSonnetへ修正・追加確認・再生成指示を出してよい。
+
+**目的**:
+- ユーザー意図とのズレをFableが吸収する
+- 軽微なズレのたびに毎回ユーザーへ差し戻さない
+- ユーザーへ提示する前に完成度を上げる
+- FableのPM/Editorial Gate機能を強化する
+
+**守ること(8項目)**:
+1. 3回使い切ることを目的にしない
+2. 1回で十分なら1回で止める
+3. `USER_DECISION_REQUIRED`をSonnetだけで解決しない
+4. 仕様変更・Production採用判断はユーザーへ戻す
+5. 新しい仕様候補を勝手に追加しない
+6. STOP条件に該当したら往復回数が残っていてもSTOPする
+7. 同一問題を意味なく反復しない
+8. QCD(品質・コスト・納期)上、追加往復の価値が低い場合は早めに
+   ユーザーへ報告する
+
+**Gatekeeper原則(Gate 7の補足)**: Fableは単なる受取役ではなく、Sonnet
+成果物をユーザー意図・受入条件と照合するEditorial/PM Gatekeeperとして
+動く。ズレがあれば、ユーザーへ出す前にSonnetへ修正指示を返す。
+
+**不変の項目**: Opus診断1回上限、Agent Teams不使用、Agent並列起動の原則
+(8節)はいずれも変更しない。
+
+**経緯**: 2026-09-06、Lane B(EDITORIAL-B-FAMILY-VOICES-TRIAL-03)で
+ユーザー意図とのズレが生じたことを受け、Fableが往復の中でズレを吸収
+できるようにする目的でユーザーが決定した(PM-FABLE-SONNET-REVIEW-LOOP-03)。
+
 ---
 
 ## 変更履歴
@@ -472,3 +513,21 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   変更なし)。2026-09-06、Phase 2(OPEN-117-KEYPHRASE-DISPLAY-TTS-
   SEPARATION-TRIAL-02)がBatch APIの実測待ち時間(1件91〜167秒)により
   長時間化したことを受けたユーザー決定。
+- 2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03): 「11. Fable↔Sonnetレビュー
+  往復の上限とGatekeeper原則」を新設。Fable↔Sonnetのレビュー往復上限を
+  「Sonnet委任は合計最大2回(初回+修正1回)」から「初回+Fableが必要と
+  判断した場合の修正・再生成指示最大3回(合計最大4回)」へ恒久的に変更し、
+  1節の参照・8節条件4の括弧をこの11節へ整合させた。3回使い切ることを
+  目的にしない・1回で十分なら1回で止める・`USER_DECISION_REQUIRED`を
+  Sonnetだけで解決しない・仕様変更/Production採用判断はユーザーへ戻す・
+  新しい仕様候補を勝手に追加しない・STOP条件該当時は往復回数が残って
+  いてもSTOPする・同一問題を意味なく反復しない・QCD上価値が低い場合は
+  早めにユーザーへ報告する、という8項目の遵守事項を明記した。あわせて
+  「Fableは単なる受取役ではなく、Sonnet成果物をユーザー意図・受入条件と
+  照合するEditorial/PM Gatekeeperとして動き、ズレがあればユーザーへ出す
+  前にSonnetへ修正指示を返す」ことをGate 7の補足として明記し、
+  `.claude/agents/sandwich-pm.md`の手順4・6・上限到達時の記述を整合させた。
+  Opus診断1回上限・Agent Teams不使用・8節のAgent並列起動の原則は変更して
+  いない(文書編集のみ、コード・Prompt変更なし)。2026-09-06、Lane B
+  (EDITORIAL-B-FAMILY-VOICES-TRIAL-03)でユーザー意図とのズレが生じたことを
+  受けたユーザー決定。
