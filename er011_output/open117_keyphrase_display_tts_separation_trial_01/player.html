@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>OPEN-117 Display/TTS Separation Trial — Audio</title>
+<style>
+body { font-family: -apple-system, "Segoe UI", sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+.card { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.status-OK { color: #2f6b4f; font-weight: bold; }
+.status-STOPPED { color: #a83232; font-weight: bold; }
+.display { font-size: 1.05rem; color: #555; }
+.tts { font-size: 1.15rem; font-weight: bold; }
+.asr { font-family: monospace; background: #f3f3f3; padding: 0.15rem 0.4rem; border-radius: 4px; }
+.meta { font-size: 0.85rem; color: #777; }
+audio { width: 100%; margin-top: 0.5rem; }
+h2 { margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<h1>OPEN-117 Key Phrase 表示用/TTS用分離Trial(Phase 1、Production Batch API)</h1>
+<p>voice=Charon / model=gemini-3.1-flash-tts-preview(Batch) / ASR=OpenAI mini(Production標準経路)。
+表示用表記(「～」)はTTSへは渡さず、右記のTTS用テキストのみを実際に発話させている。</p>
+
+<h2>主対象4件 × run1/run2(再現性確認)</h2>
+
+<div class="card">
+  <div class="display">表示用: ～を示す</div>
+  <div class="tts">TTS用(run1): なになにを示す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何々を閉めす。</span></div>
+  <audio controls src="trial/narration/p1_shimesu_run1.wav"></audio>
+  <div class="tts" style="margin-top:0.8rem;">TTS用(run2、再現性確認): なになにを示す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何々を締めす</span></div>
+  <audio controls src="trial/narration/p1_shimesu_run2.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">表示用: ～を指す</div>
+  <div class="tts">TTS用(run1): なになにを指す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何々をさす</span></div>
+  <audio controls src="trial/narration/p2_sasu_run1.wav"></audio>
+  <div class="tts" style="margin-top:0.8rem;">TTS用(run2、再現性確認): なになにを指す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1は"~をさす"でTRUE_CONTENT_MISMATCH、attempt2でPHONETIC_MATCH) / ASR: <span class="asr">何々を指す</span></div>
+  <audio controls src="trial/narration/p2_sasu_run2.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">表示用: ～につながる</div>
+  <div class="tts">TTS用(run1): なになににつながる</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1は"~に繋がる"でTRUE_CONTENT_MISMATCH、attempt2でPHONETIC_MATCH) / ASR: <span class="asr">何々に繋がる</span></div>
+  <audio controls src="trial/narration/p3_tsunagaru_run1.wav"></audio>
+  <div class="tts" style="margin-top:0.8rem;">TTS用(run2、再現性確認): なになににつながる</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1は"なになにつながる"でTRUE_CONTENT_MISMATCH[「に」欠落]、attempt2でPHONETIC_MATCH) / ASR: <span class="asr">何々につながる</span></div>
+  <audio controls src="trial/narration/p3_tsunagaru_run2.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">表示用: ～を意味する</div>
+  <div class="tts">TTS用(run1): なになにを意味する</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何々を意味する</span></div>
+  <audio controls src="trial/narration/p4_imisuru_run1.wav"></audio>
+  <div class="tts" style="margin-top:0.8rem;">TTS用(run2、再現性確認): なになにを意味する</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何々を意味する</span></div>
+  <audio controls src="trial/narration/p4_imisuru_run2.wav"></audio>
+</div>
+
+<h2>対照・代替表現</h2>
+
+<div class="card">
+  <div class="display">対照A(RECHECK-01で1/1合格): 何かを示す(表示用=TTS用、分離なし)</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何かを締めす。</span></div>
+  <audio controls src="trial/narration/control_a_nanika.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">対照B(複合形、Trial-13 kp4_ja相当): ～を示す、～を指し示す</div>
+  <div class="tts">TTS用: なになにを示す、なになにを指し示す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH、1文中2箇所の「なになに」とも安定) / ASR: <span class="asr">何々を示す、何々を指し示す</span></div>
+  <audio controls src="trial/narration/control_b_compound.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">代替1(ひらがな表記の「何か」): ～を示す</div>
+  <div class="tts">TTS用: なにかを示す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でPHONETIC_MATCH) / ASR: <span class="asr">何かを閉めす。</span></div>
+  <audio controls src="trial/narration/alt1_nanika_hiragana.wav"></audio>
+</div>
+
+<div class="card">
+  <div class="display">代替2(「あるもの」): ～を示す</div>
+  <div class="tts">TTS用: あるものを示す</div>
+  <div>結果: <span class="status-OK">OK</span>(attempt1でNORMALIZED_MATCH) / ASR: <span class="asr">あるものを示す。</span></div>
+  <audio controls src="trial/narration/alt2_arumono.wav"></audio>
+</div>
+
+<p class="meta">全12件すべてstatus=OK(fallback未使用、標準経路のみで全件解決、最大でもattempt2まで)。
+詳細JSON: <a href="results_open117_display_tts_sep.json">results_open117_display_tts_sep.json</a> /
+cost: <a href="cost_summary_open117_display_tts_sep.json">cost_summary_open117_display_tts_sep.json</a></p>
+</body>
+</html>
