@@ -6091,6 +6091,71 @@ A2(新Prompt出力、本タスク): quiet split→目立たない分かれ、the
 
 **影響するCURRENT_SPEC項目**: 「QA / Human Review」節「英語Key Phrase Component検証: Primary ASR逐語書き起こしprompt+非ラテン文字時のSecondary再判定Cascade(false rejection対策)」(新規行)。**影響するOPEN_ITEMS項目**: OPEN-119を`RESOLVED / PRODUCTION_WIRED`(適用範囲限定を明記)へ更新、OPEN-103行へ本タスクとの関係(OPEN-103の核心はTTS側非決定的誤発音のため本対策の対象外、statusは変更なし)を追記。
 
+## KEYPHRASE-JA-GLOSS-NO-PARENTHETICAL-PROD-WIRING-01(2026-09-06、ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した「gloss生成Promptへ括弧内に別訳・専門用語・補足を併記しない趣旨の短い1句を追加する」対策を`PRODUCTION_WIRED`まで配線)
+
+**背景**: `OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01`で、Theme 2(若者の旅行、B条件)A2/B1が独立に同じ語("median")を選び、日本語glossに括弧書き補足(B1「データの真ん中の値（中央値）」、A2「真ん中の値（中央値）」)を含めた結果、既存の構造Hard Requirement Validator(`er003_key_words_min_unit.py::validate_min_unit_selection`、`_JA_GLOSS_PARENTHETICAL_RE`、無変更・既存ルール)が両レベルとも独立に`KEY_WORDS_STRUCTURE_INVALID`と判定し、この選定ステージが`max_attempts=1`(既存仕様、自動再選定なし)のためcanonicalization以降のいずれにも到達せずSTOPした。同Reportは、直前配線(KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01)の「学習者が聞いてすぐ分かる平易な現代日本語にする」指示が、専門用語に対してモデルへ平易な説明+元の専門語を両方残そうとする傾向をn=2で誘発した可能性を参考情報として報告していた。ユーザーがこれを踏まえ、意味を変えずblacklist化しない範囲で、選定Promptへ「括弧内に別訳・専門用語・補足を併記しない」趣旨の短い1句を追加することを正式承認した。
+
+**実装**: 選定Prompt(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有Production本体。他にja_glossを生成するテンプレートは`er003_b1_p2_keywords.py::load_prompt_template()`経由のこのファイルのみと確認済み、`b2_key_words_production_l_prompt_template.txt`はテスト専用[`er003_test_p2i_production.py`]で現行A2/B1本番経路[`sc.run_key_phrase_selection`→`bk.load_prompt_template()`]からは呼ばれていないことをgrep監査で確認)の、直前配線の自然さ基準パラグラフ(「日本語グロスは、辞書的に正しいだけでなく…」)の直後へ新パラグラフとして以下の2文を追加した:
+
+> 日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+特定語の列挙はせず、既存の規約A(漢数字化)・規約B(「…」等placeholder禁止、「～」「〜」は許容)・数値placeholder回避文・自然さ基準の各パラグラフはいずれも無変更のまま維持した。canonicalization工程(`er003_key_words_canonicalization.py`)はja_gloss/japanese_glossを生成せず素通しするのみ(Prompt本文で「Listening Blocker Ranking自体はこの工程の対象外」と明記済み)のため、canonicalization用テンプレートへの追加は不要と判断した。retry経路(`sc.run_key_phrase_selection`をRedundancy QA NG時にやり直す`sc.run_key_phrases`の外側retry、最大2回)は、選定のたびに`bk.load_prompt_template()`を再読込するため同じPromptが自動的に使われ整合する(コード読解で確認)。既存の構造Validator(`_JA_GLOSS_PARENTHETICAL_RE`、全角/半角括弧検知)は無変更のまま維持し、本Prompt追加はそのValidatorが拒否する前にモデル側で自発的に回避させる目的の追加安全弁である。
+
+**テスト・回帰**: 単体テスト1件追加(`er003_test_b1_p2.py::test_template_contains_parenthetical_gloss_prohibition`、Prompt本文に「括弧」「書き添えないでください」が含まれることと既存の自然さ・漢数字・placeholder規約が弱められていないことを同時に確認)。`er003_test_b1_p2.py`既存49件+新規1件=50件PASS。`run_project_regression.py`変更後collected=2110/passed=2107/failed=3。`git stash`でPrompt/テスト変更を一時退避したbaseline実行でもcollected=2109/passed=2106/failed=3で、失敗3件(`er003_test_bad.FixtureTests.test_case_0`[意図的なself-check fixture]・`er003_test_p2j_investigate`のOPEN-77既知meta-test集計3件のうち2件[表記の都合上リスト化省略、DECISION_LOG既存記載と同一])はbaseline/candidateで完全に同一であり、本タスクによる新規failureはゼロと確認した。
+
+**Runtime evidence(2026-09-06、`er011_output/kp_ja_gloss_no_parenthetical_prod_wiring_01/`)**: Theme 2 B1・A2(Trial-12記事、`er011_output/open112_trend_theme2_b_a2_b1_text_trial_12/{b1b,a2}_run01/article.md`。RERUN-01が使用したTrial-13 article.mdとdiffで内容一致を確認済み)それぞれで、Production正式経路(`sc.run_key_phrases`、選定→canonicalization→Key Phrase Set Redundancy QA、いずれも無変更)を1回実行した(`er011_kp_ja_gloss_no_parenthetical_prod_wiring_01.py`、root新規、TTS/ASR/Assemblyは対象外)。結果:
+- 両レベルとも選定は構造Validatorを通過(`selection_status=KEY_WORDS_STRUCTURE_PASS`、以前のようなINVALIDは再発しなかった)。canonicalizationは両レベルとも`CANONICALIZATION_REVIEW_REQUIRED`(`run_key_phrases`の継続許容ステータス、STOPではない)、Redundancy QAは両レベルとも`REDUNDANCY_PASS`(`duplicate_pairs=[]`)。
+- 選定5件×2レベル=10件のja_glossすべてに全角/半角括弧が一切含まれなかった(`any_parenthetical_in_selection=false`、両レベル)。canonicalization後のjapanese_gloss/japanese_gloss_ttsも選定時と同一のまま維持されていることを確認した(canonicalizationはja_glossを変更しないという仕様どおり)。
+- B1 rank3で再び"median"が選定されたが、今回のglossは「真ん中の値」(括弧補足なし、平易な言い換えのみ)で構造Validatorを通過した(RERUN-01時点の「データの真ん中の値（中央値）」からの直接比較)。A2は今回"median"を選ばなかった(B1「too broad a label」「gap between」等・A2「the new normal」「policy task」等、いずれも括弧なし)。
+- 実費$0.0329(約¥5.3、選定+canonicalization+Redundancy QA計6件のLLM呼び出し[gpt-5.6-luna]、`er005_output/cost_baseline_01/pricing_snapshot.json`公式単価×`raw_usage_log.jsonl`実測usage)。
+
+**Production変更なし範囲の確認**: `er003_key_words_min_unit.py`(Validator)・`er003_key_words_canonicalization.py`(canonicalization)・`er003_v1_n3_01_scaffold_generate.py`(選定/canonicalization/redundancy QA呼び出しフロー)はいずれも無変更。変更はPromptテキストファイル1件のみ。
+
+**根拠レポート**: `KEYPHRASE-JA-GLOSS-NO-PARENTHETICAL-PROD-WIRING-01_REPORT.md`、`OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01_REPORT.md`(発見元)
+
+**影響するCURRENT_SPEC項目**: 「Key Phrase」節「Key Phrase日本語glossの括弧内別訳・専門用語・補足の併記禁止(選定Prompt)」(新規行)。**影響するOPEN_ITEMS項目**: OPEN-112行へ本タスクの結果(A/B双方の`PRODUCTION_WIRED`完了、追加1回のTheme 2完成音声再実行の結果は`OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02`として別途記録)を追記。
+
+## OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02(2026-09-06、ユーザー承認「A/BのProduction wiring完了後、Theme 2のA2/B1完成音声を1回だけ再実行してよい」に基づく「追加1回のみ」の実行。Trial音声の完成試行のため`APPROVED_FOR_PRODUCTION`・`PRODUCTION_WIRED`の格上げは対象外、到達`USER_FINAL_AUDIO_REVIEW_REQUIRED`)
+
+**背景**: RERUN-01(前エントリ)は、Key Phrase選定候補5件中1件が"median"で
+日本語glossに括弧書き補足を含み、既存の構造Hard Requirement Validatorに
+`KEY_WORDS_STRUCTURE_INVALID`と判定され選定段でSTOPした。直前タスク
+(`KEYPHRASE-JA-GLOSS-NO-PARENTHETICAL-PROD-WIRING-01`、前エントリ)で
+選定Promptへ括弧併記禁止の1句を配線し`PRODUCTION_WIRED`としたことを
+受け、承認済みの「追加1回のみ」の完成音声再実行を実施した。
+
+**実装**: `er011_open112_trend_theme2_b_final_audio_rerun_02.py`
+(root新規)をRERUN-01のアダプタから複製した(コード差分は`THEME_ID`/
+`OUT_DIR`/`article_id`等の識別子のみ、本文reuse・Key Phrase選定・音声
+生成・Assemblyのロジックは無変更)。
+
+**結果**: A2・B1とも`status=DONE`。選定は両レベルとも`KEY_WORDS_
+STRUCTURE_PASS`(RERUN-01の`KEY_WORDS_STRUCTURE_INVALID`は再発せず)、
+canonicalizationはB1が`CANONICALIZATION_PASS`・A2が`CANONICALIZATION_
+REVIEW_REQUIRED`(既存の継続許容ステータス)、Redundancy QAは両レベル
+とも`REDUNDANCY_PASS`。完成音声: B1 duration 341.975秒(5:42)・peak
+0.80806・clipping無し。A2 duration 375.226秒(6:15)・peak 0.98
+(`ER-011-ASSEMBLY-HEADROOM-SAFETY-VALVE-PRODUCTION-WIRING-01`のheadroom
+safety valveが実発火し、適用前peak=1.0350189[Trial-13時点のクラッシュ
+原因と同じPoint One起因]を抑制)・clipping無し。Key Phrase英語Component
+は10件中5件(B1 3件・A2 2件)がMaster Audio Store cache hitで再利用、
+残り5件が新規生成(各1attempt)。日本語glossは全10件新規生成(A2 rank2
+のみ数字読みゆれで2attempt、既存挙動、本タスクの変更と無関係)。Gate/
+Human Review Lockでの停止は0件。実費約$0.0573(約¥9.2、選定LLM6件+
+TTS16件+ASR16件の実測usage×公式単価)。詳細な英語Key Phrase/表示用・
+TTS用gloss/ASR/分類/attempt表はReport参照。
+
+**状態**: `USER_FINAL_AUDIO_REVIEW_REQUIRED`(ユーザー最終試聴待ち)。
+`APPROVED_FOR_PRODUCTION`・`PRODUCTION_WIRED`はいずれも該当しない
+(本タスクでは判定しない、Trial音声の完成試行)。承認された「追加1回」を
+使用済みのため、これ以上のTheme 2完成音声再実行(3回目)は行わない。
+
+**試聴**: `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/player.html`
+
+**根拠レポート**: `OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: なし(Trial音声の完成試行、Production変更なし)。**影響するOPEN_ITEMS項目**: OPEN-112行へ本タスクの結果を追記。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

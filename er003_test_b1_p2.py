@@ -144,6 +144,24 @@ class KeywordsPromptTests(unittest.TestCase):
         self.assertIn("漢数字", template)
         self.assertIn("使ってもかまいません", template)
 
+    def test_template_contains_parenthetical_gloss_prohibition(self):
+        """KEYPHRASE-JA-GLOSS-NO-PARENTHETICAL-PROD-WIRING-01(2026-09-06、
+        ユーザーAPPROVED_FOR_PRODUCTION): 日本語グロスに括弧内の別訳・
+        専門用語・補足を併記しない指示が選定Promptに存在することを
+        確認する(OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01が指摘
+        した"median"型の括弧併記による既存構造Validator
+        (`p2g.validate_min_unit_selection`、日本語グロスの括弧書き
+        補足禁止)抵触への対策)。blacklist化はしない(特定語の列挙は
+        しない)。"""
+        template = bk.load_prompt_template()
+        self.assertIn("括弧", template)
+        self.assertIn("書き添えないでください", template)
+        # 既存の規約(自然さ・漢数字・placeholder規則)を弱めていないことを
+        # 同じテスト内で再確認する。
+        self.assertIn("聞いてすぐ意味を理解できる", template)
+        self.assertIn("漢数字", template)
+        self.assertIn("使ってもかまいません", template)
+
     def test_template_does_not_contain_rule_c_short_function_word_wording(self):
         """規約C(短い機能語終端のKey Phrase回避、Trial-17 Track C)は
         ユーザー承認で不採用となったため、選定Promptへ追加しないこと
