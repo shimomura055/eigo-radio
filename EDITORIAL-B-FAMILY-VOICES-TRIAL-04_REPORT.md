@@ -670,3 +670,293 @@ Status(run02を含む本Reportの提案): 引き続き**VALIDATED**(範囲: Voic
 B1・Article-only、Focus Module修正の効果検証)。Production採用は別途
 USER_DECISION_REQUIRED — NOT APPROVED_FOR_PRODUCTION, NOT
 PRODUCTION_WIRED。最終判定はFableに委ねる。
+
+---
+
+## 11. Fableレビュー往復2回目(run03、2026-09-06)
+
+管理ID: **EDITORIAL-B-FAMILY-VOICES-TRIAL-04**(Sonnet委任2回目=往復2回目。
+run02に対するユーザー評価6点の改善指示への対応)。§1〜10(run01・run02)は
+無変更で保持し、本節を追記する。Lane B専用タスクであり、Lane A・
+`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`には触れていない。
+
+run02記事に対するユーザー評価: Trial-03から大きく改善したと評価された一方、
+(1)Voiceが「For an employee who...」のように外側から説明された人物に
+なっている、(2)Evidenceが前に出すぎている、(3)構造が5区切り
+(Hook→Voice A→Voice B→Tension→Closing)として明示的でない(Tensionが
+Voice Bへ溶け込んでいる)、(4)ClosingがIn One Lineの言い換えに寄っている、
+(5)Voice内に第三者(設計者・コンサル)の解決策が混入、(6)Hookの
+"Picture..."が定型的な呼びかけ表現、という6点の改善指示を受けた。
+
+### 11-1. Focus Module Block変更の概要(run02→run03、全面書き直し)
+
+`er012_editorial_b_voices_trial_04.py`のみを修正した(Research/Verified
+Fact Ledger/選定した2 Voiceは無変更、記事本文の手作業書き換えは行って
+いない)。run02はrun01への追記(パッチ)方式だったが、run03は5区切り構造
+という骨格そのものが変わるため、`B_FAMILY_VOICES_FOCUS_MODULE_BLOCK`を
+全面的に書き直した(run02の(a)〜(k)の内容は整理・統合して引き継いだ)。
+run02の全文は`er012_output/editorial_b_voices_trial_04/b1b_run02/audit/
+phase_a_b_family_voices_focus_module_block.txt`(無変更のまま保持)、run03
+の全文は`er012_output/editorial_b_voices_trial_04/b1b_run03/audit/phase_a_
+b_family_voices_focus_module_block.txt`を参照(機械的な行単位diffは
+ほぼ全行が変わる全面書き直しのため、可読性を優先し下記の変更点対応表と
+run03全文の掲載[§11-1-2]で代替する)。
+
+#### 11-1-1. ユーザー指示6点とFocus Module変更点の対応表
+
+| ユーザー指示 | Focus Module Blockでの対応 |
+|---|---|
+| (1) Voiceが外側から説明された人物になっている | 新設【Voiceの書き始め方】節で"For [a/an] worker who..."という紹介文での書き出しを明示的に禁止し、Ledgerの具体的な状況(毎日していること・使っているもの)から書き始めるよう指示 |
+| (2) Evidenceが前に出すぎている | 新設【Evidenceは脇役であること】節で、Evidence紹介文の連続を禁止し、人の経験・価値観の描写を主体にすることを明示 |
+| (3) 5区切り構造が明示的でない | 新設【最重要・この記事だけの出力形式】節で、Hook(##)/Voice A(###)/Voice B(###)/Tension(##)/Closing(##)の5見出しをこの順序で必ず持つことを、具体的なMarkdownテンプレート付きで指示。Tensionは「2つ目のVoiceの続きの段落ではなく独立したセクション」と明記 |
+| (4) ClosingがIn One Lineの言い換え | 【Closingの役割】節を、「2つのVoiceを見たことで問題の見え方自体がどう変わったか」への着地に書き換え(要約・In One Line言い換えを明示的に禁止) |
+| (5) Voice内への第三者解決策の混入 | 新設【Voice内に第三者の視点・解決策を混ぜないこと】節で、run02の実例("A team zone...may offer an anchor")を挙げて明示的に禁止 |
+| (6) Hookの"Picture..."定型表現 | 【Hookの役割と書き方】節で"Imagine/Picture/Think about/Consider/Now look at"を名指しで禁止し、三人称の具体的情景描写から始めるよう指示(コピー禁止の参考例文を提示) |
+
+### 11-2. 5区切り実装の詳細(Trial adapterの処理)
+
+5区切り構造(##×3+###×2)は、既存A Familyパーサの前提(`###`見出し
+ちょうど2つ)から外れる。実装前にProduction側コードを読み取り調査した
+結果を報告する:
+
+- **Writer構造ゲート(`er002_ja_free_markdown_restore_r2.validate_point_
+  structure`)**: `###`(レベル3)見出しの個数だけを検査し(`^#{3}...`の
+  正規表現)、`##`(レベル2)見出しの個数・文言は一切検査しないことを
+  コード読解で確認した。そのため、Voice A・Voice Bの2つだけを`###`に
+  し、Hook・Tension・Closingの3つを`##`にすることで、既存ゲートを
+  一切変更せずに5区切りを実現できると判断した。実際にrun03のWriterは
+  1回目の呼び出しで`STRUCTURE_PASS`(`h3_count=2`)を得ており、この判断は
+  実測でも裏付けられた(`er012_output/editorial_b_voices_trial_04/
+  b1b_run03/audit/writer_attempts.json`)。
+- **Point Overlap/Value QA(`gen.split_common_sections_for_point_qa`)**:
+  この関数は`###`が2つあれば動作してしまう(Noneを返さない)が、
+  Point Twoの終端を「`## In one line`」という特定文言でしか検出できず、
+  run03の見出し("## Why They See It Differently"等)は終端として認識
+  されない。合成テストで検証した結果、`point_two_body`にVoice B・
+  Tension・Closingの内容が全て混入することを確認した(本タスクの検証
+  ログに記録)。この関数をそのまま使うと不正確な結果を生むため、Trial
+  adapter側に`split_five_voice_sections()`(新設)を実装し、Hook/Voice A/
+  Voice B/Tension/Closingを見出し出現順にそのまま抽出する。Point
+  Overlap/Value QAはこの5区切りparserが抽出したHook/Voice A/Voice Bを、
+  Production側の同じprimitive関数(`er008_point_overlap_qa_18.flag_
+  possible_paraphrase`、`er011_point_role_value_planning_01.run_point_
+  value_qa`)へ個別に渡す形で実行した(ACTIVE_TASKの「個別に呼ぶ」の
+  選択肢を採用。Production側の2関数自体は無変更)。
+- **語数内訳(`sf1r1.section_word_counts`)**: 実測検証の結果、「in one
+  line」を含まない`##`見出し(run03ではHook/Tension/Closingの3つ全て)の
+  内容が集計から丸ごと落ちる(`intro=0`・`in_one_line=0`になる)ことを
+  確認した。Voice A/Voice Bの値自体は、run03が`###`を常にちょうど2つ
+  しか使わない設計のため実測上は正しいが、記事全体の内訳としては使えない。
+  そのため`split_five_voice_sections()`から5区切り全ての正確な語数内訳を
+  算出し、`five_section_length_report.json`へ別途保存した(既存の
+  `length_report.json`・`sf1r1.section_word_counts()`呼び出し自体は参考値
+  として維持し、スキーマ互換性を壊さない)。
+- **Fact Checker/Ledger Deviation Checker/Local Rewrite/Directional Fact
+  Precheck**: いずれも見出し構造に依存しない(生テキストを扱う)ことを
+  個別にコード読解で確認済みのため、`run_voices_pattern()`の該当ロジック
+  を一切変更せずそのままコピーした`run_voices_pattern_run03()`から、
+  呼び出す関数・引数・順序とも同一のまま呼び出した。
+- **Evidence Compression Editor(`er003_v1_n3_01_evidence_compression_
+  editor.py::run_lossless_editor`)**: このProduction関数のprompt内には
+  「Storyの論旨・構成を書き換えないこと(Title・Main Story・###見出し
+  2つ・In One Lineの構成は維持する)」という記述、および出力形式の指示
+  として「入力と全く同じMarkdown構造(# Title、Main Story、###見出し2つ、
+  ## In one lineの結び)で出力してください」という記述があり、5区切り
+  構造との不整合リスクがあると事前に判断した。この関数自体は変更せず
+  (Production変更禁止)、実際にrun03の記事に対して無変更のまま適用し、
+  出力を実測で確認した。結果、5見出し(## The Question / ### One Voice.../
+  ### Another Voice.../ ## Why They See It Differently / ## What This
+  Tells Us)は全て保持され、構造の破壊(見出しの削除・強制的な2見出しへの
+  収束等)は発生しなかった(`er012_output/editorial_b_voices_trial_04/
+  b1b_run03/audit/pre_editor_article.md`と`article.md`を比較して確認)。
+  ただし、Evidence Compressionの許可編集ルール(Pattern A: Representative
+  Metric + Supporting Trend)自体が例示する言い換え表現"showed the same
+  pattern"が、Editorによって「Their reported ability to concentrate was
+  80%, compared with 67%.」→「Their reported ability to concentrate
+  showed the same pattern: 80%, compared with 67%.」という形で本文へ
+  追加されたことを確認した。これはFocus Moduleが明示的に禁止した analyst
+  phrasing("showed the same pattern")と文字列として一致するが、Evidence
+  Compression EditorはFocus Moduleを見ておらず(別のsystem prompt)、
+  Production側のPattern A許可リストにこの表現が例として含まれているために
+  生じた。Writer自体はこの表現を使っていない(`pre_editor_article.md`には
+  存在しない)。Production変更は行わず、事実として記録し、§11-7の
+  USER_DECISION_REQUIREDへ追加する。
+
+### 11-3. run03記事全文(原文、無編集、見出し込み)
+
+Evidence Compression適用後の最終版(Local Rewrite cycleは発生していない、
+Ledger MAJORが無かったため)。
+
+```markdown
+# A Desk Is More Than a Desk
+
+## The Question
+
+Monday morning, one worker walks straight to last week's desk. Another checks the room and chooses a seat near a shared task. By September 2026, office seating is moving in both directions. Amazon returned its Seattle-area and Arlington headquarters to assigned desks, while keeping hot desking in offices that had used it before the pandemic. Across companies, assigned seating fell from 83% to 55% by 2024. The question is not simply which system is better. It is what a desk means to the person using it.
+
+### One Voice: The worker who needs a base
+
+Keys, notebooks, and personal papers stay in one place when a desk waits each morning. Without that base, moving a keyboard and finding a place for belongings can feel tiring. Workers have described unassigned offices as impersonal, confusing, and mentally tiring. They have also raised worries about hygiene and personal space.
+
+Workers with assigned desks reported a stronger sense of belonging in a study of more than 16,000 office workers: 87%, compared with 74% for workers without assigned desks. Their reported ability to concentrate showed the same pattern: 80%, compared with 67%. Among workers without a fixed desk, about six in ten wanted one. Yet about 37% of hot-desk workers said their seating had become fixed anyway. For someone in the office most days, a desk can feel less like a privilege than a steady place to begin.
+
+### Another Voice: The worker who needs room to move
+
+Another morning begins with a choice. Some offices offer places for deep focus, teamwork, light conversation, and rest. A worker can choose a setting that fits the task or the mood. Changing seats can also make contact with other departments easier—or create distance from a workplace relationship.
+
+In one 2025 street interview with 50 Japanese office workers, four in five supported hot desking and one in five did not. Supporters mentioned changing their surroundings and moving away from people when needed. Some workers also became more comfortable with flexible office seating after creating a personal work area at home. Here, freedom means deciding how much contact the day should include.
+
+## Why They See It Differently
+
+These two views protect different kinds of control. One worker needs continuity: a familiar place can support a settled start and focused work. The other needs choice: the ability to change surroundings, meet people, or step back. One measures a good office through belonging and concentration. The other measures it through control over attention and social distance. That is why the same seating system can feel reassuring to one person and useful, or freeing, to another.
+
+## What This Tells Us
+
+After hearing both voices, fixed versus free no longer looks like a simple fight over furniture. It is a question of what workers need a workplace to provide: a dependable base, or room to change focus and distance from others. The desk is only the visible part. Underneath it are two different ideas of control.
+```
+
+保存先: `er012_output/editorial_b_voices_trial_04/b1b_run03/article.md`
+(Evidence Compression後の最終版。Compression前の版は`b1b_run03/audit/
+pre_editor_article.md`を参照)。
+
+### 11-4. run02との差分表
+
+| 観点 | run02 | run03 |
+|---|---|---|
+| Hookの書き出し | "Picture an employee arriving at the office..."(呼びかけ型) | "Monday morning, one worker walks straight to last week's desk. Another checks the room and chooses a seat near a shared task."(三人称の具体的情景から開始、"Imagine/Picture"系の禁止表現は検出されず) |
+| Hookの後半 | Voice導入前の中立的な問い提示のみ | 情景の後、"By September 2026, office seating is moving in both directions."という、run01の禁止対象だった趣旨の文(トレンド要約)がAmazon固有名詞・83%→55%という数値とともに再度出現(§11-6-2で自己評価) |
+| Voiceの書き始め方 | "For an employee who spends most of the week in the office, a desk can feel like a small home base."(人物を外側から紹介) | "Keys, notebooks, and personal papers stay in one place when a desk waits each morning."(具体的な物・状況から開始、"For [a/an] worker who..."型の紹介文は検出されず) |
+| 5区切り構造 | Hook(見出しなし)→Voice A(###)→Voice B+Tension(###、同一見出し内)→Closing(## In one line) | Hook(## The Question)→Voice A(###)→Voice B(###)→Tension(## Why They See It Differently、独立見出し)→Closing(## What This Tells Us)。5見出しとも実装・実測確認済み |
+| Evidence密度(Voice A) | "three part-time workers"/"a survey"/"another survey"/"37%"が連続 | 依然としてVoice A第2段落に4つの数値(87%/74%、80%/67%、six in ten、37%)が連続する箇所が残存(§11-6-2で自己評価、部分改善にとどまる) |
+| 第三者解決策の混入 | "A team zone, or a seat reserved when needed, may offer an anchor..."(混入) | 検出されず。Voice Bの"Some offices offer places for deep focus, teamwork..."は、この当事者自身が使える選択肢の描写として書かれており、第三者(設計者等)の提案としては書かれていない |
+| Closing | "The deeper question is not simply where desks are placed. It is what kind of control a worker needs..."(要約寄り) | "After hearing both voices, fixed versus free no longer looks like a simple fight over furniture. It is a question of what workers need a workplace to provide... The desk is only the visible part. Underneath it are two different ideas of control."(「両方のVoiceを聞いたことで見方が変わった」という明示的なフレーミング) |
+| 語数 | 403語(Hook 67/Voice A 129/Voice B+Tension 180/Closing 27) | 454語(Hook 82/Voice A 132/Voice B 109/Tension 76/Closing 55、`five_section_length_report.json`) |
+
+### 11-5. 技術結果
+
+- **Phase A**: `clean_single_insert_confirmed=True`(`b1b_run03/audit/
+  phase_a_result.json`)。
+- **Writer**: 1回で`status=STRUCTURE_PASS`→`OK`(構造再試行なし、
+  `h3_count=2`、`writer_attempts.json`)。
+- **Point Overlap QA(monitoring、5区切り版)**: Voice A vs Hook=0.141、
+  Voice B vs Hook=0.179、Voice A vs Voice B=0.156、Voice B vs Voice A=
+  0.149(閾値0.40未満、いずれもflagged=False)。
+- **Point Value QA(monitoring、5区切り版)**: PASS(Voice A・Voice B×6
+  項目すべてPASS、reasoning付き、`point_overlap_value_qa_monitoring.json`)。
+- **Fact Checker**: verdict=**REVIEW_REQUIRED**(non-blocking、既存policy
+  通り)。contradictions=0件。unsupported_specific_claims 4件、いずれも
+  run01・run02と同じ性質(Evidence Compressionによる出典名一般化のため
+  独立検索で再特定できない。A-06の37%、B-03の在宅ワーク因果関係、A-03の
+  Forbes表現、B-02の街頭インタビューの距離に関する記述)。
+- **Ledger Deviation Checker**: overall_status=**LEDGER_COMPLIANT**、
+  deviations=1件(MINOR、"had become fixed anyway"がA-06の「なりがち」を
+  完了状態のように強めた、changed_certainty=true)。Local Rewrite発火なし
+  (MAJORが無かったため)。
+- **Directional Fact Precheck**: overall_status=**DIRECTION_REVIEW_
+  REQUIRED**(run01・run02のPASSから後退)。3件中1件が"Their reported
+  ability to concentrate showed the same pattern: 80%, compared with
+  67%."という文で、Ledger側に「高い」という方向語があるのに対し、この文
+  には明示的な方向語(higher/more等)が無く、機械的に一致/不一致を判定
+  できないと判定された(`directional_fact_precheck.json`)。数値自体
+  (80%/67%)はLedger通りで矛盾はなく、non-blocking(既存policy通り)。
+  §11-2で述べた通り、この文はEvidence Compressionが"showed the same
+  pattern"という表現を追加した文であり、この後退と無関係ではない可能性が
+  ある(因果関係を断定はしない、観察として記録する)。
+- **語数**: 全体454語(Hook=82、Voice A=132、Voice B=109、Tension=76、
+  Closing=55、`b1b_run03/five_section_length_report.json`)。280〜420語
+  という観察用の目安をやや超えているが、hard/soft gateではないため
+  そのまま採用した。
+- **Cost**: OpenAI(gpt-5.6-luna、Point Role Planning・Writer・Evidence
+  Compression・Point Overlap/Value QA monitoring・Fact Checker[web_search
+  12回]・Ledger Deviation Check、計6 call)input 134,367 tokens・output
+  21,001 tokens、pricing_snapshot.json単価(input $0.20/1M、output
+  $1.20/1M)で概算約$0.052。Web Search fee($10/1,000 call×12回)を加算
+  すると約$0.172。Perplexity呼び出しなし(Research再利用のため、追加
+  Researchは行っていない)。**1記事あたり1ドル未満**、Cost超過による
+  STOPには該当しない。TTSは実行していない。
+
+### 11-6. Sonnet自身の受入条件セルフチェック(10項目、根拠引用付き、最終判定はFable)
+
+1. **Voiceが外側から説明された人物になっていないか**: 達成。Voice Aは
+   "Keys, notebooks, and personal papers stay in one place when a desk
+   waits each morning."、Voice Bは"Another morning begins with a
+   choice."から始まり、"For [a/an] worker who..."型の紹介文は全文精査で
+   検出されなかった(§11-4表参照)。
+2. **Evidenceが脇役になっているか**: 部分的達成。Evidence-subject文
+   ("A survey found..."等)自体は検出されなかったが、Voice A第2段落に
+   87%/74%・80%/67%・six in ten・約37%という4つの数値が連続しており、
+   「Evidenceの紹介が主役になる文を連続させない」という指示には完全には
+   届いていない(§11-4表参照、Fableの判断を仰ぐ)。
+3. **5区切り構造(Hook/Voice A/Voice B/Tension/Closing)が明示的か**:
+   達成。5見出しとも実装され、`split_five_voice_sections()`で正しく
+   抽出できることを実測確認した(§11-2、`writer_attempts.json`の
+   `h3_count=2`)。
+4. **Tensionが独立したセクションか(Voice Bへ溶け込んでいないか)**:
+   達成。"## Why They See It Differently"という独立見出しの下に、
+   "These two views protect different kinds of control."から始まる
+   独立した段落として書かれている。
+5. **Closingが要約でなく「見方の変化」を示しているか**: 達成。"After
+   hearing both voices, fixed versus free no longer looks like a simple
+   fight over furniture."という、Hookからの見方の変化を明示するフレーズ
+   から始まっている。
+6. **Voice内に第三者の解決策が混入していないか**: 達成。run02で問題視
+   された"A team zone...may offer an anchor"のような第三者(設計者・
+   コンサル)の提案は検出されなかった(§11-4表参照)。
+7. **Hookが定型的な呼びかけ表現("Imagine.../Picture..."等)で始まって
+   いないか**: 達成。"Monday morning, one worker walks straight to..."
+   という三人称の情景描写から始まっており、禁止表現は検出されなかった。
+8. **Hook全体がニュース/分析調に戻っていないか**: 未達成(部分的)。
+   情景描写の直後に"By September 2026, office seating is moving in both
+   directions."という文が続き、これはrun01で問題視された"office seating
+   is moving in two directions"という文とほぼ同じ趣旨の記述であり、
+   Amazonの固有名詞・83%→55%という数値とともに、Hookの後半がニュース
+   要約調に戻っている(§11-4表参照、Fableの判断を仰ぐ)。
+9. **固定ラベル("Voice A"/"Voice B")が使われていないか**: 達成。見出しは
+   "One Voice: The worker who needs a base"/"Another Voice: The worker
+   who needs room to move"であり、"ここから別のVoiceが始まる"ことが
+   伝わる自然な表現になっている。
+10. **Fact Safety(Fact Checker/Ledger Deviation Checker)が維持されて
+    いるか**: 達成。contradictions=0件、Ledger MAJORなし、
+    LEDGER_COMPLIANT(§11-5参照)。Directional Fact PrecheckのみREVIEW_
+    REQUIREDへ後退したが、non-blockingであり数値自体の矛盾ではない。
+
+**総括(Sonnet自身の見立て、最終判定はFable)**: ユーザー指示6点のうち、
+(1)Voiceの書き始め方、(3)5区切り構造の明示化、(4)Closingの再定義、
+(5)第三者解決策の排除、(6)Hookの禁止表現排除の5点は達成したと判断する。
+(2)Evidenceの脇役化は部分的達成にとどまり(Voice Aの数値密度が依然として
+高い)、また(6)に関連して、Hookの冒頭は改善したが後半がニュース要約調に
+戻るという意図しない副作用が新たに生じた。これら2点はUSER_DECISION_
+REQUIREDとして残す(下記§11-7)。
+
+### 11-7. Closeout分類案・USER_DECISION_REQUIRED(run03で新たに発見・確認された点)
+
+**Closeout分類案**: 引き続き**VALIDATED**(範囲: Voice数2・B1・
+Article-only、5区切り構造への骨格変更を含むFocus Module再修正の効果検証。
+Production変更ゼロ、既存Fact Safety機構は無改造で正常動作、Writer構造
+ゲート・Point Overlap/Value QA・Evidence Compression Editorとも5区切り
+構造下で実測動作を確認)。ただし以下はUSER_DECISION_REQUIREDとして残る:
+
+1. Voice A第2段落の数値密度(87%/74%、80%/67%、six in ten、約37%が連続)
+   をどこまで許容するか、さらなるFocus Module修正で減らすべきか。
+2. Hook後半が"office seating is moving in both directions"というrun01
+   由来のトレンド要約調に戻った点を、さらなる修正で排除すべきか、それとも
+   Amazon等の背景事実をHookで簡潔に示すこと自体は許容範囲か。
+3. Evidence Compression EditorのPattern A許可リストが例示する"showed the
+   same pattern"という表現が、Focus Moduleが明示的に禁止したanalyst
+   phrasingと文字列として一致する点(§11-2)。Voices記事タイプでは
+   Evidence Compressionの許可編集リストに例外を設けるべきか、それとも
+   これは通常のDiscovery/Why記事同様に許容してよいか。
+4. Directional Fact PrecheckがDIRECTION_REVIEW_REQUIREDへ後退した点
+   (§11-5)が、Evidence Compressionの"showed the same pattern"追加と
+   関係している可能性があるかどうか(観察のみ、断定していない)。
+5. §8(run01)・§10-6(run02)のUSER_DECISION_REQUIREDは、本節の結果を
+   踏まえてなお未決のまま残る(TOPIC_JAの変更範囲、Voice数3以上の検討、
+   Fact CheckerのWeb Search再現率、Evidence Compressionでの時点情報の
+   扱い、"Picture..."系呼びかけ表現の扱い[run03では回避できたため実害は
+   なかった])。
+
+Status(run03を含む本Reportの提案): 引き続き**VALIDATED**(範囲: Voice数2・
+B1・Article-only、Focus Module修正[5区切り構造]の効果検証)。Production
+採用は別途USER_DECISION_REQUIRED — NOT APPROVED_FOR_PRODUCTION, NOT
+PRODUCTION_WIRED。最終判定・Editorial条件のセルフチェックの合否判断は
+Fableに委ねる。

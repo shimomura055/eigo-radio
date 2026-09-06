@@ -1,0 +1,178 @@
+{
+  "label": "B1B",
+  "status": "OK",
+  "metrics": {
+    "word_count": 454,
+    "sentence_count": 34,
+    "avg_sentence_length": 13.4,
+    "max_sentence_length": 25
+  },
+  "section_word_counts": {
+    "intro": 0,
+    "point_one": 132,
+    "point_two": 109,
+    "in_one_line": 0
+  },
+  "length_report": {
+    "intro": 0,
+    "point_one": 132,
+    "point_two": 109,
+    "in_one_line": 0,
+    "total": 454,
+    "point_one_within_target": false,
+    "point_one_within_tolerance": false,
+    "point_two_within_target": false,
+    "point_two_within_tolerance": false,
+    "total_within_soft_range": false,
+    "sf1r1_section_word_counts_note": "sf1r1.section_word_counts()はrun03の5見出し構造を正確には解釈しない(「in one line」を含まない##見出し=Hook/Tension/Closingの内容をheader_skipとして集計から丸ごと落とす。intro/in_one_lineは常に0になる。point_one/point_twoの値自体はrun03が###見出しを常にちょうど2つ[Voice A/Voice Bのみ]しか使わない設計のため実測上は正しいが、Hook/Tension/Closingが欠落するため記事全体の内訳としては使えない)。参考値としてのみ残す。正確な内訳はfive_section_length_report.jsonを参照。"
+  },
+  "five_section_length_report": {
+    "hook": 82,
+    "voice_a": 132,
+    "voice_b": 109,
+    "tension": 76,
+    "closing": 55,
+    "total_of_five_sections": 454,
+    "headings": {
+      "hook": "The Question",
+      "voice_a": "One Voice: The worker who needs a base",
+      "voice_b": "Another Voice: The worker who needs room to move",
+      "tension": "Why They See It Differently",
+      "closing": "What This Tells Us"
+    },
+    "unexpected_preamble_before_first_heading": ""
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 1,
+  "local_rewrite_results": [],
+  "local_rewrite_cycles": [],
+  "local_rewrite_cycle_exhausted": false,
+  "fact_usage_report": null,
+  "evidence_compression_applied": true,
+  "point_overlap_value_qa_monitoring": {
+    "qa_status": "OK",
+    "lexical_flagged": false,
+    "value_qa_flagged": false,
+    "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+    "voice_a_vs_hook": {
+      "overlap_ratio": 0.141,
+      "shared_words": [
+        "assigned",
+        "desk",
+        "desks",
+        "hot",
+        "morning",
+        "moving",
+        "office",
+        "offices",
+        "seating"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 49,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_b_vs_hook": {
+      "overlap_ratio": 0.179,
+      "shared_words": [
+        "another",
+        "area",
+        "desking",
+        "hot",
+        "means",
+        "morning",
+        "moving",
+        "office",
+        "offices",
+        "seating",
+        "task",
+        "worker"
+      ],
+      "point_word_count": 67,
+      "story_word_count": 49,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_a_vs_voice_b": {
+      "overlap_ratio": 0.156,
+      "shared_words": [
+        "also",
+        "hot",
+        "more",
+        "morning",
+        "moving",
+        "office",
+        "offices",
+        "personal",
+        "seating",
+        "workers"
+      ],
+      "point_word_count": 64,
+      "story_word_count": 67,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "voice_b_vs_voice_a": {
+      "overlap_ratio": 0.149,
+      "shared_words": [
+        "also",
+        "hot",
+        "more",
+        "morning",
+        "moving",
+        "office",
+        "offices",
+        "personal",
+        "seating",
+        "workers"
+      ],
+      "point_word_count": 67,
+      "story_word_count": 64,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "value_qa_status": "PASS",
+    "value_qa_result": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_04ee58cd8930795c006a9d36ba8e2487d08c74473efc2644f2",
+      "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nMonday morning, one worker walks straight to last week’s desk. Another checks the room and chooses a seat near a shared task. By September 2026, office seating is moving in both directions. Amazon returned its Seattle-area and Arlington headquarters to assigned desks, while keeping hot desking in offices that had used it before the pandemic. Across companies, assigned seating fell from 83% to 55% by 2024. The question is not simply which system is better. It is what a desk means to the person using it.\n\n【Point One】\nKeys, notebooks, and personal papers stay in one place when a desk waits each morning. Without that base, moving a keyboard and finding a place for belongings can feel tiring. Workers have described unassigned offices as impersonal, confusing, and mentally tiring. They have also raised worries about hygiene and personal space.\n\nWorkers with assigned desks reported a stronger sense of belonging in a study of more than 16,000 office workers: 87%, compared with 74% for workers without assigned desks. Their reported ability to concentrate showed the same pattern: 80%, compared with 67%. Among workers without a fixed desk, about six in ten wanted one. Yet about 37% of hot-desk workers said their seating had become fixed anyway. For someone in the office most days, a desk can feel less like a privilege than a steady place to begin.\n\n【Point Two】\nAnother morning begins with a choice. Some offices offer places for deep focus, teamwork, light conversation, and rest. A worker can choose a setting that fits the task or the mood. Changing seats can also make contact with other departments easier—or create distance from a workplace relationship.\n\nIn one 2025 street interview with 50 Japanese office workers, four in five supported hot desking and one in five did not. Supporters mentioned changing their surroundings and moving away from people when needed. Some workers also became more comfortable with flexible office seating after creating a personal work area at home. Here, freedom means deciding how much contact the day should include.\n",
+      "parsed": {
+        "point_one": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": "固定席が持ち物の保管場所や心理的な拠点になる仕組みを示し、所属感と集中力の具体的な数値も加えている。Full Storyの「deskの意味」という問いを、安定感・衛生・個人空間へのニーズという具体的な理解に深めている。"
+        },
+        "point_two": {
+          "qa_not_caveat_only": "PASS",
+          "qa_not_full_story_paraphrase": "PASS",
+          "qa_not_other_point_paraphrase": "PASS",
+          "qa_explains_why_it_matters": "PASS",
+          "qa_specific_not_generic": "PASS",
+          "qa_adds_new_value": "PASS",
+          "reasoning": "ホットデスクを、業務内容や気分に合わせた場所選びと、他者との接触量を調整する自由として具体化している。50人の日本人会社員への調査や自宅の個人作業空間との関係も示し、固定席の安定感とは異なる価値を加えている。"
+        }
+      },
+      "per_point": {
+        "point_one": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": "固定席が持ち物の保管場所や心理的な拠点になる仕組みを示し、所属感と集中力の具体的な数値も加えている。Full Storyの「deskの意味」という問いを、安定感・衛生・個人空間へのニーズという具体的な理解に深めている。"
+        },
+        "point_two": {
+          "ok": true,
+          "fail_fields": [],
+          "reasoning": "ホットデスクを、業務内容や気分に合わせた場所選びと、他者との接触量を調整する自由として具体化している。50人の日本人会社員への調査や自宅の個人作業空間との関係も示し、固定席の安定感とは異なる価値を加えている。"
+        }
+      },
+      "status": "PASS"
+    }
+  },
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+  "elapsed_seconds": 231.3
+}
