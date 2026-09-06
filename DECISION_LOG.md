@@ -6017,6 +6017,26 @@ A2(新Prompt出力、本タスク): quiet split→目立たない分かれ、the
 
 **影響するCURRENT_SPEC項目**: Key Phrase > Key Phrase日本語glossの自然さ基準(選定Prompt)(新規行)、QA / Human Review > Key Phrase日本語glossの自然さ(Human Review基準)(新規行)
 
+## OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01(2026-09-06、ユーザー承認「A/BのProduction wiring完了後、Theme 2のA2/B1完成音声を1回だけ再実行してよい」に基づく実行試行、`USER_DECISION_REQUIRED`で打ち切り)
+
+**背景**: KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01・KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01でHEAD(f624a5c)まで配線が完了したことを受け、Theme 2(若者の旅行、B条件)のA2/B1完成音声を1回だけ再実行する承認を得た。条件: 本文/Preview/Comment(A2 14 segment・B1 13 segment)はTrial-13の音声を再利用(review_lock RESOLVED+canonical text hash一致検証のうえコピー、再TTSしない)、Key Phraseのみ最新Production経路で選定からAssemblyまで再実行、Production関数は無変更、TTSはStandard同期、1回だけでGate/Lock停止時は打ち切り。
+
+**実装**: `er011_open112_trend_theme2_b_final_audio_rerun_01.py`(root新規)を作成した。本文reuseロジック(`prepare_level_inputs`/`reuse_non_kp_segments`/`_expected_canonical_text`)はPhase 2アダプタ(`er011_open117_keyphrase_display_tts_separation_trial_02.py`)をほぼそのまま踏襲。Key Phrase選定は、表示用/TTS用分離・数値placeholder回避・gloss自然さ基準がいずれも選定Prompt本体へ配線済みのため、Trialコピーせず`sc.run_key_phrases`(Production関数、無変更)を直接呼ぶ設計とした(Trial-02との差分)。Key Phrase音声生成は`tts_gen.resolve_key_phrase_ja_gloss_tts`(Production関数)でTTS用テキストを解決し、`shared_narration.ensure_key_phrase_english_component`/`tts_gen.generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`を直接呼ぶ設計。STOPPED時のattempt音声保全ヘルパー(`preserve_stopped_audio_evidence`)も実装した(Production側retry loopが同一out_pathへattemptごと上書きするため、関数が返った時点で残る最後のattemptのみ保全可能という制約を明記)。
+
+**実行結果**: A2・B1とも、Key Phrase選定の最初の段階(`sc.run_key_phrase_selection`→既存の構造Hard Requirement Validator`p2g.validate_min_unit_selection`、いずれも無変更)で独立に`KEY_WORDS_STRUCTURE_INVALID`となりSTOPした。原因は両レベルとも候補5件中1件が"median"(統計用語)で、日本語glossに括弧書き補足を含んだため(B1「データの真ん中の値（中央値）」、A2「真ん中の値（中央値）」)、既存ルール「日本語グロスに括弧書きの補足が含まれている」に抵触した。この選定呼び出しは`max_attempts=1`(既存仕様、`er003_b1_p2_keywords.py`docstring「自動再選定・自動再実行は行わない」)で、`sc.run_key_phrases`の外側retry(最大2回)はRedundancy QA NGの場合のみ対象のため、選定構造不適合は即座に終端した(コード読解で確認)。D4(override・fallback追加・上限緩和・手動unblock・再選定の禁止)に従い再実行せず、承認された「1回」をここで終了した。結果、canonicalization・本文reuse・Key Phrase音声生成・Assemblyのいずれにも到達せず、TTS/ASR呼び出しは0件(raw_usage_log.jsonlに選定LLM呼び出し2件のみ記録)、完成音声はA2・B1とも生成されていない。「new normal」型(英語Key PhraseのASRが非英語文字列を返す)は今回発生していない(TTS呼び出し自体に未到達のため)。
+
+**参考情報(調査・修正は未実施)**: 両レベルが独立に同じ語("median")を選び同じ失敗パターン(括弧補足)を示したことから、2026-09-06配線のgloss自然さ規約(「学習者が聞いてすぐ分かる平易な現代日本語にする」)が、専門用語に対してモデルが平易な説明と元の専門語を両方残そうとする傾向(既存の括弧禁止ルールとの相互作用)を誘発した可能性がある。n=2のみのため一般化はできず、新しいUser Decision候補として報告のみ行った。
+
+**cost**: 選定LLM呼び出し2件のみ(TTS/ASR 0件)、実費$0.02057(約¥3.3、`er005_output/cost_baseline_01/pricing_snapshot.json`公式単価×`raw_usage_log.jsonl`実測usage)。Theme 2累計は約¥134(既存記録)+¥3.3=約¥137(上限¥1,000に対し余裕あり)。
+
+**状態**: `USER_DECISION_REQUIRED`(打ち切り)。`USER_FINAL_AUDIO_REVIEW_REQUIRED`・`APPROVED_FOR_PRODUCTION`・`PRODUCTION_WIRED`はいずれも該当しない。
+
+**今回実施しなかったこと**: 選定Promptの調整(括弧禁止ルールと自然さ規約の相互作用への対処)、再選定・再実行(承認された「1回」を使用済み)、本文reuse・Key Phrase音声生成・Assemblyの実行(Key Phrase選定段でSTOPしたため到達せず)。
+
+**根拠レポート**: `OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: なし(Production変更なし)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
