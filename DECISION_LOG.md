@@ -1,7 +1,18 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01、
+**最終更新: 2026-09-06(ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01、
+ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した「TTS attemptごとの
+音声を上書きせず保存し、どのattemptで何が発話されたかを後から確認できるように
+する」診断性改善を、review_lockが管理する既存7 guarded関数のTTS retryループ
+本体8箇所へ`PRODUCTION_WIRED`まで配線した(`er011_human_review_lock_01.py::
+save_tts_attempt_audio()`新設、最終成果物のパス・内容・Assembly挙動は無変更を
+sha256で実証)。あわせてnew normal事象(A2 Key Phrase 2「new normal」STOPPED)の
+記録を、「TTSが日本語で発話した」から「TTSは英語で正しく発話しOpenAI Primary
+ASRが「新常態」へ意味変換した」(分類C、ASR側のfalse rejection)へ訂正し、
+OPEN-119として新規登録した(OPEN-103とは失敗モードが異なるため区別管理)。
+詳細は該当エントリ・`ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01_
+REPORT.md`参照)。2026-09-06(KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01、
 ユーザーが2026-09-06に問題2(Key Phrase日本語glossの自然さ、選択肢a)を
 `APPROVED_FOR_PRODUCTION`と正式決定し、選定Prompt(`b1_p2_keywords_l_
 prompt_template.txt`)へ学習者向け自然さ基準2文・CURRENT_SPEC.md「QA /
@@ -160,7 +171,7 @@ cost 約$0.01572(約¥2.52)。Production code・Prompt・`keywords_canonicalized
 
 **実装**: `er011_open117_keyphrase_display_tts_separation_trial_02.py`。選定Promptは`b1_p2_keywords_l_prompt_template.txt`の1文(gloss側placeholder禁止規約)だけをメモリ上で置換したTrialコピー(str.replaceの単一置換であることをコードで検証、ファイル自体は無変更)。`sc.run_key_phrase_selection()`がtemplateを外部化していないため、この工程のみ`bk.build_user_message`/`bk.make_selector_fn`/`prod.run_production_selection_gate`(Production関数)を直接同じ手順で呼ぶTrial限定wrapperを使用(monkeypatchなし)。canonicalization・redundancy QAは`sc.*`(Production関数)をそのまま使用。表示用gloss→TTS用テキストの変換規則(Phase 1で検証済み、文頭・読点直後の「～」「〜」→「なになに」)を適用し、TTS用テキストをKey Phrase日本語音声のcanonical_textとしてProduction TTS関数(`generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`)へ直接渡した(Production関数は無変更、渡す値だけが表示用からTTS用へ変わる)。記事本文に依存しない13/14 segment(Preview/Comment1-4/Full Story/Point/In One Line等)はTrial-13の保存済みwav+`tts_generation_results.json`エントリを、review_lock RESOLVED状態確認+canonical text sha256一致検証の上で再利用し、生成関数の呼び出し自体をskipした(再TTS0件)。Key Phrase(選定が変わるため常に新規)は両レベルとも新規選定・新規TTS。
 
-**結果**: A2/B1とも新規選定でKey Phraseが5件全て入れ替わった。分離方式の核(先頭/読点直後「～」→「なになに」変換)は**A2 rank5「not fully match」**(表示用「～と完全には一致しない」→TTS用「なになにと完全には一致しない」)でProduction正式経路上でもattempt1一発`PHONETIC_MATCH`となり、Phase 1の結果がProduction正式経路でも再現することを実証した(`VALIDATED`)。一方、選定10件中「～」を含んだのは2件のみで、うち1件(B1 rank2「put solo travel at」の日本語gloss「ソロ旅行を～％とする」)は「～」がパーセント表記の一部(変換規則の対象範囲=文頭・読点直後の**外**)にあり、意図どおり変換されずPlaceholder GateでSTOPPED(想定内の境界事例、ゲートは正しく機能・弱められていない)。さらにA2 rank2「new normal」の英語Key Phrase Componentが、OPEN-117とは無関係な既存TTS/ASR問題(TTSが英語の代わりに日本語「新常態」で発話)により4回(Minimal 2+English Lock 2)ともSTOPPED(`HUMAN_REVIEW_REQUIRED`)。この2件が独立してAudio Validation Gateを発火させ、**B1・A2ともEpisode Assemblyがブロックされ、本Runでは完成episode音声は得られなかった**(D4に従いoverride・fallback追加・上限緩和は行っていない)。それ以外の8件のKey Phrase音声(英語+日本語)は正常にTTS/ASR検証をPASSした。
+**結果**: A2/B1とも新規選定でKey Phraseが5件全て入れ替わった。分離方式の核(先頭/読点直後「～」→「なになに」変換)は**A2 rank5「not fully match」**(表示用「～と完全には一致しない」→TTS用「なになにと完全には一致しない」)でProduction正式経路上でもattempt1一発`PHONETIC_MATCH`となり、Phase 1の結果がProduction正式経路でも再現することを実証した(`VALIDATED`)。一方、選定10件中「～」を含んだのは2件のみで、うち1件(B1 rank2「put solo travel at」の日本語gloss「ソロ旅行を～％とする」)は「～」がパーセント表記の一部(変換規則の対象範囲=文頭・読点直後の**外**)にあり、意図どおり変換されずPlaceholder GateでSTOPPED(想定内の境界事例、ゲートは正しく機能・弱められていない)。さらにA2 rank2「new normal」の英語Key Phrase Componentが、OPEN-117とは無関係な既存TTS/ASR問題(TTSが英語の代わりに日本語「新常態」で発話)により4回(Minimal 2+English Lock 2)ともSTOPPED(`HUMAN_REVIEW_REQUIRED`)。**2026-09-06訂正(KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01の診断結果をユーザーが実試聴して確定)**: 上記の「TTSが日本語で発話した」という記述は誤りだった。実際にはTTSは英語`new normal`を4回とも正しく発話しており、OpenAI Primary ASR(`gpt-4o-mini-transcribe`、`language=en`指定)が音声内容を「新常態」へ意味変換・表記変換して返していた(ASR側のfalse rejection、分類C)。一次分類が`TTS_FAILURE`(Cascade発動条件[entity-like/homophone-candidate]に非該当)だったためCascade[Primary#2→Secondary Azure等]は一度も起動していない。OPEN-103(音訳ゆれ+duration anomaly)とは上位カテゴリ[短い孤立英語Key PhraseでASRが非英語文字列を返す]は共通するが具体的な失敗モードが異なるため、同一原因と断定せず新規OPEN-119として区別管理する(詳細は`KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01_REPORT.md`・OPEN_ITEMS.md OPEN-119行参照)。この2件が独立してAudio Validation Gateを発火させ、**B1・A2ともEpisode Assemblyがブロックされ、本Runでは完成episode音声は得られなかった**(D4に従いoverride・fallback追加・上限緩和は行っていない)。それ以外の8件のKey Phrase音声(英語+日本語)は正常にTTS/ASR検証をPASSした。
 
 **retry/fallback/regeneration整合**: B1 rank2のSTOPはTTS呼び出し前の決定的な事前ゲート判定であり、既存retry cascade・review_lockのいずれとも衝突しない(対象にすら入らない)。A2 rank2のSTOPは既存4回構成を正常に消費し尽くした上でのreview_lock`HUMAN_REVIEW_REQUIRED`遷移であり、既存仕様どおりの終端状態。英語Key Phrase ComponentのMaster Audio Store cache identityは`canonical_text=used_form`(英語側)のみをキーとするため、日本語gloss側の分離の影響を受けない。矛盾は確認されなかった。
 
@@ -5977,7 +5988,7 @@ Production Writerへの正式配線・CURRENT_SPEC登録・News/Trend実装・Ho
 
 ## KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01(2026-09-06、ユーザーが2026-09-06に問題2(Key Phrase日本語gloss自然さ、選択肢a)を`APPROVED_FOR_PRODUCTION`と正式決定し`PRODUCTION_WIRED`まで配線)
 
-**背景**: `KEYPHRASE-JA-GLOSS-NATURALNESS-DIAGNOSTIC-01_REPORT.md`(read-only診断)は、タスク依頼の前提「A2 Key Phrase "new normal"のglossが『新常態』となった」を実データ(`er011_output/open117_keyphrase_display_tts_separation_trial_02/`)で検証し、この前提が誤りであることを確認した。glossは選定時から一貫して「新しい当たり前」であり、「新常態」は`kp2_en`(英語Key Phrase Component)がTTSで日本語を発話しASRが誤って書き起こした、OPEN-117とは無関係な既存の英語TTS言語ロック不具合のASR文字起こしテキストとしてのみ出現していた。前提訂正の上で、依頼文の「問題クラス」自体(辞書的に正しいが硬い・直訳調・学習者に伝わりにくい訳語が生成されうる構造的リスク)を診断した結果、選定Prompt(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有、canonicalization工程は`japanese_gloss`を一切生成せずpass-throughのみ)には「短く自然な日本語グロス」という一語以外に、学習者向け平易さ・直訳調回避・硬い報道語/漢語回避の具体基準が無く、`er003_key_words_min_unit.py::validate_min_unit_selection()`(日本語文字を含むか/括弧書きを含まないか/空でないかの3点のみ判定)・Key Phrase Set Redundancy QA(5件相互の意味重複のみ判定)・Human Review基準(ASR一致・発音品質中心)のいずれも訳語の自然さを一切判定しない構造的空白(原因分類A[Prompt不足]+C[Validator形式チェックのみ]+D[Human Review明文基準なし]の複合)が確認された。既存corpus(重複除去397件)の機械的grep調査では、硬い漢語・報道語調の語彙による明確な悪化事例はほぼ確認されなかった(「効いていない」のではなく「そもそも判定軸が存在しない」ため、低頻度発生時に検知できないリスク)。ユーザーが選択肢a(選定Prompt1〜2文追加+Human Review基準1文追加。LLM追加QA・自然さValidator新設・blacklist・過去397件の一括再生成は不採用)を`APPROVED_FOR_PRODUCTION`と正式決定した。
+**背景**: `KEYPHRASE-JA-GLOSS-NATURALNESS-DIAGNOSTIC-01_REPORT.md`(read-only診断)は、タスク依頼の前提「A2 Key Phrase "new normal"のglossが『新常態』となった」を実データ(`er011_output/open117_keyphrase_display_tts_separation_trial_02/`)で検証し、この前提が誤りであることを確認した。glossは選定時から一貫して「新しい当たり前」であり、「新常態」は`kp2_en`(英語Key Phrase Component)がTTSで日本語を発話しASRが誤って書き起こした、OPEN-117とは無関係な既存の英語TTS言語ロック不具合のASR文字起こしテキストとしてのみ出現していた。**2026-09-06訂正(KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01の診断結果をユーザーが実試聴して確定)**: 「TTSで日本語を発話し」という上記記述は誤りだった。実際にはTTSは英語`new normal`を正しく発話しており、OpenAI Primary ASR(`language=en`指定)が音声内容を「新常態」へ意味変換・表記変換して返していた(ASR側のfalse rejection、分類C)。「英語TTS言語ロック不具合」ではなくASR側の問題であり、OPEN-103とは上位カテゴリ[短い孤立英語Key PhraseでASRが非英語文字列を返す]は共通するが失敗モードが異なるため同一原因と断定せず、新規OPEN-119として区別管理する(詳細は`KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01_REPORT.md`参照)。前提訂正の上で、依頼文の「問題クラス」自体(辞書的に正しいが硬い・直訳調・学習者に伝わりにくい訳語が生成されうる構造的リスク)を診断した結果、選定Prompt(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有、canonicalization工程は`japanese_gloss`を一切生成せずpass-throughのみ)には「短く自然な日本語グロス」という一語以外に、学習者向け平易さ・直訳調回避・硬い報道語/漢語回避の具体基準が無く、`er003_key_words_min_unit.py::validate_min_unit_selection()`(日本語文字を含むか/括弧書きを含まないか/空でないかの3点のみ判定)・Key Phrase Set Redundancy QA(5件相互の意味重複のみ判定)・Human Review基準(ASR一致・発音品質中心)のいずれも訳語の自然さを一切判定しない構造的空白(原因分類A[Prompt不足]+C[Validator形式チェックのみ]+D[Human Review明文基準なし]の複合)が確認された。既存corpus(重複除去397件)の機械的grep調査では、硬い漢語・報道語調の語彙による明確な悪化事例はほぼ確認されなかった(「効いていない」のではなく「そもそも判定軸が存在しない」ため、低頻度発生時に検知できないリスク)。ユーザーが選択肢a(選定Prompt1〜2文追加+Human Review基準1文追加。LLM追加QA・自然さValidator新設・blacklist・過去397件の一括再生成は不採用)を`APPROVED_FOR_PRODUCTION`と正式決定した。
 
 **実装内容1: 選定Prompt改訂**(`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`、A2/B1共有): 既存の「選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。」の直後へ、新しいパラグラフとして以下の2文を追加した(原文一字一句):
 
@@ -6036,6 +6047,26 @@ A2(新Prompt出力、本タスク): quiet split→目立たない分かれ、the
 **根拠レポート**: `OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-01_REPORT.md`
 
 **影響するCURRENT_SPEC項目**: なし(Production変更なし)
+
+## ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01(2026-09-06、ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した「TTS attemptごとの音声を上書きせず保存し、どのattemptで何が発話されたかを後から確認できるようにする」診断性改善を`PRODUCTION_WIRED`まで配線。あわせてnew normal事象の記録をASR false rejection[分類C]へ訂正、OPEN-119登録)
+
+**背景**: `KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01`(OPEN-119)でA2 Key Phrase 2「new normal」を調査した際、既存のTTS retry cascadeが同一`out_path`をattemptごとに無条件上書きする設計のため、attempt 1〜3の音声が消失しており、実際に何を発話していたかの確認が不能だった(現存したのはattempt 4のみ)。ユーザーがこの調査経験を踏まえ「TTS attemptごとの音声を上書きせず保存し、どのattemptで何が発話されたかを後から確認できるようにする」ことを正式承認した。
+
+**実装**: `er011_human_review_lock_01.py`へ`save_tts_attempt_audio(out_path, route_label, metadata)`を新設した。呼び出し時点で`out_path`に既に書き込まれている当該attemptの音声を、上書きせず`<narration_dir>/attempts/<segment_id>_attempt<N>_<route_slug>.wav`+同名`.json`へコピー保存する(`out_path`自体は読み取るだけで一切書き込まない)。attempt番号は`attempts/`配下の既存ファイルをスキャンして最大値+1を採番するグローバル単調増加方式とし、追加の永続stateを持たない。out_pathが標準的なnarrationパス規約に従わない場合(単体テストのダミーパス等)は、既存のReview Lock全体と同じ安全側判断で保存をスキップする(`_has_valid_narration_layout()`を再利用)。
+
+**配線箇所(review_lockが管理する既存7 guarded関数のTTS retryループ本体、計8箇所)**: `generate_narration_snippet_verified_strict`(`er003_v1_repro01_main_generate.py`、Key Phrase Primary/Fallback両stage・Full Story/Preview/News等の標準経路・A2英語/日本語standard経路を含め共通経由。route_labelは`style_prefix_override`の有無[標準/カスタム]から自動判定し、カスタム時は指示文のMD5先頭8桁を含めて多段呼び出し[Minimal→English Lock]同士のファイル名衝突を避ける)・`generate_charon_english`(`er003_v1_sing01_voice01_generate.py`、standard/minimal_fallbackを1ループ内で判定)・`generate_charon_japanese`(同、standard loop・fallback loopの2箇所)・`generate_news_narration_wide_margin`(`er003_v1_sing01_news_tail_fix.py`)・`point_headings.generate`(`er003_v1_sing01_point_headings_aoede.py`)・`generate_english_segment_with_fallback`のfallback loop(`er003_v1_crosslevel_audio_02_common.py`、standard部分は`generate_narration_snippet_verified_strict`経由で既にカバー済み)・`generate_a2_japanese_with_fallback`のfallback loop(`er003_v1_n3_01_tts_generate.py`、同様)。いずれもASR結果・分類が確定した直後に`save_tts_attempt_audio()`を呼び、返却パスを当該`attempts_log`/`fallback_attempts_log`エントリへ`attempt_audio_path`として追記する。この追記により、既存の`record_outcome()`(`er011_human_review_lock_01.py`、無変更)が持つ`last_attempts_log`永続化経路を経由して、review_lock台帳(`review_lock_state.json`)へも自動的にattempt保存パスが引き継がれる。
+
+**最終成果物への影響: 無し(実証済み)**。`save_tts_attempt_audio()`は`out_path`を読み取るだけで一切書き込まないため、Assembly・Master Audio Store・cache identity・retry/fallback/regeneration機構の実際の挙動には触れない。Runtime evidence(integration test、実TTS/ASRをモックし`p9a.generate_narration_snippet`/`routing.transcribe`/`secondary_asr.evaluate_attempt_with_cascade`を差し替えて`generate_narration_snippet_verified_strict`本体を実行)で、NG→OKの2attempt構成において(1)2つのattempt音声が個別ファイルとして残る、(2)採用されたattempt(OK)のsha256と最終`out_path`のsha256が完全一致する、(3)不採用attempt(NG)のsha256は最終成果物と一致しない(=diagnostic目的で別内容が保存されている)、(4)`REGENERATE_APPROVED`を挟んだ2回目の実行でattempt番号が3・4と継続し1回目のattempt1・2ファイルが上書きされない、をいずれも実証した。
+
+**容量・保持ポリシー**: 1 segmentあたり最大3〜4attempt×数秒wav(小容量)、既存の出力dir構成・`*.wav`のgitignore方針と矛盾しない。採用take確定後もattempt音声を削除する仕組みは今回導入していない(全attempt音声を無期限保持する、cleanupは別途検討事項として残す)。
+
+**記録訂正(new normal事象、KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01のRoot Cause確認を、ユーザーが実際に音声を試聴して確定)**: `OPEN-112-TREND-THEME2-SERIES-11-17`(A2 rank2「new normal」STOPPED記述)・`KEYPHRASE-JA-GLOSS-NATURALNESS-PROD-WIRING-01`(「TTSで日本語を発話しASRが誤って書き起こした」という記述)・`OPEN-117`行(Phase 2追記)・`OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-02_REPORT.md`の該当箇所に、いずれも既存文を削除せず「2026-09-06訂正」を付記した。訂正内容: 「TTSが英語の代わりに日本語で発話した」は誤りで、実際にはTTSは英語`new normal`を4回とも正しく発話しており、OpenAI Primary ASR(`gpt-4o-mini-transcribe`、`language=en`指定)が音声内容を「新常態」へ意味変換・表記変換して返していた(ASR側のfalse rejection、分類C)。一次分類が`TTS_FAILURE`(Cascade発動条件[entity-like/homophone-candidate]に非該当)のため、Cascade(Primary#2→Secondary Azure等)は一度も起動していない。OPEN-103(短い孤立英語Key PhraseのTTS非決定的誤発音、音訳ゆれ+duration anomaly)とは「短い孤立英語Key PhraseでASRが非英語文字列を返す」という上位カテゴリのみ共通し、具体的な失敗モードが異なるため、同一原因と断定せず新規**OPEN-119**として区別管理する(`USER_DECISION_REQUIRED`、対策Trial`KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01`が進行中[a/b/cいずれもVALIDATED、Production採用可否は未決])。
+
+**テスト・回帰**: 新規単体テスト9件PASS(`er011_tts_attempt_audio_retention_wiring_01_test.py`、`save_tts_attempt_audio()`単体5件+Production経路への配線確認3件[NG→OK・単一attempt・REGENERATE継続]+JSON sidecar検証1件)。既存回帰70件PASS(`er011_human_review_lock_01_test_01.py`21件・`er007_ja_tts_retry_path_fix_test_01.py`22件・`er008_crosslevel_audio_02_tts_cap_25_test_01.py`1件・`er011_ending_clarity_fallback_01_test.py`17件、ほか)。プロジェクト全体回帰は、無関係な既存スクリプト(`test_writer_api.py`・`tts_style_test.py`・backtest系スクリプト)が`unittest discover`のモジュールimport時に実TTS/LLM API呼び出しを伴う設計であることが判明したため実施を見送り、本タスクの変更が触れたモジュールに限定した targeted 回帰(上記)で代替した(詳細・発生した副作用はReport参照)。
+
+**根拠レポート**: `ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01_REPORT.md`、`KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01_REPORT.md`、`KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: 「QA / Human Review」節「TTS attempt音声の保全(上書きせず個別保存、診断性改善)」(新規行)
 
 ## 参照元
 

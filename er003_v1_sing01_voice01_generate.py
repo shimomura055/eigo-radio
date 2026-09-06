@@ -134,6 +134,18 @@ def generate_charon_english(text: str, out_path: str,
                               "length_ok": length_ok, "verified": verified, "trim_info": trim_info,
                               "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
+            "model": common.MODEL_NAME, "voice": CHARON,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"],
+            "disfluency_evidence": gate.get("disfluency_evidence"),
+        })
+        attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
@@ -273,6 +285,16 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "length_ok": length_ok, "audio_classification": cls.classification,
                               "verified": verified, "trim_info": trim_info})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "standard", {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "ja",
+            "model": p9a.JAPANESE_MODEL_NAME, "voice": CHARON,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+        })
+        attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
@@ -306,6 +328,16 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "length_ok": length_ok, "audio_classification": cls.classification,
                                    "verified": verified})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "ja",
+            "model": p9a.JAPANESE_MODEL_NAME, "voice": CHARON,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+        })
+        fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

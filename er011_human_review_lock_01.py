@@ -48,6 +48,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import shutil
 import time
 import uuid
 from functools import wraps
@@ -431,6 +433,99 @@ def is_duplicate_queue_entry(queue_path: str, wav_path: str, canonical_text: str
             if record.get("wav_path") == wav_path and _text_hash(record.get("canonical_text") or "") == target_hash:
                 return True
     return False
+
+
+# ============================================================
+# Part I: TTS attempt音声の保全(上書きせず個別保存、診断性改善)
+# ============================================================
+# 背景(2026-09-06、KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01→
+# ユーザー試聴により2026-09-06に事実訂正。ASR false rejection、分類C、
+# OPEN-118として追跡): 既存のTTS retry cascadeは、retryのたびに同一
+# out_pathを無条件に上書きする設計だったため、Human Review Lockへ到達
+# したsegmentで「attempt 1〜3それぞれで実際に何が発話されたか」を事後に
+# 確認する手段が無かった(音声そのものが消失し、attempts_logのASR文字
+# 起こしテキストしか残らない)。
+#
+# ユーザー正式承認(2026-09-06、APPROVED_FOR_PRODUCTION、診断性改善の
+# 一環): 各TTS attemptの音声を上書きせず、既存の最終成果物(out_path)
+# とは別のパスへ保存する。**最終成果物のパス・内容・Assembly挙動は
+# 一切変更しない**(save_tts_attempt_audio()はout_pathへ一切書き込まず、
+# 呼び出し時点で既にout_pathへ書き込まれている内容を読み取ってコピー
+# するだけの副次的な記録処理)。
+#
+# 保存先: `<out_pathのnarrationディレクトリ>/attempts/
+#   <segment_id>_attempt<N>_<route_slug>.wav` + 同名`.json`
+#   (ASR raw出力・分類・instruction種別・model_id・tts_execution_mode・
+#   timestamp等、呼び出し側がmetadataとして渡す)。
+#
+# attempt番号はsegment_id単位でグローバルに単調増加させる(attempts/
+# 配下の既存ファイル名をスキャンして最大値+1を採番する、追加の永続
+# stateは持たない)。これにより2点を単一の実装で満たす:
+#   (1) Key Phrase Primary(Minimal)→Fallback(English Lock)のように
+#       同一out_pathへ複数の内部stageが順にTTS呼び出しを行う場合でも、
+#       各stageの「1回目」同士がファイル名衝突しない
+#       (route_slugがstage間で異なるテキストから導出されるため)。
+#   (2) REGENERATE_APPROVEDによる再生成でも、過去のattempt音声を
+#       上書きせず番号が継続する。
+#
+# out_pathがReview Lockの標準的な".../<theme>/<level>/narration/
+# <segment>.wav"命名規約に従っていない場合(単体テストのダミーパス等)
+# は、Review Lock本体(_has_valid_narration_layout)と同じ安全側の
+# 判断で保存自体をスキップする(異なる呼び出し同士が同じattempts
+# ディレクトリを誤って共有するリスクを避ける)。
+def save_tts_attempt_audio(out_path: str, route_label: str, metadata: dict = None):
+    """out_pathへ今しがた書き込まれたばかりの音声(このattemptの内容)を、
+    上書きせず`<narration_dir>/attempts/`配下へ個別コピー保存する。
+
+    呼び出し側の既存TTS retryループ内で、`common.write_wav_float(out_path,
+    ...)`が成功した直後(ASR結果等の付随情報が揃った時点)に呼ぶこと。
+    out_path自体は読み取るだけで一切変更しない。
+
+    戻り値: 保存したwavファイルのパス(bypass・保存不可時はNone)。"""
+    if not _has_valid_narration_layout(out_path):
+        return None
+    if not os.path.exists(out_path):
+        return None
+    norm = out_path.replace("\\", "/")
+    narration_dir = os.path.dirname(norm)
+    theme_id, level, segment_id = derive_segment_key(out_path)
+    attempts_dir = f"{narration_dir}/attempts"
+    os.makedirs(attempts_dir, exist_ok=True)
+
+    prefix = f"{segment_id}_attempt"
+    existing_numbers = []
+    for fname in os.listdir(attempts_dir):
+        if fname.startswith(prefix) and fname.endswith(".wav"):
+            num_str = fname[len(prefix):].split("_", 1)[0]
+            if num_str.isdigit():
+                existing_numbers.append(int(num_str))
+    attempt_number = (max(existing_numbers) + 1) if existing_numbers else 1
+
+    route_slug = re.sub(r"[^a-zA-Z0-9]+", "", route_label or "route")[:32] or "route"
+    base_name = f"{segment_id}_attempt{attempt_number}_{route_slug}"
+    wav_path = f"{attempts_dir}/{base_name}.wav"
+    json_path = f"{attempts_dir}/{base_name}.json"
+
+    shutil.copy2(out_path, wav_path)
+    with open(wav_path, "rb") as f:
+        wav_sha256 = hashlib.sha256(f.read()).hexdigest()
+    record = {
+        "attempt_number": attempt_number,
+        "route": route_label,
+        "segment_id": segment_id,
+        "theme_id": theme_id,
+        "level": level,
+        "source_out_path": out_path,
+        "saved_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "sha256": wav_sha256,
+    }
+    if metadata:
+        for k, v in metadata.items():
+            if k not in record:
+                record[k] = v
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(record, f, ensure_ascii=False, indent=2, default=str)
+    return wav_path
 
 
 # ============================================================

@@ -33,6 +33,7 @@ import er003_b1_p9a_audio as p9a
 import er003_v1_a2_audio_02_generate as audio02
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
+import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -127,6 +128,18 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                    "audio_classification": cls.classification, "verified": verified,
                                    "disfluency_checked": gate["disfluency_checked"],
                                    "disfluency_evidence": gate.get("disfluency_evidence")})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
+            "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"],
+            "disfluency_evidence": gate.get("disfluency_evidence"),
+        })
+        fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8">
+<title>ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: runtime evidence</title>
+<style>
+  body { font-family: sans-serif; max-width: 820px; margin: 40px auto; line-height: 1.6; }
+  h1 { font-size: 1.2em; } h2 { font-size: 1.05em; margin-top: 28px; }
+  .box { border: 1px solid #ccc; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .label { font-weight: bold; margin-bottom: 6px; }
+  .note { color: #555; font-size: 0.9em; }
+  code { background: #f0f0f0; padding: 2px 4px; }
+</style></head>
+<body>
+<h1>ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01 runtime evidence</h1>
+<p class="note">Production関数(repro01.generate_key_phrase_component_verified /
+n3_tts.generate_a2_japanese_with_fallback)を無変更のまま、TTS_EXECUTION_MODE=STANDARDで
+実行した結果。各attemptの音声が上書きされず個別に残っていることを確認できます。</p>
+
+<h2>(1) 英語Key Phrase Component: new normal</h2>
+<p class="note">text=<code>new normal</code> / final status=STOPPED / asr_verified=None</p>
+<div class="box"><div class="label">最終成果物(out_path) — sha256=387e91d04f3b0a8b...</div>
+<audio controls src="kp_new_normal.wav"></audio></div>
+<div class="box"><div class="label">attempt 1 (route=custom_bd5c8f46, tts_execution_mode=STANDARD, model=gemini-2.5-pro-preview-tts)</div><audio controls src="attempts/kp_new_normal_attempt1_custombd5c8f46.wav"></audio><p class="note">ASR raw: <code>新常態</code> / verified=False / sha256=f8e22787b39a719b...</p></div><div class="box"><div class="label">attempt 2 (route=custom_bd5c8f46, tts_execution_mode=STANDARD, model=gemini-2.5-pro-preview-tts)</div><audio controls src="attempts/kp_new_normal_attempt2_custombd5c8f46.wav"></audio><p class="note">ASR raw: <code>新常態</code> / verified=False / sha256=43695d03bb1d8872...</p></div><div class="box"><div class="label">attempt 3 (route=custom_31eb2f72, tts_execution_mode=STANDARD, model=gemini-2.5-pro-preview-tts)</div><audio controls src="attempts/kp_new_normal_attempt3_custom31eb2f72.wav"></audio><p class="note">ASR raw: <code>新常態</code> / verified=False / sha256=f85f4054ff64ec87...</p></div><div class="box"><div class="label">attempt 4 (route=custom_31eb2f72, tts_execution_mode=STANDARD, model=gemini-2.5-pro-preview-tts)</div><audio controls src="attempts/kp_new_normal_attempt4_custom31eb2f72.wav"></audio><p class="note">ASR raw: <code>新常態</code> / verified=False / sha256=387e91d04f3b0a8b...</p></div>
+
+
+<h2>(2) 日本語gloss: 新しい当たり前</h2>
+<p class="note">text=<code>新しい当たり前</code> / final status=OK / asr_verified=True</p>
+<div class="box"><div class="label">最終成果物(out_path) — sha256=a6736227dbb0e8ed...</div>
+<audio controls src="gloss_new_normal.wav"></audio></div>
+<div class="box"><div class="label">attempt 1 (route=standard, tts_execution_mode=STANDARD, model=gemini-3.1-flash-tts-preview)</div><audio controls src="attempts/gloss_new_normal_attempt1_standard.wav"></audio><p class="note">ASR raw: <code>新しい当たり前</code> / verified=True / sha256=a6736227dbb0e8ed...</p></div>
+
+</body></html>

@@ -178,7 +178,18 @@ retry不要、初回選定で完結)。
   normal"の意味そのものの日本語)として書き起こし、`TTS_FAILURE`分類で
   全滅。`review_lock_state.json`に`kp2_en: HUMAN_REVIEW_REQUIRED`として
   記録された。OPEN-117の変更(gloss側placeholder規約)とは無関係な、
-  既存Production側の英語Key Phrase TTS/ASR経路の問題。
+  既存Production側の英語Key Phrase TTS/ASR経路の問題。**2026-09-06訂正
+  (`KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01`の診断結果をユーザーが実
+  試聴して確定、OPEN-119として新規登録)**: TTS自体は英語`new normal`を
+  4回とも正しく発話しており、問題はOpenAI Primary ASR
+  (`gpt-4o-mini-transcribe`、`language=en`指定)が音声内容を「新常態」へ
+  意味変換・表記変換して返したこと(ASR側のfalse rejection、分類C)に
+  ある。一次分類が`TTS_FAILURE`(Cascade発動条件[entity-like/
+  homophone-candidate]に非該当)のため、Cascade(Primary#2→Secondary
+  Azure等)は一度も起動していない。OPEN-103(短い孤立語のTTS非決定的
+  誤発音)とは上位カテゴリのみ共通し失敗モードが異なるため、同一原因と
+  断定せず区別管理する。詳細はOPEN_ITEMS.md OPEN-119行・
+  `KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01_REPORT.md`参照。
 
 いずれもAssembly側の`verify_episode_audio_validation_gate`が
 `EPISODE_BLOCKED_BY_AUDIO_VALIDATION`として検知し、B1・A2それぞれ独立に

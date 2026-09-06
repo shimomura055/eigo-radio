@@ -418,6 +418,17 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                    "audio_classification": cls.classification,
                                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
                                    "verified": verified})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "ja",
+            "model": p9a.JAPANESE_MODEL_NAME, "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+            "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
+        })
+        fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text

@@ -119,6 +119,18 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                               "length_ok": length_ok, "verified": verified,
                               "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
+            "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": length_ok, "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"],
+            "disfluency_evidence": gate.get("disfluency_evidence"),
+        })
+        attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text,

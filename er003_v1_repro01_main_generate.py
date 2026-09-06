@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 
@@ -269,6 +270,22 @@ def generate_narration_snippet_verified_strict(
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
         })
+        # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+        # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
+        # (最終成果物out_path自体は無変更)。
+        _route_label = "standard" if style_prefix_override is None else (
+            "custom_" + hashlib.md5(style_prefix_override.encode("utf-8")).hexdigest()[:8])
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, _route_label, {
+            "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": language,
+            "model": batch_model_name, "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "instruction_text": style_prefix_override,
+            "asr_text": asr_text, "audio_classification": audio_classification,
+            "length_ok": length_ok, "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
+            "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+        })
+        attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: disfluency_checkedが
             # attempts_logの中にしか記録されず、Assemble Gateがこの情報を
