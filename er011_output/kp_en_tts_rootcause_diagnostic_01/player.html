@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01: new normal 英語Key Phrase試聴</title>
+<style>
+  body { font-family: sans-serif; max-width: 760px; margin: 40px auto; line-height: 1.6; }
+  h1 { font-size: 1.2em; }
+  .box { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .label { font-weight: bold; margin-bottom: 8px; }
+  .note { color: #555; font-size: 0.9em; }
+  code { background: #f0f0f0; padding: 2px 4px; }
+</style>
+</head>
+<body>
+<h1>KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01: Key Phrase "new normal" 英語音声の試聴</h1>
+<p class="note">
+対象: er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/ の A2 kp2_en(Key Phrase 2位「new normal」の英語Component音声)。<br>
+Production/Trialの生成ロジックはout_pathを毎回上書きするため、ディスク上に残っているのは4回試行のうち最後(4回目 = Minimal instruction 2回失敗後のEnglish Language Lock、2回目)の音声のみです。attempt 1〜3の音声は上書きにより現存しません。
+</p>
+<div class="box">
+  <div class="label">kp2_en (attempt 4/4: English Language Lock, 2回目) — TTS入力テキスト = "new normal"(英語のみ)</div>
+  <audio controls src="kp2_en_attempt4_english_lock_2_final.wav"></audio>
+  <p class="note">
+    元のASR raw output(4回とも同一): 「新常態」(OpenAI gpt-4o-mini-transcribe、language=en) → audio_classification=TTS_FAILURE<br>
+    本Diagnosticでの再ASR(同じwav、今回2026-09-06に再実行):<br>
+    ・英語ASR(OpenAI gpt-4o-mini-transcribe、language=en、Production Primaryと同一): <code>新常態</code>(元の結果を再現)<br>
+    ・日本語ASR(Azure Speech STT、language=ja-JP): <code>New normal。</code>(英語表記のまま認識、句点はAzureのja-JP認識が自動付与)
+  </p>
+</div>
+<p class="note">
+上記は客観的なASR再実行の結果であり、実際に人間が聴いてどう聞こえるかの最終判断はユーザー試聴に委ねます(Agentは音声を聴けないため、発話内容を断定しません)。
+</p>
+</body>
+</html>
