@@ -504,6 +504,194 @@ def test_ledger_cache_key_uses_empty_source_context_for_cross_article_reuse():
     print("PASS: test_ledger_cache_key_uses_empty_source_context_for_cross_article_reuse")
 
 
+# ============================================================
+# KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01:
+# 非ラテン文字主体Cascade(enable_non_latin_cascade)のregression fixture
+# ============================================================
+def test_non_latin_dominance_info_threshold_boundary():
+    # ちょうど閾値(0.5)はTrue、僅かに下回るとFalse(境界値確認)。
+    assert secondary.non_latin_dominance_info("")["is_non_latin_dominant"] is False
+    assert secondary.non_latin_dominance_info("new normal")["is_non_latin_dominant"] is False
+    assert secondary.is_non_latin_dominant_mismatch("新常態") is True
+    # ラテン2文字+CJK2文字 -> ratio=0.5 -> 閾値ちょうどでTrue
+    info_exact = secondary.non_latin_dominance_info("ab" + "新常")
+    assert info_exact["ratio_cjk"] == 0.5
+    assert info_exact["is_non_latin_dominant"] is True
+    # ラテン3文字+CJK2文字 -> ratio=0.4 -> 閾値未満でFalse
+    info_below = secondary.non_latin_dominance_info("abc" + "新常")
+    assert info_below["ratio_cjk"] == 0.4
+    assert info_below["is_non_latin_dominant"] is False
+    print("PASS: test_non_latin_dominance_info_threshold_boundary")
+
+
+def test_non_latin_cascade_disabled_by_default_even_if_non_latin_and_mismatch():
+    # enable_non_latin_cascade既定False(呼び出し元が渡さない限り)なら、
+    # ASR出力が非ラテン文字主体の不一致でもSecondaryは一切呼ばれず、
+    # rejectのまま(本文segment等、他の全既存呼び出し元と同じ挙動)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "new normal", None  # Secondaryを呼べばPASSしてしまうはずの値
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "new normal", "新常態", [], "dummy.wav", cascade_enabled=True)
+        assert r["verified"] is False
+        assert r["non_latin_cascade_invoked"] is False
+        assert calls["secondary"] == 0, "enable_non_latin_cascade既定Falseの経路でSecondaryを呼んではならない"
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_non_latin_cascade_disabled_by_default_even_if_non_latin_and_mismatch")
+
+
+def test_non_latin_cascade_pass_when_secondary_matches():
+    # enable_non_latin_cascade=Trueかつ非ラテン文字主体の不一致(new
+    # normal/新常態)で、Secondaryが正しい英語書き起こしを返せば
+    # verified=Trueへ再判定される(条件(a)、Trial条件(a)と同じ設計)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "new normal", None
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "new normal", "新常態", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True)
+        assert r["verified"] is True
+        assert r["non_latin_cascade_invoked"] is True
+        assert r["cascade_invoked"] is True
+        assert calls["secondary"] == 1
+        assert any(s["step"] == "non_latin_secondary" for s in r["steps"])
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_non_latin_cascade_pass_when_secondary_matches")
+
+
+def test_non_latin_cascade_reject_maintained_when_secondary_also_mismatches():
+    # Secondaryでも一致しなければreject維持(false acceptを起こさない)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "Xinjio Tai.", None  # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
+                                     # TRIAL-01の陰性対照i-1で実際に観測されたraw出力
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "new normal", "新状態", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True)
+        assert r["verified"] is False
+        assert r["non_latin_cascade_invoked"] is True
+        assert calls["secondary"] == 1
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_non_latin_cascade_reject_maintained_when_secondary_also_mismatches")
+
+
+def test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch():
+    # cashless("Kaslis"のようなラテン文字だが誤表記)は非ラテン文字主体
+    # 判定の対象外(Trial §4の既知の限界、バグではなく設計上のスコープ)。
+    # enable_non_latin_cascade=TrueでもSecondaryは呼ばれない。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "Cashless", None
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "cashless", "Kaslis", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True)
+        assert r["non_latin_cascade_invoked"] is False
+        assert calls["secondary"] == 0
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch")
+
+
+def test_negative_fixture_ja_default_no_false_accept():
+    # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01陰性対照i-2の
+    # 実raw出力をfixture化(日本語TTSで「デフォルト」を発話、canonical=
+    # default)。Secondaryでも一致せずreject維持することを確認する。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "Defaulto.", None  # Trial i-2で実際に観測されたraw出力
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "default", "デフォルト", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True)
+        assert r["verified"] is False
+        assert r["non_latin_cascade_invoked"] is True
+        assert calls["secondary"] == 1
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_negative_fixture_ja_default_no_false_accept")
+
+
+def test_negative_fixture_new_formal_not_non_latin_no_secondary_call():
+    # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01陰性対照iiの
+    # 実raw出力をfixture化(英語TTSで別の語「new formal」、canonical=
+    # new normal)。ラテン文字のみのためnon_latin cascadeは不発動のまま
+    # reject維持(既存TRUE_CONTENT_MISMATCH経由のblind retryへ委ねる)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"secondary": 0}
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "new normal", None  # 呼ばれればfalse acceptしてしまうはずの値
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
+    try:
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            "new normal", "new formal", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True)
+        assert r["verified"] is False
+        assert r["non_latin_cascade_invoked"] is False
+        assert calls["secondary"] == 0, "ラテン文字のみのmismatchでnon_latin cascadeを発動してはならない"
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_negative_fixture_new_formal_not_non_latin_no_secondary_call")
+
+
+def test_public_wrapper_detail_out_captures_full_detail():
+    # evaluate_attempt_with_cascade()(3-tuple互換ラッパー)にdetail_out
+    # dictを渡すと、evaluate_attempt_with_cascade_detail()の戻り値全体
+    # (steps/non_latin_cascade_invoked等)を追加で取得できること。戻り値
+    # のtuple形状自体は変わらない(既存呼び出し元への影響なし)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    secondary.get_full_text_via_azure_stt_with_phrase_list = lambda *a, **k: ("new normal", None)
+    try:
+        detail_out = {}
+        verified, stop_retrying, cls = secondary.evaluate_attempt_with_cascade(
+            "new normal", "新常態", [], "dummy.wav", cascade_enabled=True,
+            enable_non_latin_cascade=True, detail_out=detail_out)
+        assert verified is True
+        assert detail_out["non_latin_cascade_invoked"] is True
+        assert any(s["step"] == "non_latin_secondary" for s in detail_out["steps"])
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
+    print("PASS: test_public_wrapper_detail_out_captures_full_detail")
+
+
+def test_public_wrapper_without_detail_out_unaffected():
+    # detail_outを渡さない既存の全呼び出し元は、戻り値のtuple形状・
+    # 挙動が完全に無変更であること(後方互換の直接確認)。
+    r = secondary.evaluate_attempt_with_cascade(
+        "The bench was tilted in March.", "The bench was tilted in March.", [], "dummy.wav")
+    assert isinstance(r, tuple) and len(r) == 3
+    assert r[0] is True
+    print("PASS: test_public_wrapper_without_detail_out_unaffected")
+
+
 if __name__ == "__main__":
     test_cascade_disabled_matches_plain_evaluate_attempt()
     test_non_entity_mismatch_does_not_trigger_cascade()
@@ -525,4 +713,13 @@ if __name__ == "__main__":
     test_case_a_entity_arpabet_match_passes_without_ledger_call()
     test_case_b_unresolved_entity_does_not_auto_pass_and_enriches_review()
     test_ledger_cache_key_uses_empty_source_context_for_cross_article_reuse()
+    test_non_latin_dominance_info_threshold_boundary()
+    test_non_latin_cascade_disabled_by_default_even_if_non_latin_and_mismatch()
+    test_non_latin_cascade_pass_when_secondary_matches()
+    test_non_latin_cascade_reject_maintained_when_secondary_also_mismatches()
+    test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch()
+    test_negative_fixture_ja_default_no_false_accept()
+    test_negative_fixture_new_formal_not_non_latin_no_secondary_call()
+    test_public_wrapper_detail_out_captures_full_detail()
+    test_public_wrapper_without_detail_out_unaffected()
     print("ALL TESTS PASSED")

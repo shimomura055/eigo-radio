@@ -67,17 +67,27 @@ def _get_openai_client():
     return _openai_client
 
 
-def _transcribe_openai_mini(wav_path: str, language: str, model: str) -> tuple[Optional[str], Optional[str]]:
+def _transcribe_openai_mini(wav_path: str, language: str, model: str,
+                             prompt: Optional[str] = None) -> tuple[Optional[str], Optional[str]]:
     client = _get_openai_client()
     try:
         with open(wav_path, "rb") as f:
-            resp = client.audio.transcriptions.create(model=model, file=f, language=_lang_key(language))
+            kwargs = {"model": model, "file": f, "language": _lang_key(language)}
+            # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01: promptは
+            # 既定None(既存の全呼び出し元は無変更)。呼び出し元が明示的に
+            # promptを渡した場合のみOpenAI APIへ転送する(適用範囲は英語
+            # Key Phrase Component経路に限定、transcribe()自体の既定挙動は
+            # 変更しない)。
+            if prompt:
+                kwargs["prompt"] = prompt
+            resp = client.audio.transcriptions.create(**kwargs)
         return resp.text, None
     except Exception as exc:
         return None, str(exc)[:500]
 
 
-def transcribe(wav_path: str, language: str, timeout_seconds: float = 90.0) -> tuple[Optional[str], Optional[str]]:
+def transcribe(wav_path: str, language: str, timeout_seconds: float = 90.0,
+               prompt: Optional[str] = None) -> tuple[Optional[str], Optional[str]]:
     """Production ASR dispatch。戻り値は既存のget_full_text_via_azure_stt_
     continuous()と同じ(asr_text, error)形式で、既存の呼び出し側コードを
     そのまま差し替えられる。
@@ -85,10 +95,16 @@ def transcribe(wav_path: str, language: str, timeout_seconds: float = 90.0) -> t
     Fail-closed: 未登録言語はrequire_asr_route()が例外を送出し、この
     関数はどのASR APIも呼ばない。OpenAI呼び出しが失敗しても、Azureへ
     黙って切り替えることはしない(エラーをそのまま返し、既存のretry/
-    guardrail機構に判断を委ねる)。"""
+    guardrail機構に判断を委ねる)。
+
+    prompt(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01で追加、
+    既定None): OpenAI ASR(openai_asr provider)のみへ転送するスタイル
+    ヒント文字列。既定Noneのため、この引数を渡さない既存の全呼び出し元
+    (本文segment等)の挙動は完全に無変更。azure providerへは効果なし
+    (無視される、azure分岐は元々promptを使わない)。"""
     route = require_asr_route(language)
     if route["provider"] == "openai_asr":
-        return _transcribe_openai_mini(wav_path, language, route["model"])
+        return _transcribe_openai_mini(wav_path, language, route["model"], prompt=prompt)
     elif route["provider"] == "azure":
         return p4.get_full_text_via_azure_stt_continuous(wav_path, language=language, timeout_seconds=timeout_seconds)
     raise UnroutedLanguageError(f"ASR_ROUTINGに未対応のprovider種別です: {route}")

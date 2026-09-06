@@ -205,6 +205,16 @@ def generate_narration_snippet_verified_strict(
     # In One Line等、短文でpartial repetitionが目立ちやすいsegmentのみ
     # 呼び出し側からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
     disfluency_qa: bool = False,
+    # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01: 英語Key
+    # Phrase Component経路(generate_key_phrase_component_verified)のみが
+    # 明示的に値を渡す(既定None/False、他の全呼び出し元は無変更)。
+    # asr_prompt: Primary ASR(routing.transcribe)へ渡すprompt文字列
+    # (language=="en"の場合のみ転送、canonical phraseは含めない)。
+    # enable_non_latin_cascade: 非ラテン文字主体の不一致に対してSecondary
+    # ASR再判定Cascadeを追加で発動するかどうか(詳細はer006_secondary_
+    # asr_01.evaluate_attempt_with_cascade_detail()docstring参照)。
+    asr_prompt: str | None = None,
+    enable_non_latin_cascade: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -234,16 +244,23 @@ def generate_narration_snippet_verified_strict(
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = routing.transcribe(out_path, language=asr_language)
+        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01: asr_prompt
+        # は既定None(この呼び出しの動作は無変更)。呼び出し元が明示的に
+        # 値を渡した場合のみ、かつlanguage=="en"の場合のみ転送する
+        # (日本語分岐[ja]はrouting.transcribeを別途呼ばないため無関係)。
+        asr_text, err = routing.transcribe(
+            out_path, language=asr_language, prompt=(asr_prompt if language == "en" else None))
         length_ok = asr_text is not None and len(asr_text) <= max_len
         phonetic_verdict = None
         stop_retrying = False
         audio_classification = None
+        cascade_detail = {}
         if language == "en":
             ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
             verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
                 text, asr_text, classification_history, out_path, language=asr_language,
-                ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
+                ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+                enable_non_latin_cascade=enable_non_latin_cascade, detail_out=cascade_detail)
             verified = verified_content and length_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]
@@ -269,6 +286,13 @@ def generate_narration_snippet_verified_strict(
             "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+            # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01: 英語
+            # Key Phrase Component経路以外はasr_prompt=None/enable_non_
+            # latin_cascade=Falseのため、以下は全てFalse/Noneのまま
+            # (適用範囲限定の裏付けとして監査に残す)。
+            "asr_prompt_applied": bool(asr_prompt) if language == "en" else False,
+            "non_latin_cascade_enabled": bool(enable_non_latin_cascade) if language == "en" else False,
+            "non_latin_cascade_invoked": cascade_detail.get("non_latin_cascade_invoked") if language == "en" else None,
         })
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
@@ -284,6 +308,15 @@ def generate_narration_snippet_verified_strict(
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+            # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01
+            # (適用範囲: 英語Key Phrase Component経路のみ、asr_prompt/
+            # enable_non_latin_cascadeが既定[None/False]の他呼び出し元は
+            # 全てFalse/Noneのまま記録される)。
+            "asr_prompt_applied": bool(asr_prompt) if language == "en" else False,
+            "non_latin_cascade_enabled": bool(enable_non_latin_cascade) if language == "en" else False,
+            "non_latin_cascade_invoked": cascade_detail.get("non_latin_cascade_invoked") if language == "en" else None,
+            "cascade_invoked": cascade_detail.get("cascade_invoked") if language == "en" else None,
+            "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -511,6 +544,38 @@ KEY_PHRASE_ENGLISH_LANGUAGE_LOCK_SUFFIX = (
 KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION = KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX + KEY_PHRASE_ENGLISH_LANGUAGE_LOCK_SUFFIX
 
 
+# ============================================================
+# KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01
+# ============================================================
+# ユーザー正式決定(2026-09-06、APPROVED_FOR_PRODUCTION)。診断
+# (KEYPHRASE-EN-TTS-ROOTCAUSE-DIAGNOSTIC-01_REPORT.md)で確認された
+# 「TTSは英語で正しく発話しているのに、Primary ASR(OpenAI gpt-4o-mini-
+# transcribe、language="en")が新常態のような日本語/中国語相当の意味
+# 変換文字列を返しfalse rejectする」問題への対策として、Trial
+# (KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01_REPORT.md)で
+# VALIDATEDとなった対策(c)(b:逐語書き起こしprompt + a:非ラテン文字時の
+# Secondary再判定Cascade)を、英語Key Phrase Component経路
+# (generate_key_phrase_component_verified、以下)に限定して採用する。
+# 文言はTrialで検証した文言を一字一句そのまま複製する(Trial専用
+# モジュールer011_kp_en_asr_false_rejection_cascade_trial_01.pyを
+# Productionからimportしない設計方針踏襲、Dangling Reference防止)。
+# canonical phrase自体はprompt文言に含めない(promptがcanonical spanを
+# 直接教えてしまうと、ASRがそれをそのまま書き起こす方向へ誘導される
+# リスクがあるため、Trialと同じ設計を維持する)。
+#
+# 適用範囲: このprompt/Cascadeは英語Key Phrase Component経路のみに限定
+# する(本文segment・Point見出し・Preview等、generate_narration_
+# snippet_verified_strict()の他の呼び出し元には一切波及しない。
+# asr_prompt/enable_non_latin_cascadeはいずれも既定None/Falseの追加
+# 引数であり、この関数[generate_key_phrase_component_verified]のみが
+# 明示的に値を渡す)。
+KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT = (
+    "The audio is spoken in English. Transcribe it verbatim in English, exactly "
+    "as spoken, using English spelling. Do not translate it, and do not write it "
+    "in Japanese, Chinese, or any other language or script."
+)
+
+
 @review_lock.guarded_generate("en")
 def generate_key_phrase_component_verified(text: str, out_path: str,
         # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key PhraseはPRODUCTION
@@ -538,7 +603,10 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
     primary = generate_narration_snippet_verified_strict(
         text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
         safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
-        style_prefix_override=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+        style_prefix_override=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX,
+        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01(適用範囲:
+        # 英語Key Phrase Component経路のみ、この関数だけが明示的に渡す)。
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True)
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL"
@@ -547,7 +615,8 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
     fallback = generate_narration_snippet_verified_strict(
         text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS,
         safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
-        style_prefix_override=KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)
+        style_prefix_override=KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION,
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True)
     fallback["fallback_used"] = True
     fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
     # record_outcome()のcumulative_tts_attempts集計は

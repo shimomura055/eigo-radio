@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import wave
 from typing import Optional
@@ -31,6 +32,38 @@ def _wav_duration_seconds(wav_path: str) -> Optional[float]:
             return round(wf.getnframes() / float(wf.getframerate()), 3)
     except Exception:
         return None
+
+
+# ============================================================
+# KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01
+# ============================================================
+# 「非ラテン文字主体」判定(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
+# TRIAL-01_REPORT.md §2の判定式をそのまま移植、無変更)。適用範囲は
+# 呼び出し元(evaluate_attempt_with_cascade/_detail)が明示的に
+# enable_non_latin_cascade=Trueを渡した経路のみ(英語Key Phrase
+# Component経路限定、他のASR経路[本文segment等]では既定Falseのため
+# この判定自体が呼ばれない)。
+_NON_LATIN_LATIN_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ]")
+_NON_LATIN_CJK_RE = re.compile(r"[぀-ヿ㐀-䶿一-鿿豈-﫿가-힣]")
+NON_LATIN_DOMINANT_THRESHOLD = 0.5
+
+
+def non_latin_dominance_info(text: Optional[str]) -> dict:
+    """ASR出力中のラテン文字数とCJK/かな/ハングル文字数を数え、
+    (CJK系文字数)/(ラテン文字数+CJK系文字数) >= NON_LATIN_DOMINANT_
+    THRESHOLD(両方0ならFalse)を「非ラテン文字主体」と判定する。"""
+    text = text or ""
+    latin_n = len(_NON_LATIN_LATIN_RE.findall(text))
+    cjk_n = len(_NON_LATIN_CJK_RE.findall(text))
+    total = latin_n + cjk_n
+    ratio = (cjk_n / total) if total > 0 else 0.0
+    is_dominant = total > 0 and cjk_n > 0 and ratio >= NON_LATIN_DOMINANT_THRESHOLD
+    return {"latin_chars": latin_n, "cjk_chars": cjk_n, "ratio_cjk": round(ratio, 3),
+            "is_non_latin_dominant": is_dominant, "threshold": NON_LATIN_DOMINANT_THRESHOLD}
+
+
+def is_non_latin_dominant_mismatch(asr_text: Optional[str]) -> bool:
+    return non_latin_dominance_info(asr_text)["is_non_latin_dominant"]
 
 
 def get_full_text_via_azure_stt_with_phrase_list(
@@ -241,7 +274,8 @@ def evaluate_attempt_with_cascade(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-    force_secondary: bool = False,
+    force_secondary: bool = False, enable_non_latin_cascade: bool = False,
+    detail_out: Optional[dict] = None,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
     と同じ(verified, stop_retrying, classification)のタプルを返す
@@ -256,13 +290,29 @@ def evaluate_attempt_with_cascade(
     (No.7 point_one_headingで実際に起きた「Primaryは正しく書き起こし
     たが実音声はSecondaryだと全く別物に聞こえる」誤PASSを防ぐため)。
     standard path(force_secondary=False)の挙動・追加コストは一切変わ
-    らない。"""
+    らない。
+
+    enable_non_latin_cascade(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
+    PROD-WIRING-01で追加、既定False)は、英語Key Phrase Component経路
+    (generate_key_phrase_component_verified経由)のみが明示的にTrueを
+    渡す想定の引数。詳細はevaluate_attempt_with_cascade_detail()参照。
+    既定Falseのため、この引数を渡さない既存の全呼び出し元(本文segment
+    等)の挙動は完全に無変更。
+
+    detail_out(同タスクで追加、既定None): dictを渡すと、
+    evaluate_attempt_with_cascade_detail()の戻り値全体(steps/
+    cascade_invoked/non_latin_cascade_invoked等)でその場でupdate()する
+    (呼び出し元がaudit記録用に参照するための追加出力、戻り値のtupleの
+    形は変えない)。既定Noneのため、渡さない既存の全呼び出し元は無影響。"""
     detail = evaluate_attempt_with_cascade_detail(
         canonical_text, asr_text, prior_results, wav_path, language=language,
         ledger_phrases=ledger_phrases, max_same_signature=max_same_signature,
-        cascade_enabled=cascade_enabled, force_secondary=force_secondary)
+        cascade_enabled=cascade_enabled, force_secondary=force_secondary,
+        enable_non_latin_cascade=enable_non_latin_cascade)
     if detail["human_review_required"]:
         _log_human_review(detail)
+    if detail_out is not None:
+        detail_out.update(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]
 
 
@@ -326,7 +376,7 @@ def evaluate_attempt_with_cascade_detail(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-    force_secondary: bool = False,
+    force_secondary: bool = False, enable_non_latin_cascade: bool = False,
 ) -> dict:
     """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
     その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
@@ -339,6 +389,22 @@ def evaluate_attempt_with_cascade_detail(
     追加で呼び、両方が一致した場合のみ最終的にverified=Trueとする
     (Part C参照)。既存のcascade_enabled/entity-like判定によるルート
     (Primary不一致時の4-step cascade)には一切影響しない。
+
+    enable_non_latin_cascade(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
+    PROD-WIRING-01で追加、既定False): Trueの場合のみ、Primary ASR出力が
+    「非ラテン文字主体」(non_latin_dominance_info、CJK比率>=
+    NON_LATIN_DOMINANT_THRESHOLD)かつ不合格(verified=False)であれば、
+    既存のentity_like/homophone_candidate判定([is_entity_like_mismatch]/
+    [is_homophone_candidate_mismatch]、下記cascade_eligible)とは独立に、
+    Secondary ASR(Azure、get_full_text_via_azure_stt_with_phrase_list、
+    既存関数をそのまま再利用)を1回呼び、その結果をclassify_asr_matchで
+    再判定する(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01の条件
+    (a)をそのまま移植)。Secondaryでも不一致ならreject維持(以降の既存
+    cascade_eligible判定へそのまま処理を継続する。数字ゲート・否定ゲート・
+    homophone/entity_like判定・Connected Speech Validatorの判定順序・
+    基準は一切変更しない)。既定False(呼び出し元が明示的にTrueを渡さない
+    限り本ブロックは実行されない、適用範囲は英語Key Phrase Component
+    経路限定)。
 
     戻り値のdictには、Human Review用に全stepのtranscriptを保持する
     (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
@@ -354,8 +420,29 @@ def evaluate_attempt_with_cascade_detail(
         "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
         "cascade_invoked": False, "steps": steps, "final_status": cls.classification,
         "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
-        "cost_guard_triggered": False,
+        "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
     }
+
+    if not verified and cascade_enabled and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
+        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)。
+        result["cascade_invoked"] = True
+        result["non_latin_cascade_invoked"] = True
+        text_nl, err_nl = get_full_text_via_azure_stt_with_phrase_list(
+            wav_path, language=language, phrases=ledger_phrases)
+        cls_nl = val.classify_asr_match(canonical_text, text_nl) if text_nl is not None else None
+        steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
+                       "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
+                       "phrase_list_used": bool(ledger_phrases),
+                       "non_latin_info": non_latin_dominance_info(asr_text)})
+        if cls_nl is not None and cls_nl.should_pass:
+            result["verified"] = True
+            result["stop_retrying"] = False
+            result["final_status"] = cls_nl.classification
+            result["classification"] = cls_nl
+            verified = True
+            cls = cls_nl
+        # Secondaryでも不一致ならreject維持(clsはPrimary#1の元の分類のまま、
+        # 以降のcascade_eligible判定へそのまま処理を継続する)。
 
     if verified and force_secondary:
         # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04

@@ -96,10 +96,69 @@ def test_transcribe_openai_failure_does_not_fallback_to_azure():
     print("PASS: test_transcribe_openai_failure_does_not_fallback_to_azure")
 
 
+# ============================================================
+# KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01:
+# prompt引数の既定None・呼び出し元限定の確認
+# ============================================================
+class _FakeTranscriptionsCapture:
+    def __init__(self):
+        self.last_kwargs = None
+
+    def create(self, **kwargs):
+        self.last_kwargs = kwargs
+        class _Resp:
+            text = "captured"
+        return _Resp()
+
+
+def _install_fake_openai_client():
+    class _FakeAudio:
+        transcriptions = _FakeTranscriptionsCapture()
+
+    class _FakeClient:
+        audio = _FakeAudio()
+
+    client = _FakeClient()
+    orig_get_client = routing._get_openai_client
+    routing._get_openai_client = lambda: client
+    return client, orig_get_client
+
+
+def test_transcribe_omits_prompt_kwarg_when_none():
+    # promptを渡さない既存の全呼び出し元(本文segment等)は、OpenAI APIへ
+    # prompt kwargが一切送られないこと(既存挙動の完全無変更を保証)。
+    real_wav = "er006_output/pool_pilot_01/pool_benches/h_onset_diagnostic/hostile_repeat1.wav"
+    client, orig_get_client = _install_fake_openai_client()
+    try:
+        text, err = routing.transcribe(real_wav, language="en-US")
+        assert text == "captured"
+        assert "prompt" not in client.audio.transcriptions.last_kwargs
+    finally:
+        routing._get_openai_client = orig_get_client
+    print("PASS: test_transcribe_omits_prompt_kwarg_when_none")
+
+
+def test_transcribe_forwards_prompt_kwarg_when_provided():
+    # 呼び出し元が明示的にpromptを渡した場合のみ、OpenAI APIへ転送される
+    # こと(英語Key Phrase Component経路が使う想定の引数)。
+    real_wav = "er006_output/pool_pilot_01/pool_benches/h_onset_diagnostic/hostile_repeat1.wav"
+    client, orig_get_client = _install_fake_openai_client()
+    try:
+        prompt_text = "The audio is spoken in English. Transcribe it verbatim."
+        text, err = routing.transcribe(real_wav, language="en-US", prompt=prompt_text)
+        assert text == "captured"
+        assert client.audio.transcriptions.last_kwargs.get("prompt") == prompt_text
+    finally:
+        routing._get_openai_client = orig_get_client
+    print("PASS: test_transcribe_forwards_prompt_kwarg_when_provided")
+
+
 if __name__ == "__main__":
     test_english_routes_to_openai()
     test_japanese_routes_to_azure()
     test_unrouted_language_fails_closed_no_call()
     test_transcribe_dispatches_to_azure_for_japanese_no_openai_call()
     test_transcribe_openai_failure_does_not_fallback_to_azure()
+    test_transcribe_omits_prompt_kwarg_when_none()
+    test_transcribe_forwards_prompt_kwarg_when_provided()
     print("ALL TESTS PASSED")

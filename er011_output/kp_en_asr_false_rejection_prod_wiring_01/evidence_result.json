@@ -1,0 +1,114 @@
+{
+  "tts_execution_mode_requested": "STANDARD",
+  "positive": {
+    "new normal": {
+      "status": "OK",
+      "fallback_used": false,
+      "primary_instruction_type": "MINIMAL",
+      "wall_seconds": 8.48,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 1.411,
+          "asr_text": "New Normal",
+          "asr_text_length": 10,
+          "max_len": 20,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": true,
+          "disfluency_evidence": {
+            "flagged": false,
+            "repeats": [],
+            "word_count": 2,
+            "transcript": "New  normal",
+            "method": "faster_whisper_small_local_verbatim"
+          },
+          "asr_prompt_applied": true,
+          "non_latin_cascade_enabled": true,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": null
+        }
+      ],
+      "asr_prompt_applied_attempt1": true,
+      "non_latin_cascade_enabled_attempt1": true,
+      "non_latin_cascade_invoked_any_attempt": false
+    },
+    "cashless": {
+      "status": "OK",
+      "fallback_used": false,
+      "primary_instruction_type": "MINIMAL",
+      "wall_seconds": 6.09,
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 1.311,
+          "asr_text": "Cashless",
+          "asr_text_length": 8,
+          "max_len": 18,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": true,
+          "disfluency_evidence": {
+            "flagged": false,
+            "repeats": [],
+            "word_count": 1,
+            "transcript": "Cashless!",
+            "method": "faster_whisper_small_local_verbatim"
+          },
+          "asr_prompt_applied": true,
+          "non_latin_cascade_enabled": true,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": null
+        }
+      ],
+      "asr_prompt_applied_attempt1": true,
+      "non_latin_cascade_enabled_attempt1": true,
+      "non_latin_cascade_invoked_any_attempt": false
+    }
+  },
+  "negative": {
+    "ja_shinjoutai_vs_new_normal": {
+      "source_wav": "er011_output/kp_en_asr_false_rejection_cascade_trial_01/audio/neg_ja_shinjoutai.wav",
+      "primary_asr_text_with_prompt": "心状態",
+      "primary_asr_error": null,
+      "verified": false,
+      "final_classification": "TTS_FAILURE",
+      "non_latin_cascade_invoked": true,
+      "steps": [
+        {
+          "step": "primary_1",
+          "provider": "openai_asr",
+          "text": "心状態",
+          "classification": "TTS_FAILURE"
+        },
+        {
+          "step": "non_latin_secondary",
+          "provider": "azure",
+          "text": "Xinjio Tai.",
+          "classification": "TTS_FAILURE",
+          "phrase_list_used": false,
+          "non_latin_info": {
+            "latin_chars": 0,
+            "cjk_chars": 3,
+            "ratio_cjk": 1.0,
+            "is_non_latin_dominant": true,
+            "threshold": 0.5
+          }
+        }
+      ]
+    }
+  },
+  "tts_execution_mode_resolved": "STANDARD"
+}

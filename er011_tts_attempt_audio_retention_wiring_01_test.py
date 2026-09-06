@@ -162,7 +162,8 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         cls_sequence = [_FakeClassification("mismatch"), _FakeClassification("exact")]
 
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
-                           cascade_enabled=None, force_secondary=False):
+                           cascade_enabled=None, force_secondary=False,
+                           enable_non_latin_cascade=False, detail_out=None):
             cls = cls_sequence.pop(0)
             verified = (cls.classification == "exact")
             return verified, False, cls
@@ -199,7 +200,8 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         fake_snippet = self._fake_generate_narration_snippet_factory([b"ONLY_TAKE"])
 
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
-                           cascade_enabled=None, force_secondary=False):
+                           cascade_enabled=None, force_secondary=False,
+                           enable_non_latin_cascade=False, detail_out=None):
             return True, False, _FakeClassification("exact")
 
         with mock.patch.object(p9a, "generate_narration_snippet", side_effect=fake_snippet), \
@@ -220,7 +222,8 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         fake_snippet = self._fake_generate_narration_snippet_factory([b"FIRST_RUN_AUDIO", b"SECOND_RUN_AUDIO"])
 
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
-                           cascade_enabled=None, force_secondary=False):
+                           cascade_enabled=None, force_secondary=False,
+                           enable_non_latin_cascade=False, detail_out=None):
             return True, False, _FakeClassification("exact")
 
         with mock.patch.object(p9a, "generate_narration_snippet", side_effect=fake_snippet), \
