@@ -39,6 +39,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 from typing import Optional
 
@@ -54,6 +55,53 @@ except Exception:  # pragma: no cover - cost_loggerが無いテスト環境向�
 DEFAULT_POLL_INTERVAL_SECONDS = 5.0
 DEFAULT_TIMEOUT_SECONDS = 600.0
 USD_TO_JPY = 160  # ER-005系cost scriptと同一の固定レート(プロジェクト既存慣習)
+
+# ------------------------------------------------------------
+# ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01
+# ------------------------------------------------------------
+# PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01(docs/pm/PM_GOVERNANCE.md 7-1)の
+# 運用基準(正式リリース前はStandard同期を既定、正式リリース後の実量産は
+# Batch API)を、monkeypatch不要でコードから支えるための唯一の分岐点。
+# Production TTS生成6call site(下記make_batch_tts_call_fn docstring参照)は
+# この関数を呼ぶだけで、実行方式の選択自体はこのモジュール内の1箇所に
+# 閉じる(call site側は無変更)。
+TTS_EXECUTION_MODE_ENV_VAR = "TTS_EXECUTION_MODE"
+TTS_EXECUTION_MODE_BATCH = "BATCH"
+TTS_EXECUTION_MODE_STANDARD = "STANDARD"
+DEFAULT_TTS_EXECUTION_MODE = TTS_EXECUTION_MODE_BATCH  # 既定はBatch(既存挙動を変更しない)
+
+
+def resolve_tts_execution_mode() -> str:
+    """環境変数TTS_EXECUTION_MODE(既定BATCH、大文字小文字非依存)を読む。
+    BATCH/STANDARD以外の値は、静かにBATCHへフォールバックせずValueErrorで
+    即停止する(不正設定に気付かず量産が走ることを防ぐfail-closed設計)。"""
+    raw = os.environ.get(TTS_EXECUTION_MODE_ENV_VAR, DEFAULT_TTS_EXECUTION_MODE)
+    mode = raw.strip().upper()
+    if mode not in (TTS_EXECUTION_MODE_BATCH, TTS_EXECUTION_MODE_STANDARD):
+        raise ValueError(
+            f"{TTS_EXECUTION_MODE_ENV_VAR}の値が不正です(BATCH/STANDARD以外、"
+            f"大文字小文字非依存で解釈): {raw!r}"
+        )
+    return mode
+
+
+def _make_standard_tts_call_fn(model_name: str, voice_name: str, client=None):
+    """TTS_EXECUTION_MODE=STANDARDのとき、make_batch_tts_call_fn()の
+    drop-in代替として返すStandard同期版tts_call_fn。呼び出し形状
+    (tts_call_fn(prompt: str) -> bytes)はBatch版と同一。voice・style
+    instruction・Structured Separation・retry cascade・Validator・Master
+    Audio Storeはこの分岐の影響を一切受けない(呼び出し元から見た形状が
+    同一のため)。er003_b1_p7a_audio.make_tts_call_fn_for_model(model,
+    voice)を優先し(model引数を取れるため6call siteが使う全モデルへ対応
+    できる)、そのモジュール自体が無い実行環境向けの防御として
+    er002_gemini_client.make_tts_call_fnへフォールバックする(固定model
+    のみ対応、通常の本番実行では到達しない経路)。"""
+    try:
+        import er003_b1_p7a_audio as p7a
+        return p7a.make_tts_call_fn_for_model(model_name, voice_name, client=client)
+    except ImportError:
+        return gclient.make_tts_call_fn(voice_name, client=client)
+
 
 PRICING_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
 _PRICING_CACHE: Optional[list] = None
@@ -108,6 +156,9 @@ def _record(status: str, model_name: str, voice_name: str, job_name: Optional[st
         "result_status": status, "success": status == "SUCCESS",
         "elapsed_seconds": round(elapsed_seconds, 3), "output_path": output_path,
         "usage_source": "OFFICIAL_API_RESPONSE" if usage_metadata is not None else "N/A",
+        # ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01: このcall_fn
+        # 自体がBatch経路として実行された記録(既存キーは変更しない追加のみ)。
+        "tts_execution_mode": TTS_EXECUTION_MODE_BATCH,
     }
     if usage_metadata is not None:
         entry["input_tokens"] = getattr(usage_metadata, "prompt_token_count", None)
@@ -200,7 +251,24 @@ def make_batch_tts_call_fn(model_name: str, voice_name: str, client=None, output
 
     output_pathはtraceability記録用(§6)。省略可(呼び出し元がまだ
     out_pathを持たない場合はNoneのまま記録される)。
+
+    ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01: 環境変数
+    TTS_EXECUTION_MODE(既定BATCH、値はBATCH/STANDARD、大文字小文字非依存)
+    がSTANDARDの場合、Batch APIを一切呼ばず、_make_standard_tts_call_fn()
+    が返すStandard同期版tts_call_fnをそのまま返す(呼び出し形状は同一)。
+    この分岐はPM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01の運用基準を支える
+    唯一の配線箇所であり、Production call site(下記6ファイル)・voice・
+    style instruction・retry cascade・Validator・Master Audio Storeは
+    一切変更しない: er003_v1_crosslevel_audio_02_common.py(repro01の
+    配線済み関数を再利用)/er003_v1_repro01_main_generate.py/
+    er003_v1_sing01_news_tail_fix.py/er003_v1_sing01_point_headings_
+    aoede.py/er003_v1_sing01_voice01_generate.py/er003_v1_n3_01_tts_
+    generate.py。
     """
+    mode = resolve_tts_execution_mode()
+    if mode == TTS_EXECUTION_MODE_STANDARD:
+        return _make_standard_tts_call_fn(model_name, voice_name, client=client)
+
     client = client or gclient.make_client()
     speech_config = gclient.build_speech_config(voice_name)
 

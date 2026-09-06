@@ -188,6 +188,10 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   明示承認がある場合に限り行い、Production忠実性への影響(Production経路と
   異なる条件で得た結果である旨)・所要時間・コスト差を必ずReportへ記録する。
   Production call site自体の変更はこの原則の対象外(別途Gate 3の対象)。
+- Standard同期の指定は環境変数`TTS_EXECUTION_MODE=STANDARD`で行う(monkeypatch
+  不要、`er006_batch_tts_wiring_01.py::make_batch_tts_call_fn()`内の分岐、
+  ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01、`PRODUCTION_WIRED`、
+  正本は`CURRENT_SPEC.md`「Gemini TTS実装方式(Batch API)」行)。
 - タスク着手前に、選択したTTS方式に応じたおおよその所要時間・コストの見込みを
   ユーザーへ提示する。
 - 経緯: 2026-09-05、Trial-13(OPEN-112-TREND-THEME2-B-A2-B1-FULL-AUDIO-TRIAL-13)

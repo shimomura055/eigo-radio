@@ -175,13 +175,21 @@ def _patch_gemini() -> None:
         try:
             response = original_generate_content(self, *args, **kwargs)
         except Exception as exc:
-            record({
+            fail_entry = {
                 "provider": "gemini", "api": api, "model_id": model_id,
                 "attempt_number": attempt, "success": False,
                 "error": str(exc)[:500],
                 "elapsed_seconds": round(time.time() - t0, 3),
                 "usage_source": "N/A_FAILED_CALL",
-            })
+            }
+            # ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01: TTS
+            # (response_modalities=["AUDIO"])呼び出しはBatch APIを経由しない
+            # 限りgenerate_content()自体がStandard同期実行であることを意味
+            # するため、既存キーは変更せずtts_execution_modeのみ追加する
+            # (text呼び出し[QA/Writer等]には付与しない、既存スキーマ後方互換)。
+            if is_audio:
+                fail_entry["tts_execution_mode"] = "STANDARD"
+            record(fail_entry)
             raise
         usage = _gemini_usage_to_dict(getattr(response, "usage_metadata", None))
         audio_seconds = None
@@ -194,14 +202,17 @@ def _patch_gemini() -> None:
                 audio_seconds = round(len(pcm) / (24000 * 2), 3)
             except Exception:
                 audio_seconds = None
-        record({
+        success_entry = {
             "provider": "gemini", "api": api, "model_id": model_id,
             "attempt_number": attempt, "success": True,
             "elapsed_seconds": round(time.time() - t0, 3),
             "usage_source": "OFFICIAL_API_RESPONSE",
             "output_audio_seconds_computed_from_pcm": audio_seconds,
             **usage,
-        })
+        }
+        if is_audio:
+            success_entry["tts_execution_mode"] = "STANDARD"
+        record(success_entry)
         return response
 
     genai_models.Models.generate_content = patched_generate_content
