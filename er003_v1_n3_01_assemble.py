@@ -699,6 +699,71 @@ def assemble_with_timeline(seq: list) -> dict:
     return {"assembled": assembled, "timeline": timeline, "total_duration_seconds": round(t, 3)}
 
 
+# ============================================================
+# ER-011-ASSEMBLY-HEADROOM-SAFETY-VALVE-PRODUCTION-WIRING-01
+# ============================================================
+# 由来(OPEN-115、実測確定はOPEN-112-TREND-THEME2-B-A2-PEAK-MEASUREMENT-16):
+# apply_a2_gain/apply_b1_gain内のcompute_gain_for_target_rms(max_peak=0.95)
+# は、各segmentを24kHz mono・gain適用直後の時点でのみpeak<=0.95に制限する。
+# その直後にmono_24k_to_stereo_target()が行うresample_poly(24kHz→48kHz)
+# はゲイン制御の外にあり、内容(語頭の破裂音・強勢等)依存で最大+8.9%程度
+# のオーバーシュートを起こす(Trial-13 A2のPoint Oneで実測: 0.95000→
+# 1.03502)。assemble_with_timeline()はnp.concatenateのみ(重ね合わせ無し)
+# のため、完成ミックス全体のpeakは常にseq中いずれかのpieceのpeakと一致する
+# (計測-16で実測確認済みの構造)。ここでは、完成ミックスのpeakが
+# HEADROOM_PEAK_THRESHOLDを超えたときだけ、エピソード全体へ一律スカラー
+# gainを掛けて閾値以内へ収める(相対バランスは変えない)。閾値以下なら
+# 一切変更せず、渡されたassembled配列をそのまま返す(byte同一を保証)。
+# 安全弁適用後もなおpeakが1.0を超える異常時は、write_wav_float()の
+# assertに到達させず、原因pieceを含むドメイン例外(RuntimeError)で
+# 停止する(write_wav_float()側のassert自体は最後の砦として残す)。
+# 安全≠成功原則(PM_GOVERNANCE.md)により、適用有無・適用前後peak・
+# スカラー値・原因pieceは必ず戻り値のreportへ記録し、呼び出し側が
+# gain_report.json/headroom_report.json/run_summary_assemble.jsonへ
+# 書き出す(静かに救済しない)。
+HEADROOM_PEAK_THRESHOLD = 0.98
+
+
+def apply_headroom_safety_valve(assembled: "np.ndarray", seq: list) -> dict:
+    peak_before = float(np.max(np.abs(assembled))) if len(assembled) else 0.0
+
+    # 原因piece特定: np.concatenateのみのAssemblyでは、完成ミックスの
+    # peakは必ずseq中いずれかのpieceのpeakと一致するため、最大peakの
+    # pieceをそのまま原因として報告できる(計測-16の実測構造どおり)。
+    piece_peaks = [(name, float(np.max(np.abs(samples))) if len(samples) else 0.0) for name, samples in seq]
+    cause_name, cause_peak = max(piece_peaks, key=lambda t: t[1]) if piece_peaks else (None, 0.0)
+
+    report = {
+        "threshold": HEADROOM_PEAK_THRESHOLD,
+        "peak_before": round(peak_before, 7),
+        "cause_piece": cause_name,
+        "cause_piece_peak": round(cause_peak, 7),
+    }
+
+    if peak_before <= HEADROOM_PEAK_THRESHOLD:
+        report["applied"] = False
+        report["scalar"] = 1.0
+        report["peak_after"] = round(peak_before, 7)
+        return {"assembled": assembled, "report": report}
+
+    scalar = HEADROOM_PEAK_THRESHOLD / peak_before
+    scaled = assembled * scalar
+    peak_after = float(np.max(np.abs(scaled))) if len(scaled) else 0.0
+    report["applied"] = True
+    report["scalar"] = round(float(scalar), 8)
+    report["peak_after"] = round(peak_after, 7)
+
+    if peak_after > 1.0:
+        raise RuntimeError(
+            "ASSEMBLY_HEADROOM_SAFETY_VALVE_INSUFFICIENT: ヘッドルーム安全弁"
+            f"(閾値{HEADROOM_PEAK_THRESHOLD}、scalar={report['scalar']})を適用した後も"
+            f"peak={peak_after}が1.0を超えています。原因piece候補: "
+            f"{cause_name}(適用前peak={cause_peak})。Assemblyを中止しました"
+            "(ER-011-ASSEMBLY-HEADROOM-SAFETY-VALVE-PRODUCTION-WIRING-01)。")
+
+    return {"assembled": scaled, "report": report}
+
+
 def stage_assemble_b1(theme: dict) -> dict:
     out_dir = f"{theme['out_dir']}/b1b"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
@@ -707,26 +772,34 @@ def stage_assemble_b1(theme: dict) -> dict:
     parts = apply_b1_gain(sources)
     seq = build_b1_timeline(parts)
     result = assemble_with_timeline(seq)
-    assembled = result["assembled"]
+    headroom = apply_headroom_safety_valve(result["assembled"], seq)
+    assembled = headroom["assembled"]
 
     out_path = f"{out_dir}/assembled/English_Your_Way_B1B_{theme['theme_id'].upper()}.wav"
-    common.write_wav_float(out_path, assembled, SR, 2)
-    metrics = common.measure_metrics(assembled[:, 0], SR)
 
+    # ER-011-ASSEMBLY-HEADROOM-SAFETY-VALVE-PRODUCTION-WIRING-01: 診断性
+    # 改善のため、gain_report/timeline/headroom_reportをwrite_wav_float()
+    # (クリッピング防止assertを持つ)より前に書き出す。
     with open(f"{out_dir}/audit/gain_report.json", "w", encoding="utf-8") as f:
         json.dump(parts["gain_report"], f, ensure_ascii=False, indent=2)
     with open(f"{out_dir}/audit/timeline.json", "w", encoding="utf-8") as f:
         json.dump(result["timeline"], f, ensure_ascii=False, indent=2)
+    with open(f"{out_dir}/audit/headroom_report.json", "w", encoding="utf-8") as f:
+        json.dump(headroom["report"], f, ensure_ascii=False, indent=2)
+
+    common.write_wav_float(out_path, assembled, SR, 2)
+    metrics = common.measure_metrics(assembled[:, 0], SR)
 
     summary = {
         "status": "OK", "out_path": out_path, "duration_seconds": result["total_duration_seconds"],
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
-        "sample_rate": SR, "channels": 2,
+        "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
     with open(f"{out_dir}/run_summary_assemble.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2, default=str)
     print(f"[N3-ASSEMBLE][{theme['theme_id']}/b1b] status={summary['status']} "
-          f"duration={summary['duration_seconds']} peak={summary['peak']} clipping={summary['clipping_detected']}")
+          f"duration={summary['duration_seconds']} peak={summary['peak']} clipping={summary['clipping_detected']} "
+          f"headroom_applied={headroom['report']['applied']}")
     return summary
 
 
@@ -738,26 +811,34 @@ def stage_assemble_a2(theme: dict) -> dict:
     parts = apply_a2_gain(sources)
     seq = build_a2_timeline(parts)
     result = assemble_with_timeline(seq)
-    assembled = result["assembled"]
+    headroom = apply_headroom_safety_valve(result["assembled"], seq)
+    assembled = headroom["assembled"]
 
     out_path = f"{out_dir}/assembled/English_Your_Way_A2_{theme['theme_id'].upper()}.wav"
-    common.write_wav_float(out_path, assembled, SR, 2)
-    metrics = common.measure_metrics(assembled[:, 0], SR)
 
+    # ER-011-ASSEMBLY-HEADROOM-SAFETY-VALVE-PRODUCTION-WIRING-01: 診断性
+    # 改善のため、gain_report/timeline/headroom_reportをwrite_wav_float()
+    # (クリッピング防止assertを持つ)より前に書き出す。
     with open(f"{out_dir}/audit/gain_report.json", "w", encoding="utf-8") as f:
         json.dump(parts["gain_report"], f, ensure_ascii=False, indent=2)
     with open(f"{out_dir}/audit/timeline.json", "w", encoding="utf-8") as f:
         json.dump(result["timeline"], f, ensure_ascii=False, indent=2)
+    with open(f"{out_dir}/audit/headroom_report.json", "w", encoding="utf-8") as f:
+        json.dump(headroom["report"], f, ensure_ascii=False, indent=2)
+
+    common.write_wav_float(out_path, assembled, SR, 2)
+    metrics = common.measure_metrics(assembled[:, 0], SR)
 
     summary = {
         "status": "OK", "out_path": out_path, "duration_seconds": result["total_duration_seconds"],
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
-        "sample_rate": SR, "channels": 2,
+        "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
     with open(f"{out_dir}/run_summary_assemble.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2, default=str)
     print(f"[N3-ASSEMBLE][{theme['theme_id']}/a2] status={summary['status']} "
-          f"duration={summary['duration_seconds']} peak={summary['peak']} clipping={summary['clipping_detected']}")
+          f"duration={summary['duration_seconds']} peak={summary['peak']} clipping={summary['clipping_detected']} "
+          f"headroom_applied={headroom['report']['applied']}")
     return summary
 
 
