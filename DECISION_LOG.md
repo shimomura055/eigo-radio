@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01、
+**最終更新: 2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08でLane B[B Family Voices/Perspective]のDESIGN-02〜TRIAL-05の状態[5-part構造は強い候補、Voices Editorial Design全体は未承認・Trial-05で再設計中、Production採用未決定]をOPEN-120・本ファイル先頭エントリへ記録)。2026-09-06(ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01、
 ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した「TTS attemptごとの
 音声を上書きせず保存し、どのattemptで何が発話されたかを後から確認できるように
 する」診断性改善を、review_lockが管理する既存7 guarded関数のTTS retryループ
@@ -58,6 +58,89 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## EDITORIAL-B-FAMILY-VOICES-SERIES-02-05: Lane B Voices/Perspective設計〜Trial-05の記録
+
+**日付**: 2026-09-06
+
+**区分**: Editorial Design / Trial(B Family、新規Editorial Type候補。Production変更なし)
+
+**内容**: B Family(Voices/Perspective)の設計〜技術検証Trial系列(DESIGN-02、
+TRIAL-03、TRIAL-04[run01〜04]、TRIAL-05-PERSPECTIVE-CONTRACT-01)をまとめて
+記録する。(a) **DESIGN-02**(読み取り調査+設計提案のみ、Trial実行なし)は
+B Family Common Skeleton(Question/Hook+可変Voice+Tension+Closing)・
+既存A Family資産の流用/要調整/専用分類・初回Trial設計案を提示し、
+Status: DESIGN / USER_DECISION_REQUIRED。ユーザーはこの段階で7論点を判断
+した: 骨格YES(B Family Common Skeleton新設に合意)/Voice数2(初回Trialは
+Voice数2限定に合意)/固定席(初回Trialテーマは候補B「固定席復活」を採用)/
+Evidence分散(各Voiceへ分散しTensionで横断参照するハイブリッド方式を採用)/
+模倣保留(Master記事[阪神記事]模倣の扱いは初回Trialのドラフト比較まで保留)/
+QA monitoring(Point Overlap/Value QAは初回はmonitoring専用、gateにしない)/
+4層独立可(A Family 4層構造の`APPROVED_FOR_PRODUCTION`確定を待たずB Family
+設計は並行して進めてよい)。(b) **TRIAL-03**は初回Research Trial(Voice数2・
+B1・Article-only、固定席復活テーマ)を実行し、Production変更ゼロのまま
+技術基盤としてVALIDATED(Fact Safety機構・Point Overlap/Value QA
+monitoring adapter・5区切りparserがいずれも無改造で正常動作)。Production
+採用は別途USER_DECISION_REQUIREDのまま。(c) **TRIAL-04**(run01〜04、
+Fable↔Sonnet往復3回)はFocus Module文言(Hook/Voice数字制約)を反復修正し、
+run04自身は「VALIDATED(Voice数2・B1・Article-only範囲)」と自己分類する
+提案を出したが、**ユーザーはTrial-04全体のVALIDATEDには同意しなかった**
+(Voice section内にDiscovery型の調査結果説明[調査主語文・複数数字連続]が
+run03で再発し、run04では数値密度を下げることで一時的に回避したにとどまり、
+Writerが『調査結果を整理するWriter』として動く根本構造が解消されていない
+と判断)。5-part structure(The Question(Hook)/One Voice/Another Voice/
+Why They See It Differently(Tension)/What This Tells Us(Closing))自体は
+run01〜04を通じて安定して機能し続けており、**強い候補**として扱う。
+(d) **TRIAL-05(PERSPECTIVE-CONTRACT-01)**は(c)の根本原因に対応するため
+生成方式自体を再設計した: Perspective Map→Voice Cards→Diversity Check→
+Writer→Analytical Leakage Check(新規検出機構)。Perspective diversityが
+改善(個人の日々の感覚[社員] vs 組織的責任[ワークプレイス戦略責任者]、
+以前の『個人の好み対個人の好み』より構造的な対比)、Voice B(Evidence
+豊富な側)は調査主語文が3 attempts中0件を達成。一方、新設のAnalytical
+Leakage Check(語り手が人物の外側から要約する文を検出)は3 attempts全てで
+不合格のまま上限に到達し、語り手要約・数字再侵入という別の失敗モードを
+可視化した。Production既存機構Evidence Compression Editor
+(`er003_v1_n3_01_evidence_compression_editor.py`、無変更)が、Voices型
+記事において実在人物名を匿名化・受動態化する編集を行い、Analytical
+Leakage Check判定に影響している可能性がある副作用を新規発見した(対策は
+提案のみ、実装なし)。ユーザー判断: **Trial-05は再設計として実施を承認**、
+Status: `USER_DECISION_REQUIRED`(REJECTEDでもVALIDATEDでもない)。
+(e) Production adoption(Production採用)はいずれのTrialでも未決定であり、
+`APPROVED_FOR_PRODUCTION`は一切付与されていない(コード・Prompt本体への
+変更もゼロ、全て読み取り調査・Trialアダプタ経由)。(f) 保留中の設計判断:
+B Family骨格の正式採用/Reference Example・Master記事の位置づけ/Voice数
+3以上への拡張/Evidence CompressionへのB Family専用ルール(実在人物名の
+匿名化除外)の要否/Analytical Leakage Checkの許容基準定義/parser・
+Assembly・TTS Validatorの2固定schema拡張対応。
+
+**Cost**: Trial-03(OpenAI概算約$0.038、Web Search fee込みで約$0.138、
+Perplexity 2 call分は料金不明[参考: 一般的水準で1ドル未満]、合計1記事
+あたり1ドル未満)、Trial-04(run01〜04各run概算約$0.05〜0.17、OpenAIの
+みWeb Search fee込み、Perplexity再利用のため新規呼び出しなし)、
+Trial-05(OpenAI概算約$0.43、web_search計27回込み、Perplexity新規呼び
+出しゼロ)。いずれもTTS実行なし。合計でも実額は小さく(概算¥300未満
+程度)、Cost超過によるSTOPには該当しない(詳細は各Reportの§Cost参照)。
+
+**採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
+Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
+実現可能性・失敗モードをユーザー承認のうえ段階的に検証するため。
+
+**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-DESIGN-02_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-03_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-04_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`
+(各Report §末尾のSSOT登録案を参照して本エントリを作成)。
+
+**状態**: `USER_DECISION_REQUIRED`(OPEN-120として追跡)。Productionコード・
+Promptへの変更は一切なし(DESIGN/TRIALいずれも読み取り調査・Trialアダプタ
+経由)。
+
+**commit**: 本タスクのcommit(hashはcommit後にGitHub上で確認可能)。
+
+**影響するCURRENT_SPEC項目**: なし(B Family Editorial TypeはProduction
+未実装のまま)。
 
 ---
 

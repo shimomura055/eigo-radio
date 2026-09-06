@@ -1,7 +1,10 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03でFable↔Sonnetレビュー
+**最終更新: 2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08で
+commit/pushを伴うタスクは同時に1つだけ稼働させる原則と、回帰実行は
+`run_project_regression.py`のみを使い`unittest discover`は使用しない運用注意を
+8節へ追記)。2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03でFable↔Sonnetレビュー
 往復上限を「Sonnet合計最大2回」から「初回+最大3回(合計最大4回)」へ変更し、
 FableのEditorial/PM Gatekeeper原則を明文化した新設11節を追加)。2026-09-06(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01でTTS方式の
 決定基準を「正式リリース前=Standard同期/正式リリース後の実量産=Batch API」へ
@@ -239,6 +242,25 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
 - 経緯: 2026-09-05〜06、Trial-13で待機中Agentの自動再開により同一管理IDへ
   複数Agentが関与し、一時ファイル・Reportの上書き競合と重複TTSが発生した
   ことを受けたユーザー指示(2026-09-06)。
+
+**commit/pushの同時実行制限と回帰実行ルール(2026-09-06追記)**:
+
+- commit/pushを伴うタスクは**同時に1つだけ**稼働させる(並列Agentのうち
+  commit権を持つのは1つに限る。他は成果物を作業ツリーに残し、後続で
+  統合commitするか、先行タスクのcommit完了後に順次commitする)。
+- 回帰実行は**`run_project_regression.py`のみ**を使用する。`unittest
+  discover`は使用禁止とする。
+- 経緯: 2026-09-06、Lane A(KEYPHRASE-JA-GLOSS-NO-PARENTHETICAL…)と
+  Lane B(EDITORIAL-B-FAMILY-VOICES-TRIAL-05)が同時にcommitし、Lane Bの
+  一時commit(`d90ac9c`、151ファイル)にLane Aのstaged fileが混入した。
+  Lane Bがpush前にローカル`git reset --mixed`で取り消し再commit
+  (`9ed544d`)、Lane Aは自身の変更を`7579d3f`で独立commitし、読み取り
+  専用の影響確認(PM-GIT-RESET-IMPACT-CHECK-01)で作業ツリー・HEADに
+  欠落なしを確認済み(実害なし)。あわせて、ER-011-TTS-ATTEMPT-AUDIO-
+  RETENTION配線時に旧`unittest discover`スクリプトがimport時に実APIを
+  呼び8ファイルを書き換えた事故(復元済み、ER-011-ACCIDENTAL-OUTPUT-
+  REVERT-01)の再発防止として、回帰実行を`run_project_regression.py`
+  へ一本化した。
 
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
@@ -531,3 +553,22 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   いない(文書編集のみ、コード・Prompt変更なし)。2026-09-06、Lane B
   (EDITORIAL-B-FAMILY-VOICES-TRIAL-03)でユーザー意図とのズレが生じたことを
   受けたユーザー決定。
+- 2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08):
+  「8. Agent並列起動の原則」へ「commit/pushの同時実行制限と回帰実行
+  ルール」を追記。commit/pushを伴うタスクは同時に1つだけ稼働させること
+  (並列Agentのうちcommit権を持つのは1つに限り、他は成果物を作業ツリーに
+  残し後続で統合commitするか先行タスクのcommit完了後に順次commitする)、
+  回帰実行は`run_project_regression.py`のみを使用し`unittest discover`は
+  使用禁止とすることを明記した。2026-09-06、Lane A(KEYPHRASE-JA-GLOSS-
+  NO-PARENTHETICAL…)とLane B(EDITORIAL-B-FAMILY-VOICES-TRIAL-05)が
+  同時にcommitしLane Bの一時commit(`d90ac9c`)にLane Aのstaged fileが
+  混入した事象(Lane Bがpush前に`git reset --mixed`で取り消し再commit
+  [`9ed544d`]、Lane Aは`7579d3f`で独立commit、影響確認[PM-GIT-RESET-
+  IMPACT-CHECK-01]で実害なしを確認済み)、およびER-011-TTS-ATTEMPT-
+  AUDIO-RETENTION配線時に旧`unittest discover`スクリプトがimport時に
+  実APIを呼び8ファイルを書き換えた事故(復元済み、ER-011-ACCIDENTAL-
+  OUTPUT-REVERT-01)を受けた再発防止(文書編集のみ、コード・Prompt
+  変更なし)。あわせてLane B(B Family Voices/Perspective)のTrial-03〜05の
+  状態(5-part構造は強い候補、Voices Editorial Design全体は未承認・
+  Trial-05で再設計中、Production採用未決定)を`OPEN_ITEMS.md`
+  (OPEN-120)・`DECISION_LOG.md`へ記録した。
