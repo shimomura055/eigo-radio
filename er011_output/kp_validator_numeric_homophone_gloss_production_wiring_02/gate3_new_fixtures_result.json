@@ -1,0 +1,113 @@
+{
+  "ja": [
+    {
+      "name": "kp3_trial13_2haku_vs_nihaku",
+      "canonical": "中央値は約2泊",
+      "asr": "中央値は約二泊。",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true,
+      "expect_pass": true,
+      "ok": true
+    },
+    {
+      "name": "mikkabouzu_no_change",
+      "canonical": "三日坊主",
+      "asr": "みっかぼうず",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true,
+      "expect_pass": true,
+      "ok": true
+    },
+    {
+      "name": "yaku2haku_vs_yakusanpaku_FAIL",
+      "canonical": "中央値は約2泊",
+      "asr": "中央値は約三泊。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expect_pass": false,
+      "ok": true
+    },
+    {
+      "name": "digit_dropped_FAIL",
+      "canonical": "2泊",
+      "asr": "泊",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expect_pass": false,
+      "ok": true
+    },
+    {
+      "name": "proper_noun_kyouzou_no_conversion",
+      "canonical": "京三さんに聞いた話です",
+      "asr": "京三さんに聞いた話です",
+      "classification": "EXACT_MATCH",
+      "should_pass": true,
+      "expect_pass": true,
+      "ok": true
+    },
+    {
+      "name": "entity_norm_kyouzou_unchanged",
+      "input": "京三",
+      "output": "京三",
+      "ok": true
+    },
+    {
+      "name": "entity_norm_ninomiya_unchanged",
+      "input": "二宮",
+      "output": "二宮",
+      "ok": true
+    }
+  ],
+  "en": [
+    {
+      "name": "point_to_vs_point_two_kp4_trial13",
+      "canonical": "point to",
+      "asr": "Point two.",
+      "classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "should_pass": true,
+      "expect_pass": true,
+      "expect_classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "ok": true
+    },
+    {
+      "name": "for_you_vs_four_you",
+      "canonical": "It was written for you.",
+      "asr": "It was written four you.",
+      "classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "should_pass": true,
+      "expect_pass": true,
+      "expect_classification": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+      "ok": true
+    },
+    {
+      "name": "point_to_vs_point_three_FAIL",
+      "canonical": "point to",
+      "asr": "point three",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expect_pass": false,
+      "expect_classification": null,
+      "ok": true
+    },
+    {
+      "name": "canonical_digit_vs_different_asr_digit_FAIL",
+      "canonical": "The median was 2 nights.",
+      "asr": "The median was 3 nights.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "expect_pass": false,
+      "expect_classification": null,
+      "ok": true
+    },
+    {
+      "name": "approximate_homophone_not_exact_FAIL",
+      "canonical": "nine dollars",
+      "asr": "mine dollars",
+      "classification": "TTS_FAILURE",
+      "should_pass": false,
+      "expect_pass": false,
+      "expect_classification": null,
+      "ok": true
+    }
+  ]
+}

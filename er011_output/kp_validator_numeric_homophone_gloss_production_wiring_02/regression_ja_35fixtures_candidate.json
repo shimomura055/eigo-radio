@@ -1,0 +1,255 @@
+{
+  "POSITIVE_FIXTURES": [
+    {
+      "name": "完全一致(句読点のみ差、実データpool_benches japanese_title)",
+      "canonical": "公共のベンチ、なぜ今見直されているのか",
+      "asr": "公共のベンチ、なぜ今見直されているのか？",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "漢字/ひらがな表記ゆれ(いす/椅子、実データpreview)",
+      "canonical": "街にあるベンチは、ただのいすなのでしょうか。",
+      "asr": "街にあるベンチは、ただの椅子なのでしょうか。",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "読点の有無(実データcomment_1)",
+      "canonical": "高齢者にとって、ベンチがどんな役割を持つのかに注目して聞いてください。",
+      "asr": "高齢者にとってベンチがどんな役割を持つのかに注目して聞いてください。",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "同音異字(後半/公判、実データpool_benches_pilot_02 comment_2。旧方式でverified=trueだった実例。「こうはん」で完全同音)",
+      "canonical": "では後半では、公共の場所は通り過ぎるためだけでなく",
+      "asr": "では、公判では、公共の場所は通り過ぎるためだけでなく",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "誰/だれの表記ゆれ(実データcomment_3)",
+      "canonical": "人とのつながりや、だれがその場所にいられるかにも関係する",
+      "asr": "人とのつながりや誰がその場所にいられるかにも関係する",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "様々/さまざまの表記ゆれ(実データpreview)",
+      "canonical": "さまざまな意見があります",
+      "asr": "様々な意見があります",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "得ます/えますの表記ゆれ(実データcomment_3、pool_benches_luna)",
+      "canonical": "立ち止まって過ごす場所にもなり得ます",
+      "asr": "立ち止まって過ごす場所にもなりえます",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "安全な数字表記差(全角/半角)",
+      "canonical": "28件の記事を分析した",
+      "asr": "２８件の記事を分析した",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "軽微なASR句読点挿入位置ゆれ(実データcomment_4)",
+      "canonical": "ここまで、公共の場所で生まれる小さな交流と、ベンチの形だけでなく実際の使われ方を確かめることについて聞きました。",
+      "asr": "ここまで公共の場所で生まれる小さな交流と、ベンチの形だけでなく、実際の使われ方を確かめることについて聞きました。",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "助数詞「つ」直前の漢数字/算用数字ゆれ(二つ/2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、実データNo.7 A2 comment_4のASR不一致に由来)",
+      "canonical": "では、この二つの動きについて、英語のまとめを聞いてみましょう。",
+      "asr": "では、この2つの動きについて、英語のまとめを聞いてみましょう。",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    }
+  ],
+  "NEGATIVE_FIXTURES": [
+    {
+      "name": "1文字/1音の誤り(実例: やめにくくする→やめにくかする)",
+      "canonical": "定期サービスをやめにくくする仕組み",
+      "asr": "定期サービスをやめにくかする仕組み",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "FTC->FCC(略語の置換、意味が変わる)",
+      "canonical": "解約を難しくする壁は、「スラッジ」と考えられます。では、FTCがこの問題を変えるために作ったルールは、その後どうなったのでしょうか。",
+      "asr": "解約を難しくする壁は、「スラッジ」と考えられます。では、FCCがこの問題を変えるために作ったルールは、その後どうなったのでしょうか。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "数字変更(150->140)",
+      "canonical": "150人の女性を対象とした調査",
+      "asr": "140人の女性を対象とした調査",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "日付変更(2020年->2021年)",
+      "canonical": "2020年の大統領選挙の結果を待つ有権者",
+      "asr": "2021年の大統領選挙の結果を待つ有権者",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "否定反転(変えるために->変えないために)",
+      "canonical": "解約を難しくする壁は、「スラッジ」と考えられます。では、FTCがこの問題を変えるために作ったルールは、その後どうなったのでしょうか。",
+      "asr": "解約を難しくする壁は、「スラッジ」と考えられます。では、FTCがこの問題を変えないために作ったルールは、その後どうなったのでしょうか。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "content word置換(増加->減少)",
+      "canonical": "果物と野菜の購入が増加しました",
+      "asr": "果物と野菜の購入が減少しました",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "content word置換(増えた->減った、タスク仕様の明示ケース)",
+      "canonical": "利用者の数が増えたという結果でした",
+      "asr": "利用者の数が減ったという結果でした",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "数字変更(15->50、タスク仕様の明示ケース)",
+      "canonical": "アンケートには15人が回答しました",
+      "asr": "アンケートには50人が回答しました",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "phrase omission(中間の一文を削除)",
+      "canonical": "このニュースは、定期サービスをやめにくくする仕組みと、それを変えようとしたルールが裁判で取り消された流れを伝えています。次は、解約の負担を手続きの最初から最後まで見ていきます。",
+      "asr": "このニュースは、定期サービスをやめにくくする仕組みを伝えています。次は、解約の負担を手続きの最初から最後まで見ていきます。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "phrase addition(無関係な一文を追加)",
+      "canonical": "解約を難しくする壁は、「スラッジ」と考えられます。",
+      "asr": "解約を難しくする壁は、「スラッジ」と考えられます。これは深刻な社会問題です。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "long segment中間部変更(comment_3実データ土台、中間のFTC関連部分を別内容に差し替え)",
+      "canonical": "このニュースは、定期サービスをやめにくくする仕組みと、それを変えようとしたルールが裁判で取り消された流れを伝えています。次は、解約の負担を手続きの最初から最後まで見ていきます。そして、研究者が複雑な解約の流れをどう調べたのかを聞きます。",
+      "asr": "このニュースは、定期サービスをやめにくくする仕組みと、それを変えようとしたルールが裁判で取り消された流れを伝えています。次は、業界全体の売り上げについて詳しく見ていきます。そして、研究者が複雑な解約の流れをどう調べたのかを聞きます。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "文頭・文末だけ一致して中間が異なる(対照テスト)",
+      "canonical": "このニュースは、定期サービスをやめにくくする仕組みについて伝えています。研究者が複雑な解約の流れをどう調べたのかを聞きます。",
+      "asr": "このニュースは、まったく別の話題である気候変動と再生可能エネルギーの動向について伝えています。研究者が複雑な解約の流れをどう調べたのかを聞きます。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "助数詞つき漢数字の数量違い(二つ->3つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、同値正規化が数量そのものの違いまで許容しないことの確認)",
+      "canonical": "では、この二つの動きについて、英語のまとめを聞いてみましょう。",
+      "asr": "では、この3つの動きについて、英語のまとめを聞いてみましょう。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "「二十」は助数詞「つ」正規化の対象外(二十->2、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、一般化しすぎていないことの確認)",
+      "canonical": "参加者は二十人ほど集まりました。",
+      "asr": "参加者は2人ほど集まりました。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "助数詞が異なると同値扱いしない(二回->2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、回と つ を混同しないことの確認)",
+      "canonical": "この点については二回説明しました。",
+      "asr": "この点については2つ説明しました。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    }
+  ],
+  "ENTITY_LIKE_FIXTURES": [
+    {
+      "name": "カタカナ固有名詞のASR表記ゆれ(スラッジ->スラッシ)",
+      "canonical": "解約を難しくする壁は、「スラッジ」と考えられます。",
+      "asr": "解約を難しくする壁は、「スラッシ」と考えられます。",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    }
+  ],
+  "PHONETIC_UNCERTAIN_FIXTURES": [
+    {
+      "name": "頃/ころ(実データ、verify_ja_cascade_production_on.pyのsmoke testで実際に発生した実例。kakasiが「頃」を文脈なしで連濁形「ごろ」と読み、canonical側の「ころ」の読みと一致しなかったため旧実装ではTRUE_CONTENT_MISMATCH→即TTS retryになっていた)",
+      "canonical": "今回のニュースは、結果を待っているときに、なぜ同じページを何度も開いてしまうのかという話です。結果がまだ分からない場面では、情報を確かめる行動が気になってくることがあります。研究を通して、こうした行動がどのような場面で起きやすいのかを見ていきます。聞き終わるころには、待っている間に確認したくなる理由について、どんなことが分かっているのかが分かります。",
+      "asr": "今回のニュースは、結果を待っているときに、なぜ同じページを何度も開いてしまうのか、という話です。結果がまだわからない場面では、情報を確かめる行動が気になってくることがあります。研究を通して、こうした行動がどのような場面で起きやすいのかを見ていきます。聞き終わる頃には、待っている間に確認したくなる理由について、どんなことがわかっているのかがわかります。",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "頃/ごろ(逆方向。kakasiの「頃」既定読みが元々「ごろ」のため、この向きは新規のvoicing許容チェックを使わずとも既存のreading_equal(完全一致)でPHONETIC_MATCHになる確認用ケース)",
+      "canonical": "宿題が終わる頃に電話します。",
+      "asr": "宿題が終わるごろに電話します。",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    }
+  ],
+  "WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES": [
+    {
+      "name": "実データNo.9 A2 Key Phrase 4 meaning_4(落とし穴、ただし書き/おとしあな ただしがき。連濁「書き→がき」の1点差のみで6回連続TRUE_CONTENT_MISMATCHだった実例、OPEN-104)",
+      "canonical": "落とし穴、ただし書き",
+      "asr": "おとしあな ただしがき",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "合成ケース(別の漢字・別の連濁パターン、「書き」へのhardcodeでないことの確認: 「歯止め」→「はどめ」の全文ひらがなASR、連濁「はどめ」は元々清音「はとめ」ではなく「はどめ」が正しい読みのため、これは全文完全一致[PHONETIC_MATCH]になるべきケース)",
+      "canonical": "歯止め",
+      "asr": "はどめ",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "合成ケース(「三日坊主」→「みっかぼうず」、複数箇所が漢字なcanonicalに対し全文ひらがなASRで一致するケース。「坊主→ぼうず」の連濁のみが差)",
+      "canonical": "三日坊主",
+      "asr": "みっかぼうず",
+      "classification": "PHONETIC_MATCH",
+      "should_pass": true
+    }
+  ],
+  "WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES": [
+    {
+      "name": "全文ひらがなASRでも意味が異なれば引き続きTRUE_CONTENT_MISMATCH(「落とし穴」→「お年やな」は連濁ではなく別の語、実データNo.9 A2 meaning_4のattempt3)",
+      "canonical": "落とし穴、ただし書き",
+      "asr": "お年やな、ただしがき。",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "合成ケース(全文ひらがなASRだが内容語が置換されている、「落とし穴」→「持ち上げ穴」は連濁でも表記ゆれでもない別内容)",
+      "canonical": "落とし穴という表現",
+      "asr": "もちあげあなという表現",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    }
+  ],
+  "KNOWN_TRADEOFF_FIXTURES": [
+    {
+      "name": "柿/鍵(清音化後にたまたま一致する、意味の異なる実在語同士。should_pass=Falseのまま(誤PASSしない)が、TRUE_CONTENT_MISMATCHではなくASR_VALIDATION_UNCERTAIN(Cascade対象)になる既知のトレードオフ)",
+      "canonical": "テーブルの上には柿が置いてありました。",
+      "asr": "テーブルの上には鍵が置いてありました。",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    }
+  ],
+  "NOT_PHONETIC_UNCERTAIN_FIXTURES": []
+}

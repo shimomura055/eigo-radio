@@ -5728,6 +5728,28 @@ Production Writerへの正式配線・CURRENT_SPEC登録・News/Trend実装・Ho
 
 **影響するCURRENT_SPEC項目**: Cross-level仕様 > 音量調整、Assembly最終段ヘッドルーム安全弁(新規行)
 
+## ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-02/03(2026-09-06、OPEN-116の一部をユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と決定した3判断[判断2: JA助数詞リスト縮小版・判断3: EN厳密同音Approach2・判断4: Prompt規約A/B採用/規約C不採用]を`PRODUCTION_WIRED`まで配線)
+
+**背景**: OPEN-116(ASR Validator数字保護ゲートの表記ゆれ誤FAIL・Key Phrase gloss規約)について、Trial-17(Track A/B/C)での検証を踏まえ、ユーザーが2026-09-06に3判断を承認した。-02で判断2・3の実装と判断4のうち規約B(key_phraseスコープ)を配線、-03で規約A・規約Bのgloss側を選定Promptへ配線し、SSOT反映とGitへの反映まで完了した。
+
+**Track A(JA数字ゲート一般化、縮小リスト、-02実装)**: `er003_audio_tts_asr_safety.py`の`_KANJI_COUNTER_RE`(旧: 助数詞「つ」限定)を、閉じた助数詞リスト(つ/泊/回/件/年/時間/か月/週/歳)の直前の単独漢数字(一〜九)へ拡張した。「日」「人」は意図的に除外した(「三日坊主」等の不規則読み慣用句が「3日坊主」へ変換されると、kakasiが数字を音声化せず全文ひらがなASRとの読み一致フォールバックが壊れる実regressionをTrial-17で確認済み。「人」も「一人/二人」の不規則読みで同型リスクを持つため予防的に除外)。`normalize_kanji_counter_numerals_ja()`は`er007_ja_asr_validator_01.normalize_ja()`(全文Validator)と`er003_audio_tts_asr_safety.validate_japanese_short_segment_match()`(短seg Validator)の共有部品のため、両経路へ呼び出し側変更なしで自動配線される。`er007_ja_asr_validator_01.py`のdocstringも拡張後の仕様に合わせて更新した(ロジック変更なし)。
+
+**Track B(EN厳密同音の数字ゲート例外、Approach2、-02実装)**: `er006_preprod_hardening_01_validation.py`の`normalize_numeric()`/`normalize_text()`へ`convert_cardinals: bool = True`引数を追加(既定は従来通り)。新規`_tokenize_raw_no_cardinal_conversion()`(cardinal変換前の生語token列取得)・`_locate_number_mismatch_opcodes()`(数字不一致opcode位置特定)・`_try_homophone_number_rescue()`(alignment-safeな1対1置換opcode全てが変換前の生語同士でCMU辞書ARPAbet完全一致の場合のみrescueを許可)を追加し、`classify_asr_match()`の数字保護ゲートに、即`TRUE_CONTENT_MISMATCH`にする前の狭い例外として組み込んだ。該当時は新分類`HOMOPHONE_MATCH_NUMBER_EXCEPTION`(`should_pass=True`)を`VALID_CLASSIFICATIONS`へ追加。近似音(nine/mine等)はPASSしない。`evaluate_attempt()`(初回・retry・fallback全経路の統一エントリポイント)経由で全Production経路へ呼び出し側変更なしで自動配線される。緩いローカル判定(Approach1)はTrial-17で構造的に不健全と実証済みのため不採用(実装もしていない)。
+
+**Prompt規約A/B(判断4、-02で規約Bのkey_phraseスコープのみ・-03で規約A/Bのgloss側を配線)**: -02実装時点でcanonicalization prompt(`b1_p2_keywords_canonicalization_prompt_template.txt`)へ規約B(key_phraseに「～」「〜」「…」を使わない)を追加したが、Runtime evidence(実LLM呼び出し1回、Trial-13 B1の実入力)により、**`japanese_gloss`はcanonicalization工程では一切生成・変更されない**(常に選定工程からのpass-through、`CANONICALIZATION_JSON_SCHEMA`に`japanese_gloss`フィールド自体が存在しない)ことを実証した。実際のgloss生成元は選定Prompt`er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`(`er003_b1_p2_keywords.py`が使用し、`er003_v1_iran01_a2_generate.py`がA2でも同一関数`bk.load_prompt_template/build_user_message/make_selector_fn`を再利用しているため、A2・B1の両方で共有される。B2レベルは別ファイル`b2_key_words_production_l_prompt_template.txt`のため今回の変更対象外)。この発見を受け、-03で選定Prompt本体`b1_p2_keywords_l_prompt_template.txt`へ、規約A(日本語グロスの数字は算用数字ではなく漢数字で書く)と規約Bのgloss側(「～」「〜」「…」を使わず、目的語省略の言い切り形へ書き換える。例: 「示す、指し示す」)を最小限の2文で追加した(既存の選定基準・3条件は無変更)。**規約C(短い機能語終端のKey Phrase回避、Trial-17 Track Cで検証)は不採用**であり、選定Promptへは追加していない。
+
+**Regression(-02+-03累計)**: JA Validator全fixture(34件、判定変化0)、JA Validator全体(35件、Reading Resolver実LLM1件含めPASS)、EN Validator全fixture(59件、判定変化0)、EN homophone fixture(6 test関数、判定変化0)、Connected Speech Validator+A2 Reading Resolver(15項目、実LLM1回含め全PASS)、Key Phrase canonicalization(43 test、判定変化0)、B1 Key Phrase選定(`er003_test_b1_p2.py`47件、新規追加した規約A/B存在確認・規約C不在確認の3件含め全PASS)、B1 Production selector(`er003_test_p2i_production.py`63件、PASS)、B2 Key Words関連(`er003_test_b2_key_words.py`/`er003_test_key_words_min_unit.py`309件、PASS)。プロジェクト全体regression(`run_project_regression.py`、collected=2084)は2081 PASS・3 failed。3件は本タスク以前から存在する既知の無関係failure(`er003_test_p2j_investigate`のOPEN-77既知meta-test集計バグ2件、`er003_test_bad.FixtureTests.test_case_0`は回帰harness自体の意図的self-check fixture)であることを、-03で変更した6ファイル全てを`git stash`で除去したbaselineでも同一の3件failureが再現することにより確認済み。
+
+**Runtime evidence**: (1)Trial-13 b1b kp3_ja_charon/kp4_enの保存済みSTOPPED attempt(標準2回+fallback1回、minimal2回+english_lock2回+fallback2回)を修正後Validatorへ再入力し、修正前は不合格だった全attemptがPASS(`NORMALIZED_MATCH`/`PHONETIC_MATCH`/`HOMOPHONE_MATCH_NUMBER_EXCEPTION`)することを確認。(2)既存PASS済み33件(Trial-13本文13+kp1/2/5×2言語+No.18 A2 14件)はbaseline/candidateで完全に無変化(0件)であることを確認。(3)-02: canonicalization prompt(規約B配線後)にTrial-13 B1の実入力(5件)を1回実行し、`japanese_gloss`フィールドがLLM出力に存在しないこと・マージ後のgloss値がTrial-13原本と完全一致(無変化)することを実証。(4)-03: 選定Prompt(規約A/B配線後)+canonicalizationの本番経路を、Trial-13 B1の実記事に対し2回実行(いずれも初回でPASS、リトライなし)。規約B(placeholder除去)はattempt_1のrank5で直接確認(Trial-13原本「～を示す、～を指し示す」→「示す、示唆する」)。規約A(漢数字化)は、この2回の選定で数字を含むgloss候補が偶然選ばれなかったため直接観測できなかった(選定はLLMの非決定的判断であり、数字を含む候補が毎回top5に選ばれるとは限らない)が、同一文言による漢数字化はTrial-17 Track C(同じ「median of about two nights」候補を含む入力)で実証済み(「中央値は約2泊」→「中央値は約二泊」)。決定的Validator PASS率・canonicalization QA PASS率(12項目×5件、全PASS)のいずれも規約追加前後で劣化は確認されなかった。詳細比較表は`er011_output/kp_validator_numeric_homophone_gloss_production_wiring_03/comparison_summary.md`。**Prompt文言による指示であり決定的Validatorではないため、遵守は確率的である**旨を明記する。
+
+**状態**: `PRODUCTION_WIRED`(判断2・3・規約A/Bのgloss側すべて)。規約Cは`REJECTED`のまま。OPEN-116は`RESOLVED / PRODUCTION_WIRED`へ更新(規約Cの不採用を明記)。OPEN-40は「助数詞リストの共通モジュール統合により部分的に解消」と追記。
+
+**今回実施しなかったこと**: 規約Cの追加、「日」「人」のリスト追加、一般漢数字変換(A')、近似音・別発音のPASS化、retry上限・fallbackの変更、TTS/ASR再生成、B2レベルの選定Prompt(`b2_key_words_production_l_prompt_template.txt`)への変更(指示範囲外)。
+
+**根拠レポート**: `ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-02_REPORT.md`、`ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-03_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: Audio Production Pipeline > Validator(数値正規化含む一般化仕様)・Validator(日本語)、Key Phrase > 日本語グロス(`ja_gloss`)のPrompt規約A/B(新規行)
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

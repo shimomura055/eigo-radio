@@ -1,0 +1,66 @@
+=== POSITIVE fixtures (should NOT trigger unnecessary retry) ===
+[OK] Malmö/Malmo + Triangeln/Triangle + ordinal + dash (benches/b1/point_two): classification=ASR_VALIDATION_UNCERTAIN ratio=0.983 should_pass=False should_retry=False
+[OK] hyphen (benches/b1/kp2 wide-scale empirical study): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] hyphen no-change (benches/b1/kp2, dehyphenated variant): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] cancelling/canceling (subscriptions/b1/comment_2): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] Click-to-Cancel/Click to cancel hyphen (subscriptions/a2/full_story_part2, excerpt): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] blitzscaling compound word boundary (startups kp3): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] spelled/digit small number (benches/b1/comment_3, OpenAI ASR spells out '2' as 'two'): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] cardinal number 28 <-> twenty-eight (benches Boavida segment, real Azure Secondary ASR output): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] larger cardinal 125 <-> one hundred twenty-five: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] year 2023 <-> two thousand twenty-three (standard cardinal reading): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] comma thousands separator 1,000 <-> 1000: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] percent 28% <-> twenty-eight percent: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] currency $5 <-> five dollars: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] decimal 2.5 <-> two point five: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] ordinal word <-> digit ordinal (third <-> 3rd, not cardinal): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] singular/plural noun variance (result/results, real No.6 A2 ASR pattern): classification=ASR_VALIDATION_UNCERTAIN ratio=0.889 should_pass=False should_retry=False
+[OK] singular/plural noun variance, -es ending (box/boxes): classification=ASR_VALIDATION_UNCERTAIN ratio=0.857 should_pass=False should_retry=False
+[OK] markdown italics + equals + decimal (b coefficient, No.6 real pattern): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] equals spoken as 'is equal to': classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] negative superscript exponent <-> spoken 'to the minus N': classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] negative superscript exponent with ordinal-style ASR reading ('16th'): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] positive superscript exponent <-> spoken 'to the N': classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] exponent word 'negative' (real No.6 B1 ASR wording) <-> Unicode superscript: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] ASCII caret exponent notation (real ASR output '10^-16') <-> Unicode superscript: classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] 'x' as multiplication between digits, no spaces (real ASR output '2x10^-16'): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] less-than symbol <-> spoken 'less than' (real No.6 B1 pattern): classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] greater-than symbol <-> spoken 'greater than': classification=NORMALIZED_MATCH ratio=1.000 should_pass=True should_retry=False
+[OK] contraction they're <-> they are (real No.8 B1 full_story_part2 bug): classification=ASR_VALIDATION_UNCERTAIN ratio=0.947 should_pass=False should_retry=False
+[OK] contraction we're <-> we are: classification=ASR_VALIDATION_UNCERTAIN ratio=0.800 should_pass=False should_retry=False
+
+=== AMBIGUOUS fixtures (吸収してよいものと、してはいけないものを区別できることを確認) ===
+[OK] St. abbreviation ASR punctuation artifact (benches/a2/full_story_part2, excerpt): classification=NORMALIZED_MATCH (expected NORMALIZED_MATCH) ratio=1.000
+[OK] St. as Saint abbreviation must NOT be absorbed (canonical says saint, not street): classification=ASR_VALIDATION_UNCERTAIN (expected ASR_VALIDATION_UNCERTAIN) ratio=0.917
+
+=== NEGATIVE fixtures (MUST stay retry-eligible, must NOT auto-pass) ===
+[OK] number changed 2->3: classification=TRUE_CONTENT_MISMATCH ratio=0.857 should_pass=False reason=数字/否定の不一致を検出: numbers=[('2', '3')] negation=[]
+[OK] number changed two->three, spelled form (must not be masked by digit/word equivalence): classification=TRUE_CONTENT_MISMATCH ratio=0.857 should_pass=False reason=数字/否定の不一致を検出: numbers=[('2', '3')] negation=[]
+[OK] year changed 2025->2024: classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=数字/否定の不一致を検出: numbers=[('2025', '2024')] negation=[]
+[OK] negation flipped can->cannot: classification=TRUE_CONTENT_MISMATCH ratio=0.875 should_pass=False reason=数字/否定の不一致を検出: numbers=[] negation=[('', 'cannot')]
+[OK] antonym increase->decrease: classification=TRUE_CONTENT_MISMATCH ratio=0.875 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'increase', 'asr': 'decrease', 'entity_like': False, 'homophone_candidate': False}]
+[OK] important content word dropped: classification=TRUE_CONTENT_MISMATCH ratio=0.933 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'delete', 'canonical': 'significant', 'asr': '', 'entity_like': False, 'homophone_candidate': False}]
+[OK] unrelated sentence appended: classification=TRUE_CONTENT_MISMATCH ratio=0.625 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'insert', 'canonical': '', 'asr': 'also remember buy milk tomorrow', 'entity_like': False, 'homophone_candidate': False}]
+[OK] may misheard as May 1st (startups full_story_part1): classification=TRUE_CONTENT_MISMATCH ratio=0.923 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '1')] negation=[]
+[OK] three != 3:00 (time-format artifact, digit value differs): classification=TRUE_CONTENT_MISMATCH ratio=0.923 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '00')] negation=[]
+[OK] 28 != 28th (cardinal vs ordinal, real bug found and fixed this task): classification=TRUE_CONTENT_MISMATCH ratio=0.800 should_pass=False reason=数字/否定の不一致を検出: numbers=[('28', '')] negation=[]
+[OK] 5 != $5 (currency marker must not be dropped): classification=TRUE_CONTENT_MISMATCH ratio=0.750 should_pass=False reason=数字/否定の不一致を検出: numbers=[('5', '')] negation=[]
+[OK] 5 != 5% (percent marker must not be dropped): classification=TRUE_CONTENT_MISMATCH ratio=0.750 should_pass=False reason=数字/否定の不一致を検出: numbers=[('5', '')] negation=[]
+[OK] 1.5 != 15 (decimal point must not be silently removed): classification=TRUE_CONTENT_MISMATCH ratio=0.750 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '15')] negation=[]
+[OK] year 2023 != 2024 (cardinal normalization must not blur distinct years): classification=TRUE_CONTENT_MISMATCH ratio=0.750 should_pass=False reason=数字/否定の不一致を検出: numbers=[('2023', '2024')] negation=[]
+[OK] 28 != 2,016 people (comma-number normalization must not mask an inserted/different quantity): classification=TRUE_CONTENT_MISMATCH ratio=0.889 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'insert', 'canonical': '', 'asr': 'people', 'entity_like': False, 'homophone_candidate': False}]
+[OK] percent value changed (28% != 30%, must not be masked by percent-marker normalization): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '28xpercentx', 'asr': '30xpercentx', 'entity_like': False, 'homophone_candidate': False}]
+[OK] unit dropped (5 dollars != 5, currency word absence must be caught): classification=TRUE_CONTENT_MISMATCH ratio=0.750 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '5')] negation=[]
+[OK] exponent sign flipped (10^-16 != 10^16, must not collapse): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '10xexpnegx16', 'asr': '10xexpx16', 'entity_like': False, 'homophone_candidate': False}]
+[OK] exponent digits differ (10^-16 != 10^-6): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '10xexpnegx16', 'asr': '10xexpnegx6', 'entity_like': False, 'homophone_candidate': False}]
+[OK] decimal value differs (0.90 != 0.09, digit transposition): classification=TRUE_CONTENT_MISMATCH ratio=0.667 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '0xdecimalpointx90', 'asr': '0xdecimalpointx09', 'entity_like': False, 'homophone_candidate': False}]
+[OK] decimal value differs (0.90 != 9.0, decimal point shifted): classification=TRUE_CONTENT_MISMATCH ratio=0.667 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '0xdecimalpointx90', 'asr': '9xdecimalpointx0', 'entity_like': False, 'homophone_candidate': False}]
+[OK] coefficient differs (2 × 10^-16 != 2 × 10^-15, exponent off by one): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '10xexpnegx16', 'asr': '10xexpnegx15', 'entity_like': False, 'homophone_candidate': False}]
+[OK] multiplier coefficient differs (2 × != 20 ×): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=数字/否定の不一致を検出: numbers=[('2', '20')] negation=[]
+[OK] negative sign missing entirely (10^-16 != 10, exponent dropped): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '10')] negation=[]
+[OK] exponent value missing (spoken form omits the digit): classification=TRUE_CONTENT_MISMATCH ratio=0.667 should_pass=False reason=数字/否定の不一致を検出: numbers=[('', '10')] negation=[]
+[OK] caret exponent sign flipped (10^-16 != 10^16, ASCII form): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '10xexpnegx16', 'asr': '10xexpx16', 'entity_like': False, 'homophone_candidate': False}]
+[OK] less-than vs greater-than must not collapse (P < X != P > X): classification=TRUE_CONTENT_MISMATCH ratio=0.833 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'less', 'asr': 'greater', 'entity_like': False, 'homophone_candidate': False}]
+[OK] unrelated plural nouns must not be absorbed as a plural pair (cats != dogs): classification=TRUE_CONTENT_MISMATCH ratio=0.875 should_pass=False reason=固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'cats', 'asr': 'dogs', 'entity_like': False, 'homophone_candidate': False}]
+
+OK: 全57件のfixtureが期待通りに分類された

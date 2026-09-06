@@ -1,0 +1,20 @@
+=== B1 Connected Speech Validator ===
+[OK] 1. studies suggest型 -> CONNECTED_SPEECH_ACCEPT
+[OK] 2. opened to型 -> CONNECTED_SPEECH_ACCEPT
+[OK] 3. survey suggest型 -> CONNECTED_SPEECH_PASS_WITH_WARNING
+[OK] 4. 無関係なword change(increase/decrease) -> TRUE_CONTENT_MISMATCH
+[OK] 5. unrelated insertion -> TRUE_CONTENT_MISMATCH
+[OK] 6. 子音条件不成立(survey/shows、次語頭がshで歯擦音対象外) -> CONNECTED_SPEECHとして誤って許容しない
+[OK] 7. ACCEPT(警告なし)とPASS_WITH_WARNINGは異なるclassificationである
+[OK] 8. er003_v1_n3_01_tts_generate.pyがer011_ending_clarity_fallback_01をimportしていない
+
+=== A2 Reading Resolver ===
+[OK] 9. 後->あと(comment_1相当) -> READING_RESOLVED_MATCH
+[OK] 10. 完全一致segment -> Resolver未発火(EXACT_MATCH)
+[OK] 11. 候補外応答 -> resolved_match=False(fail-safe)
+[OK] 12. 候補なし -> resolved_match=False(fail-safe)、resolver_calls=0
+[OK] 13. LLM不正応答(例外) -> resolved_match=False(fail-safe)、errorが記録される
+[OK] 14. 読み問題でない真の内容誤り(増加/減少) -> TRUE_CONTENT_MISMATCH(READING_RESOLVED_MATCHにならない)
+[OK] 15. er006_preprod_hardening_01_validation.pyがer011_a2_reading_resolver_01をimportしていない
+
+OK: 全15項目のregression testがPASSした

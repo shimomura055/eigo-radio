@@ -92,6 +92,31 @@ class KeywordsPromptTests(unittest.TestCase):
         self.assertIn("B1_ARTICLE_MARKER", msg)
         self.assertNotIn("{approved_b1_article}", msg)
 
+    def test_template_contains_gloss_rule_a_kanji_numeral(self):
+        """ER-011-KP-VALIDATOR-...-PRODUCTION-WIRING-03: 規約A(ユーザー承認
+        判断4)。日本語グロスの数字は漢数字で書く指示が選定Promptに
+        存在することを確認する(canonicalization工程はja_glossを生成
+        しないため、規約A/Bは選定Prompt側でのみ効果を持つ、-02 Report
+        §5参照)。"""
+        template = bk.load_prompt_template()
+        self.assertIn("漢数字", template)
+
+    def test_template_contains_gloss_rule_b_placeholder_prohibition(self):
+        """規約B(gloss側)。日本語グロスにプレースホルダー記号
+        (「～」「〜」「…」)を使わない指示が存在することを確認する。"""
+        template = bk.load_prompt_template()
+        self.assertIn("日本語グロス", template)
+        for placeholder_char in ("～", "〜", "…"):
+            self.assertIn(placeholder_char, template)
+
+    def test_template_does_not_contain_rule_c_short_function_word_wording(self):
+        """規約C(短い機能語終端のKey Phrase回避、Trial-17 Track C)は
+        ユーザー承認で不採用となったため、選定Promptへ追加しないこと
+        を確認する。"""
+        template = bk.load_prompt_template()
+        self.assertNotIn("track_c_short_function_word_ending_flagged", template)
+        self.assertNotIn("短い機能語終端", template)
+
 
 class KeywordsGateTests(unittest.TestCase):
 

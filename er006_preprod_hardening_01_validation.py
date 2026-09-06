@@ -316,14 +316,22 @@ def _convert_ordinal_words(text: str) -> str:
     return _ORDINAL_WORD_RE.sub(lambda m: _ORDINAL_WORDS[m.group(0).lower()], text)
 
 
-def normalize_numeric(text: str) -> str:
+def normalize_numeric(text: str, convert_cardinals: bool = True) -> str:
     """数値表記の意味同一な差(綴り⇔算用数字・桁区切りカンマ・小数点・
     パーセント・通貨・序数)を吸収する一方、桁や単位が変わる差は区別
     可能なまま残す。戻り値はさらにnormalize_text()の一般記号除去
     ([^a-z0-9]+をスペース化)を通ることを前提とする。%/$/小数点は、
     その除去ステップで消えてしまわないよう英数字のみのマーカー文字列
     (xdollarx/xpercentx/xdecimalpointx)へ変換しておく(除去後も
-    "5"と"5xdollarx"のように異なるtokenのまま残り、5≠$5を保つ)。"""
+    "5"と"5xdollarx"のように異なるtokenのまま残り、5≠$5を保つ)。
+
+    convert_cardinals=False(既定Trueから変更する場合)は、手順3の
+    cardinal数値語->算用数字変換だけをスキップする(それ以外の正規化
+    [序数・通貨・小数点・複合序数等]は通常通り適用する)。ER-011-KP-
+    VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-02
+    (Track B、数字ゲート例外)専用: cardinal変換前の「生語」token列
+    (two/four等がそのまま残る)を得るためだけに使う診断用引数であり、
+    通常のASR比較経路(tokenize()等)は既定値のまま一切変更しない。"""
     t = text.lower()
     # 0. 単語末尾に直接くっついた句読点(three.やfive,のような、文末や
     #    読点で頻発する形)を切り離す。_convert_cardinal_words()は
@@ -342,8 +350,9 @@ def normalize_numeric(text: str) -> str:
     #      ordinal変換(手順3・7)が独立に分裂させる前に1トークンへ変換する
     #      (ER-010-DATE-SPOKEN-FORM-POINT-FIX-01)。
     t = _convert_compound_ordinal_words(t)
-    # 3. cardinal数値語 -> 算用数字。
-    t = _convert_cardinal_words(t)
+    # 3. cardinal数値語 -> 算用数字(convert_cardinals=Falseの場合はスキップ)。
+    if convert_cardinals:
+        t = _convert_cardinal_words(t)
     # 4. 通貨語(N dollars/dollar) -> マーカー。
     t = re.sub(r"\b(\d+(?:\.\d+)?)\s+dollars?\b", r"\1xdollarx", t)
     t = re.sub(r"\$\s*(\d+(?:\.\d+)?)", r"\1xdollarx", t)
@@ -381,12 +390,17 @@ def strip_diacritics(text: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c))
 
 
-def normalize_text(text: str) -> str:
+def normalize_text(text: str, convert_cardinals: bool = True) -> str:
     """発音上区別できない表記差、および閉じた既知集合の標準的な省略形
     (通り種別略語等、_STREET_SUFFIX_EXPANSIONS参照)のみを吸収する。
     任意の単語の置き換えは行わない(BR_AM_SPELLING_PAIRS・略語展開とも、
     どちらも「同じ語の別表記」という閉じた既知集合に限定している点で
-    従来方針を維持している)。"""
+    従来方針を維持している)。
+
+    convert_cardinals: normalize_numeric()へそのまま渡す(既定Trueで
+    従来通り、FalseはER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-
+    RULES-PRODUCTION-WIRING-02[Track B]の診断用途のみ、下記
+    _tokenize_raw_no_cardinal_conversion()参照)。"""
     t = (text or "").lower()
     # strip_diacritics()のNFKD分解はUnicode上付き数字/マイナスを通常の
     # 数字へ分解してしまい、「上付きだった」という指数情報自体が失われる
@@ -400,12 +414,22 @@ def normalize_text(text: str) -> str:
     t = t.replace("—", "-").replace("–", "-")
     t = t.replace("’", "'").replace("‘", "'")
     t = t.replace("“", '"').replace("”", '"')
-    t = normalize_numeric(t)
+    t = normalize_numeric(t, convert_cardinals=convert_cardinals)
     for full, abbr_re in _STREET_SUFFIX_RES:
         t = abbr_re.sub(full, t)
     t = re.sub(r"[^a-z0-9]+", " ", t)  # ハイフン/複合語分かち書き差もここで吸収
     t = re.sub(r"\s+", " ", t).strip()
     return t
+
+
+def _tokenize_raw_no_cardinal_conversion(text: str) -> list[str]:
+    """cardinal数値語(two/four等)を算用数字へ変換する前の「生語」token列
+    (それ以外の正規化[序数・通貨・小数点・BR/AM綴り等]は通常のtokenize()
+    と同じく適用したまま)。ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-
+    GLOSS-RULES-PRODUCTION-WIRING-02(Track B、数字ゲート例外)専用の
+    診断用ヘルパーであり、通常のASR比較経路(tokenize())はこの関数を
+    経由しない。"""
+    return normalize_text(text, convert_cardinals=False).split()
 
 
 def tokenize(text: str) -> list[str]:
@@ -568,6 +592,93 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
 
 
 # ------------------------------------------------------------
+# ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+# WIRING-02(Track B、数字ゲート例外、Trial-17 Approach2をProduction配線)
+# ------------------------------------------------------------
+# 背景(Opus診断-15、OPEN-116(b)): kp4_en canonical "point to" / ASR
+# "Point two."で、_convert_cardinal_words()がASR側"two"のみを"2"へ変換し、
+# canonical側"to"は_STOPWORDS除外されるため、protected_check()の数字保護
+# ゲートが「canonicalに無い数字」として即TRUE_CONTENT_MISMATCHにしていた。
+# canonical側"to"は既存のhomophone_candidate機構(wait/weight等、1語対1語の
+# content word置換にのみ適用)にも到達しない(stopwordとしてcontent_word_
+# diffsの対象外になるため)。
+#
+# ユーザー正式決定(2026-09-06): 完全同音(CMU辞書ARPAbet完全一致、
+# er008_asr_variant_hardening_15_homophone_en.homophone_arpabet_
+# equivalent()を再利用、新辞書は作らない)のみをPASS対象とする。近似音・
+# 別発音はPASSさせない。
+def _locate_number_mismatch_opcodes(canon_tokens: list[str], asr_tokens: list[str]) -> list[dict]:
+    """protected_check()と全く同じSequenceMatcherを独立に走らせ(読み取り
+    専用、protected_check()自体は呼ばない)、数字不一致を引き起こしている
+    opcodeの位置(cardinal変換後token列でのindex)を特定するためだけに使う
+    (ProtectedCheckResult.number_mismatchesは値のペアのみを保持し、
+    位置情報を持たないため)。"""
+    sm = difflib.SequenceMatcher(None, canon_tokens, asr_tokens, autojunk=False)
+    located = []
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        canon_span = canon_tokens[i1:i2]
+        asr_span = asr_tokens[j1:j2]
+        canon_numbers = [t for t in canon_span if _is_number(t)]
+        asr_numbers = [t for t in asr_span if _is_number(t)]
+        if canon_numbers != asr_numbers and (canon_numbers or asr_numbers):
+            located.append({"tag": tag, "canon_span": canon_span, "asr_span": asr_span,
+                             "i1": i1, "i2": i2, "j1": j1, "j2": j2})
+    return located
+
+
+def _try_homophone_number_rescue(canonical_text: str, asr_text: str,
+                                  canon_tokens: list[str], asr_tokens: list[str],
+                                  protected: ProtectedCheckResult) -> list[dict] | None:
+    """数字ゲート例外(Trial-17 Approach2、alignment_safeガード付き)。
+    baseline(protected)がTRUE_CONTENT_MISMATCHの原因が数字不一致のみ
+    (否定不一致は無い)であり、かつ数字ゲート以外の内容語差(entity_like・
+    homophone_candidateのいずれでもない差)も無い場合に限り、1トークン
+    対1トークンの置換opcode全てが「cardinal変換前の生語同士でCMU辞書
+    ARPAbet完全同音」であるときだけrescueを許可する(近似音は不可)。
+
+    alignment_safe(テキスト全体でcardinal語変換によるtoken数変化が一切
+    無いこと)を要求する。複合基数(例: "twenty eight"->"28"のような2:1の
+    圧縮)がテキスト中のどこかに1箇所でもあれば、変換後token列のindexが
+    生語token列のindexとズレる(構造的に不健全になる)ため、安全側で
+    rescueを一切試みない(Trial-17でApproach1[グローバルなalignment_safe
+    を要求しない緩い変種]がこの種のindexズレを構造的に抱えることを直接
+    実証したため、Approach2のみを採用する)。
+
+    戻り値: rescue成立時はrescue詳細のlist(non-empty)、不成立時はNone。"""
+    if not protected.number_mismatches or protected.negation_mismatches:
+        return None
+
+    non_entity_non_homophone_diffs = [
+        d for d in protected.content_word_diffs if not d["entity_like"] and not d["homophone_candidate"]
+    ]
+    if non_entity_non_homophone_diffs:
+        return None  # 数字ゲート以外にも真正の内容語差がある場合はrescueしない
+
+    canon_raw = _tokenize_raw_no_cardinal_conversion(canonical_text)
+    asr_raw = _tokenize_raw_no_cardinal_conversion(asr_text)
+    if len(canon_tokens) != len(canon_raw) or len(asr_tokens) != len(asr_raw):
+        return None  # alignment_safeでない(複合基数の圧縮等でindexがズレる)
+
+    located = _locate_number_mismatch_opcodes(canon_tokens, asr_tokens)
+    if not located or len(located) != len(protected.number_mismatches):
+        return None
+
+    rescues = []
+    for loc in located:
+        if loc["tag"] != "replace" or len(loc["canon_span"]) != 1 or len(loc["asr_span"]) != 1:
+            return None  # 1トークン対1トークンの置換以外(欠落・追加・複数語)は対象外
+        raw_c = canon_raw[loc["i1"]]
+        raw_a = asr_raw[loc["j1"]]
+        if homophone_en.homophone_arpabet_equivalent(raw_c, raw_a) is not True:
+            return None  # 完全同音でなければrescueしない(近似音・別発音は不可)
+        rescues.append({"canonical_raw": raw_c, "asr_raw": raw_a,
+                         "canonical_converted": loc["canon_span"][0], "asr_converted": loc["asr_span"][0]})
+    return rescues
+
+
+# ------------------------------------------------------------
 # 分類本体
 # ------------------------------------------------------------
 VALID_CLASSIFICATIONS = (
@@ -576,6 +687,9 @@ VALID_CLASSIFICATIONS = (
     # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
     # B1 Connected Speech Validator(OPEN-107撤去に伴う正式採用)。
     "CONNECTED_SPEECH_ACCEPT", "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+    # WIRING-02(Track B、上記_try_homophone_number_rescue参照)。
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
 )
 
 
@@ -648,6 +762,17 @@ def classify_asr_match(canonical_text: str, asr_text: str,
     protected = protected_check(canon_tokens, asr_tokens, entity_tokens=entity_tokens)
 
     if not protected.passed:
+        # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+        # WIRING-02(Track B): 即TRUE_CONTENT_MISMATCHにする前に、狭い
+        # 数字ゲート例外(完全同音のみ、alignment_safe必須)に該当しないか
+        # 確認する。該当しない場合は従来通りfall throughする。
+        rescues = _try_homophone_number_rescue(canonical_text, asr_text, canon_tokens, asr_tokens, protected)
+        if rescues is not None:
+            return ClassificationResult(
+                "HOMOPHONE_MATCH_NUMBER_EXCEPTION", ratio, protected,
+                should_pass=True, should_retry=False,
+                reason=f"数字ゲート例外(Track B): ASR側の数字語と、cardinal変換前のcanonical側の語が"
+                       f"CMU辞書ARPAbet完全同音(厳密一致のみ許容): rescues={rescues}")
         return ClassificationResult("TRUE_CONTENT_MISMATCH", ratio, protected,
                                      should_pass=False, should_retry=True,
                                      reason=f"数字/否定の不一致を検出: numbers={protected.number_mismatches} negation={protected.negation_mismatches}")

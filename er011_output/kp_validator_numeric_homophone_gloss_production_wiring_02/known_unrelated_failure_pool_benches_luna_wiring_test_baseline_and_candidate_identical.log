@@ -1,0 +1,33 @@
+=== 配線確認: 対象ファイルがaudio_validationをimportしている ===
+[OK] er003_v1_sing01_voice01_generate.py
+[FAIL] er003_v1_sing01_news_tail_fix.py
+[OK] er003_v1_sing01_point_headings_aoede.py
+[OK] er003_v1_repro01_main_generate.py
+[OK] er003_v1_crosslevel_audio_02_common.py
+
+=== 配線確認: evaluate_attempt()が実際に呼ばれている ===
+[OK] er003_v1_sing01_voice01_generate.py: evaluate_attempt(_with_cascade)呼び出し 1件
+[OK] er003_v1_sing01_news_tail_fix.py: evaluate_attempt(_with_cascade)呼び出し 1件
+[OK] er003_v1_sing01_point_headings_aoede.py: evaluate_attempt(_with_cascade)呼び出し 1件
+[OK] er003_v1_repro01_main_generate.py: evaluate_attempt(_with_cascade)呼び出し 1件
+[OK] er003_v1_crosslevel_audio_02_common.py: evaluate_attempt(_with_cascade)呼び出し 1件
+
+=== 配線確認: ASR_VALIDATION_UNCERTAINという新statusを返せる ===
+[OK] er003_v1_sing01_voice01_generate.py
+[OK] er003_v1_sing01_news_tail_fix.py
+[OK] er003_v1_sing01_point_headings_aoede.py
+[OK] er003_v1_repro01_main_generate.py
+[OK] er003_v1_crosslevel_audio_02_common.py
+
+=== 動作確認: evaluate_attempt()を疑似ASR応答列で駆動(実API呼び出しなし) ===
+[OK] ケース1(即PASS): verified=True stop=False cls=NORMALIZED_MATCH
+[OK] ケース2(guardrail打ち切り): [(False, False, 'ASR_VALIDATION_UNCERTAIN'), (False, False, 'ASR_VALIDATION_UNCERTAIN'), (False, True, 'ASR_VALIDATION_UNCERTAIN')]
+[OK] ケース3(内容誤りはguardrailで打ち切らずretry継続): [(False, False, 'TRUE_CONTENT_MISMATCH'), (False, False, 'TRUE_CONTENT_MISMATCH'), (False, False, 'TRUE_CONTENT_MISMATCH')]
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er006_pool_benches_luna_audio_wiring_test.py", line 108, in <module>
+    run()
+    ~~~^^
+  File "C:\Users\tensh\eigo-radio\er006_pool_benches_luna_audio_wiring_test.py", line 103, in run
+    raise AssertionError(f"{len(failures)}件の配線確認が失敗した:\n" + "\n".join(f"  - {f}" for f in failures))
+AssertionError: 1件の配線確認が失敗した:
+  - er003_v1_sing01_news_tail_fix.py: audio_validationがimportされていない

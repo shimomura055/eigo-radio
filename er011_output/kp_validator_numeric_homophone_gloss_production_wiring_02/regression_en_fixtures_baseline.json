@@ -1,0 +1,421 @@
+{
+  "POSITIVE_FIXTURES": [
+    {
+      "name": "Malmö/Malmo + Triangeln/Triangle + ordinal + dash (benches/b1/point_two)",
+      "canonical": "Malmö’s Triangeln station opened in December 2010, and a formal complaint about its tilted bench was reported on March 4, 2011. Yet officials said it was steeper than ordered and later corrected. In 2021, an NYC Transit post linked bench removals to homeless people sleeping. It was deleted, and the MTA called it an error—not a confirmed policy.",
+      "asr": "Malmo's Triangle station opened in December 2010, and a formal complaint about its tilted bench was reported on March 4th, 2011. Yet officials said it was steeper than ordered and later corrected. In 2021, an NYC Transit post linked bench removals to homeless people sleeping. It was deleted and the MTA called it an error, not a confirmed policy.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "hyphen (benches/b1/kp2 wide-scale empirical study)",
+      "canonical": "a wide-scale empirical study",
+      "asr": "Wide-scale empirical study.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "hyphen no-change (benches/b1/kp2, dehyphenated variant)",
+      "canonical": "a wide-scale empirical study",
+      "asr": "Widescale empirical study.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "cancelling/canceling (subscriptions/b1/comment_2)",
+      "canonical": "Part 1 showed that cancelling a subscription can involve extra steps, a kind of friction called sludge. Now, listen for how US regulators tried to address this problem, and what later happened to their rule.",
+      "asr": "Part 1 showed that canceling a subscription can involve extra steps, a kind of friction called sludge. Now listen for how US regulators tried to address this problem and what later happened to their rule.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "Click-to-Cancel/Click to cancel hyphen (subscriptions/a2/full_story_part2, excerpt)",
+      "canonical": "On October 16, 2024, it finalized its Click-to-Cancel rule.",
+      "asr": "On October 16, 2024, it finalized its Click to cancel rule.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "blitzscaling compound word boundary (startups kp3)",
+      "canonical": "blitzscaling",
+      "asr": "Blitz scaling.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "spelled/digit small number (benches/b1/comment_3, OpenAI ASR spells out '2' as 'two')",
+      "canonical": "Next, we will look at this issue from 2 more angles.",
+      "asr": "Next, we will look at this issue from two more angles.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "cardinal number 28 <-> twenty-eight (benches Boavida segment, real Azure Secondary ASR output)",
+      "canonical": "A separate review by Boavida and colleagues in 2023 examined 28 articles published from 2020 to 2023.",
+      "asr": "A separate review by Boavida and colleagues in 2023 examined twenty-eight articles published from 2020 to 2023.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "larger cardinal 125 <-> one hundred twenty-five",
+      "canonical": "The survey collected 125 responses.",
+      "asr": "The survey collected one hundred twenty-five responses.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "year 2023 <-> two thousand twenty-three (standard cardinal reading)",
+      "canonical": "The report was published in 2023.",
+      "asr": "The report was published in two thousand twenty-three.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "comma thousands separator 1,000 <-> 1000",
+      "canonical": "The venue holds 1,000 people.",
+      "asr": "The venue holds 1000 people.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "percent 28% <-> twenty-eight percent",
+      "canonical": "Prices rose by 28% last year.",
+      "asr": "Prices rose by twenty-eight percent last year.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "currency $5 <-> five dollars",
+      "canonical": "The ticket costs $5.",
+      "asr": "The ticket costs five dollars.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "decimal 2.5 <-> two point five",
+      "canonical": "The average score was 2.5.",
+      "asr": "The average score was two point five.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "ordinal word <-> digit ordinal (third <-> 3rd, not cardinal)",
+      "canonical": "This is the third time we've seen this pattern.",
+      "asr": "This is the 3rd time we've seen this pattern.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "singular/plural noun variance (result/results, real No.6 A2 ASR pattern)",
+      "canonical": "the result of the 2020 U.S. presidential election",
+      "asr": "the results of the 2020 U.S. presidential election",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "singular/plural noun variance, -es ending (box/boxes)",
+      "canonical": "They opened the box on the porch.",
+      "asr": "They opened the boxes on the porch.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "markdown italics + equals + decimal (b coefficient, No.6 real pattern)",
+      "canonical": "*b* = 0.90",
+      "asr": "b equals 0.90",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "equals spoken as 'is equal to'",
+      "canonical": "*b* = 0.90",
+      "asr": "b is equal to 0.90",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "negative superscript exponent <-> spoken 'to the minus N'",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10 to the minus 16",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "negative superscript exponent with ordinal-style ASR reading ('16th')",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10 to the minus 16th",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "positive superscript exponent <-> spoken 'to the N'",
+      "canonical": "roughly 10¹⁶ combinations",
+      "asr": "roughly 10 to the 16th combinations",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "exponent word 'negative' (real No.6 B1 ASR wording) <-> Unicode superscript",
+      "canonical": "b = 0.90, P < 2 × 10⁻¹⁶",
+      "asr": "b equals 0.90, p less than 2 times 10 to the negative 16th",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "ASCII caret exponent notation (real ASR output '10^-16') <-> Unicode superscript",
+      "canonical": "P < 2 × 10⁻¹⁶",
+      "asr": "P < 2 × 10^-16",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "'x' as multiplication between digits, no spaces (real ASR output '2x10^-16')",
+      "canonical": "p below 2 × 10⁻¹⁶",
+      "asr": "p below 2x10^-16",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "less-than symbol <-> spoken 'less than' (real No.6 B1 pattern)",
+      "canonical": "P < 2 × 10⁻¹⁶",
+      "asr": "P less than 2 times 10 to the minus 16",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "greater-than symbol <-> spoken 'greater than'",
+      "canonical": "a rate above p > 0.05",
+      "asr": "a rate above p greater than 0.05",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "contraction they're <-> they are (real No.8 B1 full_story_part2 bug)",
+      "canonical": "The gates are designed to check boarding passes automatically. They are also designed to control the pace of boarding.",
+      "asr": "The gates are designed to check boarding passes automatically. They're also designed to control the pace of boarding.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    },
+    {
+      "name": "contraction we're <-> we are",
+      "canonical": "We are checking again tomorrow.",
+      "asr": "We're checking again tomorrow.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    }
+  ],
+  "AMBIGUOUS_FIXTURES": [
+    {
+      "name": "St. abbreviation ASR punctuation artifact (benches/a2/full_story_part2, excerpt)",
+      "canonical": "So, the bench debate is not only about street furniture.",
+      "asr": "So the bench debate is not only about St. furniture.",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true
+    },
+    {
+      "name": "St. as Saint abbreviation must NOT be absorbed (canonical says saint, not street)",
+      "canonical": "The event took place near Saint Louis, not far from the river.",
+      "asr": "The event took place near St. Louis, not far from the river.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "should_pass": false
+    }
+  ],
+  "NEGATIVE_FIXTURES": [
+    {
+      "name": "number changed 2->3",
+      "canonical": "The study followed 2 groups of participants.",
+      "asr": "The study followed 3 groups of participants.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "number changed two->three, spelled form (must not be masked by digit/word equivalence)",
+      "canonical": "The study followed two groups of participants.",
+      "asr": "The study followed three groups of participants.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "year changed 2025->2024",
+      "canonical": "The rule was vacated in 2025.",
+      "asr": "The rule was vacated in 2024.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "negation flipped can->cannot",
+      "canonical": "Users can cancel the plan at any time.",
+      "asr": "Users cannot cancel the plan at any time.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "antonym increase->decrease",
+      "canonical": "Prices tend to increase after the trial period.",
+      "asr": "Prices tend to decrease after the trial period.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "important content word dropped",
+      "canonical": "The company reported a significant loss last quarter.",
+      "asr": "The company reported a loss last quarter.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "unrelated sentence appended",
+      "canonical": "The park closes at nine.",
+      "asr": "The park closes at nine. Also, remember to buy milk tomorrow.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "may misheard as May 1st (startups full_story_part1)",
+      "canonical": "a company with a true network effect may first run at a loss",
+      "asr": "a company with a true network effect May 1st run at a loss",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "three != 3:00 (time-format artifact, digit value differs)",
+      "canonical": "They looked at three nearby neighborhoods.",
+      "asr": "They looked at 3:00 nearby neighborhoods.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "28 != 28th (cardinal vs ordinal, real bug found and fixed this task)",
+      "canonical": "The study included 28 articles.",
+      "asr": "The study included 28th articles.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "5 != $5 (currency marker must not be dropped)",
+      "canonical": "The fee is 5.",
+      "asr": "The fee is $5.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "5 != 5% (percent marker must not be dropped)",
+      "canonical": "The rate is 5.",
+      "asr": "The rate is 5%.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "1.5 != 15 (decimal point must not be silently removed)",
+      "canonical": "The score was 1.5.",
+      "asr": "The score was 15.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "year 2023 != 2024 (cardinal normalization must not blur distinct years)",
+      "canonical": "It happened in 2023.",
+      "asr": "It happened in 2024.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "28 != 2,016 people (comma-number normalization must not mask an inserted/different quantity)",
+      "canonical": "It happened in 2016.",
+      "asr": "It happened in 2,016 people.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "percent value changed (28% != 30%, must not be masked by percent-marker normalization)",
+      "canonical": "Prices rose by 28% last year.",
+      "asr": "Prices rose by 30% last year.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "unit dropped (5 dollars != 5, currency word absence must be caught)",
+      "canonical": "The ticket costs five dollars.",
+      "asr": "The ticket costs five.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "exponent sign flipped (10^-16 != 10^16, must not collapse)",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10 to the 16th",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "exponent digits differ (10^-16 != 10^-6)",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10 to the minus 6",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "decimal value differs (0.90 != 0.09, digit transposition)",
+      "canonical": "*b* = 0.90",
+      "asr": "b equals 0.09",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "decimal value differs (0.90 != 9.0, decimal point shifted)",
+      "canonical": "*b* = 0.90",
+      "asr": "b equals 9.0",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "coefficient differs (2 × 10^-16 != 2 × 10^-15, exponent off by one)",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10 to the minus 15",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "multiplier coefficient differs (2 × != 20 ×)",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 20 times 10 to the minus 16",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "negative sign missing entirely (10^-16 != 10, exponent dropped)",
+      "canonical": "a probability of 2 × 10⁻¹⁶",
+      "asr": "a probability of 2 times 10",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "exponent value missing (spoken form omits the digit)",
+      "canonical": "roughly 10¹⁶ combinations",
+      "asr": "roughly 10 combinations",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "caret exponent sign flipped (10^-16 != 10^16, ASCII form)",
+      "canonical": "P < 2 × 10⁻¹⁶",
+      "asr": "P < 2 × 10^16",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "less-than vs greater-than must not collapse (P < X != P > X)",
+      "canonical": "P < 2 × 10⁻¹⁶",
+      "asr": "P greater than 2 times 10 to the minus 16",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    },
+    {
+      "name": "unrelated plural nouns must not be absorbed as a plural pair (cats != dogs)",
+      "canonical": "They were chasing the cats around the yard.",
+      "asr": "They were chasing the dogs around the yard.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false
+    }
+  ]
+}
