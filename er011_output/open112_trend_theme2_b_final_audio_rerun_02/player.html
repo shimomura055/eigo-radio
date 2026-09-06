@@ -1,10 +1,265 @@
-<html><head><meta charset="utf-8"><title>OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02</title></head>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;line-height:1.6;max-width:980px;margin:0 auto;padding:16px;color:#111;}
+h1{font-size:1.4em;}
+h2{border-bottom:3px solid #333;padding-bottom:4px;margin-top:2.2em;}
+h3{margin-top:1.6em;border-left:6px solid #888;padding-left:8px;}
+table{border-collapse:collapse;width:100%;margin:12px 0 24px 0;font-size:0.92em;}
+th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top;text-align:left;}
+th{background:#f0f0f0;}
+td.txt{white-space:pre-wrap;}
+button.seek{cursor:pointer;font-family:monospace;font-size:0.95em;padding:2px 6px;}
+.missing{color:#a33;font-style:italic;}
+.src{font-size:0.85em;color:#555;}
+.kp-audio audio{height:28px;width:220px;vertical-align:middle;}
+nav#toc{background:#f7f7f7;border:1px solid #ddd;padding:10px 16px;margin-bottom:20px;}
+nav#toc ul{margin:4px 0;}
+audio.main{width:100%;max-width:640px;display:block;margin:8px 0;}
+.note{background:#fffbe6;border:1px solid #e0d080;padding:8px 12px;font-size:0.9em;margin:10px 0;}
+</style>
+</head>
 <body>
-<h1>OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02(Theme 2 A2/B1 完成音声)</h1>
+<h1>OPEN-112-TREND-THEME2-B-FINAL-AUDIO-RERUN-02(Theme 2 A2/B1 完成音声 + 全スクリプト)</h1>
+<p class="note">
+このページは完成音声と、その音声で実際に読み上げられた全文スクリプトをsegment順に並べたレビュー用ページです。
+「Seek」ボタンをクリックすると、上部の完成episode音声プレイヤーが該当時刻から再生されます(JavaScriptで<code>audio.currentTime</code>を設定)。
+各segmentのテキストは、このepisode出力フォルダ内の<code>parts.json</code> / <code>*_support_texts.json</code> / <code>audit/tts_generation_results.json</code> / <code>audit/review_lock_state.json</code> / <code>key_phrases/keywords_canonicalized.json</code>から取得した実際のcanonical text(TTSへ渡した最終テキスト)です。
+このepisode出力フォルダ内にテキストが記録されていなかった固定テンプレート音声(Welcome/Preview intro/Point explanation/Key phrases intro/Full story intro等)・音楽ジングル(Intro/Outro)・効果音(Notification/Point Notification)は、Production資産(<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>・<code>er003_b1_p9a_audio.py</code>・<code>er003_v1_n3_01_assemble.py</code>)およびそれらが参照する固定narration/sha256記録(<code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code>・<code>er003_output/b1_p9a/A01/audit/narration_generation_v2.json</code>等)から実際の読み上げ文言・音源種別を特定し、各行のSource列に記載しています。ジングル・効果音は「音楽ジングル(ナレーションなし)」「効果音(読み上げなし)」と明記し、テキスト内容に軽微な不確実性が残る箇所(A2 Full story intro)は注記しています。
+</p>
+
+<nav id="toc">
+<strong>目次</strong>
+<ul>
+<li><a href="#b1">B1 (English Your Way, B1) — 完成音声・タイムライン・全スクリプト・Key Phrase表</a></li>
+<li><a href="#a2">A2 (English Your Way, A2) — 完成音声・タイムライン・全スクリプト・Key Phrase表</a></li>
+</ul>
+</nav>
+
+<!-- ==================== B1 ==================== -->
+<section id="b1">
 <h2>B1 (English Your Way, B1)</h2>
 <p>duration: 341.975s / peak: 0.80806 / clipping: false</p>
-<audio controls src="b1b/assembled/English_Your_Way_B1B_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav"></audio>
+<audio id="player-b1" class="main" controls src="b1b/assembled/English_Your_Way_B1B_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav"></audio>
+
+<h3 id="b1-timeline">B1 タイムライン・全スクリプト(収録順)</h3>
+<table>
+<thead><tr><th>Seek</th><th>Segment</th><th>Text(実際に読み上げられた内容)</th><th>個別音声</th><th>Source</th></tr></thead>
+<tbody>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="0.0"></button></td><td>Intro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。10.748秒のIntro音楽をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\Intro.mp3(固定音源、記事非依存)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「1. Intro Music」節(「以下の音源を最初から最後まで再生してください」)+ <code>er003_b1_p9a_audio.py</code> <code>INTRO_MP3_PATH</code>定数(<code>load_and_resample_to_target</code>で生音声ロード、TTS textフィールドなし=非音声と判断)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="10.736"></button></td><td>Welcome (Charon)</td><td class="txt">Welcome to English Your Way.</td><td class="kp-audio"><audio controls src="b1b/narration/welcome_charon.wav"></audio></td><td class="src">固定テンプレート音声(記事非依存、IRAN01から再利用)。<code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code> → <code>welcome</code>(ASR verified EXACT_MATCH、trimmed_duration=2.561s=このepisodeの実ファイルと一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="13.797"></button></td><td>Topic intro (Charon)</td><td class="txt">Today's topic is Young Japanese Travelers Want More Freedom, But Their Trips Are Still Short.</td><td class="kp-audio"><audio controls src="b1b/narration/topic_intro.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.topic_intro.text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="20.508"></button></td><td>Notification 1</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、2.040秒、2回使用)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「Transition(効果音)」表 + <code>er003_b1_p9a_audio.py</code> <code>NOTIFICATION_MP3_PATH</code>定数(生音声ロード、TTS textフィールドなし)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="22.948"></button></td><td>Preview intro (Charon)</td><td class="txt">Here's a quick preview.</td><td class="kp-audio"><audio controls src="b1b/narration/preview_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(記事非依存、IRAN01から再利用)。<code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code> → <code>preview_intro</code>(ASR verified EXACT_MATCH、trimmed_duration=1.451s=このepisodeの実ファイルと一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="25.049"></button></td><td>Preview (Charon)</td><td class="txt">This episode looks at how young people in Japan think about travel, including freedom, personal interests, and time. But the label “young Japanese travelers” may hide important differences between groups. Listen to see what the surveys show about these different preferences and what “slow travel” means in this story. By the end, you will have a clearer view of what young travelers may want from a trip.</td><td class="kp-audio"><audio controls src="b1b/narration/preview.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.preview.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="54.43"></button></td><td>Notification 2</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、同上)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「Transition(効果音)」表 + <code>NOTIFICATION_MP3_PATH</code>定数。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="56.87"></button></td><td>Key phrases intro (Charon)</td><td class="txt">Here are today's key phrases.</td><td class="kp-audio"><audio controls src="b1b/narration/key_phrases_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(記事非依存、IRAN01から再利用)。<code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code> → <code>key_phrases_intro</code>(ASR verified EXACT_MATCH、trimmed_duration=2.091s=このepisodeの実ファイルと一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="59.461"></button></td><td>Key Phrase 1</td><td class="txt">EN: self-directed travel<br>JA(表示/TTS共通): 自分で進め方を決める旅行<br><span class="src">詳細は下のKey Phrase表を参照</span></td><td class="kp-audio"><audio controls src="b1b/narration/kp1_en.wav"></audio><audio controls src="b1b/narration/kp1_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[0]</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="69.544"></button></td><td>Key Phrase 2</td><td class="txt">EN: two different speeds<br>JA(表示/TTS共通): 二つの異なるペースで進んでいること</td><td class="kp-audio"><audio controls src="b1b/narration/kp2_en.wav"></audio><audio controls src="b1b/narration/kp2_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[1]</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="79.537"></button></td><td>Key Phrase 3</td><td class="txt">EN: too broad a label<br>JA(表示/TTS共通): ひとまとめにしすぎた呼び方</td><td class="kp-audio"><audio controls src="b1b/narration/kp3_en.wav"></audio><audio controls src="b1b/narration/kp3_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[2]</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="88.93"></button></td><td>Key Phrase 4</td><td class="txt">EN: interest-led plans<br>JA(表示/TTS共通): 興味を中心にした旅行プラン</td><td class="kp-audio"><audio controls src="b1b/narration/kp4_en.wav"></audio><audio controls src="b1b/narration/kp4_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[3]</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="99.133"></button></td><td>Key Phrase 5</td><td class="txt">EN: leading travel arrangement<br>JA(表示/TTS共通): 最も多い旅行の形</td><td class="kp-audio"><audio controls src="b1b/narration/kp5_en.wav"></audio><audio controls src="b1b/narration/kp5_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[4]</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="109.055"></button></td><td>Notification 3</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、同上)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「Transition(効果音)」表 + <code>NOTIFICATION_MP3_PATH</code>定数。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="111.496"></button></td><td>Full story intro (Charon)</td><td class="txt">Now, the full story.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(記事非依存、IRAN01から再利用)。<code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code> → <code>full_story_intro</code>(ASR "Now the full story."でEXACT_MATCH、trimmed_duration=2.451s=このepisodeの実ファイルと一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="114.746"></button></td><td>Comment 1 (Charon)</td><td class="txt">Listen for the difference between how long people imagine traveling and how long their planned trips are.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_1.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_1.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="123.787"></button></td><td>Full Story Part 1 (Aoede)</td><td class="txt">As of September 2026, travel surveys in Japan tell a story with two different speeds.
+
+Many younger travelers, especially men, seem to want more room for their own pace and interests. But the trips measured in surveys are still short.
+
+This contrast appears clearly when people imagine having more time. In one survey, the most common answer was about one week of travel if people could take a one-month vacation. About 24% chose that answer.
+
+But an autumn survey by the same research center asked about people considering a trip. Their planned stays averaged about 1.8 nights, with a median of about two nights.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part1.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.full_story_part1.canonical_text (= b1b/parts.json → part1)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="165.529"></button></td><td>Comment 2 (Charon)</td><td class="txt">So far, the key point is that people may imagine longer trips, but their actual plans are still short. So, are travel habits really changing, or are only people’s attitudes changing?</td><td class="kp-audio"><audio controls src="b1b/narration/comment_2.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_2.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="180.59"></button></td><td>Full Story Part 2 (Aoede)</td><td class="txt">These were not the same question. One measured a wish under a special condition. The other measured a current travel plan. Together, they show a gap between the trip people imagine and the time they plan to spend.
+
+Japan’s Tourism White Paper also says the country needs more trips per person and longer stays. In other words, longer travel is still a policy goal, not a completed change in behavior.
+
+So this is not a simple story about famous sightseeing being replaced by slow travel. The clearer story is that attitudes are changing faster than travel schedules.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part2.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.full_story_part2.canonical_text (= b1b/parts.json → part2)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="219.961"></button></td><td>Comment 3 (Charon, Bridge)</td><td class="txt">The main idea is simple: people may want more freedom in how they travel, but their actual plans are still short. This shows a gap between changing attitudes and current travel schedules. Next, we will look more closely at two sides of this story.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_3.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_3.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="235.992"></button></td><td>Point Notification (Point One cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3。<code>er003_v1_n3_01_assemble.py</code> <code>POINT_NOTIFICATION_MP3_PATH</code>定数(38行目、<code>load_and_resample_to_target</code>で生音声ロード、TTS textフィールドなし。ファイル名がストック効果音の命名規則であることも根拠)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="237.769"></button></td><td>Point One semantic heading (Aoede)</td><td class="txt">Slow travel is also about control</td><td class="kp-audio"><audio controls src="b1b/narration/point_one_heading.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_one_heading.canonical_text (= b1b/parts.json → point_one_heading)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="241.519"></button></td><td>Point One (Aoede)</td><td class="txt">Slow travel here may mean control over time, not simply more nights. Men aged 29 and under put solo travel at 25.2%, while hobby-focused travel showed a similar pattern. Separately, about 90% of Gen Z respondents wanted free time during an overseas tour, and about 80% wanted half a day or more. A short package does not have to be fully scheduled.</td><td class="kp-audio"><audio controls src="b1b/narration/point_one.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_one.canonical_text (= b1b/parts.json → point_one_body)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="270.47"></button></td><td>Point Notification (Point Two cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3。<code>er003_v1_n3_01_assemble.py</code> <code>POINT_NOTIFICATION_MP3_PATH</code>定数(同上)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="272.247"></button></td><td>Point Two semantic heading (Aoede)</td><td class="txt">One youth market does not fit all</td><td class="kp-audio"><audio controls src="b1b/narration/point_two_heading.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_two_heading.canonical_text (= b1b/parts.json → point_two_heading)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="275.908"></button></td><td>Point Two (Aoede)</td><td class="txt">“Young Japanese travelers” is too broad a label. For men aged 18 to 29, solo travel was the leading travel arrangement in another survey. But among women aged 29 and under, 44.7% were still interested in visiting famous tourist spots. Different groups may respond to different offers: flexible, interest-led plans for some, and landmark-focused trips for others.</td><td class="kp-audio"><audio controls src="b1b/narration/point_two.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_two.canonical_text (= b1b/parts.json → point_two_body)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="305.799"></button></td><td>Comment 4 (Charon)</td><td class="txt">Together, these points show that young travelers do not all want the same kind of trip. For some, control over time matters, while others may still want to visit famous sights. Now, let’s bring these ideas together in the closing summary.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_4.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_4.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="322.06"></button></td><td>In One Line (Aoede)</td><td class="txt">Young travelers in Japan are showing a clearer wish for more self-directed travel, especially young men, but the evidence points to an emerging preference—not a completed shift to longer stays.</td><td class="kp-audio"><audio controls src="b1b/narration/in_one_line.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.in_one_line.canonical_text (= b1b/parts.json → in_one_line)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="335.831"></button></td><td>Outro (Charon)</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。6.144秒のOutro音楽をそのまま再生。ラベルに「(Charon)」とあるが、実際はA2の"Outro"行と全く同じ<code>outro.mp3</code>を使う非音声ジングルであり、Charonによる読み上げではない(<code>er003_v1_n3_01_assemble.py</code>478行目・682行目とも<code>parts["outro"]</code>で同一ソース)。</td><td>—</td><td class="src">C:\Users\tensh\sound\outro.mp3(固定音源、記事非依存)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「10. Outro Music」節 + <code>er003_b1_p9a_audio.py</code> <code>OUTRO_MP3_PATH</code>定数。</td></tr>
+
+</tbody>
+</table>
+
+<p class="note">補足: <code>b1b/narration/num_one_charon.wav</code> 〜 <code>num_five_charon.wav</code>(Key Phrase 1〜5の番号読み上げ、Charon)は、上表のKey Phrase行には掲載していませんが、テキストは特定できています: num_one=&quot;One.&quot; / num_two=&quot;Two.&quot; / num_three=&quot;Three.&quot; / num_four=&quot;Four.&quot; / num_five=&quot;Five.&quot;(いずれも固定テンプレート音声、IRAN01から再利用。source: <code>er003_output/b1redesign_audio_01/IRAN01/audit/segment_generation_results.json</code> → <code>num_one</code>〜<code>num_five</code>、ASR verified EXACT_MATCH)。</p>
+
+<h3 id="b1-kp">B1 Key Phrase表(既存維持・詳細)</h3>
+<table>
+<thead><tr><th>#</th><th>English (used_form)</th><th>表示用 gloss</th><th>TTS用テキスト</th><th>ASR(英語)</th><th>分類(英語)</th><th>ASR(日本語)</th><th>分類(日本語)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>self-directed travel</td><td>自分で進め方を決める旅行</td><td>自分で進め方を決める旅行</td><td>Self-directed travel</td><td>N/A(reused master audio, 再分類なし)</td><td>自分で進め方を決める旅行</td><td>EXACT_MATCH</td></tr>
+<tr><td>2</td><td>two different speeds</td><td>二つの異なるペースで進んでいること</td><td>二つの異なるペースで進んでいること</td><td>two different speeds</td><td>N/A(reused master audio, 再分類なし)</td><td>二つの異なるペースで進んでいること。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>3</td><td>too broad a label</td><td>ひとまとめにしすぎた呼び方</td><td>ひとまとめにしすぎた呼び方</td><td>Too broad a label.</td><td>NORMALIZED_MATCH</td><td>ひとまとめにしすぎた呼び方。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>4</td><td>interest-led plans</td><td>興味を中心にした旅行プラン</td><td>興味を中心にした旅行プラン</td><td>Interest-led plans.</td><td>N/A(reused master audio, 再分類なし)</td><td>興味を中心にした旅行プラン</td><td>EXACT_MATCH</td></tr>
+<tr><td>5</td><td>leading travel arrangement</td><td>最も多い旅行の形</td><td>最も多い旅行の形</td><td>Leading travel arrangement.</td><td>NORMALIZED_MATCH</td><td>最も多い旅行の形。</td><td>NORMALIZED_MATCH</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== A2 ==================== -->
+<section id="a2">
 <h2>A2 (English Your Way, A2)</h2>
 <p>duration: 375.226s / peak: 0.98(headroom safety valve適用済み、適用前peak=1.0350189) / clipping: false</p>
-<audio controls src="a2/assembled/English_Your_Way_A2_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav"></audio>
-</body></html>
+<audio id="player-a2" class="main" controls src="a2/assembled/English_Your_Way_A2_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav"></audio>
+
+<h3 id="a2-timeline">A2 タイムライン・全スクリプト(収録順)</h3>
+<table>
+<thead><tr><th>Seek</th><th>Segment</th><th>Text(実際に読み上げられた内容)</th><th>個別音声</th><th>Source</th></tr></thead>
+<tbody>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="0.0"></button></td><td>Intro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。B1と同じ<code>Intro.mp3</code>(10.748秒)をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\Intro.mp3(固定音源、記事非依存、A2/B1共通)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「1. Intro Music」節 + <code>er003_b1_p9a_audio.py</code> <code>INTRO_MP3_PATH</code>定数。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="10.736"></button></td><td>Welcome</td><td class="txt">Welcome to English Your Way.</td><td>—(この出力フォルダに個別音声ファイルなし。サービス共通の<code>er003_output/b1_p9a/A01/narration/welcome.wav</code>を直接参照)</td><td class="src">固定テンプレート音声(記事非依存、サービス共通の<code>A01_NARRATION_DIR</code>を直接参照、コピーせず読み込み)。<code>er003_output/b1_p9a/A01/audit/narration_generation_v2.json</code> → <code>welcome</code>(sha256=<code>c1fa5636…</code>が参照元ファイルの実sha256と完全一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="13.347"></button></td><td>Topic intro</td><td class="txt">Today's topic is Young Japan Wants Slower Trips. The Plans Are Still Short.</td><td class="kp-audio"><audio controls src="a2/narration/topic_intro.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.topic_intro.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="20.088"></button></td><td>Japanese title</td><td class="txt">「ゆっくりした旅」を求める若い世代、旅の計画はまだ短い</td><td class="kp-audio"><audio controls src="a2/narration/japanese_title.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.japanese_title.canonical_text</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="26.658"></button></td><td>Notification 1</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、2.040秒)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「Transition(効果音)」表 + <code>er003_b1_p9a_audio.py</code> <code>NOTIFICATION_MP3_PATH</code>定数。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="29.098"></button></td><td>Preview intro</td><td class="txt">Here's a quick preview.</td><td>—(個別音声ファイルなし。<code>A01_NARRATION_DIR</code>を直接参照)</td><td class="src">固定テンプレート音声(記事非依存、サービス共通)。<code>er003_output/b1_p9a/A01/audit/narration_generation.json</code> → <code>preview_intro</code>(sha256=<code>159b6374…</code>が参照元ファイルの実sha256と完全一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="31.199"></button></td><td>Point explanation</td><td class="txt">ポイント解説(日本語)</td><td>—(個別音声ファイルなし。<code>A01_NARRATION_DIR</code>を直接参照)</td><td class="src">固定テンプレート音声(記事非依存、サービス共通)。<code>er003_output/b1_p9a/A01/audit/verified_regen_1.json</code> → <code>point_explanation</code>(sha256=<code>0b635980…</code>が参照元ファイルの実sha256と完全一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="33.119"></button></td><td>Preview</td><td class="txt">日本の若い世代には、旅先で自分らしく過ごしたいという思いが見られます。いくつかの調査を通して、旅行の楽しみ方がどう変わっているのかを考えます。</td><td class="kp-audio"><audio controls src="a2/narration/preview.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.preview.canonical_text (= a2/a2_support_texts.json → preview)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="45.499"></button></td><td>Notification 2</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、同上)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="47.939"></button></td><td>Key phrases intro</td><td class="txt">Here are today's key phrases.</td><td>—(個別音声ファイルなし。<code>A01_NARRATION_DIR</code>を直接参照)</td><td class="src">固定テンプレート音声(記事非依存、サービス共通)。<code>er003_output/b1_p9a/A01/audit/narration_generation_v2.json</code> → <code>key_phrases_intro</code>(sha256=<code>e80474f1…</code>が参照元ファイルの実sha256と完全一致)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="50.33"></button></td><td>Key Phrase 1</td><td class="txt">EN: at one's own pace<br>JA(表示/TTS共通): 自分のペースで<br><span class="src">詳細は下のKey Phrase表を参照</span></td><td class="kp-audio"><audio controls src="a2/narration/kp1_en.wav"></audio><audio controls src="a2/narration/meaning_1.wav"></audio></td><td class="src">a2/key_phrases/keywords_canonicalized.json → items[0]</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="59.193"></button></td><td>Key Phrase 2</td><td class="txt">EN: a full month off<br>JA(表示/TTS共通): まる一か月の休み</td><td class="kp-audio"><audio controls src="a2/narration/kp2_en.wav"></audio><audio controls src="a2/narration/meaning_2.wav"></audio></td><td class="src">a2/key_phrases/keywords_canonicalized.json → items[1]</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="68.796"></button></td><td>Key Phrase 3</td><td class="txt">EN: hobby-focused travel<br>JA(表示/TTS共通): 趣味を中心にした旅行</td><td class="kp-audio"><audio controls src="a2/narration/kp3_en.wav"></audio><audio controls src="a2/narration/meaning_3.wav"></audio></td><td class="src">a2/key_phrases/keywords_canonicalized.json → items[2]</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="78.889"></button></td><td>Key Phrase 4</td><td class="txt">EN: median<br>JA(表示/TTS共通): 真ん中の値</td><td class="kp-audio"><audio controls src="a2/narration/kp4_en.wav"></audio><audio controls src="a2/narration/meaning_4.wav"></audio></td><td class="src">a2/key_phrases/keywords_canonicalized.json → items[3]</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="85.772"></button></td><td>Key Phrase 5</td><td class="txt">EN: the new normal<br>JA(表示/TTS共通): 新しい当たり前</td><td class="kp-audio"><audio controls src="a2/narration/kp5_en.wav"></audio><audio controls src="a2/narration/meaning_5.wav"></audio></td><td class="src">a2/key_phrases/keywords_canonicalized.json → items[4]</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="93.575"></button></td><td>Notification 3</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音、同上)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="96.015"></button></td><td>Full story intro</td><td class="txt">Now, the full story.(内容は複数の生成記録で一致するが、下記の注記あり)</td><td>—(個別音声ファイルなし。<code>A01_NARRATION_DIR</code>を直接参照)</td><td class="src">固定テンプレート音声(記事非依存、サービス共通)。テキスト内容は<code>er003_output/b1_p9a/A01/audit/narration_generation.json</code>(preview_intro等の同一パイプライン)および<code>audit/full_story_intro_final.json</code>の双方で"Now, the full story."と一致するが、この2記録のsha256(それぞれ生成失敗・<code>9e3589a9…</code>)は現在<code>A01_NARRATION_DIR/full_story_intro.wav</code>として実際に参照されているファイルの実sha256(<code>455971bc…</code>)と一致しない(未特定の再生成が別途行われた可能性。テキスト内容自体は高確度、当該file個体の生成記録は未発見)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="98.886"></button></td><td>Comment 1</td><td class="txt">若い人たちが求める旅行のペースと、実際に考えている旅行の長さの関係に注目してください。</td><td class="kp-audio"><audio controls src="a2/narration/comment_1.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.comment_1.canonical_text (= a2/a2_support_texts.json → comment_1)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="107.206"></button></td><td>Full Story Part 1</td><td class="txt">As of September 2026, a quiet split appears in travel surveys in Japan.
+
+Young people are showing more interest in trips at their own pace. They want room for personal interests and free time. But the trips they plan are still often short.
+
+This is the interesting part: wanting slower travel does not yet mean a long stay.
+
+When people imagined getting a full month off, the most common answer was a trip of about one week. It was chosen by 24.1%. This shows that many people can imagine giving travel more time when the chance exists.</td><td class="kp-audio"><audio controls src="a2/narration/full_story_part1.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.full_story_part1.canonical_text (= a2/parts.json → part1)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="151.957"></button></td><td>Comment 2</td><td class="txt">前半では、ゆっくり自分のペースで旅をしたい人がいても、長い休みを想像したときの旅行は約1週間でした。では、実際に旅行を計画している人の滞在日数は、どのくらいなのでしょうか。</td><td class="kp-audio"><audio controls src="a2/narration/comment_2.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.comment_2.canonical_text (= a2/a2_support_texts.json → comment_2)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="169.027"></button></td><td>Full Story Part 2</td><td class="txt">But a different autumn survey looked at people who were planning a trip. Their planned hotel stays averaged 1.8 nights, with a median of 2 nights.
+
+The two pictures do not fully match. One shows a wish for more time. The other shows short plans.
+
+Japan’s Tourism White Paper also says that making stays longer is still a policy task. So the evidence does not show a complete move from famous sightseeing to slow travel.
+
+It shows a growing wish for a more personal trip, while long stays have not yet become normal.</td><td class="kp-audio"><audio controls src="a2/narration/full_story_part2.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.full_story_part2.canonical_text (= a2/parts.json → part2)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="206.913"></button></td><td>Comment 3</td><td class="txt">ここまでの話から、若い人の間では、自分のペースで旅行したい気持ちが見えます。ただ、実際に考えられている旅行は、まだ短いものが多く、ゆっくりした旅行が長い滞在を意味するとは限りません。これからは、ゆっくり旅行することの意味と、同じ年代でも旅行の目的が違うことに注目します。</td><td class="kp-audio"><audio controls src="a2/narration/comment_3.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.comment_3.canonical_text (= a2/a2_support_texts.json → comment_3)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="233.163"></button></td><td>Point Notification (Point One cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3。<code>er003_v1_n3_01_assemble.py</code> <code>POINT_NOTIFICATION_MP3_PATH</code>定数(生音声ロード、TTS textフィールドなし)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="234.94"></button></td><td>Point One semantic heading</td><td class="txt">Slow can mean more control</td><td class="kp-audio"><audio controls src="a2/narration/point_one_heading.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.point_one_heading.canonical_text (= a2/parts.json → point_one_heading)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="238.77"></button></td><td>Point One</td><td class="txt">Slow travel may be less about adding nights and more about choosing how to use the day. Among men aged 29 and under, solo travel was about 25%, and hobby-focused travel was about 24%. A separate survey found that about 90% of Gen Z respondents wanted free time inside an overseas tour. About 80% wanted at least half a day. A short trip can still feel more personal when the traveler has room to choose.</td><td class="kp-audio"><audio controls src="a2/narration/point_one.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.point_one.canonical_text (= a2/parts.json → point_one_body)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="276.495"></button></td><td>Point Notification (Point Two cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3。<code>POINT_NOTIFICATION_MP3_PATH</code>定数(同上)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="278.271"></button></td><td>Point Two semantic heading</td><td class="txt">One age group, different travel missions</td><td class="kp-audio"><audio controls src="a2/narration/point_two_heading.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.point_two_heading.canonical_text (= a2/parts.json → point_two_heading)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="282.91"></button></td><td>Point Two</td><td class="txt">Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.</td><td class="kp-audio"><audio controls src="a2/narration/point_two.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.point_two.canonical_text (= a2/parts.json → point_two_body)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="326.605"></button></td><td>Comment 4</td><td class="txt">ここまで見てきたのは、若い旅行者の旅の楽しみ方は一つではない、ということです。自分で時間を使いたい人もいれば、有名な場所や食を楽しみたい人もいて、同じ年代でも求めるものは違います。それでは、この話のポイントを英語でまとめて聞いてみましょう。</td><td class="kp-audio"><audio controls src="a2/narration/comment_4.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.comment_4.canonical_text (= a2/a2_support_texts.json → comment_4)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="347.245"></button></td><td>In One Line</td><td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.</td><td class="kp-audio"><audio controls src="a2/narration/in_one_line.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.in_one_line.canonical_text (= a2/parts.json → in_one_line)</td></tr>
+
+<tr><td><button class="seek" data-target="player-a2" data-sec="369.082"></button></td><td>Outro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。B1と同じ<code>outro.mp3</code>(6.144秒)をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\outro.mp3(固定音源、記事非依存、A2/B1共通)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「10. Outro Music」節 + <code>er003_b1_p9a_audio.py</code> <code>OUTRO_MP3_PATH</code>定数。</td></tr>
+
+</tbody>
+</table>
+
+<h3 id="a2-kp">A2 Key Phrase表(既存維持・詳細)</h3>
+<table>
+<thead><tr><th>#</th><th>English (used_form)</th><th>表示用 gloss</th><th>TTS用テキスト</th><th>ASR(英語)</th><th>分類(英語)</th><th>ASR(日本語)</th><th>分類(日本語)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>at one's own pace</td><td>自分のペースで</td><td>自分のペースで</td><td>At one's own pace.</td><td>N/A(reused master audio, 再分類なし)</td><td>自分のペースで</td><td>EXACT_MATCH</td></tr>
+<tr><td>2</td><td>a full month off</td><td>まる一か月の休み</td><td>まる一か月の休み</td><td>A full month off.</td><td>NORMALIZED_MATCH</td><td>丸1か月の休み。(2回目attemptで確定。1回目はTRUE_CONTENT_MISMATCHで再試行)</td><td>PHONETIC_MATCH</td></tr>
+<tr><td>3</td><td>hobby-focused travel</td><td>趣味を中心にした旅行</td><td>趣味を中心にした旅行</td><td>Hobby-Focused Travel</td><td>NORMALIZED_MATCH</td><td>趣味を中心にした旅行。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>4</td><td>median</td><td>真ん中の値</td><td>真ん中の値</td><td>Median</td><td>N/A(reused master audio, 再分類なし)</td><td>真ん中の値。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>5</td><td>the new normal</td><td>新しい当たり前</td><td>新しい当たり前</td><td>The new normal.</td><td>NORMALIZED_MATCH</td><td>新しい当たり前</td><td>EXACT_MATCH</td></tr>
+</tbody>
+</table>
+</section>
+
+<script>
+function formatTime(sec){
+  sec = parseFloat(sec);
+  var m = Math.floor(sec / 60);
+  var s = (sec - m * 60).toFixed(1);
+  if (s.length < 4) { s = "0" + s; }
+  return m + ":" + s;
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var buttons = document.querySelectorAll("button.seek");
+  buttons.forEach(function (btn) {
+    var sec = btn.getAttribute("data-sec");
+    btn.textContent = "▶ " + formatTime(sec);
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-target"));
+      if (target) {
+        target.currentTime = parseFloat(sec);
+        target.play();
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>

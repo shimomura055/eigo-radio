@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08で
+**最終更新: 2026-09-06(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09で
+完成音声・Trial音声の試聴依頼は音声+完全スクリプトを同一ページに表示する
+ことを9-2へ標準化)。2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08で
 commit/pushを伴うタスクは同時に1つだけ稼働させる原則と、回帰実行は
 `run_project_regression.py`のみを使い`unittest discover`は使用しない運用注意を
 8節へ追記)。2026-09-06(PM-FABLE-SONNET-REVIEW-LOOP-03でFable↔Sonnetレビュー
@@ -329,6 +331,17 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   URL(Ctrl+クリックで開ける)で提示する。パスのみの記載や`SendUserFile`等
   での送付は行わない(2026-09-06ユーザー指示)。sonnet-workerのReport/
   RESULT_PACKETにも同形式で記載させる。
+- 完成音声・Trial音声の試聴を依頼する場合、リンク先ページには音声だけでなく、
+  **その音声で実際に読み上げられる完全なスクリプト**(Preview/本文/Key
+  Phrases・各Keywordの日本語gloss[表示用、TTS用が異なる場合は併記]/
+  Comment/見出し・Intro・Outro等その音声内で読み上げられる全section)を
+  **同一ページ**に表示する。A2/B1など複数レベルはレベルごとに音声と
+  スクリプトを明確に分ける。segment順・開始時刻付きで「今聞いている箇所の
+  文言」を追える構成にする(クリックseek推奨)。`USER_FINAL_AUDIO_REVIEW_
+  REQUIRED`/Trial音声レビューではこの形式を標準とし、**音声だけのreview
+  linkは作らない**。テキストが取得できないsegmentは推測で埋めず「未取得」
+  と明記する(2026-09-06ユーザー指示、PM-GOVERNANCE-AUDIO-REVIEW-PAGE-
+  STANDARD-09)。
 
 本原則はFableのユーザー向け報告に適用する。Sonnet/OpusからFableへの報告
 (`RESULT_PACKET.md`・ER/OPEN Report)は従来どおり証跡・原文を省略せず詳細に
@@ -572,3 +585,25 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   状態(5-part構造は強い候補、Voices Editorial Design全体は未承認・
   Trial-05で再設計中、Production採用未決定)を`OPEN_ITEMS.md`
   (OPEN-120)・`DECISION_LOG.md`へ記録した。
+- 2026-09-06(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09): 「9-2. PMとしての
+  説明原則」の既存箇条書き(試聴・閲覧依頼は`file:///...`形式のURLで提示する)
+  に続けて、完成音声・Trial音声の試聴を依頼する場合はリンク先ページに音声
+  だけでなく、その音声で実際に読み上げられる完全なスクリプト(Preview/本文/
+  Key Phrases・各Keywordの日本語gloss[表示用、TTS用が異なる場合は併記]/
+  Comment/見出し・Intro・Outro等その音声内で読み上げられる全section)を
+  同一ページに表示することを標準化する箇条書きを追加した。A2/B1など複数
+  レベルはレベルごとに音声とスクリプトを明確に分け、segment順・開始時刻
+  付きで「今聞いている箇所の文言」を追える構成(クリックseek推奨)とし、
+  `USER_FINAL_AUDIO_REVIEW_REQUIRED`/Trial音声レビューでは音声だけの
+  review linkを作らないこと、テキストが取得できないsegmentは推測で埋めず
+  「未取得」と明記することを明記した(文書編集のみ、コード・Prompt変更
+  なし)。実例として、既存の`er011_output/open112_trend_theme2_b_final_
+  audio_rerun_02/player.html`の固定テンプレート音声(Intro/Welcome/
+  Notification/Preview intro/Point explanation/Key phrases intro/Full
+  story intro/Point Notification/Outro)を、read-onlyでProduction資産
+  (`ER-003-B1-P9A_instruction.md`・`er003_b1_p9a_audio.py`・
+  `er003_v1_n3_01_assemble.py`・IRAN01/A01の生成記録sha256)から実際の
+  読み上げ文言・音源種別(ジングル/効果音/固定テンプレート発話)まで特定し
+  同ページへ反映した。ユーザーのクライアントでは音声だけのreview linkでは
+  試聴中の該当箇所の文言を文字で確認できなかったことを受けた2026-09-06
+  ユーザー指示による新設。

@@ -61,6 +61,49 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ---
 
+## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
+
+**日付**: 2026-09-06
+
+**区分**: PM運用ルール(サービス・生成仕様ではない)
+
+**内容**: `docs/pm/PM_GOVERNANCE.md`「9-2. PMとしての説明原則」の既存箇条書き
+(試聴・閲覧依頼は`file:///...`形式のURLで提示する)に続けて、完成音声・
+Trial音声の試聴を依頼する場合はリンク先ページに音声だけでなく、その音声で
+実際に読み上げられる完全なスクリプト(Preview/本文/Key Phrasesの各Keyword
+日本語gloss[表示用・TTS用が異なる場合は併記]/Comment/見出し・Intro・Outro等、
+その音声内で読み上げられる全section)を同一ページに表示することを標準化する
+箇条書きを追加した。A2/B1等複数レベルはレベルごとに音声・スクリプトを明確に
+分け、segment順・開始時刻付きで「今聞いている箇所の文言」を追える構成
+(クリックseek推奨)とし、`USER_FINAL_AUDIO_REVIEW_REQUIRED`/Trial音声
+レビューでは音声だけのreview linkを作らないことを明記した。テキストが
+取得できないsegmentは推測で埋めず「未取得」と明記する。あわせて実例として
+Theme 2 B(`er011_output/open112_trend_theme2_b_final_audio_rerun_02/
+player.html`)の固定テンプレート音声(Intro/Welcome/Notification/Preview
+intro/Point explanation/Key phrases intro/Full story intro/Point
+Notification/Outro)を、read-onlyでProduction資産(`ER-003-B1-P9A_
+instruction.md`・`er003_b1_p9a_audio.py`・`er003_v1_n3_01_assemble.py`・
+IRAN01/A01の生成記録sha256)から実際の読み上げ文言・音源種別(ジングル/
+効果音/固定テンプレート発話)まで特定し反映した(A2 Full story introの
+1件のみ、テキスト内容は複数記録で一致するが現ファイルのsha256と一致する
+生成記録が未発見のため注記付き)。
+
+**採用理由**: 音声だけのreview linkではユーザーが「今何を聞いているか」を
+文字で確認できず試聴判断がしづらいため(2026-09-06ユーザー指示)。
+
+**根拠レポート**: なし(PM運用ルールの文書編集+既存player.htmlへの
+read-only補完、Trial実行・新規TTS・Production変更なし)。
+
+**状態**: 文書化完了・player.html補完完了(PM運用ルールの明文化のみ、
+Productionコード・Prompt・記事本文・音声・`CURRENT_SPEC.md`・
+`OPEN_ITEMS.md`は無変更)。
+
+**commit**: 本タスクのcommit(hashはcommit後にGitHub上で確認可能)。
+
+**影響するCURRENT_SPEC項目**: なし。
+
+---
+
 ## EDITORIAL-B-FAMILY-VOICES-SERIES-02-05: Lane B Voices/Perspective設計〜Trial-05の記録
 
 **日付**: 2026-09-06
@@ -137,7 +180,7 @@ Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 Promptへの変更は一切なし(DESIGN/TRIALいずれも読み取り調査・Trialアダプタ
 経由)。
 
-**commit**: 本タスクのcommit(hashはcommit後にGitHub上で確認可能)。
+**commit**: `6ae1c25`(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08、2026-09-06)。
 
 **影響するCURRENT_SPEC項目**: なし(B Family Editorial TypeはProduction
 未実装のまま)。
