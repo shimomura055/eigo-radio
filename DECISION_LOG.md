@@ -7323,6 +7323,71 @@ Production既定閾値(run≥0.12秒)で既存PASS音声517件中23件(4.4%)がf
 追記した。**根拠レポート**: `PM-LANE-A-PRODUCTION-WIRED-FINAL-ACCEPTANCE-
 AUDIT-01_REPORT.md`。
 
+## PM-CLOSEOUT-CONSOLIDATION-05(2026-09-08、B-Family Voices試聴決定+
+Comment 1 Contract Trial+Numeric Precision監査+試聴player標準フォーマット
+統合)
+
+ユーザーがB-Family(Voices)Trial-09完成episodeを試聴し、Comment 1のみ
+修正必要・それ以外はOKと判断した。ユーザーが`APPROVED_FOR_PRODUCTION`
+(2026-09-08、未配線)と正式決定したのは以下4項目: (1) Voice A=Algieba/
+Voice B=Erinome/Narrator見出し=Aoede固定、(2) Tension slot「Where the
+Difference Comes From」の正式構造への追加、(3) Key Phrase位置=Preview
+直後(現状維持)、(4) Voice A/Bの一人称"I"記述。B-Family設計の継続も
+承認した。採用項目はGate 3を満たし`PRODUCTION_WIRED`になるまでcloseしない。
+Voices Comment Contractは、Comment 2〜4は現状の方向性で問題ないが、
+Comment 1修正版を確認してからContract全体を最終化する方針とし、現時点では
+`APPROVED_FOR_PRODUCTION`にしない。試聴・報告フォーマットはTrial-09の
+player形式(Source列削除・Script列拡幅・個別`<audio>`拡幅の3修正込み)を
+今後の完成音声/Trial音声レビューの標準フォーマットとして採用した。OPEN-112
+Theme 2 B1は音声品質をユーザーが承認した(false start解消確認済み)が、
+Numeric Precision監査・必要修正が残るため最終closeしない(ユーザー見解:
+25.2%→25%、44.7%→45%で十分)。
+
+3タスクの結果: **(A)** `EDITORIAL-B-FAMILY-VOICES-COMMENT1-CONTRACT-FIX-
+TRIAL-10_REPORT.md`(Comment 1 Contract最小修正Trial+採用4項目の配線状況
+調査)。Comment 1修正版("As you listen, notice how the question compares
+different reactions to the same place.")をTTS+ASR `EXACT_MATCH`でPASS
+(¥0.62、Gate 1`VALIDATED`、Contract採用は`USER_DECISION_REQUIRED`)。
+追加委任のn=3再現性確認では(i)(ii)(Listening Focus型・断定的要約なし)は
+3/3で安定したが、(iii)run1のみ内部section名"The Question"と紛らわしい
+"the question"の漏出が検出され(run2/run3は非検出)、Contract追加修正案
+2件を提案のみ・未実装のまま記録した(累積¥0.72)。配線調査の結論:
+B-Family Production正式経路は現時点で一切存在せず(Trial番号付きファイル
+のみ)。(1)Narrator=Aoedeは既存共有Production関数がすでに満たし追加配線
+不要、(3)Key Phrase位置は変更対象自体が無い、(2)Voice A/B固定+Tension
+slotはLane B側ファイルのみで技術的に実装可能だが呼び出し元となる
+B-Family Production runtimeが不在のため本タスクでは未実装(`PRODUCTION_
+WIRED`候補、Fable受入待ち)、(4)一人称記述はLane A共有Writer
+(`er003_v1_n3_01_articles_generate.py`)へのEditorial Type Module導入が
+前提のためSTOP(別タスク推奨)。Fable判定: B-Family Production経路の新設
+自体(配線先そのもの)が未承認・未設計であり仕様判断を要するため
+`USER_DECISION_REQUIRED`。**(B)** `PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-
+STANDARD-FORMAT-11_REPORT.md`。共通module`audio_review_player.py`を新設
+し、3修正点(Source列削除・Script列拡幅・`<audio>`min-width 360px等)を
+反映、Trial-09 player.htmlを再生成、`docs/pm/PM_GOVERNANCE.md` Gate 7 (l)
+へ最小追記した。`CURRENT_SPEC.md`にplayer形式の正式仕様節は無いことを
+確認済み。rerun_03のplayerは生成元スクリプトがリポジトリに存在せず
+未反映のまま(フォローアップ要判断)。**(C)** `OPEN-112-THEME2-B1-NUMERIC-
+PRECISION-WIRING-AUDIT-01_REPORT.md`(読み取り専用監査)。Numeric
+Precision仕様(土台2026-09-04配線+強化ブロック2026-09-07配線)は配線済み
+だが、rerun_02/03の本文は強化ブロック配線前(2026-09-05生成)のテキスト
+がbyte-for-byte温存されており、強化版Editorを同一草稿に再実行すると
+25.2%→about 25%・44.7%→about 45%へ丸められることを実データで確認した。
+修正選択肢A(決定的文字列置換、対象2segmentのみ再TTS、数円〜数十円)/
+選択肢B(強化版Editor再実行、非決定的・記事全体Gate再実行要、数十円〜
+百円未満)はいずれも`USER_DECISION_REQUIRED`。副次論点2点(レベル間数字
+粒度の割れの登録要否、他の既存完成音声への遡及点検要否)も未決定のまま
+記録した。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-120行・OPEN-112行へ上記結果を追記、
+`CURRENT_SPEC.md`へB-Family採用4項目(`APPROVED_FOR_PRODUCTION`・配線待ち・
+Production経路未設計)と試聴player標準フォーマット参照を最小追記した。
+Git操作は4グループ(Lane B Trial-10、試聴フォーマット、監査Report、SSOT)
+に分けてcommitし、`origin/main`へpushした。**根拠レポート**:
+`EDITORIAL-B-FAMILY-VOICES-COMMENT1-CONTRACT-FIX-TRIAL-10_REPORT.md`、
+`PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11_REPORT.md`、
+`OPEN-112-THEME2-B1-NUMERIC-PRECISION-WIRING-AUDIT-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
