@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OPEN-112-THEME2-B1-REASSEMBLY-POST-WIRING-03</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;line-height:1.6;max-width:980px;margin:0 auto;padding:16px;color:#111;}
+h1{font-size:1.4em;}
+h2{border-bottom:3px solid #333;padding-bottom:4px;margin-top:2.2em;}
+h3{margin-top:1.6em;border-left:6px solid #888;padding-left:8px;}
+table{border-collapse:collapse;width:100%;margin:12px 0 24px 0;font-size:0.92em;}
+th,td{border:1px solid #ccc;padding:6px 8px;vertical-align:top;text-align:left;}
+th{background:#f0f0f0;}
+td.txt{white-space:pre-wrap;}
+button.seek{cursor:pointer;font-family:monospace;font-size:0.95em;padding:2px 6px;}
+.missing{color:#a33;font-style:italic;}
+.src{font-size:0.85em;color:#555;}
+.kp-audio audio{height:28px;width:220px;vertical-align:middle;}
+nav#toc{background:#f7f7f7;border:1px solid #ddd;padding:10px 16px;margin-bottom:20px;}
+nav#toc ul{margin:4px 0;}
+audio.main{width:100%;max-width:640px;display:block;margin:8px 0;}
+.note{background:#fffbe6;border:1px solid #e0d080;padding:8px 12px;font-size:0.9em;margin:10px 0;}
+.compare-row-old td{background:#ffecec;}
+.compare-row-new td{background:#eaffea;}
+code.sha{font-size:0.82em;word-break:break-all;}
+</style>
+</head>
+<body>
+<h1>OPEN-112-THEME2-B1-REASSEMBLY-POST-WIRING-03(Theme 2 B1 再Assembly + 全スクリプト + FSP1新旧比較)</h1>
+<p class="note">
+このページは、Theme 2「若者の旅行:ゆっくり滞在」B1の完成音声(rerun_03、Full Story Part 1のみOPEN-121 Production配線後の新音声に差し替え、他segmentはrerun_02のPASS音声をそのまま再利用)と、その音声で実際に読み上げられた全文スクリプトをsegment順に並べたレビュー用ページです。
+「Seek」ボタンをクリックすると、上部の完成episode音声プレイヤーが該当時刻から再生されます(JavaScriptで<code>audio.currentTime</code>を設定)。各行に「Seek(再生)ボタン」「Segment名/Voice」「完全script」「個別音声」を同一行に配置しており、長いスクロールで照合しなくてよい構造にしています。
+最後に、旧Full Story Part 1(false startあり、rerun_02由来)と新Full Story Part 1(OPEN-121 Production配線経路でPASS)の単体比較行を設けています。
+TTS方式: 新Full Story Part 1は<code>TTS_EXECUTION_MODE=STANDARD</code>(Standard同期)で生成済み(生成元run_summary.json記録)。本タスク自体は新規TTS/ASR呼び出しを一切行っていない(既存の新Full Story Part 1音声を差し替えて再Assemblyしたのみ)。他segmentもすべてrerun_02時点でStandard同期生成済みの既存PASS音声の再利用であり、Batch APIは一切使用していない(正式リリース前=Standard同期の原則どおり)。
+</p>
+
+<nav id="toc">
+<strong>目次</strong>
+<ul>
+<li><a href="#b1">B1 完成音声(rerun_03)・タイムライン・全スクリプト・Key Phrase表</a></li>
+<li><a href="#compare">Full Story Part 1: 旧(false start)vs 新(OPEN-121 PASS)単体比較</a></li>
+</ul>
+</nav>
+
+<!-- ==================== B1 ==================== -->
+<section id="b1">
+<h2>B1 (English Your Way, B1) — rerun_03(Full Story Part 1差し替え後)</h2>
+<p>duration: 343.044s(rerun_02比 +1.069s) / peak: 0.75511(rerun_02: 0.80806) / clipping: false / headroom safety valve: 不適用(peak_before=0.7551106、閾値0.98未満)。原因piece(最大peakのpiece)は新Full Story Part 1(0.7551106)。</p>
+<audio id="player-b1" class="main" controls src="b1b/assembled/English_Your_Way_B1B_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_03.wav"></audio>
+
+<h3 id="b1-timeline">B1 タイムライン・全スクリプト(収録順、rerun_03実測timeline.jsonより)</h3>
+<table>
+<thead><tr><th>Seek</th><th>Segment</th><th>Text(実際に読み上げられた内容)</th><th>個別音声</th><th>Source</th></tr></thead>
+<tbody>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="0.0"></button></td><td>Intro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。10.736秒のIntro音楽をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\Intro.mp3(固定音源、記事非依存)。rerun_02と同一ソース。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="10.736"></button></td><td>Welcome (Charon)</td><td class="txt">Welcome to English Your Way.</td><td class="kp-audio"><audio controls src="b1b/narration/welcome_charon.wav"></audio></td><td class="src">固定テンプレート音声(記事非依存、rerun_02からそのまま継承)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="13.797"></button></td><td>Topic intro (Charon)</td><td class="txt">Today's topic is Young Japanese Travelers Want More Freedom, But Their Trips Are Still Short.</td><td class="kp-audio"><audio controls src="b1b/narration/topic_intro.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.topic_intro.text(rerun_02からそのまま継承)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="20.508"></button></td><td>Notification 1</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="22.948"></button></td><td>Preview intro (Charon)</td><td class="txt">Here's a quick preview.</td><td class="kp-audio"><audio controls src="b1b/narration/preview_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(rerun_02からそのまま継承)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="25.049"></button></td><td>Preview (Charon)</td><td class="txt">This episode looks at how young people in Japan think about travel, including freedom, personal interests, and time. But the label &ldquo;young Japanese travelers&rdquo; may hide important differences between groups. Listen to see what the surveys show about these different preferences and what &ldquo;slow travel&rdquo; means in this story. By the end, you will have a clearer view of what young travelers may want from a trip.</td><td class="kp-audio"><audio controls src="b1b/narration/preview.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.preview.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="54.43"></button></td><td>Notification 2</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="56.87"></button></td><td>Key phrases intro (Charon)</td><td class="txt">Here are today's key phrases.</td><td class="kp-audio"><audio controls src="b1b/narration/key_phrases_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(rerun_02からそのまま継承)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="59.461"></button></td><td>Key Phrase 1</td><td class="txt">EN: self-directed travel<br>JA(表示/TTS共通): 自分で進め方を決める旅行</td><td class="kp-audio"><audio controls src="b1b/narration/kp1_en.wav"></audio><audio controls src="b1b/narration/kp1_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[0](rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="69.544"></button></td><td>Key Phrase 2</td><td class="txt">EN: two different speeds<br>JA(表示/TTS共通): 二つの異なるペースで進んでいること</td><td class="kp-audio"><audio controls src="b1b/narration/kp2_en.wav"></audio><audio controls src="b1b/narration/kp2_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[1](rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="79.537"></button></td><td>Key Phrase 3</td><td class="txt">EN: too broad a label<br>JA(表示/TTS共通): ひとまとめにしすぎた呼び方</td><td class="kp-audio"><audio controls src="b1b/narration/kp3_en.wav"></audio><audio controls src="b1b/narration/kp3_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[2](rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="88.93"></button></td><td>Key Phrase 4</td><td class="txt">EN: interest-led plans<br>JA(表示/TTS共通): 興味を中心にした旅行プラン</td><td class="kp-audio"><audio controls src="b1b/narration/kp4_en.wav"></audio><audio controls src="b1b/narration/kp4_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[3](rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="99.133"></button></td><td>Key Phrase 5</td><td class="txt">EN: leading travel arrangement<br>JA(表示/TTS共通): 最も多い旅行の形</td><td class="kp-audio"><audio controls src="b1b/narration/kp5_en.wav"></audio><audio controls src="b1b/narration/kp5_ja_charon.wav"></audio></td><td class="src">b1b/key_phrases/keywords_canonicalized.json → items[4](rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="109.055"></button></td><td>Notification 3</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\sound\notification.mp3(固定効果音)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="111.496"></button></td><td>Full story intro (Charon)</td><td class="txt">Now, the full story.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_intro_charon.wav"></audio></td><td class="src">固定テンプレート音声(rerun_02からそのまま継承)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="114.746"></button></td><td>Comment 1 (Charon)</td><td class="txt">Listen for the difference between how long people imagine traveling and how long their planned trips are.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_1.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_1.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み)</td></tr>
+
+<tr class="compare-row-new"><td><button class="seek" data-target="player-b1" data-sec="123.787"></button></td><td><strong>Full Story Part 1 (Aoede) — 【新音声、OPEN-121配線後PASS】</strong></td><td class="txt">As of September 2026, travel surveys in Japan tell a story with two different speeds.
+
+Many younger travelers, especially men, seem to want more room for their own pace and interests. But the trips measured in surveys are still short.
+
+This contrast appears clearly when people imagine having more time. In one survey, the most common answer was about one week of travel if people could take a one-month vacation. About 24% chose that answer.
+
+But an autumn survey by the same research center asked about people considering a trip. Their planned stays averaged about 1.8 nights, with a median of about two nights.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part1.wav"></audio></td><td class="src">生成元: <code>er011_output/open121_tts_repetition_qa_production_wiring_01/theme2_b1_fsp1_regen/run_summary.json</code>。attempt1 status=OK、asr_verified=true、repetition_qa_evidence.flagged=False(方式D' best_run=0.33秒、判定閾値0.6秒未満)。sha256=<code class="sha">a598c2342abfd758e2c009b978ca6d8d1d33c00b3582e2b8e460661724cd891b</code>。duration=42.011秒(旧40.9419秒から+1.069秒)。canonical_text sha256はrerun_02のFSP1記録と完全一致(b042b098d2f3ab9d15cc0a4f725dc28e2c1761729ac645f46ce919fe1da743e9)。</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="165.798"></button></td><td>Comment 2 (Charon)</td><td class="txt">So far, the key point is that people may imagine longer trips, but their actual plans are still short. So, are travel habits really changing, or are only people&rsquo;s attitudes changing?</td><td class="kp-audio"><audio controls src="b1b/narration/comment_2.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_2.canonical_text(rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="181.659"></button></td><td>Full Story Part 2 (Aoede)</td><td class="txt">These were not the same question. One measured a wish under a special condition. The other measured a current travel plan. Together, they show a gap between the trip people imagine and the time they plan to spend.
+
+Japan&rsquo;s Tourism White Paper also says the country needs more trips per person and longer stays. In other words, longer travel is still a policy goal, not a completed change in behavior.
+
+So this is not a simple story about famous sightseeing being replaced by slow travel. The clearer story is that attitudes are changing faster than travel schedules.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part2.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.full_story_part2.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み、audio_classification=NORMALIZED_MATCH、OPEN-121未配線当時の音声=repetition_qa monitoring適用済み・flagged=False)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="221.03"></button></td><td>Comment 3 (Charon, Bridge)</td><td class="txt">The main idea is simple: people may want more freedom in how they travel, but their actual plans are still short. This shows a gap between changing attitudes and current travel schedules. Next, we will look more closely at two sides of this story.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_3.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_3.canonical_text(rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="237.061"></button></td><td>Point Notification (Point One cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="238.838"></button></td><td>Point One semantic heading (Aoede)</td><td class="txt">Slow travel is also about control</td><td class="kp-audio"><audio controls src="b1b/narration/point_one_heading.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_one_heading.canonical_text(rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="242.589"></button></td><td>Point One (Aoede)</td><td class="txt">Slow travel here may mean control over time, not simply more nights. Men aged 29 and under put solo travel at 25.2%, while hobby-focused travel showed a similar pattern. Separately, about 90% of Gen Z respondents wanted free time during an overseas tour, and about 80% wanted half a day or more. A short package does not have to be fully scheduled.</td><td class="kp-audio"><audio controls src="b1b/narration/point_one.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_one.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み、OPEN-121 monitoringでflagged=False)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="271.54"></button></td><td>Point Notification (Point Two cue)</td><td class="txt">効果音(読み上げなし)</td><td>—</td><td class="src">C:\Users\tensh\eigo-radio\notification\universfield-new-notification-07-210334.mp3</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="273.316"></button></td><td>Point Two semantic heading (Aoede)</td><td class="txt">One youth market does not fit all</td><td class="kp-audio"><audio controls src="b1b/narration/point_two_heading.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_two_heading.canonical_text(rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="276.977"></button></td><td>Point Two (Aoede)</td><td class="txt">&ldquo;Young Japanese travelers&rdquo; is too broad a label. For men aged 18 to 29, solo travel was the leading travel arrangement in another survey. But among women aged 29 and under, 44.7% were still interested in visiting famous tourist spots. Different groups may respond to different offers: flexible, interest-led plans for some, and landmark-focused trips for others.</td><td class="kp-audio"><audio controls src="b1b/narration/point_two.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.point_two.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み、OPEN-121 monitoringでflagged=False)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="306.868"></button></td><td>Comment 4 (Charon)</td><td class="txt">Together, these points show that young travelers do not all want the same kind of trip. For some, control over time matters, while others may still want to visit famous sights. Now, let&rsquo;s bring these ideas together in the closing summary.</td><td class="kp-audio"><audio controls src="b1b/narration/comment_4.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.comment_4.canonical_text(rerun_02から再利用)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="323.129"></button></td><td>In One Line (Aoede)</td><td class="txt">Young travelers in Japan are showing a clearer wish for more self-directed travel, especially young men, but the evidence points to an emerging preference&mdash;not a completed shift to longer stays.</td><td class="kp-audio"><audio controls src="b1b/narration/in_one_line.wav"></audio></td><td class="src">b1b/audit/tts_generation_results.json → segments.in_one_line.canonical_text(rerun_02から再利用、review_lock RESOLVED/OK確認済み)</td></tr>
+
+<tr><td><button class="seek" data-target="player-b1" data-sec="336.9"></button></td><td>Outro (Charon)</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。6.144秒のOutro音楽をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\outro.mp3(固定音源、記事非依存)。</td></tr>
+
+</tbody>
+</table>
+
+<p class="note">補足: <code>b1b/narration/num_one_charon.wav</code> 〜 <code>num_five_charon.wav</code>(Key Phrase 1〜5の番号読み上げ、Charon)はrerun_02からそのまま継承した固定テンプレート音声で、上表には掲載していません(rerun_02player.htmlの補足を参照)。</p>
+
+<h3 id="b1-kp">B1 Key Phrase表(rerun_02から無変更、再掲)</h3>
+<table>
+<thead><tr><th>#</th><th>English (used_form)</th><th>表示用 gloss</th><th>TTS用テキスト</th><th>ASR(英語)</th><th>分類(英語)</th><th>ASR(日本語)</th><th>分類(日本語)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>self-directed travel</td><td>自分で進め方を決める旅行</td><td>自分で進め方を決める旅行</td><td>Self-directed travel</td><td>N/A(reused master audio, 再分類なし)</td><td>自分で進め方を決める旅行</td><td>EXACT_MATCH</td></tr>
+<tr><td>2</td><td>two different speeds</td><td>二つの異なるペースで進んでいること</td><td>二つの異なるペースで進んでいること</td><td>two different speeds</td><td>N/A(reused master audio, 再分類なし)</td><td>二つの異なるペースで進んでいること。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>3</td><td>too broad a label</td><td>ひとまとめにしすぎた呼び方</td><td>ひとまとめにしすぎた呼び方</td><td>Too broad a label.</td><td>NORMALIZED_MATCH</td><td>ひとまとめにしすぎた呼び方。</td><td>NORMALIZED_MATCH</td></tr>
+<tr><td>4</td><td>interest-led plans</td><td>興味を中心にした旅行プラン</td><td>興味を中心にした旅行プラン</td><td>Interest-led plans.</td><td>N/A(reused master audio, 再分類なし)</td><td>興味を中心にした旅行プラン</td><td>EXACT_MATCH</td></tr>
+<tr><td>5</td><td>leading travel arrangement</td><td>最も多い旅行の形</td><td>最も多い旅行の形</td><td>Leading travel arrangement.</td><td>NORMALIZED_MATCH</td><td>最も多い旅行の形。</td><td>NORMALIZED_MATCH</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ==================== FSP1比較 ==================== -->
+<section id="compare">
+<h2>Full Story Part 1: 旧(false start)vs 新(OPEN-121 PASS)単体比較</h2>
+<p class="note">同一canonical text(article.md冒頭4段落、sha256=b042b098d2f3ab9d15cc0a4f725dc28e2c1761729ac645f46ce919fe1da743e9)に対する2つの音声です。旧音声はrerun_02完成版に実際に組み込まれていたfalse start入りの音声、新音声はOPEN-121-EXISTING-AUDIO-DPRIME-SWEEP-01で検知されたfalse startを踏まえ、OPEN-121 Production配線後の経路(方式A+D+D'のrepetition QA、Standard同期TTS)で再生成しPASSした音声です。下表は完成episodeの外側で、各音声を単体で先頭から再生する比較行です(「Seek」列は完成episode player-b1ではなく、各行の個別playerをそのまま使います)。</p>
+<table>
+<thead><tr><th>版</th><th>Segment</th><th>Text</th><th>個別音声(単体再生)</th><th>Source / 判定根拠</th></tr></thead>
+<tbody>
+<tr class="compare-row-old"><td><strong>旧(false startあり、rerun_02実配信版)</strong></td><td>Full Story Part 1 (Aoede)</td><td class="txt">As of September 2026, travel surveys in Japan tell a story with two different speeds.
+
+Many younger travelers, especially men, seem to want more room for their own pace and interests. But the trips measured in surveys are still short.
+
+This contrast appears clearly when people imagine having more time. In one survey, the most common answer was about one week of travel if people could take a one-month vacation. About 24% chose that answer.
+
+But an autumn survey by the same research center asked about people considering a trip. Their planned stays averaged about 1.8 nights, with a median of about two nights.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part1_old_false_start.wav"></audio></td><td class="src">sha256=<code class="sha">54bfd035f3327a9824f81f1d9a06fbb2400b32d85b76887df13df2b20fb2a47f</code>(rerun_02の<code>b1b/narration/full_story_part1.wav</code>と同一)。duration=40.9419秒。OPEN-121-EXISTING-AUDIO-DPRIME-SWEEP-01で既知事例としてFLAG_D_PRIME(d&prime;=0.75秒、lag=0.97秒)を再確認済み(<code>OPEN-121-EXISTING-AUDIO-DPRIME-SWEEP-01_REPORT.md</code>§3参照)。2026-09-07ユーザー試聴でfalse start型重複を確認済み(OPEN-121行記載)。</td></tr>
+<tr class="compare-row-new"><td><strong>新(OPEN-121配線後PASS、rerun_03採用)</strong></td><td>Full Story Part 1 (Aoede)</td><td class="txt">As of September 2026, travel surveys in Japan tell a story with two different speeds.
+
+Many younger travelers, especially men, seem to want more room for their own pace and interests. But the trips measured in surveys are still short.
+
+This contrast appears clearly when people imagine having more time. In one survey, the most common answer was about one week of travel if people could take a one-month vacation. About 24% chose that answer.
+
+But an autumn survey by the same research center asked about people considering a trip. Their planned stays averaged about 1.8 nights, with a median of about two nights.</td><td class="kp-audio"><audio controls src="b1b/narration/full_story_part1.wav"></audio></td><td class="src">sha256=<code class="sha">a598c2342abfd758e2c009b978ca6d8d1d33c00b3582e2b8e460661724cd891b</code>。duration=42.011秒。生成元<code>er011_output/open121_tts_repetition_qa_production_wiring_01/theme2_b1_fsp1_regen/</code>。attempt1でstatus=OK・asr_verified=true・audio_classification=NORMALIZED_MATCH。repetition_qa_evidence: 方式A(n-gram)flagged=False(matches無し)、方式D(long-lag)best_run=0.03秒(閾値0.12秒未満)、方式D&prime;(short-lag、false start検知用)best_run=0.33秒(閾値0.6秒未満、旧音声0.75秒との対比で明確に非flag側)。本タスクで独立に<code>evaluate_repetition_qa()</code>(read-only monitoring)を再実行し同一結果(flagged=False、d&prime; best_run=0.33秒)を再現確認済み。</td></tr>
+</tbody>
+</table>
+</section>
+
+<script>
+function formatTime(sec){
+  sec = parseFloat(sec);
+  var m = Math.floor(sec / 60);
+  var s = (sec - m * 60).toFixed(1);
+  if (s.length < 4) { s = "0" + s; }
+  return m + ":" + s;
+}
+document.addEventListener("DOMContentLoaded", function () {
+  var buttons = document.querySelectorAll("button.seek");
+  buttons.forEach(function (btn) {
+    var sec = btn.getAttribute("data-sec");
+    btn.textContent = "▶ " + formatTime(sec);
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-target"));
+      if (target) {
+        target.currentTime = parseFloat(sec);
+        target.play();
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
