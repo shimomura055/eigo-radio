@@ -269,6 +269,51 @@ PERSON-CHECK-01、Standard同期TTS、比較用に三人称版Voice A/Bも最小
 Diversity Check+Leakage Check/主要意見優先ルール/Voices Editorial
 Contract/一人称Voice/Editor例外ルール/Leakage許容基準。
 
+**追記(2026-09-07、Trial-08)**: `EDITORIAL-B-FAMILY-VOICES-TRIAL-08-
+AUDIO-FIRST-PERSON-CHECK-01`(ユーザー承認済みTrial音声化、Production採用
+ではない)。Trial-07記事の音声化を行い、一人称版(P1)はStandard TTS一発で
+完成した(5:58想定→実測4:58.7[298.665秒]、Standard同期、全13標準segment+
+Trial追加segment[tension_reflection]+Key Phrase5件すべてstatus=OK、retry
+なし、ASR検証PASS、peak=0.928・clipping無し)。比較用に機械的に作成した
+三人称版(P3)は、Voice A(point_one)は1回目からEXACT_MATCHでPASSしたが、
+**Voice B(point_two)は三人称化後3回ともAudio Validation Gateで
+`TRUE_CONTENT_MISMATCH`となりSTOPPED**し、既存Production Gate
+(`verify_episode_audio_validation_gate`)がepisode全体のAssemblyを正しく
+中止した(override・fallback追加は一切行っていない)。実際のASR差分は
+「コンマ1箇所」「do not→don't」「emダッシュのトークン分割["need—or"→
+"need"+"or"]」のみで内容的な欠落・幻聴は無かったが、既存Gateの安全側
+STOPをそのまま維持し、最終attempt音声は`stopped_audio_evidence/`へ保全
+するに留めた(Human Review承認は保留のまま)。この観察から新規Open
+Item(OPEN-123、英語ASR Validatorの表記差[縮約形・コンマ・emダッシュの
+トークン分割]に対するTranscript Style Normalization不足)を登録する。
+そのほかの観察: (1) Preview/Comment生成はROLE prompt内の"Point One/
+Point Two"という文言があるにもかかわらず"two views"等へ自然に言い換えられ
+"Point"は一度も出力されなかった(良好、ただし非決定的)。(2) Hookを文単位で
+バランス分割した結果、Comment 2の問いとFull Story Part 2冒頭の疑問文が
+ほぼ同内容になる軽い重複を観察した(記事の構造判断のため本Trialでは変更
+していない)。(3) 5区切りのTension(Where the Difference Comes From)には
+既存11-part固定schemaに対応slotが無く、Trial専用の
+`build_b1_voices_timeline()`でPoint Two本文の直後・Comment 4の前に
+既存B1に無いAoede→Aoede連続遷移の第4beatを追加した(Production採用には
+正式なslot設計判断が必要)。(4) Key Phrase Canonicalization(Rule7、
+`_PERSON_DEPENDENT_TO_GENERIC`の閉じた語彙集合)に一人称の"I"/"me"が
+含まれておらず、1回目の選定が初回STOPした(2回目の選定[Production関数は
+無変更、単純な再呼び出し]で回避、一人称記事をProductionで扱う場合は
+語彙集合への追加要否が別途判断事項)。(5) 一人称→三人称の機械変換
+(LLM1回呼び出し)は文法的には人称・所有格・動詞一致のみを変更したが、
+Voice Aで異なる指示対象[机等の物/話者]が両方とも"they/them"へ収束し
+リスナーが誤読しうる曖昧さを新たに生む副作用を実例として観察した。
+(6) OPEN-121方式A+D(gate化せずmonitoring)をP1全segment・P3双方の
+単体wavへ適用し、Method D自己相関は全segmentでbest_run_length
+0.01〜0.14秒(実在の重複bug実測値[1秒以上]と比べ十分小さく疑わしい反復
+なし)、Method AがP1のpoint_twoを1件flagしたが、これはcanonical側
+tokenizerのemダッシュ直結表現[split()が"need—or"を1トークン扱いする]に
+起因するmonitoring自体の既知の限界によるfalse positiveと判断した
+(gate化していないため実害なし)。cost約¥39.49(上限¥500)。一人称Voice
+正式採用可否・Tension用4th beatのslot設計・Key Phrase語彙集合拡張要否・
+P3 Voice B(三人称)のHuman Review承認可否・三人称機械変換の代名詞衝突
+リスクへの対応は、いずれも`USER_DECISION_REQUIRED`のまま未決定。
+
 **採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
 Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 実現可能性・失敗モードをユーザー承認のうえ段階的に検証するため。
@@ -278,7 +323,8 @@ Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-04_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-06-PERSPECTIVE-SELECTION-EDITOR-DIAG-01_REPORT.md`、
-`EDITORIAL-B-FAMILY-VOICES-TRIAL-07-CONTRACT-REFINEMENT-01_REPORT.md`
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-07-CONTRACT-REFINEMENT-01_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-08-AUDIO-FIRST-PERSON-CHECK-01_REPORT.md`
 (各Report §末尾のSSOT登録案を参照して本エントリを作成)。
 
 **状態**: `USER_DECISION_REQUIRED`(OPEN-120として追跡)。Productionコード・
@@ -287,6 +333,8 @@ Promptへの変更は一切なし(DESIGN/TRIALいずれも読み取り調査・T
 
 **commit**: `6ae1c25`(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08、2026-09-06)。Trial-06の成果物commitは
 `PM-CONSOLIDATION-COMMIT-LANEB-TRIAL06-AND-POINT-TWO-DIAG-01`(2026-09-07、
+本エントリと同時のSSOT追記コミット)。Trial-08の成果物commitは
+`PM-CONSOLIDATION-COMMIT-OPEN122-T02-AND-LANEB-T08-01`(2026-09-07、
 本エントリと同時のSSOT追記コミット)。
 
 **影響するCURRENT_SPEC項目**: なし(B Family Editorial TypeはProduction
@@ -6654,6 +6702,63 @@ Speech Validator[3パターン、PRODUCTION_WIRED]・ASR routing・retry・
 Cost Guard・Human Review方針は一切変更なし)。**影響するOPEN_ITEMS項目**:
 新規OPEN-122登録(Production採用・適用範囲・Secondary ASR常設化は
 USER_DECISION_REQUIRED)。
+
+## CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-TRIAL-02(2026-09-07、
+追加検証+Trial-01の未分類2件の調査、ユーザー判断による継続Trial、
+Production未変更)
+
+Trial-01(VALIDATED継続・Production採用保留)を受け、ユーザー判断で追加
+検証を実施した。既存3パターンValidator・Trial-01自体は無変更のまま
+(`git diff`で確認済み)、新規Standard TTS実測で陽性28件(カテゴリA〜G
+各4件)+陰性7件(各カテゴリ最低1件)を追加した。**false accept 0/7を
+達成**(陰性7件中、5件は3経路[Primary/Secondary/local ASR]とも実際に
+発話された改変後テキストで一致しcorroboration無し、1件[T2N4]は
+`EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT`でacceptに至らず安全側
+停止、Secondary ASRが誤ってcanonical側["turned"]を支持したがlocal ASRが
+実発話["turn"]を正しく支持したためMIXED判定となった、単一証拠のみでは
+acceptしない設計の実用的正当性を追加実証)。**一方、陽性28件では新規の
+自然発生Primary false-reject救済例は0件**(既存Production本文音声履歴の
+無料マイニングでも新たな救済例は見つからず、"showed strong"1件のまま
+増えていない)。既存回帰は無回帰。
+
+Trial-01で見つかった未分類2件("asked"→"asks"、"want to"→"wanna")を
+個別調査し、Connected Speech Equivalence Layerとは別のfailure modeへ
+分離分類した: (1) **"asked"→"asks"**はARPAbet末尾音素のmanner自体が
+異なる(破裂音T→歯擦音S)ため物理的な音韻変化(弱化・脱落・同化)では
+説明できない語幹屈折形(過去形→3人称単数現在形)の置換であり、
+Secondary/local ASR双方がcanonical["asked"]を支持していることから
+TTS発話自体の誤りである可能性は低く、Primary ASR単体の文法正規化
+(grammatical normalization)が最も整合的な説明と判断した。命名提案
+(実装なし): "ASR Verb-Inflection Normalization"。(2) **"want to"→
+"wanna"**はARPAbet末尾が子音T→母音AHで母音/子音の別自体が異なるうえ、
+2語("want to")→1語("wanna")の縮約であり既存の1語対1語word_diff()前提
+自体が成立しない。Secondary/localが両方とも正書法表記で一致しPrimaryの
+みが口語表記である非対称性は、ASR側の書き起こしスタイルの違いを強く
+示唆する。命名提案(実装なし): "ASR Transcript Style Normalization
+(Contraction Spelling)"。いずれもConnected Speech Equivalence Layerへ
+無理に吸収せず、新規Open Item(OPEN-123)として別途分離登録する
+(実装は提案しない)。
+
+副次的に、既存Validatorが既に`NORMALIZED_MATCH`で正しく吸収済みの
+複合語スペリング差("drug store"→"drugstore"、追加対応不要と確認)、
+および3経路すべてが類似の誤変換へ収束した1件("rest days"→"Rustys/
+rusties"、Equivalence Layerは正しく不介入、本Trialのスコープ外の
+content-accuracy候補の可能性、断定はしない)を観測した。Primary
+(OpenAI)ASRは今回のサンプルでは実発話テキストとの一致率がSecondary
+(Azure)より高く(33/35 vs 29/35)、Secondaryが独自の誤りを複数示した
+ことから、単一のSecondary ASRだけに依存せず独立ASRを複数束ねて
+MIXED_EVIDENCE時はacceptしない既存設計の安全性を補強する追加知見を
+得た。総cost¥22.66(上限¥800)。OPEN-122は`VALIDATED`継続、
+Production採用は引き続き`USER_DECISION_REQUIRED`(適用範囲・Secondary
+ASR常設化・自然発生救済例の乏しさは未解消)。
+
+**根拠レポート**: `CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-
+TRIAL-02_REPORT.md`。**影響するCURRENT_SPEC項目**: なし(既存Connected
+Speech Validator・ASR routing・retry・Cost Guard・Human Review方針は
+一切変更なし)。**影響するOPEN_ITEMS項目**: OPEN-122行へTrial-02結果
+要旨を追記。新規OPEN-123登録(英語ASR Validatorのtranscript style
+normalization不足、Lane B Trial-08の観察[§後述]と合わせて登録、
+`USER_DECISION_REQUIRED`)。
 
 ## OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-TRIAL-02(2026-09-07、
 false start/aborted restart型の検知方式追加Trialと方式A+Dとの統合仕様

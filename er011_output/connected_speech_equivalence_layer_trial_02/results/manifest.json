@@ -1,0 +1,1882 @@
+{
+  "trial01_unclassified_case_investigation": {
+    "investigations": {
+      "P1_asked_them": {
+        "label": "tense_substitution_asked_to_asks",
+        "canonical_text": "She asked them to wait outside.",
+        "primary_asr_text": "She asks them to wait outside.",
+        "secondary_asr_text": "She asked them to wait outside.",
+        "local_asr_text": "She asked them to wait outside.",
+        "diff": {
+          "index": 1,
+          "canonical_word": "asked",
+          "asr_word": "asks",
+          "prev_word": "She",
+          "next_word": "them"
+        },
+        "canonical_word": "asked",
+        "asr_word": "asks",
+        "canonical_word_phones": [
+          "AE",
+          "S",
+          "K",
+          "T"
+        ],
+        "asr_word_phones": [
+          "AE",
+          "S",
+          "K",
+          "S"
+        ],
+        "phoneme_prefix_drop_result": null,
+        "phoneme_final_place_substitution_result": null,
+        "diff_shape_verdict": "NOT_A_CONNECTED_SPEECH_PHONEME_SHAPE",
+        "diff_shape_reason": "canonical語とASR語の音素列が、末尾1〜2音素のみ脱落 (phoneme_prefix_drop)、または末尾音素のみ調音位置が 異なる(phoneme_final_place_substitution、manner/voicing は同一)、のいずれの形にも一致しない。すなわち、「語末の弱化・脱落・同化」という物理的に連続的な 音韻現象では説明できない、語幹自体が別の語(または 別の屈折形)に置き換わった形のdiffである。",
+        "secondary_asr_supports_canonical": true,
+        "local_asr_supports_canonical": true,
+        "existing_3pattern_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+        "equivalence_layer_result_in_trial01": "NOT_A_PHONEME_PREFIX_DROP"
+      },
+      "P6_dont_you": {
+        "label": "wanna_normalization_want_to_to_wanna",
+        "canonical_text": "Don't you want to come with us?",
+        "primary_asr_text": "Don't you wanna come with us?",
+        "secondary_asr_text": "Don't you want to come with us?",
+        "local_asr_text": "Don't you want to come with us?",
+        "diff": {
+          "index": 2,
+          "canonical_word": "want",
+          "asr_word": "wanna",
+          "prev_word": "you",
+          "next_word": "to"
+        },
+        "canonical_word": "want",
+        "asr_word": "wanna",
+        "canonical_word_phones": [
+          "W",
+          "AA",
+          "N",
+          "T"
+        ],
+        "asr_word_phones": [
+          "W",
+          "AA",
+          "N",
+          "AH"
+        ],
+        "phoneme_prefix_drop_result": null,
+        "phoneme_final_place_substitution_result": null,
+        "diff_shape_verdict": "NOT_A_CONNECTED_SPEECH_PHONEME_SHAPE",
+        "diff_shape_reason": "canonical語とASR語の音素列が、末尾1〜2音素のみ脱落 (phoneme_prefix_drop)、または末尾音素のみ調音位置が 異なる(phoneme_final_place_substitution、manner/voicing は同一)、のいずれの形にも一致しない。すなわち、「語末の弱化・脱落・同化」という物理的に連続的な 音韻現象では説明できない、語幹自体が別の語(または 別の屈折形)に置き換わった形のdiffである。",
+        "secondary_asr_supports_canonical": true,
+        "local_asr_supports_canonical": true,
+        "existing_3pattern_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+        "equivalence_layer_result_in_trial01": "NOT_A_PHONEME_PREFIX_DROP"
+      }
+    },
+    "notes": {
+      "P1_asked_them": {
+        "classification_label": "ASR_TENSE_AGREEMENT_SUBSTITUTION(語幹自体の屈折形置換、Connected Speechの音素的部分集合ではない)",
+        "primary_category_bucket": "morphology/tense normalization(Connected Speechではない)",
+        "explanation": "canonical\"asked\"(過去形、ARPAbet AE1 S K T)とPrimary ASR\"asks\"(3人称単数現在形、AE1 S K S)は、末尾音素がT(破裂音)とS(歯擦音)でmanner自体が異なる。Trial-01/02のEquivalence Layerが定義する「語末子音の脱落(prefix drop)」「語末子音のplace置換のみ(manner/voicing同一)」のいずれの音素形にも一致しない。Secondary(Azure)・local(faster-whisper)はいずれも\"asked\"(canonical)と一致しており、TTSが\"asks\"と発話した証拠はない。これは「TTSが物理的に語尾子音を弱化・脱落・同化させた」のではなく、「OpenAI Primary ASR(gpt-4o-mini-transcribe)が言語モデル的な事前分布に基づき、過去形を(統計的に馴染みのある)現在形へ置換した」可能性が高い、ASR側の文法正規化(grammatical normalization/regularization)候補。既存Connected Speech Validator(3パターン)・本Equivalence Layer(カテゴリA〜G)のいずれの対象にもならず、正しく`NOT_A_PHONEME_PREFIX_DROP`/`TRUE_CONTENT_MISMATCH`のまま既存判定を維持している(false acceptしていない、安全側)。1件のみの観測であり、TTS発話自体が非決定的に\"asks\"寄りに聞こえた可能性(酸素的に近い/sk/クラスタ)を完全には排除できないため、断定的な原因確定ではない。",
+        "recommend_new_failure_mode_name": "候補名(実装なし、命名提案のみ): \"ASR Verb-Inflection Normalization\"(既存OPEN-103[default単語誤発音、TTS側]・OPEN-110[単数/複数取り違え、TTS側]とは異なり、TTS発話ではなくASR側の文法正規化が疑われる点で区別すべき)。"
+      },
+      "P6_dont_you": {
+        "classification_label": "ASR_TRANSCRIPT_STYLE_NORMALIZATION(口語短縮形の表記正規化、Connected Speechの音韻現象自体は自然だが、既存diffモデルの対象外の理由が異なる)",
+        "primary_category_bucket": "transcript style normalization(Connected Speechの実在現象に起因するが、既存の1語対1語diffモデルでは表現できない)",
+        "explanation": "canonical\"want to\"(2語)とPrimary ASR\"wanna\"(1語)は、英語の口語的短縮(coalescence、want+to→wanna)として音韻的にはよく知られた自然な現象。しかしEquivalence Layer/既存3パターンはいずれも1語対1語のword_diff()を前提としており、2語→1語の縮約は`phoneme_prefix_drop()`(同一語数、末尾音素のみ脱落)にも`phoneme_final_place_substitution()`(同一語数、末尾音素のみ置換)にも一致しない(語数自体が変わるため)。Secondary(Azure)・local(faster-whisper)はいずれも\"want to\"(canonical、正書法的な表記)と一致しており、TTSが物理的に短縮形を発話したのか、正規形を発話しつつPrimary ASRが口語表記へ変換したのかは、本調査(既存音声データのみの再利用)だけでは音響的に断定できない。Secondary/localが正書法表記を返す一方でPrimaryのみ口語表記を返す非対称性は、「ASR側の書き起こしスタイル(orthographic normalization)の違い」を強く示唆する(Primary=口語表記を許容するモデル、Secondary/local=正書法正規化する傾向、という説明が最も整合的)。",
+        "recommend_new_failure_mode_name": "候補名(実装なし、命名提案のみ): \"ASR Transcript Style Normalization (Contraction Spelling)\"(Connected Speechの物理現象自体は否定しないが、既存の1語対1語diffモデルの外側にあるため、モデル拡張[N-gram/多語diff対応]が必要になる、本Equivalence Layerの現行実装の範囲外の課題)。"
+      }
+    }
+  },
+  "flagship": {
+    "id": "FLAGSHIP_showed_strong_attempt1",
+    "source": "既存Production診断データ再利用(追加課金なし)",
+    "canonical_snippet": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+    "primary_asr_text": "Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+    "secondary_asr_text_full_clip_phrase_biased": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher at about fifty-two percent. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different.Of value from the same holiday.",
+    "secondary_asr_text_windowed_no_phrase_bias_supplementary": "Still showed strong interest.",
+    "local_asr_text": "Young  travelers  are  not  one  single  market.  Women,  aged  29  and  under,  still  showed  strong  interest  in  famous  tourist  places,  at  about  45%.  Gourmet  travel  was  even  higher,  at  about  52%.  This  is  not  the  same  picture  as  the  male  interest  in  solo  and  hobby -based  trips.  The  useful  lesson  is  not  that  sightseeing  is  ending.  Different  young  travelers  may  be  looking  for  different  kinds  of  value  from  the  same  holiday.",
+    "existing_3pattern_replay": {
+      "diff": {
+        "index": 1,
+        "canonical_word": "showed",
+        "asr_word": "show",
+        "prev_word": "still",
+        "next_word": "strong"
+      },
+      "expected_phoneme_boundary": null,
+      "rule": null,
+      "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+      "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+    },
+    "equivalence_layer_result": {
+      "layer_judgment": "EQUIVALENCE_LAYER_ACCEPT",
+      "source": "equivalence_layer",
+      "existing_result": {
+        "diff": {
+          "index": 12,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+      },
+      "equivalence_layer_info": {
+        "diff": {
+          "index": 12,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "diff_shape": "deletion",
+        "drop_info": {
+          "canonical_phones": [
+            "SH",
+            "OW",
+            "D"
+          ],
+          "asr_phones": [
+            "SH",
+            "OW"
+          ],
+          "dropped_phonemes": [
+            "D"
+          ]
+        },
+        "substitution_info": null,
+        "final_dropped_phoneme": "D",
+        "next_word_initial_phoneme": "S",
+        "categories_matched": [
+          {
+            "category": "A",
+            "rule": "final_stop_weakening_unreleased",
+            "detail": "語末の破裂音(D)が、後続子音(S)の前で無開放・弱化しやすい環境。"
+          },
+          {
+            "category": "B",
+            "rule": "alveolar_stop_reduction",
+            "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+          },
+          {
+            "category": "C",
+            "rule": "homorganic_consonant_fusion",
+            "detail": "語末(D, alveolar)と次語頭(S, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+          }
+        ],
+        "secondary_asr_supports_canonical": true,
+        "local_asr_supports_canonical": true,
+        "corroboration_count": 2,
+        "contradiction_count": 0
+      }
+    }
+  },
+  "production_history_mining": [
+    {
+      "source_file": "er011_output\\open109_a2_pre_regenerate_backup_04\\a2_before\\audit\\tts_generation_results.json",
+      "group": "segments",
+      "seg_id": "full_story_part2",
+      "attempt": 1,
+      "canonical_text": "Together, these studies show two different parts of the same story. An alert can disturb the moment. A nearby phone can shape the moment before it. This does not mean every person is affected in the same way outside these study settings. But it does show why “I never checked my phone” is not the whole story.\n\nDaily reports show why this matters. In a 2018 survey of U.S. teens aged 13 to 17, 72% said they often or sometimes checked messages or notifications soon after waking. About four in ten said they felt anxious, upset, or lonely when their phone was not nearby. A majority also felt they needed to reply quickly. The report described this as a hard-to-resist habit, not a medical diagnosis.",
+      "asr_text": "Together, these studies show two different parts of the same story. An alert can disturb the moment, and nearby phone can shape the moment before it. This does not mean every person is affected in the same way outside these study settings, but it does show why 'I never checked my phone' is not the whole story. Daily reports show why this matters. In a 2018 survey of U.S. teens aged 13 to 17, 72% said they often or sometimes checked messages or notifications soon after waking. About four in 10 said they felt anxious, upset, or lonely when their phone was not nearby. A majority also felt they needed to reply quickly. The report described this as a hard-to-resist habit, not a medical diagnosis.",
+      "audio_classification": "HIGH_SIMILARITY_SAFE"
+    },
+    {
+      "source_file": "er011_output\\open112_trend_theme2_b_final_audio_rerun_02\\a2\\audit\\tts_generation_results.json",
+      "group": "segments",
+      "seg_id": "point_two",
+      "attempt": 1,
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "asr_text": "Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH"
+    },
+    {
+      "source_file": "er011_output\\open112_trend_theme2_b_final_audio_rerun_02\\a2\\audit\\tts_generation_results.json",
+      "group": "segments",
+      "seg_id": "point_two",
+      "attempt": 2,
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "asr_text": "Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH"
+    }
+  ],
+  "existing_pattern_regression": [
+    {
+      "id": "R1_studies_suggest_PatternA",
+      "expect": "CONNECTED_SPEECH_ACCEPT",
+      "got": "CONNECTED_SPEECH_ACCEPT",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "studies",
+            "asr_word": "study",
+            "prev_word": "The",
+            "next_word": "suggest"
+          },
+          "expected_phoneme_boundary": "studies/z/ + suggest/s/",
+          "rule": "Pattern_A_sibilant_sequence",
+          "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+          "false_accept_risk": "低: canonical語からdropped接尾辞(-s/-es)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が歯擦音である場合のみ発火する。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R2_opened_to_PatternB",
+      "expect": "CONNECTED_SPEECH_ACCEPT",
+      "got": "CONNECTED_SPEECH_ACCEPT",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 7,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "be",
+            "next_word": "to"
+          },
+          "expected_phoneme_boundary": "opened/d/ + to/t/",
+          "rule": "Pattern_B_stop_consonant_sequence",
+          "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+          "false_accept_risk": "低: canonical語からdropped接尾辞(-ed)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が同系列の破裂音である場合のみ発火する。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R3_survey_suggest_PatternC",
+      "expect": "CONNECTED_SPEECH_RESEGMENTATION",
+      "got": "CONNECTED_SPEECH_RESEGMENTATION",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_RESEGMENTATION",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 4,
+            "canonical_word": "survey",
+            "asr_word": "surveys",
+            "prev_word": "the",
+            "next_word": "suggest"
+          },
+          "expected_phoneme_boundary": "survey(+s) + suggest/s/",
+          "rule": "Pattern_C_resegmentation_added_consonant",
+          "new_judgment": "CONNECTED_SPEECH_RESEGMENTATION",
+          "false_accept_risk": "中: canonical語自体に追加された子音が、次語頭の歯擦音と同一種であることのみを根拠にしている。ASR語がcanonical語と無関係な別単語である可能性を完全には排除できないため、PASS_WITH_WARNING(blockingしないが警告は残す)とする。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R4_unrelated_mismatch",
+      "expect": "UNCLASSIFIED",
+      "got": "NOT_A_PHONEME_PREFIX_DROP",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 5,
+            "canonical_word": "increase",
+            "asr_word": "decrease",
+            "prev_word": "clear",
+            "next_word": "in"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 5,
+          "canonical_word": "increase",
+          "asr_word": "decrease",
+          "prev_word": "clear",
+          "next_word": "in"
+        }
+      }
+    }
+  ],
+  "synthetic_rule_engine_checks": [
+    {
+      "id": "SYN_D_sun_sum_assimilation",
+      "expected_category": "D",
+      "matched_categories": [
+        "D"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "EQUIVALENCE_LAYER_PASS_WITH_WARNING",
+      "without_support_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+      "gate_ok": true
+    },
+    {
+      "id": "SYN_E_direct_dont_you",
+      "expected_category": "E",
+      "matched_categories": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_F_direct_get_it",
+      "expected_category": "F",
+      "matched_categories": [
+        "F",
+        "G"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_G_direct_an_apple",
+      "expected_category": "G",
+      "matched_categories": [
+        "G"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_C_direct_big_cat",
+      "expected_category": "C",
+      "matched_categories": [
+        "A",
+        "C"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    }
+  ],
+  "positive_results": [
+    {
+      "id": "T2A1_shop_closes",
+      "status": "OK",
+      "category_expected": "A",
+      "note": null,
+      "claimed_canonical": "The shop closes early on weekends, so plan your visit.",
+      "actually_spoken_text": "The shop closes early on weekends, so plan your visit.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2A1_shop_closes.wav",
+      "audio_sha256": "2465239c00d6967d4381e7252bb0e0a03c2f7d6818e56447e4f80cf7166ec4df",
+      "duration_seconds": 3.571,
+      "primary_asr_text": "The shop closes early on weekends, so plan your visit.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The shop closes early on weekends, so plan your visit.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The shop closes early on weekends, so plan your visit.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2A2_stop_watching",
+      "status": "OK",
+      "category_expected": "A",
+      "note": null,
+      "claimed_canonical": "Officials plan to stop watching the market so closely.",
+      "actually_spoken_text": "Officials plan to stop watching the market so closely.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2A2_stop_watching.wav",
+      "audio_sha256": "934b0709f7b3db15ff1a1ff902f6ae683c98bf5b40bc5c8933cc6a30b45768ba",
+      "duration_seconds": 3.931,
+      "primary_asr_text": "Officials plan to stop watching the market so closely.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Officials plan to stop watching the market so closely.",
+      "secondary_asr_error": null,
+      "local_asr_text": "officials plan to stop watching the market so closely.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2A3_drug_store",
+      "status": "OK",
+      "category_expected": "A",
+      "note": null,
+      "claimed_canonical": "The city will renovate the old drug store downtown.",
+      "actually_spoken_text": "The city will renovate the old drug store downtown.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2A3_drug_store.wav",
+      "audio_sha256": "190ae9c837fcacafdd78bbf62a965bb27b50e65d539377c4d652847278eacaed",
+      "duration_seconds": 2.991,
+      "primary_asr_text": "The city will renovate the old drugstore downtown.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The city will renovate the old drugstore downtown.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The city will renovate the old drugstore downtown.",
+      "existing_en_validator_classification": "NORMALIZED_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 6,
+            "canonical_word": "drug",
+            "asr_word": "drugstore",
+            "prev_word": "old",
+            "next_word": "store"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 6,
+          "canonical_word": "drug",
+          "asr_word": "drugstore",
+          "prev_word": "old",
+          "next_word": "store"
+        }
+      }
+    },
+    {
+      "id": "T2A4_bike_path",
+      "status": "OK",
+      "category_expected": "A",
+      "note": null,
+      "claimed_canonical": "Runners often use the new bike path near the river.",
+      "actually_spoken_text": "Runners often use the new bike path near the river.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2A4_bike_path.wav",
+      "audio_sha256": "14b58caf02c3bfc07cbf0f96d1e07134a7c84d157b5008bbd8086033f5f5596f",
+      "duration_seconds": 3.091,
+      "primary_asr_text": "Runners often use the new bike path near the river.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Runners often use the new bike path near the river.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Runners often use the new bike path near the river.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2B1_worked_hard",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "She worked hard to finish the report on time.",
+      "actually_spoken_text": "She worked hard to finish the report on time.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2B1_worked_hard.wav",
+      "audio_sha256": "39ef2643066e30d40cf8479d2b18093ce8faaf78b5b42bf1b601f1d12345aa58",
+      "duration_seconds": 3.051,
+      "primary_asr_text": "She worked hard to finish the report on time.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "She worked hard to finish the report on time.",
+      "secondary_asr_error": null,
+      "local_asr_text": "She worked hard to finish the report on time.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2B2_packed_bags",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "He packed bags for the long business trip.",
+      "actually_spoken_text": "He packed bags for the long business trip.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2B2_packed_bags.wav",
+      "audio_sha256": "df15182e7bdf3deb4c1a7b66b7876a9d16c512adfdf88c60c16655d97ae12e75",
+      "duration_seconds": 2.331,
+      "primary_asr_text": "He packed bags for the long business trip.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "He packed bags for the long business trip.",
+      "secondary_asr_error": null,
+      "local_asr_text": "He packed bags for the long business trip.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2B3_picked_books",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "The clerk picked books from the top shelf.",
+      "actually_spoken_text": "The clerk picked books from the top shelf.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2B3_picked_books.wav",
+      "audio_sha256": "9f6abfa0170e7c9f64b3c83715c8d18f2719dff572a2002da07a8e303bb62621",
+      "duration_seconds": 2.471,
+      "primary_asr_text": "The clerk picked books from the top shelf.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The clerk picked books from the top shelf.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The clerk picked books from the top shelf.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2B4_planned_carefully",
+      "status": "OK",
+      "category_expected": "A/B/D",
+      "note": null,
+      "claimed_canonical": "Volunteers planned carefully before the charity event.",
+      "actually_spoken_text": "Volunteers planned carefully before the charity event.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2B4_planned_carefully.wav",
+      "audio_sha256": "abbd3082828b1ed133e962edd7b828c7496b6384ca4a9c07fe845ae7e2ab1453",
+      "duration_seconds": 3.211,
+      "primary_asr_text": "Volunteers planned carefully before the charity event.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Volunteers planned carefully before the charity event.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Volunteers planned carefully before the charity event.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2C1_trip_plan",
+      "status": "OK",
+      "category_expected": "A/C",
+      "note": null,
+      "claimed_canonical": "A good trip plan should include enough rest days.",
+      "actually_spoken_text": "A good trip plan should include enough rest days.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2C1_trip_plan.wav",
+      "audio_sha256": "18826df9aa61bc2aefd581313899738ffa991595c7f80c5fd994d7fa26b1ee07",
+      "duration_seconds": 3.451,
+      "primary_asr_text": "A good trip plan should include enough Rustys.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "A good trip plan should include enough rusties.",
+      "secondary_asr_error": null,
+      "local_asr_text": "A good trip plan should include enough rusties.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 7,
+            "canonical_word": "rest",
+            "asr_word": "Rustys",
+            "prev_word": "enough",
+            "next_word": "days"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 7,
+          "canonical_word": "rest",
+          "asr_word": "Rustys",
+          "prev_word": "enough",
+          "next_word": "days"
+        }
+      }
+    },
+    {
+      "id": "T2C2_grab_bag",
+      "status": "OK",
+      "category_expected": "A/C",
+      "note": null,
+      "claimed_canonical": "Each visitor received a small grab bag of gifts.",
+      "actually_spoken_text": "Each visitor received a small grab bag of gifts.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2C2_grab_bag.wav",
+      "audio_sha256": "7f7d25813abba9a3cd6310b80aeffa35c988e69726b90596f390a371678d1344",
+      "duration_seconds": 3.251,
+      "primary_asr_text": "Each visitor received a small grab bag of gifts.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Each visitor received a small grab bag of gifts.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Each visitor received a small grab bag of gifts.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2C3_job_market",
+      "status": "OK",
+      "category_expected": "A/C",
+      "note": null,
+      "claimed_canonical": "The company's job market report surprised analysts.",
+      "actually_spoken_text": "The company's job market report surprised analysts.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2C3_job_market.wav",
+      "audio_sha256": "8ae5cadd583e439207766a9f129fe46180bdc7529d5afd7fe35bc0c895d17f89",
+      "duration_seconds": 3.271,
+      "primary_asr_text": "The company's job market report surprised analysts.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The company's job market reports surprised analysts.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The company's job market reports surprised analysts.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2C4_quick_glance",
+      "status": "OK",
+      "category_expected": "A/C",
+      "note": null,
+      "claimed_canonical": "A quick glance at the schedule showed no changes.",
+      "actually_spoken_text": "A quick glance at the schedule showed no changes.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2C4_quick_glance.wav",
+      "audio_sha256": "9a03bee8eefeb970bc1442bf944b0591f2ec93ff67ffe0aa642bac6079eb45f4",
+      "duration_seconds": 3.331,
+      "primary_asr_text": "A quick glance at the schedule showed no changes.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "A quick glance at the schedule showed no changes.",
+      "secondary_asr_error": null,
+      "local_asr_text": "A quick glance at the schedule showed no changes.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2D1_turn_back",
+      "status": "OK",
+      "category_expected": "D",
+      "note": null,
+      "claimed_canonical": "Traffic slowed until drivers could turn back safely.",
+      "actually_spoken_text": "Traffic slowed until drivers could turn back safely.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2D1_turn_back.wav",
+      "audio_sha256": "4bf7945768a6f1a5ce16de3814d3010b1c6c12e53090d7973966d80d4bdf96e0",
+      "duration_seconds": 3.571,
+      "primary_asr_text": "Traffic slowed until drivers could turn back safely.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Traffic slowed until drivers could turn back safely.",
+      "secondary_asr_error": null,
+      "local_asr_text": "traffic slowed until drivers could turn back safely.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2D2_run_fast",
+      "status": "OK",
+      "category_expected": "D",
+      "note": null,
+      "claimed_canonical": "The runner tried to run fast down the steep hill.",
+      "actually_spoken_text": "The runner tried to run fast down the steep hill.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2D2_run_fast.wav",
+      "audio_sha256": "65517d281c02eaef05f91a65dc67f3966155c3e68c5eb593978f0de77a325ff6",
+      "duration_seconds": 3.231,
+      "primary_asr_text": "The runner tried to run fast down the steep hill.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The runner tried to run fast down the steep hill.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The runner tried to run fast down the steep hill.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2D3_sun_barely",
+      "status": "OK",
+      "category_expected": "D",
+      "note": null,
+      "claimed_canonical": "The sun barely rose over the quiet hills this morning.",
+      "actually_spoken_text": "The sun barely rose over the quiet hills this morning.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2D3_sun_barely.wav",
+      "audio_sha256": "e52134b01577a3e081a8dfaa6107d72f792842ca2e38a47c7b3f9005910d36e2",
+      "duration_seconds": 4.091,
+      "primary_asr_text": "The sun barely rose over the quiet hills this morning.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The sun barely rose over the quiet hills this morning.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The sun barely rose over the quiet hills this morning.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2D4_win_big",
+      "status": "OK",
+      "category_expected": "D",
+      "note": null,
+      "claimed_canonical": "The team hoped to win big at the tournament.",
+      "actually_spoken_text": "The team hoped to win big at the tournament.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2D4_win_big.wav",
+      "audio_sha256": "3cb81ed60aafdbc69a3d1de72017b3de88079c812c4f58acbbdbc91769579ea5",
+      "duration_seconds": 2.871,
+      "primary_asr_text": "The team hoped to win big at the tournament.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The team hoped to win big at the tournament.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The team hoped to win big at the tournament.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2E1_could_you",
+      "status": "OK",
+      "category_expected": "A/B/D/E",
+      "note": null,
+      "claimed_canonical": "Could you send the report before noon?",
+      "actually_spoken_text": "Could you send the report before noon?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2E1_could_you.wav",
+      "audio_sha256": "5e99f6c5fdc3694239a3230ca82d68bf48df179202c6d1dc9e4428e5c00dd399",
+      "duration_seconds": 2.131,
+      "primary_asr_text": "Could you send the report before noon?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Could you send the report before noon?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Could you send the report before noon?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2E2_did_you",
+      "status": "OK",
+      "category_expected": "A/B/D/E",
+      "note": null,
+      "claimed_canonical": "Did you remember to lock the front door?",
+      "actually_spoken_text": "Did you remember to lock the front door?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2E2_did_you.wav",
+      "audio_sha256": "b0d9500b045c841e5bb99ea43e735c2f3a1ce0e3ea3d8c9f5cc823bc7291e238",
+      "duration_seconds": 2.351,
+      "primary_asr_text": "Did you remember to lock the front door?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Did you remember to lock the front door?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Did you remember to lock the front door?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2E3_would_you",
+      "status": "OK",
+      "category_expected": "A/B/D/E",
+      "note": null,
+      "claimed_canonical": "Would you mind checking the numbers again?",
+      "actually_spoken_text": "Would you mind checking the numbers again?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2E3_would_you.wav",
+      "audio_sha256": "49d25e6ee49f92dede461a2430f2611c8935b2e3dddc0c204556af57e52370a1",
+      "duration_seconds": 2.431,
+      "primary_asr_text": "Would you mind checking the numbers again?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Would you mind checking the numbers again?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Would you mind checking the numbers again?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2E4_meet_you",
+      "status": "OK",
+      "category_expected": "A/B/D/E/F",
+      "note": null,
+      "claimed_canonical": "I promise I will meet you at the station.",
+      "actually_spoken_text": "I promise I will meet you at the station.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2E4_meet_you.wav",
+      "audio_sha256": "c183cda541118fd5622b4a6bd2dd6c557531eb2069eaec9146d1783cf20d7c5f",
+      "duration_seconds": 2.551,
+      "primary_asr_text": "I promise I will meet you at the station.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "I promise I will meet you at the station.",
+      "secondary_asr_error": null,
+      "local_asr_text": "I promise I will meet you at the station.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2F1_not_bad",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "That was not bad for a first attempt.",
+      "actually_spoken_text": "That was not bad for a first attempt.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2F1_not_bad.wav",
+      "audio_sha256": "f549c0c6b68ae0ba1e3d61bd8dbcb54c0cc8d3504ef6a38516d8da07f4ddd77f",
+      "duration_seconds": 2.411,
+      "primary_asr_text": "That was not bad for a first attempt.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "That was not bad for a first attempt.",
+      "secondary_asr_error": null,
+      "local_asr_text": "That was not bad for a first attempt.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2F2_great_job",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "It was a great job by the whole team.",
+      "actually_spoken_text": "It was a great job by the whole team.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2F2_great_job.wav",
+      "audio_sha256": "2f6b9aed65a2b4c0bea6fafe579e6e923bf45fc576db9dc21f7ab9b93f9f6625",
+      "duration_seconds": 2.551,
+      "primary_asr_text": "It was a great job by the whole team.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "It was a great job by the whole team.",
+      "secondary_asr_error": null,
+      "local_asr_text": "It was a great job by the whole team.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2F3_light_switch",
+      "status": "OK",
+      "category_expected": "A/B/C/F",
+      "note": null,
+      "claimed_canonical": "Please turn off the light switch before leaving.",
+      "actually_spoken_text": "Please turn off the light switch before leaving.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2F3_light_switch.wav",
+      "audio_sha256": "9633b82c531cfaa113970bbcf008c596024b7e2651150c5e6e2a70e61d8a3d40",
+      "duration_seconds": 3.091,
+      "primary_asr_text": "Please turn off the light switch before leaving.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Please turn off the light switch before leaving.",
+      "secondary_asr_error": null,
+      "local_asr_text": "please turn off the light switch before leaving.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2F4_quiet_place",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": null,
+      "claimed_canonical": "The old library was always a quiet place to study.",
+      "actually_spoken_text": "The old library was always a quiet place to study.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2F4_quiet_place.wav",
+      "audio_sha256": "7f353340e308c4b6b2b421d3a514e9802212f91b7213d4a98e9988bc135a8b68",
+      "duration_seconds": 3.711,
+      "primary_asr_text": "The old library was always a quiet place to study.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The old library was always a quiet place to study.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The old library was always a quiet place to study.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2G1_an_apple",
+      "status": "OK",
+      "category_expected": "G",
+      "note": null,
+      "claimed_canonical": "Doctors say an apple a day helps overall health.",
+      "actually_spoken_text": "Doctors say an apple a day helps overall health.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2G1_an_apple.wav",
+      "audio_sha256": "1356e03fd2dc9f2a0c8689a39293158ffa8bbfb364c7e3e20e57bc34ce4345d3",
+      "duration_seconds": 3.291,
+      "primary_asr_text": "Doctors say an apple a day helps overall health.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Doctors say an apple a day helps overall health.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Doctors say an apple a day helps overall health.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2G2_good_idea",
+      "status": "OK",
+      "category_expected": "G/F",
+      "note": null,
+      "claimed_canonical": "That was such a good idea for the festival.",
+      "actually_spoken_text": "That was such a good idea for the festival.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2G2_good_idea.wav",
+      "audio_sha256": "df9262fadf930f1c38f33603a05172709b1362d142be75a8786957143d267283",
+      "duration_seconds": 2.391,
+      "primary_asr_text": "That was such a good idea for the festival.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "That was such a good idea for the festival.",
+      "secondary_asr_error": null,
+      "local_asr_text": "That was such a good idea for the festival.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2G3_made_it",
+      "status": "OK",
+      "category_expected": "G/F",
+      "note": null,
+      "claimed_canonical": "The mistake made it hard to trust the final results.",
+      "actually_spoken_text": "The mistake made it hard to trust the final results.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2G3_made_it.wav",
+      "audio_sha256": "7de55931ac21c45c8d874f5badd0ad4f0510d67d69693b71312f3267f48612ae",
+      "duration_seconds": 3.451,
+      "primary_asr_text": "The mistake made it hard to trust the final results.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The mistake made it hard to through the final results.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The mistake made it hard to trust the final results.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "T2G4_quick_answer",
+      "status": "OK",
+      "category_expected": "G",
+      "note": null,
+      "claimed_canonical": "A quick answer is not always the right one.",
+      "actually_spoken_text": "A quick answer is not always the right one.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2G4_quick_answer.wav",
+      "audio_sha256": "71121d82d5dd19a89b8dbd835415fd884b5e502fc214f284a871fc19f5e98cb5",
+      "duration_seconds": 3.291,
+      "primary_asr_text": "A quick answer is not always the right one.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "A quick answer is not always the right one.",
+      "secondary_asr_error": null,
+      "local_asr_text": "A quick answer is not always the right one.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    }
+  ],
+  "negative_results": [
+    {
+      "id": "T2N1_pack_not_packed",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": "T2B2との最小対(packed/pack)、時制の真の内容不一致",
+      "claimed_canonical": "The workers packed bags for the long delivery route.",
+      "actually_spoken_text": "The workers pack bags for the long delivery route.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N1_pack_not_packed.wav",
+      "audio_sha256": "a1088905dfd77c4eca438c105a4e10d82d277d3be7ba3d71ad313271a7e408cf",
+      "duration_seconds": 3.051,
+      "primary_asr_text": "The workers pack bags for the long delivery route.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The workers pack bags for the long delivery route.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The workers pack bags for the long delivery route.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "packed",
+            "asr_word": "pack",
+            "prev_word": "workers",
+            "next_word": "bags"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "packed",
+            "asr_word": "pack",
+            "prev_word": "workers",
+            "next_word": "bags"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "P",
+              "AE",
+              "K",
+              "T"
+            ],
+            "asr_phones": [
+              "P",
+              "AE",
+              "K"
+            ],
+            "dropped_phonemes": [
+              "T"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "T",
+          "next_word_initial_phoneme": "B",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(T)が、後続子音(B)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(T)が、後続子音の調音位置(bilabial)へ同化しやすい。"
+            },
+            {
+              "category": "F",
+              "rule": "glottalization_candidate",
+              "detail": "語末/t/は後続子音の前で声門閉鎖化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "T2N2_plan_not_planned",
+      "status": "OK",
+      "category_expected": "A/B/D",
+      "note": "T2B4との最小対(planned/plan)、時制の真の内容不一致",
+      "claimed_canonical": "Volunteers planned carefully before the charity event.",
+      "actually_spoken_text": "Volunteers plan carefully before the charity event.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N2_plan_not_planned.wav",
+      "audio_sha256": "82debb06b9619f60d3f578fae09736088cc47951502a570fbbf7480a5fd40fbe",
+      "duration_seconds": 3.551,
+      "primary_asr_text": "Volunteers plan carefully before the charity event.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Volunteers plan carefully before the charity event.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Volunteers plan carefully before the charity event.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "planned",
+            "asr_word": "plan",
+            "prev_word": "Volunteers",
+            "next_word": "carefully"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "planned",
+            "asr_word": "plan",
+            "prev_word": "Volunteers",
+            "next_word": "carefully"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "P",
+              "L",
+              "AE",
+              "N",
+              "D"
+            ],
+            "asr_phones": [
+              "P",
+              "L",
+              "AE",
+              "N"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "K",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(D)が、後続子音(K)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(D)が、後続子音の調音位置(velar)へ同化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "T2N3_open_not_opened",
+      "status": "OK",
+      "category_expected": "A/B/C",
+      "note": "OPEN-107型(opened/open)の新規陰性対照、時制の真の内容不一致",
+      "claimed_canonical": "These old gates opened slowly during the ceremony.",
+      "actually_spoken_text": "These old gates open slowly during the ceremony.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N3_open_not_opened.wav",
+      "audio_sha256": "452a9b2f5f500ed14701c7384c3f2c2d376d17b8d8e755bce191691ef471124d",
+      "duration_seconds": 3.891,
+      "primary_asr_text": "These old gates open slowly during the ceremony.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "These old gates opened slowly during the ceremony.",
+      "secondary_asr_error": null,
+      "local_asr_text": "These old gates open slowly during the ceremony.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 3,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "gates",
+            "next_word": "slowly"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 3,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "gates",
+            "next_word": "slowly"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "OW",
+              "P",
+              "AH",
+              "N",
+              "D"
+            ],
+            "asr_phones": [
+              "OW",
+              "P",
+              "AH",
+              "N"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "S",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(D)が、後続子音(S)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "C",
+              "rule": "homorganic_consonant_fusion",
+              "detail": "語末(D, alveolar)と次語頭(S, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": true,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 1,
+          "contradiction_count": 1
+        }
+      }
+    },
+    {
+      "id": "T2N4_turn_not_turned",
+      "status": "OK",
+      "category_expected": "D",
+      "note": "T2D1との最小対(turned/turn)、時制の真の内容不一致",
+      "claimed_canonical": "The cars turned back before reaching the bridge.",
+      "actually_spoken_text": "The cars turn back before reaching the bridge.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N4_turn_not_turned.wav",
+      "audio_sha256": "2b4816696088d40ba8a3e50ec738fa5032335fe4f15aa93d7ea5ae92149b5a66",
+      "duration_seconds": 3.311,
+      "primary_asr_text": "The cars turn back before reaching the bridge.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The cars turned back before reaching the bridge.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The cars turn back before reaching the bridge.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "turned",
+            "asr_word": "turn",
+            "prev_word": "cars",
+            "next_word": "back"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "turned",
+            "asr_word": "turn",
+            "prev_word": "cars",
+            "next_word": "back"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "T",
+              "ER",
+              "N",
+              "D"
+            ],
+            "asr_phones": [
+              "T",
+              "ER",
+              "N"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "B",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(D)が、後続子音(B)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(D)が、後続子音の調音位置(bilabial)へ同化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": true,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 1,
+          "contradiction_count": 1
+        }
+      }
+    },
+    {
+      "id": "T2N5_help_not_helped",
+      "status": "OK",
+      "category_expected": "A/B/D/E/F",
+      "note": "E環境(help/helped+you)の陰性対照、時制の真の内容不一致",
+      "claimed_canonical": "The staff helped you with every step of registration.",
+      "actually_spoken_text": "The staff help you with every step of registration.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N5_help_not_helped.wav",
+      "audio_sha256": "ad4bf849a5cc03f42806140696e909cc83f2c3d18802adacdd4cea5f148bc02c",
+      "duration_seconds": 2.871,
+      "primary_asr_text": "The staff help you with every step of registration.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The staff help you with every step of registration.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The staff help you with every step of registration.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "helped",
+            "asr_word": "help",
+            "prev_word": "staff",
+            "next_word": "you"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "helped",
+            "asr_word": "help",
+            "prev_word": "staff",
+            "next_word": "you"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "HH",
+              "EH",
+              "L",
+              "P",
+              "T"
+            ],
+            "asr_phones": [
+              "HH",
+              "EH",
+              "L",
+              "P"
+            ],
+            "dropped_phonemes": [
+              "T"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "T",
+          "next_word_initial_phoneme": "Y",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(T)が、後続子音(Y)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(T)が、後続子音の調音位置(palatal)へ同化しやすい。"
+            },
+            {
+              "category": "E",
+              "rule": "coalescence_yod",
+              "detail": "/t,d/+/j/がchurch/judge系の破擦音へ融合しやすい(don't you/did you型)。"
+            },
+            {
+              "category": "F",
+              "rule": "glottalization_candidate",
+              "detail": "語末/t/は後続子音の前で声門閉鎖化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "T2N6_open_it_not_opened_it",
+      "status": "OK",
+      "category_expected": "G/F",
+      "note": "G環境(opened/open+it)の陰性対照、時制の真の内容不一致",
+      "claimed_canonical": "Technicians opened it immediately after the alarm sounded.",
+      "actually_spoken_text": "Technicians open it immediately after the alarm sounded.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N6_open_it_not_opened_it.wav",
+      "audio_sha256": "587fb6a265ab541eaf05c1ff6493348e5920c244fcafdd90f97117c2425a0a57",
+      "duration_seconds": 3.491,
+      "primary_asr_text": "Technicians open it immediately after the alarm sounded.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Technicians open it immediately after the alarm sounded.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Technicians open it immediately after the alarm sounded.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "Technicians",
+            "next_word": "it"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "Technicians",
+            "next_word": "it"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "OW",
+              "P",
+              "AH",
+              "N",
+              "D"
+            ],
+            "asr_phones": [
+              "OW",
+              "P",
+              "AH",
+              "N"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "IH",
+          "categories_matched": [
+            {
+              "category": "G",
+              "rule": "resyllabification_liaison",
+              "detail": "語末子音(D)が次語頭の母音へ連結し、音節の切れ目が語境界とずれる。"
+            },
+            {
+              "category": "F",
+              "rule": "flapping_intervocalic",
+              "detail": "母音に挟まれた/t,d/はアメリカ英語でflap化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "T2N7_watch_not_watched",
+      "status": "OK",
+      "category_expected": "A/B/D/F",
+      "note": "T2F系との最小対(watched/watch)、時制の真の内容不一致",
+      "claimed_canonical": "The guards watched closely during the entire event.",
+      "actually_spoken_text": "The guards watch closely during the entire event.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N7_watch_not_watched.wav",
+      "audio_sha256": "1b6704cdd39a6e9dcb323f941f1fbac0d04beacf5b594dde63799cf401e297e2",
+      "duration_seconds": 3.951,
+      "primary_asr_text": "The guards watch closely during the entire event.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The guards watch closely during the entire event.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The guards watch closely during the entire event.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "watched",
+            "asr_word": "watch",
+            "prev_word": "guards",
+            "next_word": "closely"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "watched",
+            "asr_word": "watch",
+            "prev_word": "guards",
+            "next_word": "closely"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "W",
+              "AA",
+              "CH",
+              "T"
+            ],
+            "asr_phones": [
+              "W",
+              "AA",
+              "CH"
+            ],
+            "dropped_phonemes": [
+              "T"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "T",
+          "next_word_initial_phoneme": "K",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(T)が、後続子音(K)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(T)が、後続子音の調音位置(velar)へ同化しやすい。"
+            },
+            {
+              "category": "F",
+              "rule": "glottalization_candidate",
+              "detail": "語末/t/は後続子音の前で声門閉鎖化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    }
+  ],
+  "cost_jpy_total": 22.66,
+  "cost_by_provider_jpy": {
+    "gemini": 12.39,
+    "openai_asr": 0.54,
+    "azure": 9.73
+  },
+  "budget_cap_jpy": 800.0
+}
