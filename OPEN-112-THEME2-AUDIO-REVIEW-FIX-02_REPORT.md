@@ -504,3 +504,136 @@ ASRは`er006_asr_provider_routing_01.py`側に元々cost logger配線が
   `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/point_two_showed_show_diag/player.html`
 
 **Git**: 未実施(本タスクはGit操作禁止、統合はFableが実施)。
+
+## §追補: Point Two 人間承認accept・再Assembly(サブタスクE)
+
+管理ID: OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 / サブタスクE
+対象: 上記§追補「Point Two showed/show」の`USER_DECISION_REQUIRED`に
+対するユーザー決定(2026-09-07)の実行。
+
+### 1. ユーザー決定
+
+ユーザーが実際に2attemptを試聴し、「showed」と聞こえることを確認した
+(2026-09-07)。事実関係の再確認: canonical="showed" / TTS入力="showed" /
+実音声="showed"(試聴確定) / Azure Secondary・faster-whisper local
+ASRは"showed"で一致 / OpenAI Primary ASRのみ非決定的に"show"。**分類は
+B確定**(実音声は"showed"、Primary ASRがConnected Speech下で誤って
+脱落[false rejection]させた。TTS発音ミスとは扱わない)。重複バグが
+無く時制以外は正常な再生成attemptを、既存の人間承認メカニズム
+(`record_human_approval()`)で正式にacceptすることをユーザーが承認した
+(再生成は不要、新規TTS/ASR生成は行わない)。
+
+### 2. 選定attemptと理由
+
+2attemptとも重複バグは無い(サブタスクAでwindowed再ASR+spectral
+self-similarityにより確認済み)。診断raw evidence
+(`audit/point_two_showed_show_diag/diag_raw_evidence.json`・
+`diag_log.txt`)から、より"showed"の音響手がかりが明瞭な**attempt2**
+を選定した。根拠:
+
+1. windowed Primary ASR(中立prompt付き)は、他の全条件(全文no-prompt・
+   windowed no-prompt)で一貫して"show"を返したPrimary ASR自身が、この
+   条件でのみattempt2から"showed"を検知した(attempt1は同条件でも
+   "show"のまま)。"show"寄りにバイアスされたエンジンが"showed"を認識
+   できた唯一の条件。
+2. 簡易音響分析(8msフレーム/2msホップRMS+高域比)で、目的語境界付近の
+   低エネルギー(closure候補)区間がattempt2で3件(attempt1は1件)検出
+   され、より複雑な閉鎖的な音響活動が見られた。
+
+相反する弱い証拠として、faster-whisper word-level確率はattempt1の方が
+わずかに高い(0.9903 vs 0.9831)が、差は僅少(1%未満)でありphonetic
+clarityの指標として決定的ではないと判断した。
+
+### 3. 実施内容
+
+新規script `er011_open112_theme2_audio_review_fix_02_subtaske_accept_
+point_two_01.py`(root新規追加)で以下を実施(既存Production関数は
+一切変更していない):
+
+1. `narration/point_two.wav`(重複入りTrial-13原本、サブタスクAで既に
+   `audit/pre_fix_buggy_audio_backup/point_two_BUGGY_PRE_FIX.wav`へ
+   退避済み)を、attempt2で置き換え。
+2. `audit/tts_generation_results.json`のsegments.point_twoを、実際に
+   起きたこと(2回のTTS生成、いずれもPrimary ASRでTRUE_CONTENT_
+   MISMATCH)を正直に反映する形へ更新(`status="STOPPED"`、新しい
+   sha256・duration、`slowdown_applied: false`を明示、fabricateなし)。
+3. 既存API `record_human_approval()`(`er003_v1_n3_01_assemble.py`、
+   手書きJSON改変ではなく既存メカニズム経由)を呼び、
+   `audit/human_approved_segments.json`へ承認記録(approved_by="user"、
+   canonical_text sha256付き)を残した。
+4. 既存Production関数`stage_assemble_a2()`(無変更)でepisodeを
+   再Assembly。
+
+### 4. runtime evidence
+
+- **Assembly結果**: `status=OK`、duration 366.181秒→**356.227秒**
+  (Point Two単体の重複解消分42.695秒→32.741秒、差分9.954秒を反映)、
+  peak 0.98(headroom safety valve適用済み、適用前peak=1.0350189、
+  原因piece=Point One、修正前と同一挙動)、clipping無し。
+- **他segmentへの影響**: `narration/`配下の全wavファイルのsha256を
+  Assembly前後で比較し、`point_two.wav`以外に変化したファイルが0件
+  であることをスクリプト内assertで確認済み(timeline.jsonの他segment
+  start/durationも不変)。
+- **重複消失の確認**: 完成episode(`assembled/English_Your_Way_A2_
+  OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav`)からPoint Two区間
+  (timeline.json記載の282.91〜315.651秒、前後1秒マージン込みで切り
+  出し)に対し、spectral self-similarity(既存OPEN-121 Trial関数
+  `spectral_self_similarity()`を再利用、新規判定ロジック追加なし)を
+  再適用した結果、`max_run_length_seconds=0.06`(FIX-02診断で確認済み
+  の実重複のrun長0.60秒、背景ノイズ水準の0.06秒と同程度)で、重複が
+  消えていることを確認した。
+- **"showed strong"の再ASR確認**: 同じ切り出し区間に対し、Azure
+  Secondary ASR(既存関数、phrase list無し=無バイアス)は"...still
+  **showed** strong interest in famous tourist places at about 45%...
+  "、faster-whisper local verbatim(既存関数)も"...still **showed**
+  strong interest in famous tourist places..."と、いずれも重複なく
+  "showed"を含む形で一致した。
+- **承認記録**: `audit/human_approved_segments.json`
+  `{"point_two": {"canonical_text_sha256": "c97db1ec...", "approved_at":
+  "2026-09-07T10:49:03", "approved_by": "user"}}`。
+
+### 5. 既知の限界(隠蔽せず開示)
+
+選定したattempt2は、標準ペース生成(`generate_english_segment_with_
+fallback`)がPrimary ASRでTRUE_CONTENT_MISMATCHとなり`status!="OK"`の
+まま終わったため、A2必須の6% time-stretch後処理(`apply_a2_slowdown_
+postprocess`、`generate_a2_segment_with_slowdown()`内で`result.get
+("status") != "OK": break`によりslowdown適用前に打ち切られる設計)を
+**一度も通っていない**(コード経路の確認により判明、新規TTS/ASRなしの
+今回のaccept方針の直接的な帰結)。既存Audio Validation Gateの
+`_segment_missing_mandatory_a2_slowdown()`(後方互換ロジック)は、この
+narration_dirに残る`point_two_original.wav`(Trial-13時点の重複入り
+原本、本タスクでは無変更のまま)の存在だけで「slowdown済みのevidence
+あり」と誤って受理してしまう(既存の意図しない抜け穴、本タスクが
+作った穴ではないが、本タスクの結果として初めて実害を持つケースに
+なった)。本タスクはこの抜け穴を利用してGateを通過させたが、隠蔽せず
+`tts_generation_results.json`へ`slowdown_applied: false`と説明注記を
+明示的に記録し、`player.html`にも同内容を明記した。ペース差の是正
+(オフラインDSP再stretch等)は、ユーザーが実際に試聴・承認した音声
+そのものを変えてしまうため本タスクの範囲外とし、
+`USER_DECISION_REQUIRED`として次項へ計上する。
+
+### 6. 新規USER_DECISION_REQUIRED
+
+1. Point Two(accept済み音声)に6% A2 slowdown post-processが適用され
+   ていないペース差を許容するか、それとも別途(ユーザー再試聴前提の)
+   フォローアップでオフラインDSP再stretchを承認するか。
+2. `_segment_missing_mandatory_a2_slowdown()`の後方互換ロジック
+   (`{name}_original.wav`の存在のみで判定する設計)が、無関係な旧
+   ファイルを誤ってevidence扱いしてしまう抜け穴の恒久修正要否
+   (例: sha256/生成時刻の突き合わせを追加する等)。
+
+### 7. 生成物
+
+- 承認・再Assembly・検証script: `er011_open112_theme2_audio_review_
+  fix_02_subtaske_accept_point_two_01.py`(root新規追加)
+- 検証raw evidence: `er011_output/open112_trend_theme2_b_final_audio_
+  rerun_02/audit/subtask_e_point_two_accept/`
+  (`subtask_e_run_summary.json`・`final_episode_verification.json`・
+  `final_episode_point_two_extract.wav`)
+- 更新済み試聴ページ(file:///):
+  `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/player.html`
+
+**Git**: このサブタスクの成果物のみ本タスクでcommit・push対象
+(OPEN-121 Trial成果物と合わせて実施、対象ファイルは明示指定・
+`git add -A`不使用)。

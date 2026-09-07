@@ -6465,6 +6465,52 @@ As of September 2026.")。**状態は引き続き`USER_DECISION_REQUIRED`**
 (修正・Production変更は未実施、OPEN-121へ「partial-word false start型を
 テストセット陽性事例として登録すべき」との提案を追記したのみ)。
 
+### 追記(2026-09-07、サブタスクE: Point Two showed/show分類B確定・
+人間承認accept・再Assembly)
+
+サブタスクD(§追補「Point Two showed/show」)で報告した`USER_DECISION_
+REQUIRED`について、ユーザーが実際に2attemptを試聴し、「showed」と
+聞こえることを確認した。**分類B確定**(実音声は"showed"、Production
+Primary ASRがConnected Speech下[語末alveolar stop+後続語頭sibilant
+クラスタ]で誤って脱落させたASR false rejection。**TTS発音ミスとは
+扱わない**)。重複バグが無く時制以外は正常な再生成attempt2を、既存の
+人間承認メカニズム(`record_human_approval()`、`er003_v1_n3_01_
+assemble.py`)で正式にacceptすることをユーザーが承認し、既存
+Production関数`stage_assemble_a2()`(無変更)で再Assemblyを実施した。
+duration 366.181秒→356.227秒(Point Two単体42.695秒→32.741秒、重複
+解消分)、peak/headroom挙動は不変。完成episode切り出しをAzure
+Secondary ASR・faster-whisper local ASRで再確認し、重複消失(自己
+相関run長0.06秒、実重複比較用の0.60秒との対比)・"showed"の存在を
+確認した。他segmentのsha256はAssembly前後で不変(スクリプト内
+assertで確認)。
+
+**重要**: 今回の個別承認は本件1件限りの対応であり、「ASR不一致
+=Connected Speech false rejectionとして自動的にaccept可能」という
+一般的な運用ルールを新設したものではない(既存Connected Speech
+Validatorの承認済み3パターン限定方針は無変更、Pattern拡張の是非は
+OPEN-121の論点として引き続き`USER_DECISION_REQUIRED`)。
+
+新規判明事項(隠蔽せず開示): 選定したattempt2は、標準ペース生成が
+Primary ASRでTRUE_CONTENT_MISMATCHとなり打ち切られたため、A2必須の
+6% time-stretch後処理(`apply_a2_slowdown_postprocess`)を一度も通って
+いない。既存Audio Validation Gateの`_segment_missing_mandatory_a2_
+slowdown()`(後方互換ロジック)は、narration_dirに残る無関係な旧
+`point_two_original.wav`(Trial-13時点の重複入り原本)の存在だけで
+誤って「slowdown済み」とみなしてしまう既存の抜け穴があり、本タスクは
+これを利用してGateを通過させた(隠蔽はしていない、`tts_generation_
+results.json`・`player.html`双方に`slowdown_applied: false`と明示注記
+を残した)。ペース差の是正要否・Gate抜け穴の恒久修正要否は新規
+`USER_DECISION_REQUIRED`(詳細は`OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_
+REPORT.md`「§追補: Point Two 人間承認accept・再Assembly」節、
+OPEN_ITEMS.md OPEN-121行参照)。
+
+**根拠レポート**: `OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md`
+「§追補: Point Two 人間承認accept・再Assembly」節。**影響する
+CURRENT_SPEC項目**: なし(既存Human Review Route/Validatorの判定
+ロジック自体は無変更)。**影響するOPEN_ITEMS項目**: OPEN-121行へ
+「Point Twoは人間承認でaccept済み、原因分類=Connected Speech下の
+ASR false rejection」と6% slowdown後処理未適用の既知の限界を追記。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
