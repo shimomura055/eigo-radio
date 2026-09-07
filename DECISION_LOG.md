@@ -6511,6 +6511,68 @@ CURRENT_SPEC項目**: なし(既存Human Review Route/Validatorの判定
 「Point Twoは人間承認でaccept済み、原因分類=Connected Speech下の
 ASR false rejection」と6% slowdown後処理未適用の既知の限界を追記。
 
+## OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-TRIAL-01(2026-09-07、
+逐語句・文単位反復検知およびpartial-word false start型検知の一般化Trial、
+ユーザー承認済み隔離Trial、Production未変更)
+
+OPEN-121行(Point Two/In One Line型の逐語句・文単位重複、B1 Full Story
+Part 1のpartial-word false start型)に対する追加検知手段のTrial。既存
+Production関数(`generate_narration_snippet`・ASR provider routing・
+`er008_disfluency_qa_18`)を無変更のまま呼び出すだけの独立Trialモジュール
+(`er011_open121_tts_repetition_general_qa_trial_01.py`)で実施し、
+Production Validator/QA/retry/Cost Guard/TTS Promptは一切変更していない。
+テストセット51件(実在陽性3・合成陽性9・陰性33)で4方式を検証した結果、
+方式A(n-gram句・文単位反復検知、canonical crosscheck付き、min_words=3)
+は実在陽性2/2検知・false reject 0/26で`VALIDATED`、方式D(spectral
+self-similarity、閾値run長0.12秒)もTP 11/12・false accept 0/39で
+`VALIDATED`。方式A+D併用が推奨(token一致・波形一致の独立2原理、追加API
+課金ゼロ、既存disfluency QA接続パターンをそのまま流用可能)。方式C
+(窓分割ASR)はv1(naive連結)がfalse reject 13/26(50%)の設計欠陥で
+`REJECTED`、v2(窓内独立判定)はfalse reject 0/26だが即時言い直し型
+(gap<0.5秒)のみ検知と適用範囲が狭い。partial-word false start型は
+方式A/C/Dいずれも構造的に検知不能で、方式A-ext(単語duration異常)のみ
+検知(12/12)したが、false reject 10/26(38%)と高くauto-rejectゲートには
+不適格。総cost¥29.09(上限¥800の3.6%)。Production配線・適用範囲拡大の
+可否はいずれも`USER_DECISION_REQUIRED`のまま。
+
+**根拠レポート**: `OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-
+TRIAL-01_REPORT.md`。**影響するCURRENT_SPEC項目**: なし(既存disfluency
+QA/Validator/retry/Cost Guardは無変更)。**影響するOPEN_ITEMS項目**:
+OPEN-121行へTrial結果要旨(方式別TP/FP実測値、推奨方式A+D、Production
+採用可否はUSER_DECISION_REQUIRED)を追記。
+
+## CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-TRIAL-01(2026-09-07、
+A2 Point Two「showed strong」を端緒とするConnected Speech Validator一般化
+拡張レイヤーTrial、ユーザー承認済み隔離Trial、Production未変更)
+
+OPEN-121行のサブタスクD/Eで「分類B確定(実音声"showed"、Primary ASRが
+Connected Speech下で語末/d/を脱落させたfalse rejection)」と記録した
+"showed strong"事例は、既存Connected Speech Validator(`er011_b1_
+connected_speech_validator_01.py`、OPEN-107/OPEN-110、3パターン限定で
+`PRODUCTION_WIRED`)のいずれのパターンにも完全には一致しない未分類事例
+だった。本Trialは、既存3パターンValidatorを無変更のまま最初に呼び、
+UNCLASSIFIEDの場合のみ音韻環境カテゴリA〜G(ARPAbetベース)+独立ASR
+(Secondary Azure・local faster-whisper)corroborationの両方が揃った
+場合のみacceptする拡張レイヤーを、隔離Trialモジュール(`er011_connected_
+speech_equivalence_layer_trial_01.py`)として設計・実装した。Flagship
+実データ("showed strong")1件をEQUIVALENCE_LAYER_ACCEPTで正しく救済
+(corroboration 2/2)、敵対的陰性対照4件でfalse accept 0/4、既存回帰
+(fixture 4/4+既存Production regression test 15/15)は無回帰。カテゴリ
+A/B/Cの自然発生陽性事例はFlagship1件のみで、D〜Gはルールエンジン単体の
+合成テストでのみ正しさを確認した(実運用頻度は未知数)。総cost¥19.39
+(上限¥800)。副次発見として、陰性対照の1件(N4)でTTS自体が指示テキスト
+と異なる内容を発話した疑いのある事例(content accuracy揺れ、本Trialの
+対象外)が見つかった。Production採用可否・適用範囲(A/B/Cのみか
+D/E/F/G含むか)・Secondary ASRのA2への常設拡張の是非はいずれも
+`USER_DECISION_REQUIRED`。
+
+**根拠レポート**: `CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-
+TRIAL-01_REPORT.md`。**影響するCURRENT_SPEC項目**: なし(既存Connected
+Speech Validator[3パターン、PRODUCTION_WIRED]・ASR routing・retry・
+Cost Guard・Human Review方針は一切変更なし)。**影響するOPEN_ITEMS項目**:
+新規OPEN-122登録(Production採用・適用範囲・Secondary ASR常設化は
+USER_DECISION_REQUIRED)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

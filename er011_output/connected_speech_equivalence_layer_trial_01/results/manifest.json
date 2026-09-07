@@ -1,0 +1,852 @@
+{
+  "flagship": {
+    "id": "FLAGSHIP_showed_strong_attempt1",
+    "source": "既存Production診断データ再利用(追加課金なし)",
+    "canonical_snippet": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+    "primary_asr_text": "Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+    "secondary_asr_text_full_clip_phrase_biased": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher at about fifty-two percent. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different.Of value from the same holiday.",
+    "secondary_asr_text_windowed_no_phrase_bias_supplementary": "Still showed strong interest.",
+    "local_asr_text": "Young  travelers  are  not  one  single  market.  Women,  aged  29  and  under,  still  showed  strong  interest  in  famous  tourist  places,  at  about  45%.  Gourmet  travel  was  even  higher,  at  about  52%.  This  is  not  the  same  picture  as  the  male  interest  in  solo  and  hobby -based  trips.  The  useful  lesson  is  not  that  sightseeing  is  ending.  Different  young  travelers  may  be  looking  for  different  kinds  of  value  from  the  same  holiday.",
+    "existing_3pattern_replay": {
+      "diff": {
+        "index": 1,
+        "canonical_word": "showed",
+        "asr_word": "show",
+        "prev_word": "still",
+        "next_word": "strong"
+      },
+      "expected_phoneme_boundary": null,
+      "rule": null,
+      "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+      "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+    },
+    "equivalence_layer_result": {
+      "layer_judgment": "EQUIVALENCE_LAYER_ACCEPT",
+      "source": "equivalence_layer",
+      "existing_result": {
+        "diff": {
+          "index": 12,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+      },
+      "equivalence_layer_info": {
+        "diff": {
+          "index": 12,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "diff_shape": "deletion",
+        "drop_info": {
+          "canonical_phones": [
+            "SH",
+            "OW",
+            "D"
+          ],
+          "asr_phones": [
+            "SH",
+            "OW"
+          ],
+          "dropped_phonemes": [
+            "D"
+          ]
+        },
+        "substitution_info": null,
+        "final_dropped_phoneme": "D",
+        "next_word_initial_phoneme": "S",
+        "categories_matched": [
+          {
+            "category": "A",
+            "rule": "final_stop_weakening_unreleased",
+            "detail": "語末の破裂音(D)が、後続子音(S)の前で無開放・弱化しやすい環境。"
+          },
+          {
+            "category": "B",
+            "rule": "alveolar_stop_reduction",
+            "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+          },
+          {
+            "category": "C",
+            "rule": "homorganic_consonant_fusion",
+            "detail": "語末(D, alveolar)と次語頭(S, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+          }
+        ],
+        "secondary_asr_supports_canonical": true,
+        "local_asr_supports_canonical": true,
+        "corroboration_count": 2,
+        "contradiction_count": 0
+      }
+    }
+  },
+  "existing_pattern_regression": [
+    {
+      "id": "R1_studies_suggest_PatternA",
+      "expect": "CONNECTED_SPEECH_ACCEPT",
+      "got": "CONNECTED_SPEECH_ACCEPT",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "studies",
+            "asr_word": "study",
+            "prev_word": "The",
+            "next_word": "suggest"
+          },
+          "expected_phoneme_boundary": "studies/z/ + suggest/s/",
+          "rule": "Pattern_A_sibilant_sequence",
+          "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+          "false_accept_risk": "低: canonical語からdropped接尾辞(-s/-es)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が歯擦音である場合のみ発火する。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R2_opened_to_PatternB",
+      "expect": "CONNECTED_SPEECH_ACCEPT",
+      "got": "CONNECTED_SPEECH_ACCEPT",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_ACCEPT",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 7,
+            "canonical_word": "opened",
+            "asr_word": "open",
+            "prev_word": "be",
+            "next_word": "to"
+          },
+          "expected_phoneme_boundary": "opened/d/ + to/t/",
+          "rule": "Pattern_B_stop_consonant_sequence",
+          "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+          "false_accept_risk": "低: canonical語からdropped接尾辞(-ed)を除いた残り全体がASR語と完全一致しており、語幹自体の置き換わりではない。さらに次語頭が同系列の破裂音である場合のみ発火する。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R3_survey_suggest_PatternC",
+      "expect": "CONNECTED_SPEECH_RESEGMENTATION",
+      "got": "CONNECTED_SPEECH_RESEGMENTATION",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "CONNECTED_SPEECH_RESEGMENTATION",
+        "source": "existing_3_pattern_unchanged",
+        "existing_result": {
+          "diff": {
+            "index": 4,
+            "canonical_word": "survey",
+            "asr_word": "surveys",
+            "prev_word": "the",
+            "next_word": "suggest"
+          },
+          "expected_phoneme_boundary": "survey(+s) + suggest/s/",
+          "rule": "Pattern_C_resegmentation_added_consonant",
+          "new_judgment": "CONNECTED_SPEECH_RESEGMENTATION",
+          "false_accept_risk": "中: canonical語自体に追加された子音が、次語頭の歯擦音と同一種であることのみを根拠にしている。ASR語がcanonical語と無関係な別単語である可能性を完全には排除できないため、PASS_WITH_WARNING(blockingしないが警告は残す)とする。"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "R4_unrelated_mismatch",
+      "expect": "UNCLASSIFIED",
+      "got": "NOT_A_PHONEME_PREFIX_DROP",
+      "pass": true,
+      "full_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 5,
+            "canonical_word": "increase",
+            "asr_word": "decrease",
+            "prev_word": "clear",
+            "next_word": "in"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 5,
+          "canonical_word": "increase",
+          "asr_word": "decrease",
+          "prev_word": "clear",
+          "next_word": "in"
+        }
+      }
+    }
+  ],
+  "synthetic_rule_engine_checks": [
+    {
+      "id": "SYN_D_sun_sum_assimilation",
+      "expected_category": "D",
+      "matched_categories": [
+        "D"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "EQUIVALENCE_LAYER_PASS_WITH_WARNING",
+      "without_support_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+      "gate_ok": true
+    },
+    {
+      "id": "SYN_E_direct_dont_you",
+      "expected_category": "E",
+      "matched_categories": [
+        "A",
+        "B",
+        "D",
+        "E",
+        "F"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_F_direct_get_it",
+      "expected_category": "F",
+      "matched_categories": [
+        "F",
+        "G"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_G_direct_an_apple",
+      "expected_category": "G",
+      "matched_categories": [
+        "G"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    },
+    {
+      "id": "SYN_C_direct_big_cat",
+      "expected_category": "C",
+      "matched_categories": [
+        "A",
+        "C"
+      ],
+      "category_ok": true,
+      "with_support_judgment": "N/A_DIRECT_UNIT_TEST",
+      "without_support_judgment": "N/A",
+      "gate_ok": null
+    }
+  ],
+  "positive_results": [
+    {
+      "id": "P1_asked_them",
+      "status": "OK",
+      "category_expected": "A/B",
+      "note": null,
+      "claimed_canonical": "She asked them to wait outside.",
+      "actually_spoken_text": "She asked them to wait outside.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P1_asked_them.wav",
+      "audio_sha256": "e535c0c7cb8b62f2070dca62e01b80fb4528378c0c9f14f98270d55592745d4e",
+      "duration_seconds": 2.311,
+      "primary_asr_text": "She asks them to wait outside.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "She asked them to wait outside.",
+      "secondary_asr_error": null,
+      "local_asr_text": "She asked them to wait outside.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "asked",
+            "asr_word": "asks",
+            "prev_word": "She",
+            "next_word": "them"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 1,
+          "canonical_word": "asked",
+          "asr_word": "asks",
+          "prev_word": "She",
+          "next_word": "them"
+        }
+      }
+    },
+    {
+      "id": "P2_next_stop",
+      "status": "OK",
+      "category_expected": "A/B",
+      "note": null,
+      "claimed_canonical": "The next stop is downtown.",
+      "actually_spoken_text": "The next stop is downtown.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P2_next_stop.wav",
+      "audio_sha256": "8baff4af1084fddfaa9d84771f0cdfca97e506359e69950a067cd0c2558137e9",
+      "duration_seconds": 1.951,
+      "primary_asr_text": "The next stop is downtown.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The next stop is downtown.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The next stop is downtown.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P3_big_cat",
+      "status": "OK",
+      "category_expected": "A/C",
+      "note": null,
+      "claimed_canonical": "The big cat slept by the door.",
+      "actually_spoken_text": "The big cat slept by the door.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P3_big_cat.wav",
+      "audio_sha256": "00838556cdbf857653e04f3364632fa0ba2052e98175e92f496de3f954081305",
+      "duration_seconds": 2.371,
+      "primary_asr_text": "The big cat slept by the door.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The big cat slept by the door.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The big cat slept by the door.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P4_ten_pounds",
+      "status": "OK",
+      "category_expected": "D",
+      "note": null,
+      "claimed_canonical": "He paid ten pounds for the ticket.",
+      "actually_spoken_text": "He paid ten pounds for the ticket.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P4_ten_pounds.wav",
+      "audio_sha256": "af2b7d3a131e5f9ee3d3d5b7618d44873dfd5153921fc76a031a64b20dbb0c5f",
+      "duration_seconds": 2.611,
+      "primary_asr_text": "He paid ten pounds for the ticket.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "He paid £10 for the ticket.",
+      "secondary_asr_error": null,
+      "local_asr_text": "He paid 10 pounds for the ticket.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P5_that_boy",
+      "status": "OK",
+      "category_expected": "D/F",
+      "note": null,
+      "claimed_canonical": "I saw that boy at the park.",
+      "actually_spoken_text": "I saw that boy at the park.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P5_that_boy.wav",
+      "audio_sha256": "11fb0dbe3ca83fc5c4d996239e169245bd44ba371158681cdd7676c2b44ff213",
+      "duration_seconds": 1.931,
+      "primary_asr_text": "I saw that boy at the park.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "I saw that boy at the park.",
+      "secondary_asr_error": null,
+      "local_asr_text": "I saw that boy at the park.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P6_dont_you",
+      "status": "OK",
+      "category_expected": "E",
+      "note": null,
+      "claimed_canonical": "Don't you want to come with us?",
+      "actually_spoken_text": "Don't you want to come with us?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P6_dont_you.wav",
+      "audio_sha256": "00c78cd3516774d3421d56a69705317e5fbc15a28b4f5b0fe33d15d998dd4e2c",
+      "duration_seconds": 1.951,
+      "primary_asr_text": "Don't you wanna come with us?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Don't you want to come with us?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Don't you want to come with us?",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "want",
+            "asr_word": "wanna",
+            "prev_word": "you",
+            "next_word": "to"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 2,
+          "canonical_word": "want",
+          "asr_word": "wanna",
+          "prev_word": "you",
+          "next_word": "to"
+        }
+      }
+    },
+    {
+      "id": "P7_did_you",
+      "status": "OK",
+      "category_expected": "E",
+      "note": null,
+      "claimed_canonical": "Did you finish the report on time?",
+      "actually_spoken_text": "Did you finish the report on time?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P7_did_you.wav",
+      "audio_sha256": "fd4ad92bd46e8f2aaf7b637b9f14d4145eab63a3ca3e80412cab9f9702f9bb9a",
+      "duration_seconds": 2.211,
+      "primary_asr_text": "Did you finish the report on time?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Did you finish the report on time?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Did you finish the report on time?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P8_get_it",
+      "status": "OK",
+      "category_expected": "F",
+      "note": null,
+      "claimed_canonical": "Can you get it from the shelf?",
+      "actually_spoken_text": "Can you get it from the shelf?",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P8_get_it.wav",
+      "audio_sha256": "58f5ed69d011e821b6dc61ad99c67cbbc70430b3893f7439b49b01c3deefd12b",
+      "duration_seconds": 1.471,
+      "primary_asr_text": "Can you get it from the shelf?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Can you get it from the shelf?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Can you get it from the shelf?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "P9_an_apple",
+      "status": "OK",
+      "category_expected": "G",
+      "note": null,
+      "claimed_canonical": "She ate an apple for lunch.",
+      "actually_spoken_text": "She ate an apple for lunch.",
+      "is_negative_control": false,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P9_an_apple.wav",
+      "audio_sha256": "aec078078d34bb82945c8fb0bc5854c0cdccc5a6575e922026ac1c6bad2109bd",
+      "duration_seconds": 1.891,
+      "primary_asr_text": "She ate an apple for lunch.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "She ate an apple for lunch.",
+      "secondary_asr_error": null,
+      "local_asr_text": "She ate an apple for lunch.",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    }
+  ],
+  "negative_results": [
+    {
+      "id": "N1_show_not_showed",
+      "status": "OK",
+      "category_expected": null,
+      "note": "P0(showed strong)と同一環境の敵対的陰性対照(現在形での実発話)",
+      "claimed_canonical": "Young travelers still showed strong interest in the results.",
+      "actually_spoken_text": "Young travelers still show strong interest in the results.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N1_show_not_showed.wav",
+      "audio_sha256": "3551895d3c55e221229ecc8167a511c7d76685d30f5b9b975ba8e62096a1d2ca",
+      "duration_seconds": 4.311,
+      "primary_asr_text": "Young travelers still show strong interest in the results.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Young travelers still show strong interest in the results.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Young travelers still show strong interest in the results.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 3,
+            "canonical_word": "showed",
+            "asr_word": "show",
+            "prev_word": "still",
+            "next_word": "strong"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 3,
+            "canonical_word": "showed",
+            "asr_word": "show",
+            "prev_word": "still",
+            "next_word": "strong"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "SH",
+              "OW",
+              "D"
+            ],
+            "asr_phones": [
+              "SH",
+              "OW"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "S",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(D)が、後続子音(S)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "C",
+              "rule": "homorganic_consonant_fusion",
+              "detail": "語末(D, alveolar)と次語頭(S, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "N2_show_not_showed_2",
+      "status": "OK",
+      "category_expected": null,
+      "note": "flagshipと同一環境の独立した第2の敵対的陰性対照",
+      "claimed_canonical": "The results showed clear improvement this quarter.",
+      "actually_spoken_text": "The results show clear improvement this quarter.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N2_show_not_showed_2.wav",
+      "audio_sha256": "5018fc5205aff20c88f9485f92ac5ce7101cc8dfc7845862dac85541eac8b4d6",
+      "duration_seconds": 2.911,
+      "primary_asr_text": "The results show clear improvement this quarter.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "The results show clear improvement this quarter.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The results show clear improvement this quarter.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "showed",
+            "asr_word": "show",
+            "prev_word": "results",
+            "next_word": "clear"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": {
+          "diff": {
+            "index": 2,
+            "canonical_word": "showed",
+            "asr_word": "show",
+            "prev_word": "results",
+            "next_word": "clear"
+          },
+          "diff_shape": "deletion",
+          "drop_info": {
+            "canonical_phones": [
+              "SH",
+              "OW",
+              "D"
+            ],
+            "asr_phones": [
+              "SH",
+              "OW"
+            ],
+            "dropped_phonemes": [
+              "D"
+            ]
+          },
+          "substitution_info": null,
+          "final_dropped_phoneme": "D",
+          "next_word_initial_phoneme": "K",
+          "categories_matched": [
+            {
+              "category": "A",
+              "rule": "final_stop_weakening_unreleased",
+              "detail": "語末の破裂音(D)が、後続子音(K)の前で無開放・弱化しやすい環境。"
+            },
+            {
+              "category": "B",
+              "rule": "alveolar_stop_reduction",
+              "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+            },
+            {
+              "category": "D",
+              "rule": "place_assimilation",
+              "detail": "歯茎音(D)が、後続子音の調音位置(velar)へ同化しやすい。"
+            }
+          ],
+          "secondary_asr_supports_canonical": false,
+          "local_asr_supports_canonical": false,
+          "corroboration_count": 0,
+          "contradiction_count": 2
+        }
+      }
+    },
+    {
+      "id": "N3_asks_not_asked",
+      "status": "OK",
+      "category_expected": null,
+      "note": "P1との最小対、時制/人称違いの真の内容不一致",
+      "claimed_canonical": "She asked them to wait outside.",
+      "actually_spoken_text": "She asks them to wait outside.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N3_asks_not_asked.wav",
+      "audio_sha256": "99414e4ab458ae01b0ce8a2e391454928a420f168f5dbd8243ac6c7cc96d0569",
+      "duration_seconds": 2.031,
+      "primary_asr_text": "She asks them to wait outside.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "She asks them to wait outside.",
+      "secondary_asr_error": null,
+      "local_asr_text": "She asks them to wait outside.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 1,
+            "canonical_word": "asked",
+            "asr_word": "asks",
+            "prev_word": "She",
+            "next_word": "them"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 1,
+          "canonical_word": "asked",
+          "asr_word": "asks",
+          "prev_word": "She",
+          "next_word": "them"
+        }
+      }
+    },
+    {
+      "id": "N4_do_not_did",
+      "status": "OK",
+      "category_expected": null,
+      "note": "P7との最小対、時制違いの真の内容不一致",
+      "claimed_canonical": "Did you finish the report on time?",
+      "actually_spoken_text": "Do you finish the report on time?",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N4_do_not_did.wav",
+      "audio_sha256": "dd1f28663290a88560b6f815a735280507a728e23c8b2ab3b4fc1a3bade5047c",
+      "duration_seconds": 2.231,
+      "primary_asr_text": "Did you finish the report on time?",
+      "primary_asr_error": null,
+      "secondary_asr_text": "Did you finish the report on time?",
+      "secondary_asr_error": null,
+      "local_asr_text": "Did you finish the report on time?",
+      "existing_en_validator_classification": "EXACT_MATCH",
+      "existing_en_validator_should_pass": true,
+      "equivalence_layer_result": {
+        "layer_judgment": "NO_DELETION_SHAPED_DIFF",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": null,
+          "new_judgment": "NO_DIFF",
+          "rule": null,
+          "false_accept_risk": "N/A"
+        },
+        "equivalence_layer_info": null
+      }
+    },
+    {
+      "id": "N5_orange_not_apple",
+      "status": "OK",
+      "category_expected": null,
+      "note": "P9との最小対、別単語への真の内容不一致",
+      "claimed_canonical": "She ate an apple for lunch.",
+      "actually_spoken_text": "She ate an orange for lunch.",
+      "is_negative_control": true,
+      "audio_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N5_orange_not_apple.wav",
+      "audio_sha256": "baf4bf4d97374423f14f537bc5bdd8498912c6c88a87ae19517a4ad30705173f",
+      "duration_seconds": 2.371,
+      "primary_asr_text": "She ate an orange for lunch.",
+      "primary_asr_error": null,
+      "secondary_asr_text": "She ate an orange for lunch.",
+      "secondary_asr_error": null,
+      "local_asr_text": "She ate an orange for lunch.",
+      "existing_en_validator_classification": "TRUE_CONTENT_MISMATCH",
+      "existing_en_validator_should_pass": false,
+      "equivalence_layer_result": {
+        "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+        "source": "equivalence_layer",
+        "existing_result": {
+          "diff": {
+            "index": 3,
+            "canonical_word": "apple",
+            "asr_word": "orange",
+            "prev_word": "an",
+            "next_word": "for"
+          },
+          "expected_phoneme_boundary": null,
+          "rule": null,
+          "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+          "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+        },
+        "equivalence_layer_info": null,
+        "diff": {
+          "index": 3,
+          "canonical_word": "apple",
+          "asr_word": "orange",
+          "prev_word": "an",
+          "next_word": "for"
+        }
+      }
+    }
+  ],
+  "cost_jpy_total": 19.39,
+  "cost_by_provider_jpy": {
+    "gemini": 4.06,
+    "openai_asr": 0.86,
+    "azure": 14.47
+  },
+  "budget_cap_jpy": 800.0
+}
