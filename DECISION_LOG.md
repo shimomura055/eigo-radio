@@ -1,7 +1,10 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-07(ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、
+**最終更新: 2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10、
+試聴artifact規則[9-2]がsonnet-worker成果物にも直接適用されることを明記し、
+Gate 7へ音声artifact受入チェックリスト[(a)〜(k)]を追加した。文書編集のみ、
+詳細は本ファイル該当エントリ参照)。2026-09-07(ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、
 ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した2件をProduction配線した。
 **(1) B1 Preview分量原則**: 「Previewは2〜3文程度の短い導入とする。要点を先出ししすぎず、
 この回で何を聞くのかが自然に伝わる内容にする」という趣旨の分量段落を、B1 Previewの実際の
@@ -101,6 +104,52 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 各Decisionは最低限、Decision ID／日付／内容／状態／採用理由／比較した
 選択肢／却下理由／根拠レポート／commit／影響するCURRENT_SPEC項目を持つ。
+
+---
+
+## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
+
+**日付**: 2026-09-07
+
+**区分**: PM運用ルール(サービス・生成仕様ではない)
+
+**内容**: `docs/pm/PM_GOVERNANCE.md`「9-2. PMとしての説明原則」の試聴リンク・
+完全スクリプト規則(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09)の末尾に、
+本規則はFableのユーザー向け報告だけでなく試聴artifact(player等)を構築する
+sonnet-workerの成果物にも直接適用され、Fableは委任文に必須要素を明記し
+受入時にGate 7チェックリスト(2節)で確認する旨を追記した。あわせて
+「2. PM Gate 1〜7」のGate 7末尾へ「Gate 7 補足: 音声artifact受入
+チェックリスト」を新設し、音声試聴artifactを受け入れる前にFableが確認する
+必須要素11項目((a)完成episode音声[部品sampleではなく実episode構造]/
+(b)Preview/(c)Comment全件/(d)本文全section[Hook/Voice/Tension/Closing等、
+記事構造に応じた全section]/(e)Key Phrase英語+日本語gloss[表示用、TTS用が
+異なる場合は併記]/(f)Intro/Outro/SFX/効果音・固定文言[読み上げ有無を明記]/
+(g)実際のsegment order・開始秒・click-seek/(h)各segmentの使用voice名/
+(i)A2/B1等レベル別の明確な分離/(j)テキスト未取得segmentは「未取得」と
+明記[推測補完なし]/(k)Standard/Batch等TTS方式の明記)を明記した。1つでも
+欠ければ受入せず差し戻す。新構造(Lane B等)向けには`REQUIRED_SEGMENTS`
+相当の機械checkを委任文で要求することも明記した。Gate 7自体の意味は
+変更せず、受入判定を具体化するもの。
+
+**採用理由**: Lane B Trial-08で、「完成音声・Trial音声の試聴依頼は音声+
+完全スクリプト同一ページ」ルール(既にER-008-N8-CLOSEOUT-GOVERNANCE-25、
+ER-010-NO9-…-18、PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09[9-2]の3段階で
+存在)の適用漏れ(sonnet-workerの実装漏れ+Fableの受入レビュー漏れ)が
+発生したため。既存ルールは3段階で既に存在することから、新ルールは追加せず
+主語明確化とGate 7受入判定の具体化のみを行った(2026-09-07ユーザー承認、
+PM-REVIEW-ARTIFACT-RULE-GAP-DIAGNOSTIC-01の再発防止案(1)(2))。
+
+**根拠レポート**: `PM-REVIEW-ARTIFACT-RULE-GAP-DIAGNOSTIC-01_REPORT.md`
+(既存)。本エントリ自体はPM運用ルールの文書編集のみ、新規Trial・TTS・
+Production変更なし。
+
+**状態**: 文書化完了(Productionコード・Prompt・記事本文・音声・
+`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は無変更)。
+
+**commit**: 後続の統合commit(Lane B Trial-09がcommit権保持中のため、本タスク
+自体はGit操作を行わず、Fableが後で統合commitする)。
+
+**影響するCURRENT_SPEC項目**: なし。
 
 ---
 

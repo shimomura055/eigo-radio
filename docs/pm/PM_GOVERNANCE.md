@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-06(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09で
+**最終更新: 2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10で
+9-2の試聴artifact規則がsonnet-workerの成果物にも直接適用されることを明記し、
+Gate 7へ音声artifact受入チェックリスト[(a)〜(k)]を追加)。2026-09-06(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09で
 完成音声・Trial音声の試聴依頼は音声+完全スクリプトを同一ページに表示する
 ことを9-2へ標準化)。2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08で
 commit/pushを伴うタスクは同時に1つだけ稼働させる原則と、回帰実行は
@@ -86,6 +88,26 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   「動作確認済み」という報告をそのまま採用せず、Production正式path /
   runtime evidence / test / approved specとの一致 / retry・fallbackとの整合 /
   QCD(品質・コスト・納期)副作用をFableが受入判定する。
+
+**Gate 7 補足: 音声artifact受入チェックリスト**(2026-09-07、
+PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10。Gate 7の意味を変えるもの
+ではなく、音声試聴artifactに対する受入判定を具体化するもの)。音声試聴
+artifact(player等)を受け入れる前に、Fableは以下の必須要素を確認する。
+
+(a) 完成episode音声(部品sampleではなく実episode構造)であること
+(b) Preview
+(c) Comment全件
+(d) 本文全section(Hook/Voice/Tension/Closing等、記事構造に応じた全section)
+(e) Key Phraseの英語+日本語gloss(表示用。TTS用が異なる場合は併記)
+(f) Intro/Outro/SFX/効果音・固定文言(読み上げの有無を明記)
+(g) 実際のsegment order・開始秒・click-seek
+(h) 各segmentの使用voice名
+(i) A2/B1等レベル別の明確な分離
+(j) テキスト未取得segmentは「未取得」と明記(推測補完なし)
+(k) Standard/Batch等TTS方式の明記
+
+1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
+`REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
 
 ## 3. PM Closeout Mandatory Check(PM Closeout時の確認事項)
 
@@ -341,7 +363,10 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   REQUIRED`/Trial音声レビューではこの形式を標準とし、**音声だけのreview
   linkは作らない**。テキストが取得できないsegmentは推測で埋めず「未取得」
   と明記する(2026-09-06ユーザー指示、PM-GOVERNANCE-AUDIO-REVIEW-PAGE-
-  STANDARD-09)。
+  STANDARD-09)。本規則はFableのユーザー向け報告だけでなく、**試聴artifact
+  (player等)を構築するsonnet-workerの成果物にも直接適用**する。Fableは
+  委任文に必須要素を明記し、受入時にGate 7チェックリスト(2節)で確認する
+  (2026-09-07、PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10)。
 
 本原則はFableのユーザー向け報告に適用する。Sonnet/OpusからFableへの報告
 (`RESULT_PACKET.md`・ER/OPEN Report)は従来どおり証跡・原文を省略せず詳細に
@@ -607,3 +632,28 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   同ページへ反映した。ユーザーのクライアントでは音声だけのreview linkでは
   試聴中の該当箇所の文言を文字で確認できなかったことを受けた2026-09-06
   ユーザー指示による新設。
+- 2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10): 「9-2.
+  PMとしての説明原則」の試聴リンク・完全スクリプト規則の末尾に、本規則は
+  Fableのユーザー向け報告だけでなく試聴artifact(player等)を構築する
+  sonnet-workerの成果物にも直接適用され、Fableは委任文に必須要素を明記し
+  受入時にGate 7チェックリスト(2節)で確認する旨を追記した。あわせて
+  「2. PM Gate 1〜7」のGate 7末尾へ「Gate 7 補足: 音声artifact受入
+  チェックリスト」を新設し、音声試聴artifactの受入前にFableが確認する
+  必須要素11項目((a)完成episode音声[部品sampleではなく実episode構造]/
+  (b)Preview/(c)Comment全件/(d)本文全section[Hook/Voice/Tension/Closing等
+  記事構造に応じた全section]/(e)Key Phrase英語+日本語gloss[表示用、TTS用が
+  異なる場合は併記]/(f)Intro/Outro/SFX/効果音・固定文言[読み上げ有無を明記]/
+  (g)実際のsegment order・開始秒・click-seek/(h)各segmentの使用voice名/
+  (i)A2/B1等レベル別の明確な分離/(j)テキスト未取得segmentは「未取得」と
+  明記[推測補完なし]/(k)Standard/Batch等TTS方式の明記)を明記し、1つでも
+  欠ければ受入せず差し戻すこと、新構造(Lane B等)向けには
+  `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求することを明文化した
+  (Gate 7自体の意味は変更せず、受入判定の具体化。文書編集のみ、
+  Productionコード・Prompt変更なし)。2026-09-07、ユーザー承認
+  (PM-REVIEW-ARTIFACT-RULE-GAP-DIAGNOSTIC-01の再発防止案(1)(2))。
+  Lane B Trial-08で「完成音声・Trial音声の試聴依頼は音声+完全スクリプト
+  同一ページ」ルール(既にER-008-N8-CLOSEOUT-GOVERNANCE-25、ER-010-NO9-
+  …-18、PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09[9-2]の3段階で存在)の
+  適用漏れ(sonnet-workerの実装漏れ+Fableの受入レビュー漏れ)が発生した
+  ことを受け、新ルールは追加せず、既存規則の主語明確化とGate 7受入判定の
+  具体化のみを行った。
