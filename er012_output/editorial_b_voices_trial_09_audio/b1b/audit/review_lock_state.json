@@ -313,30 +313,36 @@
     ]
   },
   "point_two_heading": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "a788d3fbc009c1dd6e08154258eb64e4b6b6c4d7b9eaa4fad3cac4b123c33a4a",
     "language": "en",
     "theme_id": "editorial_b_voices_trial_09_audio",
     "level": "b1b",
     "segment_id": "point_two_heading",
-    "updated_at": "2026-09-07T18:01:34",
-    "reason": "最終status=ASR_VALIDATION_UNCERTAIN。同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)",
-    "final_status": "ASR_VALIDATION_UNCERTAIN",
+    "updated_at": "2026-09-07T20:20:51",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er012_output/editorial_b_voices_trial_09_audio/b1b/narration/point_two_heading.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
-        "asr_text": "the freedom to move",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "asr_text": "Another voice, the freedom to move.",
+        "audio_classification": "NORMALIZED_MATCH",
         "length_ok": true,
-        "verified": false,
+        "verified": true,
         "instruction_type": "english_style_prefix",
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "attempt_audio_path": "er012_output/editorial_b_voices_trial_09_audio/b1b/narration/attempts/point_two_heading_attempt1_englishstyleprefix.wav"
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 6,
+          "transcript": "Another  voice,  the  freedom  to  move.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er012_output/editorial_b_voices_trial_09_audio/b1b/narration/attempts/point_two_heading_attempt2_englishstyleprefix.wav"
       }
     ]
   },
