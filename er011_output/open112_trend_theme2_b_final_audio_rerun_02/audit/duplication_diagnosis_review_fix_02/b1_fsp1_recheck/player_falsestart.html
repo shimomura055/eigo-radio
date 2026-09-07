@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02: B1 FSP1 false-start特性解析 試聴用</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;line-height:1.6;max-width:980px;margin:0 auto;padding:16px;color:#111;}
+h2{border-bottom:3px solid #333;padding-bottom:4px;margin-top:2em;}
+audio{width:100%;max-width:520px;display:block;margin:6px 0 14px 0;}
+.box{border:1px solid #ccc;padding:12px 16px;margin:12px 0;background:#fafafa;}
+.finding{border-left:6px solid #2ca02c;}
+.negative{border-left:6px solid #888;}
+code{background:#eee;padding:1px 4px;}
+img{max-width:100%;border:1px solid #ccc;margin:8px 0;}
+table{border-collapse:collapse;margin:8px 0;}
+td,th{border:1px solid #ccc;padding:4px 8px;font-size:0.9em;}
+</style>
+</head>
+<body>
+<h1>B1 Full Story Part 1「As of Septem, As of September 2026...」<br>
+false-start特性解析(ユーザー試聴で重複確定・機械検知全手法失敗の記録)</h1>
+<p>管理ID: OPEN-112-THEME2-AUDIO-REVIEW-FIX-02(B1 FSP1解析タスク)。
+2026-09-07のユーザー試聴で narration単体・episode該当区間ともに
+冒頭0〜3秒の重複が確定した。既存の全機械検知手法(全文一括ASR8回・
+windowed再ASR12回・faster-whisper逐語8件・spectral self-similarity
+top5・cross-correlation)は全て陰性だったため、冒頭0〜3秒に絞った
+追加特性解析を行った。診断のみ、修正・再生成・Assembly変更なし。</p>
+
+<h2>1. 対象クリップ(試聴用)</h2>
+<div class="box">
+<p>narration単体、0〜3秒(ユーザー報告の該当区間そのもの):</p>
+<audio controls src="falsestart_opening_0-3s.wav"></audio>
+<p>0〜1.5秒(false startの前半のみ):</p>
+<audio controls src="falsestart_opening_0-1.5s.wav"></audio>
+<p>1.2〜3秒(2回目の"As of September 2026"を含む後半):</p>
+<audio controls src="falsestart_opening_1.2-3s.wav"></audio>
+<p>0〜6秒(word timestamp解析対象):</p>
+<audio controls src="falsestart_opening_0-6s.wav"></audio>
+<p>DTW比較用fragment: frag A(0〜1.2秒)/frag B(1.2〜2.6秒):</p>
+<audio controls src="falsestart_frag_a_0-1.2s.wav"></audio>
+<audio controls src="falsestart_frag_b_1.2-2.6s.wav"></audio>
+</div>
+
+<h2>2. RMSエネルギー包絡 + onset検出(0〜6秒)</h2>
+<div class="box finding">
+<p>0〜6秒のRMS包絡(frame20ms/hop5ms)。緑帯(0.245〜0.99秒)と橙帯
+(1.21〜1.96秒、緑帯からlag=0.97秒)は、後述(4)の短run自己相関
+rescanで検出した反復候補区間。<b>2つの帯の波形の山の形が視覚的にも
+酷似しており、約1秒間隔で似たエネルギー変化パターンが2回現れている</b>
+ことが確認できる(「As of Septem」→短い間→「As of September」の
+2回のonset burstに対応する形状として矛盾しない)。</p>
+<img src="falsestart_rms_envelope.png" alt="RMS envelope with onsets">
+</div>
+
+<h2>3. Frame self-similarity行列(0〜5秒)</h2>
+<div class="box finding">
+<p>主対角線(自分自身)とは別に、赤線で示した0.24〜0.99秒×1.21〜1.96秒
+(lag≈0.97秒)の帯が、周囲より明るい(類似度が高い)対角バンドとして
+視覚的にも確認できる。ただしこの帯の類似度は0.6〜0.85程度で、
+Point Twoで確認された確定反復(閾値0.85超・run長0.60秒)ほど高くはない
+(下記4節参照)。</p>
+<img src="falsestart_similarity_heatmap.png" alt="self-similarity heatmap">
+</div>
+
+<h2>4. 短run自己相関rescan(閾値0.5〜0.9、lag 0.3〜1.5秒)</h2>
+<div class="box finding">
+<p>前回(差し戻し1回目)の高解像度re-checkは「類似度が最も高い候補」を
+上位5〜15件抽出する設計だったため、無音・子音境界の偶然一致
+(類似度0.98台だがrun長0.02〜0.04秒のみ)が上位を占め、真の反復候補が
+埋もれていた。本rescanは<b>「run長が最も長い候補」</b>を閾値ごとに
+直接探索する設計に変えたところ、<b>lag=0.97秒付近に、閾値0.6で
+run長0.75秒、閾値0.5で0.77秒の帯</b>が見つかった(前回top5の最大run長
+0.035秒の約20倍)。閾値0.85まで上げるとrun長は0.195秒まで縮むため、
+これは「ほぼ同一の反復」ではなく「別テイクとしての言い直し(prosody・
+tempoが微妙に異なる)」の性質と整合する。</p>
+<table>
+<tr><th>閾値</th><th>run長(秒)</th><th>time_a(秒)</th><th>lag(秒)</th></tr>
+<tr><td>0.50</td><td>0.77</td><td>0.24</td><td>0.97</td></tr>
+<tr><td>0.60</td><td>0.75</td><td>0.245</td><td>0.97</td></tr>
+<tr><td>0.70</td><td>0.64</td><td>0.245</td><td>0.97</td></tr>
+<tr><td>0.75</td><td>0.58</td><td>0.25</td><td>0.97</td></tr>
+<tr><td>0.80</td><td>0.34</td><td>0.25</td><td>0.97</td></tr>
+<tr><td>0.85(前回基準)</td><td>0.195</td><td>0.26</td><td>0.965</td></tr>
+<tr><td>0.90</td><td>0.115</td><td>0.295</td><td>0.97</td></tr>
+</table>
+</div>
+
+<h2>5. 波形クロス相関(frag A vs 0〜4秒スライディング)</h2>
+<div class="box finding">
+<p>frag A(0〜1.2秒、生波形)を0〜4秒区間内でスライドさせて正規化相関を
+計算(trivialな自己一致[offset=0]は除外)。<b>最良offset=0.975秒、
+相関係数0.134</b>(正の相関だが弱め)。短run自己相関rescanが見つけた
+lag=0.97秒と独立手法(生波形の直接クロス相関)でほぼ一致しており、
+反復候補の時間位置の妥当性を補強する。相関係数が強くない(0.134)のは
+2回目の発話が完全な波形複製ではなく、別テイクの言い直し(tempo・
+co-articulationの違い)であることと整合する。</p>
+</div>
+
+<h2>6. faster-whisper word-level timestamps(0〜3秒、beam_size/temperature複数設定)</h2>
+<div class="box finding">
+<p>3設定(beam_size=5/temp=0.0、beam_size=1/temp=0.0、beam_size=5/temp=0.4)
+すべてで同一結果、word数4語のみ("as"/"of"/"September"/"2026.")。
+<b>"September"のタイムスタンプが0.62〜1.90秒(長さ1.28秒)</b>で、
+通常の"September"1語の発話長(他区間の同一語で確認すると約0.5〜0.6秒
+相当)の2倍以上に異常に長い。これは、実際には「Septem(打ち切り)」+
+短い間+「September」という2回分の音響区間を、word-level alignerが
+単一token"September"へ吸収・引き延ばして割り当てたためと考えられる
+(隣接する同一tokenとしては現れないため、既存の
+<code>detect_adjacent_word_repetition()</code>[隣接同一token検知のみ]
+は原理的に検知不可能)。</p>
+</div>
+
+<h2>7. 0〜3秒clip単体への生ASR投入(Production Primary/Azure)</h2>
+<div class="box finding">
+<p><b>Azure Speech STT(診断専用呼び出し、English Primary経路には
+未採用)の生transcriptは "As of September. As of September 2026."
+(2回分の"As of September"が明示的に現れている)</b>。一方、Production
+Primary ASR(OpenAI gpt-4o-mini-transcribe)は同じ0〜3秒clipに対し、
+prompt無し3回・verbatim-style prompt有り3回の計6回すべてで
+"As of September 2026[.,]" の1回分のみへ平滑化した(0〜3秒へ絞り込んでも
+なお平滑化を再現)。</p>
+<table>
+<tr><th>ASR</th><th>呼び出し</th><th>結果</th></tr>
+<tr><td>OpenAI(Production Primary)</td><td>no-prompt ×3</td>
+<td>'As of September 2026,' / 'As of September 2026.' / 'As of September 2026.'</td></tr>
+<tr><td>OpenAI(Production Primary)</td><td>verbatim-prompt ×3</td>
+<td>'As of September 2026.' ×3</td></tr>
+<tr><td>Azure Speech STT(診断のみ)</td><td>×2</td>
+<td>'As of September. As of September 2026.' ×2(重複を明示的に検出)</td></tr>
+</table>
+</div>
+
+<h2>8. DTW(frag A vs frag B)</h2>
+<div class="box">
+<p>frag A(0〜1.2秒)とfrag B(1.2〜2.6秒)のDTW正規化距離
+(1フレームあたり)は0.2409。同じfrag Aと無関係な後方区間
+(25〜26.2秒)とのDTW距離0.4131より明確に小さく、frag A/Bが
+frag Aと無関係区間より音響的に近いことを裏付ける(完全一致ではない
+=別テイクの言い直しという解釈と矛盾しない)。</p>
+</div>
+
+<h2>まとめ</h2>
+<div class="box negative">
+<p>今回の追加解析(word-level timestamp異常検出・RMS onsetパターン・
+run長優先の短run rescan・生波形クロス相関・DTW・0〜3秒clip単体への
+Azure診断ASR)により、<b>ユーザー試聴で確定した重複は、複数の独立した
+定量的手法(短run rescan・クロス相関・DTW・word duration異常・Azure生
+transcript)で一貫してlag≈0.97秒付近に収束する形で裏付けられた</b>。
+一方、Production Primary ASR(OpenAI)・faster-whisper word-level
+repetition検知(隣接同一token方式)は、0〜3秒へ絞り込んでもなお
+検知できなかった。全生データは
+<code>falsestart_characterization_evidence.json</code>、実行ログは
+<code>falsestart_characterization_log.txt</code>を参照。</p>
+</div>
+
+</body>
+</html>

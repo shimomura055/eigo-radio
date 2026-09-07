@@ -1,0 +1,36 @@
+=== B1 FSP1 false-start特性解析 開始 ===
+
+--- (a) faster-whisper word-level timestamps (opening_0-6s) ---
+  [WordTS] opening_0-6s cfg={'beam_size': 5, 'temperature': 0.0, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=12 text='As  of  September  2026,  travel  surveys  in  Japan  tell  a  story  with'
+  [WordTS] opening_0-6s cfg={'beam_size': 1, 'temperature': 0.0, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=12 text='As  of  September  2026,  travel  surveys  in  Japan  tell  a  story  with'
+  [WordTS] opening_0-6s cfg={'beam_size': 5, 'temperature': 0.4, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=12 text='As  of  September  2026,  travel  surveys  in  Japan  tell  a  story  with'
+
+--- (a2) faster-whisper word-level timestamps (opening_0-3s) ---
+  [WordTS] opening_0-3s cfg={'beam_size': 5, 'temperature': 0.0, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=4 text='as  of  September  2026.'
+  [WordTS] opening_0-3s cfg={'beam_size': 1, 'temperature': 0.0, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=4 text='as  of  September  2026.'
+  [WordTS] opening_0-3s cfg={'beam_size': 5, 'temperature': 0.4, 'best_of': 5, 'condition_on_previous_text': False, 'language_probability': 1} -> words=4 text='as  of  September  2026.'
+
+--- (b) RMS envelope + onset検出 (narration full, 0-6s) ---
+  [RMS/Onset] narration_solo_full onsets(<6.0s) = [{'time': 0.255, 'diff': 0.3002, 'rms_norm': 0.4217}, {'time': 0.49, 'diff': 0.0892, 'rms_norm': 0.3961}, {'time': 0.71, 'diff': 0.1149, 'rms_norm': 0.3455}, {'time': 0.94, 'diff': 0.099, 'rms_norm': 0.5626}, {'time': 1.235, 'diff': 0.253, 'rms_norm': 0.6076}, {'time': 1.46, 'diff': 0.0909, 'rms_norm': 0.5069}, {'time': 1.68, 'diff': 0.2156, 'rms_norm': 0.3598}, {'time': 2.055, 'diff': 0.143, 'rms_norm': 0.3067}, {'time': 2.225, 'diff': 0.11, 'rms_norm': 0.1209}, {'time': 2.54, 'diff': 0.1339, 'rms_norm': 0.1385}, {'time': 2.94, 'diff': 0.1107, 'rms_norm': 0.3946}, {'time': 3.555, 'diff': 0.146, 'rms_norm': 0.261}, {'time': 3.925, 'diff': 0.1066, 'rms_norm': 0.4545}, {'time': 4.08, 'diff': 0.1173, 'rms_norm': 0.4806}, {'time': 5.005, 'diff': 0.0888, 'rms_norm': 0.1668}, {'time': 5.2, 'diff': 0.0978, 'rms_norm': 0.3987}, {'time': 5.375, 'diff': 0.1479, 'rms_norm': 0.1508}, {'time': 5.825, 'diff': 0.1072, 'rms_norm': 0.2609}]
+
+--- (c) 短run再走査 (time_a<=3.0s, lag 0.3-1.5s, 複数閾値) ---
+  [ShortRunRescan] narration_solo_full thresh=0.5 -> {'run_length_seconds': 0.77, 'time_a': 0.24, 'lag': 0.97, 'similarity_at_start': 0.5144}
+  [ShortRunRescan] narration_solo_full thresh=0.6 -> {'run_length_seconds': 0.75, 'time_a': 0.245, 'lag': 0.97, 'similarity_at_start': 0.7463}
+  [ShortRunRescan] narration_solo_full thresh=0.7 -> {'run_length_seconds': 0.64, 'time_a': 0.245, 'lag': 0.97, 'similarity_at_start': 0.7463}
+  [ShortRunRescan] narration_solo_full thresh=0.75 -> {'run_length_seconds': 0.58, 'time_a': 0.25, 'lag': 0.97, 'similarity_at_start': 0.8325}
+  [ShortRunRescan] narration_solo_full thresh=0.8 -> {'run_length_seconds': 0.34, 'time_a': 0.25, 'lag': 0.97, 'similarity_at_start': 0.8325}
+  [ShortRunRescan] narration_solo_full thresh=0.85 -> {'run_length_seconds': 0.195, 'time_a': 0.26, 'lag': 0.965, 'similarity_at_start': 0.8855}
+  [ShortRunRescan] narration_solo_full thresh=0.9 -> {'run_length_seconds': 0.115, 'time_a': 0.295, 'lag': 0.97, 'similarity_at_start': 0.9023}
+
+--- (d) DTW + cross-correlation fragments ---
+  [DTW/CrossCorr] narration_solo_full -> {"label": "narration_solo_full", "dtw_frag_a_vs_frag_b": {"total_cost": 39.033, "normalized_cost_per_frame": 0.2409, "path_length": 162, "frag_a_window": "0.0-1.2s", "frag_b_window": "1.2-2.6s"}, "dtw_frag_a_vs_baseline_25-26.2s": {"total_cost": 54.526, "normalized_cost_per_frame": 0.4131, "path_length": 132}, "crosscorr_frag_a_vs_0-4s_sliding": {"offset": 0.975, "corr": 0.134}}
+
+--- (e) 0-3秒clip生ASR (Production/Azure) ---
+  [OpeningASR no-prompt 1/3] -> 'As of September 2026,' err=None
+  [OpeningASR no-prompt 2/3] -> 'As of September 2026.' err=None
+  [OpeningASR no-prompt 3/3] -> 'As of September 2026.' err=None
+  [OpeningASR with-prompt 1/3] -> 'As of September 2026.' err=None
+  [OpeningASR with-prompt 2/3] -> 'As of September 2026.' err=None
+  [OpeningASR with-prompt 3/3] -> 'As of September 2026.' err=None
+  [OpeningASR Azure 1/2] -> 'As of September. As of September 2026.' err=None
+  [OpeningASR Azure 2/2] -> 'As of September. As of September 2026.' err=None

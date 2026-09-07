@@ -6415,6 +6415,30 @@ diagnosis_review_fix_02/player.html`(診断・修正前後の切り出し比較)
 OPEN_ITEMS項目**: 新規OPEN-121登録(逐語句・文単位の重複音声に対する
 ASR/disfluency QA検知不全、`USER_DECISION_REQUIRED`)。
 
+### 追記(2026-09-07、B1 FSP1: ユーザー試聴で重複確定・機械検知全手法失敗の特性解析)
+
+上記で「B1 Full Story Part 1はユーザー報告の症状を現物で再現できず」と
+記録した部分は、2026-09-07のユーザー試聴により**重複が実在すると確定**
+した(narration単体冒頭0〜3秒「As of Septem, As of September 2026…」の
+partial-word false start[語の途中で切れる短い言い直し]+再開)。この
+時点で全機械検知手法(全文ASR8回・窓ASR12回・faster-whisper逐語8件・
+音響自己相関top5・クロス相関)がすべて陰性だったため、診断のみの
+追加特性解析(修正・再生成・Assembly・Validator変更なし)を実施し
+`OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md`§追補2・OPEN_ITEMS.md
+OPEN-121行へ記録した。要点: (1)faster-whisper word-level timestampsで
+"September"のタイムスタンプ長が1.28秒(典型長の2倍以上)という異常値を
+検出、2区間分の音響が単一tokenへ吸収され既存の隣接同一token検知
+(`detect_adjacent_word_repetition`)の既知の限界に正確に該当することを
+確認。(2)類似度優先ではなく run長優先で短run自己相関を再走査したところ
+lag≈0.97秒・run長0.75秒(閾値0.6)の帯を新たに検出し、独立手法(波形
+クロス相関offset=0.975秒・DTW)でも同じ時間位置に収束。(3)0〜3秒clip
+単体への生ASR投入で、Production Primary ASR(OpenAI)は6回全て平滑化
+した一方、**Azure Speech STT(診断専用呼び出し、English Primary経路には
+未採用)の生transcriptは重複を明示的に検出した**("As of September.
+As of September 2026.")。**状態は引き続き`USER_DECISION_REQUIRED`**
+(修正・Production変更は未実施、OPEN-121へ「partial-word false start型を
+テストセット陽性事例として登録すべき」との提案を追記したのみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

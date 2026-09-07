@@ -224,3 +224,283 @@ local verbatimはローカルCPU実行のため追加課金無し(8件)。本タ
 
 試聴用ページ(追加):
 `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/duplication_diagnosis_review_fix_02/b1_fsp1_recheck/player.html`
+
+---
+
+## §追補2: B1 FSP1 ユーザー試聴で重複確定・機械検知全手法失敗の特性解析(2026-09-07)
+
+管理ID: OPEN-112-THEME2-AUDIO-REVIEW-FIX-02(B1 FSP1解析タスク)。
+上記§追補「いずれの手法でも検出できず」を受け、ユーザーが実際に試聴を
+実施(2026-09-07)。
+
+**ユーザー試聴結果(一次情報)**: narration単体(40.94秒)・episode該当
+区間(前後3秒込み)・episode区間(厳密境界)のいずれも重複あり。窓clip
+0〜6秒・0〜10秒は重複あり、3〜12秒は「As of September」該当箇所が
+窓外のため重複なし。episode側の同窓も同じ結果。**結論: 重複はTTS生成
+音声(narration単体)の冒頭0〜3秒に実在**(「As of Septem, As of
+September 2026…」という語の途中で切れる短い言い直し[partial-word
+false start]の後、先頭から再開)。これはA2 Point Two/In One Lineと
+同じ「生成音声自体」のfailure mode(OPEN-121既存分類)だが、全文ASR8回・
+窓ASR12回・faster-whisper逐語8件・音響自己相関・クロス相関の
+**全手法が検知に失敗した**。
+
+**追加特性解析(診断のみ、修正・再生成・Assembly・Validator変更なし)**:
+narration単体wavの冒頭0〜6秒を対象に、(a)faster-whisper word-level
+timestamps(複数decoding設定)、(b)RMSエネルギー包絡+onset検出、
+(c)run長優先の短run自己相関rescan(閾値0.5〜0.9、lag 0.3〜1.5秒)、
+(d)波形クロス相関+DTW、(e)0〜3秒clip単体への生ASR投入(Production
+Primary+Azure診断呼び出し+faster-whisper)を実施した。
+
+1. **faster-whisper word-level timestamps異常**: beam_size/temperatureを
+   3通り変えても結果は同一(非決定性ではない)。0〜3秒clipの書き起こしは
+   `as`(0.0-0.46s)/`of`(0.46-0.62s)/`September`(**0.62-1.90s、長さ
+   1.28秒**)/`2026.`(1.90-2.86s)の4 wordのみ。"September"のタイムスタンプ
+   長1.28秒は、同ファイル他区間の同一語(通常0.5〜0.6秒程度)の2倍以上
+   異常に長く、「Septem(打ち切り)」+短い間+「September」という
+   2区間分の音響をword-level alignerが単一tokenへ吸収・引き延ばして
+   割り当てたと解釈できる。既存の`er008_disfluency_qa_18.
+   detect_adjacent_word_repetition()`は「直後に同一token」のみを検知する
+   設計(モジュール自身のdocstringで「独立したtokenとして現れず隣接語へ
+   吸収されるため原理的に検知できない」と明記済みの既知の限界)であり、
+   本パターンはまさにこの既知限界に正確に該当する。
+2. **RMSエネルギー包絡**: 0〜0.99秒付近と1.21〜1.96秒付近に、視覚的にも
+   酷似した形状のエネルギーburst(山)が約0.97秒間隔で2回出現している
+   ことを確認(`falsestart_rms_envelope.png`)。
+3. **短run自己相関rescan(run長優先)**: 前回の高解像度re-check
+   (`targeted_opening_self_similarity.json`)は「類似度最高」の候補を
+   上位順に抽出する設計だったため、無音・子音境界の偶然一致
+   (類似度0.98台だがrun長0.02〜0.04秒)が上位を占め、真の反復候補が
+   埋もれていた。「run長が最も長い候補」を閾値ごとに直接探索する設計へ
+   変えたところ、**lag=0.97秒付近に閾値0.6でrun長0.75秒**(前回top5の
+   最大run長0.035秒の約20倍)が見つかった。閾値0.85まで上げるとrun長は
+   0.195秒まで縮み、Point Twoの確定反復(閾値0.85超・run長0.60秒、
+   ほぼ同一波形の反復)とは性質が異なる(本件は「別テイクとしての
+   言い直し」でprosody・tempoが微妙に異なるため、frame単位の類似度が
+   相対的に低め)ことも整合する。
+4. **波形クロス相関**: frag A(0〜1.2秒)を0〜4秒区間でスライドさせた
+   結果、最良offset=0.975秒・相関係数0.134(trivialな自己一致[offset=0]
+   は除外済み)。上記(3)のlag=0.97秒と独立手法で近い値に収束。
+5. **DTW**: frag A(0〜1.2秒)とfrag B(1.2〜2.6秒)の正規化DTW距離
+   0.2409は、frag Aと無関係な後方区間(25〜26.2秒)とのDTW距離0.4131
+   より明確に小さく、frag A/Bが音響的に近いことを裏付ける。
+6. **0〜3秒clip単体への生ASR投入**: Production Primary ASR(OpenAI
+   gpt-4o-mini-transcribe)はprompt無し3回・verbatim-style prompt有り
+   3回の計6回すべて"As of September 2026[.,]"の1回分のみへ平滑化した
+   (0〜3秒へ絞り込んでもなお平滑化を再現、windowingだけでは解決しない)。
+   一方、**Azure Speech STT(診断専用呼び出し、English Primary経路には
+   未採用)の生transcriptは"As of September. As of September 2026."と、
+   2回分の"As of September"を明示的に検出した**。
+
+**示唆(命名・要件化の提案、Production採用判断はしない)**:
+- 失敗モード名(提案): 「**partial-word false start + restart**」
+  (語の途中で切れる短い言い直し、継続時間1〜2秒、2回目の発話がlag
+  0.9〜1.0秒程度で開始)。OPEN-121のテストセットへ実データ陽性事例
+  として登録すべき。
+- ASR系検知が構造的に弱い理由: (1)OpenAI gpt-4o-mini-transcribeは
+  文単位の言語モデル的平滑化により、この種の短い言い直しを一貫して
+  除去する(0〜3秒への窓絞り込みでも解消しない、根深い挙動)。
+  (2)faster-whisper word-level timestampsは、削除ではなく「異常に長い
+  単一token」として吸収するため、既存の隣接同一token検知ロジックの
+  設計では原理的に捕捉できない(ただしword durationの異常値自体は
+  新しい検知シグナルになりうる、次項)。(3)Azure Speech STTは今回
+  唯一raw transcriptに重複を残したが、これは現行Production ASR
+  routing(English Primary=OpenAI)の対象外であり、Secondary確認としての
+  採用可否は別途ユーザー判断が必要。
+- 音響系検知に必要な条件(提案): (1)run長優先(類似度最高値ではなく)で
+  短run(0.3〜1.5秒)を直接探索する設計変更。(2)閾値を0.85固定ではなく
+  0.5〜0.75程度まで下げた探索も併用する(別テイク性の言い直しは完全
+  同一波形の反復より類似度が下がるため)。(3)word durationの異常値
+  (同一語の典型長との比較で2倍以上)を新しい検知シグナルとして追加
+  する余地がある。(4)先頭付近(0〜3秒程度)を重点的に走査する
+  (false startは発話冒頭に起きやすいという経験則、本件・A2既存事例
+  ともに冒頭付近で発生)。
+
+**runtime evidence保存先**:
+`er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/
+duplication_diagnosis_review_fix_02/b1_fsp1_recheck/`
+(`falsestart_characterization_evidence.json`=word timestamps・RMS/onset・
+短run rescan・DTW/cross-correlation・0〜3秒生ASRの全生データ、
+`falsestart_characterization_log.txt`=実行ログ全文、
+`falsestart_characterization_script.py`・`falsestart_plot_script.py`=
+診断スクリプト、`falsestart_rms_envelope.png`・
+`falsestart_similarity_heatmap.png`=可視化図、対応する切り出しwav
+6本、`player_falsestart.html`=試聴・図・表まとめページ)。
+Production関数`er006_asr_provider_routing_01.transcribe()`・
+`er008_disfluency_qa_18`・`er003_b1_p4_audio.
+get_full_text_via_azure_stt_continuous()`を無変更のまま呼び出しのみ、
+新規Validator/判定ロジックの追加・Production ASR routing変更は無し
+(Azure呼び出しは診断専用、English Primary routingは無変更のまま)。
+
+**cost**: faster-whisperはローカルCPU実行のため追加課金無し(word
+timestamp呼び出し6回)。Production Primary ASR(OpenAI gpt-4o-mini-
+transcribe)0〜3秒clip呼び出し6回(prompt無し3+prompt有り3、音声合計
+約18秒相当)。Azure Speech STT診断呼び出し2回(音声合計約6秒相当)。
+いずれも小額診断コスト(数十円未満相当)、`er005_cost_logger.install()`
+を経由しない単発診断スクリプトのため`raw_usage_log.jsonl`への記録は
+無し。matplotlib(可視化図生成用)を`.venv`へ追加インストール(オープン
+ソース、追加API課金無し、既存Production依存関係への影響なし)。
+
+**Git**: 本タスク側でファイル名指定によりstage・commit・push
+(下記commit hash参照、`docs/pm/*`・他タスクの未commit差分は対象外)。
+
+試聴用ページ(追加):
+`file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/duplication_diagnosis_review_fix_02/b1_fsp1_recheck/player_falsestart.html`
+
+---
+
+## §追補: Point Two showed/show(サブタスクD)
+
+管理ID: OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 / サブタスクD
+対象: サブタスクAで`HUMAN_REVIEW_LOCKED`に到達した2026-09-07再生成
+2attempt(`a2/narration/attempts/point_two_attempt{1,2}_
+custom35d6860b.wav`)の「canonical: showed → ASR: show」という
+内容不一致1件。目的は、この文字列差だけで「TTS発音ミス」と確定せず、
+既存のB1 Connected Speech Validator(OPEN-107/OPEN-110、
+`er011_b1_connected_speech_validator_01.py`、`PRODUCTION_WIRED`)が
+想定した「語末子音の連結・弱化によるASR上の脱落」に該当するかを
+実データで診断すること。**診断のみ、TTS再生成・Assembly・仕様変更は
+一切行っていない**(Git操作も無し)。
+
+### 1. raw TTS input の確認
+
+`audit/fix02_regeneration_log.json`の`canonical_text`より、2attemptとも
+実際に投入されたTTS入力は「...still **showed** strong interest in
+famous tourist places...」(過去形)であることを確認した(入力段階で
+`show`になっていたわけではない)。
+
+### 2. 実音声への複数ASR経路の再適用(新規診断ディレクトリ)
+
+新規`er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/
+point_two_showed_show_diag/`に、既存attempt保存音声(2attemptとも実在)
+へ以下を実施した(スクリプト: `er011_open112_theme2_point_two_showed_
+show_diag_02.py`、root新規追加、Production関数は無変更のまま呼び出しの
+み)。
+
+| ASRエンジン | 対象 | 結果(attempt1 / attempt2) |
+|---|---|---|
+| Production Primary(OpenAI gpt-4o-mini-transcribe、prompt無し) | 全文・windowed | いずれも一貫して**"show"**(語末/d/なし) |
+| Production Primary(中立prompt付与、canonical answer非含有) | windowed | attempt1は"show"のまま、attempt2は**"showed"**に変化(同一音声への呼び出しでも非決定的) |
+| Secondary(Azure Speech STT、phrase list無し=無バイアス確認込み) | 全文・windowed | いずれも一貫して**"showed"**(語末/d/あり) |
+| faster-whisper small(ローカル、独立した第3のASRエンジン、追加課金無し) | 全文・windowed | いずれも一貫して**"showed"** |
+
+3エンジン中2エンジン(Secondary/Azure・ローカルfaster-whisper)は、
+全文・windowedいずれの条件でも、2attemptともブレなく"showed"と
+書き起こした。「Azureへ`showed`をphrase list重み付けしたことによる
+バイアスではないか」という懸念に対しては、phrase list無しでの再実行
+(`secondary_asr_no_phrase_bias.json`)でも同じく2attemptとも
+"Still showed strong interest."を確認し、バイアスではないことを
+確認済み。Production Primary ASRのみが主に"show"と書き起こし、
+かつ同一音声への繰り返し呼び出しで結果が変動した(既存の
+`ER-011-HUMAN-REVIEW-COST-GUARD-01`関連知見「Primary ASRの全文一括
+書き起こしは非決定的に平滑化することがある」と整合する挙動)。
+
+### 3. 簡易音響分析(語境界の高時間分解能エネルギー分析)
+
+`showed`の母音[oʊ]終端から`strong`の/s/摩擦音開始までの区間を、
+8msフレーム/2msホップでRMS+高域(4kHz以上)エネルギー比を計測した
+結果、両attemptとも「母音の高エネルギー→なだらかな減衰(約40〜60ms、
+高域比はほぼ0のまま)→/s/摩擦音の急峻な立ち上がり(高域比が数msで
+0近辺から0.9以上へ)」という波形であり、**独立した無音の閉鎖
+(silence closure)や破裂バースト(release burst)を伴う明確な有声/無声
+破裂音パターンは検出できなかった**。ただしこの波形は「/d/が完全脱落」
+「/d/の閉鎖動作はあるが無破裂[unreleased]のまま次の/s/へ連結」の
+どちらとも矛盾しない曖昧な波形であり、スペクトル特徴のみからは
+断定できない(本Agentは聴取できないため、`player.html`をユーザー
+試聴用に用意した)。
+
+### 4. Connected Speech Validatorの実適用範囲(A2/B1共有関数の確認)
+
+`er003_v1_n3_01_tts_generate.py::apply_a2_slowdown_postprocess()`・
+`generate_narration_snippet_verified_strict()`はいずれもB1と同じ中心
+関数`er006_preprod_hardening_01_validation.py::classify_asr_match()`を
+呼んでおり、**B1 Connected Speech ValidatorはA2英語segmentにも
+技術的には同じ関数を通じて適用されている**(CURRENT_SPEC.mdの記述
+「B1英語Validatorの中心関数」という表現は、経路の由来を指すもので
+適用範囲を制限してはいない)。
+
+`er011_b1_connected_speech_validator_01.classify_connected_speech()`を
+今回の実データ("still showed strong interest" → "still show strong
+interest")でそのまま再実行したところ、`UNCLASSIFIED_FALLS_THROUGH_
+TO_EXISTING`(非該当)だった。理由: Pattern B(破裂音連続、例
+`opened`/d/+`to`/t/)は次語頭音が`/t/`または`/d/`である場合のみ発火する
+設計だが、今回の次語`strong`の語頭音は`/s/`(歯擦音)であり、
+Pattern Bの対象外(Pattern A・Cも語形が異なるため非該当)。すなわち
+「語末alveolar stop + 後続語頭の`/s/`を含む子音クラスタ([str]等)」
+という組み合わせは、ユーザー承認済みの3パターン(歯擦音連続・
+破裂音連続・再分節)のいずれにも該当しない**未カバー領域**であり、
+これは既存Validatorの実装バグではなく、ユーザーが意図的に限定した
+適用範囲(「この3パターン以外への一般化は行わない」)の外側にある
+ケースである。
+
+### 5. 分類
+
+**B(実音声は"showed"の可能性が高いが、Primary ASRが連結・弱化に
+より脱落させた)に最も整合する。ただし確定[A]ではない**。根拠:
+(1) raw入力は"showed"、(2) 独立した2エンジン(Azure Secondary・
+ローカルfaster-whisper)がバイアス無しの条件も含め一貫して"showed"を
+検出、(3) Production Primary ASR自体が同一音声への繰り返し呼び出しで
+結果が変動する既知の非決定性を示した、(4) 音響分析は"showed"の
+存在を否定しない(無破裂型の語末子音脱落は英語の自然発話で広く
+知られた現象)。一方、(5) 音響分析だけでは"/d/"の実在を積極的に
+証明する明確な破裂音バーストも見つかっておらず、**このAgent自身は
+聴取できないため、最終確認はユーザー試聴に委ねる**。
+
+### 6. 対応
+
+分類が確定[A]ではないため、**再生成は行っていない**(既存Human
+Review Cost Guard・`approve_regenerate()`は一切呼び出していない、
+上限回数も消費していない)。現行Production `point_two.wav`は従来
+どおりTrial-13原本のまま(サブタスクAの結果を継続、無変更)。
+「B相当として、既存ASR/pronunciation判定仕様に沿って正しくaccept
+できるか」については、上記4.のとおり現行Connected Speech Validatorの
+承認済み3パターンには該当しないため、**現状の仕様では自動acceptの
+対象にならない**(仕様の穴、というよりユーザーが意図的に限定した
+範囲の外側)。Pattern拡張(例: 破裂音+歯擦音クラスタも許容するPattern
+Dの新設)は新しい音韻パターンの追加であり、本タスクの権限外
+(`USER_DECISION_REQUIRED`)。
+
+### 7. USER_DECISION_REQUIRED
+
+1. `player.html`試聴の上で、当該2attemptの音声が実際に"showed"と
+   聞こえるか("showed strong"の自然な連結として許容できるか)の
+   最終確認。
+2. 試聴の結果「実際にshowedと聞こえる」場合: (a) 現行Trial-13音声を
+   維持したまま何もしない(現行の重複バグは既知・別問題)か、
+   (b) 今回の2attemptのいずれかを`record_human_approval()`相当の
+   既存人間承認フローで個別承認するか、の選択。
+3. 試聴の結果「実際にshowと聞こえる」場合: 分類はAへ確定し、
+   既存Human Review Cost Guard経由での追加再生成(最大2回)を
+   別途承認するか。
+4. Connected Speech Validatorに「語末破裂音+後続語頭歯擦音クラスタ
+   ([str]等)」という新パターンを追加するかどうか(既存3パターン限定
+   方針の変更、false accept増リスクとの兼ね合い、今回の1件だけでは
+   一般化の根拠として不十分)。
+
+### 8. cost
+
+Production Primary ASR(OpenAI gpt-4o-mini-transcribe)計12回(全文
+no-prompt 2回+windowed no-prompt 2回+windowed prompt付き2回を、
+`er005_cost_logger.init_logger()`未呼び出しによる実行時エラーで
+一度中断し同一スクリプトを再実行したため、実質2セット=12回)。
+Secondary(Azure Speech STT)計6回(phrase list有り4回+無バイアス
+確認2回、音声合計約140秒)。faster-whisper local verbatimはローカル
+CPU実行のため追加課金無し(4件)。いずれも数十秒規模の短い音声に
+対する少額のASR呼び出しのみ(TTS再生成は無し)。詳細な
+`cost_log.jsonl`(Azure分)は診断ディレクトリに保存(OpenAI Primary
+ASRは`er006_asr_provider_routing_01.py`側に元々cost logger配線が
+無く、本追補でも新規配線はしていないため個別ログ無し。円換算は本
+追補では未算出、既存の同種診断[本レポート冒頭のB1再検証]と同規模の
+少額)。
+
+### 9. 生成物・試聴ページ
+
+- 診断raw evidence: `er011_output/open112_trend_theme2_b_final_audio_
+  rerun_02/audit/point_two_showed_show_diag/diag_raw_evidence.json`
+- 無バイアスSecondary ASR確認: 同ディレクトリ`secondary_asr_no_phrase_
+  bias.json`
+- 診断スクリプト: `er011_open112_theme2_point_two_showed_show_diag_02.py`
+  (root新規追加)
+- 試聴用ページ(file:///):
+  `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/point_two_showed_show_diag/player.html`
+
+**Git**: 未実施(本タスクはGit操作禁止、統合はFableが実施)。
