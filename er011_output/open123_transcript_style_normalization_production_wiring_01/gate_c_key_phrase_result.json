@@ -1,0 +1,91 @@
+{
+  "part1_existing_kp_pass_unchanged": [
+    {
+      "note": "実データ(kp_1)、契約形/短縮形なし、既存PASSが維持されることの確認",
+      "canonical_text": "opt out",
+      "asr_text": "Opt out.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_1_opt_out.wav",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false,
+      "existing_asr_verified_before_this_task": true
+    },
+    {
+      "note": "実データ(kp_2)、契約形/短縮形なし、既存PASSが維持されることの確認",
+      "canonical_text": "covered apps",
+      "asr_text": "Covered apps.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_2_covered_apps.wav",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false,
+      "existing_asr_verified_before_this_task": true
+    },
+    {
+      "note": "実データ(kp_3)、契約形/短縮形なし、既存PASSが維持されることの確認",
+      "canonical_text": "urge to watch",
+      "asr_text": "Urge to watch.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_3_urge_to_watch.wav",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false,
+      "existing_asr_verified_before_this_task": true
+    },
+    {
+      "note": "実データ(kp_4)、契約形/短縮形なし、既存PASSが維持されることの確認",
+      "canonical_text": "personalized feed",
+      "asr_text": "Personalized feed.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_4_personalized_feed.wav",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false,
+      "existing_asr_verified_before_this_task": true
+    },
+    {
+      "note": "実データ(kp_5)、契約形/短縮形なし、既存PASSが維持されることの確認",
+      "canonical_text": "digital switch-off period",
+      "asr_text": "Digital switch-off period.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_5_digital_switch-off_period.wav",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false,
+      "existing_asr_verified_before_this_task": true
+    }
+  ],
+  "part1_ok": true,
+  "part2_synthetic_contraction_checks": [
+    {
+      "note": "合成(fabricated text pair、audio_pathは実物wavを流用、内容はcontractionと無関係だがclassify_asr_matchはtextのみで判定するため実行結果に影響しない)。標準contraction(否定保持)のみの差 -> 救済されるべきケース。",
+      "canonical_text": "The manager does not check the schedule every day.",
+      "asr_text": "The manager doesn't check the schedule every day.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_1_opt_out.wav",
+      "verified": true,
+      "final_status": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false
+    },
+    {
+      "note": "合成(fabricated text pair、audio_pathは実物wavを流用)。can/can't(否定反転) -> 絶対に救済されてはいけないNegative control。",
+      "canonical_text": "You can access the shared folder from any device.",
+      "asr_text": "You can't access the shared folder from any device.",
+      "wav_path": "er003_output/b1_p9a/A02/key_phrase_components/kp_1_opt_out.wav",
+      "verified": false,
+      "final_status": "TRUE_CONTENT_MISMATCH",
+      "human_review_required": false,
+      "cascade_invoked": false,
+      "non_latin_cascade_invoked": false
+    }
+  ],
+  "part2_ok": true,
+  "overall_ok": true
+}

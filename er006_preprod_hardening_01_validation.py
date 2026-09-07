@@ -679,6 +679,73 @@ def _try_homophone_number_rescue(canonical_text: str, asr_text: str,
 
 
 # ------------------------------------------------------------
+# OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01
+# ------------------------------------------------------------
+# ユーザー正式決定(2026-09-07、APPROVED_FOR_PRODUCTION): 標準contraction
+# 展開(否定を保持したまま縮約⇔展開するペアのみ、"can"⇔"can't"のような
+# 意味反転[肯定⇔否定]は絶対に含まない)を、英語ASR照合の共通正規化層
+# として採用する。範囲は「英語の共通正規化」= A2/B1英語本文に限らず、
+# 英語ASR照合経路全体(classify_asr_match()の全呼び出し元、Key Phrase
+# 英語経路を含む)。"want to"⇔"wanna"等の口語的縮約(方式iv、2語→1語の
+# token数変化を伴う)はユーザー決定により不採用(正規化しない、現状維持)。
+#
+# 採用元: OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_REPORT.md §13
+# (VALIDATED、false accept 0/82[既存NEGATIVE fixture28件+新規Negative
+# Control 54通り]、実証済みfalse reject5/5救済[Trial-08 3回STOPPED+
+# fixture2件])。normalize_text()/tokenize()は本ラベル追加により無変更
+# のまま(下記classify_asr_match()ラッパーが、既存の分類本体
+# [_classify_asr_match_core、Trial時点の既存classify_asr_matchから
+# 無変更]を、展開後の生textで再度呼ぶだけの「外側から包む」設計)。
+_NEGATION_CONTRACTIONS = {
+    "don't": "do not", "doesn't": "does not", "didn't": "did not",
+    "isn't": "is not", "aren't": "are not", "wasn't": "was not", "weren't": "were not",
+    "hasn't": "has not", "haven't": "have not", "hadn't": "had not",
+    "can't": "cannot", "won't": "will not", "wouldn't": "would not",
+    "shouldn't": "should not", "couldn't": "could not",
+    "mustn't": "must not", "needn't": "need not", "shan't": "shall not",
+}
+
+# 非否定の標準contraction(be/have/will/would系)。's/'dは意味的に曖昧
+# (is/has、would/had)だが、下記classify_asr_match()ラッパーの
+# 「展開後に既存Validator(_classify_asr_match_core)が実際にPASSと
+# 判定した場合のみ採用する」という設計により、誤った解釈を選んでも
+# false acceptにはならない(展開後も一致しないまま残るだけ、Trial §10
+# 参照)。この安全設計はTrialでfalse accept 0/82として実証済み。
+_NON_NEGATION_CONTRACTIONS = {
+    "i'm": "i am", "you're": "you are", "we're": "we are", "they're": "they are",
+    "he's": "he is", "she's": "she is", "it's": "it is", "that's": "that is",
+    "there's": "there is", "who's": "who is", "what's": "what is", "here's": "here is",
+    "i've": "i have", "you've": "you have", "we've": "we have", "they've": "they have",
+    "i'll": "i will", "you'll": "you will", "he'll": "he will", "she'll": "she will",
+    "we'll": "we will", "they'll": "they will", "it'll": "it will",
+    "i'd": "i would", "you'd": "you would", "he'd": "he would", "she'd": "she would",
+    "we'd": "we would", "they'd": "they would",
+    "let's": "let us",
+}
+
+_ALL_STANDARD_CONTRACTIONS = {**_NEGATION_CONTRACTIONS, **_NON_NEGATION_CONTRACTIONS}
+_STANDARD_CONTRACTION_RE = re.compile(
+    r"\b(" + "|".join(re.escape(k) for k in sorted(_ALL_STANDARD_CONTRACTIONS, key=len, reverse=True)) + r")\b",
+    re.IGNORECASE)
+
+
+def expand_standard_contractions(text: str) -> str:
+    """標準contraction(否定保持・非否定とも)を完全形へ展開する。
+    "want to"⇔"wanna"等の口語的縮約(方式iv)は対象外(ユーザー決定
+    2026-09-07で不採用、正規化しない)。normalize_text()より前の生
+    テキスト段階で行う前処理であり、normalize_text()/tokenize()自体は
+    一切変更しない。該当パターンが無ければ入力をそのまま返す(副作用
+    なし、既にその表記スタイルで書かれている側には作用しない)。"""
+    if not text:
+        return text
+    t = text.replace("’", "'").replace("‘", "'")
+
+    def _sub(m):
+        return _ALL_STANDARD_CONTRACTIONS[m.group(1).lower()]
+    return _STANDARD_CONTRACTION_RE.sub(_sub, t)
+
+
+# ------------------------------------------------------------
 # 分類本体
 # ------------------------------------------------------------
 VALID_CLASSIFICATIONS = (
@@ -698,6 +765,13 @@ VALID_CLASSIFICATIONS = (
     # 常にTRUE_CONTENT_MISMATCHのまま返し、Secondary/local ASR
     # corroborationを要する最終判定はCascade層側で行う設計のため)。
     "CONNECTED_SPEECH_EQUIVALENCE_ACCEPT", "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING",
+    # OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01:
+    # 標準contraction展開(否定保持のみ)後に、既存の分類本体
+    # (_classify_asr_match_core)が実際にPASS(should_pass=True)と
+    # 判定した場合にclassify_asr_match()ラッパーが返す(下記参照)。
+    # should_pass=True・should_retry=False(その他のPASS系分類と同じ扱い、
+    # 新規のClassification専用の下流分岐は追加していない)。
+    "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
 )
 
 
@@ -717,10 +791,14 @@ class ClassificationResult:
     connected_speech_info: dict | None = None
 
 
-def classify_asr_match(canonical_text: str, asr_text: str,
-                        high_similarity_threshold: float = 0.98,
-                        uncertain_threshold: float = 0.85,
-                        tts_failure_threshold: float = 0.4) -> ClassificationResult:
+def _classify_asr_match_core(canonical_text: str, asr_text: str,
+                              high_similarity_threshold: float = 0.98,
+                              uncertain_threshold: float = 0.85,
+                              tts_failure_threshold: float = 0.4) -> ClassificationResult:
+    """分類本体(OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-
+    WIRING-01より前の既存classify_asr_match()と完全に無変更。生text
+    段階のTranscript Style Normalization[標準contraction展開]は、この
+    関数のさらに外側のclassify_asr_match()ラッパー[下記]でのみ行う。"""
     if asr_text is None:
         return ClassificationResult("TTS_FAILURE", 0.0, ProtectedCheckResult(passed=False),
                                      should_pass=False, should_retry=True, reason="ASR書き起こし自体が取得できなかった")
@@ -869,6 +947,61 @@ def classify_asr_match(canonical_text: str, asr_text: str,
     return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
                                  should_pass=False, should_retry=False,
                                  reason="内容語の差は検出されないが、一致率がPASS基準に届かない")
+
+
+def classify_asr_match(canonical_text: str, asr_text: str,
+                        high_similarity_threshold: float = 0.98,
+                        uncertain_threshold: float = 0.85,
+                        tts_failure_threshold: float = 0.4) -> ClassificationResult:
+    """OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01:
+    既存の分類本体(_classify_asr_match_core、無変更)を「外側から包む」
+    薄いラッパー。この関数名を既存呼び出し元(A2/B1本文・Key Phrase・
+    Cascade層[er006_secondary_asr_01]・homophone/数字ゲート等)が変更
+    無しでそのまま使い続けるため、英語ASR照合経路全体(Key Phrase英語
+    経路を含む)へ共通適用される(新規opt-inフラグは追加していない
+    ——ユーザー決定の採用範囲が「英語の共通正規化」であるため)。
+
+    手順: (1) まず_classify_asr_match_core()をそのまま呼ぶ(baseline)。
+    (2) baseline.should_passがTrueならそのまま返す(介入しない)。
+    (3) should_pass=Falseの場合のみ、標準contraction展開
+    (expand_standard_contractions、否定保持のみ・wanna系は対象外)を
+    canonical_text/asr_text両方へ適用する。どちらの側も変化しなければ
+    (元々contractionが無ければ)介入せずbaselineをそのまま返す(無駄な
+    再帰呼び出しを避ける、かつ無限再帰の防止にもなる)。(4) 展開後の
+    テキストで_classify_asr_match_core()を再度呼び(この呼び出しは
+    contraction展開の余地がもう無いため1回で必ず収束する)、その結果が
+    should_pass=Trueであった場合のみ、新規classification
+    "TRANSCRIPT_STYLE_NORMALIZED_MATCH"としてPASS採用する。それ以外
+    (展開後も一致しない場合)は、baseline(既存の分類・reason)をそのまま
+    返す(should_pass=False/should_retry=Trueも含め、既存のretry/
+    Human Review Lock/Cost Guard/telemetryの挙動を一切変えない)。
+
+    この設計により、's/'dのような曖昧なcontraction(is/has、would/had)を
+    テーブルに含めていても、誤った解釈を選んだ場合は単純に展開後も
+    一致しないままなので安全側(false acceptにはならず、rescueできない
+    だけ)に倒れる(OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_
+    REPORT.md §10/§13で実証済み、false accept 0/82)。"""
+    baseline = _classify_asr_match_core(
+        canonical_text, asr_text, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
+    if baseline.should_pass:
+        return baseline
+
+    canon_expanded = expand_standard_contractions(canonical_text)
+    asr_expanded = expand_standard_contractions(asr_text)
+    if canon_expanded == canonical_text and asr_expanded == asr_text:
+        return baseline  # 展開で何も変わらない(元々contractionが無い) -> 介入不要
+
+    candidate = _classify_asr_match_core(
+        canon_expanded, asr_expanded, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
+    if not candidate.should_pass:
+        return baseline  # 展開後も既存Validatorが一致と認めない -> 安全側でbaselineのまま
+
+    return ClassificationResult(
+        "TRANSCRIPT_STYLE_NORMALIZED_MATCH", candidate.normalized_ratio, candidate.protected,
+        should_pass=True, should_retry=False,
+        reason=f"標準contraction展開(否定保持のみ、can/can't等の反転・wanna系は対象外)後に"
+               f"PASS(内部classification={candidate.classification}): {candidate.reason}",
+        connected_speech_info=candidate.connected_speech_info)
 
 
 # ------------------------------------------------------------

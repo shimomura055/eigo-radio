@@ -6999,6 +6999,130 @@ Pipeline」節へ新規行「Connected Speech Equivalence Layer」追加(status
 status`CODE_COMPLETE_PENDING_COMMIT`。Key Phrase展開は引き続き
 `USER_DECISION_REQUIRED`のまま残す)。
 
+## OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01(2026-09-07、
+ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[英語ASR
+照合経路全体、A2/B1本文に限定しないKey Phrase英語経路を含む共通正規化層]で
+標準contraction展開を配線。wanna系(方式iv)は不採用。Git操作は未実施
+[Fableが統合commit後に`PRODUCTION_WIRED`確定])
+
+**ユーザー決定の要旨**(タスク仕様に記載、2026-09-07): (1) 方式(i)標準
+contraction展開を、英語ASR照合の共通正規化層としてProduction採用
+(`APPROVED_FOR_PRODUCTION`)。範囲は「英語の共通正規化」=A2/B1英語本文に
+限らず、英語ASR照合経路全体(Key Phrase英語経路を含む)。(2) wanna系
+(方式iv)は不採用(mode_a/mode_cとも採用しない、現状維持=正規化しない)。
+採用元: `OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_REPORT.md`§13
+(VALIDATED、false accept 0/82、実証済みfalse reject5/5救済)。
+
+**実装**: `er006_preprod_hardening_01_validation.py::classify_asr_match()`
+を薄いラッパーへ変更した。既存の分類本体(Trial時点まで無変更だった
+`classify_asr_match()`の中身)はそのまま`_classify_asr_match_core()`という
+名前で温存し、公開関数`classify_asr_match()`は(1)まず`_classify_asr_match_
+core()`をbaselineとして呼ぶ、(2)`baseline.should_pass`がTrueならそのまま
+返す(介入しない)、(3)Falseの場合のみ新規`expand_standard_contractions()`
+(否定を保持したまま展開するペアのみ、"don't"⇔"do not"・"can't"⇔"cannot"
+等17語+"i'm"⇔"i am"等14語の閉じたテーブル、"can"⇔"can't"のような否定
+反転・"want to"⇔"wanna"等の口語的縮約[方式iv]は一切含まない)を
+canonical_text/asr_text両方の生text段階へ適用する、(4)どちらの側も変化
+しなければ(元々contractionが無ければ)baselineをそのまま返す(無駄な
+再帰・無限再帰の防止)、(5)展開後のtextで`_classify_asr_match_core()`を
+再度呼び(1回で必ず収束する)、その結果が`should_pass=True`であった場合
+のみ新規classification`TRANSCRIPT_STYLE_NORMALIZED_MATCH`(`should_
+pass=True`・`should_retry=False`、`VALID_CLASSIFICATIONS`へ追加)として
+採用し、それ以外は展開後もPASSしない安全側としてbaselineをそのまま返す、
+という手順を踏む。`normalize_text()`/`tokenize()`は一切変更していない。
+
+**新規opt-inフラグは追加していない**。`classify_asr_match()`という関数名
+自体を変更せずラップしたため、この関数を呼ぶ既存の全経路(`evaluate_
+attempt()`→A2/B1本文・Key Phrase英語経路[`generate_key_phrase_component_
+verified()`が`enable_non_latin_cascade=True`のみを渡す既存呼び出し]・
+homophone/数字ゲート[`_try_homophone_number_rescue`]・Connected Speech
+Validator[3パターン]・OPEN-122 Connected Speech Equivalence Layer[opt-in
+フラグ]のいずれとも独立に動作)へ、コード変更無しで共通適用される
+(OPEN-119/OPEN-122のような新規opt-inフラグパターンとは異なる設計を意図
+的に選んだ。理由: ユーザー決定の採用範囲が「英語ASR照合経路全体」であり
+A2/B1限定ではないため)。
+
+**曖昧なcontraction('s/'d)の安全設計**: "'s"は"is"、"'d"は"would"として
+展開するテーブルを採用しているが(実際には"has"/"had"の意味である場合も
+ある)、上記(5)の「展開後に`_classify_asr_match_core()`が実際にPASSと
+判定した場合のみ採用」という設計により、誤った解釈を選んだ場合は展開後も
+一致しないままなので安全側(false acceptにはならず、rescueできないだけ)
+に倒れることを、新規単体テスト(`test_ambiguous_apostrophe_s_wrong_
+interpretation_stays_safe`・`test_ambiguous_apostrophe_d_wrong_
+interpretation_stays_safe`)で構造的に確認した。
+
+**日本語経路への影響が無いことの証明**: `er007_ja_secondary_asr_01.py`・
+`er007_ja_asr_validator_01.py`のいずれも`er006_preprod_hardening_01_
+validation`をimportしておらず(ソースコード直接確認、新規単体テストで
+`inspect.getsource`による直接確認も追加)、日本語専用の`classify_ja_asr_
+match()`(独自実装、`normalize_ja()`・`protected_check_ja()`)を使い続ける
+ため、本タスクの変更は日本語経路に一切到達しない(`er006_preprod_
+hardening_01_validation.py`はモジュールheader comment記載通り元々
+「英語専用」)。
+
+**Runtime evidence**(追加API課金なし、既存の保全済み音声・実データ
+manifestのみ再利用): (a) 既知false reject(Trial-08 P3 point_two、
+"do not"⇔"don't"のみが差分の3回STOPPED実例)の保全音声3件+実Primary ASR
+結果を、修正後の実Production関数(`classify_asr_match()`単体、および
+`evaluate_attempt_with_cascade_detail()`実wav_path経由)へ実際に投入し、
+3/3とも`TRANSCRIPT_STYLE_NORMALIZED_MATCH`(`verified=True`)へ救済され、
+かつCascade層の追加ASR呼び出しは一切発生しない(`cascade_invoked=False`、
+Primary#1時点で既にPASSするため追加コスト0)ことを確認した。(b) 既存
+Regression fixture(POSITIVE29+AMBIGUOUS2+NEGATIVE28=57件)を実際に
+`classify_asr_match()`へ通し、全57件が期待通り(NEGATIVE28件は`TRUE_
+CONTENT_MISMATCH`のまま非救済、POSITIVE中の"they're"/"we're"2件は
+`TRANSCRIPT_STYLE_NORMALIZED_MATCH`へ改善)であることを確認した。(c)
+英語Key Phrase経路: 実preserved KP音声5件(`er003_output/b1_p9a/A02/
+key_phrase_components/`、opt out/covered apps/urge to watch/personalized
+feed/digital switch-off period、いずれもcontractionなし)を、Key Phrase
+呼び出しと同じkwarg(`enable_non_latin_cascade=True`)で実際の`evaluate_
+attempt_with_cascade_detail()`へ投入し、既存PASS(`verified=True`)が
+一切変化しないことを確認した。contraction入りKey Phraseが実データに
+無いため、音声は実物(既存preserved wav 1件を流用、内容自体はcontraction
+と無関係だが`classify_asr_match()`はtextのみで判定するため実行結果に
+影響しない)・canonical/ASR textのみ合成した2件(救済されるべきケース1件・
+can/can't否定反転で救済されてはいけないケース1件)で追加確認し、いずれも
+想定通り(救済/非救済とも正しい)であり、想定外の挙動は0件だった。(d)
+wanna系が本層では非救済のまま維持されることを、OPEN-122 Trial-01の
+実測音声(P6_dont_you、"Don't you want to come with us?"の実発話、
+Primary ASRが実際に"wanna"と誤書き起こしした実データ)を再利用して確認
+した(`classify_asr_match()`単体・`evaluate_attempt_with_cascade_detail()`
+[opt-inフラグ無し]とも`TRUE_CONTENT_MISMATCH`のまま)。証跡: `er011_
+output/open123_transcript_style_normalization_production_wiring_01/`
+(gate_a/gate_c/gate_dの実行script3件+結果json3件)。
+
+**Regression**: `run_project_regression.py`(collected=2157、passed=2154、
+failed=3、errors=0。失敗3件はOPEN-122タスク以前から存在する既知の無関係
+failure[`er003_test_bad`の意図的self-check・`er003_test_p2j_investigate`
+のOPEN-77既知meta-test集計]であることをOPEN-122報告時点で既に確認済み、
+本タスクでも再確認した)。新規[er011_transcript_style_normalization_
+production_wiring_01_test_01.py](er011_transcript_style_normalization_
+production_wiring_01_test_01.py)19件PASS(救済確認5件・安全性確認7件・
+共通経路確認4件・日本語独立性確認3件)。回帰globに含まれない`_test.py`
+終端の関連テストも直接実行して全PASSを確認: `er006_preprod_hardening_
+01_validation_test.py`57件・`er006_secondary_asr_01_test.py`9件・
+`er007_ja_secondary_asr_01_test.py`9件・`er011_connected_speech_
+equivalence_layer_production_wiring_01_test_01.py`8件、加えて`er011_
+no18_connected_speech_reading_resolver_wiring_08_test.py`15件・`er011_
+tts_attempt_audio_retention_wiring_01_test.py`9件・`er011_keyphrase_en_
+asr_false_rejection_cascade_prod_wiring_01_test_01.py`5件(既存test
+ファイルの変更・mock signature更新は一切不要だった、`classify_asr_
+match()`の呼び出しシグネチャを変更していないため)。
+
+**未対応・継続項目(USER_DECISION_REQUIREDではないが記録)**: Trial§8で
+発見されたb05(Secondary/Local側が口語台本を正書法へ書き換える非対称性)
+の追加調査は本タスクの範囲外のまま(OPEN_ITEMS.md OPEN-123行で継続
+追跡)。Key Phrase経路への展開自体は上記(c)で確認済みだが、実データでの
+Key Phrase自然発生contraction救済の実測はまだ0件(母集団が無いため)。
+
+**根拠レポート**: `OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-
+WIRING-01_REPORT.md`。**影響するCURRENT_SPEC項目**: 「Audio Production
+Pipeline」節へ新規行「Transcript Style Normalization」追加(status
+`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`候補[commit後に確定])。
+**影響するOPEN_ITEMS項目**: OPEN-123行を更新(Production wiring追記、
+status`CODE_COMPLETE_PENDING_COMMIT`。b05非対称性の調査は継続追跡項目
+として残す)。
+
 ## OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01(2026-09-07、ユーザーが
 2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1英語本文
 segmentのProduction正式経路のみ]でTTS反復幻聴検知(方式A+D+D')を配線。
