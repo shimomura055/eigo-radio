@@ -38,6 +38,7 @@ if hasattr(sys.stdout, "reconfigure"):
 # (委任文Aで明示指定)。
 os.environ["TTS_EXECUTION_MODE"] = "STANDARD"
 
+import audio_review_player as player_common  # PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11: 標準player生成の共通module
 import er003_b1_p9a_audio as p9a
 import er003_v1_n3_01_assemble as asm
 import er003_v1_sing01_point_headings_aoede as point_headings
@@ -275,8 +276,7 @@ def build_full_player_html_03(assemble_summary: dict, timeline: list, parts: dic
     kp_data = load_json(f"{OUT_B1_DIR}/key_phrases/keywords_canonicalized.json")
     kp_by_rank = {item["rank"]: item for item in kp_data["items"]}
 
-    def abs_url(path: str) -> str:
-        return "file:///" + os.path.abspath(path).replace("\\", "/")
+    abs_url = player_common.abs_file_url
 
     rows = []
     for entry in timeline:
@@ -285,28 +285,22 @@ def build_full_player_html_03(assemble_summary: dict, timeline: list, parts: dic
             continue  # (l)は「各音声の再生ボタンと対応script」が対象、無音pauseは行を作らない
         info = _row_info(label, parts, support_texts, voice_a, voice_b, kp_by_rank, entry["duration_seconds"])
         sec = entry["start_seconds"]
-        seek_btn = (f'<button class="seek" data-sec="{sec}">'
-                    f'&#9654; {sec:.2f}s</button>')
         voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
         if info["sfx"]:
             audio_html = "—"
         elif isinstance(info["audio"], tuple):
-            audio_html = "".join(f'<audio controls preload="none" src="{abs_url(p)}"></audio>' for p in info["audio"])
+            audio_html = player_common.render_single_audio_html(tuple(abs_url(p) for p in info["audio"]))
         elif info["audio"]:
-            audio_html = f'<audio controls preload="none" src="{abs_url(info["audio"])}"></audio>'
+            audio_html = player_common.render_single_audio_html(abs_url(info["audio"]))
         else:
             audio_html = "—"
-        row_class = " class=\"missing\"" if "未取得" in info["text"] else ""
-        rows.append(
-            f'<tr{row_class}><td>{seek_btn}</td>'
-            f'<td><b>{label}</b><br><small>voice={voice_disp}</small></td>'
-            f'<td class="txt">{info["text"]}</td>'
-            f'<td>{audio_html}</td>'
-            f'<td class="src">{info["src"]}</td></tr>'
-        )
-    timeline_table = ('<table><thead><tr><th>Seek(同一行)</th><th>Segment / voice(同一行)</th>'
-                       '<th>Script(同一行)</th><th>個別音声</th><th>Source</th></tr></thead>'
-                       f'<tbody>{"".join(rows)}</tbody></table>')
+        # PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11(ユーザー決定
+        # 2026-09-08): 標準formatからSource列を削除(info["src"]は本タスク以前の
+        # 出典情報として引き続き_row_info内に保持するが、標準テーブルには出さない)。
+        rows.append(player_common.render_timeline_row(
+            sec, label, voice_disp, info["text"], audio_html,
+            missing="未取得" in info["text"]))
+    timeline_table = player_common.render_timeline_table(rows)
 
     kp_rows = []
     for rank in sorted(kp_by_rank):
@@ -314,7 +308,7 @@ def build_full_player_html_03(assemble_summary: dict, timeline: list, parts: dic
         kp_rows.append(f'<tr><td>{rank}</td><td>{kp["used_form"]}</td><td>{kp["japanese_gloss"]}</td>'
                         f'<td>{kp.get("japanese_gloss_tts", kp["japanese_gloss"])}</td>'
                         f'<td>{kp.get("qa_overall_status")}</td></tr>')
-    kp_table = ('<table><thead><tr><th>#</th><th>English(used_form)</th><th>表示用gloss</th>'
+    kp_table = ('<table class="kp"><thead><tr><th>#</th><th>English(used_form)</th><th>表示用gloss</th>'
                 '<th>TTS用テキスト</th><th>redundancy QA</th></tr></thead>'
                 f'<tbody>{"".join(kp_rows)}</tbody></table>')
 
@@ -330,31 +324,10 @@ def build_full_player_html_03(assemble_summary: dict, timeline: list, parts: dic
 <html lang="en"><head><meta charset="utf-8">
 <title>EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03 player</title>
 <style>
-body {{ font-family: "Meiryo","Hiragino Kaku Gothic ProN",sans-serif; max-width: 1080px; margin: 2em auto; line-height:1.55; color:#111; }}
-h1 {{ font-size: 1.3em; }}
-h2 {{ border-bottom: 2px solid #333; padding-bottom:4px; margin-top:1.8em; }}
-table {{ border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }}
-th, td {{ border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }}
-th {{ background:#f0f0f0; }}
-td.txt {{ white-space: pre-wrap; }}
-td.src {{ font-size:0.82em; color:#555; }}
-button.seek {{ cursor:pointer; font-family:monospace; font-size:0.92em; padding:2px 6px; }}
-audio {{ width: 100%; max-width: 260px; height: 30px; }}
-.missing {{ color:#a33; font-style:italic; }}
-.note {{ background:#fffbe6; border:1px solid #e0d080; padding:8px 12px; font-size:0.88em; margin:10px 0; }}
-audio.main {{ width:100%; max-width:640px; display:block; margin:8px 0; }}
+{player_common.PLAYER_STANDARD_CSS}
 </style>
 <script>
-function seekMain(sec) {{
-  var a = document.getElementById('episode_audio');
-  a.currentTime = parseFloat(sec);
-  a.play();
-}}
-document.addEventListener("DOMContentLoaded", function () {{
-  document.querySelectorAll("button.seek").forEach(function (btn) {{
-    btn.addEventListener("click", function () {{ seekMain(btn.getAttribute("data-sec")); }});
-  }});
-}});
+{player_common.SEEK_SCRIPT}
 </script>
 </head><body>
 <h1>EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03</h1>
@@ -365,7 +338,10 @@ clipping={assemble_summary['clipping_detected']}
 headroom_safety_valve_applied={assemble_summary['headroom_safety_valve']['applied']}。
 voice_a={voice_a} / voice_b={voice_b}(Narrator見出しは全てAoede固定)。{heading_note}
 各行に「Seek(その開始秒へ、上部episode音声をseek)」「Segment名+voice」「実際に読み上げられたscript
-(SFXは"効果音(読み上げなし)"と明記)」を同一行に配置(視線移動・長スクロール照合なし)。
+(SFXは"効果音(読み上げなし)"と明記)」「個別音声」を同一行に配置(視線移動・長スクロール照合なし)。
+標準player形式(PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11、ユーザー決定
+2026-09-08): Source列は削除し、その分Script列の幅を広げ、個別音声の幅も拡大した
+(再生ボタンが「…」メニューに隠れないようにするため)。
 </p>
 
 <h2>Episode audio</h2>

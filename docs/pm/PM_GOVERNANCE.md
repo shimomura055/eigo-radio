@@ -1,7 +1,10 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-07(EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-
+**最終更新: 2026-09-08(PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11で
+EDITORIAL-B-FAMILY-VOICES-TRIAL-09のplayer形式を試聴artifactの標準フォーマット
+として採用し、Source列削除・Script列拡幅・個別音声幅拡大[最低360px]をGate 7
+(l)へ追記)。2026-09-07(EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-
 AND-FULL-EPISODE-03でユーザー承認に基づき8節へ「完了報告後の自動復帰禁止」
 を追記)。2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10で
 9-2の試聴artifact規則がsonnet-workerの成果物にも直接適用されることを明記し、
@@ -112,7 +115,13 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
     が分かる構造。1本化wavのseek可能timelineでも、各行に「再生(その
     開始秒へseek)」ボタン+voice名+scriptを同一行に置く。2026-09-07、
     ユーザー指示、EDITORIAL-B-FAMILY-VOICES-TRIAL-09-LOCK-RETRY-AND-
-    FULL-ASSEMBLY-02で追加)
+    FULL-ASSEMBLY-02で追加。2026-09-08、ユーザー決定・PM-GOVERNANCE-
+    AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11: EDITORIAL-B-FAMILY-VOICES-
+    TRIAL-09のplayer形式(`audio_review_player.py`共通moduleに集約)を
+    今後の試聴artifactの標準フォーマットとして採用し、毎回フォーマットを
+    変えない。標準では従来のSource列は持たず、その分Script列を広げ、
+    個別`<audio controls>`要素は最低幅360px(再生ボタンが「…」メニューに
+    隠れないため)とする)
 
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
