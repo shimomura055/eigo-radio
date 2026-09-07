@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02差し戻し1回目: B1 Full Story Part 1 再検証 試聴用</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;line-height:1.6;max-width:960px;margin:0 auto;padding:16px;color:#111;}
+h2{border-bottom:3px solid #333;padding-bottom:4px;margin-top:2em;}
+audio{width:100%;max-width:520px;display:block;margin:6px 0 14px 0;}
+.box{border:1px solid #ccc;padding:12px 16px;margin:12px 0;background:#fafafa;}
+.control{border-left:6px solid #888;}
+code{background:#eee;padding:1px 4px;}
+</style>
+</head>
+<body>
+<h1>B1 Full Story Part 1「As of Septem, As of September 2026...」再検証 試聴用ページ</h1>
+<p>Fable差し戻し(OPEN-112-THEME2-AUDIO-REVIEW-FIX-02、1回目)を受け、A2 Point Two/In One
+Lineと同じ厳密な手法(windowed再ASR・spectral self-similarity)をB1 Full Story Part 1へ
+適用した再検証。結論: <b>いずれの手法でも重複を検出できず</b>(判定iii)。</p>
+
+<h2>1. narration単体(全体、40.94秒)</h2>
+<div class="box control">
+<p>rerun-02が使用している実体。sha256はTrial-13原本と完全一致(未改変)。
+Production Primary ASR(gpt-4o-mini-transcribe)4回・faster-whisper local verbatim・
+spectral self-similarity(frame25ms/hop10ms全体+frame25ms/hop5ms冒頭高解像度)いずれも
+重複を検出せず。</p>
+<audio controls src="narration_solo_full.wav"></audio>
+</div>
+
+<h2>2. episode該当区間(前後3秒込み、120.787〜167.729秒)</h2>
+<div class="box control">
+<p>完成episode(rerun-02 B1)から、直前のComment 1末尾・pause・直後のpause・Comment 2冒頭を
+含めて切り出したもの。timeline.json上、Full Story Part 1のpieceは1件のみで前後に旧断片の
+二重配置は無いことを確認済み。</p>
+<audio controls src="episode_extract_padded3s.wav"></audio>
+</div>
+
+<h2>3. episode該当区間(パディング無し、厳密segment境界)</h2>
+<div class="box control">
+<p>timeline.json記載の開始・終了秒でパディング無しに厳密切り出し。narration単体とほぼ同一
+波形(assembly時のリサンプル差のみ、48kHz化)。</p>
+<audio controls src="episode_extract_exact_segment.wav"></audio>
+</div>
+
+<h2>4. windowed clip(narration単体、冒頭切り出し3種)</h2>
+<div class="box control">
+<p>Point Two診断で有効だった手法と同じ、短い窓での再ASR用クリップ。</p>
+<p>0〜6秒:</p>
+<audio controls src="window_narration_0-6s.wav"></audio>
+<p>0〜10秒:</p>
+<audio controls src="window_narration_0-10s.wav"></audio>
+<p>3〜12秒:</p>
+<audio controls src="window_narration_3-12s.wav"></audio>
+</div>
+
+<h2>5. windowed clip(episode該当区間、同一窓・padding込みのため+3秒オフセット)</h2>
+<div class="box control">
+<p>0〜6秒相当(cut内3〜9秒):</p>
+<audio controls src="window_episode_0-6s.wav"></audio>
+<p>0〜10秒相当(cut内3〜13秒):</p>
+<audio controls src="window_episode_0-10s.wav"></audio>
+<p>3〜12秒相当(cut内6〜15秒):</p>
+<audio controls src="window_episode_3-12s.wav"></audio>
+</div>
+
+<p>生ASR出力・spectral self-similarity・cross-correlation・timeline整合の全件は
+<code>recheck_raw_evidence.json</code>と<code>targeted_opening_self_similarity.json</code>
+(冒頭0〜3秒・短lagに絞った高解像度re-check)を参照。実行ログ全文は
+<code>recheck_log.txt</code>。</p>
+<p>詳細は root <code>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md</code>の
+「§追補: B1 FSP1再検証」節を参照。</p>
+</body>
+</html>

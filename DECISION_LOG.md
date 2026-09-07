@@ -1,7 +1,50 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08でLane B[B Family Voices/Perspective]のDESIGN-02〜TRIAL-05の状態[5-part構造は強い候補、Voices Editorial Design全体は未承認・Trial-05で再設計中、Production採用未決定]をOPEN-120・本ファイル先頭エントリへ記録)。2026-09-06(ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01、
+**最終更新: 2026-09-07(ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、
+ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した2件をProduction配線した。
+**(1) B1 Preview分量原則**: 「Previewは2〜3文程度の短い導入とする。要点を先出ししすぎず、
+この回で何を聞くのかが自然に伝わる内容にする」という趣旨の分量段落を、B1 Previewの実際の
+生成元`er003_v1_b1_scaffold_01_generate.py::PREVIEW_ROLE`(`er003_v1_n3_01_scaffold_
+generate.py`が`b1s.PREVIEW_ROLE`として再利用する現行経路)へ追加した。旧Preview比の相対
+指定(「現行の1/2〜1/3」等)・hard word-count gate・「必ず2文」のような固定文数は含めない
+(soft guidance)。先出し禁止・turning point非開示・Comment1/2重複回避の既存原則は無変更。
+A2側`er003_v1_iran01_a2_generate.py::PREVIEW_ROLE`(既存の「2文程度、80〜110字目安」)は
+別ファイル・別定数のため無変更。**(2) Numeric Precision共通原則(A2/B1/B2共通、レベル別
+ルールにしない)**: 「聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。
+小数点以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る」という
+原則を、既存のEvidence Compression Editor Numeric Precisionルール(ER-011-NO18-EVIDENCE-
+COMPRESSION-A-PRODUCTION-WIRING-AND-FINAL-CANDIDATE-AUDIO-21R、Trial-18/19/20由来、
+文言は無変更のまま維持)を補強する新規追加ブロック(`NUMERIC_PRECISION_LEVEL_INDEPENDENT_
+DEFAULT_BLOCK`、既存ブロックの直後に挿入)として`er003_v1_n3_01_evidence_compression_
+editor.py`へ配線し、同一原則の1文をWriter共通Prompt(`er003_v1_n3_01_articles_generate.py::
+COMMON_BLOCK_TEMPLATE`「Spoken-first原則(数字の扱い)」C項)へも追加した。**回帰**: 既存
+単体テスト9件(`er011_no18_evidence_compression_a_precision_21r_test_01.py`、既存ブロック
+のverbatim一致・順序を維持したままPASS)、`er010_n9_production_integration_09_test_01.py`
+(33件PASS)、`er008_n8_point_prompt_strengthen_24_test_01.py`(8件PASS)、
+`run_project_regression.py`(collected=2110、failed=3、既知の無関係failure[`er003_test_
+bad`/`er003_test_p2j_investigate`のcount reconciliation系]のみであることをgit stash
+[変更3ファイルのみ]で本タスクの変更前後を比較し同一失敗であることを実証、Preview変更後・
+Numeric変更後とも同一)。**Runtime evidence(実API、Theme 2 B1/A2、`er011_output/preview_
+role_numeric_precision_wiring_01/`)**: Preview: 新B1 PREVIEW_ROLEで実際にPreviewを1回
+生成し2文・46語・253字(旧Preview[同一記事・同一Comment1/2を再利用した実測、以前の
+Trial記録]は4文・67語・405字)、A2 Previewは同一記事で1回再生成し従来どおり2文・85字を
+確認。Numeric: Theme2 B1/A2のPre-editor Writer出力(Trial-12の実生成物、再生成せず再利用)
+を新Editor Promptへ1回ずつ通し、25.2%→about 25%・44.7%→about 45%・24.3%→about one
+quarter(A2は52.4%→about 52%・24.1%→about 24%)へ既定どおり概数化されることを確認、
+観光庁調査由来の「約90%」「約80%」はLedger原本が既に近似値のため不変。編集後テキストに
+Production正式Ledger Deviation Checker(`hook_aware=True`)を実行しB1=`LEDGER_COMPLIANT`
+(0件)、A2=`LEDGER_COMPLIANT`(MINOR1件、`changed_number=false`、丸めとは無関係な確信度
+ニュアンス指摘)を確認、丸め自体がchanged_numberとして誤検知されないことを実データで確認
+した。精度保持側(既存ブロック無変更)はTrial-20の既存fixture(`article_pattern_b_
+precision_01.md`、99.71/108.95が丸めず保持された実例)で確認し新規API呼び出しは行って
+いない。**SSOT**: CURRENT_SPEC.md「Cross-level仕様」節「Preview原則」行・「Evidence
+Compression Editor(方式C)追加ルール」行・CEFR比較表「数字・金額・日付・%」行へ追記
+(`PRODUCTION_WIRED`)。OPEN_ITEMS.mdに本件専用の既存行は無く(過去Trial Report[OPEN-112-
+THEME2-AUDIO-REVIEW-FIX-02-PREVIEW-NUMERIC_REPORT.md]は登録案を提示したのみで実際には
+未登録)、該当行なしのため変更なし。詳細は`ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-
+PRINCIPLE-PRODUCTION-WIRING-01_REPORT.md`参照)。
+2026-09-06(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08でLane B[B Family Voices/Perspective]のDESIGN-02〜TRIAL-05の状態[5-part構造は強い候補、Voices Editorial Design全体は未承認・Trial-05で再設計中、Production採用未決定]をOPEN-120・本ファイル先頭エントリへ記録)。2026-09-06(ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01、
 ユーザーが2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した「TTS attemptごとの
 音声を上書きせず保存し、どのattemptで何が発話されたかを後から確認できるように
 する」診断性改善を、review_lockが管理する既存7 guarded関数のTTS retryループ

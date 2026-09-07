@@ -148,3 +148,79 @@ OPEN-121新規登録、`DECISION_LOG.md`へ
   `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/player.html`
 - 診断・修正前後の切り出し比較:
   `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/duplication_diagnosis_review_fix_02/player.html`
+
+## §追補: B1 FSP1再検証(Fable差し戻し1回目、OPEN-112-THEME2-AUDIO-REVIEW-FIX-02-02)
+
+差し戻し理由: 上記§9でB1 Full Story Part 1を「現物で再現できず」と結論したが、
+同レポート内でA2 Point Twoは全文一括ASR8回では検知できず、6〜22秒の
+windowed再ASR+spectral self-similarityで初めて確認できたと記録している。
+B1にも同じ厳密な手法を適用したかが不明のため、windowed再ASR・音響自己
+相関を含む同一手法をB1へ改めて適用し再検証した(診断のみ、修正・
+再生成・Assembly変更は無し、Git操作無し)。
+
+**対象**: narration単体(rerun-02使用実体、sha256でTrial-13原本と完全一致を
+再確認)、完成episode該当区間(前後3秒込み・パディング無し厳密境界の両方)。
+Trial-13の`tts_generation_results.json`記録(attempt数=1、`disfluency_checked=
+false`[full_story本文はスコープ外]、単発ASR済み`asr_text`に重複なし)も
+確認済み。
+
+**windowed再ASR**(narration単体・episode該当区間それぞれ、0〜6秒・0〜10秒・
+3〜12秒の3窓、prompt無し/prompt有りの計12呼び出し)+ **全文一括ASR** 8回
+(narration単体4回・episode該当区間4回、gpt-4o-mini-transcribe)、
+**faster-whisper local verbatim**(全文2件+windowed clip 6件、計8件)の
+いずれの生transcriptにも重複・言い直しは一度も現れなかった
+(flagged=False全件、"As of September 2026"の反復は0件)。
+
+**spectral self-similarity**: 全体(frame25ms/hop10ms、min_lag1.0秒)に加え、
+ユーザー報告の「As of Septem, As of September 2026」という冒頭の短い
+false-start型反復を狙い撃ちするため、冒頭0〜3秒・lag 0.3〜2.5秒に絞った
+高解像度(frame25ms/hop5ms)re-checkを追加実施。類似度0.99台の候補は
+存在するが、0.85閾値でのrun長は最大0.035秒(単一フレーム相当、無音や
+子音の偶然一致水準)。Point Twoで実在確認された反復のrun長0.60秒と比較して
+約17分の1以下であり、性質が明確に異なる(実在する反復とは判定できない)。
+
+**波形クロス相関**(2〜4秒 vs 4〜8秒window): narration単体・episode該当区間
+とも最大正規化相関は約-0.08(実質無相関)。実在する反復であれば近い時間差で
+高い正の相関が出るはずだが、それが見られない。
+
+**episode構造**: `timeline.json`に"Full Story Part 1 (Aoede)"のpieceは1件
+のみ(重複配置なし)。直前がComment 1(114.746〜122.987秒)+pause 0.8秒、
+直後がpause 0.8秒+Comment 2。旧断片の二重配置・安全弁/resample後処理での
+混入も確認できず(narration単体とepisode該当区間の無音位置パターンは完全一致)。
+
+**判定**: **(iii) いずれの手法でも検出できず**。今回はPoint Twoと同じ
+windowed ASR+spectral self-similarity(さらに冒頭狙い撃ちの高解像度re-check・
+波形クロス相関も追加)を適用したうえでの結論であり、前回の「単純な全文一括
+ASRのみで再現できず」という報告より検証強度が高い。ユーザー試聴との不一致は
+未解消のまま残る。考えられる確認事項(ユーザーへの確認候補、修正はしない):
+(1) 試聴に使用した音声ファイル・プレーヤーがrerun-02の完成episodeで
+間違いないか(Trial-13時点の別バージョンやキャッシュ済み音声を聞いた
+可能性)、(2) ブラウザ/OSの音声キャッシュにより古い音声が再生された
+可能性、(3) 別segment(例: 直前のComment 1やFull story introのCharon読み上げ)
+との聞き間違いの可能性。
+
+**runtime evidence保存先**:
+`er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/
+duplication_diagnosis_review_fix_02/b1_fsp1_recheck/`
+(`recheck_raw_evidence.json`=windowed ASR/local verbatim/self-similarity/
+cross-correlation/silence位置の全生データ、
+`targeted_opening_self_similarity.json`=冒頭高解像度re-check、
+`recheck_log.txt`=実行ログ全文、対応する切り出しwav 9本、`player.html`)。
+診断スクリプト: `er011_output/open112_trend_theme2_b_final_audio_rerun_02/
+audit/duplication_diagnosis_review_fix_02/b1_fsp1_recheck/recheck_script.py`
+(本タスクの書き込み範囲内へ配置、root追加なし)。
+Production関数`er006_asr_provider_routing_01.transcribe()`・
+`er008_disfluency_qa_18.check_segment_for_disfluency()`を無変更のまま
+呼び出しのみ、新規Validator/判定ロジックの追加は無し)。
+
+**cost**: Production Primary ASR(gpt-4o-mini-transcribe)呼び出し20回
+(全文一括8回+windowed 12回、音声合計約427.5秒≒7.1分相当)。faster-whisper
+local verbatimはローカルCPU実行のため追加課金無し(8件)。本タスクの
+呼び出しは`er005_cost_logger.install()`を経由しない単発診断スクリプトの
+ため`raw_usage_log.jsonl`への記録は無く、正確な円換算は本追補では未取得
+(前回Point Two診断のASR8回と同規模の小額診断コスト)。
+
+**Git**: 未実施(本タスクはGit操作禁止、統合はFableが実施)。
+
+試聴用ページ(追加):
+`file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/duplication_diagnosis_review_fix_02/b1_fsp1_recheck/player.html`

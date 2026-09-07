@@ -113,6 +113,28 @@ values near a meaningful threshold, or small differences that are themselves the
 finding. These are illustrative examples of the general principle only, not
 article-specific instructions."""
 
+# ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01:
+# ユーザー正式決定した「Numeric Precision原則(A2/B1/B2共通、レベル別ルールに
+# しない)」を、既存のLISTENER_FRIENDLY_NUMERIC_PRECISION_BLOCK(Trial-18/19/20
+# 由来、上記で無変更のまま維持)を補強する追加ブロックとして新設する(既存
+# ブロックの文言は書き換えない、既存回帰テストの厳密一致を壊さないため)。
+NUMERIC_PRECISION_LEVEL_INDEPENDENT_DEFAULT_BLOCK = """【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer."""
+
 EVIDENCE_COMPRESSION_EDITOR_DEVELOPER_MESSAGE = (
     "あなたはeigo-radioの記事Editorです。既に完成しているPodcast台本(Markdown)を、"
     "意味を一切変えない範囲だけで軽量に編集します。新しいFactの追加や、主張の強さを"
@@ -194,6 +216,7 @@ _EC_PATTERN_A_PRECISION_INSERTION = (
     EVIDENCE_COMPRESSION_PURPOSE_BLOCK_EN + "\n\n"
     + PATTERN_A_REPRESENTATIVE_METRIC_SUPPORTING_TREND_BLOCK + "\n\n"
     + LISTENER_FRIENDLY_NUMERIC_PRECISION_BLOCK + "\n\n"
+    + NUMERIC_PRECISION_LEVEL_INDEPENDENT_DEFAULT_BLOCK + "\n\n"
 )
 
 EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE = _EVIDENCE_COMPRESSION_EDITOR_PROMPT_TEMPLATE_BASE.replace(
