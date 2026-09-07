@@ -637,3 +637,236 @@ narration_dirに残る`point_two_original.wav`(Trial-13時点の重複入り
 **Git**: このサブタスクの成果物のみ本タスクでcommit・push対象
 (OPEN-121 Trial成果物と合わせて実施、対象ファイルは明示指定・
 `git add -A`不使用)。
+
+## §追補: slow-down是正と必須チェック既存対策レビュー(サブタスクG、2026-09-07)
+
+管理ID: OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 / サブタスクG。対象: サブタスクEが
+既知の限界として開示した「A2 Point Two(accept済みattempt2)がA2必須6%
+slowdown post-processを一度も通っていない」問題の是正、および同問題を
+見逃した既存Audio Validation Gateの抜け穴の恒久修正(不足分のみ最小修正)。
+
+### 1. Point Two slow-down適用結果
+
+既存Production関数`apply_a2_slowdown_postprocess()`
+(`er003_v1_n3_01_tts_generate.py`、無変更)を、サブタスクEでaccept済みの
+`narration/point_two.wav`(attempt2、sha256=`e10c2ef1...`)へ実際に適用した。
+duration 32.741秒→34.689秒(比率1.0595)。他のA2本文segment(`point_one`の
+実測比率1.0596、`slowdown_info.slowdown_pct_actual=5.962`)と同水準の速度
+仕様であることを確認した。post-process内蔵のPrimary ASR再検証結果は
+`NORMALIZED_MATCH`(この呼び出しでは"showed"を正しく認識、既知の非決定性の
+範囲内)。適用前(pre-slowdown accepted音声)・上書きされる無関係な旧
+Trial-13原本の両方を、隠蔽せず`audit/subtask_g_slowdown_apply/`へ退避した。
+
+### 2. 再Assembly結果
+
+`stage_assemble_a2()`(無変更)で再Assembly。status=OK、
+duration **356.227秒→358.175秒**(Point Two単体の伸長分1.948秒を反映)、
+peak 0.98(headroom safety valve適用済み、適用前peak=1.0350189、原因piece=
+Point One、既存と同一挙動)、clipping無し。narration_dir内の全wavのsha256を
+Assembly前後で比較し、`point_two.wav`/`point_two_original.wav`以外に変化
+した資産が0件であることをスクリプト内assertで確認済み。
+
+**重複再発なし**: post-slowdown音声(narration単体・完成episode切り出し
+の両方)にspectral self-similarityを再適用し、`max_run_length_seconds=0.06`
+(FIX-02診断で確認済みの実重複run長0.60秒、背景ノイズ水準の0.1秒未満と
+同程度)を確認。windowed再ASR(0-10秒・8-20秒)にも重複transcriptは無し。
+
+**"showed strong"の保持**: post-slowdown音声・完成episode切り出しの両方に
+対し、Azure Secondary ASR(phrase list無し=無バイアス)・faster-whisper
+local verbatimの独立2エンジンとも一貫して"showed strong"を含む形で内容を
+確認した(windowed ASRの一部区間ではPrimary ASRの既知の非決定性により
+"show"が現れる場合があったが、全文一括ASR・独立エンジンでは一貫して
+"showed"を確認)。
+
+player URL(更新済み): `file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_final_audio_rerun_02/player.html`
+
+### 3. 過去の同種事象・管理ID
+
+- ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 5-A: No.8
+  `point_one_heading`がHuman Review Lock経由の承認により、6%
+  time-stretchという必須post-processを一度も受けないままVALIDATED扱いで
+  Assemblyへ到達していた実インシデント(今回と全く同型: Human Review
+  accept経路がslowdown post-processをバイパスする)。
+- ER-008-N8-FINAL-QA-HARDENING-21 Item 1・Item 7: disfluency QA配線前に
+  作られた既存assetがcache再利用され、「機能は実装済みだが、この特定
+  assetには一度も適用されていない」状態を検知できなかった事例(同型の
+  「必須post-process証跡の欠落」問題)、および`_segment_asset_hash_stale()`
+  (記録sha256と実ファイルの突き合わせ)導入。
+- OPEN-112-THEME2-AUDIO-REVIEW-FIX-02サブタスクE(本レポート§追補
+  「Point Two 人間承認accept・再Assembly」)自身が、今回の抜け穴を
+  隠蔽せず`tts_generation_results.json`・`player.html`へ明記していた
+  (OPEN-121行 項番5・6として登録済み)。
+
+### 4. 過去対策の正式仕様
+
+`_segment_missing_mandatory_a2_slowdown()`(`er003_v1_n3_01_assemble.py`、
+ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19導入): A2の`A2_SLOWDOWN_TARGET_
+SEGMENTS`(point_one_heading・point_two_heading・full_story_part1/2・
+point_one・point_two・in_one_line)について、(証拠1)`slowdown_applied is
+True`、または(証拠2、後方互換のみ)`{name}_original.wav`の存在、の
+いずれかが無ければAssembleをblockする。適用path: `verify_episode_audio_
+validation_gate()`経由で初回生成・retry・regeneration・Human Review
+accept・fallback・Assembly直前のいずれの経路でも共通して呼ばれる単一の
+Gate(Part F「重複実装を避ける」により統合済み)。「slowdown適用済み」の
+判定根拠は当時、file existence(証拠2)のみで、current attemptとの
+sha256・provenance対応は見ていなかった。現在も正式仕様(`PRODUCTION_WIRED`、
+無効化・回避されていない)。
+
+### 5. 今回効かなかった理由
+
+サブタスクEのHuman Review accept経路(`record_human_approval()`+
+`stage_assemble_a2()`)は、`generate_a2_segment_with_slowdown()`を一切
+経由せず、既にASR検証済みのattempt音声ファイルを直接narration_dirへ
+コピーする設計だった。この経路は`slowdown_applied`フィールドを明示的に
+`False`(「今回のattemptには未適用」という正直な記録)としてJSONへ記録
+したが、narration_dir内に無関係な旧`point_two_original.wav`
+(Trial-13の重複入り原本、比率0.813=現在のwavとは無関係)が残っていた
+ため、既存Gateの証拠2(file存在のみで判定)がこれを誤って
+「slowdown済みのevidence」として受理してしまった。
+
+### 6. 既存対策との差分
+
+既存対策(ER-008-N8-19)が想定していたのは「通常生成pathのみ+resume系
+scriptによるmetadata欠落(フィールド自体が無い=None)」という後方互換
+ケースのみだった。今回のfailure modeは、(a) 通常生成経路
+(`generate_a2_segment_with_slowdown`)を経ずHuman Review accept経路が
+直接音声を差し替えるケースを想定していなかった、(b) 「未適用」を
+明示的に`False`と記録する(Noneとは異なる)新しい記録パターンを区別
+していなかった、(c) 証拠2(file存在)がcurrent attemptとの対応
+(sha256・duration比などのprovenance)を一切見ておらず、無関係な
+同名旧ファイルの存在だけで通過してしまう、という3点の差分による。
+「新しい抜け穴」ではなく、既存対策が明示的に想定していたシナリオ
+(resume系scriptのmetadata欠落)の外側に位置する、既存設計の想定範囲外
+ケースであることを明示する。
+
+### 7. 追加した修正(不足分のみ最小修正)
+
+`_segment_missing_mandatory_a2_slowdown()`を拡張(新規Validator・別台帳
+は追加せず、既存関数のみ修正):
+
+1. `slowdown_applied`が`True`/`False`(明示的)/`None`(フィールド自体
+   無し)の3値を区別する。`False`(明示的)の場合は、無関係な旧
+   `_original.wav`の存在で上書きしない(即block)。
+2. `None`(既存の後方互換対象)の場合のみ、引き続きfile存在を弱い証拠と
+   して認めるが、単なる存在確認に加えて、`{name}_original.wav`と
+   `{name}.wav`のduration比が実際の6% time-stretch比率(実データ97件で
+   実測1.0557〜1.0599)に整合しているか(許容レンジ[1.03, 1.09])も
+   検証する。無関係な旧ファイル(今回の実例で比率0.813)は明確に
+   レンジ外となり、正しくblockされる。
+
+既存の`{name}_original.wav`利用ロジックを置き換えたのみで、新規
+Validatorクラス・別の承認台帳は追加していない
+(`read_wav_duration_seconds()`も既存`er008_a2_postprocess_slowdown_01.py`
+の関数を再利用)。
+
+### 8. Human Review/retry/regeneration/Assembly全経路の整合
+
+- **初回生成**: `generate_a2_segment_with_slowdown()`が常に
+  `slowdown_applied=True`(成功時)を明示的に記録する経路のため、修正の
+  影響なし(引き続き即座に`False`=not missing)。
+- **retry/regeneration**: 同上、`apply_a2_slowdown_postprocess()`は
+  ASR取得に成功した時点で必ず`slowdown_applied=True`を設定するため
+  影響なし。
+- **Human Review accept経路**: 今回の修正が直接対象とするケース。
+  `slowdown_applied`が明示的に`False`のまま残っていれば正しくblockされ、
+  今回のように事後にslowdown適用+`slowdown_applied=True`へ更新すれば
+  正しく通過する(runtime evidence参照)。
+- **fallback(旧resume系scriptのmetadata欠落=None)**: 既存97件の実データ
+  (duration比1.0557〜1.0599)で回帰なしを確認済み(regression節参照)。
+  真に無関係な同名ファイルが残っているケース(今回の実データ、比率0.813)
+  は新たに正しくblockされるようになった。
+- **Assembly直前のfinal gate**: `verify_episode_audio_validation_gate()`
+  経由で全経路共通の単一Gateを通るため、経路ごとに別の挙動にはならない
+  (Human Review経路だけ別挙動になっていないことを、下記runtime evidence
+  で実データにより確認済み)。
+
+### 9. runtime evidence
+
+`er011_output/open112_trend_theme2_b_final_audio_rerun_02/audit/
+subtask_g_slowdown_apply/subtask_g_run_summary.json`(全stepのraw
+evidence一式)。実行ログ: 同ディレクトリの標準出力を保存した
+`subtask_g_run_log.txt`相当(本レポートの実行時に採取、下記抜粋)。
+
+- **修正前(実データ)**: 本タスクのコード修正後・データ修正前の状態で、
+  実際の`point_two`エントリ(`slowdown_applied=False`)+実際の
+  narration_dirに対し`_segment_missing_mandatory_a2_slowdown()`を呼ぶと
+  `True`(正しくblock)。
+- **無回帰(正常pathでの動作、実データ)**: 同時点で他の6segment
+  (`point_one`・`full_story_part1`・`full_story_part2`・`in_one_line`・
+  `point_one_heading`・`point_two_heading`、いずれも`slowdown_applied=
+  True`)は全て`False`(block されない)のまま変化なし。
+- **修正後(slowdown適用後の実データ)**: slowdown適用・
+  `tts_generation_results.json`更新後、`point_two`エントリ
+  (`slowdown_applied=True`)で`_segment_missing_mandatory_a2_slowdown()`
+  は`False`(正しく通過)。
+- Assembly実行ログ: `status=OK duration=358.175 peak=0.98 clipping=False
+  headroom_applied=True`、narration資産の想定外変化0件。
+
+### 10. regression
+
+`run_project_regression.py`: collected=2112, passed=2109, failed=3
+(`er003_test_bad.FixtureTests.test_case_0`、`er003_test_p2j_investigate`
+内2件[`test_combined_equals_sum_of_er002_and_er003`・
+`test_p2h_reported_count_matches_er002_plus_er003_at_that_time`・
+`test_p2i_reported_count_matches_er003_at_p2i_era`はテストファイル数の
+経時的増加によるカウント基準値ドリフトで、本タスク以前から既知・無関係]。
+新規failureなし)。
+
+新規テスト2件を`er008_a2_slowdown_invariant_19_test_01.py`へ追加
+(既存10件は無変更、計12件が全てPASS、`python -m unittest
+er008_a2_slowdown_invariant_19_test_01`で個別確認済み):
+
+- `test_explicit_false_is_not_overridden_by_unrelated_original_wav`:
+  `slowdown_applied=False`(明示的)のsegmentが、duration比まで6%相当に
+  整合する`_original.wav`が存在してもblockされ続けることを確認
+  (今回の実インシデントの直接再現)。
+- `test_unrelated_stale_original_wav_with_mismatched_ratio_is_flagged`:
+  `slowdown_applied`未設定(None)のsegmentで、無関係な旧originalファイル
+  (duration比約0.81、実データの実測値を再現)が存在する場合、file存在
+  だけでは通過しないことを確認(「古い同名slow-down済みファイルが
+  存在しても現在attemptと対応しなければNG」の直接的な回帰テスト)。
+
+既存テスト`test_target_segment_falls_back_to_original_wav_evidence`は、
+duration比検証の追加に伴いfixtureへ整合するcurrent wavファイルを追加
+(挙動自体は変更なし、後方互換ケースは引き続きPASS)。
+
+### 11. current accepted attemptとslowdown成果物の対応確認
+
+`postprocess_summary`(`subtask_g_run_summary.json`)に、post-process前
+`point_two.wav`のsha256(`e10c2ef1...`、サブタスクEがaccept記録した
+sha256と一致)・duration(32.741秒)、post-process後のduration(34.689秒)・
+比率(1.0595)を記録。`apply_a2_slowdown_postprocess()`は
+post-process後の実ファイルからsha256を再計算して記録する既存設計
+(ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22)のため、
+`tts_generation_results.json`のsha256は常に実ファイルと同期している
+(`_segment_asset_hash_stale()`の対象にも別途かかる)。
+
+### 12. SSOT反映
+
+`OPEN_ITEMS.md` OPEN-121行(項番5・6)を更新し、サブタスクGで是正・恒久
+修正済みである旨を追記(既存文は削除なし)。`DECISION_LOG.md`の
+`OPEN-112-THEME2-AUDIO-REVIEW-FIX-02`エントリへ追記(既存文は削除なし)。
+
+### 13. 生成物
+
+- 適用・検証script: `er011_open112_theme2_audio_review_fix_02_
+  subtaskg_apply_slowdown_01.py`(root新規追加)
+- コード修正: `er003_v1_n3_01_assemble.py`
+  `_segment_missing_mandatory_a2_slowdown()`
+- 回帰テスト追加: `er008_a2_slowdown_invariant_19_test_01.py`
+- runtime evidence: `er011_output/open112_trend_theme2_b_final_audio_
+  rerun_02/audit/subtask_g_slowdown_apply/`
+  (`subtask_g_run_summary.json`・`final_episode_verification.json`・
+  pre-slowdown/旧original退避wav・windowed clip・
+  `final_episode_point_two_extract.wav`)
+- 更新済み試聴ページ: `er011_output/open112_trend_theme2_b_final_audio_
+  rerun_02/player.html`
+
+### 14. 新規USER_DECISION_REQUIRED
+
+無し。本タスクはユーザー承認済み既存仕様の適用漏れ是正と、既存対策の
+拡張(新方針の新設ではない)のみで完結する。OPEN-121行の他項目
+(項番1〜4)は引き続き未決のまま(本タスクの範囲外、変更なし)。
+
+**Git**: このサブタスクの成果物のみ本タスクでcommit・push対象
+(対象ファイルは明示指定、`git add -A`不使用)。

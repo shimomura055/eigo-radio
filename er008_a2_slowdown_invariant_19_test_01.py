@@ -11,6 +11,7 @@ import os
 import shutil
 import tempfile
 import unittest
+import wave
 
 import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_tts_generate as n3_tts
@@ -20,6 +21,15 @@ def _write_results(out_dir: str, segments: dict) -> None:
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": segments, "key_phrases": {}}, f, ensure_ascii=False, indent=2)
+
+
+def _write_silent_wav(path: str, duration_seconds: float, framerate: int = 24000) -> None:
+    nframes = int(round(duration_seconds * framerate))
+    with wave.open(path, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(framerate)
+        w.writeframes(b"\x00\x00" * nframes)
 
 
 class SegmentMissingMandatoryA2SlowdownTests(unittest.TestCase):
@@ -41,12 +51,15 @@ class SegmentMissingMandatoryA2SlowdownTests(unittest.TestCase):
     def test_target_segment_falls_back_to_original_wav_evidence(self):
         # No.8実データ横断調査で発見: 「resume」系scriptが結果を引き継いだ
         # segmentは、実際にはslowdownを受けていてもslowdown_appliedを
-        # 記録していない場合がある。{name}_original.wavの現存を第二の
-        # evidenceとして受け入れ、既存の正しい音声を誤ってblockしない。
+        # 記録していない場合がある。{name}_original.wavの現存(+実際の
+        # 6% time-stretch比率との整合、OPEN-112-THEME2-AUDIO-REVIEW-
+        # FIX-02サブタスクG恒久修正)を第二のevidenceとして受け入れ、
+        # 既存の正しい音声を誤ってblockしない。
         tmp = tempfile.mkdtemp(prefix="er008_a2_invariant_fallback_test_")
         try:
             os.makedirs(f"{tmp}/narration", exist_ok=True)
-            open(f"{tmp}/narration/full_story_part1_original.wav", "wb").close()
+            _write_silent_wav(f"{tmp}/narration/full_story_part1_original.wav", 10.0)
+            _write_silent_wav(f"{tmp}/narration/full_story_part1.wav", 10.6)  # 実際の6% stretch比率
             self.assertFalse(asm._segment_missing_mandatory_a2_slowdown(
                 "full_story_part1", {"status": "OK", "resumed_from_existing_file": True}, f"{tmp}/narration"))
         finally:
@@ -58,6 +71,41 @@ class SegmentMissingMandatoryA2SlowdownTests(unittest.TestCase):
             os.makedirs(f"{tmp}/narration", exist_ok=True)
             self.assertTrue(asm._segment_missing_mandatory_a2_slowdown(
                 "full_story_part1", {"status": "OK"}, f"{tmp}/narration"))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    # --- OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 サブタスクG: 実インシデント
+    # (A2 Point Two、Human Review accept経路でslowdown post-processが
+    # 一度も通らないまま、無関係な旧`point_two_original.wav`[Trial-13の
+    # 重複入り原本、比率0.813]の存在だけで誤って通過した)の回帰テスト。
+
+    def test_explicit_false_is_not_overridden_by_unrelated_original_wav(self):
+        # 実インシデントの再現: slowdown_appliedが明示的にFalse(Human
+        # Review accept経路が正直に記録)で、narration_dirには無関係な旧
+        # originalファイルが残っている(duration比まで6%相当に偶然整合
+        # していたとしても)。明示的Falseは上書きされてはならない。
+        tmp = tempfile.mkdtemp(prefix="er008_a2_invariant_explicit_false_test_")
+        try:
+            os.makedirs(f"{tmp}/narration", exist_ok=True)
+            _write_silent_wav(f"{tmp}/narration/point_two_original.wav", 10.0)
+            _write_silent_wav(f"{tmp}/narration/point_two.wav", 10.6)
+            self.assertTrue(asm._segment_missing_mandatory_a2_slowdown(
+                "point_two", {"status": "STOPPED", "slowdown_applied": False}, f"{tmp}/narration"))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_unrelated_stale_original_wav_with_mismatched_ratio_is_flagged(self):
+        # 実インシデントの実測値を再現: 現在のwavが旧originalより明確に
+        # 短い(比率約0.81、実データの`point_two.wav`/`point_two_original.
+        # wav`で実測)場合、同名ファイルが存在するというだけでは
+        # evidenceとして受理しない。
+        tmp = tempfile.mkdtemp(prefix="er008_a2_invariant_stale_ratio_test_")
+        try:
+            os.makedirs(f"{tmp}/narration", exist_ok=True)
+            _write_silent_wav(f"{tmp}/narration/point_two_original.wav", 40.0)
+            _write_silent_wav(f"{tmp}/narration/point_two.wav", 32.5)  # ratio ~0.81
+            self.assertTrue(asm._segment_missing_mandatory_a2_slowdown(
+                "point_two", {"status": "STOPPED"}, f"{tmp}/narration"))
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 

@@ -198,6 +198,20 @@ def _segment_asset_hash_stale(entry: dict, narration_dir: str) -> bool:
     return actual_sha256 != recorded_sha256
 
 
+# OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 サブタスクG: A2 Point Twoの
+# Human Review accept経路(サブタスクE、`stage_assemble_a2()`は無変更)で
+# 実際に発生した抜け穴の恒久修正に使う許容比率。ER-008-A2-TIMESTRETCH-
+# ABC-10で承認された6% time-stretch(`er008_a2_postprocess_slowdown_01.
+# A2_SLOWDOWN_PERCENT`)を反映した`{name}.wav`と`{name}_original.wav`の
+# duration比は、既存Production実データ97件(全A2 slowdown対象segment、
+# er006/er011配下)で実測すると1.0557〜1.0599に収まっており(mean
+# 1.0557)、今回の抜け穴事例(無関係な旧`point_two_original.wav`が残存
+# していたケース)は比率0.8126と明確に外れていた。ここでは実測分布に
+# 十分な余裕を持たせつつ無関係ペアを弾けるレンジ[1.03, 1.09]を採用する。
+_A2_SLOWDOWN_ORIGINAL_RATIO_MIN = 1.03
+_A2_SLOWDOWN_ORIGINAL_RATIO_MAX = 1.09
+
+
 def _segment_missing_mandatory_a2_slowdown(name: str, entry: dict, narration_dir: str = None) -> bool:
     """ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19 Item 5-A: No.8
     point_one_headingが、Human Review Lock経由で承認された結果、6%
@@ -215,12 +229,45 @@ def _segment_missing_mandatory_a2_slowdown(name: str, entry: dict, narration_dir
     が欠落している既存データの穴、新規バグではない)。この既存データを
     誤ってblockしないよう、`{name}_original.wav`が実際に存在することを
     第二の(やや弱いが独立した)evidenceとして受け入れる。新規生成経路は
-    常に両方の証拠を残すため、この緩和は既存データの後方互換のみに効く。"""
+    常に両方の証拠を残すため、この緩和は既存データの後方互換のみに効く。
+
+    OPEN-112-THEME2-AUDIO-REVIEW-FIX-02サブタスクGで発見した抜け穴の
+    恒久修正(2点): (1) `slowdown_applied`が明示的に`False`の場合(旧
+    「resume」系scriptがフィールド自体を書かなかった=Noneのケースとは
+    異なり、Human Review accept経路が「今回のattemptには未適用」と
+    正直に記録した既知の事実)は、無関係な旧`{name}_original.wav`が
+    存在するというだけの弱い証拠で上書きしてはならない(現に、この
+    ケースでPoint Twoが誤って通過した)。フィールドが本当に存在しない
+    (None、上記の既存後方互換対象)場合のみ、引き続きファイル存在を
+    弱い証拠として認める。(2) その弱い証拠についても、単なる存在確認
+    だけでなく、現在の`{name}.wav`との再生時間比が実際の6%
+    time-stretch比率に整合しているか(`_A2_SLOWDOWN_ORIGINAL_RATIO_MIN`
+    `_MAX`)を追加検証する。これにより、同名だが現在のattemptに対応
+    しない無関係な旧originalファイル(duration比が大きく外れる)を
+    誤ってevidence扱いしない。既存の`{name}_original.wav`存在チェック
+    を置き換えるものであり、新規Validator・別台帳は追加していない。"""
     if name not in n3_tts.A2_SLOWDOWN_TARGET_SEGMENTS:
         return False
-    if entry.get("slowdown_applied") is True:
+    recorded = entry.get("slowdown_applied")
+    if recorded is True:
         return False
-    if narration_dir and os.path.exists(f"{narration_dir}/{name}_original.wav"):
+    if recorded is False:
+        # 明示的に「今回のattemptには未適用」と記録されている場合、
+        # 無関係な旧originalファイルの存在だけで見逃してはならない。
+        return True
+    if not narration_dir:
+        return True
+    original_path = f"{narration_dir}/{name}_original.wav"
+    current_path = f"{narration_dir}/{name}.wav"
+    if not (os.path.exists(original_path) and os.path.exists(current_path)):
+        return True
+    try:
+        original_duration = n3_tts.a2_slowdown.read_wav_duration_seconds(original_path)
+        current_duration = n3_tts.a2_slowdown.read_wav_duration_seconds(current_path)
+        ratio = current_duration / original_duration
+    except Exception:
+        return True  # durationを読めない場合は安全側(missing扱い)に倒す
+    if _A2_SLOWDOWN_ORIGINAL_RATIO_MIN <= ratio <= _A2_SLOWDOWN_ORIGINAL_RATIO_MAX:
         return False
     return True
 

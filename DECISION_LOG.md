@@ -6530,6 +6530,50 @@ CURRENT_SPEC項目**: なし(既存Human Review Route/Validatorの判定
 「Point Twoは人間承認でaccept済み、原因分類=Connected Speech下の
 ASR false rejection」と6% slowdown後処理未適用の既知の限界を追記。
 
+### 追記(2026-09-07、サブタスクG: A2必須6% slowdown是正・
+Gate後方互換ロジックの恒久修正)
+
+上記の既知の限界(Point Two accept済みattempt2がA2必須6% slowdown
+post-processを一度も通っていない)を是正した。既存Production関数
+`apply_a2_slowdown_postprocess()`(`er003_v1_n3_01_tts_generate.py`、
+無変更)を、accept済みのnarration/point_two.wavへ実際に適用し
+(duration 32.741秒→34.689秒、比率1.0595、他のA2本文segment
+`point_one`の実測比率1.0596と同水準)、`stage_assemble_a2()`(無変更)で
+再Assembly(episode duration 356.227秒→358.175秒、他segmentのsha256は
+不変)。Azure Secondary ASR・faster-whisper local verbatimの独立2エンジン
+で"showed strong"保持・重複再発なし(spectral self-similarity max run長
+0.06秒)を確認済み。
+
+同時に、この既知の限界を生んだ既存Gate`_segment_missing_mandatory_a2_
+slowdown()`(`er003_v1_n3_01_assemble.py`)の後方互換ロジック(`{name}_
+original.wav`の存在のみで「slowdown済み」を判定、current attemptとの
+対応を見ていなかった)を恒久修正した。過去対策(ER-008-N8-PRODUCTION-
+WIRING-AND-FOLLOWUP-19)が想定していたのは「resume系scriptによる
+metadata欠落[フィールド自体が無い=None]」という後方互換ケースのみで、
+(a) 通常生成経路を経ずHuman Review accept経路が直接音声を差し替える
+ケース、(b) 「未適用」を明示的に`False`と記録する(Noneとは異なる)
+新しい記録パターン、(c) 証拠2(file存在)がcurrent attemptとの対応
+[sha256・duration比]を一切見ない、という3点の差分が、今回の実インシデ
+ントの原因だった。新方針の新設ではなく、既存関数の最小拡張のみで対応
+(新規Validator・別台帳は追加せず): (1)`slowdown_applied`が`True`/
+`False`(明示的)/`None`の3値を区別し、明示的`False`はfile存在で上書き
+しない、(2)`None`のfallback時もoriginal/current間のduration比が実際の
+6%比率(許容レンジ[1.03, 1.09]、既存Production実データ97件の実測分布
+1.0557〜1.0599から導出)へ整合するかを追加検証する。実データ(今回の
+無関係ペア、比率0.813)は明確にレンジ外となり正しくblockされることを
+確認。既存97件の正常ペアには回帰なし(regression test 2件追加、
+`er008_a2_slowdown_invariant_19_test_01.py`、計12件PASS)。初回生成・
+retry・regeneration・Human Review accept・fallback・Assembly直前の
+いずれの経路も同一の単一Gateを通るため、Human Review経路だけが
+別挙動になっていないことを実データで確認済み。
+
+**根拠レポート**: `OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md`
+「§追補: slow-down是正と必須チェック既存対策レビュー(サブタスクG)」節。
+**影響するCURRENT_SPEC項目**: なし(A2必須6% slowdown仕様自体は
+既存のまま、適用漏れの是正と既存Gateの後方互換ロジック拡張のみ)。
+**影響するOPEN_ITEMS項目**: OPEN-121行(項番5・6)を「是正・恒久修正
+済み」へ更新。
+
 ## OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-TRIAL-01(2026-09-07、
 逐語句・文単位反復検知およびpartial-word false start型検知の一般化Trial、
 ユーザー承認済み隔離Trial、Production未変更)
