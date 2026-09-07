@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10で
+**最終更新: 2026-09-07(EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-
+AND-FULL-EPISODE-03でユーザー承認に基づき8節へ「完了報告後の自動復帰禁止」
+を追記)。2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10で
 9-2の試聴artifact規則がsonnet-workerの成果物にも直接適用されることを明記し、
 Gate 7へ音声artifact受入チェックリスト[(a)〜(k)]を追加)。2026-09-06(PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09で
 完成音声・Trial音声の試聴依頼は音声+完全スクリプトを同一ページに表示する
@@ -105,6 +107,12 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
 (i) A2/B1等レベル別の明確な分離
 (j) テキスト未取得segmentは「未取得」と明記(推測補完なし)
 (k) Standard/Batch等TTS方式の明記
+(l) 各音声の再生ボタンと、その音声に対応するscriptを同一行または直近に
+    配置すること(視線移動・長いスクロールなしで「どの音声を聴いているか」
+    が分かる構造。1本化wavのseek可能timelineでも、各行に「再生(その
+    開始秒へseek)」ボタン+voice名+scriptを同一行に置く。2026-09-07、
+    ユーザー指示、EDITORIAL-B-FAMILY-VOICES-TRIAL-09-LOCK-RETRY-AND-
+    FULL-ASSEMBLY-02で追加)
 
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
@@ -285,6 +293,18 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   呼び8ファイルを書き換えた事故(復元済み、ER-011-ACCIDENTAL-OUTPUT-
   REVERT-01)の再発防止として、回帰実行を`run_project_regression.py`
   へ一本化した。
+
+**完了報告後の自動復帰禁止(2026-09-07追記)**:
+
+- 完了報告後に自動復帰した担当は、Fableの新規委任なしに作業を再開しては
+  ならない。特に同一管理IDの出力ディレクトリ・Report・SSOTへの追記・
+  上書きを禁止する。
+- Fableは完了報告を受けた担当へ追加指示を送らず、必要なら新規委任(新しい
+  管理ID、または明示的な追加委任文)で継続する。
+- 経緯: OPEN-121 D'点検で、完了報告済みの担当が承認範囲外の方式D/A実行・
+  Report上書きを行った事象が発生したことを受けたユーザー承認(2026-09-07、
+  EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03の
+  委任文item D-3)。
 
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 

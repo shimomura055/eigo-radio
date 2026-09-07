@@ -7224,6 +7224,105 @@ REPORT.md`。**影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」
 wiring完了・runtime evidence・gap<0.5秒未配線の追跡明記、status更新は
 Fableが確定)。
 
+## EDITORIAL-B-FAMILY-VOICES-TRIAL-09-LOCK-RETRY-AND-FULL-ASSEMBLY-02(2026-09-07、
+ユーザー指示に基づくLane B調査・Gate 7チェックリスト拡張)
+
+Trial-09(point_two_heading「Another Voice: The freedom to move.」が
+HUMAN_REVIEW_LOCKED)について、まずattempt事実を一次証拠(`review_lock_
+state.json`・`raw_usage_log.jsonl`・`human_review_queue.jsonl`)で確認した
+結果、TTS試行は1回のみで、Production正式ルール(`entity_only_diffs`=
+`ASR_VALIDATION_UNCERTAIN`はblind retryしない、`should_retry=False`、
+`er006_preprod_hardening_01_validation.py::_classify_asr_match_core`)に
+従って規定どおり打ち切られたことを確認した(規定回数[`PRODUCTION_MAX_TTS_
+ATTEMPTS=3`]に届く前の異常停止ではない)。このため再生成は行わず、調査に
+留めた。調査結果: ASR Cascade4段(OpenAI Primary x2 + Azure Secondary x2、
+`human_review_queue.jsonl`で確認)と、追加でローカルfaster-whisperによる
+独立第三の確認(無料・読み取り専用、`er008_disfluency_qa_18.transcribe_
+verbatim`)の計3方式全てが一致して"Another Voice:"の欠落を検出し、TTS側の
+実発話欠落(ASRの偶発的誤認識ではない)と判断した。根本原因は
+`capitalized_flags()`の粗い判定(文中の大文字始まり語を機械的に固有名詞
+候補=`entity_like`とみなす)が、編集上の見出しラベル("Another Voice:")を
+実在の固有名詞と誤区分し、本来は「重要語の欠落」として通常retry対象に
+なるべき内容誤り(CURRENT_SPEC.md「TTS Retry条件」節)を、retry対象外の
+「固有名詞ASR表記ゆれ」経路へ誤って振り分けたことである。新Validator・
+fallback・overrideは追加せず(調査のみ)、将来Trial候補としてのみ記録した
+(`USER_DECISION_REQUIRED`)。Gateが解消しなかったため1本化episode Assembly
+は実施せず、既存のfallback per-segment player(`er012_output/editorial_b_
+voices_trial_09_audio/player.html`)を、ユーザー新ルール(各音声の再生
+ボタンと対応scriptを同一行に配置)に沿って再構成した。`docs/pm/PM_
+GOVERNANCE.md`のGate 7音声artifact受入チェックリストへ(l)として本ルールを
+追記し、`OPEN_ITEMS.md`のOPEN-120行へ本件の追跡結果とユーザーのVoice評価
+所見(候補voiceは音質面で問題なし、正式固定は完成episode通し試聴後)を
+追記した。**Git操作は実施していない**(タスク仕様により、Fableが統合
+commitを行う)。**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-TRIAL-09-LOCK-
+RETRY-AND-FULL-ASSEMBLY-02_REPORT.md`。
+
+## EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03(2026-09-07、
+ユーザー明示決定によるpoint_two_heading再生成1回・1本化Assembly)
+
+**ユーザー決定(2026-09-07)**: (1) `point_two_heading`("Another Voice: The
+freedom to move.")の再生成を1回だけ承認する(`review_lock.approve_
+regenerate()`をユーザー明示承認に基づき実行してよい。承認根拠:
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-09-LOCK-RETRY-AND-FULL-ASSEMBLY-02_
+REPORT.md`§8-2 (a))。(2) 再発防止候補(見出しラベルのentity_like誤分類/
+delete型diffへのentity_only_diffs適用)は検証Trialとして起票のみ(実装
+しない、→OPEN-125新規登録)。(3) `docs/pm/PM_GOVERNANCE.md`§8への追記
+(完了報告後に自動復帰した担当が、Fableの新規委任なしに同一管理IDの成果物
+へ作業を再開・上書きすることを禁止する運用ルール、根拠: OPEN-121 D'点検で
+承認範囲外の実行・Report上書きが発生した事象)を承認する。
+
+**結果**: `review_lock.approve_regenerate(out_path, text, approved_by=
+"user")`(Production、無変更)を1回だけ呼び、承認記録(承認者・承認日時・
+根拠)を`er012_output/editorial_b_voices_trial_09_audio/b1b/audit/user_
+approval_record_heading_regen_03.json`へ保存した。続けてTrial-09が使った
+のと同一のProduction関数`er003_v1_sing01_point_headings_aoede.generate()`
+(Aoede、TTS_EXECUTION_MODE=STANDARD明示)を呼んだところ、attempt1回目で
+ASR="Another voice, the freedom to move."(`NORMALIZED_MATCH`、
+verified=True、disfluency QA флagged=false)としてstatus=OKでPASSした
+(cost_delta=0.0 JPY、上限¥100以内)。`b1b/audit/tts_generation_results.
+json`のpoint_two_heading分をこの新結果へ更新した上で(review_lock_state.
+jsonとは別ファイル、`asm.verify_episode_audio_validation_gate()`が実際に
+参照するaudit記録)、既存Production/Trial primitive(`asm.load_b1_sources`
+[Gate含む]・`apply_b1_gain`・Trial-09の`build_b1_voices_timeline_trial09`
+・`assemble_with_timeline`・`apply_headroom_safety_valve`、いずれも
+無変更)で1本化episodeのAssemblyを実行し、Gateを通過してstatus=OKで完成
+した(duration=301.795秒、peak=0.87786、clipping=False、headroom safety
+valve適用なし)。`player.html`をGate 7 (a)〜(l)準拠で全面再生成し(Intro/
+Welcome/Notification/Preview/Key Phrase[英語+日本語gloss]/Full story
+intro/Comment 1-4/Hook Part 1-2/Point Notification/Narrator見出し/Voice A
+[Algieba]・Voice B[Erinome]本文/Tension/Closing/Outroの全27行を、1本化
+episode音声へのseekボタン+voice名+実際の読み上げscriptを同一行に配置)、
+SFX(Intro/Notification/Point Notification/Outro)は「効果音(読み上げ
+なし)」と明記した。`OPEN_ITEMS.md`のOPEN-120行へ本件の結果を追記し、
+OPEN-125を新規登録した(再発防止候補のTrial起票のみ、未実装)。
+`docs/pm/PM_GOVERNANCE.md`§8へユーザー承認済みの運用ルールを追記した。
+**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-
+FULL-EPISODE-03_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-04(2026-09-07、Fableによる独立監査を経た
+Lane A 3件[OPEN-121/OPEN-122/OPEN-123]の`PRODUCTION_WIRED`最終受入)
+
+Fableが独立監査(`PM-LANE-A-PRODUCTION-WIRED-FINAL-ACCEPTANCE-AUDIT-01_
+REPORT.md`、実装担当Sonnetとは別スレッド、ファイル編集・commit・API呼び
+出しは一切なし)を実施し、OPEN-122(commit`3297d1b`)・OPEN-121(commit
+`e6c2f37`)・OPEN-123(commit`9f25f7d`)の3件について、Production正式初回
+pathへの配線・既存retry/regeneration/fallback/Human Review Lock/Cost
+Guardとの非干渉・Runtime evidenceの自己申告との一致・git履歴・regression
+無回帰(`collected=2157 passed=2154 failed=3`[既知の無関係failureのみ]
+`errors=0`)を一次証拠で確認し、3件とも**受入可**と判定した。軽微な指摘
+2件(SSOTステータス表記が`CODE_COMPLETE_PENDING_COMMIT`のままcommit後の
+追従編集が抜けていた点、OPEN-123 Report §4直接実行テーブルの件数転記
+ミス2件[8→16、9→29、実行結果自体は正しい])はFableへの記録訂正事項として
+記載された。これを受け、ユーザー承認済みの`APPROVED_FOR_PRODUCTION`
+範囲(3件とも2026-09-07決定)のまま、`CURRENT_SPEC.md`/`OPEN_ITEMS.md`の
+該当3行のステータスを`PRODUCTION_WIRED`(commit hash付き)へ更新し、
+`OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01_REPORT.md`
+§4の件数表記2件を訂正注記の上で修正した。あわせてOPEN-121行へ、方式Dの
+Production既定閾値(run≥0.12秒)で既存PASS音声517件中23件(4.4%)がflagする
+という監査発見事項を`USER_DECISION_REQUIRED`(再校正は未実施)として
+追記した。**根拠レポート**: `PM-LANE-A-PRODUCTION-WIRED-FINAL-ACCEPTANCE-
+AUDIT-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

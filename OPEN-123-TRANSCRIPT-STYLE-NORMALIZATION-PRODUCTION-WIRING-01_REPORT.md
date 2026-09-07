@@ -109,12 +109,12 @@ collected数が本タスク着手前(2138)から+19件増加している。
 | ファイル | 件数 | 結果 |
 |---|---|---|
 | `er006_preprod_hardening_01_validation_test.py` | 57 | 全PASS |
-| `er006_secondary_asr_01_test.py` | 9 | 全PASS |
+| `er006_secondary_asr_01_test.py` | 29(訂正: 原記載「9」は転記ミス。`PM-LANE-A-PRODUCTION-WIRED-FINAL-ACCEPTANCE-AUDIT-01_REPORT.md`で`def test_`実数29件・`__main__`呼び出し29件を確認、実行結果[全PASS]自体は正しい) | 全PASS |
 | `er007_ja_secondary_asr_01_test.py` | 9 | 全PASS |
 | `er011_no18_connected_speech_reading_resolver_wiring_08_test.py` | 15 | 全PASS |
 | `er011_tts_attempt_audio_retention_wiring_01_test.py` | 9 | 全PASS |
 | `er011_keyphrase_en_asr_false_rejection_cascade_prod_wiring_01_test_01.py` | 5 | 全PASS |
-| `er011_connected_speech_equivalence_layer_production_wiring_01_test_01.py` | 8 | 全PASS |
+| `er011_connected_speech_equivalence_layer_production_wiring_01_test_01.py` | 16(訂正: 原記載「8」は転記ミス。`PM-LANE-A-PRODUCTION-WIRED-FINAL-ACCEPTANCE-AUDIT-01_REPORT.md`で`def test_`実数16件・`__main__`呼び出し16件を確認、実行結果[全PASS]自体は正しい) | 全PASS |
 | 新規`er011_transcript_style_normalization_production_wiring_01_test_01.py` | 19 | 全PASS |
 
 **既存テストファイルのmock signature更新は一切不要だった**(`classify_
