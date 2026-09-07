@@ -1,0 +1,117 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.137,
+    "shared_words": [
+      "day",
+      "every",
+      "feel",
+      "hot",
+      "morning",
+      "place",
+      "seat"
+    ],
+    "point_word_count": 51,
+    "story_word_count": 44,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.22,
+    "shared_words": [
+      "another",
+      "choose",
+      "corner",
+      "day",
+      "each",
+      "morning",
+      "office",
+      "place",
+      "quiet",
+      "what",
+      "where"
+    ],
+    "point_word_count": 50,
+    "story_word_count": 44,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.176,
+    "shared_words": [
+      "day",
+      "easier",
+      "japanese",
+      "made",
+      "morning",
+      "need",
+      "place",
+      "sit",
+      "steady"
+    ],
+    "point_word_count": 51,
+    "story_word_count": 50,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.18,
+    "shared_words": [
+      "day",
+      "easier",
+      "japanese",
+      "made",
+      "morning",
+      "need",
+      "place",
+      "sit",
+      "steady"
+    ],
+    "point_word_count": 50,
+    "story_word_count": 51,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_06ed8512aedb22ae006a9e1c2dc15487d0a1205a1dc26800db",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEvery morning, an office fills with small choices. One employee walks between desks, looking for an empty place. Another checks a quiet corner before opening a laptop. Some companies are bringing assigned desks back, while others keep hot desking, where employees choose a seat each day. The question is simple but harder to answer: what makes a place at work feel right?\n\n【Point One】\nEvery morning, I look for a desk nobody is using. I may sit at yesterday’s keyboard without knowing who used it. I cannot leave papers in a drawer, and my things have nowhere to stay. By the time I sit down, I already feel unsettled.\n\nI remember when the same desk, view, and drawer let me begin without searching. That familiar place helped me feel that I belonged and made it easier to focus. In one Japanese survey, roughly one in three hot-desk users described returning to the same seat. To me, that is not resistance to change. It is a need for one steady part of the day.\n\n【Point Two】\nEach morning, I choose a different place. On a quiet day, I take a corner where I can think. When I need conversation, I sit near another team. If I need distance from a difficult relationship, I can move.\n\nWorking from home taught me to create a steady workspace for myself. At the office, I value something else: changing the setting with the task. Workers in one Japanese workplace said that moving seats made it easier to talk with people from other departments. A place is useful to me because I can choose what it helps me do that day.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "固定席が、私物を置けることや慣れた環境による所属感・集中しやすさにつながると具体的に説明し、調査結果も添えている。Full Storyの二択提示を、固定席を求める利用者の実感と理由へ掘り下げており、新しい理解を加えている。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "座席を仕事内容や人間関係に応じて選べること、部署を越えた会話を促すことを具体的に示している。単なる『自由に選べる』という説明に留まらず、ホットデスク制がどのような職場上の機能を持つかを明らかにしている。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "固定席が、私物を置けることや慣れた環境による所属感・集中しやすさにつながると具体的に説明し、調査結果も添えている。Full Storyの二択提示を、固定席を求める利用者の実感と理由へ掘り下げており、新しい理解を加えている。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "座席を仕事内容や人間関係に応じて選べること、部署を越えた会話を促すことを具体的に示している。単なる『自由に選べる』という説明に留まらず、ホットデスク制がどのような職場上の機能を持つかを明らかにしている。"
+      }
+    },
+    "status": "PASS"
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "original_ng_sentence": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk.",
+    "issue": "The Ledger supports seat-search inconvenience and the absence of a personal seat for some workers, but it does not establish that the selected fixed-seat-preferring worker searches for a desk every morning. The repeated “Every morning” adds an unsupported certainty/frequency. Although the opening functions as a Hook, Hook treatment does not relax changed_certainty or unsupported_new_claim.",
+    "explanation": "A Ledger-supported situation is strengthened into a specific daily routine for the Voice 1 worker; the Hook exception does not cover this certainty increase.",
+    "flags": [
+      "changed_fact",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Some mornings, one employee enters the office and looks for an empty desk.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "Some mornings, one employee enters the office and looks for an empty desk.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "sentence_fallback(overlap=0.43)",
+    "point_context_found": false,
+    "point_context": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk. Another scans the room for a quiet corner or a place near other people."
+  },
+  {
+    "original_ng_sentence": "I used to have the same desk, drawer, and view.",
+    "issue": "The Ledger supports valuing continuity and having a familiar fixed seat, but it does not establish that this worker previously had a particular desk, drawer, and view. This adds an unsupported personal history and specific workplace details.",
+    "explanation": "The added “used to” history and the drawer/view details are not in the Ledger; only the broader preference for continuity is supported.",
+    "flags": [
+      "changed_fact",
+      "changed_time",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "A familiar fixed seat can provide a consistent place to begin work.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "A familiar fixed seat can provide a consistent place to begin work.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "sentence_fallback(overlap=0.62)",
+    "point_context_found": true,
+    "point_context": "### One Voice: The search for a home base\n\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nI used to have the same desk, drawer, and view. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there."
+  }
+]

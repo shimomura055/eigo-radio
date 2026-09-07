@@ -230,7 +230,25 @@ Analytical Leakage Checkの許容基準定義、n=1再現性)は別途
 `USER_DECISION_REQUIRED`のまま(安全≠成功原則、Sonnetの成功報告は
 Production採用の自動承認を意味しない)。Fable側の最終判定は本追記の
 時点でユーザーへの報告を優先し保留(判定結果は確定次第、本エントリへ
-追記する)。
+追記する)。Trial-06のFable判定は保留のままTrial-07へ発展した(下記追記
+参照、実質的にVALIDATED相当の評価がTrial-07で確定した)。
+
+**追記(2026-09-07、Trial-07)**: `EDITORIAL-B-FAMILY-VOICES-TRIAL-07-
+CONTRACT-REFINEMENT-01`。Trial用Voices Editorial Contractへ3点を追加した:
+Tension=Evidenceを主役にせず理由差を掘る/Closing=問いの再定義・対立軸の
+組み替え・解決策提案なし/Compactness=約350語soft target、同義反復禁止、
+配分目安。run01は453語で未達(是正メモが語数目標を再掲しない設計の穴が
+判明)。Fable↔Sonnet往復1回目で是正メモにContract全体を再掲し
+Compactness節を強化した結果、run02は最終388語で確定(Hook51/VoiceA99/
+VoiceB101/Tension81/Closing56)。Leakage 4区分全PASS、Tension内の
+Evidence主語文0件、Closing再定義達成("fixed or shared"の二択から
+"what makes a place workable"へ、締めの一文は"This is my place at work"
+に変更)。一人称"I"を再度Writerが自発的に選択した(Focus Module指示では
+なく、正式化は未決定)。Fact Safety準拠(MINOR2件、MAJOR0件)。cost約¥63
+(run01+run02合算)。**Fable判定: Voices Editorial Design VALIDATED**
+(Voice数2・B1・Article-only、Contract3点[Tension/Closing/Compactness]を
+含む範囲)。Production採用は別途未決定であり、`APPROVED_FOR_PRODUCTION`は
+付与されていない。
 
 **採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
 Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
@@ -240,7 +258,8 @@ Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-03_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-04_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`、
-`EDITORIAL-B-FAMILY-VOICES-TRIAL-06-PERSPECTIVE-SELECTION-EDITOR-DIAG-01_REPORT.md`
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-06-PERSPECTIVE-SELECTION-EDITOR-DIAG-01_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-07-CONTRACT-REFINEMENT-01_REPORT.md`
 (各Report §末尾のSSOT登録案を参照して本エントリを作成)。
 
 **状態**: `USER_DECISION_REQUIRED`(OPEN-120として追跡)。Productionコード・

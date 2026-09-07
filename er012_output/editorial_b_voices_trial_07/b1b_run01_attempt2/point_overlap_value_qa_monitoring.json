@@ -1,0 +1,133 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.2,
+    "shared_words": [
+      "desk",
+      "each",
+      "empty",
+      "every",
+      "keep",
+      "morning",
+      "office",
+      "people",
+      "place",
+      "quiet",
+      "same"
+    ],
+    "point_word_count": 55,
+    "story_word_count": 39,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.265,
+    "shared_words": [
+      "another",
+      "bring",
+      "corner",
+      "desk",
+      "different",
+      "every",
+      "feel",
+      "office",
+      "people",
+      "place",
+      "quiet",
+      "room",
+      "same"
+    ],
+    "point_word_count": 49,
+    "story_word_count": 39,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.255,
+    "shared_words": [
+      "already",
+      "day",
+      "desk",
+      "every",
+      "gives",
+      "home",
+      "office",
+      "people",
+      "personal",
+      "place",
+      "quiet",
+      "same",
+      "seat",
+      "where"
+    ],
+    "point_word_count": 55,
+    "story_word_count": 49,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.286,
+    "shared_words": [
+      "already",
+      "day",
+      "desk",
+      "every",
+      "gives",
+      "home",
+      "office",
+      "people",
+      "personal",
+      "place",
+      "quiet",
+      "same",
+      "seat",
+      "where"
+    ],
+    "point_word_count": 49,
+    "story_word_count": 55,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_0baea5e42e2fe48b006a9e1d4305a487d0b8a93f6622be3f6c",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEvery morning, one employee enters the office and looks for an empty desk. Another scans the room for a quiet corner or a place near other people. They may share the same office, yet the desk system can feel very different to each of them. As some companies bring back assigned seats while others keep shared desks, what makes a workplace feel workable?\n\n【Point One】\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nI used to have the same desk, drawer, and view. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there.\n\n【Point Two】\nOne day, I choose a quiet corner. Another day, I want a livelier place where I can talk with people from another team. If I need distance from an awkward relationship, moving to another desk gives me room.\n\nI like choosing a place that fits my mood and task. Working from home has already given me a personal place to focus, so the office does not need to feel the same every day.\n\nA different seat can bring a new conversation or a new pace. I want choice, not another problem to solve. Staying in one place all day can feel more limiting than freeing.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "共有デスクによって、衛生管理や荷物・書類の置き場を毎朝考え直す負担が生じることを具体化し、固定席が安心感や所属意識を生む「ホームベース」になると説明している。Full Storyの一例を繰り返すだけでなく、固定席が働き始めやすさに与える意味を深めている。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "共有席の選択性が、作業内容や気分に合わせた環境調整、他チームとの会話、気まずい相手との距離確保に役立つと具体的に示している。単に「静かな場所や人の近くを選ぶ」というFull Storyの内容を言い換えるのではなく、固定席より選択肢を重視する理由を提示している。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "共有デスクによって、衛生管理や荷物・書類の置き場を毎朝考え直す負担が生じることを具体化し、固定席が安心感や所属意識を生む「ホームベース」になると説明している。Full Storyの一例を繰り返すだけでなく、固定席が働き始めやすさに与える意味を深めている。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "共有席の選択性が、作業内容や気分に合わせた環境調整、他チームとの会話、気まずい相手との距離確保に役立つと具体的に示している。単に「静かな場所や人の近くを選ぶ」というFull Storyの内容を言い換えるのではなく、固定席より選択肢を重視する理由を提示している。"
+      }
+    },
+    "status": "PASS"
+  }
+}

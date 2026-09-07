@@ -1,0 +1,468 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/editorial_b_voices_trial_07/b1b_run01_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_04ee59f85d53a7a4006a9e1ccd510487d084a796ca17a98e78",
+        "prompt": "以下は、あるVoices/Perspective型記事の4つのsection本文\n(One Voice/Another Voice/Tension/Closing)です。それぞれについて、指定された項目を判定\nしてください(それぞれPASS/FAIL)。\n\n【One Voice(Voice A)・Another Voice(Voice B)に適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する5項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax /\n  leak_evidence_memorable: 上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのか\n  (価値観・経験・制約・何を優先するか・問題をどう定義しているか)の掘り下げになっており、\n  survey/研究データそのものの説明・比較へ戻っていない場合PASS。survey/研究結果の紹介・\n  数字比較がTensionの主たる内容になっている場合FAIL\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「両方に良い点がある」「人による」\n  という結び方だけで終わっておらず、かつWriter自身の解決策・妥協案の提案(例: 半固定席の\n  導入等)になっていない場合PASS。単純要約または解決策提案になっている場合FAIL\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, I look for a desk nobody is using. I may sit at yesterday’s keyboard without knowing who used it. I cannot leave papers in a drawer, and my things have nowhere to stay. By the time I sit down, I already feel unsettled.\n\nI remember when the same desk, view, and drawer let me begin without searching. That familiar place helped me feel that I belonged and made it easier to focus. In one Japanese survey, roughly one in three hot-desk users described returning to the same seat. To me, that is not resistance to change. It is a need for one steady part of the day.\n\n【Another Voice(Voice B)本文】\nEach morning, I choose a different place. On a quiet day, I take a corner where I can think. When I need conversation, I sit near another team. If I need distance from a difficult relationship, I can move.\n\nWorking from home taught me to create a steady workspace for myself. At the office, I value something else: changing the setting with the task. Workers in one Japanese workplace said that moving seats made it easier to talk with people from other departments. A place is useful to me because I can choose what it helps me do that day.\n\n【Tension本文】\nThe two employees are not really arguing about furniture. One sees a desk as a base: a known place with known tools and a sign that they belong. The other sees it as a setting that can change with the day. One finds security in continuity. The other finds it in the power to move. Repeated searching can make choice feel like a burden, while working from home and new conversations can make it feel useful.\n\n【Closing本文】\nSeen this way, the debate is not simply fixed desks versus free desks. It is about where people find control and belonging. One person finds both through repetition. Another finds them through choice. An office seat is not just furniture: it can be a routine, a boundary, or a doorway to other people.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "調査文では、数量化された回答者群が主語となり、当事者の経験ではなく調査結果を提示しています。また、「In one Japanese survey」という導入がDiscovery記事の報告構文に戻っています。",
+            "quoted_evidence": "In one Japanese survey, roughly one in three hot-desk users described returning to the same seat."
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "具体的な数字や、語り手を外側から分析する要約はありません。一方で、第三者の職場の回答を「Workers ... said that」と報告する文があり、調査結果を整理するDiscovery型の構文になっています。",
+            "quoted_evidence": "Workers in one Japanese workplace said that moving seats made it easier to talk with people from other departments."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "reasoning": "調査結果や数字を説明せず、固定席と可動性に対する二人の価値観・安心の感じ方の違いを中心に掘り下げています。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単に両論を要約するだけでなく、席をroutine・boundary・doorwayとして捉え直す概念的な結びになっており、具体的な解決策の提案にもなっていません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_a",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "調査文では、数量化された回答者群が主語となり、当事者の経験ではなく調査結果を提示しています。また、「In one Japanese survey」という導入がDiscovery記事の報告構文に戻っています。",
+            "quoted_evidence": "In one Japanese survey, roughly one in three hot-desk users described returning to the same seat."
+          },
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "具体的な数字や、語り手を外側から分析する要約はありません。一方で、第三者の職場の回答を「Workers ... said that」と報告する文があり、調査結果を整理するDiscovery型の構文になっています。",
+            "quoted_evidence": "Workers in one Japanese workplace said that moving seats made it easier to talk with people from other departments."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/editorial_b_voices_trial_07/b1b_run01_attempt2",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0bcb9cb9830fc7c9006a9e1e5782cc87d0b1e405de1d873703",
+        "prompt": "以下は、あるVoices/Perspective型記事の4つのsection本文\n(One Voice/Another Voice/Tension/Closing)です。それぞれについて、指定された項目を判定\nしてください(それぞれPASS/FAIL)。\n\n【One Voice(Voice A)・Another Voice(Voice B)に適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する5項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax /\n  leak_evidence_memorable: 上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのか\n  (価値観・経験・制約・何を優先するか・問題をどう定義しているか)の掘り下げになっており、\n  survey/研究データそのものの説明・比較へ戻っていない場合PASS。survey/研究結果の紹介・\n  数字比較がTensionの主たる内容になっている場合FAIL\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「両方に良い点がある」「人による」\n  という結び方だけで終わっておらず、かつWriter自身の解決策・妥協案の提案(例: 半固定席の\n  導入等)になっていない場合PASS。単純要約または解決策提案になっている場合FAIL\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nA familiar fixed seat can provide a consistent place to begin work. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there.\n\n【Another Voice(Voice B)本文】\nOne day, I choose a quiet corner. Another day, I want a livelier place where I can talk with people from another team. If I need distance from an awkward relationship, moving to another desk gives me room.\n\nI like choosing a place that fits my mood and task. Working from home has already given me a personal place to focus, so the office does not need to feel the same every day.\n\nA different seat can bring a new conversation or a new pace. I want choice, not another problem to solve. Staying in one place all day can feel more limiting than freeing.\n\n【Tension本文】\nThese two workers are not really answering the same question. The first asks, “Where can I return to each morning?” The second asks, “What kind of place do I need today?”\n\nOne feels secure when the surroundings stay familiar. The other feels secure when movement remains possible. Even for the second worker, choice must be easy and useful. If finding a desk becomes the first problem each morning, freedom can start to feel like work.\n\nThe same office can therefore look like a home base to one person and a set of useful choices to another.\n\n【Closing本文】\nThe desk debate is not only about where furniture goes. It is about how people find a workable place in a shared office.\n\nFor some, that place is built through continuity: the same desk, drawer, and view. For others, it is built through choice: the freedom to move toward focus, conversation, or distance. The deeper question is not simply fixed or free. It is what makes a worker feel ready to work and able to belong.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "調査・データや数字は登場せず、本人の朝の行動、落ち着けなさ、所属感が一人称の経験として描かれている。一般化に見える表現も、固定席を必要とする本人の実感を補強する範囲に収まっている。",
+            "quoted_evidence": ""
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称で、気分や仕事に応じて場所を選びたいという価値観と、移動できないことへの窮屈さが具体的に示されている。調査結果の説明や外部からの分析、数字の比較はない。",
+            "quoted_evidence": ""
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "reasoning": "2人の問いの違いを、継続性による安心と移動可能性による安心という価値観の対比として掘り下げている。研究結果や数字の紹介には戻らず、同じオフィスの意味が人によって異なる理由に焦点がある。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単に両論を要約するのではなく、共有オフィスで働く準備と所属感を何が生むのかという問いに広げて締めている。具体的な制度や妥協案をWriterが提案しているわけでもない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false
+      },
+      "any_flagged": false
+    }
+  ],
+  "total_attempts": 2,
+  "final_attempt_dir": "er012_output/editorial_b_voices_trial_07/b1b_run01_attempt2",
+  "final_result": {
+    "label": "B1B",
+    "status": "OK",
+    "metrics": {
+      "word_count": 453,
+      "sentence_count": 33,
+      "avg_sentence_length": 13.7,
+      "max_sentence_length": 29
+    },
+    "section_word_counts": {
+      "intro": 0,
+      "point_one": 113,
+      "point_two": 105,
+      "in_one_line": 0
+    },
+    "length_report": {
+      "intro": 0,
+      "point_one": 113,
+      "point_two": 105,
+      "in_one_line": 0,
+      "total": 453,
+      "point_one_within_target": false,
+      "point_one_within_tolerance": false,
+      "point_two_within_target": false,
+      "point_two_within_tolerance": false,
+      "total_within_soft_range": false
+    },
+    "five_section_length_report": {
+      "hook": 63,
+      "voice_a": 113,
+      "voice_b": 105,
+      "tension": 96,
+      "closing": 76,
+      "total_of_five_sections": 453,
+      "headings": {
+        "hook": "The Question",
+        "voice_a": "One Voice: The search for a home base",
+        "voice_b": "Another Voice: The freedom to move",
+        "tension": "Why They See It Differently",
+        "closing": "What This Tells Us"
+      },
+      "unexpected_preamble_before_first_heading": ""
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_results": [
+      {
+        "original_ng_sentence": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk.",
+        "issue": "The Ledger supports seat-search inconvenience and the absence of a personal seat for some workers, but it does not establish that the selected fixed-seat-preferring worker searches for a desk every morning. The repeated “Every morning” adds an unsupported certainty/frequency. Although the opening functions as a Hook, Hook treatment does not relax changed_certainty or unsupported_new_claim.",
+        "explanation": "A Ledger-supported situation is strengthened into a specific daily routine for the Voice 1 worker; the Hook exception does not cover this certainty increase.",
+        "flags": [
+          "changed_fact",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Some mornings, one employee enters the office and looks for an empty desk.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "Some mornings, one employee enters the office and looks for an empty desk.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "sentence_fallback(overlap=0.43)",
+        "point_context_found": false,
+        "point_context": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk. Another scans the room for a quiet corner or a place near other people."
+      },
+      {
+        "original_ng_sentence": "I used to have the same desk, drawer, and view.",
+        "issue": "The Ledger supports valuing continuity and having a familiar fixed seat, but it does not establish that this worker previously had a particular desk, drawer, and view. This adds an unsupported personal history and specific workplace details.",
+        "explanation": "The added “used to” history and the drawer/view details are not in the Ledger; only the broader preference for continuity is supported.",
+        "flags": [
+          "changed_fact",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "A familiar fixed seat can provide a consistent place to begin work.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "A familiar fixed seat can provide a consistent place to begin work.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 2,
+        "location_method": "sentence_fallback(overlap=0.62)",
+        "point_context_found": true,
+        "point_context": "### One Voice: The search for a home base\n\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nI used to have the same desk, drawer, and view. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there."
+      }
+    ],
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 2,
+        "newly_discovered_claims": [
+          "“Every morning, one employee enters the office and looks for an empty desk.” The same recurring routine is repeated in “Every morning, I get to the office and look for an empty desk.”",
+          "“I used to have the same desk, drawer, and view.” The article repeats this detail later as “the same desk, drawer, and view.”"
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk.",
+            "issue": "The Ledger supports seat-search inconvenience and the absence of a personal seat for some workers, but it does not establish that the selected fixed-seat-preferring worker searches for a desk every morning. The repeated “Every morning” adds an unsupported certainty/frequency. Although the opening functions as a Hook, Hook treatment does not relax changed_certainty or unsupported_new_claim.",
+            "explanation": "A Ledger-supported situation is strengthened into a specific daily routine for the Voice 1 worker; the Hook exception does not cover this certainty increase.",
+            "flags": [
+              "changed_fact",
+              "changed_certainty",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "Some mornings, one employee enters the office and looks for an empty desk.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "Some mornings, one employee enters the office and looks for an empty desk.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "sentence_fallback(overlap=0.43)",
+            "point_context_found": false,
+            "point_context": "# The Office Desk Divide: A Home Base or a Choice? ## The Question Every morning, one employee enters the office and looks for an empty desk. Another scans the room for a quiet corner or a place near other people."
+          },
+          {
+            "original_ng_sentence": "I used to have the same desk, drawer, and view.",
+            "issue": "The Ledger supports valuing continuity and having a familiar fixed seat, but it does not establish that this worker previously had a particular desk, drawer, and view. This adds an unsupported personal history and specific workplace details.",
+            "explanation": "The added “used to” history and the drawer/view details are not in the Ledger; only the broader preference for continuity is supported.",
+            "flags": [
+              "changed_fact",
+              "changed_time",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "A familiar fixed seat can provide a consistent place to begin work.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "A familiar fixed seat can provide a consistent place to begin work.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 2,
+            "location_method": "sentence_fallback(overlap=0.62)",
+            "point_context_found": true,
+            "point_context": "### One Voice: The search for a home base\n\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nI used to have the same desk, drawer, and view. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there."
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "fact_usage_report": null,
+    "evidence_compression_applied": true,
+    "point_overlap_value_qa_monitoring": {
+      "qa_status": "OK",
+      "lexical_flagged": false,
+      "value_qa_flagged": false,
+      "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+      "voice_a_vs_hook": {
+        "overlap_ratio": 0.2,
+        "shared_words": [
+          "desk",
+          "each",
+          "empty",
+          "every",
+          "keep",
+          "morning",
+          "office",
+          "people",
+          "place",
+          "quiet",
+          "same"
+        ],
+        "point_word_count": 55,
+        "story_word_count": 39,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_b_vs_hook": {
+        "overlap_ratio": 0.265,
+        "shared_words": [
+          "another",
+          "bring",
+          "corner",
+          "desk",
+          "different",
+          "every",
+          "feel",
+          "office",
+          "people",
+          "place",
+          "quiet",
+          "room",
+          "same"
+        ],
+        "point_word_count": 49,
+        "story_word_count": 39,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_a_vs_voice_b": {
+        "overlap_ratio": 0.255,
+        "shared_words": [
+          "already",
+          "day",
+          "desk",
+          "every",
+          "gives",
+          "home",
+          "office",
+          "people",
+          "personal",
+          "place",
+          "quiet",
+          "same",
+          "seat",
+          "where"
+        ],
+        "point_word_count": 55,
+        "story_word_count": 49,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "voice_b_vs_voice_a": {
+        "overlap_ratio": 0.286,
+        "shared_words": [
+          "already",
+          "day",
+          "desk",
+          "every",
+          "gives",
+          "home",
+          "office",
+          "people",
+          "personal",
+          "place",
+          "quiet",
+          "same",
+          "seat",
+          "where"
+        ],
+        "point_word_count": 49,
+        "story_word_count": 55,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "value_qa_status": "PASS",
+      "value_qa_result": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0baea5e42e2fe48b006a9e1d4305a487d0b8a93f6622be3f6c",
+        "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEvery morning, one employee enters the office and looks for an empty desk. Another scans the room for a quiet corner or a place near other people. They may share the same office, yet the desk system can feel very different to each of them. As some companies bring back assigned seats while others keep shared desks, what makes a workplace feel workable?\n\n【Point One】\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nI used to have the same desk, drawer, and view. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there.\n\n【Point Two】\nOne day, I choose a quiet corner. Another day, I want a livelier place where I can talk with people from another team. If I need distance from an awkward relationship, moving to another desk gives me room.\n\nI like choosing a place that fits my mood and task. Working from home has already given me a personal place to focus, so the office does not need to feel the same every day.\n\nA different seat can bring a new conversation or a new pace. I want choice, not another problem to solve. Staying in one place all day can feel more limiting than freeing.\n",
+        "parsed": {
+          "point_one": {
+            "qa_not_caveat_only": "PASS",
+            "qa_not_full_story_paraphrase": "PASS",
+            "qa_not_other_point_paraphrase": "PASS",
+            "qa_explains_why_it_matters": "PASS",
+            "qa_specific_not_generic": "PASS",
+            "qa_adds_new_value": "PASS",
+            "reasoning": "共有デスクによって、衛生管理や荷物・書類の置き場を毎朝考え直す負担が生じることを具体化し、固定席が安心感や所属意識を生む「ホームベース」になると説明している。Full Storyの一例を繰り返すだけでなく、固定席が働き始めやすさに与える意味を深めている。"
+          },
+          "point_two": {
+            "qa_not_caveat_only": "PASS",
+            "qa_not_full_story_paraphrase": "PASS",
+            "qa_not_other_point_paraphrase": "PASS",
+            "qa_explains_why_it_matters": "PASS",
+            "qa_specific_not_generic": "PASS",
+            "qa_adds_new_value": "PASS",
+            "reasoning": "共有席の選択性が、作業内容や気分に合わせた環境調整、他チームとの会話、気まずい相手との距離確保に役立つと具体的に示している。単に「静かな場所や人の近くを選ぶ」というFull Storyの内容を言い換えるのではなく、固定席より選択肢を重視する理由を提示している。"
+          }
+        },
+        "per_point": {
+          "point_one": {
+            "ok": true,
+            "fail_fields": [],
+            "reasoning": "共有デスクによって、衛生管理や荷物・書類の置き場を毎朝考え直す負担が生じることを具体化し、固定席が安心感や所属意識を生む「ホームベース」になると説明している。Full Storyの一例を繰り返すだけでなく、固定席が働き始めやすさに与える意味を深めている。"
+          },
+          "point_two": {
+            "ok": true,
+            "fail_fields": [],
+            "reasoning": "共有席の選択性が、作業内容や気分に合わせた環境調整、他チームとの会話、気まずい相手との距離確保に役立つと具体的に示している。単に「静かな場所や人の近くを選ぶ」というFull Storyの内容を言い換えるのではなく、固定席より選択肢を重視する理由を提示している。"
+          }
+        },
+        "status": "PASS"
+      }
+    },
+    "directional_fact_precheck_status": "PASS",
+    "elapsed_seconds": 360.2,
+    "analytical_leakage_check": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0bcb9cb9830fc7c9006a9e1e5782cc87d0b1e405de1d873703",
+      "prompt": "以下は、あるVoices/Perspective型記事の4つのsection本文\n(One Voice/Another Voice/Tension/Closing)です。それぞれについて、指定された項目を判定\nしてください(それぞれPASS/FAIL)。\n\n【One Voice(Voice A)・Another Voice(Voice B)に適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する5項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax /\n  leak_evidence_memorable: 上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのか\n  (価値観・経験・制約・何を優先するか・問題をどう定義しているか)の掘り下げになっており、\n  survey/研究データそのものの説明・比較へ戻っていない場合PASS。survey/研究結果の紹介・\n  数字比較がTensionの主たる内容になっている場合FAIL\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「両方に良い点がある」「人による」\n  という結び方だけで終わっておらず、かつWriter自身の解決策・妥協案の提案(例: 半固定席の\n  導入等)になっていない場合PASS。単純要約または解決策提案になっている場合FAIL\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, I get to the office and look for an empty desk. I may sit at a keyboard someone else used yesterday. Before work begins, I am already thinking about cleanliness, my bag, and where to put my papers.\n\nA familiar fixed seat can provide a consistent place to begin work. That routine let me start without searching. Now the people beside me and the desk may change each day. I keep thinking, “I have no personal seat, so I cannot settle down.”\n\nA fixed seat is not just ownership. It is a quiet home base. It gives me a familiar place to begin work and a feeling that I belong there.\n\n【Another Voice(Voice B)本文】\nOne day, I choose a quiet corner. Another day, I want a livelier place where I can talk with people from another team. If I need distance from an awkward relationship, moving to another desk gives me room.\n\nI like choosing a place that fits my mood and task. Working from home has already given me a personal place to focus, so the office does not need to feel the same every day.\n\nA different seat can bring a new conversation or a new pace. I want choice, not another problem to solve. Staying in one place all day can feel more limiting than freeing.\n\n【Tension本文】\nThese two workers are not really answering the same question. The first asks, “Where can I return to each morning?” The second asks, “What kind of place do I need today?”\n\nOne feels secure when the surroundings stay familiar. The other feels secure when movement remains possible. Even for the second worker, choice must be easy and useful. If finding a desk becomes the first problem each morning, freedom can start to feel like work.\n\nThe same office can therefore look like a home base to one person and a set of useful choices to another.\n\n【Closing本文】\nThe desk debate is not only about where furniture goes. It is about how people find a workable place in a shared office.\n\nFor some, that place is built through continuity: the same desk, drawer, and view. For others, it is built through choice: the freedom to move toward focus, conversation, or distance. The deeper question is not simply fixed or free. It is what makes a worker feel ready to work and able to belong.\n",
+      "parsed": {
+        "voice_a": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "調査・データや数字は登場せず、本人の朝の行動、落ち着けなさ、所属感が一人称の経験として描かれている。一般化に見える表現も、固定席を必要とする本人の実感を補強する範囲に収まっている。",
+          "quoted_evidence": ""
+        },
+        "voice_b": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "一人称で、気分や仕事に応じて場所を選びたいという価値観と、移動できないことへの窮屈さが具体的に示されている。調査結果の説明や外部からの分析、数字の比較はない。",
+          "quoted_evidence": ""
+        },
+        "tension": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "leak_tension_reverts_to_research": "PASS",
+          "reasoning": "2人の問いの違いを、継続性による安心と移動可能性による安心という価値観の対比として掘り下げている。研究結果や数字の紹介には戻らず、同じオフィスの意味が人によって異なる理由に焦点がある。",
+          "quoted_evidence": ""
+        },
+        "closing": {
+          "leak_closing_simple_summary": "PASS",
+          "reasoning": "単に両論を要約するのではなく、共有オフィスで働く準備と所属感を何が生むのかという問いに広げて締めている。具体的な制度や妥協案をWriterが提案しているわけでもない。",
+          "quoted_evidence": ""
+        }
+      },
+      "flagged_items": [],
+      "any_flagged": false
+    }
+  }
+}

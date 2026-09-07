@@ -1,0 +1,113 @@
+{
+  "qa_status": "OK",
+  "lexical_flagged": false,
+  "value_qa_flagged": false,
+  "note": "EDITORIAL-B-FAMILY-VOICES-TRIAL-04 run03のユーザー決定によりmonitoring専用。flaggedであっても記事全体retry・Point-only regenerationは一切発生させず、本文は変更せずそのままFact Checker以降へ進める。gen.run_point_overlap_qa_and_regenerate()ではなく、5区切り構造専用のsplit_five_voice_sections()で抽出したVoice A/Voice Bを、同じProduction primitive関数(overlap_qa.flag_possible_paraphrase / point_planning.run_point_value_qa)へ個別に渡している。",
+  "voice_a_vs_hook": {
+    "overlap_ratio": 0.2,
+    "shared_words": [
+      "desk",
+      "empty",
+      "every",
+      "feel",
+      "morning",
+      "office",
+      "place",
+      "quiet",
+      "same",
+      "seating"
+    ],
+    "point_word_count": 50,
+    "story_word_count": 33,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_hook": {
+    "overlap_ratio": 0.174,
+    "shared_words": [
+      "another",
+      "corner",
+      "desk",
+      "office",
+      "other",
+      "place",
+      "quiet",
+      "some"
+    ],
+    "point_word_count": 46,
+    "story_word_count": 33,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_a_vs_voice_b": {
+    "overlap_ratio": 0.14,
+    "shared_words": [
+      "choose",
+      "desk",
+      "gave",
+      "office",
+      "place",
+      "quiet",
+      "sit"
+    ],
+    "point_word_count": 50,
+    "story_word_count": 46,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "voice_b_vs_voice_a": {
+    "overlap_ratio": 0.152,
+    "shared_words": [
+      "choose",
+      "desk",
+      "gave",
+      "office",
+      "place",
+      "quiet",
+      "sit"
+    ],
+    "point_word_count": 46,
+    "story_word_count": 50,
+    "flagged": false,
+    "threshold": 0.4
+  },
+  "value_qa_status": "PASS",
+  "value_qa_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_012cfc304a7b4287006a9e228aa28487d0a9b0c4bd06ff2366",
+    "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nEvery morning, one employee enters the office and looks for an empty desk. Another chooses a quiet corner or a lively place near other teams. Some companies are bringing back assigned desks, while others continue shared seating. Why can the same office feel secure to one person and liberating to another?\n\n【Point One】\nEvery morning, I look for an empty desk. Someone else may have used it yesterday, and someone new may sit there tomorrow. I cannot leave papers in a drawer, and I sometimes worry about using a desk or keyboard after someone else. Before work begins, I have already spent time finding a place. I miss the same desk, drawer, and view. They helped me start without searching and gave me a quiet sense of belonging. Now the office can feel borrowed. I want my work and things to have a place, even when I cannot choose the seating policy.\n\n【Point Two】\nSome mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.\n",
+    "parsed": {
+      "point_one": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "共有席の不便さを、毎朝の席探し、私物を置けないこと、他人が使った机やキーボードへの不安、所属感の喪失という具体的な経験に落とし込んでいる。Full Storyの「固定席は安心」という結論の単なる反復ではなく、なぜ安心感が失われるのかを具体化している。"
+      },
+      "point_two": {
+        "qa_not_caveat_only": "PASS",
+        "qa_not_full_story_paraphrase": "PASS",
+        "qa_not_other_point_paraphrase": "PASS",
+        "qa_explains_why_it_matters": "PASS",
+        "qa_specific_not_generic": "PASS",
+        "qa_adds_new_value": "PASS",
+        "reasoning": "共有席の利点を、集中したい日・会話したい日・他部署と交流したい時・人間関係から距離を置きたい時という具体的な選択場面で説明している。Full Storyにはない、柔軟な席選びが仕事の内容や対人関係への対応力を高めるという新しい示唆を加えている。"
+      }
+    },
+    "per_point": {
+      "point_one": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "共有席の不便さを、毎朝の席探し、私物を置けないこと、他人が使った机やキーボードへの不安、所属感の喪失という具体的な経験に落とし込んでいる。Full Storyの「固定席は安心」という結論の単なる反復ではなく、なぜ安心感が失われるのかを具体化している。"
+      },
+      "point_two": {
+        "ok": true,
+        "fail_fields": [],
+        "reasoning": "共有席の利点を、集中したい日・会話したい日・他部署と交流したい時・人間関係から距離を置きたい時という具体的な選択場面で説明している。Full Storyにはない、柔軟な席選びが仕事の内容や対人関係への対応力を高めるという新しい示唆を加えている。"
+      }
+    },
+    "status": "PASS"
+  }
+}
