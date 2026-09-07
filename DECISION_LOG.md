@@ -250,6 +250,25 @@ Evidence主語文0件、Closing再定義達成("fixed or shared"の二択から
 含む範囲)。Production採用は別途未決定であり、`APPROVED_FOR_PRODUCTION`は
 付与されていない。
 
+**追記(2026-09-07、ユーザー判断)**: Trial-07を**Voices Editorial Design
+として一旦VALIDATED**とした(範囲: B1・Article-only・Voice数2・Trialした
+Voices Editorial Contract・同テーマ再生成結果)。Production採用ではない。
+VALIDATEDとする方向: 主要意見優先のPerspective選定/Voice Card・
+Perspective Mapによる人間中心生成/Evidenceを裏側に/Tensionで「なぜ合理的
+な人が違う答えになるか」を掘る/Tensionでsurvey・percentageを主役にしない
+/Closingは要約でなく問いの再定義・対立軸の組み替え/約350語soft target・
+450語超を標準にしない/Light・conversational・human-centered/Reference
+Exampleと同Family mechanism。388語はsoft targetに対しやや長いが判定を
+妨げない。**一人称Voiceは未決定(`USER_DECISION_REQUIRED`保留)**: 音声で
+「誰が話しているか」「実在人物の証言と誤認しないか」「Narratorが読む
+違和感」「Voice切替の伝わり方」を確認する必要があるため。次工程:
+Trial-07記事の音声化(EDITORIAL-B-FAMILY-VOICES-TRIAL-08-AUDIO-FIRST-
+PERSON-CHECK-01、Standard同期TTS、比較用に三人称版Voice A/Bも最小変換で
+作成)。目的は一人称の音声上の確認であり、Voices DesignのProduction採用
+ではない。Production採用へ自動で進めないもの: 5区切り骨格/Voice Card+
+Diversity Check+Leakage Check/主要意見優先ルール/Voices Editorial
+Contract/一人称Voice/Editor例外ルール/Leakage許容基準。
+
 **採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
 Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 実現可能性・失敗モードをユーザー承認のうえ段階的に検証するため。
