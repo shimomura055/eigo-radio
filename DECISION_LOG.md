@@ -6655,6 +6655,44 @@ Cost Guard・Human Review方針は一切変更なし)。**影響するOPEN_ITEMS
 新規OPEN-122登録(Production採用・適用範囲・Secondary ASR常設化は
 USER_DECISION_REQUIRED)。
 
+## OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-TRIAL-02(2026-09-07、
+false start/aborted restart型の検知方式追加Trialと方式A+Dとの統合仕様
+整理、ユーザー判断による継続Trial、Production未変更)
+
+Trial-01の方式A+D(`VALIDATED`)はpartial-word false start型
+(`As of Septem… As of September…`)を構造的に検知できないままだったため、
+ユーザー判断(2026-09-07、A+Dだけを先行採用せず本Trialで継続)によりOPEN-121
+を継続した。既存Production関数・Trial-01自体は無変更のまま(テストセット
+51件を読み取りコピーで再利用、新規TTSコストなし)、独立Trialモジュール
+(`er011_open121_tts_repetition_general_qa_trial_02.py`)で4方式を追加
+検証した。**方式D'**(方式Dと同一のスペクトル自己相関primitiveを使うが、
+探索lag範囲を0.5〜2.0秒に制限し類似度優先ではなくrun長優先で探索する拡張)
+が、実データ(B1 FSP1)+新規合成false start陽性5件(先頭を語途中で切って
+前置)の全6件を検知(TP 6/6)し、陰性39件で誤検知ゼロ(FP 0/39)、追加API
+課金ゼロ、方式A/Dとの検知範囲重複ゼロを実データで確認し`VALIDATED`。
+方式Dが検知できない機構的理由(`min_lag_s=1.0秒`が実データのlag=0.97秒・
+最短合成陽性のlag=0.7秒の両方を除外する境界値だったこと)も特定した。
+onset二重化検知は陽性・陰性のdip_ratio分布が分離不可能で`REJECTED`。
+A-ext v2(参照corpus拡充372→508語)はTP 6/6のままfalse rejectを38%→
+11.5%(ratio閾値2.5)へ改善したが依然auto-reject不適格、Human Review
+ソフトフラグのみ推奨。Secondary ASR(Azure)窓検知(先頭6秒、min_words=2)
+はTP 4/6・FP 0/26でcorroboration用途のみ推奨。**新規発見**: A-ext v2の
+参照corpus構築中、既存PASS済み音声(`open117_keyphrase_display_tts_
+separation_trial_02/b1b/full_story_part1.wav`、B1 FSP1と同一canonical
+テキスト)に、B1 FSP1とほぼ同一の反復シグネチャ(time_a=0.25秒、
+lag=0.97秒、run@0.6=0.75秒)を偶然発見した(同一script/promptに対する
+failure modeの再現性を示す追加証拠)。総cost¥9.73(上限¥800の1.2%)。
+推奨統合仕様: 方式A+D(既存)+方式D'(新)を既存disfluency QA接続パターン
+(ANDゲート追加のみ、新規retry/Cost Guardなし)で併用。Production配線・
+Secondary ASR/A-ext v2の用途・OPEN-117側ファイルへの対応要否はいずれも
+`USER_DECISION_REQUIRED`のまま。
+
+**根拠レポート**: `OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-
+TRIAL-02_REPORT.md`。**影響するCURRENT_SPEC項目**: なし(既存disfluency
+QA/Validator/retry/Cost Guardは無変更)。**影響するOPEN_ITEMS項目**:
+OPEN-121行へTrial-02結果要旨(方式D' VALIDATED、推奨統合仕様、新規発見の
+OPEN-117側ファイル、Production採用可否はUSER_DECISION_REQUIRED)を追記。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
