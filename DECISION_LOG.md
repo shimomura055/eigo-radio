@@ -209,6 +209,29 @@ Trial-05(OpenAI概算約$0.43、web_search計27回込み、Perplexity新規呼�
 出しゼロ)。いずれもTTS実行なし。合計でも実額は小さく(概算¥300未満
 程度)、Cost超過によるSTOPには該当しない(詳細は各Reportの§Cost参照)。
 
+**追記(2026-09-07、Trial-06)**: `EDITORIAL-B-FAMILY-VOICES-TRIAL-06-
+PERSPECTIVE-SELECTION-EDITOR-DIAG-01`。ユーザー判断でPerspective選定基準
+を「固定席を好む社員 vs 自由席を好む社員」(同じStakeholder群内の主要意見
+優先基準)へ変更した。Phase A(Writer攻略、MAX_WRITER_ATTEMPTS=3)は
+attempt3でAnalytical Leakage Check 6/6 PASSに到達し、Trial-05が3
+attempts全てFAILのまま上限到達していた残存課題を解消した。Phase B
+(Editorなし版)・Phase C(改善Editor案版、Trial側の派生プロンプトのみで
+Production Editor本体は無変更)を含めた3版はほぼ同一で明確な劣化は
+確認されなかったが、本記事には実在人物名が無く匿名化の発生条件を満たさ
+ないため、Trial-05で観測された劣化(実名匿名化・受動態化)への実効性は
+未検証のまま残る。Voiceは一人称"I"で書かれていた(Focus Module指示では
+なくWriterの自発的選択、Narrator分析leakageを構造的に抑制した可能性が
+ある副次効果として記録)。Fact Safety(Fact Checker/Ledger Deviation/
+Directional Precheck)は3版とも準拠(LEDGER_COMPLIANT、MAJORなし)。cost
+概算約$1.09(¥165前後)、TTS実行なし。Sonnetの分類提案は`VALIDATED`
+(Trial範囲内)。ただしProduction採用に関わる複数の判断(Perspective選定
+基準の正式化、一人称記述の是非、Evidence Compression例外ルールの要否、
+Analytical Leakage Checkの許容基準定義、n=1再現性)は別途
+`USER_DECISION_REQUIRED`のまま(安全≠成功原則、Sonnetの成功報告は
+Production採用の自動承認を意味しない)。Fable側の最終判定は本追記の
+時点でユーザーへの報告を優先し保留(判定結果は確定次第、本エントリへ
+追記する)。
+
 **採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
 Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 実現可能性・失敗モードをユーザー承認のうえ段階的に検証するため。
@@ -216,14 +239,17 @@ Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 **根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-DESIGN-02_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-03_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-04_REPORT.md`、
-`EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-06-PERSPECTIVE-SELECTION-EDITOR-DIAG-01_REPORT.md`
 (各Report §末尾のSSOT登録案を参照して本エントリを作成)。
 
 **状態**: `USER_DECISION_REQUIRED`(OPEN-120として追跡)。Productionコード・
 Promptへの変更は一切なし(DESIGN/TRIALいずれも読み取り調査・Trialアダプタ
 経由)。
 
-**commit**: `6ae1c25`(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08、2026-09-06)。
+**commit**: `6ae1c25`(PM-GOVERNANCE-GIT-SERIALIZATION-AND-LANE-B-STATUS-RECORD-08、2026-09-06)。Trial-06の成果物commitは
+`PM-CONSOLIDATION-COMMIT-LANEB-TRIAL06-AND-POINT-TWO-DIAG-01`(2026-09-07、
+本エントリと同時のSSOT追記コミット)。
 
 **影響するCURRENT_SPEC項目**: なし(B Family Editorial TypeはProduction
 未実装のまま)。

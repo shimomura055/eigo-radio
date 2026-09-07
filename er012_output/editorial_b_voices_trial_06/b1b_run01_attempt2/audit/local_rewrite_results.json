@@ -1,0 +1,49 @@
+[
+  {
+    "original_ng_sentence": "# One Office, Two Ideas of Home ## The Question Every morning, one employee arrives and looks for an empty desk.",
+    "issue": "Ledgerはフリーアドレスで席探しが面倒になることや日々席が変わる経験を確認しているが、選定されたVOICE_1本人が毎朝必ず席を探すという頻度までは保証していない。",
+    "explanation": "“Every morning”により、確認済みの状況を本人の毎日の反復行動として断定している。冒頭の場面描写はHookとして扱うが、Hookでもchanged_certaintyは緩和しない。",
+    "flags": [
+      "changed_certainty"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "On some mornings, one employee may arrive and look for an empty desk.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "On some mornings, one employee may arrive and look for an empty desk.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "sentence_fallback(overlap=0.57)",
+    "point_context_found": false,
+    "point_context": "# One Office, Two Ideas of Home ## The Question Every morning, one employee arrives and looks for an empty desk. Another walks in and chooses a quiet corner or a place near other people."
+  },
+  {
+    "original_ng_sentence": "I used to open the same drawer and begin work without thinking.",
+    "issue": "固定席が所属感や一貫性をもたらすこと、フリーアドレスで私物の置き場に困ることはLedgerにあるが、同じ社員が実際に同じ引き出しや同じ景色を使っていたという具体的経験はLedgerに記録されていない。",
+    "explanation": "固定席の“一貫性”の言い換えを超えて、引き出しや景色に関する具体的な個人体験を追加している。",
+    "flags": [
+      "changed_fact",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "When I had a fixed desk, I could begin work without first thinking about where to sit or put my things.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "When I had a fixed desk, I could begin work without first thinking about where to sit or put my things.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "sentence_fallback(overlap=0.92)",
+    "point_context_found": true,
+    "point_context": "### One Voice: The employee looking for a place to return to\n\nEvery morning, I scan the room for an empty desk. I may sit at a keyboard someone else used, then wonder where to put my papers and personal things. Yesterday’s view and today’s neighbor may both be different.\n\nI used to open the same drawer and begin work without thinking. That fixed desk gave me a small sign that I belonged here. Now the office can feel borrowed.\n\nEven in a free-choice system, about 37 percent of hot-desk users said their seats tend to become fixed. I understand why. When moving is tiring, people quietly create a place of their own."
+  }
+]

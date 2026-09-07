@@ -1,0 +1,39 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_06f379a586bb7824006a9e0420440887d0833b10479c82296d",
+  "prompt": "以下は、あるVoices/Perspective型記事の2つのVoice section本文です。\nそれぞれについて、以下6項目を判定してください(それぞれPASS/FAIL)。\n\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, I scan the room for an empty desk. I may sit at a keyboard someone else used, then wonder where to put my papers and personal things. Yesterday’s view and today’s neighbor may both be different.\n\nWhen I had a fixed desk, I could begin work without first thinking about where to sit or put my things. That fixed desk gave me a small sign that I belonged here. Now the office can feel borrowed.\n\nEven in a free-choice system, about 37 percent of hot-desk users said their seats tend to become fixed. I understand why. When moving is tiring, people quietly create a place of their own.\n\n【Another Voice(Voice B)本文】\nSome mornings, I need quiet, so I choose a quiet corner. On another day, I want to talk with people from another team, so I sit where conversation is easier.\n\nIf a relationship feels uncomfortable, changing desks gives me distance without making it a big event. Working from home showed me what my own work setting can feel like. I no longer need the office to give me one permanent place.\n\nI value changing the setting around my task, my mood, or the people nearby. A different desk does not feel like losing my place. It feels like choice.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "本人の経験描写が中心で、数字も1つだけ後段に自然に置かれているため、数字の前面化や記憶への影響は問題ありません。ただし、調査対象者の割合を主語にした文があり、Discovery記事のような調査結果の提示構文が混入しています。",
+      "quoted_evidence": "“Even in a free-choice system, about 37 percent of hot-desk users said their seats tend to become fixed.”"
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "全体が本人の選択、感情、過去の経験として一貫して書かれており、調査・数字・外部分析・比較結果を説明する文はありません。読み終えた後も、場所を変えることで得られる距離感や自由の感覚が中心に残ります。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_a",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "本人の経験描写が中心で、数字も1つだけ後段に自然に置かれているため、数字の前面化や記憶への影響は問題ありません。ただし、調査対象者の割合を主語にした文があり、Discovery記事のような調査結果の提示構文が混入しています。",
+      "quoted_evidence": "“Even in a free-choice system, about 37 percent of hot-desk users said their seats tend to become fixed.”"
+    }
+  ],
+  "any_flagged": true
+}

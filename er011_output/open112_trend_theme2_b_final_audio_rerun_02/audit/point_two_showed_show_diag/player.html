@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 サブタスクD: A2 Point Two "showed→show" 試聴</title>
+<style>
+  body { font-family: sans-serif; max-width: 900px; margin: 20px auto; line-height: 1.6; }
+  h1 { font-size: 1.3em; }
+  h2 { font-size: 1.1em; margin-top: 2em; border-bottom: 1px solid #ccc; }
+  .clip { margin: 12px 0; padding: 10px; background: #f7f7f7; border-radius: 6px; }
+  .clip .label { font-weight: bold; }
+  .note { color: #555; font-size: 0.9em; }
+  audio { width: 100%; margin-top: 6px; }
+  .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 6px; }
+  .tag.showed { background: #d4edda; }
+  .tag.show { background: #f8d7da; }
+  .tag.ref { background: #d1ecf1; }
+</style>
+</head>
+<body>
+<h1>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 サブタスクD<br>
+A2 Point Two 「showed → show」ASR不一致 試聴用ページ</h1>
+
+<p>対象: canonical text 「... still <b>showed</b> strong interest in famous tourist places ...」
+(raw TTS input として実際に投入されたテキスト、下記参照)。
+2026-09-07に再生成した2attempt(いずれもHUMAN_REVIEW_LOCKEDで不採用のまま、
+現行Production point_two.wavはTrial-13原本[showed正しく確認済み]のまま据え置き)。</p>
+
+<p class="note">canonical_text(抜粋): "Women aged 29 and under still <b>showed</b> strong interest
+in famous tourist places, at about 45%."</p>
+
+<h2>1. 対象2attempt(標準ペース、再生成音声、全文)</h2>
+<div class="clip">
+  <span class="label">attempt1</span> <span class="tag show">Primary ASR: "show"</span>
+  <span class="tag showed">Azure/local ASR: "showed"</span>
+  <audio controls src="../../a2/narration/attempts/point_two_attempt1_custom35d6860b.wav"></audio>
+</div>
+<div class="clip">
+  <span class="label">attempt2</span> <span class="tag show">Primary ASR: "show"</span>
+  <span class="tag showed">Azure/local ASR: "showed"</span>
+  <audio controls src="../../a2/narration/attempts/point_two_attempt2_custom35d6860b.wav"></audio>
+</div>
+
+<h2>2. 該当語周辺の切り出し(windowed、前後合わせて数秒)</h2>
+<div class="clip">
+  <span class="label">attempt1 window (5.74–9.56s)</span>
+  <audio controls src="attempt1_window_5.74-9.56s.wav"></audio>
+</div>
+<div class="clip">
+  <span class="label">attempt2 window (5.40–9.28s)</span>
+  <audio controls src="attempt2_window_5.40-9.28s.wav"></audio>
+</div>
+
+<h2>3. 該当語のみに絞った短い切り出し(tight、"showed/show strong"の前後0.6秒)</h2>
+<div class="clip">
+  <span class="label">attempt1 tight (6.34–8.36s)</span>
+  <audio controls src="attempt1_tight_6.34-8.36s.wav"></audio>
+  <p class="note">ここに「showed strong」または「show strong」が含まれる。語末/d/の有無をここで確認してください。</p>
+</div>
+<div class="clip">
+  <span class="label">attempt2 tight (6.00–8.08s)</span>
+  <audio controls src="attempt2_tight_6.00-8.08s.wav"></audio>
+</div>
+
+<h2>4. 参考: 現行Production音声(Trial-13原本、ASR両方とも"showed"で一致確認済み)</h2>
+<div class="clip">
+  <span class="label">reference (現行point_two_original.wav該当区間)</span>
+  <span class="tag ref">Primary ASR EXACT_MATCH ("showed"含む)</span>
+  <audio controls src="reference_production_showed_confirmed_5.64-7.66s.wav"></audio>
+  <p class="note">これは今回の再生成attemptとは別の(既に承認済みの)TTSテイクからの抜粋です。
+  「showed strong」がどう聞こえるかの比較対象として使ってください(重複バグは別問題として既知、ここでは
+  語尾の聞こえ方の比較のみが目的です)。</p>
+</div>
+
+<h2>5. 診断まとめ(詳細はraw evidence参照)</h2>
+<ul>
+  <li>Production Primary ASR(OpenAI gpt-4o-mini-transcribe、prompt無し): attempt1/attempt2とも
+    全文・windowedいずれも一貫して"show"(語末/d/なし)。</li>
+  <li>Production Primary ASR(中立prompt付与): attempt1は"show"のまま、attempt2は"showed"に変化
+    (同一音声に対してASR結果が非決定的)。</li>
+  <li>Secondary ASR(Azure Speech STT): attempt1/attempt2とも、全文・windowedいずれも一貫して
+    "showed"(語末/d/あり)。</li>
+  <li>faster-whisper(ローカル、独立した第3のASRエンジン): attempt1/attempt2とも、全文・windowed
+    いずれも一貫して"showed"。</li>
+  <li>簡易音響分析(高時間分解能RMS+高域エネルギー比): 両attemptとも、母音[oʊ]から"strong"の
+    /s/摩擦音への遷移区間で、明確な無音の閉鎖(silence closure)や破裂バーストは検出されず、
+    RMSがなだらかに減衰しながら直接frication(高域エネルギー急増)へ移行する波形だった。
+    これは「/d/が完全に脱落」「/d/が閉鎖はあるが無破裂[unreleased]のまま次の/s/へ連結」の
+    どちらとも整合しうる波形であり、スペクトル特徴のみからは断定できない
+    (このAgentは聴取できないため、最終判定はユーザー試聴に委ねる)。</li>
+  <li>Connected Speech Validator(B1/A2共有の`classify_asr_match()`経由、既存Production関数を
+    無変更で再現実行): 「showed→show」はPattern A(歯擦音連続)にもPattern B(破裂音連続、
+    ただし次語頭が/t/or/d/の場合のみ)にも該当しない(次語"strong"の語頭音は/s/であり、
+    Pattern Bが要求する/t//d/ではないため)。既存の3パターン限定方針により、この
+    「語末stop + 後続語頭sibilant(str-クラスター)」という組み合わせは現状の承認範囲外
+    (仕様を独自拡張していません)。</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+=== A2 Point Two 'showed -> show' 診断 開始 ===
+canonical_text(raw TTS input, fix02_regeneration_log.json確認済み): Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gour...
+
+--- attempt1: er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/attempts/point_two_attempt1_custom35d6860b.wav (sha256=5808896d63a5939f..., duration=32.421s, sr=24000) ---
+  word timestamps around target: hit_index=13 target_word={'text': ' showed', 'start': np.float64(6.94), 'end': np.float64(7.32)} next_word={'text': ' strong', 'start': np.float64(7.32), 'end': np.float64(7.76)}
+
+--- attempt2: er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/attempts/point_two_attempt2_custom35d6860b.wav (sha256=e10c2ef1a13b84cc..., duration=32.741s, sr=24000) ---
+  word timestamps around target: hit_index=13 target_word={'text': ' showed', 'start': np.float64(6.6), 'end': np.float64(7.02)} next_word={'text': ' strong', 'start': np.float64(7.02), 'end': np.float64(7.48)}
+
+--- Production Primary ASR (full attempt clip, no prompt, 既存attempt json記録の確認+再現性チェック) ---
+  [ProdASR call 1/1] attempt1 prompt=False -> 'Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.'
+  [ProdASR call 1/1] attempt2 prompt=False -> 'Young travelers are not one single market. Women aged 29 and under still show strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.'
+
+--- Production Primary ASR (windowed clip, no prompt) ---
+  [ProdASR call 1/1] attempt1_window prompt=False -> '9 and under still show strong interest in famous tourists.'
+  [ProdASR call 1/1] attempt2_window prompt=False -> '9 and under still show strong interest in famous tourists.'
+
+--- Production Primary ASR (windowed clip, 中立promptあり[canonical answerを含まない]) ---
+  [ProdASR call 1/1] attempt1_window prompt=True -> '9 and under still show strong interest in famous tourists.'
+  [ProdASR call 1/1] attempt2_window prompt=True -> '9 and under still showed strong interest in famous tourists.'
+
+--- Secondary ASR (Azure, full clip + windowed clip) ---
+  [SecondaryASR/Azure] attempt1 -> 'Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher at about fifty-two percent. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different.Of value from the same holiday.'
+  [SecondaryASR/Azure] attempt2 -> 'Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher at about fifty-two percent. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different.Kinds of value from the same holiday.'
+  [SecondaryASR/Azure] attempt1_window -> '9 and under still showed strong interest in famous tourist.'
+  [SecondaryASR/Azure] attempt2_window -> '9 and under still showed strong interest in famous tour.'
+
+--- faster-whisper local verbatim (独立した第3のASR、full + windowed) ---
+  [LocalVerbatim] attempt1 -> 'Young  travelers  are  not  one  single  market.  Women,  aged  29  and  under,  still  showed  strong  interest  in  famous  tourist  places,  at  about  45%.  Gourmet  travel  was  even  higher,  at  about  52%.  This  is  not  the  same  picture  as  the  male  interest  in  solo  and  hobby -based  trips.  The  useful  lesson  is  not  that  sightseeing  is  ending.  Different  young  travelers  may  be  looking  for  different  kinds  of  value  from  the  same  holiday.'
+  [LocalVerbatim] attempt2 -> 'Young  travelers  are  not  one  single  market.  Women,  aged  29  and  under,  still  showed  strong  interest  in  famous  tourist  places,  at  about  45%.  Gourmet  travel  was  even  higher,  at  about  52%.  This  is  not  the  same  picture  as  the  male  interest  in  solo  and  hobby -based  trips.  The  useful  lesson  is  not  that  sightseeing  is  ending.  different  young  travelers  may  be  looking  for  different  kinds  of  value  from  the  same  holiday.'
+  [LocalVerbatim] attempt1_window -> 'and  under  still  showed  strong  interest  in  famous  tourists.'
+  [LocalVerbatim] attempt2_window -> 'and  under,  still  showed  strong  interest  in  famous  tourists.'
+
+--- 簡易音響分析(語境界の低エネルギー[closure候補]区間+高域エネルギー比) ---
+  [attempt1] window=(6.790,7.670) low_energy_regions=[{'start': np.float64(7.508), 'end': np.float64(7.606), 'duration': np.float64(0.098)}]
+  [attempt2] window=(6.450,7.370) low_energy_regions=[{'start': np.float64(6.666), 'end': np.float64(6.726), 'duration': np.float64(0.06)}, {'start': np.float64(6.734), 'end': np.float64(6.838), 'duration': np.float64(0.104)}, {'start': np.float64(7.23), 'end': np.float64(7.328), 'duration': np.float64(0.098)}]
+
+--- Connected Speech Validator再現(既存関数、無変更呼び出し) ---
+{
+  "diff": {
+    "index": 1,
+    "canonical_word": "showed",
+    "asr_word": "show",
+    "prev_word": "still",
+    "next_word": "strong"
+  },
+  "expected_phoneme_boundary": null,
+  "rule": null,
+  "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+  "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+}
