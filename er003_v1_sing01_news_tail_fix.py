@@ -61,7 +61,12 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: In One Line等、
                                          # 短文でpartial repetitionが目立ちやすいsegmentのみ呼び出し側
                                          # からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
-                                         disfluency_qa: bool = False) -> dict:
+                                         disfluency_qa: bool = False,
+                                         # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-
+                                         # WIRING-01: 呼び出し側がB1英語本文segment(full_story_part1/2・
+                                         # point_one・point_two)でのみTrueを渡す(既定False、他の
+                                         # 全呼び出し元は無変更)。
+                                         enable_connected_speech_equivalence_layer: bool = False) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -109,7 +114,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]

@@ -215,6 +215,12 @@ def generate_narration_snippet_verified_strict(
     # asr_01.evaluate_attempt_with_cascade_detail()docstring参照)。
     asr_prompt: str | None = None,
     enable_non_latin_cascade: bool = False,
+    # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+    # A2/B1英語本文segment経路(generate_a2_segment_with_slowdown/
+    # generate_english_segment_with_fallback経由)のみが明示的にTrueを
+    # 渡す想定の引数(既定False、他の全呼び出し元は無変更)。詳細は
+    # er006_secondary_asr_01.evaluate_attempt_with_cascade_detail()参照。
+    enable_connected_speech_equivalence_layer: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -260,7 +266,9 @@ def generate_narration_snippet_verified_strict(
             verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
                 text, asr_text, classification_history, out_path, language=asr_language,
                 ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-                enable_non_latin_cascade=enable_non_latin_cascade, detail_out=cascade_detail)
+                enable_non_latin_cascade=enable_non_latin_cascade,
+                enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+                detail_out=cascade_detail)
             verified = verified_content and length_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]

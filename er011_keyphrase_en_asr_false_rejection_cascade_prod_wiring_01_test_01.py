@@ -69,8 +69,10 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
 
         def fake_cascade(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                           cascade_enabled=None, force_secondary=False,
-                          enable_non_latin_cascade=False, detail_out=None):
+                          enable_non_latin_cascade=False,
+                          enable_connected_speech_equivalence_layer=False, detail_out=None):
             captured["enable_non_latin_cascade"] = enable_non_latin_cascade
+            captured["enable_connected_speech_equivalence_layer"] = enable_connected_speech_equivalence_layer
             if detail_out is not None:
                 detail_out.update({"cascade_invoked": False, "non_latin_cascade_invoked": False, "steps": []})
             return True, False, _FakeClassification("exact")
@@ -89,6 +91,9 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
         self.assertEqual(result["status"], "OK")
         self.assertIsNone(captured["transcribe_prompt"])
         self.assertFalse(captured["enable_non_latin_cascade"])
+        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+        # 引数を渡さない既存の全呼び出し元は既定Falseのまま(範囲外)。
+        self.assertFalse(captured["enable_connected_speech_equivalence_layer"])
 
     def test_explicit_call_forwards_prompt_and_cascade_flag(self):
         # 呼び出し元が明示的にasr_prompt/enable_non_latin_cascade=Trueを
@@ -104,8 +109,10 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
 
         def fake_cascade(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                           cascade_enabled=None, force_secondary=False,
-                          enable_non_latin_cascade=False, detail_out=None):
+                          enable_non_latin_cascade=False,
+                          enable_connected_speech_equivalence_layer=False, detail_out=None):
             captured["enable_non_latin_cascade"] = enable_non_latin_cascade
+            captured["enable_connected_speech_equivalence_layer"] = enable_connected_speech_equivalence_layer
             if detail_out is not None:
                 detail_out.update({"cascade_invoked": True, "non_latin_cascade_invoked": True, "steps": []})
             return True, False, _FakeClassification("exact")
@@ -126,6 +133,11 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
         self.assertEqual(result["status"], "OK")
         self.assertEqual(captured["transcribe_prompt"], repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT)
         self.assertTrue(captured["enable_non_latin_cascade"])
+        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+        # Key Phrase経路相当の呼び出し(enable_non_latin_cascade=True)でも、
+        # Equivalence Layerフラグは範囲外のため既定Falseのまま(Key Phrase
+        # がProduction範囲外であることの直接証拠)。
+        self.assertFalse(captured["enable_connected_speech_equivalence_layer"])
         # attempts_logへ監査フィールドが記録されていること(review_lock/
         # attempt保存への記録要件)。
         self.assertTrue(result["attempts_log"][0]["asr_prompt_applied"])
@@ -190,6 +202,11 @@ class KeyPhraseComponentVerifiedWiringTests(unittest.TestCase):
         self.assertEqual(call_log[0]["asr_prompt"], repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT)
         self.assertTrue(call_log[0]["enable_non_latin_cascade"])
         self.assertEqual(call_log[0]["style_prefix_override"], repro01.KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
+        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+        # generate_key_phrase_component_verified()はenable_connected_speech_
+        # equivalence_layerを一切渡していないこと(Key Phrase経路が
+        # Production範囲外であることの直接証拠)。
+        self.assertNotIn("enable_connected_speech_equivalence_layer", call_log[0])
 
     def test_fallback_call_also_receives_prompt_and_cascade_flag(self):
         call_log = []

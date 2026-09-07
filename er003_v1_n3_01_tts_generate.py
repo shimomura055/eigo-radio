@@ -193,7 +193,14 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
                                         # In One Line等、短文でpartial repetitionが目立ちやすい
                                         # segmentのみ呼び出し側からTrueを渡す(既定Falseで
                                         # full_story/point本文等の既存挙動には影響しない)。
-                                        disfluency_qa: bool = False) -> dict:
+                                        disfluency_qa: bool = False,
+                                        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-
+                                        # WIRING-01: 呼び出し側がA2英語本文segment(full_story_part1/2・
+                                        # point_one・point_two)でのみTrueを渡す(既定False)。
+                                        # 6% time-stretch後の再検証(apply_a2_slowdown_postprocess、
+                                        # 直接classify_asr_matchのみを使う独立経路)には配線しない
+                                        # (スコープ外、既存挙動を変えない)。
+                                        enable_connected_speech_equivalence_layer: bool = False) -> dict:
     """通常ペースでの生成(generate_english_segment_with_fallback、既存の
     standard/fallback retry込み)→6% time-stretch→post-process後ASR
     再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
@@ -221,7 +228,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     for attempt in range(1, max_slowdown_attempts + 1):
         result = c.generate_english_segment_with_fallback(
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
-            style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
+            style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
@@ -728,7 +736,12 @@ def generate_b1_segments(theme: dict) -> dict:
                 tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
-                disfluency_qa=(name == "in_one_line"))
+                disfluency_qa=(name == "in_one_line"),
+                # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+                # ユーザー承認済み範囲(B1英語本文segment=full_story_part1/2・
+                # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
+                enable_connected_speech_equivalence_layer=(
+                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
@@ -837,7 +850,12 @@ def generate_a2_segments(theme: dict) -> dict:
                 tts_input, f"{narration_dir}/{name}.wav", sub, style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER,
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
-                disfluency_qa=(name == "in_one_line"))
+                disfluency_qa=(name == "in_one_line"),
+                # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+                # ユーザー承認済み範囲(A2英語本文segment=full_story_part1/2・
+                # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
+                enable_connected_speech_equivalence_layer=(
+                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])

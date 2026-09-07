@@ -690,6 +690,14 @@ VALID_CLASSIFICATIONS = (
     # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
     # WIRING-02(Track B、上記_try_homophone_number_rescue参照)。
     "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+    # 既存3パターンのUNCLASSIFIED後段(A2/B1英語本文segment限定、
+    # er006_secondary_asr_01.evaluate_attempt_with_cascade_detail内で
+    # 生成される。classify_asr_match自体は本ラベルを直接返さない
+    # ——このモジュールでのwav_path非依存の判定[classify_asr_match]は
+    # 常にTRUE_CONTENT_MISMATCHのまま返し、Secondary/local ASR
+    # corroborationを要する最終判定はCascade層側で行う設計のため)。
+    "CONNECTED_SPEECH_EQUIVALENCE_ACCEPT", "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING",
 )
 
 

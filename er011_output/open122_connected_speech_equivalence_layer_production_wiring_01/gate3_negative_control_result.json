@@ -1,0 +1,224 @@
+[
+  {
+    "id": "N1_show_not_showed",
+    "canonical": "Young travelers still showed strong interest in the results.",
+    "primary_asr_text": "Young travelers still show strong interest in the results.",
+    "verified": false,
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "reason": "固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'showed', 'asr': 'show', 'entity_like': False, 'homophone_candidate': False}]",
+    "connected_speech_info": {
+      "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE",
+      "source": "equivalence_layer",
+      "existing_result": {
+        "diff": {
+          "index": 3,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+      },
+      "equivalence_layer_info": {
+        "diff": {
+          "index": 3,
+          "canonical_word": "showed",
+          "asr_word": "show",
+          "prev_word": "still",
+          "next_word": "strong"
+        },
+        "diff_shape": "deletion",
+        "drop_info": {
+          "canonical_phones": [
+            "SH",
+            "OW",
+            "D"
+          ],
+          "asr_phones": [
+            "SH",
+            "OW"
+          ],
+          "dropped_phonemes": [
+            "D"
+          ]
+        },
+        "substitution_info": null,
+        "final_dropped_phoneme": "D",
+        "next_word_initial_phoneme": "S",
+        "categories_matched": [
+          {
+            "category": "A",
+            "rule": "final_stop_weakening_unreleased",
+            "detail": "語末の破裂音(D)が、後続子音(S)の前で無開放・弱化しやすい環境。"
+          },
+          {
+            "category": "B",
+            "rule": "alveolar_stop_reduction",
+            "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+          },
+          {
+            "category": "C",
+            "rule": "homorganic_consonant_fusion",
+            "detail": "語末(D, alveolar)と次語頭(S, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+          }
+        ],
+        "secondary_asr_supports_canonical": false,
+        "local_asr_supports_canonical": false,
+        "corroboration_count": 0,
+        "contradiction_count": 2
+      },
+      "secondary_asr_text": "Young travelers still show strong interest in the results.",
+      "secondary_asr_error": null,
+      "local_asr_text": "Young travelers still show strong interest in the results."
+    },
+    "false_accept_check_passed": true,
+    "detail": {
+      "verified": false,
+      "stop_retrying": false,
+      "cascade_invoked": false,
+      "steps": [
+        {
+          "step": "primary_1",
+          "provider": "openai_asr",
+          "text": "Young travelers still show strong interest in the results.",
+          "classification": "TRUE_CONTENT_MISMATCH"
+        },
+        {
+          "step": "connected_speech_equivalence_secondary",
+          "provider": "azure",
+          "text": "Young travelers still show strong interest in the results.",
+          "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE"
+        },
+        {
+          "step": "connected_speech_equivalence_local",
+          "provider": "local_faster_whisper",
+          "text": "Young travelers still show strong interest in the results.",
+          "layer_judgment": "EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE"
+        }
+      ],
+      "final_status": "TRUE_CONTENT_MISMATCH",
+      "human_review_required": false,
+      "canonical_text": "Young travelers still showed strong interest in the results.",
+      "wav_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/N1_show_not_showed.wav",
+      "cost_guard_triggered": false,
+      "non_latin_cascade_invoked": false,
+      "connected_speech_equivalence_layer_invoked": true
+    }
+  },
+  {
+    "id": "T2N4_turn_not_turned",
+    "canonical": "The cars turned back before reaching the bridge.",
+    "primary_asr_text": "The cars turn back before reaching the bridge.",
+    "verified": false,
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "should_pass": false,
+    "reason": "固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'turned', 'asr': 'turn', 'entity_like': False, 'homophone_candidate': False}]",
+    "connected_speech_info": {
+      "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT",
+      "source": "equivalence_layer",
+      "existing_result": {
+        "diff": {
+          "index": 2,
+          "canonical_word": "turned",
+          "asr_word": "turn",
+          "prev_word": "cars",
+          "next_word": "back"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+      },
+      "equivalence_layer_info": {
+        "diff": {
+          "index": 2,
+          "canonical_word": "turned",
+          "asr_word": "turn",
+          "prev_word": "cars",
+          "next_word": "back"
+        },
+        "diff_shape": "deletion",
+        "drop_info": {
+          "canonical_phones": [
+            "T",
+            "ER",
+            "N",
+            "D"
+          ],
+          "asr_phones": [
+            "T",
+            "ER",
+            "N"
+          ],
+          "dropped_phonemes": [
+            "D"
+          ]
+        },
+        "substitution_info": null,
+        "final_dropped_phoneme": "D",
+        "next_word_initial_phoneme": "B",
+        "categories_matched": [
+          {
+            "category": "A",
+            "rule": "final_stop_weakening_unreleased",
+            "detail": "語末の破裂音(D)が、後続子音(B)の前で無開放・弱化しやすい環境。"
+          },
+          {
+            "category": "B",
+            "rule": "alveolar_stop_reduction",
+            "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+          },
+          {
+            "category": "D",
+            "rule": "place_assimilation",
+            "detail": "歯茎音(D)が、後続子音の調音位置(bilabial)へ同化しやすい。"
+          }
+        ],
+        "secondary_asr_supports_canonical": true,
+        "local_asr_supports_canonical": false,
+        "corroboration_count": 1,
+        "contradiction_count": 1
+      },
+      "secondary_asr_text": "The cars turned back before reaching the bridge.",
+      "secondary_asr_error": null,
+      "local_asr_text": "The cars turn back before reaching the bridge."
+    },
+    "false_accept_check_passed": true,
+    "detail": {
+      "verified": false,
+      "stop_retrying": false,
+      "cascade_invoked": false,
+      "steps": [
+        {
+          "step": "primary_1",
+          "provider": "openai_asr",
+          "text": "The cars turn back before reaching the bridge.",
+          "classification": "TRUE_CONTENT_MISMATCH"
+        },
+        {
+          "step": "connected_speech_equivalence_secondary",
+          "provider": "azure",
+          "text": "The cars turned back before reaching the bridge.",
+          "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT"
+        },
+        {
+          "step": "connected_speech_equivalence_local",
+          "provider": "local_faster_whisper",
+          "text": "The cars turn back before reaching the bridge.",
+          "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT"
+        }
+      ],
+      "final_status": "TRUE_CONTENT_MISMATCH",
+      "human_review_required": false,
+      "canonical_text": "The cars turned back before reaching the bridge.",
+      "wav_path": "er011_output/connected_speech_equivalence_layer_trial_02/audio/T2N4_turn_not_turned.wav",
+      "cost_guard_triggered": false,
+      "non_latin_cascade_invoked": false,
+      "connected_speech_equivalence_layer_invoked": true
+    }
+  }
+]

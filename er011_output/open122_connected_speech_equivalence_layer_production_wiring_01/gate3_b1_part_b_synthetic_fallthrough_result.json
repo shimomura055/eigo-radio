@@ -1,0 +1,118 @@
+{
+  "wav_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P6_dont_you.wav",
+  "canonical_text": "Don't you want to come with us?",
+  "fabricated_primary_asr_text": "Don't you wan to come with us?",
+  "note": "Primary ASR文字列のみ意図的に改変した合成fallthrough。Secondary/localは実音声(Trial-01 P6_dont_you.wav)への実際のASR実行結果。",
+  "verified": true,
+  "stop_retrying": false,
+  "classification": "CONNECTED_SPEECH_EQUIVALENCE_ACCEPT",
+  "should_pass": true,
+  "reason": "Connected Speech Equivalence Layer(OPEN-122、A2/B1本文限定、corroboration>=1件+音韻環境カテゴリ該当): EQUIVALENCE_LAYER_ACCEPT info={'diff': {'index': 2, 'canonical_word': 'want', 'asr_word': 'wan', 'prev_word': 'you', 'next_word': 'to'}, 'diff_shape': 'deletion', 'drop_info': {'canonical_phones': ['W', 'AA', 'N', 'T'], 'asr_phones': ['W', 'AA', 'N'], 'dropped_phonemes': ['T']}, 'substitution_info': None, 'final_dropped_phoneme': 'T', 'next_word_initial_phoneme': 'T', 'categories_matched': [{'category': 'A', 'rule': 'final_stop_weakening_unreleased', 'detail': '語末の破裂音(T)が、後続子音(T)の前で無開放・弱化しやすい環境。'}, {'category': 'B', 'rule': 'alveolar_stop_reduction', 'detail': '歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。'}, {'category': 'C', 'rule': 'homorganic_consonant_fusion', 'detail': '語末(T, alveolar)と次語頭(T, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。'}, {'category': 'F', 'rule': 'glottalization_candidate', 'detail': '語末/t/は後続子音の前で声門閉鎖化しやすい。'}], 'secondary_asr_supports_canonical': True, 'local_asr_supports_canonical': True, 'corroboration_count': 2, 'contradiction_count': 0}",
+  "connected_speech_info": {
+    "layer_judgment": "EQUIVALENCE_LAYER_ACCEPT",
+    "source": "equivalence_layer",
+    "existing_result": {
+      "diff": {
+        "index": 2,
+        "canonical_word": "want",
+        "asr_word": "wan",
+        "prev_word": "you",
+        "next_word": "to"
+      },
+      "expected_phoneme_boundary": null,
+      "rule": null,
+      "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+      "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+    },
+    "equivalence_layer_info": {
+      "diff": {
+        "index": 2,
+        "canonical_word": "want",
+        "asr_word": "wan",
+        "prev_word": "you",
+        "next_word": "to"
+      },
+      "diff_shape": "deletion",
+      "drop_info": {
+        "canonical_phones": [
+          "W",
+          "AA",
+          "N",
+          "T"
+        ],
+        "asr_phones": [
+          "W",
+          "AA",
+          "N"
+        ],
+        "dropped_phonemes": [
+          "T"
+        ]
+      },
+      "substitution_info": null,
+      "final_dropped_phoneme": "T",
+      "next_word_initial_phoneme": "T",
+      "categories_matched": [
+        {
+          "category": "A",
+          "rule": "final_stop_weakening_unreleased",
+          "detail": "語末の破裂音(T)が、後続子音(T)の前で無開放・弱化しやすい環境。"
+        },
+        {
+          "category": "B",
+          "rule": "alveolar_stop_reduction",
+          "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+        },
+        {
+          "category": "C",
+          "rule": "homorganic_consonant_fusion",
+          "detail": "語末(T, alveolar)と次語頭(T, alveolar)が同じ調音位置のため、境界で融合・区別困難になりやすい。"
+        },
+        {
+          "category": "F",
+          "rule": "glottalization_candidate",
+          "detail": "語末/t/は後続子音の前で声門閉鎖化しやすい。"
+        }
+      ],
+      "secondary_asr_supports_canonical": true,
+      "local_asr_supports_canonical": true,
+      "corroboration_count": 2,
+      "contradiction_count": 0
+    },
+    "secondary_asr_text": "Don't you want to come with us?",
+    "secondary_asr_error": null,
+    "local_asr_text": "Don't you want to come with us?"
+  },
+  "detail": {
+    "verified": true,
+    "stop_retrying": false,
+    "cascade_invoked": false,
+    "steps": [
+      {
+        "step": "primary_1",
+        "provider": "openai_asr",
+        "text": "Don't you wan to come with us?",
+        "classification": "TRUE_CONTENT_MISMATCH"
+      },
+      {
+        "step": "connected_speech_equivalence_secondary",
+        "provider": "azure",
+        "text": "Don't you want to come with us?",
+        "layer_judgment": "EQUIVALENCE_LAYER_ACCEPT"
+      },
+      {
+        "step": "connected_speech_equivalence_local",
+        "provider": "local_faster_whisper",
+        "text": "Don't you want to come with us?",
+        "layer_judgment": "EQUIVALENCE_LAYER_ACCEPT"
+      }
+    ],
+    "final_status": "CONNECTED_SPEECH_EQUIVALENCE_ACCEPT",
+    "human_review_required": false,
+    "canonical_text": "Don't you want to come with us?",
+    "wav_path": "er011_output/connected_speech_equivalence_layer_trial_01/audio/P6_dont_you.wav",
+    "cost_guard_triggered": false,
+    "non_latin_cascade_invoked": false,
+    "connected_speech_equivalence_layer_invoked": true
+  }
+}

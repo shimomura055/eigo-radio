@@ -1,7 +1,16 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10、
+**最終更新: 2026-09-07(OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01、
+ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1英語本文
+segmentのみ]でConnected Speech Equivalence Layer[Trial-01/02でVALIDATED]を
+`er006_secondary_asr_01.py::evaluate_attempt_with_cascade_detail()`へ配線した
+(新規opt-inフラグ既定False、Key Phrase/日本語/他segmentは無変更)。Runtime
+evidence(Standard同期、¥3.34): A2 Flagship"showed strong"がACCEPT、B1実本文は
+通常Layer不発火・合成fallthroughはACCEPT、敵対的陰性対照2件は非accept。既存
+回帰(collected=2112、failed=3は既知の無関係failure、errors=0)・関連テスト
+計142件・新規16件PASS。Git操作は未実施(Lane B commit権保持中、Fable統合commit
+後に`PRODUCTION_WIRED`確定)。詳細は本ファイル該当エントリ参照)。2026-09-07(PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10、
 試聴artifact規則[9-2]がsonnet-worker成果物にも直接適用されることを明記し、
 Gate 7へ音声artifact受入チェックリスト[(a)〜(k)]を追加した。文書編集のみ、
 詳細は本ファイル該当エントリ参照)。2026-09-07(ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、
@@ -6868,6 +6877,116 @@ TRIAL-02_REPORT.md`。**影響するCURRENT_SPEC項目**: なし(既存disfluenc
 QA/Validator/retry/Cost Guardは無変更)。**影響するOPEN_ITEMS項目**:
 OPEN-121行へTrial-02結果要旨(方式D' VALIDATED、推奨統合仕様、新規発見の
 OPEN-117側ファイル、Production採用可否はUSER_DECISION_REQUIRED)を追記。
+
+## OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01(2026-09-07、
+ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1英語
+本文segmentのProduction正式ASR/Validator経路のみ]でConnected Speech
+Equivalence Layerを配線。Git操作は未実施[Lane B Trial-09がcommit権保持中、
+Fableが統合commit後に`PRODUCTION_WIRED`確定])
+
+CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-TRIAL-01/02(`VALIDATED`)
+で検証済みの判定ロジック(既存B1 Connected Speech Validator[3パターン]の
+UNCLASSIFIED後段として、ARPAbet音韻環境カテゴリA〜G+独立ASR[Secondary
+Azure/local faster-whisper]corroborationの両方が揃った場合のみacceptする
+拡張レイヤー)を、ユーザー承認範囲(A2/B1英語本文segment=`full_story_
+part1`/`full_story_part2`/`point_one`/`point_two`のみ、Key Phrase・日本語
+segment・comment/preview等の他segmentは対象外)へProduction配線した。
+
+**実装**: Trialロジックを無変更で新規[er011_connected_speech_equivalence_
+layer_production_01.py](er011_connected_speech_equivalence_layer_production_01.py)
+へ移植(ARPAbet音韻特徴テーブル・カテゴリA〜G分類・音素prefix脱落/
+assimilation検出・多証拠判定本体、いずれもTrial-01/02のコピー)。配線箇所は
+`er006_secondary_asr_01.py::evaluate_attempt_with_cascade_detail()`(既存
+Cascade層、既存3パターンVadidator[`er011_b1_connected_speech_validator_01.py`]
+のUNCLASSIFIED fallthrough後段)で、新規opt-inフラグ`enable_connected_
+speech_equivalence_layer`(既定`False`)を追加した(既存`enable_non_latin_
+cascade`[OPEN-119、KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01]
+と同一の設計パターン)。`classify_asr_match()`がTRUE_CONTENT_MISMATCHかつ
+`protected.passed`(数字/否定の真の不一致ではない)の場合のみ、まず
+Secondary/local ASR無しの安価な事前判定(音韻環境カテゴリ該当有無のみ、
+`NEVER_ELIGIBLE_JUDGMENTS`)を行い、候補である場合のみSecondary Azure
+(既存`get_full_text_via_azure_stt_with_phrase_list`)+local faster-whisper
+(既存`er008_disfluency_qa_18.transcribe_verbatim`、無料)を1回ずつ追加実行
+してcorroboration判定する(コストガード: fallthroughかつカテゴリ候補時のみ
+追加ASR課金)。corroboration>=1件かつカテゴリA/B/Cは新規`CONNECTED_SPEECH_
+EQUIVALENCE_ACCEPT`、D/E/F/Gは`CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_
+WARNING`(いずれも`should_pass=True`、`VALID_CLASSIFICATIONS`へ追加)。
+corroboration 0件または独立ASR同士が食い違う場合は非accept(既存`TRUE_
+CONTENT_MISMATCH`を維持、診断情報のみ`connected_speech_info`へ付与し
+false positive疑いの事後監査を可能にする)。
+
+**適用範囲の限定方法**(OPEN-119と同じ設計): `er003_v1_n3_01_tts_generate.py`
+の`generate_a2_segments()`/`generate_b1_segments()`内、`full_story_part1`/
+`full_story_part2`/`point_one`/`point_two`の4segmentのみが新規フラグを
+明示的に`True`で渡し、`generate_a2_segment_with_slowdown()`→
+`er003_v1_crosslevel_audio_02_common.py::generate_english_segment_with_
+fallback()`(A2、標準+fallback両経路)、または`er003_v1_sing01_news_tail_
+fix.py::generate_news_narration_wide_margin()`(B1)→`er003_v1_repro01_main_
+generate.py::generate_narration_snippet_verified_strict()`→
+`evaluate_attempt_with_cascade()`まで貫通させる。既定`False`のため、
+引数を渡さない全既存呼び出し元(Key Phrase`generate_key_phrase_component_
+verified()`・日本語`ja_secondary`・comment/preview/title・in_one_line等)
+は無変更。A2の6% time-stretch後再検証経路(`apply_a2_slowdown_postprocess`、
+`classify_asr_match()`を直接呼ぶだけの独立コードパス)には今回配線して
+いない(スコープ外、既存slowdown retry機構[最大3回の取り直し]で吸収
+されるため安全上の懸念は低いが、既知のギャップとして正直に記録する)。
+
+**Runtime evidence**(Standard同期、実API、実測合計¥3.34、内訳gemini
+¥1.40・openai_asr¥0.07・azure¥1.87): (1) A2 Flagship("showed strong"、
+OPEN-112 Theme2診断の保全音声`point_two_attempt1_custom35d6860b.wav`)を
+実際の`evaluate_attempt_with_cascade()`へ投入し`CONNECTED_SPEECH_
+EQUIVALENCE_ACCEPT`(カテゴリA/B/C該当、Secondary/local corroboration
+2/2)を確認。(2) B1実本文1件(hanshinテーマ`point_two_body`、既存承認済み
+記事本文の再利用)をStandard同期で実生成し、`NORMALIZED_MATCH`(ハイフン
+表記差のみ)でLayer不発火のまま合格することを確認(通常時の無介入を実証)。
+加えてTrial-01実音声(`P6_dont_you.wav`、"want"の実発話)を再利用し、
+Primary ASR文字列のみ"want"→"wan"へ意図的に差し替えた合成fallthroughを
+構成、Secondary/localは実音声への実ASR実行結果として`CONNECTED_SPEECH_
+EQUIVALENCE_ACCEPT`(カテゴリA/B/C/F、corroboration 2/2)を確認。(3) 敵対的
+陰性対照2件(Trial-01 N1[claimed"showed"・実発話"show"、Flagshipと同一
+音韻環境の最も厳しい対照]・Trial-02 T2N4[claimed"turned"・実発話"turn"、
+SecondaryがcanonicalへMIXEDに誤支持])を実際のProduction Cascade経路へ
+投入し、いずれも非accept(`TRUE_CONTENT_MISMATCH`のまま)を確認(false
+accept 0/2)。証跡: `er011_output/open122_connected_speech_equivalence_
+layer_production_wiring_01/`(gate3_*_result.json・raw_usage_log.jsonl一式)。
+
+**Regression**: `run_project_regression.py`(collected=2112、failed=3、
+errors=0。失敗3件は本タスク以前から存在する既知の無関係failure[`er003_
+test_bad`の意図的self-check・`er003_test_p2j_investigate`のOPEN-77既知
+meta-test集計、いずれもConnected Speech/ASR/音声Validatorとは無関係な
+別ドメインのfixtureであることをソース確認済み。今回はLane A方針[Git操作
+禁止]によりgit stashでの前後比較は実施していない])。`er006_preprod_
+hardening_01_validation_test.py`57件・`er006_secondary_asr_01_test.py`
+29件・`er011_no18_connected_speech_reading_resolver_wiring_08_test.py`
+15件・`er011_tts_attempt_audio_retention_wiring_01_test.py`9件・`er011_
+human_review_lock_01_test_01.py`18件・`er007_ja_secondary_asr_01_test.py`
+9件・`er011_keyphrase_en_asr_false_rejection_cascade_prod_wiring_01_
+test_01.py`5件、いずれもPASS(新規kwargs追加に伴い`er011_keyphrase_en_
+asr_false_rejection_cascade_prod_wiring_01_test_01.py`・`er011_tts_
+attempt_audio_retention_wiring_01_test.py`のmock signatureを更新、KP
+経路が新規フラグを一切渡さないことのassertionも追加)。新規[er011_
+connected_speech_equivalence_layer_production_wiring_01_test_01.py]
+(er011_connected_speech_equivalence_layer_production_wiring_01_test_01.py)
+16件PASS(判定ロジック本体4件・Cascade配線9件・KP/日本語が範囲外である
+ことの直接確認3件)。
+
+**Key Phrase/日本語が範囲外である証拠**: `generate_key_phrase_component_
+verified()`のソースコードが新規kwargを一切含まないことをテストで直接
+確認(`inspect.getsource`)、`er007_ja_secondary_asr_01.py`が本Equivalence
+Layerモジュールを一切importしていないことをテストで直接確認。
+
+**Git操作は実施していない**(タスク仕様によりLane B Trial-09がcommit権を
+保持中のため、本タスクではコード変更・テスト・Runtime evidence取得のみを
+行った。commitはFableが統合時に行う。`PRODUCTION_WIRED`の正式宣言は
+commit後まで保留)。
+
+**根拠レポート**: `OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-
+WIRING-01_REPORT.md`。**影響するCURRENT_SPEC項目**: 「Audio Production
+Pipeline」節へ新規行「Connected Speech Equivalence Layer」追加(status
+`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`候補[commit後に確定])。
+**影響するOPEN_ITEMS項目**: OPEN-122行を更新(Production wiring追記、
+status`CODE_COMPLETE_PENDING_COMMIT`。Key Phrase展開は引き続き
+`USER_DECISION_REQUIRED`のまま残す)。
 
 ## 参照元
 

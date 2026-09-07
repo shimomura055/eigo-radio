@@ -152,6 +152,8 @@ import er006_preprod_hardening_01_validation as val
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_pronunciation_research_01 as pronun_research
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
+import er008_disfluency_qa_18 as disfluency_qa
+import er011_connected_speech_equivalence_layer_production_01 as cs_equivalence
 
 FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01。
                                             # 旧OFF状態はOPEN-48で「追加検証待ち」としていたが、
@@ -270,11 +272,66 @@ def _log_human_review(detail: dict) -> None:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
 
+# ============================================================
+# OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01
+# ============================================================
+# ユーザー正式承認(2026-09-07、APPROVED_FOR_PRODUCTION、範囲=A2/B1英語
+# 本文segmentのみ)。CONNECTED-SPEECH-EQUIVALENCE-LAYER-GENERALIZATION-
+# TRIAL-01/02でVALIDATEDと判定された多証拠判定(er011_connected_speech_
+# equivalence_layer_production_01.classify_connected_speech_equivalence、
+# Trialから無変更で移植)を、既存3パターン(csv3.classify_connected_speech)
+# のUNCLASSIFIED後段として追加する。
+
+# Trial-01/02と同じlocal ASRモデル(faster-whisper small、CPU、無料)。
+CONNECTED_SPEECH_EQUIVALENCE_LAYER_LOCAL_ASR_MODEL_SIZE = "small"
+
+
+def _connected_speech_equivalence_local_asr_text(wav_path: str) -> str | None:
+    """既存er008_disfluency_qa_18.transcribe_verbatim()(faster-whisper、
+    ローカルCPU実行、追加API課金なし)を、独立ASR corroboration源として
+    再利用する。失敗時はNoneを返し、呼び出し側はcorroboration無し
+    (=acceptしない)として安全側に処理する。"""
+    try:
+        words = disfluency_qa.transcribe_verbatim(
+            wav_path, language="en", model_size=CONNECTED_SPEECH_EQUIVALENCE_LAYER_LOCAL_ASR_MODEL_SIZE)
+        return " ".join(w["text"].strip() for w in words).strip()
+    except Exception as exc:  # ローカルモデル読み込み失敗等、安全側でNone
+        return None
+
+
+def _connected_speech_equivalence_layer_attempt(
+        canonical_text: str, asr_text: Optional[str], wav_path: str, language: str,
+        ledger_phrases: Optional[list[str]]) -> Optional[dict]:
+    """TRUE_CONTENT_MISMATCH(かつprotected_check通過済み、既存3パターン
+    UNCLASSIFIED)のfallthrough時のみ呼ばれる。まずSecondary/local ASRを
+    呼ばずに音韻環境カテゴリの該当有無だけを確認し(追加課金なし)、
+    NEVER_ELIGIBLE_JUDGMENTSに該当する場合はNoneを返して即座に諦める
+    (Secondary ASR呼び出し条件=fallthrough時かつカテゴリ候補時のみ、
+    コスト増はその時だけに限定する)。候補である場合のみSecondary Azure
+    (Phrase List付き、既存呼び出しと同じ関数を再利用)+local faster-
+    whisperを1回ずつ呼び、実corroborationで最終判定する。"""
+    cheap_check = cs_equivalence.classify_connected_speech_equivalence(canonical_text, asr_text or "")
+    if cheap_check["layer_judgment"] in cs_equivalence.NEVER_ELIGIBLE_JUDGMENTS:
+        return None
+
+    secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
+        wav_path, language=language, phrases=ledger_phrases)
+    local_text = _connected_speech_equivalence_local_asr_text(wav_path)
+
+    final = cs_equivalence.classify_connected_speech_equivalence(
+        canonical_text, asr_text or "", secondary_asr_text=secondary_text, local_asr_text=local_text)
+    final["secondary_asr_text"] = secondary_text
+    final["secondary_asr_error"] = secondary_err
+    final["local_asr_text"] = local_text
+    return final
+
+
 def evaluate_attempt_with_cascade(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
     force_secondary: bool = False, enable_non_latin_cascade: bool = False,
+    enable_connected_speech_equivalence_layer: bool = False,
     detail_out: Optional[dict] = None,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
@@ -299,6 +356,15 @@ def evaluate_attempt_with_cascade(
     既定Falseのため、この引数を渡さない既存の全呼び出し元(本文segment
     等)の挙動は完全に無変更。
 
+    enable_connected_speech_equivalence_layer(OPEN-122-CONNECTED-SPEECH-
+    EQUIVALENCE-LAYER-PRODUCTION-WIRING-01で追加、既定False): Trueの
+    場合のみ、A2/B1英語本文segment限定でユーザー承認済みのConnected
+    Speech Equivalence Layer(ARPAbetカテゴリA〜G+Secondary/local ASR
+    corroboration)を、既存3パターンのUNCLASSIFIED fallthrough後段として
+    追加で試みる。既定Falseのため、この引数を渡さない既存の全呼び出し元
+    (Key Phrase・日本語segment・A2/B1以外の英語segment等)の挙動は
+    完全に無変更。詳細はevaluate_attempt_with_cascade_detail()参照。
+
     detail_out(同タスクで追加、既定None): dictを渡すと、
     evaluate_attempt_with_cascade_detail()の戻り値全体(steps/
     cascade_invoked/non_latin_cascade_invoked等)でその場でupdate()する
@@ -308,7 +374,8 @@ def evaluate_attempt_with_cascade(
         canonical_text, asr_text, prior_results, wav_path, language=language,
         ledger_phrases=ledger_phrases, max_same_signature=max_same_signature,
         cascade_enabled=cascade_enabled, force_secondary=force_secondary,
-        enable_non_latin_cascade=enable_non_latin_cascade)
+        enable_non_latin_cascade=enable_non_latin_cascade,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
     if detail["human_review_required"]:
         _log_human_review(detail)
     if detail_out is not None:
@@ -377,6 +444,7 @@ def evaluate_attempt_with_cascade_detail(
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
     force_secondary: bool = False, enable_non_latin_cascade: bool = False,
+    enable_connected_speech_equivalence_layer: bool = False,
 ) -> dict:
     """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
     その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
@@ -406,6 +474,29 @@ def evaluate_attempt_with_cascade_detail(
     限り本ブロックは実行されない、適用範囲は英語Key Phrase Component
     経路限定)。
 
+    enable_connected_speech_equivalence_layer(OPEN-122-CONNECTED-SPEECH-
+    EQUIVALENCE-LAYER-PRODUCTION-WIRING-01で追加、既定False): Trueの
+    場合のみ、Primary#1の時点でclassify_asr_matchの判定が
+    TRUE_CONTENT_MISMATCHかつprotected_check自体は通過済み(=数字/否定
+    不一致ではなく、既存3パターン[csv3.classify_connected_speech]が
+    UNCLASSIFIED_FALLS_THROUGH_TO_EXISTINGだったことによるfallthrough)
+    である場合のみ、その後段としてConnected Speech Equivalence Layer
+    (ARPAbetカテゴリA〜G+Secondary/local ASR corroboration、Trial-01/02
+    でVALIDATED)を追加で試みる。protected_check不合格(数字・否定の
+    真の不一致)には絶対に発火しない(既存のprotected_check gateを
+    一切迂回・変更しない)。音韻環境カテゴリに該当しない場合は追加ASR
+    呼び出し自体を行わない(_connected_speech_equivalence_layer_attempt
+    のNEVER_ELIGIBLE_JUDGMENTS事前チェック、コスト増はfallthrough時
+    かつカテゴリ候補時のみ)。ACCEPT/PASS_WITH_WARNINGに到達しなかった
+    場合もclassification自体は元のTRUE_CONTENT_MISMATCHのまま(既存の
+    blind TTS retryへ委ねる、既存のCascade eligibility判定
+    [is_entity_like_mismatch/is_homophone_candidate_mismatch]には一切
+    影響しない)。診断内容(secondary/local transcript・category・
+    corroboration有無)は、accept有無に関わらずcls.connected_speech_info
+    へ記録する(false positive疑いの事後監査用)。既定False(呼び出し元が
+    明示的にTrueを渡さない限り本ブロックは実行されない、適用範囲は
+    A2/B1英語本文segment限定)。
+
     戻り値のdictには、Human Review用に全stepのtranscriptを保持する
     (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
     """
@@ -421,7 +512,59 @@ def evaluate_attempt_with_cascade_detail(
         "cascade_invoked": False, "steps": steps, "final_status": cls.classification,
         "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
         "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
+        "connected_speech_equivalence_layer_invoked": False,
     }
+
+    if (not verified and cascade_enabled and enable_connected_speech_equivalence_layer
+            and cls.classification == "TRUE_CONTENT_MISMATCH" and cls.protected.passed):
+        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+        # 既存3パターン(csv3.classify_connected_speech)のUNCLASSIFIED
+        # fallthrough後段。protected.passed=Trueは「数字/否定の真の不一致
+        # ではない」ことを保証する(protected.passed=Falseのケースは
+        # classify_asr_match内で既にTRUE_CONTENT_MISMATCHとして早期return
+        # 済みで、その場合はここへ到達しない)。
+        eq_result = _connected_speech_equivalence_layer_attempt(
+            canonical_text, asr_text, wav_path, language, ledger_phrases)
+        if eq_result is not None:
+            result["connected_speech_equivalence_layer_invoked"] = True
+            steps.append({
+                "step": "connected_speech_equivalence_secondary", "provider": "azure",
+                "text": eq_result.get("secondary_asr_text"),
+                "layer_judgment": eq_result["layer_judgment"],
+            })
+            steps.append({
+                "step": "connected_speech_equivalence_local", "provider": "local_faster_whisper",
+                "text": eq_result.get("local_asr_text"),
+                "layer_judgment": eq_result["layer_judgment"],
+            })
+            if eq_result["layer_judgment"] in cs_equivalence.ACCEPT_JUDGMENTS:
+                new_classification = ("CONNECTED_SPEECH_EQUIVALENCE_ACCEPT"
+                                       if eq_result["layer_judgment"] == "EQUIVALENCE_LAYER_ACCEPT"
+                                       else "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING")
+                cls = val.ClassificationResult(
+                    new_classification, cls.normalized_ratio, cls.protected,
+                    should_pass=True, should_retry=False,
+                    reason=f"Connected Speech Equivalence Layer(OPEN-122、A2/B1本文限定、"
+                           f"corroboration>=1件+音韻環境カテゴリ該当): {eq_result['layer_judgment']} "
+                           f"info={eq_result.get('equivalence_layer_info')}",
+                    connected_speech_info=eq_result)
+                verified = True
+                stop_retrying = False
+                result["verified"] = True
+                result["stop_retrying"] = False
+                result["final_status"] = cls.classification
+                result["classification"] = cls
+            else:
+                # accept未達(INSUFFICIENT_EVIDENCE/MIXED_EVIDENCE/
+                # NO_KNOWN_CATEGORY_MATCH等): 既存判定(TRUE_CONTENT_
+                # MISMATCH、should_pass=False/should_retry=True)は変えず、
+                # 診断情報だけをconnected_speech_infoへ付与する(false
+                # positive疑いの事後監査・Runtime evidence用)。
+                cls = val.ClassificationResult(
+                    cls.classification, cls.normalized_ratio, cls.protected,
+                    should_pass=cls.should_pass, should_retry=cls.should_retry,
+                    reason=cls.reason, connected_speech_info=eq_result)
+                result["classification"] = cls
 
     if not verified and cascade_enabled and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
         # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)。

@@ -62,7 +62,12 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                             style_prefix_override: str = None,
                                             # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: 呼び出し側が
                                             # 対象segment(Point見出し/In One Line等)でのみTrueを渡す。
-                                            disfluency_qa: bool = False) -> dict:
+                                            disfluency_qa: bool = False,
+                                            # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-
+                                            # WIRING-01: 呼び出し側がA2英語本文segment(full_story_part1/2・
+                                            # point_one・point_two)でのみTrueを渡す(既定False、他の
+                                            # 全呼び出し元は無変更)。
+                                            enable_connected_speech_equivalence_layer: bool = False) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -89,7 +94,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
-        style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa)
+        style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -120,7 +126,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, fallback_classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            force_secondary=True)
+            force_secondary=True,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
