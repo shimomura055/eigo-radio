@@ -1,7 +1,18 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-07(OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01、
+**最終更新: 2026-09-07(OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01、
+ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1
+英語本文segmentのみ]でTTS反復幻聴検知(方式A[n-gram句・文単位反復]+方式D
+[spectral、min_lag1.0秒]+方式D'[同primitive、lag0.5-2.0秒・run長優先、
+false start型])を`er003_v1_repro01_main_generate.py`等4箇所へopt-inフラグ
+`enable_repetition_qa`(既定False)で配線した。D/D'はスペクトル計算を1回に
+統合(検知ロジックは無変更)。既知陽性3件TP3/3・陰性代表10件FP0/10・Theme2
+B1`full_story_part1`実再生成(Standard同期、flagged=False)をruntime
+evidenceとして確認。既存回帰(collected=2138、failed=3[既知の無関係
+failure]、errors=0)・新規単体テスト26件PASS。gap<0.5秒即座の言い直しは
+今回未配線(OPEN_ITEMS.md追跡)。Git操作は未実施(Fableが統合commit後に
+`PRODUCTION_WIRED`確定)。詳細は本ファイル該当エントリ参照)。2026-09-07(OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01、
 ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1英語本文
 segmentのみ]でConnected Speech Equivalence Layer[Trial-01/02でVALIDATED]を
 `er006_secondary_asr_01.py::evaluate_attempt_with_cascade_detail()`へ配線した
@@ -6987,6 +6998,107 @@ Pipeline」節へ新規行「Connected Speech Equivalence Layer」追加(status
 **影響するOPEN_ITEMS項目**: OPEN-122行を更新(Production wiring追記、
 status`CODE_COMPLETE_PENDING_COMMIT`。Key Phrase展開は引き続き
 `USER_DECISION_REQUIRED`のまま残す)。
+
+## OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01(2026-09-07、ユーザーが
+2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1英語本文
+segmentのProduction正式経路のみ]でTTS反復幻聴検知(方式A+D+D')を配線。
+Git操作は未実施[Fableが統合commit後に`PRODUCTION_WIRED`確定])
+
+OPEN-121-TTS-REPETITION-HALLUCINATION-GENERAL-QA-TRIAL-01/02(`VALIDATED`)
+で検証済みの3方式(方式A[n-gram句・文単位反復検知、min_words>=3、
+canonical crosscheck付き]・方式D[スペクトルself-similarity、min_lag=1.0
+秒、top-k類似度優先]・方式D'[方式Dと同一計算primitiveを共有する派生
+プロファイル、lag0.5〜2.0秒・run長優先、B1 FSP1型false start検知])を、
+ユーザー承認範囲(A2/B1英語本文segment=`full_story_part1`/`full_story_
+part2`/`point_one`/`point_two`のみ、Key Phrase・日本語segment・comment/
+preview/title/in_one_line等は対象外)へProduction配線した。
+
+**実装**: Trialロジックを無変更で新規[er011_open121_repetition_qa_
+production_01.py](er011_open121_repetition_qa_production_01.py)へ移植。
+方式D・D'は同一音声に対し独立に対数スペクトル自己相関を計算すると同じ
+FFTフレーム計算が2回発生する非効率(Trial-02 §4/§7-5で指摘済み)を、
+`compute_shared_self_similarity()`で1回だけ計算し、`analyze_profile_d_
+long_lag()`(既存方式D、min_lag=1.0秒・top-k類似度優先・sim閾値0.85・
+決定閾値run長0.12秒[Trial-01較正値])と`analyze_profile_d_prime_short_
+lag()`(新方式D'、lag0.5〜2.0秒・run長優先・sim閾値0.7・決定閾値run長
+0.6秒[Trial-02較正値])の2プロファイルへ同じ類似度行列を渡す設計で解消
+した(検知ロジック[閾値・探索アルゴリズム]自体は無変更、計算の重複だけを
+統合)。方式A(n-gram)はTrial-01の`find_repeated_spans`/`_canonical_
+repeat_count`/`detect_ngram_repetition`を無変更で移植。
+
+**接続パターン**: 既存`er008_disfluency_qa_18.apply_disfluency_gate()`と
+同一のANDゲート(`apply_repetition_qa_gate()`、`verified = verified and
+not evidence["flagged"]`)。新規retry回数・新規Cost Guard予算は一切追加
+しない(方式A/D/D'はいずれもローカルCPU計算のみで追加API課金ゼロ、既存
+`review_lock.PRODUCTION_MAX_TTS_ATTEMPTS`予算内でretryが自動発生し、上限
+到達後は既存のSTOPPED→Human Review Lock自動遷移にそのまま合流する)。
+
+**適用範囲の限定方法**(OPEN-122と同一の設計パターン): `er003_v1_n3_01_
+tts_generate.py`の`generate_a2_segments()`/`generate_b1_segments()`内、
+`full_story_part1`/`full_story_part2`/`point_one`/`point_two`の4segment
+のみが新規opt-inフラグ`enable_repetition_qa`(既定`False`)を明示的に
+`True`で渡し、`generate_a2_segment_with_slowdown()`→`er003_v1_crosslevel_
+audio_02_common.py::generate_english_segment_with_fallback()`(A2、標準+
+fallback両経路)、または`er003_v1_sing01_news_tail_fix.py::generate_news_
+narration_wide_margin()`(B1)→`er003_v1_repro01_main_generate.py::
+generate_narration_snippet_verified_strict()`まで貫通させる。既定`False`
+のため、引数を渡さない全既存呼び出し元(Key Phrase`generate_key_phrase_
+component_verified()`・日本語`ja_secondary`・comment/preview/title・
+in_one_line等)は無変更(ソースコード直接確認`inspect.getsource`による
+テストで実証)。
+
+**境界値monitoring**: `evaluate_repetition_qa()`はflag/非flagにかかわらず
+方式D/D'それぞれの最大run長・lag・similarityを常に戻り値へ含める
+(`repetition_qa_evidence`としてattempts_log/save_tts_attempt_audioの
+メタデータへ記録される設計、後から閾値再校正できるようにする)。D'の
+陽性最小run(0.7秒、実データ再現)と陰性最大run(0.5秒、`a2_comment_3`で
+実データ再現)のマージン0.2秒はTrial-02較正値のまま維持。
+
+**未配線(Trial-01方式C-v2、gap<0.5秒の即座の言い直し)**: 本タスクでは
+実装しない。OPEN_ITEMS.md OPEN-121行へ追跡項目として明記した。
+
+**Runtime evidence**: (a) 既知陽性3件(Theme2 A2 Point Two/In One Line
+[保全済attempt]・B1 FSP1 false start[保全済])を修正後のProduction関数
+`evaluate_repetition_qa()`へ実際に投入し、TP 3/3(Point Two/In One Lineは
+方式A+D、B1 FSP1は方式D'のみが検知、想定通りの役割分担を実データで再確認)。
+(b) Trial-02陰性セットのEN代表10件をFP 0/10で確認。証跡:
+`er011_output/open121_tts_repetition_qa_production_wiring_01/known_
+positive_negative_result.json`。(c) Theme2 B1`full_story_part1`(false
+startが実在した原本と同一canonical text)を、配線後のProduction関数
+`news_tail_fix.generate_news_narration_wide_margin(enable_repetition_
+qa=True)`でStandard同期・実TTS/実ASRにより再生成した。attempt1でstatus
+=OK・asr_verified=True・repetition_qa_checked=True・flagged=False(方式D'
+run長0.33秒、閾値0.6秒未満)、既存のPASS音声・player.htmlは上書きせず
+新ディレクトリ`er011_output/open121_tts_repetition_qa_production_wiring_
+01/theme2_b1_fsp1_regen/`へ保存(episode全体の再Assemblyは今回行って
+いない)。cost実測¥3.64(gemini TTS 1回+openai_asr 1回)。証跡:
+`er011_output/open121_tts_repetition_qa_production_wiring_01/theme2_b1_
+fsp1_regen/run_summary.json`。
+
+**Regression**: `run_project_regression.py`(collected=2138、passed=2135、
+failed=3、errors=0。失敗3件は本タスク以前から存在する既知の無関係
+failure[`er003_test_bad`の意図的self-check・`er003_test_p2j_investigate`
+のOPEN-77既知meta-test集計]で、OPEN-122時点[collected=2112]と同一件数
+のまま)。既存`er011_keyphrase_en_asr_false_rejection_cascade_prod_
+wiring_01_test_01.py`(5件)・`er011_tts_attempt_audio_retention_wiring_
+01_test.py`(9件)は新規kwarg追加後も無変更でPASS(fake関数が`**kwargs`
+受け皿のため破壊的影響なし)。新規[er011_open121_repetition_qa_
+production_wiring_01_test_01.py](er011_open121_repetition_qa_production_
+wiring_01_test_01.py)26件(unittest.TestCase形式、`run_project_
+regression.py`のglobパターンに収集される)全PASS(方式A/D/D'判定ロジック・
+実fixtureでの境界値monitoring確認・4箇所の配線先opt-inスコープ確認・
+KP/日本語/A2 Comment等の範囲外であることのソースコード直接確認を含む)。
+
+**Git操作は実施していない**(タスク仕様により、Fableが統合commitを行う。
+`PRODUCTION_WIRED`の正式宣言はcommit後まで保留)。
+
+**根拠レポート**: `OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01_
+REPORT.md`。**影響するCURRENT_SPEC項目**: 「Audio Production Pipeline」節
+「Disfluency QA」行の直後へ新規行「TTS Repetition/False Start QA」追加
+(status`APPROVED_FOR_PRODUCTION`[範囲限定]/`PRODUCTION_WIRED`候補[commit
+後に確定])。**影響するOPEN_ITEMS項目**: OPEN-121行を追記(Production
+wiring完了・runtime evidence・gap<0.5秒未配線の追跡明記、status更新は
+Fableが確定)。
 
 ## 参照元
 

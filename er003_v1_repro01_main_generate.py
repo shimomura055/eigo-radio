@@ -35,6 +35,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er007_ja_secondary_asr_01 as ja_secondary
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er011_open121_repetition_qa_production_01 as repetition_qa
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -221,6 +222,13 @@ def generate_narration_snippet_verified_strict(
     # 渡す想定の引数(既定False、他の全呼び出し元は無変更)。詳細は
     # er006_secondary_asr_01.evaluate_attempt_with_cascade_detail()参照。
     enable_connected_speech_equivalence_layer: bool = False,
+    # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: A2/B1英語本文
+    # segment(full_story_part1/2・point_one・point_two)のみが明示的に
+    # Trueを渡す想定の引数(既定False、他の全呼び出し元は無変更)。
+    # 詳細はer011_open121_repetition_qa_production_01.apply_repetition_
+    # qa_gate()参照(方式A[n-gram句・文単位反復]+D[spectral long-lag]+
+    # D'[spectral short-lag/false start型]、既存dq18と同一のANDゲート)。
+    enable_repetition_qa: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -272,6 +280,12 @@ def generate_narration_snippet_verified_strict(
             verified = verified_content and length_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]
+            # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
+            # gateと同一のANDゲートパターン。enable_repetition_qa=False
+            # (既定)の場合は追加コスト・追加処理なしでverifiedをそのまま返す。
+            rep_gate = repetition_qa.apply_repetition_qa_gate(
+                verified, out_path, text, language="en", enabled=enable_repetition_qa)
+            verified = rep_gate["verified"]
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
         else:
@@ -294,6 +308,11 @@ def generate_narration_snippet_verified_strict(
             "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+            # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: A2/B1英語
+            # 本文segment以外はenable_repetition_qa=Falseのため、以下は
+            # 常にFalse/Noneのまま(適用範囲限定の裏付けとして監査に残す)。
+            "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
+            "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
             # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01: 英語
             # Key Phrase Component経路以外はasr_prompt=None/enable_non_
             # latin_cascade=Falseのため、以下は全てFalse/Noneのまま
@@ -316,6 +335,8 @@ def generate_narration_snippet_verified_strict(
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+            "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
+            "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
             # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01
             # (適用範囲: 英語Key Phrase Component経路のみ、asr_prompt/
             # enable_non_latin_cascadeが既定[None/False]の他呼び出し元は
@@ -338,7 +359,9 @@ def generate_narration_snippet_verified_strict(
                     "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
                     "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
-                    "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None}
+                    "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+                    "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
+                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None}
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,

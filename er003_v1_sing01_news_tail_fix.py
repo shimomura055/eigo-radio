@@ -36,6 +36,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er011_open121_repetition_qa_production_01 as repetition_qa
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -66,7 +67,10 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # WIRING-01: 呼び出し側がB1英語本文segment(full_story_part1/2・
                                          # point_one・point_two)でのみTrueを渡す(既定False、他の
                                          # 全呼び出し元は無変更)。
-                                         enable_connected_speech_equivalence_layer: bool = False) -> dict:
+                                         enable_connected_speech_equivalence_layer: bool = False,
+                                         # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
+                                         # のみが明示的にTrueを渡す想定の引数(既定False)。
+                                         enable_repetition_qa: bool = False) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -119,12 +123,20 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
+        # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
+        # gateと同一のANDゲートパターン。enable_repetition_qa=False(既定)
+        # の場合は追加コスト・追加処理なしでverifiedをそのまま返す。
+        rep_gate = repetition_qa.apply_repetition_qa_gate(
+            verified, out_path, text, language="en", enabled=enable_repetition_qa)
+        verified = rep_gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "length_ok": length_ok, "verified": verified,
                               "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
-                              "disfluency_evidence": gate.get("disfluency_evidence")})
+                              "disfluency_evidence": gate.get("disfluency_evidence"),
+                              "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+                              "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
@@ -135,6 +147,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
+            "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+            "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -147,7 +161,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "connected_speech_info": getattr(cls, "connected_speech_info", None),
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
-                    "disfluency_evidence": gate.get("disfluency_evidence")}
+                    "disfluency_evidence": gate.get("disfluency_evidence"),
+                    "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence")}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに

@@ -39,6 +39,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er011_open121_repetition_qa_production_01 as repetition_qa
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -67,7 +68,10 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                             # WIRING-01: 呼び出し側がA2英語本文segment(full_story_part1/2・
                                             # point_one・point_two)でのみTrueを渡す(既定False、他の
                                             # 全呼び出し元は無変更)。
-                                            enable_connected_speech_equivalence_layer: bool = False) -> dict:
+                                            enable_connected_speech_equivalence_layer: bool = False,
+                                            # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
+                                            # のみが明示的にTrueを渡す想定の引数(既定False)。
+                                            enable_repetition_qa: bool = False) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -95,7 +99,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
-        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        enable_repetition_qa=enable_repetition_qa)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -131,10 +136,18 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
+        # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
+        # gateと同一のANDゲートパターン。enable_repetition_qa=False(既定)
+        # の場合は追加コスト・追加処理なしでverifiedをそのまま返す。
+        rep_gate = repetition_qa.apply_repetition_qa_gate(
+            verified, out_path, text, language="en", enabled=enable_repetition_qa)
+        verified = rep_gate["verified"]
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification, "verified": verified,
                                    "disfluency_checked": gate["disfluency_checked"],
-                                   "disfluency_evidence": gate.get("disfluency_evidence")})
+                                   "disfluency_evidence": gate.get("disfluency_evidence"),
+                                   "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+                                   "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
@@ -145,6 +158,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
+            "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+            "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
         })
         fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -156,6 +171,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
             r["disfluency_checked"] = gate["disfluency_checked"]
             r["disfluency_evidence"] = gate.get("disfluency_evidence")
+            r["repetition_qa_checked"] = rep_gate["repetition_qa_checked"]
+            r["repetition_qa_evidence"] = rep_gate.get("repetition_qa_evidence")
             return r
         if stop_retrying:
             r["status"] = "ASR_VALIDATION_UNCERTAIN"

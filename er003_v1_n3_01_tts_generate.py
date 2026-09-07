@@ -200,7 +200,11 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
                                         # 6% time-stretch後の再検証(apply_a2_slowdown_postprocess、
                                         # 直接classify_asr_matchのみを使う独立経路)には配線しない
                                         # (スコープ外、既存挙動を変えない)。
-                                        enable_connected_speech_equivalence_layer: bool = False) -> dict:
+                                        enable_connected_speech_equivalence_layer: bool = False,
+                                        # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 呼び出し側が
+                                        # A2英語本文segment(full_story_part1/2・point_one・point_two)
+                                        # でのみTrueを渡す(既定False)。
+                                        enable_repetition_qa: bool = False) -> dict:
     """通常ペースでの生成(generate_english_segment_with_fallback、既存の
     standard/fallback retry込み)→6% time-stretch→post-process後ASR
     再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
@@ -229,7 +233,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
         result = c.generate_english_segment_with_fallback(
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            enable_repetition_qa=enable_repetition_qa)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
@@ -741,6 +746,11 @@ def generate_b1_segments(theme: dict) -> dict:
                 # ユーザー承認済み範囲(B1英語本文segment=full_story_part1/2・
                 # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
                 enable_connected_speech_equivalence_layer=(
+                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")),
+                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
+                # のみ対象(ユーザー承認済み範囲、Key Phrase・日本語・
+                # Comment/Preview/Title/In One Line等は対象外)。
+                enable_repetition_qa=(
                     name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text
 
@@ -855,6 +865,11 @@ def generate_a2_segments(theme: dict) -> dict:
                 # ユーザー承認済み範囲(A2英語本文segment=full_story_part1/2・
                 # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
                 enable_connected_speech_equivalence_layer=(
+                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")),
+                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
+                # のみ対象(ユーザー承認済み範囲、Key Phrase・日本語・
+                # Comment/Preview/Title/In One Line等は対象外)。
+                enable_repetition_qa=(
                     name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text
 
