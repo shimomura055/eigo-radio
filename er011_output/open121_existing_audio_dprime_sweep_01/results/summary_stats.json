@@ -1,18 +1,18 @@
 {
   "total_items": 1654,
   "by_category": {
-    "ja_other": 474,
-    "en_other_non_body": 287,
-    "keyphrase_en": 235,
     "en_body": 520,
-    "keyphrase_ja": 138
+    "keyphrase_ja": 138,
+    "en_other_non_body": 287,
+    "ja_other": 474,
+    "keyphrase_en": 235
   },
   "main_population_en_body": 517,
   "main_flag_d_prime": 11,
   "main_flag_d": 0,
-  "main_flag_a": 0,
+  "main_flag_a": 17,
   "main_boundary_watch": 110,
-  "main_clean": 396,
+  "main_clean": 381,
   "known_case_validation": [
     {
       "item_id": "known_case::point_two_BUGGY_UNFIXED_backup",
@@ -30,12 +30,28 @@
       "in_active_narration_dir": false,
       "d_prime_run_at_0.6": 0.4,
       "d_prime_lag": 1.21,
-      "d_best_run_length_seconds": null,
-      "a_flagged": null,
-      "a_flagged_spans": null,
-      "flags": [],
+      "d_best_run_length_seconds": 0.16,
+      "a_flagged": true,
+      "a_flagged_spans": [
+        {
+          "span_text": " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places.",
+          "n_words": 20,
+          "category": "sentence",
+          "first_start_s": 0.0,
+          "first_end_s": 9.7,
+          "second_start_s": 9.88,
+          "second_end_s": 19.56,
+          "gap_seconds": 0.18,
+          "canonical_repeat_count": 1,
+          "intentional": false,
+          "flagged": true
+        }
+      ],
+      "flags": [
+        "FLAG_A"
+      ],
       "boundary_watch": false,
-      "judgement": "CLEAN"
+      "judgement": "FLAG_A"
     },
     {
       "item_id": "known_case::in_one_line_BEFORE_FIX_buggy_backup",
@@ -53,12 +69,28 @@
       "in_active_narration_dir": false,
       "d_prime_run_at_0.6": 0.43,
       "d_prime_lag": 0.52,
-      "d_best_run_length_seconds": null,
-      "a_flagged": null,
-      "a_flagged_spans": null,
-      "flags": [],
+      "d_best_run_length_seconds": 0.32,
+      "a_flagged": true,
+      "a_flagged_spans": [
+        {
+          "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+          "n_words": 18,
+          "category": "sentence",
+          "first_start_s": 0.0,
+          "first_end_s": 7.92,
+          "second_start_s": 8.42,
+          "second_end_s": 16.06,
+          "gap_seconds": 0.5,
+          "canonical_repeat_count": 0,
+          "intentional": false,
+          "flagged": true
+        }
+      ],
+      "flags": [
+        "FLAG_A"
+      ],
       "boundary_watch": false,
-      "judgement": "CLEAN"
+      "judgement": "FLAG_A"
     },
     {
       "item_id": "known_case::b1_fsp1_falsestart_clip_0-3s",
@@ -76,9 +108,9 @@
       "in_active_narration_dir": false,
       "d_prime_run_at_0.6": 0.75,
       "d_prime_lag": 0.97,
-      "d_best_run_length_seconds": null,
-      "a_flagged": null,
-      "a_flagged_spans": null,
+      "d_best_run_length_seconds": 0.03,
+      "a_flagged": false,
+      "a_flagged_spans": [],
       "flags": [
         "FLAG_D_PRIME"
       ],
