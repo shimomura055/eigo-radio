@@ -785,26 +785,27 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday."
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "OPEN112_THEME2_AUDIO_REVIEW_FIX_02_NOTE": "このsegmentは元のTrial-13音声そのものに戻した(既知の重複bug入り、未修正)。2026-09-07に再生成を1回試行したが、2 attemptとも別の内容不一致(showed→showの時制誤り)でHUMAN_REVIEW_LOCKEDへ到達したため、既存Human Review Cost Guard(ER-011-HUMAN-REVIEW-COST-GUARD-01)を独自判断で回避せず、ここで打ち切った。詳細はaudit/fix02_regeneration_log.json(失敗した2 attemptの記録)、audit/pre_fix_buggy_audio_backup/(退避した重複入り音声)、audit/review_lock_state.json(point_two=HUMAN_REVIEW_REQUIRED)参照。再修正には人間によるapprove_regenerate()等の明示判断が必要。"
     },
     "in_one_line": {
       "status": "OK",
       "text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
       "language": "en",
-      "path": "er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line.wav",
+      "path": "er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/in_one_line.wav",
       "model": "gemini-2.5-pro-preview-tts",
       "voice": "Aoede",
       "call_count": 1,
       "retry_count": 0,
-      "sha256": "8dff734cfa71ebd69997c89b26e43675d062e554994017fa55bdf1255f422f52",
-      "duration_seconds": 21.337,
+      "sha256": "9abc02e6d4d4dcdcdc30cfff27b9a31e10373e09a89d6e7b27c871da01152381",
+      "duration_seconds": 12.292,
       "trim_info": {
-        "raw_duration_seconds": 21.337,
+        "raw_duration_seconds": 12.292,
         "raw_leading_silence_seconds": 0.275,
-        "raw_trailing_silence_seconds": 0.297,
-        "trimmed_duration_seconds": 21.337,
+        "raw_trailing_silence_seconds": 0.275,
+        "trimmed_duration_seconds": 12.292,
         "leading_margin_retained_seconds": 0.275,
-        "trailing_margin_retained_seconds": 0.297
+        "trailing_margin_retained_seconds": 0.275
       },
       "clipping_detected": false,
       "asr_verified": true,
@@ -813,7 +814,7 @@
         {
           "attempt": 1,
           "status": "OK",
-          "duration_seconds": 20.1419,
+          "duration_seconds": 11.611,
           "asr_text": "The direction is visible in several surveys, but it is still a change in what young travelers want, not proof that long, slow stays have become the new normal.",
           "asr_text_length": 159,
           "max_len": 218,
@@ -828,10 +829,14 @@
           "disfluency_evidence": {
             "flagged": false,
             "repeats": [],
-            "word_count": 47,
-            "transcript": "The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.  The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want,  not  proof  that  long,  slow  stays  have  become  the  new  normal.",
+            "word_count": 29,
+            "transcript": "The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want,  not  proof  that  long,  slow  stays  have  become  the  new  normal.",
             "method": "faster_whisper_small_local_verbatim"
-          }
+          },
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/attempts/in_one_line_attempt1_custom35d6860b.wav"
         }
       ],
       "audio_classification": "NORMALIZED_MATCH",
@@ -841,20 +846,20 @@
       "disfluency_evidence": {
         "flagged": false,
         "repeats": [],
-        "word_count": 47,
-        "transcript": "The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.  The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want,  not  proof  that  long,  slow  stays  have  become  the  new  normal.",
+        "word_count": 29,
+        "transcript": "The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want,  not  proof  that  long,  slow  stays  have  become  the  new  normal.",
         "method": "faster_whisper_small_local_verbatim"
       },
       "fallback_used": false,
-      "original_path": "er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line_original.wav",
+      "original_path": "er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/in_one_line_original.wav",
       "slowdown_applied": true,
       "slowdown_info": {
         "slowdown_pct_target": 6.0,
-        "slowdown_pct_actual": 5.935,
-        "src_duration_seconds": 20.142,
-        "dst_duration_seconds": 21.337,
-        "src_path": "er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line_original.wav",
-        "dst_path": "er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line.wav"
+        "slowdown_pct_actual": 5.869,
+        "src_duration_seconds": 11.611,
+        "dst_duration_seconds": 12.292,
+        "src_path": "er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/in_one_line_original.wav",
+        "dst_path": "er011_output/open112_trend_theme2_b_final_audio_rerun_02/a2/narration/in_one_line.wav"
       },
       "post_slowdown_asr_text": "The direction is visible in several surveys, but it is still a change in what young travelers want, not proof that long, slow stays have become the new normal.",
       "post_slowdown_classification": "NORMALIZED_MATCH",

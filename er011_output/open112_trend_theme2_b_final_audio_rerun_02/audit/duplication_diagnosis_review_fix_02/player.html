@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 診断・修正 試聴用</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;line-height:1.6;max-width:960px;margin:0 auto;padding:16px;color:#111;}
+h2{border-bottom:3px solid #333;padding-bottom:4px;margin-top:2em;}
+audio{width:100%;max-width:520px;display:block;margin:6px 0 14px 0;}
+.box{border:1px solid #ccc;padding:12px 16px;margin:12px 0;background:#fafafa;}
+.buggy{border-left:6px solid #a33;}
+.fixed{border-left:6px solid #2a7;}
+.control{border-left:6px solid #888;}
+code{background:#eee;padding:1px 4px;}
+</style>
+</head>
+<body>
+<h1>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 診断・修正 runtime evidence 試聴用ページ</h1>
+<p>3件のユーザー報告重複それぞれについて、修正前(該当する場合)・修正後・単体segment・完成episode切り出しの実音声をここにまとめる。</p>
+
+<h2>1. B1 / Full Story Part 1(ユーザー報告: 症状を現物で再現できず)</h2>
+<div class="box control">
+<p>narration/full_story_part1.wav(現状のrerun-02音声、Trial-13からsha256完全一致でコピーされた原本と同一、未改変)。gpt-4o-mini-transcribe(4回)・whisper-1(verbose segment付き)・spectral self-similarity(narration単体・assembled切り出しの両方)のいずれでも重複を検出できなかった。</p>
+<audio controls src="1_b1_full_story_part1_narration_NOT_REPRODUCED.wav"></audio>
+<p>完成episode(B1)の該当区間切り出し(123.787〜165.729秒)。</p>
+<audio controls src="1_b1_full_story_part1_assembled_extract_NOT_REPRODUCED.wav"></audio>
+</div>
+
+<h2>2. A2 / Point Two(実在する重複を確認、未修正・Human Review待ち)</h2>
+<div class="box buggy">
+<p>narration/point_two.wav(Trial-13原本、実在する重複あり)。約9.6秒の位置から、冒頭2文
+「Young travelers are not one single market. Women aged 29 and under still showed strong
+interest in famous tourist places...」がまるごと1回逐語反復される(spectral self-similarity
+offset≈9.63秒、run長最大0.60秒×連続、windowed再ASRで実際に重複transcriptを確認)。
+2026-09-07に既存Production関数で再生成を試みたが、2 attemptとも別の内容不一致
+(showed→showの時制誤り)でHuman Review Cost Guardに到達したため、既存Gateを
+独自に回避せず、この既知の重複入り音声のまま据え置いている(未修正)。</p>
+<audio controls src="2_a2_point_two_narration_BUGGY_UNFIXED_pending_human_review.wav"></audio>
+<p>完成episode(A2、修正後の最新assembled、Point Two自体は未修正のまま)の該当区間切り出し(282.91〜325.61秒)。</p>
+<audio controls src="2_a2_point_two_assembled_extract_BUGGY_UNFIXED.wav"></audio>
+</div>
+
+<h2>3. A2 / In One Line(実在する重複を確認 → 修正済み)</h2>
+<div class="box buggy">
+<p>修正前(Trial-13原本、実在する重複あり)。約8.2秒の位置から文全体
+「The direction is visible in several surveys, but it is still a change in what young
+travelers want」がまるごと1回逐語反復される。既存disfluency QA(faster-whisper local
+verbatim)の生transcriptには重複が正しく記録されていたが、判定ロジック
+(隣接同一単語のみ検知)が句・文単位の反復を検知する設計になっていなかったため
+flagged=Falseとなり通過した。</p>
+<audio controls src="3_a2_in_one_line_narration_BEFORE_FIX_buggy.wav"></audio>
+</div>
+<div class="box fixed">
+<p>修正後(2026-09-07、既存Production関数を無変更のまま再実行して再生成。
+disfluency QA flagged=False[今回は実際に重複なし]、ASR複数回・spectral
+self-similarityいずれも重複なしを確認)。</p>
+<audio controls src="3_a2_in_one_line_narration_AFTER_FIX_clean.wav"></audio>
+<p>完成episode(A2、再Assembly後)の該当区間切り出し(347.25〜359.54秒)。</p>
+<audio controls src="3_a2_in_one_line_assembled_extract_AFTER_FIX_clean.wav"></audio>
+</div>
+
+<p>詳細は <code>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md</code>(root)参照。</p>
+</body>
+</html>

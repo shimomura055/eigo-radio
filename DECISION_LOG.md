@@ -6282,6 +6282,96 @@ TTS用gloss/ASR/分類/attempt表はReport参照。
 
 **影響するCURRENT_SPEC項目**: なし(Trial音声の完成試行、Production変更なし)。**影響するOPEN_ITEMS項目**: OPEN-112行へ本タスクの結果を追記。
 
+## OPEN-112-THEME2-AUDIO-REVIEW-FIX-02(2026-09-07、ユーザー試聴で報告された完成音声の重複3件[runtime bug]の診断・ASR検知不全の根本原因特定・既存Production関数のみによる部分修正。新規OPEN-121登録、`USER_DECISION_REQUIRED`)
+
+**背景**: RERUN-02(前エントリ)完成音声のユーザー試聴で、3件の重複
+(B1 Full Story Part 1「As of Septem, As of September 2026…」/
+A2 Point Two「…tourist pla、Young travelers are not one single
+market…」/A2 In One Line「…still a change、The direction is
+visible…」)が報告された。canonical textは正常なため、Writer本文の
+書き換えではなくruntime(TTS生成・ASR検証・Assembly)側のbugとして
+診断した。
+
+**診断結果**: (1) A2 Point Two・A2 In One Lineは、独立ASR複数回・
+windowed再ASR・spectral self-similarity(narration単体・assembled
+episode切り出しの両方)で、実在する音声重複を確認した。いずれもTrial-13
+時点のTTS生成自体(6% slowdown post-process前の`_original.wav`にも
+同一箇所・同一比率で重複が存在)によるhallucinationであり、time-stretch・
+コピー・Assemblyでは発生していない(sha256比較でTrial-13→rerun-02への
+コピーはbit単位で無改変)。(2) B1 Full Story Part 1は、現行rerun-02音声
+(narration単体・assembled episode該当区間の両方)に対し、OpenAI
+gpt-4o-mini-transcribe(複数回)・whisper-1(verbose segment付き)・
+spectral self-similarityのいずれでも重複を検出できず、sha256もTrial-13
+原本と完全一致した。ユーザー報告の症状を現物で再現できていない
+(要ユーザー確認)。
+
+**ASR検知不全の根本原因**: (a) Production Primary ASR(OpenAI
+gpt-4o-mini-transcribe)は、40秒級の音声を一括で書き起こす際、この種の
+「一文まるごと逐語反復」を**非決定的に**(同一音声・同一APIへの複数回
+呼び出しでも結果が変わる、実測: In One Lineの重複入り音声に対し4回
+呼び出して3回検知・1回非検知)transcript上で平滑化する。Point Twoの
+重複は複数回呼び出しても一度も検知されず、windowed(6〜22秒を切り出して
+再ASR)にして初めて実際の重複transcriptを確認できた。(b) 既存の
+disfluency QA(ER-008-N8-QA-CONTENT-SPEED-HARDENING-18/19、
+faster-whisper local verbatim)はIn One Lineには適用されており、その
+生verbatim transcriptには重複が正しく記録されていた(実データ:
+`disfluency_evidence.transcript`に重複文字列がそのまま残っている)にも
+かかわらず、判定ロジック(`detect_adjacent_word_repetition`、「直後に
+同一token」のみを検知する意図的に狭い設計)が句・文単位の反復(直後の
+単語が異なる)を原理的に検知できずflagged=Falseとなった。(c) Point Two
+等の本文segment(full_story/point body)は、同disfluency QA自体が既存
+承認スコープ外(ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19により
+heading/in_one_line限定、「承認済み範囲を超えない」の明示的スコープ
+決定)であり、初回generation経路で一切保護されていなかった。
+
+**修正**: 新しいValidator原則・判定ロジックは一切追加・変更していない。
+既存Production関数(`er003_v1_n3_01_tts_generate.generate_a2_segment_
+with_slowdown`、無変更・呼び出しパラメータもProduction呼び出しと同一)
+をそのまま呼び直すスクリプト(`er011_open112_theme2_audio_review_fix_
+02_regenerate.py`、root新規)で、2件を再生成した。**A2 In One Line**:
+1回で`status=OK`(disfluency_checked=True、flagged=False、実際に重複
+なし)。独自の追加検証(gpt-4o-mini-transcribe 5回・spectral
+self-similarity)でも重複が完全に消えたことを確認し、`stage_assemble_
+a2()`(無変更のProduction Assembly関数)を再実行して完成episodeへ反映
+した(A2 duration 375.226秒→366.181秒[重複約9.045秒分の減少]、peak
+0.98で変わらず、clipping無し)。**A2 Point Two**: 再生成2回とも別の
+内容不一致(canonical「showed」→ASR「show」の時制誤り、今回の重複
+バグとは無関係)で`TRUE_CONTENT_MISMATCH`となり、既存の
+Human Review Cost Guard(ER-011-HUMAN-REVIEW-COST-GUARD-01)が
+`HUMAN_REVIEW_LOCKED`へ到達した。既存の安全装置を独自判断で回避
+(`approve_regenerate()`呼び出し等)せず、Trial-13原本(既知の重複入り、
+sha256で原本一致を確認済み)のまま据え置き、修正を打ち切った。
+
+**Regression**: `run_project_regression.py`実行、collected=2110・
+passed=2107・failed=3(既知の無関係failure、`er003_test_bad.
+FixtureTests.test_case_0`・`er003_test_p2j_investigate`内2件、修正前と
+同一の既知failureのみ、新規failureなし)。
+
+**Runtime evidence**: `er011_output/open112_trend_theme2_b_final_audio_
+rerun_02/audit/duplication_diagnosis_review_fix_02/player.html`(3件の
+修正前/修正後/単体segment/episode切り出し音声一式)、`a2/audit/
+fix02_regeneration_log.json`(再生成2件の実行結果)、`a2/audit/
+pre_fix_buggy_audio_backup/`(修正前の重複入り音声の退避、In One Lineの
+み)、`a2/audit/review_lock_state.json`(In One Line=RESOLVED、Point
+Two=HUMAN_REVIEW_REQUIRED)。
+
+**状態**: `USER_DECISION_REQUIRED`(OPEN-121)。In One Lineのみ修正完了、
+Point Two未修正、B1 Full Story Part 1は症状未再現。3件とも当初の
+`USER_FINAL_AUDIO_REVIEW_REQUIRED`は解消していない。
+
+**試聴**: `file:///C:/Users/tensh/eigo-radio/er011_output/
+open112_trend_theme2_b_final_audio_rerun_02/player.html`(完成episode、
+修正反映済み)、`file:///C:/Users/tensh/eigo-radio/er011_output/
+open112_trend_theme2_b_final_audio_rerun_02/audit/duplication_
+diagnosis_review_fix_02/player.html`(診断・修正前後の切り出し比較)
+
+**根拠レポート**: `OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md`
+
+**影響するCURRENT_SPEC項目**: なし(既存Validator/disfluency QAの判定
+ロジック自体は無変更、Production関数の再呼び出しのみ)。**影響する
+OPEN_ITEMS項目**: 新規OPEN-121登録(逐語句・文単位の重複音声に対する
+ASR/disfluency QA検知不全、`USER_DECISION_REQUIRED`)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

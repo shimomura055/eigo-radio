@@ -139,7 +139,8 @@ So this is not a simple story about famous sightseeing being replaced by slow tr
 <!-- ==================== A2 ==================== -->
 <section id="a2">
 <h2>A2 (English Your Way, A2)</h2>
-<p>duration: 375.226s / peak: 0.98(headroom safety valve適用済み、適用前peak=1.0350189) / clipping: false</p>
+<p>duration: 366.181s / peak: 0.98(headroom safety valve適用済み、適用前peak=1.0350189) / clipping: false</p>
+<p class="note">OPEN-112-THEME2-AUDIO-REVIEW-FIX-02 (2026-09-07): 「In One Line」で実在した音声重複(TTS生成時のhallucination、既存Production ASR/disfluency QAをすり抜けていたことを確認済み)を、既存Production関数(無変更)による再生成で修正した(重複解消をASR複数回+spectral self-similarityで確認)。「Point Two」も同種の実在する重複が確認されているが、再生成2回とも既存Human Review Cost Guard(ER-011-HUMAN-REVIEW-COST-GUARD-01)によりHUMAN_REVIEW_REQUIREDへ到達したため独自に上書きせず、既知の重複入り音声のまま(未修正)据え置いている。詳細は<code>OPEN-112-THEME2-AUDIO-REVIEW-FIX-02_REPORT.md</code>参照。</p>
 <audio id="player-a2" class="main" controls src="a2/assembled/English_Your_Way_A2_OPEN112_TREND_THEME2_B_FINAL_AUDIO_RERUN_02.wav"></audio>
 
 <h3 id="a2-timeline">A2 タイムライン・全スクリプト(収録順)</h3>
@@ -219,7 +220,7 @@ It shows a growing wish for a more personal trip, while long stays have not yet 
 
 <tr><td><button class="seek" data-target="player-a2" data-sec="347.245"></button></td><td>In One Line</td><td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.</td><td class="kp-audio"><audio controls src="a2/narration/in_one_line.wav"></audio></td><td class="src">a2/audit/tts_generation_results.json → segments.in_one_line.canonical_text (= a2/parts.json → in_one_line)</td></tr>
 
-<tr><td><button class="seek" data-target="player-a2" data-sec="369.082"></button></td><td>Outro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。B1と同じ<code>outro.mp3</code>(6.144秒)をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\outro.mp3(固定音源、記事非依存、A2/B1共通)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「10. Outro Music」節 + <code>er003_b1_p9a_audio.py</code> <code>OUTRO_MP3_PATH</code>定数。</td></tr>
+<tr><td><button class="seek" data-target="player-a2" data-sec="360.04"></button></td><td>Outro</td><td class="txt">音楽ジングル(ナレーションなし、読み上げなし)。B1と同じ<code>outro.mp3</code>(6.144秒)をそのまま再生。</td><td>—</td><td class="src">C:\Users\tensh\sound\outro.mp3(固定音源、記事非依存、A2/B1共通)。<code>er003_output/b1_p9a/A01/instruction/ER-003-B1-P9A_instruction.md</code>「10. Outro Music」節 + <code>er003_b1_p9a_audio.py</code> <code>OUTRO_MP3_PATH</code>定数。</td></tr>
 
 </tbody>
 </table>
