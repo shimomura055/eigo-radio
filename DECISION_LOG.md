@@ -314,6 +314,27 @@ tokenizerのemダッシュ直結表現[split()が"need—or"を1トークン扱�
 P3 Voice B(三人称)のHuman Review承認可否・三人称機械変換の代名詞衝突
 リスクへの対応は、いずれも`USER_DECISION_REQUIRED`のまま未決定。
 
+**追記(2026-09-07、TRIAL-09-AUDIO-STRUCTURE-REFINEMENT-01)**: ユーザー
+判断を反映した新音声構造(Hook単一block・見出し非読み上げ、Comment2の後
+既存Point用SFXを再利用しNarrator[Aoede]がVoice A/B見出しを読み上げてから
+それぞれ別voice[Algieba/Erinome]で本文、Comment3→Tension→Comment4→
+Closing→Key Phrase)をTrial-07記事(一人称、本文無変更)で再音声化した。
+Gemini TTS voice Algieba/Erinomeは技術的に利用可能(変更不要)、Schedar/
+Sulafat/Aoedeとの比較sampleも生成。Voices Family用Comment 1〜4 Editorial
+Contract(候補Prompt)を新規Trialし、Ledger Deviation Check(LEDGER_
+COMPLIANT)・LLM自己チェック(4件ともcompliant=true)を通過。Hook/Tension/
+Closing/Key Phrase音声はtext hash確認のうえTrial-08から再利用しコスト削減。
+**Voice B見出し("Another Voice: The freedom to move.")のみ既存Audio
+Validation Gate/Human Review Lockで`HUMAN_REVIEW_LOCKED`となり1本化
+Assemblyがブロックされた**(override・`approve_regenerate()`の自動実行は
+していない、D4方針に従いSTOP・evidence保全のみ)。同一テキストはTrial-08
+では1回目でPASSしており非決定的な揺れの可能性が高い。他13segmentは全て
+VALIDATED。cost約¥31(上限¥800)。Voice A/B正式固定・Voices Comment
+Prompt採用・Tension slot正式化・新音声構造のProduction採用・Voice B見出し
+のHuman Review承認/再生成可否は、いずれも`USER_DECISION_REQUIRED`のまま
+未決定。根拠: `EDITORIAL-B-FAMILY-VOICES-TRIAL-09-AUDIO-STRUCTURE-
+REFINEMENT-01_REPORT.md`。
+
 **採用理由**: OPEN-112由来のA/B/C Family設計(A=Discovery/Why+News/Trend
 Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 実現可能性・失敗モードをユーザー承認のうえ段階的に検証するため。
@@ -324,7 +345,8 @@ Synthesis、B=Voices+Case Story、C=Future/Scenario)のうち、B Familyの
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-05-PERSPECTIVE-CONTRACT-01_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-06-PERSPECTIVE-SELECTION-EDITOR-DIAG-01_REPORT.md`、
 `EDITORIAL-B-FAMILY-VOICES-TRIAL-07-CONTRACT-REFINEMENT-01_REPORT.md`、
-`EDITORIAL-B-FAMILY-VOICES-TRIAL-08-AUDIO-FIRST-PERSON-CHECK-01_REPORT.md`
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-08-AUDIO-FIRST-PERSON-CHECK-01_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-TRIAL-09-AUDIO-STRUCTURE-REFINEMENT-01_REPORT.md`
 (各Report §末尾のSSOT登録案を参照して本エントリを作成)。
 
 **状態**: `USER_DECISION_REQUIRED`(OPEN-120として追跡)。Productionコード・

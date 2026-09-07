@@ -1,0 +1,9 @@
+{
+  "reason": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: B1のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['point_two_heading=UNVALIDATED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。",
+  "blocked_segments": {
+    "point_two_heading": {
+      "status": "HUMAN_REVIEW_LOCKED",
+      "reason": "[ER-011-HUMAN-REVIEW-COST-GUARD-01] このsegmentは既にHUMAN_REVIEW_REQUIRED状態です。明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません(0 API call)。詳細: 最終status=ASR_VALIDATION_UNCERTAIN。同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)"
+    }
+  }
+}
