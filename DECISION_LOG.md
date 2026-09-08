@@ -7718,6 +7718,75 @@ SSOT反映: `docs/pm/PM_GOVERNANCE.md`冒頭changelog・Gate 7補足(l)末尾へ
 `.claude/settings.local.json`はgit管理対象外のためcommitしていない
 (`git check-ignore`で再確認済み)。
 
+## PM-CLOSEOUT-CONSOLIDATION-11(2026-09-08、B-Family Phase 1受入・Trial A/B
+起票結果のSSOT反映)
+
+ユーザーが2026-09-08に以下を決定した。**B-Family Voice B**: Phase 1
+`point_two`(Voice B)の意図的反復"do not need … do not need"(em dash区切り)
+は正常な著者表現であり、Gate停止(`GATE_BLOCKED`)は誤検知であると確定した。
+Phase 1は既存のHuman Approval経路(`asm.record_human_approval()`)で通して
+よい。**OPEN-121 15件**は方式D flag対象の試聴確認結果、すべてfalse
+positive(誤flag)であり真の重複ではないと確定した。方式D Production既定
+閾値(run≥0.12秒)はTrial結果とユーザー判断が出るまで変更しない。関連する
+2件の技術調査は別管理ID・別Trialとして起票し、いずれも最大限VALIDATEDの
+Trial結果とした。完了報告と`USER_DECISION_REQUIRED`は分離して報告する。
+
+**A. B-Family Production Path Phase 1 Fable受入
+(`EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01_REPORT.md`§10)**:
+上記ユーザー決定に基づきpoint_two attempt1を`asm.record_human_approval()`
+で承認記録、Assembly完了(305.135秒、peak 0.89571、clipping False)、他
+13segment sha256一致、Gate 7(a)〜(l)全充足(Gate 3はSSOT/Git反映待ちのみ
+未充足)、共有ファイル無変更、project-wide regression PASS(既知3件failure
+のみ)、累積¥28.64。**Fable受入判定: `PRODUCTION_WIRED`(Phase 1スコープ)**。
+スコープ注記: B-Family(Voices)の音声Production経路(既存承認済み記事→
+Voice A/B/Narrator固定・Tension slot・Key Phrase位置・Comment 1〜4確定版
+Contract・A-Family同規約の安全機構→Assembly)。記事生成(Writer)・Key
+Phrase選定はPhase 1範囲外、一人称"I"の機械保証はPhase 2保留のまま。
+
+**B. Trial A: OPEN-127
+(`TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01_REPORT.md`)**:
+原因は共有module`er011_open121_repetition_qa_production_01.py`の
+`_normalize_tokens()`が空白分割のみで、em dash前後に空白のないトークン
+(例: "need—or")が1語に結合され、canonical側の反復回数が実際より少なく
+計上される新規failure mode(trial_08でも未報告だった別事例の存在を確認)。
+候補1a(em dashのみ空白へ正規表現置換する1行変更)はTP10/10・FP0/4・既存
+回帰12/12で`VALIDATED`。候補2(全記号対応tokenizerへの拡張)は既存回帰4件
+を壊すため`REJECTED`。Production配線案は`_normalize_tokens()`へ
+`re.sub(r"—"," ",text)`を追加するのみ(未実装)。
+
+**C. Trial B: OPEN-128
+(`OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01_REPORT.md`)**: 方式D
+誤flag低減の4候補を検証。(a)run閾値のみ調整=TP8/FP0を同時達成不可で
+`REJECTED`、(b)類似度+run閾値の複合調整=マージン極薄・過学習で
+`REJECTED`、(c)方式Dflag後に局所ASR語句一致度(overlap≥0.5 or lcs≥3語)で
+二段確認=TP8/8・FP0/15・マージン厚く`VALIDATED`(推奨)、(d)方式AとのAND
+統合=canonical欠落98/517件で無効化され`REJECTED`。acoustic閾値自体
+(sim/run)は無変更。費用¥0。配線案は`analyze_profile_d_long_lag()`の
+`flagged`算出へ局所ASR確認を追加し`transcribe_verbatim()`を共有する設計
+(未実装)。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-120行(Fable受入判定`PRODUCTION_WIRED`
+[Phase 1スコープ]・スコープ注記・完成episode試聴待ちを追記)、OPEN-121行
+(15件false positive確定・Trial B結果[候補c VALIDATED、a/b/d REJECTED]・
+Production閾値無変更を追記)、新規OPEN-127(Trial A、`VALIDATED`[候補1a]、
+配線可否`USER_DECISION_REQUIRED`)、新規OPEN-128(Trial B、`VALIDATED`
+[候補c]、配線可否・`transcribe_verbatim`共有リファクタ可否
+`USER_DECISION_REQUIRED`)。`CURRENT_SPEC.md`冒頭changelogへ本タスクの
+エントリを追加し、第2弾changelog(PM-CLOSEOUT-CONSOLIDATION-06相当箇所、
+B-Family4項目`APPROVED_FOR_PRODUCTION`未配線の記述)へ
+「→PRODUCTION_WIRED(Phase 1、2026-09-08)」を追記した(本文構造は変更
+せず)。`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`を本タスク用の
+固定ヘッダへ全面上書きした。Git操作は4グループ(Phase 1一式[G1]、Trial A
+一式[G2]、Trial B一式[G3]、SSOT本体3ファイル[G4、G1のcommit hashを
+OPEN-120行へ反映してからcommit])に分けてcommitし、各commit後
+`git diff-tree`で一致確認のうえ`origin/main`へpushした。REJECTED候補
+(Trial A候補2、Trial B候補a/b/d)はいずれも回帰劣化・マージン不足・
+検知率低下を理由に不採用と判定し、Production閾値・検知ロジック本体への
+変更は一切行っていない。**根拠レポート**:
+`EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01_REPORT.md`、
+`TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01_REPORT.md`、
+`OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
