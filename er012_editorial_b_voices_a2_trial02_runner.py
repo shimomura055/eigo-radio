@@ -79,15 +79,25 @@ import er012_b_family_editorial_type_registry_01 as registry
 import er012_b_family_voices_production_01 as b1prod
 import er012_editorial_b_voices_a2_trial02_writer as writer
 
-OUT_DIR = writer.OUT_DIR
-A2_DIR = writer.A2_DIR
+# EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03(Lane B): 既存
+# writer.OUT_DIR("..._02")は変更しない(_02は保持のまま既存Trial-02
+# 出力として残す)。本タスクの再生成先(_03)だけを環境変数で明示的に
+# 上書きできるようにする(未指定時は従来どおりwriter.OUT_DIRのまま=
+# 既存関数・既存呼び出し元の挙動は無変更)。
+OUT_DIR = os.environ.get("A2_TRIAL02_OUT_DIR_OVERRIDE", writer.OUT_DIR)
+A2_DIR = f"{OUT_DIR}/a2"
 NARRATION_DIR = f"{A2_DIR}/narration"
 KP_DIR = f"{A2_DIR}/key_phrases"
-AUDIT_DIR = writer.AUDIT_DIR
+AUDIT_DIR = f"{A2_DIR}/audit"
 COST_LOG_PATH = f"{AUDIT_DIR}/raw_usage_log.jsonl"
 PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
 USD_JPY = 160.0
 BUDGET_JPY_CAP = 150.0  # LLM(Step1)+TTS(Step2)合計。委任元指示の上限。
+
+# 完成episode wavのファイル名も同様に環境変数で上書き可能にする(未指定
+# 時は従来どおり"...Trial02.wav"のまま、既存_02の挙動は無変更)。
+EPISODE_OUTPUT_BASENAME = os.environ.get(
+    "A2_TRIAL02_EPISODE_BASENAME_OVERRIDE", "B_Family_A2_Free_Address_Trial02.wav")
 
 # Phase 1 B1(承認済み、同一記事のKey Phrase選定元)。選定は変えない
 # (ユーザー決定B-A2-5)。英語Componentも同一音声(Aoede)のため複製で再利用。
@@ -97,6 +107,14 @@ THEME = {"theme_id": "b_voices_a2_free_address_02", "out_dir": OUT_DIR}
 EDITORIAL_TYPE = registry.get_editorial_type("b_family_voices")
 
 AUDIO_GATE_LEVEL = "B_FAMILY_A2"  # 標準"A2"文字列は使わない(理由は上部コメント参照)
+
+# EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03 B-2: 既存A2標準
+# (er003_v1_n3_01_tts_generate.JAPANESE_TITLESパターン、及び動的タイトル
+# 記事向けの既存前例er011_open112_trend_theme2_b_full_audio_trial_13.py
+# の手法[原文タイトルの直訳、新しい主張・数字を追加しない]を踏襲)。
+# TRIAL-02にはこのJapanese title segmentが欠落していた(横断監査で判明、
+# 既存仕様どおり追加する)。
+JAPANESE_TITLE_TEXT = "一つのオフィスに、働く場所についての二つの考え方"
 
 
 def load_json(path: str) -> dict:
@@ -288,6 +306,17 @@ def run_tts(parts: dict, support_texts: dict, voice_a: str, voice_b: str) -> dic
     results["topic_intro"]["canonical_text"] = topic_intro_text
     assert_budget_ok("after topic_intro TTS")
 
+    # EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03 B-2: 既存A2標準
+    # (Topic intro英語タイトルの直後にJapanese titleを読み上げる、Aoede・
+    # 日本語、n3_tts.generate_a2_japanese_with_reading_safetyは標準A2の
+    # japanese_title生成と同一関数)。TRIAL-02で欠落していた分の追加。
+    print(f"[A2-TRIAL02-RUNNER] japanese_title生成(Aoede、標準A2経路): {JAPANESE_TITLE_TEXT!r}...")
+    with cl.segment_context("japanese_title"):
+        results["japanese_title"] = n3_tts.generate_a2_japanese_with_reading_safety(
+            JAPANESE_TITLE_TEXT, f"{NARRATION_DIR}/japanese_title.wav",
+            n3_tts.expected_substring_ja(JAPANESE_TITLE_TEXT), max_extra_chars=30)
+    assert_budget_ok("after japanese_title TTS")
+
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support_texts[name]
         print(f"[A2-TRIAL02-RUNNER] {name}生成(Aoede、日本語、標準A2経路)...")
@@ -379,6 +408,10 @@ def load_a2_sources_for_b_family(kp: dict) -> dict:
     mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/topic_intro.wav")
     assert sr == common.SAMPLE_RATE
     narration["topic_intro"] = mono
+    # B-2(横断監査fix-03): 既存A2標準どおりTopic intro直後にJapanese titleを追加。
+    mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/japanese_title.wav")
+    assert sr == common.SAMPLE_RATE
+    narration["japanese_title"] = mono
 
     b1_segments = {}
     for name in ("full_story_part1", "full_story_part2", "point_one", "point_two",
@@ -424,6 +457,12 @@ def build_a2_voices_timeline(parts: dict, voice_a: str, voice_b: str) -> list:
         ("pause_0.5", p9a.silence_stereo(0.5)),
         ("Topic intro (Charon)", parts["topic_intro"]),
         ("pause_0.65", p9a.silence_stereo(0.65)),
+        # B-2(横断監査fix-03): 既存A2標準(Hanshin/Health/Household等の
+        # timeline.json実データで確認)どおり、英語タイトル直後に
+        # Japanese title(Aoede、日本語)を追加。pause秒数も標準A2と同じ
+        # (Topic intro→JP title: 0.65秒、JP title→Notification 1: 0.5秒)。
+        ("Japanese title (Aoede, Japanese, A2)", parts["japanese_title"]),
+        ("pause_0.5_title", p9a.silence_stereo(0.5)),
         ("Notification 1", parts["notification"]),
         ("pause_0.4", p9a.silence_stereo(0.4)),
         ("Preview intro (Charon)", parts["preview_intro"]),
@@ -495,7 +534,7 @@ def run_assembly(voice_a: str, voice_b: str) -> dict:
     headroom = asm.apply_headroom_safety_valve(result["assembled"], seq)
     assembled = headroom["assembled"]
 
-    out_path = f"{A2_DIR}/assembled/B_Family_A2_Free_Address_Trial02.wav"
+    out_path = f"{A2_DIR}/assembled/{EPISODE_OUTPUT_BASENAME}"
     save_json(f"{AUDIT_DIR}/gain_report.json", parts["gain_report"])
     save_json(f"{AUDIT_DIR}/timeline.json", result["timeline"])
     save_json(f"{AUDIT_DIR}/headroom_report.json", headroom["report"])
@@ -532,6 +571,9 @@ def _row_info(label: str, parts: dict, support_texts: dict, voice_a: str, voice_
     if label == "Topic intro (Charon)":
         return {"text": f"Today's topic is {parts['title']}.", "voice": charon,
                 "audio": f"{NARRATION_DIR}/topic_intro.wav", "sfx": False}
+    if label.startswith("Japanese title"):
+        return {"text": JAPANESE_TITLE_TEXT, "voice": "Aoede(JA)",
+                "audio": f"{NARRATION_DIR}/japanese_title.wav", "sfx": False}
     if label == "Preview intro (Charon)":
         return {"text": shared_narration.FIXED_ENGLISH_TEXTS["preview_intro"], "voice": charon,
                 "audio": f"{NARRATION_DIR}/preview_intro.wav", "sfx": False}
@@ -626,9 +668,11 @@ def build_player_html(assemble_summary: dict, timeline: list, parts: dict, suppo
                        " / ".join(f"{k}: {v}" for k, v in voice_resolution_reasons.items()) + "</p>"
 
     episode_audio_url = abs_url(assemble_summary["out_path"])
+    is_fix03 = "free_address_03" in OUT_DIR
+    title_suffix = "-CROSS-AUDIT-AND-FIX-03" if is_fix03 else ""
     html = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<title>EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02 player</title>
+<title>EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02{title_suffix} player</title>
 <style>
 {player_common.PLAYER_STANDARD_CSS}
 </style>
@@ -636,17 +680,27 @@ def build_player_html(assemble_summary: dict, timeline: list, parts: dict, suppo
 {player_common.SEEK_SCRIPT}
 </script>
 </head><body>
-<h1>EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-Family A2、Trial)</h1>
+<h1>EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02{title_suffix}(B-Family A2、Trial)</h1>
 <p class="note">
 <b>これはTrial出力であり、APPROVED_FOR_PRODUCTIONではない。</b>
 完成episode(1本化wav、Standard同期、B-Family A2版のみ)。
 duration={assemble_summary['duration_seconds']}s peak={assemble_summary['peak']}
 clipping={assemble_summary['clipping_detected']}
 headroom_safety_valve_applied={assemble_summary['headroom_safety_valve']['applied']}。
-voice_a={voice_a} / voice_b={voice_b}(標準ペース、A2 slowdown非対象)。
+voice_a={voice_a} / voice_b={voice_b}(標準ペース、A2 slowdown非対象、既存B-A2-9の
+USER_DECISION_REQUIREDが未回答のためVoice A/Bへのslowdown適用は本rerunでも
+実施していない)。
 Narrator見出し・Hook・Tension・Closingは全てAoede英語(標準A2 slowdown適用)。
 Comment 1-4・PreviewはAoede日本語(標準A2規約)。B1(Phase 1)との違いは声・言語の
 み(5区切り構造・Voice A/B自体はB1と共通)。
+{"横断監査(EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03)により、Topic "
+ "intro(英語タイトル)直後のJapanese title(Aoede、日本語)を既存A2標準どおり"
+ "追加した(Trial-02では欠落)。Key Phrase「stay put」の語末/t/が聞こえにくい"
+ "件は、既存の標準Production Key Phrase経路[Master Audio Store・trim margin "
+ "0.30秒・ASR false-rejection cascade済み]を正しく通過した状態[status=OK、"
+ "asr_text=&quot;Stay put.&quot;、disfluency_checked=true]であることを確認済みで、"
+ "既存の配線漏れではなく新failure mode疑いとしてSTOP(個別patch未実施、詳細は"
+ "Report参照)。" if is_fix03 else ""}
 各行に「Seek」「Segment名+voice」「実際に読み上げられたscript」「個別音声」を
 同一行に配置(標準player形式、PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11)。
 </p>

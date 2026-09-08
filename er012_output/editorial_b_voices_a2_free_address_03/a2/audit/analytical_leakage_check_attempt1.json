@@ -1,0 +1,43 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_07280e1f8803a7eb006a9fd5f4a3a087d09a19934aee58ed06",
+  "prompt": "以下は、あるVoices/Perspective型記事の4つのsection本文\n(One Voice/Another Voice/Tension/Closing)です。それぞれについて、指定された項目を判定\nしてください(それぞれPASS/FAIL)。\n\n【One Voice(Voice A)・Another Voice(Voice B)に適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentage(調査・報告・データ)に\n  なっている文が無い場合PASS(例: \"A survey found...\", \"Research shows...\", \"X% of\n  workers said...\"のような文が無い場合PASS)\n- leak_numbers_foreground: 具体的な数字・比較結果(パーセント・人数比較等)が、その人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、または1個だけがその人の実感として\n  自然に織り込まれている場合はPASS。複数の数字が連続して比較されている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない\n  場合PASS(例: \"For a worker who...\"のような紹介・要約文で始まっていたり、\"This suggests\n  that...\"のような分析者の言い回しが無い場合PASS)\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点\n  (第三者の解決策・比較の含意等)を、その人のPerspectiveとして書いていない場合PASS\n- leak_discovery_syntax: 「調査結果を整理して説明する」Discovery/Trend記事のような文構造\n  (reported/showed the same pattern/compared with等)へ戻っていない場合PASS\n- leak_evidence_memorable: このsectionを読み終えたときに、Evidence(数字・出典)よりも\n  その人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する5項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax /\n  leak_evidence_memorable: 上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのか\n  (価値観・経験・制約・何を優先するか・問題をどう定義しているか)の掘り下げになっており、\n  survey/研究データそのものの説明・比較へ戻っていない場合PASS。survey/研究結果の紹介・\n  数字比較がTensionの主たる内容になっている場合FAIL\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「両方に良い点がある」「人による」\n  という結び方だけで終わっておらず、かつWriter自身の解決策・妥協案の提案(例: 半固定席の\n  導入等)になっていない場合PASS。単純要約または解決策提案になっている場合FAIL\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに\n該当する原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidence\nは空文字列にしてください。\n\n【One Voice(Voice A)本文】\nEvery morning, I look for an empty desk. Someone may have used it yesterday, and someone else may use it tomorrow. I cannot keep papers in a drawer. I sometimes worry about using a desk or keyboard after someone else. I spend time finding a place before work starts. I miss having the same desk, drawer, and view. They helped me start without looking around and gave me a quiet feeling that I belonged there. Now the office can feel like a place I only borrow. I want my work and things to have a place, even when I cannot choose the desk rules.\n\n【Another Voice(Voice B)本文】\nSome mornings, I choose a quiet corner because I need to think. On other days, I sit where talking is easy. A different desk can put me near people from another department. It can also give me space when a work relationship feels uncomfortable. Sometimes I simply need room. Working from home gave me a place of my own, so I do not need one fixed place at the office. I like changing my surroundings. I choose a place that fits my mood and task. I also choose who is near me—or whether I want anyone near me.\n\n【Tension本文】\nThe disagreement is not really about moving. It is about the source of stability. One worker finds stability in a desk that stays in one place. Papers and a familiar start help this person. The other finds stability in the power to change who is nearby. The kind of space this person needs can also change each day. A shared-desk system can even lead people to use the same desk often. So a rule may look flexible on paper but feel difficult to one person. The same system may feel useful to another.\n\n【Closing本文】\nThe real question is not fixed desks or shared desks. It is what makes a place work. One person needs a steady point. It removes the need to search every day. Another needs enough control to change the people nearby and the work space. The seat is only the visible part of a deeper question: What makes a worker feel, “This is my place at work”?\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "調査・数字・外部分析を使わず、固定席を失った当事者の不便さ、不安、所属感の喪失を一人称の経験として描いている。",
+      "quoted_evidence": ""
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "数字や調査結果はなく、気分や作業内容、人間関係に応じて場所を選ぶ当事者の価値観と実感が中心になっている。",
+      "quoted_evidence": ""
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "reasoning": "研究結果や数字の比較には戻らず、二人が安定を感じる源泉の違いを、固定された机と周囲を変える裁量の対比として掘り下げている。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単に両者を要約したり具体的な制度案を提示したりせず、職場で自分の場所だと感じる条件を問いとして残している。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [],
+  "any_flagged": false
+}
