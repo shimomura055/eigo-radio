@@ -7841,6 +7841,39 @@ PACKET.md`を本タスク用に上書き。
 `OPEN-128-METHOD-D-LOCAL-ASR-CONFIRM-PRODUCTION-WIRING-01_REPORT.md`。
 `PRODUCTION_WIRED`の正式宣言はFable最終受入待ち(Sonnetは宣言しない)。
 
+## PM-CLOSEOUT-CONSOLIDATION-13: OPEN-127/OPEN-128 Fable最終受入(PRODUCTION_WIRED確定)
+
+**Fable受入判定(2026-09-08)**: PM-CLOSEOUT-CONSOLIDATION-12(commit
+`efeb8da`)で`PRODUCTION_WIRED候補(Fable受入待ち)`として記録された
+OPEN-127(em dashトークナイズ、commit`602f1f5`)・OPEN-128(方式D局所ASR
+確認2段判定、commit`05bbeca`)について、Gate 3(14項目)・Gate 4表・
+runtime evidence(OPEN-127: 既知真の重複TP10/10維持・Voice B意図的並行
+構文の負例4/4是正、OPEN-128: 確定TP8/8・確定FP0/15・全23件でASR呼び出し
+1回のみ・Standard同期TTS実発火1件[¥0.483])・project-wide regression
+(collected=2184、passed=2181、failed=3[既知の無関係failureのみ])・ASR
+失敗時の挙動が現行仕様(§6)と同一であること(新規fail-open/fail-closed
+設計なし)・既存AND gate・retry loop・Human Review Lockが無変更である
+こと(diff確認)を照合し、両件を`PRODUCTION_WIRED`として正式受入した。
+
+**SSOT反映**: `OPEN_ITEMS.md`のOPEN-127/OPEN-128行を`PRODUCTION_WIRED`
+(Fable受入、commit hash付き)へ更新した。OPEN-121行へ「方式D 2段判定
+(OPEN-128)配線済み、15件FPは解消、Production acoustic閾値は不変のまま
+維持」を追記し、残る未決事項((1)Point Two残存重複の扱い、(2)disfluency
+QA検知ロジックのn-gram/句単位反復検知への拡張要否、(3)適用スコープの
+full_story/point本文segmentへの拡張要否、(4)Production ASRの非決定的
+平滑化への新acceptance条件の要否、(7)gap<0.5秒の即時言い直し[Trial-01
+方式C-v2]の配線要否)のみを残す形で整理した(項番(5)(6)は既に是正済み、
+本件のOPEN-127/OPEN-128自体・方式D誤flag低減[候補c]のProduction配線
+判断は今回のFable受入で解消)。OPEN-121行の状態は引き続き
+`USER_DECISION_REQUIRED`のまま(closeはユーザー判断)。`CURRENT_SPEC.md`
+冒頭changelogへ第8弾(OPEN-127/OPEN-128 PRODUCTION_WIRED確定)を追加した。
+
+**根拠**: `OPEN-127-EM-DASH-TOKEN-BOUNDARY-PRODUCTION-WIRING-01_REPORT.md`、
+`OPEN-128-METHOD-D-LOCAL-ASR-CONFIRM-PRODUCTION-WIRING-01_REPORT.md`、
+DECISION_LOG.md`OPEN-127/OPEN-128-PRODUCTION-WIRING`エントリ(commit
+`efeb8da`)。Git操作: `CURRENT_SPEC.md`・`DECISION_LOG.md`・
+`OPEN_ITEMS.md`のみをcommitし`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

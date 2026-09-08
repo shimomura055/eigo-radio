@@ -1,6 +1,19 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第8弾、PM-CLOSEOUT-CONSOLIDATION-13、OPEN-127/
+OPEN-128 Fable受入)**: 第7弾で配線したOPEN-127(em dashトークナイズ)・
+OPEN-128(方式D局所ASR確認2段判定)を、Fableが Gate 3(14項目)・
+Gate 4表・runtime evidence(OPEN-127: TP10/10・Voice B負例4/4是正、
+OPEN-128: 確定TP8/8・確定FP0/15・全23件ASR呼び出し1回・Standard同期
+TTS実発火1件¥0.483)・project-wide regression(collected=2184、
+passed=2181、既知3件のみ)・ASR失敗時挙動が現行仕様(§6)と同一
+(新規fail-open/fail-closed設計なし)・既存AND gate/retry loop/Human
+Review Lock無変更(diff確認)を照合し、両件を`PRODUCTION_WIRED`として
+正式受入した(commit OPEN-127=`602f1f5`、OPEN-128=`05bbeca`)。
+Production採用範囲・acoustic threshold(sim0.85/run0.12秒)は第7弾から
+無変更。詳細は`OPEN_ITEMS.md`OPEN-127/OPEN-128行、DECISION_LOG.md
+`PM-CLOSEOUT-CONSOLIDATION-13`エントリ参照。
 **最終更新: 2026-09-08(第7弾、OPEN-127/OPEN-128 Production配線完了)**:
 ユーザー承認(2026-09-08、`APPROVED_FOR_PRODUCTION`)に基づき、共有module
 `er011_open121_repetition_qa_production_01.py`へ2件を配線した。
