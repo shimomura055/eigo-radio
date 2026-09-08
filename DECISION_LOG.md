@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-20、Lane A-2`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`結果のSSOT反映)**: News固有層(Layer3 News Focus Module Major/Daily variant・Mode判定基準)設計Trialの結果をSSOTへ反映した(Gate 1=`VALIDATED`[設計]、Gate 4 PASS、費用¥0、API呼び出し0件、コード・Prompt・Production変更なし)。Point Role候補7件(DESIGN-08 4件+本Trial新規3件[mechanism/beyond-the-headline factor/certainty limitation])、Trend Synthesis Focus Moduleとの差分表、Major/Daily Gate 6項目(消去法的性質でTrend Gate6条件と非対称であることを自己注記)を提示した。実記事(Hanshin/Health/Household)を精読した結果、**Household(冷蔵庫クリスパー)記事は単一起点イベントが存在せずMajor/Daily・Trend Synthesisいずれの対象でもない可能性が高いという新規発見**があり、`FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01`・`FAMILY-A-LEGACY-NEWS-ASSET-SURVEY-01`が前提としていた「Hanshin/Health/Household一括Newsreference」の枠組み修正要否を含む`USER_DECISION_REQUIRED`候補6件(設計案[§1]採否/Household発見[§2.2]への対応/Health記事の境界[単一研究集約 vs Trend外部集約]の扱い/Gate非対称性の扱い/myth-correction候補[§3候補7]の採否/検証Trial実施可否[Hanshin Ledger再利用、A2+B1B概算¥30〜80])を提起した。採用判断はユーザーへ委ね、`CURRENT_SPEC.md`側の仕様変更は行っていない。`OPEN_ITEMS.md`OPEN-112行へ追記した。詳細は`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01_REPORT.md`参照。2026-09-08(FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01、Lane A-1、ユーザー決定A-UDR-5/6/7反映): ユーザー決定(A-UDR-5)「Hanshin系現役Production資産を通常News(Major/Daily News)の正式referenceとしてCURRENT_SPECへ反映する。ただし既にDECIDED/PRODUCTION_WIRED済みの内容だけを正式化し、B1-A等obsolete仕様は混ぜず、ADD03(イラン)・A02(英SNS)は題材・構造referenceに限定し、Trend Synthesis専用仕様(Focus Module・Engagement原則・Trend Gate等)は混ぜない」を受け、`CURRENT_SPEC.md`へ新設「## 通常News(Major/Daily News)Reference仕様」節(「## News Editorial Mode(Trend Synthesis)」節の直後)を追加した。内容は既存各節(CEFR-A2構造・音声仕様/B1/Cross-level仕様/Key Phrase/Audio Assembly)への参照+「通常Newsに適用される」ことの明記のみで、既存DECIDED仕様の重複転記はしていない。Hanshin(`ER-003-A2-B1-N3-01`、Health/Household含む)を構造・Writer・Fact Safety・音声のreference実装として正式指定し(`DECIDED`)、ADD03/A02は題材・音声構造referenceに限定(本文生成コードパス・完成音声は非再利用、B1-A方式はobsolete)。News固有層(Layer3 News Focus Module・Mode判定基準)は内容を書かず「未設計・設計Trial起票済み(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`、Lane A-2、並行稼働中の別管理ID)」とだけ明記した。obsolete除外リスト(B1-A・P-series専用script・Natural English Source方式・旧Preview分量・旧trim margin・ER-010設計文書)は既存の置換記録(ER-003-B1-B2-SCOPE-FIX-01、DECISION_LOG.md 5711行、ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23、OPEN-112行[2026-09-04]参照)へ紐付けて明記した。**Gate 4 Dangling Reference Check**: 追記テキストが参照した管理ID(ER-003-A2-STRUCT-02〜04、ER-003-A2-SPEC-FREEZE-01、ER-003-A2-B1-N3-01、ER-003-B1-B2-SCOPE-FIX-01、ER-003-SPOKEN-FIRST-03、ER-009-N1-LEDGER-DEVIATION-RECALIBRATION-02、ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12、ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、ER-003-CROSSLEVEL-AUDIO-02、ER-003-B1-NOVEL-AUDIO-01系、ER-003-POINT-NOTIFICATION-01、ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23)は全件、既存`CURRENT_SPEC.md`/`DECISION_LOG.md`内に既出であることをgrepで確認した(結果:PASS)。Trial-only・未承認仕様(Trend Focus Module、Discovery Layer3、Reference Digest等)は参照していない。新規仕様追加が必要な事態は発生せず、STOPなし。あわせてユーザー決定(A-UDR-7)「Trend Synthesis A2のPoint Overlap run間分散(0.31〜0.66)は観測継続、Trial不要、Production閾値・Prompt・retry機構は変更しない」を`OPEN_ITEMS.md`OPEN-112行へ追記した(観測項目4点: Overlap値/retry頻度/NG_REVIEW_REQUIRED発生/Cost・latency)。Discovery deferredは据え置き継続(変更なし)。コード・Prompt・API呼び出しはいずれも実施していない。詳細は`FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01_REPORT.md`、`FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01_REPORT.md`参照。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-16、Lane A[`FAMILY-A-BRANCH-FACT-CHECK-02`、Discovery/News/Trend Synthesis枝別事実確認、読み取り専用]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02`、4 Voices構造設計Trial]を相互独立に並行実施しSSOTへ反映した。**Lane A**(読み取り専用、コード・Prompt・Production無変更): Family A(Discovery/News/Trend Synthesis)の3枝を個別に事実確認し、Discoveryは共通Production配管がPRODUCTION_WIRED済み(ただしDiscovery固有ではなく全テーマ共通)、Discovery固有Layer3 Focus ModuleはVALIDATED止まりでProduction採否はDEFERRED、通常News(Major/Daily News)はOPEN-112-NEWS-MODE-DESIGN-08の設計文書のみでTrial実施0件、Trend Synthesisはmode自体のProduction採用・配線がDEFERRED(Theme 2完成音声のみAPPROVED_FOR_PRODUCTION、mode本体とは別論点)であることを確認した。**Lane B**(記事本文・音声生成なし、費用¥0): 2026-09-08ユーザー決定(4 Voices拡張YES・選定軸=案A)を受け、4 Voices対応の構造設計案3つ(S1: 4見出し直列/S2: 2ペア構造/S3: 軸提示先出し)を比較しS1を推奨(Gate 1=`VALIDATED`)、未承認仕様8件(構造採用・Comment 2/3文言変更・4声voice選定・physical_structure新規値・QA 6ペア・REQUIRED_SEGMENTS拡張・目標尺380〜430秒・Tension 2軸交差)を特定した。両Laneとも採用判断は`USER_DECISION_REQUIRED`のままSTOP。`OPEN_ITEMS.md`OPEN-112行(Lane A)・OPEN-120行(Lane B)へ各1点追記、`CURRENT_SPEC.md`は仕様変更なしのためchangelog参照のみ追記。詳細は`FAMILY-A-BRANCH-FACT-CHECK-02_REPORT.md`・`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02_REPORT.md`参照)。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-15、Lane A[`FAMILY-A-DESIGN-FIX-
+**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-21、Lane B A2横断監査結果のSSOT反映)**: `EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03_REPORT.md`が、TRIAL-02成果物と既存A2標準を横断監査した結果(B-2[日本語タイトル欠落]は配線漏れと判定し修正・再生成、B-1[Voice A/Bのslowdown未適用]・B-4[Key Phrase「stay put」の可聴性]は既存正式決定・Production経路と整合するためSTOP、B-3[Charon/Aoede役割]は既承認B-Family規約と一致、B-5[Audio Validation Gate`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL`に`B_FAMILY_A2`未登録]を新規発見)をSSOTへ反映した。`er012_output/editorial_b_voices_a2_free_address_03/`(japanese_title 1segment新規TTS、他は`_02`のバイト同一wav再利用、340.80秒、¥0.65)、Gate1=`VALIDATED`。`OPEN_ITEMS.md`OPEN-120行・OPEN-129行へ追記。詳細は本ファイル「PM-CLOSEOUT-CONSOLIDATION-21」節・`EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03_REPORT.md`参照。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-20、Lane A-2`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`結果のSSOT反映)**: News固有層(Layer3 News Focus Module Major/Daily variant・Mode判定基準)設計Trialの結果をSSOTへ反映した(Gate 1=`VALIDATED`[設計]、Gate 4 PASS、費用¥0、API呼び出し0件、コード・Prompt・Production変更なし)。Point Role候補7件(DESIGN-08 4件+本Trial新規3件[mechanism/beyond-the-headline factor/certainty limitation])、Trend Synthesis Focus Moduleとの差分表、Major/Daily Gate 6項目(消去法的性質でTrend Gate6条件と非対称であることを自己注記)を提示した。実記事(Hanshin/Health/Household)を精読した結果、**Household(冷蔵庫クリスパー)記事は単一起点イベントが存在せずMajor/Daily・Trend Synthesisいずれの対象でもない可能性が高いという新規発見**があり、`FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01`・`FAMILY-A-LEGACY-NEWS-ASSET-SURVEY-01`が前提としていた「Hanshin/Health/Household一括Newsreference」の枠組み修正要否を含む`USER_DECISION_REQUIRED`候補6件(設計案[§1]採否/Household発見[§2.2]への対応/Health記事の境界[単一研究集約 vs Trend外部集約]の扱い/Gate非対称性の扱い/myth-correction候補[§3候補7]の採否/検証Trial実施可否[Hanshin Ledger再利用、A2+B1B概算¥30〜80])を提起した。採用判断はユーザーへ委ね、`CURRENT_SPEC.md`側の仕様変更は行っていない。`OPEN_ITEMS.md`OPEN-112行へ追記した。詳細は`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01_REPORT.md`参照。2026-09-08(FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01、Lane A-1、ユーザー決定A-UDR-5/6/7反映): ユーザー決定(A-UDR-5)「Hanshin系現役Production資産を通常News(Major/Daily News)の正式referenceとしてCURRENT_SPECへ反映する。ただし既にDECIDED/PRODUCTION_WIRED済みの内容だけを正式化し、B1-A等obsolete仕様は混ぜず、ADD03(イラン)・A02(英SNS)は題材・構造referenceに限定し、Trend Synthesis専用仕様(Focus Module・Engagement原則・Trend Gate等)は混ぜない」を受け、`CURRENT_SPEC.md`へ新設「## 通常News(Major/Daily News)Reference仕様」節(「## News Editorial Mode(Trend Synthesis)」節の直後)を追加した。内容は既存各節(CEFR-A2構造・音声仕様/B1/Cross-level仕様/Key Phrase/Audio Assembly)への参照+「通常Newsに適用される」ことの明記のみで、既存DECIDED仕様の重複転記はしていない。Hanshin(`ER-003-A2-B1-N3-01`、Health/Household含む)を構造・Writer・Fact Safety・音声のreference実装として正式指定し(`DECIDED`)、ADD03/A02は題材・音声構造referenceに限定(本文生成コードパス・完成音声は非再利用、B1-A方式はobsolete)。News固有層(Layer3 News Focus Module・Mode判定基準)は内容を書かず「未設計・設計Trial起票済み(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`、Lane A-2、並行稼働中の別管理ID)」とだけ明記した。obsolete除外リスト(B1-A・P-series専用script・Natural English Source方式・旧Preview分量・旧trim margin・ER-010設計文書)は既存の置換記録(ER-003-B1-B2-SCOPE-FIX-01、DECISION_LOG.md 5711行、ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23、OPEN-112行[2026-09-04]参照)へ紐付けて明記した。**Gate 4 Dangling Reference Check**: 追記テキストが参照した管理ID(ER-003-A2-STRUCT-02〜04、ER-003-A2-SPEC-FREEZE-01、ER-003-A2-B1-N3-01、ER-003-B1-B2-SCOPE-FIX-01、ER-003-SPOKEN-FIRST-03、ER-009-N1-LEDGER-DEVIATION-RECALIBRATION-02、ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12、ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01、ER-003-CROSSLEVEL-AUDIO-02、ER-003-B1-NOVEL-AUDIO-01系、ER-003-POINT-NOTIFICATION-01、ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23)は全件、既存`CURRENT_SPEC.md`/`DECISION_LOG.md`内に既出であることをgrepで確認した(結果:PASS)。Trial-only・未承認仕様(Trend Focus Module、Discovery Layer3、Reference Digest等)は参照していない。新規仕様追加が必要な事態は発生せず、STOPなし。あわせてユーザー決定(A-UDR-7)「Trend Synthesis A2のPoint Overlap run間分散(0.31〜0.66)は観測継続、Trial不要、Production閾値・Prompt・retry機構は変更しない」を`OPEN_ITEMS.md`OPEN-112行へ追記した(観測項目4点: Overlap値/retry頻度/NG_REVIEW_REQUIRED発生/Cost・latency)。Discovery deferredは据え置き継続(変更なし)。コード・Prompt・API呼び出しはいずれも実施していない。詳細は`FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01_REPORT.md`、`FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01_REPORT.md`参照。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-16、Lane A[`FAMILY-A-BRANCH-FACT-CHECK-02`、Discovery/News/Trend Synthesis枝別事実確認、読み取り専用]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02`、4 Voices構造設計Trial]を相互独立に並行実施しSSOTへ反映した。**Lane A**(読み取り専用、コード・Prompt・Production無変更): Family A(Discovery/News/Trend Synthesis)の3枝を個別に事実確認し、Discoveryは共通Production配管がPRODUCTION_WIRED済み(ただしDiscovery固有ではなく全テーマ共通)、Discovery固有Layer3 Focus ModuleはVALIDATED止まりでProduction採否はDEFERRED、通常News(Major/Daily News)はOPEN-112-NEWS-MODE-DESIGN-08の設計文書のみでTrial実施0件、Trend Synthesisはmode自体のProduction採用・配線がDEFERRED(Theme 2完成音声のみAPPROVED_FOR_PRODUCTION、mode本体とは別論点)であることを確認した。**Lane B**(記事本文・音声生成なし、費用¥0): 2026-09-08ユーザー決定(4 Voices拡張YES・選定軸=案A)を受け、4 Voices対応の構造設計案3つ(S1: 4見出し直列/S2: 2ペア構造/S3: 軸提示先出し)を比較しS1を推奨(Gate 1=`VALIDATED`)、未承認仕様8件(構造採用・Comment 2/3文言変更・4声voice選定・physical_structure新規値・QA 6ペア・REQUIRED_SEGMENTS拡張・目標尺380〜430秒・Tension 2軸交差)を特定した。両Laneとも採用判断は`USER_DECISION_REQUIRED`のままSTOP。`OPEN_ITEMS.md`OPEN-112行(Lane A)・OPEN-120行(Lane B)へ各1点追記、`CURRENT_SPEC.md`は仕様変更なしのためchangelog参照のみ追記。詳細は`FAMILY-A-BRANCH-FACT-CHECK-02_REPORT.md`・`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02_REPORT.md`参照)。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-15、Lane A[`FAMILY-A-DESIGN-FIX-
 INVENTORY-01`、読み取り専用棚卸し]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-
 FOUR-VOICES-AXIS-DESIGN-TRIAL-01`、4 Voices選定軸設計Trial]を並行実施しSSOTへ
 反映した。**Lane A**(Lane Bとは相互に独立、コード・Prompt・Production無変更の
@@ -8233,6 +8233,76 @@ REPORT.md`(§0〜§11、修正指示1回目への対応[§11]を含む)。Git操
 production_wiring_01/a2_rerun_02/`・`.../b1b/key_phrases/`配下の
 json/md/txt/jsonl、wav無し)をG1としてcommit、SSOT 3ファイル
 (`CURRENT_SPEC.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG2として
+ファイル名指定でcommitし`origin/main`へpush。
+
+## PM-CLOSEOUT-CONSOLIDATION-21: Lane B A2横断監査結果(B-Family A2 vs 既存A2標準)のSSOT反映
+
+`EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03_REPORT.md`が、
+TRIAL-02成果物(`er012_output/editorial_b_voices_a2_free_address_02/`、
+VALIDATED、保持)と既存A2標準(単発episode、n3_01/iran01系)を横断監査
+した結果をSSOTへ反映した。
+
+**B-1(Voice A/B本文へのA2 6% slowdown未適用)**: 既存A2標準は
+`generate_a2_segment_with_slowdown`によりHook/Tension/Closing相当
+segmentへslowdownを適用するが、B-FamilyのVoice A/B本文
+(`b1prod.generate_voice_body_wide_margin`使用)は非対象。既に`B-A2-9`
+としてUSER_DECISION_REQUIRED登録済み・未回答のため、Lane Bは独自に
+速度を変更せず据え置いた。
+
+**B-2(日本語タイトル欠落、修正実施)**: 標準A2はTopic intro(英語、
+Aoede)直後に日本語タイトルを読み上げるが、TRIAL-02はこのsegmentを
+欠いていた。既存A2標準の単純な配線漏れと判定し、`JAPANESE_TITLE_TEXT`
+(原文タイトルの直訳、前例`OPEN-112`Theme2 Trial-13の手法を踏襲)を
+追加した専用runner(`er012_b_voices_a2_cross_audit_fix_03_runner.py`)
+で再生成した。
+
+**B-3(Charon/Aoedeの役割)**: 既存B-Family Phase 1 B1のNavigator規約
+(Topic intro=Charon)と一致しており、TRIAL-02固有の新規逸脱ではない
+ため修正不要と判定した。
+
+**B-4(Key Phrase「stay put」の語末/t/の可聴性)**: Master Audio Store
+経由の標準Production経路(最新trim margin 0.30秒・ASR false-rejection
+cascade)を正しく通過し、`status=OK`・ASR="Stay put."・disfluency PASS
+で配線漏れは無い。既存の自動QA(ASRベース)では検知できない**新
+failure modeの可能性**と判定し、個別patch(このKey Phraseだけ手動で
+音を足す等)は禁止事項に該当するためSTOPした(再生成・別経路への
+差し替えは未実施)。
+
+**B-5(横断発見)**: Audio Validation Gateの
+`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL`辞書に`"B_FAMILY_A2"`キー
+が未登録であることを発見した。実データ自体はdisfluency基準を満たす
+ため緊急性は無いが、防御多重化(defense-in-depth)の空白であり、
+共有module(`er003_v1_n3_01_assemble.py`)の変更を要するため本タスク
+では未修正(OPEN-129の構造完全性論点とも関連)。
+
+**B-6(修正・再生成)**: `er012_output/editorial_b_voices_a2_free_
+address_03/`(japanese_title 1segmentのみ新規TTS生成、他14segment+
+Key Phrase5件は`_02`のバイト同一wavをsha256照合のうえ再利用、
+340.80秒[335.12秒から+5.68秒]、peak0.98、clippingなし、費用¥0.65、
+`run_project_regression.py` collected=2195 passed=2192 failed=3
+[既知の無関係failureのみ、新規failure/errorゼロ])。
+
+**Gate 1分類**: `VALIDATED`(Production採用[`APPROVED_FOR_PRODUCTION`]
+は未宣言、ユーザー試聴・承認待ち)。
+
+**未決事項(いずれも`USER_DECISION_REQUIRED`)**: B-A2-9(Voice A/B
+slowdown適用可否、既存再掲)、Key Phrase「stay put」の可聴性(新
+failure mode候補、対応方針未定)、`DISFLUENCY_QA_MANDATORY_SEGMENTS_
+BY_LEVEL`への`B_FAMILY_A2`エントリ追加(Gate 3配線時に共有module変更
+として検討)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-120行(横断監査結果の要約、`a2_free_
+address_03`=VALIDATED[試聴待ち]、上記3件のUSER_DECISION_REQUIREDを
+追記)、OPEN-129行(B-Family A2での`DISFLUENCY_QA_MANDATORY_SEGMENTS_
+BY_LEVEL`未登録発見を関連事項として1行追記)。`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`を本タスク用に上書きした。
+
+**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-
+03_REPORT.md`。Git操作: Lane B成果物(Report1件、
+`er012_editorial_b_voices_a2_trial02_runner.py`、
+`er012_b_voices_a2_cross_audit_fix_03_runner.py`、`er012_output/
+editorial_b_voices_a2_free_address_03/`配下のjson/md/html[wav除外])
+をG1、SSOT2ファイル(`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG2として
 ファイル名指定でcommitし`origin/main`へpush。
 
 ## 参照元
