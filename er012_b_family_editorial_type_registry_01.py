@@ -169,6 +169,82 @@ PHASE2_PENDING_NOTES = (
     "REQUIREDのまま未確定、本registryには含めない。",
 )
 
+# ============================================================
+# B-Family A2(2026-09-09 ユーザー正式決定、APPROVED_FOR_PRODUCTION。
+# 管理ID: EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、Gate 3)
+# ============================================================
+# 声・物理構造(5区切り)はB1と同一(VOICE_ASSIGNMENT/VOICE_FALLBACK/
+# SECTION_LABELS/TENSION_SLOT_APPROVED_NAME/EXTRA_SEGMENT_NAME/
+# COMMENT_ROLES[役割定義そのもの]をそのまま流用する)。A2固有の差分
+# (Audio Gate level・slowdown対象・Comment出力言語・日本語タイトル・
+# OPEN-129整合用required segments)のみここに追加する。出典:
+# EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02/
+# ...-CROSS-AUDIT-AND-FIX-03/...-SLOWDOWN-AND-KEYPHRASE-REGEN-04の各Report。
+
+# Audio Validation Gateのlevel引数(標準"A2"文字列は使わない。理由:
+# 標準"A2"は"point_one"/"point_two"という名前へ「A2 slowdown必須」チェックを
+# 強制するが、B-Familyのpoint_one/two相当はVoice A/B[Algieba/Erinome]で
+# あり同名の別物のため誤爆する。既存の安全機構[VALIDATED/HUMAN_APPROVED状態
+# チェック・asset hash staleness]は無変更のまま有効)。
+B_FAMILY_A2_AUDIO_GATE_LEVEL = "B_FAMILY_A2"
+
+# 標準A2の既存6% slowdown(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6% time-stretch
+# post-process、er003_v1_n3_01_tts_generate.py無変更)を適用する対象segment。
+# Voice A/B本文(point_one/point_two相当)を含む(ユーザー決定2026-09-08、
+# EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04)。
+B_FAMILY_A2_SLOWDOWN_TARGET_SEGMENTS = (
+    "point_one_heading", "point_two_heading",
+    "full_story_part1", "full_story_part2",
+    "point_one", "point_two",
+    EXTRA_SEGMENT_NAME,  # "tension_reflection"
+    "in_one_line",
+)
+
+# Comment 1-4・Previewの出力言語(ユーザー決定B-A2-6: COMMENT_ROLESの役割
+# 定義そのものは維持したまま、出力言語のみ標準A2規約[日本語・Aoede]へ。
+# B1はCharon英語のまま無変更)。
+B_FAMILY_A2_COMMENT_LANGUAGE = "ja"
+B_FAMILY_A2_COMMENT_VOICE = "Aoede"
+
+# 日本語タイトル(標準A2既存規約=er003_v1_n3_01_tts_generate.JAPANESE_TITLES
+# と同じ「記事[theme]ごとに人手で直訳を用意する」パターンをB-Familyへも
+# 適用する。新しい主張・数字は追加しない、原文タイトルの直訳のみ)。
+B_FAMILY_A2_JAPANESE_TITLE_REQUIRED = True
+B_FAMILY_A2_JAPANESE_TITLES = {
+    # EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03(B-2)で追加した
+    # 直訳文言、ユーザー最終承認版(_04)まで無変更。
+    "b_voices_a2_free_address": "一つのオフィスに、働く場所についての二つの考え方",
+}
+
+# OPEN-129整合(Gate 3 item 8): Audio Validation Gate自体は「構造上あるべき
+# segment数との一致」を検証しない既知の未対策事項(OPEN-129、共有Gateは
+# 変更しない)。B-Family A2 Production runner側の完全性チェック(段数・
+# voice割当の一致)専用に、期待されるsegment一覧+期待voice roleをここへ
+# 定義する(この一覧自体はGateではなく、Lane B runner側のassertion専用の
+# データ)。"voice_a"/"voice_b"は実際に解決されたvoice名(fallback込み)と
+# 突き合わせる。
+B_FAMILY_A2_REQUIRED_SEGMENTS = (
+    ("topic_intro", "narrator_charon"),
+    ("japanese_title", "narrator_aoede_ja"),
+    ("preview", "narrator_aoede_ja"),
+    ("comment_1", "narrator_aoede_ja"), ("comment_2", "narrator_aoede_ja"),
+    ("comment_3", "narrator_aoede_ja"), ("comment_4", "narrator_aoede_ja"),
+    ("point_one_heading", "narrator"), ("point_two_heading", "narrator"),
+    ("point_one", "voice_a"), ("point_two", "voice_b"),
+    ("full_story_part1", "narrator"), ("full_story_part2", "narrator"),
+    (EXTRA_SEGMENT_NAME, "narrator"), ("in_one_line", "narrator"),
+)
+
+B_FAMILY_A2_CONFIG = {
+    "audio_gate_level": B_FAMILY_A2_AUDIO_GATE_LEVEL,
+    "slowdown_target_segments": B_FAMILY_A2_SLOWDOWN_TARGET_SEGMENTS,
+    "comment_language": B_FAMILY_A2_COMMENT_LANGUAGE,
+    "comment_voice": B_FAMILY_A2_COMMENT_VOICE,
+    "japanese_title_required": B_FAMILY_A2_JAPANESE_TITLE_REQUIRED,
+    "japanese_titles": B_FAMILY_A2_JAPANESE_TITLES,
+    "required_segments": B_FAMILY_A2_REQUIRED_SEGMENTS,
+}
+
 EDITORIAL_TYPES = {
     "b_family_voices": {
         "family": "B",
@@ -181,9 +257,15 @@ EDITORIAL_TYPES = {
         "key_phrase_position": KEY_PHRASE_POSITION,
         "comment_roles": COMMENT_ROLES,
         "first_person_mechanically_enforced": False,  # Phase 2待ち
+        "a2": B_FAMILY_A2_CONFIG,
     },
 }
 
 
 def get_editorial_type(editorial_type: str = "b_family_voices") -> dict:
     return EDITORIAL_TYPES[editorial_type]
+
+
+def get_editorial_type_a2(editorial_type: str = "b_family_voices") -> dict:
+    """A2固有設定のみを返す(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01)。"""
+    return EDITORIAL_TYPES[editorial_type]["a2"]

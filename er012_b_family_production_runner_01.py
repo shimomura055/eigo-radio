@@ -57,6 +57,7 @@ import er005_cost_logger as cl
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er012_b_family_editorial_type_registry_01 as registry
+import er012_b_family_voices_a2_production_01 as a2prod
 import er012_b_family_voices_production_01 as b1prod
 
 ARTICLE_PATH = "er012_output/editorial_b_voices_trial_07/b1b_run02_attempt2/article.md"
@@ -111,13 +112,17 @@ def _load_pricing():
     return price
 
 
-def compute_cost_jpy_so_far() -> tuple:
-    if not os.path.exists(COST_LOG_PATH):
+def compute_cost_jpy_so_far(cost_log_path: str = None) -> tuple:
+    # EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01: 完全後方互換の
+    # 追加引数(既定None)。既存B1呼び出し(引数なし)はCOST_LOG_PATH
+    # (phase1_02専用)のまま無変更、A2側だけがA2_COST_LOG_PATHを明示的に渡す。
+    cost_log_path = cost_log_path or COST_LOG_PATH
+    if not os.path.exists(cost_log_path):
         return 0.0, {}
     price = _load_pricing()
     total_usd = 0.0
     by_provider = {}
-    with open(COST_LOG_PATH, encoding="utf-8") as f:
+    with open(cost_log_path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -563,9 +568,394 @@ voice_a={voice_a} / voice_b={voice_b}(Narrator見出しは全てAoede固定)。
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01: level="a2"分岐
+# ============================================================
+# 上記のB1関数群(prepare/voice_check/reuse_key_phrases/run_scaffold/
+# run_tts/finalize_tts_results/run_assembly/_row_info/build_player_html)は
+# 一切変更していない(既存B1経路はbyte単位で無変更、Gate 3 item1)。
+#
+# 入力記事は、ユーザーが2026-09-09に`APPROVED_FOR_PRODUCTION`とした
+# `er012_output/editorial_b_voices_a2_free_address_04/`(A2 Free Address、
+# stay put新版採用済み)をそのまま使う。Voice A/B本文(point_one/point_two、
+# Gate 3 item1の中心対象)のみ本runnerが実際に新規TTSを発火して再生成し、
+# 他の全segment(Hook/Narrator見出し/Tension/Closing/Comment/Preview/
+# 日本語タイトル/Key Phrase)は承認済みbyteをsha256照合のうえ再利用する
+# (差分ゼロなら再生成しない、という委任指示どおり)。
+A2_SOURCE_DIR = "er012_output/editorial_b_voices_a2_free_address_04/a2"
+A2_THEME_KEY = "b_voices_a2_free_address"
+
+A2_OUT_DIR = "er012_output/editorial_b_family_voices_a2_production_wiring_01"
+A2_A2_DIR = f"{A2_OUT_DIR}/a2"
+A2_NARRATION_DIR = f"{A2_A2_DIR}/narration"
+A2_KP_DIR = f"{A2_A2_DIR}/key_phrases"
+A2_AUDIT_DIR = f"{A2_A2_DIR}/audit"
+A2_COST_LOG_PATH = f"{A2_AUDIT_DIR}/raw_usage_log.jsonl"
+A2_BUDGET_JPY_CAP = 100.0
+A2_EPISODE_BASENAME = "B_Family_A2_Production_Wiring_01.wav"
+A2_AUDIO_GATE_LEVEL = registry.get_editorial_type_a2()["audio_gate_level"]
+
+# Voice A/B本文以外は承認済みbyte再利用対象(sha256照合、fail-closed)。
+A2_SEGMENTS_TO_REUSE = (
+    "topic_intro", "japanese_title", "preview", "comment_1", "comment_2", "comment_3", "comment_4",
+    "point_one_heading", "point_two_heading", "full_story_part1", "full_story_part2",
+    b1prod.EXTRA_SEGMENT_NAME, "in_one_line",
+)
+# 固定narration(Master Audio Store経由の共有資産、sha256記録がないためcopy
+# のみ。ensure_all_shared_narration_a2()と同じ資産のためsha256照合対象外)。
+A2_FIXED_NARRATION_TO_REUSE = (
+    "welcome", "preview_intro", "key_phrases_intro", "full_story_intro",
+    "num_one", "num_two", "num_three", "num_four", "num_five",
+)
+
+
+def sha256_file(path: str) -> str:
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+def assert_budget_ok_a2(note: str = "") -> float:
+    jpy, by_provider = compute_cost_jpy_so_far(A2_COST_LOG_PATH)
+    print(f"[A2-PROD-RUNNER][cost] so far={jpy:.2f} JPY by_provider={by_provider} ({note})")
+    if jpy > A2_BUDGET_JPY_CAP:
+        raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {A2_BUDGET_JPY_CAP} JPY. Stopping ({note}).")
+    return jpy
+
+
+def prepare_a2() -> dict:
+    with open(f"{A2_SOURCE_DIR}/article.md", encoding="utf-8") as f:
+        article_text = f.read()
+    parts = b1prod.build_parts(article_text)
+    os.makedirs(f"{A2_A2_DIR}/audit", exist_ok=True)
+    with open(f"{A2_A2_DIR}/article.md", "w", encoding="utf-8") as f:
+        f.write(article_text)
+    save_json(f"{A2_A2_DIR}/parts.json", parts)
+    return {"article_text": article_text, "parts": parts}
+
+
+def voice_check_a2(parts: dict) -> dict:
+    sample_text = b1prod.first_n_sentences(parts["point_one_body"], 3)
+    sample_dir = f"{A2_OUT_DIR}/audit/voice_samples"
+    results = b1prod.run_voice_availability_check(sample_text, sample_dir)
+    save_json(f"{sample_dir}/voice_sample_results.json", {"sample_text": sample_text, "results": results})
+    voice_a, voice_b, reasons = b1prod.resolve_voice_names(results)
+    save_json(f"{A2_AUDIT_DIR}/voice_resolution.json", {"voice_a": voice_a, "voice_b": voice_b, "reasons": reasons})
+    return {"voice_a": voice_a, "voice_b": voice_b, "reasons": reasons}
+
+
+def reuse_approved_a2_assets(article_text: str) -> dict:
+    """Gate 3 item4: 承認済み(_04、ユーザー2026-09-09 APPROVED_FOR_PRODUCTION)
+    segmentのbyte再利用。全segmentのsha256を_04記録と突き合わせたうえで
+    コピーする(fail-closed、不一致ならRuntimeError)。Voice A/B本文
+    (point_one/point_two)のみ本runnerが新規に実発火して生成し直す
+    (run_tts_a2、Gate 3 item1の中心対象)。"""
+    import shutil
+    with open(f"{A2_SOURCE_DIR}/article.md", encoding="utf-8") as f:
+        source_article_text = f.read()
+    if sha(article_text) != sha(source_article_text):
+        raise RuntimeError("[TEXT_HASH_MISMATCH] 承認済み記事(_04)と入力記事のtext hashが一致しません。")
+
+    os.makedirs(A2_NARRATION_DIR, exist_ok=True)
+    os.makedirs(A2_KP_DIR, exist_ok=True)
+    source_results = load_json(f"{A2_SOURCE_DIR}/audit/tts_generation_results.json")
+
+    reuse_report = {"segments": {}, "key_phrases": {}}
+    for name in A2_SEGMENTS_TO_REUSE:
+        src = f"{A2_SOURCE_DIR}/narration/{name}.wav"
+        dst = f"{A2_NARRATION_DIR}/{name}.wav"
+        recorded_entry = source_results["segments"][name]
+        if recorded_entry.get("status") != "OK":
+            raise RuntimeError(f"[REUSE_SOURCE_NOT_OK] {name}: 承認済み記録のstatusがOKではありません"
+                               f"({recorded_entry.get('status')})。")
+        recorded_sha256 = recorded_entry.get("sha256")
+        actual_sha256 = sha256_file(src)
+        # topic_intro(voice01.generate_charon_english、既存Production)は
+        # 既存実装がsha256を記録しないため(_04実データで確認)、その場合は
+        # ファイル実在+status==OKのみをevidenceとする(既存関数の仕様上の
+        # 制約、本タスクでは既存関数へsha256記録を追加しない)。
+        if recorded_sha256 is not None and actual_sha256 != recorded_sha256:
+            raise RuntimeError(f"[ASSET_HASH_MISMATCH] {name}: 承認済み記録と実ファイルのsha256が不一致です。")
+        shutil.copyfile(src, dst)
+        reuse_report["segments"][name] = {
+            "reused": True, "sha256": actual_sha256, "source": src,
+            "recorded_sha256_available": recorded_sha256 is not None}
+
+    for name in A2_FIXED_NARRATION_TO_REUSE:
+        shutil.copyfile(f"{A2_SOURCE_DIR}/narration/{name}.wav", f"{A2_NARRATION_DIR}/{name}.wav")
+
+    shutil.copyfile(f"{A2_SOURCE_DIR}/key_phrases/keywords_canonicalized.json",
+                     f"{A2_KP_DIR}/keywords_canonicalized.json")
+    kp = load_json(f"{A2_KP_DIR}/keywords_canonicalized.json")
+    for item in kp["items"]:
+        rank = item["rank"]
+        for wav_name, sub_key in ((f"kp{rank}_en", "english"), (f"kp{rank}_ja_aoede", "japanese")):
+            src = f"{A2_SOURCE_DIR}/narration/{wav_name}.wav"
+            dst = f"{A2_NARRATION_DIR}/{wav_name}.wav"
+            recorded_sha256 = source_results["key_phrases"][str(rank)][sub_key]["sha256"]
+            actual_sha256 = sha256_file(src)
+            if actual_sha256 != recorded_sha256:
+                raise RuntimeError(f"[ASSET_HASH_MISMATCH] {wav_name}: 承認済み記録と実ファイルのsha256が不一致です。")
+            shutil.copyfile(src, dst)
+            reuse_report["key_phrases"].setdefault(str(rank), {})[wav_name] = {
+                "reused": True, "sha256": actual_sha256}
+
+    # Gate 3 item9: 「stay put」(Key Phrase 4英語Component)がユーザー承認済み
+    # 新版(v2)であることを明示確認する(sha256一致、旧版[v1]とは不一致)。
+    stay_put_new_sha256 = sha256_file(f"{A2_SOURCE_DIR}/narration/kp4_en_new_v2.wav")
+    stay_put_old_sha256 = sha256_file(f"{A2_SOURCE_DIR}/narration/kp4_en_old_v1.wav")
+    reused_kp4_sha256 = reuse_report["key_phrases"]["4"]["kp4_en"]["sha256"]
+    stay_put_check = {
+        "reused_kp4_en_sha256": reused_kp4_sha256,
+        "matches_new_v2": reused_kp4_sha256 == stay_put_new_sha256,
+        "matches_old_v1": reused_kp4_sha256 == stay_put_old_sha256,
+    }
+    if not stay_put_check["matches_new_v2"] or stay_put_check["matches_old_v1"]:
+        raise RuntimeError(f"[STAY_PUT_VERSION_MISMATCH] Assemblyで使用されるkp4_en.wavが承認済み"
+                           f"新版(v2)と一致しません: {stay_put_check}")
+    save_json(f"{A2_AUDIT_DIR}/asset_reuse_report.json", reuse_report)
+    save_json(f"{A2_AUDIT_DIR}/stay_put_version_check.json", stay_put_check)
+    print(f"[A2-PROD-RUNNER] 承認済みsegment byte再利用完了(stay put確認: {stay_put_check})")
+    return reuse_report
+
+
+def run_tts_a2(parts: dict, voice_a: str, voice_b: str) -> dict:
+    """Voice A/B本文(point_one/point_two)のみ実際に新規TTSを発火する
+    (Gate 3 item1の中心対象=Voice A/B slowdown付きTTSのProduction wiring
+    実発火の証跡)。他segmentはreuse_approved_a2_assets()で承認済みbyteを
+    既に再利用済み(新規TTSはしない、費用ゼロ)。"""
+    results = {}
+    for name, text, voice_name in (
+        ("point_one", parts["point_one_body"], voice_a),
+        ("point_two", parts["point_two_body"], voice_b),
+    ):
+        sc.assert_no_point_number_label(text, name)
+        print(f"[A2-PROD-RUNNER] {name}生成({voice_name}、Voice A/B A2 slowdown、正式Production関数)...")
+        with cl.segment_context(name):
+            results[name] = a2prod.generate_voice_body_wide_margin_with_a2_slowdown(
+                name, tts_gen.tts_safe_news_en(text), f"{A2_NARRATION_DIR}/{name}.wav", voice_name)
+        results[name]["canonical_text"] = text
+    assert_budget_ok_a2("after Voice A/B TTS")
+    return results
+
+
+def finalize_tts_results_a2(new_results: dict, reuse_report: dict) -> dict:
+    source_results = load_json(f"{A2_SOURCE_DIR}/audit/tts_generation_results.json")
+    segments = {}
+    for name in A2_SEGMENTS_TO_REUSE:
+        entry = dict(source_results["segments"][name])
+        entry["path"] = f"{A2_NARRATION_DIR}/{name}.wav"
+        segments[name] = entry
+    segments.update(new_results)
+
+    key_phrases = {}
+    for rank, kp_entry in source_results["key_phrases"].items():
+        new_entry = {}
+        for lang, sub in kp_entry.items():
+            sub2 = dict(sub)
+            fname = "en" if lang == "english" else "ja_aoede"
+            sub2["path"] = f"{A2_NARRATION_DIR}/kp{rank}_{fname}.wav"
+            new_entry[lang] = sub2
+        key_phrases[rank] = new_entry
+
+    data = {"segments": segments, "key_phrases": key_phrases}
+    save_json(f"{A2_AUDIT_DIR}/tts_generation_results.json", data)
+    all_status = {k: v.get("status") for k, v in segments.items()}
+    save_json(f"{A2_A2_DIR}/run_summary_tts.json", {"segment_status": all_status})
+
+    completeness = a2prod.check_required_segments_completeness(
+        all_status, new_results["point_one"]["voice"], new_results["point_two"]["voice"])
+    save_json(f"{A2_AUDIT_DIR}/required_segments_completeness.json", completeness)
+    print(f"[A2-PROD-RUNNER] TTS完了。segment_status={all_status}")
+    print(f"[A2-PROD-RUNNER] OPEN-129整合チェック(Lane B runner側完全性チェック): {completeness}")
+    return data
+
+
+def run_assembly_a2(voice_a: str, voice_b: str) -> dict:
+    os.makedirs(f"{A2_A2_DIR}/assembled", exist_ok=True)
+    kp = load_json(f"{A2_KP_DIR}/keywords_canonicalized.json")
+
+    try:
+        sources = a2prod.load_a2_sources_for_b_family(kp, A2_A2_DIR, A2_NARRATION_DIR, A2_AUDIO_GATE_LEVEL)
+    except RuntimeError as e:
+        print(f"[A2-PROD-RUNNER] Assembly GATE_BLOCKED(override無し、報告のみ): {e}")
+        summary = {"status": "GATE_BLOCKED", "error": str(e), "voice_a": voice_a, "voice_b": voice_b}
+        save_json(f"{A2_A2_DIR}/run_summary_assemble.json", summary)
+        return summary
+
+    parts = asm.apply_b1_gain(sources)
+    seq = a2prod.build_a2_voices_timeline(parts, voice_a, voice_b)
+    result = asm.assemble_with_timeline(seq)
+    headroom = asm.apply_headroom_safety_valve(result["assembled"], seq)
+    assembled = headroom["assembled"]
+
+    out_path = f"{A2_A2_DIR}/assembled/{A2_EPISODE_BASENAME}"
+    save_json(f"{A2_AUDIT_DIR}/gain_report.json", parts["gain_report"])
+    save_json(f"{A2_AUDIT_DIR}/timeline.json", result["timeline"])
+    save_json(f"{A2_AUDIT_DIR}/headroom_report.json", headroom["report"])
+    common.write_wav_float(out_path, assembled, asm.SR, 2)
+    metrics = common.measure_metrics(assembled[:, 0], asm.SR)
+
+    summary = {
+        "status": "OK", "out_path": out_path, "duration_seconds": result["total_duration_seconds"],
+        "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
+        "sample_rate": asm.SR, "channels": 2, "headroom_safety_valve": headroom["report"],
+        "voice_a": voice_a, "voice_b": voice_b,
+    }
+    save_json(f"{A2_A2_DIR}/run_summary_assemble.json", summary)
+    print(f"[A2-PROD-RUNNER] Assembly status={summary['status']} duration={summary['duration_seconds']} "
+          f"peak={summary['peak']} clipping={summary['clipping_detected']}")
+    return summary
+
+
+def build_player_html_a2(assemble_summary: dict, timeline: list, parts: dict, support_texts: dict,
+                          voice_a: str, voice_b: str, voice_resolution_reasons: dict) -> str:
+    kp_data = load_json(f"{A2_KP_DIR}/keywords_canonicalized.json")
+    kp_by_rank = {item["rank"]: item for item in kp_data["items"]}
+    abs_url = player_common.abs_file_url
+
+    rows = []
+    for entry in timeline:
+        label = entry["part"]
+        if label.startswith("pause_"):
+            continue
+        info = a2prod.row_info_a2(label, parts, support_texts, voice_a, voice_b, kp_by_rank, A2_NARRATION_DIR)
+        sec = entry["start_seconds"]
+        voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
+        if info["sfx"]:
+            audio_html = "—"
+        elif isinstance(info["audio"], tuple):
+            audio_html = player_common.render_single_audio_html(tuple(abs_url(p) for p in info["audio"]))
+        elif info["audio"]:
+            audio_html = player_common.render_single_audio_html(abs_url(info["audio"]))
+        else:
+            audio_html = "—"
+        rows.append(player_common.render_timeline_row(
+            sec, label, voice_disp, info["text"], audio_html, missing="未取得" in info["text"]))
+    timeline_table = player_common.render_timeline_table(rows)
+
+    kp_rows = []
+    for rank in sorted(kp_by_rank):
+        kp = kp_by_rank[rank]
+        kp_rows.append(f'<tr><td>{rank}</td><td>{kp["used_form"]}</td><td>{kp["japanese_gloss"]}</td>'
+                        f'<td>{kp.get("japanese_gloss_tts", kp["japanese_gloss"])}</td>'
+                        f'<td>{kp.get("qa_overall_status")}</td></tr>')
+    kp_table = ('<table class="kp"><thead><tr><th>#</th><th>English(used_form)</th><th>表示用gloss</th>'
+                '<th>TTS用テキスト</th><th>redundancy QA</th></tr></thead>'
+                f'<tbody>{"".join(kp_rows)}</tbody></table>')
+
+    reason_note = ""
+    if voice_resolution_reasons:
+        reason_note = "<p style='color:#b00'><b>Voice変更理由(fallback発火):</b> " + \
+                       " / ".join(f"{k}: {v}" for k, v in voice_resolution_reasons.items()) + "</p>"
+
+    episode_audio_url = abs_url(assemble_summary["out_path"])
+    html = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 player</title>
+<style>
+{player_common.PLAYER_STANDARD_CSS}
+</style>
+<script>
+{player_common.SEEK_SCRIPT}
+</script>
+</head><body>
+<h1>EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(B-Family A2、APPROVED_FOR_PRODUCTION候補)</h1>
+<p class="note">
+完成episode(1本化wav、Standard同期、B-Family A2版)。Production正式runner
+(er012_b_family_production_runner_01.py、<code>level="a2"</code>、Trialスクリプト非経由)
+による生成。duration={assemble_summary['duration_seconds']}s peak={assemble_summary['peak']}
+clipping={assemble_summary['clipping_detected']}
+headroom_safety_valve_applied={assemble_summary['headroom_safety_valve']['applied']}。
+voice_a={voice_a} / voice_b={voice_b}(Voice A/B本文はA2 slowdown、Narrator見出し・Hook・
+Tension・Closingも全てAoede英語A2 slowdown)。Comment 1-4・Preview・日本語タイトルは
+Aoede日本語(標準A2規約)。承認済み(_04、ユーザー2026-09-09 APPROVED_FOR_PRODUCTION)
+segmentのうちVoice A/B本文(point_one/point_two)のみ本runnerが新規に実際のTTSを発火して
+再生成し(Production wiring実発火の証跡)、他segmentは承認済みbyteをsha256照合のうえ
+再利用した(Key Phrase「stay put」は新版[v2]がsha256一致で使用されていることを確認済み)。
+各行に「Seek」「Segment名+voice」「実際に読み上げられたscript」「個別音声」を
+同一行に配置(標準player形式、PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11)。
+</p>
+{reason_note}
+
+<h2>Episode audio</h2>
+<audio id="episode_audio" class="main" controls preload="none" src="{episode_audio_url}"></audio>
+
+<h2>タイムライン・全スクリプト(収録順、同一行にSeek+voice+script)</h2>
+{timeline_table}
+
+<h2>Key Phrase表(詳細、英語+日本語gloss)</h2>
+{kp_table}
+
+</body></html>
+"""
+    out_path = f"{A2_OUT_DIR}/player.html"
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return out_path
+
+
+def main_a2() -> None:
+    os.makedirs(A2_AUDIT_DIR, exist_ok=True)
+    cl.install(A2_COST_LOG_PATH)
+
+    stage = sys.argv[1] if len(sys.argv) > 1 else "all"
+
+    if stage in ("prepare", "all"):
+        prep = prepare_a2()
+    else:
+        prep = {"article_text": open(f"{A2_SOURCE_DIR}/article.md", encoding="utf-8").read()}
+        prep["parts"] = load_json(f"{A2_A2_DIR}/parts.json")
+
+    if stage in ("voice_check", "all"):
+        vc = voice_check_a2(prep["parts"])
+        voice_a, voice_b, reasons = vc["voice_a"], vc["voice_b"], vc["reasons"]
+    else:
+        resolution = load_json(f"{A2_AUDIT_DIR}/voice_resolution.json")
+        voice_a, voice_b, reasons = resolution["voice_a"], resolution["voice_b"], resolution["reasons"]
+
+    if stage in ("reuse_assets", "all"):
+        reuse_report = reuse_approved_a2_assets(prep["article_text"])
+    elif stage in ("tts", "assemble", "player"):
+        reuse_report = load_json(f"{A2_AUDIT_DIR}/asset_reuse_report.json")
+
+    if stage in ("tts", "all"):
+        new_results = run_tts_a2(prep["parts"], voice_a, voice_b)
+        finalize_tts_results_a2(new_results, reuse_report)
+
+    if stage in ("assemble", "all"):
+        assemble_summary = run_assembly_a2(voice_a, voice_b)
+
+    if stage in ("player", "all"):
+        support_texts = load_json(f"{A2_SOURCE_DIR}/a2_support_texts.json")
+        support_texts["japanese_title"] = registry.get_editorial_type_a2()["japanese_titles"][A2_THEME_KEY]
+        assemble_summary = load_json(f"{A2_A2_DIR}/run_summary_assemble.json")
+        timeline_path = f"{A2_AUDIT_DIR}/timeline.json"
+        timeline = load_json(timeline_path) if os.path.exists(timeline_path) else []
+        parts = load_json(f"{A2_A2_DIR}/parts.json")
+        if assemble_summary.get("status") == "OK":
+            player_path = build_player_html_a2(
+                assemble_summary, timeline, parts, support_texts, voice_a, voice_b, reasons)
+            print(f"[A2-PROD-RUNNER] player.html: {os.path.abspath(player_path)}")
+        else:
+            print(f"[A2-PROD-RUNNER] Assembly未完了(status={assemble_summary.get('status')})のため"
+                  "player.htmlは生成しません。")
+
+    jpy, by_provider = compute_cost_jpy_so_far(A2_COST_LOG_PATH)
+    print(f"[A2-PROD-RUNNER] 完了(level=a2, stage={stage})。累積cost={jpy:.2f} JPY by_provider={by_provider}")
+
+
+# ============================================================
 # main
 # ============================================================
 def main() -> None:
+    # EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01: level分岐
+    # (第2引数、既定"b1")。level="b1"のとき以降の処理は本タスク以前と
+    # 完全に無変更(既存B1経路のbyte単位の不変性を保つため、既存コードは
+    # 一切書き換えていない)。
+    level = sys.argv[2] if len(sys.argv) > 2 else "b1"
+    if level == "a2":
+        main_a2()
+        return
+
     os.makedirs(f"{OUT_DIR}/audit", exist_ok=True)
     cl.install(COST_LOG_PATH)
 

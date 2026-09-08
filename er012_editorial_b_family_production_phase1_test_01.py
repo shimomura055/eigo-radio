@@ -234,5 +234,225 @@ class RunTtsBodySegmentSafetyFeatureContractTests(unittest.TestCase):
         self.assertFalse(narration_calls[b1prod.EXTRA_SEGMENT_NAME]["disfluency_qa"])
 
 
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 追加テスト
+# ============================================================
+import er012_b_family_voices_a2_production_01 as a2prod  # noqa: E402
+
+
+class BFamilyA2RegistryTests(unittest.TestCase):
+    def test_a2_config_present_under_editorial_type(self):
+        editorial_type = registry.get_editorial_type("b_family_voices")
+        self.assertIn("a2", editorial_type)
+        a2_config = registry.get_editorial_type_a2()
+        self.assertIs(a2_config, editorial_type["a2"])
+
+    def test_audio_gate_level_is_not_standard_a2_string(self):
+        a2_config = registry.get_editorial_type_a2()
+        self.assertEqual(a2_config["audio_gate_level"], "B_FAMILY_A2")
+        self.assertNotEqual(a2_config["audio_gate_level"], "A2")
+
+    def test_slowdown_target_segments_include_voice_a_and_b_and_tension(self):
+        a2_config = registry.get_editorial_type_a2()
+        targets = a2_config["slowdown_target_segments"]
+        for name in ("point_one", "point_two", "point_one_heading", "point_two_heading",
+                     "full_story_part1", "full_story_part2", "tension_reflection", "in_one_line"):
+            self.assertIn(name, targets)
+
+    def test_comment_language_and_voice_is_japanese_aoede(self):
+        a2_config = registry.get_editorial_type_a2()
+        self.assertEqual(a2_config["comment_language"], "ja")
+        self.assertEqual(a2_config["comment_voice"], "Aoede")
+
+    def test_japanese_title_required_and_text_present(self):
+        a2_config = registry.get_editorial_type_a2()
+        self.assertTrue(a2_config["japanese_title_required"])
+        self.assertIn("b_voices_a2_free_address", a2_config["japanese_titles"])
+        self.assertTrue(a2_config["japanese_titles"]["b_voices_a2_free_address"].strip())
+
+    def test_required_segments_cover_all_fifteen_expected_names(self):
+        a2_config = registry.get_editorial_type_a2()
+        names = [n for n, _ in a2_config["required_segments"]]
+        expected = ("topic_intro", "japanese_title", "preview", "comment_1", "comment_2",
+                    "comment_3", "comment_4", "point_one_heading", "point_two_heading",
+                    "point_one", "point_two", "full_story_part1", "full_story_part2",
+                    b1prod.EXTRA_SEGMENT_NAME, "in_one_line")
+        self.assertEqual(tuple(names), expected)
+
+    def test_a2_voice_assignment_and_comment_roles_are_shared_with_b1(self):
+        # A2はComment Contract(役割定義)・Voice Assignmentともに専用の
+        # 別定義を持たず、B1と同一のregistryエントリを流用する(ユーザー
+        # 決定B-A2-3/B-A2-6、出力言語のみa2設定側で差し替える)。
+        editorial_type = registry.get_editorial_type("b_family_voices")
+        self.assertIs(editorial_type["a2"]["comment_language"], registry.B_FAMILY_A2_COMMENT_LANGUAGE)
+        self.assertEqual(editorial_type["voice_assignment"]["voice_a"], "Algieba")
+        self.assertEqual(editorial_type["voice_assignment"]["voice_b"], "Erinome")
+
+
+class B1PromptByteIdentityAfterA2WiringTests(unittest.TestCase):
+    """Gate 3 item1「既存B1経路の挙動は不変」の裏付け: 本タスクで登録した
+    A2設定追加後も、既存B1のComment Contract本文(FINALIZE-11確定版)が
+    一切変更されていないことを、Fable委任文記載の固定文言(禁止句マーカー)
+    でも重ねて検証する(既存test_comment_1_bans_the_question_phraseに
+    加え、4件全ての非空・末尾文言が変わっていないことを確認)。"""
+
+    def test_comment_roles_unchanged_word_markers(self):
+        editorial_type = registry.get_editorial_type("b_family_voices")
+        self.assertIn("Listening Focus", editorial_type["comment_roles"]["comment_1"])
+        self.assertIn("Hookの問いから「ここから異なるVoiceを聞く」への橋渡し",
+                      editorial_type["comment_roles"]["comment_2"])
+        self.assertIn("なぜ違って感じるのか", editorial_type["comment_roles"]["comment_3"])
+        self.assertIn("一段深い問い", editorial_type["comment_roles"]["comment_4"])
+
+
+class A2ProductionModuleTranscriptionByteIdentityTests(unittest.TestCase):
+    """Gate 3 item1/3「Trialスクリプトをimportしない」の裏付け: A2
+    Production module(er012_b_family_voices_a2_production_01.py)が
+    Trial07/Trial02-Writerから全文転記した定数が、転記元と一字一句
+    一致することを確認する(転記ミス・意図しない改変がないことの
+    machine-checkable evidence)。"""
+
+    def test_leakage_check_prompt_matches_trial07_verbatim(self):
+        import er012_editorial_b_voices_trial_07 as trial07
+        self.assertEqual(a2prod.LEAKAGE_CHECK_PROMPT_TEMPLATE, trial07.LEAKAGE_CHECK_PROMPT_TEMPLATE)
+        self.assertEqual(a2prod.LEAKAGE_CHECK_DEVELOPER_MESSAGE, trial07.LEAKAGE_CHECK_DEVELOPER_MESSAGE)
+        self.assertEqual(a2prod.ANALYTICAL_LEAKAGE_JSON_SCHEMA, trial07.ANALYTICAL_LEAKAGE_JSON_SCHEMA)
+        self.assertEqual(a2prod.VOICE_LEAKAGE_FIELDS, trial07.VOICE_LEAKAGE_FIELDS)
+        self.assertEqual(a2prod.TENSION_LEAKAGE_FIELDS, trial07.TENSION_LEAKAGE_FIELDS)
+        self.assertEqual(a2prod.CLOSING_LEAKAGE_FIELDS, trial07.CLOSING_LEAKAGE_FIELDS)
+
+    def test_writer_prompt_constants_match_trial02_writer_verbatim(self):
+        import er012_editorial_b_voices_a2_trial02_writer as writer
+        self.assertEqual(a2prod.A2_KAI1_INSTRUCTION_PARA1_PARA3, writer.A2_KAI1_INSTRUCTION_PARA1_PARA3)
+        self.assertEqual(a2prod.CORE_EXPLANATORY_LOGIC_PRESERVATION, writer.CORE_EXPLANATORY_LOGIC_PRESERVATION)
+        self.assertEqual(a2prod.A2_TABLE_PRINCIPLES_JA, writer.A2_TABLE_PRINCIPLES_JA)
+        self.assertEqual(a2prod.B_FAMILY_A2_TASK_INSTRUCTIONS, writer.B_FAMILY_A2_TASK_INSTRUCTIONS)
+        self.assertEqual(a2prod.build_adapt_prompt("SAMPLE"), writer.build_adapt_prompt("SAMPLE"))
+
+    def test_module_does_not_import_any_trial_script_at_module_level(self):
+        import ast
+        with open("er012_b_family_voices_a2_production_01.py", encoding="utf-8") as f:
+            tree = ast.parse(f.read())
+        imported_modules = []
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imported_modules.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported_modules.append(node.module)
+        trial_imports = [m for m in imported_modules if "trial" in m]
+        self.assertEqual(trial_imports, [])
+
+
+class RequiredSegmentsCompletenessCheckTests(unittest.TestCase):
+    """Gate 3 item8(OPEN-129整合): Lane B runner側完全性チェック関数の
+    単体テスト(段数不足・voice不一致を検出できること)。"""
+
+    def _all_ok_status(self):
+        a2_config = registry.get_editorial_type_a2()
+        return {name: "OK" for name, _ in a2_config["required_segments"]}
+
+    def test_complete_status_returns_complete_true(self):
+        result = a2prod.check_required_segments_completeness(self._all_ok_status(), "Algieba", "Erinome")
+        self.assertTrue(result["complete"])
+        self.assertEqual(result["missing_or_not_ok"], [])
+        self.assertEqual(result["expected_segment_count"], 15)
+
+    def test_missing_segment_is_detected(self):
+        status = self._all_ok_status()
+        del status["point_two"]
+        result = a2prod.check_required_segments_completeness(status, "Algieba", "Erinome")
+        self.assertFalse(result["complete"])
+        self.assertIn("point_two", result["missing_or_not_ok"])
+
+    def test_non_ok_status_is_detected(self):
+        status = self._all_ok_status()
+        status["point_one"] = "STOPPED"
+        result = a2prod.check_required_segments_completeness(status, "Algieba", "Erinome")
+        self.assertFalse(result["complete"])
+        self.assertTrue(any("point_one" in item for item in result["missing_or_not_ok"]))
+
+
+class DisfluencyQaMandatoryDictB_FamilyA2Tests(unittest.TestCase):
+    """Gate 3 item7: 共有Gate辞書へのB_FAMILY_A2エントリ追加が、既存
+    B1/A2エントリを変更していないこと(diffの範囲確認)を、実際にロードした
+    辞書の内容で検証する。"""
+
+    def test_existing_b1_and_standard_a2_entries_unchanged(self):
+        self.assertEqual(
+            asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["B1"],
+            ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
+             "in_one_line", "point_one_heading", "point_two_heading"))
+        self.assertEqual(
+            asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["A2"],
+            ("in_one_line", "point_one_heading", "point_two_heading"))
+
+    def test_b_family_a2_entry_registered_and_matches_standard_a2(self):
+        self.assertIn("B_FAMILY_A2", asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL)
+        self.assertEqual(
+            asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["B_FAMILY_A2"],
+            asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["A2"])
+
+
+class GenerateVoiceBodyWithA2SlowdownContractTests(unittest.TestCase):
+    """Gate 3 item1/2: Voice A/B slowdown付きTTS合成関数が、正しい
+    style_prefix_override(標準A2の既存6% slowdown instruction)とOPEN-121/
+    OPEN-122フラグをb1prod.generate_voice_body_wide_margin()へ渡し、その後
+    標準A2のapply_a2_slowdown_postprocess()(無変更)を呼ぶことを、実TTS
+    呼び出しなしで(モックで)検証する。"""
+
+    def test_calls_wide_margin_with_slower_prefix_then_postprocess(self):
+        import er003_v1_n3_01_tts_generate as n3_tts
+        with mock.patch.object(a2prod.b1prod, "generate_voice_body_wide_margin",
+                                return_value={"status": "OK"}) as wide_margin_mock, \
+             mock.patch.object(a2prod.n3_tts, "apply_a2_slowdown_postprocess",
+                                return_value={"status": "OK", "slowdown_applied": True}) as postprocess_mock:
+            result = a2prod.generate_voice_body_wide_margin_with_a2_slowdown(
+                "point_one", "Sample text.", "out/point_one.wav", "Algieba")
+        wide_margin_mock.assert_called_once()
+        _, kwargs = wide_margin_mock.call_args
+        self.assertEqual(kwargs["style_prefix_override"], n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)
+        self.assertTrue(kwargs["enable_connected_speech_equivalence_layer"])
+        self.assertTrue(kwargs["enable_repetition_qa"])
+        postprocess_mock.assert_called_once()
+        self.assertEqual(result["status"], "OK")
+
+
+class RunnerLevelA2DispatchTests(unittest.TestCase):
+    """Gate 3 item1「runnerにlevel="a2"分岐」の契約テスト: main()が
+    sys.argv[2]=="a2"のときmain_a2()を呼び、それ以外(既定含む)では既存
+    B1経路(main_a2()呼び出しなし)のままであることを確認する。"""
+
+    def test_level_a2_dispatches_to_main_a2(self):
+        with mock.patch.object(runner, "main_a2") as main_a2_mock, \
+             mock.patch.object(runner.sys, "argv", ["prog", "all", "a2"]):
+            runner.main()
+        main_a2_mock.assert_called_once()
+
+    def test_default_level_does_not_dispatch_to_main_a2(self):
+        # 実ファイル(prepare()/save_json()等)への書き込みを一切発生させない
+        # よう、main()が呼ぶ関数を全てモック化する(実際にPhase1_02の既存
+        # 承認済み出力ディレクトリへ誤って書き込んでしまう事故を防ぐため、
+        # save_jsonも必ずモックすること)。
+        fake_prep = {"article_text": "# Title\n", "parts": {"point_one_body": "x"}}
+        fake_scaffold_result = {"support_status": {"preview": "OK"}, "deviation": {"overall_status": "LEDGER_COMPLIANT"}}
+        with mock.patch.object(runner, "main_a2") as main_a2_mock, \
+             mock.patch.object(runner.sys, "argv", ["prog"]), \
+             mock.patch.object(runner, "prepare", return_value=fake_prep), \
+             mock.patch.object(runner, "voice_check", return_value={"voice_a": "Algieba", "voice_b": "Erinome", "reasons": {}}), \
+             mock.patch.object(runner, "reuse_key_phrases"), \
+             mock.patch.object(runner, "run_scaffold", return_value=fake_scaffold_result), \
+             mock.patch.object(runner, "run_tts"), \
+             mock.patch.object(runner, "finalize_tts_results"), \
+             mock.patch.object(runner, "run_assembly", return_value={"status": "GATE_BLOCKED"}), \
+             mock.patch.object(runner, "load_json", return_value={}), \
+             mock.patch.object(runner, "save_json"), \
+             mock.patch.object(runner, "assert_budget_ok", return_value=0.0), \
+             mock.patch.object(runner, "compute_cost_jpy_so_far", return_value=(0.0, {})), \
+             mock.patch.object(runner.cl, "install"), \
+             mock.patch("builtins.open", mock.mock_open(read_data="dummy ledger text")):
+            runner.main()
+        main_a2_mock.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -167,6 +167,15 @@ DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL = {
     "B1": ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
            "in_one_line", "point_one_heading", "point_two_heading"),
     "A2": ("in_one_line", "point_one_heading", "point_two_heading"),
+    # EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 Gate 3 item 7: B-Family
+    # A2は標準A2と全く同じ3segment名(point_one_heading/two_heading/in_one_line、
+    # いずれもNarrator=Aoede英語A2 slowdown対象)を使うため、標準A2と同一の対象
+    # セットをそのまま登録する。B-FamilyのVoice A/B本文(point_one/point_two)は
+    # generate_voice_body_wide_margin()がdisfluency gateをenabled=False固定で
+    # 呼ぶため(B1 Phase1と共有、既存関数は無変更)対象に含めない(標準A2も
+    # point_one/point_two本文は対象外のため対称)。Comment 1-4/Previewは日本語
+    # 音声のため対象外(標準A2と同じ理由、上記コメント参照)。
+    "B_FAMILY_A2": ("in_one_line", "point_one_heading", "point_two_heading"),
 }
 
 
