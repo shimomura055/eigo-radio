@@ -7388,6 +7388,83 @@ Git操作は4グループ(Lane B Trial-10、試聴フォーマット、監査Rep
 `PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11_REPORT.md`、
 `OPEN-112-THEME2-B1-NUMERIC-PRECISION-WIRING-AUDIT-01_REPORT.md`。
 
+## PM-CLOSEOUT-CONSOLIDATION-06(2026-09-08、第2弾ユーザー決定四点[A Voices Comment
+Contract採用+禁止句追加/B B-Family Production経路設計案のみ/C Theme2 B1 Numeric
+Precision選択肢A決定的置換/D-1〜D-3遡及点検・登録・player標準フォーマット]の統合)
+
+ユーザーが2026-09-08(PM-CLOSEOUT-CONSOLIDATION-05報告後)に追加で以下4点を決定した。
+**A.** Voices Comment Contract(Comment 1〜4)を`APPROVED_FOR_PRODUCTION`
+(2026-09-08、未配線)とし、"the question"という語句そのものの出力禁止句1行を
+Comment 1 Contractへ追加する。**B.** B-Family Production正式経路の設計案を作成
+するのみ(実装なし)。**C.** Theme 2 B1 Numeric Precision(OPEN-112、25.2%/44.7%)は
+選択肢A(決定的文字列置換、対象2segmentのみTTS再生成+再Assembly)を採用する。
+これは既存承認済みArtifact(rerun_03、音声品質ユーザー承認済み)への**最小修正
+例外**であり、Evidence Compression Editorの再実行(judgment rule経由の非決定的
+書き換え)を経由しない決定的置換として正式に記録する。**D-1.** 完成episode全体への
+Numeric Precision遡及点検を読み取り専用で起票する。**D-2.** レベル間(A2/B1)で
+数字粒度が偶然割れる論点(OPEN-112-THEME2-AUDIO-REVIEW-FIX-02-PREVIEW-NUMERIC
+Report (c))はOPEN_ITEMS.mdへ登録のみ(実装しない)。**D-3.** rerun_03のplayer.html
+未反映問題は、Cの再Assembly(rerun_04)実施時に標準フォーマットで生成する。
+
+4タスクの結果: **(A)** `EDITORIAL-B-FAMILY-VOICES-COMMENT1-CONTRACT-FINALIZE-11
+_REPORT.md`。`er012_editorial_b_voices_trial_10_comment1.py`の
+`VOICES_COMMENT_1_ROLE_TRIAL10`へ禁止句1行を追加(他Comment 2〜4・他役割・
+分量指定は無変更)。n=3生成+機械チェックで"the question"漏出0/3(TRIAL-10時点の
+1/3から改善方向)、最良1本(run1: "As you listen, notice how the speaker
+compares two different feelings about the same place.")をStandard TTS+ASR
+Gateで1回目attemptにてPASS(`NORMALIZED_MATCH`、disfluencyなし、¥0.79)。
+Gate 1分類=`VALIDATED`。Production wiringは本タスクでは実施していない(Lane B
+Trial定義ファイル内の確定のみ)。**(B)** `EDITORIAL-B-FAMILY-PRODUCTION-PATH-
+DESIGN-01_REPORT.md`(設計案のみ、コード・Prompt・SSOT・出力ファイル変更ゼロ)。
+Phase 1(Lane B内で閉じるEditorial Type registry・Voice A/B TTS新関数・
+B-Family専用Assembly timeline builder・Comment Role辞書・専用runner新規作成)
+とPhase 2(Lane A共有Writer`build_common_block()`への後方互換`editorial_type_
+module`引数追加)の段階分けを提案。USER_DECISION_REQUIRED候補6点(CURRENT_SPEC
+記述精度・Phase1単独PRODUCTION_WIRED可否・Point Overlap QAのB-Family扱い・
+Analytical Leakage Check正式化可否・既存TTS関数共通化可否・B-Family専用retry
+上限3回の正式採用可否)を提示。**重要な発見**: CURRENT_SPEC.mdの「(1)は
+`point_headings.generate()`が満たす」という記述は、Narrator見出し(Aoede固定)
+部分のみ正しく、Voice A(Algieba)/Voice B(Erinome)という本文側の声指定は
+`point_headings.generate()`の対象外(この関数は本文を生成しない)であり、
+現状どのProduction関数にも声の差し替え手段が存在しないため、CURRENT_SPECの
+当該記述は要修正候補(本タスクでは修正せず、Report Bの提案どおり記録のみ)。
+**(C)** `OPEN-112-THEME2-B1-NUMERIC-PRECISION-MINIMAL-FIX-RERUN-04_REPORT.md`。
+rerun_03の`point_one_body`"25.2%"→"about 25%"・`point_two_body`"44.7%"→
+"about 45%"を機械assert付き決定的置換(対象文字列が本文中ちょうど1回であることを
+確認済み)。対象2segmentのみ現行Production TTS関数で再生成(いずれも1回目
+attemptでOK、point_one=`EXACT_MATCH`・point_two=`NORMALIZED_MATCH`、¥4.73)、
+他59ファイルはsha256完全一致でbyte-for-byte reuseを確認。既存Production
+`stage_assemble_b1`で新規出力先(`rerun_04`)へ再Assembly(duration339.594秒
+[-3.45秒]・peak0.75511・clipping false・headroom safety valve不適用は
+rerun_03と同値)。標準フォーマットplayer.htmlをGate 7 (a)〜(l)機械チェック全PASS
+で生成。到達Status=`USER_FINAL_AUDIO_REVIEW_REQUIRED`(ユーザー最終試聴後に
+`APPROVED_FOR_PRODUCTION`判定、rerun_03は無変更のまま保持)。**(D-1)**
+`NUMERIC-PRECISION-RETROACTIVE-AUDIT-01_REPORT.md`(読み取り専用、編集・API
+呼び出し・Git操作ゼロ)。完成episode 8本を機械抽出+目視で点検し、既報告の
+25.2%/44.7%以外に**新規発見**としてTheme 2 A2 `part1`(rerun_02)「24.1%」
+(1カ月休暇なら1週間程度が最多)を確認(重要度「高相当」、本文内で他選択肢の値は
+言及されず「最多」の順位・意味は24%へ丸めても変わらないが、一次資料は僅差の
+4択比較のため最終判定はユーザー判断)。Health A2/B1「8.1年」(追跡研究の中央値
+追跡期間、研究デザインの固有値のため%型丸め対象と性質が異なる、重要度低)。
+2026-08-17生成のHanshin/Health/Household 3テーマは原則自体が存在しない時期の
+生成物であり、遡及適用要否はユーザー判断。修正は一切実施していない。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-120行(Comment Contract`APPROVED_FOR_PRODUCTION`
+[未配線]・FINALIZE-11結果・設計案Report B完成/実装未着手・USER_DECISION_REQUIRED
+候補5点・CURRENT_SPEC記述の要修正候補)、OPEN-112行(rerun_04結果・Status=
+`USER_FINAL_AUDIO_REVIEW_REQUIRED`・D-3完了・24.1%残存の`USER_DECISION_
+REQUIRED`)を追記。新規`OPEN-126`(レベル間数字粒度差、選択肢1/2/3、状態=
+`USER_DECISION_REQUIRED`、登録のみ・実装せず)を追加。`CURRENT_SPEC.md`冒頭
+changelogへ本タスクのエントリ(Comment Contract`APPROVED_FOR_PRODUCTION`未配線・
+rerun_04・設計案Report参照、「(1)」記述の要修正候補は注記のみで本文修正せず)を
+追加。Git操作は5グループ(A: Comment1 Contract Finalize、B: Production Path
+Design Report、C: rerun_04、D-1: Retroactive Audit Report、SSOT本体)に分けて
+commitし、`origin/main`へpushした。**根拠レポート**:
+`EDITORIAL-B-FAMILY-VOICES-COMMENT1-CONTRACT-FINALIZE-11_REPORT.md`、
+`EDITORIAL-B-FAMILY-PRODUCTION-PATH-DESIGN-01_REPORT.md`、
+`OPEN-112-THEME2-B1-NUMERIC-PRECISION-MINIMAL-FIX-RERUN-04_REPORT.md`、
+`NUMERIC-PRECISION-RETROACTIVE-AUDIT-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
