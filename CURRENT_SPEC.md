@@ -1,6 +1,23 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第15弾、FAMILY-A-DAILY-NEWS-REFERENCE-
+FORMALIZATION-01、ユーザー決定A-UDR-5)**: 既にDECIDED/PRODUCTION_WIRED
+済みの既存A2/B1共通骨格(11パート構造・Writer共通経路・Point Balance・
+Fact Safety・Spoken-first数値原則・Comment Contract・Key Phrase
+Contract・Audio構造)が通常News(Major/Daily News)にもそのまま適用
+されることを、新設「## 通常News(Major/Daily News)Reference仕様」節
+(「## News Editorial Mode(Trend Synthesis)」節の直後)へ正式反映した。
+Hanshin(`ER-003-A2-B1-N3-01`、Health/Household含む)を構造・Writer・
+Fact Safety・音声のreference実装として正式指定、ADD03(イラン)/A02
+(英SNS)は題材・音声構造referenceに限定(本文生成コードパス・完成音声は
+非再利用、B1-A方式はobsolete)。News固有層(Layer3 Focus Module・Mode
+判定基準)は内容を書かず「未設計・設計Trial起票済み
+(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`、Lane A-2)」とだけ
+明記。Trend Synthesis専用仕様は本節へ混在させていない。Gate 4 Dangling
+Reference Check実施、参照管理IDはすべて既存CURRENT_SPEC/DECISION_LOG内
+に存在することを確認(詳細は`FAMILY-A-DAILY-NEWS-REFERENCE-
+FORMALIZATION-01_REPORT.md`参照)。
 **最終更新: 2026-09-08(第14弾、PM-CLOSEOUT-CONSOLIDATION-19、Fable Gate 7
 最終受入)**: Fableが`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_
 REPORT.md`(§1〜§11、修正指示1回目への対応[A2新規run2回目でstatus=OK
@@ -379,6 +396,68 @@ Focus Module採否・Engagement根底指示のDiscoveryへの適用)は本Decisi
 | Research/Ledger供給経路 | Production Writerへの入力Ledgerは、既存の承認済みTheme 2 Ledger(手動作成・手動修正)をファイルとしてそのまま使う手順が正式initial path。既存自動Research pipelineの出力形式との互換性は**未検証(不明)**。自動供給経路への統合は今回配線しない(`USER_DECISION_REQUIRED`、OPEN_ITEMS残件) | `USER_DECISION_REQUIRED`(現状=手動供給のみ) | 同上 | 2026-09-08 |
 | Trend Gate・Mode判定の記録 | Trend Gate 6条件+Mode判定2問チェックリストの判定は自動化せず、`run_writer_for_theme(..., trend_gate_checklist=...)`で渡された**手動判定結果**を、`run_metadata.json`(新規ファイル、既存`articles_run_summary.json`のschemaは変更しない)へそのまま記録する仕組みのみ実装した | `PRODUCTION_WIRED`(記録のみ、自動判定なし) | 同上 | 2026-09-08 |
 | 据え置き4件 | Mode判定自動化・News Ledger自動供給・Reference Digest・Diagnostic Full Retry診断語彙拡張は、いずれも今回の配線の必須条件ではないため仕様化していない(Open Item/Trial候補として残置、下記OPEN_ITEMS.md OPEN-112行参照) | `USER_DECISION_REQUIRED`(defer継続) | 同上 | 2026-09-08 |
+
+## 通常News(Major/Daily News)Reference仕様 — 2026-09-08新設(ユーザー決定A-UDR-5、FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01)
+
+A Family(Discovery/Why + News)のうち、Trend Synthesisではない通常
+News(Major/Daily News)について、既にDECIDED/PRODUCTION_WIRED済みの
+既存A2/B1共通骨格(11パート構造・Writer共通経路・Point Balance・Fact
+Safety・Spoken-first数値原則・Comment Contract・Key Phrase Contract・
+Audio構造)がそのまま適用されることを正式化した(ユーザー承認、
+2026-09-08、A-UDR-5)。以下は本節固有の新規仕様ではなく、既存各節への
+参照+「通常Newsに適用される」ことの明記であり、内容自体は各参照先
+節が正本(重複転記しない)。B1-A等のobsolete仕様、Trend Synthesis専用
+仕様(Focus Module・Engagement原則・Trend Gate等)は本節へ混ぜない。
+
+| 適用対象 | 参照先(CURRENT_SPEC.md内) | 状態 | 根拠管理ID |
+|---|---|---|---|
+| 全体構造(11パート) | 「CEFR-A2構造・音声仕様」節、「B1」節 | `DECIDED` | ER-003-A2-STRUCT-02〜04、ER-003-A2-SPEC-FREEZE-01 |
+| Writer共通経路(`COMMON_BLOCK_TEMPLATE`) | 上記に同じ(News専用のWriter分岐は存在しない) | `DECIDED` | ER-003-A2-B1-N3-01 |
+| B1本文生成方式(B1-B Direct Generation) | 「B1(独立生成Natural Spoken News English)」節 | `DECIDED` | ER-003-B1-B2-SCOPE-FIX-01 |
+| Point Balance | 「Cross-level仕様」節 | `VALIDATED across Sports/Health/Household` | ER-003-A2-B1-N3-01、ER-003-SPOKEN-FIRST-03 |
+| Fact Safety(Verified Fact Ledger→Fact Checker→Ledger Deviation Checker v2) | 「Cross-level仕様」節 | `DECIDED`(`PRODUCTION_WIRED`) | ER-003-A2-B1-N3-01、ER-009-N1-LEDGER-DEVIATION-RECALIBRATION-02、ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12 |
+| Spoken-first数値原則 | 「Cross-level仕様」節 | `DECIDED` | ER-003-A2-B1-N3-01 §14、ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01 |
+| Comment Contract(C1〜C4) | 「CEFR-A2構造・音声仕様」節、「B1」節 | `DECIDED` | ER-003-A2-STRUCT-02〜04、ER-003-B1-NOVEL-AUDIO-01系 |
+| Key Phrase Contract | 「Key Phrase」節 | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-02、ER-003-B1-NOVEL-AUDIO-01系 |
+| Audio構造(Point Notification/pause/SFX/TTS安全機構/Assembly) | 「Cross-level仕様」節、「Audio Assembly」節 | `DECIDED` | ER-003-POINT-NOTIFICATION-01、ER-003-A2-B1-N3-01 |
+| News固有の視点付与層(Layer3 News Focus Module、Mode判定基準) | (本節では規定しない、内容は書かない) | `未設計・設計Trial起票済み`(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`、Lane A-2) | OPEN-112-NEWS-MODE-DESIGN-08(設計文書のみ、Trial・記事生成0件) |
+
+### Reference記事の正式指定
+
+- **Hanshin(`ER-003-A2-B1-N3-01`)**: 上表の構造・Writer・Fact Safety・
+  音声実装のreference実装として正式指定する(`DECIDED`、根拠: ユーザー
+  決定A-UDR-5、`FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01`)。同一
+  管理ID内のHealth(Small Habits, Longer Lives)・Household(crisper
+  drawer)は同系列のreferenceとして併記する(3ジャンル横展開確認済み、
+  ER-003-A2-B1-N3-01)。
+- **ADD03(イラン/ホルムズ海峡)・A02(英国SNS門限)**: 題材・音声構造の
+  referenceに限定する(11パート構造・Preview日本語のみ・Key Phrase
+  発話順序の起源としての参考価値のみ、ER-003-A2-STRUCT-02〜04、
+  ER-003-A2-SPEC-FREEZE-01)。本文生成コードパス(`er003_v1_iran01_*.py`
+  等P-series専用スクリプト)・完成音声は再利用しない。ADD03/A02が使用
+  していたB1生成方式(B1-A、B2から派生させる旧2段階方式)は下記のとおり
+  obsolete。
+
+### 通常News仕様に含めない(obsolete除外)
+
+以下は既存のREJECTED/置換記録により、通常News仕様には含めない。
+
+| obsolete対象 | 置換先(現行仕様) | 根拠管理ID |
+|---|---|---|
+| B1-A方式(B2から派生させる旧2段階B1生成パイプライン) | B1-B Direct Generation(Verified Fact Ledgerから直接独立生成) | ER-003-B1-B2-SCOPE-FIX-01(2026-08-17) |
+| P-series専用Writer/Audioスクリプト(`er003_v1_iran01_articles_generate.py`等、ADD03/A02専用one-off) | `COMMON_BLOCK_TEMPLATE`(全テーマ共通Writer) | DECISION_LOG.md 5711行、ER-003-A2-B1-N3-01 |
+| Natural English Source方式(B2先行生成→B1流用の生成元) | Verified Fact Ledgerから各レベル独立生成(A2/B1とも同格) | 「CEFR(A2/B1/B2比較)」節「生成元」行(`HISTORICAL`表記) |
+| 旧Preview分量(4文/67語程度) | 2〜3文程度の短い導入(soft guidance、hard word-count gateなし) | ER-011-PREVIEW-ROLE-AND-NUMERIC-PRECISION-PRINCIPLE-PRODUCTION-WIRING-01 |
+| 旧Key Phrase trim margin 0.20秒 | 0.30秒(cache identity保証付き) | ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23 |
+| ER-010-EDITORIAL-TYPE-ARCH-BASELINE-DESIGN-02/WRITER-ARCH-01の設計内容 | 参考資料としてのみ扱う(正式仕様として採用しない) | OPEN-112行(2026-09-04ユーザー決定) |
+
+### Trend Synthesisとの境界
+
+News Focus Module(Trend Synthesis variant)固有のPrompt文言・Counter-
+signal/limitation必須化ルール・Trend成立条件・Evidence Strength分類
+タグ語彙・Trend Memory・Engagement/Storytelling原則・Reference Digest
+は、本節(通常News)には含めない。これらは「## News Editorial Mode
+(Trend Synthesis)」節(別Editorial Mode)を参照。
 
 ## Cross-level仕様(A2/B1/B2共通)
 
