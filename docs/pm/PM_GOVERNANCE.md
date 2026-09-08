@@ -1,7 +1,13 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-18で9-2末尾へ「並列Lane報告の
+**最終更新: 2026-09-09(PM-MODEL-ROUTING-TRIAL-TRIGGER-02で11節のMODEL
+ROUTING運用Trial記述末尾へ、判定Triggerは`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+の「判定Trigger」節参照である旨の1文を追記)。2026-09-09
+(PM-MODEL-ROUTING-TRIAL-SETUP-01で11節末尾へ
+「MODEL ROUTING 運用Trial」[L0 Haiku/L1 Sonnet/L2・L3 Opus、Risk分類、
+Opus利用はL2+L3合計最大1回、最大Status=`VALIDATED`、詳細は
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`]を追記)。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-18で9-2末尾へ「並列Lane報告の
 補足」[片Lane先行報告可・未回答Laneはまとめ直し再掲・Lane A/B UDR明確分離・
 Feedback済み内容の重複再掲回避]を追記)。2026-09-08(PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12で
 Gate 7補足の音声artifact受入チェックリスト末尾へ、判断依頼時は試聴・review
@@ -497,12 +503,27 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
 成果物をユーザー意図・受入条件と照合するEditorial/PM Gatekeeperとして
 動く。ズレがあれば、ユーザーへ出す前にSonnetへ修正指示を返す。
 
-**不変の項目**: Opus診断1回上限、Agent Teams不使用、Agent並列起動の原則
-(8節)はいずれも変更しない。
+**不変の項目**: Opus診断1回上限(2026-09-09のMODEL ROUTING運用Trial導入後は
+「L2(設計レビュー)+L3(診断)合計で1管理IDあたり最大1回」として整合する)、
+Agent Teams不使用、Agent並列起動の原則(8節)はいずれも変更しない。
 
 **経緯**: 2026-09-06、Lane B(EDITORIAL-B-FAMILY-VOICES-TRIAL-03)で
 ユーザー意図とのズレが生じたことを受け、Fableが往復の中でズレを吸収
 できるようにする目的でユーザーが決定した(PM-FABLE-SONNET-REVIEW-LOOP-03)。
+
+**MODEL ROUTING 運用Trial(2026-09-09開始、ユーザー承認
+PM-MODEL-ROUTING-TRIAL-SETUP-01)**: 委任先モデルをL0(Haiku、読み取り専用・
+API支出なし・SSOT編集なし・Git操作なし・Production変更なし・Gate判断なし・
+定型artifact限定)/L1(Sonnet、実装・Trial・Production配線・SSOT精密編集・
+Git・比較検証)/L2(Opus、読み取り専用、HIGH案件の設計レビュー、原則1回)/
+L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断、既存ルール)
+の4段階でRisk分類(HIGH/MEDIUM/LOW)に応じて選定する運用Trialを開始した。
+1管理IDあたりのOpus利用はL2+L3合計で最大1回とする。Status上限は
+`VALIDATED`であり、正式採用(モデル選定ルールの恒久化)は別途ユーザー判断
+とする。詳細な定義・Risk分類基準・記録ルール・実績ログは
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`に集約し、本ファイルへは全文を
+複製しない。中間レビュー・正式Closeoutの判定Triggerも同ファイルの
+「判定Trigger」節を参照する。
 
 ---
 
@@ -730,3 +751,26 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   4点を明記した(新節は増設せず9節内の既存9-2への補足。文書編集のみ、
   コード・Prompt変更なし)。2026-09-08、並列Lane稼働中の報告運用について
   ユーザーが指示した内容の正式化。
+- 2026-09-09(PM-MODEL-ROUTING-TRIAL-SETUP-01): 「11. Fable↔Sonnetレビュー
+  往復の上限とGatekeeper原則」の「不変の項目」直後へ「MODEL ROUTING
+  運用Trial」を追記した。委任先モデルをL0(Haiku、読み取り専用・API支出
+  なし・SSOT編集なし・Git操作なし・Production変更なし・Gate判断なし・
+  定型artifact限定)/L1(Sonnet、実装・Trial・Production配線・SSOT精密
+  編集・Git・比較検証)/L2(Opus、読み取り専用、HIGH案件の設計レビュー、
+  原則1回)/L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断、
+  既存ルール)の4段階でRisk分類(HIGH/MEDIUM/LOW)に応じて選定する運用
+  Trialを新設し、1管理IDあたりのOpus利用をL2+L3合計で最大1回と整合させ、
+  既存の「不変の項目」文中の「Opus診断1回上限」もこの合計ルールとして
+  整合する旨を明記した。最大到達Statusは`VALIDATED`であり、正式採用
+  (モデル選定ルールの恒久化)は別途ユーザー判断とする。詳細な定義・
+  Risk分類基準・記録ルール・実績ログ(Trial開始前の全件Sonnet固定時代の
+  ベースライン実績を含む)は新設`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ
+  集約し、本ファイルへは全文を複製しない(文書編集のみ、コード・Prompt
+  変更なし)。2026-09-09、ユーザー承認によるモデルルーティング運用Trial
+  開始の決定。
+- 2026-09-09(PM-MODEL-ROUTING-TRIAL-TRIGGER-02): 「11. Fable↔Sonnet
+  レビュー往復の上限とGatekeeper原則」のMODEL ROUTING運用Trial記述末尾へ、
+  中間レビュー・正式Closeoutの判定Triggerは`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+  の「判定Trigger」節を参照する旨の1文のみ追記した(Trigger定義自体は
+  同ファイル側に新設し、本ファイルへは複製しない。文書編集のみ、コード・
+  Prompt変更なし)。

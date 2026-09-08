@@ -15,6 +15,8 @@
    - `OPEN_ITEMS.md` — 未決事項(唯一の管理場所。`docs/pm/`には作らない)
    - `HISTORY_INDEX.md` — 履歴索引
    - `ER-*_REPORT.md` — 個別タスクの正式な詳細報告・証跡
+5. `docs/pm/MODEL_ROUTING_TRIAL_LOG.md` — モデル選定(Haiku/Sonnet/Opus)運用
+   Trialの定義・Risk分類・実績ログ(SSOTではない。正式採用は別途ユーザー判断)
 
 `ACTIVE_TASK.md`と`RESULT_PACKET.md`はタスクごとに上書きされる一時ファイルであり、
 正式記録ではない。正式反映は必ず上記SSOTへ行う。
