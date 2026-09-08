@@ -7986,6 +7986,126 @@ html`・SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`)を
 ファイル名指定でcommitし`origin/main`へpush(wav等の既存未追跡出力は
 対象外)。
 
+## OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01: Trend Synthesis modeをProduction Writer正式初回経路へGate 3配線
+
+**ユーザー決定(2026-09-08、正式)**: Trend Synthesis modeを
+`APPROVED_FOR_PRODUCTION`とし、Gate 3に従ってProduction配線へ進める。
+追加Trial推奨4件(Mode判定自動化/News Ledger自動供給/Reference Digest/
+Retry語彙拡張)は配線の必須条件でなければ仕様化しない。Discovery側
+(4-layer、Layer3 Focus Module、Engagement根底指示のDiscovery適用)は
+据え置き、触らない。
+
+**実装**: `er003_v1_n3_01_articles_generate.py::build_common_block()`へ
+後方互換オプション引数`editorial_type_module_block: str = ""`を追加
+(既存`shared_point_blueprint_block`/`evidence_compression`と同型
+パターン)。`COMMON_BLOCK_TEMPLATE`内に対応する`{editorial_type_module_
+block}`placeholderを追加し、Trend Synthesis用Focus Module
+(`TREND_SYNTHESIS_FOCUS_MODULE_BLOCK`、OPEN-112-TREND-SYNTHESIS-
+MINIMAL-PROMPT-TRIAL-09でVALIDATED済みの内容を無変更で正式採用)・
+Engagement/Storytelling原則(`TREND_SYNTHESIS_ENGAGEMENT_BLOCK`、
+OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10施策1でVALIDATED済み、
+Trend Synthesis限定採用、施策2[Reference Digest]は含めない)を新規定数
+として追加、`resolve_editorial_type_module_block(editorial_mode)`
+(未知mode文字列はfail-closedで`ValueError`)経由で解決する設計にした。
+`er006_pool_pilot_01_writer.py::run_writer_for_theme()`(Production
+Writer正式初回経路)へ`editorial_mode`/`trend_gate_checklist`引数を
+新設し、mode選択は人間の明示指定のみ(Mode自動判定は実装しない)。
+`trend_gate_checklist`(Trend Gate 6条件+Mode判定2問の手動判定結果)は
+新規ファイル`run_metadata.json`へ記録し、既存`articles_run_summary.
+json`のschemaは変更していない。Trial専用の`COMMON_BLOCK_TEMPLATE.
+replace()`アンカー置換方式には依存しない。
+
+**既定値不変**: git HEAD(配線前)の`build_common_block()`をgit showで
+取得し同一入力で生成したgolden-master fixture 3件に対し、現行コードの
+既定引数呼び出しがバイト単位で完全一致することを新規単体テスト
+(`er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py`、
+11 tests、全PASS)で固定した。既存回帰テスト1件
+(`er010_n9_production_integration_09_test_01.py`)が`COMMON_BLOCK_
+TEMPLATE.format()`を旧5-keyで直接呼んでいたため新placeholder追加で
+`KeyError`となり、`editorial_type_module_block=""`追加で修正した
+(regression実行で発見、`shared_point_blueprint_block`等の過去の同型
+拡張時にも必要だった前例と同じ追随修正)。
+
+**retry/fallback整合**: Diagnostic Full Retry(`build_diagnostic_
+retry_prompt()`)は`original_prompt + 診断section`のみを返し
+`build_common_block()`を再呼び出ししないため、editorial_type_module_
+blockはretry後も機械的に保持される(コード追跡+単体テストで確認)。
+Evidence Compression Editor・Point Overlap QA・Fact Checker・Ledger
+Deviation Checker・Directional Fact Precheckはいずれも生成済み記事
+テキストのみを操作しprompt再構築を行わないためmode非依存で無変更の
+まま機能する。
+
+**runtime evidence**: 配線後のProduction Writer正式初回経路で、正しい
+Theme 2 Ledger(日本の若者のスロー旅行志向、`APPROVED_FOR_PRODUCTION`
+のTheme 2完成音声[rerun_04]が実際に使ったLedgerと同一)から
+`editorial_mode="trend_synthesis"`でA2/B1Bを実際に1本ずつ生成した。
+B1Bは Diagnostic Full Retry(Point Overlap/Value QA NG)が2回発火し、
+2回ともFocus Module込みのpromptがそのまま引き継がれたことを確認した
+うえで最終的に`status=OK`(Fact QA=`REVIEW_REQUIRED`[non-blocking]、
+Ledger Deviation=`LEDGER_COMPLIANT`[Local Rewrite 1cycleで解消]、
+Directional Precheck=`DIRECTION_REVIEW_REQUIRED`[non-blocking])へ
+到達した。A2はDiagnostic Full Retryを2回(既存Loop Budget上限)発火
+するもPoint Overlapが閾値超過のまま解消せず`NG_REVIEW_REQUIRED`で
+終了した(既存安全装置[Loop Budget]を独自判断で回避・追加retryはして
+いない)。生成されたB1B記事は時系列列挙ではなく対比構造で書かれ、
+Focus Module/Engagement原則の意図どおりの構成になっていることを
+確認した。
+
+**作業ミスの開示**: runtime evidence初回試行で、「Theme 2 Ledger」を
+誤って別テーマ(米国・イラン/ホルムズ海峡、OPEN-112-TREND-SYNTHESIS-
+MINIMAL-PROMPT-TRIAL-09/OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-
+TRIAL-10がFocus Module検証用に使った、Theme 2に昇格したことのない
+一回限りのTrialテーマ)から使用してしまった。誤りに気づいた時点で
+正しいTheme 2 Ledger/topicへ修正して再実行し、誤ったrunの成果物は
+削除せず`er011_output/open112_trend_synthesis_production_wiring_01/
+_superseded_wrong_theme_iran_hormuz/`(README_MISTAKE.md付き)へ退避
+した。結果としてLLM費用が当初上限¥100を実費用約¥120.12(誤ったrun
+約¥83.01+訂正後run約¥37.11)で超過した。
+
+**regression**: `run_project_regression.py`(唯一の実行手段)。修正前
+collected=2195 passed=2192 failed=3 errors=1(新規error 1件、上記の
+既存テスト修正で解消)。最終確認: collected=2195 passed=2192 failed=3
+(既知・無関係、`er003_test_bad`・`er003_test_p2j_investigate`系)
+errors=0(新規failureなし)。
+
+**Gate 3チェックリスト(13項目)**: 全項目充足(未充足項目なし)。ただし
+上記作業ミス(誤テーマでのrun、費用超過)は瑕疵として明記し、B1Bの
+Key Phrase選定は費用制約により今回skip(誤テーマ側の別runで技術的
+動作は確認済み)。詳細は`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-
+WIRING-01_REPORT.md`§8参照。
+
+**Gate 4 Dangling Reference Check**: Production初回path・retry・
+fallback・regeneration・validator・Human Reviewのいずれの経路にも
+Trialスクリプトへのimport・monkeypatchは無い(grep確認)。Mode自動判定・
+Ledger自動供給・Reference Digest・Retry語彙拡張への参照も無い(いずれも
+未実装のため該当なし)。既知の相互依存注記: 過去のTrialスクリプト
+(`er011_open112_trend_*trial*`・`er012_editorial_b_voices_trial_03〜
+07`等)が`gen.COMMON_BLOCK_TEMPLATE.replace(...).format(...)`を旧
+5-keyで直接呼ぶ設計だったため、新placeholder追加でこれらを実行すると
+`KeyError`になりうる(過去の同型拡張と同じ性質のGap、これらのTrial
+スクリプト自体が`assert ANCHOR in gen.COMMON_BLOCK_TEMPLATE`という
+fail-closed設計を内包済み)。現在のLane B active runner
+(`er012_b_family_production_runner_01.py`等)はこれら旧Trialスクリプト
+を経由しない独自経路であり、実行中の他タスクとの衝突リスクは無いことを
+grepで確認した。
+
+**残件(Open Item継続、仕様化せず)**: (1) Mode判定自動化、(2) News
+Ledger自動供給(既存自動Research pipelineとの互換性は未検証)、(3)
+Reference Digest追加検証、(4) Diagnostic Full Retry診断語彙拡張。
+据え置き3件(Discovery 4-layer採否・trend overclaim severity方針・
+Point Overlap閾値/Point長さ目安見直し)は不変。
+
+**SSOT反映**: `CURRENT_SPEC.md`冒頭changelog第12弾+新設「## News
+Editorial Mode(Trend Synthesis)」節、`OPEN_ITEMS.md`OPEN-112行(mode=
+`PRODUCTION_WIRED候補[Fable受入待ち]`+commit hash)へ追記。
+
+**根拠レポート**: `OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_
+REPORT.md`、`FAMILY-A-TREND-SYNTHESIS-PRODUCTION-READINESS-01_
+REPORT.md`(配線設計の根拠)。Git操作: 配線コード・単体テスト・Report・
+runtime evidence(json/md/txt/jsonl、wav無し)をG1として先にcommit
+(`9a09103`)、SSOT 3ファイルをG2としてファイル名指定でcommitし
+`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
