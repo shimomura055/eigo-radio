@@ -139,6 +139,16 @@ def assert_budget_ok(note: str = "") -> float:
 #     「要約しない・答えを先取りしない・どちらが正しいか評価しない」という
 #     既存の禁止方向性(t9.VOICES_COMMENT_1_ROLEの「The Questionで語られる
 #     具体的な状況・問いの先取り」等の既存禁止事項)はそのまま維持する。
+#
+# 追加修正(EDITORIAL-B-FAMILY-VOICES-COMMENT1-CONTRACT-FINALIZE-11、
+# 2026-09-08、ユーザー承認済み。Comment 1 Contract確定版):
+#   - 上記TRIAL-10の修正差分に加え、禁止事項リストへ1項目のみ追加。
+#     Fable Gate 7懸念(a)(TRIAL-10 run1で生成文中に"the question"という
+#     語句が偶然出現し、Voices構造内部のPart名"The Question"の漏出に
+#     見えるおそれ)への対応として、"the question"という語句そのもの
+#     (大小文字問わず)の出力を明示的に禁止する。役割名・役割記述・既存
+#     禁止事項4点・構造ラベル非出力制約・分量指定は無変更。Comment 2〜4は
+#     このファイルでは定義・参照していない(無変更)。
 VOICES_COMMENT_1_ROLE_TRIAL10 = """あなたはPodcastのナビゲーターです。これから、あるテーマ・場面を短く
 提示する「The Question」(冒頭の問いかけ本文)をリスナーが聞きます。その直前に流す、
 Comment 1(役割: Listening Focus)を書いてください。
@@ -155,6 +165,8 @@ Comment 1(役割: Listening Focus)を書いてください。
 - 事実を解説するような硬い、Discovery的な説明口調
 - テーマ・場面についての一般的な説明・主張文(聞き方の案内ではなく、内容そのものを
   語ってしまう文)
+- "the question"という語句そのもの(大文字・小文字を問わず)を出力文中で使用すること
+  (番組構成上のPart名"The Question"と紛らわしいため)
 
 1文程度の、非常に短いListening Focusにしてください。
 
