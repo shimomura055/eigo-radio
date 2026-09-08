@@ -8307,6 +8307,42 @@ editorial_b_voices_a2_free_address_03/`配下のjson/md/html[wav除外])
 をG1、SSOT2ファイル(`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG2として
 ファイル名指定でcommitし`origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-26: OPEN-129対策Trial結果のSSOT反映
+
+`OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-TRIAL-01_REPORT.md`が、
+共有Audio Validation Gate(`er003_v1_n3_01_assemble.py::verify_
+episode_audio_validation_gate()`)が実在entryの状態のみを検証し、
+欠落segment・voice誤割当・余分segmentを検知しない設計であることを、
+4経路(A_FAMILY_A2/A_FAMILY_B1/B_FAMILY_B1/B_FAMILY_A2)×5ケース
+(baseline/delete/voice_swap/reorder/extra)のread-only再現で確認した
+(delete/voice_swap/extraの検知対象12/12件が現行Gateで不検知、reorder
+/baselineは期待通り不検知)。あわせてB-Family B1とA-Family B1が同一
+`level="B1"`を共有し構造差(tension_reflection、voice_a/b)を区別
+できない設計欠落を新規発見した。Trial実装`check_structural_
+completeness()`(family+level複合キー)は12/12検知、既存完成episode
+13件中12件でfalse reject 0(残り1件は中間iterationの真の未完成、
+true positive)。費用¥0。設計案3案を比較し案(a)(family+level複合
+キーでGate側にrequired_segments定義、opt-in→段階的mandatory化)を
+推奨。
+
+**Gate 1分類**: `VALIDATED`(Trial範囲)、Production実装は未実施。
+
+**未決事項(いずれも`USER_DECISION_REQUIRED`)**: (1) mandatory化の
+タイミング、(2) 構造定義の正本置き場(registry統合 vs Gate内蔵)、
+(3) key phrase sub-key命名のschema drift統一要否。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-129行へTrial-01結果を追記(状態は
+引き続き`USER_DECISION_REQUIRED`)。`docs/pm/ACTIVE_TASK.md`・`docs/pm/
+RESULT_PACKET.md`を本タスク用に更新した。
+
+**根拠レポート**: `OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
+TRIAL-01_REPORT.md`。Git操作: Lane B成果物(`er011_open129_structural_
+completeness_trial_01.py`、Report1件、`er011_output/open129_
+structural_completeness_trial_01/`配下のjson/md)をG1、SSOT2ファイル
+(`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG2としてファイル名指定でcommit
+し`origin/main`へpush。並列稼働中のLane A Trial-04(`er011_output/
+daily_news_focus_layer_comparison_trial_04/`)は本タスクで触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
