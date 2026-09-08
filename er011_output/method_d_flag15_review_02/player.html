@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OPEN-121 方式D flag15件 レビュー(部品試聴、完成episodeではない)</title>
+<style>
+body { font-family: "Meiryo","Hiragino Kaku Gothic ProN",sans-serif; max-width: 1080px; margin: 2em auto; line-height:1.55; color:#111; }
+h1 { font-size: 1.3em; }
+h2 { border-bottom: 2px solid #333; padding-bottom:4px; margin-top:1.8em; }
+h3 { margin-top:1.6em; border-left:6px solid #888; padding-left:8px; }
+table.timeline { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.timeline th, table.timeline td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.timeline th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 100px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 190px; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: 400px; }
+table.timeline td.txt { white-space: pre-wrap; }
+button.seek { cursor:pointer; font-family:monospace; font-size:0.92em; padding:2px 6px; }
+table.timeline audio { width: 100%; min-width: 360px; height: 32px; }
+.missing { color:#a33; font-style:italic; }
+.note { background:#fffbe6; border:1px solid #e0d080; padding:8px 12px; font-size:0.88em; margin:10px 0; }
+audio.main { width:100%; max-width:640px; display:block; margin:8px 0; }
+table.kp { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.kp th, table.kp td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.kp th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 230px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 190px; }
+table.timeline th:nth-child(3), table.timeline td:nth-child(3) { width: 260px; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: auto; }
+table.timeline th:nth-child(5), table.timeline td:nth-child(5) { width: 260px; }
+table.timeline th:nth-child(7), table.timeline td:nth-child(7) { width: 150px; }
+table.timeline audio { min-width: 360px; width: 100%; }
+mark.mark-a { background:#ffe58a; }
+mark.mark-b { background:#a6d8ff; }
+mark.mark-a.mark-b { background:linear-gradient(90deg,#ffe58a,#a6d8ff); }
+details.excluded { margin-top:1.4em; }
+details.excluded summary { cursor:pointer; font-weight:bold; }
+</style>
+</head>
+<body>
+<h1>OPEN-121 方式D flag15件 レビュー</h1>
+<div class="note">
+<b>この2箇所は、本来1回でよい内容が不自然に重複しているか?</b><br>
+これは<b>完成episodeの試聴ページではありません</b>。方式D(自己相関ベースの
+重複/hallucination検知、Production既定閾値run&ge;0.12秒)でflagされた
+23件のうち、真の重複として証拠・過去試聴で確定済みの8件
+(open112_trial13 / open117_trial02_kp の in_one_line系・point_two系、
+既知バグ再現)はここでは除外し、確認が必要な残り15件
+(誤flag可能性高14件+判断困難1件)だけを表示しています
+(管理ID: OPEN-121-METHOD-D-FLAG15-REVIEW-ARTIFACT-02。除外8件の一覧は
+ページ末尾に折りたたみで記載)。<br>
+各行の「1回目/2回目」は、方式Dが自己相関で検知した類似区間の開始秒です。
+検知秒付近のscript断片は、ローカルfaster-whisperのword-level timestamp
+から機械抽出したものです(算出できなかった場合は推測せず
+「位置未特定」と明記しています)。完全script欄の
+<mark class="mark-a">黄色</mark>=1回目付近、
+<mark class="mark-b">水色</mark>=2回目付近のハイライトも同じ機械抽出
+(difflibによる近似マッチ)によるもので、一致語句が2語未満の場合は
+ハイライトしていません。方式Dの閾値変更・自動再生成は一切行っていません
+(既存wav・JSONは読み取りのみ。新規clipは本ページ専用の
+`clips/`配下に切り出したもので、既存ファイルへの上書きはありません)。
+判定欄(3択)は選択できますが保存機能はありません(最終判断は
+ユーザー自身の記録による)。
+</div>
+
+<h2>15件 詳細</h2>
+<table class="timeline">
+<thead><tr><th>個別音声(全体)</th><th>Segment/voice/review_lock</th>
+<th>1回目/2回目(検知秒・確認範囲・断片・該当範囲clip)</th>
+<th>完全script(該当箇所ハイライト)</th><th>証拠(ASR/disfluency)</th>
+<th>一次分類・根拠</th><th>判定</th></tr></thead>
+<tbody>
+
+<tr>
+  <td>
+    <audio id="a0" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_benches/b1b/narration/in_one_line.wav"></audio><br>
+    <small>duration=16.731s / run=0.14s / lag=8.67s / sim=0.9976</small>
+  </td>
+  <td><b>pool_pilot_01/pool_benches</b> / b1b / in_one_line<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a0', 6.35)">&#9654; 6.35s(1回目)</button><br><small>確認範囲 4.85s〜7.85s</small><br><b>断片:</b> "as a rest stop, a neighborhood porch,"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_benches__er006_output_pool_pilot_01_pool_benches__b1b__in_one_line__occ1_4.85s-7.85s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a0', 15.02)">&#9654; 15.02s(2回目)</button><br><small>確認範囲 13.52s〜16.52s</small><br><b>断片:</b> "helps shape who can remain in public space."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_benches__er006_output_pool_pilot_01_pool_benches__b1b__in_one_line__occ2_13.52s-16.52s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">A bench may be a small piece of city furniture, but it can serve <mark class="mark-a">as a rest stop, a neighborhood porch,</mark> or a signal that some people should move on. How cities design the pause <mark class="mark-b">helps shape who can remain in public space.</mark></td>
+  <td><b>生成時ASR:</b> A bench may be a small piece of city furniture, but it can serve as a rest stop, a neighborhood porch, or a signal that some people should move on. How cities designed the pause helps shape who can remain in public space.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_benches/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH、方式Aも非flag。ASR全文に反復語句なし(run=0.14秒、閾値0.12秒すれすれ)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_0" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_0" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_0" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a1" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_benches/b1b/narration/topic_intro.wav"></audio><br>
+    <small>duration=5.021s / run=0.12s / lag=4.77s / sim=0.9915</small>
+  </td>
+  <td><b>pool_pilot_01/pool_benches</b> / b1b / topic_intro<br>
+    <small>voice=Charon / model=情報なし / instr=english_style_prefix</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a1', 0.18)">&#9654; 0.18s(1回目)</button><br><small>確認範囲 0.00s〜1.68s</small><br><b>断片:</b> "Today's topic is a"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_benches__er006_output_pool_pilot_01_pool_benches__b1b__topic_intro__occ1_0.00s-1.68s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a1', 4.95)">&#9654; 4.95s(2回目)</button><br><small>確認範囲 3.45s〜5.02s</small><br><b>断片:</b> "signal to move on."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_benches__er006_output_pool_pilot_01_pool_benches__b1b__topic_intro__occ2_3.45s-5.02s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt"><mark class="mark-a">Today's topic is A</mark> Place to Pause—or a <mark class="mark-b">Signal to Move On?.</mark></td>
+  <td><b>生成時ASR:</b> Today's topic is a place to pause or a signal to move on.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_benches/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH、方式Aも非flag、run=0.12秒(Production閾値ちょうど境界値)。ASR全文に反復語句なし。</small></td>
+  <td>
+    <label><input type="radio" name="judge_1" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_1" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_1" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a2" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications/b1b/narration/full_story_part1.wav"></audio><br>
+    <small>duration=44.171s / run=0.14s / lag=9.92s / sim=0.9964</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications</b> / b1b / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a2', 14.5)">&#9654; 14.50s(1回目)</button><br><small>確認範囲 13.00s〜16.00s</small><br><b>断片:</b> "tested this idea with 73 university students."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications__er006_output_pool_pilot_01_pool_n18_notifications__b1b__full_story_part1__occ1_13.00s-16.00s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a2', 24.42)">&#9654; 24.42s(2回目)</button><br><small>確認範囲 22.92s〜25.92s</small><br><b>断片:</b> "sound, others included a neutral comparison sound."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications__er006_output_pool_pilot_01_pool_n18_notifications__b1b__full_story_part1__occ2_22.92s-25.92s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">Imagine trying to focus when a familiar phone alert sounds. You do not look at the screen. You do not touch the phone. But your attention may still move toward it. A 2022 study <mark class="mark-a">tested this idea with 73 university students.</mark> They completed 960 rounds of a visual letter task. Some rounds included a notification <mark class="mark-b">sound. Others included a neutral comparison sound.</mark> The result was clear. People responded more slowly when the notification sound played. Brain-wave recordings also showed a stronger signal during those rounds. The researchers interpreted this as a sign that extra mental control was needed to keep working.</td>
+  <td><b>生成時ASR:</b> Imagine trying to focus when a familiar phone alert sounds. You do not look at the screen, you do not touch the phone, but your attention may still move toward it. A 2022 study tested this idea with 73 university students. They completed 960 rounds of a visual letter task. Some rounds included a notification sound, others included a neutral comparison sound. The result was clear: people responded more slowly when the notification sound played. Brainwave recordings also showed a stronger signal during those rounds. The researchers interpreted this as a sign that extra mental control was needed to keep working.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし、review_lock=RESOLVED/OK(既存人間レビュー済み)。run=0.14秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_2" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_2" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_2" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a3" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2/a2/narration/point_two_heading.wav"></audio><br>
+    <small>duration=3.856s / run=0.12s / lag=2.53s / sim=0.9906</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications_specfix_v2</b> / a2 / point_two_heading<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a3', 1.08)">&#9654; 1.08s(1回目)</button><br><small>確認範囲 0.00s〜2.58s</small><br><b>断片:</b> "muting is not the same as"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications_specfix_v2__er006_output_pool_pilot_01_pool_n18_notifications_specfix_v2__a2__point_two_heading__occ1_0.00s-2.58s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a3', 3.61)">&#9654; 3.61s(2回目)</button><br><small>確認範囲 2.11s〜3.86s</small><br><b>断片:</b> "same as absence."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications_specfix_v2__er006_output_pool_pilot_01_pool_n18_notifications_specfix_v2__a2__point_two_heading__occ2_2.11s-3.86s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt"><mark class="mark-a mark-b">Muting is not the same as absence</mark></td>
+  <td><b>生成時ASR:</b> Muting is not the same as absence.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時disfluency QA(faster-whisper別経路)がflagged=false・repeats=[]で明示的に反復なしと確認済み。run=0.12秒(境界値)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_3" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_3" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_3" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a4" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r/a2/narration/point_two_heading.wav"></audio><br>
+    <small>duration=3.856s / run=0.12s / lag=2.53s / sim=0.9906</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r</b> / a2 / point_two_heading<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a4', 1.08)">&#9654; 1.08s(1回目)</button><br><small>確認範囲 0.00s〜2.58s</small><br><b>断片:</b> "muting is not the same as"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications_specfix_v2_ec_a_precision_21r__er006_output_pool_pilot_01_pool_n18_notifications_specfix_v2_ec_a_precision_21r__a2__point_two_heading__occ1_0.00s-2.58s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a4', 3.61)">&#9654; 3.61s(2回目)</button><br><small>確認範囲 2.11s〜3.86s</small><br><b>断片:</b> "same as absence."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n18_notifications_specfix_v2_ec_a_precision_21r__er006_output_pool_pilot_01_pool_n18_notifications_specfix_v2_ec_a_precision_21r__a2__point_two_heading__occ2_2.11s-3.86s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt"><mark class="mark-a mark-b">Muting is not the same as absence</mark></td>
+  <td><b>生成時ASR:</b> Muting is not the same as absence.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>上記と同一script・同一flag位置(別バリアントgroup)。disfluency QAflagged=false・repeats=[]で反復なしと確認済み。run=0.12秒(境界値)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_4" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_4" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_4" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a5" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n5_cafes/a2/narration/full_story_part2.wav"></audio><br>
+    <small>duration=66.825s / run=0.12s / lag=24.53s / sim=0.9978</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n5_cafes</b> / a2 / full_story_part2<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a5', 14.07)">&#9654; 14.07s(1回目)</button><br><small>確認範囲 12.57s〜15.57s</small><br><b>断片:</b> "furniture, and controlled noise. They may also"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n5_cafes__er006_output_pool_pilot_01_pool_n5_cafes__a2__full_story_part2__occ1_12.57s-15.57s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a5', 38.6)">&#9654; 38.60s(2回目)</button><br><small>確認範囲 37.10s〜40.10s</small><br><b>断片:</b> "laptop users occupied more than 70% of"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n5_cafes__er006_output_pool_pilot_01_pool_n5_cafes__a2__full_story_part2__occ2_37.10s-40.10s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">The fourth kind is the Productive Third Place, or PTP. These cafés clearly welcome customer-workers. They offer reliable Wi-Fi, enough power outlets, useful <mark class="mark-a">furniture, and controlled noise. They may also</mark> offer daily deals. The study says these customers can bring value. They may use seats during quiet hours. They may also make the café look active and lively. But not every café wants this model. Coffee Intelligence reported a different choice by The Barn, a Berlin coffee chain. At its Neukölln shop, <mark class="mark-b">laptop users occupied more than 70</mark> percent of the seats for long periods. The café reported that sales fell by 25 percent before its policy change. The Barn then introduced a one-hour limit for laptop users. On some busy days, it could ban laptop use completely. So, cafés are moving in 2 directions. Some are changing the whole space to welcome people who work. Others are protecting seat turnover with time limits.</td>
+  <td><b>生成時ASR:</b> The fourth kind is the productive third place, or PTP. These cafes clearly welcome customer workers. They offer reliable Wi-Fi, enough power outlets, useful furniture, and controlled noise. They may also offer daily deals. The study says these customers can bring value. They may use seats during quiet hours. They may also make the cafe look active and lively. But not every cafe wants this model. Coffee Intelligence reported a different choice by The Barn, a Berlin coffee chain. At its Neukölln shop, laptop users occupied more than 70% of the seats for long periods. The cafe reported that its sales fell by 25% before its policy change. The Barn then introduced a one-hour limit for laptop users. On some busy days, it could ban laptop use completely. So cafes are moving in two directions. Some are changing the whole space to welcome people who work. Others are protecting seat turnover with time limits.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n5_cafes/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし。run=0.12秒(境界値)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_5" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_5" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_5" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a6" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/full_story_part1.wav"></audio><br>
+    <small>duration=48.705s / run=0.15s / lag=8.35s / sim=0.9981</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / a2 / full_story_part1<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a6', 24.7)">&#9654; 24.70s(1回目)</button><br><small>確認範囲 23.20s〜26.20s</small><br><b>断片:</b> "A 2014 study looked at more than"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__a2__full_story_part1__occ1_23.20s-26.20s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a6', 33.05)">&#9654; 33.05s(2回目)</button><br><small>確認範囲 31.55s〜34.55s</small><br><b>断片:</b> "found a useful natural test. For"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__a2__full_story_part1__occ2_31.55s-34.55s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">At the end of a taxi ride or a meal, the payment screen asks one small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. <mark class="mark-a">A 2014 study looked at more than</mark> 13 million credit card taxi payments in New York City. The researchers <mark class="mark-b">found a useful natural test. For</mark> fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.</td>
+  <td><b>生成時ASR:</b> At the end of a taxi ride or meal, the payment screen asks one small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. A 2014 study looked at more than 13 million credit card taxi payments in New York City. The researchers found a useful natural test. For fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし、review_lock=RESOLVED/OK。run=0.15秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_6" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_6" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_6" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a7" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/full_story_part1_original.wav"></audio><br>
+    <small>duration=45.961s / run=0.14s / lag=33.1s / sim=0.9978</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / a2 / full_story_part1_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a7', 2.98)">&#9654; 2.98s(1回目)</button><br><small>確認範囲 1.48s〜4.48s</small><br><b>断片:</b> "ride or meal, the payment screen asks one"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__a2__full_story_part1_original__occ1_1.48s-4.48s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a7', 36.08)">&#9654; 36.08s(2回目)</button><br><small>確認範囲 34.58s〜37.58s</small><br><b>断片:</b> "$15 and just above $15,"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__a2__full_story_part1_original__occ2_34.58s-37.58s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">At the end of a taxi ride or a <mark class="mark-a">meal, the payment screen asks one</mark> small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. A 2014 study looked at more than 13 million credit card taxi payments in New York City. The researchers found a useful natural test. For fares just below <mark class="mark-b">$15 and just above $15,</mark> the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.</td>
+  <td><span class="missing">未取得(生成時ASR記録が見つからず)</span></td>
+  <td><b>誤flagの可能性高</b><br><small>同一canonical・同一flag系列(sibling full_story_part1と同一script、review_lock=RESOLVED/OK)。sibling側ASR確認で反復なし。run=0.14秒。本ファイル自体の個別ASR記録は未取得(この点は判断困難要素として明記)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_7" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_7" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_7" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a8" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/narration/in_one_line.wav"></audio><br>
+    <small>duration=12.851s / run=0.15s / lag=5.98s / sim=0.9994</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / b1b / in_one_line<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a8', 0.15)">&#9654; 0.15s(1回目)</button><br><small>確認範囲 0.00s〜1.65s</small><br><b>断片:</b> "The tip screen starts the"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__b1b__in_one_line__occ1_0.00s-1.65s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a8', 6.13)">&#9654; 6.13s(2回目)</button><br><small>確認範囲 4.63s〜7.63s</small><br><b>断片:</b> "control the final answer. A stronger suggestion"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_n9_tip_screens__er006_output_pool_pilot_01_pool_n9_tip_screens__b1b__in_one_line__occ2_4.63s-7.63s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt"><mark class="mark-a">The tip screen starts the</mark> conversation with a number, but it does not <mark class="mark-b">control the final answer. A stronger suggestion</mark> may bring in more money from some customers—and bring a zero from others.</td>
+  <td><b>生成時ASR:</b> The tip screen starts the conversation with a number, but it does not control the final answer. A stronger suggestion may bring in more money from some customers and bring a zero from others.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時disfluency QAがflagged=false・repeats=[]で明示的に反復なしと確認済み、review_lock=RESOLVED/OK。run=0.15秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_8" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_8" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_8" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a9" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_startups/a2/narration/full_story_part1.wav"></audio><br>
+    <small>duration=63.581s / run=0.17s / lag=10.69s / sim=0.9986</small>
+  </td>
+  <td><b>pool_pilot_01/pool_startups</b> / a2 / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a9', 12.58)">&#9654; 12.58s(1回目)</button><br><small>確認範囲 11.08s〜14.08s</small><br><b>断片:</b> "happens when a business has a network effect. Think of"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_startups__er006_output_pool_pilot_01_pool_startups__a2__full_story_part1__occ1_11.08s-14.08s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a9', 23.27)">&#9654; 23.27s(2回目)</button><br><small>確認範囲 21.77s〜24.77s</small><br><b>断片:</b> "explained this idea as network externalities in"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/pool_pilot_01_pool_startups__er006_output_pool_pilot_01_pool_startups__a2__full_story_part1__occ2_21.77s-24.77s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">At first, the plan sounds strange: lose money now, grow fast, and think about profit later.
+
+But for some startups, user growth can change the product itself. This <mark class="mark-a">happens when a business has a network effect.
+
+Think of</mark> a service that helps people connect. When more people join, the service can become more useful for each person. Katz and Shapiro <mark class="mark-b">explained this idea as</mark> “network externalities” in their 1985 work.
+
+Then a powerful circle can begin.
+
+More users create more value. More value attracts more users.
+
+An early lead can build on itself and become a lasting advantage. A late start can also become a bigger problem over time. In such a market, even the product with the best technology may not win.
+
+This is why speed can be a rational choice. Pete Flint of NFX wrote in 2020 that a company with a true network effect may first run at a loss. It tries to reach a large enough network before rivals do. After that, it may be able to move into profit.</td>
+  <td><small>証拠source: er006_output/pool_pilot_01/pool_startups/a2/audit/tts_generation_results.json</small></td>
+  <td><b>判断困難</b><br><small>tts_status=STOPPED(標準/minimal経路とも6回で不合格、正式verified=trueの記録なし)。6回のASR試行いずれも反復語句は無いが、どの試行が実際にnarration/へ残った音声と一致するか特定できない(duration不一致)。canonicalに正当な並行構文('More users create more value. More value attracts more users.')があり誤flagの説明も可能だが、生成ステータス自体が未検証のため一次分類は判断困難とする。</small></td>
+  <td>
+    <label><input type="radio" name="judge_9" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_9" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_9" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a10" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_voices_trial_08_audio/p3/b1b/narration/point_one.wav"></audio><br>
+    <small>duration=39.731s / run=0.12s / lag=10.69s / sim=0.9971</small>
+  </td>
+  <td><b>er012_laneb_trial08</b> / b1b / point_one<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a10', 2.94)">&#9654; 2.94s(1回目)</button><br><small>確認範囲 1.44s〜4.44s</small><br><b>断片:</b> "employee looks for an empty desk. Someone else"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er012_laneb_trial08__er012_output_editorial_b_voices_trial_08_audio_p3__b1b__point_one__occ1_1.44s-4.44s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a10', 13.63)">&#9654; 13.63s(2回目)</button><br><small>確認範囲 12.13s〜15.13s</small><br><b>断片:</b> "sometimes worry about using a desk or keyboard after someone"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er012_laneb_trial08__er012_output_editorial_b_voices_trial_08_audio_p3__b1b__point_one__occ2_12.13s-15.13s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">Every morning, the <mark class="mark-a">employee looks for an empty desk. Someone else</mark> may have used it yesterday, and someone new may sit there tomorrow. They cannot leave papers in a drawer, and they <mark class="mark-b">sometimes worry about using a desk or keyboard after someone</mark> else. Before work begins, they have already spent time finding a place. They miss the same desk, drawer, and view. They helped them start without searching and gave them a quiet sense of belonging. Now the office can feel borrowed. They want their work and things to have a place, even when they cannot choose the seating policy.</td>
+  <td><b>生成時ASR:</b> Every morning, the employee looks for an empty desk. Someone else may have used it yesterday, and someone new may sit there tomorrow. They cannot leave papers in a drawer, and they sometimes worry about using a desk or keyboard after someone else. Before work begins, they have already spent time finding a place. They miss the same desk, drawer, and view. They helped them start without searching and gave them a quiet sense of belonging. Now the office can feel borrowed. They want their work and things to have a place, even when they cannot choose the seating policy.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er012_output/editorial_b_voices_trial_08_audio/p3/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH(完全一致)、review_lock=RESOLVED/OK。run=0.12秒(境界値)。</small></td>
+  <td>
+    <label><input type="radio" name="judge_10" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_10" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_10" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a11" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/a2_audio_01/A02/narration/full_story_part1.wav"></audio><br>
+    <small>duration=48.031s / run=0.15s / lag=8.49s / sim=0.9976</small>
+  </td>
+  <td><b>er003_output/a2_audio_01</b> / A02 / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a11', 14.29)">&#9654; 14.29s(1回目)</button><br><small>確認範囲 12.79s〜15.79s</small><br><b>断片:</b> "The government calls it a digital switchoff period."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_a2_audio_01__er003_output_a2_audio_01__A02__full_story_part1__occ1_12.79s-15.79s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a11', 22.78)">&#9654; 22.78s(2回目)</button><br><small>確認範囲 21.28s〜24.28s</small><br><b>断片:</b> "apps under the plan would not open at first."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_a2_audio_01__er003_output_a2_audio_01__A02__full_story_part1__occ2_21.28s-24.28s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">Social media in the UK may soon say “goodnight” at midnight.
+
+The British government shared a new plan on July 15. It is for people aged 16 and 17. <mark class="mark-a">The government calls it a digital switch-off period.</mark> It would run from midnight to 6 a.m.
+
+During that time, <mark class="mark-b">apps under the plan would not open at first.</mark> This first setting is called a default. Notifications would stop. Autoplay would stop too. This tool starts the next video on its own.
+
+The apps would also stop feeds that pick posts for each person. These feeds can keep people scrolling for a long time.
+
+The government plans to start it in spring 2027.</td>
+  <td><b>生成時ASR:</b> Social media in the UK may say goodnight at midnight. The British government shared a new plan on July 15th. It is for people aged 16 and 17. The government calls it a digital switch-off period. It would run from midnight to 6:00 AM. During that time, apps under the plan would not open at first.This first setting is called a default notifications would stop, autoplay would.Stop, too. This tool starts the next video on its own. The apps would also stop feeds that pick posts for each person. These feeds can keep people scrolling for a long time. The government plans to start it in spring 2027.<br><b>ASR verdict:</b> asr_verified=true/substring_ok=true(post-hoc検証)<br><small>証拠source: er003_output/a2_audio_01/A02/audit/new_segments_result.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>new_segments_result.jsonでasr_verified=true・substring_ok=true(post-hoc検証、既存生成音声への事後確認)。ASR全文に反復語句なし。run=0.15秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_11" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_11" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_11" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a12" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/a2/narration/full_story_part2.wav"></audio><br>
+    <small>duration=38.911s / run=0.16s / lag=26.23s / sim=0.9967</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / a2 / full_story_part2<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a12', 10.56)">&#9654; 10.56s(1回目)</button><br><small>確認範囲 9.06s〜12.06s</small><br><b>断片:</b> "Honshin then made the gap much bigger."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__a2__full_story_part2__occ1_9.06s-12.06s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a12', 36.79)">&#9654; 36.79s(2回目)</button><br><small>確認範囲 35.29s〜38.29s</small><br><b>断片:</b> "then the late hitters made sure there would be no close finish."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__a2__full_story_part2__occ2_35.29s-38.29s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">The Carp scored their only run in the fifth inning. Elehuris Montero hit a solo home run, but Hiroshima could not add anything more.
+
+Hanshin <mark class="mark-a">then made the gap much bigger.</mark>
+
+The team added runs in the seventh inning and scored again in the eighth. Hiroshima could not stop the late attack, and the game moved far out of reach.
+
+The final score was:
+
+Hanshin Tigers 8–1 Hiroshima Toyo Carp
+
+This was a complete win from beginning to end. Sato opened the game with power. Ihara protected the lead. <mark class="mark-b">Then the late hitters made sure there would be no close finish.</mark></td>
+  <td><b>生成時ASR:</b> The Carp scored their only run in the fifth inning. Elijah Montero hit a solo home run, but Hiroshima could not add anything more. Honshain then made the gap much bigger. The team added runs in the seventh inning and scored again in the 8th. Hiroshima could not stop the late attack and the game moved far out of reach. The final score was Hanjin Tigers 8 Hiroshima Toyo Carp one. This was a complete win from.Beginning to end, Sato opened the game with power. Ihara protected the lead, then the late hitters made sure there would be no close finish.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時asr_verified=true。ASR全文に反復語句なし(固有名詞の聞き取り差異のみ)。run=0.16秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_12" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_12" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_12" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a13" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/a2/narration/in_one_line.wav"></audio><br>
+    <small>duration=8.331s / run=0.14s / lag=4.85s / sim=0.9866</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / a2 / in_one_line<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a13', 2.05)">&#9654; 2.05s(1回目)</button><br><small>確認範囲 0.55s〜3.55s</small><br><b>断片:</b> "Hanschen took the lead with one big swing, protected it"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__a2__in_one_line__occ1_0.55s-3.55s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a13', 6.9)">&#9654; 6.90s(2回目)</button><br><small>確認範囲 5.40s〜8.33s</small><br><b>断片:</b> "finished the night with an 8-1 statement win."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__a2__in_one_line__occ2_5.40s-8.33s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt">Hanshin <mark class="mark-a">took the lead with one big swing, protected it</mark> with steady pitching, and <mark class="mark-b">finished the night with an</mark> 8–1 statement win.</td>
+  <td><b>生成時ASR:</b> Hanshin took the lead with one big swing, protected it with steady pitching and finished the night with an 8 to one statement win.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/a2/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>ASR全文がcanonicalとほぼ一致し反復語句なし。run=0.14秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_13" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_13" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_13" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <audio id="a14" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/b1b/narration/point_two_heading.wav"></audio><br>
+    <small>duration=3.561s / run=0.13s / lag=3.42s / sim=0.9958</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / b1b / point_two_heading<br>
+    <small>voice=Aoede / model=情報なし / instr=english_style_prefix</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td><button class="seek" onclick="seekOwn('a14', 0.0)">&#9654; 0.00s(1回目)</button><br><small>確認範囲 0.00s〜1.50s</small><br><b>断片:</b> "The late runs showed"<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__b1b__point_two_heading__occ1_0.00s-1.50s.wav">&#9654; 該当範囲のみ再生</button><hr><button class="seek" onclick="seekOwn('a14', 3.42)">&#9654; 3.42s(2回目)</button><br><small>確認範囲 1.92s〜3.56s</small><br><b>断片:</b> "Hanshian's full strength."<br><button class="seek" onclick="playClip(this)" data-src="file:///C:/Users/tensh/eigo-radio/er011_output/method_d_flag15_review_02/clips/er003_output_n3_01__er003_output_n3_01_hanshin__b1b__point_two_heading__occ2_1.92s-3.56s.wav">&#9654; 該当範囲のみ再生</button></td>
+  <td class="txt"><mark class="mark-a">The Late Runs Showed</mark> Hanshin's <mark class="mark-b">Full Strength</mark></td>
+  <td><b>生成時ASR:</b> The late runs showed Hanshin's full strength.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/b1b/audit/tts_generation_results.json</small></td>
+  <td><b>誤flagの可能性高</b><br><small>ASR全文(1文のみ)に反復語句なし。flag位置がtime_a=0.0s〜time_b=3.42s(clip全体長3.561秒)とほぼクリップ全体幅で、短い単文クリップ特有の自己相関アーティファクトの可能性が高い。run=0.13秒。</small></td>
+  <td>
+    <label><input type="radio" name="judge_14" value="dup"> 真の重複</label><br>
+    <label><input type="radio" name="judge_14" value="falseflag"> 正常音声への誤flag</label><br>
+    <label><input type="radio" name="judge_14" value="unclear"> 判断困難</label>
+  </td>
+</tr>
+
+</tbody>
+</table>
+
+<details class="excluded">
+<summary>確定済み(確認不要) 8件 — 真の重複として過去試聴で確定済み</summary>
+<ul>
+<li><code>open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::in_one_line</code> — 方式Aの独立ASR(faster-whisper)transcriptに文全体が2回連続で出現(disfluency_evidence.transcript参照...</li><li><code>open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::in_one_line_original</code> — 同上と同一script・ほぼ同一flag位置(time_a=7.09s/time_b=14.82s)のbackup版。方式Aでも同一spanをflag(cano...</li><li><code>open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::point_two</code> — 既知バグ「Point Two BUGGY」と同一script・同一flag位置(time_a=9.20s/time_b=18.84s、run=0.16s)。生成...</li><li><code>open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::point_two_original</code> — 同上backup版。方式Aでも同一spanをflag(canonical_repeat_count=0)。...</li><li><code>open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::in_one_line</code> — open112_trial13::in_one_lineと同一script・同一flag位置・同一defect(別task[OPEN-117]で生成された同一音...</li><li><code>open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::in_one_line_original</code> — open112_trial13::in_one_line_originalと同一script・同一flag位置・同一defect。...</li><li><code>open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::point_two</code> — open112_trial13::point_twoと同一script・同一flag位置・同一defect(既知バグの再現)。...</li><li><code>open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::point_two_original</code> — open112_trial13::point_two_originalと同一script・同一flag位置・同一defect。...</li>
+</ul>
+</details>
+
+<script>
+function seekOwn(audioId, sec) {
+  var a = document.getElementById(audioId);
+  if (!a) return;
+  a.currentTime = parseFloat(sec);
+  a.play();
+}
+var clipPlayers = {};
+function playClip(btn) {
+  var src = btn.getAttribute('data-src');
+  if (!clipPlayers[src]) {
+    var a = new Audio(src);
+    clipPlayers[src] = a;
+  }
+  clipPlayers[src].currentTime = 0;
+  clipPlayers[src].play();
+}
+</script>
+</body>
+</html>
