@@ -7465,6 +7465,78 @@ commitし、`origin/main`へpushした。**根拠レポート**:
 `OPEN-112-THEME2-B1-NUMERIC-PRECISION-MINIMAL-FIX-RERUN-04_REPORT.md`、
 `NUMERIC-PRECISION-RETROACTIVE-AUDIT-01_REPORT.md`。
 
+## PM-CLOSEOUT-CONSOLIDATION-07(2026-09-08、第3弾ユーザー決定五点[1. Theme2 B1
+rerun_04正式採用・rerun_03置き換え/2. B-Family Phase1先行承認(別タスク進行中)/
+3. Theme2 A2「24.1%」仕様問題close+B1同方式Artifact最小修正/4. 過去完成物
+遡及修正不要/5. OPEN-126独立性再評価]の統合)
+
+ユーザーが2026-09-08(PM-CLOSEOUT-CONSOLIDATION-06報告後)に追加で以下5点を
+決定した。**1.** Theme 2 B1完成音声はrerun_04を正式採用し、rerun_03の承認済み
+音声を置き換える(rerun_03は削除せず履歴として保持)。**2.** B-Family Phase 1を
+先行承認する(実装は別タスクで進行中、本統合タスクでは触れない)。**3.** Theme 2
+A2「24.1%」は、Numeric Precision強化版がA2/B1共通配線であること、および現行
+Editorを実際にA2草稿へ適用して24.1%が圧縮されることを確認できれば仕様問題として
+close、A2専用patch・A2専用ルールは作らない(Artifact修正は仕様問題判定と分け、
+必要なら最小範囲でB1と同一方式の例外対応とし、Production仕様へ例外を追加
+しない)。**4.** 過去完成物(Health「8.1年」等)への遡及修正は不要、そのまま
+保持する。**5.** OPEN-126は24.1%問題と独立か実データで再評価し、不要ならclose
+候補とする。
+
+3タスクの結果: **(3の検証)**
+`OPEN-112-THEME2-A2-NUMERIC-PRECISION-COMMON-WIRING-CHECK-01_REPORT.md`。
+`run_lossless_editor()`がlevel/genre引数を持たずA2/B1で分岐が存在しない共通
+コードであることをコード根拠(呼び出しチェーン含む)で確認した。実際に完成
+音声化されたA2草稿(byte-for-byte一致確認済み)へ現行Production Editorを
+無変更のまま1回適用し、「It was chosen by 24.1%.」→「About 24% chose it.」
+への圧縮を実データ(input3269/output797トークン、¥0.26)で確認した(2026-09-07
+配線タスク自身のruntime evidenceでも独立に同一結果を確認済み)。**仕様問題
+としてclose可能**と判定。あわせてB1 rerun_04と同一手順でArtifact最小修正を
+実施: `er011_output/open112_trend_theme2_b_final_audio_rerun_04/a2/`
+(rerun_02/a2の全コピー、article.md/parts.jsonの"24.1%"→"about 24%"決定的
+置換[本文中ちょうど1回であることをassert確認]、該当1segment
+`full_story_part1`のみ現行Production TTS関数で再生成[1回目attemptでPASS、
+asr_verified=True、¥3.55]、他69ファイルはsha256 byte-for-byte reuseを
+確認)。既存`stage_assemble_a2()`で再Assembly(duration358.175→355.599秒、
+peak0.98/headroom safety valve適用、clipping無し、Gate通過)。標準フォーマット
+`player_a2.html`生成、Gate 7機械チェック全PASS(unresolved1件=Japanese title
+読み上げテキスト未取得、推測補完せず正直に表記)。到達Status=
+`USER_FINAL_AUDIO_REVIEW_REQUIRED`(A2は試聴未実施)。**(5の再評価)**
+`OPEN-126-INDEPENDENCE-REEVALUATION-01_REPORT.md`(read-only、編集・API
+呼び出し・Git操作なし)。強化版Numeric Precision配線(2026-09-07)後・同一
+記事・同一Ledger値(24.3%)に対しA2/B1双方を実際にEditorへ通したruntime
+evidence(`preview_role_numeric_precision_wiring_01`)で、B1「was also about
+one quarter」(近似数量残す)・A2「showed a similar level」(数量情報なし定性
+表現)という粒度差1件を確認(同一runの他Fact3件は完全一致)。両者とも強化
+配線後のPromptで生成されており24.1%問題(配線前の古いArtifact残存)とは発生
+条件が異なるため、**(a)独立論点として残す**と判定(緊急性は低い、Ledger
+Deviation Checkは両表現ともCOMPLIANT)。既存の選択肢1/2/3(現状維持/レベル別
+ガイダンス明文化/記事内一貫性ルール)によるUSER_DECISION_REQUIREDは変更なく
+維持することを推奨。**(参考)**
+`PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-DESIGN-01_REPORT.md`(調査・設計のみ、
+設定変更ゼロ)。Claude Code公式ドキュメント調査により、PreCompact hookは
+context再注入に無効(decision-onlyでadditionalContext非対応)であり、有効
+なのはSessionStart(matcher: compact)単体であることを確認。推奨構成=案B
+(CLAUDE.md復帰手順+ACTIVE_TASK.md固定ヘッダ、hookなし)、実装はユーザー
+判断待ち(本タスクでは実装せず)。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-112行(B1 rerun_04正式採用[`APPROVED_FOR_
+PRODUCTION`、rerun_03置き換え・履歴保持]、A2 rerun_04/a2=
+`USER_FINAL_AUDIO_REVIEW_REQUIRED`、Numeric Precision仕様問題close、遡及
+修正不要決定、「OPEN-112最終closeはA2試聴承認後」を追記)、OPEN-126行(再評価
+結果[実データ1件、独立論点として維持、選択肢1/2/3のUSER_DECISION_REQUIRED
+継続]を追記)。`ARTIFACT_REGISTRY.md`はP-series(A01/A02/ADD03)・N3-01
+(Hanshin/Health/Household)のみを対象とした2026-08-17最終更新の登録簿であり、
+No.9/No.18/Theme 2/B-Family等それ以降の完成音声系列は元々この登録簿の対象
+外(Grepで確認、該当箇所なし)であるため、書式不一致として本タスクでは編集
+せず、rerun_04/rerun_03の正式状態は引き続きOPEN_ITEMS.md OPEN-112行・
+本エントリをSSOTとする。`CURRENT_SPEC.md`冒頭changelogへ本タスクのエントリ
+を追加。Git操作は3グループ(A2 Numeric Precision Report一式、OPEN-126
+Report、Context設計Report)+SSOT本体に分けてcommitし、
+`origin/main`へpushした。**根拠レポート**:
+`OPEN-112-THEME2-A2-NUMERIC-PRECISION-COMMON-WIRING-CHECK-01_REPORT.md`、
+`OPEN-126-INDEPENDENCE-REEVALUATION-01_REPORT.md`、
+`PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-DESIGN-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
