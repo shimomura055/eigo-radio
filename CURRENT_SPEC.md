@@ -1,6 +1,15 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-09(第17弾、EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-
+WIRING-01、Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_
+PRODUCTION`)に基づき、B-Family A2(「フリーアドレス vs 固定席」A2、
+`stay put`新版採用)をProduction正式経路へ配線した。新設「## B-Family
+(Voices)Editorial Type」節を参照(構造・voice・slowdown・Comment言語・
+日本語タイトル・Gate対象化・11語超許容は今回限り・Fact Checker運用注記・
+OPEN-129整合を記載)。詳細は`OPEN_ITEMS.md` OPEN-120/OPEN-129行、
+`DECISION_LOG.md`該当エントリ、`EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-
+WIRING-01_REPORT.md`参照。
 **最終更新: 2026-09-08(第16弾、PM-CLOSEOUT-CONSOLIDATION-22、ユーザー決定
 A-UDR-8/9/10反映)**: 「## 通常News(Major/Daily News)Reference仕様」節の
 「Reference記事の正式指定」を更新した。**Household(冷蔵庫クリスパー)を
@@ -390,6 +399,55 @@ Support」という理解は誤りであり、正式には採用しない。
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
 | 原則 | Key Phraseの日本語訳のみ日本語を使用する。Title・Preview・Comment・section narration等へA2由来の日本語spoken textを残さない。A2 Audio Shellの「役割」(Comment役割、Point構造等)は継承するが、A2固有の日本語spoken textそのものは継承しない | `DECIDED` | ER-003-B1-NOVEL-AUDIO-01系(日本語残存Shell要素の英語化) | 2026-08-17 |
+
+## B-Family(Voices)Editorial Type — 2026-09-09新設(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01)
+
+B-Family(Voices)は、A-Family(11パート構造)とは別の物理構造(5区切り:
+Hook/Voice A/Voice B/Tension/Closing)を持つEditorial Type。B1は
+`EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01`で既に
+`PRODUCTION_WIRED`(Phase 1スコープ、一人称"I"の機械保証はPhase 2保留、
+詳細はDECISION_LOG.md該当エントリ・同Report参照)。本節はA2版の正式
+仕様(2026-09-09ユーザー決定、`APPROVED_FOR_PRODUCTION`)を追記する。
+
+| 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
+|---|---|---|---|---|
+| 物理構造 | B1と同一の5区切り(Hook/Voice A/Voice B/Tension/Closing)。11パートへの組み替えは行わない | `PRODUCTION_WIRED` | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-1) | 2026-09-09 |
+| Voice割当 | Voice A=Algieba/Voice B=Erinome/Narrator見出し=Aoede(B1と同一、`er012_b_family_editorial_type_registry_01.py::VOICE_ASSIGNMENT`を共有) | `PRODUCTION_WIRED` | 同上(B-A2-3) | 2026-09-09 |
+| Voice A/B・本文系segmentの速度 | 標準A2の既存6% slowdown仕様(`A2_ENGLISH_STYLE_PREFIX_SLOWER`+`apply_a2_slowdown_postprocess()`、無変更)を、Voice A/B本文(`point_one`/`point_two`)を含む全英語segment(Narrator見出し・Hook Part1/2・Tension・Closing)へ適用する | `PRODUCTION_WIRED` | EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04(B-A2-9への回答) | 2026-09-09 |
+| Comment 1-4・Preview | 役割定義(FINALIZE-11 Comment Contract)はB1と共有、出力言語のみ標準A2規約(日本語・Aoede、`a2gen.run_support_text`/`n3_tts.generate_a2_japanese_with_reading_safety`)へ変更(B1はCharon英語のまま無変更) | `PRODUCTION_WIRED` | 同上(B-A2-6) | 2026-09-09 |
+| 日本語タイトル | 標準A2既存規約(Topic intro英語タイトル直後にJapanese title[Aoede、日本語]を追加、原文タイトルの直訳のみ・新規主張数字は追加しない)を適用。テキストは記事ごとにregistryへ人手で登録する(標準A2の`JAPANESE_TITLES`辞書と同じパターン) | `PRODUCTION_WIRED` | EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03(B-2) | 2026-09-09 |
+| Key Phrase | 選定(used_form/日本語gloss)はB1 Phase 1と同一。英語Componentは既存Master Audio Store経由(Aoede)、日本語glossのみ標準A2 Aoede経路で生成 | `PRODUCTION_WIRED` | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-5) | 2026-09-09 |
+| Audio Validation Gate level | 標準"A2"文字列ではなく`"B_FAMILY_A2"`を使う(標準"A2"のPoint本文向けslowdown必須チェックが、名前が同じだが別物であるVoice A/B本文へ誤爆するため)。`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL`へ標準A2と同一の対象segment集合(`in_one_line`/`point_one_heading`/`point_two_heading`)で`"B_FAMILY_A2"`キーを登録(共有`er003_v1_n3_01_assemble.py`、この1エントリ追加のみ) | `PRODUCTION_WIRED` | 同上、EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(Gate 3 item7) | 2026-09-09 |
+| 語数・文長(今回限りの許容) | 11語超の文18/38・18語超の文2/38(Voice B・Closing各1文)を、新しい上限を設けずそのまま許容した(今回1記事限りの実測値記録であり、恒久的な新CEFR-A2数値ルールではない) | `USER_DECISION_REQUIRED`扱いではなく今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-5) | 2026-09-09 |
+| Fact Checker `REVIEW_REQUIRED`(複合Voice帰属) | Voice A/Bは複合的な一人称語りであり実在個人の発言ではないため、発言者・調査名が示せずFact Checkerが`REVIEW_REQUIRED`と判定する既知の特性がある。今回(2026-09-09承認記事)はユーザー確認済みとして扱うが、**恒久的なnon-blocking運用にはしない**(機械的な判別方法はOPEN-131で別途Trial中) | 今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04 | 2026-09-09 |
+| OPEN-129整合 | 既存Audio Validation Gateは「構造上あるべきsegment数との一致」を検証しない(OPEN-129、共有Gate側は未対策のまま)。B-Family A2はLane B runner側の完全性チェック(`er012_b_family_voices_a2_production_01.py::check_required_segments_completeness()`、registryの`required_segments`と実segment_status/voice解決結果を突合)で対策済み。共有Gate自体は変更していない | `PARTIAL`(Lane B側のみ対策、共有Gate側はOPEN-129のまま) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(Gate 3 item8) | 2026-09-09 |
+| Production経路 | `er012_b_family_editorial_type_registry_01.py`(A2設定`get_editorial_type_a2()`)・`er012_b_family_voices_a2_production_01.py`(Writer/Comment/日本語タイトル/Key Phrase/Voice A/B slowdown TTS/Assembly loader・timeline)・`er012_b_family_production_runner_01.py`(`level="a2"`分岐、Trialスクリプトは一切importしない) | `PRODUCTION_WIRED`(Gate 3、Fable受入待ち) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 | 2026-09-09 |
+
+**最終更新: 2026-09-09(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、
+Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_PRODUCTION`)に
+基づき、B-Family A2(「フリーアドレス vs 固定席」A2、Trial-02/03/04で
+VALIDATED済みの内容)をProduction正式経路へ配線した。Trial runner 3本
+(`er012_editorial_b_voices_a2_trial02_writer.py`/`..._trial02_runner.py`/
+`er012_b_voices_a2_cross_audit_fix_03_runner.py`/`er012_b_voices_a2_
+slowdown_keyphrase_regen_04_runner.py`)に分散していたA2経路を、Phase 1
+Production module群(registry・新規`er012_b_family_voices_a2_production_
+01.py`・既存runnerへの`level="a2"`分岐)へ統合し、Trialスクリプトを一切
+importしない構成にした(Point Overlap/Analytical Leakage Check等の
+monitoring専用QAも含め全文転記、byte一致テストで確認)。既存B1経路
+(`level="b1"`既定、既存関数は無変更)は挙動不変(既存14テストPASS+今回
+追加19テストPASS)。共有ファイルへの変更は`er003_v1_n3_01_assemble.py`の
+Gate辞書1エントリ追加のみ。Runtime evidence: ユーザー承認済み
+(`er012_output/editorial_b_voices_a2_free_address_04/`)のVoice A/B本文
+(`point_one`/`point_two`)を正式Production関数で実際に再TTS(A2 slowdown
+6%適用・OPEN-121/122安全機構有効・ASR verified)、他13segment+Key Phrase
+5件は承認済みbyteをsha256照合のうえ再利用(Key Phrase「stay put」新版
+[v2]がsha256一致で使用されていることを確認)。完成episode
+(`er012_output/editorial_b_family_voices_a2_production_wiring_01/`、
+duration=350.493秒・peak=0.95049・clipping=False)・標準player.html
+(Gate 7 (a)〜(l))を生成、費用¥15.76(上限¥100以内)。project-wide
+regression(`run_project_regression.py`)は新規19テスト追加以外の差分
+なし。詳細は`EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01_
+REPORT.md`参照(`PRODUCTION_WIRED`確定はFable最終受入待ち)。
 
 ## News Editorial Mode(Trend Synthesis) — 2026-09-08新設(OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01)
 
