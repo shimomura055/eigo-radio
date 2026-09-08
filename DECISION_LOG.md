@@ -1,7 +1,39 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-07(OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01、
+**最終更新: 2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02、ユーザー正式決定
+[案B+Claude Code側auto-compact閾値約65%採用、`PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-
+DESIGN-01`調査結果に基づく]に沿って、長期PMセッションのcompact前後状態保持策を実装した。
+`docs/pm/PM_BRIEF.md`へACTIVE_TASK固定ヘッダの書式(管理ID/Status/UDR-blocking/
+UDR-deferred/APPROVED未配線/STOP条件/次アクション、目安15〜25行・300〜800token)と
+2026-09-08時点の実状態(B-Family Phase1受入待ち、OPEN-121/122/124/125のdeferred一覧)
+で埋めた記入例を追加、`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾へcompact復帰
+7手順(ACTIVE_TASK固定ヘッダ→PM_BRIEF→SSOT要所Grep再照合→全文読込禁止→UDR/approved
+未配線/STOP条件再確認→Trial結果とProduction仕様の誤認防止→`/clear`非自動実行)を追記
+した。`docs/pm/ACTIVE_TASK.md`・`RESULT_PACKET.md`本体は他タスク使用中のため今回編集
+していない。`docs/pm/COMPACT_OBSERVATION_LOG.md`(新規、観測用軽量Markdown表1つ、大規模
+Telemetry基盤ではない)を作成した。auto-compact閾値は、原典再確認(`model-config.md`/
+`settings-reference.md`/`cli-reference.md`/`env-vars.md`)により`autoCompactWindow`が
+「Any file」scope・100,000〜1,000,000 tokenの直接指定キーであること、`/autocompact`
+コマンドは既定でuser設定(`~/.claude/settings.json`)へ保存されることを確認したうえで、
+最小scopeの`.claude/settings.local.json`(個人・プロジェクト限定、gitignore対象、
+Project Local > 共有Project > Userの優先順位)へ`autoCompactWindow: 650000`を直接設定
+した(Sonnet 5がAnthropic API上で持つネイティブ1,000,000 token windowの65%と正確に
+一致、丸め不要、既定値は約967,000 token[≈96.7%]のため早期側への変更)。`/clear`関連の
+自動化・hook追加はいずれも実施していない。ACTIVE_TASK固定ヘッダの記入例は、
+記入作業中にB-Family Phase1が「修正1回目・`point_two`[Voice B]GATE_BLOCKED」へ
+進行したため最新実状態(UDR-blocking新規発生を含む)へ合わせて記入した。追加分の
+実測(文字数×1.2token/文字換算): CLAUDE.md追記+570 token・PM_BRIEF.md追記+1,521
+token・ACTIVE_TASK固定ヘッダ記入例622文字/12行(≈746 token)。marginal token
+(Typical、CLAUDE.md自動再注入+ACTIVE_TASKヘッダのみ)≈1,320 token、Worst(PM_BRIEF
+該当節再読込+SSOT要所Grep込み)≈3,340 token(削減効果[閾値早期化による1回あたり
+数十万token規模の圧縮]に対し軽微)。目安[Typical≈800/Worst≈3,000]をそれぞれ
+約65%/約11%上回るが数倍規模の大幅超過ではないためSTOPは不要と判断し実装は維持、
+削減余地(PM_BRIEF該当節の再読込省略・UDR-blocking欄の参照先短縮)を報告のみで
+実装はしていない(詳細・数値根拠はReport参照)。`docs/pm/PM_GOVERNANCE.md`冒頭
+changelogへ1行追記(新ルール本体は
+追加せず、参照先のみ明記)。詳細は`PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02_
+REPORT.md`参照)。2026-09-07(OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01、
 ユーザーが2026-09-07に`APPROVED_FOR_PRODUCTION`と正式決定した範囲[A2/B1
 英語本文segmentのみ]でTTS反復幻聴検知(方式A[n-gram句・文単位反復]+方式D
 [spectral、min_lag1.0秒]+方式D'[同primitive、lag0.5-2.0秒・run長優先、

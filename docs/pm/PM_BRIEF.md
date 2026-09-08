@@ -54,6 +54,50 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 - Opus診断の後、Sonnetを自動的に再実行しない
 - 上記いずれかの上限に到達したら`USER_DECISION_REQUIRED`としてSTOPする
 
+## ACTIVE_TASK固定ヘッダ(compact復帰用索引)
+
+Fableは、`docs/pm/ACTIVE_TASK.md`を上書きする全ての委任で、ファイル冒頭に
+以下の固定ヘッダを置く(本文はヘッダの後に続ける)。目安: ヘッダ全体で
+15〜25行・300〜800 token以内。ヘッダは要約であり、詳細はSSOT
+(`OPEN_ITEMS.md`等)を必要箇所だけGrepして確認する(鵜呑みにしない)。
+compact直後の復帰手順は`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節
+末尾を参照。
+
+### 書式
+
+```
+管理ID: <現在の管理ID>
+Status: <一言>
+UDR-blocking: <ID:一言、複数可>(なければ「なし」)
+UDR-deferred: <ID:一言、複数可>(なければ「なし」)
+APPROVED未配線: <ID:一言、複数可>(なければ「なし」)
+STOP条件: <一言>(なければ「なし」)
+次アクション: <一言>
+```
+
+### 記入例(2026-09-08時点、実状態)
+
+```
+管理ID: EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01(修正1回目)
+Status: OPEN-121/122のB-Family本文配線は完了・テスト/回帰PASSだが、
+  `point_two`(Voice B)がrepetition QA flaggedで3回STOPPED→GATE_BLOCKED、
+  episode/player.html未生成
+UDR-blocking: `point_two`著者意図の反復をcanonical-repeat-count logicが
+  誤検出した疑い。(a)人間試聴承認/(b)tokenization改善を別タスク起票/
+  (c)その他、をFable/ユーザーへ確認中(§9-6参照)
+UDR-deferred: OPEN-121(重複検知一般拡張)/OPEN-122(Key Phrase展開)/
+  OPEN-124(未追跡285件分類、別タスク進行中)/OPEN-125(entity誤判定Trial、低優先保留)
+APPROVED未配線: なし(OPEN-121/122該当範囲はPRODUCTION_WIRED済み)
+STOP条件: `point_two`がGATE_BLOCKEDのままAssembly未完了
+次アクション: UDR-blockingの(a)/(b)/(c)判断後、Assembly再試行→受入判定
+```
+
+### 観測ログ
+
+最初の数回のauto-compactは`docs/pm/COMPACT_OBSERVATION_LOG.md`(軽量な
+Markdown表)へ観測結果を記録する。Fableは次にSonnetへ委任するタイミングで
+記入を依頼する運用とする(大規模なTelemetry基盤は作らない)。
+
 ## 禁止事項
 
 - Agent Teamsは使用しない

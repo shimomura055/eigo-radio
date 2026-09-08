@@ -63,3 +63,11 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
 - 通常の安全なcommit/pushはClaude側で自律実行し結果のみ報告する。例外
   (破壊的操作・Production採用判断を含む・意図しないファイル混入の可能性等)は
   `docs/pm/PM_GOVERNANCE.md` 10節に従いユーザー判断を求める。
+- compact後の復帰手順(context圧縮からの復帰であり、`/clear`によるセッション
+  初期化ではない): (1)まず`docs/pm/ACTIVE_TASK.md`の固定ヘッダを読む、
+  (2)次に`docs/pm/PM_BRIEF.md`を読む、(3)Status判断は要約を鵜呑みにせず
+  必要箇所のみSSOTをGrepで再照合する、(4)`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+  `OPEN_ITEMS.md`の全文読込は禁止、(5)USER_DECISION_REQUIRED・
+  approved-but-unwired・STOP条件を必ず再確認する、(6)Trial結果(`VALIDATED`等)を
+  Production仕様(`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`)と誤認しない、
+  (7)`/clear`は自動実行しない。
