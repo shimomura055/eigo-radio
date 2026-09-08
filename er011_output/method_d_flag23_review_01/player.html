@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OPEN-121 方式D flag23件 一次レビュー(部品試聴、完成episodeではない)</title>
+<style>
+body { font-family: "Meiryo","Hiragino Kaku Gothic ProN",sans-serif; max-width: 1080px; margin: 2em auto; line-height:1.55; color:#111; }
+h1 { font-size: 1.3em; }
+h2 { border-bottom: 2px solid #333; padding-bottom:4px; margin-top:1.8em; }
+h3 { margin-top:1.6em; border-left:6px solid #888; padding-left:8px; }
+table.timeline { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.timeline th, table.timeline td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.timeline th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 100px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 190px; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: 400px; }
+table.timeline td.txt { white-space: pre-wrap; }
+button.seek { cursor:pointer; font-family:monospace; font-size:0.92em; padding:2px 6px; }
+table.timeline audio { width: 100%; min-width: 360px; height: 32px; }
+.missing { color:#a33; font-style:italic; }
+.note { background:#fffbe6; border:1px solid #e0d080; padding:8px 12px; font-size:0.88em; margin:10px 0; }
+audio.main { width:100%; max-width:640px; display:block; margin:8px 0; }
+table.kp { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.kp th, table.kp td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.kp th { background:#f0f0f0; }
+table.timeline th:nth-child(3), table.timeline td:nth-child(3) { width: auto; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: 320px; }
+table.timeline th:nth-child(6), table.timeline td:nth-child(6) { width: 220px; }
+</style>
+</head>
+<body>
+<h1>OPEN-121 方式D flag23件 一次レビュー</h1>
+<div class="note">
+<b>注意: これは完成episodeの試聴ページではありません。</b>
+方式D(自己相関ベースの重複/hallucination検知、Production既定閾値
+run&ge;0.12秒)によりflagされた個別segment(部品)23件だけを集めた
+軽量試聴ページです(管理ID: OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01)。
+各行の「1回目/2回目」Seekボタンは、その行自身の個別音声(右の
+&lt;audio&gt;)内で、方式Dが検知した類似run区間の開始秒へ移動します
+(完成episode全体のplayerではありません)。
+一次分類は機械的な証拠(生成時ASR検証結果・disfluency QA・方式Aの
+独立ASR再検知結果)に基づくものであり、Sonnetは音声を実際に聴いて
+いません。最終判断はユーザーの実試聴によります。閾値変更・自動再生成は
+一切行っていません(既存wav・JSONは読み取りのみ)。
+</div>
+
+<h2>一次分類 集計(23件)</h2>
+<table class="kp"><tr><th>一次分類</th><th>件数</th></tr><tr><td>真の重複(証拠あり)</td><td>8</td></tr><tr><td>誤flagの可能性高</td><td>14</td></tr><tr><td>判断困難</td><td>1</td></tr></table>
+
+<h2>23件 詳細(Seek / Segment・voice / Script / 証拠 / 音声 / 一次分類)</h2>
+<table class="timeline">
+<thead><tr><th>Seek(自音声内)</th><th>Segment/voice/review_lock</th><th>Script</th>
+<th>証拠(ASR/disfluency/方式A)</th><th>個別音声</th><th>一次分類・根拠</th></tr></thead>
+<tbody>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a0', 7.52)">&#9654; 7.52s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a0', 15.71)">&#9654; 15.71s(2回目)</button><br>
+    <small>run=0.32s / lag=8.19s / sim=0.9977</small>
+  </td>
+  <td><b>open112_trial13</b> / a2 / in_one_line<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=21.337s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>生成時ASR:</b> The direction is visible in several surveys, but it is still a change in what young travelers want, not proof that long, slow stays have become the new normal.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><b>方式A検知span:</b> " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want." (canonical_repeat_count=0, 0.0s-7.92s / 8.42s-16.06s)<br><small>証拠source: er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a0" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>方式Aの独立ASR(faster-whisper)transcriptに文全体が2回連続で出現(disfluency_evidence.transcript参照)。既知バグ「In One Line BEFORE_FIX」と同一script・同一flag位置(time_a=7.52s/time_b=15.71s)で、2026-09-07ユーザー実試聴により実在バグと確定済み。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a1', 7.09)">&#9654; 7.09s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a1', 14.82)">&#9654; 14.82s(2回目)</button><br>
+    <small>run=0.32s / lag=7.73s / sim=0.9987</small>
+  </td>
+  <td><b>open112_trial13</b> / a2 / in_one_line_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=20.142s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>方式A検知span:</b> " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want." (canonical_repeat_count=0, 0.0s-7.42s / 7.94s-15.14s)</td>
+  <td><audio id="a1" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/in_one_line_original.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>同上と同一script・ほぼ同一flag位置(time_a=7.09s/time_b=14.82s)のbackup版。方式Aでも同一spanをflag(canonical_repeat_count=0)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a2', 9.2)">&#9654; 9.20s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a2', 18.84)">&#9654; 18.84s(2回目)</button><br>
+    <small>run=0.16s / lag=9.64s / sim=0.9982</small>
+  </td>
+  <td><b>open112_trial13</b> / a2 / point_two<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=42.695s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>生成時ASR:</b> Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending; different young travelers may be looking for different kinds of value from the same holiday.<br><b>ASR verdict:</b> EXACT_MATCH<br><b>方式A検知span:</b> " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places." (canonical_repeat_count=1, 0.0s-9.7s / 9.88s-19.56s)<br><small>証拠source: er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a2" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/point_two.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>既知バグ「Point Two BUGGY」と同一script・同一flag位置(time_a=9.20s/time_b=18.84s、run=0.16s)。生成時ASR(EXACT_MATCH)は見逃したが、方式Aの独立ASRが文全体反復を検知し(canonical_repeat_count=1で正当な反復ではないと判定)、2026-09-07ユーザー実試聴で実在バグと確定済み。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a3', 8.66)">&#9654; 8.66s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a3', 17.75)">&#9654; 17.75s(2回目)</button><br>
+    <small>run=0.25s / lag=9.09s / sim=0.9979</small>
+  </td>
+  <td><b>open112_trial13</b> / a2 / point_two_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=40.292s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>方式A検知span:</b> " Young  travelers  are  not  one  single  market  women  age  29  and  under  still  showed  strong  interest  in  famous  tourist" (canonical_repeat_count=0, 0.0s-8.78s / 8.78s-17.88s)</td>
+  <td><audio id="a3" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open112_trend_theme2_b_full_audio_trial_13/a2/narration/point_two_original.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>同上backup版。方式Aでも同一spanをflag(canonical_repeat_count=0)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a4', 7.52)">&#9654; 7.52s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a4', 15.71)">&#9654; 15.71s(2回目)</button><br>
+    <small>run=0.32s / lag=8.19s / sim=0.9977</small>
+  </td>
+  <td><b>open117_trial02_kp</b> / a2 / in_one_line<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=21.337s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>生成時ASR:</b> The direction is visible in several surveys, but it is still a change in what young travelers want, not proof that long, slow stays have become the new normal.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><b>方式A検知span:</b> " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want." (canonical_repeat_count=0, 0.0s-7.92s / 8.42s-16.06s)<br><small>証拠source: er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a4" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/narration/in_one_line.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>open112_trial13::in_one_lineと同一script・同一flag位置・同一defect(別task[OPEN-117]で生成された同一音声/再現)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a5', 7.09)">&#9654; 7.09s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a5', 14.82)">&#9654; 14.82s(2回目)</button><br>
+    <small>run=0.32s / lag=7.73s / sim=0.9987</small>
+  </td>
+  <td><b>open117_trial02_kp</b> / a2 / in_one_line_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=20.142s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>方式A検知span:</b> " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want." (canonical_repeat_count=0, 0.0s-7.42s / 7.94s-15.14s)</td>
+  <td><audio id="a5" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/narration/in_one_line_original.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>open112_trial13::in_one_line_originalと同一script・同一flag位置・同一defect。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a6', 9.2)">&#9654; 9.20s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a6', 18.84)">&#9654; 18.84s(2回目)</button><br>
+    <small>run=0.16s / lag=9.64s / sim=0.9982</small>
+  </td>
+  <td><b>open117_trial02_kp</b> / a2 / point_two<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=42.695s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>生成時ASR:</b> Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending; different young travelers may be looking for different kinds of value from the same holiday.<br><b>ASR verdict:</b> EXACT_MATCH<br><b>方式A検知span:</b> " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places." (canonical_repeat_count=1, 0.0s-9.7s / 9.88s-19.56s)<br><small>証拠source: er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a6" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/narration/point_two.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>open112_trial13::point_twoと同一script・同一flag位置・同一defect(既知バグの再現)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a7', 8.66)">&#9654; 8.66s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a7', 17.75)">&#9654; 17.75s(2回目)</button><br>
+    <small>run=0.25s / lag=9.09s / sim=0.9979</small>
+  </td>
+  <td><b>open117_trial02_kp</b> / a2 / point_two_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=40.292s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.<br><b>[方式A検知(独立ASR): 実際の音声には下記が2回連続で出現したと推定]</b></td>
+  <td><b>方式A検知span:</b> " Young  travelers  are  not  one  single  market  women  age  29  and  under  still  showed  strong  interest  in  famous  tourist" (canonical_repeat_count=0, 0.0s-8.78s / 8.78s-17.88s)</td>
+  <td><audio id="a7" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er011_output/open117_keyphrase_display_tts_separation_trial_02/a2/narration/point_two_original.wav"></audio></td>
+  <td><b>真の重複(証拠あり)</b><br><small>open112_trial13::point_two_originalと同一script・同一flag位置・同一defect。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a8', 6.35)">&#9654; 6.35s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a8', 15.02)">&#9654; 15.02s(2回目)</button><br>
+    <small>run=0.14s / lag=8.67s / sim=0.9976</small>
+  </td>
+  <td><b>pool_pilot_01/pool_benches</b> / b1b / in_one_line<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>duration=16.731s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">A bench may be a small piece of city furniture, but it can serve as a rest stop, a neighborhood porch, or a signal that some people should move on. How cities design the pause helps shape who can remain in public space.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> A bench may be a small piece of city furniture, but it can serve as a rest stop, a neighborhood porch, or a signal that some people should move on. How cities designed the pause helps shape who can remain in public space.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_benches/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a8" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_benches/b1b/narration/in_one_line.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH、方式Aも非flag。ASR全文に反復語句なし(run=0.14秒、閾値0.12秒すれすれ)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a9', 0.18)">&#9654; 0.18s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a9', 4.95)">&#9654; 4.95s(2回目)</button><br>
+    <small>run=0.12s / lag=4.77s / sim=0.9915</small>
+  </td>
+  <td><b>pool_pilot_01/pool_benches</b> / b1b / topic_intro<br>
+    <small>voice=Charon / model=情報なし / instr=english_style_prefix</small><br>
+    <small>duration=5.021s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Today's topic is A Place to Pause—or a Signal to Move On?.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Today's topic is a place to pause or a signal to move on.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_benches/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a9" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_benches/b1b/narration/topic_intro.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH、方式Aも非flag、run=0.12秒(Production閾値ちょうど境界値)。ASR全文に反復語句なし。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a10', 14.5)">&#9654; 14.50s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a10', 24.42)">&#9654; 24.42s(2回目)</button><br>
+    <small>run=0.14s / lag=9.92s / sim=0.9964</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications</b> / b1b / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>duration=44.171s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">Imagine trying to focus when a familiar phone alert sounds. You do not look at the screen. You do not touch the phone. But your attention may still move toward it. A 2022 study tested this idea with 73 university students. They completed 960 rounds of a visual letter task. Some rounds included a notification sound. Others included a neutral comparison sound. The result was clear. People responded more slowly when the notification sound played. Brain-wave recordings also showed a stronger signal during those rounds. The researchers interpreted this as a sign that extra mental control was needed to keep working.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Imagine trying to focus when a familiar phone alert sounds. You do not look at the screen, you do not touch the phone, but your attention may still move toward it. A 2022 study tested this idea with 73 university students. They completed 960 rounds of a visual letter task. Some rounds included a notification sound, others included a neutral comparison sound. The result was clear: people responded more slowly when the notification sound played. Brainwave recordings also showed a stronger signal during those rounds. The researchers interpreted this as a sign that extra mental control was needed to keep working.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a10" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications/b1b/narration/full_story_part1.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし、review_lock=RESOLVED/OK(既存人間レビュー済み)。run=0.14秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a11', 1.08)">&#9654; 1.08s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a11', 3.61)">&#9654; 3.61s(2回目)</button><br>
+    <small>run=0.12s / lag=2.53s / sim=0.9906</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications_specfix_v2</b> / a2 / point_two_heading<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=3.856s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">Muting is not the same as absence<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Muting is not the same as absence.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a11" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2/a2/narration/point_two_heading.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時disfluency QA(faster-whisper別経路)がflagged=false・repeats=[]で明示的に反復なしと確認済み。run=0.12秒(境界値)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a12', 1.08)">&#9654; 1.08s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a12', 3.61)">&#9654; 3.61s(2回目)</button><br>
+    <small>run=0.12s / lag=2.53s / sim=0.9906</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r</b> / a2 / point_two_heading<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=3.856s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Muting is not the same as absence<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Muting is not the same as absence.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a12" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n18_notifications_specfix_v2_ec_a_precision_21r/a2/narration/point_two_heading.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>上記と同一script・同一flag位置(別バリアントgroup)。disfluency QAflagged=false・repeats=[]で反復なしと確認済み。run=0.12秒(境界値)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a13', 14.07)">&#9654; 14.07s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a13', 38.6)">&#9654; 38.60s(2回目)</button><br>
+    <small>run=0.12s / lag=24.53s / sim=0.9978</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n5_cafes</b> / a2 / full_story_part2<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=66.825s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">The fourth kind is the Productive Third Place, or PTP. These cafés clearly welcome customer-workers. They offer reliable Wi-Fi, enough power outlets, useful furniture, and controlled noise. They may also offer daily deals. The study says these customers can bring value. They may use seats during quiet hours. They may also make the café look active and lively. But not every café wants this model. Coffee Intelligence reported a different choice by The Barn, a Berlin coffee chain. At its Neukölln shop, laptop users occupied more than 70 percent of the seats for long periods. The café reported that sales fell by 25 percent before its policy change. The Barn then introduced a one-hour limit for laptop users. On some busy days, it could ban laptop use completely. So, cafés are moving in 2 directions. Some are changing the whole space to welcome people who work. Others are protecting seat turnover with time limits.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> The fourth kind is the productive third place, or PTP. These cafes clearly welcome customer workers. They offer reliable Wi-Fi, enough power outlets, useful furniture, and controlled noise. They may also offer daily deals. The study says these customers can bring value. They may use seats during quiet hours. They may also make the cafe look active and lively. But not every cafe wants this model. Coffee Intelligence reported a different choice by The Barn, a Berlin coffee chain. At its Neukölln shop, laptop users occupied more than 70% of the seats for long periods. The cafe reported that its sales fell by 25% before its policy change. The Barn then introduced a one-hour limit for laptop users. On some busy days, it could ban laptop use completely. So cafes are moving in two directions. Some are changing the whole space to welcome people who work. Others are protecting seat turnover with time limits.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n5_cafes/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a13" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n5_cafes/a2/narration/full_story_part2.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし。run=0.12秒(境界値)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a14', 24.7)">&#9654; 24.70s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a14', 33.05)">&#9654; 33.05s(2回目)</button><br>
+    <small>run=0.15s / lag=8.35s / sim=0.9981</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / a2 / full_story_part1<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=48.705s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">At the end of a taxi ride or a meal, the payment screen asks one small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. A 2014 study looked at more than 13 million credit card taxi payments in New York City. The researchers found a useful natural test. For fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> At the end of a taxi ride or meal, the payment screen asks one small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. A 2014 study looked at more than 13 million credit card taxi payments in New York City. The researchers found a useful natural test. For fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><small>証拠source: er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a14" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/full_story_part1.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=NORMALIZED_MATCH、ASR全文に反復語句なし、review_lock=RESOLVED/OK。run=0.15秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a15', 2.98)">&#9654; 2.98s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a15', 36.08)">&#9654; 36.08s(2回目)</button><br>
+    <small>run=0.14s / lag=33.1s / sim=0.9978</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / a2 / full_story_part1_original<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=45.961s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">At the end of a taxi ride or a meal, the payment screen asks one small question: How much would you like to tip? But the screen usually gives an answer first. It shows a few suggested percentages. The first choices may be higher than the amount you planned to give. That first number can change the whole decision. A 2014 study looked at more than 13 million credit card taxi payments in New York City. The researchers found a useful natural test. For fares just below $15 and just above $15, the suggested tip menu changed suddenly. The rides were almost the same price, but some passengers saw a different menu.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><span class="missing">未取得(生成時ASR記録が見つからず)</span></td>
+  <td><audio id="a15" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/a2/narration/full_story_part1_original.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>同一canonical・同一flag系列(sibling full_story_part1と同一script、review_lock=RESOLVED/OK)。sibling側ASR確認で反復なし。run=0.14秒。本ファイル自体の個別ASR記録は未取得(この点は判断困難要素として明記)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a16', 0.15)">&#9654; 0.15s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a16', 6.13)">&#9654; 6.13s(2回目)</button><br>
+    <small>run=0.15s / lag=5.98s / sim=0.9994</small>
+  </td>
+  <td><b>pool_pilot_01/pool_n9_tip_screens</b> / b1b / in_one_line<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>duration=12.851s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">The tip screen starts the conversation with a number, but it does not control the final answer. A stronger suggestion may bring in more money from some customers—and bring a zero from others.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> The tip screen starts the conversation with a number, but it does not control the final answer. A stronger suggestion may bring in more money from some customers and bring a zero from others.<br><b>ASR verdict:</b> NORMALIZED_MATCH<br><b>disfluency QA:</b> flagged=False, repeats=[]<br><small>証拠source: er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a16" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_n9_tip_screens/b1b/narration/in_one_line.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時disfluency QAがflagged=false・repeats=[]で明示的に反復なしと確認済み、review_lock=RESOLVED/OK。run=0.15秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a17', 12.58)">&#9654; 12.58s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a17', 23.27)">&#9654; 23.27s(2回目)</button><br>
+    <small>run=0.17s / lag=10.69s / sim=0.9986</small>
+  </td>
+  <td><b>pool_pilot_01/pool_startups</b> / a2 / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=63.581s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">At first, the plan sounds strange: lose money now, grow fast, and think about profit later.
+
+But for some startups, user growth can change the product itself. This happens when a business has a network effect.
+
+Think of a service that helps people connect. When more people join, the service can become more useful for each person. Katz and Shapiro explained this idea as “network externalities” in their 1985 work.
+
+Then a powerful circle can begin.
+
+More users create more value. More value attracts more users.
+
+An early lead can build on itself and become a lasting advantage. A late start can also become a bigger problem over time. In such a market, even the product with the best technology may not win.
+
+This is why speed can be a rational choice. Pete Flint of NFX wrote in 2020 that a company with a true network effect may first run at a loss. It tries to reach a large enough network before rivals do. After that, it may be able to move into profit.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><small>証拠source: er006_output/pool_pilot_01/pool_startups/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a17" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er006_output/pool_pilot_01/pool_startups/a2/narration/full_story_part1.wav"></audio></td>
+  <td><b>判断困難</b><br><small>tts_status=STOPPED(標準/minimal経路とも6回で不合格、正式verified=trueの記録なし)。6回のASR試行いずれも反復語句は無いが、どの試行が実際にnarration/へ残った音声と一致するか特定できない(duration不一致)。canonicalに正当な並行構文('More users create more value. More value attracts more users.')があり誤flagの説明も可能だが、生成ステータス自体が未検証のため一次分類は判断困難とする。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a18', 2.94)">&#9654; 2.94s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a18', 13.63)">&#9654; 13.63s(2回目)</button><br>
+    <small>run=0.12s / lag=10.69s / sim=0.9971</small>
+  </td>
+  <td><b>er012_laneb_trial08</b> / b1b / point_one<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=english_style_prefix_wide_margin</small><br>
+    <small>duration=39.731s</small><br>
+    <small>review_lock=RESOLVED/OK</small>
+  </td>
+  <td class="txt">Every morning, the employee looks for an empty desk. Someone else may have used it yesterday, and someone new may sit there tomorrow. They cannot leave papers in a drawer, and they sometimes worry about using a desk or keyboard after someone else. Before work begins, they have already spent time finding a place. They miss the same desk, drawer, and view. They helped them start without searching and gave them a quiet sense of belonging. Now the office can feel borrowed. They want their work and things to have a place, even when they cannot choose the seating policy.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Every morning, the employee looks for an empty desk. Someone else may have used it yesterday, and someone new may sit there tomorrow. They cannot leave papers in a drawer, and they sometimes worry about using a desk or keyboard after someone else. Before work begins, they have already spent time finding a place. They miss the same desk, drawer, and view. They helped them start without searching and gave them a quiet sense of belonging. Now the office can feel borrowed. They want their work and things to have a place, even when they cannot choose the seating policy.<br><b>ASR verdict:</b> EXACT_MATCH<br><small>証拠source: er012_output/editorial_b_voices_trial_08_audio/p3/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a18" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_voices_trial_08_audio/p3/b1b/narration/point_one.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時ASR verdict=EXACT_MATCH(完全一致)、review_lock=RESOLVED/OK。run=0.12秒(境界値)。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a19', 14.29)">&#9654; 14.29s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a19', 22.78)">&#9654; 22.78s(2回目)</button><br>
+    <small>run=0.15s / lag=8.49s / sim=0.9976</small>
+  </td>
+  <td><b>er003_output/a2_audio_01</b> / A02 / full_story_part1<br>
+    <small>voice=情報なし(audit記録なし) / model=情報なし / instr=情報なし</small><br>
+    <small>duration=48.031s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Social media in the UK may soon say “goodnight” at midnight.
+
+The British government shared a new plan on July 15. It is for people aged 16 and 17. The government calls it a digital switch-off period. It would run from midnight to 6 a.m.
+
+During that time, apps under the plan would not open at first. This first setting is called a default. Notifications would stop. Autoplay would stop too. This tool starts the next video on its own.
+
+The apps would also stop feeds that pick posts for each person. These feeds can keep people scrolling for a long time.
+
+The government plans to start it in spring 2027.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Social media in the UK may say goodnight at midnight. The British government shared a new plan on July 15th. It is for people aged 16 and 17. The government calls it a digital switch-off period. It would run from midnight to 6:00 AM. During that time, apps under the plan would not open at first.This first setting is called a default notifications would stop, autoplay would.Stop, too. This tool starts the next video on its own. The apps would also stop feeds that pick posts for each person. These feeds can keep people scrolling for a long time. The government plans to start it in spring 2027.<br><b>ASR verdict:</b> asr_verified=true/substring_ok=true(post-hoc検証)<br><small>証拠source: er003_output/a2_audio_01/A02/audit/new_segments_result.json</small></td>
+  <td><audio id="a19" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/a2_audio_01/A02/narration/full_story_part1.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>new_segments_result.jsonでasr_verified=true・substring_ok=true(post-hoc検証、既存生成音声への事後確認)。ASR全文に反復語句なし。run=0.15秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a20', 10.56)">&#9654; 10.56s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a20', 36.79)">&#9654; 36.79s(2回目)</button><br>
+    <small>run=0.16s / lag=26.23s / sim=0.9967</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / a2 / full_story_part2<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=38.911s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">The Carp scored their only run in the fifth inning. Elehuris Montero hit a solo home run, but Hiroshima could not add anything more.
+
+Hanshin then made the gap much bigger.
+
+The team added runs in the seventh inning and scored again in the eighth. Hiroshima could not stop the late attack, and the game moved far out of reach.
+
+The final score was:
+
+Hanshin Tigers 8–1 Hiroshima Toyo Carp
+
+This was a complete win from beginning to end. Sato opened the game with power. Ihara protected the lead. Then the late hitters made sure there would be no close finish.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> The Carp scored their only run in the fifth inning. Elijah Montero hit a solo home run, but Hiroshima could not add anything more. Honshain then made the gap much bigger. The team added runs in the seventh inning and scored again in the 8th. Hiroshima could not stop the late attack and the game moved far out of reach. The final score was Hanjin Tigers 8 Hiroshima Toyo Carp one. This was a complete win from.Beginning to end, Sato opened the game with power. Ihara protected the lead, then the late hitters made sure there would be no close finish.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a20" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/a2/narration/full_story_part2.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>生成時asr_verified=true。ASR全文に反復語句なし(固有名詞の聞き取り差異のみ)。run=0.16秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a21', 2.05)">&#9654; 2.05s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a21', 6.9)">&#9654; 6.90s(2回目)</button><br>
+    <small>run=0.14s / lag=4.85s / sim=0.9866</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / a2 / in_one_line<br>
+    <small>voice=Aoede / model=gemini-2.5-pro-preview-tts / instr=情報なし</small><br>
+    <small>duration=8.331s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">Hanshin took the lead with one big swing, protected it with steady pitching, and finished the night with an 8–1 statement win.<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> Hanshin took the lead with one big swing, protected it with steady pitching and finished the night with an 8 to one statement win.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/a2/audit/tts_generation_results.json</small></td>
+  <td><audio id="a21" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/a2/narration/in_one_line.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>ASR全文がcanonicalとほぼ一致し反復語句なし。run=0.14秒。</small></td>
+</tr>
+
+<tr class="">
+  <td>
+    <button class="seek" onclick="seekOwn('a22', 0.0)">&#9654; 0.00s(1回目)</button><br>
+    <button class="seek" onclick="seekOwn('a22', 3.42)">&#9654; 3.42s(2回目)</button><br>
+    <small>run=0.13s / lag=3.42s / sim=0.9958</small>
+  </td>
+  <td><b>er003_output/n3_01</b> / b1b / point_two_heading<br>
+    <small>voice=Aoede / model=情報なし / instr=english_style_prefix</small><br>
+    <small>duration=3.561s</small><br>
+    <small>review_lock=(記録なし)/(記録なし)</small>
+  </td>
+  <td class="txt">The Late Runs Showed Hanshin's Full Strength<br><small>(方式Dのみ検知。ASR文字起こし上は反復語句なし。下記ASR比較参照)</small></td>
+  <td><b>生成時ASR:</b> The late runs showed Hanshin's full strength.<br><b>ASR verdict:</b> asr_verified=true(verdict名称なし、旧schema)<br><small>証拠source: er003_output/n3_01/hanshin/b1b/audit/tts_generation_results.json</small></td>
+  <td><audio id="a22" controls preload="none" src="file:///C:/Users/tensh/eigo-radio/er003_output/n3_01/hanshin/b1b/narration/point_two_heading.wav"></audio></td>
+  <td><b>誤flagの可能性高</b><br><small>ASR全文(1文のみ)に反復語句なし。flag位置がtime_a=0.0s〜time_b=3.42s(clip全体長3.561秒)とほぼクリップ全体幅で、短い単文クリップ特有の自己相関アーティファクトの可能性が高い。run=0.13秒。</small></td>
+</tr>
+
+</tbody>
+</table>
+
+<script>
+function seekOwn(audioId, sec) {
+  var a = document.getElementById(audioId);
+  if (!a) return;
+  a.currentTime = parseFloat(sec);
+  a.play();
+}
+</script>
+</body>
+</html>
