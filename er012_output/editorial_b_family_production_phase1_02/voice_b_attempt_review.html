@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Voice B (point_two) Attempt Review - EDITORIAL-B-FAMILY-PHASE1-VOICE-B-ATTEMPT-REVIEW-ARTIFACT-01</title>
+<style>
+body { font-family: "Meiryo","Hiragino Kaku Gothic ProN",sans-serif; max-width: 1080px; margin: 2em auto; line-height:1.55; color:#111; }
+h1 { font-size: 1.3em; }
+h2 { border-bottom: 2px solid #333; padding-bottom:4px; margin-top:1.8em; }
+h3 { margin-top:1.6em; border-left:6px solid #888; padding-left:8px; }
+table.timeline { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.timeline th, table.timeline td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.timeline th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 100px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 190px; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: 400px; }
+table.timeline td.txt { white-space: pre-wrap; }
+button.seek { cursor:pointer; font-family:monospace; font-size:0.92em; padding:2px 6px; }
+table.timeline audio { width: 100%; min-width: 360px; height: 32px; }
+.missing { color:#a33; font-style:italic; }
+.note { background:#fffbe6; border:1px solid #e0d080; padding:8px 12px; font-size:0.88em; margin:10px 0; }
+audio.main { width:100%; max-width:640px; display:block; margin:8px 0; }
+table.kp { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.kp th, table.kp td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.kp th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 160px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 400px; }
+mark { background:#ffe08a; padding:0 2px; }
+</style>
+</head>
+<body>
+<h1>Voice B (point_two) Attempt Review</h1>
+<p>管理ID: EDITORIAL-B-FAMILY-PHASE1-VOICE-B-ATTEMPT-REVIEW-ARTIFACT-01</p>
+<div class="note">
+<b>判定目的:</b> B-Family Phase 1(記事theme=editorial_b_family_production_phase1_02、
+level=b1b、segment=point_two、voice=Erinome)は、repetition QA
+(method_a_ngram)が3 attemptすべてで、著者が意図した反復句
+"<mark>do not need</mark> &#8230; <mark>do not need</mark>"
+(em dash区切り、canonical textでは
+"the people I need&mdash;or do not need&mdash;around me")を
+誤って重複としてflagし、Assembly GATE_BLOCKEDとなりました
+(record_human_approval()は本ページでは実行していません。判断後に別途実施)。
+<br><br>
+このページで、以下いずれかをご判断ください(3択):
+<ul>
+<li><b>自然 = 承認可</b>: 意図した反復として自然に聞こえる</li>
+<li><b>不自然な重複</b>: TTSが誤って重複読み上げしたように聞こえる</li>
+<li><b>判断困難</b>: 音声だけでは判断できない</li>
+</ul>
+</div>
+<p>掲載attempt数: 3 / 3
+(3本すべて揃っています)
+</p>
+<p><small>本ページは3つの独立したTTS attempt(同一segment=point_twoの
+再試行)を並べて比較する専用artifactであり、1本化済み完成episode wavの
+timeline(Gate 7 (g)のclick-seek)ではない。各行のAttempt順序=試行順、
+再生は各attempt個別wavを直接再生する(seekボタンは対象外)。</small></p>
+<table class="timeline">
+<thead><tr><th>Attempt</th><th>再生</th><th>Script(強調=反復句)</th>
+<th>QAがflagした箇所</th><th>ASR transcript</th><th>確認してほしいこと</th></tr></thead>
+<tbody>
+
+    <tr>
+      <td><b>Attempt 1</b><br><small>voice=Erinome<br>duration=35.251s<br>TTS方式=english_style_prefix_wide_margin</small></td>
+      <td><audio controls preload="none" style="width:100%;min-width:360px;height:32px;" src="file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_family_production_phase1_02/b1b/narration/attempts/point_two_attempt1_englishstyleprefixwidemargin.wav"></audio></td>
+      <td class="txt">Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I <mark>do not need</mark> one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or <mark>do not need</mark>—around me.</td>
+      <td class="txt">語句 &quot;do  not  need&quot; が 22.64s と 33.52s の2箇所で検知(canonical_repeat_count=1, gap=10.06s, intentional=False)</td>
+      <td class="txt">Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable, or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need or do not need around me.</td>
+      <td class="txt">この2箇所の"do not need"が、著者が意図した反復として自然に聞こえるか、
+        それとも不自然なTTS重複(コピペ的な繰り返し)に聞こえるかを確認してください。</td>
+    </tr>
+    <tr>
+      <td><b>Attempt 2</b><br><small>voice=Erinome<br>duration=36.201s<br>TTS方式=english_style_prefix_wide_margin</small></td>
+      <td><audio controls preload="none" style="width:100%;min-width:360px;height:32px;" src="file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_family_production_phase1_02/b1b/narration/attempts/point_two_attempt2_englishstyleprefixwidemargin.wav"></audio></td>
+      <td class="txt">Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I <mark>do not need</mark> one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or <mark>do not need</mark>—around me.</td>
+      <td class="txt">語句 &quot;do  not  need&quot; が 23.66s と 34.38s の2箇所で検知(canonical_repeat_count=1, gap=9.98s, intentional=False)</td>
+      <td class="txt">Some mornings I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable, or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need or do not need around me.</td>
+      <td class="txt">この2箇所の"do not need"が、著者が意図した反復として自然に聞こえるか、
+        それとも不自然なTTS重複(コピペ的な繰り返し)に聞こえるかを確認してください。</td>
+    </tr>
+    <tr>
+      <td><b>Attempt 3</b><br><small>voice=Erinome<br>duration=34.661s<br>TTS方式=english_style_prefix_wide_margin</small></td>
+      <td><audio controls preload="none" style="width:100%;min-width:360px;height:32px;" src="file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_family_production_phase1_02/b1b/narration/attempts/point_two_attempt3_englishstyleprefixwidemargin.wav"></audio></td>
+      <td class="txt">Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I <mark>do not need</mark> one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or <mark>do not need</mark>—around me.</td>
+      <td class="txt">語句 &quot;do  not  need&quot; が 21.62s と 32.84s の2箇所で検知(canonical_repeat_count=1, gap=10.52s, intentional=False)<br>method_d_spectral_long_lagもflagged=true (best_run_length=0.12s, decision_threshold=0.12s)</td>
+      <td class="txt">Some mornings I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need, or do not need, around me.</td>
+      <td class="txt">この2箇所の"do not need"が、著者が意図した反復として自然に聞こえるか、
+        それとも不自然なTTS重複(コピペ的な繰り返し)に聞こえるかを確認してください。</td>
+    </tr>
+</tbody>
+</table>
+</body>
+</html>
