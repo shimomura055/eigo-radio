@@ -7787,6 +7787,60 @@ OPEN-120行へ反映してからcommit])に分けてcommitし、各commit後
 `TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01_REPORT.md`、
 `OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01_REPORT.md`。
 
+## OPEN-127/OPEN-128-PRODUCTION-WIRING(2026-09-08、ユーザー承認+実装結果)
+
+**ユーザー決定(2026-09-08、正式)**: (1) B-Family Phase 1完成episode
+(`phase1_02/player.html`)をユーザーが試聴し「問題なし/OK」、追加修正
+不要。(2) OPEN-127: candidate1a(em dash[—, U+2014]のみを空白=token
+境界として扱う前処理)を`APPROVED_FOR_PRODUCTION`。en dash[–]・
+hyphen[-]は対象外、汎用regex tokenizerへの拡張は禁止。(3) OPEN-128:
+方式D acoustic flag→局所ASRで2箇所の語句一致を確認→実際の語句重複が
+確認された場合のみ最終flag、の2段判定(候補c)を`APPROVED_FOR_
+PRODUCTION`。方式Aで取得済みのASR結果を方式Dでも共有し同一音声への
+ASR二重実行を避けるリファクタ込みで可。既存AND gate・retry loop・
+Human Review Lock等の意味を変える追加仕様変更は禁止。acoustic
+threshold(sim0.85/run0.12秒)は変更しない。
+
+**実装結果**: Sonnet委任(sandwich-pm経由)で両件を共有module
+`er011_open121_repetition_qa_production_01.py`へ実装した。OPEN-127は
+`_normalize_tokens()`への1行修正(Trial candidate1aと無変更)。
+OPEN-128は新規`confirm_by_local_asr_overlap()`+
+`analyze_profile_d_long_lag()`/`run_spectral_checks()`/
+`evaluate_repetition_qa()`の拡張(Trial候補cと無変更のロジック・閾値、
+`evaluate_repetition_qa()`が`transcribe_verbatim()`を1回だけ呼び方式A/D
+で共有する設計へリファクタ)。既存AND gate・retry loop・Human Review
+Lockとの接続コードは無変更(diff確認済み)。ASR失敗時の挙動は方式A単体
+(`run_ngram_check()`)と同一のまま(新規fail-open/fail-closed設計なし、
+既存仕様通りのため追加設計不要と判断)。
+
+**Runtime evidence**: OPEN-127はProduction entry(`evaluate_repetition_
+qa()`)経由で既知真の重複10/10がflagged=True維持、Voice B意図的並行
+構文(phase1_02 point_two attempt1-3+trial_08)4/4がflagged=False是正
+(実wav・実ASR、費用¥0)。OPEN-128は確定TP8/8・確定FP0/15、全23件で
+`transcribe_verbatim`呼び出し1回のみ(二重ASRなし)、Standard同期TTS
+実発火1件(A-Family既存Production関数`generate_news_narration_wide_
+margin`経由、費用¥0.483、上限¥20以内)。project-wide regression
+(`run_project_regression.py`、collected=2184、passed=2181、failed=3
+[既知の無関係failureのみ、新規failureゼロ])。
+
+**Gate 4 Dangling Reference Check**: 初回path・retry・fallback・
+regeneration・validator/QA・Human Reviewいずれの経路でもTrial script
+(`er011_repetition_qa_intentional_repeat_trial_01.py`・`er011_open121_
+method_d_fp_reduction_trial_01.py`)未import、未承認仕様(candidate1b/2/3、
+候補a/b/d)への参照なしを確認した。
+
+**SSOT反映**: `CURRENT_SPEC.md`冒頭changelog(第7弾)追加+OPEN-121行の
+formal spec table row追記、`OPEN_ITEMS.md` OPEN-127/OPEN-128行を
+`PRODUCTION_WIRED候補(Fable受入待ち)`へ更新、OPEN-120行へPhase 1完成
+episodeユーザー承認(問題なし/OK)を追記、OPEN-121行へ方式D 2段判定の
+Production反映を追記。`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_
+PACKET.md`を本タスク用に上書き。
+
+**根拠レポート**:
+`OPEN-127-EM-DASH-TOKEN-BOUNDARY-PRODUCTION-WIRING-01_REPORT.md`、
+`OPEN-128-METHOD-D-LOCAL-ASR-CONFIRM-PRODUCTION-WIRING-01_REPORT.md`。
+`PRODUCTION_WIRED`の正式宣言はFable最終受入待ち(Sonnetは宣言しない)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
