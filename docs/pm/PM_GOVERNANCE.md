@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-08(PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12で
+**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-18で9-2末尾へ「並列Lane報告の
+補足」[片Lane先行報告可・未回答Laneはまとめ直し再掲・Lane A/B UDR明確分離・
+Feedback済み内容の重複再掲回避]を追記)。2026-09-08(PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12で
 Gate 7補足の音声artifact受入チェックリスト末尾へ、判断依頼時は試聴・review
 artifactリンクを同一報告内に必ず提示することを既存Gate 7の具体化として
 追記)。2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02で
@@ -410,6 +412,15 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
   委任文に必須要素を明記し、受入時にGate 7チェックリスト(2節)で確認する
   (2026-09-07、PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10)。
 
+**並列Lane報告の補足(2026-09-08、ユーザー指示)**: 複数Lane(Lane A/B等)を
+並列稼働させている場合の報告順序は以下による。(1) 片方のLaneだけ報告可能に
+なった時点で、そのLaneだけを先に報告してよい(もう片方の完了を待たない)。
+(2) 片方のLane報告後、ユーザーからのFeedbackが無い状態でもう片方のLaneも
+報告可能になった場合、2つ目のLaneだけを単独で追加報告せず、直前の未回答
+Lane報告も含めてLane A/Bをまとめ直して再掲する。(3) 再掲する際は「Lane A
+完了報告 / Lane A UDR / Lane B完了報告 / Lane B UDR」を明確に分けて示す。
+(4) ユーザーが既にFeedback済みの内容は、必要以上に重複再掲しない。
+
 本原則はFableのユーザー向け報告に適用する。Sonnet/OpusからFableへの報告
 (`RESULT_PACKET.md`・ER/OPEN Report)は従来どおり証跡・原文を省略せず詳細に
 記録する(証跡はSSOT/Report側に残し、ユーザー向け説明で圧縮する)。
@@ -708,3 +719,14 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   具体化・最小追記。文書編集のみ、コード・Prompt変更なし)。経緯:
   2026-09-08、B-Family Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで
   試聴リンクを提示しないままユーザー判断を求めた事象を受けたユーザー決定。
+- 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-18): 「9-2. PMとしての説明原則」の
+  試聴リンク・完全スクリプト規則に続けて、「並列Lane報告の補足」を追記した。
+  複数Laneを並列稼働させている場合、(1)片方のLaneだけ報告可能になった時点で
+  そのLaneだけを先に報告してよい、(2)片方のLane報告後、ユーザーFeedbackが
+  無い状態でもう片方のLaneも報告可能になった場合は2つ目だけを単独追加報告
+  せず直前の未回答Lane報告も含めてLane A/Bをまとめ直して再掲する、(3)再掲時は
+  「Lane A完了報告/Lane A UDR/Lane B完了報告/Lane B UDR」を明確に分ける、
+  (4)ユーザーが既にFeedback済みの内容は必要以上に重複再掲しない、という
+  4点を明記した(新節は増設せず9節内の既存9-2への補足。文書編集のみ、
+  コード・Prompt変更なし)。2026-09-08、並列Lane稼働中の報告運用について
+  ユーザーが指示した内容の正式化。

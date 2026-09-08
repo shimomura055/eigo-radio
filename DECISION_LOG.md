@@ -8106,6 +8106,66 @@ runtime evidence(json/md/txt/jsonl、wav無し)をG1として先にcommit
 (`9a09103`)、SSOT 3ファイルをG2としてファイル名指定でcommitし
 `origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-18: Lane B A2完成Trial承認とTrial-02 VALIDATED、Lane A-3通常Newsドラフト完成、voice割当決定、並列Lane報告ルール追加
+
+**Lane B A2完成Trial**: ユーザーが`EDITORIAL-B-FAMILY-VOICES-A2-FREE-
+ADDRESS-COMPLETION-TRIAL-01_REPORT.md`の推奨6項目を承認したうえで、
+`EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02_REPORT.md`
+がGate1=`VALIDATED`到達を報告した。A2記事413語・平均文長10.9語(11語超
+18/38)、Comment日本語Aoede、QA(Fact Checker REVIEW_REQUIRED矛盾0件・
+Ledger Deviation 0件・Overlap/Leakage flagなし)、完成音声335秒・
+peak0.98(headroom safety valve正常発火)・clippingなし、Human Review
+Lockなし、費用¥33.51+翻案LLM費用(ログ漏れ)、`run_project_regression.py`
+collected=2192 PASS(既知3件failureのみ)。試聴:
+`file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_voices_a2_
+free_address_02/player.html`。Production採用(`APPROVED_FOR_PRODUCTION`)
+は未判定、`USER_DECISION_REQUIRED`候補4点(B-A2-7試聴承認可否/B-A2-8
+文長扱い/B-A2-9 Voice A・Bのslowdown要否/B-A2-10 Fact Checker
+REVIEW_REQUIREDの扱い)はユーザー回答待ちのまま。
+
+**Lane A-3 通常Newsドラフト**: `FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01_
+REPORT.md`が、既存News資産棚卸し(現役9/obsolete6/未設計3)に基づき
+`CURRENT_SPEC.md`追加候補テキストを起案した。Gate4 Dangling Reference
+自己点検PASS。次工程はユーザー判断5点待ち(採否・実装は本タスクでは
+未実施)。
+
+**voice割当決定**: Fableが提示しユーザーへ委任された案(2026-09-08、
+異論なし)により、4V=Applicant Algieba(男性的)/Recruiter・HM Erinome
+(女性的)/Business Schedar(男性的)/Legal Sulafat(女性的)、3V=Applicant
+Algieba/Business Erinome/Legal Schedarと決定した。既存2V(A=Algieba/
+B=Erinome/Narrator=Aoede)は不変。Schedar/Sulafatはユーザー承認により
+正式候補へ格上げされた(Production配線は別途)。
+
+**並列Lane報告ルール追加**: ユーザー指示(2026-09-08)に基づき
+`docs/pm/PM_GOVERNANCE.md`9節末尾へ「並列Lane報告の補足」を追記した。
+(1)片Laneだけ報告可能になった時点でそのLaneだけ先に報告してよい、
+(2)片Lane報告後、Feedback未受領のままもう片Laneも報告可能になった
+場合は2つ目だけを単独追加報告せず未回答Lane報告も含めてLane A/Bを
+まとめ直して再掲する、(3)再掲時は「Lane A完了報告/Lane A UDR/Lane B
+完了報告/Lane B UDR」を明確に分ける、(4)Feedback済み内容は必要以上に
+重複再掲しない。新節は増設せず既存9-2への最小追記。
+
+**Gate 1分類**: Lane B A2 Trial-02=`VALIDATED`(Production採用は別途
+`USER_DECISION_REQUIRED`)。Lane A-3ドラフトは読み取り専用調査・設計
+(コード・Prompt・本仕様書の変更ゼロ、採否は`USER_DECISION_REQUIRED`)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-120行(A2 Trial-02=VALIDATED、voice
+割当決定)・OPEN-112行(通常Newsドラフト完成)へ追記(状態列は不変)。
+`CURRENT_SPEC.md`冒頭changelog第13弾(参照のみ、仕様変更なし)を追加。
+`docs/pm/PM_GOVERNANCE.md`9節・変更履歴を更新。`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`を本タスク用に上書きした。
+
+**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-
+COMPLETION-TRIAL-01_REPORT.md`、`EDITORIAL-B-FAMILY-VOICES-A2-FREE-
+ADDRESS-COMPLETION-TRIAL-02_REPORT.md`、`FAMILY-A-DAILY-NEWS-SPEC-
+DRAFT-01_REPORT.md`。Git操作: Lane B Report2件+`er012_editorial_b_
+voices_a2_trial02_writer.py`+`er012_editorial_b_voices_a2_trial02_
+runner.py`+`er012_output/editorial_b_voices_a2_free_address_02/`
+(json/md/html、wav無し)をG1、Lane A-3 Report1件をG2、
+`docs/pm/PM_GOVERNANCE.md`+SSOT3ファイル(`CURRENT_SPEC.md`・
+`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG3としてファイル名指定でcommitし
+`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

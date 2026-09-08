@@ -1,6 +1,16 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第13弾、PM-CLOSEOUT-CONSOLIDATION-18、参照のみ・
+仕様変更なし)**: Lane B A2完成Trial(`EDITORIAL-B-FAMILY-VOICES-A2-FREE-
+ADDRESS-COMPLETION-TRIAL-01/02`、Trial-02=VALIDATED、試聴・承認待ち)、
+Lane A-3通常News仕様書き起こし案(`FAMILY-A-DAILY-NEWS-SPEC-DRAFT-01`)、
+Voice割当決定(4V/3V、Schedar/Sulafatはユーザー承認で正式候補へ格上げ)、
+`docs/pm/PM_GOVERNANCE.md`9節への「並列Lane報告の補足」追記をSSOTへ反映
+した。いずれも調査・設計・文書運用ルールのみでコード・Prompt・本仕様書の
+変更を伴わず、採用判断は`USER_DECISION_REQUIRED`のままSTOP。詳細は
+`OPEN_ITEMS.md`OPEN-112行・OPEN-120行、DECISION_LOG.md
+`PM-CLOSEOUT-CONSOLIDATION-18`エントリ参照。
 **最終更新: 2026-09-08(第12弾、OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-
 WIRING-01、Gate 3配線)**: ユーザー承認(`APPROVED_FOR_PRODUCTION`)に基づき、
 Trend Synthesis modeをProduction Writer正式初回経路(`er006_pool_pilot_
