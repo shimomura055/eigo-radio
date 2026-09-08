@@ -7605,6 +7605,69 @@ OPEN-124行(整理タスク起票・分類のみ・non-blockingを追記)、OPEN
 エントリを追加。Git操作は`CURRENT_SPEC.md`・`DECISION_LOG.md`・
 `OPEN_ITEMS.md`の3ファイルのみを対象にcommitし、`origin/main`へpushした。
 
+## PM-CLOSEOUT-CONSOLIDATION-09(2026-09-08、Phase 1修正結果・OPEN-121
+artifact・OPEN-124分類の統合)
+
+**A. B-Family Production Path Phase 1(`EDITORIAL-B-FAMILY-PRODUCTION-PATH-
+PHASE1-WIRING-01`修正指示1回目対応)**: Lane B新規4ファイル
+(`er012_b_family_editorial_type_registry_01.py`・
+`er012_b_family_voices_production_01.py`・
+`er012_b_family_production_runner_01.py`・
+`er012_editorial_b_family_production_phase1_test_01.py`)でPhase 1(Voice
+A=Algieba/Voice B=Erinome固定・Tension slot・Comment 1-4 Role辞書・
+B-Family専用runner)を実装した。共有ファイル無変更、単体テスト14件PASS、
+project-wide regression PASS(既知3件failureのみ、新規failureゼロ)。
+`phase1_01`(OPEN-121/122安全機構未適用版)は完成episode生成済み(¥27.56、
+pre-safety版として参考扱い)。A-Family既存Production同一規約でOPEN-121
+(repetition QA)/OPEN-122安全機構をHook/Voice A/Bへ適用した`phase1_02`
+(¥28.64)は14segment中13segmentOKだったが、**`point_two`(Voice B)が著者
+意図の反復句("do not need"がem dash区切りで2回出現)を共有module
+`er011_open121_repetition_qa_production_01.py`の`_canonical_repeat_count()`
+がem dash隣接tokenを1語として誤カウントしflagged=Trueを3回連続で出し、
+既存retry上限到達によりSTOPPED→Assembly `GATE_BLOCKED`**(episode/
+player.html未生成、既存Gate・retry上限の独自回避なし)。Fable判定:
+`PRODUCTION_WIRED`候補としては受入保留、`USER_DECISION_REQUIRED`(選択肢:
+(a) ユーザーが3 attemptを試聴し既存`record_human_approval()`経路で承認、
+(b) 共有moduleのem dash tokenization改善を別タスク化[要承認]、(c) その他)。
+Sonnet委任回数: 初回+修正1回(残2回)。
+
+**B. OPEN-121方式D flag対象23件の試聴artifact
+(`OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01`)**: 標準フォーマット試聴
+artifact(`er011_output/method_d_flag23_review_01/player.html`)を作成。
+証拠ベースの一次分類(未試聴): 真の重複8件(run長0.16〜0.32秒、既知バグ版と
+同一箇所)/誤flagの可能性高14件(0.12〜0.16秒)/判断困難1件。run長分布が
+0.16秒付近で重なり、単純な閾値引き上げのみでは分離困難という材料。費用¥0。
+最終分類はユーザーの試聴確定待ち。
+
+**C. OPEN-124未追跡ファイル285件の分類
+(`OPEN-124-UNTRACKED-FILES-CLASSIFICATION-01`)**: 285件(実ファイル1,003件、
+約2,870MB)を分類(読み取り専用、削除・移動・commit・`.gitignore`変更は
+一切実施せず)。正式成果物86グループ/Trial evidence 185/tmp 2/所属不明10/
+commit漏れ候補2。99.8%は音声で、wavは既に`.gitignore`対象外、実質判断対象は
+約246MB(mp3/webm/html、既存tracked分と前例混在)。新規`USER_DECISION_
+REQUIRED`候補4点: (1) `.gitignore`方針統一、(2) 削除候補(tmp2件0.28MB・
+所属不明10件16.5MB)、(3) commit漏れ候補(約521MB)のcommit可否、(4)
+Trial/diagnostic evidence(約2,332MB)の削除可否。既存` M`5件(安全機構
+append-onlyログ)のcommit可否も判断材料として提示。
+
+**D. `PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02`**: 完了・commit済み
+(`bc82972`)。SSOT追記は既にDECISION_LOG反映済みのため本エントリでは追加
+反映なし。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-120行(Phase 1実装結果・`GATE_BLOCKED`・
+`USER_DECISION_REQUIRED`選択肢a/b/c・phase1_01はpre-safety版として参考を
+追記)、OPEN-121行(一次分類8/14/1・artifactパス・ユーザー試聴待ちを追記)、
+OPEN-124行(分類結果・`USER_DECISION_REQUIRED`候補4点を追記、状態は
+`USER_DECISION_REQUIRED`維持)。`CURRENT_SPEC.md`冒頭changelogへ本タスクの
+エントリを追加(B-Family Phase 1は実装済み・受入保留、
+`APPROVED_FOR_PRODUCTION`未配線のまま)。`docs/pm/ACTIVE_TASK.md`を
+固定ヘッダ書式へ全面上書きした。Git操作は4グループ(Phase 1一式、OPEN-121
+artifact一式、OPEN-124 Report、SSOT本体3ファイル)に分けてcommitし、
+`origin/main`へpushした。**根拠レポート**:
+`EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01_REPORT.md`、
+`OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01_REPORT.md`、
+`OPEN-124-UNTRACKED-FILES-CLASSIFICATION-01_REPORT.md`。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
