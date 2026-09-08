@@ -7537,6 +7537,42 @@ Report、Context設計Report)+SSOT本体に分けてcommitし、
 `OPEN-126-INDEPENDENCE-REEVALUATION-01_REPORT.md`、
 `PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-DESIGN-01_REPORT.md`。
 
+## PM-CLOSEOUT-CONSOLIDATION-08(2026-09-08、第4弾ユーザー決定六点[1. Theme2 A2
+rerun_04最終承認・OPEN-112 Theme2音声close/2. OPEN-121方式D閾値現状維持・23件
+試聴確認方針/3. OPEN-126 close/4. OPEN-124整理タスク起票(分類のみ)/5. OPEN-125
+低優先保留/6. OPEN-119・OPEN-122・OPEN-118・OPEN-112本体残件は据え置き]の統合)
+
+ユーザーが2026-09-08(PM-CLOSEOUT-CONSOLIDATION-07報告後)に追加で以下6点を
+決定した。**1.** Theme 2 A2 rerun_04(`er011_output/open112_trend_theme2_b_
+final_audio_rerun_04/a2/`、24.1%→about 24%版)を試聴し、音声・修正版とも
+問題なしとして最終承認する(`APPROVED_FOR_PRODUCTION`、rerun_02のa2は置き換え、
+rerun_02自体は履歴として保持)。**2.** OPEN-121の方式D Production閾値
+(run≥0.12秒)は現状維持(変更しない)。既存flag対象23件を試聴確認し「真の
+重複/正常音声への誤flag/判断困難」の3分類に整理し、結果を見て再校正Trial
+要否を判断する(自動再生成・閾値変更はしない)。試聴artifactは標準フォーマット
+で別タスク`OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01`にて作成中。**3.**
+OPEN-126はA2/B1独立Editorによる表現差論点として、新たな対策(選択肢1/2/3の
+いずれも)を導入せずcloseする。**4.** OPEN-124は整理タスクとして起票する
+(`OPEN-124-UNTRACKED-FILES-CLASSIFICATION-01`、別タスクで分類中、読み取り
+専用)。削除ではなく分類と正体確認のみを行い、今回は削除しない(non-blocking)。
+削除・移動・大規模commit整理が必要と判明した場合は`USER_DECISION_REQUIRED`
+としてSTOPする。**5.** OPEN-125は低優先で保留し、Trial着手せずOpen Item
+として維持する。**6.** OPEN-119(英語Key Phrase ASR経路以外への適用範囲拡大)・
+OPEN-122(Key Phrase経路等への適用範囲拡大)・OPEN-118(Key Phrase gloss LLM
+QA新設)・OPEN-112本体残件(Discovery 4-layer Focus Module・Engagement根底
+指示・News Ledger自動Research経由のProduction採用可否)は、いずれも追加
+Trial・Production変更を行わず据え置く。
+
+SSOT反映: `OPEN_ITEMS.md` OPEN-112行(Theme 2音声=`CLOSED`[A2 rerun_04が
+`APPROVED_FOR_PRODUCTION`、B1 rerun_04は既承認]/本体残件=`DEFERRED`と状態
+表現を分離、Notes欄へ最終承認の経緯を追記)、OPEN-126行(状態を`CLOSED`へ
+更新)、OPEN-121行(閾値現状維持・23件試聴確認方針・artifact管理IDを追記)、
+OPEN-124行(整理タスク起票・分類のみ・non-blockingを追記)、OPEN-125行
+(低優先保留を追記)、OPEN-119/OPEN-122/OPEN-118行(2026-09-08据え置き決定を
+1行ずつ追記、状態列は変更なし)。`CURRENT_SPEC.md`冒頭changelogへ本タスクの
+エントリを追加。Git操作は`CURRENT_SPEC.md`・`DECISION_LOG.md`・
+`OPEN_ITEMS.md`の3ファイルのみを対象にcommitし、`origin/main`へpushした。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
