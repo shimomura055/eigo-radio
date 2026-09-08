@@ -1,0 +1,1075 @@
+{
+  "management_id": "TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01",
+  "candidates": [
+    "baseline",
+    "candidate1a_emdash_only_split",
+    "candidate1b_em_en_dash_split",
+    "candidate2_regex_word",
+    "candidate3_naive_delete"
+  ],
+  "corpus_size": 26,
+  "corpus_breakdown": {
+    "positive_true_duplicate": 10,
+    "negative_intentional_repeat": 4,
+    "regression_unrelated_flag": 12
+  },
+  "summary": {
+    "baseline": {
+      "TP": 10,
+      "FP": 4,
+      "FN": 0,
+      "TN": 0,
+      "regression_ok": 12,
+      "regression_break": 0
+    },
+    "candidate1a_emdash_only_split": {
+      "TP": 10,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "regression_ok": 12,
+      "regression_break": 0
+    },
+    "candidate1b_em_en_dash_split": {
+      "TP": 10,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "regression_ok": 12,
+      "regression_break": 0
+    },
+    "candidate2_regex_word": {
+      "TP": 10,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "regression_ok": 8,
+      "regression_break": 4
+    },
+    "candidate3_naive_delete": {
+      "TP": 10,
+      "FP": 4,
+      "FN": 0,
+      "TN": 0,
+      "regression_ok": 12,
+      "regression_break": 0
+    }
+  },
+  "all_baseline_reproduced": true,
+  "details": [
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::in_one_line",
+      "canonical_text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
+      "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::in_one_line_original",
+      "canonical_text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
+      "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::point_two",
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "span_text": " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places.",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open112_trial13::er011_output/open112_trend_theme2_b_full_audio_trial_13::a2::point_two_original",
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "span_text": " Young  travelers  are  not  one  single  market  women  age  29  and  under  still  showed  strong  interest  in  famous  tourist",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::in_one_line",
+      "canonical_text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
+      "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::in_one_line_original",
+      "canonical_text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
+      "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::point_two",
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "span_text": " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places.",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "open117_trial02_kp::er011_output/open117_keyphrase_display_tts_separation_trial_02::a2::point_two_original",
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "span_text": " Young  travelers  are  not  one  single  market  women  age  29  and  under  still  showed  strong  interest  in  famous  tourist",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "method_d_flag23_review_01/classification_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "known_case::point_two_BUGGY_UNFIXED_backup",
+      "canonical_text": "Young travelers are not one single market. Women aged 29 and under still showed strong interest in famous tourist places, at about 45%. Gourmet travel was even higher, at about 52%. This is not the same picture as the male interest in solo and hobby-based trips. The useful lesson is not that sightseeing is ending. Different young travelers may be looking for different kinds of value from the same holiday.",
+      "span_text": " Young  travelers  are  not  one  single  market.  Women  aged  29  and  under  still  showed  strong  interest  in  famous  tourist  places.",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "positive_true_duplicate",
+      "item_id": "known_case::in_one_line_BEFORE_FIX_buggy_backup",
+      "canonical_text": "The direction is visible in several surveys, but it is still a change in what young travelers want—not proof that long, slow stays have become the new normal.",
+      "span_text": " The  direction  is  visible  in  several  surveys,  but  it  is  still  a  change  in  what  young  travelers  want.",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=True(count<2)を維持すべき",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "negative_intentional_repeat",
+      "item_id": "phase1_02::point_two_attempt1_englishstyleprefixwidemargin",
+      "canonical_text": "Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.",
+      "span_text": " do  not  need",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "er012_output\\editorial_b_family_production_phase1_02\\b1b\\narration\\attempts\\point_two_attempt1_englishstyleprefixwidemargin.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 2,
+        "candidate1b_em_en_dash_split": 2,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=False(count>=2)へ是正すべき",
+      "candidate_correct": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      }
+    },
+    {
+      "control_type": "negative_intentional_repeat",
+      "item_id": "phase1_02::point_two_attempt2_englishstyleprefixwidemargin",
+      "canonical_text": "Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.",
+      "span_text": " do  not  need",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "er012_output\\editorial_b_family_production_phase1_02\\b1b\\narration\\attempts\\point_two_attempt2_englishstyleprefixwidemargin.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 2,
+        "candidate1b_em_en_dash_split": 2,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=False(count>=2)へ是正すべき",
+      "candidate_correct": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      }
+    },
+    {
+      "control_type": "negative_intentional_repeat",
+      "item_id": "phase1_02::point_two_attempt3_englishstyleprefixwidemargin",
+      "canonical_text": "Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.",
+      "span_text": " do  not  need",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "er012_output\\editorial_b_family_production_phase1_02\\b1b\\narration\\attempts\\point_two_attempt3_englishstyleprefixwidemargin.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 2,
+        "candidate1b_em_en_dash_split": 2,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=False(count>=2)へ是正すべき",
+      "candidate_correct": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      }
+    },
+    {
+      "control_type": "negative_intentional_repeat",
+      "item_id": "er012_laneb_trial08::er012_output/editorial_b_voices_trial_08_audio/p1::b1b::point_two",
+      "canonical_text": "Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.",
+      "span_text": " do  not  need",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "er012_output/editorial_b_voices_trial_08_audio/p1/b1b/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 2,
+        "candidate1b_em_en_dash_split": 2,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "flagged=False(count>=2)へ是正すべき",
+      "candidate_correct": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n18_notifications::er006_output/pool_pilot_01/pool_n18_notifications::b1b::point_one",
+      "canonical_text": "The second study gives the quiet effect a clearer shape. With the phone on the desk, the average attention score was 99.71, compared with 108.95 in another room. Processing speed showed the same direction: 98.48 on the desk, compared with 108.57 away. The researchers suggested that people may keep part of their attention ready for the phone, but they did not directly test that explanation.",
+      "span_text": " compared  with  108",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n18_notifications/b1b/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n4_supermarket::er006_output/pool_pilot_01/pool_n4_supermarket::a2::full_story_part2",
+      "canonical_text": "The result was clear for fruit and vegetables. After 3 months, sales rose by 1.71 standard deviations. In everyday terms, that was about 6,170 portions more per store each week. After 6 months, the increase was 2.42 standard deviations, or about 9,820 more portions each week. Sweets moved in the other direction. After 3 months, sales fell by 1.05 standard deviations. That was about 1,359 fewer portions per store each week. However, total store sales did not change in a statistically significant way. A related survey included 150 women aged 18 to 45. Fruit and vegetable buying increased in households using the changed stores, while it fell in comparison households. Sweets buying did not show a significant effect.",
+      "span_text": " After  three  months,  sales",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n4_supermarket/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n4_supermarket::er006_output/pool_pilot_01/pool_n4_supermarket::a2::full_story_part2_original",
+      "canonical_text": "The result was clear for fruit and vegetables. After 3 months, sales rose by 1.71 standard deviations. In everyday terms, that was about 6,170 portions more per store each week. After 6 months, the increase was 2.42 standard deviations, or about 9,820 more portions each week. Sweets moved in the other direction. After 3 months, sales fell by 1.05 standard deviations. That was about 1,359 fewer portions per store each week. However, total store sales did not change in a statistically significant way. A related survey included 150 women aged 18 to 45. Fruit and vegetable buying increased in households using the changed stores, while it fell in comparison households. Sweets buying did not show a significant effect.",
+      "span_text": " After  three  months,  sales",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n4_supermarket/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n4_supermarket::er006_output/pool_pilot_01/pool_n4_supermarket::b1b::full_story_part2",
+      "canonical_text": "The results showed a clear change in the sales mix. After 3 months, fruit and vegetable sales rose by 1.71 standard deviations, equal to about 6,170 portions per store each week. After 6 months, the increase reached 2.42 standard deviations, or about 9,820 portions per store each week. Snack sales fell by 1.05 standard deviations after 3 months. That was about 1,359 fewer portions per store each week. At 6 months, snack sales were still lower, but the result was not statistically significant. There was also an important limit. Total sales for the whole store did not change significantly. The new layout appeared to change what people bought, rather than how much the store sold overall. A related survey of 150 women found that fruit and vegetable purchases increased in households using the intervention stores, while they decreased in comparison households. However, the study did not find a significant effect on snack purchases.",
+      "span_text": " After  three  months,",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n4_supermarket/b1b/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n9_tip_screens::er006_output/pool_pilot_01/pool_n9_tip_screens::a2::point_one",
+      "canonical_text": "In the United States, restaurant tipping rose from about 10 to 15 percent in the early 1970s to about 20 percent in the late 1990s, according to one policy brief. Digital payment screens can now show tips as high as 35 percent. One expert argues that this changes the feeling of the moment. With a cash tip jar, the choice could be more private. With a screen held by an employee, the customer may feel watched. He calls this pressure guilt tipping.",
+      "span_text": "%  in  the",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 3,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n9_tip_screens::er006_output/pool_pilot_01/pool_n9_tip_screens::a2::point_two",
+      "canonical_text": "A 2026 survey found that 78 percent of respondents said tipping had become unreasonable. Forty-four percent said they were tipping less than the year before. Among consumers prompted by a digital screen to tip, the share who felt they had to leave a tip fell from 66 percent in September 2025 to 59 percent in 2026. And 36 percent said they chose a custom amount instead of a suggested rate. These are survey answers, not proof that the screen caused the change. But they suggest that many customers are increasingly pushing back against digital prompts to tip.",
+      "span_text": "%  said  they",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "pool_pilot_01/pool_n9_tip_screens::er006_output/pool_pilot_01/pool_n9_tip_screens::a2::point_two_original",
+      "canonical_text": "A 2026 survey found that 78 percent of respondents said tipping had become unreasonable. Forty-four percent said they were tipping less than the year before. Among consumers prompted by a digital screen to tip, the share who felt they had to leave a tip fell from 66 percent in September 2025 to 59 percent in 2026. And 36 percent said they chose a custom amount instead of a suggested rate. These are survey answers, not proof that the screen caused the change. But they suggest that many customers are increasingly pushing back against digital prompts to tip.",
+      "span_text": "%  said  they",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er006_output/pool_pilot_01/pool_n9_tip_screens/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 2,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "er003_output/n3_01::er003_output/n3_01/household::a2::full_story_part2",
+      "canonical_text": "Low humidity allows more air to move through the drawer. This is important for fruit. As fruit becomes ripe, it gives off a natural gas called ethylene. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner. A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer. So the basic rule is simple: Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity. It is a small change. But it gives each type of food the environment it needs.",
+      "span_text": " often  do  better  in",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er003_output/n3_01/household/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "er003_output/n3_01::er003_output/n3_01/household::a2::full_story_part2",
+      "canonical_text": "Low humidity allows more air to move through the drawer. This is important for fruit. As fruit becomes ripe, it gives off a natural gas called ethylene. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner. A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer. So the basic rule is simple: Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity. It is a small change. But it gives each type of food the environment it needs.",
+      "span_text": " humidity  because  the",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er003_output/n3_01/household/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "er003_output/n3_01::er003_output/n3_01/household::a2::full_story_part2",
+      "canonical_text": "Low humidity allows more air to move through the drawer. This is important for fruit. As fruit becomes ripe, it gives off a natural gas called ethylene. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner. A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer. So the basic rule is simple: Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity. It is a small change. But it gives each type of food the environment it needs.",
+      "span_text": " the  gas  escape.",
+      "prod_canonical_repeat_count": 1,
+      "prod_flagged": true,
+      "source": "er003_output/n3_01/household/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 1,
+        "candidate1a_emdash_only_split": 1,
+        "candidate1b_em_en_dash_split": 1,
+        "candidate2_regex_word": 1,
+        "candidate3_naive_delete": 1
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "er003_output/n3_01::er003_output/n3_01/household::a2::full_story_part2",
+      "canonical_text": "Low humidity allows more air to move through the drawer. This is important for fruit. As fruit becomes ripe, it gives off a natural gas called ethylene. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner. A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer. So the basic rule is simple: Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity. It is a small change. But it gives each type of food the environment it needs.",
+      "span_text": " lose  water  easily",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er003_output/n3_01/household/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    },
+    {
+      "control_type": "regression_unrelated_flag",
+      "item_id": "er003_output/n3_01::er003_output/n3_01/household::a2::full_story_part2",
+      "canonical_text": "Low humidity allows more air to move through the drawer. This is important for fruit. As fruit becomes ripe, it gives off a natural gas called ethylene. If this gas stays around other fruit and vegetables, they may become ripe too quickly. Then they can go bad sooner. A low-humidity drawer lets the gas escape more easily. This can help the food around the fruit last longer. So the basic rule is simple: Fruit usually goes in low humidity. Vegetables, especially leafy greens, usually go in high humidity. It is a small change. But it gives each type of food the environment it needs.",
+      "span_text": " humidity  can  help",
+      "prod_canonical_repeat_count": 0,
+      "prod_flagged": true,
+      "source": "er003_output/n3_01/household/a2/audit/tts_generation_results.json + open121_existing_audio_dprime_sweep_01/results/classified_table.json",
+      "recomputed_counts": {
+        "baseline": 0,
+        "candidate1a_emdash_only_split": 0,
+        "candidate1b_em_en_dash_split": 0,
+        "candidate2_regex_word": 0,
+        "candidate3_naive_delete": 0
+      },
+      "recomputed_intentional": {
+        "baseline": false,
+        "candidate1a_emdash_only_split": false,
+        "candidate1b_em_en_dash_split": false,
+        "candidate2_regex_word": false,
+        "candidate3_naive_delete": false
+      },
+      "recomputed_flagged_if_only_this_span": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      },
+      "baseline_matches_production_recorded_value": true,
+      "expected": "baselineと完全一致を維持すべき(em dash非関与)",
+      "candidate_correct": {
+        "baseline": true,
+        "candidate1a_emdash_only_split": true,
+        "candidate1b_em_en_dash_split": true,
+        "candidate2_regex_word": true,
+        "candidate3_naive_delete": true
+      }
+    }
+  ]
+}
