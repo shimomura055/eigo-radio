@@ -1,6 +1,12 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-09(第18弾、PM-CLOSEOUT-CONSOLIDATION-25、Fable最終
+受入)**: 「## B-Family(Voices)Editorial Type」節「Production経路」行の
+状態表記を`PRODUCTION_WIRED`(Gate 3、Fable受入待ち)から`PRODUCTION_WIRED`
+(2026-09-09 Fable最終受入、commit `2b2f266`/`2fbeee3`)へ更新した(仕様
+内容自体の変更なし)。詳細は`OPEN_ITEMS.md` OPEN-120行、`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-25`エントリ参照。
 **最終更新: 2026-09-09(第17弾、EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-
 WIRING-01、Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_
 PRODUCTION`)に基づき、B-Family A2(「フリーアドレス vs 固定席」A2、
@@ -421,7 +427,7 @@ Hook/Voice A/Voice B/Tension/Closing)を持つEditorial Type。B1は
 | 語数・文長(今回限りの許容) | 11語超の文18/38・18語超の文2/38(Voice B・Closing各1文)を、新しい上限を設けずそのまま許容した(今回1記事限りの実測値記録であり、恒久的な新CEFR-A2数値ルールではない) | `USER_DECISION_REQUIRED`扱いではなく今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-5) | 2026-09-09 |
 | Fact Checker `REVIEW_REQUIRED`(複合Voice帰属) | Voice A/Bは複合的な一人称語りであり実在個人の発言ではないため、発言者・調査名が示せずFact Checkerが`REVIEW_REQUIRED`と判定する既知の特性がある。今回(2026-09-09承認記事)はユーザー確認済みとして扱うが、**恒久的なnon-blocking運用にはしない**(機械的な判別方法はOPEN-131で別途Trial中) | 今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04 | 2026-09-09 |
 | OPEN-129整合 | 既存Audio Validation Gateは「構造上あるべきsegment数との一致」を検証しない(OPEN-129、共有Gate側は未対策のまま)。B-Family A2はLane B runner側の完全性チェック(`er012_b_family_voices_a2_production_01.py::check_required_segments_completeness()`、registryの`required_segments`と実segment_status/voice解決結果を突合)で対策済み。共有Gate自体は変更していない | `PARTIAL`(Lane B側のみ対策、共有Gate側はOPEN-129のまま) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(Gate 3 item8) | 2026-09-09 |
-| Production経路 | `er012_b_family_editorial_type_registry_01.py`(A2設定`get_editorial_type_a2()`)・`er012_b_family_voices_a2_production_01.py`(Writer/Comment/日本語タイトル/Key Phrase/Voice A/B slowdown TTS/Assembly loader・timeline)・`er012_b_family_production_runner_01.py`(`level="a2"`分岐、Trialスクリプトは一切importしない) | `PRODUCTION_WIRED`(Gate 3、Fable受入待ち) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 | 2026-09-09 |
+| Production経路 | `er012_b_family_editorial_type_registry_01.py`(A2設定`get_editorial_type_a2()`)・`er012_b_family_voices_a2_production_01.py`(Writer/Comment/日本語タイトル/Key Phrase/Voice A/B slowdown TTS/Assembly loader・timeline)・`er012_b_family_production_runner_01.py`(`level="a2"`分岐、Trialスクリプトは一切importしない) | `PRODUCTION_WIRED`(2026-09-09 Fable最終受入、commit `2b2f266`/`2fbeee3`) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 | 2026-09-09 |
 
 **最終更新: 2026-09-09(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、
 Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_PRODUCTION`)に
