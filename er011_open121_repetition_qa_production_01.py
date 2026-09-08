@@ -50,6 +50,8 @@
 # 対象外。OPEN_ITEMS.md OPEN-121行へ追跡項目として記録する。
 from __future__ import annotations
 
+import re
+
 import numpy as np
 import soundfile as sf
 
@@ -237,7 +239,21 @@ def run_spectral_checks(path):
 # ============================================================
 # 方式A: n-gram句・文単位反復検知(Trial-01、既存、無変更移植)
 # ============================================================
+# OPEN-127-EM-DASH-TOKEN-BOUNDARY-PRODUCTION-WIRING-01: ユーザー承認
+# 2026-09-08(candidate1a_emdash_only_split、
+# TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01_REPORT.md)。
+# em dash(—, U+2014)前後に空白が無い米国式タイポグラフィ(例:
+# "...the people I need—or do not need—around me.")の場合、
+# text.split()が"need—or"を1 tokenとして扱ってしまい、
+# `_canonical_repeat_count()`がcanonical側の意図的な反復出現数を
+# 過小カウントし、Voice B並行構文のような正常な意図的反復を誤flagして
+# いた(2026-09-08 Trial実データ再現)。em dash **のみ**を空白へ置換して
+# token境界として扱う(en dash "–"・hyphen "-"は対象外、汎用regex
+# tokenizerへの拡張は禁止、ユーザー承認範囲を超えない)。ASR側token
+# (`detect_ngram_repetition`のtokens、word-level ASR出力)は元々1語ずつ
+# 独立して現れるため本変更の影響を受けない。
 def _normalize_tokens(text):
+    text = re.sub("—", " ", text)
     return [dq18._normalize_token(w) for w in text.split()]
 
 
