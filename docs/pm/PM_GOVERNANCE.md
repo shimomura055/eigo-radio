@@ -1,7 +1,10 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02で
+**最終更新: 2026-09-08(PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12で
+Gate 7補足の音声artifact受入チェックリスト末尾へ、判断依頼時は試聴・review
+artifactリンクを同一報告内に必ず提示することを既存Gate 7の具体化として
+追記)。2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02で
 compact復帰手順は`CLAUDE.md`、ACTIVE_TASK固定ヘッダの書式は`docs/pm/PM_BRIEF.md`
 参照であることを明記。本節に新ルールは追加しない)。2026-09-08(PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11で
 EDITORIAL-B-FAMILY-VOICES-TRIAL-09のplayer形式を試聴artifactの標準フォーマット
@@ -124,6 +127,14 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
     変えない。標準では従来のSource列は持たず、その分Script列を広げ、
     個別`<audio controls>`要素は最低幅360px(再生ボタンが「…」メニューに
     隠れないため)とする)
+
+**補足(2026-09-08、ユーザー決定、PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-
+AUTOCOMPACT-50-12)**: ユーザーへ音声・artifact・比較結果等の確認を求める
+場合、判断に必要な試聴・review artifactリンクを同じ報告内に必ず提示する。
+リンク・artifact未提示のままユーザー判断を要求しない(新ルールではなく
+Gate 7「実artifactを確認して受入・判断する」の具体化。経緯: B-Family
+Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だった
+[2026-09-08])。
 
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
@@ -688,3 +699,12 @@ FableからSonnetへ修正・追加確認・再生成指示を出してよい。
   適用漏れ(sonnet-workerの実装漏れ+Fableの受入レビュー漏れ)が発生した
   ことを受け、新ルールは追加せず、既存規則の主語明確化とGate 7受入判定の
   具体化のみを行った。
+- 2026-09-08(PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12):
+  「2. PM Gate 1〜7」のGate 7補足(音声artifact受入チェックリスト)(l)末尾へ、
+  ユーザーに音声・artifact・比較結果等の確認を求める場合は判断に必要な
+  試聴・review artifactリンクを同じ報告内に必ず提示し、リンク・artifact
+  未提示のままユーザー判断を要求しないという補足を追記した(新規独立
+  ルールではなく、既存Gate 7「実artifactを確認して受入・判断する」の
+  具体化・最小追記。文書編集のみ、コード・Prompt変更なし)。経緯:
+  2026-09-08、B-Family Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで
+  試聴リンクを提示しないままユーザー判断を求めた事象を受けたユーザー決定。

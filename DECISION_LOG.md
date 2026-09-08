@@ -7668,6 +7668,56 @@ artifact一式、OPEN-124 Report、SSOT本体3ファイル)に分けてcommitし
 `OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01_REPORT.md`、
 `OPEN-124-UNTRACKED-FILES-CLASSIFICATION-01_REPORT.md`。
 
+## PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-AUTOCOMPACT-50-12(2026-09-08、
+判断依頼時のリンク必須化・auto-compact閾値50%への変更・運用整理六点)
+
+ユーザーが以下6点を決定した。
+
+**1. 判断依頼時リンク必須**: ユーザーへ音声・artifact・比較結果等の確認を
+求める場合、判断に必要な試聴・review artifactリンクを同じ報告内に必ず
+提示する。リンク・artifact未提示のままユーザー判断を要求しない。新規
+独立ルールではなく、既存`docs/pm/PM_GOVERNANCE.md` Gate 7「実artifactを
+確認して受入・判断する」の具体化として、Gate 7補足チェックリスト(l)末尾へ
+最小追記した。経緯: B-Family Voice B GATE_BLOCKEDの`USER_DECISION_
+REQUIRED`報告で試聴リンクを提示しないままユーザー判断を求めた事象
+(2026-09-08)。
+
+**2. auto-compact閾値 650,000→500,000への変更**: `/context`で実window=
+1,000,000 token、当時の使用量約177.6k(18%)を確認したうえで、
+`.claude/settings.local.json`の`autoCompactWindow`を650,000(65%)から
+**500,000(50%)**へ変更した(このファイルは`.gitignore`対象のためcommit
+対象外、`git check-ignore`で再確認済み)。復帰方式(案B: `docs/pm/
+ACTIVE_TASK.md`固定ヘッダ、`CLAUDE.md`復帰手順、必要箇所のみSSOT再照合、
+全文読込禁止、`/clear`自動実行なし)は変更せず維持する。
+
+**3. compactモニタリング**: 最初の数回について、発火頻度/compact直前の
+context使用量/復帰時間/復帰時追加Token/UDR欠落/approved-but-unwired
+欠落/STOP条件欠落/作業継続への支障、を`docs/pm/COMPACT_OBSERVATION_
+LOG.md`で軽量に記録する運用へ列を整理した(大規模Telemetryは作らない)。
+現時点はcompact未発生(2026-09-08時点、使用量約177.6k/18%)。40/50/60%
+への再調整は観測後にユーザーが判断する。
+
+**4. OPEN-124**: 追加整理・削除対応は今回後回しとし現状維持する
+(新規削除・移動・大規模commit整理には進まない)。
+
+**5. OPEN-121**: ユーザー確認対象を23件→15件(真の重複確定8件を除外)へ
+整理する。UI改善は別タスク`OPEN-121-METHOD-D-FLAG15-REVIEW-ARTIFACT-02`
+で作成中。閾値変更・自動再生成はユーザー確認結果が出るまで行わない。
+
+**6. B-Family Voice B**: Phase 1 `point_two`(Voice B)GATE_BLOCKEDの3
+attempt試聴artifactを別タスク`EDITORIAL-B-FAMILY-PHASE1-VOICE-B-ATTEMPT-
+REVIEW-ARTIFACT-01`で作成中。artifact完成後、上記1のリンク必須ルールに
+従いリンク付きでユーザー判断を求める。
+
+SSOT反映: `docs/pm/PM_GOVERNANCE.md`冒頭changelog・Gate 7補足(l)末尾へ
+上記1を追記。`docs/pm/COMPACT_OBSERVATION_LOG.md`を上記2・3の内容へ更新。
+`OPEN_ITEMS.md` OPEN-120行(Voice B試聴artifact作成中を追記)・OPEN-121行
+(15件への整理・UI改善artifact作成中を追記)・OPEN-124行(後回し・現状維持を
+追記)。`CURRENT_SPEC.md`は本タスクの対象外(PM運用改善のため無変更)。
+`docs/pm/ACTIVE_TASK.md`を本タスク用の固定ヘッダへ全面上書きした。
+`.claude/settings.local.json`はgit管理対象外のためcommitしていない
+(`git check-ignore`で再確認済み)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
