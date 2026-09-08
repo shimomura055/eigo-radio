@@ -1,0 +1,320 @@
+[
+  {
+    "attempt": 0,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": false,
+    "value_qa_flagged": true,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.0,
+        "shared_words": [],
+        "point_word_count": 30,
+        "story_word_count": 25,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.0,
+        "shared_words": [],
+        "point_word_count": 25,
+        "story_word_count": 30,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.233,
+          "shared_words": [
+            "added",
+            "eighth",
+            "first",
+            "hanshin",
+            "home",
+            "run",
+            "seventh"
+          ],
+          "point_word_count": 30,
+          "story_word_count": 51,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.0,
+          "shared_words": [],
+          "point_word_count": 30,
+          "story_word_count": 25,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.16,
+          "shared_words": [
+            "five",
+            "ihara",
+            "inning",
+            "innings"
+          ],
+          "point_word_count": 25,
+          "story_word_count": 51,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.0,
+          "shared_words": [],
+          "point_word_count": 25,
+          "story_word_count": 30,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "NG",
+    "diagnostic_used": {
+      "point_one_score": 0.233,
+      "point_one_flagged": false,
+      "point_two_score": 0.16,
+      "point_two_flagged": false,
+      "point_one_vs_point_two_flagged": false,
+      "value_qa_flagged": true
+    }
+  },
+  {
+    "attempt": 1,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": true,
+    "value_qa_flagged": false,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.185,
+        "shared_words": [
+          "game",
+          "hanshin",
+          "hiroshima",
+          "run",
+          "start"
+        ],
+        "point_word_count": 27,
+        "story_word_count": 29,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.172,
+        "shared_words": [
+          "game",
+          "hanshin",
+          "hiroshima",
+          "run",
+          "start"
+        ],
+        "point_word_count": 29,
+        "story_word_count": 27,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.444,
+          "shared_words": [
+            "again",
+            "became",
+            "first",
+            "game",
+            "hanshin",
+            "hiroshima",
+            "home",
+            "montero",
+            "run",
+            "scored",
+            "solo",
+            "start"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 56,
+          "flagged": true,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.185,
+          "shared_words": [
+            "game",
+            "hanshin",
+            "hiroshima",
+            "run",
+            "start"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 29,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false,
+        "regenerate_status": "NG_REVIEW_REQUIRED",
+        "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.414,
+          "shared_words": [
+            "five",
+            "game",
+            "hanshin",
+            "hiroshima",
+            "hits",
+            "ihara",
+            "inning",
+            "innings",
+            "lead",
+            "only",
+            "run",
+            "start"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 56,
+          "flagged": true,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.172,
+          "shared_words": [
+            "game",
+            "hanshin",
+            "hiroshima",
+            "run",
+            "start"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 27,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false,
+        "regenerate_status": "NG_REVIEW_REQUIRED",
+        "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+      }
+    },
+    "value_qa_status": "PASS",
+    "diagnostic_used": {
+      "point_one_score": 0.444,
+      "point_one_flagged": true,
+      "point_two_score": 0.414,
+      "point_two_flagged": true,
+      "point_one_vs_point_two_flagged": false,
+      "value_qa_flagged": false
+    }
+  },
+  {
+    "attempt": 2,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": true,
+    "value_qa_flagged": false,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.154,
+        "shared_words": [
+          "attack",
+          "hanshin",
+          "run",
+          "scoring"
+        ],
+        "point_word_count": 26,
+        "story_word_count": 27,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.148,
+        "shared_words": [
+          "attack",
+          "hanshin",
+          "run",
+          "scoring"
+        ],
+        "point_word_count": 27,
+        "story_word_count": 26,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.462,
+          "shared_words": [
+            "fifth",
+            "game",
+            "hanshin",
+            "helped",
+            "hiroshima",
+            "home",
+            "inning",
+            "montero",
+            "only",
+            "run",
+            "scoreboard",
+            "solo"
+          ],
+          "point_word_count": 26,
+          "story_word_count": 57,
+          "flagged": true,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.154,
+          "shared_words": [
+            "attack",
+            "hanshin",
+            "run",
+            "scoring"
+          ],
+          "point_word_count": 26,
+          "story_word_count": 27,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false,
+        "regenerate_status": "NG_REVIEW_REQUIRED",
+        "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.259,
+          "shared_words": [
+            "came",
+            "eighth",
+            "hanshin",
+            "hit",
+            "run",
+            "sato",
+            "seventh"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 57,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.148,
+          "shared_words": [
+            "attack",
+            "hanshin",
+            "run",
+            "scoring"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 26,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "PASS"
+  }
+]

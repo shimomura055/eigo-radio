@@ -1,0 +1,7 @@
+{
+  "run1_exact_jpy": 24.1,
+  "run2_3_recovered_exact_jpy": 56.0,
+  "run2_3_estimated_missing_jpy": 15.4,
+  "methodology_note": "run1はcl.install()正常稼働で全call実測。run2/3はcl.install()呼び忘れの運用ミスにより生ログ欠落、監査証跡内のresponse_idをresponses.retrieve()で事後回収(課金なし、recovered_exact)。writer/evidence-compressionのPoint Overlap retry再生成分(前段の生成のみ上書きされ跡が残らない)とlocal rewrite内部callはaudit証跡にresponse_id自体が存在せず事後回収不可能なため、run1で同型ギャップを実測した比率(A2再生成1回=JPY0.95、B1B再生成1回=JPY1.11、local rewrite 1cycle=JPY0.95、いずれもrun1実測ベース)を用いて保守的に加算推定した。",
+  "total_jpy": 95.5
+}

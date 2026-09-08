@@ -1,0 +1,209 @@
+{
+  "label": "B1B",
+  "status": "OK",
+  "metrics": {
+    "word_count": 227,
+    "sentence_count": 20,
+    "avg_sentence_length": 11.7,
+    "max_sentence_length": 22
+  },
+  "section_word_counts": {
+    "intro": 117,
+    "point_one": 49,
+    "point_two": 47,
+    "in_one_line": 14
+  },
+  "length_report": {
+    "intro": 117,
+    "point_one": 49,
+    "point_two": 47,
+    "in_one_line": 14,
+    "total": 227,
+    "point_one_within_target": true,
+    "point_one_within_tolerance": true,
+    "point_two_within_target": true,
+    "point_two_within_tolerance": true,
+    "total_within_soft_range": false
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 1,
+  "local_rewrite_results": [
+    {
+      "original_ng_sentence": "After that, Hiroshima could not create another serious threat.",
+      "issue": "Ledgerは広島の追加得点がなかったことは保証しているが、5回以降に「深刻な脅威」がなかったことまでは確認していない。",
+      "explanation": "得点がなかったという事実から、得点機会や攻撃上の脅威もなかったと具体的に拡張している。Hookとしての表現ではないため緩和しない。",
+      "flags": [
+        "unsupported_new_claim"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "text": "After that, Hiroshima did not add any more runs.",
+          "ledger_status": "LEDGER_COMPLIANT"
+        }
+      ],
+      "final_text": "After that, Hiroshima did not add any more runs.",
+      "resolved": true,
+      "human_review_required": false,
+      "cycle": 1,
+      "item_idx": 1,
+      "location_method": "exact_substring",
+      "point_context_found": true,
+      "point_context": "# One Early Swing, Then a Complete Hanshin Win\n\nOn August 16 at Mazda Stadium, Hanshin took control early.\n\nIn the first inning, Teruaki Sato hit a two-run home run to center field. Hanshin quickly led 2–0.\n\nBut the win was not built on one swing alone.\n\nStarter Ryoto Ihara gave Hanshin a steady base. Hiroshima found one answer, but Hanshin stayed in control. Hanshin added more runs in the seventh and eighth innings.\n\nThe early lead became a wide gap.\n\nHiroshima’s only run came in the fifth inning, when Elehuris Montero hit a solo home run. After that, Hiroshima could not create another serious threat.\n\nThe final score was:\n\nHiroshima 1–8 Hanshin\n\nIt was a complete win for Hanshin, from the first big hit to the final score."
+    },
+    {
+      "original_ng_sentence": "The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring.",
+      "issue": "Ledgerは広島の得点がモンテロのソロ本塁打による1点のみだったことは保証するが、試合中の攻撃が「長い rally ではなかった」「明確な挑戦が1回だけだった」とまでは確認していない。",
+      "explanation": "得点結果から、走者の出塁や攻撃の圧力の回数・長さに関する新しい具体的主張を追加している。Hookとしての表現ではないため緩和しない。",
+      "flags": [
+        "unsupported_new_claim"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "text": "The early lead was narrowed by Montero’s solo shot. Late in the game, multiple hitters added to the Tigers’ lead.",
+          "ledger_status": "LEDGER_COMPLIANT"
+        }
+      ],
+      "final_text": "The early lead was narrowed by Montero’s solo shot. Late in the game, multiple hitters added to the Tigers’ lead.",
+      "resolved": true,
+      "human_review_required": false,
+      "cycle": 1,
+      "item_idx": 2,
+      "location_method": "sentence_fallback(overlap=0.43)",
+      "point_context_found": false,
+      "point_context": "Its only run came on Montero’s solo shot, while Ihara allowed just two hits and one run over five innings. The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring. Seishiro Sakamoto drove in a run in the seventh and added an RBI double in the eighth."
+    },
+    {
+      "original_ng_sentence": "The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring.",
+      "issue": "Ledgerは広島の得点がモンテロのソロ本塁打による1点のみだったことは保証するが、試合中に長い攻撃の連続や複数のプレッシャーがなかったことまでは保証していない。試合展開に関する未確認の具体的な評価を追加している。",
+      "explanation": "得点結果から直接は導けない「長いラリーがなかった」「挑戦が一度だけだった」というゲーム展開上の事実を、確認済みの事実として断定している。Hookとして扱う条件も満たさないため、緩和していない。",
+      "flags": [
+        "changed_fact",
+        "unsupported_new_claim"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "text": "Ihara allowed just two hits and one run over five innings, helping preserve the early lead.",
+          "ledger_status": "LEDGER_COMPLIANT"
+        }
+      ],
+      "final_text": "Ihara allowed just two hits and one run over five innings, helping preserve the early lead.",
+      "resolved": true,
+      "human_review_required": false,
+      "cycle": 2,
+      "item_idx": 1,
+      "location_method": "sentence_fallback(overlap=0.43)",
+      "point_context_found": false,
+      "point_context": "Its only run came on Montero’s solo shot, while Ihara allowed just two hits and one run over five innings. The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring. Seishiro Sakamoto drove in a run in the seventh and added an RBI double in the eighth."
+    }
+  ],
+  "local_rewrite_cycles": [
+    {
+      "cycle": 1,
+      "targeted_major_count": 2,
+      "newly_discovered_claims": [
+        "After that, Hiroshima could not create another serious threat.",
+        "Hiroshima never built a long rally. ... The early lead faced one clear challenge, not repeated waves of pressure."
+      ],
+      "results": [
+        {
+          "original_ng_sentence": "After that, Hiroshima could not create another serious threat.",
+          "issue": "Ledgerは広島の追加得点がなかったことは保証しているが、5回以降に「深刻な脅威」がなかったことまでは確認していない。",
+          "explanation": "得点がなかったという事実から、得点機会や攻撃上の脅威もなかったと具体的に拡張している。Hookとしての表現ではないため緩和しない。",
+          "flags": [
+            "unsupported_new_claim"
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "text": "After that, Hiroshima did not add any more runs.",
+              "ledger_status": "LEDGER_COMPLIANT"
+            }
+          ],
+          "final_text": "After that, Hiroshima did not add any more runs.",
+          "resolved": true,
+          "human_review_required": false,
+          "cycle": 1,
+          "item_idx": 1,
+          "location_method": "exact_substring",
+          "point_context_found": true,
+          "point_context": "# One Early Swing, Then a Complete Hanshin Win\n\nOn August 16 at Mazda Stadium, Hanshin took control early.\n\nIn the first inning, Teruaki Sato hit a two-run home run to center field. Hanshin quickly led 2–0.\n\nBut the win was not built on one swing alone.\n\nStarter Ryoto Ihara gave Hanshin a steady base. Hiroshima found one answer, but Hanshin stayed in control. Hanshin added more runs in the seventh and eighth innings.\n\nThe early lead became a wide gap.\n\nHiroshima’s only run came in the fifth inning, when Elehuris Montero hit a solo home run. After that, Hiroshima could not create another serious threat.\n\nThe final score was:\n\nHiroshima 1–8 Hanshin\n\nIt was a complete win for Hanshin, from the first big hit to the final score."
+        },
+        {
+          "original_ng_sentence": "The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring.",
+          "issue": "Ledgerは広島の得点がモンテロのソロ本塁打による1点のみだったことは保証するが、試合中の攻撃が「長い rally ではなかった」「明確な挑戦が1回だけだった」とまでは確認していない。",
+          "explanation": "得点結果から、走者の出塁や攻撃の圧力の回数・長さに関する新しい具体的主張を追加している。Hookとしての表現ではないため緩和しない。",
+          "flags": [
+            "unsupported_new_claim"
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "text": "The early lead was narrowed by Montero’s solo shot. Late in the game, multiple hitters added to the Tigers’ lead.",
+              "ledger_status": "LEDGER_COMPLIANT"
+            }
+          ],
+          "final_text": "The early lead was narrowed by Montero’s solo shot. Late in the game, multiple hitters added to the Tigers’ lead.",
+          "resolved": true,
+          "human_review_required": false,
+          "cycle": 1,
+          "item_idx": 2,
+          "location_method": "sentence_fallback(overlap=0.43)",
+          "point_context_found": false,
+          "point_context": "Its only run came on Montero’s solo shot, while Ihara allowed just two hits and one run over five innings. The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring. Seishiro Sakamoto drove in a run in the seventh and added an RBI double in the eighth."
+        }
+      ],
+      "full_recheck_overall_status": "LEDGER_DEVIATION",
+      "full_recheck_major_count": 1,
+      "full_recheck_remaining_major_claims": [
+        "“Hiroshima never built a long rally.”／“The early lead faced one clear challenge, not repeated waves of pressure.”"
+      ]
+    },
+    {
+      "cycle": 2,
+      "targeted_major_count": 1,
+      "newly_discovered_claims": [
+        "“Hiroshima never built a long rally.”／“The early lead faced one clear challenge, not repeated waves of pressure.”"
+      ],
+      "results": [
+        {
+          "original_ng_sentence": "The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring.",
+          "issue": "Ledgerは広島の得点がモンテロのソロ本塁打による1点のみだったことは保証するが、試合中に長い攻撃の連続や複数のプレッシャーがなかったことまでは保証していない。試合展開に関する未確認の具体的な評価を追加している。",
+          "explanation": "得点結果から直接は導けない「長いラリーがなかった」「挑戦が一度だけだった」というゲーム展開上の事実を、確認済みの事実として断定している。Hookとして扱う条件も満たさないため、緩和していない。",
+          "flags": [
+            "changed_fact",
+            "unsupported_new_claim"
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "text": "Ihara allowed just two hits and one run over five innings, helping preserve the early lead.",
+              "ledger_status": "LEDGER_COMPLIANT"
+            }
+          ],
+          "final_text": "Ihara allowed just two hits and one run over five innings, helping preserve the early lead.",
+          "resolved": true,
+          "human_review_required": false,
+          "cycle": 2,
+          "item_idx": 1,
+          "location_method": "sentence_fallback(overlap=0.43)",
+          "point_context_found": false,
+          "point_context": "Its only run came on Montero’s solo shot, while Ihara allowed just two hits and one run over five innings. The early lead faced one clear challenge, not repeated waves of pressure. ### More than one hitter finished the job Late in the game, more than one hitter supplied the scoring. Seishiro Sakamoto drove in a run in the seventh and added an RBI double in the eighth."
+        }
+      ],
+      "full_recheck_overall_status": "LEDGER_COMPLIANT",
+      "full_recheck_major_count": 0,
+      "full_recheck_remaining_major_claims": []
+    }
+  ],
+  "local_rewrite_cycle_exhausted": false,
+  "fact_usage_report": null,
+  "evidence_compression_applied": true,
+  "point_overlap_qa_applied": false,
+  "point_overlap_article_retry_attempts": 1,
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED"
+}
