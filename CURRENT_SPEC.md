@@ -1,6 +1,21 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第16弾、PM-CLOSEOUT-CONSOLIDATION-22、ユーザー決定
+A-UDR-8/9/10反映)**: 「## 通常News(Major/Daily News)Reference仕様」節の
+「Reference記事の正式指定」を更新した。**Household(冷蔵庫クリスパー)を
+同系列referenceから除外**(単一起点イベントを持たず通常News対象外、
+別Editorial Type[Discovery/Why系]候補として別途整理、通常Newsの定義を
+Householdに合わせて広げない、A-UDR-9)。Health=「単一起点研究発表がある
+場合はMajor/Dailyとして扱う」境界規則を1行追記(`DECIDED`ではなく
+**運用方針・設計Trial段階**と明記、Major/Daily Gateの非対称性は現状許容、
+myth-correction候補は保留、A-UDR-10)。News固有層設計案(Focus Module+
+Major/Daily Gate)はユーザー承認、Hanshin Ledger固定でFocus Moduleなし/
+ありのA2/B1比較Trial(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-COMPARISON-
+TRIAL-02`)へ進む(A-UDR-8、内容は本節では規定しない、配線はユーザー
+判断前に行わない)。将来のMode自動判定には排他的・再現可能な判定ロジック
+が必要という点をOpen Item化(`OPEN_ITEMS.md` OPEN-130)。詳細は
+`DECISION_LOG.md` `PM-CLOSEOUT-CONSOLIDATION-22`エントリ参照。
 **最終更新: 2026-09-08(第15弾、FAMILY-A-DAILY-NEWS-REFERENCE-
 FORMALIZATION-01、ユーザー決定A-UDR-5)**: 既にDECIDED/PRODUCTION_WIRED
 済みの既存A2/B1共通骨格(11パート構造・Writer共通経路・Point Balance・
@@ -427,9 +442,25 @@ Audio構造)がそのまま適用されることを正式化した(ユーザー�
 - **Hanshin(`ER-003-A2-B1-N3-01`)**: 上表の構造・Writer・Fact Safety・
   音声実装のreference実装として正式指定する(`DECIDED`、根拠: ユーザー
   決定A-UDR-5、`FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01`)。同一
-  管理ID内のHealth(Small Habits, Longer Lives)・Household(crisper
-  drawer)は同系列のreferenceとして併記する(3ジャンル横展開確認済み、
-  ER-003-A2-B1-N3-01)。
+  管理ID内のHealth(Small Habits, Longer Lives)は同系列のreferenceとして
+  併記する(構造・Writer・Fact Safety・音声実装のreference価値のみ、
+  ER-003-A2-B1-N3-01)。**Household(crisper drawer)は通常Newsの同系列
+  referenceから除外する**(2026-09-08ユーザー決定A-UDR-9、
+  `FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`で新規発見)。理由:
+  Householdは単一起点イベント(特定の発表・発生事象)を持たない題材であり、
+  通常News(Major/Daily News)の対象として扱わない。Householdは別
+  Editorial Type(Discovery/Why系)候補として別途整理する(通常Newsの
+  定義をHouseholdに合わせて広げない)。
+- **Health(単一起点研究発表がある場合の扱い)**: Healthのうち、単一の
+  研究発表(起点となる1つの発表・論文・調査結果)がある場合は、Major/
+  Dailyの通常News(Major/Daily News)として扱う(2026-09-08ユーザー決定
+  A-UDR-10、`DECIDED`ではなく**運用方針(設計Trial段階)**、根拠:
+  `FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01_REPORT.md`)。Major/
+  Daily Gateの非対称性(消去法的な判定基準であること)は現状許容する。
+  myth-correction候補(通説訂正型)の扱いは保留(`USER_DECISION_REQUIRED`
+  継続)。将来Mode自動判定を実装する場合は対称性ではなく排他的・再現
+  可能な判定ロジックが必要になる点はOpen Itemとして保持する
+  (OPEN_ITEMS.md OPEN-130)。
 - **ADD03(イラン/ホルムズ海峡)・A02(英国SNS門限)**: 題材・音声構造の
   referenceに限定する(11パート構造・Preview日本語のみ・Key Phrase
   発話順序の起源としての参考価値のみ、ER-003-A2-STRUCT-02〜04、
