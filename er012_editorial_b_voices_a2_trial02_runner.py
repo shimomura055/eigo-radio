@@ -8,11 +8,15 @@
 #
 # 既存Production関数の組み合わせ方針(ユーザー決定2026-09-08、Step 2指示):
 #   - Voice A/Voice B本文: er012_b_family_voices_production_01
-#     (b1prod).generate_voice_body_wide_margin() を無変更のまま使用
-#     (Phase 1と同一関数。A2 slowdown post-processはこの関数に配線
-#     されていないため適用されない。既存関数を変更しないという制約の
-#     結果であり、Voice A/Bのみ標準ペースのまま。Gate 3の残作業として
-#     Report・PM側へ明示する)。
+#     (b1prod).generate_voice_body_wide_margin() を使用(Phase 1と同一
+#     関数。EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04
+#     [ユーザー決定2026-09-08、B-A2-9への回答]以降は、標準A2の既存6%
+#     slowdown仕様[style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_
+#     SLOWER + n3_tts.apply_a2_slowdown_postprocessによる6% time-stretch]
+#     を適用する[generate_voice_body_wide_margin_with_a2_slowdown()参照、
+#     下記]。b1prodへは完全後方互換の追加引数[style_prefix_override、
+#     既定None]のみを追加し、既存Production呼び出し[Phase 1含む]の挙動は
+#     無変更)。
 #   - Hook Part1/2・Narrator見出し(One Voice/Another Voice heading)・
 #     Closing: er003_v1_n3_01_tts_generate(n3_tts)
 #     .generate_a2_segment_with_slowdown()を無変更のまま使用(標準A2の
@@ -291,6 +295,33 @@ def run_scaffold(parts: dict, article_text: str, ledger_text: str) -> dict:
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04:
+# Voice A/B本文(point_one/point_two)へ標準A2の既存6% slowdown仕様を
+# 適用する新規合成関数(ユーザー決定2026-09-08、B-A2-9への回答)。
+#
+# 既存関数を2つ、無変更のまま順に呼ぶだけの新規関数(新しいTTS/ASR/
+# time-stretchロジックは一切追加しない):
+#   1. b1prod.generate_voice_body_wide_margin(...): Voice A/B固有の声・
+#      既存の全安全機構(ASR Cascade・disfluency gate・repetition QA・
+#      connected speech equivalence layer・Human Review Lock)込みで
+#      通常ペース音声を生成する(Phase 1と同一関数、本タスクで追加した
+#      style_prefix_override引数のみ、標準A2と同じn3_tts.
+#      A2_ENGLISH_STYLE_PREFIX_SLOWERを渡す)。
+#   2. n3_tts.apply_a2_slowdown_postprocess(...): 標準A2のfull_story_
+#      part1/2・point_one・point_two・in_one_line等と全く同じ関数
+#      (無変更)。6% time-stretch(er008_a2_postprocess_slowdown_01.
+#      A2_SLOWDOWN_PERCENT=6.0、無変更)+ post-process後のASR再検証を行う
+#      (status!="OK"の場合は何もしない、既存の同関数のガードのまま)。
+def generate_voice_body_wide_margin_with_a2_slowdown(name: str, tts_input: str, out_path: str,
+                                                       voice_name: str) -> dict:
+    result = b1prod.generate_voice_body_wide_margin(
+        tts_input, out_path, voice_name,
+        style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+        enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
+    return n3_tts.apply_a2_slowdown_postprocess(name, NARRATION_DIR, tts_input, result)
+
+
+# ============================================================
 # Step 2-4: TTS(既存Production関数 + 標準A2 slowdown関数の組み合わせ)
 # ============================================================
 def run_tts(parts: dict, support_texts: dict, voice_a: str, voice_b: str) -> dict:
@@ -344,11 +375,11 @@ def run_tts(parts: dict, support_texts: dict, voice_a: str, voice_b: str) -> dic
     ):
         import er003_v1_n3_01_scaffold_generate as sc
         sc.assert_no_point_number_label(text, name)
-        print(f"[A2-TRIAL02-RUNNER] {name}生成({voice_name}、Phase 1 b1prod関数を無変更で再利用、標準ペース)...")
+        print(f"[A2-TRIAL02-RUNNER] {name}生成({voice_name}、Phase 1 b1prod関数+標準A2 6% "
+              f"slowdown[EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04])...")
         with cl.segment_context(name):
-            results[name] = b1prod.generate_voice_body_wide_margin(
-                n3_tts.tts_safe_news_en(text), f"{NARRATION_DIR}/{name}.wav", voice_name,
-                enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
+            results[name] = generate_voice_body_wide_margin_with_a2_slowdown(
+                name, n3_tts.tts_safe_news_en(text), f"{NARRATION_DIR}/{name}.wav", voice_name)
         results[name]["canonical_text"] = text
     assert_budget_ok("after Voice A/B TTS")
 
@@ -494,12 +525,12 @@ def build_a2_voices_timeline(parts: dict, voice_a: str, voice_b: str) -> list:
         ("Point Notification (Voice A cue, existing SFX reuse)", parts["point_notification"]),
         ("Narrator: One Voice heading (Aoede, English, A2 slowdown)", b1["point_one_heading"]),
         ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
-        (f"Voice A body ({voice_a}, standard pace)", b1["point_one"]),
+        (f"Voice A body ({voice_a}, A2 slowdown)", b1["point_one"]),
         ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
         ("Point Notification (Voice B cue, existing SFX reuse)", parts["point_notification"]),
         ("Narrator: Another Voice heading (Aoede, English, A2 slowdown)", b1["point_two_heading"]),
         ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
-        (f"Voice B body ({voice_b}, standard pace)", b1["point_two"]),
+        (f"Voice B body ({voice_b}, A2 slowdown)", b1["point_two"]),
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 3 (Aoede, Japanese, A2)", b1["comment_3"]),
         ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
@@ -627,7 +658,11 @@ def _row_info(label: str, parts: dict, support_texts: dict, voice_a: str, voice_
 
 
 def build_player_html(assemble_summary: dict, timeline: list, parts: dict, support_texts: dict,
-                       voice_a: str, voice_b: str, voice_resolution_reasons: dict) -> str:
+                       voice_a: str, voice_b: str, voice_resolution_reasons: dict,
+                       # EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04:
+                       # 既定None(既存の02/03呼び出しはこの引数を渡さないため無変更)。
+                       # 04呼び出しのみ、Key Phrase「stay put」の旧/新比較行を追加する。
+                       stay_put_comparison: dict = None) -> str:
     kp_data = load_json(f"{KP_DIR}/keywords_canonicalized.json")
     kp_by_rank = {item["rank"]: item for item in kp_data["items"]}
     abs_url = player_common.abs_file_url
@@ -667,9 +702,29 @@ def build_player_html(assemble_summary: dict, timeline: list, parts: dict, suppo
         reason_note = "<p style='color:#b00'><b>Voice変更理由(fallback発火):</b> " + \
                        " / ".join(f"{k}: {v}" for k, v in voice_resolution_reasons.items()) + "</p>"
 
+    stay_put_row_html = ""
+    if stay_put_comparison:
+        old_url = abs_url(stay_put_comparison["old_path"])
+        new_url = abs_url(stay_put_comparison["new_path"])
+        adopted = stay_put_comparison["adopted"]
+        adopted_label = "新版(v2)を採用" if adopted == "new" else "旧版(v1)を維持"
+        stay_put_row_html = f"""
+<h2>Key Phrase 4「stay put」旧/新比較(EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04)</h2>
+<table class="kp"><thead><tr><th>Key Phrase</th><th>旧(v1)/新(v2)、同一行に両方の再生ボタン</th>
+<th>旧QA</th><th>新QA</th><th>採用</th></tr></thead>
+<tbody>
+<tr><td>{stay_put_comparison.get("used_form")}</td>
+<td>旧: <audio controls preload="none" src="{old_url}"></audio> 新: <audio controls preload="none" src="{new_url}"></audio></td>
+<td>{stay_put_comparison.get("old_qa_summary")}</td>
+<td>{stay_put_comparison.get("new_qa_summary")}</td>
+<td>{adopted_label}(承認記録: {stay_put_comparison.get("approval_record_path")})</td></tr>
+</tbody></table>
+"""
+
     episode_audio_url = abs_url(assemble_summary["out_path"])
     is_fix03 = "free_address_03" in OUT_DIR
-    title_suffix = "-CROSS-AUDIT-AND-FIX-03" if is_fix03 else ""
+    is_regen04 = "free_address_04" in OUT_DIR
+    title_suffix = "-CROSS-AUDIT-AND-FIX-03" if is_fix03 else ("-SLOWDOWN-AND-KEYPHRASE-REGEN-04" if is_regen04 else "")
     html = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02{title_suffix} player</title>
@@ -687,9 +742,12 @@ def build_player_html(assemble_summary: dict, timeline: list, parts: dict, suppo
 duration={assemble_summary['duration_seconds']}s peak={assemble_summary['peak']}
 clipping={assemble_summary['clipping_detected']}
 headroom_safety_valve_applied={assemble_summary['headroom_safety_valve']['applied']}。
-voice_a={voice_a} / voice_b={voice_b}(標準ペース、A2 slowdown非対象、既存B-A2-9の
-USER_DECISION_REQUIREDが未回答のためVoice A/Bへのslowdown適用は本rerunでも
-実施していない)。
+voice_a={voice_a} / voice_b={voice_b}
+{("(標準A2の既存6% slowdown仕様を適用済み: style instruction[A2_ENGLISH_STYLE_"
+  "PREFIX_SLOWER]+6% time-stretch post-process。ユーザー決定2026-09-08[B-A2-9への"
+  "回答]により本rerunで新規適用した。)" if is_regen04 else
+  "(標準ペース、A2 slowdown非対象、既存B-A2-9のUSER_DECISION_REQUIREDが未回答の"
+  "ためVoice A/Bへのslowdown適用は本rerunでも実施していない)。")}
 Narrator見出し・Hook・Tension・Closingは全てAoede英語(標準A2 slowdown適用)。
 Comment 1-4・PreviewはAoede日本語(標準A2規約)。B1(Phase 1)との違いは声・言語の
 み(5区切り構造・Voice A/B自体はB1と共通)。
@@ -701,6 +759,12 @@ Comment 1-4・PreviewはAoede日本語(標準A2規約)。B1(Phase 1)との違い
  "asr_text=&quot;Stay put.&quot;、disfluency_checked=true]であることを確認済みで、"
  "既存の配線漏れではなく新failure mode疑いとしてSTOP(個別patch未実施、詳細は"
  "Report参照)。" if is_fix03 else ""}
+{"EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04(ユーザー決定"
+ "2026-09-08): (1)Voice A/Bへ標準A2の既存6% slowdownを適用し対象segmentを"
+ "再生成。(2)Key Phrase「stay put」を既存の承認済み再生成経路で1回だけ"
+ "再生成し、旧/新を下記で比較試聴可能にした。(3)Fact Checker REVIEW_REQUIRED"
+ "(複合Voice帰属)は今回のA2に限りユーザー確認済みとして扱った(恒久運用では"
+ "ない、承認記録は監査ディレクトリ参照)。" if is_regen04 else ""}
 各行に「Seek」「Segment名+voice」「実際に読み上げられたscript」「個別音声」を
 同一行に配置(標準player形式、PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11)。
 </p>
@@ -714,7 +778,7 @@ Comment 1-4・PreviewはAoede日本語(標準A2規約)。B1(Phase 1)との違い
 
 <h2>Key Phrase表(詳細、英語+日本語gloss)</h2>
 {kp_table}
-
+{stay_put_row_html}
 </body></html>
 """
     out_path = f"{OUT_DIR}/player.html"

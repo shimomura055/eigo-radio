@@ -43,6 +43,15 @@
 # equivalence layer)を配線した(既定True)。詳細は
 # EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01_REPORT.md
 # 「修正指示1回目への対応」章を参照。
+#
+# EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04(Lane B、
+# ユーザー決定2026-09-08): generate_voice_body_wide_margin()へ既定None・
+# 完全後方互換の`style_prefix_override`引数のみを追加した(既存呼び出し・
+# 既存挙動は無変更)。Lane B(A2)がユーザー承認済みの標準A2 6% slowdown
+# 仕様を適用する場合のみ、呼び出し側がn3_tts.A2_ENGLISH_STYLE_PREFIX_
+# SLOWERを明示的に渡す。6% time-stretch post-process自体はこの関数の
+# 責務外(呼び出し側の役割、標準A2のgenerate_a2_segment_with_slowdown()と
+# 同じ役割分担)。
 from __future__ import annotations
 
 import re
@@ -270,7 +279,21 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
                                      # 規約対象のため、既定Trueとする(Voice A/B呼び出しは
                                      # 常にこの4segment集合の一員であり、A-Familyと同一挙動)。
                                      enable_connected_speech_equivalence_layer: bool = True,
-                                     enable_repetition_qa: bool = True) -> dict:
+                                     enable_repetition_qa: bool = True,
+                                     # EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-
+                                     # REGEN-04(ユーザー決定2026-09-08): Voice A/Bへ標準A2の
+                                     # 既存6% slowdown仕様を適用する場合のみ、呼び出し側が
+                                     # n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWERを明示的に渡す
+                                     # (既定None)。既定Noneのままなら従来どおり
+                                     # p9a.ENGLISH_STYLE_PREFIXを使い、既存の全Production
+                                     # 呼び出し(Phase 1 er012_b_family_production_runner_01.py
+                                     # 含む、いずれもこの引数を渡さない)の挙動・出力は完全に
+                                     # 無変更。6% time-stretch post-process自体はこの関数の
+                                     # 責務ではない(呼び出し側がn3_tts.
+                                     # apply_a2_slowdown_postprocess[Production、無変更]を
+                                     # 別途適用する設計、標準A2のgenerate_a2_segment_with_
+                                     # slowdown()と同じ役割分担)。
+                                     style_prefix_override: str = None) -> dict:
     """Voice A/B本文専用の正式Production TTS関数。既存
     news_tail_fix.generate_news_narration_wide_margin()と同一のASR検証・
     Cascade・disfluency gate・repetition QA・connected speech equivalence
@@ -282,7 +305,7 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
     classification_history = []
     for attempt in range(1, max_attempts + 1):
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, voice_name, output_path=out_path)
-        prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
+        prompt = p4c.build_tts_prompt(text, style_prefix_override or p9a.ENGLISH_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix_wide_margin"
