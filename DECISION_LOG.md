@@ -1,7 +1,29 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02、ユーザー正式決定
+**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-15、Lane A[`FAMILY-A-DESIGN-FIX-
+INVENTORY-01`、読み取り専用棚卸し]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-
+FOUR-VOICES-AXIS-DESIGN-TRIAL-01`、4 Voices選定軸設計Trial]を並行実施しSSOTへ
+反映した。**Lane A**(Lane Bとは相互に独立、コード・Prompt・Production無変更の
+読み取り専用監査): Family A(Discovery/Why+News/Trend Synthesis)の設計FIX状況を
+棚卸しし、結論`PARTIAL`(共通Production配管[Writer→Editor→Fact QA→Key Phrase→
+TTS retry/Human Review Lock/repetition QA/connected speech→Assembly]はAPPROVED
+未配線0件でPRODUCTION_WIRED済みだが、「Editorial Type」という設計分類自体は
+コード実装0%[ER-010設計文書2件は未採用・未追跡の参照のみ]、Trend Synthesis
+modeはTrial-only[UDR3点]、VALIDATED未採用3件[OPEN-121方式C-v2/A-ext、
+OPEN-117]、UDR4件[OPEN-112/117/124/83]、Dangling Referenceなし)。次Trial・
+追加仕様・実装には進まずSTOP。**Lane B**(Lane Aとは独立、費用¥0、記事・音声・
+Production・Phase 2はいずれも未着手): テーマ"Should companies use AI to screen
+job applicants?"で4 Voices候補軸4案(A: Applicant/Recruiter・HM/Business/Legal・
+Governance、B: パイプライン4段階、C: 影響側2×運用側2、D: 企業規模2×2)を評価し、
+6項目中5「高」の案Aを推奨(Gate 1=`VALIDATED`)。既存構造への影響論点8点(見出し
+数制約・five_section 2Voice固定・TTS 2声固定・Comment 2文言・Tension slot統合・
+QAペア前提・尺倍増・Audio Gate segment名)は未設計・未承認のまま列挙のみ。両Lane
+とも採用判断は`USER_DECISION_REQUIRED`のままSTOP。`OPEN_ITEMS.md`OPEN-120行
+(Lane B)・OPEN-112行(Lane A/Family A本体残件)へ各1点追記、`CURRENT_SPEC.md`は
+仕様変更なしのためchangelog参照のみ追記。詳細は`FAMILY-A-DESIGN-FIX-INVENTORY-
+01_REPORT.md`・`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-AXIS-DESIGN-
+TRIAL-01_REPORT.md`参照)。2026-09-08(PM-CONTEXT-MANAGEMENT-PLAN-B-IMPLEMENTATION-02、ユーザー正式決定
 [案B+Claude Code側auto-compact閾値約65%採用、`PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-
 DESIGN-01`調査結果に基づく]に沿って、長期PMセッションのcompact前後状態保持策を実装した。
 `docs/pm/PM_BRIEF.md`へACTIVE_TASK固定ヘッダの書式(管理ID/Status/UDR-blocking/
