@@ -1,0 +1,86 @@
+あなたは、複数Voice構成の記事における「事実帰属」を判定する担当者です。
+この記事シリーズの既定フォーマットでは、Voice(一人称の合成persona)本文は、
+そのVoiceに割り当てられたLedger evidence(調査・報道・インタビュー)を、
+一人称の語りへ翻案したものであり、本文中に出典・調査名・数値を逐一明記する
+ことは仕様上想定されていません(Voice本文はナレーションであり脚注ではない
+ため)。したがって、Voice本文中のclaimがそのVoiceに割り当てられたLedger
+evidenceの内容と実質的に対応していれば、「本文中に出典が書かれていない」
+こと自体を理由にレビュー要求してはいけません。レビューが必要なのは、
+(1) Ledgerのどのevidenceにも実質的に対応しない場合、または
+(2) Voice本文ではない箇所(Tension/Closing等の地の文としての客観的主張、
+比率・数値・研究結果への直接言及)で、具体的な出典明示が読者にとって
+本来期待される場合、のいずれかだけです。
+
+【Verified Fact Ledger(該当部分の抜粋、evidence IDタグ付き)】
+
+[VOICE_1_EVIDENCE] 1-01(fact_001): Gensler調査、固定席保有者は所属感87%/74%、集中80%/67%。source: Bisnow(Gensler調査引用)
+[VOICE_1_EVIDENCE] 1-02(fact_003): LinkedIn News特集、ホットデスキングへの反発理由=衛生懸念・パーソナルスペース喪失(他人が使った机やキーボードへの不安、私物を置けないストレス)。source: LinkedIn News
+[VOICE_1_EVIDENCE] 1-03(fact_004): Forbes 2024調査、固定席なし従業員は職場を「非人間的」「方向感覚を失う」「精神的に疲れる」と表現する傾向。Salesforce等が固定席復活。source: Forbes/LinkedIn
+[VOICE_1_EVIDENCE] 1-05(fact_007固定席側): note「REAL VOICE #05」、フリーアドレス勤務パート社員が「自分の席がないので落ち着かない」「私物置き場に困る」と発言。source: note
+[VOICE_1_EVIDENCE] 1-06(fact_009): ITmedia MONOist 2024調査、フリーアドレス勤務者の36.8%が「席が固定化しがちだ」と回答。source: MONOist(ITmedia)
+[VOICE_1_EVIDENCE] 1-07(fact_008固定席側): TOKYO MX+街頭インタビュー、50人中10人が固定席支持、理由=「席探しが面倒」「チーム分散でコミュニケーション困難」。source: TOKYO MX+
+
+[VOICE_2_EVIDENCE] 2-01(fact_008自由席側): TOKYO MX+同インタビュー、50人中40人が自由席支持、理由=「気分で環境を変えられる」「人間関係から距離を取りたい時に席を変えられる」。source: TOKYO MX+
+[VOICE_2_EVIDENCE] 2-02(fact_012): Carr Workplaces記事、企業リーダー12人、「その日必要な思考に応じて場所を選ぶ」「集中用の静かなゾーン/協働用オープンエリアなど認知ゾーンを選べることが生産性・満足度を高める」。source: Carr Workplacesブログ
+[VOICE_2_EVIDENCE] 2-03(fact_007自由席側): note「REAL VOICE #05」、フリーアドレス勤務パート社員、毎日違う席で他部署の人と話しやすくなったと発言。source: note
+[VOICE_2_EVIDENCE] 2-04(fact_014): CNET Japan 2020記事、在宅勤務長期化で自分の作業環境を持った従業員は、オフィスで必ずしも固定席を必要としなくなったと報道。source: CNET Japan
+
+[CROSS_REFERENCE] X-01(fact_002): Amazon CEOアンディ・ジャシー、2024年9月社内メモでシアトル本社のホットデスキング廃止・固定席復帰方針(欧州拠点はホットデスキング継続)。source: Business Insider
+
+
+[VOICE_3_EVIDENCE] 3-01(synthetic-design-test-only、本Trial限定の架空example、実データではない):
+人事の意思決定者は、個人の快適性よりもコスト効率・全社的な公平性を優先する
+傾向がある、という想定example(3V/4V拡張性の設計確認だけを目的とした合成
+evidenceであり、実際のResearch/Verificationは行っていない)。
+
+
+以下の各claim_textについて、次の3区分のいずれかに分類してください。
+
+- ATTRIBUTION_ONLY_SUPPORTED: Voice本文中の一人称の語りとして書かれており、
+  内容が該当Voiceに割り当てられたLedger evidenceに実質的に対応する
+  (本文中に出典明記がなくても、Voiceのナレーションである限りこれに該当する)
+- FACTUAL_CLAIM_SUPPORTED_BUT_UNCITED: Voice本文ではない地の文(Tension/
+  Closing等)で、具体的な比率・数値・研究名への言及を伴う客観的主張として
+  書かれており、Ledgerには対応するevidenceがあるが、地の文としての出典明示が
+  読者にとって本来期待される
+- UNSUPPORTED_OR_UNVERIFIED: 上記Ledgerのどのevidenceにも実質的に対応せず、
+  独立した検証(Web検索等)が必要、または明確に対応するevidenceがない
+
+matched_evidence_idsには、対応すると判断したevidence ID(例: "1-01", "2-04")を
+列挙してください(対応するものがなければ空配列)。
+
+分類に加えて、should_still_require_review(このclaimは依然として人間レビューが
+必要か)をtrue/falseで判定してください。ATTRIBUTION_ONLY_SUPPORTEDは原則false、
+UNSUPPORTED_OR_UNVERIFIEDは原則trueとしてください。
+
+【分類対象】
+- id=voiceA_desk_experience / section=voice_a_body(One Voice)
+  claim_text: 記事冒頭の「毎朝空席を探す」「机やキーボードを他人が使ったことを心配する」「同じ机・引き出し・眺めが帰属意識や安定感を与える」という一人称の経験は、発言者・企業・調査名・調査対象が示されておらず、実在する発言として確認できない。
+- id=voiceB_seat_choice_experience / section=voice_b_body(Another Voice)
+  claim_text: 「静かな場所」「他部署の近く」「気まずい仕事上の関係から距離を置くための席」を日によって選ぶという一人称の経験も、出典のない引用風表現であり、実在の当事者発言か、筆者による創作・要約か判定できない。
+- id=voiceB_wfh_reason / section=voice_b_body(Another Voice)
+  claim_text: 「在宅勤務で自分の場所を持つようになったため、オフィスに固定席は不要になった」という個人の心理・理由は、出典がなく確認できない。
+- id=tension_repeated_desk_use / section=tension_body(Where the Difference Comes From)
+  claim_text: 「フリーアドレス制では、同じ人が同じ机を頻繁に使うことがある」という主張は一定の研究知見と整合する可能性はあるが、記事内には具体的な調査・事例がなく、本文の形では確認不十分である。
+- id=control_positive_fabricated / section=tension_body(想定挿入・positive control)
+  claim_text: この記事によれば、2030年までに世界の全企業がフリーアドレス制を廃止することが法律で義務付けられている。
+- id=control_negative_generic_opinion / section=voice_b_body(想定挿入・negative control)
+  claim_text: 私は、その日の気分に合わせて席を変えられることを、単純に心地よいと感じている。
+- id=ext_fact_error_digit_voiceA / section=voice_a_body(One Voice、本Trialで数値改変)
+  claim_text: 私のように固定席を持つ人は、Genslerの調査によれば97%が職場への所属感を持てると答えており、固定席のない人はわずか40%しかそう感じていないという。だからこそ私は自分の机に安心を感じている。
+- id=ext_fact_error_subject_change / section=voice_b_body(Another Voice、本Trialで主体改変)
+  claim_text: 「在宅勤務者の意識に関する全国調査(第二産業総合研究所、2023年)」によれば、在宅勤務で自分の作業環境を持つようになった人の94%が、オフィスでの固定席を不要と感じると回答したという。私自身もまさにそうだった。
+- id=ext_real_named_individual_in_voice_body / section=voice_a_body(One Voice、本Trialで実在人物引用を追加)
+  claim_text: ワークプレイス心理学者のナイジェル・オセランド博士は、あるポッドキャストで『フリーアドレスは人を疲弊させ、固定席の方が明らかに従業員の満足度が高いことが今回の調査で判明した』と断言したという話を聞いて、私は自分の感覚が正しかったと思った。
+- id=ext_real_named_individual_misquote_tension / section=tension_body(Where the Difference Comes From、本Trialで実在人物発言を改変)
+  claim_text: Amazon CEOのアンディ・ジャシー氏は2024年9月、世界中のすべてのAmazon拠点でホットデスキングを廃止し、全社員に固定席を戻すよう命じたと報じられている。
+- id=ext_afamily_uc_davis_humidity / section=body(single_narrator, not voice_a/voice_b — A-Family household b1b、実出力より無変更で転記)
+  claim_text: UC Davisはブロッコリーなど一部野菜の最適湿度を95%としているが、この記事本文の「90〜95%が理想的湿度」という数値表示は、過去のUC Cooperative Extension資料での90〜95%という記載との食い違いがあり、断定的な出典・根拠として確認が必要である。
+- id=ext_afamily_iowa_state_room_temp / section=body(single_narrator, not voice_a/voice_b — A-Family household b1b、実出力より無変更で転記)
+  claim_text: ジャガイモ、サツマイモ、タマネギ、ニンニクはすべて冷蔵不要で同じ「涼しく乾燥した場所」を好むという記事本文の一括りの表現は単純化されている。タマネギとニンニクには低湿度・通気性の良い保管が必要だが、ジャガイモとサツマイモの最適な貯蔵条件は高めの湿度を伴う場合があり、学術的には同一視できない。
+- id=ext_mislabeled_afamily_as_voice / section=voice_a_body(意図的な誤ラベル付けrobustness test。実際はA-Family household記事の地の文)
+  claim_text: ジャガイモ、サツマイモ、タマネギ、ニンニクはすべて冷蔵不要で同じ「涼しく乾燥した場所」を好むという記事本文の一括りの表現は単純化されている。タマネギとニンニクには低湿度・通気性の良い保管が必要だが、ジャガイモとサツマイモの最適な貯蔵条件は高めの湿度を伴う場合があり、学術的には同一視できない。
+- id=ext_synthetic_3v_voice_c / section=voice_c_body(Voice 3、3V/4V拡張性確認用のsynthetic design test。実データではない)
+  claim_text: 人事の意思決定に関わる立場として、私は個人の快適さよりもコスト効率と全社的な公平性を優先せざるを得ないと感じている。
+
+指定されたJSON形式のフィールドだけで回答してください。

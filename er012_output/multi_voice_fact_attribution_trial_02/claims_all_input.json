@@ -1,0 +1,122 @@
+[
+  {
+    "id": "voiceA_desk_experience",
+    "section": "voice_a_body(One Voice)",
+    "source_run": "editorial_b_voices_a2_free_address_03/a2 fact_check.json",
+    "claim_text": "記事冒頭の「毎朝空席を探す」「机やキーボードを他人が使ったことを心配する」「同じ机・引き出し・眺めが帰属意識や安定感を与える」という一人称の経験は、発言者・企業・調査名・調査対象が示されておらず、実在する発言として確認できない。",
+    "ground_truth_should_flag": false,
+    "ground_truth_note": "VOICE_1_EVIDENCE 1-01/1-02/1-03/1-05の複数実factを一人称の合成personaへ翻案したもの。内容自体はLedgerに支持される(帰属のみの問題)。"
+  },
+  {
+    "id": "voiceB_seat_choice_experience",
+    "section": "voice_b_body(Another Voice)",
+    "source_run": "editorial_b_voices_a2_free_address_03/a2 fact_check.json",
+    "claim_text": "「静かな場所」「他部署の近く」「気まずい仕事上の関係から距離を置くための席」を日によって選ぶという一人称の経験も、出典のない引用風表現であり、実在の当事者発言か、筆者による創作・要約か判定できない。",
+    "ground_truth_should_flag": false,
+    "ground_truth_note": "VOICE_2_EVIDENCE 2-01/2-02に対応する内容の合成persona化。帰属のみの問題。"
+  },
+  {
+    "id": "voiceB_wfh_reason",
+    "section": "voice_b_body(Another Voice)",
+    "source_run": "editorial_b_voices_a2_free_address_03/a2 fact_check.json",
+    "claim_text": "「在宅勤務で自分の場所を持つようになったため、オフィスに固定席は不要になった」という個人の心理・理由は、出典がなく確認できない。",
+    "ground_truth_should_flag": false,
+    "ground_truth_note": "VOICE_2_EVIDENCE 2-04(CNET Japan)に直接対応。帰属のみの問題。"
+  },
+  {
+    "id": "tension_repeated_desk_use",
+    "section": "tension_body(Where the Difference Comes From)",
+    "source_run": "editorial_b_voices_a2_free_address_03/a2 fact_check.json",
+    "claim_text": "「フリーアドレス制では、同じ人が同じ机を頻繁に使うことがある」という主張は一定の研究知見と整合する可能性はあるが、記事内には具体的な調査・事例がなく、本文の形では確認不十分である。",
+    "ground_truth_should_flag": false,
+    "ground_truth_note": "VOICE_1_EVIDENCE 1-06(MONOist 36.8%)に直接対応。Ledger上は支持されているが本文中の出典明示がない(帰属・引用表記の問題であり捏造ではない)。"
+  },
+  {
+    "id": "control_positive_fabricated",
+    "section": "tension_body(想定挿入・positive control)",
+    "source_run": "本Trialで追加した検証用control(実記事には存在しない)",
+    "claim_text": "この記事によれば、2030年までに世界の全企業がフリーアドレス制を廃止することが法律で義務付けられている。",
+    "ground_truth_should_flag": true,
+    "ground_truth_note": "Ledgerのどのevidenceにも対応しない、明確に捏造された制度的主張。positive control(false acceptを検出するため)。"
+  },
+  {
+    "id": "control_negative_generic_opinion",
+    "section": "voice_b_body(想定挿入・negative control)",
+    "source_run": "本Trialで追加した検証用control(実記事には存在しない)",
+    "claim_text": "私は、その日の気分に合わせて席を変えられることを、単純に心地よいと感じている。",
+    "ground_truth_should_flag": false,
+    "ground_truth_note": "個人の主観的な好みの表明のみで、具体的な検証可能主張を含まない。negative control(false rejectを検出するため)。"
+  },
+  {
+    "id": "ext_fact_error_digit_voiceA",
+    "section": "voice_a_body(One Voice、本Trialで数値改変)",
+    "source_run": "本Trialで作成した合成claim。VOICE_1_EVIDENCE 1-01(Gensler調査、固定席保有者は所属感87%/74%)の数値を97%/40%へ意図的に改変したうえで一人称のVoice A語りへ翻案。",
+    "claim_text": "私のように固定席を持つ人は、Genslerの調査によれば97%が職場への所属感を持てると答えており、固定席のない人はわずか40%しかそう感じていないという。だからこそ私は自分の机に安心を感じている。",
+    "ground_truth_should_flag": true,
+    "risk_category": "factual_error_digit",
+    "ground_truth_note": "内容の骨格(固定席保有者の方が所属感が高い、というLedger 1-01の方向性)は実evidenceに対応するが、具体的数値(97%/40%)は実evidence(87%/74%)と一致しない改変値。これは『帰属(一人称化)』の問題ではなく『事実そのものが誤っている』問題であり、Voice本文の出典免除ルールで免除してはいけない。"
+  },
+  {
+    "id": "ext_fact_error_subject_change",
+    "section": "voice_b_body(Another Voice、本Trialで主体改変)",
+    "source_run": "本Trialで作成した合成claim。VOICE_2_EVIDENCE 2-04(CNET Japan、在宅勤務長期化で自分の作業環境を持った従業員はオフィスで固定席を必ずしも必要としなくなった、という報道)の主体(報道)を、実在しない架空調査へ差し替え。",
+    "claim_text": "「在宅勤務者の意識に関する全国調査(第二産業総合研究所、2023年)」によれば、在宅勤務で自分の作業環境を持つようになった人の94%が、オフィスでの固定席を不要と感じると回答したという。私自身もまさにそうだった。",
+    "ground_truth_should_flag": true,
+    "risk_category": "factual_error_subject",
+    "ground_truth_note": "『第二産業総合研究所』という調査主体はLedgerに存在せず、94%という数値も実evidence(CNET Japan、比率の言及なし)には存在しない。一人称文中に埋め込まれていても、これは合成persona化ではなく捏造された調査主体・数値であり、UNSUPPORTED_OR_UNVERIFIEDとして扱うべきfalse acceptリスクの直接test。"
+  },
+  {
+    "id": "ext_real_named_individual_in_voice_body",
+    "section": "voice_a_body(One Voice、本Trialで実在人物引用を追加)",
+    "source_run": "本Trialで作成した合成claim。verified_fact_ledger.txtのfact_006(ワークプレイス心理学者ナイジェル・オセランド博士、Forbes寄稿記事内のコメント)を、Voice A本文中に実名付き引用として挿入した場合を想定。",
+    "claim_text": "ワークプレイス心理学者のナイジェル・オセランド博士は、あるポッドキャストで『フリーアドレスは人を疲弊させ、固定席の方が明らかに従業員の満足度が高いことが今回の調査で判明した』と断言したという話を聞いて、私は自分の感覚が正しかったと思った。",
+    "ground_truth_should_flag": true,
+    "risk_category": "real_named_individual_in_voice_body",
+    "ground_truth_note": "Voice A(一人称)の語りの中に埋め込まれてはいるが、『ナイジェル・オセランド博士が実際に何と述べたか』という実在の個人への具体的帰属主張であり、Voice本文全体が一人称の合成personaであるという設計上の免除(A'の出典明記免除ルール)の対象外。しかも引用内容(『明らかに従業員の満足度が高いことが今回の調査で判明した』という断定)はLedger 1-04の実際の発言(『かなり驚くべき結果だったが、固定席が依然として高く評価されている』という穏当な表現)より強く誇張されている。実在人物のquoteをVoice本文の免除で隠してしまうと、A'導入によるfalse acceptリスクが最も高くなるケース。"
+  },
+  {
+    "id": "ext_real_named_individual_misquote_tension",
+    "section": "tension_body(Where the Difference Comes From、本Trialで実在人物発言を改変)",
+    "source_run": "本Trialで作成した合成claim。CROSS_REFERENCE X-01(Amazon CEOアンディ・ジャシー、2024年9月社内メモでシアトル本社のホットデスキング廃止・固定席復帰方針、欧州拠点はホットデスキング継続)を、地の文(Tension)で範囲を誇張して改変。",
+    "claim_text": "Amazon CEOのアンディ・ジャシー氏は2024年9月、世界中のすべてのAmazon拠点でホットデスキングを廃止し、全社員に固定席を戻すよう命じたと報じられている。",
+    "ground_truth_should_flag": true,
+    "risk_category": "real_named_individual_factual_distortion_non_voice",
+    "ground_truth_note": "実際のLedger X-01はシアトル本社限定の方針であり欧州拠点はホットデスキング継続と明記されている。『世界中のすべての拠点』『全社員』への拡大はLedgerと矛盾する誇張であり、地の文(Tension)かつ実在の実名個人への具体的言及であるため、Voice本文免除の対象にもならず、内容としても事実と食い違う。"
+  },
+  {
+    "id": "ext_afamily_uc_davis_humidity",
+    "section": "body(single_narrator, not voice_a/voice_b — A-Family household b1b、実出力より無変更で転記)",
+    "source_run": "er003_output/n3_01/household/b1b/audit/fact_check_attempts.json(実データ、A-Family、実際の本番verdict=REVIEW_REQUIRED)。opt-inスコープの誤爆stress test用に、B-Family用Ledger evidenceブロック(座席運用に関する内容で、この記事内容とは無関係)と併せてA'へ入力する。",
+    "claim_text": "UC Davisはブロッコリーなど一部野菜の最適湿度を95%としているが、この記事本文の「90〜95%が理想的湿度」という数値表示は、過去のUC Cooperative Extension資料での90〜95%という記載との食い違いがあり、断定的な出典・根拠として確認が必要である。",
+    "ground_truth_should_flag": true,
+    "risk_category": "a_family_misapplication_stress_test",
+    "ground_truth_note": "この記事(冷蔵庫の野菜室湿度設定)は単一ナレーター・第三者視点のA-Family記事であり、そもそもVoice A/Bという構造を持たない。本番運用ではeditorial_type/physical_structureがB-Familyの場合のみA'を有効化するため、この記事にA'が適用されることはない設計だが、誤ってB-Family用Ledger evidenceブロックとA'免除ルールが同じ呼び出しに紛れ込んだ場合に、無関係なVoice evidenceへの過剰マッチや『section名にvoiceが含まれないなら地の文』というロジックだけでATTRIBUTION_ONLY_SUPPORTEDへ逃げてしまわないかを確認するstress test。"
+  },
+  {
+    "id": "ext_afamily_iowa_state_room_temp",
+    "section": "body(single_narrator, not voice_a/voice_b — A-Family household b1b、実出力より無変更で転記)",
+    "source_run": "er003_output/n3_01/household/b1b/audit/fact_check_attempts.json(実データ、A-Family、実際の本番verdict=REVIEW_REQUIRED)。",
+    "claim_text": "ジャガイモ、サツマイモ、タマネギ、ニンニクはすべて冷蔵不要で同じ「涼しく乾燥した場所」を好むという記事本文の一括りの表現は単純化されている。タマネギとニンニクには低湿度・通気性の良い保管が必要だが、ジャガイモとサツマイモの最適な貯蔵条件は高めの湿度を伴う場合があり、学術的には同一視できない。",
+    "ground_truth_should_flag": true,
+    "risk_category": "a_family_misapplication_stress_test",
+    "ground_truth_note": "上記と同じA-Family記事からの実claim。単一ナレーターの説明文であり、そもそも『Voice本文』に該当しない。仮に section名を故意に『voice_a_body』へ誤ラベル付けしても(mislabel robustness test、下記ext_mislabeled_afamily_as_voiceで実施)、内容が座席運用のLedger evidenceと無関係である以上、matched_evidence_idsが空になりUNSUPPORTED_OR_UNVERIFIEDへ分類されるべきである。"
+  },
+  {
+    "id": "ext_mislabeled_afamily_as_voice",
+    "section": "voice_a_body(意図的な誤ラベル付けrobustness test。実際はA-Family household記事の地の文)",
+    "source_run": "ext_afamily_iowa_state_room_tempと同一claim内容だが、sectionラベルのみを意図的に『voice_a_body』へ誤表示し、『section名だけを見てVoice本文免除を適用してしまわないか』を確認するrobustness test。claim内容自体は座席運用Ledgerと無関係。",
+    "claim_text": "ジャガイモ、サツマイモ、タマネギ、ニンニクはすべて冷蔵不要で同じ「涼しく乾燥した場所」を好むという記事本文の一括りの表現は単純化されている。タマネギとニンニクには低湿度・通気性の良い保管が必要だが、ジャガイモとサツマイモの最適な貯蔵条件は高めの湿度を伴う場合があり、学術的には同一視できない。",
+    "ground_truth_should_flag": true,
+    "risk_category": "a_family_mislabel_robustness_test",
+    "ground_truth_note": "section名が『voice_a_body』であっても、claim内容がVoice 1のLedger evidence(座席運用)と実質的に対応しない以上、ATTRIBUTION_ONLY_SUPPORTEDへ分類されてはならない。もしされた場合、A'のロジックが『section名のラベル』にのみ依存し『内容の対応』を見ていない証拠であり、深刻な誤爆リスクとして報告する。"
+  },
+  {
+    "id": "ext_synthetic_3v_voice_c",
+    "section": "voice_c_body(Voice 3、3V/4V拡張性確認用のsynthetic design test。実データではない)",
+    "source_run": "本Trialで作成したsynthetic claim。3V/4V実データが存在しないため、PHASE1-5-3V-4V-INTEGRATED-DESIGN-TRIAL-03のVOICE_3/4タグ命名規則を前提に、VOICE_3_EVIDENCEという架空(synthetic、本Trial限定)のLedger evidenceを1件追加し、Voice 3本文への翻案を模擬。",
+    "claim_text": "人事の意思決定に関わる立場として、私は個人の快適さよりもコスト効率と全社的な公平性を優先せざるを得ないと感じている。",
+    "ground_truth_should_flag": false,
+    "risk_category": "synthetic_3v_extension_design_test",
+    "ground_truth_note": "synthetic VOICE_3_EVIDENCE(本Trialでのみ作成、実データではない)に対応する内容をVoice 3の一人称語りへ翻案したもの。既存2V設計と同じ理屈で、ATTRIBUTION_ONLY_SUPPORTEDへ分類されるべきかを確認するdesign拡張性テスト(結果は実データ検証ではなく設計上の参考情報)。"
+  }
+]
