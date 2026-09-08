@@ -240,7 +240,7 @@ Point One・Point Twoの長さの目標は、それぞれ30〜60語、許容範�
 今回最も重要なのは中心ストーリーを明確に伝えることであり、語数に合わせるための不自然な削除・
 追加はしないでください。
 
-【Spoken-first原則(数字の扱い)】
+{editorial_type_module_block}【Spoken-first原則(数字の扱い)】
 A. Fact Ledgerにある数字を恣意的に削らない。あなたが行うのは、聞いて理解しやすい形で数字を
    どう表面化するかという編集判断であり、Factを捨てることではない
 B. 正確な数値そのものが本質でない場合、rose/fell/collapsed/eased等、変化の方向性を優先してよい
@@ -345,22 +345,153 @@ Evidenceを減らす作業のなかで、以下を一切変更しないでくだ
 """
 
 
+# ============================================================
+# OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01: Trend Synthesis
+# Editorial Type Module(News Mode Design-08のLayer 3相当)。ユーザー
+# 決定(2026-09-08、APPROVED_FOR_PRODUCTION、Gate 3配線)に基づき、
+# OPEN-112-TREND-SYNTHESIS-MINIMAL-PROMPT-TRIAL-09(Focus Module本体)・
+# OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10施策1(Entertainment/
+# Engagement原則+時系列列挙禁止・反転/対比構成のStorytelling原則)で
+# VALIDATED済みの内容を、内容を変更せず正式採用する(ヘッダー行の
+# Trial注記のみProduction採用を反映するよう更新)。施策2(Reference
+# Digest)は今回のGate 3スコープに含めない(効果不明瞭、
+# USER_DECISION_REQUIRED継続、OPEN_ITEMS残件)。挿入位置はTrial-09/10と
+# 同一Anchor(COMMON_BLOCK_TEMPLATE内の「【Spoken-first原則(数字の
+# 扱い)】」直前)だが、Trialのような`.replace()`アンカー文字列一致では
+# なく、COMMON_BLOCK_TEMPLATE側に明示的な`{editorial_type_module_block}`
+# placeholderを追加する新規パラメータ化方式を採る(README根拠:
+# FAMILY-A-TREND-SYNTHESIS-PRODUCTION-READINESS-01_REPORT.md §12)。
+# ============================================================
+TREND_SYNTHESIS_FOCUS_MODULE_BLOCK = """【Trend Synthesis Focus(記事タイプ固有の焦点。OPEN-112-TREND-SYNTHESIS-\
+MINIMAL-PROMPT-TRIAL-09でVALIDATED、OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01で正式Production採用。\
+editorial_mode="trend_synthesis"指定時のみ挿入)】
+この記事は、単発の出来事を報じる記事ではありません。複数の独立した材料(Signal)が
+積み重なって示す「何が変化しつつあるのか」を、聞き手に伝えることを目的とする記事です。
+これは、上記のMain Story/Point One/Point Twoの役割定義を置き換えるものではなく、
+より具体的にする補足です。
+
+Main Storyでは、個々のSignalを出典ごとに列挙しないでください。まず、複数のSignalに
+共通して見える変化・方向性そのものを、代表的な材料を使って提示してください。Trendの
+強さを、Verified Fact Ledgerが実際に支持する範囲より強く書かないでください。早い段階の
+兆候(early signs)を、既に確立したTrend(established trend)であるかのように書かないで
+ください。
+
+Point One・Point Twoでは、それぞれ異なる役割を持たせてください(候補: 最も強い
+Signal・主な変化の要因・仕組み、または反証Signal・限界・影響を受ける対象・今後の
+分岐点・実生活上の意味)。Point One・Point Twoの両方が「Signal Aの紹介」「Signal Bの
+紹介」のような、個々の材料の説明だけで終わらないでください。それぞれのPointが、その
+材料が何を意味するのかという意味づけの違いを持つようにしてください。
+
+Point Twoでは、counter-signal(反証Signal)またはlimitation(限界)のいずれかを、
+既定の優先候補として検討してください。Verified Fact Ledgerにcounter-signalとして
+明記された項目がある場合は、それを無視せず記事内に残してください。Evidenceの強さが
+情報源によって異なる場合(例: 政府公式統計と、政治的立場を持つ媒体の報道、当事者の
+発言)、それらを同列の証拠として扱わないでください。証拠が一部の当事者・一部の期間・
+一部の地域にしか及ばない場合は、その範囲を実際より広く一般化しないでください。相関
+関係や時間的な前後関係だけから、因果関係を断定しないでください。複数のSignalの評価が
+互いに矛盾・対立している場合(mixed)は、無理にどちらかが正しいと結論づけず、対立して
+いること自体を「mixed」として明示してください。
+
+In One Lineでは、この変化がどちらの方向を向いているかと、その確からしさの度合い
+(Evidenceの強さに見合った留保)の両方を、静かな一言として結びつけてください。単なる
+要約にはしないでください。"""
+
+TREND_SYNTHESIS_ENGAGEMENT_BLOCK = """【Interesting/Engaging/Entertaining原則(根底品質原則。\
+OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10でVALIDATED、OPEN-112-TREND-SYNTHESIS-MODE-\
+PRODUCTION-WIRING-01でTrend Synthesis限定のProduction採用。editorial_mode="trend_synthesis"\
+指定時のみ挿入)】
+記事は、正確でよく整理されているだけでは十分ではありません。聞き手が
+
+- 続きを知りたくなる
+- 「そういう見方があるのか」と感じる
+- 意外な関係や対比に気づく
+- 話として面白いと感じる
+- 誰かに話したくなる
+
+と感じられることを目指してください。ただし、面白さを作るためにVerified Fact
+Ledgerの範囲を超えてはいけません。以下は禁止です:
+- 事実の創作
+- Ledgerが支持しない因果関係の主張(unsupported causality)
+- 誇張(exaggeration)・扇情的な表現(sensationalism)
+- Ledgerにない具体例の追加
+- 根拠のない心理描写
+- 根拠のない未来予測
+
+目標は「正確 + 面白い + (裏付けがある場合の)意外性 + 聞いていて楽しい」の
+組み合わせであり、面白さが正確さより優先されるという意味ではありません。
+面白くする余地とFact Ledgerの制約が衝突する場合は、常にFact Ledgerの制約を
+優先してください。
+
+【Storytelling原則(時系列の出来事列挙にしない)】
+Main Storyを、"A happened. Then B happened. Then C happened. Meanwhile D
+happened."のような時系列ニュースダイジェストにしないでください。まず、
+「この複数のSignalを一緒に見ると、何が興味深いのか」を先に見つけてください。
+そのうえで、それを伝えるために本当に必要なEvidenceだけを選び、ひとつの
+Story(throughline)として展開してください。個々の出来事を、起きた順番に
+律儀になぞる必要はありません。
+
+Main Storyの冒頭では、Verified Fact Ledgerの範囲内で成立する場合に限り、
+以下のいずれかの技法を使うことを検討してください:
+- contradiction(矛盾)
+- surprising contrast(意外な対比)
+- tension(緊張関係)
+- reversal(見方の逆転)
+- unexpected consequence(意外な結果)
+- unanswered question(まだ答えの出ていない問い)
+- gap between appearance and reality(見かけと実態のずれ)
+
+これらの技法を無理に使う必要はありません。Ledgerが支持しない「意外性」を
+発明することは禁止します。技法を使うかどうかより、記事全体がひとつの
+throughlineを持つことを優先してください。"""
+
+# editorial_mode文字列 → Editorial Type Module Blockのマッピング。Mode判定
+# の自動化(記事内容から自動でmodeを推定するロジック)はここでは実装しない
+# (今回のGate 3スコープ外、OPEN_ITEMS残件)。呼び出し側が人間の判断で
+# 明示的にeditorial_modeを渡した場合のみ、このModuleが挿入される。
+EDITORIAL_TYPE_MODULE_BLOCKS = {
+    "trend_synthesis": TREND_SYNTHESIS_FOCUS_MODULE_BLOCK + "\n\n" + TREND_SYNTHESIS_ENGAGEMENT_BLOCK,
+}
+
+
+def resolve_editorial_type_module_block(editorial_mode: str | None) -> str:
+    """editorial_mode(既定None)からEditorial Type Module Blockのテキストを
+    解決する。Noneまたは空文字列の場合は""を返し、build_common_block()の
+    既定挙動(既存A-Family出力バイト単位不変)を完全に維持する。未知の
+    mode文字列を渡した場合はfail-closedでValueErrorを送出する(無音での
+    No-op化はしない)。Mode判定自体の自動化はこの関数では行わない(呼び
+    出し側が人間の判断で明示的に渡す値をそのまま解決するだけ)。"""
+    if not editorial_mode:
+        return ""
+    if editorial_mode not in EDITORIAL_TYPE_MODULE_BLOCKS:
+        raise ValueError(
+            f"未知のeditorial_mode: {editorial_mode!r}。既知の値: {sorted(EDITORIAL_TYPE_MODULE_BLOCKS)}")
+    return EDITORIAL_TYPE_MODULE_BLOCKS[editorial_mode]
+
+
 def build_common_block(master_full_text: str, topic: str, verified_ledger_text: str,
-                        shared_point_blueprint_block: str = "", evidence_compression: bool = False) -> str:
+                        shared_point_blueprint_block: str = "", evidence_compression: bool = False,
+                        editorial_type_module_block: str = "") -> str:
     """shared_point_blueprint_blockは、A2/B1 Point Structure Semantic
     Alignment(Shared Point Blueprint)導入タスクで追加したオプション引数。
     evidence_compressionは、ER-008-TTS-FALLBACK-AND-EVIDENCE-COMPRESSION-03
     Part Bで追加したオプション引数(script-only candidate生成専用)。
-    いずれも既定値(""/False)の場合は旧来のCOMMON_BLOCK_TEMPLATEと完全に
-    同一テキストになり、後方互換を保つ(未使用のTopicへは一切影響しない、
-    Production既定は無変更)。"""
+    editorial_type_module_blockは、OPEN-112-TREND-SYNTHESIS-MODE-
+    PRODUCTION-WIRING-01で追加したオプション引数(Editorial Type/Mode
+    固有のFocus Module挿入用、shared_point_blueprint_blockと同型
+    パターン)。呼び出し側は通常、resolve_editorial_type_module_block(
+    editorial_mode)で解決したテキストをこの引数へ渡す。
+    いずれも既定値(""/False/"")の場合は旧来のCOMMON_BLOCK_TEMPLATEと
+    完全に同一テキストになり、後方互換を保つ(未使用のTopicへは一切
+    影響しない、Production既定は無変更)。"""
     block = f"\n{shared_point_blueprint_block}\n" if shared_point_blueprint_block else ""
     ec_block = EVIDENCE_COMPRESSION_BLOCK if evidence_compression else ""
+    editorial_block = f"{editorial_type_module_block}\n\n" if editorial_type_module_block else ""
     return COMMON_BLOCK_TEMPLATE.format(
         hanshin_master_full_text=master_full_text, topic=topic,
         verified_ledger_text=verified_ledger_text,
         shared_point_blueprint_block=block,
         evidence_compression_block=ec_block,
+        editorial_type_module_block=editorial_block,
     )
 
 

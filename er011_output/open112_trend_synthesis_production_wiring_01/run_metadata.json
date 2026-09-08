@@ -1,0 +1,39 @@
+{
+  "editorial_mode": "trend_synthesis",
+  "trend_gate_checklist": {
+    "note": "Theme 2は記事生成前に正式なtrend_gate_result.json相当の記録を作成していなかった(Iran/HormuzテーマのTrial-09とは異なる)。本チェックリストは、本タスク実施者が既存Ledgerの内容を読んで行った事後的な手動判定であり、記事内容からの自動判定ロジックではない。",
+    "evaluated_at": "2026-09-08",
+    "criteria": {
+      "1_independent_signals_2plus": {
+        "result": "PASS",
+        "evidence": "SRC-201(観光庁白書)/SRC-202・203・207(じゃらんリサーチセンター)/SRC-204・205(JTBF)/SRC-208(ヒルトン)/SRC-211(観光庁一次資料)など、少なくとも5系統以上の独立した調査主体による信号がある。"
+      },
+      "2_common_direction": {
+        "result": "PASS",
+        "evidence": "F-201/F-203/F-204/F-205はいずれも「自分のペースでゆっくり」「自由時間を求める」という同方向のSignal。"
+      },
+      "3_temporal_or_structural_change": {
+        "result": "PASS(構造的ギャップ型)",
+        "evidence": "単純な時系列変化ではなく、意識調査(スロー志向の高まり)と実測行動(F-206宿泊日数平均1.8泊)の間の構造的ギャップが中心主張(注記3)。"
+      },
+      "4_counter_signal_confirmed": {
+        "result": "PASS",
+        "evidence": "F-206(実際の宿泊日数の短さ)・F-211/観光白書の「長期化はまだ達成されていない」という政府認識自体が、スロー志向Trendに対する明確なcounter-signal(限界)として注記3で明示されている。"
+      },
+      "5_not_single_source_trend": {
+        "result": "PASS",
+        "evidence": "観光庁・じゃらんリサーチセンター・JTBF・ヒルトンという異なる調査主体に基づく(単一ソースの言い換えではない)。"
+      },
+      "6_evidence_strength_not_flattened": {
+        "result": "PASS",
+        "evidence": "Ledger内でofficial_statistics(F-211等)/company_official_announcement(F-201/F-206等)/reputable_media_reporting(F-205等)を各Factごとにevidence_strengthとして明示的に区別している。"
+      }
+    },
+    "verdict": "TREND_READY(本タスク実施者による事後的手動判定)",
+    "mode_determination_2question_test": {
+      "q1_single_origin_question": "Main Storyを『[日付]にXが起きた』という1文で書いても要点は失われないか? → NO(単一の出来事ではなく、意識と行動の間の構造的ギャップという複数調査の集約が主張の本体)",
+      "q2_aggregation_question": "いずれか1つのSignalを除いても中心的主張は大きく変わらないか? → YES(例: F-201[ヒルトン]を除いてもF-203/F-205/F-206による「意識と行動のギャップ」という中心主張は他のSignalで成立し続ける)",
+      "determination": "TREND_SYNTHESIS"
+    }
+  }
+}

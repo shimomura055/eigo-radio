@@ -42,10 +42,14 @@ class EvidenceBoundedInterpretationPromptTests(unittest.TestCase):
         self.assertLess(idx_ebi, idx_structure)
 
     def test_template_still_formats_without_error(self):
+        # OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01でCOMMON_BLOCK_
+        # TEMPLATEへ`{editorial_type_module_block}` placeholderが追加された
+        # ため、直接.format()する場合はこのkeyも渡す必要がある(build_
+        # common_block()経由の呼び出しは既定値""で自動的に扱われる)。
         rendered = gen.COMMON_BLOCK_TEMPLATE.format(
             hanshin_master_full_text="MASTER", topic="TOPIC",
             verified_ledger_text="LEDGER", shared_point_blueprint_block="",
-            evidence_compression_block="")
+            evidence_compression_block="", editorial_type_module_block="")
         self.assertIn("Evidence-bounded Interpretation", rendered)
 
 
