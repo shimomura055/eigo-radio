@@ -1,0 +1,14 @@
+{
+  "point_two": {
+    "canonical_text_sha256": "cf2ce490fe150c3fac72e4eeabbf4980ad0ed42eda9b7d6dac07ffb5ca39956e",
+    "approved_at": "2026-09-08T14:13:14",
+    "approved_by": "user_2026-09-08_EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01",
+    "note": "2026-09-08 ユーザー試聴承認、意図的反復の誤検知、Fable委任。管理ID: EDITORIAL-B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01(修正指示2回目)。3 attemptのうちattempt 1を採用(method_a_ngramのみflagged=True、method_d_spectral_long_lag flagged=False、method_d_prime flagged=False、ASR内容照合は audio_classification=NORMALIZED_MATCH/length_ok=True、verified=Falseはrepetition_qa gateのANDのみに起因)。\"do not need\"の意図的な2回反復(em dashで結合)を、共有canonical-repeat-count logicがcanonical側で1回としか数えず誤検知した既知の未対応ケース(Report 9-5参照)。",
+    "selected_attempt": 1,
+    "selected_attempt_reason": "3 attemptのうちattempt 1のみmethod_d_spectral_long_lag flagged=FalseかつASR内容照合NORMALIZED_MATCH(attempt3はmethod_d_spectral_long_lagもflagged=Trueで追加のリスク要因あり、attempt2はattempt1と同型のflagのみ)。ファイル欠落なし、attempt1採用可能。",
+    "adopted_audio_source_path": "er012_output/editorial_b_family_production_phase1_02/b1b/narration/attempts/point_two_attempt1_englishstyleprefixwidemargin.wav",
+    "adopted_audio_sha256": "031d090e4b58e5ac933fa77d01c1cda2ba65650ea3dfdc270c7abe51b73e2e85",
+    "narration_wav_before_swap_sha256": "d675f9f8b5c236fa0d80289a9dba6dffa6b90beeb58ffd971cc4a10b6bbdc29e",
+    "narration_wav_before_swap_note": "差し替え前のnarration/point_two.wavはattempt3のsha256と一致(実行順で最後に書き込まれたファイルがそのまま残っていたもの)。attempt3ではなくattempt1を承認対象として採用したため、attempt1の音声ファイルへ明示的に差し替えた。"
+  }
+}

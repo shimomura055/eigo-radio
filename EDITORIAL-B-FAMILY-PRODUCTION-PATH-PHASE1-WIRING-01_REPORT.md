@@ -293,13 +293,141 @@ Tension/Closingを含む全body segmentは再生成した(byte-for-byte再利用
 
 ---
 
+## 10. 修正指示2回目への対応(Fable、管理ID継続)
+
+背景: §9-6のUSER_DECISION_REQUIREDに対し、2026-09-08にユーザーが
+`point_two`(Voice B)3 attempt試聴artifact(`voice_b_attempt_review.html`)を
+確認し、正式決定した。「"do not need … do not need"は本文上の意図的反復で
+音声も問題なし。今回のGate停止は正常な意図的反復を重複バグとして扱った
+誤検知」「今回のPhase 1については既存Human Approval経路で通してよい
+(承認記録を残す)」「再発防止Trialは別管理IDで起票済み(本タスクでは
+扱わない)」。本節はこの決定に基づく対応のみを行い、共有module
+(`er011_open121_repetition_qa_production_01.py`のem dash tokenization等)への
+変更は一切行っていない。
+
+### 10-1. 承認対象attemptの選定
+
+`point_two`の3 attemptを比較し、**attempt 1**を採用した(ファイル欠落等の
+不採用事由なし)。
+
+| attempt | method_a_ngram flagged | method_d_spectral_long_lag flagged | method_d_prime flagged | audio_classification/length_ok | 備考 |
+|---|---|---|---|---|---|
+| 1(採用) | True | **False** | False | NORMALIZED_MATCH/True | ASR内容照合自体は合格(`verified=False`はrepetition_qa gateのANDにのみ起因) |
+| 2 | True | False | False | NORMALIZED_MATCH/True | attempt1と同型 |
+| 3 | True | **True** | False | NORMALIZED_MATCH/True | 追加のflagged要因あり |
+
+### 10-2. 人間承認記録
+
+既存Production機構`asm.record_human_approval()`
+(`er003_v1_n3_01_assemble.py`、無変更)で、`tts_generation_results.json`の
+`point_two.canonical_text`(em dash込みの確定本文)をそのまま渡して記録した。
+承認記録パス:
+`er012_output/editorial_b_family_production_phase1_02/b1b/audit/human_approved_segments.json`。
+`note`欄に「2026-09-08 ユーザー試聴承認、意図的反復の誤検知、Fable委任」を
+含む詳細根拠を明記(既存パターン`er010_no9_a2_attempt4_oneoff_final_audio_25.py`
+の「承認記録に追加contextを追記」手法を踏襲、ゲート判定自体は
+`canonical_text_sha256`のみ参照するため追加フィールドはゲート挙動に影響しない)。
+
+承認記録以外のGate回避・閾値変更は行っていない
+(`_segment_gate_status`/`verify_episode_audio_validation_gate`は無変更)。
+
+### 10-3. 音声ファイルの扱い(再生成なし)
+
+Assembly経路は`narration_dir/point_two.wav`という固定パスから直接読む
+実装(`asm.load_b1_sources()`)のため、承認対象をattempt 1にするには
+disk上のファイルをattempt 1の音声に一致させる必要があった(承認直前の
+`narration/point_two.wav`はattempt 3の内容と一致していた、TTSループが
+最後に書き込んだファイルがそのまま残っていたもの)。**新規TTSは一切
+発生させず**、既存attempt保存物(`narration/attempts/point_two_attempt1_
+englishstyleprefixwidemargin.wav`)をそのまま`narration/point_two.wav`へ
+コピーした。sha256一致は以下のとおり確認済み(前後とも記録):
+
+- 差し替え前`narration/point_two.wav` sha256 =
+  `d675f9f8b5c236fa0d80289a9dba6dffa6b90beeb58ffd971cc4a10b6bbdc29e`
+  (attempt3 sha256と完全一致、想定どおり)
+- attempt1保存ファイル sha256 =
+  `031d090e4b58e5ac933fa77d01c1cda2ba65650ea3dfdc270c7abe51b73e2e85`
+  (attempt1のJSON記録sha256と完全一致)
+- 差し替え後`narration/point_two.wav` sha256 =
+  `031d090e4b58e5ac933fa77d01c1cda2ba65650ea3dfdc270c7abe51b73e2e85`
+  (attempt1と完全一致)
+
+他13 segment(topic_intro/preview/comment_1-4/point_one_heading/
+point_two_heading/point_one/full_story_part1/full_story_part2/
+tension_reflection/in_one_line)は、各segmentのattempt1記録sha256と
+narration_dir上の現在のwavファイルsha256を突き合わせ、**全13件で完全一致**
+(再生成なし、既存音声をそのまま使用)。
+
+### 10-4. Assembly再実行(既存Production runner、既存Production Assembly関数)
+
+`er012_b_family_production_runner_01.py`(TTSステージは実行せず、
+`assemble`→`player`ステージのみ実行、resumable stage設計をそのまま使用)。
+追加TTS費用は**¥0**(前回runの累積cost¥28.64のまま変化なし、
+`gemini ¥26.77 / openai ¥0.59 / openai_asr ¥1.27`)。
+
+- **Assembly結果**: `status=OK`(GATE_BLOCKED解消)。
+  duration=305.135s、peak=0.89571、clipping_detected=False、
+  headroom safety valve適用なし(`peak_before=peak_after=0.8957122`、
+  閾値0.98未満のためscalar=1.0)。
+  出力: `er012_output/editorial_b_family_production_phase1_02/b1b/assembled/B_Family_Production_Phase1_B1B.wav`。
+- **player.html**: `audio_review_player.py`経由の標準format(Gate 7 (l))で
+  `er012_output/editorial_b_family_production_phase1_02/player.html`を生成。
+  Voice B body行のscriptはem dash込みの確定canonical_text
+  (`...the people I need—or do not need—around me.`)と完全一致。
+  Comment 1行のscriptは`registry.COMMENT_ROLES["comment_1"]`
+  (FINALIZE-11確定版Roleプロンプトで生成済みのテキスト、本タスクで再生成
+  していない)と一致。
+
+### 10-5. Gate 7 (a)〜(l) 機械チェック
+
+| 項目 | 結果 |
+|---|---|
+| (a) 完成episode音声 | 充足(`episode_audio`、1本化wav) |
+| (b) Preview | 充足(行あり) |
+| (c) Comment全件 | 充足(Comment 1-4全行あり) |
+| (d) 本文全section | 充足(Hook Part1/2・Voice A/B body・Tension・Closing全行あり) |
+| (e) Key Phrase英語+日本語gloss | 充足(表示用+TTS用併記、rank1-5) |
+| (f) Intro/Outro/SFX/固定文言 | 充足(読み上げ無しを明記) |
+| (g) segment order・開始秒・click-seek | 充足(`data-sec`+Seekボタン全行) |
+| (h) 各segmentの使用voice名 | 充足(`<small>voice=...`全行) |
+| (i) レベル別分離 | 充足(本episodeはB1のみ、ヘッダーに明記) |
+| (j) 未取得segmentの明記 | 充足(「未取得」該当行=0件、全行解決済み) |
+| (k) Standard/Batch明記 | 充足(「Standard同期」を明記) |
+| (l) 同一行にSeek+voice+script+個別音声 | 充足(標準format、`audio_review_player.py`共通module使用) |
+
+全項目充足。試聴用artifact:
+`file:///C:/Users/tensh/eigo-radio/er012_output/editorial_b_family_production_phase1_02/player.html`
+
+### 10-6. Gate 3充足表(最新化)
+
+| 項目 | 状況 |
+|---|---|
+| Production正式初回経路 | 充足(変更なし、§3・§9と同一) |
+| retry・fallback・regenerationとの整合 | 充足。既存retry上限(3回)は超えていない。今回追加した承認記録は、既存救済経路`record_human_approval()`をそのまま使用(独自Gate回避なし) |
+| DEV・Trial-onlyではないこと | 充足(変更なし) |
+| Production runtimeでの実発火 | 充足。§10-4のとおりAssembly実発火・episode完成 |
+| 必要testのPASS | 変更なし(本タスクはコード変更を一切行っていないため、単体テスト14件・regression`collected=2171 passed=2168 failed=3`は§9-3/9-4の結果がそのまま有効) |
+| runtime evidence | 充足(§10-4、`phase1_02`完成episode) |
+| 実際のmodel_id・routing確認 | 変更なし(§3と同一) |
+| SSOT反映・Git反映 | **未実施**(本タスク範囲外、引き続きFable/ユーザー判断待ち) |
+| approved specとProduction挙動の一致 | 一致(§3と同一事項に加え、Voice B `point_two`は今回ユーザー試聴承認により人間承認込みで一致) |
+| Human Approval記録 | 1件(`point_two`)、記録パス:`er012_output/editorial_b_family_production_phase1_02/b1b/audit/human_approved_segments.json`(§10-2) |
+| 共有ファイル | 無変更(`er003_v1_*`/`er011_*`/`er006_*`へのdiffなし、本タスクはJSON承認記録+既存attempt音声のコピー+既存runnerの`assemble`/`player`ステージ実行のみ) |
+
+Sonnetからは引き続き`PRODUCTION_WIRED`を宣言しない(候補として報告、
+Fable/ユーザー受入判定待ち)。
+
+---
+
 ## Status
 
 **Status: IMPLEMENTED(Phase 1候補)— PRODUCTION_WIREDはFable/ユーザー受入
 判定待ち。Sonnetからの宣言はしない。**
 
-**修正指示1回目後の状態: OPEN-121/OPEN-122のB-Family本文相当segmentへの
-配線は完了・単体テスト/regressionでPASS。ただしruntime evidence再取得中に
-`point_two`(Voice B)がGATE_BLOCKEDとなり(§9-5・§9-6参照)、`phase1_02`の
-完成episode/player.htmlは未生成。Sonnetからの`PRODUCTION_WIRED`宣言は
-引き続き行わない。次の判断(§9-6)をFable/ユーザーへ仰ぐ。**
+**修正指示2回目後の状態: ユーザーの2026-09-08正式決定に基づき、`point_two`
+(Voice B)のうちattempt 1を既存`record_human_approval()`機構で人間承認し、
+新規TTSなし(¥0追加)でAssembly/player.htmlを完成させた
+(`phase1_02`、duration=305.135s peak=0.89571 clipping=False)。Gate 7
+(a)〜(l)機械チェック全項目充足。Gate 3充足表を最新化(§10-6)。
+共有ファイル・SSOT・Gitへは一切触れていない。次はFable/ユーザーによる
+`PRODUCTION_WIRED`受入判定待ち。**
