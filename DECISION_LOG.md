@@ -7874,6 +7874,18 @@ DECISION_LOG.md`OPEN-127/OPEN-128-PRODUCTION-WIRING`エントリ(commit
 `efeb8da`)。Git操作: `CURRENT_SPEC.md`・`DECISION_LOG.md`・
 `OPEN_ITEMS.md`のみをcommitし`origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-14: 2026-09-08セッションclose、ユーザー最終確認
+
+**ユーザー確認(2026-09-08)**: OPEN-127・OPEN-128の`PRODUCTION_WIRED`受入、
+B-Family Phase 1の`PRODUCTION_WIRED`確定+完成episodeユーザー承認、既存
+regressionに新規breakがないこと、SSOT(CURRENT_SPEC.md/DECISION_LOG.md/
+OPEN_ITEMS.md/HISTORY_INDEX.md)・Gitへの反映、blockingの
+`USER_DECISION_REQUIRED`が現存しないことをユーザーが確認しclose承認した
+(直近commit`dbed56d`)。OPEN-121残5点・OPEN-124・OPEN-125・B-Family
+Phase 2・Context閾値(auto-compact)の観測後再調整はいずれも既存の
+deferredのまま維持し、今回close対象に含めない。次の新規作業はユーザーから
+別途指示を受けてから開始する。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

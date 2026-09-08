@@ -18,3 +18,4 @@ auto-compact閾値(`.claude/settings.local.json`の`autoCompactWindow`)
 | 日時 | 設定閾値 | 発火頻度(前回compactからの経過) | compact直前のcontext使用量 | 復帰所要時間 | 復帰時追加Token | UDR欠落 | approved-but-unwired欠落 | STOP条件欠落 | 作業継続への支障 |
 |---|---|---|---|---|---|---|---|---|---|
 | 2026-09-08時点 | 500,000 tokens(実window 1,000,000の50%) | compact未発生 | 使用約177.6k(18%)、compact未到達 | - | - | - | - | - | なし(compact未発生) |
+| 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-14) | 500,000 tokens(実window 1,000,000の50%) | compact未発生 | 未計測 | - | - | - | - | - | なし(compact未発生) |
