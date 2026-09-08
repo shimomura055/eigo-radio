@@ -1,7 +1,7 @@
 # DECISION_LOG — 確定した意思決定の索引
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-15、Lane A[`FAMILY-A-DESIGN-FIX-
+**最終更新: 2026-09-08(PM-CLOSEOUT-CONSOLIDATION-16、Lane A[`FAMILY-A-BRANCH-FACT-CHECK-02`、Discovery/News/Trend Synthesis枝別事実確認、読み取り専用]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02`、4 Voices構造設計Trial]を相互独立に並行実施しSSOTへ反映した。**Lane A**(読み取り専用、コード・Prompt・Production無変更): Family A(Discovery/News/Trend Synthesis)の3枝を個別に事実確認し、Discoveryは共通Production配管がPRODUCTION_WIRED済み(ただしDiscovery固有ではなく全テーマ共通)、Discovery固有Layer3 Focus ModuleはVALIDATED止まりでProduction採否はDEFERRED、通常News(Major/Daily News)はOPEN-112-NEWS-MODE-DESIGN-08の設計文書のみでTrial実施0件、Trend Synthesisはmode自体のProduction採用・配線がDEFERRED(Theme 2完成音声のみAPPROVED_FOR_PRODUCTION、mode本体とは別論点)であることを確認した。**Lane B**(記事本文・音声生成なし、費用¥0): 2026-09-08ユーザー決定(4 Voices拡張YES・選定軸=案A)を受け、4 Voices対応の構造設計案3つ(S1: 4見出し直列/S2: 2ペア構造/S3: 軸提示先出し)を比較しS1を推奨(Gate 1=`VALIDATED`)、未承認仕様8件(構造採用・Comment 2/3文言変更・4声voice選定・physical_structure新規値・QA 6ペア・REQUIRED_SEGMENTS拡張・目標尺380〜430秒・Tension 2軸交差)を特定した。両Laneとも採用判断は`USER_DECISION_REQUIRED`のままSTOP。`OPEN_ITEMS.md`OPEN-112行(Lane A)・OPEN-120行(Lane B)へ各1点追記、`CURRENT_SPEC.md`は仕様変更なしのためchangelog参照のみ追記。詳細は`FAMILY-A-BRANCH-FACT-CHECK-02_REPORT.md`・`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-FOUR-VOICES-STRUCTURE-DESIGN-TRIAL-02_REPORT.md`参照)。2026-09-08(PM-CLOSEOUT-CONSOLIDATION-15、Lane A[`FAMILY-A-DESIGN-FIX-
 INVENTORY-01`、読み取り専用棚卸し]とLane B[`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-
 FOUR-VOICES-AXIS-DESIGN-TRIAL-01`、4 Voices選定軸設計Trial]を並行実施しSSOTへ
 反映した。**Lane A**(Lane Bとは相互に独立、コード・Prompt・Production無変更の
