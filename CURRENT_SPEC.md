@@ -1,6 +1,21 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第11弾、PM-CLOSEOUT-CONSOLIDATION-17、参照のみ・
+仕様変更なし)**: Lane A 3件(`FAMILY-A-TREND-SYNTHESIS-PRODUCTION-
+READINESS-01`、`FAMILY-A-DISCOVERY-DEFERRED-CLASSIFICATION-01`、
+`FAMILY-A-LEGACY-NEWS-ASSET-SURVEY-01`)とLane B(`EDITORIAL-B-FAMILY-
+VOICES-PHASE1-5-3V-4V-INTEGRATED-DESIGN-TRIAL-03`、3V/4V統合設計、
+Gate 1=`VALIDATED`[Trial範囲内])をSSOTへ反映した。いずれも調査・設計のみ
+でコード・Prompt・本仕様書の変更を伴わず、採用判断は`USER_DECISION_
+REQUIRED`のままSTOP。Lane BのB-5で、既存Audio Validation Gateが「構造上
+あるべきsegment数」との一致を検証しない新規failure modeを発見し、新規
+`OPEN-129`として登録した(`USER_DECISION_REQUIRED`)。voice候補6種
+(Algieba/Erinome/Schedar/Sulafat/Aoede/Charon)の試聴用artifact
+(`er012_output/editorial_b_voices_phase1_5_3v_4v_integrated_trial_03/
+voice_samples_review.html`)を作成した。詳細は`OPEN_ITEMS.md`OPEN-112行・
+OPEN-120行・OPEN-129行、DECISION_LOG.md`PM-CLOSEOUT-CONSOLIDATION-17`
+エントリ参照。
 **最終更新: 2026-09-08(第10弾、PM-CLOSEOUT-CONSOLIDATION-16、参照のみ・
 仕様変更なし)**: Lane A(`FAMILY-A-BRANCH-FACT-CHECK-02`、Discovery/News/
 Trend Synthesis枝別事実確認、読み取り専用)とLane B(`EDITORIAL-B-FAMILY-

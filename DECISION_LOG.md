@@ -7908,6 +7908,84 @@ Phase 2・Context閾値(auto-compact)の観測後再調整はいずれも既存�
 deferredのまま維持し、今回close対象に含めない。次の新規作業はユーザーから
 別途指示を受けてから開始する。
 
+## PM-CLOSEOUT-CONSOLIDATION-17: Lane A 3件+Lane B統合設計のSSOT反映、voice sample試聴artifact作成、新規OPEN-129登録
+
+**対象**: Lane A(既存並行タスク3件、いずれも調査・設計のみ)と
+Lane B(`EDITORIAL-B-FAMILY-VOICES-PHASE1-5-3V-4V-INTEGRATED-DESIGN-
+TRIAL-03`)の成果物をSSOTへ集約反映した。
+
+**Lane A 3件**:
+- `FAMILY-A-TREND-SYNTHESIS-PRODUCTION-READINESS-01_REPORT.md`:
+  Trend Synthesis Production化の技術検証をVALIDATED(Trend Gate 6条件・
+  Mode判定基準・最小Focus Module Prompt・Engagement原則・共通4slot骨格)。
+  配線経路は`build_common_block()`への新規オプション引数
+  (`shared_point_blueprint_block`と同型)として設計。Research/Ledger
+  routeは現状Trial手動のみで自動pipeline未接続。最小判断項目11件
+  (Mode判定自動化・News Ledger供給経路・Reference Digest・Diagnostic
+  Full Retry語彙拡張の追加Trial要含む)を記録し、採否は
+  `USER_DECISION_REQUIRED`。
+- `FAMILY-A-DISCOVERY-DEFERRED-CLASSIFICATION-01_REPORT.md`:
+  Discovery deferred項目をVALIDATED4件/`USER_DECISION_REQUIRED`3件
+  (OPEN-112残件、据え置き継続)/追加Trial要2件/obsolete2件(OPEN-107
+  WITHDRAWN、ER-010設計文書)へ再分類。Dangling Referenceなし。
+- `FAMILY-A-LEGACY-NEWS-ASSET-SURVEY-01_REPORT.md`: 通常News
+  (Hanshin/Health/Household、ER-003-A2-B1-N3-01)の過去資産調査、結論
+  `PARTIAL`。既存11パート構造・Writerテンプレート・QAは現役Production
+  基盤である一方、ADD03イラン・A02英SNSはB1-A廃止方式が混入し本文生成
+  コード非再利用。News固有層(Layer3 News Focus Module、DESIGN-08初
+  設計)は未Trial。ゼロ設計ではなく既存資産(Hanshinを構造reference)の
+  部分的正式化を提案。
+
+**Lane B**: 3V/4V統合設計Trial=Gate1`VALIDATED`(Trial範囲内)。3V推奨=
+Recruiter/Hiring Managerを落とす案(Applicant/Business・Efficiency/
+Fairness・Legal・Governance)。未承認仕様10項目(Comment 2/3文言・
+physical_structure新規設計・registry集約方針・3/6ペアQA検証・3V目標尺
+約325〜355秒/4V380〜430秒・Tension新規構造等)を一覧化のみで採否は
+`USER_DECISION_REQUIRED`。**新規failure mode発見(STOP事項)**: 既存
+Audio Validation Gate(`er003_v1_n3_01_assemble.py::
+verify_episode_audio_validation_gate()`)は、記録済みsegmentの状態
+(ASR一致・Human Review Lock等)のみを検証し、「構造上あるべきsegment数」
+との一致(欠落segmentがないこと)を検証しない構造であることをコード現物
+確認で発見した。現行2 Voices Productionでも理論上は潜在するfailure
+modeだが、Voice数が3/4へ増えるほど顕在化しやすくなる。対策(構造完全性
+チェックの新設)は未設計・未実装であり、独自に実装せずSTOPし新規
+`OPEN-129`として記録した。
+
+**voice sample試聴artifact**: 承認済みvoice候補(Algieba/Erinome/
+Schedar/Sulafat/Aoede/Charon)について、既存sample wav
+(`er012_output/editorial_b_voices_trial_09_audio/audit/voice_samples/`、
+5点、Charonのみsample未取得)を標準player形式(`audio_review_player.py`
+共通関数、Source列なし、audio min-width 360px、同一行配置)で一覧化した
+試聴用ページ
+(`er012_output/editorial_b_voices_phase1_5_3v_4v_integrated_trial_03/
+voice_samples_review.html`)を新規作成した。各行にvoice名・再生・sample
+script・現在の割当(Voice A/Voice B/Narrator/fallback/既存共通
+narrator)・ユーザー記入欄(男性的/女性的/どちらとも)を配置。既存voice
+候補の性別的印象はSSOTに記載が無く(design.md確認済み)、正式判断は
+ユーザーの試聴待ち。既存wavは一切変更せず、新規TTS/LLM呼び出しは行って
+いない(¥0)。
+
+**SSOT反映**: `OPEN_ITEMS.md`のOPEN-112行・OPEN-120行へLane A 3件・
+Lane Bの要約を追記(状態列は不変)。新規`OPEN-129`(Audio Validation
+Gateの構造完全性未検証、`USER_DECISION_REQUIRED`)を追加登録した
+(既存最大番号OPEN-128の次番)。`CURRENT_SPEC.md`冒頭changelogへ
+第11弾(参照のみ、仕様変更なし)を追加した。`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`を本タスク用に上書きした。
+
+**Gate 1分類(参考、いずれも各Reportの結論を転記)**: Lane A 3件は
+いずれも読み取り専用調査・設計(Production/Prompt/コード変更ゼロ)。
+Lane BはGate1=`VALIDATED`(Trial範囲内)、Production採用は
+`USER_DECISION_REQUIRED`。
+
+**根拠レポート**: `FAMILY-A-TREND-SYNTHESIS-PRODUCTION-READINESS-01_
+REPORT.md`、`FAMILY-A-DISCOVERY-DEFERRED-CLASSIFICATION-01_REPORT.md`、
+`FAMILY-A-LEGACY-NEWS-ASSET-SURVEY-01_REPORT.md`、`EDITORIAL-B-FAMILY-
+VOICES-PHASE1-5-3V-4V-INTEGRATED-DESIGN-TRIAL-03_REPORT.md`。Git操作:
+Lane A Report 3件・Lane B Report+`design.md`+`voice_samples_review.
+html`・SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`)を
+ファイル名指定でcommitし`origin/main`へpush(wav等の既存未追跡出力は
+対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
