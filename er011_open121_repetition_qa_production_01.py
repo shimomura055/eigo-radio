@@ -50,6 +50,7 @@
 # 対象外。OPEN_ITEMS.md OPEN-121行へ追跡項目として記録する。
 from __future__ import annotations
 
+import difflib
 import re
 
 import numpy as np
@@ -81,6 +82,17 @@ METHOD_D_PRIME_SIM_THRESHOLD = 0.7
 # マージン0.2秒、生データ: er011_output/open121_tts_repetition_
 # general_qa_trial_02/results/method_d_prime_full.json)。
 METHOD_D_PRIME_DECISION_RUN_SECONDS = 0.6
+
+# OPEN-128-METHOD-D-LOCAL-ASR-CONFIRM-PRODUCTION-WIRING-01: ユーザー承認
+# 2026-09-08(候補c、OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01_
+# REPORT.md §5/§14でVALIDATED)。方式Dのacoustic flag(閾値は上記
+# METHOD_D_DECISION_RUN_SECONDS=0.12秒、無変更)後段の局所ASR語句一致度
+# 確認用パラメータ(23件データセットでTP8/8・FP0/15、マージン厚い方の
+# 構成)。acoustic threshold自体は一切変更しない。
+METHOD_D_ASR_CONFIRM_OVERLAP_RATIO_THRESHOLD = 0.5
+METHOD_D_ASR_CONFIRM_LCS_WORDS_THRESHOLD = 3
+METHOD_D_ASR_CONFIRM_WINDOW_HALF_SECONDS = 1.5
+METHOD_D_ASR_CONFIRM_MAX_HALF_WINDOW_SECONDS = 4.0
 
 
 def _load_wav_mono(path):
@@ -128,18 +140,78 @@ def compute_shared_self_similarity(path, frame_ms=METHOD_D_FRAME_MS, hop_ms=METH
             "hop_ms": hop_ms, "frame_ms": frame_ms, "sim": sim, "n_frames": n_frames}
 
 
+def confirm_by_local_asr_overlap(words, time_a, time_b,
+                                  window_half_seconds=METHOD_D_ASR_CONFIRM_WINDOW_HALF_SECONDS,
+                                  max_half_window_seconds=METHOD_D_ASR_CONFIRM_MAX_HALF_WINDOW_SECONDS,
+                                  overlap_ratio_threshold=METHOD_D_ASR_CONFIRM_OVERLAP_RATIO_THRESHOLD,
+                                  lcs_words_threshold=METHOD_D_ASR_CONFIRM_LCS_WORDS_THRESHOLD):
+    """OPEN-128候補(c、OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01
+    と無変更のロジック)。方式Dがacoustic flagした2箇所(time_a/time_b、
+    上位match)の前後の局所ASR word-level tokenを切り出し、語句一致度
+    (difflib SequenceMatcher比率+最長連続一致語数)で確認する。
+    overlap_ratio>=閾値 OR lcs_words>=閾値で「語句重複が実在する」と判定
+    する(acoustic類似のみで語句が異なる誤flagを除外)。時間窓は空なら
+    +1.0秒刻み(2.5秒まで)、その後+1.5秒刻みで最大max_half_window_seconds
+    まで拡張する(Trial-01 flag15_review_02と同一手順)。wordsは
+    `er008_disfluency_qa_18.transcribe_verbatim()`のword-level timestamp
+    (方式Aと共有、追加ASR呼び出しなし)。"""
+    def extract_window_tokens(center_s, half_window, max_half):
+        hw = half_window
+        while hw <= max_half:
+            toks = [w for w in words if center_s - hw <= (w["start"] + w["end"]) / 2 <= center_s + hw]
+            if toks:
+                return toks, hw
+            hw += 1.0 if hw < 2.5 else 1.5
+        return [], hw
+
+    def longest_common_contig_run(a, b):
+        best = 0
+        for i in range(len(a)):
+            for j in range(len(b)):
+                k = 0
+                while i + k < len(a) and j + k < len(b) and a[i + k] == b[j + k]:
+                    k += 1
+                best = max(best, k)
+        return best
+
+    toks_a_raw, hw_a = extract_window_tokens(time_a, window_half_seconds, max_half_window_seconds)
+    toks_b_raw, hw_b = extract_window_tokens(time_b, window_half_seconds, max_half_window_seconds)
+    toks_a = [dq18._normalize_token(w["text"]) for w in toks_a_raw]
+    toks_b = [dq18._normalize_token(w["text"]) for w in toks_b_raw]
+    overlap_ratio = difflib.SequenceMatcher(None, toks_a, toks_b).ratio() if (toks_a and toks_b) else 0.0
+    lcs_words = longest_common_contig_run(toks_a, toks_b) if (toks_a and toks_b) else 0
+    confirmed = bool(toks_a and toks_b
+                      and (overlap_ratio >= overlap_ratio_threshold or lcs_words >= lcs_words_threshold))
+    return {
+        "confirmed": confirmed, "overlap_ratio": round(overlap_ratio, 4), "lcs_words": lcs_words,
+        "window_half_seconds_a": hw_a, "window_half_seconds_b": hw_b,
+        "fragment_a": " ".join(w["text"].strip() for w in toks_a_raw),
+        "fragment_b": " ".join(w["text"].strip() for w in toks_b_raw),
+        "overlap_ratio_threshold": overlap_ratio_threshold, "lcs_words_threshold": lcs_words_threshold,
+    }
+
+
 def analyze_profile_d_long_lag(bundle, min_lag_s=METHOD_D_MIN_LAG_SECONDS, top_k=METHOD_D_TOP_K,
-                                sim_threshold=METHOD_D_SIM_THRESHOLD):
-    """方式D(Trial-01、既存、無変更)。lag>=min_lag_sの候補ペアを類似度
-    降順で最大top_k件選び(粗い重複除去つき)、上位3件それぞれについて
-    類似度>=sim_thresholdが連続する長さ(run長)を測る。最大run長が
-    METHOD_D_DECISION_RUN_SECONDS以上ならflagged=True。"""
+                                sim_threshold=METHOD_D_SIM_THRESHOLD, words=None):
+    """方式D(Trial-01、acoustic部分は既存・無変更)。lag>=min_lag_sの候補
+    ペアを類似度降順で最大top_k件選び(粗い重複除去つき)、上位3件それぞれ
+    について類似度>=sim_thresholdが連続する長さ(run長)を測る。最大run長が
+    METHOD_D_DECISION_RUN_SECONDS以上ならacoustic_flagged=True。
+
+    OPEN-128: words(方式Aと共有するword-level ASR結果)が渡された場合、
+    acoustic_flagged=Trueのときのみ、最大run長を出したmatchのtime_a/time_b
+    に対し`confirm_by_local_asr_overlap()`で局所語句一致度を確認し、
+    確認できた場合のみ最終flagged=Trueとする(2段判定、Trial-01候補c)。
+    words=None(既定、後方互換)の場合はacoustic判定のみを最終flaggedと
+    する(既存呼び出し元・既存テストの挙動を変更しない)。acoustic
+    threshold(sim_threshold・METHOD_D_DECISION_RUN_SECONDS)自体は
+    一切変更しない。"""
     sim = bundle["sim"]
     hop_ms = bundle["hop_ms"]
     if sim is None:
         return {"top_matches": [], "best_run_length_seconds": 0.0, "min_lag_seconds": min_lag_s,
                 "sim_threshold": sim_threshold, "decision_threshold_seconds": METHOD_D_DECISION_RUN_SECONDS,
-                "flagged": False}
+                "acoustic_flagged": False, "local_asr_confirmation": None, "flagged": False}
     min_lag_frames = int(min_lag_s * 1000.0 / hop_ms)
     n = sim.shape[0]
     candidates = []
@@ -175,9 +247,30 @@ def analyze_profile_d_long_lag(bundle, min_lag_s=METHOD_D_MIN_LAG_SECONDS, top_k
         top[idx][run_key] = rl
 
     best_run = max(run_lengths, default=0.0)
-    return {"top_matches": top, "best_run_length_seconds": best_run, "min_lag_seconds": min_lag_s,
-            "sim_threshold": sim_threshold, "decision_threshold_seconds": METHOD_D_DECISION_RUN_SECONDS,
-            "flagged": best_run >= METHOD_D_DECISION_RUN_SECONDS}
+    acoustic_flagged = best_run >= METHOD_D_DECISION_RUN_SECONDS
+    result = {"top_matches": top, "best_run_length_seconds": best_run, "min_lag_seconds": min_lag_s,
+              "sim_threshold": sim_threshold, "decision_threshold_seconds": METHOD_D_DECISION_RUN_SECONDS,
+              "acoustic_flagged": acoustic_flagged}
+
+    if not acoustic_flagged or words is None:
+        result["local_asr_confirmation"] = None
+        result["flagged"] = acoustic_flagged
+        return result
+
+    # 局所ASR確認はtop[0](類似度最上位のmatch)のtime_a/time_bに対して
+    # 実行する。OPEN-121-METHOD-D-FLAG23-REVIEW-ARTIFACT-01
+    # (er011_open121_method_d_flag23_review_01.py 221行、`best = top[0]`)・
+    # OPEN-121-METHOD-D-FALSE-POSITIVE-REDUCTION-TRIAL-01の候補c実装
+    # (`row.get("flag_time_a"/"flag_time_b")`、いずれもtop[0]由来)と
+    # 同一の対象点を使う(TP8/8・FP0/15の検証はtop[0]に対してのみ行われて
+    # おり、run長最大entryを使うのは未検証のロジック変更になるため
+    # 採用しない)。
+    top0 = top[0]
+    confirmation = confirm_by_local_asr_overlap(
+        words, top0["time_a_seconds"], top0["time_b_seconds"])
+    result["local_asr_confirmation"] = confirmation
+    result["flagged"] = acoustic_flagged and confirmation["confirmed"]
+    return result
 
 
 def analyze_profile_d_prime_short_lag(bundle, lag_min=METHOD_D_PRIME_LAG_MIN_SECONDS,
@@ -222,12 +315,17 @@ def analyze_profile_d_prime_short_lag(bundle, lag_min=METHOD_D_PRIME_LAG_MIN_SEC
             "flagged": best_run_length_seconds >= METHOD_D_PRIME_DECISION_RUN_SECONDS}
 
 
-def run_spectral_checks(path):
+def run_spectral_checks(path, words=None):
     """方式D・D'を統合スペクトル計算1回で実行する(Trial-02 §4/§7-5)。
     flag/非flagにかかわらず、境界値monitoring用に両プロファイルの
-    最大run長・lag・similarityを常に返す。"""
+    最大run長・lag・similarityを常に返す。
+
+    OPEN-128: words(方式Aと共有するword-level ASR結果)が渡された場合、
+    方式D(analyze_profile_d_long_lag)へそのまま渡し、acoustic flag後の
+    局所ASR確認2段判定を有効化する。方式D'は本Trial・ユーザー承認の
+    対象外のため無変更(常にacoustic判定のみ)。"""
     bundle = compute_shared_self_similarity(path)
-    profile_d = analyze_profile_d_long_lag(bundle)
+    profile_d = analyze_profile_d_long_lag(bundle, words=words)
     profile_d_prime = analyze_profile_d_prime_short_lag(bundle)
     return {
         "duration_seconds": bundle["duration_seconds"],
@@ -344,9 +442,18 @@ def evaluate_repetition_qa(path, canonical_text, language="en"):
     全体をflagged=Trueとする(Trial-02 §7推奨統合仕様)。flag/非flagに
     かかわらず、方式D/D'それぞれの最大run長・lag・similarityを常に
     含める(境界値monitoring用、narration audit jsonへそのまま記録
-    できる形)。"""
-    ngram = run_ngram_check(path, canonical_text, language=language)
-    spectral = run_spectral_checks(path)
+    できる形)。
+
+    OPEN-128: `dq18.transcribe_verbatim()`をここで1回だけ呼び、方式A
+    (`detect_ngram_repetition`)と方式Dの局所ASR確認
+    (`run_spectral_checks`経由で`analyze_profile_d_long_lag`へ共有)の
+    両方へ同じword-level ASR結果を渡す(同一音声への二重ASR実行を回避)。
+    ASR取得に失敗した場合(`transcribe_verbatim`が例外を送出する場合)は
+    従来通り例外がそのまま呼び出し元へ伝播する(方式A単独運用時と同じ
+    挙動、新規のfail-open/fail-closed設計は追加していない)。"""
+    words = dq18.transcribe_verbatim(path, language=language, model_size="small")
+    ngram = detect_ngram_repetition(words, canonical_text=canonical_text, min_words=METHOD_A_MIN_WORDS)
+    spectral = run_spectral_checks(path, words=words)
     flagged = bool(ngram["flagged"] or spectral["profile_d"]["flagged"]
                    or spectral["profile_d_prime"]["flagged"])
     return {
