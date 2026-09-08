@@ -212,6 +212,38 @@ def reuse_key_phrases(article_text: str) -> dict:
 
 
 # ============================================================
+# OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01:
+# Fact Checker候補A'(Voice別evidenceタグ+opt-inルール)の配線入口。
+# `family == "B"` かつ registryの`fact_attribution_mode`がTrueの場合のみ
+# blockを生成する(既定OFF、A-Family経路には一切影響しない)。B1/A2いずれの
+# 経路も、このrunnerが実際に呼び出すFact Checker関数(b1prod/a2prod)への
+# 引数としてのみblockを渡し、Gate側・registry側に別ルートの分岐は作らない。
+#
+# 呼び出し方法: `run_fact_check_b1`/`run_fact_check_a2`はPhase 1の
+# main()stage一覧(prepare/voice_check/kp_reuse/scaffold/tts/assemble/
+# player/all)には含めない(Phase 1のB1/A2経路は既存承認済み記事の音声化
+# のみが範囲であり、記事生成[Writer]・Fact Check自体はPhase 2待ちのため。
+# 既定の"all" stage出力を変えないための意図的な選択)。OPEN-131 Gate 3の
+# runtime evidence取得では、この2関数を直接呼び出す専用スクリプトから
+# 呼ぶ(er012_open131_fact_attribution_production_wiring_evidence_01.py)。
+# ============================================================
+def build_fact_attribution_block_if_enabled(ledger_text: str) -> str:
+    if registry.is_fact_attribution_mode_enabled("b_family_voices"):
+        return registry.build_voice_attribution_block(ledger_text)
+    return ""
+
+
+def run_fact_check_b1(article_text: str, topic: str, ledger_text: str) -> dict:
+    block = build_fact_attribution_block_if_enabled(ledger_text)
+    return b1prod.run_fact_checker(topic, article_text, voice_attribution_block=block)
+
+
+def run_fact_check_a2(article_text: str, topic: str, ledger_text: str) -> dict:
+    block = build_fact_attribution_block_if_enabled(ledger_text)
+    return a2prod.run_fact_checker(topic, article_text, voice_attribution_block=block)
+
+
+# ============================================================
 # Step 3: Comment 1-4 + Preview(registryのComment Role辞書を使用、既存
 # Production共有関数 b1s.run_support_text/PREVIEW_ROLE 経由、無変更)
 # ============================================================

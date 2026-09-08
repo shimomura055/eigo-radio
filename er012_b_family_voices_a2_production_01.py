@@ -207,8 +207,13 @@ def run_evidence_compression(client, article_text: str, model: str) -> dict:
 # ============================================================
 # Step C: Fact Checker(既存Production primitive、無変更)
 # ============================================================
-def run_fact_checker(topic: str, article_text: str) -> dict:
-    fc_prompt = r3.build_fact_check_prompt(topic, article_text, [])
+# OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01:
+# voice_attribution_block(既定""、後方互換)。呼び出し元(production
+# runner)がregistry.is_fact_attribution_mode_enabled()==Trueの場合のみ
+# 非空文字列を渡す。既定""のときはr3.build_fact_check_prompt()の戻り値が
+# 本引数追加以前とbyte単位で同一のため、この関数自体の出力もOFF時は無変更。
+def run_fact_checker(topic: str, article_text: str, voice_attribution_block: str = "") -> dict:
+    fc_prompt = r3.build_fact_check_prompt(topic, article_text, [], voice_attribution_block=voice_attribution_block)
 
     def make_fc_fn():
         return r3.make_fact_checker_fn(

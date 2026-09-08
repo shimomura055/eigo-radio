@@ -37,6 +37,8 @@
 # 既存Trialファイル自体(参照コメントのみ、importしない)、SSOT。
 from __future__ import annotations
 
+import re
+
 # ============================================================
 # Voice assignment(2026-09-08 ユーザー承認、APPROVED_FOR_PRODUCTION)
 # ============================================================
@@ -243,7 +245,98 @@ B_FAMILY_A2_CONFIG = {
     "japanese_title_required": B_FAMILY_A2_JAPANESE_TITLE_REQUIRED,
     "japanese_titles": B_FAMILY_A2_JAPANESE_TITLES,
     "required_segments": B_FAMILY_A2_REQUIRED_SEGMENTS,
+    # OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01:
+    # Key Phrase側の完全性チェック用(件数ベース、命名drift対応)。既存
+    # `required_segments`/`check_required_segments_completeness()`は無変更。
+    "key_phrase_ranks": 5,
+    "key_phrase_subkey_count": 2,
 }
+
+# ============================================================
+# OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01:
+# B-Family B1用required_segments(正本、role文字列+voice_a/voice_b)。
+# OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-TRIAL-01のB_FAMILY_B1
+# spec(12/12検知・既存episode false reject 0で実証済み)と同一の
+# segment一覧+voice roleを転記した(role文字列表記のみ本registryの既存
+# 命名規約[narrator_charon/narrator_aoede_ja等]に合わせて追加)。
+# full_story_part1/2・tension_reflection・in_one_lineは、既存Production
+# データ実測でvoiceフィールドが常にNone(未記録)であるため、
+# expected_voice=Noneとして「記録が無いことは既知の後方互換」として扱う
+# (false reject防止、Trial-01 Part 3と同じ扱い)。
+# ============================================================
+B_FAMILY_B1_REQUIRED_SEGMENTS = (
+    ("topic_intro", "narrator_charon"), ("preview", "narrator_charon"),
+    ("comment_1", "narrator_charon"), ("comment_2", "narrator_charon"),
+    ("comment_3", "narrator_charon"), ("comment_4", "narrator_charon"),
+    ("point_one_heading", "narrator_aoede_en"), ("point_two_heading", "narrator_aoede_en"),
+    ("point_one", "voice_a"), ("point_two", "voice_b"),
+    ("full_story_part1", None), ("full_story_part2", None),
+    (EXTRA_SEGMENT_NAME, None), ("in_one_line", None),
+)
+
+B_FAMILY_B1_CONFIG = {
+    "required_segments": B_FAMILY_B1_REQUIRED_SEGMENTS,
+    "key_phrase_ranks": 5,
+    "key_phrase_subkey_count": 2,
+}
+
+# ============================================================
+# OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01:
+# Fact Checker候補A'(Voice別evidenceタグ+「Voice本文は出典明記不要
+# (ただし事実誤り・実在人物引用は従来どおり検証)」の opt-in ルール)。
+# 出典: EDITORIAL-B-FAMILY-MULTI-VOICE-FACT-ATTRIBUTION-TRIAL-01/02
+# (ユーザー決定2026-09-09、APPROVED_FOR_PRODUCTION、Gate 3条件充足時のみ
+# PRODUCTION_WIRED)。既定OFF。B-Family Production runner側のみが、
+# `family == "B"` かつ本フラグTrueのときだけ`build_voice_attribution_
+# block()`を呼び、`build_fact_check_prompt(..., voice_attribution_block=)`
+# へ渡す。A-Family経路(er006_pool_pilot_01_writer.py等)はこのフラグ・
+# 関数を一切参照しない。
+# ============================================================
+FACT_ATTRIBUTION_MODE_DEFAULT = False  # opt-in、既定OFF(mandatory化していない)
+
+# Ledger中の[VOICE_n_EVIDENCE]タグ行を抽出する正規表現。3V/4Vも
+# タグ名(VOICE_3_EVIDENCE等)を追加するだけで自動的に拾える設計
+# (Trial-02第8節で確認済みのprompt側非ハードコードと同じ考え方)。
+_VOICE_EVIDENCE_LINE_RE = re.compile(r"^\[VOICE_(\d+)_EVIDENCE\].*$", re.MULTILINE)
+
+VOICE_ATTRIBUTION_RULE_TEXT = (
+    "【複数Voice構成の記事における事実帰属ルール(B-Family Voices固有、opt-in、"
+    "EDITORIAL-B-FAMILY-MULTI-VOICE-FACT-ATTRIBUTION-TRIAL-01/02で検証済みの"
+    "候補A')】\n"
+    "この記事のVoice本文(一人称の合成personaによる語り)は、下記のVerified "
+    "Fact Ledgerの該当[VOICE_n_EVIDENCE]evidenceを一人称の語りへ翻案した"
+    "ものです。Voice本文中の主張が、そのVoiceに割り当てられたLedger evidence"
+    "(下記抜粋)の内容と実質的に対応している場合、本文中に出典・調査名・"
+    "数値を逐一明記していないことだけを理由に、unsupported_specific_claimsへ"
+    "計上したり、REVIEW_REQUIRED/FAILと判定したりしないでください。\n"
+    "ただし、以下は従来どおり検証対象としてください(免除の対象外):\n"
+    "- Voice本文の内容がLedger evidenceの数値・調査主体・結果を改変・捏造"
+    "している場合\n"
+    "- Voice本文中に実在する名前付き個人の発言として具体的に帰属される主張\n"
+    "- Voice本文以外の地の文(Tension/Closing等)での客観的主張・出典明示が"
+    "本来期待される表現\n"
+)
+
+
+def build_voice_attribution_block(ledger_text: str) -> str:
+    """Ledgerの[VOICE_n_EVIDENCE]タグ行を抽出し、opt-inルール文言と結合した
+    blockを返す(`er002_ja_web_research_r3.build_fact_check_prompt()`の
+    `voice_attribution_block`引数へそのまま渡す想定)。該当タグが1件も
+    無ければ空文字列を返す(誤ってルールだけを渡してしまうことを防ぐ、
+    fail-closed)。"""
+    matches = _VOICE_EVIDENCE_LINE_RE.findall(ledger_text or "")
+    if not matches:
+        return ""
+    evidence_lines = [
+        line for line in (ledger_text or "").splitlines()
+        if re.match(r"^\[VOICE_\d+_EVIDENCE\]", line.strip())
+    ]
+    evidence_block = "\n".join(evidence_lines)
+    return (
+        f"{VOICE_ATTRIBUTION_RULE_TEXT}\n"
+        f"【Voice別 Verified Fact Ledger evidence(抜粋)】\n{evidence_block}\n"
+    )
+
 
 EDITORIAL_TYPES = {
     "b_family_voices": {
@@ -258,6 +351,8 @@ EDITORIAL_TYPES = {
         "comment_roles": COMMENT_ROLES,
         "first_person_mechanically_enforced": False,  # Phase 2待ち
         "a2": B_FAMILY_A2_CONFIG,
+        "b1": B_FAMILY_B1_CONFIG,
+        "fact_attribution_mode": FACT_ATTRIBUTION_MODE_DEFAULT,
     },
 }
 
@@ -269,3 +364,57 @@ def get_editorial_type(editorial_type: str = "b_family_voices") -> dict:
 def get_editorial_type_a2(editorial_type: str = "b_family_voices") -> dict:
     """A2固有設定のみを返す(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01)。"""
     return EDITORIAL_TYPES[editorial_type]["a2"]
+
+
+def get_editorial_type_b1(editorial_type: str = "b_family_voices") -> dict:
+    """B1固有設定のみを返す(OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
+    PRODUCTION-WIRING-01)。"""
+    return EDITORIAL_TYPES[editorial_type]["b1"]
+
+
+def is_fact_attribution_mode_enabled(editorial_type: str = "b_family_voices") -> bool:
+    """OPEN-131: `family == "B"` かつ `fact_attribution_mode` がTrueの場合
+    のみTrueを返す(コードレベルgating、Trial-02第6節の設計結論どおり
+    prompt側の意味理解だけに依存しない)。"""
+    et = EDITORIAL_TYPES[editorial_type]
+    return et.get("family") == "B" and bool(et.get("fact_attribution_mode"))
+
+
+# ============================================================
+# OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01:
+# registry正本(required_segments、role文字列)から、Gate側
+# `verify_episode_audio_validation_gate(required_structure=...)`へ渡す
+# 解決済み構造(role文字列を実際のvoice名へ解決したもの)を組み立てる。
+# Gate側はこの関数の出力を参照して検証するだけで、別の正本を持たない。
+# ============================================================
+_ROLE_TO_VOICE_RESOLVERS = {
+    "narrator_charon": lambda voice_a, voice_b: "Charon",
+    "narrator_aoede_en": lambda voice_a, voice_b: "Aoede",
+    "narrator_aoede_ja": lambda voice_a, voice_b: "Aoede",
+    "narrator": lambda voice_a, voice_b: "Aoede",
+    "voice_a": lambda voice_a, voice_b: voice_a,
+    "voice_b": lambda voice_a, voice_b: voice_b,
+    None: lambda voice_a, voice_b: None,
+}
+
+
+def build_required_structure(level: str, voice_a: str, voice_b: str,
+                              editorial_type: str = "b_family_voices") -> dict:
+    """level: "b1" または "a2"。OPEN-129 Gate opt-in引数(required_structure)
+    へそのまま渡せる辞書を返す。"""
+    et = EDITORIAL_TYPES[editorial_type]
+    if level == "b1":
+        cfg = et["b1"]
+    elif level == "a2":
+        cfg = et["a2"]
+    else:
+        raise ValueError(f"unknown level: {level!r}")
+    resolved = tuple(
+        (name, _ROLE_TO_VOICE_RESOLVERS[role](voice_a, voice_b))
+        for name, role in cfg["required_segments"]
+    )
+    return {
+        "segments": resolved,
+        "key_phrase_ranks": cfg["key_phrase_ranks"],
+        "key_phrase_subkey_count": cfg["key_phrase_subkey_count"],
+    }

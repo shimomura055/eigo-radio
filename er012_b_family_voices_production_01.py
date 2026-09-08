@@ -77,6 +77,40 @@ import er012_b_family_editorial_type_registry_01 as registry
 EXTRA_SEGMENT_NAME = registry.EXTRA_SEGMENT_NAME  # "tension_reflection"
 
 # ============================================================
+# OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01:
+# B1経路用Fact Checker呼び出し(既存Production primitive、無変更で使用)。
+# `er012_b_family_voices_a2_production_01.py::run_fact_checker()`と1:1の
+# 実装(A2側は既に本Production runnerが呼ぶ形で存在していたが、B1側には
+# 同等の関数が無かったため新規追加した)。Phase 1の`main()`stage一覧
+# (prepare/voice_check/kp_reuse/scaffold/tts/assemble/player/all)には
+# 追加していない(Phase 1のB1経路は既存承認済み記事の音声化のみが範囲
+# であり、記事生成[Writer]・Fact Check自体はPhase 2待りのため。既定の
+# "all" stage出力を変えないための意図的な選択)。Phase 2でB1 Writerが
+# 追加された際、この関数をそのまま呼び出せる。
+# ============================================================
+import er002_ja_web_research_r3 as r3  # noqa: E402
+import er006_model_routing_contract_01 as routing  # noqa: E402
+
+
+def run_fact_checker(topic: str, article_text: str, voice_attribution_block: str = "") -> dict:
+    """voice_attribution_block: 既定""(後方互換)。呼び出し元がregistry.
+    is_fact_attribution_mode_enabled()==Trueの場合のみ非空文字列を渡す。"""
+    fc_prompt = r3.build_fact_check_prompt(topic, article_text, [], voice_attribution_block=voice_attribution_block)
+
+    def make_fc_fn():
+        return r3.make_fact_checker_fn(
+            fc_prompt, model=routing.require_model("WRITER_FACT_CHECK", routing.WRITER_FACT_CHECK_MODEL))
+
+    fc_result, fc_status, fc_attempts, fc_model, fc_response_id, fc_search_usage, fc_sources = \
+        r3.run_fact_checker_with_gates(make_fc_fn)
+    return {
+        "final_status": fc_status, "model": fc_model, "response_id": fc_response_id,
+        "web_search_call_count": fc_search_usage["web_search_call_count"] if fc_search_usage else None,
+        "attempts": len(fc_attempts), "result": fc_result, "attempts_detail": fc_attempts,
+    }
+
+
+# ============================================================
 # 5区切り構造parser(Trial-08/09由来、正式Production化)
 # ============================================================
 _HEADING_RE = re.compile(r"^(#{2,3})[ \t]+(.+?)\s*$", re.MULTILINE)

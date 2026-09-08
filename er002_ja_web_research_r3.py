@@ -238,10 +238,21 @@ def load_fact_check_prompt_template(path: str = FACT_CHECK_PROMPT_TEMPLATE_PATH)
     return restore.load_text_file(path)
 
 
-def build_fact_check_prompt(topic: str, article_text: str, writer_sources: list, template: Optional[str] = None) -> str:
+def build_fact_check_prompt(topic: str, article_text: str, writer_sources: list, template: Optional[str] = None,
+                             voice_attribution_block: str = "") -> str:
+    """voice_attribution_block: OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-
+    PRODUCTION-WIRING-01で追加した後方互換の任意引数。既定は""(未指定)で
+    あり、この場合は本関数の戻り値はこの引数追加以前とbyte単位で完全に
+    同一(A-Family経路[er003_v1_n3_01_articles_generate.py等]は本引数を
+    一切渡さないため、Prompt出力に影響しない)。非空文字列を渡した場合の
+    み、生成済みprompt本文の末尾に追記する(B-Family opt-in時のVoice別
+    帰属ルール文言、呼び出し元はB-Family Production runner側)。"""
     template = template if template is not None else load_fact_check_prompt_template()
     sources_block = "\n".join(f"- {s.get('title') or '(タイトル不明)'}: {s.get('url')}" for s in writer_sources) or "(参照ソースなし)"
-    return template.format(topic=topic, article_text=article_text, writer_sources_block=sources_block)
+    prompt = template.format(topic=topic, article_text=article_text, writer_sources_block=sources_block)
+    if voice_attribution_block:
+        prompt = f"{prompt}\n\n{voice_attribution_block}"
+    return prompt
 
 
 def make_fact_checker_fn(
