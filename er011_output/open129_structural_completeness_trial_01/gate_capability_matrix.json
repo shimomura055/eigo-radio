@@ -1,0 +1,23 @@
+{
+  "current_gate": "er003_v1_n3_01_assemble.py::verify_episode_audio_validation_gate()",
+  "inputs_checked": [
+    "tts_generation_results.json内に実在するsegments/key_phrasesの各entryのstatus(OK/ASR_VALIDATION_UNCERTAIN/HUMAN_REVIEW_LOCKED/STOPPED)",
+    "human_approved_segments.json(canonical_text sha256突合によるHuman Review承認確認)",
+    "narration_dir上の実ファイルsha256とtts_generation_results.json記録sha256の突合(ASSET_HASH_MISMATCH、ファイルが存在する場合のみ)",
+    "A2の6% slowdown必須post-process証跡(slowdown_applied、無い場合は_original.wav比率)",
+    "disfluency QA必須post-process証跡(disfluency_checked、level別mandatory segment)"
+  ],
+  "inputs_not_checked": [
+    "tts_generation_results.jsonのsegments/key_phrases辞書に、そもそもentry自体が存在しない(=完全欠落)segmentの検知。存在するentryしか走査しないため、生成時にentryが書かれなかったsegment(例: 生成script が途中で例外終了し、そのsegmentの結果を書く前にdisk上の旧wavだけが残った場合)はGate通過対象外としてスキップされ、assembly側は旧wav(未検証)をそのまま読み込む(ER-008-N7-CONTENT-AUDIO-QA-02と同型の既知failure mode)",
+    "voice割当(entry['voice'])が構造上期待される役割(narrator/voice_a/voice_b等)と一致しているかの突合(voiceフィールド自体はrecordされているが、Gateは一切参照しない)",
+    "余分な(構造上想定されていない)segment/key phraseの混入検知",
+    "level文字列(\"B1\"等)がA-Family/B-Familyのどちらの構造を指すかの区別(現状同一文字列を共有しており、構造定義自体がGate側に存在しない)",
+    "segment数の総量(期待15件・14件・13件等)がそもそも揃っているかの直接カウント"
+  ],
+  "known_failure_modes_grepped": [
+    "ER-008-N7-CONTENT-AUDIO-QA-02: Key Phrase 1件のTTSがSTOPPEDでも、disk上の前回実行(別Key Phraseセット)の古い音声をそのまま使ってしまった(entry自体は存在したが、別の理由でGate通過前のバグ、Gate導入の直接動機)",
+    "ER-008-N8-FINAL-QA-HARDENING-21: disfluency_checked証跡欠落(status==OKのみで判定していたための取りこぼし)",
+    "OPEN-112-THEME2-AUDIO-REVIEW-FIX-02: Point Twoでslowdown_applied=Falseにも関わらず無関係な旧_original.wavの存在だけで通過した抜け穴",
+    "OPEN-129(本Trialの起点、EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01Gate 3 item 8): 上記いずれもentryの'状態'は検証するが、entry自体の'有無の全体集合一致'は検証しない、という共通する未対策領域"
+  ]
+}
