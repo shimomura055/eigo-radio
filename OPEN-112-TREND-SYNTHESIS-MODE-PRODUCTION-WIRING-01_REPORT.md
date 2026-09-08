@@ -260,3 +260,127 @@ runner(`er012_b_family_production_runner_01.py`等)はこれら旧Trial
 - Git: G1(配線コード・テスト・Report・evidence)→G2(SSOT 3ファイル)の
   2段階commit、`git add`はファイル名指定のみ(`-A`/`.`不使用)、wav除外
   (本タスクはテキストのみで生成しておらず該当ファイルなし)。
+
+---
+
+## 11. 修正指示1回目への対応(Fable Gate 7差し戻し)
+
+Fableの受入判定(Gate 7)により、(1) A2のruntime evidenceが
+`NG_REVIEW_REQUIRED`止まり、(2) B1BのKey Phrase選定skip、(3) 費用上限
+超過、の3点が差し戻された。既存Loop Budget(`POINT_OVERLAP_ARTICLE_
+RETRY_MAX=2`)・Point Overlap閾値(0.40)は無変更のまま、以下を実施した。
+本節の実装コード: `er011_open112_trend_synthesis_production_wiring_01_
+a2_rerun_02.py`(新規、A2再実行)。既存
+`er011_open112_trend_synthesis_production_wiring_01_run.py`・
+`er003_v1_n3_01_articles_generate.py`・`er006_pool_pilot_01_writer.py`は
+一切変更していない。
+
+### 11.1 A2再実行(新規runとして最大2回まで)
+
+「同じProduction正式path」の解釈: `run_writer_for_theme()`はB1B・A2の
+両方を毎回生成する設計(既にOK到達済みのB1Bを再生成すると無駄な追加費用
+になる)ため、`run_writer_for_theme()`がA2 labelに対して実際に呼ぶのと
+**全く同一の関数列**(`gen.resolve_editorial_type_module_block` →
+`gen.build_common_block` → `gen.build_prompt` → `gen.run_one_pattern`、
+`apply_evidence_compression=True`既定)を、A2単体に絞って直接呼び出した
+(`er006_pool_pilot_01_writer.py` 66-87行と同一ロジック、B1Bループを
+省いただけ)。`gen.run_one_pattern()`内部のLoop Budget・Point Overlap
+閾値・Diagnostic Full Retry・Point Value QAは無変更のまま使用。
+
+保存先: `er011_output/open112_trend_synthesis_production_wiring_01/
+a2_rerun_02/attempt{1,2}/`(既存`a2/`evidenceは上書きしていない)。
+
+| 新規run | 内部Diagnostic Full Retry(記事全体再生成) | 最終Point Overlap ratio | 最終status |
+|---|---|---|---|
+| 元run(参考、既報告済み) | attempt0→2まで3回生成、全て`point_one`or`point_two`いずれかflagged継続 | point_one=0.414, point_two=0.455(共にflagged) | `NG_REVIEW_REQUIRED`(Loop Budget上限到達) |
+| 新規run 1回目(`a2_rerun_02/attempt1`) | 同様に3回生成、attempt0(p1=0.406flagged/p2=0.364)→attempt1(p1=0.342/p2=0.406flagged)→attempt2(p1=0.48flagged/p2=0.655flagged) | point_one=0.48, point_two=0.655(共にflagged、悪化) | `NG_REVIEW_REQUIRED`(Loop Budget上限到達) |
+| 新規run 2回目(`a2_rerun_02/attempt2`) | attempt0(p1=0.483flagged/p2=0.343)→attempt1(p1=0.361/p2=0.308、いずれもflagなし)で解消(記事全体retry 1回で解消) | point_one=0.361, point_two=0.308(共にflagなし) | `status=OK` |
+
+新規run 2回目でProduction正式path上`status=OK`に到達したため、3回目
+(許可された最大2回を超える追加run)は実行していない。`status=OK`到達後の
+下流QAは以下のとおり(いずれもnon-blocking advisory、既存運用どおり
+`status=OK`の判定材料にしていない):
+
+- Fact Checker: `verdict=REVIEW_REQUIRED`(「ますます」等の経年変化表現・
+  意向データを実績のように読む表現・観光白書の政策記述の解釈、の3点を
+  参考指摘として記録。矛盾[FAIL]ではない)。
+- Ledger Deviation Checker(Hook-aware): `LEDGER_COMPLIANT`(deviation
+  0件、局所Rewriteサイクル不要)。
+- Directional Fact Precheck: `DIRECTION_REVIEW_REQUIRED`(advisory)。
+
+**参考所見(対策は実装せず、論点として提示のみ)**: 3回の独立した生成
+(元run・新規1回目・新規2回目)を比較すると、内部Diagnostic Full Retryの
+1回目・2回目で必ずratioが単調に改善するわけではない(新規1回目は
+attempt0→2で悪化: 0.406→0.48)。一方、新規2回目はattempt0→1で明確に
+改善して解消した(0.483→0.361)。Trend Synthesis Focus Module
+(「意識と実際の行動のギャップ」という対比構造を書かせる指示)が、
+Point One/TwoでLedgerの同じ数値的Evidence(宿泊日数・アンケート回答率
+等)へ言及させやすく、Full Story側とのlexical overlapを高める傾向が
+ある可能性はある一方、既存Theme 2 Trial(`OPEN-112-TREND-THEME2-B-
+LEDGER-FIX-AND-A2-B1-TEXT-TRIAL-12`、editorial_mode配線前・Focus
+Module無し)のA2でも、§16の記録によればPoint Overlap Article Retryが
+1回発火している(1回目で解消、`NG_REVIEW_REQUIRED`までは至らなかった)。
+つまりFocus Module無しでもTheme 2 A2はPoint Overlapがflagされる余地が
+元々あり、Focus Moduleが唯一の原因と断定できる材料は今回の3 runsだけでは
+不十分。run-to-run varianceが大きく(同一prompt構造でも生成ごとに
+ratioが0.31〜0.66まで振れ、内部retryを重ねても単調に改善しない)、
+「Focus Module起因で悪化幅が増えている」可能性と「単純なsampling
+variance」を切り分けるには追加run(未実施、費用がかかる)が必要。この
+切り分け自体はFable/ユーザー判断事項として提示するのみで、本タスクでは
+対策(Focus Module修正・閾値変更等)を実装していない。
+
+### 11.2 B1B Key Phrase選定
+
+対象: 既存OK到達済みのB1B本文(`er011_output/open112_trend_synthesis_
+production_wiring_01/b1b/article.md`、無変更)。実行コード:
+`er011_open112_trend_synthesis_production_wiring_01_keyphrase_run.py`
+(既存、`er003_v1_n3_01_scaffold_generate.run_key_phrases()`をB1B用
+`process="B1_SUPPORT"`で呼ぶだけ、Production Key Phrase経路そのもの)。
+保存先: `er011_output/open112_trend_synthesis_production_wiring_01/
+b1b/key_phrases/`(新規、既存B1B evidenceの上書きなし)。
+
+- Selection: `KEY_WORDS_STRUCTURE_PASS`。
+- Canonicalization: `CANONICALIZATION_PASS`(5件、QA全項目PASS)。
+- Redundancy QA(5件相互の意味重複QA): 1回目`REDUNDANCY_NG`(rank2
+  "quiet contradiction" とrank3 "unresolved tension" が意味・使用場面・
+  概念的役割で重複と判定)→ 既存の選定やり直し機構(`KEY_PHRASE_
+  REDUNDANCY_RETRY_MAX`以内)で2回目`REDUNDANCY_PASS`。
+- 最終5件(rank・key_phrase・japanese_gloss): 1 "quiet contradiction"/
+  目立たない矛盾、2 "be read as proof"/証拠と受け取ってはいけない、
+  3 "median"/真ん中の値、4 "landmark-based itineraries"/名所を中心に
+  組んだ旅程、5 "take shape"/形になり始める。
+
+### 11.3 費用実績
+
+| 項目 | USD | 円(1USD=160円固定、`er005_stage7_cost_compute.py`と同一換算SSOT) |
+|---|---|---|
+| A2再実行 新規run 1回目(`a2_rerun_02/attempt1`、NG) | $0.0375 | ¥6.00 |
+| A2再実行 新規run 2回目(`a2_rerun_02/attempt2`、OK。Fact Checker/Directional Precheckのweb_search 15回分を含む) | $0.2111 | ¥33.78 |
+| B1B Key Phrase選定(selection×2+canonicalization+redundancy QA×2) | $0.0281 | ¥4.50 |
+| **合計** | **$0.2768** | **¥44.28** |
+
+上限¥50以内(超過なし)。raw usage log: `er011_output/
+open112_trend_synthesis_production_wiring_01/a2_rerun_02/raw_usage_
+log.jsonl`・`er011_output/open112_trend_synthesis_production_wiring_01/
+b1b/key_phrases/raw_usage_log.jsonl`。
+
+### 11.4 Gate 3チェックリスト項目4(runtime evidence)の更新
+
+§8表の項目4「runtime evidence」を以下のとおり更新する(他の項目・
+既存章は書き換えない)。
+
+**旧記載**: 「充足(A2は既存Loop Budget上限内でNG_REVIEW_REQUIRED、
+B1Bは`OK`到達)。§5」
+
+**新記載**: 充足。A2は新規run 2回目(`a2_rerun_02/attempt2`)で
+Production正式path上`status=OK`に到達(§11.1)。B1BはKey Phrase選定
+まで完了(`REDUNDANCY_PASS`、§11.2)。A2・B1Bとも`status=OK`+Key
+Phrase到達という、修正指示前より高い充足水準に更新。ただし新規run
+1回目は依然`NG_REVIEW_REQUIRED`であり(§11.1表)、run-to-run varianceが
+大きいことは§11.1の参考所見のとおり未解決の論点として残る。
+
+### 11.5 本節のSSOT・Git
+
+本タスクの指示によりSSOT編集・Git操作は行っていない(Lane B並行タスクとの
+衝突回避のため)。CURRENT_SPEC.md/DECISION_LOG.md/OPEN_ITEMS.mdへの
+反映・commitは、Fable側で別途一括して行う前提。
