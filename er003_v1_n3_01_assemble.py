@@ -281,7 +281,98 @@ def _segment_missing_mandatory_a2_slowdown(name: str, entry: dict, narration_dir
     return True
 
 
-def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
+# ============================================================
+# OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01:
+# opt-in(既定None=OFF、既存呼び出し元は全て無変更のためこの引数は渡され
+# ない)。「entryの状態」ではなく「entry集合そのものの完全性」(丸ごと
+# 欠落・余剰・voice割当の不一致)を検知する。reorderは検知対象外
+# (segmentの順序はtimeline builder[build_b1_timeline/build_a2_timeline
+# 等]が別途保証しており、tts_generation_results.jsonのdict順序自体は
+# 現行アーキテクチャで意味を持たないため、OPEN-129-AUDIO-GATE-
+# STRUCTURAL-COMPLETENESS-TRIAL-01のnegative controlどおり検知しない
+# 仕様)。正本(何がrequired_segmentsか)はこの関数の外(B-Family:
+# er012_b_family_editorial_type_registry_01.build_required_structure()、
+# A-Family: 本ファイルのderive_a_family_required_structure())に置き、
+# ここでは受け取ったrequired_structureを参照して検証するだけで、別の
+# 正本は持たない。Key Phraseのsub-key名称(english/japanese_meaning等の
+# schema drift)には依存せず、rank毎のsub-entry件数のみで判定する
+# (Trial-01で確認済みの、命名drift由来のfalse reject回避策)。
+# ============================================================
+def _check_structural_completeness(data: dict, required_structure: dict) -> list:
+    segs = data.get("segments") or {}
+    kp = data.get("key_phrases") or {}
+    expected_segments = required_structure["segments"]
+    expected_names = {name for name, _ in expected_segments}
+    problems = []
+
+    for name, expected_voice in expected_segments:
+        entry = segs.get(name)
+        if entry is None:
+            problems.append(f"{name}=MISSING(STRUCTURAL_COMPLETENESS)")
+            continue
+        actual_voice = entry.get("voice")
+        if expected_voice is not None and actual_voice is not None and actual_voice != expected_voice:
+            problems.append(f"{name}=VOICE_MISMATCH(expected={expected_voice} actual={actual_voice})"
+                             "(STRUCTURAL_COMPLETENESS)")
+
+    for name in sorted(n for n in segs if n not in expected_names):
+        problems.append(f"{name}=UNEXPECTED_EXTRA_SEGMENT(STRUCTURAL_COMPLETENESS)")
+
+    expected_ranks = {str(i) for i in range(1, required_structure["key_phrase_ranks"] + 1)}
+    subkey_count = required_structure["key_phrase_subkey_count"]
+    for rank_str in sorted(expected_ranks, key=int):
+        sub = kp.get(rank_str)
+        if sub is None:
+            problems.append(f"kp{rank_str}=MISSING_KEY_PHRASE_RANK(STRUCTURAL_COMPLETENESS)")
+            continue
+        if len(sub) < subkey_count:
+            problems.append(f"kp{rank_str}=INCOMPLETE_KEY_PHRASE_SUBENTRIES(has {len(sub)}, "
+                             f"expected {subkey_count})(STRUCTURAL_COMPLETENESS)")
+    for rank_str in sorted(r for r in kp if r not in expected_ranks):
+        problems.append(f"kp{rank_str}=UNEXPECTED_EXTRA_KEY_PHRASE_RANK(STRUCTURAL_COMPLETENESS)")
+
+    return problems
+
+
+# A-Family用の期待構造(正本)。load_b1_sources()/load_a2_sources()/
+# build_b1_timeline()/build_a2_timeline()が実際に読み込む・使うsegment名
+# から導出した一覧(既存関数は無変更、新規追加のみ)。full_story_part1/2・
+# point_one/point_twoは、既存Production実データ(n3_01 3テーマ・rerun_04)
+# でvoiceフィールドが常にNone(未記録)であるため、expected_voice=Noneと
+# して既知の後方互換として扱う(OPEN-129-AUDIO-GATE-STRUCTURAL-
+# COMPLETENESS-TRIAL-01 Part 3と同じ扱い、false reject防止)。
+A_FAMILY_B1_REQUIRED_SEGMENTS = (
+    ("topic_intro", "Charon"), ("preview", "Charon"),
+    ("comment_1", "Charon"), ("comment_2", "Charon"), ("comment_3", "Charon"), ("comment_4", "Charon"),
+    ("point_one_heading", "Aoede"), ("point_two_heading", "Aoede"),
+    ("full_story_part1", None), ("full_story_part2", None),
+    ("point_one", None), ("point_two", None),
+    ("in_one_line", None),
+)
+A_FAMILY_A2_REQUIRED_SEGMENTS = (
+    ("topic_intro", "Aoede"), ("japanese_title", "Aoede"), ("preview", "Aoede"),
+    ("comment_1", "Aoede"), ("comment_2", "Aoede"), ("comment_3", "Aoede"), ("comment_4", "Aoede"),
+    ("point_one_heading", "Aoede"), ("point_two_heading", "Aoede"),
+    ("full_story_part1", "Aoede"), ("full_story_part2", "Aoede"),
+    ("point_one", "Aoede"), ("point_two", "Aoede"),
+    ("in_one_line", "Aoede"),
+)
+
+
+def derive_a_family_required_structure(level: str) -> dict:
+    """OPEN-129 opt-in引数向け。level="B1"/"A2"。A-Family用の正本はここ
+    (このモジュール)に置き、Gate側(本ファイルの`verify_episode_audio_
+    validation_gate`自身)は受け取った辞書を参照するだけ。"""
+    if level == "B1":
+        segs = A_FAMILY_B1_REQUIRED_SEGMENTS
+    elif level == "A2":
+        segs = A_FAMILY_A2_REQUIRED_SEGMENTS
+    else:
+        raise ValueError(f"unknown level for A-Family required structure: {level!r}")
+    return {"segments": segs, "key_phrase_ranks": 5, "key_phrase_subkey_count": 2}
+
+
+def verify_episode_audio_validation_gate(out_dir: str, level: str, required_structure: dict | None = None) -> None:
     result_path = f"{out_dir}/audit/tts_generation_results.json"
     if not os.path.exists(result_path):
         return
@@ -313,6 +404,9 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str) -> None:
                 blocked.append(f"{seg_key}={final}(MISSING_MANDATORY_DISFLUENCY_QA)")
             if _segment_asset_hash_stale(sub_entry, narration_dir):
                 blocked.append(f"{seg_key}={final}(ASSET_HASH_MISMATCH)")
+
+    if required_structure is not None:
+        blocked.extend(_check_structural_completeness(data, required_structure))
 
     if blocked:
         raise RuntimeError(
