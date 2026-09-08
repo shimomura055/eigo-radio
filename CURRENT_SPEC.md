@@ -1,6 +1,19 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-08(第14弾、PM-CLOSEOUT-CONSOLIDATION-19、Fable Gate 7
+最終受入)**: Fableが`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_
+REPORT.md`(§1〜§11、修正指示1回目への対応[A2新規run2回目でstatus=OK
+到達・B1B Key Phrase Redundancy PASSまで完走]を含む)をGate 7で照合し、
+Trend Synthesis modeを`PRODUCTION_WIRED`として正式受入した。下記
+「## News Editorial Mode(Trend Synthesis)」節の該当6行を
+`PRODUCTION_WIRED候補(Fable受入待ち)`から`PRODUCTION_WIRED`へ更新した
+(内容自体は無変更)。据え置き4件(Mode判定自動化・News Ledger自動供給・
+Reference Digest追加検証・Diagnostic Full Retry診断語彙拡張)はTrial
+候補として継続、Point Overlap ratioのrun間分散(0.31〜0.66)を対策未実装の
+観測事項として記録した(いずれも`USER_DECISION_REQUIRED`候補、実装なし)。
+詳細は`OPEN_ITEMS.md`OPEN-112行、DECISION_LOG.md
+`PM-CLOSEOUT-CONSOLIDATION-19`エントリ参照。
 **最終更新: 2026-09-08(第13弾、PM-CLOSEOUT-CONSOLIDATION-18、参照のみ・
 仕様変更なし)**: Lane B A2完成Trial(`EDITORIAL-B-FAMILY-VOICES-A2-FREE-
 ADDRESS-COMPLETION-TRIAL-01/02`、Trial-02=VALIDATED、試聴・承認待ち)、
@@ -358,13 +371,13 @@ Focus Module採否・Engagement根底指示のDiscoveryへの適用)は本Decisi
 
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| 配線方式 | `er003_v1_n3_01_articles_generate.py::build_common_block()`へ後方互換オプション引数`editorial_type_module_block: str = ""`を追加し、`COMMON_BLOCK_TEMPLATE`内(【Spoken-first原則(数字の扱い)】直前)に対応する`{editorial_type_module_block}`placeholderを追加した。既定値`""`の場合、既存A-Family全出力はバイト単位で不変(単体テストで固定)。Trial専用の`.replace()`アンカー置換方式には依存しない | `PRODUCTION_WIRED候補(Fable受入待ち)`(配線のみ、Gate 3詳細は`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_REPORT.md`) | 同上 | 2026-09-08 |
-| Mode指定方式 | `er006_pool_pilot_01_writer.py::run_writer_for_theme()`(Production Writer正式初回経路)へ`editorial_mode: str \| None = None`引数を追加。`gen.resolve_editorial_type_module_block(editorial_mode)`が既知のmode文字列(現状`"trend_synthesis"`のみ)をModule本文へ解決し、未知の値はfail-closedで`ValueError`。Mode判定(記事内容から自動でmodeを推定する処理)は実装していない(人間が呼び出し時に明示的に渡す) | `PRODUCTION_WIRED候補(Fable受入待ち)`(手動指定のみ、自動判定は未実装) | 同上 | 2026-09-08 |
-| Focus Module内容 | `TREND_SYNTHESIS_FOCUS_MODULE_BLOCK`(OPEN-112-TREND-SYNTHESIS-MINIMAL-PROMPT-TRIAL-09でVALIDATED、内容無変更で正式採用)。Main Storyでの個々Signal列挙禁止・Trend overclaim禁止・Point One/TwoでのSignal意味づけ分担・Point TwoでのCounter-signal/limitation優先検討・evidence strength混同禁止・mixed明示 | `PRODUCTION_WIRED候補(Fable受入待ち)` | 同上 | 2026-09-08 |
-| Engagement/Storytelling原則 | `TREND_SYNTHESIS_ENGAGEMENT_BLOCK`(OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10施策1でVALIDATED、内容無変更で正式採用)。時系列列挙型Main Story禁止+反転・対比・矛盾等の技法検討。**Trend Synthesis mode限定の採用であり、Discovery等他Editorial Typeの根底Promptへは適用しない**。施策2(Reference Digest)は今回のスコープに含めない(効果不明瞭、`USER_DECISION_REQUIRED`継続、OPEN_ITEMS残件) | `PRODUCTION_WIRED候補(Fable受入待ち)`(Trend Synthesis限定) | 同上 | 2026-09-08 |
-| retry/fallback整合 | Diagnostic Full Retry(`build_diagnostic_retry_prompt()`)はoriginal_prompt(Focus Module込み)へ診断sectionを追加するだけで、`COMMON_BLOCK_TEMPLATE`/`build_common_block()`を再呼び出ししないため、retry後もmodeは自動的に保持される。Evidence Compression Editor・Point Overlap QA・Fact Checker・Ledger Deviation Checkerはいずれも生成済み記事テキストのみを操作し、prompt再構築を行わないためmode非依存で無変更のまま機能する | `PRODUCTION_WIRED候補(Fable受入待ち)`(既存機構の無変更利用、コード追跡+単体テストで確認) | 同上 | 2026-09-08 |
+| 配線方式 | `er003_v1_n3_01_articles_generate.py::build_common_block()`へ後方互換オプション引数`editorial_type_module_block: str = ""`を追加し、`COMMON_BLOCK_TEMPLATE`内(【Spoken-first原則(数字の扱い)】直前)に対応する`{editorial_type_module_block}`placeholderを追加した。既定値`""`の場合、既存A-Family全出力はバイト単位で不変(単体テストで固定)。Trial専用の`.replace()`アンカー置換方式には依存しない | `PRODUCTION_WIRED`(配線のみ、Gate 3詳細は`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_REPORT.md`) | 同上 | 2026-09-08 |
+| Mode指定方式 | `er006_pool_pilot_01_writer.py::run_writer_for_theme()`(Production Writer正式初回経路)へ`editorial_mode: str \| None = None`引数を追加。`gen.resolve_editorial_type_module_block(editorial_mode)`が既知のmode文字列(現状`"trend_synthesis"`のみ)をModule本文へ解決し、未知の値はfail-closedで`ValueError`。Mode判定(記事内容から自動でmodeを推定する処理)は実装していない(人間が呼び出し時に明示的に渡す) | `PRODUCTION_WIRED`(手動指定のみ、自動判定は未実装) | 同上 | 2026-09-08 |
+| Focus Module内容 | `TREND_SYNTHESIS_FOCUS_MODULE_BLOCK`(OPEN-112-TREND-SYNTHESIS-MINIMAL-PROMPT-TRIAL-09でVALIDATED、内容無変更で正式採用)。Main Storyでの個々Signal列挙禁止・Trend overclaim禁止・Point One/TwoでのSignal意味づけ分担・Point TwoでのCounter-signal/limitation優先検討・evidence strength混同禁止・mixed明示 | `PRODUCTION_WIRED` | 同上 | 2026-09-08 |
+| Engagement/Storytelling原則 | `TREND_SYNTHESIS_ENGAGEMENT_BLOCK`(OPEN-112-TREND-ENGAGEMENT-REFERENCE-AB-TRIAL-10施策1でVALIDATED、内容無変更で正式採用)。時系列列挙型Main Story禁止+反転・対比・矛盾等の技法検討。**Trend Synthesis mode限定の採用であり、Discovery等他Editorial Typeの根底Promptへは適用しない**。施策2(Reference Digest)は今回のスコープに含めない(効果不明瞭、`USER_DECISION_REQUIRED`継続、OPEN_ITEMS残件) | `PRODUCTION_WIRED`(Trend Synthesis限定) | 同上 | 2026-09-08 |
+| retry/fallback整合 | Diagnostic Full Retry(`build_diagnostic_retry_prompt()`)はoriginal_prompt(Focus Module込み)へ診断sectionを追加するだけで、`COMMON_BLOCK_TEMPLATE`/`build_common_block()`を再呼び出ししないため、retry後もmodeは自動的に保持される。Evidence Compression Editor・Point Overlap QA・Fact Checker・Ledger Deviation Checkerはいずれも生成済み記事テキストのみを操作し、prompt再構築を行わないためmode非依存で無変更のまま機能する | `PRODUCTION_WIRED`(既存機構の無変更利用、コード追跡+単体テスト+実runtime evidenceで確認) | 同上 | 2026-09-08 |
 | Research/Ledger供給経路 | Production Writerへの入力Ledgerは、既存の承認済みTheme 2 Ledger(手動作成・手動修正)をファイルとしてそのまま使う手順が正式initial path。既存自動Research pipelineの出力形式との互換性は**未検証(不明)**。自動供給経路への統合は今回配線しない(`USER_DECISION_REQUIRED`、OPEN_ITEMS残件) | `USER_DECISION_REQUIRED`(現状=手動供給のみ) | 同上 | 2026-09-08 |
-| Trend Gate・Mode判定の記録 | Trend Gate 6条件+Mode判定2問チェックリストの判定は自動化せず、`run_writer_for_theme(..., trend_gate_checklist=...)`で渡された**手動判定結果**を、`run_metadata.json`(新規ファイル、既存`articles_run_summary.json`のschemaは変更しない)へそのまま記録する仕組みのみ実装した | `PRODUCTION_WIRED候補(Fable受入待ち)`(記録のみ、自動判定なし) | 同上 | 2026-09-08 |
+| Trend Gate・Mode判定の記録 | Trend Gate 6条件+Mode判定2問チェックリストの判定は自動化せず、`run_writer_for_theme(..., trend_gate_checklist=...)`で渡された**手動判定結果**を、`run_metadata.json`(新規ファイル、既存`articles_run_summary.json`のschemaは変更しない)へそのまま記録する仕組みのみ実装した | `PRODUCTION_WIRED`(記録のみ、自動判定なし) | 同上 | 2026-09-08 |
 | 据え置き4件 | Mode判定自動化・News Ledger自動供給・Reference Digest・Diagnostic Full Retry診断語彙拡張は、いずれも今回の配線の必須条件ではないため仕様化していない(Open Item/Trial候補として残置、下記OPEN_ITEMS.md OPEN-112行参照) | `USER_DECISION_REQUIRED`(defer継続) | 同上 | 2026-09-08 |
 
 ## Cross-level仕様(A2/B1/B2共通)

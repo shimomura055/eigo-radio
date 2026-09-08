@@ -8166,6 +8166,75 @@ runner.py`+`er012_output/editorial_b_voices_a2_free_address_02/`
 `DECISION_LOG.md`・`OPEN_ITEMS.md`)をG3としてファイル名指定でcommitし
 `origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-19: Trend Synthesis modeをGate 7で`PRODUCTION_WIRED`として最終受入、A-1修正分Git反映
+
+**受入判定**: Fableが`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_
+REPORT.md`(§1〜§11、修正指示1回目への対応分[§11]を含む)をGate 7で照合し、
+Trend Synthesis modeを`PRODUCTION_WIRED`として正式受入した。
+
+**受入根拠**:
+- Gate 3チェックリスト13項目すべて充足(修正後)。特に項目4(runtime
+  evidence)は、A2が新規run 2回目(`a2_rerun_02/attempt2`)で
+  Production正式path上`status=OK`に到達、B1BはKey Phrase選定まで完走し
+  `REDUNDANCY_PASS`(1回目`REDUNDANCY_NG`→選定やり直し機構で2回目PASS)。
+- Gate 4 Dangling Referenceチェック: Production初回path・retry・
+  fallback・regeneration・validator・Human Reviewいずれの経路にも
+  Trialスクリプトへのimportなし(§9)。
+- 既定値(`editorial_type_module_block=""`)で既存A-Family全出力が
+  バイト単位で不変であることをgolden-masterテスト3件で固定確認(§2)。
+- retry/fallback整合: Diagnostic Full Retryは`original_prompt`を
+  そのまま部分文字列として保持するのみでprompt再構築を行わないため、
+  modeが自動的に保持されることをコード追跡+実run(B1B2回・A2複数回の
+  Diagnostic Full Retry発火)で確認(§3・§5・§11.1)。
+- Regression: `run_project_regression.py` collected=2195 passed=2192
+  failed=3(既知・無関係)errors=0(新規failureなし、§7)。
+- 費用: 初回run約¥120.12(当初上限¥100を超過。原因は誤ってIran/Hormuz
+  Trialテーマを「Theme 2」として使用した作業ミスで、退避・開示済み[§0])
+  +修正指示対応run約¥44.28(上限¥50以内、§11.3)。合計約¥164.40。
+
+**是正記録(費用超過の扱い)**: 初回上限超過は作業ミスに起因するものと
+判定し、追加の懲罰的措置は取らない。誤りに気づいた時点で成果物を削除せず
+`_superseded_wrong_theme_iran_hormuz/`へ退避し、正しいTheme 2 Ledgerで
+再実行した経緯・実費用いずれも隠蔽せずReportへ明記されていることを、
+受入条件の一部として確認した。
+
+**残件(Trial候補として維持、Production変更なし)**: 以下4件は仕様化せず
+Open Item/Trial候補として維持する(状態はOPEN-112本体残件`DEFERRED`の
+まま不変): (1) Mode判定自動化、(2) News Ledger自動供給(現状=承認済み
+Ledgerの手動供給が正式initial path)、(3) Reference Digest追加検証、
+(4) Diagnostic Full Retry診断語彙拡張。
+
+**観測事項(対策未実装、判断事項として記録)**: A2のPoint Overlap ratioが
+run間で0.31〜0.66と分散が大きく(元run/新規1回目/新規2回目の3 runsで
+確認)、Trend Synthesis Focus Module特有の傾向か単純なsampling
+varianceかは今回の3 runsだけでは切り分けられない(既存Theme2
+Trial-12[Focus Module無し]でも同種のPoint Overlap Article Retry発火
+実績があるため、Focus Moduleが唯一の原因とは断定できない、§11.1参考
+所見)。対策(Focus Module修正・閾値変更等)は実装していない。分散低減
+Trialの実施要否は`USER_DECISION_REQUIRED`候補として記録のみ行う。
+
+**Gate 1分類**: Trend Synthesis mode = `PRODUCTION_WIRED`(Fable受入
+確定)。既存据え置き3件(Discovery 4-layer採否・trend overclaim
+severity方針・Point Overlap閾値/Point長さ目安見直し)・通常News
+(Major/Daily News)ドラフトの採否判断待ちは不変。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-112行へ追記(mode=`PRODUCTION_WIRED`、
+Fable受入根拠、残件4件をTrial候補として明記、Point Overlap分散の観測
+事項を追記)。`CURRENT_SPEC.md`「## News Editorial Mode(Trend
+Synthesis)」節の該当6行の状態表記を`PRODUCTION_WIRED候補(Fable受入
+待ち)`から`PRODUCTION_WIRED`へ更新、冒頭changelogへ第14弾を追加。
+`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`を本タスク用に
+上書きした。
+
+**根拠レポート**: `OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01_
+REPORT.md`(§0〜§11、修正指示1回目への対応[§11]を含む)。Git操作: A-1
+修正分(`er011_open112_trend_synthesis_production_wiring_01_a2_rerun_
+02.py`・Report §11更新分・`er011_output/open112_trend_synthesis_
+production_wiring_01/a2_rerun_02/`・`.../b1b/key_phrases/`配下の
+json/md/txt/jsonl、wav無し)をG1としてcommit、SSOT 3ファイル
+(`CURRENT_SPEC.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG2として
+ファイル名指定でcommitし`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
