@@ -8343,6 +8343,94 @@ structural_completeness_trial_01/`配下のjson/md)をG1、SSOT2ファイル
 し`origin/main`へpush。並列稼働中のLane A Trial-04(`er011_output/
 daily_news_focus_layer_comparison_trial_04/`)は本タスクで触っていない。
 
+## ユーザー決定(2026-09-09): Fact Checker候補A'(OPEN-131)・OPEN-129
+案(a)を`APPROVED_FOR_PRODUCTION`→配線(Sonnet委任、Fable受入待ち)
+
+ユーザーが2026-09-09、以下2件を正式承認した(いずれも
+`APPROVED_FOR_PRODUCTION`、Gate 3配線後に条件充足時のみ
+`PRODUCTION_WIRED`とする前提)。
+
+**(1) Fact Checker候補A'(OPEN-131)**: `EDITORIAL-B-FAMILY-MULTI-VOICE-
+FACT-ATTRIBUTION-TRIAL-02_REPORT.md`で検証済みの候補A'(Ledger側Voice別
+evidenceタグ`VOICE_n_EVIDENCE`+Fact Checkerへの「Voice本文は出典明記
+不要(ただし事実誤り・実在人物引用は従来どおり検証)」opt-inルール)を
+採用。family gatingはコードレベル(`family=="B"`判定)、既定OFF・opt-in
+有効化、A-Family非影響・A-Family Promptバイト不変を条件とする。
+
+**(2) OPEN-129案(a)**: `OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
+TRIAL-01_REPORT.md`で検証済みの案(a)(family+level複合キーで
+required_segmentsを定義、Audio Gate側で正式構造と実Assemblyを突合)を
+採用。**mandatory化は未承認、今回はopt-in導入のみ**(既定OFF)。
+required_segmentsの正本は生成側に持たせ、Gate側は参照して検証する側に
+徹する。
+
+## OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01・
+OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01:
+Sonnet委任配線結果
+
+上記ユーザー決定に基づき、Sonnetが同一タスク内で2件の配線を順次実施
+した(共有ファイル・registryが重なるため並列不可、Lane A Trial-04は
+本タスクで触っていない)。
+
+**OPEN-131実装**: `er002_ja_web_research_r3.py::build_fact_check_
+prompt()`へ後方互換引数`voice_attribution_block: str = ""`追加(既定
+byte不変)。`er012_b_family_editorial_type_registry_01.py`へ
+`fact_attribution_mode`(既定OFF)・`is_fact_attribution_mode_enabled()`
+(`family=="B"`かつflag Trueのみ)・`build_voice_attribution_block()`
+(Ledgerの`[VOICE_n_EVIDENCE]`タグ抽出+ルール文言)を追加。A2側既存
+`run_fact_checker()`(`er012_b_family_voices_a2_production_01.py`)へ
+同引数を追加、B1側に同一実装を新規追加
+(`er012_b_family_voices_production_01.py`)。B-Family Production runner
+(`er012_b_family_production_runner_01.py`)にopt-in入口`run_fact_check_
+b1/a2()`を追加(既定の"all" stageには未接続。事前確認の結果、同runnerの
+既定パイプラインはB1/A2いずれも既存承認済み記事の音声化のみが範囲で
+あり、Fact Checker自体を呼んでいなかったため)。Runtime evidence(実
+Production関数、web_search使用、費用¥10.24): B1/A2両実記事でopt-in ON
+時verdict REVIEW_REQUIRED→PASS、unsupported_specific_claims 5/6件→0件。
+実際の`er010_ledger_local_rewrite_09.apply_rewrites()`で1文を言い換えた
+後も再Fact CheckでPASS維持(帰属維持を実出力で確認)。新規13テストPASS。
+A-Family経路は無変更(byte一致確認済み)。
+
+**OPEN-129実装**: 共有Audio Validation Gate(`er003_v1_n3_01_assemble.
+py::verify_episode_audio_validation_gate()`)へ`required_structure:
+dict | None = None`のopt-in引数(既定OFF)を追加。正本はB-Family=
+`er012_b_family_editorial_type_registry_01.py::build_required_
+structure()`(新規`B_FAMILY_B1_REQUIRED_SEGMENTS`追加)、A-Family=同
+`assemble.py`内新規`derive_a_family_required_structure()`。既存3呼び
+出し元は無変更(既定OFF)。Key Phrase sub-key命名drift
+(`english/japanese_meaning`等)は名称統一せず件数ベース判定で対応。
+Runtime evidence(実Gate関数を直接駆動、費用¥0): 既存完成episode13件
+中12件でfalse reject 0(残り1件`editorial_b_voices_a2_free_address_02`
+は既知true positive)、4経路×5ケースで検知12/12・期待一致20/20。新規
+15テストPASS。**mandatory化は今回も未実装**(3V/4V Trialと次回
+A-Family Production run実績後に別途`USER_DECISION_REQUIRED`)。
+
+**Regression**: `run_project_regression.py`はcollected=2242,
+passed=2239, failed=3。失敗3件は`er003_test_p2j_investigate.py`の
+テスト総数reconciliation定数比較テストで、新規テスト28件追加による
+カウント差異のみが原因(同ファイル冒頭docstring記載の既知の性質、
+機能的回帰ではない)。
+
+**Status**: 両者とも`PRODUCTION_WIRED候補(Fable受入待ち)`。Sonnetは
+`PRODUCTION_WIRED`を宣言していない。
+
+**SSOT反映**: `CURRENT_SPEC.md`「B-Family(Voices)Editorial Type」節の
+Fact Checker行・OPEN-129整合行を更新。`OPEN_ITEMS.md`OPEN-131/OPEN-129
+行へ配線結果を追記(Status・commit hash)。
+
+**根拠レポート**: `OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-
+WIRING-01_REPORT.md`・`OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
+PRODUCTION-WIRING-01_REPORT.md`。Git操作: OPEN-131関連ファイル(module
+3本+registry+新規test+Report+evidence script2本+evidence出力)をG1
+(commit `3c3d7a0`)、OPEN-129関連ファイル(assemble.py+新規test+Report+
+evidence script+evidence出力)をG2(commit `2814ed5`)、SSOT3ファイル
+(`CURRENT_SPEC.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`)をG3として
+ファイル名指定でcommitし`origin/main`へpush(registry.pyは両Partの追加
+を含むため、ファイル全体としてはG1[`3c3d7a0`]へ含めた。G2の
+commit messageにその旨明記)。並列稼働中のLane A Trial-04
+(`er011_output/daily_news_focus_layer_comparison_trial_04/`)は本タスク
+で触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

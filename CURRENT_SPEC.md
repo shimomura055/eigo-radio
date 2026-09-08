@@ -1,6 +1,25 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新: 2026-09-09(第19弾、OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-
+PRODUCTION-WIRING-01・OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
+PRODUCTION-WIRING-01、Sonnet配線・Fable受入待ち)**: 「## B-Family
+(Voices)Editorial Type」節の2行を更新した。(1) Fact Checker
+`REVIEW_REQUIRED`行: 候補A'(Voice別evidenceタグ+opt-inルール)を
+`er012_b_family_editorial_type_registry_01.py::fact_attribution_mode`
+(既定OFF、`family=="B"`のコードレベルgating)として配線。ON時、実記事2本
+でverdict REVIEW_REQUIRED→PASS(unsupported claims 5/6件→0件)へ改善、
+Local Rewrite後も帰属維持を実出力で確認(費用¥10.24)。(2) OPEN-129整合
+行: 共有Audio Validation Gate(`verify_episode_audio_validation_gate()`)
+へ`required_structure`のopt-in引数(既定OFF)を追加し、family+level複合
+キーの期待構造(正本は生成側)と実segment集合を突合できるようにした
+(delete/voice_swap/extra検知、reorder対象外)。既存完成episode12/12で
+false reject 0、4経路×5ケースで検知12/12(費用¥0)。いずれも既定OFF・
+mandatory化なし、A-Family経路は無変更(byte一致テストで固定)。両者とも
+Status`PRODUCTION_WIRED候補(Fable受入待ち)`。詳細は`OPEN_ITEMS.md`
+OPEN-131/OPEN-129行、`DECISION_LOG.md`該当エントリ、`OPEN-131-MULTI-
+VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01_REPORT.md`・`OPEN-129-AUDIO-
+GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01_REPORT.md`参照。
 **最終更新: 2026-09-09(第18弾、PM-CLOSEOUT-CONSOLIDATION-25、Fable最終
 受入)**: 「## B-Family(Voices)Editorial Type」節「Production経路」行の
 状態表記を`PRODUCTION_WIRED`(Gate 3、Fable受入待ち)から`PRODUCTION_WIRED`
@@ -425,8 +444,8 @@ Hook/Voice A/Voice B/Tension/Closing)を持つEditorial Type。B1は
 | Key Phrase | 選定(used_form/日本語gloss)はB1 Phase 1と同一。英語Componentは既存Master Audio Store経由(Aoede)、日本語glossのみ標準A2 Aoede経路で生成 | `PRODUCTION_WIRED` | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-5) | 2026-09-09 |
 | Audio Validation Gate level | 標準"A2"文字列ではなく`"B_FAMILY_A2"`を使う(標準"A2"のPoint本文向けslowdown必須チェックが、名前が同じだが別物であるVoice A/B本文へ誤爆するため)。`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL`へ標準A2と同一の対象segment集合(`in_one_line`/`point_one_heading`/`point_two_heading`)で`"B_FAMILY_A2"`キーを登録(共有`er003_v1_n3_01_assemble.py`、この1エントリ追加のみ) | `PRODUCTION_WIRED` | 同上、EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(Gate 3 item7) | 2026-09-09 |
 | 語数・文長(今回限りの許容) | 11語超の文18/38・18語超の文2/38(Voice B・Closing各1文)を、新しい上限を設けずそのまま許容した(今回1記事限りの実測値記録であり、恒久的な新CEFR-A2数値ルールではない) | `USER_DECISION_REQUIRED`扱いではなく今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02(B-A2-5) | 2026-09-09 |
-| Fact Checker `REVIEW_REQUIRED`(複合Voice帰属) | Voice A/Bは複合的な一人称語りであり実在個人の発言ではないため、発言者・調査名が示せずFact Checkerが`REVIEW_REQUIRED`と判定する既知の特性がある。今回(2026-09-09承認記事)はユーザー確認済みとして扱うが、**恒久的なnon-blocking運用にはしない**(機械的な判別方法はOPEN-131で別途Trial中) | 今回限りの運用注記(恒久ルール化はしない) | EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-KEYPHRASE-REGEN-04 | 2026-09-09 |
-| OPEN-129整合 | 既存Audio Validation Gateは「構造上あるべきsegment数との一致」を検証しない(OPEN-129、共有Gate側は未対策のまま)。B-Family A2はLane B runner側の完全性チェック(`er012_b_family_voices_a2_production_01.py::check_required_segments_completeness()`、registryの`required_segments`と実segment_status/voice解決結果を突合)で対策済み。共有Gate自体は変更していない | `PARTIAL`(Lane B側のみ対策、共有Gate側はOPEN-129のまま) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01(Gate 3 item8) | 2026-09-09 |
+| Fact Checker `REVIEW_REQUIRED`(複合Voice帰属) | 候補A'(Ledger側`VOICE_n_EVIDENCE`タグ+「Voice本文は出典明記不要(ただし事実誤り・実在人物引用は従来どおり検証)」のopt-inルール)をProduction配線した。`er012_b_family_editorial_type_registry_01.py::fact_attribution_mode`(既定OFF、`family=="B"`のコードレベルgating)。ON時、実記事2本(B1/A2)でverdict REVIEW_REQUIRED→PASS、unsupported_specific_claims 5/6件→0件へ改善(runtime evidence実測)。Local Rewrite後も帰属維持を実出力で確認 | `PRODUCTION_WIRED候補(Fable受入待ち)`、既定OFF・opt-in・mandatory化なし | OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01 | 2026-09-09 |
+| OPEN-129整合 | 共有Audio Validation Gate(`er003_v1_n3_01_assemble.py::verify_episode_audio_validation_gate()`)へ、`required_structure: dict \| None = None`のopt-in引数(既定OFF)を追加し、family+level複合キーの期待構造(正本はB-Family=`er012_b_family_editorial_type_registry_01.py::build_required_structure()`、A-Family=同ファイルの新規`derive_a_family_required_structure()`)と実`tts_generation_results.json`を突合(delete/voice_swap/extra segment検知、reorderは対象外)できるようにした。既存3呼び出し元(`load_b1_sources`/`load_a2_sources`/`load_a2_sources_for_b_family`)は無変更(引数省略のまま)。既存完成episode12/12でfalse reject 0、4経路×5ケースで検知12/12(runtime evidence実測) | `PRODUCTION_WIRED候補(Fable受入待ち)`、opt-in導入のみ・**mandatory化は未承認**(別判断) | OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01 | 2026-09-09 |
 | Production経路 | `er012_b_family_editorial_type_registry_01.py`(A2設定`get_editorial_type_a2()`)・`er012_b_family_voices_a2_production_01.py`(Writer/Comment/日本語タイトル/Key Phrase/Voice A/B slowdown TTS/Assembly loader・timeline)・`er012_b_family_production_runner_01.py`(`level="a2"`分岐、Trialスクリプトは一切importしない) | `PRODUCTION_WIRED`(2026-09-09 Fable最終受入、commit `2b2f266`/`2fbeee3`) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 | 2026-09-09 |
 
 **最終更新: 2026-09-09(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、
