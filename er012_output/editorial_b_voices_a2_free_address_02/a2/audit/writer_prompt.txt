@@ -1,0 +1,67 @@
+【本Trial専用の作業指示(ユーザー決定B-A2-1/B-A2-2/B-A2-4/B-A2-5、2026-09-08承認)】
+これは新規記事の生成ではありません。以下に示す、承認済みのB1(CEFR-B1相当)記事本文を、
+「同一人物・同一立場のまま」CEFR-A2レベルへ翻案(簡略化リライト)する作業です。
+
+- 記事の物理構造(Markdown見出し5個: `## `見出し1つ→`### `見出し2つ→`## `見出し2つ、
+  この順序・見出しレベルを厳守)は、入力と完全に同じ構成のまま維持してください。11パート構造への
+  組み替えは行わないでください。
+- タイトル(`# `見出し)は入力と一字一句同じものをそのまま使ってください。
+- 一人称"I"による語り口は、One Voice(1つ目の###見出し)・Another Voice(2つ目の###見出し)の
+  両方で維持してください。
+- 2人の人物(One Voice/Another Voice)の立場・価値観・具体的な経験・結論は、入力と完全に同じ
+  内容を保ってください。新しいFact・新しい経験・新しい数字を追加しないでください。
+- Tension(3つ目の見出し)・Closing(4つ目の見出し)も、入力と同じ役割・同じ結論を保ったまま
+  A2レベルへ翻案してください(分量は入力とおおむね同じ比率を保つ)。
+- 見出し文言自体は、内容が伝わる範囲で平易な言い方へ変えてよいですが、2つ目・3つ目の見出しには、
+  「ここから別の人物の話が始まる」と分かる表現("One Voice:"/"Another Voice:"のような形)を
+  必ず含めてください。
+
+【出力形式】
+入力と全く同じMarkdown構造(`# `Title、`## `見出し1つ、`### `見出し2つ、`## `見出し2つ、
+合計5つの##/###見出し)で、翻案後の記事全文だけを出力してください。説明文やコメントは
+付けないでください。
+
+【A2言語原則(CURRENT_SPEC.md CEFR-A2節からの引用)】
+Write this as an A2-level English news story for listening. The listener should be able to understand the main events and why they matter even if their English is still limited. Present information in a clear sequence, make relationships between events explicit, and avoid making the listener hold several ideas in mind at once. Use simple, natural English and explain difficult concepts in an everyday way. Rebuild difficult parts freely rather than trying to preserve sophisticated sentence structures or phrasing.
+
+Keep each step of the story mentally light. Introduce one main idea at a time, and do not ask the listener to connect several facts, conditions, or contrasts inside the same sentence or short passage. When a sentence carries more than one important idea, separate those ideas and explain them in a simpler order. Prefer clear cause-and-result or before-and-after relationships over compressed explanation.
+
+【Core Explanatory Logic Preservation(CURRENT_SPEC.md L266からの引用)】
+Preserve the core explanatory logic and decision rule established by the Verified Fact Ledger. You may simplify wording, sentence structure, examples, and presentation order, but do not replace the Ledger's underlying mechanism or decision rule with an easier shortcut, category, causal explanation, or rule of thumb that the Ledger does not support or explicitly rejects. Simplify how the listener understands the idea, not what the idea means.
+
+【CURRENT_SPEC.md「CEFR-A2 構造・音声仕様」節からの引用(vocabulary/文長等)】
+- vocabulary: 可能な範囲で平易な一般語を優先(定性的方針)。厳密なCEFR語彙数上限・wordlistは意図的に設けない
+- 平均文長: 11語以下(生成方針)
+- 最長文: 18語以下(生成方針)
+- 全体語数: 上限なし。総語数を意図的に削らない(B1と同等程度の主要情報量を保持)
+- 1文1アイデア: 原則1文1メッセージ
+- 等位接続・従属節: 関係詞節は原則回避、分詞構文を避ける、複雑な受動態を避ける
+- 関係詞: 原則回避
+- 受動態: 複雑な受動態は避ける(単純な受動態は許容)
+- 完了形・進行形: 完了形等の複雑構造は必要最小限
+- Spoken-first: 主語・動詞を早く出す、長い前置詞句・名詞句を文頭に置きすぎない、文末まで聞かないと
+  意味が確定しない構造を避ける。厳格なsyntax validatorにはしない(style原則として運用)
+- 本文品質要件: Simple AND Natural(平易さと自然さを両立、どちらかを犠牲にしない)
+
+【翻案対象のB1記事本文(そのまま、そっくりコピーしないでA2へ翻案すること)】
+# One Office, Two Ideas of a Place to Work
+
+## The Question
+
+Every morning, one employee enters the office and looks for an empty desk. Another chooses a quiet corner or a lively place near other teams. Some companies are bringing back assigned desks, while others continue shared seating. Why can the same office feel secure to one person and liberating to another?
+
+### One Voice: The desk that lets work begin
+
+Every morning, I look for an empty desk. Someone else may have used it yesterday, and someone new may sit there tomorrow. I cannot leave papers in a drawer, and I sometimes worry about using a desk or keyboard after someone else. Before work begins, I have already spent time finding a place. I miss the same desk, drawer, and view. They helped me start without searching and gave me a quiet sense of belonging. Now the office can feel borrowed. I want my work and things to have a place, even when I cannot choose the seating policy.
+
+### Another Voice: The freedom to move
+
+Some mornings, I choose a quiet corner because I need to think. On other days, I sit where conversation is easy. A different desk can bring me closer to people from another department. It can also give me distance when a workplace relationship feels uncomfortable or when I simply need room. Since working from home gave me a place of my own, I do not need one fixed spot at the office. I value being able to change my surroundings and choose a place that fits my mood, my task, and the people I need—or do not need—around me.
+
+## Where the Difference Comes From
+
+The disagreement is not really about movement. It is about where stability comes from. One employee finds it in a desk that stays put, with papers and a familiar start. The other finds it in the power to change social distance and the kind of space needed that day. A shared-seat system can even create unofficial regular desks. So a rule that looks flexible on paper may feel like friction to one person, while the same system feels useful to another.
+
+## What the Seat Really Means
+
+The real question is not fixed desks or shared desks. It is what makes a place workable: a stable point that removes daily searching, or enough control to change one’s social and working surroundings. The seat is only the visible part of a deeper question: what makes an employee feel, “This is my place at work”?
