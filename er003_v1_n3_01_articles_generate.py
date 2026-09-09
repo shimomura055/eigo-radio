@@ -618,10 +618,18 @@ def build_diagnostic_retry_prompt(original_prompt: str, previous_article_text: s
     if sections is None:
         return original_prompt
 
+    # OPEN-112-DIAGNOSTIC-RETRY-POINT-BODY-REGRESSION-FIX-01 (2026-09-09):
+    # sections["point_one_body"]/["point_two_body"] は既に抽出済みだった
+    # が、以前はbuild_diagnostic_section()へ渡されておらず、診断prompt内の
+    # 前回Point本文がハードコードされたプレースホルダーのままだった
+    # (承認済み設計[ER-009-N1-DIAGNOSTIC-FULL-RETRY-CLOSEOUT-14]への回帰
+    # 修正、FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05で判明)。
     diagnostic_section, _ = diagnostic_mod.build_diagnostic_section(
         sections["full_story"],
         point_overlap["point_one"],
         point_overlap["point_two"],
+        sections["point_one_body"],
+        sections["point_two_body"],
     )
 
     return original_prompt + "\n\n" + diagnostic_section

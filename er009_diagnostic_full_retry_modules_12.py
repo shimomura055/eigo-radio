@@ -87,8 +87,20 @@ Rules for this new attempt:
 
 
 def build_diagnostic_section(previous_article_text: str, point_one_overlap: dict,
-                              point_two_overlap: dict) -> str:
-    """Diagnostic section を構成する"""
+                              point_two_overlap: dict, previous_point_one_text: str,
+                              previous_point_two_text: str) -> str:
+    """Diagnostic section を構成する。
+
+    OPEN-112-DIAGNOSTIC-RETRY-POINT-BODY-REGRESSION-FIX-01 (2026-09-09):
+    previous_point_one_text/previous_point_two_text は必須引数(既定値なし)。
+    以前はここでハードコードされたプレースホルダー文字列
+    "(Point One body from previous attempt)" 等を渡しており、Writerへ
+    前回のPoint本文の実テキストが渡らない実装漏れがあった(承認済み設計
+    [ER-009-N1-DIAGNOSTIC-FULL-RETRY-CLOSEOUT-14が引用するruntime検証の
+    元になった er009_n1_diagnostic_full_retry_production_12.py は実テキスト
+    を渡していた]への回帰修正、FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05の
+    Reconciliation Checkで判明)。呼び出し元は必ず前回attemptの実際の
+    Point One/Two本文を渡すこと。"""
     diagnosis_one = compose_diagnosis(point_one_overlap)
     diagnosis_two = compose_diagnosis(point_two_overlap)
 
@@ -96,11 +108,11 @@ def build_diagnostic_section(previous_article_text: str, point_one_overlap: dict
         previous_full_story=previous_article_text,
         point_one_score=point_one_overlap["overlap_ratio"],
         point_one_flagged=point_one_overlap["flagged"],
-        previous_point_one="(Point One body from previous attempt)",
+        previous_point_one=previous_point_one_text,
         diagnosis_one=diagnosis_one,
         point_two_score=point_two_overlap["overlap_ratio"],
         point_two_flagged=point_two_overlap["flagged"],
-        previous_point_two="(Point Two body from previous attempt)",
+        previous_point_two=previous_point_two_text,
         diagnosis_two=diagnosis_two,
     ), {
         "diagnosis_one": diagnosis_one,

@@ -43,8 +43,10 @@ def test_diagnostic_section_build():
     print(f"[TEST] Point Two overlap: {o2['overlap_ratio']:.3f} (flagged={o2['flagged']})")
 
     # Build diagnostic
+    # OPEN-112-DIAGNOSTIC-RETRY-POINT-BODY-REGRESSION-FIX-01: build_diagnostic_section()
+    # now requires the actual previous Point One/Two body text (regression fix).
     diag_section, diag_dict = diagnostic_mod.build_diagnostic_section(
-        full_story, o1, o2
+        full_story, o1, o2, point_one, point_two
     )
     print(f"[TEST] Diagnostic section built successfully (length={len(diag_section)})")
     print(f"[TEST] Diagnosis One: {diag_dict['diagnosis_one'][:100]}...")
