@@ -108,7 +108,7 @@ context再読コスト。
 
 | 日付 | 種別(中間レビュー/Closeout) | 到達したTrigger | 結果(Status) | 備考 |
 |---|---|---|---|---|
-| (未実施) | — | — | — | — |
+| 2026-09-09 | 中間レビュー | 最初のOpus HIGH案件完了(`EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01`) | 未判定(採否判断ではない、記録のみ) | Trial開始後の委任数7件(本タスク`PM-CLOSEOUT-CONSOLIDATION-30`含む)。モデル比率: Sonnet 6件・Opus 1件・Haiku 0件。**Opusレビューの寄与**: Fable委任案(3V/4V本文Writer Trial実行計画)の事実誤り2件を検出(0-A「Trial-09系Writer経路」不在/0-B「Ledgerは既存Research primitiveで作成可能」の誤り)、Production欠陥候補1件を検出(OPEN-131 `build_voice_attribution_block()`のevidence 1行抽出によるPASS実績の前提未実証、Fable検証で欠落率91.1%[行]/87.3%[文字]と実測)、fail-open再発点2件を指摘(`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL`/`B_FAMILY_A2_SLOWDOWN_TARGET_SEGMENTS`のsegment名ハードコードにより3V/4V新segment名が安全機構から静かに漏れる)、未承認仕様候補4件を明示(pairwise Voice Distinctness Check新設/Comment roleのvoice数パラメータ化/required_structureの可変voice数生成方式/N=1では閾値を決定しない方針)。**Haiku未使用**: L0相当(読み取り専用・API支出なし・SSOT/Git操作なし・定型出力)に該当する作業がTrial開始後まだ発生していないため(委任案の性質上、いずれもSSOT編集・コード実測・設計横断レビューを伴いL1/L2相当だった)。**規律違反**: `FAMILY-A-DAILY-NEWS-FOCUS-LAYER-COMPARISON-TRIAL-04`の費用実測用`cl.install()`未設置(ただし本Trial開始[2026-09-09]前のベースライン期間の事案であり、本Trialのルーティング判断とは無関係)。**暫定所見**: Opus 1回の投入により、Fable委任案(Sonnetへの実行指示案)に含まれていた前提の事実誤り・Production安全性論点を着手前に検出でき、Sonnet側の手戻り(委任→着手→誤り発覚→再委任)を未然に回避できた可能性が高い。費用対効果は良好に見えるが、Opus HIGH案件はまだ1件のみ(N=1)であり、一般化した結論(Opus投入基準の妥当性等)は正式Closeout Trigger(Opus HIGH案件2件以上等)到達まで判断しない。**本行は中間レビューの記録であり、Trial継続・変更・中止の採否判断ではない。** |
 
 ## ベースライン(Trial開始前、全てSonnet固定)
 
@@ -196,6 +196,8 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-28(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-29(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、新規Open Item起票、PM_GOVERNANCE新小節追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05(Lane A、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py`)中心の既知パターン修正Trial(G1/G2)、過去承認仕様との対応確認込み | Haiku不適(コード修正・retry判定ロジックを伴う)、Opus見送り(Pre-Audit-01で既存対策との重複が判明済みのため大規模(a)/(b)横断比較は不要、スコープがG1/G2に限定されたため) | 未確定(Lane A側タスクで記録) | 未確定 | 0 | 不明(Lane A側で記録) | 不明 | 不明 | 不明 |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01 | HIGH(L2/Opus) | Opus | 3V/4V本文Writer Trial実行計画(Fable委任案)の着手前second opinion。Fact Safety(Ledger作成方式・出典帰属)・既存Production定数(Comment Contract/Disfluency QA必須segment表/A2 slowdown対象segment表)への後方互換性・OPEN-131既存PASS実績の前提という複数のProduction安全性論点が重なっており、Sonnet単独レビューでは委任案自体に含まれる事実誤りを検出できていなかったため | Sonnet単独では不足(Fable明示のとおり)、Haiku不適(設計レビュー・複数moduleの横断コード精査を要する) | 108k | 379s | 0 | なし(初回レビューで完了、Sonnetへの追加質問なし) | なし | 不明(本レビュー自体はTrial着手前のためUDR/Production wiring対象外) | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-30(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー原文の転記+OPEN-131 evidence欠落の実測(読み取り専用・費用¥0)+中間レビュー記録+SSOT反映+Git統合、既知パターンの踏襲 | Haiku不適(SSOT精密編集・コード実行による実測・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー自体は既に前段のOPUS-REVIEW-01で完了済み) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -224,3 +226,13 @@ TRIAL-SETUP-01`の次から起算)
   で既存対策との重複が判明済みのため大規模(a)/(b)横断比較が不要になった
   こと)の2件を追記した。中間レビュー・正式Closeout Triggerの到達判定は
   実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-30): 「## Trial導入後の委任実績」
+  表へ、`EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01`
+  (Opus、HIGH、3V/4V Writer委任案のsecond opinion、108k token・379秒・
+  差し戻し0)と本タスク(PM-CLOSEOUT-CONSOLIDATION-30、Sonnet、MEDIUM)の
+  2件を追記した。中間レビューTrigger「最初のOpus HIGH案件完了」に到達
+  したため、「### 実施記録」表へ中間レビュー1件を記録した(委任数7件・
+  モデル比率Sonnet6/Opus1/Haiku0・Opus寄与4点・Haiku未使用理由・既知の
+  規律違反1件[Trial開始前の事案]・暫定所見を記載、採否判断ではない旨を
+  明記)。正式Closeout Triggerへは未到達(Opus HIGH案件2件以上等の条件を
+  満たしていない)。
