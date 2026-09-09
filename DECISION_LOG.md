@@ -8734,6 +8734,58 @@ Trigger進捗(Opus HIGH案件2件到達[件数上のみ、他条件未達]、Hai
 `CURRENT_SPEC.md`、`er006_output/`、`er011_output/attempt_history.jsonl`
 はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-40: A2 Trend end-to-end(A2 level完走)の
+SSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき以下を
+SSOTへ反映した(実行自体は並列Laneタスクで既に完了済み。本タスクはSSOT
+反映+Git統合のみ)。
+
+**内容**: `FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§8
+(継続、修正指示1回目)により、Trend Synthesis記事のA2 levelが配線済み
+Production関数のみ(TTS→Assembly→Audio Validation Gate→player)で完走
+した。§7で発見された`JAPANESE_TITLES`辞書の`KeyError`(新規テーマの
+日本語タイトルがモジュール内ハードコード辞書に存在しないための未処理
+例外)は、Fableが「新しい仕様判断ではなく既存前例(`er011_open112_
+trend_theme2_b_full_audio_trial_13.py`、`EDITORIAL-B-FAMILY-VOICES-A2-
+CROSS-AUDIT-AND-FIX-03_REPORT.md`B-2)の踏襲で解決可能」と判定し、
+英語タイトルの直訳(新しい主張・数字を追加しない)を人手作成のうえ
+`tts_gen.JAPANESE_TITLES.update({theme_id: ...})`で実行時登録する
+既存パターンを適用した。結果: 本文14 segment+Key Phrase 5件すべて
+attempt1でOK、Assembly `status=OK`(duration_seconds=359.829、peak=0.95、
+clipping無し)、Audio Validation Gate既定OFF経路PASS・opt-in
+`required_structure`ON経路(OPEN-129)もPASS、player(Gate 7 (a)〜(l)
+準拠)生成済み。追加費用¥28.80(前回¥31.57とは別枠、上限¥80以内)。
+人手介在は3箇所(Mode判定・Ledger手動供給・A2日本語タイトルの直訳人手
+供給)。B1B側はKey Phrase 5("take shape"/「形になり始める」)日本語
+音声のASR content-mismatchによる`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`の
+まま変更していない(Human Review Lock領域、ユーザー承認待ち)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行へA2 level完走・evidence・人手
+介在3箇所・B1B承認待ちを追記。OPEN-112行へ、Trend Synthesis article→
+audio連続性evidence(Gate 3)がA2 levelで充足したこと(B1Bは未充足のまま)
+を追記。新規`OPEN-137`(A2日本語タイトル供給方式、直訳の人手供給を
+正式initial pathとして採用・自動化は`DEFERRED`)を登録した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へA2初回(Sonnet/MEDIUM、196k token・
+1340s、STOP 2箇所)を確定値へ更新し、A2継続(Sonnet/MEDIUM、130k token・
+826s、規律違反=バックグラウンド実行での待機の可能性[TTS/Assembly実行の
+ためSTOP規定内、安全実害なし])・本タスクを新規行として追記した。
+`CURRENT_SPEC.md`「## News Editorial Mode(Trend Synthesis)」節へ、A2
+日本語タイトル供給方式(直訳定数の人手供給が正式initial path)の1行を
+追記した。
+
+**根拠**: 本エントリはFable(PM)からのSSOT反映委任に基づく記録(A2 end-
+to-end実行自体は並列Laneタスクで別途完了済み)。Git操作:
+`er011_family_a_completion_a2_trend_end_to_end_01_run.py`・
+`er011_family_a_completion_a2_trend_end_to_end_01_a2_continuation_
+player_01.py`・`FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`・
+`er011_output/family_a_completion_a2_trend_end_to_end_01/`配下json/md/
+html/jsonl(G1)、`OPEN_ITEMS.md`・`DECISION_LOG.md`・`CURRENT_SPEC.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(G2)をファイル名指定でcommitし
+`origin/main`へpush。並列稼働中のA3 News Trial-06・Lane B 3V Trialの
+成果物、`er006_output/`、`er011_output/attempt_history.jsonl`、既存の
+未追跡ファイル群はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

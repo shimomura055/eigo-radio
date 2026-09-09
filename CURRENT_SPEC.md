@@ -1,7 +1,18 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-09(第25弾、PM-CLOSEOUT-CONSOLIDATION-34、OPEN-112 G1の
+**最終更新: 2026-09-09(第26弾、PM-CLOSEOUT-CONSOLIDATION-40、A2 Trend
+end-to-end[A2 level完走]反映)**: `FAMILY-A-COMPLETION-A2-TREND-END-TO-
+END-01_REPORT.md`§8により、Trend Synthesis記事のA2 levelが配線済み
+Production関数のみ(TTS→Assembly→Audio Validation Gate→player)で完走
+した。「## News Editorial Mode(Trend Synthesis)」節へ、A2日本語タイトル
+供給方式(既存前例踏襲、直訳定数の人手供給が正式initial path)の1行を
+追加した。B1B側はKey Phrase 5日本語音声のGate BLOCKEDのまま変更なし
+(ユーザー承認待ち)。既存仕様(Focus Module・Engagement Block・retry/
+fallback整合)への変更はなし(既存前例の適用のみ)。詳細は`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-40`エントリ・`OPEN_ITEMS.md`OPEN-112/135/137
+行、`FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`参照。
+**最終更新(直前の記録): 2026-09-09(第25弾、PM-CLOSEOUT-CONSOLIDATION-34、OPEN-112 G1の
 Fable最終受入=`PRODUCTION_WIRED`確定)**: 前弾(CONSOLIDATION-33)で
 「`PRODUCTION_WIRED`候補(Fable受入待ち)」としていたG1(Diagnostic Full
 Retry診断promptへ前回Point One/Two実本文を渡す回帰修正、commit
@@ -573,6 +584,7 @@ Focus Module採否・Engagement根底指示のDiscoveryへの適用)は本Decisi
 | Research/Ledger供給経路 | Production Writerへの入力Ledgerは、既存の承認済みTheme 2 Ledger(手動作成・手動修正)をファイルとしてそのまま使う手順が正式initial path。既存自動Research pipelineの出力形式との互換性は**未検証(不明)**。自動供給経路への統合は今回配線しない(`USER_DECISION_REQUIRED`、OPEN_ITEMS残件) | `USER_DECISION_REQUIRED`(現状=手動供給のみ) | 同上 | 2026-09-08 |
 | Trend Gate・Mode判定の記録 | Trend Gate 6条件+Mode判定2問チェックリストの判定は自動化せず、`run_writer_for_theme(..., trend_gate_checklist=...)`で渡された**手動判定結果**を、`run_metadata.json`(新規ファイル、既存`articles_run_summary.json`のschemaは変更しない)へそのまま記録する仕組みのみ実装した | `PRODUCTION_WIRED`(記録のみ、自動判定なし) | 同上 | 2026-09-08 |
 | 据え置き4件 | Mode判定自動化・News Ledger自動供給・Reference Digest・Diagnostic Full Retry診断語彙拡張は、いずれも今回の配線の必須条件ではないため仕様化していない(Open Item/Trial候補として残置、下記OPEN_ITEMS.md OPEN-112行参照) | `USER_DECISION_REQUIRED`(defer継続) | 同上 | 2026-09-08 |
+| A2日本語タイトル供給 | `generate_a2_segments`(`er003_v1_n3_01_tts_generate.py`)が要求する日本語タイトルは、モジュール内ハードコード辞書`JAPANESE_TITLES`(既存3テーマのみ登録)から取得する設計。新規テーマでは既存前例(`EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03_REPORT.md`B-2)に倣い、英語タイトルの直訳(新しい主張・数字を追加しない)を人手作成し`tts_gen.JAPANESE_TITLES.update({theme_id: ...})`で実行時登録する方式を正式initial pathとする。自動翻訳・専用QAは新設しない(A-Family全体の共通gap、Trend固有ではない) | `DECIDED`(直訳の人手供給を正式initial pathとして採用。自動化はOPEN-137として`DEFERRED`) | `FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§8.1/§8.9 | 2026-09-09 |
 
 ## 通常News(Major/Daily News)Reference仕様 — 2026-09-08新設(ユーザー決定A-UDR-5、FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01)
 
