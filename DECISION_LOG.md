@@ -8786,6 +8786,59 @@ html/jsonl(G1)、`OPEN_ITEMS.md`・`DECISION_LOG.md`・`CURRENT_SPEC.md`・
 成果物、`er006_output/`、`er011_output/attempt_history.jsonl`、既存の
 未追跡ファイル群はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-41: Editorial Type Routing(2軸判定)・
+Discovery/Why(Pool型)決定(D1/D2/D3)のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+ユーザー正式決定(2026-09-09)をSSOTへ反映した。
+
+**ユーザー決定内容**:
+- **D1=(a)採用**: `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md`
+  v2の2軸判定+タイブレークprimitiveを採用する。軸A=中心的主張の妥当性
+  が日付・最近性に依存するか、軸B=独立Signalの集約に依存するか。
+  (A=Yes,B=No)→Major/Daily News、(A=Yes,B=Yes)→Trend Synthesis、
+  (A=No)→Discovery/Why。tie-break primitive=「その要素を除くと中心的
+  主張が崩れるか」という依存構造読み。判定は上流のEditorial Type
+  routing(手動判定、結果をrun summaryへ記録、Trend Gate記録機構と
+  同型)であり、既存Major/Daily Gate 6項目・Trend Gate 6条件は下流の
+  型別成立確認として維持する(2軸判定が既存Gateを代替・変更するもの
+  ではない)。Discovery/Whyは、既承認「Pool型(Evergreen、特定の1件の
+  最近の出来事に非依存)」の正式化として`POOL_TOPIC_MASTER.md`定義へ
+  接続する(既決事項A-UDR-9[Household=Discovery/Why]・A-UDR-10
+  [Health=Major/Daily]を引き継ぐ)。机上検証26件(判定不能0、独立
+  2判定者間の不一致率19%、残曖昧事例=POOL No.5/7/12/14/17は依存構造
+  読みでDiscovery/Whyに収束)。
+- **D2=(b)採用**: Layer3 Focus Module(`DISCOVERY_FOCUS_MODULE_BLOCK`)の
+  `DEFERRED`解除可否は、Household既存Ledger再利用によるN=3
+  Article-only Trial(`FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-
+  TRIAL-07`、実施中)の結果を受けてProduction配線をユーザーが判断する。
+- **D3=保留**: myth-correction・Point Role hint Discovery版・Engagement
+  原則のDiscoveryへの適用・Discovery固有Research方式・Ledger Deviation
+  Checker専用カテゴリ新設要否の5項目は、いずれも新たに確定させず既存の
+  保留状態(`DEFERRED`/`USER_DECISION_REQUIRED`)を維持する。
+
+**SSOT反映**: `CURRENT_SPEC.md`「## News Editorial Mode(Trend
+Synthesis)」節の直前へ新設「## Editorial Type Routing(2軸判定)」節
+(軸A/B・4象限・tie-break・上流routing/下流Gateの分離・Discovery=
+Pool型正式化・手動判定+記録の正式initial path・自動判定はOPEN-130
+`DEFERRED`)を追記し、「## 通常News(Major/Daily News)Reference仕様」
+節の直後へ新設「## Discovery/Why(Pool型)」節(最小、対象定義・Layer3
+Focus Module状態・D3派生5項目)を追記した。`OPEN_ITEMS.md`OPEN-130行
+(2軸判定=Editorial Type Routingとして`DECIDED`[手動]、自動化のみ
+`DEFERRED`継続)・OPEN-135行(D1/D2/D3決定内容)・OPEN-112行(Discovery
+定義確定の参照)へ追記した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ
+D2 Trial-07(Sonnet、MEDIUM、既知パターン=Trial-05再実行+N増、Opus
+不要=設計はレビュー済みのため)・本タスク(Sonnet、LOW)を追記した。
+
+**根拠**: 本エントリはFable(PM)からのSSOT反映委任に基づく記録(D2
+Trial-07自体は並列Laneタスクで別途実施中)。Git操作: `CURRENT_SPEC.md`・
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+(4ファイルのみ)をファイル名指定でcommitし`origin/main`へpush。並列
+稼働中のA3 News Trial-06・Lane B 3V Trial・D2 Discovery Layer3
+Trial-07の成果物、`POOL_TOPIC_MASTER.md`、`er006_output/`、
+`er011_output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも
+本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

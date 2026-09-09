@@ -363,3 +363,12 @@ TRIAL-SETUP-01`の次から起算)
   へ更新した。本タスク(Sonnet、MEDIUM)を新規行として追記した。中間
   レビュー・正式Closeout Triggerの到達判定・再計算はいずれも実施して
   いない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-41、本タスク): 新規行
+  `FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07`(並列稼働中、
+  Sonnet、MEDIUM、既知パターン=Trial-05[VALIDATED済み設計]の再実行+
+  N増[Household既存Ledger再利用によるN=3 Article-only]、Opus不要=
+  設計自体は`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`
+  で既にレビュー済みのため、記録のみ)を追記した。本タスク(Sonnet、
+  LOW、ユーザー決定[D1/D2/D3]のSSOT反映+Git統合のみ、新規実装・
+  Trial着手なし)を新規行として追記した。中間レビュー・正式Closeout
+  Triggerの到達判定・再計算はいずれも実施していない。

@@ -1,7 +1,24 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-09(第26弾、PM-CLOSEOUT-CONSOLIDATION-40、A2 Trend
+**最終更新: 2026-09-09(第27弾、PM-CLOSEOUT-CONSOLIDATION-41、Editorial
+Type routing[2軸判定]・Discovery/Why[Pool型]正式化のSSOT反映)**:
+ユーザー正式決定に基づき、A Family(Discovery/Why + News[Major/Daily] +
+Trend Synthesis)のうちある題材がどのEditorial Typeとして書かれるべきかを
+決める上流のType routingを、新設「## Editorial Type Routing(2軸判定)」
+節へ正式反映した(軸A=中心的主張の最近性依存・軸B=独立Signal集約依存、
+tie-break primitive=依存構造読み、判定=手動+run summary記録、自動判定は
+`OPEN-130`として引き続き`DEFERRED`)。Discovery/Whyについては、既承認
+「Pool型(Evergreen、特定の1件の最近の出来事に非依存)」の正式化として
+新設「## Discovery/Why(Pool型)」節(最小)へ、対象定義・Layer3 Focus
+Moduleの状態(`VALIDATED`、`FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-
+TRIAL-07`で追加検証中)・D3派生5項目(いずれも`DEFERRED`/保留)を記録
+した。既存のMajor/Daily Gate 6項目・Trend Gate 6条件・Trend Synthesis
+仕様への変更はない(2軸判定は上流のType routingであり下流Gateを代替・
+変更しない)。詳細は`DECISION_LOG.md` `PM-CLOSEOUT-CONSOLIDATION-41`
+エントリ・`OPEN_ITEMS.md`OPEN-130/135/112行、`FAMILY-A-COMPLETION-A4-
+DISCOVERY-DESIGN-02_REPORT.md`参照。
+**最終更新(直前の記録): 2026-09-09(第26弾、PM-CLOSEOUT-CONSOLIDATION-40、A2 Trend
 end-to-end[A2 level完走]反映)**: `FAMILY-A-COMPLETION-A2-TREND-END-TO-
 END-01_REPORT.md`§8により、Trend Synthesis記事のA2 levelが配線済み
 Production関数のみ(TTS→Assembly→Audio Validation Gate→player)で完走
@@ -564,6 +581,59 @@ regression(`run_project_regression.py`)は新規19テスト追加以外の差分
 なし。詳細は`EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01_
 REPORT.md`参照(`PRODUCTION_WIRED`確定はFable最終受入待ち)。
 
+## Editorial Type Routing(2軸判定) — 2026-09-09新設(ユーザー決定、PM-CLOSEOUT-CONSOLIDATION-41)
+
+A Family(Discovery/Why + News[Major/Daily] + Trend Synthesis)のうち、
+ある題材がどのEditorial Typeとして書かれるべきかを決める**上流のType
+routing**を正式化した(ユーザー正式決定、2026-09-09、根拠:
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md`§1.2/§4 D1)。
+2軸判定+単一のtie-break primitiveを採用する。
+
+**軸A(最近性依存)**: その記事の中心的主張の妥当性が、日付・最近性に
+依存するか。
+**軸B(独立Signal集約依存)**: その中心的主張が、複数の独立したSignal
+(出来事・観測・データ点)の集約に依存するか(軸Bは軸A=Yesの場合のみ
+問う)。
+
+| 軸A | 軸B | 判定 |
+|---|---|---|
+| Yes | No | Major/Daily News |
+| Yes | Yes | Trend Synthesis |
+| No | (問わない) | Discovery/Why |
+
+**tie-break primitive(単一規則)**: 軸A・軸Bいずれの判定に迷う場合も、
+「その要素(発表日/個々のSignal)を実際に取り除いた場合、記事の中心的
+主張が崩れる(別の記事になる)か」という依存構造読みの単一の問いへ
+還元して判定する。表面的な言葉遣い(変化を示唆する語など)だけで判定
+しない。
+
+**上流routingと下流Gateの分離**: 2軸判定は「どのGateを適用すべきか」
+を決めるための上流工程(Editorial Type routing)であり、既存のMajor/
+Daily Gate 6項目・Trend Gate 6条件(下流工程、型決定後に「その型として
+成立しているか」を確認するチェックリスト)を代替・変更するものではない。
+2軸判定を通過した後、既存の型別Gateをそのまま適用する。
+
+**Discovery=Pool型の正式化**: `POOL_TOPIC_MASTER.md`の承認済み定義
+(Evergreen、特定の1件の最近の出来事に非依存)は、2軸判定の軸A=Noの
+必要条件を満たすように設計されている(既決定義の論理的帰結)。これに
+より、Pool型記事はDiscovery/Why型として扱う運用を正式化する(既決
+事項A-UDR-9[Household=Discovery/Why]・A-UDR-10[Health=Major/Daily]を
+引き継ぐ)。`POOL_TOPIC_MASTER.md`自体の語彙・列定義は変更しない
+(参照のみ)。
+
+**判定方式・記録**: 判定は手動判定(人間が記事着手前に軸A/軸Bを判定
+する)とし、判定結果を記事のrun summaryへ記録する(Trend Synthesis
+mode判定の`run_metadata.json`記録機構と同型)。これを正式initial path
+とする。**自動判定(記事内容から軸A/軸Bを自動推定する処理)は実装しない
+(`OPEN_ITEMS.md` OPEN-130として引き続き`DEFERRED`)**。
+
+**机上検証**: POOL_TOPIC_MASTER 20件+既存記事6件、計26件で¥0机上検証を
+実施した。判定不能率0/26。素朴な表面的読み(タイブレーク未適用)の
+場合、POOL No.5/7/12/14/17の5件がTrend方向へ誤判定されうる曖昧事例
+として残る(タイブレークを厳密に適用すればDiscovery/Whyへ収束すると
+考えられるが、実記事化しての再検証は未実施)。詳細は
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md`§2参照。
+
 ## News Editorial Mode(Trend Synthesis) — 2026-09-08新設(OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01)
 
 A Family(Discovery/Why + News)のうち、News配下に「Trend Synthesis」という
@@ -663,6 +733,22 @@ signal/limitation必須化ルール・Trend成立条件・Evidence Strength分�
 タグ語彙・Trend Memory・Engagement/Storytelling原則・Reference Digest
 は、本節(通常News)には含めない。これらは「## News Editorial Mode
 (Trend Synthesis)」節(別Editorial Mode)を参照。
+
+## Discovery/Why(Pool型) — 2026-09-09新設(ユーザー決定、PM-CLOSEOUT-CONSOLIDATION-41、最小節)
+
+A Family(Discovery/Why + News[Major/Daily] + Trend Synthesis)のうち、
+Discovery/Why型の対象定義・現状を記録する最小節。判定ロジック自体は
+「## Editorial Type Routing(2軸判定)」節を参照(重複転記しない)。
+
+| 項目 | 現在値 | 状態 | 根拠管理ID |
+|---|---|---|---|
+| 対象定義 | Pool型(Evergreen、特定の1件の最近の出来事に非依存、`POOL_TOPIC_MASTER.md`定義=2軸判定の軸A=Noの正式化) | `DECIDED`(2026-09-09) | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md |
+| Layer3 Focus Module(`DISCOVERY_FOCUS_MODULE_BLOCK`) | Trial-05でVALIDATED(A2/B1、既存Point Role hint機構の流用、バイト等価配線案)。Household既存Ledger再利用によるN=3 Article-only Trial(`FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07`)で追加検証中 | `VALIDATED`(Production配線は未実施、Trial-07結果を受けてユーザーが配線可否を判断) | ER-011-DISCOVERY-4LAYER-TRIAL-05(既存)、FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07(実施中) |
+| Discovery固有Research方式(説明源優先順位ガイドライン) | LLM呼び出しを追加しない、既存Ledger構造・タグ体系に従属する優先順位ガイドライン案(未承認候補) | `DEFERRED`(D3) | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md §3/§4 D3 |
+| Point Role hint(Discovery版) | Trial-03の接続パターンは技術的に転用可能と考えられるが、Discoveryでのruntime効果は未検証 | `DEFERRED`(D3) | 同上 |
+| Engagement/Storytelling原則のDiscoveryへの適用 | Trend Synthesis側でのみA/B検証済み(Trial-10/11)、Discovery側の実施記録なし | `DEFERRED`(D3) | 同上 |
+| myth-correction(通説訂正型) | Newsからの除外は確定しない、Discoveryへの追加は候補のまま | `USER_DECISION_REQUIRED`(継続) | 同上 |
+| Ledger Deviation Checker専用カテゴリ新設要否 | 既存タグの流用で対応する現行運用を変更しない | `DEFERRED`(D3) | 同上 |
 
 ## Cross-level仕様(A2/B1/B2共通)
 
