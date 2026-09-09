@@ -1,0 +1,38 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_091368f52b5ba5d6006aa0b265ff4087d0a39564692997bd6c",
+  "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\n## Main story\n\nAs of September 2026, a quiet change is appearing in Japan’s travel mood. Young people, especially young men, seem to want more control over their travel time. But the stays they plan are still short.\n\nImagine being given one month off. In one survey, the most common answer was a trip of about one week. This was a wish under a special condition: having a full month free.\n\nA separate autumn survey asked people planning a trip about their expected hotel stay. The average was about two nights, and the middle answer was also two nights.\n\nThat is the tension. The wish points toward slower, more personal travel. The calendar still points toward short trips.\n\nSo this is not a finished move away from famous sights and toward long stays. It is an emerging change in preference, while the length of travel has not clearly changed.\n\n【Point One】\nThe key may be the kind of time travelers want, not only the number of nights. About 90% of Japanese 19-to-25-year-olds wanted free time during an overseas tour. Most of them wanted at least half a day. For men aged 29 and under, solo and hobby-focused travel led the choices. Here, “slow” means space for personal interests. Flexible time may matter as much as longer packages.\n\n【Point Two】\nThe change does not look the same for everyone. Among women aged 29 and under, about 45% still preferred visiting famous tourist sites, alongside the male interest in solo and hobby-focused travel. This is not one generation moving in one direction. Tourism planners should build for different groups. Policymakers should also remember that the official Tourism White Paper still treats longer stays as a task.\n",
+  "parsed": {
+    "point_one": {
+      "qa_not_caveat_only": "PASS",
+      "qa_not_full_story_paraphrase": "PASS",
+      "qa_not_other_point_paraphrase": "PASS",
+      "qa_explains_why_it_matters": "PASS",
+      "qa_specific_not_generic": "PASS",
+      "qa_adds_new_value": "PASS",
+      "reasoning": "若者の約90％が自由時間を望み、男性では一人旅・趣味中心の旅行が上位という具体的データを加えている。単なる長期滞在ではなく、旅行商品の柔軟性や個人の関心に使える時間が重要だという実質的な示唆がある。"
+    },
+    "point_two": {
+      "qa_not_caveat_only": "PASS",
+      "qa_not_full_story_paraphrase": "PASS",
+      "qa_not_other_point_paraphrase": "PASS",
+      "qa_explains_why_it_matters": "PASS",
+      "qa_specific_not_generic": "PASS",
+      "qa_adds_new_value": "PASS",
+      "reasoning": "29歳以下の女性の約45％が有名観光地訪問を好むという具体的な差を示し、世代全体が一方向に変化しているわけではないと明確化している。旅行業者の対象別設計や、長期滞在を課題とする政策との関係まで示しており、Full Storyにはない実務的な含意を加えている。"
+    }
+  },
+  "per_point": {
+    "point_one": {
+      "ok": true,
+      "fail_fields": [],
+      "reasoning": "若者の約90％が自由時間を望み、男性では一人旅・趣味中心の旅行が上位という具体的データを加えている。単なる長期滞在ではなく、旅行商品の柔軟性や個人の関心に使える時間が重要だという実質的な示唆がある。"
+    },
+    "point_two": {
+      "ok": true,
+      "fail_fields": [],
+      "reasoning": "29歳以下の女性の約45％が有名観光地訪問を好むという具体的な差を示し、世代全体が一方向に変化しているわけではないと明確化している。旅行業者の対象別設計や、長期滞在を課題とする政策との関係まで示しており、Full Storyにはない実務的な含意を加えている。"
+    }
+  },
+  "status": "PASS"
+}

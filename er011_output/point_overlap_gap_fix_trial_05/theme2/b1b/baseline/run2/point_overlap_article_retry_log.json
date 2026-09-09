@@ -1,0 +1,226 @@
+[
+  {
+    "attempt": 0,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": true,
+    "value_qa_flagged": true,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.125,
+        "shared_words": [
+          "about",
+          "longer",
+          "more",
+          "nights",
+          "travel"
+        ],
+        "point_word_count": 40,
+        "story_word_count": 33,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.152,
+        "shared_words": [
+          "about",
+          "longer",
+          "more",
+          "nights",
+          "travel"
+        ],
+        "point_word_count": 33,
+        "story_word_count": 40,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.4,
+          "shared_words": [
+            "about",
+            "choices",
+            "famous",
+            "free",
+            "hobby",
+            "longer",
+            "more",
+            "nights",
+            "short",
+            "slow",
+            "solo",
+            "still",
+            "time",
+            "travel",
+            "trip",
+            "visiting"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 121,
+          "flagged": true,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.125,
+          "shared_words": [
+            "about",
+            "longer",
+            "more",
+            "nights",
+            "travel"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 33,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false,
+        "regenerate_status": "NG_REVIEW_REQUIRED",
+        "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.394,
+          "shared_words": [
+            "about",
+            "answer",
+            "common",
+            "longer",
+            "month",
+            "more",
+            "nights",
+            "off",
+            "pattern",
+            "travel",
+            "week",
+            "wish",
+            "yet"
+          ],
+          "point_word_count": 33,
+          "story_word_count": 121,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.152,
+          "shared_words": [
+            "about",
+            "longer",
+            "more",
+            "nights",
+            "travel"
+          ],
+          "point_word_count": 33,
+          "story_word_count": 40,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "NG",
+    "diagnostic_used": {
+      "point_one_score": 0.4,
+      "point_one_flagged": true,
+      "point_two_score": 0.394,
+      "point_two_flagged": false,
+      "point_one_vs_point_two_flagged": false,
+      "value_qa_flagged": true
+    }
+  },
+  {
+    "attempt": 1,
+    "qa_status": "OK",
+    "flagged": false,
+    "lexical_flagged": false,
+    "value_qa_flagged": false,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.029,
+        "shared_words": [
+          "change"
+        ],
+        "point_word_count": 34,
+        "story_word_count": 34,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.029,
+        "shared_words": [
+          "change"
+        ],
+        "point_word_count": 34,
+        "story_word_count": 34,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.265,
+          "shared_words": [
+            "day",
+            "helps",
+            "hobby",
+            "mean",
+            "more",
+            "nights",
+            "personal",
+            "trip",
+            "week"
+          ],
+          "point_word_count": 34,
+          "story_word_count": 109,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.029,
+          "shared_words": [
+            "change"
+          ],
+          "point_word_count": 34,
+          "story_word_count": 34,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.353,
+          "shared_words": [
+            "about",
+            "aged",
+            "among",
+            "another",
+            "especially",
+            "growing",
+            "half",
+            "men",
+            "solo",
+            "survey",
+            "travel",
+            "young"
+          ],
+          "point_word_count": 34,
+          "story_word_count": 109,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.029,
+          "shared_words": [
+            "change"
+          ],
+          "point_word_count": 34,
+          "story_word_count": 34,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "PASS"
+  }
+]
