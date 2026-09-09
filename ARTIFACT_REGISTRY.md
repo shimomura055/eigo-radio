@@ -63,18 +63,32 @@ Generation・A2 Core Explanatory Logic Preservationを使った、P-seriesとは
 | Household | B1-B | PASS/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01時点から内容変更なし | 対象外(A2固有の不具合だったためB1-Bは無変更) | `NOT_REVIEWED` | NOT_APPROVED |
 | Household | A2 | **REVIEW_REQUIRED**(2026-08-17 SoT Consistency Cleanupで訂正: `household/a2/fact_qa.json`の実際の最終記録値は`PASS`ではなく`REVIEW_REQUIRED`。指摘内容はPoint Two周辺の精度[バナナの追熟段階、ジャガイモ/サツマイモの最適湿度]で、今回の修正対象[fruit/vegetable二分法]の範囲外かつB1の同等表現と同水準と判断し、記録の上で許容[`er003_output/n3_01/household/a2/audit/fix01_fact_checker_acceptance_note.json`参照]。無限再生成はしていない)/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01でJapanese title のinstruction leakageとfruit/vegetable二分法を手動編集で修正・再assemble済み | **本番article.mdはFIX-01の手動編集版のまま。ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)による再生成は未実施**(→[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-41) | `NOT_REVIEWED` | NOT_APPROVED |
 
-**Household候補(未承認、並置、2026-09-09追記)**: 上記2行が現行の正式
-artifactである。これとは別に、Household一本化最終候補
-(`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`、Discovery Focus Module+Part B
-案1[未承認候補]、Ledger v5、A2/B1B)が`er011_output/
-household_unified_final_candidate_01/`(試聴: `player.html`)に並置artifact
-として存在する。到達Status=USER_FINAL_AUDIO_REVIEW_REQUIRED
-(Gate1=VALIDATED相当、Trial範囲)。旧完成版(上記2行、`er003_output/
-n3_01/household/`)・旧artifact(`er011_output/
-open138_household_fact03_b1b_minimal_fix_03/`、A-FACT03-5系)はいずれも
-無変更・未上書き。採用・差し替えの可否は`USER_DECISION_REQUIRED`
-(詳細はOPEN_ITEMS.md OPEN-138行・DECISION_LOG.md
-`PM-CLOSEOUT-CONSOLIDATION-63`エントリ参照)。
+**Household一本化最終候補(2026-09-10更新、supersededへ整理)**:
+上記2行(`er003_output/n3_01/household/`)は**旧完成版**であり、本項の
+一本化最終候補によりsupersededされた(参考のため削除はしていない)。
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`(Discovery Focus Module+Part B
+案1[未承認候補、Production不採用が確定]、Ledger v5、A2/B1B、
+`er011_output/household_unified_final_candidate_01/`、試聴:
+`player.html`)を、ユーザー試聴(2026-09-10、全体として良好)を経て
+Householdの**一本化された最終候補**として確定した。B1B comment_3の
+"prevent"発音に違和感の指摘があり、既存QA記録(disfluency QA用の
+独立ローカルASR)に機械的誤認識証拠("prevent"→"perfect")を確認した
+ため、既存segment再生成経路でcomment_3のみ差し替え済み(旧音声は
+`comment_3_original.wav`として保存、A2は無変更)。再Assembly・Audio
+Validation Gate opt-in ON再PASS済み(詳細はDECISION_LOG.md
+`PM-CLOSEOUT-CONSOLIDATION-64`エントリ参照)。旧artifact
+(`er011_output/open138_household_fact03_b1b_minimal_fix_03/`、
+A-FACT03-5系)も本候補によりsupersededとして整理した(いずれのファイル
+も削除はしていない、fallback候補としての再提示は行わない)。
+
+**注意**: 本項目は「Household記事1本の最終版承認」を記録するもので
+あり、本候補が用いた実験的Prompt要素(Discovery Focus Module Part B
+案1、`cautionary_constrained`)のProduction採用(`APPROVED_FOR_
+PRODUCTION`)や`editorial_mode="discovery_why"`の正式registry登録を
+意味しない(Part B案1のProduction採用は2026-09-10にユーザー判断で
+(c)見送りと確定、詳細はOPEN_ITEMS.md OPEN-135行参照)。番組としての
+公開可否(publication)は別途判断であり、本項目は既存の
+`publication_status: NOT_APPROVED`原則を変更しない。
 
 **Artifact URL**(開発者向け試聴用、非公開): Hanshin/Health/Householdの
 各テーマ比較ページ(詳細はER-003-A2-B1-N3-01完了報告・FIX-01完了報告を

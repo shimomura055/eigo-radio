@@ -1,0 +1,122 @@
+{
+  "management_id": "PM-CLOSEOUT-CONSOLIDATION-64",
+  "sub_id": "HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01-SEGFIX-01",
+  "target": "comment_3",
+  "reason": "ユーザー試聴でcomment_3の'prevent'発音に違和感の指摘(2026-09-10)。既存QA記録を確認したところ、disfluency QA用の独立ローカルASR(faster_whisper_small_local_verbatim)が'prevent'を'perfect'と誤認識していた機械的証拠を確認した(NORMALIZED_MATCH判定に使う主ASR[asr_text]は'prevent'と一致していたが、別の独立ローカルASRが該当語のみ誤認識、ユーザー指摘箇所と一致)。これを機械的異常と判定し、既存segment再生成経路(review_lock.approve_regenerate + voice01.generate_charon_english、元のcomment_3呼び出しと同一引数[style_prefix_override=B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True])でcomment_3のみ再生成した。Prompt/本文/Support文言は無変更。旧音声はcomment_3_original.wavとして退避。",
+  "old_entry": {
+    "status": "OK",
+    "text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at 2 useful questions that can guide this choice.",
+    "path": "er011_output/household_unified_final_candidate_01/b1b/narration/comment_3.wav",
+    "voice": "Charon",
+    "asr_verified": true,
+    "asr_text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at two useful questions that can guide this choice.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at two useful questions that can guide this choice.",
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 17.531,
+          "raw_leading_silence_seconds": 0.3,
+          "raw_trailing_silence_seconds": 0.32,
+          "trimmed_duration_seconds": 17.531,
+          "leading_margin_retained_seconds": 0.3,
+          "trailing_margin_retained_seconds": 0.32
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 49,
+          "transcript": "The  drawer's  settings  change  the  air  inside,  and  this  can  affect  how  fresh  food  keeps  its  quality.  The  best  choice  depends  on  what  kind  of  problem  you  want  to  perfect,  not  only  on  the  food's  name.  Next,  we  will  look  at  two  useful  questions  that  can  guide  this  choice.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er011_output/household_unified_final_candidate_01/b1b/narration/attempts/comment_3_attempt1_englishstyleprefix.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix",
+    "trim_info": {
+      "raw_duration_seconds": 17.531,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 17.531,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.32
+    },
+    "clipping_detected": false,
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 49,
+      "transcript": "The  drawer's  settings  change  the  air  inside,  and  this  can  affect  how  fresh  food  keeps  its  quality.  The  best  choice  depends  on  what  kind  of  problem  you  want  to  perfect,  not  only  on  the  food's  name.  Next,  we  will  look  at  two  useful  questions  that  can  guide  this  choice.",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "canonical_text": "The drawer’s settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food’s name. Next, we will look at two useful questions that can guide this choice."
+  },
+  "new_entry": {
+    "status": "OK",
+    "text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at 2 useful questions that can guide this choice.",
+    "path": "er011_output/household_unified_final_candidate_01/b1b/narration/comment_3.wav",
+    "voice": "Charon",
+    "asr_verified": true,
+    "asr_text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at two useful questions that can guide this choice.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The drawer's settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food's name. Next, we will look at two useful questions that can guide this choice.",
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 17.291,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.24,
+          "trimmed_duration_seconds": 17.291,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.24
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 49,
+          "transcript": "The  drawer's  settings  change  the  air  inside,  and  this  can  affect  how  fresh  food  keeps  its  quality.  The  best  choice  depends  on  what  kind  of  problem  you  want  to  prevent,  not  only  on  the  food's  name.  Next  we  will  look  at  two  useful  questions  that  can  guide  this  choice.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er011_output/household_unified_final_candidate_01/b1b/narration/attempts/comment_3_attempt2_englishstyleprefix.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix",
+    "trim_info": {
+      "raw_duration_seconds": 17.291,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.24,
+      "trimmed_duration_seconds": 17.291,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.24
+    },
+    "clipping_detected": false,
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 49,
+      "transcript": "The  drawer's  settings  change  the  air  inside,  and  this  can  affect  how  fresh  food  keeps  its  quality.  The  best  choice  depends  on  what  kind  of  problem  you  want  to  prevent,  not  only  on  the  food's  name.  Next  we  will  look  at  two  useful  questions  that  can  guide  this  choice.",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "canonical_text": "The drawer’s settings change the air inside, and this can affect how fresh food keeps its quality. The best choice depends on what kind of problem you want to prevent, not only on the food’s name. Next, we will look at two useful questions that can guide this choice."
+  }
+}

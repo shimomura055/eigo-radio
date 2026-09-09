@@ -10121,6 +10121,129 @@ jsonl/txt/py、既存commit慣行に合わせ音声バイナリ[mp3/wav]は対�
 バックグラウンド待機(自己判断によるもの)は実施していない(SSOT反映+
 Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-64: Household一本化最終候補のB1B comment_3
+差し替え+Discovery保険文対策Part B案1(c)見送り確定+Lane B照合
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(サブID
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01-SEGFIX-01`)に基づき実施した。
+並列稼働なし(単独タスク)。
+
+**背景(ユーザー確定事項)**: `HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`
+(`er011_output/household_unified_final_candidate_01/`)をユーザーが
+試聴し、A2/B1Bとも全体として良好=OKと判断した。ただしB1B comment_3
+「The best choice depends on what kind of problem you want to
+prevent.」の"prevent"の発音に違和感があるとの指摘があった。また、
+保険文対策Part B案1は(c)見送り(Production不採用、
+`editorial_mode="discovery_why"`の正式登録もしない)で確定した。
+
+**作業A(comment_3確認・条件付き差し替え)**: 既存QA記録
+(`b1b/audit/tts_generation_results.json`のsegments.comment_3)を確認
+したところ、NORMALIZED_MATCH判定に使う主ASR(`asr_text`)は"prevent"と
+一致していたが、disfluency QA用の独立したローカルASR
+(`disfluency_evidence.transcript`、method=
+`faster_whisper_small_local_verbatim`)が該当語のみ"perfect"と誤認識
+していた機械的証拠を確認した(ユーザー指摘箇所と一致)。これを
+「機械的に異常が確認できる場合」と判定し、既存segment再生成経路
+(`er011_human_review_lock_01.approve_regenerate()`で明示的に
+REGENERATE_APPROVEDへ遷移させたうえで、`er003_v1_sing01_voice01_
+generate.generate_charon_english()`を元のcomment_3呼び出しと同一引数
+[`style_prefix_override=B1_PREVIEW_STYLE_PREFIX_CALM,
+disfluency_qa=True`]で呼ぶ、既存Production関数を無変更のまま利用)で
+comment_3のみ再生成した(`er011_household_unified_final_candidate_01_
+segfix_comment3_01.py`)。Prompt/本文/Support文言(`b1_support_texts.
+json`)は一切変更していない。1回でstatus=OK、Human Review Lock発動
+なし。再生成後は独立ローカルASRの誤認識も解消(transcript上で"prevent"
+と一致)。旧音声は`b1b/narration/comment_3_original.wav`として退避
+(削除せず)。差し替え後、`er011_household_unified_final_candidate_01_
+run.py`の`assembly_stage("b1b")`(無変更)でB1Bを再Assembly(status=OK、
+duration=302.524秒、peak=0.95296、clippingなし)し、Audio Validation
+Gate opt-in ON経路(OPEN-129)も再PASSを確認した。`build_player.py`
+(無変更)で`player.html`を再生成した(A2側は無変更、影響なし)。
+追加費用¥1.55(本タスク実測合計¥70.31、内訳openai¥19.62/gemini
+¥47.55/openai_asr¥3.15、上限¥300以内)。
+
+**Household一本化最終候補の確定**: 上記差し替え後の完成候補を、
+Householdの一本化された最終候補として確定する。旧完成版
+(`er003_output/n3_01/household/`)・旧artifact(`er011_output/
+open138_household_fact03_b1b_minimal_fix_03/`、A-FACT03-5系)は本候補
+によりsupersededとして整理した(いずれのファイルも削除はせず並置の
+まま維持、A-FACT03-5の試聴依頼提示は行わない)。**本決定は
+「Household記事1本の最終版承認」であり、本候補が用いた実験的Prompt
+要素(Discovery Focus Module Part B案1)のProduction採用
+(`APPROVED_FOR_PRODUCTION`)や`editorial_mode="discovery_why"`の正式
+registry登録を意味しない。**
+
+**Discovery保険文対策Part B案1の(c)見送り確定(ユーザー判断、
+2026-09-10)**: 経緯は以下6点。(1)観測された保険文問題:
+`FAMILY-A-DISCOVERY-STAGE4-CAUTIONARY-LANGUAGE-TRIAL-10`(D-4)で、
+保険文(聞き手に取扱説明書・メーカー案内・専門家など記事外の情報源
+確認を促す独立した一文)はWriter生出力由来であり、Household Verified
+Fact Ledger v5のFACT-03是正で追加された家庭用ガイド不一致記述
+(ストロベリー/オレンジの高湿度分類、GE/Samsung間の見解相違)を記事が
+明示的に扱ったrunにのみ出現した(current_focus条件2/6、争点非該当
+runは0/16)。(2)Trialした対策案: Part B案1(既存の断定回避段落末尾へ、
+外部参照を呼びかける独立した保険文を書かないよう求める1文を追加、
+`cautionary_constrained`条件)。(3)Trial-10の結果: Part B案1適用で
+保険文はBefore 2/6→After 0/6へ改善した一方、REVIEW率がBefore
+0/6→After 2/6へ上振れした(A2 run2=Point Overlap NG_REVIEW_REQUIRED、
+B1B run2=Fact Checkerの一般化指摘)。(4)因果は確定しなかった: N=3
+(合計12本)は小さく、この上振れがPart B案1の副作用か既存QA機構の
+通常のばらつきかは断定できなかった。(5)一方で
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`はPart B案1適用条件
+(cautionary_constrained)を用いてN=1完成経路を通し、保険文0/6・
+Human Review Lock発動なしで成立した(`PM-CLOSEOUT-CONSOLIDATION-63`
+エントリ参照)。(6)以上を踏まえ、ユーザーはPart B案1のProduction採用
+(Discovery Focus Module正式組込み)を**(c)見送り**と判断した
+(2026-09-10)。`editorial_mode="discovery_why"`の正式registry登録も
+あわせて見送る。`CURRENT_SPEC.md`への追加は行わない。
+
+**作業C(Lane B status SSOT照合、読み取りのみ)**: ユーザー認識6項目を
+`OPEN_ITEMS.md`と照合し、いずれも**一致**を確認した(相違なし)。
+(1) 3V Audio Trial=`VALIDATED`: `OPEN_ITEMS.md` OPEN-129行(281行目)の
+`PM-CLOSEOUT-CONSOLIDATION-56`追記「3V Audio Trialが試聴承認により
+Gate1=`VALIDATED`としてcloseoutした」と一致。(2) ユーザー試聴承認済み:
+同追記「試聴承認により...closeoutした」と一致。(3) Production採用は
+未決定: OPEN-120行(271行目)`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-
+TRIAL-01`追記「Production配線に必要な項目(未承認、実装なし)」と一致。
+(4) `APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない: 同OPEN-120
+行「VALIDATEDはTrial範囲の技術的成立を意味するのみで、Production採用
+(`APPROVED_FOR_PRODUCTION`)は別途ユーザー判断とし、配線に必要な項目...
+は未実施のまま維持する」と一致。(5) Fact Checker A' cache=観測継続:
+OPEN-136行(288行目)`PM-CLOSEOUT-CONSOLIDATION-47`(ユーザー正式決定
+B-FC-1(b))追記「cacheはProduction実装しない。量産時に...8項目を記録
+して観測を継続する...cache導入可否は観測後に別途
+`USER_DECISION_REQUIRED`として判断する」と一致。(6) OPEN-129構造Gate
+mandatory化=deferred: OPEN-129行(281行目)`PM-CLOSEOUT-CONSOLIDATION-
+29/56`追記「mandatory化は現時点で行わず`DEFERRED`のまま維持する...
+Status: `PRODUCTION_WIRED(opt-in)`/mandatory化`DEFERRED`(Trigger(a)
+到達・Trigger(b)未達、変更なし)」と一致。`CURRENT_SPEC.md`は本タスクで
+変更していない。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-64へ)、
+OPEN-135行(Part B案1の(c)見送り確定の6点根拠を追記)、OPEN-138行
+(comment_3差し替え結果・Household一本化最終候補確定・旧版supersession
+を追記)を反映した。`ARTIFACT_REGISTRY.md`のHousehold項を「候補
+(未承認、並置)」から一本化最終候補へ更新し、旧完成版・旧artifactを
+supersededと明記した(旧ファイルは削除していない)。`CURRENT_SPEC.md`
+は変更していない(Production・Prompt変更なし)。`docs/pm/MODEL_ROUTING_
+TRIAL_LOG.md`へ本タスク行(Sonnet/LOW〜MEDIUM、実測¥1.55[累計
+¥70.31]、Lock発動なし)を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-64、サブID
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01-SEGFIX-01`)。Git操作: ファイル
+名指定で`git add`(`git add -A`不使用)、対象=`DECISION_LOG.md`・
+`OPEN_ITEMS.md`・`ARTIFACT_REGISTRY.md`・`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`・`er011_household_unified_final_candidate_01_segfix_comment3_
+01.py`・`er011_output/household_unified_final_candidate_01/`配下で
+本タスクにより更新されたjson/md/html(既存commit慣行に合わせ音声
+バイナリ[wav/mp3]は対象から除外)。1 commitで`origin/main`へpush。
+`er006_output/`、`er011_output/attempt_history.jsonl`、既存の未追跡
+ファイル群、`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`は
+いずれも本タスクでは触っていない(ACTIVE_TASK/RESULT_PACKETは更新は
+したがcommit対象外)。Production/Prompt編集・`CURRENT_SPEC.md`編集は
+実施していない(SSOT反映+comment_3限定のsegment再生成+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
