@@ -32,6 +32,34 @@ v2で追加した「きのこ類は低湿度を好む」という例外の記述
 挙げないこととした(果物側のイチゴ・柑橘類の例外はFact Checkerで
 確認済みのため維持する)。
 
+【改訂履歴】v4(2026-09-09、HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01
+[OPEN-138]、ユーザーDecision D2-UDR-2により既存Research正式経路で
+FACT-03を再検証): Discovery Trial-07(er011_output/
+discovery_layer3_focus_trial_07/)で、独立Fact Checkerが12本中2本
+(a2/baseline/run3、a2/discovery_focus/run1)で、FACT-03の「イチゴ・
+柑橘類(オレンジ等)は高湿度を好む」という家庭用クリスパードロワー
+設定の断定をFAILと判定した(GE Appliances公式案内はオレンジ・イチゴ
+をいずれも低湿度側のFruit Binに分類し、UC San Diego・Illinois
+Extensionもオレンジを低湿度側と案内)。既存Research正式経路のFact
+Checker関数(web_search付き、er002_ja_web_research_r3.py
+make_fact_checker_fn/run_fact_checker_with_gates)をそのまま用いて
+FACT-03由来の公開済み記事段落(b1b/article.md)を再検証した結果も
+同じくFAILだった(er012_output/open138_household_fact03_reverify_01/
+fact_check_result.json)。判明した点: UC Davis Postharvest Research
+and Extension Centerが示すイチゴ・オレンジの最適相対湿度90〜95%と
+いう数値自体は正確だが、これは商業的・ポストハーベスト貯蔵条件の
+数値であり、家庭用冷蔵庫クリスパードロワーの「高湿度設定」に
+自動的に対応するわけではない。家電メーカー間でも扱いが一致して
+いない(GE: イチゴ・オレンジとも低湿度側Fruit Bin / Samsung: イチゴ
+は高湿度側)。したがって、v2〜v3で「果物側の例外としてFact Checkerで
+確認済み」としていたイチゴ・柑橘類の高湿度推奨は、家庭用クリスパー
+設定の文脈では情報源間で見解が割れており誤りだったと判明したため、
+下記のとおりFACT-03を修正する(仕組みベースの中心主張[エチレン/
+水分保持]は維持し、修正対象はイチゴ・柑橘類の具体例のみ)。過去の
+完成audio・完成記事本文(a2/b1b/article.md)は既存policyにより遡及
+修正しない(本Ledger修正は将来のDiscovery再実行・記事再生成にのみ
+適用される)。
+
 選定angle(v2、仕組みの説明を修正): 冷蔵庫の野菜室(クリスパードロワー)
 には、多くの場合「低湿度」と「高湿度」の2種類(またはスライダーで調整
 できる設定)がある。この違いを知らずに使っている人が多い。仕組みの核心
@@ -64,29 +92,50 @@ v2で追加した「きのこ類は低湿度を好む」という例外の記述
   number_classification: ANCHOR(この記事の核心的な仕組み)
   usable: yes
 
-[EXTENSION_SERVICE][MANUFACTURER_GUIDANCE] FACT-03(v3訂正、仕組み
-ベースへ変更): 使い分けの基本は「果物か野菜か」ではなく、「エチレンを
-多く放出するか」「水分をすぐ失ってしおれやすいか」である。りんご・
-洋梨・バナナ・トマトなどエチレンを多く放出する食品は低湿度ドロワーが
-適する。葉物野菜(ケール等)・薄い皮の野菜(ブロッコリー、90〜95%が
-最適湿度)のように水分をすぐ失う食品は高湿度ドロワーが適する。ただし
-例外があり、イチゴ・柑橘類(オレンジ等)のような果物は高湿度を好む
-(UC Davisはイチゴ・オレンジの最適湿度をいずれも90〜95%としている)。
+[EXTENSION_SERVICE][MANUFACTURER_GUIDANCE] FACT-03(v4訂正、イチゴ・
+柑橘類を家庭用高湿度設定の例から除外): 使い分けの基本は「果物か
+野菜か」ではなく、「エチレンを多く放出するか」「水分をすぐ失って
+しおれやすいか」である。りんご・洋梨・バナナ・トマトなどエチレンを
+多く放出する食品は低湿度ドロワーが適する。葉物野菜(ケール等)・薄い
+皮の野菜(ブロッコリー、90〜95%が最適湿度)のように水分をすぐ失う
+食品は高湿度ドロワーが適する。イチゴ・柑橘類(オレンジ等)について
+は、UC Davis Postharvest Research and Extension Centerの資料上は
+最適相対湿度90〜95%(高湿度)とされているが、これは商業的・
+ポストハーベスト貯蔵条件の数値であり、家庭用冷蔵庫クリスパー
+ドロワーの「高湿度設定」に置くべきという結論と同一視できない。家電
+メーカー公式案内も一致していない(GE Appliancesはイチゴ・オレンジを
+いずれも低湿度側のFruit Binに分類、Samsungはイチゴを高湿度側に
+分類)。
   source: Iowa State University Extension and Outreach、Whirlpool公式
   ブログ、KitchenAid公式サポート、UC Davis Postharvest Research and
-  Extension Center(Strawberry/Orange/Broccoli fact sheets)
-  confidence: 高(複数の独立情報源、独立Fact Checkerが2回にわたり
-  指摘した点を反映済み)
-  number_classification: ANCHOR
-  usable: yes
+  Extension Center(Strawberry/Orange/Broccoli fact sheets、90〜95%の
+  数値の裏付けとしてのみ有効、家庭用設定の裏付けとしては不可)、GE
+  Appliances公式Fruit Bin/Vegetable Bin案内、Samsung公式クリスパー
+  引き出し案内、Illinois Extension、UC San Diego Center for Community
+  Health(いずれもHOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01[OPEN-138]
+  再検証時[2026-09-09]に確認)
+  confidence: 中(エチレン/水分保持の仕組み部分は高。イチゴ・柑橘類を
+  家庭用クリスパーの高湿度設定に当てはめる主張は情報源間で見解が
+  割れており、独立Fact Checkerが計3回[Discovery Trial-07で2回、
+  OPEN-138再検証で1回]FAILと判定したため、家庭用設定の断定は
+  usable: noとする)
+  number_classification: ANCHOR(仕組み部分のみ)
+  usable: yes(エチレン/水分保持の仕組み部分のみ)。イチゴ・柑橘類が
+  「高湿度ドロワーを好む」という家庭用設定の断定は usable: no
   notes_for_writer: 「果物=低湿度、野菜=高湿度」という無条件の断定を
-  しない。「多くの場合はこうだが、イチゴや柑橘類のような例外もある」
-  という形で書く。仕組み(エチレン/水分保持)を主役にする。
-  【重要、v3で追加】「きのこ類は低湿度を好む」という主張は書かない
-  こと。UC Davis・USDA Agriculture Handbook 66・UNH Extensionによると、
+  しない。仕組み(エチレン/水分保持)を主役にする。
+  【重要、v4で変更】イチゴ・柑橘類(オレンジ等)を「高湿度ドロワーを
+  好む」家庭用設定の例として書かないこと。UC Davisの90〜95%という
+  数値は商業貯蔵の最適相対湿度であり、家庭用クリスパーの高湿度設定
+  推奨と同一視できず、家電メーカー間でも扱いが一致しない(v2〜v3では
+  「果物側の例外としてFact Checkerで確認済み」としていたが、Discovery
+  Trial-07の独立Fact Checker指摘[12本中2本FAIL]とOPEN-138再検証
+  [FAIL]により誤りと判明したため、v4で家庭用設定の例としては削除
+  する)。
+  【v3から継続】「きのこ類は低湿度を好む」という主張は書かないこと。
+  UC Davis・USDA Agriculture Handbook 66・UNH Extensionによると、
   きのこの最適相対湿度は約95%(高湿度)であり、通気は必要だが「低湿度を
-  好む」という意味ではない。v2で誤ってこの例を使ったが、独立Fact
-  Checkerの指摘により削除した。野菜側の「低湿度を好む例外」は、確実な
+  好む」という意味ではない。野菜側の「低湿度を好む例外」は、確実な
   裏付けが取れるまで本記事では挙げない
 
 [EXTENSION_SERVICE] FACT-04(v2訂正): トマトとバナナは冷蔵保存に適さず、
