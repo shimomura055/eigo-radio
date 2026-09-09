@@ -1,0 +1,200 @@
+--- prod_gen.run_one_pattern
++++ t3.run_one_pattern_connected
+@@ -1,6 +1,7 @@
+-def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
++def run_one_pattern_connected(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
+                      topic: str, out_dir: str, apply_evidence_compression: bool = True,
+-                     apply_directional_fact_precheck: bool = True) -> dict:
++                     apply_directional_fact_precheck: bool = True,
++                     point_role_hint_block: str = "") -> dict:
+     """apply_evidence_compression(既定True、ER-008-EVIDENCE-COMPRESSION-
+     PROD-AND-N7-AUDIO-06でProduction既定へ昇格): WriterがFact-safeな記事
+     を生成した直後、Lossless Editor(方式C、er003_v1_n3_01_evidence_
+@@ -16,19 +17,20 @@
+     with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
+         f.write(prompt)
+ 
+-    writer_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
++    writer_model = routing.require_model(prod_gen._writer_process(label), routing.WRITER_MODEL)
+ 
+     # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Point One/Twoの本文を書く
+     # 前に、Verified Fact Ledgerに基づいてrole/new_listener_takeaway/
+     # evidence_anchor/why_it_matters/重複禁止事項を明示的に計画させ、その
+     # 計画をWriter promptへ挿入する(Point Role Planning)。
+-    role_plan_result = point_planning.run_point_role_planning(
+-        client, topic, verified_ledger_text, model=writer_model, reasoning_effort=REASONING_EFFORT)
++    role_plan_result = run_point_role_planning_connected(
++        client, topic, verified_ledger_text, model=writer_model, reasoning_effort=prod_gen.REASONING_EFFORT,
++        point_role_hint_block=point_role_hint_block)
+     with open(f"{out_dir}/audit/point_role_planning_initial.json", "w", encoding="utf-8") as f:
+         json.dump(role_plan_result, f, ensure_ascii=False, indent=2, default=str)
+     prompt_with_plan = prompt + "\n" + point_planning.build_role_planning_block(role_plan_result["parsed"])
+ 
+-    gen = _generate_and_compress_article(client, theme_id, label, prompt_with_plan, out_dir,
++    gen = prod_gen._generate_and_compress_article(client, theme_id, label, prompt_with_plan, out_dir,
+                                           apply_evidence_compression, writer_model)
+     if gen["status"] != "OK":
+         return {"label": label, "status": gen["status"], "article_text": None}
+@@ -47,10 +49,10 @@
+     retry_attempt = 0
+     while True:
+         print(f"[N3-01][{theme_id}] {label}: Point-Full Story/Point-Point重複QA開始"
+-              f"(retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
+-        point_qa_result = run_point_overlap_qa_and_regenerate(
++              f"(retry {retry_attempt}/{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
++        point_qa_result = prod_gen.run_point_overlap_qa_and_regenerate(
+             client, article_text, verified_ledger_text, model=writer_model,
+-            reasoning_effort=REASONING_EFFORT, out_dir=out_dir)
++            reasoning_effort=prod_gen.REASONING_EFFORT, out_dir=out_dir)
+         overlap_report = point_qa_result.get("report") or {}
+         lexical_flagged = point_qa_result["status"] == "OK" and any(
+             overlap_report.get(key, {}).get("before_overlap", {}).get("flagged")
+@@ -62,14 +64,14 @@
+         # split_common_sections_for_point_qaが構造を認識できた場合のみ実行
+         # する(想定外構造の場合は既存のoverlap QA同様スキップし、後段の
+         # 構造検証[restore_r2.validate_point_structure]に委ねる)。
+-        sections_for_value_qa = split_common_sections_for_point_qa(article_text)
++        sections_for_value_qa = prod_gen.split_common_sections_for_point_qa(article_text)
+         value_qa_result = None
+         value_qa_flagged = False
+         if sections_for_value_qa is not None:
+             value_qa_result = point_planning.run_point_value_qa(
+                 client, sections_for_value_qa["full_story"], sections_for_value_qa["point_one_body"],
+                 sections_for_value_qa["point_two_body"], model=writer_model,
+-                reasoning_effort=REASONING_EFFORT)
++                reasoning_effort=prod_gen.REASONING_EFFORT)
+             with open(f"{out_dir}/audit/point_value_qa_attempt{retry_attempt}.json", "w",
+                       encoding="utf-8") as f:
+                 json.dump(value_qa_result, f, ensure_ascii=False, indent=2, default=str)
+@@ -83,20 +85,20 @@
+             "value_qa_status": value_qa_result["status"] if value_qa_result else None,
+         }
+         overlap_retry_log.append(log_entry)
+-        if not still_flagged or retry_attempt >= POINT_OVERLAP_ARTICLE_RETRY_MAX:
++        if not still_flagged or retry_attempt >= prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX:
+             break
+         retry_attempt += 1
+         print(f"[N3-01][{theme_id}] {label}: Point overlap/value QA NG"
+               f"(lexical={lexical_flagged}, value_qa={value_qa_flagged})。"
+               f"Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します"
+-              f"(article retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
++              f"(article retry {retry_attempt}/{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
+ 
+         # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)
+         point_overlap_result = {
+             "point_one": overlap_report["point_one"]["before_overlap"],
+             "point_two": overlap_report["point_two"]["before_overlap"],
+         }
+-        diagnostic_prompt = build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
++        diagnostic_prompt = prod_gen.build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+         if value_qa_flagged:
+             diagnostic_prompt = diagnostic_prompt + "\n\n" + point_planning.build_value_qa_diagnostic_note(
+                 value_qa_result)
+@@ -113,15 +115,16 @@
+         # 「必要な生成単位全体をLedgerから再生成する」既存方針に従い、Point
+         # Role Planningも記事全体と同じ単位として毎回再計画する(前回の計画を
+         # 使い回さない)。
+-        role_plan_result = point_planning.run_point_role_planning(
+-            client, topic, verified_ledger_text, model=writer_model, reasoning_effort=REASONING_EFFORT)
++        role_plan_result = run_point_role_planning_connected(
++            client, topic, verified_ledger_text, model=writer_model, reasoning_effort=prod_gen.REASONING_EFFORT,
++            point_role_hint_block=point_role_hint_block)
+         with open(f"{out_dir}/audit/point_role_planning_retry{retry_attempt}.json", "w",
+                   encoding="utf-8") as f:
+             json.dump(role_plan_result, f, ensure_ascii=False, indent=2, default=str)
+         diagnostic_prompt = diagnostic_prompt + "\n" + point_planning.build_role_planning_block(
+             role_plan_result["parsed"])
+ 
+-        gen = _generate_and_compress_article(client, theme_id, label, diagnostic_prompt, out_dir,
++        gen = prod_gen._generate_and_compress_article(client, theme_id, label, diagnostic_prompt, out_dir,
+                                               apply_evidence_compression, writer_model)
+         if gen["status"] != "OK":
+             print(f"[N3-01][{theme_id}] {label}: article retry中にwriterが失敗しました status={gen['status']}")
+@@ -136,7 +139,7 @@
+ 
+     point_overlap_qa_applied = False  # Point-only regeneration自体は撤去済み(常にFalse)
+     if overlap_retry_log[-1].get("flagged"):
+-        print(f"[N3-01][{theme_id}] {label}: Point overlapが{POINT_OVERLAP_ARTICLE_RETRY_MAX}回の記事全体"
++        print(f"[N3-01][{theme_id}] {label}: Point overlapが{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX}回の記事全体"
+               f"再生成後もNGのままでした。自動続行せずNG_REVIEW_REQUIREDとして報告します"
+               f"(Fact Checker以降は実行しません)。")
+         return {
+@@ -150,15 +153,15 @@
+     print(f"[N3-01][{theme_id}] {label}: Point-Full Story重複QA完了(overlapなし、"
+           f"記事全体retry {retry_attempt}回で解消)。")
+ 
+-    metrics = compute_metrics(article_text)
++    metrics = prod_gen.compute_metrics(article_text)
+     section_wc = sf1r1.section_word_counts(article_text)
+     length_report = {
+         **section_wc, "total": metrics["word_count"],
+-        "point_one_within_target": POINT_TARGET_LOWER <= section_wc["point_one"] <= POINT_TARGET_UPPER,
+-        "point_one_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_one"] <= POINT_TOLERANCE_UPPER,
+-        "point_two_within_target": POINT_TARGET_LOWER <= section_wc["point_two"] <= POINT_TARGET_UPPER,
+-        "point_two_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_two"] <= POINT_TOLERANCE_UPPER,
+-        "total_within_soft_range": TOTAL_SOFT_LOWER <= metrics["word_count"] <= TOTAL_SOFT_UPPER,
++        "point_one_within_target": prod_gen.POINT_TARGET_LOWER <= section_wc["point_one"] <= prod_gen.POINT_TARGET_UPPER,
++        "point_one_within_tolerance": prod_gen.POINT_TOLERANCE_LOWER <= section_wc["point_one"] <= prod_gen.POINT_TOLERANCE_UPPER,
++        "point_two_within_target": prod_gen.POINT_TARGET_LOWER <= section_wc["point_two"] <= prod_gen.POINT_TARGET_UPPER,
++        "point_two_within_tolerance": prod_gen.POINT_TOLERANCE_LOWER <= section_wc["point_two"] <= prod_gen.POINT_TOLERANCE_UPPER,
++        "total_within_soft_range": prod_gen.TOTAL_SOFT_LOWER <= metrics["word_count"] <= prod_gen.TOTAL_SOFT_UPPER,
+     }
+     with open(f"{out_dir}/metrics.json", "w", encoding="utf-8") as f:
+         json.dump(metrics, f, ensure_ascii=False, indent=2)
+@@ -215,7 +218,7 @@
+         }
+ 
+     print(f"[N3-01][{theme_id}] {label}: ledger逸脱チェック開始(Hook-aware)...")
+-    ledger_model = routing.require_model(_writer_process(label), routing.WRITER_MODEL)
++    ledger_model = routing.require_model(prod_gen._writer_process(label), routing.WRITER_MODEL)
+     deviation_result = vfl01.run_deviation_check(
+         client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
+     print(f"[N3-01][{theme_id}] {label}: deviation overall_status={deviation_result['parsed']['overall_status']} "
+@@ -281,7 +284,7 @@
+             point_context_found = point_context is not None
+             if point_context is None:
+                 point_context = f"{before_ctx} {target} {after_ctx}".strip()
+-            r = local_rewrite.rewrite_ng_item(client, ledger_model, REASONING_EFFORT,
++            r = local_rewrite.rewrite_ng_item(client, ledger_model, prod_gen.REASONING_EFFORT,
+                                                verified_ledger_text, point_context, target,
+                                                deviation, before_ctx, after_ctx, _run_check_window)
+             r["cycle"] = cycle
+@@ -296,22 +299,22 @@
+         article_text = local_rewrite.apply_rewrites(article_text, cycle_results)
+ 
+         # Formatting normalization (emoji・unnecessary bold削除)
+-        article_text = normalize_article_formatting(article_text)
++        article_text = prod_gen.normalize_article_formatting(article_text)
+ 
+         with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+             f.write(article_text)
+ 
+         # 局所Rewriteで本文が変わったため、metrics/length_reportを再計算し
+         # 上書きする(Rewrite前のword countがそのまま記録され続けるのを防ぐ)。
+-        metrics = compute_metrics(article_text)
++        metrics = prod_gen.compute_metrics(article_text)
+         section_wc = sf1r1.section_word_counts(article_text)
+         length_report = {
+             **section_wc, "total": metrics["word_count"],
+-            "point_one_within_target": POINT_TARGET_LOWER <= section_wc["point_one"] <= POINT_TARGET_UPPER,
+-            "point_one_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_one"] <= POINT_TOLERANCE_UPPER,
+-            "point_two_within_target": POINT_TARGET_LOWER <= section_wc["point_two"] <= POINT_TARGET_UPPER,
+-            "point_two_within_tolerance": POINT_TOLERANCE_LOWER <= section_wc["point_two"] <= POINT_TOLERANCE_UPPER,
+-            "total_within_soft_range": TOTAL_SOFT_LOWER <= metrics["word_count"] <= TOTAL_SOFT_UPPER,
++            "point_one_within_target": prod_gen.POINT_TARGET_LOWER <= section_wc["point_one"] <= prod_gen.POINT_TARGET_UPPER,
++            "point_one_within_tolerance": prod_gen.POINT_TOLERANCE_LOWER <= section_wc["point_one"] <= prod_gen.POINT_TOLERANCE_UPPER,
++            "point_two_within_target": prod_gen.POINT_TARGET_LOWER <= section_wc["point_two"] <= prod_gen.POINT_TARGET_UPPER,
++            "point_two_within_tolerance": prod_gen.POINT_TOLERANCE_LOWER <= section_wc["point_two"] <= prod_gen.POINT_TOLERANCE_UPPER,
++            "total_within_soft_range": prod_gen.TOTAL_SOFT_LOWER <= metrics["word_count"] <= prod_gen.TOTAL_SOFT_UPPER,
+         }
+         with open(f"{out_dir}/metrics.json", "w", encoding="utf-8") as f:
+             json.dump(metrics, f, ensure_ascii=False, indent=2)
+@@ -361,7 +364,7 @@
+               f"報告します(Directional Fact Precheck以降は実行しません)。")
+         return {
+             "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+-            "metrics": compute_metrics(article_text),
++            "metrics": prod_gen.compute_metrics(article_text),
+             "fact_status": fc_status, "fact_verdict": verdict,
+             "ledger_status": deviation_result["parsed"]["overall_status"],
+             "ledger_deviation_count": len(deviation_result["parsed"]["deviations"]),
