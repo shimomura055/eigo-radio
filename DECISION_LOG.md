@@ -8432,6 +8432,69 @@ commit messageにその旨明記)。並列稼働中のLane A Trial-04
 (`er011_output/daily_news_focus_layer_comparison_trial_04/`)は本タスク
 で触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-29: OPEN-131/OPEN-129 SSOT表記確定+Lane A
+G1/G2縮小方針+「既存対策・仕様 Reconciliation Check」正式化+Gate 6
+
+ユーザーが2026-09-09、以下の決定を行った。
+
+**(1) OPEN-131 Fact Checker A'**を`PRODUCTION_WIRED(opt-in)`として正式
+認定した。スコープ: 共有Fact Checkerへ実装済み/registryへ配線済み/
+runner opt-in入口(`run_fact_check_b1/a2`)へ配線済み/Production関数
+runtime evidence済み/A-Familyは既定OFF・無影響(commit `3c3d7a0`/
+`34fe8dd`)。B-Family Production既定stage(Writer→Fact Checker A'→
+後続)への自動接続は**Phase 2 Writer配線時に実施**する方針とし、新規
+Open Item`OPEN-132`(Phase 2 Writer配線時必須チェックリスト)で明示的
+に追跡し、Phase 2着手時に抜けないようにする。
+
+**(2) OPEN-129**は`PRODUCTION_WIRED(opt-in)`のままでOKとし、mandatory
+化は現時点で行わず後で判断する(必ずOpen Itemとして追跡)。mandatory化
+判断Trigger: (a) B-Family 3V/4V Trialで構造Gate実績確認、(b) 次回
+A-Family Production runで実績確認。両方揃った時点で見送らず
+`USER_DECISION_REQUIRED`として必ず提示する(自動mandatory化は禁止、
+Trigger到達後の未提示放置も禁止)。Gate 5/Gate 6/PM Closeout Mandatory
+Checkで追跡する。
+
+**(3) Lane A**: A-UDR-18=大きな(a)/(b)比較Trialは実施せず、G1/G2に
+絞った小規模修正Trial(Hanshin+Theme 2、各N=3、閾値0.40・Loop Budget 2
+不変)へ縮小する。A-UDR-19=G1は既存Production対策の実装漏れ・配線不備
+の可能性が高いものとして扱う。G1/G2それぞれ過去の正式承認仕様との
+対応関係を確認してから進める方針とし、別タスク
+`FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05`として起票した(Lane A並列
+稼働、Production無変更、SSOT編集は本タスク側のみ)。
+
+**(4) 新ルール「既存対策・仕様 Reconciliation Check」を正式化**した
+(再発防止)。failure mode対策・Prompt改善・retry/fallback改善・
+Validator/QA改善・Production仕様変更・既存挙動への追加対策を検討・
+実装する前に、必ず最初にCURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/過去の
+関連管理ID・Trial Report/現在のProduction実装/retry・fallback・
+regeneration/過去に同種failure modeへの対策がないか/APPROVED_FOR_
+PRODUCTION・PRODUCTION_WIRED済み対策がないかを確認する。順序は
+(1)過去仕様・Trial・Production実装を先に確認→(2)現在のギャップを
+特定→(3)そのギャップに対してのみ新対策を検討、とする。重複・競合・
+実装漏れが見つかったら新Trialを開始せずSTOPして整理・報告する。
+経緯: Point Overlap分散低減Trial(A-UDR-16)の事前監査で既存対策との
+重複と実装ギャップG1/G2が判明した(2026-09-09)。本ルールは
+`docs/pm/PM_GOVERNANCE.md`へ最小限で追記した。
+
+**(5) Gate 6を実施**した(問題なし、blockingなし)。3V/4V Writer設計
+(HIGH、Opusレビュー1回・型A+B)へ進めることを承認する。詳細は
+`PM-GATE6-PRE-3V4V-CHECK-01_REPORT.md`参照。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-131/OPEN-129/OPEN-112行へ追記、新規
+`OPEN-132`行を登録。`docs/pm/PM_GOVERNANCE.md`へReconciliation Check
+節を新設、Gate 5/Gate 6/PM Closeout Mandatory Checkへ確認項目を追加。
+`docs/pm/PM_BRIEF.md`へReconciliation Check参照の1行を追加。
+`CURRENT_SPEC.md`Fact Checker節のOPEN-131状態を`PRODUCTION_WIRED
+(opt-in、Phase 2で既定接続)`へ更新。
+
+**根拠**: `PM-GATE6-PRE-3V4V-CHECK-01_REPORT.md`。Git操作: G1=
+`docs/pm/PM_GOVERNANCE.md`・`docs/pm/PM_BRIEF.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・`PM-GATE6-PRE-3V4V-CHECK-01_
+REPORT.md`、G2=SSOT3ファイル(`CURRENT_SPEC.md`・`DECISION_LOG.md`・
+`OPEN_ITEMS.md`)。ファイル名指定でcommitし`origin/main`へpush。並列
+稼働中のLane A `FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05`(Sonnet、
+`er011_output/point_overlap_gap_fix_trial_*`)は本タスクで触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
