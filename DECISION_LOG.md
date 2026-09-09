@@ -9313,6 +9313,51 @@ comparison_artifact_l0_01.py`)、`er006_output/`、`er011_output/
 attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群は
 いずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-52: Lane A News/Discovery再改善 段階2
+決定(N-1/N-2/N-3、D-1/D-2)のSSOT反映+Haiku比較artifact commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+ユーザー正式決定(2026-09-09)による段階2方針をSSOTへ反映した。
+
+**ユーザー決定の要旨**: News側 N-1=(a)value単独NG時の診断条件分岐を
+Trial harnessで検証、N-2=(a)閾値・分母は変えず240件で判断材料を
+作成、N-3=(b)Role再計画への診断結果受け渡しは保留。Discovery側
+D-1=(a)既存の断定回避規則が効かない理由を¥0分析したうえで最小
+Writer側調整Trial(Ledger v4、N=3)、D-2=(a)多様性はPoint本文
+(cross_point_overlap+目視)で測定し、Role文字列ヒューリスティック
+分類は廃止(評価方法の変更であり、Production仕様[QA基準・Writer
+規則]そのものの変更ではない)。News/DiscoveryともProduction採用は
+まだ行わず、段階2の最小Trialと分析結果の提示までとし、必要な判断点
+ではSTOPする。管理ID`FAMILY-A-NEWS-STAGE2-DIAGNOSTIC-BRANCH-
+TRIAL-08`・`FAMILY-A-DISCOVERY-STAGE2-INTERPRETATION-RULE-TRIAL-08`
+(いずれも実施中、本タスクでは着手していない)。
+
+**SSOT反映**: `OPEN_ITEMS.md` OPEN-135行(段階2決定の要旨・2Trial
+管理IDを追記)、OPEN-133行(cross_point_overlapを多様性の観測指標
+[Point本文+目視、Role文字列分類廃止]として使用する方針を追記、
+still_flagged統合[未実装・DEFERRED]は変更なし)、OPEN-112行
+(段階2Trial起票の参照を追記)へ反映した。`docs/pm/MODEL_ROUTING_
+TRIAL_LOG.md`へHaiku比較artifact(実績値確定)・News段階2・
+Discovery段階2・本タスクの行を追記した。
+
+**Haiku比較artifact**: `NEWS-DISCOVERY-COMPARISON-ARTIFACT-L0-01`
+(Haiku/L0、38k token・158秒・¥0)が完了した。Haiku起因のSonnet
+再作業は0件(定型artifact生成というL0適合タスクであったため)。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、ユーザー正式決定N-1/N-2/
+N-3・D-1/D-2の伝達を含む)。Git操作: `er011_news_discovery_
+comparison_artifact_l0_01.py`・`er011_output/news_discovery_
+comparison_artifact_l0_01/`配下md/htmlをG1、`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をG2として
+ファイル名指定でcommitし`origin/main`へpush。並列稼働中のNews段階2
+(`er011_output/news_stage2_*`・`er011_news_stage2_*`)、Discovery
+段階2(`er011_output/discovery_stage2_*`・`er011_discovery_stage2_*`)、
+Lane B 3V Audio(`er012_*`)、Household修正(`er003_output/n3_01/
+household/fact03_fix_02/`)、`er006_output/`、`er011_output/
+attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群は
+いずれも本タスクでは触っていない。Production/Prompt編集・新規Trial
+着手は実施していない(SSOT反映+Haiku比較artifactのGit記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
