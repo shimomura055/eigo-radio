@@ -239,6 +239,8 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-39(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(A4 Opusレビュー転記Reportのcommit、OPEN-135/OPEN-130/OPEN-112行追記、DECISION_LOGエントリ新設、本表の確定値更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-COMPLETION-A2-TREND-END-TO-END(継続、B1B level完走) | MEDIUM(L1/Sonnet) | Sonnet | ユーザー承認(A2-UDR-1(a))に基づくB1B Key Phrase 5承認済み再生成1回(不合格)→既存Key Phrase選定経路での差し替え→TTS→Assembly→Audio Gate→playerを完走 | Haiku不適(Production TTS/Assembly/Key Phrase選定実行・Gate判定を伴う)、Opus不要(既存承認済み経路の適用のみ、新規設計判断なし) | 226k | 834s | 0 | なし | なし | なし(承認済み再生成1回は不合格、既存Key Phrase選定経路での差し替えは既存前例の適用) | 不明(B1B level完走、Gate既定OFF/opt-in ON双方PASS。ユーザー最終試聴前) |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-43(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-135/OPEN-112行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md 1行追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07(確定値) | MEDIUM(L1/Sonnet) | Sonnet | Discovery/Why Layer3 Focus Module(Trial-05でVALIDATED済みの本文段落を再利用、見出しのみ改稿)をHousehold既存Ledgerへ`editorial_type_module_block`方式で接続するN=3 Article-only Trial(baseline vs discovery_focus×A2/B1B)、既知パターン(Trend Synthesis Focus Module配線と同型)の踏襲 | Haiku不適(記事生成・Fact Checker/Ledger Deviation判定を伴う)、Opus不要(設計自体は`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`で既にレビュー済みのため、本Trialは検証実行のみ) | 192k | 2673s | 0 | なし | なし | あり(blocking2/12はFocus Module起因ではなくHousehold Ledger FACT-03の既存事実精度リスクと判定、新規`OPEN-138`へ切り出し。Sonnet推奨Gate1=`VALIDATED`[Focus Module自体]だが最終判断はユーザー、配線可否6項目は未実装のまま提示) | 不明(Trial扱いのままProduction wiring未実施。実測費用¥137.6[上限¥150以内]) |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-46(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、D2 Trial-07結果反映[OPEN-135/OPEN-112行]、新規Open Item[OPEN-138]起票)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -407,3 +409,14 @@ TRIAL-SETUP-01`の次から起算)
   相互作用効果]解消、実測費用¥20.57)へ更新した。本タスク(Sonnet、
   LOW)を新規行として追記した。中間レビュー・正式Closeout Triggerの
   到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-46、本タスク): 新規行
+  `FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07`(確定値、Sonnet、
+  MEDIUM、192k token・2673s、差し戻し0、UDR発生=blocking2/12はHousehold
+  Ledger FACT-03起因と判定し新規`OPEN-138`へ切り出し、Sonnet推奨Gate1=
+  `VALIDATED`[Focus Module自体]、実測費用¥137.6)、本タスク(Sonnet、
+  LOW)を追記した。**Trial開始(`PM-MODEL-ROUTING-TRIAL-SETUP-01`)後の
+  累計委任数(概算、管理ID単位でユニークカウント)**: 36件(Sonnet 34件・
+  Opus 2件[`EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01`・
+  `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`]・Haiku 0件)。
+  中間レビュー・正式Closeout Triggerの到達判定・再計算はいずれも実施
+  していない(件数の現況記録のみ、採否判断ではない)。

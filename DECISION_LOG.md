@@ -9021,6 +9021,59 @@ Layer3 Trial-07(`er011_output/discovery_layer3_*`)、`er006_output/`、
 `er011_output/attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡
 ファイル群はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-46: D2 Discovery Layer3 Trial-07結果のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07`(Step A4 D2、Household
+既存Ledger再利用によるDiscovery/Why Layer3 Focus Module N=3 Article-only
+Trial)の結果をSSOTへ反映した。
+
+**Trial-07結果の要点**: Household Ledger固定、Discovery Layer3 Focus
+Module(Trial-05でVALIDATED済みの本文段落を一字一句変更せず、見出しのみ
+Trend Synthesis Focus Moduleの前例と同型の書式へ改稿)を
+`editorial_type_module_block`方式でG1修正済みProduction Writerへ接続し、
+baseline vs discovery_focus×A2/B1B×N=3(12本、text-only、TTS未実施、実測
+費用¥137.6)を実行した。blocking(FAIL)は両条件1/6ずつ(計2/12)で同率
+であり、原因はいずれもHousehold Ledger FACT-03(「イチゴ・柑橘類[オレンジ
+等]のような果物は高湿度を好む」)を独立Fact Checkerが別の公式情報源
+(GE Appliances等)との不一致として検出したことによるもので、現行
+Production承認済み記事(2026-08-17、B1B)にも同一文言が存在し当時のFact
+Checkerは問題視していなかったことから、Discovery/Why Layer3 Focus Module
+固有の欠陥ではなく既存Household Ledgerの事実精度リスクと判断した。
+REVIEW_REQUIRED率はbaseline 17%(1/6)→discovery_focus 67%(4/6、平均
+unsupported claims 0.33→1.67件/本)でTrial-05(N=1)の傾向と整合し、
+unsupported claims合計10件は人間読解で全てLedgerのいずれかのFactの
+解釈・敷衍として説明可能でLedger外の事実創作は0件だった。Ledger Deviation
+Checker発火・Local Rewrite発火はいずれも0件(12本全て)。Point Role分類
+(機械分類)はFocus Module条件でmechanism/myth_correctionへ100%収束し、
+baselineが持っていたbroader_dimension等の多様性が失われた。副作用は軽微
+(Point One語数超過+1〜6語[2/6本のみ]、平均文長11.8→12.9語)。Sonnet推奨
+Gate1=`VALIDATED`(Focus Module自体について)。Production配線判断に必要な
+項目(mode名`discovery_why`の`EDITORIAL_TYPE_MODULE_BLOCKS`登録、見出し
+改稿版文言の正式採否、Discovery Gate記録欄新設、回帰テスト案、コスト影響
+[Prompt+約2.2KB・実測+24%]、Human Review負荷[REVIEW_REQUIRED率+50pt・
+unsupported claims約5倍])は未実装のまま提示中。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Step D2完了、Sonnet推奨
+Gate1=VALIDATED、配線可否・Human Review負荷はユーザー判断待ちとして提示)・
+OPEN-112行(Discovery Layer3=Focus Module自体はVALIDATED、Production配線は
+ユーザー判断待ち)へ追記した。Household Ledger FACT-03の事実精度(独立Fact
+Checkerが複数回・独立に矛盾を指摘、承認済み記事にも同文言が存在)は本
+Trialのスコープ外の別件として新規`OPEN-138`(`USER_DECISION_REQUIRED`)へ
+切り出した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-07行(Sonnet、
+MEDIUM、192k token・2673秒、差し戻し0)と本タスク行を追記し、Trial開始
+(`PM-MODEL-ROUTING-TRIAL-SETUP-01`)後の累計委任数(36件、Sonnet34件・
+Opus2件・Haiku0件)を記録した。
+
+**根拠**: `FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07_REPORT.md`。
+Git操作: G1=`er011_discovery_layer3_focus_trial_07.py`・同Report・
+`er011_output/discovery_layer3_focus_trial_07/`配下(json/md/jsonlのみ)を
+ファイル名指定でcommit。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(3ファイルのみ)をファイル名指定で
+commitし`origin/main`へpush。`CURRENT_SPEC.md`、`er006_output/`、`er011_
+output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスク
+では触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
