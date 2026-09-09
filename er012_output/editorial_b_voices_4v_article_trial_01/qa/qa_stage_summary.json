@@ -1,0 +1,196 @@
+{
+  "final_attempt_dir": "er012_output/editorial_b_voices_4v_article_trial_01/b1b_run01_attempt3",
+  "comments": {
+    "comment_1": {
+      "text": "Listen for the different viewpoints, and notice when the applicant learns what is happening.",
+      "status": "OK",
+      "llm_generated": true
+    },
+    "comment_2": {
+      "text": "Now, you will hear four different voices, one after another. Each person will share their own view on what you just heard.",
+      "llm_generated": false,
+      "status": "TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED",
+      "source": "design.md B-1(未承認・Trial-only、registryへ書かない)"
+    },
+    "comment_3": {
+      "text": "You have heard four different ways of experiencing the same situation. Instead of deciding which view is right, let us ask why the situation feels different to each person. Next, we will look more closely at where that difference comes from.",
+      "llm_generated": false,
+      "status": "TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED",
+      "source": "design.md B-1(未承認・Trial-only、registryへ書かない)"
+    },
+    "comment_4": {
+      "text": "The important question is not only who is right. It is also what is making this situation possible.",
+      "status": "OK",
+      "llm_generated": true
+    }
+  },
+  "distinctness_summary": {
+    "note": "EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-01: Pairwise Voice Distinctness Check(未承認仕様候補、Opusレビュー2-HIGH起点)。有向12ペア(個別呼び出し)+一括判定(1回で4 Voice・6ペア同時評価)を実測比較。reasoning_effort='low'(コスト管理のためのTrial限定の選択、既存Contract化QAの基準ではない)。",
+    "directed_pair_count": 12,
+    "directed_elapsed_seconds": 64.4,
+    "batch_elapsed_seconds": 21.3,
+    "direction_agreement_rate": 0.9,
+    "direction_agreement_comparisons": 30,
+    "method_agreement_rate": 0.767,
+    "method_agreement_comparisons": 30,
+    "method_agreement_definition": "batch_result[pair][axis].judgment == directed_forward[a_vs_b][axis].judgment"
+  },
+  "overlap_controls_summary": {
+    "positive_control": {
+      "overlap_ratio": 0.857,
+      "shared_words": [
+        "another",
+        "begins",
+        "challenge",
+        "done",
+        "faces",
+        "facial",
+        "gestures",
+        "honesty",
+        "how",
+        "judgment",
+        "know",
+        "later",
+        "long",
+        "low",
+        "made",
+        "movement",
+        "opt",
+        "out",
+        "period",
+        "rated",
+        "receives",
+        "rejected",
+        "reliability",
+        "result",
+        "said",
+        "skills",
+        "software",
+        "speaks",
+        "sued",
+        "system",
+        "test",
+        "tone",
+        "wants",
+        "well",
+        "work",
+        "yet"
+      ],
+      "point_word_count": 42,
+      "story_word_count": 41,
+      "flagged": true,
+      "threshold": 0.4
+    },
+    "deterministic_control": {
+      "overlap_ratio": 0.711,
+      "shared_words": [
+        "actually",
+        "affected",
+        "afterward",
+        "asks",
+        "before",
+        "cannot",
+        "decision",
+        "even",
+        "every",
+        "explain",
+        "eye",
+        "fit",
+        "front",
+        "look",
+        "make",
+        "met",
+        "never",
+        "overnight",
+        "pattern",
+        "people",
+        "process",
+        "shift",
+        "someone",
+        "wants",
+        "what",
+        "who",
+        "why"
+      ],
+      "point_word_count": 38,
+      "story_word_count": 38,
+      "flagged": true,
+      "threshold": 0.4
+    },
+    "negative_control": {
+      "overlap_ratio": 0.14,
+      "shared_words": [
+        "choose",
+        "desk",
+        "gave",
+        "office",
+        "place",
+        "quiet",
+        "sit"
+      ],
+      "point_word_count": 50,
+      "story_word_count": 46,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "theme_vocab_dummy": {
+      "overlap_ratio": 0.389,
+      "shared_words": [
+        "algorithm",
+        "applicant",
+        "applicants",
+        "audit",
+        "recruiter",
+        "screening",
+        "tool"
+      ],
+      "point_word_count": 18,
+      "story_word_count": 15,
+      "flagged": false,
+      "threshold": 0.4
+    }
+  },
+  "duration_estimate": {
+    "note": "音声は生成していない(テキストのみTrial)。design.md B-6の2V実測定数を引用し、語数/秒比で4V estimated durationをmonitoring目的でのみ換算した(gate・正式検証ではない)。",
+    "variable_word_count_4v": 523,
+    "variable_word_count_2v_reference": 388,
+    "estimate": {
+      "seconds_per_word_2v_variable_parts": 0.4979,
+      "estimated_variable_seconds_4v": 260.4,
+      "estimated_pause_seconds_4v": 20.4,
+      "estimated_total_seconds_4v": 411.9,
+      "within_4v_target_range": true
+    },
+    "four_v_target_range_seconds_design_md": [
+      380,
+      430
+    ]
+  },
+  "structure_review": {
+    "note": "OPEN-129整合(Gate 3 item 8)、Opusレビュー4-MED対応。voice_map方式(Trial側定義、registry非編集)。B_FAMILY_B1_REQUIRED_SEGMENTS(Production、2声)と同型のvoice_map拡張として妥当か[segment数18、voice_1..4がそれぞれちょうど1回登場]をレビューするのみで、Gateへの実際の突合[assemble.py::verify_episode_audio_validation_gate()]は音声・segmentが存在しないため実施しない。正本統合はOPEN-132で追跡。",
+    "segment_count": 18,
+    "segment_names_unique": true,
+    "voice_roles_present": true,
+    "each_voice_role_appears_exactly_once": true,
+    "segment_names": [
+      "topic_intro",
+      "preview",
+      "comment_1",
+      "comment_2",
+      "comment_3",
+      "comment_4",
+      "voice_1_heading",
+      "voice_2_heading",
+      "voice_3_heading",
+      "voice_4_heading",
+      "voice_1",
+      "voice_2",
+      "voice_3",
+      "voice_4",
+      "full_story_part1",
+      "full_story_part2",
+      "tension_reflection",
+      "in_one_line"
+    ]
+  }
+}

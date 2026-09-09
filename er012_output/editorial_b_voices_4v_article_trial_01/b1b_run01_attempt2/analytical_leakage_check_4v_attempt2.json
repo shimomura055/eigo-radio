@@ -1,0 +1,101 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_03cd8bd471c89f62006aa0b7d4acf487d0998269fc2b1e47e1",
+  "prompt": "以下は、あるVoices/Perspective型記事(4 Voices版)の6つのsection本文\n(Voice 1〜4/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜4に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する6項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、4人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが4人を単純に「賛成2人 vs 反対2人」のような対称的な2つの陣営へ\n  分けて描いていない場合PASS(分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nThe camera is on. A job seeker speaks while software watches her tone, face, and movements. She wants her skills and character to be seen, not reduced to a score. One woman said her skills test went well, but low scores for gestures and facial expressions were followed by rejection and long unemployment. Another applicant sued a major health company after receiving a reliability and honesty score without a choice to opt out or challenge it. Among working US job seekers, 49% called AI tools more biased than human recruiters.\n\n【Voice 2本文】\nThe recruiter clears a crowded inbox, lets software sort CVs, then opens an audit summary for candidates with questions. The tool saves time, but the questions remain: which part came from the software? What should be made of an AI-written CV—useful skill or too little effort? A public company notice shows the pressure in practice: using an automated tool also means explaining its review.\n\n【Voice 3本文】\nThe hiring dashboard is open. The business leader sees the process move from weeks toward days and imagines handling more vacancies without the same rise in workload. Reported cases include a hotel company that cut hiring time sharply after using AI. That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline.\n\n【Voice 4本文】\nA legal reviewer opens a published audit summary, then an older record of a failed hiring tool. One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring. The reviewer is looking for a record that can be checked, not only a promise of fairness. New York City requires audits for certain tools, while the EU places recruitment AI in a high-risk class.\n\n【Tension本文】\nTheir clocks are different. The applicant meets the result first and may carry it through a long job search. The recruiter meets the queue and the questions each day. The business leader watches time, cost, and scale. The legal reviewer looks for a record that can be checked when compliance or fairness is questioned. The same score is therefore not one problem: it is a lost opportunity, a daily explanation, a growth tool, or a test of accountability, depending on who must live with it.\n\n【Closing本文】\nThe deeper question is not simply whether a machine can read an application. It is who defines merit, who carries the cost of a wrong call, and whether the person affected can understand what happened. A hiring screen is also a decision about power, explanation, and whose risk is easiest to overlook.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "末尾に割合を主語とする統計文があり、当事者の経験からデータ整理へ移行している。経験描写自体は具体的で、統計よりも顔・ジェスチャー評価による不採用や失業の方が印象に残るが、複数事例と割合を列挙する構成はDiscovery/Trend記事に近い。",
+      "quoted_evidence": "Among working US job seekers, 49% called AI tools more biased than human recruiters."
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "人数や割合を主語にした文はなく、数字も使われていない。一方で、公開企業通知を根拠に状況を外側から説明する文があり、Recruiterの視点というより証拠を整理するDiscovery型の構成になっている。",
+      "quoted_evidence": "A public company notice shows the pressure in practice: using an automated tool also means explaining its review."
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "効率化と法的・評判上のリスクという事業責任者の両方の関心は描かれている。ただし、報告事例を持ち出し、語り手がその魅力とリスクをまとめて解説する部分が、当事者の視点から外れた分析・Discovery型の構成を作っている。",
+      "quoted_evidence": "That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline."
+    },
+    "voice_4": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "reasoning": "法的レビュアーが検証可能な記録を求めるという関心は示されているが、本文の中心は過去の失敗事例と各地域の規制を並べる調査結果の説明である。女性に関する履歴書が不利に扱われた具体例の方が、レビュアー本人の経験や感情より強く記憶に残る。",
+      "quoted_evidence": "One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "調査結果の説明ではなく、応募者・採用担当者・事業責任者・法務レビュアーが異なるコストと責任を負うために同じスコアを別の問題として見る構造を掘り下げている。4人を賛否の二陣営に分けず、役割ごとの違いを示している。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる要約や「人による」という結論ではなく、メリットの判断、誤判定の負担、説明可能性、権力関係という問いを残している。Writer独自の解決策や妥協案も提案していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_1",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "末尾に割合を主語とする統計文があり、当事者の経験からデータ整理へ移行している。経験描写自体は具体的で、統計よりも顔・ジェスチャー評価による不採用や失業の方が印象に残るが、複数事例と割合を列挙する構成はDiscovery/Trend記事に近い。",
+      "quoted_evidence": "Among working US job seekers, 49% called AI tools more biased than human recruiters."
+    },
+    {
+      "voice": "voice_2",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "人数や割合を主語にした文はなく、数字も使われていない。一方で、公開企業通知を根拠に状況を外側から説明する文があり、Recruiterの視点というより証拠を整理するDiscovery型の構成になっている。",
+      "quoted_evidence": "A public company notice shows the pressure in practice: using an automated tool also means explaining its review."
+    },
+    {
+      "voice": "voice_3",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "効率化と法的・評判上のリスクという事業責任者の両方の関心は描かれている。ただし、報告事例を持ち出し、語り手がその魅力とリスクをまとめて解説する部分が、当事者の視点から外れた分析・Discovery型の構成を作っている。",
+      "quoted_evidence": "That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline."
+    },
+    {
+      "voice": "voice_4",
+      "fail_fields": [
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "法的レビュアーが検証可能な記録を求めるという関心は示されているが、本文の中心は過去の失敗事例と各地域の規制を並べる調査結果の説明である。女性に関する履歴書が不利に扱われた具体例の方が、レビュアー本人の経験や感情より強く記憶に残る。",
+      "quoted_evidence": "One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring."
+    }
+  ],
+  "any_flagged": true
+}

@@ -1,0 +1,592 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/editorial_b_voices_4v_article_trial_01/b1b_run01_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0f5d5fdec28bf515006aa0b5f6b20c87d0bdb0436e2e19d366",
+        "prompt": "以下は、あるVoices/Perspective型記事(4 Voices版)の6つのsection本文\n(Voice 1〜4/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜4に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する6項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、4人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが4人を単純に「賛成2人 vs 反対2人」のような対称的な2つの陣営へ\n  分けて描いていない場合PASS(分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nThe camera stays on while the applicant speaks. A score may come from tone, expression, or gestures. One woman told a news outlet that her skills test went well, but an AI video interview rated her movements poorly. She was not hired and was later out of work for a long time. In another case, an applicant sued after a company used AI to score “reliability and honesty,” with no way to opt out or challenge the result. They are not choosing the system; they are trying to be understood fairly.\n\n【Voice 2本文】\nAfter resumes are sorted, the recruiter still asks: who fits this job, and who might fit another? The tool may save time, but it creates work too. A company published a notice after an independent review of its automated hiring tools under New York City law. The recruiter may finish screening, then prepare audit information for a worried applicant. AI-written resumes also divide opinion: a useful skill to some, too little effort to others.\n\n【Voice 3本文】\nOn another screen, the hiring dashboard shows time and cost. Reported company cases describe hiring moving from weeks to days, with lower spending after AI was introduced. That is the attraction: handling more hiring without the same growth in workload. But unfair treatment can bring legal trouble and damage the company’s name. The business leader weighs a visible gain today against a risk that may appear later, in a lawsuit or a public headline.\n\n【Voice 4本文】\nAn auditor opens an old case file. One company stopped an internal hiring tool after past resumes taught it to rate women lower in some cases. New York City requires a bias audit, a public summary, and notice to candidates before certain automated tools are used. The EU classifies certain AI systems used in recruitment, particularly those that can significantly affect careers, livelihoods, or workers’ rights, as high-risk, with rules on transparency and human oversight. But the legal picture is uneven: Japan did not have an equivalent audit law at the time examined. The reviewer asks whether a decision can be checked, not simply whether software can produce a score.\n\n【Tension本文】\nThese four people are not on opposite sides of one line. The applicant carries the result directly: a score can close a door. The recruiter uses the tool for volume but must explain it. The business leader sees time, cost, and scale, while fearing the price of a fairness failure. The legal reviewer comes later, trying to make the process answerable. Their views differ because they stand at different distances from the result, and the cost becomes visible at different times.\n\n【Closing本文】\nThat changes the question. “Should companies use AI?” sounds like a vote on a machine. The deeper issue is whose opportunity is being measured, who can question the score, and who must answer when it is wrong. Speed, fairness, and accountability meet in one hiring decision.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "応募者の具体的な不採用経験や異議申立てが中心で、数字や調査結果は前面に出ていない。一方、最後に複数の応募者の動機を語り手が一般化している。",
+            "quoted_evidence": "They are not choosing the system; they are trying to be understood fairly."
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "採用担当者の実務上の負担には触れているが、独立レビューや企業通知、AI履歴書への一般的な評価が人物の具体的経験より目立つ。特に後半は個人の視点というより、動向や意見を整理する記事の構成になっている。",
+            "quoted_evidence": "A company published a notice after an independent review of its automated hiring tools under New York City law.\n\nAI-written resumes also divide opinion: a useful skill to some, too little effort to others."
+          },
+          "voice_3": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "報告された企業事例と、weeksからdaysへの比較結果が冒頭から中心になっており、経営者の経験より導入効果の説明が前面に出ている。終盤の経営者の懸念は自然だが、全体としてはデータ起点のトレンド記事の構造である。",
+            "quoted_evidence": "Reported company cases describe hiring moving from weeks to days, with lower spending after AI was introduced.\n\nThat is the attraction: handling more hiring without the same growth in workload."
+          },
+          "voice_4": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "具体的な数値はないが、NY市、EU、日本の制度を比較する法規制の説明が大部分を占めている。「法的状況は不均一」という語り手の整理も入り、監査人の経験や判断より制度情報が記憶に残る。",
+            "quoted_evidence": "But the legal picture is uneven: Japan did not have an equivalent audit law at the time examined.\n\nNew York City requires a bias audit, a public summary, and notice to candidates before certain automated tools are used. The EU classifies certain AI systems used in recruitment, particularly those that can significantly affect careers, livelihoods, or workers’ rights, as high-risk, with rules on transparency and human oversight."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査結果や数値ではなく、4人が結果からどの距離にいて、コストがいつ見えるかという違いを軸に緊張関係を掘り下げている。4人を賛成・反対の2陣営に単純化していない。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約や「人による」という結論ではなく、測定される機会、異議申立ての可能性、誤りへの責任という問いに焦点を移している。Writer自身の具体的な解決策や妥協案も提示していない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_1",
+            "fail_fields": [
+              "leak_narrator_analysis"
+            ],
+            "reasoning": "応募者の具体的な不採用経験や異議申立てが中心で、数字や調査結果は前面に出ていない。一方、最後に複数の応募者の動機を語り手が一般化している。",
+            "quoted_evidence": "They are not choosing the system; they are trying to be understood fairly."
+          },
+          {
+            "voice": "voice_2",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "採用担当者の実務上の負担には触れているが、独立レビューや企業通知、AI履歴書への一般的な評価が人物の具体的経験より目立つ。特に後半は個人の視点というより、動向や意見を整理する記事の構成になっている。",
+            "quoted_evidence": "A company published a notice after an independent review of its automated hiring tools under New York City law.\n\nAI-written resumes also divide opinion: a useful skill to some, too little effort to others."
+          },
+          {
+            "voice": "voice_3",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_narrator_analysis",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "報告された企業事例と、weeksからdaysへの比較結果が冒頭から中心になっており、経営者の経験より導入効果の説明が前面に出ている。終盤の経営者の懸念は自然だが、全体としてはデータ起点のトレンド記事の構造である。",
+            "quoted_evidence": "Reported company cases describe hiring moving from weeks to days, with lower spending after AI was introduced.\n\nThat is the attraction: handling more hiring without the same growth in workload."
+          },
+          {
+            "voice": "voice_4",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "具体的な数値はないが、NY市、EU、日本の制度を比較する法規制の説明が大部分を占めている。「法的状況は不均一」という語り手の整理も入り、監査人の経験や判断より制度情報が記憶に残る。",
+            "quoted_evidence": "But the legal picture is uneven: Japan did not have an equivalent audit law at the time examined.\n\nNew York City requires a bias audit, a public summary, and notice to candidates before certain automated tools are used. The EU classifies certain AI systems used in recruitment, particularly those that can significantly affect careers, livelihoods, or workers’ rights, as high-risk, with rules on transparency and human oversight."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/editorial_b_voices_4v_article_trial_01/b1b_run01_attempt2",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_03cd8bd471c89f62006aa0b7d4acf487d0998269fc2b1e47e1",
+        "prompt": "以下は、あるVoices/Perspective型記事(4 Voices版)の6つのsection本文\n(Voice 1〜4/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜4に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する6項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、4人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが4人を単純に「賛成2人 vs 反対2人」のような対称的な2つの陣営へ\n  分けて描いていない場合PASS(分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nThe camera is on. A job seeker speaks while software watches her tone, face, and movements. She wants her skills and character to be seen, not reduced to a score. One woman said her skills test went well, but low scores for gestures and facial expressions were followed by rejection and long unemployment. Another applicant sued a major health company after receiving a reliability and honesty score without a choice to opt out or challenge it. Among working US job seekers, 49% called AI tools more biased than human recruiters.\n\n【Voice 2本文】\nThe recruiter clears a crowded inbox, lets software sort CVs, then opens an audit summary for candidates with questions. The tool saves time, but the questions remain: which part came from the software? What should be made of an AI-written CV—useful skill or too little effort? A public company notice shows the pressure in practice: using an automated tool also means explaining its review.\n\n【Voice 3本文】\nThe hiring dashboard is open. The business leader sees the process move from weeks toward days and imagines handling more vacancies without the same rise in workload. Reported cases include a hotel company that cut hiring time sharply after using AI. That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline.\n\n【Voice 4本文】\nA legal reviewer opens a published audit summary, then an older record of a failed hiring tool. One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring. The reviewer is looking for a record that can be checked, not only a promise of fairness. New York City requires audits for certain tools, while the EU places recruitment AI in a high-risk class.\n\n【Tension本文】\nTheir clocks are different. The applicant meets the result first and may carry it through a long job search. The recruiter meets the queue and the questions each day. The business leader watches time, cost, and scale. The legal reviewer looks for a record that can be checked when compliance or fairness is questioned. The same score is therefore not one problem: it is a lost opportunity, a daily explanation, a growth tool, or a test of accountability, depending on who must live with it.\n\n【Closing本文】\nThe deeper question is not simply whether a machine can read an application. It is who defines merit, who carries the cost of a wrong call, and whether the person affected can understand what happened. A hiring screen is also a decision about power, explanation, and whose risk is easiest to overlook.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "末尾に割合を主語とする統計文があり、当事者の経験からデータ整理へ移行している。経験描写自体は具体的で、統計よりも顔・ジェスチャー評価による不採用や失業の方が印象に残るが、複数事例と割合を列挙する構成はDiscovery/Trend記事に近い。",
+            "quoted_evidence": "Among working US job seekers, 49% called AI tools more biased than human recruiters."
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "人数や割合を主語にした文はなく、数字も使われていない。一方で、公開企業通知を根拠に状況を外側から説明する文があり、Recruiterの視点というより証拠を整理するDiscovery型の構成になっている。",
+            "quoted_evidence": "A public company notice shows the pressure in practice: using an automated tool also means explaining its review."
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "効率化と法的・評判上のリスクという事業責任者の両方の関心は描かれている。ただし、報告事例を持ち出し、語り手がその魅力とリスクをまとめて解説する部分が、当事者の視点から外れた分析・Discovery型の構成を作っている。",
+            "quoted_evidence": "That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline."
+          },
+          "voice_4": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "法的レビュアーが検証可能な記録を求めるという関心は示されているが、本文の中心は過去の失敗事例と各地域の規制を並べる調査結果の説明である。女性に関する履歴書が不利に扱われた具体例の方が、レビュアー本人の経験や感情より強く記憶に残る。",
+            "quoted_evidence": "One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査結果の説明ではなく、応募者・採用担当者・事業責任者・法務レビュアーが異なるコストと責任を負うために同じスコアを別の問題として見る構造を掘り下げている。4人を賛否の二陣営に分けず、役割ごとの違いを示している。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約や「人による」という結論ではなく、メリットの判断、誤判定の負担、説明可能性、権力関係という問いを残している。Writer独自の解決策や妥協案も提案していない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_1",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "末尾に割合を主語とする統計文があり、当事者の経験からデータ整理へ移行している。経験描写自体は具体的で、統計よりも顔・ジェスチャー評価による不採用や失業の方が印象に残るが、複数事例と割合を列挙する構成はDiscovery/Trend記事に近い。",
+            "quoted_evidence": "Among working US job seekers, 49% called AI tools more biased than human recruiters."
+          },
+          {
+            "voice": "voice_2",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "人数や割合を主語にした文はなく、数字も使われていない。一方で、公開企業通知を根拠に状況を外側から説明する文があり、Recruiterの視点というより証拠を整理するDiscovery型の構成になっている。",
+            "quoted_evidence": "A public company notice shows the pressure in practice: using an automated tool also means explaining its review."
+          },
+          {
+            "voice": "voice_3",
+            "fail_fields": [
+              "leak_narrator_analysis",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "効率化と法的・評判上のリスクという事業責任者の両方の関心は描かれている。ただし、報告事例を持ち出し、語り手がその魅力とリスクをまとめて解説する部分が、当事者の視点から外れた分析・Discovery型の構成を作っている。",
+            "quoted_evidence": "That attraction is real. So is the risk: unfair treatment could bring legal trouble and damage the company’s name. The leader is watching both the clock and the headline."
+          },
+          {
+            "voice": "voice_4",
+            "fail_fields": [
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "法的レビュアーが検証可能な記録を求めるという関心は示されているが、本文の中心は過去の失敗事例と各地域の規制を並べる調査結果の説明である。女性に関する履歴書が不利に扱われた具体例の方が、レビュアー本人の経験や感情より強く記憶に残る。",
+            "quoted_evidence": "One company’s internal system had learned from past résumés and marked down résumés mentioning women’s groups or women’s colleges; the project was stopped before actual hiring."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 3,
+      "out_dir": "er012_output/editorial_b_voices_4v_article_trial_01/b1b_run01_attempt3",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0ccb8ee93d2ff5b2006aa0bba7958887d08c38d47fabc4ffbb",
+        "prompt": "以下は、あるVoices/Perspective型記事(4 Voices版)の6つのsection本文\n(Voice 1〜4/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜4に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する6項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、4人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが4人を単純に「賛成2人 vs 反対2人」のような対称的な2つの陣営へ\n  分けて描いていない場合PASS(分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nA video interview begins. The applicant speaks while software scores tone, facial movement, and gestures. She has done well on a skills test, yet receives a low video score and is rejected. Later, she faces a long period without work.\n\nAnother applicant said an AI system rated her reliability and honesty. She said she could not opt out or challenge the result, and later sued. She wants to know how the judgment was made.\n\n【Voice 2本文】\nAfter applications arrive, the recruiter opens the screening tool. It sorts résumés, matches people to jobs, and helps schedule interviews.\n\nThen comes an audit summary for applicants who ask how the tool was checked. The recruiter has seen a notice like one published by a major employer after an independent review.\n\nAnother question waits: is an AI-written résumé a useful skill, or too little effort? The tool may save time, but the recruiter still has to explain it.\n\n【Voice 3本文】\nOn another desk, a hiring dashboard is open. The business leader watches hiring time, spending, and the number of roles the team can handle.\n\nIn one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring. But the same decision can bring legal trouble and damage the company’s name if candidates are treated unfairly.\n\nThe leader reads the result twice: first as a gain in speed, then as a risk to the business.\n\n【Voice 4本文】\nAn HR lawyer opens the audit file and checks what can be shown. In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk. The reviewer has a reason to keep reading: one company once stopped an internal tool after it rated résumés linked to women lower. The company said it had not been used for actual hiring.\n\nCan anyone inspect the path from data to decision?\n\n【Tension本文】\nThe applicant can lose an opportunity through a score they cannot question. The recruiter sits between that score and the person, using the tool while explaining it. The business leader sees speed and scale, but also the company name in a possible legal dispute. The governance reviewer arrives with records and asks whether the decision can be defended.\n\nThese are not two teams. Each is carrying a different risk: lost opportunity, daily workload, slower growth, or lost trust.\n\n【Closing本文】\nThe deeper issue is not simply whether a machine can help choose people. It is who has the power to judge, who can ask why, and who must carry the cost when a score closes an opportunity. AI screening becomes a test of responsibility, not just a test of speed.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "調査結果や数値を説明するのではなく、応募者が低い評価を受け、異議申立てもできないまま不利益を被る経験を中心に描いている。人物の不安や問いも、その人物が実際に抱きうるものに収まっている。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "具体的な数値はなく、採用担当者の実務上の負担も描かれている。ただし、監査の要約そのものが文の主語になり、人物の経験より証拠資料が前面に出る箇所がある。",
+            "quoted_evidence": "Then comes an audit summary for applicants who ask how the tool was checked."
+          },
+          "voice_3": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "ホテル事例の数値と、その結果から大規模採用へ進むという分析が、経営者自身の具体的な経験描写より前面に出ている。報告事例を起点に結論を導くDiscovery型の構成で、85％という数字も強く記憶に残る。",
+            "quoted_evidence": "In one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring."
+          },
+          "voice_4": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "reasoning": "HR弁護士の視点は設定されているが、ニューヨーク市・EUの規制や過去の企業事例を説明する報告記事型の流れに戻っている。法規制と事例の情報量が、監査ファイルを確認する人物の経験より強く印象に残る。",
+            "quoted_evidence": "In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査データの説明ではなく、応募者・採用担当者・経営者・ガバナンス担当者がそれぞれ異なるリスクを背負う理由を整理している。4人を賛成派と反対派に単純分割せず、損失・負担・成長・信頼という異なる懸念を並置している。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約や「人による」という結論ではなく、判断権限、説明を求める権利、損失の負担という責任の問題へ論点を深めている。具体的な解決策や妥協案をWriterが提案しているわけでもない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_2",
+            "fail_fields": [
+              "leak_evidence_subject"
+            ],
+            "reasoning": "具体的な数値はなく、採用担当者の実務上の負担も描かれている。ただし、監査の要約そのものが文の主語になり、人物の経験より証拠資料が前面に出る箇所がある。",
+            "quoted_evidence": "Then comes an audit summary for applicants who ask how the tool was checked."
+          },
+          {
+            "voice": "voice_3",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_narrator_analysis",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "ホテル事例の数値と、その結果から大規模採用へ進むという分析が、経営者自身の具体的な経験描写より前面に出ている。報告事例を起点に結論を導くDiscovery型の構成で、85％という数字も強く記憶に残る。",
+            "quoted_evidence": "In one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring."
+          },
+          {
+            "voice": "voice_4",
+            "fail_fields": [
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "HR弁護士の視点は設定されているが、ニューヨーク市・EUの規制や過去の企業事例を説明する報告記事型の流れに戻っている。法規制と事例の情報量が、監査ファイルを確認する人物の経験より強く印象に残る。",
+            "quoted_evidence": "In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    }
+  ],
+  "total_attempts": 3,
+  "final_attempt_dir": "er012_output/editorial_b_voices_4v_article_trial_01/b1b_run01_attempt3",
+  "final_result": {
+    "label": "B1B",
+    "status": "OK",
+    "metrics": {
+      "word_count": 523,
+      "sentence_count": 38,
+      "avg_sentence_length": 13.9,
+      "max_sentence_length": 25
+    },
+    "seven_section_report": {
+      "hook": 56,
+      "voice_1": 74,
+      "voice_2": 81,
+      "voice_3": 79,
+      "voice_4": 105,
+      "tension": 78,
+      "closing": 50,
+      "total_of_seven_sections": 523,
+      "headings": {
+        "hook": "The Question",
+        "voice_1": "The Applicant's Voice: Behind the Screen",
+        "voice_2": "Another Voice: At the Recruiter's Desk",
+        "voice_3": "A Third Voice: Watching the Hiring Clock",
+        "voice_4": "A Fourth Voice: Reading the Audit Trail",
+        "tension": "Why the Same Tool Feels Different",
+        "closing": "What the Question Is Really About"
+      },
+      "unexpected_preamble_before_first_heading": ""
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "PASS",
+    "fact_check_result": {
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0e889fd7badc6943006aa0b876b39087d0bb7ab13368506d51",
+      "web_search_call_count": 5,
+      "attempts": 1,
+      "result": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "AIによる履歴書スクリーニング、候補者マッチング、面接日程調整、動画面接での音声・表情・身振りの分析という採用用途は、2026年のHR調査、裁判記録、報道と整合する。([shrm.org](https://www.shrm.org/topics-tools/research/recruiting-executives-priorities-perspectives-2026/repp26-full-report?utm_source=openai))",
+          "動画面接の評価が低くなり不採用となった応募者の事例、およびAI評価により長期の求職状態になったという本人の訴えは、記事のApplicantのVoiceに割り当てられた証拠と整合する。動画面接で表情・身体言語を評価する採用ツールの実例も報道で確認できる。([news.sky.com](https://news.sky.com/video/companies-are-increasingly-using-ai-to-scan-cvs-and-score-candidates-as-well-as-to-analyse-body-language-and-facial-expressions-in-video-interviews-13061220?utm_source=openai))",
+          "CVSの応募者がHireVueとAffectivaによる表情・視線・声の分析について、信頼性・誠実さ等の評価、オプトアウト不能、異議申立て不能を主張して提訴し、その後和解に至ったという描写は、裁判記録およびHR Diveの報道と整合する。([hrdive.com](https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/?utm_source=openai))",
+          "ニューヨーク市Local Law 144について、AEDTの使用前1年以内のバイアス監査、監査概要の公開、候補者への通知が必要だとする記事の説明は、NYC当局の公式説明と一致する。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page?utm_source=openai))",
+          "NBCUniversalが、独立監査人によるAEDTのレビューと監査結果への案内を含む通知を公開しているというRecruiterのVoiceの描写は、同社の公式通知で確認できる。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf))",
+          "EU AI Actが、採用・選考、応募書類の分析・フィルタリング、候補者評価に用いる一定のAIシステムを高リスクに分類しているという説明は、EUR-Lexの条文・前文と一致する。([eur-lex.europa.eu](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en&utm_source=openai))",
+          "Amazonが、女性を示す語や女子大学に関する履歴書を低く評価する傾向を示した社内採用ツールを中止したという描写は、Reuters報道と整合する。なお、Reuters報道では採用担当者が推薦結果を見ていたとの説明もある一方、Amazon側は候補者評価には使っていないと説明しており、記事はこの点を会社側の説明として表現しているため矛盾とは判定しない。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))",
+          "Hiltonの採用期間が約6週間から5日間に短縮され、約85％削減と報告されたというBusiness・EfficiencyのVoiceの数値は、公開されたレビュー論文およびSHRMの事例紹介と整合する。([ijbmi.org](https://ijbmi.org/papers/Vol%2813%299/1309143150.pdf?utm_source=openai))"
+        ],
+        "sources": [
+          "ニューヨーク市消費者・労働者保護局のAEDT公式ページ・FAQ。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page?utm_source=openai))",
+          "EUR-Lex掲載のEU AI Act本文および附属書III。([eur-lex.europa.eu](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en&utm_source=openai))",
+          "Baker v. CVS Healthの裁判記録およびHR Diveの和解報道。([hrdive.com](https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/?utm_source=openai))",
+          "NBCUniversalのAutomated Employment Decision Tools公式通知。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf))",
+          "ReutersによるAmazon採用ツール報道。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))",
+          "Hiltonの採用期間短縮に関するSHRM記事およびIJBMIレビュー論文。([shrm.org](https://www.shrm.org/topics-tools/news/technology/people-tech-work-together-intelligent-hiring?utm_source=openai))",
+          "2026年の採用AI利用状況に関するSHRMおよびiCIMS/Aptitude Researchの調査報告。([shrm.org](https://www.shrm.org/topics-tools/research/recruiting-executives-priorities-perspectives-2026/repp26-full-report?utm_source=openai))"
+        ],
+        "notes": "指定された複数Voice構成の事実帰属ルールを適用し、Voice本文が対応するVerified Fact Ledgerの内容を、本文中に出典名・数値を逐一記載していないことだけを理由に未確認扱いしなかった。地の文の中心的な客観主張にも、確認済みの法規制・訴訟・企業事例との明確な矛盾はない。記事中の人物は合成personaとして描かれており、各Voiceの語りを単一の実在人物の完全な逐語証言とは扱わない。"
+      },
+      "attempts_detail": [
+        {
+          "fact_check_attempt": 1,
+          "status": "FACT_CHECK_COMPLETED",
+          "verdict": "PASS",
+          "search_usage": {
+            "web_search_call_count": 5,
+            "queries": [
+              "site:bbc.com/worklife 2024 AI recruiting hiring software bias discrimination video interview woman gestures facial expressions unemployment",
+              "CVS HireVue Affectiva Baker reliability honesty opt out lawsuit Massachusetts lie detector law settlement 2024",
+              "Hilton AI recruitment six weeks five days 85% hiring time source",
+              "NYC Local Law 144 AEDT bias audit summary notice official",
+              "site:eur-lex.europa.eu Regulation (EU) 2024/1689 Annex III employment workers management high-risk recruitment selection",
+              "Reuters Amazon recruiting tool women resumes stopped 2017 never used hiring",
+              "site:nbcunicareers.com Automated Employment Decision Tools Notice 2025 independent bias audit",
+              "2026 survey companies AI hiring resume screening adoption HR leaders 2026 official",
+              "site:eur-lex.europa.eu/legal-content/EN/TXT/PDF 2024/1689 Annex III employment recruitment selection high-risk AI systems",
+              "site:artificialintelligenceact.eu Annex III employment recruitment selection high-risk EU AI Act official text",
+              "site:eur-lex.europa.eu 2024/1689 Article 6 Annex III employment recruitment selection",
+              "\"AI hiring tools may be filtering out the best job applicants\" woman video score gestures",
+              "BBC Worklife woman skills test good video interview gestures facial expressions rejected unemployment AI hiring tools",
+              "\"long period without work\" AI video interview score gestures job applicant"
+            ]
+          },
+          "sources": [
+            {
+              "title": "Recruiting Executives Priorities and Perspectives 2026 Full Report",
+              "url": "https://www.shrm.org/topics-tools/research/recruiting-executives-priorities-perspectives-2026/repp26-full-report?utm_source=openai"
+            },
+            {
+              "title": "Companies are increasingly using AI to scan CVs and score candidates as well as to analyse body language and facial expressions in video interviews. | News UK Video News | Sky News",
+              "url": "https://news.sky.com/video/companies-are-increasingly-using-ai-to-scan-cvs-and-score-candidates-as-well-as-to-analyse-body-language-and-facial-expressions-in-video-interviews-13061220?utm_source=openai"
+            },
+            {
+              "title": "CVS settles lawsuit alleging it used AI ‘lie detector’ in interviews | HR Dive",
+              "url": "https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/?utm_source=openai"
+            },
+            {
+              "title": "Automated Employment Decision Tools (AEDT) - DCWP",
+              "url": "https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page?utm_source=openai"
+            },
+            {
+              "title": "",
+              "url": "https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf"
+            },
+            {
+              "title": "Regulation - EU - 2024/1689 - EN - EUR-Lex",
+              "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en&utm_source=openai"
+            },
+            {
+              "title": "Amazon scraps secret AI recruiting tool that showed bias against women By Reuters",
+              "url": "https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai"
+            },
+            {
+              "title": "“The Impact of Artificial Intelligence on Modern Recruitment Practices: A Multi-Company ..”",
+              "url": "https://ijbmi.org/papers/Vol%2813%299/1309143150.pdf?utm_source=openai"
+            },
+            {
+              "title": "People and Tech Work Together for Intelligent Hiring",
+              "url": "https://www.shrm.org/topics-tools/news/technology/people-tech-work-together-intelligent-hiring?utm_source=openai"
+            }
+          ],
+          "raw_text": "{\"verdict\":\"PASS\",\"contradictions\":[],\"unsupported_specific_claims\":[],\"verified_claims_summary\":[\"AIによる履歴書スクリーニング、候補者マッチング、面接日程調整、動画面接での音声・表情・身振りの分析という採用用途は、2026年のHR調査、裁判記録、報道と整合する。([shrm.org](https://www.shrm.org/topics-tools/research/recruiting-executives-priorities-perspectives-2026/repp26-full-report?utm_source=openai))\",\"動画面接の評価が低くなり不採用となった応募者の事例、およびAI評価により長期の求職状態になったという本人の訴えは、記事のApplicantのVoiceに割り当てられた証拠と整合する。動画面接で表情・身体言語を評価する採用ツールの実例も報道で確認できる。([news.sky.com](https://news.sky.com/video/companies-are-increasingly-using-ai-to-scan-cvs-and-score-candidates-as-well-as-to-analyse-body-language-and-facial-expressions-in-video-interviews-13061220?utm_source=openai))\",\"CVSの応募者がHireVueとAffectivaによる表情・視線・声の分析について、信頼性・誠実さ等の評価、オプトアウト不能、異議申立て不能を主張して提訴し、その後和解に至ったという描写は、裁判記録およびHR Diveの報道と整合する。([hrdive.com](https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/?utm_source=openai))\",\"ニューヨーク市Local Law 144について、AEDTの使用前1年以内のバイアス監査、監査概要の公開、候補者への通知が必要だとする記事の説明は、NYC当局の公式説明と一致する。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page?utm_source=openai))\",\"NBCUniversalが、独立監査人によるAEDTのレビューと監査結果への案内を含む通知を公開しているというRecruiterのVoiceの描写は、同社の公式通知で確認できる。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf))\",\"EU AI Actが、採用・選考、応募書類の分析・フィルタリング、候補者評価に用いる一定のAIシステムを高リスクに分類しているという説明は、EUR-Lexの条文・前文と一致する。([eur-lex.europa.eu](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en&utm_source=openai))\",\"Amazonが、女性を示す語や女子大学に関する履歴書を低く評価する傾向を示した社内採用ツールを中止したという描写は、Reuters報道と整合する。なお、Reuters報道では採用担当者が推薦結果を見ていたとの説明もある一方、Amazon側は候補者評価には使っていないと説明しており、記事はこの点を会社側の説明として表現しているため矛盾とは判定しない。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))\",\"Hiltonの採用期間が約6週間から5日間に短縮され、約85％削減と報告されたというBusiness・EfficiencyのVoiceの数値は、公開されたレビュー論文およびSHRMの事例紹介と整合する。([ijbmi.org](https://ijbmi.org/papers/Vol%2813%299/1309143150.pdf?utm_source=openai))\"],\"sources\":[\"ニューヨーク市消費者・労働者保護局のAEDT公式ページ・FAQ。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page?utm_source=openai))\",\"EUR-Lex掲載のEU AI Act本文および附属書III。([eur-lex.europa.eu](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en&utm_source=openai))\",\"Baker v. CVS Healthの裁判記録およびHR Diveの和解報道。([hrdive.com](https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/?utm_source=openai))\",\"NBCUniversalのAutomated Employment Decision Tools公式通知。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf))\",\"ReutersによるAmazon採用ツール報道。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))\",\"Hiltonの採用期間短縮に関するSHRM記事およびIJBMIレビュー論文。([shrm.org](https://www.shrm.org/topics-tools/news/technology/people-tech-work-together-intelligent-hiring?utm_source=openai))\",\"2026年の採用AI利用状況に関するSHRMおよびiCIMS/Aptitude Researchの調査報告。([shrm.org](https://www.shrm.org/topics-tools/research/recruiting-executives-priorities-perspectives-2026/repp26-full-report?utm_source=openai))\"],\"notes\":\"指定された複数Voice構成の事実帰属ルールを適用し、Voice本文が対応するVerified Fact Ledgerの内容を、本文中に出典名・数値を逐一記載していないことだけを理由に未確認扱いしなかった。地の文の中心的な客観主張にも、確認済みの法規制・訴訟・企業事例との明確な矛盾はない。記事中の人物は合成personaとして描かれており、各Voiceの語りを単一の実在人物の完全な逐語証言とは扱わない。\"}",
+          "model": "gpt-5.6-luna",
+          "response_id": "resp_0e889fd7badc6943006aa0b876b39087d0bb7ab13368506d51"
+        }
+      ],
+      "fact_attribution_mode_enabled": true
+    },
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 1,
+        "newly_discovered_claims": [
+          "In the European Union, hiring AI is classed as high-risk."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "In the European Union, hiring AI is classed as high-risk.",
+            "issue": "Ledgerでは、雇用・採用分野のAIのうち、個人のキャリア・生計・労働者の権利に重大な影響を与えるシステムがhigh-riskに分類されるとされている。記事はこの適用条件を省き、採用AI全般が一律にhigh-riskであるかのように一般化している。",
+            "explanation": "EU AI Actのhigh-risk分類自体はLedgerにあるが、重大な影響を与える場合という対象範囲の限定が落ちており、法規制の適用範囲を拡張している。Hookとしての緩和は適用しない。",
+            "flags": [
+              "changed_scope"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "In the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "In the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "### A Fourth Voice: Reading the Audit Trail\n\nAn HR lawyer opens the audit file and checks what can be shown. In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, hiring AI is classed as high-risk. The reviewer has a reason to keep reading: one company once stopped an internal tool after it rated résumés linked to women lower. The company said it had not been used for actual hiring.\n\nCan anyone inspect the path from data to decision?"
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "directional_fact_precheck_status": "PASS",
+    "analytical_leakage_check": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0ccb8ee93d2ff5b2006aa0bba7958887d08c38d47fabc4ffbb",
+      "prompt": "以下は、あるVoices/Perspective型記事(4 Voices版)の6つのsection本文\n(Voice 1〜4/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜4に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n【Tensionに適用する6項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、4人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが4人を単純に「賛成2人 vs 反対2人」のような対称的な2つの陣営へ\n  分けて描いていない場合PASS(分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nA video interview begins. The applicant speaks while software scores tone, facial movement, and gestures. She has done well on a skills test, yet receives a low video score and is rejected. Later, she faces a long period without work.\n\nAnother applicant said an AI system rated her reliability and honesty. She said she could not opt out or challenge the result, and later sued. She wants to know how the judgment was made.\n\n【Voice 2本文】\nAfter applications arrive, the recruiter opens the screening tool. It sorts résumés, matches people to jobs, and helps schedule interviews.\n\nThen comes an audit summary for applicants who ask how the tool was checked. The recruiter has seen a notice like one published by a major employer after an independent review.\n\nAnother question waits: is an AI-written résumé a useful skill, or too little effort? The tool may save time, but the recruiter still has to explain it.\n\n【Voice 3本文】\nOn another desk, a hiring dashboard is open. The business leader watches hiring time, spending, and the number of roles the team can handle.\n\nIn one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring. But the same decision can bring legal trouble and damage the company’s name if candidates are treated unfairly.\n\nThe leader reads the result twice: first as a gain in speed, then as a risk to the business.\n\n【Voice 4本文】\nAn HR lawyer opens the audit file and checks what can be shown. In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk. The reviewer has a reason to keep reading: one company once stopped an internal tool after it rated résumés linked to women lower. The company said it had not been used for actual hiring.\n\nCan anyone inspect the path from data to decision?\n\n【Tension本文】\nThe applicant can lose an opportunity through a score they cannot question. The recruiter sits between that score and the person, using the tool while explaining it. The business leader sees speed and scale, but also the company name in a possible legal dispute. The governance reviewer arrives with records and asks whether the decision can be defended.\n\nThese are not two teams. Each is carrying a different risk: lost opportunity, daily workload, slower growth, or lost trust.\n\n【Closing本文】\nThe deeper issue is not simply whether a machine can help choose people. It is who has the power to judge, who can ask why, and who must carry the cost when a score closes an opportunity. AI screening becomes a test of responsibility, not just a test of speed.\n",
+      "parsed": {
+        "voice_1": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "調査結果や数値を説明するのではなく、応募者が低い評価を受け、異議申立てもできないまま不利益を被る経験を中心に描いている。人物の不安や問いも、その人物が実際に抱きうるものに収まっている。",
+          "quoted_evidence": ""
+        },
+        "voice_2": {
+          "leak_evidence_subject": "FAIL",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "具体的な数値はなく、採用担当者の実務上の負担も描かれている。ただし、監査の要約そのものが文の主語になり、人物の経験より証拠資料が前面に出る箇所がある。",
+          "quoted_evidence": "Then comes an audit summary for applicants who ask how the tool was checked."
+        },
+        "voice_3": {
+          "leak_evidence_subject": "FAIL",
+          "leak_numbers_foreground": "FAIL",
+          "leak_narrator_analysis": "FAIL",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "FAIL",
+          "reasoning": "ホテル事例の数値と、その結果から大規模採用へ進むという分析が、経営者自身の具体的な経験描写より前面に出ている。報告事例を起点に結論を導くDiscovery型の構成で、85％という数字も強く記憶に残る。",
+          "quoted_evidence": "In one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring."
+        },
+        "voice_4": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "FAIL",
+          "reasoning": "HR弁護士の視点は設定されているが、ニューヨーク市・EUの規制や過去の企業事例を説明する報告記事型の流れに戻っている。法規制と事例の情報量が、監査ファイルを確認する人物の経験より強く印象に残る。",
+          "quoted_evidence": "In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk."
+        },
+        "tension": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "leak_tension_reverts_to_research": "PASS",
+          "leak_binary_camp_split": "PASS",
+          "reasoning": "調査データの説明ではなく、応募者・採用担当者・経営者・ガバナンス担当者がそれぞれ異なるリスクを背負う理由を整理している。4人を賛成派と反対派に単純分割せず、損失・負担・成長・信頼という異なる懸念を並置している。",
+          "quoted_evidence": ""
+        },
+        "closing": {
+          "leak_closing_simple_summary": "PASS",
+          "reasoning": "単なる要約や「人による」という結論ではなく、判断権限、説明を求める権利、損失の負担という責任の問題へ論点を深めている。具体的な解決策や妥協案をWriterが提案しているわけでもない。",
+          "quoted_evidence": ""
+        }
+      },
+      "flagged_items": [
+        {
+          "voice": "voice_2",
+          "fail_fields": [
+            "leak_evidence_subject"
+          ],
+          "reasoning": "具体的な数値はなく、採用担当者の実務上の負担も描かれている。ただし、監査の要約そのものが文の主語になり、人物の経験より証拠資料が前面に出る箇所がある。",
+          "quoted_evidence": "Then comes an audit summary for applicants who ask how the tool was checked."
+        },
+        {
+          "voice": "voice_3",
+          "fail_fields": [
+            "leak_evidence_subject",
+            "leak_numbers_foreground",
+            "leak_narrator_analysis",
+            "leak_discovery_syntax",
+            "leak_evidence_memorable"
+          ],
+          "reasoning": "ホテル事例の数値と、その結果から大規模採用へ進むという分析が、経営者自身の具体的な経験描写より前面に出ている。報告事例を起点に結論を導くDiscovery型の構成で、85％という数字も強く記憶に残る。",
+          "quoted_evidence": "In one reported hotel case, AI cut hiring time by about 85 percent. That result points toward larger-scale hiring."
+        },
+        {
+          "voice": "voice_4",
+          "fail_fields": [
+            "leak_discovery_syntax",
+            "leak_evidence_memorable"
+          ],
+          "reasoning": "HR弁護士の視点は設定されているが、ニューヨーク市・EUの規制や過去の企業事例を説明する報告記事型の流れに戻っている。法規制と事例の情報量が、監査ファイルを確認する人物の経験より強く印象に残る。",
+          "quoted_evidence": "In New York City, an employer using an automated hiring tool must have a recent bias audit, publish a summary, and notify candidates.\n\nIn the European Union, AI systems used in hiring that can significantly affect a person's career, livelihood, or workers' rights are classed as high-risk."
+        }
+      ],
+      "any_flagged": true
+    }
+  },
+  "resume_note": "EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-01: attempt3はユーザーの誤操作による前回セッション中断からの再開(Ledger Deviation Checker以降のみ再実行、Writer/Evidence Compression/Fact Checker A'は前回生成物を再利用、再生成なし)。"
+}

@@ -1,0 +1,133 @@
+{
+  "note": "Opusレビュー3-MED対応。¥0のcontrol群、閾値0.40は合否に使わず記録のみ。",
+  "positive_control": {
+    "description": "Voice 1本文の語彙のみ最小限改変した複製(reasoning同一、高overlap期待)",
+    "positive_text": "A recorded conversation begins. The candidate speaks while software rates tone, facial movement, and gestures. She has done well on a skills test, yet receives a low recorded rate and is rejected. Later, she faces a long period without work.\n\nAnother candidate said an the automated system system rated her reliability and honesty. She said she could not opt out or challenge the result, and later sued. She wants to know how the judgment was made.",
+    "result": {
+      "overlap_ratio": 0.857,
+      "shared_words": [
+        "another",
+        "begins",
+        "challenge",
+        "done",
+        "faces",
+        "facial",
+        "gestures",
+        "honesty",
+        "how",
+        "judgment",
+        "know",
+        "later",
+        "long",
+        "low",
+        "made",
+        "movement",
+        "opt",
+        "out",
+        "period",
+        "rated",
+        "receives",
+        "rejected",
+        "reliability",
+        "result",
+        "said",
+        "skills",
+        "software",
+        "speaks",
+        "sued",
+        "system",
+        "test",
+        "tone",
+        "wants",
+        "well",
+        "work",
+        "yet"
+      ],
+      "point_word_count": 42,
+      "story_word_count": 41,
+      "flagged": true,
+      "threshold": 0.4
+    }
+  },
+  "deterministic_control": {
+    "description": "職名だけ違い推論構造が同一の合成ダミーペア(語彙は大きく変える、低overlap期待=指標の盲点の実証)",
+    "text_a": "The overnight warehouse supervisor checks a scanner before every shift. The rules on the screen were written by people she has never met, and she cannot change them even when a case in front of her does not fit the pattern. She has to enforce a decision she did not make, and she is the one who has to look the affected worker in the eye afterward. What she wants is a process she can actually explain when someone asks why.",
+    "text_b": "The overnight charge nurse logs into a dashboard before every shift. The thresholds on the chart were set by people she has never met, and she cannot override them even when a patient in front of her does not fit the pattern. She has to carry out a decision she did not make, and she is the one who has to look the affected patient in the eye afterward. What she wants is a process she can actually explain when someone asks why.",
+    "result": {
+      "overlap_ratio": 0.711,
+      "shared_words": [
+        "actually",
+        "affected",
+        "afterward",
+        "asks",
+        "before",
+        "cannot",
+        "decision",
+        "even",
+        "every",
+        "explain",
+        "eye",
+        "fit",
+        "front",
+        "look",
+        "make",
+        "met",
+        "never",
+        "overnight",
+        "pattern",
+        "people",
+        "process",
+        "shift",
+        "someone",
+        "wants",
+        "what",
+        "who",
+        "why"
+      ],
+      "point_word_count": 38,
+      "story_word_count": 38,
+      "flagged": true,
+      "threshold": 0.4
+    }
+  },
+  "negative_control": {
+    "description": "既存2V実採用ペア(Trial-07最終記事)の再計算(低overlap期待)",
+    "result": {
+      "overlap_ratio": 0.14,
+      "shared_words": [
+        "choose",
+        "desk",
+        "gave",
+        "office",
+        "place",
+        "quiet",
+        "sit"
+      ],
+      "point_word_count": 50,
+      "story_word_count": 46,
+      "flagged": false,
+      "threshold": 0.4
+    }
+  },
+  "theme_vocab_dummy": {
+    "description": "テーマ語彙(AI/screening/applicant/algorithm/audit)を意図的に多く共有する合成ダミーペア(reasoningは異なる、偽陽性リスク確認)",
+    "text_a": "The AI screening tool flags applicants using an algorithm trained on past hiring data, and the recruiter trusts the AI screening score because the algorithm has passed an internal audit for bias in applicant screening.",
+    "text_b": "The applicant distrusts the AI screening algorithm because no audit of the screening tool has ever been shown to applicants, and the recruiter cannot explain how the AI algorithm screens each applicant.",
+    "result": {
+      "overlap_ratio": 0.389,
+      "shared_words": [
+        "algorithm",
+        "applicant",
+        "applicants",
+        "audit",
+        "recruiter",
+        "screening",
+        "tool"
+      ],
+      "point_word_count": 18,
+      "story_word_count": 15,
+      "flagged": false,
+      "threshold": 0.4
+    }
+  }
+}
