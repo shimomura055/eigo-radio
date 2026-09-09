@@ -1,0 +1,501 @@
+{
+  "a_point_wordcount_vs_overlap_ratio": {
+    "n_point_observations": 240,
+    "point_word_count_range": [
+      20,
+      47
+    ],
+    "overlap_ratio_range": [
+      0.115,
+      0.688
+    ],
+    "pearson_correlation_wordcount_vs_ratio": -0.1919,
+    "overlap_ratio_by_wordcount_bucket": {
+      "20-24": {
+        "n": 22,
+        "mean_ratio": 0.4598
+      },
+      "25-29": {
+        "n": 81,
+        "mean_ratio": 0.387
+      },
+      "30-34": {
+        "n": 85,
+        "mean_ratio": 0.3635
+      },
+      "35-39": {
+        "n": 35,
+        "mean_ratio": 0.3388
+      },
+      "40-44": {
+        "n": 13,
+        "mean_ratio": 0.4022
+      },
+      "45-49": {
+        "n": 4,
+        "mean_ratio": 0.3175
+      }
+    },
+    "baseline_vs_treatment_stratified": {
+      "trial_06:focus_hint": {
+        "n_control": 36,
+        "n_treat": 30,
+        "control_wc_mean": 28.17,
+        "treat_wc_mean": 29.4,
+        "control_ratio_mean_unstratified": 0.4179,
+        "treat_ratio_mean_unstratified": 0.375,
+        "unstratified_diff": -0.0429,
+        "common_wc_buckets(5-word bins)": 4,
+        "n_control_in_common_buckets": 36,
+        "n_treat_in_common_buckets": 30,
+        "control_ratio_mean_matched": 0.4179,
+        "treat_ratio_mean_matched": 0.375,
+        "matched_diff": -0.0429
+      },
+      "trial_06:hint_only": {
+        "n_control": 36,
+        "n_treat": 10,
+        "control_wc_mean": 28.17,
+        "treat_wc_mean": 31,
+        "control_ratio_mean_unstratified": 0.4179,
+        "treat_ratio_mean_unstratified": 0.359,
+        "unstratified_diff": -0.0589,
+        "common_wc_buckets(5-word bins)": 4,
+        "n_control_in_common_buckets": 36,
+        "n_treat_in_common_buckets": 10,
+        "control_ratio_mean_matched": 0.4179,
+        "treat_ratio_mean_matched": 0.359,
+        "matched_diff": -0.0589
+      },
+      "trial_04:focus": {
+        "n_control": 32,
+        "n_treat": 30,
+        "control_wc_mean": 29.16,
+        "treat_wc_mean": 28.87,
+        "control_ratio_mean_unstratified": 0.4071,
+        "treat_ratio_mean_unstratified": 0.3655,
+        "unstratified_diff": -0.0416,
+        "common_wc_buckets(5-word bins)": 3,
+        "n_control_in_common_buckets": 30,
+        "n_treat_in_common_buckets": 30,
+        "control_ratio_mean_matched": 0.4073,
+        "treat_ratio_mean_matched": 0.3655,
+        "matched_diff": -0.0418
+      },
+      "trial_05:gapfix": {
+        "n_control": 20,
+        "n_treat": 40,
+        "control_wc_mean": 36.7,
+        "treat_wc_mean": 32.55,
+        "control_ratio_mean_unstratified": 0.381,
+        "treat_ratio_mean_unstratified": 0.4207,
+        "unstratified_diff": 0.0397,
+        "common_wc_buckets(5-word bins)": 3,
+        "n_control_in_common_buckets": 20,
+        "n_treat_in_common_buckets": 26,
+        "control_ratio_mean_matched": 0.381,
+        "treat_ratio_mean_matched": 0.3948,
+        "matched_diff": 0.0138
+      },
+      "trial_07:discovery_focus": {
+        "n_control": 20,
+        "n_treat": 22,
+        "control_wc_mean": 32.6,
+        "treat_wc_mean": 32.77,
+        "control_ratio_mean_unstratified": 0.2974,
+        "treat_ratio_mean_unstratified": 0.2932,
+        "unstratified_diff": -0.0042,
+        "common_wc_buckets(5-word bins)": 4,
+        "n_control_in_common_buckets": 20,
+        "n_treat_in_common_buckets": 19,
+        "control_ratio_mean_matched": 0.2974,
+        "treat_ratio_mean_matched": 0.2862,
+        "matched_diff": -0.0112
+      }
+    },
+    "note": "overlap_ratio = shared_content_words / point_distinct_content_words (er008_point_overlap_qa_18.py:56, point_word_count=len(point_words) where point_words is a set() = distinct content words after stopword removal). 'matched' figures restrict to word-count 5-word bins present in both conditions (confound control for Point length)."
+  },
+  "b_flag_transition_table": {
+    "total_attempts_all_trials_all_conditions": 120,
+    "lexical_flagged_true_count": 78,
+    "lexical_flagged_true_rate": 0.65,
+    "value_qa_flagged_true_count": 58,
+    "value_qa_flagged_true_rate": 0.4833,
+    "by_trial_condition": {
+      "trial_06:baseline": {
+        "n": 18,
+        "lexical_true": 17,
+        "value_true": 13
+      },
+      "trial_06:focus_hint": {
+        "n": 15,
+        "lexical_true": 10,
+        "value_true": 8
+      },
+      "trial_06:hint_only": {
+        "n": 5,
+        "lexical_true": 3,
+        "value_true": 3
+      },
+      "trial_04:baseline": {
+        "n": 16,
+        "lexical_true": 12,
+        "value_true": 8
+      },
+      "trial_04:focus": {
+        "n": 15,
+        "lexical_true": 9,
+        "value_true": 8
+      },
+      "trial_05:gapfix": {
+        "n": 20,
+        "lexical_true": 15,
+        "value_true": 9
+      },
+      "trial_05:baseline": {
+        "n": 10,
+        "lexical_true": 6,
+        "value_true": 4
+      },
+      "trial_07:baseline": {
+        "n": 10,
+        "lexical_true": 3,
+        "value_true": 1
+      },
+      "trial_07:discovery_focus": {
+        "n": 11,
+        "lexical_true": 3,
+        "value_true": 4
+      }
+    },
+    "trial06_baseline_attempt_count": 18,
+    "trial06_baseline_lexical_true_count": 17,
+    "trial06_baseline_lexical_true_rate": 0.9444,
+    "opus_claim_17_of_18_check": {
+      "opus_claimed": "17/18",
+      "recomputed_n": 18,
+      "recomputed_lexical_true": 17
+    },
+    "any_change_transition_count_all_runs": 50,
+    "true_swap_transition_count_all_runs (fixed def: (T,F)<->(F,T) only)": 7,
+    "swap_transitions_detail": [
+      {
+        "trial": "trial_06",
+        "theme": "a2",
+        "condition": "baseline",
+        "run": "run1",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          false,
+          true
+        ],
+        "to": [
+          true,
+          false
+        ]
+      },
+      {
+        "trial": "trial_06",
+        "theme": "a2",
+        "condition": "focus_hint",
+        "run": "run2",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          true,
+          false
+        ],
+        "to": [
+          false,
+          true
+        ]
+      },
+      {
+        "trial": "trial_06",
+        "theme": "a2",
+        "condition": "focus_hint",
+        "run": "run3",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          false,
+          true
+        ],
+        "to": [
+          true,
+          false
+        ]
+      },
+      {
+        "trial": "trial_06",
+        "theme": "b1b",
+        "condition": "hint_only",
+        "run": "run1",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          true,
+          false
+        ],
+        "to": [
+          false,
+          true
+        ]
+      },
+      {
+        "trial": "trial_04",
+        "theme": "a2",
+        "condition": "focus",
+        "run": "run1",
+        "from_attempt": 0,
+        "to_attempt": 1,
+        "from": [
+          false,
+          true
+        ],
+        "to": [
+          true,
+          false
+        ]
+      },
+      {
+        "trial": "trial_05",
+        "theme": "theme2/a2",
+        "condition": "baseline",
+        "run": "run2",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          false,
+          true
+        ],
+        "to": [
+          true,
+          false
+        ]
+      },
+      {
+        "trial": "trial_05",
+        "theme": "theme2/b1b",
+        "condition": "baseline",
+        "run": "run1",
+        "from_attempt": 1,
+        "to_attempt": 2,
+        "from": [
+          true,
+          false
+        ],
+        "to": [
+          false,
+          true
+        ]
+      }
+    ],
+    "haiku_l0_definition_note": "Haiku L0 aggregation (er011_point_quality_retry_log_aggregation_l0_01.py) counts ANY change between consecutive attempts (curr != next_att) as a 'transition', including e.g. (True,True)->(True,False) which is not a swap. This recomputation uses the Fable-fixed narrower definition: only (T,F)<->(F,T) exact swaps count. any_change_transition_count is reported for direct comparison to Haiku L0's transitions field."
+  },
+  "c_value_only_ng_next_attempt": {
+    "n_value_only_ng_cases_all_trials": 9,
+    "n_next_attempt_shows_new_lexical_flag": 4,
+    "rate": 0.4444,
+    "cases": [
+      {
+        "trial": "trial_06",
+        "theme": "a2",
+        "condition": "baseline",
+        "run": "run1",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": true,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": true
+      },
+      {
+        "trial": "trial_06",
+        "theme": "a2",
+        "condition": "focus_hint",
+        "run": "run3",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": true,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": true
+      },
+      {
+        "trial": "trial_04",
+        "theme": "a2",
+        "condition": "focus",
+        "run": "run1",
+        "value_only_ng_attempt": 0,
+        "next_attempt": 1,
+        "next_lexical_flagged": true,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": true
+      },
+      {
+        "trial": "trial_04",
+        "theme": "a2",
+        "condition": "focus",
+        "run": "run2",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": false,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": false
+      },
+      {
+        "trial": "trial_05",
+        "theme": "hanshin/b1b",
+        "condition": "gapfix",
+        "run": "run1",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": false,
+        "next_value_qa_flagged": true,
+        "next_attempt_new_lexical_flag": false
+      },
+      {
+        "trial": "trial_05",
+        "theme": "theme2/a2",
+        "condition": "baseline",
+        "run": "run2",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": true,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": true
+      },
+      {
+        "trial": "trial_07",
+        "theme": "b1b",
+        "condition": "baseline",
+        "run": "run2",
+        "value_only_ng_attempt": 0,
+        "next_attempt": 1,
+        "next_lexical_flagged": false,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": false
+      },
+      {
+        "trial": "trial_07",
+        "theme": "b1b",
+        "condition": "discovery_focus",
+        "run": "run1",
+        "value_only_ng_attempt": 0,
+        "next_attempt": 1,
+        "next_lexical_flagged": false,
+        "next_value_qa_flagged": true,
+        "next_attempt_new_lexical_flag": false
+      },
+      {
+        "trial": "trial_07",
+        "theme": "b1b",
+        "condition": "discovery_focus",
+        "run": "run1",
+        "value_only_ng_attempt": 1,
+        "next_attempt": 2,
+        "next_lexical_flagged": false,
+        "next_value_qa_flagged": false,
+        "next_attempt_new_lexical_flag": false
+      }
+    ],
+    "opus_claim": "2/2 (Trial-06 only) showed next attempt with new lexical flag"
+  },
+  "d_cross_point_overlap": {
+    "n_observations": 240,
+    "overall_mean": 0.1311,
+    "overall_median": 0.1265,
+    "overall_stdev": 0.0653,
+    "min_max": [
+      0.0,
+      0.346
+    ],
+    "flagged_at_existing_threshold_0.40_count": 0,
+    "flagged_rate_at_0.40": 0.0,
+    "by_trial_condition": {
+      "trial_04:baseline": {
+        "n": 32,
+        "mean": 0.1604,
+        "median": 0.1505,
+        "max": 0.346
+      },
+      "trial_04:focus": {
+        "n": 30,
+        "mean": 0.1227,
+        "median": 0.1075,
+        "max": 0.31
+      },
+      "trial_05:baseline": {
+        "n": 20,
+        "mean": 0.1092,
+        "median": 0.125,
+        "max": 0.171
+      },
+      "trial_05:gapfix": {
+        "n": 40,
+        "mean": 0.1427,
+        "median": 0.16,
+        "max": 0.233
+      },
+      "trial_06:baseline": {
+        "n": 36,
+        "mean": 0.1265,
+        "median": 0.125,
+        "max": 0.303
+      },
+      "trial_06:focus_hint": {
+        "n": 30,
+        "mean": 0.141,
+        "median": 0.127,
+        "max": 0.241
+      },
+      "trial_06:hint_only": {
+        "n": 10,
+        "mean": 0.1151,
+        "median": 0.13,
+        "max": 0.152
+      },
+      "trial_07:baseline": {
+        "n": 20,
+        "mean": 0.094,
+        "median": 0.1025,
+        "max": 0.143
+      },
+      "trial_07:discovery_focus": {
+        "n": 22,
+        "mean": 0.1341,
+        "median": 0.1285,
+        "max": 0.25
+      }
+    }
+  },
+  "f_g1_vocabulary_priming": {
+    "trial_04_baseline_pre_G1": {
+      "n_p1": 16,
+      "p1_mean_ratio": 0.4273,
+      "p1_mean_wc": 26.6875,
+      "n_p2": 16,
+      "p2_mean_ratio": 0.3869,
+      "p2_mean_wc": 31.625
+    },
+    "trial_06_baseline_post_G1": {
+      "n_p1": 18,
+      "p1_mean_ratio": 0.4151,
+      "p1_mean_wc": 27.7778,
+      "n_p2": 18,
+      "p2_mean_ratio": 0.4207,
+      "p2_mean_wc": 28.5556
+    },
+    "opus_claim": "P2 ratio 0.339 -> 0.458 (baseline, pre-G1 to post-G1)",
+    "note": "G1 = OPEN-112-DIAGNOSTIC-RETRY-POINT-BODY-REGRESSION-FIX-01 (2026-09-09, commit 8596f34), which fixed build_diagnostic_section() to pass real previous Point One/Two body text instead of hardcoded placeholder strings, during Diagnostic Full Retry (i.e. attempt>=1 prompts only). Trial dates must be checked separately to confirm pre/post-G1 status; this function only recomputes the ratio distributions themselves."
+  },
+  "meta": {
+    "total_runs": 50,
+    "runs_by_trial": {
+      "trial_06": 14,
+      "trial_04": 12,
+      "trial_05": 12,
+      "trial_07": 12
+    }
+  }
+}
