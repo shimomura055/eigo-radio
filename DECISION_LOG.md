@@ -9601,6 +9601,63 @@ discovery_stage3_*`)、`CURRENT_SPEC.md`、`er006_output/`、
 本タスクでは触っていない。Production/Prompt編集・新規Trial着手・
 policy策定は実施していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-58: Discovery Trial-09(D-3、Ledger v5)結果の
+SSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09`(D-3)の結果をSSOTへ
+反映した。並列稼働中: News N-4(`er011_output/news_stage3_*`)、本タスクでは
+対象外(SSOT・Git担当のみ)。着手前に`PM-CLOSEOUT-CONSOLIDATION-57`
+(commit`dabc188`)の完了をgit logで確認した。
+
+**Trial結果の要旨**: Household Verified Fact Ledger v5(FACT-03/04内部
+矛盾を是正済み)を`prod_gen.THEMES`経由でそのまま参照し、current_focus
+(現行Discovery Focus Module)とadjusted_focus(Trial-08 Part A案1、断定
+回避段落末尾へscope一般化禁止文を追加)をN=3×A2/B1B×2条件=12本
+(text-only、実測¥127.3、Fact Checker¥96.6分離)で比較した。安全側指標
+(blocking・Ledger Deviation・Local Rewrite創作・cross_point_overlap
+flagged)は両条件・全12本で0件と維持された。一方、raw REVIEW+FAIL率
+(current 1/6→adjusted 2/6)、FACT-03起因ノイズ(Fact Checkerが指摘した
+claimのうちLedger v5が元々含む商業/家庭あいまいさの再述だったもの)を
+手動判定で除外した「真のREVIEW_REQUIRED率」(current 0/6→adjusted 1/6)
+のいずれも、adjusted_focusはcurrent_focusを下回らなかった。よって
+**Gate 1分類=REJECTED**(主目的[REVIEW削減]は未達成、方向は横ばい〜
+悪化、Fact Safetyは両条件維持)。
+
+**重要な副次的発見**: Ledger v5是正後、現行Discovery Focus Module
+(current_focus)自体の真のREVIEW_REQUIRED率が0/6となった。Trial-07で
+観測されたbaseline比約5倍のREVIEW増加(OPEN-112が懸念材料としていた
+論点)は、Ledger v5適用後にはほぼ消失している。これは、当時のREVIEW
+増加の主因がFocus Module側の欠陥ではなく、Ledger v4のFACT-03/04内部
+矛盾側にあったことを示唆する。多様性・深さ・Discoveryらしさの最終判断は
+比較artifact(`comparison.html`)によるFable/ユーザーの目視(D-4)に
+委ねられており、本タスクでは未実施(提示中)。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-58へ)、
+OPEN-135行(D-3結果[調整版REJECTED、真のREVIEW率0/6→1/6]・D-4[目視判断]
+提示中を追記)、OPEN-112行(Discovery Layer3のREVIEW懸念がLedger v5是正で
+解消方向にあり、`VALIDATED`のまま維持・Production採用は別途UDRのままで
+あることを追記)、OPEN-138行(本OPEN-138のLedger v5是正がDiscovery側の
+REVIEW懸念解消に寄与したことを確認した旨を追記)を反映した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へD-3(Sonnet/MEDIUM、247k token、
+1756秒、tool呼び出し635回=多め、Gate 1=REJECTED[候補棄却であり
+タスク失敗ではない])・本タスクの行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-58)。Git操作: G1=
+`er011_discovery_stage3_rule_adjustment_trial_09.py`・
+`er011_discovery_stage3_rule_adjustment_trial_09_batch_runner.py`・
+`er011_discovery_stage3_rule_adjustment_trial_09_comparison.py`・
+`FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09_REPORT.md`(すべて
+新規)・`er011_output/discovery_stage3_rule_adjustment_trial_09/`配下
+json/md/html/jsonl/txt。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。いずれもファイル名指定でcommitし
+`origin/main`へpush。並列稼働中のNews段階3(`er011_output/
+news_stage3_*`)、`CURRENT_SPEC.md`、`er006_output/`、`er011_output/
+attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスクでは
+触っていない。Production/Prompt編集・新規Trial着手・policy策定は実施
+していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
