@@ -9076,6 +9076,76 @@ commitし`origin/main`へpush。`CURRENT_SPEC.md`、`er006_output/`、`er011_
 output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスク
 では触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-48: Reconciliation Gate・FACT-03再検証・Haiku L0集計のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、並行
+稼働していた3件の結果をSSOTへ反映した(3V Person-Voice Trial-03は本
+タスクの対象外、Opusレビューは実施中のため結果は含まない)。
+
+**(1) Reconciliation Gate**: `FAMILY-A-POINT-QUALITY-CONTROL-
+RECONCILIATION-GATE-01`(read-only横断整理)が完了した。既存Point品質
+関連の10仕組み+Loop Budget+隣接3種を5軸で整理し、重複・競合5点(Value QA
+とlexical Overlap抑制が同一NGに対して交互に介入する「もぐらたたき」を
+Trial-06のretry log 3例で実証、多様性保証の不在等)、Discovery
+REVIEW_REQUIRED増加の主因(Ledger-bounded interpretation許容範囲の
+不一致)、整理候補3件(役割決定のRole Planning一本化、Value QA理由
+feedbackは既実装、多様性の複数提示+選択)を提示した。Danglingなし。
+現在Opusによる読取レビュー(`FAMILY-A-POINT-QUALITY-RECONCILIATION-
+OPUS-REVIEW-01`)が並行実施中であり、本タスクではその結果は反映して
+いない。
+
+**(2) Household Ledger FACT-03再検証(OPEN-138、D2-UDR-2)**:
+`HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01`により、既存Production
+Fact Checker(web_search付き)でFACT-03(「イチゴ・柑橘類のような果物は
+高湿度を好む」)を再検証した結果、**FAIL確定**(UC Davis 90〜95%は商業
+貯蔵条件であり家庭用クリスパー高湿度設定への対応づけが誤り、GE/Samsung
+等の情報源とも不一致)。Household Ledger(`verified_fact_ledger.txt`)を
+v3→v4へ更新し、FACT-03該当箇所を`usable: no`とした(中心機序・他FACTは
+不変)。完成済み記事(A2/B1B、2026-08-17承認)のB1 33行目に当該誤記述が
+残存している。完成audioの遡及修正は不要・新しいFact policyは作らない
+という既決方針(D2-UDR-2)は維持しつつ、「事実誤り(Fact Checker FAILが
+確定した場合)の遡及修正要否」は既決方針の対象外の論点である可能性が
+あるとしてUDR候補として提示する。今後のHousehold Discovery再実行は
+v4を使用する。費用¥2.6。新policyの実装は行っていない。
+
+**(3) Haiku L0集計(初適用)**: `FAMILY-A-POINT-QUALITY-RETRY-LOG-
+AGGREGATION-L0-01`(Haiku、43k token、126秒、¥0)によりTrial-04/05/06/07
+の50 runを機械集計した。ただしNG定義(status基準かFact Checker FAIL
+基準か)と入れ替わり回数の数え方が既存Sonnet報告と不一致であることが
+判明し、定義照合が必要な状態であるため、本タスクでは判断材料に直接
+用いていない(Haiku起因のSonnet再作業1件として`docs/pm/
+MODEL_ROUTING_TRIAL_LOG.md`へ記録)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-138行(FAIL確定・v4修正・B1 33行目の
+扱いをUDR候補として追記)・OPEN-135行(Reconciliation Gate完了・Opus
+レビュー中・Haiku集計は定義照合待ちである旨を追記)・OPEN-134行
+(Reconciliation Gateで「もぐらたたき」機序を実証したため観測項目へ
+「flag入れ替わり回数」を追加)へ反映した。`docs/pm/
+MODEL_ROUTING_TRIAL_LOG.md`へReconciliation Gate行(Sonnet/HIGH、203k
+token・405秒)・FACT-03再検証行(Sonnet/MEDIUM、125k token・599秒)・
+Haiku L0集計行(Haiku、43k token・126秒・¥0、初適用)・Opusレビュー行
+(Opus/HIGH、実施中)・本タスク行を追記し、中間レビュー欄へHaiku初適用の
+所見(機械集計は速く安いが「NG」等の定義をFableが委任文で固定しないと
+照合コストが出る)を1行追加した。
+
+**根拠**: `FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01_
+REPORT.md`、`HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01_REPORT.md`。
+Git操作: G1=`FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01_
+REPORT.md`をファイル名指定でcommit。G2=`er012_open138_household_
+fact03_reverify_01.py`・同Report・`er012_output/open138_household_
+fact03_reverify_01/`配下(json/jsonlのみ)・Household Ledger
+(`er003_output/n3_01/household/research/verified_fact_ledger.txt`、
+`git ls-files`で追跡済みと確認したため含めた)をファイル名指定で
+commit。G3=`er011_point_quality_retry_log_aggregation_l0_01.py`・
+`er011_output/point_quality_retry_log_aggregation_l0_01/`配下
+(json/mdのみ)をファイル名指定でcommit。G4=`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(3ファイルのみ)
+をファイル名指定でcommitし`origin/main`へpush。3V Person-Voice
+Trial-03成果物(`er012_output/editorial_b_voices_3v_person_voice_
+trial_03*`)、`CURRENT_SPEC.md`、`er006_output/`、`er011_output/
+attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスクでは
+触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
