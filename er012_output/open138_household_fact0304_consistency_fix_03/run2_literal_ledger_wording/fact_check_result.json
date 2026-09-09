@@ -1,0 +1,75 @@
+{
+  "management_id": "HOUSEHOLD-LEDGER-FACT-03-04-CONSISTENCY-FIX-03(OPEN-138継続)",
+  "target": "er003_output/n3_01/household/research/verified_fact_ledger.txt FACT-03(v5)とFACT-04の内部整合確認(2 claimのみ、記事全体ではない)",
+  "topic": "Household refrigerator crisper drawer storage: whether ethylene-heavy produce should be kept in the low-humidity crisper drawer, and whether this is consistent with separate guidance that tomatoes and bananas should not be refrigerated at all and are better kept at room temperature (e.g. on a counter).",
+  "article_excerpt": "Foods that release a lot of ethylene, such as apples and pears, are well suited to the refrigerator's low-humidity crisper drawer.\n\nTomatoes and bananas are not well suited to refrigerated storage. Room-temperature storage, such as on a counter, is recommended instead.",
+  "final_status": "FACT_CHECK_COMPLETED",
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_04c548d9a680ee4f006aa122d490c887d094af3f0a1add3c36",
+  "web_search_call_count": 4,
+  "attempts": [
+    {
+      "fact_check_attempt": 1,
+      "status": "FACT_CHECK_COMPLETED",
+      "verdict": "PASS",
+      "search_usage": {
+        "web_search_call_count": 4,
+        "queries": [
+          "site:extension.umn.edu crisper drawer low humidity apples pears ethylene tomatoes bananas refrigerator",
+          "site:extension.usu.edu refrigerator crisper drawer low humidity ethylene producers apples pears",
+          "site:ucanr.edu crisper drawer low humidity ethylene apples pears tomatoes bananas refrigeration",
+          "site:foodsafety.gov tomatoes bananas refrigerator room temperature storage",
+          "site:whirlpool.com crisper drawer low humidity ethylene producing fruits apples pears",
+          "site:geappliances.com crisper drawers low humidity apples pears ethylene",
+          "site:maytag.com low humidity crisper drawer ethylene apples pears",
+          "site:extension.umn.edu low humidity crisper drawer ethylene producing fruits",
+          "site:extension.umn.edu bananas should not be refrigerated tomatoes room temperature storage",
+          "site:extension.usu.edu bananas refrigerator tomatoes room temperature storage",
+          "site:ucanr.edu bananas should not be refrigerated tomatoes room temperature",
+          "site:canr.msu.edu bananas tomatoes refrigerator storage room temperature",
+          "USDA Handbook 66 ethylene apples pears bananas tomatoes storage temperature PDF",
+          "site:ars.usda.gov ethylene apples pears bananas tomatoes storage refrigerator",
+          "site:postharvest.ucdavis.edu ethylene apples pears bananas tomatoes storage temperature"
+        ]
+      },
+      "sources": [
+        {
+          "title": "What Crisper Drawer Settings Should You Use? | Whirlpool",
+          "url": "https://www.whirlpool.com/blog/kitchen/crisper-drawer-settings.html?utm_source=openai"
+        },
+        {
+          "title": "Tomatoes | UC Master Food Preserver Program of Orange County",
+          "url": "https://ucanr.edu/site/uc-master-food-preserver-program-orange-county/tomatoes?utm_source=openai"
+        },
+        {
+          "title": "Storing Fresh Produce | Food and Nutrition Administration",
+          "url": "https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai"
+        },
+        {
+          "title": "Fruit and Vegetable Guide Series: Bananas | USU",
+          "url": "https://extension.usu.edu/nutrition/research/bananas?utm_source=openai"
+        }
+      ],
+      "raw_text": "{\"verdict\":\"PASS\",\"contradictions\":[],\"unsupported_specific_claims\":[],\"verified_claims_summary\":[\"りんごや梨はエチレンを放出する果物で、家庭用冷蔵庫では低湿度設定のクリスパー（果物用引き出し）に適するとする案内が確認できる。低湿度設定は水分とガスを逃がし、過熟や腐敗を遅らせる目的で使われる。 ([whirlpool.com](https://www.whirlpool.com/blog/kitchen/crisper-drawer-settings.html?utm_source=openai))\",\"トマトは冷蔵すると風味低下や低温障害が起こり得るため、一般には直射日光を避けた室温保存が推奨されている。必要な場合、完熟トマトを短期間冷蔵できるという補足的な案内もあるが、記事の「室温保存が推奨」という主張とは矛盾しない。 ([ucanr.edu](https://ucanr.edu/site/uc-master-food-preserver-program-orange-county/tomatoes?utm_source=openai))\",\"バナナは未熟な状態では室温で追熟させるのが基本で、米国農務省系の案内でも冷蔵しない品目として扱われている。完熟後は数日延命する目的で冷蔵できるものの、皮が黒くなるなどの品質変化がある。したがって、記事の「室温保存が推奨」という一般論は確認できる。 ([fna.usda.gov](https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai))\"],\"sources\":[\"米国農務省 Food and Nutrition Administration「Storing Fresh Produce」—エチレン生成果実の扱いと、バナナを冷蔵しない品目とする案内。 ([fna.usda.gov](https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai))\",\"WhirlpoolおよびMaytagの公式クリスパー案内—りんご・梨などのエチレン放出果物を低湿度引き出しに入れる推奨。 ([whirlpool.com](https://www.whirlpool.com/blog/kitchen/crisper-drawer-settings.html?utm_source=openai))\",\"UC Agriculture and Natural Resources—トマトの室温保存推奨、冷蔵による風味低下および短期冷蔵の例外。 ([ucanr.edu](https://ucanr.edu/site/uc-master-food-preserver-program-orange-county/tomatoes?utm_source=openai))\",\"Utah State University Extension—バナナは室温で追熟し、完熟後のみ冷蔵による延命が可能との案内。 ([extension.usu.edu](https://extension.usu.edu/nutrition/research/bananas?utm_source=openai))\"],\"notes\":\"記事の2つの主張は両立する。エチレン放出量だけで保存場所が決まるわけではなく、冷蔵適性や低温障害への感受性も考慮されるため、りんご・梨は冷蔵の低湿度引き出しに適する一方、バナナやトマトは通常、室温保存が優先される。なお、バナナや完熟トマトを例外的に短期間冷蔵できるという補足はあるが、記事は「絶対に冷蔵不可」とまでは述べていない。 ([extension.usu.edu](https://extension.usu.edu/nutrition/research/bananas?utm_source=openai))\"}",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_04c548d9a680ee4f006aa122d490c887d094af3f0a1add3c36"
+    }
+  ],
+  "result": {
+    "verdict": "PASS",
+    "contradictions": [],
+    "unsupported_specific_claims": [],
+    "verified_claims_summary": [
+      "りんごや梨はエチレンを放出する果物で、家庭用冷蔵庫では低湿度設定のクリスパー（果物用引き出し）に適するとする案内が確認できる。低湿度設定は水分とガスを逃がし、過熟や腐敗を遅らせる目的で使われる。 ([whirlpool.com](https://www.whirlpool.com/blog/kitchen/crisper-drawer-settings.html?utm_source=openai))",
+      "トマトは冷蔵すると風味低下や低温障害が起こり得るため、一般には直射日光を避けた室温保存が推奨されている。必要な場合、完熟トマトを短期間冷蔵できるという補足的な案内もあるが、記事の「室温保存が推奨」という主張とは矛盾しない。 ([ucanr.edu](https://ucanr.edu/site/uc-master-food-preserver-program-orange-county/tomatoes?utm_source=openai))",
+      "バナナは未熟な状態では室温で追熟させるのが基本で、米国農務省系の案内でも冷蔵しない品目として扱われている。完熟後は数日延命する目的で冷蔵できるものの、皮が黒くなるなどの品質変化がある。したがって、記事の「室温保存が推奨」という一般論は確認できる。 ([fna.usda.gov](https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai))"
+    ],
+    "sources": [
+      "米国農務省 Food and Nutrition Administration「Storing Fresh Produce」—エチレン生成果実の扱いと、バナナを冷蔵しない品目とする案内。 ([fna.usda.gov](https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai))",
+      "WhirlpoolおよびMaytagの公式クリスパー案内—りんご・梨などのエチレン放出果物を低湿度引き出しに入れる推奨。 ([whirlpool.com](https://www.whirlpool.com/blog/kitchen/crisper-drawer-settings.html?utm_source=openai))",
+      "UC Agriculture and Natural Resources—トマトの室温保存推奨、冷蔵による風味低下および短期冷蔵の例外。 ([ucanr.edu](https://ucanr.edu/site/uc-master-food-preserver-program-orange-county/tomatoes?utm_source=openai))",
+      "Utah State University Extension—バナナは室温で追熟し、完熟後のみ冷蔵による延命が可能との案内。 ([extension.usu.edu](https://extension.usu.edu/nutrition/research/bananas?utm_source=openai))"
+    ],
+    "notes": "記事の2つの主張は両立する。エチレン放出量だけで保存場所が決まるわけではなく、冷蔵適性や低温障害への感受性も考慮されるため、りんご・梨は冷蔵の低湿度引き出しに適する一方、バナナやトマトは通常、室温保存が優先される。なお、バナナや完熟トマトを例外的に短期間冷蔵できるという補足はあるが、記事は「絶対に冷蔵不可」とまでは述べていない。 ([extension.usu.edu](https://extension.usu.edu/nutrition/research/bananas?utm_source=openai))"
+  }
+}
