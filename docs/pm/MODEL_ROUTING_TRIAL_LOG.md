@@ -211,8 +211,14 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04(本タスク) | LOW〜MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(PM_GOVERNANCE.md 11節新小節・9-1追記・冒頭changelog・末尾変更履歴、PM_BRIEF.md 1行、OPEN_ITEMS.md OPEN-120行追記、DECISION_LOG.mdエントリ新設)+Git統合、既知パターン(過去のPM_GOVERNANCE改訂タスク)の踏襲 | Haiku不適(SSOT精密編集・Git操作を伴う)、Opus不要(運用方針自体は既にユーザー正式決定済みであり、本タスクは文書反映のみ) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-COMPLETION-GAP-AUDIT-A1-01(Lane A、並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | Family A(News/Trend Synthesis/Discovery)3 Editorial Typeの15項目×3タイプGap Audit。読み取り専用だがSSOT・Trial Report・Production実装状況を横断して正確に照合する必要がある | Haiku不適(SSOT・コード・Trial Report横断の正確な照合を要する)、Opus不要(新規設計判断を伴わない通常の監査パターン) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
 | 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01(Lane B、並列稼働中) | HIGH(L1/Sonnet、Opus予算は同管理ID群[3V/4V Writer Trial系]で既に消費済みのためSonnet) | Sonnet | Voice設計自体の変更(4V→3V、Voice=具体的人物の原則)を伴う記事生成Trial。Analytical Leakage Check・Fact Safety・Pairwise Distinctness Checkなど複数QAが絡む | Opus再投入は見送り(設計方針[Voice=人物原則・Fairness/LegalのTension化・仮説]は既にユーザー決定済み、本Trialは実行検証)、Haiku不適(記事本文生成・QA判定を伴う) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
-| 2026-09-09 | LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | 既存Ledger Deviation CheckerのWeb Search呼び出しコード・費用ログの正確な追跡調査、Fact Safety観点の見落とし防止を要する | Haiku不適(コード追跡・Fact Safetyトレードオフ評価を要する)、Opus不要(新Checker設計の提案段階ではない通常の調査パターン) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01 | MEDIUM(L1/Sonnet) | Sonnet | 既存Ledger Deviation CheckerのWeb Search呼び出しコード・費用ログの正確な追跡調査、Fact Safety観点の見落とし防止を要する | Haiku不適(コード追跡・Fact Safetyトレードオフ評価を要する)、Opus不要(新Checker設計の提案段階ではない通常の調査パターン) | 152k | 504s | 0 | あり(前段Trial-02 Reportの費用帰属誤りを訂正[Ledger Deviation Checker起因ではなくFact Checker A'起因]) | なし | あり(改善案A/BをUDR候補として提示、採否未定) | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-37(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、新規Open Item2件[OPEN-135/OPEN-136]起票、PM_GOVERNANCE 2-2/9-2節への1行追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-GAP-AUDIT-A1-01(確定値) | MEDIUM(L1/Sonnet) | Sonnet | Family A(News/Trend Synthesis/Discovery)3 Editorial Typeの15項目×3タイプGap Audit。読み取り専用だがSSOT・Trial Report・Production実装状況を横断して正確に照合する必要がある | Haiku不適(SSOT・コード・Trial Report横断の正確な照合を要する)、Opus不要(新規設計判断を伴わない通常の監査パターン) | 159k | 323s | 0 | なし | なし | なし(結果はEvidence段階、共通Gap 7件・人手介在3箇所を確認) | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A2-TREND-END-TO-END(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | 既存Trend Synthesis Production配線(`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01`)を壊さず、残存Gap(Research/News Ledger自動供給・Focus Module接続・retry/fallback整合・article→audio連続性)を既知パターンで検証するend-to-end実行 | Haiku不適(Production Writer/QA実行・retry判定を伴う)、Opus不要(既承認範囲の実行検証であり新規設計判断を伴わない) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-DAILY-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | News比較Trial(Point Role hint+News Focus Module+G1修正版、Hanshin N=3)、既存Trial-02/04の踏襲改良パターン | Haiku不適(記事生成・比較検証を伴う)、Opus不要(設計方針[Point Role hint等]は既存Trialで確立済み、実行検証のみ) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-01 | MEDIUM(L1/Sonnet) | Sonnet | Discovery(Why)対象定義・News/Trendとの排他的境界・固有Research方式の設計(Production実装なし、費用¥0)。既存資産(Household等)とのReconciliationを要する | Haiku不適(SSOT横断照合・設計文書の精密な整合確認を要する)、Opus不要(この段階ではSonnetによる設計案提示のみで足り、横断レビューは後段のOpusレビューで実施する計画のため) | 133k | 340s | 0 | なし | なし | あり(UDR候補7件を提示、未承認新規提案) | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01(実施中) | HIGH(L2/Opus) | Opus | A4 Discovery設計案(判定木Q1〜Q5、境界事例、POOL_TOPIC_MASTER 20件との一致可能性等)のsecond opinion。3 Editorial Type境界の排他性・網羅性を横断検証する必要があり、Sonnet単独では境界検証(News/Trend/Discoveryの相互排他性の見落とし)が甘くなりやすいため | Sonnet単独では不足(3タイプ横断の排他性・網羅性検証)、Haiku不適(設計レビュー・複数Report横断精査を要する) | 不明(実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-38(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-135/OPEN-136/OPEN-112/OPEN-130行の確定反映、DECISION_LOGエントリ新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -309,3 +315,19 @@ TRIAL-SETUP-01`の次から起算)
   LOW)。並列3件は記録のみ(token/時間/差し戻し等は各タスク完了時に
   Fableが追記)。中間レビュー・正式Closeout Triggerの到達判定・再計算は
   いずれも実施していない。
+
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-38、本タスク): `FAMILY-A-
+  COMPLETION-GAP-AUDIT-A1-01`行を確定値(Sonnet、MEDIUM、159k token・
+  323秒、差し戻し0)へ更新した。`LEDGER-DEVIATION-CHECKER-SEARCH-COST-
+  RECONCILIATION-01`行を確定値(Sonnet、MEDIUM、152k token・504秒、
+  手戻り=前段Trial-02 Reportの費用帰属誤りを訂正、UDR発生=改善案A/B
+  提示・採否未定)へ更新した。新規4件を追記した: `FAMILY-A-COMPLETION-
+  A2-TREND-END-TO-END`(並列稼働中、Sonnet、MEDIUM、記録のみ)、
+  `FAMILY-A-DAILY-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06`(並列稼働中、
+  Sonnet、MEDIUM、記録のみ)、`FAMILY-A-COMPLETION-A4-DISCOVERY-
+  DESIGN-01`(Sonnet、MEDIUM、133k token・340秒、UDR候補7件提示)、
+  `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`(実施中、
+  Opus、HIGH、選定理由=3タイプ境界の排他性・網羅性の横断検証、Sonnet
+  単独では境界検証が甘くなりやすいため)、本タスク(Sonnet、MEDIUM)。
+  中間レビュー・正式Closeout Triggerの到達判定・再計算はいずれも
+  実施していない。

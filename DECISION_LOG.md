@@ -8594,6 +8594,81 @@ VOICES-3V-PERSON-VOICE-TRIAL-01`)・Ledger Deviation Checkerコスト調査
 (`LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01`)はいずれも
 別タスクであり、本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-38: A1 Gap Audit完了・Ledger Deviation
+Checkerコスト調査結果(訂正含む)・A4 Discovery設計(未承認)のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき以下を
+SSOTへ反映した(3件とも内容自体はSonnet単独タスクとして既に完了済み。
+本タスクはSSOT反映+Git統合のみ)。
+
+**(1) Step A1 Gap Audit完了**: `FAMILY-A-COMPLETION-GAP-AUDIT-A1-01_
+REPORT.md`(読み取り専用)。News(Major/Daily)・Trend Synthesis・
+Discovery(Why)の3 Editorial Type×15項目を照合し、共通Gap 7件・人手
+介在3箇所を確認した。Trend配線後経路(`OPEN-112-TREND-SYNTHESIS-MODE-
+PRODUCTION-WIRING-01`)のevidenceはKey Phraseまでで止まっている。News
+はコード実装0%。Discovery はLayer3 `VALIDATED`止まり(Production配線
+なし)。この結果を受け、Step A2(Trend end-to-end、`er011_output/
+family_a_completion_a2_*`)・Step A3(News比較Trial-06、Point Role
+hint+News Focus Module+G1修正版、Hanshin N=3)が並行実施中、Step A4
+(Discovery設計)は設計案提示済みでOpusレビュー実施中。
+
+**(2) Ledger Deviation Checkerコスト調査完了(訂正含む、OPEN-136)**:
+`LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01_REPORT.md`。
+4V Trial-02で観測した27回のWeb Search呼び出し(¥76.6)は、当初報告
+(Trial-02 Report §6)がLedger Deviation Checker起因としていたが、
+**これは事実誤りであった**。実際は独立のFact Checker A'
+(`make_fact_checker_fn`、web_search明示宣言)がAnalytical Leakage Check
+是正のMAX_WRITER_ATTEMPTS=3ループ内で毎attempt呼ばれたことによるもので
+あり、Ledger Deviation Checker(`run_deviation_check`、web_search未宣言)
+自体は同じ27回の中で検索呼び出し**0回**であることをresponse_id完全
+一致で確認した。Ledger Deviation Checkerの1回あたり検索回数(8〜11回)
+は他記事と同水準で異常ではない。キャッシュは未実装(設計判断の記録
+なし)であり、Fact CheckerがLedger入力ミスを検知した実例があるため
+単純キャッシュはFact Safetyリスクを伴う。二重検証・過去の類似対策は
+確認されなかった。改善案A(Ledger単位のclaim/citationキャッシュ、
+1記事¥40〜50削減、1,000記事規模¥4〜5万・10,000記事規模¥40〜50万)・
+改善案B(中間attemptでFact Checker省略、Fact Safetyリスクやや高)は
+いずれも品質低下トレードオフを伴うためUDR候補としてユーザー判断待ち
+(採否未定)。
+
+**(3) A4 Discovery設計(未承認、設計のみ)**: `FAMILY-A-COMPLETION-A4-
+DISCOVERY-DESIGN-01_REPORT.md`。News/Trendとの排他的境界を切り分ける
+判定木案Q1〜Q5(未承認の新規提案)、境界事例(Hanshin=News、イラン=
+Trend、Health=News、Household/No.18=Discovery)、POOL_TOPIC_MASTER 20件
+が「Why」でDiscovery母集団と一致する可能性、Research=why-question分解
+(未検証)、Point Role候補4件、Ledger負荷増(REVIEW_REQUIRED増)見込み、
+検証Trial案A/B(見積り¥30〜100)、UDR候補7件を提示した。いずれも
+Production実装は行っておらず(費用¥0)、現在Opusレビュー(`FAMILY-A-
+COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`)実施中。
+
+**(4) A3-UDR決定の反映**: ユーザー決定(A3-UDR-1=(i)、A3-UDR-2=(i))
+により、News比較Trial-06(Point Role hint+News Focus Module+G1修正済み、
+Hanshin N=3)を起動し、当面は「手動Mode判定+手動Ledger供給」を正式
+initial pathとする(自動化は後段の課題とする)ことが2026-09-09付で
+決定された。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行へA1結果要約・A2/A3/A4の並行
+実施状況・A3-UDR決定を追記。OPEN-136行へLDC調査結果(訂正含む)と
+改善案A/Bを追記しStatusを`USER_DECISION_REQUIRED`(調査完了・改善案
+採否待ち)へ更新。OPEN-112行へ「手動Mode判定+手動Ledger供給=正式
+initial path(2026-09-09決定)」を追記。OPEN-130行へA4判定木案
+(未承認)への参照を追記。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へA2
+(Sonnet/MEDIUM)・A4(Sonnet/MEDIUM)・A3 Trial-06(Sonnet/MEDIUM)・A4
+Opusレビュー(Opus/HIGH、理由=3タイプ境界の排他性・網羅性の横断検証、
+Sonnet単独では境界検証が甘くなりやすいため)・本タスクを追記し、A1
+(159k token/323秒)・LDC(152k token/504秒)・A4(133k token/340秒)の
+確定値を記録した。
+
+**根拠**: 本エントリはFable(PM)からのSSOT反映委任に基づく記録(A1/LDC/
+A4の各Report自体は各Laneの並列タスクで別途完了済み)。Git操作:
+`FAMILY-A-COMPLETION-GAP-AUDIT-A1-01_REPORT.md`・`LEDGER-DEVIATION-
+CHECKER-SEARCH-COST-RECONCILIATION-01_REPORT.md`・`FAMILY-A-COMPLETION-
+A4-DISCOVERY-DESIGN-01_REPORT.md`(G1)、`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(G2)を
+ファイル名指定でcommitし`origin/main`へpush。並列稼働中のLane A2
+(Trend end-to-end)・A3(News比較Trial-06)・Lane B(3V Trial)・Opus
+レビューはいずれも別タスクであり、本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
