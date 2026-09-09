@@ -9146,6 +9146,61 @@ trial_03*`)、`CURRENT_SPEC.md`、`er006_output/`、`er011_output/
 attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスクでは
 触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-49: 3V Person-Voice Trial-03結果のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-03`(Trial-02最終版の
+Tensionのみ75〜90語へ短縮する再生成を1回だけ実施、ユーザー承認済み)の
+結果をSSOTへ反映した。
+
+**Trial-03結果の要点**: Tension圧縮は1回のLLM呼び出しで90語(目標上限)を
+達成したが、既存Ledger Deviation CheckerがMAJOR2件を検出し、既存Local
+Rewriteが2文を差し替えた結果、最終Tension語数は118語(目標75〜90語は
+未達)へ増加した。Local Rewriteが差し替えた非対称性文・外部制約統合文が
+法令解説調・抽象軸表現("business-efficiency concerns")へ後退し、
+Analytical Leakage(`leak_discovery_syntax`)を再導入した。Fact Checker A'
+はPASS→REVIEW_REQUIREDへ悪化し、Ledger最終判定は記事全体としては
+LEDGER_COMPLIANTだが個別item1件が`human_review_required=true`のまま
+残存した。統合構造(`leak_tension_constraint_integration`PASS)・陣営化
+回避(`leak_binary_camp_split`PASS)・3 concrete voices(Voice本文は
+Trial-02とbyte一致)は維持された。全体483語/推定尺388.3秒(Trial-02の
+497語/395.3秒より改善したが目標325〜355秒・365秒近傍のいずれも未達)。
+Pairwise Voice Distinctness Check実績(4件目): direction_agreement_
+rate=0.933・method_agreement_rate=0.867。費用¥19.49。Gate1=
+`USER_DECISION_REQUIRED`(2回目の再生成は実施せず、ユーザー決定どおり
+本Reportで停止)。
+
+**Fable判定**: Trial-03記事は品質後退(Fact/Ledger/Leakageのいずれも
+Trial-02より悪化)のためREJECTED相当と判定し、**3V基準記事の候補は
+Trial-02最終版(497語/395.3秒)のまま**とした。新規UDR候補B-3V-3として、
+395秒許容(soft target超過を許容する案(a))を採用しTrial-02版で3V Audio
+Trial(B-3V-2)へ進むかをユーザーへ提示する。
+
+**観測事項(B-Family固有、要観測)**: Local Rewrite(既存Ledger Deviation
+Checker是正の安全装置)の安全側書き換えが、Voices記事においてAnalytical
+Leakageを再導入する失敗モードを、Trial-01(人物化タスク)・Trial-03
+(圧縮タスク)という異なる2タスクで計2回観測した。恒久対策は未設計・
+未承認のため実装せず、今後のTrialで件数を蓄積したうえで別途USER_
+DECISION_REQUIREDとする。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-120行(Trial-03結果、品質後退・
+Trial-02版を候補・UDR B-3V-3、B-Family固有の観測事項[Local Rewrite
+安全側書き換えによるLeakage再導入、Trial-01/03で2回観測]、Distinctness
+実績4件目)へ追記した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-03行
+(Sonnet、MEDIUM、168k token・1525秒)と本タスク行を追記した。
+
+**根拠**: `EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-03_REPORT.md`。
+Git操作: `er012_editorial_b_voices_3v_person_voice_trial_03.py`・同
+Report・`er012_output/editorial_b_voices_3v_person_voice_trial_03/`配下
+一式(json/md/txt/jsonlのみ、wavなし)をG1、`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をG2として
+ファイル名指定でcommitし`origin/main`へpush。並列稼働中のLane A段階1
+再集計(`er011_output/point_quality_stage1_*`等、`FAMILY-A-POINT-QUALITY-
+STAGE1-*`、`FAMILY-A-POINT-QUALITY-RECONCILIATION-OPUS-REVIEW-01_
+REPORT.md`)、`er006_output/`、`er011_output/attempt_history.jsonl`、
+`CURRENT_SPEC.md`、既存の未追跡ファイル群はいずれも本タスクでは触って
+いない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
