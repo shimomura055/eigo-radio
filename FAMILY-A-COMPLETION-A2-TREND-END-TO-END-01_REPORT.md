@@ -254,3 +254,111 @@ A2 Japanese Titleの自動生成(LLM翻訳ステップの新設、記事title→
 B1B Key Phrase 5("take shape"/「形になり始める」)日本語音声の再生成
 可否は、引き続き**ユーザー承認待ち**(Human Review Lock領域、本タスクの
 指示どおり一切触っていない)。B1B完成音声・playerは未生成のまま。
+
+---
+
+## 9. 継続(B1B level完走、修正指示2回目)
+
+ユーザー決定(2026-09-09、A2-UDR-1=(a)): B1B Key Phrase 5日本語gloss
+「形になり始める」(kp5_ja_charon)を、承認済み再生成経路
+(`review_lock.approve_regenerate()`、EDITORIAL-B-FAMILY-VOICES-TRIAL-09-
+HEADING-REGEN-AND-FULL-EPISODE-03の前例)であと1回だけ再生成する
+(1回限り、同一文言での追加retryはしない)。通れば採用、不合格の場合は
+既存Key Phrase選定経路(Selection→Canonicalization→Redundancy QA)で
+別候補へ差し替える、という条件付き承認。
+
+### 9.1 実装
+
+既存runner`er011_family_a_completion_a2_trend_end_to_end_01_run.py`へ
+`run_b1b_continuation()`(+ヘルパー`_b1b_kp5_regenerate_once()`/
+`_b1b_kp5_replace_via_selection_pipeline()`)を追加(Production関数
+`tts_gen.generate_charon_japanese_with_reading_safety`
+(→`voice01.generate_charon_japanese`、`@review_lock.guarded_generate("ja")`
+でガード済み)・`sc.run_key_phrases`/`run_key_phrase_redundancy_qa`・
+`shared_narration.ensure_key_phrase_english_component`・
+`asm.stage_assemble_b1`・`asm.verify_episode_audio_validation_gate`・
+`asm.derive_a_family_required_structure`は無変更で直接呼ぶのみ)。承認
+記録: `er011_output/family_a_completion_a2_trend_end_to_end_01/b1b/
+kp5_regen_and_completion_01/audit/user_approval_record_kp5_regen_01.json`
+(「2026-09-09 ユーザー承認、A2-UDR-1(a)、1回限り」を明記)。二重承認防止
+のため、同ディレクトリに`kp5_regen_01_result.json`が既に存在する場合は
+`approve_regenerate()`を再度呼ばない冪等性ガードを実装(同一文言での2回目
+の承認・再生成を構造的に防止)。
+
+### 9.2 再生成結果(1回限り) — 不合格
+
+`kp5_ja_charon`(「形になり始める」)を承認済み経路で1回再生成
+(内部は標準経路2回+fallback経路1回の計3回、Production既定の
+`generate_charon_japanese`契約どおり) → **全3回とも`TRUE_CONTENT_
+MISMATCH`で不合格**(ASR起こし例: 「かたちにはじめあいます。」「形には
+じめはじめる」「形に始める」、いずれも「なり」周辺の脱落・混同)。
+`review_lock_state.json`は`HUMAN_REVIEW_REQUIRED`(`final_status=STOPPED`、
+`cumulative_tts_attempts=6`、初回3回+今回3回の通算)のまま。ユーザー決定
+どおり、同一文言での追加retryは行わず差し替えへ移行した。
+
+### 9.3 差し替え(Selection→Canonicalization→Redundancy QA)
+
+`sc.run_key_phrases()`(Production、article.md本文は無変更)でフル5件
+新規選定を実行し、旧rank1-4(既承認・既TTS済み、変更なし)+新選定の
+rank5候補、という最終5件セットで`sc.run_key_phrase_redundancy_qa()`
+(Production)を再実行し重複が無いことを確認した。
+
+- 旧候補(rank5): `take shape` / 「形になり始める」
+- 新候補(rank5): `work to do` / 「まだ取り組むべき課題」
+  (出典: "Official policy still treats longer stays as work to do, not
+  as a completed change.")
+- 差し替え理由: 上記9.2のTTS/ASR不合格(既知の困難ワードと判断)。
+- 最終5件セット(旧1-4+新5)のRedundancy QA: **REDUNDANCY_PASS**
+- 詳細記録: `.../kp5_regen_and_completion_01/audit/kp5_replacement_
+  candidate_and_reason.json`(旧候補・新候補・理由を全文記録)。
+  `key_phrases/keywords_canonicalized.json`のrank5のみ差し替え済み
+  (rank1-4は無変更)。
+
+新候補の音声生成: 英語`kp5_en.wav`(Master Audio Store経由、新規生成
+`reused=False`、`status=OK`、ASR一致`NORMALIZED_MATCH`)+日本語gloss
+`kp5_ja_charon.wav`(`generate_charon_japanese_with_reading_safety`、
+1回目で`status=OK`)。ともに一発でPASS。
+
+### 9.4 Assembly
+
+`stage_assemble_b1`: `status=OK`、`duration_seconds=337.254`、
+`peak=0.78439`、`clipping_detected=False`、`headroom_safety_valve`不適用。
+出力: `er011_output/family_a_completion_a2_trend_end_to_end_01/b1b/
+assembled/English_Your_Way_B1B_FAMILY_A_COMPLETION_A2_TREND_END_TO_END_01.wav`
+他30segment(kp5_en以外)はbyte-for-byte再利用(sha256 manifest記録・
+Assembly後に再検証、差分0件)。kp5_en.wavのみ意図的な差し替えによる差分
+(想定どおり)。
+
+### 9.5 Audio Validation Gate
+
+- 既定OFF経路(Assembly内部で自動実行): **PASS**
+- opt-in ON経路(OPEN-129、`required_structure=derive_a_family_required_
+  structure("B1")`、read-only): **PASS**
+
+### 9.6 player(Gate 7 (a)〜(l))
+
+新規スクリプト`er011_family_a_completion_a2_trend_end_to_end_01_b1b_
+continuation_player_01.py`(共通module`audio_review_player.py`、
+PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11準拠、読み取り専用)
+で生成。kp5差し替えの経緯を本文中に明記。
+
+`file:///C:/Users/tensh/eigo-radio/er011_output/family_a_completion_a2_
+trend_end_to_end_01/b1b/kp5_regen_and_completion_01/player.html`
+
+### 9.7 費用
+
+本タスク分 **¥3.53**(USD $0.022、14 API call、`.../kp5_regen_and_
+completion_01/raw_usage_log_kp5_regen_and_completion_01.jsonl`、
+`er005_output/cost_baseline_01/pricing_snapshot.json`の価格表をそのまま
+参照)。上限¥60以内(超過なし)。他segmentでのHuman Review Lock発動なし
+(reuse_manifestで確認)。
+
+### 9.8 Status
+
+A2level(§8)・B1B level(本節)ともにTTS→Assembly→Audio Validation
+Gate(既定OFF/opt-in ON両方)→標準playerまで完走した。
+**「Trend Synthesis theme→artifact連続性(人手介在3箇所)実証完了、
+Gate 3 article→audio evidence充足(Fable受入待ち)」**。
+
+OPEN-134観測run(記事再生成を伴う観測)には非該当(本タスクは記事非
+再生成、Key Phrase 5のみの差し替え)。

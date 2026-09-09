@@ -1,0 +1,60 @@
+{
+  "old_candidate": {
+    "rank": 5,
+    "source_span": "taking shape",
+    "source_sentence": "It is a direction taking shape, not a completed shift.",
+    "display_phrase": "take shape",
+    "key_phrase": "take shape",
+    "used_form": "take shape",
+    "japanese_gloss": "形になり始める",
+    "japanese_gloss_tts": "形になり始める",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+    },
+    "qa_overall_status": "PASS",
+    "reasoning": "display_phraseは本文の taking shape を方式Lの選定時点で基本形に正規化した自然な句動詞であり、そのまま維持します。「形になり始める」という意味の核を保つため、語を削りません。"
+  },
+  "new_candidate": {
+    "rank": 5,
+    "source_span": "work to do",
+    "source_sentence": "Official policy still treats longer stays as work to do, not as a completed change.",
+    "display_phrase": "work to do",
+    "key_phrase": "work to do",
+    "used_form": "work to do",
+    "japanese_gloss": "まだ取り組むべき課題",
+    "japanese_gloss_tts": "まだ取り組むべき課題",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "none",
+    "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+    },
+    "qa_overall_status": "PASS",
+    "reasoning": "残された課題や取り組むべき仕事があるという意味を担う表現で、workやto doを削ると中心的な意味が変わります。独立した自然な慣用的学習単位としてそのまま維持します。"
+  },
+  "reason": "承認済み再生成(review_lock.approve_regenerate())を1回実施したが、kp5_ja_charon(『形になり始める』)は標準経路2回+fallback経路1回(このrunの3回、通算では以前のrunと合わせて6回)ともASR検証でTRUE_CONTENT_MISMATCHとなり不合格だった(『なり』周辺の発話が繰り返し欠落/混同される既知の困難ワードと判断)。ユーザー決定(2026-09-09、A2-UDR-1(a))に従い、同一文言での追加retryはせず、既存Key Phrase選定経路(Selection→Canonicalization→Redundancy QA)で新規に選定された別候補へ差し替えた。",
+  "final_merged_redundancy_qa_status": "REDUNDANCY_PASS"
+}

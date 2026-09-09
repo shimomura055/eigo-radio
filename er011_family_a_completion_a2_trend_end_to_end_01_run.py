@@ -30,6 +30,7 @@ import json
 import os
 import shutil
 import sys
+import time
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
@@ -41,6 +42,7 @@ import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
+import er011_human_review_lock_01 as review_lock
 
 THEME_ID = "family_a_completion_a2_trend_end_to_end_01"
 OUT_DIR = f"er011_output/{THEME_ID}"
@@ -330,6 +332,292 @@ def run_a2_continuation() -> dict:
 
 
 # ============================================================
+# B1B継続(FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01継続、Fable委任
+# 「修正指示2回目」): Key Phrase 5 日本語gloss「形になり始める」
+# (kp5_ja_charon)がHUMAN_REVIEW_REQUIRED(標準2回+fallback1回、合計上限
+# 3回とも不合格、final_status=STOPPED)で止まっている。
+#
+# ユーザー決定(2026-09-09、A2-UDR-1=(a)): 承認済み再生成経路
+# (review_lock.approve_regenerate()、EDITORIAL-B-FAMILY-VOICES-TRIAL-09-
+# HEADING-REGEN-AND-FULL-EPISODE-03の前例)であと1回だけ再生成する
+# (1回限り、同一文言での追加retryはしない)。通れば結果を採用しB1Bの
+# Trend End-to-End確認を完了方向へ進める。今回も不合格の場合は同じ文言で
+# 追加retryせず、既存Key Phrase選定経路(Selection→Canonicalization→
+# Redundancy QA、sc.run_key_phrases、Production関数を無変更で直接呼ぶ)で
+# 新たに得られる選定結果のうちrank5候補だけをKey Phrase 5の差し替え候補
+# として採用する(rank1-4は既に承認済み・TTS済みのため変更しない。記事
+# 本文自体も再生成しない)。
+# ============================================================
+B1B_KP5_SEGMENT = "kp5_ja_charon"
+B1B_KP5_OUT_PATH = f"{OUT_DIR}/b1b/narration/{B1B_KP5_SEGMENT}.wav"
+B1B_CONTINUATION_DIR = f"{OUT_DIR}/b1b/kp5_regen_and_completion_01"
+B1B_CONTINUATION_COST_LOG = f"{B1B_CONTINUATION_DIR}/raw_usage_log_kp5_regen_and_completion_01.jsonl"
+
+B1B_KP5_APPROVAL_RATIONALE = (
+    "ユーザー決定(2026-09-09、管理ID FAMILY-A-COMPLETION-A2-TREND-END-TO-"
+    "END-01継続、A2-UDR-1=(a)): B1B Key Phrase 5 日本語gloss「形になり始"
+    "める」(kp5_ja_charon)を、承認済み再生成経路(review_lock.approve_"
+    "regenerate())であと1回だけ再生成することを承認する。根拠(前例): "
+    "EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03"
+    "(review_lock.approve_regenerate()による1回限りの再生成承認)。通らな"
+    "い場合は同一文言での追加retryをせず、既存Key Phrase選定経路で別候補"
+    "へ差し替える(ユーザー決定の一部)。"
+)
+
+
+def _b1b_kp5_regenerate_once() -> dict:
+    """kp5_ja_charonを承認済み経路であと1回だけ再生成する。呼ぶのは
+    Production関数(tts_gen.generate_charon_japanese_with_reading_safety
+    -> voice01.generate_charon_japanese、@review_lock.guarded_generate("ja")
+    でガードされた既存関数)のみで、この関数自体は薄いorchestrationに
+    留める(Production関数は無変更)。"""
+    b1_out_dir = f"{OUT_DIR}/b1b"
+    kp = load_json(f"{b1_out_dir}/key_phrases/keywords_canonicalized.json")
+    item5 = next(it for it in kp["items"] if it["rank"] == 5)
+    ja_gloss_tts, fallback_derived = tts_gen.resolve_key_phrase_ja_gloss_tts(item5)
+    used_form = item5["used_form"]
+
+    prior_lock = load_json(f"{b1_out_dir}/audit/review_lock_state.json").get(B1B_KP5_SEGMENT, {})
+    if prior_lock.get("state") != "HUMAN_REVIEW_REQUIRED":
+        raise RuntimeError(
+            f"想定外のlock状態(HUMAN_REVIEW_REQUIREDのはず): {prior_lock.get('state')}。"
+            "STOP(別segmentでのLock発動、または既に処理済みの可能性があります)。")
+
+    approved_at = time.strftime("%Y-%m-%dT%H:%M:%S")
+    approval_entry = review_lock.approve_regenerate(B1B_KP5_OUT_PATH, ja_gloss_tts, approved_by="user")
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/user_approval_record_kp5_regen_01.json", {
+        "management_id": "FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01",
+        "segment_id": B1B_KP5_SEGMENT, "canonical_text": ja_gloss_tts,
+        "approved_by": "user", "approved_at": approved_at,
+        "rationale": B1B_KP5_APPROVAL_RATIONALE,
+        "prior_lock_state_before_approval": prior_lock,
+        "review_lock_entry_after_approval": approval_entry,
+    })
+    print(f"[B1B-CONT] approve_regenerate() 実行完了: state={approval_entry.get('state')}")
+
+    result = tts_gen.generate_charon_japanese_with_reading_safety(
+        ja_gloss_tts, B1B_KP5_OUT_PATH, tts_gen.expected_substring_ja(ja_gloss_tts),
+        known_key_phrase_terms=[used_form])
+    print(f"[B1B-CONT] kp5_ja_charon 再生成結果: status={result.get('status')}")
+
+    # 既存Production/Gateが読むaudit記録(tts_generation_results.json)を、
+    # このcallで得た実結果で更新する(Trial-09 heading_regen_03と同一パターン)。
+    tts_results_path = f"{b1_out_dir}/audit/tts_generation_results.json"
+    tts_results = load_json(tts_results_path)
+    entry = dict(result)
+    entry["canonical_text"] = ja_gloss_tts
+    entry["display_gloss"] = item5["japanese_gloss"]
+    entry["japanese_gloss_tts_fallback_derived"] = fallback_derived
+    tts_results["key_phrases"]["5"]["japanese"] = entry
+    save_json(tts_results_path, tts_results)
+    print(f"[B1B-CONT] tts_generation_results.json のkey_phrases['5']['japanese']を更新: "
+          f"status={entry.get('status')}")
+
+    new_lock = load_json(f"{b1_out_dir}/audit/review_lock_state.json").get(B1B_KP5_SEGMENT, {})
+    summary = {
+        "segment_id": B1B_KP5_SEGMENT, "canonical_text": ja_gloss_tts, "used_form": used_form,
+        "generate_result_status": result.get("status"), "generate_result": result,
+        "review_lock_entry_after_generate": new_lock,
+    }
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/kp5_regen_01_result.json", summary)
+    return summary
+
+
+# ============================================================
+# kp5差し替え(1回限りの承認済み再生成が再度不合格だった場合のみ実行)
+# ============================================================
+def _b1b_kp5_replace_via_selection_pipeline() -> dict:
+    """kp5_ja_charonの承認済み再生成(1回限り)が再度不合格だった場合の
+    差し替え経路。既存Key Phrase選定経路(sc.run_key_phrases、Selection→
+    Canonicalization→Redundancy QA、Production関数を無変更で直接呼ぶ)で
+    フル5件の新規選定を実行し、そのうちrank5候補だけをKey Phrase 5の
+    差し替え候補として採用する(rank1-4は既承認・既TTS済みのため変更
+    しない、新規選定側のrank1-4は破棄する)。採用前に「旧rank1-4(既承認)
+    + 新rank5候補」という最終5件セットでRedundancy QA
+    (sc.run_key_phrase_redundancy_qa、Production関数)を再実行し、
+    旧rank1-4との重複が無いことを確認する。"""
+    b1_out_dir = f"{OUT_DIR}/b1b"
+    kp_dir = f"{b1_out_dir}/key_phrases"
+    replacement_dir = f"{B1B_CONTINUATION_DIR}/kp5_replacement_selection_01"
+    os.makedirs(replacement_dir, exist_ok=True)
+
+    with open(SOURCE_ARTICLE["b1b"], encoding="utf-8") as f:
+        article_text = f.read()
+
+    old_kp = load_json(f"{kp_dir}/keywords_canonicalized.json")
+    old_item5 = next(it for it in old_kp["items"] if it["rank"] == 5)
+    old_items_1to4 = [it for it in old_kp["items"] if it["rank"] != 5]
+
+    fresh = sc.run_key_phrases(
+        article_text, replacement_dir, LEVELS["b1b"]["article_id"] + "_KP5_REPLACEMENT",
+        LEVELS["b1b"]["source_level"], process=LEVELS["b1b"]["process"])
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/kp5_replacement_fresh_selection_result_summary.json", {
+        "selection_status": fresh["selection"]["status"],
+        "canonicalization_status": (fresh.get("canonicalization") or {}).get("status"),
+        "redundancy_qa_status": (fresh.get("redundancy_qa") or {}).get("status"),
+    })
+    if fresh.get("canonicalization") is None or fresh["canonicalization"]["status"] not in (
+            "CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+        raise RuntimeError(
+            f"kp5差し替え用フル新規選定が失敗しました。selection={fresh['selection']['status']} "
+            f"canonicalization={(fresh.get('canonicalization') or {}).get('status')}。STOP。")
+
+    new_items_all = fresh["canonicalization"]["merged"]["items"]
+    new_item5 = next(it for it in new_items_all if it["rank"] == 5)
+
+    merged_final_items = sorted(old_items_1to4 + [new_item5], key=lambda it: it["rank"])
+    final_check_dir = f"{replacement_dir}/final_merged_redundancy_check"
+    os.makedirs(final_check_dir, exist_ok=True)
+    redundancy = sc.run_key_phrase_redundancy_qa(
+        article_text, merged_final_items, final_check_dir,
+        LEVELS["b1b"]["article_id"] + "_KP5_REPLACEMENT_FINAL", process=LEVELS["b1b"]["process"])
+
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/kp5_replacement_candidate_and_reason.json", {
+        "old_candidate": old_item5, "new_candidate": new_item5,
+        "reason": (
+            "承認済み再生成(review_lock.approve_regenerate())を1回実施したが、"
+            "kp5_ja_charon(『形になり始める』)は標準経路2回+fallback経路1回(このrunの"
+            "3回、通算では以前のrunと合わせて6回)ともASR検証でTRUE_CONTENT_MISMATCHとなり"
+            "不合格だった(『なり』周辺の発話が繰り返し欠落/混同される既知の困難ワードと判断)。"
+            "ユーザー決定(2026-09-09、A2-UDR-1(a))に従い、同一文言での追加retryはせず、"
+            "既存Key Phrase選定経路(Selection→Canonicalization→Redundancy QA)で新規に"
+            "選定された別候補へ差し替えた。"),
+        "final_merged_redundancy_qa_status": redundancy.get("status"),
+    })
+
+    if redundancy.get("status") == "REDUNDANCY_NG":
+        raise RuntimeError(
+            f"kp5差し替え候補が旧rank1-4とのRedundancy QAでNG(duplicate_pairs="
+            f"{redundancy.get('duplicate_pairs')})。既存Loop Budgetの範囲を超える追加retryは"
+            "本タスクの委任範囲外のため、ここでSTOPし報告します。")
+
+    final_kp_doc = {"items": merged_final_items, "overall_status": redundancy.get("status")}
+    save_json(f"{kp_dir}/keywords_canonicalized.json", final_kp_doc)
+    print(f"[B1B-CONT][KP5-REPLACE] keywords_canonicalized.json rank5を差し替え: "
+          f"旧={old_item5['used_form']!r} 新={new_item5['used_form']!r}")
+
+    narration_dir = f"{b1_out_dir}/narration"
+    new_used_form = new_item5["used_form"]
+    ja_gloss_tts, fallback_derived = tts_gen.resolve_key_phrase_ja_gloss_tts(new_item5)
+
+    en_out_path = f"{narration_dir}/kp5_en.wav"
+    en_result = tts_gen.shared_narration.ensure_key_phrase_english_component(
+        tts_gen.tts_safe_kp_en(new_used_form), en_out_path)
+    print(f"[B1B-CONT][KP5-REPLACE] 新kp5_en生成: status={en_result.get('status')} "
+          f"reused={en_result.get('reused')}")
+
+    ja_out_path = f"{narration_dir}/{B1B_KP5_SEGMENT}.wav"
+    ja_result = tts_gen.generate_charon_japanese_with_reading_safety(
+        ja_gloss_tts, ja_out_path, tts_gen.expected_substring_ja(ja_gloss_tts),
+        known_key_phrase_terms=[new_used_form])
+    print(f"[B1B-CONT][KP5-REPLACE] 新kp5_ja_charon生成: status={ja_result.get('status')}")
+
+    tts_results_path = f"{b1_out_dir}/audit/tts_generation_results.json"
+    tts_results = load_json(tts_results_path)
+    en_entry = dict(en_result)
+    en_entry["canonical_text"] = new_used_form
+    ja_entry = dict(ja_result)
+    ja_entry["canonical_text"] = ja_gloss_tts
+    ja_entry["display_gloss"] = new_item5["japanese_gloss"]
+    ja_entry["japanese_gloss_tts_fallback_derived"] = fallback_derived
+    tts_results["key_phrases"]["5"] = {"english": en_entry, "japanese": ja_entry}
+    save_json(tts_results_path, tts_results)
+
+    summary = {
+        "old_candidate": old_item5, "new_candidate": new_item5,
+        "final_merged_redundancy_qa_status": redundancy.get("status"),
+        "english_result_status": en_result.get("status"), "japanese_result_status": ja_result.get("status"),
+        "final_status": "OK" if (en_result.get("status") == "OK" and ja_result.get("status") == "OK") else "NG",
+    }
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/kp5_replacement_result.json", summary)
+    return summary
+
+
+def run_b1b_continuation() -> dict:
+    print("===== [B1B-CONT] 開始 =====")
+    os.makedirs(f"{B1B_CONTINUATION_DIR}/audit", exist_ok=True)
+    cl.install(B1B_CONTINUATION_COST_LOG)
+
+    b1_out_dir = f"{OUT_DIR}/b1b"
+    narration_dir = f"{b1_out_dir}/narration"
+
+    # 他segment(前回OK分)をbyte-for-byte再利用することの記録(sha256
+    # manifest、kp5_ja_charon自体は今回書き換えるため対象外)。
+    reuse_manifest = {}
+    for fname in sorted(os.listdir(narration_dir)):
+        full_path = f"{narration_dir}/{fname}"
+        if fname.endswith(".wav") and os.path.isfile(full_path) and fname != f"{B1B_KP5_SEGMENT}.wav":
+            with open(full_path, "rb") as f:
+                reuse_manifest[fname] = hashlib.sha256(f.read()).hexdigest()
+    save_json(f"{B1B_CONTINUATION_DIR}/audit/pre_existing_segments_sha256_manifest.json", reuse_manifest)
+    print(f"[B1B-CONT] 既存segment(kp5_ja_charon以外){len(reuse_manifest)}件のsha256を記録"
+          "(byte-for-byte再利用、変更なしの確認用)。")
+
+    # 冪等性ガード: このcontinuation出力ディレクトリに既にkp5_regen_01_result.json
+    # が存在する場合(=このタスク内で承認済み1回限りの再生成を既に実行済み)、
+    # 二度目のapprove_regenerate()呼び出しを避けるため再実行せず前回結果を再利用
+    # する(同一文言での2回目の承認・再生成は絶対に行わない)。
+    regen_result_path = f"{B1B_CONTINUATION_DIR}/audit/kp5_regen_01_result.json"
+    if os.path.exists(regen_result_path):
+        regen_summary = load_json(regen_result_path)
+        print("[B1B-CONT] 既存のkp5_regen_01_result.jsonを検出、承認済み再生成(1回限り)は"
+              f"実行済みのためスキップします(前回結果: status="
+              f"{regen_summary.get('generate_result_status')})。")
+    else:
+        with cl.logging_context(THEME_ID, "b1b_kp5_regen"):
+            regen_summary = _b1b_kp5_regenerate_once()
+
+    replacement_summary = None
+    kp5_final_ok = regen_summary["generate_result_status"] == "OK"
+    if not kp5_final_ok:
+        print("[B1B-CONT] kp5_ja_charon再生成はNGでした。同一文言での追加retryはせず、"
+              "既存Key Phrase選定経路(Selection→Canonicalization→Redundancy QA)で"
+              "別候補への差し替えを実行します。")
+        replacement_result_path = f"{B1B_CONTINUATION_DIR}/audit/kp5_replacement_result.json"
+        if os.path.exists(replacement_result_path):
+            replacement_summary = load_json(replacement_result_path)
+            print("[B1B-CONT] 既存のkp5_replacement_result.jsonを検出、差し替え済みのため"
+                  f"再実行せず前回結果を再利用します(前回結果: final_status="
+                  f"{replacement_summary.get('final_status')})。")
+        else:
+            with cl.logging_context(THEME_ID, "b1b_kp5_replace"):
+                replacement_summary = _b1b_kp5_replace_via_selection_pipeline()
+        kp5_final_ok = replacement_summary.get("final_status") == "OK"
+
+    assemble_result = None
+    gate_on = None
+    if kp5_final_ok:
+        with cl.logging_context(THEME_ID, "assemble_b1b_continuation"):
+            try:
+                assemble_result = asm.stage_assemble_b1({"theme_id": THEME_ID, "out_dir": OUT_DIR})
+                assemble_result["gate_off_result"] = "PASS"
+            except RuntimeError as e:
+                assemble_result = {"status": "GATE_BLOCKED", "gate_off_result": "BLOCKED", "error": str(e)}
+        print(f"[B1B-CONT] Assembly(Gate OFF経路)結果: {assemble_result.get('gate_off_result')}")
+
+        if assemble_result.get("gate_off_result") == "PASS":
+            rs = asm.derive_a_family_required_structure("B1")
+            try:
+                asm.verify_episode_audio_validation_gate(b1_out_dir, "B1", required_structure=rs)
+                gate_on = {"gate_on_result": "PASS"}
+            except RuntimeError as e:
+                gate_on = {"gate_on_result": "BLOCKED", "gate_on_message": str(e)[:800]}
+        else:
+            gate_on = {"gate_on_result": "SKIPPED_ASSEMBLE_NOT_PASS"}
+        print(f"[B1B-CONT] Gate opt-in ON経路結果: {gate_on.get('gate_on_result')}")
+
+    result = {
+        "level": "b1b_continuation",
+        "kp5_regen": regen_summary, "kp5_replacement": replacement_summary,
+        "assemble_result": assemble_result, "gate_opt_in_result": gate_on,
+        "reuse_manifest_count": len(reuse_manifest),
+    }
+    save_json(f"{B1B_CONTINUATION_DIR}/b1b_continuation_summary.json", result)
+    print("[B1B-CONT] 完了。")
+    return result
+
+
+# ============================================================
 # Level単位のオーケストレーション
 # ============================================================
 def run_level(level: str) -> dict:
@@ -356,6 +644,11 @@ def main() -> dict:
         result = run_a2_continuation()
         print("[E2E-A2-CONT] 完了。")
         return {"a2_continuation": result}
+
+    # B1B継続専用の呼び出し(kp5_ja_charon再生成承認、上記参照)。
+    if levels == ["b1b_continuation"]:
+        result = run_b1b_continuation()
+        return {"b1b_continuation": result}
 
     os.makedirs(f"{OUT_DIR}/audit", exist_ok=True)
     cl.install(f"{OUT_DIR}/raw_usage_log.jsonl")
