@@ -246,7 +246,10 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-03(確定値) | MEDIUM(L1/Sonnet) | Sonnet | B-3V-1(b)承認(Trial-02のTensionのみ75〜90語へ短縮する再生成1回)、既知パターン(Trial-01→02の継続、承認済み設計の適用にとどまる)の踏襲 | Haiku不適(記事生成・QA判定を伴う)、Opus不要(設計方針変更ではなく承認済み範囲の適用のみ) | 168k | 1525s | 0 | なし | なし | あり(圧縮90語達成もLocal Rewriteが2文差し替え→118語へ後退、Analytical Leakage再導入・Fact Checker A' REVIEW_REQUIRED・Ledger human_review_required=true残存で品質後退、新規UDR候補B-3V-3[395秒許容案]を提示、B-Family固有観測事項[Local Rewrite安全側書き換えによるLeakage再導入、Trial-01/03で2回目]も新規記録) | 不明(Trial記事はFable判定でREJECTED相当、3V基準記事の候補はTrial-02最終版[497語/395.3秒]のまま継続、Production採用は別途ユーザー判断) |
 | 2026-09-09 | HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01(確定値) | MEDIUM(L1/Sonnet) | Sonnet | D2-UDR-2承認、Household Ledger FACT-03(柑橘類の高湿度記載)を既存Research正式経路で再検証、既知パターン(既存Fact Checker/Research経路の再実行) | Haiku不適(Research/Fact Checker実行・判定を伴う)、Opus不要(通常のFact再検証パターン) | 125k | 599s | 0 | なし | なし | あり(既存Production Fact Checker[web_search付き]でFAIL確定、Ledger v3→v4更新[FACT-03 usable: no]、完成記事B1 33行目の遡及修正要否をUDR候補として提示) | 不明(完成audioの遡及修正は不要、新Fact policyは作らない方針。実測費用¥2.6) |
 | 2026-09-09 | FAMILY-A-POINT-QUALITY-RETRY-LOG-AGGREGATION-L0-01(Haiku初適用) | LOW(L0/Haiku) | Haiku | 過去Trial-04/05/06/07のretry log 50 runを機械集計する定型集計作業(読み取り専用・SSOT編集なし・Git操作なし・Gate判断なし)、L0定義に合致する初めての実案件 | Sonnet/Opusは過剰(単純な機械集計にとどまるため) | 43k | 126s | 0 | あり(NG定義[status基準かFact Checker FAIL基準か]・flag入れ替わり回数の数え方がSonnet既存報告と不一致であることが判明し、Sonnetによる定義照合が必要になった) | なし | なし(判断材料に直接は用いず、定義照合待ちのまま保留) | 不明(¥0、L0のためProduction wiring対象外) |
-| 2026-09-09 | FAMILY-A-POINT-QUALITY-RECONCILIATION-OPUS-REVIEW-01(実施中) | HIGH(L2/Opus) | Opus | Reconciliation Gate(read-only横断整理)のsecond opinion。複数Familyへ波及するHIGH案件であり、Sonnet単独読取では見落としうる重複・競合の構造的評価を要するため | Sonnet単独では不足の可能性(HIGH案件のため)、Haiku不適(設計レビュー・複数module横断精査を要する) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-POINT-QUALITY-RECONCILIATION-OPUS-REVIEW-01 | HIGH(L2/Opus) | Opus | Reconciliation Gate(read-only横断整理)のsecond opinion。複数Familyへ波及するHIGH案件であり、Sonnet単独読取では見落としうる重複・競合の構造的評価を要するため | Sonnet単独では不足の可能性(HIGH案件のため)、Haiku不適(設計レビュー・複数module横断精査を要する) | 100k | 372s | 0 | **寄与**: Sonnet横断整理(Reconciliation Gate)の因果連鎖の誤り2件(もぐらたたきが主因という主張、Focus ModuleがRole収束を引き起こすという主張)を実データ・コードで検出、実装欠陥候補1件(value単独NG時のoverlap診断section無条件構築)を検出、交絡候補(overlap_ratioへのPoint語数交絡)を検出。段階1事後再集計(`FAMILY-A-POINT-QUALITY-STAGE1-RECOMPUTATION-01`)でいずれも支持または条件付き支持と確認済み | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-POINT-QUALITY-STAGE1-RECOMPUTATION-01 | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー指摘の事後検証(既存JSON読み取り再計算・コード引用確認が中心、(e)のみFable許可の極小LLM呼び出し[N=10、¥3.34]を含む) | Haiku不適(定義照合・コード解釈・判定を伴う)、Opus不要(新規設計判断ではなくOpus指摘の事後検証) | 186k | 998s | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | NEWS-DISCOVERY-COMPARISON-ARTIFACT-L0-01(実施中) | LOW(L0/Haiku) | Haiku | News/Discovery再改善の新Trial起票前に必要な既存比較artifact(approved/reference・baseline・現行focus_hint等)の定型生成、読み取り専用・定型出力に該当 | Sonnet不要(定型artifact生成、設計判断を伴わない)、Opus不要(診断ではない) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-51(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、段階1再集計・Opusレビュー転記の反映[OPEN-135/133/134行]、DECISION_LOGエントリ新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-48(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、Reconciliation Gate/FACT-03確定値反映、Haiku L0初適用の記録、新規Open Item追記なし)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-47(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、A3-UDR-3/D2-UDR-1不承認のOPEN-135/112/120/136/138行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md/PM_GOVERNANCE.md追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-49(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、3V Trial-03結果反映[OPEN-120行]、DECISION_LOGエントリ新設、Trial-03行の確定値更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
@@ -472,3 +475,14 @@ TRIAL-SETUP-01`の次から起算)
   FIX-02`(並列稼働中、Sonnet、MEDIUM、rerun_04と同型のArtifact最小修正
   例外パターン)、本タスク(Sonnet、LOW)を追記した。中間レビュー・
   正式Closeout Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-51、本タスク): `FAMILY-A-POINT-
+  QUALITY-RECONCILIATION-OPUS-REVIEW-01`行を確定値(Opus、HIGH、
+  100k token・372s、寄与=Sonnet横断整理の因果連鎖の誤り2件・実装欠陥
+  候補1件・交絡候補の検出)へ更新した。新規行`FAMILY-A-POINT-QUALITY-
+  STAGE1-RECOMPUTATION-01`(Sonnet、MEDIUM、186k token・998s、Opus指摘
+  の事後検証)、`NEWS-DISCOVERY-COMPARISON-ARTIFACT-L0-01`(並列稼働中、
+  Haiku、L0、既存比較artifactの定型生成)、本タスク(Sonnet、LOW)を
+  追記した。Closeout進捗としてHaiku適用は本Trial開始後2件目
+  (1件目は`FAMILY-A-POINT-QUALITY-RETRY-LOG-AGGREGATION-L0-01`)。
+  中間レビュー・正式Closeout Triggerの到達判定・再計算はいずれも
+  実施していない。

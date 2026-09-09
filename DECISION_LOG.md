@@ -9246,6 +9246,73 @@ editorial_b_voices_3v_audio_trial_*`等)、Household最小修正
 `er011_output/attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の
 未追跡ファイル群はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-51: Lane A News/Discovery再改善 段階1
+再集計・Opusレビュー転記のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-POINT-QUALITY-RECONCILIATION-OPUS-REVIEW-01_REPORT.md`
+(Opusレビュー、Fable転記の要旨)と`FAMILY-A-POINT-QUALITY-STAGE1-
+RECOMPUTATION-01_REPORT.md`(段階1事後再集計、Sonnet、実測¥3.34)の
+成果をSSOTへ反映した。
+
+**Opusレビュー(Fable転記の要旨)**: 先行するSonnet横断整理
+(`FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01`)が提示した
+中核的な因果連鎖のうち、もぐらたたきが主因という主張・Focus Module
+がRole収束を引き起こすという主張を、実データ・コードで否定した
+(Opus消費約100,000トークン・372秒)。
+
+**段階1再集計の要点**: (a)overlap_ratio交絡は条件により異なる
+(Trial-06/04のFocus/hint系優位は語数交絡ではなく実質、Trial-05
+gapfixの「悪化」は語数交絡でほぼ説明)。(b)Trial-06 baseline lexical
+flag 17/18・真の入れ替わり4件はOpus引用を完全再現、全4Trial合計の
+真のswap(狭義)は7件(Haiku L0集計の50件はany-change定義による
+過大評価)。(c)value単独NG時のoverlap診断section構築は無条件
+(コード確認)、設計意図(ER-011-NO18)は「加算的」で基本構造は仕様
+どおりだが、断定文言の事実精度自体は不明(未検討)。(d)cross_point_
+overlap全240件平均0.1311、現行閾値0.40超は0件。(e)Role Planningに
+Focus Moduleへの因果経路はコード上存在しない(コード確認)一方、
+Trial-07 discovery_focus実績のRole収束(6/6 run全てmechanism/
+myth_correctionのみ)は同一入力の新規N=10抽選(実測¥3.34)でも
+再現せず、**真因は依然不明**。(f)G1語彙プライミング仮説はattempt=0
+で既に差が存在し非単調なため不支持寄り。(g)Role再計画は診断結果
+非依存の「盲目の再抽選」であり、命令文言が診断sectionより後で強い
+ことをコードで確認。
+
+**SSOT反映**: `OPEN_ITEMS.md` OPEN-135行(段階1完了・要点・UDR候補
+(i)〜(iv)・Trial-07 Role収束の真因不明を追記)、OPEN-133行
+(cross_point_overlapの事後集計値=平均0.1311を追記、retry判定への
+統合は引き続き行わない)、OPEN-134行(A-UDR-22観測項目へ「value単独
+NG後のlexical flag発生」「swap回数(狭義)」の2項目を追加)へ追記した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へOpusレビュー・段階1・Haiku
+比較artifact(実施中)・本タスクの行を追記した。
+
+**UDR候補(実装しない、ユーザー裁定待ち)**: (i)value単独NG時の
+overlap診断section構築を条件分岐する(¥0・低リスク)。(ii)overlap
+指標の分母正規化/閾値再校正(QA基準変更、Fact Safetyリスク中)。
+(iii)G1語彙プライミングのA/B Trial(¥60〜80、優先度低)。(iv)Role
+再計画へ診断結果を渡す(効果不明、実装規模中)。いずれも人間ユーザーの
+承認(`APPROVED_FOR_PRODUCTION`または明示的UDR裁定)が無い限り実装
+しない。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、Opusレビュー転記・段階1
+再集計の要旨を含む)。Git操作:
+`FAMILY-A-POINT-QUALITY-RECONCILIATION-OPUS-REVIEW-01_REPORT.md`・
+`FAMILY-A-POINT-QUALITY-STAGE1-RECOMPUTATION-01_REPORT.md`・
+`er011_point_quality_stage1_recomputation_01.py`・
+`er011_point_role_planning_reproducibility_stage1_01.py`・
+`er011_output/point_quality_stage1_recomputation_01/`配下・
+`er011_output/point_role_planning_reproducibility_stage1_01/`配下
+(json/md/jsonlのみ)をG1、`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をG2としてファイル名指定で
+commitし`origin/main`へpush。並列稼働中の3V Audio Trial
+(`er012_output/editorial_b_voices_3v_audio_trial_*`等)、Household
+最小修正(`er003_output/n3_01/household/fact03_fix_02/`、
+`er011_output/*household*`)、Haiku比較artifact(`er011_output/
+news_discovery_comparison_artifact_l0_01/`、`er011_news_discovery_
+comparison_artifact_l0_01.py`)、`er006_output/`、`er011_output/
+attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群は
+いずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
