@@ -241,6 +241,10 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-43(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-135/OPEN-112行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md 1行追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07(確定値) | MEDIUM(L1/Sonnet) | Sonnet | Discovery/Why Layer3 Focus Module(Trial-05でVALIDATED済みの本文段落を再利用、見出しのみ改稿)をHousehold既存Ledgerへ`editorial_type_module_block`方式で接続するN=3 Article-only Trial(baseline vs discovery_focus×A2/B1B)、既知パターン(Trend Synthesis Focus Module配線と同型)の踏襲 | Haiku不適(記事生成・Fact Checker/Ledger Deviation判定を伴う)、Opus不要(設計自体は`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`で既にレビュー済みのため、本Trialは検証実行のみ) | 192k | 2673s | 0 | なし | なし | あり(blocking2/12はFocus Module起因ではなくHousehold Ledger FACT-03の既存事実精度リスクと判定、新規`OPEN-138`へ切り出し。Sonnet推奨Gate1=`VALIDATED`[Focus Module自体]だが最終判断はユーザー、配線可否6項目は未実装のまま提示) | 不明(Trial扱いのままProduction wiring未実施。実測費用¥137.6[上限¥150以内]) |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-46(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、D2 Trial-07結果反映[OPEN-135/OPEN-112行]、新規Open Item[OPEN-138]起票)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01 | HIGH(L1/Sonnet読取、後にOpusレビュー予定) | Sonnet | A3-UDR-3・D2-UDR-1不承認を受けたPM/Reconciliation Gate(read-only横断整理、既存の類似対策・既存Production仕様・retry/QA/Validatorとの重複・競合の棚卸し)、複数Familyへ波及するHIGH案件のため完了後にOpus second opinionを予定 | Haiku不適(横断的なコード・SSOT精査・判定を要する)、Opus同時投入は時期尚早(Sonnet読取完了・整理結果が出てからのレビューが効率的なため段階分け) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明(read-only、Production変更ゼロ) |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-03 | MEDIUM(L1/Sonnet) | Sonnet | B-3V-1(b)承認(Trial-02のTensionのみ75〜90語へ短縮する再生成1回)、既知パターン(Trial-01→02の継続、承認済み設計の適用にとどまる)の踏襲 | Haiku不適(記事生成・QA判定を伴う)、Opus不要(設計方針変更ではなく承認済み範囲の適用のみ) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明(保持条件7点を維持できればcloseout、崩れればUDR) |
+| 2026-09-09 | HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01 | MEDIUM(L1/Sonnet) | Sonnet | D2-UDR-2承認、Household Ledger FACT-03(柑橘類の高湿度記載)を既存Research正式経路で再検証、既知パターン(既存Fact Checker/Research経路の再実行) | Haiku不適(Research/Fact Checker実行・判定を伴う)、Opus不要(通常のFact再検証パターン) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明(完成audioの遡及修正は不要、新Fact policyは作らない方針) |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-47(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、A3-UDR-3/D2-UDR-1不承認のOPEN-135/112/120/136/138行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md/PM_GOVERNANCE.md追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -420,3 +424,14 @@ TRIAL-SETUP-01`の次から起算)
   `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`]・Haiku 0件)。
   中間レビュー・正式Closeout Triggerの到達判定・再計算はいずれも実施
   していない(件数の現況記録のみ、採否判断ではない)。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-47、本タスク): ユーザー正式決定
+  (A3-UDR-3・D2-UDR-1不承認、PM/Reconciliation Gate最優先実施)を受け、
+  新規行`FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01`(並列
+  稼働中、Sonnet、HIGH読取。複数Familyへの波及・後戻りコストの大きさ
+  からHIGH分類、read-only横断整理完了後にOpus second opinionを予定)、
+  `EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-03`(並列稼働中、
+  Sonnet、MEDIUM、B-3V-1(b)承認範囲の適用)、`HOUSEHOLD-LEDGER-FACT-03-
+  REVERIFICATION-01`(並列稼働中、Sonnet、MEDIUM、D2-UDR-2承認、既存
+  Research正式経路での再検証)、本タスク(Sonnet、LOW)を追記した。中間
+  レビュー・正式Closeout Triggerの到達判定・再計算はいずれも実施して
+  いない。

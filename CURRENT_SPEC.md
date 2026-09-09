@@ -1,7 +1,24 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-09(第28弾、PM-CLOSEOUT-CONSOLIDATION-43、A2 Trend
+**最終更新: 2026-09-09(第29弾、PM-CLOSEOUT-CONSOLIDATION-47、A3-UDR-3/
+D2-UDR-1現行案不承認のSSOT反映)**: ユーザー正式決定により、News Focus
+Module+Point Role hint(A3-UDR-3、Trial-06)・Discovery/Why Layer3 Focus
+Module(D2-UDR-1、Trial-07)は、いずれもGate1=`VALIDATED(Trial)`のStatus
+自体は保持しつつ、**現行Production採用案は不承認**(News: focus_hint NG率
+50%はProduction採用水準ではない、Discovery: REVIEW_REQUIRED率約5倍増加・
+Point多様性低下、両者とも既存仕様全体との重複・競合整理が未了)と確定
+した。Focus Module/Point Roleという考え方自体はREJECTEDではなく、既存
+仕様全体を俯瞰する再改善を実施する(PM/Reconciliation Gate`FAMILY-A-
+POINT-QUALITY-CONTROL-RECONCILIATION-GATE-01`を最優先、その後A3-UDR-3・
+D2-UDR-1それぞれの再改善Trialへ)。「## 通常News(Major/Daily News)
+Reference仕様」節の「News固有の視点付与層」行、「## Discovery/Why
+(Pool型)」節の「Layer3 Focus Module」行を更新した。既存のMajor/Daily
+Gate 6項目・Trend Gate 6条件・Trend Synthesis仕様(`PRODUCTION_WIRED`
+済み部分)への変更はない。Production/Prompt本体の変更はゼロ。詳細は
+`DECISION_LOG.md` `PM-CLOSEOUT-CONSOLIDATION-47`エントリ・
+`OPEN_ITEMS.md`OPEN-135/112/120/136/138行参照。
+**最終更新(直前の記録): 2026-09-09(第28弾、PM-CLOSEOUT-CONSOLIDATION-43、A2 Trend
 end-to-end B1B level完走のSSOT反映)**: `FAMILY-A-COMPLETION-A2-TREND-
 END-TO-END-01_REPORT.md`§9により、Trend Synthesis記事がA2level・B1B
 level両方でTTS→Assembly→Audio Validation Gate→player完走した。B1B
@@ -692,7 +709,7 @@ Audio構造)がそのまま適用されることを正式化した(ユーザー�
 | Comment Contract(C1〜C4) | 「CEFR-A2構造・音声仕様」節、「B1」節 | `DECIDED` | ER-003-A2-STRUCT-02〜04、ER-003-B1-NOVEL-AUDIO-01系 |
 | Key Phrase Contract | 「Key Phrase」節 | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-02、ER-003-B1-NOVEL-AUDIO-01系 |
 | Audio構造(Point Notification/pause/SFX/TTS安全機構/Assembly) | 「Cross-level仕様」節、「Audio Assembly」節 | `DECIDED` | ER-003-POINT-NOTIFICATION-01、ER-003-A2-B1-N3-01 |
-| News固有の視点付与層(Layer3 News Focus Module、Mode判定基準) | (本節では規定しない、内容は書かない) | `未設計・設計Trial起票済み`(`FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01`、Lane A-2) | OPEN-112-NEWS-MODE-DESIGN-08(設計文書のみ、Trial・記事生成0件) |
+| News固有の視点付与層(Layer3 News Focus Module+Point Role hint、Mode判定基準) | (本節では規定しない、内容は書かない)。比較Trial-06(Hanshin Ledger固定、focus_hint NG率50%[3/6] vs baseline NG率100%[6/6])完了 | `VALIDATED(Trial)`止まり。**現行Production採用案は2026-09-09ユーザー決定により不承認**(NG率50%はProduction採用水準ではない、既存仕様全体との重複・競合整理未了)。考え方自体はREJECTEDではなく再改善中(A3-UDR-3の再改善、PM/Reconciliation Gate完了後に着手) | FAMILY-A-COMPLETION-A3-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06(Trial)、OPEN-112行/OPEN-135行(2026-09-09ユーザー決定、再改善中) |
 
 ### Reference記事の正式指定
 
@@ -756,7 +773,7 @@ Discovery/Why型の対象定義・現状を記録する最小節。判定ロジ�
 | 項目 | 現在値 | 状態 | 根拠管理ID |
 |---|---|---|---|
 | 対象定義 | Pool型(Evergreen、特定の1件の最近の出来事に非依存、`POOL_TOPIC_MASTER.md`定義=2軸判定の軸A=Noの正式化) | `DECIDED`(2026-09-09) | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md |
-| Layer3 Focus Module(`DISCOVERY_FOCUS_MODULE_BLOCK`) | Trial-05でVALIDATED(A2/B1、既存Point Role hint機構の流用、バイト等価配線案)。Household既存Ledger再利用によるN=3 Article-only Trial(`FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07`)で追加検証中 | `VALIDATED`(Production配線は未実施、Trial-07結果を受けてユーザーが配線可否を判断) | ER-011-DISCOVERY-4LAYER-TRIAL-05(既存)、FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07(実施中) |
+| Layer3 Focus Module(`DISCOVERY_FOCUS_MODULE_BLOCK`) | Trial-05でVALIDATED(A2/B1、既存Point Role hint機構の流用、バイト等価配線案)。Household既存Ledger再利用によるN=3 Article-only Trial-07完了(Gate1=Sonnet推奨`VALIDATED`、REVIEW_REQUIRED率baseline比約5倍増加・Point多様性低下を確認) | `VALIDATED(Trial)`止まり。**現行Production採用案は2026-09-09ユーザー決定により不承認**(REVIEW_REQUIRED増加・Point多様性低下、Ledger注記案は自動採用しない)。考え方自体はREJECTEDではなく再改善中(D2-UDR-1の再改善、Household Ledger FACT-03再検証`HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01`と並行) | ER-011-DISCOVERY-4LAYER-TRIAL-05(既存)、FAMILY-A-COMPLETION-A4-DISCOVERY-LAYER3-TRIAL-07(完了)、OPEN-135行/OPEN-138行(2026-09-09ユーザー決定、再改善中) |
 | Discovery固有Research方式(説明源優先順位ガイドライン) | LLM呼び出しを追加しない、既存Ledger構造・タグ体系に従属する優先順位ガイドライン案(未承認候補) | `DEFERRED`(D3) | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md §3/§4 D3 |
 | Point Role hint(Discovery版) | Trial-03の接続パターンは技術的に転用可能と考えられるが、Discoveryでのruntime効果は未検証 | `DEFERRED`(D3) | 同上 |
 | Engagement/Storytelling原則のDiscoveryへの適用 | Trend Synthesis側でのみA/B検証済み(Trial-10/11)、Discovery側の実施記録なし | `DEFERRED`(D3) | 同上 |

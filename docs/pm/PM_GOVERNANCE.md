@@ -198,6 +198,11 @@ Distinctness Checkのような LLMベースQA)を提案・導入する場合、�
   ユーザー判断(Gate 2)を依頼する際は必ずコスト影響を明示する。
 - **禁止**: コスト影響が不明なままProduction採用(`APPROVED_FOR_
   PRODUCTION`)へ進めない。
+- **外部呼び出し費用の分離報告**(2026-09-09追記、PM-CLOSEOUT-
+  CONSOLIDATION-47): Fact Checker等、記事生成の主経路とは別に独立して
+  外部API(web search等)を呼び出すComponentの費用は、Trial・記事全体の
+  費用と分離して報告する(例: Fact Checker A'単体費用とTrial全体費用を
+  別項目で明示する)。
 
 ## 3. PM Closeout Mandatory Check(PM Closeout時の確認事項)
 
@@ -910,3 +915,19 @@ Leakage)の再試行方針についてユーザーが決定した運用方針
   新規登録)を並列委任するにあたり、既存2-2・9-2節の記載充足を確認した
   ユーザー指示(2026-09-09)。詳細は`DECISION_LOG.md`
   `PM-CLOSEOUT-CONSOLIDATION-37`エントリ参照。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-47): 2-2節「コスト影響評価」へ
+  「外部呼び出し費用の分離報告」を1行追記(Fact Checker等、記事生成の
+  主経路とは別に外部API[web search等]を呼び出すComponentの費用は、
+  Trial・記事全体の費用と分離して報告する)。経緯: ユーザーがB-FC-1(b)
+  として量産時の観測継続を承認し、Fact Checker A'単体費用をTrial全体
+  費用と分離して報告することを正式指示(2026-09-09)。あわせてA3-UDR-3
+  (News Focus Module+Point Role hint)・D2-UDR-1(Discovery Focus Module)
+  の現行Production採用案をユーザーが不承認としたこと(理由: News NG率
+  50%はProduction採用水準ではない、DiscoveryのREVIEW_REQUIRED増加[約
+  5倍]・Point多様性低下、既存仕様全体との重複・競合整理未了。Focus
+  Module/Point Role自体はREJECTEDではなく再改善対象)、最優先でPM/
+  Reconciliation Gate(`FAMILY-A-POINT-QUALITY-CONTROL-RECONCILIATION-
+  GATE-01`)を実施することを本節の運用実例として記録する(文書編集のみ、
+  コード・Prompt変更なし)。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-47`エントリ・`OPEN_ITEMS.md`OPEN-135/112/
+  120/136/138行参照。
