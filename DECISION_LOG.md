@@ -9900,6 +9900,131 @@ inventory_01/`等)、`CURRENT_SPEC.md`、`er006_output/`、
 本タスクでは触っていない。Production/Prompt編集・Trial着手・
 バックグラウンド待機は実施していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-62: News Stage 4整理(Sonnet)+Opus L2レビュー+
+Evidence Allocation監査の結果のSSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+News段階4再設計に向けたSonnet整理(`FAMILY-A-NEWS-STAGE4-REDESIGN-
+INVENTORY-01`)+Opus L2レビュー+`FAMILY-A-NEWS-STAGE4-EVIDENCE-
+ALLOCATION-AUDIT-01`(¥0監査)の結果をSSOTへ反映した。並列稼働中:
+Household一本化候補生成(`er011_output/household_unified_final_
+candidate_01/`、`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01_REPORT.md`)。
+本タスクでは対象外(SSOT・Git担当のみ)。
+
+**Sonnet整理の要旨**: `FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01`
+(¥0 offline限定、既存Trial出力[Hanshin/Theme2/CAR-T、48 run・248
+Point-attempt観測]の読み取り再集計、新規API呼び出しなし)は、既存
+14仕組みの構造整理(語彙重複が3層[Writer Prompt/lexical Overlap QA/
+Diagnostic Full Retry診断]で反復提示される構造、cross_point_overlap
+[#7]がretry判定未使用、Point Role Planning[#3]がFocus Module[#4]を
+受け取らない独立経路)を再確認した上で、topic_structure別flag率
+(single_event_boxscore 46.9%・survey_trend 47.4%・mechanism_
+limitation 25.0%)を新規集計した。§3-2で「shared_wordsから固有名詞・
+数値語を除外すると全体flag率45.56%→13.31%(single_event_boxscoreは
+46.91%→7.73%)」という結果を得たが、目視(§3-1)では「固有名詞と意味
+重複が混在し分離できない」ことも確認し、過大解釈を避ける記述とした。
+改善候補4件(優先順位順: (1)診断feedbackへの「トレードオフ回避」明示
+指示、(2)Role Planning再抽選への診断結果フィードバック接続、(3)
+topic_structureを考慮したNews題材選定ガイダンス、(4)Ledger由来語
+ベースのnecessary factual overlap除外指標[観測指標のみ])を根拠・
+反証・リスク・cost見積・最小Trial設計付きで提示し、Opus設計レビューに
+掛けるべき論点4点を整理した。
+
+**Opusレビュー要旨**(Report非作成、Fable転記に基づき本エントリへ記録):
+(1)§3-2(entity除外でflag率45.6%→13.3%)は閾値未再校正のartifactであり、
+序数除去漏れ・entity辞書サイズの非対称性(Hanshin 45語/Theme2 9語/
+CAR-T 11語)という欠陥がある。`er008_point_overlap_qa_18.py`の閾値0.40は
+「通常Point 0.15〜0.35」を前提とした暫定校正であり`_STOPWORDS`は
+one/two/threeのみに限定される、という題材別ミスキャリブレーションの
+直接証拠である。(2)候補1・候補2はTrial-08(情報削減方向、REJECTED)と
+同根の限界を持つ可能性があり、真の問題は検出力不足(Trial-08 N=6で
+3/6 vs 5/6、Fisher正確検定p≈0.55で有意差検出不能)。候補3は「不利な
+題材構造を避ける」回避策であり構造自体の改善ではなく、topic_structureは
+テーマ・Ledgerと完全に交絡している。**最大の見落としは論点H(Ledger
+fact供給量/evidence allocation)**: Hanshin実質usable fact数5に対し
+CAR-T 14と大きな差があり、Sonnet整理はこれを検討していなかった。
+(3)retry責務競合を、コード(`er003_v1_n3_01_articles_generate.py`で
+Role Planning blockが診断sectionより後ろに配置され、`run_point_role_
+planning`はretry時もtopic+ledgerの2引数のみを受け取る「盲目の再抽選」)
+とデータ(Trial-04 A2 baseline run1のanchor回帰実例)の両面で確認した。
+構造改善案として「retryで固定すべきはfact割当、変えるべきは表現角度」
+という提案を提示した。(4)Sonnet整理には推測箇所が5点あった。(5)次の
+最小Trialとして¥0のevidence allocation監査を提案し、評価量を二値NG率
+から連続量(overlap_ratio)へ切り替えることを推奨した。(6)STOP該当性:
+候補1(Prompt変更、承認要)、候補2(retry方針変更、STOP該当の可能性)、
+候補3(編集方針、ユーザー判断)、候補4(観測指標のみ、非該当)、Ledger
+拡充(Research/Fact Safety領域、ユーザー判断)。
+
+**監査結果の要旨**: `FAMILY-A-NEWS-STAGE4-EVIDENCE-ALLOCATION-AUDIT-01`
+(¥0、既存48 run・124 attempt観測の読み取り再集計、新規API呼び出し
+なし、データ欠落0件)は、Opus指摘の論点Hを検証した。Part 1: anchor
+衝突数とP1-P2語彙overlap(cross_point_overlap系)の相関はr=0.4623(基準
+r>0.3達成)で正相関を確認したが、実際のGate指標(Point対Full Story
+overlap、閾値0.40)とはr=0.1852、最終NG二値とはr=0.0997といずれも
+弱く基準未達だった。すなわち「anchor衝突→P1-P2語彙的類似」の経路は
+支持されるが、その語彙的類似が実際のNG判定を動かす経路は支持されない
+(**部分的支持**)。initial→retryのanchor変化は76〜79%が新規組み合わせへ
+変わり(盲目の再抽選と整合)、衝突再燃率は23.6%(13/55衝突event)。
+テーマ別使用可能fact数(5/8/14)とNG率(72.2%/50.0%/0.0%)は単調な逆関係
+にあり、fact利用率(95.6%/67.2%/37.5%)も単調に低下したが、N=3テーマ
+のみで topic_structure・条件構成と完全に交絡しており分離不可(既存の
+限界を踏襲)。Part 2: 候補4(entity除外overlap)の完全正規化版(分子・
+分母ともentity/数値除外、N=96=48 run×2 Point)は、flag率26.0%→11.5%、
+raw比率との順位相関r=0.9132、パーセンタイル整合閾値での分類入替
+10.4%(10/96件)であり、entity辞書サイズの非対称性(Point内容語に占める
+Ledger由来語割合がHanshin 17.5%に対しTheme2 3.3%・CAR-T 2.8%)に起因
+するテーマ依存artifactとして**棄却に近いが完全棄却ではない**と判定
+した。Part 3: Trial-08(N=6)の実際のGate指標(Point対Full Story overlap
+連続値)はNG群平均0.405・OK群平均0.321(差0.084)で、二値NG率(Fisher
+p≈0.55で検出力不足)より閾値0.40近傍で意味のある差を示した一方、
+cross_point_overlapの差は0.033に留まった(連続量切替による検出力向上
+余地を確認、統計的有意性の主張ではない)。データ欠落・限界として、
+Full Storyに`evidence_anchor`フィールドが存在せずpoint-to-story直接
+測定は不可(fact利用率で代替)、**Theme2 LedgerのID不整合(F-210/
+F-211)を新規発見**(既存Ledgerデータ品質問題、本監査では補正せず観測
+のみ、新規`OPEN-140`を起票)した。
+
+**Status**: いずれも¥0・VALIDATED/整理段階に留まる。Production・
+Prompt・QA・retryコードの変更は一切行っていない。Fableは(1)主軸を
+候補1/2→論点H(Ledger fact供給・evidence allocation)へ移すか、(2)
+候補3を「Ledger拡充」へ読み替えるか、(3)候補2見送り可否、(4)Trial
+評価量の連続量化承認、の4点をユーザーへ提示中(次候補=Ledger拡充
+Trial A/B[Hanshin型、N=6]・候補4不採用判断・OPEN-133再検討、いずれも
+ユーザー判断待ち)。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-62へ)、
+OPEN-135行(News Stage 4整理・Opusレビュー・監査の要旨、UDR 4件提示中、
+次候補=Ledger拡充Trial A/B保留・候補4棄却寄りを追記)、OPEN-133行
+(監査の定量根拠を追記: anchor衝突→P1-P2語彙類似は実在、NG判定経路は
+非該当)、OPEN-134行(候補4完全正規化の棄却寄り判定・評価量の連続量化
+提案を追記、ユーザー判断待ち)、新規OPEN-140行(Theme2 LedgerのID
+不整合[F-210/F-211]の是正要否、既存データ品質問題、未補正、
+`USER_DECISION_REQUIRED`)を反映した。`CURRENT_SPEC.md`は変更していない
+(Production採用なし)。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へNews整理
+行(Sonnet/MEDIUM、¥0、確定)、Opus L2レビュー行(新規、HIGH理由=
+Production QA/retry横断・複数設計案・過去のSonnet因果反証歴、成果=
+Sonnet整理の構造的欠陥3点と見落とし論点Hの検出)、監査行(Sonnet/
+MEDIUM、¥0、確定)、Household候補行(Sonnet、実行中、foreground 600s
+上限によるバックグラウンド実行2回をtooling制約として記録し規律違反とは
+区別)、本タスク(Sonnet/LOW)を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-62)。Git操作: G1=
+`er011_news_stage4_redesign_inventory_01.py`・
+`FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01_REPORT.md`・
+`er011_output/news_stage4_redesign_inventory_01/`配下・
+`er011_news_stage4_evidence_allocation_audit_01.py`・
+`FAMILY-A-NEWS-STAGE4-EVIDENCE-ALLOCATION-AUDIT-01_REPORT.md`・
+`er011_output/news_stage4_evidence_allocation_audit_01/`配下
+(json/csv/md)。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/
+MODEL_ROUTING_TRIAL_LOG.md`。いずれもファイル名指定でcommitし
+`origin/main`へpush。並列稼働中のHousehold一本化候補生成
+(`er011_output/household_unified_final_candidate_01/`等)、
+`CURRENT_SPEC.md`、`er006_output/`、`er011_output/attempt_history.jsonl`、
+既存の未追跡ファイル群はいずれも本タスクでは触っていない。
+Production/Prompt編集・Trial着手・バックグラウンド待機は実施していない
+(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

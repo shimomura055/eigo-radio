@@ -1,0 +1,588 @@
+{
+  "meta": {
+    "n_point_attempt_observations": 248,
+    "n_runs": 48,
+    "entity_dict_sizes": {
+      "hanshin": 45,
+      "theme2": 9,
+      "car_t": 11
+    },
+    "note": "Y0 offline recompute. Threshold 0.40 unchanged (Production checker not modified). entity_dict built via mid-sentence-capitalization heuristic over existing article.md text (Trial-only proxy, not a Production change)."
+  },
+  "c_threshold_by_topic_level_phase": [
+    {
+      "topic_structure": "mechanism_limitation",
+      "level": "a2",
+      "phase": "initial",
+      "n": 4,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.31,
+      "mean_point_word_count": 38.5
+    },
+    {
+      "topic_structure": "mechanism_limitation",
+      "level": "a2",
+      "phase": "retry",
+      "n": 4,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.2682,
+      "mean_point_word_count": 36.5
+    },
+    {
+      "topic_structure": "mechanism_limitation",
+      "level": "b1b",
+      "phase": "initial",
+      "n": 4,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.327,
+      "mean_point_word_count": 34.5
+    },
+    {
+      "topic_structure": "mechanism_limitation",
+      "level": "b1b",
+      "phase": "retry",
+      "n": 4,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.3003,
+      "mean_point_word_count": 38.75
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "level": "a2",
+      "phase": "initial",
+      "n": 36,
+      "flag_rate": 0.5833,
+      "mean_overlap": 0.4134,
+      "mean_point_word_count": 28.3333
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "level": "a2",
+      "phase": "retry",
+      "n": 64,
+      "flag_rate": 0.4531,
+      "mean_overlap": 0.3758,
+      "mean_point_word_count": 27.7656
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "level": "b1b",
+      "phase": "initial",
+      "n": 36,
+      "flag_rate": 0.5278,
+      "mean_overlap": 0.4109,
+      "mean_point_word_count": 30.0278
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "level": "b1b",
+      "phase": "retry",
+      "n": 58,
+      "flag_rate": 0.3793,
+      "mean_overlap": 0.3798,
+      "mean_point_word_count": 30.931
+    },
+    {
+      "topic_structure": "survey_trend",
+      "level": "a2",
+      "phase": "initial",
+      "n": 8,
+      "flag_rate": 0.75,
+      "mean_overlap": 0.4725,
+      "mean_point_word_count": 33.5
+    },
+    {
+      "topic_structure": "survey_trend",
+      "level": "a2",
+      "phase": "retry",
+      "n": 12,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.3292,
+      "mean_point_word_count": 38.25
+    },
+    {
+      "topic_structure": "survey_trend",
+      "level": "b1b",
+      "phase": "initial",
+      "n": 8,
+      "flag_rate": 0.625,
+      "mean_overlap": 0.3989,
+      "mean_point_word_count": 35.625
+    },
+    {
+      "topic_structure": "survey_trend",
+      "level": "b1b",
+      "phase": "retry",
+      "n": 10,
+      "flag_rate": 0.4,
+      "mean_overlap": 0.3808,
+      "mean_point_word_count": 36
+    }
+  ],
+  "c_threshold_by_topic_structure_overall": [
+    {
+      "topic_structure": "mechanism_limitation",
+      "n": 16,
+      "flag_rate": 0.25,
+      "mean_overlap": 0.3014
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "n": 194,
+      "flag_rate": 0.4691,
+      "mean_overlap": 0.3905
+    },
+    {
+      "topic_structure": "survey_trend",
+      "n": 38,
+      "flag_rate": 0.4737,
+      "mean_overlap": 0.3876
+    }
+  ],
+  "c_fp_candidate_summary": {
+    "n_flagged_total": 113,
+    "n_necessary_factual_reuse_candidate": 2,
+    "fp_candidate_rate_tentative": 0.0177,
+    "by_topic_structure": {
+      "mechanism_limitation": {
+        "n_flagged": 4,
+        "n_fp_candidate": 0
+      },
+      "single_event_boxscore": {
+        "n_flagged": 91,
+        "n_fp_candidate": 2
+      },
+      "survey_trend": {
+        "n_flagged": 18,
+        "n_fp_candidate": 0
+      }
+    },
+    "note": "LABEL IS A RULE-BASED (entity/number-token-share >= 0.5) TENTATIVE CLASSIFICATION, NOT human ground truth. A representative subset is eyeballed separately (see fp_classification_sample.md) and may disagree with the rule."
+  },
+  "c_fp_sample_for_eyeball": [
+    {
+      "trial": "trial09_cart",
+      "theme": "car_t",
+      "topic_structure": "mechanism_limitation",
+      "level": "a2",
+      "condition": "focus_hint",
+      "run": "run2",
+      "attempt": 0,
+      "point_label": "point_two",
+      "overlap_ratio": 0.5,
+      "shared_words": [
+        "all",
+        "antibody",
+        "blood",
+        "disease",
+        "diseases",
+        "each",
+        "fluid",
+        "four",
+        "groups",
+        "improvement",
+        "larger",
+        "muscle",
+        "myasthenia",
+        "people",
+        "person",
+        "progressive",
+        "related",
+        "spinal",
+        "studies",
+        "through"
+      ],
+      "entity_ratio": 0.05,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial09_cart",
+      "theme": "car_t",
+      "topic_structure": "mechanism_limitation",
+      "level": "a2",
+      "condition": "focus_hint",
+      "run": "run2",
+      "attempt": 1,
+      "point_label": "point_two",
+      "overlap_ratio": 0.4,
+      "shared_words": [
+        "antibody",
+        "blood",
+        "disease",
+        "each",
+        "four",
+        "group",
+        "groups",
+        "immune",
+        "multiple",
+        "muscle",
+        "people",
+        "person",
+        "progressive",
+        "sclerosis",
+        "seven",
+        "signal"
+      ],
+      "entity_ratio": 0.125,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial09_cart",
+      "theme": "car_t",
+      "topic_structure": "mechanism_limitation",
+      "level": "b1b",
+      "condition": "focus_hint",
+      "run": "run1",
+      "attempt": 0,
+      "point_label": "point_two",
+      "overlap_ratio": 0.571,
+      "shared_words": [
+        "across",
+        "blood",
+        "comparison",
+        "disease",
+        "diseases",
+        "early",
+        "fell",
+        "four",
+        "function",
+        "group",
+        "inflammatory",
+        "mog",
+        "muscle",
+        "myasthenia",
+        "nerve",
+        "new",
+        "patients",
+        "people",
+        "progressive",
+        "scores"
+      ],
+      "entity_ratio": 0.15,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial04",
+      "theme": "hanshin",
+      "topic_structure": "single_event_boxscore",
+      "level": "b1b",
+      "condition": "focus",
+      "run": "run1",
+      "attempt": 0,
+      "point_label": "point_one",
+      "overlap_ratio": 0.412,
+      "shared_words": [
+        "came",
+        "eighth",
+        "fifth",
+        "first",
+        "hanshin",
+        "hiroshima",
+        "hits",
+        "home",
+        "inning",
+        "run",
+        "sato",
+        "second",
+        "seventh",
+        "timely"
+      ],
+      "entity_ratio": 0.571,
+      "classification": "necessary_factual_reuse_candidate"
+    },
+    {
+      "trial": "trial06",
+      "theme": "hanshin",
+      "topic_structure": "single_event_boxscore",
+      "level": "b1b",
+      "condition": "baseline",
+      "run": "run2",
+      "attempt": 1,
+      "point_label": "point_one",
+      "overlap_ratio": 0.424,
+      "shared_words": [
+        "added",
+        "advantage",
+        "early",
+        "eighth",
+        "fifth",
+        "first",
+        "hanshin",
+        "hiroshima",
+        "inning",
+        "montero",
+        "runs",
+        "seventh",
+        "solo",
+        "tigers"
+      ],
+      "entity_ratio": 0.571,
+      "classification": "necessary_factual_reuse_candidate"
+    },
+    {
+      "trial": "trial04",
+      "theme": "hanshin",
+      "topic_structure": "single_event_boxscore",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run1",
+      "attempt": 0,
+      "point_label": "point_one",
+      "overlap_ratio": 0.5,
+      "shared_words": [
+        "attack",
+        "came",
+        "control",
+        "game",
+        "hanshin",
+        "hiroshima",
+        "home",
+        "lead",
+        "montero",
+        "only",
+        "run",
+        "score",
+        "solo"
+      ],
+      "entity_ratio": 0.231,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial04",
+      "theme": "hanshin",
+      "topic_structure": "single_event_boxscore",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run1",
+      "attempt": 1,
+      "point_label": "point_two",
+      "overlap_ratio": 0.464,
+      "shared_words": [
+        "attack",
+        "came",
+        "five",
+        "game",
+        "hiroshima",
+        "hits",
+        "home",
+        "ihara",
+        "innings",
+        "montero",
+        "only",
+        "run",
+        "solo"
+      ],
+      "entity_ratio": 0.308,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial04",
+      "theme": "hanshin",
+      "topic_structure": "single_event_boxscore",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run1",
+      "attempt": 2,
+      "point_label": "point_one",
+      "overlap_ratio": 0.444,
+      "shared_words": [
+        "five",
+        "hanshin",
+        "hiroshima",
+        "home",
+        "ihara",
+        "innings",
+        "kept",
+        "late",
+        "more",
+        "run",
+        "scored",
+        "team"
+      ],
+      "entity_ratio": 0.333,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial05_theme2",
+      "theme": "theme2",
+      "topic_structure": "survey_trend",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run1",
+      "attempt": 0,
+      "point_label": "point_one",
+      "overlap_ratio": 0.425,
+      "shared_words": [
+        "about",
+        "before",
+        "long",
+        "more",
+        "own",
+        "people",
+        "plans",
+        "respondents",
+        "slow",
+        "still",
+        "survey",
+        "take",
+        "time",
+        "travel",
+        "trip",
+        "want",
+        "week"
+      ],
+      "entity_ratio": 0.0,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial05_theme2",
+      "theme": "theme2",
+      "topic_structure": "survey_trend",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run2",
+      "attempt": 0,
+      "point_label": "point_two",
+      "overlap_ratio": 0.613,
+      "shared_words": [
+        "about",
+        "answer",
+        "autumn",
+        "average",
+        "common",
+        "expected",
+        "figure",
+        "longer",
+        "middle",
+        "month",
+        "most",
+        "nights",
+        "off",
+        "only",
+        "plans",
+        "stays",
+        "tourism",
+        "travel",
+        "week"
+      ],
+      "entity_ratio": 0.053,
+      "classification": "true_duplication_candidate"
+    },
+    {
+      "trial": "trial05_theme2",
+      "theme": "theme2",
+      "topic_structure": "survey_trend",
+      "level": "a2",
+      "condition": "baseline",
+      "run": "run2",
+      "attempt": 2,
+      "point_label": "point_one",
+      "overlap_ratio": 0.405,
+      "shared_words": [
+        "about",
+        "aged",
+        "also",
+        "change",
+        "day",
+        "famous",
+        "interest",
+        "men",
+        "sightseeing",
+        "solo",
+        "still",
+        "survey",
+        "travel",
+        "trips",
+        "young"
+      ],
+      "entity_ratio": 0.0,
+      "classification": "true_duplication_candidate"
+    }
+  ],
+  "b_entity_excluded_recompute": {
+    "n": 248,
+    "original_flag_rate_at_0_40": 0.4556,
+    "entity_excluded_flag_rate_at_0_40": 0.1331,
+    "delta_pt": -32.25,
+    "n_flag_flip_true_to_false": 80,
+    "n_flag_flip_false_to_true": 0,
+    "by_topic_structure": {
+      "mechanism_limitation": {
+        "n": 16,
+        "original_flag_rate": 0.25,
+        "adjusted_flag_rate": 0.1875
+      },
+      "single_event_boxscore": {
+        "n": 194,
+        "original_flag_rate": 0.4691,
+        "adjusted_flag_rate": 0.0773
+      },
+      "survey_trend": {
+        "n": 38,
+        "original_flag_rate": 0.4737,
+        "adjusted_flag_rate": 0.3947
+      }
+    },
+    "correlations": {
+      "point_word_count_vs_overlap_ratio": -0.1329,
+      "n_entity_shared_vs_overlap_ratio": 0.4151,
+      "evidence_density_vs_overlap_ratio": 0.4613,
+      "point_word_count_vs_adjusted_overlap_ratio": 0.0393
+    },
+    "note": "Numerator-only adjustment (denominator = original point_word_count, unchanged) because shared_words/point_word_count are the only per-attempt fields persisted in the existing retry logs; full per-attempt Point/Story text is not stored for attempts other than the final one, so a full (numerator+denominator) entity-excluded retokenization is not possible for all attempts from existing artifacts alone."
+  },
+  "g_topic_structure_ng_rates": [
+    {
+      "topic_structure": "mechanism_limitation",
+      "n_runs": 4,
+      "ng_rate_overall": 0.0,
+      "ng_rate_baseline": null,
+      "n_baseline": 0,
+      "ng_rate_treatment": 0.0,
+      "n_treatment": 4,
+      "mean_retry_attempts": 1
+    },
+    {
+      "topic_structure": "single_event_boxscore",
+      "n_runs": 36,
+      "ng_rate_overall": 0.7222,
+      "ng_rate_baseline": 0.8333,
+      "n_baseline": 12,
+      "ng_rate_treatment": 0.6667,
+      "n_treatment": 24,
+      "mean_retry_attempts": 1.6944
+    },
+    {
+      "topic_structure": "survey_trend",
+      "n_runs": 8,
+      "ng_rate_overall": 0.5,
+      "ng_rate_baseline": 0.5,
+      "n_baseline": 4,
+      "ng_rate_treatment": 0.5,
+      "n_treatment": 4,
+      "mean_retry_attempts": 1.375
+    }
+  ],
+  "g_initial_attempt_flag_rate_by_topic_structure": {
+    "mechanism_limitation": 0.5,
+    "single_event_boxscore": 0.9167,
+    "survey_trend": 0.875
+  },
+  "g_true_swap_rate_by_topic_structure": {
+    "mechanism_limitation": {
+      "true_swaps": 0,
+      "transitions": 4,
+      "rate": 0.0
+    },
+    "single_event_boxscore": {
+      "true_swaps": 7,
+      "transitions": 61,
+      "rate": 0.1148
+    },
+    "survey_trend": {
+      "true_swaps": 2,
+      "transitions": 11,
+      "rate": 0.1818
+    }
+  }
+}

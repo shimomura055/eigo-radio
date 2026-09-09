@@ -1,0 +1,303 @@
+{
+  "part1": {
+    "aggregate": {
+      "conflict_by_group": [
+        {
+          "theme": "car_t",
+          "level": "a2",
+          "phase": "initial",
+          "n": 2,
+          "conflict_present_rate": 0.0,
+          "mean_conflict_count": 0,
+          "mean_jaccard_conflict_rate": 0.0,
+          "mean_cross_overlap_ratio": 0.077
+        },
+        {
+          "theme": "car_t",
+          "level": "a2",
+          "phase": "retry",
+          "n": 2,
+          "conflict_present_rate": 0.0,
+          "mean_conflict_count": 0,
+          "mean_jaccard_conflict_rate": 0.0,
+          "mean_cross_overlap_ratio": 0.102
+        },
+        {
+          "theme": "car_t",
+          "level": "b1b",
+          "phase": "initial",
+          "n": 2,
+          "conflict_present_rate": 0.5,
+          "mean_conflict_count": 0.5,
+          "mean_jaccard_conflict_rate": 0.25,
+          "mean_cross_overlap_ratio": 0.0855
+        },
+        {
+          "theme": "car_t",
+          "level": "b1b",
+          "phase": "retry",
+          "n": 2,
+          "conflict_present_rate": 0.5,
+          "mean_conflict_count": 1.5,
+          "mean_jaccard_conflict_rate": 0.25,
+          "mean_cross_overlap_ratio": 0.1395
+        },
+        {
+          "theme": "hanshin",
+          "level": "a2",
+          "phase": "initial",
+          "n": 18,
+          "conflict_present_rate": 0.5,
+          "mean_conflict_count": 0.7222,
+          "mean_jaccard_conflict_rate": 0.163,
+          "mean_cross_overlap_ratio": 0.1572
+        },
+        {
+          "theme": "hanshin",
+          "level": "a2",
+          "phase": "retry",
+          "n": 32,
+          "conflict_present_rate": 0.4688,
+          "mean_conflict_count": 0.625,
+          "mean_jaccard_conflict_rate": 0.1391,
+          "mean_cross_overlap_ratio": 0.1303
+        },
+        {
+          "theme": "hanshin",
+          "level": "b1b",
+          "phase": "initial",
+          "n": 18,
+          "conflict_present_rate": 0.3889,
+          "mean_conflict_count": 0.6667,
+          "mean_jaccard_conflict_rate": 0.15,
+          "mean_cross_overlap_ratio": 0.1368
+        },
+        {
+          "theme": "hanshin",
+          "level": "b1b",
+          "phase": "retry",
+          "n": 29,
+          "conflict_present_rate": 0.5172,
+          "mean_conflict_count": 0.7931,
+          "mean_jaccard_conflict_rate": 0.1937,
+          "mean_cross_overlap_ratio": 0.1206
+        },
+        {
+          "theme": "theme2",
+          "level": "a2",
+          "phase": "initial",
+          "n": 4,
+          "conflict_present_rate": 0.5,
+          "mean_conflict_count": 0.5,
+          "mean_jaccard_conflict_rate": 0.125,
+          "mean_cross_overlap_ratio": 0.1512
+        },
+        {
+          "theme": "theme2",
+          "level": "a2",
+          "phase": "retry",
+          "n": 6,
+          "conflict_present_rate": 0.3333,
+          "mean_conflict_count": 0.3333,
+          "mean_jaccard_conflict_rate": 0.125,
+          "mean_cross_overlap_ratio": 0.1455
+        },
+        {
+          "theme": "theme2",
+          "level": "b1b",
+          "phase": "initial",
+          "n": 4,
+          "conflict_present_rate": 0.25,
+          "mean_conflict_count": 0.25,
+          "mean_jaccard_conflict_rate": 0.1111,
+          "mean_cross_overlap_ratio": 0.1125
+        },
+        {
+          "theme": "theme2",
+          "level": "b1b",
+          "phase": "retry",
+          "n": 5,
+          "conflict_present_rate": 0.4,
+          "mean_conflict_count": 0.4,
+          "mean_jaccard_conflict_rate": 0.1067,
+          "mean_cross_overlap_ratio": 0.1058
+        }
+      ],
+      "transition_summary": [
+        {
+          "point": "point_one",
+          "transition": "changed",
+          "count": 60
+        },
+        {
+          "point": "point_one",
+          "transition": "fixed",
+          "count": 11
+        },
+        {
+          "point": "point_one",
+          "transition": "regressed_to_earlier_state",
+          "count": 5
+        },
+        {
+          "point": "point_two",
+          "transition": "changed",
+          "count": 58
+        },
+        {
+          "point": "point_two",
+          "transition": "fixed",
+          "count": 13
+        },
+        {
+          "point": "point_two",
+          "transition": "regressed_to_earlier_state",
+          "count": 5
+        }
+      ],
+      "correlation": {
+        "spearman_conflict_count_vs_cross_overlap": 0.4623,
+        "n_conflict_vs_overlap": 124,
+        "spearman_jaccard_vs_cross_overlap": 0.4187,
+        "n_jaccard_vs_overlap": 123,
+        "spearman_conflict_count_vs_final_ng": 0.0997,
+        "n_conflict_vs_ng": 124,
+        "spearman_jaccard_vs_final_ng": 0.0784,
+        "n_jaccard_vs_ng": 123,
+        "spearman_conflict_count_vs_max_point_vs_story_overlap": 0.1852,
+        "n_conflict_vs_story": 124,
+        "spearman_jaccard_vs_max_point_vs_story_overlap": 0.155,
+        "n_jaccard_vs_story": 123,
+        "spearman_conflict_count_vs_lexical_flagged_attempt": 0.129,
+        "n_conflict_vs_lexflag": 124
+      },
+      "fact_supply_by_theme": [
+        {
+          "theme": "car_t",
+          "usable_fact_count": 14,
+          "n_runs": 4,
+          "final_ng_rate": 0.0,
+          "mean_facts_referenced_by_points": 5.25
+        },
+        {
+          "theme": "hanshin",
+          "usable_fact_count": 5,
+          "n_runs": 36,
+          "final_ng_rate": 0.7222,
+          "mean_facts_referenced_by_points": 4.7778
+        },
+        {
+          "theme": "theme2",
+          "usable_fact_count": 8,
+          "n_runs": 8,
+          "final_ng_rate": 0.5,
+          "mean_facts_referenced_by_points": 5.375
+        }
+      ],
+      "run_level_conflict_rate": {
+        "initial_conflict_present_rate": 0.4167,
+        "final_conflict_present_rate": 0.5,
+        "n_runs": 48
+      }
+    },
+    "n_attempt_observations": 124,
+    "n_runs": 48,
+    "missing_role_planning_runs": [],
+    "missing_overlap_log_runs": [],
+    "conflict_recurrence": {
+      "conflict_recurrence_events": 13,
+      "conflict_events_total": 55,
+      "conflict_recurrence_rate": 0.2364
+    }
+  },
+  "part2": {
+    "summary": {
+      "n": 96,
+      "raw_flag_rate_at_040": 0.2604,
+      "candidate_full_norm_flag_rate_at_040": 0.1146,
+      "candidate_percentile_matched_threshold": 0.3333,
+      "candidate_flag_rate_at_matched_threshold": 0.3229,
+      "spearman_raw_vs_candidate_ratio": 0.9132,
+      "n_pairs": 96,
+      "classification_swap_count": 10,
+      "classification_swap_rate": 0.1042
+    },
+    "ledger_word_share_by_theme_level": [
+      {
+        "theme": "car_t",
+        "level": "a2",
+        "ledger_word_occurrences": 5,
+        "total_content_word_occurrences": 177,
+        "ledger_word_share": 0.0282
+      },
+      {
+        "theme": "car_t",
+        "level": "b1b",
+        "ledger_word_occurrences": 1,
+        "total_content_word_occurrences": 167,
+        "ledger_word_share": 0.006
+      },
+      {
+        "theme": "hanshin",
+        "level": "a2",
+        "ledger_word_occurrences": 222,
+        "total_content_word_occurrences": 1266,
+        "ledger_word_share": 0.1754
+      },
+      {
+        "theme": "hanshin",
+        "level": "b1b",
+        "ledger_word_occurrences": 239,
+        "total_content_word_occurrences": 1373,
+        "ledger_word_share": 0.1741
+      },
+      {
+        "theme": "theme2",
+        "level": "a2",
+        "ledger_word_occurrences": 12,
+        "total_content_word_occurrences": 368,
+        "ledger_word_share": 0.0326
+      },
+      {
+        "theme": "theme2",
+        "level": "b1b",
+        "ledger_word_occurrences": 5,
+        "total_content_word_occurrences": 355,
+        "ledger_word_share": 0.0141
+      }
+    ],
+    "entity_dict_sizes": {
+      "hanshin": 45,
+      "theme2": 9,
+      "car_t": 11
+    }
+  },
+  "part3": {
+    "trial08_n_runs": 6,
+    "trial08_mean_cross_overlap_ratio_final_ng": 0.1396,
+    "trial08_mean_cross_overlap_ratio_final_ok": 0.107,
+    "trial08_mean_max_point_vs_story_overlap_final_ng": 0.4046,
+    "trial08_mean_max_point_vs_story_overlap_final_ok": 0.321,
+    "trial08_final_max_point_vs_story_overlap_distribution": {
+      "n": 6,
+      "mean": 0.3907,
+      "stdev": 0.0815,
+      "min": 0.303,
+      "max": 0.525
+    },
+    "all_trials_initial_cross_overlap_distribution": {
+      "n": 48,
+      "mean": 0.139,
+      "stdev": 0.0699,
+      "min": 0.0,
+      "max": 0.346
+    },
+    "all_trials_retry_cross_overlap_distribution": {
+      "n": 76,
+      "mean": 0.1257,
+      "stdev": 0.0678,
+      "min": 0.0,
+      "max": 0.333
+    }
+  }
+}
