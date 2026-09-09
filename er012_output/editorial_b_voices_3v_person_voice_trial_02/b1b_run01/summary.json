@@ -1,0 +1,500 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/editorial_b_voices_3v_person_voice_trial_02/b1b_run01_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0de7340cc3fcaaa3006aa0eef4549c87d0ac8e6ddddd04a8fd",
+        "prompt": "以下は、あるVoices/Perspective型記事(3 Voices・Person-Voice版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nなお、Voice 3(Business Owner=経営者)についても、他のVoiceと同一の基準で判定してください\n(「効率性」という抽象的な立場の解説になっている場合は、leak_evidence_subject/leak_narrator_\nanalysis/leak_discovery_syntaxのいずれかでFAILとしてください)。\n\n【Tensionに適用する7項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に「応募者1人 vs 採用担当+経営者2人」のような対称的な\n  2対1の陣営へ分けて描いていない場合PASS(分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・AIの高リスク分類・\n  過去の差別的AIの中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合\n  PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ\n  (3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI send my résumé, then sit in front of a camera. Software may judge my tone, face, and gestures. I can do well on a skills test and still be rejected after my movements receive a low score. I can then face long-term unemployment. I can also receive a “reliability” score without a chance to opt out or challenge it. Nearly half of working U.S. job seekers see AI hiring tools as more biased than people. I cannot choose the system. I want a fair chance and a reason.\n\n【Voice 2本文】\nI open the hiring dashboard and let a screening tool sort a large stack of résumés. It helps me move faster and match people with jobs. Then I hear a candidate ask how the system works. I may need to explain an audit and public notice, as one large company has done. Around nine in ten HR leaders say they already use AI in hiring. I also judge whether an AI-written résumé shows useful skill or too little effort. I run the tool, but I do not decide whether the company adopts it.\n\n【Voice 3本文】\nI check this week’s dashboard: hiring time, money spent, and whether teams have enough people. I have seen reported cases where some companies cut hiring time from weeks to days, and another cut hiring costs by about 30%. That can feel tied to whether my company keeps up. But if a tool appears unfair, I imagine my name attached to the decision. I cannot hand responsibility to software. I must live with the choice to keep using it, even when speed and risk arrive together.\n\n【Tension本文】\nAll three want the right person in the right job. But the applicant may lose a chance unseen; the recruiter must keep work moving and explain the tool; the owner must keep the company running and own the result. Power is unequal: the applicant cannot choose the tool, the recruiter runs it but does not choose its use, and the owner decides. Outside limits make a simple sum impossible. New York City requires a recent bias audit and notice. That limits the owner, adds work for the recruiter, and gives the applicant notice, not control. One company stopped an internal tool after it rated résumés linked to women lower. Rules and failures constrain all three, so their reasonable views cannot answer the question alone.\n\n【Closing本文】\nThe deeper question is not simply whether a machine can sort people. It is who gets a fair chance to be understood, who must explain a judgment, and who carries it when the system fails. AI hiring is also a question about power: who can choose, who can object, and who must answer.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "個人の経験を中心に進むが、統計的な割合を主語にした文が一文含まれている。数値は一つだけで、拒否や異議申立ての経験より前面には出ていない。",
+            "quoted_evidence": "Nearly half of working U.S. job seekers see AI hiring tools as more biased than people."
+          },
+          "voice_2": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "採用担当者の行動と制約を一人称で描いているが、HRリーダー全体の割合を主語にした外部データ文がある。統計は一文にとどまり、人物の実務経験や責任の描写を圧倒してはいない。",
+            "quoted_evidence": "Around nine in ten HR leaders say they already use AI in hiring."
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称で経営者の責任や不安を描いているため、外部の語り手による人物分析にはなっていない。一方、冒頭で企業事例の比較と具体的な削減率を提示しており、個人の経験より効率性の証拠が前面に出て、Discovery/Trend型の構文にも戻っている。",
+            "quoted_evidence": "I have seen reported cases where some companies cut hiring time from weeks to days, and another cut hiring costs by about 30%."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "leak_tension_constraint_integration": "PASS",
+            "reasoning": "外部規制や過去の失敗事例を単独の調査説明にせず、応募者・採用担当者・経営者それぞれの制約と帰結に結び付けている。3人を2対1の陣営に分けず、権限と責任の非対称性を掘り下げている。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約や「人による」という結論ではなく、理解される権利、異議申立て、説明責任、権力という論点を問いとして残している。特定の解決策や妥協案をWriterが提案していない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_1",
+            "fail_fields": [
+              "leak_evidence_subject"
+            ],
+            "reasoning": "個人の経験を中心に進むが、統計的な割合を主語にした文が一文含まれている。数値は一つだけで、拒否や異議申立ての経験より前面には出ていない。",
+            "quoted_evidence": "Nearly half of working U.S. job seekers see AI hiring tools as more biased than people."
+          },
+          {
+            "voice": "voice_2",
+            "fail_fields": [
+              "leak_evidence_subject"
+            ],
+            "reasoning": "採用担当者の行動と制約を一人称で描いているが、HRリーダー全体の割合を主語にした外部データ文がある。統計は一文にとどまり、人物の実務経験や責任の描写を圧倒してはいない。",
+            "quoted_evidence": "Around nine in ten HR leaders say they already use AI in hiring."
+          },
+          {
+            "voice": "voice_3",
+            "fail_fields": [
+              "leak_numbers_foreground",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "一人称で経営者の責任や不安を描いているため、外部の語り手による人物分析にはなっていない。一方、冒頭で企業事例の比較と具体的な削減率を提示しており、個人の経験より効率性の証拠が前面に出て、Discovery/Trend型の構文にも戻っている。",
+            "quoted_evidence": "I have seen reported cases where some companies cut hiring time from weeks to days, and another cut hiring costs by about 30%."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/editorial_b_voices_3v_person_voice_trial_02/b1b_run01_attempt2",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_05246bdd629a19f9006aa0f0e0508487d0a2afed4b7572c309",
+        "prompt": "以下は、あるVoices/Perspective型記事(3 Voices・Person-Voice版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nなお、Voice 3(Business Owner=経営者)についても、他のVoiceと同一の基準で判定してください\n(「効率性」という抽象的な立場の解説になっている場合は、leak_evidence_subject/leak_narrator_\nanalysis/leak_discovery_syntaxのいずれかでFAILとしてください)。\n\n【Tensionに適用する7項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に「応募者1人 vs 採用担当+経営者2人」のような対称的な\n  2対1の陣営へ分けて描いていない場合PASS(分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・AIの高リスク分類・\n  過去の差別的AIの中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合\n  PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ\n  (3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI speak to a camera while software scores my tone, face, and gestures. I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result. I want my ability and character seen, not reduced to a score.\n\n【Voice 2本文】\nI start with résumés and an AI tool that sorts them, schedules interviews, and matches people to jobs. It helps when applications arrive faster than my team can read them. But the work does not end with a score. I may prepare a plain summary of a fairness check and answer candidates' questions; one company's public notice makes that duty concrete. I also judge AI-written résumés: useful skill, or too little effort? I run the tool, but I do not decide whether the company adopts it.\n\n【Voice 3本文】\nEach week, I look at the hiring dashboard: time, cost, and the people we still need. If hiring slows, the work does not wait. I have seen reports of faster hiring and lower costs after AI. That is why I may keep using it. But news of a tool that rated women lower makes me look twice at my own choice. If it is questioned, my name is attached. I am protecting the company's future while carrying the risk of being wrong.\n\n【Tension本文】\nAll three want the right person in the right job. But the applicant may lose a fair chance, the recruiter must keep work moving and explain it, and the owner must keep the company running and answer for the choice. The applicant cannot choose the system; the recruiter runs it and may also help decide whether to adopt it; the owner may make the final call. Outside limits narrow all three roles. In New York City, an employer needs a recent fairness check, a public summary, and notice before using an automated hiring tool. The recruiter cannot use it silently, the owner cannot rely on speed alone, and the applicant still cannot control the score. One company stopped a tool after it rated women lower. Their views cannot simply make one answer.\n\n【Closing本文】\nThis is not merely a question about whether a machine can read a résumé or a face. It is about who defines a fair chance, who must explain it, and who carries the consequences when it fails. Hiring is not just a tool choice. It is a question of power, proof, and responsibility.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称でカメラ審査を受ける経験と、能力や人格をスコアに還元されたくないという願いが中心です。外部事例も本人の不安を具体化する材料として自然に組み込まれています。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "採用担当者自身の業務負荷、説明責任、AI履歴書への判断が一人称で描かれており、調査結果の解説にはなっていません。企業の通知への言及も、本人が担う実務上の責任を具体化する範囲に収まっています。",
+            "quoted_evidence": ""
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "経営者が時間・コスト・人員不足を見ながら、効率と差別リスクの間で判断する一人称の経験として書かれています。AIの報告や差別事例は、経営者が負う責任と不安を説明するために従属的に使われています。",
+            "quoted_evidence": ""
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "leak_tension_constraint_integration": "PASS",
+            "reasoning": "3人がそれぞれ公平な機会、業務継続と説明、会社の存続と責任という異なる制約を負う構図が中心です。ニューヨーク市の監査・通知義務や女性を低く評価したツールの停止も、各人物の行動を制約する力として物語に統合されています。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約や「人による」という結論ではなく、公平性を定義し説明し失敗の結果を負う主体の問題として、権力・証拠・責任に焦点を広げて締めています。特定の解決策や妥協案も提案していません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false
+      },
+      "any_flagged": false
+    }
+  ],
+  "total_attempts": 2,
+  "final_attempt_dir": "er012_output/editorial_b_voices_3v_person_voice_trial_02/b1b_run01_attempt2",
+  "final_result": {
+    "label": "B1B",
+    "status": "OK",
+    "metrics": {
+      "word_count": 497,
+      "sentence_count": 36,
+      "avg_sentence_length": 13.9,
+      "max_sentence_length": 30
+    },
+    "six_section_report": {
+      "hook": 60,
+      "point_one": 79,
+      "point_two": 90,
+      "point_three": 82,
+      "tension": 132,
+      "closing": 54,
+      "total_of_six_sections": 497,
+      "headings": {
+        "hook": "The Question",
+        "point_one": "The Applicant's Voice: Under the Camera",
+        "point_two": "Another Voice: The Recruiter",
+        "point_three": "A Third Voice: The Business Owner",
+        "tension": "Why They See It Differently",
+        "closing": "What This Question Really Means"
+      },
+      "unexpected_preamble_before_first_heading": ""
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "PASS",
+    "fact_check_result": {
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0ec12aaae335bdcb006aa0ef8a1f5c87d0852867b394e0a210",
+      "web_search_call_count": 7,
+      "attempts": 1,
+      "result": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "応募者Voiceの、技能評価では高評価だった女性がAIによる身振り・表情評価で不採用となり、その後も失業状態に置かれたという事例は、提示されたLedgerの証拠と外部資料の記述に実質的に対応している。([journals.law.unc.edu](https://journals.law.unc.edu/ncjolt/wp-content/uploads/sites/4/2024/04/Waters-Final.pdf?utm_source=openai))",
+          "CVSの応募者がHireVue・Affectivaによって表情、視線、声の抑揚などから信頼性・誠実さ等を評価されたと主張し、オプトアウトや結果への異議申立ての機会がなかったという記述は、Baker v. CVSの訴状・裁判所文書と整合する。ただし、これは主として原告の主張として確認される内容であり、記事も『応募者が言った』という帰属で書かれている。([cases.justia.com](https://cases.justia.com/federal/district-courts/massachusetts/madce/1%3A2023cv11483/258945/48/0.pdf))",
+          "採用担当者Voiceにおける履歴書スクリーニング、面接日程調整、候補者と職種のマッチング、AI作成履歴書への評価の分かれは、提示されたLedger evidenceの範囲内である。Voice本文については、指定された事実帰属ルールにより、本文中に調査名や数値がないこと自体は問題としない。",
+          "NBCUniversalがニューヨーク市Local Law 144に対応し、独立監査人によるAEDT監査結果への案内を含む公開通知を出しているという採用担当者Voiceの背景は、同社の公式通知で確認できる。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2024-08/Notice%20Regarding%20Automated%20Employment%20Decision%20Tools%208.8.2024.pdf?utm_source=openai))",
+          "経営者Voiceの、AI導入後の採用速度・コスト改善に関する報告を見て導入継続を検討するという記述は、提示されたLedger evidenceに対応している。",
+          "『女性を低く評価した採用AIツールを企業が停止した』という地の文の事例は、Amazonが女性に不利な採用システムのプロジェクトを打ち切ったというReuters報道と整合する。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))",
+          "ニューヨーク市についての『最近の公平性チェック、公開要約、使用前の通知が必要』という説明は、Local Law 144の要件を概ね正しく要約している。公式FAQでは、対象となるAEDTについて過去1年以内のバイアス監査、監査結果の要約の公開、ニューヨーク市居住の候補者への通知が求められ、通知は原則として使用10営業日前に行うと説明されている。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page))",
+          "記事冒頭の履歴書スクリーニング、録画面接、表情・声・動作の評価という説明は、EEOCおよびADA.govの公式資料が挙げるAI採用・評価の用途と整合する。([eeoc.gov](https://www.eeoc.gov/sites/default/files/2024-04/20240429_Employment%20Discrimination%20and%20AI%20for%20Workers.pdf?utm_source=openai))"
+        ],
+        "sources": [
+          "ニューヨーク市DCWP公式AEDTページ・FAQ：([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page))",
+          "Baker v. CVSの裁判所文書：([cases.justia.com](https://cases.justia.com/federal/district-courts/massachusetts/madce/1%3A2023cv11483/258945/48/0.pdf))",
+          "NBCUniversal公式AEDT通知・監査結果：([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2024-08/Notice%20Regarding%20Automated%20Employment%20Decision%20Tools%208.8.2024.pdf?utm_source=openai))",
+          "Amazon採用AIに関するReuters報道：([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))",
+          "EEOC・ADA.govのAI採用評価に関する公式資料：([eeoc.gov](https://www.eeoc.gov/sites/default/files/2024-04/20240429_Employment%20Discrimination%20and%20AI%20for%20Workers.pdf?utm_source=openai))"
+        ],
+        "notes": "明確な矛盾、または重要な具体的主張の未確認は見当たらない。ニューヨーク市法の記述は対象となるAEDT、対象地域、通知の10営業日前という細部を省略した簡略表現だが、記載内容自体は法の要件と矛盾しない。Voice本文の一人称による経験・認識は、指定された事実帰属ルールに従い、割り当てられたLedger evidenceとの実質的対応を確認した。"
+      },
+      "attempts_detail": [
+        {
+          "fact_check_attempt": 1,
+          "status": "FACT_CHECK_COMPLETED",
+          "verdict": "PASS",
+          "search_usage": {
+            "web_search_call_count": 7,
+            "queries": [
+              "site:bbc.com/worklife 2024 AI hiring tools filtering best job applicants gestures facial expressions long-term unemployment",
+              "CVS HireVue Affectiva Baker opt out challenge reliability honesty lawsuit 2021 Massachusetts official complaint",
+              "site:nyc.gov Local Law 144 automated employment decision tool bias audit summary notice official",
+              "Amazon abandoned AI recruiting tool women rated lower Reuters",
+              "\"AI hiring tools may be filtering out the best job applicants\" woman gestures facial expressions unemployment",
+              "\"gestures and facial expressions\" AI rejected job applicant unemployment",
+              "BBC Worklife 2024 AI recruiting hiring software bias discrimination woman skills test gestures facial expressions",
+              "site:nbcunicareers.com 2025 Notice Regarding Automated Employment Decision Tools bias audit summary NBCUniversal PDF",
+              "site:cdn2.nbcuni.com NBCUniversal Notice Regarding Automated Employment Decision Tools 8.2025 PDF",
+              "official AI hiring video interview facial expressions voice analysis employment tool 2026",
+              "official recruiting AI resume screening personality assessment interview scheduling candidate matching 2026",
+              "EEOC AI hiring software facial expression voice video interview official guidance",
+              "\"long-term unemployment\" \"facial expressions\" AI recruitment make-up artist",
+              "\"skills test\" \"facial expressions\" \"AI\" job applicant BBC make-up artist",
+              "\"Mairoudhiou\" AI recruitment body language unemployment",
+              "BBC Anthea Mairoudhiou \"long-term\" unemployed",
+              "Anthea Mairoudhiou unemployed for months AI HireVue",
+              "\"Anthea Mairoudhiou\" \"unemployment\""
+            ]
+          },
+          "sources": [
+            {
+              "title": "NORTH CAROLINA JOURNAL OF LAW & TECHNOLOGY",
+              "url": "https://journals.law.unc.edu/ncjolt/wp-content/uploads/sites/4/2024/04/Waters-Final.pdf?utm_source=openai"
+            },
+            {
+              "title": " Judge Patti B. Saris: MEMORANDUM AND ORDER entered. CVS Health Corporation and CVS Pharmacy, Inc.'s Partial Motion to Dismiss the Second Amended Complaint (Dkt. 42 ) and CVS Health Corporation's Motion tot Dismiss the Amended Complaint (Dkt. 22 ) are DENIED. (Geraldino-Karasek, Clarilde)",
+              "url": "https://cases.justia.com/federal/district-courts/massachusetts/madce/1%3A2023cv11483/258945/48/0.pdf"
+            },
+            {
+              "title": "Notice Regarding Automated Employment Decision Tools (AEDTs) for New York City Residents or",
+              "url": "https://cdn2.nbcuni.com/NBCUnicareers/2024-08/Notice%20Regarding%20Automated%20Employment%20Decision%20Tools%208.8.2024.pdf?utm_source=openai"
+            },
+            {
+              "title": "Amazon scraps secret AI recruiting tool that showed bias against women By Reuters",
+              "url": "https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai"
+            },
+            {
+              "title": "Automated Employment Decision Tools (AEDT) - DCWP",
+              "url": "https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page"
+            },
+            {
+              "title": "Employment Discrimination and AI for Workers",
+              "url": "https://www.eeoc.gov/sites/default/files/2024-04/20240429_Employment%20Discrimination%20and%20AI%20for%20Workers.pdf?utm_source=openai"
+            }
+          ],
+          "raw_text": "{\"verdict\":\"PASS\",\"contradictions\":[],\"unsupported_specific_claims\":[],\"verified_claims_summary\":[\"応募者Voiceの、技能評価では高評価だった女性がAIによる身振り・表情評価で不採用となり、その後も失業状態に置かれたという事例は、提示されたLedgerの証拠と外部資料の記述に実質的に対応している。([journals.law.unc.edu](https://journals.law.unc.edu/ncjolt/wp-content/uploads/sites/4/2024/04/Waters-Final.pdf?utm_source=openai))\",\"CVSの応募者がHireVue・Affectivaによって表情、視線、声の抑揚などから信頼性・誠実さ等を評価されたと主張し、オプトアウトや結果への異議申立ての機会がなかったという記述は、Baker v. CVSの訴状・裁判所文書と整合する。ただし、これは主として原告の主張として確認される内容であり、記事も『応募者が言った』という帰属で書かれている。([cases.justia.com](https://cases.justia.com/federal/district-courts/massachusetts/madce/1%3A2023cv11483/258945/48/0.pdf))\",\"採用担当者Voiceにおける履歴書スクリーニング、面接日程調整、候補者と職種のマッチング、AI作成履歴書への評価の分かれは、提示されたLedger evidenceの範囲内である。Voice本文については、指定された事実帰属ルールにより、本文中に調査名や数値がないこと自体は問題としない。\",\"NBCUniversalがニューヨーク市Local Law 144に対応し、独立監査人によるAEDT監査結果への案内を含む公開通知を出しているという採用担当者Voiceの背景は、同社の公式通知で確認できる。([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2024-08/Notice%20Regarding%20Automated%20Employment%20Decision%20Tools%208.8.2024.pdf?utm_source=openai))\",\"経営者Voiceの、AI導入後の採用速度・コスト改善に関する報告を見て導入継続を検討するという記述は、提示されたLedger evidenceに対応している。\",\"『女性を低く評価した採用AIツールを企業が停止した』という地の文の事例は、Amazonが女性に不利な採用システムのプロジェクトを打ち切ったというReuters報道と整合する。([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))\",\"ニューヨーク市についての『最近の公平性チェック、公開要約、使用前の通知が必要』という説明は、Local Law 144の要件を概ね正しく要約している。公式FAQでは、対象となるAEDTについて過去1年以内のバイアス監査、監査結果の要約の公開、ニューヨーク市居住の候補者への通知が求められ、通知は原則として使用10営業日前に行うと説明されている。([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page))\",\"記事冒頭の履歴書スクリーニング、録画面接、表情・声・動作の評価という説明は、EEOCおよびADA.govの公式資料が挙げるAI採用・評価の用途と整合する。([eeoc.gov](https://www.eeoc.gov/sites/default/files/2024-04/20240429_Employment%20Discrimination%20and%20AI%20for%20Workers.pdf?utm_source=openai))\"],\"sources\":[\"ニューヨーク市DCWP公式AEDTページ・FAQ：([nyc.gov](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page))\",\"Baker v. CVSの裁判所文書：([cases.justia.com](https://cases.justia.com/federal/district-courts/massachusetts/madce/1%3A2023cv11483/258945/48/0.pdf))\",\"NBCUniversal公式AEDT通知・監査結果：([cdn2.nbcuni.com](https://cdn2.nbcuni.com/NBCUnicareers/2024-08/Notice%20Regarding%20Automated%20Employment%20Decision%20Tools%208.8.2024.pdf?utm_source=openai))\",\"Amazon採用AIに関するReuters報道：([investing.com](https://www.investing.com/news/stock-market-news/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-1637988?utm_source=openai))\",\"EEOC・ADA.govのAI採用評価に関する公式資料：([eeoc.gov](https://www.eeoc.gov/sites/default/files/2024-04/20240429_Employment%20Discrimination%20and%20AI%20for%20Workers.pdf?utm_source=openai))\"],\"notes\":\"明確な矛盾、または重要な具体的主張の未確認は見当たらない。ニューヨーク市法の記述は対象となるAEDT、対象地域、通知の10営業日前という細部を省略した簡略表現だが、記載内容自体は法の要件と矛盾しない。Voice本文の一人称による経験・認識は、指定された事実帰属ルールに従い、割り当てられたLedger evidenceとの実質的対応を確認した。\"}",
+          "model": "gpt-5.6-luna",
+          "response_id": "resp_0ec12aaae335bdcb006aa0ef8a1f5c87d0852867b394e0a210"
+        }
+      ],
+      "fact_attribution_mode_enabled": true
+    },
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 1,
+        "newly_discovered_claims": [
+          "The applicant cannot choose the system; the recruiter runs it but cannot adopt it; the owner decides."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "The applicant cannot choose the system; the recruiter runs it but cannot adopt it; the owner decides.",
+            "issue": "採用AIの導入判断者を所有者に限定し、採用担当者・Hiring Managerは導入を決められないと断定している。LedgerのVOICE_2は、採用担当者・人事責任者をAIを実際に使う側、または使うかどうかを判断する側として定義しており、導入決定をownerだけに帰属させていない。",
+            "explanation": "Ledgerにない意思決定構造を追加し、VOICE_2に含まれる導入判断の役割を否定して、ownerを唯一の決定主体としている。Hookではなく、役割に関する明示的な主張である。",
+            "flags": [
+              "changed_fact",
+              "changed_scope",
+              "changed_certainty",
+              "changed_actor",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "The applicant cannot choose the system; the recruiter runs it and may also help decide whether to adopt it; the owner may make the final call.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "The applicant cannot choose the system; the recruiter runs it and may also help decide whether to adopt it; the owner may make the final call.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job. But the applicant may lose a fair chance, the recruiter must keep work moving and explain it, and the owner must keep the company running and answer for the choice. The applicant cannot choose the system; the recruiter runs it but cannot adopt it; the owner decides. Outside limits narrow all three roles. In New York City, an employer needs a recent fairness check, a public summary, and notice before using an automated hiring tool. The recruiter cannot use it silently, the owner cannot rely on speed alone, and the applicant still cannot control the score. One company stopped a tool after it rated women lower. Their views cannot simply make one answer."
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "point_overlap_qa_monitoring": {
+      "qa_status": "OK",
+      "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-02: monitoring専用(合否判定には使わない、N=1で閾値を決めない)。有向ペア6(Permutation(3,2))+ vs Hook 3 = 9値。lexical_overlap_ratio()はProduction関数(er008_point_overlap_qa_18.py)を無変更のまま使用。",
+      "directed_voice_pair_count": 6,
+      "voice_vs_hook_count": 3,
+      "total_values": 9,
+      "any_flagged": false,
+      "directed_voice_pairs": {
+        "point_one_vs_point_two": {
+          "overlap_ratio": 0.07,
+          "shared_words": [
+            "also",
+            "read",
+            "score"
+          ],
+          "point_word_count": 43,
+          "story_word_count": 45,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_one_vs_point_three": {
+          "overlap_ratio": 0.07,
+          "shared_words": [
+            "after",
+            "rated",
+            "seen"
+          ],
+          "point_word_count": 43,
+          "story_word_count": 39,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_one": {
+          "overlap_ratio": 0.067,
+          "shared_words": [
+            "also",
+            "read",
+            "score"
+          ],
+          "point_word_count": 45,
+          "story_word_count": 43,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_three": {
+          "overlap_ratio": 0.133,
+          "shared_words": [
+            "company's",
+            "faster",
+            "makes",
+            "people",
+            "tool",
+            "work"
+          ],
+          "point_word_count": 45,
+          "story_word_count": 39,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_three_vs_point_one": {
+          "overlap_ratio": 0.077,
+          "shared_words": [
+            "after",
+            "rated",
+            "seen"
+          ],
+          "point_word_count": 39,
+          "story_word_count": 43,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_three_vs_point_two": {
+          "overlap_ratio": 0.154,
+          "shared_words": [
+            "company's",
+            "faster",
+            "makes",
+            "people",
+            "tool",
+            "work"
+          ],
+          "point_word_count": 39,
+          "story_word_count": 45,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      },
+      "voice_vs_hook": {
+        "point_one_vs_hook": {
+          "overlap_ratio": 0.163,
+          "shared_words": [
+            "applicant",
+            "expressions",
+            "facial",
+            "gestures",
+            "scored",
+            "software",
+            "test"
+          ],
+          "point_word_count": 43,
+          "story_word_count": 33,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_hook": {
+          "overlap_ratio": 0.044,
+          "shared_words": [
+            "company",
+            "sum"
+          ],
+          "point_word_count": 45,
+          "story_word_count": 33,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_three_vs_hook": {
+          "overlap_ratio": 0.0,
+          "shared_words": [],
+          "point_word_count": 39,
+          "story_word_count": 33,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      }
+    },
+    "directional_fact_precheck_status": "PASS",
+    "elapsed_seconds": 443.7,
+    "analytical_leakage_check": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_05246bdd629a19f9006aa0f0e0508487d0a2afed4b7572c309",
+      "prompt": "以下は、あるVoices/Perspective型記事(3 Voices・Person-Voice版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nなお、Voice 3(Business Owner=経営者)についても、他のVoiceと同一の基準で判定してください\n(「効率性」という抽象的な立場の解説になっている場合は、leak_evidence_subject/leak_narrator_\nanalysis/leak_discovery_syntaxのいずれかでFAILとしてください)。\n\n【Tensionに適用する7項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に「応募者1人 vs 採用担当+経営者2人」のような対称的な\n  2対1の陣営へ分けて描いていない場合PASS(分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・AIの高リスク分類・\n  過去の差別的AIの中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合\n  PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ\n  (3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI speak to a camera while software scores my tone, face, and gestures. I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result. I want my ability and character seen, not reduced to a score.\n\n【Voice 2本文】\nI start with résumés and an AI tool that sorts them, schedules interviews, and matches people to jobs. It helps when applications arrive faster than my team can read them. But the work does not end with a score. I may prepare a plain summary of a fairness check and answer candidates' questions; one company's public notice makes that duty concrete. I also judge AI-written résumés: useful skill, or too little effort? I run the tool, but I do not decide whether the company adopts it.\n\n【Voice 3本文】\nEach week, I look at the hiring dashboard: time, cost, and the people we still need. If hiring slows, the work does not wait. I have seen reports of faster hiring and lower costs after AI. That is why I may keep using it. But news of a tool that rated women lower makes me look twice at my own choice. If it is questioned, my name is attached. I am protecting the company's future while carrying the risk of being wrong.\n\n【Tension本文】\nAll three want the right person in the right job. But the applicant may lose a fair chance, the recruiter must keep work moving and explain it, and the owner must keep the company running and answer for the choice. The applicant cannot choose the system; the recruiter runs it and may also help decide whether to adopt it; the owner may make the final call. Outside limits narrow all three roles. In New York City, an employer needs a recent fairness check, a public summary, and notice before using an automated hiring tool. The recruiter cannot use it silently, the owner cannot rely on speed alone, and the applicant still cannot control the score. One company stopped a tool after it rated women lower. Their views cannot simply make one answer.\n\n【Closing本文】\nThis is not merely a question about whether a machine can read a résumé or a face. It is about who defines a fair chance, who must explain it, and who carries the consequences when it fails. Hiring is not just a tool choice. It is a question of power, proof, and responsibility.\n",
+      "parsed": {
+        "voice_1": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "一人称でカメラ審査を受ける経験と、能力や人格をスコアに還元されたくないという願いが中心です。外部事例も本人の不安を具体化する材料として自然に組み込まれています。",
+          "quoted_evidence": ""
+        },
+        "voice_2": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "採用担当者自身の業務負荷、説明責任、AI履歴書への判断が一人称で描かれており、調査結果の解説にはなっていません。企業の通知への言及も、本人が担う実務上の責任を具体化する範囲に収まっています。",
+          "quoted_evidence": ""
+        },
+        "voice_3": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "経営者が時間・コスト・人員不足を見ながら、効率と差別リスクの間で判断する一人称の経験として書かれています。AIの報告や差別事例は、経営者が負う責任と不安を説明するために従属的に使われています。",
+          "quoted_evidence": ""
+        },
+        "tension": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "leak_tension_reverts_to_research": "PASS",
+          "leak_binary_camp_split": "PASS",
+          "leak_tension_constraint_integration": "PASS",
+          "reasoning": "3人がそれぞれ公平な機会、業務継続と説明、会社の存続と責任という異なる制約を負う構図が中心です。ニューヨーク市の監査・通知義務や女性を低く評価したツールの停止も、各人物の行動を制約する力として物語に統合されています。",
+          "quoted_evidence": ""
+        },
+        "closing": {
+          "leak_closing_simple_summary": "PASS",
+          "reasoning": "単なる要約や「人による」という結論ではなく、公平性を定義し説明し失敗の結果を負う主体の問題として、権力・証拠・責任に焦点を広げて締めています。特定の解決策や妥協案も提案していません。",
+          "quoted_evidence": ""
+        }
+      },
+      "flagged_items": [],
+      "any_flagged": false
+    }
+  }
+}

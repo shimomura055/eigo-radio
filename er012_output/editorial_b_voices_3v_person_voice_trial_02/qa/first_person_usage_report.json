@@ -1,0 +1,35 @@
+{
+  "note": "機械計測(rule-based、¥0、正規表現`\\bI\\b`で文中に一人称'I'[I'm/I'veの縮約形も含む]が出現するかを判定)。Gate・Leakage Checkの判定には使わない、QA monitoring専用。Voice 1〜3(point_one/two/three)は一人称指示の対象、Hook/Tension/Closingは対象外(三人称のまま、低い比率が期待値)。参考値であり、単純な'I'出現率を成功基準にはしない(評価はTension/Closing・視点一貫性を定性評価で別途行う)。",
+  "per_section": {
+    "hook": {
+      "total_sentences": 6,
+      "first_person_sentence_count": 0,
+      "first_person_ratio": 0.0
+    },
+    "point_one": {
+      "total_sentences": 5,
+      "first_person_sentence_count": 4,
+      "first_person_ratio": 0.8
+    },
+    "point_two": {
+      "total_sentences": 6,
+      "first_person_sentence_count": 4,
+      "first_person_ratio": 0.667
+    },
+    "point_three": {
+      "total_sentences": 7,
+      "first_person_sentence_count": 4,
+      "first_person_ratio": 0.571
+    },
+    "tension": {
+      "total_sentences": 8,
+      "first_person_sentence_count": 0,
+      "first_person_ratio": 0.0
+    },
+    "closing": {
+      "total_sentences": 4,
+      "first_person_sentence_count": 0,
+      "first_person_ratio": 0.0
+    }
+  }
+}
