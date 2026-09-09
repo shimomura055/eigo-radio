@@ -9358,6 +9358,59 @@ attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群�
 いずれも本タスクでは触っていない。Production/Prompt編集・新規Trial
 着手は実施していない(SSOT反映+Haiku比較artifactのGit記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-53: 3V Audio Trial結果のSSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01`の結果をSSOTへ反映した。
+
+**Trial結果の要旨**: 3V基準記事(Trial-02最終版)を用いて3声(Voice 1=
+Algieba/Voice 2=Erinome/Voice 3=Schedar)のAudio Trialを実施した。
+16 segment全てstatus=OK・asr_verified=True、Human Review Lockなし。
+OPEN-121(repetition QA)/OPEN-122(connected speech equivalence)安全
+機構をpoint_one/two/threeへ同一規約で対称適用しrepetition_qa_
+checked=Trueを3声全てで確認、disfluency必須9 segmentも確認した。
+Comment 2/3は3V版ドラフト(`TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED`、
+未承認・registry未登録)を使用。Audio Validation Gate既定OFF経路
+PASS、opt-in ON経路(Trial側`build_required_structure_3v()`、16
+segment)もPASS、negative control2件(voice名誤り→`VOICE_MISMATCH`、
+point_three除外→`UNEXPECTED_EXTRA_SEGMENT`)で正しくBLOCKEDを確認し
+(OPEN-129構造Gateの3V実績、mandatory化Trigger(a)の材料)。Assembly
+実測356.613秒(peak0.95、clippingなし)、更新後目標380〜400秒より
+約6〜11%不足(旧目標325〜355秒には近い)。Fact/content整合6/6。
+費用¥93.82(TTS57.69/LLM33.41/ASR2.72)。Gate1=`USER_DECISION_
+REQUIRED`(尺のみ)。
+
+**Fable判定**: 尺のみが「テキスト見積り395秒→実測357秒」という通常の
+見積り誤差であり、Voice/構造/Gate/Fact整合は全て成立しているため
+品質問題ではないと判定し、VALIDATED候補としてユーザー試聴へ進める。
+
+**SSOT反映**: `OPEN_ITEMS.md` OPEN-120行(3V Audio Trial結果、
+VALIDATED候補・実測357秒・ユーザー試聴待ち、Production配線に必要な
+5項目、Schedar本採用格上げの承認待ちを追記)、OPEN-129行(3V構造Gate
+実績=mandatory化Trigger(a)到達、Trigger(b)[次回A-Family Production
+run]は未達のため両方揃うまでUSER_DECISION_REQUIRED提示を保留する
+PM-CLOSEOUT-CONSOLIDATION-29の規定を再掲)、OPEN-132行(Phase 2
+チェックリストへ3V Audio Trialで判明した配線項目[required_structure
+可変voice数シグネチャ・Gate辞書point_three登録要否・Comment 3V文言
+Contract化・mode/level命名・Schedar格上げ承認]を追加)へ反映した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ3V Audio Trial(Sonnet/MEDIUM)・
+Household修正継続2件(Sonnet/MEDIUM)・本タスクの行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09)。Git操作:
+`er012_editorial_b_voices_3v_audio_trial_01.py`・
+`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01_REPORT.md`・
+`er012_output/editorial_b_voices_3v_audio_trial_01/`配下json/md/
+html/jsonl(wav除外)をG1、`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をG2としてファイル名指定で
+commitし`origin/main`へpush。並列稼働中のNews段階2(`er011_output/
+news_stage2_*`・`er011_news_stage2_*`)、Discovery段階2(`er011_
+output/discovery_stage2_*`・`er011_discovery_stage2_*`)、Household
+修正継続(`er003_output/n3_01/household/fact03_fix_02/`、`er011_
+output/open138_*`)、`er006_output/`、`er011_output/attempt_
+history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群はいずれも
+本タスクでは触っていない。Production/Prompt編集・Trial着手は実施
+していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
