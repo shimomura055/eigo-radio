@@ -235,6 +235,8 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01(確定値) | HIGH(L2/Opus) | Opus | A4 Discovery設計案(判定木Q1〜Q5、境界事例、POOL_TOPIC_MASTER 20件との一致可能性等)のsecond opinion。3 Editorial Type境界の排他性・網羅性を横断検証する必要があり、Sonnet単独では境界検証(News/Trend/Discoveryの相互排他性の見落とし)が甘くなりやすいため | Sonnet単独では不足(3タイプ横断の排他性・網羅性検証)、Haiku不適(設計レビュー・複数Report横断精査を要する) | 121k | 327s | 0 | なし | なし | あり(HIGH重大度指摘: v1判定木の循環[Q1/Q3]・Q3とMajor/Daily Gate項目1の矛盾・Q5判定不能バケット・Q2先行によるTrend誤送、およびPOOL_TOPIC_MASTER件数の事実誤り[全20件Whyは誤り、実際は英語Why7件・日本語なぜ7件]を採用前に検出。寄与=構造欠陥3件+事実誤り1件の採用前検出) | 不明(採用前レビュー段階、Production wiring対象外) |
 | 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02(v2、Opusレビュー反映) | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー指摘(HIGH)を反映したv2設計修正(2軸判定+タイブレークprimitiveへの再構成、事実誤り訂正、POOL_TOPIC_MASTER20件+既存記事6件の¥0机上検証実施)。設計修正+検証読解の精密さを要する | Haiku不適(SSOT横断照合・机上検証の精密な読解判定を要する)、Opus不要(この段階は前段Opusレビューを反映するSonnet作業であり新規横断レビューではない) | 81k | 480s | 0 | なし | なし | あり(D1/D2/D3 UDR統合、2軸判定・Pool型正式化はいずれも未承認候補のまま提示) | 不明(設計のみ、Production実装・費用¥0) |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-39(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(A4 Opusレビュー転記Reportのcommit、OPEN-135/OPEN-130/OPEN-112行追記、DECISION_LOGエントリ新設、本表の確定値更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A2-TREND-END-TO-END(継続、B1B level完走) | MEDIUM(L1/Sonnet) | Sonnet | ユーザー承認(A2-UDR-1(a))に基づくB1B Key Phrase 5承認済み再生成1回(不合格)→既存Key Phrase選定経路での差し替え→TTS→Assembly→Audio Gate→playerを完走 | Haiku不適(Production TTS/Assembly/Key Phrase選定実行・Gate判定を伴う)、Opus不要(既存承認済み経路の適用のみ、新規設計判断なし) | 226k | 834s | 0 | なし | なし | なし(承認済み再生成1回は不合格、既存Key Phrase選定経路での差し替えは既存前例の適用) | 不明(B1B level完走、Gate既定OFF/opt-in ON双方PASS。ユーザー最終試聴前) |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-43(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-135/OPEN-112行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md 1行追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -382,3 +384,9 @@ TRIAL-SETUP-01`の次から起算)
   Sonnet、HIGH継続、Opus不要=設計方針変更ではなく承認済み設計の適用
   にとどまるため)、本タスク(Sonnet、LOW)を追記した。中間レビュー・
   正式Closeout Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-43、本タスク): `FAMILY-A-
+  COMPLETION-A2-TREND-END-TO-END`行へ新規行「継続、B1B level完走」
+  (Sonnet、MEDIUM、226k token・834s、差し戻し0、B1B Key Phrase 5承認済み
+  再生成1回不合格→既存選定経路での差し替えでB1B level完走)を追記した。
+  本タスク(Sonnet、LOW)を新規行として追記した。中間レビュー・正式
+  Closeout Triggerの到達判定・再計算はいずれも実施していない。

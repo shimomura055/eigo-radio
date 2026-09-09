@@ -1,7 +1,19 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-09(第27弾、PM-CLOSEOUT-CONSOLIDATION-41、Editorial
+**最終更新: 2026-09-09(第28弾、PM-CLOSEOUT-CONSOLIDATION-43、A2 Trend
+end-to-end B1B level完走のSSOT反映)**: `FAMILY-A-COMPLETION-A2-TREND-
+END-TO-END-01_REPORT.md`§9により、Trend Synthesis記事がA2level・B1B
+level両方でTTS→Assembly→Audio Validation Gate→player完走した。B1B
+Key Phrase 5(「形になり始める」)は承認済み経路での再生成1回も
+`TRUE_CONTENT_MISMATCH`で不合格となり、既存Key Phrase選定経路で新候補
+`work to do`/「まだ取り組むべき課題」へ差し替え(Redundancy QA PASS)。
+「## News Editorial Mode(Trend Synthesis)」節へ「theme→artifact連続性」
+行を追加した。既存仕様(Focus Module・Engagement Block・retry/
+fallback整合)への変更はなし。詳細は`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-43`エントリ・`OPEN_ITEMS.md`OPEN-135/112行、
+`FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§9参照。
+**最終更新(直前の記録): 2026-09-09(第27弾、PM-CLOSEOUT-CONSOLIDATION-41、Editorial
 Type routing[2軸判定]・Discovery/Why[Pool型]正式化のSSOT反映)**:
 ユーザー正式決定に基づき、A Family(Discovery/Why + News[Major/Daily] +
 Trend Synthesis)のうちある題材がどのEditorial Typeとして書かれるべきかを
@@ -655,6 +667,7 @@ Focus Module採否・Engagement根底指示のDiscoveryへの適用)は本Decisi
 | Trend Gate・Mode判定の記録 | Trend Gate 6条件+Mode判定2問チェックリストの判定は自動化せず、`run_writer_for_theme(..., trend_gate_checklist=...)`で渡された**手動判定結果**を、`run_metadata.json`(新規ファイル、既存`articles_run_summary.json`のschemaは変更しない)へそのまま記録する仕組みのみ実装した | `PRODUCTION_WIRED`(記録のみ、自動判定なし) | 同上 | 2026-09-08 |
 | 据え置き4件 | Mode判定自動化・News Ledger自動供給・Reference Digest・Diagnostic Full Retry診断語彙拡張は、いずれも今回の配線の必須条件ではないため仕様化していない(Open Item/Trial候補として残置、下記OPEN_ITEMS.md OPEN-112行参照) | `USER_DECISION_REQUIRED`(defer継続) | 同上 | 2026-09-08 |
 | A2日本語タイトル供給 | `generate_a2_segments`(`er003_v1_n3_01_tts_generate.py`)が要求する日本語タイトルは、モジュール内ハードコード辞書`JAPANESE_TITLES`(既存3テーマのみ登録)から取得する設計。新規テーマでは既存前例(`EDITORIAL-B-FAMILY-VOICES-A2-CROSS-AUDIT-AND-FIX-03_REPORT.md`B-2)に倣い、英語タイトルの直訳(新しい主張・数字を追加しない)を人手作成し`tts_gen.JAPANESE_TITLES.update({theme_id: ...})`で実行時登録する方式を正式initial pathとする。自動翻訳・専用QAは新設しない(A-Family全体の共通gap、Trend固有ではない) | `DECIDED`(直訳の人手供給を正式initial pathとして採用。自動化はOPEN-137として`DEFERRED`) | `FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§8.1/§8.9 | 2026-09-09 |
+| theme→artifact連続性 | A2 level(§8)・B1B level(§9)ともにTTS→Assembly→Audio Validation Gate(既定OFF/opt-in ON両方)→標準player完走を確認し、theme→artifact連続性(人手介在3箇所=Mode判定・Ledger供給・日本語タイトル供給を除く)を実証済み(2026-09-09)。B1B Key Phrase 5は既存Key Phrase選定経路での差し替え(`work to do`/「まだ取り組むべき課題」)を経て完走 | `DECIDED`(実証完了、Fable受入=Gate 3「article→audio連続性」evidence充足) | `FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§9 | 2026-09-09 |
 
 ## 通常News(Major/Daily News)Reference仕様 — 2026-09-08新設(ユーザー決定A-UDR-5、FAMILY-A-DAILY-NEWS-REFERENCE-FORMALIZATION-01)
 

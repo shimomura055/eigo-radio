@@ -8887,6 +8887,51 @@ Git操作: `er012_editorial_b_voices_3v_person_voice_trial_01.py`・同Report・
 `CURRENT_SPEC.md`、`er006_output/`、`er011_output/attempt_history.jsonl`、
 既存の未追跡ファイル群はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-43: A2 Trend end-to-end B1B level完走のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01`(§9、B1B level継続、
+修正指示2回目)の結果をSSOTへ反映した。
+
+**結果の要点**: ユーザー決定(A2-UDR-1=(a))に基づき、B1B Key Phrase 5
+日本語gloss「形になり始める」(`kp5_ja_charon`)を承認済み再生成経路
+であと1回だけ再生成した(内部は標準経路2回+fallback経路1回の計3回)が、
+全3回とも`TRUE_CONTENT_MISMATCH`で不合格(累計6回)。ユーザー決定どおり
+同一文言での追加retryはせず、既存Key Phrase選定経路(Selection→
+Canonicalization→Redundancy QA)で新候補`work to do`/「まだ取り組む
+べき課題」へ差し替え、最終5件セットのRedundancy QAはPASS。新候補の
+英語・日本語音声とも1回目でPASS。B1B Assembly `status=OK`
+(duration_seconds=337.254、peak=0.78439、clipping無し)、他30segment
+(kp5_en以外)はbyte-for-byte再利用。Audio Validation Gate既定OFF経路・
+opt-in ON経路(OPEN-129、`required_structure=derive_a_family_required_
+structure("B1")`)ともにPASS。標準player(Gate 7 (a)〜(l)準拠)生成済み。
+費用¥3.53(上限¥60以内)。A2level(§8)・B1B level(§9)ともに完走した
+ことで、Trend Synthesisの「theme→artifact連続性(人手介在3箇所=Mode
+判定・Ledger供給・日本語タイトル供給を除く)」実証が完了し、Fableが
+Gate 3「article→audio連続性」evidence充足として受入た。OPEN-134観測
+run(記事再生成を伴う観測)には非該当(本タスクは記事非再生成、Key
+Phrase 5のみの差し替え)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Step A2完了、B1B KP5差し替え、
+Fable受入)・OPEN-112行(Trend Synthesis article→audio evidence充足、
+A2/B1B両level)へ追記した。`CURRENT_SPEC.md`「## News Editorial Mode
+(Trend Synthesis)」節へ「theme→artifact連続性 実証済み」の1行を追加し、
+changelogヘッダを更新した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ
+本タスク(Sonnet、MEDIUM、226k token・834秒)を新規行として追記した。
+
+**根拠**: `FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01_REPORT.md`§9。
+Git操作: G1=`er011_family_a_completion_a2_trend_end_to_end_01_run.py`・
+`er011_family_a_completion_a2_trend_end_to_end_01_b1b_continuation_
+player_01.py`・同Report・`er011_output/family_a_completion_a2_trend_
+end_to_end_01/b1b/kp5_regen_and_completion_01/`配下(json/md/html/
+jsonlのみ)をファイル名指定でcommit。G2=`OPEN_ITEMS.md`・
+`CURRENT_SPEC.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+(4ファイルのみ)をファイル名指定でcommitし`origin/main`へpush。並列
+稼働中の3V Trial-02(`er012_*`)・A3 News Trial-06・D2 Discovery
+Layer3 Trial-07(`er011_output/news_focus_*`・`er011_output/discovery_
+layer3_*`)の成果物、`er006_output/`、`er011_output/attempt_history.
+jsonl`、既存の未追跡ファイル群はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
