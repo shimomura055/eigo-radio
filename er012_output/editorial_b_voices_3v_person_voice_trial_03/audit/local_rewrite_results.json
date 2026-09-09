@@ -1,0 +1,69 @@
+[
+  {
+    "original_ng_sentence": "Power differs: applicant cannot choose the system, recruiter operates it without deciding adoption, and owner may make the final call.",
+    "issue": "LedgerはRecruiter・Hiring ManagerをAIツールの利用者または導入判断者として定義しているが、利用担当者には導入判断権がないという役割分担や、Business・Efficiencyの主体が特定のownerとして最終決定を行うことまでは確認していない。",
+    "explanation": "採用担当者と経営側の意思決定権限をLedgerにない形で具体化しており、Recruiter・Hiring Manager／Business・Efficiencyという確認済みの対象を、特定の権限関係へ拡張している。Hookではない。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_actor",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Power can differ: applicants generally cannot choose the system, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may shape the organizational decision.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "Their perspectives and roles can differ: applicants experience the system as candidates, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may also inform organizational choices.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "Their perspectives and roles can differ: applicants experience the system as candidates, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may also inform organizational choices.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "sentence_fallback(overlap=0.45)",
+    "point_context_found": true,
+    "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job. Yet the applicant may lose a fair chance; recruiter must keep work moving and explain it; owner must keep company running and answer for the choice. Power differs: applicant cannot choose the system, recruiter operates it without deciding adoption, and owner may make the final call. NYC’s fairness check, public summary, and notice requirements constrain all three: recruiter cannot use it silently, owner cannot rely on speed alone, and applicant cannot control the score. They cannot simply yield one answer."
+  },
+  {
+    "original_ng_sentence": "NYC’s fairness check, public summary, and notice requirements constrain all three: recruiter cannot use it silently, owner cannot rely on speed alone, and applicant cannot control the score.",
+    "issue": "Local Law 144の監査・要約公開・通知義務の対象は雇用主や人材紹介会社等であり、応募者自身を法的義務の主体として「constrain all three」に含めることはLedgerの範囲を超える。また、同法がownerの速度重視の判断を直接禁止することや、応募者のスコアを法的に制御不能とすることも確認されていない。",
+    "explanation": "NYC法の適用対象・義務主体を応募者まで拡張し、法的要件から未確認の制約を追加している。説明的な結論であり、Hookとしての緩和対象ではない。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_actor",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "NYC’s fairness-audit, public-summary, and notice requirements place compliance duties on employers and staffing firms: recruiters cannot use covered tools silently, owners may need to weigh more than speed, and applicants remain subject to a system they do not control.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "NYC’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are the people subject to the assessment.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 3,
+        "text": "In New York City, Local Law 144’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are subject to the assessment.",
+        "ledger_status": "LEDGER_DEVIATION"
+      }
+    ],
+    "final_text": "In New York City, Local Law 144’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are subject to the assessment.",
+    "resolved": false,
+    "human_review_required": true,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "sentence_fallback(overlap=1.0)",
+    "point_context_found": true,
+    "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job. Yet the applicant may lose a fair chance; recruiter must keep work moving and explain it; owner must keep company running and answer for the choice. Power differs: applicant cannot choose the system, recruiter operates it without deciding adoption, and owner may make the final call. NYC’s fairness check, public summary, and notice requirements constrain all three: recruiter cannot use it silently, owner cannot rely on speed alone, and applicant cannot control the score. They cannot simply yield one answer."
+  }
+]

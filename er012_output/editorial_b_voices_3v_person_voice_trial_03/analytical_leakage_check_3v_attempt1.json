@@ -1,0 +1,64 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0b868356e943df4b006aa116a3de7487d0b024296df9092760",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices・Person-Voice版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nなお、Voice 3(Business Owner=経営者)についても、他のVoiceと同一の基準で判定してください\n(「効率性」という抽象的な立場の解説になっている場合は、leak_evidence_subject/leak_narrator_\nanalysis/leak_discovery_syntaxのいずれかでFAILとしてください)。\n\n【Tensionに適用する7項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に「応募者1人 vs 採用担当+経営者2人」のような対称的な\n  2対1の陣営へ分けて描いていない場合PASS(分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・AIの高リスク分類・\n  過去の差別的AIの中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合\n  PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ\n  (3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI speak to a camera while software scores my tone, face, and gestures. I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result. I want my ability and character seen, not reduced to a score.\n\n【Voice 2本文】\nI start with résumés and an AI tool that sorts them, schedules interviews, and matches people to jobs. It helps when applications arrive faster than my team can read them. But the work does not end with a score. I may prepare a plain summary of a fairness check and answer candidates' questions; one company's public notice makes that duty concrete. I also judge AI-written résumés: useful skill, or too little effort? I run the tool, but I do not decide whether the company adopts it.\n\n【Voice 3本文】\nEach week, I look at the hiring dashboard: time, cost, and the people we still need. If hiring slows, the work does not wait. I have seen reports of faster hiring and lower costs after AI. That is why I may keep using it. But news of a tool that rated women lower makes me look twice at my own choice. If it is questioned, my name is attached. I am protecting the company's future while carrying the risk of being wrong.\n\n【Tension本文】\nAll three want the right person in the right job. Yet the applicant may lose a fair chance; recruiter must keep work moving and explain it; owner must keep company running and answer for the choice. Their perspectives and roles can differ: applicants experience the system as candidates, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may also inform organizational choices. In New York City, Local Law 144’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are subject to the assessment. They cannot simply yield one answer.\n\n【Closing本文】\nThis is not merely a question about whether a machine can read a résumé or a face. It is about who defines a fair chance, who must explain it, and who carries the consequences when it fails. Hiring is not just a tool choice. It is a question of power, proof, and responsibility.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "一人称でカメラ審査を受ける経験と、能力や人格をスコアに還元されたくないという願いが中心になっている。外部事例も本人の懸念を補強する範囲に収まっている。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "採用担当者自身の作業負荷、説明責任、AI履歴書への判断、導入決定権の限界が一人称で具体的に描かれている。調査結果の整理や外部からの分析にはなっていない。",
+      "quoted_evidence": ""
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "経営者が時間・費用・人員不足を見ながら、効率性と差別リスク、最終責任の間で判断する構成になっている。報告やニュースは本人の迷いと責任感を示す材料として使われている。",
+      "quoted_evidence": ""
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "leak_tension_constraint_integration": "PASS",
+      "reasoning": "三者の異なる責任と制約を示し、Local Law 144の義務も組織側の説明責任として接続している。一方で、役割を一般化して説明する文と法規の解説が続き、個別の三人の緊張を描くよりDiscovery／解説記事的な構文に寄っている。",
+      "quoted_evidence": "Their perspectives and roles can differ: applicants experience the system as candidates, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may also inform organizational choices.\n\nIn New York City, Local Law 144’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are subject to the assessment."
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる要約や「人による」という結論ではなく、公平性を定義する権力、説明の証拠、失敗時の責任という論点を提示している。特定の解決策や妥協案も提案していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "三者の異なる責任と制約を示し、Local Law 144の義務も組織側の説明責任として接続している。一方で、役割を一般化して説明する文と法規の解説が続き、個別の三人の緊張を描くよりDiscovery／解説記事的な構文に寄っている。",
+      "quoted_evidence": "Their perspectives and roles can differ: applicants experience the system as candidates, while recruiters or hiring managers may use it or help decide whether to use it, and business-efficiency concerns may also inform organizational choices.\n\nIn New York City, Local Law 144’s fairness-audit, public-summary, and notice requirements apply to employers and staffing firms using covered tools, placing those compliance duties on the organizations that use them rather than on applicants, who are subject to the assessment."
+    }
+  ],
+  "any_flagged": true
+}

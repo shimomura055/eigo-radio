@@ -1,0 +1,255 @@
+{
+  "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-02: Pairwise Voice Distinctness Check(未承認仕様候補、4V Trial-02から継続)。有向6ペア(個別呼び出し)+一括判定(1回で3 Voice・3ペア同時評価)を実測比較。reasoning_effort='low'(コスト管理のためのTrial限定の選択、既存Contract化QAの基準ではない)。",
+  "directed_pair_count": 6,
+  "directed_elapsed_seconds": 34.5,
+  "batch_elapsed_seconds": 16.4,
+  "direction_agreement_rate": 0.933,
+  "direction_agreement_comparisons": 15,
+  "method_agreement_rate": 0.867,
+  "method_agreement_comparisons": 15,
+  "method_agreement_definition": "batch_result[pair][axis].judgment == directed_forward[a_vs_b][axis].judgment",
+  "directed_results": {
+    "voice_1_vs_voice_2": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_017211376e65144a006aa116e5716887d089488ee8f86bfe22",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "XはAI評価を受ける応募者であり、評価される当事者として語っている。YはAI採用ツールを運用し候補者対応を担う採用担当者で、採用プロセスを管理する側に立っている。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは顔・声・身振りの評価、異議申立てやオプトアウトの欠如によって不利益を受ける制約を抱える。Yは大量応募への対応や、AIのスコア・履歴書評価を人間が補完しなければならないという業務上の制約を抱える。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xの主な関心は自分が公正かつ全人的に評価されることだが、採用判断や制度運用の責任は負わない。Yはツールを運用し、候補者の質問に答え、公平性チェックの概要を説明する責任を負う一方、導入決定権は持たない。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは能力や人格が恣意的な表情・身振りのスコアに還元されないこと、評価への異議申立ての機会を守ろうとしている。Yは採用業務の処理能力、公平性に関する説明責任、採用判断における人間の関与を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "XはAI評価が人格や将来の雇用機会を損なう事例から、透明性・異議申立て・人間らしい評価が必要だと考える。Yは応募数の多さからAIの効率性を認めつつ、スコアだけでは不十分で人間の確認と説明が必要だと推論している。"
+        }
+      },
+      "input_tokens": 755,
+      "output_tokens": 488
+    },
+    "voice_1_vs_voice_3": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0cffa634cd4dc34f006aa116ec54b087d0b40e2796412faeda",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice XはAI評価を受ける応募者として、自分の能力や人格を評価される側の立場にある。Voice Yは採用判断とAI導入を決める事業主として、選ぶ側・運用する側の立場にある。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xの制約は、評価基準が不透明で異議申立てやオプトアウトの手段がないこと。Voice Yの制約は、採用の遅延やコストを抑えつつ必要な人員を確保しなければならないことと、導入後の評判・誤判断のリスクである。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは自身の評価結果による不利益を受ける当事者である。一方、Voice Yは採用手法を選択し、誤った評価や差別が起きた場合に会社名を負う意思決定者である。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは自分の能力や人格がスコアに還元されず、公正に見られることを守ろうとしている。Voice Yは会社の将来、採用の効率、そして経営者としての信用を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは、AIによる不透明な評価や実例から、個人の尊厳と公正な評価が損なわれると推論している。Voice Yは、効率化の実績を踏まえて利用継続を考えつつ、差別事例から自社への影響と誤判断のリスクを再検討している。"
+        }
+      },
+      "input_tokens": 743,
+      "output_tokens": 445
+    },
+    "voice_2_vs_voice_1": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_05a67d57cec081fc006aa116f1b69887d08ba6d1d7e162643b",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは採用業務を運用・評価するRecruiter/Hiring Managerであり、YはAI評価を受ける応募者である。当事者としての権限と関与する位置が明確に異なる。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは応募者数が多く、チームだけでは処理しきれない業務上の制約を抱える。一方Yは、顔・声・身振りなどの評価や、異議申立て・オプトアウトの欠如に制約されている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "XにはAIツールの運用、結果の説明、フェアネス確認への対応、AI生成履歴書の評価などの実務責任がある。Yには制度を運用する責任はなく、自分の能力や人格を評価される側として問題を訴える立場にある。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは採用プロセスの処理効率や公平性、候補者への説明可能性を守ろうとしている。Yは自分の能力・人格が単一のスコアに還元されず、適切に評価されることを守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは応募処理の効率化という利点を認めつつ、人間による確認や説明責任でAI利用を補完するという運用上の推論を示す。YはAI評価の具体的な不利益事例から、スコアだけでは人を正当に評価できないという被評価者側の推論に至っている。"
+        }
+      },
+      "input_tokens": 755,
+      "output_tokens": 426
+    },
+    "voice_2_vs_voice_3": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0f6116787f753b58006aa116f6586887d0868e2380cf3bfe53",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用実務を担う運用者・評価者であり、Voice YはAI採用の継続利用を判断する事業オーナーである。意思決定への関与と当事者としての立場が異なる。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは応募者数の多さ、チームの処理能力、候補者への説明や公平性確認に制約されている。Voice Yは採用の時間・コスト・人員不足に加え、判断が誤った場合の事業上・ reputationalなリスクに制約されている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xはツールを運用し、結果を確認し、候補者の質問に答えるが、導入継続の決定は担わない。Voice Yは利用継続を判断し、その選択に自身の名前と会社の責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用プロセスの公平性、候補者への説明可能性、業務の適切な運用を守ろうとしている。Voice Yは会社の将来、採用による事業継続、そして経営判断の信頼を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは処理効率やAIの実用性を認めつつ、公平性確認と候補者対応によって導入結果を吟味する。Voice Yは採用の迅速化・低コストという便益と、差別的結果や判断ミスの事業リスクを比較して利用継続を決める。"
+        }
+      },
+      "input_tokens": 762,
+      "output_tokens": 563
+    },
+    "voice_3_vs_voice_1": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0f368ca544f97ef7006aa116fce31087d0b050bcd40c4fb6c5",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用を決定・運用する事業主の立場であり、Voice YはAI評価を受ける応募者の立場である。当事者としての権限と置かれている位置が異なる。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用の時間・コスト・人員不足と、AI利用に伴う評判や判断ミスのリスクに制約されている。Voice Yは評価基準の不透明さ、異議申立てやオプトアウトの欠如、AIによる不利益に直面している。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice XはAIを採用に使う判断と、その結果に対する会社および自身の説明責任を負う。Voice Yは評価される側として、自分の能力や人格が適切に扱われることを求める立場であり、採用判断の責任者ではない。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xが守ろうとしているのは、採用を継続して業務を支え、会社の将来を確保することである。Voice Yが守ろうとしているのは、能力や人格を単純なスコアに還元されず、公正に評価される機会である。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは、採用の効率化やコスト削減の利点を認めつつ、差別的な結果や自身の責任リスクを考慮して利用を続けるか判断している。Voice Yは、AI評価による具体的な不利益や救済手段の欠如を根拠に、スコアではなく人として能力・人格を見てほしいと結論づけている。"
+        }
+      },
+      "input_tokens": 743,
+      "output_tokens": 543
+    },
+    "voice_3_vs_voice_2": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0c7fe06209f6c121006aa11702f05c87d0bd9de37fdf81bbec",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは採用AIの導入・継続利用を判断する事業オーナーで、会社の将来と経営上のリスクを負う立場である。Yは導入判断はせず、現場でAIを運用し候補者対応を担う採用担当者である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは採用の遅延やコスト、必要人員の不足が経営上の制約になる。Yは応募書類がチームの処理能力を超えることや、候補者への説明・AI生成履歴書の評価といった実務上の制約に直面している。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "XはAI利用を続けるかどうかの判断と、その結果について会社名を背負う責任を負う。Yはツールの操作、フェアネス確認の説明、候補者の質問への対応を担うが、導入判断の責任は負わない。"
+        },
+        "what_they_protect": {
+          "judgment": "SIMILAR",
+          "reasoning": "両者とも採用業務の有効性と公平性を損なわないことを守ろうとしている。Xは会社の将来、Yは候補者への公正な扱いと採用実務の信頼性をより直接的に守る点で焦点が異なる。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは採用の効率・コスト削減の期待と、差別的な結果や評判リスクを比較して利用継続を考える。YはAIを処理補助として使いつつ、スコアだけに依存せず説明責任や候補者対応を通じて妥当性を確認する。"
+        }
+      },
+      "input_tokens": 762,
+      "output_tokens": 453
+    }
+  },
+  "batch_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_014a14b9d65ea35c006aa11707fc8c87d08fbb5f13da2eef77",
+    "parsed": {
+      "voice_1_voice_2": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1はAI評価を受ける応募者であり、Voice 2はAIを採用実務で運用する採用担当者である。評価される側と評価を実施する側で立場が異なる。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1はオプトアウトや評価結果への異議申立てができないことに制約を感じている。一方、Voice 2は応募数の多さやチームの処理能力、さらにツール導入を決定できない権限上の制約を抱えている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1の主な役割は自分の能力や人格を適切に評価されることを求める立場である。Voice 2はツールを運用し、公平性チェックの説明や候補者の質問への対応を担う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1は自分の能力・人格・将来の雇用機会がスコアに還元されないことを守ろうとしている。Voice 2は採用プロセスの実用性、公平性、候補者への説明可能性を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1はAI評価による個人的な不利益や人格の矮小化を根拠に警戒している。Voice 2は処理効率を認めつつ、運用者として公平性確認や説明責任を加えるという実務的な推論をしている。"
+        }
+      },
+      "voice_1_voice_3": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1はAI採用評価の対象となる応募者である。Voice 3は採用の継続やAI利用を判断し、その結果に名前を負う事業主である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1の制約は評価基準の不透明さや異議申立て手段の欠如である。Voice 3は採用の遅れ、コスト、業務上の人手不足、さらに誤った判断による事業リスクに直面している。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1は自分が公正に評価されることを求める当事者で、採用ツールの選択責任は負っていない。Voice 3はAI利用を継続するか判断し、問題が起きた際の経営上の責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1は自分の能力、人格、雇用機会を守ろうとしている。Voice 3は会社の将来、採用の継続性、事業運営を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 1は自分が不透明なAI評価で不利益を受ける危険から、スコアへの還元を拒んでいる。Voice 3は効率やコスト削減の利益と性別差別などのリスクを比較し、責任を引き受けながら利用を判断している。"
+        }
+      },
+      "voice_2_voice_3": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 2は採用業務とAIツールの運用を担う採用担当者である。Voice 3は採用方針やAI利用の継続を判断する事業主であり、意思決定権限と経営上の立場が異なる。"
+        },
+        "constraint": {
+          "judgment": "SIMILAR",
+          "reasoning": "両者とも採用を効率化する必要に迫られているが、Voice 2は応募量とチームの処理能力、Voice 3は時間・コスト・人手不足と事業継続上のリスクを主な制約としている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 2はツールの運用、公平性チェックの説明、候補者対応を担うが、導入判断は行わない。Voice 3はAIを使い続けるかを判断し、その選択に伴う経営上の責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice 2は採用業務の処理能力、公平性、候補者への説明可能性を守ろうとしている。Voice 3は会社の将来、業務に必要な人材の確保、経営者としての信頼と責任を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "SIMILAR",
+          "reasoning": "両者ともAIの効率性を認めながら、偏りや公平性への懸念を踏まえて無条件には信頼していない。ただしVoice 2は運用・説明の観点から、Voice 3は継続利用の経営判断と自らの責任の観点から推論している。"
+        }
+      }
+    },
+    "input_tokens": 1329,
+    "output_tokens": 1652
+  }
+}

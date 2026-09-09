@@ -1,0 +1,188 @@
+{
+  "theme_id": "editorial_b_voices_3v_person_voice_trial_03",
+  "tension_regen": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_0e60c3187f1c4675006aa1133cc2f487d0a3d2ec32f52c5962",
+    "original_tension_body": "All three want the right person in the right job. But the applicant may lose a fair chance, the recruiter must keep work moving and explain it, and the owner must keep the company running and answer for the choice. The applicant cannot choose the system; the recruiter runs it and may also help decide whether to adopt it; the owner may make the final call. Outside limits narrow all three roles. In New York City, an employer needs a recent fairness check, a public summary, and notice before using an automated hiring tool. The recruiter cannot use it silently, the owner cannot rely on speed alone, and the applicant still cannot control the score. One company stopped a tool after it rated women lower. Their views cannot simply make one answer.",
+    "original_word_count": 132,
+    "new_tension_body": "All three want the right person in the right job. Yet the applicant may lose a fair chance; recruiter must keep work moving and explain it; owner must keep company running and answer for the choice. Power differs: applicant cannot choose the system, recruiter operates it without deciding adoption, and owner may make the final call. NYC’s fairness check, public summary, and notice requirements constrain all three: recruiter cannot use it silently, owner cannot rely on speed alone, and applicant cannot control the score. They cannot simply yield one answer.",
+    "new_word_count": 90,
+    "word_count_within_target": true,
+    "target_range": [
+      75,
+      90
+    ]
+  },
+  "byte_check_post_tension_regen": {
+    "all_non_tension_sections_byte_identical": true,
+    "per_key": {
+      "hook_heading": true,
+      "hook_heading_level": true,
+      "hook_body": true,
+      "point_one_heading": true,
+      "point_one_heading_level": true,
+      "point_one_body": true,
+      "point_two_heading": true,
+      "point_two_heading_level": true,
+      "point_two_body": true,
+      "point_three_heading": true,
+      "point_three_heading_level": true,
+      "point_three_body": true,
+      "tension_heading": true,
+      "tension_heading_level": true,
+      "closing_heading": true,
+      "closing_heading_level": true,
+      "closing_body": true,
+      "unexpected_preamble_before_first_heading": true
+    }
+  },
+  "qa_status": "NG_REVIEW_REQUIRED_LEDGER",
+  "byte_check_post_ledger_deviation": {
+    "all_non_tension_sections_byte_identical": true,
+    "per_key": {
+      "hook_heading": true,
+      "hook_heading_level": true,
+      "hook_body": true,
+      "point_one_heading": true,
+      "point_one_heading_level": true,
+      "point_one_body": true,
+      "point_two_heading": true,
+      "point_two_heading_level": true,
+      "point_two_body": true,
+      "point_three_heading": true,
+      "point_three_heading_level": true,
+      "point_three_body": true,
+      "tension_heading": true,
+      "tension_heading_level": true,
+      "closing_heading": true,
+      "closing_heading_level": true,
+      "closing_body": true,
+      "unexpected_preamble_before_first_heading": true
+    }
+  },
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "leakage_any_flagged": true,
+  "distinctness": {
+    "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-02: Pairwise Voice Distinctness Check(未承認仕様候補、4V Trial-02から継続)。有向6ペア(個別呼び出し)+一括判定(1回で3 Voice・3ペア同時評価)を実測比較。reasoning_effort='low'(コスト管理のためのTrial限定の選択、既存Contract化QAの基準ではない)。",
+    "directed_pair_count": 6,
+    "directed_elapsed_seconds": 34.5,
+    "batch_elapsed_seconds": 16.4,
+    "direction_agreement_rate": 0.933,
+    "direction_agreement_comparisons": 15,
+    "method_agreement_rate": 0.867,
+    "method_agreement_comparisons": 15,
+    "method_agreement_definition": "batch_result[pair][axis].judgment == directed_forward[a_vs_b][axis].judgment"
+  },
+  "duration_estimate": {
+    "note": "音声は生成していない(テキストのみTrial)。design.md B-6の2V実測定数を引用し、語数/秒比で3V estimated durationをmonitoring目的でのみ換算した(gate・正式検証ではない)。",
+    "variable_word_count_3v": 483,
+    "variable_word_count_2v_reference": 388,
+    "estimate": {
+      "seconds_per_word_2v_variable_parts": 0.4979,
+      "estimated_variable_seconds_3v": 240.5,
+      "estimated_pause_seconds_3v": 16.7,
+      "estimated_total_seconds_3v": 388.3,
+      "within_3v_target_range": false
+    },
+    "three_v_target_range_seconds_design_md": [
+      325,
+      355
+    ]
+  },
+  "six_section_length_report": {
+    "hook": 60,
+    "point_one": 79,
+    "point_two": 90,
+    "point_three": 82,
+    "tension": 118,
+    "closing": 54,
+    "total_of_six_sections": 483,
+    "headings": {
+      "hook": "The Question",
+      "point_one": "The Applicant's Voice: Under the Camera",
+      "point_two": "Another Voice: The Recruiter",
+      "point_three": "A Third Voice: The Business Owner",
+      "tension": "Why They See It Differently",
+      "closing": "What This Question Really Means"
+    },
+    "unexpected_preamble_before_first_heading": ""
+  },
+  "gate1": {
+    "classification": "USER_DECISION_REQUIRED",
+    "integration_quality_maintained": false,
+    "any_flagged": true,
+    "binary_camp_split_fail": false,
+    "constraint_integration_fail": false,
+    "fact_pass": true,
+    "fact_review_required": true,
+    "ledger_compliant": true,
+    "ledger_human_review_required": true,
+    "distinctness_maintained": true,
+    "byte_identical_non_tension_sections": true,
+    "tension_word_count_within_target": true,
+    "estimated_seconds": 388.3,
+    "within_target_325_355": false,
+    "near_target_up_to_365": false,
+    "fallback_option_a_395s_note": "整合品質は維持されているが尺が365秒を超えて残存した場合、Trial-02実測395.3秒を『許容案(a)』として併記する(実装はしない、USER_DECISION_REQUIREDとしてユーザー判断を仰ぐ)。"
+  },
+  "diff_table_vs_trial_02": {
+    "tension_word_count": {
+      "trial_02": 132,
+      "trial_03": 90
+    },
+    "total_word_count_six_sections": {
+      "trial_02": 497,
+      "trial_03": 483
+    },
+    "estimated_duration_seconds": {
+      "trial_02": 395.3,
+      "trial_03": 388.3
+    },
+    "leak_tension_constraint_integration": {
+      "trial_02": "PASS(2/2)",
+      "trial_03": "PASS"
+    },
+    "leak_binary_camp_split": {
+      "trial_02": "PASS(FAILなし)",
+      "trial_03": "PASS"
+    },
+    "analytical_leakage_any_flagged": {
+      "trial_02": false,
+      "trial_03": true
+    },
+    "fact_checker_a_prime": {
+      "trial_02": "PASS(2/2)",
+      "trial_03": "REVIEW_REQUIRED"
+    },
+    "ledger_status": {
+      "trial_02": "LEDGER_COMPLIANT",
+      "trial_03": "LEDGER_COMPLIANT"
+    },
+    "distinctness_direction_agreement_rate": {
+      "trial_02": 1.0,
+      "trial_03": 0.933
+    },
+    "distinctness_method_agreement_rate": {
+      "trial_02": 0.933,
+      "trial_03": 0.867
+    },
+    "cost_jpy": {
+      "trial_02": 20.57,
+      "trial_03": 19.49
+    },
+    "gate1_classification": {
+      "trial_02": "USER_DECISION_REQUIRED",
+      "trial_03": "USER_DECISION_REQUIRED"
+    }
+  },
+  "cost": {
+    "found": true,
+    "call_count": 22,
+    "usd_jpy_rate": 155.0,
+    "cost_usd": 0.1257,
+    "cost_jpy": 19.49,
+    "web_search_call_count_total": 11
+  },
+  "elapsed_seconds": 117.2
+}
