@@ -10025,6 +10025,102 @@ MODEL_ROUTING_TRIAL_LOG.md`。いずれもファイル名指定でcommitし
 Production/Prompt編集・Trial着手・バックグラウンド待機は実施していない
 (SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-63: Household一本化最終候補
+(HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01)結果のSSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`の結果をSSOTへ反映した。並列稼働
+なし(単独タスク)。
+
+**Trial結果の要旨**: Household(Discovery/Why、Ledger v5)の一本化を、
+Discovery Focus Module軽微改善(`FAMILY-A-DISCOVERY-STAGE4-CAUTIONARY-
+LANGUAGE-TRIAL-10`のPart B案1=`cautionary_constrained`、未承認候補、
+保険文0/6を確認済み)を用いてA2/B1B記事→Support→Audio→試聴artifactまで
+作成した(Trial harness、既存Production QA/Audio Gate経路のみ使用)。
+Trial-10条件は無変更のままread-only importで再利用し、独自出力先で
+Gate 4静的確認(Production関数再定義なし、baseline↔cautionary差分は
+単一insert、Ledger v5マーカー確認、Point Overlap Loop Budget=2)を実施し
+PASS。記事生成はA2 status OK/fact_verdict PASS/ledger_status
+LEDGER_COMPLIANT(0件)/Point Overlap記事全体retry1回(上限2、既存
+Diagnostic Full Retry機構内で解消)/379語/保険文(regex)0件、B1B OK/
+PASS/COMPLIANT(0件)/retry0回/399語/保険文0件。両レベルとも自己判断
+による追加retry・再抽選は行っていない。Support(Preview/Comment/Key
+Phrase)は全項目OK、Key Phrase Selection→Canonicalization→Redundancy
+QAは両レベルとも1回でREDUNDANCY_PASSへ到達。A2日本語タイトルは
+`JAPANESE_TITLES`辞書に本Trial theme_id未登録という既知gap(OPEN-137、
+FAMILY-A-COMPLETION-A2-TREND-END-TO-END-01と同一構造)が再発したため、
+新しい主張・数字を追加せず既存Household完成版タイトルをそのまま流用
+した(記録: `audit/a2_japanese_title_gap_note.json`)。Audio検証は全
+segment(A2 14+Key Phrase5件EN/JA、B1B 13+Key Phrase5件EN/JA)がTTS/ASR
+OK、Assembly(Gate OFF)PASS、Audio Validation Gate opt-in ON
+(OPEN-129)もPASS(A2 330.0秒/peak 0.98[headroom適用]/clipping無し、
+B1B 302.8秒/peak 0.953/clipping無し)。HUMAN_REVIEW_REQUIRED・
+GATE_BLOCKED・Lockはいずれも発動せず、代理承認・独自回避は不要だった。
+実測費用¥68.76(openai¥19.62・gemini TTS¥46.08・openai_asr¥3.06、
+unpriced_records=0、上限¥300以内)。
+
+Gate 1分類は`VALIDATED`相当(Trial範囲)。到達Statusは
+**USER_FINAL_AUDIO_REVIEW_REQUIRED**。試聴artifact
+`er011_output/household_unified_final_candidate_01/player.html`は標準
+player規則(`audio_review_player.py`、Source列なし)に従うが、1ページに
+A2/B1B両方の完成episode音声を並置するため、標準`SEEK_SCRIPT`(単一
+episode音声前提)をdata属性でseek対象をscopeする専用JSへ置き換えた
+(`build_player.py`内のみ、`audio_review_player.py`自体は無変更)。
+差分要約は`diff_vs_old_final_summary.md`(保険文検出は新旧とも0件で
+この指標だけでは優劣を示せない、Point切り口は新候補がより明示的、
+FACT-03/04整合は新旧とも矛盾なし)。
+
+**Supersession確認(PM_GOVERNANCE 2-3)**: 旧artifact
+(`er011_output/open138_household_fact03_b1b_minimal_fix_03/`)・既存
+Household完成版(`er003_output/n3_01/household/`)はいずれも読み取りのみで
+一切変更していない。新候補は独立した並置artifactであり、旧完成版を
+上書き・置換していない。
+
+**規律事象**: 担当がBashツールのforeground 600秒上限を単一プロセスが
+超えたため、ツール側の仕様でバックグラウンド実行→通知復帰が2回発生した
+(tooling制約であり、複数プロセスの並行起動・二重起動ではない)。並列
+稼働中の他タスク領域(`er011_output/discovery_stage4_cautionary_
+language_trial_10/`、`er011_output/news_stage4_redesign_inventory_01/`)
+は読み取りのみで一切編集していない。
+
+**USER_DECISION_REQUIRED(未承認のまま、Fableがユーザーへ提示中)**:
+(1) 新候補(A2/B1B)を旧完成版の後継として採用するか、旧完成版を維持する
+か、A-FACT03-5(Household FACT-03最小修正版)fallbackへ戻すか(試聴・
+比較のうえユーザー判断)。(2) Part B案1(`cautionary_constrained`)を
+Production Discovery Focus Moduleへ正式採用するか(Trial-10はN=3・N=1
+範囲の確認に留まる)。(3) `editorial_mode="discovery_why"`の正式
+registry登録(採用する場合に必要、本Trialでは未登録の想定名のまま使用)。
+Production採用・旧完成版との差し替えはいずれも未承認。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-63へ)、
+OPEN-138行(一本化候補完成・USER_FINAL_AUDIO_REVIEW_REQUIRED・
+A-FACT03-5 fallback保留継続・UDR 3件を追記)、OPEN-135行(Part B案1が
+N=1完成経路でも保険文0・Lock無しを維持したがProduction採用は別途UDR
+である旨を追記)、OPEN-137行(A2 JAPANESE_TITLES未登録gapの再発を手動
+介在の実例として追記)を反映した。`ARTIFACT_REGISTRY.md`のHousehold項へ
+新候補を「候補(未承認、並置)」として追記した(既存の正式artifact記載は
+変更していない)。`CURRENT_SPEC.md`は変更していない(Production・
+Prompt変更なし)。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へHousehold候補行
+を確定値(Sonnet/MEDIUM、¥68.76、tooling制約によるバックグラウンド
+実行2回を規律違反とは区別して記録)へ更新し、本タスク(Sonnet/LOW)を
+追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-63)。Git操作: G1=
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01_REPORT.md`・
+`er011_household_unified_final_candidate_01_run.py`・
+`er011_output/household_unified_final_candidate_01/`配下(json/md/html/
+jsonl/txt/py、既存commit慣行に合わせ音声バイナリ[mp3/wav]は対象から
+除外)。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・`ARTIFACT_REGISTRY.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。いずれもファイル名指定でcommitし
+`origin/main`へpush。`CURRENT_SPEC.md`、`er006_output/`、
+`er011_output/attempt_history.jsonl`、旧Household artifact、既存の
+未追跡ファイル群、`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`
+はいずれも本タスクでは触っていない(ACTIVE_TASK/RESULT_PACKETは更新は
+したがcommit対象外)。Production/Prompt編集・Trial着手・旧artifact変更・
+バックグラウンド待機(自己判断によるもの)は実施していない(SSOT反映+
+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
