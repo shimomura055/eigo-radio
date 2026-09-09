@@ -53,7 +53,12 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 `docs/pm/PM_GOVERNANCE.md` 11節「自明な修正の自律実施」、2026-09-09追記)。
 主要artifactの再生成・修正前には、旧artifactの二重最終版化を避けるため
 `docs/pm/PM_GOVERNANCE.md`「2-3. Artifact supersession確認」を必ず確認する
-(2026-09-09追記)。
+(2026-09-09追記)。報告単位(Lane/Workstream/Feature/Trial群等)を基準に
+した即時報告・未回答フル再掲・Next Action/Reminder提示の正式SSOTは
+`docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit
+Rule)」(2026-09-10追記)。報告可能な単位が出たら他の並列作業を待たず
+報告し、ユーザー未回答の過去報告があれば次回報告時にフルレポートで
+必ず再掲する。
 
 ## ループ上限(サンドイッチ運用)
 
@@ -68,10 +73,10 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 
 Fableは、`docs/pm/ACTIVE_TASK.md`を上書きする全ての委任で、ファイル冒頭に
 以下の固定ヘッダを置く(本文はヘッダの後に続ける)。目安: ヘッダ全体で
-15〜25行・300〜800 token以内。ヘッダは要約であり、詳細はSSOT
-(`OPEN_ITEMS.md`等)を必要箇所だけGrepして確認する(鵜呑みにしない)。
-compact直後の復帰手順は`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節
-末尾を参照。
+20〜30行・300〜800 token以内(2026-09-10、報告単位管理ルール追加に伴い
+15〜25行から緩和)。ヘッダは要約であり、詳細はSSOT(`OPEN_ITEMS.md`等)を
+必要箇所だけGrepして確認する(鵜呑みにしない)。compact直後の復帰手順は
+`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。
 
 ### 書式
 
@@ -83,6 +88,11 @@ UDR-deferred: <ID:一言、複数可>(なければ「なし」)
 APPROVED未配線: <ID:一言、複数可>(なければ「なし」)
 STOP条件: <一言>(なければ「なし」)
 次アクション: <一言>
+未回答報告: <報告単位名:未回答項目ID列挙、報告日、参照REPORT>(複数可、
+  なければ「なし」。`docs/pm/PM_GOVERNANCE.md`12節「報告単位管理ルール」
+  対象、2026-09-10追加)
+報告単位Status: <単位名:状態>(複数可、例: Lane A-1 Household=CLOSED /
+  Lane A-1 Discovery仕様=USER_DECISION_REQUIRED。2026-09-10追加)
 ```
 
 ### 記入例(2026-09-08時点、実状態)

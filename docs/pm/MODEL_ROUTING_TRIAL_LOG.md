@@ -286,6 +286,7 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | FAMILY-A-NEWS-STAGE4-EVIDENCE-ALLOCATION-AUDIT-01(完了) | MEDIUM(L1/Sonnet) | Sonnet | Opus L2レビュー指摘(論点H=Ledger fact供給量/evidence allocation)の¥0実証監査(既存48 run・124 attempt観測の読み取り再集計) | Haiku不適(相関分析・複数指標の統計比較を要する)、Opus不要(Opusが設計した検証基準への照合作業であり新規横断設計判断ではない) | 不明(セッション未回収) | 不明 | 0 | なし | なし | あり(Ledger拡充Trial A/B・候補4不採用判断・OPEN-133再検討の3件をUDR候補として提示、新規OPEN-140[Theme2 Ledger ID不整合]を発見・起票) | 不明(Trial・監査段階、Production wiringなし) |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-62(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、News Stage 4整理+Opus L2レビュー+Evidence Allocation監査の結果反映[OPEN-135/OPEN-133/OPEN-134行]、新規OPEN-140起票、DECISION_LOGエントリ新設、News整理・Household候補行の更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-10 | PM-CLOSEOUT-CONSOLIDATION-65(本タスク、Household最終版closeout+3V[3声Voice方式]APPROVED_FOR_PRODUCTION反映+表記ルール新設のSSOT反映) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-138行closeout判定、OPEN-135行追記+「保険文0/6」表記訂正4箇所、OPEN-120行Lane B4項目追記、DECISION_LOGエントリ新設、ARTIFACT_REGISTRY.md Household項更新、CURRENT_SPEC.md 3V状態行更新、PM_GOVERNANCE.md 9-3節新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT複数ファイルの精密整合編集・矛盾発見の判断を要する)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 不明(次回Fable記録時に追記) | 不明 | 0 | なし | なし | なし(反映作業のみ、コード・Prompt・Production実装は無変更) | 該当なし(Production wiringなし、SSOT反映のみ、実測費用¥0) |
+| 2026-09-10 | PM-CLOSEOUT-CONSOLIDATION-66(本タスク、報告単位管理ルール[Reporting Unit Rule]の正式PM運用SSOT反映) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(PM_GOVERNANCE.md新設12節・3節項目15〜18・Gate5/6追記・9-1候補セクション6/7追加・冒頭最終更新行・末尾変更履歴、PM_BRIEF.md参照追記+ACTIVE_TASK固定ヘッダ書式へ新フィールド2件追加、CLAUDE.md 1〜2行追記、DECISION_LOGエントリ新設、OPEN_ITEMS.mdヘッダ更新)+Git統合、既知パターン(過去のPM_GOVERNANCE改訂タスク)の踏襲 | Haiku不適(SSOT複数ファイルの精密整合編集・既存節番号との衝突確認を要する)、Opus不要(運用方針自体は既にユーザー正式決定済みであり、本タスクは文書反映のみ) | 不明(次回Fable記録時に追記) | 不明 | 0 | なし | なし | なし(反映作業のみ、コード・Prompt・Production実装は無変更) | 該当なし(Production wiringなし、SSOT反映のみ、実測費用¥0) |
 
 **所見(2026-09-09、PM-CLOSEOUT-CONSOLIDATION-57)**: HOUSEHOLD-FACT-03-
 PUBLISHED-ARTICLE-MINIMAL-FIX-02(継続3〜4)において、Sonnetは承認代行・
@@ -567,3 +568,8 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   OPEN-135行の記述矛盾(current_focus/cautionary_constrained)を1件発見し
   修正せず報告した。中間レビュー・正式Closeout Triggerの到達判定・
   再計算はいずれも実施していない。
+- 2026-09-10(PM-CLOSEOUT-CONSOLIDATION-66、本タスク): 報告単位管理ルール
+  (Reporting Unit Rule: 即時報告・未回答フル再掲・Next Action提示)の
+  正式PM運用SSOT反映のみ(Sonnet、LOW、実測¥0、新規コード実行・API
+  呼び出しなし)。中間レビュー・正式Closeout Triggerの到達判定・再計算は
+  いずれも実施していない。

@@ -10346,6 +10346,94 @@ unified_final_candidate_01_run.py`もA2/B1B双方の生成呼び出しで
 `PM-CLOSEOUT-CONSOLIDATION-64`追記(5)の「current_focus(Before)のまま」
 は誤りと判定し、`OPEN_ITEMS.md`OPEN-135行を訂正した。
 
+## PM-CLOSEOUT-CONSOLIDATION-66: 報告単位管理ルール(Reporting Unit Rule)
+の正式SSOT反映(即時報告・未回答フル再掲・Next Action提示、恒久ルール)
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-66)に基づき実施した。並列稼働中のAgentはない。
+
+**ユーザー正式決定(2026-09-10、恒久ルール)**: Lane A/B限定に矮小化せず、
+内容を弱めないことを前提に、以下をPM運用SSOTへ反映した。
+
+1. **報告単位(Reporting Unit)を基準に管理する**: 他の並列作業を待たずに
+   ユーザーへ報告できる「ひと固まり」(Lane/Workstream/Feature/Trial群/
+   Production wiring/Article単位/Investigation等、名称は問わない)を
+   1報告単位として扱う。並列数はA/B/C/D…複数を前提とする。
+2. **1つの報告単位が報告可能になったら即時報告**: Trial終了/
+   `USER_DECISION_REQUIRED`到達/`APPROVED_FOR_PRODUCTION`到達/Production
+   wiring完了/重要な途中結果判明/blocker発生/user review可能なartifact
+   完成/closeout可能のいずれかに達したら、他の並列作業の完了を待たずに
+   報告する。「AもBも揃ってからまとめて報告」と待つことを禁止する。
+3. **未回答の報告は次の報告時に必ず再掲する**: 報告済みでユーザーの
+   Feedback/判断がない項目がある状態で別の報告単位が報告可能になった
+   場合、新規報告だけを出さず未回答分も合わせて再掲する(時点1: A→
+   時点2: A+B→時点3: A+B+C)。ユーザーが明示的に回答・判断した項目のみ
+   再掲対象から外す。
+4. **再掲時は必ずフルレポートを再掲する**: 簡易サマリではなく前回提示
+   したフルレポートを原則そのまま再掲(短縮・要約・一部省略しない)。
+   前回レポート中の事実がその後更新された場合は「前回フルレポート」+
+   「その後の更新・訂正内容」が明確に分かる形で提示する。artifact/
+   listening link/comparison link等も必ず再掲する。
+5. **大きな報告単位がcloseしたら必ず次の状態を示す**: 「完了しました」で
+   終わらせず、(A)Next Action/Suggestion、(B)関連未解決事項の状況
+   Reminder、(C)「この報告単位について残件なし」のいずれかを示す。
+6. **Next Actionを勝手な仕様決定にしない**: Next Action提示はユーザー
+   承認を飛ばして次工程へ進む権限ではなく、従来のPM Gate
+   (`USER_DECISION_REQUIRED`ならSTOP/`VALIDATED`からProduction採用へ
+   自動移行しない/`APPROVED_FOR_PRODUCTION`のみProduction wiring可/
+   新仕様・意味変更・大きなQCD変更はユーザー判断/明示的deferredは
+   deferredとして管理)を維持する。
+7. **未回答管理を明示的に行う**: Fableは常に「報告済みだが未回答の
+   項目」を把握し、次回報告を作る前に必ず確認する。明示的にdeferと
+   ユーザー合意したものは毎回の再掲不要だが、大きなtask closeout時には
+   Reminder対象として確認する。
+8. **PM Closeoutとの統合**: 既存PM Closeout Mandatory Checkへ4項目
+   (並列報告単位を待った遅延の有無/未回答フル再掲の実施/Next Action・
+   Reminder提示/並列する他の報告単位Statusの見落とし確認)を追加し、
+   既存Gate 5・Gate 6のUSER_DECISION_REQUIRED放置防止と統合する。
+9. **今回への即時適用**: 現在のLane A(Household/Discovery/News)/
+   Lane B(3V)にも直ちに適用する。
+10. **SSOT反映**: 会話限りのルールにせず正式PM運用ルールとして記録する。
+
+**SSOT反映内容**:
+
+- `docs/pm/PM_GOVERNANCE.md`: 冒頭の最終更新行、新設「12. 報告単位管理
+  ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action
+  提示」(12-1〜12-8)、「3. PM Closeout Mandatory Check」項目15〜18、
+  Gate 5・Gate 6の記述への1〜2行追記、9-1「候補セクションと選択基準」へ
+  候補セクション6(未回答再掲)・7(Next Action / Reminder、該当時省略
+  不可)の追加、末尾「変更履歴」への新規エントリを反映した。
+- `docs/pm/PM_BRIEF.md`: 「PM運用Gate・Closeout原則」節へ`docs/pm/
+  PM_GOVERNANCE.md`12節への参照2〜3行を追記した。「ACTIVE_TASK固定
+  ヘッダ」書式へ新フィールド`未回答報告`・`報告単位Status`を追加し、
+  ヘッダ行数目安を15〜25行から20〜30行へ緩和した。
+- `CLAUDE.md`: 「Fableサンドイッチ運用(PM層)」節へ、報告単位管理ルール
+  (即時報告・未回答フル再掲・Next Action提示)の正式SSOTは
+  `docs/pm/PM_GOVERNANCE.md` 12節である旨を1〜2行追記した。他の既存
+  記述は変更していない。
+- `OPEN_ITEMS.md`: ヘッダへ本エントリを参照する短い最終更新段落を追加
+  した(新規Open Itemの起票はなし)。
+- `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`: 本タスク行(Sonnet、LOW、¥0)を
+  追記した。
+
+**Dangling Reference Check**: 新設した節番号・フィールド名(12節、
+12-1〜12-8、`未回答報告`、`報告単位Status`、Closeout Mandatory Check
+項目15〜18、9-1候補セクション6・7)は`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/PM_BRIEF.md`・`CLAUDE.md`間で一致していることを確認した。既存
+節番号(1〜11、2-1〜2-3、9-1〜9-3)との衝突はない。未定義語の新規追加は
+ない。
+
+**コード・Prompt・Production実装は一切変更していない**(SSOT反映のみ、
+費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-66)。Git操作: ファイル名指定で`git add`
+(`git add -A`不使用)、対象=`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/PM_BRIEF.md`・`CLAUDE.md`・`DECISION_LOG.md`・`OPEN_ITEMS.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。1 commitで`origin/main`へpush。
+`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`・その他未追跡
+ファイルはcommitしていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

@@ -1,7 +1,19 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-59で2節へ新小節「2-3.
+**最終更新: 2026-09-10(PM-CLOSEOUT-CONSOLIDATION-66で新設12節「報告単位
+管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action
+提示」を追加し、報告単位[Lane/Workstream/Feature/Trial群/Production
+wiring/Article単位/Investigation等]を基準に、報告可能になった時点での
+即時報告・報告済み未回答項目の把握・次回報告時のフル再掲(短縮・省略
+しない)・報告単位close時のNext Action/Reminder提示を恒久PMルールとして
+明記した。3節「PM Closeout Mandatory Check」へ項目15〜18[並列報告単位を
+待って遅延していないか/未回答をフル再掲したか/Next Action・Reminderを
+示したか/並列する他の報告単位のStatusを見落としていないか]を追加し、
+Gate 5・Gate 6の記述へ未回答再掲との接続を追記した。9-1「候補セクション
+と選択基準」へ「未回答再掲」「Next Action / Reminder」を候補セクション
+6・7として追加し、該当時は省略不可であることを明記した。
+2026-09-09(PM-CLOSEOUT-CONSOLIDATION-59で2節へ新小節「2-3.
 Artifact supersession確認」を新設し、同じ記事・episodeが仕様変更・
 Prompt改善で近く再生成される予定がある場合は旧completed artifactの
 個別修正前に確認A〜Cを行う原則・例外・暫定修正版と次期最終候補の分離を
@@ -118,11 +130,15 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
 - **Gate 5 — Open Item Review**: closeout時に、未処理の
   `USER_DECISION_REQUIRED` / 未採否の`VALIDATED` / 未配線の`APPROVED_FOR_PRODUCTION` /
   未報告Trial / Open Item漏れの有無を確認する。OPEN-129 mandatory化
-  Triggerの到達状況(2026-09-09追記)も確認する。
+  Triggerの到達状況(2026-09-09追記)も確認する。報告済みだが未回答の
+  項目(12節「報告単位管理ルール」)をフル再掲対象として洗い出すことも
+  含む(2026-09-10追記)。
 - **Gate 6 — 次工程前PM確認**: 次の実装・Trial・Production作業に着手する前に、
   未処理UDR / APPROVED未配線 / SSOT漏れ / 無断追加Trial /
   DEV・Trial誤認が無いかを確認する。Phase 2 Writer配線に着手する場合は
-  `OPEN-132`チェックリストの確認も含める(2026-09-09追記)。
+  `OPEN-132`チェックリストの確認も含める(2026-09-09追記)。未回答のまま
+  報告済みの項目(12節「報告単位管理ルール」)を見落としていないかも
+  確認する(2026-09-10追記)。
 - **Gate 7 — 実務報告の受入判定**: Sonnet/Opus等の「完了」「Production反映済み」
   「動作確認済み」という報告をそのまま採用せず、Production正式path /
   runtime evidence / test / approved specとの一致 / retry・fallbackとの整合 /
@@ -264,6 +280,14 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     PM Closeoutのいずれかで確認していること(2026-09-09追記)
 14. 主要artifactの修正前にsupersession確認(2-3節)を行っていること
     (2026-09-09追記)
+15. 他の並列報告単位を待って報告を遅延していないこと(12節「報告単位
+    管理ルール」、2026-09-10追記)
+16. ユーザー未回答の過去報告をフルレポートで再掲したこと(短縮・要約
+    せず、前回提示物をそのまま含める。12節、2026-09-10追記)
+17. closeした報告単位についてNext ActionまたはReminderを示したこと
+    (何もなければ「残件なし」と明示。12節、2026-09-10追記)
+18. 並列する他の報告単位の現在Statusを見落としていないこと(12節、
+    2026-09-10追記)
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -445,10 +469,13 @@ Fableの役割は、証拠を失わずに「ユーザーが判断しやすい言
 
 ### 9-1. 候補セクションと選択基準(adaptive reporting)
 
-ユーザー向け報告は、以下5つを固定必須の見出しとして毎回すべて埋めるのでは
+ユーザー向け報告は、以下7つを固定必須の見出しとして毎回すべて埋めるのでは
 なく、「候補セクション」として扱い、その回答の目的に応じて必要な項目だけを
 組み合わせて使う(adaptive reporting)。「レス」と「報告」で別フォーマットに
 分けるのではなく、本節1つの共通ルールでFableがそのつど必要な分量を判断する。
+ただし6(未回答再掲)・7(Next Action / Reminder)は、該当する状況(未回答項目
+がある/報告単位がcloseした)であれば省略できない(2026-09-10追記、
+12節参照)。
 
 1. **現在の状態** — 現在地・実行状況をユーザーへ伝える必要がある場合のみ
    使う。1〜3文で平易に説明する。内部経緯・Agent回数・path・process詳細等は
@@ -474,6 +501,21 @@ Fableの役割は、証拠を失わずに「ユーザーが判断しやすい言
 5. **補足・技術詳細** — commit SHA・path・runtime evidence・token・
    model_id・詳細ログ等がユーザーの理解・判断に必要な場合のみ最後に置く。
    不要なら省略する。
+6. **未回答再掲**(2026-09-10、12節「報告単位管理ルール」追加) — 報告済み
+   でユーザーの回答・判断がない項目(未回答の`USER_DECISION_REQUIRED`/
+   listening待ち/Production採用判断待ち/ユーザーFeedback待ち等)がある
+   状態で別の報告単位が報告可能になった場合に使う。前回提示したフル
+   レポートを原則そのまま再掲する(短縮・要約・一部省略しない)。
+   artifact/listening link/comparison link等、ユーザー判断に必要だった
+   ものも必ず再掲する。**該当する場合は省略できない**(明示的にdeferと
+   ユーザー合意済みの項目を除く)。
+7. **Next Action / Reminder**(2026-09-10、12節追加) — 大きな報告単位が
+   closeした場合に使う。次にやるべきActionがあれば提示し、すぐ着手すべき
+   Actionはないが関連未解決事項があれば状況Reminderを示し、本当に何も
+   残っていなければ「この報告単位について残件なし」と明示する。Next
+   Actionはユーザー承認を飛ばして次工程へ進む権限ではなく、従来のPM
+   Gate(`USER_DECISION_REQUIRED`ならSTOP等)を守る。**報告単位がcloseした
+   場合は省略できない**。
 
 最重要原則: 「テンプレートを埋めるために見出しを出す」ことは禁止する。
 5項目を毎回すべて出す固定必須構造ではなく、回答の目的に応じて必要最小限の
@@ -665,6 +707,85 @@ Gatekeeper原則・Opus上限は本追記によって変更しない。
 **経緯**: OPEN-120 B-Family 4V Trial(B-4V-1一人称漏れ・B-4V-2
 Leakage)の再試行方針についてユーザーが決定した運用方針
 (PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04、2026-09-09)。
+
+## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**
+
+本節はLane A/B等、特定の並列構成へ限定するものではない。並列数はA/B/C/D…
+複数を前提とする。
+
+### 12-1. 報告単位(Reporting Unit)を基準に管理する
+
+他の並列作業を待たずにユーザーへ報告できる「ひと固まり」(Lane/
+Workstream/Feature/Trial群/Production wiring/Article単位/Investigation等、
+名称は問わない)を1報告単位として扱う。
+
+### 12-2. 1つの報告単位が報告可能になったら即時報告する
+
+Trial終了 / `USER_DECISION_REQUIRED`到達 / `APPROVED_FOR_PRODUCTION`到達 /
+Production wiring完了 / 重要な途中結果判明 / blocker発生 / user review
+可能なartifact完成 / closeout可能、のいずれかに達したら、他の並列作業の
+完了を待たずに報告する。禁止: 「AもBも揃ってからまとめて報告」と待つこと。
+
+### 12-3. 未回答の報告は次の報告時に必ず再掲する
+
+報告済みでユーザーのFeedback/判断がない項目がある状態で別の報告単位が
+報告可能になった場合、新規報告だけを出さず、未回答分も合わせて再掲する
+(時点1: A→時点2: A+B→時点3: A+B+C)。ユーザーが明示的に回答・判断した
+項目のみ再掲対象から外す。「一度報告したからユーザーが覚えている前提」に
+しない。
+
+### 12-4. 再掲時は必ずフルレポートを再掲する
+
+簡易サマリではなく前回提示したフルレポートを原則そのまま再掲する(短縮・
+要約・一部省略しない。冗長でもよい。ユーザーが過去ログを探さずその1回で
+判断できることを優先する)。前回レポート中の事実がその後更新された場合は
+「前回フルレポート」+「その後の更新・訂正内容」が明確に分かる形で提示
+する。artifact/listening link/comparison link等、ユーザー判断に必要
+だったものも必ず再掲する。
+
+### 12-5. 大きな報告単位がcloseしたら必ず次の状態を示す
+
+「完了しました」で終わらせず、以下を示す。(A) 次にやるべきActionがあれば
+Next Action/Suggestion。(B) すぐ着手すべきActionはないが関連未解決事項が
+あれば状況Reminder。(C) 本当に何も残っていなければ「この報告単位について
+残件なし」と明示する。例:「Household記事はclose。次はDiscovery仕様
+そのもののProduction最終化が残っています。」
+
+### 12-6. Next Actionを勝手な仕様決定にしない
+
+Next Action提示はユーザー承認を飛ばして次工程へ進む権限ではない。従来の
+PM Gate(`USER_DECISION_REQUIRED`ならSTOP / `VALIDATED`からProduction採用
+へ自動移行しない / `APPROVED_FOR_PRODUCTION`のみProduction wiring可 /
+新仕様・意味変更・大きなQCD変更はユーザー判断 / 明示的deferredはdeferred
+として管理)を守る。Next Actionは「次に何があるかを見えるようにする」ため
+のものである。
+
+### 12-7. 未回答管理を明示的に行う
+
+Fableは常に「報告済みだが未回答の項目」を把握し、次回報告を作る前に必ず
+確認する(未回答の`USER_DECISION_REQUIRED`/listening待ち/Production採用
+判断待ち/ユーザーFeedback待ち/報告済みだがユーザーが触れていない項目)。
+存在すれば新規報告と一緒にフルレポートを再掲する(12-4)。明示的にdeferと
+ユーザー合意したものは毎回の再掲不要だが、大きなtask closeout時には
+Reminder対象として確認する。
+
+### 12-8. PM Closeoutとの統合
+
+「3. PM Closeout Mandatory Check」へ項目15〜18(他の並列報告単位を待って
+報告を遅延していないか / ユーザー未回答の過去報告をフルレポートで再掲
+したか / closeした報告単位についてNext ActionまたはReminderを示したか /
+並列する他の報告単位の現在Statusを見落としていないか)を追加した。
+既存Gate 5(Open Item Review)・Gate 6(次工程前PM確認)のUSER_DECISION_
+REQUIRED放置防止と統合し、両Gateの記述へ本節への参照を追記した(2節参照)。
+
+**今回への即時適用**: 現在のLane A(Household/Discovery/News)/Lane B
+(3V)にも直ちに適用する。
+
+**経緯**: 2026-09-10、ユーザーが恒久PMルールとして正式決定した
+(PM-CLOSEOUT-CONSOLIDATION-66)。会話限りのルールにせず正式PM運用ルール
+として記録する。
 
 ---
 
@@ -991,4 +1112,24 @@ Leakage)の再試行方針についてユーザーが決定した運用方針
   二重に最終版として承認しかけたことを受けたユーザー決定(文書編集のみ、
   コード・Prompt変更なし)。詳細は`DECISION_LOG.md`
   `PM-CLOSEOUT-CONSOLIDATION-59`エントリ・`OPEN_ITEMS.md`OPEN-135/138行
+  参照。
+- 2026-09-10(PM-CLOSEOUT-CONSOLIDATION-66): 新設「12. 報告単位管理ルール
+  (Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示」を
+  追加した。報告単位(Lane/Workstream/Feature/Trial群/Production wiring/
+  Article単位/Investigation等、名称は問わない)を基準に、(1)報告可能に
+  なった時点での即時報告(他の並列作業を待たない)、(2)未回答管理(報告済み
+  だがユーザーの回答・判断がない項目の把握)、(3)未回答フル再掲(次の報告
+  作成時に前回提示したフルレポートを短縮・省略せずそのまま再掲、artifact/
+  listening link等も含む)、(4)報告単位close時のNext Action/Reminder提示
+  (Next Actionはユーザー承認を飛ばす権限ではなく既存PM Gateを維持)を
+  恒久ルールとして明記した。「3. PM Closeout Mandatory Check」へ項目
+  15〜18(並列報告単位を待った遅延の有無/未回答フル再掲の実施/Next
+  Action・Reminder提示/並列する他の報告単位Statusの見落とし確認)を追加し、
+  Gate 5・Gate 6の記述へそれぞれ1〜2行、未回答再掲との接続を追記した。
+  9-1「候補セクションと選択基準」へ候補セクション6(未回答再掲)・7(Next
+  Action / Reminder)を追加し、該当時は省略不可であることを明記した
+  (文書編集のみ、コード・Prompt変更なし)。経緯: 2026-09-10、ユーザーが
+  「報告単位管理・即時報告・未回答フル再掲・Next Action提示」を恒久PM
+  ルールとして正式決定した(Lane A/Bのみに矮小化せず、内容を弱めずに
+  反映)。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-66`エントリ
   参照。
