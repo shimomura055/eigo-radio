@@ -9549,6 +9549,58 @@ attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タ�
 触っていない。Production/Prompt編集・新規Trial着手は実施していない
 (SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-57: Household FIX-03(topic_intro承認)
+完了のSSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+Household FIX-02継続分(§13〜14)とFIX-03の結果をSSOTへ反映した。
+並列稼働中: News N-4(`er011_output/news_stage3_*`)、Discovery D-3
+(`er011_output/discovery_stage3_*`)、いずれも本タスクでは対象外
+(SSOT・Git担当のみ)。
+
+**承認記録の要旨(正規経路、status捏造なし)**: (1) A-FACT03-2に基づく
+FIX-02継続3で、kp2_englishを既存人間承認経路(`record_human_approval()`)
+でHUMAN_APPROVEDとして記録し、disfluency QA(既存関数の事後適用)にも
+PASSした。残る唯一のブロック要因topic_intro=STOPPEDはユーザー決定の
+対象範囲外だったため、Sonnetは承認代行を拒否しSTOPした(FIX-02継続4も
+同じ安全原則を再確認しSTOPを維持、規律遵守の好例)。(2) A-FACT03-4=(a)
+に基づくFIX-03で、topic_introをkp2_englishと同じ既存承認経路で
+HUMAN_APPROVEDとして記録した(note「現行ASR cascadeによる事後再照合
+PASS」、`tts_generation_results.json`の`status`フィールドは書き込み
+前後で不変であることをassertで確認済み、捏造なし)。Assembly実行
+(duration_seconds=284.754・peak=0.8312・clippingなし)、Gate既定OFF・
+opt-in ON両経路PASS、Gate 7全充足のplayer生成まで到達し(sha256 32件中
+31件original一致、point_oneのみrevision3a差分)、費用¥0。到達Status=
+**USER_FINAL_AUDIO_REVIEW_REQUIRED**(ユーザー最終試聴待ち)。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-57へ)、
+OPEN-138行(FIX-03完了・試聴待ち・承認記録2件[kp2_english/topic_intro]は
+いずれも正規経路[既存`record_human_approval()`]・A2は無変更を追記)、
+OPEN-139行(FIX-03で新たに確認した判断材料を追記: Household B1B
+topic_introは2026-08-17承認時に生成時ASR FAIL×6のまま承認されていた
+[旧cascadeの限界]、現行Gate導入前の承認済みsegmentには証跡不整合が
+あり得る、policyは未決定のまま[新policy採用ではない])を反映した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へFIX-02継続3(Sonnet/113k)・継続4
+(Sonnet/65k、STOP正当)・FIX-03(Sonnet/158k)・本タスクの行を追記し、
+所見(「Sonnetは承認代行・status捏造を拒否してSTOPした[規律遵守の
+好例]」)を1行記録した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-57)。Git操作: G1=
+`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02_REPORT.md`(§13〜14)・
+`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-03_REPORT.md`(新規)・
+`er011_output/open138_household_fact03_b1b_minimal_fix_02/`・
+`er011_output/open138_household_fact03_b1b_minimal_fix_03/`配下py/json/
+jsonl/html・`er003_output/n3_01/household/fact03_fix_02/b1b/audit/`配下
+json・同`b1b/`配下md/json/html(wav除外)。G2=`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。いずれも
+ファイル名指定でcommitし`origin/main`へpush。並列稼働中のNews段階3
+(`er011_output/news_stage3_*`)、Discovery段階3(`er011_output/
+discovery_stage3_*`)、`CURRENT_SPEC.md`、`er006_output/`、
+`er011_output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも
+本タスクでは触っていない。Production/Prompt編集・新規Trial着手・
+policy策定は実施していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
