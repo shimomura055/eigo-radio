@@ -10035,7 +10035,7 @@ Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
 **Trial結果の要旨**: Household(Discovery/Why、Ledger v5)の一本化を、
 Discovery Focus Module軽微改善(`FAMILY-A-DISCOVERY-STAGE4-CAUTIONARY-
 LANGUAGE-TRIAL-10`のPart B案1=`cautionary_constrained`、未承認候補、
-保険文0/6を確認済み)を用いてA2/B1B記事→Support→Audio→試聴artifactまで
+保険文0(A2・B1Bとも)を確認済み)を用いてA2/B1B記事→Support→Audio→試聴artifactまで
 作成した(Trial harness、既存Production QA/Audio Gate経路のみ使用)。
 Trial-10条件は無変更のままread-only importで再利用し、独自出力先で
 Gate 4静的確認(Production関数再定義なし、baseline↔cautionary差分は
@@ -10190,8 +10190,8 @@ B1B run2=Fact Checkerの一般化指摘)。(4)因果は確定しなかった: N=
 (合計12本)は小さく、この上振れがPart B案1の副作用か既存QA機構の
 通常のばらつきかは断定できなかった。(5)一方で
 `HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`はPart B案1適用条件
-(cautionary_constrained)を用いてN=1完成経路を通し、保険文0/6・
-Human Review Lock発動なしで成立した(`PM-CLOSEOUT-CONSOLIDATION-63`
+(cautionary_constrained)を用いてN=1完成経路を通し、保険文0(A2・
+B1Bとも)・Human Review Lock発動なしで成立した(`PM-CLOSEOUT-CONSOLIDATION-63`
 エントリ参照)。(6)以上を踏まえ、ユーザーはPart B案1のProduction採用
 (Discovery Focus Module正式組込み)を**(c)見送り**と判断した
 (2026-09-10)。`editorial_mode="discovery_why"`の正式registry登録も
@@ -10243,6 +10243,97 @@ LOG.md`・`er011_household_unified_final_candidate_01_segfix_comment3_
 いずれも本タスクでは触っていない(ACTIVE_TASK/RESULT_PACKETは更新は
 したがcommit対象外)。Production/Prompt編集・`CURRENT_SPEC.md`編集は
 実施していない(SSOT反映+comment_3限定のsegment再生成+Git記録のみ)。
+
+## PM-CLOSEOUT-CONSOLIDATION-65: Household最終版closeout+3V(3声Voice方式)の
+APPROVED_FOR_PRODUCTION反映+表記ルール新設
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-65)に基づき実施した。並列稼働中の読み取り
+専用タスク2件(News Stage4状況報告の編纂、Discovery仕様reconcile分析。
+いずれもroot直下`*_REPORT.md`のみ新規作成)とは独立(それらの生成物・
+SSOT・一時ファイルには触れていない)。
+
+**表記ルール新設(2026-09-10、ユーザー指示)**: ユーザー向け報告・SSOT
+記述では、管理上の略号だけで書かず必ず内容が分かる名称を併記する運用を
+新設した(例: ×「Part B案1」 ○「Discoveryの『取扱説明書的な保険文を
+抑えるPrompt制約案』(Part B案1)」)。`docs/pm/PM_GOVERNANCE.md`9-3節へ
+追記した。本エントリ以降の記述もこの形式に従う。
+
+**Lane A-1: Household最終版closeout(ユーザー正式決定、2026-09-10)**:
+ユーザーが`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`(Discovery/Whyの家庭用
+冷蔵庫クリスパー記事、A2/B1B、B1B comment_3差し替え版
+[PM-CLOSEOUT-CONSOLIDATION-64]反映済み)を最終試聴し**OK**と判断した。
+これを受け、同artifactを**現行の正式Household完成artifact**として
+closeoutした。旧Household完成版(`er003_output/n3_01/household/`、
+2026-08-17承認)・A-FACT03-5系fallback(`er011_output/
+open138_household_fact03_b1b_minimal_fix_03/`)は履歴として保持するが、
+今後の正式候補として再提示しない(同一記事の二重最終版化を避ける運用、
+`docs/pm/PM_GOVERNANCE.md`2-3節)。`OPEN-138`(Household Ledger FACT-03の
+事実精度)は、(1)Ledger改訂完了(v3→v4→v5)、(2)是正済みLedgerに基づく
+新版記事が正式artifactとなり旧誤記事がsupersededされたこと、の2点により
+**CLOSED**と判定した。残件は`OPEN-139`(2026-08-17当時の遡及QA方針、
+現行Gate導入前の既存公開episode一般の証跡不足問題)へ引き継ぐ(本Itemの
+範囲外)。
+
+**軽微訂正**: `PM-CLOSEOUT-CONSOLIDATION-64`エントリ(および同一箇所の
+`PM-CLOSEOUT-CONSOLIDATION-63`エントリ)・`OPEN_ITEMS.md`OPEN-135行に
+あった「保険文0/6」という表記は、最終候補がA2/B1B各1本(N=1)であるため
+分母「/6」が不適切であり、「保険文0(A2・B1Bとも)」へ訂正した
+(DECISION_LOG.md 2箇所、OPEN_ITEMS.md OPEN-135行2箇所、計4箇所)。
+
+**発見事項(未対応、報告のみ)**: 上記訂正作業中、`OPEN_ITEMS.md`
+OPEN-135行の`PM-CLOSEOUT-CONSOLIDATION-64`追記(5)に
+「HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01自体はcurrent_focus(Before)の
+まま...成立した」という記述があるが、同じOPEN-135行の
+`PM-CLOSEOUT-CONSOLIDATION-63`追記には「使用したPart B案1
+(`cautionary_constrained`)はN=1完成経路でも保険文0(A2・B1Bとも)・
+Lock発動なしを維持した」とあり、**cautionary_constrained(Part B案1
+適用)かcurrent_focus(Before、Part B案1未適用)かで記述が矛盾している**。
+`DECISION_LOG.md`側(本エントリ上記)は「Part B案1適用条件
+(cautionary_constrained)を用いて」と記載されており、こちらはOPEN-138行
+の`PM-CLOSEOUT-CONSOLIDATION-63`追記と整合する。本タスクの委任範囲
+(「保険文0/6」の数値表記訂正のみ)を超えるため、この矛盾自体は修正せず、
+Fable/ユーザーへ報告する(`USER_DECISION_REQUIRED`候補: いずれの条件が
+実際に使われたか事実確認のうえ、正しい方の記述へ統一が必要)。
+
+**Lane B: 3V(3声Voice方式)に関するユーザー正式決定(2026-09-10)**:
+(1)今回の3V記事(`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01`)はTrial
+記事としてcloseoutした。(2)3V方式自体を**`APPROVED_FOR_PRODUCTION`**と
+した(Status更新: `VALIDATED`→`APPROVED_FOR_PRODUCTION`)。ただし
+**`PRODUCTION_WIRED`にはしない**。`PRODUCTION_WIRED`化の完了条件
+(a)〜(k)、および配線時に無視してはならない残存課題(3V長文化・Tension
+再膨張・Local Rewriteによる人物Voice抽象化失敗モード・Fact Checker A'
+負荷・Distinctness維持・Audio structural gate mandatory化deferred
+[OPEN-129])を`OPEN_ITEMS.md`OPEN-120行へ記録した。(3)2V(2声Voice方式)/
+3Vそれぞれ別テーマで1本ずつProduction実運用確認を行う計画(観測項目11点)
+を登録した(着手は別タスク)。(4)4V(4声Voice方式)は明示的に
+`DEFERRED`とした(2V/3V追加記事のユーザー試聴完了まで着手しない)。
+
+**SSOT反映**: `OPEN_ITEMS.md`(ヘッダ、OPEN-138行[closeout]、OPEN-135行
+[Household最終版closeoutの追記+「保険文0/6」訂正]、OPEN-120行[Lane B
+4項目])、`ARTIFACT_REGISTRY.md`(Household項を「正式完成artifact
+(ユーザー最終試聴承認2026-09-10)」として明記)、`CURRENT_SPEC.md`
+(「## B-Family(Voices)Editorial Type」節の3V状態行のみを`VALIDATED`→
+`APPROVED_FOR_PRODUCTION`[未配線]へ更新、仕様本文は追加・変更なし)、
+`docs/pm/PM_GOVERNANCE.md`(9-3節新設)、`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`(本タスク行追記)を反映した。コード・Prompt・Production実装は
+一切変更していない(SSOT反映のみ、費用¥0)。
+
+**Dangling Reference Check**: 本タスクで使用した新規仕様名・rule名
+(「表記ルール」「`PRODUCTION_WIRED`化の完了条件(a)〜(k)」等)はすべて
+既存SSOT(`docs/pm/PM_GOVERNANCE.md`Gate 3、`docs/pm/PM_BRIEF.md`Status
+語彙)の既存定義の言い換え・列挙であり、未定義語の新規追加はない。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-65)。Git操作: ファイル名指定で`git add`
+(`git add -A`不使用)、対象=`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`ARTIFACT_REGISTRY.md`・`CURRENT_SPEC.md`・`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。1 commitで`origin/main`へpush。
+並列タスクが作る`*_REPORT.md`・`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`・`er006_output/`・`er011_output/
+attempt_history.jsonl`・既存の未追跡ファイル群はいずれも本タスクでは
+触っていない(commit対象外)。Production/Prompt編集は実施していない
+(SSOT反映のみ)。
 
 ## 参照元
 

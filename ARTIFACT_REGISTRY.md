@@ -63,7 +63,8 @@ Generation・A2 Core Explanatory Logic Preservationを使った、P-seriesとは
 | Household | B1-B | PASS/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01時点から内容変更なし | 対象外(A2固有の不具合だったためB1-Bは無変更) | `NOT_REVIEWED` | NOT_APPROVED |
 | Household | A2 | **REVIEW_REQUIRED**(2026-08-17 SoT Consistency Cleanupで訂正: `household/a2/fact_qa.json`の実際の最終記録値は`PASS`ではなく`REVIEW_REQUIRED`。指摘内容はPoint Two周辺の精度[バナナの追熟段階、ジャガイモ/サツマイモの最適湿度]で、今回の修正対象[fruit/vegetable二分法]の範囲外かつB1の同等表現と同水準と判断し、記録の上で許容[`er003_output/n3_01/household/a2/audit/fix01_fact_checker_acceptance_note.json`参照]。無限再生成はしていない)/LEDGER_COMPLIANT | 完成(clippingなし)。FIX-01でJapanese title のinstruction leakageとfruit/vegetable二分法を手動編集で修正・再assemble済み | **本番article.mdはFIX-01の手動編集版のまま。ER-003-N3-ROOT-FIX-01で正式採用したA2_KAI1_INSTRUCTION(Core Logic Preservation原則入り)による再生成は未実施**(→[OPEN_ITEMS.md](OPEN_ITEMS.md) OPEN-41) | `NOT_REVIEWED` | NOT_APPROVED |
 
-**Household一本化最終候補(2026-09-10更新、supersededへ整理)**:
+**Household — 正式完成artifact(ユーザー最終試聴承認2026-09-10)、旧版
+supersededへ整理**:
 上記2行(`er003_output/n3_01/household/`)は**旧完成版**であり、本項の
 一本化最終候補によりsupersededされた(参考のため削除はしていない)。
 `HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`(Discovery Focus Module+Part B
@@ -79,7 +80,10 @@ Validation Gate opt-in ON再PASS済み(詳細はDECISION_LOG.md
 `PM-CLOSEOUT-CONSOLIDATION-64`エントリ参照)。旧artifact
 (`er011_output/open138_household_fact03_b1b_minimal_fix_03/`、
 A-FACT03-5系)も本候補によりsupersededとして整理した(いずれのファイル
-も削除はしていない、fallback候補としての再提示は行わない)。
+も削除はしていない、fallback候補としての再提示は行わない)。2026-09-10、
+PM-CLOSEOUT-CONSOLIDATION-65にて本項を**Householdの正式完成artifact**
+としてcloseoutした(ユーザー最終試聴承認済み、以後は旧版・fallbackの
+再提示を行わない運用を維持する)。
 
 **注意**: 本項目は「Household記事1本の最終版承認」を記録するもので
 あり、本候補が用いた実験的Prompt要素(Discovery Focus Module Part B

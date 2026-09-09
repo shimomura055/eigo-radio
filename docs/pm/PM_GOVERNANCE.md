@@ -554,6 +554,14 @@ Lane報告も含めてLane A/Bをまとめ直して再掲する。(3) 再掲す�
   読みやすくするものであり、`USER_DECISION_REQUIRED`を省略しないことは
   9-1・9-2で明示している(PM-GOVERNANCE-ADAPTIVE-REPORTING-06)。
 
+### 9-3. 名称併記ルール(2026-09-10、ユーザー指示)
+
+ユーザー向け報告・SSOT記述では、管理上の略号だけで書かず、必ず内容が
+分かる名称を併記する(例: ×「Part B案1」 ○「Discoveryの『取扱説明書的な
+保険文を抑えるPrompt制約案』(Part B案1)」)。2026-09-10以降のユーザー向け
+報告・SSOT記述に恒久適用する(経緯: PM-CLOSEOUT-CONSOLIDATION-65、
+ユーザー指示)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
