@@ -9480,6 +9480,75 @@ Ledger v5是正中の`verified_fact_ledger.txt`・
 本タスクでは触っていない。Production/Prompt編集・Trial着手は実施
 していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-56: 承認5件反映・3V Audio Trial VALIDATED
+closeout・OPEN-139詳細記録+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+ユーザー正式決定5件をSSOTへ反映した。並列稼働中: News N-4
+(`er011_output/news_stage3_*`)、Discovery D-3(`er011_output/
+discovery_stage3_*`)、Household kp2承認(`er003_output/n3_01/
+household/fact03_fix_02/`)、いずれも本タスクでは対象外(SSOT・Git
+担当のみ)。
+
+**ユーザー決定の要旨**: (1) N-4=(a)別テーマの新規News Ledgerを既存
+Research経路で作成、Focus+hintでA2/B1B N=3、題材依存の切り分け+News
+Completion実走(`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09`、
+実施中)。(2) D-3=(a)Ledger v5で現行版 vs 最小調整版N=3
+(`FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09`、実施中)。
+(3) A-FACT03-2=(a)kp2_english試聴OK→HUMAN_APPROVED→Assembly→player
+(実施中)。(4) A-FACT03-3=OPEN-139を起票のみ詳細化(新policyは決めず、
+未決事項・trigger・判断が必要な理由だけを記録)。(5) B-3V-4=(a)3V完成
+episode試聴OK、3V Audio Trial(Trial-02版基準)を**VALIDATED**として
+closeout(VALIDATED≠Production採用)。
+
+**3V Audio Trial closeoutの要旨**: 新規`EDITORIAL-B-FAMILY-VOICES-
+3V-AUDIO-TRIAL-01-CLOSEOUT_REPORT.md`を作成し、ユーザー指定10項目
+(Voice assignment/required_structure 3V/Comment 3V wording/実測尺
+356.6秒[2V比+51.5秒・約+17%]/Analytical Leakage 0/Distinctness 1.0・
+0.933/Fact A' 2/2 PASS/Audio structural gate両経路PASS+negative
+control検知/listening artifact/2Vとの差分・負荷感)を表で整理し、
+Gate1=**VALIDATED**(ユーザー試聴承認2026-09-09)と確定した。
+Production採用判断は別途USER_DECISION_REQUIRED(配線に必要な5項目
+[registry可変voice数シグネチャ・Gate辞書point_three登録・Comment 3V
+Contract化・mode/level命名・Voice 3(Schedar)本採用格上げ承認]を継続
+提示)。本closeoutは新規コード実行を伴わないSSOT整理のみ(費用¥0)。
+
+**OPEN-139詳細化の要旨**: 新policyを決定・`CURRENT_SPEC.md`への追加は
+行わず、未決事項を4点へ整理して記録した。(1)遡及QAの範囲(現行Gate
+導入前の全episodeへ及ぼすか、事実誤り確定時のみに限定するか)、
+(2)修正方式(「既存承認済みArtifactへの最小修正例外」方式を恒久的な
+標準手順として一般化してよいか)、(3)trigger(次に事実誤りが確定した
+時点で都度判断するか、Family A Completion Programが量産段階に近づいた
+時点でまとめて判断するか)、(4)判断が必要な理由(「完成audioの遡及修正
+は不要」という既存運用方針とFact Safety最上位原則との整合が未整理、
+量産でepisode数が増えるほど同種の事後QA不合格ケースの運用負荷が増す
+可能性)。状態は`USER_DECISION_REQUIRED`のまま(起票の詳細化のみ、
+今回は判断しない)。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-56へ)、
+OPEN-120行(3V Audio=VALIDATED・closeout Report参照・Production採用
+判断はUDR継続)、OPEN-129行(mandatory化Trigger(a)=到達済みのまま
+変更なし・Trigger(b)=引き続き未達、closeoutはTriggerに影響しないことを
+明記)、OPEN-135行(N-4/D-3を新規管理IDで起票・実施中)、OPEN-138行
+(A-FACT03-2実施中)、OPEN-139行(上記4点の未決事項詳細化)へ反映した。
+`CURRENT_SPEC.md`「## B-Family(Voices)Editorial Type」節へ3V(人物
+Voice)=VALIDATED(Trial、2026-09-09、Production採用は別判断)の1行を
+追加した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へN-4(Sonnet/MEDIUM)・
+D-3(Sonnet/MEDIUM)・kp2承認(Sonnet/LOW)・本タスクの行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-56)。Git操作: G1=
+`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01-CLOSEOUT_REPORT.md`
+(新規)。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・`CURRENT_SPEC.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。いずれもファイル名指定で
+commitし`origin/main`へpush。並列稼働中のNews段階3
+(`er011_output/news_stage3_*`)、Discovery段階3(`er011_output/
+discovery_stage3_*`)、Household kp2承認(`er003_output/n3_01/
+household/fact03_fix_02/`)、`er006_output/`、`er011_output/
+attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスクでは
+触っていない。Production/Prompt編集・新規Trial着手は実施していない
+(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

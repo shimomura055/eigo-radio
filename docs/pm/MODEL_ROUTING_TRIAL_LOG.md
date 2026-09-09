@@ -264,6 +264,10 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | HOUSEHOLD-LEDGER-FACT-03-04-CONSISTENCY-FIX-03(確定値) | LOW〜MEDIUM(L1/Sonnet) | Sonnet | Discovery段階2Trial(FAMILY-A-DISCOVERY-STAGE2-INTERPRETATION-RULE-TRIAL-08)で発見されたLedger v4のFACT-03修正文言とFACT-04の内部矛盾を是正するLedger v4→v5更新作業(FACT-03からバナナ・トマトを削除、FACT-04は無変更、既存Fact Checkerで確認) | Haiku不適(Ledger内容の整合判断を伴う)、Opus不要(既存Research/Ledger更新パターンの適用) | 105k | 465s | 0 | なし | なし | なし(FACT-03/04の矛盾を最小差分で解消、Discovery段階2 Trial-08の8本中4本に矛盾文を確認したが再生成は行わず、今後の再実行はv5使用) | 不明(Production配線対象外、Ledger[非コード]更新のみ。実測費用¥3.31) |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-54(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、Household修正継続2回分結果反映[OPEN-138行]、Discovery段階2Trial結果反映[OPEN-135行]、新規OPEN-139起票、DECISION_LOGエントリ新設、Discovery段階2・Household継続2の確定値反映)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-55(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、News段階2結果反映[OPEN-135/OPEN-133/OPEN-134行、Gate 1=REJECTED]、Household Ledger v5是正反映[OPEN-138行]、DECISION_LOGエントリ新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | ユーザー決定N-4=(a)(別テーマの新規News Ledgerを既存Research経路で作成、手動Major/Daily判定、Focus+hintでA2/B1B N=3、題材依存の切り分け+News Completion実走)を受けた新規News Ledger Trial、既知パターン(既存Research/Writer経路の再実行) | Haiku不適(Research/記事生成・診断を伴う)、Opus不要(設計方針は既にユーザー決定済み、実行検証のみ) | 不明(並列稼働中、次回Fable記録時に追記) | 不明 | 不明 | 不明 | 不明 | 不明 | 不明(Production wiringなし、Focus+hintは採用済み扱いにしない) |
+| 2026-09-09 | FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | ユーザー決定D-3=(a)(Ledger v5で現行版 vs 最小調整版をN=3で比較、Fact Checker緩和は禁止、比較artifact提示)を受けたDiscovery段階3Trial、既知パターン(段階2診断手法の踏襲) | Haiku不適(記事生成・比較検証を伴う)、Opus不要(設計方針は既にユーザー決定済み、実行検証のみ) | 不明(並列稼働中、次回Fable記録時に追記) | 不明 | 不明 | 不明 | 不明 | 不明 | 不明(Production配線なし、Trial harness内実行のみ) |
+| 2026-09-09 | HOUSEHOLD-FACT-03-KP2-HUMAN-APPROVAL-AND-ASSEMBLY-01(並列稼働中) | LOW(L1/Sonnet) | Sonnet | ユーザー決定A-FACT03-2=(a)(kp2_english試聴OK→HUMAN_APPROVED記録→Assembly→player生成)を受けた承認記録・Assembly実行、既知パターン(既存`record_human_approval()`+`stage_assemble_b1()`の適用) | Haiku不適(承認記録・Assembly実行を伴う)、Opus不要(新規設計判断ではなく既存前例の適用のみ) | 不明(並列稼働中、次回Fable記録時に追記) | 不明 | 不明 | 不明 | 不明 | 不明 | 不明(完了後USER_FINAL_AUDIO_REVIEW) |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-56(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、承認5件反映[OPEN-120/OPEN-129/OPEN-135/OPEN-138/OPEN-139行]、3V Audio Trial VALIDATED closeout Report新規作成、DECISION_LOGエントリ新設、CURRENT_SPEC.md B-Family節1行追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明(closeout Reportは新規コード実行なし、費用¥0) |
 
 ## 変更履歴
 
@@ -505,3 +509,14 @@ TRIAL-SETUP-01`の次から起算)
   L0-01`・`NEWS-DISCOVERY-COMPARISON-ARTIFACT-L0-01`)、うちHaiku起因の
   Sonnet再作業が発生したのは1件(定義照合コスト)。中間レビュー・正式
   Closeout Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-56、本タスク): ユーザー正式決定
+  5件(N-4/D-3/A-FACT03-2/A-FACT03-3/B-3V-4)を受け、新規行
+  `FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09`(並列稼働中、
+  Sonnet、MEDIUM)、`FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-
+  TRIAL-09`(並列稼働中、Sonnet、MEDIUM)、
+  `HOUSEHOLD-FACT-03-KP2-HUMAN-APPROVAL-AND-ASSEMBLY-01`(並列稼働中、
+  Sonnet、LOW)、本タスク(Sonnet、LOW)を追記した。3V Audio Trial
+  (`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01`)はユーザー試聴承認
+  によりGate1=VALIDATEDとして新規closeout Reportでcloseoutした(新規
+  コード実行なし、費用¥0)。中間レビュー・正式Closeout Triggerの到達
+  判定・再計算はいずれも実施していない。

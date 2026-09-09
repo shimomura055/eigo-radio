@@ -1,7 +1,23 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
-**最終更新: 2026-09-09(第29弾、PM-CLOSEOUT-CONSOLIDATION-47、A3-UDR-3/
+**最終更新: 2026-09-09(第30弾、PM-CLOSEOUT-CONSOLIDATION-56、3V Audio
+Trial VALIDATED closeoutのSSOT反映)**: ユーザー正式決定(B-3V-4=(a)、
+3V完成episode試聴OK)により、`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-
+TRIAL-01`(Trial-02版基準、3声・16 segment・Audio Validation Gate
+両経路PASS・実測356.6秒)をGate1=**VALIDATED**として新規closeout
+Report(`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01-CLOSEOUT_
+REPORT.md`)で確定した。VALIDATEDはTrial範囲の技術的成立を意味する
+のみで、Production採用(`APPROVED_FOR_PRODUCTION`)は別途ユーザー判断
+のまま(配線に必要な5項目[registry可変voice数シグネチャ・Gate辞書
+point_three登録・Comment 3V Contract化・mode/level命名・Voice 3
+(Schedar)本採用格上げ承認]は未実装で継続提示)。「## B-Family
+(Voices)Editorial Type」節へ3V(人物Voice)の状態行を1行追加した。
+既存のB1/A2 Production配線(`PRODUCTION_WIRED`済み部分)への変更は
+ない。Production/Prompt本体の変更はゼロ。詳細は`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-56`エントリ・`OPEN_ITEMS.md`OPEN-120行
+参照。
+**最終更新(直前の記録): 2026-09-09(第29弾、PM-CLOSEOUT-CONSOLIDATION-47、A3-UDR-3/
 D2-UDR-1現行案不承認のSSOT反映)**: ユーザー正式決定により、News Focus
 Module+Point Role hint(A3-UDR-3、Trial-06)・Discovery/Why Layer3 Focus
 Module(D2-UDR-1、Trial-07)は、いずれもGate1=`VALIDATED(Trial)`のStatus
@@ -583,6 +599,7 @@ Hook/Voice A/Voice B/Tension/Closing)を持つEditorial Type。B1は
 | Fact Checker `REVIEW_REQUIRED`(複合Voice帰属) | 候補A'(Ledger側`VOICE_n_EVIDENCE`タグ+「Voice本文は出典明記不要(ただし事実誤り・実在人物引用は従来どおり検証)」のopt-inルール)をProduction配線した。`er012_b_family_editorial_type_registry_01.py::fact_attribution_mode`(既定OFF、`family=="B"`のコードレベルgating)。`build_voice_attribution_block()`はタグ行から開始し、次に現れる空行/`[`開始行/`===`開始行の直前までを1エントリとして抽出する(fact本文の継続行・source/URL/counter_or_limitation/verificationを含む塊単位抽出。旧実装はタグの乗る物理1行のみを抽出しevidence本体を欠落させていたが、`OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02`で修正済み、関数シグネチャ・fail-closed挙動・ルール文言は不変)。ON時、実記事2本(B1/A2)でverdict REVIEW_REQUIRED→PASS、unsupported_specific_claims 5/6件→0件へ改善(修正後の完全blockでのruntime evidence実測、B1は不変。**A2は同修正によりPASS→REVIEW_REQUIRED[unsupported2件]へ変化**——Tension段落[Voice本文以外の地の文]の免除対象外claimが、切り詰めblockの下で見えていなかった適正な検出として回復したものであり、false accept新規発生ではない)。Local Rewrite後も帰属維持を実出力で確認 | `PRODUCTION_WIRED(opt-in、Phase 2で既定接続)`(2026-09-09ユーザー正式決定、PM-CLOSEOUT-CONSOLIDATION-29。抽出ロジックのMULTILINE-FIX-02修正版はPM-CLOSEOUT-CONSOLIDATION-31でFable受入)。スコープ: 共有Fact Checker/registry/runner opt-in入口配線済み、A-Family既定OFF・無影響(commit `3c3d7a0`/`34fe8dd`/`a865411`)。B-Family Production既定stage(Writer→Fact Checker A'→後続)への自動接続はPhase 2 Writer配線時に実施(deferred、`OPEN-132`で追跡、既定接続時はMULTILINE-FIX-02版が前提) | OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01、OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02 | 2026-09-09 |
 | OPEN-129整合 | 共有Audio Validation Gate(`er003_v1_n3_01_assemble.py::verify_episode_audio_validation_gate()`)へ、`required_structure: dict \| None = None`のopt-in引数(既定OFF)を追加し、family+level複合キーの期待構造(正本はB-Family=`er012_b_family_editorial_type_registry_01.py::build_required_structure()`、A-Family=同ファイルの新規`derive_a_family_required_structure()`)と実`tts_generation_results.json`を突合(delete/voice_swap/extra segment検知、reorderは対象外)できるようにした。既存3呼び出し元(`load_b1_sources`/`load_a2_sources`/`load_a2_sources_for_b_family`)は無変更(引数省略のまま)。既存完成episode12/12でfalse reject 0、4経路×5ケースで検知12/12(runtime evidence実測) | `PRODUCTION_WIRED`(opt-in、2026-09-09 Fable受入、commit `2814ed5`/`34fe8dd`)、opt-in導入のみ・**mandatory化は未承認**(3V/4V Trialと次回A-Family Production run実績後に別判断) | OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-PRODUCTION-WIRING-01 | 2026-09-09 |
 | Production経路 | `er012_b_family_editorial_type_registry_01.py`(A2設定`get_editorial_type_a2()`)・`er012_b_family_voices_a2_production_01.py`(Writer/Comment/日本語タイトル/Key Phrase/Voice A/B slowdown TTS/Assembly loader・timeline)・`er012_b_family_production_runner_01.py`(`level="a2"`分岐、Trialスクリプトは一切importしない) | `PRODUCTION_WIRED`(2026-09-09 Fable最終受入、commit `2b2f266`/`2fbeee3`) | EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 | 2026-09-09 |
+| 3V(人物Voice、Voice 1/2/3=Algieba/Erinome/Schedar) | 3声版(6区切り: Hook/3 Voices/Tension/Closing)をTrialスクリプトで検証。required_structure 3V・Comment 3V文言・Audio Validation Gate両経路(既定OFF/opt-in ON)PASS・negative control検知・Fact A' 2/2 PASS・Analytical Leakage 0・Distinctness 1.0/0.933・実測尺356.6秒(2V比+約17%)。ユーザー試聴により**VALIDATED**(Trial)としてcloseoutした | `VALIDATED`(Trial、2026-09-09)。**Production採用は別判断**(Trial実装のみ、Production module・registryは無変更。配線に必要な5項目[registry可変voice数シグネチャ・Gate辞書point_three登録・Comment 3V Contract化・mode/level命名・Schedar本採用格上げ承認]は未実装) | EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01-CLOSEOUT | 2026-09-09 |
 
 **最終更新: 2026-09-09(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、
 Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_PRODUCTION`)に
