@@ -8505,6 +8505,95 @@ REPORT.md`、G2=SSOT3ファイル(`CURRENT_SPEC.md`・`DECISION_LOG.md`・
 稼働中のLane A `FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05`(Sonnet、
 `er011_output/point_overlap_gap_fix_trial_*`)は本タスクで触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-37: Family A Completion Program起票
+(OPEN-135新規)・4V→3V設計修正Trial起票(OPEN-120追記)・Ledger
+Deviation Checkerコスト調査起票(OPEN-136新規)・PM_GOVERNANCE
+2-2/9-2節への追記
+
+ユーザーが2026-09-09、以下の決定を行った。
+
+**(1) Lane A — Family A Completion Program**: News(Major/Daily)・
+Trend Synthesis・Discovery(Why)の3 Editorial Typeについて「テーマ
+入力→正式Production経路でResearch/Search→Ledger/Reference→Writer→
+QA/retry/fallback→レベル別記事→音声化→Audio Gate→完成artifact」に
+到達させる包括プログラムを開始する。一括実装はせず、Step A1(Gap
+Audit、15項目×3タイプ、Status6分類、SSOT・Trial・Production確認必須、
+管理ID`FAMILY-A-COMPLETION-GAP-AUDIT-A1-01`、実施中)→Step A2(Trend、
+既存Writer配線を壊さず残存Gap[Mode指定/自動判定・Research/News Ledger
+自動供給・Trend Focus Module接続・retry/fallbackでTrend仕様維持・
+article→audio連続性]に対応、既承認範囲は進めてよいがMode自動判定等の
+新規仕様はSTOP)→Step A3(News、共通基盤再利用、Major/Daily判定・News
+固有Focus Module・Research/Ledger入口・Hanshin reference整合、Trial
+終了時REJECTED/VALIDATED/USER_DECISION_REQUIREDに分類、VALIDATED→配線
+はユーザー判断必須)→Step A4(Discovery、最初からProduction実装しない、
+対象定義・News/Trendとの排他的・再現可能な境界・固有Research方式・
+Focus Module・Ledger/Referenceの考え方・Writer固有要求をHousehold等
+過去資産とReconciliationして設計、設計判断はすべてUSER_DECISION_
+REQUIRED)の順で進める。最終到達条件はユーザーがProduction採用したもの
+がGate 3を全て満たして初めて`PRODUCTION_WIRED`とし、「コードがある」
+「Trialで動いた」「音声が一度出た」は完成扱いにしない。OPEN-134観測は
+継続、Completion作業の正式Production runは条件に合えば観測runとして
+記録する。新規`OPEN-135`として登録した。
+
+**(2) Lane B — 4V→3V設計修正Trial**: 4V Trial-02が残したB-4V-2
+(Analytical Leakage Check flagged未解消)を受け、今回のテーマでは
+4V→3Vへ変更するTrial(`EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-
+TRIAL-01`、実施中、Production採用ではない)を起票した。Voice=論点では
+なく「その立場から"I"で語れる具体的な人物」(問題によって得る・失う・
+責任を負う人物)とする。3 Voices=仕事に応募する一人の人/採用担当者・
+Hiring Manager/経営者(抽象的なBusiness/Efficiency軸ではなく、採用
+コスト・速度・会社運営・結果に責任を持つ人物)。Fairness/Legal/HR
+GovernanceはVoiceから外し、Tension/Closing側の統合・制約材料(fairness
+/bias/accountability/law/compliance=外部制約、3者の合理性は単純加算で
+答えにならない)として扱う。原因仮説: Business/EfficiencyとFairness/
+Legalが抽象的分析軸だったためWriterが数値・ROI・制度・規制の解説へ
+戻った。Promptを強める前にVoice設計を修正し仮説を検証する。評価項目
+13点(ユーザー指定)。Pairwise Voice Distinctness Check一括判定方式は
+Trialのみで実績蓄積(agreement率/FP・FN候補/elapsed/費用)を継続し、
+正式採用は別途USER_DECISION_REQUIRED。SSOT反映は`OPEN_ITEMS.md`
+OPEN-120行への追記のみとし、「Voice=具体的人物」原則はB-Family設計
+原則の候補(未承認、Trial検証中)としてOPEN-120行に記載する
+(`CURRENT_SPEC.md`は変更しない)。
+
+**(3) Ledger Deviation Checkerコスト調査**: 4V Trial-02でWeb Search
+27回(内訳11/8/8)・¥76.6が発生したことを受け、コスト削減ありきではなく
+Reconciliation(本来目的・検索内訳・重複・キャッシュ不能理由・Fact
+Safety維持の設計余地・差分検証・責任分界・過去対策の有無の確認)を
+先行させる(`LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01`、
+実施中)。改善案を提示する場合は現状/改善後/1記事あたり削減額/1,000・
+10,000記事概算/latency/Fact Safety維持可否/False Accept・False Reject
+影響/実装複雑性を必ず比較して提示する。品質低下を許容する改善案は
+不可。新Checker仕様・既存Production Checkerの挙動変更はいずれも
+USER_DECISION_REQUIRED。新規`OPEN-136`として登録した。
+
+**(4) Fable運用ルール(PM_GOVERNANCE 2-2・9-2節)の再確認・追記**:
+新QA/Validator/LLM判定/Prompt/retry提案時のコスト影響評価項目
+(2-2節)に「運用負荷」の記載が無かったため1行追記した(retry増加可能性
+は既存の「retry・Human Review増減への影響」に含まれるため追記不要と
+確認)。`USER_DECISION_REQUIRED`提示時の「判断依頼の5点セット(何が
+分かったか/なぜ判断が必要か/選択肢/Fable推奨/QCD差)」・「自明な
+failureを改善を試さず選択肢として投げない」旨が9-2節に無かったため
+1行追記した。
+
+**SSOT反映**: `OPEN_ITEMS.md`に新規OPEN-135(Family A Completion
+Program)・OPEN-136(Ledger Deviation Checkerコスト調査)を登録、
+OPEN-120行へ4V→3V設計修正Trial起票の追記、OPEN-112行へOPEN-135参照の
+追記。`docs/pm/PM_GOVERNANCE.md`2-2節・9-2節へ追記・changelog追加。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ本日の並列委任4件(A1 Gap Audit
+=Sonnet/MEDIUM、3V Trial=Sonnet/HIGH、Ledger Deviation Checkerコスト
+調査=Sonnet/MEDIUM、本タスク[SSOT反映]=Sonnet/LOW)を追記。
+`CURRENT_SPEC.md`は変更していない(設計原則はTrial段階のため)。
+
+**根拠**: 本エントリはFable(PM)からユーザー決定のSSOT反映として記録
+(個別Trial Reportは各Laneの並列タスクで別途作成される)。Git操作:
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をファイル名指定でcommitし
+`origin/main`へpush。並列稼働中のLane A Gap Audit(`FAMILY-A-
+COMPLETION-GAP-AUDIT-A1-01`)・Lane B 3V Trial(`EDITORIAL-B-FAMILY-
+VOICES-3V-PERSON-VOICE-TRIAL-01`)・Ledger Deviation Checkerコスト調査
+(`LEDGER-DEVIATION-CHECKER-SEARCH-COST-RECONCILIATION-01`)はいずれも
+別タスクであり、本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

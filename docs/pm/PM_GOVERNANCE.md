@@ -193,7 +193,7 @@ Distinctness Checkのような LLMベースQA)を提案・導入する場合、�
 - **対象**: 新QA/Validator/LLM判定/追加仕様全般。
 - **評価項目**: 1実行あたりtoken・API費用 / 処理時間・latency /
   量産時の継続コスト増(記事あたり・月あたり概算) / retry・Human Review
-  増減への影響。
+  増減への影響 / 運用負荷(運用体制・人的レビュー負荷の増減)。
 - **タイミング**: Trial前に見込みを明示する → Trial後に実測値を記録する →
   ユーザー判断(Gate 2)を依頼する際は必ずコスト影響を明示する。
 - **禁止**: コスト影響が不明なままProduction採用(`APPROVED_FOR_
@@ -460,6 +460,9 @@ Key Phrase Validator修正の隔離Trialを並列で開始しました。同音�
 - ユーザーが追加詳細を求めた場合にのみ、補足・技術詳細を展開する。
 - Fable自身の説明が複雑になった場合は、最後に1行で「要するに」を付ける。
 - 可能なら、悪い例より良い例を優先して示す。
+- `USER_DECISION_REQUIRED`をユーザーへ提示する際は、判断依頼の5点セット
+  (何が分かったか/なぜ判断が必要か/選択肢/Fable推奨/QCD差)を揃える。
+  自明なfailureを改善を試さず選択肢として投げない。
 - ユーザーへ試聴・閲覧を依頼するローカル成果物(音声player・html・音声
   ファイル等)は、必ず `file:///C:/Users/tensh/eigo-radio/<相対パス>` 形式の
   URL(Ctrl+クリックで開ける)で提示する。パスのみの記載や`SendUserFile`等
@@ -895,3 +898,15 @@ Leakage)の再試行方針についてユーザーが決定した運用方針
   (文書編集のみ、コード・Prompt変更なし)。経緯: OPEN-120 B-Family 4V
   Trial(B-4V-1〜4)の再試行方針についてユーザーが決定した運用方針
   (2026-09-09)。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-37): 2-2節「コスト影響評価」の
+  評価項目へ「運用負荷(運用体制・人的レビュー負荷の増減)」を追記(retry
+  増加可能性は既存の「retry・Human Review増減への影響」に含まれるため
+  追記不要と確認)。9-2節「PMとしての説明原則」へ「`USER_DECISION_
+  REQUIRED`提示時は判断依頼の5点セット(何が分かったか/なぜ判断が必要か
+  /選択肢/Fable推奨/QCD差)を揃え、自明なfailureを改善を試さず選択肢と
+  して投げない」旨を1行追記した(文書編集のみ、コード・Prompt変更なし)。
+  経緯: Family A Completion Program(OPEN-135新規登録)・4V→3V設計修正
+  Trial起票(OPEN-120追記)・Ledger Deviation Checkerコスト調査(OPEN-136
+  新規登録)を並列委任するにあたり、既存2-2・9-2節の記載充足を確認した
+  ユーザー指示(2026-09-09)。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-37`エントリ参照。
