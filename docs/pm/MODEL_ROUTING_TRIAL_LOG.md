@@ -195,7 +195,7 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-MODEL-ROUTING-TRIAL-TRIGGER-02 | LOW〜MEDIUM(L1/Sonnet) | Sonnet | SSOT(本ファイル)への定型節追加、機械的だが文書間整合を要する | Haiku不適(SSOT編集を伴う)、Opus不要 | 34k | 71s | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-28(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-29(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、新規Open Item起票、PM_GOVERNANCE新小節追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
-| 2026-09-09 | FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05(Lane A、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py`)中心の既知パターン修正Trial(G1/G2)、過去承認仕様との対応確認込み | Haiku不適(コード修正・retry判定ロジックを伴う)、Opus見送り(Pre-Audit-01で既存対策との重複が判明済みのため大規模(a)/(b)横断比較は不要、スコープがG1/G2に限定されたため) | 未確定(Lane A側タスクで記録) | 未確定 | 0 | 不明(Lane A側で記録) | 不明 | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05(Lane A) | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py`)中心の既知パターン修正Trial(G1/G2)、過去承認仕様との対応確認込み | Haiku不適(コード修正・retry判定ロジックを伴う)、Opus見送り(Pre-Audit-01で既存対策との重複が判明済みのため大規模(a)/(b)横断比較は不要、スコープがG1/G2に限定されたため) | 340k | 4152s | 0 | なし | あり(バックグラウンド実行での待機が発生した可能性、通知なしで検出。TTS/ASR実行やProduction/Prompt編集は伴わないためN縮小はSTOP規定内で安全実害なし) | あり(G1=実装漏れ確定・新規OPEN-133[SSOT記載と実装の不一致]・OPEN-134[NG42%はG1対象外]を新規登録、Gate1=`USER_DECISION_REQUIRED`) | 不明(配線未実施) |
 | 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01 | HIGH(L2/Opus) | Opus | 3V/4V本文Writer Trial実行計画(Fable委任案)の着手前second opinion。Fact Safety(Ledger作成方式・出典帰属)・既存Production定数(Comment Contract/Disfluency QA必須segment表/A2 slowdown対象segment表)への後方互換性・OPEN-131既存PASS実績の前提という複数のProduction安全性論点が重なっており、Sonnet単独レビューでは委任案自体に含まれる事実誤りを検出できていなかったため | Sonnet単独では不足(Fable明示のとおり)、Haiku不適(設計レビュー・複数moduleの横断コード精査を要する) | 108k | 379s | 0 | なし(初回レビューで完了、Sonnetへの追加質問なし) | なし | 不明(本レビュー自体はTrial着手前のためUDR/Production wiring対象外) | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-30 | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー原文の転記+OPEN-131 evidence欠落の実測(読み取り専用・費用¥0)+中間レビュー記録+SSOT反映+Git統合、既知パターンの踏襲 | Haiku不適(SSOT精密編集・コード実行による実測・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー自体は既に前段のOPUS-REVIEW-01で完了済み) | 179k | 778s | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02 | MEDIUM(L1/Sonnet) | Sonnet | 単一関数(`build_voice_attribution_block()`)の抽出ロジック修正+runtime evidence再取得、既知パターンのProduction修正 | Haiku不適(Ledger書式実測・fail-closed挙動維持の精密なコード修正を要する)、Opus不要(欠陥自体は前段のOpusレビューで既に特定済み、本タスクは修正実装のみ) | 163k | 1322s | 0 | なし | なし | なし(A2のPASS→REVIEW_REQUIRED変化はTP回復でありUDRではない) | 不明 |
@@ -254,3 +254,13 @@ TRIAL-SETUP-01`の次から起算)
   実装、Pairwise Voice Distinctnessのコスト見込みをPM_GOVERNANCE 2-2
   に沿って事前提示済み[上限¥300])を記録のみ追加した。中間レビュー・
   正式Closeout Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-32、本タスク): 「## Trial導入後の
+  委任実績」表のFAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05行を確定値
+  (Sonnet、MEDIUM、340k token・4152秒)へ更新した。規律違反列へ
+  「バックグラウンド実行での待機が発生した可能性(通知なしで検出)」を
+  記録した(TTS/ASR実行・Production/Prompt編集は伴わないためSTOP規定内、
+  安全実害なし)。費用超過見込みによりN=3→N=2へ縮小した判断もSTOP規定内
+  として扱う。UDR発生列へ、G1(前回Point本文埋め込み漏れ)=実装漏れ確定・
+  新規`OPEN-133`(SSOT記載と実装の不一致)・`OPEN-134`(NG 42%はG1対象外)
+  を新規登録した旨を記録した。中間レビュー・正式Closeout Triggerの
+  到達判定・再計算はいずれも実施していない。
