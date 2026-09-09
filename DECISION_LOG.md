@@ -9411,6 +9411,73 @@ history.jsonl`、`CURRENT_SPEC.md`、既存の未追跡ファイル群はいず�
 本タスクでは触っていない。Production/Prompt編集・Trial着手は実施
 していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-54: Household修正継続2回分・Discovery段階2
+Trial結果のSSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02`(OPEN-138)継続
+2回分と`FAMILY-A-DISCOVERY-STAGE2-INTERPRETATION-RULE-TRIAL-08`
+(OPEN-135段階2)の結果をSSOTへ反映した。
+
+**Household修正継続の要旨**: 継続1回目、revision2のTTS省略誘発表現
+("the low-humidity one")をrevision3aへ修正した(Fact Checker PASS・
+Ledger v4 COMPLIANT、TTS point_one attempt 1でPASS、Human Review Lock
+発動なし)。Assembly実行時、既存Production Gate(disfluency QA必須化・
+ASR Cascade改善等)が2026-08-17承認当時のレガシー13segment(disfluency
+QA未記録・一部STOPPED状態)をブロックし、`EPISODE_BLOCKED_BY_AUDIO_
+VALIDATION`で例外停止した。これはpoint_one修正とは無関係の記事全体の
+前提条件問題であり、Gate回避・承認記録の遡及作成はいずれも指示範囲外
+のため実装せずSTOPした。継続2回目、他segment再生成・承認記録の遡及
+作成は行わず、現行Gateが要求する既存QA関数(disfluency QA・ASR
+Cascade)をレガシー13segmentの既存wav(byte不変)へ事後適用した。
+disfluency 12/12 PASS、topic_intro ASR再照合PASS、kp2_english FAIL
+(短い2語フレーズ"crisper drawer"でASRが"CRISPR"と誤認識、entity_like/
+homophone判定不能によりcascade対象外条件のため即FAIL、Production
+実際の挙動と同一)。13/14 PASSだが1件不合格のため指示どおりAssembly・
+Gate通過・player生成は実施せずSTOPした(比較試聴ページ
+`legacy_qa_review.html`)。費用累計¥37.09(上限内)。作業中に判明した
+一般論(2026-08-17以前承認のレガシー記事は現行Gate導入以降のQA証跡を
+持たない)を新規OPEN-139として起票した。
+
+**Discovery段階2の要旨**: Part A(¥0机上)で既存記事の断定回避規則
+違反claim 10件を分類(Ledger起因6件・規則の具体性不足4件・別failure
+mode 1件)し、規則不徹底の原因(位置・具体性・強度)を分析、最小調整案
+2件を提示した。Part B(N=2、実測¥70.8)はblocking・Ledger Deviation・
+cross_point_overlap flagged全て0/8で安全側指標に新規リスクは確認され
+なかったが、PASS率の条件間差はN数が小さく統計的に結論づけられない。
+作業中にLedger v4のFACT-03修正文言がFACT-04と内部矛盾する新規課題を
+発見し、是正タスク`HOUSEHOLD-LEDGER-FACT-03-04-CONSISTENCY-FIX-03`を
+別途起動した(本Trialの権限では修正せず報告のみ)。Gate 1分類は
+`USER_DECISION_REQUIRED`(N数不足+Ledger側の未解決課題)。
+
+**SSOT反映**: `OPEN_ITEMS.md` OPEN-138行(revision3a採用・レガシーQA
+事後適用13/14 PASSでSTOP・UDR A-FACT03-2を追記)、OPEN-135行
+(Discovery段階2結果・Ledger v4矛盾発見を追記)、新規OPEN-139
+(遡及QA方針、`USER_DECISION_REQUIRED`、起票のみ)を追加した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へDiscovery段階2(Sonnet/MEDIUM)・
+Household修正継続2(Sonnet/MEDIUM)・Ledger v5是正(実施中、Sonnet/
+LOW〜MEDIUM)・本タスクの行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID PM-CLOSEOUT-
+CONSOLIDATION-54)。Git操作: G1=
+`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02_REPORT.md`・
+`er011_output/open138_household_fact03_b1b_minimal_fix_02/`配下py/
+json/jsonl・`er003_output/n3_01/household/fact03_fix_02/b1b/`配下
+md/json/html(commit `38b2f44`)。G2=
+`er011_discovery_stage2_interpretation_rule_trial_08.py`・
+`er011_discovery_stage2_interpretation_rule_trial_08_comparison.py`・
+`FAMILY-A-DISCOVERY-STAGE2-INTERPRETATION-RULE-TRIAL-08_REPORT.md`・
+`er011_output/discovery_stage2_interpretation_rule_trial_08/`配下
+json/md/html/jsonl(commit `93e9b7c`)。G3=`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。いずれも
+ファイル名指定でcommitし`origin/main`へpush。並列稼働中のNews段階2
+(`er011_output/news_stage2_*`・`er011_news_stage2_*`)、Household
+Ledger v5是正中の`verified_fact_ledger.txt`・
+`HOUSEHOLD-LEDGER-FACT-03-04-*`、`CURRENT_SPEC.md`・`er006_output/`・
+`er011_output/attempt_history.jsonl`・既存の未追跡ファイル群はいずれも
+本タスクでは触っていない。Production/Prompt編集・Trial着手は実施
+していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
