@@ -197,7 +197,12 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-29(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、新規Open Item起票、PM_GOVERNANCE新小節追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05(Lane A、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py`)中心の既知パターン修正Trial(G1/G2)、過去承認仕様との対応確認込み | Haiku不適(コード修正・retry判定ロジックを伴う)、Opus見送り(Pre-Audit-01で既存対策との重複が判明済みのため大規模(a)/(b)横断比較は不要、スコープがG1/G2に限定されたため) | 未確定(Lane A側タスクで記録) | 未確定 | 0 | 不明(Lane A側で記録) | 不明 | 不明 | 不明 |
 | 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-DESIGN-OPUS-REVIEW-01 | HIGH(L2/Opus) | Opus | 3V/4V本文Writer Trial実行計画(Fable委任案)の着手前second opinion。Fact Safety(Ledger作成方式・出典帰属)・既存Production定数(Comment Contract/Disfluency QA必須segment表/A2 slowdown対象segment表)への後方互換性・OPEN-131既存PASS実績の前提という複数のProduction安全性論点が重なっており、Sonnet単独レビューでは委任案自体に含まれる事実誤りを検出できていなかったため | Sonnet単独では不足(Fable明示のとおり)、Haiku不適(設計レビュー・複数moduleの横断コード精査を要する) | 108k | 379s | 0 | なし(初回レビューで完了、Sonnetへの追加質問なし) | なし | 不明(本レビュー自体はTrial着手前のためUDR/Production wiring対象外) | 不明 |
-| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-30(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー原文の転記+OPEN-131 evidence欠落の実測(読み取り専用・費用¥0)+中間レビュー記録+SSOT反映+Git統合、既知パターンの踏襲 | Haiku不適(SSOT精密編集・コード実行による実測・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー自体は既に前段のOPUS-REVIEW-01で完了済み) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-30 | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー原文の転記+OPEN-131 evidence欠落の実測(読み取り専用・費用¥0)+中間レビュー記録+SSOT反映+Git統合、既知パターンの踏襲 | Haiku不適(SSOT精密編集・コード実行による実測・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー自体は既に前段のOPUS-REVIEW-01で完了済み) | 179k | 778s | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02 | MEDIUM(L1/Sonnet) | Sonnet | 単一関数(`build_voice_attribution_block()`)の抽出ロジック修正+runtime evidence再取得、既知パターンのProduction修正 | Haiku不適(Ledger書式実測・fail-closed挙動維持の精密なコード修正を要する)、Opus不要(欠陥自体は前段のOpusレビューで既に特定済み、本タスクは修正実装のみ) | 163k | 1322s | 0 | なし | なし | なし(A2のPASS→REVIEW_REQUIRED変化はTP回復でありUDRではない) | 不明 |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-AI-SCREENING-LEDGER-TRIAL-01 | MEDIUM(L1/Sonnet) | Sonnet | 4V本文Trial向け検証済みLedger作成(既存`_perplexity_call()`パターンの再利用+手作業curation)、Fact Safety精度を要する | Haiku不適(Fact Safety判定・curationの正確性を要する)、Opus不要(既存Trial-04〜07パターンの踏襲、新規設計判断なし) | 189k | 1020s | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | PM-GOVERNANCE-COST-IMPACT-RULE-03 | LOW(L1/Sonnet) | Sonnet | SSOT(PM_GOVERNANCE.md/PM_BRIEF.md)への定型節追加、機械的な文書間整合 | Haiku不適(SSOT編集を伴う)、Opus不要(定型節追加のみ) | 36k | 81s | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-31(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-131修正版反映、Ledger Trial VALIDATED記録)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-01(並列稼働、本タスクでは触っていない) | HIGH(L2扱いだがOpus予算は同管理ID群[3V/4V Writer Trial系]で既に消費済みのためSonnet実装) | Sonnet | Opus指摘(事実誤り2件・fail-open再発点2件・未承認仕様候補4件)を反映した再設計に基づく4V本文Trial着手。Pairwise Voice Distinctness(LLM)コスト見込み(4V有向12ペア+vs Hook4=16判定、1記事¥5〜15、処理1〜2分)をPM_GOVERNANCE 2-2(コスト影響評価)に沿って事前提示済み、上限¥300 | Opus再投入は見送り(第7節修正提案8項目の反映自体はSonnetで実施可能な既知パターン修正と判断されたため)、Haiku不適(記事本文生成・QA設計を伴う) | 未確定(並列稼働中) | 未確定 | 不明 | 不明 | 不明 | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -236,3 +241,16 @@ TRIAL-SETUP-01`の次から起算)
   規律違反1件[Trial開始前の事案]・暫定所見を記載、採否判断ではない旨を
   明記)。正式Closeout Triggerへは未到達(Opus HIGH案件2件以上等の条件を
   満たしていない)。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-31、本タスク): PM-CLOSEOUT-
+  CONSOLIDATION-30行のtoken/所要時間を確定値(179k/778s)へ更新した。
+  「## Trial導入後の委任実績」表へ4件を新規追記した:
+  OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02(Sonnet、MEDIUM、163k・
+  1322s)、EDITORIAL-B-FAMILY-VOICES-AI-SCREENING-LEDGER-TRIAL-01
+  (Sonnet、MEDIUM、189k・1020s)、PM-GOVERNANCE-COST-IMPACT-RULE-03
+  (Sonnet、LOW、36k・81s)、本タスク(Sonnet、MEDIUM、token/時間は次回
+  記録時に追記)。あわせて並列稼働中(本タスクでは触れていない)
+  EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-01(Sonnet、HIGH、Opus
+  レビュー済み設計を反映、Opus予算は同管理ID群で消費済みのためSonnet
+  実装、Pairwise Voice Distinctnessのコスト見込みをPM_GOVERNANCE 2-2
+  に沿って事前提示済み[上限¥300])を記録のみ追加した。中間レビュー・
+  正式Closeout Triggerの到達判定・再計算はいずれも実施していない。

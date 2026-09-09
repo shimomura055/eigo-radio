@@ -1,7 +1,9 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29で新小節「2-1.
+**最終更新: 2026-09-09(PM-GOVERNANCE-COST-IMPACT-RULE-03で新小節「2-2.
+コスト影響評価」を新設し、Gate 2/Gate 3チェックリストと9-1のUSER_DECISION_
+REQUIRED記載に2-2参照を追記)。2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29で新小節「2-1.
 既存対策・仕様 Reconciliation Check」を新設し、Gate 5/Gate 6/PM
 Closeout Mandatory Check[3節]へOPEN-129 mandatory化Trigger確認・
 OPEN-132[Phase 2 Writer配線時チェックリスト]確認の各1行を追記)。
@@ -88,12 +90,13 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   ではない。`USER_DECISION_REQUIRED`ならユーザー判断または明示deferまでSTOPする。
 - **Gate 2 — User Decision**: `VALIDATED`→`APPROVED_FOR_PRODUCTION`は
   ユーザー正式採用時のみ行う。Fable/Sonnet/Opusが独自判断で承認しない。
+  コスト影響(2-2参照)が未評価のまま承認しない。
 - **Gate 3 — Production Wiring Checklist**: `APPROVED_FOR_PRODUCTION`後、
   以下すべてが完了するまで`PRODUCTION_WIRED`としない: Production正式初回経路 /
   retry・fallback・regenerationとの整合 / DEV・Trial-onlyではないこと /
   Production runtimeでの実発火 / 必要testのPASS / runtime evidence /
-  実際のmodel_id・routing確認(必要時) / `CURRENT_SPEC.md` /
-  `DECISION_LOG.md` / `OPEN_ITEMS.md` / 必要なGit反映 /
+  実際のmodel_id・routing確認(必要時) / コスト影響評価(2-2参照) /
+  `CURRENT_SPEC.md` / `DECISION_LOG.md` / `OPEN_ITEMS.md` / 必要なGit反映 /
   approved specとProduction挙動の一致。
 - **Gate 4 — Dangling Reference Check**: Production code / Prompt / retry等が
   未承認・未実装・Trial-only仕様を参照していないかを確認する。
@@ -173,6 +176,21 @@ regeneration機構 / 過去に同種failure modeへの対策がないか /
 **経緯**: Point Overlap分散低減Trial(A-UDR-16)の事前監査で既存対策との
 重複と実装ギャップG1/G2が判明した(2026-09-09、PM-CLOSEOUT-
 CONSOLIDATION-29)。
+
+### 2-2. コスト影響評価(2026-09-09、ユーザー指示)
+
+新しいQAチェック・Validator・LLM判定・追加仕様(例: pairwise Voice
+Distinctness Checkのような LLMベースQA)を提案・導入する場合、品質効果
+だけでなくコスト影響も必ず評価する。
+
+- **対象**: 新QA/Validator/LLM判定/追加仕様全般。
+- **評価項目**: 1実行あたりtoken・API費用 / 処理時間・latency /
+  量産時の継続コスト増(記事あたり・月あたり概算) / retry・Human Review
+  増減への影響。
+- **タイミング**: Trial前に見込みを明示する → Trial後に実測値を記録する →
+  ユーザー判断(Gate 2)を依頼する際は必ずコスト影響を明示する。
+- **禁止**: コスト影響が不明なままProduction採用(`APPROVED_FOR_
+  PRODUCTION`)へ進めない。
 
 ## 3. PM Closeout Mandatory Check(PM Closeout時の確認事項)
 
@@ -397,7 +415,8 @@ Fableの役割は、証拠を失わずに「ユーザーが判断しやすい言
    ユーザー判断」として分ける。原則としてFable/PMの推奨案と短い推奨理由を
    必ず添える。ただし試聴・感覚評価などユーザー本人の主観判断そのものが
    本体の場合(例: 実際に音声を聞いて自然か)は推奨不要。`USER_DECISION_
-   REQUIRED`に該当する場合はこのセクションも省略しない。
+   REQUIRED`に該当する場合はこのセクションも省略しない。該当する場合は
+   コスト影響(該当時、2-2参照)も1行明示する。
 5. **補足・技術詳細** — commit SHA・path・runtime evidence・token・
    model_id・詳細ログ等がユーザーの理解・判断に必要な場合のみ最後に置く。
    不要なら省略する。
