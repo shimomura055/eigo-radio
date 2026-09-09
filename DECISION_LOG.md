@@ -8932,6 +8932,50 @@ Layer3 Trial-07(`er011_output/news_focus_*`・`er011_output/discovery_
 layer3_*`)の成果物、`er006_output/`、`er011_output/attempt_history.
 jsonl`、既存の未追跡ファイル群はいずれも本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-44: A3 News Focus Hint比較Trial-06結果のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-COMPLETION-A3-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06`の結果を
+SSOTへ反映した。
+
+**結果の要点**: Hanshin Ledger固定・G1修正済みProduction配下でPoint
+Role hint(Trial-03 VALIDATED)+News Focus Module(Trial-01/02)を比較。
+baseline(N=6)はNG率100%(6/6、A2/B1B両レベル全滅)、focus_hint(N=6)は
+NG率50%(3/6、A2 1/3・B1B 2/3)、hint_only(N=2、bonus)はNG率50%
+(1/2)。focus_hint条件はbaselineに対し両レベル一貫してNG率・overlap
+平均が良好で、Trial-04で見られたレベル間逆方向傾向は今回再現しな
+かった。役割再現率(キーワード機械分類)はP1 33.3%・P2 16.7%と
+Trial-04と同水準の低さに留まり、本文がroleを体現しているかのキー
+ワード一致は分類できた9件全てで0件(Trial-04と同じ限界)。新規
+failure modeなし、既存安全装置(Point Overlap retry上限2回・Fact
+Checker・Local Rewrite・Directional Fact Precheck)は正常作動。費用
+¥85.6(上限¥150以内)。Gate 4はPASS(`build_diagnostic_retry_prompt`の
+Production直呼びを機械確認)。Gate 1分類は`USER_DECISION_REQUIRED`
+(focus_hint自体のNG率50%が依然高い、G1修正後baselineがTrial-04
+[G1修正前]より悪化して見える原因を切り分け不能、役割再現の低水準
+継続、N数不足)。Production配線に必要な判断項目6件(Focus Module/
+hint文言確定、`major_daily_news`の`EDITORIAL_TYPE_MODULE_BLOCKS`
+登録要否、hint接続の共有Writer配線範囲、baseline悪化とOPEN-134観測
+の関係、N数追加要否等)を未実装のまま提示。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Step A3 Trial-06結果、UDR
+提示中)・OPEN-112行(News Focus Module+hint比較結果参照)・OPEN-134行
+(参考データ注記、baseline NG 6/6はtrial harness実行でありOPEN-134
+正式観測20 run対象外)へ追記した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+へTrial-06行の確定値(Sonnet、MEDIUM、178k token・3689秒、差し戻し0)
+と本タスク行を追記した。
+
+**根拠**: `FAMILY-A-COMPLETION-A3-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06_REPORT.md`。
+Git操作: G1=`er011_news_focus_hint_comparison_trial_06.py`・
+`er011_news_focus_hint_comparison_trial_06_stats.py`・同Report・
+`er011_output/news_focus_hint_comparison_trial_06/`配下json/md/jsonl
+一式をファイル名指定でcommit。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(3ファイルのみ)をファイル名
+指定でcommitし`origin/main`へpush。並列稼働中のD2 Discovery Layer3
+Trial-07(`er011_output/discovery_layer3_*`)・3V Trial-02(`er012_*`)の
+成果物、`er006_output/`、`er011_output/attempt_history.jsonl`、既存の
+未追跡ファイル群はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
