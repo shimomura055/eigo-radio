@@ -1,0 +1,84 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 319,
+  "section_word_counts": {
+    "intro": 144,
+    "point_one": 73,
+    "point_two": 71,
+    "in_one_line": 31
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 73,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 71,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "The drawer is not the right place for every item.",
+      "sentence_b": "The crisper drawer is not one answer for every food.",
+      "ratio": 0.653
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 1,
+  "avg_sentence_length": 12.4,
+  "max_sentence_length": 26,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「商業的な湿度数値90〜95％は、家庭用冷蔵庫の高湿度設定に自動的には置き換えられない」という説明は、方向性としては妥当ですが、記事内ではその理由や根拠が具体的に示されていません。イチゴやオレンジの商業保管上の推奨相対湿度が90〜95％であることは確認できますが、家庭用ドロワーの設定との直接的な換算関係を否定する資料までは確認できませんでした。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))",
+    "「アプライアンスの案内は異なる」という主張は確認できますが、記事ではメーカー名や具体例を示していません。実際、Samsungはイチゴを高湿度側の例に挙げる一方、GEの案内はイチゴやオレンジを低湿度側の例に挙げています。([samsung.com](https://www.samsung.com/us/support/answer/ANS10006806/?utm_source=openai))"
+  ],
+  "fact_unsupported_specific_claims_count": 2,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "cross_point_overlap": {
+    "point_one_vs_point_two_ratio": 0.098,
+    "point_one_vs_point_two_flagged": false,
+    "point_two_vs_point_one_ratio": 0.093,
+    "point_two_vs_point_one_flagged": false
+  },
+  "full_story_text": "A refrigerator crisper drawer can look like a small detail. But behind its simple slider are two ways to store fresh food.\n\nMany models offer a low-humidity setting and a high-humidity setting. The low setting lets more air move through the drawer. The high setting is closer to sealed, so it helps hold moisture inside.\n\nUsed with the right food, these settings can help produce stay fresh longer.\n\nBut the familiar shortcut — fruit in one place and vegetables in the other — does not tell the whole story.\n\nThe better question is what problem the food faces in storage. Some foods can make nearby produce ripen too soon. Others mainly lose water and wilt. That is where the small control helps.\n\nThere is one more catch. The drawer is not the right place for every item. A setting cannot fix food that belongs somewhere else.",
+  "point_one_text": "The slider is a cause-and-effect tool\nThink of the control as a way to respond to a food’s main storage problem, not as a simple fruit label. If ethylene from the food may affect nearby produce, the low setting gives that gas a way out. Apples, pears, and bananas fit this side. If quick water loss is the bigger risk, the high setting helps hold moisture. Leafy greens and broccoli are examples. This approach also helps with unfamiliar produce.",
+  "point_two_text": "First ask whether the drawer is right\nBefore choosing a setting, ask whether the item belongs in the drawer at all. Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic are better kept in a cool, dry place, so they should not be treated as identical counter items. Strawberries and oranges show why one rule can mislead: commercial humidity figures of 90–95% do not automatically become a household high-humidity recommendation, and appliance guidance differs.",
+  "elapsed_seconds": 116.65,
+  "condition": "adjusted_focus",
+  "level": "B1B",
+  "run": 2,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「商業的な湿度数値90〜95％は、家庭用冷蔵庫の高湿度設定に自動的には置き換えられない」という説明は、方向性としては妥当ですが、記事内ではその理由や根拠が具体的に示されていません。イチゴやオレンジの商業保管上の推奨相対湿度が90〜95％であることは確認できますが、家庭用ドロワーの設定との直接的な換算関係を否定する資料までは確認できませんでした。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 1,
+        "FACT-04": 0
+      }
+    },
+    {
+      "claim": "「アプライアンスの案内は異なる」という主張は確認できますが、記事ではメーカー名や具体例を示していません。実際、Samsungはイチゴを高湿度側の例に挙げる一方、GEの案内はイチゴやオレンジを低湿度側の例に挙げています。([samsung.com](https://www.samsung.com/us/support/answer/ANS10006806/?utm_source=openai))",
+      "judgement": "LEDGER_OUTSIDE_OR_NO_LEXICAL_MATCH",
+      "evidence_id": null,
+      "score": 0,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 0,
+        "FACT-04": 0
+      }
+    }
+  ]
+}

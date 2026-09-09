@@ -1,0 +1,94 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 343,
+  "section_word_counts": {
+    "intro": 134,
+    "point_one": 114,
+    "point_two": 69,
+    "in_one_line": 26
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 114,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 69,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": true
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "A low-humidity drawer has more airflow.",
+      "sentence_b": "A high-humidity drawer holds more moisture.",
+      "ratio": 0.732
+    },
+    {
+      "sentence_a": "These foods can lose water quickly and become limp.",
+      "sentence_b": "Or does it lose water quickly and wilt?",
+      "ratio": 0.622
+    },
+    {
+      "sentence_a": "One guide places strawberries and oranges in a low-humidity fruit bin, while another places strawberries in a high-humidity bin.",
+      "sentence_b": "Also, one storage guide gives strawberries and oranges a humidity target of 90 to 95 percent.",
+      "ratio": 0.552
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 3,
+  "avg_sentence_length": 13.5,
+  "max_sentence_length": 27,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "『リンゴ、ナシ、バナナ、トマトなどは多量のエチレンガスを放出する』という一括表現は過度に一般化されています。リンゴとナシは高エチレン生成物として扱われますが、バナナとトマトは成熟時にエチレンを生成するという説明がより正確です。([psu.edu](https://www.psu.edu/news/agricultural-sciences/story/your-produce-may-be-getting-gassed-refrigerator?utm_source=openai))",
+    "低湿度ドロワーをバナナやトマトの一般的な保存先と読める部分には、冷蔵が適切な場合に限るという条件が必要です。未カットのバナナ、トマト、サツマイモ、ジャガイモ、乾燥タマネギなどは、複数の公的・大学系ガイドで常温または冷暗乾燥所が推奨されています。([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))"
+  ],
+  "fact_unsupported_specific_claims_count": 2,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "cross_point_overlap": {
+    "point_one_vs_point_two_ratio": 0.135,
+    "point_one_vs_point_two_flagged": false,
+    "point_two_vs_point_one_ratio": 0.179,
+    "point_two_vs_point_one_flagged": false
+  },
+  "full_story_text": "A crisper drawer may look like a simple box. But many refrigerators offer two choices: low humidity and high humidity.\n\nThat choice changes the air inside the drawer.\n\nA low-humidity drawer has more airflow. It is useful for foods that release a lot of ethylene gas, such as apples, pears, bananas, and tomatoes. This gas can make nearby fruits and vegetables ripen too quickly and spoil. With more airflow, the gas can escape more easily.\n\nA high-humidity drawer holds more moisture. It is useful for leafy vegetables, such as kale, and thin-skinned vegetables, such as broccoli. These foods can lose water quickly and become limp. More moisture can help them stay fresh longer.\n\nSo, the key is not simply “fruit goes here” and “vegetables go there.” The food’s behavior matters more than its name.",
+  "point_one_text": "The label is only a clue\nA label such as “Fruit Bin” is not a universal rule. Even official guides do not always sort the same food in the same way. One guide places strawberries and oranges in a low-humidity fruit bin, while another places strawberries in a high-humidity bin.\n\nAlso, one storage guide gives strawberries and oranges a humidity target of 90 to 95 percent. But that number applies to storage after harvest, not automatically to a home refrigerator drawer.\n\nFor a clearer choice at home, ask two simple questions: Does the food release a lot of ethylene? Or does it lose water quickly and wilt? These questions are often more useful than the word “fruit” or “vegetable” on a label.",
+  "point_two_text": "Check the refrigerator first\nBefore choosing a drawer setting, ask whether the food belongs in the refrigerator at all. Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place and do not need refrigeration.\n\nThis creates a two-step habit: first choose the right place, then choose the right drawer setting. A careful humidity choice cannot fix putting every kind of produce in the refrigerator.",
+  "elapsed_seconds": 125.05,
+  "condition": "adjusted_focus",
+  "level": "A2",
+  "run": 1,
+  "claim_to_evidence_table": [
+    {
+      "claim": "『リンゴ、ナシ、バナナ、トマトなどは多量のエチレンガスを放出する』という一括表現は過度に一般化されています。リンゴとナシは高エチレン生成物として扱われますが、バナナとトマトは成熟時にエチレンを生成するという説明がより正確です。([psu.edu](https://www.psu.edu/news/agricultural-sciences/story/your-produce-may-be-getting-gassed-refrigerator?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-02",
+      "evidence_id": "FACT-02",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 1,
+        "FACT-03": 0,
+        "FACT-04": 1
+      }
+    },
+    {
+      "claim": "低湿度ドロワーをバナナやトマトの一般的な保存先と読める部分には、冷蔵が適切な場合に限るという条件が必要です。未カットのバナナ、トマト、サツマイモ、ジャガイモ、乾燥タマネギなどは、複数の公的・大学系ガイドで常温または冷暗乾燥所が推奨されています。([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-01",
+      "evidence_id": "FACT-01",
+      "score": 2,
+      "scores": {
+        "FACT-01": 2,
+        "FACT-02": 0,
+        "FACT-03": 0,
+        "FACT-04": 1
+      }
+    }
+  ]
+}

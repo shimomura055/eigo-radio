@@ -1,0 +1,571 @@
+[
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 343,
+    "section_word_counts": {
+      "intro": 134,
+      "point_one": 114,
+      "point_two": 69,
+      "in_one_line": 26
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 114,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 69,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "A low-humidity drawer has more airflow.",
+        "sentence_b": "A high-humidity drawer holds more moisture.",
+        "ratio": 0.732
+      },
+      {
+        "sentence_a": "These foods can lose water quickly and become limp.",
+        "sentence_b": "Or does it lose water quickly and wilt?",
+        "ratio": 0.622
+      },
+      {
+        "sentence_a": "One guide places strawberries and oranges in a low-humidity fruit bin, while another places strawberries in a high-humidity bin.",
+        "sentence_b": "Also, one storage guide gives strawberries and oranges a humidity target of 90 to 95 percent.",
+        "ratio": 0.552
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 3,
+    "avg_sentence_length": 13.5,
+    "max_sentence_length": 27,
+    "fact_verdict": "REVIEW_REQUIRED",
+    "fact_unsupported_specific_claims": [
+      "『リンゴ、ナシ、バナナ、トマトなどは多量のエチレンガスを放出する』という一括表現は過度に一般化されています。リンゴとナシは高エチレン生成物として扱われますが、バナナとトマトは成熟時にエチレンを生成するという説明がより正確です。([psu.edu](https://www.psu.edu/news/agricultural-sciences/story/your-produce-may-be-getting-gassed-refrigerator?utm_source=openai))",
+      "低湿度ドロワーをバナナやトマトの一般的な保存先と読める部分には、冷蔵が適切な場合に限るという条件が必要です。未カットのバナナ、トマト、サツマイモ、ジャガイモ、乾燥タマネギなどは、複数の公的・大学系ガイドで常温または冷暗乾燥所が推奨されています。([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))"
+    ],
+    "fact_unsupported_specific_claims_count": 2,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.135,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.179,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A crisper drawer may look like a simple box. But many refrigerators offer two choices: low humidity and high humidity.\n\nThat choice changes the air inside the drawer.\n\nA low-humidity drawer has more airflow. It is useful for foods that release a lot of ethylene gas, such as apples, pears, bananas, and tomatoes. This gas can make nearby fruits and vegetables ripen too quickly and spoil. With more airflow, the gas can escape more easily.\n\nA high-humidity drawer holds more moisture. It is useful for leafy vegetables, such as kale, and thin-skinned vegetables, such as broccoli. These foods can lose water quickly and become limp. More moisture can help them stay fresh longer.\n\nSo, the key is not simply “fruit goes here” and “vegetables go there.” The food’s behavior matters more than its name.",
+    "point_one_text": "The label is only a clue\nA label such as “Fruit Bin” is not a universal rule. Even official guides do not always sort the same food in the same way. One guide places strawberries and oranges in a low-humidity fruit bin, while another places strawberries in a high-humidity bin.\n\nAlso, one storage guide gives strawberries and oranges a humidity target of 90 to 95 percent. But that number applies to storage after harvest, not automatically to a home refrigerator drawer.\n\nFor a clearer choice at home, ask two simple questions: Does the food release a lot of ethylene? Or does it lose water quickly and wilt? These questions are often more useful than the word “fruit” or “vegetable” on a label.",
+    "point_two_text": "Check the refrigerator first\nBefore choosing a drawer setting, ask whether the food belongs in the refrigerator at all. Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place and do not need refrigeration.\n\nThis creates a two-step habit: first choose the right place, then choose the right drawer setting. A careful humidity choice cannot fix putting every kind of produce in the refrigerator.",
+    "elapsed_seconds": 125.05,
+    "condition": "adjusted_focus",
+    "level": "A2",
+    "run": 1,
+    "claim_to_evidence_table": [
+      {
+        "claim": "『リンゴ、ナシ、バナナ、トマトなどは多量のエチレンガスを放出する』という一括表現は過度に一般化されています。リンゴとナシは高エチレン生成物として扱われますが、バナナとトマトは成熟時にエチレンを生成するという説明がより正確です。([psu.edu](https://www.psu.edu/news/agricultural-sciences/story/your-produce-may-be-getting-gassed-refrigerator?utm_source=openai))",
+        "judgement": "LIKELY_INTERPRETATION_OF_FACT-02",
+        "evidence_id": "FACT-02",
+        "score": 1,
+        "scores": {
+          "FACT-01": 0,
+          "FACT-02": 1,
+          "FACT-03": 0,
+          "FACT-04": 1
+        }
+      },
+      {
+        "claim": "低湿度ドロワーをバナナやトマトの一般的な保存先と読める部分には、冷蔵が適切な場合に限るという条件が必要です。未カットのバナナ、トマト、サツマイモ、ジャガイモ、乾燥タマネギなどは、複数の公的・大学系ガイドで常温または冷暗乾燥所が推奨されています。([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))",
+        "judgement": "LIKELY_INTERPRETATION_OF_FACT-01",
+        "evidence_id": "FACT-01",
+        "score": 2,
+        "scores": {
+          "FACT-01": 2,
+          "FACT-02": 0,
+          "FACT-03": 0,
+          "FACT-04": 1
+        }
+      }
+    ]
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 342,
+    "section_word_counts": {
+      "intro": 174,
+      "point_one": 67,
+      "point_two": 62,
+      "in_one_line": 39
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 67,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 62,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "The low-humidity setting lets more air move through the drawer.",
+        "sentence_b": "The high-humidity setting keeps more moisture in.",
+        "ratio": 0.625
+      },
+      {
+        "sentence_a": "Choose the storage place first, then choose the drawer setting.",
+        "sentence_b": "Choose the right storage place first, then match the drawer to the food’s water loss or gas, and check the home guide when the answer is unclear.",
+        "ratio": 0.558
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 2,
+    "avg_sentence_length": 13.5,
+    "max_sentence_length": 28,
+    "fact_verdict": "PASS",
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.184,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.206,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A crisper drawer may look like just another part of the refrigerator. But its humidity setting can affect how well some produce keeps its quality.\n\nMany refrigerators offer two choices: low humidity and high humidity. The low-humidity setting lets more air move through the drawer. The high-humidity setting keeps more moisture in.\n\nThe important question is not simply, “Is this a fruit or a vegetable?”\n\nInstead, ask two simple questions.\n\nDoes the food release a lot of ethylene, a natural gas produced as some foods ripen? Or does it lose water quickly and become wilted?\n\nApples and pears release more ethylene. In a low-humidity drawer, that gas can escape more easily. This can help protect other produce nearby from ripening too fast.\n\nLeafy greens like kale and vegetables like broccoli can lose water quickly. A high-humidity drawer helps keep moisture around them, which can help them stay fresh and firm.\n\nSo the crisper is not divided into a simple “fruit side” and “vegetable side.” The better choice depends on what the food is doing.",
+    "point_one_text": "Check the storage place first\nBefore choosing low or high humidity, make a different choice: should this food be in the refrigerator? Iowa State Extension recommends room temperature for tomatoes and bananas. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place, but they are not simply counter foods. Choose the storage place first, then choose the drawer setting. That keeps the drawer rule from being used on the wrong foods.",
+    "point_two_text": "When the label is not the whole answer\nNumbers can mislead. One large-scale storage guide gives strawberries and oranges a target humidity of about 90 to 95 percent after harvest. That does not automatically mean the high-humidity drawer at home. One refrigerator guide puts both in its low-humidity fruit bin, while another puts strawberries on the high side. When guidance is unclear, follow your refrigerator’s own guide—not a universal fruit rule.",
+    "elapsed_seconds": 116.95,
+    "condition": "adjusted_focus",
+    "level": "A2",
+    "run": 2,
+    "claim_to_evidence_table": []
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 321,
+    "section_word_counts": {
+      "intro": 144,
+      "point_one": 76,
+      "point_two": 72,
+      "in_one_line": 29
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 76,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 72,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "A high-humidity drawer is more closed.",
+        "sentence_b": "A low-humidity drawer allows more air to move through.",
+        "ratio": 0.63
+      },
+      {
+        "sentence_a": "More ventilation lets the gas escape more easily.",
+        "sentence_b": "In a ventilated, low-humidity drawer, that gas can leave more easily.",
+        "ratio": 0.61
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 2,
+    "avg_sentence_length": 13.0,
+    "max_sentence_length": 36,
+    "fact_verdict": "PASS",
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.116,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.156,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "At first glance, a crisper drawer is just a box for fresh food. But many refrigerators offer two settings: low humidity and high humidity.\n\nThat small choice creates a different environment inside the drawer.\n\nA high-humidity drawer is more closed. It helps keep moisture around foods that lose water quickly. Leafy greens, such as kale, can stay fresh longer instead of wilting quickly. Broccoli and other produce that needs moisture can also benefit from this setting.\n\nA low-humidity drawer allows more air to move through. This matters for foods that release ethylene as they ripen. If that gas stays around other fruits and vegetables, they may ripen too quickly and go bad sooner. More ventilation lets the gas escape more easily.\n\nSo the crisper drawer does more than keep food cold. One setting helps manage moisture. The other helps manage the air around foods.",
+    "point_one_text": "Think about how foods affect one another\nThe useful question is not simply, “Is this a fruit or a vegetable?”\n\nApples, pears, bananas, and tomatoes release a lot of ethylene. In a ventilated, low-humidity drawer, that gas can leave more easily. The benefit may extend beyond the item itself, because nearby produce is less exposed to a gas that can push it toward early ripening and spoilage.\n\nThe drawer can therefore help manage relationships between foods, not just store them side by side.",
+    "point_two_text": "First decide whether the drawer is needed\nHumidity is not always the first question. Tomatoes and bananas are recommended for counter storage.\n\nPotatoes, sweet potatoes, onions, and garlic are different. They are best kept in a cool, dry place. They should not all be treated as one identical “leave it on the counter” group.\n\nSo the first question is sometimes not, “Which humidity setting should I use?” It is, “Does this food belong in the crisper system at all?”",
+    "elapsed_seconds": 107.05,
+    "condition": "adjusted_focus",
+    "level": "B1B",
+    "run": 1,
+    "claim_to_evidence_table": []
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 319,
+    "section_word_counts": {
+      "intro": 144,
+      "point_one": 73,
+      "point_two": 71,
+      "in_one_line": 31
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 73,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 71,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "The drawer is not the right place for every item.",
+        "sentence_b": "The crisper drawer is not one answer for every food.",
+        "ratio": 0.653
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 1,
+    "avg_sentence_length": 12.4,
+    "max_sentence_length": 26,
+    "fact_verdict": "REVIEW_REQUIRED",
+    "fact_unsupported_specific_claims": [
+      "「商業的な湿度数値90〜95％は、家庭用冷蔵庫の高湿度設定に自動的には置き換えられない」という説明は、方向性としては妥当ですが、記事内ではその理由や根拠が具体的に示されていません。イチゴやオレンジの商業保管上の推奨相対湿度が90〜95％であることは確認できますが、家庭用ドロワーの設定との直接的な換算関係を否定する資料までは確認できませんでした。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))",
+      "「アプライアンスの案内は異なる」という主張は確認できますが、記事ではメーカー名や具体例を示していません。実際、Samsungはイチゴを高湿度側の例に挙げる一方、GEの案内はイチゴやオレンジを低湿度側の例に挙げています。([samsung.com](https://www.samsung.com/us/support/answer/ANS10006806/?utm_source=openai))"
+    ],
+    "fact_unsupported_specific_claims_count": 2,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.098,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.093,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A refrigerator crisper drawer can look like a small detail. But behind its simple slider are two ways to store fresh food.\n\nMany models offer a low-humidity setting and a high-humidity setting. The low setting lets more air move through the drawer. The high setting is closer to sealed, so it helps hold moisture inside.\n\nUsed with the right food, these settings can help produce stay fresh longer.\n\nBut the familiar shortcut — fruit in one place and vegetables in the other — does not tell the whole story.\n\nThe better question is what problem the food faces in storage. Some foods can make nearby produce ripen too soon. Others mainly lose water and wilt. That is where the small control helps.\n\nThere is one more catch. The drawer is not the right place for every item. A setting cannot fix food that belongs somewhere else.",
+    "point_one_text": "The slider is a cause-and-effect tool\nThink of the control as a way to respond to a food’s main storage problem, not as a simple fruit label. If ethylene from the food may affect nearby produce, the low setting gives that gas a way out. Apples, pears, and bananas fit this side. If quick water loss is the bigger risk, the high setting helps hold moisture. Leafy greens and broccoli are examples. This approach also helps with unfamiliar produce.",
+    "point_two_text": "First ask whether the drawer is right\nBefore choosing a setting, ask whether the item belongs in the drawer at all. Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic are better kept in a cool, dry place, so they should not be treated as identical counter items. Strawberries and oranges show why one rule can mislead: commercial humidity figures of 90–95% do not automatically become a household high-humidity recommendation, and appliance guidance differs.",
+    "elapsed_seconds": 116.65,
+    "condition": "adjusted_focus",
+    "level": "B1B",
+    "run": 2,
+    "claim_to_evidence_table": [
+      {
+        "claim": "「商業的な湿度数値90〜95％は、家庭用冷蔵庫の高湿度設定に自動的には置き換えられない」という説明は、方向性としては妥当ですが、記事内ではその理由や根拠が具体的に示されていません。イチゴやオレンジの商業保管上の推奨相対湿度が90〜95％であることは確認できますが、家庭用ドロワーの設定との直接的な換算関係を否定する資料までは確認できませんでした。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))",
+        "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+        "evidence_id": "FACT-03",
+        "score": 1,
+        "scores": {
+          "FACT-01": 0,
+          "FACT-02": 0,
+          "FACT-03": 1,
+          "FACT-04": 0
+        }
+      },
+      {
+        "claim": "「アプライアンスの案内は異なる」という主張は確認できますが、記事ではメーカー名や具体例を示していません。実際、Samsungはイチゴを高湿度側の例に挙げる一方、GEの案内はイチゴやオレンジを低湿度側の例に挙げています。([samsung.com](https://www.samsung.com/us/support/answer/ANS10006806/?utm_source=openai))",
+        "judgement": "LEDGER_OUTSIDE_OR_NO_LEXICAL_MATCH",
+        "evidence_id": null,
+        "score": 0,
+        "scores": {
+          "FACT-01": 0,
+          "FACT-02": 0,
+          "FACT-03": 0,
+          "FACT-04": 0
+        }
+      }
+    ]
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 348,
+    "section_word_counts": {
+      "intro": 133,
+      "point_one": 101,
+      "point_two": 88,
+      "in_one_line": 26
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 101,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 88,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "The low-humidity drawer lets more air move through it.",
+        "sentence_b": "The high-humidity drawer is more closed.",
+        "ratio": 0.66
+      },
+      {
+        "sentence_a": "For food that releases a lot of ethylene, the low-humidity drawer is the better match.",
+        "sentence_b": "For food that loses water quickly, high humidity is more useful.",
+        "ratio": 0.573
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 2,
+    "avg_sentence_length": 11.7,
+    "max_sentence_length": 27,
+    "fact_verdict": "PASS",
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.107,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.154,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "Open the refrigerator, and you may find a small choice in the produce drawers.\n\nOne setting says low humidity. The other says high humidity. They may look almost the same, but they do different jobs.\n\nThe low-humidity drawer lets more air move through it. The high-humidity drawer is more closed. This difference matters because fresh food can face different problems in storage.\n\nSome foods release a gas called ethylene as they ripen. If other produce stays near that gas too long, it may ripen too quickly and spoil sooner.\n\nOther foods lose water quickly. Their leaves become soft and wilted.\n\nSo the best setting is not always based on one simple rule: fruit in one drawer, vegetables in the other. The better question is what problem the food is most likely to have.",
+    "point_one_text": "Look at the food’s main risk\nFor food that releases a lot of ethylene, the low-humidity drawer is the better match. Apples, pears, bananas, and tomatoes release more of this gas. The open airflow helps move it away.\n\nFor food that loses water quickly, high humidity is more useful. Kale and other leafy vegetables need help staying fresh. Broccoli is another example. Here, keeping moisture in the drawer matters more than letting air move out.\n\nThis gives you a simple sorting test: is the main risk gas, or water loss? That question is more useful than simply asking whether the food is a fruit or a vegetable.",
+    "point_two_text": "Sometimes the right drawer is no drawer\nThere is one more question to ask before choosing a setting: does this food need to go in the refrigerator at all?\n\nTomatoes and bananas are best kept on the counter rather than in the refrigerator. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration either, but they should be kept in a cool, dry place. That is not exactly the same as counter storage.\n\nThis is the practical boundary of the crisper system. It is not a universal produce box. Some foods should stay outside it.",
+    "elapsed_seconds": 75.75,
+    "condition": "current_focus",
+    "level": "A2",
+    "run": 1,
+    "claim_to_evidence_table": []
+  },
+  {
+    "status": "NG_REVIEW_REQUIRED",
+    "retry_attempts": 2,
+    "word_count": 327,
+    "section_word_counts": {
+      "intro": 155,
+      "point_one": 62,
+      "point_two": 72,
+      "in_one_line": 38
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 62,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 72,
+        "exceeds_tolerance_upper": true,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "The low-humidity side lets more air move through.",
+        "sentence_b": "The high-humidity side is more closed, so it helps keep moisture around the food.",
+        "ratio": 0.554
+      },
+      {
+        "sentence_a": "The low-humidity side lets more air move through.",
+        "sentence_b": "The low-humidity side helps move that gas away.",
+        "ratio": 0.708
+      },
+      {
+        "sentence_a": "The low-humidity side lets more air move through.",
+        "sentence_b": "The high-humidity side helps hold moisture around food that dries out quickly.",
+        "ratio": 0.598
+      },
+      {
+        "sentence_a": "The high-humidity side is more closed, so it helps keep moisture around the food.",
+        "sentence_b": "The high-humidity side helps hold moisture around food that dries out quickly.",
+        "ratio": 0.642
+      },
+      {
+        "sentence_a": "The low-humidity side helps move that gas away.",
+        "sentence_b": "The high-humidity side helps hold moisture around food that dries out quickly.",
+        "ratio": 0.608
+      },
+      {
+        "sentence_a": "It can affect the food beside it.",
+        "sentence_b": "First ask if the food belongs in the refrigerator.",
+        "ratio": 0.602
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 6,
+    "avg_sentence_length": 11.9,
+    "max_sentence_length": 22,
+    "fact_verdict": null,
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": null,
+    "ledger_deviation_count": null,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": null,
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.2,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.146,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A small slider in a refrigerator can look like a detail nobody needs to touch. It may say “low humidity” on one side and “high humidity” on the other. Some refrigerators use two drawers instead.\n\nBut the choice changes the air around fresh food. The low-humidity side lets more air move through. The high-humidity side is more closed, so it helps keep moisture around the food.\n\nFresh food does not all face the same problem. Leafy greens and broccoli can lose water and wilt. Other foods give off ethylene, a gas that can make nearby fruit and vegetables ripen too soon and spoil faster.\n\nThe low-humidity side helps move that gas away. The high-humidity side helps hold moisture around food that dries out quickly.\n\nThat is why “fruit” and “vegetable” are not enough. The useful question is: what problem does this food need help with? And sometimes, the right answer starts before the crisper drawer.",
+    "point_one_text": "The food beside it matters\nAn apple or pear is not only a food that needs a place. It can affect the food beside it.\n\nThese foods release a lot of ethylene. In a drawer that lets air move through, some of that gas can escape. Nearby produce may then have less exposure.\n\nSo the drawer can help protect neighboring food, not just the item inside it.",
+    "point_two_text": "Start with the right place\nFirst ask if the food belongs in the refrigerator. Tomatoes and bananas are kept on the counter. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place, not the crisper.\n\nFor produce that does belong in the refrigerator, look at its gas or wilting risk, not only its name. A humidity figure from commercial strawberry or orange storage does not give one sure home-drawer answer. Appliance guides do not all agree.",
+    "elapsed_seconds": 190.91,
+    "condition": "current_focus",
+    "level": "A2",
+    "run": 2,
+    "claim_to_evidence_table": []
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 1,
+    "word_count": 300,
+    "section_word_counts": {
+      "intro": 155,
+      "point_one": 65,
+      "point_two": 55,
+      "in_one_line": 25
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 65,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 55,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": false
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "A low-humidity drawer lets more air pass through.",
+        "sentence_b": "A high-humidity drawer is more tightly closed.",
+        "ratio": 0.632
+      },
+      {
+        "sentence_a": "If it is losing water and becoming wilted, the more closed, high-humidity setting is the better match.",
+        "sentence_b": "If ethylene is the concern, the more ventilated, low-humidity setting can help the gas move away.",
+        "ratio": 0.563
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 2,
+    "avg_sentence_length": 12.2,
+    "max_sentence_length": 26,
+    "fact_verdict": "PASS",
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.154,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.171,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A small slider in the refrigerator can change what happens to fresh produce.\n\nMany refrigerators offer two crisper drawer settings: low humidity and high humidity. The difference is more than a label. A low-humidity drawer lets more air pass through. A high-humidity drawer is more tightly closed.\n\nThat creates two different storage environments.\n\nThe reason matters because fresh food does not all change in the same way. Some fruit releases ethylene gas as it ripens. If nearby produce is exposed to too much of this gas for too long, it may ripen too quickly and begin to spoil.\n\nOther produce loses water quickly. It can become wilted before it is eaten.\n\nSo the crisper drawer is not simply a place for “fruit” on one side and “vegetables” on the other. It is a small system for dealing with different problems. Used with care, the two settings can help fresh produce stay in good condition longer.",
+    "point_one_text": "Find the problem before choosing the setting\nUse the food’s first problem as a quick guide. If it is losing water and becoming wilted, the more closed, high-humidity setting is the better match. Leafy greens and broccoli fit this pattern. If ethylene is the concern, the more ventilated, low-humidity setting can help the gas move away. Apples and pears are examples. This is more useful than memorizing simple fruit and vegetable labels.",
+    "point_two_text": "The drawer is not the whole storage plan\nBefore choosing low or high humidity, ask a more basic question: does the food belong in the crisper at all? Guidance recommends keeping tomatoes and bananas at room temperature. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration; keep them in a cool, dry place. A humidity setting cannot fix the wrong storage place.",
+    "elapsed_seconds": 173.03,
+    "condition": "current_focus",
+    "level": "B1B",
+    "run": 1,
+    "claim_to_evidence_table": []
+  },
+  {
+    "status": "OK",
+    "retry_attempts": 0,
+    "word_count": 376,
+    "section_word_counts": {
+      "intro": 215,
+      "point_one": 61,
+      "point_two": 65,
+      "in_one_line": 35
+    },
+    "word_overflow": {
+      "point_one": {
+        "word_count": 61,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      },
+      "point_two": {
+        "word_count": 65,
+        "exceeds_tolerance_upper": false,
+        "exceeds_target_upper": true
+      }
+    },
+    "near_duplicate_sentence_pairs": [
+      {
+        "sentence_a": "The low-humidity drawer lets more outside air move through it.",
+        "sentence_b": "The high-humidity drawer is more closed off.",
+        "ratio": 0.642
+      },
+      {
+        "sentence_a": "The high-humidity drawer is more closed off.",
+        "sentence_b": "Keeping them in the high-humidity drawer helps hold moisture around them.",
+        "ratio": 0.615
+      },
+      {
+        "sentence_a": "Apples and pears fit the vented low-humidity drawer.",
+        "sentence_b": "Leafy greens, such as kale, and broccoli fit the high-humidity drawer.",
+        "ratio": 0.574
+      }
+    ],
+    "near_duplicate_sentence_pair_count": 3,
+    "avg_sentence_length": 15.5,
+    "max_sentence_length": 46,
+    "fact_verdict": "PASS",
+    "fact_unsupported_specific_claims": [],
+    "fact_unsupported_specific_claims_count": 0,
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles_count": 0,
+    "local_rewrite_item_count": 0,
+    "local_rewrite_human_review_count": 0,
+    "directional_fact_precheck_status": "PASS",
+    "cross_point_overlap": {
+      "point_one_vs_point_two_ratio": 0.194,
+      "point_one_vs_point_two_flagged": false,
+      "point_two_vs_point_one_ratio": 0.184,
+      "point_two_vs_point_one_flagged": false
+    },
+    "full_story_text": "A crisper drawer can look like a place where all fresh produce goes. But the small control on the drawer can change the air around the food. Many refrigerators offer a low-humidity setting and a high-humidity setting, sometimes through a slider.\n\nThe low-humidity drawer lets more outside air move through it. The high-humidity drawer is more closed off. That difference matters because fresh food does not all lose quality in the same way.\n\nSome produce gives off ethylene gas as it matures. If other fruits and vegetables stay exposed to that gas, they can ripen too quickly and spoil sooner. A vented low-humidity drawer lets more of the gas escape, which can help protect nearby produce.\n\nOther foods lose water quickly and begin to wilt. Keeping them in the high-humidity drawer helps hold moisture around them. So the real question is not simply, “Is this a fruit or a vegetable?” It is, “Does this food give off a lot of ethylene, or does it lose water easily?”\n\nThat is the useful shift: the two settings are not just labels on a refrigerator. They are two different ways to manage the air around fresh food. But the simple rule has limits, especially when advice for home refrigerators does not match advice for other kinds of storage.",
+    "point_one_text": "Sort by behavior, not by name\nUse the drawer as a quick sorting tool. Apples and pears fit the vented low-humidity drawer. Leafy greens, such as kale, and broccoli fit the high-humidity drawer. Tomatoes and bananas are a separate case: one guide recommends keeping them on the counter, rather than putting them in either drawer. That small exception keeps a simple rule from becoming a bad habit.",
+    "point_two_text": "When the rule stops being simple\nStrawberries and oranges show why one universal rule can mislead. A commercial-storage guide lists very high humidity for these foods after harvest, but that does not automatically tell you which household drawer to use. One refrigerator maker places both foods in its low-humidity fruit bin, while another places strawberries in high humidity. When guidance differs, check your refrigerator’s manual instead of forcing a category rule.",
+    "elapsed_seconds": 107.17,
+    "condition": "current_focus",
+    "level": "B1B",
+    "run": 2,
+    "claim_to_evidence_table": []
+  }
+]
