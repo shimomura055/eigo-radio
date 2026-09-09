@@ -1,0 +1,94 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 384,
+  "section_word_counts": {
+    "intro": 170,
+    "point_one": 82,
+    "point_two": 100,
+    "in_one_line": 32
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 82,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 100,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "A low-humidity drawer lets more air move through.",
+      "sentence_b": "A high-humidity drawer is more closed, so it holds more moisture around the food.",
+      "ratio": 0.554
+    },
+    {
+      "sentence_a": "A low-humidity drawer lets more air move through.",
+      "sentence_b": "A low-humidity drawer lets the gas move away more easily.",
+      "ratio": 0.717
+    },
+    {
+      "sentence_a": "One appliance maker places both strawberries and oranges in its low-humidity Fruit Bin guidance.",
+      "sentence_b": "Another places strawberries on the high-humidity side.",
+      "ratio": 0.573
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 3,
+  "avg_sentence_length": 14.1,
+  "max_sentence_length": 32,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「バナナとトマトは冷蔵庫の引き出しに向かず、カウンター保存が推奨される」という記述は、バナナについて一般化が強い。Iowa State University Extensionは、追熟中の青〜黄色のバナナは室温保存とする一方、熟したバナナは冷蔵庫で最長約2週間保存できるとしている。したがって、少なくとも「追熟中のバナナ」などの条件が必要。 ([spendsmart.extension.iastate.edu](https://spendsmart.extension.iastate.edu/produce-item/bananas/?utm_source=openai))",
+    "「周囲の食品が早く傷む」というエチレンの影響は食品ごとに感受性が異なるため、すべての周囲の食品に一律に当てはまるようにも読める。記事本文には「may」があるため明確な矛盾ではないが、エチレン感受性の高い食品を指す限定がない。 ([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))"
+  ],
+  "fact_unsupported_specific_claims_count": 2,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "cross_point_overlap": {
+    "point_one_vs_point_two_ratio": 0.2,
+    "point_one_vs_point_two_flagged": false,
+    "point_two_vs_point_one_ratio": 0.178,
+    "point_two_vs_point_one_flagged": false
+  },
+  "full_story_text": "A refrigerator produce drawer may look like one simple box. But many refrigerators give it two jobs: low humidity and high humidity.\n\nThe difference is in the air. A low-humidity drawer lets more air move through. A high-humidity drawer is more closed, so it holds more moisture around the food.\n\nThe best choice is not simply “fruit” or “vegetable.” A better question is: what problem does this food have?\n\nSome fruit, including apples and pears, gives off ethylene gas as it matures. If other produce stays around that gas, it may ripen too quickly and spoil sooner. A low-humidity drawer lets the gas move away more easily.\n\nOther foods lose water quickly and begin to wilt. Leafy greens, such as kale, and vegetables such as broccoli can benefit from the more closed conditions of a high-humidity drawer.\n\nSo the simple story is not about putting all fruit on one side and all vegetables on the other. It is about either letting gas escape or helping food hold on to water.",
+  "point_one_text": "Decide on the refrigerator first\nBefore choosing a humidity setting, make a more basic decision: does this food belong in the refrigerator at all?\n\nApples and pears are examples that can fit the low-humidity drawer. But bananas and tomatoes are not good refrigerated-drawer examples. They are recommended for counter storage. The order matters: first decide “fridge or not,” and then choose a drawer setting.\n\nThat avoids using the humidity slider to solve a problem that should instead be solved by keeping the food out of the refrigerator.",
+  "point_two_text": "When storage science meets a home drawer\nA commercial storage guide may give strawberries or oranges an ideal humidity of 90 to 95 percent. But that number does not automatically mean “use the high-humidity setting” in a home refrigerator.\n\nHousehold guidance is not always the same. One appliance maker places both strawberries and oranges in its low-humidity Fruit Bin guidance. Another places strawberries on the high-humidity side.\n\nThe lesson is not that the science is useless. It is that a commercial storage number and a household drawer label are not always the same instruction. For disputed foods, guidance for the specific appliance matters more than a universal fruit-versus-vegetable rule.",
+  "elapsed_seconds": 99.64,
+  "condition": "cautionary_constrained",
+  "level": "B1B",
+  "run": 2,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「バナナとトマトは冷蔵庫の引き出しに向かず、カウンター保存が推奨される」という記述は、バナナについて一般化が強い。Iowa State University Extensionは、追熟中の青〜黄色のバナナは室温保存とする一方、熟したバナナは冷蔵庫で最長約2週間保存できるとしている。したがって、少なくとも「追熟中のバナナ」などの条件が必要。 ([spendsmart.extension.iastate.edu](https://spendsmart.extension.iastate.edu/produce-item/bananas/?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 1,
+        "FACT-04": 1
+      }
+    },
+    {
+      "claim": "「周囲の食品が早く傷む」というエチレンの影響は食品ごとに感受性が異なるため、すべての周囲の食品に一律に当てはまるようにも読める。記事本文には「may」があるため明確な矛盾ではないが、エチレン感受性の高い食品を指す限定がない。 ([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-01",
+      "evidence_id": "FACT-01",
+      "score": 2,
+      "scores": {
+        "FACT-01": 2,
+        "FACT-02": 0,
+        "FACT-03": 0,
+        "FACT-04": 1
+      }
+    }
+  ]
+}

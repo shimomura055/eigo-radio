@@ -9805,6 +9805,101 @@ root直下の`er011_discovery_stage4_*.py`・REPORT)、`CURRENT_SPEC.md`、
 `full_story_part1`の再生成・HUMAN_APPROVED記録・新規Trial着手は実施
 していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-61: Discovery Trial-10(D-4、保険文対策)結果の
+SSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-DISCOVERY-STAGE4-CAUTIONARY-LANGUAGE-TRIAL-10`(D-4)の結果を
+SSOTへ反映した。並列稼働中: Household一本化候補生成
+(`er011_output/household_unified_final_candidate_01/`、
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01_REPORT.md`)、News整理
+(`er011_output/news_stage4_redesign_inventory_01/`、
+`er011_news_stage4_redesign_inventory_01.py`、
+`FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01_REPORT.md`)。本タスクでは
+いずれも対象外(SSOT・Git担当のみ)。
+
+**Trial結果の要旨**: Household Verified Fact Ledger v5(無変更)上で
+current_focus(Before)とcautionary_constrained(After、Part B案1=
+未承認候補)をN=3×A2/B1B×2条件=12本(text-only)実施した(実測¥100.5、
+うちFact Checker¥73.1/その他¥27.4)。保険文(聞き手に取扱説明書・
+メーカー案内・専門家など記事外の情報源確認を促す独立した一文)は
+Writer生出力由来で、Household Ledger v5のFACT-03再検証で追加された
+家庭用ガイド不一致記述(ストロベリー/オレンジの高湿度分類、GE/Samsung
+間の見解相違)を記事が明示的に扱ったrunにのみ出現した(current_focus
+2/6、争点非該当runは両条件・全Trialを通じて0/16)。Part B案1(既存の
+断定回避段落末尾へ、外部参照を呼びかける独立した保険文を書かないよう
+求める1文を追加、Ledgerが注意喚起自体を発見として明示する場合は例外)
+を適用すると保険文Before 2/6→After 0/6となり、安全側指標(blocking
+[FAIL] 0/12、Ledger Deviation 0、創作0、cross_point_overlap 0/12)は
+両条件で維持、語数もほぼ同水準(A2平均300語台)で不自然な簡略化は
+確認されなかった。
+
+一方でREVIEW率がAfter側で0/6→2/6へ上振れした(A2 run2=Point-vs-Story
+類似度0.474で既存Point Overlap安全機構[ER-008-N8-FINAL-QA-HARDENING-21]
+によるNG_REVIEW_REQUIRED、B1B run2=Fact Checkerが「バナナ冷蔵可能期間の
+一般化」「エチレン感受性の一般化」を指摘)。両件とも内容的にはPart Bの
+追加文言(保険文の禁止)とは無関係な既存QA機構の指摘であり、Trial-09の
+adjusted_focusで見られた「追加文言がLedgerのあいまいさをより積極的に
+書かせた結果REVIEWが増えた」という因果関係とは異なる。ただしN=3
+(合計12本)は小さく、この上振れが本当に無関係かはPart Bの副作用と
+断定できない。
+
+Gate 1分類は`VALIDATED`(Trial範囲)。Part B文言のProduction Discovery
+Focus Moduleへの正式採用、および`editorial_mode="discovery_why"`の
+正式registry登録は、いずれも別途`USER_DECISION_REQUIRED`(未承認候補の
+まま)。
+
+**Household一本化候補への所見**: 担当Sonnetは、Household A2/B1B
+一本化候補(記事→Support→Audio→試聴artifact)への進行について
+「現時点では推奨しない(条件付き)」との所見を提示した。根拠は
+(1)Part B文言はまだ未承認候補でありProduction Prompt側は無変更のため
+現状のHousehold一本化はcurrent_focus(Before)のままとなりD-4の保険文
+問題は未解決で流れる、(2)After条件でのREVIEW率上振れ(0%→33%)の因果
+関係がN=3では統計的に確認できない、の2点。推奨としては(a)Part B採用の
+場合はもう1ラウンド(N=5程度)の追試で上振れの再現性を確認してから
+一本化へ進む、(b)不採用の場合はcurrent_focus(Before)のまま一本化を
+進めD-4の保険文問題は別途Human Reviewでの目視修正に委ねる、の
+いずれかをユーザーに判断してもらう、というもの。**この所見はSonnetの
+提示であり判断そのものではない**。ユーザーはこの所見を把握した上で、
+並行してHousehold A2/B1B一本化候補(Trial扱い)の生成をFableへ指示し、
+`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`として実行中(結果は別途SSOT
+反映)。
+
+**規律事象**: Trial-10の初回担当がバックグラウンド待機で一度停止した
+(規律違反)。Fableが引き継ぎ担当を起動したところ、初回担当は自力復帰し
+Trialを完了させており、引き継ぎ担当は同一のREPORT・`comparison.html`を
+再作成(上書き、追加API費¥0)した。二重稼働事象として
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ記録した。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-61へ)、
+OPEN-135行(Trial-10結果要旨・Part B案1=未承認候補・VALIDATED・REVIEW率
+上振れ注記・二重稼働事象・Household一本化候補生成中を追記)、OPEN-138行
+(保険文の引き金がv5追加のFACT-03是正記述である事実、A-FACT03-5は
+fallback保留のままを追記)、OPEN-112行(Discovery Layer3懸念[Trial-07
+REVIEW率]と保険文問題はLedger v5起因の別事象であることを追記)を
+反映した。`CURRENT_SPEC.md`は変更していない(Production・Prompt変更
+なし)。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-10行を確定値
+(Sonnet/MEDIUM、¥100.5、バックグラウンド待機1件を規律違反として記録)
+へ更新し、引き継ぎ担当行(Sonnet/LOW、¥0、二重稼働)、Household候補行
+(Sonnet/MEDIUM、実行中)、News整理行(Sonnet/MEDIUM、¥0、実行中)、
+本タスク(Sonnet/LOW)を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-61)。Git操作: G1=
+`er011_discovery_stage4_cautionary_language_trial_10.py`・
+`er011_discovery_stage4_cautionary_language_trial_10_comparison.py`・
+`FAMILY-A-DISCOVERY-STAGE4-CAUTIONARY-LANGUAGE-TRIAL-10_REPORT.md`・
+`er011_output/discovery_stage4_cautionary_language_trial_10/`配下
+(json/md/html/jsonl/txt、既存commit慣行に合わせ音声バイナリは対象から
+除外)。G2=`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_
+TRIAL_LOG.md`。いずれもファイル名指定でcommitし`origin/main`へpush。
+並列稼働中のHousehold一本化候補生成(`er011_output/household_unified_
+final_candidate_01/`等)・News整理(`er011_output/news_stage4_redesign_
+inventory_01/`等)、`CURRENT_SPEC.md`、`er006_output/`、
+`er011_output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも
+本タスクでは触っていない。Production/Prompt編集・Trial着手・
+バックグラウンド待機は実施していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
