@@ -1,0 +1,61 @@
+<html><head><meta charset='utf-8'>
+<title>HOUSEHOLD-FACT-03-FIX-02 legacy_qa_review (軽量試聴ページ)</title>
+<style>body{font-family:sans-serif;font-size:14px;margin:20px}table{border-collapse:collapse;width:100%}td{border:1px solid #ccc;padding:8px;vertical-align:top}h1{font-size:20px}h2{font-size:16px;margin-top:28px}audio{width:220px}.pass{color:#0a7a0a;font-weight:bold}.fail{color:#b00020;font-weight:bold}</style></head><body>
+<h1>HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02(継続、Fable修正指示2回目): legacy_qa_review</h1>
+<p>Household B1B(2026-08-17承認)の14 legacy segment(point_one以外、現行Audio Validation
+Gateがブロックしたsegment)へ、既存Production QA(disfluency QA=faster-whisperローカル、
+ASR照合=er006_secondary_asr_01 Cascade)を<b>既存wav(byte不変、TTS再生成なし)</b>へ
+事後適用した結果。全wavは元の公開済み<code>er003_output/n3_01/household/b1b/narration/</code>
+とsha256完全一致(確認済み、コピー元のまま無変更)。</p>
+
+<h2>1. disfluency QA再適用(12件、全PASS)</h2>
+<p>faster-whisper(ローカル、追加API課金なし)による隣接単語repetition検知
+(er008_disfluency_qa_18.check_segment_for_disfluency)。全件flagged=False。</p>
+<table><tr><th style='width:180px'>segment</th><th>結果</th></tr>
+<tr><td>preview</td><td class='pass'>PASS</td></tr>
+<tr><td>comment_1</td><td class='pass'>PASS</td></tr>
+<tr><td>comment_2</td><td class='pass'>PASS</td></tr>
+<tr><td>comment_3</td><td class='pass'>PASS</td></tr>
+<tr><td>comment_4</td><td class='pass'>PASS</td></tr>
+<tr><td>point_one_heading</td><td class='pass'>PASS</td></tr>
+<tr><td>point_two_heading</td><td class='pass'>PASS</td></tr>
+<tr><td>in_one_line</td><td class='pass'>PASS</td></tr>
+<tr><td>kp1_english</td><td class='pass'>PASS</td></tr>
+<tr><td>kp3_english</td><td class='pass'>PASS</td></tr>
+<tr><td>kp4_english</td><td class='pass'>PASS</td></tr>
+<tr><td>kp5_english</td><td class='pass'>PASS</td></tr>
+</table>
+<p>詳細: <code>er011_output/open138_household_fact03_b1b_minimal_fix_02/legacy_disfluency_qa_reapply_summary.json</code></p>
+
+<h2>2. ASR Cascade再照合(2件、STOPPED終端状態、1 PASS・1 FAIL)</h2>
+<p>2026-08-17当時、いずれも6回試行後にstatus=STOPPEDで終端(canonical
+&quot;crisper&quot;をASRが一貫して&quot;CRISPR&quot;と書き起こしていたため)。現行の
+ASR Cascade(er006_secondary_asr_01.evaluate_attempt_with_cascade_detail、Primary
+1・2回目+Secondary Azure 1・2回目、entity_like/homophone Case A判定)を、既存wav
+(byte不変)へ再実行(TTSは呼んでいない)。</p>
+<table><tr><th style='width:220px'>segment</th><th style='width:240px'>audio(既存wav、byte不変)</th><th>canonical / 各stepのASR書き起こし</th><th style='width:100px'>結果</th></tr>
+<tr><td><b>topic_intro</b><div style='font-size:11px;color:#555'>元status=STOPPED(6/6試行FAIL)</div></td>
+<td><audio controls preload='none' src='narration/topic_intro.wav'></audio></td>
+<td style='max-width:520px;font-size:13px;line-height:1.5'>
+canonical: &quot;Today's topic is Your Crisper Drawer Has 2 Jobs—and One Tiny Switch Decides Which.&quot;<br>
+Primary#1/#2(OpenAI): &quot;...your <b>CRISPR</b> drawer has two jobs...&quot;(ASR_VALIDATION_UNCERTAIN)<br>
+Secondary#1(Azure): &quot;...your <b>crisper</b> drawer has two jobs...&quot;(<b>NORMALIZED_MATCH</b>)
+</td><td class='pass'>PASS<div style='font-size:11px;font-weight:normal'>Secondary ASR(Azure)が文脈込みで正しく
+&quot;crisper&quot;と書き起こした</div></td></tr>
+<tr><td><b>kp2_english</b><div style='font-size:11px;color:#555'>元status=STOPPED(6/6標準+6/6 fallback試行FAIL)</div></td>
+<td><audio controls preload='none' src='narration/kp2_en.wav'></audio></td>
+<td style='max-width:520px;font-size:13px;line-height:1.5'>
+canonical: &quot;crisper drawer&quot;<br>
+Primary#1(OpenAI): &quot;<b>CRISPR</b> drawer.&quot;(classification=TRUE_CONTENT_MISMATCH、
+entity_like=False・homophone_candidate=False → cascade非該当のためSecondary Azureへ
+進まず即FAIL終了、Production実際の挙動と同一)
+</td><td class='fail'>FAIL<div style='font-size:11px;font-weight:normal'>2語のみの単独フレーズでは
+文脈が無く、&quot;crisper&quot;単体がCMU辞書に無い&quot;CRISPR&quot;との区別を現行QAでも解決できない</div></td></tr>
+</table>
+<p>詳細: <code>er011_output/open138_household_fact03_b1b_minimal_fix_02/legacy_stopped_segments_asr_reverify_summary.json</code></p>
+
+<h2>3. 結論</h2>
+<p><b>1件(kp2_english)が現行QAでも不合格</b>のため、Assembly・Audio Validation Gate通過は
+本タスクでは実施していない(指示どおり再生成・承認代行なし、STOP)。他13件(disfluency
+QA 12件全PASS + topic_intro再照合PASS)は現行QA基準を満たすことを確認済み。</p>
+</body></html>

@@ -1,0 +1,135 @@
+{
+  "point_one": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "c77be90e78ebf615d9561293ddde1478414b3bb0e8519743b389c37294b82e2b",
+    "language": "en",
+    "theme_id": "fact03_fix_02",
+    "level": "b1b",
+    "segment_id": "point_one",
+    "updated_at": "2026-09-09T17:50:40",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er003_output/n3_01/household/fact03_fix_02/b1b/narration/point_one.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The common shortcut, fruit in low humidity and vegetables in high humidity, has important exceptions. Strawberries are one case. Some refrigerator makers put them in the high humidity drawer, while others put them in the low humidity drawer instead. The food's behavior matters more than its category.",
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 20.251,
+          "raw_leading_silence_seconds": 0.3,
+          "raw_trailing_silence_seconds": 0.38,
+          "trimmed_duration_seconds": 20.221,
+          "leading_margin_retained_seconds": 0.3,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 20.221,
+          "method_a_ngram": {
+            "matches": [
+              {
+                "span_text": " put  them  in  the",
+                "n_words": 4,
+                "category": "phrase",
+                "first_start_s": 11.0,
+                "first_end_s": 12.06,
+                "second_start_s": 14.02,
+                "second_end_s": 14.94,
+                "gap_seconds": 1.96,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              }
+            ],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 47,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9967,
+                "time_a_seconds": 2.95,
+                "time_b_seconds": 5.03,
+                "lag_seconds": 2.08,
+                "run_length_seconds_at_thresh_0.85": 0.1
+              },
+              {
+                "similarity": 0.9953,
+                "time_a_seconds": 2.94,
+                "time_b_seconds": 12.54,
+                "lag_seconds": 9.6,
+                "run_length_seconds_at_thresh_0.85": 0.13
+              },
+              {
+                "similarity": 0.9953,
+                "time_a_seconds": 5.05,
+                "time_b_seconds": 12.57,
+                "lag_seconds": 7.52,
+                "run_length_seconds_at_thresh_0.85": 0.1
+              },
+              {
+                "similarity": 0.9945,
+                "time_a_seconds": 5.04,
+                "time_b_seconds": 15.34,
+                "lag_seconds": 10.3
+              },
+              {
+                "similarity": 0.9938,
+                "time_a_seconds": 2.94,
+                "time_b_seconds": 11.92,
+                "lag_seconds": 8.98
+              }
+            ],
+            "best_run_length_seconds": 0.13,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": true,
+            "local_asr_confirmation": {
+              "confirmed": false,
+              "overlap_ratio": 0.3077,
+              "lcs_words": 2,
+              "window_half_seconds_a": 1.5,
+              "window_half_seconds_b": 1.5,
+              "fragment_a": "fruit in low humidity and vegetables in",
+              "fragment_b": "vegetables in high humidity, has important",
+              "overlap_ratio_threshold": 0.5,
+              "lcs_words_threshold": 3
+            },
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.35,
+            "time_a": 3.05,
+            "lag": 1.98,
+            "similarity_at_start": 0.8792,
+            "best_run_length_seconds": 0.35,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          }
+        },
+        "attempt_audio_path": "er003_output/n3_01/household/fact03_fix_02/b1b/narration/attempts/point_one_attempt4_englishstyleprefixwidemargin.wav"
+      }
+    ]
+  }
+}

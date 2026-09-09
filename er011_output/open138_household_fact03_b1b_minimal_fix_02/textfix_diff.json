@@ -1,0 +1,59 @@
+{
+  "diff": [
+    {
+      "revision": 1,
+      "file": "article.md",
+      "old_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, prefer high humidity. UC Davis lists an ideal humidity of 90 to 95 percent for both. The food’s behavior matters more than its category.",
+      "new_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, are one case. Refrigerator makers do not even agree on which drawer suits them best. The food’s behavior matters more than its category."
+    },
+    {
+      "revision": 1,
+      "file": "parts.json",
+      "field": "point_one_body",
+      "old_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, prefer high humidity. UC Davis lists an ideal humidity of 90 to 95 percent for both. The food’s behavior matters more than its category.",
+      "new_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, are one case. Refrigerator makers do not even agree on which drawer suits them best. The food’s behavior matters more than its category."
+    },
+    {
+      "revision": 2,
+      "reason": "revision 1をProduction Fact Checker(qa_runtime_evidence.py実行)に通した結果、"
+        "verdict=REVIEW_REQUIRED、unsupported_specific_claims 1件("
+        "citrus fruits/orangesを含めてメーカー間で見解が割れると一般化するのは広すぎる。"
+        "Ledger v4はGEがイチゴ・オレンジをいずれも低湿度、Samsungはイチゴのみ高湿度と"
+        "しており、オレンジについてはIllinois Extension・GEとも低湿度で一致している)。"
+        "この指摘を踏まえ、citrus/orangesの言及を削除し、Ledger v4が実際に記録している"
+        "『メーカー間の見解不一致』の範囲(イチゴのみ)に厳密化した。",
+      "file": "article.md",
+      "old_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, are one case. Refrigerator makers do not even agree on which drawer suits them best. The food’s behavior matters more than its category.",
+      "new_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries are one case: some refrigerator makers place them in the high-humidity drawer, others in the low-humidity one. The food’s behavior matters more than its category."
+    },
+    {
+      "revision": 2,
+      "file": "parts.json",
+      "field": "point_one_body",
+      "old_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, are one case. Refrigerator makers do not even agree on which drawer suits them best. The food’s behavior matters more than its category.",
+      "new_text": "The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries are one case: some refrigerator makers place them in the high-humidity drawer, others in the low-humidity one. The food’s behavior matters more than its category."
+    }
+  ],
+  "other_occurrences_after_replace": {
+    "90 to 95 percent": [
+      "fact_qa.json",
+      "audit/b1_support_generation.json",
+      "audit/deviation_full_record.json",
+      "audit/fact_check_attempts.json",
+      "audit/tts_generation_results.json",
+      "audit/writer_attempts.json",
+      "key_phrases/canonicalization_prompt.txt",
+      "key_phrases/keywords_selector_prompt.txt"
+    ],
+    "strawberries and citrus": [
+      "article.md",
+      "parts.json",
+      "audit/b1_support_generation.json",
+      "audit/deviation_full_record.json",
+      "audit/tts_generation_results.json",
+      "audit/writer_attempts.json",
+      "key_phrases/canonicalization_prompt.txt",
+      "key_phrases/keywords_selector_prompt.txt"
+    ]
+  }
+}

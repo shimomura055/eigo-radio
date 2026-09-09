@@ -1,0 +1,74 @@
+{
+  "all_pass": false,
+  "segments": {
+    "topic_intro": {
+      "wav_path": "er003_output/n3_01/household/fact03_fix_02/b1b/narration/topic_intro.wav",
+      "wav_sha256": "0c4d16c8e60a9dccb368c14d8cc37d699a2e45f7a73a83deec29488448b64e5a",
+      "canonical_text": "Today's topic is Your Crisper Drawer Has 2 Jobs—and One Tiny Switch Decides Which.",
+      "primary_1_asr_text": "Today's topic is, your CRISPR drawer has two jobs, and one tiny switch decides which.",
+      "verified": true,
+      "final_status": "NORMALIZED_MATCH",
+      "classification": "NORMALIZED_MATCH",
+      "should_pass": true,
+      "reason": "表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致",
+      "content_word_diffs": [],
+      "cascade_invoked": true,
+      "steps": [
+        {
+          "step": "primary_1",
+          "provider": "openai_asr",
+          "text": "Today's topic is, your CRISPR drawer has two jobs, and one tiny switch decides which.",
+          "classification": "ASR_VALIDATION_UNCERTAIN"
+        },
+        {
+          "step": "primary_2",
+          "provider": "openai_asr",
+          "text": "Today's topic is, your CRISPR drawer has two jobs, and one tiny switch decides which.",
+          "classification": "ASR_VALIDATION_UNCERTAIN"
+        },
+        {
+          "step": "secondary_1",
+          "provider": "azure",
+          "text": "Today's topic is your crisper drawer has two jobs and one tiny switch decides which.",
+          "classification": "NORMALIZED_MATCH",
+          "phrase_list_used": false
+        }
+      ],
+      "human_review_required": false,
+      "pronunciation_lookups": null,
+      "result": "PASS"
+    },
+    "kp2_english": {
+      "wav_path": "er003_output/n3_01/household/fact03_fix_02/b1b/narration/kp2_en.wav",
+      "wav_sha256": "bd6c8e5e64aca399cfdc972bb50a758dd6a6ad090d8d1e5d3e0d0129f3b34f2a",
+      "canonical_text": "crisper drawer",
+      "primary_1_asr_text": "CRISPR drawer.",
+      "verified": false,
+      "final_status": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "should_pass": false,
+      "reason": "固有名詞以外の内容語に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'crisper', 'asr': 'crispr', 'entity_like': False, 'homophone_candidate': False}]",
+      "content_word_diffs": [
+        {
+          "type": "replace",
+          "canonical": "crisper",
+          "asr": "crispr",
+          "entity_like": false,
+          "homophone_candidate": false
+        }
+      ],
+      "cascade_invoked": false,
+      "steps": [
+        {
+          "step": "primary_1",
+          "provider": "openai_asr",
+          "text": "CRISPR drawer.",
+          "classification": "TRUE_CONTENT_MISMATCH"
+        }
+      ],
+      "human_review_required": false,
+      "pronunciation_lookups": null,
+      "result": "FAIL"
+    }
+  }
+}
