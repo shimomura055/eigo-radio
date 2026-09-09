@@ -10335,6 +10335,17 @@ attempt_history.jsonl`・既存の未追跡ファイル群はいずれも本タ�
 触っていない(commit対象外)。Production/Prompt編集は実施していない
 (SSOT反映のみ)。
 
+**Fable修正指示1回目(2026-09-10)**: 上記「発見事項」のOPEN-135行内矛盾を
+事実確認のうえ是正した。根拠: `er011_output/household_unified_final_
+candidate_01/a2/audit/prompt.txt`・`b1b/audit/prompt.txt`双方にPart B案1
+(`cautionary_constrained`、外部確認促しの独立した保険文を書かない旨の
+1文)が含まれることをgrepで確認(確認日時2026-09-10)、`er011_household_
+unified_final_candidate_01_run.py`もA2/B1B双方の生成呼び出しで
+`CAUTIONARY_FOCUS_BLOCK`を使用していることを確認した。正しいのは
+`PM-CLOSEOUT-CONSOLIDATION-63`側(cautionary_constrained適用)であり、
+`PM-CLOSEOUT-CONSOLIDATION-64`追記(5)の「current_focus(Before)のまま」
+は誤りと判定し、`OPEN_ITEMS.md`OPEN-135行を訂正した。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
