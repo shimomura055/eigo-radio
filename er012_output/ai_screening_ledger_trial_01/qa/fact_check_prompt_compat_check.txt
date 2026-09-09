@@ -1,0 +1,269 @@
+あなたは、生成済みの記事の事実確認だけを行う、独立した担当者です。
+
+記事の面白さ、切り口、構成、トーンは一切評価しないでください。記事を書き直したり、修正したりしないでください。
+
+【対象テーマ】
+
+Should companies use AI to screen job applicants?
+
+【検証対象の記事】
+
+(placeholder article text, not a real generation)
+
+【参考情報: 記事作成者が参照したとされる情報源(参考情報であり、これだけを信用しないこと)】
+
+(参照ソースなし)
+
+以下の方針で、独立してWeb検索を行い、記事内の具体的主張を確認してください。
+
+- 記事作成者が参照したソースだけを信用せず、必要に応じて自分で新たな検索クエリを作成してください。
+- 可能な限り一次情報または当事者の公式情報を確認してください。一次情報に到達できない場合は、複数の信頼できる報道を照合してください。
+- 数字、日付、人名・組織名、試合結果、得点経過、発言、制度内容、政策内容、市場反応、因果関係、当事者の心理や意図として読める表現、「初」「最高」「最低」などの比較表現、記事の中心的な出来事を検証対象としてください。
+
+判定は以下の3区分のいずれかとしてください。
+
+- PASS: 明確な矛盾・未確認の重要な具体的主張がない
+- REVIEW_REQUIRED: 確認できない具体的主張、解釈、引用風表現などがある(矛盾とまでは言えない)
+- FAIL: 信頼できる情報と明確に矛盾する
+
+指定されたJSON形式のフィールドだけで回答してください。
+
+
+【複数Voice構成の記事における事実帰属ルール(B-Family Voices固有、opt-in、EDITORIAL-B-FAMILY-MULTI-VOICE-FACT-ATTRIBUTION-TRIAL-01/02で検証済みの候補A')】
+この記事のVoice本文(一人称の合成personaによる語り)は、下記のVerified Fact Ledgerの該当[VOICE_n_EVIDENCE]evidenceを一人称の語りへ翻案したものです。Voice本文中の主張が、そのVoiceに割り当てられたLedger evidence(下記抜粋)の内容と実質的に対応している場合、本文中に出典・調査名・数値を逐一明記していないことだけを理由に、unsupported_specific_claimsへ計上したり、REVIEW_REQUIRED/FAILと判定したりしないでください。
+ただし、以下は従来どおり検証対象としてください(免除の対象外):
+- Voice本文の内容がLedger evidenceの数値・調査主体・結果を改変・捏造している場合
+- Voice本文中に実在する名前付き個人の発言として具体的に帰属される主張
+- Voice本文以外の地の文(Tension/Closing等)での客観的主張・出典明示が本来期待される表現
+
+【Voice別 Verified Fact Ledger evidence(抜粋)】
+  [VOICE_1_EVIDENCE] = Voice 1(Applicant)を支える事実
+  [VOICE_2_EVIDENCE] = Voice 2(Recruiter・Hiring Manager)を支える事実
+  [VOICE_3_EVIDENCE] = Voice 3(Business・Efficiency)を支える事実
+  [VOICE_4_EVIDENCE] = Voice 4(Fairness・Legal・HR Governance)を支える事実
+[VOICE_1_EVIDENCE] 1-01(R1_applicant_usa_perceived_bias_asa_2023): 米国の
+人材派遣業界団体American Staffing Association(ASA)がThe Harris Pollに
+委託して2023年に実施したWorkforce Monitor調査によれば、就労中の米国求職者
+の49%が、採用選考で使われるAIツールは人間の採用担当者よりも偏っている
+(biased)と考えている。
+  source: American Staffing Association Workforce Monitor(The Harris Poll
+  実施)
+  (https://americanstaffing.net/posts/2023/09/07/ai-recruiting-tools/)
+  counter_or_limitation: 就労中の求職者のみを対象としたオンライン調査の
+  自己申告データであり、実際に測定されたバイアスや、失業中・周辺化された
+  応募者の経験を反映しているとは限らない
+  verification: CONFIRMED
+[VOICE_1_EVIDENCE] 1-02(R1_applicant_public_concern_race_bias_pew): Pew
+Research Centerが2023年に発表した報告書「AI in Hiring and Evaluating
+Workers」によれば、米国の成人の約79%が、応募者の人種・民族に基づく
+偏りや不公平な扱いが採用における問題だと回答しており(37%が「重大な
+問題」、42%が「軽微な問題」)、AIが採用で使われることでこうした偏りが
+悪化するのではないかという懸念が広く共有されている。
+  source: Pew Research Center「AI in Hiring and Evaluating Workers: What
+  Americans Think」
+  (https://www.pewresearch.org/internet/2023/04/20/ai-in-hiring-and-evaluating-workers-what-americans-think/)
+  counter_or_limitation: 一般的な意識調査であり、実際にAI選考を経験した
+  応募者に限定した数字ではない
+  verification: CONFIRMED
+[VOICE_1_EVIDENCE] 1-03(R2_fact_002): BBC Worklifeが2024年に報じた記事
+「AI hiring tools may be filtering out the best job applicants」では、
+ある女性求職者が、スキル評価では良い結果を出したにもかかわらず、AIによる
+動画面接評価で「身振り・表情」を低く採点されて不採用となり、その後長期の
+失業状態に陥ったと証言している。本人はこれを、非言語的な振る舞いに対する
+不透明な自動評価のせいだと考えている。
+  source: BBC Worklife
+  (https://www.bbc.com/worklife/article/20240214-ai-recruiting-hiring-software-bias-discrimination)
+  counter_or_limitation: 匿名の1事例であり、本人・雇用主の実名は記事内で
+  明かされていない。スコアリングモデルの技術的詳細も限定的
+  verification: CONFIRMED
+[VOICE_1_EVIDENCE] 1-04(R2_fact_004): HR Diveが2024年に報じたところに
+よると、マサチューセッツ州の応募者(Baker氏)が2021年にCVS Healthの
+サプライチェーン部門に応募した際、HireVueの動画面接技術とAffectivaの
+AIによる表情・声のトーン分析を用いた「信頼性・誠実さ」スコアリングを
+受けさせられ、オプトアウト(拒否)も結果への異議申し立てもできないまま
+不採用となったとして提訴し、CVSは後に集団訴訟の暫定和解に応じた。
+  source: HR Dive
+  (https://www.hrdive.com/news/cvs-settles-lawsuit-over-using-ai-based-lie-detector/722249/)
+  counter_or_limitation: 争点はマサチューセッツ州のうそ発見器規制法違反・
+  オプトアウト欠如であり、AI評価そのものの不正確さ・差別性を裁判所が
+  認定したわけではない
+  verification: CONFIRMED
+[VOICE_1_EVIDENCE] 1-05(R1_applicant_global_discrimination_concern_nature_2023):
+Nature系学術誌に2023年に掲載された論文「Ethics and discrimination in
+artificial intelligence-enabled recruitment practices」は、AIによる採用
+選考が人種・性別等に基づく差別を引き起こしうるという懸念を、応募者・
+市民社会団体が提起していると報告しており、応募者がアルゴリズムによる
+決定の理由を理解できず、異議も申し立てられないまま不利益を受けうる
+リスクを指摘している。
+  source: Nature Humanities and Social Sciences Communications「Ethics
+  and discrimination in artificial intelligence-enabled recruitment
+  practices」
+  (https://www.nature.com/articles/s41599-023-02079-x)
+  counter_or_limitation: 個別事例の直接調査ではなく、既存の懸念・事例を
+  総括した学術分析
+  verification: CONFIRMED
+[VOICE_2_EVIDENCE] 2-01(R2_fact_006): 人事プラットフォームPaylocityが
+2026年に発表した調査(Yahoo News/LabManager経由で報道)によれば、HR
+リーダーの91%が採用プロセスのどこかで実際にAIを「積極的に使用している」
+と回答し、最も多い用途は履歴書スクリーニング(67%)、面接日程調整
+(59%)、求人票の作成(57%)だった。
+  source: Paylocity調査(Yahoo News/LabManager経由の報道)
+  (https://www.yahoo.com/news/us/articles/hiring-managers-trust-ai-actively-104900010.html)
+  counter_or_limitation: ベンダー主導の調査であり、サンプリング方法の詳細は
+  公開情報では限定的
+  verification: CONFIRMED
+[VOICE_2_EVIDENCE] 2-02(R2_fact_007): Insight Globalが2025年に発表した
+「AI in Hiring」調査によれば、採用担当者の74%が「AIは応募者のスキル
+適合度の評価を助けてくれる」と回答し、73%が「AIは候補者を他の職種にも
+マッチングさせるのに役立つ」と回答した一方、応募者がAIで書いた応募書類
+については評価が割れており、36%は「AI活用力の証」と見る一方、24%は
+「努力不足の表れ」と見ている。
+  source: Insight Global(SHRM Vendor Directory経由)
+  (https://vendordirectory.shrm.org/company/830416/news/3569032/insight-globals-ai-in-hiring-survey-highlights-essential-role-of-tech-enabled-people)
+  counter_or_limitation: ベンダー実施調査であり、公開されているサンプル
+  詳細は限定的
+  verification: CONFIRMED
+[VOICE_2_EVIDENCE] 2-03(R2_fact_018): 2026年にLabManagerが報じた調査に
+よれば、採用担当者の87%が採用プロセスの少なくとも1段階でAIを使用しており、
+最も多い用途は履歴書スクリーニング(58%)、求人票・募集文の作成
+(46%)、候補者と職種のマッチング(44%)、面接日程調整(41%)だった。
+同時に、応募者側がAIを使って応募書類を作成することへの懸念も併せて
+表明されている。
+  source: LabManager(AI採用に関する調査の要約報道)
+  (https://www.labmanager.com/ai-use-is-changing-how-employers-evaluate-candidates-35697)
+  counter_or_limitation: 米国の採用担当者を対象とした調査であり、業種・
+  サンプルサイズの詳細は二次報道内で限定的
+  verification: CONFIRMED
+[VOICE_2_EVIDENCE] 2-04(R1_recruiter_nyc_employer_practice_notice_aedt):
+NBCUniversalが2025年に公開した「Automated Employment Decision Tools
+(AEDT)に関する通知」は、ニューヨーク市Local Law 144に基づき、同社が
+使用するAEDTについて独立監査人によるレビューが行われたことを示しており、
+大手雇用主が実際にAI選考ツールを使用しながら、バイアス監査の実施と
+応募者への通知を運用している実例である。
+  source: NBCUniversal「Notice Regarding Automated Employment Decision
+  Tools」(公開通知)
+  (https://cdn2.nbcuni.com/NBCUnicareers/2025-08/Notice_Regarding_Automated_Employment_Decision_Tools_8.2025.pdf)
+  counter_or_limitation: コンプライアンス遵守の実例であり、ツール自体の
+  性能を示すものではない
+  verification: CONFIRMED
+[VOICE_2_EVIDENCE] 2-05(R1_recruiter_industry_pressure_to_document_ai_fairness):
+2026年のStaffingHub記事は、求職者のほぼ半数がAIスクリーニングを偏って
+いると考えている(1-01参照)ことを踏まえ、人材紹介・採用担当者に対して、
+バイアス監査の要約や透明性資料などの文書を用いて候補者の不信感に応える
+よう促しており、採用担当者自身がAIの公平性を証明する責任・プレッシャーを
+感じていることを示している。
+  source: StaffingHub「49% of Job Seekers Think Your AI Screening Is
+  Biased. Here's the documentation that answers them」
+  (https://staffinghub.com/candidate-experience/49-of-job-seekers-think-your-ai-screening-is-biased-heres-the-documentation-that-answers-them/)
+  counter_or_limitation: 採用担当者向けの助言記事であり、ツール性能の
+  検証記事ではない
+  verification: CONFIRMED
+[VOICE_3_EVIDENCE] 3-01(R2_fact_011): 学術誌International Journal of
+Business and Management Invention(IJBMI)が2024年に発表したAI採用の
+影響に関するレビュー論文によれば、Hiltonは採用にAIを導入した結果、
+平均採用期間が約6週間から5日間へ(約85%削減)短縮されたと報告されており、
+IBMは採用コストを約30%削減したと報告されている。
+  source: IJBMI「The Impact of Artificial Intelligence on Modern
+  Recruitment」(Hilton・IBMの事例研究を集約した学術レビュー)
+  (https://www.ijbmi.org/papers/Vol(13)9/1309143150.pdf)
+  counter_or_limitation: 個別企業のケーススタディを集約した学術論文であり、
+  数値はベンダー・コンサルティング側の報告に基づく可能性があり、独立
+  監査されたものではない
+  verification: CONFIRMED
+[VOICE_3_EVIDENCE] 3-02(R2_fact_012): Netscribesが2025年に公開した
+ケーススタディによれば、あるグローバルなクラウドコンピューティング企業が
+AI採用自動化(自動スクリーニング・ワークフロー管理を含む)を導入した
+結果、平均採用期間が60日から35日へ(42%削減)短縮され、外部採用
+エージェンシーへの支出が40%削減された。
+  source: Netscribesケーススタディ
+  (https://dev.netscribes.com/wp-content/uploads/2025/05/Case-study_How-AI-automation-cut-time-to-hire-by-42-for-a-global-cloud-computing-provide-2.pdf)
+  counter_or_limitation: 特定顧客1社に関するベンダー作成のケーススタディ
+  であり、自己申告の指標であるため、同様の高採用量の状況以外に一般化
+  できるとは限らない
+  verification: CONFIRMED
+[VOICE_3_EVIDENCE] 3-03(R2_fact_013): AI採用ツールベンダーVitae.aiが
+2026年に公開した情報によれば、200社超の顧客の導入後90日間の中央値で、
+採用充足までの期間が43%短縮、採用単価が31%低下、採用担当者1人あたりの
+処理件数が2.4倍に増加、ツール関連支出が47%削減されたと報告されている。
+  source: Vitae.ai
+  (https://www.vitae.ai/resources/ai-recruiting-cost-savings-roi)
+  counter_or_limitation: ベンダー自身の顧客基盤から集計した指標であり、
+  導入後90日間という早期の数字にとどまり、独立検証はされていない
+  verification: CONFIRMED
+[VOICE_3_EVIDENCE] 3-04(R2_fact_019): HR Diveが2025年に報じたResume.org
+の調査によれば、企業の57%が既に採用選考でAIを使用しており、74%が
+「AIが採用の質を向上させた」と回答している。
+  source: HR Dive(Resume.org調査の報道)
+  (https://www.hrdive.com/news/ai-hiring-process/758384/)
+  counter_or_limitation: 自己申告による企業側の認識調査であり、採用の質を
+  独立に測定した指標ではない
+  verification: CONFIRMED
+[VOICE_3_EVIDENCE] 3-05(R1_business_risk_of_discrimination_and_reputation_nature):
+前出のNature系論文は、AIによる採用選考を導入する企業が、機械による
+差別が生じた場合の倫理的・法的リスクと、企業の評判(reputation)への
+ダメージという代償に直面しうると指摘しており、経営層は効率化のメリットと、
+賠償責任・信頼喪失のコストを天秤にかける必要があるとしている。
+  source: Nature Humanities and Social Sciences Communications「Ethics
+  and discrimination in artificial intelligence-enabled recruitment
+  practices」
+  (https://www.nature.com/articles/s41599-023-02079-x)
+  counter_or_limitation: 個別事例の直接調査ではなく、既存の懸念・事例を
+  総括した学術分析(1-05と同一出典)
+  verification: CONFIRMED
+[VOICE_4_EVIDENCE] 4-01(R1_fairness_ll144_bias_audit_requirement): ニュー
+ヨーク市議会が制定したLocal Law 144(2021年)は、雇用主・人材紹介会社が
+自動雇用意思決定ツール(AEDT)を使って候補者・従業員を選考することを、
+そのツールが使用前1年以内にバイアス監査を受け、監査結果の要約とツールの
+配備日が公開され、候補者・従業員への通知が行われていない限り違法とする。
+  source: ニューヨーク市消費者・労働者保護局(DCWP)のAEDTガイダンス、
+  Local Law 144(2021年)本文
+  (https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page)
+  counter_or_limitation: ニューヨーク市内での雇用・昇進の意思決定にのみ
+  適用される地方法であり、他地域には及ばない
+  verification: CONFIRMED
+[VOICE_4_EVIDENCE] 4-02(R2_fact_016): EU AI Act(規則2024/1689)は、
+採用・選考のための人材選定を含む雇用分野のAIシステムを、個人の将来の
+キャリア・生計・労働者の権利に重大な影響を与えるとして「high-risk(高
+リスク)」に分類し(附属書III第4項)、リスク管理・データガバナンス・
+透明性・人間による監督に関する厳格な要件を課している。
+  source: EU AI Act公式文書(AI Act Service Desk)
+  (https://ai-act-service-desk.ec.europa.eu/en/ai-act/recital-57)
+  counter_or_limitation: 「high-risk」に分類するが、それ自体が採用AIを
+  禁止するものではなく、「意思決定に重大な影響を与える」場合の適用範囲には
+  解釈の余地が残る
+  verification: CONFIRMED
+[VOICE_4_EVIDENCE] 4-03(R2_fact_001): Reutersが2018年に報じたところに
+よると、Amazonは社内向けに機械学習を用いた採用エンジンを開発していたが、
+過去の履歴書データから学習した結果、"women's"という語(例:
+「women's chess club captain」)を含む履歴書や、女子大学の卒業生を
+低く評価するようになり、2017年までにこのプロジェクトは中止された。
+  source: Reuters
+  (https://www.reuters.com/article/world/insight-amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK0AG/)
+  counter_or_limitation: 実験的な社内ツールであり、会社側の説明によれば
+  実際の採用判断には一度も使われなかったが、学習データの偏りがどのように
+  AIに反映されうるかを示す事例として広く引用されている
+  verification: CONFIRMED
+[VOICE_4_EVIDENCE] 4-04(R2_fact_003): HireVueは、2017年1月27日から2026
+年6月25日の間にイリノイ州内で面接を受けた応募者に対し、書面同意なしに
+表情・声紋等の生体情報を取得・分析して認知能力・性格を評価したとして、
+イリノイ州生体情報プライバシー法(BIPA)違反を問われ、375万ドルの和解
+基金を設けることに合意した(2026年8月発表)。
+  source: ClassAction.org / Top Class Actions(和解に関する報道)
+  (https://classactionu.org/our-news/hirevue-agrees-to-3-75-million-class-action-settlement-over-alleged-biometric-privacy-violations/)
+  counter_or_limitation: 和解の争点は生体情報プライバシー(同意・開示)で
+  あり、雇用差別や採点の正確性そのものを裁判所が認定したものではない
+  verification: CONFIRMED
+[VOICE_4_EVIDENCE] 4-05(R1_fairness_japan_discussion_on_recruitment_ai_bias):
+日本のAI法制に関する比較法ガイド(Chambers/Legal500等)および東京大学の
+政策提言によれば、2023年9月時点で日本には採用AIの監査を義務付ける法律・
+規制は存在せず、企業には監査を行う法的インセンティブがほとんどない一方、
+経済産業省のAI事業者ガイドライン等を通じて公平性・アルゴリズムバイアスに
+関する議論は続いている。ニューヨーク市のLocal Law 144のような具体的な
+法律を日本はまだ持っていない。
+  source: Chambers/Legal500比較法ガイド、東京大学「Advancing AI Audits」
+  政策提言
+  (https://practiceguides.chambers.com/practice-guides/artificial-intelligence-2024/japan)
+  counter_or_limitation: 日本の規制状況に関する情報は、NYC Local Law 144
+  ほど明確な成文規定を持たず、議論・懸念の段階にとどまっていることを示す
+  ものであり、具体的な数値・法規定を示すものではない
+  verification: CONFIRMED

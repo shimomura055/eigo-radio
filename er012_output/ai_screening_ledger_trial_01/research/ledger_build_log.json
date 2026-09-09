@@ -1,0 +1,70 @@
+{
+  "management_id": "EDITORIAL-B-FAMILY-VOICES-AI-SCREENING-LEDGER-TRIAL-01",
+  "purpose": "4V本文Trial(B-3V4V-1=(c)、案A)に先立ち、検証済み4-Voice Verified Fact Ledgerを別Trialで先に作成する",
+  "reconciliation_check": {
+    "trial07_ledger_format_reference": "er012_output/editorial_b_voices_trial_07/research/verified_fact_ledger.txt (L52以降のVOICE_1_EVIDENCE/VOICE_2_EVIDENCE/CROSS_REFERENCEブロック構造)",
+    "a_family_er002_research_pipeline_reviewed": "er002_ja_web_research_r3.py (make_writer_research_fn/run_writer_with_gates/build_fact_check_prompt/make_fact_checker_fn)",
+    "finding": "er002_ja_web_research_r3.pyのResearch関数は、A-Family全文Writer本体がOpenAI Responses APIのweb_searchツールを使って記事本文を書きながら同時に出典を集める設計であり、独立したstakeholder視点のfact収集・独立verificationという2段階構造(Stage 1B/2B)には対応していないスキーマ・呼び出し形態である。B-Family Voice Ledgerの実際の先例(EDITORIAL-B-FAMILY-VOICES-TRIAL-04/05/06/07)は、いずれもer011_open112_engagement_reference_cross_topic_ab_trial_11.pyに由来する_perplexity_call()パターン(Perplexity sonar-pro、Stage 1B: fact research、Stage 2B: 独立verification)を各Trialファイル内に無変更のまま再実装したものであり、er002とは別系統である。本Trialでは『新規Research primitiveの独自実装をしない』という制約を、Trial-04〜07と全く同じ_perplexity_call()実装(無変更コピー)を再利用するという意味で満たした。er002側は、後段の品質確認(build_fact_check_prompt()がvoice_attribution_block込みで読めるか)のread-only呼び出しにのみ使用し、本文生成・Fact Checker実行はしていない。",
+    "current_spec_fact_safety_reference": "CURRENT_SPEC.md L538「Fact Safety(Verified Fact Ledger→Fact Checker→Ledger Deviation Checker v2)」表エントリ。CONFIRMEDのみを主要根拠として採用し、PARTIALLY_CONFIRMED以下は主要根拠から除外する方針(Trial-07よりも厳格、本Trial固有の判断)を採用した。"
+  },
+  "research_function_used": {
+    "function": "_perplexity_call() (Trial-04/05/06/07から無変更のまま本Trial専用スクリプトへ再実装したもの)",
+    "script": "er012_ai_screening_ledger_trial_01.py",
+    "model": "sonar-pro",
+    "stages": ["research_facts (Stage 1B, Round1)", "verify_facts (Stage 2B, Round1)",
+               "research_facts_round2 (Stage 1B, Round2)", "verify_facts_round2 (Stage 2B, Round2)"],
+    "cost_logger": "er005_cost_logger.py (cl.install()を各Roundの冒頭で有効化、raw_usage_log_ledger_trial01_research*.jsonlへ記録)"
+  },
+  "queries": {
+    "round1_research_facts_prompt_summary": "テーマ全体について、4立場(Applicant/Recruiter・Hiring Manager/Business・Efficiency/Fairness・Legal・HR Governance)ごとに最低4件、合計16件以上のCONFIRMED候補factを収集する指示",
+    "round1_result_fact_count": 22,
+    "round2_reason": "Round1実査の結果、fairness_legal_hr_governance(NYC Local Law 144の監査要件)に事実が偏り、他3 Voiceの個人の生きた経験・定量的ROI事例が薄いことが判明したため追加Research",
+    "round2_research_facts_prompt_summary": "NYC LL144監査要件の説明は除外し、(1)Applicant個人の実例、(2)Recruiter実利用実感、(3)Business定量ROI事例、(4)EU AI Act等の別角度の法規制、(5)全体導入率、を優先する指示",
+    "round2_result_fact_count": 19
+  },
+  "verification_results": {
+    "round1": {"CONFIRMED": 20, "PARTIALLY_CONFIRMED": 2, "COULD_NOT_CONFIRM": 0, "CONTRADICTED": 0,
+               "partially_confirmed_fact_ids": ["applicant_usa_transparency_concern_pew_asa", "applicant_usa_fear_need_to_game_ai"],
+               "policy": "PARTIALLY_CONFIRMEDの2件はFact Safetyを優先しLedger本体の主要根拠から除外(Ledger末尾の不採用理由節に明記)"},
+    "round2": {"CONFIRMED": 19, "PARTIALLY_CONFIRMED": 0, "COULD_NOT_CONFIRM": 0, "CONTRADICTED": 0}
+  },
+  "ledger_curation": {
+    "method": "手作業でのcuration(Trial-03/05/06/07と同じ方式)。全41件のCONFIRMED/PARTIALLY_CONFIRMED factのうち、4 Voice各5件・CROSS_REFERENCE 2件の計22件を主要根拠として選定し、残り(NYC LL144の重複restatement、business_efficiency領域の重複調査等)はLedger末尾の不採用節に理由付きで記録した",
+    "voice_evidence_counts": {"VOICE_1_Applicant": 5, "VOICE_2_Recruiter_HiringManager": 5, "VOICE_3_Business_Efficiency": 5, "VOICE_4_Fairness_Legal_HRGovernance": 5, "CROSS_REFERENCE": 2},
+    "output_files": [
+      "research/verified_fact_ledger.txt",
+      "research/perspective_map.md"
+    ]
+  },
+  "quality_checks": {
+    "structural_diff_vs_trial07": {
+      "method": "正規表現によるタグ・fieldラベル抽出比較(scratchpad/structure_check.py、対話内で実行・保存はしていない一時スクリプト)",
+      "result": "field_labels完全一致(source/counter_or_limitation/verification)。tagはVOICE_1_EVIDENCE〜VOICE_2_EVIDENCE(Trial-07は2Voice)に対しVOICE_1〜VOICE_4_EVIDENCE(本Ledgerは4Voice)へ拡張、CROSS_REFERENCEは共通。section header形式(=== TAG(説明) ===)も同一。"
+    },
+    "build_voice_attribution_block_compat": {
+      "method": "er012_b_family_editorial_type_registry_01.build_voice_attribution_block()をread-onlyでimport・呼び出し(OPEN-131修正タスクが同時進行中のため、registry自体は一切編集していない)",
+      "result": "VOICE_1〜VOICE_4の4タグ全てを正しく抽出、ルール文言+evidence抜粋ブロックを生成(出力長10872文字)。出力は qa/voice_attribution_block_output.txt に保存"
+    },
+    "build_fact_check_prompt_compat": {
+      "method": "er002_ja_web_research_r3.build_fact_check_prompt()をread-onlyで呼び出し(voice_attribution_block引数にbuild_voice_attribution_block()の出力を渡す、article_textはplaceholder、実際のFact Checker API呼び出しはしていない)",
+      "result": "例外なくprompt生成成功(長さ11584文字)、末尾がattribution blockと一致することを確認。出力は qa/fact_check_prompt_compat_check.txt に保存"
+    },
+    "representativeness_and_bias_check": "research/perspective_map.md『Perspective Diversity Check』節参照。4 Voice各5件で均衡、出典の多様性を確認、単純な賛否2対2構造になっていないことを個別に確認した"
+  },
+  "cost_actual": {
+    "note": "各API応答のusage.costフィールド(Perplexity公式レスポンス内の実測コスト)をそのまま合算。JPY換算は概算レート(1USD≈150-155円)を用いた概算",
+    "round1_research_facts_usd": 0.08218,
+    "round1_verify_facts_usd": 0.09336,
+    "round2_research_facts_usd": 0.08675,
+    "round2_verify_facts_usd": 0.08944,
+    "total_usd": 0.35173,
+    "total_jpy_estimate": "約53円(150円/USD換算)〜約55円(155円/USD換算)、budget上限¥150に対し十分な余裕"
+  },
+  "prohibited_actions_confirmed_not_taken": [
+    "Production Prompt/registry編集(er012_b_family_editorial_type_registry_01.pyはread-only importのみ、一切編集していない)",
+    "SSOT・Git操作(本Trialでは行っていない)",
+    "本文生成・音声生成(行っていない)",
+    "未検証事実の記載(PARTIALLY_CONFIRMED以下2件はLedger本体の主要根拠から除外)",
+    "Research primitiveの独自実装(Trial-04〜07の_perplexity_callパターンを無変更のまま再利用)"
+  ]
+}
