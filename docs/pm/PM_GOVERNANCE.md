@@ -1,7 +1,11 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-09(PM-MODEL-ROUTING-TRIAL-TRIGGER-02で11節のMODEL
+**最終更新: 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29で新小節「2-1.
+既存対策・仕様 Reconciliation Check」を新設し、Gate 5/Gate 6/PM
+Closeout Mandatory Check[3節]へOPEN-129 mandatory化Trigger確認・
+OPEN-132[Phase 2 Writer配線時チェックリスト]確認の各1行を追記)。
+2026-09-09(PM-MODEL-ROUTING-TRIAL-TRIGGER-02で11節のMODEL
 ROUTING運用Trial記述末尾へ、判定Triggerは`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
 の「判定Trigger」節参照である旨の1文を追記)。2026-09-09
 (PM-MODEL-ROUTING-TRIAL-SETUP-01で11節末尾へ
@@ -98,10 +102,12 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   本ファイルはそれを参照するのみで全文を再掲しない。**
 - **Gate 5 — Open Item Review**: closeout時に、未処理の
   `USER_DECISION_REQUIRED` / 未採否の`VALIDATED` / 未配線の`APPROVED_FOR_PRODUCTION` /
-  未報告Trial / Open Item漏れの有無を確認する。
+  未報告Trial / Open Item漏れの有無を確認する。OPEN-129 mandatory化
+  Triggerの到達状況(2026-09-09追記)も確認する。
 - **Gate 6 — 次工程前PM確認**: 次の実装・Trial・Production作業に着手する前に、
   未処理UDR / APPROVED未配線 / SSOT漏れ / 無断追加Trial /
-  DEV・Trial誤認が無いかを確認する。
+  DEV・Trial誤認が無いかを確認する。Phase 2 Writer配線に着手する場合は
+  `OPEN-132`チェックリストの確認も含める(2026-09-09追記)。
 - **Gate 7 — 実務報告の受入判定**: Sonnet/Opus等の「完了」「Production反映済み」
   「動作確認済み」という報告をそのまま採用せず、Production正式path /
   runtime evidence / test / approved specとの一致 / retry・fallbackとの整合 /
@@ -147,6 +153,27 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
 
+### 2-1. 既存対策・仕様 Reconciliation Check(2026-09-09、ユーザー指示)
+
+failure mode対策・Prompt改善・retry/fallback改善・Validator/QA改善・
+Production仕様変更・既存挙動への追加対策を検討・実装する前に、必ず
+最初に以下を確認する: CURRENT_SPEC / DECISION_LOG / OPEN_ITEMS / 過去の
+関連管理ID・Trial Report / 現在のProduction実装 / retry・fallback・
+regeneration機構 / 過去に同種failure modeへの対策がないか /
+`APPROVED_FOR_PRODUCTION`・`PRODUCTION_WIRED`済み対策がないか /
+新案との重複・競合・二重実装がないか。
+
+**順序**: (1) 過去仕様・Trial・Production実装を先に確認する →
+(2) 現在のギャップを特定する → (3) そのギャップに対してのみ新対策を
+検討する。
+
+重複・競合・実装漏れが見つかった場合は、新Trialを開始せずSTOPして
+整理・報告する(既存`USER_DECISION_REQUIRED`文化の踏襲)。
+
+**経緯**: Point Overlap分散低減Trial(A-UDR-16)の事前監査で既存対策との
+重複と実装ギャップG1/G2が判明した(2026-09-09、PM-CLOSEOUT-
+CONSOLIDATION-29)。
+
 ## 3. PM Closeout Mandatory Check(PM Closeout時の確認事項)
 
 主要タスクをcloseする前に、最低限以下を確認する。1件でも未処理なら
@@ -162,6 +189,10 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
 8. 未報告Trialが無いこと
 9. 無断deferが無いこと
 10. 次タスクへの持ち越し事項が明示されていること
+11. OPEN-129 mandatory化Trigger(3V/4V Trial実績・次回A-Family Production
+    run実績)の到達状況を確認していること(2026-09-09追記)
+12. Phase 2 Writer配線時チェックリスト(`OPEN-132`)を、Phase 2着手前の
+    タスクであれば参照していること(2026-09-09追記)
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -774,3 +805,18 @@ L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断�
   の「判定Trigger」節を参照する旨の1文のみ追記した(Trigger定義自体は
   同ファイル側に新設し、本ファイルへは複製しない。文書編集のみ、コード・
   Prompt変更なし)。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29): 2節へ新小節「2-1. 既存対策・
+  仕様 Reconciliation Check」を新設し、failure mode対策・Prompt改善・
+  retry/fallback改善・Validator/QA改善・Production仕様変更・既存挙動への
+  追加対策を検討・実装する前に、CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/過去の
+  関連管理ID・Trial Report/現在のProduction実装/retry・fallback・
+  regeneration機構/過去の同種failure mode対策/`APPROVED_FOR_PRODUCTION`・
+  `PRODUCTION_WIRED`済み対策との重複・競合の有無を確認する順序(過去確認→
+  ギャップ特定→ギャップ限定の新対策検討)とSTOP規定を明記した。Gate 5・
+  Gate 6の各定義文へOPEN-129 mandatory化Trigger確認・`OPEN-132`(Phase 2
+  Writer配線時チェックリスト)確認をそれぞれ1文追記し、3節「PM Closeout
+  Mandatory Check」へ同2項目(11・12)を追加した。経緯: Point Overlap
+  分散低減Trial(A-UDR-16)の事前監査で既存対策との重複と実装ギャップG1/G2が
+  判明したことを受けたユーザー指示(2026-09-09)。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-29`エントリ参照(文書編集のみ、コード・Prompt
+  変更なし)。

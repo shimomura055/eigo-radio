@@ -45,7 +45,9 @@ Gateの正式定義(Audio Validation Gate、Human Review Lock等)は既存SSOT�
 PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外条件含む)・
 安全≠成功原則の正式SSOTは
 `docs/pm/PM_GOVERNANCE.md`(2026-09-05、PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01)。
-全文はここへ複製しない。
+全文はここへ複製しない。新対策・仕様変更の前には、`docs/pm/PM_GOVERNANCE.md`
+「2-1. 既存対策・仕様 Reconciliation Check」を必ず先に確認する
+(2026-09-09追記)。
 
 ## ループ上限(サンドイッチ運用)
 

@@ -194,6 +194,8 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | FAMILY-A-POINT-OVERLAP-COUNTERMEASURE-PRE-AUDIT-01 | MEDIUM(L1/Sonnet) | Sonnet | 既存コード・過去決定の読み取り監査だがコード追跡精度が必要 | Haiku不適(コード根拠の正確な引用・判定を要する)、Opus不要(通常の監査パターン) | 102k | 285s | 0 | なし | なし | なし(STOP推奨提示のみ) | 不明 |
 | 2026-09-09 | PM-MODEL-ROUTING-TRIAL-TRIGGER-02 | LOW〜MEDIUM(L1/Sonnet) | Sonnet | SSOT(本ファイル)への定型節追加、機械的だが文書間整合を要する | Haiku不適(SSOT編集を伴う)、Opus不要 | 34k | 71s | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-28(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-29(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、新規Open Item起票、PM_GOVERNANCE新小節追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05(Lane A、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py`)中心の既知パターン修正Trial(G1/G2)、過去承認仕様との対応確認込み | Haiku不適(コード修正・retry判定ロジックを伴う)、Opus見送り(Pre-Audit-01で既存対策との重複が判明済みのため大規模(a)/(b)横断比較は不要、スコープがG1/G2に限定されたため) | 未確定(Lane A側タスクで記録) | 未確定 | 0 | 不明(Lane A側で記録) | 不明 | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -215,3 +217,10 @@ TRIAL-SETUP-01`の次から起算)
   ベースライン側、Trial開始後の表とは区別)。中間レビュー・正式Closeout
   Triggerの到達判定・集計値の再計算はいずれも実施していない(Fableの
   今後の判断事項)。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29): 「## Trial導入後の委任実績」
+  表へ、本タスク(PM-CLOSEOUT-CONSOLIDATION-29、Sonnet、MEDIUM)と、並列
+  稼働中のLane A `FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05`(Sonnet、
+  MEDIUM、選定理由=単一module・既知パターン、Opus見送り理由=Pre-Audit-01
+  で既存対策との重複が判明済みのため大規模(a)/(b)横断比較が不要になった
+  こと)の2件を追記した。中間レビュー・正式Closeout Triggerの到達判定は
+  実施していない。
