@@ -1,0 +1,18 @@
+{
+  "kp2_english": {
+    "canonical_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "approved_at": "2026-09-09T18:43:38",
+    "approved_by": "user_2026-09-09_HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02",
+    "note": "2026-09-09 ユーザー試聴承認、A-FACT03-2(a)、ASR同音異義によるfalse reject、音声はbyte不変",
+    "management_id": "HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02",
+    "asr_homophone_evidence": "audit/tts_generation_results.json key_phrases.2.english.legacy_asr_reverify(canonical='crisper drawer', primary_asr='CRISPR drawer.', final_status=TRUE_CONTENT_MISMATCH, cascade_invoked=false: 短い2語フレーズのためentity_like/homophone_candidate判定が成立せずcascade対象外、topic_intro側の文脈込み発話ではSecondary ASRがcrisperと正しく書き起こしNORMALIZED_MATCH。同一音声・同一TTS生成の綴り相違に起因するfalse rejectと判断)"
+  },
+  "topic_intro": {
+    "canonical_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "approved_at": "2026-09-09T19:00:12",
+    "approved_by": "user_2026-09-09_HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-03",
+    "note": "2026-09-09 ユーザー判断A-FACT03-4(a)、現行ASR cascadeによる事後再照合PASS(NORMALIZED_MATCH、§12.3)、当時attempt 1〜6はFAIL、音声byte不変",
+    "management_id": "HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-03",
+    "asr_reverify_evidence": "audit/tts_generation_results.json segments.topic_intro.legacy_asr_reverify(canonical_text=\"Today's topic is Your Crisper Drawer Has 2 Jobs\\u2014and One Tiny Switch Decides Which.\", final_status=NORMALIZED_MATCH, cascade_invoked=true: Primary#1/#2[OpenAI]は引き続き'CRISPR'と書き起こしASR_VALIDATION_UNCERTAINだが、entity_like該当によりcascade続行、Secondary#1[Azure]が文脈込みで'crisper'と正しく書き起こしNORMALIZED_MATCHでPASS。当時[2026-08-17]の6回試行[attempts_log]は全てASR_verdict=FAIL[旧Primary単発判定のまま]、この事後再照合[現行cascade]は当時のFAIL記録を書き換えるものではない)"
+  }
+}

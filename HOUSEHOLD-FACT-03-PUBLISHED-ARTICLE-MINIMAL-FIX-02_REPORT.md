@@ -421,3 +421,136 @@ Key Phraseなど、文脈の乏しいsegment)は依然として不合格にな�
 ケースが今後も他のレガシー記事で発生しうる。遡及QA方針(事後適用で
 PASSしたレガシー記事をどう扱うか、不合格segmentが残る場合の運用)は
 ユーザー/Fableの判断が必要な事項として、ここでは実装せず提示のみ行う。
+
+
+## 13. 継続(Fable修正指示3回目、kp2_english人間承認)— 到達Status:
+STOP(topic_intro=STOPPEDが別途未解決)
+
+指示: ユーザー決定(2026-09-09、A-FACT03-2(a))「kp2_englishはユーザー
+試聴OK」に基づき、既存Production承認経路
+(`er003_v1_n3_01_assemble.record_human_approval()`、ER-009-N1・
+OPEN-112 Subtask Eと同一関数)でkp2_englishを`HUMAN_APPROVED`として
+記録し、`stage_assemble_b1`→Audio Validation Gate→playerまで進める。
+
+### 13.1 承認記録
+
+`asm.record_human_approval(B1_DIR, "kp2_english", "", approved_by=
+"user_2026-09-09_HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02")`
+を実行(canonical_textはkey phrase sub-entry仕様上空文字列、
+ER-010-NO9-kp2_english one-off採用と同型のパターンを踏襲)。承認記録
+ファイル: `er003_output/n3_01/household/fact03_fix_02/b1b/audit/
+human_approved_segments.json`(新規)。noteフィールドに指定文言
+(「2026-09-09 ユーザー試聴承認、A-FACT03-2(a)、ASR同音異義による
+false reject、音声はbyte不変」)およびASR同音異義の根拠
+(`legacy_asr_reverify`参照)を追記。
+
+### 13.2 追加で必要と判明したdisfluency QA(kp2_english、想定内の技術的前提)
+
+承認記録後にGateを実行したところ、`kp2_english=HUMAN_APPROVED
+(MISSING_MANDATORY_DISFLUENCY_QA)`が新たに検出された。Gateの
+disfluency QA必須chekは承認statusとは独立した別条件(`_english`
+サフィックスsegment全てが対象)であり、kp2_englishはcontinuation2
+(Fable修正指示2回目)の12segment事後適用対象に含まれていなかった
+(当時STOPPEDのため別枠扱い)ため未適用のままだった。「必要なAudio
+Validation整合確認を実施」という指示範囲内の技術的前提と判断し、
+continuation2と同一の既存Production関数
+(`er008_disfluency_qa_18.check_segment_for_disfluency`、faster-whisper
+ローカル実行、追加API課金なし)を既存wav(`narration/kp2_en.wav`、
+byte不変)へ事後適用した。結果: `flagged=False`→**PASS**。適用前後の
+sha256一致をassertで確認済み(wav無変更)。`tts_generation_results.json`
+のkp2_english.englishへ`disfluency_checked=True`+`disfluency_evidence`を
+追記(`status`フィールド自体はSTOPPEDのまま不変)。
+
+### 13.3 sha256再確認(narration/*.wav全32件)
+
+`fact03_fix_02/b1b/narration/`直下の全32件(attempts/配下除く)を
+original(`er003_output/n3_01/household/b1b/narration/`)と突合。
+**31件完全一致、point_one.wavのみ不一致(想定どおりrevision3a、
+continuation1で既確認済みの差分)**。詳細:
+`er011_output/open138_household_fact03_b1b_minimal_fix_02/
+kp2_english_human_approval_and_assemble_03_result.json`
+(`step1_sha256_precheck`)。
+
+### 13.4 Gate結果・Assembly結果 — STOP(topic_intro=STOPPEDが未解決)
+
+- 既定Gate経路(`verify_episode_audio_validation_gate(B1_DIR, "B1")`、
+  `stage_assemble_b1`内蔵と同一)・opt-in `required_structure` ON経路
+  (`derive_a_family_required_structure("B1")`)ともに**同一理由で
+  BLOCKED**: `EPISODE_BLOCKED_BY_AUDIO_VALIDATION: ['topic_intro=
+  STOPPED']`。kp2_englishはこの時点で完全にクリア(承認記録+
+  disfluency QA PASS)されており、**残る唯一のブロック要因は
+  topic_intro**。
+- `stage_assemble_b1(theme)`本体も同一理由でRuntimeError、**Assembly・
+  player生成は未実施**。
+- topic_intro自体は既にcontinuation2(§12.3)で既存ASR Cascadeにより
+  content的にはPASS(`NORMALIZED_MATCH`、Secondary ASRがcrisperと
+  正しく書き起こし)しているが、Gateが見る`status`フィールドは
+  2026-08-17当時の`STOPPED`のまま変更されていない
+  (continuation2は「statusフィールド自体は変更せず、Gate合否判断は
+  人間/Fable判断に委ねる」と明記して意図的に据え置いていた)。
+- **今回のユーザー決定(2026-09-09、A-FACT03-2(a))はkp2_english
+  のみを明示的に対象としており、topic_intro承認は範囲外**。指示された
+  「Lock発動時は承認代行せずSTOP」の趣旨(STOPPED状態segmentの承認は
+  ユーザー/Fableの明示判断が必要)に従い、**topic_introへの
+  `record_human_approval()`は実行せずここでSTOP**した。承認代行・
+  推測による拡大実装は行っていない。
+
+### 13.5 費用
+
+本ラウンドは全てローカル処理(record_human_approval=ファイルI/Oのみ、
+disfluency QA=faster-whisperローカル実行、sha256突合=ローカル)。
+**追加API課金なし、実費¥0.00**(上限¥10に対し実費¥0)。
+
+### 13.6 player file:///パス
+
+**Assembly未実施のため、本ラウンドでの新規player.htmlは存在しない**
+(§7と同様、A2は無変更のため既存承認済み
+`er003_output/n3_01/household/a2/`を引き続き参照)。
+
+### 13.7 新規/変更ファイル
+
+- 新規: `er011_output/open138_household_fact03_b1b_minimal_fix_02/
+  kp2_english_human_approval_and_assemble_03.py`・
+  `kp2_english_human_approval_and_assemble_03_result.json`
+- 新規: `er003_output/n3_01/household/fact03_fix_02/b1b/audit/
+  human_approved_segments.json`(kp2_englishの承認記録のみ)
+- 変更: `er003_output/n3_01/household/fact03_fix_02/b1b/audit/
+  tts_generation_results.json`(kp2_english.englishへ
+  `disfluency_checked`/`disfluency_evidence`/
+  `disfluency_qa_retroactive_note`/`disfluency_qa_retroactive_status`を
+  追記。`status`フィールド自体は変更していない。narration配下のwav自体は
+  無変更、sha256突合済み)
+- 不変: `er003_output/n3_01/household/{a2,b1b}/`(元の公開済み
+  Artifact、無編集)。`docs/pm/ACTIVE_TASK.md`・`RESULT_PACKET.md`・
+  `CURRENT_SPEC.md`等SSOT一式(本タスクでは編集していない、SSOT/Git
+  禁止指示どおり)。
+
+### 13.8 STOP条件該当性
+
+- kp2_englishのHUMAN_APPROVED記録: 完了(ユーザー決定どおり)。
+- kp2_englishのdisfluency QA: PASS(想定内の技術的前提を追加適用)。
+- sha256再確認: 31/32一致(point_oneのみ想定内の差分)。
+- **Assembly: topic_intro=STOPPEDにより依然BLOCKED。ユーザー決定は
+  kp2_englishのみを対象としており、topic_introの承認可否は本タスク
+  範囲外のためSTOP。** Human Review Lock(er011機構)自体は今回発動して
+  いない(発動する前段のGateでブロックされたため)が、「STOPPED状態
+  segmentの承認代行はしない」という同じ安全原則に従いSTOPした。
+- 費用超過: 非該当(¥0 / 上限¥10)。
+
+### 13.9 USER_DECISION_REQUIRED(次のアクション候補、実装せず提示のみ)
+
+topic_intro(canonical: "Today's topic is Your Crisper Drawer Has 2
+Jobs—and One Tiny Switch Decides Which.")は、2026-08-17当時6回試行後
+STOPPEDだが、continuation2で適用した現行ASR Cascadeでは
+`NORMALIZED_MATCH`(Secondary ASRがcrisperと正しく書き起こし)でPASS
+している。以下のいずれかの判断が必要:
+
+(a) kp2_englishと同様、ユーザー試聴の上でtopic_introも
+    `record_human_approval()`によりHUMAN_APPROVEDとして記録する
+    (既存音声はbyte不変、再生成なし)、
+(b) topic_introは対象外のまま、Assembly自体を見送る、
+
+のいずれを取るかはユーザー/Fableの判断が必要。本タスクでは実装して
+いない。判断が得られ次第、Assembly→Audio Validation Gate→player生成を
+再試行することは技術的には即座に可能な状態(kp2_english側の前提条件は
+全てクリア済み)。

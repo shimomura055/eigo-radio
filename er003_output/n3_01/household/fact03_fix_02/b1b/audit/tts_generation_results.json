@@ -1077,7 +1077,17 @@
           ],
           "pronunciation_lookups": null,
           "note": "HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02(継続): 既存wav(byte不変、TTS再生成なし)へ現行ASR Cascade (er006_secondary_asr_01.evaluate_attempt_with_cascade_detail)を事後適用した証跡。statusフィールド自体は2026-08-17当時のSTOPPED記録のまま変更していない(Gateの合否判断はこのフィールドを見た人間/Fableが行うこと、承認記録の遡及作成はしていない)。"
-        }
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "crisper  drawer.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "disfluency_qa_retroactive_note": "HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02(継続、Fable修正指示3回目): 2026-08-17承認時点では存在しなかった現行Audio Validation Gate(ER-008-N8-FINAL-QA-HARDENING-21)のdisfluency QA必須化(_englishサフィックスsegment対象)に対応するため、既存wav(byte不変)へ事後適用した証跡。TTS再生成は行っていない。statusフィールド自体はSTOPPEDのまま(HUMAN_APPROVEDはaudit/human_approved_segments.json側の別記録で成立)。",
+        "disfluency_qa_retroactive_status": "PASS"
       },
       "japanese": {
         "status": "OK",
