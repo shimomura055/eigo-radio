@@ -1,0 +1,86 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 305,
+  "section_word_counts": {
+    "intro": 105,
+    "point_one": 91,
+    "point_two": 82,
+    "in_one_line": 27
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 91,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 82,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "But this setting changes the air around fresh food.",
+      "sentence_b": "It matches the air to the food.",
+      "ratio": 0.61
+    },
+    {
+      "sentence_a": "It matches the air to the food.",
+      "sentence_b": "This match also matters to nearby food.",
+      "ratio": 0.6
+    },
+    {
+      "sentence_a": "The right setting can help food stay in better condition.",
+      "sentence_b": "So, one correct setting can help more than one food in the drawer.",
+      "ratio": 0.553
+    },
+    {
+      "sentence_a": "The low-humidity side lets more air move through.",
+      "sentence_b": "The high-humidity side is more closed.",
+      "ratio": 0.667
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 4,
+  "avg_sentence_length": 12.4,
+  "max_sentence_length": 28,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「商業保管で示される相対湿度90〜95％という数値だけでは、家庭用の引き出しで最適な設定は決まらない」という説明は、商業保管条件と複数メーカーの家庭向け案内を比較した妥当な推論ではあるが、記事中で直接裏付ける資料は示されていない。UC Davisはイチゴの商業的な最適相対湿度を90〜95％としている一方、GEはイチゴを低湿度、KitchenAidは高湿度としており、家庭用設定への単純な換算ができないことは示唆される。 ([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))"
+  ],
+  "fact_unsupported_specific_claims_count": 1,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "cross_point_overlap": {
+    "point_one_vs_point_two_ratio": 0.163,
+    "point_one_vs_point_two_flagged": false,
+    "point_two_vs_point_one_ratio": 0.174,
+    "point_two_vs_point_one_flagged": false
+  },
+  "full_story_text": "Inside many refrigerators, the crisper drawer has a small choice: low or high humidity.\n\nIt is easy to leave the slider alone. But this setting changes the air around fresh food.\n\nThat matters because fresh food does not all lose quality in the same way. Some food releases a gas as it ripens. Other food loses water and wilts quickly. The drawer is not just a box. It matches the air to the food.\n\nThe simple message is this: do not choose only by the words “fruit” or “vegetable.” Look at what the food does. The right setting can help food stay in better condition.",
+  "point_one_text": "Match the drawer to the food\nThink of the drawer as a matching system.\n\nThe low-humidity side lets more air move through. Apples and pears fit this setting because they release a lot of ethylene gas as they ripen.\n\nThe high-humidity side is more closed. It helps foods that lose water quickly, such as leafy greens like kale and vegetables like broccoli.\n\nThis match also matters to nearby food. When ethylene can escape, it is less likely to make other produce ripen too quickly. So, one correct setting can help more than one food in the drawer.",
+  "point_two_text": "Why the fruit-and-vegetable rule fails\nNow for the trap: “Fruit means low humidity, and vegetables mean high humidity” is too simple.\n\nBananas and tomatoes are recommended for counter storage, not as examples for a refrigerator drawer.\n\nThere is also no single household answer for strawberries and oranges. Different appliance makers give different advice. A 90 to 95 percent humidity figure from commercial storage does not settle the best choice for a home drawer.\n\nFor unclear foods, check your own refrigerator’s guide instead of relying on a simple category rule.",
+  "elapsed_seconds": 109.23,
+  "condition": "current_focus",
+  "level": "A2",
+  "run": 3,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「商業保管で示される相対湿度90〜95％という数値だけでは、家庭用の引き出しで最適な設定は決まらない」という説明は、商業保管条件と複数メーカーの家庭向け案内を比較した妥当な推論ではあるが、記事中で直接裏付ける資料は示されていない。UC Davisはイチゴの商業的な最適相対湿度を90〜95％としている一方、GEはイチゴを低湿度、KitchenAidは高湿度としており、家庭用設定への単純な換算ができないことは示唆される。 ([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 1,
+        "FACT-04": 0
+      }
+    }
+  ]
+}

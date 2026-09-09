@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09 Comparison</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; margin-top: 12px; margin-bottom: 30px; table-layout: fixed; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; word-wrap: break-word; }
+th { background-color: #f2f2f2; font-weight: bold; }
+tr:nth-child(even) { background-color: #f9f9f9; }
+pre { white-space: pre-wrap; font-family: inherit; margin: 0; font-size: 0.92em; }
+.overlap { margin-top: 6px; font-size: 0.8em; color: #555; }
+.status-ok { color: green; font-weight: bold; }
+.status-ng { color: red; font-weight: bold; }
+.status-review { color: #b8860b; font-weight: bold; }
+.section-title { font-size: 1.3em; font-weight: bold; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 6px; }
+.note { background: #fff8e1; border: 1px solid #f0d060; padding: 10px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<h1>FAMILY-A-DISCOVERY-STAGE3-RULE-ADJUSTMENT-TRIAL-09 — Point本文比較(D-2目視artifact)</h1>
+<p>Output: <code>C:\Users\tensh\eigo-radio\er011_output\discovery_stage3_rule_adjustment_trial_09</code></p>
+<div class="note">
+Role文字列のヒューリスティック分類は行っていない(D-2=(a)を踏襲、Point本文そのものと
+cross_point_overlap[既存Point Overlap Countermeasure機構の出力、新規指標ではない]で
+Fable/ユーザーが目視判定する)。current_focus=現行Focus Module(Trial-05/07/08 current_focusと
+一字一句同一本体、見出しのみTrial-09向けに改稿)、adjusted_focus=Trial-08 Part A案1(既存断定回避
+段落末尾へscope-generalization禁止の1文のみ追加、Trial-08で使用したadjusted版と完全同一文言、
+未承認候補)。全runでHousehold Verified Fact Ledger v5(FACT-03/04整合修正版、
+HOUSEHOLD-LEDGER-FACT-03-04-CONSISTENCY-FIX-03)を使用。N=3(A2/B1B各条件3本、計12本)。
+Fact Checker側の変更は行っていない(緩和なし)。
+</div>
+
+    <div class="section-title">A2 — Point One / Point Two 本文比較</div>
+    <table>
+        <tr><th style="width:14%">条件/run</th><th style="width:38%">Point One</th>
+        <th style="width:38%">Point Two</th><th style="width:10%">Fact結果</th></tr>
+        <tr><td><strong>Household原本(2026-08-17承認)</strong></td><td><pre>The slider is really a small air door
+Think of the humidity control as a door for air. Low humidity opens the way for more airflow. High humidity keeps the drawer closer to sealed. KitchenAid and Whirlpool also recommend high humidity for leafy greens and low humidity for fruits such as apples and pears.</pre></td><td><pre>Some produce should skip the refrigerator
+Not every fruit or vegetable belongs in a crisper drawer. Iowa State University Extension says tomatoes and bananas are better kept at room temperature, such as on a counter. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration, either. They prefer a cool, dry spot instead — that is not always the same as a warm kitchen counter.</pre></td><td>Production採用済み(参考、本Trial対象外、Ledger v5適用前)</td></tr><tr><td><strong>current_focus / run1</strong></td><td><pre>Look at the food’s first problem
+For produce that belongs in the refrigerator, ask what is likely to go wrong first.
+
+Leafy greens and broccoli can lose water quickly. The high-humidity setting helps keep moisture inside.
+
+Apples and pears release a lot of ethylene, a gas that can make nearby food ripen too soon. The ventilated low-humidity setting lets this gas move out more easily.
+
+This gives you a practical rule: choose a setting based on the food’s main risk, not simply on whether it is called a fruit or a vegetable.</pre><div class='overlap'>cross_point_overlap=0.115 (flagged=False)</div></td><td><pre>The drawer is not always the first step
+Before choosing a setting, decide whether the food should go in the refrigerator.
+
+Bananas and tomatoes are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place. That does not mean exactly the same thing as keeping them on the counter.
+
+The useful order is simple: choose the right storage place first. Then, if refrigeration is right, choose the drawer setting.</pre><div class='overlap'>cross_point_overlap=0.182 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=338</td></tr><tr><td><strong>current_focus / run2</strong></td><td><pre>Check the fridge before the slider
+Before choosing low or high, ask a more basic question: should this food be in the refrigerator? Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration and are better in a cool, dry place. Low humidity is not a reason to refrigerate everything.</pre><div class='overlap'>cross_point_overlap=0.138 (flagged=False)</div></td><td><pre>When a precise number is not a simple answer
+Some guides for storing produce after harvest give strawberries and oranges an ideal humidity of 90 to 95 percent. But that number is not a direct instruction for a home drawer. One refrigerator maker puts both foods on its low-humidity fruit side, while another puts strawberries on the high side. For these foods, follow your refrigerator maker’s guidance.</pre><div class='overlap'>cross_point_overlap=0.138 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=288<div class='overlap'>directional_precheck=DIRECTION_REVIEW_REQUIRED</div></td></tr><tr><td><strong>current_focus / run3</strong></td><td><pre>Match the drawer to the food
+Think of the drawer as a matching system.
+
+The low-humidity side lets more air move through. Apples and pears fit this setting because they release a lot of ethylene gas as they ripen.
+
+The high-humidity side is more closed. It helps foods that lose water quickly, such as leafy greens like kale and vegetables like broccoli.
+
+This match also matters to nearby food. When ethylene can escape, it is less likely to make other produce ripen too quickly. So, one correct setting can help more than one food in the drawer.</pre><div class='overlap'>cross_point_overlap=0.163 (flagged=False)</div></td><td><pre>Why the fruit-and-vegetable rule fails
+Now for the trap: “Fruit means low humidity, and vegetables mean high humidity” is too simple.
+
+Bananas and tomatoes are recommended for counter storage, not as examples for a refrigerator drawer.
+
+There is also no single household answer for strawberries and oranges. Different appliance makers give different advice. A 90 to 95 percent humidity figure from commercial storage does not settle the best choice for a home drawer.
+
+For unclear foods, check your own refrigerator’s guide instead of relying on a simple category rule.</pre><div class='overlap'>cross_point_overlap=0.174 (flagged=False)</div></td><td><span class='status-review'>REVIEW_REQUIRED</span><br>unsupported_claims=1<br>word_count=305</td></tr><tr><td><strong>adjusted_focus / run1</strong></td><td><pre>Choose by the food’s first problem
+The better question is: what problem comes first? Food that quickly loses water and wilts may suit high humidity. Leafy greens such as kale and broccoli are examples. Food that releases a lot of ripening gas may suit low humidity. Apples and pears are examples. The choice follows food behavior, not food names.</pre><div class='overlap'>cross_point_overlap=0.226 (flagged=False)</div></td><td><pre>Some foods should stay out of the drawer
+But first, decide whether the food belongs in the refrigerator at all. Bananas and tomatoes are recommended for room-temperature storage, such as on a counter, rather than in a crisper. Potatoes, sweet potatoes, onions, and garlic are recommended for a cool, dry place. So low humidity is not a destination for every food that releases gas.</pre><div class='overlap'>cross_point_overlap=0.233 (flagged=False)</div></td><td><span class='status-review'>REVIEW_REQUIRED</span><br>unsupported_claims=1<br>word_count=272</td></tr><tr><td><strong>adjusted_focus / run2</strong></td><td><pre>Read the food, not the label
+Do not start with the words “fruit” or “vegetable.” Start with what the food does during storage.
+
+Apples and pears release a lot of ethylene, so the low-humidity side is a better fit. Leafy greens, such as kale, and broccoli lose water quickly, so the high-humidity side is a better fit.
+
+It is a simple sorting test: ask what the food does, not what group it belongs to.</pre><div class='overlap'>cross_point_overlap=0.182 (flagged=False)</div></td><td><pre>The drawer is not always the first stop
+Before choosing a setting, ask whether the food belongs in the refrigerator at all.
+
+Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic are best kept in a cool, dry place. Strawberries and citrus also need care because official home guides do not agree about their crisper setting. High humidity is not a settled rule for them.
+
+The drawer cannot solve a storage question that comes before the drawer.</pre><div class='overlap'>cross_point_overlap=0.14 (flagged=False)</div></td><td><span class='status-review'>REVIEW_REQUIRED</span><br>unsupported_claims=3<br>word_count=298</td></tr><tr><td><strong>adjusted_focus / run3</strong></td><td><pre>Sort before you slide
+Before choosing a drawer, ask a simpler question: should this food be chilled? Bananas and tomatoes are recommended for room-temperature storage. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place, not necessarily the same counter. For produce that does belong in the refrigerator, apples and pears fit the low-humidity side. Leafy greens and broccoli fit the high-humidity side. This two-step check keeps the drawer rule from being used on the wrong foods.</pre><div class='overlap'>cross_point_overlap=0.156 (flagged=False)</div></td><td><pre>A storage number needs context
+One careful detail can prevent confusion. Commercial storage guides list 90 to 95 percent humidity as the best range for strawberries and oranges. But that number does not automatically tell you which setting to use in a home refrigerator. Appliance advice differs: one maker puts both on its low-humidity fruit side, while another puts strawberries on the high-humidity side. For these foods, the guidance for your refrigerator matters.</pre><div class='overlap'>cross_point_overlap=0.194 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=319</td></tr>
+    </table>
+    
+    <div class="section-title">B1B — Point One / Point Two 本文比較</div>
+    <table>
+        <tr><th style="width:14%">条件/run</th><th style="width:38%">Point One</th>
+        <th style="width:38%">Point Two</th><th style="width:10%">Fact結果</th></tr>
+        <tr><td><strong>Household原本(2026-08-17承認)</strong></td><td><pre>The fruit-or-vegetable rule can mislead
+The common shortcut—fruit in low humidity and vegetables in high humidity—has important exceptions. Strawberries and citrus fruits, including oranges, prefer high humidity. UC Davis lists an ideal humidity of 90 to 95 percent for both. The food’s behavior matters more than its category.</pre></td><td><pre>Not every fresh food belongs in the drawer
+A humidity setting cannot fix the wrong storage location. Iowa State says tomatoes and bananas are better kept at room temperature, such as on a counter. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration. They prefer a cool, dry place instead.</pre></td><td>Production採用済み(参考、本Trial対象外、Ledger v5適用前)</td></tr><tr><td><strong>current_focus / run1</strong></td><td><pre>Sort food by what it does in storage
+A useful test is to look at the food’s behavior, not just its name. Apples and pears release ethylene, a gas that can make nearby produce ripen and spoil sooner. They are examples of foods that fit the low-humidity side, where air can move more freely.
+
+Leafy greens, such as kale, and vegetables such as broccoli can lose water quickly. They are better matches for the high-humidity side, which helps them hold on to moisture. This gives the drawer a practical sorting rule: think about what the food releases or loses.</pre><div class='overlap'>cross_point_overlap=0.109 (flagged=False)</div></td><td><pre>The slider is not the first question
+The humidity setting cannot make every food suitable for refrigeration. Tomatoes and bananas are recommended for counter storage, rather than a crisper drawer.
+
+Potatoes, sweet potatoes, onions, and garlic do not need to be refrigerated. They are recommended for a cool, dry environment. That does not automatically mean the same place as a kitchen counter.
+
+So before choosing a drawer setting, first check whether the food belongs in the refrigerator. Only then is it useful to decide which humidity setting fits its storage needs.</pre><div class='overlap'>cross_point_overlap=0.14 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=345</td></tr><tr><td><strong>current_focus / run2</strong></td><td><pre>The drawer has a neighborhood effect
+Think of the drawer as a small neighborhood, not a private room. An apple or pear may release ethylene as it matures. That gas can affect nearby produce, making it ripen and deteriorate sooner. A low-humidity setting lets the gas move away more easily. So placement can protect the surrounding food, not just the item itself.</pre><div class='overlap'>cross_point_overlap=0.088 (flagged=False)</div></td><td><pre>Check the fridge before the slider
+Before choosing a setting, ask a more basic question: should this food be refrigerated? Bananas and tomatoes are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration and favor a cool, dry place. The slider is useful, but it is not a solution for every food.</pre><div class='overlap'>cross_point_overlap=0.107 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=285</td></tr><tr><td><strong>current_focus / run3</strong></td><td><pre>Sort by the problem, not the label
+For refrigerated food, ask what is likely to happen first. Apples and pears release a lot of ethylene, so they fit the low-humidity, vented side. Leafy greens such as kale and vegetables such as broccoli lose water quickly, so the high-humidity, more closed side is a better fit. This test is more useful than simply saying “fruit” or “vegetable.”</pre><div class='overlap'>cross_point_overlap=0.167 (flagged=False)</div></td><td><pre>The refrigerator is not always the destination
+The drawer choice comes second. First, ask whether the food belongs in the refrigerator at all. Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration and are recommended for a cool, dry place. So low humidity is not a universal fruit setting.</pre><div class='overlap'>cross_point_overlap=0.2 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=309</td></tr><tr><td><strong>adjusted_focus / run1</strong></td><td><pre>Ventilation for ripening gas
+A low-humidity drawer is best seen as a ventilation tool, not simply a fruit box. Apples and pears release ethylene, which can speed ripening and spoilage nearby. In a vented drawer, some of that gas can escape. Bananas and tomatoes are recommended for counter storage, so they are not refrigerator examples.</pre><div class='overlap'>cross_point_overlap=0.1 (flagged=False)</div></td><td><pre>Protecting water and texture
+Leafy greens such as kale can lose water quickly and wilt. Broccoli also benefits from high humidity; its listed best humidity is about 90 to 95 percent. A more enclosed drawer helps hold moisture around these foods. When limp leaves or lost crispness is the concern, moisture—not the word “vegetable”—guides the choice.</pre><div class='overlap'>cross_point_overlap=0.088 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=280</td></tr><tr><td><strong>adjusted_focus / run2</strong></td><td><pre>The question is what the food is doing
+For produce that belongs in the refrigerator, ask one practical question: Is it mainly releasing ethylene, or mainly losing water? Apples and pears are examples for the low-humidity drawer. Leafy greens, such as kale, and broccoli fit the high-humidity side because they can lose water and wilt quickly. This behavior-based rule is more useful than “fruit” or “vegetable” alone.</pre><div class='overlap'>cross_point_overlap=0.139 (flagged=False)</div></td><td><pre>First decide where it belongs
+But the humidity choice comes second. First decide whether the food should be refrigerated at all. Tomatoes and bananas are recommended for counter storage, not the refrigerator. Potatoes, sweet potatoes, onions, and garlic need a cool, dry place. So do not put tomatoes or bananas in the low-humidity drawer just because they release ethylene.</pre><div class='overlap'>cross_point_overlap=0.167 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=328</td></tr><tr><td><strong>adjusted_focus / run3</strong></td><td><pre>Match the setting to the food’s main risk
+The practical question is not simply, “Is this a fruit or a vegetable?” Apples and pears release a lot of ethylene gas, so they fit the ventilated, low-humidity side. Leafy vegetables such as kale, and vegetables such as broccoli, can lose water quickly, so they fit the more enclosed, high-humidity side. This gives you a simple rule when the label alone is not enough.</pre><div class='overlap'>cross_point_overlap=0.091 (flagged=False)</div></td><td><pre>Sometimes the right answer is no drawer
+But some foods should not be placed in either crisper setting. Bananas and tomatoes release ethylene, but official guidance recommends keeping them at room temperature, such as on the counter, instead of refrigerating them. Potatoes, sweet potatoes, onions, and garlic do not need refrigeration. They are better kept in a cool, dry place. First choose the storage place, then choose a drawer setting.</pre><div class='overlap'>cross_point_overlap=0.086 (flagged=False)</div></td><td><span class='status-ok'>PASS</span><br>unsupported_claims=0<br>word_count=309</td></tr>
+    </table>
+    
+</body>
+</html>

@@ -1,0 +1,33 @@
+# The Small Refrigerator Drawer With a Big Job
+
+A small setting in the refrigerator may help fresh food stay good for longer.
+
+Many refrigerators have a crisper drawer with two choices: low humidity and high humidity. Some models use a slider to change the setting.
+
+The difference is about air and water. The low-humidity side lets more air move through. The high-humidity side is more closed off and keeps more moisture inside.
+
+Why does that matter? Fresh food can have different problems while it is stored.
+
+Some foods release a natural gas called ethylene. If other produce stays near it for too long, it may ripen too quickly and spoil sooner. Other foods lose water quickly. Then they may become dry, soft, or wilted.
+
+So the drawer is not simply a place for “fruit” or “vegetables.” The better choice depends on what each food needs.
+
+### Read the food, not the label
+
+Do not start with the words “fruit” or “vegetable.” Start with what the food does during storage.
+
+Apples and pears release a lot of ethylene, so the low-humidity side is a better fit. Leafy greens, such as kale, and broccoli lose water quickly, so the high-humidity side is a better fit.
+
+It is a simple sorting test: ask what the food does, not what group it belongs to.
+
+### The drawer is not always the first stop
+
+Before choosing a setting, ask whether the food belongs in the refrigerator at all.
+
+Tomatoes and bananas are recommended for counter storage. Potatoes, sweet potatoes, onions, and garlic are best kept in a cool, dry place. Strawberries and citrus also need care because official home guides do not agree about their crisper setting. High humidity is not a settled rule for them.
+
+The drawer cannot solve a storage question that comes before the drawer.
+
+## In one line
+
+Use the drawer according to the food’s storage risk, but first make sure the food belongs in the refrigerator.

@@ -1,0 +1,76 @@
+{
+  "status": "OK",
+  "retry_attempts": 1,
+  "word_count": 272,
+  "section_word_counts": {
+    "intro": 125,
+    "point_one": 53,
+    "point_two": 56,
+    "in_one_line": 38
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 53,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": false
+    },
+    "point_two": {
+      "word_count": 56,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": false
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "Some fruits release a natural ripening gas called ethylene.",
+      "sentence_b": "Food that releases a lot of ripening gas may suit low humidity.",
+      "ratio": 0.574
+    },
+    {
+      "sentence_a": "Food that quickly loses water and wilts may suit high humidity.",
+      "sentence_b": "Food that releases a lot of ripening gas may suit low humidity.",
+      "ratio": 0.651
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 2,
+  "avg_sentence_length": 11.5,
+  "max_sentence_length": 29,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「Leafy greens such as kale and broccoli are examples」という表現は不正確。ケールは葉物野菜だが、ブロッコリーは通常、葉物野菜には分類されない。ただし、ブロッコリーを高湿度の野菜室に入れるという保存方針自体は、複数の公的・大学系情報源で支持されている。([uaex.uada.edu](https://www.uaex.uada.edu/counties/miller/news/fcs/fruits-veggies/Spoiled-Rotten-How-to-Store-Fruits-and-Vegetables.aspx))"
+  ],
+  "fact_unsupported_specific_claims_count": 1,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "cross_point_overlap": {
+    "point_one_vs_point_two_ratio": 0.226,
+    "point_one_vs_point_two_flagged": false,
+    "point_two_vs_point_one_ratio": 0.233,
+    "point_two_vs_point_one_flagged": false
+  },
+  "full_story_text": "Inside many refrigerators, the produce drawer often has two choices: low humidity and high humidity. Some models use a small slider to choose between them.\n\nAt low humidity, more air can move through the drawer. At high humidity, the drawer is more closed, so it holds more moisture.\n\nWhy does that matter?\n\nFresh produce can go bad in different ways. Some fruits release a natural ripening gas called ethylene. If other produce stays around this gas for a long time, it may ripen too fast. Other foods lose water quickly and begin to wilt.\n\nSo the two settings are not just different labels. They create different conditions inside the same drawer. The goal is to match the condition to the problem the food is facing.",
+  "point_one_text": "Choose by the food’s first problem\nThe better question is: what problem comes first? Food that quickly loses water and wilts may suit high humidity. Leafy greens such as kale and broccoli are examples. Food that releases a lot of ripening gas may suit low humidity. Apples and pears are examples. The choice follows food behavior, not food names.",
+  "point_two_text": "Some foods should stay out of the drawer\nBut first, decide whether the food belongs in the refrigerator at all. Bananas and tomatoes are recommended for room-temperature storage, such as on a counter, rather than in a crisper. Potatoes, sweet potatoes, onions, and garlic are recommended for a cool, dry place. So low humidity is not a destination for every food that releases gas.",
+  "elapsed_seconds": 195.19,
+  "condition": "adjusted_focus",
+  "level": "A2",
+  "run": 1,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「Leafy greens such as kale and broccoli are examples」という表現は不正確。ケールは葉物野菜だが、ブロッコリーは通常、葉物野菜には分類されない。ただし、ブロッコリーを高湿度の野菜室に入れるという保存方針自体は、複数の公的・大学系情報源で支持されている。([uaex.uada.edu](https://www.uaex.uada.edu/counties/miller/news/fcs/fruits-veggies/Spoiled-Rotten-How-to-Store-Fruits-and-Vegetables.aspx))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 3,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 1,
+        "FACT-03": 3,
+        "FACT-04": 0
+      }
+    }
+  ]
+}
