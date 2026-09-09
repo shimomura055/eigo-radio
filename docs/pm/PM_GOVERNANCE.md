@@ -1,7 +1,12 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-09(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04で
+**最終更新: 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-59で2節へ新小節「2-3.
+Artifact supersession確認」を新設し、同じ記事・episodeが仕様変更・
+Prompt改善で近く再生成される予定がある場合は旧completed artifactの
+個別修正前に確認A〜Cを行う原則・例外・暫定修正版と次期最終候補の分離を
+明記し、3節へ「主要artifactの修正前にsupersession確認」を1行追記した。
+2026-09-09(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04で
 11節「Fable↔Sonnetレビュー往復の上限とGatekeeper原則」へ新小節「自明な
 修正の自律実施」を追加し、ユーザー意図が明確で「そのままでは不適切なので
 修正すべき」と自明なfailureは、まず2-1[既存対策・仕様Reconciliation
@@ -204,6 +209,36 @@ Distinctness Checkのような LLMベースQA)を提案・導入する場合、�
   費用と分離して報告する(例: Fact Checker A'単体費用とTrial全体費用を
   別項目で明示する)。
 
+### 2-3. Artifact supersession確認(2026-09-09、ユーザー指示)
+
+同じ記事・episodeについて仕様変更やPrompt改善による再生成が予定されて
+いる場合、旧completed artifact(記事・音声等)の個別修正へ着手する前に、
+必ず以下を確認する。
+
+- (A) このartifactは近く新仕様で再生成される予定があるか
+- (B) その再生成結果が旧artifactをsupersedeする予定か
+- (C) 旧artifactを今修正しても新版完成後すぐ不要にならないか
+
+(A)または(B)がYesの場合、原則として旧artifactの個別修正は行わず、
+新仕様での再生成側へ修正内容を統合する(「旧品修正→ユーザー確認→
+完成→直後に新仕様で再生成→再確認」という二重工程を作らない)。
+
+**例外(即時修正の合理性がある場合)**: 新版完成まで長期間かかる /
+公開中の重大なFact誤りを放置できない / safety・compliance上の暫定修正 /
+新仕様Trialが成立する見込みが低い。これらに該当し即時修正する場合も、
+「暫定修正版」と「次期最終候補」を明確に分けて記録し、二つの正式最終版を
+並立させない。
+
+主要artifactの再生成・修正に着手する前には、existing current artifact /
+active regeneration・spec-change task / planned supersession /
+duplicate finalization riskの有無を確認する。
+
+**経緯**: Household(Discovery/Why)の同一記事について、旧完成版
+(A-FACT03-5、FACT-03最小修正版)と、進行中のDiscovery Focus Module軽微
+改善Trial(Trial-10)由来の新完成候補を二重に最終版として承認しかけた
+ことを受け、ユーザーが再発防止原則として決定した(2026-09-09、
+PM-CLOSEOUT-CONSOLIDATION-59)。
+
 ## 3. PM Closeout Mandatory Check(PM Closeout時の確認事項)
 
 主要タスクをcloseする前に、最低限以下を確認する。1件でも未処理なら
@@ -227,6 +262,8 @@ Distinctness Checkのような LLMベースQA)を提案・導入する場合、�
     A-UDR-22)の到達状況(10 run中間報告/20 run・30日最終報告/主要因
     50%以上かつ4件以上/全体NG率40%以上または20%以下)を、Gate 5・Gate 6・
     PM Closeoutのいずれかで確認していること(2026-09-09追記)
+14. 主要artifactの修正前にsupersession確認(2-3節)を行っていること
+    (2026-09-09追記)
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -931,3 +968,19 @@ Leakage)の再試行方針についてユーザーが決定した運用方針
   コード・Prompt変更なし)。詳細は`DECISION_LOG.md`
   `PM-CLOSEOUT-CONSOLIDATION-47`エントリ・`OPEN_ITEMS.md`OPEN-135/112/
   120/136/138行参照。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-59): 2節へ新小節「2-3. Artifact
+  supersession確認」を新設した。同じ記事・episodeについて仕様変更や
+  Prompt改善による再生成が予定されている場合、旧completed artifactの
+  個別修正着手前に必ず確認A〜C(近く新仕様で再生成予定があるか/その
+  結果が旧artifactをsupersedeする予定か/旧修正が新版完成後すぐ不要に
+  ならないか)を行い、A/BがYesなら旧artifactの個別修正を避け新仕様側へ
+  修正内容を統合する原則、例外(即時修正の合理性がある場合)、暫定修正版と
+  次期最終候補を分け二重の正式最終版を並立させないことを明記した。3節
+  「PM Closeout Mandatory Check」へ項目14(主要artifactの修正前に
+  supersession確認)を追加した。経緯: Household(Discovery/Why)の同一
+  記事について、旧完成版(A-FACT03-5、FACT-03最小修正版)と進行中の
+  Discovery Focus Module軽微改善Trial(Trial-10)由来の新完成候補を
+  二重に最終版として承認しかけたことを受けたユーザー決定(文書編集のみ、
+  コード・Prompt変更なし)。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-59`エントリ・`OPEN_ITEMS.md`OPEN-135/138行
+  参照。

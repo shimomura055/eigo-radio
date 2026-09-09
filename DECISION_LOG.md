@@ -9658,6 +9658,75 @@ attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タ�
 触っていない。Production/Prompt編集・新規Trial着手・policy策定は実施
 していない(SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-59: Household一本化方針(Primary=Discovery
+改善版/Fallback=A-FACT03-5)・Artifact supersession確認原則の反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+ユーザーが正式決定したHousehold(Discovery/Why)の一本化方針と、
+再発防止のためのPM運用原則「Artifact supersession確認」をSSOTへ反映
+した。並列稼働中: Discovery Trial-10(`er011_output/discovery_stage4_*`)、
+News N-4(`er011_output/news_stage3_*`)。本タスクはSSOT・Git担当のみで
+両Laneの成果物はstageしていない。
+
+**ユーザー決定の要旨**:
+
+1. A-FACT03-5(Household FACT-03最小修正版、
+`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-03`、技術的に完成・
+到達Status=USER_FINAL_AUDIO_REVIEW_REQUIRED)は現時点で正式置き換え
+承認しない。同じHouseholdテーマでDiscovery Focus Moduleの軽微改善
+(Trial-10)を進行中で、成立すれば記事→Support→Audioまで新しい完成
+候補を作る予定であり、同一記事について「旧完成版のFACT-03最小修正版」
+と「新Discovery仕様の改善版」を二重に最終版として承認しない。
+
+2. Householdの扱いはPrimary=Discovery軽微改善Trial(良好ならA2/B1Bの
+記事→Support→Audio→listening artifactまで作成しHouseholdの一本化
+された最終候補として提示)、Fallback=A-FACT03-5(fallback candidate /
+formal replacement保留として保持、current正式artifactへ置き換えず
+最終版として承認済みにせず新版と並立させない)。Discovery改善が不成立
+または新候補に到達できない場合のみA-FACT03-5を正式版候補として再提示
+し、それまでA-FACT03-5のUDRは再提示しない。
+
+3. 再発防止原則(PM運用): 同じ記事・episodeについて仕様変更やPrompt
+改善による再生成が予定されている場合、旧完成品の個別修正を始める前に
+必ず確認する: (A)近く新仕様で再生成される予定があるか、(B)その結果が
+旧artifactをsupersedeする予定か、(C)旧artifactを今修正しても新版完成後
+すぐ不要にならないか。A/BがYesなら原則として旧artifactの個別修正を
+行わず、新仕様での再生成側へ修正内容を統合する(「旧品修正→ユーザー
+確認→完成→直後に新仕様で再生成→再確認」の二重工程を作らない)。例外
+(新版完成まで長期間かかる/公開中の重大なFact誤りを放置できない/
+safety・compliance上の暫定修正/新仕様Trialが成立する見込みが低い)時も
+「暫定修正版」と「次期最終候補」を明確に分け、二つの正式最終版を
+並立させない。主要artifactの再生成・修正前にはexisting current
+artifact/active regeneration・spec-change task/planned supersession/
+duplicate finalization riskを確認する。
+
+4. Production wiring・正式採用はユーザー判断まで行わない(変更なし)。
+
+**SSOT反映**: `docs/pm/PM_GOVERNANCE.md`へ2節の新小節「2-3. Artifact
+supersession確認」(確認A〜C・原則・例外・暫定修正版と次期最終候補の
+分離・経緯)を新設し、3節「PM Closeout Mandatory Check」へ項目14
+(主要artifactの修正前にsupersession確認)を追加、冒頭changelogへ1文
+追記した。`docs/pm/PM_BRIEF.md`へ2-3節参照の1行を追記した。
+`OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-59へ)、OPEN-135行
+(Household最終候補=Discovery改善版[Trial-10→記事→Support→Audio]を
+一本化候補として作成予定、Primary/Fallback方針を追記)、OPEN-138行
+(A-FACT03-5=fallback candidate/formal replacement保留、Discovery改善版
+成立時に一本化、不成立時のみ正式版候補として再提示、試聴依頼は保留を
+追記)を反映した。`CURRENT_SPEC.md`は変更していない(運用原則のため
+対象外)。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-10(Sonnet/MEDIUM、
+実施中)・本タスク(Sonnet/LOW)の行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-59)。Git操作: ファイル名指定で
+`docs/pm/PM_GOVERNANCE.md`・`docs/pm/PM_BRIEF.md`・`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をcommitし
+`origin/main`へpush(`git add -A`は不使用)。並列稼働中のDiscovery
+Trial-10(`er011_output/discovery_stage4_*`)・News N-4(`er011_output/
+news_stage3_*`)、`CURRENT_SPEC.md`、`er006_output/`、`er011_output/
+attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タスクでは
+触っていない。Production/Prompt編集・新規Trial着手は実施していない
+(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

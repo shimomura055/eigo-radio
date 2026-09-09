@@ -51,6 +51,9 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 (例: B-4V-1/2)は2-1確認後、承認範囲内で改善・改善Trialを実施してから
 報告し、毎回UDRで止めない(STOP必須6条件あり、詳細は
 `docs/pm/PM_GOVERNANCE.md` 11節「自明な修正の自律実施」、2026-09-09追記)。
+主要artifactの再生成・修正前には、旧artifactの二重最終版化を避けるため
+`docs/pm/PM_GOVERNANCE.md`「2-3. Artifact supersession確認」を必ず確認する
+(2026-09-09追記)。
 
 ## ループ上限(サンドイッチ運用)
 
