@@ -1,0 +1,44 @@
+{
+  "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01: Ledger Deviation Checker(vfl01.run_deviation_check、Production primitive、無変更)のWeb Search使用状況を、raw_usage_log_3v_writer.jsonl(response単位の実測ログ、er005_cost_logger経由)とソースコード現物(er003_v1_en_direct_vfl_01_generate.py L603-626)の両方から確認した記録。並列稼働中のLedger Deviation Checkerコスト調査タスク向け。",
+  "code_level_finding": "vfl01.run_deviation_check()のclient.responses.create()呼び出しにはtools=引数が一切渡されていない(json_schema構造化出力のみ)。したがって、この関数自体、およびLocal Rewrite内の再チェックコールバック(_run_check_window、同じrun_deviation_checkを呼ぶだけ)は、Web Search toolを一度も使用しない(1回あたりのweb_search_call_countは常に0)。本Trialのraw usage logでも、Ledger Deviation Checker/Local Rewrite系の全callでweb_search_call_countフィールドが0または欠落していることを実測で確認した。",
+  "who_actually_uses_web_search": "Fact Checker A'(b1prod.run_fact_checker → r3.make_fact_checker_fn、tools=[{\"type\": \"web_search\"}])のみがWeb Searchを使用する。1 attemptにつきFact Checker A'呼び出しは1回(技術再試行が発生しない限り)。",
+  "cross_check_method": "raw_usage_log_3v_writer.jsonlの各recordのresponse_idと、各attemptのfact_qa.json['response_id']が完全一致することを確認した(attempt1: resp_0dc1b944957cbccd006aa0e38fa64c87d0bf6bc32256831901、attempt2: resp_0b8fcb65d0166ed9006aa0e4af106887d091922ddb706b467c、attempt3: resp_07e6eaa95c4bd377006aa0e674732487d0b470f5aad8319bd0)。いずれもweb_search_call_countを持つ唯一のrecordであり、それ以外の全record(Ledger Deviation Checker本体・Local Rewrite・Analytical Leakage Check・Directional Fact Precheckは¥0のrule-basedのため呼び出しなし)はweb_search_call_count=0だった。",
+  "per_attempt": {
+    "attempt1": {
+      "total_openai_responses_create_calls": 4,
+      "fact_checker_a_prime_web_search_call_count": 6,
+      "fact_checker_a_prime_input_tokens": 60869,
+      "fact_checker_a_prime_output_tokens": 8102,
+      "ledger_deviation_checker_calls_this_attempt": 1,
+      "ledger_deviation_checker_web_search_call_count": 0,
+      "local_rewrite_cycles_this_attempt": 0,
+      "fact_checker_target_claims_reviewed": "attempt1 fact_qa.json: verdict=PASS, unsupported_specific_claims=[](0件)。Ledger deviation: MINOR 1件('I still have to use it every day'、Local Rewrite不発)。"
+    },
+    "attempt2": {
+      "total_openai_responses_create_calls": 12,
+      "fact_checker_a_prime_web_search_call_count": 11,
+      "fact_checker_a_prime_input_tokens": 99855,
+      "fact_checker_a_prime_output_tokens": 7468,
+      "ledger_deviation_checker_calls_this_attempt": 1,
+      "ledger_deviation_checker_web_search_call_count": 0,
+      "local_rewrite_cycles_this_attempt": 0,
+      "fact_checker_target_claims_reviewed": "attempt2 fact_qa.json: verdict=REVIEW_REQUIRED, unsupported_specific_claims=2件(応募者の一人称描写から第三者事例の紹介へ切り替わる部分の具体的主張)。Ledger deviation: MINOR 1件('It saves time, but my job does not end when scores appear.'、Local Rewrite不発)。"
+    },
+    "attempt3": {
+      "total_openai_responses_create_calls": 29,
+      "fact_checker_a_prime_web_search_call_count": 10,
+      "fact_checker_a_prime_input_tokens": 95020,
+      "fact_checker_a_prime_output_tokens": 5890,
+      "ledger_deviation_checker_calls_this_attempt": "4(初回1 + Local Rewrite全体再判定3サイクル分)",
+      "ledger_deviation_checker_web_search_call_count": 0,
+      "local_rewrite_cycles_this_attempt": 3,
+      "local_rewrite_item_level_calls": "cycle1:4件, cycle2:3件, cycle3:1件(item毎に最大3 rewrite attemptsのループ、詳細はaudit/local_rewrite_cycles.json参照)",
+      "fact_checker_target_claims_reviewed": "attempt3 fact_qa.json: verdict=REVIEW_REQUIRED, unsupported_specific_claims=5件(Tension内の権限分担の一般化、経営者個人の信用への言及、NYC法の適用範囲の不正確さ、'外部制約が3者を同じ形で制約する'という一般化)。Ledger deviation: MAJOR 4件→Local Rewrite 3サイクルで最終的にLEDGER_COMPLIANT(deviations=0)まで解消したが、item_idx3('If bias becomes public...')は3 rewrite attemptsを尽くしてもresolved=falseのままhuman_review_required=trueが残った(詳細はaudit/local_rewrite_results.json参照)。"
+    }
+  },
+  "total_web_search_calls_all_attempts": 27,
+  "total_web_search_calls_by_component": {
+    "fact_checker_a_prime": 27,
+    "ledger_deviation_checker_including_local_rewrite": 0
+  }
+}

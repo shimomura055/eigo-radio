@@ -1,0 +1,232 @@
+{
+  "final_attempt_dir": "er012_output/editorial_b_voices_3v_person_voice_trial_01/b1b_run01_attempt3",
+  "comments": {
+    "comment_1": {
+      "text": "Listen for who is involved and how their roles differ.",
+      "status": "OK",
+      "llm_generated": true
+    },
+    "comment_2": {
+      "text": "Now, you will hear three different voices, one after another. Each person will share their own view on what you just heard.",
+      "llm_generated": false,
+      "status": "TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED",
+      "source": "design.md B-1(3V/4V統合設計Trial、未承認・Trial-only、registryへ書かない)"
+    },
+    "comment_3": {
+      "text": "You have heard three different ways of experiencing the same situation. Instead of deciding which view is right, let us ask why the situation feels different to each person. Next, we will look more closely at where that difference comes from.",
+      "llm_generated": false,
+      "status": "TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED",
+      "source": "design.md B-1(3V/4V統合設計Trial、未承認・Trial-only、registryへ書かない)"
+    },
+    "comment_4": {
+      "text": "So the question is not only who is right. We also need to ask what is making this situation work the way it does.",
+      "status": "OK",
+      "llm_generated": true
+    }
+  },
+  "distinctness_summary": {
+    "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01: Pairwise Voice Distinctness Check(未承認仕様候補、4V Trial-02から継続)。有向6ペア(個別呼び出し)+一括判定(1回で3 Voice・3ペア同時評価)を実測比較。reasoning_effort='low'(コスト管理のためのTrial限定の選択、既存Contract化QAの基準ではない)。",
+    "directed_pair_count": 6,
+    "directed_elapsed_seconds": 47.9,
+    "batch_elapsed_seconds": 14.3,
+    "direction_agreement_rate": 0.933,
+    "direction_agreement_comparisons": 15,
+    "method_agreement_rate": 0.933,
+    "method_agreement_comparisons": 15,
+    "method_agreement_definition": "batch_result[pair][axis].judgment == directed_forward[a_vs_b][axis].judgment"
+  },
+  "overlap_controls_summary": {
+    "positive_control": {
+      "overlap_ratio": 0.907,
+      "shared_words": [
+        "about",
+        "after",
+        "biased",
+        "cannot",
+        "challenge",
+        "character",
+        "clear",
+        "face",
+        "gestures",
+        "guess",
+        "half",
+        "how",
+        "human",
+        "judged",
+        "left",
+        "lose",
+        "low",
+        "more",
+        "move",
+        "natural",
+        "nearly",
+        "opt",
+        "out",
+        "reason",
+        "recruiters",
+        "result",
+        "see",
+        "seekers",
+        "skills",
+        "software",
+        "sound",
+        "still",
+        "test",
+        "tone",
+        "tools",
+        "try",
+        "want",
+        "well",
+        "working"
+      ],
+      "point_word_count": 43,
+      "story_word_count": 43,
+      "flagged": true,
+      "threshold": 0.4
+    },
+    "deterministic_control": {
+      "overlap_ratio": 0.711,
+      "shared_words": [
+        "actually",
+        "affected",
+        "afterward",
+        "asks",
+        "before",
+        "cannot",
+        "decision",
+        "even",
+        "every",
+        "explain",
+        "eye",
+        "fit",
+        "front",
+        "look",
+        "make",
+        "met",
+        "never",
+        "overnight",
+        "pattern",
+        "people",
+        "process",
+        "shift",
+        "someone",
+        "wants",
+        "what",
+        "who",
+        "why"
+      ],
+      "point_word_count": 38,
+      "story_word_count": 38,
+      "flagged": true,
+      "threshold": 0.4
+    },
+    "negative_control": {
+      "overlap_ratio": 0.14,
+      "shared_words": [
+        "choose",
+        "desk",
+        "gave",
+        "office",
+        "place",
+        "quiet",
+        "sit"
+      ],
+      "point_word_count": 50,
+      "story_word_count": 46,
+      "flagged": false,
+      "threshold": 0.4
+    },
+    "theme_vocab_dummy": {
+      "overlap_ratio": 0.389,
+      "shared_words": [
+        "algorithm",
+        "applicant",
+        "applicants",
+        "audit",
+        "recruiter",
+        "screening",
+        "tool"
+      ],
+      "point_word_count": 18,
+      "story_word_count": 15,
+      "flagged": false,
+      "threshold": 0.4
+    }
+  },
+  "duration_estimate": {
+    "note": "音声は生成していない(テキストのみTrial)。design.md B-6の2V実測定数を引用し、語数/秒比で3V estimated durationをmonitoring目的でのみ換算した(gate・正式検証ではない)。",
+    "variable_word_count_3v": 530,
+    "variable_word_count_2v_reference": 388,
+    "estimate": {
+      "seconds_per_word_2v_variable_parts": 0.4979,
+      "estimated_variable_seconds_3v": 263.9,
+      "estimated_pause_seconds_3v": 16.7,
+      "estimated_total_seconds_3v": 411.7,
+      "within_3v_target_range": false
+    },
+    "three_v_target_range_seconds_design_md": [
+      325,
+      355
+    ]
+  },
+  "first_person_usage": {
+    "note": "機械計測(rule-based、¥0、正規表現`\\bI\\b`で文中に一人称'I'[I'm/I'veの縮約形も含む]が出現するかを判定)。Gate・Leakage Checkの判定には使わない、QA monitoring専用。Voice 1〜3(point_one/two/three)は一人称指示の対象、Hook/Tension/Closingは対象外(三人称のまま、低い比率が期待値)。参考値であり、単純な'I'出現率を成功基準にはしない(評価はTension/Closing・視点一貫性を定性評価で別途行う)。",
+    "per_section": {
+      "hook": {
+        "total_sentences": 4,
+        "first_person_sentence_count": 0,
+        "first_person_ratio": 0.0
+      },
+      "point_one": {
+        "total_sentences": 6,
+        "first_person_sentence_count": 4,
+        "first_person_ratio": 0.667
+      },
+      "point_two": {
+        "total_sentences": 7,
+        "first_person_sentence_count": 5,
+        "first_person_ratio": 0.714
+      },
+      "point_three": {
+        "total_sentences": 6,
+        "first_person_sentence_count": 4,
+        "first_person_ratio": 0.667
+      },
+      "tension": {
+        "total_sentences": 8,
+        "first_person_sentence_count": 0,
+        "first_person_ratio": 0.0
+      },
+      "closing": {
+        "total_sentences": 4,
+        "first_person_sentence_count": 0,
+        "first_person_ratio": 0.0
+      }
+    }
+  },
+  "structure_review": {
+    "note": "OPEN-129整合(Gate 3 item 8)。point_one/two/three命名方式(Trial側定義、registry非編集、Production 2V正式命名point_one/point_twoの1段拡張。4Vが選んだvoice_1..4命名とは異なる設計選択、両命名方式の比較は本Trialの評価対象)。segment数16、point_one..3がそれぞれちょうど1回登場するかをレビューするのみで、Gateへの実際の突合[assemble.py::verify_episode_audio_validation_gate()]は音声・segmentが存在しないため実施しない。",
+    "segment_count": 16,
+    "segment_names_unique": true,
+    "voice_roles_present": true,
+    "each_voice_role_appears_exactly_once": true,
+    "segment_names": [
+      "topic_intro",
+      "preview",
+      "comment_1",
+      "comment_2",
+      "comment_3",
+      "comment_4",
+      "point_one_heading",
+      "point_two_heading",
+      "point_three_heading",
+      "point_one",
+      "point_two",
+      "point_three",
+      "full_story_part1",
+      "full_story_part2",
+      "tension_reflection",
+      "in_one_line"
+    ]
+  }
+}

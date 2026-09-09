@@ -1,0 +1,265 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 4,
+    "newly_discovered_claims": [
+      "“I run the system, but I do not make the final company decision.”",
+      "“Each week, I study the dashboard ... I decide whether an AI tool stays.”また、“the final responsibility comes back to me.”",
+      "“If bias becomes public, the damage can reach the company’s name, legal costs, and my own credibility.”",
+      "“The power is uneven: the applicant is judged, the recruiter runs the system without choosing the policy, and the owner chooses whether it stays.”"
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "I run the system, but I do not make the final company decision. ### A third voice: The business owner's dashboard Each week, I study the dashboard: hiring time, cost, and open jobs.",
+        "issue": "採用担当者が最終的な会社判断をしないと述べているが、LedgerはRecruiter・Hiring ManagerをAIツールを使う側、または使用可否を判断する側としている。この権限関係はLedgerで確認されていない。",
+        "explanation": "採用担当者の意思決定権限をLedgerにない形で限定する具体的主張を追加している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I run the system, and I may also help decide whether the company uses it.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I run the system, and I may also help decide whether the company uses it.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "sentence_fallback(overlap=0.42)",
+        "point_context_found": false,
+        "point_context": "I also face a hard judgment: is an AI-written application a useful skill, or weak effort? I run the system, but I do not make the final company decision. ### A third voice: The business owner's dashboard Each week, I study the dashboard: hiring time, cost, and open jobs. I decide whether an AI tool stays."
+      },
+      {
+        "original_ng_sentence": "I decide whether an AI tool stays.",
+        "issue": "Business・Efficiencyの抽象的な立場を、毎週ダッシュボードを確認し、AIツールの継続と最終責任を個人的に決める特定の事業オーナーへ拡張している。",
+        "explanation": "Ledgerは経営・効率の観点から評価することは確認しているが、事業オーナーの週次行動、継続判断、最終責任までは確認していない。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_actor",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I help assess whether an AI tool is worth keeping for the business.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I help assess whether an AI tool is worth keeping for the business.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 2,
+        "location_method": "sentence_fallback(overlap=0.39)",
+        "point_context_found": true,
+        "point_context": "### A third voice: The business owner's dashboard\n\nEach week, I study the dashboard: hiring time, cost, and open jobs. I decide whether an AI tool stays. I have seen cases where hiring moved from weeks to days, and one report found a 30% cut in a company's hiring cost. That pressure is personal. If bias becomes public, the damage can reach the company’s name, legal costs, and my own credibility. I am trying to keep the business running, but the final responsibility comes back to me."
+      },
+      {
+        "original_ng_sentence": "If bias becomes public, the damage can reach the company’s name, legal costs, and my own credibility.",
+        "issue": "LedgerはAIによる差別が生じた場合の評判上・法的リスクを確認しているが、記事は公になることを損害の条件とし、具体的な法的費用と事業オーナー個人の信用への損害まで追加している。",
+        "explanation": "企業の評判・法的リスクという範囲を、 publicityを起点とする法的費用および個人信用への因果的な損害へ拡張している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_causality",
+          "changed_actor",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "If bias leads to discriminatory outcomes, the company may face reputational and legal risks.",
+            "ledger_status": "LEDGER_DEVIATION"
+          },
+          {
+            "attempt": 2,
+            "text": "If an AI hiring system produces discriminatory outcomes, the company may face legal and reputational risks.",
+            "ledger_status": "LEDGER_DEVIATION"
+          },
+          {
+            "attempt": 3,
+            "text": "The cited analysis suggests that if an AI hiring system produces discriminatory outcomes, the company may face legal and reputational risks.",
+            "ledger_status": "LEDGER_DEVIATION"
+          }
+        ],
+        "final_text": "The cited analysis suggests that if an AI hiring system produces discriminatory outcomes, the company may face legal and reputational risks.",
+        "resolved": false,
+        "human_review_required": true,
+        "cycle": 1,
+        "item_idx": 3,
+        "location_method": "sentence_fallback(overlap=1.0)",
+        "point_context_found": true,
+        "point_context": "### A third voice: The business owner's dashboard\n\nEach week, I study the dashboard: hiring time, cost, and open jobs. I decide whether an AI tool stays. I have seen cases where hiring moved from weeks to days, and one report found a 30% cut in a company's hiring cost. That pressure is personal. If bias becomes public, the damage can reach the company’s name, legal costs, and my own credibility. I am trying to keep the business running, but the final responsibility comes back to me."
+      },
+      {
+        "original_ng_sentence": "The power is uneven: the applicant is judged, the recruiter runs the system without choosing the policy, and the owner chooses whether it stays.",
+        "issue": "応募者が評価されることはLedgerに沿うが、Recruiterが方針を選ばず、ownerがツール継続を決めるという権限分担はLedgerにない。特にLedgerはRecruiter・Hiring Managerがツール使用可否を判断し得るとしている。",
+        "explanation": "採用担当者と経営側の意思決定権限を、Ledgerで確認された4Vの立場から具体的な人物・権限関係へ置き換えている。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_actor",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "The power is uneven: the applicant is judged, while the recruiter or hiring manager may use the system or help decide whether it is used, and the owner weighs its efficiency gains against its risks.",
+            "ledger_status": "LEDGER_DEVIATION"
+          },
+          {
+            "attempt": 2,
+            "text": "The power is uneven: the applicant is judged, while the recruiter or hiring manager may use the system or help decide whether it is used, and the business side weighs potential efficiency gains against legal, reputational, and other risks.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "The power is uneven: the applicant is judged, while the recruiter or hiring manager may use the system or help decide whether it is used, and the business side weighs potential efficiency gains against legal, reputational, and other risks.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 4,
+        "location_method": "sentence_fallback(overlap=1.0)",
+        "point_context_found": true,
+        "point_context": "## Why They See It Differently\n\nAll three want the same result: the right person in the right job. But the applicant risks losing a chance without being fairly seen. The recruiter must keep work moving while answering questions about the tool. The owner must keep the company running and carry the decision. The power is uneven: the applicant is judged, the recruiter runs the system without choosing the policy, and the owner chooses whether it stays. Their reasonable views still do not make one answer. A New York recruiter may need a bias audit and notice before using such a tool, while European rules treat hiring AI as high risk. The outside rules limit all three."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_DEVIATION",
+    "full_recheck_major_count": 3,
+    "full_recheck_remaining_major_claims": [
+      "I run the system, but I do not make the final company decision.",
+      "I am trying to keep the business running, but the final responsibility comes back to me.",
+      "European rules treat hiring AI as high risk."
+    ]
+  },
+  {
+    "cycle": 2,
+    "targeted_major_count": 3,
+    "newly_discovered_claims": [
+      "I run the system, but I do not make the final company decision.",
+      "I am trying to keep the business running, but the final responsibility comes back to me.",
+      "European rules treat hiring AI as high risk."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "I run the system, but I do not make the final company decision.",
+        "issue": "Ledgerは採用担当者がAIを使う、または使用可否を判断することは確認しているが、採用担当者が最終的な会社判断を行わないという役割分担までは確認していない。",
+        "explanation": "採用担当者と最終意思決定者を明確に分ける新しいガバナンス上の事実を追加している。",
+        "flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I run the system, but my assessment may be only one part of the company’s final decision.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I run the system, but my assessment may be only one part of the company’s final decision.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 2,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### Another voice: The recruiter at the screen\n\nNew applications arrive, and I open the resume-screening system. It helps me sort resumes, arrange interviews, and match people with jobs. I am not unusual: 91% of HR leaders say they actively use AI somewhere in hiring. But the work does not end with a shortlist. I may need to prepare a clear bias-audit summary for applicants who distrust the tool. I also face a hard judgment: is an AI-written application a useful skill, or weak effort? I run the system, but I do not make the final company decision."
+      },
+      {
+        "original_ng_sentence": "I am trying to keep the business running, but the final responsibility comes back to me.",
+        "issue": "Ledgerは企業・経営側が効率化の利益と法的・評判上のリスクを比較検討することを示すが、個々の事業オーナーが最終責任を負うとは確認していない。",
+        "explanation": "企業・経営側という主体を個人の『owner』に置き換え、個人が最終責任を負うという新しい事実を加えている。",
+        "flags": [
+          "changed_fact",
+          "changed_actor",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I am trying to keep the business running, but the decision still comes back to weighing efficiency gains against legal and reputational risks.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I am trying to keep the business running, but the decision still comes back to weighing efficiency gains against legal and reputational risks.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 2,
+        "item_idx": 2,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### A third voice: The business owner's dashboard\n\nEach week, I study the dashboard: hiring time, cost, and open jobs. I help assess whether an AI tool is worth keeping for the business. I have seen cases where hiring moved from weeks to days, and one report found a 30% cut in a company's hiring cost. That pressure is personal. The cited analysis suggests that if an AI hiring system produces discriminatory outcomes, the company may face legal and reputational risks. I am trying to keep the business running, but the final responsibility comes back to me."
+      },
+      {
+        "original_ng_sentence": "European rules treat hiring AI as high risk.",
+        "issue": "LedgerのEU AI Actは、採用・選考に用いられ、個人の将来のキャリア・生計・労働者の権利に重大な影響を与えるAIシステムをhigh-riskに分類する。記事はこの適用条件を省き、採用AI全般が高リスクであるかのように一般化している。",
+        "explanation": "EU域内の一定の適用条件付きの分類を、すべての『hiring AI』に及ぶ一般的な分類へ拡張している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 2,
+        "item_idx": 3,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "## Why They See It Differently\n\nAll three want the same result: the right person in the right job. But the applicant risks losing a chance without being fairly seen. The recruiter must keep work moving while answering questions about the tool. The owner must keep the company running and carry the decision. The power is uneven: the applicant is judged, while the recruiter or hiring manager may use the system or help decide whether it is used, and the business side weighs potential efficiency gains against legal, reputational, and other risks. Their reasonable views still do not make one answer. A New York recruiter may need a bias audit and notice before using such a tool, while European rules treat hiring AI as high risk. The outside rules limit all three."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_DEVIATION",
+    "full_recheck_major_count": 1,
+    "full_recheck_remaining_major_claims": [
+      "A New York recruiter may need a bias audit and notice before using such a tool."
+    ]
+  },
+  {
+    "cycle": 3,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "A New York recruiter may need a bias audit and notice before using such a tool."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "A New York recruiter may need a bias audit and notice before using such a tool, while European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights.",
+        "issue": "Local Law 144の適用範囲をニューヨーク市内から「New York」全体へ広げて読める表現になっている。Ledgerが確認しているのはニューヨーク市の地方法であり、州全体の規制ではない。",
+        "explanation": "NYC限定の法規制をニューヨーク全体に適用されるように一般化しているため、changed_scopeに該当する。Hookとしての緩和は適用していない。",
+        "flags": [
+          "changed_scope"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "A New York City recruiter may need a bias audit and notice before using such a tool, while European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "A New York City recruiter may need a bias audit and notice before using such a tool, while European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 3,
+        "item_idx": 1,
+        "location_method": "sentence_fallback(overlap=0.38)",
+        "point_context_found": true,
+        "point_context": "## Why They See It Differently\n\nAll three want the same result: the right person in the right job. But the applicant risks losing a chance without being fairly seen. The recruiter must keep work moving while answering questions about the tool. The owner must keep the company running and carry the decision. The power is uneven: the applicant is judged, while the recruiter or hiring manager may use the system or help decide whether it is used, and the business side weighs potential efficiency gains against legal, reputational, and other risks. Their reasonable views still do not make one answer. A New York recruiter may need a bias audit and notice before using such a tool, while European rules can treat AI used in hiring as high risk when it may significantly affect a person’s career, livelihood, or workers’ rights. The outside rules limit all three."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]

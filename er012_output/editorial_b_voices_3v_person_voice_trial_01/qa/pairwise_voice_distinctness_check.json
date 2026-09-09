@@ -1,0 +1,255 @@
+{
+  "note": "EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01: Pairwise Voice Distinctness Check(未承認仕様候補、4V Trial-02から継続)。有向6ペア(個別呼び出し)+一括判定(1回で3 Voice・3ペア同時評価)を実測比較。reasoning_effort='low'(コスト管理のためのTrial限定の選択、既存Contract化QAの基準ではない)。",
+  "directed_pair_count": 6,
+  "directed_elapsed_seconds": 47.9,
+  "batch_elapsed_seconds": 14.3,
+  "direction_agreement_rate": 0.933,
+  "direction_agreement_comparisons": 15,
+  "method_agreement_rate": 0.933,
+  "method_agreement_comparisons": 15,
+  "method_agreement_definition": "batch_result[pair][axis].judgment == directed_forward[a_vs_b][axis].judgment",
+  "directed_results": {
+    "voice_1_vs_voice_2": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_029ed30d6f916188006aa0ea195a7887d0a1abf36746aef675",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice XはAI評価を受ける応募者として、評価される側の立場にある。Voice YはAI採用システムを運用し、採用判断に関与する採用担当者・管理者である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xの制約は、AI評価の基準が不透明で、拒否や異議申立てができないことにある。Voice Yは、候補者の選別・面接調整に加え、バイアス監査やAI生成応募書類の評価など、運用上の判断負担を抱えている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは自分の技能や人格が適切に評価されることを求める立場で、採用プロセスを管理する責任はない。Voice Yはシステムを運用し、監査結果の説明や最終的な採用判断に関与する責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xが守ろうとしているのは、動作や表情への推測ではなく、技能・人格に基づく公平な評価である。Voice Yは、採用業務の効率、判断の妥当性、応募者への説明責任、会社の最終決定プロセスを守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "SIMILAR",
+          "reasoning": "両者とも、AIの出力だけでは採用判断を完結できず、バイアスや人間による追加判断が必要だと捉えている点は共通する。ただしVoice Xは不透明なスコアによる不利益を問題にし、Voice YはAIを使いながら説明・選別・最終判断をどう担うかを問題にしており、推論の起点と方向は異なる。"
+        }
+      },
+      "input_tokens": 772,
+      "output_tokens": 607
+    },
+    "voice_1_vs_voice_3": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_01b115112e0f0489006aa0ea205db487d0a0843e448a90a03e",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "XはAI評価を受け、採否を左右される応募者という当事者の立場である。YはAI採用ツールの継続利用を判断する事業者側の立場である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは評価基準の不透明さ、オプトアウトや異議申立ての困難さに制約されている。Yは採用期間・コスト・欠員対応に加え、差別による法的・評判上のリスクに制約されている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xの責任は自身の能力や人柄を適切に伝え、評価されることに関わる。Yは事業運営のために採用ツールの費用対効果とリスクを評価し、利用継続を判断する責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xが守ろうとしているのは、自身の公平な評価、機会、異議を申し立てる権利である。Yが守ろうとしているのは、事業の継続、採用効率、コスト管理であり、同時に法的・評判上の損害の回避でもある。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Xは、AIの不透明または偏った評価が能力と無関係に不採用を招くため、説明可能性と公正な評価が必要だと推論している。Yは、採用の効率化・コスト削減という便益と、差別が生む法的・評判上のリスクを比較して導入価値を判断している。"
+        }
+      },
+      "input_tokens": 766,
+      "output_tokens": 443
+    },
+    "voice_2_vs_voice_1": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_02a600bcb7d25695006aa0ea25338c87d086159159c244789a",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用システムを運用し候補者を評価する採用側の立場である。一方、Voice YはAI評価を受け、採否の影響を受ける応募者側の立場である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは候補者の選別、バイアス監査の説明、AI作成応募の評価など、採用判断と説明に関する制約を抱える。Voice Yは評価基準の不透明さ、オプトアウトや異議申立ての困難さ、低い動画評価で不採用になるリスクに直面している。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xはシステムを運用し、候補者への監査結果の説明や採用判断への情報提供を担う。Voice Yは自身の技能や人物像を評価される側であり、採用プロセスを管理・説明する責任は負わない。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用業務の効率性や評価の妥当性、会社の最終判断を守ろうとしている。Voice Yは自分の技能・人格が不透明または不適切な行動推定で損なわれないこと、公正な評価機会を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xの推論は、AIを採用実務に活用しつつ、監査・判断上の不確実性を扱うという運用者の筋道である。Voice Yは、AIの評価が行動や外見の推測に依存し、説明や異議申立てがなければ不公正な不採用につながるという被評価者の筋道である。"
+        }
+      },
+      "input_tokens": 772,
+      "output_tokens": 464
+    },
+    "voice_2_vs_voice_3": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_01190efc800532ad006aa0ea2a621c87d0bd8693b352d1b880",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用システムを運用し、応募者を選考する採用担当者の立場である。一方、Voice Yは採用AIを事業上維持する価値を評価する経営・事業責任者の立場である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xの制約は、応募者への説明やAI生成応募書類の評価、最終決定への関与が限定的である点にある。Voice Yは採用期間・コストの改善要求と、差別的結果が生む法的・評判上のリスクの両立に制約されている。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xはシステム運用、候補者の振り分け、面接調整、バイアス監査の説明など、採用プロセスの実務を担う。Voice YはAI導入を継続するか判断し、事業上の効率とリスクを評価する責任を負う。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは応募者への公平で透明な扱いと、適切な候補者評価を守ろうとしている。Voice Yは事業の継続性や効率性に加え、会社の法的・評判上の安全を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用実務上の具体的な判断と、自身の評価が最終決定の一部にすぎないことから考えている。Voice Yは採用時間・コストの改善効果と、差別による法的・評判リスクを比較衡量して導入継続を判断している。"
+        }
+      },
+      "input_tokens": 792,
+      "output_tokens": 547
+    },
+    "voice_3_vs_voice_1": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_05d19a57d0d5267a006aa0ea31799487d0bc588ef9ec33032b",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用ツールの導入・継続を判断する事業者側の立場であり、Voice Yはその評価を受ける応募者側の立場である。意思決定する側と影響を受ける側で明確に異なる。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは採用効率やコスト削減を求められる一方、差別的な結果による法的・評判上のリスクに制約されている。Voice Yは、オプトアウトや判定への異議申立てができず、評価理由も分からないことが主な制約である。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice XはAIツールが事業に見合うかを評価し、事業を維持する責任を負う。Voice Yは制度を運用する責任ではなく、自分の技能や人物面が適切に評価されることを求める立場にある。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xが守ろうとしているのは、事業の継続性や採用効率、法的・評判上の安全性である。Voice Yが守ろうとしているのは、自身の技能・人格に基づく公平な評価と就業機会である。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは、採用の効率化による利益と差別に伴う法的・評判リスクを比較衡量している。Voice Yは、動画上の外見的・行動的指標が技能評価を歪め、説明や異議申立てのないまま不利益につながると推論している。"
+        }
+      },
+      "input_tokens": 766,
+      "output_tokens": 557
+    },
+    "voice_3_vs_voice_2": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0987f2d49b08f5a1006aa0ea3793b887d0b111f7c156a73abc",
+      "parsed": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは事業の継続や投資判断を担う経営側の立場である。一方、Voice Yは採用システムを実際に運用し、候補者を評価する採用実務側の立場である。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xの主な制約は、採用効率・コストと、差別による法的・評判上のリスクの両立である。Voice Yは、応募者への説明やバイアス監査、AI生成応募書類の評価、最終決定権が限定的であることに直面している。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice XはAIツールを事業に使い続ける価値があるかを判断する責任を負う。Voice Yはツールを運用し、候補者の選別や説明対応を行うが、最終的な採用判断の一部しか担わない。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは事業の効率性・継続性と、法的および企業評判上の安全を守ろうとしている。Voice Yは応募者への公平性・透明性や、採用評価の妥当性を守ろうとしている。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Voice Xは、効率向上やコスト削減の利益と、差別によるリスクを比較衡量して導入継続を判断する。Voice Yは、採用業務を効率化しながら、応募者への説明、評価の妥当性、AI利用の解釈を実務上調整する。"
+        }
+      },
+      "input_tokens": 792,
+      "output_tokens": 550
+    }
+  },
+  "batch_result": {
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_0dd9caa5e0170821006aa0ea49486487d094e09a329e64bdda",
+    "parsed": {
+      "voice_1_voice_2": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "ApplicantはAIによって評価される当事者であり、RecruiterはAIを採用業務で運用・評価する側です。判断を受ける立場と、判断プロセスを管理する立場が異なります。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantは評価基準の不透明さ、オプトアウトや異議申立ての困難さに制約されます。一方、Recruiterはバイアス監査の説明やAI生成応募書類の扱いなど、運用上の判断を迫られます。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantの主な責任は自分の技能や人物像を適切に評価してもらうことです。Recruiterはシステムを運用し、候補者を選別し、必要に応じて監査結果を説明する責任を負います。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantは技能・人格が不透明な推測で損なわれないことや、公平な評価を守ろうとしています。Recruiterは採用業務の実用性、説明可能性、候補者との信頼を守ろうとしています。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantの推論は、AI評価による個人的な不利益と救済手段の欠如を問題にするものです。Recruiterは、効率や実務上の判断と、監査・説明責任および最終意思決定への関与の限定性を同時に考えています。"
+        }
+      },
+      "voice_1_voice_3": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantは採用評価を受ける個人ですが、Business OwnerはAI採用ツールを事業上導入・継続するか判断する経営側です。意思決定の影響を受ける側と、導入判断を行う側が異なります。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantはスコアの不透明さや異議申立て不能に直面します。Business Ownerは採用の効率・コスト改善を求められる一方、差別的結果による法的・ reputationalリスクにも制約されます。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantは自分の能力や人物像を正しく評価してもらう立場です。Business Ownerは事業運営の観点からツールの価値を評価し、効率向上とリスクのバランスを取る責任を負います。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantが守ろうとしているのは、自身の公平な評価と就業機会です。Business Ownerが守ろうとしているのは、事業継続、採用コスト、会社の法的・評判上の安全です。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Applicantは、AIスコアが自分に不利益を与え、理由も争えないという個人被害から推論しています。Business Ownerは、採用の迅速化・低コスト化という便益と、差別による法的・評判リスクを比較して判断しています。"
+        }
+      },
+      "voice_2_voice_3": {
+        "stakeholder_position": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Recruiterは採用システムを日常的に操作し、候補者選考や説明に関わる実務担当者です。Business Ownerは会社全体の成果を見て、AIツールを維持する価値を判断する経営側です。"
+        },
+        "constraint": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Recruiterは候補者へのバイアス監査の説明やAI生成応募書類の評価など、採用現場の判断に制約されます。Business Ownerは採用時間・コストの圧力と、法的・評判上のリスクとの両立を迫られます。"
+        },
+        "responsibility": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Recruiterはシステムを運用し、候補者を整理・評価し、採用判断の一部を担います。Business Ownerは事業全体への効果を評価し、ツールを継続するかをリスク込みで判断します。"
+        },
+        "what_they_protect": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Recruiterは採用プロセスの機能性、候補者への説明可能性、適切な選考運用を守ろうとしています。Business Ownerは事業の効率、継続性、会社の法的・評判上の安全を守ろうとしています。"
+        },
+        "reasoning": {
+          "judgment": "DIFFERENT",
+          "reasoning": "Recruiterの推論は、採用現場での効率化を活用しつつ、監査説明や応募書類の扱いを含む実務上の妥当性を考えるものです。Business Ownerは、会社全体の時間・コスト削減と差別に伴う法的・評判リスクを比較して導入継続を判断しています。"
+        }
+      }
+    },
+    "input_tokens": 1364,
+    "output_tokens": 1510
+  }
+}
