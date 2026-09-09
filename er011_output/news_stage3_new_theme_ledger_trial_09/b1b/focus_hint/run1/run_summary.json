@@ -1,0 +1,100 @@
+{
+  "label": "B1B",
+  "status": "OK",
+  "metrics": {
+    "word_count": 453,
+    "sentence_count": 33,
+    "avg_sentence_length": 14.3,
+    "max_sentence_length": 27
+  },
+  "section_word_counts": {
+    "intro": 280,
+    "point_one": 55,
+    "point_two": 76,
+    "in_one_line": 42
+  },
+  "length_report": {
+    "intro": 280,
+    "point_one": 55,
+    "point_two": 76,
+    "in_one_line": 42,
+    "total": 453,
+    "point_one_within_target": true,
+    "point_one_within_tolerance": true,
+    "point_two_within_target": false,
+    "point_two_within_tolerance": false,
+    "total_within_soft_range": false
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_results": [
+    {
+      "original_ng_sentence": "One dose made CAR-T cells inside the body and produced a deep, but apparently temporary, fall in B cells.",
+      "issue": "B細胞の減少について、Ledgerが観察結果として報告している「投与後にB細胞が深く減少した」という関係を、単回投与がB細胞減少を生じさせたという確立した因果関係として表現している。",
+      "explanation": "Fact-006のB細胞減少は観察結果であり、Fact-015も有効性の因果効果は確立していないとする。『produced』は観察された時間的関係を因果として強めている。Hookとしての文ではないため、緩和対象外。",
+      "flags": [
+        "changed_causality"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "text": "Following a single dose, CAR-T cells were generated inside the body, and a deep, but apparently temporary, fall in B cells was observed.",
+          "ledger_status": "LEDGER_COMPLIANT"
+        }
+      ],
+      "final_text": "Following a single dose, CAR-T cells were generated inside the body, and a deep, but apparently temporary, fall in B cells was observed.",
+      "resolved": true,
+      "human_review_required": false,
+      "cycle": 1,
+      "item_idx": 1,
+      "location_method": "exact_substring",
+      "point_context_found": true,
+      "point_context": "## In one line…\n\nOne dose made CAR-T cells inside the body and produced a deep, but apparently temporary, fall in B cells. The report offers an important signal, but its lasting value will depend on what happens after B cells return."
+    }
+  ],
+  "local_rewrite_cycles": [
+    {
+      "cycle": 1,
+      "targeted_major_count": 1,
+      "newly_discovered_claims": [
+        "One dose made CAR-T cells inside the body and produced a deep, but apparently temporary, fall in B cells."
+      ],
+      "results": [
+        {
+          "original_ng_sentence": "One dose made CAR-T cells inside the body and produced a deep, but apparently temporary, fall in B cells.",
+          "issue": "B細胞の減少について、Ledgerが観察結果として報告している「投与後にB細胞が深く減少した」という関係を、単回投与がB細胞減少を生じさせたという確立した因果関係として表現している。",
+          "explanation": "Fact-006のB細胞減少は観察結果であり、Fact-015も有効性の因果効果は確立していないとする。『produced』は観察された時間的関係を因果として強めている。Hookとしての文ではないため、緩和対象外。",
+          "flags": [
+            "changed_causality"
+          ],
+          "attempts": [
+            {
+              "attempt": 1,
+              "text": "Following a single dose, CAR-T cells were generated inside the body, and a deep, but apparently temporary, fall in B cells was observed.",
+              "ledger_status": "LEDGER_COMPLIANT"
+            }
+          ],
+          "final_text": "Following a single dose, CAR-T cells were generated inside the body, and a deep, but apparently temporary, fall in B cells was observed.",
+          "resolved": true,
+          "human_review_required": false,
+          "cycle": 1,
+          "item_idx": 1,
+          "location_method": "exact_substring",
+          "point_context_found": true,
+          "point_context": "## In one line…\n\nOne dose made CAR-T cells inside the body and produced a deep, but apparently temporary, fall in B cells. The report offers an important signal, but its lasting value will depend on what happens after B cells return."
+        }
+      ],
+      "full_recheck_overall_status": "LEDGER_COMPLIANT",
+      "full_recheck_major_count": 0,
+      "full_recheck_remaining_major_claims": []
+    }
+  ],
+  "local_rewrite_cycle_exhausted": false,
+  "fact_usage_report": null,
+  "evidence_compression_applied": true,
+  "point_overlap_qa_applied": false,
+  "point_overlap_article_retry_attempts": 2,
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED"
+}

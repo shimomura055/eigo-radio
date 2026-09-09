@@ -1,0 +1,32 @@
+{
+  "note": "FAMILY-A-DAILY-NEWS-FOCUS-LAYER-DESIGN-TRIAL-01_REPORT.md §2.1の6項目を、実際にverified_fact_ledger.txt(invivo_cart_ms、CONFIRMED14件)を読んで手動で当てはめた(自動判定ロジックではない)。",
+  "evaluated_at": "2026-09-09",
+  "topic_id": "invivo_cart_ms",
+  "criteria": {
+    "1_single_origin_confirmed": {
+      "result": "PASS",
+      "evidence": "Main Storyは「2026年9月3日、New England Journal of Medicineに、体内で直接CD19 CAR-T細胞を誘導する遺伝子治療の小規模臨床試験が報告された」の1文で要点を保てる。単一の発表(FACT-001)を起点とする単一起点イベント。"
+    },
+    "2_importance_independent": {
+      "result": "PASS(該当なし)",
+      "evidence": "重要度の高低(小規模試験か大規模試験か)自体はMAJOR_DAILY判定を変えない。"
+    },
+    "3_ledger_sufficiency": {
+      "result": "PASS",
+      "evidence": "単一のverified_fact_ledger.txtだけで、Main Story(今回の発表の概要)、Point候補1(mechanism: FACT-004の体内直接CAR-T誘導という従来法との違い)、Point候補2(limitation/unconfirmed: FACT-015の対照群なし単群第1相、より大規模な検証が必要、またはbeyond-the-headline: FACT-012〜014の安全性プロファイル)という相互に異なる2つの意味づけを支えるだけの確認済み情報がある。"
+    },
+    "4_uncertainty_explicit": {
+      "result": "PASS",
+      "evidence": "FACT-015が「小規模な単群第1相研究で対照群なし、より大規模な検証が必要」と明示しており、各Factのnotes_for_writerも断定的表現を避けるよう明示的に注意している(例: FACT-007の「改善が報告された」という限定表現)。"
+    },
+    "5_no_duplicate_recent_article": {
+      "result": "PASS",
+      "evidence": "既存のPrint/Discovery/Trendレーンガーでこの発表(NEJMc2603114)を扱った記事は存在しない(新規)。"
+    },
+    "6_disguised_trend_exclusion": {
+      "result": "PASS",
+      "evidence": "FACT-015が明示するとおり単一の小規模研究であり、複数の独立した研究・発表を横断的に集約する必要はない。CURRENT_SPEC.md「Health(単一起点研究発表がある場合の扱い)」節の既存判定パターン(単一研究プロジェクト=1つの起点)をそのまま適用できる。"
+    }
+  },
+  "conclusion": "MAJOR_DAILY(1〜6すべてPASS)"
+}

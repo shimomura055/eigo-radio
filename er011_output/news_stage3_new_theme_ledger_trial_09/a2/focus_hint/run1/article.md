@@ -1,0 +1,25 @@
+# When the Body Builds Its Own CAR-T Cells
+
+On September 3, the New England Journal of Medicine published a report with a striking idea: make CD19 CAR-T cells inside the patient’s body.
+
+The study included 16 people with hard-to-treat autoimmune diseases of the nervous system. Seven had progressive multiple sclerosis. Three had MOG antibody-related disease, three had generalized myasthenia gravis, and three had an inflammatory muscle disease. It was an early Phase 1 study.
+
+Each person received one intravenous dose of a lentiviral carrier. It placed a CD19 CAR gene into the person’s own T cells. These cells then became CAR-T cells inside the body. The carrier was designed not to copy itself and to switch itself off.
+
+So, the T cells did not need to be taken out, changed in a laboratory, and put back.
+
+After treatment, B cells fell deeply, then began to return. The team reported changes in nerve function, symptoms, or test results in all four disease groups.
+
+The main safety finding was a mild immune reaction called cytokine release syndrome. Eleven of the 16 people had grade 1 cases between days 5 and 28. Everyone improved within two weeks. The study did not observe a serious nerve reaction, low blood pressure, or low oxygen.
+
+### A deep reset, but not a permanent one
+
+The important biological clue is the reach of the B-cell change. It was seen not only in blood, but also in bone marrow and the fluid around the brain and spinal cord. Then B cells began to return at a median of about two months. This looks more like a deep, temporary immune reset than permanent removal. The future question is whether clinical changes last after that return.
+
+### Four diseases, four different signals
+
+These are different signals, not one shared proof of benefit. In progressive MS, walking, hand use, thinking speed, and spinal-fluid markers changed over six months. In MOG disease, fatigue and function changed, but antibodies fell in only two of three people. In myasthenia gravis, a score fell by more than 60%; in muscle disease, blood markers fell by more than 60%. With no comparison group, larger studies for each disease are needed.
+
+## In one line…
+
+One dose made the body’s own CAR-T cells and was followed by a deep, temporary B-cell reset. The early signals matter, but this small first study has not yet shown one lasting benefit across all four diseases.

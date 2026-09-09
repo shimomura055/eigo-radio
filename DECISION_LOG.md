@@ -9727,6 +9727,84 @@ attempt_history.jsonl`、既存の未追跡ファイル群はいずれも本タ�
 触っていない。Production/Prompt編集・新規Trial着手は実施していない
 (SSOT反映+Git記録のみ)。
 
+## PM-CLOSEOUT-CONSOLIDATION-60: News Trial-09(N-4、新テーマ)結果の
+SSOT反映+commit
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09`(N-4)の結果をSSOTへ
+反映した。並列稼働中: Discovery Trial-10(`er011_output/discovery_
+stage4_*`)、本タスクでは対象外(SSOT・Git担当のみ)。
+
+**Trial結果の要旨**: Hanshin以外の新規News Ledgerを既存Research正式
+経路で作成し(新テーマ=in-vivo CAR-T[NEJM 2026-09-03]、14件CONFIRMED、
+費用¥57.89)、そのLedgerでFocus Module+Point Role hint条件を
+A2/B1B×N=2(予算超過見込みのためN=3から自律的にN=2へ縮小、run1完了
+時点でN=3見込み¥186.6>予算¥150と判断、費用¥142.50)実施した結果、
+最終NG 0/4を得た。Hanshin Trial-06(baseline 6/6・focus_hint 3/6)・
+Theme2 Trial-05(baseline 2/4)と比較すると、初期attempt flag率(2/4)は
+題材によらず同水準だが、retry後の最終解消率は本Trial4/4(100%)に対し
+Hanshin focus_hintでは3/6(50%)しか解消しておらず、「retryが発火する
+かどうかは題材非依存だが、retryで実際にPointの意味づけを分離できる
+かどうかは題材依存」という方向性の示唆を得た(N=4小標本、断定的な
+結論ではない)。
+
+B1B full pipeline(Key Phrase→TTS→Assembly→Audio Validation Gateまで
+既存Production関数を無変更で実行、費用¥40.10)はKey Phrase
+REDUNDANCY_PASS、TTS 13segment中12件RESOLVED(OK)だが、
+`full_story_part1`が3回試行(既存retry上限)後もASR検証NG
+(`TRUE_CONTENT_MISMATCH`、"a report on"を3回とも一貫して読み落とす)
+でHUMAN_REVIEW_REQUIREDへ遷移、Assemblyは`EPISODE_BLOCKED_BY_AUDIO_
+VALIDATION`で正常STOP(既存Human Review Lock・Audio Validation Gate
+が意図通り機能、player・完成episodeは未生成)。**この
+`full_story_part1`のHUMAN_REVIEW_REQUIREDは、ユーザー承認なしに
+再生成・HUMAN_APPROVED記録・Assembly実行のいずれも行わない**(本
+タスクの委任範囲外、試聴artifact化する場合は再生成1回のユーザー承認が
+別途必要)。
+
+作業中、誤操作でB1B full pipelineスクリプトを二重起動し即座に強制
+終了する事故が1件発生した(約¥2.56の無駄なScaffold呼び出し、
+TTS/Key Phrase/Assemblyは非重複)。副作用としてScaffold出力
+[Preview/Comment本文json]が2回目生成で上書きされ、実際に音声化された
+1回目の本文とbyte不一致になった(記事本文自体には影響なし、Gate
+BLOCKEDのため最終artifactは元々未生成、cosmetic)。これは規律違反
+として`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`のTrial-09行に記録した。
+
+Gate 1分類は`VALIDATED(Trial)`止まり(Production採用[Focus Module+
+hint配線]は本Trial単体では判断しない、別途十分なNでの再現性確認が
+必要)。総費用¥240.49(Step0¥57.89+Step1¥142.50+B1B full pipeline
+¥40.10)。News Focus Module Production採用(N-3)は引き続き保留。
+
+**SSOT反映**: `OPEN_ITEMS.md`ヘッダ(最終更新をCONSOLIDATION-60へ)、
+OPEN-135行(N-4結果[新テーマ選定理由・最終NG0/4・比較表・題材依存の
+示唆・小標本注記・B1B full pipelineがHuman Review Lock/Audio
+Validation Gate発動で正常STOP・Production採用未判断]を追記)、
+OPEN-137行(News Completionの人手介在箇所[テーマ選定/Mode判定/
+Ledger供給、B1BのみのためA2日本語タイトルは本Trialでは未検証]が
+OPEN-137の既知gap[3箇所]と同一構造であることを追記)を反映した。
+`CURRENT_SPEC.md`は変更していない(Production採用なし)。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-09行を確定値(Sonnet/
+MEDIUM、¥240.49、N=3→2縮小の自律判断、二重起動事故1件を規律違反として
+記録)へ更新し、本タスク(Sonnet/LOW)の行を追記した。
+
+**根拠**: Fable(PM)からの委任(2026-09-09、管理ID
+PM-CLOSEOUT-CONSOLIDATION-60)。Git操作: G1=
+`er011_news_stage3_new_theme_ledger_trial_09.py`・
+`er011_news_stage3_new_theme_ledger_trial_09_b1b_full_pipeline.py`・
+`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09_REPORT.md`(すべて
+新規)・`er011_output/news_stage3_new_theme_ledger_trial_09/`配下・
+`er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/`配下
+(json/md/jsonl/txt。既存commit慣行[`discovery_stage3_rule_
+adjustment_trial_09`・`family_a_completion_a2_trend_end_to_end_01`等]
+に合わせ、音声バイナリ[wav]58件は対象から除外)。G2=
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`。いずれもファイル名指定でcommitし`origin/main`へpush。並列
+稼働中のDiscovery Trial-10(`er011_output/discovery_stage4_*`、対応する
+root直下の`er011_discovery_stage4_*.py`・REPORT)、`CURRENT_SPEC.md`、
+`er006_output/`、`er011_output/attempt_history.jsonl`、既存の未追跡
+ファイル群はいずれも本タスクでは触っていない。Production/Prompt編集・
+`full_story_part1`の再生成・HUMAN_APPROVED記録・新規Trial着手は実施
+していない(SSOT反映+Git記録のみ)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

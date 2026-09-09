@@ -1,0 +1,77 @@
+{
+  "prompt": "直近(おおむね過去1〜2週間以内)に実際に報じられた、スポーツ・科学・社会(政治的争点を除く)のいずれかの分野で、単一の起点となる出来事・発表・観測結果を3件、Webで検索して挙げてください。\n\n【条件】\n- 政治的な争点(選挙・政党・国際紛争・政策論争等)は避けること\n- 「[日付]に、Xが起きた」という1文で要点を保てる、単一起点のdateableな出来事であること(複数の\n  独立した出来事・時点を横断的にまとめた傾向記事のような題材は避けること)\n- 3件は互いに異なる分野(sports/science/societyのうち、できるだけ異なるカテゴリ)にすること\n- 数値(スコア・統計等)への依存度が低い題材(比較のため、野球の試合結果のような数値密度の高い\n  題材だけに偏らないようにすること)を少なくとも1件は含めること\n- 各候補について、実際に存在するSourceのtitle/urlを記録すること\n\n出力は各候補ごとに、category・headline_ja・event_date・single_origin_summary_ja(「[日付]に、Xが\n起きた」の1文形式)・numeric_density_estimate(LOW/MEDIUM/HIGH、その出来事を記事化した場合に必要な\n具体的数値の量の見積もり)・why_not_political(政治的争点でないことの簡潔な説明)・source_title・\nsource_urlとしてください。",
+  "raw_text": "{\"candidates\":[{\"category\":\"sports\",\"headline_ja\":\"ケイティ・テイラーが現役最後の試合に勝利し、引退\",\"event_date\":\"2026-09-05\",\"single_origin_summary_ja\":\"2026年9月5日に、ケイティ・テイラーがフローラ・ピリを破って現役引退を表明した。 ([theguardian.com](https://www.theguardian.com/sport/2026/sep/05/katie-taylor-bows-out-boxing-undisputed-world-champion-dominating-flora-pili))\",\"numeric_density_estimate\":\"MEDIUM\",\"why_not_political\":\"ボクシングの試合結果と選手の引退に関するスポーツニュースで、政治的な争点を含まない。\",\"source_title\":\"‘I ended my career on top’: Katie Taylor bows out from boxing as undisputed champion\",\"source_url\":\"https://www.theguardian.com/sport/2026/sep/05/katie-taylor-bows-out-boxing-undisputed-world-champion\"},{\"category\":\"science\",\"headline_ja\":\"体内でCAR-T細胞を作らせる免疫療法で多発性硬化症の症状改善を報告\",\"event_date\":\"2026-09-03\",\"single_origin_summary_ja\":\"2026年9月3日に、体内でCAR-T細胞を作らせる遺伝子治療の小規模試験で、多発性硬化症などの自己免疫疾患の症状改善が報告された。 ([nature.com](https://www.nature.com/articles/d41586-026-02765-1?utm_source=openai))\",\"numeric_density_estimate\":\"MEDIUM\",\"why_not_political\":\"臨床研究の結果に関する科学ニュースであり、選挙・政党・政策論争などの政治的争点ではない。\",\"source_title\":\"Immune therapy engineered inside the body eases multiple sclerosis\",\"source_url\":\"https://www.nature.com/articles/d41586-026-02765-1\"},{\"category\":\"society\",\"headline_ja\":\"アテネ動物園で希少なスマトラトラの幼獣が初の健康診断\",\"event_date\":\"2026-09-08\",\"single_origin_summary_ja\":\"2026年9月8日に、アテネ近郊の動物園で希少なスマトラトラの幼獣3頭が初めて健康診断を受けた。 ([yahoo.com](https://www.yahoo.com/news/videos/athens-zoos-rare-sumatran-tiger-145933532.html?utm_source=openai))\",\"numeric_density_estimate\":\"LOW\",\"why_not_political\":\"動物園での希少動物の飼育・保全に関する人間社会のニュースで、政治的な争点を扱っていない。\",\"source_title\":\"Athens zoo's rare Sumatran tiger cubs get first health checks\",\"source_url\":\"https://www.yahoo.com/news/videos/athens-zoos-rare-sumatran-tiger-145933532.html\"}]}",
+  "parsed": {
+    "candidates": [
+      {
+        "category": "sports",
+        "headline_ja": "ケイティ・テイラーが現役最後の試合に勝利し、引退",
+        "event_date": "2026-09-05",
+        "single_origin_summary_ja": "2026年9月5日に、ケイティ・テイラーがフローラ・ピリを破って現役引退を表明した。 ([theguardian.com](https://www.theguardian.com/sport/2026/sep/05/katie-taylor-bows-out-boxing-undisputed-world-champion-dominating-flora-pili))",
+        "numeric_density_estimate": "MEDIUM",
+        "why_not_political": "ボクシングの試合結果と選手の引退に関するスポーツニュースで、政治的な争点を含まない。",
+        "source_title": "‘I ended my career on top’: Katie Taylor bows out from boxing as undisputed champion",
+        "source_url": "https://www.theguardian.com/sport/2026/sep/05/katie-taylor-bows-out-boxing-undisputed-world-champion"
+      },
+      {
+        "category": "science",
+        "headline_ja": "体内でCAR-T細胞を作らせる免疫療法で多発性硬化症の症状改善を報告",
+        "event_date": "2026-09-03",
+        "single_origin_summary_ja": "2026年9月3日に、体内でCAR-T細胞を作らせる遺伝子治療の小規模試験で、多発性硬化症などの自己免疫疾患の症状改善が報告された。 ([nature.com](https://www.nature.com/articles/d41586-026-02765-1?utm_source=openai))",
+        "numeric_density_estimate": "MEDIUM",
+        "why_not_political": "臨床研究の結果に関する科学ニュースであり、選挙・政党・政策論争などの政治的争点ではない。",
+        "source_title": "Immune therapy engineered inside the body eases multiple sclerosis",
+        "source_url": "https://www.nature.com/articles/d41586-026-02765-1"
+      },
+      {
+        "category": "society",
+        "headline_ja": "アテネ動物園で希少なスマトラトラの幼獣が初の健康診断",
+        "event_date": "2026-09-08",
+        "single_origin_summary_ja": "2026年9月8日に、アテネ近郊の動物園で希少なスマトラトラの幼獣3頭が初めて健康診断を受けた。 ([yahoo.com](https://www.yahoo.com/news/videos/athens-zoos-rare-sumatran-tiger-145933532.html?utm_source=openai))",
+        "numeric_density_estimate": "LOW",
+        "why_not_political": "動物園での希少動物の飼育・保全に関する人間社会のニュースで、政治的な争点を扱っていない。",
+        "source_title": "Athens zoo's rare Sumatran tiger cubs get first health checks",
+        "source_url": "https://www.yahoo.com/news/videos/athens-zoos-rare-sumatran-tiger-145933532.html"
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0fb73d1427efa284006aa1296a859087d099db66eafa130152",
+  "search_usage": {
+    "web_search_call_count": 7,
+    "queries": [
+      "site:reuters.com sports September 2026 latest event September 2026",
+      "site:nature.com September 2026 science discovery latest",
+      "site:apnews.com society September 2026 event latest non political",
+      "sports news September 8 2026 major event Reuters AP ESPN",
+      "September 2026 sports latest news single event September 2026",
+      "society news September 2026 non political event Reuters AP September 2026",
+      "\"Rare Sumatran tiger cubs get first health checks\"",
+      "September 8 2026 society news zoo animal event reported",
+      "September 2026 social news nonpolitical unusual event AP Reuters",
+      "September 2026 Venice Film Festival winner announced September 8 2026 Reuters AP",
+      "September 2026 society culture event reported September 8 2026 AP Reuters non political",
+      "September 2026 human interest news event AP Reuters September 5 2026",
+      "September 5 2026 Katie Taylor retirement boxing reported AP Reuters",
+      "September 2026 sports athlete announced retirement Reuters AP September 6 2026",
+      "site:apnews.com September 2026 sports \"Sep\" 2026 final",
+      "site:nature.com/articles \"Immune therapy engineered inside the body eases multiple sclerosis\"",
+      "site:nature.com \"Immune therapy engineered inside the body eases multiple sclerosis\" 03 Sep 2026",
+      "\"Immune therapy engineered inside the body eases multiple sclerosis\""
+    ]
+  },
+  "sources": [
+    {
+      "title": "‘I ended my career on top’: Katie Taylor bows out from boxing as undisputed champion | Katie Taylor | The Guardian",
+      "url": "https://www.theguardian.com/sport/2026/sep/05/katie-taylor-bows-out-boxing-undisputed-world-champion-dominating-flora-pili"
+    },
+    {
+      "title": "Immune therapy engineered inside the body eases multiple sclerosis | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02765-1?utm_source=openai"
+    },
+    {
+      "title": "Athens zoo's rare Sumatran tiger cubs get first health checks",
+      "url": "https://www.yahoo.com/news/videos/athens-zoos-rare-sumatran-tiger-145933532.html?utm_source=openai"
+    }
+  ]
+}
