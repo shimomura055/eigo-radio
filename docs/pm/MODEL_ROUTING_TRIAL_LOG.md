@@ -206,6 +206,8 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-34(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、G1 Fable受入反映、観測record初回記録、OPEN-120訂正、OPEN-132 Phase2追加)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | OPEN-112-DIAGNOSTIC-RETRY-POINT-BODY-REGRESSION-FIX-01 | MEDIUM(L1/Sonnet) | Sonnet | 単一module(`er009_diagnostic_full_retry_modules_12.py::build_diagnostic_section()`)への引数追加+呼び出し元1箇所の配線修正、既存Trial(`FAMILY-A-POINT-OVERLAP-GAP-FIX-TRIAL-05`)が既に配線案・回帰テスト方針を提示済みの既知パターン、承認済み挙動(ER-009-N1-DIAGNOSTIC-FULL-RETRY-CLOSEOUT-14)への回帰修正 | Haiku不適(retry判定ロジックに波及しないことの精密な確認・Production関数の直接修正を要する)、Opus不要(設計判断は既にTrial-05のReconciliation Checkで完了済み、実装のみ) | 355k(G1配線+PM-CLOSEOUT-CONSOLIDATION-33合算値、両タスクが同一セッションで連続実施されたため個別内訳なし) | 1778s(同上) | 0 | なし | なし | なし(Gate 3宣言はSonnetからは行わない、`PRODUCTION_WIRED候補`のまま。**2026-09-09追記(PM-CLOSEOUT-CONSOLIDATION-34)**: 後日Fableが`PRODUCTION_WIRED`として正式受入) | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-33(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、CURRENT_SPEC訂正、Exit条件全文記録)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-02(並列稼働中、本タスクでは触れていない) | HIGH(L1/Sonnet継続、Opus予算は同管理ID群[3V/4V Writer Trial系]で既に消費済み) | Sonnet | B-4V-1(一人称)/B-4V-2(Leakage)のユーザー決定方式(いずれも(i)既存対策踏襲の再試行)を反映した再生成Trial。Opus再投入は不要(第7節相当の修正方針は既にOpus/ユーザー決定で確定済み、Sonnetによる既知パターン再試行) | Haiku不適(記事本文生成・QA判定を伴う)、Opus見送り(設計判断は既に完了、実行のみ) | 未確定(4V Trial-02側の完了時にFableが記録) | 未確定 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04(本タスク) | LOW〜MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(PM_GOVERNANCE.md 11節新小節・9-1追記・冒頭changelog・末尾変更履歴、PM_BRIEF.md 1行、OPEN_ITEMS.md OPEN-120行追記、DECISION_LOG.mdエントリ新設)+Git統合、既知パターン(過去のPM_GOVERNANCE改訂タスク)の踏襲 | Haiku不適(SSOT精密編集・Git操作を伴う)、Opus不要(運用方針自体は既にユーザー正式決定済みであり、本タスクは文書反映のみ) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -277,3 +279,11 @@ TRIAL-SETUP-01`の次から起算)
   新規`OPEN-133`(SSOT記載と実装の不一致)・`OPEN-134`(NG 42%はG1対象外)
   を新規登録した旨を記録した。中間レビュー・正式Closeout Triggerの
   到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04、本タスク):
+  「## Trial導入後の委任実績」表へ2件を追記した。並列稼働中(本タスクでは
+  触れていない)`EDITORIAL-B-FAMILY-VOICES-4V-ARTICLE-TRIAL-02`(Sonnet、
+  HIGH、Opus予算は同管理ID群で既に消費済み、B-4V-1/2のユーザー決定方式を
+  反映した再生成Trial、token/時間は同Trial完了時にFableが記録)、本タスク
+  (Sonnet、LOW〜MEDIUM、PM_GOVERNANCE 11節新小節・9-1追記・OPEN_ITEMS/
+  DECISION_LOG反映)。中間レビュー・正式Closeout Triggerの到達判定・
+  再計算はいずれも実施していない。

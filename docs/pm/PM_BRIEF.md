@@ -47,7 +47,10 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 `docs/pm/PM_GOVERNANCE.md`(2026-09-05、PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01)。
 全文はここへ複製しない。新対策・仕様変更の前には、`docs/pm/PM_GOVERNANCE.md`
 「2-1. 既存対策・仕様 Reconciliation Check」を必ず先に確認する
-(2026-09-09追記)。+コスト影響評価(PM_GOVERNANCE 2-2)
+(2026-09-09追記)。+コスト影響評価(PM_GOVERNANCE 2-2)。自明な修正
+(例: B-4V-1/2)は2-1確認後、承認範囲内で改善・改善Trialを実施してから
+報告し、毎回UDRで止めない(STOP必須6条件あり、詳細は
+`docs/pm/PM_GOVERNANCE.md` 11節「自明な修正の自律実施」、2026-09-09追記)。
 
 ## ループ上限(サンドイッチ運用)
 

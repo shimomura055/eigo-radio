@@ -1,7 +1,14 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-09(PM-GOVERNANCE-COST-IMPACT-RULE-03で新小節「2-2.
+**最終更新: 2026-09-09(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04で
+11節「Fable↔Sonnetレビュー往復の上限とGatekeeper原則」へ新小節「自明な
+修正の自律実施」を追加し、ユーザー意図が明確で「そのままでは不適切なので
+修正すべき」と自明なfailureは、まず2-1[既存対策・仕様Reconciliation
+Check]を行った上で承認済み範囲内での改善・改善Trialを実施してから報告し、
+毎回`USER_DECISION_REQUIRED`で止めない運用[STOP必須6条件付き]を明記した。
+9-1のユーザー判断セクションへ「自明な修正は改善結果をもって報告し、UDRに
+しない」旨を1行追記した。2026-09-09(PM-GOVERNANCE-COST-IMPACT-RULE-03で新小節「2-2.
 コスト影響評価」を新設し、Gate 2/Gate 3チェックリストと9-1のUSER_DECISION_
 REQUIRED記載に2-2参照を追記)。2026-09-09(PM-CLOSEOUT-CONSOLIDATION-29で新小節「2-1.
 既存対策・仕様 Reconciliation Check」を新設し、Gate 5/Gate 6/PM
@@ -420,7 +427,8 @@ Fableの役割は、証拠を失わずに「ユーザーが判断しやすい言
    必ず添える。ただし試聴・感覚評価などユーザー本人の主観判断そのものが
    本体の場合(例: 実際に音声を聞いて自然か)は推奨不要。`USER_DECISION_
    REQUIRED`に該当する場合はこのセクションも省略しない。該当する場合は
-   コスト影響(該当時、2-2参照)も1行明示する。
+   コスト影響(該当時、2-2参照)も1行明示する。自明な修正(11節「自明な
+   修正の自律実施」参照)は改善結果をもって報告し、UDRにしない。
 5. **補足・技術詳細** — commit SHA・path・runtime evidence・token・
    model_id・詳細ログ等がユーザーの理解・判断に必要な場合のみ最後に置く。
    不要なら省略する。
@@ -578,6 +586,32 @@ L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断�
 `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`に集約し、本ファイルへは全文を
 複製しない。中間レビュー・正式Closeoutの判定Triggerも同ファイルの
 「判定Trigger」節を参照する。
+
+**自明な修正の自律実施(2026-09-09、ユーザー指示、PM-GOVERNANCE-
+AUTONOMOUS-OBVIOUS-FIX-RULE-04)**: ユーザーの意図が明確で「そのままでは
+不適切なので修正すべき」と自明なfailure(例: B-4V-1/2)については、
+今後は原則として、まずFable側で2-1(既存対策・仕様Reconciliation
+Check)を先に行い、既存承認仕様・既存retry/fallback・過去実装を確認した
+うえで、承認済み範囲内で改善または少なくとも改善Trialを実施してから
+ユーザーへ報告する。コスト影響評価(2-2)が必要な変更であれば2-1の後・
+報告前に行う(順序: 2-1 → 2-2[該当時] → 改善/Trial実施 → 報告)。
+「聞いても直してとなる」事項を毎回`USER_DECISION_REQUIRED`で止めない。
+
+**ただし以下はSTOP必須(従来どおりユーザー判断必須)**:
+1. 新仕様の追加
+2. 既存承認仕様の変更
+3. Production挙動の意味的変更
+4. QCD影響が大きい変更
+5. 複数の妥当な選択肢がありユーザー価値判断が必要な場合
+6. 未承認のQA・Validator・Prompt原則のProduction採用
+
+失敗・副作用・新たな仕様判断が発生した場合のみ、その時点で
+`USER_DECISION_REQUIRED`としてSTOPする。既存の8項目の遵守事項・
+Gatekeeper原則・Opus上限は本追記によって変更しない。
+
+**経緯**: OPEN-120 B-Family 4V Trial(B-4V-1一人称漏れ・B-4V-2
+Leakage)の再試行方針についてユーザーが決定した運用方針
+(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04、2026-09-09)。
 
 ---
 
@@ -843,3 +877,21 @@ L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断�
   判明したことを受けたユーザー指示(2026-09-09)。詳細は`DECISION_LOG.md`
   `PM-CLOSEOUT-CONSOLIDATION-29`エントリ参照(文書編集のみ、コード・Prompt
   変更なし)。
+- 2026-09-09(PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04): 「11.
+  Fable↔Sonnetレビュー往復の上限とGatekeeper原則」のMODEL ROUTING運用
+  Trial記述末尾へ新小節「自明な修正の自律実施」を追加した。ユーザーの
+  意図が明確で「そのままでは不適切なので修正すべき」と自明なfailure
+  (例: B-4V-1一人称漏れ・B-4V-2 Leakage)は、まず2-1(既存対策・仕様
+  Reconciliation Check)を先に行い、既存承認仕様・既存retry/fallback・
+  過去実装を確認したうえで承認済み範囲内で改善または改善Trialを実施して
+  からユーザーへ報告し、コスト影響評価(2-2)が必要な場合はその後・報告前に
+  行う(順序: 2-1→2-2[該当時]→改善/Trial実施→報告)運用を明記した。
+  ただし新仕様の追加/既存承認仕様の変更/Production挙動の意味的変更/
+  QCD影響が大きい変更/複数の妥当な選択肢がありユーザー価値判断が必要な
+  場合/未承認のQA・Validator・Prompt原則のProduction採用の6条件は従来
+  どおりSTOP必須とし、失敗・副作用・新たな仕様判断発生時のみその時点で
+  `USER_DECISION_REQUIRED`とする。あわせて9-1の「ユーザー判断」選択基準へ
+  「自明な修正は改善結果をもって報告し、UDRにしない」旨を1行追記した
+  (文書編集のみ、コード・Prompt変更なし)。経緯: OPEN-120 B-Family 4V
+  Trial(B-4V-1〜4)の再試行方針についてユーザーが決定した運用方針
+  (2026-09-09)。
