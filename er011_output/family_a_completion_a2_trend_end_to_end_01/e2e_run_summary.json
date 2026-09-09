@@ -1,0 +1,67 @@
+{
+  "b1b": {
+    "level": "b1b",
+    "kp_status": "REUSED_REDUNDANCY_PASS",
+    "tts_result": {
+      "segment_status": {
+        "topic_intro": "OK",
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK",
+        "point_one_heading": "OK",
+        "point_two_heading": "OK",
+        "full_story_part1": "OK",
+        "full_story_part2": "OK",
+        "point_one": "OK",
+        "point_two": "OK",
+        "in_one_line": "OK"
+      },
+      "key_phrase_status": {
+        "1": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "2": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "3": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "4": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "5": {
+          "en": "OK",
+          "ja": "STOPPED"
+        }
+      }
+    },
+    "assemble_result": {
+      "status": "GATE_BLOCKED",
+      "gate_off_result": "BLOCKED",
+      "error": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: B1のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['kp5_japanese=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。"
+    },
+    "gate_opt_in_result": {
+      "gate_on_result": "SKIPPED_ASSEMBLE_NOT_PASS"
+    }
+  },
+  "a2": {
+    "level": "a2",
+    "status": "STOP_UNCAUGHT_KEYERROR",
+    "scaffold_status": {
+      "preview": "OK",
+      "comment_1": "OK",
+      "comment_2": "OK",
+      "comment_3": "OK",
+      "comment_4": "OK"
+    },
+    "kp_status": "REDUNDANCY_PASS(after 1 retry, canonicalization=CANONICALIZATION_REVIEW_REQUIRED)",
+    "error": "KeyError: 'family_a_completion_a2_trend_end_to_end_01' at er003_v1_n3_01_tts_generate.py:821 (JAPANESE_TITLES[theme_id]). generate_a2_segments() requires a hardcoded Japanese title entry in the module-level JAPANESE_TITLES dict (currently only hanshin/health/household). No automated/QA-covered production path generates this title for a new theme_id; existing precedent (er011_open112_trend_theme2_b_full_audio_trial_13.py) works around this by runtime tts_gen.JAPANESE_TITLES.update({THEME_ID: <manually authored title>}) without modifying the production file, but authoring the title text itself is outside this task scope (new spoken content, no existing fact-check/QA path). One real TTS call (topic_intro) executed before the crash (accounted in cost).",
+    "note": "記事再生成なし。article.md/parts.json/scaffold(Preview/Comment1-4)/Key Phrase(A2、新規実行)は全てOK到達。TTS開始直後(topic_intro成功、japanese_title着手前)でSTOP。"
+  }
+}
