@@ -1,0 +1,49 @@
+[
+  {
+    "original_ng_sentence": "Japan does not yet have an equivalent audit law.",
+    "issue": "Ledgerが確認している日本の状況は2023年9月時点のものだが、記事は時点を示さず、記事執筆時点でも同じ状況であるかのように現在の事実として述べている。",
+    "explanation": "日本に採用AIの監査義務法がないという内容自体はLedgerにあるが、確認時点（2023年9月）を外して現在まで一般化しているため、changed_timeに該当する。Hookとしての緩和は適用しない。",
+    "flags": [
+      "changed_time"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "As of September 2023, Japan did not yet have an equivalent law requiring audits.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "As of September 2023, Japan did not yet have an equivalent law requiring audits.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### A fourth voice: the fairness check\n\nI read audit summaries, public notices, and old case records. I have seen one company stop an internal hiring tool after learning that it used past résumés and rated résumés linked to women lower. I also see rules moving at different speeds. New York City requires a recent independent bias check for tools covered by its law. The EU treats hiring AI as high risk. I see that Japan does not yet have an equivalent audit law. I am asking whether anyone can inspect the process when a person is harmed."
+  },
+  {
+    "original_ng_sentence": "The EU treats hiring AI as high risk.",
+    "issue": "雇用・選考分野のAIシステムのうち、EU AI Actの対象となる一定のシステム、とくに意思決定への重大な影響がある場合という条件を省き、採用AI全般が一律にhigh-riskであるかのように一般化している。",
+    "explanation": "Ledgerは採用・選考を含む雇用分野のAIをhigh-riskに分類するが、適用範囲には重大な影響等の条件と解釈上の余地がある。",
+    "flags": [
+      "changed_scope",
+      "changed_certainty"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The EU treats certain AI systems used in hiring and employment, particularly those that can significantly affect decisions, as high risk.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "The EU treats certain AI systems used in hiring and employment, particularly those that can significantly affect decisions, as high risk.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 2,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### A fourth voice: the fairness check\n\nI read audit summaries, public notices, and old case records. I have seen one company stop an internal hiring tool after learning that it used past résumés and rated résumés linked to women lower. I also see rules moving at different speeds. New York City requires a recent independent bias check for tools covered by its law. The EU treats hiring AI as high risk. I see that As of September 2023, Japan did not yet have an equivalent law requiring audits. I am asking whether anyone can inspect the process when a person is harmed."
+  }
+]
