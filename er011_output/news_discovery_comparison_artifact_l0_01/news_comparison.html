@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>News (Hanshin) Comparison</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-ng { color: red; font-weight: bold; }
+        .section-title { font-size: 1.1em; font-weight: bold; margin-top: 20px; margin-bottom: 10px; }
+        .path { font-family: monospace; font-size: 0.9em; color: #666; }
+        .metrics { font-size: 0.9em; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <h1>News (Hanshin) Comparison</h1>
+    <p>Output: <code>C:\Users\tensh\eigo-radio\er011_output\news_discovery_comparison_artifact_l0_01</code></p>
+
+    <table>
+        <tr>
+            <th>Level</th>
+            <th>Reference</th>
+            <th>Baseline (run1)</th>
+            <th>Focus/Discovery (latest OK)</th>
+        </tr>
+        <tr>
+            <td><strong>A2</strong></td>
+            <td><span class="status-ok">✓ OK</span></td>
+            <td><span class="status-ok">✓ OK</span></td>
+            <td><span class="status-ok">✓ OK</span></td>
+        </tr>
+        <tr>
+            <td><strong>B1B</strong></td>
+            <td><span class="status-ok">✓ OK</span></td>
+            <td><span class="status-ok">✓ OK</span></td>
+            <td><span class="status-ok">✓ OK</span></td>
+        </tr>
+    </table>
+
+    <div class="section-title">A2 - Detailed Metrics</div>
+
+    <div class="metrics">
+        <strong>Baseline (run1)</strong><br>
+        Status: <span class='status-ok'>NG_REVIEW_REQUIRED</span><br>
+        Fact Verdict: 情報なし<br>
+        <span class='path'>Path: C:\Users\tensh\eigo-radio\er011_output\news_focus_hint_comparison_trial_06\a2\baseline\run1\article.md</span><br><br>
+        <strong>Focus Hint (latest OK)</strong><br>
+        Status: <span class='status-ok'>OK</span><br>
+        Fact Verdict: PASS<br>
+        Word Counts: intro=127, p1=46, p2=53, in_one_line=34<br>
+        Point Overlap: P1 vs P2=0.179, P2 vs P1=0.185<br>
+        <span class='path'>Path: C:\Users\tensh\eigo-radio\er011_output\news_focus_hint_comparison_trial_06\a2\focus_hint\run1\article.md</span>
+    </div>
+
+    <div class="section-title">B1B - Detailed Metrics</div>
+
+    <div class="metrics">
+        <strong>Baseline (run1)</strong><br>
+        Status: <span class='status-ok'>NG_REVIEW_REQUIRED</span><br>
+        Fact Verdict: 情報なし<br>
+        <span class='path'>Path: C:\Users\tensh\eigo-radio\er011_output\news_focus_hint_comparison_trial_06\b1b\baseline\run1\article.md</span><br><br>
+        <strong>Focus Hint (latest OK)</strong><br>
+        Status: <span class='status-ok'>OK</span><br>
+        Fact Verdict: PASS<br>
+        Word Counts: intro=124, p1=61, p2=71, in_one_line=23<br>
+        Point Overlap: P1 vs P2=0.108, P2 vs P1=0.114<br>
+        <span class='path'>Path: C:\Users\tensh\eigo-radio\er011_output\news_focus_hint_comparison_trial_06\b1b\focus_hint\run2\article.md</span>
+    </div>
+
+</body>
+</html>
