@@ -1,0 +1,37 @@
+{
+  "management_id": "FAMILY-A-NEWS-STAGE2-DIAGNOSTIC-BRANCH-TRIAL-08",
+  "mode_supply_path": "A3-UDR-2=(i)踏襲: 手動Mode判定+手動Ledger供給(Trend Synthesisと同じ機構)。",
+  "major_daily_gate_checklist_source": "er011_daily_news_focus_layer_comparison_trial_02.MAJOR_DAILY_GATE_CHECKLIST(再確認、再判定なし)",
+  "major_daily_gate_checklist": {
+    "note": "DESIGN-TRIAL-01 §2.1の6項目を、本タスク実施者がverified_fact_ledger.txt(Hanshin)を読んで再度手動で当てはめた(自動判定ロジックではない、DESIGN-TRIAL-01 §2.2の既存判定の再確認)。",
+    "evaluated_at": "2026-09-08",
+    "criteria": {
+      "1_single_origin_confirmed": {
+        "result": "PASS",
+        "evidence": "Main Storyは『2026年8月16日、広島対阪神戦で阪神が8-1で勝利した』の1文で要点を保てる、単一試合・単一日付の単一起点イベント。"
+      },
+      "2_importance_independent": {
+        "result": "PASS(該当なし)",
+        "evidence": "重要度の高低(プロ野球の1試合)自体はMAJOR_DAILY判定に影響しない(DESIGN-08の一般原則をそのまま適用)。"
+      },
+      "3_ledger_sufficiency": {
+        "result": "PASS",
+        "evidence": "単一のverified_fact_ledger.txtだけで、Main Story + Point One(初回の佐藤輝明2ランが試合の形を決めたmechanism)+ Point Two(7-8回の追加点という見出し以外の貢献の広がり)という異なる2つの意味づけを支える確認済み情報がある。"
+      },
+      "4_uncertainty_explicit": {
+        "result": "PASS(該当事項なし)",
+        "evidence": "試合結果は既に確定した事実であり、投影的・未確定要素を含まない(Health記事のような単一研究発表とは異なりこの項目は実質NA)。"
+      },
+      "5_no_recent_duplicate": {
+        "result": "PASS",
+        "evidence": "同一起点イベント(2026-08-16の広島対阪神戦)についての別記事は本Trial実施時点で存在しない。"
+      },
+      "6_not_disguised_trend": {
+        "result": "PASS",
+        "evidence": "記事化にあたり複数の独立した時点・出来事を横断的に参照する必要はなく、単一試合の内部推移(1試合の中の複数イニング)のみで完結する。"
+      }
+    },
+    "verdict": "MAJOR_DAILY(本タスク実施者による手動再確認、DESIGN-TRIAL-01 §2.2の判定と一致)"
+  },
+  "editorial_mode_determination": "MAJOR_DAILY(既存Trial-02/06の手動判定を再利用、本Trialで新規判定は行っていない)。"
+}

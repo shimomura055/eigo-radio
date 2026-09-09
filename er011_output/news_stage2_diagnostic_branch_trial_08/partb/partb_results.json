@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "management_id": "FAMILY-A-NEWS-STAGE2-DIAGNOSTIC-BRANCH-TRIAL-08",
+    "part": "Part B (N-2=(a)、¥0)",
+    "n_point_observations": 240,
+    "source": "er011_point_quality_stage1_recomputation_01.RUNS (Trial-04/05/06/07、全50 run、全attemptのpoint_overlap_article_retry_log.json、既存JSON読み取りのみ、新規API呼び出しなし)。",
+    "threshold_unchanged": 0.4,
+    "denominator_unchanged_in_production": "現行分母(Point自身の異なり内容語数)は変更していない(本Partは判断材料の提示のみ)。"
+  },
+  "threshold_position_in_observed_distribution": {
+    "n": 240,
+    "threshold": 0.4,
+    "threshold_percentile_of_observed_distribution": 57.92,
+    "mean_ratio": 0.378,
+    "median_ratio": 0.375,
+    "stdev_ratio": 0.1131,
+    "quartiles(Q1,Q2,Q3)": [
+      0.297,
+      0.375,
+      0.4537
+    ],
+    "one_word_delta_used": 0.037,
+    "boundary_band": [
+      0.363,
+      0.437
+    ],
+    "n_observations_in_boundary_band(within_1_word_of_threshold)": 60,
+    "pct_observations_in_boundary_band": 25.0,
+    "note": "閾値0.40が観測分布のどの位置にあるか(percentile)。境界帯は『あと1語shared word数が変わればflag判定が反転する』観測の数(stage1(a)で確認済みの1語あたり変化量≈0.037を使用)。"
+  },
+  "denominator_normalization_proposal": {
+    "formula": "ratio_norm = shared_word_count / D_fixed, D_fixed=30(観測分布の中央値point_word_count、stage1(a)と同一値)。現行: ratio = shared_word_count / point_word_count(Point自身の異なり内容語数)。閾値0.40は据え置き、分子(shared_word_count)は不変。",
+    "n_point_observations": 240,
+    "n_flagged_current_denominator": 105,
+    "current_flagged_rate": 43.75,
+    "n_flagged_fixed_denominator_30": 118,
+    "fixed_denom_flagged_rate": 49.17,
+    "n_point_observations_flag_status_changed": 45,
+    "newly_flagged_under_fixed_denominator": {
+      "count": 29,
+      "mean_point_word_count": 36.97,
+      "note": "現行分母では未flagだが固定分母30なら新たにflagされる観測(=元のpoint_word_countが30語より小さいため、固定分母だと相対的にoverlapが強く出るケース)。"
+    },
+    "no_longer_flagged_under_fixed_denominator": {
+      "count": 16,
+      "mean_point_word_count": 23.06,
+      "note": "現行分母ではflag済みだが固定分母30なら未flagとなる観測(=元のpoint_word_countが30語より大きいため、固定分母だと相対的にoverlapが弱く出るケース)。"
+    },
+    "attempt_level_lexical_flag_rate_impact(rough_estimate)": {
+      "note": "run×attempt単位で、point_one/two いずれかがflaggedならそのattemptを『lexical flag相当』とみなす粗い試算(still_flaggedのOR判定・retry後の実際のNG rateは再現していない。分母変更だけを孤立させた試算値)。",
+      "n_attempts": 120,
+      "attempt_lexical_flag_rate_current": 65.0,
+      "attempt_lexical_flag_rate_fixed_denominator_30": 70.83
+    },
+    "caution": "本試算は判断材料の提示のみ(採用しない)。閾値0.40は据え置き、分母のみを仮に固定した場合の機械的な再計算であり、Fact Safety・実運用適合性の検討は含まない(A-UDR-7観測Exit条件・OPEN-134との整合確認はUDR対象、FAMILY-A-POINT-QUALITY-STAGE1-RECOMPUTATION-01_REPORT.md UDR候補(ii)参照)。"
+  },
+  "boundary_effect_dependency_of_focus_family_improvements": {
+    "trial_06:focus_hint": {
+      "n_control": 36,
+      "n_treat": 30,
+      "control_flagged_rate_pct": 63.89,
+      "treat_flagged_rate_pct": 46.67,
+      "flagged_rate_reduction_pct_points": 17.22,
+      "n_treat_non_flagged": 16,
+      "n_treat_non_flagged_within_1_word_of_threshold": 2,
+      "pct_of_treat_non_flagged_observations_that_are_boundary_adjacent": 12.5
+    },
+    "trial_06:hint_only": {
+      "n_control": 36,
+      "n_treat": 10,
+      "control_flagged_rate_pct": 63.89,
+      "treat_flagged_rate_pct": 40.0,
+      "flagged_rate_reduction_pct_points": 23.89,
+      "n_treat_non_flagged": 6,
+      "n_treat_non_flagged_within_1_word_of_threshold": 1,
+      "pct_of_treat_non_flagged_observations_that_are_boundary_adjacent": 16.67
+    },
+    "trial_04:focus": {
+      "n_control": 32,
+      "n_treat": 30,
+      "control_flagged_rate_pct": 50.0,
+      "treat_flagged_rate_pct": 40.0,
+      "flagged_rate_reduction_pct_points": 10.0,
+      "n_treat_non_flagged": 18,
+      "n_treat_non_flagged_within_1_word_of_threshold": 5,
+      "pct_of_treat_non_flagged_observations_that_are_boundary_adjacent": 27.78
+    },
+    "trial_05:gapfix": {
+      "n_control": 20,
+      "n_treat": 40,
+      "control_flagged_rate_pct": 35.0,
+      "treat_flagged_rate_pct": 57.5,
+      "flagged_rate_reduction_pct_points": -22.5,
+      "n_treat_non_flagged": 17,
+      "n_treat_non_flagged_within_1_word_of_threshold": 4,
+      "pct_of_treat_non_flagged_observations_that_are_boundary_adjacent": 23.53
+    },
+    "trial_07:discovery_focus": {
+      "n_control": 20,
+      "n_treat": 22,
+      "control_flagged_rate_pct": 15.0,
+      "treat_flagged_rate_pct": 13.64,
+      "flagged_rate_reduction_pct_points": 1.36,
+      "n_treat_non_flagged": 19,
+      "n_treat_non_flagged_within_1_word_of_threshold": 2,
+      "pct_of_treat_non_flagged_observations_that_are_boundary_adjacent": 10.53
+    }
+  }
+}

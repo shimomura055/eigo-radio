@@ -1,0 +1,345 @@
+[
+  {
+    "attempt": 0,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": false,
+    "value_qa_flagged": true,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.132,
+        "shared_words": [
+          "clear",
+          "game",
+          "hanshin",
+          "run",
+          "team"
+        ],
+        "point_word_count": 38,
+        "story_word_count": 30,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.167,
+        "shared_words": [
+          "clear",
+          "game",
+          "hanshin",
+          "run",
+          "team"
+        ],
+        "point_word_count": 30,
+        "story_word_count": 38,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.316,
+          "shared_words": [
+            "came",
+            "early",
+            "eighth",
+            "final",
+            "game",
+            "hanshin",
+            "hit",
+            "home",
+            "only",
+            "run",
+            "sato",
+            "seventh"
+          ],
+          "point_word_count": 38,
+          "story_word_count": 53,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.132,
+          "shared_words": [
+            "clear",
+            "game",
+            "hanshin",
+            "run",
+            "team"
+          ],
+          "point_word_count": 38,
+          "story_word_count": 30,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.333,
+          "shared_words": [
+            "five",
+            "game",
+            "gave",
+            "hanshin",
+            "hits",
+            "ihara",
+            "innings",
+            "run",
+            "start",
+            "strong"
+          ],
+          "point_word_count": 30,
+          "story_word_count": 53,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.167,
+          "shared_words": [
+            "clear",
+            "game",
+            "hanshin",
+            "run",
+            "team"
+          ],
+          "point_word_count": 30,
+          "story_word_count": 38,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "NG",
+    "diagnostic_construction_mode": "overlap_section_skipped_value_only",
+    "diagnostic_used": {
+      "point_one_score": 0.316,
+      "point_one_flagged": false,
+      "point_two_score": 0.333,
+      "point_two_flagged": false,
+      "point_one_vs_point_two_flagged": false,
+      "value_qa_flagged": true
+    }
+  },
+  {
+    "attempt": 1,
+    "qa_status": "OK",
+    "flagged": true,
+    "lexical_flagged": true,
+    "value_qa_flagged": true,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.105,
+        "shared_words": [
+          "game",
+          "run"
+        ],
+        "point_word_count": 19,
+        "story_word_count": 28,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.071,
+        "shared_words": [
+          "game",
+          "run"
+        ],
+        "point_word_count": 28,
+        "story_word_count": 19,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.684,
+          "shared_words": [
+            "became",
+            "changed",
+            "fifth",
+            "game",
+            "hiroshima",
+            "home",
+            "montero",
+            "only",
+            "run",
+            "score",
+            "shape",
+            "solo",
+            "team"
+          ],
+          "point_word_count": 19,
+          "story_word_count": 66,
+          "flagged": true,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.105,
+          "shared_words": [
+            "game",
+            "run"
+          ],
+          "point_word_count": 19,
+          "story_word_count": 28,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false,
+        "regenerate_status": "NG_REVIEW_REQUIRED",
+        "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.321,
+          "shared_words": [
+            "built",
+            "came",
+            "eighth",
+            "game",
+            "inning",
+            "late",
+            "run",
+            "sato",
+            "seventh"
+          ],
+          "point_word_count": 28,
+          "story_word_count": 66,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.071,
+          "shared_words": [
+            "game",
+            "run"
+          ],
+          "point_word_count": 28,
+          "story_word_count": 19,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "NG",
+    "diagnostic_construction_mode": "full_diagnostic_both_flagged",
+    "diagnostic_used": {
+      "point_one_score": 0.684,
+      "point_one_flagged": true,
+      "point_two_score": 0.321,
+      "point_two_flagged": false,
+      "point_one_vs_point_two_flagged": false,
+      "value_qa_flagged": true
+    }
+  },
+  {
+    "attempt": 2,
+    "qa_status": "OK",
+    "flagged": false,
+    "lexical_flagged": false,
+    "value_qa_flagged": false,
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.207,
+        "shared_words": [
+          "attack",
+          "hits",
+          "home",
+          "run",
+          "swing",
+          "team"
+        ],
+        "point_word_count": 29,
+        "story_word_count": 25,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.24,
+        "shared_words": [
+          "attack",
+          "hits",
+          "home",
+          "run",
+          "swing",
+          "team"
+        ],
+        "point_word_count": 25,
+        "story_word_count": 29,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.276,
+          "shared_words": [
+            "first",
+            "hanshin",
+            "home",
+            "later",
+            "lead",
+            "run",
+            "runs",
+            "team"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 60,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.207,
+          "shared_words": [
+            "attack",
+            "hits",
+            "home",
+            "run",
+            "swing",
+            "team"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 25,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.36,
+          "shared_words": [
+            "five",
+            "hiroshima",
+            "hit",
+            "home",
+            "ihara",
+            "inning",
+            "innings",
+            "run",
+            "team"
+          ],
+          "point_word_count": 25,
+          "story_word_count": 60,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.24,
+          "shared_words": [
+            "attack",
+            "hits",
+            "home",
+            "run",
+            "swing",
+            "team"
+          ],
+          "point_word_count": 25,
+          "story_word_count": 29,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    },
+    "value_qa_status": "PASS"
+  }
+]

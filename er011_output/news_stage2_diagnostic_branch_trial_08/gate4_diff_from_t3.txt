@@ -1,0 +1,195 @@
+--- t3.run_one_pattern_connected
++++ run_one_pattern_diagnostic_branch
+@@ -1,17 +1,8 @@
+-def run_one_pattern_connected(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
+-                     topic: str, out_dir: str, apply_evidence_compression: bool = True,
+-                     apply_directional_fact_precheck: bool = True,
+-                     point_role_hint_block: str = "") -> dict:
+-    """apply_evidence_compression(既定True、ER-008-EVIDENCE-COMPRESSION-
+-    PROD-AND-N7-AUDIO-06でProduction既定へ昇格): WriterがFact-safeな記事
+-    を生成した直後、Lossless Editor(方式C、er003_v1_n3_01_evidence_
+-    compression_editor.py)でspoken layerだけを軽量化する。Research/
+-    Evidence Pack/VFL/Fact Ledger自体は変更しない。EditorはWriterでは
+-    なく、意味を保ったまま聴取負荷を下げるだけの工程(禁止事項は
+-    er003_v1_n3_01_evidence_compression_editor.py参照)。Editor適用後の
+-    テキストに対してmetrics/Fact Check/Ledger Deviationを実行するため、
+-    既存の安全確認プロセスがそのままEditor出力にも適用される。DEV/test
+-    でOFFにしたい場合はFalseを渡す(Production既定はTrue)。"""
++def run_one_pattern_diagnostic_branch(client, theme_id: str, label: str, prompt: str,
++                                       verified_ledger_text: str, topic: str, out_dir: str,
++                                       apply_evidence_compression: bool = True,
++                                       apply_directional_fact_precheck: bool = True,
++                                       point_role_hint_block: str = "") -> dict:
+     os.makedirs(out_dir, exist_ok=True)
+     os.makedirs(f"{out_dir}/audit", exist_ok=True)
+     with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
+@@ -19,11 +10,7 @@
+ 
+     writer_model = routing.require_model(prod_gen._writer_process(label), routing.WRITER_MODEL)
+ 
+-    # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Point One/Twoの本文を書く
+-    # 前に、Verified Fact Ledgerに基づいてrole/new_listener_takeaway/
+-    # evidence_anchor/why_it_matters/重複禁止事項を明示的に計画させ、その
+-    # 計画をWriter promptへ挿入する(Point Role Planning)。
+-    role_plan_result = run_point_role_planning_connected(
++    role_plan_result = t3.run_point_role_planning_connected(
+         client, topic, verified_ledger_text, model=writer_model, reasoning_effort=prod_gen.REASONING_EFFORT,
+         point_role_hint_block=point_role_hint_block)
+     with open(f"{out_dir}/audit/point_role_planning_initial.json", "w", encoding="utf-8") as f:
+@@ -38,13 +25,6 @@
+     fact_usage_report = gen["fact_usage_report"]
+     evidence_compression_applied = gen["evidence_compression_applied"]
+ 
+-    # ER-22 + ER-009-N1-DIAGNOSTIC-FULL-RETRY-PRODUCTION-WIRING-13:
+-    # Point overlap NG時は記事全体をWriterから再生成する(最大
+-    # POINT_OVERLAP_ARTICLE_RETRY_MAX回)。Diagnostic Full Retry により、
+-    # retry時は前回の記事・overlap score・shared words・簡易診断を
+-    # NG例として prompt へ追加し、Evidence/VFL固定で全文再生成させる。
+-    # retry対象はWriter+Evidence Compression+overlap再チェックのみで、
+-    # Fact Checker/Ledger Deviationはループの外(最終確定後)で一度だけ実行。
+     overlap_retry_log = []
+     retry_attempt = 0
+     while True:
+@@ -58,12 +38,6 @@
+             overlap_report.get(key, {}).get("before_overlap", {}).get("flagged")
+             for key in ("point_one", "point_two"))
+ 
+-        # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Point Value QA
+-        # (No.18 A2で発見された「重複はしていないが新しい価値も無い」
+-        # Pointを検知する。lexical overlapとは独立した意味判定)。
+-        # split_common_sections_for_point_qaが構造を認識できた場合のみ実行
+-        # する(想定外構造の場合は既存のoverlap QA同様スキップし、後段の
+-        # 構造検証[restore_r2.validate_point_structure]に委ねる)。
+         sections_for_value_qa = prod_gen.split_common_sections_for_point_qa(article_text)
+         value_qa_result = None
+         value_qa_flagged = False
+@@ -93,15 +67,27 @@
+               f"Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します"
+               f"(article retry {retry_attempt}/{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
+ 
+-        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)
+         point_overlap_result = {
+             "point_one": overlap_report["point_one"]["before_overlap"],
+             "point_two": overlap_report["point_two"]["before_overlap"],
+         }
+-        diagnostic_prompt = prod_gen.build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
++
++        # ---- (ii) N-1=(a) 条件分岐: lexical_flaggedがTrueの時だけoverlap
++        # 診断section(既存テンプレート、断定文+shared_words+前回Point本文
++        # を含む)を構築する。Falseの場合(value単独NG)はoverlap診断section
++        # 自体を構築せず、diagnostic_promptは元のpromptのまま。文言・
++        # テンプレート自体は無変更(既存build_diagnostic_retry_promptの
++        # 呼び出し可否のみを分岐)。----
++        if lexical_flagged:
++            diagnostic_prompt = prod_gen.build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
++            diagnostic_mode = "full_diagnostic_both_flagged" if value_qa_flagged else "full_diagnostic_lexical_flagged"
++        else:
++            diagnostic_prompt = prompt
++            diagnostic_mode = "overlap_section_skipped_value_only"
+         if value_qa_flagged:
+             diagnostic_prompt = diagnostic_prompt + "\n\n" + point_planning.build_value_qa_diagnostic_note(
+                 value_qa_result)
++        log_entry["diagnostic_construction_mode"] = diagnostic_mode
+         log_entry["diagnostic_used"] = {
+             "point_one_score": point_overlap_result["point_one"]["overlap_ratio"],
+             "point_one_flagged": point_overlap_result["point_one"]["flagged"],
+@@ -111,11 +97,7 @@
+             "value_qa_flagged": value_qa_flagged,
+         }
+ 
+-        # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Diagnostic Full Retryは
+-        # 「必要な生成単位全体をLedgerから再生成する」既存方針に従い、Point
+-        # Role Planningも記事全体と同じ単位として毎回再計画する(前回の計画を
+-        # 使い回さない)。
+-        role_plan_result = run_point_role_planning_connected(
++        role_plan_result = t3.run_point_role_planning_connected(
+             client, topic, verified_ledger_text, model=writer_model, reasoning_effort=prod_gen.REASONING_EFFORT,
+             point_role_hint_block=point_role_hint_block)
+         with open(f"{out_dir}/audit/point_role_planning_retry{retry_attempt}.json", "w",
+@@ -123,6 +105,12 @@
+             json.dump(role_plan_result, f, ensure_ascii=False, indent=2, default=str)
+         diagnostic_prompt = diagnostic_prompt + "\n" + point_planning.build_role_planning_block(
+             role_plan_result["parsed"])
++
++        # ---- (iii) 検証用: 実際にWriterへ渡されたdiagnostic_prompt全文を
++        # 保存する(既存にはなかった追加の監査ログのみ、生成ロジックへの
++        # 影響なし)。----
++        with open(f"{out_dir}/audit/diagnostic_prompt_retry{retry_attempt}.txt", "w", encoding="utf-8") as f:
++            f.write(diagnostic_prompt)
+ 
+         gen = prod_gen._generate_and_compress_article(client, theme_id, label, diagnostic_prompt, out_dir,
+                                               apply_evidence_compression, writer_model)
+@@ -137,7 +125,7 @@
+     with open(f"{out_dir}/point_overlap_article_retry_log.json", "w", encoding="utf-8") as f:
+         json.dump(overlap_retry_log, f, ensure_ascii=False, indent=2, default=str)
+ 
+-    point_overlap_qa_applied = False  # Point-only regeneration自体は撤去済み(常にFalse)
++    point_overlap_qa_applied = False
+     if overlap_retry_log[-1].get("flagged"):
+         print(f"[N3-01][{theme_id}] {label}: Point overlapが{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX}回の記事全体"
+               f"再生成後もNGのままでした。自動続行せずNG_REVIEW_REQUIREDとして報告します"
+@@ -190,19 +178,6 @@
+     with open(f"{out_dir}/audit/fact_check_attempts.json", "w", encoding="utf-8") as f:
+         json.dump(fc_attempts, f, ensure_ascii=False, indent=2, default=str)
+ 
+-    # ER-010-NO9-FACTCHECK-POLICY-AND-POINT-COMPRESSION-DIAGNOSTIC-12(ユーザー正式Decision):
+-    # Fact Checkerのverdict="REVIEW_REQUIRED"(確認できない具体的主張・解釈・
+-    # certainty nuance等、fact_checker_prompt_template_r3.txt参照)は、原則
+-    # non-blocking advisoryとして扱い、記事生成・QA工程を継続する(status=OKの
+-    # 判定材料にしない)。指摘は最終artifact提示時に「Fact Checker参考指摘」
+-    # として別途ユーザーへ提示する(fact_qa.jsonのcontradictions/
+-    # unsupported_specific_claims/notesがその内容)。一方、verdict="FAIL"
+-    # (信頼できる情報と明確に矛盾する場合のみ付与される)は、Ledger Deviation
+-    # MAJORや Point overlap未解消と同様にblockingとして扱い、それ以降の
+-    # 工程(Ledger逸脱チェック・Directional Fact Precheck)は実行せず
+-    # NG_REVIEW_REQUIREDを返す。役割はLedger Deviation Checkerとは異なる
+-    # (Ledgerは記事とVerified Fact Ledgerの整合性、Fact Checkerは独立Web
+-    # 検索によるexternal factとの整合性)ため、判定を混同しない。
+     if verdict == "FAIL":
+         print(f"[N3-01][{theme_id}] {label}: fact checkerがFAIL(信頼できる情報と明確に矛盾)と"
+               f"判定しました。自動続行せずNG_REVIEW_REQUIREDとして報告します"
+@@ -224,14 +199,6 @@
+     print(f"[N3-01][{theme_id}] {label}: deviation overall_status={deviation_result['parsed']['overall_status']} "
+           f"deviations={len(deviation_result['parsed']['deviations'])}")
+ 
+-    # ER-010-NO9-LOCAL-REWRITE-LOOP-FINAL-10: MAJOR検出時は記事全体を再生成
+-    # せず、局所Rewriteのみを行う。局所Rewrite後は記事全体をLedger Deviation
+-    # Checkerへ再投入し(Hook-aware)、そこで新たなMAJORが見つかった場合も
+-    # 「一度直したから終了」とはせず、MAX_REWRITE_CYCLES回まで同じ局所
+-    # Rewriteを繰り返す(cycle上限の根拠はer010_ledger_local_rewrite_09.py
+-    # のMAX_REWRITE_CYCLES定義を参照)。対象はMAJORのみ、MINORは記録のみで
+-    # 対象外。上限まで繰り返してもMAJORが残る場合はNG_REVIEW_REQUIREDとし、
+-    # 無限ループや黙示的PASSは行わない。
+     local_rewrite_results = []
+     local_rewrite_cycles = []
+     cycle = 0
+@@ -273,13 +240,6 @@
+                 sidx = -1
+             before_ctx = sentences[sidx - 1] if 0 <= sidx - 1 else ""
+             after_ctx = sentences[sidx + 1] if 0 <= sidx and sidx + 1 < len(sentences) else ""
+-            # OPEN-113-POINT-CONTEXT-PRODUCTION-WIRING-04(ユーザー正式採用、
+-            # OPEN-113 Trial-03でVALIDATED): 対象文が属するPoint(またはsection)
+-            # 全文をRewriteモデルへ参考contextとして渡す。既存のbefore/after
+-            # context(check windowの範囲)・System Prompt・attempt escalation
+-            # 文言・Retry上限・Ledger再チェック方法は一切変更しない。対象文の
+-            # 所属section特定に失敗した稀なケースのみ、追加前の挙動(前後1文)へ
+-            # fallbackする。
+             point_context = local_rewrite.extract_point_context(article_text, target)
+             point_context_found = point_context is not None
+             if point_context is None:
+@@ -297,15 +257,11 @@
+                   f"human_review={r['human_review_required']} attempts={len(r['attempts'])}")
+ 
+         article_text = local_rewrite.apply_rewrites(article_text, cycle_results)
+-
+-        # Formatting normalization (emoji・unnecessary bold削除)
+         article_text = prod_gen.normalize_article_formatting(article_text)
+ 
+         with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+             f.write(article_text)
+ 
+-        # 局所Rewriteで本文が変わったため、metrics/length_reportを再計算し
+-        # 上書きする(Rewrite前のword countがそのまま記録され続けるのを防ぐ)。
+         metrics = prod_gen.compute_metrics(article_text)
+         section_wc = sf1r1.section_word_counts(article_text)
+         length_report = {
