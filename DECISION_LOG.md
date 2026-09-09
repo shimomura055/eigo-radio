@@ -9201,6 +9201,51 @@ REPORT.md`)、`er006_output/`、`er011_output/attempt_history.jsonl`、
 `CURRENT_SPEC.md`、既存の未追跡ファイル群はいずれも本タスクでは触って
 いない。
 
+## PM-CLOSEOUT-CONSOLIDATION-50: B-3V-3(3V基準記事確定)・A-FACT03-1
+(Household FACT-03最小修正)ユーザー決定のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+ユーザーが同日正式決定した2件をSSOTへ反映した。
+
+**B-3V-3=(a)**: 3V Person-Voice Trial-02最終版
+(`er012_output/editorial_b_voices_3v_person_voice_trial_02/
+b1b_run01_attempt2/article.md`)を3V基準記事として**VALIDATED**確定。
+3V目標尺は「約380〜400秒(3V実測基準)」へ更新した(Trial設計目標であり、
+Productionの正式尺仕様の変更ではない)。Trial-03(Tension圧縮再生成、
+`PM-CLOSEOUT-CONSOLIDATION-49`参照)は品質後退のためREJECTED相当のまま
+記録保持する。今後は`EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01`
+(3V Audio Trial、実施中)へ進む。
+
+**A-FACT03-1=(a)**: Household公開記事(A2/B1B、2026-08-17承認)の
+FACT-03由来誤記述(`HOUSEHOLD-LEDGER-FACT-03-REVERIFICATION-01`で
+Fact Checker FAILが確定済み、`PM-CLOSEOUT-CONSOLIDATION-48`参照)を、
+Numeric Precision修正(Theme 2 B1 rerun_04時に実施したArtifact最小修正、
+本ファイル`OPEN-112行rerun_04関連エントリ`参照)と同一手順の「既存承認済み
+Artifactへの最小修正例外」方式で、該当segmentのみ差し替える
+(`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02`、実施中)。
+**本件はpolicy変更ではなく例外適用である**: 既存の「遡及修正不要」方針
+(表現・精度差レベルの事後改善は完成済みArtifactを書き換えない)は維持
+したまま、Fact Checker FAILが確定した個別の事実誤りに限り、承認済み
+Artifactへの最小修正(該当segmentのみ差し替え)を例外的に適用する。
+新しいFact policyは新設しない。完了後はUSER_FINAL_AUDIO_REVIEWとする。
+
+**SSOT反映**: `OPEN_ITEMS.md` OPEN-120行(B-3V-3決定、3V基準記事=
+Trial-02版VALIDATED、目標尺更新、Audio Trial実施中、Trial-03=REJECTED
+相当)・OPEN-138行(A-FACT03-1決定、最小修正例外、実施中、完了後は
+USER_FINAL_AUDIO_REVIEW)へ追記した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+へ3V Audio Trial・Household最小修正・本タスクの行を追記した。
+
+**根拠**: ユーザー決定(2026-09-09、Fable(PM)委任メッセージ内で提示)。
+Git操作: `OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をファイル名指定でcommitし
+`origin/main`へpush。並列稼働中の3V Audio Trial(`er012_output/
+editorial_b_voices_3v_audio_trial_*`等)、Household最小修正
+(`er003_output/n3_01/household/fact03_fix_02/`、`er011_output/
+*household*`)、Lane A段階1再集計(`er011_output/point_quality_*`、
+`FAMILY-A-POINT-QUALITY-*`)、`er006_output/`、
+`er011_output/attempt_history.jsonl`、`CURRENT_SPEC.md`、既存の
+未追跡ファイル群はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

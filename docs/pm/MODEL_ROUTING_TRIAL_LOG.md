@@ -250,6 +250,9 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-48(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、Reconciliation Gate/FACT-03確定値反映、Haiku L0初適用の記録、新規Open Item追記なし)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-47(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、A3-UDR-3/D2-UDR-1不承認のOPEN-135/112/120/136/138行反映、DECISION_LOGエントリ新設、CURRENT_SPEC.md/PM_GOVERNANCE.md追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 | 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-49(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、3V Trial-03結果反映[OPEN-120行]、DECISION_LOGエントリ新設、Trial-03行の確定値更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | EDITORIAL-B-FAMILY-VOICES-3V-AUDIO-TRIAL-01(実施中) | MEDIUM(L1/Sonnet) | Sonnet | B-3V-3(a)確定(3V基準記事=Trial-02最終版VALIDATED)を受けた3V Audio Trial(3 voices・3V required_structure・3V Comment文言・voice割当・TTS QA・Audio structural gate・実測尺・Fact整合・試聴artifact)、既知パターン(Phase 1経路のTrial側ラップ)の踏襲 | Haiku不適(TTS/Audio Gate実行・QA判定を伴う)、Opus不要(設計方針変更ではなく承認済み範囲[B-3V-2]の適用のみ) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-FIX-02(実施中) | MEDIUM(L1/Sonnet) | Sonnet | A-FACT03-1(a)確定を受けたHousehold公開記事(A2/B1B、2026-08-17承認)のFACT-03該当segment差し替え、Theme 2 B1 rerun_04と同型の「既存承認済みArtifactへの最小修正例外」パターンの踏襲 | Haiku不適(Artifact差し替え・整合確認を伴う)、Opus不要(新規設計判断ではなく既存前例の適用のみ) | 並列稼働中のため未確定(次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-50(本タスク) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、B-3V-3/A-FACT03-1ユーザー決定反映[OPEN-120/OPEN-138行]、DECISION_LOGエントリ新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -462,3 +465,10 @@ TRIAL-SETUP-01`の次から起算)
   3V基準記事の候補はTrial-02最終版が継続])へ更新した。本タスク
   (Sonnet、LOW)を新規行として追記した。中間レビュー・正式Closeout
   Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-50、本タスク): ユーザー正式決定
+  (B-3V-3=(a)・A-FACT03-1=(a))を受け、新規行`EDITORIAL-B-FAMILY-VOICES-
+  3V-AUDIO-TRIAL-01`(並列稼働中、Sonnet、MEDIUM、既知パターン=Phase 1
+  経路のTrial側ラップ)、`HOUSEHOLD-FACT-03-PUBLISHED-ARTICLE-MINIMAL-
+  FIX-02`(並列稼働中、Sonnet、MEDIUM、rerun_04と同型のArtifact最小修正
+  例外パターン)、本タスク(Sonnet、LOW)を追記した。中間レビュー・
+  正式Closeout Triggerの到達判定・再計算はいずれも実施していない。
