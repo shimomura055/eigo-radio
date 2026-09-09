@@ -26,6 +26,42 @@ LEDGER_SAMPLE_3V = LEDGER_SAMPLE + (
     "[VOICE_3_EVIDENCE] 3-01(synthetic): テスト用の3人目Voice evidence。source: none\n"
 )
 
+# OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02: 実Ledger
+# (`editorial_b_voices_trial_07/research/verified_fact_ledger.txt`)と
+# 同じ書式(fact本文の折り返し・source/URL/counter_or_limitation/
+# verificationの継続行、空行区切り、`===...===`セクション見出し、
+# タグ混在)を模した多行サンプル。
+LEDGER_SAMPLE_MULTILINE = """
+=== VOICE_1_EVIDENCE(固定席を好む社員) ===
+
+[VOICE_1_EVIDENCE] 1-01(fact_001): オフィス設計会社Genslerが世界のオフィス
+勤務者1万6000人超を対象に行った調査によれば、固定席を持つ従業員は職場での
+所属感を感じる割合が高い(固定席あり87%、固定席なし74%)。
+  source: Bisnow(Genslerの調査を引用)
+  (https://www.bisnow.com/news/example)
+  counter_or_limitation: アンケートの自己申告データである
+  verification: CONFIRMED
+
+[VOICE_1_EVIDENCE] 1-02(fact_003): LinkedIn Newsの特集記事では、社員が
+衛生面の懸念とパーソナルスペースの喪失を理由に反発していると報じられている。
+  source: LinkedIn News
+  verification: CONFIRMED
+
+=== VOICE_2_EVIDENCE(自由席を好む社員) ===
+
+[VOICE_2_EVIDENCE] 2-01(fact_008): TOKYO MX+が行った街頭インタビューでは、
+40人が自由席を支持した。
+  source: TOKYO MX+
+  verification: PARTIALLY_CONFIRMED
+
+=== CROSS_REFERENCE(横断参照) ===
+
+[CROSS_REFERENCE] X-01(fact_002): AmazonのCEOは2024年9月の社内メモで、
+固定席へ戻す方針を示した。
+  source: Business Insider
+  verification: CONFIRMED
+"""
+
 
 class BuildFactCheckPromptBackwardCompatTest(unittest.TestCase):
     """Gate 3: 既定""でPromptバイト不変(A-Family fixture)。"""
@@ -87,6 +123,52 @@ class RegistryFactAttributionModeGatingTest(unittest.TestCase):
     def test_3v_extension_via_voice_3_evidence_tag_without_code_change(self):
         block = registry.build_voice_attribution_block(LEDGER_SAMPLE_3V)
         self.assertIn("VOICE_3_EVIDENCE", block)
+
+
+class MultilineEvidenceExtractionTest(unittest.TestCase):
+    """OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02: 実Ledgerと同じ多行
+    evidenceエントリ(fact本文の折り返し・source/URL/counter_or_limitation/
+    verificationの継続行)が、タグの物理1行だけでなく全体としてblockに
+    含まれることを確認する。"""
+
+    def test_multiline_evidence_body_and_source_lines_are_included(self):
+        block = registry.build_voice_attribution_block(LEDGER_SAMPLE_MULTILINE)
+        # 1-01の本文2行目・3行目(タグ行には無い折り返し部分)が含まれる。
+        self.assertIn("勤務者1万6000人超を対象に行った調査によれば", block)
+        self.assertIn("所属感を感じる割合が高い", block)
+        # source/URL/counter_or_limitation/verification継続行も含まれる。
+        self.assertIn("source: Bisnow(Genslerの調査を引用)", block)
+        self.assertIn("(https://www.bisnow.com/news/example)", block)
+        self.assertIn("counter_or_limitation: アンケートの自己申告データである", block)
+        self.assertIn("verification: CONFIRMED", block)
+
+    def test_multiline_entry_terminates_before_next_tag_and_does_not_bleed(self):
+        block = registry.build_voice_attribution_block(LEDGER_SAMPLE_MULTILINE)
+        # 1-01の"verification: CONFIRMED"の後に1-02の内容が続く(1エントリ
+        # が次のタグへ食い込んで混ざっていない)ことを、出現順で確認する。
+        idx_101_verification = block.index("(https://www.bisnow.com/news/example)")
+        idx_102_tag = block.index("[VOICE_1_EVIDENCE] 1-02")
+        self.assertLess(idx_101_verification, idx_102_tag)
+        # 1-02の本文には1-01のsource行が混入していない。
+        segment_102 = block[idx_102_tag:]
+        self.assertNotIn("bisnow.com", segment_102)
+
+    def test_multiline_entry_does_not_bleed_into_next_section_header(self):
+        block = registry.build_voice_attribution_block(LEDGER_SAMPLE_MULTILINE)
+        # VOICE_2セクション見出し(===...===)自体はタグ行ではないため
+        # blockへ含まれない。
+        self.assertNotIn("=== VOICE_2_EVIDENCE", block)
+        self.assertNotIn("=== CROSS_REFERENCE", block)
+
+    def test_cross_reference_tag_is_excluded_even_when_mixed_in(self):
+        block = registry.build_voice_attribution_block(LEDGER_SAMPLE_MULTILINE)
+        self.assertNotIn("[CROSS_REFERENCE]", block)
+        self.assertNotIn("AmazonのCEOは2024年9月の社内メモで", block)
+
+    def test_mixed_voice_1_and_voice_2_tags_both_fully_captured(self):
+        block = registry.build_voice_attribution_block(LEDGER_SAMPLE_MULTILINE)
+        self.assertIn("40人が自由席を支持した", block)
+        self.assertIn("verification: PARTIALLY_CONFIRMED", block)
 
 
 class ProductionRunnerGatingWiringTest(unittest.TestCase):

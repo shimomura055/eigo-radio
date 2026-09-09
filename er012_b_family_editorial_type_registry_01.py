@@ -319,18 +319,41 @@ VOICE_ATTRIBUTION_RULE_TEXT = (
 
 
 def build_voice_attribution_block(ledger_text: str) -> str:
-    """Ledgerの[VOICE_n_EVIDENCE]タグ行を抽出し、opt-inルール文言と結合した
-    blockを返す(`er002_ja_web_research_r3.build_fact_check_prompt()`の
+    """Ledgerの[VOICE_n_EVIDENCE]タグ行から始まるevidenceブロック全体
+    (fact本文の折り返し・source/URL/counter_or_limitation/verification等の
+    継続行を含む)を抽出し、opt-inルール文言と結合したblockを返す
+    (`er002_ja_web_research_r3.build_fact_check_prompt()`の
     `voice_attribution_block`引数へそのまま渡す想定)。該当タグが1件も
     無ければ空文字列を返す(誤ってルールだけを渡してしまうことを防ぐ、
-    fail-closed)。"""
-    matches = _VOICE_EVIDENCE_LINE_RE.findall(ledger_text or "")
-    if not matches:
+    fail-closed)。
+
+    OPEN-131-ATTRIBUTION-BLOCK-MULTILINE-FIX-02: 修正前はタグが乗る物理1行
+    のみを抽出しており、実Ledger(例:
+    `er012_output/editorial_b_voices_trial_07/research/
+    verified_fact_ledger.txt`)のように1 evidenceがfact本文の折り返し・
+    `source:`/URL/`counter_or_limitation:`/`verification:`の複数行に
+    またがる場合、2行目以降が欠落していた。終端規約(実Ledgerの書式から
+    確定): 各evidenceエントリは空行1つで次のエントリ・次の`[...]`タグ・
+    `===...===`セクション見出しと区切られている(Trial-07 Ledger実測、
+    途中に空行が入るエントリは無い)。このため、タグ行から開始し、次に
+    現れる「空行」「`[`で始まる行」「`===`で始まる行」のいずれかの直前
+    までを1エントリとして抽出する。"""
+    lines = (ledger_text or "").splitlines()
+    evidence_lines: list = []
+    in_block = False
+    for line in lines:
+        stripped = line.strip()
+        if re.match(r"^\[VOICE_\d+_EVIDENCE\]", stripped):
+            in_block = True
+            evidence_lines.append(line)
+            continue
+        if in_block:
+            if stripped == "" or stripped.startswith("[") or stripped.startswith("==="):
+                in_block = False
+                continue
+            evidence_lines.append(line)
+    if not evidence_lines:
         return ""
-    evidence_lines = [
-        line for line in (ledger_text or "").splitlines()
-        if re.match(r"^\[VOICE_\d+_EVIDENCE\]", line.strip())
-    ]
     evidence_block = "\n".join(evidence_lines)
     return (
         f"{VOICE_ATTRIBUTION_RULE_TEXT}\n"
