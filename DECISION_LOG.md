@@ -8839,6 +8839,54 @@ Trial-07の成果物、`POOL_TOPIC_MASTER.md`、`er006_output/`、
 `er011_output/attempt_history.jsonl`、既存の未追跡ファイル群はいずれも
 本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-42: 3V Person-Voice Trial-01結果のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき、
+`EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01`(3人物版perspective_map
+[応募する一人の人/採用担当・HM/経営者=責任を持つ人物]、Fairness/Legalは
+Tensionの外部制約へ、Ledger不変・再割当のみ)の結果をSSOTへ反映した。
+
+**Trial-01結果の要点**: attempt1=OK/PASS、attempt2=OK/REVIEW_REQUIRED、
+attempt3=NG_REVIEW_REQUIRED(既存安全装置Local Rewrite 3サイクル後も
+`human_review_required`1件が残存)。**仮説は支持された**(経営者Voiceの
+Analytical Leakage flagが4V Trial-02[3 attempts全てFAIL]と対照的に、本Trial
+のattempt1・attempt2ではいずれも0件)。一方で新しい相互作用効果を発見した:
+人物化により未裏付けの個人claimが増え、それがLedger Deviation Checkerの
+MAJOR判定→Local Rewriteのhedging表現を誘発し、そのhedgingがnarrator調の
+Leakageを別経路から再導入する。Tension外部制約統合基準
+(`leak_tension_constraint_integration`)は3/3で未達成、語数530語・推定尺
+約412秒(3V目標325〜355秒を超過)、2対1構図は非検出、Pairwise Voice
+Distinctness Check実績はdirection/method agreement=0.933/0.933(4V Trial-02と
+同水準)、費用¥93.63(量産概算¥90〜100/記事)。Fact Checker A'のweb search
+実測(6回/11回/10回)によりLedger Deviation Checker自体のweb search呼び出し
+0回を本Trialでも確認し、4V Trial-02 Reportの誤記帰属を訂正した。Gate1=
+`USER_DECISION_REQUIRED`、Gate4 PASS、STOPなし。
+
+**新規発見(記録のみ)**: 物理命名`point_one/two/three`(Production 2V命名の
+1段拡張)とQAスキーマ`voice_1..3`の命名乖離を確認した(4Vの`voice_1..4`
+命名とは異なる設計選択)。
+
+**Fable判定**: 「自明な修正は自律」の範囲内で、承認済み設計の適用
+(Tension構造の明示・目標尺からの語数配分・体験claimのLedger根拠付け)による
+Trial-02をすでに起動済み(並列稼働中、結果は別途追記予定)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-120行(Trial-01結果、仮説支持、未達3点、
+相互作用効果、Trial-02実施中、Distinctness実績2件目)・OPEN-136行(3V
+Trial-01でもLDC検索0・Fact Checker A' 6/11/10を確認、4V-02 Report誤記の
+訂正済み)・OPEN-132行(命名乖離の統一をPhase 2項目に追加)へ追記した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-01を確定値(Sonnet、HIGH、
+319k token・3132s、差し戻し0)へ更新し、Trial-02(Sonnet、HIGH継続)・
+本タスク(Sonnet、LOW)を新規行として追記した。
+
+**根拠**: `EDITORIAL-B-FAMILY-VOICES-3V-PERSON-VOICE-TRIAL-01_REPORT.md`。
+Git操作: `er012_editorial_b_voices_3v_person_voice_trial_01.py`・同Report・
+`er012_output/editorial_b_voices_3v_person_voice_trial_01/`配下一式
+(json/md/txt/jsonlのみ、wavなし)をG1、`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`をG2としてファイル名指定でcommitし
+`origin/main`へpush。並列稼働中のTrial-02成果物、Lane A(`er011_*`)3件、
+`CURRENT_SPEC.md`、`er006_output/`、`er011_output/attempt_history.jsonl`、
+既存の未追跡ファイル群はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
