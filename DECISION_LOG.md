@@ -8669,6 +8669,71 @@ A4-DISCOVERY-DESIGN-01_REPORT.md`(G1)、`OPEN_ITEMS.md`・
 (Trend end-to-end)・A3(News比較Trial-06)・Lane B(3V Trial)・Opus
 レビューはいずれも別タスクであり、本タスクでは触っていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-39: A4 Discovery設計Opusレビュー転記・v2設計
+(2軸判定+タイブレーク・机上検証)のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-09、Fable(PM)からの委任に基づき以下を
+SSOTへ反映した(内容自体は各Laneの並列タスクで既に完了済み。本タスクは
+SSOT反映+Git統合のみ)。
+
+**(1) A4 Discovery設計Opusレビュー転記**: `FAMILY-A-COMPLETION-A4-
+DISCOVERY-DESIGN-OPUS-REVIEW-01_REPORT.md`(Fable転記、原文全文は
+Fable会話ログのみに存在)。重大度HIGH。v1判定木Q1〜Q5の構造的欠陥
+(Q1/Q3循環、Q3とMajor/Daily Gate項目1の矛盾、Q5判定不能バケット、
+Q2先行によるDiscovery母集団のTrend誤送)を指摘し、代替案として2軸判定
+(軸A=中心的主張の最近性依存・軸B=独立Signal集約依存)を未承認候補として
+提案した。また「POOL_TOPIC_MASTER全20件がWhyタイトル」という事実誤り
+(実際は英語Why 7件・日本語なぜ7件)を検出した。Focus Module配線
+(`DISCOVERY_FOCUS_MODULE_BLOCK`)はTrial-05検証済みPromptとバイト等価で
+配線技術リスク低いが見出し文言改稿が前提と評価。¥0机上検証の実施を
+最も価値の高い未実施項目として指摘した。UDRはD1(定義・判定ロジック)・
+D2(Layer3 DEFERRED解除)・D3(派生UDR)の3ブロックへ統合するよう提案した。
+
+**(2) A4 Discovery設計v2(Opusレビュー反映、未承認・設計のみ)**:
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md`。v1事実誤り
+(POOL_TOPIC_MASTER件数)を訂正(英語Why7件・日本語なぜ7件、5件[No.5,7,
+12,14,17]は「変化の主張」型、承認済み定義「Pool型=Evergreen」は20件
+全件に適用される既決事実として維持)。判定ロジックをOpus提案の2軸判定+
+タイブレークprimitive(「その要素を実際に取り除いたら中心的主張が
+崩れるか」)へ再構成し、既存Major/Daily Gate・Trend Gateとは別工程
+(Editorial Type routingという上流工程)であることを明示した。
+POOL_TOPIC_MASTER20件+既存完成記事6件(Hanshin/Health/Household/
+Iran-Theme2/Iran-ADD03/No.18本文)で¥0机上検証(LLM呼び出しゼロ)を
+実施した結果: 判定不能率0/26(v1・v2とも)、Trend誤送数=素朴読み(判定者1)
+5件[POOL No.5,7,12,14,17]・依存構造読み(判定者2)0件、独立2判定者間の
+不一致率v1 23%→v2 19%(v2ではHealth/No.18境界が軸Aで解消、残る不一致は
+POOL No.5,7,12,14,17の5件のみでタイブレーク厳密適用が前提)。Discovery
+Research方式はLLM呼び出しを伴う「Why-question分解ステップ」提案を撤回し
+「説明源の優先順位ガイドライン」(LLM呼び出しなし)へ縮小、myth-correction
+はDiscoveryへの追加候補としつつNewsからの除外は確定しない、Fact Checker
+とLedger Deviation Checkerの役割混同を分離、既決事項(A-UDR-9/10)を
+「新規発見」と書かない訂正を行った。UDRはD1(推奨(b)=2軸判定+タイブレーク
+採用だが再現性Trial検証とセット)・D2(推奨(b)=机上検証+N=3 Trial実施後に
+Production採用可否を再判断)・D3(myth-correction/Point Role hint/
+Engagement/Research/LDCカテゴリの5項目は保留)として整理し、いずれも
+`USER_DECISION_REQUIRED`のまま提示した。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行へOpusレビュー要点・v2設計内容
+(2軸判定・机上検証結果・D1/D2/D3 UDR)を追記。OPEN-130行へ、A4の判定木案が
+2軸判定へ更新されたことを追記(OPEN-130本体[Mode自動判定]は未着手のまま
+変更なし)。OPEN-112行へ、Discovery Layer3 DEFERRED状態がOPEN-135/D2
+(机上検証+N=3 Trial後に再判断)として引き続き参照されることを追記。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へA4 Opusレビュー(Opus/HIGH、
+121k token・327秒、寄与=構造欠陥3件+事実誤り1件の採用前検出)・A4 v2
+(Sonnet/MEDIUM、81k token・480秒)・本タスクを追記し、正式Closeout
+Trigger進捗(Opus HIGH案件2件到達[件数上のみ、他条件未達]、Haiku 0/5
+[未使用のまま]、Production wiring後手戻り観測0/2)を記録した。
+
+**根拠**: 本エントリはFable(PM)からのSSOT反映委任に基づく記録(Opus
+レビュー・v2設計自体は各Laneの並列タスクで別途完了済み)。Git操作:
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01_REPORT.md`・
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02_REPORT.md`(G1)、
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+(G2)をファイル名指定でcommitし`origin/main`へpush。並列稼働中のLane A2
+(Trend end-to-end)・A3(News Trial-06)・Lane B(3V Trial)の成果物、
+`CURRENT_SPEC.md`、`er006_output/`、`er011_output/attempt_history.jsonl`
+はいずれも本タスクでは触っていない。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

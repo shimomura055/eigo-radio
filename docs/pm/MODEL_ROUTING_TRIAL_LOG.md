@@ -104,6 +104,17 @@ context再読コスト。
 
 現在のStatus: 未判定(中間レビュー・Closeoutいずれも未実施)。
 
+**2026-09-09追記(PM-CLOSEOUT-CONSOLIDATION-39)**: 正式Closeout Trigger
+条件の進捗を確認した(判定・集計はまだ実施していない、単なる件数の
+現況記録)。Opus HIGH案件は`EDITORIAL-B-FAMILY-VOICES-3V-4V-WRITER-
+DESIGN-OPUS-REVIEW-01`・`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-
+REVIEW-01`の2件目に到達した(Trigger条件「Opus HIGH案件2件以上」を
+件数上は満たすが、他の必須条件[Haiku5件以上・Sonnet10件以上・
+Production wiring到達2件以上での手戻り観測等]が未達のため正式Closeout
+判定はまだ行わない)。Haikuは本Trial開始後の委任実績表で依然0/5件
+(未使用)。Production wiring後の手戻り観測は0/2件(観測数自体がまだ
+少ない)。
+
 ### 実施記録(中間レビュー・Closeout、Fableが到達の都度追記)
 
 | 日付 | 種別(中間レビュー/Closeout) | 到達したTrigger | 結果(Status) | 備考 |
@@ -217,8 +228,9 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-09 | FAMILY-A-COMPLETION-A2-TREND-END-TO-END(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | 既存Trend Synthesis Production配線(`OPEN-112-TREND-SYNTHESIS-MODE-PRODUCTION-WIRING-01`)を壊さず、残存Gap(Research/News Ledger自動供給・Focus Module接続・retry/fallback整合・article→audio連続性)を既知パターンで検証するend-to-end実行 | Haiku不適(Production Writer/QA実行・retry判定を伴う)、Opus不要(既承認範囲の実行検証であり新規設計判断を伴わない) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-DAILY-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06(並列稼働中) | MEDIUM(L1/Sonnet) | Sonnet | News比較Trial(Point Role hint+News Focus Module+G1修正版、Hanshin N=3)、既存Trial-02/04の踏襲改良パターン | Haiku不適(記事生成・比較検証を伴う)、Opus不要(設計方針[Point Role hint等]は既存Trialで確立済み、実行検証のみ) | 不明(並列実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
 | 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-01 | MEDIUM(L1/Sonnet) | Sonnet | Discovery(Why)対象定義・News/Trendとの排他的境界・固有Research方式の設計(Production実装なし、費用¥0)。既存資産(Household等)とのReconciliationを要する | Haiku不適(SSOT横断照合・設計文書の精密な整合確認を要する)、Opus不要(この段階ではSonnetによる設計案提示のみで足り、横断レビューは後段のOpusレビューで実施する計画のため) | 133k | 340s | 0 | なし | なし | あり(UDR候補7件を提示、未承認新規提案) | 不明 |
-| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01(実施中) | HIGH(L2/Opus) | Opus | A4 Discovery設計案(判定木Q1〜Q5、境界事例、POOL_TOPIC_MASTER 20件との一致可能性等)のsecond opinion。3 Editorial Type境界の排他性・網羅性を横断検証する必要があり、Sonnet単独では境界検証(News/Trend/Discoveryの相互排他性の見落とし)が甘くなりやすいため | Sonnet単独では不足(3タイプ横断の排他性・網羅性検証)、Haiku不適(設計レビュー・複数Report横断精査を要する) | 不明(実施中、次回Fable記録時に追記) | 同上 | 不明 | 不明 | 不明 | 不明 | 不明 |
-| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-38(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、OPEN-135/OPEN-136/OPEN-112/OPEN-130行の確定反映、DECISION_LOGエントリ新設)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
+| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01(確定値) | HIGH(L2/Opus) | Opus | A4 Discovery設計案(判定木Q1〜Q5、境界事例、POOL_TOPIC_MASTER 20件との一致可能性等)のsecond opinion。3 Editorial Type境界の排他性・網羅性を横断検証する必要があり、Sonnet単独では境界検証(News/Trend/Discoveryの相互排他性の見落とし)が甘くなりやすいため | Sonnet単独では不足(3タイプ横断の排他性・網羅性検証)、Haiku不適(設計レビュー・複数Report横断精査を要する) | 121k | 327s | 0 | なし | なし | あり(HIGH重大度指摘: v1判定木の循環[Q1/Q3]・Q3とMajor/Daily Gate項目1の矛盾・Q5判定不能バケット・Q2先行によるTrend誤送、およびPOOL_TOPIC_MASTER件数の事実誤り[全20件Whyは誤り、実際は英語Why7件・日本語なぜ7件]を採用前に検出。寄与=構造欠陥3件+事実誤り1件の採用前検出) | 不明(採用前レビュー段階、Production wiring対象外) |
+| 2026-09-09 | FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02(v2、Opusレビュー反映) | MEDIUM(L1/Sonnet) | Sonnet | Opusレビュー指摘(HIGH)を反映したv2設計修正(2軸判定+タイブレークprimitiveへの再構成、事実誤り訂正、POOL_TOPIC_MASTER20件+既存記事6件の¥0机上検証実施)。設計修正+検証読解の精密さを要する | Haiku不適(SSOT横断照合・机上検証の精密な読解判定を要する)、Opus不要(この段階は前段Opusレビューを反映するSonnet作業であり新規横断レビューではない) | 81k | 480s | 0 | なし | なし | あり(D1/D2/D3 UDR統合、2軸判定・Pool型正式化はいずれも未承認候補のまま提示) | 不明(設計のみ、Production実装・費用¥0) |
+| 2026-09-09 | PM-CLOSEOUT-CONSOLIDATION-39(本タスク) | MEDIUM(L1/Sonnet) | Sonnet | SSOT精密編集(A4 Opusレビュー転記Reportのcommit、OPEN-135/OPEN-130/OPEN-112行追記、DECISION_LOGエントリ新設、本表の確定値更新)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT編集・Git操作を伴う)、Opus不要(通常のcloseout統合パターン、設計横断レビュー不要) | 本タスク完了時点で未確定(次回Fable記録時に追記) | 同上 | 0 | なし | なし | 不明 | 不明 |
 
 ## 変更履歴
 
@@ -326,8 +338,19 @@ TRIAL-SETUP-01`の次から起算)
   `FAMILY-A-DAILY-NEWS-FOCUS-HINT-COMPARISON-TRIAL-06`(並列稼働中、
   Sonnet、MEDIUM、記録のみ)、`FAMILY-A-COMPLETION-A4-DISCOVERY-
   DESIGN-01`(Sonnet、MEDIUM、133k token・340秒、UDR候補7件提示)、
-  `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`(実施中、
+  `FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`(当時実施中、
   Opus、HIGH、選定理由=3タイプ境界の排他性・網羅性の横断検証、Sonnet
   単独では境界検証が甘くなりやすいため)、本タスク(Sonnet、MEDIUM)。
   中間レビュー・正式Closeout Triggerの到達判定・再計算はいずれも
   実施していない。
+- 2026-09-09(PM-CLOSEOUT-CONSOLIDATION-39、本タスク): `FAMILY-A-
+  COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`行を確定値(Opus、HIGH、
+  121k token・327秒、寄与=v1判定木の構造欠陥3件[Q1/Q3循環・Q3とGate
+  矛盾・Q5判定不能バケット]+POOL_TOPIC_MASTER件数の事実誤り1件を採用前
+  検出)へ更新した。新規行`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-02`
+  (v2、Sonnet、MEDIUM、81k token・480秒、2軸判定+タイブレークprimitive
+  への再構成・¥0机上検証26件実施)、本タスク(Sonnet、MEDIUM)を追記した。
+  「### 正式Closeout Trigger」節へ進捗追記(Opus HIGH案件2件到達[件数上
+  のみ、他条件未達のため正式判定はまだ]、Haiku 0/5[未使用]、Production
+  wiring後手戻り観測0/2)。中間レビュー・正式Closeout Triggerの到達判定
+  ・再計算はいずれも実施していない。
