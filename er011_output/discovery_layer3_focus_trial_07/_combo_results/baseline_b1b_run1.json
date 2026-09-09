@@ -1,0 +1,59 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 311,
+  "section_word_counts": {
+    "intro": 144,
+    "point_one": 67,
+    "point_two": 64,
+    "in_one_line": 36
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 67,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 64,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": true
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "The low-humidity setting is more ventilated.",
+      "sentence_b": "The high-humidity setting is more closed.",
+      "ratio": 0.8
+    },
+    {
+      "sentence_a": "They lose water quickly and begin to wilt.",
+      "sentence_b": "If it loses water quickly, use the high-humidity drawer.",
+      "ratio": 0.551
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 2,
+  "avg_sentence_length": 11.4,
+  "max_sentence_length": 35,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「柑橘類は高湿度のクリスパーを好む」という具体的な分類は、ストロベリーには裏付けがあるが、柑橘類については低湿度のクリスパーを推奨する公的な延長サービス資料もあり、普遍的な主張としては確認できない。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/ask-produce-docs/what-are-best-storage-methods-strawberries?utm_source=openai))",
+    "「じゃがいも、さつまいも、玉ねぎ、にんにくは冷たく乾燥した場所が必要」という一文は、冷蔵しないという点では概ね支持されるものの、作物ごとの適温・湿度は異なるため、4品目すべてに同一条件が必要だと読む場合は過度に一般化されている。([fna.usda.gov](https://www.fna.usda.gov/fs/produce-safety/storage?utm_source=openai))"
+  ],
+  "fact_unsupported_specific_claims_count": 2,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "point_one_role_text": "Turn the drawer labels into a mechanism-based sorting test rather than a fruit-versus-vegetable rule. The listener should learn to ask whether a food is most vulnerable to rapid water loss or to ethylene buildup, then use high humidity for the former and the ventilated low-humidity setting for the latter.",
+  "point_one_role_category": "mechanism",
+  "point_two_role_text": "Expose the practical trap in treating the fruit-versus-vegetable rule as absolute, then widen the listener’s sorting decision to include foods that should not be put in a crisper at all. The emphasis should be on correcting familiar shopping and storage habits with specific, verified examples.",
+  "point_two_role_category": "broader_dimension",
+  "elapsed_seconds": 109.59,
+  "condition": "baseline",
+  "level": "B1B",
+  "run": 1,
+  "claim_to_evidence_table": []
+}

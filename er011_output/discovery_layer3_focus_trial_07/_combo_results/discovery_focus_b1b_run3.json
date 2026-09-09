@@ -1,0 +1,107 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 308,
+  "section_word_counts": {
+    "intro": 165,
+    "point_one": 54,
+    "point_two": 60,
+    "in_one_line": 29
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 54,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": false
+    },
+    "point_two": {
+      "word_count": 60,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": false
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "The two drawers in a refrigerator may look like simple storage boxes.",
+      "sentence_b": "In other words, the refrigerator creates two different storage spaces.",
+      "ratio": 0.561
+    },
+    {
+      "sentence_a": "A low-humidity drawer has more ventilation.",
+      "sentence_b": "A high-humidity drawer is more sealed.",
+      "ratio": 0.716
+    },
+    {
+      "sentence_a": "Other produce loses water quickly and starts to wilt.",
+      "sentence_b": "Or does it lose water quickly and wilt?",
+      "ratio": 0.717
+    },
+    {
+      "sentence_a": "Apples and pears point to low humidity.",
+      "sentence_b": "Leafy greens such as kale and broccoli point to high humidity.",
+      "ratio": 0.574
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 4,
+  "avg_sentence_length": 10.8,
+  "max_sentence_length": 21,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「ストロベリーとオレンジなどの柑橘類は高湿度を好む」とする記述は、果実の最適相対湿度という意味では概ね支持される。ストロベリーとオレンジはいずれも90～95％RHが示されているが、家庭用冷蔵庫のクリスパー設定としては情報源に揺れがあり、GEはストロベリーを低湿度の引き出しの対象例としている。したがって、高湿度設定が常に最適だと断定するには補足が必要。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/ask-produce-docs/what-are-best-storage-methods-strawberries?utm_source=openai))",
+    "「葉物野菜 such as kale and broccoli」という分類は不正確。ケールは葉菜だが、ブロッコリーは一般にアブラナ科の花蕾・花序を食べる野菜として分類される。ただし、ブロッコリーを高湿度で保存するという実用上の助言自体は支持される。([lod.nal.usda.gov](https://lod.nal.usda.gov/nalt/en/page/19485?utm_source=openai))",
+    "「見慣れない食品は、換気が必要か、湿気を保つべきかで判断する」というテストは便利な一般化ではあるが、食品ごとの温度、エチレン感受性、結露・腐敗リスクなどを考慮しないため、普遍的な判定法としての裏付けは確認できない。"
+  ],
+  "fact_unsupported_specific_claims_count": 3,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "point_one_role_text": "Turn the drawer settings into a mechanism-based decision rule: choose low humidity for produce that releases substantial ethylene, and high humidity for produce that rapidly loses water and wilts, rather than sorting only by “fruit” versus “vegetable.”",
+  "point_one_role_category": "mechanism",
+  "point_two_role_text": "Expose the counterintuitive exceptions that make the mechanism useful in real kitchens: some fruits, especially strawberries and citrus, belong with high-humidity storage, while tomatoes and bananas should be kept at room temperature rather than placed in either drawer.",
+  "point_two_role_category": "mechanism",
+  "elapsed_seconds": 105.64,
+  "condition": "discovery_focus",
+  "level": "B1B",
+  "run": 3,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「ストロベリーとオレンジなどの柑橘類は高湿度を好む」とする記述は、果実の最適相対湿度という意味では概ね支持される。ストロベリーとオレンジはいずれも90～95％RHが示されているが、家庭用冷蔵庫のクリスパー設定としては情報源に揺れがあり、GEはストロベリーを低湿度の引き出しの対象例としている。したがって、高湿度設定が常に最適だと断定するには補足が必要。([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/ask-produce-docs/what-are-best-storage-methods-strawberries?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 1,
+        "FACT-04": 0
+      }
+    },
+    {
+      "claim": "「葉物野菜 such as kale and broccoli」という分類は不正確。ケールは葉菜だが、ブロッコリーは一般にアブラナ科の花蕾・花序を食べる野菜として分類される。ただし、ブロッコリーを高湿度で保存するという実用上の助言自体は支持される。([lod.nal.usda.gov](https://lod.nal.usda.gov/nalt/en/page/19485?utm_source=openai))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 2,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 2,
+        "FACT-04": 0
+      }
+    },
+    {
+      "claim": "「見慣れない食品は、換気が必要か、湿気を保つべきかで判断する」というテストは便利な一般化ではあるが、食品ごとの温度、エチレン感受性、結露・腐敗リスクなどを考慮しないため、普遍的な判定法としての裏付けは確認できない。",
+      "judgement": "LEDGER_OUTSIDE_OR_NO_LEXICAL_MATCH",
+      "evidence_id": null,
+      "score": 0,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 0,
+        "FACT-04": 0
+      }
+    }
+  ]
+}

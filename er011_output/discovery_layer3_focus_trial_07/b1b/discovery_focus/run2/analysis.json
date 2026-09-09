@@ -1,0 +1,97 @@
+{
+  "status": "OK",
+  "retry_attempts": 0,
+  "word_count": 299,
+  "section_word_counts": {
+    "intro": 134,
+    "point_one": 71,
+    "point_two": 56,
+    "in_one_line": 38
+  },
+  "word_overflow": {
+    "point_one": {
+      "word_count": 71,
+      "exceeds_tolerance_upper": true,
+      "exceeds_target_upper": true
+    },
+    "point_two": {
+      "word_count": 56,
+      "exceeds_tolerance_upper": false,
+      "exceeds_target_upper": false
+    }
+  },
+  "near_duplicate_sentence_pairs": [
+    {
+      "sentence_a": "Apples, pears, bananas, and tomatoes generally fit the ventilated, low-humidity drawer.",
+      "sentence_b": "Leafy greens and broccoli generally fit the high-humidity drawer.",
+      "ratio": 0.618
+    },
+    {
+      "sentence_a": "The food’s behavior matters more than whether it is a fruit or a vegetable.",
+      "sentence_b": "The crisper drawer works best when you match it to how food releases gas or loses water—not simply to whether it is a fruit or a vegetable.",
+      "ratio": 0.561
+    }
+  ],
+  "near_duplicate_sentence_pair_count": 2,
+  "avg_sentence_length": 12.6,
+  "max_sentence_length": 28,
+  "fact_verdict": "REVIEW_REQUIRED",
+  "fact_unsupported_specific_claims": [
+    "「リンゴ、洋ナシ、バナナ、トマトは一般に低湿度の野菜室に合う」という記述は、バナナとトマトについては注意が必要。信頼できる大学・公的機関の案内では、バナナとトマトは通常、冷蔵庫ではなく室温・カウンターでの保存が推奨されている。記事後半でその点を説明しているため記事全体としては補足されているが、前半の分類だけを読むと誤解を招く。 ([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/))",
+    "「イチゴと柑橘類は高湿度を好む」という一括りの説明は、イチゴについては高湿度保存の根拠がある一方、柑橘類については資料により扱いが異なる。アーカンソー大学系の案内は高湿度室を推奨するが、イリノイ大学系の案内は柑橘類を低湿度設定としているため、家庭用クリスパードロワーの設定としては断定を避けるべき。 ([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry))",
+    "「クリスパードロワーには2種類の保存スペースがある」という表現は一般論としては妥当だが、すべての冷蔵庫に高湿度・低湿度の2区画や調整スライダーがあるとは限らない。資料も「2つある場合がある」「調整機能がない高湿度タイプもある」としている。 ([uaex.uada.edu](https://www.uaex.uada.edu/counties/miller/news/fcs/fruits-veggies/Spoiled-Rotten-How-to-Store-Fruits-and-Vegetables.aspx))"
+  ],
+  "fact_unsupported_specific_claims_count": 3,
+  "ledger_status": "LEDGER_COMPLIANT",
+  "ledger_deviation_count": 0,
+  "local_rewrite_cycles_count": 0,
+  "local_rewrite_item_count": 0,
+  "local_rewrite_human_review_count": 0,
+  "directional_fact_precheck_status": "PASS",
+  "point_one_role_text": "Turn the drawer’s design into a practical, mechanism-based sorting rule rather than a simple fruit-versus-vegetable rule. It should spotlight the counterintuitive fact that strawberries and citrus can belong in the high-humidity setting despite being fruits.",
+  "point_one_role_category": "mechanism",
+  "point_two_role_text": "Define the important boundary of the drawer strategy: some familiar produce should not be assigned to either humidity setting because its recommended storage location is different. This adds a concrete ‘when not to use the drawer’ takeaway rather than another explanation of humidity mechanics.",
+  "point_two_role_category": "mechanism",
+  "elapsed_seconds": 90.53,
+  "condition": "discovery_focus",
+  "level": "B1B",
+  "run": 2,
+  "claim_to_evidence_table": [
+    {
+      "claim": "「リンゴ、洋ナシ、バナナ、トマトは一般に低湿度の野菜室に合う」という記述は、バナナとトマトについては注意が必要。信頼できる大学・公的機関の案内では、バナナとトマトは通常、冷蔵庫ではなく室温・カウンターでの保存が推奨されている。記事後半でその点を説明しているため記事全体としては補足されているが、前半の分類だけを読むと誤解を招く。 ([blogs.extension.iastate.edu](https://blogs.extension.iastate.edu/answerline/2016/09/22/choosing-the-right-crisper-drawer-in-the-refrigerator/comment-page-1/))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-01",
+      "evidence_id": "FACT-01",
+      "score": 2,
+      "scores": {
+        "FACT-01": 2,
+        "FACT-02": 0,
+        "FACT-03": 0,
+        "FACT-04": 1
+      }
+    },
+    {
+      "claim": "「イチゴと柑橘類は高湿度を好む」という一括りの説明は、イチゴについては高湿度保存の根拠がある一方、柑橘類については資料により扱いが異なる。アーカンソー大学系の案内は高湿度室を推奨するが、イリノイ大学系の案内は柑橘類を低湿度設定としているため、家庭用クリスパードロワーの設定としては断定を避けるべき。 ([postharvest.ucdavis.edu](https://postharvest.ucdavis.edu/produce-facts-sheets/strawberry))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-03",
+      "evidence_id": "FACT-03",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 0,
+        "FACT-03": 1,
+        "FACT-04": 0
+      }
+    },
+    {
+      "claim": "「クリスパードロワーには2種類の保存スペースがある」という表現は一般論としては妥当だが、すべての冷蔵庫に高湿度・低湿度の2区画や調整スライダーがあるとは限らない。資料も「2つある場合がある」「調整機能がない高湿度タイプもある」としている。 ([uaex.uada.edu](https://www.uaex.uada.edu/counties/miller/news/fcs/fruits-veggies/Spoiled-Rotten-How-to-Store-Fruits-and-Vegetables.aspx))",
+      "judgement": "LIKELY_INTERPRETATION_OF_FACT-02",
+      "evidence_id": "FACT-02",
+      "score": 1,
+      "scores": {
+        "FACT-01": 0,
+        "FACT-02": 1,
+        "FACT-03": 0,
+        "FACT-04": 0
+      }
+    }
+  ]
+}
