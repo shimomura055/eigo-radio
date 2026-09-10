@@ -10662,6 +10662,121 @@ jsonl/txt/html(音声バイナリなし)・`OPEN_ITEMS.md`・`DECISION_LOG.md`�
 RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは
 触っていない(commit対象外)。
 
+## PM-CLOSEOUT-CONSOLIDATION-69: 3V(3声Voice方式)Production配線Phase 1
+完了(実装+offline regression PASS)のGit統合+Phase 2前提不一致の記録
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-69)に基づき実施した。並列稼働中の
+`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12`
+(`er011_output/news_ledger_enrichment_ab_trial_12/`・同名script・同名
+REPORT)、`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01`(読み取り専用、
+`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`のみ)の生成物は一切
+stageしていない(`git status --short`で確認、`git add -A`不使用)。
+
+**反映内容(3V Production Wiring Phase 1完了)**: 出典
+`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01_REPORT.md`
+1〜12節から転記した(推測で埋めていない)。**要旨**: Phase 1実装(¥0)が
+完了した。registryへ`voice_c`(Voice 3=Schedar、fallbackキーなし)・
+3V用`point_one/two/three` 16 segment required_structure・`EDITORIAL_
+TYPES["b_family_voices"]["b1_3v"]`を新規追加(2V経路は無変更のまま分岐、
+byte単位一致を単体テストで固定)。`run_tts_3v()`をTrial実装から正式
+移設(narration_dir引数化)。B-Family Production runnerへ`level="b1_3v"`
+分岐(`main_b1_3v()`ほか新規関数群)を追加。共有`er003_v1_n3_01_
+assemble.py`の`DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["B1"]`へ
+`point_three_heading`を1エントリのみ追加。Comment 2/3の登録テキスト
+(`VOICES_COMMENT_2_ROLE`/`_3_ROLE`)をVoice数非依存の汎用文言へ最小限
+書き換えた(2026-09-10ユーザー決定に基づく、**Promptの実質変更のため
+人間レビューを推奨**、意味変更が避けられない箇所[タイトル行「どちらが
+正しいか」]はあえて変更していない)。新規offline test 36件(11クラス)
+全PASS、Trial実装(`er012_editorial_b_voices_3v_audio_trial_01.py`等)
+へのモジュールレベルimport依存0件をAST解析で機械確認した。
+
+**Fable修正指示1回目**: 初回報告時点でSTOP条件(a)相当の新規regression
+failure 1件(既存pinテスト`test_existing_b1_and_standard_a2_entries_
+unchanged`が旧8要素タプルを厳密一致でpinしていたため、`point_three_
+heading`追加で不一致)が判明した。ユーザー正式決定(共有Audio Gateへ
+3Vに必要な`point_three`系entryを最小追加)に基づき、該当テスト1
+メソッドのみを「旧8要素が順序どおり部分集合として含まれる」+「追加は
+`point_three_heading`1件のみ」の2アサーションへ書き直した(他ファイル・
+他テストは無変更)。修正後のregression再実行結果: `collected=2289
+passed=2286 failed=3 errors=0 skipped=0`。failed 3件はいずれも
+`er003_test_p2j_investigate.py`の既知failure(帳簿的カウント照合、
+テスト総数増加のたびに失敗する設計上の既知事象、本タスクと無関係)の
+みで、**新規failureはゼロ**(STOP条件(a)は解消)。API呼び出しは0回
+(費用¥0)。
+
+**`PRODUCTION_WIRED`は未宣言**。`docs/pm/PM_GOVERNANCE.md`のGate 3
+各項目のうち、(a)Production正式経路はコード実装済みだが実運用未実施、
+(d)Production runtimeでの実発火・(f)runtime evidence・(g)実際の
+model_id/routing確認はいずれも**未達**(Phase 2待ち)、(i)(j)(k)SSOT
+本文反映は本エントリで一部達成するが`CURRENT_SPEC.md`はPhase 3で更新
+予定、(l)Git反映は本エントリのcommitで達成、(m)approved specとの挙動
+一致は構造レベルのみ部分達成(runtime実行後に最終確認)。
+
+**Phase 2前提の重大な不一致を新規発見**: Fable修正指示1回目で実施した
+調査(読み取り専用、コード読解のみ、API呼び出しなし)により、現行
+Production runner(2V B1/A2)は既存承認済み記事(`ARTICLE_PATH`/
+`A2_SOURCE_DIR`固定パス)を**読み取るだけ**であり、Research(Web検索)・
+Ledger作成・Writer(記事生成)・Key Phrase選定のいずれもこの経路の
+コード内に存在しないことが判明した(`prepare()`docstring・実装で
+直接確認)。2026-09-08の「B-Family Phase 1の`PRODUCTION_WIRED`確定」
+(`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-14`)は、この「既存承認
+済み記事の音声化のみ」の範囲を指すものであり、**「新テーマからの記事
+生成」を含む`PRODUCTION_WIRED`宣言ではないことをコード・SSOT両面で
+確認した(重要な範囲確認)**。3V Writer(3人物Voice本文生成)の
+Production経路は存在せず、現状は121KBのTrialスクリプト
+(`er012_editorial_b_voices_3v_person_voice_trial_02.py`、関数30個)に
+のみ存在する。Key Phrase選定は2V/3Vいずれも既存Trial出力からのhash
+照合再利用関数(`reuse_key_phrases()`/`reuse_key_phrases_3v()`)のみで、
+新規記事に対する選定ロジック自体はB-Family runner内に存在しない
+(fail-closed設計、hash不一致時にRuntimeError)。Ledger Deviation
+Check・Tension尺/Analytical Leakage/Voice distinctnessの観測ログ出力も
+Production経路には一切配線されていない。**この結果、2V比較記事も現行
+Production経路では新テーマから完走できないことが判明した**(2Vが既に
+`PRODUCTION_WIRED`だから新テーマでもすぐ通るという前提は誤り)。
+
+**選択肢整理(ユーザー判断待ち、V-2)**: (A)Phase 1b(Writer/Ledger/Key
+Phrase glue配線+offline test、見込み2〜3セッション・¥0)→Phase 2新
+テーマ3V記事1本(見込み¥150〜250)→2V比較記事1本(見込み¥100〜180)
+(ユーザー決定に最も忠実)。(B)Phase 2は既存Trial記事再利用でruntime
+evidenceのみ先に取得(¥90〜150、低リスクだが2026-09-10ユーザー決定
+[新テーマ・Production正式経路までの完走]と不一致と判明)。(C)Key
+Phrase選定glueのみ既存Trial出力hash再利用のまま新テーマへ暫定適用する
+部分縮小案は、reuse関数がfail-closed設計(hash不一致時にRuntimeError)
+のため技術的に不成立。Sonnetは(A)を推奨するが、着手前にユーザー承認を
+得ることを推奨する(本タスクでは調査のみで実装はしていない)。
+
+**未回答ユーザー判断待ち(本エントリで新規追加)**: V-1(Comment 2/3
+汎用文言の人間レビュー・承認)、V-2(Phase 2の進め方、選択肢A/B/Cの
+いずれか)。いずれも本タスクでは決定していない。
+
+**Dangling Reference Check**: 本タスクで新設した用語はない(出典
+REPORTからの転記のみ)。
+
+**触れていないもの**: 並列稼働中2タスク(News Ledger拡充Trial-12、
+Token効率診断PM-TOKEN-EFFICIENCY-DIAGNOSIS-01)の生成物・script・
+REPORT、`CURRENT_SPEC.md`(本タスクでは変更しない、Phase 3で更新)。
+
+**コード・Prompt・Production実装は本タスク(Git統合)では一切変更して
+いない**(コード変更自体は先行するSonnet実装タスクで完了済み、本タスク
+はそのGit反映+SSOT記録のみ、追加の費用発生なし)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-69、3V Production配線Phase 1完了のGit統合+
+SSOT記録+Phase 2前提不一致の記録)。Git操作: ファイル名指定で`git add`
+(`git add -A`不使用)、対象=`er012_b_family_editorial_type_registry_
+01.py`・`er012_b_family_voices_production_01.py`・`er012_b_family_
+production_runner_01.py`・`er003_v1_n3_01_assemble.py`・
+`er012_editorial_b_family_voices_3v_production_wiring_phase1_test_
+01.py`(新規)・`er012_editorial_b_family_production_phase1_test_01.py`
+(pin修正)・`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-
+01_REPORT.md`・`er012_output/editorial_b_family_voices_3v_production_
+wiring_phase1_01/`配下のjson/txt/md・`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。1 commitで`origin/main`へpush。
+並列タスク2件の生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/
+RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは
+触っていない(commit対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

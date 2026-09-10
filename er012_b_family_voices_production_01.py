@@ -63,9 +63,14 @@ import er003_b1_p4c_audio as p4c
 import er003_b1_p9a_audio as p9a
 import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
+import er003_v1_n3_01_tts_generate as tts_gen
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er003_v1_sing01_point_headings_aoede as point_headings
+import er003_v1_sing01_voice01_generate as voice01
+import er005_cost_logger as cl
 import er006_asr_provider_routing_01 as asr_routing
+import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
@@ -203,6 +208,64 @@ def build_parts(article_text: str) -> dict:
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 6区切り構造
+# parser(3V専用、正式移設)。出典:
+# er012_editorial_b_voices_3v_audio_trial_01.py::split_six_voice_sections()/
+# build_parts_3v()(2026-09-10ユーザー正式決定: segment命名は
+# point_one/point_two/point_three)。上記5区切りparser(split_five_voice_
+# sections/build_parts)は無変更のまま(2V呼び出し経路への影響ゼロ)。
+# ============================================================
+SECTION_LABEL_ORDER_3V = ("hook", "voice_1", "voice_2", "voice_3", "tension", "closing")
+
+
+def split_six_voice_sections(article_text: str) -> dict | None:
+    """記事本文(# タイトル + 6つの##/### 見出し)を、B-Family Voices 3V構造
+    (hook/voice_1/voice_2/voice_3/tension/closing)へ分解する。想定外の
+    見出し数(6以外)の場合はNoneを返す(ガード、単体テスト対象)。"""
+    title_match = re.match(r"^#[ \t]+.+?\s*\n", article_text)
+    if not title_match:
+        return None
+    body = article_text[title_match.end():]
+    matches = list(_HEADING_RE.finditer(body))
+    if len(matches) != 6:
+        return None
+    result = {}
+    for i, label in enumerate(SECTION_LABEL_ORDER_3V):
+        heading_text = matches[i].group(2).strip()
+        content_start = matches[i].end()
+        content_end = matches[i + 1].start() if i + 1 < len(matches) else len(body)
+        result[f"{label}_heading"] = heading_text
+        result[f"{label}_body"] = body[content_start:content_end].strip()
+    result["unexpected_preamble_before_first_heading"] = body[:matches[0].start()].strip()
+    return result
+
+
+def build_parts_3v(article_text: str) -> dict:
+    sections = split_six_voice_sections(article_text)
+    if sections is None:
+        raise RuntimeError("6区切り構造(3V)の検出に失敗しました(想定と異なる見出し構成)")
+    title = extract_title(article_text)
+    hook_part1, hook_part2 = split_two_balanced_by_sentence(sections["hook_body"])
+    return {
+        "title": title,
+        "part1": hook_part1, "part2": hook_part2,
+        "point_one_heading": ensure_period(sc.clean_heading(sections["voice_1_heading"])),
+        "point_one_body": sections["voice_1_body"],
+        "point_two_heading": ensure_period(sc.clean_heading(sections["voice_2_heading"])),
+        "point_two_body": sections["voice_2_body"],
+        "point_three_heading": ensure_period(sc.clean_heading(sections["voice_3_heading"])),
+        "point_three_body": sections["voice_3_body"],
+        "in_one_line": sections["closing_body"],
+        "tension_heading": sections["tension_heading"],
+        "tension_body": sections["tension_body"],
+        "sections": sections,
+        "_six_section_headings": {k: sections[k] for k in
+                                   ("hook_heading", "voice_1_heading", "voice_2_heading", "voice_3_heading",
+                                    "tension_heading", "closing_heading")},
+    }
+
+
+# ============================================================
 # Voice可用性チェック + fallback解決
 # ============================================================
 def generate_voice_sample_single_take(text: str, out_path: str, voice_name: str) -> dict:
@@ -264,6 +327,26 @@ def resolve_voice_names(sample_results: dict) -> tuple:
                                f"{sample_results.get(voice_b_candidate, {}).get('error')})のため"
                                f"{voice_b_fallback}へ変更")
     return voice_a, voice_b, reasons
+
+
+def resolve_voice_names_3v(sample_results: dict) -> tuple:
+    """EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 3V(3声)版。
+    Voice A/Bは既存resolve_voice_names()のfallbackロジックをそのまま再利用
+    する(無変更)。Voice C(registry.VOICE_ASSIGNMENT["voice_c"]=Schedar)は、
+    2026-09-10ユーザー決定により専用fallback声を持たない。voice_check段階の
+    sample生成がVoice Cで技術的に失敗した場合も、ここで独自の代替声を発明
+    せずreasonsへ記録するのみにとどめる(Voice Cの実際の安全網は、本文TTS
+    呼び出しgenerate_voice_body_wide_margin()が既に備える既存Human Review
+    Lock[guarded_generate、既存Production、無変更]である)。単体テスト対象。"""
+    voice_a, voice_b, reasons = resolve_voice_names(sample_results)
+    voice_c = registry.VOICE_ASSIGNMENT["voice_c"]
+    if sample_results.get(voice_c, {}).get("status") != "OK":
+        reasons["voice_c"] = (
+            f"{voice_c}のvoice-check sample生成が技術的に失敗しました"
+            f"({sample_results.get(voice_c, {}).get('error')})。Voice 3には専用fallback声が"
+            f"無いため代替せず、既存Human Review Lock(generate_voice_body_wide_marginの"
+            f"guarded_generate)へ委ねます。")
+    return voice_a, voice_b, voice_c, reasons
 
 
 # ============================================================
@@ -498,3 +581,227 @@ def build_b1_voices_timeline(parts: dict, voice_a: str, voice_b: str) -> list:
         ("Outro (Charon)", parts["outro"]),
     ]
     return seq
+
+
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 3V(3声)専用
+# Assembly source loader + timeline builder(正式移設)。既存load_b1_sources
+# 相当の共有Production関数(asm.load_b1_sources())は2声固定(point_one/
+# point_two)のためそのままでは3声に使えず、また共有ファイル
+# (er003_v1_n3_01_assemble.py)への変更は本Phase 1のSTOP条件(b)により
+# DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVELの1エントリ追加のみに限定した
+# ため、3V用loaderはこちら(B-Family専用集約ファイル)へ新規追加する
+# (asm.verify_episode_audio_validation_gate/copy_b1_shared_assetsは既存
+# Production、無変更のままそのまま呼ぶ)。出典:
+# er012_editorial_b_voices_3v_audio_trial_01.py::load_b1_sources_3v()。
+# ============================================================
+def load_b1_sources_3v(out_dir: str) -> dict:
+    narration_dir = f"{out_dir}/narration"
+    # 既定OFF経路のGate検証(既存asm.load_b1_sources()と同一の既定挙動)。
+    asm.verify_episode_audio_validation_gate(out_dir, "B1")
+    asm.copy_b1_shared_assets(narration_dir)  # Production、無変更
+
+    intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
+    notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
+    point_notification = p9a.load_and_resample_to_target(asm.POINT_NOTIFICATION_MP3_PATH)
+    outro = p9a.load_and_resample_to_target(p9a.OUTRO_MP3_PATH)
+
+    narration = {}
+    for name in ("welcome", "preview_intro", "key_phrases_intro", "full_story_intro"):
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}_charon.wav")
+        assert sr == common.SAMPLE_RATE
+        narration[name] = mono
+    for name in ("num_one", "num_two", "num_three", "num_four", "num_five"):
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}_charon.wav")
+        assert sr == common.SAMPLE_RATE
+        narration[name] = mono
+    mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/topic_intro.wav")
+    assert sr == common.SAMPLE_RATE
+    narration["topic_intro"] = mono
+
+    b1_segments = {}
+    for name in ("full_story_part1", "full_story_part2", "point_one", "point_two", "point_three",
+                  EXTRA_SEGMENT_NAME):
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
+        assert sr == common.SAMPLE_RATE
+        b1_segments[name] = mono
+    for name in ("comment_1", "comment_2", "comment_3", "comment_4", "preview"):
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
+        assert sr == common.SAMPLE_RATE
+        b1_segments[name] = mono
+    mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/in_one_line.wav")
+    assert sr == common.SAMPLE_RATE
+    b1_segments["in_one_line"] = mono
+    for name in ("point_one_heading", "point_two_heading", "point_three_heading"):
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
+        assert sr == common.SAMPLE_RATE
+        b1_segments[name] = mono
+
+    kp = _load_json_local(f"{out_dir}/key_phrases/keywords_canonicalized.json")
+    kp_items = sorted(kp["items"], key=lambda it: it["rank"])
+    key_phrase_components, key_phrase_meanings = {}, {}
+    for item in kp_items:
+        rank = item["rank"]
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_en.wav")
+        key_phrase_components[rank] = mono
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_ja_charon.wav")
+        key_phrase_meanings[rank] = mono
+
+    return {"intro": intro, "notification": notification, "point_notification": point_notification, "outro": outro,
+            "narration": narration, "b1_segments": b1_segments,
+            "key_phrase_components": key_phrase_components, "key_phrase_meanings": key_phrase_meanings,
+            "kp_items": kp_items}
+
+
+def build_b1_voices_timeline_3v(parts: dict, voice_a: str, voice_b: str, voice_c: str) -> list:
+    """Hook/Comment1/Voice A(heading+body)/Comment2/Voice B(heading+body)/
+    Voice C(heading+body)/Comment3/Tension/Comment4/Closingという、3V構造
+    (6区切り)のtimelineを構築する。既存build_b1_voices_timeline()(2声
+    固定、無変更のまま温存)と同一のPause定数・Key Phrase位置規約を踏襲し、
+    Voice Cの Point Notification/heading/body 1ブロックだけを新規挿入した
+    (正式移設、出典: er012_editorial_b_voices_3v_audio_trial_01.py::
+    build_b1_voices_timeline_3v())。"""
+    key_phrase_blocks = asm.build_b1_key_phrase_blocks(parts)  # Production、無変更
+    b1 = parts["b1_segments"]
+
+    seq = [
+        ("Intro", parts["intro"]),
+        ("Welcome (Charon)", parts["welcome"]),
+        ("pause_0.5", p9a.silence_stereo(0.5)),
+        ("Topic intro (Charon)", parts["topic_intro"]),
+        ("pause_0.65", p9a.silence_stereo(0.65)),
+        ("Notification 1", parts["notification"]),
+        ("pause_0.4", p9a.silence_stereo(0.4)),
+        ("Preview intro (Charon)", parts["preview_intro"]),
+        ("pause_0.65", p9a.silence_stereo(0.65)),
+        ("Preview (Charon)", b1["preview"]),
+        ("pause_0.5", p9a.silence_stereo(0.5)),
+        ("Notification 2", parts["notification"]),
+        ("pause_0.4", p9a.silence_stereo(0.4)),
+        ("Key phrases intro (Charon)", parts["key_phrases_intro"]),
+        ("pause_0.5", p9a.silence_stereo(0.5)),
+    ]
+    kp_labels = tuple(f"Key Phrase {i}" for i in range(1, len(key_phrase_blocks) + 1))
+    for label, block in zip(kp_labels, key_phrase_blocks):
+        seq.append((label, block))
+
+    seq += [
+        ("Notification 3", parts["notification"]),
+        ("pause_0.4", p9a.silence_stereo(0.4)),
+        ("Full story intro (Charon)", parts["full_story_intro"]),
+        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
+        ("Comment 1 (Charon)", b1["comment_1"]),
+        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
+        ("Hook Part 1: The Question (Aoede, no heading)", b1["full_story_part1"]),
+        ("pause_0.25_hook_internal", p9a.silence_stereo(0.25)),
+        ("Hook Part 2: The Question (Aoede, no heading)", b1["full_story_part2"]),
+        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
+        ("Comment 2 (Charon, bridge to Voices)", b1["comment_2"]),
+        ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
+        ("Point Notification (Voice 1 cue, existing SFX reuse)", parts["point_notification"]),
+        ("Narrator: Voice 1 heading (Aoede)", b1["point_one_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
+        (f"Voice 1 body ({voice_a})", b1["point_one"]),
+        ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
+        ("Point Notification (Voice 2 cue, existing SFX reuse)", parts["point_notification"]),
+        ("Narrator: Voice 2 heading (Aoede)", b1["point_two_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
+        (f"Voice 2 body ({voice_b})", b1["point_two"]),
+        ("pause_0.5_notification_entry", p9a.silence_stereo(asm.NOTIFICATION_ENTRY_PAUSE_SECONDS)),
+        ("Point Notification (Voice 3 cue, existing SFX reuse)", parts["point_notification"]),
+        ("Narrator: Voice 3 heading (Aoede)", b1["point_three_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
+        (f"Voice 3 body ({voice_c})", b1["point_three"]),
+        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
+        ("Comment 3 (Charon)", b1["comment_3"]),
+        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
+        ("Tension: Why They See It Differently (Aoede, no heading)", b1[EXTRA_SEGMENT_NAME]),
+        ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
+        ("Comment 4 (Charon)", b1["comment_4"]),
+        ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
+        ("Closing: What This Question Really Means (Aoede, no heading, In One Line)", b1["in_one_line"]),
+        ("pause_0.8_in_one_line_to_outro", p9a.silence_stereo(asm.IN_ONE_LINE_TO_OUTRO_PAUSE_SECONDS)),
+        ("Outro (Charon)", parts["outro"]),
+    ]
+    return seq
+
+
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 3V(3声)専用
+# TTS(正式移設)。2V run_tts()(er012_b_family_production_runner_01.py)と
+# 同一のsegment順序・同一の既存Production primitive呼び出しパターンに、
+# Voice C(point_three系3segment)を追加しただけの1段拡張。既存2V run_tts()
+# は無変更のまま。narration_dirは呼び出し側(runner)が出力先ごとに指定する
+# (Trial側のグローバル定数[NARRATION_DIR]をここでは引数化した)。出典:
+# er012_editorial_b_voices_3v_audio_trial_01.py::run_tts_3v()。
+# ============================================================
+def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voice_c: str,
+               narration_dir: str) -> dict:
+    shared_narration.ensure_all_shared_narration_b1(narration_dir)  # Production、無変更(Master Audio Store経由)
+
+    results = {}
+    topic_intro_text = f"Today's topic is {parts['title']}."
+    print("[B-FAMILY-VOICES-3V-PROD] topic_intro生成(Charon)...")
+    with cl.segment_context("topic_intro"):
+        results["topic_intro"] = voice01.generate_charon_english(
+            tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav")
+    results["topic_intro"]["canonical_text"] = topic_intro_text
+
+    for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
+        text = support_texts[name]
+        print(f"[B-FAMILY-VOICES-3V-PROD] {name}生成(Charon、registry Comment Contract)...")
+        with cl.segment_context(name):
+            results[name] = voice01.generate_charon_english(
+                tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                style_prefix_override=tts_gen.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True)
+        results[name]["canonical_text"] = text
+
+    for name in ("point_one_heading", "point_two_heading", "point_three_heading"):
+        text = parts[name]
+        sc.assert_no_point_number_label(text, name)
+        print(f"[B-FAMILY-VOICES-3V-PROD] {name}生成(Narrator=Aoede、Production point_headings.generate、無変更)...")
+        with cl.segment_context(name):
+            results[name] = point_headings.generate(
+                tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(text)), f"{narration_dir}/{name}.wav")
+        results[name]["canonical_text"] = text
+
+    # OPEN-121/OPEN-122安全機構の対称性: Voice A/B(Phase 1)と同一規約で
+    # Voice C(point_three)にもenable_connected_speech_equivalence_layer=
+    # True・enable_repetition_qa=Trueを明示適用する(3V Audio Trialで実測
+    # 確認済み)。
+    for name, text, voice_name in (
+        ("point_one", parts["point_one_body"], voice_a),
+        ("point_two", parts["point_two_body"], voice_b),
+        ("point_three", parts["point_three_body"], voice_c),
+    ):
+        sc.assert_no_point_number_label(text, name)
+        print(f"[B-FAMILY-VOICES-3V-PROD] {name}生成({voice_name}、generate_voice_body_wide_margin、無変更)...")
+        with cl.segment_context(name):
+            results[name] = generate_voice_body_wide_margin(
+                tts_gen.tts_safe_news_en(text), f"{narration_dir}/{name}.wav", voice_name,
+                enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
+        results[name]["canonical_text"] = text
+
+    for name, text in (
+        ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
+        (EXTRA_SEGMENT_NAME, parts["tension_body"]), ("in_one_line", parts["in_one_line"]),
+    ):
+        print(f"[B-FAMILY-VOICES-3V-PROD] {name}生成(Aoede、既存Production "
+              "news_tail_fix.generate_news_narration_wide_margin、無変更)...")
+        with cl.segment_context(name):
+            results[name] = news_tail_fix.generate_news_narration_wide_margin(
+                tts_gen.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
+                # 2V Phase1と同一規約(A-Family full_story_part1/2相当のみ
+                # OPEN-121/OPEN-122対象、Tension/Closingは対象外)。
+                disfluency_qa=(name == "in_one_line"),
+                enable_connected_speech_equivalence_layer=(name in ("full_story_part1", "full_story_part2")),
+                enable_repetition_qa=(name in ("full_story_part1", "full_story_part2")))
+        results[name]["canonical_text"] = text
+
+    return results
+
+
+def _load_json_local(path: str) -> dict:
+    import json
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)

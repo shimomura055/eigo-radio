@@ -378,10 +378,15 @@ class DisfluencyQaMandatoryDictB_FamilyA2Tests(unittest.TestCase):
     辞書の内容で検証する。"""
 
     def test_existing_b1_and_standard_a2_entries_unchanged(self):
-        self.assertEqual(
-            asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["B1"],
-            ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
-             "in_one_line", "point_one_heading", "point_two_heading"))
+        # EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01(Fable修正指示1回目、
+        # 2026-09-10): ユーザー正式決定により"B1"へ`point_three_heading`が追加された
+        # (3Vに必要な最小追加、er003_v1_n3_01_assemble.py参照)。旧8要素タプルはその
+        # まま部分集合として保持し、追加は`point_three_heading`1件のみであることを固定する。
+        old_b1_entries = ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
+                           "in_one_line", "point_one_heading", "point_two_heading")
+        current_b1 = asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["B1"]
+        self.assertEqual(current_b1[:len(old_b1_entries)], old_b1_entries)
+        self.assertEqual(current_b1[len(old_b1_entries):], ("point_three_heading",))
         self.assertEqual(
             asm.DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL["A2"],
             ("in_one_line", "point_one_heading", "point_two_heading"))

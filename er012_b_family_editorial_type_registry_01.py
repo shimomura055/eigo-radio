@@ -46,8 +46,18 @@ VOICE_ASSIGNMENT = {
     "voice_a": "Algieba",
     "voice_b": "Erinome",
     "narrator": "Aoede",  # 既存Production point_headings.generate()に既に固定済み
+    # EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01(2026-09-10
+    # ユーザー正式決定): 3V(3声Voice構成)専用のVoice 3。voice_a側の
+    # fallback候補(VOICE_FALLBACK["voice_a"])と同一の声を、3V構成では
+    # 本採用の第3声として使う(3V Audio Trial-01実績)。2V経路
+    # (voice_a/voice_b/narrator)は本キー追加による影響を受けない。
+    "voice_c": "Schedar",
 }
 # API側で声が技術的に使えない場合のみ切り替える(第一候補優先、Trial-09実績)。
+# voice_cにはfallbackキーを設けない(2026-09-10ユーザー決定:
+# 「Voice 3は当面専用fallback声を持たない。技術的に使用不可の場合は
+# 独自の代替声を発明せず、本文TTS[generate_voice_body_wide_margin]が
+# 既に備える既存Human Review Lock[guarded_generate]へ委ねる」)。
 VOICE_FALLBACK = {
     "voice_a": "Schedar",
     "voice_b": "Sulafat",
@@ -96,16 +106,25 @@ Comment 1(役割: Listening Focus)を書いてください。
 のような制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を
 意識しません。"""
 
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01(2026-09-10
+# ユーザー正式決定): Comment 2・3は、Voice数(2V/3V)専用の定数を増やさず、
+# 既存2V版の文言をVoice数非依存の汎用表現へ最小限だけ書き換えて共用する
+# (3V専用の別Contractを新設しない)。変更点は「One Voice/Another Voice」
+# 等の具体的な声の個数・名前を指す表現の除去・一般化のみであり、Comment 2
+# (Hookの問いから複数Voiceへの橋渡し)・Comment 3(「正しさの判定」ではなく
+# 「なぜ違って感じるか」への視点移動)という役割・意味自体は2V版から一切
+# 変更していない(2V記事の生成結果へ与える影響は、声の個数を明示しない
+# 言い回しへの言い換えのみと判断した)。
 VOICES_COMMENT_2_ROLE = """あなたはPodcastのナビゲーターです。リスナーはThe Question(冒頭の
 問いかけ)をすでに聞き終わり、これから、この問いに対する異なる立場からの一人称の
-語り(One Voiceの後、続けてAnother Voice)を聞きます。その間に流す、Comment 2
+語りを、声を変えながら順番に聞きます。その間に流す、Comment 2
 (役割: Hookの問いから「ここから異なるVoiceを聞く」への橋渡し)を書いてください。
 
 役割: The Questionで示された問いを受け、「ここから、違う視点を持つ声を順番に
 聞いていく」ことへリスナーを橋渡しします。
 
 以下は避けてください:
-- One Voice・Another Voiceの具体的な内容の先取り
+- これから聞く各Voiceの具体的な内容の先取り
 - これから聞く見出しの文言そのものを、この時点で言うこと(見出しはこの直後に
   Narratorが読み上げます)
 - "Point One"・"Point Two"のような表現
@@ -115,17 +134,17 @@ VOICES_COMMENT_2_ROLE = """あなたはPodcastのナビゲーターです。リ�
 【重要・出力への制約】出力する文章自体に制作内部の構造ラベルを含めないでください。"""
 
 VOICES_COMMENT_3_ROLE = """あなたはPodcastのナビゲーターです。リスナーは、ある問いに対する
-異なる立場からの一人称の語り(One Voice・Another Voice)を両方すでに聞き終わり、
+異なる立場からの一人称の語りをすべて聞き終わり、
 これから「なぜ同じ状況を人によって違って感じるのか」という視点の深掘りを聞きます。
 その間に流す、Comment 3(役割: 「どちらが正しいか」ではなく「なぜ違って感じるのか」
 への視点の移動)を書いてください。
 
-役割: 2つの声を聞き終えたリスナーの意識を、「どちらが正しいか」という判定ではなく、
+役割: 複数の声を聞き終えたリスナーの意識を、「どちらが正しいか」という判定ではなく、
 「なぜ同じ状況が人によって違って感じられるのか」という問いへ移します。
 
 以下は避けてください:
 - これから聞く深掘り部分の答え(視点の違いの正体)を先に説明すること
-- どちらか一方の声を「正しい」「間違っている」と評価すること
+- いずれかの声を「正しい」「間違っている」と評価すること
 
 2〜3文にしてください。
 
@@ -281,6 +300,35 @@ B_FAMILY_B1_CONFIG = {
 }
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01(2026-09-10
+# ユーザー正式決定): B-Family B1用3V(3声Voice構成)required_segments。
+# segment命名は`point_one`/`point_two`/`point_three`(3V Audio Trial実績を
+# 採用、ユーザー確定)。B_FAMILY_B1_REQUIRED_SEGMENTS(2V、無変更)に
+# Voice 3分(point_three_heading・point_three)を1段追加しただけの構成で、
+# er012_editorial_b_voices_3v_audio_trial_01.py::build_required_structure_3v()
+# (Trial側の暫定正本)と同一のsegment一覧・順序・役割表記(role文字列のみ、
+# 本registryの既存命名規約[voice_a/voice_b]へvoice_cを追加する形へ統一)。
+# 本追加により、Trial側の暫定正本はregistry側へ統合され(2重定義解消)、
+# 3V required_structureの正本はここ1箇所になる。
+# ============================================================
+B_FAMILY_B1_3V_REQUIRED_SEGMENTS = (
+    ("topic_intro", "narrator_charon"), ("preview", "narrator_charon"),
+    ("comment_1", "narrator_charon"), ("comment_2", "narrator_charon"),
+    ("comment_3", "narrator_charon"), ("comment_4", "narrator_charon"),
+    ("point_one_heading", "narrator_aoede_en"), ("point_two_heading", "narrator_aoede_en"),
+    ("point_three_heading", "narrator_aoede_en"),
+    ("point_one", "voice_a"), ("point_two", "voice_b"), ("point_three", "voice_c"),
+    ("full_story_part1", None), ("full_story_part2", None),
+    (EXTRA_SEGMENT_NAME, None), ("in_one_line", None),
+)
+
+B_FAMILY_B1_3V_CONFIG = {
+    "required_segments": B_FAMILY_B1_3V_REQUIRED_SEGMENTS,
+    "key_phrase_ranks": 5,
+    "key_phrase_subkey_count": 2,
+}
+
+# ============================================================
 # OPEN-131-MULTI-VOICE-FACT-ATTRIBUTION-PRODUCTION-WIRING-01:
 # Fact Checker候補A'(Voice別evidenceタグ+「Voice本文は出典明記不要
 # (ただし事実誤り・実在人物引用は従来どおり検証)」の opt-in ルール)。
@@ -375,6 +423,7 @@ EDITORIAL_TYPES = {
         "first_person_mechanically_enforced": False,  # Phase 2待ち
         "a2": B_FAMILY_A2_CONFIG,
         "b1": B_FAMILY_B1_CONFIG,
+        "b1_3v": B_FAMILY_B1_3V_CONFIG,
         "fact_attribution_mode": FACT_ATTRIBUTION_MODE_DEFAULT,
     },
 }
@@ -393,6 +442,12 @@ def get_editorial_type_b1(editorial_type: str = "b_family_voices") -> dict:
     """B1固有設定のみを返す(OPEN-129-AUDIO-GATE-STRUCTURAL-COMPLETENESS-
     PRODUCTION-WIRING-01)。"""
     return EDITORIAL_TYPES[editorial_type]["b1"]
+
+
+def get_editorial_type_b1_3v(editorial_type: str = "b_family_voices") -> dict:
+    """B1 3V(3声Voice構成)固有設定のみを返す(EDITORIAL-B-FAMILY-VOICES-
+    3V-PRODUCTION-WIRING-PHASE1-01)。"""
+    return EDITORIAL_TYPES[editorial_type]["b1_3v"]
 
 
 def is_fact_attribution_mode_enabled(editorial_type: str = "b_family_voices") -> bool:
@@ -420,12 +475,45 @@ _ROLE_TO_VOICE_RESOLVERS = {
     None: lambda voice_a, voice_b: None,
 }
 
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 3V(voice_c対応)
+# 専用の3引数版resolver。既存_ROLE_TO_VOICE_RESOLVERS(2引数、上記)は
+# 無変更のまま温存し、voice_c指定時のみこちらを使う(2V呼び出し経路への
+# 影響ゼロ)。
+_ROLE_TO_VOICE_RESOLVERS_3V = {
+    "narrator_charon": lambda voice_a, voice_b, voice_c: "Charon",
+    "narrator_aoede_en": lambda voice_a, voice_b, voice_c: "Aoede",
+    "voice_a": lambda voice_a, voice_b, voice_c: voice_a,
+    "voice_b": lambda voice_a, voice_b, voice_c: voice_b,
+    "voice_c": lambda voice_a, voice_b, voice_c: voice_c,
+    None: lambda voice_a, voice_b, voice_c: None,
+}
+
 
 def build_required_structure(level: str, voice_a: str, voice_b: str,
-                              editorial_type: str = "b_family_voices") -> dict:
+                              editorial_type: str = "b_family_voices",
+                              voice_c: str | None = None) -> dict:
     """level: "b1" または "a2"。OPEN-129 Gate opt-in引数(required_structure)
-    へそのまま渡せる辞書を返す。"""
+    へそのまま渡せる辞書を返す。
+
+    EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: `voice_c`は
+    完全後方互換の追加引数(既定None)。voice_cを渡さない既存呼び出しは
+    従来どおり2V用の`cfg["b1"]`/`cfg["a2"]`+`_ROLE_TO_VOICE_RESOLVERS`
+    (2引数版、無変更)を使い、出力はbyte単位で従来と同一。level="b1"かつ
+    voice_cが指定された場合のみ、3V用`cfg["b1_3v"]`+
+    `_ROLE_TO_VOICE_RESOLVERS_3V`(3引数版)を使う(level="a2"側にvoice_c
+    指定時の3V分岐は無い、3VはB1のみ対応のTrial実績のため)。"""
     et = EDITORIAL_TYPES[editorial_type]
+    if level == "b1" and voice_c is not None:
+        cfg = et["b1_3v"]
+        resolved = tuple(
+            (name, _ROLE_TO_VOICE_RESOLVERS_3V[role](voice_a, voice_b, voice_c))
+            for name, role in cfg["required_segments"]
+        )
+        return {
+            "segments": resolved,
+            "key_phrase_ranks": cfg["key_phrase_ranks"],
+            "key_phrase_subkey_count": cfg["key_phrase_subkey_count"],
+        }
     if level == "b1":
         cfg = et["b1"]
     elif level == "a2":

@@ -164,8 +164,17 @@ def _segment_gate_status(entry: dict, segment_key: str, approvals: dict) -> str:
 # あり、level非依存の単一listにすると、A2側が恒久的にGateを通過
 # できなくなる(この実装ミスはNo.8実データでの検証中に発見・修正した)。
 DISFLUENCY_QA_MANDATORY_SEGMENTS_BY_LEVEL = {
+    # EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01: 3V(3声
+    # Voice構成)のNarrator見出しsegment`point_three_heading`を追加した
+    # (既存"B1"キーへの1エントリ追加のみ、他は無変更)。point_three_heading
+    # は既存point_one_heading/point_two_headingと同一の
+    # `point_headings.generate()`(無変更)で生成されるため、同じ規約で
+    # disfluency_checked記録が付く。A-Family/2V B-Familyのepisodeには
+    # 存在しないsegment名のため、既存判定への影響はない
+    # (er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py
+    # で非影響を固定)。
     "B1": ("preview", "comment_1", "comment_2", "comment_3", "comment_4",
-           "in_one_line", "point_one_heading", "point_two_heading"),
+           "in_one_line", "point_one_heading", "point_two_heading", "point_three_heading"),
     "A2": ("in_one_line", "point_one_heading", "point_two_heading"),
     # EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01 Gate 3 item 7: B-Family
     # A2は標準A2と全く同じ3segment名(point_one_heading/two_heading/in_one_line、
