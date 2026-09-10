@@ -593,3 +593,12 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   正式PM運用SSOT反映のみ(Sonnet、LOW、実測¥0、新規コード実行・API
   呼び出しなし)。中間レビュー・正式Closeout Triggerの到達判定・再計算は
   いずれも実施していない。
+- 2026-09-10(PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01、本タスク):
+  `OPEN_ITEMS.md`巨大単一行(25行+ヘッダ「直前の記録」連鎖)の構造分割
+  (Status要約行+`OPEN_ITEMS_HISTORY.md`新規への履歴全文切り出し、要約・
+  言い換えなし)。Sonnet、MEDIUM、実測¥0(LLM API呼び出しなし、決定論的
+  script処理のみ)。決定論的検証script(`er011_open_items_restructure_
+  verify_01.py`)で25行全件+ヘッダの完全一致(空白正規化後)・行数一致
+  (143行)・ID/日付/URL/ファイルパス件数一致を確認(`ALL_PASS: true`)。
+  `OPEN_ITEMS.md`本体418,461→182,340文字(-56.4%)。中間レビュー・正式
+  Closeout Triggerの到達判定・再計算はいずれも実施していない。

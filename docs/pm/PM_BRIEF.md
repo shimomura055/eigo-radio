@@ -12,7 +12,11 @@
 4. 必要な箇所だけ、以下のroot直下SSOTをGrepする(全文読み込みしない):
    - `CURRENT_SPEC.md` — 正式仕様SSOT
    - `DECISION_LOG.md` — 意思決定履歴
-   - `OPEN_ITEMS.md` — 未決事項(唯一の管理場所。`docs/pm/`には作らない)
+   - `OPEN_ITEMS.md` — 未決事項(唯一の管理場所。`docs/pm/`には作らない)。
+     3,000文字超だった行はStatus要約のみを残し、履歴全文は
+     `OPEN_ITEMS_HISTORY.md`(同じroot直下、別の管理場所ではなく
+     `OPEN_ITEMS.md`各行の切り出し先)へ原文のまま移動した
+     (PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01、2026-09-10)。
    - `HISTORY_INDEX.md` — 履歴索引
    - `ER-*_REPORT.md` — 個別タスクの正式な詳細報告・証跡
 5. `docs/pm/MODEL_ROUTING_TRIAL_LOG.md` — モデル選定(Haiku/Sonnet/Opus)運用

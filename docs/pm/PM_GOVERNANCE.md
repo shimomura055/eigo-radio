@@ -78,7 +78,11 @@ PM-GOVERNANCE-TTS-MODE-CONFIRMATION-01でTTS方式明示・確認原則[7節]を
 **このファイルはPM運用規則(Gate・Closeout Check等)の正式SSOTである。**
 正式仕様(記事・音声・生成パイプラインそのものの仕様)は引き続き
 `CURRENT_SPEC.md`が正本であり、このファイルはそれを置き換えない。
-決定履歴は`DECISION_LOG.md`、未決事項は`OPEN_ITEMS.md`が正本のまま。
+決定履歴は`DECISION_LOG.md`、未決事項は`OPEN_ITEMS.md`が正本のまま
+(2026-09-10、PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01以降、
+`OPEN_ITEMS.md`はStatus要約、3,000文字超だった行の履歴全文は
+`OPEN_ITEMS_HISTORY.md`[`OPEN_ITEMS.md`各行の切り出し先、別の管理場所
+ではない]を参照)。
 
 本ファイルはユーザー承認済みのPM運用原則4点
 (PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01、2026-09-05、

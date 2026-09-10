@@ -11039,6 +11039,82 @@ GENERALIZATION-TOWELS-TRIAL-11-OPUS-L2-REVIEW-01_REPORT.md`。1 commit
 `docs/pm/RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスク
 では触っていない(commit対象外)。
 
+## PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01: OPEN_ITEMS.md巨大単一行の構造分割(内容不変)
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01)に基づき、ユーザー承認
+(2026-09-10、T-1、条件: 内容・Status・履歴を欠落させない/SSOTの意味を
+変えない/構造整理のみ/参照性・検索性を悪化させない/削減効果を記録)の
+もとで実施した。並列稼働中の4件(3V Phase 1修正+Phase 1b、Opus L2
+[Trial-12読取]、Discovery Trial-11タオルAudio、TTS retryモニタリング)の
+生成物・SSOTは一切触れていない。
+
+**方式**: `OPEN_ITEMS.md`の各行(テーブル6列: ID/内容/状態/種類/
+Blocking/次Action)のうち、いずれかの列が1,800文字を超える行を対象に、
+その列の中から日付/管理ID単位の追記境界(`**YYYY-MM-DD追記(ID)**:`型・
+`。YYYY-MM-DD(ID`型のいずれか)を機械検出し、**最新の1エントリのみを
+`OPEN_ITEMS.md`本体に残し、それより前の全エントリを原文のまま
+`OPEN_ITEMS_HISTORY.md`(新規、root直下)へ移動**した。要約・言い換えは
+一切行っていない(切り貼りのみ)。境界が見つからない列は文末("。")境界で
+機械分割、それも無ければ変更なし。ヘッダの「最終更新」(最新1件、
+2026-09-10付、3,094文字)は本体に残し、それより古い「直前の記録」
+「その前の記録」「さらに前の記録」の連鎖(2026-09-10付CONSOLIDATION-70
+から2026-08-29付の旧ER-008以前まで、合計35,384+11,667文字相当)は
+`OPEN_ITEMS_HISTORY.md`の`## HEADER_HISTORY`節へ原文のまま移動した。
+対象行(3,000文字超)は25行: OPEN-100/103/107/108/110/111/64/65/66/68/
+112/113/116/117/119/120/121/122/123/129/131/132/134/135/138。各行末尾に
+「履歴全文: `OPEN_ITEMS_HISTORY.md#OPEN-XXX`」を付記した。両ファイル
+冒頭に、管理場所は引き続き`OPEN_ITEMS.md`のみであり`OPEN_ITEMS_
+HISTORY.md`は別の管理場所ではない旨を明記した。
+
+**事前調査**: `*.py`をGrepし、`OPEN_ITEMS.md`をプログラムで解析する
+コードが存在しないこと(コメント中の参照14件のみ)を確認済み、分割で
+既存コードが壊れるリスクはない。
+
+**検証(決定論的、`er011_open_items_restructure_verify_01.py`)**: git
+HEAD時点(restructure前)の`OPEN_ITEMS.md`を基準に、(1) 25行それぞれの
+分割対象セルについて「新本体の要約セル+`OPEN_ITEMS_HISTORY.md`の対応
+節」を連結した文字列が、空白・改行の正規化後に元のセルと完全一致する
+ことを25行全件で確認(25/25一致、不一致0件)、(2) ヘッダの`HEADER_
+HISTORY`節が元のlines 66-306と完全一致することを確認、(3) 元ファイルの
+テーブル行数(`| OPEN-`開始行、143件)が新本体でも143件で一致(行の
+欠落・重複・混入なし)、(4) 管理ID(`[A-Z][A-Z0-9]*(?:-[A-Z0-9]+){2,}`
+形式)1,154件・`OPEN-\d+`484件・日付359件・URL12件・ファイルパス
+(拡張子付きbacktick引用)554件のいずれも、元ファイルと(新本体+新
+HISTORY、追加した構造用の定型文を除外)で完全一致。結果は
+`er011_output/open_items_restructure_01/verify_result.json`
+(`ALL_PASS: true`)・`manifest.json`に保存。
+
+**参照性確認**: `OPEN-135`・`USER_DECISION_REQUIRED`・`3V`・
+`Fact Checker A'`のいずれも、分割後も`OPEN_ITEMS.md`側(11/18/10/2件)・
+`OPEN_ITEMS_HISTORY.md`側(33/94/50/9件)の両方でヒットし、`OPEN_ITEMS.
+md`側の要約行だけで各項目の現在Statusが判別できることを目視確認した。
+
+**削減効果**(文字数、換算token=文字数/2.2の粗い概算): `OPEN_ITEMS.md`
+本体は418,461文字(約190,210 token)→182,340文字(約82,882 token、
+-56.4%)。上位4行(OPEN-120/112/135/121)合計は120,187文字→11,434文字
+(-90.5%)。`OPEN-135`行単独は27,110文字(約12,323 token)→3,941文字
+(約1,791 token、-85.5%)。`OPEN_ITEMS_HISTORY.md`(新規)は239,829文字。
+
+**SSOT参照更新**: `docs/pm/PM_BRIEF.md`「参照順序」・
+`docs/pm/PM_GOVERNANCE.md`冒頭・`CLAUDE.md`のSSOT列挙へ、
+`OPEN_ITEMS_HISTORY.md`が`OPEN_ITEMS.md`各行の切り出し先(別の管理場所
+ではない)である旨を各1〜2行追記した。`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`へ本タスク行(Sonnet/MEDIUM、¥0)を追加した。
+
+**触れていないもの**: `CURRENT_SPEC.md`・並列稼働中4件の生成物・
+`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`。コード・Prompt・
+Production実装の変更はゼロ(構造整理のみ、追加API費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01)。Git操作: ファイル
+名指定で`git add`(`git add -A`不使用)、対象=`OPEN_ITEMS.md`・
+`OPEN_ITEMS_HISTORY.md`(新規)・`DECISION_LOG.md`・`docs/pm/PM_BRIEF.md`・
+`docs/pm/PM_GOVERNANCE.md`・`CLAUDE.md`・`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`・`er011_open_items_restructure_verify_01.py`(新規)・
+`er011_output/open_items_restructure_01/`配下のjson。1 commitで
+`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

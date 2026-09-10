@@ -45,7 +45,9 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
 - PM運用の入口は`docs/pm/PM_BRIEF.md`。正式仕様・決定履歴・未決事項は
   引き続きroot直下の`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`/
   `HISTORY_INDEX.md`/`ER-*_REPORT.md`が正式SSOTであり、`docs/pm/`配下は
-  その複製ではない。
+  その複製ではない。`OPEN_ITEMS_HISTORY.md`は`OPEN_ITEMS.md`本体行(旧
+  3,000文字超)の履歴全文の切り出し先であり、管理場所は引き続き
+  `OPEN_ITEMS.md`のみ。
 - `docs/pm/ACTIVE_TASK.md`と`docs/pm/RESULT_PACKET.md`は一時ファイルであり、
   正式記録ではない(タスクごとに上書きされる)。
 - サンドイッチ方式の起動は`claude --agent sandwich-pm`。
