@@ -20,10 +20,15 @@ Fable・Sonnetの委任判断における「モデル選定の妥当性」を事
 
 ## L0〜L3 定義
 
-- **L0 = Haiku**(`sonnet-worker`定義に`model=haiku`指定で起動):
-  読み取り専用・API支出なし・SSOT編集なし・Git操作なし・Production変更なし・
-  Gate判断なし・出力はReport/表/定型artifactに限る。Haikuの誤りが仕様判断・
-  Production判断へ直接入らないよう、Fableが必ず照合する。
+- **L0 = Haiku**: 読み取り専用・API支出なし・SSOT編集なし・Git操作なし・
+  Production変更なし・Gate判断なし・出力はReport/表/定型artifactに限る。
+  Haikuの誤りが仕様判断・Production判断へ直接入らないよう、Fableが必ず
+  照合する。**2026-09-10追記**: 専用Agent定義`.claude/agents/
+  haiku-worker.md`(tools: Read/Grep/Glob、Bashは付与しない)を新設した。
+  L0起動は今後この専用Agent定義を用いる(従来の「`sonnet-worker`定義に
+  `model=haiku`を指定して起動」する暫定運用から移行)。制約は本定義と
+  完全に整合する(矛盾なし)。次回`claude --agent sandwich-pm`起動時から
+  有効。
 - **L1 = Sonnet**: 実装・Trial・Production配線・SSOT精密編集・Git操作・
   比較検証・通常のfailure mode調査。既定の実行モデル。
 - **L2 = Opus(読み取り専用、原則1回)**: HIGH案件の設計レビュー/second
@@ -296,6 +301,11 @@ TRIAL-SETUP-01`の次から起算)
 | 2026-09-10 | MODEL-ROUTING-TRIAL-STATUS-REVIEW-01(完了、記録漏れ是正) | LOW(L1/Sonnet) | Sonnet | モデルルーティングTrial自体の実績集計・役割分担整合確認・Opus/Haiku案件整理・進行中案件の推奨ルーティング・Trial自体のStatus判定(中間レビュー・正式Closeout Trigger照合)・逸脱整理・コスト影響評価の読み取り専用レビュー(本LOGに基づく分析作業) | Haiku不適(複数SSOT・LOGの横断照合・分析判断を伴う)、Opus不要(LOG運用状況の整理・集計であり新規横断設計判断ではない) | 不明(REPORTに記録なし) | 不明(REPORTに記録なし) | 0 | なし | なし | なし(読み取り専用、正式Closeout判定は行わず「観測継続」の所見提示のみ) | 該当なし(Production wiringなし、読み取り専用のため実測費用¥0) |
 | 2026-09-10 | PM-CLOSEOUT-CONSOLIDATION-68(本タスク、Discovery一般化Trial-11結果のSSOT反映+Git統合+モデルルーティングLOG保守) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、Discovery Trial-11[タオル臭テーマ]結果反映[OPEN-135/OPEN-137行]、DECISION_LOGエントリ新設、本表Trial-11行の確定値更新、記録漏れ2件[PLAN-01/STATUS-REVIEW-01]の追記、中間レビュー実施記録表へのTrigger照合結果追記)+Git統合、既知パターンの踏襲 | Haiku不適(SSOT複数ファイルの精密整合編集・記録漏れの特定判断を要する)、Opus不要(通常のcloseout統合パターン、正式Closeout判定はしない) | 不明(次回Fable記録時に追記) | 不明(次回Fable記録時に追記) | 0 | なし | なし | なし(反映作業のみ、コード・Prompt・Production実装は無変更) | 該当なし(Production wiringなし、SSOT反映のみ、実測費用¥0) |
 | 2026-09-10 | PM-CLOSEOUT-CONSOLIDATION-69(本タスク、3V Production配線Phase 1完了のGit統合+Phase 2前提不一致の記録) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記、3V Production Wiring Phase 1完了結果反映[OPEN-120/OPEN-132行]、Phase 2前提不一致[Writer/Ledger/Key Phrase選定未配線、2V比較記事も新テーマから完走不可]の新規記録、DECISION_LOGエントリ新設、本表Phase 1行の確定値更新)+Git統合(コード4ファイル・新規テスト・REPORT・regression evidence)、既知パターンの踏襲 | Haiku不適(SSOT複数ファイルの精密整合編集・コード差分整合確認を要する)、Opus不要(通常のcloseout統合パターン、正式Production採用判断はしない) | 不明(次回Fable記録時に追記) | 不明(次回Fable記録時に追記) | 0 | なし | なし | なし(反映作業のみ、本タスクではコード・Prompt・Production実装を変更していない[コード実装は先行するSonnet実装タスクで完了済み]) | 該当なし(Production wiringなし[`PRODUCTION_WIRED`未宣言のまま]、SSOT反映+Git統合のみ、実測費用¥0) |
+| 2026-09-10 | PM-CLOSEOUT-CONSOLIDATION-70(本タスク、2026-09-10ユーザー回答・追加指示10項目のSSOT反映+恒久ルール追加+haiku-worker新設+Token効率診断REPORTのGit記録) | LOW(L1/Sonnet) | Sonnet | SSOT精密編集(巨大単一行テーブルへの追記4件[OPEN-135/139/140行・ヘッダ]、`docs/pm/PM_GOVERNANCE.md`新小節9-4/13新設+1/3/11節追記、新規Agent定義[`haiku-worker.md`]作成、`sandwich-pm.md`更新、Token効率診断REPORTの初回Git記録)+Git統合、既知パターン(PM_GOVERNANCE改訂タスク)の踏襲だが新設項目が多い | Haiku不適(SSOT複数ファイルの精密整合編集・新規Agent定義の設計判断を要する)、Opus不要(運用方針自体は既にユーザー正式決定済みであり、本タスクは文書反映のみ) | 不明(次回Fable記録時に追記) | 不明(次回Fable記録時に追記) | 0 | なし | なし | なし(反映作業のみ、コード・Prompt・Production実装は無変更) | 該当なし(Production wiringなし、SSOT反映のみ、実測費用¥0) |
+| 2026-09-10 | FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-01(実行中、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | Trial-11(タオル臭テーマ)結果のSupport生成→Audio化→試聴artifact完成(D-1、N増しには進まずユーザー試聴後に判断) | Haiku不適(記事生成・Audio化を伴う)、Opus不要(既存Trial系列の延長) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 該当なし(Production wiringなし、費用は後日確定) |
+| 2026-09-10 | FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09-REGEN-01(実行中、並列稼働) | MEDIUM(L1/Sonnet) | Sonnet | CAR-T記事(Trial-09)B1B `full_story_part1`の承認済み再生成経路での1回限り再生成(B-6、不通過ならSTOPしユーザー確認) | Haiku不適(TTS/ASR再生成・Gate判定を伴う)、Opus不要(既存retry/fallback機構の範囲内) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 該当なし(Production wiringなし、費用は後日確定) |
+| 2026-09-10 | OPEN-140-THEME2-LEDGER-ID-CONSISTENCY-FIX-01(実行中、並列稼働) | LOW〜MEDIUM(L1/Sonnet) | Sonnet | Theme2 Ledger `F-210`/`F-211`のID不整合是正(B-10、単純なID整合修正で意味・Fact対応関係が明確なら自律修正、不明ならSTOP) | Haiku不適(Ledgerデータの意味・Fact対応関係の判断を要する)、Opus不要(既存Ledger構造内の是正作業) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 該当なし(Production wiringなし、費用は後日確定) |
+| 2026-09-10 | Opus L2レビュー(Trial-11 N=1解釈、管理ID未確定・実行中) | HIGH(L2/Opus) | Opus | ユーザー承認済み高リスク案件へのL2事前レビュー(M-2、Discovery Trial-11 N=1結果の解釈、論点限定) | Sonnet単独では因果解釈・N=1の一般化可否判断に限界があるため(過去のPOINT-QUALITY-RECONCILIATION等の実績に基づく判断) | 不明(実行中) | 不明(実行中) | 該当なし(読み取り専用診断) | 不明(実行中) | 不明(実行中) | 不明(実行中) | 該当なし(読み取り専用、実測費用¥0) |
 
 **所見(2026-09-09、PM-CLOSEOUT-CONSOLIDATION-57)**: HOUSEHOLD-FACT-03-
 PUBLISHED-ARTICLE-MINIMAL-FIX-02(継続3〜4)において、Sonnetは承認代行・

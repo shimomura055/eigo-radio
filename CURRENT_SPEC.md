@@ -806,6 +806,7 @@ Discovery/Why型の対象定義・現状を記録する最小節。判定ロジ�
 | Engagement/Storytelling原則のDiscoveryへの適用 | Trend Synthesis側でのみA/B検証済み(Trial-10/11)、Discovery側の実施記録なし | `DEFERRED`(D3) | 同上 |
 | myth-correction(通説訂正型) | Newsからの除外は確定しない、Discoveryへの追加は候補のまま | `USER_DECISION_REQUIRED`(継続) | 同上 |
 | Ledger Deviation Checker専用カテゴリ新設要否 | 既存タグの流用で対応する現行運用を変更しない | `DEFERRED`(D3) | 同上 |
+| 保険文(取扱説明書的な断定回避表現)運用注記(2026-09-10) | 保険文抑制Prompt制約案(Part B案1、`cautionary_constrained`)はProduction不採用のまま(2026-09-10ユーザー正式決定、上記Focus Module行参照)。Focus Module Part A本体単独運用で取扱説明書的・保険文的表現が出た場合は、追加Prompt対策Trialを行わず、Human Reviewで目視修正したうえで発生率を観測・記録する(仕様変更ではなく運用方針) | `DECIDED`(運用方針、仕様ではない) | PM-CLOSEOUT-CONSOLIDATION-70(ユーザーA-3回答)、OPEN-135行 |
 
 ## Cross-level仕様(A2/B1/B2共通)
 

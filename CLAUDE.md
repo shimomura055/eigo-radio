@@ -65,6 +65,16 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   `docs/pm/PM_GOVERNANCE.md` 10節に従いユーザー判断を求める。
 - 報告単位管理ルール(即時報告・未回答フル再掲・Next Action提示)の正式
   SSOTは`docs/pm/PM_GOVERNANCE.md` 12節。
+- Sonnet不要のread-only定型処理(定型集計・artifact存在確認・費用集計・
+  固定チェックリスト等、判断を含まない作業)は`haiku-worker`
+  (`.claude/agents/haiku-worker.md`)へ委任できる。SSOT編集・Git操作・
+  API支出・Gate判断・Production変更は行わない(次回`claude --agent
+  sandwich-pm`起動時から有効、2026-09-10新設)。
+- 新規記事(既存記事のregen/retry/Local Rewrite/segment再生成を除く)の
+  テーマは、Fable/Claudeが単独で決めない。複数テーマ候補(英語・日本語・
+  短い選定理由付き)を提示し、ユーザーが選んでから生成する(ユーザーが
+  テーマ選定も明示的に委ねた場合のみ例外、詳細`docs/pm/PM_GOVERNANCE.md`
+  13節「新規記事テーマ選定ルール」、2026-09-10新設)。
 - compact後の復帰手順(context圧縮からの復帰であり、`/clear`によるセッション
   初期化ではない): (1)まず`docs/pm/ACTIVE_TASK.md`の固定ヘッダを読む、
   (2)次に`docs/pm/PM_BRIEF.md`を読む、(3)Status判断は要約を鵜呑みにせず

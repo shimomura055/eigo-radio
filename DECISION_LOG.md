@@ -10777,6 +10777,133 @@ wiring_phase1_01/`配下のjson/txt/md・`OPEN_ITEMS.md`・`DECISION_LOG.md`・
 RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは
 触っていない(commit対象外)。
 
+## PM-CLOSEOUT-CONSOLIDATION-70: 2026-09-10ユーザー回答・追加指示10項目の
+SSOT反映+恒久ルール追加+haiku-worker新設+Token効率診断REPORTのGit記録
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-70)に基づき実施した。並列稼働中の5件
+(Trial-11タオル記事のSupport→Audio[`FAMILY-A-DISCOVERY-GENERALIZATION-
+TOWELS-TRIAL-11-AUDIO-01`、`er011_output/discovery_generalization_
+towels_trial_11/`]、CAR-T B1B再生成[`FAMILY-A-NEWS-STAGE3-NEW-THEME-
+LEDGER-TRIAL-09-REGEN-01`]、OPEN-140 Ledger ID是正
+[`OPEN-140-THEME2-LEDGER-ID-CONSISTENCY-FIX-01`]、News Trial-12継続、
+Opus L2レビュー[Trial-11])の生成物は一切stageしていない(`git status
+--short`で確認、`git add -A`不使用)。
+
+**反映内容(ユーザー2026-09-10確定指示10項目)**:
+
+1. **Discovery Trial-11(D-1)**: N増し(追加テーマ2〜3件×N=2〜3程度)には
+   進まず、まず記事→Support→Audio→試聴artifactまで完成させ(並列実施中、
+   管理ID`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-01`)、
+   ユーザー試聴後にN増し可否・Production採用判断を行う。Focus Module
+   自体のProduction採用判断も試聴・評価前には行わない。OPEN-135行へ
+   反映。
+2. **Discovery保険文運用(A-3)**: 保険文抑制Prompt制約案(Part B案1、
+   `cautionary_constrained`)はProduction不採用のまま維持(既決)。Part A
+   単独運用で取扱説明書的・保険文的表現が出た場合は、Human Reviewで
+   目視修正したうえで発生率を観測・記録する(追加Prompt対策Trialは
+   現時点不要)。OPEN-135行・`CURRENT_SPEC.md`Discovery/Why節(新規表行
+   「保険文運用注記(2026-09-10)」、`DECIDED`(運用方針、仕様ではない))
+   へ反映。
+3. **News Focus Module NG率報告(B-5関連)**: 報告されたNG率「3/6」は
+   過去のHanshin(阪神)テーマでのFocus Module+Point Role hint結果の
+   既存の再掲であり、News Ledger拡充A/B Trial-12(進行中、別Trial)の
+   新規結果ではないことを確認した。報告時に「新規更新/過去結果の再掲/
+   進行中で未結果」を必ず明示する恒久ルールを`docs/pm/PM_GOVERNANCE.md`
+   9-4節「更新種別の明示ルール」として新設(既存12-4のフル再掲ルールと
+   接続)。OPEN-135行へ反映。
+4. **CAR-T記事(Trial-09)B1B `full_story_part1`(B-6)**: 承認済み
+   再生成経路(既存segment再生成経路)で1回のみ再生成可、通らなければ
+   STOPしユーザー確認する(並列実施中、管理ID`FAMILY-A-NEWS-STAGE3-
+   NEW-THEME-LEDGER-TRIAL-09-REGEN-01`)。OPEN-135行へ反映。
+5. **新規記事テーマ選定ルール(恒久)**: News/Discovery/Voices他を問わず
+   新規記事(使い捨てTrialではなく最終版候補前提)のテーマをFable/
+   Claude側で勝手に決めない。ユーザー価値判断(実際に聞きたいか/一般
+   ユーザーの関心/専門的すぎないか/最終公開候補として成立するか)が
+   必要なため、Fableが複数テーマ候補を英語・日本語・短い選定理由付きで
+   提示しユーザーが選択してから生成する(例外: ユーザーが選定自体を
+   明示的に委ねた場合のみ)。既存記事のregen/retry/Local Rewrite/
+   segment再生成は対象外。`docs/pm/PM_GOVERNANCE.md`新設「13. 新規記事
+   テーマ選定ルール」・`docs/pm/PM_BRIEF.md`参照追記・`CLAUDE.md`1行・
+   PM Closeout Mandatory Check項目19へ反映(経緯: CAR-Tテーマ[検証には
+   有用だが最終版になりにくいテーマの例]を受けた決定)。
+6. **OPEN-140 Theme2 Ledger ID不整合(B-10)**: 単純なID整合修正で意味・
+   Fact対応関係が明確な場合は自律修正可、不明・意味が変わりうる場合は
+   STOPする方針をOPEN-140行へ記載(並列実施中、管理ID
+   `OPEN-140-THEME2-LEDGER-ID-CONSISTENCY-FIX-01`、結果は別タスクで
+   追って反映)。
+7. **OPEN-139遡及QA(B-11)**: 量産段階に近づいた時点でまとめて判断する
+   方針でDEFERを維持する。現時点で新しい恒久方針は作らない。OPEN-139行
+   へ反映。
+8. **haiku-worker新設(M-1)**: `.claude/agents/haiku-worker.md`を新設した
+   (frontmatter: name=haiku-worker、model=haiku、tools=Read/Grep/Glob
+   [Bashは付与しない]、description=Sonnet不要のread-only定型処理限定)。
+   目的は件数増ではなく、判断を含まない定型集計・artifact存在確認・
+   費用集計・固定チェックリスト確認のみ。SSOT編集・Git操作・API支出・
+   Gate判断・Production変更・QA判定は禁止と明記した。`.claude/agents/
+   sandwich-pm.md`の委任先制限をsonnet-worker/opus-consultant/
+   haiku-workerの3つへ更新し、haiku-workerの用途限定を明記した。
+   `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`のL0定義(読み取り専用・API支出
+   なし・SSOT編集なし・Git操作なし・Production変更なし・Gate判断なし・
+   定型artifact限定)と整合していることを確認した(矛盾なし)。**注記**:
+   新Agent定義は次回`claude --agent sandwich-pm`起動時から有効(現行
+   セッションでは未ロード)。`docs/pm/PM_GOVERNANCE.md`1節・
+   `docs/pm/PM_BRIEF.md`へも反映。
+9. **Opus L2レビュー投入(M-2)**: 3案件(3V Phase 1差分/Discovery
+   Trial-11 N=1解釈/News Trial-12 A/B解釈)へのL2設計レビュー投入を
+   ユーザーが承認した。原則「重要論点にスコープを絞る」(全文再レビュー
+   はしない、Opus自身の追加探索は妨げない)。目的はOpus利用自体の増加
+   ではなく高リスク判断・因果解釈・Production差分の見落とし・手戻り
+   削減。`docs/pm/PM_GOVERNANCE.md`11節へ「L2事前レビューの運用」を
+   新設し、Opus起動条件(従来のL3=Sonnet差し戻し後の診断1回)に「ユーザー
+   承認に基づくL2事前レビュー(論点限定)」を追加した。`.claude/agents/
+   sandwich-pm.md`手順7/8の記述もあわせて整合させた(L2はユーザー承認
+   済み案件に限る、L3診断は従来どおり)。
+10. **共通PMルール**: 自明な修正は自律/仕様判断はユーザー/新テーマは
+    承認前に決めない/Trial良好≠Production採用/`APPROVED_FOR_PRODUCTION`
+    は`PRODUCTION_WIRED`まで追跡/UDR未報告放置禁止/過去再掲と新結果の
+    区別/報告可能単位から即時報告/未回答はフル再掲、の9項目を既存SSOT
+    (`docs/pm/PM_GOVERNANCE.md`1節・Gate 1〜3・9節・12節)で確認した
+    ところ、大半は既存記述で充足済みと確認できた。不足していたのは
+    「新テーマは承認前に決めない」(→13節新設、上記5)と「過去再掲と
+    新結果の区別」(→9-4節新設、上記3)の2点のみで、他は重複記載を
+    避けて追記しなかった。
+
+**Token効率運用の即時反映(`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`
+診断結果)**: 同REPORT(読み取り専用診断、Sonnet委任、¥0)が提示した
+即時実施可の運用改善5件(Git記録専用委任の軽量化/同モデル・同性質の
+REPORT編纂→SSOT反映の連続実施/回帰実行`--pattern`反復+Production
+wiring前の最終1回は全件/Discovery・News Ledgerの再利用標準化+バッチ化/
+REPORT定型節の半機械化)を`docs/pm/PM_GOVERNANCE.md`11節へ「Token効率
+運用(2026-09-10)」として記録した。ユーザー判断待ちの4件(T-1: 巨大単一
+行の記録様式改善、T-2: Fableへの限定的Git操作権限付与、T-3: Ledger研究の
+検索回数上限/reasoning effort調整、T-4: 利用量連動節約モード)は未決定の
+まま`docs/pm/ACTIVE_TASK.md`の未回答報告へ維持した。
+
+**Dangling Reference Check**: `CURRENT_SPEC.md`Discovery/Why節へ追加した
+運用注記行は、保険文抑制Prompt制約案(Part B案1)を「Production不採用の
+まま」と明記しており、未承認仕様が採用済みであるかのような記述は含まない
+ことを確認した。新設した9-4節・13節・haiku-worker定義はいずれも既存の
+承認済み運用原則(9-1/9-2/12節・Gate 1〜3・11節上限)と矛盾しないことを
+確認した。
+
+**触れていないもの**: 並列稼働中5件(上記)の生成物・script・REPORT。
+コード・Prompt・Production実装は一切変更していない(SSOT・PM運用文書
+反映のみ、追加API費用なし)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-70、2026-09-10ユーザー回答・追加指示10項目の
+SSOT反映+恒久ルール追加+haiku-worker新設+Token効率診断REPORTのGit記録)。
+Git操作: ファイル名指定で`git add`(`git add -A`不使用)、対象=
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/PM_BRIEF.md`・`CLAUDE.md`・`.claude/agents/haiku-worker.md`
+(新規)・`.claude/agents/sandwich-pm.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・
+`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`。1 commitで`origin/main`へ
+push。並列稼働中5件の生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/
+RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは触って
+いない(commit対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

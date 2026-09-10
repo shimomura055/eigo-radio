@@ -58,7 +58,11 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 `docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit
 Rule)」(2026-09-10追記)。報告可能な単位が出たら他の並列作業を待たず
 報告し、ユーザー未回答の過去報告があれば次回報告時にフルレポートで
-必ず再掲する。
+必ず再掲する。Fable/sonnet-worker/opus-consultant/haiku-worker/ユーザーの
+責任分担は`docs/pm/PM_GOVERNANCE.md`1節を参照(haiku-workerはSonnet不要の
+read-only定型処理限定、2026-09-10追加)。新規記事のテーマ選定ルール
+(Fable/Claudeが単独で決めない)は`docs/pm/PM_GOVERNANCE.md`13節を参照
+(2026-09-10新設)。
 
 ## ループ上限(サンドイッチ運用)
 

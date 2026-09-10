@@ -105,6 +105,13 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
 - **opus-consultant**: 読み取り専用の診断(原因・選択肢・影響範囲)を行う。
   実装・編集・Git・Production採用判断をしない。診断後にSonnetを
   自動再実行しない。
+- **haiku-worker**(2026-09-10新設): Sonnet不要のread-only定型処理
+  (定型集計・artifact存在確認・費用集計・固定チェックリスト確認等、
+  判断を含まない作業)のみを行う。SSOT編集・Git操作・API支出・Gate判断・
+  Production変更・QA判定を行わない。委任文に用語・判定基準があらかじめ
+  固定されていることを前提とする(`MODEL_ROUTING_TRIAL_LOG.md`L0定義との
+  整合、詳細は`.claude/agents/haiku-worker.md`)。件数を増やす目的での
+  起用はしない。
 - ループ上限は11節を正本とする(`CLAUDE.md`・`PM_BRIEF.md`は参照のみ)。
 
 ## 2. PM Gate 1〜7
@@ -287,6 +294,11 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
 17. closeした報告単位についてNext ActionまたはReminderを示したこと
     (何もなければ「残件なし」と明示。12節、2026-09-10追記)
 18. 並列する他の報告単位の現在Statusを見落としていないこと(12節、
+    2026-09-10追記)
+19. 新規記事(使い捨てTrialではなく最終版候補前提。既存記事のregen/
+    retry/Local Rewrite/segment再生成は対象外)のテーマが、ユーザーが
+    複数候補から選択済み(またはユーザーがテーマ選定自体を明示的に
+    委ねている)であること(13節「新規記事テーマ選定ルール」、
     2026-09-10追記)
 
 ## 4. 「1記事ずつ完結させる」原則と例外
@@ -604,6 +616,22 @@ Lane報告も含めてLane A/Bをまとめ直して再掲する。(3) 再掲す�
 報告・SSOT記述に恒久適用する(経緯: PM-CLOSEOUT-CONSOLIDATION-65、
 ユーザー指示)。
 
+### 9-4. 更新種別の明示ルール(新規更新/過去結果の再掲/進行中で未結果、2026-09-10、ユーザー指示)
+
+数値・結果をユーザーへ報告する際は、それが (a) 今回新しく得られた結果
+(新規更新)、(b) 過去に報告済みの結果の再掲(過去結果の再掲、新しい
+observationではない)、(c) 現在進行中でまだ結果が出ていないもの
+(進行中で未結果)のいずれかを必ず明示する。いずれに該当するかを書かずに
+数値だけを示さない。SSOT記述でも同様とし、既存の12-4(未回答フル再掲)と
+接続する(12-4で過去レポートを再掲する場合も、それが「過去結果の再掲」で
+あることを明示する)。
+
+経緯: News Focus Module(News再改善のためのFocus Module機構)のNG率
+「50%」(3/6)という数値が、実際には過去のHanshin(阪神)テーマでの
+既存結果の再掲であり、News Ledger拡充A/B Trial-12(進行中、別の新規
+Trial)の結果ではないにもかかわらず、区別が不明瞭なまま報告された事象を
+受け、ユーザーが恒久ルールとして新設した(PM-CLOSEOUT-CONSOLIDATION-70)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -682,6 +710,18 @@ L3(Opus、読み取り専用、Sonnet差し戻し後も未解決の難問診断�
 複製しない。中間レビュー・正式Closeoutの判定Triggerも同ファイルの
 「判定Trigger」節を参照する。
 
+**L2事前レビューの運用(2026-09-10、ユーザー承認、
+PM-CLOSEOUT-CONSOLIDATION-70)**: 従来のOpus起動条件(Sonnet差し戻し後も
+未解決の難問診断、L3)に加えて、ユーザーが事前に承認した高リスク(HIGH)
+案件については、Sonnetへの差し戻しを待たずFableが直接opus-consultantへ
+L2設計レビューを依頼してよい。対象は個別にユーザー承認された案件に限る
+(2026-09-10時点の承認例: 3V Phase 1差分、Discovery Trial-11 N=1解釈、
+News Trial-12 A/B解釈の3件)。原則は「重要論点にスコープを絞る」(全論点の
+再レビューはしない、ただしOpus自身が委任範囲外の関連箇所を追加探索する
+ことは妨げない)。目的はOpus利用自体を増やすことではなく、高リスク判断・
+因果解釈・Production差分の見落とし・手戻りの削減である。L2+L3合計で
+1管理IDあたり最大1回という上限(上記)は変更しない。
+
 **自明な修正の自律実施(2026-09-09、ユーザー指示、PM-GOVERNANCE-
 AUTONOMOUS-OBVIOUS-FIX-RULE-04)**: ユーザーの意図が明確で「そのままでは
 不適切なので修正すべき」と自明なfailure(例: B-4V-1/2)については、
@@ -739,6 +779,24 @@ STOP必須条件の免除理由にならない)。本節は「自明な修正の
 `USER_DECISION_REQUIRED`として提示され往復コストが生じていたことを
 受け、¥0分析・低コストTrialについては結果提示まで一括して進めてよいと
 ユーザーが決定した(PM-CLOSEOUT-CONSOLIDATION-67)。
+
+**Token効率運用(2026-09-10、`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`
+診断結果の即時適用)**: 以下5件は仕様変更を伴わない運用改善として常時
+適用する。(1) Git記録専用委任の軽量化(新規ファイル追加のみのcommitでは
+委任文でSSOT/ACTIVE_TASK読込省略を明示する)。(2) 同モデル・同性質の
+作業(読取専用REPORT編纂→SSOT反映)が同一Lane内で連続する場合は1回の
+Sonnet委任内で連続実施する(モデル・視点が変わる独立レビュー[Opus等]には
+適用しない)。(3) 回帰実行は`run_project_regression.py --pattern`で
+変更module関連ファイルへ絞った反復実行を許容し、Production wiring前の
+最終1回のみdefaultパターン(全件)で実行する(8節の`unittest discover`
+禁止ルールとは無関係、既存ツール機能内)。(4) Discovery/News Ledgerの
+再利用(既存Ledgerがあるテーマでの再調査費用ゼロ化)を標準運用とし、
+複数テーマをまとめて1回のSonnet委任でバッチ実行することを許容する。
+(5) REPORT定型節(費用表・参照ファイル一覧等)の半機械化。上記5件と
+別に、`OPEN_ITEMS.md`等の巨大単一行の記録様式改善・Fableへの限定的Git
+操作権限付与・Ledger研究の検索回数上限/reasoning effort調整・利用量連動
+節約モードは、いずれもユーザー判断待ち(同REPORT「ユーザー判断が必要な
+項目」節参照、2026-09-10時点で未決定のまま)。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
@@ -818,6 +876,42 @@ REQUIRED放置防止と統合し、両Gateの記述へ本節への参照を追�
 **経緯**: 2026-09-10、ユーザーが恒久PMルールとして正式決定した
 (PM-CLOSEOUT-CONSOLIDATION-66)。会話限りのルールにせず正式PM運用ルール
 として記録する。
+
+## 13. 新規記事テーマ選定ルール
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-70(2026-09-10、ユーザー正式決定、恒久ルール)**
+
+News/Discovery/Voices他、Familyを問わず「新しい記事を1本作る」場合、
+Fable/Claude側でテーマを勝手に決めない。
+
+### 13-1. 理由
+
+新規記事は使い捨てTrialではなく最終版候補前提であるため、テーマ選定には
+ユーザー価値判断(実際に聞きたいか/一般ユーザーの関心があるか/専門的
+すぎないか/最終公開候補として成立するか)が含まれる。技術的な検証には
+有用でも最終版になりにくいテーマがありうる(例: in-vivo CAR-T/自己免疫
+疾患のような専門的すぎるNewsテーマ)。
+
+### 13-2. 手順
+
+新規記事が必要な場合、Fableは複数のテーマ候補を、英語・日本語・短い
+選定理由付きで提示し、ユーザーが選択した後に生成へ着手する。
+
+### 13-3. 例外
+
+ユーザーが「テーマ選定も任せる」と明示した場合のみ、Fable側でテーマを
+決めてよい。
+
+### 13-4. 対象外
+
+既存記事のregen(再生成)/retry(再試行)/Local Rewrite(既存の記事品質
+自動修正機構による部分修正)/segment再生成は、新規記事のテーマ選定には
+あたらず本節の対象外。
+
+**経緯**: News Stage3新テーマLedger Trial-09で選んだ「in-vivo CAR-T/
+自己免疫疾患」テーマについて、検証には有用だが最終公開候補として一般
+ユーザー向けに成立しにくいという評価をユーザーから受け、新規記事テーマ
+選定にユーザー価値判断を組み込む恒久ルールとして正式決定した。
 
 ---
 
@@ -1164,4 +1258,26 @@ REQUIRED放置防止と統合し、両Gateの記述へ本節への参照を追�
   「報告単位管理・即時報告・未回答フル再掲・Next Action提示」を恒久PM
   ルールとして正式決定した(Lane A/Bのみに矮小化せず、内容を弱めずに
   反映)。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-66`エントリ
+  参照。
+- 2026-09-10(PM-CLOSEOUT-CONSOLIDATION-70): 2026-09-10ユーザー回答・
+  追加指示10項目を反映した。1節へhaiku-worker(read-only定型処理限定)の
+  責任分担を追加。3節「PM Closeout Mandatory Check」へ項目19(新規記事
+  テーマのユーザー選択確認)を追加。9節へ新小節「9-4. 更新種別の明示
+  ルール」(新規更新/過去結果の再掲/進行中で未結果を必ず明示、News
+  Focus Module NG率50%が過去Hanshinの再掲だった事象を受けて新設)を
+  追加。11節へ「L2事前レビューの運用」(ユーザー承認済みHIGH案件への
+  論点限定型Opus L2事前投入、2026-09-10承認3件[3V Phase 1差分/
+  Discovery Trial-11 N=1解釈/News Trial-12 A/B解釈])・「Token効率運用」
+  (`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`診断の即時実施可5件を
+  記録)を追加。新設「13. 新規記事テーマ選定ルール」(新規記事[使い捨て
+  Trialではなく最終版候補前提]のテーマをFable/Claudeが単独で決めず、
+  複数候補[英語・日本語・選定理由付き]提示→ユーザー選択を経る、既存
+  記事のregen/retry/Local Rewrite/segment再生成は対象外)を追加した
+  (文書編集のみ、コード・Prompt変更なし)。あわせて`.claude/agents/
+  haiku-worker.md`を新設し、`.claude/agents/sandwich-pm.md`の委任先を
+  sonnet-worker/opus-consultant/haiku-workerの3つへ更新した。経緯:
+  2026-09-10、ユーザーがDiscovery Trial-11/保険文運用/News Focus
+  Module NG率報告/CAR-T記事再生成/新規記事テーマ選定/OPEN-140/OPEN-139/
+  haiku-worker新設/Opus L2レビュー投入/Token効率運用について確定指示を
+  出した。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-70`エントリ
   参照。
