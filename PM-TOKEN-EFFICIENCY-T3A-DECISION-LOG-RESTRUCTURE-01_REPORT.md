@@ -93,8 +93,9 @@ ALL_PASS: true
 `er011_output/news_ledger_enrichment_ab_trial_12/`・`FAMILY-A-*`REPORT等)は
 一切stageしていない。
 
-- commit hash: `<COMMIT_HASH_PLACEHOLDER>`
-- raw URL(`DECISION_LOG.md`): `<RAW_URL_PLACEHOLDER>`
+- commit hash: `e32fe4d`(push成功、origin/main、d742335..e32fe4d)
+- raw URL(`DECISION_LOG.md`): https://raw.githubusercontent.com/shimomura055/eigo-radio/main/DECISION_LOG.md
+- raw URL(`DECISION_LOG_HISTORY.md`): https://raw.githubusercontent.com/shimomura055/eigo-radio/main/DECISION_LOG_HISTORY.md
 
 ## 7. 禁止事項の遵守
 
