@@ -329,6 +329,9 @@ TTS retry timing/Token効率/量産APIコスト/新規記事テーマ)のSSOT反
 2026-09-11第2回(News追加切り分けTrial承認/3V Comment 3共有定義承認/
 Claude開発Token削減T-3施策A・B正式採用/既存進行事項事実訂正/Reporting
 Rule再確認)のSSOT反映+Opus L2解釈(Trial-12)のREPORT化
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14: News Trial-14(曖昧性解消)+
+Trial-12b(leaveout)結果のSSOT反映(副仮説REJECTED・主仮説USER_DECISION_
+REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
 
 ---
 
@@ -2688,6 +2691,66 @@ PM-TOKEN-EFFICIENCY-T3A-DECISION-LOG-RESTRUCTURE-01)。詳細は
 `er011_decision_log_restructure_01.py`、
 `er011_decision_log_restructure_verify_01.py`、
 `er011_output/decision_log_restructure_01/`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14: News Trial-14(曖昧性解消)+Trial-12b(leaveout)結果のSSOT反映(副仮説REJECTED・主仮説USER_DECISION_REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
+
+**日付**: 2026-09-11
+
+**区分**: サービス・生成仕様(News Editorial Type、Trial段階、Production未採用)
+
+Sonnet(sonnet-worker)が、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14)に基づき、`FAMILY-A-NEWS-
+STAGE4-LEDGER-ENRICHMENT-DISAMBIGUATION-TRIAL-14_REPORT.md`と
+`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-LEAVEOUT-TRIAL-12B_REPORT.md`
+(いずれもSonnet委任実行・Fable既読了)の結果をSSOTへ反映した。
+
+**結果概要**: 副仮説「fact数が多いほど良い」= **REJECTED**(条件C[fact10件]
+の最終NG率83.3%が条件A[fact5件]と同率であることを正式集計[Trial-12b]で
+確認、fact数と最終NG率は単調でない)。主仮説「Pointごとに異なる
+非headline角度のEvidence供給が重要」= **USER_DECISION_REQUIRED**
+(Point生成段階の構造指標[初回Value QA flag 6/6→0/24、anchor衝突平均
+1.5→0〜0.167]は条件C/D/B/Eいずれも一貫して支持するが、条件E[最終NG率
+16.7%、N=6]はA比較Fisher正確検定p=0.08で有意差に達せず、Fact Checker
+以降の合否はfact固有の性質[固有名詞の多寡]に強く依存し単一仮説では
+説明しきれない)。新規発見として、打ち切り記事8本へのFact Checker
+単独適用により、FAILの77.8%(9件中7件)が人名ローマ字誤り(例:
+伏見寅威→Tora/Tai Fushimi)であり、Ledger拡充とは独立した全条件共通の
+基礎的弱点であることが判明した(打ち切りバイアス除去後の条件A真の
+FAIL率33.3%、従来は元パイプラインのFact Checker到達率1/6のため隠れて
+いた)。費用実績合計¥147.3(上限¥150以内、内訳・段階3最終run開始時点の
+残枠¥15.8に対する最悪ケース超過の余地はSonnetが自己申告済み)。
+Trial-12bは¥0(既存artifactの正式集計・報告書化)。
+
+**反映範囲**: `OPEN_ITEMS.md`OPEN-135行(News節)へ上記結果・新規発見・
+UDR(Fableが提示する選択肢: (a)人名ローマ字誤り対策[Ledgerへの英語表記
+併記等、候補]を先に切り分ける/(b)Hanshin型以外への一般化Trial/(c)現状で
+主軸移行を決める、のいずれか、決定はしない)を追記した。News Focus
+Module NG率「50%」は過去Hanshin 3/6の再掲であり本Trial-14の新規結果と
+混同しない旨の既存注記を維持した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+に本Trialを1行追記した。`docs/pm/PM_GOVERNANCE.md`8節(並列起動)へ、
+並列稼働中は`git stash`(あらゆる形式)・`git clean`・他タスクファイルの
+`git checkout`を禁止する旨を追記した(経緯: 2026-09-11のT3A作業中に
+`git stash -u`が並列タスクの未追跡ファイルを一時退避する事故があり、
+`pop`で復元済みだが再発防止のため恒久ルール化)。
+
+**整合性確認**: `er011_output/news_ledger_enrichment_ab_trial_12/
+{factcheck_censored,twofact_e,reaggregation}/`配下のJSONが全件parse
+可能であること、REPORT記載件数(打ち切り記事8本・条件E N=6 run)と
+一致することを確認した(直前タスクのstash事故の影響がないことの確認、
+詳細は`docs/pm/RESULT_PACKET.md`参照)。
+
+**Production採用範囲外**: 本エントリはTrial結果のSSOT反映のみであり、
+Production Prompt・Ledger・QA/Validator/retryコードの変更、
+`APPROVED_FOR_PRODUCTION`宣言はいずれも行っていない(追加API費用¥0、
+本タスクでのSonnet委任実行はなし)。並列稼働中のDiscoveryタオル音声
+再開(`er011_output/discovery_generalization_towels_trial_11/`)には
+一切触れていない。
+
+**根拠**: Fable(PM)からの委任(2026-09-11、管理ID
+PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14)。詳細は
+`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-DISAMBIGUATION-TRIAL-14_
+REPORT.md`、`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-LEAVEOUT-TRIAL-12B_
+REPORT.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

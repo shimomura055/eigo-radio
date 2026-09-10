@@ -495,6 +495,24 @@ Storytelling・Entertainment性・ユーザー価値が明確に劣化してい�
   EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03の
   委任文item D-3)。
 
+**並列稼働中の`git stash`/`git clean`/他タスクファイルの`git checkout`禁止
+(2026-09-11追記)**:
+
+- 並列タスクが稼働中(他の管理IDの生成物・未追跡ファイルが作業ツリーに
+  存在する状態)は、`git stash`(`-u`を含むあらゆる形式)・`git clean`
+  (`-f`を含むあらゆる形式)を使用しない。
+- 自タスクの範囲外のファイルに対する`git checkout -- <path>`(変更取り消し)
+  も同様に禁止する。
+- 作業ツリーの一時退避・整理が必要な場合は、対象ファイルを明示的に指定した
+  方法(個別ファイルの`git add`のみでcommitを分離する、または一時退避が
+  必要な自タスク分のファイルのみを別ディレクトリへ手動コピーする等)に限る。
+- 経緯: 2026-09-11、`PM-TOKEN-EFFICIENCY-T3A-DECISION-LOG-RESTRUCTURE-01`
+  (T3A)作業中に`git stash -u`を実行した結果、並列稼働中だった他タスク
+  (News追加切り分けTrial等)の未追跡ファイルが一時的に退避される事故が
+  発生した(直後に`git stash pop`で復元し実害なしと確認済みだが、
+  再発防止のため恒久ルール化、`PM-CLOSEOUT-CONSOLIDATION-75-NEWS-
+  TRIAL-14`で明文化)。
+
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
 Fableがユーザーへ報告・説明する際は、Sonnetの技術レポートをそのまま転記しない。

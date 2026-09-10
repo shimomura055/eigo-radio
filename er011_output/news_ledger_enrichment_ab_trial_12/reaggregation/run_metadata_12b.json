@@ -1,0 +1,34 @@
+{
+  "management_id": "FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-LEAVEOUT-TRIAL-12B",
+  "parent_trial": "FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12",
+  "opus_review": "FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12-OPUS-L2-REVIEW-01",
+  "n_per_condition": 3,
+  "n_definition": "N=6は条件ごとのrun数(A2×3+B1B×3)。条件C/D合計で12 run(新規生成)。条件A/Bは既存Trial-12の12 runを¥0で再集計する(新規生成なし)。",
+  "conditions": {
+    "leaveout_c": {
+      "ledger_path": "er011_output/news_ledger_enrichment_ab_trial_12/leaveout_c/hanshin_ledger_condition_c_leaveout.txt",
+      "usable_fact_count": 10,
+      "label_ja": "条件C: 抜き取り対照(条件A5件+FACT-08/09/10/11/14の5件=10件、FACT-12/13を除外)",
+      "included_fact_ids": [
+        "08",
+        "09",
+        "10",
+        "11",
+        "14"
+      ]
+    },
+    "twofact_d": {
+      "ledger_path": "er011_output/news_ledger_enrichment_ab_trial_12/twofact_d/hanshin_ledger_condition_d_twofact.txt",
+      "usable_fact_count": 7,
+      "label_ja": "条件D: 2件のみ追加(条件A5件+FACT-12/13の2件=7件)",
+      "included_fact_ids": [
+        "12",
+        "13"
+      ]
+    }
+  },
+  "editorial_type_module_block": "常に空文字(Production既定、Focus Moduleなし)",
+  "point_role_hint_block": "常に空文字(Production既定、hintなし)",
+  "loop_budget_point_overlap_article_retry_max": 2,
+  "primary_endpoint": "初回attempt(attempt=0)のPoint Value QA判定(PASS/NG)。point_overlap_article_retry_log.json[0].value_qa_flagged(True=NG, False=PASS)を条件間で比較する。"
+}
