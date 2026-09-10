@@ -1,0 +1,49 @@
+[
+  {
+    "original_ng_sentence": "That smell may appear before washing, while the fabric is still wet after washing, or only after drying.",
+    "issue": "F001 confirms odor reports in each of these states, but also states that the categories can overlap. The phrase “only after drying” adds an unsupported exclusive dry-only pattern.",
+    "explanation": "The article changes overlapping state categories into an exclusive temporal claim. Although this functions as a hook, changed_fact is still checked normally.",
+    "flags": [
+      "changed_fact"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "That smell may be noticed before washing, while the fabric is still wet after washing, or after the laundry has dried, and these stages can overlap.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "That smell may be noticed before washing, while the fabric is still wet after washing, or after the laundry has dried, and these stages can overlap.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "# Why a Clean Towel Can Still Smell\n\nA towel can come out of the wash looking clean, then give off a wet-cloth or old-rag smell. That smell may appear before washing, while the fabric is still wet after washing, or only after drying.\n\nA 2022 survey asked 359 households about laundry odors. About 110 reported a smell before washing, while fewer noticed one in wet laundry after washing or after the laundry had dried. These groups could overlap, so the numbers are not a rate for all households. But they show that the wash cycle does not always mark the end of the story.\n\nWhy can the smell return? In laboratory models using cotton and polyester, bacteria linked with skin oil and sweat could move into the fibers and build a sticky layer called a biofilm. That layer was difficult to remove with ordinary washing, and odor could remain after the wash.\n\nIn another cotton-cloth model, a particular combination of three bacteria produced a stronger and longer-lasting wet-cloth smell than single bacteria or other combinations.\n\nA separate six-month study followed new cotton towels in 26 Japanese households. Smell and dullness were already observed after two months. During the study, biofilm structures were seen mainly around the towels’ lengthwise threads. The layer’s components and the number of bacteria that could be grown in the lab also increased over time.\n\nThis was what researchers observed in those homes. It does not mean that every towel will smell after two months."
+  },
+  {
+    "original_ng_sentence": "In lab tests, longer or more humid drying was linked with stronger odor.",
+    "issue": "The ledger supports strong odor with prolonged or slow drying and an association between high-humidity drying and characteristic odor, but it does not establish that higher humidity specifically produces a stronger odor.",
+    "explanation": "The statement strengthens the humidity finding into an unverified comparison of odor intensity; “linked” appropriately preserves non-causal wording, but the stronger-odor comparison is not guaranteed by the ledger.",
+    "flags": [
+      "changed_fact",
+      "changed_comparison"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "In lab tests, prolonged or slow drying was linked with stronger odor, while high-humidity drying was associated with characteristic laundry odor.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "In lab tests, prolonged or slow drying was linked with stronger odor, while high-humidity drying was associated with characteristic laundry odor.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### When fabric and drying join forces\n\nThere is another twist: drying and fabric type work together. In lab tests, longer or more humid drying was linked with stronger odor. Polyester held more skin oil and more strongly attached bacteria, while cotton held more water; some bacterial activity continued after drying. Softener-treated cotton also absorbed less water. So the same detergent routine can end differently on different fabrics."
+  }
+]

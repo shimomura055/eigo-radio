@@ -1,0 +1,25 @@
+# Why a Clean Towel Can Still Smell
+
+A towel can come out of the wash looking clean, then give off a wet-cloth or old-rag smell. That smell may appear before washing, after washing while the fabric is still wet, or only after drying.
+
+A 2022 survey asked 359 households about laundry odors. Of them, 110 reported a smell before washing. Another 91 noticed one in wet laundry after washing, and 73 noticed one after the laundry had dried. These groups could overlap, so the numbers are not a rate for all households. But they show that the wash cycle does not always mark the end of the story.
+
+Why can the smell return? In laboratory models using cotton and polyester, bacteria linked with skin oil and sweat could move into the fibers and build a sticky layer called a biofilm. That layer was difficult to remove with ordinary washing, and odor could remain after the wash.
+
+In another cotton-cloth model, a particular combination of three bacteria produced a stronger and longer-lasting wet-cloth smell than single bacteria or other combinations.
+
+A separate six-month study followed new cotton towels in 26 Japanese households. Smell and dullness were already observed after two months. During the study, biofilm structures were seen mainly around the towels’ lengthwise threads. The layer’s components and the number of bacteria that could be grown in the lab also increased over time.
+
+This was what researchers observed in those homes. It does not mean that every towel will smell after two months.
+
+### When fabric and drying join forces
+
+There is another twist: drying and fabric type work together. In lab tests, longer or more humid drying was linked with stronger odor. Polyester held more skin oil and more strongly attached bacteria, while cotton held more water; some bacterial activity continued after drying. Softener-treated cotton also absorbed less water. So the same detergent routine can end differently on different fabrics.
+
+### The washing machine joins the story
+
+Washing is an exchange, not a reset. In tests, bacteria survived and moved between fabrics during bleach-free washing; bleach-containing conditions reduced them more. In five household machines, bacteria moved among water, clothes, and machine surfaces, while prewash groups remained on washed cotton. Machine parts also carried many bacteria. Another comparison found no clear link between total bacterial makeup and machine odor. The towel may be one part of the system.
+
+## In one line…
+
+A clean-looking towel can carry a longer history. In these studies, recurring odor was linked not just to the towel, but to the meeting point of fabric, moisture, bacteria, and the washing system around them.

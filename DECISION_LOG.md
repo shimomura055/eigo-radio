@@ -10575,6 +10575,93 @@ Git操作: ファイル名指定で`git add`(`git add -A`不使用)、対象=
 並列タスクの生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`・
 既存の未追跡ファイル群はいずれも本タスクでは触っていない(commit対象外)。
 
+## PM-CLOSEOUT-CONSOLIDATION-68: Discovery Focus Module一般化確認
+Trial-11(タオル臭テーマ)結果のSSOT反映+Git統合+モデルルーティングLOG保守
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-68)に基づき実施した。並列稼働中のsonnet-worker
+2件(News Ledger拡充A/B Trial-12`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-
+AB-TRIAL-12`、3V Production Wiring Phase 1`EDITORIAL-B-FAMILY-VOICES-3V-
+PRODUCTION-WIRING-PHASE1-01`)とは独立(それらが`er0XX_output/`配下・
+`er012_b_family_*.py`・`er003_v1_n3_01_assemble.py`・新規テスト・REPORTへ
+書く生成物・変更は本タスクでは一切触っていない)。
+
+**反映内容(Discovery Focus Module一般化確認Trial-11結果)**: Sonnetが
+実行した`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11`
+(テーマ「Why do towels sometimes smell even after washing?」、A2/B1B、
+N=1)の結果を`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11_REPORT.md`
+から転記した(推測で埋めていない)。**要旨**: Discovery Focus Module
+Part A本体のみ(保険文抑制Prompt制約案[Part B案1]は不使用)、新規
+Verified Fact Ledger(査読論文15件、CONFIRMEDのみ)を新規作成。A2/B1B各
+1本とも最終status=OK、Point Overlap記事全体retryは両レベルとも0回、
+保険文(regex検出)はA2/B1Bとも0件。B1BのみLedger Deviation MAJOR 2件を
+検出したが、既存Local Rewrite機構(記事品質自動修正機構)が1cycle・
+1attemptで両件解消し、human_review_requiredは0件だった。Fact Checkerは
+A2=fact_verdict=PASS(unsupported_specific_claims 0件)、B1B=
+fact_verdict=REVIEW_REQUIRED(3件、いずれも捏造ではなく精緻化余地の
+指摘、Production既定方針どおりnon-blocking advisoryとして扱われ記事は
+status=OKで完走)。cross_point_overlap(A2: 0.243/0.225、B1B:
+0.244/0.222、いずれもflagged=False)はHousehold最終候補(A2: 0.196/
+0.289、B1B: 0.183/0.25)と同程度の範囲。Directional Fact Precheckは
+両レベルともoverall_status=DIRECTION_REVIEW_REQUIREDとなったが機械判定
+できるconflictsは0件(non-blocking助言のみ、Household側とは測定条件
+[Layer 1の有無]が異なるための見かけ上の差であり記事の質の差ではない)。
+実測費用¥117.72(Ledger作成¥55.48+記事生成[A2+B1B合計]¥62.24、上限
+¥150以内)。**Gate 1分類=VALIDATED相当(Trial範囲、N=1)。Production採用
+[APPROVED_FOR_PRODUCTION]は行っていない**。次のN増し(追加テーマ2〜3件×
+A2/B1B各N=2〜3程度)の要否・Production採用判断の提示時期はユーザー判断
+待ち。**既知gap**: A2/B1Bの記事生成費用が実装上同一theme_tagでログされ
+レベル別に分離できていない(合算のみ)。`JAPANESE_TITLES`辞書への登録は
+Support/Audioを実施しなかったため未実施(OPEN-137の既知gapとは別件、
+本Trialでは未発生・次回Support/Audio実施時に再発見込み)。`OPEN_ITEMS.md`
+OPEN-135行・OPEN-137行へ反映した。
+
+**モデルルーティングLOG保守**: `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`の
+「Trial導入後の委任実績」表について、(1)Trial-11の暫定行を上記確定値
+(Sonnet/MEDIUM、実測¥117.72、Fable差し戻し0回、STOP 0件)へ更新した。
+(2)本タスク(PM-CLOSEOUT-CONSOLIDATION-68、Sonnet/LOW、¥0)の行を追加
+した。(3)`MODEL-ROUTING-TRIAL-STATUS-REVIEW-01_REPORT.md`7節が指摘した
+記録漏れを是正し、`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-
+PLAN-01`(3V wiring影響分析、読み取り専用・LLM/TTS API呼び出しなし、
+Sonnet/MEDIUM、¥0、2026-09-10)の行、および`MODEL-ROUTING-TRIAL-
+STATUS-REVIEW-01`自体(Sonnet/LOW、¥0)の行を追記した。(4)「中間レビュー
+実施記録」表に、同REPORT 6節が行った正式Closeout Trigger(6条件)との
+照合結果を1エントリ追記した(出典=同REPORT 6節): 「Trial開始後20委任
+以上」満たす(84件)、「Haiku 5件以上」未達(2件のみ)、「Sonnet 10件
+以上」満たす(78件)、「Opus HIGH案件2件以上」満たす(4件)、
+「Production wiring到達2件以上+手戻り観測」不確実(ログ上で明確な2件
+該当を特定不可)、「規律違反等が記録済み」満たす、「モデル別サンプル
+非偏在」未達方向(Haiku 2件・Opus 4件・Sonnet 78件は明確に偏っている)。
+**6条件中2条件(Haiku 5件以上、サンプル非偏在)が未達、1条件
+(Production wiring到達2件+手戻り観測)が不確実であり、正式Closeout
+判定はまだ行わない(観測継続)**という同REPORTの結論をそのまま転記した。
+本タスク自体は正式Closeout判定を行っていない(LOG保守・記録反映のみ)。
+
+**Dangling Reference Check**: 本タスクで新設した用語はない(既存SSOT
+[`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11_REPORT.md`・
+`MODEL-ROUTING-TRIAL-STATUS-REVIEW-01_REPORT.md`・`EDITORIAL-B-FAMILY-
+VOICES-3V-PRODUCTION-WIRING-PLAN-01_REPORT.md`]からの転記のみ)。
+
+**触れていないもの**: 並列稼働中2タスク(News Ledger拡充Trial-12、3V
+Production Wiring Phase 1)の生成物・script・REPORT、`CURRENT_SPEC.md`
+(変更なし)、`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`
+(本タスク用に新規上書きするが本エントリのGit対象外)。
+
+**コード・Prompt・Production実装は一切変更していない**(SSOT反映のみ、
+費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-68、Discovery一般化Trial-11結果のSSOT反映+
+Git統合+モデルルーティングLOG保守)。Git操作: ファイル名指定で`git add`
+(`git add -A`不使用)、対象=`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-
+TRIAL-11_REPORT.md`・`er011_discovery_generalization_towels_trial_11_run.py`・
+`er011_output/discovery_generalization_towels_trial_11/`配下のjson/md/
+jsonl/txt/html(音声バイナリなし)・`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。1 commitで`origin/main`へpush。
+並列タスク2件の生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/
+RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは
+触っていない(commit対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

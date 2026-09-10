@@ -1,0 +1,173 @@
+{
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\n\"Why do towels sometimes smell even after washing?\"(洗濯したのに、なぜタオルは臭うことがあるのか?)というテーマについて調査してください。家庭用洗濯機でタオル・衣類を洗濯した後、乾燥後や保管中に生乾き臭・雑巾のようなニオイが残る現象の原因(原因菌・繊維内のバイオフィルム、洗濯槽内の残留物、部分的に湿った状態での放置時間、低温洗濯での洗浄効果の限界、洗剤・柔軟剤の残留蓄積、タオルの繊維素材による違い等)について、微生物学研究・繊維科学・家電メーカーや大学のExtensionサービス等、信頼できる情報源に基づいて調査してください。\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F001\",\n      \"claim\": \"家庭用洗濯に関連するニオイは、洗濯前だけでなく、洗濯後の湿った状態および乾燥後にも自己申告されている。調査対象359世帯のうち、110世帯が洗濯前、91世帯が洗濯後の湿った洗濯物、73世帯が乾燥後の洗濯物についてニオイを経験したと回答した。\",\n      \"subject\": \"家庭内洗濯物のニオイ経験\",\n      \"date_or_period\": \"2022年発表の調査\",\n      \"scope\": \"調査に参加した359世帯。一般人口全体の有病率・発生率を示す標本ではない。\",\n      \"conditions\": \"自己申告式の家庭調査。ニオイの有無を洗濯前・洗濯後の湿潤状態・乾燥後で分類。\",\n      \"numeric_value\": \"359世帯、110世帯、91世帯、73世帯\",\n      \"numeric_scope\": \"359世帯中、洗濯前110、洗濯後の湿った洗濯物91、乾燥後73。カテゴリーは重複し得る。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"A Comprehensive View of Microbial Communities in the Laundering Cycle Suggests a Preventive Effect of Soil Bacteria on Malodour Formation ([mdpi.com](https://www.mdpi.com/2076-2607/10/7/1465?utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC9318688/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"調査対象世帯の国・地域の代表性、および各カテゴリー間の重複の詳細は、ここで確認できる範囲では不明。\",\n      \"notes_for_writer\": \"数値は発生率ではなく、研究に参加した世帯の自己申告件数。一般家庭の割合として拡張しない。\"\n    },\n    {\n      \"fact_id\": \"F002\",\n      \"claim\": \"湿った布・雑巾様のニオイを再現する実験モデルでは、Micrococcus luteus、Staphylococcus hominis、Corynebacterium jeikeiumの組み合わせが、単独または他の組み合わせより強く持続的なニオイを生成した。\",\n      \"subject\": \"湿った布様の洗濯物臭と細菌組み合わせ\",\n      \"date_or_period\": \"2021年\",\n      \"scope\": \"実験室内の綿布モデル。家庭の洗濯物そのものではない。\",\n      \"conditions\": \"綿布、牛脂を栄養・湿度源として使用し、細菌を組み合わせて培養。強いニオイ形成を官能評価。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"Smells Like Teen Spirit—A Model to Generate Laundry-Associated Malodour In Vitro ([mdpi.com](https://www.mdpi.com/2076-2607/9/5/974?utm_source=openai))\",\n      \"source_url\": \"https://www.mdpi.com/2076-2607/9/5/974\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"この3種が家庭内の生乾き臭の唯一または普遍的な原因であることは示されていない。\",\n      \"notes_for_writer\": \"『原因菌はこの3種である』と一般化しない。実験モデルで臭気生成能が示された細菌の組み合わせとして扱う。\"\n    },\n    {\n      \"fact_id\": \"F003\",\n      \"claim\": \"上記の湿った布様ニオイの実験モデルでは、dimethyl disulfide、dimethyl trisulfide、indoleが主要な臭気寄与物質として検出され、para-cresolも寄与物質候補として検出された。\",\n      \"subject\": \"洗濯物の湿った布様臭に関与する揮発性化合物\",\n      \"date_or_period\": \"2021年\",\n      \"scope\": \"実験室内の細菌・綿布モデル。家庭用洗濯物の全臭気成分を網羅した結果ではない。\",\n      \"conditions\": \"GC/Oおよび質量分析による揮発性化合物の同定。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Smells Like Teen Spirit—A Model to Generate Laundry-Associated Malodour In Vitro ([mdpi.com](https://www.mdpi.com/2076-2607/9/5/974?utm_source=openai))\",\n      \"source_url\": \"https://www.mdpi.com/2076-2607/9/5/974\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"検出された化合物が家庭のすべての生乾き臭で同じ寄与度を持つかは不明。\",\n      \"notes_for_writer\": \"化合物名は臭気への寄与物質として記録し、家庭環境での濃度や普遍性を断定しない。\"\n    },\n    {\n      \"fact_id\": \"F004\",\n      \"claim\": \"綿およびポリエステルの試験布では、洗濯後の乾燥が長引くと強いニオイが形成された。綿では3-methylindoleが形成され、長時間乾燥後の臭気プロファイルでは分岐脂肪酸が目立った。ポリエステルではアルデヒド類を含む、より複雑な臭気プロファイルが観察された。\",\n      \"subject\": \"乾燥時間と洗濯物臭\",\n      \"date_or_period\": \"2001年\",\n      \"scope\": \"実験室で洗濯・乾燥した綿およびポリエステル試験布。\",\n      \"conditions\": \"ヒト皮脂・汗で汚染した布を洗濯後、長時間またはゆっくり乾燥。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Microbial survival and odor in laundry ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))\",\n      \"source_url\": \"https://aocs.onlinelibrary.wiley.com/doi/10.1007/s11743-001-0192-2\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"家庭用洗濯機の全機種・全乾燥条件に同じ強度で適用できるかは不明。\",\n      \"notes_for_writer\": \"『湿った時間が長い実験条件で臭気が形成された』という表現に限定する。\"\n    },\n    {\n      \"fact_id\": \"F005\",\n      \"claim\": \"30℃または40℃の漂白剤を含まない洗剤条件では、綿布に接種したStaphylococcus epidermidis、Staphylococcus aureus、Escherichia coli、Pseudomonas aeruginosaの生存と布間移行が確認された。一方、漂白剤を含む洗剤条件では本試験で生存が観察されなかった。\",\n      \"subject\": \"低温・漂白剤なし洗濯における細菌生存と移行\",\n      \"date_or_period\": \"2001年\",\n      \"scope\": \"4種の試験菌を接種した綿布の実験室洗濯試験。\",\n      \"conditions\": \"30℃または40℃、米国・欧州仕様の漂白剤なしカラー洗剤、および漂白剤入り洗剤を比較。\",\n      \"numeric_value\": \"30℃、40℃、4菌種\",\n      \"numeric_scope\": \"試験した4菌種および実験条件に限定。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Microbial survival and odor in laundry ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))\",\n      \"source_url\": \"https://aocs.onlinelibrary.wiley.com/doi/10.1007/s11743-001-0192-2\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"洗剤配合、洗濯時間、菌量、布素材が異なる家庭では結果が変わり得る。\",\n      \"notes_for_writer\": \"低温洗濯が常に不十分という意味ではなく、漂白剤なし・実験条件での生存と移行として記載する。\"\n    },\n    {\n      \"fact_id\": \"F006\",\n      \"claim\": \"家庭用洗濯工程を模擬した試験では、活性酸素系漂白剤を含む洗剤は30分洗浄でも微生物減少を増加させ、60℃では試験した微生物が完全に減少した。漂白剤なしでは、30℃未満および短時間の40℃条件で、汚染布から無菌布への微生物移行が確認された。\",\n      \"subject\": \"洗濯温度・洗浄時間・活性酸素系漂白剤\",\n      \"date_or_period\": \"2020年\",\n      \"scope\": \"ラボスケール洗濯機を用いた試験。試験微生物9種、綿・ポリエステルを含む条件。\",\n      \"conditions\": \"30・40・60℃、30分・60分、活性酸素系漂白剤の有無を比較。\",\n      \"numeric_value\": \"30℃、40℃、60℃、30分、60分、9種\",\n      \"numeric_scope\": \"試験した微生物およびラボスケール条件に限定。\",\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"A New Method to Evaluate the Antimicrobial Efficacy of Domestic Laundry Detergents ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/10.1002/jsde.12401?utm_source=openai))\",\n      \"source_url\": \"https://aocs.onlinelibrary.wiley.com/doi/10.1002/jsde.12401\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"『微生物の完全減少』は試験した初期菌量・測定限界・試験微生物に依存し、家庭のすべての菌やバイオフィルムに適用できるとは限らない。\",\n      \"notes_for_writer\": \"温度単独の効果と、漂白剤・時間・機械的作用の複合効果を分けて記載する。\"\n    },\n    {\n      \"fact_id\": \"F007\",\n      \"claim\": \"洗濯・乾燥サイクルを追跡した2025年の研究では、湿度の高い乾燥条件が特徴的な洗濯物臭と関連し、特定のグラム陰性菌の増殖を促す条件として報告された。\",\n      \"subject\": \"湿潤乾燥条件と洗濯物臭・細菌増殖\",\n      \"date_or_period\": \"2025年\",\n      \"scope\": \"合成Tシャツを用いた着用・洗濯・乾燥の実験系。\",\n      \"conditions\": \"洗濯後に湿度の高い状態で乾燥させる条件を含む。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Unravelling the hidden side of laundry: malodour, microbiome and pathogenome ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/39924526/?utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC11809074/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"家庭のタオル、室内湿度、乾燥時間にそのまま換算できる数値は示されていない。\",\n      \"notes_for_writer\": \"『放置時間が長いほど必ず臭う』とは断定せず、湿潤乾燥条件で臭気・細菌増殖が観察されたと記載する。\"\n    },\n    {\n      \"fact_id\": \"F008\",\n      \"claim\": \"綿とポリエステルを比較した実験では、ポリエステルは綿より疎水性が高く、より多くの細菌が不可逆的に付着し、皮脂を多く吸収したため、細菌活動も高かった。綿はポリエステルより水を保持し、乾燥後も一部の菌種の活動が維持された。\",\n      \"subject\": \"繊維素材の疎水性・吸湿性と細菌挙動\",\n      \"date_or_period\": \"2021年\",\n      \"scope\": \"汗・皮脂を模擬した綿およびポリエステル布のin vitroモデル。\",\n      \"conditions\": \"細菌の付着、増殖、乾燥、洗浄を比較。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"The Bacterial Life Cycle in Textiles is Governed by Fiber Hydrophobicity ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/34643452/?dopt=Abstract&utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"試験素材は綿・ポリエステルであり、竹繊維、麻、レーヨン、混紡、タオルパイル構造全般の順位を示すものではない。\",\n      \"notes_for_writer\": \"素材差は『細菌付着・皮脂保持・水分保持の物性差』として記載し、すべてのポリエステル製品が綿より臭うと一般化しない。\"\n    },\n    {\n      \"fact_id\": \"F009\",\n      \"claim\": \"繊維内部に入った細菌はバイオフィルムを形成し得て、通常の洗浄で除去しにくく、バイオフィルムが洗浄後も残ると汗臭が残留することが、綿・ポリエステルのin vitroモデルで報告された。\",\n      \"subject\": \"繊維内バイオフィルムと洗浄後臭気\",\n      \"date_or_period\": \"2021年\",\n      \"scope\": \"綿およびポリエステル布を使った実験室モデル。\",\n      \"conditions\": \"汗・皮脂成分を模擬し、細菌の付着・乾燥・洗浄後の残留を評価。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"The Bacterial Life Cycle in Textiles is Governed by Fiber Hydrophobicity ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/34643452/?dopt=Abstract&utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"家庭用タオルで同一のバイオフィルム除去率を測定した研究ではない。\",\n      \"notes_for_writer\": \"繊維内バイオフィルムの存在が、洗浄後にも臭気が再出現し得る機序の一つとして扱う。\"\n    },\n    {\n      \"fact_id\": \"F010\",\n      \"claim\": \"日本の26世帯で6か月間使用した綿タオルを追跡した研究では、使用開始から2か月後にニオイとくすみが観察され、6か月間にわたりタオルの地経糸部分を中心にバイオフィルム構造が観察された。多糖類、タンパク質、核酸、培養可能菌数は時間とともに増加した。\",\n      \"subject\": \"日常使用タオルのバイオフィルム形成\",\n      \"date_or_period\": \"6か月間の縦断試験、2023年発表\",\n      \"scope\": \"日本の和歌山県・栃木県にある26世帯。各世帯に新品の綿タオル6枚を配布。\",\n      \"conditions\": \"3枚を日常使用・洗濯し、3枚を未使用のまま使用済みタオルと同時洗濯して洗濯中の移行を評価。2か月ごとに回収。\",\n      \"numeric_value\": \"26世帯、6か月、2か月後\",\n      \"numeric_scope\": \"研究参加26世帯のタオルに限定。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Analysis of biofilm and bacterial communities in the towel environment with daily use ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/37165063/?utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC10172380/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"ニオイの全成分および各細菌種の因果寄与は確定していない。研究は綿タオルを対象とし、素材別比較ではない。\",\n      \"notes_for_writer\": \"『洗濯しても必ず2か月で臭う』ではなく、日常使用タオルでこの時期からニオイ・バイオフィルムが観察された研究結果として記載する。\"\n    },\n    {\n      \"fact_id\": \"F011\",\n      \"claim\": \"日常使用タオルの研究では、タオルの微生物相はヒト皮膚や衣類の微生物相と有意に異なり、複数のAlphaproteobacteriaがくすみ強度およびバイオフィルム成分量と相関した。\",\n      \"subject\": \"タオル特有の微生物相\",\n      \"date_or_period\": \"6か月間の縦断試験、2023年発表\",\n      \"scope\": \"日本の26世帯で使用された綿タオル。\",\n      \"conditions\": \"16S rRNA解析、バイオフィルム成分測定、官能的なニオイ・くすみ評価。\",\n      \"numeric_value\": \"26世帯、6か月\",\n      \"numeric_scope\": \"研究対象の家庭用綿タオルに限定。\",\n      \"causal_strength\": \"CORRELATIONAL\",\n      \"source_title\": \"Analysis of biofilm and bacterial communities in the towel environment with daily use ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/37165063/?utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC10172380/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"相関は示されているが、Alphaproteobacteriaがくすみや臭気を直接引き起こしたことは証明されていない。\",\n      \"notes_for_writer\": \"『原因菌』ではなく、バイオフィルム成分・くすみと相関した分類群として扱う。\"\n    },\n    {\n      \"fact_id\": \"F012\",\n      \"claim\": \"5台の家庭用洗濯機を調査した研究では、洗濯後の排水中の生菌数は給水中より一般に低くならず、洗濯工程で給水由来、皮膚・衣類由来、洗濯機バイオフィルム由来の細菌交換が生じた。洗濯後の綿布には、洗濯前の細菌属のほぼ全てがなお検出された。\",\n      \"subject\": \"洗濯機内の微生物交換と洗濯後布の再汚染\",\n      \"date_or_period\": \"2015年\",\n      \"scope\": \"5台の家庭用洗濯機。\",\n      \"conditions\": \"30℃、漂白剤を含まない洗剤、デリケート洗浄プログラム。未使用の綿Tシャツ片を通常の洗濯物と同時洗濯。\",\n      \"numeric_value\": \"5台、30℃\",\n      \"numeric_scope\": \"研究対象の5台および特定の洗濯条件。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Bacterial Exchange in Household Washing Machines ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/26696989/?utm_source=openai))\",\n      \"source_url\": \"https://pubmed.ncbi.nlm.nih.gov/26696989/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"洗濯機の機種、洗剤、温度、洗濯物の汚れによって微生物交換量は変化し得る。\",\n      \"notes_for_writer\": \"洗濯機が必ず衣類を再汚染するとは断定せず、特定条件下で微生物交換と残存が観察されたと記載する。\"\n    },\n    {\n      \"fact_id\": \"F013\",\n      \"claim\": \"10台の家庭用洗濯機の洗剤引き出し、引き出し室、ドアシールを培養調査した研究では、4か所全体の平均細菌負荷は2.1±1.0×10^4 CFU/cm²だった。洗剤引き出し、引き出し室、ドアシール下部は、ドアシール上部より高い負荷を示した。\",\n      \"subject\": \"洗濯機内部の細菌負荷\",\n      \"date_or_period\": \"2021年発表\",\n      \"scope\": \"ドイツの家庭用洗濯機10台。4つの採取部位を各機械で調査。\",\n      \"conditions\": \"洗剤引き出し、洗剤引き出し室、ゴム製ドアシール上部・下部を綿棒採取し、培養法で測定。\",\n      \"numeric_value\": \"平均2.1±1.0×10^4 CFU/cm²\",\n      \"numeric_scope\": \"10台・4採取部位を合わせた平均値。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Cultivation-Based Quantification and Identification of Bacteria at Two Hygienic Key Sides of Domestic Washing Machines ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8146927/?utm_source=openai))\",\n      \"source_url\": \"https://pmc.ncbi.nlm.nih.gov/articles/PMC8146927/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"培養可能な好気性菌の値であり、全微生物量・全細菌DNA量・臭気原因菌量を直接示すものではない。\",\n      \"notes_for_writer\": \"洗濯槽全体の平均値や家庭一般の標準値として扱わない。\"\n    },\n    {\n      \"fact_id\": \"F014\",\n      \"claim\": \"洗剤や柔軟剤の過剰使用は、衣類・洗濯槽・洗剤引き出しへの残留物や蓄積を生じ、メーカーのトラブルシューティング資料では、残留物が洗濯機や衣類のニオイに関与し得ると説明されている。\",\n      \"subject\": \"洗剤・柔軟剤残留物とニオイ\",\n      \"date_or_period\": \"2025年更新の公式サポート資料\",\n      \"scope\": \"Samsung製家庭用洗濯機の公式サポート情報。機種・製品仕様に依存する。\",\n      \"conditions\": \"洗剤の過剰使用、柔軟剤使用、少量洗濯、洗濯槽内の残留物を想定。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"Samsung washing machine or laundry smells bad ([samsung.com](https://www.samsung.com/us/support/troubleshoot/TSG10007246/?utm_source=openai))\",\n      \"source_url\": \"https://www.samsung.com/us/support/troubleshoot/TSG10007246/\",\n      \"source_type\": \"OTHER\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"メーカーのサポート説明であり、独立した比較試験による一般家庭全体の因果効果の大きさは示していない。\",\n      \"notes_for_writer\": \"『過剰使用や残留物が原因の一つになり得る』と限定する。通常量の洗剤・柔軟剤すべてを臭気原因としない。\"\n    },\n    {\n      \"fact_id\": \"F015\",\n      \"claim\": \"綿タオルを柔軟剤処理した研究では、柔軟剤処理により綿布表面が疎水化し、吸水性が低下することが報告された。柔軟剤の化学構造と濃度により影響の程度は変化する。\",\n      \"subject\": \"柔軟剤残留とタオルの吸水性\",\n      \"date_or_period\": \"2021年\",\n      \"scope\": \"綿布・綿タオルを用いた材料科学研究。\",\n      \"conditions\": \"柔軟剤処理後の表面濡れ性、吸水性、拭き取り感を評価。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"Improvement of the Water Absorbency of Softener-treated Fabric: Addition of a New Hydrophilic Surface ([jstage.jst.go.jp](https://www.jstage.jst.go.jp/article/jos/70/4/70_ess20297/_pdf?utm_source=openai))\",\n      \"source_url\": \"https://www.jstage.jst.go.jp/article/jos/70/4/70_ess20297/_pdf\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"吸水性低下がそのまま生乾き臭を引き起こすことを本研究が直接測定したわけではない。\",\n      \"notes_for_writer\": \"柔軟剤が水分吸収・乾燥挙動に影響し得る事実と、臭気への直接因果を分ける。\"\n    },\n    {\n      \"fact_id\": \"F016\",\n      \"claim\": \"洗濯機のニオイの有無を利用者申告で分類した2026年研究では、ニオイのある洗濯機8台とニオイのない洗濯機8台を比較した結果、全体の細菌群集構成には大きな差がなく、ドアシールではMoraxella osloensisの相対存在量が高かった。一方、細菌DNA量はニオイのある機械で中央値が高かったものの、混合効果解析ではニオイ分類の有意な効果はなかった。\",\n      \"subject\": \"洗濯機微生物相と利用者が感じるニオイ\",\n      \"date_or_period\": \"2026年\",\n      \"scope\": \"ドイツ国内の家庭用洗濯機16台。ニオイあり8台、ニオイなし8台。\",\n      \"conditions\": \"洗剤引き出し、ドアシール、サンプを採取し、全長16S rRNA解析およびqPCRを実施。\",\n      \"numeric_value\": \"16台、8台、8台、約1,492種\",\n      \"numeric_scope\": \"16台の洗濯機から得た解析対象。約1,492種は検出された細菌種数。\",\n      \"causal_strength\": \"CORRELATIONAL\",\n      \"source_title\": \"Bacterial communities in domestic washing machines associated with user-perceived odours ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/42521838/?utm_source=openai))\",\n      \"source_url\": \"https://pubmed.ncbi.nlm.nih.gov/42521838/\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"標本数が少なく、ニオイの主観評価、細菌の活動性、揮発性化合物を同時に測定していないため、Moraxella osloensisを単独の原因菌とは確定できない。\",\n      \"notes_for_writer\": \"洗濯機内の微生物量だけでニオイを説明できない可能性を示す限定的な比較研究として扱う。\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。",
+  "raw_text": "{\"verifications\":[{\"fact_id\":\"F001\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"研究本文は359世帯を対象とし、洗濯前110世帯、洗濯後の湿った洗濯物91世帯、乾燥後73世帯がニオイを経験したと報告している。調査対象世帯の自己申告であり、一般人口の有病率ではないというscopeの限定も妥当。カテゴリーの重複可能性を明示している点も過剰一般化を避けている。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9318688/?utm_source=openai))\"},{\"fact_id\":\"F002\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2021年のin vitroモデルは、Micrococcus luteus、Staphylococcus hominis、Corynebacterium jeikeiumの組み合わせを用い、他の組み合わせや単独菌より強く、3日後・7日後にも持続する湿った布様のニオイを示した。この結果を家庭内で普遍的な『唯一の原因菌』と一般化していないため、記載は適切。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33946384/?utm_source=openai))\"},{\"fact_id\":\"F003\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"同モデルではdimethyl disulfide、dimethyl trisulfide、indoleが湿った布様ニオイへの重要な寄与物質として示され、para-cresolも候補成分として論じられている。家庭の全ての生乾き臭に同じ組成・寄与度があるとはしておらず、実験モデルに限定する記載として妥当。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33946384/?utm_source=openai))\"},{\"fact_id\":\"F004\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2001年研究は、綿・ポリエステルの双方で長時間乾燥時に強いニオイが形成され、綿では3-methylindoleが形成され、長時間乾燥後は分岐脂肪酸が支配的となり、ポリエステルでは綿より複雑でアルデヒド類がより目立つ臭気プロファイルを報告している。実験布・低速乾燥条件に限定するscopeも妥当。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))\"},{\"fact_id\":\"F005\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"研究要旨は、30℃または40℃で漂白剤なしの米国・EUカラー洗剤を用いた場合、綿布上の4菌種の生存・布間移行を確認し、漂白剤入り洗剤では生存を観察しなかったと報告している。米国条件とEU条件では温度・時間などが異なるため、家庭の全条件に一般化しないという注記も適切。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))\"},{\"fact_id\":\"F006\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2020年研究は、活性酸素系漂白剤入り洗剤が30分洗浄でも微生物減少を有意に増加させ、60℃では試験した全微生物が完全減少の判定となったと報告している。また、漂白剤なしでは30℃未満、および短時間の40℃条件で無菌布への移行が確認された。『完全減少』が試験微生物・初期菌量・検出限界に依存するという限定も必要だが、下書きにはその注意が含まれている。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/10.1002/jsde.12401))\"},{\"fact_id\":\"F007\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2025年の合成Tシャツによるwear-wash-dry研究は、高温・高湿度のhumid-drying条件、具体的には約31.8℃・相対湿度80±5％で、洗濯後の特徴的な悪臭、細菌増殖、特定の環境由来グラム陰性菌の増加を報告している。温度と湿度を独立に分離していないため、湿度単独の効果とは断定できないが、下書きのscopeと注意書きは概ね妥当。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC11809074/?utm_source=openai))\"},{\"fact_id\":\"F008\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2021年のin vitro研究は、ポリエステルが綿より疎水性が高く、試験した大部分の菌種でより強い付着・不可逆的付着を示し、皮脂・汗成分をより多く吸収したと報告している。初期の代謝活性はポリエステルで高かったが、全菌種混合では差が明確でなく、乾燥後には傾向が消える一方、S. hominisやS. epidermidisなど一部菌種は綿で活動を維持または増加させた。下書きは実験素材・菌種に限定しており、一般的な素材順位に拡張していないため妥当。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/?utm_source=openai))\"},{\"fact_id\":\"F009\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"同研究は、繊維上・繊維内部で細菌がバイオフィルムを形成し得て、通常の洗浄で除去しにくく、バイオフィルムが残存すると汗臭が保持される機序を報告している。ただし、家庭用タオルでの除去率を直接測定した研究ではないという限定も正しい。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/?utm_source=openai))\"},{\"fact_id\":\"F010\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2023年のScientific Reports研究は、日本の和歌山県・栃木県の26世帯で6か月間、各世帯に新品の綿タオル6枚を配布して追跡した。2か月後からニオイ・くすみが観察され、地経糸部分を中心にバイオフィルムが確認され、多糖類・タンパク質・核酸・生菌数が時間とともに増加した。研究対象限定であり、2か月で全家庭のタオルが必ず臭うという意味ではない。 ([nature.com](https://www.nature.com/articles/s41598-023-34501-4?utm_source=openai))\"},{\"fact_id\":\"F011\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"同研究の要旨・本文は、タオルの微生物相がヒト皮膚・衣類と有意に異なり、複数のAlphaproteobacteriaがくすみ強度およびバイオフィルム成分量と相関したと報告している。相関を原因菌の証明と扱っていないため、因果強度の設定も適切。 ([nature.com](https://www.nature.com/articles/s41598-023-34501-4?utm_source=openai))\"},{\"fact_id\":\"F012\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"5台の家庭用洗濯機を対象とした研究は、洗濯後排水の生菌数が給水より一般に低くならず、給水・皮膚・衣類・洗濯機バイオフィルム由来の細菌交換を報告している。また、洗濯前の綿布で検出された細菌属のほぼ全てが洗濯後にも検出された。30℃・漂白剤なし・デリケート洗浄という限定条件も下書きと一致する。 ([public-pages-files-2025.frontiersin.org](https://public-pages-files-2025.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01381/pdf))\"},{\"fact_id\":\"F013\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"10台の家庭用洗濯機の洗剤引き出し、引き出し室、ドアシール上部・下部を培養調査した研究は、全採取サンプルの平均を2.1±1.0×10^4 CFU/cm²と報告している。ドアシール上部が最も低く、洗剤関連部位および下部シールが相対的に高いという記載も確認できる。値は培養可能な好気性菌の平均であり、臭気原因菌や全微生物量の標準値ではない。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8146927/?utm_source=openai))\"},{\"fact_id\":\"F014\",\"verdict\":\"AMBIGUOUS\",\"verification_notes\":\"Samsung公式サポートページは、洗剤の過剰使用や柔軟剤が石けんカス・残留物を蓄積させ、洗濯機のニオイに関与し得ること、濡れた衣類を長時間放置すると衣類にもニオイが移ることを明記しているため、主張の内容自体は支持される。ただし、提示された『2025年更新』という日付は現行ページ上で独立確認できず、現在のページフッターは2026年表示である。また、メーカーのトラブルシューティング情報であり、一般家庭全体での因果効果の大きさを示す比較試験ではない。 ([samsung.com](https://www.samsung.com/us/support/troubleshoot/TSG10007246/))\"},{\"fact_id\":\"F015\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2021年の材料科学研究は、一般的な柔軟剤の疎水性アルキル鎖により、処理した綿布・綿タオル表面が疎水化し、吸水性が低下することを報告している。柔軟剤の種類・濃度で影響が変わり得ること、および吸水性低下を生乾き臭の直接原因とはしていないという下書きの限定は妥当。 ([jstage.jst.go.jp](https://www.jstage.jst.go.jp/article/jos/70/4/70_ess20297/_pdf))\"},{\"fact_id\":\"F016\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"2026年7月28日発表の研究は、利用者がニオイありと申告した洗濯機8台、なし8台の計16台を比較し、約1,492種を検出した。Moraxella osloensisはドアシールで高い相対存在量を示したが、ニオイあり・なしで全体の群集構成に大差は少なく、ニオイあり群のDNA量中央値は高いものの、混合効果解析ではニオイ分類の有意効果がなかった。2026年8月14日の訂正は欠落していた図の追加であり、下書きの主要数値・結論を変更するものではない。 ([link.springer.com](https://link.springer.com/article/10.1007/s00253-026-13972-1?utm_source=openai))\"}]}",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F001",
+        "verdict": "VERIFIED",
+        "verification_notes": "研究本文は359世帯を対象とし、洗濯前110世帯、洗濯後の湿った洗濯物91世帯、乾燥後73世帯がニオイを経験したと報告している。調査対象世帯の自己申告であり、一般人口の有病率ではないというscopeの限定も妥当。カテゴリーの重複可能性を明示している点も過剰一般化を避けている。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9318688/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F002",
+        "verdict": "VERIFIED",
+        "verification_notes": "2021年のin vitroモデルは、Micrococcus luteus、Staphylococcus hominis、Corynebacterium jeikeiumの組み合わせを用い、他の組み合わせや単独菌より強く、3日後・7日後にも持続する湿った布様のニオイを示した。この結果を家庭内で普遍的な『唯一の原因菌』と一般化していないため、記載は適切。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33946384/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F003",
+        "verdict": "VERIFIED",
+        "verification_notes": "同モデルではdimethyl disulfide、dimethyl trisulfide、indoleが湿った布様ニオイへの重要な寄与物質として示され、para-cresolも候補成分として論じられている。家庭の全ての生乾き臭に同じ組成・寄与度があるとはしておらず、実験モデルに限定する記載として妥当。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/33946384/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F004",
+        "verdict": "VERIFIED",
+        "verification_notes": "2001年研究は、綿・ポリエステルの双方で長時間乾燥時に強いニオイが形成され、綿では3-methylindoleが形成され、長時間乾燥後は分岐脂肪酸が支配的となり、ポリエステルでは綿より複雑でアルデヒド類がより目立つ臭気プロファイルを報告している。実験布・低速乾燥条件に限定するscopeも妥当。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))"
+      },
+      {
+        "fact_id": "F005",
+        "verdict": "VERIFIED",
+        "verification_notes": "研究要旨は、30℃または40℃で漂白剤なしの米国・EUカラー洗剤を用いた場合、綿布上の4菌種の生存・布間移行を確認し、漂白剤入り洗剤では生存を観察しなかったと報告している。米国条件とEU条件では温度・時間などが異なるため、家庭の全条件に一般化しないという注記も適切。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai))"
+      },
+      {
+        "fact_id": "F006",
+        "verdict": "VERIFIED",
+        "verification_notes": "2020年研究は、活性酸素系漂白剤入り洗剤が30分洗浄でも微生物減少を有意に増加させ、60℃では試験した全微生物が完全減少の判定となったと報告している。また、漂白剤なしでは30℃未満、および短時間の40℃条件で無菌布への移行が確認された。『完全減少』が試験微生物・初期菌量・検出限界に依存するという限定も必要だが、下書きにはその注意が含まれている。 ([aocs.onlinelibrary.wiley.com](https://aocs.onlinelibrary.wiley.com/doi/10.1002/jsde.12401))"
+      },
+      {
+        "fact_id": "F007",
+        "verdict": "VERIFIED",
+        "verification_notes": "2025年の合成Tシャツによるwear-wash-dry研究は、高温・高湿度のhumid-drying条件、具体的には約31.8℃・相対湿度80±5％で、洗濯後の特徴的な悪臭、細菌増殖、特定の環境由来グラム陰性菌の増加を報告している。温度と湿度を独立に分離していないため、湿度単独の効果とは断定できないが、下書きのscopeと注意書きは概ね妥当。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC11809074/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F008",
+        "verdict": "VERIFIED",
+        "verification_notes": "2021年のin vitro研究は、ポリエステルが綿より疎水性が高く、試験した大部分の菌種でより強い付着・不可逆的付着を示し、皮脂・汗成分をより多く吸収したと報告している。初期の代謝活性はポリエステルで高かったが、全菌種混合では差が明確でなく、乾燥後には傾向が消える一方、S. hominisやS. epidermidisなど一部菌種は綿で活動を維持または増加させた。下書きは実験素材・菌種に限定しており、一般的な素材順位に拡張していないため妥当。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F009",
+        "verdict": "VERIFIED",
+        "verification_notes": "同研究は、繊維上・繊維内部で細菌がバイオフィルムを形成し得て、通常の洗浄で除去しにくく、バイオフィルムが残存すると汗臭が保持される機序を報告している。ただし、家庭用タオルでの除去率を直接測定した研究ではないという限定も正しい。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F010",
+        "verdict": "VERIFIED",
+        "verification_notes": "2023年のScientific Reports研究は、日本の和歌山県・栃木県の26世帯で6か月間、各世帯に新品の綿タオル6枚を配布して追跡した。2か月後からニオイ・くすみが観察され、地経糸部分を中心にバイオフィルムが確認され、多糖類・タンパク質・核酸・生菌数が時間とともに増加した。研究対象限定であり、2か月で全家庭のタオルが必ず臭うという意味ではない。 ([nature.com](https://www.nature.com/articles/s41598-023-34501-4?utm_source=openai))"
+      },
+      {
+        "fact_id": "F011",
+        "verdict": "VERIFIED",
+        "verification_notes": "同研究の要旨・本文は、タオルの微生物相がヒト皮膚・衣類と有意に異なり、複数のAlphaproteobacteriaがくすみ強度およびバイオフィルム成分量と相関したと報告している。相関を原因菌の証明と扱っていないため、因果強度の設定も適切。 ([nature.com](https://www.nature.com/articles/s41598-023-34501-4?utm_source=openai))"
+      },
+      {
+        "fact_id": "F012",
+        "verdict": "VERIFIED",
+        "verification_notes": "5台の家庭用洗濯機を対象とした研究は、洗濯後排水の生菌数が給水より一般に低くならず、給水・皮膚・衣類・洗濯機バイオフィルム由来の細菌交換を報告している。また、洗濯前の綿布で検出された細菌属のほぼ全てが洗濯後にも検出された。30℃・漂白剤なし・デリケート洗浄という限定条件も下書きと一致する。 ([public-pages-files-2025.frontiersin.org](https://public-pages-files-2025.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01381/pdf))"
+      },
+      {
+        "fact_id": "F013",
+        "verdict": "VERIFIED",
+        "verification_notes": "10台の家庭用洗濯機の洗剤引き出し、引き出し室、ドアシール上部・下部を培養調査した研究は、全採取サンプルの平均を2.1±1.0×10^4 CFU/cm²と報告している。ドアシール上部が最も低く、洗剤関連部位および下部シールが相対的に高いという記載も確認できる。値は培養可能な好気性菌の平均であり、臭気原因菌や全微生物量の標準値ではない。 ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8146927/?utm_source=openai))"
+      },
+      {
+        "fact_id": "F014",
+        "verdict": "AMBIGUOUS",
+        "verification_notes": "Samsung公式サポートページは、洗剤の過剰使用や柔軟剤が石けんカス・残留物を蓄積させ、洗濯機のニオイに関与し得ること、濡れた衣類を長時間放置すると衣類にもニオイが移ることを明記しているため、主張の内容自体は支持される。ただし、提示された『2025年更新』という日付は現行ページ上で独立確認できず、現在のページフッターは2026年表示である。また、メーカーのトラブルシューティング情報であり、一般家庭全体での因果効果の大きさを示す比較試験ではない。 ([samsung.com](https://www.samsung.com/us/support/troubleshoot/TSG10007246/))"
+      },
+      {
+        "fact_id": "F015",
+        "verdict": "VERIFIED",
+        "verification_notes": "2021年の材料科学研究は、一般的な柔軟剤の疎水性アルキル鎖により、処理した綿布・綿タオル表面が疎水化し、吸水性が低下することを報告している。柔軟剤の種類・濃度で影響が変わり得ること、および吸水性低下を生乾き臭の直接原因とはしていないという下書きの限定は妥当。 ([jstage.jst.go.jp](https://www.jstage.jst.go.jp/article/jos/70/4/70_ess20297/_pdf))"
+      },
+      {
+        "fact_id": "F016",
+        "verdict": "VERIFIED",
+        "verification_notes": "2026年7月28日発表の研究は、利用者がニオイありと申告した洗濯機8台、なし8台の計16台を比較し、約1,492種を検出した。Moraxella osloensisはドアシールで高い相対存在量を示したが、ニオイあり・なしで全体の群集構成に大差は少なく、ニオイあり群のDNA量中央値は高いものの、混合効果解析ではニオイ分類の有意効果がなかった。2026年8月14日の訂正は欠落していた図の追加であり、下書きの主要数値・結論を変更するものではない。 ([link.springer.com](https://link.springer.com/article/10.1007/s00253-026-13972-1?utm_source=openai))"
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0d1fd8495682ff18006aa1f5ae228487d0b0c8d10dff897541",
+  "search_usage": {
+    "web_search_call_count": 14,
+    "queries": [
+      "\"A Comprehensive View of Microbial Communities in the Laundering Cycle\" 359 households 110 91 73",
+      "\"Smells Like Teen Spirit\" laundry-associated malodour Micrococcus luteus Staphylococcus hominis Corynebacterium jeikeium",
+      "\"Microbial survival and odor in laundry\" 3-methylindole polyester cotton",
+      "\"Bacterial Exchange in Household Washing Machines\" five washing machines 30 C",
+      "\"Unravelling the hidden side of laundry\" malodour microbiome pathogenome 2025",
+      "\"The Bacterial Life Cycle in Textiles is Governed by Fiber Hydrophobicity\"",
+      "\"Analysis of biofilm and bacterial communities in the towel environment with daily use\" 26 households",
+      "\"Cultivation-Based Quantification and Identification of Bacteria at Two Hygienic Key Sides of Domestic Washing Machines\" 2.1",
+      "\"Analysis of biofilm and bacterial communities in the towel environment with daily use\" \"26\"",
+      "\"Analysis of biofilm and bacterial communities\" Alphaproteobacteria dullness",
+      "\"Cultivation-Based Quantification\" \"2.1\" CFU/cm2",
+      "\"washing machine\" \"2.1 ± 1.0\" CFU/cm²",
+      "\"Microbial survival and odor in laundry\" \"aldehydes\" polyester",
+      "\"Microbial survival and odor in laundry\" cotton polyester branched fatty acids",
+      "\"Microbial survival and odor in laundry\" 3-methylindole branched fatty acids",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC11809074 \"humidity\" laundry malodour Gram-negative",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC11809074 \"drying\" \"Gram-negative\"",
+      "site:link.springer.com/article/10.1186/s12915-025-02147-5 humidity drying malodour",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC8146927 \"lower part\" \"upper part\" detergent drawer bacterial load",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC8146927 \"detergent drawer\" \"rubber door seal\" \"higher\"",
+      "\"Correction: Bacterial communities in domestic washing machines associated with user-perceived odours\"",
+      "\"42599508\" correction Bacterial communities washing machines",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC8515937 \"activity\" cotton polyester drying bacteria",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC8515937 \"after drying\" \"activity\"",
+      "site:pmc.ncbi.nlm.nih.gov/articles/PMC8515937 \"bacterial activity\" polyester cotton",
+      "\"Analysis of biofilm and bacterial communities in the towel environment with daily use\" Wakayama Tochigi",
+      "\"Analysis of biofilm and bacterial communities in the towel environment with daily use\" \"Wakayama\"",
+      "\"Analysis of biofilm and bacterial communities in the towel environment with daily use\" \"Alphaproteobacteria\" \"26 households\""
+    ]
+  },
+  "sources": [
+    {
+      "title": "A Comprehensive View of Microbial Communities in the Laundering Cycle Suggests a Preventive Effect of Soil Bacteria on Malodour Formation - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9318688/?utm_source=openai"
+    },
+    {
+      "title": "Smells Like Teen Spirit-A Model to Generate Laundry-Associated Malodour In Vitro.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33946384/?utm_source=openai"
+    },
+    {
+      "title": "Microbial survival and odor in laundry - Munk - 2001 - Journal of Surfactants and Detergents - Wiley Online Library",
+      "url": "https://aocs.onlinelibrary.wiley.com/doi/abs/10.1007/s11743-001-0192-2?utm_source=openai"
+    },
+    {
+      "title": "A New Method to Evaluate the Antimicrobial Efficacy of Domestic Laundry Detergents - Schages - 2020 - Journal of Surfactants and Detergents - Wiley Online Library",
+      "url": "https://aocs.onlinelibrary.wiley.com/doi/10.1002/jsde.12401"
+    },
+    {
+      "title": "Unravelling the hidden side of laundry: malodour, microbiome and pathogenome - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11809074/?utm_source=openai"
+    },
+    {
+      "title": "The Bacterial Life Cycle in Textiles is Governed by Fiber Hydrophobicity - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8515937/?utm_source=openai"
+    },
+    {
+      "title": "Analysis of biofilm and bacterial communities in the towel environment with daily use | Scientific Reports",
+      "url": "https://www.nature.com/articles/s41598-023-34501-4?utm_source=openai"
+    },
+    {
+      "title": "Bacterial Exchange in Household Washing Machines",
+      "url": "https://public-pages-files-2025.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2015.01381/pdf"
+    },
+    {
+      "title": "Cultivation-Based Quantification and Identification of Bacteria at Two Hygienic Key Sides of Domestic Washing Machines - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8146927/?utm_source=openai"
+    },
+    {
+      "title": "Samsung washing machine or laundry smells bad",
+      "url": "https://www.samsung.com/us/support/troubleshoot/TSG10007246/"
+    },
+    {
+      "title": "",
+      "url": "https://www.jstage.jst.go.jp/article/jos/70/4/70_ess20297/_pdf"
+    },
+    {
+      "title": "Bacterial communities in domestic washing machines associated with user-perceived odours | Applied Microbiology and Biotechnology | Springer Nature Link",
+      "url": "https://link.springer.com/article/10.1007/s00253-026-13972-1?utm_source=openai"
+    }
+  ]
+}
