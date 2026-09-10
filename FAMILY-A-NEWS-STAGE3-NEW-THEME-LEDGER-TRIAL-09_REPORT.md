@@ -130,3 +130,76 @@ News Completionの人手介在箇所: (1)テーマ選定(候補検索結果か�
 ## 8. 費用合計
 
 ¥57.89(Step0)+¥142.50(Step1)+¥40.10(B1B full pipeline)=**¥240.49**(実測、各段階budget内)。
+
+## REGEN-01(2026-09-10、ユーザー承認再生成1回)
+
+管理ID: `FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09-REGEN-01`。ユーザー決定
+(2026-09-10): §4のB1B `full_story_part1`(3回連続ASR NGでHUMAN_REVIEW_REQUIRED、
+Assembly=`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`)について、既存の承認済み再生成
+経路で1回のみ再生成してよい。その1回でAudio Validation(ASR/disfluency QA)を
+通らなければ追加再生成せずSTOPしユーザー確認へ戻す、という条件付き承認。
+
+**再生成前のLock状態確認**(`er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/audit/review_lock_state.json`、読み取りのみ):
+state=`HUMAN_REVIEW_REQUIRED`、final_status=`STOPPED`、cumulative_tts_attempts=3。
+3回とも`audio_classification=TRUE_CONTENT_MISMATCH`で、canonical_textの
+"published **a report on** a new gene treatment"の"a report on"をASRが一貫して
+読み落としていた(3回のASR結果全て"published a new gene treatment"、"a report
+on"が欠落)。
+
+**再生成経路**(`er011_news_stage3_new_theme_ledger_trial_09_b1b_regen01_full_story_part1.py`、新規、
+Household候補の`er011_household_unified_final_candidate_01_segfix_comment3_01.py`
+と同一パターン): `er011_human_review_lock_01.approve_regenerate()`で
+REGENERATE_APPROVEDへ遷移→元のfull_story_part1呼び出しと同一関数・同一引数
+(`er003_v1_sing01_news_tail_fix.generate_news_narration_wide_margin`、
+`disfluency_qa=False, enable_connected_speech_equivalence_layer=True,
+enable_repetition_qa=True`、`er003_v1_n3_01_tts_generate.generate_b1_segments()`
+内呼び出しと同一)で再生成→旧wavは`full_story_part1_original.wav`として退避
+(削除しない)→PASSのため`er003_v1_n3_01_assemble.stage_assemble_b1`で再Assembly
+→Audio Validation Gate opt-in ON確認→player.html生成。本文・Prompt・引数は
+無変更。Production/Prompt/共有module編集・Git操作なし。
+
+**結果: PASS(1回目の試行で解消)**。
+
+| 項目 | 再生成前(3回とも) | 再生成後(1回目) |
+|---|---|---|
+| audio_classification | TRUE_CONTENT_MISMATCH | **NORMALIZED_MATCH** |
+| asr_text冒頭 | "...published **a new** gene treatment..." | "...published **a report on** a new gene treatment..." |
+| verified | false | **true** |
+| repetition_qa_checked/flagged | 未実施(NG確定前に打ち切り) | 実施・flagged=false |
+| lock state(再生成後) | HUMAN_REVIEW_REQUIRED | **RESOLVED**(review_lock機構により自動遷移) |
+
+再生成後のASR全文(1回目attempt、独立実測): "On September 3, 2026, a medical
+journal published a report on a new gene treatment for hard-to-treat autoimmune
+diseases of the nervous system. The study included 16 people, 7 with progressive
+multiple sclerosis, and 3 each with MOG antibody-associated disease, generalized
+myasthenia gravis, and idiopathic inflammatory muscle disease. The unusual part
+was where the treatment was made. Instead of removing a patient's immune cells,
+changing them in a laboratory, and putting them back, researchers gave one
+intravenous dose of a disabled gene carrier. It delivered a gene for
+CD19-targeting CAR T cells into the patient's own T cells inside the body."
+("a report on"を正しく発話・認識、NORMALIZED_MATCHでverified=true)。
+
+**Assembly/Gate**: 再Assembly `status=OK`(duration=330.294s、peak=0.9362、
+clipping=false)。Gate OFF経路PASS。Audio Validation Gate opt-in ON経路(OPEN-129)
+**PASS**(`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`は解消)。
+
+**費用**: ¥4.20(実測、TTS 1回+ASR 1回分、上限¥30以内)。
+
+**player**: 新規生成(B1B単独ページ、標準フォーマット
+`audio_review_player.py`準拠、Household候補の`build_player.py`のB1B行構築
+ロジックを踏襲・無変更利用)。
+`C:\Users\tensh\eigo-radio\er011_output\news_stage3_new_theme_ledger_trial_09_b1b_full\player.html`
+(`file:///C:/Users/tensh/eigo-radio/er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/player.html`)。
+
+**新規ファイル**:
+- `er011_news_stage3_new_theme_ledger_trial_09_b1b_regen01_full_story_part1.py`(root、新規)
+- `er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/full_story_part1_original.wav`(退避、再生成前音声)
+- `er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/audit/regen01_full_story_part1_family_a_news_stage3_new_theme_ledger_trial_09.json`(診断・新旧entry記録)
+- `er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/regen01_full_story_part1_summary.json`
+- `er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/player.html`(新規)
+- 更新: `er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/audit/tts_generation_results.json`・`review_lock_state.json`・`run_summary_tts.json`・`run_summary_assemble.json`・`audit/timeline.json`・`audit/gain_report.json`・`audit/headroom_report.json`(full_story_part1のsegment差し替えに伴う既存監査ファイル更新、他segmentは無変更)
+
+**総費用(本管理ID全体)**: ¥240.49(Trial-09本体)+¥4.20(REGEN-01)=**¥244.69**。
+
+**Gate 1分類**: `VALIDATED(Trial)`止まり。Production採用は別途UDR(本REGEN-01
+単体では判断しない、既存§6のUSER_DECISION_REQUIRED候補は解消していない)。

@@ -10904,6 +10904,141 @@ push。並列稼働中5件の生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/
 RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスクでは触って
 いない(commit対象外)。
 
+## PM-CLOSEOUT-CONSOLIDATION-71: News Trial-12完走+OPEN-140是正完了+CAR-T
+再生成PASS+Discovery Opus L2レビュー記録(新規OPEN-141)+CONSOLIDATION-70後
+のユーザー追加確定のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-71)に基づき実施した。並列稼働中の4件
+(Trial-11タオル記事のSupport→Audio、Opus L2レビュー[3V Phase 1差分]、
+T-2/T-3精査[`PM-TOKEN-EFFICIENCY-T2-T3-ASSESSMENT-01_REPORT.md`]、TTS
+時間依存性調査[`TTS-REGENERATION-TIMING-DEPENDENCY-ANALYSIS-01_REPORT.md`])
+の生成物は一切stageしていない(`git status --short`で確認、`git add -A`
+不使用)。
+
+**反映内容**:
+
+1. **News Ledger拡充A/B Trial-12(新規更新)**: 出典
+   `FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12_REPORT.md`
+   「## 継続実行(Fable継続指示1回目)」節。N=12(条件A=現行Hanshin Ledger
+   fact5件、条件B=拡充Ledger fact12件、各A2×3/B1B×3)完走。最終NG率
+   条件A 83.3%(5/6)→条件B 33.3%(2/6)、lexical overlap起因NG 4/6→1/6、
+   retry平均1.833→0.833、Point対Full Story overlap平均0.4497→0.370、
+   anchor衝突平均1.5→0.0、fact利用率93.3%→27.8%。Fisher正確検定
+   p=0.242(有意でない)。条件BのNG2件中1件はOverlap解消後のFact
+   Checker FAIL(条件A側には出現しなかった新NGモード)。pooled NG群
+   (n=7)/OK群(n=5)のGate指標比較差0.156・Welch p=0.0039・Mann-Whitney
+   p=0.0073(条件操作とNG/OKが交絡、因果の強い主張は不可)。
+   cross_point_overlapは条件差・NG/OK差とも不明瞭(p=0.669)。¥0並行
+   分析: (a)閾値0.40は依然判断材料不足、(b)lexical表層よりanchor衝突数
+   (構造指標)が操作効果を鋭敏に捉える、(c)fact供給増でOverlap由来retry
+   依存は下がるがFact Checker起因の新NGモードが生じ得る、(d)連続量評価は
+   「Point対Full Story overlap」限定の支持材料。費用累計¥248.4(Ledger
+   研究¥148.6+記事¥99.8)。Gate1=`VALIDATED(Trial)`。OPEN_ITEMS.md
+   OPEN-135行(News節)へ反映。ユーザー判断待ち: 拡充fact(FACT-08〜14)の
+   Production Ledger採用可否(URL人手再検証前提)、UDR候補a(主軸を論点H
+   へ)、UDR候補d(連続量評価の正式検討)。
+2. **OPEN-140 Theme2 Ledger ID不整合是正(新規更新、CLOSED)**: 出典
+   `OPEN-140-THEME2-LEDGER-ID-CONSISTENCY-FIX-01_REPORT.md`。
+   `theme2_verified_fact_ledger_CORRECTED_trial12.txt`「注記3」の引用
+   番号4箇所(F-211→F-206、F-206→F-205、F-205→F-204、F-208→F-202)を、
+   引用文言・数値がFact一覧本文と完全一致することを根拠に一意に修正した
+   (Fact本体・意味は無変更、対応表`er011_output/open140_theme2_ledger_
+   id_fix_01/id_mapping.json`)。既存完成音声(Theme2 rerun_04)は当時の
+   `prompt.txt`(不変)を使用しており遡及影響なし。ユーザー承認条件
+   (B-10、意味が明確なら自律修正)を満たすため、OPEN_ITEMS.md OPEN-140行
+   を**CLOSED**へ更新した。
+3. **CAR-T記事(Trial-09)B1B `full_story_part1`承認済み再生成1回PASS
+   (新規更新)**: 出典`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-
+   TRIAL-09_REPORT.md`「## REGEN-01」節。3回連続NGの原因はTTSが"a
+   report on"を一貫して読み落としたこと。`approve_regenerate()`経由で
+   同一関数・同一引数で1回のみ再生成→ASR NORMALIZED_MATCH→Assembly
+   PASS→Audio Validation Gate PASS→player生成完了(費用¥4.20実測)。旧
+   wavは`full_story_part1_original.wav`として退避。Trial-09全体の
+   Statusは`VALIDATED(Trial)`のまま(Gate1分類変更なし)、CAR-Tテーマは
+   Production採用候補として提示しない(既存決定を維持、最終版になり
+   にくいテーマ)。3回NG後の4回目PASSという時間依存性は別途read-only
+   調査中(`TTS-REGENERATION-TIMING-DEPENDENCY-ANALYSIS-01`、1件で結論
+   しない、retry仕様変更なし)。OPEN_ITEMS.md OPEN-135行(News節、N-4
+   クローズ)へ反映。
+4. **Opus L2レビュー(Discovery Trial-11 N=1解釈)所見の記録(新規更新)**:
+   Opus(opus-consultant、読み取り専用)から受領した全文を一字一句その
+   まま新規Report`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-
+   OPUS-L2-REVIEW-01_REPORT.md`として保存した(要約せず全文コピー)。
+   要旨: (論点1)保険文0件は題材依存(争点となる消費者向けガイド記述が
+   タオルLedgerに不在)であり、Part A単独効果の証拠にはできない。逆に
+   REVIEW率はPart A単独の過去実測0/6に対しTrial-11 B1Bは1/2で悪化側。
+   対照アーム(baseline)がなくPart A単独の寄与を差分として測れていない。
+   (論点2)B1B Ledger Deviation MAJOR2件の自動解消は事実面は妥当だが、
+   `er003_v1_n3_01_articles_generate.py`の実行順(Evidence Compression
+   →Fact Checker→Ledger Deviation→Local Rewrite→Deviation再チェック)
+   により、**Local Rewrite後の本文はFact Checker・Point Overlap QA・
+   Point Value QA・Evidence Compressionのいずれも再通過しない構造的
+   盲点**が全Editorial Type共通で存在する。(論点3)Fact Checker
+   advisory3件中1件はLocal Rewriteで置換済みの文へのstale指摘、残り2件
+   (柔軟剤の無条件断定・"prewash groups"指示対象不明)は公開前修正推奨。
+   (論点4)A2 294語は既存Part A分布の中央で問題ではない、B1B 419語が
+   soft上限420語に1語差という点の方が優先度が高い。(論点5)次のN増しに
+   は対照アーム・争点テーマ・異型テーマが必須、36本≈¥1,100〜1,300見込み。
+   OPEN_ITEMS.md OPEN-135行(Discovery節)へ要旨反映。**新規OPEN-141を
+   起票**: Local Rewrite後のQA非再通過という構造的盲点は仕様変更を伴う
+   ためUSER_DECISION_REQUIRED(起票のみ・実装なし)。
+5. **CONSOLIDATION-70後にユーザーが追加確定した事項(2026-09-10)**:
+   T-1(`OPEN_ITEMS.md`等の巨大単一行の記録様式改善)=条件付き実施承認
+   (条件: 内容・Status・履歴を欠落させない/意味不変/構造整理のみ/
+   参照性・検索性を悪化させない/削減効果を記録、実施は別タスク)。
+   T-2(Fableへの限定的Git操作権限付与)・T-3(News/Discovery Ledger
+   検索回数上限・reasoning effort調整)=現時点不実施、精査報告を実行中
+   (`PM-TOKEN-EFFICIENCY-T2-T3-ASSESSMENT-01_REPORT.md`)。T-4(利用量
+   連動節約モード新設)=保留。**V-2**(3V Phase 2の進め方)=選択肢A
+   (Phase 1b→新テーマ3V記事→2V比較記事)を承認。Phase 1bの定義=「既承認
+   3V仕様をProduction正式初回経路で記事生成できるようにする不足配線
+   のみ(Writer/Ledger/Key Phrase選定等)」。STOP条件=3V専用の新Writer
+   ルール/Ledger意味変更/3V専用の新Key Phrase仕様/新QA基準/新retry・
+   fallback仕様/その他未承認の意味変更が必要と判明した場合。Phase 1b
+   着手前またはcommit前にOpus L2レビュー(Production core差分・2V
+   regression・Dangling Reference限定)を実施する。**V-1**(Comment 2/3
+   汎用文言)=2V/3V両方に適用する形で承認(条件: 2V既存意味不変/Voice数
+   非依存/3V前提表現なし、commit済み差分と承認内容の一致確認+test実施
+   が前提)。OPEN_ITEMS.md OPEN-120行・OPEN-135行へ反映。Phase 1b・新
+   テーマ3V記事・2V比較記事の着手は本タスクでは行わず、別タスクで実施
+   する。
+
+**Dangling Reference Check**: OPEN-140行の`CLOSED`表記は、既存完成音声
+(Theme2 rerun_04)が当時の`prompt.txt`(不変)を使用し遡及影響がないことを
+根拠にしており、未検証のまま完了扱いにしていないことを確認した。新規
+OPEN-141はUSER_DECISION_REQUIRED(起票のみ)であり、Production仕様が
+無断で変更されたかのような記述は含まないことを確認した。OPEN-120行の
+V-1/V-2追記は、Phase 1b・新テーマ3V記事・2V比較記事のいずれも本タスク
+では未着手であることを明記した。
+
+**触れていないもの**: 並列稼働中4件(上記)の生成物・script・REPORT。
+コード・Prompt・Production実装は一切変更していない(SSOT反映のみ、
+追加API費用なし、本タスク自体の費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-71)。出典REPORT: `FAMILY-A-NEWS-STAGE4-
+LEDGER-ENRICHMENT-AB-TRIAL-12_REPORT.md`・`OPEN-140-THEME2-LEDGER-ID-
+CONSISTENCY-FIX-01_REPORT.md`・`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-
+TRIAL-09_REPORT.md`・`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-
+TRIAL-11-OPUS-L2-REVIEW-01_REPORT.md`(新規)。Git操作: ファイル名指定で
+`git add`(`git add -A`不使用)、対象=`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・`FAMILY-A-NEWS-STAGE4-LEDGER-
+ENRICHMENT-AB-TRIAL-12_REPORT.md`・`er011_news_ledger_enrichment_ab_
+trial_12_run.py`・`er011_output/news_ledger_enrichment_ab_trial_12/`
+配下json/md/jsonl/txt・`OPEN-140-THEME2-LEDGER-ID-CONSISTENCY-FIX-01_
+REPORT.md`・`er011_output/open112_trend_theme2_b_a2_b1_text_trial_12/
+research/theme2_verified_fact_ledger_CORRECTED_trial12.txt`・
+`er011_output/open140_theme2_ledger_id_fix_01/id_mapping.json`・
+`FAMILY-A-NEWS-STAGE3-NEW-THEME-LEDGER-TRIAL-09_REPORT.md`・
+`er011_news_stage3_new_theme_ledger_trial_09_b1b_regen01_full_story_
+part1.py`・`er011_output/news_stage3_new_theme_ledger_trial_09_b1b_
+full/`配下のjson/html/txt(wav/mp3除外)・`FAMILY-A-DISCOVERY-
+GENERALIZATION-TOWELS-TRIAL-11-OPUS-L2-REVIEW-01_REPORT.md`。1 commit
+で`origin/main`へpush。並列稼働中4件の生成物・`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`・既存の未追跡ファイル群はいずれも本タスク
+では触っていない(commit対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

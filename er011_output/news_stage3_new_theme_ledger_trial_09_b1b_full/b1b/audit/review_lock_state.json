@@ -326,88 +326,111 @@
     ]
   },
   "full_story_part1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "6005f0765abf1714b4f6b2a9f5bb9a1404909be37156729c82f41b6565734d23",
     "language": "en",
     "theme_id": "news_stage3_new_theme_ledger_trial_09_b1b_full",
     "level": "b1b",
     "segment_id": "full_story_part1",
-    "updated_at": "2026-09-09T19:29:43",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-09-10T09:50:18",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/full_story_part1.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "On September 3rd, 2026, a medical journal published a new gene treatment for hard-to-treat autoimmune diseases of the nervous system. The study included 16 people, seven with progressive multiple sclerosis and three each with MOG antibody-associated disease, generalized myasthenia gravis, and idiopathic inflammatory muscle disease. The unusual part was where the treatment was made. Instead of removing a patient's immune cells, changing them in a laboratory, and putting them back, researchers gave one intravenous dose of a disabled gene carrier. It delivered a gene for CD19-targeting CAR T cells into the patient's own T cells inside the body.",
+        "asr_text": "On September 3, 2026, a medical journal published a report on a new gene treatment for hard-to-treat autoimmune diseases of the nervous system. The study included 16 people, 7 with progressive multiple sclerosis, and 3 each with MOG antibody-associated disease, generalized myasthenia gravis, and idiopathic inflammatory muscle disease. The unusual part was where the treatment was made. Instead of removing a patient's immune cells, changing them in a laboratory, and putting them back, researchers gave one intravenous dose of a disabled gene carrier. It delivered a gene for CD19-targeting CAR T cells into the patient's own T cells inside the body.",
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "length_ok": true,
-        "verified": false,
+        "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 48.371,
+          "raw_duration_seconds": 48.811,
           "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.44,
-          "trimmed_duration_seconds": 48.281,
+          "raw_trailing_silence_seconds": 0.48,
+          "trimmed_duration_seconds": 48.681,
           "leading_margin_retained_seconds": 0.26,
           "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/attempts/full_story_part1_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "On September 3rd, 2026, a medical journal published a new gene treatment for hard-to-treat autoimmune diseases of the nervous system. The study included 16 people, seven with progressive multiple sclerosis, and three each with MOG antibody-associated disease, generalized myasthenia gravis, and idiopathic inflammatory muscle disease. The unusual part was where the treatment was made. Instead of removing a patient's immune cells, changing them in a laboratory, and putting them back, researchers gave one intravenous dose of a disabled gene carrier. It delivered a gene for CD19 targeting CAR T cells into the patient's own T cells inside the body.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 46.371,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.42,
-          "trimmed_duration_seconds": 46.301,
-          "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.35
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 48.681,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 108,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9977,
+                "time_a_seconds": 17.83,
+                "time_b_seconds": 38.93,
+                "lag_seconds": 21.1,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9968,
+                "time_a_seconds": 40.34,
+                "time_b_seconds": 41.97,
+                "lag_seconds": 1.63,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9967,
+                "time_a_seconds": 9.27,
+                "time_b_seconds": 38.28,
+                "lag_seconds": 29.01,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9967,
+                "time_a_seconds": 6.12,
+                "time_b_seconds": 16.21,
+                "lag_seconds": 10.09
+              },
+              {
+                "similarity": 0.9966,
+                "time_a_seconds": 34.29,
+                "time_b_seconds": 42.76,
+                "lag_seconds": 8.47
+              }
+            ],
+            "best_run_length_seconds": 0.04,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.31,
+            "time_a": 41.49,
+            "lag": 1.84,
+            "similarity_at_start": 0.7339,
+            "best_run_length_seconds": 0.31,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          }
         },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/attempts/full_story_part1_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "On September 3rd, 2026, a medical journal published a new gene treatment for hard-to-treat autoimmune diseases of the nervous system. The study included 16 people, seven with progressive multiple sclerosis and three each with MOG antibody-associated disease, generalized myasthenia gravis, and idiopathic inflammatory muscle disease. The unusual part was where the treatment was made. Instead of removing a patient's immune cells, changing them in a laboratory, and putting them back, researchers gave one intravenous dose of a disabled gene carrier. It delivered a gene for CD19-targeting CAR T cells into the patient's own T cells inside the body.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 48.771,
-          "raw_leading_silence_seconds": 0.28,
-          "raw_trailing_silence_seconds": 0.42,
-          "trimmed_duration_seconds": 48.701,
-          "leading_margin_retained_seconds": 0.28,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/attempts/full_story_part1_attempt3_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b/narration/attempts/full_story_part1_attempt4_englishstyleprefixwidemargin.wav"
       }
     ]
   },

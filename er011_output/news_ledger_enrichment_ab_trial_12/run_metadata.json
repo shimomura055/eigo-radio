@@ -1,0 +1,21 @@
+{
+  "management_id": "FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12",
+  "n_per_condition": 3,
+  "n_definition": "N=6は条件ごとのrun数(A2×3+B1B×3)。条件A/B合計で12 run。",
+  "conditions": {
+    "current": {
+      "ledger_path": "er003_output/n3_01/hanshin/research/verified_fact_ledger.txt",
+      "usable_fact_count": 5,
+      "label_ja": "条件A: 現行Ledger(既存、無変更)"
+    },
+    "enriched": {
+      "ledger_path": "er011_output/news_ledger_enrichment_ab_trial_12/hanshin_ledger_condition_b_enriched.txt",
+      "usable_fact_count": 12,
+      "label_ja": "条件B: 拡充Ledger(条件A全文+新規fact追記)"
+    }
+  },
+  "editorial_type_module_block": "常に空文字(Production既定、Focus Moduleなし)",
+  "point_role_hint_block": "常に空文字(Production既定、hintなし)",
+  "loop_budget_point_overlap_article_retry_max": 2,
+  "condition_b_ledger_starts_with_condition_a_full_text": true
+}
