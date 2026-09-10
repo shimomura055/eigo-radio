@@ -708,6 +708,38 @@ Gatekeeper原則・Opus上限は本追記によって変更しない。
 Leakage)の再試行方針についてユーザーが決定した運用方針
 (PM-GOVERNANCE-AUTONOMOUS-OBVIOUS-FIX-RULE-04、2026-09-09)。
 
+**低コスト分析・Trialの自律実施(2026-09-10、ユーザー正式決定、
+PM-CLOSEOUT-CONSOLIDATION-67)**: ¥0分析や大きな費用を要しないTrialは、
+逐一ユーザー承認へ戻らずFable側で実施し結果まで持ち込む。小さなTrial
+ごとに`USER_DECISION_REQUIRED`化しない。
+
+**対象の目安**: (a) 既存データの再集計・机上分析等、追加API費用が
+¥0の分析、(b) 既存の承認済み範囲内(既存Production仕様・既存QA基準・
+既存retry/fallback機構を変更しない)で行う小規模Trial(目安: 単発の
+比較実験、既存の題材差し替え、既存Prompt構造内での軽微な文言調整の
+Trial検証等)。
+
+**ただし以下はSTOP必須(従来どおりユーザー判断必須、11節上記の
+「自明な修正の自律実施」のSTOP必須6条件と同一の考え方を適用する)**:
+1. Production仕様の変更
+2. QA・Validator・閾値(threshold)の変更
+3. 大きなQCD(品質・コスト・納期)影響を伴う変更
+4. 複数の有力な設計案が残っており、いずれを採るかにユーザー価値判断が
+   必要な場合
+5. 新仕様の追加・既存承認仕様の変更・Production挙動の意味的変更
+6. 未承認のQA・Validator・Prompt原則のProduction採用
+
+上記に該当する場合は、低コストであっても実施前または実施後の採用判断で
+`USER_DECISION_REQUIRED`としてユーザーへ提示する(低コストであることは
+STOP必須条件の免除理由にならない)。本節は「自明な修正の自律実施」
+(上記)と同じGatekeeper原則・往復上限(11節冒頭)・Opus上限を前提とし、
+これらを変更しない。
+
+**経緯**: 2026-09-10、Discovery/NewsのTrialが小さな単位で繰り返し
+`USER_DECISION_REQUIRED`として提示され往復コストが生じていたことを
+受け、¥0分析・低コストTrialについては結果提示まで一括して進めてよいと
+ユーザーが決定した(PM-CLOSEOUT-CONSOLIDATION-67)。
+
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**

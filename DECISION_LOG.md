@@ -10434,6 +10434,147 @@ PM-CLOSEOUT-CONSOLIDATION-66)。Git操作: ファイル名指定で`git add`
 `docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`・その他未追跡
 ファイルはcommitしていない。
 
+## PM-CLOSEOUT-CONSOLIDATION-67: 2026-09-10ユーザー次アクション確定指示の
+SSOT反映(Household記録訂正+Discovery一般化確認Trial起票+News Blocking/
+deferred分類統一+3V Production Wiring Phase 1確定+Phase 2/2V比較記事
+計画+4V DEFERRED再確認+低コスト分析・Trial自律実施ルール新設)
+
+Sonnet(sonnet-worker)が2026-09-10、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-67)に基づき実施した。並列稼働中のsonnet-worker
+3件(Discovery新テーマ一般化確認Trial-11、News Ledger拡充A/B Trial-12、
+3V Production Wiring Phase 1)とは独立(それらが`er0XX_output/`配下へ
+書く新規ディレクトリ・新規REPORT・コード[3V配線のみ]は本タスクでは
+一切触っていない)。
+
+**Lane A-1 Discovery — 記録訂正(必須)**: `OPEN_ITEMS.md`OPEN-135行・
+ヘッダ「最終更新」段落に残っていた、`PM-CLOSEOUT-CONSOLIDATION-64`
+エントリ由来の誤った因果説明を、ユーザー確定内容に基づき事実へ訂正した。
+訂正前→訂正後は以下のとおり(全2箇所、いずれも`OPEN_ITEMS.md`)。
+
+1. OPEN_ITEMS.mdヘッダ「最終更新」段落(`PM-CLOSEOUT-CONSOLIDATION-64`の
+   直前の記録本文内)。訂正前: 「...一方でHOUSEHOLD-UNIFIED-FINAL-
+   CANDIDATE-01自体は保険文0で成立したため採用の必要性が薄いと判断」。
+   訂正後: 「HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01自体はPart B案1
+   [cautionary_constrained]を**適用して**生成され保険文0[A2・B1Bとも]で
+   成立したが、このREVIEW率上振れとの因果関係が未確定であり、Household
+   記事1本[N=1]の成立だけでは一般採用の根拠として不足と判断してProduction
+   採用を見送った」。
+2. `OPEN_ITEMS.md`OPEN-135行、`PM-CLOSEOUT-CONSOLIDATION-64`追記(6)。
+   訂正前: 「このため採用の必要性が薄いと判断しProduction採用を見送った」。
+   訂正後: 「しかし(3)のREVIEW率上振れとの因果関係が未確定であり、
+   Household記事1本(N=1)の成立だけでは一般採用(Production採用)の根拠
+   として不足と判断し、Production採用を見送った」。
+
+いずれも訂正箇所には「2026-09-10、PM-CLOSEOUT-CONSOLIDATION-67で...
+訂正」という付記を残した(旧記述を削除するのではなく、誤りであった旨を
+明示したうえで正しい記述へ置き換えた)。**正しい理解**: Household最終版
+(`HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01`)はDiscovery保険文抑制Prompt
+制約案(Part B案1、`cautionary_constrained`)を**適用して**生成された
+(制約なしで保険文0が成立したのではない)。Production採用見送りの正しい
+理由は、Trial-10で観測されたREVIEW率0/6→2/6上振れとの因果関係が未確定
+であり、Household記事1本(N=1)の成立だけでは一般採用(Production採用)の
+根拠として不足すると判断したためである。`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-64`エントリ本文(10176〜10198行付近)は元々
+「Part B案1適用条件[cautionary_constrained]を用いて...成立した」
+「以上を踏まえ...(c)見送りと判断した」という記述で、上記の正しい理解と
+矛盾しておらず修正不要と確認した(誤った因果説明「制約なしでも保険文0で
+成立した」「採用の必要性が薄い」は`OPEN_ITEMS.md`側にのみ残存していた)。
+
+**Lane A-1 Discovery — 一般化確認Trial起票**: Discovery Focus Module
+一般化確認Trial(N=1)をユーザーが確定した。テーマ「Why do towels
+sometimes smell even after washing?(洗濯したのに、なぜタオルは臭う
+ことがあるのか?)」(Householdと異なるテーマ)、A2/B1B。確認項目:
+Discoveryらしさ/「へえ」があるか、Full StoryとPointの役割分離、Point
+One/Twoの切り口、Point同士の多様性、Fact Safety、Ledger Deviation、
+Point Value/Overlap、A2/B1B整合、不自然な保険文・説明書的表現、retry
+挙動。**現時点ではDiscovery Focus ModuleのProduction採用は行わない。
+N=1が良好なら次にProduction採用判断をユーザーへ提示する**。管理ID:
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11`(並列実施中、本タスク
+では触れていない)。`OPEN_ITEMS.md`OPEN-135行へ追記した。
+
+**Lane A-2 News**: News再改善はLedgerのfact供給量/evidence allocationを
+増やすことでHanshin型NewsのPoint Overlap・retry成功率を改善できるかの
+検証を主軸として継続する。Hanshin型テーマでLedger拡充A/B Trial実施を
+ユーザーが承認した(管理ID`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-
+TRIAL-12`、並列実施中、本タスクでは触れていない)。Overlap threshold
+0.40・Overlap Checker自体・retry構想・Point Role Planning・連続量評価の
+低コスト分析も並行可とした。**矛盾統一**: `FAMILY-A-NEWS-STAGE4-STATUS-
+REPORT-01_REPORT.md`8節がN-3(News Focus ModuleのProduction採用可否)・
+N-4(CAR-T B1B`full_story_part1`再生成承認)を「Blocking」と分類した一方、
+`docs/pm/ACTIVE_TASK.md`は「UDR-blocking: なし」としており、SSOT間で
+分類が不整合だった。SSOT上の正しい分類は「`USER_DECISION_REQUIRED`
+(ユーザー判断要)だが、現行の作業単位をblockしないため`UDR-deferred`
+(未回答再掲対象)」である。同REPORTは記録物のため本文は修正せず、本
+エントリで「REPORTの『Blocking』表記はSSOT上『deferred・未回答再掲対象』
+へ統一」と記す。`OPEN_ITEMS.md`OPEN-135行へ反映した。
+
+**恒久運用ルール新設(低コスト分析・Trialの自律実施)**: ¥0分析や大きな
+費用を要しないTrialは、逐一ユーザー承認へ戻らずFable側で実施し結果まで
+持ち込む運用を恒久ルール化した。小さなTrialごとに`USER_DECISION_REQUIRED`
+化しない。ただしProduction仕様変更・QA/threshold変更・大きなQCD
+(品質・コスト・納期)変更・複数の有力設計案が残る場合はユーザー判断へ
+戻す。`docs/pm/PM_GOVERNANCE.md`11節「自明な修正の自律実施」の直後へ
+新設小節「低コスト分析・Trialの自律実施」として追記した(既存のSTOP必須
+6条件・8項目の遵守事項・Gatekeeper原則・Opus上限はいずれも変更しない)。
+
+**Lane B 3V — Production Wiring Phase 1確定**: 3V(3声Voice方式)
+Production Wiring Phase 1の確定事項をユーザーが決定した。segment命名=
+`point_one/point_two/point_three`を基本採用。Voice 3=Schedarを3V正式
+Voiceとして採用。Voice 3のfallback声は当面専用のものを設けず、使用不可
+時は既存Human Review Lockへ委ねる。Comment 2/3文言はVoice数非依存の
+汎用文言として整合させる。共有Audio Validation Gateは3Vに必要な
+`point_three`系entryを最小追加する。既存2V(2声Voice方式)の挙動は変更
+しない。**Phase 1の範囲はoffline regressionまでとし、Production
+runtimeでの実記事生成は行わない**。管理ID`EDITORIAL-B-FAMILY-VOICES-3V-
+PRODUCTION-WIRING-PHASE1-01`(並列実施中、本タスクでは触れていない)。
+
+**Lane B — Phase 2・2V比較記事計画・4V DEFERRED再確認**: Phase 2
+(Production runtime確認)は既存Trial記事(固定席テーマ等)を再利用せず、
+新テーマ「Should schools replace some homework with more free time?
+(学校は宿題の一部を減らして、子どもの自由時間を増やすべきか)」・
+Voice=Student/Parent/Teacherで、記事→Support→AudioをProduction正式
+経路で完成させユーザー試聴artifactを提示する計画を登録した(着手は
+Phase 1完了後)。観測項目: 全文尺・Tension尺・Local Rewrite発生・
+Tension再膨張・Analytical Leakage・Voice distinctness・Fact Checker
+A' call数/search数/cost/latency・retry回数・Ledger Deviation・Audio
+structural gate・最終的な聞きやすさ。2V比較記事N=1として「Should
+supermarkets discount food more aggressively before it expires?
+(スーパーは消費期限前の商品をもっと積極的に値引きすべきか)」・
+Voice=Shopper/Store Managerを、Production正式経路で記事→Support→
+Audio生成し、3Vと同じ主要指標を取得、試聴artifactを提示する計画を
+登録した(目的: 2V/3Vの尺・修正負荷・QA負荷・音声体験の実測比較)。
+4V(4声Voice方式)は2V/3V追加記事のユーザー試聴・評価完了まで明示的に
+`DEFERRED`のまま維持することを再確認した。いずれも本タスク時点では
+未着手(Phase 1完了待ち)。`OPEN_ITEMS.md`OPEN-120行・OPEN-132行へ
+反映した。
+
+**Dangling Reference Check**: 本タスクで新設した表現(「低コスト分析・
+Trialの自律実施」小節、`UDR-deferred`という分類語)は、いずれも既存
+SSOTの既存語彙(`docs/pm/PM_BRIEF.md`Status語彙の`USER_DECISION_REQUIRED`、
+`docs/pm/ACTIVE_TASK.md`固定ヘッダの`UDR-deferred`フィールド[既存])の
+組み合わせ・適用であり、未定義語の新規追加はない。新規管理ID
+(`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11`・`FAMILY-A-NEWS-
+STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12`・`EDITORIAL-B-FAMILY-VOICES-3V-
+PRODUCTION-WIRING-PHASE1-01`)は並列稼働中のsonnet-worker側の管理IDで
+あり、本タスクはそれらのSSOT登録のみを行った(実装・実行はしていない)。
+
+**触れていないもの**: 並列稼働中3タスクの生成物(`er0XX_output/`配下の
+新規ディレクトリ・新規REPORT・3V配線コード)、`docs/pm/ACTIVE_TASK.md`・
+`docs/pm/RESULT_PACKET.md`(本タスク用に新規上書きするが本エントリの
+Git対象外)、`CURRENT_SPEC.md`(配線完了後に別途更新予定、本タスクでは
+未変更)。
+
+**コード・Prompt・Production実装は一切変更していない**(SSOT反映のみ、
+費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-10、管理ID
+PM-CLOSEOUT-CONSOLIDATION-67、2026-09-10ユーザー次アクション確定指示)。
+Git操作: ファイル名指定で`git add`(`git add -A`不使用)、対象=
+`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/PM_GOVERNANCE.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`。1 commitで`origin/main`へpush。
+並列タスクの生成物・`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`・
+既存の未追跡ファイル群はいずれも本タスクでは触っていない(commit対象外)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
