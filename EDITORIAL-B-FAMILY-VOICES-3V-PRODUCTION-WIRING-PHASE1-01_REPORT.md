@@ -531,6 +531,467 @@ Audio Gate完走)に限定される。ただし規模・リスクが前回Phase 
 詳細設計)は実装開始前にFable/ユーザーの承認を得ることを推奨する**
 (本タスクでは調査のみに留め、実装はしていない)。
 
+## 13. Fable修正指示2回目(2026-09-10、Opus L2レビュー指摘への対応)
+
+管理ID: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01`(修正指示
+2回目)。出典: Opus L2レビュー(`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-
+WIRING-PHASE1-01-OPUS-L2-REVIEW-01`)。いずれも承認済み設計の範囲内での
+是正であり、新原則の追加ではない。API呼び出し0回(費用¥0)。
+
+### 13-1. Voice衝突ガード(HIGH、指摘#1)
+
+`registry.VOICE_FALLBACK["voice_a"]`と`registry.VOICE_ASSIGNMENT["voice_c"]`
+が同一("Schedar")のため、Voice A(Algieba)が技術的に利用不可でfallback
+した場合、解決後のVoice AとVoice Cが同じ声(Schedar)になっていた
+(Voice 1とVoice 3が同一の声で発話される、旧仕様では黙認)。
+
+`er012_b_family_voices_production_01.py::resolve_voice_names_3v()`を修正:
+Voice A/B/C解決後、3声がpairwiseに異なるかを検証し、衝突があれば独自の
+代替声を発明せず`RuntimeError`(prefix `[VOICE_COLLISION_STOP]`、衝突ペア・
+解決済み3声・reasonsを含む)で明示停止する。呼び出し側
+`er012_b_family_production_runner_01.py::voice_check_3v()`はこの例外を
+`audit/voice_resolution.json`へ`status="VOICE_COLLISION_STOP"`として記録
+した上で再送出し、パイプライン全体を停止する(overrideしない)。
+
+既存テスト`test_voice_a_unavailable_still_uses_existing_fallback_logic`を
+`test_voice_a_unavailable_causes_collision_with_voice_c_and_stops`へ改名・
+書き換え、衝突時はSTOPすることを期待値とした(ユーザー決定「Voice 3に
+専用fallbackなし、使用不可時は止める」と整合)。
+
+### 13-2. content integrity checkのProduction module正式移設(HIGH、指摘#2)
+
+Trial `er012_editorial_b_voices_3v_audio_trial_01.py`の`run_content_
+integrity_check()`(L879-903付近、6区切りparserが本文を正しく割り当てた
+証跡)を、`er012_b_family_voices_production_01.py::run_content_integrity_
+check_3v()`へロジックそのまま正式移設した(pure関数化、ファイルI/Oは
+呼び出し側の責務に分離)。Trial側は無変更のまま(参照のみ)。
+
+`build_parts_3v()`の消費側`er012_b_family_production_runner_01.py::
+run_scaffold_3v()`で必ず実行し、結果を`audit/content_integrity_3v.json`
+へ記録する。`all_section_bodies_verbatim_from_article`がFalse(NG)の場合は
+`RuntimeError`(prefix `[CONTENT_INTEGRITY_STOP]`)で明示停止する。
+
+新規テストで、移設後の関数がTrial側の同名関数と同一入力で同一出力になる
+ことを固定した(`RunContentIntegrityCheck3vTests::test_matches_trial_
+function_output_for_same_input`、Trialをimportするのはテストのみ、
+Production module自体はimportしない)。
+
+### 13-3. `build_required_structure()`踏み台の除去(指摘#3)
+
+2点を修正した(`er012_b_family_editorial_type_registry_01.py::build_
+required_structure()`):
+
+1. `level="a2"`へ`voice_c`を指定すると、従来は黙って無視されていた
+   (A2は3V未対応のため気づかずに2V扱いされる踏み台)。`voice_c is not
+   None`の場合に`ValueError`を送出するよう変更。
+2. runner CLIの`level="b1_3v"`文字列と、本関数の従来呼び出し規約
+   (`level="b1"`+`voice_c=<str>`)が非対称で、`level="b1_3v"`をそのまま
+   渡すと`voice_c`の有無に関わらず`ValueError("unknown level")`になる
+   踏み台だった。`level="b1_3v"`を薄いaliasとして正式に受理し(`voice_c`
+   必須を強制した上で`level="b1"`へ正規化)、`voice_c`省略時は明示的に
+   `ValueError`で止めるようにした(黙って2V相当へfallbackしない)。
+
+新規テストクラス`BuildRequiredStructureB13vAliasAndA2VoiceCGuardTests`
+(4件)で固定した。
+
+### 13-4. Comment 3役割行の言い換え(指摘#4、ユーザー承認済み汎用化の範囲内)
+
+`VOICES_COMMENT_3_ROLE`内の「役割:」行(タイトル行ではない、実際にLLMへ
+渡る役割説明文の1文)のみ、「どちらが正しいか」→「どの声が正しいか」へ
+言い換えた。タイトル行(「その間に流す、Comment 3(役割: ...」)と
+Comment 4本文はユーザー判断待ちのため本修正では変更していない。既存
+テスト(`test_comment_3_role_markers_preserved`等)は継続PASS。
+
+### 13-5. Comment 2/3汎用文言のA2 Production波及(指摘#5、人間レビュー推奨)
+
+`VOICES_COMMENT_2_ROLE`/`VOICES_COMMENT_3_ROLE`は`registry.COMMENT_ROLES`
+経由でB1(2V/3V)・A2いずれの経路からも共有される単一の定数であるため、
+Phase 1(修正指示1回目)でのVoice数非依存汎用化、および本修正指示2回目の
+13-4の言い換えは、いずれも`er012_b_family_voices_a2_production_01.py`
+(485〜499行、`run_scaffold_a2()`)の出力(日本語Comment 2/3生成)へも
+同様に波及する。A2側は個別のComment定数を持たず、B1と全く同じ
+`registry.COMMENT_ROLES`辞書を参照するため、意図した変更でありB1/A2間の
+不整合ではない。
+
+### 13-6. regression結果
+
+- `er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`
+  単独: 46テスト全PASS(`Ran 46 tests in 0.094s / OK`、新規12件+改修1件を
+  含む)。
+- `--pattern "er012_*b_family*test*.py"`(B-Family関連全体): 79テスト全
+  PASS(`collected=79 passed=79 failed=0 errors=0 skipped=0`)。
+- 証跡: `er012_output/editorial_b_family_voices_3v_production_wiring_
+  phase1_01/regression_evidence/phase1b_offline_test_run_log.txt`
+  (Part 2実装後の最終48テストログと共通、Part 1修正分もここに含まれる)。
+
+## 14. Phase 1b(EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01、
+不足配線のみ)
+
+管理ID: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01`。定義
+(ユーザー確定2026-09-10、Fable経由): 「既にユーザー承認済みの3V仕様を、
+Production正式初回経路で実際に記事生成できるようにするための不足配線
+のみ」。新しい3V仕様を作る工程にはしない。API呼び出し0回(費用¥0)。
+
+### 14-1. 設計分類(移設可 / STOP)
+
+12-2節(修正指示1回目の事前調査)の続きとして、Trial-02(3V Writer経路:
+Research→Ledger作成→Writer→Fact Checker A'→Local Rewrite→Key Phrase
+選定)・2V相当Trial・関連の既存Production共有module(er008/er010系)の
+コード現物を読み、各項目を「既存承認仕様の正式移設(可)」「STOP(新仕様が
+必要)」に分類した。
+
+| # | 項目 | 分類 | 根拠 |
+|---|------|------|------|
+| 1 | Ledger作成(Research、Perplexity sonar-pro Stage1B/2B) | **STOP** | `er012_ai_screening_ledger_trial_01.py`自身のコメントが明記するとおり、B-Family Voice Ledgerの実際の先例(Trial-04〜07)はいずれも`_perplexity_call()`パターンを**各Trialファイル内へ毎回再実装**したものであり、共有Production primitiveとして一度もGate通過・formalize(共通moduleへの集約)されたことがない。「到達してよいStatusはVALIDATED/REJECTED/USER_DECISION_REQUIREDのみ、Production採用判断はしない」と明記されている。これを今回Production化することは、ad-hocなTrial-copy-pasteパターンを初めてProduction primitiveとして新設する判断になり、「不足配線」の範囲を超える。 |
+| 2 | Writer本体呼び出し(Lane A共有`gen`/`vfl01.run_writer_no_search`) | 部分的に**移設可**、ただし単独では機能しない | Trial-02は`import er003_v1_n3_01_articles_generate as gen`でLane A共有Writer(既存Production、A-Family全記事で使用中)を使うが、その内部の汎用構造ゲート(`validate_point_structure()`、H3見出し数=2を無条件要求)が3V(H3=3)と非互換なため、Trial-02はLane A Writerのラッパー関数(`gen._generate_and_compress_article()`)を経由せず、より低レベルの`vfl01.run_writer_no_search()`を直接呼ぶ回避策を取っている。この非互換はSSOT `OPEN-132`として追跡中・**未解決**とTrial自身のコメントに明記されている(「変更にはProduction側の承認が必要」)。 |
+| 3 | Writer retry上限(`MAX_WRITER_ATTEMPTS=3`、是正再実行ループ) | **STOP** | Phase 1 registry(`er012_b_family_editorial_type_registry_01.py::PHASE2_PENDING_NOTES`)が「B-Family専用Writer retry上限(3回)は...USER_DECISION_REQUIREDのまま未確定」と明記(既にProduction code内のコメントとして存在、今回新たに発見したものではない)。Trial側コメントが「既存上限」と称していても、これはTrial-01からTrial-02への内部一貫性であり、Production採用の正式決定ではない。 |
+| 4 | Analytical Leakage Check / Point Overlap QAの**gate化**(pass/failでWriter出力をブロックするか) | **STOP**(gate化のみ)。**record-onlyは可** | 同じくregistry `PHASE2_PENDING_NOTES`が両者とも「B-Family専用扱い...USER_DECISION_REQUIREDのまま未確定」と明記。Fable指示のとおり、既存算出関数を**記録専用**(pass/fail判定なし)として`audit/`へ書き出すことは新QA基準の追加ではないため許容し、pipelineをブロックする「gate」としての採用のみSTOPする。 |
+| 5 | Ledger Deviation Check(`vfl01.run_deviation_check`、Support文への適用) | **移設可** | 2V `run_scaffold()`が既に同一関数を同一の使い方(monitoring専用、非gate)で実行済み(Phase 1から存在)。3Vへ同一パターンをそのまま適用するのみで、新しい判定ロジック・新しい閾値は一切追加しない。「既存監視機構の接続」。 |
+| 6 | OPEN-131 Fact Attribution(`registry.build_voice_attribution_block`+`run_fact_checker`) | **移設可**(ただし2V精度に合わせ`main()`のstage一覧へは含めない) | 既存関数はvoice数非依存(article_text単位で動作)。2V側も`run_fact_check_b1`/`run_fact_check_a2`は`main()`のstage一覧に含まれておらず(意図的除外、Phase 2待ちと既存コメントに明記)、3V側もこの既存precedentに合わせ、今回はstage一覧へ追加しない(2Vとの対称性維持、新しい包含判断をしない)。 |
+| 7 | Key Phrase選定(`er003_v1_n3_01_scaffold_generate.run_key_phrases`等) | **移設可**(関数自体は既存、ただし呼び出す新規記事が無いため今回は未使用) | A-Family(News/Discovery)が既に使っている既存Production関数であり、article_text単位で動作するためB-Family固有の新設は不要。ただし本Phase 1bでは新規記事生成(項目1・2・3のSTOP)が無いため、既存の承認済み3V記事に対して今これを実行しても得られる情報がない(hash再利用[`reuse_key_phrases_3v`]で既に確定済みの結果と同じになるだけ)。Phase 2でWriter STOPが解消され新規記事が生成された時点で接続する。 |
+| 8 | Tension segment語数(record-only観測ログ) | **移設可**(実装済み) | `ab01.compute_word_count`(既存Production、A-Family Lane Aでも使用中)を再利用するのみ。pass/fail判定を持たない純粋なテキスト計算(¥0)。 |
+| 9 | Voice distinctness(pairwise、`direction_agreement_rate`等) | 関数設計は**移設可**、実行は**今回未実施** | LLM呼び出しを伴う(¥0制約下の本セッションでは実行不可)。かつ既存の承認済み3V記事(Trial側で既にPASS済み)に対して再実行しても新しい情報が得られない。Phase 2で新規記事が生成された時点で、Trial側の算出関数(`run_pairwise_distinctness_check_single`等)をrecord-onlyとして移設・実行する設計。 |
+| 10 | Local Rewrite回数・語数増分(record-only観測ログ) | **今回対象外**(自動Local Rewrite実行が項目3のSTOPに従属) | Local Rewrite自体はLane A Writer内部で既に使用されている既存Production機構(`er010_ledger_local_rewrite_09`、無変更)だが、Writer retry/QAループ(項目3)がSTOPのため、本Phase 1bでは新規にLocal Rewriteを発火させる経路がない。 |
+
+### 14-2. 結論: `writer`ステージの新規実装はSTOP
+
+項目1(Ledger作成)・項目3(Writer retry上限)は、いずれかを除いても
+「新テーマから記事を生成する」という`writer`ステージの中核目的を達成
+できない(Ledgerなしでは事実根拠がなく、retryなしでは技術失敗時に停止
+するのみで実用に耐えない)。加えて項目2はLane A共有Writerの汎用構造
+ゲートとの非互換(OPEN-132、未解決)を含む。この3点はいずれも「除いて
+進める」ことができない(Fable指示2節「除けない場合は実装せずSTOP報告」に
+該当)。
+
+したがって、**runnerへの新規`writer`ステージ追加、および`all`ステージへの
+「writer→support→tts→assemble」の組み込みは実装していない**。これらは
+STOPとして報告し、実装しない。
+
+### 14-3. 実装した範囲(STOPを除く、安全に独立して進められる不足配線)
+
+STOPと無関係に独立して実施でき、Fableが明示的に許可した範囲(「既存監視
+機構の接続」「record-only観測ログ、新QA基準は作らない」)のみ、既存の
+承認済み3V記事(`ARTICLE_PATH_3V`)に対して実装した:
+
+1. **Ledger Deviation Check接続**(表14-1項目5): `er012_b_family_
+   production_runner_01.py::run_scaffold_3v()`のsignatureへ`ledger_text`
+   引数を追加し、2V `run_scaffold()`と同一の`vfl01.run_deviation_check`
+   呼び出しを追加した(monitoring専用、非gate)。Ledger入力元は新規定数
+   `LEDGER_PATH_3V`(2V `LEDGER_PATH`と同じ設計、既存Trial成果物
+   `er012_output/ai_screening_ledger_trial_01/research/verified_fact_
+   ledger.txt`を読み取り専用のまま参照、ハッシュ照合なし=2V precedentと
+   同一)。結果は`audit/support_ledger_deviation_3v.json`へ保存。
+   `main_b1_3v()`の`scaffold`/`all`stageから自動実行される。
+2. **Tension segment語数のrecord-only観測ログ**(表14-1項目8):
+   `er012_b_family_voices_production_01.py::compute_tension_segment_
+   word_count_3v()`を新設(既存`ab01.compute_word_count`を再利用する
+   pure関数)。`run_scaffold_3v()`から呼び出し、`audit/tension_scale_3v.
+   json`へ保存。
+
+いずれも既存2V経路の関数・挙動は無変更。`run_scaffold_3v()`のsignature
+変更(`ledger_text`引数追加)に伴い、呼び出し元`main_b1_3v()`と既存
+テスト2件を追随修正した。
+
+### 14-4. 変更ファイルと差分規模
+
+- `er012_b_family_voices_production_01.py`: 関数2件追加(`resolve_voice_
+  names_3v`衝突ガード追加・`run_content_integrity_check_3v`新設・
+  `compute_tension_segment_word_count_3v`新設)、import 1件追加(`ab01`)。
+- `er012_b_family_production_runner_01.py`: `voice_check_3v()`に
+  try/except追加、`run_scaffold_3v()`signature変更+本文追加(content
+  integrity check呼び出し+Ledger Deviation Check+Tension観測ログ)、
+  `LEDGER_PATH_3V`定数追加、`main_b1_3v()`のscaffold呼び出し1箇所修正。
+- `er012_b_family_editorial_type_registry_01.py`: `build_required_
+  structure()`にvalidation 2件追加、`VOICES_COMMENT_3_ROLE`内1行の
+  言い換え。
+- `er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`:
+  新規テストクラス5件・既存テスト2件改修(合計48テスト)。
+- 新規ファイル・新規ステージ追加は**していない**(`writer`ステージは
+  STOPのため未実装)。
+
+### 14-5. Trial import 0件の確認
+
+`NoTrialScriptModuleLevelImportTests`(既存3テスト、AST解析でtrial文字列を
+含むモジュールレベルimportが無いことを機械確認)は今回も無変更のまま
+PASS。`RunContentIntegrityCheck3vTests::test_matches_trial_function_
+output_for_same_input`のみテストコード内でTrialをimportするが(Production
+moduleではなくテストファイル、既存precedentと同じ扱い)、Production 3
+module(registry/production_01/production_runner_01)はいずれもTrialを
+一切importしていない。
+
+### 14-6. regression結果
+
+- `er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`
+  単独: **48テスト全PASS**(`Ran 48 tests in 0.101s / OK`)。
+- `--pattern "er012_*b_family*test*.py"`: **81テスト全PASS**
+  (`collected=81 passed=81 failed=0 errors=0 skipped=0`)。
+- `run_project_regression.py`(全体、対象106ファイル・2301件、Part 1
+  修正+Phase 1b実装後の最終1回のみ実行): `collected=2301 passed=2298
+  failed=3 errors=0 skipped=0`。**failed=3件はいずれも`er003_test_p2j_
+  investigate.py`の既知failure**(本タスク前から存在するテスト総数カウント
+  照合の既知事象、本タスクと無関係)のみで、**新規failureはゼロ**。
+- API呼び出しは0回(費用¥0、regression実行時のcostログ表示は既存test群が
+  mockで`main()`系関数を呼ぶ際の印字であり実際のAPI呼び出しではない、
+  12-1節と同じ確認方法)。
+- 証跡保存先(いずれも`er012_output/editorial_b_family_voices_3v_
+  production_wiring_phase1_01/regression_evidence/`):
+  `phase1b_offline_test_run_log.txt`(48テストverboseログ、Part 1修正+
+  Phase 1b実装後の最終状態)・`phase1b_fix2_full_regression_log.txt`
+  (全体regression実行ログ)・`phase1b_fix2_summary.json`
+  (`{"collected": 2301, "passed": 2298, "failed": 3, "errors": 0,
+  "skipped": 0}`)。
+
+### 14-7. Dangling Reference Check
+
+- `run_scaffold_3v(`の全呼び出し元を機械確認(3箇所: 定義・`main_b1_3v()`
+  呼び出し・Trial側の同名別関数[別モジュール、無関係]): 全て新signature
+  (`ledger_text`引数追加)に追随済み。
+- `resolve_voice_names_3v(`の全呼び出し元(定義・`voice_check_3v()`)を
+  確認: 例外ハンドリング追加済み。
+- `build_required_structure(`の全呼び出し元(定義・`er011_open129_
+  structural_completeness_production_wiring_evidence_01.py`2箇所)を
+  確認: いずれも`voice_c`未指定のためValueError追加の影響を受けない。
+- `LEDGER_PATH_3V`が指す既存ファイル(`er012_output/ai_screening_ledger_
+  trial_01/research/verified_fact_ledger.txt`)の実在をファイルシステムで
+  確認済み(368行、25546バイト)。
+
+### 14-8. Phase 2で記録するruntime evidence項目(Opus論点5、13項目)
+
+Phase 1bはWriterステージ自体がSTOPのため、以下はいずれも**Phase 1bでは
+未取得**(¥0制約下・新規記事が存在しないため取得不能)であり、Phase 2
+(Writer STOP解消後、新規記事生成時)で取得する対象として整理した:
+
+1. 実行同一性(同一入力での再現性)
+2. model_id・routing実測(実際に使用されたモデルIDの記録)
+3. Voice 3値(Voice A/B/C)が相互に異なることの実測確認(本修正指示2回目で
+   衝突ガードは実装済み、実際の衝突検知イベントの有無はPhase 2実行時に
+   観測)
+4. 16 segment構造の実測確認
+5. mandatory disfluency 9件の実測確認
+6. OPEN-121・OPEN-122(repetition QA・connected speech equivalence
+   layer)有効化の実行時記録
+7. Human Review Lock非発火の確認(発火した場合はoverrideせずSTOP)
+8. OPEN-129 opt-in構造Gate(`build_required_structure`)発火+1回PASSの
+   実測(現状3V経路からは未呼出のまま、Phase 2で呼び出すかはFable/ユーザー
+   判断が必要)
+9. 音声実測(実際に生成された音声の尺・品質)
+10. Key Phrase再利用/選定の明示記録
+11. 費用実測
+12. Comment 1-4実出力全文の記録
+13. SSOT前提(OPEN-131/OPEN-129/OPEN-132等)との整合確認
+
+### 14-9. Phase 2手順(Writer STOPの解消を前提)
+
+Phase 2(新テーマ「Should schools replace some homework with more free
+time?」Voice=Student/Parent/Teacher、3V記事1本+2V比較記事1本)は、本
+Phase 1bのSTOP事項(Ledger作成のProduction化・Writer retry上限の決定・
+OPEN-132構造ゲート非互換の解消)がユーザー/Fableにより解決されない限り
+着手できない。解決後の想定手順:
+
+1. STOP事項(表14-1項目1・2・3)それぞれについて、Fable/ユーザーの決定を
+   得る(Ledger作成primitiveの正式化可否・Writer retry上限の数値・
+   OPEN-132構造ゲートの扱い)。
+2. 決定に基づき`writer`ステージを実装(本Phase 1bと同じくSonnet委任、
+   ループ上限に従う)。
+3. `all`ステージで完走させる。`GATE_BLOCKED`等のSTATUS発生時はoverride
+   せずSTOPし、Fable/ユーザーへ報告する(既存安全装置を独自判断で回避
+   しない)。
+4. 14-8節の13項目のruntime evidenceを取得し、REPORTへ記録する。
+5. Human Review Lockが必要な場合は`record_human_approval()`等による
+   再承認をユーザーへ依頼する(代行しない)。
+
+### 14-10. 見込み費用
+
+Phase 1b自体(本節の範囲)は¥0(オフライン実装のみ、API呼び出しなし)。
+Phase 2実行時の見込み費用は12-2節3項の既存見積り(新テーマ3V記事1本
+¥150〜250程度、2V比較記事1本¥100〜180程度、いずれも確定額ではない)を
+維持する(本Phase 1bでは新たな見積り材料は得られていない)。
+
+## 15. Fable修正指示3回目(Opus commit前レビュー対応)
+
+管理ID: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01`(Fableから
+の修正指示3回目=最終)。出典: Opus L2レビュー(commit前、Production core
+差分・2V regression・Dangling Reference限定、Blocking=なし)。いずれも
+承認済み設計の範囲内での是正であり、新原則の追加ではない。SSOT
+(`docs/pm/ACTIVE_TASK.md`/`RESULT_PACKET.md`含む)は未編集(並列T-1タスク
+使用中のため)、Git操作(add/commit/push)は未実施、API呼び出し0回
+(費用¥0)。
+
+### 15-1. content integrity checkの挙動追加の明記(指摘A)
+
+Trial `run_content_integrity_check()`はTTS後にrecord-onlyで結果を保存
+するのみ(pass/fail判定でパイプラインを止めない)だったのに対し、
+Production移設版`run_content_integrity_check_3v()`の消費側
+`run_scaffold_3v()`(13-2節)は、scaffold内で`all_section_bodies_
+verbatim_from_article`がFalseの場合に`RuntimeError([CONTENT_INTEGRITY_
+STOP])`でfail-closed停止する。これはTrialには無かった挙動追加であり、
+2V経路には同等のgateが存在しない(3Vのみfail-closed、3Vが3声pairwise
+distinctness等より複雑な構造のため安全側に倒した意図的な非対称、既存
+安全装置の追加除去ではない)。
+
+あわせて、`run_content_integrity_check_3v()`内の`all_ok`判定は、Trial版
+(`er012_editorial_b_voices_3v_audio_trial_01.py::run_content_integrity_
+check()`)と同一ロジックのまま移設しており、`hook_part1_and_part2_
+reconstruct_hook_body`(Hook分割チェック)と`key_phrase_used_form_
+appears_in_article`(Key Phrase不在チェック)の2項目は`all_ok`から明示的に
+除外されている(`checks`辞書・`kp_used_forms_in_article`辞書へは記録する
+が、STOP判定には含めない)。したがってHook分割ミス・Key Phrase不在は
+Production版でも記録のみでSTOPしない(Trialと同一の粒度、実装コード
+無変更で移設済み、本節で挙動を新たに追加したものではない)。
+
+### 15-2. scaffold_summary.json(3V)へdeviation_overall_status追加(指摘B)
+
+2V `run_scaffold()`消費側(`main()`のscaffold stage、L1511-1513)が
+`audit/scaffold_summary.json`へ`deviation_overall_status`
+(`scaffold_result["deviation"].get("overall_status")`)を含めているのに
+対し、3V側`main_b1_3v()`のscaffold stageは`support_status`のみで
+`deviation_overall_status`を含んでいなかった(Phase 1bでLedger Deviation
+Checkを接続した際の対称化漏れ)。2Vと同一形で`deviation_overall_status`を
+追加した(`er012_b_family_production_runner_01.py::main_b1_3v()`)。
+
+### 15-3. `LEDGER_PATH_3V`と記事側Trial-02のLedger同一性の明記(指摘C)
+
+`LEDGER_PATH_3V`(`er012_output/ai_screening_ledger_trial_01/research/
+verified_fact_ledger.txt`)は、`ARTICLE_PATH_3V`が指す記事
+(`er012_editorial_b_voices_3v_person_voice_trial_02.py`の出力、L132-133
+付近で同一Ledgerパスを参照)と同一のLedgerである(記事本文の事実的根拠と
+Deviation Check対象Ledgerが一致していることの確認、Phase 1bで既に接続
+済みの実装内容自体は無変更)。
+
+### 15-4. registryコメントの正本宣言表現への修正(指摘D)
+
+`er012_b_family_editorial_type_registry_01.py`の`B_FAMILY_B1_3V_
+REQUIRED_SEGMENTS`直前コメント(旧: 「Trial側の暫定正本はregistry側へ
+統合され(2重定義解消)」)を、「Trial側`build_required_structure_3v()`/
+`run_content_integrity_check()`はいずれも据え置き(削除・書き換えなし、
+Trial-onlyのまま)であり、registry側(本定数・`run_content_integrity_
+check_3v()`)を正本と宣言する。両者の同値は単体テストでpinする」という
+表現へ修正した(実体のコード・テストは修正指示2回目時点から変更なし、
+コメントの表現のみ是正)。
+
+### 15-5. run_tts_3v()へbudget_check_fn引数追加(指摘E、3V実発火前に必須)
+
+`er012_b_family_voices_production_01.py::run_tts_3v()`へ`budget_check_
+fn=None`引数を追加した(既定None=修正前と同一挙動)。渡された場合、2V
+`run_tts()`(`er012_b_family_production_runner_01.py`)と同一の粒度で、
+各segment群(topic_intro/preview・comment/Narrator heading/Voice A・B・C
+本文/Hook・Tension・Closing、計5群)の生成後に`budget_check_fn(note)`を
+呼ぶ。`main_b1_3v()`のtts stageから`assert_budget_ok_3v`を渡すよう修正
+(従前は`run_tts_3v()`の呼び出し中は予算チェックが一切走らず、tts stage
+完了後の1回のみだった)。`budget_check_fn`が例外(`[BUDGET_GUARD]`等)を
+送出した場合はここで揉み消さずそのまま伝播し、以降のsegment群を生成
+しない(既存安全装置を独自判断で回避しない)。
+
+新規テストクラス`RunTts3vBudgetCheckFnContractTests`(3件)で、(1)既定
+None時は何も呼ばれず既存呼び出し元との後方互換が保たれること、(2)5群
+それぞれの生成後に1回ずつ計5回呼ばれること(呼び出し順・note文言も固定)、
+(3)budget_check_fnが例外を送出した場合はそこで即座に伝播し、以降の
+TTS呼び出し(heading/Voice A・B・C/Hook等)が一切発生しないこと、を固定
+した。
+
+### 15-6. 見落とし2: Voice衝突STOP時のaudit/voice_resolution.json
+
+`resolve_voice_names_3v()`が`[VOICE_COLLISION_STOP]`のRuntimeErrorを
+送出する際、解決済み値(`resolved`辞書)とreasonsを例外オブジェクトへ
+属性(`.resolved`/`.voice_reasons`)として添付するよう修正した(文字列
+parseに依存させない)。呼び出し側`voice_check_3v()`はこれを使い、
+衝突STOP時の`audit/voice_resolution.json`へも`voice_a`/`voice_b`/
+`voice_c`(解決済み値、未解決分はnull)・`reasons`キーを含めるよう修正
+した(従前はstatus/error/sample_resultsのみで、これらのキーが欠落して
+いた)。
+
+あわせて`main_b1_3v()`側で、`stage="tts"`等の単独実行時に読み込んだ
+`voice_resolution.json`の`status`が`"VOICE_COLLISION_STOP"`だった場合、
+従前は`resolution["voice_a"]`アクセス時に不可解な`KeyError`で落ちて
+いたのを、明示メッセージの`RuntimeError`(まず`stage="voice_check"`のみ
+再実行して一過性か切り分けることを促す文言含む)でSTOPするよう修正した。
+
+新規テストクラス`VoiceCheck3vCollisionAuditTests`(2件、resolved属性あり/
+なし双方)・`MainB13vCollisionStopExplicitMessageTests`(1件)で固定した。
+既存`ResolveVoiceNames3vTests::test_voice_a_unavailable_causes_
+collision_with_voice_c_and_stops`にも、`.resolved`/`.voice_reasons`
+属性の存在確認を追加した。
+
+### 15-7. 見落とし1/3: 運用注記の追記(REPORT文書のみ)
+
+- `scaffold`単独実行は`kp_reuse`済み(`key_phrases/keywords_canonicalized.
+  json`が存在する状態)が前提である(`run_scaffold_3v()`が`kp_merged`を
+  そのファイルから読むため、未実行のまま`scaffold`単独を呼ぶと
+  `FileNotFoundError`になる)。
+- Voice衝突STOP発生時は、まず`stage="voice_check"`のみを再実行し、
+  一過性の技術失敗(Voice A等が一時的にTTS技術失敗しただけ)か、
+  構造的な衝突(`VOICE_FALLBACK`と`VOICE_ASSIGNMENT`の設計上の重複)かを
+  切り分けることを推奨する(15-6節で追加した明示メッセージにも同旨を
+  含めた)。
+- 3V `B_FAMILY_B1_3V_REQUIRED_SEGMENTS`(opt-in構造Gate、
+  `registry.build_required_structure(voice_c=...)`経由)は、現状の
+  Production実走経路(`main_b1_3v()`)からは呼び出されておらず、2Vの
+  `build_required_structure()`(mandatory化deferred、OPEN-129)と同じ
+  非mandatory運用のままである。実際に呼ばれるのは、本Phaseの対象外の
+  別evidence取得スクリプト(OPEN-129系の前例、14-1節項目9参照)からのみ。
+
+### 15-8. 未使用定数`THEME_3V`の削除
+
+`er012_b_family_production_runner_01.py`の`THEME_3V`
+(`{"theme_id": ..., "out_dir": OUT_DIR_3V}`)は、参照ゼロ(定義箇所以外
+grep該当なし)を確認した。3V Assembly(`run_assembly_3v()`)は2V
+`run_assembly()`と異なり`asm.load_b1_sources(THEME)`ではなく専用の
+`b1prod.load_b1_sources_3v(OUT_B1_DIR_3V)`を呼ぶ設計のため、この定数は
+2V実装のコピー時に残った死コードだったと判断し、削除した(用途コメントを
+付す選択肢もあったが、参照ゼロかつ将来使う予定のある設計要素ではない
+ため削除を選択)。
+
+### 15-9. 変更ファイル一覧(修正指示3回目)
+
+- `er012_b_family_editorial_type_registry_01.py`: コメント修正のみ(D)、
+  コード実体は無変更。
+- `er012_b_family_voices_production_01.py`: `resolve_voice_names_3v()`の
+  RuntimeErrorへ`.resolved`/`.voice_reasons`属性追加(見落とし2)、
+  `run_tts_3v()`へ`budget_check_fn=None`引数+5箇所の呼び出し追加(E)。
+- `er012_b_family_production_runner_01.py`: `voice_check_3v()`の
+  except節でvoice_a/b/c+reasonsを保存(見落とし2)、`main_b1_3v()`で
+  (i)collision-stop resolutionロード時の明示STOP追加(見落とし2)、
+  (ii)scaffold_summary.jsonへdeviation_overall_status追加(B)、
+  (iii)`run_tts_3v()`呼び出しへ`budget_check_fn=assert_budget_ok_3v`追加
+  (E)、`THEME_3V`定数削除(15-8節)。
+- `er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`:
+  新規テストクラス4件(`RunTts3vBudgetCheckFnContractTests`3件・
+  `VoiceCheck3vCollisionAuditTests`2件・`MainB13vCollisionStopExplicit
+  MessageTests`1件)・既存テスト1件へアサーション追加(合計54テスト、
+  修正指示2回目時点の48テストから+6)。
+- 本REPORT: 13-2節・14-7節への追記(A・C)、本15節の新設。
+- いずれも2V/A-Family既存関数のロジック自体は1つも書き換えていない
+  (新規オプション引数[既定値で無効]・except節の保存内容拡張・コメント
+  修正・死コード削除のみ)。
+
+### 15-10. regression結果
+
+- `er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`
+  単独: **54テスト全PASS**(`Ran 54 tests in 0.101s / OK`、新規6件含む)。
+  証跡: `er012_output/editorial_b_family_voices_3v_production_wiring_
+  phase1_01/regression_evidence/phase1_fix3_offline_test_run_log.txt`。
+- `--pattern "er012_*b_family*test*.py"`: **87テスト全PASS**
+  (`collected=87 passed=87 failed=0 errors=0 skipped=0`、Phase 1bの81件
+  +本修正の6件)。
+- `run_project_regression.py`(全体、対象106ファイル・2307件、Part 1〜3
+  修正+Phase 1b+本修正指示3回目実装後の最終1回のみ実行):
+  `collected=2307 passed=2304 failed=3 errors=0 skipped=0`。証跡:
+  `er012_output/editorial_b_family_voices_3v_production_wiring_phase1_01/
+  regression_evidence/phase1_fix3_full_regression_log.txt`・
+  `phase1_fix3_summary.json`。
+- **既知failure 3件の同一性確認**: failed=3件の内訳は`er003_test_p2j_
+  investigate.py`の`test_combined_equals_sum_of_er002_and_er003`・
+  `test_p2h_reported_count_matches_er002_plus_er003_at_that_time`・
+  `test_p2i_reported_count_matches_er003_at_p2i_era`の3件で、いずれも
+  14-6節で記録した既知failure(テスト総数カウント照合、本タスクと無関係)と
+  **テスト名が完全一致**する(本修正でテスト総数が2301→2307
+  [+6]に増えたのに伴いこの3件のfailureメッセージ内のカウント期待値も
+  ズレているだけで、fail自体の原因・対象テストは従前から変わっていない
+  ことを`FAIL:`行のテスト名grep照合で確認した)。新規failureはゼロ。
+- API呼び出しは0回(費用¥0、regression実行時のcostログ表示は既存test群が
+  mockで`main()`系関数を呼ぶ際の印字であり実際のAPI呼び出しではない、
+  12-1節と同じ確認方法)。
+
 ---
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01EqG9xnr2dZhshz85bFW4Kt

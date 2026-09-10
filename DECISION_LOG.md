@@ -11115,6 +11115,146 @@ LOG.md`・`er011_open_items_restructure_verify_01.py`(新規)・
 `er011_output/open_items_restructure_01/`配下のjson。1 commitで
 `origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-72: PCシャットダウン復旧確認+3V Phase 1b実装/
+Opus L2レビュー2件/TTS retryモニタ/T2-T3評価のGit統合+Discovery
+Trial-11 Audio GATE_BLOCKED記録
+
+Sonnet(sonnet-worker)が2026-09-11、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-72)に基づき実施した。前提は直前の
+`PM-RECOVERY-AFTER-SHUTDOWN-2026-09-11-01`(read-only状況確認、
+`docs/pm/RESULT_PACKET.md`旧稿参照)。
+
+**訂正**: `docs/pm/ACTIVE_TASK.md`が「並列稼働中4件」の1つとして記載
+していた「Opus L2レビュー(Trial-12、読み取り)」は誤記だった。実在する
+Opus L2 REPORT2件(`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-
+PHASE1-01-OPUS-L2-REVIEW-01_REPORT.md`・同PHASE1B-01版)はいずれも3V
+Phase 1/1b向けのレビューであり、"Trial-12"という独立の管理IDは実在
+しない。News Ledger拡充Trial-12(`FAMILY-A-NEWS-STAGE4-LEDGER-
+ENRICHMENT-AB-TRIAL-12`)は前タスク`PM-CLOSEOUT-CONSOLIDATION-71`
+(commit `6a39015`)で既に完走・SSOT反映・commit済みの別物であり、混同
+していた。
+
+**反映内容**:
+
+1. **3V Phase 1修正+Phase 1b実装(OPEN-120行へ追記)**: `EDITORIAL-B-
+   FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01_REPORT.md`の修正指示
+   2回目(Opus L2レビュー指摘対応)・Phase 1b(不足配線のみ)を反映した。
+   実装: Voice衝突ガード(`resolve_voice_names_3v()`、Algieba fallback=
+   Schedar=voice_cの重複をRuntimeErrorでSTOP)、content integrity check
+   のProduction module正式移設(`run_content_integrity_check_3v()`、
+   scaffold内fail-closed STOP)、Ledger Deviation Check接続
+   (`run_scaffold_3v()`、2Vと同一パターンをmonitoring専用で追加)、
+   Tension segment語数のrecord-only観測ログ。`writer`ステージ新規実装
+   (Ledger作成のProduction化・Writer retry上限・OPEN-132構造ゲート
+   非互換)は3点ともSTOPのまま未実装。offline regression testを本タスク
+   で独立に再実行し**54テスト全PASS**(`Ran 54 tests in 0.095s / OK`、
+   `.venv/Scripts/python.exe -m unittest`実測)を確認した(REPORT記載の
+   48テストから、その後の指摘対応で54件に増加)。Statusは`VALIDATED
+   (Trial)`のまま変更せず、`PRODUCTION_WIRED`は宣言していない。
+2. **Opus L2レビュー2件の主要指摘記録(OPEN-120行へ追記、コード修正は
+   実施していない)**: Phase1版はVoice衝突(HIGH、Phase 1修正で対応済み)・
+   Comment 2/3汎用化のB-Family A2への波及(MED-HIGH、コード変更なし)を
+   検出。Phase1B版は(1-a)content integrity checkがTrialでは記録専用
+   だったのがProductionでfail-closed STOPへ変わった点は「移設」ではなく
+   「挙動追加」でREPORTへの1行明記が未対応、(1-b、MED、**未対処**)
+   `run_tts_3v()`に予算ガードが1つも無く`BUDGET_JPY_CAP_3V=150.0`が
+   事後判定のまま=3V実走前に必須、(1-h、運用注意)Voice A一過性失敗が
+   全体STOPになる設計への運用注記が未反映、軽微指摘3件(deviation_
+   overall_status欠落/Ledger同一性未記載/「2重定義解消」の記述と実態の
+   食い違い)はいずれも未対応、と確認した。Comment 3/4の「どちらが
+   正しいか」汎用化可否はユーザー判断待ちのまま。
+3. **Discovery Trial-11タオルAudio(OPEN-135行Discovery節へ追記)**:
+   `er011_output/discovery_generalization_towels_trial_11/`のA2音声は
+   GATE_BLOCKED(comment_2/kp4_japanese_meaning[meaning_4]がSTOPPED、
+   既存Audio Validation Gateの想定挙動)で安全停止。B1B音声は未着手。
+   PCシャットダウン(2026-09-10→11)による書き込み中断・破損の証跡なし。
+   生成再開には小額API支出を伴うため本タスクでは実施せず、現状記録の
+   みとした(GATE_BLOCKED状態は変更なし)。
+4. **TTS retryタイミング調査2件(OPEN-135行News節へ追記、CLOSED)**:
+   `TTS-REGENERATION-TIMING-DEPENDENCY-ANALYSIS-01_REPORT.md`(CAR-T
+   `full_story_part1`3回NG→14時間21分後PASS 1件の横断調査)と、その
+   常設集計script化`TTS-RETRY-TIMING-OBSERVATION-MONITOR-01_REPORT.md`
+   (`er011_tts_retry_timing_monitor_01.py`、421件のattempt記録・320
+   segment系列を集計、冪等性2回実行でMD5一致確認済み)は、いずれも
+   「時間依存性あり」と結論する材料はなく(長間隔でのN=1〜3の極小
+   サンプル中に明確な反証[kp5_ja_charon、39分後も失敗]が含まれる)、
+   Production retry仕様の変更提案はしないと結論した。再評価Trigger案
+   (間隔30分以上の事例が累計20件以上かつ連続NG2回以上が累計10件以上)
+   を提示、2026-09-10時点はいずれも未達。
+5. **Token効率T-2/T-3評価(OPEN-135行News節へ追記)**:
+   `PM-TOKEN-EFFICIENCY-T2-T3-ASSESSMENT-01_REPORT.md`(読み取り専用、
+   ¥0)は、T-2(Fableへの限定Git権限付与)・T-3(Ledger研究のWeb検索
+   回数上限/reasoning effort調整)とも**推奨=現状維持(保留)**と結論
+   した。T-2は既存の軽量委任形式で削減額の60〜70%を既に回収済みで
+   フル権限化の追加効果は限定的、かつGatekeeper二層構造の自己点検
+   機能が弱まるリスクがある。T-3は検索回数上限がFact Safety(QA相当)に
+   該当しうるためSTOP必須条件に該当し、News Trial-12型(簡易・独立
+   Verificationなし)とDiscovery/CAR-T型(2段階検証)で安全性水準が
+   異なるため一律の上限設定は不適切と判定した(削減見込み自体は
+   Discovery型40%前後・News型24〜33%と有意)。実装・設定変更はいずれも
+   行っていない。
+6. **`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`**: Opus L2レビュー2件
+   (Phase1-01/Phase1B-01)の実績行を追記した(未記載だったため新規)。
+
+**Dangling Reference Check**: OPEN-120行・OPEN-135行への追記が参照した
+管理ID(`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1-01`・
+同PHASE1B-01・両Opus L2レビュー・`FAMILY-A-DISCOVERY-GENERALIZATION-
+TOWELS-TRIAL-11-AUDIO-01`・`TTS-REGENERATION-TIMING-DEPENDENCY-
+ANALYSIS-01`・`TTS-RETRY-TIMING-OBSERVATION-MONITOR-01`・
+`PM-TOKEN-EFFICIENCY-T2-T3-ASSESSMENT-01`)はいずれも既存`OPEN_
+ITEMS.md`/本ファイル内に既出または本エントリで新規言及した対象で
+あり、未定義参照なし(結果:PASS)。OPEN-120行のStatus(`VALIDATED
+(Trial)`)・`PRODUCTION_WIRED`未宣言の記述は変更していない。Opus
+指摘1-b(予算ガード欠如)は「未対処」と明記し、対処済みであるかの
+ような記述にはしていない。
+
+**触れていないもの**: コード・Prompt・Production実装は一切変更して
+いない(SSOT反映+regression再実行確認のみ、追加API費用なし、本タスク
+自体の費用¥0)。Opus L2 Phase 1b指摘へのコード修正、Discovery
+Trial-11の生成再開はいずれも実施していない(未回答報告の原文回収結果
+は`docs/pm/RESULT_PACKET.md`参照)。
+
+**根拠**: Fable(PM)からの委任(2026-09-11、管理ID
+PM-CLOSEOUT-CONSOLIDATION-72)。出典REPORT: `EDITORIAL-B-FAMILY-VOICES-
+3V-PRODUCTION-WIRING-PHASE1-01_REPORT.md`・同PHASE1-01-OPUS-L2-
+REVIEW-01・同PHASE1B-01-OPUS-L2-REVIEW-01・`PM-TOKEN-EFFICIENCY-T2-T3-
+ASSESSMENT-01_REPORT.md`・`TTS-REGENERATION-TIMING-DEPENDENCY-
+ANALYSIS-01_REPORT.md`・`TTS-RETRY-TIMING-OBSERVATION-MONITOR-01_
+REPORT.md`。Git操作: ファイル名指定で`git add`(`git add -A`不使用)、
+対象=er012コード4件(`er012_b_family_editorial_type_registry_01.py`・
+`er012_b_family_production_runner_01.py`・`er012_b_family_voices_
+production_01.py`・`er012_editorial_b_family_voices_3v_production_
+wiring_phase1_test_01.py`)・`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-
+WIRING-PHASE1-01_REPORT.md`・Opus L2 REPORT2件・`PM-TOKEN-EFFICIENCY-
+T2-T3-ASSESSMENT-01_REPORT.md`・`TTS-REGENERATION-TIMING-DEPENDENCY-
+ANALYSIS-01_REPORT.md`・`TTS-RETRY-TIMING-OBSERVATION-MONITOR-01_
+REPORT.md`・`er011_tts_retry_timing_monitor_01.py`・`er011_output/
+tts_retry_timing_monitor_01/`配下・`er012_output/editorial_b_family_
+voices_3v_production_wiring_phase1_01/regression_evidence/`配下・
+ER-010 REPORT2件(`ER-010-EDITORIAL-TYPE-ARCH-BASELINE-DESIGN-02_
+REPORT.md`・`ER-010-EDITORIAL-TYPE-WRITER-ARCH-01_REPORT.md`、
+OPEN-124行・`OPEN_ITEMS_HISTORY.md`から参照されていることを確認の上
+含めた)・`OPEN_ITEMS.md`・`DECISION_LOG.md`・`docs/pm/MODEL_ROUTING_
+TRIAL_LOG.md`。**除外**(由来不明・本タスク対象外と判定): (1)
+Discovery Trial-11タオルAudio一式(`er011_output/discovery_
+generalization_towels_trial_11/`・`er011_discovery_generalization_
+towels_trial_11_audio_run.py`、GATE_BLOCKEDのまま未解決かつ過去
+CONSOLIDATIONで未完了Trial出力を先行commitした前例が確認できなかった
+ため)、(2) er006_output/er011_outputのM8件中5件
+(`er006_output/audio_retry_cascade_prod_01/human_review_queue.
+jsonl`・`er006_output/pronunciation_ledger_01/ledger.json`・
+`er011_output/family_a_completion_a2_trend_end_to_end_01/`配下3件、
+いずれも最終更新が2026-09-07〜09でTTS retryモニタ調査の参照元データに
+過ぎず、本タスクの並列作業4件のいずれにも由来しない)、(3) 同M8件中
+3件(`er006_output/master_audio_store_01/manifest.json`・`reuse_
+telemetry.jsonl`・`er011_output/attempt_history.jsonl`、最終更新
+2026-09-10 11:18-11:20でDiscovery Trial-11(theme_id実測確認済み)に
+由来するが、Trial-11本体をGATE_BLOCKEDのまま未commitとする判断と
+整合させるため同時に除外)。1 commitで`origin/main`へpush(競合・
+エラー時は本タスクではpushせず報告)。並列稼働中の後続作業は現時点
+でなし。`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`はいずれも
+本タスクの最終更新対象(通常の一時ファイル更新)。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

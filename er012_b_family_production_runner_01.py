@@ -632,14 +632,21 @@ ARTICLE_PATH_3V = ("er012_output/editorial_b_voices_3v_person_voice_trial_02/"
 KP_SOURCE_DIR_3V = "er012_output/editorial_b_voices_3v_audio_trial_01/b1b"
 KP_SOURCE_ARTICLE_PATH_3V = f"{KP_SOURCE_DIR_3V}/article.md"
 
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01: Ledger
+# Deviation Check(既存2V run_scaffold()と同一のvfl01.run_deviation_check、
+# monitoring専用、無変更)を3Vへ接続するための入力。2V側のLEDGER_PATH
+# (既存Trial-07成果物を読み取り専用のまま参照する既存パターン)と全く同じ
+# 設計で、3V記事(ARTICLE_PATH_3V、テーマ"Should companies use AI to
+# screen job applicants?")に対応する既存Trial成果物のLedgerを読み取り専用
+# のまま参照する(Ledger作成[Research]自体は本Phase 1bの対象外、STOP。
+# REPORT参照)。
+LEDGER_PATH_3V = "er012_output/ai_screening_ledger_trial_01/research/verified_fact_ledger.txt"
+
 OUT_DIR_3V = "er012_output/editorial_b_family_voices_3v_production_wiring_01"
 OUT_B1_DIR_3V = f"{OUT_DIR_3V}/b1b"
 NARRATION_DIR_3V = f"{OUT_B1_DIR_3V}/narration"
 COST_LOG_PATH_3V = f"{OUT_DIR_3V}/audit/raw_usage_log.jsonl"
 BUDGET_JPY_CAP_3V = 150.0
-
-THEME_3V = {"theme_id": "b_family_voices_3v_production_wiring_phase1_01", "out_dir": OUT_DIR_3V}
-
 
 def assert_budget_ok_3v(note: str = "") -> float:
     jpy, by_provider = compute_cost_jpy_so_far(COST_LOG_PATH_3V)
@@ -667,7 +674,26 @@ def voice_check_3v(parts: dict) -> dict:
                    registry.VOICE_ASSIGNMENT["voice_c"])
     results = b1prod.run_voice_availability_check(sample_text, sample_dir, voice_names=voice_names)
     save_json(f"{sample_dir}/voice_sample_results.json", {"sample_text": sample_text, "results": results})
-    voice_a, voice_b, voice_c, reasons = b1prod.resolve_voice_names_3v(results)
+    # 修正指示2回目(Opus L2レビュー指摘#1): resolve_voice_names_3v()が
+    # Voice衝突時にRuntimeError("[VOICE_COLLISION_STOP]"prefix)を送出する。
+    # ここでaudit証跡(status="VOICE_COLLISION_STOP")を保存したうえで
+    # 例外を再送出し、パイプラインを明示的に停止する(overrideしない)。
+    try:
+        voice_a, voice_b, voice_c, reasons = b1prod.resolve_voice_names_3v(results)
+    except RuntimeError as e:
+        # Fable修正指示3回目(見落とし2): 衝突STOP時もvoice_a/voice_b/voice_c
+        # キー(解決済み値、未解決分はnull)を含めることで、後続のstage="tts"
+        # 単独実行がこのJSONを読む際にKeyErrorで不可解に落ちるのではなく、
+        # main_b1_3v()側で明示メッセージによりSTOPできるようにする
+        # (resolve_voice_names_3v()が例外へ添付したresolved/voice_reasons
+        # 属性から取得、無ければNoneのまま記録)。
+        resolved = getattr(e, "resolved", None) or {}
+        save_json(f"{OUT_DIR_3V}/audit/voice_resolution.json",
+                  {"status": "VOICE_COLLISION_STOP", "error": str(e), "sample_results": results,
+                   "voice_a": resolved.get("voice_a"), "voice_b": resolved.get("voice_b"),
+                   "voice_c": resolved.get("voice_c"),
+                   "reasons": getattr(e, "voice_reasons", None) or {}})
+        raise
     save_json(f"{OUT_DIR_3V}/audit/voice_resolution.json",
               {"voice_a": voice_a, "voice_b": voice_b, "voice_c": voice_c, "reasons": reasons})
     return {"voice_a": voice_a, "voice_b": voice_b, "voice_c": voice_c, "reasons": reasons}
@@ -699,15 +725,22 @@ def reuse_key_phrases_3v(article_text: str) -> dict:
     return result
 
 
-def run_scaffold_3v(parts: dict, article_text: str, sections: dict) -> dict:
+def run_scaffold_3v(parts: dict, article_text: str, sections: dict, ledger_text: str) -> dict:
     """Comment 1-4はいずれもregistry確定Contract(EDITORIAL-B-FAMILY-VOICES-
     3V-PRODUCTION-WIRING-PHASE1-01でVoice数非依存の汎用文言へ整合済み)を
     LLM呼び出しで使う。3V Audio Trial-01と異なり、Comment 2/3のTrial専用
     手動ドラフト(TRIAL_ONLY_MANUAL_DRAFT_NOT_LLM_GENERATED)には依存しない
-    (STOP条件(d)「Trial専用実装への依存が残る」の回避)。Ledger Deviation
-    Check(vfl01.run_deviation_check)は3V Audio Trial-01でも実施しておらず、
-    本Phase 1でも新規追加しない(残存課題2「Tension再膨張」はdeferred、
-    Reportの残存課題節に明記)。"""
+    (STOP条件(d)「Trial専用実装への依存が残る」の回避)。
+
+    EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01: Ledger
+    Deviation Check(vfl01.run_deviation_check)は、Phase 1では3V Audio
+    Trial-01・本Production配線いずれでも未実施だったが、Phase 1bで
+    2V run_scaffold()と全く同一の既存Production呼び出し(monitoring専用、
+    無変更)を3Vへ接続した(「既存監視機構の接続」、新しいgate・新しい
+    閾値は追加しない)。Tension segment語数のrecord-only観測ログ
+    (b1prod.compute_tension_segment_word_count_3v、新QA基準ではない)も
+    同時に記録する(残存課題2「Tension再膨張」の定量把握用、Reportの
+    観測ログ節参照)。"""
     client = b1s.get_client()
     model = routing.require_model("B1_SUPPORT", routing.SUPPORT_MODEL)
     comment_roles = EDITORIAL_TYPE["comment_roles"]
@@ -749,7 +782,35 @@ def run_scaffold_3v(parts: dict, article_text: str, sections: dict) -> dict:
     with open(f"{OUT_B1_DIR_3V}/audit/b1_support_generation.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2, default=str)
 
-    return {"support": results, "support_status": {k: v.get("status") for k, v in results.items()}}
+    # 修正指示2回目(Opus L2レビュー指摘#2): build_parts_3v()の消費側で
+    # content integrity check(移設済みb1prod.run_content_integrity_check_3v)
+    # を実行し、audit/content_integrity_3v.jsonへ記録する。NG(6区切り
+    # parserの抽出誤り疑い)は独自判断で継続せず、RuntimeErrorで明示停止する。
+    kp_merged = load_json(f"{OUT_B1_DIR_3V}/key_phrases/keywords_canonicalized.json")
+    integrity_result = b1prod.run_content_integrity_check_3v(article_text, parts, kp_merged)
+    save_json(f"{OUT_B1_DIR_3V}/audit/content_integrity_3v.json", integrity_result)
+    if not integrity_result["all_section_bodies_verbatim_from_article"]:
+        raise RuntimeError(
+            "[CONTENT_INTEGRITY_STOP] run_scaffold_3v: 6区切りparserが記事本文から抽出した"
+            "本文の一部が記事本文中に完全一致で見つかりませんでした。"
+            f"checks={integrity_result['section_body_substring_checks']}")
+
+    # Phase 1b: Ledger Deviation Check(2V run_scaffold()と同一の既存Production
+    # vfl01.run_deviation_check、monitoring専用・無変更)を3Vへ接続する
+    # (「既存監視機構の接続」、新しいgateではない)。
+    support_concat = "\n\n".join(t for t in (v.get("text") for v in results.values()) if t)
+    print("[B-FAMILY-VOICES-3V-PROD-RUNNER] Support Ledger Deviation Check(既存Production "
+          "vfl01.run_deviation_check、無変更、monitoring専用)実行...")
+    deviation = vfl01.run_deviation_check(client, ledger_text, support_concat)
+    save_json(f"{OUT_B1_DIR_3V}/audit/support_ledger_deviation_3v.json", deviation["parsed"])
+
+    # Phase 1b: Tension segment語数のrecord-only観測ログ(新QA基準ではない)。
+    tension_scale = b1prod.compute_tension_segment_word_count_3v(parts)
+    save_json(f"{OUT_B1_DIR_3V}/audit/tension_scale_3v.json", tension_scale)
+
+    return {"support": results, "support_status": {k: v.get("status") for k, v in results.items()},
+            "content_integrity": integrity_result, "deviation": deviation["parsed"],
+            "tension_scale": tension_scale}
 
 
 def finalize_tts_results_3v(new_results: dict) -> dict:
@@ -988,6 +1049,17 @@ def main_b1_3v() -> None:
         voice_a, voice_b, voice_c, reasons = vc["voice_a"], vc["voice_b"], vc["voice_c"], vc["reasons"]
     elif needs_voice_resolution:
         resolution = load_json(f"{OUT_DIR_3V}/audit/voice_resolution.json")
+        # Fable修正指示3回目(見落とし2): voice_check_3v()未実行/衝突STOP済みの
+        # まま stage="tts" 等を単独実行すると、以前は resolution["voice_a"] が
+        # KeyErrorで不可解に落ちていた。status="VOICE_COLLISION_STOP"の場合は
+        # ここで明示メッセージのRuntimeErrorとしてSTOPする(overrideしない、
+        # まずstage="voice_check"のみ再実行して一過性か切り分けることを促す)。
+        if resolution.get("status") == "VOICE_COLLISION_STOP":
+            raise RuntimeError(
+                "[VOICE_COLLISION_STOP] main_b1_3v: 直近のvoice_check_3v()がVoice衝突で"
+                "STOPしたままです(audit/voice_resolution.json参照)。まずstage=\"voice_check\""
+                "のみ再実行し、一過性の技術失敗か構造的な衝突かを切り分けてください。"
+                f"error={resolution.get('error')}")
         voice_a, voice_b, voice_c, reasons = (resolution["voice_a"], resolution["voice_b"],
                                                 resolution["voice_c"], resolution["reasons"])
 
@@ -996,14 +1068,27 @@ def main_b1_3v() -> None:
 
     if stage in ("scaffold", "all"):
         sections = b1prod.split_six_voice_sections(prep["article_text"])
-        scaffold_result = run_scaffold_3v(prep["parts"], prep["article_text"], sections)
+        # Phase 1b: 2V main()のLEDGER_PATH読み取りパターンと同一(既存Trial
+        # 成果物を読み取り専用のまま参照、ハッシュ照合なし、既存precedentと同一)。
+        with open(LEDGER_PATH_3V, encoding="utf-8") as f:
+            ledger_text_3v = f.read()
+        scaffold_result = run_scaffold_3v(prep["parts"], prep["article_text"], sections, ledger_text_3v)
+        # Fable修正指示3回目(B、2V run_scaffold_3v保存箇所[L1511-1513]との
+        # 対称化): deviation_overall_status(vfl01.run_deviation_check、
+        # monitoring専用、Phase 1bで接続済み)を2Vと同じくscaffold_summary.json
+        # へ含める。
         save_json(f"{OUT_DIR_3V}/audit/scaffold_summary.json",
-                  {"support_status": scaffold_result["support_status"]})
+                  {"support_status": scaffold_result["support_status"],
+                   "deviation_overall_status": scaffold_result["deviation"].get("overall_status")})
         assert_budget_ok_3v("after scaffold")
 
     if stage in ("tts", "all"):
         support_texts = load_json(f"{OUT_B1_DIR_3V}/b1_support_texts.json")
-        new_results = b1prod.run_tts_3v(prep["parts"], support_texts, voice_a, voice_b, voice_c, NARRATION_DIR_3V)
+        # Fable修正指示3回目(Opus L2レビュー指摘E): 2V run_tts()と同様に、
+        # 各segment群生成後にassert_budget_ok_3vが走るようbudget_check_fnとして
+        # 渡す(3V実発火前に必須の対称化)。
+        new_results = b1prod.run_tts_3v(prep["parts"], support_texts, voice_a, voice_b, voice_c, NARRATION_DIR_3V,
+                                          budget_check_fn=assert_budget_ok_3v)
         finalize_tts_results_3v(new_results)
         assert_budget_ok_3v("after TTS")
 

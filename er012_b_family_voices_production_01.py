@@ -61,6 +61,7 @@ import er003_audio_tts_asr_safety as safety
 import er003_b1_p3u_audio as p3u
 import er003_b1_p4c_audio as p4c
 import er003_b1_p9a_audio as p9a
+import er003_v1_en_direct_ab_01_generate as ab01  # Phase 1b: 既存Production語数計算(観測ログ用)
 import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as tts_gen
@@ -266,6 +267,66 @@ def build_parts_3v(article_text: str) -> dict:
 
 
 # ============================================================
+# Fact/content integrity check(記事本文とTTS入力の一致確認、byte単位)
+# ============================================================
+# 修正指示2回目(Fable、Opus L2レビュー指摘#2・HIGH): 従来Trial専用
+# (er012_editorial_b_voices_3v_audio_trial_01.py L879-903付近)だった
+# 「6区切りparserが本文を正しく割り当てたことのevidence」を、正式
+# Production module(本ファイル)へロジックそのまま移設した(pure関数化、
+# ファイルI/Oは呼び出し側[runner run_scaffold_3v()]の責務とする)。
+# build_parts_3v()の消費側で必ず実行し、結果をaudit/content_integrity_3v.
+# jsonへ記録する(NG=STOP、呼び出し側がRuntimeErrorで明示停止する設計)。
+def run_content_integrity_check_3v(article_text: str, parts: dict, kp_merged: dict) -> dict:
+    """build_parts_3v()が記事本文から抽出したtext(TTSへ渡すtts_safe_*変換
+    前の原文)が、実際の記事本文の該当section内に完全一致で含まれるかを
+    確認する(6区切りparserの抽出誤りが無いことのevidence)。TTS入力自体は
+    tts_gen.tts_safe_*()による記号正規化[句読点・数字読み等]を経るため、
+    その変換後との完全byte一致ではなく、変換前のsource textが記事本文の
+    正しい抜粋であることを検証する設計(既存Productionと同じ検証粒度、
+    Trial版と同一ロジック)。呼び出し側でのファイル保存を前提としたpure
+    関数(save_jsonはここでは行わない、単体テストしやすくするため)。"""
+    checks = {}
+    for key, body_key in (("voice_1", "point_one_body"), ("voice_2", "point_two_body"),
+                           ("voice_3", "point_three_body")):
+        checks[body_key] = parts[body_key] in article_text
+    checks["tension_body"] = parts["tension_body"] in article_text
+    checks["in_one_line"] = parts["in_one_line"] in article_text
+    checks["hook_part1_and_part2_reconstruct_hook_body"] = (
+        (parts["part1"] + " " + parts["part2"]).replace("  ", " ") in
+        (parts["sections"]["hook_body"]).replace("  ", " ")
+        or (parts["part1"] + parts["part2"]) == parts["sections"]["hook_body"].replace(" ", "")
+    )
+    all_ok = all(v for k, v in checks.items() if k != "hook_part1_and_part2_reconstruct_hook_body")
+    kp_used_forms_in_article = {
+        item["used_form"]: (item["used_form"] in article_text) for item in kp_merged["items"]}
+    return {"section_body_substring_checks": checks, "all_section_bodies_verbatim_from_article": all_ok,
+            "key_phrase_used_form_appears_in_article": kp_used_forms_in_article}
+
+
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01:
+# Tension segment観測ログ(record-only、新QA基準は作らない)
+# ============================================================
+def compute_tension_segment_word_count_3v(parts: dict) -> dict:
+    """Phase 1bの設計分類(REPORT参照)により、Tension segment
+    (tension_reflection、parts["tension_body"])の語数のみをrecord-only
+    (pass/fail判定を伴わない)観測ログとして記録する。既存Production
+    語数計算関数(ab01.compute_word_count、A-Family Lane Aでも使用中、
+    無変更)を再利用するのみで、新しい計算方式・新しい閾値は一切
+    追加しない(gate化しない、新QA基準ではない)。実測秒数(音声の
+    実際の尺)は、run_tts_3v()が既に返すduration_seconds(既存
+    Production機構)側から別途取得できるため、ここではテキストのみで
+    完結する語数計算にとどめる(¥0、offline、API呼び出し無し)。"""
+    return {
+        "tension_body_word_count": ab01.compute_word_count(parts["tension_body"]),
+        "note": ("Tension segment(tension_reflection)の語数のみを記録するrecord-only"
+                 "観測ログ(gate・正式検証ではない、新QA基準の追加ではない)。実測秒数は"
+                 "run_tts_3v()のduration_seconds(既存Production機構)側から別途取得する"
+                 "設計のため、ここでは未収集。"),
+    }
+
+
+# ============================================================
 # Voice可用性チェック + fallback解決
 # ============================================================
 def generate_voice_sample_single_take(text: str, out_path: str, voice_name: str) -> dict:
@@ -337,7 +398,18 @@ def resolve_voice_names_3v(sample_results: dict) -> tuple:
     sample生成がVoice Cで技術的に失敗した場合も、ここで独自の代替声を発明
     せずreasonsへ記録するのみにとどめる(Voice Cの実際の安全網は、本文TTS
     呼び出しgenerate_voice_body_wide_margin()が既に備える既存Human Review
-    Lock[guarded_generate、既存Production、無変更]である)。単体テスト対象。"""
+    Lock[guarded_generate、既存Production、無変更]である)。単体テスト対象。
+
+    修正指示2回目(Fable、Opus L2レビュー指摘#1・HIGH): registry.
+    VOICE_FALLBACK["voice_a"]とregistry.VOICE_ASSIGNMENT["voice_c"]が
+    同一("Schedar")のため、Voice A(Algieba)が技術的に利用不可でfallback
+    した場合、解決後のVoice AとVoice Cが同じ声(Schedar)になってしまう
+    (Voice 1とVoice 3が同一の声で発話される)。この場合も独自の代替声を
+    発明せず、resolve後の3声が相互に異なるかをここで検証し、衝突時は
+    明示的にRuntimeError(prefix "[VOICE_COLLISION_STOP]")でSTOPする
+    (2026-09-10ユーザー決定「Voice 3に専用fallbackなし、使用不可時は
+    止める」と整合。呼び出し側[runner voice_check_3v()]がこの例外を
+    audit記録した上で再送出し、パイプライン全体を明示停止する設計)。"""
     voice_a, voice_b, reasons = resolve_voice_names(sample_results)
     voice_c = registry.VOICE_ASSIGNMENT["voice_c"]
     if sample_results.get(voice_c, {}).get("status") != "OK":
@@ -346,6 +418,25 @@ def resolve_voice_names_3v(sample_results: dict) -> tuple:
             f"({sample_results.get(voice_c, {}).get('error')})。Voice 3には専用fallback声が"
             f"無いため代替せず、既存Human Review Lock(generate_voice_body_wide_marginの"
             f"guarded_generate)へ委ねます。")
+    resolved = {"voice_a": voice_a, "voice_b": voice_b, "voice_c": voice_c}
+    collisions = [
+        (key1, key2) for i, key1 in enumerate(("voice_a", "voice_b", "voice_c"))
+        for key2 in ("voice_a", "voice_b", "voice_c")[i + 1:]
+        if resolved[key1] == resolved[key2]
+    ]
+    if collisions:
+        err = RuntimeError(
+            "[VOICE_COLLISION_STOP] resolve_voice_names_3v: 解決後のVoice A/B/Cが"
+            f"相互に異なりません(collisions={collisions}, resolved={resolved})。3Vは3声が"
+            "pairwiseに異なることが前提のため、独自の代替声を発明せず明示的に停止します"
+            f"(reasons={reasons})。")
+        # Fable修正指示3回目(見落とし2): 呼び出し側(runner voice_check_3v())が
+        # audit/voice_resolution.jsonへvoice_a/voice_b/voice_c(解決済み値または
+        # null)を含められるよう、例外に解決済み値とreasonsを添付する(文字列
+        # parseに依存させない)。
+        err.resolved = resolved
+        err.voice_reasons = reasons
+        raise err
     return voice_a, voice_b, voice_c, reasons
 
 
@@ -736,7 +827,16 @@ def build_b1_voices_timeline_3v(parts: dict, voice_a: str, voice_b: str, voice_c
 # er012_editorial_b_voices_3v_audio_trial_01.py::run_tts_3v()。
 # ============================================================
 def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voice_c: str,
-               narration_dir: str) -> dict:
+               narration_dir: str, budget_check_fn=None) -> dict:
+    """budget_check_fn: Fable修正指示3回目(Opus L2レビュー指摘E)。既定
+    None(現行挙動のまま無変更)。渡された場合、2V run_tts()
+    (er012_b_family_production_runner_01.py::assert_budget_ok)と同様に、
+    各segment群(topic_intro/comment・preview/heading/Voice1・2・3本文/
+    Hook・Tension・Closing)の生成後に`budget_check_fn(note)`を呼ぶ。
+    `note: str -> float`のcallableを想定(既存assert_budget_ok/
+    assert_budget_ok_3vと同一シグネチャ)。budget_check_fnが例外(超過時の
+    RuntimeError等)を送出した場合はここで揉み消さずそのまま伝播させ、
+    以降のsegment生成を行わない(既存の安全装置を独自判断で回避しない)。"""
     shared_narration.ensure_all_shared_narration_b1(narration_dir)  # Production、無変更(Master Audio Store経由)
 
     results = {}
@@ -746,6 +846,8 @@ def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voi
         results["topic_intro"] = voice01.generate_charon_english(
             tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav")
     results["topic_intro"]["canonical_text"] = topic_intro_text
+    if budget_check_fn is not None:
+        budget_check_fn("after topic_intro TTS")
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support_texts[name]
@@ -755,6 +857,8 @@ def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voi
                 tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
                 style_prefix_override=tts_gen.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True)
         results[name]["canonical_text"] = text
+    if budget_check_fn is not None:
+        budget_check_fn("after preview/comment TTS")
 
     for name in ("point_one_heading", "point_two_heading", "point_three_heading"):
         text = parts[name]
@@ -764,6 +868,8 @@ def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voi
             results[name] = point_headings.generate(
                 tts_gen.tts_safe_number_words_en(tts_gen.tts_safe_en(text)), f"{narration_dir}/{name}.wav")
         results[name]["canonical_text"] = text
+    if budget_check_fn is not None:
+        budget_check_fn("after Narrator heading TTS")
 
     # OPEN-121/OPEN-122安全機構の対称性: Voice A/B(Phase 1)と同一規約で
     # Voice C(point_three)にもenable_connected_speech_equivalence_layer=
@@ -781,6 +887,8 @@ def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voi
                 tts_gen.tts_safe_news_en(text), f"{narration_dir}/{name}.wav", voice_name,
                 enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
         results[name]["canonical_text"] = text
+    if budget_check_fn is not None:
+        budget_check_fn("after Voice A/B/C TTS")
 
     for name, text in (
         ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
@@ -797,6 +905,8 @@ def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voi
                 enable_connected_speech_equivalence_layer=(name in ("full_story_part1", "full_story_part2")),
                 enable_repetition_qa=(name in ("full_story_part1", "full_story_part2")))
         results[name]["canonical_text"] = text
+    if budget_check_fn is not None:
+        budget_check_fn("after Hook/Tension/Closing TTS")
 
     return results
 

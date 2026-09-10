@@ -133,13 +133,18 @@ VOICES_COMMENT_2_ROLE = """あなたはPodcastのナビゲーターです。リ�
 
 【重要・出力への制約】出力する文章自体に制作内部の構造ラベルを含めないでください。"""
 
+# 修正指示2回目(Fable、Opus L2レビュー指摘#4): 下記「役割:」行(旧行番号
+# L142相当)のみ「どちらが正しいか」→「どの声が正しいか」へ言い換えた
+# (ユーザー承認済みComment 3汎用化の範囲内、声の主体を明示するだけの
+# 言い換え)。タイトル行("その間に流す、Comment 3(役割: ...")と
+# Comment 4本文はユーザー判断待ちのため本タスクでは変更していない。
 VOICES_COMMENT_3_ROLE = """あなたはPodcastのナビゲーターです。リスナーは、ある問いに対する
 異なる立場からの一人称の語りをすべて聞き終わり、
 これから「なぜ同じ状況を人によって違って感じるのか」という視点の深掘りを聞きます。
 その間に流す、Comment 3(役割: 「どちらが正しいか」ではなく「なぜ違って感じるのか」
 への視点の移動)を書いてください。
 
-役割: 複数の声を聞き終えたリスナーの意識を、「どちらが正しいか」という判定ではなく、
+役割: 複数の声を聞き終えたリスナーの意識を、「どの声が正しいか」という判定ではなく、
 「なぜ同じ状況が人によって違って感じられるのか」という問いへ移します。
 
 以下は避けてください:
@@ -308,8 +313,17 @@ B_FAMILY_B1_CONFIG = {
 # er012_editorial_b_voices_3v_audio_trial_01.py::build_required_structure_3v()
 # (Trial側の暫定正本)と同一のsegment一覧・順序・役割表記(role文字列のみ、
 # 本registryの既存命名規約[voice_a/voice_b]へvoice_cを追加する形へ統一)。
-# 本追加により、Trial側の暫定正本はregistry側へ統合され(2重定義解消)、
-# 3V required_structureの正本はここ1箇所になる。
+# Fable修正指示3回目(D): 「2重定義解消」ではなく、ここを正本と宣言する
+# 表現へ修正する。Trial側build_required_structure_3v()自体は据え置き
+# (削除・書き換えしていない、Trial-onlyのまま)であり、本registry
+# (B_FAMILY_B1_3V_REQUIRED_SEGMENTS)がここで正本(2V build_required_
+# structure()のvoice_c拡張経路)となる。両者が同一segment一覧・順序・
+# 役割表記であることは単体テスト(RegistryVoiceCArgument3VStructureTests::
+# test_matches_registry_b_family_b1_3v_required_segments_constant)で
+# 固定し、以後の差分をpinする(同様にTrial側run_content_integrity_check()も
+# 据え置きのまま、Production移設版run_content_integrity_check_3v()との
+# 同値をRunContentIntegrityCheck3vTests::test_matches_trial_function_
+# output_for_same_inputでpinしている)。
 # ============================================================
 B_FAMILY_B1_3V_REQUIRED_SEGMENTS = (
     ("topic_intro", "narrator_charon"), ("preview", "narrator_charon"),
@@ -501,8 +515,31 @@ def build_required_structure(level: str, voice_a: str, voice_b: str,
     (2引数版、無変更)を使い、出力はbyte単位で従来と同一。level="b1"かつ
     voice_cが指定された場合のみ、3V用`cfg["b1_3v"]`+
     `_ROLE_TO_VOICE_RESOLVERS_3V`(3引数版)を使う(level="a2"側にvoice_c
-    指定時の3V分岐は無い、3VはB1のみ対応のTrial実績のため)。"""
+    指定時の3V分岐は無い、3VはB1のみ対応のTrial実績のため)。
+
+    修正指示2回目(Fable、Opus L2レビュー指摘#3への対応): runner CLIの
+    level文字列"b1_3v"(`er012_b_family_production_runner_01.py`
+    main()のsys.argv[2]分岐)と、本関数の従来呼び出し規約
+    (level="b1"+voice_c=<str>)が非対称で、level="b1_3v"をそのまま渡すと
+    (voice_cの有無に関わらず)下のelse節へ落ちてValueError(unknown level)
+    になる踏み台だった。level="b1_3v"を薄いaliasとして正式に受理し、
+    voice_c必須を明示的に強制したうえでlevel="b1"へ正規化する(voice_c
+    省略のままlevel="b1_3v"を渡すことは意図が矛盾するため、黙って2V相当へ
+    fallbackさせずValueErrorで止める)。また、level="a2"側でvoice_cを
+    渡すと従来は黙って無視されていた(A2は3V未対応のため気づかずに2V
+    扱いされる踏み台だった)ため、同様に明示的なValueErrorで止める。"""
     et = EDITORIAL_TYPES[editorial_type]
+    if level == "b1_3v":
+        if voice_c is None:
+            raise ValueError(
+                'level="b1_3v" requires voice_c to be specified (3V needs all '
+                'three voice names). Omit voice_c and use level="b1" for 2V.')
+        level = "b1"
+    if level == "a2" and voice_c is not None:
+        raise ValueError(
+            'level="a2" does not support voice_c (3V is B1-only per Trial '
+            'results; passing voice_c here was previously silently ignored). '
+            'Omit voice_c for level="a2".')
     if level == "b1" and voice_c is not None:
         cfg = et["b1_3v"]
         resolved = tuple(
