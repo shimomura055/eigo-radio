@@ -253,6 +253,31 @@ class CommentTwoThreeVoiceCountIndependentGeneralizationTests(unittest.TestCase)
         self.assertIn("一段深い問い", editorial_type["comment_roles"]["comment_4"])
 
 
+class Comment3TitleRoleWordingUnifiedTests(unittest.TestCase):
+    """EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-02-BUDGET-
+    GUARD-AND-COMMENT3-01(2026-09-11ユーザー決定): Opus L2レビュー
+    (PHASE1B-01-OPUS-L2-REVIEW-01論点2)が指摘した、Comment 3プロンプト
+    内のタイトル行/役割行での表現混在(「どちらが正しいか」と「どの声が
+    正しいか」の同居)を解消し、両方とも「どの声が正しいか」側へ統一した
+    ことを固定する。Comment 4は対象外のため「どちらが正しいか」のままで
+    あることも合わせて固定する。"""
+
+    def test_comment_3_title_and_role_lines_both_use_which_voice_phrasing(self):
+        editorial_type = registry.get_editorial_type("b_family_voices")
+        c3 = editorial_type["comment_roles"]["comment_3"]
+        self.assertEqual(c3.count("どの声が正しいか"), 2)
+        self.assertNotIn("どちらが正しいか", c3)
+
+    def test_comment_4_wording_untouched_by_this_task(self):
+        # Comment 4は本タスクのユーザー決定の対象外(タイトル行/役割行とも
+        # Comment 3とは別定数)。「どちらが正しいか」のまま変更していない
+        # ことを固定し、意図せぬ波及がないことを確認する。
+        editorial_type = registry.get_editorial_type("b_family_voices")
+        c4 = editorial_type["comment_roles"]["comment_4"]
+        self.assertIn("どちらが正しいか", c4)
+        self.assertNotIn("どの声が正しいか", c4)
+
+
 class SplitSixVoiceSectionsTests(unittest.TestCase):
     def test_valid_six_section_article_parses(self):
         sections = b1prod.split_six_voice_sections(ARTICLE_SIX_SECTIONS)

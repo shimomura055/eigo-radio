@@ -11365,6 +11365,137 @@ PM-CLOSEOUT-CONSOLIDATION-73-USER-ANSWERS-2026-09-11)。Git操作: ファイル
 `docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`のみ。1 commitで
 `origin/main`へpush。
 
+## PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02: ユーザー回答
+2026-09-11第2回(News追加切り分けTrial承認/3V Comment 3共有定義承認/
+Claude開発Token削減T-3施策A・B正式採用/既存進行事項事実訂正/Reporting
+Rule再確認)のSSOT反映+Opus L2解釈(Trial-12)のREPORT化
+
+Sonnet(sonnet-worker)が2026-09-11、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02)に基づき実施した。
+本タスクは並列稼働中2件(Discoveryタオル音声再開`er011_output/
+discovery_generalization_towels_trial_11/`、News追加切り分けTrial
+`er011_output/news_ledger_enrichment_ab_trial_12/`配下)の生成物には
+一切触れていない。
+
+**ユーザー回答原文(2026-09-11第2回、そのまま転記)**:
+
+```
+1. News追加切り分けTrial → 実施承認。Opus推奨の以下2本を実施。
+- 既存の打ち切られた7記事へFact Checker単独適用。目的: Overlap Gateで先に停止したことにより、後段Fact Checkerの問題が隠れていたか確認する。見込み費用: 約¥15〜25。
+- 条件E Trial。FACT-11 / FACT-14の2件を追加し、「fact数」ではなく「非headline角度の周辺FactがPointごとに供給されること」がOverlap改善に効いているか切り分ける。見込み費用: 約¥70〜100。
+単純なA/B N増しは今回は行わない。今回の仮説は「Fact数が多いほど良い」ではなく「Pointごとに異なる非headline角度のEvidenceが供給されることが重要」。ただしこれはまだTrial仮説であり、Production仕様として採用しないこと。Trial終了時はREJECTED / VALIDATED / USER_DECISION_REQUIREDのいずれかで明示的にcloseすること。
+また、既に存在しているTrial-12b artifactについて、新規API実行なしで集計・REPORT化すること。
+重要: Trial-12bは既に結果が確定していたにもかかわらず、「タオルAudio完了後にまとめて報告する」という理由でユーザーへの報告が遅れた。これは現在の恒久Reporting Rule「独立した報告単位がreportableになった時点で直ちに報告する」に反する。今後は、別作業の完了待ち・統合報告待ち・並列タスクの終了待ちを理由に、確定済みTrial結果・USER_DECISION_REQUIRED・重要発見の報告を保留しないこと。独立して報告可能になった時点で即時報告すること。今回の遅延理由と再発防止をPM記録へ反映すること。
+2. 3V Comment 3 → 共有定義のままで承認。「どの声が正しいか」へ統一したComment 3定義は、3V専用へ分岐せず、2V/A2と共有のままとする。ただし、文字列「どの声が正しいか」を本文へ固定挿入する仕様という意味ではない。Comment 3生成Prompt上の役割表現である。既存承認済みA2音声を再生成する必要はない。なお、VoicesはPerspectivesであり、pro/conの勝敗判定を目的とするものではない。将来「正しい声を選ばせる」方向へ意味が拡張される場合は、新仕様としてSTOPし、USER_DECISION_REQUIREDにすること。
+3. Claude開発Token削減 → 以下を正式採用。目的はProduction APIコスト削減ではなく、Claude Codeのweekly Token消費を抑え、Token limitにより開発不能になる時間を減らすこと。
+T-2: 現状維持。FableへGit権限は追加しない。
+T-3: 以下2施策を採用。
+A. DECISION_LOG.mdの構造分割 — T-1でOPEN_ITEMSへ行ったのと同様、内容・意味・status・履歴を変えず、必要部分だけ読める構造へ分割する。情報削除・要約による意味圧縮は禁止。既存参照・検索性・管理IDの追跡性を維持する。構造変更前後で情報欠落がないことを確認する。実施後、Claude Token削減効果を代表ケースで実測または比較報告する。
+B. Opus L2入力限定 — Opusへ巨大SSOT全文を原則渡さない。レビュー対象の論点・必要ファイル・必要な該当箇所だけを渡す。必要な事実を省いてレビュー精度を落とさないこと。「Token節約のために重要contextを落とす」ことは禁止。まずSonnet/Fable側で対象範囲を絞り、Opusには論点限定contextを渡す。この運用をPM_GOVERNANCEへ明文化する。
+可能であれば、実施前後でOpus 1回あたり入力Token・SSOT読込量・Fable/Sonnet/Opus間の重複読込を比較し、削減効果を報告すること。
+Production API側のGPT / Web Search / TTS / ASRコスト最適化は別Open Itemとして保持。ユーザー実検証後に本格的に実施。今のClaude Token改善と混同しないこと。
+4. 既存進行事項
+- 3V予算ガード: 既に実装済みとのことなので、新規実装不要。SSOTの「未実装」記録だけ事実訂正する。
+- 3V Status: 既にユーザー正式採用済みなのでAPPROVED_FOR_PRODUCTION。VALIDATEDへ戻さない。Production正式初回経路・retry/fallback/Local Rewrite等の整合、runtime evidence、tests、SSOT/Gitまで完了するまではPRODUCTION_WIREDにしない。
+- Discovery Trial-11 タオル: Human Review+必要segment再生成へ進める。A2/B1B Audio・試聴artifactまで完成させ、ユーザー確認後にN増し判断。
+- TTS cool-down: 現時点では事前基準未達。Production retry仕様には採用せず、自然発生retryのみ継続観測。
+5. Reporting / PM Gate再確認 — 今回のTrial-12b未報告は「統合報告まで待った」こと自体が問題。以後、Trial結果確定・Opus/Sonnetレビューで重要発見・USER_DECISION_REQUIRED発生・Production wiring STOP・既存認識を覆す結果、が出た時点で他作業を待たず即時報告すること。既に未回答の報告がある状態で新しい報告が出た場合は、恒久ルールどおり未回答報告を省略せず必要に応じて再掲すること。主要タスクcloseout時は、USER_DECISION_REQUIRED・VALIDATED未採否・APPROVED_FOR_PRODUCTION未配線・未報告Trial・未登録Open Itemが残っていないか必ず確認すること。
+```
+
+**Opus L2解釈のREPORT化**: opus-consultantからFable経由で受領した最終メッセージ
+全文を`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12-OPUS-L2-
+INTERPRETATION-01_REPORT.md`として原文のまま(改変・要約なし)保存した。
+要旨は`OPEN_ITEMS.md`OPEN-135行2026-09-11追記(本管理ID)参照。
+
+**Trial-12b報告遅延の原因と再発防止(ユーザー指摘、原文1「重要」節)**:
+News Ledger拡充Trial-12b(条件C/D、`er011_output/news_ledger_enrichment_
+ab_trial_12/`配下)は、artifact生成・結果確定が2026-09-10時点で既に完了
+していたにもかかわらず、Fableが「Discoveryタオル記事のAudio完了後に
+まとめて報告する」と判断したため、確定済みTrial結果のユーザーへの報告が
+1日以上遅延した。これは`docs/pm/PM_GOVERNANCE.md`12-2(報告可能になった
+時点での即時報告、他の並列作業の完了を待たない)に反する運用判断だった。
+再発防止として`docs/pm/PM_GOVERNANCE.md`12節へ新小節12-9「『他作業の
+完了待ち・統合報告待ち』を理由にした報告保留の禁止」を追加し、確定済み
+Trial結果・`USER_DECISION_REQUIRED`・重要な発見(Opus/Sonnetレビューでの
+重要発見・Production wiring STOP・既存認識を覆す結果)は、他作業の完了
+待ち・統合報告待ち・並列タスク終了待ちを理由に保留しないことを恒久
+ルールとして明文化した。
+
+**過去Opus L2利用の実態確認(付記事項、Fable/ユーザー指示による事実確認)**:
+opus-consultantの最終メッセージ付記が言及した「1回目のOpus L2」
+(`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-TRIAL-12-OPUS-L2-REVIEW-01`)
+について、`er011_news_ledger_enrichment_leaveout_trial_12b_run.py`
+L5-13・L219(`"opus_review": "FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-
+TRIAL-12-OPUS-L2-REVIEW-01"`)と`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`を
+Grepし、以下を事実確認した(判断はFable/ユーザーへ委ねる、本タスクでは
+判断しない)。(1) root直下に`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-AB-
+TRIAL-12-OPUS-L2-REVIEW-01_REPORT.md`という名前のREPORTファイルは存在
+しない(`find`実測、他の類似命名REPORT3件[3V Phase1/Phase1b/Discovery
+Trial-11]は存在するのに本件のみ存在しない)。(2) `docs/pm/MODEL_ROUTING_
+TRIAL_LOG.md`にも当該Opus L2レビューをOpus利用実績として記録した行は
+見当たらない(Trial-12本体の実行[L1に相当]は「Opus不要」と明記した行が
+1件あるのみ、L2レビュー実施の記録行はGrep該当なし)。(3) 唯一の記録は
+`er011_news_ledger_enrichment_leaveout_trial_12b_run.py`冒頭コメントと
+metadata辞書キーのみであり、SSOT(`OPEN_ITEMS.md`・`DECISION_LOG.md`・
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`)への反映が漏れていたと判断できる。
+`docs/pm/PM_GOVERNANCE.md`11節のOpus利用上限(1管理IDあたりL2+L3合計
+最大1回)との整合はPM(Fable)側で確認されたい。
+
+**反映箇所**:
+
+1. **OPEN-120行(3V)**: 予算ガード実装済みの事実訂正(Grep根拠行を明記、
+   `er012_b_family_voices_production_01.py` L829-909・
+   `er012_b_family_production_runner_01.py` L649-655/1083/1091/1093)。
+   Phase 1b-02(Comment 3タイトル行/役割行統一、offline regression
+   `collected=2309 passed=2306 failed=3`実測、¥0)を反映。ユーザー回答2
+   (共有定義承認、Voices=Perspectives、勝敗判定へ拡張ならSTOP→UDR)を
+   記録。Status=`APPROVED_FOR_PRODUCTION`維持、`PRODUCTION_WIRED`条件を
+   原文どおり記録。
+2. **OPEN-135行(News/TTS retry)**: Opus解釈要点(REPORT全文への参照)、
+   Trial-12b未報告の事実、追加切り分けTrial 2本の承認(仮説は「Point
+   ごとに異なる非headline角度のEvidence供給」、Trial仮説でありProduction
+   採用ではない、close時はREJECTED/VALIDATED/UDR明示)、TTS retry
+   cool-down分析結果(即時54.35%[N=46] vs 非即時71.43%[N=7]、
+   Fisher p=0.6851、非即時7件中5件は人的介入、事前基準未達、継続観測)を
+   反映した。
+3. **OPEN-142行(Token効率)**: T-3再評価結果(`DECISION_LOG.md`
+   1,334,377字が最大Token源、Opus L2入力≈45.2万字/件、T-1効果実測
+   [全文-54.6%・Grep最悪ケース-83〜90%・Edit diff約1/5])を記録し、
+   施策A(DECISION_LOG.md構造分割、本タスクでは未実装・別タスク)・
+   B(Opus L2入力限定、`docs/pm/PM_GOVERNANCE.md`へ明文化)を正式採用と
+   記録した。T-2は現状維持、T-4は保留のまま。OPEN-143(量産APIコスト)は
+   保持のまま混同しない旨を再確認した。
+4. **`docs/pm/PM_GOVERNANCE.md`**: (a) 12節へ新小節12-9(Trial-12b
+   未報告の経緯・再発防止の明文化)を追加。(b) 11節「L2事前レビューの
+   運用」直後へ新小節「Opus L2入力限定の運用」を追加(巨大SSOT全文を
+   渡さない/論点・必要ファイル・該当箇所限定/重要context省略禁止/
+   Sonnet・Fable側での範囲絞り込み/委任文への入力ファイル一覧・概算
+   文字数記載)。(c) 3節「PM Closeout Mandatory Check」へ項目20
+   (UDR未処理・VALIDATED未採否・APPROVED未配線・未報告Trial・未登録
+   Open Itemの5項目確認)を追加。(d) `.claude/agents/opus-consultant.md`
+   へ入力限定運用を1〜2行追記。(e) ヘッダ「最終更新」・末尾「変更履歴」を
+   更新。
+5. **`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`**: Opus解釈
+   (`...OPUS-L2-INTERPRETATION-01`)を1行追記し、入力規模概算
+   (Trial-12 REPORT本文32,801字+Trial-12b artifact直読分)を記録した。
+6. **`docs/pm/ACTIVE_TASK.md`**: 固定ヘッダを更新し、並列稼働中を
+   タオル音声再開・News追加切り分けTrial2件へ整理、次アクション(DECISION_
+   LOG構造分割は本タスクでは実施せず、承認済みだが別タスクで実施する
+   旨)を明記した。
+
+**触れていないもの**: 並列稼働中2件(Discoveryタオル音声再開・News追加
+切り分けTrial)の生成物には一切触れていない。News追加切り分けTrial2本
+(Fact Checker単独適用・条件E)自体の実行はFableが別途sonnet-workerへ
+委任する(本タスクの範囲外、本タスクはOpus解釈のREPORT化とSSOT反映の
+みを実施)。DECISION_LOG.mdの構造分割(施策A)は正式採用のみ記録し、
+実装は別タスクで行う。コード・Prompt・Production実装は一切変更していない
+(追加API費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-11、管理ID
+PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02)。Git操作:
+ファイル名指定で`git add`(`git add -A`不使用)。1 commitで
+`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

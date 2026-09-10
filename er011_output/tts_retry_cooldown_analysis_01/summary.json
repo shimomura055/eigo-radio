@@ -1,0 +1,424 @@
+{
+  "management_id": "TTS-RETRY-COOLDOWN-HYPOTHESIS-ANALYSIS-01",
+  "input_file": "er011_output/tts_retry_timing_monitor_01/observations.jsonl",
+  "total_retry_after_ng_pairs": 56,
+  "type_b_quality_ng_pairs": 53,
+  "type_a_infra_suspected_pairs": 3,
+  "gap_bucket_definition_seconds": {
+    "immediate": "<150",
+    "short": "150-1800",
+    "medium": "1800-21600",
+    "long": ">=21600"
+  },
+  "table_type_b_by_gap_bucket_only": [
+    {
+      "key": "immediate",
+      "n": 46,
+      "pass_n": 25,
+      "pass_rate": 0.5435,
+      "examples": [
+        "kp5_ja_charon@3s(NG)",
+        "meaning_4@3s(PASS)",
+        "kp_new_normal@3s(NG)",
+        "kp2_ja_charon@4s(PASS)",
+        "kp4_ja_charon@4s(PASS)",
+        "kp5_ja_charon@4s(NG)",
+        "kp5_ja_charon@4s(NG)",
+        "kp4_ja_charon@4s(PASS)"
+      ]
+    },
+    {
+      "key": "short",
+      "n": 4,
+      "pass_n": 3,
+      "pass_rate": 0.75,
+      "examples": [
+        "meaning_4@172s(NG)",
+        "kp5_ja_charon@282s(PASS)",
+        "point_two@377s(PASS)",
+        "point_one@567s(PASS)"
+      ]
+    },
+    {
+      "key": "medium",
+      "n": 2,
+      "pass_n": 1,
+      "pass_rate": 0.5,
+      "examples": [
+        "kp5_ja_charon@2350s(NG)",
+        "point_two_heading@8357s(PASS)"
+      ]
+    },
+    {
+      "key": "long",
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0,
+      "examples": [
+        "full_story_part1@51635s(PASS)"
+      ]
+    }
+  ],
+  "table_type_b_by_ngbefore_x_gapbucket": [
+    {
+      "key": [
+        "1",
+        "immediate"
+      ],
+      "n": 34,
+      "pass_n": 23,
+      "pass_rate": 0.6765,
+      "examples": [
+        "kp5_ja_charon@3s(NG)",
+        "meaning_4@3s(PASS)",
+        "kp2_ja_charon@4s(PASS)",
+        "kp4_ja_charon@4s(PASS)",
+        "meaning_2@5s(PASS)",
+        "meaning_2@5s(PASS)",
+        "kp_new_normal@5s(NG)",
+        "kp4_en@5s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "3plus",
+        "immediate"
+      ],
+      "n": 2,
+      "pass_n": 0,
+      "pass_rate": 0.0,
+      "examples": [
+        "kp_new_normal@3s(NG)",
+        "kp5_ja_charon@4s(NG)"
+      ]
+    },
+    {
+      "key": [
+        "2",
+        "immediate"
+      ],
+      "n": 10,
+      "pass_n": 2,
+      "pass_rate": 0.2,
+      "examples": [
+        "kp4_ja_charon@4s(PASS)",
+        "kp5_ja_charon@4s(NG)",
+        "kp_new_normal@4s(NG)",
+        "point_one@17s(NG)",
+        "point_two@26s(NG)",
+        "full_story_part1@37s(NG)",
+        "point_two@43s(NG)",
+        "point_one@50s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "1",
+        "short"
+      ],
+      "n": 2,
+      "pass_n": 1,
+      "pass_rate": 0.5,
+      "examples": [
+        "meaning_4@172s(NG)",
+        "point_two@377s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "3plus",
+        "short"
+      ],
+      "n": 2,
+      "pass_n": 2,
+      "pass_rate": 1.0,
+      "examples": [
+        "kp5_ja_charon@282s(PASS)",
+        "point_one@567s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "3plus",
+        "medium"
+      ],
+      "n": 1,
+      "pass_n": 0,
+      "pass_rate": 0.0,
+      "examples": [
+        "kp5_ja_charon@2350s(NG)"
+      ]
+    },
+    {
+      "key": [
+        "1",
+        "medium"
+      ],
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0,
+      "examples": [
+        "point_two_heading@8357s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "3plus",
+        "long"
+      ],
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0,
+      "examples": [
+        "full_story_part1@51635s(PASS)"
+      ]
+    }
+  ],
+  "table_type_b_by_generation_path_x_gapbucket": [
+    {
+      "key": [
+        "automatic_retry_within_loop_cap",
+        "no_override",
+        "immediate"
+      ],
+      "n": 39,
+      "pass_n": 21,
+      "pass_rate": 0.5385,
+      "examples": [
+        "kp5_ja_charon@3s(NG)",
+        "meaning_4@3s(PASS)",
+        "kp2_ja_charon@4s(PASS)",
+        "kp4_ja_charon@4s(PASS)",
+        "kp5_ja_charon@4s(NG)",
+        "kp4_ja_charon@4s(PASS)",
+        "meaning_2@5s(PASS)",
+        "meaning_2@5s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "manual_regenerate_beyond_loop_cap",
+        "no_override",
+        "immediate"
+      ],
+      "n": 7,
+      "pass_n": 4,
+      "pass_rate": 0.5714,
+      "examples": [
+        "kp_new_normal@3s(NG)",
+        "kp5_ja_charon@4s(NG)",
+        "kp_new_normal@4s(NG)",
+        "kp1_ja_aoede@6s(PASS)",
+        "kp1_ja_aoede@6s(PASS)",
+        "kp1_ja_aoede@6s(PASS)",
+        "comment_3@22s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "automatic_retry_within_loop_cap",
+        "no_override",
+        "short"
+      ],
+      "n": 2,
+      "pass_n": 1,
+      "pass_rate": 0.5,
+      "examples": [
+        "meaning_4@172s(NG)",
+        "point_two@377s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "manual_regenerate_beyond_loop_cap",
+        "no_override",
+        "short"
+      ],
+      "n": 2,
+      "pass_n": 2,
+      "pass_rate": 1.0,
+      "examples": [
+        "kp5_ja_charon@282s(PASS)",
+        "point_one@567s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "manual_regenerate_beyond_loop_cap",
+        "no_override",
+        "medium"
+      ],
+      "n": 1,
+      "pass_n": 0,
+      "pass_rate": 0.0,
+      "examples": [
+        "kp5_ja_charon@2350s(NG)"
+      ]
+    },
+    {
+      "key": [
+        "automatic_retry_within_loop_cap",
+        "deliberate_override",
+        "medium"
+      ],
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0,
+      "examples": [
+        "point_two_heading@8357s(PASS)"
+      ]
+    },
+    {
+      "key": [
+        "manual_regenerate_beyond_loop_cap",
+        "no_override",
+        "long"
+      ],
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0,
+      "examples": [
+        "full_story_part1@51635s(PASS)"
+      ]
+    }
+  ],
+  "table_type_a_by_gap_bucket_only_reference_only": [
+    {
+      "key": "immediate",
+      "n": 3,
+      "pass_n": 2,
+      "pass_rate": 0.6667,
+      "examples": [
+        "kp5_ja_charon@3s(NG)",
+        "in_one_line@26s(PASS)",
+        "point_one@47s(PASS)"
+      ]
+    }
+  ],
+  "fisher_exact_test_immediate_vs_non_immediate": {
+    "comparison": "immediate(<150s) vs non_immediate(>=150s, short+medium+long統合)",
+    "note": "種別Bのみ。参考値(件数が小さいため解釈に注意、下記sufficiency_criteria参照)。",
+    "table_2x2": {
+      "immediate": {
+        "pass": 25,
+        "fail": 21,
+        "n": 46
+      },
+      "non_immediate": {
+        "pass": 5,
+        "fail": 2,
+        "n": 7
+      }
+    },
+    "immediate_pass_rate": 0.5435,
+    "non_immediate_pass_rate": 0.7143,
+    "fisher_exact_two_sided_p_value": 0.6851
+  },
+  "sufficiency_check": {
+    "criteria": {
+      "description": "各binでN>=20 かつ、即時binと非即時bin(いずれか)のPASS率の差が20ポイント以上、かつ全ての非即時binに『deliberate_intervention'(手動介入・別run再実行)を伴わない自然発生の長間隔retryサンプル』が最低5件以上含まれること(手動介入100%のサンプルでは時間経過そのものの効果と介入効果を分離できないため)。",
+      "min_n_per_bin": 20,
+      "min_pass_rate_diff_points": 20,
+      "min_non_intervention_long_gap_samples": 5
+    },
+    "current_state": {
+      "bucket_n": {
+        "immediate": 46,
+        "short": 4,
+        "medium": 2,
+        "long": 1
+      },
+      "min_bucket_n_across_4_buckets": 1,
+      "pass_rate_diff_points_immediate_vs_non_immediate": 17.1,
+      "non_immediate_samples_without_deliberate_intervention": 2,
+      "non_immediate_samples_without_deliberate_intervention_list": [
+        "meaning_4@172s(short)",
+        "point_two@377s(short)"
+      ]
+    },
+    "criteria_met": false
+  },
+  "non_immediate_case_audit_all_5_or_fewer": [
+    {
+      "segment_id": "meaning_4",
+      "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+      "gap_seconds": 172.0,
+      "gap_bucket": "short",
+      "consecutive_ng_before_this_attempt": 1,
+      "next_try_result_verified": false,
+      "generation_path_field_raw": "automatic_retry_within_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": false
+    },
+    {
+      "segment_id": "kp5_ja_charon",
+      "level_dir": "er011_output/family_a_completion_a2_trend_end_to_end_01/b1b",
+      "gap_seconds": 282.0,
+      "gap_bucket": "short",
+      "consecutive_ng_before_this_attempt": 6,
+      "next_try_result_verified": true,
+      "generation_path_field_raw": "manual_regenerate_beyond_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": true
+    },
+    {
+      "segment_id": "point_two",
+      "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+      "gap_seconds": 377.0,
+      "gap_bucket": "short",
+      "consecutive_ng_before_this_attempt": 1,
+      "next_try_result_verified": true,
+      "generation_path_field_raw": "automatic_retry_within_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": false
+    },
+    {
+      "segment_id": "point_one",
+      "level_dir": "er003_output/n3_01/household/fact03_fix_02/b1b",
+      "gap_seconds": 567.0,
+      "gap_bucket": "short",
+      "consecutive_ng_before_this_attempt": 3,
+      "next_try_result_verified": true,
+      "generation_path_field_raw": "manual_regenerate_beyond_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": true
+    },
+    {
+      "segment_id": "kp5_ja_charon",
+      "level_dir": "er011_output/family_a_completion_a2_trend_end_to_end_01/b1b",
+      "gap_seconds": 2350.0,
+      "gap_bucket": "medium",
+      "consecutive_ng_before_this_attempt": 3,
+      "next_try_result_verified": false,
+      "generation_path_field_raw": "manual_regenerate_beyond_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": true
+    },
+    {
+      "segment_id": "point_two_heading",
+      "level_dir": "er012_output/editorial_b_voices_trial_09_audio/b1b",
+      "gap_seconds": 8357.0,
+      "gap_bucket": "medium",
+      "consecutive_ng_before_this_attempt": 1,
+      "next_try_result_verified": true,
+      "generation_path_field_raw": "automatic_retry_within_loop_cap",
+      "deliberate_intervention_override": {
+        "corrected_intervention_type": "deliberate_separate_regen_run_mislabeled_as_automatic",
+        "evidence_file": "er012_output/editorial_b_voices_trial_09_audio/b1b/audit/heading_regen_03_result.json",
+        "note": "management_id=EDITORIAL-B-FAMILY-VOICES-TRIAL-09-HEADING-REGEN-AND-FULL-EPISODE-03。attempt_number<=max_attemptsのためgeneration_pathフィールドはautomatic_retry_within_loop_capと機械判定されるが、実際は別名の管理IDで2時間19分後に明示的に再実行されたdeliberate regen。"
+      },
+      "is_confounded_by_deliberate_intervention": true
+    },
+    {
+      "segment_id": "full_story_part1",
+      "level_dir": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b",
+      "gap_seconds": 51635.0,
+      "gap_bucket": "long",
+      "consecutive_ng_before_this_attempt": 3,
+      "next_try_result_verified": true,
+      "generation_path_field_raw": "manual_regenerate_beyond_loop_cap",
+      "deliberate_intervention_override": null,
+      "is_confounded_by_deliberate_intervention": true
+    }
+  ]
+}

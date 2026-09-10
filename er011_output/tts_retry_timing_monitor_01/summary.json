@@ -2,12 +2,12 @@
   "management_id": "TTS-RETRY-TIMING-OBSERVATION-MONITOR-01",
   "generated_at_note": "スクリプト実行のたびに全ログを再走査し上書き生成(冪等)。実行日時はrun_evidence側で別途記録。",
   "input_counts": {
-    "attempt_files_scanned": 421,
+    "attempt_files_scanned": 443,
     "attempt_files_load_errors": 0,
-    "records_with_segment_id": 421,
+    "records_with_segment_id": 443,
     "records_without_segment_id_excluded": 0,
-    "distinct_segments_groups": 320,
-    "groups_with_2plus_attempts": 77,
+    "distinct_segments_groups": 339,
+    "groups_with_2plus_attempts": 79,
     "human_review_queue_entries": 32
   },
   "load_errors": [],
@@ -21,9 +21,16 @@
     {
       "consecutive_ng_before_bucket": "1",
       "gap_bucket": "1_immediate_lt5min",
-      "n": 34,
+      "n": 35,
       "pass_n": 23,
-      "pass_rate": 0.6765
+      "pass_rate": 0.6571
+    },
+    {
+      "consecutive_ng_before_bucket": "1",
+      "gap_bucket": "2_5to30min",
+      "n": 1,
+      "pass_n": 1,
+      "pass_rate": 1.0
     },
     {
       "consecutive_ng_before_bucket": "1",
@@ -35,9 +42,9 @@
     {
       "consecutive_ng_before_bucket": "2",
       "gap_bucket": "1_immediate_lt5min",
-      "n": 9,
+      "n": 10,
       "pass_n": 2,
-      "pass_rate": 0.2222
+      "pass_rate": 0.2
     },
     {
       "consecutive_ng_before_bucket": "3plus",
@@ -88,9 +95,9 @@
   "post_hoc_verification_change_case_rows_excluded_from_causal_reading": [],
   "pattern_counts": {
     "ng_x3plus_then_eventually_pass": 3,
-    "single_attempt_only": 243,
-    "never_resolved_all_ng_in_log": 6,
-    "ng_x1_then_pass_simple_retry": 25,
+    "single_attempt_only": 260,
+    "never_resolved_all_ng_in_log": 7,
+    "ng_x1_then_pass_simple_retry": 26,
     "ng_x2_then_eventually_pass": 2,
     "all_pass_no_retry_needed": 41
   },
@@ -148,7 +155,7 @@
       },
       {
         "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
-        "segment_id": "japanese_title",
+        "segment_id": "comment_3",
         "n_attempts": 1,
         "verified_sequence": [
           true
@@ -157,7 +164,7 @@
       },
       {
         "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
-        "segment_id": "preview",
+        "segment_id": "comment_4",
         "n_attempts": 1,
         "verified_sequence": [
           true
@@ -166,7 +173,7 @@
       },
       {
         "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
-        "segment_id": "topic_intro",
+        "segment_id": "full_story_part1",
         "n_attempts": 1,
         "verified_sequence": [
           true
@@ -174,8 +181,8 @@
         "post_hoc_verification_change_case": false
       },
       {
-        "level_dir": "er011_output/family_a_completion_a2_trend_end_to_end_01/a2",
-        "segment_id": "topic_intro",
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+        "segment_id": "full_story_part2",
         "n_attempts": 1,
         "verified_sequence": [
           true
@@ -187,6 +194,17 @@
       {
         "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
         "segment_id": "comment_2",
+        "n_attempts": 3,
+        "verified_sequence": [
+          false,
+          false,
+          false
+        ],
+        "post_hoc_verification_change_case": false
+      },
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+        "segment_id": "meaning_4",
         "n_attempts": 3,
         "verified_sequence": [
           false,
@@ -226,20 +244,19 @@
           false
         ],
         "post_hoc_verification_change_case": false
-      },
-      {
-        "level_dir": "er012_output/editorial_b_family_production_phase1_02/b1b",
-        "segment_id": "point_two",
-        "n_attempts": 3,
-        "verified_sequence": [
-          false,
-          false,
-          false
-        ],
-        "post_hoc_verification_change_case": false
       }
     ],
     "ng_x1_then_pass_simple_retry": [
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+        "segment_id": "point_two",
+        "n_attempts": 2,
+        "verified_sequence": [
+          false,
+          true
+        ],
+        "post_hoc_verification_change_case": false
+      },
       {
         "level_dir": "er011_output/family_a_completion_a2_trend_end_to_end_01/a2/rerun_01/a2",
         "segment_id": "point_one",
@@ -273,16 +290,6 @@
       {
         "level_dir": "er011_output/household_unified_final_candidate_01/a2",
         "segment_id": "meaning_4",
-        "n_attempts": 2,
-        "verified_sequence": [
-          false,
-          true
-        ],
-        "post_hoc_verification_change_case": false
-      },
-      {
-        "level_dir": "er011_output/household_unified_final_candidate_01/b1b",
-        "segment_id": "kp4_ja_charon",
         "n_attempts": 2,
         "verified_sequence": [
           false,

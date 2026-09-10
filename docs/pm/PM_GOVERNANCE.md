@@ -1,7 +1,12 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-10(PM-CLOSEOUT-CONSOLIDATION-66で新設12節「報告単位
+**最終更新: 2026-09-11(PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
+2026-09-11-02で12節へ新小節12-9「他作業の完了待ち・統合報告待ちを理由に
+した報告保留の禁止」、11節へ新小節「Opus L2入力限定の運用」、3節へ
+Closeout Check項目20[UDR/VALIDATED/APPROVED/未報告Trial/未登録Open Item
+5項目確認]を追加した。詳細は末尾「変更履歴」参照)。
+2026-09-10(PM-CLOSEOUT-CONSOLIDATION-66で新設12節「報告単位
 管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action
 提示」を追加し、報告単位[Lane/Workstream/Feature/Trial群/Production
 wiring/Article単位/Investigation等]を基準に、報告可能になった時点での
@@ -307,6 +312,12 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     複数候補から選択済み(またはユーザーがテーマ選定自体を明示的に
     委ねている)であること(13節「新規記事テーマ選定ルール」、
     2026-09-10追記)
+20. 主要タスクcloseout時、以下5項目が残っていないか必ず確認すること
+    (2026-09-11追記、PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
+    2026-09-11-02): (a) 未処理の`USER_DECISION_REQUIRED` (b) 採否未決の
+    `VALIDATED` (c) 未配線の`APPROVED_FOR_PRODUCTION` (d) 未報告のTrial
+    (e) 未登録のOpen Item。既存項目1〜4・8・9と重複する場合は個別確認を
+    省略せず、closeout直前のまとめ確認として本項目でも通しで再確認する。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -733,6 +744,23 @@ News Trial-12 A/B解釈の3件)。原則は「重要論点にスコープを絞�
 因果解釈・Production差分の見落とし・手戻りの削減である。L2+L3合計で
 1管理IDあたり最大1回という上限(上記)は変更しない。
 
+**Opus L2入力限定の運用(2026-09-11追記、ユーザー正式決定、
+PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02)**: Opusへ
+巨大SSOT(`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`等)の全文を
+原則渡さない。レビュー対象の論点・必要ファイル・必要な該当箇所だけを
+渡す。**「Token節約のために重要contextを落とす」ことは禁止**であり、
+必要な事実を省いてレビュー精度を落としてはならない。まずSonnet/Fable側で
+対象範囲(論点・差分・関連ファイル)を絞り込んだうえで、Opusには論点限定
+contextを渡す。Opus委任ごとに、委任文へ入力ファイル一覧と概算文字数
+(または概算token数)を記載する。経緯: `PM-TOKEN-EFFICIENCY-T3-CLAUDE-
+DEV-TOKEN-REASSESSMENT-01_REPORT.md`実測で、Opus L2レビュー1件あたりの
+支配的コストは出力ではなく入力側(3V Phase 1の例でコード8ファイル+
+Sonnet REPORT本文=約45.2万字≈20.5万token)であり、`opus-consultant.md`に
+入力側の絞り込み指示が無かったことが判明したため、運用として明文化した
+(`opus-consultant.md`にも同旨を追記)。本節はOpusの診断役割(原因・選択肢・
+影響範囲の整理)自体を変更するものではなく、入力の絞り込み方法を明文化
+するものである。
+
 **自明な修正の自律実施(2026-09-09、ユーザー指示、PM-GOVERNANCE-
 AUTONOMOUS-OBVIOUS-FIX-RULE-04)**: ユーザーの意図が明確で「そのままでは
 不適切なので修正すべき」と自明なfailure(例: B-4V-1/2)については、
@@ -892,6 +920,33 @@ REQUIRED放置防止と統合し、両Gateの記述へ本節への参照を追�
 **経緯**: 2026-09-10、ユーザーが恒久PMルールとして正式決定した
 (PM-CLOSEOUT-CONSOLIDATION-66)。会話限りのルールにせず正式PM運用ルール
 として記録する。
+
+### 12-9. 「他作業の完了待ち・統合報告待ち」を理由にした報告保留の禁止(2026-09-11追記)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02
+(2026-09-11、ユーザー正式決定)**
+
+**経緯**: News Ledger拡充Trial-12b(条件C/D、`er011_output/news_ledger_
+enrichment_ab_trial_12/`配下)は、artifact生成・結果確定が完了していた
+にもかかわらず、「タオル(Discovery Trial-11)Audio完了後にまとめて報告
+する」という判断により、ユーザーへの報告が遅延した。これは12-2(報告
+可能になった時点で即時報告する、他の並列作業の完了を待たない)に反する。
+遅延の原因は、Fableが「関連する複数の並列作業の結果をまとめてから報告
+した方が分かりやすい」と判断し、統合報告を待ったことにある。
+
+**再発防止(恒久ルール)**: 別作業の完了待ち・統合報告待ち・並列タスクの
+終了待ちを理由に、以下のいずれかに該当する事項の報告を保留しない。
+
+1. 確定済みTrial結果(Gate 1でREJECTED/VALIDATED/USER_DECISION_REQUIRED
+   に分類可能になったもの)
+2. `USER_DECISION_REQUIRED`
+3. 重要な発見(Opus/Sonnetレビューでの重要発見、Production wiring
+   STOP、既存認識を覆す結果を含む)
+
+独立して報告可能になった時点で即時報告する。既に未回答の報告がある状態
+で新しい報告が出た場合も、12-3・12-4(未回答フル再掲)に従い省略せず
+必要に応じて再掲する。本節は12-2の具体化・再確認であり、新しい判断基準を
+追加するものではない。
 
 ## 13. 新規記事テーマ選定ルール
 
@@ -1307,3 +1362,25 @@ Safety・Gate上の問題が判明した場合はこの限りではなく、従�
   haiku-worker新設/Opus L2レビュー投入/Token効率運用について確定指示を
   出した。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-70`エントリ
   参照。
+- 2026-09-11(PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02):
+  12節へ新小節「12-9. 『他作業の完了待ち・統合報告待ち』を理由にした
+  報告保留の禁止」を追加した。News Ledger拡充Trial-12b(条件C/D)の結果が
+  確定済みだったにもかかわらず「タオルAudio完了後にまとめて報告する」
+  という判断で報告が遅延した事象を受け、確定済みTrial結果・
+  `USER_DECISION_REQUIRED`・重要な発見(Opus/Sonnetレビューでの重要発見・
+  Production wiring STOP・既存認識を覆す結果)は、他作業の完了待ち・
+  統合報告待ち・並列タスク終了待ちを理由に保留しないことを明文化した
+  (12-2の具体化・再確認、新基準ではない)。11節「L2事前レビューの運用」
+  直後へ新小節「Opus L2入力限定の運用」を追加し、Opusへ巨大SSOT全文を
+  渡さずレビュー対象の論点・必要ファイル・該当箇所へ限定すること、
+  重要contextを省いて精度を落とすことは禁止であること、Opus委任ごとに
+  入力ファイル一覧・概算文字数を委任文へ記載することを明記した(経緯:
+  `PM-TOKEN-EFFICIENCY-T3-CLAUDE-DEV-TOKEN-REASSESSMENT-01_REPORT.md`で
+  Opus L2レビュー1件あたりの支配的コストが入力側[約45万字]であり
+  `opus-consultant.md`に絞り込み指示が無かったことが判明)。3節「PM
+  Closeout Mandatory Check」へ項目20(closeout時にUDR未処理/VALIDATED
+  未採否/APPROVED未配線/未報告Trial/未登録Open Itemの5項目を通しで
+  再確認)を追加した。あわせて`.claude/agents/opus-consultant.md`へ入力
+  限定の運用を1〜2行追記した(文書編集のみ、コード・Prompt変更なし)。
+  詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
+  2026-09-11-02`エントリ参照。
