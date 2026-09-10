@@ -11255,6 +11255,116 @@ telemetry.jsonl`・`er011_output/attempt_history.jsonl`、最終更新
 でなし。`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`はいずれも
 本タスクの最終更新対象(通常の一時ファイル更新)。
 
+## PM-CLOSEOUT-CONSOLIDATION-73: ユーザー回答2026-09-11(3V/Discovery/News/
+TTS retry timing/Token効率/量産APIコスト/新規記事テーマ)のSSOT反映
+
+Sonnet(sonnet-worker)が2026-09-11、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-73-USER-ANSWERS-2026-09-11)に基づき実施した。
+本タスクは並列稼働中5件(3V予算ガード修正/Discoveryタオル音声再開/TTS
+retry cool-down分析/Token効率T-3再評価/Opus News Trial-12解釈)の生成物
+(er011/er012コード・出力・新規REPORT)には一切触れていない。
+
+**ユーザー回答原文(2026-09-11、そのまま転記)**:
+
+```
+1. 3V
+- 予算ガード修正:着手OK。
+- Comment文言:3V対応表現へ統一。
+- 3Vの正式Statusは VALIDATED ではなく、既にユーザー正式採用済みなので APPROVED_FOR_PRODUCTION に是正。
+- ただし runtime evidence・Production全経路・SSOT/Git等が完了するまで PRODUCTION_WIRED にはしない。
+- Phase 1bは「承認済み3V仕様の不足配線のみ」。新仕様が必要ならSTOP。
+2. Discovery タオル
+- Human Review+必要segment再生成へ進める。
+- 記事・Support・Audio・試聴artifactまで完成させ、ユーザー確認後にN増し判断。
+- 保険文は、出たらHuman Review修正+発生率観測。
+- Focus Module Production採用はまだしない。
+3. TTS retry timing
+- CAR-Tの4回目PASSを受け、過去ログ集計+今後の継続モニタリングを実施。
+- 見たいのは「4回目だから通るか」ではなく、「連続NG後、時間を空けたretryの方がPASS率が高いか」。
+- 自然発生retryのみ観測し、人工的にTTS生成回数を増やさない。
+- 傾向が十分出たら、cool-down retry仕様候補としてUSER_DECISION_REQUIREDで提示。
+- 現時点ではProduction retry仕様変更しない。
+4. Token効率
+ユーザーが今改善したいのは、「量産APIコスト」ではなく「開発Lineで消費するClaude Token / weekly limit」。
+目的:Token limit到達で開発できない時間帯を減らすこと。
+- T-1:実施継続。実施前後のClaude Token削減効果を実測/代表ケースで報告。
+- T-2:現状維持。FableへGit権限追加しない。
+- T-3:従来REPORTはProduction/APIコスト寄りで論点がずれていたため、Claude開発Token観点で再評価する。特に、・Ledger/Research結果の重複読込・Fable/Sonnet/Opus間の同一context再読・巨大Ledger全文読込・Opusへ渡すcontext過多・長いResearch結果を必要以上に引き継いでいないか を調査し、Claude Token削減案とリスクを報告。
+- T-4:現状保留。節約モードはまだ導入しない。
+5. 量産LineのAPIコスト
+- GPT / Web Search / TTS / ASR等の量産コスト最適化は重要。
+- ただし、これはユーザー実検証後に別途がっつり実施する。
+- Open Itemとして保持し、今の開発Token改善と混同しない。
+6. News
+- Ledger fact供給量 / evidence allocationを改善主軸へ寄せる方向は合意。
+- Trial-12のOpus解釈を待って正式判断。
+- News Focus Module NG率50%は過去Hanshin 3/6の再掲。新規結果と混同しない。
+- Theme2 Ledger ID不整合は単純修正なら自律修正。
+- 遡及QAは量産段階までDEFER。
+7. 新規記事テーマ
+- Fable / Claude側で勝手に新テーマを決めない。
+- 新規記事は問題なければ最終版候補まで持っていく前提。
+- 英語 / 日本語 / 短い理由の複数候補を出し、ユーザー選択後に生成。
+- retry / regen / Local Rewrite等の既存記事修正は除外。
+共通:
+- 自明な修正は自律的に進める。
+- 仕様判断はユーザーへ戻す。
+- 小コストTrialは結果まで進めてよい。
+- USER_DECISION_REQUIREDは未報告放置しない。
+- APPROVED_FOR_PRODUCTIONはPRODUCTION_WIREDまで追跡。
+- 新規結果 / 過去再掲 / 進行中未結果を明示的に区別。
+```
+
+**反映箇所**:
+
+1. **OPEN-120行(3V)**: Statusを`VALIDATED(Trial)`から`APPROVED_FOR_
+   PRODUCTION`へ是正(`CURRENT_SPEC.md`側は2026-09-10時点で既に正しく
+   `APPROVED_FOR_PRODUCTION`[未配線]だったため追加編集なし、Grep確認
+   のみ実施)。`PRODUCTION_WIRED`は引き続き未宣言と明記。予算ガード
+   修正着手承認・Comment 2/3/4の3V対応表現への統一・Phase 1bスコープ
+   (既承認3V仕様の不足配線のみ、新仕様が必要ならSTOP)を追記した。
+2. **OPEN-135行(Discovery/News/TTS retry timing)**: 原文2・3・6の決定を
+   追記した。**訂正**: `PM-CLOSEOUT-CONSOLIDATION-72`(本ファイル該当
+   エントリ、書き換えず本エントリで訂正)が「`docs/pm/ACTIVE_TASK.md`の
+   『Opus L2レビュー(Trial-12、読み取り)』は誤記」としていた点を、
+   「News Trial-12のOpus L2解釈は計画済みで未実施だっただけであり、
+   2026-09-11に別途実施中(結果待ち)」に改めた。News Focus Module NG率
+   50%が過去Hanshin再掲である旨、Theme2 Ledger ID不整合(OPEN-140)が
+   既に`CLOSED`済みで追加対応不要である旨、遡及QA(OPEN-141)は量産段階
+   までDEFERする旨を記録した。
+3. **OPEN-142(新規起票)**: Claude開発Token効率化プログラム(T-1継続+
+   効果実測、T-2現状維持、T-3は開発Token観点で再評価中[並列task]、
+   T-4保留)。既存OPEN-135内「Token効率T-2/T-3」記載(量産API/Production
+   観点)とは目的が異なる開発Token/weekly limit観点の追跡行として区別
+   した。
+4. **OPEN-143(新規起票)**: 量産Line(GPT/Web Search/TTS/ASR等)APIコスト
+   最適化。Status=`DEFERRED`(ユーザー実検証後に着手)。OPEN-142との
+   混同防止を明記。
+5. **`docs/pm/PM_GOVERNANCE.md`**: 13節へ「新規記事は問題なければ最終版
+   候補まで持っていく前提」の2026-09-11再確認を追記(13-1既存記述と
+   同旨の再確認、新ルールではない)。3節(PM Closeout Mandatory Check)
+   item 4の直後へ「APPROVED_FOR_PRODUCTIONはPRODUCTION_WIREDまで追跡」
+   の2026-09-11再確認を追記(具体例としてOPEN-120 3Vを参照)。9-4
+   (更新種別の明示ルール)・11節(低コスト分析・Trialの自律実施/自明な
+   修正の自律実施)・12-7(未回答管理)は原文「共通」6項目のうち該当5項目
+   (新規結果/過去再掲/進行中未結果の区別・小コストTrial・自明な修正・
+   仕様判断のユーザー差し戻し・UDR未報告放置禁止)を既に恒久ルールとして
+   カバー済みであることを確認し、重複追記はせず各節へ2026-09-11再確認の
+   1行のみ追加した。`docs/pm/PM_BRIEF.md`の13節案内文(67-69行付近)へも
+   同旨を反映した。
+
+**触れていないもの**: コード・Prompt・Production実装は一切変更していない
+(SSOT/governance反映のみ、追加API費用¥0)。並列稼働中5件(3V予算ガード
+修正コード・Discoveryタオル音声再開・TTS retry cool-down分析・Token効率
+T-3再評価・Opus News Trial-12解釈)の生成物には一切触れていない。
+
+**根拠**: Fable(PM)からの委任(2026-09-11、管理ID
+PM-CLOSEOUT-CONSOLIDATION-73-USER-ANSWERS-2026-09-11)。Git操作: ファイル
+名指定で`git add`(`git add -A`不使用)、対象=`OPEN_ITEMS.md`・
+`DECISION_LOG.md`・`docs/pm/PM_GOVERNANCE.md`・`docs/pm/PM_BRIEF.md`・
+`docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`のみ。1 commitで
+`origin/main`へpush。
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

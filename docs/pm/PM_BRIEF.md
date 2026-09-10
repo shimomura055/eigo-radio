@@ -65,8 +65,9 @@ Rule)」(2026-09-10追記)。報告可能な単位が出たら他の並列作業
 必ず再掲する。Fable/sonnet-worker/opus-consultant/haiku-worker/ユーザーの
 責任分担は`docs/pm/PM_GOVERNANCE.md`1節を参照(haiku-workerはSonnet不要の
 read-only定型処理限定、2026-09-10追加)。新規記事のテーマ選定ルール
-(Fable/Claudeが単独で決めない)は`docs/pm/PM_GOVERNANCE.md`13節を参照
-(2026-09-10新設)。
+(Fable/Claudeが単独で決めない、新規記事は問題なければ最終版候補まで
+持っていく前提)は`docs/pm/PM_GOVERNANCE.md`13節を参照(2026-09-10新設、
+13-5は2026-09-11追記)。
 
 ## ループ上限(サンドイッチ運用)
 

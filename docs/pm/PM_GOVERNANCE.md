@@ -274,7 +274,10 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
 1. Trial statusが分類済みであること
 2. UDRが提示済みであること
 3. 正式採用項目が追跡済みであること
-4. `APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`の完了確認
+4. `APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`の完了確認(2026-09-11、
+   ユーザー回答で再確認。runtime evidence・Production全経路・SSOT/Git
+   反映等が揃うまで`PRODUCTION_WIRED`は宣言しない。具体例: OPEN-120
+   3V方式、`PM-CLOSEOUT-CONSOLIDATION-73`)
 5. initial/retry/fallbackの整合確認
 6. runtime evidenceの取得
 7. `CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`との整合
@@ -636,6 +639,10 @@ observationではない)、(c) 現在進行中でまだ結果が出ていない�
 Trial)の結果ではないにもかかわらず、区別が不明瞭なまま報告された事象を
 受け、ユーザーが恒久ルールとして新設した(PM-CLOSEOUT-CONSOLIDATION-70)。
 
+**2026-09-11追記(PM-CLOSEOUT-CONSOLIDATION-73)**: 本ルールはユーザー
+回答「共通」原則の1つ(新規結果/過去再掲/進行中未結果を明示的に区別)
+として再確認された(新ルールではなく本節の再確認)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -784,6 +791,11 @@ STOP必須条件の免除理由にならない)。本節は「自明な修正の
 受け、¥0分析・低コストTrialについては結果提示まで一括して進めてよいと
 ユーザーが決定した(PM-CLOSEOUT-CONSOLIDATION-67)。
 
+**2026-09-11追記(PM-CLOSEOUT-CONSOLIDATION-73)**: 本方針(小コストTrialは
+結果まで進めてよい)、および上記「自明な修正の自律実施」・Gate 2(仕様
+判断はユーザーへ戻す)は、ユーザー回答「共通」原則として再確認された
+(新ルールではなく既存項目の再確認)。
+
 **Token効率運用(2026-09-10、`PM-TOKEN-EFFICIENCY-DIAGNOSIS-01_REPORT.md`
 診断結果の即時適用)**: 以下5件は仕様変更を伴わない運用改善として常時
 適用する。(1) Git記録専用委任の軽量化(新規ファイル追加のみのcommitでは
@@ -916,6 +928,16 @@ Fable/Claude側でテーマを勝手に決めない。
 自己免疫疾患」テーマについて、検証には有用だが最終公開候補として一般
 ユーザー向けに成立しにくいという評価をユーザーから受け、新規記事テーマ
 選定にユーザー価値判断を組み込む恒久ルールとして正式決定した。
+
+### 13-5. 最終版候補前提の再確認(2026-09-11追記)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-73(2026-09-11、ユーザー正式決定)**
+
+新規記事は「問題なければ最終版候補まで持っていく」前提であることを
+ユーザーが再確認した(13-1「新規記事は使い捨てTrialではなく最終版候補
+前提である」と同旨の再確認であり、新ルールではない)。品質・Fact
+Safety・Gate上の問題が判明した場合はこの限りではなく、従来どおり
+`USER_DECISION_REQUIRED`・STOP条件が優先する。
 
 ---
 
