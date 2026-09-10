@@ -11,7 +11,11 @@
 3. `docs/pm/RESULT_PACKET.md` — Sonnet/Opusからの一時報告(SSOTではない)
 4. 必要な箇所だけ、以下のroot直下SSOTをGrepする(全文読み込みしない):
    - `CURRENT_SPEC.md` — 正式仕様SSOT
-   - `DECISION_LOG.md` — 意思決定履歴
+   - `DECISION_LOG.md` — 意思決定履歴。直近25件の決定エントリ+索引を
+     本体に残し、古いエントリ(ヘッダーチェーン旧12件・本体206件)の
+     履歴全文は`DECISION_LOG_HISTORY.md`(同じroot直下、別の管理場所
+     ではなく`DECISION_LOG.md`の切り出し先)へ原文のまま移動した
+     (PM-TOKEN-EFFICIENCY-T3A-DECISION-LOG-RESTRUCTURE-01、2026-09-11)。
    - `OPEN_ITEMS.md` — 未決事項(唯一の管理場所。`docs/pm/`には作らない)。
      3,000文字超だった行はStatus要約のみを残し、履歴全文は
      `OPEN_ITEMS_HISTORY.md`(同じroot直下、別の管理場所ではなく

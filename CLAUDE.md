@@ -47,7 +47,10 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   `HISTORY_INDEX.md`/`ER-*_REPORT.md`が正式SSOTであり、`docs/pm/`配下は
   その複製ではない。`OPEN_ITEMS_HISTORY.md`は`OPEN_ITEMS.md`本体行(旧
   3,000文字超)の履歴全文の切り出し先であり、管理場所は引き続き
-  `OPEN_ITEMS.md`のみ。
+  `OPEN_ITEMS.md`のみ。同様に`DECISION_LOG_HISTORY.md`は`DECISION_LOG.md`
+  の古いエントリ(ヘッダーチェーン旧12件・本体の古い決定エントリ206件)の
+  履歴全文の切り出し先であり、管理場所は引き続き`DECISION_LOG.md`のみ
+  (PM-TOKEN-EFFICIENCY-T3A-DECISION-LOG-RESTRUCTURE-01、2026-09-11)。
 - `docs/pm/ACTIVE_TASK.md`と`docs/pm/RESULT_PACKET.md`は一時ファイルであり、
   正式記録ではない(タスクごとに上書きされる)。
 - サンドイッチ方式の起動は`claude --agent sandwich-pm`。
