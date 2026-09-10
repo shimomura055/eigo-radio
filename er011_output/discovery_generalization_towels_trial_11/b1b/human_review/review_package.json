@@ -1,0 +1,40 @@
+{
+  "management_id": "FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-02-RESUME",
+  "theme_id": "discovery_generalization_towels_trial_11",
+  "level": "b1b",
+  "generated_at": "2026-09-11",
+  "mechanism_used": "既存Production機構(er011_human_review_lock_01.py, ER-011-HUMAN-REVIEW-COST-GUARD-01)。approve_regenerate()で1回だけREGENERATE_APPROVEDへ遷移させ、既存機構が許す自然な追加1roundを取得した。新しいGate/閾値/retry仕様は追加していない。",
+  "segments": [
+    {
+      "segment_id": "full_story_part1",
+      "review_lock_state": "HUMAN_REVIEW_REQUIRED",
+      "status_after_all_attempts": "STOPPED",
+      "note_for_human_review": "originalラウンド(take1-3)は3/3で「A 2022 survey...」の統計文が丸ごと欠落するgenuine content dropだった。resumeラウンド(take4-6)は同文が含まれるようになったが、take4は言い直しグリッチ、take5/6は'has dried'が'had dried'に書き起こされる軽微な差異(has/hadの音の近さによるものの可能性)。take5が最も内容一致度が高い。",
+      "recommended_take_for_listening": 5,
+      "takes": [
+        {"take_no": 1, "round": "original#1", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "2022 survey文が丸ごと欠落", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt1_englishstyleprefixwidemargin.wav"},
+        {"take_no": 2, "round": "original#2", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "2022 survey文が丸ごと欠落", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt2_englishstyleprefixwidemargin.wav"},
+        {"take_no": 3, "round": "original#3", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "2022 survey文が丸ごと欠落", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt3_englishstyleprefixwidemargin.wav"},
+        {"take_no": 4, "round": "resume#1", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "言い直しグリッチ(フレーズ2回連続)", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt4_englishstyleprefixwidemargin.wav"},
+        {"take_no": 5, "round": "resume#2", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "'has dried'→'had dried'のみ(内容ほぼ完全一致、おすすめ)", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt5_englishstyleprefixwidemargin.wav"},
+        {"take_no": 6, "round": "resume#3", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "'has dried'→'had dried'+文の切れ目変化", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part1_attempt6_englishstyleprefixwidemargin.wav"}
+      ]
+    },
+    {
+      "segment_id": "full_story_part2",
+      "review_lock_state": "HUMAN_REVIEW_REQUIRED",
+      "status_after_all_attempts": "STOPPED",
+      "note_for_human_review": "canonical textには'after two months'というフレーズが本文として正規に2回登場する。6take中4take(2,3,5,6)は内容としてNORMALIZED_MATCH/HIGH_SIMILARITY_SAFEだったが、Repetition QAがこの正規の2回出現を意図しない言い直しと誤検知している可能性が高い(Sonnetの所見、Production側の修正はユーザー判断後)。take1・4のみ軽微な語形差(the/this smell、is/was)。",
+      "recommended_takes_for_listening": [2, 3, 6],
+      "takes": [
+        {"take_no": 1, "round": "original#1", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "'the smell'→'this smell'", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt1_englishstyleprefixwidemargin.wav"},
+        {"take_no": 2, "round": "original#2", "audio_classification": "NORMALIZED_MATCH", "issue": "内容一致、Repetition QA flagのみで不合格(おすすめ)", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt2_englishstyleprefixwidemargin.wav"},
+        {"take_no": 3, "round": "original#3", "audio_classification": "NORMALIZED_MATCH", "issue": "内容一致、Repetition QA flagのみで不合格(おすすめ)", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt3_englishstyleprefixwidemargin.wav"},
+        {"take_no": 4, "round": "resume#1", "audio_classification": "TRUE_CONTENT_MISMATCH", "issue": "'This is'/'This was'相当の軽微差", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt4_englishstyleprefixwidemargin.wav"},
+        {"take_no": 5, "round": "resume#2", "audio_classification": "HIGH_SIMILARITY_SAFE", "issue": "Repetition QA flagのみで不合格", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt5_englishstyleprefixwidemargin.wav"},
+        {"take_no": 6, "round": "resume#3", "audio_classification": "NORMALIZED_MATCH", "issue": "内容一致、Repetition QA flagのみで不合格(おすすめ)", "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt6_englishstyleprefixwidemargin.wav"}
+      ]
+    }
+  ],
+  "known_followup_gap": "tts_generation_results.json(b1b/audit)は両segmentとも元run(2026-09-11)のSTOPPED記録のまま。resumeで得たtake4-6はhuman_review_resume_04_results.jsonにのみ記録している(既存監査ファイルは意図的に書き換えていない)。Human Review承認後、採用takeを同ファイルへ同期してからstage_assemble_bを実行する必要がある。"
+}

@@ -1,0 +1,98 @@
+{
+  "a2": {
+    "level": "a2",
+    "support": {
+      "support_status": {
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK"
+      },
+      "insurance_hits": {},
+      "total_insurance_hits": 0
+    },
+    "key_phrase": {
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "redundancy_qa_status": "REDUNDANCY_PASS",
+      "redundancy_retry_log": [
+        {
+          "attempt": 0,
+          "status": "REDUNDANCY_PASS",
+          "duplicate_pairs": []
+        }
+      ]
+    },
+    "tts": {
+      "segment_status": {
+        "topic_intro": "OK",
+        "japanese_title": "OK",
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "STOPPED",
+        "comment_3": "OK",
+        "comment_4": "OK",
+        "point_one_heading": "OK",
+        "point_two_heading": "OK",
+        "full_story_part1": "OK",
+        "full_story_part2": "OK",
+        "point_one": "OK",
+        "point_two": "OK",
+        "in_one_line": "OK"
+      },
+      "key_phrase_status": {
+        "1": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "2": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "3": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "4": {
+          "en": "OK",
+          "ja": "STOPPED"
+        },
+        "5": {
+          "en": "OK",
+          "ja": "OK"
+        }
+      }
+    },
+    "review_lock": {
+      "lock_state_file_present": true,
+      "segment_count": 24,
+      "max_cumulative_tts_attempts_any_segment": 2,
+      "locked_or_review_required_segments": [
+        "comment_2",
+        "meaning_4"
+      ]
+    },
+    "assembly": {
+      "status": "GATE_BLOCKED",
+      "gate_off_result": "BLOCKED",
+      "error": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: A2のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['comment_2=STOPPED', 'kp4_japanese_meaning=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。",
+      "gate_opt_in_result": {
+        "gate_on_result": "SKIPPED_ASSEMBLE_NOT_PASS"
+      }
+    }
+  },
+  "cost": {
+    "total_jpy": 4.79,
+    "by_provider_jpy": {
+      "openai": 2.73,
+      "gemini_batch": 0.0,
+      "openai_asr": 2.06
+    },
+    "by_level_jpy": {
+      "a2": 4.79
+    },
+    "unpriced_records": 29,
+    "total_records": 84
+  }
+}

@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Why a Clean Towel Can Still Smell
+
+A towel can come out of the wash looking clean, then give off a wet-cloth or old-rag smell. That smell may be noticed before washing, while the fabric is still wet after washing, or after the laundry has dried, and these stages can overlap.
+
+A 2022 survey asked 359 households about laundry odors. About 110 reported a smell before washing, while fewer noticed one in wet laundry after washing or after the laundry had dried. These groups could overlap, so the numbers are not a rate for all households. But they show that the wash cycle does not always mark the end of the story.
+
+Why can the smell return? In laboratory models using cotton and polyester, bacteria linked with skin oil and sweat could move into the fibers and build a sticky layer called a biofilm. That layer was difficult to remove with ordinary washing, and odor could remain after the wash.
+
+In another cotton-cloth model, a particular combination of three bacteria produced a stronger and longer-lasting wet-cloth smell than single bacteria or other combinations.
+
+A separate six-month study followed new cotton towels in 26 Japanese households. Smell and dullness were already observed after two months. During the study, biofilm structures were seen mainly around the towels’ lengthwise threads. The layer’s components and the number of bacteria that could be grown in the lab also increased over time.
+
+This was what researchers observed in those homes. It does not mean that every towel will smell after two months.
+
+### When fabric and drying join forces
+
+There is another twist: drying and fabric type work together. In lab tests, prolonged or slow drying was linked with stronger odor, while high-humidity drying was associated with characteristic laundry odor. Polyester held more skin oil and more strongly attached bacteria, while cotton held more water; some bacterial activity continued after drying. Softener-treated cotton also absorbed less water. So the same detergent routine can end differently on different fabrics.
+
+### The washing machine joins the story
+
+Washing is an exchange, not a reset. In tests, bacteria survived and moved between fabrics during bleach-free washing; bleach-containing conditions reduced them more. In five household machines, bacteria moved among water, clothes, and machine surfaces, while prewash groups remained on washed cotton. Machine parts also carried many bacteria. Another comparison found no clear link between total bacterial makeup and machine odor. The towel may be one part of the system.
+
+## In one line…
+
+A clean-looking towel can carry a longer history. In these studies, recurring odor was linked not just to the towel, but to the meeting point of fabric, moisture, bacteria, and the washing system around them.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "biofilm",
+    "japanese_gloss": "細菌が作るぬめりの膜",
+    "source_sentence": "In laboratory models using cotton and polyester, bacteria linked with skin oil and sweat could move into the fibers and build a sticky layer called a biofilm."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "give off",
+    "japanese_gloss": "においを出す",
+    "source_sentence": "A towel can come out of the wash looking clean, then give off a wet-cloth or old-rag smell."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "an exchange, not a reset",
+    "japanese_gloss": "洗濯は完全なリセットではなく、ものが移り合うことだ",
+    "source_sentence": "Washing is an exchange, not a reset."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "mark the end",
+    "japanese_gloss": "終わりを意味する",
+    "source_sentence": "But they show that the wash cycle does not always mark the end of the story."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "prolonged or slow drying",
+    "japanese_gloss": "長引く、またはゆっくり進む乾燥",
+    "source_sentence": "In lab tests, prolonged or slow drying was linked with stronger odor, while high-humidity drying was associated with characteristic laundry odor."
+  }
+]

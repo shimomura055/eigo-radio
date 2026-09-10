@@ -332,6 +332,9 @@ Rule再確認)のSSOT反映+Opus L2解釈(Trial-12)のREPORT化
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14: News Trial-14(曖昧性解消)+
 Trial-12b(leaveout)結果のSSOT反映(副仮説REJECTED・主仮説USER_DECISION_
 REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW: Discoveryタオル
+音声resume(Trial-11)のHuman Review 3件をSSOT反映+TTS費用集計gemini_batch
+¥0計上バグを新規OPEN-144として起票
 
 ---
 
@@ -2751,6 +2754,75 @@ PM-CLOSEOUT-CONSOLIDATION-75-NEWS-TRIAL-14)。詳細は
 `FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-DISAMBIGUATION-TRIAL-14_
 REPORT.md`、`FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-LEAVEOUT-TRIAL-12B_
 REPORT.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW: Discoveryタオル音声resume(Trial-11)のHuman Review 3件をSSOT反映+TTS費用集計gemini_batch ¥0計上バグを新規OPEN-144として起票
+
+**日付**: 2026-09-11
+
+**区分**: サービス・生成仕様(Discovery Editorial Type、Trial段階、Production未採用)+技術的負債(コスト計測)
+
+Sonnet(sonnet-worker)が、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW)に基づき、
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-01_REPORT.md`
+(管理ID`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-02-RESUME`、
+Sonnet委任実行・Fable既読了)と付随する`a2`/`b1b`の
+`human_review/review_package.md`の内容をSSOTへ反映した。
+
+**結果概要**: 前回GATE_BLOCKED状態から、既存Human Review Lock機構
+(ER-011-HUMAN-REVIEW-COST-GUARD-01)の`approve_regenerate()`で各segment
+1回だけ自然な追加takeを取得した(新規Gate・閾値・retry仕様の追加なし)。
+A2の`meaning_4`(Key Phrase4日本語gloss)は追加take1回目で`EXACT_MATCH`
+となり`RESOLVED`。A2の`comment_2`は6/6takeがTRUE_CONTENT_MISMATCHで
+`HUMAN_REVIEW_REQUIRED`のままだが、観測されたのは「時間がたつ→経つ」
+「におい→ニオイ/臭い」という同一発音の表記ゆれのみであり、誤分類の疑いが
+ある。B1Bの`full_story_part1`は原roundで2022 survey統計文が丸ごと欠落する
+genuine content dropだったが、resume roundのtake5(内容ほぼ完全一致、差異
+は"has dried"→"had dried"のみ)が最良候補として得られた。B1Bの
+`full_story_part2`は6take中4takeが内容一致(NORMALIZED_MATCH/
+HIGH_SIMILARITY_SAFE)だが、canonical textに正規に2回登場する
+「after two months」をRepetition QAが`canonical_repeat_count: 0`と誤認識
+し言い直しとして誤flagしている疑いが強い。保険文(hedging表現)はA2・B1B
+とも0件(Part A単独運用での発生率観測の初回記録)。3件ともユーザーの
+試聴によるHuman Review判断が必要であり、本タスクでは`record_human_
+approval()`の代行・Assembly実行はいずれも行っていない。
+
+**新規発見(TTS費用集計バグ)**: 既存`cost_stage()`による報告額¥12.76は、
+集計元script(`er011_discovery_generalization_towels_trial_11_audio_run.py`
+の`_call_cost_usd()`)が`provider=="gemini"`のみを判定し、実際のログ記録
+`provider=="gemini_batch"`(TTS音声生成、69件)と一致させられず0円計上して
+しまうバグにより過小計上されていることが判明した。手動概算では約
+¥62.83(¥50.07未計上)。Grepにより同一パターン(`gemini_batch`分岐を持た
+ない)のscript12本(Household最終版・News Trial-09・no18系・
+open121系・connected_speech系・transcript_style_normalization・
+er005_stage7・er006系3本)を特定し、個別確認できた範囲では
+Household最終版・News Trial-09・`er006_pool_pilot_01_cost_time_compute.py`
+の対象3テーマはいずれも`gemini_batch`記録0件で実質影響なし(標準TTS
+経路のみ使用)と確認した。残り(transcript_style_normalization・
+connected_speech系2本・open121系2本・no18系2本・er005_stage7)は個別
+ログでの`gemini_batch`有無を本タスクでは未確認。修正はいずれのscript
+に対しても実施していない(新規**OPEN-144**として起票、Status=`OPEN`)。
+
+**反映範囲**: `OPEN_ITEMS.md`OPEN-135行(Discovery節)へ上記Human Review
+結果・保険文観測・費用実績と発見バグを追記した。`OPEN_ITEMS.md`OPEN-121行
+へ、`full_story_part2`のRepetition QA誤flag疑いが2026-09-08の
+`TTS-REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-TRIAL-01`(em dash
+起因の`_canonical_repeat_count()`誤カウント)と同一module・同種の
+failure modeである可能性が高いこと(ただし今回はem dashが原因ではなく
+原因未特定)を新規観測として追記した。`OPEN_ITEMS.md`へ新規OPEN-144行
+(TTS費用集計gemini_batch ¥0計上バグ、Status=`OPEN`)を起票した。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`に本resume実行を1行追記した。
+
+**Production採用範囲外**: 本エントリはHuman Review待ち状態・Trial結果・
+バグ発見のSSOT反映のみであり、Production Prompt・Ledger・QA/Validator/
+retryコード・費用集計scriptの変更、`record_human_approval()`の代行、
+Assembly実行、`APPROVED_FOR_PRODUCTION`宣言はいずれも行っていない
+(本タスクでの追加API費用¥0)。
+
+**根拠**: Fable(PM)からの委任(2026-09-11、管理ID
+PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW)。詳細は
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-01_REPORT.md`、
+`er011_output/discovery_generalization_towels_trial_11/{a2,b1b}/
+human_review/review_package.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

@@ -1,0 +1,104 @@
+{
+  "management_id": "FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-02-RESUME",
+  "theme_id": "discovery_generalization_towels_trial_11",
+  "level": "a2",
+  "generated_at": "2026-09-11",
+  "mechanism_used": "既存Production機構(er011_human_review_lock_01.py, ER-011-HUMAN-REVIEW-COST-GUARD-01)。approve_regenerate()で1回だけREGENERATE_APPROVEDへ遷移させ、既存の標準2回+fallback1回(合計上限3回)の自然な追加1roundを取得した。新しいGate/閾値/retry仕様は追加していない。",
+  "segments": [
+    {
+      "segment_id": "comment_2",
+      "display_label": "A2 Comment 2(Charon前の日本語コメント、実装上はAoede)",
+      "review_lock_state": "HUMAN_REVIEW_REQUIRED",
+      "canonical_text": "洗濯して乾かしても、においが残ることがあります。では、タオルの中には、時間がたつと何が残るのでしょうか。",
+      "status_after_all_attempts": "STOPPED",
+      "note_for_human_review": "全6take(標準2+fallback1を2round=既存機構が許す範囲での追加1round)とも、TTS音声自体は自然に発話されているが、ASR書き起こしがcanonical textと異なる表記(homophoneの漢字/カタカナ表記ゆれ)になり、機械判定でTRUE_CONTENT_MISMATCHと分類され続けている。6/6takeで共通して『時間がたつ』(canonical、ひらがな)が『時間が経つ』(ASR、漢字)と書き起こされ、4/6takeで『におい』(canonical、ひらがな)が『ニオイ』(カタカナ)または『臭い』(漢字)と書き起こされている。これらは日本語として同一の発音・同一の意味であり、実際に聞いた音声内容に誤りがあるかどうかはHuman Reviewでの試聴判断が必要(Sonnetからの提案: 機械分類がSTOPしているだけで、音声自体は正しい可能性が高いという所見。修正案の実装はユーザー判断後)。",
+      "takes": [
+        {
+          "take_no": 1, "round": "original(2026-09-10)", "route": "standard", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか?",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt1_standard.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt1_standard.wav"
+        },
+        {
+          "take_no": 2, "round": "original(2026-09-10)", "route": "standard", "attempt": 2,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、においが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか?",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt2_standard.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt2_standard.wav"
+        },
+        {
+          "take_no": 3, "round": "original(2026-09-10)", "route": "minimal_fallback", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、においが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt3_minimalfallback.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt3_minimalfallback.wav"
+        },
+        {
+          "take_no": 4, "round": "resume(2026-09-11, REGENERATE_APPROVED)", "route": "standard", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には時間が経つと何が残るのでしょうか。",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt4_standard.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt4_standard.wav"
+        },
+        {
+          "take_no": 5, "round": "resume(2026-09-11, REGENERATE_APPROVED)", "route": "standard", "attempt": 2,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt5_standard.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt5_standard.wav"
+        },
+        {
+          "take_no": 6, "round": "resume(2026-09-11, REGENERATE_APPROVED)", "route": "minimal_fallback", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "洗濯して乾かしても、臭いが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt6_minimalfallback.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/comment_2_attempt6_minimalfallback.wav"
+        }
+      ],
+      "possible_human_review_outcomes_existing_mechanism_only": [
+        "(a) いずれかのtakeを試聴し、内容として正しいと判断すれば、既存のrecord_human_approval()(er003_v1_n3_01_assemble.py)で当該canonical_textをHUMAN_APPROVEDとして記録する(そのtakeの音声ファイルをcomment_2.wavとして採用する運用含む、既存機構)。",
+        "(b) 試聴して実際に内容誤りがあると判断すれば、STOPPEDのまま維持し、記事本文側(comment_2のtext自体)の言い回し変更をユーザー判断で検討する(本タスクでは記事本文は変更しない)。",
+        "(c) 追加のapprove_regenerate()による再試行(既存機構、上限は運用ルールに従う)。"
+      ]
+    },
+    {
+      "segment_id": "meaning_4",
+      "display_label": "A2 Key Phrase 4 日本語gloss(kp4_japanese_meaning、「stay active」→「活動し続ける」)",
+      "review_lock_state": "RESOLVED",
+      "canonical_text": "活動し続ける",
+      "status_after_all_attempts": "OK(resume roundのtake4で解決、Human Review不要)",
+      "note_for_human_review": "resume round(REGENERATE_APPROVED)の最初のtakeでEXACT_MATCH(ASR文字起こし=canonical完全一致)。既存機構により自動的にRESOLVEDへ遷移し、narration/meaning_4.wavは既にこのtakeの音声に更新済み。Human Review不要。",
+      "takes": [
+        {
+          "take_no": 1, "round": "original(2026-09-10)", "route": "standard", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "活動をし続ける。",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/meaning_4_attempt1_standard.wav"
+        },
+        {
+          "take_no": 2, "round": "original(2026-09-10)", "route": "standard", "attempt": 2,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "活動を広げる",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/meaning_4_attempt2_standard.wav"
+        },
+        {
+          "take_no": 3, "round": "original(2026-09-10)", "route": "minimal_fallback", "attempt": 1,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "asr_text": "活動を続ける",
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/meaning_4_attempt3_minimalfallback.wav"
+        },
+        {
+          "take_no": 4, "round": "resume(2026-09-11, REGENERATE_APPROVED)", "route": "standard", "attempt": 1,
+          "audio_classification": "EXACT_MATCH",
+          "asr_text": "活動し続ける",
+          "verified": true,
+          "wav_path": "er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/meaning_4_attempt4_standard.wav",
+          "wav_file_url": "file:///C:/Users/tensh/eigo-radio/er011_output/discovery_generalization_towels_trial_11/a2/narration/attempts/meaning_4_attempt4_standard.wav",
+          "note": "この音声がnarration/meaning_4.wav(最終成果物パス)として既に採用されている。"
+        }
+      ]
+    }
+  ],
+  "known_followup_gap": "tts_generation_results.json(a2/audit)のcomment_2エントリは元runのSTOPPED記録のまま(resume roundの4-6takeは human_review_resume_02_results.jsonにのみ記録、意図的に元監査ファイルは書き換えていない)。meaning_4についても同様にtts_generation_results.jsonのkey_phrases['4'].japanese_meaningは元のSTOPPED記録のままで、実際のnarration/meaning_4.wav・review_lock_state.jsonはRESOLVED/OKへ更新済みという不一致がある(Sonnetの権限では監査ファイルの書き換えをauto-mode classifierがブロックしたため、意図的にスキップ。Assembly実行前に同ファイルをOKへ同期する必要がある。既存run_level()を通した完全な再実行[支持済みsupport/keyphraseも含む]か、対象2entryのみの手動同期のいずれかをユーザー承認後に行う)。"
+}
