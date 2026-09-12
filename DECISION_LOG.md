@@ -377,6 +377,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER: 3V Phase 1b-04(Sonnet委任上限到達→Opus L3診断)結果を`USER_DECISION_REQUIRED`として記録(Leakage 2/2再現の主因は旧prompt由来の二律背反+retry whack-a-mole、3V方式自体の意味は保持、Fable推奨は案2だが未回答)+Phase 1b-04 REPORT 11-5(ii) near-duplicate比率の取り違え訂正(0.143→0.559)+委任文最小化(E-1/D-1/G-1)のTrial After計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY: 2026-09-13ユーザーFeedback(原文全文、8項目)の正式記録 — (1)ユーザー向け表記を「B1」に統一(内部ID/ファイル名`b1b`はrename不要)、(2)Trend記事B1 Key Phrase 1差替(`not there yet`→`autonomous`)・A2`## Main story`混入除去の個別修正2件反映、(3)Discovery Trial-12 A2 Comment 2文言差替の個別修正1件反映(いずれも新規一般仕様化ではない)、(4)記事close条件(生成→音声化→標準player→ユーザー視聴→受入/修正判断→close)の再確認、(5)3V Voice内数字1個「必須」要求の撤廃方針(上限規定`:251-256`は維持、要求文言`:402-404`のみ撤廃)、(6)3V Tension/Fact Safety問題は「Voices/PerspectiveにNews/Discoveryと同レベルのFact Checker/Ledger Deviationを適用すること自体が過剰」という方向でFirst option(Family=B限定の判定緩和)を優先設計し`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`として`USER_DECISION_REQUIRED`化(以前提示の案1〜3は不採用として明示的に破棄)。Part A(player残是正、TTS mode表記追加・mp3キャッシュ再変換方式修正・13項目再監査全○)・Part C(棚卸し)を合わせて実施。
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-UDR-LABEL-HYGIENE: OPEN-145/146 Gate3個別照合(13項目中「Production runtime実発火」が両者とも未充足、Status更新は見送り`APPROVED_FOR_PRODUCTION`のまま維持)+UDR表記整備(OPEN-121/131/133行頭Status実態反映+OPEN-135 raw.githack STALE注記追加)+区分A(真に未回答)10項目の先送り決定有無一覧+Fable報告漏れ(区分の機械棚卸し不足)の原因記録・再発防止(Gate 5へ手順追記)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED: 2026-09-13ユーザー再視聴結果原文(verbatim)によるTrend記事(B1/A2)・Discovery Trial-12(A2/B1)の3件修正(B1 Key Phrase`autonomous`差替・A2`## Main story`除去・Trial-12 Comment 2文言差替)受入確定+記事close記録(`USER_LISTENING_PENDING`→`CLOSED(ユーザー受入済み、2026-09-13)`、各工程[生成/音声化/標準player/視聴/受入/close]の根拠・費用[Trend¥141.14・Trial-12¥143.23]を記録)+OPEN-146を`PRODUCTION_WIRED`へ格上げ(2026-09-13、Fable判定、根拠=CONSOLIDATION-100の13項目照合12/13+News Family実発火2件[Trial-15/16]、他Familyは自然N増しで継続観測)+OPEN-145は自然発火0件のため`APPROVED_FOR_PRODUCTION`(配線済み)維持+Discovery Focus Module Part Aの仕様Statusは記事closeとは別軸で不変+3V Fact Safety等の別UDRとは分離
 
 ---
 
@@ -5921,6 +5922,130 @@ REPORT.md`、`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-
 RESUME-01_REPORT.md`、`FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-
 FEEDBACK-FIX-01_REPORT.md`、`OPEN_ITEMS.md`OPEN-121/131/133/135/145/146行、
 `docs/pm/PM_GOVERNANCE.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED: Trend/Discovery Trial-12ユーザー受入によるclose記録+OPEN-146`PRODUCTION_WIRED`格上げ
+
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク、LLM/TTS/ASR API呼び出し禁止・¥0)
+
+**ユーザー発言原文(verbatim、セッション記録`294958fe-
+da6e-491c-8a02-4f864d8195c8.jsonl`の`"type":"user"`行[2344行目]より抽出)**:
+
+```
+ユーザー再視聴結果です。
+
+以下3件、すべて確認OKです。受け入れます。
+
+1. Trend B1
+- Key Phrase 1
+- `not there yet` → `autonomous`
+- 修正後音声OK
+
+2. Trend A2
+- Full Story Part 1冒頭の `## Main story` 混入除去
+- 修正後音声OK
+
+3. Discovery Trial-12 A2
+- Comment 2
+- 「決めた時間近くに起きられることはあるのでしょうか。」
+- 修正後音声OK
+
+上記3件はユーザー受入済みとして扱ってください。
+
+記事close条件について、
+- Trend記事(B1/A2)
+- Discovery Trial-12(A2/B1)
+
+はいずれも、今回のユーザー再視聴・受入まで完了したため、close可能です。
+
+必要なCURRENT_SPEC / DECISION_LOG / OPEN_ITEMS / closeout記録を実態に合わせて更新し、
+「ユーザー視聴待ち」のStatusを解除してください。
+
+なお、今回の受入は上記修正内容に対する受入です。
+3V Fact Safety等の別UDRとは分離して扱ってください。
+```
+
+**決定整理**:
+
+1. **受入対象3件の確定**: (1)Trend B1 Key Phrase 1`not there yet`→
+   `autonomous`(修正後音声OK)、(2)Trend A2 Full Story Part 1冒頭
+   `## Main story`混入除去(修正後音声OK)、(3)Discovery Trial-12 A2
+   Comment 2「決めた時間近くに起きられることはあるのでしょうか。」
+   (修正後音声OK)。いずれもユーザーが標準playerでの再試聴後に明示的に
+   受入した。
+2. **記事close記録**: `PM-CLOSEOUT-CONSOLIDATION-97`で明文化した記事
+   フロー(生成→音声化→標準player→ユーザー視聴→受入判断→close)が
+   Trend記事(B1/A2)・Discovery Trial-12(A2/B1)とも全工程完了したため、
+   両記事のStatusを`USER_LISTENING_PENDING`(ユーザー視聴待ち)から
+   `CLOSED(ユーザー受入済み、2026-09-13)`へ更新する。各工程の根拠:
+   - 生成: `FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01_
+     REPORT.md`/`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-
+     TREND-A2-RESUME-01_REPORT.md`(Trend)、`FAMILY-A-DISCOVERY-
+     GENERALIZATION-TRIAL-12-OPUS-L2-INTERPRETATION-01_REPORT.md`等
+     (Discovery Trial-12)。
+   - 音声化(個別修正分): `FAMILY-A-TREND-AI-MANUFACTURING-USER-
+     LISTENING-FEEDBACK-FIX-01_REPORT.md`(実測¥9.46)、`FAMILY-A-
+     DISCOVERY-TRIAL-12-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`
+     (実測約¥1.55)、いずれもTTS mode=STANDARD(Trial-12標準player A2
+     区画の`TTS_EXECUTION_MODE=STANDARD`表記、CONSOLIDATION-99 Part A
+     参照)。
+   - 標準player: commit固定URL(`598174a`、raw.githack CDNキャッシュ
+     STALEのためcommit固定を使用、OPEN-135行既記載): Trend B1=
+     `er011_output/family_a_trend_ai_manufacturing_prod_run_01/
+     player_std/index.html`、Trend A2=同`a2_index.html`、Discovery
+     Trial-12=`er011_output/discovery_generalization_wake_before_
+     alarm_trial_12/player_std/index.html`。commit固定URLでの内容
+     確認は`docs/pm/RESULT_PACKET_STATUS_RECON.md`3節(HTTP 200、
+     修正箇所とも一致)で実施済み。
+   - ユーザー視聴・受入判断: 上記2026-09-13発言原文。
+   - close: 本エントリ。
+   費用(累計、上限内): Trend記事全体¥141.14(既存累計¥131.68+ユーザー
+   視聴Feedback修正¥9.46)、Discovery Trial-12(記事+Support/Audio合算)
+   ¥143.23(上限¥300の47.7%)。
+3. **分離の明記**: 今回の受入・close判断は上記3件の個別修正内容に対する
+   ものであり、3V(B-Family Voices/Perspective)Fact Safety強度設計
+   (`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_
+   REPORT.md`、`USER_DECISION_REQUIRED`のまま)等の別Open Item・別UDR
+   とは分離して扱う(混同しない)。
+4. **Discovery Focus Module Part Aの仕様Statusは不変**: 記事closeと
+   Focus Module Part Aの仕様Status(`VALIDATED`(Trial)、
+   `APPROVED_FOR_PRODUCTION`は不採用、対照アーム不実施[2026-09-12
+   ユーザー決定、`PM-CLOSEOUT-CONSOLIDATION-94`])は別軸であり、本
+   エントリでは変更しない。
+5. **OPEN-146を`PRODUCTION_WIRED`へ格上げ(2026-09-13、Fable判定)**:
+   `PM-CLOSEOUT-CONSOLIDATION-100`のGate 3チェックリスト(13項目)照合で
+   12/13充足済み(未充足=「Production runtime実発火の適用範囲」が
+   News Family限定[Trial-15人名2件・Trial-16所属機関1件、計2件の実API
+   発火、Production関数`make_proper_noun_extraction_fn`は無改変]で、
+   Discovery/Trend Synthesis/B-Family Voices等の他Familyでは未確認)
+   だった。今回、他Familyでの追加自然発火は確認していないが、Fableは
+   「同一Production関数経路を全Familyが共有しており、News 2件の自然
+   発火実績+コード配線・回帰テスト・runtime evidence等の他12項目が
+   充足済みであること」を根拠に`PRODUCTION_WIRED`と判定した。他Family
+   (Discovery/Trend Synthesis/B-Family Voices等)は今後の通常N増しの
+   中で自然発火実例を継続観測する(人工的なTrialは追加しない、
+   `PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01`の既存方針どおり)。
+6. **OPEN-145は`APPROVED_FOR_PRODUCTION`(配線済み)を維持**: 自然発火
+   (新規TTS/ASR呼び出しを伴う実発火)が本タスク時点で0件のため、
+   `PRODUCTION_WIRED`へは格上げしない。将来、自然発火が確認され次第
+   格上げする方針をOPEN-145行へ1行追記した。
+7. **反映範囲**: `OPEN_ITEMS.md`(OPEN-135行[Trend/Discovery close
+   追記]・OPEN-146行[Status`PRODUCTION_WIRED`へ更新]・OPEN-145行
+   [方針1行追記])、`CURRENT_SPEC.md`(OPEN-146節Status表記を
+   `PRODUCTION_WIRED`へ更新、仕様本文は不変)、`docs/pm/
+   PM_GOVERNANCE.md`(変更なし、既存の記事close条件どおり運用)、
+   `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(1行追記)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-101-
+TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED`)、セッション
+記録`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`[2344行目]、`FAMILY-A-
+TREND-AI-MANUFACTURING-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`、
+`FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`、
+`docs/pm/RESULT_PACKET_STATUS_RECON.md`、`PM-CLOSEOUT-CONSOLIDATION-100`
+エントリ、`OPEN_ITEMS.md`OPEN-135/145/146行、`CURRENT_SPEC.md`OPEN-146節、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ---
 

@@ -868,3 +868,18 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   抽出不能だったため本タスク内では未保存(Fableから本文を別途受け取り
   次第、別タスクで保存)。並列稼働中の他Agentの生成物には一切触れず、
   stageもしていない。
+- 2026-09-13(PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-
+  ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED、本タスク、Git書込唯一の
+  タスク): セッション転記からユーザー再視聴結果原文(verbatim、
+  `"type":"user"`行[2344行目])を抽出しDECISION_LOG.md新規エントリ+
+  索引へ記録、Trend記事(B1/A2)・Discovery Trial-12(A2/B1)の3件修正
+  ユーザー受入に基づき記事Statusを`USER_LISTENING_PENDING`→
+  `CLOSED(ユーザー受入済み、2026-09-13)`へ`OPEN_ITEMS.md`OPEN-135行へ
+  追記、OPEN-146をGate3照合12/13+News Family実発火2件[Trial-15/16]を
+  根拠に`PRODUCTION_WIRED`へ格上げ(`OPEN_ITEMS.md`・`CURRENT_SPEC.md`
+  両方反映)、OPEN-145は自然発火0件のため`APPROVED_FOR_PRODUCTION`
+  (配線済み)維持の1行追記、Gate5棚卸し(区分A/B/C)を実施。Sonnet、
+  LOW、実測¥0(SSOT編集・Git操作のみ、新規LLM/TTS/ASR API呼び出し
+  なし、Productionコード変更なし、他Agent成果物[er012_output/
+  fact_safety_relaxation_trial_01/等]には一切触れず)。委任回数=初回
+  のみ(ループ上限4回以内)。
