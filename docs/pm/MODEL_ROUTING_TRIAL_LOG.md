@@ -804,3 +804,21 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   並列稼働中の他Agent(3V Phase 1b-04`er012_*`、ER-009辞書拡張
   `er003_audio_tts_asr_safety.py`等、`er011_output/family_a_completion_
   a2_trend_end_to_end_01/`)の生成物には一切触れず、stageもしていない。
+
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-96-TRIAL-12-A2-COMPLETION-ER-009-
+  WIRING-USER-ANSWERS-AUTONOMY-RULES、本タスク、Git書込唯一のタスク):
+  Trial-12 A2`full_story_part1`へFable許可の小額Primary ASR再検証1回
+  (¥1未満相当)を含む`apply_a2_slowdown_postprocess()`を適用しAssembly
+  PASS・標準player更新まで完成、OPEN-121を`PRODUCTION_WIRED`化。ER-009
+  辞書拡張(15語)のdiff確認・テスト17件PASS再確認・SSOT反映。2026-09-12
+  ユーザー7項目回答(Trial REPORT必須5項目/層間不整合・数値表記不起票/
+  News Trial-16 close(b)/ER-009承認/Token効率委任文最小Trial/PM運用
+  自律範囲)を`DECISION_LOG.md`新規エントリ(verbatim)+`OPEN_ITEMS.md`
+  (OPEN-121/OPEN-135/OPEN-142行)+`docs/pm/PM_GOVERNANCE.md`(10-1自律
+  処理範囲新設・Gate6補足Trial REPORT必須事項新設・11節E-1/D-1/G-1/F-1
+  委任運用ルール新設)+`docs/pm/DELEGATION_STANDARD_RULES_DRAFT.md`
+  (新規草案)へ反映。Sonnet、LOW、実測¥1未満(gpt-4o-mini-transcribe
+  1回のみ、上限¥50以内)。委任回数=初回のみ(ループ上限4回以内)。並列
+  稼働中の3V修正タスク(`er012_*`、`EDITORIAL-B-FAMILY-VOICES-3V-*
+  PHASE1B-04*`、`docs/pm/*_3V_1B04.md`)の生成物には一切触れず、stageも
+  していない。

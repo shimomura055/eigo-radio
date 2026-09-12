@@ -205,6 +205,15 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   ものであり、新設Gateではない(2026-09-12ユーザー指摘、管理ID
   `PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-
   GENERALIZATION-REGRESSION-RULE`)。
+- **Gate 6 補足: Trial REPORT必須記載事項**(2026-09-12、
+  `PM-CLOSEOUT-CONSOLIDATION-96`、ユーザー正式決定。Trial-11見落とし
+  ④⑤⑥⑨がTrial-12で再発したことを受け、既存JSON出力から¥0で算出できる
+  以下5項目をTrial REPORTの必須欄とする)。
+  1. section別語数+target/tolerance上限の実数値+PASS/FAIL
+  2. near-duplicate最大ratioと閾値
+  3. caveat文(regex外、目視・手動)カウント
+  4. 記事間の定型句・結論型の類似(有無・代表例)
+  5. 音声layerブロックの有無
 - **Gate 7 — 実務報告の受入判定**: Sonnet/Opus等の「完了」「Production反映済み」
   「動作確認済み」という報告をそのまま採用せず、Production正式path /
   runtime evidence / test / approved specとの一致 / retry・fallbackとの整合 /
@@ -960,6 +969,22 @@ PM-CLOSEOUT-CONSOLIDATION-94エントリ参照)により新設・確定した。
   ボトルネックになっていたことを受けたユーザー方針確定
   (PM-GOVERNANCE-REPORT-FORMAT-AND-AUTONOMOUS-GIT-05)。
 
+### 10-1. Fable自律処理範囲とUDR維持範囲(2026-09-12追記、
+`PM-CLOSEOUT-CONSOLIDATION-96`、ユーザー正式決定の要旨。原文は
+`DECISION_LOG.md`該当エントリ参照)
+
+- **Fable自律処理範囲**(以下に該当する場合、逐一ユーザー判断を求めず
+  Fableが自律的に処理し、実施後に正式報告する): ¥0/低リスク/既存仕様の
+  意味を変えない/明らかな報告漏れ防止ルールの反映/明らかなQCD上のclose
+  判断/小規模・Gate思想を変えない辞書拡張。
+- **UDR維持範囲**(以下に該当する場合は従来どおり`USER_DECISION_REQUIRED`
+  としてSTOPし、ユーザー判断を仰ぐ): 新しい仕様原則/Productionの意味
+  変更/QA blocking条件変更/Writer・Prompt原則変更/複数の妥当な選択肢が
+  ありQCD差が大きいもの/コスト・UXへの重要な影響。
+- 本節は既存の10節(commit/push運用の例外)・Gate 2(User Decision)・
+  14節(問題発生時のPM処理原則)を置き換えるものではなく、Fableの日常的な
+  軽微判断の範囲を明確化するもの。
+
 ## 11. Fable↔Sonnetレビュー往復の上限とGatekeeper原則
 
 **管理ID: PM-FABLE-SONNET-REVIEW-LOOP-03(2026-09-06ユーザー決定)**
@@ -1152,6 +1177,20 @@ Sonnet委任内で連続実施する(モデル・視点が変わる独立レビ�
 操作権限付与・Ledger研究の検索回数上限/reasoning effort調整・利用量連動
 節約モードは、いずれもユーザー判断待ち(同REPORT「ユーザー判断が必要な
 項目」節参照、2026-09-10時点で未決定のまま)。
+
+**委任運用ルール(2026-09-12追記、`PM-CLOSEOUT-CONSOLIDATION-95`/`96`、
+Fable判定・低リスクのため採用。読込効率改善)**: 以下3件をSonnet/Opus
+委任文に付す。
+- **E-1**: 同一task内で同一ファイルを再読しない(結果を保持し、再読しない
+  ことを委任文で明示する)。
+- **D-1**: 配線タスクはコード読込を該当関数/行範囲に限定する(ファイル
+  全文読込ではなくGrep→該当箇所のみRead)。
+- **G-1**: git出力を`--short`/`--quiet`等で最小化する。
+A-1(Consolidation統合、件数削減による委任回数圧縮)はロールバック単位
+肥大化等のリスクが中〜高のため不採用。
+- **F-1**: 統合タスク開始時に、当該セッションの`tasks/*.output`(0バイト
+  でないもの)をscratchpad配下(repo外)へ退避する(消失防止、repoには
+  含めない)。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 

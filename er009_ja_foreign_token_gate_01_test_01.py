@@ -145,5 +145,55 @@ class WiringStopsBeforeTtsCallTests(unittest.TestCase):
         self.assertFalse(safety.foreign_token_gate_requires_stop(findings))
 
 
+class AcronymDictionaryExpansionTests(unittest.TestCase):
+    """ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-RESUME-01
+    (2026-09-12、ユーザー承認)で追加した15語がREADING_DICTIONARYへ正しく
+    分類され、かつGateの防波堤(未登録語は引き続きHUMAN_REVIEW)が弱まって
+    いないことを確認する。API/TTS呼び出しは一切発生しない(pure-Python)。"""
+
+    ADDED_ACRONYMS = (
+        "AI", "IT", "EV", "IoT", "DX", "GPS", "SNS", "PC", "GDP", "EU",
+        "NASA", "AR", "VR", "ESG", "NFT",
+    )
+
+    def test_11_all_15_added_acronyms_classified_as_reading_dictionary(self):
+        for word in self.ADDED_ACRONYMS:
+            with self.subTest(word=word):
+                text = f"これは{word}に関する日本語の説明文です。"
+                findings = safety.classify_foreign_tokens_in_japanese_text(text)
+                categories = [f["category"] for f in findings]
+                self.assertIn(READING_DICT, categories, word)
+                self.assertNotIn(HUMAN_REVIEW, categories, word)
+                self.assertFalse(safety.foreign_token_gate_requires_stop(findings), word)
+
+    def test_12_mixed_case_and_slash_joined_tokens_still_match_dictionary(self):
+        # 「IoT」のような混在表記、「AR/VR」のようなスラッシュ連結表記でも
+        # トークン分割・小文字照合が正しく機能すること(仕様確認のみ、
+        # ロジック変更なし)。
+        findings = safety.classify_foreign_tokens_in_japanese_text("AR/VR技術について話します。")
+        categories = [(f["token"], f["category"]) for f in findings]
+        self.assertEqual(categories, [("AR", READING_DICT), ("VR", READING_DICT)])
+        self.assertFalse(safety.foreign_token_gate_requires_stop(findings))
+
+    def test_13_unregistered_acronym_still_human_review_gate_not_weakened(self):
+        # 15語追加後も、辞書に無い未登録語は引き続きHUMAN_REVIEWとなり、
+        # Gateの「確信が持てないtokenは止める」思想が弱まっていないこと。
+        findings = safety.classify_foreign_tokens_in_japanese_text("これはXYZという新しい規格の話です。")
+        categories = [f["category"] for f in findings]
+        self.assertIn(HUMAN_REVIEW, categories)
+        self.assertTrue(safety.foreign_token_gate_requires_stop(findings))
+
+    def test_14_original_7_entries_unchanged(self):
+        # 既存7語(cm/kg/km/kcal/ceo/wi-fi/cafe)が今回の追加で変更されて
+        # いないことの回帰確認。
+        original = {
+            "cm": "センチ", "kg": "キログラム", "km": "キロメートル", "kcal": "キロカロリー",
+            "ceo": "シーイーオー", "wi-fi": "ワイファイ", "cafe": "カフェ",
+        }
+        for key, reading in original.items():
+            with self.subTest(key=key):
+                self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get(key), reading)
+
+
 if __name__ == "__main__":
     unittest.main()

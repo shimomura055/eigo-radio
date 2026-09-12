@@ -5282,6 +5282,181 @@ RECONCILE-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-121/OPEN-135/OPEN-142行�
 
 ---
 
+## PM-CLOSEOUT-CONSOLIDATION-96-TRIAL-12-A2-COMPLETION-ER-009-WIRING-USER-ANSWERS-AUTONOMY-RULES: Trial-12 A2完成(OPEN-121 Gate 3 `PRODUCTION_WIRED`)+ER-009 SSOT反映+2026-09-12ユーザー7項目回答(自律処理範囲・Trial REPORT必須5項目・PM運用自律範囲)の正式記録
+
+**日付**: 2026-09-12
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク)
+
+**背景**: `PM-CLOSEOUT-CONSOLIDATION-95`でTrial-12 A2 `full_story_part1`の
+Human Review Lock状態遷移(RESOLVED)までは完了していたが、A2必須6%
+slowdown post-process(`apply_a2_slowdown_postprocess()`内蔵のPrimary ASR
+再検証、小額)が委任条件(¥0・API呼び出し禁止)と衝突し`USER_DECISION_
+REQUIRED`としてSTOPしていた。またER-009辞書拡張・Trend A2再開
+(`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-RESUME-01`)は
+実装・検証済みだがSSOT反映・Git commit/pushが未実施だった。本タスクは
+Fableが小額ASR呼び出し1回を明示許可(上限¥50)したうえで、両件の完成・
+SSOT反映・Git反映、および2026-09-12にユーザーがまとめて回答した7項目の
+正式記録を行う統合タスク。
+
+**ユーザー発言原文(verbatim、ER-009 A'案承認、セッション記録`294958fe-
+da6e-491c-8a02-4f864d8195c8.jsonl`の`type":"user"`行[1591行目]より抽出)**:
+
+```
+Trend A2のER-009読み辞書について、Fable推奨のA'案で進めてください。
+
+「AI」単語だけの個別対応ではなく、今後Trend / News等で出現可能性の高い一般的な英語略語を、小さな固定リストとして読み辞書へ追加する方針で進めて結構です。
+
+ただし実装前に、
+- 候補略語一覧
+- 各略語のカタカナ読み
+- 選定根拠
+
+を提示し、内容確認後に確定してください。
+
+Gateロジック自体は変更せず、辞書拡張のみで進めてください。
+
+ユーザー判断：
+A'方針で進行OK。
+```
+
+**ユーザー発言原文(verbatim、「今回の判断・指示をまとめます」7項目、
+同セッション記録の`type":"user"`行[1743行目]より抽出)**:
+
+```
+今回の判断・指示をまとめます。
+
+1. Trial REPORT必須5項目
+- 採用で進めてください。
+- 今後、この程度の¥0・低リスク・既存出力の報告漏れ防止ルールは、Fable/Claude側で自律的に判断して反映して構いません。
+- ユーザー判断を逐一求めず、実施後に正式報告してください。
+- ただし、新しい仕様原則・意味変更・QAのblocking条件変更・Production挙動変更に当たる場合は従来どおりユーザー判断へ戻してください。
+
+2. 「層間不整合」Open Item
+- 新規起票しないでください。
+- 記事側near-duplicate検出と音声側Repetition QAは目的が異なり、「層間不整合」として独立管理する必要はありません。
+- 今回の実問題はcanonical/ASR間の正規化差によるRepetition QA誤判定であり、OPEN-121の対称正規化で扱ってください。
+
+3. A2/B1B数字表記未定義 Open Item
+- 新規起票しないでください。
+- A2/B1で仕様自体が異なる場合は管理対象です。
+- 一方、同一仕様の下で `twenty-four-hour` / `24-hour` のような出力揺れが起きること自体は、わざわざ表記統一しなくて構いません。
+- 下流QAが正しく吸収できることが重要であり、今回の問題はOPEN-121の正規化で対応してください。
+
+4. News Trial-16
+- (b)で確定です。
+- 追加Trialは行わず、本テーマはcloseしてください。
+- 「Main Story必須度の低いfactがPoint素材になりやすい可能性」という仮説精緻化のみ記録してください。
+- この程度の、追加費用に対して得られる情報が小さいことが明らかなclose判断は、今後Fable側でQCDを見て自律的に進めて構いません。
+- ユーザー確認項目を増やしすぎないでください。
+
+5. ER-009略語辞書
+- NFTを含む以下15語を登録して構いません。
+  AI / IT / EV / IoT / DX / GPS / SNS / PC / GDP / EU / NASA / AR / VR / ESG / NFT
+- Gateロジック自体は変更せず、辞書拡張のみで進めてください。
+- 今後、この程度の小規模・低リスク・Gate思想を変えない辞書追加はFable側で自律判断して構いません。実施後に報告してください。
+
+6. Token効率化
+- Opus context packet方式は採用済み。正式反映を継続してください。
+- Fable→Sonnet委任prompt削減については、現在進行中の「定型文比率の実測」を完了し、結果を正式報告してください。
+- その結果を踏まえて、最小Trialを設計してください。
+- ただし、単にFableの出力文字数だけを見るのではなく、Sonnet側の追加Read量を含めた総Token相当量と、品質・見落とし・ルール遵守まで比較してください。
+
+7. PM運用
+今後は、
+- ¥0
+- 低リスク
+- 既存仕様の意味を変えない
+- 明らかな報告漏れ防止
+- 明らかなQCD上のclose判断
+- 小規模な辞書拡張
+のような事項まで逐一ユーザー判断へ上げないでください。
+
+Fable側で自律的に処理し、正式報告してください。
+
+一方で、
+- 新しい仕様原則
+- Productionの意味変更
+- QA blocking条件変更
+- Writer/Prompt原則変更
+- 複数の妥当な選択肢がありQCD差が大きいもの
+- コストやUXへの重要な影響
+は従来どおりUSER_DECISION_REQUIREDとしてSTOPしてください。
+
+以上をSSOT / DECISION_LOG / OPEN_ITEMS / PM_GOVERNANCEへ必要に応じて反映し、既存のProduction wiring・OPEN-121・ER-009 Trend A2再開・Token計測を進めてください。
+```
+
+**決定整理(7項目)**:
+
+1. **Trial REPORT必須5項目**: 採用。(a)section別語数+target/tolerance上限
+   実数値+PASS/FAIL、(b)near-duplicate最大ratioと閾値、(c)caveat文(regex外)
+   手動カウント、(d)記事間定型句・結論型の類似、(e)音声layerブロック有無。
+   既存JSONから¥0で算出、Trial REPORTの必須欄とする(`PM_GOVERNANCE.md`へ
+   追記、根拠: Trial-11見落とし④⑤⑥⑨のTrial-12再発)。
+2. **層間不整合Open Item**: 新規起票しない。記事側near-duplicate検出と
+   音声側Repetition QAは目的が異なり独立管理不要。今回の実問題は
+   canonical/ASR間の正規化差によるRepetition QA誤判定であり、OPEN-121の
+   対称正規化で扱う(既に対応済み)。
+3. **A2/B1B数値表記未定義Open Item**: 新規起票しない。A2/B1で仕様自体が
+   異なる場合のみ管理対象とし、同一仕様下の出力揺れ(`twenty-four-hour`/
+   `24-hour`等)は表記統一不要(下流QAが吸収する前提、OPEN-121の正規化で
+   対応済み)。
+4. **News Trial-16**: (b)でclose確定。追加Trialは行わず、仮説精緻化
+   「Main Story必須度の低いfactがPoint素材になりやすい可能性」のみを
+   `OPEN_ITEMS.md`OPEN-135(News)へ記録する。
+5. **ER-009略語辞書**: AI/IT/EV/IoT/DX/GPS/SNS/PC/GDP/EU/NASA/AR/VR/ESG/NFT
+   の15語登録を承認。Gateロジック自体は無変更、辞書拡張のみ。本タスクで
+   実装確認(diffは辞書追加のみ)・テスト17件PASS・Trend A2完成まで確認済み。
+6. **Token効率化**: Opus context packet方式は採用済みとして継続。委任文
+   最小Trial設計は総Token相当量(Sonnet側追加Read量を含む)+品質+見落とし+
+   ルール遵守で比較する方針(`OPEN_ITEMS.md`OPEN-142で追跡)。
+7. **PM運用: Fable自律処理範囲/UDR維持範囲**: 「¥0/低リスク/既存仕様の
+   意味を変えない/明らかな報告漏れ防止/明らかなQCD上のclose判断/小規模な
+   辞書拡張」は今後Fableが自律処理し実施後に正式報告する。「新しい仕様
+   原則/Productionの意味変更/QA blocking条件変更/Writer・Prompt原則変更/
+   複数の妥当な選択肢がありQCD差が大きいもの/コスト・UXへの重要影響」は
+   従来どおり`USER_DECISION_REQUIRED`としてSTOPする(`PM_GOVERNANCE.md`10節
+   付近へ追記)。
+
+**Part A: Trial-12 A2完成(¥0超の小額ASR呼び出し1回、Fable許可・上限¥50)**:
+既存Production関数`apply_a2_slowdown_postprocess()`(無変更)をRESOLVED
+採用済みの`full_story_part1`へ適用(6% time-stretch、実測比率1.0595、内蔵
+Primary ASR再検証PASS=`NORMALIZED_MATCH`、実測費用: gpt-4o-mini-transcribe
+398 tokens・¥1未満相当)。post-slowdown音声への`evaluate_repetition_qa()`
+再判定(ローカルfaster-whisper、¥0)でもflagged=False(canon_count=2)を確認、
+対称正規化がA2 Assemblyへ渡る最終音声上で実発火することを実証した。続けて
+`stage_assemble_a2()`を実行しGate OFF/opt-in ON両経路とも**PASS**
+(duration=327.24秒、peak=0.89889、clipping=False)。標準player
+(`er011_wake_before_alarm_trial12_std_player_01.py`)を完成episode audio
+付きへ更新(旧`LOCKED_SEGMENT_IDS`ハードコード・「Assembly BLOCKED」固定
+文言を除去し、B1Bと同様の完成episode audioセクションを追加)。
+
+**Part B: ER-009検証+Trend A2 SSOT反映**: `er003_audio_tts_asr_safety.py`
+の差分が辞書15語追加のみ(ロジック不変)であることを`git diff`で確認、
+テスト17件全PASSを再実行で確認。`CURRENT_SPEC.md`(JA Foreign Token Gate
+行)・`OPEN_ITEMS.md`(OPEN-135 Trend行)へSSOT追記。
+
+**Gate 3 `PRODUCTION_WIRED`判定根拠表**:
+
+| 対象 | Gate 3充足状況 | 判定 |
+|---|---|---|
+| OPEN-121対称正規化(ハイフン境界+数詞0〜999拡張) | 13項目チェックリスト全充足(実装/retry整合/pin test/既存+回帰テスト67件PASS/Trial-12 A2 Assembly実発火PASS/CURRENT_SPEC・DECISION_LOG・OPEN_ITEMS反映/Git反映/Dangling Reference Check) | 本エントリで`PRODUCTION_WIRED`と判定 |
+| ER-009辞書拡張(15略語) | 辞書拡張のみ(Gateロジック不変)、テスト17件PASS、Trend A2実データでHUMAN_REVIEW解消→Assembly完成まで実証。Fable/ユーザー最終受入は別途 | `APPROVED_FOR_PRODUCTION`+配線実装済み(`PRODUCTION_WIRED`の正式宣言はFable最終確認後) |
+
+**Git操作**: 本タスクが本セッション内で唯一のGit書込タスク。並列稼働中の
+3V修正タスク(`er012_*`、`EDITORIAL-B-FAMILY-VOICES-3V-*PHASE1B-04*`、
+`docs/pm/*_3V_1B04.md`)には一切触れず、stageもしていない。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-96-TRIAL-
+12-A2-COMPLETION-ER-009-WIRING-USER-ANSWERS-AUTONOMY-RULES`)、セッション
+記録`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`ユーザー発言原文(上記)、
+`OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01_
+REPORT.md`、`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-
+RESUME-01_REPORT.md`。詳細はOPEN_ITEMS.md OPEN-121/OPEN-135/OPEN-142行、
+CURRENT_SPEC.md OPEN-121節・JA Foreign Token Gate行、
+`docs/pm/RESULT_PACKET.md`参照。
+
+---
+
 ## 参照元
 
 [PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、

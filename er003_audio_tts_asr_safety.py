@@ -681,6 +681,16 @@ _LATIN_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9\-\.']*")
 DEFAULT_JA_READING_DICTIONARY = {
     "cm": "センチ", "kg": "キログラム", "km": "キロメートル", "kcal": "キロカロリー",
     "ceo": "シーイーオー", "wi-fi": "ワイファイ", "cafe": "カフェ",
+    # ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-RESUME-01
+    # (2026-09-12、ユーザー承認=APPROVED_FOR_PRODUCTION、辞書エントリ追加の
+    # みでGateロジック自体は不変)。Trend/News editorial modeで技術トレンド系
+    # テーマを扱う際に高頻度で出現し得る略語15語を予防的に追加登録する
+    # (根拠: FAMILY-A-TREND-AI-MANUFACTURING-A2-JA-FOREIGN-TOKEN-GATE-
+    # RECONCILE-01_REPORT.md 候補案A)。
+    "ai": "エーアイ", "it": "アイティー", "ev": "イーブイ", "iot": "アイオーティー",
+    "dx": "ディーエックス", "gps": "ジーピーエス", "sns": "エスエヌエス", "pc": "ピーシー",
+    "gdp": "ジーディーピー", "eu": "イーユー", "nasa": "ナサ", "ar": "エーアール",
+    "vr": "ブイアール", "esg": "イーエスジー", "nft": "エヌエフティー",
 }
 
 

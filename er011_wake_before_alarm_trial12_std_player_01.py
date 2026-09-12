@@ -11,13 +11,15 @@
 # 両方PASS)まで完了しているため、Trial-11と同一の完成episode audio付き
 # セクションを生成する。
 #
-# A2: TTS segment `full_story_part1`が既存Human Review Lock機構により
-# 3回連続NG→STOPPED(cool-down 20分観測の4回目も無人でNG、review_lock_
-# state.json参照)となり、Assembly(Gate OFF経路)がBLOCKEDのまま。本Trial
-# harnessは自動retry・Production側承認代行を行わない(委任文の制約どおり)
-# ため、A2は「未承認テイクを一切公開しない」部分player(完成episode audio
-# なし、full_story_part1のみ音声リンク省略・PENDING HUMAN REVIEWと明記、
-# 他の検証PASS済みsegmentの個別音声は参照可能)として出力する。
+# A2: TTS segment `full_story_part1`は当初、既存Human Review Lock機構により
+# 3回連続NG→STOPPED(cool-down 20分観測の4回目も無人でNG)となっていたが、
+# OPEN-121対称正規化のProduction配線(2026-09-12、ハイフン境界+数詞0-999
+# 拡張)適用後の遡及再判定で"24-hour day"の誤flagが解消され、Human Review
+# Lockが既存機構どおりRESOLVED(採用: standard attempt1)へ遷移、A2必須6%
+# slowdown post-process適用・post-slowdown ASR再検証PASSまで完了した
+# (PM-CLOSEOUT-CONSOLIDATION-95/96)。これによりA2もAssembly(Gate OFF/
+# opt-in ON両方)PASSとなり、B1Bと同じ完成episode audio付きセクションを
+# 生成する。
 #
 # 制約: 音声再生成なし。TTS/ASR/API呼び出し一切なし(¥0)。既存
 # `{a2,b1b}/narration/`・`review_lock_state.json`等は読み取りのみ。
@@ -151,8 +153,8 @@ PASS。
 
 
 # ------------------------------------------------------------
-# A2(部分完成。full_story_part1がHuman Review Lock中のため、Assembly
-# BLOCKED。未承認テイクは一切公開しない)
+# A2(完成、Assembly PASS。PM-CLOSEOUT-CONSOLIDATION-96でfull_story_part1
+# のHuman Review Lock RESOLVED+A2必須6% slowdown post-process適用完了)
 # ------------------------------------------------------------
 A2_SEGMENT_ORDER = [
     ("topic_intro", "Topic intro", "Aoede(英語)"),
@@ -171,7 +173,7 @@ A2_SEGMENT_ORDER = [
     ("in_one_line", "In One Line", "Aoede(英語・A2 6%減速)"),
 ]
 
-LOCKED_SEGMENT_IDS = {"full_story_part1"}  # review_lock_state.jsonから確認済み(HUMAN_REVIEW_REQUIRED)
+LOCKED_SEGMENT_IDS = set()  # PM-CLOSEOUT-CONSOLIDATION-95/96でfull_story_part1はRESOLVED済み(旧HUMAN_REVIEW_REQUIREDから解消)
 
 
 def a2_text_for(segment_id: str, parts: dict, support: dict) -> str:
@@ -192,6 +194,18 @@ def a2_text_for(segment_id: str, parts: dict, support: dict) -> str:
         "in_one_line": parts.get("in_one_line"),
     }
     return mapping.get(segment_id, "")
+
+
+def build_a2_episode_audio_url() -> tuple:
+    assemble = run.load_json(f"{OUT_DIR}/a2/audit/assembly_and_gate_summary_audio_01.json")
+    wav_path = assemble["out_path"]
+    mp3_path = f"{MP3_DIR}/a2_episode.mp3"
+    if not os.path.exists(mp3_path):
+        t0 = time.time()
+        data, sr = sf.read(wav_path)
+        sf.write(mp3_path, data, sr, format="MP3")
+        print(f"[episode mp3変換] a2: {time.time() - t0:.1f}s")
+    return raw_url(mp3_path), assemble
 
 
 def a2_kp_table_html(kp_canon: dict) -> str:
@@ -249,24 +263,26 @@ def build_a2_section() -> str:
     with open(f"{a2_dir}/article.md", encoding="utf-8") as f:
         article_md = f.read()
 
+    episode_url, assemble = build_a2_episode_audio_url()
+    audio_id = "episode_audio_a2"
     return f"""
-<div>
-<h2>A2 — 「{esc(parts.get('title'))}」(部分完成。<span class="missing">完成episode音声なし
-・Assembly BLOCKED</span>)</h2>
+<div data-audio-target="{audio_id}">
+<h2>A2 — 「{esc(parts.get('title'))}」(完成、Assembly PASS)</h2>
 <p class="note">
-既存Human Review Lock機構(TTS Retry Cascade)が、segment
-<code>full_story_part1</code>で3回連続NG(Repetition QA: 記事本文に
-正当に2回出現する句"24-hour day"をrepetitionと判定、既知の安全側
-false-positiveの可能性、Production Repetition QAロジックは本Trialでは
-一切変更していない)を検出し、review_lock_state.json上でHUMAN_REVIEW_
-REQUIRED(final_status=STOPPED)に遷移した。cool-down 20分観測フック
-(TTS-RETRY-COOLDOWN-20MIN-OBSERVATION-TRIAL-01)による無人4回目試行も
-NGだった(観測記録のみ、Production側は変更していない・自動採用していない)。
-本Trial harnessは自動retry・Human Review承認代行を行わないため、
-Assembly(Gate OFF経路)はBLOCKEDのまま。<b>full_story_part1およびepisode
-全体の完成音声は本playerに一切含めていない(未承認テイクを公開しない)。</b>
-他segment(TTS/ASR検証PASS済み)の個別音声のみ参照可能。
+duration={assemble['duration_seconds']}s / peak={assemble['peak']} /
+clipping={assemble['clipping_detected']}。segment<code>full_story_part1</code>
+は当初、既存Human Review Lock機構(TTS Retry Cascade)が記事本文に正当に
+2回出現する句"24-hour day"をrepetitionと誤判定(3回連続NG、cool-down
+4回目も無人でNG)しHUMAN_REVIEW_REQUIREDへ遷移していたが、OPEN-121対称
+正規化のProduction配線(2026-09-12、ハイフン境界+数詞0-999拡張)適用後の
+遡及再判定で誤flagが解消され、既存機構どおりRESOLVED(採用: standard
+attempt1)へ遷移した。その後A2必須6% time-stretch post-process
+(apply_a2_slowdown_postprocess、既存Production関数・無変更)を適用し、
+内蔵Primary ASR再検証PASS(NORMALIZED_MATCH)、post-slowdown音声への
+OPEN-121対称正規化repetition_qa再判定もflagged=falseを確認済み。Gate
+OFF/opt-in ON経路とも PASS。
 </p>
+<audio id="{audio_id}" class="main" controls preload="none" src="{episode_url}"></audio>
 <table class="timeline"><thead>{arp.TIMELINE_TABLE_HEADER}</thead>
 <tbody>{''.join(rows_html)}</tbody></table>
 <h3>A2 Key Phrase表</h3>
@@ -291,8 +307,7 @@ PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11、Source列なし、
 </p>
 <p class="note">
 <b>Focus ModuleのProduction採用判断はこのTrialでは行っていません。
-ユーザー試聴待ちです。A2はHuman Review Lock中のsegmentがあるため
-部分完成(下記参照)。</b>
+ユーザー試聴待ちです。A2/B1Bともに完成(Assembly PASS、下記参照)。</b>
 </p>
 """
     a2_section = build_a2_section()
