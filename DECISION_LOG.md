@@ -366,6 +366,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01: タオルTrial-11ユーザー評価(標準player試聴OK/内容OK/音声OK/全体体験OK)の正式記録(Status/Gate維持、Production自動採用なし)+Discovery N=1追加Trial-12(テーマ「Why do we sometimes wake up just before the alarm?」ユーザー選定、進行中、費用上限¥300)の記録+並列稼働2件(Trial-12記事制作/他Family進捗フォロー監査)の生成物には非関与
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD: 横断監査(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`)が指摘したOPEN-145/146`APPROVED_FOR_PRODUCTION`のユーザー承認証拠不明(STOP条件該当)に対応し、2026-09-12ユーザー発言原文全文(UDR#11/#12「⇒採用」)・Fable提示判断表原文・commit hash付き時系列を正式記録(承認自体は実在、記録不備が原因と特定)+`PM-CLOSEOUT-CONSOLIDATION-83`エントリへ相互参照注記追加(既存本文不変)+`docs/pm/PM_GOVERNANCE.md`へ「ユーザー承認は要約引用ではなく原文全文転記を必須とする」再発防止ルール追記
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-PHASE1: Claude開発Token効率化(OPEN-142)Phase 1実測監査(`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-AUDIT-01_REPORT.md`)結果のSSOT反映(巨大SSOT全文再読0件・同一管理ID内再読込37.8%・Agent間重複7.0%・Fable委任文744,841字が実測読込量835,677字と同規模)+Sonnet改善案A〜Hとユーザー原案A〜Hの対応表+Phase 2 Trial設計案、STOP条件該当なし・実施はユーザー判断待ち
+- [本ファイル内] ## PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01: News Point品質一般化Trial-16(Hubble/Saturnテーマ)着手+News Ledger公式英語表記(OPEN-146)は過去Ledger遡及適用なしでN増しの中でruntime evidence蓄積+B-Family 3V Phase 1bをDiscovery Trial-12待ちにせず着手(STOP条件6項目・Phase 2テーマ=スマホ制限3V/2V比較)+Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)を既存Production仕様で1本作成+FableのPMフォロー不足是正(既存Gate 5/Gate 6/12節への適用漏れとして12-10節を追加)
 
 ---
 
@@ -3894,6 +3895,79 @@ AGENT-READ-AUDIT-PHASE1)、`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-
 AUDIT-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-142行、
 `er011_output/pm_agent_read_audit_01/`(`per_call.jsonl`/
 `per_agent_task_summary.json`/`summary.md`)、
+`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01: 2026-09-12ユーザー次アクション
+確定指示(News一般化Trial-16着手・News Ledger遡及適用なし・B-Family 3V
+Phase 1b着手・Trend Synthesis新記事・FableのPMフォロー不足是正)の
+SSOT正式反映
+
+**経緯**: 2026-09-12、ユーザーが管理ID`PM-NEXT-ACTIONS-NEWS-VOICES-
+TREND-01`で、並列稼働中の複数Familyの次工程に関する決定を一括で
+指示した。以下はユーザー指示原文の全文(要約禁止、原文のまま転記)。
+
+```
+【管理ID】PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01
+【目的】以下のユーザー決定を正式反映し、各Familyの次工程を進める。
+1. A-Family / News - Point品質改善の一般化Trialを別テーマで実施 - テーマはユーザー決定済み
+2. A-Family / News / Ledger公式英語表記 - 過去Ledgerへの遡及適用は行わない - 今後の新規記事・他Familyを含むN増しの中で自然にruntime evidenceを蓄積
+3. B-Family / Voices - 3V Phase 1bをDiscovery Trial-12待ちにせず着手 - 新規テーマで3V記事を作り、同一テーマの2V版と比較
+4. A-Family / Trend Synthesis - 既存Production仕様を使って新しいTrend記事を1本作る - テーマはユーザー決定済み
+5. FableのPMフォロー不足を是正 - 前提タスク完了後に次Actionが可能になった場合、ユーザーが掘り起こすまで待たず、次Actionと推奨案を自発的に提示する
+──1. A-Family / News — Point品質改善── ユーザー判断: 別Newsテーマで一般化Trialを実施する。採用テーマ: English: New Hubble images reveal an unusual shape over Saturn's south pole / Japanese: ハッブル宇宙望遠鏡が土星の南極に捉えた奇妙な形。【目的】Hanshin系Trialで得られた「Fact数そのものではなく、Pointに使える非headlineの周辺Factの質が重要」という仮説が、異なるNewsテーマでも再現するか確認する。【今回確認すること】現行News Production/Trial設計を基準にする/headline factだけでPointを作ろうとした場合との違い/非headline周辺FactがPoint One / Twoの役割分離に寄与するか/Full StoryとPointのlexical / semantic overlap/Point Value/anchor conflict/Fact Checker/Ledger Deviation/retry回数/A2 / B1双方/公式英語表記機構が該当固有名詞で自然発火するか/1記事総コスト。単純にFact数を増やすTrialへ戻さないこと。Trial終了時: REJECTED / VALIDATED / USER_DECISION_REQUIREDのいずれかでcloseする。Production採用はユーザー判断なしに行わない。
+──2. A-Family / News — Ledger公式英語表記── ユーザー決定: 過去Ledgerへ遡及適用しない/過去記事・過去artifactを自動修正しない/上記News新テーマを含む今後の新規記事でruntime evidenceを取る/News固有機構として閉じず、他Familyでも固有名詞が自然に出た場合は、N増しの中で共通機構として観測する。重要: 「Newsで1回通った」ことをもって全Familyでruntime確認済みとは扱わない。Familyごとに自然発火した実例を、追加コストを増やすためだけの人工Trialではなく、今後の通常N増しの中で蓄積する。OPEN-146はAPPROVED_FOR_PRODUCTIONのまま、Gate 3のruntime evidenceをこの方針で進める。
+──3. B-Family / Voices — 3V Phase 1b── ユーザー判断: Discovery Trial-12の完了を待つ必要はない。3V Phase 1bを着手すること。もし待機理由がGit/SSOT serializationや同一ファイル競合などの具体的な技術理由で存在する場合のみ、着手前に明示してSTOPする。単なる「別Trialが進行中だから」は待機理由にしない。【Phase 1bの目的】承認済み3V仕様を、新規テーマからProduction正式経路で記事生成できる状態にする。対象: Writer/Ledger/Key Phrase/Production runner / glue/既存retry / fallback / regenerationとの整合/OPEN-132との整合/2V regression/Dangling Reference Check。既存承認済み仕様の不足配線のみを行う。以下が必要になったらSTOP: 3V専用の新Writer原則/Ledger意味変更/3V専用の新Key Phrase仕様/新QA基準/新retry/fallback仕様/その他未承認の意味変更。
+──4. B-Family / Voices — 新規3V+2V比較記事── Phase 1b配線後、以下の新テーマでProduction runtime evidenceを取る。English: Should schools limit students' use of smartphones during the day? / Japanese: 学校は日中の生徒のスマートフォン利用を制限すべきか?【3Vの考え方】単純な賛成 / 反対 / 中立にしない。Perspectiveとして自然に異なるVoiceを構成する。例: 生徒: 連絡・利便性・自主性/教師: 集中・授業運営/保護者: 安全・緊急連絡。ただし、この例を固定原稿として使わず、Research / Verified Fact Ledgerに基づいて実際のVoice構成を決めること。【比較】同一テーマで3V版・2V版を作成する。比較観点: 3Vで理解が実際に豊かになるか/Voice間のDistinctness/内容重複/記事長/Tension/Point構造/Fact Safety/Local Rewrite/Audio成立性/コスト/runtime evidence/actual model_id / routing。3Vを有利に見せるために2Vを意図的に弱く作らないこと。両方とも既存正式仕様で最善に生成すること。
+──5. A-Family / Trend Synthesis── Repo上のCURRENT_SPECでは、Trend Synthesisは既にProduction仕様・end-to-end経路が成立している。新規設計を追加せず、既存Production正式経路を使って新しいTrend記事を1本作る。採用テーマ: English: AI investment is reshaping factories and manufacturing / Japanese: AI投資が工場・製造業をどう変え始めているか。【重要】Trend Synthesisなので、単発ニュース1件の要約にしない。複数の独立Signalを集約して、「何が変わりつつあるか」を描く既存Trend仕様に従う。最低限確認: 独立Signalが複数あること/単一事件への依存になっていないこと/Trend Synthesisの既存Focus / Engagement構造/A2 / B1成立/Fact Checker/Ledger Deviation/Point品質/Support / Key Phrase/Audioまで進める場合は標準player/1記事総コスト。既存Trend Production仕様にない新ルールが必要になった場合はSTOPして報告する。
+──6. FableのPMフォロー不足 — 是正── 今回、News Point品質について、人名表記対策が完了したことで次の一般化Trialへ進める状態になっていたにもかかわらず、ユーザーが自分からフォローするまで次Actionの提示が無かった。これは、新仕様不足ではなく既存のNext Action / Open Item / Reporting Unit管理の運用漏れとして扱う。今後は、「ある前提タスクの完了により、保留中・blocked中の別タスクが再び進行可能になった」時点で、Fableが自発的に以下を提示すること。何がunblockされたか/次に進めるAction/Fable推奨/必要なら選択肢/ユーザー判断が必要か/今やらない場合の影響。ユーザーが後から思い出して「この件どうなった?」と聞くまで放置しない。ただし、ユーザー判断なしにProduction採用や新仕様Trialへ勝手に進めることは禁止。つまり、自動で「進める」のではなく、自動で「次に何をするべきか提案する」。この運用を既存PM_GOVERNANCEのNext Action / Reporting Unit / Open Item Reviewと整合する形で是正する。新しい重複ルールを足すのではなく、既存ルールの適用漏れとして整理すること。
+──7. 優先順位── 以下は並列可能性を確認して進める。A. Discovery Trial-12 既に進行中。そのまま完走。B. News一般化Trial 上記Hubble / Saturnテーマ。C. B-Family 3V Phase 1b 待たずに実装開始。Phase 1b完了後、スマホ制限テーマで3V+2V。D. Trend Synthesis新記事 AI investment / factories / manufacturingテーマ。E. OPEN-142 Token効率監査 進行中のまま継続。Opusは外さず、入力context削減を狙う。ただしGit/SSOT同一ファイル書き込み競合がある場合は、PM_GOVERNANCEのserializationに従い、実装順序だけ調整すること。「作業順序の調整」と「タスク自体を止めること」を混同しない。
+──8. コスト・Token── Production/APIコストとClaude開発Tokenを分けて報告する。各記事Trial: A2+B1合算1記事総コスト/Research/Ledger/Writer/Fact Check/Support/Key Phrase/TTS/ASR/retry/regeneration/Trial固有追加費用/abnormal retry / Human Review上振れ。TTS: Development/Trial = Standard同期/Mass Production想定 = Batch。Claude開発Token: OPEN-142で別途追跡。Opusレビューは外さない。Agent間重複読込・巨大context再読を削減する。
+──9. PM Gate── 各独立タスクは個別にstatus管理すること。Trial: REJECTED / VALIDATED / USER_DECISION_REQUIRED。Production採用済み: APPROVED_FOR_PRODUCTION → Gate 3完了後のみPRODUCTION_WIRED。以下を禁止: VALIDATEDをProduction採用扱い/runtime evidenceなしでPRODUCTION_WIRED/DEV/Trial pathだけでWIRED認定/retry/fallback未確認/SSOT/Git未反映でclose/ユーザー承認なしの新仕様追加/次Actionがunblockされたのに無報告で放置。
+──10. 報告方法── 各報告はFamily単位で分ける。1. A-Family / Discovery 2. A-Family / News 3. A-Family / Trend Synthesis 4. B-Family / Voices 5. 共通基盤 / Token効率。各項目について: 現在Status/今回完了したこと/runtime evidence/残作業/コスト/ユーザー判断が必要か/次Action/Production wiring状況を示す。重要: 他のLaneの完了待ちを理由に、報告可能な結果を保留しない。また、ある作業の完了で別Open Itemがunblockされた場合は、その時点で次ActionとSuggestionを同じ報告内に出すこと。
+```
+
+**反映箇所**:
+1. **News一般化Trial-16着手**(OPEN-135行News節): 採用テーマ(Hubble/
+   Saturn、ユーザー選定)・確認項目・closeout語彙(REJECTED/VALIDATED/
+   USER_DECISION_REQUIRED)を追記。並列稼働中の管理ID`FAMILY-A-NEWS-
+   POINT-QUALITY-GENERALIZATION-HUBBLE-SATURN-TRIAL-16`
+   (`er011_output/news_point_quality_generalization_hubble_saturn_
+   trial_16/`)の生成物には本タスクでは触れていない。
+2. **News Ledger公式英語表記(OPEN-146行)**: 過去Ledgerへの遡及適用
+   なし・過去記事/artifactの自動修正なし・今後の新規記事でのN増しの
+   中でFamily別にruntime evidenceを蓄積する方針・「Newsで1回通った」
+   ことをもって全Family確認済みとしない旨を追記。Status
+   (`APPROVED_FOR_PRODUCTION`、配線中)は維持。
+3. **3V Phase 1b着手(OPEN-120行)**: Discovery Trial-12待ちにしない旨・
+   STOP条件6項目・Phase 2テーマ(スマホ制限、3V/2V比較観点12項目・2V
+   意図的弱体化禁止)を追記。並列稼働中の管理ID`EDITORIAL-B-FAMILY-
+   VOICES-3V-PRODUCTION-WIRING-PHASE1B-01`の生成物には本タスクでは
+   触れていない。
+4. **Trend Synthesis新記事(OPEN-135行Step A2節)**: 採用テーマ(AI
+   investment/factories/manufacturing、ユーザー選定)・既存Production
+   仕様使用・確認項目・新ルール要時STOPを追記。並列稼働中の新記事生成物
+   には本タスクでは触れていない。
+5. **FableのPMフォロー不足是正**: `docs/pm/PM_GOVERNANCE.md`12節へ
+   新規12-10節「前提タスク完了によるunblock時の自発的Next Action提示」
+   を追加し、Gate 5・Gate 6の該当箇所へも参照を追記した(新節を増やす
+   のではなく既存節・既存Gateの適用漏れとして明確化)。事例として
+   2026-09-12 News Point品質(人名対策完了後に次の一般化Trialを提示
+   しなかった)を記録した。
+
+**Status/STOP条件**: 本タスクはSSOT記録(DECISION_LOG.md/OPEN_ITEMS.md/
+`docs/pm/PM_GOVERNANCE.md`)のみを対象とし、コード変更・API支出・
+Production Status格上げはいずれも行っていない。STOP条件該当なし。
+
+**並列稼働中4件(本タスクでは生成物に触れずstageしていない)**:
+Discovery Trial-12(`er011_output/discovery_generalization_wake_
+before_alarm_trial_12/`)、News一般化Trial-16(`er011_output/
+news_point_quality_generalization_hubble_saturn_trial_16/`)、3V
+Phase 1b配線(er012コード+test+REPORT)、Trend新記事(Trend Production
+出力dir+REPORT)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-NEXT-ACTIONS-NEWS-VOICES-
+TREND-01`)、ユーザー指示原文(上記全文)。詳細は`OPEN_ITEMS.md`
+OPEN-135/OPEN-146/OPEN-120行、`docs/pm/PM_GOVERNANCE.md`12-10節、
 `docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
