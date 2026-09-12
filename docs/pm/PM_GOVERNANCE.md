@@ -1215,7 +1215,9 @@ A-1(Consolidation統合、件数削減による委任回数圧縮)はロール�
 肥大化等のリスクが中〜高のため不採用。
 - **F-1**: 統合タスク開始時に、当該セッションの`tasks/*.output`(0バイト
   でないもの)をscratchpad配下(repo外)へ退避する(消失防止、repoには
-  含めない)。
+  含めない)。subagent転記(`tasks/*.output`)は完了直後に消失し得る
+  (agentId再利用)。Opus出力・重要REPORTはFableが受領した本文を即座に
+  Sonnetへ渡してファイル保存する(2026-09-12、Opus L3転記消失2件目)。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
