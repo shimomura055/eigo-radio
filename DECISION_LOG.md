@@ -349,6 +349,9 @@ Repetition QA数字↔数詞同値化APPROVED_FOR_PRODUCTION、News人名対策�
 TTS Trial/開発=Standard同期・量産=Batch別軸管理、コスト報告5区分化、PM再発防止)の
 SSOT反映(OPEN-121/135/142/143/144/145/146・PM_GOVERNANCE 7-4/14/15/9-5・
 ACTIVE_TASK.md更新)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-80-REPETITION-QA-NUMBER-WORD-FIX: OPEN-121
+数字↔数詞同値化Production実装完了のSSOT反映+Gate 3個別判定表+タオルB1B
+full_story_part2採用+News人名Trial設計完了の反映
 
 ---
 
@@ -3162,6 +3165,118 @@ PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02)、ユーザー
 指示原文(上記)。詳細は`OPEN_ITEMS.md` OPEN-121/135/142/143/144/145/
 146行、`docs/pm/PM_GOVERNANCE.md`該当節、`docs/pm/RESULT_PACKET.md`
 参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-80-REPETITION-QA-NUMBER-WORD-FIX: OPEN-121数字↔数詞同値化Production実装完了のSSOT反映+Gate 3個別判定表+タオルB1B full_story_part2採用+News人名Trial設計完了の反映
+
+**日付**: 2026-09-12
+
+**区分**: SSOT反映+Git統合(実装自体は並列稼働の別タスク`OPEN-121-
+REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01`で完了済み。
+本タスクはその結果のSSOT反映・Gate 3進捗の個別判定・commit/pushのみ)
+
+**背景**: `PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02`
+で記録したユーザー承認(OPEN-121数字↔数詞同値化=`APPROVED_FOR_
+PRODUCTION`)に基づき、並列タスクが実装・回帰テスト・¥0遡及再判定・
+タオルB1B `full_story_part2`再判定を完了した
+(`OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01_
+REPORT.md`)。本タスクはこの結果をSSOTへ反映し、`docs/pm/
+PM_GOVERNANCE.md`Gate 3 Production Wiring Checklistの各項目を個別に
+判定した。あわせて、並列タスク`FAMILY-A-NEWS-JA-PERSON-NAME-
+ROMANIZATION-TRIAL-DESIGN-01`(OPEN-146の候補比較Trial設計)が完了
+したためその結果も反映した。
+
+**実装内容(先行タスクで完了済み、本タスクで独立再確認)**:
+`er011_open121_repetition_qa_production_01.py`へ`_normalize_token_
+numeric_equiv()`を新設し、canonical側`_normalize_tokens()`・ASR側
+`detect_ngram_repetition()`の両方へ、綴り小数(two〜twelve)↔算用数字
+の同値化を比較前に適用した(判定閾値`canonical_repeat_count>=2`・
+方式D/D'の閾値・`%`/`percent`対象外は無変更)。本タスクで
+`er011_open121_repetition_qa_production_wiring_01_test_01.py`(35件)・
+`er011_open128_method_d_local_asr_confirm_production_wiring_01_test_
+01.py`(9件)を独立再実行し、いずれも実測PASS(`Ran 35 tests ... OK`・
+`Ran 9 tests ... OK`)を確認した。project-wide regressionは先行タスク
+実測値(collected=2309、passed=2306、failed=3[既知の無関係failureの
+み])をそのまま引用(本タスクでは再実行していない)。
+
+**¥0遡及再判定・タオルB1B `full_story_part2`採用**: 誤flag3件(タオル
+Trial-11 B1B `full_story_part2`、`pool_n4_supermarket`A2/B1B、いずれも
+"after two/three months"型)が解消し、既知真陽性2件は退行なく維持
+されたことを確認した。`pool_n4_supermarket`は既に`PRODUCTION_WIRED`
+済みのA-Family既存音声だが、生成当時Repetition QAが未配線だったため
+実際のretry・差し替えは発生しておらず、音声ファイルは無変更。タオル
+Trial-11 B1B `full_story_part2`は、内容一致していた4取り(attempt2,3,
+5,6)全てが修正後QAでPASSしたため、ユーザー事前承認どおり試聴なしで
+既存採用規則(最初にPASSした取り)に従いattempt2を採用し、
+`review_lock_state.json`をRESOLVEDへ更新した(TTS再生成なし、¥0)。
+これによりタオルTrial-11 B1Bの残Human Reviewは`full_story_part1`
+(take5試聴待ち)と`comment_2`(表記ゆれTrial待ち)の2件のみとなった。
+`tts_generation_results.json`側の該当attempt記録の同期は本タスクでは
+未実施のまま(Episode Assembly実施前に同期手順の実施が必要、A2
+`meaning_4`と同種の既知の未同期状態)。
+
+**Gate 3 Production Wiring Checklist個別判定**(`docs/pm/
+PM_GOVERNANCE.md`2節、14項目中12項目完了・2項目未完了):
+
+| 項目 | 判定 | 根拠 |
+|---|---|---|
+| Production正式初回経路 | 済 | `er011_open121_repetition_qa_production_01.py`が既にA2/B1本文4segment用Production経路4ファイル(`er003_v1_n3_01_tts_generate.py`/`er003_v1_repro01_main_generate.py`/`er003_v1_crosslevel_audio_02_common.py`/`er003_v1_sing01_news_tail_fix.py`)からimport・呼び出し済みとGrepで実証、修正は同一共有module内部関数のみのため既存配線経由で自動反映される |
+| retry・fallback・regenerationとの整合 | 済 | `apply_repetition_qa_gate()`・既存AND gate・Human Review Lock遷移・閾値は無変更(diff確認・回帰PASS) |
+| DEV・Trial-onlyでないこと | 済 | Trial専用ファイルではなくProduction共有module本体への実装 |
+| Production runtimeでの実発火 | **未完了** | 次回、数字↔数詞パターンを含む実記事のProduction run(`enable_repetition_qa=True`経路)での実発火が必要。今回の遡及再判定はいずれもoffline(既存記録・過去wavへの事後再計算のみ) |
+| 必要testのPASS | 済 | 新規5件+既存30件(35件、本タスクで独立再実行しPASS実測)・依存9件(同)・project-wide regression(先行タスク実測値、既知3件failureのみ) |
+| runtime evidence | **未完了** | 上記のとおり実発火未確認のため |
+| 実際のmodel_id・routing確認 | 該当なし | LLM呼び出しを伴わない音声/ASR比較ロジックのみ |
+| コスト影響評価 | 済 | ¥0(追加API呼び出しなし、ローカル計算・既存wav複製のみ) |
+| `CURRENT_SPEC.md` | 済 | 「TTS Repetition/False Start QA」行へ本タスクで1行追記 |
+| `DECISION_LOG.md` | 済 | 本エントリ |
+| `OPEN_ITEMS.md` | 済 | OPEN-121/135行(本タスク) |
+| 必要なGit反映 | 済 | 本タスクでcommit |
+| approved specとProduction挙動の一致 | 済 | 2026-09-12ユーザー承認範囲(2〜12、%は対象外)と実装が一致(回帰テスト`test_d_percent_and_percent_word_not_equivalenced`・`test_e_range_boundary_one_twelve_thirteen`で固定) |
+
+未完了2項目(Production runtimeでの実発火・runtime evidence)が残る
+ため、`PRODUCTION_WIRED`は宣言しない。Statusは`APPROVED_FOR_
+PRODUCTION`(Gate 3進行中)のまま維持する。
+
+**News人名英語表記Trial設計(OPEN-146)の反映**: 並列タスク
+`FAMILY-A-NEWS-JA-PERSON-NAME-ROMANIZATION-TRIAL-DESIGN-01`
+(read-only設計)が完了した。既存Ledger統合/Research段階取得/Writer
+供給/Fact Checker照合を横断した4候補+組み合わせを5軸で比較し、
+候補(a)(Verified Fact Ledgerへ`canonical_en_spelling`追加、既存Gate
+順序を変えない予防策、見込み¥100〜200/記事)を推奨、候補(c)(Gate順序
+変更)はSTOP必須級と整理した。あわせて`generate_test.py`(既存SSOTで
+「無関係な別番組専用」と明記済み)に2026-07-14時点の死蔵コード
+(`NAME_GLOSSARY`/`verify_romanization`、Writerプロンプトへ未配線の
+まま)を新規発見した。実装・Trial実施はいずれもゼロ、採否は
+`USER_DECISION_REQUIRED`のまま。
+
+**反映範囲**: `OPEN_ITEMS.md`(OPEN-121/135/146行)、`CURRENT_SPEC.md`
+(「TTS Repetition/False Start QA」行)、本エントリ+索引1行、
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(1行)、`docs/pm/ACTIVE_TASK.md`
+固定ヘッダ。Git反映: `er011_open121_repetition_qa_production_01.py`・
+`er011_open121_repetition_qa_production_wiring_01_test_01.py`・
+`OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01_
+REPORT.md`・`er011_output/discovery_generalization_towels_trial_11/
+b1b/audit/review_lock_state.json`・`FAMILY-A-NEWS-JA-PERSON-NAME-
+ROMANIZATION-TRIAL-DESIGN-01_REPORT.md`・上記SSOTファイルをcommit。
+並列稼働中4件(JA ASR表記ゆれ一般化Trial/OPEN-144修正+TTSモード分離
++take5 clip生成/News人名英語表記Trial設計[本タスクで結果反映済みの
+ため終了]/Repetition QA数字↔数詞同値化実装[本タスクで結果反映済み
+のため終了])のうち残る2件(JA ASR表記ゆれ一般化Trial、OPEN-144修正+
+TTSモード分離+take5 clip生成)の生成物・コードには一切触れていない。
+`git stash`/`git clean`/他タスクファイルの`git checkout`は使用して
+いない。
+
+**Production採用範囲外**: `PRODUCTION_WIRED`の新規宣言はしていない
+(Gate 3の2項目が未完了のため`APPROVED_FOR_PRODUCTION`[Gate 3進行中]
+のまま)。コード実装自体は先行する並列タスクで完了済みであり、本
+タスクはその結果の検証済み再確認・SSOT反映・Git統合のみ。
+
+**根拠**: Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-80-REPETITION-QA-NUMBER-WORD-FIX)、
+`OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01_
+REPORT.md`、`FAMILY-A-NEWS-JA-PERSON-NAME-ROMANIZATION-TRIAL-
+DESIGN-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-121/135/146行、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

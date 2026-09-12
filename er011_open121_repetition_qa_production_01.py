@@ -350,9 +350,49 @@ def run_spectral_checks(path, words=None):
 # tokenizerへの拡張は禁止、ユーザー承認範囲を超えない)。ASR側token
 # (`detect_ngram_repetition`のtokens、word-level ASR出力)は元々1語ずつ
 # 独立して現れるため本変更の影響を受けない。
+#
+# OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01:
+# ユーザー承認2026-09-12(REPETITION-QA-INTENTIONAL-REPEAT-FALSE-
+# POSITIVE-RECONCILE-02_REPORT.md)。Production呼び出し経路では
+# canonical_textが`tts_safe_number_words_en()`(er003_v1_n3_01_tts_
+# generate.py)により綴り小数(two~twelve)を算用数字へ変換済みの状態で
+# 渡される一方、Repetition QA専用のローカルASR(faster-whisper、
+# dq18.transcribe_verbatim())は発話された小さな数を綴りのまま書き
+# 起こすため、`_canonical_repeat_count()`の完全一致比較が"two"対"2"で
+# 常に失敗し、canonicalへ正規に2回登場する語句(例: "after two
+# months"が台本に2箇所)が意図的反復と判定されず誤flagされていた
+# (タオルTrial-11 B1B full_story_part2、pool_n4_supermarket A2/B1B
+# で実データ確認済み、根本原因はEM dash対策[OPEN-127]・%/percent
+# 不一致[未修正・別管理]のいずれとも別原因)。
+# `_NUM_WORD_TO_DIGIT_EN`は`tts_safe_number_words_en()`の変換対象
+# `_EN_NUMBER_WORDS`(er003_v1_n3_01_tts_generate.py)と**完全に同じ
+# 語彙(two~twelve)**を複製したもの(モジュール直接import不可: er003_
+# v1_n3_01_tts_generate -> er003_v1_sing01_news_tail_fix -> 本モジュール
+# という既存の循環importが既に存在するため、逆方向importを追加すると
+# 循環参照になる。字面の重複は許容し、範囲がずれないようキー集合を
+# `_EN_NUMBER_WORDS`と同一に保つ)。"one"は代名詞としての曖昧性回避の
+# ため対象外(既存tts_safe_number_words_en()の方針を踏襲)。"%"/
+# "percent"の同値化は対象外(範囲拡張は別途ユーザー判断待ち)。
+# canonical側・ASR側のトークンの両方にこの正規化を一様に適用すること
+# で、`_canonical_repeat_count()`への入力の表記ゆれのみを吸収し、
+# 閾値(canon_count>=2)・判定意味は一切変更しない。
+_NUM_WORD_TO_DIGIT_EN = {
+    "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
+    "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
+}
+
+
+def _normalize_token_numeric_equiv(word):
+    """既存`dq18._normalize_token()`(句読点除去+小文字化)のあとに、
+    2~12の綴り小数のみを算用数字へ同値化する(範囲は`_NUM_WORD_TO_
+    DIGIT_EN`のキーに厳密に限定、それ以外の語は無変換)。"""
+    t = dq18._normalize_token(word)
+    return _NUM_WORD_TO_DIGIT_EN.get(t, t)
+
+
 def _normalize_tokens(text):
     text = re.sub("—", " ", text)
-    return [dq18._normalize_token(w) for w in text.split()]
+    return [_normalize_token_numeric_equiv(w) for w in text.split()]
 
 
 def find_repeated_spans(tokens, min_words=1):
@@ -403,7 +443,11 @@ def detect_ngram_repetition(words, canonical_text=None, min_words=METHOD_A_MIN_W
     timestamps(dq18.transcribe_verbatim()の戻り値)。min_words=3で
     phrase/sentence-level(3語以上)の非隣接反復を検知し、canonicalへの
     照合で意図的反復(台本に元々複数回同じ語句がある場合)を除外する。"""
-    tokens = [dq18._normalize_token(w["text"]) for w in words]
+    # OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01:
+    # ASR側token(綴り小数のまま書き起こされる)にも、canonical側
+    # `_normalize_tokens()`と同じ`_normalize_token_numeric_equiv()`を
+    # 適用し、比較前の表記を揃える(判定ロジック自体は無変更)。
+    tokens = [_normalize_token_numeric_equiv(w["text"]) for w in words]
     spans = find_repeated_spans(tokens, min_words=min_words)
     canonical_tokens = _normalize_tokens(canonical_text) if canonical_text else None
     matches = []

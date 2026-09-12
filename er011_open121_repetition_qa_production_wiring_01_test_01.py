@@ -184,6 +184,109 @@ class EmDashTokenBoundaryTests(unittest.TestCase):
 
 
 # ============================================================
+# OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01:
+# ユーザー承認2026-09-12(REPETITION-QA-INTENTIONAL-REPEAT-FALSE-
+# POSITIVE-RECONCILE-02_REPORT.md)。canonical側は`tts_safe_number_
+# words_en()`により綴り小数(two~twelve)が算用数字へ変換済みの状態で
+# 渡される一方、Repetition QA専用のローカルASR(faster-whisper)は発話
+# 小数を綴りのまま書き起こすため、`_canonical_repeat_count()`の完全
+# 一致比較が"two"対"2"で失敗し、正規に2回登場する語句が誤ってflagされ
+# ていた根本原因への回帰テスト。判定閾値(canon_count>=2)・意味は無変更、
+# "%"/"percent"は対象外(範囲拡張は別管理ID)。
+# ============================================================
+class NumberWordDigitEquivalenceTests(unittest.TestCase):
+    def _words(self, tokens_with_times):
+        return [{"text": t, "start": s, "end": e} for t, s, e in tokens_with_times]
+
+    def test_a_mixed_digit_and_word_canonical_repeat_resolves_canon_count_2(self):
+        # canonical側は"two"(綴り)と"2"(算用数字、tts_safe_number_words_en
+        # 変換後を模擬)が混在する2箇所の並行構文。ASR側は発話小数を綴り
+        # "two"のまま書き起こす(実データ挙動どおり)。正規化後は両方とも
+        # "2"に揃い、canonical_repeat_count=2で意図的反復と判定される
+        # こと(誤flag解消)。
+        canon = ("The store reopened after two months. The store reopened "
+                 "after 2 months, and business slowly returned.")
+        words = self._words([
+            ("The", 0.0, 0.2), ("store", 0.2, 0.4), ("reopened", 0.4, 0.7),
+            ("after", 0.7, 0.9), ("two", 0.9, 1.1), ("months.", 1.1, 1.4),
+            ("It", 9.0, 9.2), ("continued.", 9.2, 9.5),
+            ("The", 12.0, 12.2), ("store", 12.2, 12.4), ("reopened", 12.4, 12.7),
+            ("after", 12.7, 12.9), ("two", 12.9, 13.1), ("months,", 13.1, 13.4),
+            ("and", 13.4, 13.6), ("business", 13.6, 13.9),
+        ])
+        r = repetition_qa.detect_ngram_repetition(words, canonical_text=canon, min_words=3)
+        target = [m for m in r["matches"]
+                  if m["span_text"].lower().rstrip(".,").startswith("the store reopened after two")]
+        self.assertTrue(target, r)
+        for m in target:
+            self.assertEqual(m["canonical_repeat_count"], 2, m)
+            self.assertTrue(m["intentional"], m)
+            self.assertFalse(m["flagged"], m)
+        self.assertFalse(r["flagged"], r)
+
+    def test_b_true_positive_single_canonical_occurrence_still_flagged(self):
+        # canonical側に1回しか登場しない語句("after two months")が、ASR
+        # 側でハルシネーションにより2回出現した場合は、数詞同値化を
+        # 追加した後も引き続きflagされること(真陽性が消えないことの
+        # 直接確認)。
+        canon = "The store reopened after two months and business slowly returned."
+        words = self._words([
+            ("The", 0.0, 0.2), ("store", 0.2, 0.4), ("reopened", 0.4, 0.7),
+            ("after", 0.7, 0.9), ("two", 0.9, 1.1), ("months.", 1.1, 1.4),
+            ("The", 9.0, 9.2), ("store", 9.2, 9.4), ("reopened", 9.4, 9.7),
+            ("after", 9.7, 9.9), ("two", 9.9, 10.1), ("months.", 10.1, 10.4),
+        ])
+        r = repetition_qa.detect_ngram_repetition(words, canonical_text=canon, min_words=3)
+        self.assertTrue(r["flagged"], r)
+        flagged_texts = [m["span_text"].lower() for m in r["flagged_matches"]]
+        self.assertTrue(any("store reopened after two" in t for t in flagged_texts), r)
+        for m in r["flagged_matches"]:
+            if "store reopened after two" in m["span_text"].lower():
+                self.assertEqual(m["canonical_repeat_count"], 1, m)
+                self.assertFalse(m["intentional"], m)
+
+    def test_c_no_number_words_output_byte_identical_to_pre_fix_tokenization(self):
+        # 綴り小数(two~twelve)を含まない既存ケースは、修正前の
+        # dq18._normalize_token()のみによるtokenizeと出力が完全に一致
+        # すること(退行なしの直接確認)。
+        samples = [
+            "The cat sat down. Later it slept again, quietly.",
+            "Sales rose by 1.71 standard deviations after the change.",
+            "well-known fact well-known fact",
+            "pages 10–12 were revised pages 10–12 were revised",
+        ]
+        for text in samples:
+            expected = [dq18._normalize_token(w) for w in text.split()]
+            self.assertEqual(
+                [repetition_qa._normalize_token_numeric_equiv(w) for w in text.split()],
+                expected, text)
+
+    def test_d_percent_and_percent_word_not_equivalenced(self):
+        # "%"↔"percent"の同値化は今回のスコープ外(範囲拡張は別途
+        # ユーザー判断待ち)。数値↔数詞同値化がこの対象を巻き込んで
+        # いないことを明示的にpinする。
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("45%"), "45%")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("percent"), "percent")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("5%"), "5%")
+        self.assertNotEqual(
+            repetition_qa._normalize_token_numeric_equiv("5%"),
+            repetition_qa._normalize_token_numeric_equiv("five"))
+
+    def test_e_range_boundary_one_twelve_thirteen(self):
+        # 範囲は`tts_safe_number_words_en()`の対象(two~twelve)と完全に
+        # 同じでなければならない。"one"は代名詞曖昧性のため対象外
+        # (既存方針を踏襲)、"twelve"は範囲内(→"12")、"thirteen"は範囲外
+        # (無変換のまま)。
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("one"), "one")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("twelve"), "12")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("thirteen"), "thirteen")
+        # 既に算用数字のtokenはそのまま(digit->digitの自己一致)。
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("1"), "1")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("12"), "12")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("13"), "13")
+
+
+# ============================================================
 # Part 2: 方式D/D'(スペクトル、統合計算)、実音声固定資産で判定
 # (Trial-01保全済みfixture、読み取りのみ)
 # ============================================================

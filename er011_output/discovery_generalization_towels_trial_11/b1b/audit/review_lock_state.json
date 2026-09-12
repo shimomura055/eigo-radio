@@ -423,15 +423,15 @@
     ]
   },
   "full_story_part2": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "1065e6f2a508390c5d1487c233f686170e0d603c12755ae3135d0c77f7c42624",
     "language": "en",
     "theme_id": "discovery_generalization_towels_trial_11",
     "level": "b1b",
     "segment_id": "full_story_part2",
-    "updated_at": "2026-09-11T08:42:40",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-09-12T10:08:26",
+    "reason": "OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01(2026-09-12)適用後の再判定: \"after two months\"/\"after 2 months\"の数字/数詞不一致による誤flagが解消され、内容一致していた4取り(attempt2,3,5,6、TRUE_CONTENT_MISMATCHだったattempt1/4は対象外)全てが方式A/D/D'いずれもflagged=Falseとなった(ローカルfaster-whisper再実行、追加TTS呼び出しなし、¥0)。既存採用規則(retry loop内で最初にverified=Trueとなる取り)に従い、時系列で最初にPASSしたattempt2(full_story_part2_attempt2_englishstyleprefixwidemargin.wav)をfull_story_part2.wavへ採用した(TTS再生成なし、既存音声ファイルの差し替えのみ)。旧final_status=STOPPED/state=HUMAN_REVIEW_REQUIRED(2026-09-11)から、本修正の遡及再判定によりRESOLVEDへ更新。tts_generation_results.jsonの当該エントリの同期(status/attempt別verified/repetition_qa_evidence反映)は本タスクでは未実施、別途要否確認(OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01_REPORT.md参照)。",
+    "final_status": "OK",
     "wav_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/full_story_part2.wav",
     "cumulative_tts_attempts": 6,
     "cumulative_asr_calls": 6,
@@ -700,7 +700,8 @@
         },
         "attempt_audio_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt6_englishstyleprefixwidemargin.wav"
       }
-    ]
+    ],
+    "adopted_attempt_audio_path": "er011_output/discovery_generalization_towels_trial_11/b1b/narration/attempts/full_story_part2_attempt2_englishstyleprefixwidemargin.wav"
   },
   "point_one": {
     "state": "RESOLVED",
