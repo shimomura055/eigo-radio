@@ -1,0 +1,23 @@
+# Saturn’s South Pole Reveals a Giant Ten-Sided Wave
+
+At first glance, Saturn’s south pole looks as if someone has drawn a giant shape in the sky. Hubble has found a huge, changing wave with ten sides — a decagon — circling the pole.
+
+This is not a solid object above Saturn. It is a pattern in a fast jet of air in the planet’s atmosphere. It sits at about 58 to 63 degrees south latitude, with its center near 63 degrees south. So it circles the south pole rather than sitting exactly on the pole.
+
+NASA and ESA say this is the first large, regular polygonal jet wave found in Saturn’s southern hemisphere.
+
+The main image was taken on August 29, 2025, by Hubble. It is part of observations made from 2023 through 2025. NASA and ESA announced the result on September 2, 2026. On that same day, a paper led by Agustín Sánchez-Lavega of the University of the Basque Country was published online in Science Advances.
+
+The cause is still open. One model suggests that a very large bend in the jet may be held by the curve of the jet. Other ideas point to repeated disturbances high in the jet, or to a dark, high-pressure swirl just to the north. But researchers say there is no single confirmed explanation.
+
+### A discovery pieced together over time
+
+The discovery unfolded like a detective story. In 2024, Sánchez-Lavega and amateur astronomers Trevor Barry and Jean-Paul Oger first noticed the waving band in ground-based images. It became clearer in 2025. Researchers then returned to older Hubble data and traced signs back to 2023. So “present since 2023” means later archive confirmation, not the moment of first notice. The changing clarity also reveals how the pattern developed.
+
+### Not a mirror image of the north
+
+Saturn’s famous northern hexagon makes the southern shape more surprising. The north-polar pattern has lasted more than 40 years. Hubble images from 1997 to 2002 found no long-lived southern match, and Cassini observations from 2004 to 2017 found none either. The comparison suggests that polar jet patterns need not be mirror images. They may differ in shape and in how long they last, giving atmospheric models a concrete north–south difference to explain.
+
+## In one line…
+
+Saturn’s south pole has revealed a changing ten-sided wave, not a simple copy of the north — and its formation remains an atmospheric mystery.

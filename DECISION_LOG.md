@@ -369,6 +369,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01: News Point品質一般化Trial-16(Hubble/Saturnテーマ)着手+News Ledger公式英語表記(OPEN-146)は過去Ledger遡及適用なしでN増しの中でruntime evidence蓄積+B-Family 3V Phase 1bをDiscovery Trial-12待ちにせず着手(STOP条件6項目・Phase 2テーマ=スマホ制限3V/2V比較)+Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)を既存Production仕様で1本作成+FableのPMフォロー不足是正(既存Gate 5/Gate 6/12節への適用漏れとして12-10節を追加)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-STOP: Discovery N=1追加Trial-12完走(A2音声USER_DECISION_REQUIRED)+3V Phase 1b-03 STOP(Writer/Ledger未配線)+Token効率Phase 2ユーザー承認の正式反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE: 3V Phase 1b-03「ユーザー回答＋追加PM指示」(2026-09-12、原文全文)の正式記録(体験claimの根拠付け=B-Family共通Writer原則として採用/Tensionでの外部制約統合=任意パターンとして採用/スマホ制限新テーマ着手前に既存AI採用選考記事でのRegression実施を必須指示/Fableは汎用化のたびにRegressionを自発提案すべきという恒久PM運用フィードバック)+`docs/pm/PM_GOVERNANCE.md`への「汎用化時のRegression自発提案」ルール明確化
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD: News Point品質一般化Trial-16(Hubble/Saturnテーマ)結果のSSOT反映(主要エンドポイントは天井効果で比較不能・N非対称H=6/P=4・Fact-ID別利用と質的観察で「非headline周辺factがPoint素材になる」方向性の限定的支持・Status`USER_DECISION_REQUIRED`候補a/b/c[Fable推奨(b)]・費用¥308.7で上限¥300を¥8.7超過+記録漏れ概算¥5未満の正直な記録)+OPEN-146 runtime evidence(英語一次情報源テーマでも研究者所属機関名で自然発火)
 
 ---
 
@@ -4411,6 +4412,126 @@ RECONCILE-03、3V Phase 1b-04(実装+Regression本体)、Opus L2解釈。
 ユーザー発言原文(上記、セッション記録`294958fe-da6e-491c-8a02-
 4f864d8195c8.jsonl`より抽出)。詳細は`OPEN_ITEMS.md`OPEN-120行、
 `docs/pm/PM_GOVERNANCE.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD: News
+Point品質一般化Trial-16(Hubble/Saturnテーマ)結果のSSOT反映+OPEN-146
+runtime evidence記録+費用超過・記録漏れの正直な記録
+
+**背景**: 並列稼働中のNews Point品質一般化Trial-16(管理ID`FAMILY-A-
+NEWS-POINT-QUALITY-GENERALIZATION-HUBBLE-SATURN-TRIAL-16`、Hanshin系
+Trial-12/12b/14/15の異テーマ再現)が完走した。採用テーマはユーザー指定
+どおり変更していない: "New Hubble images reveal an unusual shape over
+Saturn's south pole"(土星南極を取り巻く十角形[decagon]の大気波、
+NASA/ESA 2026年9月2日発表)。本タスクはその結果をSSOTへ反映し、
+成果物をGit統合する(Trial結果自体は`USER_DECISION_REQUIRED`のまま、
+VALIDATED/REJECTEDへ変更しない)。並列稼働中の他Agent(Phase 2 After
+計測、RECONCILE-03、3V Phase 1b-04、Trend新記事)の生成物には一切
+触れていない。
+
+**(A) 主要結果(要旨)**:
+
+1. 主要エンドポイント(最終NG率)は天井効果(ceiling effect、両条件とも
+   0%)により比較不能だった。条件H(headlineのみ、N=6)・条件P
+   (headline+周辺fact、N=4、費用上限到達により未完)いずれも全記事が
+   status=OK・Fact Checker PASS・Ledger逸脱MINORのみで、Hanshin系
+   Trial-12/14で見られた「headline-onlyほど最終NG率が高い」という
+   中心的パターンは、本テーマではそのままの形では再現しなかった。
+2. Point Role Planningのevidence anchor(FACT-ID)を見ると、両条件で
+   factの使われ方に明確な違いがあった。条件Hでは、headline角度追加分の
+   FACT-06/07(物理的解説)が6/6本すべてでPointのanchorとして使われ、
+   条件Pでは真の周辺fact FACT-08(北極六角形との歴史的比較)・FACT-09
+   (発生メカニズムの仮説)がそれぞれ4/4本・3/4本で使われた。Writerは
+   「headlineの成立に不要な、Main Storyに入れなくてよいfact」を自発的に
+   Pointの素材として選ぶ傾向があり、実際の役割分離を左右する要因は
+   「Main Story必須度の低さ」であることを示唆する(Hanshin仮説の部分的な
+   精緻化、断定はしない)。
+3. 質的に読むと、条件Hの2 Pointは「物理的な誤解訂正」「発見の経緯」に
+   収束し、条件Pの2 Pointは「歴史的非対称性の比較」「発生メカニズムの
+   未解決性」という、より"beyond-the-headline"色の強い角度に収束した。
+   両条件とも重複のない2 Pointを生成できた(final NG率では差が出ない)が、
+   条件Pの角度の方が意図した性質に近い、という限定的な支持が得られた。
+4. OPEN-146(公式英語表記)は英語一次情報源テーマでも自然発火した
+   (想定外、正直な記録、下記(C)参照)。
+
+**(B) UDRとした理由(3点)**:
+
+1. 主要エンドポイント(最終NG率)が天井効果(両条件0%)により比較不能
+   であり、Hanshin系の中心仮説を「再現した」「再現しなかった」の
+   いずれとも断定できない。
+2. 条件Pが費用上限到達によりN=4(計画のN=6に対し2本不足)で打ち切られ、
+   条件間でNが非対称(H=6、P=4)なため、たとえ他の指標で差が見えても
+   統計的な結論は出せない。
+3. 一方、Fact-ID別利用状況・Point role質的内容では、「非headline周辺
+   factがPointの主要素材になり、より'beyond-the-headline'色の強い角度を
+   生む」という方向性の限定的支持が得られており、完全なREJECTEDでもない。
+
+**ユーザー判断を要する候補(採用可否は判断していない)**:
+- (候補a) 追加予算(目安¥50〜80、条件P B1B run2/3の2本相当)を承認し、
+  条件間Nを揃えたうえで最終NG率以外の指標を主要エンドポイントに
+  切り替えて再集計する。
+- (候補b) 本テーマでの検証はここで終了し(天井効果のため追加予算でも
+  最終NG率の差は出にくいと判断)、Point role質的観察を仮説の「精緻化」
+  (数ではなく「Main Story必須度の低さ」が真の変数)としてOPEN_ITEMS.md
+  へ記録するに留める。
+- (候補c) 最終NG率で条件を弁別できる、より脆弱性の高い英語一次情報源
+  テーマ(固有名詞密度が高い・法制度差がある等)で改めて一般化Trialを
+  実施する。
+- **Fable推奨**: 候補b(天井効果は本テーマの性質[英語科学ニュース、
+  Ledgerの事実密度・研究者コメントの豊富さ]に起因する可能性が高く、
+  追加予算での完走でも最終NG率の差は出にくいと考えられるため)。
+
+**(C) OPEN-146 runtime evidence(新規知見、正直な記録)**: 条件H・P双方の
+Ledger本文に対しProduction関数`make_proper_noun_extraction_fn`(無改変、
+web検索なし)を実行した結果、「バスク大学」(研究チーム筆頭著者
+Agustín Sánchez-Lavegaの所属、Science Advances論文由来、日本語表記の
+みでLedgerに記載)が自律的に検出された。続けてProduction関数
+`run_canonical_spelling_research`(無改変)で確認し、`University of the
+Basque Country`と判明、両条件のLedgerへ追記した。本テーマは英語一次
+情報源(NASA/ESA)だが、Ledgerの記述言語は日本語であり、研究者の所属
+機関名のような二次的固有名詞は日本語表記のみで記載され得る。これは
+「英語一次情報源テーマでは非発火が正しい挙動」という当初の予想を
+裏切る結果であり、OPEN-146機構はJapanese-domestic sports newsに限らない
+より広い適用範囲を持つことが実証された。Production関数は無改変。
+この1件をもって`PRODUCTION_WIRED`への格上げは行わない(Status
+`APPROVED_FOR_PRODUCTION`のまま維持、全経路確認・SSOT・Gitが揃うまで
+格上げしない)。Fact Checker側のcanonical spelling照合は本Trialが
+再利用したharness(`run_one_pattern_connected`、OPEN-146配線より前に
+作成された既存VALIDATED Trial-03のコピー)には実装されておらず、
+本Trialの12本ではFact Checker側の全経路検証はスコープ外(正直な限界の
+記録、詳細REPORT2節)。
+
+**(D) 費用超過と記録漏れ(正直な記録)**: 記録上の合計¥308.7(上限¥300を
+¥8.7超過)。超過を検知した時点(条件P B1B run1完了後)で直ちに追加API
+呼び出しを停止し、条件P B1B run2/3(2本)は未実施のまま。超過の経緯は
+Ledger研究(¥155.6)が委任文見込み(¥150)とほぼ一致した時点で残枠が
+¥144.4だったが、本テーマの記事はretry発生率・記事長がやや高く(条件H
+平均¥11.87/本、条件P平均¥17.05/本)、過去Trial(12/12b)の実測平均
+(1本あたり約¥8.3〜¥10.0)からの見込みを上回った。加えて、OPEN-146
+自然発火チェック段階(`open146_firing_check_stage()`)で本Trial専用の
+`cl.install()`呼び出しを別プロセスで行っておらず、固有名詞抽出API
+呼び出し2回のusageが`raw_usage_log.jsonl`へ記録されなかった(実際の
+API課金は発生しているが正確なusageは未記録、概算¥5未満と推定、正確な
+実測ではない)。実質合計は概算¥310台前半と考えられる。意図的な超過では
+なく、実測ベースでの運用結果として正直に報告する。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Trial-16結果要旨+UDR候補a/b/c)、
+OPEN-146行(runtime evidence 1件目)、OPEN-143行(1記事あたり記事生成
+コスト参考値)へそれぞれ追記(既存本文不変)。`docs/pm/PM_GOVERNANCE.md`
+15節へ「Trial専用harnessは開始時にcost logger installを必須化する」
+再発防止ルールを1行追記。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-16
+実績エントリを追記。
+
+**並列稼働中(本タスクでは以下の生成物に一切触れず、stageもしていない)**:
+Phase 2 After計測、Repetition QA RECONCILE-03、3V Phase 1b-04、Trend
+新記事。`er011_output/attempt_history.jsonl`等の共有追跡ファイルの
+変更分もTrial-16由来と確認できなかったため本タスクではstageしていない。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-92-
+NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD`)、`FAMILY-A-NEWS-POINT-QUALITY-
+GENERALIZATION-HUBBLE-SATURN-TRIAL-16_REPORT.md`(全文)。詳細は
+`OPEN_ITEMS.md`OPEN-135/OPEN-146/OPEN-143行、`docs/pm/PM_GOVERNANCE.md`
+15節、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`
+参照。
 
 ## 参照元
 

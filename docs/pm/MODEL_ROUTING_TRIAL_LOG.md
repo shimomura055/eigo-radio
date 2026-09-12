@@ -709,3 +709,28 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   確認)。Sonnet、LOW、実測¥0(SSOT編集・Git操作・HTTP確認のみ、新規
   LLM/TTS/ASR API呼び出しなし)。中間レビュー・正式Closeout Triggerの
   到達判定・再計算はいずれも実施していない。
+- 2026-09-12(`FAMILY-A-NEWS-POINT-QUALITY-GENERALIZATION-HUBBLE-
+  SATURN-TRIAL-16`、Trial完走): Hanshin系Trial-12/12b/14/15の異テーマ
+  再現(Hubble/Saturnの十角形大気波テーマ、ユーザー指定・変更なし)。
+  Sonnet、実測¥308.7(記録上、費用上限¥300を¥8.7超過)+記録漏れ概算
+  ¥5未満(OPEN-146自然発火チェック段階の固有名詞抽出API呼び出し2回分
+  usageが`cl.install()`未実行のため`raw_usage_log.jsonl`へ未記録)。
+  主要エンドポイント(最終NG率)は天井効果(両条件0%)で比較不能、
+  条件H(N=6)・条件P(N=4、費用上限到達で未完)のN非対称。Fact-ID別
+  利用・Point role質的観察では「非headline周辺factがPointの主要素材に
+  なる」方向性の限定的支持を得た。OPEN-146が英語一次情報源テーマでも
+  研究者所属機関名で自然発火する新規knowledge(想定外、Production関数
+  無改変)を発見。Fable判定=`USER_DECISION_REQUIRED`(候補a/b/c、
+  Fable推奨(b))。委任回数=初回のみ(ループ上限4回以内)。
+  **規律違反(費用超過+記録漏れ)**: 実測ベースの見込み違いにより上限を
+  ¥8.7超過(超過検知後は直ちに追加API呼び出しを停止)、加えて本Trial
+  専用harnessでの`cl.install()`呼び忘れにより一部usageが未記録。
+  再発防止としてPM_GOVERNANCE 15節へ「Trial開始時のcost logger install
+  必須化」を追記した。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-
+  UDR-RECORD、本タスク): 上記News Trial-16の結果をSSOTへ反映
+  (OPEN-135/OPEN-146/OPEN-143行への追記、DECISION_LOGエントリ新設+
+  索引、PM_GOVERNANCE 15節への再発防止ルール追記)+Git統合。Sonnet、
+  LOW、実測¥0(SSOT編集・Git操作のみ、新規LLM/TTS/ASR API呼び出し
+  なし)。並列稼働中の他Agent(Phase 2 After計測、RECONCILE-03、
+  3V Phase 1b-04、Trend新記事)の生成物には一切触れていない。

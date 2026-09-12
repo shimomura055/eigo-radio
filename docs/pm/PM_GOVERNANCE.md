@@ -1434,6 +1434,16 @@ Trial特有コストを独立項目として明示する5区分へ更新)。
 上振れ/Standard同期でのコスト/Batch量産換算時のコスト」の5区分へ
 更新した(既存15-1〜15-4・15-6の内容自体は変更していない)。
 
+**2026-09-12追記(PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-
+SATURN-UDR-RECORD)**: News Point品質一般化Trial-16(Hubble/Saturn
+テーマ)で、費用上限¥300に対し記録上の合計が¥308.7(¥8.7超過)と
+なり、加えてOPEN-146自然発火チェック段階の固有名詞抽出API呼び出し
+2回分のusageが`cl.install()`未実行のため`raw_usage_log.jsonl`へ
+記録されなかった(概算¥5未満、正確な実測ではない)。再発防止として、
+Trial専用harnessは開始時に費用記録(cost logger install、既存
+`er005_cost_logger.cl.install()`相当)を必須化し、費用記録が有効で
+あることをTrial開始チェックに含める。
+
 ---
 
 ## 変更履歴
