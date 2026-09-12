@@ -13,6 +13,11 @@ USD_JPY = 160.0
 LUNA_IN, LUNA_CACHED, LUNA_OUT = 0.20, 0.02, 1.20
 SOL_IN, SOL_CACHED, SOL_OUT = 5.00, 0.50, 30.00
 GEMINI_IN, GEMINI_OUT = 1.00, 20.00
+# OPEN-144是正: pricing_snapshot.jsonのgemini Batch tier(Standard比50%オフ)。
+# 対象log(pool_pilot_01/raw_usage_log.jsonl)中のgemini_batch記録は
+# pool_benches/pool_benches_lunaテーマには存在しないことを確認済み
+# (実行結果への影響は無し、将来混入した場合の予防的修正)。
+GEMINI_BATCH_IN, GEMINI_BATCH_OUT = 0.50, 10.00
 AZURE_HOUR = 1.00
 SEARCH_PER_1K = 10.00
 
@@ -35,6 +40,8 @@ def cost_jpy(r):
         return cost * USD_JPY
     if provider == "gemini":
         return ((r.get("input_tokens") or 0) / 1e6 * GEMINI_IN + (r.get("output_tokens") or 0) / 1e6 * GEMINI_OUT) * USD_JPY
+    if provider == "gemini_batch":
+        return ((r.get("input_tokens") or 0) / 1e6 * GEMINI_BATCH_IN + (r.get("output_tokens") or 0) / 1e6 * GEMINI_BATCH_OUT) * USD_JPY
     if provider == "azure":
         return ((r.get("audio_duration_submitted_seconds") or 0) / 3600) * AZURE_HOUR * USD_JPY
     return 0.0
@@ -74,7 +81,7 @@ def summarize(theme_id):
         level = level_of(stage)
         cat = stage_category(stage)
         if cat == "audio":
-            sub = "tts" if provider == "gemini" else "asr" if provider == "azure" else "other"
+            sub = "tts" if provider in ("gemini", "gemini_batch") else "asr" if provider == "azure" else "other"
             totals[level][f"audio_{sub}_jpy"] += v["cost_jpy"]
         else:
             totals[level][f"{cat}_jpy"] += v["cost_jpy"]

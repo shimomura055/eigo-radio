@@ -67,9 +67,10 @@ def log(msg):
 def _load_pricing():
     prices = json.load(open(PRICING_SNAPSHOT_PATH, encoding="utf-8"))["prices"]
 
-    def price(provider, model, meter):
+    def price(provider, model, meter, tier="Standard"):
         return next(p["price"] for p in prices
-                    if p["provider"] == provider and p["model"] == model and p["meter"] == meter)
+                    if p["provider"] == provider and p["model"] == model and p["meter"] == meter
+                    and p.get("tier", "Standard") == tier)
     return price
 
 
@@ -89,11 +90,16 @@ def compute_cost_jpy_so_far():
             model = rec.get("model_id") or rec.get("model")
             usd = 0.0
             try:
-                if provider == "gemini" and model:
+                if provider in ("gemini", "gemini_batch") and model:
+                    # OPEN-144是正: Gemini Batch API経由はprovider="gemini_batch"
+                    # で記録されるが、旧ロジックはprovider=="gemini"のみ判定して
+                    # おり、gemini_batch分は0円計上(unpriced扱いですらなく黙って
+                    # by_provider["gemini_batch"]=0)になっていた。
+                    tier = "Batch" if provider == "gemini_batch" else "Standard"
                     in_tok = rec.get("input_tokens") or 0
                     out_tok = rec.get("output_tokens") or 0
-                    usd = in_tok * price("gemini", model, "input_tokens") / 1e6 \
-                        + out_tok * price("gemini", model, "output_tokens") / 1e6
+                    usd = in_tok * price("gemini", model, "input_tokens", tier) / 1e6 \
+                        + out_tok * price("gemini", model, "output_tokens", tier) / 1e6
                 elif provider == "openai_asr" and model:
                     in_tok = rec.get("input_tokens") or 0
                     out_tok = rec.get("output_tokens") or 0

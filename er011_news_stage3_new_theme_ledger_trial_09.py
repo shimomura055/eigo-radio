@@ -75,8 +75,9 @@ USD_JPY = 160.0
 PRICING = json.load(open("er005_output/cost_baseline_01/pricing_snapshot.json", encoding="utf-8"))["prices"]
 
 
-def _price(provider, model, meter):
-    return next(p["price"] for p in PRICING if p["provider"] == provider and p["model"] == model and p["meter"] == meter)
+def _price(provider, model, meter, tier="Standard"):
+    return next(p["price"] for p in PRICING if p["provider"] == provider and p["model"] == model
+                and p["meter"] == meter and p.get("tier", "Standard") == tier)
 
 
 _LUNA_IN, _LUNA_CACHED, _LUNA_OUT = _price("openai", "gpt-5.6-luna", "input_tokens"), \
@@ -92,9 +93,15 @@ def _call_cost_usd(rec: dict) -> float:
     ct = rec.get("cached_input_tokens") or 0
     if provider == "openai_asr":
         cost = (it / 1e6) * _price("openai_asr", model, "input_tokens") + (ot / 1e6) * _price("openai_asr", model, "output_tokens")
-    elif provider == "gemini":
-        tier = "Batch" if rec.get("batch") else "Standard"
-        cost = (it / 1e6) * _price("gemini", model, "input_tokens") + (ot / 1e6) * _price("gemini", model, "output_tokens")
+    elif provider in ("gemini", "gemini_batch"):
+        # OPEN-144是正: Gemini Batch API(batches.create)経由の呼び出しは
+        # provider="gemini_batch"として記録される(rec.get("batch")という
+        # フィールドは実際のcost_logger出力には存在せず、旧ロジックのtier変数は
+        # 常にStandard扱いになり、かつgemini_batch自体はこのelif分岐に
+        # 到達せずelse節でValueErrorになっていた)。
+        tier = "Batch" if provider == "gemini_batch" else "Standard"
+        cost = (it / 1e6) * _price("gemini", model, "input_tokens", tier) \
+            + (ot / 1e6) * _price("gemini", model, "output_tokens", tier)
     elif provider == "openai":
         billable_in = max(it - ct, 0)
         if model == "gpt-5.6-luna":

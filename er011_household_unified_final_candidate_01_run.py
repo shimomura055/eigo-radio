@@ -152,6 +152,13 @@ def _call_cost_usd(r: dict) -> tuple:
         if provider == "gemini":
             return (it / 1e6) * _price("gemini", model, "input_tokens") \
                 + (ot / 1e6) * _price("gemini", model, "output_tokens"), False
+        if provider == "gemini_batch":
+            # OPEN-144是正: Gemini Batch API(batches.create)経由の呼び出しは
+            # provider="gemini_batch"で記録されるが、pricing_snapshot.json側は
+            # provider="gemini"のtier="Batch"として単価定義されている。従来は
+            # このプロバイダ名不一致によりKeyErrorで0円(unpriced)計上していた。
+            return (it / 1e6) * _price("gemini", model, "input_tokens", tier="Batch") \
+                + (ot / 1e6) * _price("gemini", model, "output_tokens", tier="Batch"), False
         if provider == "openai_asr":
             return (it / 1e6) * _price("openai_asr", model, "input_tokens") \
                 + (ot / 1e6) * _price("openai_asr", model, "output_tokens"), False

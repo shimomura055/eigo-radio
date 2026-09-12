@@ -21,8 +21,9 @@ LOG_PATH = f"er006_output/pool_pilot_01/{THEME_ID}/raw_usage_log.jsonl"
 pricing = json.load(open("er005_output/cost_baseline_01/pricing_snapshot.json", encoding="utf-8"))["prices"]
 
 
-def price(provider, model, meter):
-    return next(p["price"] for p in pricing if p["provider"] == provider and p["model"] == model and p["meter"] == meter)
+def price(provider, model, meter, tier="Standard"):
+    return next(p["price"] for p in pricing if p["provider"] == provider and p["model"] == model
+                and p["meter"] == meter and p.get("tier", "Standard") == tier)
 
 
 LUNA_IN, LUNA_CACHED, LUNA_OUT = price("openai", "gpt-5.6-luna", "input_tokens"), \
@@ -31,6 +32,12 @@ GEMINI_PRO_IN = price("gemini", "gemini-2.5-pro-preview-tts", "input_tokens")
 GEMINI_PRO_OUT = price("gemini", "gemini-2.5-pro-preview-tts", "output_tokens")
 GEMINI_FLASH_IN = price("gemini", "gemini-3.1-flash-tts-preview", "input_tokens")
 GEMINI_FLASH_OUT = price("gemini", "gemini-3.1-flash-tts-preview", "output_tokens")
+# OPEN-144是正: 従来はgemini_batch分岐が無く、該当call全てが末尾の
+# raise ValueError("unpriced provider")に落ちていた(0円計上ではなく実際には
+# 未検出だった=このLOG_PATH[pool_n18_notifications]にgemini_batch記録は
+# 0件だったため本スクリプトは過去に実行時エラーになっていない、確認済み)。
+GEMINI_PRO_BATCH_IN = price("gemini", "gemini-2.5-pro-preview-tts", "input_tokens", "Batch")
+GEMINI_PRO_BATCH_OUT = price("gemini", "gemini-2.5-pro-preview-tts", "output_tokens", "Batch")
 ASR_IN = price("openai_asr", "gpt-4o-mini-transcribe", "input_tokens")
 ASR_OUT = price("openai_asr", "gpt-4o-mini-transcribe", "output_tokens")
 
@@ -50,6 +57,10 @@ def call_cost_usd(r: dict) -> float:
         if model == "gemini-3.1-flash-tts-preview":
             return (it / 1e6) * GEMINI_FLASH_IN + (ot / 1e6) * GEMINI_FLASH_OUT
         raise ValueError(f"unpriced gemini model: {model}")
+    if provider == "gemini_batch":
+        if model == "gemini-2.5-pro-preview-tts":
+            return (it / 1e6) * GEMINI_PRO_BATCH_IN + (ot / 1e6) * GEMINI_PRO_BATCH_OUT
+        raise ValueError(f"unpriced gemini_batch model: {model}")
     if provider == "openai_asr":
         return (it / 1e6) * ASR_IN + (ot / 1e6) * ASR_OUT
     raise ValueError(f"unpriced provider: {provider}")

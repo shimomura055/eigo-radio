@@ -615,3 +615,8 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   (143行)・ID/日付/URL/ファイルパス件数一致を確認(`ALL_PASS: true`)。
   `OPEN_ITEMS.md`本体418,461→182,340文字(-56.4%)。中間レビュー・正式
   Closeout Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-
+  REANALYSIS、本タスク): OPEN-144費用集計バグ修正結果+TTS retry timing
+  選別効果reanalysis結果のSSOT反映+TTS Trial harness実行モード既定値の
+  適用範囲拡大監査(Sonnet、LOW、実測¥0、新規LLM/TTS/ASR API呼び出しなし、
+  既存script冪等再実行[観測入力の再集計]・Grep監査・SSOT編集のみ)。

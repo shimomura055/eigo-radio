@@ -1,0 +1,427 @@
+{
+  "management_id": "TTS-RETRY-TIMING-SELECTION-EFFECT-REANALYSIS-01",
+  "inputs": {
+    "observations_jsonl": "er011_output/tts_retry_timing_monitor_01/observations.jsonl",
+    "cooldown_pairs_jsonl": "er011_output/tts_retry_cooldown_analysis_01/cooldown_pairs.jsonl",
+    "observations_count": 483,
+    "cooldown_pairs_count": 74
+  },
+  "section1_naive_selection_effect": {
+    "all_types": [
+      {
+        "consecutive_ng_before": "1",
+        "n": 45,
+        "pass_n": 31,
+        "pass_rate": 0.6889,
+        "wilson_95ci": [
+          0.5433,
+          0.8047
+        ]
+      },
+      {
+        "consecutive_ng_before": "2",
+        "n": 12,
+        "pass_n": 2,
+        "pass_rate": 0.1667,
+        "wilson_95ci": [
+          0.047,
+          0.448
+        ]
+      },
+      {
+        "consecutive_ng_before": "3plus",
+        "n": 17,
+        "pass_n": 4,
+        "pass_rate": 0.2353,
+        "wilson_95ci": [
+          0.0955,
+          0.4726
+        ]
+      }
+    ],
+    "type_b_only": [
+      {
+        "consecutive_ng_before": "1",
+        "n": 43,
+        "pass_n": 29,
+        "pass_rate": 0.6744,
+        "wilson_95ci": [
+          0.5252,
+          0.7951
+        ]
+      },
+      {
+        "consecutive_ng_before": "2",
+        "n": 12,
+        "pass_n": 2,
+        "pass_rate": 0.1667,
+        "wilson_95ci": [
+          0.047,
+          0.448
+        ]
+      },
+      {
+        "consecutive_ng_before": "3plus",
+        "n": 15,
+        "pass_n": 4,
+        "pass_rate": 0.2667,
+        "wilson_95ci": [
+          0.109,
+          0.5195
+        ]
+      }
+    ],
+    "note": "『1回NG後→69%、2回NG後→17%、3回以上NG後→24-27%』という非単調な低下は、そのまま『時間経過が悪い』と解釈すべきではない。3回以上NGバケツには複数attempt位置(4回目・5回目・6回目…)の観測が重複して含まれ、かつ元々失敗し続けている難しいsegmentほど何度も登場する(comment_2等)。主分析ではこの重複・選別を排除するため『最初の3回全NG→4回目』という一意な位置に母集団を限定する。"
+  },
+  "section2_main_analysis_strict_population": {
+    "population_definition": "level_dir+segment_id単位でグループ化し、sequence_index 1,2,3のverifiedが全てFalseで、かつ4回目attemptが存在し4回目直前のgap_secondsが既知の事例。",
+    "n_total_cases": 8,
+    "n_cases_with_detected_or_known_intervention": 8,
+    "n_cases_without_any_detected_or_known_intervention": 0,
+    "structural_note": "本システムのProduction retry実装は自動retryをmax_attempts到達で必ず停止する(er011_tts_retry_timing_monitor_01.pyのgeneration_path判定と同じ根拠)。したがって4回目以降のattemptは、この母集団8件全件でgeneration_path=manual_regenerate_beyond_loop_capとなり、構造上必ず人間が明示的に別scriptを再実行して発生する。加えて本タスクの個別script監査により、8件中7件でreview_lock.approve_regenerate()の明示的呼び出しまたは原稿本文の差し替え(textfix.py)を直接確認した(INTERVENTION_EVIDENCE参照)。残り1件(kp_new_normal)も意図的なdiagnostic parameter sweepであり、自然発生の『同一設定のまま時間だけ空いたretry』は本母集団に0件である。",
+    "main_comparison_immediate_vs_non_immediate": {
+      "label": "主分析: 最初の3回全NG母集団、4回目attempt、即時 vs 非即時(全8件)",
+      "immediate": {
+        "n": 1,
+        "pass_n": 0,
+        "pass_rate": 0.0,
+        "wilson_95ci": [
+          0.0,
+          0.7935
+        ]
+      },
+      "non_immediate": {
+        "n": 7,
+        "pass_n": 3,
+        "pass_rate": 0.4286,
+        "wilson_95ci": [
+          0.1582,
+          0.7495
+        ]
+      },
+      "pass_rate_diff_points": 42.9,
+      "fisher_exact_two_sided_p_value": 1.0,
+      "odds_ratio_non_immediate_vs_immediate": 0.4286,
+      "odds_ratio_note": "0セルありのためHaldane-Anscombe補正(+0.5)適用済み(参考値)"
+    },
+    "sub_analysis_excluding_any_intervention": {
+      "label": "副分析: 上記のうち介入なしに限定(N=0)",
+      "immediate": {
+        "n": 0,
+        "pass_n": 0,
+        "pass_rate": null,
+        "wilson_95ci": null
+      },
+      "non_immediate": {
+        "n": 0,
+        "pass_n": 0,
+        "pass_rate": null,
+        "wilson_95ci": null
+      },
+      "pass_rate_diff_points": null,
+      "fisher_exact_two_sided_p_value": null,
+      "odds_ratio_non_immediate_vs_immediate": 1.0,
+      "odds_ratio_note": "0セルありのためHaldane-Anscombe補正(+0.5)適用済み(参考値)"
+    },
+    "sub_analysis_note": "介入なし副分析はN=0であり、統計的判断はできない(参考値のみ)。指示4項の『人的介入ありしか長時間群に存在しない場合は時間効果単独を推定できないと明記する』に該当する状況が、この母集団では非即時群だけでなく全群(即時群含む)に及んでいる。",
+    "cases": [
+      {
+        "level_dir": "er011_output/tts_attempt_audio_retention_wiring_01/evidence01/a2",
+        "segment_id": "kp_new_normal",
+        "n_attempts_in_group": 4,
+        "first3_ng_subtypes": [
+          "tts_generation_content_failure_non_infra",
+          "tts_generation_content_failure_non_infra",
+          "tts_generation_content_failure_non_infra"
+        ],
+        "gap_seconds_before_4th": 3.0,
+        "gap_bucket": "immediate",
+        "attempt4_verified": false,
+        "attempt4_ng_subtype": "tts_generation_content_failure_non_infra",
+        "route_changed_3to4": false,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "deliberate_diagnostic_parameter_sweep",
+          "evidence": "review_lock_state.jsonのreasonに『Minimal instruction2回+English language lock2回(合計4回)を試行済み』と明記(2つの異なるroute設定を意図的に試すdiagnostic runであり、自然発生の同一設定retryではない)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er003_output/n3_01/household/fact03_fix_02/b1b",
+        "segment_id": "point_one",
+        "n_attempts_in_group": 4,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 567.0,
+        "gap_bucket": "short",
+        "attempt4_verified": true,
+        "attempt4_ng_subtype": null,
+        "route_changed_3to4": false,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "manuscript_text_change_before_regen",
+          "evidence": "er011_output/open138_household_fact03_b1b_minimal_fix_02/textfix.py (OPEN-138、point_one_body本文をOLD_POINT_ONE_BODY->NEW_POINT_ONE_BODYへユーザー決定に基づき差し替えたうえでの再生成)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/family_a_completion_a2_trend_end_to_end_01/b1b",
+        "segment_id": "kp5_ja_charon",
+        "n_attempts_in_group": 7,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 2350.0,
+        "gap_bucket": "medium",
+        "attempt4_verified": false,
+        "attempt4_ng_subtype": "content_mismatch_or_word_omission",
+        "route_changed_3to4": true,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate_plus_route_change",
+          "evidence": "er011_family_a_completion_a2_trend_end_to_end_01_run.py (review_lock.approve_regenerate()呼び出し、line 387)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/b1b",
+        "segment_id": "full_story_part2",
+        "n_attempts_in_group": 6,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "repetition_or_disfluency_flagged",
+          "repetition_or_disfluency_flagged"
+        ],
+        "gap_seconds_before_4th": 2466.0,
+        "gap_bucket": "medium",
+        "attempt4_verified": false,
+        "attempt4_ng_subtype": "content_mismatch_or_word_omission",
+        "route_changed_3to4": false,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate",
+          "evidence": "er011_discovery_generalization_towels_trial_11_audio_04_b1b_fullstory_resume_human_review.py (review_lock.approve_regenerate()呼び出し、line 61。full_story_part1と同一run)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/b1b",
+        "segment_id": "full_story_part1",
+        "n_attempts_in_group": 6,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 2716.0,
+        "gap_bucket": "medium",
+        "attempt4_verified": false,
+        "attempt4_ng_subtype": "content_mismatch_or_word_omission",
+        "route_changed_3to4": false,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate",
+          "evidence": "er011_discovery_generalization_towels_trial_11_audio_04_b1b_fullstory_resume_human_review.py (review_lock.approve_regenerate()呼び出し、line 61。既存FAMILY-A-DISCOVERY-TOWELS-B1B-SECONDARY-ASR-AND-RETRY-TIMING-RECONCILE-01_REPORT.md 5節で『時間経過ではなく人的介入』と既に分類済み)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/news_stage3_new_theme_ledger_trial_09_b1b_full/b1b",
+        "segment_id": "full_story_part1",
+        "n_attempts_in_group": 4,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 51635.0,
+        "gap_bucket": "long",
+        "attempt4_verified": true,
+        "attempt4_ng_subtype": null,
+        "route_changed_3to4": false,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate",
+          "evidence": "er011_news_stage3_new_theme_ledger_trial_09_b1b_regen01_full_story_part1.py (review_lock.approve_regenerate()呼び出し、ユーザー決定2026-09-10に基づく『既存の承認済み再生成経路で1回のみ再生成』)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+        "segment_id": "meaning_4",
+        "n_attempts_in_group": 4,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 71819.0,
+        "gap_bucket": "long",
+        "attempt4_verified": true,
+        "attempt4_ng_subtype": null,
+        "route_changed_3to4": true,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate_plus_route_change",
+          "evidence": "er011_discovery_generalization_towels_trial_11_audio_02_resume_human_review.py (review_lock.approve_regenerate()呼び出し、line 81)"
+        },
+        "any_detected_or_known_intervention": true
+      },
+      {
+        "level_dir": "er011_output/discovery_generalization_towels_trial_11/a2",
+        "segment_id": "comment_2",
+        "n_attempts_in_group": 6,
+        "first3_ng_subtypes": [
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission",
+          "content_mismatch_or_word_omission"
+        ],
+        "gap_seconds_before_4th": 75332.0,
+        "gap_bucket": "long",
+        "attempt4_verified": false,
+        "attempt4_ng_subtype": "content_mismatch_or_word_omission",
+        "route_changed_3to4": true,
+        "voice_changed_3to4": false,
+        "model_changed_3to4": false,
+        "generation_path_attempt4": "manual_regenerate_beyond_loop_cap",
+        "structurally_requires_manual_rerun_beyond_loop_cap": true,
+        "known_intervention_evidence": {
+          "intervention_type": "explicit_approve_regenerate_plus_route_change",
+          "evidence": "er011_discovery_generalization_towels_trial_11_audio_02_resume_human_review.py (review_lock.approve_regenerate()呼び出し、line 66)"
+        },
+        "any_detected_or_known_intervention": true
+      }
+    ]
+  },
+  "section3_broader_position_unrestricted_population": {
+    "population_definition": "位置を4回目に限定せず、consecutive_ng_before_this_attempt>=3の全attempt(既存cooldown_pairs.jsonlの3plus行、種別Bのみ)。同一segmentが複数position(4回目・5回目・6回目…)で重複計上されうる点に注意(主分析ではないため参考位置づけ)。",
+    "n_total_cases": 15,
+    "n_cases_manual_regenerate_beyond_loop_cap": 15,
+    "comparison_immediate_vs_non_immediate": {
+      "label": "副分析: 連続NG回数>=3(位置不問、全15件)、即時 vs 非即時",
+      "immediate": {
+        "n": 4,
+        "pass_n": 0,
+        "pass_rate": 0.0,
+        "wilson_95ci": [
+          0.0,
+          0.4899
+        ]
+      },
+      "non_immediate": {
+        "n": 11,
+        "pass_n": 4,
+        "pass_rate": 0.3636,
+        "wilson_95ci": [
+          0.1517,
+          0.6462
+        ]
+      },
+      "pass_rate_diff_points": 36.4,
+      "fisher_exact_two_sided_p_value": 0.5165,
+      "odds_ratio_non_immediate_vs_immediate": 0.1852,
+      "odds_ratio_note": "0セルありのためHaldane-Anscombe補正(+0.5)適用済み(参考値)"
+    },
+    "note": "この母集団も15件中15件(100%)がmanual_regenerate_beyond_loop_capであり、主分析と同じ構造的confoundが存在する。"
+  },
+  "section4_failure_type_reference_only": {
+    "note": "各セルN<5が大半のため統計化せず参考値のみ。",
+    "rows": [
+      {
+        "failure_type_at_3rd_ng": "tts_generation_content_failure_non_infra",
+        "immediate_n": 1,
+        "immediate_pass": 0,
+        "non_immediate_n": 0,
+        "non_immediate_pass": 0
+      },
+      {
+        "failure_type_at_3rd_ng": "content_mismatch_or_word_omission",
+        "immediate_n": 0,
+        "immediate_pass": 0,
+        "non_immediate_n": 6,
+        "non_immediate_pass": 3
+      },
+      {
+        "failure_type_at_3rd_ng": "repetition_or_disfluency_flagged",
+        "immediate_n": 0,
+        "immediate_pass": 0,
+        "non_immediate_n": 1,
+        "non_immediate_pass": 0
+      }
+    ]
+  },
+  "section5_towel_full_story_part1_observation": {
+    "segment": "discovery_generalization_towels_trial_11/b1b full_story_part1",
+    "take1_to_3": "2022 survey文が丸ごと欠落するTRUE_CONTENT_MISMATCH(3回連続NG)",
+    "take4_gap_seconds": 2716.0,
+    "take4_result": false,
+    "failure_mode_change_observed": "take4以降、2022 survey文の欠落(content drop)は解消したが、take5で新たな残存差分(has→had、TRUE_CONTENT_MISMATCH、語差型)が発生し、segmentは現在もHUMAN_REVIEW_REQUIREDのまま未解決(既存FAMILY-A-DISCOVERY-TOWELS-B1B-SECONDARY-ASR-AND-RETRY-TIMING-RECONCILE-01_REPORT.md Part A/B参照)",
+    "causal_attribution": "既存報告(同上REPORT.md 5節)で『時間経過ではなく人的介入(review_lock.approve_regenerate()の明示的呼び出し)』と既に分類済み。時間効果単独への帰属はできない。本reanalysisはこの結論を上書きしない(1事例のみでの時間効果断定は禁止、指示7項)。"
+  },
+  "section6_power_calculation_for_future_data_planning": {
+    "method": "2群比率比較の正規近似サンプルサイズ公式(連続性補正なし)、alpha=0.05(両側)、power=0.80、z_alpha/2=1.959964、z_beta=0.841621。scipy等の統計ライブラリは使用せず、既存cooldown分析と同一方針で標準ライブラリのみで計算(参考値)。",
+    "anchor_non_immediate_pass_rate": 0.4,
+    "anchor_note": "主分析(N=8)の非即時PASS率0.4286と副分析(N=15)の非即時PASS率0.3636の中間的な丸め値0.40を基準とした。即時側の想定値は3シナリオ(10%/20%/30%)を例示する(現状データの即時群はN=1-4と極small・0件PASSのため、真の即時PASS率を精度良く推定できていない)。",
+    "scenarios": [
+      {
+        "assumed_immediate_pass_rate": 0.1,
+        "assumed_non_immediate_pass_rate": 0.4,
+        "diff_points": 30.0,
+        "required_n_per_group_alpha05_power80": 29
+      },
+      {
+        "assumed_immediate_pass_rate": 0.2,
+        "assumed_non_immediate_pass_rate": 0.4,
+        "diff_points": 20.0,
+        "required_n_per_group_alpha05_power80": 79
+      },
+      {
+        "assumed_immediate_pass_rate": 0.3,
+        "assumed_non_immediate_pass_rate": 0.4,
+        "diff_points": 10.0,
+        "required_n_per_group_alpha05_power80": 354
+      }
+    ],
+    "current_data_sufficiency": "主分析母集団(自然発生・介入なしの4回目観測)は現状0件。副分析(位置不問)でも介入なし0件。したがって上記シナリオのいずれの必要Nに対しても、現時点の『介入なし』有効サンプルは0件であり、本テーマの検出力は実質ゼロ。"
+  },
+  "final_answers": {
+    "A_does_time_gap_group_have_higher_4th_pass_rate_after_controlling_difficulty": "主分析(N=8、最初の3回全NG母集団)では、非即時群のPASS率(42.9%, 3/7)が即時群(0%, 0/1)より高いが、即時群N=1のためこの比較自体が意味のある推定ではない。副分析(N=15、位置不問)では非即時36.4%(4/11) vs 即時0%(0/4)で方向性は同じだが、こちらも即時群N=4と小さい。『選別効果を制御した後でも時間を空けた方が高い』とは言えるだけの精度のデータがない。",
+    "B_is_the_difference_statistically_significant": "いいえ。Fisher正確検定p値は主分析=1.0、副分析=0.5165であり、N不足のため有意差ありとは判定できない(p値だけで『効果なし』と断定もしない。項目の趣旨通り、判定不能が正しい記述)。",
+    "C_does_trend_remain_after_excluding_human_intervention": "検証不能。主分析母集団8件全件(100%)が構造的または個別確認された人的介入(approve_regenerate()明示呼び出し7件、原稿差し替え1件[point_oneは差し替えと介入が重複])を伴い、介入なしの自然発生サンプルは即時・非即時いずれの群にも0件である。したがって『介入を除いても傾向が残るか』という問いには、現状データでは回答できない(YESともNOとも言えない)。",
+    "D_is_there_enough_basis_to_make_time_gap_retry_a_production_spec_candidate": "いいえ。理由: (1)主分析N=8は極小、(2)母集団100%が人的介入を伴い時間効果と介入効果が完全に交絡、(3)Fisher p値は有意水準に遠く及ばず、(4)本システムのアーキテクチャ上、max_attempts超のattemptは常に人間の明示的操作を要するため、現行の自動retryループ内に『時間を空ける』仕様を追加しても、そもそも4回目以降が発生する条件(=人間の介入)自体が変わらない限り効果を検証する自然発生データが増えない構造的な問題がある。",
+    "E_what_data_would_be_needed": "(1) 各群29〜354件(想定効果量20-30ポイント差、alpha=0.05・power=0.80の場合の目安、section6参照)の『介入なし』自然発生4回目観測が必要。(2) それには自動retryのmax_attempts自体を一時的に4以上へ緩めるか、既存max_attempts=3のまま複数の異なるsegmentで『人間が何もtext/設定を変えずにapprove_regenerateだけ実行する』運用を意図的に増やす必要がある(ただしこれ自体が『人工的にサンプルを増やす』ため、本タスクの『追加Trial禁止』原則とは別の、将来のPM決定が必要な運用変更)。(3) 即時retry側も同様に、3回連続NG後に即座に4回目を実行しつつ設定変更なしのケースを増やす必要がある(現状はN=1のみ)。(4) 人工的にサンプル数を増やさない場合は、通常のProduction運用が自然に蓄積するのを待つほかなく、蓄積速度は月あたりのHUMAN_REVIEW_REQUIRED到達件数に依存するため、現在のペースでは目安件数に達するまで相当の期間を要すると見込まれる(具体的な月数の推定は本タスクの範囲外、運用側のHUMAN_REVIEW_REQUIRED到達頻度データが必要)。"
+  },
+  "closeout": {
+    "verdict": "REJECTED",
+    "verdict_scope": "『時間を空けるretry』をProduction仕様候補として今回採用しない、という意味でのREJECTED。『時間経過に効果が存在しない』という主張のREJECTEDではない(N不足・交絡のため効果の有無自体が判定不能。指示のとおり有意差なし=効果なしとは結論しない)。",
+    "n_insufficiency": "主分析N=8(うち介入なし0件)、副分析N=15(うち介入なし0件)。",
+    "confounding": "システム構造上、max_attempts超のattemptは常に人的介入を伴う。現行ログには『介入なしで時間だけ空いた自然発生の4回目retry』が存在しない。",
+    "selection_effect": "素朴な連続NG回数別PASS率の低下(69%→17%→24-27%)は、同一の困難segmentが複数position(4,5,6回目…)で重複計上されることによる部分が大きい。母集団を『最初の3回全NG→4回目』に一意化すると、非即時群のPASS率(36-43%)は素朴な3+バケツの値(24-27%)よりむしろ高く、選別効果を制御すると『連続NGが即座に悪化を意味する』という単純な解釈は支持されない。"
+  }
+}

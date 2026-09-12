@@ -15,6 +15,11 @@ USD_JPY = 160.0
 LUNA_IN, LUNA_CACHED, LUNA_OUT = 0.20, 0.02, 1.20
 SOL_IN, SOL_CACHED, SOL_OUT = 5.00, 0.50, 30.00
 GEMINI_IN, GEMINI_OUT = 1.00, 20.00
+# OPEN-144是正: pricing_snapshot.jsonのgemini Batch tier(Standard比50%オフ)。
+# 対象log(pool_pilot_01/raw_usage_log.jsonl)中のgemini_batch記録はTHEMES
+# (pool_benches/pool_subscriptions/pool_startups)には存在しないことを
+# 確認済み(実行結果への影響は無し、将来混入した場合の予防的修正)。
+GEMINI_BATCH_IN, GEMINI_BATCH_OUT = 0.50, 10.00
 AZURE_HOUR = 1.00
 SEARCH_PER_1K = 10.00
 
@@ -33,6 +38,10 @@ def search_cost(r):
 
 def gemini_cost(r):
     return (r.get("input_tokens", 0) or 0) / 1e6 * GEMINI_IN + (r.get("output_tokens", 0) or 0) / 1e6 * GEMINI_OUT
+
+
+def gemini_batch_cost(r):
+    return (r.get("input_tokens", 0) or 0) / 1e6 * GEMINI_BATCH_IN + (r.get("output_tokens", 0) or 0) / 1e6 * GEMINI_BATCH_OUT
 
 
 def azure_cost(r):
@@ -66,6 +75,9 @@ for r in RECORDS:
         excess_usd = actual_usd - counterfactual_usd
     elif provider == "gemini":
         actual_usd = counterfactual_usd = gemini_cost(r)
+        excess_usd = 0.0
+    elif provider == "gemini_batch":
+        actual_usd = counterfactual_usd = gemini_batch_cost(r)
         excess_usd = 0.0
     elif provider == "azure":
         actual_usd = counterfactual_usd = azure_cost(r)

@@ -21,7 +21,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ## 索引(Index): 全Decisionエントリ一覧
 
-> 以下は全231件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
+> 以下は全232件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
 
 - [履歴] ## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
 - [履歴] ## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
@@ -352,6 +352,10 @@ ACTIVE_TASK.md更新)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-80-REPETITION-QA-NUMBER-WORD-FIX: OPEN-121
 数字↔数詞同値化Production実装完了のSSOT反映+Gate 3個別判定表+タオルB1B
 full_story_part2採用+News人名Trial設計完了の反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-REANALYSIS:
+OPEN-144 Gemini Batch費用集計バグ修正完了+TTS Trial harness実行モード
+既定値の適用範囲拡大監査+TTS retry timing選別効果reanalysis(REJECTED/
+Fable判定USER_DECISION_REQUIRED)の反映
 
 ---
 
@@ -3277,6 +3281,80 @@ PM-CLOSEOUT-CONSOLIDATION-80-REPETITION-QA-NUMBER-WORD-FIX)、
 REPORT.md`、`FAMILY-A-NEWS-JA-PERSON-NAME-ROMANIZATION-TRIAL-
 DESIGN-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-121/135/146行、
 `docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-REANALYSIS: OPEN-144 Gemini Batch費用集計バグ修正完了+TTS Trial harness実行モード既定値の適用範囲拡大監査+TTS retry timing選別効果reanalysis(REJECTED/Fable判定USER_DECISION_REQUIRED)の反映
+
+先行する並列タスクで完了した2件の結果をSSOTへ反映した。コード変更は
+本タスクでは実施していない(いずれも先行タスクの実装・調査結果を検証・
+反映)。追加で、TTS実行モード既定値(PM_GOVERNANCE 7-4)の適用範囲を
+TTSを呼び出すTrial harnessへ拡大監査した(API呼び出しなし、¥0)。
+
+**A. OPEN-144(Gemini Batch費用集計バグ)修正完了**: 詳細は
+`OPEN-144-GEMINI-BATCH-COST-ACCOUNTING-FIX-01_REPORT.md`。トリガー1本+
+同型13本の計14 scriptへ`gemini_batch`分岐を追加(生成経路・API呼び出し
+コードは無変更)。実影響が確認できたのは2件のみ: タオルTrial-11音声
+¥12.76→¥62.83(既存概算と一致、出力更新)、No.18 Evidence Compression
+21r grand_total¥12.5→¥27.8(出力更新)。他12scriptは差分¥0(gemini_batch
+記録0件、実行確認済み)。`er006_model_routing_contract_01_cost_
+recompute.py`・`er006_pool_pilot_01_cost_time_compute.py`の2本は、
+本修正前(git HEAD版)でも対象ログの`stage: null`レコードで同一の
+`AttributeError`によりクラッシュすることを確認した(本修正が原因ではない
+既存の別バグ、対象テーマにgemini_batch記録が無いため金銭影響¥0、この
+クラッシュ自体の修正は別課題として記録のみ・本タスク範囲外)。
+
+**B. TTS retry timing選別効果reanalysis**: 詳細は
+`TTS-RETRY-TIMING-SELECTION-EFFECT-REANALYSIS-01_REPORT.md`。「最初の
+3回attemptが全てNG」母集団(N=8)・広義母集団(連続NG≥3、N=15)のいずれも
+100%が人的介入(`approve_regenerate()`明示呼び出し・原稿差し替え)を
+伴い、時間経過単独の効果を分離できない構造的交絡が判明した(自動retry
+はmax_attempts到達で必ず停止する実装のため)。Fisher正確検定p=1.0
+(主)/p=0.5165(副)で有意差なし。位置を一意化した非即時群PASS率
+(36〜43%)が素朴な「3回以上後」集計値(27%)より高く、選別効果(同一難所
+segmentの反復計上)の部分的裏付けは得られた。Sonnet判定はREJECTED
+(cool-down retryを今回Production仕様候補として不採用)。ただし
+**Fableはこれを「効果なし」の確定判定とはせず、N不足・構造的交絡による
+判定不能として`USER_DECISION_REQUIRED`(新規UDR#10)を維持する**:
+(a)現状維持(観測終了)、(b)観測目的限定の運用変更(必要N/群29〜79件の
+目安あり)、(c)本論点をclose。Fable推奨は(c)。
+
+**C. TTS実行モード既定値の適用範囲拡大監査**: PM_GOVERNANCE 7-4を
+TTSを呼び出す全Trial/開発harnessへ拡大監査した。2026-09-06
+(`PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01`)以降作成の現行世代Trial
+harness(確認19本)はいずれも既に`TTS_EXECUTION_MODE=STANDARD`を実装
+済みで追加修正は不要だった。同決定以前(2026-08-22〜09-02)に作成され
+既に完了・再実行予定のない履歴上のDiagnostic/Trial script 5本は同設定を
+持たないが、遡及修正は本タスクの範囲外と判断し変更していない(一覧は
+`docs/pm/RESULT_PACKET.md`参照)。Production runner・`er006_batch_tts_
+wiring_01.py`が定義する6つの「Production call site」・量産既定Batchは
+いずれも無変更。`docs/pm/PM_GOVERNANCE.md`7-4へ新規Trial script作成時の
+必須項目を追記した。
+
+**反映範囲**: `OPEN_ITEMS.md`(OPEN-135/142/143/144行)、
+`docs/pm/PM_GOVERNANCE.md`(7-4追記)、本エントリ+索引1行、
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(2行)、`docs/pm/ACTIVE_TASK.md`
+固定ヘッダ。Git反映: 修正済み14 script、`er011_discovery_
+generalization_towels_trial_11_audio_run.py`、B1B take5試聴clip
+(`take5_has_dried_clip.mp3`/`take5_review_player.html`)、
+`OPEN-144-GEMINI-BATCH-COST-ACCOUNTING-FIX-01_REPORT.md`、
+`TTS-RETRY-TIMING-SELECTION-EFFECT-REANALYSIS-01_REPORT.md`、
+`er011_tts_retry_selection_effect_reanalysis_01.py`、
+`er011_output/tts_retry_selection_effect_reanalysis_01/`、
+再実行して最新化した`er011_output/tts_retry_timing_monitor_01/`・
+`tts_retry_cooldown_analysis_01/`、上記SSOTファイルをcommit。並列稼働中
+2件(JA ASR表記ゆれ一般化Trial、News Trial-15)の生成物・コードには
+一切触れていない。`git stash`/`git clean`/他タスクファイルの`git
+checkout`は使用していない。
+
+**Production採用範囲外**: 本タスクではコード変更・API支出はゼロ(先行
+タスクの実装・調査結果を検証・反映したのみ、TTS Trial harness監査も
+API呼び出しなし)。cool-down retryのProduction採用可否はUDR#10として
+ユーザー判断待ちのまま。
+
+**根拠**: Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-REANALYSIS)、
+`OPEN-144-GEMINI-BATCH-COST-ACCOUNTING-FIX-01_REPORT.md`、
+`TTS-RETRY-TIMING-SELECTION-EFFECT-REANALYSIS-01_REPORT.md`。詳細は
+`OPEN_ITEMS.md`OPEN-135/142/143/144行、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

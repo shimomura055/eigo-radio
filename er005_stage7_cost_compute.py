@@ -17,9 +17,9 @@ with open(PRICING_PATH, encoding="utf-8") as f:
     PRICING = json.load(f)["prices"]
 
 
-def price_lookup(provider, model, meter):
+def price_lookup(provider, model, meter, tier="Standard"):
     for p in PRICING:
-        if p["provider"] == provider and p["meter"] == meter and (
+        if p["provider"] == provider and p["meter"] == meter and p.get("tier", "Standard") == tier and (
             model is None or p["model"] == model or model in p["model"]
         ):
             return p
@@ -32,6 +32,13 @@ OPENAI_OUT = price_lookup("openai", "gpt-5.6-sol", "output_tokens")
 OPENAI_SEARCH = price_lookup("openai", None, "web_search_call")
 GEMINI_IN = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "input_tokens")
 GEMINI_OUT = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "output_tokens")
+# OPEN-144是正: provider="gemini_batch"(Batch API経由)のrecordは従来
+# record_cost()内でどの分岐にも一致せず(0.0, 0.0)へ落ちていた
+# (対象LOG_PATH[cost_baseline_01/raw_usage_log.jsonl]にgemini_batch記録は
+# 実際には0件のため過去の実行結果への影響は無いことを確認済み、将来この
+# ログへgemini_batch recordが混入した場合の予防的修正)。
+GEMINI_BATCH_IN = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "input_tokens", tier="Batch")
+GEMINI_BATCH_OUT = price_lookup("gemini", "gemini-2.5-pro-preview-tts", "output_tokens", tier="Batch")
 AZURE_HOUR = price_lookup("azure", None, "audio_hour")
 
 # ER-008-N8-FINAL-CLOSEOUT-24で発見: 本モジュールはER-005-COST-BASELINE-01
@@ -77,6 +84,12 @@ def record_cost(r: dict) -> tuple[float, float]:
         output_tokens = r.get("output_tokens") or 0
         cost = (input_tokens / 1_000_000) * GEMINI_IN["price"]
         cost += (output_tokens / 1_000_000) * GEMINI_OUT["price"]
+        return cost, 0.0
+    if provider == "gemini_batch":
+        input_tokens = r.get("input_tokens") or 0
+        output_tokens = r.get("output_tokens") or 0
+        cost = (input_tokens / 1_000_000) * GEMINI_BATCH_IN["price"]
+        cost += (output_tokens / 1_000_000) * GEMINI_BATCH_OUT["price"]
         return cost, 0.0
     if provider == "azure":
         seconds = r.get("audio_duration_submitted_seconds") or 0
@@ -173,7 +186,7 @@ def cost_type_of(record: dict) -> str:
     provider = record["provider"]
     if stage.startswith("research_ledger"):
         return "llm"
-    if provider == "gemini":
+    if provider in ("gemini", "gemini_batch"):
         return "tts"
     if provider == "azure":
         return "asr"

@@ -468,6 +468,13 @@ Trial・開発作業と、量産Production runでは、コスト最適化の目�
   しない事例として認識された。本節でTrial/開発=Standard同期という
   運用を再確認し、今後は`TTS_EXECUTION_MODE`の既定値・呼び出し側の
   指定漏れに注意する(Batch既定実行を許容する新例外は追加しない)。
+- **新規Trial script作成時の必須項目(2026-09-12追加、
+  `PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-REANALYSIS`)**:
+  TTSを呼び出すTrial harnessは、冒頭で`os.environ["TTS_EXECUTION_MODE"]
+  = "STANDARD"`(または`os.environ.setdefault(...)`)を既定とする。
+  Production runner(`er006_batch_tts_wiring_01.py`が「Production call
+  site」と定義するファイル・`er012_b_family_production_runner_01.py`等)
+  はBatch既定のまま変更しない。
 
 ## 8. Agent並列起動の原則
 

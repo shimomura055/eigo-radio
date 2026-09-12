@@ -34,6 +34,12 @@ GEMINI_PRO_IN = price_tiered("gemini", "gemini-2.5-pro-preview-tts", "input_toke
 GEMINI_PRO_OUT = price_tiered("gemini", "gemini-2.5-pro-preview-tts", "output_tokens", "Standard")
 GEMINI_FLASH_IN = price_tiered("gemini", "gemini-3.1-flash-tts-preview", "input_tokens", "Standard")
 GEMINI_FLASH_OUT = price_tiered("gemini", "gemini-3.1-flash-tts-preview", "output_tokens", "Standard")
+# OPEN-144是正: Gemini Batch API(batches.create)経由はprovider="gemini_batch"
+# として記録されるが、従来このモジュールにはgemini_batch分岐が無く、
+# 該当call全てが末尾のreturn 0.0(黙って0円計上)に落ちていた
+# (er011_specfix_cost_compute_01.pyの既存正しい実装と同一パターンで是正)。
+GEMINI_PRO_BATCH_IN = price_tiered("gemini", "gemini-2.5-pro-preview-tts", "input_tokens", "Batch")
+GEMINI_PRO_BATCH_OUT = price_tiered("gemini", "gemini-2.5-pro-preview-tts", "output_tokens", "Batch")
 ASR_IN = price("openai_asr", "gpt-4o-mini-transcribe", "input_tokens")
 ASR_OUT = price("openai_asr", "gpt-4o-mini-transcribe", "output_tokens")
 
@@ -50,6 +56,10 @@ def call_cost_usd(r: dict) -> float:
             return (it / 1e6) * GEMINI_PRO_IN + (ot / 1e6) * GEMINI_PRO_OUT
         if model == "gemini-3.1-flash-tts-preview":
             return (it / 1e6) * GEMINI_FLASH_IN + (ot / 1e6) * GEMINI_FLASH_OUT
+        return 0.0
+    if provider == "gemini_batch":
+        if model == "gemini-2.5-pro-preview-tts":
+            return (it / 1e6) * GEMINI_PRO_BATCH_IN + (ot / 1e6) * GEMINI_PRO_BATCH_OUT
         return 0.0
     if provider == "openai_asr":
         return (it / 1e6) * ASR_IN + (ot / 1e6) * ASR_OUT

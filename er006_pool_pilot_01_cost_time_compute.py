@@ -33,6 +33,11 @@ LOG_PATH = "er006_output/pool_pilot_01/raw_usage_log.jsonl"
 LUNA_IN, LUNA_CACHED, LUNA_OUT = 0.20, 0.02, 1.20
 SOL_IN, SOL_CACHED, SOL_OUT = 5.00, 0.50, 30.00
 GEMINI_IN, GEMINI_OUT = 1.00, 20.00
+# OPEN-144是正: pricing_snapshot.jsonのgemini Batch tier(Standard比50%オフ)。
+# 対象log(pool_pilot_01/raw_usage_log.jsonl)中のgemini_batch記録はTHEMES
+# (pool_benches/pool_subscriptions/pool_startups)には存在しないことを
+# 確認済み(実行結果への影響は無し、将来混入した場合の予防的修正)。
+GEMINI_BATCH_IN, GEMINI_BATCH_OUT = 0.50, 10.00
 AZURE_HOUR = 1.00
 SEARCH_PER_1K = 10.00
 
@@ -74,6 +79,11 @@ def record_cost_usd(r: dict) -> tuple[float, float]:
         ot = r.get("output_tokens") or 0
         cost = (it / 1_000_000) * GEMINI_IN + (ot / 1_000_000) * GEMINI_OUT
         return cost, 0.0
+    if provider == "gemini_batch":
+        it = r.get("input_tokens") or 0
+        ot = r.get("output_tokens") or 0
+        cost = (it / 1_000_000) * GEMINI_BATCH_IN + (ot / 1_000_000) * GEMINI_BATCH_OUT
+        return cost, 0.0
     if provider == "azure":
         sec = r.get("audio_duration_submitted_seconds") or 0
         cost = (sec / 3600) * AZURE_HOUR
@@ -99,7 +109,7 @@ def ctype_of(stage: str, provider: str) -> str:
     if stage.startswith("support_"):
         return "support_llm"
     if stage.startswith("tts_"):
-        return "tts" if provider == "gemini" else "asr" if provider == "azure" else "tts_other"
+        return "tts" if provider in ("gemini", "gemini_batch") else "asr" if provider == "azure" else "tts_other"
     return "other"
 
 
