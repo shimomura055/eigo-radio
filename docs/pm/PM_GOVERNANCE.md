@@ -200,6 +200,14 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
     変えない。標準では従来のSource列は持たず、その分Script列を広げ、
     個別`<audio controls>`要素は最低幅360px(再生ボタンが「…」メニューに
     隠れないため)とする)
+(m) **ユーザー環境から実際に開けるリンクであること**(2026-09-12、
+    PM-CLOSEOUT-CONSOLIDATION-83)。`file:///C:/...`・`C:\...`形式は
+    ユーザー側ChatGPT/会話画面からアクセスできないため、ユーザー向け
+    試聴リンクとして不可(内部証跡パスとしてのみ記録可、9-5参照)。
+    Fableは試聴依頼前に必ず「これはユーザー環境から実際に開けるリンクか」
+    を確認する(標準はGitHub blob/raw URL、将来Artifact対応環境では
+    Artifact)。開ける形式を用意できない環境では試聴依頼(Human Review
+    依頼)自体を行わない。
 
 **補足(2026-09-08、ユーザー決定、PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-
 AUTOCOMPACT-50-12)**: ユーザーへ音声・artifact・比較結果等の確認を求める
@@ -762,6 +770,41 @@ player.html等]であることを必須要件として明記する)。
 試聴依頼を行うという運用と合わせて再確認した(新ルールではなく
 既存9-5・14節の再確認。ローカルpathのみの提示での試聴依頼は
 引き続き不可)。
+
+### 9-6. `file:///`のユーザー向けリンク使用禁止(恒久是正、2026-09-12、
+ユーザー正式決定)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-
+DISTRIBUTION**
+
+**違反事例**: 2026-09-12、B1B `full_story_part1`(take5)のHuman Review
+依頼、および`OPEN-135`行の記載において、`file:///C:/Users/tensh/
+eigo-radio/...`形式のローカルURLを「クリック可能なリンク」として提示した
+(ユーザー側ChatGPT画面からはアクセスできず、実質的に開けないリンクを
+試聴依頼として提示していた)。これを受け、9-2・9-5を以下の5点で
+恒久的に明確化する(新ルールの追加ではなく、既存9-2「`file://...`形式URL」
+という記述自体が誤解を生んでいたことの是正)。
+
+1. ユーザーが実際に会話画面から開ける形式で提示する(Claude Artifact等の
+   外部からアクセス可能なArtifact/会話へ添付された音声・HTML等ユーザー側
+   UIから開けるファイル/その他ユーザー環境から実際にクリックして再生
+   できる形式)。
+2. `C:\...`・`file:///C:/...`は**内部証跡パス**として記録してよいが、
+   **ユーザー向け試聴リンクとしては使用しない**(9-2の既存記述は、以後
+   この意味[内部証跡限定]でのみ有効とし、ユーザー向け提示URLとしての
+   `file://`使用は本節により明確に禁止する)。
+3. ユーザー側から開けるArtifactを生成できない環境の場合は、「試聴リンクを
+   提示した」と扱わない。Human Review依頼を行わず、利用可能な配布方法
+   (下記4)を整えてから報告する。
+4. **標準配布経路**: Claude Artifact生成ツールが使えない環境では、GitHub
+   経由の配布(commit・push後の`https://github.com/<owner>/<repo>/blob/
+   main/<path>`および`https://raw.githubusercontent.com/<owner>/<repo>/
+   main/<path>`)を用いる。用いる際は当該repoの公開/非公開設定を確認し
+   (非公開の場合は未認証アクセス不可である旨を明記)、実際にHTTPで
+   200が返るかを確認した結果を報告に含める。将来Artifact生成ツールが
+   使える環境では、そちらを優先する。
+5. Fableは試聴依頼前に必ずGate 7(2節、補足(m))で「これはユーザー環境
+   から実際に開けるリンクか」を確認する。
 
 ## 10. commit / push運用
 
@@ -1702,4 +1745,20 @@ Trial特有コストを独立項目として明示する5区分へ更新)。
   必須)を再確認した(内容変更なし)。文書編集のみ、コード・Prompt
   変更なし、追加API費用¥0。詳細は`DECISION_LOG.md`
   `PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02`エントリ
+  参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-
+  B1B-DISTRIBUTION): ユーザー指示「試聴リンク運用の恒久是正」を受け、
+  新小節「9-6. `file:///`のユーザー向けリンク使用禁止(恒久是正)」を
+  追加。2026-09-12に`file:///C:/...`形式URLを試聴依頼リンクとして
+  提示した2件(B1B take5 Human Review依頼、OPEN-135行記載)を違反事例
+  として記録し、原文5点(1.ユーザー環境から開ける形式で提示/2.
+  `C:\...`・`file:///...`は内部証跡パス限定でユーザー向けリンク不可/
+  3.開ける形式を生成できない環境ではHuman Review依頼自体を行わない/
+  4.標準配布経路=GitHub blob/raw URL[公開性確認・HTTP到達性確認込み]、
+  将来Artifact対応環境ではArtifact/5.試聴依頼前にGate 7で確認)を
+  恒久ルールとして明記した。Gate 7音声artifact受入チェックリスト
+  (2節)へ項目(m)「ユーザー環境から実際に開けるリンクであること」を
+  追加した。文書編集のみ、コード・Prompt変更なし、追加API費用¥0。
+  詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-
+  LINK-RULE-AND-B1B-DISTRIBUTION`エントリ、`docs/pm/RESULT_PACKET.md`
   参照。

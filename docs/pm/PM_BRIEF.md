@@ -76,7 +76,13 @@ Trial/開発=Standard同期(速度・デバッグ性優先)・量産Production=B
 2026-09-12新設)。試聴依頼は、14節の7段階を経てreconcile・原因切り分け・
 一般化Trialが済み「本当に人間の耳でしか判断できない」段階に到達した
 場合にのみ行い、必ずクリックできるArtifact/playerリンクを提示する
-(ローカルpathのみは不可、`docs/pm/PM_GOVERNANCE.md`9-5)。報告単位(Lane/
+(ローカルpathのみは不可、`docs/pm/PM_GOVERNANCE.md`9-5)。
+`file:///C:/...`・`C:\...`はユーザー環境から開けないため、ユーザー向け
+試聴リンクとして使用禁止(内部証跡パスとしてのみ記録可)。標準配布経路は
+GitHub blob URL(`https://github.com/<repo>/blob/main/<path>`)・raw URL
+(`https://raw.githubusercontent.com/<repo>/main/<path>`)であり、依頼前に
+実際にユーザー環境から開けるかをGate 7で確認する(2026-09-12、
+PM-CLOSEOUT-CONSOLIDATION-83で明確化)。報告単位(Lane/
 Workstream/Feature/Trial群等)を基準に
 した即時報告・未回答フル再掲・Next Action/Reminder提示の正式SSOTは
 `docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit

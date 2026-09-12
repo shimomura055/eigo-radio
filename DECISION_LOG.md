@@ -21,7 +21,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ## 索引(Index): 全Decisionエントリ一覧
 
-> 以下は全232件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
+> 以下は全233件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
 
 - [履歴] ## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
 - [履歴] ## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
@@ -360,6 +360,7 @@ Fable判定USER_DECISION_REQUIRED)の反映
 JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 (OPEN-146)の並列稼働2件、いずれもTrial closeout=VALIDATEDのSSOT反映
 (UDR#11/UDR#12新規、Production採用は未承認)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION: 試聴リンク運用の恒久是正(`file:///`禁止・GitHub配布)+タオルTrial-11 B1B完成配布+OPEN-145/146 Production採用(配線中)+TTS retry cool-down観測Trial記録(UDR#10解消)
 
 ---
 
@@ -3434,6 +3435,65 @@ TRIALS)、`JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01_
 REPORT.md`、`FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15_
 REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
 RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION: 試聴リンク運用の恒久是正(`file:///`禁止・GitHub配布)+タオルTrial-11 B1B完成配布+OPEN-145/146 Production採用(配線中)+TTS retry cool-down観測Trial記録(UDR#10解消)
+
+**ユーザー指示原文(2026-09-12、全文転記)**:
+
+```
+【試聴リンク運用の恒久是正】
+今回もfile:///C:/Users/...形式のローカルリンクが提示されましたが、ユーザー側のChatGPT画面からアクセスできません。今後、ユーザーへ試聴・Artifact確認を依頼する場合は、ローカル`file:///`URLを「クリック可能なリンク」として扱うことを禁止します。
+必須要件:
+1. ユーザーが実際に会話画面から開ける形式で提示する - Claude Artifact等の外部からアクセス可能なArtifact - 会話へ添付された音声/HTML等、ユーザー側UIから開けるファイル - その他、ユーザー環境から実際にクリックして再生できる形式
+2. `C:\...`や`file:///C:/...`は内部証跡パスとして記録してよいが、ユーザー向け試聴リンクとしては使用しない。
+3. ユーザー側から開けるArtifactを生成できない環境の場合は、「試聴リンクを提示した」と扱わない。Human Reviewを依頼せず、利用可能な配布方法を整えてから報告する。
+4. 試聴依頼前にFableが、「これはユーザー環境から実際に開けるリンクか」をGate 7で確認すること。
+5. PM_GOVERNANCEの既存「試聴依頼時はクリック可能なArtifact/playerリンク必須」を上記内容で明確化し、`file:///`をユーザー向けリンクとして認めないことを恒久ルールとして記録する。
+今回のA-Family / Discovery / B1 Trial-11についても、既存player.htmlとmp3をユーザーが実際に開ける形で再提示してください。音声内容の再生成は不要です。
+```
+
+**違反事例の記録**: 2026-09-12、B1B `full_story_part1`(take5)のHuman Review
+依頼、および`OPEN_ITEMS.md`OPEN-135行の記載において、`file:///C:/Users/
+tensh/eigo-radio/...`形式のローカルURLを試聴リンクとして提示していた
+(ユーザー側から実際には開けない)。
+
+**対応**: `docs/pm/PM_GOVERNANCE.md`9節へ新小節「9-6.
+`file:///`のユーザー向けリンク使用禁止(恒久是正)」を追加し、上記原文
+1〜5をそのまま恒久ルール化した。Gate 7音声artifact受入チェックリスト
+(2節)へ項目(m)「ユーザー環境から実際に開けるリンクであること」を
+追加した。`docs/pm/PM_BRIEF.md`のGate 7/9-5案内へGitHub配布経路の
+案内を追記した。
+
+**配布方法の確立(GitHub経由)**: 本セッションはArtifact生成ツールが
+無いため、GitHub経由の配布を採用した。リポジトリ`shimomura055/
+eigo-radio`は公開(public)であることを、未認証`curl -sI`で
+`https://api.github.com/repos/shimomura055/eigo-radio`(200)・
+`https://github.com/shimomura055/eigo-radio`(200、`logged_in=no`
+cookieでも200)の両方で確認した。B1B最終mp3・player.html・take5 clip
+mp3・take5_review_player.htmlをcommit・push後、各mp3についてGitHub
+blob URL・raw URLを生成し、実際にHTTPで200が返るかを確認した
+(詳細は`docs/pm/RESULT_PACKET.md`参照)。player.html/take5_review_
+player.htmlはGitHub上でHTMLとして描画されない(ソース表示のみ)ため、
+GitHub Pages有効化までは内部証跡パス扱いとする(Fable判断事項として
+GitHub Release添付/Gist/GitHub Pages有効化の要否を別途提示)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Discovery B1B完成[take5個別
+承認・part2採用・comment_2既解消・Assembly PASS]、A2はUDR#11配線後
+Assembly予定、配布URL、TTS retry cool-down観測TrialによるUDR#10解消)、
+OPEN-145/146行を`APPROVED_FOR_PRODUCTION`(2026-09-12ユーザー採用、
+配線中、Gate 3未完了)へ更新した。`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+へ本タスクの実績行を追記した。
+
+**Production採用範囲外**: 本タスクではコード変更・API支出はゼロ。
+`CURRENT_SPEC.md`は並列稼働中の別タスク(#11 JA ASR/#12 Ledger)が
+編集中のため本タスクでは一切編集・stageしていない。OPEN-145/146の
+`APPROVED_FOR_PRODUCTION`はユーザー採用の記録であり、`PRODUCTION_
+WIRED`(Gate 3完了)には別途到達が必要。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-
+83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION)、ユーザー指示原文
+(上記)。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
+PM_GOVERNANCE.md`9-6、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 
