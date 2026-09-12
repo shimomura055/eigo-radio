@@ -368,6 +368,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-PHASE1: Claude開発Token効率化(OPEN-142)Phase 1実測監査(`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-AUDIT-01_REPORT.md`)結果のSSOT反映(巨大SSOT全文再読0件・同一管理ID内再読込37.8%・Agent間重複7.0%・Fable委任文744,841字が実測読込量835,677字と同規模)+Sonnet改善案A〜Hとユーザー原案A〜Hの対応表+Phase 2 Trial設計案、STOP条件該当なし・実施はユーザー判断待ち
 - [本ファイル内] ## PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01: News Point品質一般化Trial-16(Hubble/Saturnテーマ)着手+News Ledger公式英語表記(OPEN-146)は過去Ledger遡及適用なしでN増しの中でruntime evidence蓄積+B-Family 3V Phase 1bをDiscovery Trial-12待ちにせず着手(STOP条件6項目・Phase 2テーマ=スマホ制限3V/2V比較)+Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)を既存Production仕様で1本作成+FableのPMフォロー不足是正(既存Gate 5/Gate 6/12節への適用漏れとして12-10節を追加)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-STOP: Discovery N=1追加Trial-12完走(A2音声USER_DECISION_REQUIRED)+3V Phase 1b-03 STOP(Writer/Ledger未配線)+Token効率Phase 2ユーザー承認の正式反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE: 3V Phase 1b-03「ユーザー回答＋追加PM指示」(2026-09-12、原文全文)の正式記録(体験claimの根拠付け=B-Family共通Writer原則として採用/Tensionでの外部制約統合=任意パターンとして採用/スマホ制限新テーマ着手前に既存AI採用選考記事でのRegression実施を必須指示/Fableは汎用化のたびにRegressionを自発提案すべきという恒久PM運用フィードバック)+`docs/pm/PM_GOVERNANCE.md`への「汎用化時のRegression自発提案」ルール明確化
 
 ---
 
@@ -4105,6 +4106,311 @@ EFFICIENCY-PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`(準備節)、
 ユーザー発言原文(上記(C))。詳細は`OPEN_ITEMS.md`OPEN-135/120/121/142
 行、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`
 参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE: 3V
+Phase 1b-03「ユーザー回答＋追加PM指示」(2026-09-12)の原文正式記録+
+「汎用化時のRegression自発提案」ルールのPM_GOVERNANCE明確化
+
+**背景**: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-03-
+WRITER-LEDGER-KP-GLUE`(STOP、`PM-CLOSEOUT-CONSOLIDATION-90`で記録済み)
+が提示した代替案A/Bおよび2件の判断事項(体験claimの根拠付け/Tensionでの
+外部制約統合)に対し、ユーザーが2026-09-12に回答した。本エントリは
+その原文全文を要約せず正式転記する(セッション記録`294958fe-da6e-491c-
+8a02-4f864d8195c8.jsonl`、`type":"user"`行より抽出、改変なし)。
+
+**ユーザー発言原文(verbatim)**:
+
+```
+【B-Family / Voices — Phase 1b-03 ユーザー回答＋追加PM指示】
+
+今回の判断事項2点は以下で確定します。
+
+1. 「体験claimの根拠付け」
+→ Claude推奨どおり採用。
+
+体験談的・主観的に見えるclaimについても、
+Writerが根拠なく創作するのではなく、
+Ledger / Fact Safetyで裏付けられることを
+B-Family / Voices共通のWriter原則とする。
+
+3Vだけではなく、
+Voice数・テーマに依存しないB-Family共通原則として扱う。
+
+
+2. 「Tensionでの外部制約統合」
+→ Claude推奨どおり(b)を採用。
+
+3V共通の必須恒久ルールにはしない。
+
+「3人のVoiceだけでは単純な陣営分解ができず、
+Ledger上、規制・監査・制度等の外部制約が重要な場合に使える
+構成パターンの1つ」
+
+として任意適用とする。
+
+今後のN増しで再現性・必要性が確認できた場合に、
+恒久ルール化の要否を改めて判断する。
+
+
+────────────────────
+追加指示：汎用化Regressionを新テーマより先に実施
+────────────────────
+
+今回、
+Trial-02のAI採用選考向けWriter / Ledger構造から
+テーマ固有部分を分離し、
+B-Family / Voicesの汎用Writerテンプレートへ移行することになります。
+
+そのため、新しいスマホ制限テーマへ進む前に、
+
+「汎用化によって、これまで成立していた既存記事を壊していないか」
+
+を必ず確認してください。
+
+
+【対象】
+
+既存のAI採用選考記事
+（Trial-02で3V成立確認済みのもの）
+
+既存完成artifactをBaselineとして固定し、
+今回作成する汎用化後の経路を使って、
+同じAI採用選考テーマを再生成してください。
+
+
+【目的】
+
+テーマ固有Promptを汎用化した結果、
+
+- 既存3V品質が落ちていないか
+- Voiceの役割が変質していないか
+- Tensionが弱くなっていないか
+- Fact Safetyが悪化していないか
+- テーマ固有情報の分離漏れがないか
+- 共通化したWriterがAI採用選考でも正常に機能するか
+
+を確認する。
+
+
+【比較観点】
+
+最低限、
+
+- Voice distinctness
+- 各Voiceの役割
+- 3Vが単純な賛成/反対/中立になっていないこと
+- Full Story / Point構造
+- Tension
+- 外部制約の扱い
+- 体験claimの根拠
+- Ledger traceability
+- Fact Checker
+- Ledger Deviation
+- Point Overlap / Point Value
+- Content Integrity
+- Key Phrase
+- retry / fallback
+- 記事長
+- QA Gate結果
+- 既存Trial-02との差分
+- 意味・体験上の劣化有無
+
+を比較してください。
+
+LLM生成なので文章完全一致は要求しません。
+
+判定したいのは、
+
+「汎用化後も、既存テーマで同等以上の設計品質を再現できるか」
+
+です。
+
+
+【重要】
+
+Regressionのために
+旧AI採用選考テーマ固有Promptを裏から再利用して
+PASSさせないこと。
+
+今回作る
+「新しい汎用Writerテンプレート＋テーマ固有Ledger / Voice Card」
+という正式候補経路を使用すること。
+
+そうでなければ汎用化Regressionになりません。
+
+
+────────────────────
+進行順
+────────────────────
+
+Phase 1b-03の順序を以下にしてください。
+
+1. 上記ユーザー判断2点を仕様へ反映
+2. AI採用選考固有部分と共通部分を正式分離
+3. Ledger curation方式の暫定経路を構成
+4. Voice Card供給方式を構成
+5. 汎用Writerテンプレートを構成
+6. 必要test
+7. 既存AI採用選考記事を汎用経路で再生成
+8. BaselineとのRegression比較
+9. Regression PASS確認
+10. その後に初めて、
+   「学校は日中の生徒のスマートフォン利用を制限すべきか？」
+   の新テーマへ進む
+11. 新テーマで3V生成
+12. 同テーマで2V生成
+13. 3V / 2V比較
+
+
+Regressionで問題が出た場合は、
+スマホテーマへ進まず原因を切り分けてください。
+
+承認済み仕様の範囲内で明らかな実装漏れ・分離漏れなら
+自律的に修正して再Regressionしてよい。
+
+一方、
+
+- 新しいWriter原則
+- 新しいVoice設計
+- 新しいLedger意味論
+- 新QA基準
+- 承認済み2点を超える仕様変更
+
+が必要ならSTOPして報告してください。
+
+
+────────────────────
+FableへのPM運用指示
+────────────────────
+
+今回の追加指示には、もう1つ重要なPM上のフィードバックがあります。
+
+ユーザーが、
+
+「汎用化したなら元記事でRegressionすべきでは？」
+
+と後から指摘しないと検証されない状態は改善してください。
+
+今後、
+
+- テーマ固有実装 → 汎用実装
+- 個別Prompt → 共通Prompt
+- 専用関数 → 共通primitive
+- 1記事で検証した構造 → Family共通仕様
+
+のような一般化・抽象化を行う場合、
+
+Fableは実装指示だけを順番に消化するのではなく、
+自発的に、
+
+1. 既存成功ケースへのRegressionが必要ではないか
+2. 元artifactを新経路で再現すべきではないか
+3. 既存Production経路を壊す可能性がないか
+4. 新テーマへ進む前に非劣化確認が必要ではないか
+
+を検討してください。
+
+必要と判断した場合は、
+ユーザーから言われるのを待たず、
+
+「この汎用化では既存記事Regressionを先に行うことを推奨します」
+
+とNext Action / Suggestionとして提示してください。
+
+これは「勝手に新仕様を追加する」という意味ではありません。
+
+仕様判断はユーザーへ戻す一方、
+品質・Regression・Production整合のために
+次に何を確認すべきかをFable自身が考え、
+提案することを求めます。
+
+今回についてはRegression実施をユーザーが明示承認したので、
+追加判断なしで上記順序で進めてください。
+
+
+────────────────────
+Status
+────────────────────
+
+B-Family / Voices 3V：
+APPROVED_FOR_PRODUCTION維持。
+
+ユーザー判断：
+今はなし。
+
+今後の展望：
+汎用化実装
+→ AI採用選考記事でRegression
+→ PASS後にスマホ制限3V
+→ 同テーマ2V
+→ 3V/2V比較
+→ Gate 3残項目確認。
+
+Regressionで新たな仕様判断が必要になった場合のみ、
+その時点でユーザーへ提示してください。
+```
+
+**決定の整理**:
+
+1. 「体験claimの根拠付け」= B-Family共通Writer原則として採用。3Vに
+   限定せず、Voice数・テーマに依存しないB-Family/Voices共通原則。
+   体験談的・主観的に見えるclaimも、Writerが根拠なく創作するのでは
+   なくLedger/Fact Safetyで裏付けられることを要求する。
+2. 「Tensionでの外部制約統合」= 3V共通の必須恒久ルールにはしない。
+   任意適用パターン(3人のVoiceだけでは単純な陣営分解ができず、
+   Ledger上、規制・監査・制度等の外部制約が重要な場合に使える構成
+   パターンの1つ)として採用。恒久ルール化の要否はN増しでの再現性・
+   必要性確認後に改めて判断する。
+3. スマホ制限新テーマ着手前に、既存のAI採用選考記事(Trial-02で3V
+   成立確認済み)を対象に、既存完成artifactをBaselineとして固定した
+   うえで、今回作成する汎用Writerテンプレート＋テーマ固有Ledger/
+   Voice Cardという正式候補経路を使って同テーマを再生成し、Regression
+   比較(Voice distinctness、各Voiceの役割、3Vが単純な賛成/反対/中立に
+   なっていないこと、Full Story/Point構造、Tension、外部制約の扱い、
+   体験claimの根拠、Ledger traceability、Fact Checker、Ledger
+   Deviation、Point Overlap/Point Value、Content Integrity、Key
+   Phrase、retry/fallback、記事長、QA Gate結果、既存Trial-02との差分、
+   意味・体験上の劣化有無)を実施する。旧テーマ固有Promptを裏から
+   再利用してPASSさせることは不可。進行順は上記原文1〜13の順序に従う。
+   Regressionで問題が出た場合はスマホテーマへ進まず原因を切り分ける
+   (承認済み仕様の範囲内の実装漏れ・分離漏れなら自律修正・再Regression
+   可。新しいWriter原則/新しいVoice設計/新しいLedger意味論/新QA基準/
+   承認済み2点を超える仕様変更が必要ならSTOPして報告)。
+4. Fableは今後、テーマ固有実装→汎用実装等の一般化・抽象化を行う際、
+   実装指示を順番に消化するだけでなく、既存成功ケースへのRegression
+   要否・元artifactの新経路再現要否・既存Production経路への影響・
+   非劣化確認要否を自発的に検討し、必要と判断した場合はユーザーに
+   言われる前に「既存記事Regressionを先に行うことを推奨します」と
+   Next Action/Suggestionとして提示する(仕様判断自体はユーザーへ
+   戻す)。
+
+**Status**: 上記(1)〜(4)はいずれも**ユーザー決定(仕様判断)**である。
+B-Family/Voices 3VのStatusは`APPROVED_FOR_PRODUCTION`のまま変更なし。
+Phase 1b-04(汎用Writerテンプレート実装+AI採用選考記事Regression)は
+別管理IDで並列進行中であり、本タスク時点で結果は未出。Regression結果
+(PASS/STOP)が出るまで、本エントリの内容を根拠に`APPROVED_FOR_
+PRODUCTION`から`PRODUCTION_WIRED`への格上げ、または`CURRENT_SPEC.md`
+3V節の恒久仕様への反映は行わない(格上げ・仕様反映はPhase 1b-04完了後、
+別タスクで実施予定)。
+
+**PM_GOVERNANCE反映**: 上記(4)の恒久PM運用フィードバックを受け、
+`docs/pm/PM_GOVERNANCE.md`へ「汎用化時のRegression自発提案」の趣旨を
+既存節に1段落追加した(新設Gateではなく既存ルールの適用明確化)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-120行末尾へ追記(既存本文不変)。
+`docs/pm/PM_GOVERNANCE.md`へ上記1段落追加。`CURRENT_SPEC.md`3V節への
+反映はPhase 1b-04完了後に別タスクで実施するため本タスクでは行って
+いない。
+
+**並列稼働中(本タスクでは以下の生成物に一切触れず、stageもして
+いない)**: News一般化Trial-16、Trend新記事、Repetition QA
+RECONCILE-03、3V Phase 1b-04(実装+Regression本体)、Opus L2解釈。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-91-
+3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE`)、
+ユーザー発言原文(上記、セッション記録`294958fe-da6e-491c-8a02-
+4f864d8195c8.jsonl`より抽出)。詳細は`OPEN_ITEMS.md`OPEN-120行、
+`docs/pm/PM_GOVERNANCE.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

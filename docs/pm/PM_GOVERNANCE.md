@@ -186,7 +186,19 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   報告済みの項目(12節「報告単位管理ルール」)を見落としていないかも
   確認する(2026-09-10追記)。前提タスクの完了で新たに着手可能になった
   別タスクがあれば、着手前にNext Action/推奨/選択肢をユーザーへ
-  提示済みか確認する(2026-09-12追記、12-10参照)。
+  提示済みか確認する(2026-09-12追記、12-10参照)。テーマ固有実装→
+  汎用実装/個別Prompt→共通Prompt/専用関数→共通primitive/1記事で検証
+  した構造→Family共通仕様、のような一般化・抽象化を伴う次工程に着手
+  する場合は、着手前に、既存の成立済み記事へのRegression(汎用化に
+  よって既存記事が壊れていないかの確認)が必要ではないかをFableが
+  自発的に検討し、必要と判断した場合はユーザーから指摘される前に
+  「この汎用化では既存記事Regressionを先に行うことを推奨します」と
+  Next Action/Suggestionとして提示する。これは既存ルール(12-6「Next
+  Actionを勝手な仕様決定にしない」・12-10「前提タスク完了によるunblock
+  時の自発的Next Action提示」)の適用範囲を汎用化作業にも明確化する
+  ものであり、新設Gateではない(2026-09-12ユーザー指摘、管理ID
+  `PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-
+  GENERALIZATION-REGRESSION-RULE`)。
 - **Gate 7 — 実務報告の受入判定**: Sonnet/Opus等の「完了」「Production反映済み」
   「動作確認済み」という報告をそのまま採用せず、Production正式path /
   runtime evidence / test / approved specとの一致 / retry・fallbackとの整合 /
