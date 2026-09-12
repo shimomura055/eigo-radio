@@ -647,3 +647,11 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   LOW、実測¥0、SSOT編集+再現性確認scriptの実行[MD5完全一致確認]の
   みで新規LLM/TTS/ASR API呼び出しなし)。中間レビュー・正式Closeout
   Triggerの到達判定・再計算はいずれも実施していない。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-
+  A2-DISTRIBUTION、本タスク): OPEN-145/146のProduction配線(いずれも
+  並列稼働の別タスクで実装済み、本タスクはGit統合+SSOT反映+追加作業を
+  実施)を統合。Sonnet、LOW、実測¥0(新規LLM/TTS/ASR API呼び出しなし、
+  A2 mp3書き出し[soundfile、CPU計算のみ]・TTS cooldown観測フックの
+  harness配線3件・project-wide regression[collected=2346、既知fail3件
+  のみ]の実行に限定)。中間レビュー・正式Closeout Triggerの到達判定・
+  再計算はいずれも実施していない。

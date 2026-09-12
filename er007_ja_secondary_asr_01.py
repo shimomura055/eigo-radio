@@ -17,6 +17,13 @@ import er003_b1_p4_audio as p4  # Azure STT呼び出し(既存の連続認識関
 import er005_cost_logger as cl
 import er007_ja_asr_validator_01 as javal
 import er008_asr_variant_hardening_15_ja_kanji_readings as ja_kanji_readings
+# OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01(2026-09-12
+# ユーザー正式決定 APPROVED_FOR_PRODUCTION): Candidate D-2(voicing許容
+# Cascadeの厳密一致引き上げ)は、既存classify_ja_asr_match()自体の
+# ASR_VALIDATION_UNCERTAINという返り値の意味を変更せず、この
+# Cascade呼び出し元でのpost-processingとして配線する(Trial REPORT
+# 「修正2回目」節§6の設計どおり)。
+import er011_ja_asr_variant_layer_01 as ja_variant_layer
 
 FEATURE_FLAG_JA_PRIMARY_OPENAI = True  # ER-007-JA-ASR-VALIDATOR-REDESIGN-
                                          # AND-CASCADE-01: Part Fの6条件を
@@ -79,6 +86,21 @@ def _orthographic_reading_confirmed(cls_step: "javal.ClassificationResultJA") ->
     return True
 
 
+def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional[str],
+                                          cls_step: Optional["javal.ClassificationResultJA"]
+                                          ) -> Optional["javal.ClassificationResultJA"]:
+    """OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01: Candidate
+    D-2(voicing許容Cascadeの厳密一致引き上げ)。cls_stepがASR_VALIDATION_
+    UNCERTAIN(根拠がphonetic_uncertainのみ)の場合に限り、形態素解析
+    ベースの厳密一致で裏付けが取れればPHONETIC_MATCHへ引き上げた新しい
+    結果を返す。それ以外(対象外・厳密不一致・flag OFF・asr_text無し)は
+    元のcls_stepをそのまま返す(既存挙動を変えない)。"""
+    if cls_step is None or asr_text is None:
+        return cls_step
+    upgraded = ja_variant_layer.try_upgrade_voicing_cascade(canonical_text, asr_text, cls_step)
+    return upgraded if upgraded is not None else cls_step
+
+
 def evaluate_attempt_ja_with_cascade_detail(
     canonical_text: str, primary_asr_text: Optional[str], wav_path: str,
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
@@ -88,6 +110,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     Secondary#1->Secondary#2)を追加実行する。cascade_enabled=Falseなら
     classify_ja_asr_matchの結果をそのまま返す(後方互換)。"""
     cls = javal.classify_ja_asr_match(canonical_text, primary_asr_text)
+    cls = _apply_variant_layer_voicing_upgrade(canonical_text, primary_asr_text, cls)
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": primary_asr_text,
               "classification": cls.classification}]
     result = {
@@ -127,6 +150,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     # --- Primary #2(同じ音声、OpenAI、TTSは再生成しない) ---
     text_p2, err_p2 = routing._transcribe_openai_mini(wav_path, "ja-JP", "gpt-4o-mini-transcribe")
     cls_p2 = javal.classify_ja_asr_match(canonical_text, text_p2) if text_p2 is not None else None
+    cls_p2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_p2, cls_p2)
     steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
                    "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
     if cls_p2 is not None and cls_p2.should_pass:
@@ -137,6 +161,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     # --- Secondary #1(Azure) ---
     text_s1, err_s1 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
     cls_s1 = javal.classify_ja_asr_match(canonical_text, text_s1) if text_s1 is not None else None
+    cls_s1 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s1, cls_s1)
     steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
                    "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE"})
     if cls_s1 is not None and cls_s1.should_pass:
@@ -151,6 +176,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     # --- Secondary #2(Azure、同じ音声を再度) ---
     text_s2, err_s2 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
     cls_s2 = javal.classify_ja_asr_match(canonical_text, text_s2) if text_s2 is not None else None
+    cls_s2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s2, cls_s2)
     steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
                    "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE"})
     if cls_s2 is not None and cls_s2.should_pass:

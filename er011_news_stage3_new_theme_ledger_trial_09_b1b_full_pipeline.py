@@ -41,6 +41,8 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
+import er011_tts_cooldown_observation_01 as cooldown_obs
+import er011_tts_cooldown_observation_harness_helpers_01 as cooldown_helpers
 
 THEME_ID = "news_stage3_new_theme_ledger_trial_09_b1b_full"
 OUT_DIR = f"er011_output/{THEME_ID}"
@@ -135,6 +137,56 @@ def run_tts() -> dict:
 
 
 # ============================================================
+# Step 3b: TTS retry cool-down 20分観測フック(Trial限定、既定OFF)
+# (TTS-RETRY-COOLDOWN-20MIN-OBSERVATION-TRIAL-01_REPORT.md 2.2節の配線指示)
+# ============================================================
+def run_cooldown_observation_stage(tts_result: dict) -> dict:
+    """`TTS_COOLDOWN_OBSERVATION`が"1"の場合のみ、tts_result内でstatusが
+    STOPPEDだったsegmentについてcooldown観測を実行する(既定OFFではno-op、
+    Production側review_lock_state.json/tts_generation_results.json/最終
+    成果物wavは一切変更しない)。Production runner組み込みなし。"""
+    if os.environ.get("TTS_COOLDOWN_OBSERVATION") != "1":
+        return {"status": "SKIPPED_DISABLED", "jobs": 0}
+
+    narration_dir = f"{LEVEL_OUT_DIR}/narration"
+    results_path = f"{LEVEL_OUT_DIR}/audit/tts_generation_results.json"
+    tts_results_full = json.load(open(results_path, "r", encoding="utf-8")) if os.path.exists(results_path) else {}
+    segments_meta = tts_results_full.get("segments", {})
+    stopped_segments = [seg_id for seg_id, status in (tts_result.get("segment_status") or {}).items()
+                         if status not in ("OK", None)]
+
+    jobs = []
+    skipped = []
+    for segment_id in stopped_segments:
+        three = cooldown_helpers.load_three_attempt_records(narration_dir, segment_id)
+        if not three:
+            skipped.append({"segment_id": segment_id, "reason": "no_exactly_three_consecutive_ng_records"})
+            continue
+        canonical_text = (segments_meta.get(segment_id) or {}).get("canonical_text")
+        if canonical_text is None:
+            skipped.append({"segment_id": segment_id, "reason": "canonical_text_not_found"})
+            continue
+        binding = cooldown_helpers.build_b1_single_attempt_binding(segment_id, canonical_text, narration_dir)
+        if binding is None:
+            skipped.append({"segment_id": segment_id, "reason": "no_single_attempt_binding_for_segment_type"})
+            continue
+        fn, args, kwargs = binding
+        jobs.append({
+            "level_dir": LEVEL_OUT_DIR, "segment_id": segment_id, "canonical_text": canonical_text,
+            "language": "ja" if kwargs.get("language") == "ja" else "en",
+            "three_attempt_records": three, "params": dict(kwargs),
+            "single_attempt_fn": fn, "single_attempt_args": args, "single_attempt_kwargs": kwargs,
+        })
+
+    observations = cooldown_obs.run_batch_observations(jobs) if jobs else []
+    summary = {"status": "RAN" if jobs else "NO_ELIGIBLE_SEGMENTS", "jobs": len(jobs),
+               "skipped": skipped, "observations": observations}
+    save_json(f"{LEVEL_OUT_DIR}/audit/tts_cooldown_observation_stage_summary.json", summary)
+    print(f"[{THEME_ID}] TTS cooldown観測: jobs={len(jobs)} skipped={len(skipped)}")
+    return summary
+
+
+# ============================================================
 # Step 4: Assembly(Production関数を無変更で直接呼ぶ。内部でAudio
 # Validation Gate OFF経路が自動実行される)
 # ============================================================
@@ -170,6 +222,7 @@ def main() -> dict:
     run_scaffold(article_text)
     kp_result = prepare_key_phrases(article_text)
     tts_result = run_tts()
+    cooldown_result = run_cooldown_observation_stage(tts_result)
     assemble_result = run_assembly()
     gate_on = run_gate_opt_in_check() if assemble_result.get("gate_off_result") == "PASS" else \
         {"gate_on_result": "SKIPPED(gate_off_blocked)"}
@@ -181,6 +234,7 @@ def main() -> dict:
             "redundancy_qa": (kp_result.get("redundancy_qa") or {}).get("status"),
         },
         "tts_result_keys": list(tts_result.keys()) if isinstance(tts_result, dict) else None,
+        "cooldown_observation": {k: v for k, v in cooldown_result.items() if k != "observations"},
         "assemble_result": {k: v for k, v in assemble_result.items() if k != "article_text"},
         "gate_opt_in_result": gate_on,
     }

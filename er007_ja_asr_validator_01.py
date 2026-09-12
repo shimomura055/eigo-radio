@@ -264,6 +264,27 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
     protected = protected_check_ja(c_norm, a_norm)
 
     if not protected.passed:
+        # OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01(2026-09-12
+        # ユーザー正式決定 APPROVED_FOR_PRODUCTION): 数字の不一致「のみ」
+        # (否定の不一致が同時に発生していない場合に限る、既存の否定保護は
+        # 一切弱めない)で保護落ちした場合に限り、Resolver呼び出し前と同じ
+        # 追加型チェックを試みる。これはCandidate D-1(漢数字の位取り
+        # [十/百/千/万]一般正規化)が対象とする「十件/10件」のようなケースが、
+        # 既存のnumber_mismatches判定(単独1桁の漢数字しか算用数字化しない
+        # 既存正規化の対象外)で、Resolverに到達するより前のこの時点で
+        # 早期TRUE_CONTENT_MISMATCH化してしまうため。この層の判定(全文の
+        # 形態素解析ベース読み一致、または漢数字を含む正規化後の文字列
+        # 完全一致)は、数量そのものが異なる場合は構造的に一致しないため
+        # (「十五件」を「15」、「五十件」を「50」等、常に元の数値どおりに
+        # しか変換しない)、誤PASSのリスクを生まない(Trial実測でも負例
+        # 0件、詳細はJA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01
+        # 「修正2回目」節参照)。
+        if protected.number_mismatches and not protected.negation_mismatches:
+            import er011_ja_asr_variant_layer_01 as ja_variant_layer
+            variant_result = ja_variant_layer.try_rescue_before_resolver(
+                canonical_text, asr_text, c_norm, a_norm, ratio, protected)
+            if variant_result is not None:
+                return variant_result
         return ClassificationResultJA(
             "TRUE_CONTENT_MISMATCH", ratio, protected, should_pass=False, should_retry=True,
             reason=f"数字/否定の不一致を検出: numbers={protected.number_mismatches} negation={protected.negation_mismatches}")
@@ -327,6 +348,21 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
                 reason="局所diffはscript差で分断されたが、正規化後の全文の読みは濁点/半濁点の有無を"
                        "除き一致(retryでは解決しない可能性が高い、Cascadeで追加確認)",
                 canonical_reading=c_reading, asr_reading=a_reading)
+
+        # OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01
+        # (2026-09-12ユーザー正式決定 APPROVED_FOR_PRODUCTION): 上記の
+        # whole_text読み一致(pykakasiベース)でも説明できない差が残った
+        # 場合、Resolver(LLM)を呼ぶ前にもう1段、形態素解析ベース読みエンジン
+        # +正規化層による追加型(additive)チェックを試みる(既存判定を一切
+        # 変更しない、Trial-VALIDATED、JA-ASR-ORTHOGRAPHIC-VARIANT-
+        # GENERALIZATION-TRIAL-01)。解決できればResolverを呼ばずに済む
+        # (¥0・LLM不要)。遅延importは循環import回避のため
+        # (er011_ja_asr_variant_layer_01はこのモジュールを遅延importする)。
+        import er011_ja_asr_variant_layer_01 as ja_variant_layer
+        variant_result = ja_variant_layer.try_rescue_before_resolver(
+            canonical_text, asr_text, c_norm, a_norm, ratio, protected)
+        if variant_result is not None:
+            return variant_result
 
         # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
         # 全文の機械的な読み一致(上記whole_text_reading_equal等)でも

@@ -361,6 +361,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 (OPEN-146)の並列稼働2件、いずれもTrial closeout=VALIDATEDのSSOT反映
 (UDR#11/UDR#12新規、Production採用は未承認)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION: 試聴リンク運用の恒久是正(`file:///`禁止・GitHub配布)+タオルTrial-11 B1B完成配布+OPEN-145/146 Production採用(配線中)+TTS retry cool-down観測Trial記録(UDR#10解消)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION: OPEN-145(JA ASR表記ゆれ)・OPEN-146(News人名英語表記)のProduction配線完了をSSOTへ統合+タオルTrial-11 A2完成episode配布(mp3+player.html、GitHub URL)+TTS retry cool-down観測フックのTrial harness 3系統への配線
 
 ---
 
@@ -3496,6 +3497,72 @@ WIRED`(Gate 3完了)には別途到達が必要。
 83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION)、ユーザー指示原文
 (上記)。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
 PM_GOVERNANCE.md`9-7、`docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION
+
+**背景**: 並列稼働していた2件のSonnet委任タスク(#11 `OPEN-145-JA-ASR-
+ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01`、#12 `OPEN-146-LEDGER-
+CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01`)がそれぞれ実装・テストを
+完了したが、両REPORTともDECISION_LOG.md/OPEN_ITEMS.md反映・Git commit・
+pushはFable統合工程(本タスク)で行う前提だった。本タスクはその統合と、
+`docs/pm/ACTIVE_TASK.md`の次アクション(タオルTrial-11 A2 Assembly、
+TTS retry cool-down観測のharness配線)をあわせて実施した。
+
+**OPEN-145反映**: JA ASR表記ゆれ一般化Variant Layer(新規module
+`er011_ja_asr_variant_layer_01.py`、`er007_ja_asr_validator_01.py`/
+`er007_ja_secondary_asr_01.py`への追加型配線、既定ON)をProduction配線
+した。Trial fixture再評価(自作82/82・実データMISMATCH5/7解消・過去
+PASS72件でregression0件)・既存回帰・project-wide regression(collected=
+2346、failed=3=既知の無関係failureのみ)は全PASS。タオルTrial-11 A2
+`comment_2`(既存6take)を配線後のValidatorでoffline再判定しPHONETIC_
+MATCHでPASS採用(TTS再生成なし)、`meaning_4`の別件記録同期漏れも是正
+した。A2 Assembly実行、PASS(duration=325.109秒、peak=0.95、clipping
+無し)。Gate 3のうち「新規TTS/ASR呼び出しを伴う実発火」のみ未完了。
+
+**OPEN-146反映**: News Ledger公式英語表記(新規module
+`er011_open146_ledger_canonical_en_spelling_production_01.py`、
+`er003_v1_n3_01_articles_generate.py`・`er002_ja_web_research_r3.py`
+[後方互換オプション引数]への配線)をProduction配線した。既存Ledger
+(該当行無し)ではbyte単位で完全不変。新規回帰テスト24/24 PASS+既存
+`er012_open131_fact_attribution_production_wiring_01_test_01.py`更新分
+18/18 PASS、project-wide regression全PASS。Gate 3のうち「実News
+Production runでのruntime evidence」のみ未完了(新規記事テーマは
+`docs/pm/PM_GOVERNANCE.md`13節によりユーザー選定必須のため本タスクでは
+未実施)。UDR候補2件(既存Production Ledgerへの遡及適用要否、固有名詞
+抽出コストの実測)は未判断のまま記録した。
+
+**タオルTrial-11 A2完成episode配布**: B1B側の前例(soundfile MP3書き出し)
+をそのまま再利用し、A2最終wavからmp3を追加生成した
+(`er011_open145_towels_trial11_a2_mp3_export_01.py`)。mp3+player.htmlを
+commit・push後、GitHub blob/raw URL(HTTP 200確認)を確認した(詳細は
+`docs/pm/RESULT_PACKET.md`)。これでタオルTrial-11のA2/B1B双方が配布可能
+になった。他テーマでの一般化Trial追加(N増し)の要否はユーザー試聴後に
+判断する(Fableが単独で決めない)。
+
+**TTS retry cool-down観測フックのharness配線**: `TTS-RETRY-COOLDOWN-
+20MIN-OBSERVATION-TRIAL-01_REPORT.md`2節の配線指示書どおり、新規共有
+helper`er011_tts_cooldown_observation_harness_helpers_01.py`を作成し、
+A-Family Discovery Trial harness・News Trial harness・B-Family Trial
+harnessの3系統へ配線した(いずれも`TTS_COOLDOWN_OBSERVATION`未設定時は
+既定no-op)。Production runnerには組み込んでいない。offline回帰
+(py_compile・importlib import・既存test 8/8 PASS・project-wide
+regression)で新規failureが無いことを確認した。データ収集は次回以降の
+Trial実行で自然発生する3連続NGから開始する。
+
+**Production採用範囲外**: OPEN-145/146とも`PRODUCTION_WIRED`は宣言して
+いない(Gate 3のうち実runtime evidenceが未完了のため)。cool-down観測
+フックはTrial限定であり、Production retry/Gate/Human Review機構は一切
+変更していない。新規TTS/ASR/LLM API呼び出しは本タスクでは発生していない
+(¥0)。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-84-
+OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION)、`OPEN-145-JA-ASR-
+ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01_REPORT.md`、`OPEN-146-LEDGER-
+CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01_REPORT.md`、`TTS-RETRY-
+COOLDOWN-20MIN-OBSERVATION-TRIAL-01_REPORT.md`。詳細は`OPEN_ITEMS.md`
+OPEN-135/145/146行、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

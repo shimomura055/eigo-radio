@@ -250,10 +250,18 @@ class AFamilyUnaffectedTest(unittest.TestCase):
             self.assertNotIn("er012_b_family_editorial_type_registry_01", text,
                              f"{path} imports the B-Family registry")
 
-    def test_a_family_fact_check_call_site_still_passes_no_extra_args(self):
+    def test_a_family_fact_check_call_site_still_passes_no_voice_attribution_arg(self):
+        # OPEN-146-LEDGER-CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01で
+        # canonical_spelling_block引数(本テストが監視するvoice_attribution_
+        # blockとは無関係の別引数)が追加されたため、呼び出し全体の完全一致
+        # ではなく、(1)前半3引数の形が保たれていること、(2)本Testが対象と
+        # するvoice_attribution_blockはA-Family経路から一切参照されない
+        # ことの2点を確認する(OPEN-146は別管理IDの正当な変更であり、本
+        # テストの目的であるvoice_attribution_block非混入の確認とは独立)。
         with open("er003_v1_n3_01_articles_generate.py", encoding="utf-8") as f:
             text = f.read()
-        self.assertIn("r3.build_fact_check_prompt(topic, article_text, [])", text)
+        self.assertIn("r3.build_fact_check_prompt(topic, article_text, [],", text)
+        self.assertNotIn("voice_attribution_block=", text)
 
 
 if __name__ == "__main__":

@@ -91,14 +91,21 @@ COST-GUARD-01)の`approve_regenerate()`による追加1round(標準+fallback、
 46.83 + 16.00 = **¥62.83**(OPEN-144訂正後の実額。公式script報告値
 ¥12.76は`gemini_batch`¥0計上バグにより過小、差額¥50.07)。
 
-## 3. 1記事一式(A2+B1B)の総コスト
+## 3. 1記事一式(A2+B1B)の総コスト(最終値、2026-09-12更新)
+
+A2・B1B両レベルともHuman Review解消(comment_2はOPEN-145配線後の
+Validatorでoffline再判定しPASS採用、TTS再生成なし)後にAssembly
+(`stage_assemble_a2`/`stage_assemble_b1`)を実行しPASSしたことを反映
+した最終値。Assembly自体はexisting narration wavの結合・gain/headroom
+処理・SFX付与のみでLLM/TTS/ASR API呼び出しを伴わないため、Assembly
+実行による追加費用は**両レベルとも¥0**。
 
 | 区分 | 金額(¥) | 説明 |
 |---|---|---|
-| **①今回実測(訂正後、実際に使われた実行経路ベース=Batch API)** | **180.55** | text-gen 117.72 + audio(訂正後)62.83。**本Trialは既にBatch APIで実行済み**であり、「同期実行ベース」ではない(下記4節参照)。 |
+| **①今回実測(訂正後、実際に使われた実行経路ベース=Batch API)** | **180.55** | text-gen 117.72 + audio(訂正後)62.83。**本Trialは既にBatch APIで実行済み**であり、「同期実行ベース」ではない(下記4節参照)。A2/B1B Assembly実行による追加費用は¥0(4節参照)。 |
 | ②今回実測(未訂正、公式script報告値) | 130.48 | text-gen 117.72 + audio(バグ影響)12.76。OPEN-144未修正のまま参照すると過小。 |
 | ③量産想定(Batch適用時の1記事見込み) | 180.55 | ①と同値。本Trialが既にBatch APIの既定経路で実行されているため、追加のBatch化余地は無い(TTS側は既にBatch)。 |
-| ④retry/Human Review由来の上振れ分(内数) | 16.00 | ①のaudio 62.83のうち16.00(25.5%)がHuman Review Lock追加takeによる上振れ。通常運用分は46.83。 |
+| ④retry/Human Review由来の上振れ分(内数) | 16.00 | ①のaudio 62.83のうち16.00(25.5%)がHuman Review Lock追加takeによる上振れ。通常運用分は46.83。OPEN-145配線後のcomment_2/meaning_4 resync・A2 Assembly(`OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01`)はoffline再判定のみで新規API呼び出しがないため、この上振れ額に追加は生じていない。 |
 | ⑤(参考、机上換算・未実行)同一segment数をStandard同期TTSで実行した場合 | 約230.6 | pricing_snapshot.jsonでBatch tierはStandardの50%(input/output とも)と確認済み。audio側訂正額62.83のうちTTS部分(gemini)を2倍換算した理論値(実行はしていない)。 |
 
 **通常コストとTrial/異常対応コストの区分**: ①のうち¥16.00(④)は
@@ -106,6 +113,13 @@ Human Review発生に伴う異常対応コストであり、通常の量産1本�
 コストは¥164.55(180.55-16.00)相当と見るのが妥当。ただし本Trialは
 N=1であり、Human Review発生率・retry発生率の量産平均は未確定
 (既存`OPEN_ITEMS.md`OPEN-135行参照)。
+
+**真の累計(参考、本表①には含まれず開示のみ)**: 別タスク
+`FAMILY-A-DISCOVERY-TOWELS-B1B-SECONDARY-ASR-AND-RETRY-TIMING-
+RECONCILE-01`のAzure Secondary ASR診断呼び出し実費用約¥1.81を①(¥180.55)
+に加えた**真の累計は約¥182.36**(`OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-
+PRODUCTION-WIRING-01_REPORT.md`8節と同一の開示、本REPORTの区分①自体は
+記事生成一式[text-gen+audio]のみを対象とする定義のため変更しない)。
 
 ## 4. 重要な観測(コード変更なし、報告のみ)
 
@@ -136,9 +150,12 @@ N=1であり、Human Review発生率・retry発生率の量産平均は未確定
    (`tts`/`tts_human_review_resume_02`/`tts_human_review_resume_04`)で
    区別可能だったため取得**できた**(2-3節に反映済み、当初想定していた
    「取得不可」ではなかった)。
-3. Assembly/最終音声(player.html)生成後の追加費用: 本Trialは両レベル
-   ともAssembly未実行(Human Review承認待ちで意図的に保留)のため、
-   Assembly以降の費用は発生しておらず「該当なし」(取得不可ではない)。
+3. Assembly/最終音声(player.html)生成後の追加費用: 本REPORT初版作成時点
+   では両レベルともAssembly未実行(Human Review承認待ちで意図的に保留)
+   だったが、その後B1B(take5個別承認)・A2(OPEN-145配線後のcomment_2/
+   meaning_4 resync)とも解消し、両レベルともAssembly実行・PASSした
+   (2026-09-12更新、3節参照)。Assembly自体はLLM/TTS/ASR API呼び出しを
+   伴わないため追加費用は¥0(取得不可ではなく実測¥0)。
 4. 量産時の月次・記事本数あたりコスト予測: N=1のためHuman Review発生率
    の統計的な見込みが立てられず、上記表③は「本Trialと同一retry発生
    パターンだった場合」の見込みに限る(取得不可: 理由=統計的サンプル

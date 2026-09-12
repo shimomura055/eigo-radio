@@ -75,6 +75,8 @@ import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
+import er011_tts_cooldown_observation_01 as cooldown_obs
+import er011_tts_cooldown_observation_harness_helpers_01 as cooldown_helpers
 
 THEME_ID = "discovery_generalization_towels_trial_11"
 OUT_DIR = f"er011_output/{THEME_ID}"
@@ -328,6 +330,58 @@ def lock_summary_stage(level: str) -> dict:
 
 
 # ============================================================
+# Step 5b: TTS retry cool-down 20分観測フック(Trial限定、既定OFF)
+# (TTS-RETRY-COOLDOWN-20MIN-OBSERVATION-TRIAL-01_REPORT.md 2.1節の配線指示)
+# ============================================================
+def tts_cooldown_observation_stage(level: str, lock_summary: dict) -> dict:
+    """`TTS_COOLDOWN_OBSERVATION`が"1"の場合のみ、lock_summary_stage()で
+    検出したlocked_or_review_required_segments各件について、直近3
+    attemptがverified=False x3であればcooldown観測を実行する(既定OFFでは
+    no-op、Production側review_lock_state.json/tts_generation_results.json/
+    最終成果物wavは一切変更しない)。Production runner組み込みなし
+    (このTrial harness限定)。"""
+    if os.environ.get("TTS_COOLDOWN_OBSERVATION") != "1":
+        return {"status": "SKIPPED_DISABLED", "jobs": 0}
+
+    narration_dir = f"{OUT_DIR}/{level}/narration"
+    results_path = f"{OUT_DIR}/{level}/audit/tts_generation_results.json"
+    tts_results = load_json(results_path) if os.path.exists(results_path) else {}
+    segments_meta = tts_results.get("segments", {})
+
+    jobs = []
+    skipped = []
+    for segment_id in lock_summary.get("locked_or_review_required_segments", []):
+        three = cooldown_helpers.load_three_attempt_records(narration_dir, segment_id)
+        if not three:
+            skipped.append({"segment_id": segment_id, "reason": "no_exactly_three_consecutive_ng_records"})
+            continue
+        canonical_text = (segments_meta.get(segment_id) or {}).get("canonical_text")
+        if canonical_text is None:
+            skipped.append({"segment_id": segment_id, "reason": "canonical_text_not_found"})
+            continue
+        binding = (cooldown_helpers.build_a2_single_attempt_binding(segment_id, canonical_text, narration_dir)
+                   if level == "a2" else
+                   cooldown_helpers.build_b1_single_attempt_binding(segment_id, canonical_text, narration_dir))
+        if binding is None:
+            skipped.append({"segment_id": segment_id, "reason": "no_single_attempt_binding_for_segment_type"})
+            continue
+        fn, args, kwargs = binding
+        jobs.append({
+            "level_dir": f"{OUT_DIR}/{level}", "segment_id": segment_id, "canonical_text": canonical_text,
+            "language": "ja" if kwargs.get("language") == "ja" else "en",
+            "three_attempt_records": three, "params": dict(kwargs),
+            "single_attempt_fn": fn, "single_attempt_args": args, "single_attempt_kwargs": kwargs,
+        })
+
+    observations = cooldown_obs.run_batch_observations(jobs) if jobs else []
+    summary = {"status": "RAN" if jobs else "NO_ELIGIBLE_SEGMENTS", "jobs": len(jobs),
+               "skipped": skipped, "observations": observations}
+    save_json(f"{OUT_DIR}/{level}/audit/tts_cooldown_observation_stage_summary.json", summary)
+    print(f"[{THEME_ID}][{level}] TTS cooldown観測: jobs={len(jobs)} skipped={len(skipped)}")
+    return summary
+
+
+# ============================================================
 # Step 6: Assembly(Gate OFF経路[内部で自動実行]) + Gate opt-in ON経路
 # (OPEN-129、read-only)
 # ============================================================
@@ -368,11 +422,13 @@ def run_level(level: str) -> dict:
         japanese_title_stage()
     tts_result = tts_stage(level)
     lock_summary = lock_summary_stage(level)
+    cooldown_summary = tts_cooldown_observation_stage(level, lock_summary)
     assembly_result = assembly_stage(level)
 
     return {
         "level": level, "support": support_summary, "key_phrase": kp_summary,
-        "tts": tts_result, "review_lock": lock_summary, "assembly": assembly_result,
+        "tts": tts_result, "review_lock": lock_summary, "cooldown_observation": cooldown_summary,
+        "assembly": assembly_result,
     }
 
 

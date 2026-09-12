@@ -1,0 +1,263 @@
+{
+  "er007": {
+    "groups": {
+      "POSITIVE": [
+        {
+          "name": "完全一致(句読点のみ差、実データpool_benches japanese_title)",
+          "classification": "NORMALIZED_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "漢字/ひらがな表記ゆれ(いす/椅子、実データpreview)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "読点の有無(実データcomment_1)",
+          "classification": "NORMALIZED_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "同音異字(後半/公判、実データpool_benches_pilot_02 comment_2。旧方式でverified=trueだった実例。「こうはん」で完全同音)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "誰/だれの表記ゆれ(実データcomment_3)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "様々/さまざまの表記ゆれ(実データpreview)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "得ます/えますの表記ゆれ(実データcomment_3、pool_benches_luna)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "安全な数字表記差(全角/半角)",
+          "classification": "NORMALIZED_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "軽微なASR句読点挿入位置ゆれ(実データcomment_4)",
+          "classification": "NORMALIZED_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "助数詞「つ」直前の漢数字/算用数字ゆれ(二つ/2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、実データNo.7 A2 comment_4のASR不一致に由来)",
+          "classification": "NORMALIZED_MATCH",
+          "should_pass": true,
+          "ok": true
+        }
+      ],
+      "NEGATIVE": [
+        {
+          "name": "1文字/1音の誤り(実例: やめにくくする→やめにくかする)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "FTC->FCC(略語の置換、意味が変わる)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "数字変更(150->140)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "日付変更(2020年->2021年)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "否定反転(変えるために->変えないために)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "content word置換(増加->減少)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "content word置換(増えた->減った、タスク仕様の明示ケース)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "数字変更(15->50、タスク仕様の明示ケース)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "phrase omission(中間の一文を削除)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "phrase addition(無関係な一文を追加)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "long segment中間部変更(comment_3実データ土台、中間のFTC関連部分を別内容に差し替え)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "文頭・文末だけ一致して中間が異なる(対照テスト)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "助数詞つき漢数字の数量違い(二つ->3つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、同値正規化が数量そのものの違いまで許容しないことの確認)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "「二十」は助数詞「つ」正規化の対象外(二十->2、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、一般化しすぎていないことの確認)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "助数詞が異なると同値扱いしない(二回->2つ、ER-008-B1-POINT2-FACT-FIX-AND-JA-NUMERAL-NORMALIZATION-07、回と つ を混同しないことの確認)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        }
+      ],
+      "ENTITY_LIKE": [
+        {
+          "name": "カタカナ固有名詞のASR表記ゆれ(スラッジ->スラッシ)",
+          "classification": "ASR_VALIDATION_UNCERTAIN",
+          "should_pass": false,
+          "ok": true
+        }
+      ],
+      "PHONETIC_UNCERTAIN": [
+        {
+          "name": "頃/ころ(実データ、verify_ja_cascade_production_on.pyのsmoke testで実際に発生した実例。kakasiが「頃」を文脈なしで連濁形「ごろ」と読み、canonical側の「ころ」の読みと一致しなかったため旧実装ではTRUE_CONTENT_MISMATCH→即TTS retryになっていた)",
+          "classification": "ASR_VALIDATION_UNCERTAIN",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "頃/ごろ(逆方向。kakasiの「頃」既定読みが元々「ごろ」のため、この向きは新規のvoicing許容チェックを使わずとも既存のreading_equal(完全一致)でPHONETIC_MATCHになる確認用ケース)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        }
+      ],
+      "WHOLE_TEXT_SCRIPT_MISMATCH": [
+        {
+          "name": "実データNo.9 A2 Key Phrase 4 meaning_4(落とし穴、ただし書き/おとしあな ただしがき。連濁「書き→がき」の1点差のみで6回連続TRUE_CONTENT_MISMATCHだった実例、OPEN-104)",
+          "classification": "ASR_VALIDATION_UNCERTAIN",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "合成ケース(別の漢字・別の連濁パターン、「書き」へのhardcodeでないことの確認: 「歯止め」→「はどめ」の全文ひらがなASR、連濁「はどめ」は元々清音「はとめ」ではなく「はどめ」が正しい読みのため、これは全文完全一致[PHONETIC_MATCH]になるべきケース)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        },
+        {
+          "name": "合成ケース(「三日坊主」→「みっかぼうず」、複数箇所が漢字なcanonicalに対し全文ひらがなASRで一致するケース。「坊主→ぼうず」の連濁のみが差)",
+          "classification": "PHONETIC_MATCH",
+          "should_pass": true,
+          "ok": true
+        }
+      ],
+      "WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE": [
+        {
+          "name": "全文ひらがなASRでも意味が異なれば引き続きTRUE_CONTENT_MISMATCH(「落とし穴」→「お年やな」は連濁ではなく別の語、実データNo.9 A2 meaning_4のattempt3)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        },
+        {
+          "name": "合成ケース(全文ひらがなASRだが内容語が置換されている、「落とし穴」→「持ち上げ穴」は連濁でも表記ゆれでもない別内容)",
+          "classification": "TRUE_CONTENT_MISMATCH",
+          "should_pass": false,
+          "ok": true
+        }
+      ],
+      "KNOWN_TRADEOFF": [
+        {
+          "name": "柿/鍵(清音化後にたまたま一致する、意味の異なる実在語同士。should_pass=Falseのまま(誤PASSしない)が、TRUE_CONTENT_MISMATCHではなくASR_VALIDATION_UNCERTAIN(Cascade対象)になる既知のトレードオフ)",
+          "classification": "ASR_VALIDATION_UNCERTAIN",
+          "should_pass": false,
+          "ok": true
+        }
+      ],
+      "NOT_PHONETIC_UNCERTAIN": []
+    },
+    "all_ok": true,
+    "skipped": [
+      "READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES (月/つき、実際のLLM呼び出しが必須なためAPI支出禁止の本タスクでは未実行、件数のみ計上=1件。Trial時と同じ扱い)"
+    ]
+  },
+  "er011_wiring08_a2_relevant": {
+    "results": [
+      {
+        "name": "10. 完全一致segment -> EXACT_MATCH",
+        "classification": "EXACT_MATCH",
+        "should_pass": true,
+        "ok": true
+      },
+      {
+        "name": "14. 読み問題でない真の内容誤り(増加/減少) -> TRUE_CONTENT_MISMATCH",
+        "classification": "TRUE_CONTENT_MISMATCH",
+        "should_pass": false,
+        "ok": true
+      },
+      {
+        "name": "15. B1(英語Validator)にはReading Resolverが一切importされない",
+        "classification": null,
+        "should_pass": null,
+        "ok": true
+      },
+      {
+        "name": "15b(追加). B1(英語Validator)にはJA ASR Variant Layerも一切importされない",
+        "classification": null,
+        "should_pass": null,
+        "ok": true
+      }
+    ],
+    "all_ok": true,
+    "skipped": [
+      "9. 後->あと (実際のLLM Resolver呼び出しが必須、API支出禁止の本タスクでは未実行)",
+      "1-8 (B1英語Validator、A2 JAパイプラインと無関係、Candidate B/C/D-1/D-2の対象外)",
+      "11-13 (resolve_reading_diff内部のmock検証、classify_ja_asr_matchを経由しないため対象外)"
+    ]
+  }
+}

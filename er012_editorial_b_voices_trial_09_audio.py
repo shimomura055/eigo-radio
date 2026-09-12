@@ -82,6 +82,8 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er011_tts_cooldown_observation_01 as cooldown_obs
+import er011_tts_cooldown_observation_harness_helpers_01 as cooldown_helpers
 
 TRIAL07_ARTICLE_PATH = "er012_output/editorial_b_voices_trial_07/b1b_run02_attempt2/article.md"
 TRIAL07_LEDGER_PATH = "er012_output/editorial_b_voices_trial_07/research/verified_fact_ledger.txt"
@@ -751,6 +753,7 @@ def run_tts_new_segments(parts: dict, support_texts: dict, voice_a: str, voice_b
         results[name]["canonical_text"] = text
     assert_budget_ok("after Narrator heading TTS")
 
+    cooldown_jobs = []
     for name, text, voice_name in (
         ("point_one", parts["point_one_body"], voice_a),
         ("point_two", parts["point_two_body"], voice_b),
@@ -761,9 +764,53 @@ def run_tts_new_segments(parts: dict, support_texts: dict, voice_a: str, voice_b
             results[name] = generate_voice_body_wide_margin(
                 tts_gen.tts_safe_news_en(text), f"{NARRATION_DIR}/{name}.wav", voice_name)
         results[name]["canonical_text"] = text
+        if results[name].get("status") == "STOPPED":
+            cooldown_jobs.append(_build_voice_body_cooldown_job(name, text, voice_name))
     assert_budget_ok("after Voice A/B TTS")
 
+    if cooldown_jobs and os.environ.get("TTS_COOLDOWN_OBSERVATION") == "1":
+        cooldown_observations = cooldown_obs.run_batch_observations(cooldown_jobs)
+        save_json(f"{OUT_B1_DIR}/audit/tts_cooldown_observation_stage_summary.json",
+                  {"status": "RAN", "jobs": len(cooldown_jobs), "observations": cooldown_observations})
+        print(f"[TRIAL09-AUDIO] TTS cooldown観測: jobs={len(cooldown_jobs)}")
+
     return results
+
+
+# ============================================================
+# TTS retry cool-down 20分観測フック用job組み立て(Trial限定、既定OFF)
+# (TTS-RETRY-COOLDOWN-20MIN-OBSERVATION-TRIAL-01_REPORT.md 2.3節の配線指示)
+# ============================================================
+def _build_voice_body_cooldown_job(name: str, text: str, voice_name: str) -> dict:
+    """`generate_voice_body_wide_margin`がSTOPPEDだったsegment用のcooldown
+    観測jobを組み立てる。`three_attempt_records`は既存の
+    `{NARRATION_DIR}/attempts/{name}_attempt*.json`(review_lock.
+    save_tts_attempt_audio()が書き出す既存スキーマ)から読む。3件未満、
+    または3件ともverified=Falseでなければ本jobはNoneを返さず、cooldown_obs
+    側の`INELIGIBLE_NOT_EXACTLY_THREE_CONSECUTIVE_NG`判定に委ねる(過剰な
+    事前フィルタで観測記録の透明性を落とさないため、A-Family/News harnessの
+    事前フィルタとは異なる設計だが、cooldown_obs側の安全性契約は同一)。"""
+    out_path = f"{NARRATION_DIR}/_cooldown_observation_01/{name}.wav"
+    os.makedirs(f"{NARRATION_DIR}/_cooldown_observation_01", exist_ok=True)
+    three = cooldown_helpers.load_three_attempt_records(NARRATION_DIR, name)
+    if not three:
+        three = []  # cooldown_obs側でINELIGIBLE判定させる(len(three)!=3)
+    params = {"model": p9a.ENGLISH_MODEL_NAME, "voice": voice_name, "max_attempts": 1}
+
+    def _capture_live_params():
+        return {"model": p9a.ENGLISH_MODEL_NAME, "voice": voice_name,
+                "style_prefix": p9a.ENGLISH_STYLE_PREFIX,
+                "safety_margin": news_tail_fix.LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS}
+
+    return {
+        "level_dir": OUT_B1_DIR, "segment_id": name, "canonical_text": text, "language": "en",
+        "three_attempt_records": three, "params": params,
+        "single_attempt_fn": generate_voice_body_wide_margin.__wrapped__,
+        "single_attempt_args": (), "single_attempt_kwargs": {
+            "text": tts_gen.tts_safe_news_en(text), "out_path": out_path, "voice_name": voice_name,
+            "max_attempts": 1},
+        "capture_live_params_fn": _capture_live_params,
+    }
 
 
 def finalize_tts_results(new_results: dict, reused: dict) -> dict:

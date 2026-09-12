@@ -33,6 +33,7 @@ import er008_point_regenerate_19 as point_regen
 import er008_shared_point_blueprint_01 as blueprint_mod
 import er009_diagnostic_full_retry_modules_12 as diagnostic_mod
 import er010_ledger_local_rewrite_09 as local_rewrite
+import er011_open146_ledger_canonical_en_spelling_production_01 as canon_spelling
 import er011_point_role_value_planning_01 as point_planning
 
 load_dotenv()
@@ -983,7 +984,13 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
     print(f"[N3-01][{theme_id}] {label}: metrics={metrics} sections={section_wc}")
 
     print(f"[N3-01][{theme_id}] {label}: fact checker呼び出し開始...")
-    fc_prompt = r3.build_fact_check_prompt(topic, article_text, [])
+    # OPEN-146-LEDGER-CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01:
+    # Ledgerにcanonical_en_spelling行がある場合のみ、Fact Checkerへ
+    # 「記事本文の固有名詞表記がLedger記載の公式英語表記と一致するか」の
+    # 照合項目を追加する。無い場合は""でありprompt出力はbyte単位で不変。
+    canonical_spelling_block = canon_spelling.build_canonical_spelling_fact_check_block(verified_ledger_text)
+    fc_prompt = r3.build_fact_check_prompt(topic, article_text, [],
+                                            canonical_spelling_block=canonical_spelling_block)
 
     def make_fc_fn():
         return r3.make_fact_checker_fn(
@@ -1228,7 +1235,14 @@ def run_theme(client, master_full_text: str, theme: dict, blueprint=None) -> dic
     (levelごとにrender_blueprint_for_writerでA2/B1向けの文言を分ける)。
     Noneの場合(既定)は旧来の呼び出しと完全に同一の挙動になる。"""
     theme_id = theme["theme_id"]
-    verified_ledger_text = load_text(theme["ledger_path"])
+    # OPEN-146-LEDGER-CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01:
+    # Ledger本文に`canonical_en_spelling:`行がある場合のみ、Writerへの
+    # 伝達用1文をLedgerテキスト自体へ追記する(build_common_block()/
+    # COMMON_BLOCK_TEMPLATEは無改変)。この行が無い既存Ledgerでは
+    # append_canonical_spelling_instruction_if_present()はno-opであり、
+    # 以降のverified_ledger_textはload_text()の結果とbyte単位で同一。
+    verified_ledger_text = canon_spelling.append_canonical_spelling_instruction_if_present(
+        load_text(theme["ledger_path"]))
 
     results = {}
     for label, instruction, out_dir in [
