@@ -1,7 +1,13 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
+**最終更新: 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-
+09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITYで新小節9-8[正式
+報告ブロック必須化+「ユーザー判断」欄/「今後の展望」欄の分離]・
+12-4-1[未回答事項の省略再掲禁止]を新設し、11節へcontext packet方式の
+Opus L2標準入力方式化・12-10へFableの自発的Next Action確認7点の再確認を
+追記した。詳細は末尾「変更履歴」参照)。
+2026-09-12(PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
 DISTRIBUTIONでGate 7補足(m)へ「`file:///`禁止は既存の標準player要件
 [TRIAL-09形式・(a)〜(l)]を置き換えるものではなく追加要件」を明記し、
 9-7末尾へ2026-09-12 B1B再提示でGate 7 Reconciliation漏れ・Sonnet未参照
@@ -894,6 +900,43 @@ PLAYER-01`で標準player形式(TRIAL-09形式、Gate 7 (a)〜(m)全項目)へ
 是正のみを目的とする委任であっても、Fableは委任前にGate 7 (a)〜(l)を
 Reconciliationし、Sonnetは受入報告前にGate 7全項目を自己点検する。
 
+### 9-8. 正式報告ブロック(★★★★報告ここから★★★★〜ここまで★★★★)の
+必須化+「ユーザー判断」欄と「今後の展望」欄の分離(2026-09-12、ユーザー
+正式決定)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-
+FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY**
+
+**正式報告ブロック**: 今後Terminal上でユーザーへ正式報告を出す場合は、
+必ず以下の形式で囲む。
+
+```
+★★★★報告ここから★★★★
+
+（その時点でユーザーへ報告すべき内容をすべて記載）
+
+★★★★報告ここまで★★★★
+```
+
+このブロックだけを見れば、最新の正式報告内容がすべて分かる状態にする。
+ブロック内には必要に応じて、新規結果/前回未回答事項のフル再掲/Status/
+コスト/runtime evidence/Artifact・player/ユーザー判断/今後の展望/Next
+Action/残課題/Production wiring状況を含める。ユーザー向けの重要報告を
+このブロック外に分散させない(shell log・agent内部メモ・途中経過ログ等は
+ブロック外でよい)。その後に新しい重要結果が出た場合は、新しい正式報告
+ブロックを作り、その時点で報告すべき内容を統合して提示する(9-1の
+候補セクション制・6「未回答再掲」・7「Next Action/Reminder」と矛盾せず、
+それらを1つのブロックへ収める運用上の外枠を追加するものである)。
+
+**「ユーザー判断」欄と「今後の展望」欄の分離**: 9-1の4「ユーザー判断」欄
+には、現時点でユーザーの回答が必要な事項だけを書く(例: 「ユーザー判断:
+今はなし。」)。将来判断が必要になる可能性や、次に何をするかは「今後の
+展望」欄へ分離する。「将来判断が必要だからユーザー判断あり」という
+書き方はしない。
+
+**経緯**: 2026-09-12のユーザー回答(原文全文は`DECISION_LOG.md`
+PM-CLOSEOUT-CONSOLIDATION-94エントリ参照)により新設・確定した。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -982,7 +1025,9 @@ News Trial-12 A/B解釈の3件)。原則は「重要論点にスコープを絞�
 再レビューはしない、ただしOpus自身が委任範囲外の関連箇所を追加探索する
 ことは妨げない)。目的はOpus利用自体を増やすことではなく、高リスク判断・
 因果解釈・Production差分の見落とし・手戻りの削減である。L2+L3合計で
-1管理IDあたり最大1回という上限(上記)は変更しない。
+1管理IDあたり最大1回という上限(上記)は変更しない。高リスク案件の
+L2レビューを含め、Opusへの入力は下記「context packet方式の標準化」
+(2026-09-12追記)を標準入力方式とする。
 
 **Opus L2入力限定の運用(2026-09-11追記、ユーザー正式決定、
 PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02)**: Opusへ
@@ -1000,6 +1045,32 @@ Sonnet REPORT本文=約45.2万字≈20.5万token)であり、`opus-consultant.md
 (`opus-consultant.md`にも同旨を追記)。本節はOpusの診断役割(原因・選択肢・
 影響範囲の整理)自体を変更するものではなく、入力の絞り込み方法を明文化
 するものである。
+
+**context packet方式の標準化(2026-09-12追記、ユーザー正式決定、管理ID
+PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-
+PACKET-STANDARD-DISCOVERY-PRIORITY)**: context packet方式
+(`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`)+progressive
+disclosureを、Opus L2レビューの標準入力方式として採用する。Phase 2
+Trial(Discovery Trial-12のOpus L2解釈、`PM-TOKEN-EFFICIENCY-PHASE2-
+CONTEXT-PACKET-TRIAL-01_REPORT.md`)で、Opus実読込文字数がBefore代替値
+135,397字→After約23,450字(約82.7%減)、rubric必須論点10項目の欠落0件
+という結果が得られたことを踏まえ、改善済みpacket template(packet不足点
+9件反映済み)を正式運用へ反映する。**Opusそのものは削減・廃止しない。
+レビュー品質維持を優先する**(入力を絞ることと、必要な事実・論点を省く
+ことは別であり、上記「Token節約のために重要contextを落とすことは禁止」
+の原則は変更しない)。
+
+**packet不足時の追加開示ルール**: packetの内容だけではレビューに不十分と
+Opusまたは委任者(Fable/Sonnet)が判断した場合、(1)追加開示が必要な理由・
+対象ファイル/箇所・行範囲を宣言したうえで、(2)必要最小限の範囲のみを
+追加開示し、(3)実際に読み込んだ追加文字数を自己申告する。念のための
+巨大SSOT全文読込・関連ファイル全文の予防的読込は禁止する(11節冒頭の
+「Opus L2入力限定の運用」と同一原則)。
+
+**適用範囲**: `docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`
+(context packet template)、progressive disclosure方式、本節・必要な
+SSOTへ反映済み。全Opus L2レビューへの一般適用として標準化する
+(Discovery Trial-12個別案件限定ではない)。
 
 **自明な修正の自律実施(2026-09-09、ユーザー指示、PM-GOVERNANCE-
 AUTONOMOUS-OBVIOUS-FIX-RULE-04)**: ユーザーの意図が明確で「そのままでは
@@ -1119,6 +1190,39 @@ Production wiring完了 / 重要な途中結果判明 / blocker発生 / user rev
 する。artifact/listening link/comparison link等、ユーザー判断に必要
 だったものも必ず再掲する。
 
+### 12-4-1. 未回答事項の省略再掲禁止(明文化、2026-09-12追記)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-
+FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY(2026-09-12、ユーザー正式決定)**
+
+12-4(再掲時は必ずフルレポートを再掲する)を以下のとおり明文化する。
+未回答事項を再掲する場合、以下のような**省略再掲は禁止**する。
+
+- ×「Trial-16 (a)/(b)/(c)、推奨(b)」
+- ×「REPORT必須5項目、推奨採用」
+- ×「Open Item登録、推奨登録」
+
+ユーザーがその再掲だけを見て判断できるだけの内容を再掲すること。前回
+提示した以下を省略しない。
+
+- 選択肢全文
+- 推奨理由
+- 必要な数値
+- コスト
+- Artifact / player
+- Status
+- 重要な背景
+
+**再発事例の記録(2026-09-12)**: 同日中に、News Trial-16の(a)/(b)/(c)案・
+Trial REPORT必須欄5項目・層間不整合とA2数値表記のOpen Item登録の3件で、
+上記の省略再掲(番号+推奨のみへの圧縮)が発生した。原因は、判断待ち件数の
+増加に伴い、Fableが再掲コストを下げるため「番号+推奨のみ」へ内容を圧縮
+した(=12-4・本項の運用適用漏れ)ことである。
+
+**再発防止**: 「ユーザー判断」欄の各項目は、初回提示時の全文をそのまま
+再掲する(圧縮不可)。長くなる場合も省略せず、9-8の正式報告ブロック内に
+収める。
+
 ### 12-5. 大きな報告単位がcloseしたら必ず次の状態を示す
 
 「完了しました」で終わらせず、以下を示す。(A) 次にやるべきActionがあれば
@@ -1225,6 +1329,18 @@ Gate原則を維持)。
 自体が閉じた時」を対象とするのに対し、本項(12-10)は「ある作業の完了が、
 "それとは別の"保留中タスクを再び進行可能にした時」も対象に含むことを
 明確化する(Gate 5・Gate 6の該当箇所へも参照を追記した)。
+
+**2026-09-12再確認・対象範囲の明確化(管理ID PM-CLOSEOUT-CONSOLIDATION-
+94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-
+PRIORITY、ユーザー正式決定)**: Fableは、指示された作業を順番に処理する
+だけでなく、(1)前提タスク完了でunblockされた作業、(2)汎用化時に必要な
+Regression、(3)Production wiring残、(4)未報告結果、(5)ユーザー判断待ち、
+(6)次に進めるべきAction、(7)追加Trialより記事生成を優先すべき場面、の
+7点を自発的に確認する対象として明示的に再確認した((7)は本節既存の
+1〜6項目に対する追加観点)。必要な場合は、ユーザーが思い出して聞く前に
+「何がunblockされたか/次Action/Fable推奨/今やらない場合の影響」を提示
+する(既存の提示項目1〜4と同旨)。新仕様採用やProduction採用をユーザー
+判断なしに進めてはならない点は変更しない(12-6と同旨)。
 
 ## 13. 新規記事テーマ選定ルール
 
@@ -1933,3 +2049,27 @@ Trial専用harnessは開始時に費用記録(cost logger install、既存
   追加API費用¥0。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-
   87-APPROVAL-EVIDENCE-RECORD`エントリ参照。
   参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-
+  REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY): 2026-09-12ユーザー
+  回答11項目(原文全文)を受け、新小節「9-8. 正式報告ブロック(★★★★
+  報告ここから★★★★〜ここまで★★★★)の必須化+『ユーザー判断』欄と
+  『今後の展望』欄の分離」を追加した。11節「Opus L2入力限定の運用」へ
+  「context packet方式の標準化」を追記し、context packet方式
+  (`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`)+progressive
+  disclosureをOpus L2レビューの標準入力方式として採用した(Phase 2
+  Trialで82.7%削減・rubric論点欠落0件、Opus自体は削減・廃止しない)。
+  高リスク案件のL2レビュー段落へも1行参照を追記した。12節へ新小節
+  「12-4-1. 未回答事項の省略再掲禁止」を追加し、同日発生したNews
+  Trial-16/Trial REPORT必須欄5項目/Open Item登録3件での省略再掲の事実・
+  原因(判断待ち件数増加に伴う「番号+推奨のみ」への圧縮)・再発防止策
+  (初回提示時の全文をそのまま再掲、圧縮不可)を記録した。12-10へ
+  ユーザー指示(10)「FableのPM動作」の7点(前提タスク完了unblock/
+  汎用化Regression/Production wiring残/未報告結果/ユーザー判断待ち/
+  次Action/追加Trialより記事生成を優先すべき場面)の再確認を追記した。
+  併せて、Discovery対照アームTrialの不実施(優先順位判断)、Repetition
+  QA RECONCILE-03一般化案の`APPROVED_FOR_PRODUCTION`決定(Gate 3進行)を
+  `OPEN_ITEMS.md`・`DECISION_LOG.md`へ反映した。文書編集のみ、コード・
+  Prompt変更なし、追加API費用¥0。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-
+  PACKET-STANDARD-DISCOVERY-PRIORITY`エントリ、`OPEN_ITEMS.md`
+  OPEN-135/OPEN-121/OPEN-142行、`docs/pm/RESULT_PACKET.md`参照。

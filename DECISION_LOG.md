@@ -21,7 +21,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ## 索引(Index): 全Decisionエントリ一覧
 
-> 以下は全233件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
+> 以下は全234件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
 
 - [履歴] ## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
 - [履歴] ## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
@@ -371,6 +371,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE: 3V Phase 1b-03「ユーザー回答＋追加PM指示」(2026-09-12、原文全文)の正式記録(体験claimの根拠付け=B-Family共通Writer原則として採用/Tensionでの外部制約統合=任意パターンとして採用/スマホ制限新テーマ着手前に既存AI採用選考記事でのRegression実施を必須指示/Fableは汎用化のたびにRegressionを自発提案すべきという恒久PM運用フィードバック)+`docs/pm/PM_GOVERNANCE.md`への「汎用化時のRegression自発提案」ルール明確化
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD: News Point品質一般化Trial-16(Hubble/Saturnテーマ)結果のSSOT反映(主要エンドポイントは天井効果で比較不能・N非対称H=6/P=4・Fact-ID別利用と質的観察で「非headline周辺factがPoint素材になる」方向性の限定的支持・Status`USER_DECISION_REQUIRED`候補a/b/c[Fable推奨(b)]・費用¥308.7で上限¥300を¥8.7超過+記録漏れ概算¥5未満の正直な記録)+OPEN-146 runtime evidence(英語一次情報源テーマでも研究者所属機関名で自然発火)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-L2-RECONCILE-03: Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)配布(B1B完走PASS・A2はER-009 Foreign Token GateでSTOPPED、費用¥121.98)+Token効率Phase 2 After測定完了(Opus実読込135,397字→約23,450字、82.7%減、Fable判定`VALIDATED`[Trial]、標準化はUDR)+Discovery Trial-12 Opus L2解釈(テキスト軸悪化・A2 point_one語数超過は系統的signal・型固定継続、UDR3件)+Repetition QA RECONCILE-03修正1回目(対称正規化層prototype、Trial-12実バグ3件解消・真陽性維持・回帰35件中33 PASS、Production採用はUDR)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY: 2026-09-12ユーザー回答11項目(原文全文)の正式記録 — Discovery対照アームTrial不実施(優先順位判断、Focus Module Part Aは新規記事生成のN増しで継続観測)/Repetition QA RECONCILE-03一般化案を`APPROVED_FOR_PRODUCTION`としGate 3進行/Opus context packet方式をOpus L2標準入力方式として採用(Opus自体は削減・廃止しない)/Trial REPORT必須欄5項目・層間不整合とA2数値表記のOpen Item登録・News Trial-16はいずれも「今はなし」(フル再提示後に判断)/正式報告ブロック(★★★★報告ここから★★★★〜ここまで★★★★)新設/未回答事項の省略再掲禁止の再確認と再発防止/「ユーザー判断」欄は現時点で回答が必要な事項のみ・将来判断は「今後の展望」欄へ分離/FableのPM自発的Next Action確認ルール追加
 
 ---
 
@@ -4671,6 +4672,510 @@ INTERPRETATION-01_REPORT.md`(全文)、`REPETITION-QA-INTENTIONAL-REPEAT-
 FALSE-POSITIVE-RECONCILE-03_REPORT.md`(全文)。詳細は`OPEN_ITEMS.md`
 OPEN-135/OPEN-142/OPEN-121行、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、
 `docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-
+PACKET-STANDARD-DISCOVERY-PRIORITY: 2026-09-12ユーザー回答11項目
+(原文全文)の正式記録+正式報告フォーマット新設+Opus context packet方式
+標準化+Repetition QA RECONCILE-03のProduction採用決定+Discovery対照
+アームTrial不実施
+
+**背景**: `PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-
+AFTER-OPUS-L2-RECONCILE-03`等で提示した複数件のUSER_DECISION_REQUIRED
+(Discovery Trial-12 Opus L2解釈のUDR3件、Token効率Phase2 packet方式
+標準化可否、Repetition QA RECONCILE-03のProduction採用可否)、および
+`PM-CLOSEOUT-CONSOLIDATION-92`のNews Trial-16省略再掲問題に対し、
+ユーザーが2026-09-12にまとめて回答した。本エントリはその原文全文を
+要約せず正式転記する(セッション記録`294958fe-da6e-491c-8a02-
+4f864d8195c8.jsonl`、`type":"user"`行[1571行目]より抽出、改変なし)。
+
+**ユーザー発言原文(verbatim)**:
+
+```
+【ユーザー回答・追加指示】
+
+今回の判断と運用方針を以下で確定します。
+
+────────────────────
+1. Discovery 対照アームTrial
+────────────────────
+
+ユーザー決定：
+
+対照アームTrialは実施しない。
+
+Focus Module Part Aあり / なしのA/B比較の必要性は理解するが、
+現時点ではその必要性・優先度を感じない。
+
+追加Trialより、
+新規記事生成を優先する。
+
+したがって、
+Discoveryの対照アーム用に約¥160を使うTrialは行わない。
+
+Focus Module Part Aについては、
+今後の新規Discovery記事生成の中で自然にNを増やし、
+記事品質・Fact Safety・Point品質・多様性等を継続観測する。
+
+この判断は
+「Focus Module Part Aの効果検証が不要」
+という一般論ではなく、
+
+「現時点では追加A/B Trialより記事生成を優先する」
+
+という優先順位判断。
+
+Statusを適切に記録すること。
+
+ユーザー判断：
+回答済み。
+
+今後の展望：
+新規記事生成を優先し、
+実運用のN増しの中で必要な観測を蓄積する。
+
+
+────────────────────
+2. Repetition QA RECONCILE-03
+────────────────────
+
+ユーザー決定済み：
+
+(i) ハイフン境界の対称正規化
+(ii) 数詞↔数字の0〜999拡張
+
+を組み合わせた一般化案をProduction採用する。
+
+APPROVED_FOR_PRODUCTIONとしてGate 3を進めること。
+
+最低限確認：
+- Production正式初回pathへの実装
+- retry / fallback / regeneration整合
+- pin test 2件の期待値更新
+- 既存35テスト再実行
+- 必要Regression
+- Trial-12 A2既存takeの¥0再判定
+- PASS時のA2 Assembly
+- 標準player更新
+- runtime evidence
+- CURRENT_SPEC
+- DECISION_LOG
+- OPEN_ITEMS
+- Git反映
+- Dangling Reference Check
+
+すべて確認できるまでは
+PRODUCTION_WIREDとしない。
+
+ユーザー判断：
+回答済み。
+
+
+────────────────────
+3. Opus context packet方式
+────────────────────
+
+ユーザー決定済み：
+
+Opus L2の標準入力方式として
+context packet方式を採用する。
+
+82.7%削減・rubric上の論点欠落なしというTrial結果を踏まえ、
+改善済みpacket templateを正式運用へ反映すること。
+
+対象：
+- PM_GOVERNANCEのOpus入力制限節
+- context packet template
+- progressive disclosure方式
+- 必要なSSOT
+- Git反映
+
+Opusそのものは削減・廃止しない。
+レビュー品質維持を優先する。
+
+ユーザー判断：
+回答済み。
+
+
+────────────────────
+4. Trial REPORT必須欄5項目
+────────────────────
+
+前回報告では、
+「必須欄5項目を採用するか」
+という判断だけ再掲され、
+肝心の5項目の中身が省略されていた。
+
+現時点では判断しない。
+
+次回、以下をフルで報告すること。
+
+- 5項目の全文
+- 各項目が何を意味するか
+- なぜ必要になったか
+- どの過去の報告漏れを防ぐものか
+- 既存PM_GOVERNANCEのどの規定と重複 / 補完するか
+- 新ルールなのか既存ルール強化なのか
+- Token / 作業量への影響
+- Claude / Fable推奨
+- ユーザー判断が必要か
+
+ユーザー判断：
+今はなし。
+
+今後の展望：
+内容のフル再提示後に判断。
+
+
+────────────────────
+5. 「層間不整合・A2数値表記 Open Item登録」
+────────────────────
+
+前回報告では名称だけで、
+具体的内容が再掲されていないため判断しない。
+
+次回、以下を別項目としてフルで報告すること。
+
+【A. 層間不整合】
+- 実際に何が起きたか
+- 対象記事 / segment / artifact
+- 期待値と実際
+- どの層とどの層が不整合なのか
+- ユーザー体験への影響
+- Productionへの影響
+- 既存仕様上の扱い
+- 既存Open Itemとの重複有無
+- なぜOpen Item登録が必要か
+- Claude / Fable推奨
+
+【B. A2数値表記】
+- 実際の文章
+- 現在の表記
+- 本来期待される表記
+- Spoken-first Number Treatmentとの関係
+- 単なる表記差か
+- 聞き取りやすさ / 意味への影響
+- Production仕様違反か未定義か
+- なぜOpen Item登録が必要か
+- Claude / Fable推奨
+
+ユーザー判断：
+今はなし。
+
+今後の展望：
+フル説明後に判断。
+
+
+────────────────────
+6. News Trial-16
+────────────────────
+
+前回、
+
+「(a)/(b)/(c)、推奨(b)」
+
+とだけ再掲したことは、
+既存の未回答事項フル再掲ルールに違反している。
+
+次回は省略せず、
+Trial-16の報告をフルで再掲すること。
+
+最低限：
+
+- テーマ
+- Trial目的
+- A2結果
+- B1結果
+- Point品質
+- 非headline周辺Fact仮説
+- Fact Checker
+- Ledger Deviation
+- Point Overlap / Point Value
+- retry
+- 固有名詞英語表記機構の発火有無
+- コスト
+- Trial closeout Status
+- 新しく分かったこと
+- 残った問題
+
+さらに、
+(a)/(b)/(c)について全文を再掲すること。
+
+各案について：
+- 何をするか
+- コスト
+- メリット
+- リスク
+- 何が分かるか
+- Claude / Fable推奨理由
+
+ユーザー判断：
+今はなし。
+
+今後の展望：
+フルレポート再掲後に判断。
+
+
+────────────────────
+7. 正式報告フォーマット変更
+────────────────────
+
+今回ユーザーから新規指示。
+
+今後Terminal上でユーザーへ正式報告を出す場合は、
+必ず以下の形式で囲むこと。
+
+★★★★報告ここから★★★★
+
+（その時点でユーザーへ報告すべき内容をすべて記載）
+
+★★★★報告ここまで★★★★
+
+このブロックだけを見れば、
+最新の正式報告内容がすべて分かる状態にする。
+
+ブロック内には必要に応じて：
+
+- 新規結果
+- 前回未回答事項のフル再掲
+- Status
+- コスト
+- runtime evidence
+- Artifact / player
+- ユーザー判断
+- 今後の展望
+- Next Action
+- 残課題
+- Production wiring状況
+
+を含める。
+
+重要：
+ユーザー向けの重要報告を
+このブロック外に分散させない。
+
+shell log、
+agent内部メモ、
+途中経過ログ等はブロック外でよい。
+
+ただし、
+その後に新しい重要結果が出た場合は、
+新しい正式報告ブロックを作り、
+その時点で報告すべき内容を統合して提示すること。
+
+
+────────────────────
+8. 未回答事項の再掲ルール
+────────────────────
+
+既存ルールを再確認する。
+
+未回答事項を再掲する場合、
+
+×「Trial-16 (a)/(b)/(c)、推奨(b)」
+×「REPORT必須5項目、推奨採用」
+×「Open Item登録、推奨登録」
+
+のような省略再掲は禁止。
+
+ユーザーがその再掲だけを見て
+判断できるだけの内容を再掲すること。
+
+前回提示した：
+- 選択肢全文
+- 推奨理由
+- 必要な数値
+- コスト
+- Artifact / player
+- Status
+- 重要な背景
+
+を省略しない。
+
+今回のNews Trial-16等の省略再掲については、
+単に再提示するだけでなく、
+なぜ既存ルールが守られなかったかを確認し、
+Reporting Unit運用の再発防止を行うこと。
+
+
+────────────────────
+9. 「ユーザー判断」欄の使い方
+────────────────────
+
+今後、
+「ユーザー判断」欄には
+
+現時点でユーザーの回答が必要な事項だけを書く。
+
+例：
+ユーザー判断：今はなし。
+
+将来判断が必要になる可能性や、
+次に何をするかは、
+
+「今後の展望」
+
+欄へ分離する。
+
+「将来判断が必要だからユーザー判断あり」
+という書き方はしない。
+
+
+────────────────────
+10. FableのPM動作
+────────────────────
+
+Fableは、
+指示された作業を順番に処理するだけではなく、
+
+- 前提タスク完了でunblockされた作業
+- 汎用化時に必要なRegression
+- Production wiring残
+- 未報告結果
+- ユーザー判断待ち
+- 次に進めるべきAction
+- 追加Trialより記事生成を優先すべき場面
+
+を自発的に確認すること。
+
+必要な場合は、
+ユーザーが思い出して聞く前に
+
+- 何がunblockされたか
+- 次Action
+- Fable推奨
+- 今やらない場合の影響
+
+を提示する。
+
+ただし、
+新仕様採用やProduction採用を
+ユーザー判断なしに進めてはならない。
+
+
+────────────────────
+11. 現在のユーザー判断まとめ
+────────────────────
+
+回答済み：
+- Repetition QA一般化 → Production採用
+- Opus context packet方式 → 標準化採用
+- Discovery対照アームTrial → 実施しない
+- 新規記事生成を優先する
+
+今はなし：
+- Trial REPORT必須欄5項目
+- 層間不整合 Open Item登録
+- A2数値表記 Open Item登録
+- News Trial-16
+
+上記「今はなし」の4件は、
+次回フル報告してから判断依頼すること。
+```
+
+**整理(決定事項の要約、原文が優先)**:
+
+1. **Discovery対照アームTrial**: 実施しない。Focus Module Part Aの
+   効果検証が不要という一般論ではなく、「現時点では追加A/B Trialより
+   新規記事生成を優先する」という優先順位判断。Focus Module Part Aは
+   今後の新規Discovery記事生成の中でNを増やし継続観測する。
+2. **Repetition QA RECONCILE-03**: (i)ハイフン境界の対称正規化+
+   (ii)数詞↔数字の0〜999拡張の一般化案を`APPROVED_FOR_PRODUCTION`とし
+   Gate 3を進める。最低限確認14項目(Production正式初回path実装/retry・
+   fallback・regeneration整合/pin test 2件期待値更新/既存35テスト
+   再実行/必要Regression/Trial-12 A2既存takeの¥0再判定/PASS時のA2
+   Assembly/標準player更新/runtime evidence/CURRENT_SPEC/DECISION_LOG/
+   OPEN_ITEMS/Git反映/Dangling Reference Check)がすべて確認できるまで
+   `PRODUCTION_WIRED`としない。
+3. **Opus context packet方式**: Opus L2の標準入力方式として採用。
+   82.7%削減・rubric論点欠落なしのTrial結果を踏まえ、改善済みpacket
+   templateを正式運用へ反映する。Opus自体は削減・廃止しない。
+4. **Trial REPORT必須欄5項目**: 判断しない(今はなし)。次回、5項目の
+   全文・意味・必要になった理由・防止する報告漏れ・既存PM_GOVERNANCE
+   との重複/補完関係・新ルールか既存強化か・Token/作業量影響・
+   Claude/Fable推奨・ユーザー判断要否をフルで報告してから判断する。
+5. **層間不整合・A2数値表記Open Item登録**: 判断しない(今はなし)。
+   次回、【A.層間不整合】【B.A2数値表記】それぞれについて指定された
+   全項目(実際の内容・対象・期待値と実際・影響・既存仕様上の扱い・
+   既存Open Itemとの重複有無・登録理由・推奨)をフルで報告してから
+   判断する。
+6. **News Trial-16**: 判断しない(今はなし)。前回「(a)/(b)/(c)、
+   推奨(b)」とだけ再掲したことは既存の未回答事項フル再掲ルール違反
+   であり、次回はTrial-16結果14項目+(a)/(b)/(c)各案の全文(内容・
+   コスト・メリット・リスク・分かること・推奨理由)を省略せず再掲して
+   から判断する。
+7. **正式報告フォーマット新設**: 今後Terminal上の正式報告は必ず
+   「★★★★報告ここから★★★★」〜「★★★★報告ここまで★★★★」で
+   囲み、ブロックだけで最新の正式報告内容が全て分かる状態にする。
+   新規結果・前回未回答事項のフル再掲・Status・コスト・runtime
+   evidence・Artifact/player・ユーザー判断・今後の展望・Next Action・
+   残課題・Production wiring状況を必要に応じ含める。重要報告をブロック
+   外に分散させない(shell log・内部メモ・途中経過はブロック外可)。
+   新しい重要結果が出たら新ブロックで統合提示する。
+8. **未回答事項の再掲ルール再確認**: 「(a)/(b)/(c)、推奨(b)」型の
+   省略再掲は禁止。選択肢全文・推奨理由・必要数値・コスト・
+   Artifact/player・Status・重要背景を省略しない。News Trial-16の
+   省略再掲について、なぜ既存ルールが守られなかったかを確認し
+   Reporting Unit運用の再発防止を行う。
+9. **「ユーザー判断」欄の使い方**: 現時点で回答が必要な事項のみを書く。
+   将来判断の可能性や次Actionは「今後の展望」欄へ分離する。「将来判断が
+   必要だからユーザー判断あり」という書き方はしない。
+10. **FableのPM動作**: 前提タスク完了でunblockされた作業・汎用化時の
+    Regression・Production wiring残・未報告結果・ユーザー判断待ち・
+    次Action・追加Trialより記事生成を優先すべき場面を自発的に確認し、
+    必要な場合は何がunblockされたか/次Action/Fable推奨/今やらない場合の
+    影響を提示する。ただし新仕様採用やProduction採用はユーザー判断なし
+    に進めない。
+11. **現在のユーザー判断まとめ**: 回答済み4件(Repetition QA一般化→
+    Production採用、Opus context packet方式→標準化採用、Discovery対照
+    アームTrial→実施しない、新規記事生成を優先する)。今はなし4件
+    (Trial REPORT必須欄5項目、層間不整合Open Item登録、A2数値表記Open
+    Item登録、News Trial-16)、いずれも次回フル報告後に判断依頼する。
+
+**未回答として残る事項**: ER-009読み辞書への略語追加(A/A')は今回の
+ユーザー回答原文に含まれておらず未回答のまま(Fableが次回フル再提示する
+必要がある)。
+
+**Status**: 上記1〜3は**ユーザー決定(仕様・優先順位判断)**である。
+Discovery Trial-12/Focus Module Part Aは`VALIDATED`(Trial)のまま・
+Production不採用のまま(対照アームTrial不実施は効果検証不要という結論
+ではないため、Status変更なし)。Repetition QA RECONCILE-03一般化案は
+`APPROVED_FOR_PRODUCTION`(Gate 3進行、上記14項目確認まで
+`PRODUCTION_WIRED`にしない)。Opus context packet方式はOpus L2標準入力
+方式として正式採用(Opus自体は削減・廃止しない)。4〜6(Trial REPORT
+必須欄5項目/層間不整合・A2数値表記Open Item/News Trial-16)は
+`USER_DECISION_REQUIRED`のまま変更なし(フル再提示後に判断)。7〜10は
+PM運用ルール(`docs/pm/PM_GOVERNANCE.md`へ反映)。
+
+**PM_GOVERNANCE反映**: `docs/pm/PM_GOVERNANCE.md`9節へ正式報告ブロック
+ルール(★★★★報告ここから★★★★〜ここまで★★★★)と「ユーザー判断」欄
+/「今後の展望」欄の分離ルールを追加。12節へ未回答事項の省略再掲禁止の
+明文化(2026-09-12のNews Trial-16/REPORT必須欄/Open Item登録3件での
+省略再掲の事実・原因・再発防止策を記録)を追加。12-10節へFableの自発的
+Next Action確認ルールを追加。Opus入力制限節へcontext packet方式+
+progressive disclosureをOpus L2標準入力方式とする旨を追加。11節へ
+packet方式が標準である旨を1行参照追記。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Discovery対照アーム不実施・
+優先順位判断・Status変更なしの記録)、OPEN-121行(RECONCILE-03一般化案
+`APPROVED_FOR_PRODUCTION`・Gate 3進行の記録)、OPEN-142行(packet方式
+標準採用の記録)へそれぞれ追記(既存本文不変)。`docs/pm/PM_BRIEF.md`へ
+正式報告ブロックルール・省略再掲禁止の要点を追記。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ本タスクのエントリを追記。
+
+**並列稼働中(本タスクでは以下の生成物に一切触れず、stageもしていない)**:
+3V Phase 1b-04(`er012_*`)、Repetition QA RECONCILE-03のProduction配線
+(`er011_open121_repetition_qa_production_01.py`とそのtest、
+`er011_output/discovery_generalization_wake_before_alarm_trial_12/`、
+`OPEN-121-*`REPORT)、報告草稿(`docs/pm/REPORT_DRAFT_*`)。API呼び出しは
+行っていない(¥0)。Productionコードは変更していない(SSOT/ガバナンス
+文書のみ)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-94-
+USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-
+PRIORITY`)、ユーザー発言原文(上記、セッション記録`294958fe-da6e-491c-
+8a02-4f864d8195c8.jsonl`より抽出)。詳細は`OPEN_ITEMS.md`OPEN-135/
+OPEN-121/OPEN-142行、`docs/pm/PM_GOVERNANCE.md`、`docs/pm/PM_BRIEF.md`、
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

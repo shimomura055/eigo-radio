@@ -772,3 +772,19 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   新規LLM/TTS/ASR API呼び出しなし)。並列稼働中の他Agent(3V Phase
   1b-04、Trend A2 Foreign Token Gate Reconcile)の生成物には一切
   触れていない。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-
+  REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY、本タスク):
+  2026-09-12ユーザー回答11項目の原文全文をセッション記録から抽出し
+  (byte一致確認済み)、`DECISION_LOG.md`新規エントリ+索引・
+  `OPEN_ITEMS.md`(OPEN-135/OPEN-121/OPEN-142行)・
+  `docs/pm/PM_GOVERNANCE.md`(9-8正式報告ブロック新設・12-4-1未回答
+  省略再掲禁止新設・11節context packet方式標準化・12-10自発的Next
+  Action再確認)・`docs/pm/PM_BRIEF.md`へ反映。Sonnet、LOW、実測¥0
+  (SSOT・ガバナンス文書編集のみ、新規LLM/TTS/ASR API呼び出しなし、
+  Productionコード変更なし)。委任回数=初回のみ(ループ上限4回以内)。
+  並列稼働中の他Agent(3V Phase 1b-04`er012_*`、Repetition QA
+  RECONCILE-03のProduction配線`er011_open121_repetition_qa_
+  production_01.py`とそのtest・`er011_output/discovery_
+  generalization_wake_before_alarm_trial_12/`・`OPEN-121-*`REPORT、
+  報告草稿`docs/pm/REPORT_DRAFT_*`)の生成物には一切触れず、stageも
+  していない。
