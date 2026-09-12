@@ -1,0 +1,84 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Why Do We Sometimes Wake Up Before the Alarm?
+
+The alarm has not rung yet. The room is quiet. Then, suddenly, you are awake just before it sounds.
+
+It can feel as if the body has somehow read the clock. Research suggests a less magical, but still surprising, explanation. The brain and body keep time through an internal daily system. Light and regular sleep and wake times help set that system. When a waking time is expected, the body may also begin preparing before sleep ends.
+
+In a laboratory study, blood levels of ACTH, a hormone, rose about one hour before an expected waking time. Researchers saw this as more than the normal daily rhythm. They said it could be part of a preparation process for the end of sleep.
+
+Other small studies found changes before planned self-awakening. In one, activity in a front part of the brain changed about 30 minutes before waking. In another short-nap study, heart rate began to rise about three minutes before waking.
+
+But this is not proof that the body can read an alarm with perfect accuracy. Most self-awakening studies asked people to choose a waking time and try to wake then without outside help. That is related to waking just before an alarm, but it is not exactly the same event. The real question is why the feeling can sometimes be so precise.
+
+### A clock that can keep time, but not count perfectly
+
+In one laboratory experiment, weak light and a fixed routine matched a 24-hour day, but usually did not match shorter or longer days of 23.5 or 24.6 hours. Regular mornings may steady the body’s timing near its natural, almost-24-hour rhythm. They do not turn it into a countdown timer.
+
+### Practice can change the feeling of certainty
+
+A different clue comes from planned self-awakening. In one study of 11 people, 82% met the study’s success rule on day seven after repeated attempts. Yet about 10% of 643 university students said they routinely self-awoke. This suggests that expectation and practice may matter for some people, while a broadly reliable ability is not established. Most studies tested planned waking, not accidental waking just before a real alarm.
+
+## In one line…
+
+Waking before an alarm may be the meeting point of a steady body clock and a learned expectation—not proof of a perfect internal countdown.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "self-awakening",
+    "japanese_gloss": "自分で目を覚ますこと",
+    "source_sentence": "Other small studies found changes before planned self-awakening."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "keep time",
+    "japanese_gloss": "時間を刻む",
+    "source_sentence": "The brain and body keep time through an internal daily system."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "read the clock",
+    "japanese_gloss": "時計の時刻を読み取る",
+    "source_sentence": "It can feel as if the body has somehow read the clock."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "body clock",
+    "japanese_gloss": "体内時計",
+    "source_sentence": "Waking before an alarm may be the meeting point of a steady body clock and a learned expectation—not proof of a perfect internal countdown."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "learned expectation",
+    "japanese_gloss": "経験から身についた予測",
+    "source_sentence": "Waking before an alarm may be the meeting point of a steady body clock and a learned expectation—not proof of a perfect internal countdown."
+  }
+]

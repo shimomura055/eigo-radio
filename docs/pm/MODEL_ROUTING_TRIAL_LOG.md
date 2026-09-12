@@ -679,3 +679,33 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   反映。Sonnet、LOW、実測¥0(会話ログの機械集計のみ、新規LLM/TTS/ASR
   API呼び出しなし)。Phase 2(Before/After Trial)の実施要否はユーザー
   判断待ち。
+- 2026-09-12(`FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-
+  NPLUS1-TRIAL-12`、Trial完走): Discovery Focus Module Part A単独の
+  N=1追加Trial(テーマ「Why do we sometimes wake up just before the
+  alarm?」)が完走した。Sonnet、実測¥141.55(管理ID全体上限¥300の
+  47.2%)。記事レベル(A2/B1B)はFull Story/Point構成成立・Local
+  Rewrite 0回・保険文0件・Fact Checker一発PASSで`VALIDATED`(Trial-11
+  より良好)。音声はB1B`VALIDATED`(全segment PASS)、A2は
+  `full_story_part1`がRepetition QA(既存`method_a_ngram`)で3+1回
+  連続NG(cool-down 20分観測フック無人4回目試行含む、N=1)となり既存
+  Human Review Lock(STOPPED)へ到達、`USER_DECISION_REQUIRED`とした
+  (自動採用・承認代行なし)。正当な語句再利用の誤検出疑いという新しい
+  failure type候補を発見(`REPETITION-QA-FAILURE-TYPE-RECONCILE-03`が
+  並列で切り分け中)。委任回数=初回のみ(ループ上限4回以内)。
+- 2026-09-12(`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-
+  03-WRITER-LEDGER-KP-GLUE`、STOP判定): 3V Phase 1bのWriter/Ledger/
+  Key Phrase Production glue配線を検討した結果、Key Phraseは配線可能
+  (新仕様不要)と判定したが、Ledger作成(単一テーマのグローバル定数
+  依存)とWriter(3V共通構造原則とテーマ固有内容が不可分に混在)は
+  いずれもユーザー指定STOP条件「3V専用の新Writer原則」に該当しうる
+  ため、コード変更を一切行わずSTOPで終了した。Sonnet、LOW、実測¥0
+  (新規LLM/TTS/ASR API呼び出しなし、既存3V offline regression 56件の
+  再実行確認のみ)。委任回数=初回のみ(ループ上限4回以内、診断結果は
+  代替案2件の提示のみでユーザー判断待ち)。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-
+  STOP、本タスク): 上記2件のTrial結果+Token効率Phase 2ユーザー承認
+  (2026-09-12「Token効率 Phase 2について(A)提案通り実施します。進めて
+  ください。」)をSSOTへ反映+Trial-12配布(Git commit・push・HTTP到達
+  確認)。Sonnet、LOW、実測¥0(SSOT編集・Git操作・HTTP確認のみ、新規
+  LLM/TTS/ASR API呼び出しなし)。中間レビュー・正式Closeout Triggerの
+  到達判定・再計算はいずれも実施していない。

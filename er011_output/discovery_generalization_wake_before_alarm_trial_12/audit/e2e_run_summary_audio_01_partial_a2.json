@@ -1,0 +1,154 @@
+{
+  "a2": {
+    "level": "a2",
+    "support": {
+      "support_status": {
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK"
+      },
+      "insurance_hits": {},
+      "total_insurance_hits": 0
+    },
+    "key_phrase": {
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "redundancy_qa_status": "REDUNDANCY_PASS",
+      "redundancy_retry_log": [
+        {
+          "attempt": 0,
+          "status": "REDUNDANCY_PASS",
+          "duplicate_pairs": []
+        }
+      ]
+    },
+    "tts": {
+      "segment_status": {
+        "topic_intro": "OK",
+        "japanese_title": "OK",
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK",
+        "point_one_heading": "OK",
+        "point_two_heading": "OK",
+        "full_story_part1": "STOPPED",
+        "full_story_part2": "OK",
+        "point_one": "OK",
+        "point_two": "OK",
+        "in_one_line": "OK"
+      },
+      "key_phrase_status": {
+        "1": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "2": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "3": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "4": {
+          "en": "OK",
+          "ja": "OK"
+        },
+        "5": {
+          "en": "OK",
+          "ja": "OK"
+        }
+      }
+    },
+    "review_lock": {
+      "lock_state_file_present": true,
+      "segment_count": 24,
+      "max_cumulative_tts_attempts_any_segment": 2,
+      "locked_or_review_required_segments": [
+        "full_story_part1"
+      ]
+    },
+    "cooldown_observation": {
+      "status": "RAN",
+      "jobs": 1,
+      "skipped": [],
+      "observations": [
+        {
+          "run_id": "771b0033-0df6-45f0-8995-c1ac10e78485",
+          "management_id": "TTS-RETRY-COOLDOWN-20MIN-OBSERVATION-TRIAL-01",
+          "level_dir": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2",
+          "segment_id": "full_story_part1",
+          "language": "en",
+          "canonical_text_sha256": "2dedd81dfabc3b09ae2bd2dd1d917f3578add5426c83f28891d1c7741ec4da43",
+          "three_ng_summary": [
+            {
+              "sequence": 1,
+              "ng_category": "NORMALIZED_MATCH",
+              "ng_subtype": null,
+              "audio_classification": "NORMALIZED_MATCH",
+              "verified": false,
+              "asr_text_sha256": "888f4b86c0cf9de6343b39d833bfdb3c8390326a68de071067a744cfce7cf260",
+              "route": "custom_35d6860b",
+              "model": "gemini-2.5-pro-preview-tts",
+              "voice": "Aoede"
+            },
+            {
+              "sequence": 2,
+              "ng_category": "NORMALIZED_MATCH",
+              "ng_subtype": null,
+              "audio_classification": "NORMALIZED_MATCH",
+              "verified": false,
+              "asr_text_sha256": "888f4b86c0cf9de6343b39d833bfdb3c8390326a68de071067a744cfce7cf260",
+              "route": "custom_35d6860b",
+              "model": "gemini-2.5-pro-preview-tts",
+              "voice": "Aoede"
+            },
+            {
+              "sequence": 3,
+              "ng_category": "NORMALIZED_MATCH",
+              "ng_subtype": null,
+              "audio_classification": "NORMALIZED_MATCH",
+              "verified": false,
+              "asr_text_sha256": "888f4b86c0cf9de6343b39d833bfdb3c8390326a68de071067a744cfce7cf260",
+              "route": "minimal_fallback",
+              "model": "gemini-2.5-pro-preview-tts",
+              "voice": "Aoede"
+            }
+          ],
+          "no_human_intervention": true,
+          "production_state_modified": false,
+          "auto_adopted_to_production": false,
+          "requested_cooldown_seconds": 1200.0,
+          "actual_wait_seconds": 1200.006,
+          "params_hash_before_wait": "09bea6af3f2c1a94eb655389e58ca2e3f52509fa70646d628141abb2185f20a8",
+          "params_hash_after_wait": "09bea6af3f2c1a94eb655389e58ca2e3f52509fa70646d628141abb2185f20a8",
+          "live_params_hash_before_wait": null,
+          "live_params_hash_after_wait": null,
+          "params_unchanged_verified": true,
+          "status": "OBSERVED",
+          "fourth_attempt_executed": true,
+          "fourth_attempt_result_status": "NG",
+          "fourth_attempt_raw_status_field": "STOPPED",
+          "fourth_attempt_asr_verified": null,
+          "fourth_attempt_reason": "1回試行してもASR検証(内容+長さ)に合格しませんでした",
+          "fourth_attempt_audio_classification": null,
+          "fourth_attempt_duration_seconds": 43.027,
+          "cost_note": "4回目attempt=通常のTTS 1回+ASR検証1回相当(single_attempt_fnの内部実装に依存、本モジュール自身は追加のAPI呼び出しを行わない)。",
+          "adoption_note": "4回目がPASSした場合でも、本モジュールはProduction側(review_lock_state.json)を一切変更しません(STOPPEDのまま)。Production側で採用する場合は、(1) ユーザーが4回目の結果[観測記録のwav/ASR文字起こし]を確認し、(2) 採用してよいと判断した場合のみ、既存Human Review機構であるreview_lock.approve_regenerate(out_path, text, approved_by=...)をユーザー自身の指示に基づき明示的に呼び出し、(3) その後Production側のcascade関数(3回連続NGを検出した既存の生成関数)を通常どおり再実行してREGENERATE_APPROVED状態を消費させてください。本モジュールが生成した4回目の音声ファイルをProduction成果物パスへ直接コピーする、といったReview Lockを迂回する手順は取らないでください。"
+        }
+      ]
+    },
+    "assembly": {
+      "status": "GATE_BLOCKED",
+      "gate_off_result": "BLOCKED",
+      "error": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: A2のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['full_story_part1=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。",
+      "gate_opt_in_result": {
+        "gate_on_result": "SKIPPED_ASSEMBLE_NOT_PASS"
+      }
+    }
+  }
+}

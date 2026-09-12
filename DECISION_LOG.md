@@ -367,6 +367,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD: 横断監査(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`)が指摘したOPEN-145/146`APPROVED_FOR_PRODUCTION`のユーザー承認証拠不明(STOP条件該当)に対応し、2026-09-12ユーザー発言原文全文(UDR#11/#12「⇒採用」)・Fable提示判断表原文・commit hash付き時系列を正式記録(承認自体は実在、記録不備が原因と特定)+`PM-CLOSEOUT-CONSOLIDATION-83`エントリへ相互参照注記追加(既存本文不変)+`docs/pm/PM_GOVERNANCE.md`へ「ユーザー承認は要約引用ではなく原文全文転記を必須とする」再発防止ルール追記
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-PHASE1: Claude開発Token効率化(OPEN-142)Phase 1実測監査(`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-AUDIT-01_REPORT.md`)結果のSSOT反映(巨大SSOT全文再読0件・同一管理ID内再読込37.8%・Agent間重複7.0%・Fable委任文744,841字が実測読込量835,677字と同規模)+Sonnet改善案A〜Hとユーザー原案A〜Hの対応表+Phase 2 Trial設計案、STOP条件該当なし・実施はユーザー判断待ち
 - [本ファイル内] ## PM-NEXT-ACTIONS-NEWS-VOICES-TREND-01: News Point品質一般化Trial-16(Hubble/Saturnテーマ)着手+News Ledger公式英語表記(OPEN-146)は過去Ledger遡及適用なしでN増しの中でruntime evidence蓄積+B-Family 3V Phase 1bをDiscovery Trial-12待ちにせず着手(STOP条件6項目・Phase 2テーマ=スマホ制限3V/2V比較)+Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)を既存Production仕様で1本作成+FableのPMフォロー不足是正(既存Gate 5/Gate 6/12節への適用漏れとして12-10節を追加)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-STOP: Discovery N=1追加Trial-12完走(A2音声USER_DECISION_REQUIRED)+3V Phase 1b-03 STOP(Writer/Ledger未配線)+Token効率Phase 2ユーザー承認の正式反映
 
 ---
 
@@ -3969,6 +3970,141 @@ Phase 1b配線(er012コード+test+REPORT)、Trend新記事(Trend Production
 TREND-01`)、ユーザー指示原文(上記全文)。詳細は`OPEN_ITEMS.md`
 OPEN-135/OPEN-146/OPEN-120行、`docs/pm/PM_GOVERNANCE.md`12-10節、
 `docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-STOP: Discovery
+N=1追加Trial-12完走(A2音声USER_DECISION_REQUIRED)+3V Phase 1b-03 STOP
+(Writer/Ledger未配線)+Token効率Phase 2ユーザー承認の正式反映
+
+**背景**: 並列稼働5件(News Trial-16・Trend新記事・3V線引き設計・
+Repetition QA RECONCILE-03・Phase 2 packet生成)のうち、報告可能に
+なった3件(Discovery Trial-12、3V Phase 1b-03、Token効率Phase 2承認)
+をSSOTへ反映する。残り2件(News Trial-16・Trend新記事)およびRECONCILE-
+03・Phase 2 packet生成は引き続き並列進行中であり、本タスクではそれらの
+生成物に一切触れていない。
+
+**(A) Discovery N=1追加Trial-12(テーマ「Why do we sometimes wake up
+just before the alarm?」/「なぜ目覚ましが鳴る直前に目が覚めることが
+あるのか?」、ユーザー選定・変更なし)**: 記事レベル(A2/B1B、Discovery
+Focus Module Part A単独)は`VALIDATED`。Full Story/Point構成の自然な
+成立・Point間の意味的差異・保険文0件・Ledger準拠・Fact Checker一発PASS・
+Local Rewrite 0回が再現され、Trial-11(タオル)より結果が良好だった
+(N=2テーマの観測であり量産平均としての一般化主張はしない)。音声は
+B1B`VALIDATED`(全22segment PASS、Assembly PASS、Gate PASS)。A2は
+`full_story_part1`が標準2回attempt+cool-down観測フック(`TTS-RETRY-
+COOLDOWN-20MIN-OBSERVATION-TRIAL-01`)による無人4回目試行もNGとなり、
+既存Human Review Lock(`review_lock_state.json`HUMAN_REVIEW_REQUIRED/
+STOPPED)に到達した。自動採用・人的承認代行は一切行っていない。原因は
+既存Repetition QA(`method_a_ngram`)が記事本文中の正当な語句再利用
+("Light helps this clock match the 24-hour day."と"...usually
+matched a 24-hour day."という、Point Overlap QA側でも許容範囲として
+PASS済みの意図的な2回使用)を反復と誤検出した疑い(false-positive疑い、
+既存Repetition QAロジックは本Trialで一切変更していない)であり、通常の
+TTSばらつきに起因する既存failure typeとは異なる新しい型の可能性がある。
+この切り分けは`REPETITION-QA-FAILURE-TYPE-RECONCILE-03`(並列稼働中、
+本タスクでは非関与)が担当中。**Fable判定**: 記事レベル=`VALIDATED`、
+音声レベルはB1B=`VALIDATED`、A2=`USER_DECISION_REQUIRED`(RECONCILE-03
+の結果を待って判断する、現時点でHuman Review依頼はしない)。費用¥141.55
+(管理ID全体上限¥300の47.2%、超過なし)。cool-down 20分観測フックの
+無人4回目試行観測はこれが初回(N=1)であり、対象がRepetition QA
+false-positive疑いという特殊なfailure typeだったため、今後の観測は
+failure type別に層別して記録する必要がある。
+
+**Trial-12配布**: `er011_output/discovery_generalization_wake_before_
+alarm_trial_12/`一式(記事・audit・B1B assembled mp3・player_std、
+`*.wav`は既存`.gitignore`ルールにより自動除外)+script 3本
+(`er011_discovery_generalization_wake_before_alarm_trial_12_run.py`/
+`er011_discovery_generalization_wake_before_alarm_trial_12_audio_run.py`/
+`er011_wake_before_alarm_trial12_std_player_01.py`)+REPORT
+(`FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12_
+REPORT.md`)を明示的に`git add`(`-A`不使用)しcommit・push、push後に
+`https://raw.githack.com/shimomura055/eigo-radio/main/er011_output/
+discovery_generalization_wake_before_alarm_trial_12/player_std/
+index.html`および参照音声URL全件のHTTP到達確認を実施した(結果は
+`docs/pm/RESULT_PACKET.md`参照。A2未完成segmentはplayer上で非公開
+[9節設計どおり13件個別segment+Key Phrase5件のみ掲載、`full_story_
+part1`・A2完成episodeは含まれない])。
+
+**(B) 3V Phase 1b-03 STOP(Writer/Ledger/Key Phrase glue配線)**: 管理ID
+`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-03-WRITER-
+LEDGER-KP-GLUE`は**STOP(未実装)**で終了した。Key Phrase選定glueは既存
+汎用Production関数(`er003_v1_n3_01_scaffold_generate.py::run_key_
+phrases`)がそのまま再利用可能で新仕様不要と判定したが、(b) Ledger
+作成の実体(`er003_v1_en_direct_vfl_01_generate.py`)は自らを「実験
+パイプライン」と明記し単一テーマのグローバル定数`TOPIC`を無条件使用
+する設計であり任意テーマへの汎用配線には関数改修が必要、(c) Writer
+(Focus Module)の実体(Trial-02の`B_FAMILY_VOICES_3V_FOCUS_MODULE_
+BLOCK`)は3V承認済み構造原則(6見出し構造・一人称ルール・Evidence脇役
+原則・Tension 4要素構造等)とAI審査(job screening)テーマ固有内容
+(Voice Card 1〜3の具体的人物像・特定Ledger evidence tag ID参照)が
+不可分に混在しており、汎用テンプレート化には「どの文が構造原則でどの
+文がテーマ固有か」という新たな切り分け基準の考案が必要で、これは
+ユーザー指定STOP条件6項目のうち「3V専用の新Writer原則」に該当しうると
+Sonnetが判断し実装しなかった。Key Phrase単体は入力(記事テキスト)が
+無く単独では意味を持たないため、これも実装を見送った。既存3V offline
+regressionスイート56件はコード変更ゼロのままPASSを再確認した。代替案
+2件(A: Key Phrase glue単体配線+vfl01のtopic引数化改修+Writer切り分け
+設計を別セッションで承認後に機械的にテンプレート化/B: Phase 2を
+「テーマ固有Voice Card/Ledger/Focus Module content作成[人手/Fable主導
+の設計セッション]→承認済みcontentを入力とするParameterized Production
+glue→Assembly/TTS」の3段階に再定義)を提示、いずれも未選択(ユーザー
+判断待ち)。「どの部分が3V共通原則でどの部分がテーマ固有か」の線引き
+設計自体は、別管理ID`EDITORIAL-B-FAMILY-VOICES-3V-WRITER-GENERIC-VS-
+THEME-SPLIT-DESIGN-01`で並列進行中であり、本タスクではその生成物に
+一切触れていない。`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-
+PHASE1B-03_REPORT.md`を明示的に`git add`しcommitした。
+
+**(C) Token効率化プログラム(OPEN-142)Phase 2ユーザー承認**: ユーザーが
+2026-09-12、以下のとおり正式承認した(原文全文、要約禁止)。
+
+```
+Token効率 Phase 2について(A)提案通り実施します。進めてください。
+```
+
+これを受け、Phase 2準備(管理ID`PM-TOKEN-EFFICIENCY-PHASE2-CONTEXT-
+PACKET-TRIAL-01`、並列稼働中)がBefore基準確定・必須論点チェックリスト
+固定・雛形`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`(新規、
+SSOTではない、未記入状態)作成・After実行手順書作成まで完了した(準備
+段階のみ、¥0、API呼び出し・Opus起動なし、Trial-12生成物は読み取りの
+み)。Before代替値は`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-
+REVIEW-01`のOpus実測135,397字(22呼出、Read/Grep内訳あり)を採用した
+(Trial-11 Opus L2レビュー自体のOpus実読込文字数はrotation失効により
+未計測のため代替値とした)。After(Discovery Trial-12完了後のOpus L2
+解釈をcontext packet+progressive disclosure方式で実施し読込文字数を
+比較する)は本タスク時点で未実施(準備完了・実施はFableの別タスクで
+進行中)。`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`を明示的に
+`git add`しcommitした(準備REPORT本体`PM-TOKEN-EFFICIENCY-PHASE2-
+CONTEXT-PACKET-TRIAL-01_REPORT.md`は編集中のため本タスクでは
+stageしていない)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Discovery Trial-12結果・
+closeout・配布URL・A2の扱い・cool-down N=1追記)・OPEN-120行(3V
+Phase 1b-03 STOP・代替案・線引き設計への参照)・OPEN-121行(Repetition
+QA第4のfailure type候補・RECONCILE-03参照)・OPEN-142行(Phase 2承認・
+準備完了・After実施中)へ追記(既存本文は書き換えず末尾追記のみ)。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へTrial-12完走・3V Phase 1b-03
+STOPの2エントリを追記。
+
+**Status/STOP条件**: 本タスクはSSOT記録・Git統合(commit/push)・HTTP
+到達確認のみを対象とし、コード変更・API支出・Production Status格上げ
+(A2音声の`VALIDATED`格上げ等)はいずれも行っていない。STOP条件該当なし。
+
+**並列稼働中5件(本タスクでは以下の生成物に一切触れず、stageもして
+いない)**: News一般化Trial-16(`er011_output/news_point_quality_
+generalization_hubble_saturn_trial_16/`+script+REPORT)、Trend新記事
+(Trend Production出力dir+REPORT)、3V線引き設計(`EDITORIAL-B-FAMILY-
+VOICES-3V-WRITER-GENERIC-VS-THEME-SPLIT-DESIGN-01_REPORT.md`のみ)、
+Repetition QA RECONCILE-03(REPORT+scratchpad)、Phase 2 packet生成
+(`.../trial_12/opus_context_packet.md`+`PM-TOKEN-EFFICIENCY-PHASE2-*_
+REPORT.md`追記分)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-90-
+DISCOVERY-TRIAL-12-AND-3V-STOP`)、`FAMILY-A-DISCOVERY-GENERALIZATION-
+WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12_REPORT.md`、`EDITORIAL-B-FAMILY-
+VOICES-3V-PRODUCTION-WIRING-PHASE1B-03_REPORT.md`、`PM-TOKEN-
+EFFICIENCY-PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`(準備節)、
+ユーザー発言原文(上記(C))。詳細は`OPEN_ITEMS.md`OPEN-135/120/121/142
+行、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`
+参照。
 
 ## 参照元
 
