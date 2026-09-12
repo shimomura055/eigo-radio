@@ -1,7 +1,12 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-
+**最終更新: 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
+DISTRIBUTIONでGate 7補足(m)へ「`file:///`禁止は既存の標準player要件
+[TRIAL-09形式・(a)〜(l)]を置き換えるものではなく追加要件」を明記し、
+9-7末尾へ2026-09-12 B1B再提示でGate 7 Reconciliation漏れ・Sonnet未参照
+だった事例記録を追加した。詳細は末尾「変更履歴」参照)。
+2026-09-12(PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-
 AND-B1B-DISTRIBUTIONで9-7「`file:///`のユーザー向けリンク使用禁止」を
 追加しGate 7チェックリストへ項目(m)を追加。PM-GOVERNANCE-USER-DECISION-
 EXPLANATION-FORMAT-01で9-6「分かりやすく説明して」等の依頼時の判断項目別
@@ -214,6 +219,19 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
     を確認する(標準はGitHub blob/raw URL、将来Artifact対応環境では
     Artifact)。開ける形式を用意できない環境では試聴依頼(Human Review
     依頼)自体を行わない。
+    **補足(2026-09-12、PM-CLOSEOUT-CONSOLIDATION-85)**: `file:///`禁止
+    (本項目)は、既存の標準player要件(TRIAL-09形式・完全スクリプト・
+    (a)〜(l))を置き換えるものではなく、それらに加えて満たすべき追加要件
+    である。試聴依頼は、Gate 7全項目((a)〜(l))+本項目(m)の到達確認の
+    両方を満たすまで「(ユーザーへ)提示した」と扱わない。標準配布経路:
+    player本体(HTML)は`raw.githubusercontent.com`だと`text/plain`で
+    配信されHTMLとして描画されないため、`raw.githack.com`
+    (`https://raw.githack.com/<owner>/<repo>/<branch>/<path>`、公開repo・
+    設定不要の無料proxy、Trial試聴用途)を用いる。音声ファイル(mp3/wav等の
+    バイナリ)は`raw.githubusercontent.com`のraw URLをそのまま`<audio src>`
+    として使用してよい(HTMLレンダリング解釈が不要なため問題ない)。将来的な
+    恒久経路としてGitHub Pages(要ユーザー承認の上で有効化)またはArtifact
+    対応環境への移行を検討する。
 
 **補足(2026-09-08、ユーザー決定、PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-
 AUTOCOMPACT-50-12)**: ユーザーへ音声・artifact・比較結果等の確認を求める
@@ -836,6 +854,19 @@ eigo-radio/...`形式のローカルURLを「クリック可能なリンク」�
    使える環境では、そちらを優先する。
 5. Fableは試聴依頼前に必ずGate 7(2節、補足(m))で「これはユーザー環境
    から実際に開けるリンクか」を確認する。
+
+**事例記録(2026-09-12、PM-CLOSEOUT-CONSOLIDATION-85)**: 上記4での
+B1B再提示(mp3 raw URLのみ)対応時、Fableが配布経路(`file:///`禁止)の
+是正に集中し、既存の標準player要件(Gate 7補足(a)〜(l)、PM-GOVERNANCE-
+AUDIO-ARTIFACT-GATE7-CHECKLIST-10)をReconciliationせず、Sonnetへの
+委任文にも当該要件を含めなかった。Sonnet側もGate 7を参照せずmp3 raw
+URLのみで「配布可能」と報告した(Gate 7未参照・Reconciliation確認漏れ)。
+是正: `FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-STANDARD-
+PLAYER-01`で標準player形式(TRIAL-09形式、Gate 7 (a)〜(m)全項目)へ
+作り直し、本節2節Gate 7補足(m)へ「`file:///`禁止は既存Gate 7要件を
+置き換えるものではなく追加要件」である旨を明記した。今後、配布経路の
+是正のみを目的とする委任であっても、Fableは委任前にGate 7 (a)〜(l)を
+Reconciliationし、Sonnetは受入報告前にGate 7全項目を自己点検する。
 
 ## 10. commit / push運用
 
@@ -1793,4 +1824,27 @@ Trial特有コストを独立項目として明示する5区分へ更新)。
   追加した。文書編集のみ、コード・Prompt変更なし、追加API費用¥0。
   詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-
   LINK-RULE-AND-B1B-DISTRIBUTION`エントリ、`docs/pm/RESULT_PACKET.md`
+  参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
+  DISTRIBUTION): タオルTrial-11(A2/B1B)のmp3 raw URLのみでの試聴提示
+  (PM-CLOSEOUT-CONSOLIDATION-83)が、既存の標準player要件(Gate 7補足
+  (a)〜(l)、PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10)を満たして
+  いないとのユーザー指摘を受け是正。Gate 7補足(m)へ「`file:///`禁止
+  (2026-09-12追加)は既存の標準player要件を置き換えるものではなく追加
+  要件であり、試聴依頼はGate 7全項目(a)〜(l)+本項目(m)の到達確認の
+  両方を満たすまで『提示した』と扱わない」を明記し、player本体(HTML)は
+  `raw.githubusercontent.com`だと`text/plain`配信されHTMLとして描画
+  されないため`raw.githack.com`(公開repo・設定不要)を標準配布経路と
+  する旨、音声バイナリは`raw.githubusercontent.com`のraw URLをそのまま
+  使ってよい旨を追記した。9-7末尾へ事例記録(2026-09-12のB1B再提示対応
+  時、Fableが配布経路是正に集中し既存Gate 7要件をReconciliationせず
+  委任文に含めず、SonnetもGate 7を参照しなかった)を追加した。
+  是正実装(標準player`er011_output/discovery_generalization_towels_
+  trial_11/player_std/index.html`、Gate 7 (a)〜(m)全項目PASS確認、
+  raw.githack.com/rawcdn.githack.comでのHTTP 200+全53音声URL到達確認
+  済み)はSonnet実行、SSOT反映は本エントリで実施。文書編集+新規Trial
+  成果物のGit記録のみ、Production変更・API費用0円。詳細は
+  `DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
+  DISTRIBUTION`エントリ、`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-
+  TRIAL-11-STANDARD-PLAYER-01_REPORT.md`、`docs/pm/RESULT_PACKET.md`
   参照。

@@ -362,6 +362,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 (UDR#11/UDR#12新規、Production採用は未承認)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION: 試聴リンク運用の恒久是正(`file:///`禁止・GitHub配布)+タオルTrial-11 B1B完成配布+OPEN-145/146 Production採用(配線中)+TTS retry cool-down観測Trial記録(UDR#10解消)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION: OPEN-145(JA ASR表記ゆれ)・OPEN-146(News人名英語表記)のProduction配線完了をSSOTへ統合+タオルTrial-11 A2完成episode配布(mp3+player.html、GitHub URL)+TTS retry cool-down観測フックのTrial harness 3系統への配線
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-DISTRIBUTION: タオルTrial-11(A2/B1B)標準player(Gate 7 (a)〜(m)準拠)のcommit・push+raw.githack.com/rawcdn.githack.comでのHTTP到達確認(index.html+音声53件、全件200)+PM_GOVERNANCE Gate 7補足(m)への追加要件明記+Gate 7 Reconciliation漏れの事例記録+OPEN-135への反映
 
 ---
 
@@ -3563,6 +3564,71 @@ ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01_REPORT.md`、`OPEN-146-LEDGER-
 CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01_REPORT.md`、`TTS-RETRY-
 COOLDOWN-20MIN-OBSERVATION-TRIAL-01_REPORT.md`。詳細は`OPEN_ITEMS.md`
 OPEN-135/145/146行、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-DISTRIBUTION
+
+**背景**: `FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-STANDARD-
+PLAYER-01_REPORT.md`により、前回(PM-CLOSEOUT-CONSOLIDATION-83/84)の
+タオルTrial-11(A2/B1B)配布報告(mp3 raw URLのみ提示)が、PM_GOVERNANCE
+Gate 7の既存「試聴artifact標準player」要件(TRIAL-09形式、(a)〜(l)、
+PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10)を満たしていないという
+ユーザー指摘への是正が既にSonnet側で実装済み(音声再生成なし)であり、
+本タスクはそのGit反映・到達確認・SSOT反映を行った。
+
+**やったこと**: (1) 標準player成果物一式
+(`er011_output/discovery_generalization_towels_trial_11/player_std/`
+配下の`index.html`・`DISTRIBUTION.md`・`audio_mp3/`[A2個別24件・
+B1B個別27件・A2完成episode1件、いずれもwavからの単純mp3変換のみで
+TTS再生成ではない]、生成script`er011_towels_trial11_std_player_01.py`、
+対応REPORT)を明示的に`git add`(`-A`不使用)しcommit(c4e7d96)・push
+した。(2) push後、以下でHTTP到達確認を実施した: player本体
+`https://raw.githack.com/shimomura055/eigo-radio/main/er011_output/
+discovery_generalization_towels_trial_11/player_std/index.html`
+(HTTP 200、Content-Type: text/html)、CDN固定版
+`https://rawcdn.githack.com/shimomura055/eigo-radio/
+c4e7d96b2595617e19a1662a199ad8b2f58a95d4/er011_output/
+discovery_generalization_towels_trial_11/player_std/index.html`
+(HTTP 200)、index.htmlが参照する音声URL(raw.githubusercontent.com
+絶対URL)を全件抽出(53件: A2個別24+A2完成episode1+B1B個別27+B1B完成
+episode1)しHTTP HEADで確認した結果、全53件がHTTP 200(失敗0件)。
+(3) `docs/pm/PM_GOVERNANCE.md` 2節Gate 7補足(m)へ、`file:///`禁止
+(2026-09-12追加)は既存の標準player要件(TRIAL-09形式・(a)〜(l))を
+置き換えるものではなく追加要件であり、試聴依頼はGate 7全項目+本項目
+(m)の到達確認を満たすまで「提示した」と扱わないこと、player本体
+(HTML)は`raw.githubusercontent.com`だと`text/plain`配信されHTMLとして
+描画されないため`raw.githack.com`を標準配布経路とすること(音声
+バイナリは`raw.githubusercontent.com`のraw URLをそのまま使ってよい)を
+明記した。9節9-7末尾へ、2026-09-12のB1B再提示対応時にFableが配布経路
+是正に集中し既存Gate 7要件をReconciliationせず委任文に含めず、
+Sonnet側もGate 7を参照しなかった事例を記録した。
+
+**Gate 7点検結果**: (a)完成episode音声PASS、(b)Preview PASS、
+(c)Comment全件PASS、(d)本文全section PASS、(e)Key Phrase英語+日本語
+gloss PASS、(f)Intro/Outro/SFX明記PASS、(g)segment order・開始秒・
+click-seek PASS、(h)voice名PASS、(i)A2/B1分離PASS、(j)未取得segment
+なし(該当なし)、(k)TTS方式明記PASS(全segment provider=gemini_batch)、
+(l)再生ボタン+script同一行PASS(標準module形式)、(m)到達確認完了で
+確定PASS。
+
+**発見事項(報告のみ、本タスクでは未修正)**: 既存`build_a2_rows()`
+(Trialコード、Production配線なし)は、A2の固定文言5行(welcome/
+preview_intro/key_phrases_intro/full_story_intro/point_explanation)の
+個別音声セルを意図的に`None`にしており、B1B側の対応する固定文言行
+(個別音声あり)と非対称。Seek+完成episode音声+scriptは全行にあるため
+Gate 7(l)自体は満たすが、個別再生の網羅性という観点で非対称が残る。
+既存Trialコードの仕様であり本タスクの委任範囲(Git反映・到達確認・
+SSOT反映)を超えるため変更していない。是正の要否は別途ユーザー/Fable
+判断。
+
+**Production採用範囲外**: Production配線・API呼び出し・音声再生成は
+本タスクでは一切行っていない(¥0)。GitHub Pages有効化も行っていない
+(raw.githack.comのみ使用、第三者proxy依存でありTrial試聴用途限定)。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-85-
+STANDARD-PLAYER-DISTRIBUTION)、`FAMILY-A-DISCOVERY-GENERALIZATION-
+TOWELS-TRIAL-11-STANDARD-PLAYER-01_REPORT.md`。詳細は`OPEN_ITEMS.md`
+OPEN-135行、`docs/pm/PM_GOVERNANCE.md` 2節Gate 7補足(m)・9節9-7、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 
