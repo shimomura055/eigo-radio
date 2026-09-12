@@ -3457,8 +3457,10 @@ RESULT_PACKET.md`参照。
 tensh/eigo-radio/...`形式のローカルURLを試聴リンクとして提示していた
 (ユーザー側から実際には開けない)。
 
-**対応**: `docs/pm/PM_GOVERNANCE.md`9節へ新小節「9-6.
-`file:///`のユーザー向けリンク使用禁止(恒久是正)」を追加し、上記原文
+**対応**: `docs/pm/PM_GOVERNANCE.md`9節へ新小節「9-7.
+`file:///`のユーザー向けリンク使用禁止(恒久是正)」を追加し(merge時に
+リモート側で同時期追加された9-6[判断項目別説明ルール]との番号衝突を
+解消、本節は9-7)、上記原文
 1〜5をそのまま恒久ルール化した。Gate 7音声artifact受入チェックリスト
 (2節)へ項目(m)「ユーザー環境から実際に開けるリンクであること」を
 追加した。`docs/pm/PM_BRIEF.md`のGate 7/9-5案内へGitHub配布経路の
@@ -3493,7 +3495,7 @@ WIRED`(Gate 3完了)には別途到達が必要。
 **根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-
 83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION)、ユーザー指示原文
 (上記)。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
-PM_GOVERNANCE.md`9-6、`docs/pm/RESULT_PACKET.md`参照。
+PM_GOVERNANCE.md`9-7、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 
