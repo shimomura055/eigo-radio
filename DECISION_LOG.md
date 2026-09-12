@@ -365,6 +365,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-DISTRIBUTION: タオルTrial-11(A2/B1B)標準player(Gate 7 (a)〜(m)準拠)のcommit・push+raw.githack.com/rawcdn.githack.comでのHTTP到達確認(index.html+音声53件、全件200)+PM_GOVERNANCE Gate 7補足(m)への追加要件明記+Gate 7 Reconciliation漏れの事例記録+OPEN-135への反映
 - [本ファイル内] ## PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01: タオルTrial-11ユーザー評価(標準player試聴OK/内容OK/音声OK/全体体験OK)の正式記録(Status/Gate維持、Production自動採用なし)+Discovery N=1追加Trial-12(テーマ「Why do we sometimes wake up just before the alarm?」ユーザー選定、進行中、費用上限¥300)の記録+並列稼働2件(Trial-12記事制作/他Family進捗フォロー監査)の生成物には非関与
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD: 横断監査(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`)が指摘したOPEN-145/146`APPROVED_FOR_PRODUCTION`のユーザー承認証拠不明(STOP条件該当)に対応し、2026-09-12ユーザー発言原文全文(UDR#11/#12「⇒採用」)・Fable提示判断表原文・commit hash付き時系列を正式記録(承認自体は実在、記録不備が原因と特定)+`PM-CLOSEOUT-CONSOLIDATION-83`エントリへ相互参照注記追加(既存本文不変)+`docs/pm/PM_GOVERNANCE.md`へ「ユーザー承認は要約引用ではなく原文全文転記を必須とする」再発防止ルール追記
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-PHASE1: Claude開発Token効率化(OPEN-142)Phase 1実測監査(`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-AUDIT-01_REPORT.md`)結果のSSOT反映(巨大SSOT全文再読0件・同一管理ID内再読込37.8%・Agent間重複7.0%・Fable委任文744,841字が実測読込量835,677字と同規模)+Sonnet改善案A〜Hとユーザー原案A〜Hの対応表+Phase 2 Trial設計案、STOP条件該当なし・実施はユーザー判断待ち
 
 ---
 
@@ -3796,6 +3797,104 @@ APPROVAL-EVIDENCE-RECORD-AND-AUDIT)、`PM-CROSS-FAMILY-STATUS-AUDIT-
 2026-09-12-01_REPORT.md`、Fableが保持するユーザー発言原文(上記(a))。
 詳細は`OPEN_ITEMS.md`OPEN-145/146行、`docs/pm/PM_GOVERNANCE.md`Gate 2・
 3節、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-PHASE1: Claude開発
+Token効率化(OPEN-142)Phase 1(read-only実測監査)結果のSSOT反映+
+Sonnet改善案A〜Hとユーザー原案A〜Hの対応表+Phase 2 Trial設計案
+
+**背景**: OPEN-142(Claude開発Token効率化プログラム、2026-09-11ユーザー
+正式決定)のT-3関連で懸念されていた「Agent間read重複」を対象に、
+Sonnet(本タスク)が`er011_pm_agent_read_audit_01.py`を新規作成し、
+Fable本体3セッション・Sonnet subagent転記3件・Opus subagent転記2件
+(計615呼び出し)の会話ログを機械集計するPhase 1(read-only実測監査、
+API呼び出しなし・¥0)を実施した。詳細は`PM-TOKEN-EFFICIENCY-AGENT-READ-
+DUPLICATION-AUDIT-01_REPORT.md`参照。
+
+**実測結果(要点)**:
+1. **巨大SSOT(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS)の全文Read
+   (offset/limit省略)は実測0件**。全てGrepまたは行範囲指定Readであり、
+   T1のOPEN_ITEMS構造分割・Opus入力限定ルールが少なくとも本サンプルでは
+   機能している形跡がある。
+2. **同一管理ID内での同一ファイル再読込は読込文字数(835,677字)の
+   37.8%(316,166字)**、うち**Agent種別をまたぐ重複(Fable↔Sonnet↔
+   Opus)は7.0%(58,460字)**。再読込はSSOTよりもREPORT/governance
+   ファイル(`PM_GOVERNANCE.md`/`PM_BRIEF.md`/`ACTIVE_TASK.md`・個別
+   `*_REPORT.md`)に集中(`PM_BRIEF.md`・`ACTIVE_TASK.md`はAgent間重複率
+   100%、`PM_GOVERNANCE.md`は59%)。
+3. **Fable→Sonnet/Opus委任文(Agent tool input)自体の文字量が
+   744,841字**あり、実測した全Read/Grep/Bash読込合計(835,677字)と
+   ほぼ同規模(委任文平均3,124字/Sonnet・2,860字/Opus×236件)。「何を
+   読むか」以前に「委任文そのものが既に大きい」ことが少なくとも同等
+   以上の削減余地として実測された。
+4. Opus L2レビュー入力は案件で3〜5倍のばらつき(過去実測45.2万字
+   [3V Phase1、コード全文ダンプ型]vs本実測13.5万字/8.3万字[複数REPORT
+   横断参照型])。
+5. **データ源制約**: subagent転記の大半が保持期限切れ(rotation)で
+   失われており、ユーザー例示タスク(News Trial-14/15・Standard
+   Player・Voices 3V Phase1B等)はFable委任文サイズのみ実測可能
+   だった。Failure mode 5(Sonnet整理済みなのにOpusが元ファイル全文
+   再読)・7(compact後復旧での巨大SSOT再読)は判定不能。
+
+**Fable追記の所見**: 本Phase1実測で最大の無駄と判断されるのは個別
+ファイルの読み方以前に**Fable委任文自体の分量**である(ユーザー回答
+原文の複数タスクへの重複転記、禁止事項・出力形式等の定型文の毎回
+再掲が主因)。ユーザー原案A(context packet)/B(委任文に読むべき・
+読まなくてよいファイルを明示)に合致する改善候補: (i)委任テンプレート
+定型部分(厳守事項・出力形式等)を`docs/pm/`側の固定文書として1回だけ
+確立し以降は参照のみにする、(ii)ユーザー回答原文は1回だけ`docs/pm/`側
+の台帳(例:`USER_DECISIONS_LEDGER.md`、正式SSOTではなく`DECISION_LOG`
+転記元の一時台帳)へ記録し後続タスクはそこを参照する、(iii)Opus委任は
+論点・関連diff・必要codeのみに限定しprogressive disclosureで段階的に
+渡す。
+
+**Sonnet改善案A〜H(監査REPORT7節)とユーザー原案A〜Hの対応表**:
+
+| ユーザー原案 | 対応するSonnet提案 | 分類 |
+|---|---|---|
+| A: context packet | Sonnet A(委任文テンプレート定型部固定文書化)+Sonnet B(既読内容転記) | A部分=新ルール(要承認、委任文テンプレート変更)/B部分=既存ルール運用強化(実施可) |
+| B: 委任文に読むべき/読まなくてよいファイルを明示 | Sonnet F(REPORT階層引き継ぎの「どこまで読めば十分か」明示) | 新ルール(要承認、PM_GOVERNANCE 11節追記) |
+| C: SSOTはgrep→section read、全文readは例外 | 対応するSonnet提案なし | Phase1実測で全文Read0件と確認済み、現状維持で足りる(新ルール不要) |
+| D: Opus L2は論点・relevant diff・必要code・spec section・Sonnet要約に限定 | Sonnet C(差分のみ必須化)+Sonnet D(入力量目安明記) | 新ルール(要承認、`opus-consultant.md`変更) |
+| E: progressive disclosure | Sonnet A・Fの段階的開示運用 | 新ルール(要承認) |
+| F: 同一タスク内SSOT抜粋のAgent間再利用 | Sonnet B(既読内容転記)+Sonnet E(同一ファイル複数回Grepの使い回し) | 既存ルール運用強化(実施可) |
+| G: Haikuで済む定型処理をSonnetにやらせない | Sonnet G(Haiku-worker適用範囲拡大) | 既存ルール運用強化(2026-09-10新設ルールの適用拡大、実施可) |
+| H: compact後復旧の順序固定 | 対応するSonnet提案なし | `CLAUDE.md`のcompact復帰7手順として既に明文化済み、追加変更不要 |
+| (対応なし) | Sonnet H(委任文からの管理ID抽出・Agent間重複追跡自動化の常設ツール化) | 新ルール(要承認、PM運用ツールの常設化) |
+
+**Phase 2 Trial設計案**: Before(現行委任文構成、
+`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01`実測135,397字
+または`FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01`実測82,628字を代替
+使用可)/After(ユーザー原案B+F適用:既読内容転記+入力目安明記を適用した
+context packet方式)で、次回のDiscovery系またはNews Stage4系Opus L2
+解釈タスクにおいてFable/Sonnet/Opus読込文字数・Agent間重複率・総読込
+文字数(delegation含む)・Opusレビュー品質(論点カバレッジ突合)・
+見落とし件数・作業時間・compact回数を比較する
+(`er011_pm_agent_read_audit_01.py`を再実行して同一手法で計測)。
+
+**Status/STOP条件**: Phase 1完了・Phase 2実施要否はユーザー判断待ち。
+STOP条件該当なし(read-only・SSOT/Production/Prompt変更なし、ループ
+上限は初回のみ消化)。新ルール(A/D/E/H等)の採否・既存ルール運用強化
+(B/F/G等)の即時適用可否はいずれもユーザー判断を待つ(本タスクでは
+`docs/pm/PM_GOVERNANCE.md`等の編集は行っていない)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-142行へ本エントリの要点(実測結果・
+Fable所見・対応表・Phase 2設計案・Status)を追記。`docs/pm/
+MODEL_ROUTING_TRIAL_LOG.md`へ1行追記。`docs/pm/ACTIVE_TASK.md`固定
+ヘッダを本管理ID(`PM-CLOSEOUT-CONSOLIDATION-88-AGENT-READ-AUDIT-
+PHASE1`)へ更新。
+
+**Production採用範囲外**: 本タスクはread-only監査結果のSSOT記録のみ
+であり、コード変更(Production)・`docs/pm/PM_GOVERNANCE.md`/agent定義
+の変更・API支出はいずれも行っていない(¥0)。並列稼働中のDiscovery
+N=1 Trial-12(`er011_output/discovery_generalization_wake_before_
+alarm_trial_12/`ほか)の生成物には触れていない。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-88-
+AGENT-READ-AUDIT-PHASE1)、`PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-
+AUDIT-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-142行、
+`er011_output/pm_agent_read_audit_01/`(`per_call.jsonl`/
+`per_agent_task_summary.json`/`summary.md`)、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 
