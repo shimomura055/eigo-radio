@@ -363,6 +363,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-83-LISTENING-LINK-RULE-AND-B1B-DISTRIBUTION: 試聴リンク運用の恒久是正(`file:///`禁止・GitHub配布)+タオルTrial-11 B1B完成配布+OPEN-145/146 Production採用(配線中)+TTS retry cool-down観測Trial記録(UDR#10解消)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION: OPEN-145(JA ASR表記ゆれ)・OPEN-146(News人名英語表記)のProduction配線完了をSSOTへ統合+タオルTrial-11 A2完成episode配布(mp3+player.html、GitHub URL)+TTS retry cool-down観測フックのTrial harness 3系統への配線
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-DISTRIBUTION: タオルTrial-11(A2/B1B)標準player(Gate 7 (a)〜(m)準拠)のcommit・push+raw.githack.com/rawcdn.githack.comでのHTTP到達確認(index.html+音声53件、全件200)+PM_GOVERNANCE Gate 7補足(m)への追加要件明記+Gate 7 Reconciliation漏れの事例記録+OPEN-135への反映
+- [本ファイル内] ## PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01: タオルTrial-11ユーザー評価(標準player試聴OK/内容OK/音声OK/全体体験OK)の正式記録(Status/Gate維持、Production自動採用なし)+Discovery N=1追加Trial-12(テーマ「Why do we sometimes wake up just before the alarm?」ユーザー選定、進行中、費用上限¥300)の記録+並列稼働2件(Trial-12記事制作/他Family進捗フォロー監査)の生成物には非関与
 
 ---
 
@@ -3628,6 +3629,63 @@ SSOT反映)を超えるため変更していない。是正の要否は別途ユ
 STANDARD-PLAYER-DISTRIBUTION)、`FAMILY-A-DISCOVERY-GENERALIZATION-
 TOWELS-TRIAL-11-STANDARD-PLAYER-01_REPORT.md`。詳細は`OPEN_ITEMS.md`
 OPEN-135行、`docs/pm/PM_GOVERNANCE.md` 2節Gate 7補足(m)・9節9-7、
+`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01: Trial-11
+ユーザー評価記録+Discovery N=1追加Trial-12着手記録+他Family進捗フォロー
+監査結果の反映
+
+Sonnet(sonnet-worker)が2026-09-12、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-86-TOWELS-TRIAL-11-USER-EVALUATION)に基づき
+実施した。本タスクは並列稼働中2件(Discovery N=1 Trial-12の記事制作
+[`er011_output/discovery_generalization_wake_before_alarm_trial_12/`+
+生成script+REPORT、本タスク時点で未作成]、および現在地監査
+[`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01_REPORT.md`、read-only、
+本タスク時点で未作成])の生成物には一切触れていない。
+
+**ユーザー指示原文(2026-09-12、そのまま転記)**:
+
+```
+【管理ID】PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01
+1. A-Family / Discovery / Trial-11(タオル): ユーザーが標準playerでA2/B1Bを試聴しました。結果: 標準playerでのA2/B1B試聴: OK/内容: OK/音声: OK/全体体験: OK。Trial-11について、このユーザー評価を正式に記録してください。ただし、Trial-11が良好だったことを理由にDiscovery仕様を自動でProduction採用しないこと。既存のStatus / Gateを維持してください。
+2. A-Family / Discovery — N=1追加Trial: ユーザーはDiscoveryのN増しを決定しました。追加数: N=1。テーマはユーザー選択済みです。English: Why do we sometimes wake up just before the alarm? Japanese: なぜ目覚ましが鳴る直前に目が覚めることがあるのか? このテーマで、現在のDiscovery Trial設計を使ってA2+B1の記事制作Trialを進めてください。【重要】新規記事なので、今回は上記テーマをそのまま使用してください。Claude/Fable側で別テーマへ変更しないでください。【目的】タオルとは異なる「身体・睡眠」の身近なテーマで、Discovery方式の再現性を見ること。最低限観察すること: Full Story / Point構成が自然に成立するか/PointがFull Storyの言い換えにならないか/Pointごとに意味のある異なる発見が出るか/保険文・過剰な注意文が出ないか/Ledger Deviation / Local Rewriteが発生した場合の挙動/Fact Checker/Point Overlap / Point Value QA/Support / Key Phrase/A2 / B1両方での成立性/音声工程まで進める場合は既存標準player形式を維持すること。記事制作Trial / Production runのコストは、既存PM_GOVERNANCEの1記事総コストルールに従い、A2+B1合算で報告してください。このN=1 Trial終了時はREJECTED / VALIDATED / USER_DECISION_REQUIREDのいずれかでcloseし、Production採用はユーザー判断なしに行わないこと。
+3. 他Family / 共通基盤の進捗フォロー: (省略せず転記すること — 以下の項目: A-Family/News[Point品質改善、Ledger公式英語表記の承認証拠確認]、B-Family/Voices[3VのPRODUCTION_WIREDまでの残項目一覧]、共通/日本語ASR表記ゆれ一般化[承認証拠・VALIDATEDとAPPROVED_FOR_PRODUCTIONの混同禁止]、共通/Repetition QA数字↔数詞[Gate 3進捗]、共通/TTS 20分cool-down[N=0ならN=0と明記]。報告フォーマット: Familyごと、各項目6点、末尾一覧表。PM Gate/STOP条件10項目[UDR未処理/VALIDATEDのままProduction配線/APPROVED_FOR_PRODUCTIONだがGate 3未完了/runtime evidenceなしにPRODUCTION_WIRED/Trial・DEV path誤認/SSOT不整合/承認のない追加仕様・Trial/Dangling Reference/未報告Trial/未登録Open Item]。特に日本語ASR表記ゆれ一般化とLedger公式英語表記について正式なユーザーProduction承認の存在を必ず確認。)
+```
+
+第3項はFableが要約して並列タスクへ委任したものであり、ユーザー原文は
+Fableとの会話ログに存在する。本エントリでは要旨のみを転記し、監査結果は
+`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01_REPORT.md`(並列稼働中、
+本タスク時点で未作成のためこのDECISION_LOGエントリでは内容に立ち入らない)
+を正式な参照先とする。
+
+**やったこと(本タスクの範囲、上記1・2のみ)**:
+
+1. `OPEN_ITEMS.md` OPEN-135行(次Action列末尾)へ、Trial-11の標準player
+   試聴によるユーザー評価(標準player試聴=OK/内容=OK/音声=OK/全体体験=OK、
+   2026-09-12)を追記した。既存Status(`USER_DECISION_REQUIRED(段階的)`)・
+   Gate区分(Gate1=`VALIDATED(Trial)`)はいずれも変更していない
+   (ユーザー指示どおりStatus/Gate維持)。
+2. 同じOPEN-135行へ、Discovery N=1追加Trial-12(管理ID
+   `FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-TRIAL-12`、
+   テーマ「Why do we sometimes wake up just before the alarm?」/
+   「なぜ目覚ましが鳴る直前に目が覚めることがあるのか?」、ユーザー選定・
+   本タスクでは変更せずそのまま使用、進行中、費用上限¥300[A2+B1合算、
+   既存1記事総コストルールに従う]、TTS retry cool-down 20分観測フックは
+   既定どおりON)を記録した。本タスクでは記事制作Trial自体の着手・API
+   呼び出しは一切行っていない(¥0、記録のみ)。
+3. `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へ、Trial-12着手記録・並行監査の
+   実施記録を各1行追加した。
+4. `docs/pm/ACTIVE_TASK.md`固定ヘッダを本管理ID
+   (`PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01`、
+   ユーザー指定)へ更新し、並列稼働中2件・UDR-blockingなし・APPROVED
+   未配線(OPEN-120/121/145/146)を記録した。
+
+**Production採用範囲外**: Discovery仕様のProduction採用・Status/Gate
+格上げ・コード変更・API支出はいずれも本タスクでは行っていない(¥0)。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-86-
+TOWELS-TRIAL-11-USER-EVALUATION)、ユーザー指示原文(上記)。詳細は
+`OPEN_ITEMS.md` OPEN-135行、`docs/pm/ACTIVE_TASK.md`、
 `docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元

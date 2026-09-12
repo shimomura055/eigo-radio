@@ -655,3 +655,21 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   harness配線3件・project-wide regression[collected=2346、既知fail3件
   のみ]の実行に限定)。中間レビュー・正式Closeout Triggerの到達判定・
   再計算はいずれも実施していない。
+- 2026-09-12(`FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-
+  TRIAL-12`、並列稼働タスク、管理ID PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-
+  CROSS-FAMILY-STATUS-FOLLOWUP-01からのユーザー決定によりN=1追加Trial
+  として着手): テーマ「Why do we sometimes wake up just before the
+  alarm?」/「なぜ目覚ましが鳴る直前に目が覚めることがあるのか?」
+  (ユーザー選定、変更なし)でDiscovery Trial設計(A2+B1)による記事制作
+  Trialを開始。Sonnet、費用上限¥300(A2+B1合算、既存1記事総コスト
+  ルールに従う)、本エントリ記録時点では記事制作自体は別タスクで進行中
+  のため実測¥0(本タスクではAPI呼び出しなし)。TTS retry cool-down
+  20分観測フックは既定どおりON。Trial終了時はREJECTED/VALIDATED/
+  USER_DECISION_REQUIREDのいずれかで明示的にcloseする(本タスク時点
+  では未close)。
+- 2026-09-12(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`、並列稼働
+  タスク、read-only監査): A-Family/News・B-Family/Voices・共通(JA ASR
+  表記ゆれ一般化・Ledger公式英語表記・Repetition QA数字↔数詞・TTS 20分
+  cool-down)の現在地監査。Sonnet、LOW、実測¥0(既存SSOT・REPORTの
+  read-onlyでの点検のみ、新規LLM/TTS/ASR API呼び出しなし)。本タスク
+  時点で監査結果は未commit(並列稼働中、本タスクの生成物には非関与)。
