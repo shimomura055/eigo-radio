@@ -343,6 +343,12 @@ REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
 だった4件のreconcile結果(A2表記ゆれ/B1B Secondary ASR+retry timing/Repetition QA根本原因
 /News人名ローマ字表記)のSSOT反映+Sonnetの指示違反(禁止されたLLM API呼び出し1回)の記録
 +新規OPEN-145/OPEN-146起票+OPEN-144補正額¥180.55反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02: ユーザー
+2回目の是正指示(個別対応禁止・failure mode一般化徹底、B1B has/had実音声確認方針、
+Repetition QA数字↔数詞同値化APPROVED_FOR_PRODUCTION、News人名対策の候補比較Trial要請、
+TTS Trial/開発=Standard同期・量産=Batch別軸管理、コスト報告5区分化、PM再発防止)の
+SSOT反映(OPEN-121/135/142/143/144/145/146・PM_GOVERNANCE 7-4/14/15/9-5・
+ACTIVE_TASK.md更新)
 
 ---
 
@@ -3065,6 +3071,97 @@ Validator・Repetition QA moduleの変更、`APPROVED_FOR_PRODUCTION`宣言は
 PM-CLOSEOUT-CONSOLIDATION-78-RECONCILE-RESULTS-2026-09-12)、上記4件の
 `*_REPORT.md`。詳細は各REPORT本文、`OPEN_ITEMS.md` OPEN-121/135/144/
 145/146行、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02: ユーザー2回目の是正指示のSSOT反映
+
+**日付**: 2026-09-12
+
+**区分**: SSOT反映(ユーザー是正指示の記録+PM_GOVERNANCE/OPEN_ITEMS.md/
+ACTIVE_TASK.mdへの反映。コード・Prompt・Production実装の変更はゼロ、
+API支出ゼロ)
+
+**背景**: `PM-CLOSEOUT-CONSOLIDATION-78-RECONCILE-RESULTS-2026-09-12`の
+reconcile結果報告に対し、ユーザーが同日2回目の是正指示(原文全文は
+下記)を出した。本エントリはこの指示の全文を記録し、反映箇所を整理する。
+
+**ユーザー指示原文(全文、2026-09-12第2回)**:
+
+```
+【ユーザー回答・是正指示:今回の残件まとめ】
+今回の個別問題だけを直すのではなく、同じfailure modeが再発しないところまで原因を一般化して対策してください。
+1. A-Family / Discovery / A2 日本語ASR表記ゆれ対策: 「たつ⇔経つ」だけを追加する個別対応は禁止。今回の目的は、日本語ASRで一般的・高頻度に起こる ひらがな⇔漢字/ひらがな⇔カタカナ/同音異表記/一般的な送り仮名・表記差 等を一通りカバーし、同種問題が基本的に再発しない水準まで対策すること。過去ログに出た語だけでなく、一般的な日本語音声で高頻度に起こり得る表記差も対象にする。極めて稀な特殊語まで無制限に辞書化する必要はないが、「また別の一般語で発生したら都度追加」は不可。既存Reading Resolver / 日本語ASR正規化 / 過去Human Review対策をreconcileし、既存機構の拡張/補助読みテーブル/正規化層/既存ライブラリ活用 等を比較した上で最小Trialを実施する。受入観点: 今回の「たつ/経つ」「におい/ニオイ/臭い」が解消/過去既知事例が解消/一般的・高頻度の未出ケースでも通る/true content mismatchを誤PASSしない/過去正常判定を壊さない/offline regression PASS。Trial closeoutはREJECTED / VALIDATED / USER_DECISION_REQUIRED。Production採用はユーザー判断後。
+2. A-Family / Discovery / B1 full_story_part1 の has / had: take5の該当箇所だけユーザーが試聴する。Primary / Secondary ASRとも`had dried`なら、実音声が本当に`had`なのかをまず確認する。実音声も`had`なら、これはASR誤判定ではなくTTS実発話エラーなので、以後の対策方針を切り替えること。また、take1〜3で「2022 survey...」欠落、take4以降で欠落が解消した事実があるため、既存のTTS retry timing監視結果を再集計して先に報告すること。最低限: 即時retry/非即時retry/連続NG後の次attempt PASS率/人的介入あり・なし を分ける。「時間を空けるretry」を正式仕様へ入れるかは、集計結果を見てユーザーが判断する。現時点で自動採用しない。
+3. 共通 / Repetition QA: 既に承認した方針どおり、数字↔数詞の同値化をProduction Gateへ実装する。判定閾値や`canonical_repeat_count >= 2`の意味は変えず、比較前の正規化だけを追加。回帰テスト、過去flag記録の再判定、真陽性が消えないことを確認する。`% ↔ percent`は今回含めない。別判断。既存A-Family Production音声は、¥0の機械的遡及再判定を実施。音声再生成・成果物差し替えは自動で行わない。full_story_part2は、修正後の再判定を先に行い、PASSするならユーザー試聴不要。この項目はユーザー正式採用済みなのでAPPROVED_FOR_PRODUCTION。Gate 3完了までPRODUCTION_WIREDにしない。
+4. A-Family / News 日本人名の英語表記: 過去に対策を行った認識があるため、Trial / Decision / CURRENT_SPEC / Production code / Research / Search / Ledger / Pronunciation関連を再度確認する。ただし再調査して本当に「日本人名の英語表記をWeb検索で事前確認し、Writer/TTS用の正しい表記へ反映する仕組み」が存在しないなら、新規対策案をPM側で設計すること。ユーザーへいきなり方式選択を投げず、最低限、既存Ledgerとの統合/公式英語表記をResearch段階で取得/Writerへcanonical spellingを供給/Fact Checkerでの最終照合 等の候補を比較し、品質・コスト・実装影響・再発防止力を整理したTrial案を提示する。「人名ごとに誤ったら個別修正」は不可。failure modeとして対策する。
+5. 共通 / TTS運用ルール: Trial / 開発は Standard同期へ戻す。開発はスピード優先。数十円・百円を節約するために、検証速度・デバッグ性・原因切り分け性能を落とさない。一方、量産Productionはコスト優先。1円/記事でも大量生成では大きな差になるため、Batch等を使って1記事原価を最適化する。つまり、Development cost と Production unit cost は別軸で管理する。今後、Trial / 開発:Standard同期を基本/量産:Batch前提で最適化 とする。この考え方をPM運用へ明文化すること。
+6. 共通 / コスト報告ルール: 今後、記事制作Trial / Production runでは必ず「1記事あたり総コスト」を報告する。単位はB1 + A2を合わせた1記事一式。可能な限り、Research/Ledger/Writer/Fact Check/Support/Key Phrase/TTS/ASR/retry / regeneration を含める。必ず分けて表示すること: 今回実測コスト/Trial特有の追加コスト/異常retry / Human Review由来の上振れ/Standard同期でのコスト/Batch量産時ならいくらになるか。TTSがStandard / Batchで単価差がある場合は必ず明記する。「今回¥xx」だけでは不可。量産時の1記事原価が分かる形で出すこと。
+7. 共通 / Gemini Batch費用集計バグ: OPEN-144は修正着手。`gemini_batch`を¥0計上している集計バグを是正し、同型scriptも影響範囲確認。生成経路は変更せず、まず費用集計の正確性を直す。過去費用報告への影響範囲も整理して報告する。
+8. PM運用の再発防止: 今後、「問題が起きた → 比較的マシなtakeをユーザーに聞いてもらう」を基本運用にしない。原則: 問題検知→既存仕様・過去対策reconcile→原因切り分け→failure mode一般化→必要最小Trial→QCD比較→ユーザー判断材料を提示。Human Reviewは、機械的に切り分け可能な問題を棚上げする手段ではない。ユーザー試聴を依頼するのは、原因・既存対策・Trial結果が整理され、本当に人間の耳でしか判断できない段階に到達してから。また、試聴依頼時はローカルpathではなく、必ずユーザーがクリックできるArtifact / playerリンクを提示する。個別修正の積み重ねではなく、再発可能な問題はfailure mode単位で閉じること。
+```
+
+**反映箇所**:
+
+1. **OPEN-121**(Repetition QA数字↔数詞同値化): Statusへ
+   「数字↔数詞同値化部分のみ`APPROVED_FOR_PRODUCTION`」(Gate 3完了まで
+   `PRODUCTION_WIRED`としない、"%"↔"percent"は範囲外・別判断)を追記。
+   実装範囲(4segment全体)・遡及再判定(¥0機械的のみ、差し替え自動
+   なし)・`full_story_part2`はPASSならユーザー試聴不要、を追記した
+   (原文3)。
+2. **OPEN-135**(Discovery B1B has/had・News人名・TTS retry timing):
+   take5該当箇所のみユーザー試聴し実音声確認する方針、実音声も"had"
+   ならTTS実発話エラーとして方針切替、retry timing再集計値(即時
+   52.83% N=53/短40.0% N=10/中25.0% N=4/長66.67% N=3、連続NG回数別・
+   人的介入有無別、Fisher p=0.578で基準未達・自動採用しない)を追記
+   した(原文2)。
+3. **OPEN-142/OPEN-143**: Development cost(開発Token)とProduction
+   unit cost(量産API原価)を別軸で管理する方針を追記した(原文5)。
+4. **OPEN-144**: 修正着手をユーザーが承認したこと(生成経路は変更せず
+   費用集計の正確性のみ是正、過去費用報告への影響範囲整理も報告)を
+   追記した(原文7)。
+5. **OPEN-145**(新規、日本語読み辞書): 個別対応(候補Aの「たつ/経つ」
+   限定追加)を禁止し、failure mode一般化Trial(管理ID
+   `JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01`)実施中である
+   ことと受入観点6項目を追記した(原文1)。
+6. **OPEN-146**(新規、News人名英語表記): 人名ごとの個別修正を禁止し、
+   既存Ledger統合/Research段階取得/Writerへのcanonical spelling供給/
+   Fact Checker照合等の候補比較Trial設計中であることを追記した
+   (原文4)。
+7. **`docs/pm/PM_GOVERNANCE.md`**: 14-1へ「4. failure mode一般化」
+   段階を追加し7段階へ更新、「個別修正の禁止」を明記(14-5に経緯追記、
+   原文8)。新小節「7-4. TTS実行モードの運用: Development cost /
+   Production unit costの別軸管理」を新設(原文5)。15-5(コスト報告
+   ルールの最低限区分)を旧3区分から「今回実測/Trial特有の追加
+   コスト/異常retry・Human Review由来の上振れ/Standard同期での
+   コスト/Batch量産換算時のコスト」の5区分へ更新(原文6)。9-5
+   (試聴依頼のArtifact/playerリンク必須)を再確認(原文8)。
+8. **`docs/pm/PM_BRIEF.md`**: 上記PM_GOVERNANCE更新箇所への案内文を
+   更新した。
+9. **`docs/pm/ACTIVE_TASK.md`**: 固定ヘッダのAPPROVED未配線
+   (OPEN-120 3V、OPEN-121数字↔数詞同値化)・UDR-blocking(読み辞書=
+   Trial結果待ち、take5試聴=clip準備中、人名=設計待ち、Batch既定=
+   原文5で解決しUDR解除)・並列稼働中4件を更新した。
+
+**反映範囲**: `OPEN_ITEMS.md`(OPEN-121/135/142/143/144/145/146行)、
+`docs/pm/PM_GOVERNANCE.md`(7-4新設・14-1/14-5・15-5/15-7・9-5)、
+`docs/pm/PM_BRIEF.md`、`docs/pm/ACTIVE_TASK.md`、本エントリ+索引1行。
+並列稼働中4件(JA ASR表記ゆれ一般化Trial/OPEN-144修正+TTSモード分離+
+take5 clip/人名英語表記Trial設計/Repetition QA数字↔数詞同値化実装)の
+生成物・コード・`er011_output/`配下は本タスクでは一切変更していない。
+
+**Production採用範囲外**: 本エントリはSSOT反映(ユーザー指示原文の
+記録+反映箇所の整理)のみであり、Production Prompt・コード・費用
+集計script・TTS Validator・Repetition QA moduleの実装変更、
+`APPROVED_FOR_PRODUCTION`の新規宣言(OPEN-121は本エントリで反映する
+がユーザーが既に明示した決定の記録であり、本タスクによる独自判断
+ではない)はいずれも行っていない。並列稼働中4件への介入・生成物への
+`git add`もしていない。`git stash`/`git clean`/他タスクファイルの
+`git checkout`は使用していない。
+
+**根拠**: Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02)、ユーザー
+指示原文(上記)。詳細は`OPEN_ITEMS.md` OPEN-121/135/142/143/144/145/
+146行、`docs/pm/PM_GOVERNANCE.md`該当節、`docs/pm/RESULT_PACKET.md`
+参照。
 
 ## 参照元
 

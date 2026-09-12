@@ -62,11 +62,21 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 主要artifactの再生成・修正前には、旧artifactの二重最終版化を避けるため
 `docs/pm/PM_GOVERNANCE.md`「2-3. Artifact supersession確認」を必ず確認する
 (2026-09-09追記)。問題発生時は「とりあえずHuman Review依頼」を基本運用
-とせず、`docs/pm/PM_GOVERNANCE.md`14節(reconcile→原因切り分け→既存範囲の
-最小Trial→結果整理→QCD比較→ユーザー判断の7段階、Human Reviewは最後の
-手段)に従う。記事制作Trial/Production runのコスト報告は同15節(1記事
-[B1+A2]あたり総コスト、TTS同期/Batch単価分離、今回実測/量産想定/retry
-上振れ分の3区分)に従う(いずれも2026-09-12追記)。報告単位(Lane/
+とせず、`docs/pm/PM_GOVERNANCE.md`14節(検知→既存仕様・過去対策
+reconcile→原因切り分け→failure mode一般化→必要最小Trial→結果整理+QCD
+比較→ユーザー判断の7段階、Human Reviewは最後の手段)に従う。個別の語・
+takeへの個別修正の積み重ねで閉じず、failure mode単位で対策・close判断を
+行う(2026-09-12更新、14-1「failure mode一般化」段階追加)。記事制作
+Trial/Production runのコスト報告は同15節(1記事[B1+A2]あたり総コスト、
+TTS同期/Batch単価分離、今回実測/Trial特有の追加コスト/異常retry・Human
+Review由来の上振れ/Standard同期でのコスト/Batch量産換算時のコストの
+5区分)に従う(2026-09-12更新、15-5旧3区分から5区分化)。TTS実行方式は
+Trial/開発=Standard同期(速度・デバッグ性優先)・量産Production=Batch
+前提(1記事原価優先)で別軸管理する(`docs/pm/PM_GOVERNANCE.md`7-4、
+2026-09-12新設)。試聴依頼は、14節の7段階を経てreconcile・原因切り分け・
+一般化Trialが済み「本当に人間の耳でしか判断できない」段階に到達した
+場合にのみ行い、必ずクリックできるArtifact/playerリンクを提示する
+(ローカルpathのみは不可、`docs/pm/PM_GOVERNANCE.md`9-5)。報告単位(Lane/
 Workstream/Feature/Trial群等)を基準に
 した即時報告・未回答フル再掲・Next Action/Reminder提示の正式SSOTは
 `docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit
