@@ -184,7 +184,14 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   項目(12節「報告単位管理ルール」)をフル再掲対象として洗い出すことも
   含む(2026-09-10追記)。前提タスクの完了により保留中・blocked中の
   別タスクがunblockされていないかの確認も含む(2026-09-12追記、
-  12-10参照)。
+  12-10参照)。棚卸しは`USER_DECISION_REQUIRED`文字列の有無ではなく、
+  行頭Status+`DECISION_LOG.md`回答記録の突合でOpen Item各行をA(真に
+  未回答)/B(回答済みだが古い表記残存)/C(Status別値へ遷移済み)に分類し、
+  Aのうち先送り決定のないものを必ず報告する(2026-09-13追記、管理ID
+  `PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-
+  UDR-LABEL-HYGIENE`。`PM-CLOSEOUT-CONSOLIDATION-99`でUDR文字列の有無
+  のみによる棚卸しの結果、先送り決定のないOPEN-136/141/OPEN-121残論点/
+  OPEN-122残件等が未提示だった反省による再発防止)。
 - **Gate 6 — 次工程前PM確認**: 次の実装・Trial・Production作業に着手する前に、
   未処理UDR / APPROVED未配線 / SSOT漏れ / 無断追加Trial /
   DEV・Trial誤認が無いかを確認する。Phase 2 Writer配線に着手する場合は

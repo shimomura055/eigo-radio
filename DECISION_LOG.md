@@ -376,6 +376,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT: ユーザー是正指示(2026-09-12、原文全文)「技術的完成(Assembly PASS・player公開・Gate 7 HTTP確認)をcloseと同一視してはならない」を受け、Trend記事(AI investment/factories/manufacturing、A2/B1B)とDiscovery Trial-12(wake before alarm、A2/B1B)を`OPEN_ITEMS.md`OPEN-135行で`USER_LISTENING_PENDING`(ユーザー視聴待ち、未close)へ是正+`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout Mandatory Checkへ「記事のclose条件(記事生成→音声化→標準player作成・公開→ユーザー視聴→ユーザー受入/修正判断→close)」を明文化+標準player必須要素(13項目)監査でTrial-12標準player(`er011_wake_before_alarm_trial12_std_player_01.py`)のA2区間に実装漏れ2件(Seek用`<script>`欠落によりB1B含め全Seekボタンが無反応/A2完成後もHuman Review待ち時代の「個別再生のみ(episode未完成)」固定文字列とIntro・Notification等固定文言行の欠落が残存)を発見・是正(既存ローカルreview player生成関数`run.build_a2_rows()`/`run.build_b1b_rows()`の再利用によりtimeline.json実測start_secondsベースのSeekボタンを復元、新規ロジック追加なし、¥0)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER: 3V Phase 1b-04(Sonnet委任上限到達→Opus L3診断)結果を`USER_DECISION_REQUIRED`として記録(Leakage 2/2再現の主因は旧prompt由来の二律背反+retry whack-a-mole、3V方式自体の意味は保持、Fable推奨は案2だが未回答)+Phase 1b-04 REPORT 11-5(ii) near-duplicate比率の取り違え訂正(0.143→0.559)+委任文最小化(E-1/D-1/G-1)のTrial After計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY: 2026-09-13ユーザーFeedback(原文全文、8項目)の正式記録 — (1)ユーザー向け表記を「B1」に統一(内部ID/ファイル名`b1b`はrename不要)、(2)Trend記事B1 Key Phrase 1差替(`not there yet`→`autonomous`)・A2`## Main story`混入除去の個別修正2件反映、(3)Discovery Trial-12 A2 Comment 2文言差替の個別修正1件反映(いずれも新規一般仕様化ではない)、(4)記事close条件(生成→音声化→標準player→ユーザー視聴→受入/修正判断→close)の再確認、(5)3V Voice内数字1個「必須」要求の撤廃方針(上限規定`:251-256`は維持、要求文言`:402-404`のみ撤廃)、(6)3V Tension/Fact Safety問題は「Voices/PerspectiveにNews/Discoveryと同レベルのFact Checker/Ledger Deviationを適用すること自体が過剰」という方向でFirst option(Family=B限定の判定緩和)を優先設計し`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`として`USER_DECISION_REQUIRED`化(以前提示の案1〜3は不採用として明示的に破棄)。Part A(player残是正、TTS mode表記追加・mp3キャッシュ再変換方式修正・13項目再監査全○)・Part C(棚卸し)を合わせて実施。
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-UDR-LABEL-HYGIENE: OPEN-145/146 Gate3個別照合(13項目中「Production runtime実発火」が両者とも未充足、Status更新は見送り`APPROVED_FOR_PRODUCTION`のまま維持)+UDR表記整備(OPEN-121/131/133行頭Status実態反映+OPEN-135 raw.githack STALE注記追加)+区分A(真に未回答)10項目の先送り決定有無一覧+Fable報告漏れ(区分の機械棚卸し不足)の原因記録・再発防止(Gate 5へ手順追記)
 
 ---
 
@@ -5818,6 +5819,108 @@ LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY`)、セッション記�
 `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`、
 `OPEN_ITEMS.md`OPEN-135行・OPEN-120行、`docs/pm/PM_GOVERNANCE.md`、
 `docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-UDR-LABEL-HYGIENE: OPEN-145/146 Gate3個別照合(未充足のためStatus更新見送り)+UDR表記整備(区分A/B/C棚卸し)+Fable報告漏れの記録・再発防止
+
+**Part A(Gate 3個別照合、いずれもStatus更新なし)**: `docs/pm/PM_GOVERNANCE.md`
+Gate 3 Production Wiring Checklist(「/」区切りで13項目)を、既存REPORT・
+実コード・git logで照合した。
+
+- **OPEN-145(JA ASR表記ゆれ層)**: `OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-
+  PRODUCTION-WIRING-01_REPORT.md`§7の自己申告(13項目中12項目済、
+  「Production runtimeでの実発火」のみ部分済[既存実データのoffline
+  再判定のみ、新規TTS/ASR呼び出しでの発火なし])を、`er007_ja_asr_
+  validator_01.py`/`er007_ja_secondary_asr_01.py`のコード配線(`try_
+  rescue_before_resolver`/`_apply_variant_layer_voicing_upgrade`実在確認)、
+  commit`89f633d`(CONSOLIDATION-84)、および`FAMILY-A-TREND-SYNTHESIS-AI-
+  MANUFACTURING-PRODUCTION-RUN-01_REPORT.md`(前段Foreign Token Gateで停止し
+  発火機会自体なし)・`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-
+  TREND-A2-RESUME-01_REPORT.md`§12(`reading_resolver_info=null`、7件中
+  不発火)・`FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-FEEDBACK-FIX-01_
+  REPORT.md`(数字非含有のため対象外、不発火)の3件のruntime evidenceで
+  照合した結果、新規TTS/ASR呼び出しを伴う実発火は今回も確認できず、
+  13項目中1項目(Production runtimeでの実発火)が未充足のまま。
+- **OPEN-146(Ledger公式英語表記)**: `OPEN-146-LEDGER-CANONICAL-EN-
+  SPELLING-PRODUCTION-WIRING-01_REPORT.md`§5、`er011_open146_ledger_
+  canonical_en_spelling_production_01.py`/`er003_v1_n3_01_articles_
+  generate.py`のコード配線(`make_proper_noun_extraction_fn`実在確認)、
+  commit`89f633d`、`FAMILY-A-NEWS-POINT-QUALITY-GENERALIZATION-HUBBLE-
+  SATURN-TRIAL-16_REPORT.md`§2(runtime evidence 2件目、「バスク大学」→
+  `University of the Basque Country`)で照合した。News Family内で
+  Trial-15(人名2件)・Trial-16(所属機関1件)の計2件の実API経由自然発火を
+  確認したが、`OPEN_ITEMS.md`OPEN-146行に既にFable自身が「全経路確認・
+  SSOT・Gitが揃うまで`APPROVED_FOR_PRODUCTION`のまま」「この1件をもって
+  `PRODUCTION_WIRED`へは格上げしない」と明記済みであり、Discovery/Trend
+  Synthesis/B-Family Voices等の他Familyでは未確認のまま。13項目中1項目
+  (Production runtime実発火の適用範囲)が未充足。
+- **結論**: いずれも「全項目充足」に至らないため、`OPEN_ITEMS.md`
+  OPEN-145/146行のStatusは`APPROVED_FOR_PRODUCTION`(配線中)のまま
+  更新していない(`PRODUCTION_WIRED`への格上げは見送り)。未充足項目は
+  Fableへ報告し判断を仰ぐ(詳細`docs/pm/RESULT_PACKET.md`)。
+
+**Part B(UDR表記整備、¥0、判断内容は変更していない)**:
+
+- **B1**: `OPEN_ITEMS.md`OPEN-121(数字↔数詞正規化サブ項目)/OPEN-131/
+  OPEN-133の行頭Status文言を実態(それぞれ「サブ項目のみ`PRODUCTION_
+  WIRED`済み・残5論点は未回答」「実質`PRODUCTION_WIRED(opt-in)`確定済み
+  [CONSOLIDATION-31]」「2026-09-09ユーザー決定(b)採用済みで`DEFERRED`」)
+  に合わせて更新し、末尾に「2026-09-13表記整備、根拠PM-CLOSEOUT-
+  CONSOLIDATION-100/PM-STATUS-RECONCILIATION-UDR-AND-APPROVED-UNWIRED-
+  2026-09-13-01」を追記した(本文の判断内容自体は不変)。
+- **B4**: OPEN-135行に「Trend B1/Trend A2/Trial-12の`main`URLはraw.githack
+  CDNキャッシュがSTALEのため、ユーザー提示はcommit固定URL(`598174a`)で
+  行う」を1行追記した。
+- **B2: 区分A(真に未回答)の一覧と先送り決定の有無**(`docs/pm/RESULT_
+  PACKET_STATUS_RECON.md`の機械棚卸しに基づく):
+  1. OPEN-120(3V Fact Safety強度設計): 未回答。**先送り決定なし**
+     (提示済み・単純未回答)。
+  2. OPEN-121残5論点(方式D'配線要否/disfluency QA拡張/適用スコープ
+     拡大/ASR非決定的平滑化条件/gap<0.5秒即時言い直し配線): 未回答。
+     **先送り決定なし**。
+  3. OPEN-122(Key Phrase経路展開): 2026-09-08 CONSOLIDATION-08で
+     「据え置き」。**先送り決定あり**。
+  4. OPEN-124(未追跡ファイル285件・約2,870MBの整理方針): 2026-09-08
+     「今回後回し、現状維持」。**先送り決定あり**。
+  5. OPEN-125(TTS retry entity_only_diffs誤分類): 2026-09-08「低優先で
+     保留、Trial着手しない、Open Itemとして維持する」。**先送り決定あり**。
+  6. OPEN-135(Family A Completion Programフレームワーク全体):
+     段階的・進行中プログラムであり、個別の先送り決定の対象ではなく
+     継続中。**該当なし(N/A、継続中プログラム)**。
+  7. OPEN-136(Ledger Deviation Checker検索コスト削減案A/B採否):
+     調査完了・採否未定。**先送り決定なし**(明示的な先送り宣言はない)。
+  8. OPEN-139(レガシーepisode遡及QA適用方針): 2026-09-10
+     CONSOLIDATION-70「量産段階に近づいた時点でまとめて判断」。
+     **先送り決定あり**。
+  9. OPEN-141(Local Rewrite後、下流QAが再通過しない構造的盲点):
+     起票のみ(2026-09-10)、後続の追記・回答なし。**先送り決定なし**。
+  10. OPEN-142(Claude開発Token効率化プログラムT-1〜T-4全体Status):
+      個別Phase施策(Phase 2 context packet採用等)は前進しているが、
+      都度「Status変更しない」と明記されるのみで全体の先送り決定の
+      明文はない。**先送り決定なし(個別施策の前進はあるが全体は
+      明文の先送り決定なしで継続中)**。
+- **Fable報告漏れの記録**: `PM-CLOSEOUT-CONSOLIDATION-99`で「判断待ちは
+  3V Fact Safetyのみ」と報告したが、上記のうち先送り決定のない
+  OPEN-136・OPEN-141・OPEN-121残5論点・OPEN-122残件(および広義には
+  先送り決定はあるが依然Openなまま残るOPEN-124/125/135/139/142)が
+  未提示だった。**原因**: 棚卸しを`USER_DECISION_REQUIRED`という文字列
+  の有無で行っており、行頭Status+DECISION_LOG回答記録の突合による
+  A/B/C分類を経ていなかったため、UDR文字列を含まない行や、回答済みだが
+  古い`USER_DECISION_REQUIRED`表記が行頭に残存する行を機械的に
+  見落とした。**再発防止**: 統合タスクごとに本エントリのPart Aと同様の
+  機械棚卸し+A/B/C分類を必須化する。`docs/pm/PM_GOVERNANCE.md`Gate 5へ
+  この手順を明記した。
+
+根拠: `docs/pm/RESULT_PACKET_STATUS_RECON.md`(2026-09-13実態照合)、
+`OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01_REPORT.md`、
+`OPEN-146-LEDGER-CANONICAL-EN-SPELLING-PRODUCTION-WIRING-01_REPORT.md`、
+`FAMILY-A-NEWS-POINT-QUALITY-GENERALIZATION-HUBBLE-SATURN-TRIAL-16_
+REPORT.md`、`FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01_
+REPORT.md`、`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-
+RESUME-01_REPORT.md`、`FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-
+FEEDBACK-FIX-01_REPORT.md`、`OPEN_ITEMS.md`OPEN-121/131/133/135/145/146行、
+`docs/pm/PM_GOVERNANCE.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ---
 
