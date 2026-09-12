@@ -611,9 +611,18 @@
       "canonical_text": "The last sleep stage matters"
     },
     "full_story_part1": {
-      "status": "STOPPED",
-      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
-      "standard_attempts_log": [
+      "status": "OK",
+      "text": "Sometimes, a person opens their eyes just before the alarm rings.\n\nIt can feel like a small mystery. Did the body know the time?\n\nThe human body has a built-in clock. Light helps this clock match the twenty-four-hour day. Regular sleep and wake times can also help. In a laboratory study, weak light and regular routines usually matched a twenty-four-hour day. They did not usually match shorter or longer days.",
+      "language": "en",
+      "path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/full_story_part1.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "sha256": "00417de4ec3b5a853c3720a955e7c20cf5efdc484caa6f379b8588d2f3011c6a",
+      "duration_seconds": 29.451,
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Sometimes a person opens their eyes just before the alarm rings. It can feel like a small mystery. Did the body know the time? The human body has a built-in clock. Light helps this clock match the 24-hour day. Regular sleep and wake times can also help. In a laboratory study, weak light and regular routines usually matched a 24-hour day. They did not usually match shorter or longer days.",
+      "attempts_log": [
         {
           "attempt": 1,
           "status": "OK",
@@ -853,9 +862,7 @@
           "non_latin_cascade_enabled": false,
           "non_latin_cascade_invoked": false,
           "attempt_audio_path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/attempts/full_story_part1_attempt2_custom35d6860b.wav"
-        }
-      ],
-      "fallback_attempts_log": [
+        },
         {
           "attempt": 1,
           "status": "OK",
@@ -966,8 +973,99 @@
           "attempt_audio_path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/attempts/full_story_part1_attempt3_minimalfallback.wav"
         }
       ],
-      "slowdown_attempts_log": [],
-      "canonical_text": "Sometimes, a person opens their eyes just before the alarm rings.\n\nIt can feel like a small mystery. Did the body know the time?\n\nThe human body has a built-in clock. Light helps this clock match the twenty-four-hour day. Regular sleep and wake times can also help. In a laboratory study, weak light and regular routines usually matched a twenty-four-hour day. They did not usually match shorter or longer days."
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 29.451,
+        "method_a_ngram": {
+          "matches": [
+            {
+              "span_text": " 24 -hour  day.",
+              "n_words": 3,
+              "category": "phrase",
+              "first_start_s": 14.28,
+              "first_end_s": 15.38,
+              "second_start_s": 24.3,
+              "second_end_s": 25.4,
+              "gap_seconds": 8.92,
+              "canonical_repeat_count": 2,
+              "intentional": true,
+              "flagged": false
+            }
+          ],
+          "flagged": false,
+          "flagged_matches": [],
+          "word_count": 73,
+          "canonical_known": true,
+          "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+          "top_matches": [
+            {
+              "similarity": 0.9977,
+              "time_a_seconds": 7.31,
+              "time_b_seconds": 18.71,
+              "lag_seconds": 11.4,
+              "run_length_seconds_at_thresh_0.85": 0.01
+            },
+            {
+              "similarity": 0.9976,
+              "time_a_seconds": 17.42,
+              "time_b_seconds": 25.9,
+              "lag_seconds": 8.48,
+              "run_length_seconds_at_thresh_0.85": 0.01
+            },
+            {
+              "similarity": 0.9976,
+              "time_a_seconds": 5.95,
+              "time_b_seconds": 7.31,
+              "lag_seconds": 1.36,
+              "run_length_seconds_at_thresh_0.85": 0.01
+            },
+            {
+              "similarity": 0.9974,
+              "time_a_seconds": 6.97,
+              "time_b_seconds": 18.71,
+              "lag_seconds": 11.74
+            },
+            {
+              "similarity": 0.9972,
+              "time_a_seconds": 6.97,
+              "time_b_seconds": 29.22,
+              "lag_seconds": 22.25
+            }
+          ],
+          "best_run_length_seconds": 0.01,
+          "min_lag_seconds": 1.0,
+          "sim_threshold": 0.85,
+          "decision_threshold_seconds": 0.12,
+          "acoustic_flagged": false,
+          "local_asr_confirmation": null,
+          "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+          "run_length_seconds": 0.35,
+          "time_a": 8.63,
+          "lag": 1.48,
+          "similarity_at_start": 0.8323,
+          "best_run_length_seconds": 0.35,
+          "lag_range_seconds": [
+            0.5,
+            2.0
+          ],
+          "sim_threshold": 0.7,
+          "decision_threshold_seconds": 0.6,
+          "flagged": false
+        }
+      },
+      "fallback_used": false,
+      "canonical_text": "Sometimes, a person opens their eyes just before the alarm rings.\n\nIt can feel like a small mystery. Did the body know the time?\n\nThe human body has a built-in clock. Light helps this clock match the twenty-four-hour day. Regular sleep and wake times can also help. In a laboratory study, weak light and regular routines usually matched a twenty-four-hour day. They did not usually match shorter or longer days.",
+      "OPEN121_SYMMETRIC_NORMALIZATION_TRIAL12_A2_LOCK_RESOLVE_SYNC_NOTE": "[2026-09-12T20:26:30] PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT: OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01(2026-09-12)適用後の遡及再判定により、標準attempt1のrepetition_qa誤flag(\"24-hour day\"のハイフン境界トークン化不備)が解消されverified=Trueだったことを、実際のattempt1音声へProduction関数evaluate_repetition_qa()を直接再実行して独立に確認した(ローカルfaster-whisper再実行のみ、TTS新規生成・追加ASR API呼び出しなし、¥0)。review_lock_state.jsonはRESOLVED/OK(採用attempt1)へ更新済み(本タスク、同時実施)。旧status=STOPPED(標準2回+fallback1回とも不合格)から、本タスクの再判定結果を反映してstatus=OKへ更新した。attempts_log配下の各attemptオブジェクト内のrepetition_qa_evidenceは当時(旧実装バグ時)の記録のまま保持し、書き換えていない(履歴改変を避けるため)。トップレベルのrepetition_qa_evidenceのみ、新実装での再計算結果(本フィールド)を反映する。call_count/retry_count/trim_infoフィールドは、attempt1個別のTTS技術的retry回数・trim silence詳細が当時のstandard_attempts_log記録に保存されていなかったため、本タスクでは再構成していない(既存Gateロジック[_segment_gate_status/_segment_asset_hash_stale/_segment_missing_mandatory_disfluency_qa]はいずれもこれらのフィールドを参照しないため、Gate判定への影響なし)。**A2必須6% slowdown(slowdown_applied)は本タスクでは未適用**(次のAssembly試行で意図的にMISSING_MANDATORY_A2_SLOWDOWNとしてブロックされることを確認する。理由: 既存Production関数apply_a2_slowdown_postprocess()は、time-stretch自体はローカル無料[ffmpeg]だが、内蔵の安全再検証としてPrimary ASR[er006_asr_provider_routing_01.transcribe、有料]を1回呼び出す設計であり、本タスクの¥0/API呼び出し禁止制約と衝突するため、独自判断で省略・代替せずFable/ユーザー判断を仰ぐ。詳細はPM-CLOSEOUT-CONSOLIDATION-95のRESULT_PACKET参照)。"
     },
     "full_story_part2": {
       "status": "OK",

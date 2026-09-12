@@ -56,6 +56,7 @@ import re
 import numpy as np
 import soundfile as sf
 
+import er006_preprod_hardening_01_validation as en_validator
 import er008_disfluency_qa_18 as dq18
 
 # ============================================================
@@ -376,23 +377,123 @@ def run_spectral_checks(path, words=None):
 # canonical側・ASR側のトークンの両方にこの正規化を一様に適用すること
 # で、`_canonical_repeat_count()`への入力の表記ゆれのみを吸収し、
 # 閾値(canon_count>=2)・判定意味は一切変更しない。
-_NUM_WORD_TO_DIGIT_EN = {
-    "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
-    "eight": "8", "nine": "9", "ten": "10", "eleven": "11", "twelve": "12",
-}
+#
+# OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01:
+# ユーザー承認2026-09-12(REPETITION-QA-INTENTIONAL-REPEAT-FALSE-
+# POSITIVE-RECONCILE-03_REPORT.md「修正1回目」節)。上記(2~12専用辞書)は
+# Trial-12実データ("twenty-four-hour day"が"24"+"-hour"の2 tokenへASR側で
+# 分割される一方、canonical側tokenizerは空白のみで分割するためハイフン
+# 複合語"twenty-four-hour"が1 tokenのまま残ってしまう非対称)には
+# 構造的に無関係であり、数値レンジ拡張だけでは解消しなかった。以下の
+# 2点を組み合わせた対称正規化層へ置き換える(判定閾値canon_count>=2・
+# 判定意味は無変更):
+#   (i) ハイフン境界の対称正規化: em dash(—)・en dash(–)は既存OPEN-127の
+#       em dash処理と同じく前後の空白有無を問わず常に空白へ(en dashへ
+#       拡張)。ハイフン(-)は英字/数字が隣接する境界のみ空白へ
+#       (digit-digit境界[例: "10-15"という範囲表記]は無関係な数字対の
+#       誤結合riskを避けるため明示的に除外)。canonical側・ASR側の
+#       両方に同一正規化を適用する(対称性が本質)。
+#   (ii) 数詞↔算用数字の同値化を0〜999へ拡張: 専用辞書(2~12)を廃止し、
+#       Production既承認・稼働中のASR Validator側の実装(`er006_
+#       preprod_hardening_01_validation.py`の`_ONES`/`_TENS`/
+#       `_NUM_WORD_VOCAB`/`_words_to_number`)をそのまま再利用する
+#       (重複実装によるバグ・語彙drift混入を避けるため。逆方向import
+#       ではないため循環importなし、実地確認済み)。canonical側は複数
+#       tokenの数詞列を1つの算用数字tokenへ畳み込む(例: "twenty four"→
+#       "24"、"one hundred twenty"→"120")。ASR側はタイムスタンプ保持の
+#       ため複数token統合はせず、単一token単位の数詞→算用数字変換のみ
+#       (0〜99、"one"は代名詞曖昧性のため既存方針通り除外)。
+#   %/percentの同値化・序数(first〜ninety-ninth)は引き続き対象外
+#   (実例なし、範囲拡張は別途ユーザー判断待ち、RECONCILE-03参照)。
+_EM_EN_DASH_RE = re.compile(r"[–—]")
+_HYPHEN_BOUNDARY_RE = re.compile(
+    r"(?<=[A-Za-z])-(?=[A-Za-z])"
+    r"|(?<=[A-Za-z])-(?=[0-9])"
+    r"|(?<=[0-9])-(?=[A-Za-z])"
+)
+
+_ONES = en_validator._ONES
+_TENS = en_validator._TENS
+_NUM_WORD_VOCAB = en_validator._NUM_WORD_VOCAB
+_words_to_number = en_validator._words_to_number
+
+
+def _dash_unify(text):
+    """em/en dashは常に空白へ(既存OPEN-127のem dash処理をen dashへも
+    拡張)。ハイフンは英字/数字が隣接する境界のみ空白へ(digit-digit境界
+    [範囲表記]は除外)。"""
+    text = _EM_EN_DASH_RE.sub(" ", text)
+    text = _HYPHEN_BOUNDARY_RE.sub(" ", text)
+    return text
+
+
+def _fold_cardinal_words(tokens):
+    """canonical側: 空白区切り済みの生token列(大文字小文字混在・句読点
+    付着あり)に対し、連続する数詞語の最大munchを`_words_to_number()`で
+    算用数字1 tokenへ畳み込む(既存`en_validator._convert_cardinal_
+    words()`と同一アルゴリズムをtoken列に対して直接適用)。句読点は
+    ここでは未除去(呼び出し側で個々のtokenへ`dq18._normalize_token`を
+    後段適用する前提)。"""
+    lower = [t.lower() for t in tokens]
+    out = []
+    i = 0
+    n = len(tokens)
+    while i < n:
+        bare = re.sub(r"[^a-z]", "", lower[i])
+        if bare and bare in _NUM_WORD_VOCAB:
+            j = i
+            seq = []
+            while j < n:
+                b = re.sub(r"[^a-z]", "", lower[j])
+                if b and b in _NUM_WORD_VOCAB:
+                    seq.append(b)
+                    j += 1
+                else:
+                    break
+            if len(seq) == 1 and seq[0] == "one":
+                out.append(tokens[i])
+                i += 1
+                continue
+            val = _words_to_number(seq)
+            if val is None or (len(seq) == 1 and val < 2):
+                out.append(tokens[i])
+                i += 1
+                continue
+            out.append(str(val))
+            i = j
+        else:
+            out.append(tokens[i])
+            i += 1
+    return out
 
 
 def _normalize_token_numeric_equiv(word):
-    """既存`dq18._normalize_token()`(句読点除去+小文字化)のあとに、
-    2~12の綴り小数のみを算用数字へ同値化する(範囲は`_NUM_WORD_TO_
-    DIGIT_EN`のキーに厳密に限定、それ以外の語は無変換)。"""
-    t = dq18._normalize_token(word)
-    return _NUM_WORD_TO_DIGIT_EN.get(t, t)
+    """ASR側: 単一token単位の正規化(タイムスタンプ保持のため複数token
+    統合はしない)。(a)先頭ハイフン/en-dash/em-dash artifactの除去
+    (faster-whisperがハイフン複合語を"word"+"-suffix"の2 tokenへ分割する
+    tokenize artifact対策) (b)既存`dq18._normalize_token()`(句読点除去+
+    小文字化) (c)単一token数詞→算用数字(0〜99、"one"は代名詞曖昧性の
+    ため対象外、既存方針を踏襲)。"""
+    w = word
+    if len(w) > 1 and w[0] in "-–—" and (w[1].isalpha() or w[1].isdigit()):
+        w = w[1:]
+    t = dq18._normalize_token(w)
+    if t == "one":
+        return t
+    if t in _ONES:
+        return str(_ONES[t])
+    if t in _TENS:
+        return str(_TENS[t])
+    return t
 
 
 def _normalize_tokens(text):
-    text = re.sub("—", " ", text)
-    return [_normalize_token_numeric_equiv(w) for w in text.split()]
+    """canonical側: (i)ダッシュ境界統一→分割→(ii)数詞畳み込み→
+    既存`dq18._normalize_token`(句読点除去+小文字化)。"""
+    text = _dash_unify(text)
+    raw_tokens = text.split()
+    folded = _fold_cardinal_words(raw_tokens)
+    return [dq18._normalize_token(t) for t in folded]
 
 
 def find_repeated_spans(tokens, min_words=1):

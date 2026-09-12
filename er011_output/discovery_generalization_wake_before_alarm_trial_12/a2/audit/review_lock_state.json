@@ -395,15 +395,15 @@
     ]
   },
   "full_story_part1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "076a7845f9bd8002adfbae652e6a6ff0dec9ddca370ca115a90c4947bc090f1f",
     "language": "en",
     "theme_id": "discovery_generalization_wake_before_alarm_trial_12",
     "level": "a2",
     "segment_id": "full_story_part1",
-    "updated_at": "2026-09-12T14:43:51",
-    "reason": "最終status=STOPPED。2回試行してもASR検証(内容+長さ)に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-09-12T20:26:30",
+    "reason": "OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01(2026-09-12)適用後の遡及再判定: \"24-hour day\"のハイフン境界トークン化不備による誤flagが解消され、標準attempt1/2・fallback attempt1の3件とも method_a_ngram の canonical_repeat_count が0->2となり、method_a/d/d'いずれもflagged=falseとなった(ローカルfaster-whisper再実行のみ、追加TTS/ASR呼び出しなし、¥0)。3件ともASR内容一致(NORMALIZED_MATCH)は元々成立しており、verified=Falseだった唯一の原因がrepetition_qa gate(旧実装のバグ)であったことをコード追跡で確認済み。承認根拠: ユーザー2026-09-12指示(DECISION_LOG PM-CLOSEOUT-CONSOLIDATION-94エントリ、RECONCILE-03 Gate3最低限確認14項目「Trial-12 A2既存takeの¥0再判定/PASS時のA2 Assembly/標準player更新」)。既存採用規則(retry loop内で最初にverified=Trueとなる取り)に従い、標準attempt1(full_story_part1_attempt1_custom35d6860b.wav)を採用した(TTS再生成なし、既存音声ファイルの複製のみ)。旧final_status=STOPPED/state=HUMAN_REVIEW_REQUIRED(2026-09-12早期)から、本修正の遡及再判定によりRESOLVEDへ更新。過去の類似precedent(OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-PRODUCTION-FIX-01、towels_trial_11 full_story_part2 'after two months')と同一の手続き。",
+    "final_status": "OK",
     "wav_path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/full_story_part1.wav",
     "cumulative_tts_attempts": 2,
     "cumulative_asr_calls": 2,
@@ -649,7 +649,8 @@
         "non_latin_cascade_invoked": false,
         "attempt_audio_path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/attempts/full_story_part1_attempt2_custom35d6860b.wav"
       }
-    ]
+    ],
+    "adopted_attempt_audio_path": "er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/narration/attempts/full_story_part1_attempt1_custom35d6860b.wav"
   },
   "full_story_part2": {
     "state": "RESOLVED",

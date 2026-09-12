@@ -21,7 +21,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ## 索引(Index): 全Decisionエントリ一覧
 
-> 以下は全234件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
+> 以下は全235件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
 
 - [履歴] ## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
 - [履歴] ## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
@@ -372,6 +372,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD: News Point品質一般化Trial-16(Hubble/Saturnテーマ)結果のSSOT反映(主要エンドポイントは天井効果で比較不能・N非対称H=6/P=4・Fact-ID別利用と質的観察で「非headline周辺factがPoint素材になる」方向性の限定的支持・Status`USER_DECISION_REQUIRED`候補a/b/c[Fable推奨(b)]・費用¥308.7で上限¥300を¥8.7超過+記録漏れ概算¥5未満の正直な記録)+OPEN-146 runtime evidence(英語一次情報源テーマでも研究者所属機関名で自然発火)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-L2-RECONCILE-03: Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)配布(B1B完走PASS・A2はER-009 Foreign Token GateでSTOPPED、費用¥121.98)+Token効率Phase 2 After測定完了(Opus実読込135,397字→約23,450字、82.7%減、Fable判定`VALIDATED`[Trial]、標準化はUDR)+Discovery Trial-12 Opus L2解釈(テキスト軸悪化・A2 point_one語数超過は系統的signal・型固定継続、UDR3件)+Repetition QA RECONCILE-03修正1回目(対称正規化層prototype、Trial-12実バグ3件解消・真陽性維持・回帰35件中33 PASS、Production採用はUDR)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY: 2026-09-12ユーザー回答11項目(原文全文)の正式記録 — Discovery対照アームTrial不実施(優先順位判断、Focus Module Part Aは新規記事生成のN増しで継続観測)/Repetition QA RECONCILE-03一般化案を`APPROVED_FOR_PRODUCTION`としGate 3進行/Opus context packet方式をOpus L2標準入力方式として採用(Opus自体は削減・廃止しない)/Trial REPORT必須欄5項目・層間不整合とA2数値表記のOpen Item登録・News Trial-16はいずれも「今はなし」(フル再提示後に判断)/正式報告ブロック(★★★★報告ここから★★★★〜ここまで★★★★)新設/未回答事項の省略再掲禁止の再確認と再発防止/「ユーザー判断」欄は現時点で回答が必要な事項のみ・将来判断は「今後の展望」欄へ分離/FableのPM自発的Next Action確認ルール追加
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT: OPEN-121対称正規化Production配線67テストPASS済みを前提に、Trial-12 A2`full_story_part1`のLock状態遷移(RESOLVED/OK、標準attempt1採用、¥0)を実施したがA2 Assemblyは6% slowdown post-process未適用で`MISSING_MANDATORY_A2_SLOWDOWN`により正しくブロックされ未完了(内蔵の安全再検証が有料Primary ASRを要するため¥0制約と衝突、`USER_DECISION_REQUIRED`でSTOP)+Token効率実測2件(委任文定型比率4.78%・改善案A REJECTED、subagent内部消費3,659万token=委任文の108倍・E-1/D-1/G-1採用/A-1不採用)+ER-009 Foreign Token Gate Trend Reconcile完了・ユーザーA'承認の記録
 
 ---
 
@@ -5176,6 +5177,110 @@ PRIORITY`)、ユーザー発言原文(上記、セッション記録`294958fe-da
 8a02-4f864d8195c8.jsonl`より抽出)。詳細は`OPEN_ITEMS.md`OPEN-135/
 OPEN-121/OPEN-142行、`docs/pm/PM_GOVERNANCE.md`、`docs/pm/PM_BRIEF.md`、
 `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT
+
+**日付**: 2026-09-12
+**実行者**: sonnet-worker(Fable委任、再開タスク、Git書込唯一のタスク、API呼び出し禁止/¥0)
+
+**背景**: 前タスク(`OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-
+WIRING-01`)で、対称正規化(ハイフン境界+数詞0〜999拡張)を
+`er011_open121_repetition_qa_production_01.py`のProduction正式初回経路へ実装し、
+既存35テスト+新規回帰32テスト=67テスト全PASSまで完了していた
+(`OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01_REPORT.md`)。
+本タスクはその続きとして、Trial-12 A2既存take(`full_story_part1`)のLock状態
+遷移・A2 Assembly・SSOT/Git反映を行う統合タスク(前回はGit書込直前で上限到達停止)。
+
+**1. Lock状態遷移(実施済み、¥0)**: 承認根拠はDECISION_LOG
+`PM-CLOSEOUT-CONSOLIDATION-94`エントリのユーザー原文中、RECONCILE-03 Gate 3
+最低限確認14項目の一部「Trial-12 A2既存takeの¥0再判定/PASS時のA2 Assembly/
+標準player更新」。`er011_output/discovery_generalization_wake_before_alarm_
+trial_12/a2/audit/review_lock_state.json`の`full_story_part1`エントリを
+`HUMAN_REVIEW_REQUIRED`→`RESOLVED`(`final_status: OK`)へ更新し、標準attempt1
+(`attempts/full_story_part1_attempt1_custom35d6860b.wav`、既存採用規則=retry
+loop内で最初にverified=Trueとなる取り)を`narration/full_story_part1.wav`へ
+複製した(TTS再生成なし)。独立検証として、実際のattempt1音声へProduction関数
+`evaluate_repetition_qa()`を直接再実行し(ローカルfaster-whisper、追加API
+呼び出しなし)、`flagged=False`・`canonical_repeat_count`が0→2に解消することを
+本タスクで再確認した(REPORTの記載を鵜呑みにせず独立再計算)。
+`audit/tts_generation_results.json`の`full_story_part1`エントリも`STOPPED`→
+`OK`へ更新し、独立再計算した`repetition_qa_evidence`・実ファイルsha256等を
+反映した(過去の類似precedent[`OPEN-121-REPETITION-QA-NUMBER-WORD-EQUIVALENCE-
+PRODUCTION-FIX-01`、towels_trial_11 `full_story_part2`"after two months"]と
+同一の手続き)。attempts_log内の各attempt個別のrepetition_qa_evidenceは当時の
+記録のまま保持し書き換えていない(履歴改変なし)。
+
+**2. A2 Assembly(未完了、`USER_DECISION_REQUIRED`)**: 実際に
+`er003_v1_n3_01_assemble.py::stage_assemble_a2()`を実行した結果、
+`EPISODE_BLOCKED_BY_AUDIO_VALIDATION`(`full_story_part1=VALIDATED
+(MISSING_MANDATORY_A2_SLOWDOWN)`)で正しくブロックされた(実データで確認、
+Lock/tts_generation_results.json更新自体は正しくGateを通過しVALIDATED扱いに
+なったことも同時に確認できた)。A2本文segmentは6% time-stretch post-processが
+必須(`_segment_missing_mandatory_a2_slowdown`)だが、既存Production関数
+`apply_a2_slowdown_postprocess()`は、time-stretch自体はローカル無料(ffmpeg
+`atempo`)である一方、内蔵の安全再検証としてPrimary ASR
+(`er006_asr_provider_routing_01.transcribe`、有料)を1回呼び出す設計になって
+おり、本タスクの委任条件(¥0・LLM/TTS/ASR API呼び出し禁止)と衝突する。既存の
+安全機構(post-slowdown再検証)を独自判断で省略・代替せず、Fable/ユーザー判断を
+仰ぐため`USER_DECISION_REQUIRED`としてSTOPした。**選択肢**: (a)小額のPrimary
+ASR呼び出し1回を承認し次タスクでslowdown post-process+Assembly+標準player
+再生成まで完了する、(b)別タスク・別予算枠で実施する、(c)¥0代替検証方法(ローカル
+faster-whisper等でPrimary ASRを代替)を明示的に承認する(既存の安全再検証設計
+からの逸脱となるため要ユーザー判断)。A2 Assembly・標準player再生成・Git上の
+A2完成audio artifactはいずれも未実施。**Gate 3の13項目チェックリスト
+(`OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01_REPORT.md`
+7節)のうち9(CURRENT_SPEC.md)・10(DECISION_LOG.md、本エントリ)・11
+(OPEN_ITEMS.md)・12(Git反映)は本タスクで充足したが、4(Production runtimeでの
+実発火、A2 Assembly完了を含む)は依然未充足のため、`PRODUCTION_WIRED`は宣言
+しない**(Status継続`APPROVED_FOR_PRODUCTION`、Gate 3進行中)。
+
+**3. Token効率実測2件(read-only、¥0、記録のみ)**:
+`PM-TOKEN-EFFICIENCY-DELEGATION-PROMPT-BOILERPLATE-MEASUREMENT-01_REPORT.md`
+は、Fable→Sonnet/Opus委任文の定型(boilerplate)比率が union調整後4.78%
+(厳格一致のみ2.2%)と小さく、参照Read方式(改善案A)は「毎回読ませる」実装だと
+現状の埋め込みコスト(38,750字)を上回るためREJECTED(判定語なし・材料提示)と
+結論した。`PM-TOKEN-EFFICIENCY-SUBAGENT-TOKEN-CONSUMPTION-BY-TASK-TYPE-01_
+REPORT.md`は、254件の重複排除済みsubagent実行の合計消費が36,590,141 token
+(委任文合計743,907字の概算338,140 tokenの約108倍)であり、現存18件実測で
+読込文字数の27.8%が同一task内の同一ファイル重複読込と判明したと報告した。
+改善候補のうちE-1(同一task内重複Read抑制)・D-1(Production配線タスクの対象
+コードRead範囲限定)・G-1(git出力抑制)は低リスク・低実装コストのため本
+サンドイッチ運用の読込効率ルールとして採用し(本タスクの委任文冒頭にも明記)、
+A-1(Consolidationの件数削減)はロールバック単位肥大化等のリスクが中〜高のため
+不採用とした。いずれもFable判定であり、ユーザーへの正式最終確認は別途。
+
+**4. ER-009 Foreign Token Gate Trend Reconcile(read-only、¥0)**:
+`FAMILY-A-TREND-AI-MANUFACTURING-A2-JA-FOREIGN-TOKEN-GATE-RECONCILE-01_
+REPORT.md`が完了し、Family A Trend Synthesis(AI investment/factories/
+manufacturingテーマ)A2がER-009 Japanese Foreign Token Gateで未登録token
+「AI」によりSTOPPEDしていた原因を切り分けた(japanese_title・preview・
+comment_1〜4・kp5日本語glossの計7segment)。推奨案A(`DEFAULT_JA_READING_
+DICTIONARY`へ`"ai": "エーアイ"`追加、¥0・2026-08-26の既存7語追加と同一手順)
+につき、ユーザーが短い直接指示(約15語)で承認した旨をFableより本タスクへ委任
+された(原文はFable側記録であり、本タスクでは一次資料からの検証は行っていない、
+正直な限界として明記)。実装(辞書1行追加+該当7segmentの¥0事前判定)は並列
+稼働中の別タスクの範囲であり、本タスクでは`er003_audio_tts_asr_safety.py`に
+一切触れていない(SSOT[OPEN-135行]反映のみ)。
+
+**Git操作**: 本タスクが本セッション内で唯一のGit書込タスク。並列稼働中の他Agent
+(3V Phase 1b-04`er012_*`、ER-009辞書拡張`er003_audio_tts_asr_safety.py`、
+`er009_ja_foreign_token_gate_01_test_01.py`、`er012_b_family_production_
+runner_01.py`、`er011_output/family_a_completion_a2_trend_end_to_end_01/`
+配下)の生成物には一切触れず、stageもしていない(`CURRENT_SPEC.md`は同一
+ファイル内で他Agentの追記[Writer原則/Tensionパターン、B-Family 3V関連]と
+非重複のhunkに分離できたため`git add -p`で自タスク分のみ選択的にstageした)。
+API呼び出しは行っていない(¥0)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-
+SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT`)、
+`OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01_
+REPORT.md`、`PM-TOKEN-EFFICIENCY-DELEGATION-PROMPT-BOILERPLATE-MEASUREMENT-01_
+REPORT.md`、`PM-TOKEN-EFFICIENCY-SUBAGENT-TOKEN-CONSUMPTION-BY-TASK-TYPE-01_
+REPORT.md`、`FAMILY-A-TREND-AI-MANUFACTURING-A2-JA-FOREIGN-TOKEN-GATE-
+RECONCILE-01_REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-121/OPEN-135/OPEN-142行、
+`CURRENT_SPEC.md`OPEN-121節、`docs/pm/RESULT_PACKET.md`参照。
+
+---
 
 ## 参照元
 

@@ -152,26 +152,32 @@ class EmDashTokenBoundaryTests(unittest.TestCase):
         self.assertEqual(r["flagged_matches"][0]["n_words"], 4)
 
     def test_c_hyphen_en_dash_percent_numeric_cases_unchanged(self):
-        # ハイフン(-)・en dash(–, U+2013)・%記号・小数点数字は対象外
-        # (em dashのみを空白へ置換、他の記号のtokenizationは無変更、
-        # 既存dq18._normalize_tokenによる句読点除去挙動もそのまま)。
+        # OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-
+        # WIRING-01(ユーザー承認2026-09-12、RECONCILE-03「修正1回目」)に
+        # よりスコープ拡大: ハイフン(-)・en dash(–, U+2013)は、英字/数字が
+        # 隣接する境界に限り空白へ分割されるようになった(digit-digit
+        # 境界["10-15"等の範囲表記]は除外、%記号・小数点付き数字の
+        # tokenizationは引き続き無変更)。この期待値更新はスコープ拡大の
+        # 直接的な帰結であり、RECONCILE-03 §2「(e)」で報告済み。
         def expected(text):
             return [dq18._normalize_token(w) for w in text.split()]
 
         hyphen_text = "well-known fact well-known fact"
         self.assertEqual(
-            repetition_qa._normalize_tokens(hyphen_text), expected(hyphen_text),
-            "ハイフンは空白へ置換されず、既存のtext.split()挙動のまま",
+            repetition_qa._normalize_tokens(hyphen_text),
+            ["well", "known", "fact", "well", "known", "fact"],
+            "ハイフンは英字-英字境界のため空白へ分割される(新スコープ)",
         )
         en_dash_text = "pages 10–12 were revised pages 10–12 were revised"
         self.assertEqual(
-            repetition_qa._normalize_tokens(en_dash_text), expected(en_dash_text),
-            "en dash(U+2013)は空白へ置換されない",
+            repetition_qa._normalize_tokens(en_dash_text),
+            ["pages", "10", "12", "were", "revised", "pages", "10", "12", "were", "revised"],
+            "en dash(U+2013)は常に空白へ分割される(新スコープ、OPEN-127のem dash処理をen dashへ拡張)",
         )
         percent_numeric_text = "about 45% growth and 108.95 percent of respondents"
         self.assertEqual(
             repetition_qa._normalize_tokens(percent_numeric_text), expected(percent_numeric_text),
-            "%記号・小数点付き数字のtokenizationは無変更",
+            "%記号・小数点付き数字のtokenizationは無変更(ハイフン・dash境界を含まないため)",
         )
 
     def test_d_em_dash_with_and_without_surrounding_whitespace(self):
@@ -273,17 +279,305 @@ class NumberWordDigitEquivalenceTests(unittest.TestCase):
             repetition_qa._normalize_token_numeric_equiv("five"))
 
     def test_e_range_boundary_one_twelve_thirteen(self):
-        # 範囲は`tts_safe_number_words_en()`の対象(two~twelve)と完全に
-        # 同じでなければならない。"one"は代名詞曖昧性のため対象外
-        # (既存方針を踏襲)、"twelve"は範囲内(→"12")、"thirteen"は範囲外
-        # (無変換のまま)。
+        # OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-
+        # WIRING-01(ユーザー承認2026-09-12、RECONCILE-03「修正1回目」)に
+        # より、ASR側単一token数詞→算用数字変換の範囲が2~12専用辞書から
+        # 0~99(単一token単位、`en_validator._ONES`/`_TENS`)へ拡張された。
+        # "one"は代名詞曖昧性のため引き続き対象外(既存方針を踏襲)。
+        # "twelve"(→"12")・"thirteen"(→"13")とも新スコープでは変換対象
+        # (この期待値更新はスコープ拡大の直接的な帰結、RECONCILE-03 §2
+        # 「(e)」で報告済み)。100以上(hundred等)は複数token構成のため
+        # ASR側の単一token変換では対象外のまま(canonical側`_normalize_
+        # tokens`の`_fold_cardinal_words`のみが複数token統合を行う)。
         self.assertEqual(repetition_qa._normalize_token_numeric_equiv("one"), "one")
         self.assertEqual(repetition_qa._normalize_token_numeric_equiv("twelve"), "12")
-        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("thirteen"), "thirteen")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("thirteen"), "13")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("ninety"), "90")
+        self.assertEqual(repetition_qa._normalize_token_numeric_equiv("hundred"), "hundred")
         # 既に算用数字のtokenはそのまま(digit->digitの自己一致)。
         self.assertEqual(repetition_qa._normalize_token_numeric_equiv("1"), "1")
         self.assertEqual(repetition_qa._normalize_token_numeric_equiv("12"), "12")
         self.assertEqual(repetition_qa._normalize_token_numeric_equiv("13"), "13")
+
+
+# ============================================================
+# OPEN-121-REPETITION-QA-SYMMETRIC-NORMALIZATION-PRODUCTION-WIRING-01:
+# ユーザー承認2026-09-12(REPETITION-QA-INTENTIONAL-REPEAT-FALSE-
+# POSITIVE-RECONCILE-03_REPORT.md「修正1回目」節)の回帰テスト。
+# scratchpad prototype(reconcile03_fix1_positives.py/negatives.py、
+# 8正例・23負例)をProduction実装(このtestファイルが監視する
+# `er011_open121_repetition_qa_production_01.py`)へ直接テスト化した
+# もの(scratchpadには残さない)。
+# ============================================================
+class SymmetricNormalizationResolvedPositivesTests(unittest.TestCase):
+    """意図的反復であるにも関わらず旧normalizationではcanon_count<2に
+    なっていたが、新normalizationではcanon_count>=2に解消されるべき
+    ケース(RECONCILE-03 §2「(a)」8パターン)。"""
+
+    def _canon_count(self, canon, span):
+        span_tokens = [repetition_qa._normalize_token_numeric_equiv(w) for w in span.split()]
+        canon_tokens = repetition_qa._normalize_tokens(canon)
+        return repetition_qa._canonical_repeat_count(span_tokens, canon_tokens)
+
+    def test_p01_twenty_four_hour_real_bug(self):
+        # Trial-12 full_story_part1実バグ(3分割ハイフン複合数詞)。
+        cnt = self._canon_count(
+            "Light helps this clock match the twenty-four-hour day. In a "
+            "laboratory study, weak light and regular routines usually matched a "
+            "twenty-four-hour day.",
+            "24 -hour day.")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p02_standalone_twenty_four(self):
+        cnt = self._canon_count(
+            "The team reported twenty-four new cases this week. Regional health "
+            "offices reported twenty-four new cases as well.",
+            "24 new cases")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p03_standalone_thirty_five(self):
+        cnt = self._canon_count(
+            "About thirty-five volunteers joined the first session. The second "
+            "session also drew about thirty-five volunteers.",
+            "about 35 volunteers")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p04_standalone_ninety(self):
+        cnt = self._canon_count(
+            "Ninety percent completed the survey on the first try. In a separate "
+            "poll, ninety percent completed the same survey within a week.",
+            "90 percent completed the")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p05_ten_minute_nap_example(self):
+        cnt = self._canon_count(
+            "A ten-minute nap improved focus in the morning group. A ten-minute "
+            "nap also improved focus in the afternoon group.",
+            "a 10 minute nap")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p06_mid_2020s_example(self):
+        cnt = self._canon_count(
+            "Analysts expect demand to peak in the mid-2020s. Multiple reports "
+            "expect demand to peak in the mid-2020s as well.",
+            "peak in the mid 2020s")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p07_hobby_based_generalization_beyond_numbers(self):
+        # 数字以外の一般ハイフン複合語(hobby-based型)も同じ構造的バグを
+        # 持つことをcorpus再走査で発見(RECONCILE-03 §3)、副次的に解消。
+        cnt = self._canon_count(
+            "Interest in solo and hobby-based trips grew this year. Interest in "
+            "solo and hobby-based trips also grew last year.",
+            "solo and hobby based trips")
+        self.assertGreaterEqual(cnt, 2)
+
+    def test_p08_one_hundred_twenty_compound(self):
+        cnt = self._canon_count(
+            "The pilot enrolled one hundred twenty participants in June. The "
+            "pilot again enrolled one hundred twenty participants in July.",
+            "enrolled 120 participants in")
+        self.assertGreaterEqual(cnt, 2)
+
+
+class SymmetricNormalizationNegativesRemainFlaggedTests(unittest.TestCase):
+    """誤PASSしてはいけない23負例(RECONCILE-03 §2「(d)」)。真陽性・
+    無関係なハイフン複合語・digit-digit範囲表記・序数・%/percent
+    非同値化がいずれもcanon_count<2(flagged)のまま維持されること。"""
+
+    def _assert_still_flagged(self, canon, span):
+        span_tokens = [repetition_qa._normalize_token_numeric_equiv(w) for w in span.split()]
+        canon_tokens = repetition_qa._normalize_tokens(canon)
+        cnt = repetition_qa._canonical_repeat_count(span_tokens, canon_tokens)
+        self.assertLess(cnt, 2, f"canon={canon!r} span={span!r} cnt={cnt}")
+
+    def test_neg01_hobby_based_single_occurrence(self):
+        self._assert_still_flagged(
+            "The male interest in solo and hobby-based trips is well known.",
+            "solo and hobby-based trips")
+
+    def test_neg02_self_directed_single_occurrence(self):
+        self._assert_still_flagged(
+            "Employees who are self-directed tend to need less supervision at work.",
+            "employees who are self-directed")
+
+    def test_neg03_state_of_the_art_single_occurrence(self):
+        self._assert_still_flagged(
+            "The lab uses a state-of-the-art microscope for every sample.",
+            "uses a state-of-the-art microscope")
+
+    def test_neg04_forty_two_percent_single_occurrence(self):
+        self._assert_still_flagged(
+            "About forty-two percent of respondents said they exercise daily.",
+            "about forty-two percent of")
+
+    def test_neg05_twenty_four_hour_single_occurrence(self):
+        self._assert_still_flagged(
+            "The clinic runs a twenty-four-hour hotline for emergencies.",
+            "runs a twenty-four-hour hotline")
+
+    def test_neg06_ten_minute_single_occurrence(self):
+        self._assert_still_flagged(
+            "A short ten-minute nap improved reaction time in the trial.",
+            "a short ten-minute nap")
+
+    def test_neg07_different_digit_24_vs_48(self):
+        self._assert_still_flagged(
+            "Light helps this clock match the twenty-four-hour day. A separate "
+            "test used a forty-eight-hour cycle instead.",
+            "the forty eight hour cycle")
+
+    def test_neg08_thirteen_vs_thirty_confusion(self):
+        self._assert_still_flagged(
+            "Thirteen participants finished the survey on time.",
+            "thirty participants finished the survey")
+
+    def test_neg09_hundred_vs_hundred_twenty(self):
+        self._assert_still_flagged(
+            "The group included one hundred volunteers in total.",
+            "one hundred twenty volunteers")
+
+    def test_neg10_ordinal_third_not_bridged_to_cardinal_three(self):
+        self._assert_still_flagged(
+            "This is the third time researchers have replicated the result. A "
+            "separate team ran three independent trials before publishing.",
+            "researchers have replicated the result a separate team ran three")
+
+    def test_neg11_twentieth_ordinal_word_untouched(self):
+        self._assert_still_flagged(
+            "It happened on her twentieth birthday, a milestone she remembered well.",
+            "on her twentieth birthday a")
+
+    def test_neg12_compound_ordinal_twenty_eighth_untouched(self):
+        self._assert_still_flagged(
+            "The meeting was rescheduled to the twenty-eighth of April this year.",
+            "rescheduled to the twenty eighth")
+
+    def test_neg13_percent_word_not_bridging_digit_percent(self):
+        self._assert_still_flagged(
+            "Sales rose by 12 percent last year. Sales rose by 12% the year before.",
+            "sales rose by 12 percent")
+
+    def test_neg14_percent_true_single_occurrence(self):
+        self._assert_still_flagged(
+            "Only 12 percent of users upgraded within the first month.",
+            "only 12 percent of users upgraded")
+
+    def test_neg15_percent_sign_alone_not_matching_word_form(self):
+        self._assert_still_flagged(
+            "The rate reached 30% in the final quarter of the study.",
+            "the rate reached 30 percent")
+
+    def test_neg16_digit_range_10_15_not_merged_across_unrelated_context(self):
+        self._assert_still_flagged(
+            "Please read pages 10-15 for background. Elsewhere the report cites "
+            "10 different studies and 15 total datasets used in another table.",
+            "cites 10 different studies and 15 total")
+
+    def test_neg17_digit_range_true_duplicate_bug(self):
+        self._assert_still_flagged(
+            "The survey covered ages 18-25 in the first wave only.",
+            "the survey covered ages 18")
+
+    def test_neg18_phone_like_digit_hyphen_digit_untouched(self):
+        self._assert_still_flagged(
+            "Call the support line at 03-1234 for assistance during business hours.",
+            "call the support line at")
+
+    def test_neg19_one_hundred_twenty_single_occurrence(self):
+        self._assert_still_flagged(
+            "Researchers recruited one hundred twenty volunteers for the pilot study.",
+            "recruited one hundred twenty volunteers")
+
+    def test_neg20_two_thousand_single_occurrence(self):
+        self._assert_still_flagged(
+            "The city budget grew to two thousand million yen this fiscal year.",
+            "the city budget grew to two thousand")
+
+    def test_neg21_mid_2020s_single_occurrence(self):
+        self._assert_still_flagged(
+            "Analysts expect the trend to peak in the mid-2020s before slowing down.",
+            "expect the trend to peak in the mid 2020s")
+
+    def test_neg22_em_dash_unrelated_true_duplicate(self):
+        self._assert_still_flagged(
+            "The people I need—or do not need—around me. The cat sat down quietly in the corner.",
+            "the cat sat down quietly")
+
+    def test_neg23_en_dash_range_unrelated_true_duplicate(self):
+        self._assert_still_flagged(
+            "Pages 10–12 were revised for clarity in the final draft.",
+            "the cat sat down quietly")
+
+
+class Trial12FullStoryPart1RealBugReplayTests(unittest.TestCase):
+    """FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-
+    TRIAL-12実データ(3attempt、`er011_output/discovery_generalization_
+    wake_before_alarm_trial_12/a2/audit/tts_generation_results.json`
+    記載のcanonical_text・実ASR word-level分割artifactを再現)。新
+    normalizationで3件ともcanon_count 0->2・flagged True->Falseに解消
+    されることの直接回帰テスト(OPEN-121-REPETITION-QA-SYMMETRIC-
+    NORMALIZATION-PRODUCTION-WIRING-01)。"""
+
+    CANONICAL_TEXT = (
+        "Sometimes, a person opens their eyes just before the alarm rings. "
+        "It can feel like a small mystery. Did the body know the time? "
+        "The human body has a built-in clock. Light helps this clock match "
+        "the twenty-four-hour day. Regular sleep and wake times can also "
+        "help. In a laboratory study, weak light and regular routines "
+        "usually matched a twenty-four-hour day. They did not usually "
+        "match shorter or longer days.")
+
+    def _words(self, tokens_with_times):
+        return [{"text": t, "start": s, "end": e} for t, s, e in tokens_with_times]
+
+    def _make_words_for_attempt(self):
+        # 実監査JSON記載のASR文字起こし(3attemptとも完全一致)を、
+        # faster-whisperのword-level分割artifact("24-hour"->"24"+
+        # "-hour"の2 token)を再現した構造でword-levelへ分解する。
+        # 2箇所の"24 -hour day."出現の間に実記録どおり8.9秒程度の
+        # gapを明示的に置く(first_start_s=14.28/second_start_s=24.3、
+        # gap_seconds=8.92の実記録に準拠)。
+        before_first = ("Sometimes a person opens their eyes just before the alarm "
+                        "rings. It can feel like a small mystery. Did the body know "
+                        "the time? The human body has a built-in clock. Light helps "
+                        "this clock match the").split()
+        between = "Regular sleep and wake times can also help. In a laboratory study, weak light and regular routines usually matched a".split()
+        after_second = "They did not usually match shorter or longer days.".split()
+
+        words = []
+        t = 0.0
+
+        def add(tok, dur=0.3):
+            nonlocal t
+            words.append((tok, t, t + dur))
+            t += dur
+
+        for tok in before_first:
+            add(tok)
+        add("24")
+        add("-hour")
+        add("day.")
+        t += 8.9  # 実記録gap_seconds=8.92相当
+        for tok in between:
+            add(tok)
+        add("24")
+        add("-hour")
+        add("day.")
+        for tok in after_second:
+            add(tok)
+        return self._words(words)
+
+    def test_all_three_attempts_resolve_to_intentional_not_flagged(self):
+        words = self._make_words_for_attempt()
+        r = repetition_qa.detect_ngram_repetition(
+            words, canonical_text=self.CANONICAL_TEXT, min_words=3)
+        day_matches = [m for m in r["matches"] if "24" in m["span_text"] and "day" in m["span_text"]]
+        self.assertTrue(day_matches, r)
+        for m in day_matches:
+            self.assertGreaterEqual(m["canonical_repeat_count"], 2, m)
+            self.assertTrue(m["intentional"], m)
+            self.assertFalse(m["flagged"], m)
 
 
 # ============================================================

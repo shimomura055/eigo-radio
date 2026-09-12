@@ -788,3 +788,19 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   generalization_wake_before_alarm_trial_12/`・`OPEN-121-*`REPORT、
   報告草稿`docs/pm/REPORT_DRAFT_*`)の生成物には一切触れず、stageも
   していない。
+
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-
+  WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT、本タスク、Git書込唯一のタスク):
+  Trial-12 A2`full_story_part1`のLock状態遷移(RESOLVED/OK、¥0、TTS再生成
+  なし)を実施。A2 Assemblyは6% slowdown post-process未適用のため
+  `MISSING_MANDATORY_A2_SLOWDOWN`で正しくブロックされ未完了(post-process
+  内蔵の安全再検証が有料Primary ASRを要するため¥0制約と衝突、
+  `USER_DECISION_REQUIRED`でSTOP)。あわせてToken効率実測2件(委任文定型
+  比率4.78%・改善案A REJECTED、subagent内部消費3,659万token)・ER-009
+  Foreign Token Gate Trend Reconcile完了をSSOT反映。Sonnet、LOW、実測¥0
+  (JSON編集・ローカル音声解析[faster-whisper再実行含む]・SSOT編集のみ、
+  新規LLM/TTS/ASR API呼び出しなし、Productionコード変更なし)。委任回数=
+  再開含め初回扱い(前回は同一管理IDでGit書込直前STOP、ループ上限4回以内)。
+  並列稼働中の他Agent(3V Phase 1b-04`er012_*`、ER-009辞書拡張
+  `er003_audio_tts_asr_safety.py`等、`er011_output/family_a_completion_
+  a2_trend_end_to_end_01/`)の生成物には一切触れず、stageもしていない。
