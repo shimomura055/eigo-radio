@@ -280,6 +280,15 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
 
+**13項目監査はplayer提示前の必須手順(2026-09-13追記、
+`PM-CLOSEOUT-CONSOLIDATION-99`)**: 上記(a)〜(m)の音声artifact受入
+チェックリスト(通称「13項目」)は、player HTML/mp3のHTTP到達確認
+(200/206応答)だけでは代替できない。player URLをユーザーへ提示する前に、
+必ず(a)〜(m)全項目を実際のHTML内容(見出しラベル・note文言・table列・
+audio要素・script等)に対して個別に確認し、○/×表として残す。HTTP 200/206
+確認は「リンクが開けること」の確認に過ぎず、「中身が13項目を満たして
+いること」の確認を兼ねない(両方が必須、片方だけで足りない)。
+
 **記事のclose条件(2026-09-12、PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-
 CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT、ユーザー是正
 指示)**: 記事(Trial記事含む)のcloseは、記事生成→音声化→標準player
@@ -971,6 +980,21 @@ Action/残課題/Production wiring状況を含める。ユーザー向けの重�
 **経緯**: 2026-09-12のユーザー回答(原文全文は`DECISION_LOG.md`
 PM-CLOSEOUT-CONSOLIDATION-94エントリ参照)により新設・確定した。
 
+### 9-9. ユーザー向け表記の命名ルール(2026-09-13、ユーザー指示)
+
+- ユーザー向け表記(REPORT・RESULT_PACKET・player HTML・報告文言等)は、
+  ユーザーが実際に使う名称に統一する(例: 「B1B」ではなく「B1」)。「B1B」等の
+  内部実装由来の呼称は**ユーザーが定義した名前ではない**ため、ユーザー向け
+  表記としては使わない。
+- 今後、ユーザーが定義した名称を勝手に変更しないこと。
+- 既存の内部ディレクトリ名・ファイル名・変数名・関数名まで無理にrenameする
+  必要はない(そのまま維持してよい)。あくまでユーザー向けに見える箇所
+  (報告文・player・ユーザー向け表示)だけを対象とする。
+
+**経緯**: 2026-09-13のユーザーFeedback(原文全文は`DECISION_LOG.md`
+`PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-
+STATUS-INVENTORY`エントリ参照)により新設。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -990,6 +1014,10 @@ PM-CLOSEOUT-CONSOLIDATION-94エントリ参照)により新設・確定した。
 - 既存の運用(8節「ファイル名指定の`git add`のみ、`-A`禁止」、`CLAUDE.md`
   「Git運用ルール」の履歴書き換え等[amend・rebase・force push]は必ず
   ユーザーに確認する)は本節と矛盾せず、そのまま維持する。
+- **amend禁止の明確化(2026-09-13追記、`PM-CLOSEOUT-CONSOLIDATION-99`)**:
+  `git commit --amend`は、直前commitが**未pushであっても**行わない。
+  訂正が必要な場合は必ず追加commitで行う(ユーザー確認を求める例外ではなく、
+  amend自体を選択肢から外す)。
 - 経緯: 2026-09-06、通常commit/pushのたびにユーザー確認を挟む運用が
   ボトルネックになっていたことを受けたユーザー方針確定
   (PM-GOVERNANCE-REPORT-FORMAT-AND-AUTONOMOUS-GIT-05)。
@@ -1213,11 +1241,15 @@ Fable判定・低リスクのため採用。読込効率改善)**: 以下3件を
 - **G-1**: git出力を`--short`/`--quiet`等で最小化する。
 A-1(Consolidation統合、件数削減による委任回数圧縮)はロールバック単位
 肥大化等のリスクが中〜高のため不採用。
-- **F-1**: 統合タスク開始時に、当該セッションの`tasks/*.output`(0バイト
+- **F-1**(2026-09-13更新、`PM-CLOSEOUT-CONSOLIDATION-99`。統合タスク
+  開始時のみの退避では委任完了〜次の統合タスク開始までの間に消失する
+  リスクが残るため、退避タイミングを前倒しする): 各委任(Sonnet/Opus)の
+  完了通知を受け取った直後に、当該セッションの`tasks/*.output`(0バイト
   でないもの)をscratchpad配下(repo外)へ退避する(消失防止、repoには
-  含めない)。subagent転記(`tasks/*.output`)は完了直後に消失し得る
-  (agentId再利用)。Opus出力・重要REPORTはFableが受領した本文を即座に
-  Sonnetへ渡してファイル保存する(2026-09-12、Opus L3転記消失2件目)。
+  含めない)。統合タスク開始時の一括退避のみに頼らない。subagent転記
+  (`tasks/*.output`)は完了直後に消失し得る(agentId再利用)。Opus出力・
+  重要REPORTはFableが受領した本文を即座にSonnetへ渡してファイル保存する
+  (2026-09-12、Opus L3転記消失2件目)。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 

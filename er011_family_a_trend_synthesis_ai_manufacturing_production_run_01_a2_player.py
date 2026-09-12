@@ -38,10 +38,21 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
+# 2026-09-13是正(PM-CLOSEOUT-CONSOLIDATION-99): mp3が存在するだけで
+# 無条件に再変換をスキップしていたため、元wavを再生成しても古い音声が
+# player配信され続ける潜在バグ(FAMILY-A-TREND-AI-MANUFACTURING-USER-
+# LISTENING-FEEDBACK-FIX-01_REPORT.md 2.4節で発見)があった。元wavの
+# mtimeがmp3より新しければ再変換する方式へ修正(常に安全側で再変換)。
+def _needs_reconvert(src_wav_path: str, out_path: str) -> bool:
+    if not os.path.exists(out_path):
+        return True
+    return os.path.getmtime(src_wav_path) > os.path.getmtime(out_path)
+
+
 def wav_to_mp3_url(src_wav_path: str) -> str:
     basename = os.path.splitext(os.path.basename(src_wav_path))[0]
     out_path = f"{MP3_DIR}/{basename}.mp3"
-    if not os.path.exists(out_path):
+    if _needs_reconvert(src_wav_path, out_path):
         data, sr = sf.read(src_wav_path)
         sf.write(out_path, data, sr, format="MP3")
     return raw_url(out_path)
@@ -49,7 +60,7 @@ def wav_to_mp3_url(src_wav_path: str) -> str:
 
 def episode_mp3_url(wav_path: str) -> str:
     out_path = f"{MP3_DIR}/a2_episode.mp3"
-    if not os.path.exists(out_path):
+    if _needs_reconvert(wav_path, out_path):
         data, sr = sf.read(wav_path)
         sf.write(out_path, data, sr, format="MP3")
     return raw_url(out_path)

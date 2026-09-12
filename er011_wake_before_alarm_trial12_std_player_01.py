@@ -78,12 +78,24 @@ def collect_source_wav_paths(level: str) -> set:
     return collected
 
 
+# 2026-09-13是正(PM-CLOSEOUT-CONSOLIDATION-99): mp3が存在するだけで
+# 無条件に再変換をスキップしていたため、元wavを再生成しても古い音声が
+# player配信され続ける潜在バグ(FAMILY-A-TREND-AI-MANUFACTURING-USER-
+# LISTENING-FEEDBACK-FIX-01_REPORT.md 2.4節で発見、同型パターン)が
+# あった。元wavのmtimeがmp3より新しければ再変換する方式へ修正
+# (常に安全側で再変換)。
+def _needs_reconvert(src_wav_path: str, out_path: str) -> bool:
+    if not os.path.exists(out_path):
+        return True
+    return os.path.getmtime(src_wav_path) > os.path.getmtime(out_path)
+
+
 def convert_wav_to_mp3(src_wav_path: str, level: str) -> str:
     basename = os.path.splitext(os.path.basename(src_wav_path))[0]
     out_dir = f"{MP3_DIR}/{level}"
     os.makedirs(out_dir, exist_ok=True)
     out_path = f"{out_dir}/{basename}.mp3"
-    if not os.path.exists(out_path):
+    if _needs_reconvert(src_wav_path, out_path):
         data, sr = sf.read(src_wav_path)
         sf.write(out_path, data, sr, format="MP3")
     return out_path
@@ -143,7 +155,7 @@ def build_b1b_episode_audio_url() -> tuple:
     assemble = run.load_json(f"{OUT_DIR}/b1b/run_summary_assemble.json")
     wav_path = assemble["out_path"]
     mp3_path = f"{MP3_DIR}/b1b_episode.mp3"
-    if not os.path.exists(mp3_path):
+    if _needs_reconvert(wav_path, mp3_path):
         t0 = time.time()
         data, sr = sf.read(wav_path)
         sf.write(mp3_path, data, sr, format="MP3")
@@ -159,7 +171,7 @@ def build_b1b_section() -> str:
     audio_id = "episode_audio_b1b"
     return f"""
 <div data-audio-target="{audio_id}">
-<h2>B1B — 「{esc(parts.get('title'))}」(完成、Assembly PASS)</h2>
+<h2>B1 — 「{esc(parts.get('title'))}」(完成、Assembly PASS)</h2>
 <p class="note">
 duration={assemble['duration_seconds']}s / peak={assemble['peak']} /
 clipping={assemble['clipping_detected']}。TTS_EXECUTION_MODE=STANDARD
@@ -168,11 +180,11 @@ clipping={assemble['clipping_detected']}。TTS_EXECUTION_MODE=STANDARD
 PASS。
 </p>
 <audio id="{audio_id}" class="main" controls preload="none" src="{episode_url}"></audio>
-<h3>B1B タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h3>
+<h3>B1 タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h3>
 {arp.render_timeline_table(rows)}
-<h3>B1B Key Phrase表</h3>
+<h3>B1 Key Phrase表</h3>
 {kp_table}
-<h3>B1B 記事全文(article.md)</h3>
+<h3>B1 記事全文(article.md)</h3>
 <pre class="article">{esc(article_md)}</pre>
 </div>
 """
@@ -201,7 +213,7 @@ def build_a2_episode_audio_url() -> tuple:
     assemble = run.load_json(f"{OUT_DIR}/a2/audit/assembly_and_gate_summary_audio_01.json")
     wav_path = assemble["out_path"]
     mp3_path = f"{MP3_DIR}/a2_episode.mp3"
-    if not os.path.exists(mp3_path):
+    if _needs_reconvert(wav_path, mp3_path):
         t0 = time.time()
         data, sr = sf.read(wav_path)
         sf.write(mp3_path, data, sr, format="MP3")
@@ -235,7 +247,9 @@ attempt1)へ遷移した。その後A2必須6% time-stretch post-process
 (apply_a2_slowdown_postprocess、既存Production関数・無変更)を適用し、
 内蔵Primary ASR再検証PASS(NORMALIZED_MATCH)、post-slowdown音声への
 OPEN-121対称正規化repetition_qa再判定もflagged=falseを確認済み。Gate
-OFF/opt-in ON経路とも PASS。
+OFF/opt-in ON経路とも PASS。TTS_EXECUTION_MODE=STANDARD(同期呼び出し、
+`audit/tts_generation_results.json`の各segment`attempts_log[].
+attempt_audio_path`が`_standard`suffix付きファイル名であることから確認)。
 </p>
 <audio id="{audio_id}" class="main" controls preload="none" src="{episode_url}"></audio>
 <h3>A2 タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h3>
@@ -256,13 +270,13 @@ def build_index_html() -> str:
 PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11、Source列なし、
 個別音声最低幅360px)準拠。音声再生成なし、既存採用済み(検証PASS)音声の
 みをそのまま使用。個別segment音声はmp3変換済み(player_std/audio_mp3/
-配下、新規変換・元wav/narrationは無変更)。B1Bの完成episode音声はmp3
+配下、新規変換・元wav/narrationは無変更)。B1の完成episode音声はmp3
 (新規変換、TTS再生成ではない)。全リンクはGitHub raw絶対URL
 (https://raw.githubusercontent.com/shimomura055/eigo-radio/main/...)。
 </p>
 <p class="note">
 <b>Focus ModuleのProduction採用判断はこのTrialでは行っていません。
-ユーザー試聴待ちです。A2/B1Bともに完成(Assembly PASS、下記参照)。</b>
+ユーザー試聴待ちです。A2/B1ともに完成(Assembly PASS、下記参照)。</b>
 </p>
 """
     a2_section = build_a2_section()
@@ -301,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <body>
 <h1>FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12 —
 「なぜ目覚ましが鳴る直前に目が覚めることがあるのか?」テーマ 標準player
-(A2/B1B、Discovery Focus Module Part A単独)</h1>
+(A2/B1、Discovery Focus Module Part A単独)</h1>
 {note}
 {a2_section}
 <hr>

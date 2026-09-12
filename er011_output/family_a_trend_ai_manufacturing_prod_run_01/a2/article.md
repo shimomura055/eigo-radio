@@ -1,7 +1,5 @@
 # The AI Factory Story Has Two Different Clocks
 
-## Main story
-
 As of September 2026, the factory AI story has two clocks.
 
 Investment plans are moving fast. But broad use inside factories is moving more slowly.

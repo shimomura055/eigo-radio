@@ -40,10 +40,21 @@ def load_json(path: str) -> dict:
         return json.load(f)
 
 
+# 2026-09-13是正(PM-CLOSEOUT-CONSOLIDATION-99): mp3が存在するだけで
+# 無条件に再変換をスキップしていたため、元wavを再生成しても古い音声が
+# player配信され続める潜在バグ(FAMILY-A-TREND-AI-MANUFACTURING-USER-
+# LISTENING-FEEDBACK-FIX-01_REPORT.md 2.4節で発見)があった。元wavの
+# mtimeがmp3より新しければ再変換する方式へ修正(常に安全側で再変換)。
+def _needs_reconvert(src_wav_path: str, out_path: str) -> bool:
+    if not os.path.exists(out_path):
+        return True
+    return os.path.getmtime(src_wav_path) > os.path.getmtime(out_path)
+
+
 def wav_to_mp3_url(src_wav_path: str) -> str:
     basename = os.path.splitext(os.path.basename(src_wav_path))[0]
     out_path = f"{MP3_DIR}/{basename}.mp3"
-    if not os.path.exists(out_path):
+    if _needs_reconvert(src_wav_path, out_path):
         data, sr = sf.read(src_wav_path)
         sf.write(out_path, data, sr, format="MP3")
     return raw_url(out_path)
@@ -51,7 +62,7 @@ def wav_to_mp3_url(src_wav_path: str) -> str:
 
 def episode_mp3_url(wav_path: str) -> str:
     out_path = f"{MP3_DIR}/b1b_episode.mp3"
-    if not os.path.exists(out_path):
+    if _needs_reconvert(wav_path, out_path):
         data, sr = sf.read(wav_path)
         sf.write(out_path, data, sr, format="MP3")
     return raw_url(out_path)
@@ -146,13 +157,13 @@ def main() -> None:
 <html>
 <head>
 <meta charset="utf-8">
-<title>FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01 B1B</title>
+<title>FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01 B1</title>
 <style>
 {arp.PLAYER_STANDARD_CSS}
 </style>
 </head>
 <body>
-<h1>FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01 — B1B 完成episode音声</h1>
+<h1>FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01 — B1 完成episode音声</h1>
 <p class="note">
 記事: 「{parts.get('title')}」(Trend Synthesis、editorial_mode="trend_synthesis"、
 Production Writer正式初回経路[er006_pool_pilot_01_writer.run_writer_for_theme ->
@@ -170,15 +181,15 @@ Fable統合時のcommit/push後に開けるようになる)。
 </p>
 <p class="note">
 <b>A2は日本語Foreign Token Gate(ER-009-JA-FOREIGN-TOKEN-GATE-01)によりHuman
-Review待ちで未完成のため、本playerはB1Bのみを対象とする(詳細はREPORT参照)。</b>
+Review待ちで未完成のため、本playerはB1のみを対象とする(詳細はREPORT参照)。</b>
 </p>
 
 <audio id="episode_audio" class="main" controls preload="none" src="{episode_url}"></audio>
 
-<h2>B1B タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h2>
+<h2>B1 タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h2>
 {arp.render_timeline_table(rows)}
 
-<h2>B1B 記事全文(article.md)</h2>
+<h2>B1 記事全文(article.md)</h2>
 <pre class="article">{html_mod.escape(open(f"{B1_DIR}/article.md", encoding="utf-8").read())}</pre>
 
 <script>

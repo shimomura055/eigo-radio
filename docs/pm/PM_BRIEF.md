@@ -35,6 +35,11 @@
 - 管理ID(`ER-XXX-...`/`OPEN-XXX-...`)・仕様名・Gate名でGrepし、必要箇所だけ読む。
 - コード全体・大量ログ・`er0XX_output/`配下のディレクトリは読まない。
 
+## 表記ルール
+
+- ユーザー向け表記は「B1」に統一する(「B1B」は内部呼称、詳細
+  `docs/pm/PM_GOVERNANCE.md` 9-9節)。
+
 ## 正式Status語彙(既存SSOTで使われているものをそのまま使う)
 
 - `VALIDATED` — Trialとして有効性が確認された状態。**Production採用ではない。**

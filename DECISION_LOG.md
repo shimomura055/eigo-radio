@@ -375,6 +375,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT: OPEN-121対称正規化Production配線67テストPASS済みを前提に、Trial-12 A2`full_story_part1`のLock状態遷移(RESOLVED/OK、標準attempt1採用、¥0)を実施したがA2 Assemblyは6% slowdown post-process未適用で`MISSING_MANDATORY_A2_SLOWDOWN`により正しくブロックされ未完了(内蔵の安全再検証が有料Primary ASRを要するため¥0制約と衝突、`USER_DECISION_REQUIRED`でSTOP)+Token効率実測2件(委任文定型比率4.78%・改善案A REJECTED、subagent内部消費3,659万token=委任文の108倍・E-1/D-1/G-1採用/A-1不採用)+ER-009 Foreign Token Gate Trend Reconcile完了・ユーザーA'承認の記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT: ユーザー是正指示(2026-09-12、原文全文)「技術的完成(Assembly PASS・player公開・Gate 7 HTTP確認)をcloseと同一視してはならない」を受け、Trend記事(AI investment/factories/manufacturing、A2/B1B)とDiscovery Trial-12(wake before alarm、A2/B1B)を`OPEN_ITEMS.md`OPEN-135行で`USER_LISTENING_PENDING`(ユーザー視聴待ち、未close)へ是正+`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout Mandatory Checkへ「記事のclose条件(記事生成→音声化→標準player作成・公開→ユーザー視聴→ユーザー受入/修正判断→close)」を明文化+標準player必須要素(13項目)監査でTrial-12標準player(`er011_wake_before_alarm_trial12_std_player_01.py`)のA2区間に実装漏れ2件(Seek用`<script>`欠落によりB1B含め全Seekボタンが無反応/A2完成後もHuman Review待ち時代の「個別再生のみ(episode未完成)」固定文字列とIntro・Notification等固定文言行の欠落が残存)を発見・是正(既存ローカルreview player生成関数`run.build_a2_rows()`/`run.build_b1b_rows()`の再利用によりtimeline.json実測start_secondsベースのSeekボタンを復元、新規ロジック追加なし、¥0)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER: 3V Phase 1b-04(Sonnet委任上限到達→Opus L3診断)結果を`USER_DECISION_REQUIRED`として記録(Leakage 2/2再現の主因は旧prompt由来の二律背反+retry whack-a-mole、3V方式自体の意味は保持、Fable推奨は案2だが未回答)+Phase 1b-04 REPORT 11-5(ii) near-duplicate比率の取り違え訂正(0.143→0.559)+委任文最小化(E-1/D-1/G-1)のTrial After計測
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY: 2026-09-13ユーザーFeedback(原文全文、8項目)の正式記録 — (1)ユーザー向け表記を「B1」に統一(内部ID/ファイル名`b1b`はrename不要)、(2)Trend記事B1 Key Phrase 1差替(`not there yet`→`autonomous`)・A2`## Main story`混入除去の個別修正2件反映、(3)Discovery Trial-12 A2 Comment 2文言差替の個別修正1件反映(いずれも新規一般仕様化ではない)、(4)記事close条件(生成→音声化→標準player→ユーザー視聴→受入/修正判断→close)の再確認、(5)3V Voice内数字1個「必須」要求の撤廃方針(上限規定`:251-256`は維持、要求文言`:402-404`のみ撤廃)、(6)3V Tension/Fact Safety問題は「Voices/PerspectiveにNews/Discoveryと同レベルのFact Checker/Ledger Deviationを適用すること自体が過剰」という方向でFirst option(Family=B限定の判定緩和)を優先設計し`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`として`USER_DECISION_REQUIRED`化(以前提示の案1〜3は不採用として明示的に破棄)。Part A(player残是正、TTS mode表記追加・mp3キャッシュ再変換方式修正・13項目再監査全○)・Part C(棚卸し)を合わせて実施。
 
 ---
 
@@ -5650,6 +5651,173 @@ PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER`)、
 `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04_REPORT.md`、
 `OPEN_ITEMS.md`OPEN-120行、`PM-TOKEN-EFFICIENCY-DELEGATION-TRIAL-AFTER-
 MEASUREMENT-01_REPORT.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY: 2026-09-13ユーザーFeedback原文の正式記録+Trend/Trial-12個別修正のGit統合+3V Fact Safety設計のUDR化+player残是正+棚卸し
+
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク、LLM/TTS/ASR API呼び出し禁止・¥0)
+
+**背景**: Trend記事のB1 Key Phrase差替・A2`## Main story`除去、Discovery
+Trial-12 A2 Comment 2文言差替の個別修正2件は完了済み(未commit)、3V
+(Voices/Perspective方式)のFact Checker/Ledger Deviation厳格さについては
+ユーザーから明示的な方針転換の指示があった。以下はその指示原文である。
+
+**ユーザー発言原文(verbatim、セッション記録`294958fe-
+da6e-491c-8a02-4f864d8195c8.jsonl`の`"type":"user"`行[2164行目]より抽出)**:
+
+```
+ユーザーFeedback・指示です。Trend Hookに関する記載は今回不要です。
+
+1. 命名
+- ユーザー向け表記は「B1」に統一してください。
+- 「B1B」は内部実装由来の呼称であり、ユーザーが定義した名前ではありません。
+- 今後、ユーザーが定義した名称を勝手に変更しないこと。
+- 既存の内部ID・ファイル名まで無理にrenameする必要はありませんが、報告・player・ユーザー向け表示はB1としてください。
+
+2. Trend記事：今回のユーザー視聴Feedback
+
+B1:
+- Key Phraseを `not there yet` → `autonomous` へ差し替え。
+- 今回は個別対応でよい。新しい一般仕様にはしない。
+
+A2:
+- Full Story Part 1冒頭に `## Main story` が本文として残っている。
+- これは仕様追加ではなくartifact/整形不具合として除去する。
+- 修正後、必要な音声を再生成し、いつもの標準playerで再提示する。
+
+3. Discovery Trial-12 A2：ユーザー視聴Feedback
+
+Comment 2:
+- 「決めた時間に近く起きられることはあるのでしょうか。」
+  → 「決めた時間近くに起きられることはあるのでしょうか。」
+- 今回は個別対応で差し替え。
+- 修正後、必要な音声を再生成し、標準playerで再提示する。
+
+4. 記事close条件
+- Trend / Discoveryとも、ユーザー視聴・受入確認前にcloseしない。
+- 記事は
+  生成 → 音声化 → 標準player → ユーザー視聴 → ユーザー受入/修正判断 → close
+  まで必須。
+- 今回の修正後もユーザー再視聴待ちとして維持する。
+
+5. 3V：Voice内の数字要求
+- 「各Voiceに数字を1つ入れる」類の要求は不要。
+- 旧AI採用テーマPrompt由来でgeneric化前から存在していたことは確認済み。
+- 今後、Voice品質のために数字を入れることを要求しない。
+- ただし、自然に必要な数字まで禁止する意味ではない。
+- 具体的事実・数字を書く場合のFact Safety自体は維持する。
+- このユーザー判断を3V Writer仕様候補へ反映し、旧prompt / generic prompt / retry / fallbackとの整合を確認すること。
+
+6. 3V Tension / Fact Safety問題：最優先の検討方向
+
+今回の本質は、
+「権限の非対称性を明示せよ」というWriter要求だけでなく、
+Voices / Perspectives記事にNews / Discoveryと同レベルのFact Checker / Ledger Deviationを適用していること自体が過剰な可能性にある。
+
+ユーザー方針:
+- 根拠のない具体的事実を書くのは不可。
+- ただしVoicesは、人の意見・感情・Perspective・立場を扱うFamily。
+- `usually / may / often` のような限定付き表現まで強く弾き、hedgeを増やしても通らないのは厳しすぎる可能性が高い。
+- First optionとして、B-Family / Voices限定でFact Check / Ledger Deviationの厳しさを適切に緩和する案を検討する。
+- A-Family News / DiscoveryのFact Safetyは変更しない。
+
+まず調査・設計してほしいこと:
+a. 現在共有しているFact Checker / Ledger Deviationのうち、どの判定がVoicesに対して過剰なのか特定。
+b. 「具体的事実・数字・制度・第三者の具体的行動」は従来どおり厳格にチェック。
+c. 「本人の意見・感情・判断・Perspective・限定付き一般化」はVoices限定で許容度を上げる境界案を設計。
+d. `usually / may / often` 等でも現在NGになる実例を示し、緩和案で何がPASS / FAILになるか比較。
+e. Unsupported Factまで通してしまわないための安全境界、Regression条件、retry / fallback / Local Rewriteへの影響を整理。
+f. 既存のVoice attribution等、B-Family固有機構との整合を確認。
+
+- 「権限の非対称性を普遍ルールから外す」はSecond optionとして残してよい。
+- ただし最初からWriter側だけを弱めるのではなく、Family特性に合ったFact Safety強度設計をFirst optionとして評価すること。
+- Fact Checker / Ledgerそのものを全Family共通で弱めないこと。
+
+7. 3Vの次工程
+- 上記は新しいProduction意味変更を含むため、勝手に実装・Production wiringしない。
+- まず現状原因、First option、Second option、必要ならその他案をQCD・安全性・具体例付きで整理する。
+- Trialが必要なら最小Trial案と費用を提示。
+- USER_DECISION_REQUIREDでSTOPし、ユーザー判断を待つ。
+- 以前提示していた「案1 / 案2 / 案3」は、今回のユーザーFeedbackを反映せずそのまま進めないこと。
+
+8. PM / Gate
+- 今回の個別修正（Key Phrase、Comment 2、`## Main story`除去）は承認済み範囲の明白な修正として自律対応可。
+- 3VのFact Safety緩和は仕様判断なのでUDR。
+- 修正・検討後、未処理UDR、APPROVED未配線、視聴待ち記事を再確認してから次工程へ進むこと。
+```
+
+**決定整理**:
+
+1. **命名(B1表記)**: ユーザー向け表記(REPORT・RESULT_PACKET・player HTML等)は
+   すべて「B1」に統一する。「B1B」は内部実装由来の呼称であり、内部
+   ディレクトリ名・ファイル名・変数名・関数名はrename不要でそのまま
+   維持する(`docs/pm/PM_GOVERNANCE.md`へ本原則を追記)。
+2. **Trend記事の個別修正2件**(承認済み範囲の明白な修正、自律対応可):
+   B1 Key Phrase 1を`not there yet`→`autonomous`へ差替、A2
+   `full_story_part1`冒頭の`## Main story`混入(artifact/整形不具合、
+   仕様追加ではない)を除去。詳細:
+   `FAMILY-A-TREND-AI-MANUFACTURING-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`。
+3. **Discovery Trial-12の個別修正1件**(承認済み範囲、自律対応可):
+   A2 Comment 2日本語文言を「決めた時間に近く」→「決めた時間近くに」へ
+   差替。詳細:
+   `FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`。
+   いずれも新しい一般仕様化ではなく個別対応。
+4. **記事close条件の再確認**: `PM-CLOSEOUT-CONSOLIDATION-97`で明文化済みの
+   「生成→音声化→標準player→ユーザー視聴→受入/修正判断→close」を
+   再確認。Trend記事・Discovery Trial-12とも、上記個別修正後も
+   `USER_LISTENING_PENDING`(未close)を維持する。
+5. **3V Voice内数字要求の撤廃方針**: Voice Card生成prompt内の「1つの
+   Voiceにつき最大1つの具体的な数字を**織り込んでください**」という
+   要求文言(`er012_b_family_voices_writer_generic_01.py:402-404`、
+   generic化前から旧prompt`er012_editorial_b_voices_3v_person_voice_
+   trial_02.py`に存在)は撤廃する方針とする。既存の「最大1個までの上限」
+   規定(`:251-256`、Fact Safety=Ledger根拠要件そのもの)は無変更で維持し、
+   自然に必要な数字を禁止する意味ではない。撤廃後の文言案は
+   `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`
+   g節に記載(未実装、実装はUSER_DECISION_REQUIRED後)。
+6. **3V Tension/Fact Safety強度設計**: ユーザー方針「Voices/Perspectives
+   記事にNews/Discoveryと同レベルのFact Checker/Ledger Deviationを
+   適用すること自体が過剰な可能性がある」を受け、Family=B限定の判定緩和
+   (First option)を優先して調査・設計した。結果は
+   `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`
+   (`USER_DECISION_REQUIRED`)にまとめ、OPEN_ITEMS.md OPEN-120行へ反映した。
+   **以前提示していた「案1/案2/案3」(Opus L3診断の候補(A)(D)(E)相当)は、
+   今回のユーザーFeedbackを反映していないため破棄し、そのまま進めない**。
+   A-Family(News/Discovery)のFact Safety・共有prompt本体・Checker本体は
+   一切変更しない設計(`family=="B"`ゲートで追加、既存パターン踏襲)。
+   Production実装・配線は本Reportの範囲外で未実施。
+7. **Part A(player残是正)**: Trial-12標準playerのA2区画にTTS mode表記
+   (`TTS_EXECUTION_MODE=STANDARD`)を追加し13項目監査の△を○化、Trend/
+   Trial-12計3スクリプトのmp3変換ロジックを「既存mp3があれば無条件
+   スキップ」から「元wavのmtimeが新しければ再変換」へ修正(全mp3が
+   現行wavと一致することをmtime比較で確認済み、stale=0件)、3ページとも
+   13項目全○を再確認した。
+8. **Part C(棚卸し)**: OPEN_ITEMS.mdの`USER_DECISION_REQUIRED`未処理項目・
+   `APPROVED_FOR_PRODUCTION`未`PRODUCTION_WIRED`項目・
+   `USER_LISTENING_PENDING`記事を機械的に一覧化した(判断は行っていない、
+   詳細は`docs/pm/RESULT_PACKET.md`)。
+
+**Production不具合候補の記録(実装しない)**: (i) `split_article_text()`
+(`er003_v1_n3_01_scaffold_generate.py:115`)がintro_text抽出時に`## In one
+line…`以外の`## `見出し行を除去しない仕様のため、Writer出力の飾り見出しが
+canonical textへ混入し得る(今回のTrend A2で実際に発生)。他の現存
+`parts.json`(er011_output配下)を全件Grepした結果、混入は今回の1件のみで
+修正後は0件(過去の未採用draft16件に同型見出しが見つかったが対応する
+`parts.json`が無く実害未確認、対応不要)。(ii) player script群の
+mp3キャッシュ問題は本タスクPart Aで是正済み(上記7参照)。いずれも
+`OPEN_ITEMS.md`OPEN-135行へ追記し、新規Open Itemとしては起票しない
+(ユーザー指示どおり)。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-99-USER-
+LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY`)、セッション記録
+`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`[2164行目]、
+`FAMILY-A-TREND-AI-MANUFACTURING-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`、
+`FAMILY-A-DISCOVERY-TRIAL-12-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`、
+`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`、
+`OPEN_ITEMS.md`OPEN-135行・OPEN-120行、`docs/pm/PM_GOVERNANCE.md`、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ---
 
