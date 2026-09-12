@@ -1,0 +1,85 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_018a87255d32ecea006aa507d5163487d0b72b2f27948531a2",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・高リスク分類・過去の中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ(3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI send my application and sit in front of a camera. Software may score my tone, face, and gestures. I want a fair chance and a reason for rejection. In one reported case, a woman did well on a skills test but received a low video score for her gestures and expression, then faced long-term unemployment. Another applicant sued after having no way to refuse or challenge an AI score about trust and honesty. I cannot change the rules; I can only wait.\n\n【Voice 2本文】\nI open the screening system after a flood of applications. It helps me move people toward the right jobs, but it does not remove my responsibility. I may need to prepare an audit summary when a candidate asks whether the process was fair. I also face a hard question: when an applicant uses AI to write a résumé, is that a useful skill or too little effort? I use these tools in the hiring process, but I do not set policy. I keep the process moving while answering questions.\n\n【Voice 3本文】\nI keep a close eye on hiring time and cost. If we cannot fill roles fast enough, I feel that pressure as my decision. AI looks attractive: a hotel chain reported cutting hiring time from weeks to days, while another company reported lower hiring costs. But I also see the other side. If an AI tool is accused of discrimination, my name will be tied to the choice. I am carrying the risk of keeping the company running.\n\n【Tension本文】\nAll three want the right person in the right job. But the stakes split: the applicant may lose a chance unseen; the recruiter must keep speed and explain the process; the owner must keep the company running and answer for the choice. The positions are not identical: the applicant is judged by the process, while the recruiter or hiring manager and the business side consider how the tool is used and what it achieves. In New York City, yearly bias checks and public notice make speed not just a private choice: the recruiter must document the tool, and applicants must be told. One company stopped a tool after it rated women’s résumés lower. So these reasonable views cannot simply become one answer.\n\n【Closing本文】\nThe question is no longer only whether a machine can help a company hire. It is also about who gets a fair chance to be seen, who must explain a score, and who carries the final risk. AI changes the hiring room, but outside rules, past failures, and unequal power decide how large that room really is.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "reasoning": "本人の不安や立場は一人称で示されていますが、途中に報告事例を並べるDiscovery記事型の構文が入り、本人の経験より外部事例が印象に残ります。",
+      "quoted_evidence": "In one reported case, a woman did well on a skills test but received a low video score for her gestures and expression, then faced long-term unemployment. Another applicant sued after having no way to refuse or challenge an AI score about trust and honesty."
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "採用担当者自身の責任、判断上の迷い、監査への対応が一人称の経験として描かれており、外部データや語り手による分析に依存していません。",
+      "quoted_evidence": ""
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "reasoning": "本人のコスト・時間への圧力は示されていますが、企業の報告値による比較が判断理由の前面に出ており、Trend記事のような報告構文になっています。そのため、本人が背負うリスクより外部の成果データが印象に残ります。",
+      "quoted_evidence": "AI looks attractive: a hotel chain reported cutting hiring time from weeks to days, while another company reported lower hiring costs."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "FAIL",
+      "leak_tension_constraint_integration": "PASS",
+      "reasoning": "三者の役割上の制約や規制が示されている一方、ニューヨーク市の規則や企業の中止事例を紹介する報告型構文が入り、抽象的な役割整理より外部事例が目立ちます。また、応募者対採用側・事業側という1対2の陣営分けに戻っています。規制と過去の失敗は、採用担当者の速度追求や説明責任を制約する力として本文に結び付いています。",
+      "quoted_evidence": "The positions are not identical: the applicant is judged by the process, while the recruiter or hiring manager and the business side consider how the tool is used and what it achieves. In New York City, yearly bias checks and public notice make speed not just a private choice: the recruiter must document the tool, and applicants must be told. One company stopped a tool after it rated women’s résumés lower."
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる要約や「人による」という結論ではなく、公平な機会・説明責任・最終的なリスクという問題を再定義して締めています。Writer自身の具体的な解決策や妥協案も提示していません。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_1",
+      "fail_fields": [
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "本人の不安や立場は一人称で示されていますが、途中に報告事例を並べるDiscovery記事型の構文が入り、本人の経験より外部事例が印象に残ります。",
+      "quoted_evidence": "In one reported case, a woman did well on a skills test but received a low video score for her gestures and expression, then faced long-term unemployment. Another applicant sued after having no way to refuse or challenge an AI score about trust and honesty."
+    },
+    {
+      "voice": "voice_3",
+      "fail_fields": [
+        "leak_numbers_foreground",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "本人のコスト・時間への圧力は示されていますが、企業の報告値による比較が判断理由の前面に出ており、Trend記事のような報告構文になっています。そのため、本人が背負うリスクより外部の成果データが印象に残ります。",
+      "quoted_evidence": "AI looks attractive: a hotel chain reported cutting hiring time from weeks to days, while another company reported lower hiring costs."
+    },
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_discovery_syntax",
+        "leak_evidence_memorable",
+        "leak_binary_camp_split"
+      ],
+      "reasoning": "三者の役割上の制約や規制が示されている一方、ニューヨーク市の規則や企業の中止事例を紹介する報告型構文が入り、抽象的な役割整理より外部事例が目立ちます。また、応募者対採用側・事業側という1対2の陣営分けに戻っています。規制と過去の失敗は、採用担当者の速度追求や説明責任を制約する力として本文に結び付いています。",
+      "quoted_evidence": "The positions are not identical: the applicant is judged by the process, while the recruiter or hiring manager and the business side consider how the tool is used and what it achieves. In New York City, yearly bias checks and public notice make speed not just a private choice: the recruiter must document the tool, and applicants must be told. One company stopped a tool after it rated women’s résumés lower."
+    }
+  ],
+  "any_flagged": true
+}

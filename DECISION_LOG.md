@@ -374,6 +374,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY: 2026-09-12ユーザー回答11項目(原文全文)の正式記録 — Discovery対照アームTrial不実施(優先順位判断、Focus Module Part Aは新規記事生成のN増しで継続観測)/Repetition QA RECONCILE-03一般化案を`APPROVED_FOR_PRODUCTION`としGate 3進行/Opus context packet方式をOpus L2標準入力方式として採用(Opus自体は削減・廃止しない)/Trial REPORT必須欄5項目・層間不整合とA2数値表記のOpen Item登録・News Trial-16はいずれも「今はなし」(フル再提示後に判断)/正式報告ブロック(★★★★報告ここから★★★★〜ここまで★★★★)新設/未回答事項の省略再掲禁止の再確認と再発防止/「ユーザー判断」欄は現時点で回答が必要な事項のみ・将来判断は「今後の展望」欄へ分離/FableのPM自発的Next Action確認ルール追加
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT: OPEN-121対称正規化Production配線67テストPASS済みを前提に、Trial-12 A2`full_story_part1`のLock状態遷移(RESOLVED/OK、標準attempt1採用、¥0)を実施したがA2 Assemblyは6% slowdown post-process未適用で`MISSING_MANDATORY_A2_SLOWDOWN`により正しくブロックされ未完了(内蔵の安全再検証が有料Primary ASRを要するため¥0制約と衝突、`USER_DECISION_REQUIRED`でSTOP)+Token効率実測2件(委任文定型比率4.78%・改善案A REJECTED、subagent内部消費3,659万token=委任文の108倍・E-1/D-1/G-1採用/A-1不採用)+ER-009 Foreign Token Gate Trend Reconcile完了・ユーザーA'承認の記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT: ユーザー是正指示(2026-09-12、原文全文)「技術的完成(Assembly PASS・player公開・Gate 7 HTTP確認)をcloseと同一視してはならない」を受け、Trend記事(AI investment/factories/manufacturing、A2/B1B)とDiscovery Trial-12(wake before alarm、A2/B1B)を`OPEN_ITEMS.md`OPEN-135行で`USER_LISTENING_PENDING`(ユーザー視聴待ち、未close)へ是正+`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout Mandatory Checkへ「記事のclose条件(記事生成→音声化→標準player作成・公開→ユーザー視聴→ユーザー受入/修正判断→close)」を明文化+標準player必須要素(13項目)監査でTrial-12標準player(`er011_wake_before_alarm_trial12_std_player_01.py`)のA2区間に実装漏れ2件(Seek用`<script>`欠落によりB1B含め全Seekボタンが無反応/A2完成後もHuman Review待ち時代の「個別再生のみ(episode未完成)」固定文字列とIntro・Notification等固定文言行の欠落が残存)を発見・是正(既存ローカルreview player生成関数`run.build_a2_rows()`/`run.build_b1b_rows()`の再利用によりtimeline.json実測start_secondsベースのSeekボタンを復元、新規ロジック追加なし、¥0)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER: 3V Phase 1b-04(Sonnet委任上限到達→Opus L3診断)結果を`USER_DECISION_REQUIRED`として記録(Leakage 2/2再現の主因は旧prompt由来の二律背反+retry whack-a-mole、3V方式自体の意味は保持、Fable推奨は案2だが未回答)+Phase 1b-04 REPORT 11-5(ii) near-duplicate比率の取り違え訂正(0.143→0.559)+委任文最小化(E-1/D-1/G-1)のTrial After計測
 
 ---
 
@@ -5586,6 +5587,69 @@ ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT`)、
 原文(上記、2047行目)、`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout
 Mandatory Check該当項目、`OPEN_ITEMS.md`OPEN-135行、
 `docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER: 3V Phase 1b-04 USER_DECISION_REQUIRED記録(Opus L3診断結果)+委任文最小化Trial After計測+SSOT訂正
+
+**経緯**: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04`は
+初回実装後、Leakage(数値・集計統計の直接引用)がGate判定でNGとなり、
+Sonnetへの修正・再生成委任を1〜3回目まで実施したが、Leakageは2/2回
+再現した。ループ上限(管理IDあたりSonnet委任は初回+修正最大3回=合計
+最大4回)に到達したため、`EDITORIAL-B-FAMILY-VOICES-3V-PHASE1B-04-
+OPUS-L3-DIAGNOSIS-01`としてOpus(診断目的、上限1回)へ委任し、診断が
+完了した。
+
+**Opus L3診断の要旨**: Leakage 2/2再現の主因は3V方式の汎用化そのもので
+はなく、旧prompt由来の二律背反にある。(1) Voice Card側の指示「数字を
+1つ織り込め」と、ルール側の指示「データを主語にするな」が矛盾しており、
+かつtheme側に用意されたevidenceが集計統計のみだったため、この矛盾が
+Leakageとして表面化した。(2) Tensionセクションの権限非対称性列挙文が、
+Ledger/FCと衝突する第二の二律背反を含んでいた。(3) 既存retryが記事全文
+書き直し方式であるため、1箇所を直しても別箇所で再発するwhack-a-mole
+状態になっていた。3V方式(3声Voice構成)自体の意味・構造は4本の生成
+すべてで保持されていることを確認した。記事間定型化(Closingの修辞骨格が
+4記事中4本とも同型)については、次テーマでの追加1本の生成が判別材料と
+なる(現時点では同一テーマ内比較のみで判別不能)。旧方式との統計的な差は
+p=0.25〜0.33で判別不能水準だが、本番運用基準(8割収束)に照らすと今回
+2/2非収束であるため、現行prompt構成のままでの本番投入は棄却される。
+Opus推奨の選択肢: 案1(追加¥10以内で診断を閉じ、修正案(A)(E)を提示する
+のみに留める)/案2(修正案を適用した上で実生成1本を追加実施し、次テーマへ
+進む。追加費用¥55〜160)/案3(統計的決着を狙う追加検証、¥150〜470、
+Opusは非推奨としている)。本診断までの費用累計は約¥189.9(上限¥230)。
+
+**ステータス**: 本件は`USER_DECISION_REQUIRED`(ユーザー未回答)である。
+上記3案のいずれを採るか、またはPhase 1b-04自体を一旦保留し次テーマへ
+進むか等の判断はユーザーに委ねる。Fable(PM)としては、追加費用¥55〜160の
+範囲で修正案を適用し実生成1本+次テーマへ進む「案2」(案1の¥0〜¥10相当の
+診断確定作業を内包する)を推奨するが、これはFableの推奨であり決定では
+ない。B-Family/Voices 3VのStatusは`APPROVED_FOR_PRODUCTION`のまま変更
+なし。Phase 1b-04自体は完了しておらず、Production採用判断も行っていない。
+
+**SSOT訂正**: `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04_
+REPORT.md`11-5(ii)「near-duplicate最大ratio」の値を、Point Overlap QA
+(11-4)の値0.143との取り違えであったため、SequenceMatcher記事内文ペア
+方式で再計算した正しい値0.559へ訂正した(2026-09-12)。
+
+**委任文最小化Trial After計測**: `er011_pm_agent_read_audit_01.py`を用いて、
+E-1/D-1/G-1条項(同一ファイル再読禁止・SSOTはGrep該当箇所のみ・コードは
+該当行範囲のみ)付きで委任した直近のsonnet-worker転記群を集計し、
+Phase 1実測時点(Before、重複率27.8%)との比較を
+`PM-TOKEN-EFFICIENCY-DELEGATION-TRIAL-AFTER-MEASUREMENT-01_REPORT.md`へ
+記録した(詳細は同REPORT参照)。
+
+**注記**: Opus L3診断(`EDITORIAL-B-FAMILY-VOICES-3V-PHASE1B-04-OPUS-L3-
+DIAGNOSIS-01`)の最終出力を`EDITORIAL-B-FAMILY-VOICES-3V-PHASE1B-04-OPUS-
+L3-DIAGNOSIS-01_REPORT.md`として保存する作業は、転記元セッション出力
+ファイルが0バイトで抽出不能だったためSTOPし、本タスク内では未完了
+(Fableから本文を別途受け取り次第、別途保存)。上記の要旨は本委任指示
+本文に転記されていたテキストに基づく。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-98-3V-
+PHASE1B-04-UDR-RECORD-OPUS-L3-AND-DELEGATION-TRIAL-AFTER`)、
+`EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04_REPORT.md`、
+`OPEN_ITEMS.md`OPEN-120行、`PM-TOKEN-EFFICIENCY-DELEGATION-TRIAL-AFTER-
+MEASUREMENT-01_REPORT.md`、`docs/pm/RESULT_PACKET.md`参照。
 
 ---
 

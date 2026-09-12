@@ -835,3 +835,34 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   以内)。並列稼働中の3V修正タスク(`er012_*`、`EDITORIAL-B-FAMILY-
   VOICES-3V-*`、`docs/pm/*_3V_1B04.md`)の生成物には一切触れず、stageも
   していない。
+- 2026-09-12(`EDITORIAL-B-FAMILY-VOICES-3V-PHASE1B-04-OPUS-L3-
+  DIAGNOSIS-01`、Opus L3 packet方式1件): 3V Phase 1b-04(Leakage 2/2
+  再現、Sonnet委任上限[初回+修正3回=最大4回]到達)の根本原因診断を、
+  context packet方式(packet本文約33,556字+診断中の追加開示約9,600字、
+  合計約43,000字)+progressive disclosureで実施。packet生成=Sonnet
+  (実測¥0、read-only)、L3診断=Opus(診断目的、上限1回、費用累計約
+  ¥189.9/上限¥230)。結論: Leakage主因は3V汎用化ではなく旧prompt由来の
+  二律背反(Voice Card数値指示 vs データ主語化禁止ルール、Tension権限
+  非対称性列挙とLedger/FCの衝突)+retry全文書き直しによるwhack-a-mole。
+  3V方式自体の意味は4本とも保持。統計的差はp=0.25〜0.33で判別不能だが
+  本番基準(8割収束)は2/2非収束で棄却。案1(¥10以内)/案2(¥55〜160、
+  Opus推奨に近いFable案)/案3(¥150〜470、非推奨)を提示。判定=
+  `USER_DECISION_REQUIRED`。委任回数: Sonnet(packet生成)初回のみ、
+  Opus診断目的1回(いずれも上限以内)。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-98-3V-PHASE1B-04-UDR-RECORD-
+  OPUS-L3-AND-DELEGATION-TRIAL-AFTER、本タスク、Git書込唯一のタスク):
+  上記Opus L3診断結果を`USER_DECISION_REQUIRED`としてSSOT反映
+  (`OPEN_ITEMS.md`OPEN-120行、`DECISION_LOG.md`新規エントリ+索引)+
+  `EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04_REPORT.md`
+  11-5(ii)のnear-duplicate最大ratio取り違え訂正(0.143→0.559)+委任文
+  最小化(E-1/D-1/G-1)のTrial After計測(`er011_pm_agent_read_audit_
+  01.py`、Before[Phase 1実測、重複率27.8%]との比較)を
+  `PM-TOKEN-EFFICIENCY-DELEGATION-TRIAL-AFTER-MEASUREMENT-01_REPORT.md`
+  へ記録+Git統合。Sonnet、LOW、実測¥0(SSOT編集・Git操作・offline
+  read-only集計のみ、新規LLM/TTS/ASR API呼び出しなし、Productionコード
+  変更なし)。委任回数=初回のみ(ループ上限4回以内)。Opus L3診断の最終
+  出力REPORT(`EDITORIAL-B-FAMILY-VOICES-3V-PHASE1B-04-OPUS-L3-
+  DIAGNOSIS-01_REPORT.md`)は転記元セッション出力ファイルが0バイトで
+  抽出不能だったため本タスク内では未保存(Fableから本文を別途受け取り
+  次第、別タスクで保存)。並列稼働中の他Agentの生成物には一切触れず、
+  stageもしていない。

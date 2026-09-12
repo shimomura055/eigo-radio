@@ -1,0 +1,115 @@
+[
+  {
+    "original_ng_sentence": "Their power is uneven: the applicant is judged, the recruiter runs a tool without choosing it, and the owner decides whether to use it.",
+    "issue": "Ledgerは採用担当者を、AIを実際に使う側または使うかどうかを判断する側としているが、採用担当者が必ず使わされること、また所有者が利用可否を決めることまでは確認していない。記事は主体と意思決定権の配置を具体的に追加している。",
+    "explanation": "採用担当者の強制使用と所有者の決定権はLedgerにない具体的主張であり、「must」「decides」と断定的に表現されている。Hookとして扱っても緩和対象外のフラグに該当する。",
+    "flags": [
+      "changed_fact",
+      "changed_certainty",
+      "changed_actor",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Their power is uneven: the applicant is judged, while the recruiter may use the tool or help decide whether to use it.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "Their power is uneven: the applicant is judged, while the recruiter may be involved in using the tool or in decisions about its use.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 3,
+        "text": "In the evidence gathered here, their power appears uneven: the applicant is judged, while the recruiter may be involved in using the tool or in decisions about its use.",
+        "ledger_status": "LEDGER_DEVIATION"
+      }
+    ],
+    "final_text": "In the evidence gathered here, their power appears uneven: the applicant is judged, while the recruiter may be involved in using the tool or in decisions about its use.",
+    "resolved": false,
+    "human_review_required": true,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "sentence_fallback(overlap=0.5)",
+    "point_context_found": true,
+    "point_context": "## Why They See Different Stakes\n\nAll three want the same thing: the right person in the right job. But the wager differs. The applicant risks losing a chance unseen; the recruiter risks speed without explanation; the owner risks the company’s future and responsibility. Their power is uneven: the applicant is judged, the recruiter runs a tool without choosing it, and the owner decides whether to use it. New York City’s yearly bias check and notice rule adds work for the recruiter, limits the owner’s choice, and leaves the applicant without control. One company stopped an internal tool after it rated women’s résumés lower. Outside rules and past failures mean these reasons cannot simply be added."
+  },
+  {
+    "original_ng_sentence": "But when I see a tool facing a discrimination case, I think about my own name on the decision.",
+    "issue": "Ledgerで確認されているHireVueの訴訟・和解は生体情報プライバシーと同意・開示に関するもので、雇用差別の裁判所認定ではない。記事は、Ledgerにない「AIツールが差別訴訟に直面している」という具体的事実を追加している。",
+    "explanation": "確認済みのプライバシー訴訟や差別リスクを、実際の差別訴訟として置き換えている。新しい具体的な法的事実なので、場面描写としても許容されない。",
+    "flags": [
+      "changed_fact",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "But when I see a tool facing a privacy lawsuit over consent and disclosure, I think about my own name on the decision.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "But when I see a tool facing a privacy lawsuit over consent and disclosure, I think about my own name on the decision.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "sentence_fallback(overlap=0.47)",
+    "point_context_found": true,
+    "point_context": "### A Third Voice: Watching the Dashboard\n\nI look at the weekly dashboard: how long hiring takes and what it costs. I need enough people, quickly enough, to keep the business moving. Other companies have reported hiring faster and spending less after using AI, so the choice can feel tied to survival. But when I see a tool facing a discrimination case, I think about my own name on the decision. I cannot hand that risk to a machine. I am protecting the company’s future and trust in my judgment."
+  },
+  {
+    "original_ng_sentence": "I did not choose the direction; I must use the tool and answer for it.",
+    "issue": "Ledgerは採用担当者を、AIを実際に使う場合だけでなく、使うかどうかを判断する側としているため、「選択していない」「必ず使わなければならない」とするのは、担当者の裁量と役割を反転・拡張している。責任を負う点はLedger内にあるが、強制的な使用までは確認されていない。",
+    "explanation": "Recruiterの「使うかどうかを判断する」というLedger上の役割を、「選べず、必ず使う」に変更している。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_certainty",
+      "changed_negation",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "I may help decide whether to use the tool; if we do, I must answer for it.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "I may help decide whether to use the tool; if we do, I must answer for it.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 2,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### Another Voice: At the Recruiter’s Desk\n\nI open the screening tool after a morning of applications. It helps me sort résumés and match people with jobs. Then an applicant asks how the system was checked. I cannot answer, “The computer said so.” I may prepare a bias-check summary and explain the notice. One company has publicly shown this process under New York City law. I also judge AI-written applications: useful skill, or less effort? I did not choose the direction; I must use the tool and answer for it."
+  },
+  {
+    "original_ng_sentence": "New York City’s yearly bias check and notice rule adds work for the recruiter, limits the owner’s choice, and leaves the applicant without control.",
+    "issue": "NYC Local Law 144の年次相当の監査・通知要件が雇用側の手続負担や利用条件を生むことはLedgerと整合するが、それによって応募者が「controlを失う」とする効果・因果関係は、同法についてLedgerが確認した事実を超えている。応募者のオプトアウト・異議申立て不能は別の事例で確認されており、NYC法の直接の効果としては示されていない。",
+    "explanation": "別の事例にある応募者の統制欠如を、NYC Local Law 144の直接の結果として一般化している。",
+    "flags": [
+      "changed_fact",
+      "changed_causality",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "New York City’s yearly bias check and notice rule adds work for the recruiter, limits the owner’s choice, and requires notice to the applicant.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "New York City’s yearly bias check and notice rule adds work for the recruiter, limits the owner’s choice, and requires notice to the applicant.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 2,
+    "item_idx": 2,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "## Why They See Different Stakes\n\nAll three want the same thing: the right person in the right job. But the wager differs. The applicant risks losing a chance unseen; the recruiter risks speed without explanation; the owner risks the company’s future and responsibility. In the evidence gathered here, their power appears uneven: the applicant is judged, while the recruiter may be involved in using the tool or in decisions about its use. New York City’s yearly bias check and notice rule adds work for the recruiter, limits the owner’s choice, and leaves the applicant without control. One company stopped an internal tool after it rated women’s résumés lower. Outside rules and past failures mean these reasons cannot simply be added."
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "original_ng_sentence": "even though I did not make the final decision to adopt the tool",
+    "issue": "Ledgerは採用担当者・Hiring ManagerがAIを使う、または利用判断を行う側であることを保証しているが、採用担当者が最終導入決定権を持たないという組織上の権限関係は確認していない。",
+    "explanation": "Ledgerにない具体的な権限分担を追加しているため、changed_factとunsupported_new_claimに該当する。",
+    "flags": [
+      "changed_fact",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "I prepare plain explanations and audit summaries, even as I help decide how the tool is used.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "I prepare plain explanations and audit summaries, even as I help decide how the tool is used.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### The recruiter’s voice: making the list\n\nBy morning, I am moving through résumés, arranging interviews, and writing job posts. The software helps me handle a large pile and connect people with possible roles. But I may have to answer when an applicant asks, “How was I judged?” I prepare plain explanations and audit summaries, even though I did not make the final decision to adopt the tool. I also face a new judgment call: is an AI-written résumé a sign of useful skill, or too little effort? In one survey, 87% of recruiters said they use AI in at least one hiring step."
+  },
+  {
+    "original_ng_sentence": "Their power is unequal: the applicant cannot choose the system, the recruiter runs it without final authority, and the owner approves its use.",
+    "issue": "Ledgerには、特定の応募者がオプトアウトや結果への異議申し立てをできなかった事例はあるが、すべての応募者がシステムを選べないこと、採用担当者が最終権限なしに運用し、所有者が導入を承認するという一般的な権限構造までは確認されていない。",
+    "explanation": "個別事例・ stakeholder視点から、応募者・採用担当者・所有者全般の権限関係へ一般化し、Ledgerにない役割分担を断定している。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_certainty",
+      "changed_actor",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Their power can be unequal: in some cases, applicants may have little control over the system, including no option to opt out or challenge the result, while employers and recruiters determine whether and how such tools are used.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "Their power can be unequal: in some cases, applicants may have little control over the system, including no option to opt out or challenge the result, while employers and recruiters determine whether and how such tools are used.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "## Why They See It Differently\n\nAll three want the same thing: the right person in the right job. But the applicant may lose a chance without being fairly seen; the recruiter must keep hiring moving and answer for the process; the owner must keep the company running and carry the decision. Their power is unequal: the applicant cannot choose the system, the recruiter runs it without final authority, and the owner approves its use. Outside rules narrow these choices: New York City’s annual bias checks and notice rules limit what the recruiter and owner can approve, while one company stopped an internal tool after it rated women’s résumés lower. So the three views cannot simply be added together."
+  },
+  {
+    "original_ng_sentence": "Every week, I check how long jobs stay open and what hiring costs.",
+    "issue": "Ledgerは事業効率の観点で採用期間や採用コストを評価する事実を含むが、事業主が毎週それらを確認しているという具体的な頻度・行動は確認していない。",
+    "explanation": "『毎週確認する』という具体的な業務行動はLedgerにない新規主張であり、単なる一般的な情景描写の範囲を超えている。新規の具体的事実を含むためHookとして緩和しない。",
+    "flags": [
+      "changed_fact",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "I keep track of how long jobs stay open and what hiring costs.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "I keep track of how long jobs stay open and what hiring costs.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 2,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### The business owner’s voice: watching the clock\n\nEvery week, I check how long jobs stay open and what hiring costs. If key roles remain empty, I worry about keeping the business moving. That makes AI hard to dismiss. I have seen hiring move from weeks to days, so speed can feel like a lifeline. But the decision comes back to me. If a tool is accused of unfair treatment, I picture my name attached to that choice and feel the legal and public pressure. I am protecting the company’s ability to keep hiring—and my trust in my judgment."
+  }
+]

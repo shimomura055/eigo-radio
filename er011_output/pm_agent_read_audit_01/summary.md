@@ -1,10 +1,14 @@
 # er011_pm_agent_read_audit_01 — 実測サマリ (Phase 1)
 
-総呼び出し件数(read系): 490
-総委任(Task)件数: 256
-総読込文字数(全ソース合算、Fable+Sonnet+Opus): 1,038,356 字 (概算 471,980 token)
+総呼び出し件数(read系): 752
+総委任(Task)件数: 281
+総読込文字数(全ソース合算、Fable+Sonnet+Opus): 1,575,673 字 (概算 716,215 token)
 
 ## 管理ID別サマリ(上位、総読込文字数順)
+- EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION: 281,790 字
+    - subagent:current_session_2026-09-11_12: 275,193 字 (133回呼び出し, full_read=22, partial=21, delegation_sent=0字)
+    - fable:current_session_2026-09-11_12: 6,597 字 (12回呼び出し, full_read=1, partial=1, delegation_sent=14,495字)
+    - 重複読込(同一ファイル再読込)文字数: 128,229 / うちAgent間重複: 32,086
 - UNKNOWN_MGMT_ID: 253,210 字
     - fable:current_session_2026-09-11_12: 7,774 字 (4回呼び出し, full_read=2, partial=1, delegation_sent=3,816字)
     - subagent:prev_session_2026-09-10: 194,381 字 (86回呼び出し, full_read=8, partial=18, delegation_sent=0字)
@@ -23,6 +27,14 @@
     - subagent:current_session_2026-09-11_12: 112,314 字 (42回呼び出し, full_read=4, partial=1, delegation_sent=0字)
     - fable:current_session_2026-09-11_12: 14,680 字 (9回呼び出し, full_read=1, partial=1, delegation_sent=5,081字)
     - 重複読込(同一ファイル再読込)文字数: 19,796 / うちAgent間重複: 9,761
+- FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15: 122,329 字
+    - subagent:current_session_2026-09-11_12: 118,023 字 (65回呼び出し, full_read=1, partial=3, delegation_sent=0字)
+    - fable:current_session_2026-09-11_12: 4,306 字 (6回呼び出し, full_read=0, partial=1, delegation_sent=6,948字)
+    - 重複読込(同一ファイル再読込)文字数: 28,234 / うちAgent間重複: 0
+- FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-STANDARD-PLAYER-01: 111,101 字
+    - subagent:current_session_2026-09-11_12: 111,101 字 (37回呼び出し, full_read=4, partial=5, delegation_sent=0字)
+    - fable:current_session_2026-09-11_12: 0 字 (1回呼び出し, full_read=0, partial=0, delegation_sent=1,897字)
+    - 重複読込(同一ファイル再読込)文字数: 9,272 / うちAgent間重複: 0
 - FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01: 83,947 字
     - subagent:older_session_opus_l2_examples: 82,628 字 (27回呼び出し, full_read=7, partial=6, delegation_sent=0字)
     - fable:older_session_opus_l2_examples: 1,319 字 (3回呼び出し, full_read=0, partial=0, delegation_sent=5,838字)
@@ -44,6 +56,9 @@
 - PM-CLOSEOUT-CONSOLIDATION-69: 15,979 字
     - fable:prev_session_2026-09-10: 15,979 字 (5回呼び出し, full_read=0, partial=3, delegation_sent=2,074字)
     - 重複読込(同一ファイル再読込)文字数: 15,631 / うちAgent間重複: 0
+- PM-REPORT-FULL-REPRESENTATION-DRAFT-2026-09-12-01: 11,920 字
+    - fable:current_session_2026-09-11_12: 11,920 字 (8回呼び出し, full_read=0, partial=4, delegation_sent=3,974字)
+    - 重複読込(同一ファイル再読込)文字数: 5,932 / うちAgent間重複: 0
 - PM-CLOSEOUT-CONSOLIDATION-65: 10,817 字
     - fable:prev_session_2026-09-10: 10,817 字 (10回呼び出し, full_read=0, partial=1, delegation_sent=9,443字)
     - 重複読込(同一ファイル再読込)文字数: 9,323 / うちAgent間重複: 0
@@ -68,30 +83,21 @@
 - EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01-OPUS-L2-REVIEW-01: 6,246 字
     - fable:prev_session_2026-09-10: 6,246 字 (3回呼び出し, full_read=0, partial=1, delegation_sent=2,155字)
     - 重複読込(同一ファイル再読込)文字数: 5,268 / うちAgent間重複: 0
+- ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-RESUME-01: 4,887 字
+    - fable:current_session_2026-09-11_12: 4,887 字 (3回呼び出し, full_read=0, partial=0, delegation_sent=5,446字)
+    - 重複読込(同一ファイル再読込)文字数: 0 / うちAgent間重複: 0
 - PM-CLOSEOUT-CONSOLIDATION-62: 4,430 字
     - fable:older_session_opus_l2_examples: 4,430 字 (3回呼び出し, full_read=0, partial=1, delegation_sent=2,800字)
     - 重複読込(同一ファイル再読込)文字数: 3,592 / うちAgent間重複: 0
-- FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15: 4,306 字
-    - fable:current_session_2026-09-11_12: 4,306 字 (6回呼び出し, full_read=0, partial=1, delegation_sent=6,948字)
-    - 重複読込(同一ファイル再読込)文字数: 1,237 / うちAgent間重複: 0
 - HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01: 4,250 字
     - fable:older_session_opus_l2_examples: 4,250 字 (3回呼び出し, full_read=0, partial=1, delegation_sent=3,326字)
     - 重複読込(同一ファイル再読込)文字数: 3,778 / うちAgent間重複: 0
-- EDITORIAL-B-FAMILY-VOICES-A2-FREE-ADDRESS-COMPLETION-TRIAL-02: 3,453 字
-    - fable:older_session_opus_l2_examples: 3,453 字 (2回呼び出し, full_read=0, partial=0, delegation_sent=1,685字)
-    - 重複読込(同一ファイル再読込)文字数: 0 / うちAgent間重複: 0
-- PM-TOKEN-EFFICIENCY-AGENT-READ-DUPLICATION-AUDIT-01: 3,285 字
-    - fable:current_session_2026-09-11_12: 3,285 字 (3回呼び出し, full_read=0, partial=0, delegation_sent=2,716字)
-    - 重複読込(同一ファイル再読込)文字数: 2,192 / うちAgent間重複: 0
-- PM-TOKEN-EFFICIENCY-T3A-DECISION-LOG-RESTRUCTURE-01: 3,209 字
-    - fable:current_session_2026-09-11_12: 3,209 字 (4回呼び出し, full_read=0, partial=1, delegation_sent=3,091字)
-    - 重複読込(同一ファイル再読込)文字数: 0 / うちAgent間重複: 0
-- EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PLAN-01: 3,095 字
-    - fable:prev_session_2026-09-10: 3,095 字 (3回呼び出し, full_read=1, partial=1, delegation_sent=2,502字)
-    - 重複読込(同一ファイル再読込)文字数: 0 / うちAgent間重複: 0
 
 ## 再読込(同一管理ID内・同一ファイル)上位40件
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] c:/users/tensh/eigo-radio/er012_b_family_voices_writer_generic_01.py — 17回読込, 重複60,899字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01] c:/users/tensh/eigo-radio/open_items.md — 6回読込, 重複34,846字(Agent間重複0字), sources=['subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples']
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-phase1b-04_report.md — 9回読込, 重複24,816字(Agent間重複24,816字), sources=['fable:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
+- [FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15] er011_news_ledger_canonical_spelling_trial_15_run.py — 17回読込, 重複16,104字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/decision_log.md — 7回読込, 重複15,787字(Agent間重複6,081字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [PM-CLOSEOUT-CONSOLIDATION-69] c:/users/tensh/eigo-radio/pm-token-efficiency-diagnosis-01_report.md — 4回読込, 重複15,631字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [MODEL-ROUTING-TRIAL-STATUS-REVIEW-01] c:/users/tensh/eigo-radio/model-routing-trial-status-review-01_report.md — 2回読込, 重複15,089字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
@@ -100,34 +106,31 @@
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/docs/pm/pm_brief.md — 4回読込, 重複12,711字(Agent間重複12,711字), sources=['fable:older_session_opus_l2_examples', 'fable:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'fable:current_session_2026-09-11_12']
 - [MODEL-ROUTING-TRIAL-STATUS-REVIEW-01] c:/users/tensh/eigo-radio/family-a-discovery-generalization-towels-trial-11_report.md — 4回読込, 重複10,352字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [FAMILY-A-DISCOVERY-SPEC-FINALIZATION-RECONCILE-01] c:/users/tensh/eigo-radio/family-a-news-stage4-status-report-01_report.md — 4回読込, 重複9,253字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] c:/users/tensh/eigo-radio/docs/pm/active_task_3v_1b04.md — 5回読込, 重複9,111字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/docs/pm/active_task.md — 5回読込, 重複8,637字(Agent間重複8,637字), sources=['fable:older_session_opus_l2_examples', 'fable:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:current_session_2026-09-11_12']
 - [PM-CLOSEOUT-CONSOLIDATION-65] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-plan-01_report.md — 2回読込, 重複8,380字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/open_items.md — 15回読込, 重複8,302字(Agent間重複7,497字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/er011_household_unified_final_candidate_01_run.py — 4回読込, 重複7,946字(Agent間重複0字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
 - [PM-RECOVERY-AFTER-SHUTDOWN-2026-09-11-01] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-phase1b-01-opus-l2-review-01_report.md — 2回読込, 重複7,395字(Agent間重複7,395字), sources=['subagent:current_session_2026-09-11_12', 'fable:current_session_2026-09-11_12']
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] c:/users/tensh/eigo-radio/docs/pm/result_packet_3v_1b04.md — 4回読込, 重複7,270字(Agent間重複7,270字), sources=['fable:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [PM-CLOSEOUT-CONSOLIDATION-68] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-phase1-01_report.md — 2回読込, 重複6,833字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [PM-CLOSEOUT-CONSOLIDATION-72] c:/users/tensh/.claude/projects/c--users-tensh-eigo-radio/a146ec25-1821-49c1-a6f2-3b7ad423406a.jsonl — 4回読込, 重複6,668字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
+- [FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15] er011_point_role_planning_focus_connection_trial_03.py — 3回読込, 重複6,105字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [PM-TOKEN-EFFICIENCY-T3-CLAUDE-DEV-TOKEN-REASSESSMENT-01] decision_log.md — 8回読込, 重複5,454字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/docs/pm/result_packet.md — 5回読込, 重複5,442字(Agent間重複5,442字), sources=['fable:older_session_opus_l2_examples', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:current_session_2026-09-11_12']
 - [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-01-OPUS-L2-REVIEW-01] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-phase1-01_report.md — 2回読込, 重複5,268字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01] c:/users/tensh/eigo-radio/er011_news_stage4_redesign_inventory_01.py — 2回読込, 重複5,221字(Agent間重複0字), sources=['subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples']
+- [FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-STANDARD-PLAYER-01] c:/users/tensh/eigo-radio/docs/pm/pm_governance.md — 3回読込, 重複5,201字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12] c:/users/tensh/appdata/local/temp/claude/c--users-tensh-eigo-radio/294958fe-da6e-491c-8a02-4f864d8195c8/tasks/bijrur18s.output — 3回読込, 重複5,179字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [FAMILY-A-DISCOVERY-SPEC-FINALIZATION-RECONCILE-01] c:/users/tensh/eigo-radio/family-a-discovery-spec-finalization-reconcile-01_report.md — 2回読込, 重複5,154字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] editorial-b-family-voices-3v-production-wiring-phase1b-04_report.md — 16回読込, 重複5,111字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [PM-CONTEXT-MANAGEMENT-LIGHTWEIGHT-DESIGN-01] c:/users/tensh/eigo-radio/editorial-b-family-production-path-phase1-wiring-01_report.md — 2回読込, 重複5,082字(Agent間重複0字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples']
 - [FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12] er011_discovery_generalization_wake_before_alarm_trial_12_run.py — 8回読込, 重複4,483字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01] c:/users/tensh/eigo-radio/er011_output/news_stage4_redesign_inventory_01/stage4_recomputation_results.json — 2回読込, 重複4,395字(Agent間重複0字), sources=['subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples']
 - [PM-RECOVERY-AFTER-SHUTDOWN-2026-09-11-01] editorial-b-family-voices-3v-production-wiring-phase1-01_report.md — 3回読込, 重複4,318字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/artifact_registry.md — 2回読込, 重複4,162字(Agent間重複0字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
+- [EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION] c:/users/tensh/appdata/local/temp/claude/c--users-tensh-eigo-radio/294958fe-da6e-491c-8a02-4f864d8195c8/tasks/bjc9ww38k.output — 2回読込, 重複4,008字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [PM-CLOSEOUT-CONSOLIDATION-66] c:/users/tensh/eigo-radio/docs/pm/pm_governance.md — 4回読込, 重複3,942字(Agent間重複0字), sources=['fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10', 'fable:prev_session_2026-09-10']
 - [PM-TOKEN-EFFICIENCY-T3-CLAUDE-DEV-TOKEN-REASSESSMENT-01] c:/users/tensh/eigo-radio/editorial-b-family-voices-3v-production-wiring-phase1-01-opus-l2-review-01_report.md — 2回読込, 重複3,809字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
 - [HOUSEHOLD-UNIFIED-FINAL-CANDIDATE-01] c:/users/tensh/eigo-radio/family-a-discovery-stage4-cautionary-language-trial-10_report.md — 2回読込, 重複3,778字(Agent間重複0字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples']
 - [FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-REVIEW-01] c:/users/tensh/eigo-radio/pool_topic_master.md — 2回読込, 重複3,685字(Agent間重複0字), sources=['subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples']
-- [PM-CLOSEOUT-CONSOLIDATION-62] c:/users/tensh/eigo-radio/household-unified-final-candidate-01_report.md — 2回読込, 重複3,592字(Agent間重複0字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples']
-- [PM-CLOSEOUT-CONSOLIDATION-59] c:/users/tensh/eigo-radio/family-a-news-stage3-new-theme-ledger-trial-09_report.md — 2回読込, 重複3,474字(Agent間重複0字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples']
-- [UNKNOWN_MGMT_ID] er011_output/household_unified_final_candidate_01 — 4回読込, 重複3,418字(Agent間重複0字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
-- [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/er011_human_review_lock_01.py — 2回読込, 重複3,299字(Agent間重複0字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
-- [FAMILY-A-NEWS-STAGE4-REDESIGN-INVENTORY-01] c:/users/tensh/eigo-radio/er009_diagnostic_full_retry_modules_12.py — 2回読込, 重複3,127字(Agent間重複0字), sources=['subagent:older_session_opus_l2_examples', 'subagent:older_session_opus_l2_examples']
-- [PM-RECOVERY-AFTER-SHUTDOWN-2026-09-11-01] open_items.md — 2回読込, 重複3,084字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
-- [FAMILY-A-DISCOVERY-GENERALIZATION-WAKE-BEFORE-ALARM-NPLUS1-TRIAL-12] er011_discovery_generalization_wake_before_alarm_trial_12_audio_run.py — 10回読込, 重複3,080字(Agent間重複0字), sources=['subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12', 'subagent:current_session_2026-09-11_12']
-- [UNKNOWN_MGMT_ID] decision_log.md — 3回読込, 重複3,075字(Agent間重複0字), sources=['subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10', 'subagent:prev_session_2026-09-10']
-- [UNKNOWN_MGMT_ID] c:/users/tensh/eigo-radio/editorial-b-family-voices-trial-09-heading-regen-and-full-episode-03_report.md — 2回読込, 重複2,761字(Agent間重複0字), sources=['fable:older_session_opus_l2_examples', 'fable:older_session_opus_l2_examples']

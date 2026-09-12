@@ -1,0 +1,168 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 3,
+    "newly_discovered_claims": [
+      "But I must also answer candidates’ doubts and prepare a plain summary of a bias audit.",
+      "Each week, I check the dashboard: hiring time and cost.",
+      "Their power is uneven: the applicant cannot choose the process; the recruiter runs it but does not choose adoption; the owner chooses and bears the consequences."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "But I must also answer candidates’ doubts and prepare a plain summary of a bias audit.",
+        "issue": "Ledgerが示すのは、採用担当者が監査要約や透明性資料で候補者の不信感に応えるよう促され、責任・プレッシャーを感じていること、および特定地域での監査・通知要件である。すべての採用担当者にこの準備義務があるとはしていない。",
+        "explanation": "助言・プレッシャーや条件付きの法的要件を、一般的かつ必須の職務として断定している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_certainty"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "But in some cases, I may also be expected to answer candidates’ doubts and help provide a plain summary of a bias audit.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "But in some cases, I may also be expected to answer candidates’ doubts and help provide a plain summary of a bias audit.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### Another Voice: The Recruiter at the Desk\n\nI use software to sort résumés, arrange interviews, and match people with jobs. When the pile is large, that help matters. But I must also answer candidates’ doubts and prepare a plain summary of a bias audit. I have seen what this looks like at one large company: its hiring tool was independently reviewed, and applicants were notified. I also judge applications written with AI. Is that useful skill, or too little effort? I run the tool, but I do not make the final company decision."
+      },
+      {
+        "original_ng_sentence": "Each week, I check the dashboard: hiring time and cost.",
+        "issue": "Ledgerには、経営・事業効率の観点で採用期間やコストを評価する事実はあるが、経営者が毎週ダッシュボードを確認するという行動・頻度は存在しない。",
+        "explanation": "「毎週」「ダッシュボードを確認する」という具体的な行動と頻度を新たに追加している。場面描写としても具体的な新規Factを含むためHook扱いにはしない。",
+        "flags": [
+          "changed_fact",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I judge the business impact by two key measures: hiring time and cost.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I judge the business impact by two key measures: hiring time and cost.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 2,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### A Third Voice: The Owner Watching the Clock\n\nEach week, I check the dashboard: hiring time and cost. If key jobs stay open, the business feels it, and I am responsible. In one reported case, a hotel chain’s hiring time fell from about six weeks to days after AI was introduced. That is hard to ignore when the company must keep moving. But if a tool is accused of discrimination, my name is tied to the reputation, legal bill, and trust at risk. I decide whether to keep using it, then live with the result."
+      },
+      {
+        "original_ng_sentence": "Their power is uneven: the applicant cannot choose the process; the recruiter runs it but does not choose adoption; the owner chooses and bears the consequences.",
+        "issue": "Ledgerは、応募者側の不透明性・異議申立て困難のリスク、採用担当者がツールを使うか使用可否を判断する役割、企業・経営層が効率とリスクを評価する立場を示している。記事はこれを、応募者・採用担当者・所有者の固定的な権限分担に変え、採用担当者が導入可否を判断し得る可能性を否定している。",
+        "explanation": "Ledgerの複数の役割可能性を、応募者は選べず、採用担当者は導入を選べず、所有者が個人的に結果を負うという絶対的な権限構造へ拡張・固定している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_certainty",
+          "changed_actor",
+          "changed_negation",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Their power is uneven: the applicant may have little say in the process; the recruiter may run it and help decide whether to use the tool; the owner or business leader may weigh efficiency against the risks and consequences.",
+            "ledger_status": "LEDGER_DEVIATION"
+          },
+          {
+            "attempt": 2,
+            "text": "Their power is uneven: the applicant may have limited influence over the process and may face difficulty understanding or challenging it; the recruiter or hiring manager may use the tool or help decide whether it is used; and the company or business leader may weigh efficiency against fairness, legal, and other risks and consequences.",
+            "ledger_status": "LEDGER_DEVIATION"
+          },
+          {
+            "attempt": 3,
+            "text": "In these cases, their power may be uneven: the applicant may have limited influence over the process and may face difficulty understanding or challenging it; the recruiter or hiring manager may use the tool and, in some cases, help decide whether it is used; and the company or business leader may weigh efficiency against fairness, legal, and other risks and consequences.",
+            "ledger_status": "LEDGER_DEVIATION"
+          }
+        ],
+        "final_text": "In these cases, their power may be uneven: the applicant may have limited influence over the process and may face difficulty understanding or challenging it; the recruiter or hiring manager may use the tool and, in some cases, help decide whether it is used; and the company or business leader may weigh efficiency against fairness, legal, and other risks and consequences.",
+        "resolved": false,
+        "human_review_required": true,
+        "cycle": 1,
+        "item_idx": 3,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "## Why They See It Differently\n\nAll three want the same result: the right person in the right job. They divide over what they could lose. The applicant may lose a chance without being fairly seen. The recruiter must keep work moving and answer for the tool. The owner must keep the company running and carry the result personally. Their power is uneven: the applicant cannot choose the process; the recruiter runs it but does not choose adoption; the owner chooses and bears the consequences. Their views cannot simply be added. New York City requires a recent bias audit and notice when these tools are used, while the EU treats hiring AI as high-risk, with oversight and transparency duties. Those outside rules limit the choices inside the process, so no one person’s reasonable need can settle it."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_DEVIATION",
+    "full_recheck_major_count": 2,
+    "full_recheck_remaining_major_claims": [
+      "The recruiter must use the system.",
+      "I have no say in the system."
+    ]
+  },
+  {
+    "cycle": 2,
+    "targeted_major_count": 2,
+    "newly_discovered_claims": [
+      "The recruiter must use the system.",
+      "I have no say in the system."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "The recruiter must use the system.",
+        "issue": "Ledgerは採用担当者がAIを実際に使う場合、または使うかどうかを判断する場合を確認しているが、全ての採用担当者に使用義務があるとは確認していない。",
+        "explanation": "既存の「採用担当者が使うことがある」という事実を、「必ず使わなければならない」という義務・断定に強めている。",
+        "flags": [
+          "changed_fact",
+          "changed_certainty"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "The recruiter may use the system—or decide whether to use it.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "The recruiter may use the system—or decide whether to use it.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 2,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "## The Question\n\nAn application is sent. A video interview begins. Behind the screen, software may scan a résumé, score a test, or read a person's voice and face. The applicant waits to be judged. The recruiter must use the system. The owner must decide whether its cost is worth it. One question connects them: should companies use AI to screen job applicants?"
+      },
+      {
+        "original_ng_sentence": "I have no say in the system.",
+        "issue": "Ledgerが確認しているのは、応募者が選考プロセスへの影響力を限定される場合があること、また特定事例でオプトアウトや異議申立てができなかったことであり、応募者に一切の発言権がないという一般的・絶対的主張ではない。",
+        "explanation": "「限定された影響力」や特定事例の「オプトアウト不可」を、応募者には完全に発言権がないという断定へ強めている。Hookとしての緩和対象であるchanged_scope・changed_comparisonではなく、changed_factとchanged_certaintyに該当する。",
+        "flags": [
+          "changed_fact",
+          "changed_certainty"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "I may have limited say in the system.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "I may have limited say in the system.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 2,
+        "item_idx": 2,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### The Applicant's Voice: Under the Camera\n\nI send in an application, then sit before a camera while software scores my voice, face, and movements. I want my skills to be seen, and I want to know why I did not move forward. One woman told a news outlet that her skills test went well, but AI rated her gestures and facial expressions poorly. She was rejected and later faced long-term unemployment. Another applicant sued after being scored for “reliability and honesty” without a way to opt out or challenge the result. I have no say in the system."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]

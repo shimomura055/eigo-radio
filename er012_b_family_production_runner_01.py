@@ -59,6 +59,7 @@ import er006_model_routing_contract_01 as routing
 import er012_b_family_editorial_type_registry_01 as registry
 import er012_b_family_voices_a2_production_01 as a2prod
 import er012_b_family_voices_production_01 as b1prod
+import er012_b_family_voices_writer_generic_01 as writer_generic
 
 ARTICLE_PATH = "er012_output/editorial_b_voices_trial_07/b1b_run02_attempt2/article.md"
 LEDGER_PATH = "er012_output/editorial_b_voices_trial_07/research/verified_fact_ledger.txt"
@@ -1031,10 +1032,35 @@ voice_a={voice_a} / voice_b={voice_b} / voice_c={voice_c}(Narrator見出しは�
 
 
 def main_b1_3v() -> None:
+    stage = sys.argv[1] if len(sys.argv) > 1 else "all"
+
+    # EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-
+    # AND-REGRESSION: 新テーマ用エントリポイント(Writerのみ、TTSは行わない)。
+    # 既存stage(prepare/voice_check/kp_reuse/scaffold/tts/assemble/player/all)の
+    # 分岐・挙動には一切影響しない(この分岐は他のstageのための`os.makedirs`/
+    # `cl.install(COST_LOG_PATH_3V)`より前に独立してreturnする)。呼び出し規約は
+    # 既存`main()`のlevel分岐(`argv[1]`=stage, `argv[2]`=level)と整合させる
+    # ため、`argv[2]`は"b1_3v"(呼び出し元`main()`がここへ来るための必須値)、
+    # テーマdataモジュール名は`argv[3]`、出力先ディレクトリは`argv[4]`とする:
+    # `python er012_b_family_production_runner_01.py write_new_theme b1_3v `
+    # `er012_b_family_voices_theme_ai_screening_01 er012_output/...`
+    if stage == "write_new_theme":
+        theme_module_name = sys.argv[3] if len(sys.argv) > 3 else None
+        if not theme_module_name:
+            raise SystemExit(
+                "write_new_theme stageにはtheme moduleの指定が必要です(例: python "
+                "er012_b_family_production_runner_01.py write_new_theme b1_3v "
+                "er012_b_family_voices_theme_ai_screening_01 <out_dir>)")
+        out_dir_base = sys.argv[4] if len(sys.argv) > 4 else f"{OUT_DIR_3V}_new_theme"
+        import importlib
+        theme_mod = importlib.import_module(theme_module_name)
+        result = writer_generic.run_writer_stage_generic(theme_mod.THEME_CONFIG, out_dir_base)
+        print(f"[B-FAMILY-VOICES-3V-PROD-RUNNER][write_new_theme] status={result.get('status')}")
+        return
+
     os.makedirs(f"{OUT_DIR_3V}/audit", exist_ok=True)
     cl.install(COST_LOG_PATH_3V)
 
-    stage = sys.argv[1] if len(sys.argv) > 1 else "all"
     needs_prep = stage in ("prepare", "voice_check", "kp_reuse", "scaffold", "tts", "all")
     needs_voice_resolution = stage in ("tts", "assemble", "player", "all")
 

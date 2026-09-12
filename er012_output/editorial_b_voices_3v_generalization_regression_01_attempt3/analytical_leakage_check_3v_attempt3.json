@@ -1,0 +1,64 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0dae7e63ecf1707a006aa50bf73f7487d08bad2218aa133ec8",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・高リスク分類・過去の中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ(3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI watch the camera light while software studies my tone, face, and gestures. I may do well on a skills test and still be marked down in the video. In one real case, a woman said this happened and later faced a long period without work. I may not know what counted against me, or be allowed to refuse the analysis or challenge the result. I am not alone: 49% of working U.S. job seekers say these tools seem more biased than human recruiters.\n\n【Voice 2本文】\nI start with a queue of resumes. AI helps me screen them, arrange interviews, and write job posts. When an applicant asks how the tool treats people fairly, I cannot answer with a shrug. I prepare an audit summary and notice, as required under New York City rules. I also face a hard question: is AI in an applicant’s resume a useful skill or less effort? I operate the tool, but I do not decide whether the company adopts it.\n\n【Voice 3本文】\nEach week I check the dashboard: hiring days, open roles, and cost. I must decide whether to keep paying for the tool. I have seen one reported case where hiring costs fell by about 30 percent. That is hard to ignore. Then a legal challenge involving an AI hiring tool makes me ask whether our speed is worth the worry. If our choice is questioned, my name is on it. I need the company to keep hiring, and I must answer for that choice.\n\n【Tension本文】\nAll three want the right person in the right job. But their losses differ: the applicant may miss a fair chance; the recruiter must join speed with explanation; the owner must keep the company moving and answer for the choice. Power can be uneven: in some cases, the applicant may have little control over the process, while the recruiter may operate the tool or help decide whether to use it, and the employer may remain responsible for how it is used. New York City requires a bias check and applicant notice, so the recruiter must document and the owner must follow the rule; the applicant still cannot control the score. One company stopped a tool that rated resumes with women’s terms lower. These outside limits mean their reasons cannot simply be added.\n\n【Closing本文】\nSeen this way, the question is not only whether a machine can sort applications faster. It is who gets to be seen, who can question the judgment, and who carries the decision when the system is challenged. AI hiring is also a question about power: whose opportunity is measured, who must explain the process, and whose name carries the risk.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "終始、応募者本人の不安と経験を一人称で描いているため、外部の語り手による分析やDiscovery記事調の構造はありません。ただし、最後の文ではパーセンテージが文の主語になっています。",
+      "quoted_evidence": "I am not alone: 49% of working U.S. job seekers say these tools seem more biased than human recruiters."
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "採用担当者本人が日常の作業、説明責任、導入判断への関与範囲を語っており、調査結果の整理や外部からの人物分析にはなっていません。NYCの規則も、本人が負う実務上の制約として自然に組み込まれています。",
+      "quoted_evidence": ""
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "経営者本人の判断、コストへの反応、法的リスクへの心配、意思決定への責任が中心で、報告事例や数値は判断の背景として一度だけ自然に使われています。外部の分析的な要約やトレンド記事の構文には戻っていません。",
+      "quoted_evidence": ""
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "leak_tension_constraint_integration": "PASS",
+      "reasoning": "3人を単純な賛成・反対の陣営に分けず、応募者・採用担当者・経営者それぞれの損失、権限、説明責任の違いを示しています。NYCの監査・通知義務や性別バイアスによるツール停止も、各人物の行動を制約する力として物語に接続されています。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる「立場によって異なる」という要約ではなく、可視化される機会、判断への異議申立て、説明責任とリスクの所在へ論点を広げています。筆者独自の解決策や妥協案を提案していません。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_1",
+      "fail_fields": [
+        "leak_evidence_subject"
+      ],
+      "reasoning": "終始、応募者本人の不安と経験を一人称で描いているため、外部の語り手による分析やDiscovery記事調の構造はありません。ただし、最後の文ではパーセンテージが文の主語になっています。",
+      "quoted_evidence": "I am not alone: 49% of working U.S. job seekers say these tools seem more biased than human recruiters."
+    }
+  ],
+  "any_flagged": true
+}
