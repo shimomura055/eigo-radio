@@ -87,7 +87,8 @@ def main() -> None:
     add("Welcome (Charon)", "Welcome (Charon)", "Charon(固定文言)",
         shared_narration.FIXED_ENGLISH_TEXTS["welcome"], seg_audio("welcome_charon"))
     add("Topic intro (Charon)", "Topic intro (Charon)", "Charon(英語)",
-        seg["topic_intro"].get("canonical_text", ""), seg_audio("topic_intro"))
+        seg["topic_intro"].get("canonical_text") or seg["topic_intro"].get("text", ""),
+        seg_audio("topic_intro"))
     add("Notification 1", "Notification 1", "—(SFX)", "効果音(読み上げなし、固定音源)", None)
     add("Preview intro (Charon)", "Preview intro (Charon)", "Charon(固定文言)",
         shared_narration.FIXED_ENGLISH_TEXTS["preview_intro"], seg_audio("preview_intro_charon"))
