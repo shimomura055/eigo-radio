@@ -373,6 +373,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-L2-RECONCILE-03: Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)配布(B1B完走PASS・A2はER-009 Foreign Token GateでSTOPPED、費用¥121.98)+Token効率Phase 2 After測定完了(Opus実読込135,397字→約23,450字、82.7%減、Fable判定`VALIDATED`[Trial]、標準化はUDR)+Discovery Trial-12 Opus L2解釈(テキスト軸悪化・A2 point_one語数超過は系統的signal・型固定継続、UDR3件)+Repetition QA RECONCILE-03修正1回目(対称正規化層prototype、Trial-12実バグ3件解消・真陽性維持・回帰35件中33 PASS、Production採用はUDR)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-PACKET-STANDARD-DISCOVERY-PRIORITY: 2026-09-12ユーザー回答11項目(原文全文)の正式記録 — Discovery対照アームTrial不実施(優先順位判断、Focus Module Part Aは新規記事生成のN増しで継続観測)/Repetition QA RECONCILE-03一般化案を`APPROVED_FOR_PRODUCTION`としGate 3進行/Opus context packet方式をOpus L2標準入力方式として採用(Opus自体は削減・廃止しない)/Trial REPORT必須欄5項目・層間不整合とA2数値表記のOpen Item登録・News Trial-16はいずれも「今はなし」(フル再提示後に判断)/正式報告ブロック(★★★★報告ここから★★★★〜ここまで★★★★)新設/未回答事項の省略再掲禁止の再確認と再発防止/「ユーザー判断」欄は現時点で回答が必要な事項のみ・将来判断は「今後の展望」欄へ分離/FableのPM自発的Next Action確認ルール追加
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-95-OPEN-121-SYMMETRIC-NORMALIZATION-WIRING-TRIAL-12-A2-ASSEMBLY-AND-SSOT: OPEN-121対称正規化Production配線67テストPASS済みを前提に、Trial-12 A2`full_story_part1`のLock状態遷移(RESOLVED/OK、標準attempt1採用、¥0)を実施したがA2 Assemblyは6% slowdown post-process未適用で`MISSING_MANDATORY_A2_SLOWDOWN`により正しくブロックされ未完了(内蔵の安全再検証が有料Primary ASRを要するため¥0制約と衝突、`USER_DECISION_REQUIRED`でSTOP)+Token効率実測2件(委任文定型比率4.78%・改善案A REJECTED、subagent内部消費3,659万token=委任文の108倍・E-1/D-1/G-1採用/A-1不採用)+ER-009 Foreign Token Gate Trend Reconcile完了・ユーザーA'承認の記録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT: ユーザー是正指示(2026-09-12、原文全文)「技術的完成(Assembly PASS・player公開・Gate 7 HTTP確認)をcloseと同一視してはならない」を受け、Trend記事(AI investment/factories/manufacturing、A2/B1B)とDiscovery Trial-12(wake before alarm、A2/B1B)を`OPEN_ITEMS.md`OPEN-135行で`USER_LISTENING_PENDING`(ユーザー視聴待ち、未close)へ是正+`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout Mandatory Checkへ「記事のclose条件(記事生成→音声化→標準player作成・公開→ユーザー視聴→ユーザー受入/修正判断→close)」を明文化+標準player必須要素(13項目)監査でTrial-12標準player(`er011_wake_before_alarm_trial12_std_player_01.py`)のA2区間に実装漏れ2件(Seek用`<script>`欠落によりB1B含め全Seekボタンが無反応/A2完成後もHuman Review待ち時代の「個別再生のみ(episode未完成)」固定文字列とIntro・Notification等固定文言行の欠落が残存)を発見・是正(既存ローカルreview player生成関数`run.build_a2_rows()`/`run.build_b1b_rows()`の再利用によりtimeline.json実測start_secondsベースのSeekボタンを復元、新規ロジック追加なし、¥0)
 
 ---
 
@@ -5453,6 +5454,137 @@ Primary ASR再検証PASS=`NORMALIZED_MATCH`、実測費用: gpt-4o-mini-transcri
 REPORT.md`、`ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-
 RESUME-01_REPORT.md`。詳細はOPEN_ITEMS.md OPEN-121/OPEN-135/OPEN-142行、
 CURRENT_SPEC.md OPEN-121節・JA Foreign Token Gate行、
+`docs/pm/RESULT_PACKET.md`参照。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT: Trend記事・Discovery Trial-12を「ユーザー視聴待ち」へ是正+記事close条件の明文化+標準player監査・是正
+
+**日付**: 2026-09-12
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク、LLM/TTS/ASR API呼び出し禁止・¥0)
+
+**背景**: `PM-CLOSEOUT-CONSOLIDATION-93`(Trend記事)・`PM-CLOSEOUT-
+CONSOLIDATION-90/96`(Discovery Trial-12)により、Trend記事(AI investment
+is reshaping factories and manufacturing、A2/B1B)とDiscovery Trial-12
+(Why do we sometimes wake up just before the alarm?、A2/B1B)はいずれも
+Assembly PASS・標準player作成・GitHub push後のHTTP到達確認まで完了して
+いたが、ユーザーが実際に音声を試聴し受入/修正判断を行う工程は未実施
+だった。Fable側はこの「技術的完成」を記事のcloseと同一視しかけており、
+ユーザーが2026-09-12に是正指示を出した。
+
+**ユーザー発言原文(verbatim、セッション記録`294958fe-
+da6e-491c-8a02-4f864d8195c8.jsonl`の`type":"user"`行[2047行目]より抽出)**:
+
+```
+重要な運用是正です。
+
+Trend記事とDiscovery Trial-12について、音声生成・player公開まで終わっていても、ユーザー視聴・受入確認なしにclose扱いしてはいけません。
+
+今回、
+- Trend記事 → 技術的には完成
+- Discovery Trial-12 A2/B1B → 技術的には完成
+
+ですが、どちらもユーザー視聴が未実施です。
+したがって、記事としては未closeです。
+
+今後の記事フローは必ず以下まで実施してください。
+
+記事生成
+→ 音声化
+→ 標準player作成・公開
+→ ユーザー視聴
+→ ユーザー受入/修正判断
+→ close
+
+ユーザー判断なしに「完成」「close」と扱わないでください。
+
+音声視聴はいつもの標準フォーマットで提示してください。
+つまり、
+- audio + complete script を同一ページ
+- 再生UIを各該当箇所の近くに配置
+- A2/B1Bを区別
+- Full Story / Point One / Point Two / In One Line
+- Preview / Comment 1〜4
+- Key Phrase 英日
+- intro / outro / SFX / fixed phrases
+- 順序・start sec・seek
+- voice情報
+- unretrieved marker等があれば明示
+- TTS mode
+まで確認できる標準player形式です。
+
+Trend記事とDiscovery Trial-12の両方を「ユーザー視聴待ち」としてOpen状態へ戻し、次の正式報告でplayer URLを明示してください。
+
+また、この漏れは重大です。
+PM_GOVERNANCE / Closeoutルールに、
+「記事は音声化＋ユーザー視聴＋ユーザー受入確認までclose不可」
+を明文化し、再発防止してください。
+
+ユーザー判断:
+Trend / Discoveryとも、現時点では未close。
+次Actionは標準playerでのユーザー視聴。
+```
+
+**Fableの漏れの原因**: 「技術的完成」(Assembly PASS・標準player公開・
+Gate 7 HTTP到達確認)を記事のcloseと同一視し、Gate 7補足チェックリスト
+(a)〜(m)の到達確認をもって受入判定は行っていたが、そのGate 7判定と
+「記事としてのclose」を別工程として明確に区別せず、ユーザー自身が実際に
+音声を聴いて受入/修正判断する工程を記事完了条件として運用していなかった。
+既存`docs/pm/PM_GOVERNANCE.md`にも「記事のclose」を明示的に定義する条項が
+無かったため、Sonnet/Fableの双方が「Gate 7チェックリスト到達=完成」を
+「close」と混同する構造的な隙があった。
+
+**対応**:
+1. `OPEN_ITEMS.md`OPEN-135行のTrend節・Discovery節に、Trend記事(A2/B1B)
+   とDiscovery Trial-12(A2/B1B)を`Status: USER_LISTENING_PENDING`
+   (ユーザー視聴待ち、未close)として追記した。既存のVALIDATED/PASS等の
+   技術的判定自体は変更していない(Status追記のみ)。
+2. `docs/pm/PM_GOVERNANCE.md`「2. PM Gate 1〜7」Gate 7末尾と「3. PM
+   Closeout Mandatory Check」へ、記事のclose条件(記事生成→音声化→
+   標準player作成・公開→ユーザー視聴→ユーザー受入/修正判断→close)を
+   明文化する新項目を追加した。標準player必須要素チェックリストは
+   既存Gate 7補足(a)〜(m)(2026-09-07新設、2026-09-12まで複数回追記)を
+   そのまま参照し、複製しない。
+3. 既存3件の標準player(`er011_output/family_a_trend_ai_manufacturing_
+   prod_run_01/player_std/{index.html,a2_index.html}`、
+   `er011_output/discovery_generalization_wake_before_alarm_trial_12/
+   player_std/index.html`)をGate 7補足(a)〜(m)で監査した。Trend2ページは
+   全項目満たしていたが、Trial-12の標準player生成スクリプト
+   (`er011_wake_before_alarm_trial12_std_player_01.py`)に実装漏れ2件を
+   発見した。(a) ページ全体でSeekボタンクリック用`<script>`が完全に
+   欠落しており、B1B区間のSeekボタン(60個中の一部)も見た目上は存在するが
+   クリックしても無反応だった(標準共通部品`audio_review_player.py`の
+   `SEEK_SCRIPT`は単一audio要素id前提であり、本ページはA2/B1B 2つの
+   完成episode音声を1ページに持つため、`data-audio-target`属性で
+   Seek対象をscopeする独自スクリプトが必要だったが、既存のローカル
+   review player生成関数`run.player_stage()`内に実装済みの
+   `scoped_seek_script`と同等のものが移植されていなかった)。(b) A2区間は
+   本タスク以前まで日本語Foreign Token GateのHuman Review待ちで
+   `STOPPED`だった名残で、Seek列に固定文字列「個別再生のみ(episode
+   未完成)」を出し続け、Intro/Welcome/Notification/Preview intro/Point
+   explanation/Key phrases intro/Full story intro/Outro等の固定文言・SFX
+   行も全て欠落していた(A2完成[`PM-CLOSEOUT-CONSOLIDATION-95/96`]後も
+   player生成コードが追随していなかった)。いずれも新しいSeekロジック・
+   新しい行定義を追加するのではなく、既存のローカルreview player生成
+   関数`run.build_a2_rows()`/`run.build_b1b_rows()`(`timeline.json`の
+   実測start_secondsに基づく完全な行データを返す既存関数、B1Bは元々
+   これを再利用しGitHub raw URLへ差し替える実装だった)をA2にも同様に
+   適用し是正した(音声再生成・API呼び出しなし、¥0)。是正後の
+   player_std/index.htmlはA2/B1Bとも60個のSeekボタン全てが機能し、
+   固定文言行・Key Phrase表(TTS用テキスト列含む)がB1Bと同一水準まで
+   復元されたことを確認した(詳細は`docs/pm/RESULT_PACKET.md`の
+   ○/×監査表参照)。
+
+**Gate判定**: Trend記事(A2/B1B)・Discovery Trial-12(A2/B1B)とも、記事
+レベル・音声レベルの既存Gate判定(VALIDATED/PASS等)は変更しない。記事
+としてのcloseは`USER_LISTENING_PENDING`のまま、ユーザーが標準playerで
+試聴し受入/修正判断するまで確定しない。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-97-
+ARTICLE-CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT`)、
+セッション記録`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`ユーザー発言
+原文(上記、2047行目)、`docs/pm/PM_GOVERNANCE.md`Gate 7・PM Closeout
+Mandatory Check該当項目、`OPEN_ITEMS.md`OPEN-135行、
 `docs/pm/RESULT_PACKET.md`参照。
 
 ---

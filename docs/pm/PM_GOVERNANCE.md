@@ -280,6 +280,21 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
 
+**記事のclose条件(2026-09-12、PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-
+CLOSE-REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT、ユーザー是正
+指示)**: 記事(Trial記事含む)のcloseは、記事生成→音声化→標準player
+作成・公開→ユーザー視聴→ユーザー受入/修正判断→closeの全工程を経て
+初めて成立する。Assembly PASS・標準player公開・HTTP到達確認等の
+「技術的完成」は、上記(a)〜(m)を満たしていても、それ自体では記事の
+closeとは扱わない。ユーザー視聴・受入/修正判断が済むまでのStatusは
+`USER_LISTENING_PENDING`とし、Fable/Sonnet単独の判断で「完成」「close」
+という語を使わない(経緯: Trend記事「AI investment is reshaping
+factories and manufacturing」・Discovery Trial-12「Why do we sometimes
+wake up just before the alarm?」がいずれも音声化・player公開・HTTP確認
+まで完了した状態を技術的完成としてcloseと同一視しかけたため、ユーザーが
+2026-09-12に是正した。詳細`DECISION_LOG.md`
+PM-CLOSEOUT-CONSOLIDATION-97エントリ、`OPEN_ITEMS.md`OPEN-135行)。
+
 ### 2-1. 既存対策・仕様 Reconciliation Check(2026-09-09、ユーザー指示)
 
 failure mode対策・Prompt改善・retry/fallback改善・Validator/QA改善・
@@ -403,6 +418,16 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     追記、`PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD`。事例:
     OPEN-145/146の承認記録がCONSOLIDATION-83/84時点で要約引用のみだった
     ため、後日の横断監査で承認証拠不明と判定された)。
+22. 記事(Trial記事含む)をcloseする場合、記事生成→音声化→標準player
+    作成・公開→ユーザー視聴→ユーザー受入/修正判断→closeの全工程が
+    完了していること。Assembly PASS・player公開・HTTP到達確認等の
+    技術的完成のみでは足りず、ユーザー視聴・受入/修正判断の記録
+    (`DECISION_LOG.md`原文記録)なしに「完成」「close」と扱わない
+    (2026-09-12追記、PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-
+    REQUIRES-USER-LISTENING-AND-STANDARD-PLAYER-AUDIT、ユーザー是正
+    指示。標準player必須要素は2節Gate 7補足(a)〜(m)参照、事例: Trend
+    記事・Discovery Trial-12がいずれも技術的完成のみでcloseと同一視
+    されかけた)。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -2112,3 +2137,23 @@ Trial専用harnessは開始時に費用記録(cost logger install、既存
   `PM-CLOSEOUT-CONSOLIDATION-94-USER-ANSWERS-2026-09-12-REPORT-FORMAT-
   PACKET-STANDARD-DISCOVERY-PRIORITY`エントリ、`OPEN_ITEMS.md`
   OPEN-135/OPEN-121/OPEN-142行、`docs/pm/RESULT_PACKET.md`参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-
+  LISTENING-AND-STANDARD-PLAYER-AUDIT): ユーザー是正指示(原文全文、
+  「音声生成・player公開まで終わっていても、ユーザー視聴・受入確認なしに
+  close扱いしてはいけない」)を受け、「2. PM Gate 1〜7」Gate 7末尾へ
+  記事のclose条件(記事生成→音声化→標準player作成・公開→ユーザー視聴→
+  ユーザー受入/修正判断→close。技術的完成はcloseではなく
+  `USER_LISTENING_PENDING`)を新設し、「3. PM Closeout Mandatory Check」へ
+  同旨の項目22を追加した。標準player必須要素チェックリストは既存Gate 7
+  補足(a)〜(m)をそのまま参照し複製していない。背景: Trend記事(AI
+  investment is reshaping factories and manufacturing)とDiscovery
+  Trial-12(Why do we sometimes wake up just before the alarm?)がいずれも
+  Assembly PASS・標準player公開・HTTP到達確認まで完了した「技術的完成」を
+  closeと同一視しかけたため、`OPEN_ITEMS.md`OPEN-135行を
+  `USER_LISTENING_PENDING`へ是正した。あわせて標準player監査(Gate 7
+  補足(a)〜(m))でDiscovery Trial-12側の実装漏れ2件(Seek用`<script>`
+  欠落・A2区間の固定文言行欠落)を発見し、既存のローカルreview player
+  生成関数の再利用で是正した(新規ロジック追加なし、¥0)。文書編集+
+  player生成スクリプト1件の是正のみ、Production仕様変更なし。詳細は
+  `DECISION_LOG.md`PM-CLOSEOUT-CONSOLIDATION-97エントリ、`OPEN_ITEMS.md`
+  OPEN-135行、`docs/pm/RESULT_PACKET.md`参照。

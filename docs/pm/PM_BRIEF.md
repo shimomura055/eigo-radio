@@ -43,6 +43,9 @@
 - `PRODUCTION_WIRED` — 正式Production経路へ配線済み。
 - `USER_DECISION_REQUIRED` — 上限到達・仕様変更候補発見時などにSTOPし、
   人間ユーザーの判断を待つ状態。
+- `USER_LISTENING_PENDING` — 記事(Trial記事含む)が音声化・標準player
+  公開まで技術的に完成していても、ユーザーが実際に試聴し受入/修正判断を
+  行うまでは未close(2026-09-12新設、PM-CLOSEOUT-CONSOLIDATION-97)。
 - `REJECTED` — 却下された案。
 
 Gateの正式定義(Audio Validation Gate、Human Review Lock等)は既存SSOT側の記述が正であり、

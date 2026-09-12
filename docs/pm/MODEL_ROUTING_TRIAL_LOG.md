@@ -822,3 +822,16 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   稼働中の3V修正タスク(`er012_*`、`EDITORIAL-B-FAMILY-VOICES-3V-*
   PHASE1B-04*`、`docs/pm/*_3V_1B04.md`)の生成物には一切触れず、stageも
   していない。
+
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-USER-
+  LISTENING-AND-STANDARD-PLAYER-AUDIT、本タスク、Git書込唯一のタスク):
+  ユーザー是正指示のSSOT反映(`OPEN_ITEMS.md`OPEN-135行を
+  `USER_LISTENING_PENDING`へ是正、`docs/pm/PM_GOVERNANCE.md`へ記事close
+  条件明文化)+標準player監査(Gate 7補足(a)〜(m))+Discovery Trial-12
+  player生成スクリプトの実装漏れ2件(Seek用`<script>`欠落・A2固定文言行
+  欠落)是正・再生成。Sonnet、LOW、実測¥0(SSOT編集・既存ローカルwavの
+  mp3変換[soundfile]・player再生成のみ、新規LLM/TTS/ASR API呼び出し
+  なし、Productionコード変更なし)。委任回数=初回のみ(ループ上限4回
+  以内)。並列稼働中の3V修正タスク(`er012_*`、`EDITORIAL-B-FAMILY-
+  VOICES-3V-*`、`docs/pm/*_3V_1B04.md`)の生成物には一切触れず、stageも
+  していない。

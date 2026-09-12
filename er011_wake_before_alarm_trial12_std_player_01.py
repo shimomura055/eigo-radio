@@ -69,6 +69,8 @@ def collect_source_wav_paths(level: str) -> set:
     try:
         if level == "b1b":
             run.build_b1b_rows()
+        elif level == "a2":
+            run.build_a2_rows()
         else:
             raise ValueError(level)
     finally:
@@ -108,6 +110,30 @@ def render_b1b_rows_with_raw_urls() -> tuple:
     run.au = au_to_raw_mp3
     try:
         result = run.build_b1b_rows()
+    finally:
+        run.au = original_au
+    return result
+
+
+def render_a2_rows_with_raw_urls() -> tuple:
+    """A2タイムラインの行生成は、既存のローカルreview player生成関数
+    `run.build_a2_rows()`(Intro/Welcome/Notification/固定文言Charon台詞・
+    Point explanation・実際のtimeline.json start_secondsによるSeekボタンを
+    全て含む、B1Bと同じ完全な行データを返す既存関数)をそのまま再利用する。
+    新しいSeekロジック・新しい行定義は作らず、`run.au`(file://絶対パス
+    解決)だけをGitHub raw mp3 URL解決に差し替える(B1Bと同一パターン)。
+    """
+    url_map = build_wav_to_mp3_url_map("a2")
+    original_au = run.au
+
+    def au_to_raw_mp3(path: str) -> str:
+        if path not in url_map:
+            raise KeyError(f"未変換のnarration wavパス: {path}")
+        return url_map[path]
+
+    run.au = au_to_raw_mp3
+    try:
+        result = run.build_a2_rows()
     finally:
         run.au = original_au
     return result
@@ -155,45 +181,20 @@ PASS。
 # ------------------------------------------------------------
 # A2(完成、Assembly PASS。PM-CLOSEOUT-CONSOLIDATION-96でfull_story_part1
 # のHuman Review Lock RESOLVED+A2必須6% slowdown post-process適用完了)
+#
+# 2026-09-12是正(PM-CLOSEOUT-CONSOLIDATION-97-ARTICLE-CLOSE-REQUIRES-
+# USER-LISTENING-AND-STANDARD-PLAYER-AUDIT): 旧実装はA2完成前(Human
+# Review待ちでSTOPPED)時点のまま「個別再生のみ(episode未完成)」の
+# 固定文字列をSeek列に出し続けており、A2完成後もIntro/Welcome/
+# Notification/Preview intro/Point explanation/Key phrases intro/
+# Full story intro/Outro等の固定文言行が欠落し、Seekボタンの
+# クリック動作用<script>も出力されていなかった(標準player必須要素
+# (7)固定文言/(8)順序・start sec・seekが欠落)。既存のローカルreview
+# player生成関数`run.build_a2_rows()`(B1Bの`run.build_b1b_rows()`と
+# 対になる、`timeline.json`のstart_secondsに基づく完全な行データを
+# 返す既存関数、新規ロジックではない)をそのまま再利用し、`run.au`の
+# 解決先だけをGitHub raw mp3 URLへ差し替えることで是正する。
 # ------------------------------------------------------------
-A2_SEGMENT_ORDER = [
-    ("topic_intro", "Topic intro", "Aoede(英語)"),
-    ("japanese_title", "Japanese title", "Aoede(日本語、ユーザー提示タイトル)"),
-    ("preview", "Preview", "Aoede(日本語)"),
-    ("comment_1", "Comment 1", "Aoede(日本語)"),
-    ("full_story_part1", "Full Story Part 1", "Aoede(英語・A2 6%減速)"),
-    ("comment_2", "Comment 2", "Aoede(日本語)"),
-    ("full_story_part2", "Full Story Part 2", "Aoede(英語・A2 6%減速)"),
-    ("comment_3", "Comment 3", "Aoede(日本語)"),
-    ("point_one_heading", "Point One heading", "Aoede(英語・A2 6%減速)"),
-    ("point_one", "Point One", "Aoede(英語・A2 6%減速)"),
-    ("point_two_heading", "Point Two heading", "Aoede(英語・A2 6%減速)"),
-    ("point_two", "Point Two", "Aoede(英語・A2 6%減速)"),
-    ("comment_4", "Comment 4", "Aoede(日本語)"),
-    ("in_one_line", "In One Line", "Aoede(英語・A2 6%減速)"),
-]
-
-LOCKED_SEGMENT_IDS = set()  # PM-CLOSEOUT-CONSOLIDATION-95/96でfull_story_part1はRESOLVED済み(旧HUMAN_REVIEW_REQUIREDから解消)
-
-
-def a2_text_for(segment_id: str, parts: dict, support: dict) -> str:
-    mapping = {
-        "topic_intro": f"Today's topic is {parts.get('title')}.",
-        "japanese_title": run.WAKE_JAPANESE_TITLE,
-        "preview": support.get("preview"),
-        "comment_1": support.get("comment_1"),
-        "comment_2": support.get("comment_2"),
-        "comment_3": support.get("comment_3"),
-        "comment_4": support.get("comment_4"),
-        "full_story_part1": parts.get("part1"),
-        "full_story_part2": parts.get("part2"),
-        "point_one_heading": parts.get("point_one_heading"),
-        "point_one": parts.get("point_one_body"),
-        "point_two_heading": parts.get("point_two_heading"),
-        "point_two": parts.get("point_two_body"),
-        "in_one_line": parts.get("in_one_line"),
-    }
-    return mapping.get(segment_id, "")
 
 
 def build_a2_episode_audio_url() -> tuple:
@@ -208,57 +209,11 @@ def build_a2_episode_audio_url() -> tuple:
     return raw_url(mp3_path), assemble
 
 
-def a2_kp_table_html(kp_canon: dict) -> str:
-    kp_rows = ["<tr><th>#</th><th>English (used_form)</th><th>表示用 gloss</th></tr>"]
-    for item in sorted(kp_canon["items"], key=lambda x: x["rank"]):
-        kp_rows.append(f"<tr><td>{item['rank']}</td><td>{esc(item['used_form'])}</td>"
-                        f"<td>{esc(item['japanese_gloss'])}</td></tr>")
-    return f'<table class="kp"><thead>{kp_rows[0]}</thead><tbody>{"".join(kp_rows[1:])}</tbody></table>'
-
-
 def build_a2_section() -> str:
     a2_dir = f"{OUT_DIR}/a2"
-    narration_dir = f"{a2_dir}/narration"
     parts = run.load_json(f"{a2_dir}/parts.json")
-    support = run.load_json(f"{a2_dir}/a2_support_texts.json")
-    kp_canon = run.load_json(f"{a2_dir}/key_phrases/keywords_canonicalized.json")
-    tts = run.load_json(f"{a2_dir}/audit/tts_generation_results.json")
-    seg_status = {sid: (v.get("status") if isinstance(v, dict) else None)
-                  for sid, v in tts.get("segments", {}).items()}
 
-    rows_html = []
-    for segment_id, label, voice in A2_SEGMENT_ORDER:
-        text = esc(a2_text_for(segment_id, parts, support))
-        status = seg_status.get(segment_id)
-        if segment_id in LOCKED_SEGMENT_IDS or status != "OK":
-            audio_html = ("<span class=\"missing\">PENDING HUMAN REVIEW"
-                           "(既存Human Review Lock、3回NG+cool-down 4回目もNG。"
-                           "未承認テイクにつき音声は非公開。詳細:"
-                           " a2/audit/review_lock_state.json / "
-                           "a2/audit/tts_cooldown_observation_stage_summary.json)</span>")
-            rows_html.append(
-                f'<tr class="missing"><td>個別再生のみ(episode未完成)</td>'
-                f'<td><b>{label}</b><br><small>voice={voice}</small></td>'
-                f'<td class="txt">{text}</td><td>{audio_html}</td></tr>')
-            continue
-        mp3_path = convert_wav_to_mp3(f"{narration_dir}/{segment_id}.wav", "a2")
-        audio_html = arp.render_single_audio_html(raw_url(mp3_path))
-        rows_html.append(
-            f'<tr><td>個別再生のみ(episode未完成)</td>'
-            f'<td><b>{label}</b><br><small>voice={voice}</small></td>'
-            f'<td class="txt">{text}</td><td>{audio_html}</td></tr>')
-
-    # Key Phrase(全5件、TTS OK)
-    for rank in range(1, 6):
-        item = next(it for it in kp_canon["items"] if it["rank"] == rank)
-        en_mp3 = convert_wav_to_mp3(f"{narration_dir}/kp{rank}_en.wav", "a2")
-        ja_mp3 = convert_wav_to_mp3(f"{narration_dir}/meaning_{rank}.wav", "a2")
-        audio_html = arp.render_single_audio_html([raw_url(en_mp3), raw_url(ja_mp3)])
-        text = f"英語: {esc(item['used_form'])}<br>日本語gloss: {esc(item['japanese_gloss'])}"
-        rows_html.append(
-            f'<tr><td>個別再生のみ(episode未完成)</td>'
-            f'<td><b>Key Phrase {rank}</b><br><small>voice=Aoede(EN)/Aoede(JA)</small></td>'
-            f'<td class="txt">{text}</td><td>{audio_html}</td></tr>')
+    rows, kp_table, _parts, _support = render_a2_rows_with_raw_urls()
 
     with open(f"{a2_dir}/article.md", encoding="utf-8") as f:
         article_md = f.read()
@@ -283,10 +238,10 @@ OPEN-121対称正規化repetition_qa再判定もflagged=falseを確認済み。G
 OFF/opt-in ON経路とも PASS。
 </p>
 <audio id="{audio_id}" class="main" controls preload="none" src="{episode_url}"></audio>
-<table class="timeline"><thead>{arp.TIMELINE_TABLE_HEADER}</thead>
-<tbody>{''.join(rows_html)}</tbody></table>
+<h3>A2 タイムライン・全スクリプト・Key Phrase(実際に読み上げられた内容、収録順)</h3>
+{arp.render_timeline_table(rows)}
 <h3>A2 Key Phrase表</h3>
-{a2_kp_table_html(kp_canon)}
+{kp_table}
 <h3>A2 記事全文(article.md)</h3>
 <pre class="article">{esc(article_md)}</pre>
 </div>
@@ -312,6 +267,28 @@ PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11、Source列なし、
 """
     a2_section = build_a2_section()
     b1b_section = build_b1b_section()
+    # 2026-09-12是正(PM-CLOSEOUT-CONSOLIDATION-97): 標準arp.SEEK_SCRIPTは
+    # 単一id="episode_audio"を前提とするが、本ページはA2/B1Bの2つの完成
+    # episode音声を1ページに並置するため、Seek対象の解決を各セクションの
+    # data-audio-target属性でscopeする(既存ローカルreview player生成
+    # `run.player_stage()`のscoped_seek_scriptと同一パターン、新規ロジック
+    # ではない)。旧実装は本<script>自体が欠落しており、B1Bのseekボタンも
+    # クリック無反応だった。
+    scoped_seek_script = """
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("[data-audio-target]").forEach(function (container) {
+    var audioId = container.getAttribute("data-audio-target");
+    container.querySelectorAll("button.seek").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var a = document.getElementById(audioId);
+        if (!a) return;
+        a.currentTime = parseFloat(btn.getAttribute("data-sec"));
+        a.play();
+      });
+    });
+  });
+});
+""".strip("\n")
     return f"""<!doctype html>
 <html>
 <head>
@@ -329,6 +306,9 @@ PM-GOVERNANCE-AUDIO-REVIEW-PLAYER-STANDARD-FORMAT-11、Source列なし、
 {a2_section}
 <hr>
 {b1b_section}
+<script>
+{scoped_seek_script}
+</script>
 </body>
 </html>
 """
