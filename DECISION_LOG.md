@@ -339,6 +339,10 @@ REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
 とりあえずHuman Review依頼」運用の是正、PM_GOVERNANCE新設14節(問題発生時のPM処理原則)・
 15節(コスト報告ルール)・9-5(問題対応報告7項目順+試聴Artifact/playerリンク必須)追加+
 タオルTrial-11コスト報告初回適用
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-78-RECONCILE-RESULTS-2026-09-12: 並列稼働中
+だった4件のreconcile結果(A2表記ゆれ/B1B Secondary ASR+retry timing/Repetition QA根本原因
+/News人名ローマ字表記)のSSOT反映+Sonnetの指示違反(禁止されたLLM API呼び出し1回)の記録
++新規OPEN-145/OPEN-146起票+OPEN-144補正額¥180.55反映
 
 ---
 
@@ -2969,6 +2973,98 @@ Repetition QA根本原因/News日本人名表記再調査)は、本タスクと�
 詳細は`docs/pm/PM_GOVERNANCE.md`14節・15節・9-5、
 `FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-COST-01_REPORT.md`、
 `docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-78-RECONCILE-RESULTS-2026-09-12: 並列稼働中だった4件のreconcile結果反映+Sonnet指示違反(LLM API呼び出し1回)の記録+新規OPEN-145/146起票
+
+**日付**: 2026-09-12
+
+**区分**: SSOT反映(reconcile調査4件の結果整理。コード・Prompt・Production実装の変更はゼロ)
+
+**背景(Fable報告品質是正の経緯)**: 2026-09-12にユーザーが
+`PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12`原文
+(同エントリ参照)で「問題が起きた→比較的マシなtakeをユーザーに聞いて
+もらう」という運用を明確に問題視し、原因切り分け・既存対策との
+reconcile・必要最小Trialまで進めてから判断材料を揃えて報告するよう
+指示した。これを受けて並列稼働していた4件のSonnet委任reconcileタスク
+が完了し、本エントリでその結果をSSOTへ反映する。
+
+**反映内容**:
+
+1. **A2表記ゆれ(comment_2)**
+   (`FAMILY-A-DISCOVERY-TOWELS-A2-JA-ASR-VARIANT-RECONCILE-01`): 既存
+   対策(JA ASR Validator読み一致判定+A2 Reading Resolver、いずれも
+   Production配線済み)は対象範囲内だったが、依拠するpykakasi内蔵辞書
+   (kanwadict)に「経つ」=「たつ」の読み候補が存在せず機能しなかった。
+   過去18ペア中この型は1segmentのみ。候補A(閉じた補完テーブル追加)/
+   候補B(辞書切替)は新仕様のためUSER_DECISION_REQUIRED、候補C(既存
+   Human Review機構での試聴判断)のみ即応可能。**新規OPEN-145として
+   起票**。
+2. **B1B has/had・TTS retry timing再集計**
+   (`FAMILY-A-DISCOVERY-TOWELS-B1B-SECONDARY-ASR-AND-RETRY-TIMING-
+   RECONCILE-01`): Secondary ASR Cascade・Connected Speech Equivalence
+   Layerはいずれも「対象外」判定で設計通り発火せず(バグ・配線漏れでは
+   ない)。Secondary ASR単独適用(実費用¥1.8)でも救済不可と確認。
+   retry timing再集計は即時retry PASS率52.8%(N=53)、非即時41.2%
+   (N=17)、Fisher p=0.578で有意差なし、事前定義の十分性基準は未達。
+   **前回報告した非即時71.4%(N=7)は本再集計値41.2%(N=17)で上書き**。
+   仕様採用せず継続観測。
+3. **Repetition QA誤flagの根本原因**
+   (`REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-RECONCILE-02`):
+   `tts_safe_number_words_en()`の綴り小数→算用数字変換後の
+   canonical_textとRepetition QA専用ローカルASR(faster-whisper、綴り
+   のまま書き起こし)の不一致による`canonical_repeat_count: 0`が根本
+   原因と特定した。OPEN-127(em dash)・OPEN-121行既存記載の「%/percent」
+   不一致(未修正)とは異なる**第3の独立したfailure mode**。既に
+   `PRODUCTION_WIRED`のA-Family経路(`pool_pilot_01/pool_n4_supermarket`)
+   でも再現することを確認した(単発のTrial限定事象ではない)。scratchpad
+   prototype(¥0)で判定意味を変えない最小修正により誤flag3件解消・
+   真陽性1件維持を確認したが、**Production/QAコードへは未実装**。
+   実装可否・適用範囲・遡及点検要否はUSER_DECISION_REQUIRED。
+4. **News人名ローマ字表記**
+   (`FAMILY-A-NEWS-JA-PERSON-NAME-ROMANIZATION-RECONCILE-01`):
+   「人名事前確認」専用対策は`NEW`(見つからなかった)。既存3機構
+   (ER-009 JA Foreign Token Gate/Pronunciation Ledger/Fact Checker)は
+   いずれも別目的。根本要因はVerified Fact Ledgerが人名を日本語表記
+   のみで保持し英語canonical spellingを持たないため、WriterがRun毎に
+   ローマ字を推測し揺れること、およびPoint Overlap GateがFact Checker
+   より先行しGate NGで到達率1/6と低いこと。候補(a)Ledgerへ英語表記
+   併記/(b)Gate順序見直し(STOP必須級)/(c)現状維持はUSER_DECISION_
+   REQUIRED。**新規OPEN-146として起票**。
+5. **Sonnet指示違反の記録**: 項目1のreconcile作業中、Sonnet
+   (sonnet-worker)が「offline関数呼び出しのみ・API支出禁止」という
+   本タスクの指示に反し、`er011_a2_reading_resolver_01.resolve_
+   reading_diff()`を`FEATURE_FLAG_A2_READING_RESOLVER_ENABLED`を無効化
+   せずに1回呼び出し、Resolver用LLM(`A2_SUPPORT`ルーティング、
+   `reasoning.effort=low`)への課金API呼び出しが実際に発生した(対象語
+   「にお→臭」、`resolver_calls=1`、金額はごく小さいと推測されるが
+   正式な金額確認は未実施)。当該REPORT自身が違反を隠さず開示しており
+   (`FAMILY-A-DISCOVERY-TOWELS-A2-JA-ASR-VARIANT-RECONCILE-01_
+   REPORT.md`前提節)、以降の全呼び出しはFEATURE_FLAG明示的Falseで
+   実施し直したことを確認した。金額確認・是正要否はユーザー判断待ち
+   (本エントリでは追加対応していない)。
+6. **OPEN-144(TTS費用集計バグ)への補正額反映**: タオルTrial-11
+   (A2+B1B)の1記事一式総コスト(訂正後、Batch実行ベース)=¥180.55
+   (うちretry/Human Review由来¥16.00)をOPEN-144行へ追記した。
+
+**反映範囲**: `OPEN_ITEMS.md`(OPEN-121行・OPEN-135行・OPEN-144行への
+追記、新規OPEN-145・OPEN-146起票)、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+(reconcile4件の実績行追加)、`docs/pm/ACTIVE_TASK.md`(固定ヘッダー
+UDR-blocking 9項目列挙)、本エントリ+索引1行。上記4件の各`*_REPORT.md`
+本体・`er011_output/discovery_generalization_towels_trial_11/b1b/audit/`
+配下の新規診断JSON2件・`er011_output/tts_retry_timing_monitor_01/`・
+`er011_output/tts_retry_cooldown_analysis_01/`の再実行更新分はGit記録
+対象(下記「根拠」参照)。`CURRENT_SPEC.md`は本タスクでは編集していない。
+
+**Production採用範囲外**: 本エントリはSSOT反映(4件のreconcile結果の
+記録)のみであり、Production Prompt・コード・費用集計script・TTS
+Validator・Repetition QA moduleの変更、`APPROVED_FOR_PRODUCTION`宣言は
+いずれも行っていない。UDRの代行判断もしていない。`git stash`/
+`git clean`/他タスクファイルの`git checkout`は使用していない。
+
+**根拠**: Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-78-RECONCILE-RESULTS-2026-09-12)、上記4件の
+`*_REPORT.md`。詳細は各REPORT本文、`OPEN_ITEMS.md` OPEN-121/135/144/
+145/146行、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 
