@@ -1,7 +1,16 @@
 # PM_GOVERNANCE — PM運用規則(正式SSOT)
 
 **管理ID: PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01**
-**最終更新: 2026-09-11(PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
+**最終更新: 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-
+CORRECTION-2026-09-12で新設14節「問題発生時のPM処理原則(Human Reviewは
+最後の手段)」[reconcile→原因切り分け→既存範囲の最小Trial→結果整理→
+QCD比較→ユーザー判断の7段階、2026-09-11タオル音声Human Review依頼を
+原則違反の事例として記録]、新設15節「コスト報告ルール(1記事あたり
+総コスト)」[Research/Ledger/Writer/Fact Check/Support/Key Phrase/TTS/
+ASR/retry/regeneration内訳、TTS同期/Batch単価分離、今回実測/量産想定/
+retry上振れ分の3区分]、9節へ新小節9-5[問題対応報告7項目順+試聴依頼の
+Artifact/playerリンク必須]を追加した。詳細は末尾「変更履歴」参照)。
+2026-09-11(PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
 2026-09-11-02で12節へ新小節12-9「他作業の完了待ち・統合報告待ちを理由に
 した報告保留の禁止」、11節へ新小節「Opus L2入力限定の運用」、3節へ
 Closeout Check項目20[UDR/VALIDATED/APPROVED/未報告Trial/未登録Open Item
@@ -671,6 +680,38 @@ observationではない)、(c) 現在進行中でまだ結果が出ていない�
 Trial)の結果ではないにもかかわらず、区別が不明瞭なまま報告された事象を
 受け、ユーザーが恒久ルールとして新設した(PM-CLOSEOUT-CONSOLIDATION-70)。
 
+### 9-5. 問題対応報告の7項目順+試聴依頼のArtifact/playerリンク必須
+(2026-09-12、ユーザー正式決定)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12**
+
+14節「問題発生時のPM処理原則」に基づく問題対応報告(failure mode・QA
+誤検知・Human Review候補等の報告)は、以下7項目の順で構成する。
+
+1. Family(対象Family、例: A-Family/Discovery等)
+2. 現象
+3. 既存対策
+4. 今回なぜ効かなかったか
+5. 追加Trial有無
+6. 結果
+7. Production判断が必要か
+
+この順は9-1の候補セクション制と矛盾しない(9-1の「未解決問題」
+「ユーザー判断」等のセクション内で、問題対応報告である場合にこの7項目
+順を用いる)。
+
+**試聴依頼はArtifact/playerリンク必須**: 問題対応報告に限らず、
+ユーザーへ試聴を依頼する場合は、実際にクリックして聴けるArtifact/
+player形式のリンクを必須とする。ローカルファイルパスの提示だけで
+Human Review依頼を行わない(9-2の`file:///...`形式URL提示ルールの
+具体化・強化であり、矛盾しない。9-2は最低限`file://`形式URLを要求して
+いるが、本節はさらに、実際にクリックして再生できる状態[Artifact公開・
+player.html等]であることを必須要件として明記する)。
+
+**経緯**: 2026-09-11のタオル音声Human Review依頼(14-4参照)が、上記
+7項目順・reconcile結果の整理を経ずに試聴依頼のみで終わっていたことを
+受け、報告フォーマットとして明文化した。
+
 **2026-09-11追記(PM-CLOSEOUT-CONSOLIDATION-73)**: 本ルールはユーザー
 回答「共通」原則の1つ(新規結果/過去再掲/進行中未結果を明示的に区別)
 として再確認された(新ルールではなく本節の再確認)。
@@ -1014,6 +1055,115 @@ Fable/Claude側でテーマを勝手に決めない。
 前提である」と同旨の再確認であり、新ルールではない)。品質・Fact
 Safety・Gate上の問題が判明した場合はこの限りではなく、従来どおり
 `USER_DECISION_REQUIRED`・STOP条件が優先する。
+
+## 14. 問題発生時のPM処理原則(Human Reviewは最後の手段)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12
+(2026-09-12、ユーザー正式決定、恒久ルール)**
+
+### 14-1. 原則
+
+問題を検知した場合、今後は「問題発生 → とりあえずHuman Review依頼」を
+基本運用としない。以下7段階の順序で処理する。
+
+1. 問題を検知する
+2. 既存仕様・過去対策とreconcileする(2-1「既存対策・仕様
+   Reconciliation Check」を先に行う。新規failure modeであっても、
+   まず既存の対策・Validator・retry/fallback機構が対象範囲か・
+   なぜ今回効かなかったかを先に確認する)
+3. 原因を切り分ける(既存対策の不足配線・実装漏れなのか、既存対策の
+   対象外[新仕様が必要]なのかを区別する)
+4. 既存範囲内で可能な最小Trialを実施する(新仕様・新閾値の追加はせず、
+   既存の承認済み機構・パラメータ内で切り分け・検証を行う)
+5. 結果を整理する
+6. QCD(品質・コスト・納期)比較を行う
+7. その上でユーザー判断を仰ぐ(判断材料が揃った状態で持っていく)
+
+### 14-2. Human Reviewの位置づけ
+
+Human Reviewは、機械的切り分けや既存対策で解決できない場合の**最後の
+判断手段**として使う。原因切り分け・reconcile・既存範囲での最小Trialを
+経ずに、直接「比較的マシなtakeをユーザーに聞いてもらう」形でHuman
+Reviewへ逃がすことを禁止する。
+
+### 14-3. 例外(従来どおりユーザー判断必須)
+
+新仕様の追加・新閾値の設定・既存仕様の意味変更・`APPROVED_FOR_
+PRODUCTION`宣言は、14-1の手順を経てもなお必要な場合、引き続き
+`USER_DECISION_REQUIRED`としてユーザー判断を仰ぐ(本節は11節「自明な
+修正の自律実施」のSTOP必須6条件、Gate 2[User Decision]と矛盾しない)。
+
+### 14-4. 経緯(原則違反の事例)
+
+2026-09-11、`PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW`
+(タオル音声Human Review、`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-
+TRIAL-11-AUDIO-01_REPORT.md`)の報告は、(a) A2/B1Bの表記ゆれ
+(「たつ/経つ」「におい/ニオイ/臭い」)・(b) B1B `full_story_part1`の
+「has dried→had dried」・(c) 共通のRepetition QA `after two months`
+誤flag、のいずれについても、既存の日本語ASR正規化・表記ゆれ対策や
+既存Secondary ASR cascade・過去のintentional-repeat false positive
+対策(2026-09-08事例)とのreconcile・原因切り分けを行わないまま、
+「6take中、比較的マシなtakeをユーザーに聴いて判断してもらう」形の
+Human Review依頼で報告を終えていた。これは14-1の手順(reconcile→
+原因切り分け→既存範囲での最小Trial→結果整理→QCD比較→ユーザー判断)を
+経ていない事例であり、本節の再発防止対象として記録する
+(`PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12`で
+ユーザーが是正指示)。
+
+## 15. コスト報告ルール(1記事あたり総コスト)
+
+**管理ID: PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12
+(2026-09-12、ユーザー正式決定、恒久ルール)**
+
+### 15-1. 対象と単位
+
+記事制作Trial・Production runでは、必ず「1記事あたりの総コスト」を
+報告する。単位はB1(B1B等)+A2を合わせた**1記事一式**とする。
+
+### 15-2. 含める内訳(可能な範囲で)
+
+Research / Ledger / Writer / Fact Check / Support / Key Phrase / TTS /
+ASR / retry / regeneration を可能な範囲で内訳表示する。ログ・script側の
+粒度(stageタグ等)により個別分離できない費目は、まとめて示しつつ
+「取得不可(理由)」を明記する(理由を書かずに数値だけを省略しない)。
+
+### 15-3. Trial特有の追加コストの分離
+
+Trial特有の追加コスト(例: 新規Verified Fact Ledger作成、A/B比較用の
+追加run等)は、通常運用コストと分離して表示する。
+
+### 15-4. TTS: 同期(Standard)/Batchの単価差の分離
+
+TTSについて、同期実行(Standard)とBatch実行で単価差がある場合、必ず
+分けて示す(既存`pricing_snapshot.json`の該当tierを参照する)。実際に
+どちらの実行経路で本Trial/runが行われたかを明記し、想定と異なる経路
+(例: 正式リリース前なのにBatchが使われていた等)が判明した場合は、
+7-1との整合確認が必要な事項として報告する(本節はコスト報告ルールで
+あり、7-1のTTS方式決定基準自体を変更するものではない)。
+
+### 15-5. 最低限記載する3区分
+
+少なくとも以下3区分を明記する。「今回¥xx」だけで終わらせない。
+
+1. **今回実測**: 実際に使われた実行経路(同期/Batch)ベースでいくら
+   かかったか
+2. **量産想定**: Batch適用時の1記事あたり見込み(今回実測がBatch実行
+   だった場合、これと同一になりうる。今回実測がStandard同期だった
+   場合は、Batch適用時の見込みを別途示す)
+3. **retry/Human Review由来の上振れ分**: 通常運用コストとの差分を
+   内数として明示する
+
+### 15-6. 通常コストとTrial/異常対応コストの区分
+
+量産原価として何が通常コストで、何がTrial固有コスト・異常対応
+(retry/Human Review)コストかを区別して示す。
+
+### 15-7. 経緯
+
+2026-09-12、`PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-
+2026-09-12`にてユーザーが恒久ルールとして正式決定した。初回適用は
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-COST-01_REPORT.md`
+(タオルTrial-11のコスト再集計、追加API費用¥0)。
 
 ---
 
@@ -1405,3 +1555,35 @@ Safety・Gate上の問題が判明した場合はこの限りではなく、従�
   限定の運用を1〜2行追記した(文書編集のみ、コード・Prompt変更なし)。
   詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
   2026-09-11-02`エントリ参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-
+  2026-09-12): 新設「14. 問題発生時のPM処理原則(Human Reviewは最後の
+  手段)」を追加し、問題検知時の処理順序(1.検知→2.既存仕様・過去対策
+  とのreconcile[2-1参照]→3.原因切り分け→4.既存範囲内での最小Trial→
+  5.結果整理→6.QCD比較→7.ユーザー判断)を恒久ルール化した。Human
+  Reviewは機械的切り分け・既存対策で解けない場合の最後の判断手段と位置
+  づけ、新仕様・新閾値・意味変更・Production採用は引き続き
+  `USER_DECISION_REQUIRED`とする例外を明記した。2026-09-11の
+  `PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW`(タオル音声
+  Human Review依頼)を、reconcile・原因切り分けを経ずに試聴依頼のみで
+  終えた原則違反の事例として14-4に記録した。新設「15. コスト報告ルール
+  (1記事あたり総コスト)」を追加し、記事制作Trial/Production runでは
+  B1+A2を合わせた1記事一式の総コストを、Research/Ledger/Writer/Fact
+  Check/Support/Key Phrase/TTS/ASR/retry/regeneration別に(取得不可な
+  費目は理由付きで)報告すること、Trial特有の追加コストの分離表示、TTS
+  同期(Standard)/Batchの単価差の分離表示、「今回実測/量産想定(Batch
+  適用時)/retry・Human Review由来の上振れ分」の3区分を最低限明記する
+  ことを恒久ルール化した。9節へ新小節「9-5. 問題対応報告の7項目順+
+  試聴依頼のArtifact/playerリンク必須」を追加し、問題対応報告は
+  Family/現象/既存対策/今回なぜ効かなかったか/追加Trial有無/結果/
+  Production判断が必要か、の7項目順で構成すること、試聴依頼は
+  ローカルファイルパスの提示だけで終わらせず実際にクリックして聴ける
+  Artifact/player形式のリンクを必須とすることを明記した(9-2の既存
+  `file://`URL提示ルールを具体化・強化するものであり矛盾しない)。
+  文書編集のみ、コード・Prompt変更なし、追加API費用¥0。経緯: 2026-09-12
+  ユーザー指示「今回の報告品質は不十分です」(タオル音声Human Review・
+  B1B Secondary ASR cascade未確認・Repetition QA根本原因未整理・News
+  日本人名表記対策の未確認をreconcileせずHuman Reviewへ逃がしていた
+  ことへの是正指示)。詳細は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12`
+  エントリ、`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-COST-01_
+  REPORT.md`参照。

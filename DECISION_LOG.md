@@ -335,6 +335,10 @@ REQUIRED)+PM_GOVERNANCE 8節へgit stash/clean禁止追記
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW: Discoveryタオル
 音声resume(Trial-11)のHuman Review 3件をSSOT反映+TTS費用集計gemini_batch
 ¥0計上バグを新規OPEN-144として起票
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12: 「問題発生→
+とりあえずHuman Review依頼」運用の是正、PM_GOVERNANCE新設14節(問題発生時のPM処理原則)・
+15節(コスト報告ルール)・9-5(問題対応報告7項目順+試聴Artifact/playerリンク必須)追加+
+タオルTrial-11コスト報告初回適用
 
 ---
 
@@ -2823,6 +2827,148 @@ PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW)。詳細は
 `FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-AUDIO-01_REPORT.md`、
 `er011_output/discovery_generalization_towels_trial_11/{a2,b1b}/
 human_review/review_package.md`、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12: 「問題発生→とりあえずHuman Review依頼」運用の是正、PM_GOVERNANCE新設14節(問題発生時のPM処理原則)・15節(コスト報告ルール)・9-5(問題対応報告7項目順+試聴Artifact/playerリンク必須)追加+タオルTrial-11コスト報告初回適用
+
+**日付**: 2026-09-12
+
+**区分**: Implementation Hardening(PM運用ルールの明文化。サービス・
+生成仕様・Production Prompt・コードは変更していない)
+
+**ユーザー指示原文(全文)**:
+
+```
+今回の報告品質は不十分です。「問題が起きた → 比較的マシなtakeをユーザーに
+聞いてもらう」ではなく、問題発生時はまず原因を切り分け、既存対策との
+reconcile、必要最小TrialまでPM側で進め、ユーザーには"判断材料が揃った
+状態"で持ってきてください。
+1. A-Family / Discovery / A2: 表記ゆれをHuman Reviewで逃がさない。
+「たつ/経つ」「におい/ニオイ/臭い」について、既存の日本語ASR正規化・
+表記ゆれ対策をRepoで確認し、既存対策があるのに今回効かなかったのか/
+そもそも対象外なのかを特定する。既存対策で解けるなら、その不足配線/
+実装漏れを是正候補として整理。今回固有の語だけでなく、同様の問題を
+起こさせないこと。新仕様が必要ならSTOPしてUSER_DECISION_REQUIRED。
+2. A-Family / Discovery / B1: `has dried → had dried`について、既存
+Secondary ASR cascadeが発火したか、結果が何であったかを事実確認。未発火
+なら「なぜ発火しなかったか」を特定。Human Reviewより前に既存cascadeで
+切り分け可能か確認する。また、full_story_part1はtake1-3で2022 survey文
+欠落、take4以降で欠落解消。このため「時間を空けたretryで改善する可能性」
+について、既存TTS retry timing監視データを再集計し、即時retry/非即時
+retry/連続NG後の次attempt PASS率/人的介入あり・なしを分けて結果だけまず
+報告すること。まだ基準未達なら仕様採用しない。十分な傾向がある場合のみ、
+正式retry方針候補としてUSER_DECISION_REQUIREDへ。
+3. 共通 / Repetition QA: 今回の`after two months`誤flagは個別Human
+Reviewで終わらせない。過去のintentional-repeat false positive対策
+(2026-09-08の既存事例含む)とreconcileし、今回なぜ`canonical_repeat_
+count: 0`になったか根本原因を特定。既存対策の不足なら最小修正Trialを
+設計・実施。新しいValidator意味変更になるならSTOPしてUSER_DECISION_
+REQUIRED。ユーザー試聴は、QA側の原因整理後に必要性を判断する。
+4. A-Family / News: 日本人名の英語表記/読みについて、過去に「人名が
+出たらネット検索して正しい英語表記/読みを事前確認し、TTS台本等へ反映
+する」対策を実施した認識あり。Trial・Decision・CURRENT_SPEC・Production
+code・Pronunciation Ledger系・Research/Search系を含めてRepo全体から
+再調査すること。必ず確認するもの: 過去管理ID/Trial内容/ユーザー承認
+有無/CURRENT_SPEC記載/Production初回経路への配線有無/Writer前処理・
+Research・Ledger・TTS safe-readingのどこに存在するか/今回のHanshin記事
+でなぜ発火しなかったか。既存対策が見つかった場合→新規対策を作らず、
+今回の未発火理由/配線漏れ/適用漏れを特定。見つからない場合→その時点で
+初めて新規対策Trial案を提示。
+5. PM運用是正: 今後は「問題発生 → とりあえずHuman Review依頼」を基本
+運用にしない。原則: 問題を検知→既存仕様/過去対策とreconcile→原因
+切り分け→既存範囲で可能な最小Trial→結果整理→QCD比較→その上でユーザー
+判断。Human Reviewは、機械的切り分けや既存対策で解けない最後の判断手段
+として使う。ただし、新仕様・新閾値・意味変更・Production採用はユーザー
+判断必須。
+6. コスト報告ルールを今後固定: 記事制作Trial/Production runでは、必ず
+「1記事あたりの総コスト」を報告する。単位: B1 + A2 を合わせた1記事一式。
+Research / Ledger / Writer / Fact Check / Support / Key Phrase / TTS /
+ASR / retry / regeneration を可能な範囲で含める。Trial特有の追加コストは
+分離表示。TTSについては、同期実行とBatchで単価差がある場合、必ず分けて
+示す。最低限、今回実測: 同期/実行経路ベースでいくら/量産想定: Batch
+適用なら1記事いくら見込み/retry/Human Review由来の上振れ分、を明記する。
+「今回¥xx」だけで終わらせない。量産原価として何が通常コストで、何が
+Trial/異常対応コストかを分ける。
+7. 今回の報告方法: まずコード変更や新Trialを勝手に広げず、上記1〜4に
+ついて事実確認・既存対策照合・必要最小の追加検証結果をまとめること。
+各項目はFamily/現象/既存対策/今回なぜ効かなかったか/追加Trial有無/
+結果/Production判断が必要か、の順で報告。試聴を依頼する場合は、
+ユーザーが実際にクリックして聞けるArtifact/playerリンクを必須とする。
+ローカルファイルパスだけでHuman Review依頼しない。
+```
+
+Sonnet(sonnet-worker)が、Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12)に基づき、
+上記ユーザー指示のうち**5(PM運用是正)・6(コスト報告ルール)・7の一部
+(7項目順・試聴リンク必須)をPM_GOVERNANCE.mdへ正式反映**した。
+1〜4(A2表記ゆれreconcile/B1B Secondary ASR+retry timing分析/
+Repetition QA根本原因/News日本人名表記再調査)は、本タスクとは別に
+並列稼働中の4件で個別に対応中であり、本タスクの範囲外(新規
+`*_REPORT.md`・`er011_output/tts_retry_cooldown_analysis_01/`が対象、
+本タスクでは触れていない)。
+
+**反映内容**:
+
+1. `docs/pm/PM_GOVERNANCE.md`新設14節「問題発生時のPM処理原則(Human
+   Reviewは最後の手段)」: 問題検知時の処理順序7段階(検知→2-1
+   Reconciliation Check→原因切り分け→既存範囲内の最小Trial→結果整理→
+   QCD比較→ユーザー判断)を恒久ルール化。Human Reviewは機械的切り分け・
+   既存対策で解けない場合の最後の判断手段と位置づけ。新仕様・新閾値・
+   意味変更・Production採用は引き続き`USER_DECISION_REQUIRED`とする
+   例外(11節のSTOP必須6条件、Gate 2と整合)を明記。2026-09-11の
+   `PM-CLOSEOUT-CONSOLIDATION-76-TOWELS-AUDIO-HUMAN-REVIEW`(タオル音声
+   Human Review依頼)を、reconcile・原因切り分けを経ずに試聴依頼のみで
+   終えた**原則違反の事例**として14-4に明記した。
+2. 新設15節「コスト報告ルール(1記事あたり総コスト)」: 記事制作
+   Trial/Production runでは、B1+A2を合わせた1記事一式の総コストを
+   Research/Ledger/Writer/Fact Check/Support/Key Phrase/TTS/ASR/
+   retry/regeneration別に(取得不可な費目は理由付きで)報告すること、
+   Trial特有の追加コストの分離表示、TTS同期(Standard)/Batchの単価差の
+   分離表示、「今回実測/量産想定(Batch適用時)/retry・Human Review
+   由来の上振れ分」の3区分を最低限明記することを恒久ルール化した。
+3. 9節へ新小節「9-5. 問題対応報告の7項目順+試聴依頼のArtifact/player
+   リンク必須」を追加。問題対応報告はFamily/現象/既存対策/今回なぜ
+   効かなかったか/追加Trial有無/結果/Production判断が必要か、の7項目
+   順で構成すること、試聴依頼はローカルファイルパスの提示だけで終わら
+   せず実際にクリックして聴けるArtifact/player形式のリンクを必須と
+   することを明記した(9-2の既存`file://`URL提示ルールを具体化・強化
+   するものであり矛盾しない)。
+4. `docs/pm/PM_BRIEF.md`へ14節・15節への案内(1〜2行)を追記した。
+5. **コスト報告ルールの初回適用**: `FAMILY-A-DISCOVERY-GENERALIZATION-
+   TOWELS-TRIAL-11-COST-01_REPORT.md`を新規作成し、タオルTrial-11
+   (A2+B1B、1記事一式)の総コストを再集計した。text-gen(Research/
+   Ledger/Writer/Fact Check/Support/Key Phrase、既存`cost_summary.json`
+   の¥117.72と検算完全一致)、audio(TTS/ASR、OPEN-144のgemini_batch
+   ¥0計上バグを訂正した実額¥62.83、公式script報告値¥12.76との差額
+   ¥50.07)を合算し、**1記事一式の総コスト(訂正後、Batch実行ベース)
+   =¥180.55**と算出した。retry/Human Review由来の上振れ分はaudio側
+   (¥62.83)の内数で¥16.00(audio側の約25.5%、記事全体の約8.9%)。
+   あわせて、本Trialが
+   `TTS_EXECUTION_MODE`未指定によりGemini Batch API(既定値)経由で
+   実行されていたこと(PM_GOVERNANCE 7-1「正式リリース前は原則
+   Standard同期」との整合が本タスクの範囲では未確認であること)を
+   **新たな観測事項として報告のみ**行った(コード修正・追加Trialは
+   実施していない、`USER_DECISION_REQUIRED`候補として記録)。
+
+**Production採用範囲外**: 本エントリはPM運用ルール(文書)の明文化と
+既存Trial artifactの読み取り再集計のみであり、Production Prompt・
+コード・費用集計script・TTS実行モードの変更、`APPROVED_FOR_PRODUCTION`
+宣言はいずれも行っていない(追加API費用¥0)。並列稼働中の4件
+(A2表記ゆれreconcile/B1B Secondary ASR+retry timing分析/Repetition QA
+根本原因/News日本人名表記再調査)の生成物・出力先には一切触れていない。
+`git stash`/`git clean`/他タスクファイルの`git checkout`は使用していない。
+
+**反映範囲**: `docs/pm/PM_GOVERNANCE.md`(14節・15節新設、9-5新設、
+ヘッダー「最終更新」・末尾「変更履歴」更新)、`docs/pm/PM_BRIEF.md`
+(案内追記)、`docs/pm/ACTIVE_TASK.md`(固定ヘッダー更新)、本エントリ、
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-COST-01_REPORT.md`
+(新規作成)。`OPEN_ITEMS.md`・`CURRENT_SPEC.md`は本タスクでは編集して
+いない(OPEN-144行の追記は別タスク[並列稼働中の4件]で対応予定)。
+
+**根拠**: ユーザー指示(2026-09-12、上記原文)、Fable(PM)からの委任
+(管理ID PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12)。
+詳細は`docs/pm/PM_GOVERNANCE.md`14節・15節・9-5、
+`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-TRIAL-11-COST-01_REPORT.md`、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

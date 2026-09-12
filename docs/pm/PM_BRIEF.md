@@ -61,7 +61,13 @@ PM Gate 1〜7・PM Closeout Mandatory Check・1記事ずつ完結原則(例外�
 `docs/pm/PM_GOVERNANCE.md` 11節「自明な修正の自律実施」、2026-09-09追記)。
 主要artifactの再生成・修正前には、旧artifactの二重最終版化を避けるため
 `docs/pm/PM_GOVERNANCE.md`「2-3. Artifact supersession確認」を必ず確認する
-(2026-09-09追記)。報告単位(Lane/Workstream/Feature/Trial群等)を基準に
+(2026-09-09追記)。問題発生時は「とりあえずHuman Review依頼」を基本運用
+とせず、`docs/pm/PM_GOVERNANCE.md`14節(reconcile→原因切り分け→既存範囲の
+最小Trial→結果整理→QCD比較→ユーザー判断の7段階、Human Reviewは最後の
+手段)に従う。記事制作Trial/Production runのコスト報告は同15節(1記事
+[B1+A2]あたり総コスト、TTS同期/Batch単価分離、今回実測/量産想定/retry
+上振れ分の3区分)に従う(いずれも2026-09-12追記)。報告単位(Lane/
+Workstream/Feature/Trial群等)を基準に
 した即時報告・未回答フル再掲・Next Action/Reminder提示の正式SSOTは
 `docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit
 Rule)」(2026-09-10追記)。報告可能な単位が出たら他の並列作業を待たず
