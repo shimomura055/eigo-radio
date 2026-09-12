@@ -1,0 +1,226 @@
+{
+  "overall_status": "POTENTIAL_DIRECTION_REVERSAL",
+  "results": [
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "fell",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "注記1: 本Ledgerは今回のProduction run専用に新規作成したものであり、",
+      "script_sentence": "In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent.",
+      "shared_numbers": [
+        "1"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "fell",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "トップトレンドの第1位は「AI & Autonomy in Robotics」であり、Analytical AI・",
+      "script_sentence": "In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent.",
+      "shared_numbers": [
+        "1"
+      ]
+    },
+    {
+      "verdict": "POTENTIAL_DIRECTION_REVERSAL",
+      "conflicts": [
+        {
+          "axis": "magnitude",
+          "category": "trend",
+          "reference_bucket": "low",
+          "candidate_bucket": "high",
+          "threshold_only": false
+        }
+      ],
+      "reason": "高確度の方向表現が逆になっている: [{'axis': 'magnitude', 'category': 'trend', 'reference_bucket': 'low', 'candidate_bucket': 'high', 'threshold_only': False}]",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "減少",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "fell",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "counter_signal_or_limitation: 自動車産業(最大セクター)自体はわずかに減少(-1%)",
+      "script_sentence": "In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent.",
+      "shared_numbers": [
+        "1"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "conflicts": [
+        {
+          "axis": "magnitude",
+          "category": "threshold",
+          "reference_bucket": "low",
+          "candidate_bucket": "high",
+          "threshold_only": true
+        }
+      ],
+      "reason": "曖昧な表現同士で方向が逆に見えるが確度が低い: [{'axis': 'magnitude', 'category': 'threshold', 'reference_bucket': 'low', 'candidate_bucket': 'high', 'threshold_only': True}]",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "以上",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "低い",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "at least",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "導入完了を保証するものではない。「20%以上」という基準ラインが相対的に低い",
+      "script_sentence": "In one survey, 80 percent of manufacturing leaders said they plan to put at least 20 percent of their improvement budget into smart manufacturing tools.",
+      "shared_numbers": [
+        "20"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rose",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "ロボット犬やヒューマノイド等)を使用する予定」と回答した製造業者は22%で",
+      "script_sentence": "The share expected to use them within two years rose to 22 percent.",
+      "shared_numbers": [
+        "22"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "increasing",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "signal_direction: increasing(将来計画)、ただしcurrent実績は依然少数派(9%)",
+      "script_sentence": "A survey cited in one report found that only 9 percent of companies were already using highly independent robots or machines.",
+      "shared_numbers": [
+        "9"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "up",
+          "confidence": "low",
+          "category": "trend"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "投資を牽引しており、例えば小型モジュール炉(SMR)関連スタートアップは2024年に",
+      "script_sentence": "More than 542,000 robots were installed worldwide in 2024, and Asia made up 74 percent of those installations.",
+      "shared_numbers": [
+        "2024"
+      ]
+    }
+  ]
+}

@@ -370,6 +370,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-90-DISCOVERY-TRIAL-12-AND-3V-STOP: Discovery N=1追加Trial-12完走(A2音声USER_DECISION_REQUIRED)+3V Phase 1b-03 STOP(Writer/Ledger未配線)+Token効率Phase 2ユーザー承認の正式反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-91-3V-PHASE1B-03-USER-ANSWERS-AND-GENERALIZATION-REGRESSION-RULE: 3V Phase 1b-03「ユーザー回答＋追加PM指示」(2026-09-12、原文全文)の正式記録(体験claimの根拠付け=B-Family共通Writer原則として採用/Tensionでの外部制約統合=任意パターンとして採用/スマホ制限新テーマ着手前に既存AI採用選考記事でのRegression実施を必須指示/Fableは汎用化のたびにRegressionを自発提案すべきという恒久PM運用フィードバック)+`docs/pm/PM_GOVERNANCE.md`への「汎用化時のRegression自発提案」ルール明確化
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-92-NEWS-TRIAL-16-HUBBLE-SATURN-UDR-RECORD: News Point品質一般化Trial-16(Hubble/Saturnテーマ)結果のSSOT反映(主要エンドポイントは天井効果で比較不能・N非対称H=6/P=4・Fact-ID別利用と質的観察で「非headline周辺factがPoint素材になる」方向性の限定的支持・Status`USER_DECISION_REQUIRED`候補a/b/c[Fable推奨(b)]・費用¥308.7で上限¥300を¥8.7超過+記録漏れ概算¥5未満の正直な記録)+OPEN-146 runtime evidence(英語一次情報源テーマでも研究者所属機関名で自然発火)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-L2-RECONCILE-03: Trend Synthesis新記事(AI investment/factories/manufacturingテーマ)配布(B1B完走PASS・A2はER-009 Foreign Token GateでSTOPPED、費用¥121.98)+Token効率Phase 2 After測定完了(Opus実読込135,397字→約23,450字、82.7%減、Fable判定`VALIDATED`[Trial]、標準化はUDR)+Discovery Trial-12 Opus L2解釈(テキスト軸悪化・A2 point_one語数超過は系統的signal・型固定継続、UDR3件)+Repetition QA RECONCILE-03修正1回目(対称正規化層prototype、Trial-12実バグ3件解消・真陽性維持・回帰35件中33 PASS、Production採用はUDR)
 
 ---
 
@@ -4532,6 +4533,144 @@ GENERALIZATION-HUBBLE-SATURN-TRIAL-16_REPORT.md`(全文)。詳細は
 `OPEN_ITEMS.md`OPEN-135/OPEN-146/OPEN-143行、`docs/pm/PM_GOVERNANCE.md`
 15節、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、`docs/pm/RESULT_PACKET.md`
 参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-93-TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-
+L2-RECONCILE-03: Trend Synthesis新記事配布+Token効率Phase 2 After測定+
+Discovery Trial-12 Opus L2解釈+Repetition QA RECONCILE-03修正1回目の
+SSOT反映
+
+**背景**: 並列稼働中の4件の結果をSSOTへ反映しGit統合する(いずれも確定済み、
+本タスクでは新規実装・API支出・Production採用のいずれも行っていない)。
+並列稼働中の他Agent(3V Phase 1b-04`er012_*`、Trend A2 Japanese Foreign
+Token Gate Reconcile)の生成物には一切触れず、stageもしていない。
+
+**(A) Trend Synthesis新記事(`FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-
+PRODUCTION-RUN-01_REPORT.md`)**: ユーザー選定テーマ「AI investment is
+reshaping factories and manufacturing」(AI投資が工場・製造業をどう変え
+始めているか)を、既存Trend Synthesis Production正式経路(無変更)で
+生成した。独立4組織(IFR・Deloitte・Manufacturing Leadership Council・
+米連邦準備制度理事会)のSignalでLedgerを構成(実費¥0、curl直接取得+手動
+構造化)。B1BはWriter→Fact Checker(REVIEW_REQUIRED、non-blocking)→
+Ledger Deviation(LEDGER_COMPLIANT)→Point Overlap QA→Scaffold→Key
+Phrase→TTS(Standard同期)→Assembly→Audio Validation Gate(OPEN-129
+opt-in ON)まで完走しPASS(duration 391.5秒、peak 0.950、clipping無し)、
+標準player(`player_std/index.html`)を作成した。A2はER-009 Japanese
+Foreign Token Gate(`classify_foreign_tokens_in_japanese_text()`)が
+日本語canonical text中の未登録英字トークン「AI」を検知し、
+japanese_title・preview・comment_1〜4・kp5日本語glossの計7segmentが
+Human Review待ちでSTOPPED(TTS呼び出し前段でブロック、自動retryせず
+承認代行もしていない)。テーマ自体が「AI」であるためほぼ全Japanese
+narrationに未対応トークンが含まれ、機構が設計どおり機能した結果として
+異常に高い割合でHuman Review待ちが生じたと機械的に切り分け済み
+(Production側のバグではない、辞書追加等の修正は`Production/Prompt/QA/
+Validator/retryコード変更禁止`のため実施していない)。OPEN-121(数字↔
+数詞Repetition QA)はB1B長尺segmentで`flagged: False`(異常なし)、
+OPEN-145(JA表記ゆれ)はA2主要segmentがGate前段で停止したため発火機会
+自体が生じず非発火、OPEN-146(固有名詞公式英語表記)は一次情報源が全て
+英語のため想定どおり非発火。総費用¥121.98(上限¥400以内)。
+
+**(B) Token効率Phase 2 After測定(`PM-TOKEN-EFFICIENCY-PHASE2-CONTEXT-
+PACKET-TRIAL-01_REPORT.md`7節)**: Discovery Trial-12のOpus L2解釈を
+context packet方式(`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`)
++progressive disclosureで実施した結果を実測した。Opus実読込文字数は
+Before代替値135,397字(`FAMILY-A-COMPLETION-A4-DISCOVERY-DESIGN-OPUS-
+REVIEW-01`実測、管理ID完全一致ではない代表値)に対し、After約23,450字
+(packet本体15,211字機械実測+追加開示約8,250字自己申告、file-size突合で
+過大申告の兆候なしと確認済み)で**約82.7%減**。Fable→Opus委任文字数は
+単発値で2,338字→1,583字(約32.3%減)。2節のrubric必須論点10項目の欠落は
+**0件**(全項目に判定・根拠を明記)。Opus自身の生ログ(`.output`)が0
+バイトで消失していたため、Agent間重複読込の定量化は不能という制約が
+残る。Fable判定: `VALIDATED`(Trial)。**packet方式のOpus L2標準化
+(全Opus L2レビューへの一般適用)はUSER_DECISION_REQUIRED**(Fable推奨:
+採用)。テンプレート改訂(packet不足点9件反映)・packet内の誤記訂正
+(`(?<!-)`の帰属箇所)は実施済み。
+
+**(C) Discovery Trial-12 Opus L2解釈(`FAMILY-A-DISCOVERY-GENERALIZATION-
+TRIAL-12-OPUS-L2-INTERPRETATION-01_REPORT.md`)**: context packet方式の
+Opus出力として、Trial-12は「Trial-11より一段クリーン」ではなく軸を
+分けると逆と判定した。プロセス軸(Local Rewrite 0・Fact Checker一発
+PASS)は改善したが、テキスト軸はTrial-11比で悪化(A2 point_one語数
+71→79語でtolerance超過幅拡大、near-duplicate A2 0→1・B1B 1→2)し、
+この悪化がそのままA2音声Human Review Lockを引き起こしたと指摘。A2
+point_one語数超過は「見落とし」ではなくN=2/2で同方向に再現した系統的
+signalと判定(悪化方向)。型固定(house phraseの置換のみ)が継続し、
+対照アーム0・題材の型分散0のため現状のデータでProduction採用を検討
+できる段階には達していないと判定。記事側near-duplicate ratio 0.554を
+PASSさせる一方で音声側Repetition QAがブロックする層間閾値不整合、
+およびA2 "twenty-four-hour"/B1B "24-hour"というレベル間表記差を新規
+指摘。RECONCILE-03の根本原因特定はコード照合で正確と判定した一方、
+一般化予見は「今後再発しうる」ではなく「A2レベルで数値付きハイフン
+複合修飾語が2回出現すれば構造的に必ず再発する決定論的事象」である
+べきと指摘した。**USER_DECISION_REQUIRED(3件、いずれもFable推奨付き、
+ユーザー未回答)**:
+1. 対照アームの先行実施(既存2テーマの記事レベルのみ、概算¥160) —
+   Fable推奨: 実施。
+2. Trial REPORT必須欄5項目(section別word count+tolerance上限、
+   near-duplicate最大ratio、caveat文の手動カウント、記事間テンプレート
+   類似、音声layerでのブロック発生有無)の追加 — Fable推奨: 採用。
+3. 層間不整合(記事側PASS/音声側ブロック)・A2/B1B数値表記差を
+   Open Item登録のみ行う — Fable推奨: 登録。
+
+**(D) Repetition QA RECONCILE-03修正1回目(`REPETITION-QA-INTENTIONAL-
+REPEAT-FALSE-POSITIVE-RECONCILE-03_REPORT.md`)**: Discovery Trial-12
+A2 `full_story_part1`の誤flagの根本原因を、canonical側tokenizerが
+"twenty-four-hour"を1トークンのまま残す一方、ASR側word-level出力が
+"24"/"-hour"の2トークンへ分割するという**トークン境界の非対称性**
+(2026-09-12承認済みの数字↔数詞同値化[2〜12域]とは別の第3の独立した
+failure mode)として特定した。対称正規化層((i)em/en/hyphenダッシュ
+境界統一[複合語対応、digit-digit境界は除外]、(ii)数詞↔算用数字同値化を
+既存2〜12域から0〜999域へ拡張、既存Production・稼働中のASR Validator
+[`er006_preprod_hardening_01_validation.py`]の実装を再利用)を
+scratchpad prototypeで検証した(repoコード未変更)。Trial-12実バグ3件
+(canonical_repeat_count 0→2で解消)、既知真陽性3パターン(towels
+point_two等)は変化なく維持、自作負例23件で誤PASS 0件、既存回帰テスト
+35件中33 PASS(FAIL 2件は意図的なスコープ限定pinテストで、スコープ拡大に
+伴う期待値更新が必要と判明したもの)。追加発見(スコープ外、実装なし):
+数字を含まないハイフン複合語("hobby-based"等)も同一構造のバグを持つ
+ことをcorpus実データ(7,781ファイルのASR word-level出力走査)で確認。
+Production採用(`er011_open121_repetition_qa_production_01.py`への正式
+実装)は**USER_DECISION_REQUIRED**(Fable推奨: 採用。"%"↔"percent"・
+序数[first〜ninety-ninth]は今回も対象外)。repoコードは未変更のまま。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-135行(Trend Synthesis要旨+Discovery
+Opus L2解釈要旨)、OPEN-142行(Token効率Phase 2 After測定要旨)、OPEN-121行
+(RECONCILE-03修正1回目要旨)へそれぞれ追記(既存本文不変)。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`へOpus L2 packet方式1件+本タスクの
+Sonnet実行分を追記。
+
+**Git反映**: `FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-
+01_REPORT.md`・新規オーケストレーションscript3本・`er011_output/
+family_a_trend_ai_manufacturing_prod_run_01/`一式(記事・audit・B1B
+assembled mp3・player_std、wav等の巨大中間ファイルは既存Trial-12配布
+時の方針([player_std配下のmp3+監査JSON+article.md+Ledgerのみ]、
+`*.wav`は元々`.gitignore`対象)を踏襲して除外)、`PM-TOKEN-EFFICIENCY-
+PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`・`FAMILY-A-DISCOVERY-
+GENERALIZATION-TRIAL-12-OPUS-L2-INTERPRETATION-01_REPORT.md`・
+`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`・
+`er011_output/discovery_generalization_wake_before_alarm_trial_12/
+opus_context_packet.md`・`er011_output/pm_agent_read_audit_01/`更新分・
+`REPETITION-QA-INTENTIONAL-REPEAT-FALSE-POSITIVE-RECONCILE-03_REPORT.md`
+をcommit・pushした。共有追跡ファイル(`er011_output/attempt_history.
+jsonl`・`er006_output/master_audio_store_01/*`・`er006_output/
+pronunciation_ledger_01/ledger.json`・`er006_output/audio_retry_
+cascade_prod_01/human_review_queue.jsonl`)は、diffが本タスク以外の
+並列Agent(pool_test_theme/wiring_theme/discovery_generalization_
+wake_before_alarm_trial_12/`er012_output`の3V Trial-09等)由来の記録と
+混在していることを確認したため、いずれも本タスクではstageしていない
+(詳細は`docs/pm/RESULT_PACKET.md`)。`CURRENT_SPEC.md`(3V Phase 1b-04
+由来の変更)・`er012_*`・`er011_output/family_a_completion_a2_trend_
+end_to_end_01/`(A2 Foreign Token Gate Reconcile由来)にも一切触れて
+いない。
+
+**根拠**: Fable(PM)からの委任(管理ID`PM-CLOSEOUT-CONSOLIDATION-93-
+TREND-AI-MANUFACTURING-PHASE2-AFTER-OPUS-L2-RECONCILE-03`)、
+`FAMILY-A-TREND-SYNTHESIS-AI-MANUFACTURING-PRODUCTION-RUN-01_REPORT.md`
+(全文)、`PM-TOKEN-EFFICIENCY-PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`
+(全文)、`FAMILY-A-DISCOVERY-GENERALIZATION-TRIAL-12-OPUS-L2-
+INTERPRETATION-01_REPORT.md`(全文)、`REPETITION-QA-INTENTIONAL-REPEAT-
+FALSE-POSITIVE-RECONCILE-03_REPORT.md`(全文)。詳細は`OPEN_ITEMS.md`
+OPEN-135/OPEN-142/OPEN-121行、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、
+`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

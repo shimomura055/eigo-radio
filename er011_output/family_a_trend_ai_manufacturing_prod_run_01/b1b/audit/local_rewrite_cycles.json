@@ -1,0 +1,66 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 2,
+    "newly_discovered_claims": [
+      "Some factories are not using AI to change their own production lines. Instead, they are making the chips, power systems, and other equipment that the wider AI economy needs.",
+      "The first visible gains from AI may therefore appear in its suppliers, before AI changes other factories’ own production lines."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "Some factories are not using AI to change their own production lines. Instead, they are making the chips, power systems, and other equipment that the wider AI economy needs.",
+        "issue": "Ledgerが確認しているのは、AIを支える半導体・電力設備向けの投資ベクトルが工場内のAI導入とは別に存在するという点であり、その投資を行う工場が自らの生産ラインではAIを使っていないという事実ではない。投資の内訳を、個々の工場の行動に拡張している。",
+        "explanation": "二つの投資ベクトルという中心構造は保っているが、Ledgerにない工場単位の否定的事実を追加している。",
+        "flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Some manufacturing investment is not aimed at using AI to change production lines; instead, it is directed toward making the chips, power systems, and other equipment that the wider AI economy needs.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "Some manufacturing investment is not aimed at using AI to change production lines; instead, it is directed toward making the chips, power systems, and other equipment that the wider AI economy needs.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "# AI Investment Is Racing Ahead of the AI Factory\n\nBy September 2026, the manufacturing world is sending two messages at once.\n\nThe first is clear: interest in AI and robots is rising quickly. Global industrial robot installations have more than doubled in ten years. A robotics group now lists AI and self-directed robots as the top robotics trend for 2026.\n\nBusiness plans tell a similar story. In one survey, 80 percent of manufacturing leaders said they plan to put at least 20 percent of their improvement budget into smart manufacturing tools. These tools include automation equipment, sensors, data systems, and AI that can make some decisions on its own.\n\nBut plans are moving faster than working systems.\n\nA survey cited in one report found that only 9 percent of companies were already using highly independent robots or machines. The share expected to use them within two years rose to 22 percent. That is a strong rise in expectations, but it also shows that most companies are not there yet.\n\nChina has placed AI robotics at the center of its national industrial strategy. Its human-shaped robots have appeared in major public demonstrations. Yet a robotics group says their abilities in real production settings are still mainly limited to demonstrations and pilot projects.\n\nThere is also another side to the story. Some factories are not using AI to change their own production lines. Instead, they are making the chips, power systems, and other equipment that the wider AI economy needs.\n\nSo the big change is not that factories have already become autonomous. It is that investment plans are growing rapidly, while real factory-floor use is developing more slowly—and in more than one direction."
+      },
+      {
+        "original_ng_sentence": "The first visible gains from AI may therefore appear in its suppliers, before AI changes other factories’ own production lines.",
+        "issue": "LedgerはAIを支える製造業への投資と工場内AI導入を区別しているが、供給側での成果が他の工場の生産ライン変化に先行するという時間的順序や予測は確認していない。",
+        "explanation": "“may”で不確実性は示しているものの、Ledgerにない因果的・時間的な先行関係を新たに推測している。",
+        "flags": [
+          "changed_fact",
+          "changed_causality",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "The AI boom may therefore show visible effects in its suppliers without necessarily changing other factories’ own production lines.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "The AI boom may therefore show visible effects in its suppliers without necessarily changing other factories’ own production lines.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 2,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### The AI boom can arrive from outside the factory\n\nThe money trail can also be surprising. More than $500 billion in private commitments has been announced for U.S. chip manufacturing. Funding for startups working on small modular nuclear reactors reached about $4 billion in 2024, roughly ten times the previous year. Some makers of transformers and power equipment already have several years of orders. A central-bank report says some districts linked stronger factory activity to data-center demand. The first visible gains from AI may therefore appear in its suppliers, before AI changes other factories’ own production lines."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]

@@ -1,0 +1,29 @@
+# AI Investment Is Racing Ahead of the AI Factory
+
+By September 2026, the manufacturing world is sending two messages at once.
+
+The first is clear: interest in AI and robots is rising quickly. Global industrial robot installations have more than doubled in ten years. The International Federation of Robotics now lists AI and self-directed robots as the top robotics trend for 2026.
+
+Business plans tell a similar story. In a Deloitte survey of 600 manufacturing leaders, 80 percent said they plan to put at least 20 percent of their improvement budget into smart manufacturing tools. These tools include automation equipment, sensors, data systems, and AI that can make some decisions on its own.
+
+But plans are moving faster than working systems.
+
+A survey cited in the Deloitte report found that only 9 percent of companies were already using highly independent robots or machines. The share expected to use them within two years rose to 22 percent. That is a strong rise in expectations, but it also shows that most companies are not there yet.
+
+China has placed AI robotics at the center of its national industrial strategy. Its human-shaped robots have appeared in major public demonstrations. Yet the robotics federation says their abilities in real production settings are still mainly limited to demonstrations and pilot projects.
+
+There is also another side to the story. Some factories are not using AI to change their own production lines. Instead, they are making the chips, power systems, and other equipment that the wider AI economy needs.
+
+So the big change is not that factories have already become autonomous. It is that investment plans are growing rapidly, while real factory-floor use is developing more slowly—and in more than one direction.
+
+### Where the robots are actually spreading
+
+Look beyond the headline numbers. More than 542,000 robots were installed worldwide in 2024, but Asia made up 74 percent of those installations. China alone accounted for 54 percent of the world total. In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent. This points to practical, sector-specific automation as a better sign of real commercial use than a spectacular robot demonstration.
+
+### The AI boom can arrive from outside the factory
+
+The money trail can also be surprising. More than $500 billion in private commitments has been announced for U.S. chip manufacturing. Funding for startups working on small modular nuclear reactors reached $3.9 billion in 2024, ten times the previous year. Some makers of transformers and power equipment already have several years of orders. The Federal Reserve says some districts linked stronger factory activity to data-center demand. The first visible gains from AI may therefore appear in its suppliers, before AI changes other factories’ own production lines.
+
+## In one line…
+
+Manufacturing is moving toward more AI and robotics investment, but the evidence points to a transition—not an already autonomous factory floor. The commitment is growing faster than the machines are becoming part of everyday production.

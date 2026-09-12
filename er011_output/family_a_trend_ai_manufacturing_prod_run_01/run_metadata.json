@@ -1,0 +1,39 @@
+{
+  "editorial_mode": "trend_synthesis",
+  "trend_gate_checklist": {
+    "note": "本チェックリストは、本タスク実施者(Claude Code)が新規作成したVerified Fact Ledger(ai_manufacturing_verified_fact_ledger_01.txt)の内容を読んで行った事前の手動判定であり、記事内容からの自動判定ロジックではない。",
+    "evaluated_at": "2026-09-12",
+    "criteria": {
+      "1_independent_signals_2plus": {
+        "result": "PASS",
+        "evidence": "SRC-401〜405(IFR、業界団体公式統計)/SRC-406〜407(Deloitte自社調査、Manufacturing Leadership Council)/SRC-408(米連邦準備制度理事会Beige Book)という4つの独立した組織による信号がある。"
+      },
+      "2_common_direction": {
+        "result": "PASS",
+        "evidence": "F-401/F-402/F-403/F-404/F-405/F-406はいずれも「AI・自律ロボットへの投資・導入意欲の高まり」という同方向のSignal。"
+      },
+      "3_temporal_or_structural_change": {
+        "result": "PASS(構造的ギャップ型)",
+        "evidence": "単純な時系列変化ではなく、投資意欲・計画調査(急拡大)と実際の稼働導入率(F-406: 現状9%)の間の構造的ギャップ、および「AIを使う製造業」と「AIのために製造する製造業」という2つの投資ベクトルの併存が中心主張(注記3)。"
+      },
+      "4_counter_signal_confirmed": {
+        "result": "PASS",
+        "evidence": "F-406(physical AIの現状実導入率はまだ9%)・F-404(IFR自身がヒューマノイドロボットの実生産能力は依然デモ・パイロット段階と明記)が、AI投資拡大Trendに対する明確なcounter-signal(限界)として注記3で明示されている。"
+      },
+      "5_not_single_source_trend": {
+        "result": "PASS",
+        "evidence": "IFR・Deloitte・Manufacturing Leadership Council・米連邦準備制度理事会という異なる調査主体に基づく(単一ソースの言い換えではない)。"
+      },
+      "6_evidence_strength_not_flattened": {
+        "result": "PASS",
+        "evidence": "Ledger内でgovernment_official_announcement(F-409)/industry_association_official_statistics(F-401〜404)/company_official_announcement(F-405/407/408)/reputable_secondary_reporting(F-406、MLC一次資料COULD_NOT_CONFIRM)を各Factごとにevidence_strengthとして明示的に区別している。"
+      }
+    },
+    "verdict": "TREND_READY(本タスク実施者による事前手動判定)",
+    "mode_determination_2question_test": {
+      "q1_single_origin_question": "Main Storyを『[日付]にXが起きた』という1文で書いても要点は失われないか? → NO(単一の出来事ではなく、複数の独立調査が示す投資意欲の急拡大と、実際の稼働導入の現状との間のギャップという集約が主張の本体)",
+      "q2_aggregation_question": "いずれか1つのSignalを除いても中心的主張は大きく変わらないか? → YES(例: F-404[中国の国家戦略]を除いても、F-401/F-403/F-405/F-406による「投資拡大と実導入のギャップ」という中心主張は他のSignalで成立し続ける)",
+      "determination": "TREND_SYNTHESIS"
+    }
+  }
+}

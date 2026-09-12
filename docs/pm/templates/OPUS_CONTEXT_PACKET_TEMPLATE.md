@@ -6,6 +6,17 @@
 `docs/pm/PM_GOVERNANCE.md` 11節「Opus L2入力限定の運用」、
 `.claude/agents/opus-consultant.md`「入力範囲」節。
 
+改訂: `PM-TOKEN-EFFICIENCY-PHASE2-TEMPLATE-REVISION-01`(2026-09-12)。
+Discovery Trial-12 Opus L2レビュー(`FAMILY-A-DISCOVERY-GENERALIZATION-
+TRIAL-12-OPUS-L2-INTERPRETATION-01_REPORT.md`末尾「packet不足点(Phase 2
+改善用)」9件、`PM-TOKEN-EFFICIENCY-PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`
+7-5節に集約)を反映し、(b)へ7小節を追加・(c)へGrep確認欄を追加・(f)へ
+計測項目を追加した。**packet総量の目安は2〜3万字以内**とする。本改訂で
+記事本文等の転記分が増える一方、その転記によりOpusのProgressive
+Disclosure(追加ファイル読込)が減るはずであり、**増えた転記分は
+Progressive Disclosureの削減で相殺されるべき**(転記後もOpusが同じ
+ファイルを追加で読む場合はpacket化の失敗であり、次回改訂で見直す)。
+
 この雛形は**フォーマットの型のみ**を定めるものであり、正式ルール
 (PM_GOVERNANCE.md・opus-consultant.md)を上書き・追加しない。既存ルール
 「重要contextを省いて精度を落とすことは禁止」は本雛形にもそのまま適用される。
@@ -28,6 +39,18 @@ opus-consultantへ渡す(元REPORT全文・巨大SSOT全文を追加で渡さな
 3. (必須論点チェックリスト該当項目をここに転記。詳細は
    `PM-TOKEN-EFFICIENCY-PHASE2-CONTEXT-PACKET-TRIAL-01_REPORT.md`
    「Opusレビュー品質rubric」節を参照し、対象Trialに合わせて具体化する)
+
+### 論点と材料の対応チェック(必須)
+
+上記で立てた論点それぞれについて、判定に必要な**材料(本文・成果物・
+数値)が(b)/(c)に実際に含まれているか**を1行で確認する。材料を用意
+できない論点は、ここで論点から外すか、(e)のProgressive Disclosureで
+読ませる前提を明記する(「材料なしで論点だけ立てる」ことを禁止する)。
+
+| 論点番号 | 必要な材料 | (b)/(c)のどこにあるか | 不足時の扱い |
+|---|---|---|---|
+| 1 | 例: Trial-12記事本文 | (b)「記事本文」節 | (不足なし) |
+| … | … | … | … |
 
 ---
 
@@ -58,6 +81,82 @@ Sonnet REPORTの「要点(5行)」に相当する要約と、比較に使う結�
 (表の行は対象Trialの必須論点チェックリストに合わせて増減してよい。
 数値は実測値のみを記載し、推定値は「推定」と明記する。)
 
+### 記事本文(必須転記)
+
+対象記事(A2/B1B等)の`parts.json`相当の**全文**(通常約4,000〜5,000字)を
+ここに転記する。本文読込なしでは①内容の具体的判定②語数超過の実感③
+near-duplicate文脈④house phrase再出現、などが検証不能になり、
+Progressive Disclosureで結局読ませることになる(Trial-12 packetでの
+実測: 本文なしで4ファイル追加読込が発生。**最も費用対効果が高い改善点**)。
+複数レベル・複数テーマを比較する場合はそれぞれ全文転記する。
+
+```
+(A2 parts.json相当 全文をここに貼る)
+```
+
+```
+(B1B parts.json相当 全文をここに貼る)
+```
+
+### 語数target/tolerance実数値表
+
+boolean(超過/非超過)だけでなく、**target語数・tolerance上限の実数値**
+そのものを記載する。実数値がないと超過幅の逆算(推定)が必要になる
+(Trial-12 packetでの実測不備)。
+
+| セグメント | target語数 | tolerance上限 | 実測語数 | 超過幅 |
+|---|---|---|---|---|
+| A2 point_one | | | | |
+| B1B point_two | | | | |
+
+### near-duplicate実文
+
+QAが検出したnear-duplicate pair(ratio値等)の**該当2文の実文**を転記する
+(ratio数値のみでは、記事QAと音声QAの層間不整合のような論点に到達
+できない、Trial-12 packetでの実測不備)。
+
+| ペア | 文A | 文B | ratio |
+|---|---|---|---|
+| | | | |
+
+### 比較対象Trialの定型句
+
+前回Trial等、比較対象となる`in_one_line`/heading等の**定型句そのもの**
+を転記する(型/house phraseの継続性判定には比較対象の実文が要る、
+Trial-12 packetでの実測不備)。
+
+| 対象Trial | in_one_line | heading | その他定型句 |
+|---|---|---|---|
+| | | | |
+
+### comparison artifact生成有無
+
+`comparison.html`等、目視比較用artifactが**今回生成されたか否か**を
+明記する(未記載だと論点の充足判定が「不明」になる、Trial-12 packetでの
+実測不備)。
+
+- 生成有無: 生成した/生成していない
+- 生成した場合のパス: 
+
+### 費用按分単位
+
+費用(¥換算)がある場合、その**按分単位**(テーマ単位/レベル単位/記事
+単位など)を明記する(単位が曖昧だと規模見積りに推定を挟む必要がある、
+Trial-12 packetでの実測不備)。
+
+- 按分単位: 
+- 単価(該当単位あたり): 
+
+### failure modeの条件差
+
+レベル間の表記差(例: A2 "twenty-four-hour" vs B1B "24-hour")など、
+**同じ問題が条件によって現れ方・発生有無が変わる差分**があれば記載する
+(この条件差がfailure modeの一般化可否の核心になることがある、
+Trial-12 packetでの実測不備)。
+
+- 条件差の内容: 
+- どの条件で発生し、どの条件で発生しないか: 
+
 ---
 
 ## (c) 必要なProduction code/spec sectionの該当行範囲のみ
@@ -66,10 +165,16 @@ Sonnet REPORTの「要点(5行)」に相当する要約と、比較に使う結�
 ファイル全文の貼り付け禁止)。Opusが行範囲を自分でReadする場合はこの一覧を
 そのまま使わせる。
 
-| ファイル | 行範囲 | この範囲が必要な理由 |
-|---|---|---|
-| `er003_v1_n3_01_articles_generate.py` | 例: 794-1138行 | Fact Checker→Ledger Deviation→Local Rewriteの実行順を確認するため |
-| … | … | … |
+**コード帰属(どの実装がどの振る舞いをするか)を記述する場合は、
+`ファイル名:行番号`を必須とし、Sonnetが実際にGrepで実在確認したことを
+「Grep確認」列に明記する**(未確認のまま記憶や推測で帰属を書くと誤記の
+リスクがある。Trial-12 packetで`(?<!-)`の帰属先を誤記した実例があり、
+Opus L2レビューが指摘するまで訂正されなかった)。
+
+| ファイル | 行範囲 | この範囲が必要な理由 | Grep確認 |
+|---|---|---|---|
+| `er003_v1_n3_01_articles_generate.py` | 例: 794-1138行 | Fact Checker→Ledger Deviation→Local Rewriteの実行順を確認するため | 済(コマンド/結果概要を一言) |
+| … | … | … | … |
 
 ---
 
@@ -95,14 +200,22 @@ Fableへ渡す前段としてSonnetが作成した所見・懸念・未解決点
 
 Sonnetが本packetを完成させた時点で、以下を記入する。
 
-- (a)論点セクション: ____字
-- (b)主要数値表・要点セクション: ____字
-- (c)Production code/spec抜粋セクション: ____字
+- (a)論点セクション(論点と材料の対応チェック含む): ____字
+- (b)主要数値表・要点セクション(記事本文・語数実数値表・near-duplicate
+  実文・比較対象定型句・comparison artifact有無・費用按分単位・
+  failure mode条件差の7小節を含む): ____字
+  - うち記事本文小節のみ: ____字(参考: target目安4,000〜5,000字)
+- (c)Production code/spec抜粋セクション(Grep確認欄含む): ____字
 - (d)Sonnet要約セクション: ____字
 - (e)Progressive Disclosure指示文: ____字
-- packet合計文字数: ____字
+- packet合計文字数: ____字(目安2〜3万字以内。超過する場合は理由を
+  1行で記載する)
+- 前回packet(改訂前)との差分: 増えた文字数の主因(例: 記事本文転記)
+  と、それによって不要になったはずのProgressive Disclosure読込先を
+  1行で対応付ける
 - (参考)雛形自体の文字数(見出し・記入例・説明文を含む未記入状態、
-  Python `len()`実測): 2,637字
+  Python `len()`実測): 2,637字(2026-09-12改訂前の値。改訂後の値は
+  次回packet作成時に実測して更新する)
 
 Opus側は、診断完了後に以下を追記する(opus-consultant最終メッセージへの
 自己申告、`.claude/agents/opus-consultant.md`の既存指示と整合させる)。
