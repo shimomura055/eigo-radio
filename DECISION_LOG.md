@@ -356,6 +356,10 @@ full_story_part2採用+News人名Trial設計完了の反映
 OPEN-144 Gemini Batch費用集計バグ修正完了+TTS Trial harness実行モード
 既定値の適用範囲拡大監査+TTS retry timing選別効果reanalysis(REJECTED/
 Fable判定USER_DECISION_REQUIRED)の反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-82-JA-ASR-VARIANT-AND-LEDGER-SPELLING-TRIALS:
+JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
+(OPEN-146)の並列稼働2件、いずれもTrial closeout=VALIDATEDのSSOT反映
+(UDR#11/UDR#12新規、Production採用は未承認)
 
 ---
 
@@ -3355,6 +3359,81 @@ PM-CLOSEOUT-CONSOLIDATION-81-COST-FIX-TTS-MODE-RETRY-REANALYSIS)、
 `OPEN-144-GEMINI-BATCH-COST-ACCOUNTING-FIX-01_REPORT.md`、
 `TTS-RETRY-TIMING-SELECTION-EFFECT-REANALYSIS-01_REPORT.md`。詳細は
 `OPEN_ITEMS.md`OPEN-135/142/143/144行、`docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-82-JA-ASR-VARIANT-AND-LEDGER-SPELLING-TRIALS: JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15(OPEN-146)の並列稼働2件、いずれもTrial closeout=VALIDATEDのSSOT反映(UDR#11/UDR#12新規、Production採用は未承認)
+
+並列稼働中だった2件のTrial結果(いずれもFable判定`VALIDATED`[Trial]、
+Production採用はユーザー判断待ち)をSSOTへ反映した。本タスクでは
+Production関数・Production Ledger・`CURRENT_SPEC.md`の変更・API支出は
+ゼロ。
+
+**A. `JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01`
+(OPEN-145、初回+修正1回目+修正2回目)**: 個別語テーブルを使わない
+追加型設計(候補B形態素解析fugashi/unidic-lite・候補C一般正規化・
+Candidate D-1漢数字位取りの一般正規化・Candidate D-2濁点差Cascade
+再確認)を段階的に実装した。自作テストセット82/82(100%)通過、過去
+実データMISMATCH 7件中5件を解消(残り2件[湿度/死図塔、しばられず/
+縛られる]は真の内容誤りのため意図的に未解消のまま)、誤PASS 0件・
+過去PASS 72件のregression 0件・既存offline regression(er007/er011
+wiring08)全PASSを実測で確認した。追加費用¥0、LLM呼び出しゼロ
+(候補生成部分のみoffline確認)。Trial closeout判定: **VALIDATED**。
+Production配線案は報告書「修正2回目」6節に記載(挿入位置・新規feature
+flag`FEATURE_FLAG_A2_KANJI_NUMERAL_GENERALIZATION_ENABLED`等・回帰
+テスト追加分)。**UDR#11(新規)**: (a)配線案どおりProduction採用する、
+(b)追加検証(長音符・助数詞ギャップ等)まで保留する。Fable推奨は(a)。
+
+**B. `FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15`
+(OPEN-146、本体+修正1回目)**: Verified Fact Ledgerへ日本人名の
+`canonical_en_spelling`(公式英語表記)を追記した改訂Ledger(条件F)を
+N=6(A2×3+B1B×3)で検証した。本体: 条件FでNG 0/6・Fact Checker到達率
+100%(対照群条件E 1/6から改善)・固有名詞60/60完全一致、実測費用
+¥121.2。修正1回目(追加費用¥0、既存article.md 36記事の機械解析による
+直接計測): 伊原陵人は公式表記なしの条件A〜E(N=30記事)全32箇所で
+100%誤り(Rihito/Rito/Ryoto/Ryohto/Taketoの5通りに揺れ)→条件Fで
+9/9正、伏見寅威は8箇所中7箇所(87.5%)誤り→条件Fで5/5正、Fisher
+正確検定p=6.31×10⁻⁷。副次発見: 条件A〜Eの30記事中15箇所でFact
+Checker verdict=PASSにもかかわらず人名綴りが誤っていた(FC検出の
+ムラ、Ledger側予防の方が確実な対策であることが裏付けられた)。限界:
+単一題材(阪神-広島戦)・単一の選手構成に限定され、他テーマへの
+一般化は未検証。Trial closeout判定: **VALIDATED**。**UDR#12
+(新規)**: (a)報告書6節の最小配線(Ledger schemaへ`canonical_en_
+spelling`追加+Research取得拡張+Writer指示、`CURRENT_SPEC.md`改訂を
+伴う)を承認する、(b)他テーマでの一般化Trialを先に実施する、(c)保留
+する。Fable推奨は(a)(Trial-15設計どおりの最小配線を採用し、他テーマ
+での一般化はProduction初回runのruntime evidenceで確認する)。
+
+**再現性確保**: News Trial-15修正1回目のscratchpad一時分析script
+(spelling variance direct measurement)を`er011_news_spelling_
+variance_analysis_15.py`としてrepoへコピーし(パスをrepo相対
+[スクリプト自身の場所基準]へ修正、ロジック・出力先は無変更)、実行
+して既存`spelling_variance_analysis.json`とMD5ハッシュ完全一致
+(`50a814415de85e643ebf9d468c3ddfcc`)を確認した(追加API呼び出し
+ゼロ、¥0)。
+
+**反映範囲**: `OPEN_ITEMS.md`(OPEN-135/145/146行)、本エントリ+
+索引1行、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(2 Trial分)、
+`docs/pm/ACTIVE_TASK.md`固定ヘッダ。Git反映: 2件のREPORT
+(`JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01_REPORT.md`、
+`FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15_REPORT.md`)、
+`er011_ja_asr_variant_trial_01*.py`(全rev)、`er011_output/
+ja_asr_variant_trial_01/`、`er011_news_ledger_canonical_spelling_
+trial_15_run.py`、`er011_news_spelling_variance_analysis_15.py`
+(新規)、`er011_output/news_ledger_canonical_spelling_trial_15/`、
+上記SSOTファイルをcommit。並列稼働以外のファイル・Production
+コード・他タスクの生成物には一切触れていない。`git stash`/`git
+clean`/他タスクファイルの`git checkout`は使用していない。
+
+**Production採用範囲外**: 本タスクではコード変更・API支出はゼロ
+(先行タスクのTrial結果を検証・反映したのみ)。UDR#11・UDR#12は
+いずれもProduction採用可否をユーザーが判断するまで未承認のまま
+維持する。
+
+**根拠**: Fable(PM)からの委任(管理ID
+PM-CLOSEOUT-CONSOLIDATION-82-JA-ASR-VARIANT-AND-LEDGER-SPELLING-
+TRIALS)、`JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01_
+REPORT.md`、`FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15_
+REPORT.md`。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
+RESULT_PACKET.md`参照。
 
 ## 参照元
 

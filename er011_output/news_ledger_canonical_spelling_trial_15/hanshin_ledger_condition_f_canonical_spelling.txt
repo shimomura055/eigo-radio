@@ -1,0 +1,181 @@
+ER-003-A2-B1-N3-01 — THEME 1 (Hanshin) Verified Fact Ledger(A2/B1共通Source of Truth)
+テーマ: 2026年8月16日、広島東洋カープ vs 阪神タイガース(マツダスタジアム)
+作成方法: WebSearch/WebFetchによる公式サイト・NPB公式・報道機関の直接調査
+Research実施日時: 2026-08-16(セッション内、日本時間夜)
+情報cutoff: 2026-08-16の試合終了時点の報道を採用対象とする。
+
+【Source確認の経緯(重要)】
+初回のWebFetch(阪神タイガース公式サイトのトップスコアページ)は具体的な
+スコアを含まない要約しか得られなかった。2回目のNPB公式サイトのFetchでは
+要約モデルが「1-8で阪神敗戦」と誤読した(実際は「広島1-阪神8」で阪神の
+勝利)。この時点でSource間の見かけ上の矛盾があったため、以下3つの独立
+Sourceで再確認し、矛盾を解消した:
+  (1) Yahoo!スポーツ プロ野球 該当試合詳細ページ(試合ID 2021039286)
+  (2) マイナビニュース記事(2026-08-16付)
+  (3) WebSearch経由の複数メディア要約(勝利投手・敗戦投手名を含む)
+3つのSourceはすべて、スコア・勝敗・主要選手名(佐藤輝明、モンテロ、
+伊原、森)について完全に一致した。よって最終結果は確定と判断する。
+
+選定angle: 阪神は初回の佐藤輝明の2ランホームランで早々に主導権を握り、
+先発伊原陵人が5回2安打1失点と試合をつくったことで、そのリードを終始
+守り切った。広島は5回のモンテロのソロホームラン1点のみに抑えられ、
+阪神は7回・8回にも加点して8-1の完勝で試合を締めくくった。
+「早い先制点+安定した先発投球でリードを守り切った完勝」という単一の
+中心ストーリーに絞る(inning-by-inning recapにしない)。
+
+タグ体系:
+  [CONFIRMED_FACT] = 独立した複数の情報源で裏付けられる事実
+  [OFFICIAL_RESULT] = 公式試合結果(スコア・勝敗・個人記録)
+
+=== 中心Fact ===
+
+[OFFICIAL_RESULT] FACT-01: 2026年8月16日(日)、マツダスタジアムで行われた
+公式戦で、阪神タイガースが広島東洋カープに8-1で勝利した。
+  source: Yahoo!スポーツ(試合ID 2021039286詳細ページ)、マイナビ
+  ニュース(2026-08-16)、WebSearch経由の複数メディア要約が一致
+  date_or_period: 2026年8月16日(日)18:00開始
+  confidence: 高(3つの独立Sourceが完全一致)
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED(スコアは意味そのものなので
+  正確な数字を維持する)
+  usable: yes
+
+[CONFIRMED_FACT] FACT-02: 阪神は1回に佐藤輝明のセンターへの2ランホーム
+ランで2点を先制した。
+  source: Yahoo!スポーツ、マイナビニュース、両者一致
+  date_or_period: 試合1回表(阪神の攻撃)
+  confidence: 高
+  number_classification: ANCHOR
+  exactness_requirement: EXACT_REQUIRED
+  usable: yes
+
+[CONFIRMED_FACT] FACT-03: 阪神の先発投手・伊原陵人は5回を2安打1失点で
+まとめ、試合を作った。伊原は今季4勝目(2敗)を挙げた。
+  source: Yahoo!スポーツ詳細ページ
+  date_or_period: 2026年8月16日の試合
+  confidence: 高
+  number_classification: SUPPORTING
+  exactness_requirement: APPROXIMATE_OK(「5回を2安打1失点」という
+  安定した投球内容が要点。防御率等の副次的数字は不要)
+  usable: yes
+
+[CONFIRMED_FACT] FACT-04: 広島の得点は5回裏、E・モンテロ(フルネーム:
+Elehuris Montero、広島東洋カープ公式サイトで確認済み)のソロホーム
+ランによる1点のみだった。
+  source: Yahoo!スポーツ、マイナビニュース、両者一致。フルネームは
+  広島東洋カープ公式サイト選手ページで確認(独立Fact Checkerの指摘を
+  受けて追加検証)
+  date_or_period: 試合5回裏
+  confidence: 高
+  number_classification: SUPPORTING
+  exactness_requirement: EXACT_REQUIRED(広島の得点源が「モンテロの
+  ソロホームランのみ」という点が対比の核)
+  usable: yes
+  notes_for_writer: 選手の心理状態("he stayed calm"、"it gave the
+  home team some hope"等)は試合記録から確認できないため書かない。
+  客観的に確認できる事実(誰が・何回に・何をしたか)のみを書く
+
+[CONFIRMED_FACT] FACT-05: 阪神は7回に坂本誠志郎の適時打・代打伏見寅威の
+適時打、8回に坂本の適時二塁打で加点し、リードを広げた。
+  source: Yahoo!スポーツ詳細ページ
+  date_or_period: 試合7回・8回(阪神の攻撃)
+  confidence: 高
+  number_classification: SUPPORTING
+  exactness_requirement: APPROXIMATE_OK(「終盤にも追加点を重ねた」と
+  いう傾向が要点。全打点の内訳を逐一読み上げる必要はない)
+  usable: yes
+
+[CONFIRMED_FACT] FACT-06: 広島の敗戦投手は森翔平(今季1勝3敗)。
+  source: Yahoo!スポーツ詳細ページ
+  confidence: 高
+  number_classification: DISPENSABLE(記事の核心ではないため、
+  B1本文で触れるかは任意。Key Phraseやbackgroundとしての利用は可)
+  exactness_requirement: EXACT_REQUIRED(使う場合は正確な氏名・成績)
+  usable: yes
+
+[CONFIRMED_FACT] FACT-07: 試合時間は3時間5分、観客数31,645人だった。
+  source: Yahoo!スポーツ詳細ページ
+  confidence: 高
+  number_classification: DISPENSABLE
+  exactness_requirement: APPROXIMATE_OK
+  usable: yes(使わなくてもよい)
+
+=== この記事で扱わない情報(スコープ限定) ===
+- リーグ順位表・優勝マジック等のシーズン全体文脈(今回は単発試合の
+  ストーリーに絞る)
+- 個々の選手の年間成績詳細(打率・防御率の細かい推移等)
+
+=== 参照した情報源一覧 ===
+1. Yahoo!スポーツ プロ野球「2026年8月16日 広島東洋カープ vs.阪神タイガース」
+   試合詳細ページ(試合ID 2021039286)
+   https://baseball.yahoo.co.jp/npb/game/2021039286/top
+2. マイナビニュース「広島 vs 阪神 2026年8月16日のプロ野球速報」
+   https://news.mynavi.jp/article/20260816-4706896/
+3. NPB.jp 日本野球機構「阪神タイガース 試合結果」(2026年度8月、
+   8月16日時点の各球団結果一覧より)
+   https://npb.jp/bis/teams/results_t_08.html
+4. WebSearch経由の複数メディア要約(勝利投手・敗戦投手名の裏付け)
+
+=== 追加Fact(Trial-14 条件E: A+FACT-11/14の2件のみ、機械的抜粋) ===
+管理ID: FAMILY-A-NEWS-STAGE4-LEDGER-ENRICHMENT-DISAMBIGUATION-TRIAL-14
+作成方法: 新規Web調査は行っていない(追加research費用¥0)。既存の
+Trial-12条件B用Ledger(hanshin_ledger_condition_b_enriched.txt、無変更)
+から、FACT-11(佐藤輝明28号本塁打の球種)・FACT-14(順位・ゲーム差)の
+ブロックのみを正規表現で機械的に抽出し、文言を一切変更せずそのまま
+連結したものである。
+
+[CONFIRMED_FACT] FACT-11: 佐藤輝明の本塁打は、森がカウント1ボール
+1ストライクから投じた3球目のツーシームを捉え、バックスクリーンへ
+運んだものだった。この28号で、試合終了時点の本塁打数はチームメート
+の森下翔太の29本に1本差となった。
+  source: デイリースポーツ、日刊スポーツ、東スポWEB(いずれもモデル
+  報告、URL annotation確認済み[news.livedoor.com記事1件])
+  date_or_period: 1回表2死一塁
+  confidence: 中(同上の理由。exactness_requirementに関わる打球詳細
+  であり、Trial実施者による個別再確認は特に推奨)
+  number_classification: SUPPORTING
+  exactness_requirement: EXACT_REQUIRED
+  usable: yes
+  notes: 一部媒体に打球速度・飛距離の数値もあったが、信頼できる複数
+  の独立ソースで確認できなかったため採用しなかった(モデル報告)。
+
+[CONFIRMED_FACT] FACT-14: 阪神はこの勝利で連敗を2で止め、首位を維持
+して2位・巨人とのゲーム差も2のままだった。広島は連勝が2で止まり、
+開幕カード以来となる3連勝を逃した。
+  source: NPB公式「阪神タイガース2026年度試合結果」、日刊スポーツ、
+  東スポWEB、スポニチアネックス、デイリースポーツ(モデル報告、URL
+  annotation確認済み[npb.jp/bis/teams/results_t_08.html])
+  date_or_period: 2026年8月16日の全試合終了時点
+  confidence: 中(同上の理由)
+  number_classification: SUPPORTING
+  exactness_requirement: EXACT_REQUIRED
+  usable: yes
+  notes: 阪神の順位・ゲーム差はNPB公式の同日欄でも「1位、+2.0」と
+  確認(モデル報告)。広島は3連戦自体には2勝1敗で勝ち越している。
+
+=== 条件E usable fact数の集計(Trial実施者による機械集計) ===
+条件A由来(ANCHOR+SUPPORTING、FACT-01〜05): 5件
+条件B由来(このLedgerで採用したSUPPORTING、FACT-11/14): 2件
+usable(ANCHOR+SUPPORTING)合計 = 7件
+
+
+=== 固有名詞の公式英語表記(Trial-15、Web確認済み) ===
+管理ID: FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15
+作成方法: 条件E Ledger(無変更、上記本文)本文から機械抽出+目視で網羅した固有名詞に対し、Web検索(WRITER_MODELのweb_searchツール、1回のAPI実行)で公式英語表記を確認し追記した。以下は日本語表記=公式英語表記の対応のみを機械的に転記したもの(出典URLはcanonical_spelling_research_raw.json参照)。
+
+canonical_en_spelling: 佐藤輝明 = Teruaki Sato
+canonical_en_spelling: 伊原陵人 = Takato Ihara
+canonical_en_spelling: 森翔平 = Shohei Mori
+canonical_en_spelling: 坂本誠志郎 = Seishiro Sakamoto
+canonical_en_spelling: 伏見寅威 = Torai Fushimi
+canonical_en_spelling: 森下翔太 = Shota Morishita
+canonical_en_spelling: E・モンテロ（エレウリス・モンテロ） = Elehuris Montero
+canonical_en_spelling: 阪神タイガース = Hanshin Tigers
+canonical_en_spelling: 広島東洋カープ = Hiroshima Toyo Carp
+canonical_en_spelling: マツダスタジアム = MAZDA Zoom-Zoom Stadium Hiroshima
+
+
+=== 固有名詞の英語表記について(Trial-15、Ledger内での伝達) ===
+このLedgerに`canonical_en_spelling: <日本語表記> = <English>`という形式で
+記載がある固有名詞は、必ずこの英語表記をそのまま使用すること。自己判断で
+別のローマ字表記を作らないこと。

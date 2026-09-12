@@ -1,0 +1,6810 @@
+{
+  "headline_metrics": {
+    "note": "最も揺れが検出された2エンティティの要約(全文詳細はentity_table_person参照)",
+    "伊原陵人_given_name_Takato": {
+      "AE_pooled_occurrences": 32,
+      "AE_pooled_correct": 0,
+      "AE_pooled_error_rate": 1.0,
+      "AE_pooled_distinct_wrong_variants": {
+        "Rito": 6,
+        "Ryohto": 2,
+        "Rihito": 19,
+        "Ryoto": 4,
+        "Taketo": 1
+      },
+      "F_occurrences": 9,
+      "F_correct": 9
+    },
+    "伏見寅威_given_name_Torai": {
+      "AE_pooled_occurrences": 8,
+      "AE_pooled_correct": 1,
+      "AE_pooled_error_rate": 0.875,
+      "AE_pooled_distinct_wrong_variants": {
+        "Tora": 4,
+        "Tai": 1,
+        "Torae": 1,
+        "Tori": 1
+      },
+      "F_occurrences": 5,
+      "F_correct": 5
+    },
+    "other_5_entities_(Sato/Sakamoto/Mori/Morishita/Montero)": "AE・Fともに揺れ0件(全occurrence が公式表記と完全一致)"
+  },
+  "meta": {
+    "management_id": "FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15",
+    "task": "Fable修正指示1回目(¥0追加分析、新規API呼び出しなし、既存article.md機械解析のみ)",
+    "condition_to_directory_and_source_trial": {
+      "A": {
+        "dir": "news_ledger_enrichment_ab_trial_12/{a2,b1b}/current/run{1,2,3}",
+        "source_trial": "Trial-12",
+        "ledger": "FACT-01~07(現行Ledger)"
+      },
+      "B": {
+        "dir": "news_ledger_enrichment_ab_trial_12/{a2,b1b}/enriched/run{1,2,3}",
+        "source_trial": "Trial-12",
+        "ledger": "A+FACT-08~14(拡充)"
+      },
+      "C": {
+        "dir": "news_ledger_enrichment_ab_trial_12/leaveout_c/{a2,b1b}/run{1,2,3}",
+        "source_trial": "Trial-12b",
+        "ledger": "leaveout(抜き取り対照)"
+      },
+      "D": {
+        "dir": "news_ledger_enrichment_ab_trial_12/twofact_d/{a2,b1b}/run{1,2,3}",
+        "source_trial": "Trial-14",
+        "ledger": "A+FACT-08/09(2件追加)"
+      },
+      "E": {
+        "dir": "news_ledger_enrichment_ab_trial_12/twofact_e/{a2,b1b}/run{1,2,3}",
+        "source_trial": "Trial-14",
+        "ledger": "A+FACT-11/14(2件追加、canonical_en_spellingなし)"
+      },
+      "F": {
+        "dir": "news_ledger_canonical_spelling_trial_15/condition_f/{a2,b1b}/run{1,2,3}",
+        "source_trial": "Trial-15",
+        "ledger": "E+canonical_en_spelling(10件)"
+      }
+    },
+    "extraction_rules_person": [
+      {
+        "entity_jp": "佐藤輝明",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Sato\\b",
+        "official_given_name": "Teruaki",
+        "official_full": "Teruaki Sato"
+      },
+      {
+        "entity_jp": "伊原陵人",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Ihara\\b",
+        "official_given_name": "Takato",
+        "official_full": "Takato Ihara"
+      },
+      {
+        "entity_jp": "森翔平",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Mori\\b(?!shita)",
+        "official_given_name": "Shohei",
+        "official_full": "Shohei Mori"
+      },
+      {
+        "entity_jp": "坂本誠志郎",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Sakamoto\\b",
+        "official_given_name": "Seishiro",
+        "official_full": "Seishiro Sakamoto"
+      },
+      {
+        "entity_jp": "伏見寅威",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Fushimi\\b",
+        "official_given_name": "Torai",
+        "official_full": "Torai Fushimi"
+      },
+      {
+        "entity_jp": "森下翔太",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Morishita\\b",
+        "official_given_name": "Shota",
+        "official_full": "Shota Morishita"
+      },
+      {
+        "entity_jp": "E・モンテロ",
+        "regex": "\\b([A-Z][a-zA-Z]*)[ \\t]+Montero\\b",
+        "official_given_name": "Elehuris",
+        "official_full": "Elehuris Montero"
+      }
+    ],
+    "extraction_rules_org_or_facility": [
+      {
+        "entity_jp": "阪神タイガース",
+        "regex": "\\bHanshin\\s+Tigers?\\b",
+        "official_full": "Hanshin Tigers"
+      },
+      {
+        "entity_jp": "広島東洋カープ",
+        "regex": "\\bHiroshima\\s+(?:Toyo\\s+)?Carps?\\b",
+        "official_full": "Hiroshima Toyo Carp"
+      },
+      {
+        "entity_jp": "マツダスタジアム",
+        "regex": "\\b(?:MAZDA|Mazda)\\s+(?:Zoom-Zoom\\s+)?Stadium(?:\\s+Hiroshima)?\\b",
+        "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima"
+      }
+    ],
+    "extraction_note": "人名5種は「姓の直前の与えられた名トークン(先頭大文字の連続英字列)」を正規表現でキャプチャし、Trial-15段階1で確定した公式のgiven nameと文字列完全一致で比較した(大文字小文字区別、部分一致は不一致扱い)。Moriは正規表現側でMorishitaの部分一致を除外する否定先読み(?!shita)を使用した。姓の直前トークンは同一行内([ \\t]+、改行をまたがない)のみに限定し(見出しと次段落が\\n\\nで連結され誤って結合されるfalse positiveを回避)、かつ「After/In/On/While/From/With/But/The/To/At/By/Of/For/So/Then/When/As/A/An/Only/Instead/Behind/Turned/Moved/Left/Brought/Trusted/Was/Hit/Is/It/This/That/Once/Later」等の非人名ストップワード(文頭で偶然大文字化された前置詞・接続詞・動詞)は、姓単独言及(与えられた名なし)としてgiven name occurrenceの集計から除外した(article_level_detailのexcluded_surname_only_mentionsに記録、全て条件A-E側のみで観測、条件Fでは0件)。団体名/施設名3種は完全文字列一致のみで公式表記/短縮形/その他を分類し、短縮形(Mazda Stadium・Hiroshima Carp)は誤記ではなく通称として別集計した(is_common_shortform)。佐藤輝明・坂本誠志郎・森下翔太・森翔平・E.モンテロの5種は条件A-Fすべてで検出された全occurrence(件数の詳細はentity_table_person参照)が公式表記と完全一致しており、揺れは1件も検出されなかった。表記ゆれが実際に検出されたのは伊原陵人(given name)と伏見寅威(given name)の2種のみだった。"
+  },
+  "entity_table_person": {
+    "佐藤輝明": {
+      "official_full": "Teruaki Sato",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 6
+          }
+        },
+        "B": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 6
+          }
+        },
+        "C": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 6
+          }
+        },
+        "D": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 6
+          }
+        },
+        "E": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 6
+          }
+        },
+        "F": {
+          "n_occurrences": 9,
+          "n_official_match": 9,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Teruaki": 9
+          }
+        }
+      }
+    },
+    "伊原陵人": {
+      "official_full": "Takato Ihara",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 6,
+          "n_official_match": 0,
+          "n_mismatch": 6,
+          "distinct_variants": {
+            "Rito": 2,
+            "Ryohto": 1,
+            "Rihito": 2,
+            "Ryoto": 1
+          }
+        },
+        "B": {
+          "n_occurrences": 8,
+          "n_official_match": 0,
+          "n_mismatch": 8,
+          "distinct_variants": {
+            "Taketo": 1,
+            "Rihito": 7
+          }
+        },
+        "C": {
+          "n_occurrences": 6,
+          "n_official_match": 0,
+          "n_mismatch": 6,
+          "distinct_variants": {
+            "Rihito": 4,
+            "Rito": 2
+          }
+        },
+        "D": {
+          "n_occurrences": 6,
+          "n_official_match": 0,
+          "n_mismatch": 6,
+          "distinct_variants": {
+            "Rihito": 4,
+            "Ryohto": 1,
+            "Ryoto": 1
+          }
+        },
+        "E": {
+          "n_occurrences": 6,
+          "n_official_match": 0,
+          "n_mismatch": 6,
+          "distinct_variants": {
+            "Rihito": 2,
+            "Rito": 2,
+            "Ryoto": 2
+          }
+        },
+        "F": {
+          "n_occurrences": 9,
+          "n_official_match": 9,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Takato": 9
+          }
+        }
+      }
+    },
+    "森翔平": {
+      "official_full": "Shohei Mori",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "D": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "E": {
+          "n_occurrences": 3,
+          "n_official_match": 3,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Shohei": 3
+          }
+        },
+        "F": {
+          "n_occurrences": 5,
+          "n_official_match": 5,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Shohei": 5
+          }
+        }
+      }
+    },
+    "坂本誠志郎": {
+      "official_full": "Seishiro Sakamoto",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 5,
+          "n_official_match": 5,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Seishiro": 5
+          }
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 1,
+          "n_official_match": 1,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Seishiro": 1
+          }
+        },
+        "D": {
+          "n_occurrences": 1,
+          "n_official_match": 1,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Seishiro": 1
+          }
+        },
+        "E": {
+          "n_occurrences": 1,
+          "n_official_match": 1,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Seishiro": 1
+          }
+        },
+        "F": {
+          "n_occurrences": 5,
+          "n_official_match": 5,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Seishiro": 5
+          }
+        }
+      }
+    },
+    "伏見寅威": {
+      "official_full": "Torai Fushimi",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 5,
+          "n_official_match": 1,
+          "n_mismatch": 4,
+          "distinct_variants": {
+            "Tora": 3,
+            "Torai": 1,
+            "Tai": 1
+          }
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 1,
+          "n_official_match": 0,
+          "n_mismatch": 1,
+          "distinct_variants": {
+            "Tora": 1
+          }
+        },
+        "D": {
+          "n_occurrences": 1,
+          "n_official_match": 0,
+          "n_mismatch": 1,
+          "distinct_variants": {
+            "Torae": 1
+          }
+        },
+        "E": {
+          "n_occurrences": 1,
+          "n_official_match": 0,
+          "n_mismatch": 1,
+          "distinct_variants": {
+            "Tori": 1
+          }
+        },
+        "F": {
+          "n_occurrences": 5,
+          "n_official_match": 5,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Torai": 5
+          }
+        }
+      }
+    },
+    "森下翔太": {
+      "official_full": "Shota Morishita",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 1,
+          "n_official_match": 1,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Shota": 1
+          }
+        },
+        "D": {
+          "n_occurrences": 0,
+          "n_official_match": 0,
+          "n_mismatch": 0,
+          "distinct_variants": {}
+        },
+        "E": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Shota": 6
+          }
+        },
+        "F": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Shota": 6
+          }
+        }
+      }
+    },
+    "E・モンテロ": {
+      "official_full": "Elehuris Montero",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        },
+        "B": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        },
+        "C": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        },
+        "D": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        },
+        "E": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        },
+        "F": {
+          "n_occurrences": 6,
+          "n_official_match": 6,
+          "n_mismatch": 0,
+          "distinct_variants": {
+            "Elehuris": 6
+          }
+        }
+      }
+    }
+  },
+  "entity_table_org_or_facility": {
+    "阪神タイガース": {
+      "official_full": "Hanshin Tigers",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 1,
+          "n_official_full_match": 1,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hanshin Tigers": 1
+          }
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_full_match": 0,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 2,
+          "n_official_full_match": 2,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hanshin Tigers": 2
+          }
+        },
+        "D": {
+          "n_occurrences": 1,
+          "n_official_full_match": 1,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hanshin Tigers": 1
+          }
+        },
+        "E": {
+          "n_occurrences": 3,
+          "n_official_full_match": 3,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hanshin Tigers": 3
+          }
+        },
+        "F": {
+          "n_occurrences": 9,
+          "n_official_full_match": 9,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hanshin Tigers": 9
+          }
+        }
+      }
+    },
+    "広島東洋カープ": {
+      "official_full": "Hiroshima Toyo Carp",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 1,
+          "n_official_full_match": 1,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hiroshima Toyo Carp": 1
+          }
+        },
+        "B": {
+          "n_occurrences": 0,
+          "n_official_full_match": 0,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {}
+        },
+        "C": {
+          "n_occurrences": 2,
+          "n_official_full_match": 2,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hiroshima Toyo Carp": 2
+          }
+        },
+        "D": {
+          "n_occurrences": 1,
+          "n_official_full_match": 0,
+          "n_common_shortform": 1,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hiroshima Carp": 1
+          }
+        },
+        "E": {
+          "n_occurrences": 3,
+          "n_official_full_match": 0,
+          "n_common_shortform": 3,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hiroshima Carp": 3
+          }
+        },
+        "F": {
+          "n_occurrences": 9,
+          "n_official_full_match": 9,
+          "n_common_shortform": 0,
+          "n_other": 0,
+          "distinct_variants": {
+            "Hiroshima Toyo Carp": 9
+          }
+        }
+      }
+    },
+    "マツダスタジアム": {
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "by_condition": {
+        "A": {
+          "n_occurrences": 6,
+          "n_official_full_match": 0,
+          "n_common_shortform": 6,
+          "n_other": 0,
+          "distinct_variants": {
+            "Mazda Stadium": 6
+          }
+        },
+        "B": {
+          "n_occurrences": 6,
+          "n_official_full_match": 0,
+          "n_common_shortform": 6,
+          "n_other": 0,
+          "distinct_variants": {
+            "Mazda Stadium": 6
+          }
+        },
+        "C": {
+          "n_occurrences": 6,
+          "n_official_full_match": 0,
+          "n_common_shortform": 6,
+          "n_other": 0,
+          "distinct_variants": {
+            "Mazda Stadium": 6
+          }
+        },
+        "D": {
+          "n_occurrences": 6,
+          "n_official_full_match": 0,
+          "n_common_shortform": 6,
+          "n_other": 0,
+          "distinct_variants": {
+            "Mazda Stadium": 6
+          }
+        },
+        "E": {
+          "n_occurrences": 6,
+          "n_official_full_match": 0,
+          "n_common_shortform": 6,
+          "n_other": 0,
+          "distinct_variants": {
+            "Mazda Stadium": 6
+          }
+        },
+        "F": {
+          "n_occurrences": 4,
+          "n_official_full_match": 3,
+          "n_common_shortform": 0,
+          "n_other": 1,
+          "distinct_variants": {
+            "MAZDA Zoom-Zoom Stadium Hiroshima": 3,
+            "MAZDA Zoom-Zoom Stadium": 1
+          }
+        }
+      }
+    }
+  },
+  "variant_counts_by_entity_AE_pooled_vs_F": {
+    "佐藤輝明": {
+      "official_given_name": "Teruaki",
+      "AE_pooled_distinct_variants": {
+        "Teruaki": 30
+      },
+      "AE_pooled_n_distinct": 1,
+      "AE_pooled_n_occurrences": 30,
+      "AE_pooled_n_match": 30,
+      "F_distinct_variants": {
+        "Teruaki": 9
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 9,
+      "F_n_match": 9
+    },
+    "伊原陵人": {
+      "official_given_name": "Takato",
+      "AE_pooled_distinct_variants": {
+        "Rito": 6,
+        "Ryohto": 2,
+        "Rihito": 19,
+        "Ryoto": 4,
+        "Taketo": 1
+      },
+      "AE_pooled_n_distinct": 5,
+      "AE_pooled_n_occurrences": 32,
+      "AE_pooled_n_match": 0,
+      "F_distinct_variants": {
+        "Takato": 9
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 9,
+      "F_n_match": 9
+    },
+    "森翔平": {
+      "official_given_name": "Shohei",
+      "AE_pooled_distinct_variants": {
+        "Shohei": 3
+      },
+      "AE_pooled_n_distinct": 1,
+      "AE_pooled_n_occurrences": 3,
+      "AE_pooled_n_match": 3,
+      "F_distinct_variants": {
+        "Shohei": 5
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 5,
+      "F_n_match": 5
+    },
+    "坂本誠志郎": {
+      "official_given_name": "Seishiro",
+      "AE_pooled_distinct_variants": {
+        "Seishiro": 8
+      },
+      "AE_pooled_n_distinct": 1,
+      "AE_pooled_n_occurrences": 8,
+      "AE_pooled_n_match": 8,
+      "F_distinct_variants": {
+        "Seishiro": 5
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 5,
+      "F_n_match": 5
+    },
+    "伏見寅威": {
+      "official_given_name": "Torai",
+      "AE_pooled_distinct_variants": {
+        "Tora": 4,
+        "Torai": 1,
+        "Tai": 1,
+        "Torae": 1,
+        "Tori": 1
+      },
+      "AE_pooled_n_distinct": 5,
+      "AE_pooled_n_occurrences": 8,
+      "AE_pooled_n_match": 1,
+      "F_distinct_variants": {
+        "Torai": 5
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 5,
+      "F_n_match": 5
+    },
+    "森下翔太": {
+      "official_given_name": "Shota",
+      "AE_pooled_distinct_variants": {
+        "Shota": 7
+      },
+      "AE_pooled_n_distinct": 1,
+      "AE_pooled_n_occurrences": 7,
+      "AE_pooled_n_match": 7,
+      "F_distinct_variants": {
+        "Shota": 6
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 6,
+      "F_n_match": 6
+    },
+    "E・モンテロ": {
+      "official_given_name": "Elehuris",
+      "AE_pooled_distinct_variants": {
+        "Elehuris": 30
+      },
+      "AE_pooled_n_distinct": 1,
+      "AE_pooled_n_occurrences": 30,
+      "AE_pooled_n_match": 30,
+      "F_distinct_variants": {
+        "Elehuris": 6
+      },
+      "F_n_distinct": 1,
+      "F_n_occurrences": 6,
+      "F_n_match": 6
+    }
+  },
+  "pooled_comparison_AE_vs_F": {
+    "note": "条件A/B/C/D/E(いずれもLedgerにcanonical_en_spellingなし)を対照群として統合し、人名5種の全occurrenceをプールした値。",
+    "AE_pooled": {
+      "n_occurrences": 118,
+      "n_official_match": 79,
+      "n_mismatch": 39,
+      "match_rate": 0.6694915254237288,
+      "match_rate_95ci_wilson": [
+        0.5804506872362977,
+        0.7478444106613005
+      ]
+    },
+    "F": {
+      "n_occurrences": 45,
+      "n_official_match": 45,
+      "n_mismatch": 0,
+      "match_rate": 1.0,
+      "match_rate_95ci_wilson": [
+        0.9213457380593593,
+        1.0
+      ]
+    },
+    "match_rate_difference_F_minus_AE": 0.3305084745762712,
+    "fisher_exact_two_sided_p_value": 6.308925599014533e-07,
+    "caveat": "N小(特にF=6記事)のため統計的検定は参考値。条件A-EはそれぞれN=6記事(A2x3+B1Bx3)、5条件合計でも記事数は30(人名5種x30記事=最大150occurrenceだが、Morishita/Moriは条件Eのみ・条件Fにしか出現しないfactのため実際のoccurrence数は少ない。詳細はentity_table_person参照)。"
+  },
+  "variance_article_rate_by_condition": {
+    "A": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 6,
+      "rate": 1.0
+    },
+    "B": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 6,
+      "rate": 1.0
+    },
+    "C": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 6,
+      "rate": 1.0
+    },
+    "D": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 6,
+      "rate": 1.0
+    },
+    "E": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 6,
+      "rate": 1.0
+    },
+    "F": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 0,
+      "rate": 0.0
+    }
+  },
+  "variance_article_rate_AE_pooled_vs_F": {
+    "AE_pooled": {
+      "n_articles": 30,
+      "n_articles_with_mismatch": 30,
+      "rate": 1.0
+    },
+    "F": {
+      "n_articles": 6,
+      "n_articles_with_mismatch": 0,
+      "rate": 0.0
+    }
+  },
+  "article_level_detail": [
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tora"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Montero"
+      ]
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryohto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "In Ihara"
+      ]
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryoto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tora"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tora"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "A",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Taketo"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "B",
+      "article_id": "B/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run3",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": [
+        "After Ihara"
+      ]
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tora"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "C",
+      "article_id": "C/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryohto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryoto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torae"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "D",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Tori"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rihito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryoto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Rito"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Ryoto"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "E",
+      "article_id": "E/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Mazda Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "MAZDA Zoom-Zoom Stadium Hiroshima"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "MAZDA Zoom-Zoom Stadium"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "MAZDA Zoom-Zoom Stadium Hiroshima"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "occurrences": 1,
+      "distinct_variants": [
+        "MAZDA Zoom-Zoom Stadium Hiroshima"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run2",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Teruaki"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "occurrences": 2,
+      "distinct_variants": [
+        "Takato"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "森翔平",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shohei"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Seishiro"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Torai"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "森下翔太",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Shota"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Elehuris"
+      ],
+      "within_article_inconsistent": false,
+      "excluded_surname_only_mentions": []
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hanshin Tigers"
+      ],
+      "within_article_inconsistent": false
+    },
+    {
+      "condition": "F",
+      "article_id": "F/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "occurrences": 1,
+      "distinct_variants": [
+        "Hiroshima Toyo Carp"
+      ],
+      "within_article_inconsistent": false
+    }
+  ],
+  "fc_pass_articles_with_missed_spelling_error": [
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tora",
+      "match_span_text": "Tora Fushimi",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "article_id": "B/a2/run1",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Taketo",
+      "match_span_text": "Taketo Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "article_id": "B/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "article_id": "B/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "article_id": "B/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "article_id": "D/a2/run2",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryohto",
+      "match_span_text": "Ryohto Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "article_id": "D/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "article_id": "D/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryoto",
+      "match_span_text": "Ryoto Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torae",
+      "match_span_text": "Torae Fushimi",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "article_id": "E/a2/run1",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "article_id": "E/a2/run3",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "fact_verdict": "PASS"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "article_id": "E/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "fact_verdict": "PASS"
+    }
+  ],
+  "per_condition_person_summary": {
+    "A": {
+      "n_occurrences": 28,
+      "n_official_match": 18,
+      "n_mismatch": 10,
+      "match_rate": 0.6428571428571429
+    },
+    "B": {
+      "n_occurrences": 20,
+      "n_official_match": 12,
+      "n_mismatch": 8,
+      "match_rate": 0.6
+    },
+    "C": {
+      "n_occurrences": 21,
+      "n_official_match": 14,
+      "n_mismatch": 7,
+      "match_rate": 0.6666666666666666
+    },
+    "D": {
+      "n_occurrences": 20,
+      "n_official_match": 13,
+      "n_mismatch": 7,
+      "match_rate": 0.65
+    },
+    "E": {
+      "n_occurrences": 29,
+      "n_official_match": 22,
+      "n_mismatch": 7,
+      "match_rate": 0.7586206896551724
+    },
+    "F": {
+      "n_occurrences": 45,
+      "n_official_match": 45,
+      "n_mismatch": 0,
+      "match_rate": 1.0
+    }
+  },
+  "raw_occurrence_records_person": [
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tora",
+      "match_span_text": "Tora Fushimi",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryohto",
+      "match_span_text": "Ryohto Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tai",
+      "match_span_text": "Tai Fushimi",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "A/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "A/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryoto",
+      "match_span_text": "Ryoto Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "A/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tora",
+      "match_span_text": "Tora Fushimi",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tora",
+      "match_span_text": "Tora Fushimi",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "B/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "B/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Taketo",
+      "match_span_text": "Taketo Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "B/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "B/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "B/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "B/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "B/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "B/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "B/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "B/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "B/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "B/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "B/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "B/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "B/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "B/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "B/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "B/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "B/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "B/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 1,
+      "article_id": "C/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 1,
+      "article_id": "C/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 1,
+      "article_id": "C/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 2,
+      "article_id": "C/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 2,
+      "article_id": "C/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 2,
+      "article_id": "C/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 3,
+      "article_id": "C/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 3,
+      "article_id": "C/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 3,
+      "article_id": "C/a2/run3",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 3,
+      "article_id": "C/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "C/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "C/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "C/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "C/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "C/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "C/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tora",
+      "match_span_text": "Tora Fushimi",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "D/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "D/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "D/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "D/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "D/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryohto",
+      "match_span_text": "Ryohto Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "D/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "D/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "D/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "D/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "D/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "D/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "D/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "D/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "D/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryoto",
+      "match_span_text": "Ryoto Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "D/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torae",
+      "match_span_text": "Torae Fushimi",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Tori",
+      "match_span_text": "Tori Fushimi",
+      "is_official_match": false,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rihito",
+      "match_span_text": "Rihito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryoto",
+      "match_span_text": "Ryoto Ihara",
+      "is_official_match": false,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Rito",
+      "match_span_text": "Rito Ihara",
+      "is_official_match": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Ryoto",
+      "match_span_text": "Ryoto Ihara",
+      "is_official_match": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "佐藤輝明",
+      "entity_type": "person",
+      "official_full": "Teruaki Sato",
+      "extracted_given_name": "Teruaki",
+      "match_span_text": "Teruaki Sato",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "伊原陵人",
+      "entity_type": "person",
+      "official_full": "Takato Ihara",
+      "extracted_given_name": "Takato",
+      "match_span_text": "Takato Ihara",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "森翔平",
+      "entity_type": "person",
+      "official_full": "Shohei Mori",
+      "extracted_given_name": "Shohei",
+      "match_span_text": "Shohei Mori",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "坂本誠志郎",
+      "entity_type": "person",
+      "official_full": "Seishiro Sakamoto",
+      "extracted_given_name": "Seishiro",
+      "match_span_text": "Seishiro Sakamoto",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "伏見寅威",
+      "entity_type": "person",
+      "official_full": "Torai Fushimi",
+      "extracted_given_name": "Torai",
+      "match_span_text": "Torai Fushimi",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "森下翔太",
+      "entity_type": "person",
+      "official_full": "Shota Morishita",
+      "extracted_given_name": "Shota",
+      "match_span_text": "Shota Morishita",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "E・モンテロ",
+      "entity_type": "person",
+      "official_full": "Elehuris Montero",
+      "extracted_given_name": "Elehuris",
+      "match_span_text": "Elehuris Montero",
+      "is_official_match": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    }
+  ],
+  "raw_occurrence_records_org_or_facility": [
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "A/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "A/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "A/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "A/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "A/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "A",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "A/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 1,
+      "article_id": "B/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 2,
+      "article_id": "B/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "a2",
+      "run": 3,
+      "article_id": "B/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "B/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "B/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "B",
+      "source_trial": "Trial-12",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "B/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 1,
+      "article_id": "C/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 1,
+      "article_id": "C/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 2,
+      "article_id": "C/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "a2",
+      "run": 3,
+      "article_id": "C/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "C/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "C/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "C/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "C",
+      "source_trial": "Trial-12b",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "C/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "D/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "D/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "D/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "D/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": null,
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "D/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Carp",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "D/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "D/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "D",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "D/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Carp",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 1,
+      "article_id": "E/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 2,
+      "article_id": "E/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "a2",
+      "run": 3,
+      "article_id": "E/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Carp",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "E/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "REVIEW_REQUIRED",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "E/b1b/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Carp",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "E",
+      "source_trial": "Trial-14",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "E/b1b/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "Mazda Stadium",
+      "is_official_match": false,
+      "is_common_shortform": true,
+      "fact_verdict": "FAIL",
+      "status": "NG_REVIEW_REQUIRED"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 1,
+      "article_id": "F/a2/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 2,
+      "article_id": "F/a2/run2",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "MAZDA Zoom-Zoom Stadium",
+      "is_official_match": false,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "a2",
+      "run": 3,
+      "article_id": "F/a2/run3",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 1,
+      "article_id": "F/b1b/run1",
+      "entity_jp": "マツダスタジアム",
+      "entity_type": "org_or_facility",
+      "official_full": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "extracted_text": "MAZDA Zoom-Zoom Stadium Hiroshima",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 2,
+      "article_id": "F/b1b/run2",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "阪神タイガース",
+      "entity_type": "org_or_facility",
+      "official_full": "Hanshin Tigers",
+      "extracted_text": "Hanshin Tigers",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    },
+    {
+      "condition": "F",
+      "source_trial": "Trial-15",
+      "level": "b1b",
+      "run": 3,
+      "article_id": "F/b1b/run3",
+      "entity_jp": "広島東洋カープ",
+      "entity_type": "org_or_facility",
+      "official_full": "Hiroshima Toyo Carp",
+      "extracted_text": "Hiroshima Toyo Carp",
+      "is_official_match": true,
+      "is_common_shortform": false,
+      "fact_verdict": "PASS",
+      "status": "OK"
+    }
+  ]
+}

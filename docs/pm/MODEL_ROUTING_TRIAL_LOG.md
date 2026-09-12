@@ -620,3 +620,29 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   選別効果reanalysis結果のSSOT反映+TTS Trial harness実行モード既定値の
   適用範囲拡大監査(Sonnet、LOW、実測¥0、新規LLM/TTS/ASR API呼び出しなし、
   既存script冪等再実行[観測入力の再集計]・Grep監査・SSOT編集のみ)。
+- 2026-09-12(`JA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01`、
+  OPEN-145、並列稼働タスク): 個別語テーブルを使わないfailure mode単位の
+  追加型設計(候補B形態素解析fugashi/unidic-lite・候補C一般正規化・
+  Candidate D-1漢数字位取り一般正規化・Candidate D-2濁点差Cascade
+  再確認)。Sonnet、MEDIUM、実測¥0(LLM呼び出しゼロ、候補生成部分のみ
+  offline確認)。委任回数=初回+Fable差し戻し2回(修正1回目・修正2回目)、
+  合計3回(ループ上限4回以内)。自作82/82・過去MISMATCH 5/7解消・誤PASS
+  0件・過去PASS regression 0件・既存offline regression全PASSを実測、
+  Trial closeout=**VALIDATED**。Production採用可否は`USER_DECISION_
+  REQUIRED`(新規UDR#11)としてユーザー判断待ち。
+- 2026-09-12(`FAMILY-A-NEWS-LEDGER-CANONICAL-EN-SPELLING-TRIAL-15`、
+  OPEN-146、並列稼働タスク): Verified Fact Ledgerへ日本人名の公式英語
+  表記(`canonical_en_spelling`)を追記した改訂Ledger(条件F)をN=6
+  (A2×3+B1B×3)で検証。Sonnet、MEDIUM、実測¥121.2(表記確認Research
+  ¥49.5+記事生成6本¥71.7)。委任回数=本体+Fable差し戻し1回(修正1回目、
+  追加費用¥0の既存article.md機械解析のみ)、合計2回(ループ上限4回
+  以内)。条件FでNG 0/6・Fact Checker到達率100%・固有名詞60/60一致、
+  修正1回目で伊原陵人32/32誤り→条件F9/9正・伏見寅威7/8誤り→5/5正
+  (Fisher p=6.31×10⁻⁷)・FC見逃し綴り誤り15箇所を新規発見、Trial
+  closeout=**VALIDATED**。Production採用可否は`USER_DECISION_REQUIRED`
+  (新規UDR#12)としてユーザー判断待ち。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-82-JA-ASR-VARIANT-AND-LEDGER-
+  SPELLING-TRIALS、本タスク): 上記2 Trialの結果をSSOTへ反映(Sonnet、
+  LOW、実測¥0、SSOT編集+再現性確認scriptの実行[MD5完全一致確認]の
+  みで新規LLM/TTS/ASR API呼び出しなし)。中間レビュー・正式Closeout
+  Triggerの到達判定・再計算はいずれも実施していない。
