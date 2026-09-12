@@ -364,6 +364,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION: OPEN-145(JA ASR表記ゆれ)・OPEN-146(News人名英語表記)のProduction配線完了をSSOTへ統合+タオルTrial-11 A2完成episode配布(mp3+player.html、GitHub URL)+TTS retry cool-down観測フックのTrial harness 3系統への配線
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-DISTRIBUTION: タオルTrial-11(A2/B1B)標準player(Gate 7 (a)〜(m)準拠)のcommit・push+raw.githack.com/rawcdn.githack.comでのHTTP到達確認(index.html+音声53件、全件200)+PM_GOVERNANCE Gate 7補足(m)への追加要件明記+Gate 7 Reconciliation漏れの事例記録+OPEN-135への反映
 - [本ファイル内] ## PM-CLOSEOUT-DISCOVERY-NPLUS1-AND-CROSS-FAMILY-STATUS-FOLLOWUP-01: タオルTrial-11ユーザー評価(標準player試聴OK/内容OK/音声OK/全体体験OK)の正式記録(Status/Gate維持、Production自動採用なし)+Discovery N=1追加Trial-12(テーマ「Why do we sometimes wake up just before the alarm?」ユーザー選定、進行中、費用上限¥300)の記録+並列稼働2件(Trial-12記事制作/他Family進捗フォロー監査)の生成物には非関与
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD: 横断監査(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`)が指摘したOPEN-145/146`APPROVED_FOR_PRODUCTION`のユーザー承認証拠不明(STOP条件該当)に対応し、2026-09-12ユーザー発言原文全文(UDR#11/#12「⇒採用」)・Fable提示判断表原文・commit hash付き時系列を正式記録(承認自体は実在、記録不備が原因と特定)+`PM-CLOSEOUT-CONSOLIDATION-83`エントリへ相互参照注記追加(既存本文不変)+`docs/pm/PM_GOVERNANCE.md`へ「ユーザー承認は要約引用ではなく原文全文転記を必須とする」再発防止ルール追記
 
 ---
 
@@ -3500,6 +3501,17 @@ WIRED`(Gate 3完了)には別途到達が必要。
 (上記)。詳細は`OPEN_ITEMS.md`OPEN-135/145/146行、`docs/pm/
 PM_GOVERNANCE.md`9-7、`docs/pm/RESULT_PACKET.md`参照。
 
+**相互参照(2026-09-12追記、`PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-
+EVIDENCE-RECORD`)**: 本エントリ冒頭の「ユーザー指示原文」(試聴リンク
+運用の恒久是正のみを内容とする)には、直後に記載した「OPEN-145/146
+Production採用(配線中)」というSSOT反映の根拠となるユーザーの
+UDR#11/#12選択発言そのものは引用されていない(この点が後日の横断
+監査`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01_REPORT.md`で「承認
+証拠不明」と指摘された)。当該ユーザー発言の原文全文・Fable提示の
+判断表原文・時系列(commit hash付き)は`PM-CLOSEOUT-CONSOLIDATION-
+87-APPROVAL-EVIDENCE-RECORD`エントリ(本ファイル後方)に正式記録した。
+本エントリ本文は書き換えていない(記録の欠落を追加転記で補うのみ)。
+
 ---
 
 ## PM-CLOSEOUT-CONSOLIDATION-84-OPEN145-OPEN146-WIRING-AND-A2-DISTRIBUTION
@@ -3687,6 +3699,103 @@ Fableとの会話ログに存在する。本エントリでは要旨のみを転
 TOWELS-TRIAL-11-USER-EVALUATION)、ユーザー指示原文(上記)。詳細は
 `OPEN_ITEMS.md` OPEN-135行、`docs/pm/ACTIVE_TASK.md`、
 `docs/pm/RESULT_PACKET.md`参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD: OPEN-145/146
+`APPROVED_FOR_PRODUCTION`のユーザー承認原文の正式記録+CONSOLIDATION-
+83/84記録不備(要約引用)の是正+再発防止ルール追加
+
+**背景(STOP条件該当: SSOT不整合)**: `PM-CROSS-FAMILY-STATUS-AUDIT-
+2026-09-12-01_REPORT.md`が、OPEN-145(JA ASR表記ゆれ一般化)・OPEN-146
+(News Ledger公式英語表記)の`APPROVED_FOR_PRODUCTION`について、
+`DECISION_LOG.md`にユーザー承認の一次証拠(原文)が無いと指摘した
+(`PM-CLOSEOUT-CONSOLIDATION-83`本文の「ユーザー指示原文」は試聴リンク
+運用是正のみを内容とし、UDR#11/#12選択への言及が原文中に無い。
+`CURRENT_SPEC.md`L837の「ユーザー決定2026-09-12『#12...⇒採用』」は
+要約引用であり、`DECISION_LOG.md`側に対応する原文が存在しなかった)。
+Fableはユーザーの実際の発言(2026-09-12、会話ログ)を一次証拠として
+保持しており、本エントリでそれを正式にSSOTへ転記する。
+
+**(a) ユーザー発言原文(2026-09-12、一字一句そのまま)**:
+
+```
+#11 A-Family / Discovery / A2 日本語ASR表記ゆれ一般化対策のProduction採用⇒採用  
+
+#12 A-Family / News Ledger公式英語表記のProduction採用  ⇒採用
+
+それ以外は回答済
+```
+
+ユーザーはこの直後に「これ以外で判断待ちないですね?」と発言し、
+Fableが「はい」と回答したうえで両配線を起動した。ここでの`#11`/`#12`は
+`OPEN_ITEMS.md`記載のUDR番号(`OPEN-145`行のUDR#11、`OPEN-146`行の
+UDR#12)であり、Sonnet作業の並列タスク通し番号(`PM-CLOSEOUT-
+CONSOLIDATION-84`で使われた並列タスクラベル`#11`/`#12`)とは別物である
+(監査が指摘した混同ポイント)。
+
+**(b) Fableが提示した判断表の選択肢原文(ユーザー発言の直前に提示、
+2026-09-12)**: `#11「日本語ASR表記ゆれ対策のProduction採用: (a)
+APPROVED_FOR_PRODUCTION(feature flag配線→Gate 3)/(b)保留」、#12
+「Ledger公式英語表記のProduction採用: (a)承認(Ledger schema+Research
+取得+Writer指示、CURRENT_SPEC改訂)/(b)他テーマ一般化Trialを先に/
+(c)保留」`。ユーザーは両方とも(a)を選択した(上記(a)原文「⇒採用」)。
+この判断表の選択肢は、`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-82`
+エントリ内のUDR#11((a)配線案どおり採用/(b)保留)・UDR#12((a)承認/
+(b)他テーマ一般化Trialを先に/(c)保留)と選択肢の実質が一致している。
+
+**(c) 時系列(commit hashつき)**:
+
+1. `PM-CLOSEOUT-CONSOLIDATION-82`(commit `d071a3e`): JA ASR表記ゆれ
+   一般化Trial・News Ledger公式英語表記Trial-15、いずれもTrial
+   closeout=`VALIDATED`。UDR#11・UDR#12を新規起票(Production採用は
+   未承認のまま)。
+2. ユーザー発言(2026-09-12、上記(a))によりUDR#11/#12とも(a)を承認。
+3. `PM-CLOSEOUT-CONSOLIDATION-83`(commit `74a8cd6`、参照修正commit
+   `fc37b3d`): OPEN-145/146行を`APPROVED_FOR_PRODUCTION`(2026-09-12
+   ユーザー採用、配線中)へ更新。ただし本エントリ本文の「ユーザー指示
+   原文」欄には上記(a)の原文が含まれておらず、要約引用のみで承認を
+   記載していた(本タスクで是正)。
+4. `PM-CLOSEOUT-CONSOLIDATION-84`(commit `89f633d`): OPEN-145
+   (`er011_ja_asr_variant_layer_01.py`ほか)・OPEN-146
+   (`er011_open146_ledger_canonical_en_spelling_production_01.py`ほか)
+   のProduction配線を完了(新規回帰・project-wide regression全PASS)。
+   同commitでタオルTrial-11 A2`comment_2`を配線後のValidatorでoffline
+   再判定しPHONETIC_MATCHでPASS採用(TTS再生成なし)。
+
+**(d) 監査で「承認証拠不明」となった原因**: `PM-CLOSEOUT-
+CONSOLIDATION-83`・`84`のエントリが、ユーザー承認発言を要約(「ユーザー
+採用」「⇒採用」という記述)で記載し、発言原文そのものを`DECISION_LOG.md`
+へ転記していなかったこと(記録不備)。承認自体は(a)(b)(c)のとおり実際に
+存在し、UDR番号・選択内容・タイミングも一致しており、Production配線の
+実施そのものは正当な承認に基づく。すなわち「無承認でのProduction採用」
+ではなく「承認はあったが一次証拠の記録方法が不十分だった」という記録上の
+不備である。
+
+**(e) 再発防止**: ユーザー承認は必ず原文全文を`DECISION_LOG.md`へ転記
+する(要約引用のみで済ませない)。これは新ルールではなく、既存の
+`docs/pm/PM_GOVERNANCE.md`が既に前提としているユーザー指示原文転記の
+慣行(`PM-CLOSEOUT-CONSOLIDATION-83`等、通常は原文をそのまま転記して
+いる)を、Production採用可否(Gate 2)の場面でも例外なく徹底することの
+明確化である。`docs/pm/PM_GOVERNANCE.md` Gate 2・3節「PM Closeout
+Mandatory Check」へ本ルールを明記した(本エントリと合わせて参照)。
+
+**SSOT反映**: `OPEN_ITEMS.md`OPEN-145/146行末尾へ「承認原文は
+`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-
+RECORD`参照」を追記(Statusは`APPROVED_FOR_PRODUCTION`のまま変更なし、
+格上げ・格下げなし)。`PM-CLOSEOUT-CONSOLIDATION-83`エントリへ相互参照
+の注記を追加(既存本文は書き換えず追記のみ)。`docs/pm/PM_GOVERNANCE.md`
+Gate 2・3節へ再発防止ルールを追記。
+
+**Production採用範囲外**: 本タスクはSSOT記録の是正・追記のみであり、
+コード変更・API支出・Status格上げ/格下げはいずれも行っていない(¥0)。
+OPEN-145/146の`APPROVED_FOR_PRODUCTION`というStatus自体は本タスク以前
+から既に正当な承認に基づいて存在しており、本タスクはその承認の一次
+証拠を欠落なく記録し直したものである。
+
+**根拠**: Fable(PM)からの委任(管理ID PM-CLOSEOUT-CONSOLIDATION-87-
+APPROVAL-EVIDENCE-RECORD-AND-AUDIT)、`PM-CROSS-FAMILY-STATUS-AUDIT-
+2026-09-12-01_REPORT.md`、Fableが保持するユーザー発言原文(上記(a))。
+詳細は`OPEN_ITEMS.md`OPEN-145/146行、`docs/pm/PM_GOVERNANCE.md`Gate 2・
+3節、`docs/pm/RESULT_PACKET.md`参照。
 
 ## 参照元
 

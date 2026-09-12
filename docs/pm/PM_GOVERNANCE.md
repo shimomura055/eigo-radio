@@ -153,7 +153,12 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   ではない。`USER_DECISION_REQUIRED`ならユーザー判断または明示deferまでSTOPする。
 - **Gate 2 — User Decision**: `VALIDATED`→`APPROVED_FOR_PRODUCTION`は
   ユーザー正式採用時のみ行う。Fable/Sonnet/Opusが独自判断で承認しない。
-  コスト影響(2-2参照)が未評価のまま承認しない。
+  コスト影響(2-2参照)が未評価のまま承認しない。**ユーザー承認の記録は
+  要約引用ではなく原文全文を`DECISION_LOG.md`へ転記することを必須と
+  する**(2026-09-12追記、`PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-
+  EVIDENCE-RECORD`。事例: `PM-CLOSEOUT-CONSOLIDATION-83/84`がOPEN-145/
+  146の承認を要約引用のみで記載したため、後日の横断監査で承認証拠不明
+  と判定された)。
 - **Gate 3 — Production Wiring Checklist**: `APPROVED_FOR_PRODUCTION`後、
   以下すべてが完了するまで`PRODUCTION_WIRED`としない: Production正式初回経路 /
   retry・fallback・regenerationとの整合 / DEV・Trial-onlyではないこと /
@@ -362,6 +367,11 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     `VALIDATED` (c) 未配線の`APPROVED_FOR_PRODUCTION` (d) 未報告のTrial
     (e) 未登録のOpen Item。既存項目1〜4・8・9と重複する場合は個別確認を
     省略せず、closeout直前のまとめ確認として本項目でも通しで再確認する。
+21. `APPROVED_FOR_PRODUCTION`化の根拠となるユーザー承認が、要約引用
+    ではなく原文全文で`DECISION_LOG.md`に記録されていること(2026-09-12
+    追記、`PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD`。事例:
+    OPEN-145/146の承認記録がCONSOLIDATION-83/84時点で要約引用のみだった
+    ため、後日の横断監査で承認証拠不明と判定された)。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -1847,4 +1857,15 @@ Trial特有コストを独立項目として明示する5区分へ更新)。
   `DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-85-STANDARD-PLAYER-
   DISTRIBUTION`エントリ、`FAMILY-A-DISCOVERY-GENERALIZATION-TOWELS-
   TRIAL-11-STANDARD-PLAYER-01_REPORT.md`、`docs/pm/RESULT_PACKET.md`
+  参照。
+- 2026-09-12(PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-EVIDENCE-RECORD):
+  横断監査(`PM-CROSS-FAMILY-STATUS-AUDIT-2026-09-12-01`)が、OPEN-145/
+  146の`APPROVED_FOR_PRODUCTION`についてユーザー承認の一次証拠(原文)が
+  `DECISION_LOG.md`に無いと指摘(`PM-CLOSEOUT-CONSOLIDATION-83/84`が
+  要約引用のみで記載していたための記録不備、承認自体は実在)。Gate 2へ
+  「ユーザー承認は要約引用ではなく原文全文を`DECISION_LOG.md`へ転記する
+  ことを必須とする」を追記し、3節「PM Closeout Mandatory Check」へ項目
+  21(同旨の確認事項)を追加した。文書編集のみ、コード・Prompt変更なし、
+  追加API費用¥0。詳細は`DECISION_LOG.md``PM-CLOSEOUT-CONSOLIDATION-
+  87-APPROVAL-EVIDENCE-RECORD`エントリ参照。
   参照。
