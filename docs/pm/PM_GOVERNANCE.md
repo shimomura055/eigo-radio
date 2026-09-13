@@ -1286,6 +1286,14 @@ Fable判定・低リスクのため採用。読込効率改善)**: 以下3件を
 - **G-1**: git出力を`--short`/`--quiet`等で最小化する。
 A-1(Consolidation統合、件数削減による委任回数圧縮)はロールバック単位
 肥大化等のリスクが中〜高のため不採用。
+
+**E-1/D-1/G-1明記率是正(2026-09-13追記、`PM-CLOSEOUT-CONSOLIDATION-109`、
+ユーザー承認済み・施策2)**: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01`の
+再測定で、After委任文へのE-1/D-1/G-1明記率が55%(18/33)にとどまり
+運用が徹底されていないことが判明した。既存ルール(本節)を変更するもの
+ではなく、その遵守手段として、Fableは`docs/pm/templates/
+DELEGATION_READ_EFFICIENCY_BLOCK.md`の固定ブロック(E-1/D-1/G-1/F-1、
+施策1 Trial対象タスクのみT-1追加)を全委任文へ必ず含める。
 - **F-1**(2026-09-13更新、`PM-CLOSEOUT-CONSOLIDATION-99`。統合タスク
   開始時のみの退避では委任完了〜次の統合タスク開始までの間に消失する
   リスクが残るため、退避タイミングを前倒しする): 各委任(Sonnet/Opus)の

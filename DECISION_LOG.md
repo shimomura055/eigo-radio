@@ -384,6 +384,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-105: 2026-09-13ユーザー正式判断5件(OPEN-141差分QA Production採用/3V Fact Safetyは次実記事のruntime evidence待ち/見出し混入バグ修正Production反映/方式D'継続/方式C-v2 Production不採用Close)の正式記録+OPEN-141 Production配線(target-sentence-matching既定ON+差分QA案I)+3V Fact Safety保守版ゲート既定ON化+方式C-v2 Close
 - [本ファイル内] ## PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02: Token節約施策(E-1/D-1/G-1/F-1)のread-only現状測定(まだ評価不足)+task-notification `subagent_tokens`は累積処理量ではない新発見
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-107: F-1 transcript退避手順の恒久変更(0バイト時はsubagents/agent-<id>.jsonlから取得)をPM_GOVERNANCEへ正式反映+直近2委任の退避実施
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-109: 施策1(tool_uses削減)Trial設計+施策2(E-1/D-1/G-1委任文定型ブロック)導入
 
 ---
 
@@ -6767,6 +6768,77 @@ tool_uses削減/D-1徹底のTrial設計・新しい節約施策の採用/運用�
 `docs/pm/tools/collect_subagent_transcripts.py`(`--only-task-ids`追加)・
 `docs/pm/transcripts/`(新規2ファイル)をまとめてcommitする
 (hashは`docs/pm/RESULT_PACKET_F1B.md`参照)。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-109: 施策1(tool_uses削減)Trial設計+施策2(E-1/D-1/G-1委任文定型ブロック)導入
+
+**区分**: Implementation Hardening(PM運用効率化。記事生成仕様・
+Production経路の変更なし)。
+
+**ユーザー正式判断(原文、2026-09-13)**:
+> 施策1は推奨案(a)でTrial設計に進めてください。施策2も推奨案(a)とし、
+> まず既存ルールの委任文明記率を100%に是正して観察してください。施策1では
+> tool_usesとusageに加え、見落とし・手戻りも確認してください。
+
+**対応(Status確定)**:
+
+**1. 施策1(tool_uses削減Trial設計、実行はFable)**: 対象タスク種別=
+(a)Consolidation/SSOT反映+commit(定型性が高くリスク小、将来拡張候補は
+(f)計測→(d)Wiring→(b)Trial/Production-runの順)。Trial armは委任文の
+書き方のみを変更し手順・品質要件は不変(事前指定Read/Grep一覧、小さな
+確認の一括化、回帰は`--pattern`絞込+最終1回default、git手順の一連化、
+RESULT_PACKET固定テンプレ、SSOT追記文案はFableが委任文に含める)。
+受入条件照合・Dangling Reference確認・明示`git add`・回帰全件1回は
+削らないことを明記。計測指標はtool_uses・累積usage・最終ターンcontext・
+tool_result文字数・同一ファイル再読率・全文Read率・durationに加え、
+見落とし・手戻り(gate_reject/accept_criteria_miss/fixup_commit/
+scope_leak/ssot_errorの5指標、定義固定)を`docs/pm/tool_uses_trial_log.md`
+(新規)へFableが1委任1行で記録する。比較はBefore=
+`PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`の(a)種別母集団
+(約92件)、After=Trial arm N=6(N=3時点で見落とし・手戻りが2/3件以上に
+発生すれば一旦STOPして中間判断)。判定基準(Fable確定):
+tool_uses中央値▲20%以上かつ見落とし・手戻り増加なし→VALIDATED候補、
+減少なし→効果なし、見落とし・手戻り増加→REJECTED候補、他→評価不足。
+STOP条件は見落とし・手戻り増加/Gate要件省略が必要になった場合/
+事前指定外の大量Readが必要になった場合(設計不備)。計測手段として
+`docs/pm/tools/measure_delegation_task.py`(新規、read-only、taskId指定で
+JSON出力)を作成し、`er011_pm_agent_read_audit_01.py`(無変更)の
+`classify_path`/`bash_command_read_targets`/`tool_result_text_len`/
+`extract_mgmt_id`を再利用、既存の復元transcript2件(`a13715a15827192a6`・
+`a804ec4e76562ba24`)で動作確認済み(正常終了・想定どおりの数値出力)、
+存在しないtaskIdではエラーを返し推測値を出さないことも確認した。
+**本タスクではTrialを実行していない(設計のみ、実行はFableが別途行う)**。
+
+**2. 施策2(E-1/D-1/G-1委任文明記率是正)**: 再測定でAfter委任文への
+E-1/D-1/G-1明記率が55%(18/33)にとどまっていたため、`docs/pm/templates/
+DELEGATION_READ_EFFICIENCY_BLOCK.md`(新規)を作成した。Fableが全委任文へ
+そのまま貼る固定ブロック(E-1/D-1/G-1/F-1の4行、施策1 Trial対象タスクのみ
+T-1行を追加)であり、ラベル(E-1/D-1/G-1)は既存の明記率計測手法
+(`remeasure_reminder_tag_01.py`相当のキーワード検出)でそのまま検出できる
+文言のまま変更していない。品質・Gate要件を省略する指示ではないことを
+ブロック内に明記した。`docs/pm/PM_GOVERNANCE.md`のE-1/D-1/G-1節(11節)へ、
+本ブロックを全委任文へ必ず含める旨の1段落を追記した(既存文は削除して
+いない)。
+
+**3. 反映範囲**: 新規`PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-TRIAL-DESIGN-01_REPORT.md`
+(root、施策1 Trial設計全文)・`docs/pm/tools/measure_delegation_task.py`
+(新規)・`docs/pm/tool_uses_trial_log.md`(新規、Fable記録用テンプレ)・
+`docs/pm/templates/DELEGATION_READ_EFFICIENCY_BLOCK.md`(新規)・
+`docs/pm/PM_GOVERNANCE.md`(11節へ1段落追記)・本エントリ。
+
+**Status**: 施策1=Trial設計完了/実行待ち(Fableが別タスクとして実行)、
+施策2=運用是正実施(定型ブロック導入・PM_GOVERNANCE追記、以後の委任文へ
+適用開始)。
+
+**根拠**: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`、
+ユーザー発言原文(本セッション、2026-09-13)。
+
+**影響するCURRENT_SPEC項目**: なし(PM運用手順の改善であり、記事生成仕様・
+Production経路の変更ではない)。
+
+**commit**: 本エントリと上記新規/変更ファイルをまとめてcommitする
+(hashは`docs/pm/RESULT_PACKET_T1.md`参照)。
 
 ---
 

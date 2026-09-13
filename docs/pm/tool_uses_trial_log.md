@@ -1,0 +1,26 @@
+# tool_uses_trial_log.md
+
+管理ID: PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-TRIAL-DESIGN-01(施策1 Trial)。
+Fableが各Trial arm委任の完了後に1行ずつ追記する記録ファイル(新規、テンプレのみ)。
+Sonnetはこのファイルへ書き込まない(Fable専用の観測記録)。
+
+## 記入ルール
+- 1委任1行。列は`|`区切り(Markdown table)。
+- 「見落とし・手戻り」列の定義(固定、変更しない):
+  - `gate_reject`: Fableのgate-checkで差し戻しになった回数(0以上の整数)
+  - `accept_criteria_miss`: 受入条件未達で発覚した件数
+  - `fixup_commit`: 当該タスクのcommit後に必要になった修正commit件数
+  - `scope_leak`: 対象外ファイル混入件数(意図しないファイルがcommitに混入)
+  - `ssot_error`: SSOT記載誤り件数(DECISION_LOG/OPEN_ITEMS等への誤記載)
+- `tool_uses`/`cumulative_usage`/`final_context_size`等は
+  `docs/pm/tools/measure_delegation_task.py --task-id <taskId>`の出力値を転記する。
+- pairing_before_taskはBefore母集団からペアリングした比較対象タスクの
+  管理ID(規模が近いConsolidation系タスク)を記す。
+
+## 記録テーブル
+
+| No | taskId | 管理ID | pairing_before_task | tool_uses | cumulative_usage | final_context_size | tool_result_total_chars | same_file_reread_rate | full_read_rate_by_chars | duration_seconds | gate_reject | accept_criteria_miss | fixup_commit | scope_leak | ssot_error | 備考 |
+|----|--------|--------|----------------------|-----------|-------------------|----------------------|---------------------------|--------------------------|----------------------------|--------------------|--------------|--------------------------|----------------|--------------|--------------|------|
+| 1  |        |        |                      |           |                   |                      |                           |                          |                            |                    |              |                          |                |              |              |      |
+
+(以下、Trial実行のたびに行を追加する。N=6到達時点でPM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-TRIAL-DESIGN-01_REPORT.mdの判定基準に照らして評価する。N=3時点で中間判断を行う場合は同REPORTの中間判断基準を参照する。)
