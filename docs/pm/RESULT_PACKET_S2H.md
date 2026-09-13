@@ -44,7 +44,8 @@
    いるため、Overlap NG時はStage2-3全体retry(追加API call)が必要になる
    構造(OPEN-134関連)。新規設計は未実装、ユーザー判断待ち。
 
-10. commit hash・push結果: 本ファイルcommit後に追記。
+10. commit hash・push結果: `7f626f4e7e231ebaee60c54b7590f6263bd0fd73`、
+    `git push origin main`成功(`4f2a9942..7f626f4e main -> main`)。
 
 11. T-0結果: `status=FAIL`(reason: フレーズ重複検出「前回と同一度1」。
     必須項目8/8・fixed_block[E-1/D-1/G-1/F-1]は全てOK。非ブロッキングで

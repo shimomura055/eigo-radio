@@ -178,4 +178,5 @@ er011_output/discovery_s2_production_runtime_evidence_02/run_happy_path_a2.py`
 
 ## 12. Git
 
-commit/push結果は本REPORTのコミット後に追記(下記参照)。
+- commit: `7f626f4e7e231ebaee60c54b7590f6263bd0fd73`
+- push: `git push origin main`成功(`4f2a9942..7f626f4e main -> main`)
