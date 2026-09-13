@@ -400,6 +400,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-122: Discovery S2 Production設計完了(USER_DECISION_REQUIRED、Gate 2判断待ち)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-123: Family C長文化診断+v4再Trial(USER_DECISION_REQUIRED、¥20.53)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-124: Family C Trial-05(VALIDATED)のGit記録+S2配線安全インシデント記録+回帰pattern再発防止
+- [本ファイル内] ## FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01: Discovery S2 Production正式関数の正常完走runtime evidence(A2)取得+PRODUCTION_WIRED確定
 
 ---
 
@@ -7032,6 +7033,30 @@ Status: **`PRODUCTION_WIRED`**。commit hashはRESULT_PACKET_S2W.md/同REPORT参
 ## PM-CLOSEOUT-CONSOLIDATION-124(2026-09-13)
 
 PM-CLOSEOUT-CONSOLIDATION-124。(A) Family C Trial-05をGit記録・OPEN-147反映(VALIDATED、Production未採用)。(B) 安全インシデント記録: FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01でFableの委任文が指定した回帰コマンド`run_project_regression.py --pattern "er003*"`/`"er011*"`がテスト以外のrunnerスクリプトをimport実行し、無関係のProduction記事(pool_n18_notifications_specfix_v2)への実API呼び出し(¥15-20相当)とファイル上書きが発生。Sonnetが即時kill+`git checkout --`で復元、以後`_test_*.py`限定で再実行。原因はFable委任文の欠陥(コマンド指定の安全性未確認)。(C) 再発防止(¥0・整合性修正、Fable自律実施・事後報告): 委任文標準に『回帰patternは必ず`_test`を含む』を明記、`run_project_regression.py`に非テストpattern拒否ガード追加(既定動作・収集件数2588不変)。(D) transcript退避2件。詳細: 各REPORT参照。
+
+## FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01(2026-09-14)
+
+ユーザー人間評価PASS(記事「Why Do We Wake Up Just Before the Alarm?」)を
+受け、Discovery S2 Production正式関数`run_one_pattern_staged_discovery_
+focus()`の正常系runtime evidenceを取得した。前回evidence(commit 3080105f、
+`er011_output/discovery_s2_production_runtime_evidence_01/`)は意図的な
+F008欠落Ledgerでfail-closed分岐(b)を強制発火させる検証であり記事は未完走
+だった。本run(`er011_output/discovery_s2_production_runtime_evidence_02/`)
+は通常の(無改変)Verified Fact Ledgerを使用し、Stage1 escalation(分岐(b)、
+自然発火)1回を経てStage2-3が成功、記事全体Fact Checker=PASS、Ledger
+Deviation=LEDGER_COMPLIANTで最後まで正常完走(`status="OK"`、460語、
+model_id=gpt-5.6-luna、reasoning_effort=high)。Local Rewrite/差分QAは
+MAJOR無しのため未発火(仕様上正しい非発火)。開発・検証費¥55.30
+(Discovery残額¥88.31→¥33.01)。量産時1記事あたり単価(A2、Standard同期):
+retry込み¥55.30/retry除き概算¥32.71(B1未確定)。追加仕様変更なし
+(ユーザー指示どおり、新しい改善Trial/Point設計/Focus変更/Prompt調整は
+一切実施していない)。Gate 3 14項目全て✓によりStatus:
+`PRODUCTION_WIRED`(正式受入可)を確定。Open Item候補: Point Overlap QAで
+Point-only regenerationがER-008-N8-FINAL-QA-HARDENING-21によりProduction
+自動経路から外されているため、Overlap NG発生時はStage2-3全体retry
+(追加API call)が必要になる構造(OPEN-134関連、新規設計は未実装・
+ユーザー判断待ち)。詳細:
+`FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01_REPORT.md`。
 
 ## 参照元
 

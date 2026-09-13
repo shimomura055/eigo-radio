@@ -1,0 +1,229 @@
+{
+  "label": "A2",
+  "level": "a2",
+  "status": "OK",
+  "word_count": 460,
+  "section_word_counts": {
+    "point_one": 43,
+    "point_two": 56
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "PASS",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+  "stage1_regen_attempts": 1,
+  "stage2_3_retry_attempts": 1,
+  "overlap_retry_log": [
+    {
+      "attempt": 0,
+      "lexical_flagged": true,
+      "value_qa_flagged": false,
+      "evidence_compression_applied": true,
+      "main_story_reproduced_exactly": true,
+      "report": {
+        "point_one_vs_point_two": {
+          "overlap_ratio": 0.125,
+          "shared_words": [
+            "about",
+            "day",
+            "earlier",
+            "minutes",
+            "morning"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 27,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_one": {
+          "overlap_ratio": 0.185,
+          "shared_words": [
+            "about",
+            "day",
+            "earlier",
+            "minutes",
+            "morning"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 40,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_one": {
+          "before_overlap": {
+            "overlap_ratio": 0.275,
+            "shared_words": [
+              "about",
+              "also",
+              "between",
+              "day",
+              "help",
+              "later",
+              "minutes",
+              "more",
+              "sleep",
+              "wake",
+              "waking"
+            ],
+            "point_word_count": 40,
+            "story_word_count": 135,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.125,
+            "shared_words": [
+              "about",
+              "day",
+              "earlier",
+              "minutes",
+              "morning"
+            ],
+            "point_word_count": 40,
+            "story_word_count": 27,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        },
+        "point_two": {
+          "before_overlap": {
+            "overlap_ratio": 0.407,
+            "shared_words": [
+              "about",
+              "awakening",
+              "day",
+              "found",
+              "minutes",
+              "people",
+              "self",
+              "showed",
+              "students",
+              "study",
+              "woke"
+            ],
+            "point_word_count": 27,
+            "story_word_count": 135,
+            "flagged": true,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.185,
+            "shared_words": [
+              "about",
+              "day",
+              "earlier",
+              "minutes",
+              "morning"
+            ],
+            "point_word_count": 27,
+            "story_word_count": 40,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false,
+          "regenerate_status": "NG_REVIEW_REQUIRED",
+          "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+        }
+      },
+      "value_qa_status": "PASS"
+    },
+    {
+      "attempt": 1,
+      "lexical_flagged": false,
+      "value_qa_flagged": false,
+      "evidence_compression_applied": true,
+      "main_story_reproduced_exactly": true,
+      "report": {
+        "point_one_vs_point_two": {
+          "overlap_ratio": 0.071,
+          "shared_words": [
+            "light",
+            "waking"
+          ],
+          "point_word_count": 28,
+          "story_word_count": 27,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_one": {
+          "overlap_ratio": 0.074,
+          "shared_words": [
+            "light",
+            "waking"
+          ],
+          "point_word_count": 27,
+          "story_word_count": 28,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_one": {
+          "before_overlap": {
+            "overlap_ratio": 0.357,
+            "shared_words": [
+              "alarm",
+              "hour",
+              "laboratory",
+              "light",
+              "minute",
+              "regular",
+              "short",
+              "still",
+              "timing",
+              "waking"
+            ],
+            "point_word_count": 28,
+            "story_word_count": 135,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.071,
+            "shared_words": [
+              "light",
+              "waking"
+            ],
+            "point_word_count": 28,
+            "story_word_count": 27,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        },
+        "point_two": {
+          "before_overlap": {
+            "overlap_ratio": 0.259,
+            "shared_words": [
+              "feel",
+              "later",
+              "light",
+              "more",
+              "sleep",
+              "wake",
+              "waking"
+            ],
+            "point_word_count": 27,
+            "story_word_count": 135,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.074,
+            "shared_words": [
+              "light",
+              "waking"
+            ],
+            "point_word_count": 27,
+            "story_word_count": 28,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        }
+      },
+      "value_qa_status": "PASS"
+    }
+  ],
+  "final_local_rewrite_cycles": [],
+  "elapsed_seconds": 535.91
+}

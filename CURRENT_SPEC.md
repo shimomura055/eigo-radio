@@ -919,6 +919,11 @@ RESULT_PACKET参照)。
 Gate 3 runtime evidence(実施結果・費用・commitの詳細)は
 `FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01_REPORT.md`参照。
 
+2026-09-14 正常系runtime evidence(`er011_output/discovery_s2_production_
+runtime_evidence_02/`)で通常LedgerによるA2完走を確認し、Gate 3全項目
+充足によりPRODUCTION_WIRED確定。詳細:
+`FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01_REPORT.md`。
+
 ## Cross-level仕様(A2/B1/B2共通)
 
 以下はA2の検証で発見・試作したが、**特定レベル固有ではなく番組全体
