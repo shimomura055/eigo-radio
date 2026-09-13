@@ -1,0 +1,66 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [],
+        "sources": [],
+        "notes": "検証対象の記事本文に具体的な主張がなく、CURRENT FACT文もありません。そのため、事実確認の対象となる主張は存在しません。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_039764d7f5d993ea006aa7287e475087d094907d737168fe3a",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "site:nih.gov brain-computer interface overview",
+          "site:fda.gov brain computer interface"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "The text contains only a title and a question; it makes no claims connecting today's technology to an imagined future."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_04af45d4c179c586006aa72885cb5087d089a3901ef6ab060e",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The scene is explicitly marked as taking place around 2035 and is presented as a hypothetical narrative. Although it uses present-tense storytelling, it does not present the events as true today."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0d55f99d322b7a7f006aa72887bf5487d096d3b4d29cac5f1c"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。"
+}

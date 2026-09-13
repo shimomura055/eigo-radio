@@ -964,3 +964,6 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
 2026-09-14 FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01(通常Ledgerでの正常完走evidence、Production正式経路`run_one_pattern_staged_discovery_focus`): gpt-5.6-luna(reasoning_effort=high)、¥55.30(A2、status=OK、Stage1 escalation1回発火後成功、28 API records)。
 2026-09-13 EDITORIAL-FUTURE-FAMILY-C-LENGTH-DIAGNOSIS-AND-RESPEC-TRIAL-04: gpt-5.6-luna、¥20.53(Ledger/Scaffold再利用、A2/B1+QA)。
 2026-09-13 EDITORIAL-FUTURE-FAMILY-C-V5-EMOTION-RECOVERY-AND-CONSTRAINT-STABILITY-TRIAL-05: gpt-5.6-luna、¥22.88(Research/Ledger/Scaffold/Layer2-3はTrial-02からread-only再利用、A2/B1本生成+A2安定性2サンプルのみ実行、VALIDATED[Trial]・Production未採用)。
+2026-09-14 EDITORIAL-FUTURE-FAMILY-C-V6-CORE-PROVOCATION-REDESIGN-TRIAL-06(初回、home_robots、Story Spark Gate FAIL): gpt-5.6-luna、¥1.21(3件、provocation/writer/spark_gate、future_leap=1でFACT Safety未実行)。
+2026-09-14 EDITORIAL-FUTURE-FAMILY-C-V6-CORE-PROVOCATION-REDESIGN-TRIAL-06b(最小改善、home_robots、Story Spark Gate PASS): gpt-5.6-luna、¥11.19(7件、provocation/writer/spark_gate/fact_check/deviation/bridge/imagined、A'のweb_search6クエリが主因、VALIDATED[Trial]・Production未採用)。
+2026-09-14 EDITORIAL-FUTURE-FAMILY-C-V6-CORE-PROVOCATION-REDESIGN-TRIAL-06_bmi(BCI一般化、Story Spark Gate PASS): gpt-5.6-luna、¥8.76(7件、BCI research/provocation/writer/spark_gate/fact_check/bridge/imagined、VALIDATED[Trial]・Production未採用)。

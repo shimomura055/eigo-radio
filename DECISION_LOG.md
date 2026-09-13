@@ -401,6 +401,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-123: Family C長文化診断+v4再Trial(USER_DECISION_REQUIRED、¥20.53)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-124: Family C Trial-05(VALIDATED)のGit記録+S2配線安全インシデント記録+回帰pattern再発防止
 - [本ファイル内] ## FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01: Discovery S2 Production正式関数の正常完走runtime evidence(A2)取得+PRODUCTION_WIRED確定
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-125: Family C v6再設計Trial-06(VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 
 ---
 
@@ -7057,6 +7058,14 @@ Point-only regenerationがER-008-N8-FINAL-QA-HARDENING-21によりProduction
 (追加API call)が必要になる構造(OPEN-134関連、新規設計は未実装・
 ユーザー判断待ち)。詳細:
 `FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-125(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-125。Family C Trial-06(v6再設計、VALIDATED、
+Production未採用)をGit記録・OPEN-147反映。Discovery S2は同日
+FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01で正常完走
+evidence取得済み・PRODUCTION_WIRED正式受入(SSOT反映済み、本エントリは
+索引目的)。transcript退避2件。詳細: 各REPORT。
 
 ## 参照元
 
