@@ -1,0 +1,38 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_085d29eb464df0f5006aa65220957c87d09a4ff0f90b8d6589",
+  "prompt": "以下はある英語ニュースpodcast記事のFull Story・Point One・Point Twoです。\nPoint One・Point Twoそれぞれについて、以下6項目を判定してください\n(それぞれPASS/FAIL)。\n\n- qa_not_caveat_only: このPointが、研究上の限界・一般化上の注意・免責事項\n  だけで構成されていない場合PASS(それらに加えて実質的な新しい内容がある\n  場合もPASS。留保だけでPoint枠全体が終わっている場合はFAIL)\n- qa_not_full_story_paraphrase: Full Storyの要約・言い換えに留まっていない\n  場合PASS(Full Storyの中心的なlogic・結論を語彙だけ変えて繰り返している\n  場合はFAIL)\n- qa_not_other_point_paraphrase: もう一方のPointの要約・言い換えになって\n  いない場合PASS\n- qa_explains_why_it_matters: 「だから何なのか」を具体的に説明できている\n  場合PASS(聞き手にとっての具体的な意味・示唆がある場合)\n- qa_specific_not_generic: この記事のLedger固有の内容に基づいており、他の\n  どんな記事にもほぼそのまま流用できる一般論になっていない場合PASS\n- qa_adds_new_value: 新しい理解・解釈・意外性・具体的示唆のいずれかを\n  実際に加えている場合PASS(Full Storyだけを聞いた場合と比べて、聞き手の\n  理解が実際に深まっている場合)\n\nreasoningには、判定理由を1〜2文の日本語で書いてください(特にFAILの場合は\n具体的な理由を明記してください)。\n\n【Full Story】\nThere is a small mystery on many mornings. The alarm has not rung, but your eyes open. You look at the clock, and there are only a few minutes left. It can feel as if your body heard a sound that never came.\n\nThe best explanation is not one magic alarm inside the brain. It is a meeting of several timing systems. Light helps set the body’s internal clock to the day. A regular sleep and wake schedule can help too. In a lab, weak light and a regular schedule matched a 24-hour day. They did not usually match test days that were shorter or longer.\n\nThe body may also prepare for an expected wake-up time. In one night-sleep experiment, a hormone linked to waking began to rise about one hour before the planned end of sleep. The researchers said this looked like preparation for waking, not just the normal daily rhythm.\n\nSmall studies found other signs. In one planned self-waking study, brain activity changed about 30 minutes before waking. In a short nap study, heart rate began to rise about three minutes before waking. These findings suggest that waking can begin before the eyes open. But they do not show that the body knows the exact minute an alarm will ring.\n\n【Point One】\nSleep changes as the night goes on. Deep sleep becomes less common, while lighter sleep and REM sleep become more common. Waking from deep sleep is linked with a stronger, heavier, groggier feeling than waking from lighter sleep.\n\nSo, on one night, a familiar wake-up time may arrive during a lighter part of sleep. On another night, it may arrive during deeper sleep. This may help explain why waking before an alarm can sometimes feel clear and easy, but may not happen—or may feel very difficult—on another morning.\n\n【Point Two】\nMany self-waking studies asked people to expect a certain time and wake without outside help. A review found 17 studies with 715 people, but the methods were quite different. Often, waking within 30 minutes of the target counted as success.\n\nIn one study, 7 of 15 people succeeded. In another, success reached 82 percent on the seventh day of repeated practice. These results suggest that expectation and a repeated schedule may help. They do not prove that the brain can find the exact future moment when an alarm will sound.\n",
+  "parsed": {
+    "point_one": {
+      "qa_not_caveat_only": "PASS",
+      "qa_not_full_story_paraphrase": "PASS",
+      "qa_not_other_point_paraphrase": "PASS",
+      "qa_explains_why_it_matters": "PASS",
+      "qa_specific_not_generic": "PASS",
+      "qa_adds_new_value": "PASS",
+      "reasoning": "睡眠の深さやREM睡眠の変化を示し、同じ起床時刻でも日によって目覚めやすさや予告なしの覚醒の成否が変わる理由を具体的に説明している。Full Storyにはない睡眠段階という新しいメカニズムを加えている。"
+    },
+    "point_two": {
+      "qa_not_caveat_only": "PASS",
+      "qa_not_full_story_paraphrase": "PASS",
+      "qa_not_other_point_paraphrase": "PASS",
+      "qa_explains_why_it_matters": "PASS",
+      "qa_specific_not_generic": "PASS",
+      "qa_adds_new_value": "PASS",
+      "reasoning": "17研究・715人、成功率の具体例、30分以内を成功とする基準などを示し、自己覚醒研究の実態と証拠の限界を具体化している。単なる留保ではなく、期待や反復練習が役立つ可能性という新しい示唆を加えている。"
+    }
+  },
+  "per_point": {
+    "point_one": {
+      "ok": true,
+      "fail_fields": [],
+      "reasoning": "睡眠の深さやREM睡眠の変化を示し、同じ起床時刻でも日によって目覚めやすさや予告なしの覚醒の成否が変わる理由を具体的に説明している。Full Storyにはない睡眠段階という新しいメカニズムを加えている。"
+    },
+    "point_two": {
+      "ok": true,
+      "fail_fields": [],
+      "reasoning": "17研究・715人、成功率の具体例、30分以内を成功とする基準などを示し、自己覚醒研究の実態と証拠の限界を具体化している。単なる留保ではなく、期待や反復練習が役立つ可能性という新しい示唆を加えている。"
+    }
+  },
+  "status": "PASS"
+}
