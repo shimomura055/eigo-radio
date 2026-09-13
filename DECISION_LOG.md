@@ -390,6 +390,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-112: Discovery Focus×Point Role Planning接続設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1訂正記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-113: Future Family C試作Trial(VALIDATED[機構]・編集面要改稿)のSSOT反映+施策1 arm#3計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-114: Discovery Focus接続Trial(案2、VALIDATED[Trial])のSSOT反映+施策1 arm#4計測
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-115: Discovery Part A単独案(S2)Trial(VALIDATED[Trial、構造設計])のSSOT反映+施策1 arm#6
 
 ---
 
@@ -6870,6 +6871,12 @@ EDITORIAL-FUTURE-FAMILY-C-PROTOTYPE-TRIAL-01: ユーザー確定判断「Future:
 
 ## PM-CLOSEOUT-CONSOLIDATION-114(2026-09-13)
 FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-TRIAL-01: ユーザー確定判断「Discovery: 接続は短いPoint役割hintの案2のみ。案2'は今回試しません。前回の『目覚ましが鳴る直前に起きる理由』のLedgerとFocus単独A2・B1記事を再利用し、接続ありのA2・B1を新規生成して、計4記事を比較してください。Trialの費用上限は300円です。Production経路は変更しないでください。記事全文とPoint計画を並べ、書き分け、Pointの価値・多様性、面白さ、Fact Safety、retryを評価してください。0〜2点の主観評価には本文上の根拠を添え、ユーザーが4記事を直接読めるようにしてください。」に基づき実施。結果は上記OPEN-135追記のとおり。Fable判断記録: 初回STOP後、Trial専用ファイルの現行同等化(選択肢(a))はProduction無変更・¥0のためFable自律範囲として実施(修正指示1回目)。Gate 1: `VALIDATED`(Trial)。次段階はUSER_DECISION_REQUIRED。実費¥46.47。commit abf4910。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-115(2026-09-13)
+FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01: ユーザーFeedback「今回の接続案2については、Trial結果自体はVALIDATEDですが、現行案をProduction候補としては採用しない方向です。ユーザーが支持した基本設計は以下です。Focusを先に決める→Main StoryはそのFocusに従う→Pointはその後で、Main Storyを見ながら独自価値を探す。重要なのは、Point-firstにしないことです。また、FocusからPointへ『mechanism / limitation / different angle』等の具体的な角度を強く指定する接続も避けます。(中略)まだProduction配線はしないでください。(中略)VALIDATEDでも自動的にProduction採用へ進めず、ユーザー判断でSTOPしてください。」に基づき実施。結果は上記OPEN-135追記のとおり。Gate 1: `VALIDATED`(Trial、構造設計)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。次段階(S2のProduction設計着手可否・retry単位)はUSER_DECISION_REQUIRED。実費¥33.94。commit 8df8d97。
+施策1 Trial記録: arm #6=本委任(CONSOLIDATION-115)。N=6到達後の判定はFableが別途記録。
 
 ---
 
