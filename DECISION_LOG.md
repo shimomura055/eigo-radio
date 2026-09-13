@@ -386,6 +386,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-107: F-1 transcript退避手順の恒久変更(0バイト時はsubagents/agent-<id>.jsonlから取得)をPM_GOVERNANCEへ正式反映+直近2委任の退避実施
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-109: 施策1(tool_uses削減)Trial設計+施策2(E-1/D-1/G-1委任文定型ブロック)導入
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-110: Discovery Focus Module再検証Trial(VALIDATED)のSSOT反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-111: Future記事設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1所見
 
 ---
 
@@ -6845,6 +6846,11 @@ Production経路の変更ではない)。
 
 ## PM-CLOSEOUT-CONSOLIDATION-110(2026-09-13)
 FAMILY-A-DISCOVERY-FOCUS-MODULE-REVALIDATION-01: ユーザー指示(Discovery/Why Focus Module Part Aを旧Trial-07の再現ではなく現行Production基盤・現行Ledger/QA条件で再検証、Production採用判断なし、Article-only、同一テーマ・同一Ledger・A2/B1×baseline/focus 4記事、Household以外優先・新規Research不可、到達StatusはREJECTED/VALIDATED/USER_DECISION_REQUIREDまで)に基づき実施。結果は上記OPEN_ITEMS追記のとおり。Fable Gate 1判定=`VALIDATED`(Trial)。N増しは現時点で不要と判断。Production registry登録・Focus Module配線・Point Role PlanningへのFocus接続・Part B・Fact Checker緩和・新Validator・新Research方式・Audioは非対象のまま。Status: Trial `VALIDATED`、次段階はUSER_DECISION_REQUIRED(Production案再設計の要否)。費用¥113.91。commit 748128b。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-111(2026-09-13)
+EDITORIAL-FUTURE-ARTICLE-DESIGN-01: ユーザー指示「Futureの記事設計を、Discovery Focus Module再検証と並行して進めてください。(中略)まず¥0で設計とTrial用の準備を進め、現行経路への影響、比較方法、記事の面白さ・Futureらしさ・事実と想像の区別を評価する観点、費用上限を報告してください。新規記事のテーマは既存の選定ルールに従って候補を提示し、私が選びます。API費用が発生するTrialとProduction採用は、設計・費用を確認してから別途判断します。Discoveryの進行やProduction経路には、この作業で変更を加えないでください。」に基づき設計完了(¥0)。内容は上記OPEN_ITEMS新規行のとおり。Status: `USER_DECISION_REQUIRED`(Fableはユーザー報告後に判断を仰ぐ)。Production/SSOT本文/Git変更なしで実施し、本エントリで記録。あわせて施策1 Trial arm #1(CONSOLIDATION-110、taskId a9215801a1916cb64)の所見: tool_uses 57(Before同種別中央値50)で削減なし、見落とし・手戻り=Fable委任文設計不備2件(SSOT複数物理行構造へのGrep指定不足、F-1スクリプト必須引数の記載漏れ)、差し戻し0。
 
 ---
 
