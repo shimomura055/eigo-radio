@@ -1,0 +1,81 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "However, the researchers did not find clear evidence of a sudden change in the rate of rise during the hour before waking."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "However, the researchers did not find clear evidence of a sudden change in the rate of rise during the hour before waking.",
+        "issue": "Ledgerが示しているのは、覚醒前1時間と覚醒後1時間でコルチゾール上昇速度に差がなかったという比較結果であり、覚醒前1時間内に上昇速度の急変がなかったという別の主張ではない。比較の内容が変わっている。",
+        "explanation": "関連する研究結果を述べているが、覚醒前後の比較を、覚醒前1時間内の変化の有無へと変更している。Hookではないため通常判定。",
+        "flags": [
+          "changed_fact",
+          "changed_comparison"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "However, the researchers did not find clear evidence that the rate of rise differed between the hour before waking and the hour after waking.",
+            "ledger_status": "LEDGER_COMPLIANT",
+            "ledger_status_window": "LEDGER_COMPLIANT",
+            "target_sentence_eval": {
+              "overall_status": "LEDGER_COMPLIANT",
+              "window_overall_status": "LEDGER_COMPLIANT",
+              "target_deviations": [],
+              "adjacent_deviations": [],
+              "ambiguous_deviations": [],
+              "match_fallback": false
+            }
+          }
+        ],
+        "final_text": "However, the researchers did not find clear evidence that the rate of rise differed between the hour before waking and the hour after waking.",
+        "resolved": true,
+        "human_review_required": false,
+        "diff_qa": {
+          "applied": true,
+          "diff_qa_calls": 1,
+          "window_text": "On average, their cortisol levels began rising long before waking and reached a peak soon after waking. However, the researchers did not find clear evidence that the rate of rise differed between the hour before waking and the hour after waking. Differences between people were also large.",
+          "fact_check_status": "FACT_CHECK_COMPLETED",
+          "fact_check_verdict": "PASS",
+          "fact_check_model": "gpt-5.6-luna",
+          "fact_check_response_id": "resp_0b5520ba1509ab02006aa6692aad9487d094ad7da03d164ae6",
+          "fact_check_search_usage": {
+            "web_search_call_count": 3,
+            "queries": [
+              "\"cortisol levels began rising\" \"hour before waking\" \"hour after waking\" study",
+              "\"rate of rise\" cortisol \"hour before waking\" \"hour after waking\"",
+              "cortisol awakening response began rising before waking peaked soon after waking individual differences study",
+              "\"Timing the end of nocturnal sleep\" cortisol ACTH",
+              "\"Awakening not associated with an increased rate of cortisol secretion\" Royal Society",
+              "\"Klaas\" \"Awakening not associated\" cortisol 201 healthy volunteers",
+              "site:royalsocietypublishing.org cortisol awakening 201 healthy volunteers microdialysis"
+            ]
+          },
+          "ledger_check_full": {
+            "deviations": [],
+            "overall_status": "LEDGER_COMPLIANT"
+          },
+          "ledger_check_target_eval": {
+            "overall_status": "LEDGER_COMPLIANT",
+            "window_overall_status": "LEDGER_COMPLIANT",
+            "target_deviations": [],
+            "adjacent_deviations": [],
+            "ambiguous_deviations": [],
+            "match_fallback": false
+          },
+          "blocks_acceptance": false
+        },
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "locus": "main_story"
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]
