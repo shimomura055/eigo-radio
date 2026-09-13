@@ -931,3 +931,21 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   編集・テスト追加[新規9件、ASR呼び出しはモック]・Git操作のみ、新規
   LLM/TTS/ASR API呼び出しなし)。委任回数はいずれも初回のみ(ループ
   上限4回以内)。
+
+- 2026-09-13 PM-CLOSEOUT-CONSOLIDATION-105(OPEN-141-TARGET-SENTENCE-
+  DIFF-QA-PRODUCTION-WIRING-01+EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-
+  GATE-ENABLE-01+OPEN-121-METHOD-C-V2-CLOSE-01、本タスク、Git書込
+  唯一のタスク): target-sentence-matching既定ON化+差分QA案I
+  Production配線(`er010_ledger_local_rewrite_09.py::run_diff_qa_for_
+  accepted_rewrite()`/`apply_diff_qa_to_resolved_rewrite()`)のruntime
+  evidence取得のため、保存済みVerified Fact Ledger(Hanshin、OPEN-141
+  Phase Bと同一)を入力にProduction関数を2回実行(直接呼び出し1回+
+  `apply_diff_qa_to_resolved_rewrite()`経由1回)。実際にAPIへ渡った
+  model_idは`gpt-5.6-luna`(`routing.require_model("WRITER_FACT_CHECK",
+  ...)`経由、Trialが直接参照していた`gpt-5.6-sol`とは異なることを実測
+  で確認)。web_search呼び出し合計6回(2回+4回)、Ledger Deviation
+  Checker(web_search無し、同モデル)2回。概算$0.07前後(¥10〜15程度、
+  token数詳細は未記録)、上限¥50の20〜30%。3V Fact Safety保守版ゲート
+  既定ON化・方式C-v2 Closeは新規API呼び出し0件(¥0、SSOT/コード
+  コメント編集のみ)。テスト追加(新規15件、既存3ファイル更新)は全て
+  LLMモックのため¥0。委任回数=初回のみ(ループ上限4回以内)。

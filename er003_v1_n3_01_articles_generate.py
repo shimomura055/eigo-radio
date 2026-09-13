@@ -1104,9 +1104,28 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
             point_context_found = point_context is not None
             if point_context is None:
                 point_context = f"{before_ctx} {target} {after_ctx}".strip()
+            # OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01(ユーザー
+            # 正式判断2026-09-13): target-sentence-matchingを既定ONへ切替。
             r = local_rewrite.rewrite_ng_item(client, ledger_model, REASONING_EFFORT,
                                                verified_ledger_text, point_context, target,
-                                               deviation, before_ctx, after_ctx, _run_check_window)
+                                               deviation, before_ctx, after_ctx, _run_check_window,
+                                               use_target_sentence_matching=True)
+            # 同上ユーザー判断: Local Rewrite受理直後に差分QA案I(Fact Checker
+            # A'再実行+Ledger Deviation Checker再確認)を実行する。FAIL相当の
+            # みresolvedをFalseへ反転させ、既存human_review_requiredの流れへ
+            # 合流させる(新規機構は作らない)。Fact Checker A'のmodelは
+            # 既存Production呼び出し元(本ファイルL997)と同一のrouting
+            # ("WRITER_FACT_CHECK")で解決する。
+            diff_qa_fact_checker_model = routing.require_model(
+                "WRITER_FACT_CHECK", routing.WRITER_FACT_CHECK_MODEL)
+            r = local_rewrite.apply_diff_qa_to_resolved_rewrite(
+                r, client, topic, before_ctx, after_ctx, verified_ledger_text, ledger_model,
+                diff_qa_fact_checker_model)
+            # Point Overlap rule-based再計算(¥0、LLM再呼び出しなし)。対象文が
+            # Point One/Two本文に属する場合のみ記録(non-blocking、記録のみ)。
+            sections_for_overlap = split_common_sections_for_point_qa(article_text)
+            r["diff_qa_point_overlap"] = overlap_qa.recompute_point_overlap_for_target_sentence(
+                sections_for_overlap, target, replacement_text=r.get("final_text"))
             r["cycle"] = cycle
             r["item_idx"] = idx
             r["location_method"] = location_method

@@ -934,7 +934,8 @@ def _apply_b_family_voice_safety_gate(parsed: dict, article_text: str) -> dict:
 # 一切変更せず踏襲、article_textの内部構造[section数]に依存しない)。
 # ============================================================
 def run_ledger_deviation_and_local_rewrite(client, theme_id: str, label: str, article_text: str,
-                                            verified_ledger_text: str, out_dir: str, ledger_model: str) -> dict:
+                                            verified_ledger_text: str, out_dir: str, ledger_model: str,
+                                            topic_ja: str = "") -> dict:
     print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: ledger逸脱チェック開始(Hook-aware)...")
     deviation_result = vfl01.run_deviation_check(
         client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
@@ -984,9 +985,35 @@ def run_ledger_deviation_and_local_rewrite(client, theme_id: str, label: str, ar
             point_context_found = point_context is not None
             if point_context is None:
                 point_context = f"{before_ctx} {target} {after_ctx}".strip()
+            # OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01(ユーザー
+            # 正式判断2026-09-13): target-sentence-matchingを既定ONへ切替。
             r = local_rewrite.rewrite_ng_item(client, ledger_model, gen.REASONING_EFFORT, verified_ledger_text,
                                                point_context, target, deviation, before_ctx, after_ctx,
-                                               _run_check_window)
+                                               _run_check_window, use_target_sentence_matching=True)
+            # 同上ユーザー判断: Local Rewrite受理直後に差分QA案I(Fact Checker
+            # A'再実行+Ledger Deviation Checker再確認)を実行する。FAIL相当の
+            # みresolvedをFalseへ反転させ、既存human_review_requiredの流れへ
+            # 合流させる(新規機構は作らない)。Fact Checker A'のmodelは既存
+            # Production呼び出し元(本ファイルrun_fact_checker_a_prime_3v経由の
+            # b1prod.run_fact_checker)と同一のrouting("WRITER_FACT_CHECK")で
+            # 解決する。topic_jaが空文字列(呼び出し元未指定、既存test互換の
+            # 既定値)の場合は差分Fact Checker A'を発火させない(topicなしで
+            # web_search fact checkerを走らせても意味のある判定にならず、
+            # 意図しないAPI呼び出しを防ぐための安全側ガード)。
+            if topic_ja:
+                diff_qa_fact_checker_model = routing.require_model(
+                    "WRITER_FACT_CHECK", routing.WRITER_FACT_CHECK_MODEL)
+                r = local_rewrite.apply_diff_qa_to_resolved_rewrite(
+                    r, client, topic_ja, before_ctx, after_ctx, verified_ledger_text, ledger_model,
+                    diff_qa_fact_checker_model)
+                # Point Overlap rule-based再計算(¥0、LLM再呼び出しなし)。
+                # B-Family 3VはPoint One/Two見出しを持たないため通常
+                # applicable=Falseとなる(想定通りの安全な無効化)。
+                sections_for_overlap = gen.split_common_sections_for_point_qa(article_text)
+                r["diff_qa_point_overlap"] = overlap_qa.recompute_point_overlap_for_target_sentence(
+                    sections_for_overlap, target, replacement_text=r.get("final_text"))
+            else:
+                r["diff_qa"] = {"applied": False, "reason": "topic_ja_not_provided"}
             r["cycle"] = cycle
             r["item_idx"] = idx
             r["location_method"] = location_method
@@ -1144,7 +1171,8 @@ def run_voices_pattern_3v(client, theme_id: str, label: str, prompt: str, verifi
 
     ledger_model = routing.require_model(gen._writer_process(label), routing.WRITER_MODEL)
     ledger_result = run_ledger_deviation_and_local_rewrite(
-        client, theme_id, label, article_text, verified_ledger_text, out_dir, ledger_model)
+        client, theme_id, label, article_text, verified_ledger_text, out_dir, ledger_model,
+        topic_ja=topic_ja)
     article_text = ledger_result["article_text"]
     sections = split_six_voice_sections(article_text)  # Local Rewrite後に再抽出
 

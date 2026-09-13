@@ -381,6 +381,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD: B-Family Voices Fact Safety緩和Trial(Stage 1/1b)結果のSSOT反映、Status`USER_DECISION_REQUIRED`(段階1=実データ適用0件、段階2=設計文言どおりでは合成true-positive11件中6件誤緩和・保守版ゲート採用でも実データ効果は6件中5件どまり、その他案3=受理ロジックのtarget-sentence-matching仕様変更が必要と判明しSTOP)、費用¥9.75、ユーザー選択肢(a)〜(d)提示(Fable推奨欄は未記入)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE: 2026-09-13ユーザー回答(原文全文、9項目)の正式記録+OPEN-121残5論点のReconciliation(実装・CURRENT_SPEC・DECISION_LOG・過去REPORTまで確認)+OPEN-136/122/141/120のSSOT表記整合+PM_GOVERNANCEへの4追記(ユーザーへ上げるOpen Item基準/試作期の膿出し方針/ChatGPTルール/是正記録)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-104: 3V Fact Safety Stage2/3(UDR)+OPEN-141 Phase B(VALIDATED)+方式D' Gate 3検証+方式C-v2統合Trial のGit統合とSSOT反映
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-105: 2026-09-13ユーザー正式判断5件(OPEN-141差分QA Production採用/3V Fact Safetyは次実記事のruntime evidence待ち/見出し混入バグ修正Production反映/方式D'継続/方式C-v2 Production不採用Close)の正式記録+OPEN-141 Production配線(target-sentence-matching既定ON+差分QA案I)+3V Fact Safety保守版ゲート既定ON化+方式C-v2 Close
 
 ---
 
@@ -6656,6 +6657,41 @@ D' `PRODUCTION_WIRED`確定+方式C-v2 Trial統合追記)。
 **commit**: 本エントリと`CURRENT_SPEC.md`・`OPEN_ITEMS.md`(OPEN-120/
 121/141行)・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・対象コード/テスト/
 REPORT一式をまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-105: 2026-09-13ユーザー正式判断5件の記録+OPEN-141差分QA Production配線+3V Fact Safety保守版ゲート既定ON化+方式C-v2 Close
+
+**管理ID**: PM-CLOSEOUT-CONSOLIDATION-105
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(SSOT・Git担当、¥0の範囲外は実LLM呼び出しによるruntime evidence取得のみ)
+
+**ユーザー正式判断(原文、2026-09-13)**:
+> 1. 3V Fact Safety: 追加Trialは不要です。offlineでは有効性が確認できているため、次のB-Family実記事生成時に自然発火した場合にruntime evidenceを取得・確認する方針としてください。
+> 2. target-sentence-matching+Local Rewrite差分QA: Production採用で進めてください。Local Rewrite後の変更箇所を正確に特定し、その変更箇所に対してFact Checker A'+Ledger等の差分QAを再実行する構成でProduction反映してください。今回のTrial結果・実記事での検出実績から、追加コストに対して十分なFact Safety上の価値があると判断します。
+> 3. Local Rewriteの見出し混入バグ修正: 明確な不具合修正のため、Production反映で問題ありません。
+> 4. 方式D': 現在のProduction採用・配線済み構成を継続してください。
+> 5. 方式C-v2: Productionには採用しません。Closeしてください。Trialとしての技術的成立性は確認できましたが、既存方式Aに対する追加検出が実測0件であり、追加ASR呼び出し・latency増に見合うincremental valueが確認できないためです。C-v2については「Trial失敗」ではなく、「検証の結果、既存A+D'構成に対する追加価値が不足しているためProduction不採用」という理由をSSOT/Decision Log等に明確に残してください。
+
+**対応(Status確定)**:
+
+**1. 3V Fact Safety保守版ゲート(`voice_fact_safety_gate_mode`)**: 追加Trialは実施せず、B-Family 3V Production経路(`er012_b_family_editorial_type_registry_01.py::VOICE_FACT_SAFETY_GATE_MODE_DEFAULT`)で既定ONへ切替した(A-Family経路はこのフラグ・関連関数[`er012_b_family_voices_writer_generic_01.py::_apply_b_family_voice_safety_gate()`]を一切参照しないことをgrepで再確認、無影響)。**Status = `APPROVED_FOR_PRODUCTION`**(配線実装済み)。Gate3項目4/6(Production runtimeでの実発火・runtime evidence)は、次のB-Family実記事生成時に自然発火した場合に取得・確認する方針とする(OPEN-145と同じ扱い、OPEN_ITEMS.md OPEN-120へ明記)。新規記事生成は行っていない(¥0)。既定ON化のテスト(`er012_b_family_voices_writer_generic_01_test_01.py::test_default_mode_is_on_for_b_family_2026_09_13`)を更新しPASSを確認。
+
+**2. OPEN-141差分QA Production配線(target-sentence-matching+差分QA案I)**: target-sentence-matching(`er010_ledger_local_rewrite_09.py::rewrite_ng_item(use_target_sentence_matching=True)`)をA-Family(`er003_v1_n3_01_articles_generate.py`)・B-Family(`er012_b_family_voices_writer_generic_01.py::run_ledger_deviation_and_local_rewrite()`)の両呼び出し元で既定ONへ切替した。Local Rewrite受理直後に差分QA案I(対象文±1文をFact Checker A'+Ledger Deviation Checkerへ再投入、`run_diff_qa_for_accepted_rewrite()`/`apply_diff_qa_to_resolved_rewrite()`、Trial専用スクリプト`er011_open141_target_sentence_diff_qa_integration_trial_b_01.py`のロジックをそのまま`er010_ledger_local_rewrite_09.py`[Production module]へ移植、Trial専用モジュールは引き続きimportしない)を配線した。verdict扱い: Fact Checker A'のverdict=`FAIL`またはLedger再評価=`LEDGER_DEVIATION`の場合のみ不受理(既存human_review_required/cycle/retry/fallbackの流れへ合流、新規機構は作らない)。`REVIEW_REQUIRED`は既存Fact Checker A'のnon-blocking advisory運用方針と同一に扱い記録のみで通過。Point Overlap rule-based再計算(`er008_point_overlap_qa_18.recompute_point_overlap_for_target_sentence()`)も同時配線(¥0、LLM再呼び出しなし)。`DIFF_QA_CALLS_PER_ITEM=1`(既存`MAX_REWRITE_CYCLES`/`MAX_REWRITE_ATTEMPTS`と独立の別軸カウンタ)。Fact Checker A'のmodelは各呼び出し元の既存routing(`routing.require_model("WRITER_FACT_CHECK", routing.WRITER_FACT_CHECK_MODEL)`)をそのまま再利用し、新しいmodel選択ロジックは作らない。新規テスト15件PASS(`er010_open141_diff_qa_production_wiring_test_01.py`、FAIL/REVIEW_REQUIRED/PASS各verdict分岐・DIFF_QA上限1・A/B-Family配線を含む)+既存回帰PASS(`er010_n9_production_integration_09_test_01.py`33件・`er012_b_family_voices_writer_generic_01_test_01.py`・`er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`56件・`er010_open141_target_sentence_matching_diff_qa_b_test_01.py`22件、いずれもPASS)。**Status = `PRODUCTION_WIRED`**。詳細・Gate3 14項目表・runtime evidence・コスト影響は`OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01_REPORT.md`参照。
+
+**3. Local Rewrite見出し混入バグ修正**: `split_sentences()`の見出し行除外修正(OPEN-141 Phase Bで既にFable自律範囲として`APPROVED_FOR_PRODUCTION`済み、PM-CLOSEOUT-CONSOLIDATION-104)は、本タスクの既定ON化後も継続して有効(無変更)。
+
+**4. 方式D'**: 現行の`PRODUCTION_WIRED`構成(2026-09-13確定、`OPEN-121-METHOD-D-PRIME-PRODUCTION-WIRING-01`)を継続、変更なし。
+
+**5. 方式C-v2 Close**: `er011_open121_repetition_qa_production_01.py`の方式C-v2実装(`enable_method_c_v2`既定OFF・opt-in)は削除せず残す。**Status = `REJECTED_FOR_PRODUCTION`でClose**(Trial自体は`VALIDATED`のまま変更しない)。採用不可の理由はユーザー原文どおり「検証の結果、既存A+D'構成に対する追加価値が不足しているためProduction不採用」(既存方式Aに対する追加検出が実測0件、追加ASR呼び出し・latency増に見合わない)であり、「Trial失敗」ではない。同ファイルへ2026-09-13付のコメント(Production不採用・既定OFF維持・呼び出し元は渡さないこと)を追加した。Production呼び出し元4箇所(`er003_v1_*.py`等)が`enable_method_c_v2`を一切渡していないことをgrepで再確認した。OPEN_ITEMS.md OPEN-121 (e)をCloseし、「残5論点」のうち未回答は(d)のみへ整理した。
+
+**状態**: 反映完了(SSOT[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/本エントリ/`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`]・テスト追加[新規15件PASS]・Git反映)。
+
+**根拠**: `OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01_REPORT.md`、`OPEN-141-TARGET-SENTENCE-MATCHING-AND-DIFF-QA-COMMON-BASE-TRIAL-01_REPORT.md`(Phase B節)、`OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01_REPORT.md`、ユーザー発言原文(本セッション)。
+
+**影響するCURRENT_SPEC項目**: 「Ledger Deviation MAJOR時の局所Rewrite(Local Rewrite)」行(target-sentence-matching+差分QA案I既定ON追記)、「## B-Family(Voices)Editorial Type」節新規行(3V Fact Safety保守版ゲート既定ON)、「TTS Repetition/False Start QA」行(方式C-v2 `REJECTED_FOR_PRODUCTION`追記)。
+
+**commit**: 本エントリと`CURRENT_SPEC.md`・`OPEN_ITEMS.md`(OPEN-120/121/141行)・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・対象コード(`er010_ledger_local_rewrite_09.py`・`er003_v1_n3_01_articles_generate.py`・`er012_b_family_voices_writer_generic_01.py`・`er008_point_overlap_qa_18.py`・`er012_b_family_editorial_type_registry_01.py`・`er011_open121_repetition_qa_production_01.py`)・テスト(新規`er010_open141_diff_qa_production_wiring_test_01.py`+既存3ファイル更新)・REPORTをまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
 
 ---
 

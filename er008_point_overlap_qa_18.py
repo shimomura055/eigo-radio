@@ -78,3 +78,49 @@ def flag_possible_paraphrase(point_text: str, full_story_text: str,
     result["flagged"] = result["overlap_ratio"] >= threshold
     result["threshold"] = threshold
     return result
+
+
+# ============================================================
+# OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01(ユーザー承認
+# 2026-09-13、差分QA案IのPoint Overlap rule-based再計算部分)。
+# ============================================================
+# Local Rewrite受理直後、対象文がPoint One/Twoの本文に属する場合のみ、
+# 既存のrule-based Point Overlap(上記flag_possible_paraphrase、LLM再呼び出し
+# なし・¥0)をそのsectionについて再計算する
+# (`er011_open141_target_sentence_diff_qa_integration_trial_b_01.py`
+# recompute_point_overlap_if_in_point_section()のProduction移植)。
+# sectionsは呼び出し元(A-Family: er003_v1_n3_01_articles_generate.
+# split_common_sections_for_point_qa()、B-Family: 同関数をそのまま流用、
+# `{'point_one_body','point_two_body','full_story'}`を含む辞書または
+# 想定構造が見つからない場合はNone)をそのまま渡す。この関数自身は
+# 記事構造のparsingを行わない(呼び出し元の既存分割ロジックへ一切変更を
+# 加えないため)。B-Family 3V(Point One/Two見出しを持たない構造)では
+# sectionsが常にNoneまたは対象文が該当しないため、applicable=Falseとなる
+# (想定通りの安全な無効化、新しい構造判定基準を追加しない)。
+# 判定結果は記録のみ(non-blocking)であり、Trial版と同様この結果を理由に
+# Local Rewriteの受理/不受理を変更しない(受理判定はFact Checker A'の
+# verdict='FAIL'およびLedger Deviation Checkerの対象文再評価のみで行う、
+# er010_ledger_local_rewrite_09.run_diff_qa_for_accepted_rewrite参照)。
+def recompute_point_overlap_for_target_sentence(sections, target_sentence: str,
+                                                  replacement_text: str = None) -> dict:
+    if not sections:
+        return {"applicable": False, "reason": "sections_not_available"}
+    point_one_body = sections.get("point_one_body", "") or ""
+    point_two_body = sections.get("point_two_body", "") or ""
+    if target_sentence in point_one_body:
+        key, other_key = "point_one", "point_two_body"
+    elif target_sentence in point_two_body:
+        key, other_key = "point_two", "point_one_body"
+    else:
+        return {"applicable": False, "reason": "target_not_in_point_one_or_two"}
+    body = sections[f"{key}_body"]
+    if replacement_text and target_sentence in body:
+        body = body.replace(target_sentence, replacement_text, 1)
+    overlap_vs_story = flag_possible_paraphrase(body, sections["full_story"])
+    overlap_vs_other = flag_possible_paraphrase(body, sections[other_key])
+    return {
+        "applicable": True, "point": key,
+        "overlap_vs_full_story": overlap_vs_story,
+        "overlap_vs_other_point": overlap_vs_other,
+        "flagged": overlap_vs_story["flagged"] or overlap_vs_other["flagged"],
+    }

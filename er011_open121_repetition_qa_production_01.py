@@ -59,6 +59,18 @@
 # 異なり、有効化すると窓分割ASR呼び出し(既存`er006_asr_provider_
 # routing_01.transcribe`)を追加で行うため追加API課金・追加レイテンシが
 # 発生する(既定Falseのため無効化時はゼロ)。
+#
+# OPEN-121-METHOD-C-V2-CLOSE-01(ユーザー正式判断2026-09-13、
+# PM-CLOSEOUT-CONSOLIDATION-105): 方式C-v2はProductionには採用しない
+# (Status=REJECTED_FOR_PRODUCTION)。Trialとしての技術的成立性(窓内独立
+# 判定・既存正規化関数の再利用)は確認できたが、既存方式A+D'構成に対する
+# 追加検出が実測0件であり、追加ASR呼び出し・latency増に見合うincremental
+# valueが確認できなかったため(「Trial失敗」ではなく「検証の結果、既存
+# 構成に対する追加価値が不足しているためProduction不採用」という判断、
+# 詳細はCURRENT_SPEC.md/OPEN_ITEMS.md OPEN-121 (e)/DECISION_LOG.md参照)。
+# コードは既定OFF・opt-inのまま削除せず残す(将来の再評価に備える)。
+# 呼び出し元(er003_v1_*.py等の既存4箇所)は`enable_method_c_v2`を一切
+# 渡さないこと(既定Falseのまま、新たに配線を追加しない)。
 from __future__ import annotations
 
 import difflib

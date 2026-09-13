@@ -444,7 +444,16 @@ def build_voice_attribution_block(ledger_text: str) -> str:
 # (`er003_v1_n3_01_articles_generate.py`等)はこのフラグ・関数を一切
 # 参照しない(is_fact_attribution_mode_enabledと同型のcode-level gating)。
 # ============================================================
-VOICE_FACT_SAFETY_GATE_MODE_DEFAULT = False  # opt-in、既定OFF(Trial継続、Production正式採用ではない)
+# PM-CLOSEOUT-CONSOLIDATION-105(ユーザー正式判断2026-09-13「追加Trialは
+# 不要です。offlineでは有効性が確認できているため、次のB-Family実記事生成時
+# に自然発火した場合にruntime evidenceを取得・確認する方針としてください」):
+# Status=APPROVED_FOR_PRODUCTION(配線実装済み、B-Family経路で既定ON)。
+# Gate 3項目4/6(Production runtimeでの実発火・runtime evidence)は、次の
+# B-Family実記事生成時に自然発火した場合に取得・確認する(OPEN-145と同じ
+# 扱い、OPEN_ITEMS.md OPEN-120参照)。A-Family経路はこのフラグ・関数を
+# 一切参照しない(is_fact_attribution_mode_enabledと同型のcode-level
+# gating、無変更)。
+VOICE_FACT_SAFETY_GATE_MODE_DEFAULT = True  # 既定ON(B-Family限定、2026-09-13)
 
 
 EDITORIAL_TYPES = {

@@ -385,7 +385,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
                                "ledger_status": "LEDGER_COMPLIANT"}],
                  "final_text": "In this study, the tip rate rose after screens appeared.",
                  "resolved": True, "human_review_required": False,
-             }):
+             }), \
+             mock.patch.object(gen.local_rewrite, "apply_diff_qa_to_resolved_rewrite",
+                                side_effect=lambda r, *a, **k: r):
             result = gen.run_one_pattern(
                 client=object(), theme_id="t1", label="A2",
                 prompt="fake prompt", verified_ledger_text="FACT-01: some ledger fact",
@@ -437,7 +439,9 @@ class RunOnePatternLocalRewriteWiringTests(unittest.TestCase):
              mock.patch.object(gen.point_planning, "run_point_role_planning",
                                 side_effect=_fake_role_planning_result), \
              mock.patch.object(gen.point_planning, "run_point_value_qa", side_effect=_fake_value_qa_pass), \
-             mock.patch.object(gen.local_rewrite, "rewrite_ng_item", rewrite_mock):
+             mock.patch.object(gen.local_rewrite, "rewrite_ng_item", rewrite_mock), \
+             mock.patch.object(gen.local_rewrite, "apply_diff_qa_to_resolved_rewrite",
+                                side_effect=lambda r, *a, **k: r):
             result = gen.run_one_pattern(
                 client=object(), theme_id="t1", label="A2",
                 prompt="fake prompt", verified_ledger_text="FACT-01: some ledger fact",

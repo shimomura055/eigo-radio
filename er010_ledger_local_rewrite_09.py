@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import re
 
+import er002_ja_web_research_r3 as r3
 import er003_v1_en_direct_vfl_01_generate as vfl01
 
 MAX_REWRITE_ATTEMPTS = 3
@@ -270,6 +271,91 @@ def evaluate_target_sentence_status(check_result: dict, target_sentence: str, be
     return {"overall_status": status, "window_overall_status": window_status,
             "target_deviations": target_devs, "adjacent_deviations": adjacent_devs,
             "ambiguous_deviations": [], "match_fallback": False}
+
+
+# ============================================================
+# OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01(ユーザー正式判断
+# 2026-09-13「target-sentence-matching+Local Rewrite差分QA: Production採用で
+# 進めてください」)。Phase B Trial(`er011_open141_target_sentence_diff_qa_
+# integration_trial_b_01.py::run_diff_qa_for_target_sentence`)を、新しい
+# LLM判定基準・promptを一切作らずそのままProduction moduleへ移植したもの。
+# ============================================================
+# 既存MAX_REWRITE_CYCLES(記事全体cycle上限=3)・MAX_REWRITE_ATTEMPTS
+# (文単位rewrite試行上限=3)とは全く別軸の「差分QA呼び出し回数」カウンタ
+# (対象文1件につき1回のみ、混同を避けるため独立定数として明示)。
+DIFF_QA_CALLS_PER_ITEM = 1
+
+
+def run_diff_qa_for_accepted_rewrite(client, topic_ja: str, target_sentence: str, before_ctx: str,
+                                      after_ctx: str, verified_ledger_text: str, ledger_model: str,
+                                      fact_checker_model: str) -> dict:
+    """Local Rewrite受理(resolved=True)直後、対象文(+前後1文)を既存の
+    Fact Checker A'(`er002_ja_web_research_r3.build_fact_check_prompt`/
+    `make_fact_checker_fn`/`run_fact_checker_with_gates`、web_search込み)と
+    既存のLedger Deviation Checker(`vfl01.run_deviation_check`、Hook-aware)
+    へ再投入する(OPEN-141 Phase B案I)。fact_checker_modelは呼び出し元が
+    既存のmodel routing(`er006_model_routing_contract_01.require_model(
+    "WRITER_FACT_CHECK", ...)`)で解決した値をそのまま渡すこと(この関数
+    自身は新しいmodel選択ロジックを持たない、Gate 3項目7)。reasoning_effort
+    は`make_fact_checker_fn`の既定値(`r3.FACT_CHECKER_REASONING_EFFORT`、
+    既存Production呼び出し元と同じ、明示的に上書きしない)。"""
+    window_text = f"{before_ctx} {target_sentence} {after_ctx}".strip()
+
+    fc_prompt = r3.build_fact_check_prompt(topic_ja, window_text, [])
+
+    def make_fc_fn():
+        return r3.make_fact_checker_fn(fc_prompt, model=fact_checker_model)
+
+    fc_result, fc_status, fc_attempts, fc_model, fc_response_id, fc_search_usage, fc_sources = \
+        r3.run_fact_checker_with_gates(make_fc_fn)
+    fc_verdict = fc_result.get("verdict") if fc_result else None
+
+    ledger_result = vfl01.run_deviation_check(client, verified_ledger_text, window_text,
+                                               model=ledger_model, hook_aware=True)
+    ledger_eval = evaluate_target_sentence_status(ledger_result["parsed"], target_sentence, before_ctx, after_ctx)
+
+    return {
+        "diff_qa_calls": DIFF_QA_CALLS_PER_ITEM,
+        "window_text": window_text,
+        "fact_check_status": fc_status,
+        "fact_check_verdict": fc_verdict,
+        "fact_check_model": fc_model,
+        "fact_check_response_id": fc_response_id,
+        "fact_check_search_usage": fc_search_usage,
+        "ledger_check_full": ledger_result["parsed"],
+        "ledger_check_target_eval": ledger_eval,
+        # ユーザー承認2026-09-13の閾値: 差分Fact Checker A'のverdict='FAIL'、
+        # またはLedger Deviation Checkerの対象文再評価がLEDGER_DEVIATIONの
+        # 場合のみ不受理とする。verdict='REVIEW_REQUIRED'は既存Fact Checker
+        # A'の運用方針(non-blocking advisory、`er003_v1_n3_01_articles_
+        # generate.py`L1013-1025参照)と同じ扱いとし記録のみ・通過させる。
+        "blocks_acceptance": (fc_verdict == "FAIL") or (ledger_eval["overall_status"] == "LEDGER_DEVIATION"),
+    }
+
+
+def apply_diff_qa_to_resolved_rewrite(rewrite_result: dict, client, topic_ja: str, before_ctx: str,
+                                       after_ctx: str, verified_ledger_text: str, ledger_model: str,
+                                       fact_checker_model: str) -> dict:
+    """`rewrite_ng_item()`の戻り値(rewrite_result)へ、差分QA(案I)の結果を
+    'diff_qa'キーとして追記して返す(呼び出し元がcycle_resultsへappendする
+    直前に呼ぶことを想定)。resolved=False(3-attempt上限で未解決、既に
+    human_review_required=True)の項目には適用しない(既に既存フローで
+    ブロック対象のため、追加のAPI呼び出しをせず¥0で早期return)。
+    差分QAがblocks_acceptance=Trueと判定した場合のみ、rewrite_result
+    ['resolved']をFalseへ、['human_review_required']をTrueへ書き換える
+    (新規のretry/fallback機構は作らず、既存の3-attempt枯渇時と同一の
+    下流処理[cycle継続・最終的にNG_REVIEW_REQUIRED]へ合流させる)。"""
+    if not rewrite_result.get("resolved"):
+        rewrite_result["diff_qa"] = {"applied": False, "reason": "not_resolved_skip"}
+        return rewrite_result
+    diff_qa_result = run_diff_qa_for_accepted_rewrite(
+        client, topic_ja, rewrite_result["final_text"], before_ctx, after_ctx,
+        verified_ledger_text, ledger_model, fact_checker_model)
+    rewrite_result["diff_qa"] = {"applied": True, **diff_qa_result}
+    if diff_qa_result["blocks_acceptance"]:
+        rewrite_result["resolved"] = False
+        rewrite_result["human_review_required"] = True
+    return rewrite_result
 
 
 def generate_rewrite(client, model: str, reasoning_effort: str, prompt: str) -> str:

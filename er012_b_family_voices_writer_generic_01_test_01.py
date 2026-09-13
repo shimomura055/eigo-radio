@@ -255,10 +255,13 @@ class VoiceSafetyGateOptInDefaultOffTests(unittest.TestCase):
     """既定OFF・family=="B"コードレベルgating(is_fact_attribution_mode_
     enabledと同型)。"""
 
-    def test_default_mode_is_off(self):
+    def test_default_mode_is_on_for_b_family_2026_09_13(self):
+        # PM-CLOSEOUT-CONSOLIDATION-105(ユーザー正式判断2026-09-13):
+        # B-Family経路で既定ONへ切替(Gate 3項目4/6は次のB-Family実記事
+        # 生成時の自然発火待ち、OPEN_ITEMS.md OPEN-120参照)。
         et = registry.get_editorial_type("b_family_voices")
-        self.assertFalse(et["voice_fact_safety_gate_mode"])
-        self.assertFalse(registry.is_voice_fact_safety_gate_mode_enabled())
+        self.assertTrue(et["voice_fact_safety_gate_mode"])
+        self.assertTrue(registry.is_voice_fact_safety_gate_mode_enabled())
 
     def test_enabled_only_when_family_b_and_flag_true(self):
         et = registry.EDITORIAL_TYPES["b_family_voices"]
