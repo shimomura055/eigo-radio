@@ -391,6 +391,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-113: Future Family C試作Trial(VALIDATED[機構]・編集面要改稿)のSSOT反映+施策1 arm#3計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-114: Discovery Focus接続Trial(案2、VALIDATED[Trial])のSSOT反映+施策1 arm#4計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-115: Discovery Part A単独案(S2)Trial(VALIDATED[Trial、構造設計])のSSOT反映+施策1 arm#6
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-116: Future Family C再設計Trial-02(VALIDATED[Trial])のSSOT反映+施策1 N=6判定記録
 
 ---
 
@@ -6877,6 +6878,12 @@ FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-TRIAL-01: ユーザー確定�
 ## PM-CLOSEOUT-CONSOLIDATION-115(2026-09-13)
 FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01: ユーザーFeedback「今回の接続案2については、Trial結果自体はVALIDATEDですが、現行案をProduction候補としては採用しない方向です。ユーザーが支持した基本設計は以下です。Focusを先に決める→Main StoryはそのFocusに従う→Pointはその後で、Main Storyを見ながら独自価値を探す。重要なのは、Point-firstにしないことです。また、FocusからPointへ『mechanism / limitation / different angle』等の具体的な角度を強く指定する接続も避けます。(中略)まだProduction配線はしないでください。(中略)VALIDATEDでも自動的にProduction採用へ進めず、ユーザー判断でSTOPしてください。」に基づき実施。結果は上記OPEN-135追記のとおり。Gate 1: `VALIDATED`(Trial、構造設計)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。次段階(S2のProduction設計着手可否・retry単位)はUSER_DECISION_REQUIRED。実費¥33.94。commit 8df8d97。
 施策1 Trial記録: arm #6=本委任(CONSOLIDATION-115)。N=6到達後の判定はFableが別途記録。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-116(2026-09-13)
+(1) EDITORIAL-FUTURE-FAMILY-C-REDESIGN-TRIAL-02: ユーザーFeedback「完成記事に『研究・データ解説っぽさ』が残るのは不可です。(中略)必要ならドラスティックに設計を変更してください。(中略)完成記事の主役はResearchではなく、未来の生活場面→そこで何が起きるか→人の生活・感情・選択に何をもたらすか→楽しみ/期待/不安/葛藤です。(中略)ただし、Fact Safetyを弱めてはいけません。(中略)時点数・時間間隔・未来の描き方はテーマ依存としてください。」に基づき実施。結果とFable所見は上記OPEN-147追記のとおり。Gate 1: `VALIDATED`(Trial)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。実費¥20.08。
+(2) 施策1(tool_uses削減)Trial N=6到達、Fable判定記録: Consolidation系6委任(CONSOLIDATION-110〜115)のtool_uses計測値は`docs/pm/tool_uses_trial_log.md`のとおり(arm #1 51、#2 18、#3 26、#4 22、#5・#6は本エントリ時点の記録値)。Before同種別中央値50に対しAfter中央値は概ね▲35〜40%。Sonnet側の見落とし・SSOT誤り・混入・修正commitは全arm 0件。一覧外操作は Fable委任文側の不備(Grep指定不足・コマンド引数の記載漏れ/誤り)に起因し4件。Fable判定: **VALIDATED候補**(tool_uses中央値▲20%以上かつSonnet側手戻り増なし)。ただし単一種別・N=6・期間短の限界あり。恒久運用化(事前指定Read/Grep一覧+実行コマンド全文を委任文標準に含める)はユーザー判断待ち(USER_DECISION_REQUIRED)。
 
 ---
 

@@ -1,0 +1,291 @@
+# er013_output/family_c_future_trial_02/comparison.md
+
+管理ID: EDITORIAL-FUTURE-FAMILY-C-REDESIGN-TRIAL-02
+
+テーマ: 「家庭用ロボットと家事」(home robots and housework、Trial-01と同一。
+Research/Ledger Verification[Layer1]はTrial-01の成果物を無変更で再利用)。
+比較対象: `er013_output/family_c_future_trial_01/{a2,b1}/reader_facing_article.txt`
+(前回)。Audio/TTSなし。**Production採用・配線ではない**。
+
+## 0. パイプラインの変更点(要約)
+
+| 段階 | Trial-01 | Trial-02 |
+|---|---|---|
+| Writerへ渡す材料 | Layer1生テキスト(数値・出典・製品名を含む)をそのまま同梱 | World Scaffold(数値・出典・製品名を含まない平易な言い換え)のみ |
+| 記事構成 | Main Story的な導入(統計提示)→Around 2030/2035/2040固定3段階 | 場面から開始、時点数・間隔・分岐はWriterがテーマに応じ選択(内部メタで理由を記録) |
+| 現在事実の明示 | 制限なし(統計・製品名を直接引用) | 最大2件、`[[FACT: id]]`で明示、World Scaffold由来の平易な言い換えのみ |
+| 完成記事の合否判定 | Fact Checker A'/Deviation/Framing QAのみ | 上記に加え、決定的スキャンの編集Gate(数値・研究語・製品名・FACT件数・冒頭段落)を新設 |
+| Framing QA | 5項目 | 6項目目「研究・データ解説っぽさ(discovery_style_density)」を追加 |
+
+## 1. World Scaffold(新設、抜粋。全25件は`research/world_scaffold_result.json`)
+
+```
+scaffold_id: SC-001
+category: change_direction
+statement: Home robot adoption is concentrated in floor cleaning, while broader household robot use remains less established.
+
+scaffold_id: SC-005
+category: capability_now
+statement: Some robot vacuums can recognize obstacles and move selected objects with a mechanical arm when configured through an app.
+
+scaffold_id: SC-009
+category: limitation_now
+statement: A mobile home robot still needs regular charging and dedicated floor space, and its working time depends on the task and load.
+```
+
+抽出された`product_names_mentioned`(Writerへは渡さず、編集Gateの製品名突合にのみ使用): IFR、YouGov、Pew Research Center、Roborock、Saros Z70、Weave Robotics、Isaac 1、Consumer Reports、Miele、Samsung、RTINGS.com、J.D. Power、慶應義塾家計パネル調査、Dobb·E、Stretch、Figure AI、Helix、LG CLOiD、LG Electronics 等22件。leakage_issues=0件(数字・製品名の紛れ込みなし)、grounding_issues=0件。
+
+## 2. Layer2/3(v2、World Scaffold根拠)
+
+`structure_rationale`(LLMが記録した、時点数選択の理由。読者向け本文には出さない):
+> 床掃除から家事全体への広がり、学習による分担、そして家事が完全には消えない分岐を追う構成にした。
+
+imagined_futures: 3件(around 2030 / 2035 / 2040、grounded_inで各FUTURE_ASSUMPTIONへ紐づけ)。**Writerはこの3件をそのまま使う必要はなかったが、A2/B1とも独自の時間軸([2030,2040,2050]/[2035,2045,2055])を選んだ(Layer2/3の時点をそのまま流用せず、テーマに応じて改めて選択している)**。
+
+## 3. 新記事: A2(全文)
+
+`er013_output/family_c_future_trial_02/a2/reader_facing_article.txt`より全文転記(1161 words):
+
+```
+# When the House Starts to Share the Work
+
+A home robot may first feel like a quiet helper. It may not change the whole house at once. It may begin with one room, one task, and one small promise: "I will handle this while you do something else."
+
+## The robot by the wall
+
+Picture a weekday evening in 2030, when a mobile home robot waits beside the wall near its charging space.
+
+The floor is clear enough for it to move. The robot starts cleaning. It notices a bag in its path. It moves around it. A small item has been placed in its way, and the robot moves it to a place chosen in the home app.
+
+Then it stops.
+
+A cord has fallen across the floor. The robot does not know what to do. A remote helper appears on the screen. With help from far away, the robot continues.
+
+The people in the home are still busy. They are cooking, answering messages, or helping with homework. They enjoy seeing the floor become clean without stopping everything.
+
+But they also watch the robot.
+
+They must keep its charging space open. They must leave enough floor for it to work. They must pick up cords. They must deal with dirt that the robot cannot handle.
+
+The robot has not removed housework. It has changed the kind of attention the house needs.
+
+At first, this could feel like freedom. A person might stop thinking about the floor every evening. A room could become ready for guests without a long cleaning session.
+
+There could also be a new kind of irritation. The robot may be working, yet someone still needs to prepare the room for it. A person may ask, "Am I being helped, or am I working for the helper?"
+
+That question may decide where the robot belongs in the home. Some people may accept the small preparations because they save time later. Others may prefer a simple manual tool that works anywhere.
+
+## The robot learns the home
+
+If home robots become better at learning from people, the next change could be more personal. The robot may not only follow a general command. It could learn how one home handles its own clothes, dishes, beds, and objects.
+
+Picture a morning in 2040, when a person stands beside a basket of laundry.
+
+The person slowly shows the robot what to do. Delicate clothes go here. Heavy clothes go there. A shirt is turned the right way before it is placed down.
+
+The robot watches. It tries the steps.
+
+Later, the person shows it how to clear the table. Plates go near the sink. Cups go on a shelf. A pan needs special care. The robot tries to follow the order.
+
+Some tasks go well. Others do not.
+
+A soft sweater slips from the robot's hand. A crowded shelf blocks its movement. A dish has a shape it has not seen before. The robot pauses and asks for help.
+
+The person can take over. They can also teach the robot a new step.
+
+The home becomes a place where people do not only live with a robot. They train it, correct it, and decide what it is allowed to do.
+
+This future could bring a strange mix of pride and tiredness. Teaching the robot may feel like teaching a new member of the household. Each successful task could create excitement. Each mistake could bring doubt.
+
+People may choose tasks carefully. They may let the robot fold familiar clothes but keep fragile items for themselves. They may allow it to tidy a room but not move personal objects. They may want help without giving the machine full control.
+
+The hardest question may not be whether the robot can act. It may be whether people can trust it to act without watching.
+
+## When housework divides
+
+A home robot may make housework lighter in one home and more complicated in another. The difference may come from stairs, ceilings, deep dirt, narrow spaces, cords, pets, or objects left in unexpected places.
+
+Picture an evening in 2050, when two homes prepare for the night.
+
+In the first home, the robot has cleaned the floor several times during the day. Manual sweeping has become rare. The people notice dust sooner because the robot keeps returning to the room. The house feels calm, and the residents have more energy for dinner, rest, or time together.
+
+In the second home, the robot moves carefully around a crowded room. It cannot reach the stairs. It cannot clean the ceiling. A deep stain remains on the floor. A cord and a small object stop its work.
+
+The residents still use the robot. They like what it does. They also keep a manual vacuum nearby. They check the rooms, clear obstacles, and clean the difficult places themselves.
+
+In both homes, housework remains. But it has a different shape.
+
+This split may become normal. One person may feel that a robot has given back part of the day. Another may feel that the robot has added supervision to the day.
+
+Cleaning may happen more often because it is easier to start. Yet the total effort may not disappear. Some people may spend less time cleaning by hand. Others may spend more time checking, correcting, and handling exceptions.
+
+The robot may even change family arguments. Instead of asking who will vacuum, people may ask who will clear the floor, who will answer the robot, and who will clean what it cannot reach.
+
+That could be a welcome change. It could also expose a new unfairness. A machine may perform the visible task while one person quietly manages everything around it.
+
+## A different idea of help
+
+The most exciting future is not a house with no human work. It is a house where people can choose which work to keep.
+
+A person may keep the careful parts. They may enjoy arranging a room, washing a favorite dish, or folding clothes in a familiar way. They may give repetitive work to the robot. They may ask for help only when their time, strength, or attention is low.
+
+The most worrying future is different. People may feel forced to adapt their homes to the machine. They may need clear floors, special spaces, and constant checks. The robot may be useful, but its limits may become another responsibility.
+
+So the choice may not be "robot or no robot." It may be "which parts of home life are worth handing over?"
+
+The answer will differ from home to home. It may also differ from day to day. On a relaxed morning, a person may want to do the work by hand. On a difficult evening, the same person may welcome every small movement the robot can complete.
+
+The future of housework may not be a silent house with no chores.
+
+It may be a house where people and machines keep deciding, together, who should do what next.
+```
+
+### A2: 内部メモ(META、読者向けには出さない)
+
+> The article moves from limited floor assistance to learning household routines, then to different outcomes in different homes. This path makes the emotional shift visible: relief grows, but so do supervision, trust, and the need to choose what should remain human.
+
+### A2: 編集Gate/QA結果
+
+- 編集Gate: PASS(1回目、`fail_reasons=[]`、`fact_exception_count=0`=FACT例外マーカーは1件も使用しなかった)。
+- Fact Checker A'(Layer1のみ): **REVIEW_REQUIRED**(捏造ではなく、一般化の強さに関する指摘5件。例:「Cleaning may happen more often because it is easier to start」は少数世帯対象の研究知見を家庭用ロボット一般の因果として一般化しすぎている、等。詳細は`a2/fact_check_result.json`)。
+- Ledger Deviation Checker(Layer1のみ): LEDGER_COMPLIANT(deviations=0)。
+- Future Framing QA v2: PASS(6項目全て0件、discovery_style_density=0件)。
+- overall_status: **NG_REVIEW_REQUIRED**(Fact Checker A'のREVIEW_REQUIREDによる。「安全≠成功」原則どおり、精度指摘を無視して合格扱いにしていない)。
+
+## 4. 新記事: B1(全文)
+
+`er013_output/family_c_future_trial_02/b1/reader_facing_article.txt`より全文転記(1145 words):
+
+```
+## The Floor Is Already Moving
+
+Picture a Tuesday evening in 2035. The front door opens, and the home is already in motion.
+
+A robot glides across the floor while the family is away. It notices a shoe in its path, moves around a bag, and pushes a small toy toward the wall. Through an app, the family has told it which objects may be moved and which must be left alone.
+
+In the hallway, a larger mobile robot waits near the laundry basket. It has prepared some clothes for washing and placed a folded blanket on the bed. It is not perfectly independent. When it meets a tangled cord or a dirty patch that it cannot understand, it sends a request for help. A distant human checks the image and guides it, or the family handles the problem when they return.
+
+The machine needs a clear place to charge. Its working time depends on what it is carrying and what kind of task it is doing. The family has learned to keep part of the floor open, not only for walking, but for the robot to turn and work.
+
+The house feels easier, but also slightly less private. A light on the robot means that someone may be watching its view. A message on the phone means that the home has asked for a decision again.
+
+At first, this kind of help could feel like a small miracle. The floor is cleaned while people cook, work, or rest. A bed is prepared before anyone has time to think about it. Laundry no longer waits in a silent pile.
+
+But the house has not become free of care. Someone must remove the cord. Someone must wipe the deep stain. Someone must decide whether the robot should move the bag or leave it where it is. Convenience brings a new kind of responsibility: keeping the home understandable to the machine.
+
+That may create a quiet conflict. Do people arrange their rooms for themselves, or for the robot? Do they accept a little mess, or do they clear every path before the machine begins? The robot saves effort, but it also changes the shape of the home.
+
+## When the Machine Learns Your Way
+
+Picture a home where the robot does not begin with a fixed list of chores. Instead, a resident slowly teaches it.
+
+A person shows how to place a plate in the rack, how to handle a soft shirt, and where clean towels belong. The robot watches the movement, tries the same steps, and adjusts to the kitchen and laundry room. It learns that this household keeps cups in a different cabinet and that a certain chair blocks the usual path.
+
+For simple tasks, the result is almost magical. The robot remembers what was shown to it yesterday. It can begin work without a long set of instructions. A short demonstration becomes part of the household routine.
+
+Then a problem appears. A wet pan slips. A sweater catches on another garment. A plate has a shape the robot has not seen before. The robot stops and waits. The resident must take over, change the instructions, or accept that the task will remain unfinished.
+
+The emotional change is larger than the practical one. Teaching the robot takes patience. It can feel satisfying when the machine finally understands a familiar routine. It can also feel tiring to explain a task that a person would have done without thinking.
+
+The family must choose how much imperfection it can live with. A robot that helps most of the time may be more useful than a robot that promises to do everything but cannot be trusted. The home becomes a place where people and machines share skills, but also share mistakes.
+
+This future would not mean that a short lesson creates perfect housework. Learning a step is different from completing a whole task safely. The robot may know how to fold a towel and still fail with a pile of mixed clothes. It may understand how to wash a plate and still need a person when the sink is crowded.
+
+That uncertainty could change how people plan their days. A resident might leave the easy work to the machine and stay nearby for the difficult part. Another might prefer to do the job alone because checking the robot feels like more work than finishing the chore.
+
+The important choice would not be whether to own a robot. It would be whether to let the robot enter the small, personal rules of the home.
+
+## The Homes That Choose Differently
+
+Picture a time when household robots have become common enough for families to use them in very different ways.
+
+In one home, the robot cleans the floor many times while people are away. Manual sweeping becomes rare. The family enjoys returning to a room that feels ready for the evening. Because cleaning is easy, they may even clean more often. The home is not less active; it is active in a different way.
+
+In another home, the robot works only in open rooms. Stairs remain difficult. Ceilings stay beyond its reach. Deep dirt, delicate surfaces, loose cords, and confusing piles still need human hands. The robot is useful, but it is not the center of the household.
+
+A third family keeps the robot because it brings peace of mind, even though a person still checks the work. They do not expect a perfect replacement. They value the small moments it gives back: time to prepare food, sit with a child, or rest without seeing the floor as a command.
+
+Yet those moments may not automatically become sleep or freedom. Some people may use the saved time to clean more carefully. Others may spend it watching the robot, correcting it, or making the room easier for its next visit. The same machine could feel like relief in one home and another duty in the next.
+
+The difference would come from more than the robot's ability. It would come from the family's habits, space, patience, and trust.
+
+The most surprising future may be that housework does not disappear. Its center moves.
+
+Hands spend less time sweeping ordinary floors, but more time checking edges, rescuing tangled clothes, handling deep stains, and deciding what the machine should learn next. A clean home may require fewer repeated movements, while still demanding attention.
+
+That creates both hope and unease. The hope is clear: machines could carry the dull parts of daily life. The unease is harder to name. If a robot needs to be taught, watched, corrected, and forgiven, then care has not vanished. It has become a partnership with something that does not fully understand the home.
+
+Perhaps the future home will not be a place without chores, but a place where people must decide which chores they are still willing to call their own.
+```
+
+### B1: 内部メモ(META、読者向けには出さない)
+
+> I chose three future moments to follow the movement from floor cleaning, to household learning, to different family choices. This creates a clear path from excitement about assistance to the deeper tension between convenience, control, and responsibility.
+
+### B1: 編集Gate/QA結果
+
+- 編集Gate: 1回目FAIL(`numeric_hits`2件、いずれも"around 2035."/"around 2045."の直後の文末ピリオドを数字トークンへ誤って含めてしまう**編集Gate自体の実装バグ**によるもの。実データ実行中に発見し、`_DIGIT_TOKEN_RE`を修正[`\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?`へ変更、回帰テスト2件追加、offline test再実行24/24 PASS確認]。修正後に本stageを再実行)。修正後は1回目でPASS(`fact_exception_count=0`)。
+- Fact Checker A'(Layer1のみ): **PASS**。
+- Ledger Deviation Checker(Layer1のみ): LEDGER_COMPLIANT(deviations=0)。
+- Future Framing QA v2: PASS(6項目全て0件)。
+- overall_status: **PASS**(全QA層で合格)。
+
+## 5. 費用実測(実測、Trial-02、Trial-01との対比)
+
+| 区分 | Trial-01(円) | Trial-02(円) | 備考 |
+|---|---|---|---|
+| Research(Researcher) | 24.81 | 0(再利用) | 同一テーマのためTrial-01成果物を再利用 |
+| Ledger Verification | 34.23 | 0(再利用) | 同上 |
+| World Scaffold生成(新設) | - | 1.88 | Layer2/3整理に相当する新規ステップ |
+| Layer2/3生成 | 0.50 | 0.64 | v2はWorld Scaffold根拠+structure_rationale出力を追加 |
+| Writer(A2+B1) | 2.47 | 2.90 | B1は編集Gateバグにより技術的に2回生成(修正後は1回で成功) |
+| QA(Fact Checker A'+Deviation+Local Rewrite+Framing QA v2) | 78.82 | 14.66 | Fact Checker A'のコストが大幅減(A2: 53.41→8.24、B1: 19.84→3.98) |
+| **合計(実測)** | **140.83** | **20.08** | 上限¥159.17に対し実測¥20.08(残り¥139.09、API呼び出し16件、unpriced_records=0) |
+
+Fact Checker A'コスト減少の主因: 本文の枠外(現在事実)テキストが、生の統計・製品名の直接引用ではなく、World Scaffold由来の平易な言い換え中心になったため、Fact Checker側の検証対象・web_search呼び出し・retry回数が減ったと考えられる(設計変更の副次効果であり、狙って最適化したものではない)。
+
+## 6. 評価表(0〜2点、主観・該当文引用必須。指示書指定の8観点)
+
+### A2
+
+| 観点 | 点 | 根拠(該当文引用) |
+|---|---|---|
+| 面白さ(わくわく/不安の強度) | 2/2 | "Am I being helped, or am I working for the helper?" |
+| Futureらしさ | 2/2 | "Picture a morning in 2040, when a person stands beside a basket of laundry."で始まる具体的教示場面 |
+| 研究解説っぽさの不在 | 2/2 | 編集Gate: numeric_hits=0、research_term_hits=0、product_name_hits=0。冒頭は統計ではなく生活場面("A home robot may first feel like a quiet helper...")から開始 |
+| 事実と想像の区別 | 2/2 | Framing QA v2: 6項目全て0件。Deviation Checker: LEDGER_COMPLIANT |
+| throughline | 2/2 | "which parts of home life are worth handing over?"が全場面を貫く問いとして最終段落で回収される |
+| 1ナレーターの自然さ | 2/2 | 全編単一視点 |
+| 時間軸の明示 | 2/2 | "around 2030"/"2040"/"2050"を場面内で明示 |
+| 希望/不安の描写 | 2/2 | "this could feel like freedom"と"a new kind of irritation"が同じ場面内で対比される |
+| **合計** | **16/16** | |
+
+補足: Fact Checker A'はREVIEW_REQUIRED(一般化の強さに関する指摘、§3参照)。評価表は読者体験の質を採点するものであり、Fact Safety判定(overall_status=NG_REVIEW_REQUIRED)とは別軸。両方を独立して報告する。
+
+### B1
+
+| 観点 | 点 | 根拠(該当文引用) |
+|---|---|---|
+| 面白さ | 2/2 | "A light on the robot means that someone may be watching its view." |
+| Futureらしさ | 2/2 | "Picture a Tuesday evening in 2035. The front door opens, and the home is already in motion." |
+| 研究解説っぽさの不在 | 2/2 | 編集Gate: numeric_hits=0、research_term_hits=0、product_name_hits=0(修正後) |
+| 事実と想像の区別 | 2/2 | Fact Checker A': PASS。Framing QA v2: 6項目全て0件 |
+| throughline | 2/2 | "a place where people must decide which chores they are still willing to call their own"が結び |
+| 1ナレーターの自然さ | 2/2 | 全編単一視点 |
+| 時間軸の明示 | 2/2 | "around 2035"を明示(2つ目・3つ目の場面は年を明示せず"a home where..."/"a time when..."と抽象化、時間軸の一貫した明示という点ではA2よりやや弱い) |
+| 希望/不安の描写 | 2/2 | "That creates both hope and unease."と明言した上でそれぞれを描写 |
+| **合計** | **16/16** | |
+
+## 7. Trial-01との定性比較(要点)
+
+- 冒頭: Trial-01 A2/B1はいずれも統計値("more than 2.1 million"、"about 57%"等)から開始。Trial-02 A2/B1はいずれも生活場面から開始(編集Gateの決定的スキャンで確認済み、`er013_family_c_future_qa_test_02.py::Trial01RegressionTest`が両者の差を回帰テストとして固定化)。
+- "study/survey/research found"型表現: Trial-01 B1に3箇所残存("In one household study"/"A 2025 survey found"/"Another survey found")。Trial-02 A2/B1は0箇所(編集Gate`research_term_hits`で確認)。
+- 製品名列挙: Trial-01 B1に4件(Roborock Saros Z70、Weave Robotics、Isaac 1、LG CLOiD)。Trial-02 A2/B1は0件。
+- 時点数・構成: Trial-01は3時点固定(2030/2035/2040)がLayer3の出力とそのまま一致(機械的な当てはめの疑い)。Trial-02はLayer2/3が提案した3時点(2030/2035/2040)を、Writerが独自の時点(A2: 2030/2040/2050、B1: 2035/2045/2055)へ選び直しており、Layer2/3の出力を機械的に流用していないことを確認できた。
+- FACT例外枠(最大2件): A2/B1とも0件で執筆完了(Writerは明示的な現在事実の言及を1件も必要としなかった)。World Scaffold経由の暗黙のグラウンディングのみで、読者への説明なしに未来像を成立させられることを示す一つの実例。
+
+## 8. 残る問題(§9 REPORTへ転記)
+
+- Trial-02 A2はFact Checker A'がREVIEW_REQUIRED(一般化の強さ、捏造ではない)。
+- 編集Gateの決定的スキャンに実装バグがあり(未来年+文末記号の誤検出)、実データ実行中に発見・修正した(§4参照)。今回の修正で解消したが、他の言語パターン(例: 未来年の直後にダッシュや括弧が続く場合等)で同種の誤検出が残る可能性は否定できない。
+- 読者向け本文のマーカー除去箇所に、空行が2〜3行連続する軽微な整形アーティファクトが残る(Trial-01から継続する既知の限界、Audio化時は事前クレンジングが必要)。

@@ -1,0 +1,223 @@
+テーマ: 家庭用ロボットと家事(home robots and housework)
+
+【使ってよい材料(この範囲外の具体的な現在の事実・数字・固有名詞・
+製品名を新たに作り出さないでください)】
+[WORLD_SCAFFOLD]
+scaffold_id: SC-001
+category: change_direction
+statement: Home robot adoption is concentrated in floor cleaning, while broader household robot use remains less established.
+
+scaffold_id: SC-002
+category: capability_now
+statement: Some adults already own robot vacuums.
+
+scaffold_id: SC-003
+category: capability_now
+statement: Some adults already own robot vacuums with AI features, although this is a different measure from general robot vacuum ownership.
+
+scaffold_id: SC-004
+category: change_direction
+statement: Interest in robots that help with chores extends beyond established ownership, but interest alone is not proof of adoption.
+
+scaffold_id: SC-005
+category: capability_now
+statement: Some robot vacuums can recognize obstacles and move selected objects with a mechanical arm when configured through an app.
+
+scaffold_id: SC-006
+category: change_direction
+statement: Mobile home robots are being developed for laundry, bed making, and tidying, with remote assistance available when needed.
+
+scaffold_id: SC-007
+category: limitation_now
+statement: The announced prices and payment plans for some mobile home robots are reservation terms, not evidence of completed mass-market sales.
+
+scaffold_id: SC-008
+category: change_direction
+statement: Rollouts of new home robots are planned to begin in limited regions before broader national availability.
+
+scaffold_id: SC-009
+category: limitation_now
+statement: A mobile home robot still needs regular charging and dedicated floor space, and its working time depends on the task and load.
+
+scaffold_id: SC-010
+category: limitation_now
+statement: Robot vacuums remain mainly suited to routine floor cleaning and can underperform manual vacuums on some surfaces; they do not cover stairs or ceilings.
+
+scaffold_id: SC-011
+category: limitation_now
+statement: Deep cleaning remains a limitation, especially in less suitable rooms or on challenging surfaces.
+
+scaffold_id: SC-012
+category: limitation_now
+statement: Reliable avoidance of cords, pet waste, and other household obstacles is still not taken for granted.
+
+scaffold_id: SC-013
+category: change_direction
+statement: During an automation trial, manual cleaning fell while cleaning became more frequent and total cleaning activity increased.
+
+scaffold_id: SC-014
+category: change_direction
+statement: Research estimates link robot vacuum use with less housework time, while not finding a clear change in sleep time.
+
+scaffold_id: SC-015
+category: limitation_now
+statement: The link between robot vacuum use and work participation remains associative rather than proof that the robot caused the change.
+
+scaffold_id: SC-016
+category: capability_now
+statement: Robot vacuum owners can report high satisfaction even when their device does not fully replace manual cleaning.
+
+scaffold_id: SC-017
+category: capability_now
+statement: Research robots have learned a broad set of household tasks from brief human demonstrations and model adaptation in real homes.
+
+scaffold_id: SC-018
+category: limitation_now
+statement: These results show research feasibility, not the performance of a consumer general-purpose household robot.
+
+scaffold_id: SC-019
+category: capability_now
+statement: A research system can learn individual dishwashing steps from a human demonstration.
+
+scaffold_id: SC-020
+category: limitation_now
+statement: Completing the whole dishwashing task remains unreliable in research settings, and this does not show that mass-market products are available.
+
+scaffold_id: SC-021
+category: capability_now
+statement: A humanoid robot has demonstrated autonomous laundry folding in a controlled demonstration.
+
+scaffold_id: SC-022
+category: limitation_now
+statement: The demonstration does not establish reliable performance with varied household clothing or practical mass production.
+
+scaffold_id: SC-023
+category: change_direction
+statement: Home robot development is moving beyond vacuuming toward mobile machines with dexterous hands, sensing, and links to household appliances for household chores.
+
+scaffold_id: SC-024
+category: limitation_now
+statement: Broader home robots remain at the announcement or demonstration stage, without established consumer pricing, mass production, or independent home evaluation.
+
+scaffold_id: SC-025
+category: change_direction
+statement: Research is moving toward general-purpose home robots that combine language, vision, planning, physical action, feedback, and adaptation in open-ended home environments.
+
+[FUTURE_ASSUMPTION]
+assumption_id: FA-EXPANSION
+assumption: もし限られた地域での導入が広がり、家庭向けの生産と提供の条件が整えば、家庭ロボットは床掃除だけでなく、洗濯、ベッド整え、片付けなどを組み合わせて支援する方向へ進む。ただし、充電場所、専用の床面、作業内容による稼働時間、家庭内の障害物への対応が実用化の条件になる。
+based_on: SC-001, SC-006, SC-008, SC-009, SC-012, SC-023, SC-024
+
+assumption_id: FA-LEARNING
+assumption: もし実際の家庭での学習と適応が一般向けに実用化されれば、人の短い実演や家庭ごとの指示から家事の手順を覚え、環境に合わせて作業を調整するロボットが成立する可能性がある。ただし、一部の手順を覚えることと、一連の家事を安定して完了することは別である。
+based_on: SC-017, SC-018, SC-019, SC-020, SC-021, SC-022, SC-025
+
+assumption_id: FA-SHIFT
+assumption: もし家事支援が日常的に使われるようになれば、家事はなくなるのではなく、手作業から確認、やり直し、難しい場所への対応へと重心が移る可能性がある。掃除の回数や総活動が増える家庭もあり、睡眠や仕事への影響がロボットだけで決まるとは限らない。
+based_on: SC-010, SC-011, SC-012, SC-013, SC-014, SC-015, SC-016
+
+[IMAGINED_FUTURE]
+scene_id: SCENE-LOCAL-ASSISTANCE
+timeframe: 数年後、導入地域が広がり始める頃
+scene_summary: 床掃除を中心に、ロボットが障害物を避け、設定された物を動かし、必要な場面では遠隔の助けを受ける。住人は充電場所と専用の床面を確保し、コードや汚れなどの例外は手作業で処理する。
+grounded_in: FA-EXPANSION, SC-005, SC-006, SC-009, SC-012
+
+scene_id: SCENE-HOUSEHOLD-LEARNING
+timeframe: さらに先、家庭向けの学習型ロボットが実用化された頃
+scene_summary: 住人が洗濯物の扱い、食器洗い、片付けの手順を短く見せると、ロボットは家庭の環境に合わせて作業を試す。うまくいかない衣類や食器、難しい場所では人が引き継ぐため、家事の完全な無人化ではなく、教えることと例外対応を含む分担になる。
+grounded_in: FA-LEARNING, SC-006, SC-017, SC-019, SC-020, SC-021, SC-022, SC-025
+
+scene_id: SCENE-DIFFERENT-HOUSEHOLDS
+timeframe: 普及が進んだ後、家庭ごとの使い方が分かれる時期
+scene_summary: ある家庭では掃除の回数が増え、手作業の床掃除が減る。別の家庭では、階段や天井、深い汚れ、複雑な障害物への対応が残り、ロボットの監督や手作業が続く。ロボットは満足を生む一方で、家事そのものが一様に消えるわけではない。
+grounded_in: FA-SHIFT, SC-010, SC-011, SC-012, SC-013, SC-014, SC-016
+
+[STRUCTURE_RATIONALE_REFERENCE_ONLY]
+床掃除から家事全体への広がり、学習による分担、そして家事が完全には消えない分岐を追う構成にした。
+
+
+【記事の主役(最重要)】
+この記事の主役は、未来の生活場面・そこで何が起きるか・それが人の生活や
+感情や選択にもたらすもの・楽しみや期待や不安や葛藤です。Research・現在の
+事実・統計・製品情報は、その未来像を無根拠にしないための内部の足場に
+すぎません。読者に説明する必要がなければ、本文には出さないでください。
+
+【固く禁止する表現(1つでも本文に出た場合、記事は不合格になります)】
+- 統計値・比率・パーセンテージ・年次データ・具体的な販売台数や調査対象
+  人数などの数字(想像した未来の時間軸を表す表現[例: "around 2035"、
+  "a decade from now"]は数字を含んでも構いません。禁止されるのは調査・
+  統計・過去/現在の実績データとしての数字です)。
+- "study/studies/research/survey/report/researcher/scientist"のような、
+  研究・調査であることを示す語、および"found/shows/showed/suggests/
+  indicates/according to"のような研究結果を読者へ説明する言い回し。
+- 製品名・型番・企業名・ブランド名の列挙。
+- Researchの結果を読者へ解説する構造(「〜という調査結果があります」
+  「〜という研究が示しています」のように、記事が現在の根拠を説明する
+  ための記事になること)。
+
+【現在の事実に触れてよい例外(最大2件のみ)】
+未来像の説得力にどうしても必要で、読者に説明が必要な現在の事実がある
+場合に限り、記事全体で最大2件まで、Worldscaffoldの
+statementを平易に言い換えた一文として本文に含めてよいです。その場合は
+必ず次の形式で挟んでください(数字・出典・固有名詞は入れないでください、
+Worldscaffoldの言い換えのみ):
+
+[[FACT: WS-003]]
+(ここに、Worldscaffoldのいずれか1項目を平易に言い換えた1文。数字・
+出典・固有名詞は含めないでください。)
+[[/FACT]]
+
+このマーカーを使わない現在事実への言及(地の文でさりげなく現在の様子に
+触れる程度の1文)は、統計・研究・製品情報でない限り問題ありません。
+
+【最低限の構成要素(型は固定しません。テーマに最も合う展開を選んで
+ください)】
+1. 入口: 統計から始めず、いきなり生活場面から始めてください。時間軸
+   (いつの未来を描くか)は、場面の中で自然に伝わるようにしてください。
+2. 場面で起きること: 具体的な未来の場面で、何が起きるかを描いてください。
+3. 人の生活・感情・選択への影響: その出来事が、登場する人(または聞き手
+   自身)の生活・感情・選択にどう影響するかを描いてください。
+4. 楽しみ/期待/不安/葛藤: 読み手が持つであろう感情の対立や揺れを描いて
+   ください。
+5. 時点数・間隔・分岐の選び方はテーマ依存です。数年後→10年後のような
+   複数時点、複数の別の未来(希望/不安などの分岐)、単一の時点を深く描く
+   構成、のいずれでも構いません。機械的に3時点へ当てはめる必要は
+   ありません(Layer2/3材料のimagined_futuresを全て使い切る必要はなく、
+   このテーマに最も意味のある未来変化を選んでください)。
+6. 持ち帰りの一行: 記事の終わりに、聞き手が持ち帰る印象(わくわく/
+   不安の余韻)を一行で残してください。事実の要約にしないでください。
+
+構成は##等の短い見出しで区切ってください(後工程での区切り把握のため)。
+見出しの文言・数は自由です。
+
+【想像した未来の場面の書き方】
+具体的な未来の場面・情景を描くときは、必ず次の形式で挟んでください:
+
+[[IMAGINED: around 2035]]
+(ここに、その場面の英語の本文。読み手が「これは想像された未来だ」と
+自然に理解できる入口の一文から始めてください。例: "Picture a Tuesday
+evening in 2035, when ..."のような、時間軸を含む自然な導入文。マーカー
+内部は、通常の記事のように一文ごとに"might"を繰り返す必要はありません。
+自然で引き込まれる語りにしてください。ただし、この場面の中で「現在は
+既に〜だ」という現在の事実の主張を新たに作らないでください。)
+[[/IMAGINED]]
+
+上記のマーカー(角括弧2つ)は、実際に本文中にそのまま書いてください
+(このマーカーは最終読者向け出力では自動的に取り除かれます)。マーカー
+の外側では、未来を確定事実であるかのように断定しないでください。
+
+【内部メモ(読者には見せません)】
+本文の最後に、以下の形式で内部メモを1つだけ書いてください(読者向け
+出力からは自動的に完全に取り除かれます)。なぜこの時点数・間隔・
+分岐構成を選んだかを1〜2文で説明してください:
+
+[[META]]
+(この記事の時点数・間隔・分岐構成を選んだ理由。1〜2文。)
+[[/META]]
+
+B1レベル: A2よりやや複雑な文・仮定法・条件構文を使ってよいですが、難解な専門語は避けてください。仮定・未来のhedgingは"might"/"could"に加え、やや複雑な仮定法("If this trend continued, cities could ..."のような)も使ってよいです。
+
+英文のみを出力してください(日本語の解説・見出し訳は不要です)。
+
+【前回の下書きが編集Gateで不合格になった理由(必ず今回は避けてください)】
+numeric_hits=2; opening_paragraph_numeric_hits=1
