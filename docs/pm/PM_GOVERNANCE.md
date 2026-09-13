@@ -1296,6 +1296,29 @@ A-1(Consolidation統合、件数削減による委任回数圧縮)はロール�
   重要REPORTはFableが受領した本文を即座にSonnetへ渡してファイル保存する
   (2026-09-12、Opus L3転記消失2件目)。
 
+**F-1恒久手順更新(2026-09-13、`PM-CLOSEOUT-CONSOLIDATION-107`、ユーザー
+正式承認済み。根拠: `PM-TOKEN-EFFICIENCY-F1-ZERO-BYTE-TRANSCRIPT-ROOT-CAUSE-01_REPORT.md`、
+原因はharness側`tasks/*.output`書込不全で観測上約35%が0バイトのまま
+恒久的に残る)**: 退避元の正式順序を以下のとおりとする。
+- (a) 退避元の正式順序: 各委任について、まず`tasks/<taskId>.output`が
+  非0バイトであればそれを退避する。**0バイトの場合は、それだけを理由に
+  退避を省略せず**、`%USERPROFILE%\.claude\projects\<project>\<sessionId>\
+  subagents\agent-<taskId>.jsonl`(Claude Code自身がリアルタイムで逐次
+  追記している完全な会話ログ)を代替保存元として`docs/pm/transcripts/
+  <taskId>_recovered.jsonl`という新規ファイル名で退避する。
+- (b) 標準手段: `docs/pm/tools/collect_subagent_transcripts.py --apply`
+  を用いる(既定はdry-run、`--apply`指定時のみ書込み)。追加コピーのみで
+  既存ファイルの上書き・削除は行わない。合計コピーサイズ上限は
+  `--max-total-mb`既定20MB。特定taskIdのみに絞りたい場合は
+  `--only-task-ids`(カンマ区切り、opt-inフィルタ、未指定時は挙動不変、
+  2026-09-13追加)を使える。
+- (c) 退避タイミング: 従来どおり、各委任の完了通知を受け取った直後
+  (次回委任時ではなく完了直後)。0バイトであることを理由に退避自体を
+  先送り・省略しない。
+- (d) 注意: 代替保存元(`subagents/agent-<taskId>.jsonl`)はClaude Code
+  CLIの非文書化の内部保存パスである。CLIのアップデートで保存形式や
+  パスが変更された場合は本手順の再調査が必要になる(恒久保証ではない)。
+
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**

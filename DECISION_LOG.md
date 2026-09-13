@@ -383,6 +383,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-104: 3V Fact Safety Stage2/3(UDR)+OPEN-141 Phase B(VALIDATED)+方式D' Gate 3検証+方式C-v2統合Trial のGit統合とSSOT反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-105: 2026-09-13ユーザー正式判断5件(OPEN-141差分QA Production採用/3V Fact Safetyは次実記事のruntime evidence待ち/見出し混入バグ修正Production反映/方式D'継続/方式C-v2 Production不採用Close)の正式記録+OPEN-141 Production配線(target-sentence-matching既定ON+差分QA案I)+3V Fact Safety保守版ゲート既定ON化+方式C-v2 Close
 - [本ファイル内] ## PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02: Token節約施策(E-1/D-1/G-1/F-1)のread-only現状測定(まだ評価不足)+task-notification `subagent_tokens`は累積処理量ではない新発見
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-107: F-1 transcript退避手順の恒久変更(0バイト時はsubagents/agent-<id>.jsonlから取得)をPM_GOVERNANCEへ正式反映+直近2委任の退避実施
 
 ---
 
@@ -6704,6 +6705,68 @@ REPORT一式をまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)
 read-only現状測定完了。Fable判定: Fable→Sonnet削減施策(E-1/D-1/G-1/F-1)は「まだ評価不足」(E-1 reread率Before27.8%→After31.0%で改善実測なし、D-1は新baseline47〜50%のみ、G-1効果ありだが寄与小、F-1は直近10委任の非0バイト2/10で運用不全)。新発見: task-notificationの`subagent_tokens`は最終ターンusageに一致し累積処理量ではない(N=2、累積は45〜167倍、cache_read 95〜97%)。改善案3件(tool_uses削減/D-1徹底/F-1原因特定)は提示のみで未実装、ユーザー判断待ち。
 
 **根拠**: `PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02_REPORT.md`。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-107: F-1 transcript退避手順の恒久変更(0バイト時はsubagents/agent-<id>.jsonlから取得)をPM_GOVERNANCEへ正式反映+直近2委任の退避実施
+
+**管理ID**: PM-CLOSEOUT-CONSOLIDATION-107
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(SSOT・Git担当、API呼び出しなし、¥0)
+
+**ユーザー正式判断(原文、2026-09-13)**:
+> 両方承認します。推奨どおり進めてください。F-1恒久変更を採用。tasks/*.outputが0バイトの場合、subagents/agent-<id>.jsonlから自動取得する手順を正式化してください。PM_GOVERNANCEのF-1手順へ反映してください。施策1・2の前に再測定を実施。復元したtranscriptを使って、E-1 / D-1のBefore/Afterを¥0で再測定してください。その結果を見てから、tool_uses削減 / D-1徹底のTrial設計へ進んでください。新しい節約施策の採用・運用変更は、再測定結果を報告してから判断します。
+
+**対応(Status確定)**:
+
+**1. F-1恒久手順化**: `docs/pm/PM_GOVERNANCE.md`の既存F-1節(既存文は削除せず)へ、
+2026-09-13付の追記として退避元の正式順序を明文化した — (a) `tasks/<taskId>.output`
+が非0バイトならそれを退避、0バイトの場合は**それだけを理由に退避を省略せず**
+`%USERPROFILE%\.claude\projects\<project>\<sessionId>\subagents\agent-<taskId>.jsonl`
+(Claude Code自身がリアルタイムで逐次追記している完全な会話ログ)を代替保存元
+として`docs/pm/transcripts/<taskId>_recovered.jsonl`へ退避する。(b) 標準手段は
+`docs/pm/tools/collect_subagent_transcripts.py --apply`(既定dry-run、追加コピー
+のみで上書き・削除なし、`--max-total-mb`既定20MB)。特定taskIdのみへ絞る
+opt-inフィルタ`--only-task-ids`(未指定時は挙動不変)を本タスクで追加した。
+(c) 退避タイミングは従来どおり完了通知受信直後(0バイトを理由に先送りしない)。
+(d) 代替保存元はClaude Code CLIの非文書化内部パスであり、CLI更新で形式変更
+時は再調査が必要(恒久保証ではない)ことを注記した。
+根拠: `PM-TOKEN-EFFICIENCY-F1-ZERO-BYTE-TRANSCRIPT-ROOT-CAUSE-01_REPORT.md`
+(原因はharness側`tasks/*.output`書込不全、観測上約35%が0バイトのまま残る)。
+
+**2. 直近2委任のF-1退避(新手順の初回適用)**: 本セッション
+(`294958fe-da6e-491c-8a02-4f864d8195c8`)の直近2委任について、
+`tasks/<taskId>.output`が両方とも0バイトであることを確認した上で
+`collect_subagent_transcripts.py --only-task-ids "ac8f4ab86897a327c,a13715a15827192a6" --apply`
+を実行し、`docs/pm/transcripts/`へ退避した。
+- `ac8f4ab86897a327c`(F-1原因特定タスク): 退避元
+  `subagents/agent-ac8f4ab86897a327c.jsonl`(605,275バイト)→
+  `docs/pm/transcripts/ac8f4ab86897a327c_recovered.jsonl`(605,275バイト、完全一致)。
+- `a13715a15827192a6`(push専用タスク): 退避元
+  `subagents/agent-a13715a15827192a6.jsonl`(131,949バイト)→
+  `docs/pm/transcripts/a13715a15827192a6_recovered.jsonl`(131,949バイト、完全一致)。
+既存ファイルの上書き・削除は発生していない(新規ファイル2件の追加コピーのみ)。
+
+**3. 次の並行タスク**: E-1/D-1のBefore/Afterを、本タスクで復元したtranscriptを
+用いて¥0で再測定する作業は、別管理ID`PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01`
+として並行実施中である(本エントリのスコープ外)。ユーザー指示どおり、
+tool_uses削減/D-1徹底のTrial設計・新しい節約施策の採用/運用変更は、
+その再測定結果を報告してから判断する(本エントリでは未着手・未決定)。
+
+**状態**: 反映完了(`PM_GOVERNANCE.md`のF-1節追記・本エントリ・
+`docs/pm/tools/collect_subagent_transcripts.py`への`--only-task-ids`追加・
+`docs/pm/transcripts/`への2件退避・Git反映)。
+
+**根拠**: `PM-TOKEN-EFFICIENCY-F1-ZERO-BYTE-TRANSCRIPT-ROOT-CAUSE-01_REPORT.md`、
+ユーザー発言原文(本セッション、2026-09-13)。
+
+**影響するCURRENT_SPEC項目**: なし(PM運用手順[`PM_GOVERNANCE.md`F-1節]の
+恒久化であり、記事生成仕様・Production経路の変更ではない)。
+
+**commit**: 本エントリと`docs/pm/PM_GOVERNANCE.md`(F-1節追記)・
+`docs/pm/tools/collect_subagent_transcripts.py`(`--only-task-ids`追加)・
+`docs/pm/transcripts/`(新規2ファイル)をまとめてcommitする
+(hashは`docs/pm/RESULT_PACKET_F1B.md`参照)。
 
 ---
 

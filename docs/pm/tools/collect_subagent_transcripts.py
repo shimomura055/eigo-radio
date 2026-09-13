@@ -65,6 +65,12 @@ def main():
                           "退避済み(0バイトのまま)のtaskIdだけを対象にする。"
                           "repoサイズ影響を抑えつつ、既に報告済みの0バイト"
                           "ケースだけを補修したい場合に使う。")
+    ap.add_argument("--only-task-ids", default=None,
+                     help="カンマ区切りのtaskId一覧を指定した場合、その"
+                          "taskIdだけを対象にする(追加のopt-inフィルタ、"
+                          "指定しない場合は挙動不変)。特定の委任だけを"
+                          "退避したい場合に使う(2026-09-13追加、"
+                          "PM-CLOSEOUT-CONSOLIDATION-107)。")
     args = ap.parse_args()
 
     zero_outputs = []
@@ -87,6 +93,11 @@ def main():
                 placeholder_ids.add(task_id)
         zero_outputs = [p for p in zero_outputs
                          if os.path.splitext(os.path.basename(p))[0] in placeholder_ids]
+
+    if args.only_task_ids:
+        wanted_ids = set(x.strip() for x in args.only_task_ids.split(",") if x.strip())
+        zero_outputs = [p for p in zero_outputs
+                         if os.path.splitext(os.path.basename(p))[0] in wanted_ids]
 
     recoverable = []
     for path in zero_outputs:
