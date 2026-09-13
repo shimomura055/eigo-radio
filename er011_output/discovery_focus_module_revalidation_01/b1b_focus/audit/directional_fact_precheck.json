@@ -1,0 +1,149 @@
+{
+  "overall_status": "DIRECTION_REVIEW_REQUIRED",
+  "results": [
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "多く",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "conditions: 多くの研究では、予定覚醒時刻の前後30分以内を成功基準としていた",
+      "script_sentence": "In one study, 7 of 15 men woke within 30 minutes of their planned time.",
+      "shared_numbers": [
+        "30"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "conflicts": [],
+      "reason": "両者に方向表現はあるが共有する軸がない(比較不能)",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "多く",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "before",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "conditions: 多くの研究では、予定覚醒時刻の前後30分以内を成功基準としていた",
+      "script_sentence": "Among these successful participants, activity in the front of the brain changed about 30 minutes before waking.",
+      "shared_numbers": [
+        "30"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "conflicts": [],
+      "reason": "両者に方向表現はあるが共有する軸がない(比較不能)",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "多く",
+          "confidence": "low",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "earlier",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "conditions: 多くの研究では、予定覚醒時刻の前後30分以内を成功基準としていた",
+      "script_sentence": "Their schedules were about 30 minutes earlier and were linked with a morning-type pattern.",
+      "shared_numbers": [
+        "30"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rise",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "before",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "scope: 学生9人による短時間昼寝実験",
+      "script_sentence": "In a separate short-nap study of 9 students, heart rate began to rise about 3 minutes before waking.",
+      "shared_numbers": [
+        "9"
+      ]
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "上昇",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "rise",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "temporal",
+          "bucket": "earlier",
+          "term": "before",
+          "confidence": "high",
+          "category": "temporal"
+        }
+      ],
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "numeric_value: 9人；約3分前 (numeric_scope: 参加者数；心拍上昇開始の平均的な時期)",
+      "script_sentence": "In a separate short-nap study of 9 students, heart rate began to rise about 3 minutes before waking.",
+      "shared_numbers": [
+        "3",
+        "9"
+      ]
+    }
+  ]
+}

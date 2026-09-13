@@ -1,0 +1,107 @@
+[
+  {
+    "original_ng_sentence": "In another, repeated attempts raised success to 82% by the seventh day.",
+    "issue": "F007は7日目の自己覚醒成功率が82%だったことを示すが、反復練習が成功率を引き上げたという因果関係は確定していない。Ledgerでは、予定時刻の反復や期待との関連は可能性として扱われている。",
+    "explanation": "観察された7日目の82%という結果を、反復試行が成功率を上昇させたという断定的な因果説明に変えている。Hookではないため緩和していない。",
+    "flags": [
+      "changed_causality",
+      "changed_certainty"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "In another, success was 82% on the seventh day of a week of repeated attempts.",
+        "ledger_status": "LEDGER_COMPLIANT",
+        "ledger_status_window": "LEDGER_COMPLIANT",
+        "target_sentence_eval": {
+          "overall_status": "LEDGER_COMPLIANT",
+          "window_overall_status": "LEDGER_COMPLIANT",
+          "target_deviations": [],
+          "adjacent_deviations": [],
+          "ambiguous_deviations": [],
+          "match_fallback": false
+        }
+      }
+    ],
+    "final_text": "In another, success was 82% on the seventh day of a week of repeated attempts.",
+    "resolved": true,
+    "human_review_required": false,
+    "diff_qa": {
+      "applied": true,
+      "diff_qa_calls": 1,
+      "window_text": "In one study, 7 of 15 people woke within 30 minutes. In another, success was 82% on the seventh day of a week of repeated attempts. A review of 17 studies involving more than 700 people found different methods.",
+      "fact_check_status": "FACT_CHECK_COMPLETED",
+      "fact_check_verdict": "PASS",
+      "fact_check_model": "gpt-5.6-luna",
+      "fact_check_response_id": "resp_038123630371d386006aa637e6c5c487d092efed40f74f961e",
+      "fact_check_search_usage": {
+        "web_search_call_count": 6,
+        "queries": [
+          "\"7 of 15\" \"30 minutes\" self-awakening",
+          "\"82%\" seventh day self-awakening",
+          "review 17 studies 700 self-awakening sleep",
+          "\"Sleeping with time in mind\" self-awakening",
+          "Aritake 2012 self-awakening 15 7 30 minutes",
+          "\"Aritake\" \"7\" \"15\" self-awakening",
+          "\"success was 82%\" self-awakening sleep",
+          "\"seventh day\" \"self-awakening\""
+        ]
+      },
+      "ledger_check_full": {
+        "deviations": [],
+        "overall_status": "LEDGER_COMPLIANT"
+      },
+      "ledger_check_target_eval": {
+        "overall_status": "LEDGER_COMPLIANT",
+        "window_overall_status": "LEDGER_COMPLIANT",
+        "target_deviations": [],
+        "adjacent_deviations": [],
+        "ambiguous_deviations": [],
+        "match_fallback": false
+      },
+      "blocks_acceptance": false
+    },
+    "diff_qa_point_overlap": {
+      "applicable": true,
+      "point": "point_two",
+      "overlap_vs_full_story": {
+        "overlap_ratio": 0.229,
+        "shared_words": [
+          "alarm",
+          "another",
+          "before",
+          "day",
+          "help",
+          "studies",
+          "time",
+          "waking"
+        ],
+        "point_word_count": 35,
+        "story_word_count": 73,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "overlap_vs_other_point": {
+        "overlap_ratio": 0.171,
+        "shared_words": [
+          "alarm",
+          "before",
+          "minutes",
+          "studies",
+          "study",
+          "waking"
+        ],
+        "point_word_count": 35,
+        "story_word_count": 40,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "flagged": false
+    },
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "sentence_fallback(overlap=0.65)",
+    "point_context_found": true,
+    "point_context": "### Practice changes the question\n\nIn many studies, people knew the target time and tried to wake near it. In one study, 7 of 15 people woke within 30 minutes. In another, repeated attempts raised success to 82% by the seventh day. A review of 17 studies involving more than 700 people found different methods. So practice and expectation may help. This is different from accidentally waking just before a real alarm."
+  }
+]

@@ -1,0 +1,27 @@
+# Why Do You Sometimes Wake Up Just Before the Alarm?
+
+Sometimes, your eyes open just before the alarm rings.
+
+It can feel as if your body already knew the exact time. But science has not shown that the body can read an alarm clock with perfect accuracy. A more careful explanation is that your daily body clock and your preparations for waking may come together around the same time.
+
+Light is the main signal that sets the body clock. A regular sleep and wake schedule can also help. In one laboratory study, healthy adults could match a 24-hour schedule even under very weak light. But they usually did not match schedules shorter or longer than a day. Under those conditions, the daily schedule itself helped the body keep time.
+
+The body may also begin preparing before sleep is due to end. In one laboratory experiment, the hormone ACTH rose clearly about an hour before the expected waking time. The researchers said this rise reflected not only the daily body clock, but also preparation for the end of sleep.
+
+Other experiments found changes before people woke on their own. In one study, activity in the front part of the brain changed about 30 minutes before waking. In a small afternoon-nap study, heart rate began to rise about three minutes before waking.
+
+The full picture is not quite so simple. A newer study followed 201 healthy adults sleeping at home. On average, their cortisol level began to rise about three hours before waking and reached its highest point about 35 minutes after waking. But the study found no clear evidence that cortisol rose faster during the hour before waking than during the hour after.
+
+So, waking just before an alarm may involve several processes. The body clock helps organize the day, while the body may also prepare for an expected waking time. The research shows preparation, but it does not prove a perfect inner alarm.
+
+### When waking feels easier
+
+Near morning, sleep itself changes. Deep, slow-wave sleep becomes less common, while lighter sleep and another stage called REM sleep become more common. Waking from deep sleep is linked with stronger grogginess and a harder adjustment. So a smooth pre-alarm awakening may partly reflect the sleep stage, not knowledge of the exact minute.
+
+### Practice can shape the wake-up
+
+Waking without an alarm may also be shaped by practice and expectation. In one small study of 11 students, about 80% woke without an alarm at the planned time by the seventh day. Across 17 studies, many counted waking within 30 minutes, though methods differed. A survey found that about 10% of Japanese university students reported the habit. Most studies asked people to aim for a time, so they do not directly test waking just before a real alarm.
+
+## In one line…
+
+Your body may prepare for a familiar waking time, and lighter late-night sleep may make waking feel easy. But waking just before an alarm is evidence of preparation and habit—not proof of a perfect internal timekeeper.
