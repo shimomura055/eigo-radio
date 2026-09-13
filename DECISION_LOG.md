@@ -385,6 +385,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02: Token節約施策(E-1/D-1/G-1/F-1)のread-only現状測定(まだ評価不足)+task-notification `subagent_tokens`は累積処理量ではない新発見
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-107: F-1 transcript退避手順の恒久変更(0バイト時はsubagents/agent-<id>.jsonlから取得)をPM_GOVERNANCEへ正式反映+直近2委任の退避実施
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-109: 施策1(tool_uses削減)Trial設計+施策2(E-1/D-1/G-1委任文定型ブロック)導入
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-110: Discovery Focus Module再検証Trial(VALIDATED)のSSOT反映
 
 ---
 
@@ -6839,6 +6840,11 @@ Production経路の変更ではない)。
 
 **commit**: 本エントリと上記新規/変更ファイルをまとめてcommitする
 (hashは`docs/pm/RESULT_PACKET_T1.md`参照)。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-110(2026-09-13)
+FAMILY-A-DISCOVERY-FOCUS-MODULE-REVALIDATION-01: ユーザー指示(Discovery/Why Focus Module Part Aを旧Trial-07の再現ではなく現行Production基盤・現行Ledger/QA条件で再検証、Production採用判断なし、Article-only、同一テーマ・同一Ledger・A2/B1×baseline/focus 4記事、Household以外優先・新規Research不可、到達StatusはREJECTED/VALIDATED/USER_DECISION_REQUIREDまで)に基づき実施。結果は上記OPEN_ITEMS追記のとおり。Fable Gate 1判定=`VALIDATED`(Trial)。N増しは現時点で不要と判断。Production registry登録・Focus Module配線・Point Role PlanningへのFocus接続・Part B・Fact Checker緩和・新Validator・新Research方式・Audioは非対象のまま。Status: Trial `VALIDATED`、次段階はUSER_DECISION_REQUIRED(Production案再設計の要否)。費用¥113.91。commit 748128b。
 
 ---
 

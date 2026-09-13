@@ -949,3 +949,7 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   既定ON化・方式C-v2 Closeは新規API呼び出し0件(¥0、SSOT/コード
   コメント編集のみ)。テスト追加(新規15件、既存3ファイル更新)は全て
   LLMモックのため¥0。委任回数=初回のみ(ループ上限4回以内)。
+
+- 2026-09-13 FAMILY-A-DISCOVERY-FOCUS-MODULE-REVALIDATION-01: gpt-5.6-luna
+  (全29呼び出し)、¥113.91(A2 baseline 31.16/A2 focus 30.54/B1 baseline
+  28.39/B1 focus 23.81)。
