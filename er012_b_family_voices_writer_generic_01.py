@@ -400,8 +400,9 @@ def _voice_card_block_text(card: dict) -> str:
         f"- Constraint(制約): {card['constraint']}",
         f"- Concrete lived scene(具体的な場面、Ledgerに根拠あり): {card['concrete_scene']}",
         f"- Supporting evidence(裏付け専用、Voice本文の主役にしない): {card['supporting_evidence']}"
-        "この裏付けの中から、1つのVoiceにつき最大1つの具体的な数字だけを、人を主語にした"
-        "自然な話し言葉で織り込んでください(詳細ルールは上記【Evidenceは脇役であること】参照)。",
+        "この裏付けの中から、自然に人を主語にした話し言葉へ織り込める場合に限り、具体的な"
+        "数字を1つだけ使ってください。無理に数字を使う必要はなく、数字を使わずにその人の"
+        "実感だけで書いても構いません(詳細ルールは下記【Evidenceは脇役であること】参照)。",
     ]
     return "\n".join(lines)
 
@@ -775,6 +776,160 @@ def build_leakage_corrective_note_3v(leakage_result: dict, voice_cards: list) ->
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2:
+# 保守版Fact Safetyゲート(段階1/段階2)。`family=="B"`かつ3V経路限定の
+# opt-in(registry.is_voice_fact_safety_gate_mode_enabled()、既定False。
+# Trial継続の承認でありProduction正式採用[APPROVED_FOR_PRODUCTION]では
+# ない)。`_apply_deviation_post_hoc_validation`(er003_v1_en_direct_vfl_
+# 01_generate.py:513)と同型の後処理として、Ledger Deviation Checkerが
+# 返したseverityをMAJOR→MINORへ再分類するのみで、判定基準・prompt本体・
+# MAX_REWRITE_CYCLES等の既存の安全装置の上限回数は一切変更しない。
+#
+# 出典: `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`
+# (c/e節)、`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_
+# REPORT.md`(Stage1b-2、合成true-positive 17件/17件・実データ5/6改善)。
+#
+# 段階1(Voice本文hedge免除、狭い): section=voice_1/2/3_body かつ主語が
+# 一人称(I/my/me等)、かつflag集合が{changed_scope, changed_certainty}の
+# 部分集合(他8種flagが1つでもtrueなら対象外)。
+# 段階2(Tension役割合成の保守版緩和): section=tension_body かつ
+# {changed_actor, unsupported_new_claim}のいずれかがtrue、かつb節が
+# 「常に厳格」と明記する5フラグ(changed_number/changed_causality/
+# changed_negation/changed_comparison/changed_time)がflag単位でも
+# 1つもtrueでない、かつ数字・固有名詞・制度名・第三者具体的行動の
+# 字面が対象文に含まれない場合のみMINORへ降格する(Stage1b-2で11/11
+# 合成true-positive取りこぼし0件を確認した保守版)。
+#
+# [PM-DELEGATION-NOTE 2026-09-13] 本タスクの委任文(入力節)は保守版5
+# フラグを[changed_number/changed_fact/changed_negation/changed_
+# comparison/changed_time]と表記していたが、実際にStage1b-2で11/11
+# 検証済み・実データ5/6改善(ablation1件[changed_negation]のみ未解決)を
+# 達成したのは[changed_number/changed_causality/changed_negation/
+# changed_comparison/changed_time](causality、factではない)の組み合わせ
+# (b節本文・stage1b2_synthetic_gate_test.pyのALWAYS_STRICT_TENSION_FLAGS
+# と一致)。changed_factを含めると実データのtension MAJOR 6件全件が
+# changed_fact=trueを伴うため段階2の適用対象が0/6になり、本タスクが
+# 明示的に確認を求める「5/6改善」の前提と矛盾する。本実装は検証済みの
+# causality版を採用し、この不一致をFableへ報告する(詳細REPORT
+# 「## Stage 2」節)。
+# ============================================================
+_VOICE_GATE_STAGE1_TARGET_FLAGS = {"changed_scope", "changed_certainty"}
+_VOICE_GATE_STAGE2_TARGET_FLAGS = {"changed_actor", "unsupported_new_claim"}
+_VOICE_GATE_ALWAYS_STRICT_FLAGS = {"changed_number", "changed_causality", "changed_negation",
+                                    "changed_comparison", "changed_time"}
+_VOICE_GATE_INSTITUTIONS = ("New York City", "NYC", "European Union", " EU ", "NBCUniversal",
+                             "IBM", "OSHA", "EEOC", "FTC")
+_VOICE_GATE_STOP_CAP_WORDS = {"I", "The", "A", "An", "In", "On", "At", "Their", "Another", "Since",
+                               "Because", "This", "That", "They", "He", "She", "It", "We", "You",
+                               "My", "Voice"}
+_VOICE_GATE_THIRDPARTY_ACTION_RE = re.compile(
+    r"\bfiled\b|\bsued\b|\blawsuit\b|\bcomplaint\b|\bannounced\b|\bdecided to end\b|\bresigned\b|"
+    r"\btestified\b|cut \d+%")
+
+
+def _voice_gate_has_first_person_marker(text: str) -> bool:
+    """段階1の「主語が一人称(I/my/me)または当該Voiceの立場を指す代名詞」を
+    保守的に(見逃しは安全側=降格しない、誤検出のみ避ける)機械判定する。"""
+    text = text or ""
+    if re.search(r"\bI\b", text):
+        return True
+    if re.search(r"\bI['’](m|ve|d|ll)\b", text):
+        return True
+    if re.search(r"\b(my|me|myself)\b", text, re.IGNORECASE):
+        return True
+    return False
+
+
+def _voice_gate_has_surface_signal(text: str) -> bool:
+    """b節の境界(数字・固有名詞・制度名・第三者具体的行動)をrule-based
+    (字面)で機械チェックする(stage1b2_synthetic_gate_test.pyの
+    surface_signals()と同一ロジック)。"""
+    text = text or ""
+    if re.search(r"\d", text):
+        return True
+    for inst in _VOICE_GATE_INSTITUTIONS:
+        if inst.strip() and inst.strip() in text:
+            return True
+    words = text.split()
+    for i, w in enumerate(words):
+        core = re.sub(r"[^A-Za-z]", "", w)
+        if not core:
+            continue
+        if core[0].isupper() and i != 0 and core not in _VOICE_GATE_STOP_CAP_WORDS:
+            return True
+    if _VOICE_GATE_THIRDPARTY_ACTION_RE.search(text):
+        return True
+    return False
+
+
+def _voice_gate_locate_section(claim_text: str, sections: dict) -> str | None:
+    """`claim_text`が6区切りsectionsのどのbodyに含まれるかを字面一致で
+    判定する(Stage1 A1節の機械分類と同一手法)。一致するsectionが無い、
+    またはsectionsが未確定(6区切り失敗)の場合はNoneを返す(この場合、
+    呼び出し側は段階1/2いずれの対象にもしない=安全側)。"""
+    claim_text = (claim_text or "").strip()
+    if not claim_text or not sections:
+        return None
+    for label in SIX_SECTION_LABELS:
+        body = sections.get(f"{label}_body") or ""
+        if body and claim_text in body:
+            return f"{label}_body"
+    return None
+
+
+def _voice_gate_stage1_eligible(section: str | None, claim_text: str, flagset: set) -> bool:
+    if section not in {"voice_1_body", "voice_2_body", "voice_3_body"}:
+        return False
+    if not flagset:
+        return False
+    if flagset - _VOICE_GATE_STAGE1_TARGET_FLAGS:
+        return False
+    if not _voice_gate_has_first_person_marker(claim_text):
+        return False
+    return True
+
+
+def _voice_gate_stage2_eligible(section: str | None, claim_text: str, flagset: set) -> bool:
+    if section != "tension_body":
+        return False
+    if not (flagset & _VOICE_GATE_STAGE2_TARGET_FLAGS):
+        return False
+    if flagset & _VOICE_GATE_ALWAYS_STRICT_FLAGS:
+        return False
+    if _voice_gate_has_surface_signal(claim_text):
+        return False
+    return True
+
+
+def _apply_b_family_voice_safety_gate(parsed: dict, article_text: str) -> dict:
+    """`vfl01.run_deviation_check()`が返す`parsed`(`_apply_deviation_
+    post_hoc_validation`適用済み)に対し、段階1/段階2条件に一致する
+    MAJOR deviationのみをMINORへ再分類し、overall_statusを再計算する。
+    条件に一致しない場合は完全に無変更(現行の厳格判定のまま)。"""
+    sections = b1prod.split_six_voice_sections(article_text) or {}
+    deviations = []
+    for raw in parsed.get("deviations", []):
+        d = dict(raw)
+        d["b_family_voice_gate_downgraded"] = False
+        if d.get("severity") == "MAJOR":
+            claim_text = d.get("claim_in_article") or ""
+            section = _voice_gate_locate_section(claim_text, sections)
+            flagset = {k for k in vfl01.DEVIATION_FLAG_KEYS if d.get(k)}
+            stage1 = _voice_gate_stage1_eligible(section, claim_text, flagset)
+            stage2 = (not stage1) and _voice_gate_stage2_eligible(section, claim_text, flagset)
+            if stage1 or stage2:
+                d["severity"] = "MINOR"
+                d["b_family_voice_gate_downgraded"] = True
+                d["b_family_voice_gate_stage"] = "stage1" if stage1 else "stage2"
+                d["issue"] = (f"[B-FAMILY-VOICE-GATE-DOWNGRADED stage="
+                               f"{'1' if stage1 else '2'}] {d.get('issue', '')}")
+        deviations.append(d)
+    overall_status = "LEDGER_DEVIATION" if any(x["severity"] == "MAJOR" for x in deviations) \
+        else "LEDGER_COMPLIANT"
+    return {"deviations": deviations, "overall_status": overall_status}
+
+
+# ============================================================
 # Ledger Deviation Checker + Local Rewrite(既存呼び出し関数・引数・順序を
 # 一切変更せず踏襲、article_textの内部構造[section数]に依存しない)。
 # ============================================================
@@ -783,6 +938,8 @@ def run_ledger_deviation_and_local_rewrite(client, theme_id: str, label: str, ar
     print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: ledger逸脱チェック開始(Hook-aware)...")
     deviation_result = vfl01.run_deviation_check(
         client, verified_ledger_text, article_text, model=ledger_model, hook_aware=True)
+    if registry.is_voice_fact_safety_gate_mode_enabled():
+        deviation_result["parsed"] = _apply_b_family_voice_safety_gate(deviation_result["parsed"], article_text)
     print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: deviation overall_status="
           f"{deviation_result['parsed']['overall_status']} deviations={len(deviation_result['parsed']['deviations'])}")
 
@@ -847,6 +1004,8 @@ def run_ledger_deviation_and_local_rewrite(client, theme_id: str, label: str, ar
         print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: cycle {cycle} Local Rewrite後、Ledger全体を再判定...")
         deviation_result = vfl01.run_deviation_check(client, verified_ledger_text, article_text,
                                                        model=ledger_model, hook_aware=True)
+        if registry.is_voice_fact_safety_gate_mode_enabled():
+            deviation_result["parsed"] = _apply_b_family_voice_safety_gate(deviation_result["parsed"], article_text)
         recheck_major = [d for d in deviation_result["parsed"]["deviations"] if d["severity"] == "MAJOR"]
         print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: cycle {cycle} 再判定 overall_status="
               f"{deviation_result['parsed']['overall_status']} MAJOR={len(recheck_major)}件")

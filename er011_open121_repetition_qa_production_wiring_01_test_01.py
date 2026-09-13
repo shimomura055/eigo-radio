@@ -693,6 +693,135 @@ class ApplyRepetitionQaGateTests(unittest.TestCase):
 
 
 # ============================================================
+# Part 3.5: 方式C-v2(OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01、Trial
+# 統合・opt-inフラグ`enable_method_c_v2`既定False)。(i)既定OFF不変性、
+# (ii)`_text_ngram_repetition_c_v2()`のTP/FP代表ケース(Trial-01の
+# 既存windowed ASR結果`method_c_windowed_asr.json`の実transcriptを固定
+# 入力として再利用、新規ASR呼び出しなし)、(iii)`run_method_c_v2_window_
+# check()`はASR呼び出しを全てモックし実APIは一切呼ばない。
+# ============================================================
+
+# Trial-01実測windowed ASR結果(method_c_windowed_asr.json)から抜粋した
+# 固定transcript。real_point_two_buggy win12_hop6[0.0-12.0]相当(TP、
+# canonicalには"Young travelers are not one single market"は1回のみ)。
+CV2_TP_TEXT_POINT_TWO_WIN12 = (
+    "Young travelers are not one single market. Women aged 29 and under still "
+    "showed strong interest in famous tourist places. Young travelers are not one...")
+
+# real_in_one_line_buggy win12_hop6[0.0-12.0]相当(TP、canonicalには
+# "The direction is visible in several surveys"は1回のみ)。
+CV2_TP_TEXT_IN_ONE_LINE_WIN12 = (
+    "The direction is visible in several surveys, but it is still a change in "
+    "what young travelers want. The direction is visible in several surveys.")
+CV2_IN_ONE_LINE_CANONICAL_TEXT = (
+    "The direction is visible in several surveys, but it is still a change in "
+    "what young travelers want—not proof that long, slow stays have become "
+    "the new normal.")
+
+# a2_point_one_clean win8_hop4[8.0-16.0]相当(FP陰性、"travel was about"は
+# canonicalに2回登場する正当な繰り返し=intentional)。
+CV2_FP_TEXT_POINT_ONE_WIN8 = (
+    "Men aged 29 and under, solo travel was about 25% and hobby-focused travel was about")
+
+
+class MethodCV2TextNgramRepetitionTests(unittest.TestCase):
+    """`_text_ngram_repetition_c_v2()`のTP/FP代表ケース(Trial-01
+    `method_c_windowed_asr.json`の実測transcriptを固定入力として再現、
+    ASR呼び出しなし)。"""
+
+    def test_tp_point_two_win12_flags_non_canonical_repeat(self):
+        r = repetition_qa._text_ngram_repetition_c_v2(
+            CV2_TP_TEXT_POINT_TWO_WIN12, canonical_text=REAL_POINT_TWO_CANONICAL_TEXT)
+        self.assertTrue(r["flagged"], r)
+
+    def test_tp_in_one_line_win12_flags_non_canonical_repeat(self):
+        r = repetition_qa._text_ngram_repetition_c_v2(
+            CV2_TP_TEXT_IN_ONE_LINE_WIN12, canonical_text=CV2_IN_ONE_LINE_CANONICAL_TEXT)
+        self.assertTrue(r["flagged"], r)
+
+    def test_fp_point_one_win8_does_not_flag_canonical_intentional_repeat(self):
+        r = repetition_qa._text_ngram_repetition_c_v2(
+            CV2_FP_TEXT_POINT_ONE_WIN8, canonical_text=CLEAN_NEGATIVE_CANONICAL_TEXT)
+        self.assertFalse(r["flagged"], r)
+
+    def test_empty_text_returns_not_flagged(self):
+        r = repetition_qa._text_ngram_repetition_c_v2("", canonical_text=REAL_POINT_TWO_CANONICAL_TEXT)
+        self.assertFalse(r["flagged"])
+        self.assertEqual(r["matches"], [])
+
+
+class MethodCV2DefaultOffInvarianceTests(unittest.TestCase):
+    """`enable_method_c_v2`を明示的に渡さない場合と明示的にFalseを渡した
+    場合とで、`evaluate_repetition_qa`/`apply_repetition_qa_gate`の結果が
+    一致すること(既定OFF不変性)。方式C-v2自体は一切実行されない
+    (`run_method_c_v2_window_check`をmockしunused呼び出しゼロを確認)。"""
+
+    @unittest.skipUnless(os.path.exists(CLEAN_NEGATIVE_WAV), "OPEN-121 Trial-01 fixture not present")
+    def test_evaluate_repetition_qa_unspecified_matches_explicit_false(self):
+        with mock.patch.object(repetition_qa, "run_method_c_v2_window_check") as fake_c_v2:
+            r_default = repetition_qa.evaluate_repetition_qa(
+                CLEAN_NEGATIVE_WAV, CLEAN_NEGATIVE_CANONICAL_TEXT, language="en")
+            r_explicit_false = repetition_qa.evaluate_repetition_qa(
+                CLEAN_NEGATIVE_WAV, CLEAN_NEGATIVE_CANONICAL_TEXT, language="en",
+                enable_method_c_v2=False)
+            fake_c_v2.assert_not_called()
+        self.assertIsNone(r_default["method_c_v2_window_check"])
+        self.assertIsNone(r_explicit_false["method_c_v2_window_check"])
+        self.assertEqual(r_default["flagged"], r_explicit_false["flagged"])
+        self.assertFalse(r_default["flagged"])
+
+    @unittest.skipUnless(os.path.exists(CLEAN_NEGATIVE_WAV), "OPEN-121 Trial-01 fixture not present")
+    def test_apply_repetition_qa_gate_unspecified_matches_explicit_false(self):
+        with mock.patch.object(repetition_qa, "run_method_c_v2_window_check") as fake_c_v2:
+            r_default = repetition_qa.apply_repetition_qa_gate(
+                True, CLEAN_NEGATIVE_WAV, CLEAN_NEGATIVE_CANONICAL_TEXT,
+                language="en", enabled=True)
+            r_explicit_false = repetition_qa.apply_repetition_qa_gate(
+                True, CLEAN_NEGATIVE_WAV, CLEAN_NEGATIVE_CANONICAL_TEXT,
+                language="en", enabled=True, enable_method_c_v2=False)
+            fake_c_v2.assert_not_called()
+        self.assertEqual(r_default["verified"], r_explicit_false["verified"])
+        self.assertTrue(r_default["verified"])
+
+    def test_disabled_gate_ignores_enable_method_c_v2_true(self):
+        # enabled=Falseの場合はenable_method_c_v2=Trueを渡しても評価自体が
+        # 発生しない(既存のenabled=FalseショートサーキットがC-v2にも適用
+        # されることを確認)。
+        with mock.patch.object(repetition_qa, "run_method_c_v2_window_check") as fake_c_v2:
+            result = repetition_qa.apply_repetition_qa_gate(
+                True, "nonexistent_path.wav", "some canonical text",
+                enabled=False, enable_method_c_v2=True)
+            fake_c_v2.assert_not_called()
+        self.assertTrue(result["verified"])
+        self.assertFalse(result["repetition_qa_checked"])
+
+
+class MethodCV2WindowCheckMockedAsrTests(unittest.TestCase):
+    """`run_method_c_v2_window_check()`は既存Production ASR経路
+    (`er006_asr_provider_routing_01.transcribe`)を呼び出すが、本テストは
+    実API呼び出しを一切行わず全てモックする。"""
+
+    @unittest.skipUnless(os.path.exists(CLEAN_NEGATIVE_WAV), "OPEN-121 Trial-01 fixture not present")
+    def test_flags_when_mocked_asr_returns_non_canonical_repeat(self):
+        with mock.patch.object(repetition_qa.asr_routing, "transcribe",
+                                return_value=(CV2_TP_TEXT_POINT_TWO_WIN12, None)) as fake_transcribe:
+            r = repetition_qa.run_method_c_v2_window_check(
+                CLEAN_NEGATIVE_WAV, REAL_POINT_TWO_CANONICAL_TEXT, language="en")
+        self.assertTrue(fake_transcribe.called)
+        self.assertTrue(r["flagged"], r)
+        self.assertGreater(r["asr_calls"], 0)
+
+    @unittest.skipUnless(os.path.exists(CLEAN_NEGATIVE_WAV), "OPEN-121 Trial-01 fixture not present")
+    def test_does_not_flag_when_mocked_asr_returns_clean_text(self):
+        with mock.patch.object(repetition_qa.asr_routing, "transcribe",
+                                return_value=(CV2_FP_TEXT_POINT_ONE_WIN8, None)) as fake_transcribe:
+            r = repetition_qa.run_method_c_v2_window_check(
+                CLEAN_NEGATIVE_WAV, CLEAN_NEGATIVE_CANONICAL_TEXT, language="en")
+        self.assertTrue(fake_transcribe.called)
+        self.assertFalse(r["flagged"], r)
+
+
+# ============================================================
 # Part 4: Production配線(適用範囲限定)。TTS/ASRの外部呼び出しはすべて
 # モックし、実APIは一切呼ばない(既存er011_keyphrase_en_asr_false_
 # rejection_cascade_prod_wiring_01_test_01.pyと同じ方針)。

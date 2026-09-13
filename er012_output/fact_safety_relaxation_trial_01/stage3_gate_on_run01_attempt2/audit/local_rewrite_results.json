@@ -1,0 +1,126 @@
+[
+  {
+    "original_ng_sentence": "Outside checks and past failures prevent these reasons from becoming one answer.",
+    "issue": "監査や過去の事例が、応募者・採用担当者・経営側の見解を実際に一つの答えにできなくするという効果まではLedgerで確認されていない。",
+    "explanation": "Ledgerは監査要件やAmazonの事例を確認しているが、それらが議論の結論を妨げるという因果関係は裏付けていない。",
+    "flags": [
+      "changed_causality",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "Outside checks and past failures add further considerations, so these reasons may not settle into one answer.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "Outside checks and past failures add important context, but they may not resolve the competing concerns into one answer.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 3,
+        "text": "In this discussion, outside checks and past failures add important context, but they may not by themselves settle the competing concerns into one answer.",
+        "ledger_status": "LEDGER_DEVIATION"
+      }
+    ],
+    "final_text": "In this discussion, outside checks and past failures add important context, but they may not by themselves settle the competing concerns into one answer.",
+    "resolved": false,
+    "human_review_required": true,
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job, but each risks something different: the applicant may lose the chance to be fairly seen; the recruiter must keep work moving and explain the tool; the owner must keep the company running and answer for the decision. Their power is unequal: the applicant cannot choose the process, the recruiter runs it without choosing adoption, and the owner chooses and carries the result. Outside checks and past failures prevent these reasons from becoming one answer. In New York City, covered tools need a yearly check for unfair patterns and a notice. This gives the recruiter more to explain and stops the owner from treating speed as the only issue. One company stopped an internal system after learning that it rated some women’s résumés lower. The applicant still cannot change the process, while the other two face these limits before anyone has the last word."
+  },
+  {
+    "original_ng_sentence": "This gives the recruiter more to explain and stops the owner from treating speed as the only issue.",
+    "issue": "NYC Local Law 144の監査・通知要件が、経営者が速度を唯一の判断基準として扱うことを実際に阻止する、と因果的・断定的に述べている。",
+    "explanation": "Ledgerは監査・通知の法的要件と、効率性以外に法的・評判上のリスクも考慮すべきことを示すが、同法が経営判断をそのように『止める』効果までは確認していない。",
+    "flags": [
+      "changed_causality",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "This gives the recruiter more to explain and may make it harder for the owner to treat speed as the only issue.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "This gives the recruiter more to explain, while the owner may need to weigh speed against compliance and other legal or reputational risks.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "This gives the recruiter more to explain, while the owner may need to weigh speed against compliance and other legal or reputational risks.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 1,
+    "item_idx": 2,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job, but each risks something different: the applicant may lose the chance to be fairly seen; the recruiter must keep work moving and explain the tool; the owner must keep the company running and answer for the decision. Their power is unequal: the applicant cannot choose the process, the recruiter runs it without choosing adoption, and the owner chooses and carries the result. Outside checks and past failures prevent these reasons from becoming one answer. In New York City, covered tools need a yearly check for unfair patterns and a notice. This gives the recruiter more to explain and stops the owner from treating speed as the only issue. One company stopped an internal system after learning that it rated some women’s résumés lower. The applicant still cannot change the process, while the other two face these limits before anyone has the last word."
+  },
+  {
+    "original_ng_sentence": "Each week, I check the dashboard: hiring time, cost, and whether we are hiring enough people.",
+    "issue": "Ledgerには採用期間や採用コストを効率指標として扱う事例はあるが、企業オーナーが毎週ダッシュボードを確認することや、「十分な人数を採用できているか」を確認する運用は確認されていない。",
+    "explanation": "既存の効率指標を用いた新しい具体的な運用習慣を追加している。Hookとしての単なる情景描写にとどまらず、「毎週」という頻度を伴う具体的主張になっている。",
+    "flags": [
+      "changed_fact",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "I watch the measures that matter to the business: how long hiring takes and what it costs.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 2,
+        "text": "For the business, relevant measures can include how long hiring takes and what it costs.",
+        "ledger_status": "LEDGER_DEVIATION"
+      },
+      {
+        "attempt": 3,
+        "text": "In the documented business cases, relevant efficiency measures can include how long hiring takes and what it costs.",
+        "ledger_status": "LEDGER_DEVIATION"
+      }
+    ],
+    "final_text": "In the documented business cases, relevant efficiency measures can include how long hiring takes and what it costs.",
+    "resolved": false,
+    "human_review_required": true,
+    "cycle": 2,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### A Third Voice: The Business Owner’s Dashboard\n\nEach week, I check the dashboard: hiring time, cost, and whether we are hiring enough people. When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool. If hiring slows, I worry about keeping the business running. If an AI decision is called discriminatory, I know the question will return to my desk. I am protecting the company and the trust placed in my judgment."
+  },
+  {
+    "original_ng_sentence": "When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool.",
+    "issue": "Ledgerは一部企業のケーススタディで採用期間短縮やコスト低下を報告しているが、それによって企業オーナーがAIの継続利用への心理的圧力を感じるという事実や因果関係は確認していない。",
+    "explanation": "限定された企業事例の効率効果から、事業オーナーの「継続利用への圧力」という心理状態と、その原因関係を新たに導入している。",
+    "flags": [
+      "changed_fact",
+      "changed_causality",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "When some case studies report that hiring can sometimes happen in days and costs may fall, I can feel pressure to keep using the tool.",
+        "ledger_status": "LEDGER_COMPLIANT"
+      }
+    ],
+    "final_text": "When some case studies report that hiring can sometimes happen in days and costs may fall, I can feel pressure to keep using the tool.",
+    "resolved": true,
+    "human_review_required": false,
+    "cycle": 2,
+    "item_idx": 2,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### A Third Voice: The Business Owner’s Dashboard\n\nEach week, I check the dashboard: hiring time, cost, and whether we are hiring enough people. When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool. If hiring slows, I worry about keeping the business running. If an AI decision is called discriminatory, I know the question will return to my desk. I am protecting the company and the trust placed in my judgment."
+  }
+]

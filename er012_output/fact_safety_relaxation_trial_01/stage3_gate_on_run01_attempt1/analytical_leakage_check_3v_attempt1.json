@@ -1,0 +1,66 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_07fdd5ec42cac6e3006aa6060e77cc87d0a8c47e4199d9209f",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・高リスク分類・過去の中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ(3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI send in my CV and speak to a camera, knowing software may score my tone, face, and gestures. I want my skills and character seen, not reduced to a score I cannot question. I could do well on a skills test, yet a low mark on my expression could end the process. I cannot ignore a woman’s account of that experience or a long period without work. I also cannot ignore an applicant given no chance to opt out or appeal after a “trustworthiness” score.\n\n【Voice 2本文】\nAfter using screening software on a large stack of CVs, I still answer people who ask how they were judged. I need the tool to match skills to jobs, but I also need to explain its role. I may have to prepare a bias-audit summary or transparency notice. I saw a public notice showing that an independent review of an employment tool had been carried out. I did not choose the system, but I must operate it carefully. I also have to judge what an AI-written CV means.\n\n【Voice 3本文】\nEach week I check the dashboard for hiring time and cost. I ask whether we can fill jobs fast enough. AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs. I feel relief when my team fills roles on time. But I also think about the legal and ethical risk if an AI decision harms people. If that becomes public, my name is attached to the choice. I am protecting the company and trust in my judgment.\n\n【Tension本文】\nAll three want the right person in the right job, but their stakes differ. The applicant may lose a chance unseen; the recruiter must balance speed and explanation; the owner must keep the company running and answer for the result. Power is uneven: the applicant cannot set the process, the recruiter operates the tool and may also decide whether to use it, and the owner chooses and carries responsibility.\n\nOutside limits turn these differences into hard boundaries. In New York City, an employer must arrange a yearly bias audit and notify applicants. That adds work for the recruiter and limits a speed-only choice by the owner. An internal tool was stopped after it rated women’s resumes lower. Because of rules and past failure, these three views cannot simply be combined.\n\n【Closing本文】\nThe question is bigger than whether a machine is good or bad at hiring. It is about who gets seen, who must explain the judgment, and who carries the consequences when a fast decision is questioned. AI creates a shared process, but not a shared risk. The same screen can therefore mean three different things.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "一人称の応募者として、評価される不安や異議申立ての必要性が具体的に描かれている。外部データの説明や語り手による要約が前面に出ていない。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "採用担当者自身の業務上の経験と責任として、説明・監督・AI生成CVへの判断が書かれている。独立レビューや通知への言及も本人の観察・実務の一部として機能しており、調査結果の要約にはなっていない。",
+      "quoted_evidence": ""
+    },
+    "voice_3": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "一人称の経営者の責任感は描けているが、採用期間やコストに関する報告結果が、AI導入を正当化する中心的な根拠として置かれている。そのため、報告主体・比較結果・「一方では」の構文がDiscovery/Trend記事の形式に戻っている。一方で、安心感や自分の名前が選択に結び付く感覚は人物の経験として残る。",
+      "quoted_evidence": "AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "leak_tension_constraint_integration": "PASS",
+      "reasoning": "3人の権限・責任・失うものの違いを軸に緊張関係を整理しており、研究データの比較や単純な2対1の陣営分けには戻っていない。バイアス監査義務や過去の女性差別事例も、採用担当者の負担と所有者の速度優先を制約する力として物語に結び付けられている。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる要約ではなく、同じAI画面が立場ごとに異なる意味とリスクを持つという緊張を再提示している。Writer自身の解決策や妥協案を提案していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_3",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "一人称の経営者の責任感は描けているが、採用期間やコストに関する報告結果が、AI導入を正当化する中心的な根拠として置かれている。そのため、報告主体・比較結果・「一方では」の構文がDiscovery/Trend記事の形式に戻っている。一方で、安心感や自分の名前が選択に結び付く感覚は人物の経験として残る。",
+      "quoted_evidence": "AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs."
+    }
+  ],
+  "any_flagged": true
+}

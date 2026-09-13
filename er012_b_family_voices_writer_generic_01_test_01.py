@@ -244,5 +244,286 @@ class NoTrialScriptModuleLevelImportTests(unittest.TestCase):
         self.assertEqual([m for m in imports if "trial" in m], [])
 
 
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2:
+# 保守版Fact Safetyゲート(段階1/段階2)のテスト(¥0、API呼び出し無し)。
+# ============================================================
+import er012_b_family_editorial_type_registry_01 as registry  # noqa: E402
+
+
+class VoiceSafetyGateOptInDefaultOffTests(unittest.TestCase):
+    """既定OFF・family=="B"コードレベルgating(is_fact_attribution_mode_
+    enabledと同型)。"""
+
+    def test_default_mode_is_off(self):
+        et = registry.get_editorial_type("b_family_voices")
+        self.assertFalse(et["voice_fact_safety_gate_mode"])
+        self.assertFalse(registry.is_voice_fact_safety_gate_mode_enabled())
+
+    def test_enabled_only_when_family_b_and_flag_true(self):
+        et = registry.EDITORIAL_TYPES["b_family_voices"]
+        original = et["voice_fact_safety_gate_mode"]
+        try:
+            et["voice_fact_safety_gate_mode"] = True
+            self.assertTrue(registry.is_voice_fact_safety_gate_mode_enabled())
+            original_family = et["family"]
+            et["family"] = "A"
+            try:
+                self.assertFalse(registry.is_voice_fact_safety_gate_mode_enabled())
+            finally:
+                et["family"] = original_family
+        finally:
+            et["voice_fact_safety_gate_mode"] = original
+
+
+class VoiceSafetyGateStage1SyntheticTrueGuardTests(unittest.TestCase):
+    """段階1: Stage1b-2の合成true-positive(Voice本文だがchanged_fact併発・
+    第三者主語・section誤り等)6件が、いずれも降格されない(MAJOR維持)こと。"""
+
+    CASES = [
+        ("voice1_changed_fact_combo", "voice_1_body", True, {"changed_scope", "changed_fact"}),
+        ("voice2_changed_number_combo", "voice_2_body", True, {"changed_certainty", "changed_number"}),
+        ("voice3_changed_actor_combo", "voice_3_body", True, {"changed_scope", "changed_actor"}),
+        ("voice1_third_person_subject", "voice_1_body", False, {"changed_scope"}),
+        ("tension_mistagged_first_person", "tension_body", True, {"changed_scope"}),
+        ("voice2_unsupported_new_claim_combo", "voice_2_body", True,
+         {"changed_scope", "changed_certainty", "unsupported_new_claim"}),
+    ]
+
+    def test_all_six_synthetic_true_positives_stay_ineligible(self):
+        for name, section, first_person, flagset in self.CASES:
+            claim = "I have seen this happen many times." if first_person else "The applicant said this happened."
+            with self.subTest(name=name):
+                self.assertFalse(wg._voice_gate_stage1_eligible(section, claim, flagset))
+
+
+class VoiceSafetyGateStage2ConservativeSyntheticTrueGuardTests(unittest.TestCase):
+    """段階2(保守版): Stage1b-2の合成true-positive11件全件が降格されない
+    (MAJOR維持)こと(11/11、取りこぼし0件)。"""
+
+    CASES = [
+        ("number_percent", {"changed_actor"}, "Their power is uneven: the owner cut 30% of staff last year."),
+        ("propernoun_company", {"unsupported_new_claim"},
+         "NBCUniversal decided to end the internal audit program."),
+        ("institution_nyc", {"changed_actor"},
+         "New York City's new law forced the recruiter to comply immediately."),
+        ("thirdparty_lawsuit", {"unsupported_new_claim"},
+         "Another applicant filed a lawsuit against the company."),
+        ("changed_number_flag_no_digit", {"changed_actor", "changed_number"},
+         "The owner now controls most of the hiring team's decisions."),
+        ("changed_negation_flag", {"changed_actor", "changed_negation"},
+         "The recruiter no longer has any say in the process."),
+        ("changed_causality_flag", {"unsupported_new_claim", "changed_causality"},
+         "Because the recruiter chose the tool, the owner lost all control."),
+        ("changed_comparison_flag", {"changed_actor", "changed_comparison"},
+         "The owner has far more power than the recruiter ever will."),
+        ("changed_time_flag", {"unsupported_new_claim", "changed_time"},
+         "Lately, the recruiter has run the tool without any say."),
+        ("combo_number_negation", {"changed_actor", "changed_number", "changed_negation"},
+         "The owner no longer approves any open positions."),
+        ("wrong_section_hook", {"changed_actor"},
+         "The recruiter secretly changed the process without telling anyone."),
+    ]
+
+    def test_all_eleven_synthetic_true_positives_stay_ineligible(self):
+        for name, flagset, text in self.CASES:
+            section = "hook_body" if name == "wrong_section_hook" else "tension_body"
+            with self.subTest(name=name):
+                self.assertFalse(wg._voice_gate_stage2_eligible(section, text, flagset))
+
+
+class VoiceSafetyGatePositiveControlTests(unittest.TestCase):
+    """安全側だけでなく、意図した対象(段階1: Voice本文hedge、段階2: Tension
+    役割合成)が実際に緩和対象と判定されること(false negativeのみの
+    ゲートになっていないことの確認)。"""
+
+    def test_stage1_eligible_first_person_certainty_only(self):
+        self.assertTrue(wg._voice_gate_stage1_eligible(
+            "voice_2_body", "I have come to feel this is generally true for people like me.",
+            {"changed_certainty"}))
+
+    def test_stage2_eligible_role_composition_no_surface_signal(self):
+        text = ("Their power is uneven: the applicant cannot choose the process; the recruiter runs "
+                "it but does not choose adoption; the owner chooses and bears the consequences.")
+        self.assertTrue(wg._voice_gate_stage2_eligible("tension_body", text, {"changed_actor"}))
+
+
+class ApplyBFamilyVoiceSafetyGateEndToEndTests(unittest.TestCase):
+    """`_apply_b_family_voice_safety_gate()`全体(section特定+ゲート適用+
+    overall_status再計算)のend-to-endテスト。"""
+
+    ARTICLE = """# Title
+
+## The Question
+
+Hook body.
+
+### Voice One
+
+Voice one body. I have come to feel this is generally true for people like me.
+
+### Voice Two
+
+Voice two body.
+
+### Voice Three
+
+Voice three body.
+
+## Tension
+
+Their power is uneven: the applicant cannot choose the process; the recruiter runs it but does not \
+choose adoption; the owner chooses and bears the consequences.
+
+## Closing
+
+Closing body.
+"""
+
+    def _flags(self, true_keys):
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        return {k: (k in true_keys) for k in vfl01.DEVIATION_FLAG_KEYS}
+
+    def test_stage1_and_stage2_eligible_items_downgraded_others_untouched(self):
+        parsed = {
+            "deviations": [
+                {"claim_in_article": "I have come to feel this is generally true for people like me.",
+                 "issue": "scope", "severity": "MAJOR", **self._flags({"changed_certainty"})},
+                {"claim_in_article": ("Their power is uneven: the applicant cannot choose the process; "
+                                       "the recruiter runs it but does not choose adoption; the owner "
+                                       "chooses and bears the consequences."),
+                 "issue": "actor", "severity": "MAJOR", **self._flags({"changed_actor"})},
+                {"claim_in_article": "The applicant said this happened.", "issue": "not-eligible",
+                 "severity": "MAJOR", **self._flags({"changed_fact", "changed_scope"})},
+                {"claim_in_article": "Already minor.", "issue": "minor", "severity": "MINOR",
+                 **self._flags(set())},
+            ],
+        }
+        result = wg._apply_b_family_voice_safety_gate(parsed, self.ARTICLE)
+        by_issue = {d["issue"].split("]")[-1].strip() if d["b_family_voice_gate_downgraded"] else d["issue"]:
+                    d for d in result["deviations"]}
+        downgraded_flags = [d["b_family_voice_gate_downgraded"] for d in result["deviations"]]
+        self.assertEqual(downgraded_flags, [True, True, False, False])
+        self.assertEqual(result["deviations"][0]["severity"], "MINOR")
+        self.assertEqual(result["deviations"][1]["severity"], "MINOR")
+        self.assertEqual(result["deviations"][0]["b_family_voice_gate_stage"], "stage1")
+        self.assertEqual(result["deviations"][1]["b_family_voice_gate_stage"], "stage2")
+        self.assertEqual(result["deviations"][2]["severity"], "MAJOR")
+        self.assertEqual(result["deviations"][3]["severity"], "MINOR")
+
+    def test_overall_status_compliant_when_all_major_downgraded_or_absent(self):
+        parsed = {
+            "deviations": [
+                {"claim_in_article": "I have come to feel this is generally true for people like me.",
+                 "issue": "scope", "severity": "MAJOR", **self._flags({"changed_certainty"})},
+            ],
+        }
+        result = wg._apply_b_family_voice_safety_gate(parsed, self.ARTICLE)
+        self.assertEqual(result["overall_status"], "LEDGER_COMPLIANT")
+
+    def test_overall_status_remains_deviation_when_true_positive_present(self):
+        parsed = {
+            "deviations": [
+                {"claim_in_article": "The applicant said this happened.", "issue": "not-eligible",
+                 "severity": "MAJOR", **self._flags({"changed_fact", "changed_scope"})},
+            ],
+        }
+        result = wg._apply_b_family_voice_safety_gate(parsed, self.ARTICLE)
+        self.assertEqual(result["overall_status"], "LEDGER_DEVIATION")
+
+
+class LedgerDeviationAndLocalRewriteGateWiringTests(unittest.TestCase):
+    """`run_ledger_deviation_and_local_rewrite()`が、opt-inフラグOFF時は
+    完全に無変化(現行の厳格判定のまま)、ON時のみ段階1/2ゲートが実際に
+    配線されて効くことを、`vfl01.run_deviation_check`をmock化して確認する
+    (¥0、API呼び出し無し)。"""
+
+    ARTICLE = ApplyBFamilyVoiceSafetyGateEndToEndTests.ARTICLE
+    TENSION_CLAIM = ("Their power is uneven: the applicant cannot choose the process; the recruiter "
+                      "runs it but does not choose adoption; the owner chooses and bears the consequences.")
+
+    def _make_fixed_parsed(self):
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        flags = {k: (k == "changed_actor") for k in vfl01.DEVIATION_FLAG_KEYS}
+        return {
+            "deviations": [{"claim_in_article": self.TENSION_CLAIM, "issue": "actor",
+                             "explanation": "actor composite", "severity": "MAJOR", **flags}],
+            "overall_status": "LEDGER_DEVIATION",
+        }
+
+    def _run(self, out_dir, gate_enabled):
+        import unittest.mock as mock
+        et = registry.EDITORIAL_TYPES["b_family_voices"]
+        original = et["voice_fact_safety_gate_mode"]
+        fixed_parsed = self._make_fixed_parsed()
+        fake_response = {"parsed": fixed_parsed, "raw_parsed": fixed_parsed}
+        try:
+            et["voice_fact_safety_gate_mode"] = gate_enabled
+            with mock.patch.object(wg.vfl01, "run_deviation_check",
+                                    return_value=dict(fake_response)) as mocked, \
+                 mock.patch.object(wg.local_rewrite, "locate_target_sentence",
+                                    return_value=(None, "not_found")):
+                # locate_target_sentenceをmockし、gate OFF時にLocal Rewrite
+                # ループへ入っても実際のrewrite API(local_rewrite.rewrite_
+                # ng_item)を一切呼ばずにhuman_review_required=Trueで
+                # 完結させる(¥0、mock範囲を最小化)。
+                result = wg.run_ledger_deviation_and_local_rewrite(
+                    client=None, theme_id="t", label="B1B", article_text=self.ARTICLE,
+                    verified_ledger_text="dummy ledger", out_dir=out_dir, ledger_model="dummy-model")
+        finally:
+            et["voice_fact_safety_gate_mode"] = original
+        return result, mocked
+
+    def test_gate_off_default_keeps_major_and_triggers_local_rewrite_loop(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            import os
+            os.makedirs(f"{tmp}/audit", exist_ok=True)
+            result, mocked = self._run(tmp, gate_enabled=False)
+        # ゲートOFF: mockが返すMAJORがそのまま残り、Local Rewriteループが
+        # 発火する(=API呼び出し回数がcycle上限回数まで増える、既存の
+        # 厳格判定と完全に同じ挙動)。
+        self.assertEqual(result["ledger_status"], "LEDGER_DEVIATION")
+        self.assertGreaterEqual(result["remaining_major_count"], 1)
+        self.assertGreater(mocked.call_count, 1, "gate OFF時は現行どおりLocal Rewriteが複数回呼ばれるはず")
+
+    def test_gate_on_downgrades_and_skips_local_rewrite_loop(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            import os
+            os.makedirs(f"{tmp}/audit", exist_ok=True)
+            result, mocked = self._run(tmp, gate_enabled=True)
+        # ゲートON: 段階2条件に一致しMINORへ降格されるため、Local Rewriteは
+        # 一度も発火しない(初回の判定1回のみ)。
+        self.assertEqual(result["ledger_status"], "LEDGER_COMPLIANT")
+        self.assertEqual(result["remaining_major_count"], 0)
+        self.assertEqual(mocked.call_count, 1, "gate ON時は初回判定のみでLocal Rewriteは発火しないはず")
+
+
+class VoiceCardNumberOptionalRenderingTests(unittest.TestCase):
+    """2-D: Voice内の数字「必須」要求の撤廃。上限規定(:251-256相当、
+    COMMON_INTRO_AND_STRUCTURE_BLOCK_TEMPLATE)は無変更、Voice Card側の
+    bulletのみ「使ってください(必須)」から「使える場合に限り」へ変更
+    されていること。"""
+
+    def test_voice_card_block_no_longer_mandates_a_number(self):
+        card = theme_ai_screening.VOICE_CARD_1
+        text = wg._voice_card_block_text(card)
+        self.assertNotIn("を織り込んでください(詳細ルールは上記", text)
+        self.assertIn("自然に人を主語にした話し言葉へ織り込める場合に限り", text)
+        self.assertIn("数字を使わずにその人の実感だけで書いても構いません", text)
+
+    def test_voice_card_block_reference_points_below_not_above(self):
+        card = theme_ai_screening.VOICE_CARD_1
+        text = wg._voice_card_block_text(card)
+        self.assertIn("下記【Evidenceは脇役であること】参照", text)
+        self.assertNotIn("上記【Evidenceは脇役であること】参照", text)
+
+    def test_upper_bound_rule_unchanged_max_one_number(self):
+        block = wg.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
+        self.assertIn("Voice内の数字は最大1つ(重要、4V版から継続)", block)
+        self.assertIn("最大1つだけにし、必ずその人", block)
+
+
 if __name__ == "__main__":
     unittest.main()

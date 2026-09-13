@@ -380,6 +380,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED: 2026-09-13ユーザー再視聴結果原文(verbatim)によるTrend記事(B1/A2)・Discovery Trial-12(A2/B1)の3件修正(B1 Key Phrase`autonomous`差替・A2`## Main story`除去・Trial-12 Comment 2文言差替)受入確定+記事close記録(`USER_LISTENING_PENDING`→`CLOSED(ユーザー受入済み、2026-09-13)`、各工程[生成/音声化/標準player/視聴/受入/close]の根拠・費用[Trend¥141.14・Trial-12¥143.23]を記録)+OPEN-146を`PRODUCTION_WIRED`へ格上げ(2026-09-13、Fable判定、根拠=CONSOLIDATION-100の13項目照合12/13+News Family実発火2件[Trial-15/16]、他Familyは自然N増しで継続観測)+OPEN-145は自然発火0件のため`APPROVED_FOR_PRODUCTION`(配線済み)維持+Discovery Focus Module Part Aの仕様Statusは記事closeとは別軸で不変+3V Fact Safety等の別UDRとは分離
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD: B-Family Voices Fact Safety緩和Trial(Stage 1/1b)結果のSSOT反映、Status`USER_DECISION_REQUIRED`(段階1=実データ適用0件、段階2=設計文言どおりでは合成true-positive11件中6件誤緩和・保守版ゲート採用でも実データ効果は6件中5件どまり、その他案3=受理ロジックのtarget-sentence-matching仕様変更が必要と判明しSTOP)、費用¥9.75、ユーザー選択肢(a)〜(d)提示(Fable推奨欄は未記入)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE: 2026-09-13ユーザー回答(原文全文、9項目)の正式記録+OPEN-121残5論点のReconciliation(実装・CURRENT_SPEC・DECISION_LOG・過去REPORTまで確認)+OPEN-136/122/141/120のSSOT表記整合+PM_GOVERNANCEへの4追記(ユーザーへ上げるOpen Item基準/試作期の膿出し方針/ChatGPTルール/是正記録)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-104: 3V Fact Safety Stage2/3(UDR)+OPEN-141 Phase B(VALIDATED)+方式D' Gate 3検証+方式C-v2統合Trial のGit統合とSSOT反映
 
 ---
 
@@ -6557,6 +6558,104 @@ Open Item表記整合・PM_GOVERNANCE追記のみ、Production仕様・コード
 `docs/pm/PM_GOVERNANCE.md`・`docs/pm/PM_BRIEF.md`・`docs/pm/MODEL_
 ROUTING_TRIAL_LOG.md`(1行)をまとめてcommitする(hashは`docs/pm/
 RESULT_PACKET.md`参照)。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-104: 3V Fact Safety Stage2/3(UDR)+OPEN-141 Phase B(VALIDATED)+方式D' Gate 3検証+方式C-v2統合Trial のGit統合とSSOT反映
+
+**管理ID**: PM-CLOSEOUT-CONSOLIDATION-104
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(本セッション唯一のGit担当タスク、API呼び出し禁止・¥0)
+
+本エントリは、本セッションで並行実施された3つの委任タスクの成果物を
+Git統合し、Fableが確定したGate判定をSSOTへ反映する。新規コード実装は
+テスト追加(方式C-v2の既定OFF不変性・TP/FP代表ケース、新規9件、ASR
+呼び出しはモック)のみで、Production仕様・判定ロジック自体は変更して
+いない。
+
+**1. 3V Fact Safety Relaxation Trial Stage2/3(EDITORIAL-B-FAMILY-
+VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3)**: Gate1 =
+`USER_DECISION_REQUIRED`(Fable確定)。保守版ゲート(段階1/段階2、
+`voice_fact_safety_gate_mode`、既定OFF、`family=="B"`3V限定opt-in)+
+2-D(Voice内数字の「必須」要求撤廃、上限規定は不変)を実装し、offline
+Regressionで実データ5/6改善・false accept0件を確認したが、実生成1本
+(Stage3)では本ゲート自体が0件発火のため効果を直接観測できず、追加run
+要否のユーザー判断が必要なため`USER_DECISION_REQUIRED`とする。実装は
+既定OFFのままcommitし、Trial継続の承認であり`APPROVED_FOR_PRODUCTION`
+ではない。付記: (a)常に厳格5フラグは実装済みの`changed_causality`版が
+正(委任文の`changed_fact`表記はPM側転記誤り)、(b)制度名の字面除外
+`_VOICE_GATE_INSTITUTIONS`はテーマ依存ハードコード辞書であり汎用性に
+限界がある、(c)2-D単独では`leak_evidence_subject`型Leakageを防げない
+という新知見を得た。詳細:
+`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_REPORT.md`。
+
+**2. OPEN-141 Phase B(target-sentence-matching+差分QA案I、
+OPEN-141-TARGET-SENTENCE-MATCHING-AND-DIFF-QA-COMMON-BASE-TRIAL-01)**:
+Gate1(Trial) = `VALIDATED`(Fable確定)。Gate2(Production配線) =
+`USER_DECISION_REQUIRED`(差分QAの自動経路配線・opt-in既定切替・
+REVIEW_REQUIRED閾値・100記事換算コスト[¥600〜1,200]の許容は未決)。
+ただし、副次的に発見した`split_sentences()`の見出し行混入バグ
+(`resolved=True`と記録されながら本文が書き換わらないサイレント失敗)
+の修正は、既存仕様(Local Rewriteが対象文を書き換えるという既存の
+意味)を変更しない整合性修正であり、Fable自律範囲(既存89件+新規22件
+テスト回帰PASS)として`APPROVED_FOR_PRODUCTION`(ユーザー拒否可)と
+した。詳細:
+`OPEN-141-TARGET-SENTENCE-MATCHING-AND-DIFF-QA-COMMON-BASE-TRIAL-01_REPORT.md`
+Phase B節。
+
+**3. 方式D'(OPEN-121-METHOD-D-PRIME-PRODUCTION-WIRING-01)**: 方式D'は
+2026-09-07のcommit`e6c2f37`で方式A/Dと共に既にA2/B1英語本文4segment
+(`full_story_part1/2`・`point_one`・`point_two`)へ実装・配線済みで
+あった事実を正とする。本タスクで独立検証(Trial-02テストセット56件
+再現[TP6/6・FP0/50]、既存76テストPASS[67+9]、project-wide regression
+[collected=2447/passed=2444/failed=3(既知無関係)]、遡及144件[D'固有
+の新規false positive0件]、実機runtime evidence[¥2.71])を実施し、Gate
+3全14項目(1〜8・14は`OPEN-121-METHOD-D-PRIME-PRODUCTION-WIRING-01`で
+充足済み、9〜13[SSOT/Git/Dangling Reference]は本エントリで充足)の
+充足を確認した。**Status = `PRODUCTION_WIRED`(2026-09-13ユーザー承認
+`APPROVED_FOR_PRODUCTION`に基づく)**。閾値・実装は無変更。詳細:
+`OPEN-121-METHOD-D-PRIME-PRODUCTION-WIRING-01_REPORT.md`。
+
+**4. 方式C-v2(OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01)**: Gate1 =
+`VALIDATED`(Fable確定、offline限定Trial、opt-in`enable_method_c_v2`
+既定OFF、TP2/2・FP0/26、遡及144件で新規flag0件)。Production採用は
+本タスク対象外(今後の展望: 実機window単位ASR runtime evidence・Cost
+Guard会計拡張・適用範囲確定が採用前提)。詳細:
+`OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01_REPORT.md`。
+
+**5. OPEN-121「残5論点」Reconciliation更新**: (a)方式D'配線要否=
+解決済み(`PRODUCTION_WIRED`、根拠上記3)。(b)disfluency QA拡張
+(n-gram/句単位反復検知)=解決済み(既存実装で充足、PM-CLOSEOUT-
+CONSOLIDATION-103で既に残件除外)。(c)適用スコープ拡大(full_story/
+point本文)=解決済み(配線済み、PM-CLOSEOUT-CONSOLIDATION-103で既に
+残件除外)。(d)ASR非決定的平滑化条件=真に未決のまま(低優先保留、
+ユーザーによる明示的defer決定は記録されていない、有効性未検証・設計
+未着手)。(e)gap<0.5秒即時言い直し配線(方式C-v2)=既決(試作期統合
+Trial完了、上記4の`VALIDATED`。Production採用可否は別途ユーザー判断が
+必要な新しい論点として残るが、これは「未回答の古い残件」ではなく
+統合Trial完了後の新しい採否判断)。**未回答として残るのは(d)のみ**
+(低優先、再提示は新しい実害・前提変更が生じた場合のみ)。
+
+**状態**: 反映完了(SSOT[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/本エントリ/
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`]・テスト追加[新規9件PASS]・
+Git反映)。
+
+**根拠**: `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_REPORT.md`、
+`OPEN-141-TARGET-SENTENCE-MATCHING-AND-DIFF-QA-COMMON-BASE-TRIAL-01_REPORT.md`、
+`OPEN-121-METHOD-D-PRIME-PRODUCTION-WIRING-01_REPORT.md`、
+`OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01_REPORT.md`、
+`docs/pm/RESULT_PACKET_3V_FS_S3.md`、`docs/pm/RESULT_PACKET_TSM_B.md`、
+`docs/pm/RESULT_PACKET_DPRIME.md`。
+
+**影響するCURRENT_SPEC項目**: 「## B-Family(Voices)Editorial Type」節
+3V行(Fact Safety Stage2/3追記)、「Ledger Deviation MAJOR時の局所
+Rewrite(Local Rewrite)」行(target-sentence-matching Trial+見出しバグ
+修正のProduction採用追記)、「TTS Repetition/False Start QA」行(方式
+D' `PRODUCTION_WIRED`確定+方式C-v2 Trial統合追記)。
+
+**commit**: 本エントリと`CURRENT_SPEC.md`・`OPEN_ITEMS.md`(OPEN-120/
+121/141行)・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・対象コード/テスト/
+REPORT一式をまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
 
 ---
 

@@ -431,6 +431,22 @@ def build_voice_attribution_block(ledger_text: str) -> str:
     )
 
 
+# ============================================================
+# Fact Safety保守版ゲート(B-Family Voices 3V限定、段階1: Voice本文hedge
+# 免除・段階2: Tension役割合成の保守版緩和)。
+# 出典: EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2
+# (ユーザー承認2026-09-13、Fable推奨(b)採用)。**Trial継続の承認であり、
+# Production正式採用[APPROVED_FOR_PRODUCTION]ではない**。既定OFF。
+# `family == "B"`かつ本フラグTrueのときだけ、`er012_b_family_voices_
+# writer_generic_01._apply_b_family_voice_safety_gate()`がLedger
+# Deviation Checkerの結果(severity)をMAJOR→MINORへ再分類する(判定基準・
+# prompt本体・MAX_REWRITE_CYCLES等の上限回数は無変更)。A-Family経路
+# (`er003_v1_n3_01_articles_generate.py`等)はこのフラグ・関数を一切
+# 参照しない(is_fact_attribution_mode_enabledと同型のcode-level gating)。
+# ============================================================
+VOICE_FACT_SAFETY_GATE_MODE_DEFAULT = False  # opt-in、既定OFF(Trial継続、Production正式採用ではない)
+
+
 EDITORIAL_TYPES = {
     "b_family_voices": {
         "family": "B",
@@ -447,6 +463,7 @@ EDITORIAL_TYPES = {
         "b1": B_FAMILY_B1_CONFIG,
         "b1_3v": B_FAMILY_B1_3V_CONFIG,
         "fact_attribution_mode": FACT_ATTRIBUTION_MODE_DEFAULT,
+        "voice_fact_safety_gate_mode": VOICE_FACT_SAFETY_GATE_MODE_DEFAULT,
     },
 }
 
@@ -478,6 +495,15 @@ def is_fact_attribution_mode_enabled(editorial_type: str = "b_family_voices") ->
     prompt側の意味理解だけに依存しない)。"""
     et = EDITORIAL_TYPES[editorial_type]
     return et.get("family") == "B" and bool(et.get("fact_attribution_mode"))
+
+
+def is_voice_fact_safety_gate_mode_enabled(editorial_type: str = "b_family_voices") -> bool:
+    """EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2:
+    `family == "B"` かつ `voice_fact_safety_gate_mode` がTrueの場合のみ
+    Trueを返す(is_fact_attribution_mode_enabledと同型のcode-level
+    gating)。既定False(Trial継続、Production正式採用ではない)。"""
+    et = EDITORIAL_TYPES[editorial_type]
+    return et.get("family") == "B" and bool(et.get("voice_fact_safety_gate_mode"))
 
 
 # ============================================================

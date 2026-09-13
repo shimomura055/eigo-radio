@@ -1,0 +1,383 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/fact_safety_relaxation_trial_01/stage3_gate_on_run01_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_07fdd5ec42cac6e3006aa6060e77cc87d0a8c47e4199d9209f",
+        "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n- leak_tension_constraint_integration: Tensionが、外部制約(バイアス監査義務・高リスク分類・過去の中止/提訴事例等)を、3人の合理性を制約する実質的な力として自然に統合している場合PASS。外部制約への言及が全く無い場合、または単なる箇条書き・列挙・解説として付け足されているだけ(3人の物語に統合されていない)場合はFAILとしてください。\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI send in my CV and speak to a camera, knowing software may score my tone, face, and gestures. I want my skills and character seen, not reduced to a score I cannot question. I could do well on a skills test, yet a low mark on my expression could end the process. I cannot ignore a woman’s account of that experience or a long period without work. I also cannot ignore an applicant given no chance to opt out or appeal after a “trustworthiness” score.\n\n【Voice 2本文】\nAfter using screening software on a large stack of CVs, I still answer people who ask how they were judged. I need the tool to match skills to jobs, but I also need to explain its role. I may have to prepare a bias-audit summary or transparency notice. I saw a public notice showing that an independent review of an employment tool had been carried out. I did not choose the system, but I must operate it carefully. I also have to judge what an AI-written CV means.\n\n【Voice 3本文】\nEach week I check the dashboard for hiring time and cost. I ask whether we can fill jobs fast enough. AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs. I feel relief when my team fills roles on time. But I also think about the legal and ethical risk if an AI decision harms people. If that becomes public, my name is attached to the choice. I am protecting the company and trust in my judgment.\n\n【Tension本文】\nAll three want the right person in the right job, but their stakes differ. The applicant may lose a chance unseen; the recruiter must balance speed and explanation; the owner must keep the company running and answer for the result. Power is uneven: the applicant cannot set the process, the recruiter operates the tool and may also decide whether to use it, and the owner chooses and carries responsibility.\n\nOutside limits turn these differences into hard boundaries. In New York City, an employer must arrange a yearly bias audit and notify applicants. That adds work for the recruiter and limits a speed-only choice by the owner. An internal tool was stopped after it rated women’s resumes lower. Because of rules and past failure, these three views cannot simply be combined.\n\n【Closing本文】\nThe question is bigger than whether a machine is good or bad at hiring. It is about who gets seen, who must explain the judgment, and who carries the consequences when a fast decision is questioned. AI creates a shared process, but not a shared risk. The same screen can therefore mean three different things.\n",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称の応募者として、評価される不安や異議申立ての必要性が具体的に描かれている。外部データの説明や語り手による要約が前面に出ていない。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "採用担当者自身の業務上の経験と責任として、説明・監督・AI生成CVへの判断が書かれている。独立レビューや通知への言及も本人の観察・実務の一部として機能しており、調査結果の要約にはなっていない。",
+            "quoted_evidence": ""
+          },
+          "voice_3": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称の経営者の責任感は描けているが、採用期間やコストに関する報告結果が、AI導入を正当化する中心的な根拠として置かれている。そのため、報告主体・比較結果・「一方では」の構文がDiscovery/Trend記事の形式に戻っている。一方で、安心感や自分の名前が選択に結び付く感覚は人物の経験として残る。",
+            "quoted_evidence": "AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "leak_tension_constraint_integration": "PASS",
+            "reasoning": "3人の権限・責任・失うものの違いを軸に緊張関係を整理しており、研究データの比較や単純な2対1の陣営分けには戻っていない。バイアス監査義務や過去の女性差別事例も、採用担当者の負担と所有者の速度優先を制約する力として物語に結び付けられている。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単なる要約ではなく、同じAI画面が立場ごとに異なる意味とリスクを持つという緊張を再提示している。Writer自身の解決策や妥協案を提案していない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_3",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "一人称の経営者の責任感は描けているが、採用期間やコストに関する報告結果が、AI導入を正当化する中心的な根拠として置かれている。そのため、報告主体・比較結果・「一方では」の構文がDiscovery/Trend記事の形式に戻っている。一方で、安心感や自分の名前が選択に結び付く感覚は人物の経験として残る。",
+            "quoted_evidence": "AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/fact_safety_relaxation_trial_01/stage3_gate_on_run01_attempt2",
+      "status": "NG_REVIEW_REQUIRED",
+      "leakage_check": null,
+      "any_flagged": null
+    }
+  ],
+  "total_attempts": 2,
+  "final_attempt_dir": "er012_output/fact_safety_relaxation_trial_01/stage3_gate_on_run01_attempt2",
+  "final_result": {
+    "label": "B1B",
+    "status": "NG_REVIEW_REQUIRED",
+    "metrics": {
+      "word_count": 547,
+      "sentence_count": 32,
+      "avg_sentence_length": 17.1,
+      "max_sentence_length": 47
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 2,
+        "newly_discovered_claims": [
+          "Outside checks and past failures prevent these reasons from becoming one answer.",
+          "This gives the recruiter more to explain and stops the owner from treating speed as the only issue."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "Outside checks and past failures prevent these reasons from becoming one answer.",
+            "issue": "監査や過去の事例が、応募者・採用担当者・経営側の見解を実際に一つの答えにできなくするという効果まではLedgerで確認されていない。",
+            "explanation": "Ledgerは監査要件やAmazonの事例を確認しているが、それらが議論の結論を妨げるという因果関係は裏付けていない。",
+            "flags": [
+              "changed_causality",
+              "changed_certainty",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "Outside checks and past failures add further considerations, so these reasons may not settle into one answer.",
+                "ledger_status": "LEDGER_DEVIATION"
+              },
+              {
+                "attempt": 2,
+                "text": "Outside checks and past failures add important context, but they may not resolve the competing concerns into one answer.",
+                "ledger_status": "LEDGER_DEVIATION"
+              },
+              {
+                "attempt": 3,
+                "text": "In this discussion, outside checks and past failures add important context, but they may not by themselves settle the competing concerns into one answer.",
+                "ledger_status": "LEDGER_DEVIATION"
+              }
+            ],
+            "final_text": "In this discussion, outside checks and past failures add important context, but they may not by themselves settle the competing concerns into one answer.",
+            "resolved": false,
+            "human_review_required": true,
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job, but each risks something different: the applicant may lose the chance to be fairly seen; the recruiter must keep work moving and explain the tool; the owner must keep the company running and answer for the decision. Their power is unequal: the applicant cannot choose the process, the recruiter runs it without choosing adoption, and the owner chooses and carries the result. Outside checks and past failures prevent these reasons from becoming one answer. In New York City, covered tools need a yearly check for unfair patterns and a notice. This gives the recruiter more to explain and stops the owner from treating speed as the only issue. One company stopped an internal system after learning that it rated some women’s résumés lower. The applicant still cannot change the process, while the other two face these limits before anyone has the last word."
+          },
+          {
+            "original_ng_sentence": "This gives the recruiter more to explain and stops the owner from treating speed as the only issue.",
+            "issue": "NYC Local Law 144の監査・通知要件が、経営者が速度を唯一の判断基準として扱うことを実際に阻止する、と因果的・断定的に述べている。",
+            "explanation": "Ledgerは監査・通知の法的要件と、効率性以外に法的・評判上のリスクも考慮すべきことを示すが、同法が経営判断をそのように『止める』効果までは確認していない。",
+            "flags": [
+              "changed_causality",
+              "changed_certainty",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "This gives the recruiter more to explain and may make it harder for the owner to treat speed as the only issue.",
+                "ledger_status": "LEDGER_DEVIATION"
+              },
+              {
+                "attempt": 2,
+                "text": "This gives the recruiter more to explain, while the owner may need to weigh speed against compliance and other legal or reputational risks.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "This gives the recruiter more to explain, while the owner may need to weigh speed against compliance and other legal or reputational risks.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 1,
+            "item_idx": 2,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job, but each risks something different: the applicant may lose the chance to be fairly seen; the recruiter must keep work moving and explain the tool; the owner must keep the company running and answer for the decision. Their power is unequal: the applicant cannot choose the process, the recruiter runs it without choosing adoption, and the owner chooses and carries the result. Outside checks and past failures prevent these reasons from becoming one answer. In New York City, covered tools need a yearly check for unfair patterns and a notice. This gives the recruiter more to explain and stops the owner from treating speed as the only issue. One company stopped an internal system after learning that it rated some women’s résumés lower. The applicant still cannot change the process, while the other two face these limits before anyone has the last word."
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_DEVIATION",
+        "full_recheck_major_count": 2,
+        "full_recheck_remaining_major_claims": [
+          "Each week, I check the dashboard: hiring time, cost, and whether we are hiring enough people.",
+          "When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool."
+        ]
+      },
+      {
+        "cycle": 2,
+        "targeted_major_count": 2,
+        "newly_discovered_claims": [
+          "Each week, I check the dashboard: hiring time, cost, and whether we are hiring enough people.",
+          "When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "Each week, I check the dashboard: hiring time, cost, and whether we are hiring enough people.",
+            "issue": "Ledgerには採用期間や採用コストを効率指標として扱う事例はあるが、企業オーナーが毎週ダッシュボードを確認することや、「十分な人数を採用できているか」を確認する運用は確認されていない。",
+            "explanation": "既存の効率指標を用いた新しい具体的な運用習慣を追加している。Hookとしての単なる情景描写にとどまらず、「毎週」という頻度を伴う具体的主張になっている。",
+            "flags": [
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "I watch the measures that matter to the business: how long hiring takes and what it costs.",
+                "ledger_status": "LEDGER_DEVIATION"
+              },
+              {
+                "attempt": 2,
+                "text": "For the business, relevant measures can include how long hiring takes and what it costs.",
+                "ledger_status": "LEDGER_DEVIATION"
+              },
+              {
+                "attempt": 3,
+                "text": "In the documented business cases, relevant efficiency measures can include how long hiring takes and what it costs.",
+                "ledger_status": "LEDGER_DEVIATION"
+              }
+            ],
+            "final_text": "In the documented business cases, relevant efficiency measures can include how long hiring takes and what it costs.",
+            "resolved": false,
+            "human_review_required": true,
+            "cycle": 2,
+            "item_idx": 1,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "### A Third Voice: The Business Owner’s Dashboard\n\nEach week, I check the dashboard: hiring time, cost, and whether we are hiring enough people. When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool. If hiring slows, I worry about keeping the business running. If an AI decision is called discriminatory, I know the question will return to my desk. I am protecting the company and the trust placed in my judgment."
+          },
+          {
+            "original_ng_sentence": "When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool.",
+            "issue": "Ledgerは一部企業のケーススタディで採用期間短縮やコスト低下を報告しているが、それによって企業オーナーがAIの継続利用への心理的圧力を感じるという事実や因果関係は確認していない。",
+            "explanation": "限定された企業事例の効率効果から、事業オーナーの「継続利用への圧力」という心理状態と、その原因関係を新たに導入している。",
+            "flags": [
+              "changed_fact",
+              "changed_causality",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "When some case studies report that hiring can sometimes happen in days and costs may fall, I can feel pressure to keep using the tool.",
+                "ledger_status": "LEDGER_COMPLIANT"
+              }
+            ],
+            "final_text": "When some case studies report that hiring can sometimes happen in days and costs may fall, I can feel pressure to keep using the tool.",
+            "resolved": true,
+            "human_review_required": false,
+            "cycle": 2,
+            "item_idx": 2,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "### A Third Voice: The Business Owner’s Dashboard\n\nEach week, I check the dashboard: hiring time, cost, and whether we are hiring enough people. When hiring that once took weeks can happen in days and costs can fall, I feel pressure to keep using the tool. If hiring slows, I worry about keeping the business running. If an AI decision is called discriminatory, I know the question will return to my desk. I am protecting the company and the trust placed in my judgment."
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "point_overlap_qa_monitoring": {
+      "qa_status": "OK",
+      "note": "EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04: monitoring専用(合否判定には使わない、N=1で閾値を決めない)。有向ペア6(Permutation(3,2))+ vs Hook 3 = 9値。lexical_overlap_ratio()はProduction関数(er008_point_overlap_qa_18.py)を無変更のまま使用。",
+      "directed_voice_pair_count": 6,
+      "voice_vs_hook_count": 3,
+      "any_flagged": false,
+      "directed_voice_pairs": {
+        "voice_1_vs_voice_2": {
+          "overlap_ratio": 0.139,
+          "shared_words": [
+            "after",
+            "also",
+            "long",
+            "score",
+            "tool"
+          ],
+          "point_word_count": 36,
+          "story_word_count": 46,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_1_vs_voice_3": {
+          "overlap_ratio": 0.028,
+          "shared_words": [
+            "tool"
+          ],
+          "point_word_count": 36,
+          "story_word_count": 40,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_2_vs_voice_1": {
+          "overlap_ratio": 0.109,
+          "shared_words": [
+            "after",
+            "also",
+            "long",
+            "score",
+            "tool"
+          ],
+          "point_word_count": 46,
+          "story_word_count": 36,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_2_vs_voice_3": {
+          "overlap_ratio": 0.087,
+          "shared_words": [
+            "company",
+            "people",
+            "tool",
+            "whether"
+          ],
+          "point_word_count": 46,
+          "story_word_count": 40,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_3_vs_voice_1": {
+          "overlap_ratio": 0.025,
+          "shared_words": [
+            "tool"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 36,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_3_vs_voice_2": {
+          "overlap_ratio": 0.1,
+          "shared_words": [
+            "company",
+            "people",
+            "tool",
+            "whether"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 46,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      },
+      "voice_vs_hook": {
+        "voice_1_vs_hook": {
+          "overlap_ratio": 0.194,
+          "shared_words": [
+            "face",
+            "gestures",
+            "score",
+            "software",
+            "test",
+            "voice",
+            "work"
+          ],
+          "point_word_count": 36,
+          "story_word_count": 31,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_2_vs_hook": {
+          "overlap_ratio": 0.109,
+          "shared_words": [
+            "application",
+            "judge",
+            "score",
+            "sort",
+            "sum"
+          ],
+          "point_word_count": 46,
+          "story_word_count": 31,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_3_vs_hook": {
+          "overlap_ratio": 0.075,
+          "shared_words": [
+            "decision",
+            "hiring",
+            "running"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 31,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      }
+    },
+    "elapsed_seconds": 737.6
+  }
+}

@@ -415,66 +415,246 @@ Tension MAJOR 6件に、保守版ゲート(flag単位除外を追加したもの
 
 ## Stage 2
 
-**Status: 未実行(STOP、Fableへの判断待ち)**。上記1b-1/1b-2の新発見(2-Cの単純実装は隣接文巻き添えで
-安全に機能しない、2-Bの設計文書文言どおりのゲートは取りこぼしが発生する)は、いずれも承認済み設計
-文書(`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`)の記述と異なる追加の
-安全設計判断(ゲート条件の強化、受理ロジックのtarget-sentence-matching化)を必要とするため、
-Production Fact Safety機構(`er012_b_family_voices_writer_generic_01.py`のB-Family専用Ledger Deviation
-Checker/Local Rewrite統合)への実際のコード変更は行わなかった。2-A(段階1)/2-D(数字任意化)/2-E
-(整合確認)/2-F(offline Regression)についても、2-Bの安全なゲート定義が未確定な状態で着手すると
-手戻りが大きいため、まとめて保留した。
+管理ID: EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3(実行者sonnet-worker)。
+ユーザー正式判断(2026-09-13、Fable推奨(b)採用): 2-B保守版ゲート(5/6改善、ablation型
+`changed_negation`併発は安全側で現行維持)+2-D(数字任意化)+必要Regressionを実装し、AI採用テーマ
+1本でStage 3実生成・統合確認を行う(2-C[受理チェック文脈整合]は今回対象外、判定context拡張案も
+対象外)。
 
-**Fableへの報告事項(判断が必要)**:
-1. 2-Bを実装する場合、設計文書の文字どおりの条件(`changed_actor`/`unsupported_new_claim`のみ判定)
-   ではなく、b節の「常に厳格」5フラグ(`changed_number`/`changed_causality`/`changed_negation`/
-   `changed_comparison`/`changed_time`)をflag単位でも明示的に除外する**保守版ゲーム**を採用する
-   必要がある(1b-2で実証済み)。この場合、Stage 1が「Stage 2で解決見込み」としていたTension
-   MAJOR 6件のうち、**5件は解決見込みが残るが、最も深刻だった事例(ablation、3回上限到達→
-   human_review_required)は解決されない**(`changed_negation`のため)。この点は設計文書d節の
-   想定と異なる結果であり、Stage 2実装の価値(コスト削減効果)を保守版ゲームでは過大評価しない
-   よう申し添える。
-2. 2-C(その他案3)は、単純な`window_text=point_context`差し替え+既存`overall_status`判定のままでは
-   **安全に機能しない**(1b-1で確認、隣接文巻き添えによる新規regressionリスク)。実装するには
-   受理ロジックを「拡張windowが返すdeviationsのうち対象文に一致するものだけを見る」方式へ変更する
-   必要があり、これは`run_check_window_fn`インターフェースの設計変更を伴う(2-Cの前提「判定基準・
-   severity不変」は維持できるが、受理判定の実装方式は「不変」ではなくなる)。この設計変更の是非は
-   本タスクの権限範囲を超えるため、実装せず報告する。
-3. 上記1・2を踏まえたうえで、(a)2-Bを保守版ゲームで、2-D(数字任意化、Checker変更不要で独立性が
-   高い)を先行して実装する、(b)2-Cは追加設計(target-sentence-matching)を別タスクとして起票する、
-   (c)Stage 2全体を見送り2-D単独のみ進める、等の進め方をFableに判断いただきたい。
+### 実装(Production変更)
 
-## Stage 3準備
+- `er012_b_family_editorial_type_registry_01.py`: `VOICE_FACT_SAFETY_GATE_MODE_DEFAULT = False`
+  (既定OFF、Trial継続でありProduction正式採用ではない)を追加し、`b_family_voices`の
+  `EDITORIAL_TYPES`エントリへ`voice_fact_safety_gate_mode`キーを追加。`is_voice_fact_safety_gate_mode_
+  enabled()`を新設(`family=="B"`かつフラグTrueのときのみTrue、`is_fact_attribution_mode_enabled()`と
+  同型のcode-level gating)。
+- `er012_b_family_voices_writer_generic_01.py`:
+  - `_apply_b_family_voice_safety_gate(parsed, article_text)`を新設。`vfl01.run_deviation_check()`が
+    返す`parsed`(`_apply_deviation_post_hoc_validation`適用済み)に対し、MAJOR deviationのみを対象に
+    段階1/段階2条件を判定し、該当すればMINORへ再分類してoverall_statusを再計算する(判定基準・
+    prompt本体・`MAX_REWRITE_CYCLES`等の上限回数は無変更)。
+    - 段階1(Voice本文hedge免除): `section∈{voice_1,2,3_body}`(`b1prod.split_six_voice_sections()`で
+      `claim_in_article`の字面一致によりsectionを特定)、主語に一人称マーカー(`I`/`I'm`/`my`/`me`等、
+      `_voice_gate_has_first_person_marker`)、flag集合が`{changed_scope, changed_certainty}`の部分集合
+      (他8種flagが1つでもtrueなら対象外)。
+    - 段階2(Tension役割合成の保守版緩和): `section=="tension_body"`、`{changed_actor,
+      unsupported_new_claim}`のいずれかがtrue、かつ**b節「常に厳格」5フラグ
+      (`changed_number`/`changed_causality`/`changed_negation`/`changed_comparison`/`changed_time`)が
+      flag単位で1つもtrueでない**、かつ数字・固有名詞(大文字語)・制度名(NYC/EU/NBCUniversal等)・
+      第三者具体的行動(`filed`/`sued`/`lawsuit`等)の字面が対象文に含まれない
+      (`_voice_gate_has_surface_signal`)場合のみMINOR降格(Stage1b-2で11/11合成true-positive・
+      取りこぼし0件を確認した保守版と同一ロジック)。
+  - `run_ledger_deviation_and_local_rewrite()`内の2箇所(初回判定・cycle再判定)で、
+    `if registry.is_voice_fact_safety_gate_mode_enabled(): deviation_result["parsed"] =
+    _apply_b_family_voice_safety_gate(...)`のガード付きで呼ぶ(opt-in、既定OFF時は完全に無変化)。
+  - 2-D: `_voice_card_block_text()`(:402-404相当)の「1つのVoiceにつき最大1つの具体的な数字だけを…
+    織り込んでください」(必須要求)を「自然に人を主語にした話し言葉へ織り込める場合に限り…1つだけ
+    使ってください。無理に数字を使う必要はなく、数字を使わずにその人の実感だけで書いても構いません」
+    (任意)へ置換。あわせて末尾の参照文言の誤記(「上記【Evidenceは脇役であること】参照」→実際には
+    テンプレート内でVoice Cardブロックより後ろに出現するため「下記」が正しい)を修正。上限規定
+    (:251-256相当、「具体的な数字は最大1つだけにし」)・Ledger根拠要件は無変更。
 
-Stage 2が実行されていないため、Stage 3(実生成)の前提となる本番コード変更は存在しない。以下は
-Stage 2が将来承認・実装された場合に備えた準備であり、現時点で実行するものではない。
+**[PM-DELEGATION-NOTE 2026-09-13]** 委任文の入力節はb節「常に厳格」5フラグを
+`[changed_number/changed_fact/changed_negation/changed_comparison/changed_time]`と表記していたが、
+Stage1b-2で11/11合成true-positive・実データ5/6改善を実証したのは`changed_causality`版
+(`changed_number/changed_causality/changed_negation/changed_comparison/changed_time`、b節本文・
+`stage1b2_synthetic_gate_test.py`のALWAYS_STRICT_TENSION_FLAGSと一致)であり、`changed_fact`ではない。
+実データのtension MAJOR 6件は全件`changed_fact=true`を伴うため、`changed_fact`を常に厳格側に含めると
+段階2の適用対象が0/6になり、本委任文が明示的に確認を求める「5/6改善」の前提と矛盾する。本実装は
+検証済みの`changed_causality`版を採用した(コード内コメントにも明記)。この不一致自体をFableへ
+報告する(Production正式仕様の変更ではなく、委任文中の表記揺れの指摘)。
 
-- **想定費用レンジ**: Phase 1b-04実測ベースで¥25.5(retryなし最良ケース)〜¥78.0(leakage retryで
-  2attempt discardした実測最悪ケース)。Stage 2(保守版ゲート採用時)の効果は「5/6のTension MAJORで
-  Local Rewrite 1回分の再試行を削減できる可能性」程度であり、レンジの上限側を大きく引き下げる根拠には
-  ならない(1b-2の結論を踏まえた保守的な見立て)。
-- **確認項目チェックリスト(Stage 2実装後、実生成前に確認)**: (1) Fact Checker A' verdict、
-  (2) Ledger Deviation Checkerの検出件数・severity内訳(Stage 2適用有無別)、(3) Local Rewriteの
-  発動回数・収束cycle数、(4) Analytical Leakage Check全項目、(5) Voice本文が実際に一人称・
-  Perspectiveらしく書けているか(数字任意化で内容が薄くならないか)、(6) Tensionの品質(役割合成が
-  緩和されて説得力が落ちていないか)、(7) 新規false accept(緩和で本来MAJORにすべき文を見逃していないか、
-  目視レビュー必須)、(8) 数字撤廃後の内容の厚み、(9) 3V方式の意味(Voices=Perspectives・賛否陣営化
-  なし・単純合計では答えにならない)が保たれているか、(10) retry/fallbackが従来と同じ挙動を保つか、
-  (11) A-Family(News/Discovery)への影響が皆無か(import/grep差分+既存offlineテストPASS)。
-- **既存Regression(旧Trial-02採用版)との比較方法**: 同一Ledger・同一テーマで旧採用版記事と
-  Stage 2適用後の新規生成記事を並べ、Tension文の言い回し・Local Rewrite発動有無・Fact Safety
-  違反件数を比較する(既存の`qa/pairwise_voice_distinctness_check.json`等の既存QA成果物を再利用可能)。
+### テスト(2-E相当、¥0)
+
+`er012_b_family_voices_writer_generic_01_test_01.py`へ14件追加(既存20件は無変更のままPASS、合計34件
+PASS)。追加テスト内容: (1) opt-in既定OFF・`family=="B"`gating、(2) 段階1合成true-positive6件全件が
+非該当のまま(取りこぼし0件)、(3) 段階2(保守版)合成true-positive11件全件が非該当のまま(取りこぼし
+0件)、(4) 段階1/2の正例(実際に緩和対象になること)、(5) `_apply_b_family_voice_safety_gate()`の
+end-to-end(section特定+ゲート適用+overall_status再計算)、(6)
+`run_ledger_deviation_and_local_rewrite()`を`vfl01.run_deviation_check`mock化で呼び、opt-in OFF時は
+現行どおりLocal Rewriteが複数回発火し(mock呼び出し4回)、ON時はMINOR降格によりLocal Rewriteが
+一度も発火しない(mock呼び出し1回)ことを確認、(7) 2-D(数字任意化文言・参照修正・上限規定不変)。
+
+既存offlineテストの回帰確認(すべてPASS、無変更):
+`er012_b_family_voices_writer_generic_01_test_01.py`(34件)+
+`er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py`(56件)+
+`er012_open131_fact_attribution_production_wiring_01_test_01.py`(4件)=合計94件PASS(実測、
+`.venv/Scripts/python.exe -m unittest`)。A-Family offline: `er010_n9_production_integration_09_test_01.py`
+33件PASS(無変更)。A-Family呼び出し元(`er003_v1_n3_01_articles_generate.py`)は
+`voice_fact_safety_gate_mode`/`is_voice_fact_safety_gate_mode_enabled`/
+`er012_b_family_voices_writer_generic_01`のいずれも参照しないことをgrepで確認(0件)。
+
+### 2-F. offline Regression(¥0、Production関数を実際にimportして適用)
+
+scratchpad`stage2_2f_offline_regression.py`が、Stage1が既に機械分類済みの実データ(最終ledger 4件+
+cycle内MAJOR 17件、計21件、6個体×複数attempt/cycle、うち1個体[run1ng]は参考個体)へ、
+**scratchpadの複製ロジックではなくProduction関数`wg._voice_gate_stage1_eligible`/
+`wg._voice_gate_stage2_eligible`をそのままimportして**適用し、Before(実際の記録severity)/
+After(ゲート適用後)を比較した。
+
+| 指標 | 値 |
+|---|---|
+| Before MAJOR件数 | 17件(cycle内MAJOR全件、最終ledger4件は元々MINOR) |
+| After MAJOR件数 | 12件 |
+| 降格件数(MAJOR→MINOR) | **5件、すべてtension_body**(`trial02_attempt2`/`regression_attempt1`/
+`regression_attempt2`/`regression_attempt3`/`regression_run1ng_attempt1`のcycle1 Tension非対称性文) |
+| 降格されなかった理由 | Voice本文10件(全件`changed_fact`併発のため段階1対象外、0/10=Stage1と同じ)、
+hook本文1件(対象外section)、tension残り1件(`ablation_attempt1`、`changed_negation`併発のため
+段階2対象外)、`regression_run1ng_attempt1`cycle2のtension文(NYC言及、`changed_causality`併発のため
+対象外、字面除外[institution]でも独立に除外される) |
+
+Stage1b-2のoffline合成テスト(11/11・6/6取りこぼし0件)およびStage1が予測した「5/6改善(ablation型
+`changed_negation`併発1件のみ未解決)」と**Production関数の実測が完全一致**した。真陽性(数字・固有
+名詞・第三者具体行動を伴うMAJOR)は今回のサンプルにも存在せず(Stage1のA3節既知の限界を継承)、
+`ablation_attempt1`のtension文・`run1ng`cycle2のtension文(NYC言及)は狙いどおり厳格判定のまま維持
+された(実文は下記Stage 3節で人手照合)。詳細JSON:
+`stage2_2f_results.json`(scratchpad、Git未追跡)。
+
+## Stage 3
+
+管理ID: EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3。想定費用¥25.5〜78
+(事前記載どおり、RESULT_PACKET_3V_FS_S3.mdへも記載)。実測合計¥56.49(後述)。
+
+### 実行方法
+
+`voice_fact_safety_gate_mode`はProduction既定Falseのまま(コード変更なし)、scratchpadドライバ
+スクリプトが`registry.EDITORIAL_TYPES["b_family_voices"]["voice_fact_safety_gate_mode"] = True`を
+一時的に上書きし(`is_fact_attribution_mode_enabled`の既存テスト手法[monkeypatch]と同型)、
+`er012_b_family_voices_writer_generic_01.run_writer_stage_generic(theme_ai_screening.THEME_CONFIG,
+"er012_output/fact_safety_relaxation_trial_01/stage3_gate_on_run01")`を呼び出した(新経路
+generic+theme、AI採用選考テーマ、既存Ledger)。
+
+**技術的中断と再開(Fact Safety判定ロジックとは無関係)**: attempt1はFact Checker A' PASS→Ledger
+Deviation 1件MAJOR検出→Local Rewrite 1attemptで解決→cycle再判定LEDGER_COMPLIANTまで正常完走した
+直後、Directional Fact Precheckのログ行に含まれる半角記号(円記号)をWindowsコンソール(cp932)へ
+printしようとして`UnicodeEncodeError`でクラッシュした(Production側の既存print文の話であり、
+Ledger Deviation Checker・本ゲートの判定ロジックとは無関係。実測¥23.09が既に消費済みだったため、
+Writerを再生成せずattempt1の保存済み成果物[article.md/fact_qa.json/ledger_deviation.json/
+local_rewrite_*.json等]をそのまま再利用し、Production関数[`dfp.audit_article_directional_facts`/
+`run_analytical_leakage_check_3v`等]をそのまま呼んで残り手順を完走させた[`stage3_resume_driver.py`、
+Git未追跡]。無駄なAPI再課金を避けるための処置であり、Writer生成をやり直していないため「追加の
+実生成」には該当しない)。
+
+### 結果(実測)
+
+| 段階 | attempt1 | attempt2 |
+|---|---|---|
+| Fact Checker A' verdict | PASS | REVIEW_REQUIRED(FAILではないため即NG化はしない、既存仕様どおり) |
+| Ledger Deviation(初回) | MAJOR 1件(`Power is uneven: the applicant cannot set the process, the recruiter operates but does not choose the tool, and the owner chooses and carries responsibility.`、flags=changed_fact/changed_actor/**changed_negation**/unsupported_new_claim) | MAJOR 2件(cycle1: causality系2件、cycle2: fact系2件) |
+| ゲート適用結果 | **非該当(MAJOR維持)**: `changed_negation`が常に厳格5フラグに該当するため段階2対象外(狙いどおり保守的) | 4件とも非該当(cycle1は`changed_causality`併発、cycle2は`changed_fact`併発でVoice本文のため段階1対象外)。**本Stage3実生成では段階1/2ゲートは0件適用(発火せず)** |
+| Local Rewrite | 1 cycle・1 attempt で解決(hedge化) | cycle1: item1は3attempt後もresolved=False(human_review_required=True)、item2は2attemptで解決。cycle2: item1は3attempt後もresolved=False(human_review_required=True)、item2は1attemptで解決。cycle2再判定はMAJOR=0(overall LEDGER_COMPLIANT)だが、**cycle内でhuman_review_requiredが立った記録が残るため**最終`any_human_review_required=True` |
+| Analytical Leakage Check | voice_3が`leak_evidence_subject`/`leak_numbers_foreground`/`leak_discovery_syntax`でFAIL(該当文: "AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs."、**数字を含まないにもかかわらず**"reports show..."という報告主語構文でFAILした) | (到達せず、Ledger起因のNG_REVIEW_REQUIREDで打ち切り) |
+| 最終status | (attempt2へ) | **NG_REVIEW_REQUIRED**(`any_human_review_required=True`のため) |
+
+**全体結果**: 既存のretry機構(人為介入なし)が正常に動作し、attempt1のLeakage FAILを受けてattempt2へ
+自動移行、attempt2でLedger起因のhuman_review_requiredにより最終`NG_REVIEW_REQUIRED`で確定した。
+これは**新しいfailure modeではない**(Stage1データの`ablation_no_grounding_block_01`/
+`generalization_regression_01_run1_ng_review_required`個体で既に確認済みの、3回上限到達→
+human_review_required→discardという既存の安全側の挙動と同型。原因flagも`changed_causality`/
+`changed_fact`であり、いずれも本ゲートの緩和対象[`changed_scope`/`changed_certainty`/保守版
+`changed_actor`・`unsupported_new_claim`]の**外側**)。追加runは実施せずSTOPする(本タスクの
+制約どおり)。
+
+### 確認項目(委任文の必須項目)
+
+1. **Fact Checker/Ledger Deviation(適用件数・実文)**: 上記のとおり実測。本Stage3実生成では
+   ゲート適用0件(発火せず)。理由は生成テキストの非決定性(LLMの出力が毎回変わる)により、今回の
+   Tension非対称性文が偶然`changed_negation`(attempt1)・`changed_causality`(attempt2)を伴う表現に
+   なったため(Stage1データの5/6は`changed_actor`/`unsupported_new_claim`のみで`changed_negation`等を
+   伴わない表現だった)。**ゲート自体の効果は2-Fのoffline Regression(Production関数で5/6実証)で
+   裏付けられているが、本Stage3の1サンプルではその効果が可視化されなかった**(サンプル数1の
+   ばらつきとして正直に報告する。過大に成功と主張しない)。
+2. **Local Rewrite回数・収束性**: attempt1は1cycle・1attemptで収束(既存機構どおり)。attempt2は
+   2cycle実施も1項目(causality系→fact系、実際には別文)が両cycleとも3attempt以内に収束せず
+   human_review_required(既存の収束限界、ゲート無関係)。
+3. **Analytical Leakage Check**: attempt1 voice_3 FAIL(上記)。**2-D(数字任意化)の限界**:
+   voice_1〜3本文はいずれも数字ゼロ(2-Dの意図どおり、後述4参照)だったにもかかわらず、voice_3は
+   「一部の報告は〜と示す("some reports show...")」という報告主語構文でLeakage FAILとなった。
+   **数字を外すだけでは`leak_evidence_subject`型の漏洩を防げない**(Evidenceを主語にする構文自体が
+   問題であり、数字の有無とは独立)。既存のLeakage Check+corrective note機構が正しく検出し、
+   既存のretry機構どおりattempt2へ自動移行した(安全側の動作、regressionではない)。
+4. **Voice本文のPerspectiveらしさ・数字撤廃後の内容の厚み**: attempt1のvoice_1/2/3本文はいずれも
+   **数字0個**(旧prompt[必須]では各Voiceに最低1個含まれていたのと対照的)。語数はvoice_1=87語/
+   voice_2=90語/voice_3=85語(旧Trial-02採用版: 81/91/82語、旧regression_01採用版: 84/81/83語)と、
+   数字を使わずとも既存2本と同水準を維持。内容は一人称・具体的場面描写を保持("I cannot ignore a
+   woman's account of that experience"、"I saw a public notice showing that an independent review…
+   had been carried out"等、Ledger evidenceへ具体的に紐づく)。**内容が薄くなった徴候は無い**。
+5. **Tension品質・3V方式の意味**: attempt1のTension文("Power is uneven: the applicant cannot set the
+   process, the recruiter operates but does not choose the tool, and the owner chooses and carries
+   responsibility.")は3人の役割非対称性を単一文で統合しており、旧2本と同型の構造(3人の合理性を
+   単純に足しても答えにならない、という3V方式の中核目的)を保持。ただし本サンプルでは
+   `changed_negation`のためゲート非該当となり、既存hedge機構で解決(1attempt)。
+6. **retry/fallbackが従来と同じ挙動か(コード経路確認)**: 上記のとおり、Leakage FAIL→corrective
+   note→attempt2という既存ループ、Ledger human_review_required→NG_REVIEW_REQUIREDという既存の
+   discardロジックは、ゲートON状態でも完全に従来どおり動作した(コード上も`if registry.is_voice_
+   fact_safety_gate_mode_enabled():`の外側は無変更)。
+7. **A-Family無影響**: 上記テスト節のとおりgrep 0件・A-Family offlineテスト33件PASS(無変更)。
+8. **必須5項目**(実測、`stage3_metrics.txt`参照、scratchpad):
+   - section別語数(hook/voice_1/2/3/tension/closing、目安Hook45〜55語・Voice各70〜85語・
+     Tension75〜90語・Closing45〜55語、design.md B-6 soft target): attempt1={hook:54, voice_1:87,
+     voice_2:90, voice_3:85, tension:132, closing:55}合計503語。旧Trial-02採用版={60,81,91,82,132,54}
+     合計500語、旧regression_01採用版={50,84,81,83,133,60}合計491語。**3本とも同様にsoft target
+     (410〜450語)をやや上回る水準で、2-D適用後も傾向は変化していない**(数字任意化による顕著な
+     短縮・増加は無し)。Tensionが3本とも130語超とsoft target上限(90語)を上回るのは既存の傾向で
+     あり、本Trialによる新規劣化ではない。
+   - near-dup最大ratio(SequenceMatcher、Tension本文同士・記事全体・対応Voice同士のペアワイズ):
+     Tension本文: stage3 vs 旧Trial-02=0.075、stage3 vs 旧regression_01=0.084、旧Trial-02 vs
+     旧regression_01=0.105。記事全体: 0.129/0.123/0.161。**最大ratio=0.161(旧2本同士)、いずれも
+     定型句の使い回しと呼べる水準(目安0.8以上)には遠く及ばない**(3本とも独立した言い回し)。
+   - caveat文(hedge語`can/may/might/some/sometimes/in some cases`等)カウント: stage3=10語、
+     旧Trial-02採用版=10語、旧regression_01採用版=11語。**同水準、過剰hedge化・hedge不足化どちらも
+     見られない**。
+   - 記事間定型句類似(上記near-dup ratioで代替、3本間で最大0.161、定型句依存の兆候なし)。
+   - 音声: 未実施(Writerのみ、TTSは呼んでいない。本Trialの範囲外)。
+9. **旧Trial-02採用版との比較表**: 上記8の表に統合(word count/hedge count/near-dup ratio)。
+
+### false accept人手照合(2-Fで降格された5件の実文、目視確認)
+
+| 個体 | 実文 | flags | 判定 |
+|---|---|---|---|
+| trial02_attempt2 | "The applicant cannot choose the system; the recruiter runs it but cannot adopt it; the owner decides." | changed_actor/certainty/fact/scope/unsupported_new_claim | 数字・固有名詞・制度名・第三者具体的行動なし、役割合成のみ→**緩和妥当** |
+| regression_attempt1 | "Power is unequal: the applicant is judged, the recruiter runs a tool without choosing it, and the owner chooses it and carries the result." | changed_actor/fact/scope/unsupported_new_claim | 同上→**緩和妥当** |
+| regression_attempt2 | "Their power is unequal: the applicant cannot choose the system, the recruiter runs it without final authority, and the owner approves its use." | changed_actor/certainty/fact/scope/unsupported_new_claim | 同上→**緩和妥当** |
+| regression_attempt3 | "Power is uneven: the applicant cannot choose, the recruiter operates, and the owner decides." | changed_actor/certainty/fact/scope/unsupported_new_claim | 同上→**緩和妥当** |
+| regression_run1ng_attempt1(cycle1) | "Their power is uneven: the applicant is judged, the recruiter runs a tool without choosing it, and the owner decides whether to use it." | changed_actor/certainty/fact/unsupported_new_claim | 同上→**緩和妥当** |
+
+比較(非該当のまま維持、意図どおり): `ablation_attempt1`の同型文(`changed_negation`併発)、
+`regression_run1ng_attempt1`cycle2の"New York City's yearly bias check and notice rule adds work
+for the recruiter…"(`changed_causality`併発+NYC言及)はいずれも**MAJOR維持**(false acceptなし)。
 
 ## コスト評価
 
-Stage 2が未実装のため、Before/After比較は**仮の試算(未検証)**である。
-
-| 指標 | Before(Stage 1実測) | After(仮試算、保守版ゲート採用時) |
+| 指標 | Before(Stage1実測、緩和なし) | After(Stage2実装+Stage3実測、gate ON) |
 |---|---|---|
-| 品質 | 現状どおり(hedge運任せ、事例5型は3回上限到達のリスクあり) | 5/6のTension MAJORでhedge不要化見込み、事例5型は未解決のまま残る |
-| 安全性 | Fact Safety基準は現行のまま | 1b-2の保守版ゲート採用が前提(設計文書文言どおりの実装は不可、取りこぼしリスクあり) |
-| 1記事あたりコスト | 平均¥43.1(レンジ¥24.1〜¥70.4) | 未実装のため実測不可。5/6のTension MAJORでLocal Rewrite 1回分(¥1〜3程度)を削減できる可能性があるが、隣接文巻き添えリスク(1b-1)を考慮すると2-Cは見送りが安全 |
-| 100記事換算コスト | 平均約¥4,310(単純外挿) | 未実装のため試算不可(2-B単独なら微減、2-C見送りなら影響なし) |
-| 処理時間 | 現状どおり | 2-Dは¥0・即日実装可能。2-A/2-Bは保守版ゲート実装+テスト追加が必要(規模未見積もり) |
+| 品質 | hedge運任せ、ablation型は3回上限到達リスクあり | Stage3実測では本ゲート発火0件(生成テキストの非決定性)。offline Regression(2-F、Production関数)では5/6のTension MAJORでhedge不要化を確認 |
+| 安全性 | Fact Safety基準は現行のまま | 保守版ゲート(5/6実証、ablation型は非該当のまま維持)。false accept 0件(2-Fの5件全件を目視照合、A-Family無影響を93+33件のoffline test PASSで確認) |
+| 1記事あたりコスト(Fact Safety関連、Writer除く) | 平均¥43.1(レンジ¥24.1〜¥70.4、Stage1実測) | Stage3実測¥56.49(attempt1完走[¥23.09]+attempt2完走まで[追加¥33.4]、2attempt要のケース。Beforeレンジ¥24.1〜¥70.4の範囲内) |
+| 100記事換算コスト | 平均約¥4,310(単純外挙) | 2-Bのコスト削減効果は「Tension非対称性文が偶然ゲート対象パターン[changed_actor/unsupported_new_claimのみ]になった場合のみhedge 1回分[¥1〜3程度]を削減」に限定される。今回のStage3 1サンプルでは非該当だったため削減0(このサンプルでは) |
+| 処理時間 | 現状どおり | 2-D実装+テスト追加は完了(即日)。2-A/2-B実装+テスト34件PASSは完了。Stage3実生成は約10分(attempt1+attempt2、Web検索含む) |
+
+## Gate 1判定材料
+
+判定語(REJECTED/VALIDATED/USER_DECISION_REQUIRED)はFableが確定する。本節は判定材料の提示のみ。
+
+- **安全性**: 2-A/2-B(保守版ゲート)はStage1b-2の合成true-positive17件(6+11)全件で取りこぼし0件、
+  2-Fのoffline Regression(Production関数)で実データ5/6改善・false accept 0件(5件全件を目視照合)、
+  Stage3実生成でも(発火0件ながら)非該当ケースが正しく非該当のまま維持された(`changed_negation`/
+  `changed_causality`は狙いどおり常に厳格)。A-Family(News/Discovery)への影響は0件
+  (import/grep差分+既存offlineテスト33件PASS)。**安全側の設計は維持されている**。
+- **効果の限定性**: Stage3実生成1本では本ゲートは発火0件だった(生成テキストの非決定性により、
+  たまたま今回のTension文が`changed_negation`/`changed_causality`を伴う表現になったため)。効果自体は
+  offline Regression(Production関数、5/6)で裏付けられるが、**実生成1本のみでは効果を直接観測
+  できなかった**(過大評価しないよう明記)。
+- **新しい発見(2-D単独の限界)**: 数字撤廃(2-D)だけでは`leak_evidence_subject`型のAnalytical
+  Leakage漏洩を防げない(voice_3が数字ゼロでも"reports show..."構文でFAILした)。既存のLeakage
+  Check+retry機構は正しく機能した(regressionではない)が、2-Dの効果は「数字の強制」問題の解決に
+  限定され、「Evidence主語構文」問題は別課題として残る(本タスクの範囲外、報告のみ)。
+- **Stage3の最終結果**: NG_REVIEW_REQUIRED(既存の安全側discardロジックによる、Stage1の
+  ablation/run1ng個体と同型の既知の残余リスク。本ゲートが原因ではない)。
+- **委任文とSSOTの不一致**: b節「常に厳格」5フラグの表記(`changed_fact`か`changed_causality`か)に
+  ついて、委任文とStage1b-2実証結果に不一致があった。本実装は実証済みの`changed_causality`版を
+  採用し、Fableへ報告(上記PM-DELEGATION-NOTE参照)。
+- **費用**: 本管理ID累計¥66.24(Stage1b ¥9.75+Stage3 ¥56.49)、上限¥310以内。
 
 ## 費用
 
@@ -483,4 +663,53 @@ Stage 1: 本タスク(Stage 1)でのAPI呼び出しは0件(¥0)。既存の保�
 
 Stage 1b: 実測¥9.75(1b-1、8 API呼び出し、input=61,897 tokens・output=40,480 tokens、
 `gpt-5.6-luna`、pricing_snapshot単価・¥160/$換算)。1b-2/1b-3は¥0(offline)。上限¥10以内。
-Stage 2はコード実装を実行しなかったため追加API呼び出しなし。
+
+Stage 2: 実装・テスト・2-F offline Regressionはすべて¥0(API呼び出しなし)。
+
+Stage 3: 実測¥56.49(32 API呼び出し、input=403,345 tokens・output=110,279 tokens・
+cached_input=4,471 tokens・web_search=14回、`gpt-5.6-luna`、pricing_snapshot単価・¥160/$換算。
+attempt1完走分¥23.09+attempt2完走までの追加分¥33.4の合計。attempt1完走後のUnicodeEncodeError
+[Production側の既存print文起因、判定ロジックとは無関係]によりプロセスが中断したため、Writerを
+再生成せず保存済み成果物を再利用してresumeした[詳細は上記Stage3節])。
+
+**本管理ID累計: ¥66.24(¥9.75+¥56.49)。上限¥310以内(残額約¥243.76)。追加runは実施せずSTOP。**
+
+## SSOT追記文案(sonnet-workerはSSOTを直接編集しない。Fable/sandwich-pm側での反映用文案)
+
+### CURRENT_SPEC.md(3V節への追記案)
+
+> B-Family Voices 3V: Fact Safety保守版ゲート(段階1/段階2、`voice_fact_safety_gate_mode`、既定OFF、
+> `family=="B"`限定opt-in)を`er012_b_family_voices_writer_generic_01.py`/
+> `er012_b_family_editorial_type_registry_01.py`へ実装済み(2026-09-13、
+> EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3)。Trial継続の承認であり
+> `APPROVED_FOR_PRODUCTION`ではない(既定OFFのままcommit)。2-D(Voice内数字の「必須」要求撤廃、
+> 上限規定は不変)も同時実装。詳細・実測は当該REPORT参照。
+
+### OPEN_ITEMS.md(OPEN-120への追記案)
+
+> **追記(2026-09-13、EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3)**:
+> Stage2(保守版Fact Safetyゲート実装+2-D数字任意化)完了、offline Regression(Production関数)で
+> 実データ5/6改善・false accept 0件を確認。Stage3実生成1本(AI採用選考テーマ)はattempt1完走
+> (Fact Checker PASS→Ledger 1件MAJOR→hedge 1回で解決)後、Leakage Check(voice_3、数字ゼロでも
+> `leak_evidence_subject`型でFAIL)により既存retryでattempt2へ自動移行、attempt2はLedger起因の
+> human_review_requiredで最終`NG_REVIEW_REQUIRED`(Stage1のablation/run1ng個体と同型の既知の
+> 残余リスク、本ゲートは無関係、本ゲート自体はStage3では0件発火)。実測費用¥66.24(Stage1b+Stage3
+> 合算、上限¥310以内)。新知見: 2-D単独では`leak_evidence_subject`型Leakageは防げない(数字撤廃と
+> Evidence主語構文は別問題)。Gate1判定はFable/ユーザー判断待ち(`USER_DECISION_REQUIRED`候補)。
+> 根拠: `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_REPORT.md`(Stage2/Stage3/
+> コスト評価/Gate1判定材料節)。
+
+### DECISION_LOG.md(新規エントリ案)
+
+> **2026-09-13 EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE2-STAGE3**:
+> ユーザー正式判断(Fable推奨(b)採用、2026-09-13)に基づき、B-Family Voices 3V限定の保守版Fact
+> Safetyゲート(段階1: Voice本文hedge免除、段階2: Tension役割合成の`changed_actor`/
+> `unsupported_new_claim`緩和[b節「常に厳格」5フラグ`changed_number`/`changed_causality`/
+> `changed_negation`/`changed_comparison`/`changed_time`はflag単位で除外、数字・固有名詞・制度名・
+> 第三者具体的行動は字面でも除外]、既定OFF opt-in)+Voice内数字の「必須」要求撤廃(上限規定は不変)を
+> 実装。offline Regression(Production関数)で実データ5/6改善・false accept 0件を確認。Stage3実生成
+> 1本は既存retry機構により最終`NG_REVIEW_REQUIRED`(本ゲートとは無関係の既知の残余リスク)。
+> 判定context拡張案(2-C)は本ラウンド対象外のまま。Status: `USER_DECISION_REQUIRED`
+> (Gate1判定はFableが確定)。委任文の入力節記載(b節5フラグの表記)とStage1b-2実証結果に不一致が
+> あり、実装は実証済みの`changed_causality`版を採用(報告済み)。根拠:
+> `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_REPORT.md`。

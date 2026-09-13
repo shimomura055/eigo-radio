@@ -46,16 +46,30 @@
 # 陽性最小run(0.7秒)と陰性最大run(0.5秒、マージン0.2秒)は、後から
 # 閾値再校正する際にこの監査ログを使う。
 #
-# 未配線(Trial-01方式C-v2、gap<0.5秒の即座の言い直し)は本モジュールの
-# 対象外。OPEN_ITEMS.md OPEN-121行へ追跡項目として記録する。
+# OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01: 方式C-v2(Trial-01、gap<0.5秒
+# の即座の言い直し、窓内独立判定)を、本モジュールの正規化関数を再利用する
+# 形でTrial統合した(Trial専用モジュール`er011_open121_tts_repetition_
+# general_qa_trial_01.py`は一切importしない)。新規opt-inフラグ
+# `enable_method_c_v2`は既定`False`で、既存の4呼び出し元(er003_v1_*.py)は
+# この引数を一切渡していないため、既存Production経路への影響はゼロ
+# (`evaluate_repetition_qa()`/`apply_repetition_qa_gate()`のデフォルト
+# パラメータのみの追加、既存呼び出しのpositional/keyword互換性は維持)。
+# 方式C-v2はまだ**Production採用ではない**(`APPROVED_FOR_PRODUCTION`
+# 未取得、Trial統合による副作用・競合の洗い出し目的のみ)。方式A/D/D'とは
+# 異なり、有効化すると窓分割ASR呼び出し(既存`er006_asr_provider_
+# routing_01.transcribe`)を追加で行うため追加API課金・追加レイテンシが
+# 発生する(既定Falseのため無効化時はゼロ)。
 from __future__ import annotations
 
 import difflib
+import os
 import re
+import tempfile
 
 import numpy as np
 import soundfile as sf
 
+import er006_asr_provider_routing_01 as asr_routing
 import er006_preprod_hardening_01_validation as en_validator
 import er008_disfluency_qa_18 as dq18
 
@@ -94,6 +108,13 @@ METHOD_D_ASR_CONFIRM_OVERLAP_RATIO_THRESHOLD = 0.5
 METHOD_D_ASR_CONFIRM_LCS_WORDS_THRESHOLD = 3
 METHOD_D_ASR_CONFIRM_WINDOW_HALF_SECONDS = 1.5
 METHOD_D_ASR_CONFIRM_MAX_HALF_WINDOW_SECONDS = 4.0
+
+# OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01: Trial-01窓設定と同一
+# (win8s/hop4s・win12s/hop6s)。Production採用は未承認、Trial統合の
+# 副作用洗い出し目的でのみ使用する(既定enable_method_c_v2=Falseの
+# ため通常経路では一切実行されない)。
+METHOD_C_V2_WINDOW_CONFIGS = ((8.0, 4.0), (12.0, 6.0))
+METHOD_C_V2_MIN_WORDS = 3
 
 
 def _load_wav_mono(path):
@@ -580,9 +601,91 @@ def run_ngram_check(path, canonical_text, language="en", min_words=METHOD_A_MIN_
 
 
 # ============================================================
+# 方式C-v2(Trial-01、gap<0.5秒の即座の言い直し、窓内独立判定)
+# OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01: Production採用は未承認
+# (Trial統合のみ、既定opt-inフラグFalse)
+# ============================================================
+def _text_ngram_repetition_c_v2(text, canonical_text=None, min_words=METHOD_C_V2_MIN_WORDS):
+    """ASR transcript(window単位、word-level timestampなし)に対する
+    方式Aのtext-only版(Trial-01`_text_ngram_repetition`と同一設計)。
+    本モジュール既存の正規化関数(`_normalize_tokens`/`find_repeated_
+    spans`/`_canonical_repeat_count`、ダッシュ境界統一・数詞↔算用数字
+    同値化を含む)をそのまま再利用する(Trial専用モジュールは参照しない)。"""
+    if not text:
+        return {"matches": [], "flagged": False, "flagged_matches": [],
+                "canonical_known": canonical_text is not None}
+    tokens = _normalize_tokens(text)
+    spans = find_repeated_spans(tokens, min_words=min_words)
+    canonical_tokens = _normalize_tokens(canonical_text) if canonical_text else None
+    raw_words = text.split()
+    matches = []
+    for i, j, k in spans:
+        span_tokens = tokens[i:i + k]
+        span_text = " ".join(raw_words[i:i + k]) if i + k <= len(raw_words) else " ".join(span_tokens)
+        canon_count = _canonical_repeat_count(span_tokens, canonical_tokens) if canonical_tokens is not None else None
+        intentional = (canon_count is not None and canon_count >= 2)
+        matches.append({"span_text": span_text, "n_words": k, "canonical_repeat_count": canon_count,
+                         "intentional": intentional, "flagged": not intentional})
+    flagged = [m for m in matches if m["flagged"]]
+    return {"matches": matches, "flagged": bool(flagged), "flagged_matches": flagged,
+            "canonical_known": canonical_tokens is not None}
+
+
+def run_method_c_v2_window_check(path, canonical_text, language="en",
+                                  window_configs=METHOD_C_V2_WINDOW_CONFIGS,
+                                  min_words=METHOD_C_V2_MIN_WORDS):
+    """方式C-v2(Trial-01 `run_method_c`の窓内独立判定版、既存Production
+    ASR経路`er006_asr_provider_routing_01.transcribe`を各window clipへ
+    個別に呼び出す)。各windowのtranscriptは独立に判定し(連結しない、
+    Trial-01のnaive連結v1で確認されたfalse reject 50%の設計欠陥を回避)、
+    いずれかのwindow・いずれかのconfigでflagged=Trueなら全体をflagged=
+    Trueとする。Production採用は未承認(`APPROVED_FOR_PRODUCTION`未取得、
+    副作用洗い出しTrial目的のみ)。呼び出し側が有効化した場合、window数×
+    config数だけ追加のASR API呼び出しが発生する(追加コスト・追加
+    レイテンシ、既定では呼び出されない)。"""
+    mono, sr = _load_wav_mono(path)
+    total_dur = len(mono) / sr
+    by_config = {}
+    asr_calls = 0
+    for (win_s, hop_s) in window_configs:
+        key = f"win{win_s:g}_hop{hop_s:g}"
+        windows_detail = []
+        flagged_this_config = False
+        w0 = 0.0
+        while w0 < total_dur:
+            w1 = min(w0 + win_s, total_dur)
+            clip = mono[int(round(w0 * sr)):int(round(w1 * sr))]
+            tmp_fd, tmp_path = tempfile.mkstemp(suffix=".wav")
+            os.close(tmp_fd)
+            text, err = None, None
+            try:
+                sf.write(tmp_path, clip, sr)
+                text, err = asr_routing.transcribe(tmp_path, language=language)
+                asr_calls += 1
+            finally:
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
+            check = _text_ngram_repetition_c_v2(text, canonical_text, min_words=min_words)
+            windows_detail.append({"window_start_s": round(w0, 2), "window_end_s": round(w1, 2),
+                                    "asr_text": text, "error": err, "ngram_check": check})
+            if check["flagged"]:
+                flagged_this_config = True
+            if w1 >= total_dur:
+                break
+            w0 += hop_s
+        by_config[key] = {"flagged": flagged_this_config, "windows": windows_detail,
+                           "window_seconds": win_s, "hop_seconds": hop_s}
+    flagged = any(v["flagged"] for v in by_config.values())
+    return {"flagged": flagged, "by_config": by_config, "asr_calls": asr_calls,
+            "window_configs": list(window_configs), "min_words": min_words}
+
+
+# ============================================================
 # 統合判定 + Production Gate
 # ============================================================
-def evaluate_repetition_qa(path, canonical_text, language="en"):
+def evaluate_repetition_qa(path, canonical_text, language="en", enable_method_c_v2: bool = False):
     """方式A + D + D'を1segmentへ実行し、いずれか1つでもflagged=Trueなら
     全体をflagged=Trueとする(Trial-02 §7推奨統合仕様)。flag/非flagに
     かかわらず、方式D/D'それぞれの最大run長・lag・similarityを常に
@@ -595,23 +698,34 @@ def evaluate_repetition_qa(path, canonical_text, language="en"):
     両方へ同じword-level ASR結果を渡す(同一音声への二重ASR実行を回避)。
     ASR取得に失敗した場合(`transcribe_verbatim`が例外を送出する場合)は
     従来通り例外がそのまま呼び出し元へ伝播する(方式A単独運用時と同じ
-    挙動、新規のfail-open/fail-closed設計は追加していない)。"""
+    挙動、新規のfail-open/fail-closed設計は追加していない)。
+
+    OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01: `enable_method_c_v2`
+    (既定False)を明示的にTrueで渡した場合のみ、方式C-v2(窓内独立判定)
+    を追加実行する。Production採用は未承認のため既定Falseであり、既存
+    呼び出し元(er003_v1_*.py、4箇所)はこの引数を一切渡していない
+    (常にFalse、既存挙動に影響なし)。"""
     words = dq18.transcribe_verbatim(path, language=language, model_size="small")
     ngram = detect_ngram_repetition(words, canonical_text=canonical_text, min_words=METHOD_A_MIN_WORDS)
     spectral = run_spectral_checks(path, words=words)
+    method_c_v2 = None
+    if enable_method_c_v2:
+        method_c_v2 = run_method_c_v2_window_check(path, canonical_text, language=language)
     flagged = bool(ngram["flagged"] or spectral["profile_d"]["flagged"]
-                   or spectral["profile_d_prime"]["flagged"])
+                   or spectral["profile_d_prime"]["flagged"]
+                   or (method_c_v2["flagged"] if method_c_v2 else False))
     return {
         "flagged": flagged,
         "duration_seconds": spectral["duration_seconds"],
         "method_a_ngram": ngram,
         "method_d_spectral_long_lag": spectral["profile_d"],
         "method_d_prime_spectral_short_lag": spectral["profile_d_prime"],
+        "method_c_v2_window_check": method_c_v2,
     }
 
 
 def apply_repetition_qa_gate(verified: bool, out_path: str, canonical_text: str, language: str = "en",
-                              enabled: bool = False) -> dict:
+                              enabled: bool = False, enable_method_c_v2: bool = False) -> dict:
     """既存`er008_disfluency_qa_18.apply_disfluency_gate()`と同一のAND
     ゲートパターン。呼び出し側(各generate系関数のretry loop内)は、
     既存のverified変数をこの関数の戻り値で置き換えるだけでよい。
@@ -621,10 +735,23 @@ def apply_repetition_qa_gate(verified: bool, out_path: str, canonical_text: str,
     しているsegmentへ余計な計算をしない、dq18と同じ安全側の設計)。
     flag時は「TTS再生成→通常ASR+repetition QA再判定」という既存の
     retry loopにそのまま合流させる(新規retry回数・新規Cost Guardは
-    追加しない)。"""
+    追加しない)。
+
+    OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01: `enable_method_c_v2`
+    (既定False)は既存の4呼び出し元(er003_v1_*.py)が一切渡していない
+    新規kwargであり、Production採用は未承認。Trial統合の副作用洗い出し
+    目的でのみ、テスト・オフライン検証から明示的にTrueを渡して使う。"""
     if not enabled or not verified:
         return {"verified": verified, "repetition_qa_checked": False, "repetition_qa_evidence": None}
-    evidence = evaluate_repetition_qa(out_path, canonical_text, language=language)
+    # enable_method_c_v2=False(既定)の場合はevaluate_repetition_qa()を
+    # 従来と全く同じ位置引数のみで呼び出す(既存テストのmonkeypatch
+    # シグネチャ`tracking_evaluate(path, canonical_text, language="en")`
+    # との後方互換性を保つため、kwarg自体を渡さない)。
+    if enable_method_c_v2:
+        evidence = evaluate_repetition_qa(out_path, canonical_text, language=language,
+                                           enable_method_c_v2=True)
+    else:
+        evidence = evaluate_repetition_qa(out_path, canonical_text, language=language)
     return {
         "verified": verified and not evidence["flagged"],
         "repetition_qa_checked": True,

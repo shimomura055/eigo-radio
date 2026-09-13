@@ -913,3 +913,21 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   Git操作のみ、新規LLM/TTS/ASR API呼び出しなし、Productionコード変更
   なし、他Agent成果物[`er012_*`/`er011_open121_*`等]には一切触れず)。
   委任回数=初回のみ(ループ上限4回以内)。
+
+- 2026-09-13 PM-CLOSEOUT-CONSOLIDATION-104: 本セッション3タスクの
+  モデル・費用を記録する。(1) EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-
+  RELAXATION-TRIAL-01-STAGE2-STAGE3(3V Fact Safety保守版ゲート実装+
+  実生成1本): Sonnet、実測¥56.49(Stage3、32 API呼び出し、上限¥310
+  以内)。(2) OPEN-141-TARGET-SENTENCE-MATCHING-AND-DIFF-QA-COMMON-
+  BASE-TRIAL-01 Phase B(target-sentence-matching+差分QA案I+1記事統合
+  Trial): Sonnet、実測概算¥15〜30(Ledger Deviation Checker`gpt-5.6-
+  luna`2回+Fact Checker A'`gpt-5.6-sol`1回、web_search4回、上限¥50
+  以内、トークン数詳細は未記録)。(3) OPEN-121-METHOD-D-PRIME-
+  PRODUCTION-WIRING-01+OPEN-121-METHOD-C-V2-INTEGRATION-TRIAL-01(D'
+  Gate3独立検証+C-v2試作期統合): Sonnet、実測¥2.71(D'のみ、Standard
+  同期TTS+ASR runtime evidence、上限¥30以内)。C-v2部分は¥0(既存
+  キャッシュ済みASR結果の再利用+ローカルCPU計算のみ)。(4)本統合
+  タスク(PM-CLOSEOUT-CONSOLIDATION-104自体): Sonnet、実測¥0(SSOT
+  編集・テスト追加[新規9件、ASR呼び出しはモック]・Git操作のみ、新規
+  LLM/TTS/ASR API呼び出しなし)。委任回数はいずれも初回のみ(ループ
+  上限4回以内)。

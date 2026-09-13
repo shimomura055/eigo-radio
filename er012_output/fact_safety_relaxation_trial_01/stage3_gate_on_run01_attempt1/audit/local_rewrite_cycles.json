@@ -1,0 +1,40 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "“Power is uneven: the applicant cannot set the process, the recruiter operates but does not choose the tool, and the owner chooses and carries responsibility for the result.”（同じ趣旨が前段の“I did not choose the system”にも表れている）"
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "Power is uneven: the applicant cannot set the process, the recruiter operates but does not choose the tool, and the owner chooses and carries responsibility.",
+        "issue": "LedgerではRecruiter・Hiring ManagerはAIツールを実際に使うだけでなく、使うかどうかを判断する側にも含まれる。一方、記事は選択権を所有者だけに帰属させ、採用担当者を選択しない運用者として描いているため、意思決定主体の関係を変更している。",
+        "explanation": "採用担当者が利用判断を担う可能性を否定し、Ledgerにない「ownerが選択し、採用担当者は選択しない」という役割分担を追加している。Hookとしての緩和対象ではない。",
+        "flags": [
+          "changed_fact",
+          "changed_actor",
+          "changed_negation",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Power is uneven: the applicant cannot set the process, the recruiter operates the tool and may also decide whether to use it, and the owner chooses and carries responsibility.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "final_text": "Power is uneven: the applicant cannot set the process, the recruiter operates the tool and may also decide whether to use it, and the owner chooses and carries responsibility.",
+        "resolved": true,
+        "human_review_required": false,
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "sentence_fallback(overlap=0.8)",
+        "point_context_found": true,
+        "point_context": "## Why They See It Differently\n\nAll three want the right person in the right job, but their stakes differ. The applicant may lose a chance unseen; the recruiter must balance speed and explanation; the owner must keep the company running and answer for the result. Power is uneven: the applicant cannot set the process, the recruiter operates but does not choose the tool, and the owner chooses and carries responsibility.\n\nOutside limits turn these differences into hard boundaries. In New York City, an employer must arrange a yearly bias audit and notify applicants. That adds work for the recruiter and limits a speed-only choice by the owner. An internal tool was stopped after it rated women’s resumes lower. Because of rules and past failure, these three views cannot simply be combined."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]
