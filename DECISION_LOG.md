@@ -382,6 +382,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE: 2026-09-13ユーザー回答(原文全文、9項目)の正式記録+OPEN-121残5論点のReconciliation(実装・CURRENT_SPEC・DECISION_LOG・過去REPORTまで確認)+OPEN-136/122/141/120のSSOT表記整合+PM_GOVERNANCEへの4追記(ユーザーへ上げるOpen Item基準/試作期の膿出し方針/ChatGPTルール/是正記録)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-104: 3V Fact Safety Stage2/3(UDR)+OPEN-141 Phase B(VALIDATED)+方式D' Gate 3検証+方式C-v2統合Trial のGit統合とSSOT反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-105: 2026-09-13ユーザー正式判断5件(OPEN-141差分QA Production採用/3V Fact Safetyは次実記事のruntime evidence待ち/見出し混入バグ修正Production反映/方式D'継続/方式C-v2 Production不採用Close)の正式記録+OPEN-141 Production配線(target-sentence-matching既定ON+差分QA案I)+3V Fact Safety保守版ゲート既定ON化+方式C-v2 Close
+- [本ファイル内] ## PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02: Token節約施策(E-1/D-1/G-1/F-1)のread-only現状測定(まだ評価不足)+task-notification `subagent_tokens`は累積処理量ではない新発見
 
 ---
 
@@ -6692,6 +6693,17 @@ REPORT一式をまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)
 **影響するCURRENT_SPEC項目**: 「Ledger Deviation MAJOR時の局所Rewrite(Local Rewrite)」行(target-sentence-matching+差分QA案I既定ON追記)、「## B-Family(Voices)Editorial Type」節新規行(3V Fact Safety保守版ゲート既定ON)、「TTS Repetition/False Start QA」行(方式C-v2 `REJECTED_FOR_PRODUCTION`追記)。
 
 **commit**: 本エントリと`CURRENT_SPEC.md`・`OPEN_ITEMS.md`(OPEN-120/121/141行)・`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`・対象コード(`er010_ledger_local_rewrite_09.py`・`er003_v1_n3_01_articles_generate.py`・`er012_b_family_voices_writer_generic_01.py`・`er008_point_overlap_qa_18.py`・`er012_b_family_editorial_type_registry_01.py`・`er011_open121_repetition_qa_production_01.py`)・テスト(新規`er010_open141_diff_qa_production_wiring_test_01.py`+既存3ファイル更新)・REPORTをまとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
+
+---
+
+## PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02: Token節約施策(E-1/D-1/G-1/F-1)のread-only現状測定
+
+**管理ID**: PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02
+**日付**: 2026-09-13
+
+read-only現状測定完了。Fable判定: Fable→Sonnet削減施策(E-1/D-1/G-1/F-1)は「まだ評価不足」(E-1 reread率Before27.8%→After31.0%で改善実測なし、D-1は新baseline47〜50%のみ、G-1効果ありだが寄与小、F-1は直近10委任の非0バイト2/10で運用不全)。新発見: task-notificationの`subagent_tokens`は最終ターンusageに一致し累積処理量ではない(N=2、累積は45〜167倍、cache_read 95〜97%)。改善案3件(tool_uses削減/D-1徹底/F-1原因特定)は提示のみで未実装、ユーザー判断待ち。
+
+**根拠**: `PM-TOKEN-EFFICIENCY-STATUS-MEASUREMENT-02_REPORT.md`。
 
 ---
 
