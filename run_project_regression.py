@@ -72,9 +72,35 @@ def build_summary(pattern: str, files: list, collected: int, result: "unittest.T
     }
 
 
-def run(pattern: str = DEFAULT_PATTERN, verbosity: int = 1, root: Path = None) -> tuple:
+def is_test_only_pattern(pattern: str) -> bool:
+    """patternがテストファイル限定のglobかどうかを判定する
+    (CONSOLIDATION-124: `_test`を含まないpatternはテスト以外の`.py`を
+    誤ってimport実行する事故防止ガード)。"""
+    return "_test" in pattern
+
+
+def run(pattern: str = DEFAULT_PATTERN, verbosity: int = 1, root: Path = None,
+        allow_non_test_pattern: bool = False) -> tuple:
     """探索・実行を行い、(exit_code, summary_dict または None)を返す。
-    収集0件の場合はtestを実行せずexit_code=1・summary=Noneを返す。"""
+    収集0件の場合はtestを実行せずexit_code=1・summary=Noneを返す。
+    patternがテストファイル限定でない場合(`_test`を含まない場合)、
+    `allow_non_test_pattern=True`が明示されない限り拒否する
+    (CONSOLIDATION-124: `unittest.TestLoader().discover()`はpatternに
+    一致する全`.py`をimportする仕様のため、テスト以外の一回限りrunner
+    スクリプトが実行され実API呼び出し・ファイル上書きが起きた事故の
+    再発防止)。"""
+    if not allow_non_test_pattern and not is_test_only_pattern(pattern):
+        print(
+            f"[run_project_regression] REJECTED: pattern '{pattern}' is not "
+            "test-file-limited (must contain '_test'). unittest discover() "
+            "would import ALL matching .py files, including non-test "
+            "one-shot runner scripts, risking unintended real API calls / "
+            "file overwrites. Use a pattern like 'er003*_test_*.py', or "
+            "pass --allow-non-test-pattern to explicitly override.",
+            file=sys.stderr,
+        )
+        return 2, None
+
     root = root if root is not None else resolve_repo_root()
     files = discover_test_files(pattern, root)
 
@@ -112,9 +138,13 @@ def main(argv=None) -> int:
     parser.add_argument("-v", "--verbosity", type=int, default=1)
     parser.add_argument("--json-summary", default=None,
                         help="collected/passed/failed/skippedをJSONへ保存するpath(省略可)")
+    parser.add_argument("--allow-non-test-pattern", action="store_true",
+                        help="`_test`を含まないpatternを明示的に許可する(通常は使用しないこと。"
+                             "CONSOLIDATION-124のガードを意図的に解除するオプション)")
     args = parser.parse_args(argv)
 
-    exit_code, summary = run(pattern=args.pattern, verbosity=args.verbosity)
+    exit_code, summary = run(pattern=args.pattern, verbosity=args.verbosity,
+                              allow_non_test_pattern=args.allow_non_test_pattern)
 
     if args.json_summary and summary is not None:
         with open(args.json_summary, "w", encoding="utf-8") as f:

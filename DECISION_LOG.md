@@ -399,6 +399,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-121: UDR候補6件(OPEN-106/120/124/132/133/134)のReconciliation(既決表記の整理、意味変更なし)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-122: Discovery S2 Production設計完了(USER_DECISION_REQUIRED、Gate 2判断待ち)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-123: Family C長文化診断+v4再Trial(USER_DECISION_REQUIRED、¥20.53)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-124: Family C Trial-05(VALIDATED)のGit記録+S2配線安全インシデント記録+回帰pattern再発防止
 
 ---
 
@@ -7027,6 +7028,10 @@ unittest discoverのimport時に実行され、無関係な既存Production記�
 触れていない)。以後は`_test_*.py`限定patternへ切り替えて安全に再実行した。
 詳細は`FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01_REPORT.md`参照。
 Status: **`PRODUCTION_WIRED`**。commit hashはRESULT_PACKET_S2W.md/同REPORT参照。
+
+## PM-CLOSEOUT-CONSOLIDATION-124(2026-09-13)
+
+PM-CLOSEOUT-CONSOLIDATION-124。(A) Family C Trial-05をGit記録・OPEN-147反映(VALIDATED、Production未採用)。(B) 安全インシデント記録: FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01でFableの委任文が指定した回帰コマンド`run_project_regression.py --pattern "er003*"`/`"er011*"`がテスト以外のrunnerスクリプトをimport実行し、無関係のProduction記事(pool_n18_notifications_specfix_v2)への実API呼び出し(¥15-20相当)とファイル上書きが発生。Sonnetが即時kill+`git checkout --`で復元、以後`_test_*.py`限定で再実行。原因はFable委任文の欠陥(コマンド指定の安全性未確認)。(C) 再発防止(¥0・整合性修正、Fable自律実施・事後報告): 委任文標準に『回帰patternは必ず`_test`を含む』を明記、`run_project_regression.py`に非テストpattern拒否ガード追加(既定動作・収集件数2588不変)。(D) transcript退避2件。詳細: 各REPORT参照。
 
 ## 参照元
 

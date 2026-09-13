@@ -962,3 +962,4 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
 2026-09-13 FAMILY-A-DISCOVERY-FOCUS-S2-FULL-QA-PARITY-TRIAL-01: gpt-5.6-luna、¥84.62(A2/B1 Stage 1〜3+QA+Local Rewrite 1回)。
 2026-09-13 FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01(Gate 3 runtime evidence、Production正式経路`run_one_pattern_staged_discovery_focus`): gpt-5.6-luna(reasoning_effort=high)、¥46.66(A2、Stage 1 escalation実発火、35 API records)。
 2026-09-13 EDITORIAL-FUTURE-FAMILY-C-LENGTH-DIAGNOSIS-AND-RESPEC-TRIAL-04: gpt-5.6-luna、¥20.53(Ledger/Scaffold再利用、A2/B1+QA)。
+2026-09-13 EDITORIAL-FUTURE-FAMILY-C-V5-EMOTION-RECOVERY-AND-CONSTRAINT-STABILITY-TRIAL-05: gpt-5.6-luna、¥22.88(Research/Ledger/Scaffold/Layer2-3はTrial-02からread-only再利用、A2/B1本生成+A2安定性2サンプルのみ実行、VALIDATED[Trial]・Production未採用)。

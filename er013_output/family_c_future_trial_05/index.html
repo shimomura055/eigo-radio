@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Family C Future Trial-03 vs Trial-04 vs Trial-05</title>
+<style>
+body { font-family: sans-serif; max-width: 1000px; margin: 2em auto; line-height: 1.6; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f0f0f0; }
+.pass { color: green; font-weight: bold; }
+.fail { color: #b00; font-weight: bold; }
+.review { color: #b60; font-weight: bold; }
+pre { white-space: pre-wrap; background: #fafafa; padding: 1em; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+<h1>Family C Future — Trial-03 vs Trial-04 vs Trial-05</h1>
+<p>管理ID: EDITORIAL-FUTURE-FAMILY-C-V5-EMOTION-RECOVERY-AND-CONSTRAINT-STABILITY-TRIAL-05
+(Trial限定、Production未採用。VALIDATEDでもProductionへは進まない)。</p>
+
+<h2>語数・場面数・構成</h2>
+<table>
+<tr><th></th><th>Trial-03 A2</th><th>Trial-04 A2</th><th>Trial-05 A2</th><th>Trial-03 B1</th><th>Trial-04 B1</th><th>Trial-05 B1</th></tr>
+<tr><td>word_count</td><td>550</td><td>405</td><td>434</td><td>744</td><td>484</td><td>520</td></tr>
+<tr><td>within_range</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="fail">FAIL(+44語)</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>[[IMAGINED]]場面数</td><td>3</td><td>2</td><td>2</td><td>3</td><td>2</td><td>2</td></tr>
+<tr><td>見出し数契約</td><td>自由</td><td>自由</td><td>3固定</td><td>自由</td><td>自由(場面間に混入)</td><td>3固定</td></tr>
+</table>
+
+<h2>Gate・QA結果</h2>
+<table>
+<tr><th></th><th>Trial-03 A2</th><th>Trial-04 A2</th><th>Trial-05 A2</th><th>Trial-03 B1</th><th>Trial-04 B1</th><th>Trial-05 B1</th></tr>
+<tr><td>編集Gate v3</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="fail">FAIL</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>v5構造Gate(新規)</td><td>-</td><td>-</td><td class="pass">PASS</td><td>-</td><td>-(該当問題あり)</td><td class="pass">PASS</td></tr>
+<tr><td>Fact Checker A'(対象外)</td><td class="review">REVIEW_REQUIRED</td><td class="review">REVIEW_REQUIRED</td><td class="review">REVIEW_REQUIRED</td><td class="review">REVIEW_REQUIRED</td><td class="review">REVIEW_REQUIRED</td><td class="review">REVIEW_REQUIRED</td></tr>
+<tr><td>Ledger Deviation</td><td class="pass">COMPLIANT</td><td class="pass">COMPLIANT</td><td class="pass">COMPLIANT</td><td class="pass">COMPLIANT</td><td class="pass">COMPLIANT</td><td class="pass">COMPLIANT</td></tr>
+<tr><td>Future Framing QA v2</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="pass">PASS</td><td class="review">REVIEW_REQUIRED</td><td class="pass">PASS(是正済み)</td></tr>
+</table>
+
+<h2>感情・没入感スコア(0〜3)</h2>
+<table>
+<tr><th></th><th>Trial-03</th><th>Trial-04</th><th>Trial-05</th></tr>
+<tr><td>A2</td><td>2</td><td>1</td><td><b>3</b></td></tr>
+<tr><td>B1</td><td>(対象外)</td><td>1</td><td><b>3</b></td></tr>
+</table>
+
+<h2>安定性(A2、Writer呼び出しのみ×3サンプル)</h2>
+<table>
+<tr><th>サンプル</th><th>word_count</th><th>within_range</th><th>見出し数</th><th>v5構造Gate</th></tr>
+<tr><td>本生成</td><td>434</td><td class="pass">PASS</td><td>3</td><td class="pass">PASS</td></tr>
+<tr><td>stability sample1</td><td>407</td><td class="pass">PASS</td><td>3</td><td class="pass">PASS</td></tr>
+<tr><td>stability sample2</td><td>444</td><td class="pass">PASS</td><td>3</td><td class="pass">PASS</td></tr>
+</table>
+<p>3サンプルとも語数目安内・構造契約PASS。制約追加による不安定化
+(語数の大きなばらつき・Gate再試行の多発・マーカー崩れ)は観測されな
+かった(A2/B1本生成ともgate_attempts_used=1、初回PASS)。</p>
+
+<h2>費用</h2>
+<p>Trial-05累積実費: ¥22.88(Family C残額¥105.01+追加上限¥100=合計
+上限¥205.01のうち。残り¥182.13)</p>
+
+<h2>本文</h2>
+<h3>Trial-05 A2(reader_facing_article.txt)</h3>
+<pre>Picture an evening in 2035, in a town where home robots have just begun to arrive...
+(全文は下記リンク先を参照)</pre>
+<h3>本文リンク</h3>
+<ul>
+<li>Trial-03 A2: <a href="../family_c_future_trial_03/a2/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-04 A2: <a href="../family_c_future_trial_04/a2/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-05 A2: <a href="a2/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-04 B1: <a href="../family_c_future_trial_04/b1/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-05 B1: <a href="b1/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-05 安定性サンプル1(A2): <a href="stability/a2_sample_1/reader_facing_article.txt">reader_facing_article.txt</a></li>
+<li>Trial-05 安定性サンプル2(A2): <a href="stability/a2_sample_2/reader_facing_article.txt">reader_facing_article.txt</a></li>
+</ul>
+
+<p>詳細は同ディレクトリの<a href="comparison.md">comparison.md</a>、および
+root直下の
+<code>EDITORIAL-FUTURE-FAMILY-C-V5-EMOTION-RECOVERY-AND-CONSTRAINT-STABILITY-TRIAL-05_REPORT.md</code>
+を参照。</p>
+</body>
+</html>

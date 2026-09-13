@@ -46,7 +46,9 @@ T-0は委任文標準の検証手順(受領した委任文を`docs/pm/delegation
 「同上」「前回と同じ」「<引数>」等のプレースホルダは禁止。実行コマンドは
 `.venv\Scripts\python.exe`(またはvenv有効化後のpython)を使用する。PATH上の
 素の`python`はMicrosoft Store版等の別環境を拾い回帰が誤検知する
-(CONSOLIDATION-118で実証)。)
+(CONSOLIDATION-118で実証)。`run_project_regression.py --pattern`のglobは
+必ず`_test`を含める(例`er003*_test_*.py`)。テスト以外のスクリプトが
+import実行される事故防止(CONSOLIDATION-124)。)
 
 ## SSOT追記文
 

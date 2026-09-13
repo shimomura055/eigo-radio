@@ -1354,6 +1354,13 @@ E-1/D-1/G-1/F-1ラベル・プレースホルダ語(同上/前回と同じ/前�
 gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_error
 全arm 0)の詳細は`tool_uses_trial_log.md`参照。
 
+D-2-補足(2026-09-13、PM-CLOSEOUT-CONSOLIDATION-124): 委任文の実行コマンドで
+`run_project_regression.py --pattern`を指定する場合、patternは必ず`_test`を
+含むテストファイル限定glob(例`er003*_test_*.py`)とする。テスト以外の
+`.py`をimport実行すると一回限りrunnerが実行されProduction記事への実API
+呼び出し・上書きが起こる(同日インシデント)。ハーネス側にも非テストpattern
+拒否ガードを追加済み。
+
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**
