@@ -1327,6 +1327,30 @@ DELEGATION_READ_EFFICIENCY_BLOCK.md`の固定ブロック(E-1/D-1/G-1/F-1、
   CLIの非文書化の内部保存パスである。CLIのアップデートで保存形式や
   パスが変更された場合は本手順の再調査が必要になる(恒久保証ではない)。
 
+### D-2 委任文標準(2026-09-13ユーザー正式採用、PRODUCTION_WIRED判定は本節末尾のGate 3表参照)
+
+**管理ID: PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-PRODUCTION-WIRING-01
+(+PM-CLOSEOUT-CONSOLIDATION-117、2026-09-13、ユーザーが施策1[委任文標準]の
+正式採用[`APPROVED_FOR_PRODUCTION`]を決定、Trial継続ではなくProduction配線
+まで実施)**: E-1/D-1/G-1/F-1(本節上記)の遵守を徹底するため、Fableは
+全委任文(Sonnet/Opusへの委任)を`docs/pm/templates/
+DELEGATION_STANDARD_TEMPLATE.md`の見出し構成(管理ID/性質・到達上限
+Status・禁止事項/固定ブロック[E-1/D-1/G-1/F-1/T-1]/ユーザー指示原文/
+事前指定Read一覧/事前指定Grep一覧+追記位置・更新位置の手順/実行コマンド
+全文[引数実値を含む、プレースホルダ禁止]/SSOT追記文/Git[明示add対象・
+コミットメッセージ・trailer]/報告[RESULT_PACKET項目])に従って作成する。
+固定ブロックにはT-0(受領した委任文を`docs/pm/delegation_log/<管理ID>.md`
+へ保存し`python docs/pm/tools/check_delegation_prompt.py --file <path>
+--json-out <path>_check.json`で検証、結果をRESULT_PACKETへ1行記録。
+FAILでも作業は継続する非ブロッキング運用)を含む。検証器
+`docs/pm/tools/check_delegation_prompt.py`は必須セクション見出し・
+E-1/D-1/G-1/F-1ラベル・プレースホルダ語(同上/前回と同じ/前回同様/
+<引数>/TBD)混入・実行コマンド各行の引数実値/絶対パス有無を機械的に
+判定し、PASS/FAILをJSON+人間可読で出力する(終了コードは常に0、記録用)。
+本標準の元になった施策1 Trial(N=6、tool_uses中央値28、Before比▲44%、
+gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_error
+全arm 0)の詳細は`tool_uses_trial_log.md`参照。
+
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**

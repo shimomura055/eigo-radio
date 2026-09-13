@@ -114,6 +114,13 @@ Status・重要背景を省略せず再掲する(同12-4-1、2026-09-12新設)�
 基本方針にせず積極的に統合・検証する(同16節)。ChatGPTはユーザーの
 明示依頼がある場合のみClaude/Fable向け指示文を作成する(同17節)。
 
+## 委任文標準(D-2、2026-09-13ユーザー正式採用・PRODUCTION_WIRED)
+
+Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に
+従って作成し、Sonnet/Opusは受領した委任文を`check_delegation_prompt.py`
+で検証して結果をRESULT_PACKETに記録する(詳細は
+`docs/pm/PM_GOVERNANCE.md` 11節D-2)。
+
 ## ループ上限(サンドイッチ運用)
 
 - Sonnetへの委任は1管理IDあたり初回+Fableからの修正・再生成指示最大3回

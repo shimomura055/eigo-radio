@@ -32,3 +32,5 @@ Sonnetはこのファイルへ書き込まない(Fable専用の観測記録)。
 (以下、Trial実行のたびに行を追加する。N=6到達時点でPM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-TRIAL-DESIGN-01_REPORT.mdの判定基準に照らして評価する。N=3時点で中間判断を行う場合は同REPORTの中間判断基準を参照する。)
 
 **N=6到達、Fable判定=VALIDATED候補(DECISION_LOG CONSOLIDATION-116参照)**: arm #1〜#6のtool_uses=51/18/26/22/36/30、中央値28。Before同種別(参考値含む)中央値50に対し▲44%。gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_errorは全arm 0。一覧外操作はarm#1(2件)・arm#3(1件)・arm#5(1件)の計4件、いずれもFable委任文側の不備(Grep指定不足・引数記載漏れ)が原因でSonnet側要因ではない。
+
+**2026-09-13 ユーザー正式採用→配線(CONSOLIDATION-117)、Trial終了**: 施策1をユーザーが`APPROVED_FOR_PRODUCTION`として正式採用し、`PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-PRODUCTION-WIRING-01`でGate 3配線を実施、Status`PRODUCTION_WIRED`(詳細は`DECISION_LOG.md` `PM-CLOSEOUT-CONSOLIDATION-117`エントリ参照)。委任文標準テンプレ(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`)+検証器(`docs/pm/tools/check_delegation_prompt.py`)へ恒久移行し、本Trial arm記録(No.1〜7)は以後追加しない。

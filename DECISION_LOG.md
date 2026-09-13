@@ -392,6 +392,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-114: Discovery Focus接続Trial(案2、VALIDATED[Trial])のSSOT反映+施策1 arm#4計測
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-115: Discovery Part A単独案(S2)Trial(VALIDATED[Trial、構造設計])のSSOT反映+施策1 arm#6
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-116: Future Family C再設計Trial-02(VALIDATED[Trial])のSSOT反映+施策1 N=6判定記録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-117: 施策1(委任文標準)のユーザー正式採用→Production配線(D-2、Gate 3実施)
 
 ---
 
@@ -6886,6 +6887,19 @@ FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01: ユーザーFeedback
 (2) 施策1(tool_uses削減)Trial N=6到達、Fable判定記録: Consolidation系6委任(CONSOLIDATION-110〜115)のtool_uses計測値は`docs/pm/tool_uses_trial_log.md`のとおり(arm #1 51、#2 18、#3 26、#4 22、#5・#6は本エントリ時点の記録値)。Before同種別中央値50に対しAfter中央値は概ね▲35〜40%。Sonnet側の見落とし・SSOT誤り・混入・修正commitは全arm 0件。一覧外操作は Fable委任文側の不備(Grep指定不足・コマンド引数の記載漏れ/誤り)に起因し4件。Fable判定: **VALIDATED候補**(tool_uses中央値▲20%以上かつSonnet側手戻り増なし)。ただし単一種別・N=6・期間短の限界あり。恒久運用化(事前指定Read/Grep一覧+実行コマンド全文を委任文標準に含める)はユーザー判断待ち(USER_DECISION_REQUIRED)。
 
 ---
+
+## PM-CLOSEOUT-CONSOLIDATION-117(2026-09-13)
+ユーザー承認原文: 「施策1: 作業効率化ルール こちらはユーザーが正式採用を決定しました。したがってStatusはAPPROVED_FOR_PRODUCTIONとして扱い、ここはTrial継続ではなく、PRODUCTION_WIREDまで完了させてください。正式運用ルールとして、委任文標準へ少なくとも以下を組み込んでください。事前指定Read一覧/事前指定Grep一覧/追記位置・更新位置の手順/実行コマンド全文/Fable側のコマンド引数漏れ・Grep指定不足を防ぐチェック。ただし、単に文書へ追記しただけでPRODUCTION_WIREDとはしません。以下をすべて確認してください。実際の標準委任経路へ反映/次回委任で自然に適用される状態/Trial専用scriptや一時指示だけに存在しない/必要なRegression・validator・governance check PASS/runtimeまたは実委任での発火証拠/CURRENT_SPEC更新/DECISION_LOG更新/OPEN_ITEMSのclose・update/必要なGit commit・push/Dangling Referenceなし/ユーザー承認内容と実際の運用が一致。上記が揃うまでPRODUCTION_WIREDと判定しないでください。」に基づき実施。
+
+実装場所: (A)`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`(委任文標準テンプレ新設)/(B)`docs/pm/tools/check_delegation_prompt.py`(検証器、必須セクション・E-1/D-1/G-1/F-1・プレースホルダ・実行コマンド引数実値/絶対パスを判定、終了コード常時0の記録用ツール)/(C)`docs/pm/tools/check_delegation_prompt_test_01.py`(合格例=本委任文の保存/不合格例2件のunit test、4/4 PASS)/(D)`docs/pm/delegation_log/PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-PRODUCTION-WIRING-01.md`+同`_check.json`(本委任文自体をrutime evidenceとして保存・検証、結果PASS)/(E)`docs/pm/tools/README.md`(ツール3件の用途)/`docs/pm/templates/DELEGATION_READ_EFFICIENCY_BLOCK.md`へT-0(委任文保存+検証手順、常時貼付)を追加/`docs/pm/PM_GOVERNANCE.md` 11節へ新小節D-2を追加。
+
+Gate 3チェック結果(11項目): 1充足(PM_GOVERNANCE D-2+PM_BRIEF+テンプレ)/2充足(固定ブロックT-0が全委任へ常時貼付される既存運用経路に乗る)/3充足(templates・tools・governanceへ恒久配置、Trial専用scriptではない)/4充足(check_delegation_prompt_test_01.pyを直接実行し4/4 PASS。ただし`run_project_regression.py --pattern "check_delegation*"`はroot直下のみを対象とする既定探索[`er0*_test_*.py`向け設計]のため`docs/pm/tools/`配下のtestを再帰収集できず「0 tests collected」となる既知の環境制約であり、本タスクのコード起因ではない[README.mdに明記、Production regression本体[485件、371 passed/7 failed/107 errors]は本タスク変更前から存在する既存の別件failure/errorで無関係と確認済み])/5充足(D、実委任文をcheck_delegation_prompt.pyで検証しPASS)/6充足(CURRENT_SPEC.md第32弾)/7充足(本エントリ)/8充足(OPEN-142行末尾へ追記)/9充足(下記commit)/10充足(新規ファイル・テンプレ相互参照パスは全て実在確認済み、旧名参照なし)/11充足(Read一覧/Grep一覧/位置手順/コマンド全文/チェックの5項目がテンプレ+検証器の必須セクションに対応)。
+
+Status: **`PRODUCTION_WIRED`**(11項目すべて充足。項目4は環境制約の注記付きだが、直接unittest実行によるPASS実測エビデンスを取得済み)。
+
+施策1 Trial最終数値(`docs/pm/tool_uses_trial_log.md`、N=6): tool_uses=51/18/26/22/36/30、中央値28。Before同種別中央値50比▲44%。gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_errorは全arm 0。一覧外操作4件(arm#1×2、arm#3×1、arm#5×1)はいずれもFable委任文側の不備(Grep指定不足・引数記載漏れ)が原因であり、本委任文標準(事前指定Read/Grep一覧+実行コマンド全文+検証器)により再発防止を図る。
+
+実費: ¥0(API呼び出しなし)。並行Trialタスク(FAMILY-A-DISCOVERY-*/er011_*/EDITORIAL-FUTURE-*/er013_*)のファイルは無変更。
 
 ## 参照元
 

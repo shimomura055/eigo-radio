@@ -12,6 +12,13 @@ F-1: transcript退避は完了後Fable側で実施する。Sonnet/Opusは対応�
 (施策1 Trial対象タスクのみ追加)T-1: 本委任文に列挙した「事前指定
 Read/Grep一覧」に従うこと。一覧外の追加Readが必要な場合は、その理由を
 RESULT_PACKETに1行で記録すること。
+T-0(2026-09-13、`PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-PRODUCTION-
+WIRING-01`/`PM-CLOSEOUT-CONSOLIDATION-117`、ユーザー正式採用に伴う恒久
+運用、施策1 Trial対象タスクに限らず全委任で常時有効): 受領した委任文を
+`docs/pm/delegation_log/<管理ID>.md`へ保存し、`python docs/pm/tools/
+check_delegation_prompt.py --file <path> --json-out <path>_check.json`
+を実行する。結果(PASS/FAIL・reasons)をRESULT_PACKETへ1行記録する
+(FAILでも作業は継続する。ブロッキングではなく記録用)。
 ---
 
 ## 使用上の注意
@@ -20,5 +27,5 @@ RESULT_PACKETに1行で記録すること。
 - 品質・Gate要件(受入条件照合、Dangling Reference確認、明示`git add`、
   回帰全件1回の実行等)を省略する指示ではない。本ブロックは読込・出力の
   最小化のみを対象とする。
-- 施策1 Trial対象外の通常委任ではT-1行を省略してよい(E-1/D-1/G-1/F-1の
-  4行は常時貼付)。
+- 施策1 Trial対象外の通常委任ではT-1行を省略してよい(E-1/D-1/G-1/F-1/T-0の
+  5行は常時貼付、T-1のみTrial対象タスク限定)。
