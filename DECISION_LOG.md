@@ -6771,3 +6771,5 @@ tool_uses削減/D-1徹底のTrial設計・新しい節約施策の採用/運用�
 ---
 
 ## 参照元
+
+- PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。
