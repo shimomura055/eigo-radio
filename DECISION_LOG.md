@@ -398,6 +398,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-120: Discovery S2完全版Trial(VALIDATED[Trial])のSSOT反映+Closeout前再棚卸し
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-121: UDR候補6件(OPEN-106/120/124/132/133/134)のReconciliation(既決表記の整理、意味変更なし)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-122: Discovery S2 Production設計完了(USER_DECISION_REQUIRED、Gate 2判断待ち)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-123: Family C長文化診断+v4再Trial(USER_DECISION_REQUIRED、¥20.53)
 
 ---
 
@@ -6971,6 +6972,9 @@ UDR候補Reconciliation: CONSOLIDATION-120の文字列棚卸しで挙がったOP
 
 ## PM-CLOSEOUT-CONSOLIDATION-122(2026-09-13)
 FAMILY-A-DISCOVERY-S2-PRODUCTION-DESIGN-01: ユーザー判断「S2について追加Trialを先に増やさず、Production設計フェーズへ進むことを承認しました。ただし、これはまだProduction実装・配線承認ではありません。現在StatusはVALIDATED→Production設計着手可であり、APPROVED_FOR_PRODUCTIONではありません。(中略)設計完了後にGate 2としてユーザー判断を求めてSTOPしてください。」に基づき¥0で設計完了。内容は上記OPEN-135追記のとおり。Status: `USER_DECISION_REQUIRED`(Gate 2、判断事項5件)。実装・配線・CURRENT_SPEC正式化なし。commit 7ea4d5d。
+
+## PM-CLOSEOUT-CONSOLIDATION-123(2026-09-13)
+EDITORIAL-FUTURE-FAMILY-C-LENGTH-DIAGNOSIS-AND-RESPEC-TRIAL-04: ユーザー判断「前回のFable推奨『別テーマでもう1本Trial』は採用しません。次の記事・次テーマには進まないでください。(中略)まず費用ゼロで、なぜFamily Cが長くなるのかを構造的に診断してください。(中略)『少し長いが許容』とする前提では進めません。(中略)別テーマTrialには進まないでください。」に基づき実施。結果とFable所見は上記OPEN-147追記のとおり。Gate 1: `USER_DECISION_REQUIRED`(語数は解消、感情強度の後退とB1 Framing QA新規課題により完全PASS未達)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。実費¥20.53。
 
 ## 参照元
 

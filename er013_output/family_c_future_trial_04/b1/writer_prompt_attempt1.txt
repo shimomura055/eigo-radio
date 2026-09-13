@@ -1,0 +1,196 @@
+テーマ: 家庭用ロボットと家事(home robots and housework)
+
+【使ってよい材料(この範囲外の具体的な現在の事実・数字・固有名詞・
+製品名を新たに作り出さないでください)】
+[WORLD_SCAFFOLD]
+scaffold_id: SC-001
+category: change_direction
+statement: Home robot adoption is concentrated in floor cleaning, while broader household robot use remains less established.
+
+scaffold_id: SC-005
+category: capability_now
+statement: Some robot vacuums can recognize obstacles and move selected objects with a mechanical arm when configured through an app.
+
+scaffold_id: SC-006
+category: change_direction
+statement: Mobile home robots are being developed for laundry, bed making, and tidying, with remote assistance available when needed.
+
+scaffold_id: SC-008
+category: change_direction
+statement: Rollouts of new home robots are planned to begin in limited regions before broader national availability.
+
+scaffold_id: SC-009
+category: limitation_now
+statement: A mobile home robot still needs regular charging and dedicated floor space, and its working time depends on the task and load.
+
+scaffold_id: SC-010
+category: limitation_now
+statement: Robot vacuums remain mainly suited to routine floor cleaning and can underperform manual vacuums on some surfaces; they do not cover stairs or ceilings.
+
+scaffold_id: SC-011
+category: limitation_now
+statement: Deep cleaning remains a limitation, especially in less suitable rooms or on challenging surfaces.
+
+scaffold_id: SC-012
+category: limitation_now
+statement: Reliable avoidance of cords, pet waste, and other household obstacles is still not taken for granted.
+
+scaffold_id: SC-013
+category: change_direction
+statement: During an automation trial, manual cleaning fell while cleaning became more frequent and total cleaning activity increased.
+
+scaffold_id: SC-014
+category: change_direction
+statement: Research estimates link robot vacuum use with less housework time, while not finding a clear change in sleep time.
+
+scaffold_id: SC-015
+category: limitation_now
+statement: The link between robot vacuum use and work participation remains associative rather than proof that the robot caused the change.
+
+scaffold_id: SC-016
+category: capability_now
+statement: Robot vacuum owners can report high satisfaction even when their device does not fully replace manual cleaning.
+
+scaffold_id: SC-023
+category: change_direction
+statement: Home robot development is moving beyond vacuuming toward mobile machines with dexterous hands, sensing, and links to household appliances for household chores.
+
+scaffold_id: SC-024
+category: limitation_now
+statement: Broader home robots remain at the announcement or demonstration stage, without established consumer pricing, mass production, or independent home evaluation.
+
+[FUTURE_ASSUMPTION]
+assumption_id: FA-EXPANSION
+assumption: もし限られた地域での導入が広がり、家庭向けの生産と提供の条件が整えば、家庭ロボットは床掃除だけでなく、洗濯、ベッド整え、片付けなどを組み合わせて支援する方向へ進む。ただし、充電場所、専用の床面、作業内容による稼働時間、家庭内の障害物への対応が実用化の条件になる。
+based_on: SC-001, SC-006, SC-008, SC-009, SC-012, SC-023, SC-024
+
+assumption_id: FA-SHIFT
+assumption: もし家事支援が日常的に使われるようになれば、家事はなくなるのではなく、手作業から確認、やり直し、難しい場所への対応へと重心が移る可能性がある。掃除の回数や総活動が増える家庭もあり、睡眠や仕事への影響がロボットだけで決まるとは限らない。
+based_on: SC-010, SC-011, SC-012, SC-013, SC-014, SC-015, SC-016
+
+[IMAGINED_FUTURE]
+scene_id: SCENE-LOCAL-ASSISTANCE
+timeframe: 数年後、導入地域が広がり始める頃
+scene_summary: 床掃除を中心に、ロボットが障害物を避け、設定された物を動かし、必要な場面では遠隔の助けを受ける。住人は充電場所と専用の床面を確保し、コードや汚れなどの例外は手作業で処理する。
+grounded_in: FA-EXPANSION, SC-005, SC-006, SC-009, SC-012
+
+scene_id: SCENE-DIFFERENT-HOUSEHOLDS
+timeframe: 普及が進んだ後、家庭ごとの使い方が分かれる時期
+scene_summary: ある家庭では掃除の回数が増え、手作業の床掃除が減る。別の家庭では、階段や天井、深い汚れ、複雑な障害物への対応が残り、ロボットの監督や手作業が続く。ロボットは満足を生む一方で、家事そのものが一様に消えるわけではない。
+grounded_in: FA-SHIFT, SC-010, SC-011, SC-012, SC-013, SC-014, SC-016
+
+[STRUCTURE_RATIONALE_REFERENCE_ONLY]
+v4診断respecにより、元の3場面から2場面(scene_id: SCENE-DIFFERENT-HOUSEHOLDS, SCENE-LOCAL-ASSISTANCE)へ決定的に絞り込んだ(中間の場面を除外)。1つ目の場面=変化の始まりと期待寄り、2つ目の場面=定着後の葛藤・懸念寄りとして描くこと。
+
+
+【記事の主役(最重要)】
+この記事の主役は、未来の生活場面・そこで何が起きるか・それが人の生活や
+感情や選択にもたらすもの・楽しみや期待や不安や葛藤です。Research・現在の
+事実・統計・製品情報は、その未来像を無根拠にしないための内部の足場に
+すぎません。読者に説明する必要がなければ、本文には出さないでください。
+
+【固く禁止する表現(1つでも本文に出た場合、記事は不合格になります)】
+- 統計値・比率・パーセンテージ・年次データ・具体的な販売台数や調査対象
+  人数などの数字(想像した未来の時間軸を表す表現[例: "around 2035"、
+  "a decade from now"]は数字を含んでも構いません。禁止されるのは調査・
+  統計・過去/現在の実績データとしての数字です)。
+- "study/studies/research/survey/report/researcher/scientist"のような、
+  研究・調査であることを示す語、および"found/shows/showed/suggests/
+  indicates/according to"のような研究結果を読者へ説明する言い回し。
+- 製品名・型番・企業名・ブランド名の列挙。
+- Researchの結果を読者へ解説する構造(「〜という調査結果があります」
+  「〜という研究が示しています」のように、記事が現在の根拠を説明する
+  ための記事になること)。
+- 記事を短くするために、場面や感情の描写を削って上記の研究解説的な
+  要約表現へ戻すこと(分量調整は、重複した言い回し・説明的な接続文を
+  削ることで行ってください)。
+
+【現在の事実に触れてよい例外(最大2件のみ)】
+未来像の説得力にどうしても必要で、読者に説明が必要な現在の事実がある
+場合に限り、記事全体で最大2件まで、Worldscaffoldの
+statementを平易に言い換えた一文として本文に含めてよいです。その場合は
+必ず次の形式で挟んでください(数字・出典・固有名詞は入れないでください、
+Worldscaffoldの言い換えのみ):
+
+[[FACT: WS-003]]
+(ここに、Worldscaffoldのいずれか1項目を平易に言い換えた1文。数字・
+出典・固有名詞は含めないでください。)
+[[/FACT]]
+
+このマーカーを使わない現在事実への言及(地の文でさりげなく現在の様子に
+触れる程度の1文)は、統計・研究・製品情報でない限り問題ありません。
+
+【場面数・構成(重要な変更点)】
+【使ってよい材料】の[IMAGINED_FUTURE]に列挙されている場面の数だけを
+使ってください(材料にない場面を新たに追加しない、材料にある場面を
+省略しない)。1つ目の場面は、変化が始まったばかりの時期として、
+主に期待・意欲を中心に描いてください。2つ目の場面(材料に2つ目が
+ある場合)は、その変化が定着したあとの時期として、主に葛藤・懸念を
+中心に描いてください(両方の感情を両方の場面に均等に詰め込まないで
+ください。各場面で行動または短い台詞により示す具体的な感情は1つに
+絞ってください)。
+
+【最低限の構成要素(型は固定しません。テーマに最も合う展開を選んで
+ください)】
+1. 入口: 統計から始めず、いきなり生活場面から始めてください。時間軸
+   (いつの未来を描くか)は、場面の中で自然に伝わるようにしてください。
+2. 場面で起きること: 具体的な未来の場面で、何が起きるかを描いてください。
+3. 人の生活・感情・選択への影響: その出来事が、登場する人(または聞き手
+   自身)の生活・感情・選択にどう影響するかを、行動または短い台詞
+   (セリフ)で示してください(単なる形容詞の羅列[例: "この状況は
+   不安だ"]ではなく、何をした/何を言ったかで示す)。
+4. 全ての場面を描き終えたあと、記事の終わり近くに、複数の場面にまたがる
+   一般的な示唆をまとめる段落を「1つだけ」書いてください。期待・希望と、
+   不安・懸念という2つの感情の対立の対比は、この統合示唆段落の中で
+   1回だけ行ってください(個々の場面の中や、場面ごとの移行文では、この
+   対比を繰り返さないでください)。
+5. 持ち帰りの一行: 記事の終わりに、聞き手が持ち帰る印象(わくわく/
+   不安の余韻)を一行で残してください。事実の要約にしないでください。
+
+構成は##等の短い見出しで区切ってください(後工程での区切り把握のため)。
+見出しの文言・数は自由です。
+
+【想像した未来の場面の書き方】
+具体的な未来の場面・情景を描くときは、必ず次の形式で挟んでください:
+
+[[IMAGINED: around 2035]]
+(ここに、その場面の英語の本文。読み手が「これは想像された未来だ」と
+自然に理解できる入口の一文から始めてください。例: "Picture a Tuesday
+evening in 2035, when ..."のような、時間軸を含む自然な導入文。)
+[[/IMAGINED]]
+
+この枠の中では、入口の一文で既に「これは想像だ」と示せているため、
+"might"/"could"/"may"/"perhaps"/"possibly"のようなhedging語を使う
+必要はありません。現在形・断定調で、情景・人物の行動・選択・感情を
+はっきりと描いてください(例: "The robot pauses. She watches it,
+unsure whether to help."のように)。
+
+**この枠は、場面の情景描写だけで終わらせず、その場面から直接生まれる
+人物の反応・気持ち・その場での選択までを、同じ枠の中に含めてください**
+(例: 場面の中でロボットが失敗し、その場でその人がどう感じ、次に
+何をするかまでを枠内で描く)。枠を閉じるのは、その1つの具体的な場面
+から離れ、複数の場面にまたがる一般的な示唆・まとめ・別の話題へ移る
+ときにしてください。ただし、この場面の中で「現在は既に〜だ」という
+現在の事実の主張を新たに作らないでください。
+
+枠を離れて、全場面終了後の統合示唆段落を書くとき(例: 「もしこうした
+変化が広がれば」)は、従来どおり"might"/"could"のようなhedgingや
+"If ... , ..."の条件節を使い、未来を確定事実であるかのように断定
+しないでください。個々の場面の直後には、この統合示唆段落を置かないで
+ください(全場面を描き終えたあとに1回だけ置いてください)。
+
+上記のマーカー(角括弧2つ)は、実際に本文中にそのまま書いてください
+(このマーカーは最終読者向け出力では自動的に取り除かれます)。
+
+【内部メモ(読者には見せません)】
+本文の最後に、以下の形式で内部メモを1つだけ書いてください(読者向け
+出力からは自動的に完全に取り除かれます)。なぜこの場面数・間隔・
+場面の役割分担を選んだかを1〜2文で説明してください:
+
+[[META]]
+(この記事の場面数・間隔・役割分担を選んだ理由。1〜2文。)
+[[/META]]
+
+B1レベル: A2よりやや複雑な文・仮定法・条件構文を使ってよいですが、難解な専門語は避けてください。[[IMAGINED]]の枠外・移行文での仮定・未来のhedgingは"might"/"could"に加え、やや複雑な仮定法("If this trend continued, cities could ..."のような)も使ってよいです。英文本文(マーカーを除いた読者向け本文)の分量は、全体で450〜620語程度を目安にしてください(超過している場合は、場面や感情の描写を削るのではなく、重複した言い回し・説明的な接続文を削って短くしてください)。各[[IMAGINED]]場面は、目安として140語程度までにまとめてください(場面+反応+選択のみに絞り、複数の感情を詰め込まないでください)。
+
+英文のみを出力してください(日本語の解説・見出し訳は不要です)。

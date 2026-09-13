@@ -1,0 +1,49 @@
+{
+  "parsed": {
+    "verdict": "REVIEW_REQUIRED",
+    "contradictions": [],
+    "unsupported_specific_claims": [
+      "「家事は消えるのではなく移動する」という中心命題は、記事内では将来予測として示されており、現時点で一般化できる検証済み事実とは確認できない。",
+      "「人は経路確認、コード除去、階段清掃、深い汚れへの対応により多くの時間を費やす」という家事の再配分は、現行のロボット掃除機がコードや障害物の影響を受け、階段を清掃できないという制約とは部分的に整合する。一方、「より多くの時間を費やす」という将来の行動変化、特に深い汚れへの対応については直接の裏付けがない。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/20500?utm_source=openai))",
+      "「ルーティン作業が容易に感じられるため、家によってはより頻繁に清掃する」という因果関係は、小規模な家庭研究で清掃習慣や頻度が変化し得ることは示されているものの、家庭全般に当てはまる確定的事実ではない。([doi.org](https://doi.org/10.1145/1228716.1228734?utm_source=openai))",
+      "「家族がロボットに与える空間や充電時期を決める」という表現は、現行機でユーザーが設置場所や清掃スケジュールを設定する面とは整合するが、ロボットはバッテリー低下時に自動でドックへ戻って充電する機種もあるため、家族が常に充電時期を決めるという意味では不正確になり得る。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/31227?utm_source=openai))",
+      "「ケア、訂正、責任が人間の手に残る」という結論は、現行機で障害物除去やセンサー・ブラシの清掃など人間の介入が必要とされることから一定の妥当性はあるが、将来の家庭用ロボット全般について確認済みの事実ではない。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/20500?utm_source=openai))"
+    ],
+    "verified_claims_summary": [
+      "現行のロボット掃除機は、コード、靴ひも、衣類などがローラーに絡んだり、障害物によって停止したりする可能性があり、メーカーは床を片付けてから使用するよう案内している。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/64102?utm_source=openai))",
+      "ロボット掃除機のドックには開けたスペースや障害物のない経路が必要で、階段から離して設置するよう案内されている。複数の機種では、清掃終了時やバッテリー低下時に自動でドックへ戻る。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/31227?utm_source=openai))",
+      "一般的なロボット掃除機は階段を上れず、階段の下など到達できない場所を清掃できない機種がある。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/20500?utm_source=openai))",
+      "家庭へのロボット掃除機導入が清掃活動や日課を変え得ることは、少人数のエスノグラフィー研究で報告されている。ただし、これらの研究はサンプルが限定されており、すべての家庭に一般化できるとは確認できない。([doi.org](https://doi.org/10.1145/1228716.1228734?utm_source=openai))"
+    ],
+    "sources": [
+      "iRobot公式サポート：コードや障害物への対応、ドックの設置、階段回避、充電動作。([homesupport.irobot.com](https://homesupport.irobot.com/articles/en_US/Knowledge/31227?utm_source=openai))",
+      "ECOVACS公式情報：ロボット掃除機の階段対応、コード・障害物、ドック設置に関する説明。([ecovacs.com](https://www.ecovacs.com/us/blog/vacuum-robot-mop-vs-regular-vacuum?utm_source=openai))",
+      "ACM掲載の家庭内ロボット掃除機研究：ロボット導入が清掃活動や製品利用を変えたという初期研究。([doi.org](https://doi.org/10.1145/1228716.1228734?utm_source=openai))",
+      "Finkらによる6か月・9世帯のエスノグラフィー研究：家庭内でのロボット掃除機の利用、清掃日課、導入後の環境変化。([infoscience.epfl.ch](https://infoscience.epfl.ch/record/186330/files/12369_2013_Article_190.pdf?utm_source=openai))"
+    ],
+    "notes": "想像した未来の場面として除外された2段落は判定対象外とした。対象段落は断定を避けた予測表現が中心で、現行ロボット掃除機の制約とは概ね整合するためFAILではない。ただし、家事がどのように再配分されるか、清掃頻度が増えるか、人間の責任が将来も残るかについては、確認済みの具体的事実ではなく、限定的な研究や現行製品の仕様からの推測にとどまるためREVIEW_REQUIREDと判定する。"
+  },
+  "final_status": "FACT_CHECK_COMPLETED",
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0625e91f66eff78a006aa672de335087d0bca5ee5b7a5bf0f2",
+  "search_usage": {
+    "web_search_call_count": 4,
+    "queries": [
+      "site:irobot.com support Roomba stairs cords charging dock obstacles",
+      "site:support.roborock.com robot vacuum stairs cords charging dock obstacles",
+      "robot vacuum cleaner user study cleaning frequency housework academic paper",
+      "site:ecovacs.com robot vacuum stairs cords charging dock obstacles",
+      "site:doi.org robot vacuum household cleaning routine study",
+      "site:sciencedirect.com robotic vacuum cleaner household cleaning frequency study",
+      "site:dl.acm.org domestic robot vacuum housework user study",
+      "site:researchgate.net robot vacuum cleaner household cleaning routine study",
+      "site:homesupport.irobot.com stairs robot cannot clean stairs Roomba",
+      "site:support.roborock.com stairs robot vacuum cannot clean stairs",
+      "site:ecovacs.com robot vacuum stairs cannot clean stairs",
+      "robot vacuum stairs limitation official manual",
+      "\"Living with a Vacuum Cleaning Robot\" Springer DOI 10.1007/s12369-013-0190-2",
+      "site:link.springer.com 10.1007/s12369-013-0190-2",
+      "site:dl.acm.org 1228734 Roomba cleaning activities"
+    ]
+  }
+}

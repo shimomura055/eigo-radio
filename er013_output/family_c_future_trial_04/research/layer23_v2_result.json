@@ -1,0 +1,93 @@
+{
+  "prompt": "テーマ: 家庭用ロボットと家事(home robots and housework)\n\n【World Scaffold(現在できること/できないこと/変化の方向。数値・出典・\n固有名詞は含まれていません。変更禁止)】\n[WORLD_SCAFFOLD]\nscaffold_id: SC-001\ncategory: change_direction\nstatement: Home robot adoption is concentrated in floor cleaning, while broader household robot use remains less established.\n\nscaffold_id: SC-002\ncategory: capability_now\nstatement: Some adults already own robot vacuums.\n\nscaffold_id: SC-003\ncategory: capability_now\nstatement: Some adults already own robot vacuums with AI features, although this is a different measure from general robot vacuum ownership.\n\nscaffold_id: SC-004\ncategory: change_direction\nstatement: Interest in robots that help with chores extends beyond established ownership, but interest alone is not proof of adoption.\n\nscaffold_id: SC-005\ncategory: capability_now\nstatement: Some robot vacuums can recognize obstacles and move selected objects with a mechanical arm when configured through an app.\n\nscaffold_id: SC-006\ncategory: change_direction\nstatement: Mobile home robots are being developed for laundry, bed making, and tidying, with remote assistance available when needed.\n\nscaffold_id: SC-007\ncategory: limitation_now\nstatement: The announced prices and payment plans for some mobile home robots are reservation terms, not evidence of completed mass-market sales.\n\nscaffold_id: SC-008\ncategory: change_direction\nstatement: Rollouts of new home robots are planned to begin in limited regions before broader national availability.\n\nscaffold_id: SC-009\ncategory: limitation_now\nstatement: A mobile home robot still needs regular charging and dedicated floor space, and its working time depends on the task and load.\n\nscaffold_id: SC-010\ncategory: limitation_now\nstatement: Robot vacuums remain mainly suited to routine floor cleaning and can underperform manual vacuums on some surfaces; they do not cover stairs or ceilings.\n\nscaffold_id: SC-011\ncategory: limitation_now\nstatement: Deep cleaning remains a limitation, especially in less suitable rooms or on challenging surfaces.\n\nscaffold_id: SC-012\ncategory: limitation_now\nstatement: Reliable avoidance of cords, pet waste, and other household obstacles is still not taken for granted.\n\nscaffold_id: SC-013\ncategory: change_direction\nstatement: During an automation trial, manual cleaning fell while cleaning became more frequent and total cleaning activity increased.\n\nscaffold_id: SC-014\ncategory: change_direction\nstatement: Research estimates link robot vacuum use with less housework time, while not finding a clear change in sleep time.\n\nscaffold_id: SC-015\ncategory: limitation_now\nstatement: The link between robot vacuum use and work participation remains associative rather than proof that the robot caused the change.\n\nscaffold_id: SC-016\ncategory: capability_now\nstatement: Robot vacuum owners can report high satisfaction even when their device does not fully replace manual cleaning.\n\nscaffold_id: SC-017\ncategory: capability_now\nstatement: Research robots have learned a broad set of household tasks from brief human demonstrations and model adaptation in real homes.\n\nscaffold_id: SC-018\ncategory: limitation_now\nstatement: These results show research feasibility, not the performance of a consumer general-purpose household robot.\n\nscaffold_id: SC-019\ncategory: capability_now\nstatement: A research system can learn individual dishwashing steps from a human demonstration.\n\nscaffold_id: SC-020\ncategory: limitation_now\nstatement: Completing the whole dishwashing task remains unreliable in research settings, and this does not show that mass-market products are available.\n\nscaffold_id: SC-021\ncategory: capability_now\nstatement: A humanoid robot has demonstrated autonomous laundry folding in a controlled demonstration.\n\nscaffold_id: SC-022\ncategory: limitation_now\nstatement: The demonstration does not establish reliable performance with varied household clothing or practical mass production.\n\nscaffold_id: SC-023\ncategory: change_direction\nstatement: Home robot development is moving beyond vacuuming toward mobile machines with dexterous hands, sensing, and links to household appliances for household chores.\n\nscaffold_id: SC-024\ncategory: limitation_now\nstatement: Broader home robots remain at the announcement or demonstration stage, without established consumer pricing, mass production, or independent home evaluation.\n\nscaffold_id: SC-025\ncategory: change_direction\nstatement: Research is moving toward general-purpose home robots that combine language, vision, planning, physical action, feedback, and adaptation in open-ended home environments.\n\n\n上記World Scaffoldだけを根拠として、以下2種類の材料を作成してください。\n\n1. FUTURE_ASSUMPTION(明示的な仮定・条件): 「もしこの流れが続けば」\n   「この技術が実用化されれば」のような、読み手にも仮定だとわかる\n   仮定を1〜4件。各仮定について、based_onにWorld Scaffoldのscaffold_idを\n   1件以上指定してください(複数のscaffold項目からの一般的な推論で、\n   特定の単一項目に紐づけられない場合のみ、based_onへ\"NONE_GENERAL_INFERENCE\"を\n   使ってください)。\n\n2. IMAGINED_FUTURE(想像した未来の場面材料): このテーマにとって最も\n   意味のある未来の描き方を選んでください。数年後→10年後のような複数\n   時点、複数の別未来(希望/不安などの分岐)、単一の時点を深く描く、など\n   構成は自由です。機械的に3時点へ当てはめる必要はありません(意味が\n   なければ1通りでも十分です)。各sceneについて、grounded_inに\n   FUTURE_ASSUMPTIONのassumption_id、またはWorld Scaffoldのscaffold_idを\n   1件以上指定してください。timeframeには、このテーマに合う具体的な\n   時間軸表現を入れてください。scene_summaryは短い日本語の下書きで\n   構いません(実際の英語本文はこの後Writerが別途執筆します)。また、\n   なぜこの時点数・構成を選んだかを一言でstructure_rationaleに記して\n   ください(このrationaleはWriterへの参考メモであり、読者向け本文には\n   出しません)。\n\n出力は指定のJSON形式のみで返してください。",
+  "raw_text": "{\"structure_rationale\":\"床掃除から家事全体への広がり、学習による分担、そして家事が完全には消えない分岐を追う構成にした。\",\"future_assumptions\":[{\"assumption_id\":\"FA-EXPANSION\",\"assumption\":\"もし限られた地域での導入が広がり、家庭向けの生産と提供の条件が整えば、家庭ロボットは床掃除だけでなく、洗濯、ベッド整え、片付けなどを組み合わせて支援する方向へ進む。ただし、充電場所、専用の床面、作業内容による稼働時間、家庭内の障害物への対応が実用化の条件になる。\",\"based_on\":[\"SC-001\",\"SC-006\",\"SC-008\",\"SC-009\",\"SC-012\",\"SC-023\",\"SC-024\"]},{\"assumption_id\":\"FA-LEARNING\",\"assumption\":\"もし実際の家庭での学習と適応が一般向けに実用化されれば、人の短い実演や家庭ごとの指示から家事の手順を覚え、環境に合わせて作業を調整するロボットが成立する可能性がある。ただし、一部の手順を覚えることと、一連の家事を安定して完了することは別である。\",\"based_on\":[\"SC-017\",\"SC-018\",\"SC-019\",\"SC-020\",\"SC-021\",\"SC-022\",\"SC-025\"]},{\"assumption_id\":\"FA-SHIFT\",\"assumption\":\"もし家事支援が日常的に使われるようになれば、家事はなくなるのではなく、手作業から確認、やり直し、難しい場所への対応へと重心が移る可能性がある。掃除の回数や総活動が増える家庭もあり、睡眠や仕事への影響がロボットだけで決まるとは限らない。\",\"based_on\":[\"SC-010\",\"SC-011\",\"SC-012\",\"SC-013\",\"SC-014\",\"SC-015\",\"SC-016\"]}],\"imagined_futures\":[{\"scene_id\":\"SCENE-LOCAL-ASSISTANCE\",\"timeframe\":\"数年後、導入地域が広がり始める頃\",\"scene_summary\":\"床掃除を中心に、ロボットが障害物を避け、設定された物を動かし、必要な場面では遠隔の助けを受ける。住人は充電場所と専用の床面を確保し、コードや汚れなどの例外は手作業で処理する。\",\"grounded_in\":[\"FA-EXPANSION\",\"SC-005\",\"SC-006\",\"SC-009\",\"SC-012\"]},{\"scene_id\":\"SCENE-HOUSEHOLD-LEARNING\",\"timeframe\":\"さらに先、家庭向けの学習型ロボットが実用化された頃\",\"scene_summary\":\"住人が洗濯物の扱い、食器洗い、片付けの手順を短く見せると、ロボットは家庭の環境に合わせて作業を試す。うまくいかない衣類や食器、難しい場所では人が引き継ぐため、家事の完全な無人化ではなく、教えることと例外対応を含む分担になる。\",\"grounded_in\":[\"FA-LEARNING\",\"SC-006\",\"SC-017\",\"SC-019\",\"SC-020\",\"SC-021\",\"SC-022\",\"SC-025\"]},{\"scene_id\":\"SCENE-DIFFERENT-HOUSEHOLDS\",\"timeframe\":\"普及が進んだ後、家庭ごとの使い方が分かれる時期\",\"scene_summary\":\"ある家庭では掃除の回数が増え、手作業の床掃除が減る。別の家庭では、階段や天井、深い汚れ、複雑な障害物への対応が残り、ロボットの監督や手作業が続く。ロボットは満足を生む一方で、家事そのものが一様に消えるわけではない。\",\"grounded_in\":[\"FA-SHIFT\",\"SC-010\",\"SC-011\",\"SC-012\",\"SC-013\",\"SC-014\",\"SC-016\"]}]}",
+  "parsed": {
+    "structure_rationale": "床掃除から家事全体への広がり、学習による分担、そして家事が完全には消えない分岐を追う構成にした。",
+    "future_assumptions": [
+      {
+        "assumption_id": "FA-EXPANSION",
+        "assumption": "もし限られた地域での導入が広がり、家庭向けの生産と提供の条件が整えば、家庭ロボットは床掃除だけでなく、洗濯、ベッド整え、片付けなどを組み合わせて支援する方向へ進む。ただし、充電場所、専用の床面、作業内容による稼働時間、家庭内の障害物への対応が実用化の条件になる。",
+        "based_on": [
+          "SC-001",
+          "SC-006",
+          "SC-008",
+          "SC-009",
+          "SC-012",
+          "SC-023",
+          "SC-024"
+        ]
+      },
+      {
+        "assumption_id": "FA-LEARNING",
+        "assumption": "もし実際の家庭での学習と適応が一般向けに実用化されれば、人の短い実演や家庭ごとの指示から家事の手順を覚え、環境に合わせて作業を調整するロボットが成立する可能性がある。ただし、一部の手順を覚えることと、一連の家事を安定して完了することは別である。",
+        "based_on": [
+          "SC-017",
+          "SC-018",
+          "SC-019",
+          "SC-020",
+          "SC-021",
+          "SC-022",
+          "SC-025"
+        ]
+      },
+      {
+        "assumption_id": "FA-SHIFT",
+        "assumption": "もし家事支援が日常的に使われるようになれば、家事はなくなるのではなく、手作業から確認、やり直し、難しい場所への対応へと重心が移る可能性がある。掃除の回数や総活動が増える家庭もあり、睡眠や仕事への影響がロボットだけで決まるとは限らない。",
+        "based_on": [
+          "SC-010",
+          "SC-011",
+          "SC-012",
+          "SC-013",
+          "SC-014",
+          "SC-015",
+          "SC-016"
+        ]
+      }
+    ],
+    "imagined_futures": [
+      {
+        "scene_id": "SCENE-LOCAL-ASSISTANCE",
+        "timeframe": "数年後、導入地域が広がり始める頃",
+        "scene_summary": "床掃除を中心に、ロボットが障害物を避け、設定された物を動かし、必要な場面では遠隔の助けを受ける。住人は充電場所と専用の床面を確保し、コードや汚れなどの例外は手作業で処理する。",
+        "grounded_in": [
+          "FA-EXPANSION",
+          "SC-005",
+          "SC-006",
+          "SC-009",
+          "SC-012"
+        ]
+      },
+      {
+        "scene_id": "SCENE-HOUSEHOLD-LEARNING",
+        "timeframe": "さらに先、家庭向けの学習型ロボットが実用化された頃",
+        "scene_summary": "住人が洗濯物の扱い、食器洗い、片付けの手順を短く見せると、ロボットは家庭の環境に合わせて作業を試す。うまくいかない衣類や食器、難しい場所では人が引き継ぐため、家事の完全な無人化ではなく、教えることと例外対応を含む分担になる。",
+        "grounded_in": [
+          "FA-LEARNING",
+          "SC-006",
+          "SC-017",
+          "SC-019",
+          "SC-020",
+          "SC-021",
+          "SC-022",
+          "SC-025"
+        ]
+      },
+      {
+        "scene_id": "SCENE-DIFFERENT-HOUSEHOLDS",
+        "timeframe": "普及が進んだ後、家庭ごとの使い方が分かれる時期",
+        "scene_summary": "ある家庭では掃除の回数が増え、手作業の床掃除が減る。別の家庭では、階段や天井、深い汚れ、複雑な障害物への対応が残り、ロボットの監督や手作業が続く。ロボットは満足を生む一方で、家事そのものが一様に消えるわけではない。",
+        "grounded_in": [
+          "FA-SHIFT",
+          "SC-010",
+          "SC-011",
+          "SC-012",
+          "SC-013",
+          "SC-014",
+          "SC-016"
+        ]
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_00e368501e87b584006aa65e55e4c487d082c2d40a1ea872de"
+}
