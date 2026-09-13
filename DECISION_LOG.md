@@ -394,6 +394,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-116: Future Family C再設計Trial-02(VALIDATED[Trial])のSSOT反映+施策1 N=6判定記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-117: 施策1(委任文標準)のユーザー正式採用→Production配線(D-2、Gate 3実施)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-118: Gate 3項目4(Regression PASS)再検証+F-1文言是正
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-119: Future Family C最終調整Trial-03(VALIDATED[Trial])のSSOT反映+委任コマンドのvenv標準化
 
 ---
 
@@ -6953,6 +6954,10 @@ docs.pm.tools.check_delegation_prompt_test_01 -v`)を併記(既存の
 実費: ¥0(API呼び出しなし)。Productionコード(er0*)無編集。並行Trial
 タスク(FAMILY-A-DISCOVERY-*/er011_*/EDITORIAL-FUTURE-*/er013_*)の
 ファイルは無変更。
+
+## PM-CLOSEOUT-CONSOLIDATION-119(2026-09-13)
+EDITORIAL-FUTURE-FAMILY-C-FINAL-TUNING-TRIAL-03: ユーザー確定判断「hedging削減+A2短縮の最終調整Trialを進めてください。(中略)想像枠内のmay / could等のhedging過多を抑える/想像であることを入口で明示した後は、場面内ではより自然で力のある語りを許容する/『わくわく』『不安』『葛藤』の感情強度を上げる/A2を標準分量へ近づける/Fact Safetyは一切弱めない/研究・データ解説っぽさを再流入させない。(中略)今回到達してよいStatusは最大VALIDATEDです。」に基づき実施。結果は上記OPEN-147追記のとおり。Gate 1: `VALIDATED`(Trial)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。実費¥13.55。
+運用是正(Fable自律、既存ルールの意味不変): 委任文標準の実行コマンドは`.venv\Scripts\python.exe`を明記(CONSOLIDATION-118で素の`python`が別環境を拾い回帰が誤検知した事象の再発防止)。
 
 ## 参照元
 

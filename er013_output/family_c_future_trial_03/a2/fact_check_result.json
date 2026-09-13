@@ -1,0 +1,44 @@
+{
+  "parsed": {
+    "verdict": "REVIEW_REQUIRED",
+    "contradictions": [],
+    "unsupported_specific_claims": [
+      "「Homes would need a charging place and clear floor space」は、現在のロボット掃除機には概ね当てはまるが、将来の家庭用ロボット全般に普遍化できる根拠は確認できない。",
+      "「A crowded room could turn help into supervision」「saved time could become time spent answering alerts and preparing rooms」は、起こり得る結果としては理解できるものの、具体的な実証研究や条件が示されていない。",
+      "「short demonstrations could carry personal meaning」「A robot could learn ... how a bed should feel」は、デモンストレーション学習の技術的可能性と、個人的な意味やベッドの感覚を学習できることを混同しており、後者は確認できない。",
+      "「a learned step would not guarantee a reliable chain」は、家庭環境でのロボット学習が複数の失敗要因を伴うという研究とは整合するが、記事中では一般論として提示され、信頼性の程度や条件が未特定である。",
+      "「People could become teachers and rescuers as well as users」「teaching is another chore」は、利用者の役割や負担に関する解釈・予測であり、記事内で裏付けとなる調査結果が示されていない。",
+      "「Satisfaction could grow even when the robot never replaces a person」「People could gain time」は、利用者の満足度や時間節約という結果を示唆するが、具体的な調査対象・測定結果がない。"
+    ],
+    "verified_claims_summary": [
+      "家庭内で人間の短時間の実演からロボットに作業を学習させる研究は存在する。Dobb-Eは、約5分の実演を使った学習を家庭環境で検証し、10戸・109タスクで81%の成功率を報告している。ただし、これは研究システムの結果であり、一般家庭向け製品の性能を意味しない。 ([arxiv.org](https://arxiv.org/abs/2311.16098?utm_source=openai))",
+      "ベッドメイキングや部屋の片付けを対象にした研究実証は存在する。一方で、知覚、乱雑な環境、柔軟物の操作、障害物回避、長い作業手順などが課題として報告されている。 ([arxiv.org](https://arxiv.org/abs/1711.02525?utm_source=openai))",
+      "現在のロボット掃除機では、充電ドックの設置場所や周囲の空間が必要で、床上の過剰な散乱物を取り除くよう公式案内されている。この点は記事の「充電場所と床面の確保」という記述を部分的に支持するが、家庭用ロボット全般への一般化までは支持しない。 ([answers.irobot.com](https://answers.irobot.com/knowledge/10501?utm_source=openai))",
+      "記事の大部分は「could」「would」「might」による未来の可能性や主観的解釈で、検証可能な現在の具体的事実としては限定的である。明確な矛盾は確認できないが、技術的可能性と利用者の心理・満足度・時間節約を同一視する部分は未確認である。"
+    ],
+    "sources": [
+      "Nur Muhammad Mahi Shafiullah et al., “On Bringing Robots Home” — 家庭での短時間の実演学習と実環境試験。 ([arxiv.org](https://arxiv.org/abs/2311.16098?utm_source=openai))",
+      "Michael Laskey et al., “Learning Robust Bed Making using Deep Imitation Learning with DART” — ベッドメイキングの模倣学習研究。 ([arxiv.org](https://arxiv.org/abs/1711.02525?utm_source=openai))",
+      "Tatsuya Matsushima et al., “World Robot Challenge 2020 — Partner Robot” — 実家庭環境での片付けと課題。 ([arxiv.org](https://arxiv.org/abs/2207.10106?utm_source=openai))",
+      "iRobot公式サポート・製品情報 — 床の散乱物、充電ドック、必要なクリアランスに関する案内。 ([answers.irobot.com](https://answers.irobot.com/knowledge/10501?utm_source=openai))",
+      "Roborock公式サポート — 充電ドック周囲の設置スペースに関する案内。 ([support.roborock.com](https://support.roborock.com/hc/en-us/articles/34112966527001-Where-should-I-position-my-device?utm_source=openai))"
+    ],
+    "notes": "判定対象外とされた想像上の場面は除外した。本文は明示的な条件文・仮定表現が多く、現実の出来事を断定してはいないためFAILではない。ただし、監視・救助・負担・満足度・時間節約・個人的意味といった心理的または因果的な含意は、確認可能な具体的根拠がなく、REVIEW_REQUIREDとした。"
+  },
+  "final_status": "FACT_CHECK_COMPLETED",
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_08d529da3334a8df006aa666c97bc487d0ac36a84e7f7562c5",
+  "search_usage": {
+    "web_search_call_count": 2,
+    "queries": [
+      "site:arxiv.org home robot learning from human demonstrations laundry bed making tidying household tasks",
+      "site:ieeexplore.ieee.org household robot manipulation laundry bed making home environment demonstration learning",
+      "site:1x.tech home robot laundry tidying charging space official",
+      "site:figure.ai home robot household tasks laundry dishes official",
+      "site:irobot.com Roomba clean floors free of clutter charging dock official",
+      "site:support.roborock.com charging dock clear space robot vacuum official",
+      "site:research.google home robot user supervision failures household tasks",
+      "site:arxiv.org household robots human supervision interventions real homes"
+    ]
+  }
+}

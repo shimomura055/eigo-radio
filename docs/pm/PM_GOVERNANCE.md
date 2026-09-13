@@ -1347,6 +1347,9 @@ FAILでも作業は継続する非ブロッキング運用)を含む。検証器
 E-1/D-1/G-1/F-1ラベル・プレースホルダ語(同上/前回と同じ/前回同様/
 <引数>/TBD)混入・実行コマンド各行の引数実値/絶対パス有無を機械的に
 判定し、PASS/FAILをJSON+人間可読で出力する(終了コードは常に0、記録用)。
+実行コマンドは`.venv\Scripts\python.exe`(またはvenv有効化後のpython)を
+使用する。PATH上の素の`python`はMicrosoft Store版等の別環境を拾い回帰が
+誤検知する(CONSOLIDATION-118で実証)。
 本標準の元になった施策1 Trial(N=6、tool_uses中央値28、Before比▲44%、
 gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_error
 全arm 0)の詳細は`tool_uses_trial_log.md`参照。
