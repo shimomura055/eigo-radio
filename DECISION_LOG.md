@@ -379,6 +379,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-UDR-LABEL-HYGIENE: OPEN-145/146 Gate3個別照合(13項目中「Production runtime実発火」が両者とも未充足、Status更新は見送り`APPROVED_FOR_PRODUCTION`のまま維持)+UDR表記整備(OPEN-121/131/133行頭Status実態反映+OPEN-135 raw.githack STALE注記追加)+区分A(真に未回答)10項目の先送り決定有無一覧+Fable報告漏れ(区分の機械棚卸し不足)の原因記録・再発防止(Gate 5へ手順追記)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED: 2026-09-13ユーザー再視聴結果原文(verbatim)によるTrend記事(B1/A2)・Discovery Trial-12(A2/B1)の3件修正(B1 Key Phrase`autonomous`差替・A2`## Main story`除去・Trial-12 Comment 2文言差替)受入確定+記事close記録(`USER_LISTENING_PENDING`→`CLOSED(ユーザー受入済み、2026-09-13)`、各工程[生成/音声化/標準player/視聴/受入/close]の根拠・費用[Trend¥141.14・Trial-12¥143.23]を記録)+OPEN-146を`PRODUCTION_WIRED`へ格上げ(2026-09-13、Fable判定、根拠=CONSOLIDATION-100の13項目照合12/13+News Family実発火2件[Trial-15/16]、他Familyは自然N増しで継続観測)+OPEN-145は自然発火0件のため`APPROVED_FOR_PRODUCTION`(配線済み)維持+Discovery Focus Module Part Aの仕様Statusは記事closeとは別軸で不変+3V Fact Safety等の別UDRとは分離
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD: B-Family Voices Fact Safety緩和Trial(Stage 1/1b)結果のSSOT反映、Status`USER_DECISION_REQUIRED`(段階1=実データ適用0件、段階2=設計文言どおりでは合成true-positive11件中6件誤緩和・保守版ゲート採用でも実データ効果は6件中5件どまり、その他案3=受理ロジックのtarget-sentence-matching仕様変更が必要と判明しSTOP)、費用¥9.75、ユーザー選択肢(a)〜(d)提示(Fable推奨欄は未記入)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE: 2026-09-13ユーザー回答(原文全文、9項目)の正式記録+OPEN-121残5論点のReconciliation(実装・CURRENT_SPEC・DECISION_LOG・過去REPORTまで確認)+OPEN-136/122/141/120のSSOT表記整合+PM_GOVERNANCEへの4追記(ユーザーへ上げるOpen Item基準/試作期の膿出し方針/ChatGPTルール/是正記録)
 
 ---
 
@@ -6154,6 +6155,408 @@ REPORT.md`(Stage 1/Stage 1b/Stage 2/コスト評価/Stage 3準備/費用)、
 **commit**: 本エントリと`OPEN_ITEMS.md`OPEN-120行・`docs/pm/MODEL_ROUTING_TRIAL_
 LOG.md`・両REPORT・`er012_output/fact_safety_relaxation_trial_01/`配下jsonを
 まとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE: 2026-09-13ユーザー回答(原文全文、9項目)の正式記録+OPEN-121残5論点のReconciliation(実装・CURRENT_SPEC・DECISION_LOG・過去REPORTまで確認)+OPEN-136/122/141/120のSSOT表記整合+PM_GOVERNANCEへの4追記(ユーザーへ上げるOpen Item基準/試作期の膿出し方針/ChatGPTルール/是正記録)
+
+**Decision ID**: `PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE`
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク、API呼び出し禁止・¥0、コード変更禁止)
+
+**ユーザー回答原文(verbatim、改行含め原文どおり)**: セッション記録
+`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`行2439(`type":"user"`、
+timestamp `2026-09-13T01:38:57.896Z`、タイトル「Claude/Fableへの回答・指示」)
+から抽出した全文4,716文字。
+
+```
+Claude/Fableへの回答・指示
+
+ここまでのユーザー判断・Feedbackを反映してください。
+
+1. B-Family / Voices 3V Fact Safety改善
+
+Fable推奨 (b) で進めてください。
+
+今回進めてよい範囲は以下です。
+
+B-Family / Voices限定の保守版Fact Safetyゲート
+Voiceごとの数字強制撤廃
+必要Regression
+A-Family無変化確認
+AI採用テーマ1本でのStage 3実生成・統合確認
+
+理解としては、Voicesでは従来よりFact Checkを一部限定的に緩める方向です。ただし全面緩和ではありません。
+
+数字・具体的Fact・否定・比較・時系列・固有名詞・制度・第三者の具体行動等は引き続き厳格に扱ってください。
+
+既存問題ケースでは、保守版ゲートにより6件中5件がoffline上で改善しています。残る1件はchanged_negation併発のため、安全側で現行判定を維持します。
+
+なお、この5/6はoffline再分類結果なので、実生成での確認はStage 3で行ってください。
+
+単純に判定contextを広げる案は今回の3V修正には入れないこと。
+広いcontextでは対象文自体は改善する一方、隣接文の問題に巻き込まれるfalse rejectが確認されたためです。
+
+本件は現時点ではTrial継続承認であり、Production正式採用判断ではありません。Stage 3終了時にGate 1で REJECTED / VALIDATED / USER_DECISION_REQUIRED を明示してください。
+
+2. Local Rewrite後の見逃し問題とtarget-sentence-matchingは今まとめて対応する
+
+これは後回しにせず、今まとめて設計・Trial対象にしてください。
+
+目的は、
+
+Local Rewriteで実際に変更された文を特定する
+隣接文の問題に巻き込まれず、その対象文だけを正しく判定する
+Rewrite後の文について、必要な下流QAを差分再実行する
+Fact Safetyの穴を埋めつつ、不要な全文再Fact Checkによるコスト増を避ける
+
+ことです。
+
+少なくとも以下を含むTrial計画を作成してください。
+
+既存artifactを使った¥0 offline検証
+変更前文 / 変更後文 / target sentenceを正しく対応付けられるか
+過去のfalse reject事例を解消できるか
+真に危険な変更を誤って通さないか
+target sentence単位の差分QA検証
+Fact Checker
+Ledger Deviation
+必要な関連QA
+のうち、変更内容に必要なものだけを再実行する設計を比較する
+false accept / false reject / cost / latency比較
+必要最小限の1記事統合Trial
+Local Rewrite発火
+target sentence特定
+差分QA
+再受理
+retry/fallback整合
+まで確認する
+
+OPEN-141とtarget-sentence-matchingは、「変更された対象文を特定して必要QAだけ再検証する」という共通基盤として統合設計してください。
+
+ただし、3V Stage 3を不要にblockしないよう作業依存関係は整理してください。
+
+3. TTSのpartial-word false start検知 D' はProductionへ正式採用する
+
+方式D'については、過去Trialで、
+
+TP 6/6
+FP 0/39
+追加API課金ゼロ
+既存方式との検知範囲重複なし
+
+まで確認済みで、すでにVALIDATEDです。
+
+再Trialや「候補扱い」は不要です。
+
+ユーザーは今回、方式D'をProductionへ正式採用する方針を決定しました。
+
+したがってStatusを、
+
+VALIDATED → APPROVED_FOR_PRODUCTION
+
+として扱い、Gate 3を満たすまでProduction wiringを進めてください。
+
+到達してよい最終Statusは PRODUCTION_WIRED です。
+
+必須確認:
+
+Production正式初回経路
+retry / fallback / regeneration整合
+Trial/DEV専用実装でないこと
+runtime evidence
+必要Regression / integration test
+actual routing等、該当するruntime evidence
+CURRENT_SPEC
+DECISION_LOG
+OPEN_ITEMS
+Git反映
+Dangling Reference Check
+ユーザー承認内容と実挙動一致
+
+1項目でも未確認ならPRODUCTION_WIREDとしないでください。
+
+4. gap<0.5秒の即時言い直し検知は、試作期に統合して確認する
+
+方式C-v2については、過去Trialで即時言い直し型への有効性と陰性確認が取れていますが、適用範囲が狭いことも分かっています。
+
+「Productionで自然発生するまで待つ」ではなく、今の試作期に統合して副作用・既存QAとの競合を洗い出す対象として扱ってください。
+
+ただし、今回のユーザー判断はD'のようなProduction正式採用ではありません。
+
+既存Trial結果を無駄に繰り返さず、必要なのは統合時の副作用・回帰確認です。終了時はGate 1でStatusを分類し、Production採用は別途ユーザー判断としてください。
+
+5. OPEN-121の古い残件表記をReconciliationする
+
+OPEN-121について、「残5論点」という古い整理をそのままユーザーへ上げないでください。
+
+特に以下を事実確認してSSOTを整理してください。
+
+n-gram / 句単位反復検知
+過去Trial・Production実装の現状を確認し、実質解決済みなら残件から外す。
+full_story / point本文への適用
+既にA2/B1英語本文4segmentへProduction配線されている実態を確認し、残件表記が古ければ是正する。
+ASR非決定性平滑化
+過去のユーザー判断をDECISION_LOGまで確認する。
+「扱わない」「Open Itemとして保留」「低優先」のいずれかとして既に整理済みなら、その状態を維持し、今回ユーザーへ再判断を求めない。
+
+OPEN_ITEMSの行頭Statusだけを見て判断せず、実装・CURRENT_SPEC・DECISION_LOG・過去ReportまでReconciliationしてください。
+
+6. 既決事項を再度ユーザーへ確認しない
+
+以下のような既決事項を、SSOTのStatus不整合だけを理由に再質問しないでください。
+
+Fact Checker検索コスト削減
+
+既に、
+
+cacheは現時点でProduction実装しない
+量産時に必要項目を観測
+観測後に採否判断
+
+とユーザー決定済みです。
+
+再確認不要です。SSOT表記が不整合ならSSOTを修正してください。
+
+Connected SpeechのKey Phrase展開
+
+既に据え置き判断済みです。
+
+新しい実害・前提変更・合意済みtrigger到来がない限り、再度ユーザーへ上げないでください。
+
+7. ユーザーへ上げるOpen Itemの基準を是正する
+
+今後は「Open Itemに存在する」ことを理由にユーザー判断へ上げないでください。
+
+まずFable側で以下に分類してください。
+
+実装済み
+実質解決済み
+他の対策で不要になった
+ユーザーが既にdefer / 据え置き / 後回しを決定済み
+低優先
+今判断してもQCD上の価値が低い
+量産段階・後工程で判断すればよい
+今ユーザー判断が必要
+
+ユーザーへ提示するのは原則、最後の**「今ユーザー判断が必要」**だけです。
+
+特に以下は、原則再提示しないでください。
+
+実質上すでにProductionへ織り込まれているもの
+他対策が有効化され不要になったもの
+一度Open Itemとして保留するとユーザーが決めたもの
+現在のプロジェクト運営上、優先度が低いもの
+
+ただし、新しい実害・前提変更・blocker・合意済みtrigger到来があれば再提示して構いません。
+
+Open Item全体の棚卸しは、現在の高優先タスクが一区切りした時点でまとめて行うこと。低優先項目を途中でばらばらにユーザーへ投げないでください。
+
+8. 試作期の「膿出し」方針
+
+現在は量産前の試作・検証期です。
+
+したがって、
+
+有効性が十分確認済み
+negative検証済み
+低リスク
+低コスト
+failure modeが明確
+既存仕様との整合が取りやすい
+
+対策を「自然発生するまで待つ」ことを基本方針にしないでください。
+
+今の段階でProduction相当経路または正式Production経路へ入れ、副作用・競合・新failure modeを先に出すべきものは積極的に処理するという方針で優先順位を付けてください。
+
+ただし、ユーザーの正式Production採用が必要な仕様変更はGate 2を飛ばさないこと。
+
+9. ChatGPTがClaude向け指示文を勝手に作らないルールを正式記録する
+
+ユーザーから繰り返し指示されているため、PM_GOVERNANCEへ恒久ルールとして記録してください。
+
+内容:
+
+ChatGPTは、ユーザーから明示的に依頼されるまでClaude/Fable向けの実装・検証指示文を作成しない。
+ユーザーが「まず説明して」「内容を教えて」「どう思う」「サマリして」等を求めている段階では、説明・PM判断・論点整理・選択肢整理に留める。
+「Claudeへの指示を作って」「Claudeに伝えて」「Fable向けにまとめて」等の明示指示があった場合のみ、Claude/Fable向け指示文を作成する。
+
+今回、このユーザーから明示的にClaudeへの指示作成依頼があったため、本指示は例外ではなくルールに適合しています。
+
+Closeout時の必須報告
+
+今回の作業群について、最後に必ず以下を分離して報告してください。
+
+3V Fact Safety Stage 3結果
+target-sentence-matching + Local Rewrite差分QA Trial結果
+D' Production WiringのGate 3充足状況
+C-v2統合確認結果
+OPEN-121残件のReconciliation結果
+既決/defer/低優先項目をユーザー判断対象から除外するPM運用是正結果
+PM_GOVERNANCEへの「ChatGPTは明示依頼前にClaude指示を書かない」ルール反映
+USER_DECISION_REQUIREDが本当に残るものだけの一覧
+APPROVED_FOR_PRODUCTIONだが未配線の項目
+未報告Trialの有無
+Dangling Referenceの有無
+
+既決事項・低優先defer事項を再度ユーザー判断として列挙しないでください。
+```
+
+**決定整理(1〜9)**:
+
+1. **3V Fact Safety改善(B-Family/Voices限定)**: ユーザーがFable推奨(b)を
+   採用。Fable推奨(b)の理由(セッション記録同ファイル行2424、Fable発言
+   原文): 「2-B保守版は合成真陽性で取りこぼし0を確認済みで、A-Family
+   無影響・コスト低下方向。2-Cは単純実装が不安全と判明したため、受理
+   ロジック再設計をOPEN-141(下流QA再通過)と同じ『差分再検証』課題として
+   一括設計する方が手戻りが少ない。2-Dはユーザー決定済み。」今回進めて
+   よい範囲(Stage 2実装対象、5点): B-Family/Voices限定の保守版Fact
+   Safetyゲート/Voiceごとの数字強制撤廃/必要Regression/A-Family無変化
+   確認/AI採用テーマ1本でのStage 3実生成・統合確認。厳格維持を維持する
+   項目: 数字・具体的Fact・否定・比較・時系列・固有名詞・制度・第三者の
+   具体行動等。2-C(判定context拡大)は今回のStage 2実装には含めない
+   (隣接文巻き添えfalse rejectのため。実装検討自体は項目2でOPEN-141と
+   統合設計)。既存問題ケースは保守版ゲートでoffline上6件中5件改善見込み
+   (残り1件はchanged_negation併発のため現行判定維持)、実生成確認は
+   Stage 3で実施。本件は引き続きTrial継続承認でありProduction正式採用
+   判断ではない。Stage 3終了時にGate1でREJECTED/VALIDATED/USER_
+   DECISION_REQUIREDを明示する。
+2. **OPEN-141+target-sentence-matching共通基盤の統合設計・Trial**:
+   後回しにせず今まとめて設計・Trial対象とする。目的はLocal Rewriteで
+   実際に変更された文を特定し、隣接文の問題に巻き込まれずその対象文
+   だけを正しく判定し、Rewrite後の文について必要な下流QAのみを差分
+   再実行すること(Fact Safetyの穴を埋めつつ不要な全文再Fact Checkの
+   コスト増を回避)。Trial計画には最低限、既存artifactを使った¥0
+   offline検証(変更前/変更後/target sentenceの対応付け精度、過去false
+   reject事例の解消、真に危険な変更を誤って通さないかの確認)、target
+   sentence単位の差分QA(Fact Checker/Ledger Deviation/必要な関連QAの
+   うち必要なものだけ再実行する設計比較、false accept/false reject/
+   cost/latency比較)、必要最小限の1記事統合Trial(Local Rewrite発火→
+   target sentence特定→差分QA→再受理→retry/fallback整合まで確認)を
+   含める。OPEN-141とtarget-sentence-matchingは「変更された対象文を
+   特定して必要QAだけ再検証する」共通基盤として統合設計する。ただし
+   3V Stage 3を不要にblockしないよう作業依存関係を整理する。
+3. **方式D'のProduction正式採用**: 過去TrialでTP6/6・FP0/39・追加API
+   課金ゼロ・既存方式との検知範囲重複なしを確認済みでVALIDATED済み
+   (再Trial・候補扱いは不要)。Statusを`VALIDATED`→
+   `APPROVED_FOR_PRODUCTION`として扱い、Gate3を満たすまでProduction
+   wiringを進める。到達してよい最終Statusは`PRODUCTION_WIRED`。必須
+   確認: Production正式初回経路/retry・fallback・regeneration整合/
+   Trial・DEV専用実装でないこと/runtime evidence/必要Regression・
+   integration test/actual routing等該当するruntime evidence/
+   CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/Git反映/Dangling Reference
+   Check/ユーザー承認内容と実挙動一致。1項目でも未確認なら
+   `PRODUCTION_WIRED`としない。
+4. **方式C-v2(gap<0.5秒即時言い直し検知)は試作期に統合して確認**:
+   過去Trialで即時言い直し型への有効性・陰性確認は取れているが適用
+   範囲は狭い。「Productionで自然発生するまで待つ」のではなく、今の
+   試作期に統合して副作用・既存QAとの競合を洗い出す対象として扱う。
+   ただしD'のようなProduction正式採用ではない。既存Trial結果を無駄に
+   繰り返さず、必要なのは統合時の副作用・回帰確認のみ。終了時はGate1で
+   Statusを分類し、Production採用は別途ユーザー判断とする。
+5. **OPEN-121残件表記のReconciliation**: 「残5論点」という古い整理を
+   そのままユーザーへ上げず、n-gram/句単位反復検知・full_story/point
+   本文への適用・ASR非決定性平滑化を、行頭Statusだけでなく実装・
+   CURRENT_SPEC・DECISION_LOG・過去Reportまで確認して整理する(結果は
+   本タスクPart Bで実施し、`OPEN_ITEMS.md`OPEN-121行「2026-09-13
+   Reconciliation」節に反映、下記参照)。
+6. **既決事項の再確認禁止**: Fact Checker検索コスト削減は既に「cacheは
+   現時点でProduction実装しない/量産時に必要項目を観測/観測後に採否
+   判断」と決定済み(2026-09-09、`PM-CLOSEOUT-CONSOLIDATION-47`、
+   ユーザー正式決定B-FC-1(b)、本DECISION_LOG.md該当エントリ)であり
+   再確認不要。SSOT表記が不整合な場合はSSOTを修正する(→OPEN-136行を
+   本タスクで是正、下記参照)。Connected SpeechのKey Phrase展開は既に
+   据え置き判断済み(2026-09-08、`PM-CLOSEOUT-CONSOLIDATION-08`)であり、
+   新しい実害・前提変更・合意済みtrigger到来がない限り再度ユーザーへ
+   上げない(→OPEN-122行を本タスクで表記整合、下記参照)。
+7. **ユーザーへ上げるOpen Itemの基準の是正**: 「Open Itemに存在する」
+   ことを理由にユーザー判断へ上げない。Fableは先に(1)実装済み(2)実質
+   解決済み(3)他の対策で不要になった(4)ユーザーが既にdefer/据え置き/
+   後回しを決定済み(5)低優先(6)今判断してもQCD上の価値が低い(7)量産
+   段階・後工程で判断すればよい(8)今ユーザー判断が必要、の8分類を行い、
+   原則(8)だけを提示する。実質上既にProductionへ織り込まれているもの・
+   他対策が有効化され不要になったもの・一度Open Itemとして保留すると
+   ユーザーが決めたもの・現在のプロジェクト運営上優先度が低いものは
+   原則再提示しない。ただし新しい実害・前提変更・blocker・合意済み
+   trigger到来があれば再提示してよい。Open Item全体の棚卸しは高優先
+   タスクが一区切りした時点でまとめて行い、低優先項目を途中でばらばらに
+   投げない(→`docs/pm/PM_GOVERNANCE.md`へ節新設、下記Part D参照)。
+8. **試作期の「膿出し」方針**: 現在は量産前の試作・検証期であり、
+   有効性が十分確認済み・negative検証済み・低リスク・低コスト・
+   failure modeが明確・既存仕様との整合が取りやすい対策を「自然発生
+   するまで待つ」ことを基本方針にしない。今の段階でProduction相当
+   経路または正式Production経路へ入れ、副作用・競合・新failure modeを
+   先に出すべきものは積極的に処理する方針で優先順位を付ける。ただし
+   ユーザーの正式Production採用が必要な仕様変更はGate2を飛ばさない
+   (→`docs/pm/PM_GOVERNANCE.md`へ節新設、下記Part D参照)。
+9. **ChatGPTルールの正式記録**: ChatGPTは、ユーザーから明示的に依頼
+   されるまでClaude/Fable向けの実装・検証指示文を作成しない。ユーザーが
+   「まず説明して」「内容を教えて」「どう思う」「サマリして」等を求めて
+   いる段階では、説明・PM判断・論点整理・選択肢整理に留める。「Claude
+   への指示を作って」「Claudeに伝えて」「Fable向けにまとめて」等の明示
+   指示があった場合のみ、Claude/Fable向け指示文を作成する。今回、この
+   ユーザーから明示的にClaudeへの指示作成依頼があったため、本指示自体は
+   例外ではなくルールに適合している(→`docs/pm/PM_GOVERNANCE.md`へ恒久
+   ルールとして節新設、下記Part D参照)。
+
+**Part B(OPEN-121 Reconciliation)の要旨**: `er011_open121_repetition_qa_
+production_01.py`の方式A(`detect_ngram_repetition()`542行/
+`find_repeated_spans()`499行、`METHOD_A_MIN_WORDS=3`)が3語以上の
+非隣接反復(句/文単位)を既に検知しており、RECONCILE-02/03(対称正規化、
+`PM-CLOSEOUT-CONSOLIDATION-95/96`で`PRODUCTION_WIRED`)がその誤flag
+(数字↔数詞・ハイフン境界)を解消済みであることをコードで確認し、
+「n-gram/句単位反復検知」を残件から除外した。`er003_v1_n3_01_tts_
+generate.py`753行(B1)・872行(A2)で`enable_repetition_qa=(name in
+("full_story_part1","full_story_part2","point_one","point_two"))`と
+既に配線されている(`CURRENT_SPEC.md`672行にも同記載)ことを確認し、
+「full_story/point本文への適用」の残件表記を是正した。ASR非決定性
+平滑化については、`DECISION_LOG.md`/`DECISION_LOG_HISTORY.md`を
+`非決定`/`平滑化`/`多数決`/`OPEN-121`でGrepしたが、現象自体の記録
+(`DECISION_LOG_HISTORY.md`6616-6621行、Production Primary ASRが
+一文まるごと逐語反復を非決定的に平滑化する)はあるものの、「扱わない」
+「保留」「低優先」等の明示的ユーザー決定は確認できず、直近の
+`PM-CLOSEOUT-CONSOLIDATION-100`(`DECISION_LOG.md`5881-5883行)でも
+「未回答・先送り決定なし」と明記されていたため、Fable判断で低優先
+保留に分類した(理由: 試作期に統合すべきことが確認済みの対策[D'/
+C-v2]と異なり、有効性未検証・設計未着手のため)。詳細は`OPEN_ITEMS.md`
+OPEN-121行「2026-09-13 Reconciliation」節参照。
+
+**Part C(SSOT表記整合)の要旨**: OPEN-136(Status表記を既決を示す語へ
+整合、観測8項目の記録機構は現時点で未実装[.pyファイルへのGrepで実装
+コード未検出]のため量産着手時に実装と記載)・OPEN-122(Key Phrase展開は
+2026-09-08据え置き決定済みである旨を明記)・OPEN-141(target-sentence-
+matchingとの統合設計・Trial進行中である旨を追記)・OPEN-120(Fable推奨
+(b)採用・Stage2進行中・2-C不採用[Stage2範囲]・Trial継続承認である旨を
+追記)を反映した。詳細は各OPEN_ITEMS.md行参照。
+
+**Part D(PM_GOVERNANCE追記)の要旨**: 10-1/Gate5付近へ「ユーザーへ上げる
+Open Itemの基準」(8分類・原則「今ユーザー判断が必要」のみ提示)、
+「試作期の膿出し方針」、「ChatGPTはユーザーから明示的に依頼されるまで
+Claude/Fable向け指示文を作成しない」恒久ルールを新設し、Fableが既決/
+defer項目(OPEN-136/122)と古い残件整理(OPEN-121残5論点)を再質問した
+事実・原因・対策を是正記録として追記した。詳細は`docs/pm/PM_GOVERNANCE.md`
+参照。
+
+**状態**: 反映完了(ユーザー回答の正式記録+SSOT整合作業)。3V Fact
+Safety Stage 2実装・target-sentence-matching Trial・D' Production
+Wiring・C-v2統合確認は、いずれも本エントリでは実装せず、別タスクで
+実施する(本タスクはSSOT反映・Git担当のみ、コード変更なし、API呼び
+出しなし)。
+
+**根拠**: セッション記録`294958fe-da6e-491c-8a02-4f864d8195c8.jsonl`
+行2439(ユーザー回答原文)・行2365/2398/2424(Fable報告・推奨理由原文)、
+`er011_open121_repetition_qa_production_01.py`、`er003_v1_n3_01_tts_
+generate.py`、`CURRENT_SPEC.md`、`DECISION_LOG_HISTORY.md`、
+`docs/pm/RESULT_PACKET.md`。
+
+**影響するCURRENT_SPEC項目**: なし(本エントリはユーザー回答の記録・
+Open Item表記整合・PM_GOVERNANCE追記のみ、Production仕様・コードは
+本タスクでは変更していない)。
+
+**commit**: 本エントリと`OPEN_ITEMS.md`(OPEN-121/136/122/141/120行)・
+`docs/pm/PM_GOVERNANCE.md`・`docs/pm/PM_BRIEF.md`・`docs/pm/MODEL_
+ROUTING_TRIAL_LOG.md`(1行)をまとめてcommitする(hashは`docs/pm/
+RESULT_PACKET.md`参照)。
 
 ---
 

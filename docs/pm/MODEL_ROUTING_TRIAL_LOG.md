@@ -896,3 +896,20 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   Sonnet、LOW、実測¥0(本タスクでのAPI呼び出しなし、SSOT編集・Git
   操作のみ、Productionコード変更なし)。委任回数=初回のみ(ループ上限
   4回以内)。
+
+- 2026-09-13(PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-
+  OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE、本タスク、Git書込
+  唯一のタスク): セッション転記からユーザー回答原文(verbatim、
+  `"type":"user"`行[2439行目]、9項目)を抽出しDECISION_LOG.md新規
+  エントリ+索引へ記録、OPEN-121残5論点をコード(`er011_open121_
+  repetition_qa_production_01.py`/`er003_v1_n3_01_tts_generate.py`)・
+  `CURRENT_SPEC.md`・`DECISION_LOG.md`(+HISTORY)まで確認して
+  Reconciliation(n-gram/句単位反復検知・full_story/point本文適用は
+  実質解決済み/配線済みと確認、ASR非決定性平滑化はユーザー判断記録
+  なしのため低優先保留に分類)、OPEN-136/122の既決事項をSSOT表記整合、
+  OPEN-141/120へユーザー決定を追記、`docs/pm/PM_GOVERNANCE.md`へ
+  10-2節(ユーザーへ上げるOpen Item基準+是正記録)・16節(試作期の膿出し
+  方針)・17節(ChatGPTルール)を新設。Sonnet、LOW、実測¥0(SSOT編集・
+  Git操作のみ、新規LLM/TTS/ASR API呼び出しなし、Productionコード変更
+  なし、他Agent成果物[`er012_*`/`er011_open121_*`等]には一切触れず)。
+  委任回数=初回のみ(ループ上限4回以内)。

@@ -1045,6 +1045,44 @@ STATUS-INVENTORY`エントリ参照)により新設。
   14節(問題発生時のPM処理原則)を置き換えるものではなく、Fableの日常的な
   軽微判断の範囲を明確化するもの。
 
+### 10-2. ユーザーへ上げるOpen Itemの基準(2026-09-13追記、
+`PM-CLOSEOUT-CONSOLIDATION-103`、ユーザー正式決定の要旨。原文は
+`DECISION_LOG.md`同管理IDエントリ参照)
+
+- Fableは、`OPEN_ITEMS.md`に存在することを理由に機械的にユーザー判断へ
+  上げてはならない。ユーザーへ提示する前に、必ず以下の8分類へ仕分ける:
+  (1) 実装済み/(2) 実質解決済み/(3) 他の対策で不要になった/(4) ユーザーが
+  既にdefer・据え置き・後回しを決定済み/(5) 低優先/(6) 今判断しても
+  QCD上の価値が低い/(7) 量産段階・後工程で判断すればよい/(8) 今ユーザー
+  判断が必要。
+- ユーザーへ提示するのは原則、(8)「今ユーザー判断が必要」に分類される
+  項目だけである。特に次のものは原則再提示しない: 実質上すでに
+  Productionへ織り込まれているもの、他対策が有効化され不要になったもの、
+  一度Open Itemとして保留するとユーザーが決めたもの、現在のプロジェクト
+  運営上優先度が低いもの。
+- ただし、新しい実害・前提変更・blocker・合意済みtrigger到来があれば
+  再提示してよい。
+- 分類作業は、`OPEN_ITEMS.md`行頭Status文字列だけを見て機械的に行っては
+  ならない。実装コード・`CURRENT_SPEC.md`・`DECISION_LOG.md`(および
+  `DECISION_LOG_HISTORY.md`)・過去REPORTまで確認するReconciliationを
+  行った上で分類する(Status文字列と実態が食い違っている場合はStatus側を
+  是正する)。
+- Open Item全体の棚卸しは、現在の高優先タスクが一区切りした時点で
+  まとめて実施する。低優先項目を途中でばらばらにユーザーへ投げない。
+- **経緯(是正記録)**: 2026-09-13、Fableが既に既決・deferされていた項目
+  (OPEN-136[Fact Checker検索コスト削減、2026-09-09`PM-CLOSEOUT-
+  CONSOLIDATION-47`ユーザー正式決定B-FC-1(b)で「cache未実装/量産時観測/
+  観測後採否判断」と既決済みだった]、OPEN-122[Connected Speech
+  Key Phrase展開、2026-09-08`PM-CLOSEOUT-CONSOLIDATION-08`で据え置き
+  決定済みだった])と、古い残件整理(OPEN-121「残5論点」のうち、
+  disfluency QAのn-gram/句単位反復検知拡張・full_story/point本文への
+  適用スコープ拡大の2点は、既にProduction実装・配線が完了していた)を、
+  再度ユーザー判断事項として提示してしまった。**原因**: Open Itemの
+  棚卸しを`OPEN_ITEMS.md`行頭Status文字列ベースで行い、実装コード・
+  DECISION_LOG・過去REPORTまで遡るReconciliationを行っていなかったため。
+  **対策**: 本10-2節(8分類・原則(8)のみ提示)と、分類前に実装・SSOT・
+  過去REPORTまで確認するReconciliation必須化を本節へ明記した。
+
 ## 11. Fable↔Sonnetレビュー往復の上限とGatekeeper原則
 
 **管理ID: PM-FABLE-SONNET-REVIEW-LOOP-03(2026-09-06ユーザー決定)**
@@ -1667,6 +1705,46 @@ Trial専用harnessは開始時に費用記録(cost logger install、既存
 
 ---
 
+## 16. 試作期の「膿出し」方針(2026-09-13新設、`PM-CLOSEOUT-
+CONSOLIDATION-103`、ユーザー正式決定の要旨。原文は`DECISION_LOG.md`
+同管理IDエントリ参照)
+
+- 現在は量産前の試作・検証期である。有効性が十分確認済み・negative
+  検証済み・低リスク・低コスト・failure modeが明確・既存仕様との整合が
+  取りやすい対策については、「Productionで自然発生するまで待つ」ことを
+  基本方針にしない。
+- 今の試作期の段階で、Production相当経路または正式Production経路へ
+  積極的に入れ、副作用・既存QAとの競合・新しいfailure modeを先に
+  洗い出すべきものは、優先的に処理する方針で優先順位を付ける。
+- ただし、ユーザーの正式Production採用(`APPROVED_FOR_PRODUCTION`)が
+  必要な仕様変更については、本方針を理由にGate 2(User Decision)を
+  飛ばさない。あくまで「統合・検証を先送りにしない」方針であり、
+  「ユーザー承認なしにProduction採用する」方針ではない。
+- 適用例(2026-09-13時点): TTS partial-word false start検知(方式D')は
+  過去TrialでVALIDATED済みのためユーザーが`APPROVED_FOR_PRODUCTION`と
+  正式決定しGate 3配線を進める。gap<0.5秒の即時言い直し検知(方式C-v2)は
+  有効性・陰性確認は取れているが適用範囲が狭いため、試作期に統合して
+  副作用・既存QAとの競合のみ確認し、Production採用は別途ユーザー判断と
+  する。
+
+## 17. ChatGPTのClaude/Fable向け指示文作成ルール(2026-09-13新設、
+`PM-CLOSEOUT-CONSOLIDATION-103`、ユーザー正式決定。原文は
+`DECISION_LOG.md`同管理IDエントリ参照)
+
+- ChatGPTは、ユーザーから明示的に依頼されるまで、Claude/Fable向けの
+  実装・検証指示文を作成しない。
+- ユーザーが「まず説明して」「内容を教えて」「どう思う」「サマリして」
+  等を求めている段階では、ChatGPTは説明・PM判断・論点整理・選択肢整理に
+  留める。
+- 「Claudeへの指示を作って」「Claudeに伝えて」「Fable向けにまとめて」
+  等の明示的な依頼があった場合のみ、ChatGPTはClaude/Fable向け指示文を
+  作成してよい。
+- 本ルールはユーザーから繰り返し指摘されたため、恒久ルールとして本節へ
+  正式記録する。ユーザー指示原文は`DECISION_LOG.md`
+  `PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-OPEN-121-
+  RECONCILIATION-PM-CRITERIA-CHATGPT-RULE`エントリの「ユーザー回答
+  原文(verbatim)」項目9を参照。
+
 ## 変更履歴
 
 - 2026-09-05(PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01): 新設。PM Gate 1〜7・
@@ -2198,3 +2276,16 @@ Trial専用harnessは開始時に費用記録(cost logger install、既存
   player生成スクリプト1件の是正のみ、Production仕様変更なし。詳細は
   `DECISION_LOG.md`PM-CLOSEOUT-CONSOLIDATION-97エントリ、`OPEN_ITEMS.md`
   OPEN-135行、`docs/pm/RESULT_PACKET.md`参照。
+- 2026-09-13(PM-CLOSEOUT-CONSOLIDATION-103-USER-ANSWERS-2026-09-13-
+  OPEN-121-RECONCILIATION-PM-CRITERIA-CHATGPT-RULE): 「10-2. ユーザーへ
+  上げるOpen Itemの基準」(8分類・原則(8)のみ提示・Reconciliation必須化・
+  是正記録)、「16. 試作期の『膿出し』方針」、「17. ChatGPTのClaude/
+  Fable向け指示文作成ルール」を新設した。背景: Fableが既に既決・defer
+  済みだったOPEN-136(Fact Checker検索コスト削減)・OPEN-122(Key Phrase
+  展開)と、既にProduction配線済みだったOPEN-121の一部残件を再度ユーザー
+  判断事項として提示してしまった事実を10-2節へ是正記録として明記した
+  (原因: Status文字列ベースの棚卸しで実装・DECISION_LOG・過去REPORTまで
+  遡るReconciliationを行っていなかったこと)。文書編集のみ、コード・
+  Prompt変更なし。詳細は`DECISION_LOG.md`同管理IDエントリ、
+  `OPEN_ITEMS.md`OPEN-121/136/122/141/120行、`docs/pm/RESULT_PACKET.md`
+  参照。
