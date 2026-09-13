@@ -858,6 +858,67 @@ Discovery/Why型の対象定義・現状を記録する最小節。判定ロジ�
 | Ledger Deviation Checker専用カテゴリ新設要否 | 既存タグの流用で対応する現行運用を変更しない | `DEFERRED`(D3) | 同上 |
 | 保険文(取扱説明書的な断定回避表現)運用注記(2026-09-10) | 保険文抑制Prompt制約案(Part B案1、`cautionary_constrained`)はProduction不採用のまま(2026-09-10ユーザー正式決定、上記Focus Module行参照)。Focus Module Part A本体単独運用で取扱説明書的・保険文的表現が出た場合は、追加Prompt対策Trialを行わず、Human Reviewで目視修正したうえで発生率を観測・記録する(仕様変更ではなく運用方針) | `DECIDED`(運用方針、仕様ではない) | PM-CLOSEOUT-CONSOLIDATION-70(ユーザーA-3回答)、OPEN-135行 |
 
+## Discovery Focus S2(Production、FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01、2026-09-13)
+
+ユーザー正式承認(`APPROVED_FOR_PRODUCTION`、2026-09-13、
+`FAMILY-A-DISCOVERY-S2-PRODUCTION-DESIGN-01_REPORT.md`推奨案=分割方式P1)に
+基づき、Discovery Focus S2(Focusを先に決める→Main Storyを確定する→その
+Main Story本文を見てPoint Role Planning→Point生成)をProduction配線した。
+実装先: `er003_discovery_focus_staged_production_01.py`(新規モジュール)、
+opt-in `editorial_mode="discovery_focus_staged"`(`er003_v1_n3_01_articles_
+generate.EDITORIAL_TYPE_MODULE_BLOCKS`へ`DISCOVERY_FOCUS_MODULE_PART_A_BLOCK`
+として正式登録)。既存`run_one_pattern`(News Major/Daily/Trend Synthesis/
+現行Discovery非staged)は無変更のまま(案P1、バイト不変)。
+
+**正式処理順**: Focus解決 → Stage 1 Main Story生成+Stage 1 QA(Fact Checker
+A' → Ledger Deviation+Local Rewrite → Directional Fact Precheck
+non-blocking) → [blocking時、`STAGE1_MAX_REGENERATIONS`回までStage 1
+再生成] → Stage 2 Point Role Planning(確定Main Story本文を入力、角度hint
+なし) → Stage 3 Point生成+Evidence Compression(Points本文のみ)+結合 →
+Point Overlap QA/Point Value QA(NG時はStage 2-3のみ再実行、
+`POINT_OVERLAP_ARTICLE_RETRY_MAX=2`既存値) → 記事全体Fact Checker A'/
+Ledger Deviation+Local Rewrite(+差分QA、OPEN-141既定ON)/Directional
+Fact Precheck → OK/NG_REVIEW_REQUIRED確定。
+
+**retry単位・しきい値**: 通常retryはStage 2-3のみ(Main Story固定)。
+`STAGE1_MAX_REGENERATIONS=1`(ユーザー確定案1)。Stage 1再生成は以下いずれか
+の場合のみ発動する例外的経路: (a)記事全体Ledger Deviation MAJORが
+`locate_target_sentence`でMain Story側に位置しLocal Rewrite上限
+(`MAX_REWRITE_CYCLES=3`)でも未解決、(b)Stage 2-3再実行が
+`POINT_OVERLAP_ARTICLE_RETRY_MAX`回を尽くしてもNGのままの最終フォール
+バック、(c)記事全体Fact Checker FAIL(Fact Checker FAIL locus=案(ii)簡略
+ルール、Stage2-3 exhaustion後のみStage1へescalate)。いずれも尽きれば
+NG_REVIEW_REQUIRED(fail-closed)。
+
+**Main Story固定原則**: Stage 2からStage 3を通じてMain Story本文(Stage 1
+確定範囲)は原則不変。ただし既存の安全装置(Ledger Deviation Check+Local
+Rewrite、差分QA)がMain Story側1文のMAJOR逸脱を局所修正する場合は例外として
+許容する(Stage 1再生成[全文書き直し]とLocal Rewrite[局所修正]は区別し、
+後者は既存安全装置の通常動作として扱う)。
+
+**Focus Module本文の採用範囲(重要、既存USER_DECISIONとの関係)**:
+`DISCOVERY_FOCUS_MODULE_PART_A_BLOCK`の本文自体は、OPEN-112-A-FAMILY-
+4LAYER-PROMPT-DESIGN-TRIAL-05で検証済みのFocus Module Part Aと一字一句
+同一である。このFocus Module本文を、Household Ledgerでの現行非staged
+`run_one_pattern`単発生成へ一般適用することは、上記「Discovery/Why(Pool型)」
+節のとおり2026-09-09ユーザー決定によりProduction不採用のまま(Trial-07で
+REVIEW_REQUIRED増加・Point多様性低下を確認、再改善中/未決)。今回の
+Production採用は、この一般適用可否とは別軸であり、S2 Staged Generation
+との組み合わせでの実測結果(`er011_output/discovery_focus_s2_full_trial_01/`、
+Gate 1判定`VALIDATED`)を根拠とした`editorial_mode="discovery_focus_staged"`
+限定のopt-inにすぎない。
+
+**Trial専用ファイルの扱い**: `er011_discovery_focus_s2_full_trial_01.py`/
+`er011_discovery_focus_part_a_standalone_trial_01_run.py`/
+`er011_discovery_stage3_rule_adjustment_trial_09.py`はarchive目的でGitに
+残置するが、Production側(`er003_discovery_focus_staged_production_01.py`/
+`er003_v1_n3_01_articles_generate.py`)からのimport・参照は一切ない
+(Gate 4 Dangling Reference Check該当ゼロ、Grep実測件数は同管理ID
+RESULT_PACKET参照)。
+
+Gate 3 runtime evidence(実施結果・費用・commitの詳細)は
+`FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01_REPORT.md`参照。
+
 ## Cross-level仕様(A2/B1/B2共通)
 
 以下はA2の検証で発見・試作したが、**特定レベル固有ではなく番組全体

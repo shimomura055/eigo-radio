@@ -445,12 +445,60 @@ Main Storyの冒頭では、Verified Fact Ledgerの範囲内で成立する場�
 発明することは禁止します。技法を使うかどうかより、記事全体がひとつの
 throughlineを持つことを優先してください。"""
 
+# ============================================================
+# Discovery/Why Focus Module(記事タイプ固有の焦点、Part A本体)。
+# FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01(2026-09-13)で、Discovery
+# Focus S2 Staged Generation(`editorial_mode="discovery_focus_staged"`、
+# er003_discovery_focus_staged_production_01.py)限定のopt-inとして
+# Production採用。本体テキストはOPEN-112-A-FAMILY-4LAYER-PROMPT-DESIGN-
+# TRIAL-05(VALIDATED、Article-only)→er011_discovery_stage3_rule_
+# adjustment_trial_09.CURRENT_FOCUS_BLOCKの本体を一字一句無変更のまま
+# 移設したもの(見出し行のみ、移設時点のProduction採用範囲を反映して
+# 更新)。
+# 注意(重要、既存USER_DECISIONとの関係): このFocus Module本文を、
+# Household Ledgerでの現行非staged`run_one_pattern`単発生成へ一般適用する
+# ことは、2026-09-09ユーザー決定によりProduction不採用のまま
+# (`CURRENT_SPEC.md`「Discovery/Why(Pool型)」節、Trial-07でREVIEW_
+# REQUIRED増加・Point多様性低下を確認、再改善中/未決)。今回のProduction
+# 採用は、S2 Staged Generation(Stage 1 Main Story確定後にStage 2 Role
+# PlanningがMain Story本文を読む新順序、`FAMILY-A-DISCOVERY-S2-
+# PRODUCTION-DESIGN-01_REPORT.md`)との組み合わせでのS2 Trial実測結果
+# (`er011_output/discovery_focus_s2_full_trial_01/`)を根拠とした、狭い
+# 範囲のopt-inであり、上記の一般適用可否とは別軸の決定である。
+# ============================================================
+DISCOVERY_FOCUS_MODULE_PART_A_BLOCK = """【Discovery/Why Focus(記事タイプ固有の焦点。OPEN-112-A-FAMILY-4LAYER-\
+PROMPT-DESIGN-TRIAL-05でArticle-only N=1検証(VALIDATED)、FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01で\
+Discovery Focus S2 Staged Generation限定のProduction採用。editorial_mode="discovery_focus_staged"\
+指定時のみ挿入。Household Ledgerでの非staged単発生成への一般適用は2026-09-09時点で不承認のまま\
+[別軸の決定、CURRENT_SPEC.md「Discovery/Why(Pool型)」節参照])】
+この記事は、ある現象や結果が実際になぜ起こるのかを、聞き手に理解してもらうことを中心的な
+目的とする記事です。これは、上記のMain Story/Point One/Point Twoの役割定義を置き換える
+ものではなく、より具体的にする補足です。
+
+Main Storyでは、まず「何が観察されたか」という現象そのものを伝えてください。「なぜそれが
+起こるのか」という答えをMain Storyだけで説明しきってしまわないでください。
+
+Point One・Point Twoでは、その現象が実際に起こる理由・仕組み・意外な詳細のうち、異なる
+角度をそれぞれ一つずつ深掘りしてください(例: 心理的な理由、環境や設計上の要因、社会的・
+日常的な文脈)。両方が同じ角度から「なぜ」を説明しないでください。
+
+Evidenceが支持する範囲を超えて、「なぜ起こるか」の説明を断定しないでください。Verified
+Fact Ledgerのある項目が、著者の解釈である旨をwriter_guidance等で明記している場合は、記事
+内でも「研究者らはこう解釈している」という形で書き、直接測定された結果と著者の解釈を混同
+しないでください。Ledgerが直接支持していない限り、「自動的」「不随意的」「必ず」のような
+断定表現は使わないでください。
+
+In One Lineでは、Main Storyで伝えた現象と、Point One・Point Twoで深掘りした理由・示唆を
+結びつけ、聞き手が持ち帰れる静かな一言として締めてください。単なる要約にはしないで
+ください。"""
+
 # editorial_mode文字列 → Editorial Type Module Blockのマッピング。Mode判定
 # の自動化(記事内容から自動でmodeを推定するロジック)はここでは実装しない
 # (今回のGate 3スコープ外、OPEN_ITEMS残件)。呼び出し側が人間の判断で
 # 明示的にeditorial_modeを渡した場合のみ、このModuleが挿入される。
 EDITORIAL_TYPE_MODULE_BLOCKS = {
     "trend_synthesis": TREND_SYNTHESIS_FOCUS_MODULE_BLOCK + "\n\n" + TREND_SYNTHESIS_ENGAGEMENT_BLOCK,
+    "discovery_focus_staged": DISCOVERY_FOCUS_MODULE_PART_A_BLOCK,
 }
 
 

@@ -6976,6 +6976,58 @@ FAMILY-A-DISCOVERY-S2-PRODUCTION-DESIGN-01: ユーザー判断「S2について�
 ## PM-CLOSEOUT-CONSOLIDATION-123(2026-09-13)
 EDITORIAL-FUTURE-FAMILY-C-LENGTH-DIAGNOSIS-AND-RESPEC-TRIAL-04: ユーザー判断「前回のFable推奨『別テーマでもう1本Trial』は採用しません。次の記事・次テーマには進まないでください。(中略)まず費用ゼロで、なぜFamily Cが長くなるのかを構造的に診断してください。(中略)『少し長いが許容』とする前提では進めません。(中略)別テーマTrialには進まないでください。」に基づき実施。結果とFable所見は上記OPEN-147追記のとおり。Gate 1: `USER_DECISION_REQUIRED`(語数は解消、感情強度の後退とB1 Framing QA新規課題により完全PASS未達)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。実費¥20.53。
 
+## FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01(2026-09-13)
+ユーザー正式承認(APPROVED_FOR_PRODUCTION)原文: 「ユーザーは、提示した推奨設計で
+Production実装へ進むことを正式承認しました。したがってStatusはAPPROVED_FOR_
+PRODUCTIONへ変更し、ここからはPRODUCTION_WIREDまで完了させてください。採用内容は
+前回推奨案です。分割方式: P1/STAGE1_MAX_REGENERATIONS: 1/Fact Checker FAIL
+locus: 案(ii)簡略ルール/Trial専用実装はProduction正式側へ移設し、暫定importを
+残さない/Gate 3 runtime evidenceとして、Stage 1 escalation実発火を実データ1本で
+確認」に基づきDiscovery S2をProduction正式経路へ配線した。
+実装: `er003_discovery_focus_staged_production_01.py`(新規、opt-in
+`editorial_mode="discovery_focus_staged"`)。Focus Module Part A本文を
+`er003_v1_n3_01_articles_generate.DISCOVERY_FOCUS_MODULE_PART_A_BLOCK`として
+`EDITORIAL_TYPE_MODULE_BLOCKS`へ正式登録(既存`run_one_pattern`本体L818-1248は
+無変更、追加のみ)。移設した関数: `extract_stage1_main_story`/
+`run_stage1_main_story_writer`/`run_ledger_local_rewrite_loop`/`run_stage1_qa`
+(移設元`er011_discovery_focus_s2_full_trial_01.py`)、`run_stage2_role_planning`/
+`run_stage3_points_writer`/`assemble_article`(移設元`er011_discovery_focus_
+part_a_standalone_trial_01_run.py`)。オーケストレーション本体
+`run_one_pattern_staged_discovery_focus()`。新規テスト
+`er003_discovery_focus_staged_production_01_test_01.py`(24件、全PASS、
+Trial版22テストの移植+Dangling Reference確認2件追加)。
+Dangling Reference Check: Production側ファイル(`er003_*.py`/`er010_*.py`/
+`er012_*.py`)から`er011_discovery_focus_*`/`er011_discovery_stage3_*`への
+`import`文0件(Grep実測、コメント中の説明文言のみ)。
+Gate 3 runtime evidence: `er011_output/discovery_s2_production_runtime_
+evidence_01/`。S2 Trialと同一テーマ・Ledger(`discovery_generalization_
+wake_before_alarm_trial_12`)を再利用し、Stage 1 escalationを実発火させるため
+F008(ACTH予期的上昇という、本テーマの核心的な「なぜ目覚ましの直前に起きるか」
+に対する唯一のメカニズム的根拠事実)を除去した複製Ledgerを新規作成して使用
+(元Ledgerは無編集)。結果: Stage 1 escalation実発火(分岐(b)、Stage 2-3が
+POINT_OVERLAP_ARTICLE_RETRY_MAX=2回を尽くしてもPoint Overlap QA[lexical
+overlap比率>0.40]が解消せず、Stage 1を1回再生成。再生成後も同じ理由で
+Stage 2-3が再度exhaustし、STAGE1_MAX_REGENERATIONS=1到達によりfail-closedで
+NG_REVIEW_REQUIRED停止。Stage 1 Fact Checkerは両ラウンドともREVIEW_REQUIRED
+[non-blocking]、Ledger DeviationはLEDGER_COMPLIANT[MAJORなし、分岐(a)/差分QAは
+本runでは未発火]。使用モデルgpt-5.6-luna、reasoning_effort=high。実費¥46.66
+[35 API records]。Discovery残額¥134.97→¥88.31)。
+回帰: `er003*_test_*.py`(1389 collected/1386 passed/3 failed[既知
+`er003_test_p2j_investigate`2件相当+関連]/0 errors)、`er011*_test_*.py`
+(266 collected/266 passed/0 failed/0 errors)、全件回帰(`er0*_test_*.py`
+既定pattern)は同日中に別途実施し結果はRESULT_PACKET/REPORT参照。
+安全インシデント(付記、Fableへの申し送り事項): 委任文が指定したとおりの
+回帰コマンド`--pattern "er003*"`/`--pattern "er011*"`(test file限定なし)を
+最初に実行したところ、`if __name__=="__main__"`ガードの無い一回限りrunner
+スクリプト(`er011_no18_open108_b1_ledger_refined_regenerate_01.py`等)が
+unittest discoverのimport時に実行され、無関係な既存Production記事
+(`pool_n18_notifications_specfix_v2`)への実API呼び出し・記事上書きが発生した
+(実測¥15〜20相当)。直ちに該当プロセスをkillし、`git checkout --`で影響を
+受けた全ファイルを復元した(タスク開始前から存在した無関係の既存差分には
+触れていない)。以後は`_test_*.py`限定patternへ切り替えて安全に再実行した。
+詳細は`FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01_REPORT.md`参照。
+Status: **`PRODUCTION_WIRED`**。commit hashはRESULT_PACKET_S2W.md/同REPORT参照。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。

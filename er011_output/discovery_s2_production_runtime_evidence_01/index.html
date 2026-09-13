@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01 runtime evidence</title>
+<style>
+body { font-family: sans-serif; max-width: 900px; margin: 2em auto; line-height: 1.6; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; vertical-align: top; }
+code { background: #f4f4f4; padding: 1px 4px; }
+</style>
+</head>
+<body>
+<h1>Discovery Focus S2 Production Wiring — Gate 3 runtime evidence</h1>
+<p>管理ID: FAMILY-A-DISCOVERY-S2-PRODUCTION-WIRING-01(2026-09-13)。
+Production正式入口
+<code>er003_discovery_focus_staged_production_01.run_one_pattern_staged_discovery_focus()</code>
+(<code>editorial_mode="discovery_focus_staged"</code>)をA2レベルで実行した
+runtime evidence(実API呼び出し)。</p>
+
+<h2>結果サマリ</h2>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>status</td><td>NG_REVIEW_REQUIRED(fail-closed、全分岐exhausted)</td></tr>
+<tr><td>Stage 1 escalation発火</td><td>有(分岐(b): Stage2-3 exhaustion後のfallback、`STAGE1_MAX_REGENERATIONS=1`到達まで実行)</td></tr>
+<tr><td>Stage 1再生成回数</td><td>1回(上限どおり)</td></tr>
+<tr><td>Stage 2-3 retry回数</td><td>各Stage1ラウンドとも2回(POINT_OVERLAP_ARTICLE_RETRY_MAX上限まで)</td></tr>
+<tr><td>Stage 1 Fact Checker</td><td>両ラウンドとも REVIEW_REQUIRED(non-blocking advisory)</td></tr>
+<tr><td>Stage 1 Ledger Deviation</td><td>両ラウンドとも LEDGER_COMPLIANT(MAJORなし)</td></tr>
+<tr><td>Point Overlap/Value QA</td><td>両ラウンドとも3attempt(0,1,2)全てlexical_flagged=True(point_one/point_two交互にoverlap比率&gt;0.40)</td></tr>
+<tr><td>使用モデル</td><td>gpt-5.6-luna(WRITER_MODEL/WRITER_FACT_CHECK、reasoning_effort=high)</td></tr>
+<tr><td>実費</td><td>¥46.66(openai、35 API records)</td></tr>
+<tr><td>出力dir</td><td><code>er011_output/discovery_s2_production_runtime_evidence_01/</code></td></tr>
+</table>
+
+<h2>意図的MAJOR誘発用Ledger(改変内容)</h2>
+<p>元Ledger(<code>er011_output/discovery_generalization_wake_before_alarm_trial_12/research/verified_fact_ledger.txt</code>、
+無編集)から、F008(「覚醒の約1時間前に血中ACTH濃度が上昇し、研究者は睡眠終了を予期する準備過程を反映すると解釈した」という、
+本テーマの核心的な「なぜ目覚ましの直前に起きるのか」への回答に直結する唯一の予期メカニズム事実)を削除した複製を
+<code>research/verified_fact_ledger_intentional_major_01.txt</code>として新規作成し使用した(他の全ファクトは byte-for-byte 不変)。</p>
+<p>実際に発火したescalationは分岐(b)(Stage 2-3 exhaustion後のfallback、Point One/TwoとMain Storyの
+lexical overlapが閾値0.40を継続的に超えたことが直接原因)であり、F008削除がLedger Deviation MAJORを
+直接誘発したわけではない(Stage 1 Ledger Deviationは両ラウンドともLEDGER_COMPLIANT)。分岐(a)(Main Story側
+MAJORのLocal Rewrite exhaustion)は本runでは未観測。</p>
+
+<h2>Stage trace(実ログ)</h2>
+<pre>stage1(attempt0): blocking=false
+stage2_3(stage1_regen_attempt0): status=NG_REVIEW_REQUIRED retry_attempt=2 (exhausted)
+stage1_escalated(attempt1): blocking=false  ← Stage 1 escalation実発火
+stage2_3(stage1_regen_attempt1): status=NG_REVIEW_REQUIRED retry_attempt=2 (exhausted)
+→ all_branches_exhausted → NG_REVIEW_REQUIRED(STAGE1_MAX_REGENERATIONS=1到達、fail-closed停止)</pre>
+
+<h2>関連artifact</h2>
+<ul>
+<li><a href="a2/run_summary.json">a2/run_summary.json</a></li>
+<li><a href="a2/audit/stage_trace.json">a2/audit/stage_trace.json</a></li>
+<li><a href="a2/stage23_overlap_retry_log.json">a2/stage23_overlap_retry_log.json</a></li>
+<li><a href="cost_summary.json">cost_summary.json</a></li>
+<li><a href="raw_usage_log.jsonl">raw_usage_log.jsonl</a></li>
+</ul>
+<p>本runは最終的に記事を完成させず(article_text無し)、安全装置(fail-closed、
+無限ループなし)が正しく機能したことを示す。設計REPORTが定めた3経路の
+Stage 1 escalation分岐のうち(b)が実データで発火したことをGate 3
+runtime evidenceとして確認した。</p>
+</body>
+</html>
