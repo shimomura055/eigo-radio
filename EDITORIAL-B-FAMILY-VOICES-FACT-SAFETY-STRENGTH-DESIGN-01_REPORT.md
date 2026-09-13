@@ -104,7 +104,7 @@ Status: **USER_DECISION_REQUIRED**
 
 ### Regression条件(実行可能な検証手順)
 
-1. **真陽性温存テスト(¥0、offline)**: 既存9個体(旧Trial-02 attempt1/2、新Regression attempt1/2/3、ablation attempt1、その他既存Ledger逸脱ログ)の`ledger_deviation.json`に記録済みの全deviationsを、新ルールで再分類する。**具体的数字・固有名詞・第三者行動を含むdeviation(例: 9-2節のNBCUniversal関連`changed_actor`)が緩和後も引き続きMAJORのままであること**を確認する(緩和ルールがb節の境界を守っているかの直接検証、追加API呼び出し不要)。
+1. **真陽性温存テスト(¥0、offline)**: 既存9個体(旧Trial-02 attempt1/2、新Regression attempt1/2/3、ablation attempt1、その他既存Ledger逸脱ログ)の`ledger_deviation.json`に記録済みの全deviationsを、新ルールで再分類する。**具体的数字・固有名詞・第三者行動を含むdeviation(例: 9-2節のNBCUniversal関連`changed_actor`)が緩和後も引き続きMAJORのままであること**を確認する(緩和ルールがb節の境界を守っているかの直接検証、追加API呼び出し不要)。[2026-09-13訂正: 実データでは該当箇所(`regression_attempt3`の"I prepare an audit summary and notice, as required under New York City rules.")は現行severity=MINORであり、MAJOR化した記録はない(Stage 1で確認、`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_REPORT.md`A3節)。したがって本引用は「緩和してもMAJORのまま残るべき真陽性」の実例としては成立していない。真に数字・固有名詞入りのMAJOR実例は、Stage 1のサンプル(10個体・21件)には存在しなかった]
 2. **A-Family無変化テスト**: `hook_aware`の既定値・`DEVIATION_PROMPT_TEMPLATE`本体を無改変のまま、新ルールを`family=="B"`ゲート付きの追加関数(例: `run_deviation_check_voice_aware`)として実装し、A-Family呼び出し元(`er003_v1_n3_01_articles_generate.py`)からは一切参照されないことをimport/grep差分で確認する。既存A-Family offlineテスト(`er010_n9_production_integration_09_test_01.py`等)を無変更のまま実行し全PASSを確認する。
 3. **既存offlineテストの回帰**: `er012_b_family_voices_writer_generic_01_test_01.py`(現状56件PASS、Phase1b-04実測)を無変更のまま実行し、新規追加分のみ増分テストとして追加する。
 

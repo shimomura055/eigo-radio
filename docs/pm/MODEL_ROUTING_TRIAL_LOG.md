@@ -883,3 +883,16 @@ status捏造を拒否してSTOPした(規律遵守の好例)。
   なし、Productionコード変更なし、他Agent成果物[er012_output/
   fact_safety_relaxation_trial_01/等]には一切触れず)。委任回数=初回
   のみ(ループ上限4回以内)。
+
+- 2026-09-13(PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-
+  TRIAL-01-STAGE1B-UDR-RECORD、本タスク、Git書込唯一のタスク):
+  B-Family Voices Fact Safety緩和Trial(Stage 1/1b、既存sonnet-worker
+  実施済み)の結果をSSOTへ記録。`OPEN_ITEMS.md`OPEN-120行末尾へStatus
+  `USER_DECISION_REQUIRED`・STOP条件(2-C=受理ロジックのtarget-
+  sentence-matching仕様変更要、2-B=保守版ゲート採用でも実データ効果は
+  6件中5件、2-A=実データ適用0件)・費用¥9.75を追記、`DECISION_LOG.md`
+  新規エントリ(`PM-CLOSEOUT-CONSOLIDATION-102-...`)+索引へTrial経緯・
+  判定材料・ユーザー選択肢(a)〜(d)のQCDを記録(Fable推奨欄は未記入)。
+  Sonnet、LOW、実測¥0(本タスクでのAPI呼び出しなし、SSOT編集・Git
+  操作のみ、Productionコード変更なし)。委任回数=初回のみ(ループ上限
+  4回以内)。

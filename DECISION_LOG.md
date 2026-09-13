@@ -378,6 +378,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-STATUS-INVENTORY: 2026-09-13ユーザーFeedback(原文全文、8項目)の正式記録 — (1)ユーザー向け表記を「B1」に統一(内部ID/ファイル名`b1b`はrename不要)、(2)Trend記事B1 Key Phrase 1差替(`not there yet`→`autonomous`)・A2`## Main story`混入除去の個別修正2件反映、(3)Discovery Trial-12 A2 Comment 2文言差替の個別修正1件反映(いずれも新規一般仕様化ではない)、(4)記事close条件(生成→音声化→標準player→ユーザー視聴→受入/修正判断→close)の再確認、(5)3V Voice内数字1個「必須」要求の撤廃方針(上限規定`:251-256`は維持、要求文言`:402-404`のみ撤廃)、(6)3V Tension/Fact Safety問題は「Voices/PerspectiveにNews/Discoveryと同レベルのFact Checker/Ledger Deviationを適用すること自体が過剰」という方向でFirst option(Family=B限定の判定緩和)を優先設計し`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`として`USER_DECISION_REQUIRED`化(以前提示の案1〜3は不採用として明示的に破棄)。Part A(player残是正、TTS mode表記追加・mp3キャッシュ再変換方式修正・13項目再監査全○)・Part C(棚卸し)を合わせて実施。
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-100-OPEN-145-146-GATE3-VERIFICATION-AND-UDR-LABEL-HYGIENE: OPEN-145/146 Gate3個別照合(13項目中「Production runtime実発火」が両者とも未充足、Status更新は見送り`APPROVED_FOR_PRODUCTION`のまま維持)+UDR表記整備(OPEN-121/131/133行頭Status実態反映+OPEN-135 raw.githack STALE注記追加)+区分A(真に未回答)10項目の先送り決定有無一覧+Fable報告漏れ(区分の機械棚卸し不足)の原因記録・再発防止(Gate 5へ手順追記)
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-101-TREND-AND-TRIAL-12-USER-ACCEPTANCE-CLOSE-AND-OPEN-146-WIRED: 2026-09-13ユーザー再視聴結果原文(verbatim)によるTrend記事(B1/A2)・Discovery Trial-12(A2/B1)の3件修正(B1 Key Phrase`autonomous`差替・A2`## Main story`除去・Trial-12 Comment 2文言差替)受入確定+記事close記録(`USER_LISTENING_PENDING`→`CLOSED(ユーザー受入済み、2026-09-13)`、各工程[生成/音声化/標準player/視聴/受入/close]の根拠・費用[Trend¥141.14・Trial-12¥143.23]を記録)+OPEN-146を`PRODUCTION_WIRED`へ格上げ(2026-09-13、Fable判定、根拠=CONSOLIDATION-100の13項目照合12/13+News Family実発火2件[Trial-15/16]、他Familyは自然N増しで継続観測)+OPEN-145は自然発火0件のため`APPROVED_FOR_PRODUCTION`(配線済み)維持+Discovery Focus Module Part Aの仕様Statusは記事closeとは別軸で不変+3V Fact Safety等の別UDRとは分離
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD: B-Family Voices Fact Safety緩和Trial(Stage 1/1b)結果のSSOT反映、Status`USER_DECISION_REQUIRED`(段階1=実データ適用0件、段階2=設計文言どおりでは合成true-positive11件中6件誤緩和・保守版ゲート採用でも実データ効果は6件中5件どまり、その他案3=受理ロジックのtarget-sentence-matching仕様変更が必要と判明しSTOP)、費用¥9.75、ユーザー選択肢(a)〜(d)提示(Fable推奨欄は未記入)
 
 ---
 
@@ -6049,7 +6050,111 @@ TREND-AI-MANUFACTURING-USER-LISTENING-FEEDBACK-FIX-01_REPORT.md`、
 
 ---
 
-## 参照元
+## PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD: B-Family Voices Fact Safety緩和Trial(Stage 1/1b)結果の記録、Status`USER_DECISION_REQUIRED`
 
-[PROJECT_INDEX.md](PROJECT_INDEX.md)、[CURRENT_SPEC.md](CURRENT_SPEC.md)、
-[HISTORY_INDEX.md](HISTORY_INDEX.md)、[A2_PROTOTYPE_SPEC.md](A2_PROTOTYPE_SPEC.md)
+**Decision ID**: `PM-CLOSEOUT-CONSOLIDATION-102-3V-FACT-SAFETY-RELAXATION-TRIAL-01-STAGE1B-UDR-RECORD`
+**日付**: 2026-09-13
+**実行者**: sonnet-worker(Fable委任、本セッション唯一のGit書込タスク、API呼び出し禁止・¥0、コード変更禁止)
+
+**内容**: `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`で
+提示された段階1(Voice本文hedge免除)・段階2(Tension役割合成緩和)・その他案3
+(Local Rewrite受理チェックの文脈整合)の3施策について、Trial(Stage 1=¥0 offline、
+Stage 1b=¥9.75の有料確証8回+¥0 offline合成テスト)で検証した結果、いずれも
+承認済み設計文書の記述をそのまま実装した場合には安全に機能しない、または効果が
+限定的であることが判明したため、Production Fact Safety機構(`er012_b_family_
+voices_writer_generic_01.py`のB-Family専用Ledger Deviation Checker/Local Rewrite
+統合)への実際のコード変更(Stage 2)は実行せず、Fableへ判断を仰ぐ
+`USER_DECISION_REQUIRED`として記録する。
+
+**判定材料の要旨**:
+1. **段階1(2-A)**: 実データ10個体・21件のdeviationのうち、段階1の適用条件
+   (`changed_scope`/`changed_certainty`のみtrue、他8種false)に一致する事例は
+   **0件**(MAJOR判定される逸脱には常に`changed_fact`が併記されるため)。安全性
+   (真陽性を落とすリスク)は無いが、コスト削減効果は実データでは実証されない。
+2. **段階2(2-B)**: 実データのTension非対称性文6/6件が適用対象となり、真陽性の
+   誤緩和は実データでは0件確認されたが、Stage 1bの合成true-positiveテスト
+   (11件)では、設計文書の文字どおりの条件(`changed_actor`/`unsupported_new_
+   claim`のみ判定)は**6件を誤って緩和(取りこぼし)**した。b節が「常に厳格」と
+   明記する5フラグ(`changed_number`/`changed_causality`/`changed_negation`/
+   `changed_comparison`/`changed_time`)をflag単位でも明示的に除外する保守版
+   ゲートを採用すれば合成11件・段階1側6件とも取りこぼし0件を達成できるが、この
+   保守版ゲートを実データのTension MAJOR 6件へ再適用すると、**5件のみ**解決見込みが
+   残り、最も深刻だった実例(ablation個体、3回上限到達→human_review_required)は
+   `changed_negation`のため解決されない。
+3. **その他案3(2-C)**: Stage 1では「文脈量を揃えるだけの技術的不整合」と評価して
+   いたが、Stage 1b-1の有料確証(Production関数をそのままimportし引数のみ差し替え、
+   計8回)で、対象文自体は拡張文脈で検出されなくなる一方、**受理判定が「window全体の
+   overall_status」ベースであるため、windowを広げると無関係な既存の隣接文が新たに
+   MAJOR検出され、回帰確認control 4件中3件が新規に不合格化(regression)する**副作用が
+   判明した。安全に機能させるには、受理判定を「拡張windowが返すdeviationsのうち
+   対象文に一致するものだけを見る」target-sentence-matching方式へ変更する必要があるが、
+   これは`run_check_window_fn`インターフェース自体の設計変更であり、「判定基準・
+   severity・promptテンプレート本体は変えない」という2-Cの前提の範囲を超える。
+4. 2-D(Voice内数字1個「必須」要求の撤廃)はLedger Deviation Checker自体の変更を
+   伴わず独立性が高く、単独で先行実施可能な候補として温存されている。
+5. 設計報告書e節107行目のNBCUniversal引用は実データと不一致(現行MINOR、MAJOR化した
+   記録なし)と判明し、該当行へ訂正注記を追加済み(`EDITORIAL-B-FAMILY-VOICES-FACT-
+   SAFETY-STRENGTH-DESIGN-01_REPORT.md`)。
+
+**状態**: `USER_DECISION_REQUIRED`(Stage 2のProductionコード変更は未実行、正しい
+STOP判断。既存retry/fallback/Local Rewrite上限回数・Gateは独自判断で回避・
+無効化していない)。
+
+**ユーザーへ提示する選択肢(QCD、コスト評価節`EDITORIAL-B-FAMILY-VOICES-FACT-
+SAFETY-RELAXATION-TRIAL-01_REPORT.md`「## コスト評価」節から引用)**:
+
+- **(a) 2-B(保守版ゲート)+2-D(数字強制撤廃)を先行実装し、Stage 3実生成1本で
+  確認(2-Cは見送り)**: Quality=Tension MAJOR 6件中5件でhedge不要化見込み(最も
+  深刻だったablation事例5型は`changed_negation`のため未解決のまま残る)。
+  Cost=Stage 3実生成1本分¥25.5(最良)〜¥78.0(実測最悪)+2-Bゲート実装・テスト
+  追加の工数(規模未見積もり)。Delivery=2-Dは¥0・即日実装可能、2-Bはゲート実装+
+  テスト追加が必要。2-C見送りのため受理チェックの文脈不整合(1b-1で確認)は
+  未解消のまま残る。
+- **(b) 2-Cをtarget-sentence-matching設計として別タスクで起票し、2-B保守版+2-Dと
+  併せて後日実施**: Quality=(a)と同様の効果に加え、将来2-C実装で受理チェックの
+  隣接文巻き添え問題(1b-1で確認、control4件中3件が新規regression)も解消できる
+  可能性。Cost=(a)と同等+別タスクでの設計・検証コスト(未見積もり)。
+  Delivery=最も時間を要する(設計タスク起票→設計→検証→実装の複数ステップ)。
+- **(c) Stage 2全体を見送り、2-D(数字強制撤廃)のみ実施しStage 3で確認**:
+  Quality=数字撤廃の効果のみ確認(Tension緩和・受理チェック整合は現状のまま、
+  事例5型のような3回上限到達→discardのリスクは残存)。Cost=最小(2-D¥0実装+
+  Stage 3実生成1本¥25.5〜78.0)。Delivery=最速(ゲート設計判断が不要で即実装可)。
+- **(d) Trial REJECTEDで現状維持(いずれも実装しない)**: Quality=現状どおり
+  (hedge運任せ、事例5型は3回上限到達のリスクを維持したまま変更なし)。
+  Cost=追加コスト¥0。ただしStage 1で実データ10個体中2個体(20%)が3回上限
+  到達→discardに至った型が今後も再発し得る(100記事換算で理論上¥480〜640相当の
+  節約機会を見送ることになるが、サンプル数10は少なく外挿信頼度は低い、参考値)。
+  Delivery=即時(何もしない)。
+
+**Fable推奨と理由**: Fable記入
+
+**却下理由**: 上記4案はいずれも未確定(ユーザー選択待ち)のため、本エントリ時点で
+却下された案はない。ただし段階2の「設計文書文言どおりの実装」単独案、および
+その他案3の「単純な引数差し替えのみ」案は、Stage 1bで安全に機能しないことが
+確認されたため、実装方式としては不採用(保守版ゲート・target-sentence-matching
+方式への変更を伴わない限り採用不可)。
+
+**費用**: Stage 1=¥0(API呼び出し0件)。Stage 1b=¥9.75(1b-1、8 API呼び出し、
+input 61,897 tokens・output 40,480 tokens、gpt-5.6-luna、pricing_snapshot単価・
+¥160/$換算)。1b-2/1b-3は¥0(offline)。Stage 2はコード実装未実行のため追加API
+呼び出しなし。本管理ID累計¥9.75(予算枠は別途)。
+
+**根拠レポート**: `EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-RELAXATION-TRIAL-01_
+REPORT.md`(Stage 1/Stage 1b/Stage 2/コスト評価/Stage 3準備/費用)、
+`EDITORIAL-B-FAMILY-VOICES-FACT-SAFETY-STRENGTH-DESIGN-01_REPORT.md`(e節
+訂正注記追加済み)、`docs/pm/RESULT_PACKET_3V_FS_S1.md`、`docs/pm/RESULT_PACKET_
+3V_FS_S2.md`、`er012_output/fact_safety_relaxation_trial_01/`配下json
+(`a_deviation_classification.json`/`a2_major_reclassification.json`/
+`b_cycle_extraction.json`/`c_cost_breakdown.json`)。
+
+**影響するCURRENT_SPEC項目**: なし(Production Fact Safety機構・B-Family Voices
+3V仕様はいずれも本エントリでは変更していない。`OPEN_ITEMS.md`OPEN-120行へ要旨
+追記のみ)。
+
+**commit**: 本エントリと`OPEN_ITEMS.md`OPEN-120行・`docs/pm/MODEL_ROUTING_TRIAL_
+LOG.md`・両REPORT・`er012_output/fact_safety_relaxation_trial_01/`配下jsonを
+まとめてcommitする(hashは`docs/pm/RESULT_PACKET.md`参照)。
+
+---
+
+## 参照元
