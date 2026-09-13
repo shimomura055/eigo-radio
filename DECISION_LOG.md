@@ -389,6 +389,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-111: Future記事設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1所見
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-112: Discovery Focus×Point Role Planning接続設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1訂正記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-113: Future Family C試作Trial(VALIDATED[機構]・編集面要改稿)のSSOT反映+施策1 arm#3計測
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-114: Discovery Focus接続Trial(案2、VALIDATED[Trial])のSSOT反映+施策1 arm#4計測
 
 ---
 
@@ -6864,6 +6865,11 @@ FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-DESIGN-01: ユーザー指示�
 
 ## PM-CLOSEOUT-CONSOLIDATION-113(2026-09-13)
 EDITORIAL-FUTURE-FAMILY-C-PROTOTYPE-TRIAL-01: ユーザー確定判断「Future: 既存のA-Familyへの新型追加案は採用せず、A・Bとは別のFamily Cとして設計してください。最初のテーマは『家庭用ロボットと家事』です。まず費用ゼロで独立経路、1人ナレーターの記事構成、事実・仮定・想像の区別とQA、Trial用の実装を試作・検証してください。既存の安全装置は適切に再利用して構いませんが、想像を許すために現在の事実確認を一律に緩めないでください。仮想場面は、まず入口で想像した未来と分かるようにし、場面内では自然で引き込まれる語りを試してください。未来はテーマに合う時間軸で、意味のある1〜3通りを描き、分岐数をPoint数に対応させません。わくわくする、または強い不安を呼ぶ未来像が主役です。エビデンスは内部の足場・安全確認に使い、完成記事を研究やデータの解説にしないでください。Futureで記事生成Trialが必要なら、費用上限300円で実施して構いません。(中略)両TrialともProduction採用・配線の承認ではありません。」に基づき実施。結果とFable所見は上記OPEN-147追記のとおり。Gate 1: 機構=`VALIDATED`、編集面=要改稿(次段階はUSER_DECISION_REQUIRED)。Production/Discovery成果物/SSOT本文の変更なし。実費¥140.83。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-114(2026-09-13)
+FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-TRIAL-01: ユーザー確定判断「Discovery: 接続は短いPoint役割hintの案2のみ。案2'は今回試しません。前回の『目覚ましが鳴る直前に起きる理由』のLedgerとFocus単独A2・B1記事を再利用し、接続ありのA2・B1を新規生成して、計4記事を比較してください。Trialの費用上限は300円です。Production経路は変更しないでください。記事全文とPoint計画を並べ、書き分け、Pointの価値・多様性、面白さ、Fact Safety、retryを評価してください。0〜2点の主観評価には本文上の根拠を添え、ユーザーが4記事を直接読めるようにしてください。」に基づき実施。結果は上記OPEN-135追記のとおり。Fable判断記録: 初回STOP後、Trial専用ファイルの現行同等化(選択肢(a))はProduction無変更・¥0のためFable自律範囲として実施(修正指示1回目)。Gate 1: `VALIDATED`(Trial)。次段階はUSER_DECISION_REQUIRED。実費¥46.47。commit abf4910。
 
 ---
 
