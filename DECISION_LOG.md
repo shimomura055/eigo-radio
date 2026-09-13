@@ -393,6 +393,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-115: Discovery Part A単独案(S2)Trial(VALIDATED[Trial、構造設計])のSSOT反映+施策1 arm#6
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-116: Future Family C再設計Trial-02(VALIDATED[Trial])のSSOT反映+施策1 N=6判定記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-117: 施策1(委任文標準)のユーザー正式採用→Production配線(D-2、Gate 3実施)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-118: Gate 3項目4(Regression PASS)再検証+F-1文言是正
 
 ---
 
@@ -6900,6 +6901,58 @@ Status: **`PRODUCTION_WIRED`**(11項目すべて充足。項目4は環境制約�
 施策1 Trial最終数値(`docs/pm/tool_uses_trial_log.md`、N=6): tool_uses=51/18/26/22/36/30、中央値28。Before同種別中央値50比▲44%。gate_reject/accept_criteria_miss/fixup_commit/scope_leak/ssot_errorは全arm 0。一覧外操作4件(arm#1×2、arm#3×1、arm#5×1)はいずれもFable委任文側の不備(Grep指定不足・引数記載漏れ)が原因であり、本委任文標準(事前指定Read/Grep一覧+実行コマンド全文+検証器)により再発防止を図る。
 
 実費: ¥0(API呼び出しなし)。並行Trialタスク(FAMILY-A-DISCOVERY-*/er011_*/EDITORIAL-FUTURE-*/er013_*)のファイルは無変更。
+
+## PM-CLOSEOUT-CONSOLIDATION-118(2026-09-13)
+Fable差し戻し理由: `PM-CLOSEOUT-CONSOLIDATION-117`のRESULT_PACKET_W1で
+「`python run_project_regression.py`(default全件)は485件中371 passed/
+7 failed/107 errors」と報告されたが、同日の他タスク(`EDITORIAL-FUTURE-
+FAMILY-C-REDESIGN-TRIAL-02`等)は同コマンドでcollected=2509〜2512/
+failed=3(既知無関係)を一貫して観測しており、Gate 3項目4(Regression
+PASS)は未確認扱いとしてPRODUCTION_WIRED判定を保留していた。
+
+Gate 3再検証(root cause特定): 直前タスクは、この端末のPATH上の`python`
+コマンド(`C:\Users\tensh\AppData\Local\Microsoft\WindowsApps\python.exe`、
+Microsoft Store版Python 3.14.6)で実行しており、これにはprojectの依存
+パッケージ(`python-dotenv`等)が未インストールだった。このため
+`er002_test_ja_article_generation`等108ファイルがimport時に
+`ModuleNotFoundError`となり、各ファイルが`unittest.loader._FailedTest`の
+1件スタブとしてしか集計されず(本来の複数testが1件に潰れる)、
+collected=486・errors=108という異常値になっていた。cwd差ではなくPython
+インタプリタ差(未セットアップの実行系を誤って使用)が原因と確定した。
+
+repo直下の`.venv\Scripts\python.exe`(依存パッケージ導入済み、project正式
+実行系)で同一コマンドを再実行した結果: collected=2557 passed=2554
+failed=3 errors=0。failed=3件は`er003_test_p2j_investigate.py`の既存
+履歴カウント照合テスト2件+`er003_test_bad`(自己テスト用一時fixtureの
+既知の性質)で、いずれも本タスク・`CONSOLIDATION-117`のPRODUCTION配線とは
+無関係と確認済み(過去のRESULT_PACKET_FC2等の報告と同一の既知failure)。
+
+Gate 3項目4を**充足**と確定。`CONSOLIDATION-117`の最終Status
+**`PRODUCTION_WIRED`**を維持する(項目4のエビデンスをerrors=0の全件回帰
+実測へ更新)。
+
+是正: 固定ブロックF-1の文言を「F-1: 自タスクのtranscript退避は不要
+(Fableが次回委任でコピーを指示する。委任文で明示的に退避コマンドが
+指定された場合はそれを実行する)。」に統一(`docs/pm/templates/
+DELEGATION_READ_EFFICIENCY_BLOCK.md`)。理由: 直前タスクで「委任文の
+退避コマンド」と旧F-1文言「Sonnet/Opusは対応不要」が矛盾と解釈され、
+委任文に明記された退避コマンドが未実行のまま報告された(RESULT_PACKET_W1
+「一覧外操作」節)。確認の結果、`PM_GOVERNANCE.md`・
+`DELEGATION_STANDARD_TEMPLATE.md`にはF-1本文の逐語転記は存在せず(両者は
+`DELEGATION_READ_EFFICIENCY_BLOCK.md`を参照するのみ)、逐語転記は同ファイル
+1箇所のみのため、そこだけを是正した(重複コピーを増やさない設計を維持)。
+本タスクの委任文に明記されていた退避コマンドは実行済み(taskId
+a4368e132f7f81b1d/a5fd1934fcf8fd679を`docs/pm/transcripts/
+<taskId>_recovered.jsonl`へ退避)。
+
+`docs/pm/tools/README.md`へ`check_delegation_prompt_test_01.py`の
+直接実行コマンドの別形式(`python -m unittest
+docs.pm.tools.check_delegation_prompt_test_01 -v`)を併記(既存の
+直接実行手段の説明を補強、既存の環境制約注記自体は変更なし)。
+
+実費: ¥0(API呼び出しなし)。Productionコード(er0*)無編集。並行Trial
+タスク(FAMILY-A-DISCOVERY-*/er011_*/EDITORIAL-FUTURE-*/er013_*)の
+ファイルは無変更。
 
 ## 参照元
 

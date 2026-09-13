@@ -63,4 +63,6 @@ root直下のみを対象とするため、本ディレクトリのtestは`--pat
 `unittest.TestLoader.discover`側がroot起点の再帰探索で0件収集となる
 既知の制約がある[`__init__.py`非配置のnamespaceディレクトリ再帰の挙動]。
 本ディレクトリのtestは直接`python docs/pm/tools/
-check_delegation_prompt_test_01.py`で実行するのが確実な手段。)
+check_delegation_prompt_test_01.py -v`、または`python -m unittest
+docs.pm.tools.check_delegation_prompt_test_01 -v`(パッケージ実行形式)
+で実行するのが確実な手段。)

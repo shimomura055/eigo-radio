@@ -8,7 +8,7 @@ Fableは以下をSonnet/Opusへの**全委任文**にそのまま貼る(明記�
 E-1: 同一task内で同一ファイルを再読しない(結果を保持し再利用する)。
 D-1: Grep→該当行範囲Readを基本とし、全文Readは構造変更時のみ許可する。
 G-1: git出力は`--porcelain`/`--stat`/`--short`等で最小化する。
-F-1: transcript退避は完了後Fable側で実施する。Sonnet/Opusは対応不要。
+F-1: 自タスクのtranscript退避は不要(Fableが次回委任でコピーを指示する。委任文で明示的に退避コマンドが指定された場合はそれを実行する)。
 (施策1 Trial対象タスクのみ追加)T-1: 本委任文に列挙した「事前指定
 Read/Grep一覧」に従うこと。一覧外の追加Readが必要な場合は、その理由を
 RESULT_PACKETに1行で記録すること。
