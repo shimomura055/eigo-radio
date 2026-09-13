@@ -397,6 +397,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-119: Future Family C最終調整Trial-03(VALIDATED[Trial])のSSOT反映+委任コマンドのvenv標準化
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-120: Discovery S2完全版Trial(VALIDATED[Trial])のSSOT反映+Closeout前再棚卸し
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-121: UDR候補6件(OPEN-106/120/124/132/133/134)のReconciliation(既決表記の整理、意味変更なし)
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-122: Discovery S2 Production設計完了(USER_DECISION_REQUIRED、Gate 2判断待ち)
 
 ---
 
@@ -6967,6 +6968,9 @@ FAMILY-A-DISCOVERY-FOCUS-S2-FULL-QA-PARITY-TRIAL-01: ユーザー確定判断「
 
 ## PM-CLOSEOUT-CONSOLIDATION-121(2026-09-13)
 UDR候補Reconciliation: CONSOLIDATION-120の文字列棚卸しで挙がったOPEN-106/120/124/132/133/134について、DECISION_LOGの決定記録と突合し分類(表)。(A)既決・表記古い=OPEN-106/120/124/132/133、(B)真に未処理=OPEN-134、(C)観測待ち=該当なし。(A)はOPEN_ITEMSへReconciliation注記を追記(意味変更なし)。最終確定はFable。
+
+## PM-CLOSEOUT-CONSOLIDATION-122(2026-09-13)
+FAMILY-A-DISCOVERY-S2-PRODUCTION-DESIGN-01: ユーザー判断「S2について追加Trialを先に増やさず、Production設計フェーズへ進むことを承認しました。ただし、これはまだProduction実装・配線承認ではありません。現在StatusはVALIDATED→Production設計着手可であり、APPROVED_FOR_PRODUCTIONではありません。(中略)設計完了後にGate 2としてユーザー判断を求めてSTOPしてください。」に基づき¥0で設計完了。内容は上記OPEN-135追記のとおり。Status: `USER_DECISION_REQUIRED`(Gate 2、判断事項5件)。実装・配線・CURRENT_SPEC正式化なし。commit 7ea4d5d。
 
 ## 参照元
 
