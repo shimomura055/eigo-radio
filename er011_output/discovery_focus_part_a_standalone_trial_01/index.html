@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01 比較</title>
+<style>
+body { font-family: sans-serif; max-width: 900px; margin: 2em auto; line-height: 1.6; }
+pre { background:#f5f5f5; padding:1em; white-space: pre-wrap; }
+h2 { border-bottom: 2px solid #ccc; padding-bottom: 4px; }
+.evidence { background:#eef; padding:1em; margin-bottom:1em; }
+</style>
+</head>
+<body>
+<h1>FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01</h1>
+<p>比較Artifact(comparison.mdの内容をそのままHTML化)。詳細は
+<a href="comparison.md">comparison.md</a>参照。</p>
+
+<div class="evidence">
+<h2>証拠: Point Role Planningの入力に実際のMain Story本文が渡ったこと</h2>
+<p>Stage 2 prompt(A2)冒頭600文字:</p>
+<pre>これから、以下のVerified Fact Ledgerと、既に確定済みのMain Story本文に基づいて、
+英語ニュースpodcast記事のPoint One・Point Twoを設計します。Main Storyは既に
+別の工程で完成しており、この後変更されません。
+
+【今回のテーマ】
+目覚まし時計が鳴る直前に自然に目が覚めることがあるのは、体内時計(概日ペースメーカー)が光や規則的な睡眠・覚醒スケジュールによって24時間周期に同調していることに加え、体が予定された起床時刻を予期して準備する反応が関係していると考えられている。実験室研究では、睡眠の終わりを予期させる条件で、覚醒の約1時間前から血中ACTH濃度が明らかに上昇することが報告されており、研究者はこれを概日リズムだけでなく睡眠終了を予期する準備過程の反映と解釈している。また、外部からの合図なしに予定時刻近くで自然に目覚める「自己覚醒」を扱った研究では、成功した参加者で覚醒の約30分前に前頭前野の活動変化が、短い昼寝からの自己覚醒では覚醒の約3分前から心拍数の上昇が観察されている。ただし、これらの多くは参加者が目覚まし時刻を知った上で意識的に自己覚醒を試みる実験であり、実際に鳴る目覚まし音の直前に偶然目覚める現象そのものを直接示したものではないため、体内時計が目覚まし時刻を正確に予知しているとまでは断定できない。(Tim...</pre>
+<p>Stage 2 prompt(B1)冒頭600文字:</p>
+<pre>これから、以下のVerified Fact Ledgerと、既に確定済みのMain Story本文に基づいて、
+英語ニュースpodcast記事のPoint One・Point Twoを設計します。Main Storyは既に
+別の工程で完成しており、この後変更されません。
+
+【今回のテーマ】
+目覚まし時計が鳴る直前に自然に目が覚めることがあるのは、体内時計(概日ペースメーカー)が光や規則的な睡眠・覚醒スケジュールによって24時間周期に同調していることに加え、体が予定された起床時刻を予期して準備する反応が関係していると考えられている。実験室研究では、睡眠の終わりを予期させる条件で、覚醒の約1時間前から血中ACTH濃度が明らかに上昇することが報告されており、研究者はこれを概日リズムだけでなく睡眠終了を予期する準備過程の反映と解釈している。また、外部からの合図なしに予定時刻近くで自然に目覚める「自己覚醒」を扱った研究では、成功した参加者で覚醒の約30分前に前頭前野の活動変化が、短い昼寝からの自己覚醒では覚醒の約3分前から心拍数の上昇が観察されている。ただし、これらの多くは参加者が目覚まし時刻を知った上で意識的に自己覚醒を試みる実験であり、実際に鳴る目覚まし音の直前に偶然目覚める現象そのものを直接示したものではないため、体内時計が目覚まし時刻を正確に予知しているとまでは断定できない。(Tim...</pre>
+<p>上記promptには「既に確定済みのMain Story本文」として、Stage 1で固定した
+実際のMain Story本文がそのまま埋め込まれている(全文は各audit/stage2_role_planning.jsonのprompt fieldを参照)。</p>
+</div>
+
+<h2>comparison.md 全文(生Markdown)</h2>
+<pre># FAMILY-A-DISCOVERY-FOCUS-PART-A-STANDALONE-DESIGN-TRIAL-01: 比較Artifact
+
+テーマ: &quot;Why do we sometimes wake up right before the alarm rings?&quot;(既存Trial
+`discovery_generalization_wake_before_alarm_trial_12`のLedger/topicを
+read-onlyで再利用。新規Research/Ledger作成なし)。
+
+条件(案S2、Focus→Main Story→Point Role Planning→Pointの順序):
+- Stage 1(Main Story): 新規生成せず、既存Trial`discovery_focus_module_
+  revalidation_01`のfocus腕(Focus Module Part A有効、現行Production
+  `run_one_pattern`で生成・Fact Checker PASS・Ledger Deviation
+  LEDGER_COMPLIANT確認済み)のarticle.mdからMain Story本文をそのまま固定。
+- Stage 2(Point Role Planning): 新規LLM呼び出し。topic+ledgerに加え、
+  Stage 1の実際のMain Story本文を読ませたうえでPoint One/Twoの役割を
+  計画させる(案2のような具体的角度hint[mechanism/limitation/different
+  angle]は一切追加しない)。
+- Stage 3(Point生成): 新規LLM呼び出し。Main Storyは書かせず、Stage 2の
+  計画に従いPoint One/Point Two/In One Lineのみを生成。
+- 結合はtitle行+Stage 1 Main Story本文(無変更)+Stage 3出力の単純連結。
+
+比較対象:
+- **S1相当**(`discovery_focus_module_revalidation_01`のfocus腕、既存結果・
+  再実行なし): 現行Production順序(Point Role PlanningがWriterより前、
+  Main Storyを見ない)でFocus Module Part Aのみ有効。
+- **案2**(`discovery_focus_role_planning_connection_trial_01`、既存結果・
+  再実行なし): 現行順序のまま、Role PlanningへFocus由来の具体的角度hint
+  (mechanism/different angle/limitation)を追加接続。
+- **S2**(本Trial、新規生成): 上記の3段階構成。
+
+採点者注記: 0〜2点の定性スコアは本タスク(Sonnet実行層)による主観評価であり、
+統計的検定ではない。N=1×2レベルのみ(既存S1/案2と同一制約)。
+
+## 比較表(必須)
+
+| 指標 | S1(既存, 順序: Role Plan→Writer) | 案2(既存, 順序同上+角度hint接続) | S2(本Trial, 順序: Main Story→Role Plan→Point) |
+|---|---|---|---|
+| Fact Checker verdict | A2=PASS, B1=PASS | A2=PASS, B1=PASS | A2=PASS, B1=REVIEW_REQUIRED(non-blocking advisory、3件の解釈ニュアンス指摘、下記参照) |
+| Ledger Deviation最終status | A2=LEDGER_COMPLIANT(MAJOR1件→Local Rewriteで解消), B1=LEDGER_COMPLIANT(逸脱0件) | A2=LEDGER_COMPLIANT(MINOR1件, non-blocking), B1=LEDGER_COMPLIANT(逸脱0件) | A2=LEDGER_COMPLIANT(逸脱0件), B1=LEDGER_COMPLIANT(逸脱0件) |
+| Point Overlap(lexical/value QA flag) | flagなし(A2/B1とも) | flagなし(A2/B1とも) | flagなし(A2/B1とも) |
+| A2 Point One役割 | 生理学的段階的countdown(ACTH→前頭前野→心拍) | 睡眠段階(sleep architecture) | ホルモンの長い時計(ACTH/cortisol) |
+| A2 Point Two役割 | self-awakening文献における練習・期待の役割 | 学習された期待(learned expectation) | 層状の覚醒プロセス(脳酸素化+心拍) |
+| B1 Point One役割 | 概日ペースメーカーの限定同調範囲(synchronizer) | 睡眠段階(sleep architecture) | 概日時計の同調範囲の限界(time-isolation実験) |
+| B1 Point Two役割 | 学習されたスキルとしてのself-awakening | 学習された期待(learned expectation) | 睡眠構造(sleep architecture、N2/N3/REM) |
+| A2/B1間の役割重複(角度収束) | 重複なし(4通りとも異なる) | **重複あり**(Point One/Two双方でA2=B1) | 重複なし(4通りとも異なる。ただしB1 Point Two=睡眠構造はS1のbaseline腕・S2内で唯一の一致で、S1 focus腕やS2 A2とは異なる) |
+| Main Story抑制(0-2、現象提示に留め「なぜ」を出し切らないか) | A2=2, B1=1(やや弱い、既存評価) | (未評価対象、Main Story自体はS1と同一構造で新規評価していない) | A2=Main Story無変更のためS1と同一(2)、B1=同左(1) |
+| Point Role Planningの入力にMain Storyが渡った証拠 | なし(topic+ledgerのみ、Gate 4機械確認済み) | なし(hintは角度カテゴリ文字列のみ、Main Story本文は非渡し) | **あり**(`audit/stage2_role_planning.json`のpromptに実際のMain Story本文が埋め込まれていることを直接確認可能) |
+| コスト(実測) | 4本合計113.91円(参考、baseline含む) | A2+B1=46.47円 | A2+B1=33.94円(A2=16.51円、B1=17.43円) |
+
+## Main Story抑制について
+
+S2はStage 1(Main Story)をS1のfocus腕からそのまま再利用しているため、
+Main Story本文自体はS1と完全に同一であり、Main Story抑制の評価もS1と
+同一になる(A2は明瞭、B1はACTHの具体値がMain Story内に一部残りやや弱い、
+既存`discovery_focus_module_revalidation_01/comparison.md`29-33行の評価を
+参照)。**S2はMain Story抑制そのものを改善する設計ではない**(Focus Module
+Part Aの働き方は変えていない)。S2が変えたのは「Point Role PlanningがMain
+Story成立後に、実際の本文を見て計画する」という順序のみ。
+
+## Point One/Twoの新しい価値・A2/B1間の角度多様性
+
+- S2のA2/B1は、Point One・Point Twoの4役割すべてが異なる内容になった
+  (ホルモン性countdown / 層状覚醒プロセス / 概日同調限界 / 睡眠構造)。
+  これはS1(4通りとも異なる)と同じ傾向であり、**案2で観察された「A2・B1
+  ともPoint One=睡眠段階、Point Two=学習された期待」という収束は再発
+  しなかった**。
+- 一方、S2のB1 Point Two(睡眠構造)は、S1のbaseline腕(Focus Moduleなし)
+  でもA2/B1双方のPoint Twoとして採用されていた角度と同じカテゴリである
+  (S1 comparison.md 39行「Baselineでは2本とも『睡眠段階』角度がPoint Two
+  に登場」)。S2のA2 Point Twoは睡眠段階ではなく層状覚醒プロセスであり、
+  S2内でのA2/B1間重複はない。ただしこれはN=1×2であり、「Main Storyを
+  実際に見せたことで収束が構造的に防げた」と断定はできない(単一テーマ・
+  各条件1本のみのため、一般化可能性は本Trialの範囲では確定できない)。
+- Point Role Planningのprompt(`stage2_role_planning.json`)を直接確認する
+  と、`must_not_overlap_with_full_story`の記述が、A2は「ACTH/cortisol等の
+  具体的な数値」、B1は「light and regular scheduleがsynchronizerとして
+  働くという一般論」のように、実際のMain Story本文の具体的な記述内容を
+  引用する形で書かれていた(抽象的な予測ではなく、実際の文面に基づく判断に
+  なっていることを確認)。
+
+## Fact Safety
+
+- 4記事(S1のA2/B1、S2のA2/B1)ともFact CheckerはFAIL無し、Ledger
+  DeviationはいずれもLEDGER_COMPLIANT(non-blockingなMINOR/解消済みMAJOR
+  のみ)。S2のB1のみverdict=REVIEW_REQUIRED(3件の解釈ニュアンス指摘:
+  time-isolation実験の呼称のやや不正確な表現、N3/N2/REMの覚醒慣性の
+  順位づけの厳密性、覚醒しやすさとアラーム直前覚醒の直接比較の有無)。
+  いずれも既存Production方針(ER-010-NO9-FACTCHECK-POLICY-AND-POINT-
+  COMPRESSION-DIAGNOSTIC-12)上はnon-blocking advisoryであり、fact_verdict
+  =FAILではないため本Trialの`status=OK`判定には影響しない。詳細は
+  `b1b/fact_qa.json`(`result.unsupported_specific_claims`)・
+  `audit/fact_qa_b1b_readable.txt`参照。
+- S2のPoint One/Two本文はStage 3で新規生成されたため、Main Story固定
+  部分とは独立にFact Checker/Ledger Deviation Checkの対象になっている
+  (固定したMain Story部分を「安全だから再チェック不要」として省略しては
+  いない)。
+
+## 本Trialが再現しなかったもの(限界、正直に記録)
+
+- Point Overlap/Value QA retry(POINT_OVERLAP_ARTICLE_RETRY_MAX、
+  Diagnostic Full Retry)は未実装。本Trialでは両記事ともflagが出ず単発で
+  完了したため実際には発火しなかったが、発火した場合の「S2でのretry単位
+  (Stage 1から作り直すか、Stage 2/3のみやり直すか)」は本Trialでは
+  検証していない(下記USER_DECISION_REQUIRED参照)。
+- Local Rewrite(Ledger MAJOR検出時の局所書き換えループ)は未実装
+  (fail-closed、MAJOR検出時はNG_REVIEW_REQUIRED停止のみ)。本Trialでは
+  両記事ともMAJOR逸脱0件だったため未発火。
+- Directional Fact Precheckは未実施。
+- Stage 3ではEvidence Compressionを未適用(Main Story側はStage 1生成時
+  [revalidation_01実行時]に適用済み)。
+
+## Gate 1判定材料
+
+- 差は明瞭か: (1)Point Role Planningの入力に実際のMain Story本文が
+  渡ったことは`stage2_role_planning.json`で直接確認できる(S1/案2との
+  構造的な違いが明瞭)。(2)案2で観察されたA2/B1角度収束はS2では再発
+  しなかった(4役割すべて異なる)。(3)Main Story抑制自体はS2固有の
+  改善ではない(S1のMain Storyをそのまま再利用したため)。
+- 品質問題の有無: Fact Safety上は2記事ともOK相当(B1のREVIEW_REQUIREDは
+  non-blocking advisory)。新しいfailure modeは観察されなかった。
+- 未解決事項(USER_DECISION_REQUIRED相当、Production化する場合に必要):
+  Point Overlap/Value QA retryが発火した場合、S2のretry単位を
+  「Stage 1[Main Story]から全て作り直す」か「Stage 1は固定したままStage
+  2/3のみ再実行する」かは、現行Production方式(全体を一体で再生成し
+  Role Planningも毎回再計画する)との整合性を含め、Production配線前に
+  ユーザー判断が必要(本Trialは単発実行のみで、どちらの方式が良いかを
+  検証していない)。
+
+## 2記事本文比較
+
+### A2(S2)
+
+```
+# Why Do We Wake Up Just Before the Alarm?
+
+A familiar morning can feel almost magical. The alarm has not rung, but your eyes open. A few seconds later, the sound begins. Did your body know the exact time?
+
+Researchers call one related ability self-awakening: waking at, or close to, a planned time without an outside signal. Studies suggest that the body can prepare for a regular waking time. But they do not show that an inner clock can read the exact minute when an alarm will ring.
+
+One part of the story is the body’s daily time system. Light is its main outside signal. Regular sleep and activity times can also help it match a roughly 24-hour day. This gives the body a schedule to follow.
+
+There may be another part. When the end of sleep is expected, the body may begin preparing before the person is fully awake. The question is not whether the body has a hidden alarm, but whether several quiet changes build up before waking.
+
+### Hormones on a Longer Clock
+
+An expected end to sleep can leave a measurable hormonal trail. In a controlled laboratory study, ACTH rose clearly about an hour before planned awakening. In a 2025 home study of 201 adults, tissue-free cortisol began rising 187 minutes before waking and peaked about 36 minutes afterward, with wide individual variation—more ramp than countdown. That is distinct from hormone changes triggered by awakening itself.
+
+### A Layered Wake-Up
+
+The preparation may be layered. Among seven successful self-awakeners in a 15-person experiment, right prefrontal oxygenation increased and EEG delta power fell about 30 minutes before waking. In a separate nine-person nap study, heart rate began rising about three minutes beforehand. Brain readiness may precede closer-to-waking cardiovascular activation. A known target makes this plausible, not proof of exact timing.
+
+## In one line
+
+A body can be early without being exact.
+
+```
+
+### B1(S2)
+
+```
+# The Quiet Countdown Before Your Alarm
+
+Sometimes the alarm never gets the first word. You open your eyes a few seconds or minutes before it rings. It can feel as if your body has read the clock. The less magical answer is that your daily timing system may begin preparing for a planned waking time.
+
+Light and regular sleep and wake times help set this system. When the end of sleep is expected, the body may start changing before waking. In a laboratory study, a body signal called ACTH rose about an hour before people woke. Researchers interpreted this as part of a process preparing the body for sleep to end.
+
+Other small studies found changes closer to waking. In one study, 7 of 15 men woke within 30 minutes of their planned time. Among these successful participants, activity in the front of the brain changed about 30 minutes before waking. In a separate short-nap study of 9 students, heart rate began to rise about 3 minutes before waking.
+
+These findings suggest that waking may not be a single switch turned on by the alarm. Some preparation may already be under way.
+
+But there is an important limit. A 2023 review covered 17 studies and 715 participants, yet the methods and success rules differed greatly. Most studies asked people to choose a wake-up time and try to wake without an outside signal. They did not directly test the everyday moment when someone wakes by chance just before a real alarm. So the two experiences are related, but science has not shown that the body can predict the exact minute an alarm will ring.
+
+### A Clock With Limits
+
+A time-isolation experiment tested how much a human clock can be adjusted. Under very dim light, a scheduled activity-and-rest cycle synchronized healthy adults when the imposed day lasted 24.0 hours. It usually failed at 23.5 or 24.6 hours. Regular timing is therefore a real cue—but not a minute-perfect timer.
+
+### Why Waking Can Feel Easy
+
+Sleep architecture adds another piece. NREM and REM periods alternate roughly every 90–110 minutes, while deep slow-wave sleep declines as the night progresses. Waking from N3 is linked with stronger sleep inertia than waking from N2, with REM between them. A smooth awakening may thus reflect more wakeable sleep, not precise clock prediction.
+
+## In one line
+
+The mystery may lie less in an internal alarm than in several imperfect rhythms meeting at nearly the same moment.
+
+```
+</pre>
+
+</body>
+</html>
