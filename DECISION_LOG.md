@@ -396,6 +396,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-118: Gate 3項目4(Regression PASS)再検証+F-1文言是正
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-119: Future Family C最終調整Trial-03(VALIDATED[Trial])のSSOT反映+委任コマンドのvenv標準化
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-120: Discovery S2完全版Trial(VALIDATED[Trial])のSSOT反映+Closeout前再棚卸し
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-121: UDR候補6件(OPEN-106/120/124/132/133/134)のReconciliation(既決表記の整理、意味変更なし)
 
 ---
 
@@ -6963,6 +6964,9 @@ EDITORIAL-FUTURE-FAMILY-C-FINAL-TUNING-TRIAL-03: ユーザー確定判断「hedg
 ## PM-CLOSEOUT-CONSOLIDATION-120(2026-09-13)
 FAMILY-A-DISCOVERY-FOCUS-S2-FULL-QA-PARITY-TRIAL-01: ユーザー確定判断「S2を軸に、完全版Trialまで進めてください。(中略)最低限、以下を含めてください。Local Rewrite/Point Overlap・Point Value retry/Directional Precheck/Evidence Compressionを含むStage 3/retry・fallback・regenerationの整合/Main Story固定時のStage 2-3再実行/Main Story自体に重大問題がある場合のみStage 1からやり直す分岐/A2・B1間・複数記事間の角度収束確認/既存News・Trend・Discoveryとの競合確認。(中略)今回到達してよいStatusは最大VALIDATEDです。」に基づき実施。結果は上記OPEN-135追記のとおり。Gate 1: `VALIDATED`(Trial)。Production配線・CURRENT_SPEC正式化・APPROVED変更なし。実費¥84.62。commit 0e4e914。
 再棚卸し結果は本エントリ末尾に表で記録(Fableが最終報告で確定)。
+
+## PM-CLOSEOUT-CONSOLIDATION-121(2026-09-13)
+UDR候補Reconciliation: CONSOLIDATION-120の文字列棚卸しで挙がったOPEN-106/120/124/132/133/134について、DECISION_LOGの決定記録と突合し分類(表)。(A)既決・表記古い=OPEN-106/120/124/132/133、(B)真に未処理=OPEN-134、(C)観測待ち=該当なし。(A)はOPEN_ITEMSへReconciliation注記を追記(意味変更なし)。最終確定はFable。
 
 ## 参照元
 
