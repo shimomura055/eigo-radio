@@ -388,6 +388,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-110: Discovery Focus Module再検証Trial(VALIDATED)のSSOT反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-111: Future記事設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1所見
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-112: Discovery Focus×Point Role Planning接続設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1訂正記録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-113: Future Family C試作Trial(VALIDATED[機構]・編集面要改稿)のSSOT反映+施策1 arm#3計測
 
 ---
 
@@ -6858,6 +6859,11 @@ EDITORIAL-FUTURE-ARTICLE-DESIGN-01: ユーザー指示「Futureの記事設計�
 ## PM-CLOSEOUT-CONSOLIDATION-112(2026-09-13)
 FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-DESIGN-01: ユーザー指示「Discovery Focus Module Part Aは(a) Production案の再設計へ進めてください。これはProduction採用の承認ではありません。Point Role PlanningへFocusの方針、特に『Main Storyで何を示し、何をPointへ展開するか』を渡す接続案を設計してください。ただし、B1での書き分けの弱さや記事間の角度の類似が未接続に起因するかは未検証です。原因と決めつけず、Focus単独案と接続案を比較できる小規模Trialを提案してください。(中略)試行費用の見積もりと新規記事テーマ候補を先に報告し、テーマ選定と費用を伴う実行は私の判断を待ってください。既存Productionと並行中のFuture設計は変更しないでください。」に基づき¥0で設計完了。内容は上記OPEN-135追記のとおり。Status: `USER_DECISION_REQUIRED`。Production/Future設計/SSOT本文/Git変更なしで実施。
 訂正記録(施策1 Trial arm #1): CONSOLIDATION-111エントリに記載した「tool_uses 57」は完了通知の値であり、`measure_delegation_task.py`による計測値(Before母集団と同一定義)は51。以後、Trial判定は計測スクリプト値を正とし、通知値は参考値とする。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-113(2026-09-13)
+EDITORIAL-FUTURE-FAMILY-C-PROTOTYPE-TRIAL-01: ユーザー確定判断「Future: 既存のA-Familyへの新型追加案は採用せず、A・Bとは別のFamily Cとして設計してください。最初のテーマは『家庭用ロボットと家事』です。まず費用ゼロで独立経路、1人ナレーターの記事構成、事実・仮定・想像の区別とQA、Trial用の実装を試作・検証してください。既存の安全装置は適切に再利用して構いませんが、想像を許すために現在の事実確認を一律に緩めないでください。仮想場面は、まず入口で想像した未来と分かるようにし、場面内では自然で引き込まれる語りを試してください。未来はテーマに合う時間軸で、意味のある1〜3通りを描き、分岐数をPoint数に対応させません。わくわくする、または強い不安を呼ぶ未来像が主役です。エビデンスは内部の足場・安全確認に使い、完成記事を研究やデータの解説にしないでください。Futureで記事生成Trialが必要なら、費用上限300円で実施して構いません。(中略)両TrialともProduction採用・配線の承認ではありません。」に基づき実施。結果とFable所見は上記OPEN-147追記のとおり。Gate 1: 機構=`VALIDATED`、編集面=要改稿(次段階はUSER_DECISION_REQUIRED)。Production/Discovery成果物/SSOT本文の変更なし。実費¥140.83。
 
 ---
 
