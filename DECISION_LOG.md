@@ -387,6 +387,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-109: 施策1(tool_uses削減)Trial設計+施策2(E-1/D-1/G-1委任文定型ブロック)導入
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-110: Discovery Focus Module再検証Trial(VALIDATED)のSSOT反映
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-111: Future記事設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1所見
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-112: Discovery Focus×Point Role Planning接続設計(USER_DECISION_REQUIRED)のSSOT反映+施策1 Trial arm #1訂正記録
 
 ---
 
@@ -6851,6 +6852,12 @@ FAMILY-A-DISCOVERY-FOCUS-MODULE-REVALIDATION-01: ユーザー指示(Discovery/Wh
 
 ## PM-CLOSEOUT-CONSOLIDATION-111(2026-09-13)
 EDITORIAL-FUTURE-ARTICLE-DESIGN-01: ユーザー指示「Futureの記事設計を、Discovery Focus Module再検証と並行して進めてください。(中略)まず¥0で設計とTrial用の準備を進め、現行経路への影響、比較方法、記事の面白さ・Futureらしさ・事実と想像の区別を評価する観点、費用上限を報告してください。新規記事のテーマは既存の選定ルールに従って候補を提示し、私が選びます。API費用が発生するTrialとProduction採用は、設計・費用を確認してから別途判断します。Discoveryの進行やProduction経路には、この作業で変更を加えないでください。」に基づき設計完了(¥0)。内容は上記OPEN_ITEMS新規行のとおり。Status: `USER_DECISION_REQUIRED`(Fableはユーザー報告後に判断を仰ぐ)。Production/SSOT本文/Git変更なしで実施し、本エントリで記録。あわせて施策1 Trial arm #1(CONSOLIDATION-110、taskId a9215801a1916cb64)の所見: tool_uses 57(Before同種別中央値50)で削減なし、見落とし・手戻り=Fable委任文設計不備2件(SSOT複数物理行構造へのGrep指定不足、F-1スクリプト必須引数の記載漏れ)、差し戻し0。
+
+---
+
+## PM-CLOSEOUT-CONSOLIDATION-112(2026-09-13)
+FAMILY-A-DISCOVERY-FOCUS-ROLE-PLANNING-CONNECTION-DESIGN-01: ユーザー指示「Discovery Focus Module Part Aは(a) Production案の再設計へ進めてください。これはProduction採用の承認ではありません。Point Role PlanningへFocusの方針、特に『Main Storyで何を示し、何をPointへ展開するか』を渡す接続案を設計してください。ただし、B1での書き分けの弱さや記事間の角度の類似が未接続に起因するかは未検証です。原因と決めつけず、Focus単独案と接続案を比較できる小規模Trialを提案してください。(中略)試行費用の見積もりと新規記事テーマ候補を先に報告し、テーマ選定と費用を伴う実行は私の判断を待ってください。既存Productionと並行中のFuture設計は変更しないでください。」に基づき¥0で設計完了。内容は上記OPEN-135追記のとおり。Status: `USER_DECISION_REQUIRED`。Production/Future設計/SSOT本文/Git変更なしで実施。
+訂正記録(施策1 Trial arm #1): CONSOLIDATION-111エントリに記載した「tool_uses 57」は完了通知の値であり、`measure_delegation_task.py`による計測値(Before母集団と同一定義)は51。以後、Trial判定は計測スクリプト値を正とし、通知値は参考値とする。
 
 ---
 
