@@ -1,0 +1,351 @@
+{
+  "prompt": "今回のテーマについて、Webで調査し、Verified Fact Ledgerの下書きを作成してください。\n\n【今回のテーマ】\nDiscovery topic: why can silence feel uncomfortable? Aim: research psychological and behavioral science findings about why many people find silence -- especially unexpected silence in conversation, or being alone without any stimulation or activity -- uncomfortable or unpleasant. Cover findings such as: research on awkward or uncomfortable silences in conversation, research on people's general preference for having something to do rather than sitting alone with only their own thoughts (including studies where participants chose to self-administer a mild electric shock rather than sit quietly with their thoughts), physiological or arousal responses associated with silence or unstructured alone time, and any documented individual or cultural variation in how comfortable people are with silence. Use only facts confirmed by web search (no invented details, no facts supplied from the assistant's own prior knowledge).\n\n【役割】\nあなたはResearcherです。以下を行いません:\n- 記事本文を書く\n- Narrativeを作る\n- 比喩を考える\n- 阪神マスターのstyleを模倣する\nあなたが行うのは、Factだけを収集・整理することです。\n\n【Source優先順位】\n1. 政府・規制当局等の一次資料\n2. 公式調査・報告書\n3. 信頼できる二次資料\n一次Sourceで確認できるFactを、二次Sourceだけで確定しないでください。\n\n【特に注意して構造化すべき観点(今回のテーマに当てはまる場合のみ)】\n\n1. 対象範囲: 年齢・人数・期間・地域等、Factが適用される範囲(scope)を数値の母集団と混同せずに特定する\n2. 制度・仕様の適用条件: default設定なのか常時適用なのか、変更・例外が認められるか等、時間的・条件的scopeを明確にする。一次資料内で表現が揺れている場合は、より明確な一次Sourceを追加で検索する。それでも確定できない場合は、断定せずambiguityフィールドへその旨を明記する\n3. 数値の内訳: ある数字が全体を指すのか、特定のサブグループ・条件を指すのかを明確にする。一次資料で直接確認できる場合のみnumeric_valueとして確定し、確認できない場合は推測で数字を作らず、numeric_valueをnullにしてambiguityへその旨を記録する\n4. 観察・相関・因果の区別: 変化・効果・傾向等について、観察・報告なのか、相関なのか、Source自身が因果関係を主張しているのかを、causal_strengthで区別する。Sourceより強い因果表現(caused/produced/proved等)を後工程のwriterが使わないよう、causal_strengthとnotes_for_writerで明示する\n\n【出力形式】\n各Factについて、fact_id・claim・subject・date_or_period・scope・conditions・numeric_value・\nnumeric_scope・causal_strength・source_title・source_url・source_type・support_level・\nambiguity・notes_for_writerを埋めてください(該当しない項目はnullで構いません)。\n数字・期間・対象範囲があるFactについては、該当項目を必ず明示してください。",
+  "raw_text": "{\"facts\":[{\"fact_id\":\"F001\",\"claim\":\"In Study 1, a brief silence inserted into an imagined group conversation was followed by higher reported rejection and negative emotion, and lower reported belonging, self-esteem, social validation, and perceived consensus than a fluent-conversation condition. ([pure.rug.nl](https://pure.rug.nl/ws/files/146971883/Disrupting_the_flow_How_brief_silences_in_group_conversations_affect.pdf))\",\"subject\":\"Brief silence disrupting conversational flow\",\"date_or_period\":\"2011\",\"scope\":\"102 undergraduate participants; 57 female; randomized to fluent-conversation or disrupted-flow conditions\",\"conditions\":\"Participants read a scenario in which a mildly controversial statement was followed either by continued conversation or by a brief silent moment.\",\"numeric_value\":\"N=102; 57 female\",\"numeric_scope\":\"Study 1 participants\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Disrupting the flow: How brief silences in group conversations affect social needs\",\"source_url\":\"https://doi.org/10.1016/j.jesp.2010.12.006\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":null,\"notes_for_writer\":\"The study manipulated a brief silence in an imagined group-conversation scenario; do not generalize to every form of silence.\"},{\"fact_id\":\"F002\",\"claim\":\"In Study 2, a single four-second silence in a six-minute video conversation produced more reported rejection and negative emotion, less positive emotion, and lower belonging, self-esteem, social validation, and perceived consensus than the fluent-conversation condition; participants were generally unaware of the specific silence. ([pure.rug.nl](https://pure.rug.nl/ws/files/146971883/Disrupting_the_flow_How_brief_silences_in_group_conversations_affect.pdf))\",\"subject\":\"Unexpected four-second silence in conversation\",\"date_or_period\":\"2011\",\"scope\":\"60 undergraduate participants; randomized across fluent, disrupted-flow, and base-rate conditions\",\"conditions\":\"The silence followed a statement in a videotaped conversation; the source states that four seconds was selected to remain below conscious awareness while still disrupting perceived conversational flow.\",\"numeric_value\":\"N=60; 4 seconds; 6-minute video\",\"numeric_scope\":\"Study 2 participants and stimulus duration\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Disrupting the flow: How brief silences in group conversations affect social needs\",\"source_url\":\"https://doi.org/10.1016/j.jesp.2010.12.006\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":null,\"notes_for_writer\":\"Use precise wording such as 'a four-second silence in this experiment was sufficient to...' rather than claiming that four seconds is universally awkward.\"},{\"fact_id\":\"F003\",\"claim\":\"In natural ten-minute conversations, long gaps between turns were more common among friends than among strangers; long gaps reduced momentary connection for strangers but increased momentary connection for friends. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9985966/?utm_source=openai))\",\"subject\":\"Relationship context and long conversational gaps\",\"date_or_period\":\"2023 publication; data from recorded conversations\",\"scope\":\"261 stranger dyads and 65 friend dyads; 10-minute unstructured conversations\",\"conditions\":\"A long gap was defined as more than two seconds without verbal speech between turns.\",\"numeric_value\":\"261 stranger dyads; 65 friend dyads; >2 seconds; 10 minutes\",\"numeric_scope\":\"Study 1 conversation datasets\",\"causal_strength\":\"OBSERVED_REPORTED\",\"source_title\":\"Long gaps between turns are awkward for strangers but not for friends\",\"source_url\":\"https://doi.org/10.1016/j.pec.2016.04.009\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The study measured naturally occurring gaps rather than experimentally assigning gap lengths in the recorded conversations.\",\"notes_for_writer\":\"The finding is context-dependent: long gaps did not have a uniformly negative meaning.\"},{\"fact_id\":\"F004\",\"claim\":\"Independent observers rated long gaps in stranger conversations as more awkward than equally long gaps in friend conversations, and perceived awkwardness increased more strongly with gap length for strangers. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9985966/?utm_source=openai))\",\"subject\":\"Perceived awkwardness of long conversational gaps\",\"date_or_period\":\"2023 publication; Study 2\",\"scope\":\"100 video clips: 50 from stranger conversations and 50 from friend conversations\",\"conditions\":\"Clips represented five gap-length intervals: 2–2.5, 2.5–3, 3–3.5, 3.5–4, and more than 4 seconds.\",\"numeric_value\":\"100 clips; 50 stranger; 50 friend; five duration intervals\",\"numeric_scope\":\"Independent-rater stimulus set\",\"causal_strength\":\"OBSERVED_REPORTED\",\"source_title\":\"Long gaps between turns are awkward for strangers but not for friends\",\"source_url\":\"https://doi.org/10.1016/j.pec.2016.04.009\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":null,\"notes_for_writer\":\"The result concerns observers' ratings of video clips and should not be presented as a universal physiological response to silence.\"},{\"fact_id\":\"F005\",\"claim\":\"Across 11 studies, participants generally did not enjoy spending 6–15 minutes alone with nothing to do but think, and they rated mundane external activities as more enjoyable than simply thinking. ([doi.org](https://doi.org/10.1126/SCIENCE.1250830?utm_source=openai))\",\"subject\":\"Preference for external activity over unstructured solitary thought\",\"date_or_period\":\"2014\",\"scope\":\"Participants across 11 experimental studies; the paper's abstract does not provide one combined sample size\",\"conditions\":\"Participants were left alone for a short period with no external activity, or assigned to mundane activities in comparison conditions.\",\"numeric_value\":\"11 studies; 6–15 minutes\",\"numeric_scope\":\"Study count and solitary-thinking interval\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Just think: The challenges of the disengaged mind\",\"source_url\":\"https://doi.org/10.1126/science.1250830\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The paper reports results across multiple studies with different samples and procedures; the finding is not a single-population estimate.\",\"notes_for_writer\":\"Avoid wording that implies everyone dislikes quiet thought; the source reports a general experimental tendency with substantial individual variation.\"},{\"fact_id\":\"F006\",\"claim\":\"In the electric-shock study, 55 undergraduates spent 15 minutes alone with their thoughts while retaining the option to self-administer a previously experienced mild electric shock; the study reported that many participants chose the shock rather than remain without external stimulation. ([david-reinhard.com](https://www.david-reinhard.com/uploads/2/7/2/9/27296817/wilson_et_al_%282014%29_science_-_just_think.pdf?utm_source=openai))\",\"subject\":\"Self-administered mild electric shock during solitary thought\",\"date_or_period\":\"2014\",\"scope\":\"55 undergraduate participants; 31 female and 24 male according to the study materials\",\"conditions\":\"Participants first evaluated the shock and then sat alone for 15 minutes with a button that could deliver the shock again.\",\"numeric_value\":\"N=55; 15 minutes\",\"numeric_scope\":\"Study 10 participants and thinking period\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Just think: The challenges of the disengaged mind\",\"source_url\":\"https://doi.org/10.1126/science.1250830\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The commonly repeated gender percentages are based on a subset and should not be treated as percentages for all 55 participants without specifying the analysis sample.\",\"notes_for_writer\":\"State that many participants self-administered the shock; do not imply that most participants preferred shock for the entire 15-minute period.\"},{\"fact_id\":\"F007\",\"claim\":\"In a replication conducted with 2,557 participants at 12 sites in 11 countries, participants assigned to do an everyday activity reported significantly greater enjoyment than participants assigned to think for pleasure in every country sampled. ([khu.elsevierpure.com](https://khu.elsevierpure.com/en/publications/cross-cultural-consistency-and-relativity-in-the-enjoyment-of-thi/))\",\"subject\":\"Cross-cultural preference for doing versus thinking for pleasure\",\"date_or_period\":\"2019\",\"scope\":\"2,557 participants; 12 sites; 11 countries; participants were college students\",\"conditions\":\"Participants were randomly assigned either to think for pleasure or to engage in an everyday solitary activity such as reading or watching a video.\",\"numeric_value\":\"N=2,557; 12 sites; 11 countries\",\"numeric_scope\":\"Full cross-cultural sample\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Cross-Cultural Consistency and Relativity in the Enjoyment of Thinking Versus Doing\",\"source_url\":\"https://doi.org/10.1037/pspp0000198\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The countries and sites were a broad but non-global sample of college-student populations.\",\"notes_for_writer\":\"The finding supports a cross-sample tendency, not a claim that all cultures or all individuals prefer activity over thought.\"},{\"fact_id\":\"F008\",\"claim\":\"The magnitude of the country differences in enjoyment of thinking for pleasure was statistically accounted for by variation in five individual-difference variables: need for cognition, openness to experience, meditation experience, initial positive affect, and reported phone usage, with phone usage negatively related to enjoyment. ([dtg.sites.fas.harvard.edu](https://dtg.sites.fas.harvard.edu/BUTTRICKETAL2019.pdf))\",\"subject\":\"Individual differences associated with enjoyment of solitary thought\",\"date_or_period\":\"2019\",\"scope\":\"Cross-cultural college-student sample nested within the 2,557-participant, 11-country dataset\",\"conditions\":\"Associations were examined using multilevel and structural-equation models; the source describes these as predictors or correlates, not experimentally manipulated causes.\",\"numeric_value\":\"5 individual-difference variables; 8 initially examined as significant correlates\",\"numeric_scope\":\"Cross-cultural individual-difference analyses\",\"causal_strength\":\"CORRELATIONAL\",\"source_title\":\"Cross-Cultural Consistency and Relativity in the Enjoyment of Thinking Versus Doing\",\"source_url\":\"https://doi.org/10.1037/pspp0000198\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The statistical model accounted for country-level differences; it does not prove that these traits or behaviors caused enjoyment differences.\",\"notes_for_writer\":\"Use 'was associated with' or 'statistically accounted for variation in,' not 'caused.'\"},{\"fact_id\":\"F009\",\"claim\":\"Across four studies, solitude generally reduced both high-arousal positive affect and high-arousal negative affect; solitude was associated with relaxation and reduced stress when participants actively chose to be alone. ([selfdeterminationtheory.org](https://selfdeterminationtheory.org/wp-content/uploads/2018/05/2018_NguyenRyanDeci_PSPB.pdf?utm_source=openai))\",\"subject\":\"Affective arousal during solitude\",\"date_or_period\":\"2018 publication; studies conducted before publication\",\"scope\":\"Four experimental studies reported in one research program\",\"conditions\":\"Conditions varied in whether participants were alone, engaged in an activity, chose what to think about, or actively chose to be alone.\",\"numeric_value\":\"4 studies\",\"numeric_scope\":\"Research program\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Solitude as an Approach to Affective Self-Regulation\",\"source_url\":\"https://doi.org/10.1177/0146167217733073\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The result concerns affective self-report measures and solitude conditions, not complete sensory deprivation or every form of silence.\",\"notes_for_writer\":\"This research provides evidence that unstructured alone time can reduce arousal for some conditions, contrasting with studies in which people prefer external activity.\"},{\"fact_id\":\"F010\",\"claim\":\"In a study summarized by Pfeifer and Wittmann, students instructed to occupy themselves with their own thoughts during 6 minutes 30 seconds of silent solitary time reported greater relaxation, better mood, and lower arousal afterward than beforehand. ([frontiersin.org](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/pdf?utm_source=openai))\",\"subject\":\"Self-reported arousal and mood after silent solitary thought\",\"date_or_period\":\"2019 study summarized in 2020 review\",\"scope\":\"Student participants in a university seminar-room study; the review describes the silent interval but does not state the sample size in the cited passage\",\"conditions\":\"Participants sat alone, remained awake and seated, and were instructed to occupy themselves with their own thoughts; the duration was not disclosed in advance.\",\"numeric_value\":\"6 minutes 30 seconds\",\"numeric_scope\":\"Silent-thinking interval\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence\",\"source_url\":\"https://doi.org/10.3389/fpsyg.2020.00602\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The result is based on self-report before–after comparisons in a student sample and does not establish that silence is relaxing for everyone.\",\"notes_for_writer\":\"Distinguish self-reported arousal from physiological arousal measured by autonomic sensors.\"},{\"fact_id\":\"F011\",\"claim\":\"In a within-participant study of 46 students, 6 minutes 30 seconds of silence increased relaxation in both a university seminar room and a city-garden setting; participants reported less boredom and greater present-moment orientation in the outdoor setting. ([frontiersin.org](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/full))\",\"subject\":\"Environmental context, boredom, and relaxation during silence\",\"date_or_period\":\"2019 study summarized in 2020 review\",\"scope\":\"46 students; 42 women and 4 men; age range 20–52; mean age 23.5\",\"conditions\":\"Each participant experienced silent periods indoors and outdoors, with one week between sessions; the duration was unknown to participants.\",\"numeric_value\":\"N=46; 6 minutes 30 seconds; 42 women; 4 men; age range 20–52\",\"numeric_scope\":\"Study 5 participants and silent intervals\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence\",\"source_url\":\"https://doi.org/10.3389/fpsyg.2020.00602\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The sample consisted mainly of students from one German university, limiting generalizability.\",\"notes_for_writer\":\"The setting altered the experience of silence; do not describe 'silence' as an isolated variable without the indoor/outdoor condition.\"},{\"fact_id\":\"F012\",\"claim\":\"A systematic review of 37 studies concluded that autonomic responses to silence differ according to whether silence is conceptualized as inner silence or outer silence, and may also depend on context, familiarity with silence, surrounding noise, and empathy. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/37714570/?utm_source=openai))\",\"subject\":\"Autonomic nervous-system responses associated with silence\",\"date_or_period\":\"2023 systematic review\",\"scope\":\"37 studies included after searches of PubMed, Scopus, PsycINFO, EMBASE, and Google Scholar through July 2023\",\"conditions\":\"The review distinguished internally cultivated or experienced silence from externally quiet conditions.\",\"numeric_value\":\"37 included studies; literature searched through July 2023\",\"numeric_scope\":\"Systematic-review evidence base\",\"causal_strength\":\"NOT_APPLICABLE\",\"source_title\":\"Silence and its effects on the autonomic nervous system: A systematic review\",\"source_url\":\"https://doi.org/10.1016/bs.pbr.2023.08.001\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The review uses a theoretical distinction between inner and outer silence and synthesizes heterogeneous studies; it does not establish one universal autonomic response.\",\"notes_for_writer\":\"Do not claim that silence always lowers physiological arousal; the review explicitly describes context-dependent responses.\"},{\"fact_id\":\"F013\",\"claim\":\"In a counterbalanced EKG experiment, participants experienced eight-minute periods of silence, fMRI acoustic noise, and white noise; parasympathetic activity was higher during fMRI noise than during silence, while sympathetic activity was higher during white noise than during fMRI noise. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8615429/?utm_source=openai))\",\"subject\":\"Autonomic activity during silence versus auditory noise\",\"date_or_period\":\"2021 publication\",\"scope\":\"Healthy human participants without specified neuropsychiatric, hearing, medication, or relevant medical conditions in the cited source passage\",\"conditions\":\"Each condition lasted eight minutes; condition order was counterbalanced; autonomic measures were derived from EKG R–R intervals.\",\"numeric_value\":\"8 minutes per condition; 3 auditory conditions\",\"numeric_scope\":\"Within-participant experimental conditions\",\"causal_strength\":\"CAUSAL_STATED_BY_SOURCE\",\"source_title\":\"fMRI Acoustic Noise Enhances Parasympathetic Activity in Humans\",\"source_url\":\"https://doi.org/10.3389/fnins.2021.742989\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The study compared laboratory silence with specific high-intensity auditory stimuli; it does not establish how unexpected conversational silence affects autonomic activity.\",\"notes_for_writer\":\"This result is a counterexample to the assumption that silence is automatically the most physiologically calming auditory condition.\"},{\"fact_id\":\"F014\",\"claim\":\"In a Japan–United States survey study, Japanese respondents reported a more negative view of silence with strangers than with close friends, whereas Americans did not show that relationship; Americans reported more strategic use of silence than Japanese respondents. ([journals.sagepub.com](https://journals.sagepub.com/doi/10.1177/0022022198295005))\",\"subject\":\"Cultural and relational variation in attitudes toward conversational silence\",\"date_or_period\":\"1998\",\"scope\":\"Respondents from Japan and the United States; the accessible source excerpt does not state the full sample size\",\"conditions\":\"Attitudes were examined separately for communication with strangers and close friends.\",\"numeric_value\":null,\"numeric_scope\":null,\"causal_strength\":\"OBSERVED_REPORTED\",\"source_title\":\"Silence in Japan and the United States\",\"source_url\":\"https://doi.org/10.1177/0022022198295005\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The accessible abstract does not provide the sample size or detailed sampling frame; findings concern reported attitudes rather than observed conversational behavior.\",\"notes_for_writer\":\"Avoid broad cultural stereotypes; the source itself reports that relationship context changes the pattern.\"},{\"fact_id\":\"F015\",\"claim\":\"In a staged one-to-one tutorial study, Japanese and UK undergraduates showed similar tolerance of instructor silence and similar discomfort: the groups differed by only about seven seconds in mean silence tolerance, and both groups' average discomfort was around 4 on a 1–6 scale; silence duration was not correlated with discomfort. ([link.springer.com](https://link.springer.com/article/10.1007/s12564-017-9503-8))\",\"subject\":\"Cross-cultural comparison of tolerance for silence\",\"date_or_period\":\"2018 publication\",\"scope\":\"Initial sample: 20 Japanese and 15 UK first-year undergraduates; quantitative analysis retained 34 participants after exclusions\",\"conditions\":\"An instructor adopted a neutral, silent posture during a staged one-to-one tutorial; students could end the silence by speaking.\",\"numeric_value\":\"Japan n=20; UK n=15; quantitative analysis n=34; approximately 7-second mean difference; discomfort approximately 4/6\",\"numeric_scope\":\"Participant groups and reported group comparisons\",\"causal_strength\":\"OBSERVED_REPORTED\",\"source_title\":\"Talk, silence and anxiety during one-to-one tutorials: A cross-cultural comparative study of Japan and UK undergraduates’ tolerance of silence\",\"source_url\":\"https://doi.org/10.1007/s12564-017-9503-8\",\"source_type\":\"OFFICIAL_REPORT_OR_STUDY\",\"support_level\":\"DIRECTLY_STATED\",\"ambiguity\":\"The study used small, intact classes and a specific instructor–student context; it should not be treated as a representative national comparison.\",\"notes_for_writer\":\"This study found similarities rather than a simple Japan-versus-UK difference, showing that context and individual reactions matter.\"}]}",
+  "parsed": {
+    "facts": [
+      {
+        "fact_id": "F001",
+        "claim": "In Study 1, a brief silence inserted into an imagined group conversation was followed by higher reported rejection and negative emotion, and lower reported belonging, self-esteem, social validation, and perceived consensus than a fluent-conversation condition. ([pure.rug.nl](https://pure.rug.nl/ws/files/146971883/Disrupting_the_flow_How_brief_silences_in_group_conversations_affect.pdf))",
+        "subject": "Brief silence disrupting conversational flow",
+        "date_or_period": "2011",
+        "scope": "102 undergraduate participants; 57 female; randomized to fluent-conversation or disrupted-flow conditions",
+        "conditions": "Participants read a scenario in which a mildly controversial statement was followed either by continued conversation or by a brief silent moment.",
+        "numeric_value": "N=102; 57 female",
+        "numeric_scope": "Study 1 participants",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Disrupting the flow: How brief silences in group conversations affect social needs",
+        "source_url": "https://doi.org/10.1016/j.jesp.2010.12.006",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": null,
+        "notes_for_writer": "The study manipulated a brief silence in an imagined group-conversation scenario; do not generalize to every form of silence."
+      },
+      {
+        "fact_id": "F002",
+        "claim": "In Study 2, a single four-second silence in a six-minute video conversation produced more reported rejection and negative emotion, less positive emotion, and lower belonging, self-esteem, social validation, and perceived consensus than the fluent-conversation condition; participants were generally unaware of the specific silence. ([pure.rug.nl](https://pure.rug.nl/ws/files/146971883/Disrupting_the_flow_How_brief_silences_in_group_conversations_affect.pdf))",
+        "subject": "Unexpected four-second silence in conversation",
+        "date_or_period": "2011",
+        "scope": "60 undergraduate participants; randomized across fluent, disrupted-flow, and base-rate conditions",
+        "conditions": "The silence followed a statement in a videotaped conversation; the source states that four seconds was selected to remain below conscious awareness while still disrupting perceived conversational flow.",
+        "numeric_value": "N=60; 4 seconds; 6-minute video",
+        "numeric_scope": "Study 2 participants and stimulus duration",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Disrupting the flow: How brief silences in group conversations affect social needs",
+        "source_url": "https://doi.org/10.1016/j.jesp.2010.12.006",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": null,
+        "notes_for_writer": "Use precise wording such as 'a four-second silence in this experiment was sufficient to...' rather than claiming that four seconds is universally awkward."
+      },
+      {
+        "fact_id": "F003",
+        "claim": "In natural ten-minute conversations, long gaps between turns were more common among friends than among strangers; long gaps reduced momentary connection for strangers but increased momentary connection for friends. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9985966/?utm_source=openai))",
+        "subject": "Relationship context and long conversational gaps",
+        "date_or_period": "2023 publication; data from recorded conversations",
+        "scope": "261 stranger dyads and 65 friend dyads; 10-minute unstructured conversations",
+        "conditions": "A long gap was defined as more than two seconds without verbal speech between turns.",
+        "numeric_value": "261 stranger dyads; 65 friend dyads; >2 seconds; 10 minutes",
+        "numeric_scope": "Study 1 conversation datasets",
+        "causal_strength": "OBSERVED_REPORTED",
+        "source_title": "Long gaps between turns are awkward for strangers but not for friends",
+        "source_url": "https://doi.org/10.1016/j.pec.2016.04.009",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The study measured naturally occurring gaps rather than experimentally assigning gap lengths in the recorded conversations.",
+        "notes_for_writer": "The finding is context-dependent: long gaps did not have a uniformly negative meaning."
+      },
+      {
+        "fact_id": "F004",
+        "claim": "Independent observers rated long gaps in stranger conversations as more awkward than equally long gaps in friend conversations, and perceived awkwardness increased more strongly with gap length for strangers. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC9985966/?utm_source=openai))",
+        "subject": "Perceived awkwardness of long conversational gaps",
+        "date_or_period": "2023 publication; Study 2",
+        "scope": "100 video clips: 50 from stranger conversations and 50 from friend conversations",
+        "conditions": "Clips represented five gap-length intervals: 2–2.5, 2.5–3, 3–3.5, 3.5–4, and more than 4 seconds.",
+        "numeric_value": "100 clips; 50 stranger; 50 friend; five duration intervals",
+        "numeric_scope": "Independent-rater stimulus set",
+        "causal_strength": "OBSERVED_REPORTED",
+        "source_title": "Long gaps between turns are awkward for strangers but not for friends",
+        "source_url": "https://doi.org/10.1016/j.pec.2016.04.009",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": null,
+        "notes_for_writer": "The result concerns observers' ratings of video clips and should not be presented as a universal physiological response to silence."
+      },
+      {
+        "fact_id": "F005",
+        "claim": "Across 11 studies, participants generally did not enjoy spending 6–15 minutes alone with nothing to do but think, and they rated mundane external activities as more enjoyable than simply thinking. ([doi.org](https://doi.org/10.1126/SCIENCE.1250830?utm_source=openai))",
+        "subject": "Preference for external activity over unstructured solitary thought",
+        "date_or_period": "2014",
+        "scope": "Participants across 11 experimental studies; the paper's abstract does not provide one combined sample size",
+        "conditions": "Participants were left alone for a short period with no external activity, or assigned to mundane activities in comparison conditions.",
+        "numeric_value": "11 studies; 6–15 minutes",
+        "numeric_scope": "Study count and solitary-thinking interval",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Just think: The challenges of the disengaged mind",
+        "source_url": "https://doi.org/10.1126/science.1250830",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The paper reports results across multiple studies with different samples and procedures; the finding is not a single-population estimate.",
+        "notes_for_writer": "Avoid wording that implies everyone dislikes quiet thought; the source reports a general experimental tendency with substantial individual variation."
+      },
+      {
+        "fact_id": "F006",
+        "claim": "In the electric-shock study, 55 undergraduates spent 15 minutes alone with their thoughts while retaining the option to self-administer a previously experienced mild electric shock; the study reported that many participants chose the shock rather than remain without external stimulation. ([david-reinhard.com](https://www.david-reinhard.com/uploads/2/7/2/9/27296817/wilson_et_al_%282014%29_science_-_just_think.pdf?utm_source=openai))",
+        "subject": "Self-administered mild electric shock during solitary thought",
+        "date_or_period": "2014",
+        "scope": "55 undergraduate participants; 31 female and 24 male according to the study materials",
+        "conditions": "Participants first evaluated the shock and then sat alone for 15 minutes with a button that could deliver the shock again.",
+        "numeric_value": "N=55; 15 minutes",
+        "numeric_scope": "Study 10 participants and thinking period",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Just think: The challenges of the disengaged mind",
+        "source_url": "https://doi.org/10.1126/science.1250830",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The commonly repeated gender percentages are based on a subset and should not be treated as percentages for all 55 participants without specifying the analysis sample.",
+        "notes_for_writer": "State that many participants self-administered the shock; do not imply that most participants preferred shock for the entire 15-minute period."
+      },
+      {
+        "fact_id": "F007",
+        "claim": "In a replication conducted with 2,557 participants at 12 sites in 11 countries, participants assigned to do an everyday activity reported significantly greater enjoyment than participants assigned to think for pleasure in every country sampled. ([khu.elsevierpure.com](https://khu.elsevierpure.com/en/publications/cross-cultural-consistency-and-relativity-in-the-enjoyment-of-thi/))",
+        "subject": "Cross-cultural preference for doing versus thinking for pleasure",
+        "date_or_period": "2019",
+        "scope": "2,557 participants; 12 sites; 11 countries; participants were college students",
+        "conditions": "Participants were randomly assigned either to think for pleasure or to engage in an everyday solitary activity such as reading or watching a video.",
+        "numeric_value": "N=2,557; 12 sites; 11 countries",
+        "numeric_scope": "Full cross-cultural sample",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Cross-Cultural Consistency and Relativity in the Enjoyment of Thinking Versus Doing",
+        "source_url": "https://doi.org/10.1037/pspp0000198",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The countries and sites were a broad but non-global sample of college-student populations.",
+        "notes_for_writer": "The finding supports a cross-sample tendency, not a claim that all cultures or all individuals prefer activity over thought."
+      },
+      {
+        "fact_id": "F008",
+        "claim": "The magnitude of the country differences in enjoyment of thinking for pleasure was statistically accounted for by variation in five individual-difference variables: need for cognition, openness to experience, meditation experience, initial positive affect, and reported phone usage, with phone usage negatively related to enjoyment. ([dtg.sites.fas.harvard.edu](https://dtg.sites.fas.harvard.edu/BUTTRICKETAL2019.pdf))",
+        "subject": "Individual differences associated with enjoyment of solitary thought",
+        "date_or_period": "2019",
+        "scope": "Cross-cultural college-student sample nested within the 2,557-participant, 11-country dataset",
+        "conditions": "Associations were examined using multilevel and structural-equation models; the source describes these as predictors or correlates, not experimentally manipulated causes.",
+        "numeric_value": "5 individual-difference variables; 8 initially examined as significant correlates",
+        "numeric_scope": "Cross-cultural individual-difference analyses",
+        "causal_strength": "CORRELATIONAL",
+        "source_title": "Cross-Cultural Consistency and Relativity in the Enjoyment of Thinking Versus Doing",
+        "source_url": "https://doi.org/10.1037/pspp0000198",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The statistical model accounted for country-level differences; it does not prove that these traits or behaviors caused enjoyment differences.",
+        "notes_for_writer": "Use 'was associated with' or 'statistically accounted for variation in,' not 'caused.'"
+      },
+      {
+        "fact_id": "F009",
+        "claim": "Across four studies, solitude generally reduced both high-arousal positive affect and high-arousal negative affect; solitude was associated with relaxation and reduced stress when participants actively chose to be alone. ([selfdeterminationtheory.org](https://selfdeterminationtheory.org/wp-content/uploads/2018/05/2018_NguyenRyanDeci_PSPB.pdf?utm_source=openai))",
+        "subject": "Affective arousal during solitude",
+        "date_or_period": "2018 publication; studies conducted before publication",
+        "scope": "Four experimental studies reported in one research program",
+        "conditions": "Conditions varied in whether participants were alone, engaged in an activity, chose what to think about, or actively chose to be alone.",
+        "numeric_value": "4 studies",
+        "numeric_scope": "Research program",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Solitude as an Approach to Affective Self-Regulation",
+        "source_url": "https://doi.org/10.1177/0146167217733073",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The result concerns affective self-report measures and solitude conditions, not complete sensory deprivation or every form of silence.",
+        "notes_for_writer": "This research provides evidence that unstructured alone time can reduce arousal for some conditions, contrasting with studies in which people prefer external activity."
+      },
+      {
+        "fact_id": "F010",
+        "claim": "In a study summarized by Pfeifer and Wittmann, students instructed to occupy themselves with their own thoughts during 6 minutes 30 seconds of silent solitary time reported greater relaxation, better mood, and lower arousal afterward than beforehand. ([frontiersin.org](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/pdf?utm_source=openai))",
+        "subject": "Self-reported arousal and mood after silent solitary thought",
+        "date_or_period": "2019 study summarized in 2020 review",
+        "scope": "Student participants in a university seminar-room study; the review describes the silent interval but does not state the sample size in the cited passage",
+        "conditions": "Participants sat alone, remained awake and seated, and were instructed to occupy themselves with their own thoughts; the duration was not disclosed in advance.",
+        "numeric_value": "6 minutes 30 seconds",
+        "numeric_scope": "Silent-thinking interval",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence",
+        "source_url": "https://doi.org/10.3389/fpsyg.2020.00602",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The result is based on self-report before–after comparisons in a student sample and does not establish that silence is relaxing for everyone.",
+        "notes_for_writer": "Distinguish self-reported arousal from physiological arousal measured by autonomic sensors."
+      },
+      {
+        "fact_id": "F011",
+        "claim": "In a within-participant study of 46 students, 6 minutes 30 seconds of silence increased relaxation in both a university seminar room and a city-garden setting; participants reported less boredom and greater present-moment orientation in the outdoor setting. ([frontiersin.org](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/full))",
+        "subject": "Environmental context, boredom, and relaxation during silence",
+        "date_or_period": "2019 study summarized in 2020 review",
+        "scope": "46 students; 42 women and 4 men; age range 20–52; mean age 23.5",
+        "conditions": "Each participant experienced silent periods indoors and outdoors, with one week between sessions; the duration was unknown to participants.",
+        "numeric_value": "N=46; 6 minutes 30 seconds; 42 women; 4 men; age range 20–52",
+        "numeric_scope": "Study 5 participants and silent intervals",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence",
+        "source_url": "https://doi.org/10.3389/fpsyg.2020.00602",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The sample consisted mainly of students from one German university, limiting generalizability.",
+        "notes_for_writer": "The setting altered the experience of silence; do not describe 'silence' as an isolated variable without the indoor/outdoor condition."
+      },
+      {
+        "fact_id": "F012",
+        "claim": "A systematic review of 37 studies concluded that autonomic responses to silence differ according to whether silence is conceptualized as inner silence or outer silence, and may also depend on context, familiarity with silence, surrounding noise, and empathy. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/37714570/?utm_source=openai))",
+        "subject": "Autonomic nervous-system responses associated with silence",
+        "date_or_period": "2023 systematic review",
+        "scope": "37 studies included after searches of PubMed, Scopus, PsycINFO, EMBASE, and Google Scholar through July 2023",
+        "conditions": "The review distinguished internally cultivated or experienced silence from externally quiet conditions.",
+        "numeric_value": "37 included studies; literature searched through July 2023",
+        "numeric_scope": "Systematic-review evidence base",
+        "causal_strength": "NOT_APPLICABLE",
+        "source_title": "Silence and its effects on the autonomic nervous system: A systematic review",
+        "source_url": "https://doi.org/10.1016/bs.pbr.2023.08.001",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The review uses a theoretical distinction between inner and outer silence and synthesizes heterogeneous studies; it does not establish one universal autonomic response.",
+        "notes_for_writer": "Do not claim that silence always lowers physiological arousal; the review explicitly describes context-dependent responses."
+      },
+      {
+        "fact_id": "F013",
+        "claim": "In a counterbalanced EKG experiment, participants experienced eight-minute periods of silence, fMRI acoustic noise, and white noise; parasympathetic activity was higher during fMRI noise than during silence, while sympathetic activity was higher during white noise than during fMRI noise. ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC8615429/?utm_source=openai))",
+        "subject": "Autonomic activity during silence versus auditory noise",
+        "date_or_period": "2021 publication",
+        "scope": "Healthy human participants without specified neuropsychiatric, hearing, medication, or relevant medical conditions in the cited source passage",
+        "conditions": "Each condition lasted eight minutes; condition order was counterbalanced; autonomic measures were derived from EKG R–R intervals.",
+        "numeric_value": "8 minutes per condition; 3 auditory conditions",
+        "numeric_scope": "Within-participant experimental conditions",
+        "causal_strength": "CAUSAL_STATED_BY_SOURCE",
+        "source_title": "fMRI Acoustic Noise Enhances Parasympathetic Activity in Humans",
+        "source_url": "https://doi.org/10.3389/fnins.2021.742989",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The study compared laboratory silence with specific high-intensity auditory stimuli; it does not establish how unexpected conversational silence affects autonomic activity.",
+        "notes_for_writer": "This result is a counterexample to the assumption that silence is automatically the most physiologically calming auditory condition."
+      },
+      {
+        "fact_id": "F014",
+        "claim": "In a Japan–United States survey study, Japanese respondents reported a more negative view of silence with strangers than with close friends, whereas Americans did not show that relationship; Americans reported more strategic use of silence than Japanese respondents. ([journals.sagepub.com](https://journals.sagepub.com/doi/10.1177/0022022198295005))",
+        "subject": "Cultural and relational variation in attitudes toward conversational silence",
+        "date_or_period": "1998",
+        "scope": "Respondents from Japan and the United States; the accessible source excerpt does not state the full sample size",
+        "conditions": "Attitudes were examined separately for communication with strangers and close friends.",
+        "numeric_value": null,
+        "numeric_scope": null,
+        "causal_strength": "OBSERVED_REPORTED",
+        "source_title": "Silence in Japan and the United States",
+        "source_url": "https://doi.org/10.1177/0022022198295005",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The accessible abstract does not provide the sample size or detailed sampling frame; findings concern reported attitudes rather than observed conversational behavior.",
+        "notes_for_writer": "Avoid broad cultural stereotypes; the source itself reports that relationship context changes the pattern."
+      },
+      {
+        "fact_id": "F015",
+        "claim": "In a staged one-to-one tutorial study, Japanese and UK undergraduates showed similar tolerance of instructor silence and similar discomfort: the groups differed by only about seven seconds in mean silence tolerance, and both groups' average discomfort was around 4 on a 1–6 scale; silence duration was not correlated with discomfort. ([link.springer.com](https://link.springer.com/article/10.1007/s12564-017-9503-8))",
+        "subject": "Cross-cultural comparison of tolerance for silence",
+        "date_or_period": "2018 publication",
+        "scope": "Initial sample: 20 Japanese and 15 UK first-year undergraduates; quantitative analysis retained 34 participants after exclusions",
+        "conditions": "An instructor adopted a neutral, silent posture during a staged one-to-one tutorial; students could end the silence by speaking.",
+        "numeric_value": "Japan n=20; UK n=15; quantitative analysis n=34; approximately 7-second mean difference; discomfort approximately 4/6",
+        "numeric_scope": "Participant groups and reported group comparisons",
+        "causal_strength": "OBSERVED_REPORTED",
+        "source_title": "Talk, silence and anxiety during one-to-one tutorials: A cross-cultural comparative study of Japan and UK undergraduates’ tolerance of silence",
+        "source_url": "https://doi.org/10.1007/s12564-017-9503-8",
+        "source_type": "OFFICIAL_REPORT_OR_STUDY",
+        "support_level": "DIRECTLY_STATED",
+        "ambiguity": "The study used small, intact classes and a specific instructor–student context; it should not be treated as a representative national comparison.",
+        "notes_for_writer": "This study found similarities rather than a simple Japan-versus-UK difference, showing that context and individual reactions matter."
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0159dcf8cbfcf105006aa7440cade087d08b81785b699a483e",
+  "search_usage": {
+    "web_search_call_count": 14,
+    "queries": [
+      "site:science.org Just Think The Challenges of the Disengaged Mind electric shock study 2014",
+      "awkward silence conversation study duration social discomfort journal",
+      "cross-cultural differences comfort with silence conversation study Japanese American",
+      "silence physiological arousal study alone with thoughts primary research",
+      "Koudenburg silence unbearable after four seconds study 2010 group belonging silence paper",
+      "Koudenburg Postmes Gordijn 2011 regulating social order through silence abstract",
+      "Wilson Reinhard Westgate Gilbert Ellerbeck Hahn Shaked 2014 just think electric shock 67% 25% primary paper",
+      "long gaps between turns awkward strangers friends study sample size PMC",
+      "silence physiological response heart rate skin conductance study silence relaxation primary research",
+      "quiet alone time physiological arousal study unstructured time boredom stress primary research",
+      "silence cortisol heart rate variability study human participants journal",
+      "silence auditory stimulus autonomic nervous system study",
+      "Pfeifer 2019 Waiting Thinking Feeling Variations Perception Time During Silence participants study 2 6:30 min full text",
+      "Pfeifer 2019 silence alone room relaxed less aroused better mood sample size",
+      "Pfeifer et al 2019 silence nature seminar room boredom study 6:30",
+      "Hasegawa Gudykunst 1998 Silence in Japan and United States sample size respondents",
+      "\"Silence in Japan and the United States\" sample 1998 respondents",
+      "individual differences enjoyment solitude thoughts Wilson just think study moderators introversion boredom proneness primary paper",
+      "Nguyen Ryan Deci 2018 solitude affective self-regulation study participants motivation for solitude",
+      "thinking for pleasure individual differences study meaning in life solitude primary research",
+      "Alone with our thoughts study sample 2022 Collabra Psychology 730 participants",
+      "Buttrick Choi Wilson 2019 thinking for pleasure country differences 11 countries study primary paper",
+      "The mind is its own place difficulties benefits thinking for pleasure individual cultural differences sample countries",
+      "thinking for pleasure across cultures 12 countries study enjoyment thoughts",
+      "Wilson et al 2014 Just Think Study 10 shock 67% men 25% women exact sample size 15 minutes",
+      "\"67% of men\" \"25% of women\" shock Wilson 2014 sample",
+      "Wilson 2014 just think 11 studies approximately 900 participants study 10 electric shock details"
+    ]
+  },
+  "sources": [
+    {
+      "title": "",
+      "url": "https://pure.rug.nl/ws/files/146971883/Disrupting_the_flow_How_brief_silences_in_group_conversations_affect.pdf"
+    },
+    {
+      "title": "Long gaps between turns are awkward for strangers but not for friends - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9985966/?utm_source=openai"
+    },
+    {
+      "title": "Just think: The challenges of the disengaged mind | Science",
+      "url": "https://doi.org/10.1126/SCIENCE.1250830?utm_source=openai"
+    },
+    {
+      "title": "et al.\nTimothy D. Wilson\nJust think: The challenge",
+      "url": "https://www.david-reinhard.com/uploads/2/7/2/9/27296817/wilson_et_al_%282014%29_science_-_just_think.pdf?utm_source=openai"
+    },
+    {
+      "title": "Cross-Cultural Consistency and Relativity in the Enjoyment of Thinking Versus Doing - Kyung Hee University",
+      "url": "https://khu.elsevierpure.com/en/publications/cross-cultural-consistency-and-relativity-in-the-enjoyment-of-thi/"
+    },
+    {
+      "title": "",
+      "url": "https://dtg.sites.fas.harvard.edu/BUTTRICKETAL2019.pdf"
+    },
+    {
+      "title": "Empirical Research Paper",
+      "url": "https://selfdeterminationtheory.org/wp-content/uploads/2018/05/2018_NguyenRyanDeci_PSPB.pdf?utm_source=openai"
+    },
+    {
+      "title": "Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/pdf?utm_source=openai"
+    },
+    {
+      "title": "Frontiers | Waiting, Thinking, and Feeling: Variations in the Perception of Time During Silence",
+      "url": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2020.00602/full"
+    },
+    {
+      "title": "Silence and its effects on the autonomic nervous system: A systematic review - PubMed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37714570/?utm_source=openai"
+    },
+    {
+      "title": "fMRI Acoustic Noise Enhances Parasympathetic Activity in Humans - PMC",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8615429/?utm_source=openai"
+    },
+    {
+      "title": "Silence in Japan and the United States - Tomohiro Hasegawa, William B. Gudykunst, 1998",
+      "url": "https://journals.sagepub.com/doi/10.1177/0022022198295005"
+    },
+    {
+      "title": "Talk, silence and anxiety during one-to-one tutorials: A cross-cultural comparative study of Japan and UK undergraduates’ tolerance of silence | Asia Pacific Education Review | Springer Nature Link",
+      "url": "https://link.springer.com/article/10.1007/s12564-017-9503-8"
+    }
+  ]
+}

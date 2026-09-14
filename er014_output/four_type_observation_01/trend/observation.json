@@ -1,0 +1,73 @@
+{
+  "run_dir": "er014_output/four_type_observation_01/trend",
+  "status": "NG_REVIEW_REQUIRED",
+  "topic": "Emerging trend: the smartphone screen is gradually becoming less central as the primary interface between people and digital technology. This is NOT a claim that smartphones are disappearing or being replaced outright. It is about multiple independent signals -- such as AI assistants and AI agents, smart glasses, voice interfaces and earbuds, other wearables, ambient computing, and cars or homes acting as interfaces -- that, taken together, point toward digital interaction spreading beyond the smartphone touchscreen. Aim: research several independent signals (specific products, adoption/usage data, company strategies or announcements) in different categories, each with its own source, using only facts confirmed by web search (no invented details, no facts supplied from the assistant's own prior knowledge). Do not fix the article's angle to only one of the example signals listed above; the facts collected should allow a synthesis across multiple independent signals.",
+  "level": "a2",
+  "started_at": "2026-09-14T00:25:05.931230+00:00",
+  "finished_at": "2026-09-14T00:34:52.080582+00:00",
+  "budget_jpy": 130.0,
+  "api_calls_total": 17,
+  "api_calls_failed": 0,
+  "input_tokens_total": 429193,
+  "output_tokens_total": 57225,
+  "cached_input_tokens_total": 25884,
+  "total_tokens_total": 486418,
+  "cost_jpy_total": 87.98,
+  "cost_breakdown_jpy": {
+    "research_ledger": 48.73,
+    "writer": 4.28,
+    "qa": 33.74,
+    "uncategorized": 1.22
+  },
+  "cost_breakdown_detail": {
+    "research_ledger": {
+      "calls": 2,
+      "input_tokens": 225465,
+      "output_tokens": 17601,
+      "cached_input_tokens": 9128,
+      "total_tokens": 243066,
+      "cost_jpy": 48.73
+    },
+    "writer": {
+      "calls": 7,
+      "input_tokens": 38868,
+      "output_tokens": 17007,
+      "cached_input_tokens": 7814,
+      "total_tokens": 55875,
+      "cost_jpy": 4.28
+    },
+    "qa": {
+      "calls": 6,
+      "input_tokens": 151845,
+      "output_tokens": 18442,
+      "cached_input_tokens": 8942,
+      "total_tokens": 170287,
+      "cost_jpy": 33.74
+    },
+    "uncategorized": {
+      "calls": 2,
+      "input_tokens": 13015,
+      "output_tokens": 4175,
+      "cached_input_tokens": 0,
+      "total_tokens": 17190,
+      "cost_jpy": 1.22
+    }
+  },
+  "provider_model_usage": [
+    {
+      "provider": "openai",
+      "model_id": "gpt-5.6-luna",
+      "calls": 17,
+      "input_tokens": 429193,
+      "output_tokens": 57225,
+      "cached_input_tokens": 25884,
+      "total_tokens": 486418,
+      "cost_jpy": 87.98
+    }
+  ],
+  "article_point_overlap_retry_attempts": null,
+  "retry_occurred": false,
+  "retry_extra_cost_jpy": 0.0,
+  "no_retry_cost_jpy": 87.98,
+  "note_on_categorization": "cost_breakdown_jpyのwriter/qa/rewrite_regenerationは、各audit JSONファイルに保存されたresponse_idとraw_usage_log.jsonlの response_idを完全一致で突き合わせて分類した(推測ではない)。対応が見つからなかった呼び出しは'uncategorized'に計上する。retry_extra_cost_jpy/no_retry_cost_jpyは、記事全体retry回数(point_overlap_article_retry_attempts)とlocal_rewrite件数が共に0の場合のみ機械的に分離できる(0の場合は全額no_retry扱い)。1以上の場合は本スクリプトはNoneを返すため、手動確認が必要。"
+}

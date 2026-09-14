@@ -1,0 +1,63 @@
+{
+  "editorial_mode": "trend_synthesis",
+  "trend_gate_checklist": {
+    "mode_judgment_2_questions": {
+      "axis_a_recency_dependence": {
+        "question": "軸A(最近性依存): 中心的主張の妥当性が日付・最近性に依存するか",
+        "judgment": "Yes",
+        "rationale": "central claim describes an ongoing, currently-unfolding shift evidenced by recent (last 1-3 years) product launches/adoption data; if those recent signals were removed the claim would not hold as a live trend."
+      },
+      "axis_b_independent_signal_aggregation": {
+        "question": "軸B(独立Signal集約依存、軸A=Yesの場合のみ問う): 中心的主張が複数の独立したSignalの集約に依存するか",
+        "judgment": "Yes",
+        "rationale": "Ledger contains VERIFIED facts spanning multiple independent product/company categories (kept_facts=15); removing any single category signal would not by itself invalidate the trend claim."
+      },
+      "routing_result": "Trend Synthesis(軸A=Yes, 軸B=Yes)"
+    },
+    "trend_gate_6_conditions": {
+      "condition_1_no_individual_signal_enumeration": {
+        "description": "Main Storyで個々のSignalを単純列挙するだけの構成になっていないか(禁止)",
+        "judgment": "PENDING_ARTICLE_REVIEW",
+        "rationale": "この条件は生成された記事本文の構成に依存するため、Ledger段階では判定不能。Writer(Focus Module=TREND_SYNTHESIS_FOCUS_MODULE_BLOCK)が強制するが、記事完成後に本文を確認して最終判定する。"
+      },
+      "condition_2_no_trend_overclaim": {
+        "description": "Trend overclaim(誇張、例: 'スマホは消える')がないか",
+        "judgment": "Ledger-level: OK(見込み)",
+        "rationale": "Topic文で明示的に「スマホが消えるという予測ではない」と釘を刺しており、Ledgerのfactも個別signal(製品/採用動向)のみでoverclaim的主張を含まない設計。最終判定は記事完成後に確認する。"
+      },
+      "condition_3_point_signal_role_division": {
+        "description": "Point One/TwoでSignalの意味づけが分担されているか",
+        "judgment": "PENDING_ARTICLE_REVIEW",
+        "rationale": "Writer側のFocus Module仕様に依存し、Ledger段階では判定不能。"
+      },
+      "condition_4_point_two_counter_signal_priority": {
+        "description": "Point TwoでCounter-signal/limitationが優先的に検討されているか",
+        "judgment": "PENDING_ARTICLE_REVIEW",
+        "rationale": "Ledger段階では判定不能。記事完成後に本文を確認する。"
+      },
+      "condition_5_no_evidence_strength_conflation": {
+        "description": "evidence strengthの混同(強い根拠と弱い根拠を同列に扱う)がないか",
+        "judgment": "Ledger-level: OK(見込み)",
+        "rationale": "採用したのはVERIFIED(CONFIRMED)のみでAMBIGUOUS/REJECTEDは除外済み(counts参照)。ただしfact間の確度差[例: 公式発表 vs 観測データ]の混同有無は記事本文レベルの確認が必要。"
+      },
+      "condition_6_mixed_signal_explicit": {
+        "description": "signal強弱・方向がmixed(混在)であることが明示されているか",
+        "judgment": "PENDING_ARTICLE_REVIEW",
+        "rationale": "Ledger段階では判定不能。記事完成後に本文を確認する。"
+      }
+    },
+    "signal_category_sample": [
+      "Alexa endpoints across multiple device and service categories",
+      "Amazon-reported activity among Alexa customers",
+      "Android XR glasses prototypes and planned ecosystem products",
+      "Cars supporting Android Auto and car models with Google built-in",
+      "Customers who joined Amazon’s Alexa+ Early Access program",
+      "Google AI Ultra subscribers; Google stated initial availability in the United States",
+      "Google speakers, smart displays, cameras, doorbells, and the Google Home app",
+      "New Aston Martin vehicle orders in the United States and Canada at launch; Hyundai, Kia, and Genesis were identified as newly committed brands",
+      "Pixel Buds 2a users using the Gemini-enabled assistant experience",
+      "Ray-Ban Meta glasses worldwide, according to Meta’s announcement"
+    ],
+    "note": "本チェックリストはSonnetによる手動判定(CURRENT_SPEC.md L690-734[2軸判定]・L757[Focus Module内容]に基づく解釈)。CURRENT_SPEC.md本体にTrend Gate 6条件の独立した番号付きリストは見当たらず、L757記載のFocus Module必須要件6項目をTrend Gate相当として判定した(Open Item候補として報告)。自動判定ロジックは実装していない(仕様どおり)。"
+  }
+}

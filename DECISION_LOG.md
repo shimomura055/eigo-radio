@@ -404,6 +404,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-125: Family C v6再設計Trial-06(VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-126: OPEN-148起票(Discovery S2量産単価のStage 2-3 retry上振れ、HIGH・意図的defer)+Discovery S2正式受入の記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-127: Family C Trial-07(発想スケール比較、VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-128: 4記事タイプ正常生成観測(News/Trend/Discovery生成、Voices 2V path不在でUSER_DECISION_REQUIRED)+比較ページ+費用・token・Claude利用量REPORT
 
 ---
 
@@ -7081,6 +7082,21 @@ PM-CLOSEOUT-CONSOLIDATION-126。ユーザー判断: Discovery S2はPRODUCTION_WI
 PM-CLOSEOUT-CONSOLIDATION-127。Family C Trial-07(発想スケール比較、
 VALIDATED、Production未採用)をGit記録・OPEN-147反映。CURRENT FACT
 本文契約撤廃はユーザー判断(2026-09-14)。transcript退避2件。
+
+## PM-CLOSEOUT-CONSOLIDATION-128(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-128(EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01)。
+4記事タイプの正常生成観測: News(AI regulation vs AI race)A2 OK ¥70.16/
+Trend(The end of the smartphone as the main interface)B1 OK・A2 Fact
+Checker FAIL→NG_REVIEW_REQUIRED ¥87.98/Discovery S2(Why can silence feel
+uncomfortable?)A2 OK ¥104.25/Voices 2V(Is personalized news good for us?)
+未生成=2 Voices新規トピックWriterの正式Production path不在でSTOP
+(USER_DECISION_REQUIRED)。Ledgerは先例(DECISION_LOG L941、CAR-T/
+wake-before-alarm)に従いResearch正式経路で作成(Fable判断、仕様変更なし)。
+量産API原価合計¥262.39、開発・検証費¥0、Claude Code側はtranscript実測
+cumulative_usage(内訳・セッション枠deltaは取得不能)。仕様Status変更なし。
+Open Item候補10件はREPORT G節(登録はユーザー判断待ち)。詳細:
+`EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md`。
 
 ## 参照元
 

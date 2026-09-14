@@ -1,0 +1,64 @@
+{
+  "run_dir": "er014_output/four_type_observation_01/news",
+  "status": "OK",
+  "topic": "Current news topic: the tension between AI regulation and the AI race. On one side, governments, regulators, and international bodies are pushing new AI safety rules, oversight requirements, and governance frameworks. On the other side, major AI companies and competing nations continue to race intensely to build and deploy more powerful AI systems faster than rivals. Aim: cover this tension between AI safety/regulation efforts and the competitive AI race as a current-events news story, using only facts confirmed by web search (no invented details, no facts supplied from the assistant's own prior knowledge).",
+  "level": "a2",
+  "started_at": "2026-09-14T00:06:24.348473+00:00",
+  "finished_at": "2026-09-14T00:11:56.202769+00:00",
+  "budget_jpy": 130.0,
+  "api_calls_total": 8,
+  "api_calls_failed": 0,
+  "input_tokens_total": 307109,
+  "output_tokens_total": 39908,
+  "cached_input_tokens_total": 4471,
+  "total_tokens_total": 347017,
+  "cost_jpy_total": 70.16,
+  "cost_breakdown_jpy": {
+    "research_ledger": 42.52,
+    "writer": 2.84,
+    "qa": 24.8
+  },
+  "cost_breakdown_detail": {
+    "research_ledger": {
+      "calls": 2,
+      "input_tokens": 182029,
+      "output_tokens": 16133,
+      "cached_input_tokens": 0,
+      "total_tokens": 198162,
+      "cost_jpy": 42.52
+    },
+    "writer": {
+      "calls": 3,
+      "input_tokens": 15156,
+      "output_tokens": 12256,
+      "cached_input_tokens": 0,
+      "total_tokens": 27412,
+      "cost_jpy": 2.84
+    },
+    "qa": {
+      "calls": 3,
+      "input_tokens": 109924,
+      "output_tokens": 11519,
+      "cached_input_tokens": 4471,
+      "total_tokens": 121443,
+      "cost_jpy": 24.8
+    }
+  },
+  "provider_model_usage": [
+    {
+      "provider": "openai",
+      "model_id": "gpt-5.6-luna",
+      "calls": 8,
+      "input_tokens": 307109,
+      "output_tokens": 39908,
+      "cached_input_tokens": 4471,
+      "total_tokens": 347017,
+      "cost_jpy": 70.16
+    }
+  ],
+  "article_point_overlap_retry_attempts": 0,
+  "retry_occurred": false,
+  "retry_extra_cost_jpy": 0.0,
+  "no_retry_cost_jpy": 70.16,
+  "note_on_categorization": "cost_breakdown_jpyのwriter/qa/rewrite_regenerationは、各audit JSONファイルに保存されたresponse_idとraw_usage_log.jsonlの response_idを完全一致で突き合わせて分類した(推測ではない)。対応が見つからなかった呼び出しは'uncategorized'に計上する。retry_extra_cost_jpy/no_retry_cost_jpyは、記事全体retry回数(point_overlap_article_retry_attempts)とlocal_rewrite件数が共に0の場合のみ機械的に分離できる(0の場合は全額no_retry扱い)。1以上の場合は本スクリプトはNoneを返すため、手動確認が必要。"
+}
