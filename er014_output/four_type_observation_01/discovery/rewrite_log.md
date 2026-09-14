@@ -79,3 +79,52 @@ RuntimeErrorを送出しmain()が異常終了した(uncaught exception、既存�
 書き出しコードへ到達しなかった)。本ファイルはクラッシュ後、追加API呼び出しゼロで
 既存のディスク上artifact[raw_usage_log.jsonl・a2_before_fix/・reader_facing_article*.txt・
 b1b/article.md・各audit JSON]のみから手動再構成した。
+
+# Discovery Complete (Fact fix: F002/F011) - rewrite_log addendum
+## A2 Fact fix (F002/F011)
+- F002
+  旧: In one experiment, 60 students watched a six-minute conversation.
+  新: In one experiment, 37 students watched a six-minute conversation.
+  resolved=False human_review_required=True diff_qa_blocks_acceptance=True
+
+- F011
+  旧: In one study, 46 students spent six minutes and 30 seconds in silence indoors and outdoors.
+  新: In one study, about 46 students spent six minutes and 30 seconds in silence indoors and outdoors.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False
+
+## B1B Fact fix (F002/F011)
+- F002
+  旧: Sixty students watched a six-minute conversation.
+  新: Thirty-seven students watched a six-minute conversation.
+  resolved=False human_review_required=True diff_qa_blocks_acceptance=True
+
+- F011
+  旧: In one study of 46 students, six minutes and 30 seconds of silence increased relaxation in both a university room and a city garden.
+  新: In one study of roughly 46 students, six minutes and 30 seconds of silence increased relaxation in both a university room and a city garden.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False
+
+
+# Discovery Complete 2 (F002 operator escalation + B1B F009/F014 fix) - addendum
+## A2 F002 operator escalation
+  旧: In one experiment, 37 students watched a six-minute conversation.
+  新(operator提供): In one experiment, students watched a six-minute video of a conversation.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False fact_check_verdict=PASS
+
+## B1B F002 operator escalation
+  旧: Thirty-seven students watched a six-minute conversation.
+  新(operator提供): In this experiment, students watched a six-minute video of a conversation.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False fact_check_verdict=PASS
+
+## B1B F009/F014 limited fix (final QA FAIL cause)
+- F009
+  旧: Across four studies, actively choosing solitude was associated with relaxation and lower stress.
+  新: In one study, actively choosing solitude was associated with relaxation and lower stress.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False
+
+- F014
+  旧: In one Japan–United States survey, views of silence also changed depending on whether people were speaking with strangers or close friends.
+  新: In one Japan–United States survey, Japanese respondents viewed silence more negatively with strangers than with close friends, while Americans did not show that difference.
+  resolved=True human_review_required=False diff_qa_blocks_acceptance=False
+
+
+# Discovery Complete 3 (CONT2: A2 final QA + Key Phrase A2/B1B completion) - addendum

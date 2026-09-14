@@ -1,57 +1,148 @@
 {
   "definition": "Discovery Production 1生成セット(共通Research/Ledger+A2+B1)総原価。50:50配賦は行わず、機械分離できない分は共通/uncategorizedのまま計上する。",
-  "status": "PARTIAL(Key Phrase A2/B1B未実施のためKey Phrase原価は含まれない。STOP=budget exceeded)",
+  "status": "COMPLETE3(COMPLETE)",
   "research_ledger_jpy_initial": 58.37,
   "a2_initial_writer_and_qa_jpy": 45.88,
   "this_task_jargon_fix_b1b_and_partial_qa_jpy": 157.32,
   "this_task_breakdown_by_stage_jpy": {
-    "a2_jargon_fix_rewrite": {
-      "calls": 2,
-      "cost_jpy": 0.38
+    "fact_fix_verification": {
+      "calls": 1,
+      "cost_jpy": 21.47
     },
-    "a2_jargon_fix_ledger_check": {
+    "a2_fact_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.33
+    },
+    "a2_fact_fix_ledger_check": {
+      "calls": 2,
+      "cost_jpy": 0.42
+    },
+    "a2_fact_fix_diff_qa": {
+      "calls": 4,
+      "cost_jpy": 11.98
+    },
+    "b1b_fact_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.33
+    },
+    "b1b_fact_fix_ledger_check": {
       "calls": 2,
       "cost_jpy": 0.43
     },
-    "a2_jargon_fix_diff_qa": {
+    "b1b_fact_fix_diff_qa": {
       "calls": 4,
-      "cost_jpy": 14.45
+      "cost_jpy": 11.89
     },
     "a2_final_fact_checker": {
       "calls": 1,
-      "cost_jpy": 25.53
+      "cost_jpy": 23.42
     },
     "a2_final_ledger_check": {
       "calls": 1,
-      "cost_jpy": 0.81
-    },
-    "stage_split_b1b": {
-      "calls": 13,
-      "cost_jpy": 55.71
-    },
-    "b1b_jargon_fix_rewrite": {
-      "calls": 1,
-      "cost_jpy": 0.17
-    },
-    "b1b_jargon_fix_ledger_check": {
-      "calls": 1,
-      "cost_jpy": 0.34
-    },
-    "b1b_jargon_fix_diff_qa": {
-      "calls": 2,
-      "cost_jpy": 9.86
+      "cost_jpy": 0.59
     },
     "b1b_final_fact_checker": {
-      "calls": 2,
-      "cost_jpy": 48.44
+      "calls": 1,
+      "cost_jpy": 25.14
     },
     "b1b_final_ledger_check": {
       "calls": 1,
-      "cost_jpy": 1.21
+      "cost_jpy": 1.13
+    },
+    "unknown": {
+      "calls": 4,
+      "cost_jpy": 3.77
     }
   },
-  "key_phrase_a2_jpy": null,
-  "key_phrase_b1b_jpy": null,
+  "key_phrase_a2_jpy": 2.47,
+  "key_phrase_b1b_jpy": 1.3,
+  "key_phrase_b1b_retry2_jpy": 5.2,
+  "key_phrase_b1b_status": "KEY_WORDS_STRUCTURE_INVALID(2回とも失敗。'have agency'が既存Validatorの有限助動詞ブロックリストで'have'に一致し不合格。未解決、Open Item)",
   "grand_total_jpy_excluding_key_phrase": 261.57,
-  "note": "Key Phrase A2/B1BはSTOP(budget exceeded)のため未実施。追加タスクでの実施が必要。"
+  "note": "Discovery Production 1生成セット(共通Research/Ledger+A2+B1、Key Phrase込み)。本タスク(EDITORIAL-4TYPE-FOLLOWUP-03B-DISCOVERY-COMPLETE、継続CONT2)でA2記事全体final QAを初めて再実行し、Key Phrase A2の最終本文整合をローカル確認、Key Phrase B1Bを確定canonical本文に対して正規の初回生成として実行した(最大2回)。50:50配賦は行わない。",
+  "this_task_fact_fix_qa_and_key_phrase_jpy": 106.08,
+  "grand_total_jpy_including_key_phrase": 463.27,
+  "this_task2_f002_fix_and_b1b_qa_fix_jpy": 67.87,
+  "this_task2_breakdown_by_stage_jpy": {
+    "f002_operator_a2_diffqa": {
+      "calls": 2,
+      "cost_jpy": 6.17
+    },
+    "f002_operator_b1b_diffqa": {
+      "calls": 2,
+      "cost_jpy": 6.0
+    },
+    "b1b_qa_fix_fact_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.35
+    },
+    "b1b_qa_fix_fact_fix_ledger_check": {
+      "calls": 2,
+      "cost_jpy": 0.99
+    },
+    "b1b_qa_fix_fact_fix_diff_qa": {
+      "calls": 4,
+      "cost_jpy": 27.42
+    },
+    "b1b_complete2_final_fact_checker": {
+      "calls": 1,
+      "cost_jpy": 25.34
+    },
+    "b1b_complete2_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 1.6
+    }
+  },
+  "key_phrase_a2_status_corrected": {
+    "selector_final_status": "KEY_WORDS_STRUCTURE_PASS",
+    "canonicalization_final_status": "CANONICALIZATION_PASS",
+    "redundancy_qa_status": "REDUNDANCY_PASS",
+    "overall": "PASS"
+  },
+  "key_phrase_b1b_status_corrected": {
+    "reconstructed_history_from_file_mtimes_and_content": [
+      {
+        "call": 1,
+        "source": "run_discovery_complete.py original execution (~2026-09-14 16:59-17:12 JST)",
+        "article_text_used": "post-F002/F011-local-rewrite text (pre this task F002 operator fix, pre F009/F014 fix)",
+        "selector_result": "KEY_WORDS_STRUCTURE_INVALID"
+      },
+      {
+        "call": 2,
+        "source": "retry_key_phrase_b1b.py, first execution (created 17:13:55, files written ~17:15:28-17:16:56 JST)",
+        "article_text_used": "same as call 1 (article text unchanged between call1 and call2)",
+        "selector_result": "KEY_WORDS_STRUCTURE_PASS (items: agency / occupy one's thoughts / a mental path to follow / outside stimulation / mixed picture)",
+        "canonicalization_result": "CANONICALIZATION_REVIEW_REQUIRED (item rank2 occupy one's thoughts failed qa_traceable_contiguous_span, because their->one's normalization broke exact-span traceability)",
+        "redundancy_qa_result": "REDUNDANCY_NG (rank2 occupy one's thoughts vs rank3 a mental path to follow flagged as meaning_overlap FAIL + conceptual_role_overlap FAIL)"
+      },
+      {
+        "call": 3,
+        "source": "retry_key_phrase_b1b.py run again (same script, second execution; exact trigger not recorded -- discovered only from file mtimes/content during this task, not documented in any log by the prior agent) -- OVERWROTE call 2's keywords_runtime_metadata.json at ~17:19 JST",
+        "article_text_used": "same as call 1/2 (still the pre-this-task text; this call predates this task's F002 operator fix and F009/F014 fix)",
+        "selector_result": "KEY_WORDS_STRUCTURE_INVALID ('have agency' triggers finite-auxiliary-verb block rule; different phrase set than call 2)",
+        "side_effect": "canonicalization_runtime_metadata.json and keyphrase_redundancy_qa.json on disk are now STALE leftovers from call 2 (PASS-selector) and no longer correspond to the current (call 3) selector output, since the pipeline does not reach canonicalization when the selector is INVALID. The on-disk key_phrases/b1b/ directory is therefore in a mixed, internally-inconsistent state."
+      }
+    ],
+    "calls_used_of_max_3": 3,
+    "max_3_cap_status": "EXHAUSTED -- no further run_key_phrases() call for B1B is permitted under this task's governance without new authorization",
+    "full_pipeline_pass_achieved": false,
+    "additional_complication": "All 3 calls above ran against b1b article text BEFORE this task's F002 operator-escalation fix and F009/F014 limited fix (this task, run_discovery_complete_2.py). The final canonical b1b/article.md text has since changed, so even call 2's best (still-incomplete) result would need re-generation against the new text regardless of the REVIEW_REQUIRED/NG issues.",
+    "overall": "STOP: Key Phrase B1B is NOT complete. 3-call cap already exhausted (2 calls occurred before this task started; this task made zero new run_key_phrases() calls for B1B). Requires human decision (approve a 4th call against final text / accept Ledger-independent phrase-selection quality issue for human curation / treat as Open Item)."
+  },
+  "this_task3_a2_final_qa_and_kp_completion_jpy": 27.75,
+  "this_task3_breakdown_by_stage_jpy": {
+    "a2_complete3_final_fact_checker": {
+      "calls": 1,
+      "cost_jpy": 23.5
+    },
+    "a2_complete3_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 1.14
+    },
+    "unknown": {
+      "calls": 2,
+      "cost_jpy": 3.11
+    }
+  },
+  "key_phrase_b1b_final_status_complete3": "KEY_WORDS_STRUCTURE_INVALID"
 }

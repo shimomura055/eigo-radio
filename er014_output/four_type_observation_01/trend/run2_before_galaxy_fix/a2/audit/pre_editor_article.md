@@ -1,0 +1,33 @@
+# The Phone Is Still Here, but It Is No Longer the Only Door
+
+## Main Story
+
+For years, the smartphone screen was the main door to digital life.
+
+Now, several companies are building other doors.
+
+This does not mean that smartphones are disappearing. It means that digital help can meet people in more places: in a car, in a home, on a wrist, or through a voice.
+
+Google announced [Gemini Intelligence for Android](https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/). It is designed to handle multi-step jobs. It will first come to selected Samsung Galaxy and Google Pixel phones. Google says it plans to bring the service to watches, cars, glasses, and laptops later in 2026.
+
+That is a company plan, not proof that most people already use these features.
+
+Amazon has made [Alexa+](https://www.aboutamazon.com/news/devices/alexa-plus-available-free-prime-members-us?email_hash=0d7a7050906b225db2718485ca0f3472) available in the United States through Alexa-enabled devices, its website, and its app. Amazon describes help with tasks across these places.
+
+Google is also changing the home. [Gemini for Home](https://blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/) is designed for speakers, smart displays, cameras, doorbells, and the Google Home app.
+
+Cars show how large this direction could become. Google says more than 250 million cars support Android Auto. It also plans to bring Gemini to Android Auto and to cars with Google built-in.
+
+Seen together, these are early signs of a wider change: the smartphone screen is becoming one doorway among several.
+
+### The first step may be heard, not seen
+
+The hardware path may begin with simple actions. [Pixel Buds](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-2a/) can give hands-free access to Gemini. Google is testing live speech translation through headphones in more than 70 languages and 2,000 language pairs. Gemini is also rolling out on supported Wear OS watches. Google’s first Android XR product is planned as audio-only glasses for fall 2026. The camera-and-optional-display version is a separate product tier. The early path looks more like hearing and asking than wearing a full visual computer.
+
+### The phone may become the quiet helper
+
+Software is changing the task itself. A person may ask for an outcome instead of opening several apps: book a ride or order takeout. Google’s [Agent Mode](https://blog.google/products-and-platforms/products/gemini/gemini-app-updates-io-2025/) is an experimental tool that uses web research and Google apps to handle complex tasks. Amazon says tens of millions joined Alexa+ Early Access and reports 600 million active Alexa endpoints. That term is not a count of people. These are signs of direction, not proof of routine delegation. The phone may stay in the background while the request becomes the visible action.
+
+## In one line…
+
+Digital interaction is spreading beyond the smartphone screen, but the evidence still points to a gradual, mixed shift—not the end of the smartphone.

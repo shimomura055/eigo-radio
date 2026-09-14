@@ -4,7 +4,7 @@ The strange thing about silence is that it can feel louder than speech.
 
 Imagine a conversation. Someone says something, and then nobody speaks for four seconds. The pause may seem very short. But it can still change the feeling in the room.
 
-In one experiment, 60 students watched a six-minute conversation. After one statement, the conversation stopped for four seconds. Most participants did not notice the exact pause. Still, compared with people who watched a smooth conversation, they reported more negative feelings. They also felt less accepted and less connected, and they were less sure that the group agreed with them.
+In one experiment, students watched a six-minute video of a conversation. After one statement, the conversation stopped for four seconds. Most participants did not notice the exact pause. Still, compared with people who watched a smooth conversation, they reported more negative feelings. They also felt less accepted and less connected, and they were less sure that the group agreed with them.
 
 A second study with 102 students found a similar result after a short silent moment in an imagined group conversation. These studies do not show that every silence feels bad. They show that an unexpected break can change how people experience a social moment.
 
@@ -16,7 +16,7 @@ Silence can also feel difficult when nobody else is there. Across 11 studies, pe
 
 In one study, 55 students sat alone for 15 minutes. They had a button that could give a mild electric shock they had already experienced. Many chose to use the button rather than sit without outside stimulation.
 
-But silence is not always unpleasant. Other studies found that chosen time alone could lower strong feelings and was linked with relaxation. In one study, 46 students spent six minutes and 30 seconds in silence indoors and outdoors. Both settings increased relaxation. The outdoor setting also brought less boredom and more attention to the present moment.
+But silence is not always unpleasant. Other studies found that chosen time alone could lower strong feelings and was linked with relaxation. In one study, about 46 students spent six minutes and 30 seconds in silence indoors and outdoors. Both settings increased relaxation. The outdoor setting also brought less boredom and more attention to the present moment.
 
 Research across countries also shows that there is no single rule. In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was more enjoyable than thinking for pleasure in every country tested. But people still differed. A review of 37 studies found that the body’s response to silence can change with the situation, the type of silence, and how familiar a person is with it.
 

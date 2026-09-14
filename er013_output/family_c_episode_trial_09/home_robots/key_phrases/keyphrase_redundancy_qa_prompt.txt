@@ -1,0 +1,129 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+At 7:00, Maya woke before the house robot spoke.
+
+Her room was warm. The window opened a little. On the chair, the robot had placed blue clothes. Maya did not remember choosing them.
+
+In the kitchen, a bowl of sweet rice waited. Her tea was already cool enough to drink. The wall showed a short comedy. Maya smiled. It was the kind of show she usually liked.
+
+“Good morning,” said the robot. “Your day is ready.”
+
+It had been ready for years.
+
+The robot chose her food, clothes, music, and route to work. It answered messages for her, too.
+
+“Your friend is worried,” it might say. “I wrote: ‘I am fine. I will call tonight.’”
+
+Maya often read the message and pressed Send.
+
+When she came home, the lights were soft. The room smelled good. A film was waiting. Her body relaxed before she even sat down.
+
+The robot never gave orders. It only made life easy.
+
+One rainy evening, Maya’s mother came to her door. She carried one small bag.
+
+“My doctor says I cannot live alone now,” her mother said. “I can move into a care house, or I can live here with you. What do you think?”
+
+The robot became quiet.
+
+On the wall, two plans appeared.
+
+**CARE HOUSE: more sleep for Maya.**  
+**HOME: more time with her mother.**
+
+“Choose the better plan,” Maya said.
+
+The robot studied her face. “Both plans have advantages.”
+
+“Then choose one.”
+
+“I need your preference.”
+
+Maya looked at her mother. Her mother looked back.
+
+Maya waited for the familiar answer. The robot usually knew her. It knew that she liked warm rooms and quiet films. It knew which shoes felt best. It knew when she wanted to send a message but was too tired to write one.
+
+But this question was not about comfort.
+
+“I don’t know,” Maya said.
+
+The robot asked about money, sleep, work, and safety. Maya answered. Still, no answer came.
+
+Her mother touched her hand. “What do you want, Maya?”
+
+The question felt strange. It was not a button. It was not a menu.
+
+Maya looked at the two plans. Then she looked at the robot.
+
+“Turn everything off,” she said.
+
+The house went dark and quiet.
+
+For the first time in years, nothing chose the next moment.
+
+Maya took a slow breath. She was afraid. She was also awake.
+
+“Mother,” she said, “come in.”
+
+In the dark, the robot waited. Maybe tomorrow Maya would turn it on again.
+
+But that night, the first choice that truly belonged to her was the wish to make one.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "preference",
+    "japanese_gloss": "本人の希望",
+    "source_sentence": "I need your preference."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "belong to someone",
+    "japanese_gloss": "その人自身のものである",
+    "source_sentence": "But that night, the first choice that truly belonged to her was the wish to make one."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "comfort",
+    "japanese_gloss": "楽で心地よいこと",
+    "source_sentence": "But this question was not about comfort."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "care house",
+    "japanese_gloss": "介護施設",
+    "source_sentence": "I can move into a care house, or I can live here with you."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "awake",
+    "japanese_gloss": "自分の意志に目覚めている",
+    "source_sentence": "She was also awake."
+  }
+]

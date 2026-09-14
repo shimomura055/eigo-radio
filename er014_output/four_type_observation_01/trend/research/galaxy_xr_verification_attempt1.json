@@ -1,0 +1,44 @@
+{
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\nEmerging trend: the smartphone screen is gradually becoming less central as the primary interface between people and digital technology. This is NOT a claim that smartphones are disappearing or being replaced outright. It is about multiple independent signals -- such as AI assistants and AI agents, smart glasses, voice interfaces and earbuds, other wearables, ambient computing, and cars or homes acting as interfaces -- that, taken together, point toward digital interaction spreading beyond the smartphone touchscreen. Aim: research several independent signals (specific products, adoption/usage data, company strategies or announcements) in different categories, each with its own source, using only facts confirmed by web search (no invented details, no facts supplied from the assistant's own prior knowledge). Do not fix the article's angle to only one of the example signals listed above; the facts collected should allow a synthesis across multiple independent signals.\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F008_FIX2\",\n      \"claim\": \"Google's Android XR platform page identifies the Samsung Galaxy XR headset as the first available device built on the Android XR platform, and describes it as already available -- distinct from the fall 2026 audio-only glasses (F008_FIX) and the camera/optional-in-lens-display glasses prototype (F008), which are a separate hardware form factor (eyewear, not a headset) without the same 'first device' status.\",\n      \"subject\": \"Android XR platform: first available device overall (Samsung Galaxy XR headset) vs. first eyewear/audio-only product\",\n      \"date_or_period\": \"Not stated as a specific launch date in the cited platform page; the page describes Galaxy XR as already available at the time of citation.\",\n      \"scope\": \"Samsung Galaxy XR headset as described on Google's Android XR platform page (android.com/xr/); the cited passage does not establish specific country/market availability details.\",\n      \"conditions\": \"The platform page's 'first device' characterization applies to the Android XR platform overall (headset form factor), not specifically to the eyewear/glasses product line described in F008/F008_FIX, which are a different hardware form factor (glasses, not a headset).\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Learn About Extended Reality & Immersive VR with Android XR\",\n      \"source_url\": \"https://www.android.com/xr/\",\n      \"source_type\": \"OTHER\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"The exact wording of 'first device' status and precise release date/region for Galaxy XR were not directly quoted in the passage available before this verification call; confirm via web_search whether android.com/xr/ (or a closely related Samsung/Google source) directly supports Galaxy XR as the first Android XR device and as already available.\",\n      \"notes_for_writer\": \"Do not describe the fall 2026 audio-only glasses (F008_FIX) as 'the first Android XR product' without qualification. Google's Android XR platform page describes the Samsung Galaxy XR headset -- a different hardware form factor (headset, not eyewear) -- as the first device on the Android XR platform overall, and it is already available. Use precise phrasing: Galaxy XR headset = first Android XR device overall (already available); fall 2026 audio-only glasses = first audio-only / eyewear product in the Android XR eyewear line (not yet launched).\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。",
+  "raw_text": "{\"verifications\":[{\"fact_id\":\"F008_FIX2\",\"verdict\":\"VERIFIED\",\"verification_notes\":\"GoogleのAndroid XR公式ページは、FAQで「The first device, Samsung Galaxy XR, is available now」、availability欄で「The first headset device, Samsung Galaxy XR, is available now」と明記しており、Galaxy XRをAndroid XRの最初のデバイス／最初のヘッドセットとして、すでに提供中と位置付けている。([android.com](https://www.android.com/xr/?utm_source=openai)) Google公式ブログもGalaxy XRを「the very first device built on Android XR」とし、発売当日から米国・韓国で購入可能と説明しており、source_url以外の公式情報でも主要部分が独立に裏付けられる。([blog.google](https://blog.google/products-and-platforms/platforms/android/samsung-galaxy-xr/?utm_source=openai)) また、Googleの2026年5月19日付発表は、Android XRの知的アイウェアを音声のみのaudio glassesと表示付きdisplay glassesに分け、audio glassesを先に「later this fall」に投入すると説明している。したがって、Galaxy XRの「Android XR全体で最初のデバイス／ヘッドセット」という位置付けを、後続の音声型メガネや別形態の表示付きメガネ試作機にそのまま適用しない、という条件も妥当。([blog.google](https://blog.google/products-and-platforms/platforms/android/android-xr-io-2026/?utm_source=openai)) Googleの別の公式説明では、試作メガネはカメラ・マイク・スピーカーを備え、オプションのインレンズディスプレイを持つ眼鏡形態として記述されており、ヘッドセットとは別のハードウェア形態である。([blog.google](https://blog.google/products-and-platforms/platforms/android/android-xr-glasses-demo-io-2025/?utm_source=openai)) なお、「fall 2026」はプラットフォームページ自体の文言ではなく、2026年5月19日付発表の「this fall」からの時間的な読み替えであり、ページ単独に厳密な発売日・地域情報を帰属させないというLedgerの条件は適切。\"}]}",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F008_FIX2",
+        "verdict": "VERIFIED",
+        "verification_notes": "GoogleのAndroid XR公式ページは、FAQで「The first device, Samsung Galaxy XR, is available now」、availability欄で「The first headset device, Samsung Galaxy XR, is available now」と明記しており、Galaxy XRをAndroid XRの最初のデバイス／最初のヘッドセットとして、すでに提供中と位置付けている。([android.com](https://www.android.com/xr/?utm_source=openai)) Google公式ブログもGalaxy XRを「the very first device built on Android XR」とし、発売当日から米国・韓国で購入可能と説明しており、source_url以外の公式情報でも主要部分が独立に裏付けられる。([blog.google](https://blog.google/products-and-platforms/platforms/android/samsung-galaxy-xr/?utm_source=openai)) また、Googleの2026年5月19日付発表は、Android XRの知的アイウェアを音声のみのaudio glassesと表示付きdisplay glassesに分け、audio glassesを先に「later this fall」に投入すると説明している。したがって、Galaxy XRの「Android XR全体で最初のデバイス／ヘッドセット」という位置付けを、後続の音声型メガネや別形態の表示付きメガネ試作機にそのまま適用しない、という条件も妥当。([blog.google](https://blog.google/products-and-platforms/platforms/android/android-xr-io-2026/?utm_source=openai)) Googleの別の公式説明では、試作メガネはカメラ・マイク・スピーカーを備え、オプションのインレンズディスプレイを持つ眼鏡形態として記述されており、ヘッドセットとは別のハードウェア形態である。([blog.google](https://blog.google/products-and-platforms/platforms/android/android-xr-glasses-demo-io-2025/?utm_source=openai)) なお、「fall 2026」はプラットフォームページ自体の文言ではなく、2026年5月19日付発表の「this fall」からの時間的な読み替えであり、ページ単独に厳密な発売日・地域情報を帰属させないというLedgerの条件は適切。"
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_05061ed7569b1288006aa7a83f040487d094be68d09102bc34",
+  "search_usage": {
+    "web_search_call_count": 2,
+    "queries": [
+      "site:android.com/xr Samsung Galaxy XR first device available Android XR",
+      "site:blog.google/products/android/android-xr Samsung Galaxy XR available first device",
+      "site:samsung.com Galaxy XR available Android XR first device",
+      "site:blog.google Android XR audio glasses fall 2026 audio-only",
+      "site:android.com/xr \"audio glasses\" \"fall\" 2026",
+      "site:blog.google Android XR glasses audio-only 2026"
+    ]
+  },
+  "sources": [
+    {
+      "title": "Learn About Extended Reality & Immersive VR with Android XR | Android",
+      "url": "https://www.android.com/xr/?utm_source=openai"
+    },
+    {
+      "title": "Galaxy XR: The first Android XR headset",
+      "url": "https://blog.google/products-and-platforms/platforms/android/samsung-galaxy-xr/?utm_source=openai"
+    },
+    {
+      "title": "Intelligent eyewear with Gemini is coming this fall",
+      "url": "https://blog.google/products-and-platforms/platforms/android/android-xr-io-2026/?utm_source=openai"
+    },
+    {
+      "title": "Watch Google’s Android XR glasses demo from I/O 2025",
+      "url": "https://blog.google/products-and-platforms/platforms/android/android-xr-glasses-demo-io-2025/?utm_source=openai"
+    }
+  ]
+}

@@ -1,21 +1,13 @@
 {
   "note": "Trend Production 1生成セット(A2+B1)総原価。50:50配賦はしない。",
   "research_ledger_cost_run1_jpy": 48.73,
-  "ledger_fix_regen_breakdown_jpy": {
-    "verification_draft_attempt1_wasted_jpy": 9.77,
-    "verification_draft_attempt1_note": "F008_FIX下書き初版(scope='in the United States'を明記)がAMBIGUOUS判定(米国限定である根拠が確認できないため)。",
-    "verification_draft_attempt2_wasted_jpy": 6.15,
-    "verification_draft_attempt2_note": "F008_FIX下書き2版(米国限定を削除)がAMBIGUOUS判定(claimが'Android XR smart glasses'全体を指すと読めてしまい、実際にfall 2026に発売されるのはaudio-onlyのglassesのみであるため)。",
-    "verification_and_regen_attempt3_success_jpy": 59.33,
-    "verification_and_regen_attempt3_note": "F008_FIX下書き3版(audio-onlyの製品tierへ限定)でVERIFIED。以降Ledger修正+A2/B1B Writer再実行(A2は記事全体retry 2回)+QA一式の合算(機械分離不能なため内訳は分離せず「共通」として扱う)。"
+  "ledger_fix_regen_cost_run2_jpy": 75.25,
+  "galaxy_xr_fix_regen_cost_this_run_jpy": 50.05,
+  "production_set_total_cost_jpy": 174.03,
+  "reference_discarded_runs": {
+    "run1_total_including_fail_jpy": 87.98,
+    "run2_total_note": "run2(A2 FAIL継続、Galaxy XR未修正)の実費はledger_fix_regen_cost_run2_jpyに含まれ、破棄はしていない(Ledger修正・B1B成果物は本runの土台としてそのまま利用)。"
   },
-  "ledger_fix_regen_cost_total_this_delegation_jpy": 75.25,
-  "budget_jpy": 80.0,
-  "budget_exceeded": false,
-  "production_set_total_cost_jpy": 123.98,
-  "reference_run1_total_cost_including_fail_jpy": 87.98,
-  "reference_note": "run1(FAIL含む、Writer部分¥39.25相当)は参考値。本修正delegationの実費は"
-                     "ledger_fix_regen_cost_total_this_delegation_jpy(=¥75.25、限定Verification"
-                     "3回の試行[うち2回は下書きのscope/claimを絞り込むための無駄打ち]+Ledger修正"
-                     "+A2/B1B Writer再実行[A2は記事全体retry 2回]+QA一式の合算)を正とする。"
+  "reference_note": "完成セット(A2+B1、両方Fact Checker非FAIL)としての総原価はproduction_set_total_cost_jpy。run1のみが参考の破棄run(Writer部分¥39.25相当)。",
+  "this_task_note": "本タスク(EDITORIAL-4TYPE-FOLLOWUP-02B-TREND-COMPLETE)実費=¥50.05(限定Verification1回[初回でVERIFIED]+Ledger修正+A2/B1B Writer再実行+QA一式の合算、budget_jpy=120に対し未超過)。started_at=2026-09-14T07:54:37.288329+00:00 finished_at=2026-09-14T08:06:15.272901+00:00 A2 fact_verdict=REVIEW_REQUIRED B1B fact_verdict=PASS"
 }

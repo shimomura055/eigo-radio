@@ -1,0 +1,72 @@
+{
+  "started_at": "2026-09-14T07:59:16.379230+00:00",
+  "finished_at": "2026-09-14T08:12:26.262551+00:00",
+  "budget_jpy": 170.0,
+  "baseline_cost_jpy_excluded": 261.58,
+  "this_task_cost_jpy": 106.08,
+  "budget_exceeded": false,
+  "overall_status": "COMPLETE",
+  "stopped_before_stage": null,
+  "new_api_calls": 29,
+  "model_ids": [
+    "gpt-5.6-luna"
+  ],
+  "note_key_phrase_b1b_retry": "Key Phrase B1B selection failed KEY_WORDS_STRUCTURE_INVALID twice (initial run in run_discovery_complete.py, cost included in 'unknown' below; one manual retry via retry_key_phrase_b1b.py, cost ¥5.20/4 calls not included in cost_breakdown_by_stage_jpy below, see key_phrase_b1b_retry2_result.json). Both attempts selected 'have agency' as top-ranked phrase, rejected by the existing selection Validator for containing 'have' (finite-verb blocklist false positive on a lexical, non-auxiliary use). Not retried further; recorded as Open Item.",
+  "token_totals": {
+    "input_tokens": 497019,
+    "output_tokens": 50289,
+    "cached_input_tokens": 51440,
+    "total_tokens": 547308,
+    "note": "retry2(4 calls, ¥5.20)分は別途key_phrase_b1b_retry2_result.jsonに記録、ここには未合算"
+  },
+  "cost_breakdown_by_stage_jpy": {
+    "fact_fix_verification": {
+      "calls": 1,
+      "cost_jpy": 21.47
+    },
+    "a2_fact_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.33
+    },
+    "a2_fact_fix_ledger_check": {
+      "calls": 2,
+      "cost_jpy": 0.42
+    },
+    "a2_fact_fix_diff_qa": {
+      "calls": 4,
+      "cost_jpy": 11.98
+    },
+    "b1b_fact_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.33
+    },
+    "b1b_fact_fix_ledger_check": {
+      "calls": 2,
+      "cost_jpy": 0.43
+    },
+    "b1b_fact_fix_diff_qa": {
+      "calls": 4,
+      "cost_jpy": 11.89
+    },
+    "a2_final_fact_checker": {
+      "calls": 1,
+      "cost_jpy": 23.42
+    },
+    "a2_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 0.59
+    },
+    "b1b_final_fact_checker": {
+      "calls": 1,
+      "cost_jpy": 25.14
+    },
+    "b1b_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 1.13
+    },
+    "unknown": {
+      "calls": 4,
+      "cost_jpy": 3.77
+    }
+  }
+}

@@ -1,31 +1,27 @@
-# The Smartphone Stays. The Screen Steps Back.
+# The Smartphone Is Still Here, but It Is No Longer the Only Door
 
-## Main Story
+The strange thing about the next screen may be that it is not a screen at all. The smartphone is still part of the picture. But digital tasks are beginning to spread across the places where people already speak, listen, drive, and live.
 
-The smartphone is still in the picture. But the screen is beginning to share its job.
+[Google says](https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/) Gemini Intelligence will begin on selected Samsung Galaxy and Google Pixel phones, then reach watches, cars, glasses, and laptops later in 2026. Google has also announced [Agent Mode](https://blog.google/products-and-platforms/products/gemini/gemini-app-updates-io-2025/), an experimental desktop feature for AI Ultra subscribers in the United States. It is designed to manage complex tasks with little oversight.
 
-That is the interesting signal in a group of announcements from Google, Amazon, Meta, and Apple. They do not describe one new gadget replacing the phone. They describe digital help spreading to ears, wrists, cars, homes, and glasses.
+[Amazon says](https://www.aboutamazon.com/news/devices/alexa-plus-available-free-prime-members-us?email_hash=0d7a7050906b225db2718485ca0f3472) Alexa+ is now available in the United States through Alexa devices, Alexa.com, and the Alexa app. The company is presenting it as an assistant that can take action, not only answer questions.
 
-Google announced Gemini Intelligence for Android. It will start on selected Samsung Galaxy and Google Pixel phones, with plans to reach watches, cars, glasses, and laptops later in 2026.
+[Google is also bringing Gemini](https://blog.google/products-and-platforms/platforms/wear-os/gemini-wear-os-watches/) to Wear OS watches and [Pixel Buds 2a](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-2a/). Meanwhile, [Google Home](https://blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/) is adding natural-language control for devices, cameras, and doorbells.
 
-Amazon says Alexa has 600 million active endpoints across devices, cars, offices, Fire TV, and Prime Video. Amazon’s measure is a count of endpoints, not unique people or households.
+These announcements do not show that smartphones are disappearing. They show something quieter: the phone is becoming one doorway among several.
 
-At the face, Meta says Ray-Ban Meta glasses have sold millions since launch. The company describes them as hands-free glasses with a camera, an AI assistant, a translator, and open-ear audio.
+### From tapping through apps to handing over a task
 
-Google has also announced a fall 2026 launch for the first audio-only product in its Android XR eyewear family. The camera and optional display version is a separate product, and its launch date has not been confirmed.
+The deeper change is not simply a new gadget. It is a new way to act. Google describes Gemini as helping with research, shopping, and ride bookings across several steps. Alexa+ describes help with takeout, reservations, rides, and repairs. Google Home brings natural-language control and automation into the house. The assistant becomes the coordinator, while the screen becomes one doorway. If this develops, companies may compete over context and connections across devices, not only over screen time.
 
-The same direction appears at home and in the car. Google’s Gemini for Home is designed for speakers, displays, cameras, doorbells, and the Google Home app. Google also says Android Auto supports more than 250 million cars, while more than 50 car models have Google built in.
+### A transition moving at two speeds
 
-These numbers and announcements do not prove that people have stopped using phone screens. Some are company-reported figures, and some products are planned or still experimental. But together, they point to a change in location: digital interaction can happen wherever the person already is.
+The scale is real in some places, but the timeline is uneven. Amazon reports 600 million active Alexa endpoints across devices, cars, offices, Fire TV, and Prime Video. “Active endpoints” is Amazon’s term, not a count of unique people. Amazon also reports that customers talked to Alexa twice as much and completed purchases on devices three times more often. It says music streaming rose 25%, while smart-home use rose 50%. The company does not state the comparison period in the cited letter.
 
-### The screen can move without the phone disappearing
+Tens of millions joined Alexa+ Early Access before it became available to all U.S. customers. Meta says millions of Ray-Ban Meta glasses have sold. But Google’s Android XR products are at different stages: the Galaxy XR headset is already available, audio-only glasses are planned for fall 2026, and the camera glasses with an optional lens display have no separate confirmed launch date in the cited evidence.
 
-Here is the useful distinction: screen displacement is not phone replacement. Pixel Buds 2a can give users hands-free access to Gemini, while Google’s headphone translation still needs a compatible device. Siri AI on Apple Watch requires a paired Apple Intelligence device. CarPlay Ultra still uses iPhone information in the vehicle. The near-term change may be fewer moments spent looking at or touching a phone screen, even when the phone remains connected.
+That mix points to gradual layering, not one sudden replacement.
 
-### From opening an app to stating a goal
+## In one line
 
-The deeper shift is from access to action. Gemini Intelligence, first on selected Android phones, is designed to automate rides and shopping. Google’s experimental desktop Agent Mode combines browsing, research, and Google apps. U.S. Alexa+ describes takeout orders, reservations, rides, and home repairs. Gemini for Home adds device control and automations. These are not proof of routine use. But they show the direction: state a goal, and let an assistant attempt the steps.
-
-## In one line…
-
-The smartphone is not being removed so much as repositioned: early evidence points to digital interaction spreading beyond its screen, while the phone often remains part of the system. The direction is clear in company strategy, but broad replacement of the screen is not yet established.
+Digital interaction is moving outward from the touchscreen, but the evidence points to a gradual handover—not the end of the smartphone.

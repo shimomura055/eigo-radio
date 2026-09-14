@@ -410,6 +410,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: Voices Writerの2/3 Voices可変化(OPEN-151)配線(Sonnet報告PRODUCTION_WIRED→PM-CLOSEOUT-CONSOLIDATION-131でPARTIALへ訂正)+2V runtime evidence+3V byte不変regression
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-131: 4TYPE補完(News B1追加/Trend Ledger修正再生成/Discovery No Jargon修正+B1B)統合+OPEN-151をPARTIALへ訂正+最終REPORT+比較ページ更新
 - [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02: OPEN-151完成(Comment Contract接続+Fact Safetyゲート2V/3V対応+2V clean evidence、Status=PARTIAL[14/15、Leakage残存のみ未充足])
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-132: 4TYPE補完完成(Trend OK/Discovery OK[Key Phrase B1B未完成でUDR])+Family C Trial-09(home_robots完成episode、VALIDATED)のGit記録+Voices OPEN-151 -02結果参照+PM運用方針(既存仕様内個別修正は完成まで進める、2026-09-14ユーザー指示)追記+Family C運用clarification(AI固有名当該記事限り・語数は目安)記録
 
 ---
 
@@ -7199,6 +7200,118 @@ importが0件であることをgrepで確認(`er012_b_family_production_runner_0
 辞書2V/3V整合の2点は今回で解消し、3点目[REVIEW_REQUIRED/残存flag]もFact Checker側
 はPASSへ改善したが、Leakage Check側の残存flagは構造的限界として残った)。詳細:
 `EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-132(2026-09-14)
+
+管理ID`PM-CLOSEOUT-CONSOLIDATION-132`(Sonnet委任、Git記録・SSOT反映・REPORT
+作成担当、API呼び出しなし・費用¥0)。4TYPE補完の残課題(Trend/Discovery)完成、
+Family C Trial-09完成episode、Voices OPEN-151 -02結果の統合報告、およびユーザー
+から示されたPM運用方針の恒久反映を行った。
+
+**(1) Trend完成(OK)**: A2(503語)・B1B(479語)とも完成。A2 Fact Checker=
+REVIEW_REQUIRED(non-blocking)、Ledger Deviation MAJOR1件→Local Rewriteで解消
+(LEDGER_COMPLIANT)。B1B Fact Checker=PASS/LEDGER_COMPLIANT(MINOR1件)。Ledger
+追記F008_FIX2(Google公式android.com/xr FAQ・blog.google Galaxy XR記事により、
+Samsung Galaxy XRヘッドセット=Android XRプラットフォーム全体の最初のデバイスで
+既提供中と確認、audio-onlyグラス[eyewearライン内の最初の製品]とは別形態と明記)。
+Cross-Level Consistency判定=矛盾なし。ただし本タスクで、既存
+`trend/cross_level_consistency.md`の突合表がLocal Rewrite前のA2旧文(削除済みの
+「The camera-and-optional-display version is a separate product tier.」)を
+引用したまま残っていた事実を発見し、Local Rewrite後の最終A2/B1B本文から
+引用し直して突合表を訂正した(結論「矛盾なし」は最終テキストでも成立、A2は
+カメラ版に触れないという「省略」でありB1Bの記述と矛盾しない)。Trend
+Production 1生成セット総原価=¥174.03(Research/Ledger[run1]¥48.73+
+Ledger-Fix-Regen[run2]¥75.25+Galaxy-XR-Fix-Regen[本node]¥50.05、50:50配賦なし)。
+
+**(2) Discovery完成(OK、Key Phrase B1Bのみ未完成)**: A2(final QA PASS/
+LEDGER_COMPLIANT)・B1B(PASS/LEDGER_COMPLIANT)とも記事本文・No Jargon(0/0)・
+Cross-Level Consistency(矛盾なし)は完了。Ledger修正: F002(視聴者数を数字で
+断定しない、限定Verificationの結果=AMBIGUOUS)、F009(Nguyen/Ryan/Deci、
+「chosen solitude→relaxation/lower stress」はStudy 4限定と明記)、F011
+(46名が正、41名は別研究[forest対seminar-room]との取り違えと確認、VERIFIED)、
+F014(Hasegawa/Gudykunst、本文側の一般化のみ修正)。Key Phrase A2=OK(5件:
+lowest-arousal state/feel louder than speech/outside stimulation/thinking
+for pleasure/nothing to do but think)。**Key Phrase B1Bは未完成**: 確定
+canonical本文への正規初回生成を2回試行し、いずれも`KEY_WORDS_STRUCTURE_INVALID`
+(候補「have agency」の語彙動詞"have"を、既存選定Validatorの有限助動詞
+ブロックリスト[is/are/was/were/has/have/had/will/would/can/could/should/
+may/might/must]が誤検知している可能性が高い)。3回目以降の追加試行、または
+Validator側の修正(Production QA変更に該当するためユーザー承認が必要)、
+または本文側の言い換えのいずれかをユーザーが選択する必要がある
+(USER_DECISION_REQUIRED)。Discovery Production 1生成セット総原価=¥463.27
+(Research/Ledger初回¥58.37+A2初回¥45.88+No Jargon修正/B1B生成/partial QA
+¥157.32+F002/F011修正¥106.08+F002 operator escalation/F009/F014修正+B1B
+final QA¥67.87+A2 final QA再実行/Key Phrase B1B試行¥27.75、50:50配賦なし)。
+プロセス問題2件を記録(Production変更は行っていない、教訓のみ): (a) 初回
+driver`fix_fact_blocks()`がblock単位diff QAの`resolved`フラグを確認せずに
+rewriteを適用するバグがあり、F002修正がGateを意図せず回避した形になったが、
+上位の独立した記事全体Fact Checkerが内容自体は正確と判定していたため実害は
+未確認(CONT1でoperator escalation+diff QA PASSにより最終的に正規手順で
+上書き解消済み)。(b) Key Phrase B1B再試行スクリプトが同一ディレクトリへ
+出力を上書きする設計のため、初回試行の詳細(phrase一覧・reason原文)が
+2回にわたり失われた(運用上のリスクとして記録のみ、コード修正は本タスクの
+範囲外)。
+
+**(3) Family C Trial-09完成episode(VALIDATED、Trial上限、Production採用・
+配線なし)**: home_robotsテーマ(Trial-08で選定)から完成episode(音声含む)を
+構築。segment構造はtopic_intro→preview→key_phrase 1〜5→story(段落0〜33、
+支流入り)→support 1・2、2-voice(narrator=Aoede/robot発話のみCharon)。
+Preview/Key Phrase5件/Support2件を新規生成し、Audio Validation Gate PASS
+(38/38セグメント、4分18秒、clipping無し)。A2語数429語(許容300〜420語を
+超過、Trial-08時点からの既知事実で本Trialでは未修正)。実測開発・Trial費
+¥96.30(推定合算、既存Production wrapper関数がtoken単位usageを戻り値に
+含まないため正確な実測ではなくprecedent単価からの推定、方法論はREPORT
+13)節に明記)。Family C残額¥133.99→¥37.69。USER_DECISION_REQUIRED 3件:
+(1)A2/B1構成(まずA2 1レベルで3本[home_robots/memory/digital_twins]検証を
+提案)、(2)Key Phrase選定Validatorが会話文主体記事で高頻度不合格(観測6回中
+4回)となる問題への対応要否、(3)UI表示文読み上げ(Charon採用)・人物名
+ルールの恒久化要否。
+
+**(4) Voices OPEN-151(-02タスク結果の参照のみ、本タスクでは再編集なし)**:
+`EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02`で
+Status=PARTIAL(15項目中14項目✓、項目7[clean 2V runtime evidence]のみ
+Analytical Leakage Check残存flagにより未充足)、commit`7aefedb2`/`9d9384c0`
+で既にSSOT・Git反映済み。本タスクは参照・要約のみ。
+
+**(5) PM運用方針の恒久反映(ユーザー指示、2026-09-14、原文)**: 「既存仕様・
+既存Gate・許容コスト範囲内なら、発見→修正→QA→完成まで進める。ユーザー判断が
+必要なのは、仕様変更・Gate変更・大きなコスト増・最終人間品質判断だけです。」
+STOP条件5つ(新Production仕様が必要/既存Gate緩和・変更が必要/Ledger修正だけ
+では解消できない構造問題/想定を大きく超える追加コスト/最終的に人間判断しか
+できない品質問題)とともに`docs/pm/PM_GOVERNANCE.md` 11節へ追記した
+(Sonnetループ上限・費用上限は従来どおり変更なし)。
+
+**(6) Family C運用clarification(ユーザー指示、原文要旨、DECISION_LOGのみに
+記録・CURRENT_SPECへルール追加はしない)**: AI固有名(Echo等)はFamily C
+フィクション記事に限り許容し、CURRENT_SPECの一般ルールとしては追加しない。
+語数は目安でありhard capではない、Trial-09のA2 429語は今回限り許容するが、
+今後も語数超過は毎回必ず報告することとする。
+
+**(7) SSOT反映範囲**: `OPEN_ITEMS.md`(OPEN-135行末尾[Trend/Discovery完成事実・
+費用]、OPEN-150行末尾[No Jargon 0/0維持確認]、OPEN-147行末尾[Family C
+Trial-09結果]へ追記。OPEN-148行・OPEN-151行は変更なし)。`er014_output/
+four_type_observation_01/trend/cross_level_consistency.md`(Local Rewrite後
+最終テキストへ突合表を訂正)。`er014_output/four_type_observation_01/
+index.html`・`EDITORIAL-4TYPE-FOLLOWUP-02_REPORT.md`(新規、最終REPORT)。
+`docs/pm/PM_GOVERNANCE.md`11節(新項追加)、`docs/pm/PM_BRIEF.md`(状態行
+更新)、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(Trend/Discovery完成run追記)。
+なお、CURRENT_SPEC.mdには既存の「Family C」関連節が存在しないことを確認した
+(grep 0件、Family CはOPEN-147[OPEN_ITEMS.md]がこれまでも一貫した記録先で
+あり、CURRENT_SPEC.mdはProduction正式仕様のみを記載する運用のため)。委任文は
+「CURRENT_SPEC.md Family C Trial節末尾へ追記」を指示していたが、該当節が
+実在しないため新設はせず、既存の記録先であるOPEN-147行(OPEN_ITEMS.md)への
+追記に代えた(この判断はSonnetによる委任文からの軽微な逸脱であり、理由を
+本エントリおよび`docs/pm/RESULT_PACKET.md`へ明記する)。
+
+**(8) 費用**: 本タスク自体はAPI呼び出しゼロ(¥0)。4TYPE合計(News¥98.32+
+Trend¥174.03+Discovery¥463.27+Voices¥140.39、50:50配賦なし)。Family C
+Trial-09¥96.30(Family C累計残額¥37.69)。
+
+詳細: `EDITORIAL-4TYPE-FOLLOWUP-02_REPORT.md`、`docs/pm/RESULT_PACKET_
+4T_TREND_COMPLETE.md`、`docs/pm/RESULT_PACKET_4T_DISCOVERY_COMPLETE.md`/
+`_2.md`/`_3.md`、`docs/pm/RESULT_PACKET_VOICES_VAR2.md`、`docs/pm/
+RESULT_PACKET_FC9.md`、`EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-
+SPEC-TRIAL-09_REPORT.md`。
 
 ## 参照元
 

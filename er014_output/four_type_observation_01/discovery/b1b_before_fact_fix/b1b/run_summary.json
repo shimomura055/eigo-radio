@@ -1,0 +1,230 @@
+{
+  "label": "B1B",
+  "level": "b1b",
+  "status": "OK",
+  "word_count": 582,
+  "section_word_counts": {
+    "point_one": 65,
+    "point_two": 59
+  },
+  "fact_status": "FACT_CHECK_COMPLETED",
+  "fact_verdict": "REVIEW_REQUIRED",
+  "ledger_status": "LEDGER_COMPLIANT",
+  "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+  "stage1_regen_attempts": 0,
+  "stage2_3_retry_attempts": 1,
+  "overlap_retry_log": [
+    {
+      "attempt": 0,
+      "lexical_flagged": true,
+      "value_qa_flagged": false,
+      "evidence_compression_applied": true,
+      "main_story_reproduced_exactly": true,
+      "report": {
+        "point_one_vs_point_two": {
+          "overlap_ratio": 0.025,
+          "shared_words": [
+            "about"
+          ],
+          "point_word_count": 40,
+          "story_word_count": 38,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_one": {
+          "overlap_ratio": 0.026,
+          "shared_words": [
+            "about"
+          ],
+          "point_word_count": 38,
+          "story_word_count": 40,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_one": {
+          "before_overlap": {
+            "overlap_ratio": 0.25,
+            "shared_words": [
+              "about",
+              "alone",
+              "conversation",
+              "instead",
+              "lower",
+              "pause",
+              "present",
+              "question",
+              "self",
+              "time"
+            ],
+            "point_word_count": 40,
+            "story_word_count": 192,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.025,
+            "shared_words": [
+              "about"
+            ],
+            "point_word_count": 40,
+            "story_word_count": 38,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        },
+        "point_two": {
+          "before_overlap": {
+            "overlap_ratio": 0.421,
+            "shared_words": [
+              "about",
+              "close",
+              "found",
+              "friends",
+              "japan",
+              "more",
+              "pattern",
+              "reported",
+              "seconds",
+              "showed",
+              "silence",
+              "similar",
+              "strangers",
+              "students",
+              "survey",
+              "use"
+            ],
+            "point_word_count": 38,
+            "story_word_count": 192,
+            "flagged": true,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.026,
+            "shared_words": [
+              "about"
+            ],
+            "point_word_count": 38,
+            "story_word_count": 40,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false,
+          "regenerate_status": "NG_REVIEW_REQUIRED",
+          "reason": "Point-only regenerationはER-008-N8-FINAL-QA-HARDENING-21でProduction自動経路から外されている(新Fact fabricationの実例があったため)。本文は変更せず、Human Reviewでの確認対象として記録するのみ。"
+        }
+      },
+      "value_qa_status": "PASS"
+    },
+    {
+      "attempt": 1,
+      "lexical_flagged": false,
+      "value_qa_flagged": false,
+      "evidence_compression_applied": true,
+      "main_story_reproduced_exactly": true,
+      "report": {
+        "point_one_vs_point_two": {
+          "overlap_ratio": 0.073,
+          "shared_words": [
+            "greater",
+            "reported",
+            "silence"
+          ],
+          "point_word_count": 41,
+          "story_word_count": 37,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_two_vs_point_one": {
+          "overlap_ratio": 0.081,
+          "shared_words": [
+            "greater",
+            "reported",
+            "silence"
+          ],
+          "point_word_count": 37,
+          "story_word_count": 41,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "point_one": {
+          "before_overlap": {
+            "overlap_ratio": 0.341,
+            "shared_words": [
+              "across",
+              "afterward",
+              "brief",
+              "four",
+              "lower",
+              "mood",
+              "people",
+              "relaxation",
+              "reported",
+              "silence",
+              "students",
+              "studies",
+              "study",
+              "whether"
+            ],
+            "point_word_count": 41,
+            "story_word_count": 192,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.073,
+            "shared_words": [
+              "greater",
+              "reported",
+              "silence"
+            ],
+            "point_word_count": 41,
+            "story_word_count": 37,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        },
+        "point_two": {
+          "before_overlap": {
+            "overlap_ratio": 0.324,
+            "shared_words": [
+              "about",
+              "alone",
+              "both",
+              "linked",
+              "longer",
+              "reported",
+              "seconds",
+              "setting",
+              "silence",
+              "similar",
+              "simple",
+              "six"
+            ],
+            "point_word_count": 37,
+            "story_word_count": 192,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "cross_point_overlap": {
+            "overlap_ratio": 0.081,
+            "shared_words": [
+              "greater",
+              "reported",
+              "silence"
+            ],
+            "point_word_count": 37,
+            "story_word_count": 41,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "applied": false
+        }
+      },
+      "value_qa_status": "PASS"
+    }
+  ],
+  "final_local_rewrite_cycles": [],
+  "elapsed_seconds": 493.17
+}
