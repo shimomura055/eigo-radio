@@ -48,7 +48,8 @@ Contractのみ「新規topic Writer-only入口自体はComment未接続」とい
    直後に新規エントリ+索引1行)。
 10. **OPEN_ITEMS**: ✓。`OPEN_ITEMS.md`(OPEN-151行末尾に配線結果追記、
     OPEN-120行末尾に3Vゲート未発火の事実+2V構造的不発の判明を追記)。
-11. **Git反映**: 本commitで実施(6節)。
+11. **Git反映**: commit `d5c4df57`(push成功、origin/main反映済み、
+    `6f1fcc92..d5c4df57`)。
 
 ## 3. 3V regression evidence(byte不変性)
 

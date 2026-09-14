@@ -35,7 +35,8 @@
    のまま3attempt上限到達、(2)3V保守版Fact Safetyゲートが2V記事構造
    [5区切り]に対し構造的に不発、(3)Comment Contract新規topic入口未接続
    (3V既存スコープと同一)。
-9. commit: `<COMMIT_HASH_PLACEHOLDER>`(本パケット生成後にcommit実施、
-   後続コマンドで確定させGit反映)。push結果は後続で確認。
+9. commit: `d5c4df57`。push成功(origin/main反映済み、`6f1fcc92..d5c4df57`)。
+   コミットhash確定に伴うSSOT側placeholder置換(`OPEN_ITEMS.md`/
+   `DECISION_LOG.md`/本REPORT)は別途フォローアップcommitで反映する。
 10. T-0=PASS。事前指定外Read3件(理由付きREPORT9節)。STOPなし。
 11. `docs/pm/ACTIVE_TASK.md`更新済み。

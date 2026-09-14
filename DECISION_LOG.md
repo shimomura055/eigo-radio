@@ -7131,7 +7131,7 @@ evidence=✓(オフラインbyte不変、実API再生成不要と判断)。(8)�
 Production 1生成セット総原価=¥99.01(Research/Ledger¥46.98、Writer/QA/Gate/
 retry¥52.03、TTS¥0[未実行、Writer-only入口のためTTS未配線])。回帰
 `er012*_test_*.py`174件PASS/`er011*_test_*.py`266件PASS/全件2668件中2665件
-PASS。commit `<PLACEHOLDER_COMMIT_HASH>`。詳細
+PASS。commit `d5c4df57`。詳細
 `EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01_REPORT.md`。
 
 ## 参照元
