@@ -405,6 +405,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-126: OPEN-148起票(Discovery S2量産単価のStage 2-3 retry上振れ、HIGH・意図的defer)+Discovery S2正式受入の記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-127: Family C Trial-07(発想スケール比較、VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-128: 4記事タイプ正常生成観測(News/Trend/Discovery生成、Voices 2V path不在でUSER_DECISION_REQUIRED)+比較ページ+費用・token・Claude利用量REPORT
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-129: Family C Trial-08(自由生成5テーマ、VALIDATED)のGit記録+OPEN-147反映+transcript退避1件
 
 ---
 
@@ -7097,6 +7098,10 @@ wake-before-alarm)に従いResearch正式経路で作成(Fable判断、仕様変
 cumulative_usage(内訳・セッション枠deltaは取得不能)。仕様Status変更なし。
 Open Item候補10件はREPORT G節(登録はユーザー判断待ち)。詳細:
 `EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-129(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-129。Family C Trial-08(自由生成5テーマ、VALIDATED、Production未採用)をGit記録・OPEN-147反映。transcript退避1件。
 
 ## 参照元
 
