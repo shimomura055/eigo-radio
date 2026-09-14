@@ -1,0 +1,36 @@
+{
+  "topic": "Is personalized news good for us? (2 Voices)",
+  "topic_id": "is_personalized_news_good_for_us",
+  "theme_id": "voices_2v_personalized_news_open151",
+  "research_verification": {
+    "cost_jpy": 46.98,
+    "input_tokens": 213460,
+    "output_tokens": 18114,
+    "cached_input_tokens": 4477,
+    "api_calls": 2,
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "counts": {
+      "VERIFIED": 18,
+      "AMBIGUOUS": 1,
+      "REJECTED": 0
+    }
+  },
+  "writer_qa_gate_retry_rewrite": {
+    "cost_jpy": 52.03,
+    "input_tokens": 264299,
+    "output_tokens": 62292,
+    "cached_input_tokens": 13413,
+    "api_calls": 15,
+    "models": [
+      "gpt-5.6-luna"
+    ],
+    "total_attempts": 3,
+    "note": "Writer+Evidence Compression+Fact Checker A'+Ledger Deviation Checker+Analytical Leakage Check(2V)の3属性attempt分すべてを含む合算(retry/rewrite別建て不可、run_writer_stage_generic()内部で単一attemptとして扱われるため機械分離不可)。"
+  },
+  "total_cost_jpy": 99.01,
+  "budget_jpy": 150.0,
+  "budget_exceeded": false,
+  "note": "driver(run_voices_2v_b1.py)のcost_so_far_jpy()はresearch/raw_usage_log.jsonlのみを参照するため、run_writer_stage_generic()内部でcl.install()がb1_2v_new_theme/raw_usage_log_writer.jsonlへ切り替える実装(3V経路run_writer_stage_generic()と共通の既存仕様)によりWriter側コストが未計上のまま`Phase 2完了。費用実測(最終)=¥46.98`と表示された(driver側の表示バグ、Production関数側の実装は無変更)。本ファイルは両ログを個別に集計し直した正しい実測値。"
+}

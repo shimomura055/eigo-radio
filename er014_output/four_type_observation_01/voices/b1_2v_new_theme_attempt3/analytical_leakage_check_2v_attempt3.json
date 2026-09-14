@@ -1,0 +1,74 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0610806141121d75006aa799cc6f7487d0ac62cae165e3a150",
+  "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn the morning train, she opens Google News’s “For you” page. Stories about topics she follows are waiting, along with sources that matter to her. Past activity on Google services and YouTube can shape the page too. She does not search through everything before work. If a story misses the mark, she can ask for less, hide a source, or change what she follows. She is not seeing every headline, but the feed gives her a useful feeling: she is still keeping up. Personalization helps her reach relevant news before the day gets away.\n\n【Voice B本文】\nAnother reader scrolls through her feed and stops. The opinions sound familiar, and the subjects repeat. She wonders whether the world is changing, or only the window through which she sees it. She wants to know what rules put each item there, but cannot see or change the ranking rules. The system may use clicks, likes, shares, search history, engagement, and advertising goals. The feed feels unlike an editor she can question. She does not need every story; she fears the same view will keep returning while other views fade from sight.\n\n【Tension本文】\nBoth believe what they see can shape understanding and daily life. But one must keep up with relevant news in limited time; the other fears a narrow world closing around her. One experiences ranking through choices—follow, hide, ask for less. The other faces rules she cannot see or change. She also faces an awkward gap: political attitudes did not shift after one short feed change, but that brief test could not show what years of exposure might build. Their hopes do not make one answer.\n\n【Closing本文】\nThe deeper question is not whether a personal feed is good or bad. It is who defines “relevant” when time is scarce, and what a partly hidden definition does to a reader’s sense of the whole. Personalization is also about control: which stories arrive, and whether a reader can notice what is missing.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "朝の具体的な利用場面や自分でフィードを調整する行動は当事者の経験として機能している。一方、サービスの仕組みの説明と、最後に人物の利点を外側から総括する文が混ざっている。",
+      "quoted_evidence": "“Past activity on Google services and YouTube can shape the page too.”\n“Personalization helps her reach relevant news before the day gets away.”"
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "読者が感じる違和感や、同じ見方だけが戻ってくることへの恐れは具体的で記憶に残る。ただし、ランキング要因を列挙する箇所は、本人の経験ではなく外部の仕組みを説明する分析的な文章になっている。",
+      "quoted_evidence": "“The system may use clicks, likes, shares, search history, engagement, and advertising goals.”"
+    },
+    "tension": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "FAIL",
+      "reasoning": "時間の制約と狭い世界への恐れ、可視的な選択と不可視のルールという対比は成立している。しかし後半で、短期テストの結果と長期的影響の限界という研究結果の説明に戻り、数値的な時間比較も前面に出ている。研究部分よりも、二人の異なる不安と必要の対比の方が全体としては記憶に残る。",
+      "quoted_evidence": "“She also faces an awkward gap: political attitudes did not shift after one short feed change, but that brief test could not show what years of exposure might build.”"
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる「人によって違う」という要約ではなく、誰が「関連性」を定義するのか、何が見えなくなるのかという問いを残している。Writer自身の具体的な解決策や妥協案も提示していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_a",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis"
+      ],
+      "reasoning": "朝の具体的な利用場面や自分でフィードを調整する行動は当事者の経験として機能している。一方、サービスの仕組みの説明と、最後に人物の利点を外側から総括する文が混ざっている。",
+      "quoted_evidence": "“Past activity on Google services and YouTube can shape the page too.”\n“Personalization helps her reach relevant news before the day gets away.”"
+    },
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_narrator_analysis",
+        "leak_unknowable_analysis",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "読者が感じる違和感や、同じ見方だけが戻ってくることへの恐れは具体的で記憶に残る。ただし、ランキング要因を列挙する箇所は、本人の経験ではなく外部の仕組みを説明する分析的な文章になっている。",
+      "quoted_evidence": "“The system may use clicks, likes, shares, search history, engagement, and advertising goals.”"
+    },
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax",
+        "leak_tension_reverts_to_research"
+      ],
+      "reasoning": "時間の制約と狭い世界への恐れ、可視的な選択と不可視のルールという対比は成立している。しかし後半で、短期テストの結果と長期的影響の限界という研究結果の説明に戻り、数値的な時間比較も前面に出ている。研究部分よりも、二人の異なる不安と必要の対比の方が全体としては記憶に残る。",
+      "quoted_evidence": "“She also faces an awkward gap: political attitudes did not shift after one short feed change, but that brief test could not show what years of exposure might build.”"
+    }
+  ],
+  "any_flagged": true
+}

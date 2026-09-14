@@ -204,11 +204,23 @@ class VoiceCardValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             wg.validate_voice_card(card)
 
-    def test_theme_config_requires_exactly_three_voice_cards(self):
+    def test_theme_config_requires_two_or_three_voice_cards(self):
+        # EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+        # (OPEN-151、2026-09-14ユーザー正式決定)によりmake_theme_config()は
+        # 2件(2V)も正式に受け付けるよう一般化された。1件・4件は引き続き
+        # 拒否する(2V/3V以外は不正)。2件が受理されるかどうかの契約は
+        # `er012_b_family_voices_variable_voice_count_test_01.py`
+        # (MakeThemeConfigVariableVoiceCountTests)で網羅的に検証する。
         with self.assertRaises(ValueError):
             wg.make_theme_config(
                 theme_id="t", topic_ja="topic", ledger_path="x.txt",
-                voice_cards=[theme_ai_screening.VOICE_CARD_1, theme_ai_screening.VOICE_CARD_2],
+                voice_cards=[theme_ai_screening.VOICE_CARD_1],
+                tension_common_ground_value="g", tension_asymmetry_value="a")
+        with self.assertRaises(ValueError):
+            wg.make_theme_config(
+                theme_id="t", topic_ja="topic", ledger_path="x.txt",
+                voice_cards=[theme_ai_screening.VOICE_CARD_1, theme_ai_screening.VOICE_CARD_2,
+                             theme_ai_screening.VOICE_CARD_3, theme_ai_screening.VOICE_CARD_1],
                 tension_common_ground_value="g", tension_asymmetry_value="a")
 
 

@@ -407,6 +407,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-128: 4記事タイプ正常生成観測(News/Trend/Discovery生成、Voices 2V path不在でUSER_DECISION_REQUIRED)+比較ページ+費用・token・Claude利用量REPORT
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-129: Family C Trial-08(自由生成5テーマ、VALIDATED)のGit記録+OPEN-147反映+transcript退避1件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-130: OPEN-149/150/151起票(Fact Check最適化MEDIUM・No Jargon LOW・Voices 2/3可変Writer APPROVED)+コスト報告『Production 1生成セット総原価』とClaude usage報告形式の恒久反映
+- [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: Voices Writerの2/3 Voices可変化(OPEN-151)配線完了(PRODUCTION_WIRED)+2V runtime evidence+3V byte不変regression
 
 ---
 
@@ -7107,6 +7108,31 @@ PM-CLOSEOUT-CONSOLIDATION-129。Family C Trial-08(自由生成5テーマ、VALID
 ## PM-CLOSEOUT-CONSOLIDATION-130(2026-09-14)
 
 PM-CLOSEOUT-CONSOLIDATION-130。ユーザー正式決定4件をSSOT反映: (1)OPEN-149 A-Family Research/Verification/Final Web Fact Check cost optimization=MEDIUM/DEFERRED(単純削除禁止、今回Production変更なし)。(2)OPEN-150 No Jargon Writer compliance instability=LOW/DEFERRED(新Checker追加せず、個別修正+再発観測)。(3)コスト報告形式の恒久統一: Familyごとに『Production 1生成セット総原価』を主指標、共通Research/Ledgerの50:50配賦による擬似記事単価は禁止、機械分離できる直接費のみ参考内訳(PM_GOVERNANCE 15-8、CURRENT_SPEC参照段落、PM_BRIEF)。(4)Claude Code usage報告形式: Production pipeline API usageとClaude Code development/audit usageを別項目、cumulative_usageを『量産1記事のClaude token』と表現しない、週間利用枠before/afterが取得可能な場合のみ『xx%→yy%(+z pp)』、取得不能なら『週間利用枠換算: 取得不能』、推定%禁止(PM_GOVERNANCE 9-10)。(5)OPEN-151 Voices 2/3可変Writer=APPROVED_FOR_PRODUCTION(未配線、Gate 3追跡)。
+
+## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01(2026-09-14)
+
+EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01(OPEN-151)。
+ユーザー正式決定(2026-09-14、`APPROVED_FOR_PRODUCTION`)「Production Writerを
+2/3 Voices可変へ一般化する」に基づき配線した。結果`PRODUCTION_WIRED`。Gate 3
+11項目照合: (1)2V新規topic正式Production path=✓(`main_b1_2v()`/level="b1_2v"、
+write_new_theme専用、既存main/main_a2/main_b1_3v無変更)。(2)3V既存挙動の
+Regressionなし=✓(byte不変テスト11件+3V専用関数source完全一致+全件回帰2668件中
+2665件PASS[既知FAIL3件のみ])。(3)registry可変voice数=✓(既存実装で確認、
+無変更)。(4)retry・fallback整合=✓(`run_ledger_deviation_and_local_rewrite`等
+共有関数は無変更のまま2V/3V双方で再利用、Leakage Check是正retryを2V実データで
+3 attempts実測)。(5)Fact attribution・Comment Contract・Gate辞書整合=✓
+(Fact attribution: `run_fact_check_a_prime_2v`実測PASS/PASS/REVIEW_REQUIRED。
+Comment Contract: voice数非依存の共有定義を静的確認[新規topic Writer-only
+入口自体はComment未接続、3V既存スコープと同一の限界]。Gate辞書: 既存実装で
+確認)。(6)2V runtime evidence=✓(`er014_output/four_type_observation_01/
+voices/`、topic「Is personalized news good for us?」)。(7)3V regression
+evidence=✓(オフラインbyte不変、実API再生成不要と判断)。(8)〜(10)CURRENT_SPEC/
+本エントリ/OPEN_ITEMS=✓反映済み。(11)Git反映=本commitで実施。費用: Voices
+Production 1生成セット総原価=¥99.01(Research/Ledger¥46.98、Writer/QA/Gate/
+retry¥52.03、TTS¥0[未実行、Writer-only入口のためTTS未配線])。回帰
+`er012*_test_*.py`174件PASS/`er011*_test_*.py`266件PASS/全件2668件中2665件
+PASS。commit `<PLACEHOLDER_COMMIT_HASH>`。詳細
+`EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01_REPORT.md`。
 
 ## 参照元
 

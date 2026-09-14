@@ -1140,6 +1140,40 @@ def main_b1_3v() -> None:
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): level="b1_2v"分岐。main_b1_3v()のwrite_new_theme stageと
+# 同型(Writerのみ、TTSは行わない)の新規追加関数。既存main()/main_a2()/
+# main_b1_3v()のいずれの分岐・挙動にも一切影響しない(このブロック自体が
+# 新規追加コードのみで完結し、既存関数は1バイトも変更していない)。
+# ============================================================
+def main_b1_2v() -> None:
+    """2V(2 Voices)新規topic用エントリポイント(Writerのみ、TTSは行わない)。
+    呼び出し規約はmain_b1_3v()のwrite_new_theme stageと同一
+    (argv[1]="write_new_theme"、argv[2]="b1_2v"、argv[3]=theme module名、
+    argv[4]=出力先ディレクトリ)。呼び出し例:
+    python er012_b_family_production_runner_01.py write_new_theme b1_2v
+    <theme_module_name> <out_dir>
+    現時点でwrite_new_theme stageのみサポートする(2V TTS/assembly/
+    player stageは本タスクの承認範囲外のため未配線、OPEN-151参照)。"""
+    stage = sys.argv[1] if len(sys.argv) > 1 else None
+    if stage != "write_new_theme":
+        raise SystemExit(
+            'level="b1_2v"は現時点でwrite_new_theme stageのみサポートします(2V新規topic '
+            'Writerエントリ、OPEN-151。TTS/assembly stageは未配線)。')
+    theme_module_name = sys.argv[3] if len(sys.argv) > 3 else None
+    if not theme_module_name:
+        raise SystemExit(
+            "write_new_theme stageにはtheme moduleの指定が必要です(例: python "
+            "er012_b_family_production_runner_01.py write_new_theme b1_2v "
+            "<theme_module_name> <out_dir>)")
+    out_dir_base = sys.argv[4] if len(sys.argv) > 4 else "er012_output/b1_2v_new_theme"
+    import importlib
+    theme_mod = importlib.import_module(theme_module_name)
+    result = writer_generic.run_writer_stage_generic(theme_mod.THEME_CONFIG, out_dir_base)
+    print(f"[B-FAMILY-VOICES-2V-PROD-RUNNER][write_new_theme] status={result.get('status')}")
+
+
+# ============================================================
 # EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01: level="a2"分岐
 # ============================================================
 # 上記のB1関数群(prepare/voice_check/reuse_key_phrases/run_scaffold/
@@ -1531,6 +1565,11 @@ def main() -> None:
         return
     if level == "b1_3v":
         main_b1_3v()
+        return
+    # EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+    # (OPEN-151): level="b1_2v"分岐を追加(既存"b1"/"a2"/"b1_3v"分岐は無変更)。
+    if level == "b1_2v":
+        main_b1_2v()
         return
 
     os.makedirs(f"{OUT_DIR}/audit", exist_ok=True)

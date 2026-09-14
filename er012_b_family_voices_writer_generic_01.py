@@ -118,8 +118,23 @@ def make_theme_config(theme_id: str, topic_ja: str, ledger_path: str, voice_card
                        tension_common_ground_value: str, tension_asymmetry_value: str,
                        similar_voices_clarification: str = "",
                        external_constraint: dict | None = None) -> dict:
-    if len(voice_cards) != 3:
-        raise ValueError("本モジュールは3V(3 Voice)専用です。voice_cardsは3件である必要があります。")
+    # EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+    # (OPEN-151、2026-09-14ユーザー正式決定「Production Writerを2/3 Voices
+    # 可変へ一般化する」): 旧実装はvoice_cards件数が3以外の場合を一律で
+    # 拒否していたが、2件(2V)も正式に受け付けるよう一般化する。3件時の
+    # 戻り値dict・検証順序はbyte単位で不変(旧実装の3件分岐と完全に同じ
+    # 内容を返す)。external_constraint(Tension外部制約統合パターン)は
+    # CURRENT_SPEC.md記載のとおり「3人以上のVoice構成向け」の任意パターン
+    # であり、2Vでは使用できない(恒久ルール化されていない3V限定パターンを
+    # 2Vへ無断で拡張しないため、明示的にfail-closed)。
+    if len(voice_cards) not in (2, 3):
+        raise ValueError(
+            "本モジュールは2V(2 Voice)または3V(3 Voice)専用です。voice_cardsは2件または"
+            "3件である必要があります。")
+    if len(voice_cards) == 2 and external_constraint is not None:
+        raise ValueError(
+            "external_constraint(Tension外部制約統合パターン)は3V(3人以上のVoice構成)専用の"
+            "任意パターンです(CURRENT_SPEC.md該当箇所)。2Vでは指定できません。")
     for card in voice_cards:
         validate_voice_card(card)
     return {
@@ -454,6 +469,223 @@ def build_focus_module_block_3v(theme_config: dict) -> str:
 
 
 # ============================================================
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V(2 Voices)共通構造原則。上のCOMMON_INTRO_AND_STRUCTURE_
+# BLOCK_TEMPLATE(3V版)と対をなす、5区切り(Hook/Voice A/Voice B/Tension/
+# Closing)の2V版。内容は、既にPRODUCTION_WIRED(2026-09-09、EDITORIAL-
+# B-FAMILY-PRODUCTION-PATH-PHASE1-WIRING-01)である2V(B1)の元になった
+# 承認済みTrial(`er012_editorial_b_voices_trial_07.py`
+# ::B_FAMILY_VOICES_FOCUS_MODULE_BLOCK、EDITORIAL-B-FAMILY-VOICES-TRIAL-
+# 07-CONTRACT-REFINEMENT-01)の構造原則(5区切り出力形式・Research is
+# backstage原則・Evidence脇役原則・Narrator分析禁止・Hook/Tension/
+# Closingの役割・長さ目標)を、3V汎用テンプレートと同じ流儀でテーマ非依存の
+# 汎用テンプレートへ切り出したもの(Trial-07はVoice内容自体が「固定席 vs
+# フリーアドレス」テーマに固有だったため、そのテーマ固有部分のみ
+# {voice_card_N_block}等のplaceholderへ置き換えた。構造原則・禁止事項・
+# 長さ目標の文言はTrial-07の内容を実質的に変更していない)。3V版と異なり、
+# Voiceセクション本文の一人称"I"指定(3V Person-Voice Trial-02由来)は
+# 含めない(Trial-07=2Vの承認済み内容は三人称Narrator記述であり、3Vの
+# 人称指示を2Vへ無断で拡張しないため)。外部制約統合パターン(3b)も、
+# CURRENT_SPEC.md上「3人以上のVoice構成向け」と明記されているため2V
+# テンプレートには含めない。
+# ============================================================
+COMMON_INTRO_AND_STRUCTURE_BLOCK_TEMPLATE_2V = """【B Family Voices/Perspective Focus Module(2 Voices版、汎用テンプレート、
+EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01(OPEN-151)。
+2V Trial-07(EDITORIAL-B-FAMILY-VOICES-TRIAL-07-CONTRACT-REFINEMENT-01、2026-09-09
+PRODUCTION_WIRED)で確立した構造原則を、テーマ非依存の共通テンプレートとして正式に
+切り出したもの(3V汎用テンプレート[PHASE1B-04-GENERALIZATION-AND-REGRESSION]と対をなす
+構成)。人称指示・Evidence脇役原則等はTrial-07から内容を変更していない）】
+この記事は、上記で説明されている「Main Story / Point One・Point Two / In One Line」という
+一般的な役割定義とは異なる、Voices/Perspective(実在する複数の立場を並立させ、その違いの
+奥にあるTensionを発見し、一段深い理解へ着地する)という別の記事タイプです。今回は**2人**の
+立場を並立させます。以下は、上記の一般的な役割定義・見出し構成を置き換えるのではなく、この
+記事に限り、それぞれのslotが何を担い、どのMarkdown見出しで書くかを、より具体的に上書きする
+指示です。今回の記事では、以下の役割定義・出力形式を最優先で守ってください。
+
+【最重要・この記事だけの出力形式(5区切り構造、厳守)】
+上記「記事構成」節にある「Markdownの###見出しをちょうど2つ置く」という指示は、この記事
+では次のように解釈してください: ###(レベル3見出し)は必ずちょうど**2つ**だけ使い、それぞれ
+1つ目・2つ目のVoiceの見出しとしてのみ使ってください。それに加えて、##(レベル2見出し)を
+3つ使い、Hook・Tension・Closingの見出しとしてください。記事全体は、必ず次の**5つ**の
+Markdown区切りを、この順序で持ってください(見出し文言は下の例を基本としつつ、内容に応じて
+自然に言い換えてかまいませんが、2つのVoice見出しには、「ここから別のVoiceが始まる」と聞き手に
+伝わる表現("One Voice:" "Another Voice:"のような形、またはその人物が何者かを示す語
+[{reference_phrase_1}/{reference_phrase_2}]を使った自然な表現)を必ず含めてください。
+"Voice A"/"Voice B"/"Perspective A"のような固定ラベル・番号ラベル、賛成/反対のような
+対称的なラベルは禁止です):
+
+# [Title]
+
+## The Question
+[Hookの本文]
+
+### [1つ目のVoiceの見出し。その人物・立場が何者かが伝わる短いフレーズ]
+[1つ目のVoice({stakeholder_label_1})の本文]
+
+### [2つ目のVoiceの見出し]
+[2つ目のVoice({stakeholder_label_2})の本文]
+
+## [Tensionの見出し。例: "Why They See It Differently"]
+[Tensionの本文]
+
+## [Closingの見出し。例: "What This Tells Us"]
+[Closingの本文]
+
+Tensionは、2つ目のVoiceの本文の続きの段落ではなく、独立した見出しを持つ独立したセクション
+として書いてください。
+
+【見出しは合計ちょうど5つ、これ以外の見出しを追加しないこと(重要、厳守)】
+記事全体のMarkdown見出し(#・##・###のいずれも)は、上記の5つ(Title含めると6つ、Titleの
+#は別枠)だけにしてください。以下は禁止です:
+- 記事の最後に「## In one line」やそれに類する結びの見出しを追加すること(この記事タイプ
+  では、5つ目の見出し["Closingの見出し"]が結びの役割を兼ねます)
+- Tensionセクション・Closingセクションの中に、新しいMarkdown見出し(###や##)をさらに
+  追加すること(切り口が複数ある場合も、見出しで区切らず、地の文の中でひとつづきの文章
+  として書いてください)
+- Voice以外の要素(まとめ・補足・解決策等)のための追加の見出しを作ること
+書き終えた後、Hook相当・2つのVoice相当・Tension相当・Closing相当の見出しがちょうど5つに
+なっているか、自分で数え直してから出力してください。
+
+【中心原則: Research is backstage. People are on stage.】
+この記事の最大の失敗パターンは、Voiceのセクションが「調査結果を整理・説明する文章」に
+なってしまうことです。あなたには、これから2枚のVoice Card(下記)を渡します。Voice Cardは、
+Researchで確認された実在の人々の立場について、その人が何を経験し・何を必要とし・何を心配し・
+何を守ろうとし・どんな条件からその考えに至っているかを、既にこちらで整理したものです。
+**Voiceのセクションを書くときは、必ずVoice Cardの内容(その人の状況・必要・心配・守りたい
+もの・具体的な場面)を主たる材料にして書き始めてください。Voice Cardの後に置かれている
+Verified Fact Ledger(出典・数字を含む詳しいFact集)は、Fact Checker・Ledger Deviation
+Checkのための正式な事実源であり続けますが、Voiceの文章を組み立てる際の「主役」ではありません。**
+Evidence(調査・出典・統計)がVoiceの文章の主語になったり、Voiceの内容の中心になったりしては
+いけません。特定のVoiceを、具体的な状況・賭け金・責任を持つ一人の人物としてではなく、抽象的な
+立場・機能(例: 効率性、コスト、規制)の代弁者として書かないでください(該当するVoiceがある
+場合は、そのVoice Cardの冒頭指示に必ず従ってください)。
+
+【この記事の2つのPerspectiveについて(重要な前提)】
+{similar_voices_clarification_block}【Voice Card 1(1つ目のVoice。{stakeholder_label_1}={role_description_ja_1}。{card_intro_caveat_1}この内容から
+書き始めてください)】
+{voice_card_1_block}
+
+【Voice Card 2(2つ目のVoice。{stakeholder_label_2}={role_description_ja_2}。{card_intro_caveat_2}この内容から
+書き始めてください)】
+{voice_card_2_block}
+
+【Voiceの書き始め方(重要)】
+Voiceの本文は、"For [a/an] person who..."のような、その人物のことを外側から要約・紹介する
+文で始めないでください。代わりに、Voice Cardが示す具体的な状況(その人が実際に毎日している
+こと・直面していること・使っているもの、目にする光景)から書き始め、そこからその人の感覚・
+必要性が自然に浮かび上がるようにしてください。反論のための藁人形にしないでください。
+
+【Narrator(語り手)がVoiceの人物を外側から要約・分析しないこと(重要)】
+Voiceのセクション内で、語り手がその人物の必要・感情・責任を外側から定義づけるような文
+("The need is...", "She is protecting...", "This person must choose between..."のような、
+Voiceの人物を三人称で要約・分析する文)を書かないでください。すべての文は、その人が実際に
+その瞬間にしていること・気づいていること・感じていることの描写として書いてください。
+
+【Evidenceは脇役であること・Voice内の数字は最大1つ(重要)】
+1つのVoiceの中で、Evidenceの紹介そのものが主役になる文を連続させないでください。文の
+主語が調査・報告・データ("A survey found...", "One report described...", "The data
+show...")になる文は書かないでください。1つのVoiceのセクション全体を通して、具体的な数字は
+最大1つだけにし、必ずその人/その立場の人々の実感に折り込み、話し言葉で書いてください。
+両方のVoiceについて例外なくこのルールを適用してください。
+
+{experiential_claim_grounding_block}
+
+【トーン(重要)】
+この記事は、業界レポート・コンサルティングメモ・分析的なブリーフィングのような読み味に
+しないでください。Light・conversational・human-centeredに、友人に説明するような、気軽に
+読める文章にしてください。
+
+【Hookの役割と書き方(重要)】
+Hook("## The Question")は、これから2つの立場を紹介するテーマ・状況を簡潔に提示する
+導入です。どちらの立場が正しいかを示唆したり、結論を先取りしたりしないでください。目安は
+70語未満です。読み手へ呼びかけたり、命令形・二人称で想像を促したりする表現("Imagine...",
+"Picture...", "Think about...", "Consider...")で始めないでください。代わりに、具体的な
+情景そのものから、三人称で書き始めてください。Hookに企業名・統計・パーセントを入れないで
+ください。
+
+【Voice以外の場面(Tension)で第三者の視点・解決策を混ぜないこと(重要)】
+各Voiceのセクションでは、その当事者がどう感じ、何を必要としているかを描き切ってください。
+解決策・妥協案・提案は、この記事では基本的に書かないでください(Solution articleでは
+ありません)。
+
+【Tensionの役割(重要)】
+「どちらの考え方が正しいか」を決めようとしないでください。そうではなく、なぜ両方のVoiceが、
+それぞれの立場からは合理的に見えるのかを掘り下げ、そのうえで、2人の合理性を単純に足しても
+答えにはならないことを示してください。**Tensionの中心は、あくまでVoice Cardに描かれている
+2人の人物と、彼らの合理性を制約する力であり、Evidence(survey/research/data/percentage)
+そのものの説明ではありません。**Tensionの段落を、"A survey found...", "The data show..."
+のような、調査・データそのものを主語にした文で始めたり、その説明へ立ち戻ったりしないで
+ください。Tensionは、必ず以下の要素を、この順序で(ただし本文に「第1段」等のラベルは
+書かず、地の文としてひとつづきに)含めてください:
+
+1. 共通前提: 2人とも、本当は同じこと({tension_common_ground_value})を望んでいる、という
+   出発点を示してください(この時点では誰も間違っていない、という前提の共有)。
+2. 分岐点: なぜそこから意見が分かれるかを、答えを要約せず「何を賭けているか」の違いとして
+   示してください。{stakeholder_label_1}にとっての賭け金は「{stake_1}」、{stakeholder_label_2}に
+   とっての賭け金は「{stake_2}」です(2人の発言内容の再掲・時系列の反復はしないでください)。
+3. 非対称性: {tension_asymmetry_value}という、プロセス上の力関係の非対称を明示してください。
+単純に2人の主張を時系列で繰り返し要約するのではなく、それぞれが「何を賭けている」のかという
+非対称性として描いてください。単に「両方とも一理ある」とまとめるだけの記述にもしないで
+ください。解決策の提案はここでも基本的に行わないでください。Verified Fact Ledgerに無い
+新しい因果関係・新しい事実を作り出さないでください。
+
+【Closingの役割(重要)】
+これは要約でも、In One Lineの言い換えでもありません。2つのVoiceと、その外側にある制約を
+見たことによって、この問題そのものの見え方が、Hook(冒頭の問い)の時点からどう変わったかを
+書いてください。「両方に良い点がある」「人による」というだけの結び方で終わらせないで
+ください。目指すのは、この問題が実は何についての問題なのかを一段深く見せることです。
+Writer自身の解決策・コンサル提案にはしないでください。Closingの最初の役割は要約ではなく
+再定義です。前段(2つのVoice・Tension)の内容の要約から書き始めないでください。
+
+【各Voiceは同じ意味を2回言わないこと】
+1つの経験・1つの感覚は、そのVoiceの中で1回だけ描写してください。
+
+【記事全体の長さについて(この記事専用、hard capではない。2V Trial-07設計目標を踏襲)】
+記事全体の総語数は、**約320〜380語をsoft targetとしてください**(hard capではありません)。
+目安配分(soft guidance): Hook 60〜70語程度 / 各Voice 90〜100語程度(2人合計約180〜200語)/
+Tension 60〜70語程度 / Closing 40〜50語程度。この配分は目安であり、自然な文章の流れ・
+Tension(上記構造要素すべて)・Closingの深さを犠牲にしてまで厳密に一致させる必要はありません。
+
+【禁止事項まとめ(この記事全体を通して)】
+- Reference Example由来の定型的な呼びかけ表現をコピー・準用すること
+- "Voice A"/"Voice B"/"Perspective A"のような固定ラベル・番号ラベル
+- 文の主語がEvidence(survey/report/data/study)になる文(Tensionの段落を含む)
+- Narrator(語り手)がVoiceの人物を外側から要約・分析する文
+- Voiceのセクションへ第三者(設計者・コンサルタント)の視点を持ち込むこと、または
+  どちらのVoiceの人物であっても具体的な解決策・妥協案をVoice本文内・Tension・Closing内で
+  提案すること
+- Hookに企業名・統計・パーセントを入れること
+- 1つのVoiceのセクション内で具体的な数字を2つ以上使うこと
+- 特定のVoiceを、具体的な状況・賭け金・責任を持つ一人の人物としてではなく、抽象的な立場・
+  機能の代弁者として書くこと(該当するVoiceがある場合は、そのVoice Cardの冒頭指示に従う
+  こと)"""
+
+
+def build_focus_module_block_2v(theme_config: dict) -> str:
+    """2V(2 Voices版)のFocus Module全文を組み立てる(pure関数、API呼び出し
+    無し、単体テスト対象)。3V版(build_focus_module_block_3v)のロジック・
+    出力には一切影響しない(別のtemplate定数・別の関数)。"""
+    cards = theme_config["voice_cards"]
+    similar_clarification = theme_config.get("similar_voices_clarification") or ""
+    similar_block = (
+        (similar_clarification + "\n") if similar_clarification else ""
+    )
+    block = COMMON_INTRO_AND_STRUCTURE_BLOCK_TEMPLATE_2V.format(
+        reference_phrase_1=cards[0]["reference_phrase"], reference_phrase_2=cards[1]["reference_phrase"],
+        stakeholder_label_1=cards[0]["stakeholder_label"], stakeholder_label_2=cards[1]["stakeholder_label"],
+        role_description_ja_1=cards[0]["role_description_ja"], role_description_ja_2=cards[1]["role_description_ja"],
+        card_intro_caveat_1=cards[0]["card_intro_caveat"], card_intro_caveat_2=cards[1]["card_intro_caveat"],
+        voice_card_1_block=_voice_card_block_text(cards[0]), voice_card_2_block=_voice_card_block_text(cards[1]),
+        similar_voices_clarification_block=similar_block,
+        experiential_claim_grounding_block=COMMON_EXPERIENTIAL_CLAIM_GROUNDING_BLOCK,
+        tension_common_ground_value=theme_config["tension_common_ground_value"],
+        stake_1=cards[0]["stake"], stake_2=cards[1]["stake"],
+        tension_asymmetry_value=theme_config["tension_asymmetry_value"],
+    )
+    return block
+
+
+# ============================================================
 # ANCHOR挿入(Trial-01/02と同じ手法、Production側template自体は変更しない)。
 # ============================================================
 def build_candidate_template(focus_module_block: str) -> str:
@@ -499,6 +731,13 @@ def run_phase_a(focus_module_block: str, audit_dir: str) -> dict:
 # ============================================================
 def split_six_voice_sections(article_text: str) -> dict | None:
     return b1prod.split_six_voice_sections(article_text)
+
+
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V(5区切り)parserも同様にProduction正式版(b1prod.
+# split_five_voice_sections)へ委譲する(独自複製は作らない)。
+def split_five_voice_sections(article_text: str) -> dict | None:
+    return b1prod.split_five_voice_sections(article_text)
 
 
 # ============================================================
@@ -559,6 +798,33 @@ def run_fact_check_a_prime_3v(article_text: str, ledger_text: str, topic_ja: str
     return fc_record
 
 
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V版Fact Checker A'。ロジックは上のrun_fact_check_a_prime_3v
+# と同一(num_visible_voices=2のみが異なる)。3V関数の内部は一切変更せず、
+# 別関数として複製することで3V側の出力バイト不変性を保つ。
+def run_fact_check_a_prime_2v(article_text: str, ledger_text: str, topic_ja: str, out_dir: str) -> dict:
+    os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    enabled = True
+    ledger_fragment = build_ledger_fragment_visible_voices_only(ledger_text, num_visible_voices=2)
+    with open(f"{out_dir}/audit/ledger_fragment_visible_voices_only.txt", "w", encoding="utf-8") as f:
+        f.write(ledger_fragment)
+    block = registry.build_voice_attribution_block(ledger_fragment) if enabled else ""
+    with open(f"{out_dir}/audit/voice_attribution_block_used.txt", "w", encoding="utf-8") as f:
+        f.write(block if block else "(fact_attribution_mode_enabled=False、blockは空文字列)")
+    fc_prompt_for_evidence = r3.build_fact_check_prompt(topic_ja, article_text, [], voice_attribution_block=block)
+    with open(f"{out_dir}/audit/fact_check_prompt_with_attribution.txt", "w", encoding="utf-8") as f:
+        f.write(fc_prompt_for_evidence)
+
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Fact Checker A'呼び出し開始(fact_attribution_mode_enabled={enabled})...")
+    fc_record = b1prod.run_fact_checker(topic_ja, article_text, voice_attribution_block=block)
+    fc_record["fact_attribution_mode_enabled"] = enabled
+    with open(f"{out_dir}/fact_qa.json", "w", encoding="utf-8") as f:
+        json.dump(fc_record, f, ensure_ascii=False, indent=2, default=str)
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Fact Checker A'完了。final_status={fc_record.get('final_status')} "
+          f"verdict={(fc_record.get('result') or {}).get('verdict')}")
+    return fc_record
+
+
 # ============================================================
 # Point Overlap QA(monitoring専用、3V版)。Trial-02と同一ロジック。
 # ============================================================
@@ -589,6 +855,41 @@ def run_overlap_monitoring_3v(sections: dict, out_dir: str) -> dict:
     with open(f"{out_dir}/point_overlap_qa_monitoring_3v.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2, default=str)
     print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Overlap monitoring(9値)完了。any_flagged={summary['any_flagged']}")
+    return summary
+
+
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V版Overlap monitoring(monitoring専用、合否判定には使わない)。
+# voice_keys=("voice_a","voice_b")のみが3V版と異なる(有向ペア2
+# [Permutation(2,2)]+ vs Hook 2 = 4値)。出力ファイル名を3V版と分けて
+# 衝突を避ける(_2vサフィックス)。
+def run_overlap_monitoring_2v(sections: dict, out_dir: str) -> dict:
+    voice_keys = ("voice_a", "voice_b")
+    hook = sections["hook_body"]
+    directed_voice_pairs = {}
+    for a, b in itertools.permutations(voice_keys, 2):
+        r = overlap_qa.flag_possible_paraphrase(sections[f"{a}_body"], sections[f"{b}_body"])
+        directed_voice_pairs[f"{a}_vs_{b}"] = r
+    voice_vs_hook = {}
+    for v in voice_keys:
+        r = overlap_qa.flag_possible_paraphrase(sections[f"{v}_body"], hook)
+        voice_vs_hook[f"{v}_vs_hook"] = r
+    all_flags = [r["flagged"] for r in directed_voice_pairs.values()] + [r["flagged"] for r in voice_vs_hook.values()]
+    summary = {
+        "qa_status": "OK",
+        "note": ("EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: monitoring専用"
+                 "(合否判定には使わない、N=1で閾値を決めない)。有向ペア2(Permutation(2,2))+ vs Hook "
+                 "2 = 4値。lexical_overlap_ratio()はProduction関数(er008_point_overlap_qa_18.py)を"
+                 "無変更のまま使用(3V版run_overlap_monitoring_3vと同一ロジック、voice_keysのみ異なる)。"),
+        "directed_voice_pair_count": len(directed_voice_pairs),
+        "voice_vs_hook_count": len(voice_vs_hook),
+        "any_flagged": any(all_flags),
+        "directed_voice_pairs": directed_voice_pairs,
+        "voice_vs_hook": voice_vs_hook,
+    }
+    with open(f"{out_dir}/point_overlap_qa_monitoring_2v.json", "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2, default=str)
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Overlap monitoring 2V(4値)完了。any_flagged={summary['any_flagged']}")
     return summary
 
 
@@ -765,6 +1066,152 @@ def build_leakage_corrective_note_3v(leakage_result: dict, voice_cards: list) ->
         "削るときはreplace-with-nothingを基本とし、削った直後に別の言い回しで同じ内容を書き足さないでください。\n"
         "- Tensionの役割: Tensionの中心はVoice Cardの3人の人物と、彼らを制約する力であり、"
         "Evidenceの列挙ではありません。3人を単純に2対1へ分けないでください。\n"
+        "- 体験claimの根拠付け: 数値・制度・他者の行動を事実として述べる場合はLedger evidenceに限り、"
+        "根拠がない事柄(自分の評判・信用が具体的にどうなるか等)は体験・感情・判断として書いてください。\n"
+        "- 各Voiceの役割: 抽象的な立場の解説ではなく、具体的な状況・賭け金・責任を持つ一人の人物として"
+        "書いてください(該当するVoiceがある場合はVoice Card冒頭の指示に従うこと)。\n"
+        "- Closingの役割: 単なる要約や「人による」で終わらせず、この問題が実は何についての問題なのかという"
+        "再定義そのものから書き始めてください。解決策の提案はしないでください。"
+    )
+    return "\n".join(lines)
+
+
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): Analytical Leakage Check 2V版。VOICE_LEAKAGE_FIELDS・
+# CLOSING_LEAKAGE_FIELDS(上記、Voice数非依存の6項目・1項目)はそのまま
+# 再利用する。Tensionのみ、2V用に`leak_binary_camp_split`(「3人を2対1へ
+# 分けない」という3人以上向けの基準)と`leak_tension_constraint_
+# integration`(3V限定の任意パターン)を除いた5項目にする(2Vは構造的に
+# 2人しかいないため「2対1」という誤判定対象が存在しない)。
+# ============================================================
+TENSION_LEAKAGE_FIELDS_2V = (
+    "leak_evidence_subject", "leak_numbers_foreground", "leak_discovery_syntax",
+    "leak_evidence_memorable", "leak_tension_reverts_to_research",
+)
+
+
+def build_leakage_schema_2v() -> tuple:
+    section_fields = {
+        "voice_a": VOICE_LEAKAGE_FIELDS, "voice_b": VOICE_LEAKAGE_FIELDS,
+        "tension": TENSION_LEAKAGE_FIELDS_2V, "closing": CLOSING_LEAKAGE_FIELDS,
+    }
+    schema = {
+        "name": "analytical_leakage_check_2v_generic",
+        "schema": {
+            "type": "object",
+            "properties": {k: _leakage_item_schema(v) for k, v in section_fields.items()},
+            "required": list(section_fields.keys()), "additionalProperties": False,
+        },
+        "strict": True,
+    }
+    return schema, section_fields
+
+
+def build_leakage_check_prompt_2v(sections: dict) -> str:
+    return f"""以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文
+(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください
+(それぞれPASS/FAIL)。
+
+【Voice A・Voice Bに共通で適用する6項目】
+- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS
+- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合
+  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)
+- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS
+- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の
+  Perspectiveとして書いていない場合PASS
+- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS
+- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS
+
+両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に
+なっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの
+いずれかでFAILとしてください)。
+
+【Tensionに適用する項目】
+- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:
+  上記と同じ意味(Tension本文に対して判定)
+- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって
+  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS
+
+【Closingに適用する1項目】
+- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、
+  かつWriter自身の解決策・妥協案の提案になっていない場合PASS
+
+reasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する
+原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に
+してください。
+
+【Voice A本文】
+{sections['voice_a_body']}
+
+【Voice B本文】
+{sections['voice_b_body']}
+
+【Tension本文】
+{sections['tension_body']}
+
+【Closing本文】
+{sections['closing_body']}
+"""
+
+
+def run_analytical_leakage_check_2v(client, sections: dict, model: str, reasoning_effort: str,
+                                     out_dir: str, attempt: int) -> dict:
+    schema, section_fields = build_leakage_schema_2v()
+    prompt = build_leakage_check_prompt_2v(sections)
+    response = client.responses.create(
+        model=model, reasoning={"effort": reasoning_effort},
+        text={"format": {"type": "json_schema", **schema}},
+        input=[{"role": "developer", "content": LEAKAGE_CHECK_DEVELOPER_MESSAGE},
+               {"role": "user", "content": prompt}],
+    )
+    if response.model != model:
+        raise RuntimeError(f"応答モデルが不一致です(期待: {model}, 実際: {response.model})")
+    text = getattr(response, "output_text", None)
+    if not text or not text.strip():
+        raise RuntimeError("Analytical Leakage Check応答が空です")
+    parsed = json.loads(text)
+
+    flagged_items = []
+    for section_key, fields in section_fields.items():
+        item = parsed[section_key]
+        fail_fields = [f for f in fields if item[f] == "FAIL"]
+        if fail_fields:
+            flagged_items.append({"voice": section_key, "fail_fields": fail_fields,
+                                   "reasoning": item["reasoning"], "quoted_evidence": item["quoted_evidence"]})
+    result = {
+        "model": response.model, "response_id": response.id, "prompt": prompt, "parsed": parsed,
+        "flagged_items": flagged_items, "any_flagged": bool(flagged_items),
+    }
+    with open(f"{out_dir}/analytical_leakage_check_2v_attempt{attempt}.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2, default=str)
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC][Leakage Check 2V] attempt{attempt}: any_flagged={result['any_flagged']} "
+          f"flagged_items={[(x['voice'], x['fail_fields']) for x in flagged_items]}")
+    return result
+
+
+def build_leakage_corrective_note_2v(leakage_result: dict, voice_cards: list) -> str:
+    lines = [
+        "【Analytical Leakage Check是正メモ(前回attemptの検出結果。Voice Card・Verified "
+        "Fact Ledger・骨格は変更しません。今回はこの記事全文をゼロから新しく書き直して"
+        "ください。前回の文をそのまま部分修正するのではなく、Voice Cardの内容から書き始め、"
+        "以下の問題を避けてください)】",
+    ]
+    voice_label = {
+        "voice_a": f"Voice A({voice_cards[0]['stakeholder_label']})",
+        "voice_b": f"Voice B({voice_cards[1]['stakeholder_label']})",
+        "tension": "Tension", "closing": "Closing",
+    }
+    for item in leakage_result["flagged_items"]:
+        lines.append(f"- {voice_label[item['voice']]}で検出: {', '.join(item['fail_fields'])}")
+        lines.append(f"  理由: {item['reasoning']}")
+        if item["quoted_evidence"]:
+            lines.append(f"  該当箇所(この種の書き方を避ける): \"{item['quoted_evidence']}\"")
+    lines.append(
+        "\n【この記事全体で必ず守るContractの優先事項(是正のたびに毎回再掲)】\n"
+        "- Compactness: 記事全体の総語数は約320〜380語がsoft targetです(hard capではありません)。"
+        "削るときはreplace-with-nothingを基本とし、削った直後に別の言い回しで同じ内容を書き足さないでください。\n"
+        "- Tensionの役割: Tensionの中心はVoice Cardの2人の人物であり、Evidenceの列挙ではありません。\n"
         "- 体験claimの根拠付け: 数値・制度・他者の行動を事実として述べる場合はLedger evidenceに限り、"
         "根拠がない事柄(自分の評判・信用が具体的にどうなるか等)は体験・感情・判断として書いてください。\n"
         "- 各Voiceの役割: 抽象的な立場の解説ではなく、具体的な状況・賭け金・責任を持つ一人の人物として"
@@ -1213,6 +1660,103 @@ def run_voices_pattern_3v(client, theme_id: str, label: str, prompt: str, verifi
     }
 
 
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V版run_voices_pattern。run_voices_pattern_3vと同一の
+# stage順序(Writer生成→Overlap monitoring→metrics→Fact Checker A'→
+# Ledger Deviation+Local Rewrite→比較方向Fact事前チェック)を辿るが、
+# 5区切りparser・2V版Overlap monitoring・2V版Fact Checker A'(num_visible_
+# voices=2)を使う。external_constraintは2Vでは常にOFF(make_theme_config
+# がlen==2時にexternal_constraint!=Noneを拒否するため、呼び出し側は
+# 気にしなくてよい)。`run_ledger_deviation_and_local_rewrite`はVoice数に
+# 依存しない既存共通関数(無変更)をそのまま再利用する。
+def run_voices_pattern_2v(client, theme_id: str, label: str, prompt: str, verified_ledger_text: str,
+                           topic_ja: str, out_dir: str,
+                           apply_evidence_compression: bool = True,
+                           apply_directional_fact_precheck: bool = True) -> dict:
+    os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    with open(f"{out_dir}/audit/prompt.txt", "w", encoding="utf-8") as f:
+        f.write(prompt)
+
+    writer_model = routing.require_model(gen._writer_process(label), routing.WRITER_MODEL)
+
+    gen_result = _generate_and_compress_article_3v(
+        client, theme_id, label, prompt, out_dir, apply_evidence_compression, writer_model)
+    if gen_result["status"] != "OK":
+        return {"label": label, "status": gen_result["status"], "article_text": None}
+    article_text = gen_result["article_text"]
+
+    sections = split_five_voice_sections(article_text)
+    if sections is None:
+        return {
+            "label": label, "status": "STRUCTURE_NOT_FIVE_SECTIONS", "article_text": article_text,
+            "metrics": gen.compute_metrics(article_text),
+        }
+
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: Overlap monitoring(4値)開始...")
+    overlap_summary = run_overlap_monitoring_2v(sections, out_dir)
+
+    metrics = gen.compute_metrics(article_text)
+    with open(f"{out_dir}/metrics.json", "w", encoding="utf-8") as f:
+        json.dump(metrics, f, ensure_ascii=False, indent=2)
+    print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: metrics={metrics}")
+
+    fc_record = run_fact_check_a_prime_2v(article_text, verified_ledger_text, topic_ja, out_dir)
+    fc_status = fc_record.get("final_status")
+    verdict = (fc_record.get("result") or {}).get("verdict")
+    if verdict == "FAIL":
+        print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: Fact CheckerがFAILと判定。NG_REVIEW_REQUIREDとして報告します。")
+        return {
+            "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+            "metrics": metrics, "sections": sections,
+            "fact_status": fc_status, "fact_verdict": verdict, "fact_check_result": fc_record,
+            "point_overlap_qa_monitoring": overlap_summary,
+        }
+
+    ledger_model = routing.require_model(gen._writer_process(label), routing.WRITER_MODEL)
+    ledger_result = run_ledger_deviation_and_local_rewrite(
+        client, theme_id, label, article_text, verified_ledger_text, out_dir, ledger_model,
+        topic_ja=topic_ja)
+    article_text = ledger_result["article_text"]
+    sections = split_five_voice_sections(article_text)  # Local Rewrite後に再抽出
+
+    if ledger_result["remaining_major_count"] or ledger_result["any_human_review_required"]:
+        print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: Local Rewrite cycleを尽くしてもLedger MAJOR残存/"
+              f"human_review_required。NG_REVIEW_REQUIREDとして報告します。")
+        return {
+            "label": label, "status": "NG_REVIEW_REQUIRED", "article_text": article_text,
+            "metrics": gen.compute_metrics(article_text), "sections": sections,
+            "fact_status": fc_status, "fact_verdict": verdict,
+            "ledger_status": ledger_result["ledger_status"],
+            "ledger_deviation_count": ledger_result["ledger_deviation_count"],
+            "local_rewrite_cycles": ledger_result["local_rewrite_cycles"],
+            "local_rewrite_cycle_exhausted": ledger_result["local_rewrite_cycle_exhausted"],
+            "point_overlap_qa_monitoring": overlap_summary,
+        }
+
+    directional_precheck_status = None
+    if apply_directional_fact_precheck:
+        print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: 比較方向Fact事前チェック開始(rule-based、¥0)...")
+        vfl_path = f"{out_dir}/research/stage_b3_vfl.json"  # 本経路では存在しない、Layer 2のみ実行(¥0)
+        directional_result = dfp.audit_article_directional_facts(article_text, verified_ledger_text, vfl_path=vfl_path)
+        directional_precheck_status = directional_result["overall_status"]
+        with open(f"{out_dir}/audit/directional_fact_precheck.json", "w", encoding="utf-8") as f:
+            json.dump(directional_result, f, ensure_ascii=False, indent=2, default=str)
+        print(f"[B-FAMILY-VOICES-WRITER-GENERIC][{theme_id}] {label}: 比較方向Fact事前チェック完了。overall_status={directional_precheck_status}")
+
+    return {
+        "label": label, "status": "OK", "article_text": article_text,
+        "metrics": gen.compute_metrics(article_text), "sections": sections,
+        "fact_status": fc_status, "fact_verdict": verdict, "fact_check_result": fc_record,
+        "ledger_status": ledger_result["ledger_status"],
+        "ledger_deviation_count": ledger_result["ledger_deviation_count"],
+        "local_rewrite_cycles": ledger_result["local_rewrite_cycles"],
+        "local_rewrite_cycle_exhausted": ledger_result["local_rewrite_cycle_exhausted"],
+        "point_overlap_qa_monitoring": overlap_summary,
+        "directional_fact_precheck_status": directional_precheck_status,
+    }
+
+
 def run_pipeline_3v(client, theme_id: str, label: str, base_prompt: str, verified_ledger_text: str,
                      topic_ja: str, voice_cards: list, external_constraint_enabled: bool,
                      out_dir_base: str) -> dict:
@@ -1280,6 +1824,76 @@ def run_pipeline_3v(client, theme_id: str, label: str, base_prompt: str, verifie
             "attempt_history": attempt_history, "total_attempts": len(attempt_history)}
 
 
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+# (OPEN-151): 2V版run_pipeline。run_pipeline_3vと同一のattemptループ構造
+# (最大MAX_WRITER_ATTEMPTS回、Analytical Leakage Check flagged時のみ是正
+# 再実行)を辿るが、5区切りparser・2V版Leakage Check・2V版是正メモを使う。
+def run_pipeline_2v(client, theme_id: str, label: str, base_prompt: str, verified_ledger_text: str,
+                     topic_ja: str, voice_cards: list, out_dir_base: str) -> dict:
+    writer_model = routing.require_model(gen._writer_process(label), routing.WRITER_MODEL)
+    attempt_history = []
+    corrective_note = ""
+    final_result = None
+    final_attempt_dir = None
+
+    for attempt in range(1, MAX_WRITER_ATTEMPTS + 1):
+        attempt_dir = f"{out_dir_base}_attempt{attempt}"
+        prompt_for_attempt = base_prompt + (f"\n\n{corrective_note}" if corrective_note else "")
+        os.makedirs(f"{attempt_dir}/audit", exist_ok=True)
+        with open(f"{attempt_dir}/audit/candidate_prompt_used.txt", "w", encoding="utf-8") as f:
+            f.write(prompt_for_attempt)
+
+        print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Writer attempt {attempt}/{MAX_WRITER_ATTEMPTS} 開始(out_dir={attempt_dir})...")
+        t0 = time.time()
+        with cl.logging_context(theme_id, f"writer_{label.lower()}_attempt{attempt}"):
+            result = run_voices_pattern_2v(client, theme_id, label, prompt_for_attempt, verified_ledger_text,
+                                            topic_ja, attempt_dir)
+        result["elapsed_seconds"] = round(time.time() - t0, 1)
+
+        entry = {"attempt": attempt, "out_dir": attempt_dir, "status": result.get("status")}
+        final_result = result
+        final_attempt_dir = attempt_dir
+
+        if result.get("status") != "OK" or not result.get("article_text"):
+            entry["leakage_check"] = None
+            entry["any_flagged"] = None
+            attempt_history.append(entry)
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: status={result.get('status')}のためLeakage Checkをスキップします。")
+            break
+
+        sections = result.get("sections") or split_five_voice_sections(result["article_text"])
+        if sections is None:
+            entry["leakage_check"] = {"qa_status": "SKIPPED_NO_FIVE_SECTIONS"}
+            entry["any_flagged"] = None
+            attempt_history.append(entry)
+            final_result["sections"] = None
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 5区切り構造が検出できずLeakage Checkをスキップしました。")
+            break
+
+        leakage = run_analytical_leakage_check_2v(
+            client, sections, writer_model, gen.REASONING_EFFORT, attempt_dir, attempt)
+        entry["leakage_check"] = leakage
+        entry["any_flagged"] = leakage["any_flagged"]
+        attempt_history.append(entry)
+        final_result["sections"] = sections
+        final_result["analytical_leakage_check"] = leakage
+
+        if not leakage["any_flagged"]:
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: Analytical Leakage Check flagged項目なし。確定。")
+            break
+        if attempt == MAX_WRITER_ATTEMPTS:
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 最大attempt数に到達。flagged項目が残った状態の"
+                  f"記事を最終結果として記録します(Report側でUSER_DECISION_REQUIRED候補として扱う)。")
+            break
+        corrective_note = build_leakage_corrective_note_2v(leakage, voice_cards)
+
+    with open(f"{out_dir_base}_attempt_history.json", "w", encoding="utf-8") as f:
+        json.dump(attempt_history, f, ensure_ascii=False, indent=2, default=str)
+
+    return {"final_result": final_result, "final_attempt_dir": final_attempt_dir,
+            "attempt_history": attempt_history, "total_attempts": len(attempt_history)}
+
+
 def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str = "B1B") -> dict:
     """新テーマ用エントリポイント(Writerのみ、TTSは行わない)。`theme_config`
     (`make_theme_config()`の戻り値)からLedger・Voice Card・Tension contentを
@@ -1291,7 +1905,19 @@ def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str =
         verified_ledger_text = f.read()
 
     os.makedirs(out_dir_base, exist_ok=True)
-    focus_module_block = build_focus_module_block_3v(theme_config)
+    # EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01
+    # (OPEN-151): voice_cards件数(2V/3V)で分岐する。voice_cards=3の分岐は
+    # 旧実装(build_focus_module_block_3v→run_pipeline_3v)と完全に同じ
+    # 呼び出し列(byte単位で不変)。voice_cards=2の分岐のみ新規に追加した。
+    num_voices = len(theme_config["voice_cards"])
+    if num_voices == 3:
+        focus_module_block = build_focus_module_block_3v(theme_config)
+    elif num_voices == 2:
+        focus_module_block = build_focus_module_block_2v(theme_config)
+    else:
+        # make_theme_config()が既に2/3以外を拒否するため通常到達しないが、
+        # theme_configを直接手組みして渡すテスト等を想定したfail-closed。
+        raise ValueError(f"voice_cardsは2件または3件である必要があります(実際: {num_voices}件)")
     phase_a = run_phase_a(focus_module_block, f"{out_dir_base}/audit")
     if not phase_a["phase_a_pass"]:
         print("[B-FAMILY-VOICES-WRITER-GENERIC] Phase Aで意図しない差分を検出したため、Writerへ進まずSTOPします。")
@@ -1311,10 +1937,15 @@ def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str =
         theme_config.get("external_constraint") and theme_config["external_constraint"].get("enabled"))
     theme_id = theme_config["theme_id"]
     print(f"[B-FAMILY-VOICES-WRITER-GENERIC] Writer + Analytical Leakage Checkパイプライン開始"
-          f"(最大{MAX_WRITER_ATTEMPTS} attempts、external_constraint_enabled={external_constraint_enabled})...")
-    pipeline_result = run_pipeline_3v(client, theme_id, label, candidate_prompt, verified_ledger_text,
-                                       theme_config["topic_ja"], theme_config["voice_cards"],
-                                       external_constraint_enabled, out_dir_base)
+          f"(最大{MAX_WRITER_ATTEMPTS} attempts、num_voices={num_voices}、"
+          f"external_constraint_enabled={external_constraint_enabled})...")
+    if num_voices == 3:
+        pipeline_result = run_pipeline_3v(client, theme_id, label, candidate_prompt, verified_ledger_text,
+                                           theme_config["topic_ja"], theme_config["voice_cards"],
+                                           external_constraint_enabled, out_dir_base)
+    else:
+        pipeline_result = run_pipeline_2v(client, theme_id, label, candidate_prompt, verified_ledger_text,
+                                           theme_config["topic_ja"], theme_config["voice_cards"], out_dir_base)
 
     with open(f"{out_dir_base}/summary.json", "w", encoding="utf-8") as f:
         json.dump({
