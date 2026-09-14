@@ -78,7 +78,9 @@ takeへの個別修正の積み重ねで閉じず、failure mode単位で対策�
 Trial/Production runのコスト報告は同15節(1記事[B1+A2]あたり総コスト、
 TTS同期/Batch単価分離、今回実測/Trial特有の追加コスト/異常retry・Human
 Review由来の上振れ/Standard同期でのコスト/Batch量産換算時のコストの
-5区分)に従う(2026-09-12更新、15-5旧3区分から5区分化)。TTS実行方式は
+5区分)に従う(2026-09-12更新、15-5旧3区分から5区分化)。Production記事
+生成コストはPM_GOVERNANCE 15-8『Production 1生成セット総原価』を主指標(50:50配賦禁止)、
+Claude Code usageは9-10の形式(2026-09-14)に従う。TTS実行方式は
 Trial/開発=Standard同期(速度・デバッグ性優先)・量産Production=Batch
 前提(1記事原価優先)で別軸管理する(`docs/pm/PM_GOVERNANCE.md`7-4、
 2026-09-12新設)。試聴依頼は、14節の7段階を経てreconcile・原因切り分け・

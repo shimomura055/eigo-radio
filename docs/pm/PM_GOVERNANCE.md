@@ -1002,6 +1002,25 @@ PM-CLOSEOUT-CONSOLIDATION-94エントリ参照)により新設・確定した。
 `PM-CLOSEOUT-CONSOLIDATION-99-USER-LISTENING-FEEDBACK-FIXES-B1-NAMING-AND-
 STATUS-INVENTORY`エントリ参照)により新設。
 
+### 9-10. Claude Code usage報告形式(2026-09-14ユーザー正式決定)
+
+- 記事生成API tokenとClaude Code作業量を混同しない。今後、「Production
+  pipeline API usage」(記事生成のAPI呼び出しコスト)と「Claude Code
+  development / audit usage」(Claude Codeでの開発・監査作業量)を
+  別項目として報告する。
+- Claude Codeのcumulative_usage(cache_readを含む巨大値)を、「量産1記事で
+  消費するClaude token」と表現しない。
+- weekly / 5-hour utilizationのbefore/afterが取得可能な場合、「週間利用枠:
+  xx% → yy%(+z percentage points)」を最も分かりやすい指標として報告する。
+- 取得不能な場合は「週間利用枠換算: 取得不能」と明記する。推定で%を
+  作らない。
+- 代替指標として、tool uses・委任数・transcript実測cumulative_usageは
+  「Claude Code development/audit usage(参考)」欄に限って記載してよい。
+
+**経緯**: 2026-09-14、`PM-CLOSEOUT-CONSOLIDATION-130`にてユーザーが
+恒久ルールとして正式決定した(原文全文は`DECISION_LOG.md`同管理ID
+エントリ参照)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -1767,6 +1786,38 @@ SATURN-UDR-RECORD)**: News Point品質一般化Trial-16(Hubble/Saturn
 Trial専用harnessは開始時に費用記録(cost logger install、既存
 `er005_cost_logger.cl.install()`相当)を必須化し、費用記録が有効で
 あることをTrial開始チェックに含める。
+
+### 15-8. Production 1生成セット総原価(2026-09-14ユーザー正式決定)
+
+今後のProduction記事生成コストは、「量産時1記事単価」だけを主見出しに
+しない。Familyごとにまず、Production 1生成セット総原価を主指標として
+報告する。標準表:
+
+| Family | Production 1生成セット | 総原価 |
+|---|---|---|
+| News | 共通Research/Ledger + A2+B1 | ¥xx |
+| Trend | 共通Research/Ledger + A2+B1 | ¥xx |
+| Discovery | 共通Research/Ledger + A2+B1 | ¥xx |
+| Voices | そのFamilyの正式1生成セット | ¥xx |
+
+その下に可能な範囲で、Research / Ledger、A2 Writer、B1 Writer、QA、
+retry、rewrite、その他を示す。
+
+**重要**: 共通Research / Ledger等を恣意的にA2/B1へ50:50配賦して
+「A2 ¥xx / B1 ¥yy」のような擬似的記事単価を作らない。正確に機械分離
+できる直接費だけを参考内訳として示す。Trendのように、A2+B1を1runで
+生成するものは、「Trend Production 1生成セット(A2+B1)= ¥xx」と表示
+する。
+
+この報告方式はPM報告標準として恒久適用する。Statusはユーザー正式決定に
+基づく運用仕様として追跡する。
+
+**経緯**: 2026-09-14、`PM-CLOSEOUT-CONSOLIDATION-130`にてユーザーが
+恒久ルールとして正式決定した(原文全文は`DECISION_LOG.md`同管理ID
+エントリ参照)。既存15-1〜15-7(1記事あたり総コスト報告ルール)と
+矛盾しない。Production記事(量産)の報告では、本15-8のFamily別
+「Production 1生成セット総原価」表を主指標とし、15-5の5区分等は
+参考内訳として併記する。
 
 ---
 

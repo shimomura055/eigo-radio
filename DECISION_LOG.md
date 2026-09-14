@@ -406,6 +406,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-127: Family C Trial-07(発想スケール比較、VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-128: 4記事タイプ正常生成観測(News/Trend/Discovery生成、Voices 2V path不在でUSER_DECISION_REQUIRED)+比較ページ+費用・token・Claude利用量REPORT
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-129: Family C Trial-08(自由生成5テーマ、VALIDATED)のGit記録+OPEN-147反映+transcript退避1件
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-130: OPEN-149/150/151起票(Fact Check最適化MEDIUM・No Jargon LOW・Voices 2/3可変Writer APPROVED)+コスト報告『Production 1生成セット総原価』とClaude usage報告形式の恒久反映
 
 ---
 
@@ -7102,6 +7103,10 @@ Open Item候補10件はREPORT G節(登録はユーザー判断待ち)。詳細:
 ## PM-CLOSEOUT-CONSOLIDATION-129(2026-09-14)
 
 PM-CLOSEOUT-CONSOLIDATION-129。Family C Trial-08(自由生成5テーマ、VALIDATED、Production未採用)をGit記録・OPEN-147反映。transcript退避1件。
+
+## PM-CLOSEOUT-CONSOLIDATION-130(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-130。ユーザー正式決定4件をSSOT反映: (1)OPEN-149 A-Family Research/Verification/Final Web Fact Check cost optimization=MEDIUM/DEFERRED(単純削除禁止、今回Production変更なし)。(2)OPEN-150 No Jargon Writer compliance instability=LOW/DEFERRED(新Checker追加せず、個別修正+再発観測)。(3)コスト報告形式の恒久統一: Familyごとに『Production 1生成セット総原価』を主指標、共通Research/Ledgerの50:50配賦による擬似記事単価は禁止、機械分離できる直接費のみ参考内訳(PM_GOVERNANCE 15-8、CURRENT_SPEC参照段落、PM_BRIEF)。(4)Claude Code usage報告形式: Production pipeline API usageとClaude Code development/audit usageを別項目、cumulative_usageを『量産1記事のClaude token』と表現しない、週間利用枠before/afterが取得可能な場合のみ『xx%→yy%(+z pp)』、取得不能なら『週間利用枠換算: 取得不能』、推定%禁止(PM_GOVERNANCE 9-10)。(5)OPEN-151 Voices 2/3可変Writer=APPROVED_FOR_PRODUCTION(未配線、Gate 3追跡)。
 
 ## 参照元
 
