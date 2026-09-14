@@ -41,8 +41,7 @@
     `OPEN_ITEMS.md`(OPEN-151・OPEN-120両方へ追記)、`DECISION_LOG.md`
     (PM-CLOSEOUT-CONSOLIDATION-131直後に新規エントリ+索引1行)、
     `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(1行追記)。
-14. commit: 本メッセージ提出時点で未commit(次ステップで実施、hashは
-    別途確定)。push結果も同様。
+14. commit: `7aefedb2`(push成功、origin/main反映済み、`7eb23bd6..7aefedb2`)。
 15. Open Item候補: (1)Leakage Check残存flagの扱い(ユーザー判断が必要、
     REPORT8節に選択肢[a継続観測/b Prompt改善/c retry上限変更]記載)、
     (2)3V保守版Fact Safetyゲートの2V実発火はcontent依存のため本runでは
