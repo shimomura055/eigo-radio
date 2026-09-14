@@ -384,7 +384,14 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
         ことを確認する(git diffでの無変更確認の二重チェック)。retry/
         fallback機構(run_ledger_deviation_and_local_rewrite、Voice数に
         依存しない共通関数)もここに含め、2V/3V双方で同一実装が再利用
-        されていることを保証する。"""
+        されていることを保証する。EDITORIAL-B-FAMILY-VOICES-VARIABLE-
+        VOICE-COUNT-PRODUCTION-WIRING-02(OPEN-151 5-2)で`_apply_b_family_
+        voice_safety_gate`(+補助関数`_voice_gate_locate_section`/
+        `_voice_gate_stage1_eligible`)は「構造読み取りの2V/5区切り対応
+        一般化」のためsourceを意図的に変更したので、このリストからは除外
+        する(3V側の判定ロジック・出力が不変であることは、直後の
+        `VoiceSafetyGate2V3VParserGeneralizationTests`で挙動不変性として
+        別途証明する)。"""
         import inspect
         names = [
             "build_focus_module_block_3v", "run_fact_check_a_prime_3v",
@@ -392,7 +399,7 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
             "build_leakage_check_prompt_3v", "run_analytical_leakage_check_3v",
             "build_leakage_corrective_note_3v", "run_voices_pattern_3v",
             "run_pipeline_3v", "run_ledger_deviation_and_local_rewrite",
-            "_generate_and_compress_article_3v", "_apply_b_family_voice_safety_gate",
+            "_generate_and_compress_article_3v",
             "split_six_voice_sections", "build_ledger_fragment_visible_voices_only",
             "run_phase_a", "build_candidate_prompt",
         ]
@@ -400,6 +407,193 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
             before_src = inspect.getsource(getattr(self.wg_before, name))
             after_src = inspect.getsource(getattr(wg, name))
             self.assertEqual(before_src, after_src, f"{name}のsourceが変更されています")
+
+
+# ============================================================
+# 9. EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02
+# (OPEN-151 5-2): Fact Safetyゲートのsection parser 2V/3V一般化。
+# 判定ロジック(段階1/2条件)は完全無変更、構造読み取りのみを一般化した
+# ことを、(a)3V側は改修前(git HEAD)と改修後で同一入力に対し同一出力
+# (挙動不変性)、(b)2Vは改修前は常に無変化(fail-closed=不発)だったのが
+# 改修後は正しく発火(降格)すること、の両方で証明する(API呼び出し無し、¥0)。
+# ============================================================
+class VoiceSafetyGate2V3VParserGeneralizationTests(unittest.TestCase):
+    ARTICLE_3V = (
+        "# Title\n\n## The Question\n\nHook body.\n\n"
+        "### Voice One\n\nVoice one body. I have come to feel this is generally true for people like me.\n\n"
+        "### Voice Two\n\nVoice two body.\n\n"
+        "### Voice Three\n\nVoice three body.\n\n"
+        "## Tension\n\nTension body about disagreement.\n\n"
+        "## Closing\n\nClosing body.\n"
+    )
+    ARTICLE_2V = (
+        "# Title\n\n## The Question\n\nHook body.\n\n"
+        "### One Voice\n\nVoice a body. I have come to feel this is generally true for people like me.\n\n"
+        "### Another Voice\n\nVoice b body.\n\n"
+        "## Tension\n\nTension body about disagreement.\n\n"
+        "## Closing\n\nClosing body.\n"
+    )
+
+    def _flags(self, true_keys):
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        return {k: (k in true_keys) for k in vfl01.DEVIATION_FLAG_KEYS}
+
+    def _parsed_stage1_case(self):
+        return {"deviations": [
+            {"claim_in_article": "I have come to feel this is generally true for people like me.",
+             "issue": "scope", "severity": "MAJOR", **self._flags({"changed_certainty"})},
+        ]}
+
+    def test_3v_behavior_unchanged_against_head(self):
+        """3V(6区切り)入力について、改修前(HEAD)と改修後で
+        `_apply_b_family_voice_safety_gate`の出力(降格結果・overall_status)
+        が完全一致すること(挙動不変性、byte不変ではなくbehavior不変)。"""
+        wg_before = _load_before_module()
+        before = wg_before._apply_b_family_voice_safety_gate(self._parsed_stage1_case(), self.ARTICLE_3V)
+        after = wg._apply_b_family_voice_safety_gate(self._parsed_stage1_case(), self.ARTICLE_3V)
+        self.assertEqual(before, after)
+        self.assertTrue(after["deviations"][0]["b_family_voice_gate_downgraded"])
+        self.assertEqual(after["overall_status"], "LEDGER_COMPLIANT")
+
+    def test_2v_previously_never_fired_against_head(self):
+        """改修前(HEAD)は2V(5区切り)記事に対して常にsections={}となり、
+        stage1/2条件に一致しようがなかった(構造的に不発)ことを確認する
+        (5-2で修正する問題そのものの再現証拠)。"""
+        wg_before = _load_before_module()
+        before = wg_before._apply_b_family_voice_safety_gate(self._parsed_stage1_case(), self.ARTICLE_2V)
+        self.assertFalse(before["deviations"][0]["b_family_voice_gate_downgraded"])
+        self.assertEqual(before["overall_status"], "LEDGER_DEVIATION")
+
+    def test_2v_now_fires_after_generalization(self):
+        """改修後は2V(5区切り)記事でもstage1条件(Voice本文+一人称+
+        changed_certaintyのみ)に一致すればMINORへ降格し、overall_statusが
+        LEDGER_COMPLIANTへ変わること(判定ロジック自体は3Vと共通のまま)。"""
+        after = wg._apply_b_family_voice_safety_gate(self._parsed_stage1_case(), self.ARTICLE_2V)
+        self.assertTrue(after["deviations"][0]["b_family_voice_gate_downgraded"])
+        self.assertEqual(after["deviations"][0]["b_family_voice_gate_stage"], "stage1")
+        self.assertEqual(after["overall_status"], "LEDGER_COMPLIANT")
+
+    def test_2v_stage2_tension_eligible_after_generalization(self):
+        """段階2(Tension role合成、surface signal無し)も2V記事で発火する
+        こと(3Vと同一の`_voice_gate_stage2_eligible`ロジックをそのまま
+        共有していることの確認、tension_bodyのsection key名は5区切り/
+        6区切りで共通のため本来から動作していた経路との整合確認)。"""
+        text = ("Their power is uneven: one side cannot choose the process while the other runs it "
+                "but does not choose adoption; a third party chooses and bears the consequences.")
+        article_2v_tension = self.ARTICLE_2V.replace("Tension body about disagreement.", text)
+        parsed = {"deviations": [
+            {"claim_in_article": text, "issue": "actor", "severity": "MAJOR",
+             **self._flags({"changed_actor"})},
+        ]}
+        after = wg._apply_b_family_voice_safety_gate(parsed, article_2v_tension)
+        self.assertTrue(after["deviations"][0]["b_family_voice_gate_downgraded"])
+        self.assertEqual(after["deviations"][0]["b_family_voice_gate_stage"], "stage2")
+
+
+# ============================================================
+# 10. EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02
+# (OPEN-151 5-1): 新規topic write_new_theme入口のComment Contract配線。
+# ============================================================
+class NewThemeCommentContractWiringTests(unittest.TestCase):
+    """main_b1_2v()/main_b1_3v()のwrite_new_theme stageが、Writerパイプライン
+    確定後の最終article_text/sectionsに対してのみComment Contract
+    (run_comment_contract_for_new_theme)を呼ぶことを、API呼び出し無しで
+    確認する(¥0)。"""
+
+    def test_main_b1_2v_calls_comment_contract_when_status_ok(self):
+        fake_theme_mod = types.SimpleNamespace(
+            THEME_CONFIG={"voice_cards": [1, 2], "ledger_path": "fake_ledger.txt"})
+        fake_pipeline_result = {
+            "status": "DONE",
+            "pipeline": {"final_result": {"status": "OK", "article_text": "ART", "sections": {"hook_body": "H"}}},
+        }
+        with mock.patch("builtins.open", mock.mock_open(read_data="LEDGER TEXT")), \
+             mock.patch.object(runner.sys, "argv",
+                                ["prog", "write_new_theme", "b1_2v", "fake_theme_module_x", "out/dir"]), \
+             mock.patch("importlib.import_module", return_value=fake_theme_mod), \
+             mock.patch.object(runner.writer_generic, "run_writer_stage_generic",
+                                return_value=fake_pipeline_result), \
+             mock.patch.object(runner, "run_comment_contract_for_new_theme",
+                                return_value={"support_status": {"comment_1": "OK"},
+                                              "deviation": {"overall_status": "LEDGER_COMPLIANT"}}) as cc_mock, \
+             mock.patch.object(runner, "save_json"):
+            runner.main_b1_2v()
+        cc_mock.assert_called_once_with("ART", {"hook_body": "H"}, 2, "LEDGER TEXT", "out/dir")
+
+    def test_main_b1_2v_skips_comment_contract_when_status_not_ok(self):
+        fake_theme_mod = types.SimpleNamespace(THEME_CONFIG={"voice_cards": [1, 2]})
+        fake_pipeline_result = {
+            "status": "DONE",
+            "pipeline": {"final_result": {"status": "NG_REVIEW_REQUIRED", "article_text": "ART"}},
+        }
+        with mock.patch.object(runner.sys, "argv",
+                                ["prog", "write_new_theme", "b1_2v", "fake_theme_module_x", "out/dir"]), \
+             mock.patch("importlib.import_module", return_value=fake_theme_mod), \
+             mock.patch.object(runner.writer_generic, "run_writer_stage_generic",
+                                return_value=fake_pipeline_result), \
+             mock.patch.object(runner, "run_comment_contract_for_new_theme") as cc_mock:
+            runner.main_b1_2v()
+        cc_mock.assert_not_called()
+
+    def test_main_b1_3v_calls_comment_contract_when_status_ok(self):
+        fake_theme_mod = types.SimpleNamespace(
+            THEME_CONFIG={"voice_cards": [1, 2, 3], "ledger_path": "fake_ledger.txt"})
+        fake_pipeline_result = {
+            "status": "DONE",
+            "pipeline": {"final_result": {"status": "OK", "article_text": "ART3", "sections": {"hook_body": "H3"}}},
+        }
+        with mock.patch("builtins.open", mock.mock_open(read_data="LEDGER TEXT 3V")), \
+             mock.patch.object(runner.sys, "argv",
+                                ["prog", "write_new_theme", "b1_3v", "fake_theme_module_x", "out/dir3v"]), \
+             mock.patch("importlib.import_module", return_value=fake_theme_mod), \
+             mock.patch.object(runner.writer_generic, "run_writer_stage_generic",
+                                return_value=fake_pipeline_result), \
+             mock.patch.object(runner, "run_comment_contract_for_new_theme",
+                                return_value={"support_status": {"comment_1": "OK"},
+                                              "deviation": {"overall_status": "LEDGER_COMPLIANT"}}) as cc_mock, \
+             mock.patch.object(runner, "save_json"):
+            runner.main_b1_3v()
+        cc_mock.assert_called_once_with("ART3", {"hook_body": "H3"}, 3, "LEDGER TEXT 3V", "out/dir3v")
+
+    def test_main_b1_3v_skips_comment_contract_when_status_not_ok(self):
+        fake_theme_mod = types.SimpleNamespace(THEME_CONFIG={"voice_cards": [1, 2, 3]})
+        fake_pipeline_result = {
+            "status": "DONE",
+            "pipeline": {"final_result": {"status": "NG_REVIEW_REQUIRED", "article_text": "ART3"}},
+        }
+        with mock.patch.object(runner.sys, "argv",
+                                ["prog", "write_new_theme", "b1_3v", "fake_theme_module_x", "out/dir3v"]), \
+             mock.patch("importlib.import_module", return_value=fake_theme_mod), \
+             mock.patch.object(runner.writer_generic, "run_writer_stage_generic",
+                                return_value=fake_pipeline_result), \
+             mock.patch.object(runner, "run_comment_contract_for_new_theme") as cc_mock:
+            runner.main_b1_3v()
+        cc_mock.assert_not_called()
+
+
+# ============================================================
+# 11. EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02:
+# Dangling Reference Check(Production→Trial importが0件であること、
+# er012_editorial_b_voices_trial_*/`_trial_0`パターン)。
+# ============================================================
+class DanglingTrialReferenceTests(unittest.TestCase):
+    """`import er012_editorial_b_voices_trial_*`のようなProduction→Trial
+    importが0件であることを確認する(コード内コメントでの言及[「Trial
+    スクリプトを一切importしない」という設計方針の説明文等]は対象外、
+    実際の`import`文のみをチェックする)。"""
+
+    _IMPORT_RE = __import__("re").compile(
+        r"^\s*(import|from)\s+er012_editorial_b_voices_trial", __import__("re").MULTILINE)
+
+    def test_runner_has_no_trial_module_imports(self):
+        import inspect
+        src = inspect.getsource(runner)
+        self.assertEqual(self._IMPORT_RE.findall(src), [])
+
+    def test_writer_generic_has_no_trial_module_imports(self):
+        import inspect
+        src = inspect.getsource(wg)
+        self.assertEqual(self._IMPORT_RE.findall(src), [])
 
 
 if __name__ == "__main__":

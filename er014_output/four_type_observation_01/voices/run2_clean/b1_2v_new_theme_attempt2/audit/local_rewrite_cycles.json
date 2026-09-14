@@ -1,0 +1,175 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "She knows ranked social-media feeds can reduce exposure to opposing views compared with posts friends share."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "She knows ranked social-media feeds can reduce exposure to opposing views compared with posts friends share.",
+        "issue": "Ledgerで確認されているのは、米国Facebookユーザーを対象にした研究で、FacebookのNews Feedランキングが友人共有コンテンツに比べて異なる立場のニュースへの接触を減らしたという結果です。記事はこれを「ranked social-media feeds」全般に拡張しています。",
+        "explanation": "Facebookに限定された研究結果を、ソーシャルメディアのランキングフィード一般についての主張に広げており、対象範囲が変更されています。",
+        "flags": [
+          "changed_scope"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "She knows that a study of U.S. Facebook users found that Facebook’s News Feed ranking reduced exposure to news from differing viewpoints compared with content shared by friends.",
+            "ledger_status": "LEDGER_COMPLIANT",
+            "ledger_status_window": "LEDGER_COMPLIANT",
+            "target_sentence_eval": {
+              "overall_status": "LEDGER_COMPLIANT",
+              "window_overall_status": "LEDGER_COMPLIANT",
+              "target_deviations": [],
+              "adjacent_deviations": [],
+              "ambiguous_deviations": [],
+              "match_fallback": false
+            }
+          }
+        ],
+        "final_text": "She knows that a study of U.S. Facebook users found that Facebook’s News Feed ranking reduced exposure to news from differing viewpoints compared with content shared by friends.",
+        "resolved": true,
+        "human_review_required": false,
+        "diff_qa": {
+          "applied": true,
+          "diff_qa_calls": 1,
+          "window_text": "The rules are not hers to see or change. She knows that a study of U.S. Facebook users found that Facebook’s News Feed ranking reduced exposure to news from differing viewpoints compared with content shared by friends. Her own clicks can narrow that window.",
+          "fact_check_status": "FACT_CHECK_COMPLETED",
+          "fact_check_verdict": "REVIEW_REQUIRED",
+          "fact_check_model": "gpt-5.6-luna",
+          "fact_check_response_id": "resp_06f6ba53b6ecb3cf006aa7ae08bd6c87d0b49109c465c4fc5a",
+          "fact_check_search_usage": {
+            "web_search_call_count": 4,
+            "queries": [
+              "Bakshy Messing Adamic 2015 Exposure to ideologically diverse news and opinion on Facebook News Feed ranking reduced exposure compared with friends shared content Science",
+              "Facebook News Feed ranking exposure cross-cutting news compared to friends shared study primary source",
+              "Facebook help News Feed ranking signals clicks interests official",
+              "site:science.org \"Exposure to ideologically diverse news and opinion on Facebook\"",
+              "\"Exposure to ideologically diverse news and opinion on Facebook\" abstract",
+              "site:facebook.com/help feed preferences manage what you see Facebook official",
+              "site:about.fb.com News Feed users control preferences see more see less official",
+              "site:transparency.meta.com feed ranking algorithm explainability Facebook"
+            ]
+          },
+          "ledger_check_full": {
+            "deviations": [
+              {
+                "claim_in_article": "The rules are not hers to see or change.",
+                "issue": "アルゴリズムの主要パラメータの説明や、利用者が影響を与えられる選択肢が確認されている一方で、利用者には見ることも変更することもできないと断定している。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerはプラットフォーム側のアルゴリズム調整と、一定のプラットフォームで利用者がパラメータ説明を受けたり選択肢を変更・影響したりできることを確認しているが、「彼女には規則を見たり変更したりできない」という具体的な利用者の不可能性までは保証していない。注意喚起的なHookとして扱っても、明確な新規主張であるため通常どおり検出する。",
+                "treated_as_hook": true,
+                "auto_downgraded": false
+              }
+            ],
+            "overall_status": "LEDGER_DEVIATION"
+          },
+          "ledger_check_target_eval": {
+            "overall_status": "LEDGER_COMPLIANT",
+            "window_overall_status": "LEDGER_DEVIATION",
+            "target_deviations": [],
+            "adjacent_deviations": [
+              {
+                "claim_in_article": "The rules are not hers to see or change.",
+                "issue": "アルゴリズムの主要パラメータの説明や、利用者が影響を与えられる選択肢が確認されている一方で、利用者には見ることも変更することもできないと断定している。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerはプラットフォーム側のアルゴリズム調整と、一定のプラットフォームで利用者がパラメータ説明を受けたり選択肢を変更・影響したりできることを確認しているが、「彼女には規則を見たり変更したりできない」という具体的な利用者の不可能性までは保証していない。注意喚起的なHookとして扱っても、明確な新規主張であるため通常どおり検出する。",
+                "treated_as_hook": true,
+                "auto_downgraded": false,
+                "_role_classification": {
+                  "role": "before",
+                  "method": "exact_substring"
+                }
+              }
+            ],
+            "ambiguous_deviations": [],
+            "match_fallback": false
+          },
+          "blocks_acceptance": false
+        },
+        "diff_qa_point_overlap": {
+          "applicable": true,
+          "point": "point_two",
+          "overlap_vs_full_story": {
+            "overlap_ratio": 0.124,
+            "shared_words": [
+              "appears",
+              "arguments",
+              "both",
+              "clicks",
+              "feed",
+              "first",
+              "news",
+              "other",
+              "question",
+              "returning",
+              "same",
+              "scrolls",
+              "see",
+              "stories",
+              "what",
+              "world"
+            ],
+            "point_word_count": 129,
+            "story_word_count": 39,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "overlap_vs_other_point": {
+            "overlap_ratio": 0.101,
+            "shared_words": [
+              "controls",
+              "feed",
+              "feel",
+              "follows",
+              "keep",
+              "life",
+              "like",
+              "make",
+              "news",
+              "relevance",
+              "something",
+              "still",
+              "stories"
+            ],
+            "point_word_count": 129,
+            "story_word_count": 48,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "flagged": false
+        },
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### Another Voice: The reader who feels her feed closing in\n\nLater, she scrolls and notices a pattern: the same arguments keep returning. She wants to know why stories appear first and whether the ranking serves her or ad income. The rules are not hers to see or change. She knows ranked social-media feeds can reduce exposure to opposing views compared with posts friends share. Her own clicks can narrow that window. Each familiar post carries a question: am I choosing this world, or is it being chosen for me? She is trying not to miss what she never knew to seek."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]

@@ -1031,6 +1031,90 @@ voice_a={voice_a} / voice_b={voice_b} / voice_c={voice_c}(Narrator見出しは�
     return out_path
 
 
+# ============================================================
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02
+# (OPEN-151 5-1): 新規topic write_new_theme入口(main_b1_2v()/
+# main_b1_3v())専用のComment 1-4 + Preview Contract配線。Comment本文・
+# Role prompt自体はrun_scaffold()/run_scaffold_3v()と全く同一の既存
+# 承認済みregistry Comment Contract(EDITORIAL_TYPE["comment_roles"]、
+# b1s.run_support_text、b1s.PREVIEW_ROLE、無変更)を呼ぶだけであり、
+# 新しいComment仕様は一切作らない。呼び出し側(main_b1_2v/main_b1_3v)は
+# Writerパイプライン(retry・Local Rewrite含む)が確定させた最終
+# article_text/sectionsに対してのみこの関数を呼ぶ(=Comment生成は必ず
+# 記事再生成後の最終版に対して行われる、retry/fallback/regeneration
+# 整合)。Ledger Deviation Check(vfl01.run_deviation_check、monitoring
+#専用・無変更)による「Comment Contract検証」もrun_scaffold()と同一。
+# ============================================================
+def run_comment_contract_for_new_theme(article_text: str, sections: dict, num_voices: int,
+                                        ledger_text: str, out_dir: str) -> dict:
+    if num_voices == 3:
+        parts = b1prod.build_parts_3v(article_text)
+        voice_heading_lines = (
+            f"Voice 1 heading: {parts['point_one_heading']}\n"
+            f"Voice 2 heading: {parts['point_two_heading']}\n"
+            f"Voice 3 heading: {parts['point_three_heading']}")
+        voice_content_block = (
+            f"【Voice 1(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
+            f"【Voice 2(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}\n\n"
+            f"【Voice 3(聞き終えた内容)】\n{parts['point_three_heading']}\n{parts['point_three_body']}")
+    elif num_voices == 2:
+        parts = b1prod.build_parts(article_text)
+        voice_heading_lines = (
+            f"One Voice heading: {parts['point_one_heading']}\n"
+            f"Another Voice heading: {parts['point_two_heading']}")
+        voice_content_block = (
+            f"【One Voice(聞き終えた内容)】\n{parts['point_one_heading']}\n{parts['point_one_body']}\n\n"
+            f"【Another Voice(聞き終えた内容)】\n{parts['point_two_heading']}\n{parts['point_two_body']}")
+    else:
+        raise ValueError(f"num_voicesは2または3である必要があります(実際: {num_voices})")
+
+    client = b1s.get_client()
+    model = routing.require_model("B1_SUPPORT", routing.SUPPORT_MODEL)
+    comment_roles = EDITORIAL_TYPE["comment_roles"]
+
+    print(f"[B-FAMILY-VOICES-NEW-THEME-COMMENT] Comment 1(registry Role)生成開始(num_voices={num_voices})...")
+    c1_context = f"【これから聞く本文(The Question)】\n{sections['hook_body']}"
+    c1 = b1s.run_support_text(client, comment_roles["comment_1"], c1_context, model=model)
+
+    print("[B-FAMILY-VOICES-NEW-THEME-COMMENT] Comment 2(registry Role)生成開始...")
+    c2_context = (f"【すでに聞いた本文(The Question)】\n{sections['hook_body']}\n\n"
+                  f"【これから聞く声の見出しのみ(内容は伏せる、この時点でこの文言を言わないこと)】\n"
+                  f"{voice_heading_lines}")
+    c2 = b1s.run_support_text(client, comment_roles["comment_2"], c2_context, model=model)
+
+    print("[B-FAMILY-VOICES-NEW-THEME-COMMENT] Comment 3(registry Role)生成開始...")
+    c3_context = (f"{voice_content_block}\n\n"
+                  f"【これから聞く内容の見出しのみ(内容は伏せる)】\n{sections['tension_heading']}")
+    c3 = b1s.run_support_text(client, comment_roles["comment_3"], c3_context, model=model)
+
+    print("[B-FAMILY-VOICES-NEW-THEME-COMMENT] Comment 4(registry Role)生成開始...")
+    c4_context = (f"【聞き終えた内容(視点の違いの深掘り)】\n{sections['tension_body']}\n\n"
+                  f"【これから聞く結びの見出しのみ(内容は伏せる)】\n{sections['closing_heading']}")
+    c4 = b1s.run_support_text(client, comment_roles["comment_4"], c4_context, model=model)
+
+    print("[B-FAMILY-VOICES-NEW-THEME-COMMENT] Preview(既存Production Prompt、無変更)生成開始...")
+    preview_role = b1s.PREVIEW_ROLE.format(
+        comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
+    preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
+    preview = b1s.run_support_text(client, preview_role, preview_context, model=model)
+
+    results = {"preview": preview, "comment_1": c1, "comment_2": c2, "comment_3": c3, "comment_4": c4}
+    os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    with open(f"{out_dir}/b1_support_texts.json", "w", encoding="utf-8") as f:
+        json.dump({k: v.get("text") for k, v in results.items()}, f, ensure_ascii=False, indent=2)
+    with open(f"{out_dir}/audit/b1_support_generation.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2, default=str)
+
+    support_concat = "\n\n".join(t for t in (v.get("text") for v in results.values()) if t)
+    print("[B-FAMILY-VOICES-NEW-THEME-COMMENT] Comment Contract検証(既存Production "
+          "vfl01.run_deviation_check、無変更、monitoring専用)実行...")
+    deviation = vfl01.run_deviation_check(client, ledger_text, support_concat)
+    save_json(f"{out_dir}/audit/support_ledger_deviation.json", deviation["parsed"])
+
+    return {"support": results, "support_status": {k: v.get("status") for k, v in results.items()},
+            "parts": parts, "deviation": deviation["parsed"]}
+
+
 def main_b1_3v() -> None:
     stage = sys.argv[1] if len(sys.argv) > 1 else "all"
 
@@ -1056,6 +1140,26 @@ def main_b1_3v() -> None:
         theme_mod = importlib.import_module(theme_module_name)
         result = writer_generic.run_writer_stage_generic(theme_mod.THEME_CONFIG, out_dir_base)
         print(f"[B-FAMILY-VOICES-3V-PROD-RUNNER][write_new_theme] status={result.get('status')}")
+        # OPEN-151 5-1: Writerパイプライン(retry/Local Rewrite込み)が確定
+        # させた最終article_text/sectionsに対してのみComment Contractを
+        # 接続する(status!="OK"の場合はブロック状態のためComment生成を
+        # スキップし、その旨を記録する。retry上限自体は変更しない)。
+        final_result = (result.get("pipeline") or {}).get("final_result") or {}
+        if result.get("status") == "DONE" and final_result.get("status") == "OK" and final_result.get("sections"):
+            with open(theme_mod.THEME_CONFIG["ledger_path"], encoding="utf-8") as f:
+                ledger_text_for_comments = f.read()
+            comment_result = run_comment_contract_for_new_theme(
+                final_result["article_text"], final_result["sections"], 3, ledger_text_for_comments, out_dir_base)
+            save_json(f"{out_dir_base}/audit/new_theme_comment_contract_summary.json",
+                      {"support_status": comment_result["support_status"],
+                       "deviation_overall_status": comment_result["deviation"].get("overall_status")})
+            print(f"[B-FAMILY-VOICES-3V-PROD-RUNNER][write_new_theme] comment_contract "
+                  f"support_status={comment_result['support_status']} "
+                  f"deviation_overall_status={comment_result['deviation'].get('overall_status')}")
+        else:
+            print(f"[B-FAMILY-VOICES-3V-PROD-RUNNER][write_new_theme] status="
+                  f"{final_result.get('status')}のためComment Contractはスキップします"
+                  "(記事未確定/ブロック状態)。")
         return
 
     os.makedirs(f"{OUT_DIR_3V}/audit", exist_ok=True)
@@ -1171,6 +1275,25 @@ def main_b1_2v() -> None:
     theme_mod = importlib.import_module(theme_module_name)
     result = writer_generic.run_writer_stage_generic(theme_mod.THEME_CONFIG, out_dir_base)
     print(f"[B-FAMILY-VOICES-2V-PROD-RUNNER][write_new_theme] status={result.get('status')}")
+    # OPEN-151 5-1: main_b1_3v()のwrite_new_theme stageと同一の配線(Writer
+    # パイプライン確定後の最終article_text/sectionsにのみComment Contractを
+    # 接続、status!="OK"はスキップ)。
+    final_result = (result.get("pipeline") or {}).get("final_result") or {}
+    if result.get("status") == "DONE" and final_result.get("status") == "OK" and final_result.get("sections"):
+        with open(theme_mod.THEME_CONFIG["ledger_path"], encoding="utf-8") as f:
+            ledger_text_for_comments = f.read()
+        comment_result = run_comment_contract_for_new_theme(
+            final_result["article_text"], final_result["sections"], 2, ledger_text_for_comments, out_dir_base)
+        save_json(f"{out_dir_base}/audit/new_theme_comment_contract_summary.json",
+                  {"support_status": comment_result["support_status"],
+                   "deviation_overall_status": comment_result["deviation"].get("overall_status")})
+        print(f"[B-FAMILY-VOICES-2V-PROD-RUNNER][write_new_theme] comment_contract "
+              f"support_status={comment_result['support_status']} "
+              f"deviation_overall_status={comment_result['deviation'].get('overall_status')}")
+    else:
+        print(f"[B-FAMILY-VOICES-2V-PROD-RUNNER][write_new_theme] status="
+              f"{final_result.get('status')}のためComment Contractはスキップします"
+              "(記事未確定/ブロック状態)。")
 
 
 # ============================================================

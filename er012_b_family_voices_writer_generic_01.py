@@ -60,6 +60,10 @@ ANCHOR = "【Spoken-first原則(数字の扱い)】"
 # 使わない。`point_one`等はb1prod.build_parts_3v()が返すdict内でのみ登場する
 # 別レイヤーの名前で、6区切りsections dict自体のキーではない)。
 SIX_SECTION_LABELS = ("hook", "voice_1", "voice_2", "voice_3", "tension", "closing")
+# EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02(OPEN-151
+# 5-2): 2V(5区切り)版のsection label列。b1prod.split_five_voice_sections()の
+# 物理キー命名(`voice_a`/`voice_b`)にそのまま合わせる(新しい命名は作らない)。
+FIVE_SECTION_LABELS = ("hook", "voice_a", "voice_b", "tension", "closing")
 MAX_WRITER_ATTEMPTS = 3  # 初回1回 + 是正再実行最大2回(3V既存Trialと同一の承認済み上限)
 
 # ============================================================
@@ -1309,23 +1313,36 @@ def _voice_gate_has_surface_signal(text: str) -> bool:
     return False
 
 
-def _voice_gate_locate_section(claim_text: str, sections: dict) -> str | None:
-    """`claim_text`が6区切りsectionsのどのbodyに含まれるかを字面一致で
-    判定する(Stage1 A1節の機械分類と同一手法)。一致するsectionが無い、
-    またはsectionsが未確定(6区切り失敗)の場合はNoneを返す(この場合、
-    呼び出し側は段階1/2いずれの対象にもしない=安全側)。"""
+def _voice_gate_locate_section(claim_text: str, sections: dict,
+                                section_labels: tuple = SIX_SECTION_LABELS) -> str | None:
+    """`claim_text`が(6区切り/5区切りいずれかの)sectionsのどのbodyに含まれる
+    かを字面一致で判定する(Stage1 A1節の機械分類と同一手法)。一致する
+    sectionが無い、またはsectionsが未確定(構造検出失敗)の場合はNoneを返す
+    (この場合、呼び出し側は段階1/2いずれの対象にもしない=安全側)。
+    `section_labels`は3V既定(SIX_SECTION_LABELS)のまま省略可(既存呼び出し
+    互換)。2V(5区切り)呼び出し側はFIVE_SECTION_LABELSを明示的に渡す
+    (OPEN-151 5-2、構造読み取りの一般化のみ、判定ロジックは無変更)。"""
     claim_text = (claim_text or "").strip()
     if not claim_text or not sections:
         return None
-    for label in SIX_SECTION_LABELS:
+    for label in section_labels:
         body = sections.get(f"{label}_body") or ""
         if body and claim_text in body:
             return f"{label}_body"
     return None
 
 
-def _voice_gate_stage1_eligible(section: str | None, claim_text: str, flagset: set) -> bool:
-    if section not in {"voice_1_body", "voice_2_body", "voice_3_body"}:
+_VOICE_GATE_VOICE_BODY_KEYS_3V = {"voice_1_body", "voice_2_body", "voice_3_body"}
+# OPEN-151 5-2: 2V(5区切り)版の「Voice本文」section keyセット。
+_VOICE_GATE_VOICE_BODY_KEYS_2V = {"voice_a_body", "voice_b_body"}
+
+
+def _voice_gate_stage1_eligible(section: str | None, claim_text: str, flagset: set,
+                                 voice_body_keys: set = _VOICE_GATE_VOICE_BODY_KEYS_3V) -> bool:
+    """`voice_body_keys`は3V既定のまま省略可(既存呼び出し互換)。2V呼び出し
+    側は_VOICE_GATE_VOICE_BODY_KEYS_2Vを渡す(判定ロジック自体は無変更、
+    「どのsection keyをVoice本文とみなすか」という構造情報のみ一般化)。"""
+    if section not in voice_body_keys:
         return False
     if not flagset:
         return False
@@ -1352,17 +1369,33 @@ def _apply_b_family_voice_safety_gate(parsed: dict, article_text: str) -> dict:
     """`vfl01.run_deviation_check()`が返す`parsed`(`_apply_deviation_
     post_hoc_validation`適用済み)に対し、段階1/段階2条件に一致する
     MAJOR deviationのみをMINORへ再分類し、overall_statusを再計算する。
-    条件に一致しない場合は完全に無変更(現行の厳格判定のまま)。"""
-    sections = b1prod.split_six_voice_sections(article_text) or {}
+    条件に一致しない場合は完全に無変更(現行の厳格判定のまま)。
+
+    EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02
+    (OPEN-151 5-2、2026-09-14): 段階1/2の判定ロジック・安全基準は一切
+    変更しない。構造読み取りのみを一般化し、3V(6区切り)を優先して検出、
+    検出できない場合のみ2V(5区切り)として再検出する(3Vの既存挙動は
+    byte単位で不変。2Vはこれまで`split_six_voice_sections`が常にNoneを
+    返しsections={}になっていたためstage1/2が構造的に一致しようがなかった
+    [fail-closed、安全側]が、本修正により2Vでも正しいsection構造を
+    参照できるようになる)。"""
+    sections = b1prod.split_six_voice_sections(article_text)
+    section_labels = SIX_SECTION_LABELS
+    voice_body_keys = _VOICE_GATE_VOICE_BODY_KEYS_3V
+    if sections is None:
+        sections = b1prod.split_five_voice_sections(article_text)
+        section_labels = FIVE_SECTION_LABELS
+        voice_body_keys = _VOICE_GATE_VOICE_BODY_KEYS_2V
+    sections = sections or {}
     deviations = []
     for raw in parsed.get("deviations", []):
         d = dict(raw)
         d["b_family_voice_gate_downgraded"] = False
         if d.get("severity") == "MAJOR":
             claim_text = d.get("claim_in_article") or ""
-            section = _voice_gate_locate_section(claim_text, sections)
+            section = _voice_gate_locate_section(claim_text, sections, section_labels)
             flagset = {k for k in vfl01.DEVIATION_FLAG_KEYS if d.get(k)}
-            stage1 = _voice_gate_stage1_eligible(section, claim_text, flagset)
+            stage1 = _voice_gate_stage1_eligible(section, claim_text, flagset, voice_body_keys)
             stage2 = (not stage1) and _voice_gate_stage2_eligible(section, claim_text, flagset)
             if stage1 or stage2:
                 d["severity"] = "MINOR"

@@ -409,6 +409,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-130: OPEN-149/150/151起票(Fact Check最適化MEDIUM・No Jargon LOW・Voices 2/3可変Writer APPROVED)+コスト報告『Production 1生成セット総原価』とClaude usage報告形式の恒久反映
 - [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: Voices Writerの2/3 Voices可変化(OPEN-151)配線(Sonnet報告PRODUCTION_WIRED→PM-CLOSEOUT-CONSOLIDATION-131でPARTIALへ訂正)+2V runtime evidence+3V byte不変regression
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-131: 4TYPE補完(News B1追加/Trend Ledger修正再生成/Discovery No Jargon修正+B1B)統合+OPEN-151をPARTIALへ訂正+最終REPORT+比較ページ更新
+- [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02: OPEN-151完成(Comment Contract接続+Fact Safetyゲート2V/3V対応+2V clean evidence、Status=PARTIAL[14/15、Leakage残存のみ未充足])
 
 ---
 
@@ -7153,6 +7154,51 @@ PM-CLOSEOUT-CONSOLIDATION-131(4TYPE補完統合)。News B1追加OK(News 1生成
 照合でPARTIAL(Comment Contract未接続/3Vゲート2V不発/2V記事REVIEW_REQUIRED
 残存)。費用: 4TYPE補完合計¥359.74(A ¥28.16+B ¥75.25+C ¥157.32+E ¥99.01)、
 Claude Code usage別記。詳細: `EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md`。
+
+## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02(2026-09-14)
+
+EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02(OPEN-151完成)。
+ユーザー方針(2026-09-14、Comment接続/Gate 2V対応/残存指摘個別修正)に基づき実施。
+(5-1)Comment Contract未接続の修正: `er012_b_family_production_runner_01.py`に
+`run_comment_contract_for_new_theme()`を新規追加し、`main_b1_2v()`/`main_b1_3v()`
+のwrite_new_theme stageから、Writerパイプライン(retry・Local Rewrite込み)確定後の
+最終article_text/sectionsに対してのみComment 1-4+Preview(既存承認済みregistry
+Comment Contract、run_scaffold()/run_scaffold_3v()と同一Role・呼び出し方法、無変更)
++Ledger Deviation Check(Comment Contract検証、既存vfl01.run_deviation_check、
+monitoring専用)を接続(status!="OK"時はスキップし記録、新しいComment仕様は作って
+いない)。(5-2)2VでFact Safety Gateが発火しない問題の修正: `_apply_b_family_
+voice_safety_gate`/`_voice_gate_locate_section`/`_voice_gate_stage1_eligible`を、
+3V(6区切り)優先検出→検出不可時のみ2V(5区切り)として再検出するよう一般化した
+(段階1/2の判定ロジック・安全基準は一切変更せず、構造読み取りのみ一般化)。3V側は
+改修前[git HEAD]と改修後で挙動(出力)が完全一致することを新規テストで確認(byteでは
+なくbehavior不変性、意図的にsource変更したため既存`ThreeVoiceByteInvarianceAgainst
+HeadTests`のbyte比較対象からは除外)、2V側は新規4テストで実際に降格が発火することを
+確認(段階1/段階2いずれも)。(5-3)REVIEW_REQUIRED/Leakage flag残存の個別修正:
+2V記事「Is personalized news good for us?」を、5-1/5-2配線後に同一Ledger(Research
+再実行なし)で再生成した。結果、Fact Checker verdict=PASS(前回REVIEW_REQUIREDから
+改善)、Ledger Deviation Checker=LEDGER_COMPLIANT(deviations=0)、Comment Contract
+検証もLEDGER_COMPLIANT。ただしAnalytical Leakage Check(voice_b/tension)は3attempts
+上限到達後もflagged項目が残存した(retry上限変更・Gate基準変更は禁止のため、既存
+corrective retry機構[Leakage是正2回]で解消しきれなかった構造的限界として記録。3V側
+にも同型の「3attempt上限で残存flagはUSER_DECISION_REQUIRED候補として記録」という
+既存仕様があり、新しい問題ではない)。テスト: 新規9テスト(Comment Contract配線契約
+4件+Gate 2V/3V一般化4件+Dangling Reference 2件、うち3V behavior不変性1件)全てPASS、
+既存33+11件も全PASS、`er012*_test_*.py`184件PASS、`er011*_test_*.py`266件PASS、
+全件回帰2699件中2696件PASS(既知FAIL3件[`er003_test_bad`1件+`er003_test_p2j_
+investigate`2件]のみ、新規FAILなし)。Dangling Reference Check: Production→Trial
+importが0件であることをgrepで確認(`er012_b_family_production_runner_01.py`/
+`er012_b_family_voices_writer_generic_01.py`)。2V clean runtime evidence:
+`er014_output/four_type_observation_01/voices/run2_clean/`(model_id=gpt-5.6-luna、
+374語、Comment 1-4+Preview全てstatus=OK)。費用: Voices Production 1生成セット総
+原価=¥140.39(Research/Ledger¥46.98再利用+Writer/Comment/QA/Gate/retry¥93.41実測、
+36 API records)。上限¥150[新規スペンド分]に対し実績¥93.41(余裕あり)、合計上限
+¥250に対し実績¥93.41のみ(3V再生成は実施していないため追加費用ゼロ)。**Status:
+`PARTIAL`**(Sonnet自己申告2026-09-14。ユーザー指定15項目中14項目は✓、項目7[clean
+な2V runtime evidence]のみAnalytical Leakage Check残存flagにより完全クリーンでは
+ないため`PARTIAL`のまま。前回[-01]の未充足3点のうちComment Contract整合・Gate
+辞書2V/3V整合の2点は今回で解消し、3点目[REVIEW_REQUIRED/残存flag]もFact Checker側
+はPASSへ改善したが、Leakage Check側の残存flagは構造的限界として残った)。詳細:
+`EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md`。
 
 ## 参照元
 

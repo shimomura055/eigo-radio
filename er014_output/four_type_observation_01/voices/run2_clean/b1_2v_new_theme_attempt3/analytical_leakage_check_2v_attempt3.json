@@ -1,0 +1,65 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0cc0e1c48f65f6e0006aa7af2f12fc87d0ab247a6cd3d2894c",
+  "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn the morning train, she opens a news app’s “For you” page. Stories close to her interests are already there, so she can catch up before work without digging through an endless list. She follows topics and sources, hides others, and asks for more or fewer stories. That gives her a sense of control, even though she cannot see every signal behind the ranking. She still worries that an important story may be left out. But on a busy day, relevance is the reason she can keep up.\n\n【Voice B本文】\nFamiliar opinions return, and she begins to wonder what is missing. She cannot see the signals behind the ranking. She knows they can include past clicks and search history, while the system can be tuned for engagement or ad revenue. The choice may not feel like hers. In the United States, about 60 percent of people in one survey worried about missing different views. Her unease has a concrete basis: under one news-feed ranking, people saw less news from different viewpoints than in friends’ shared content, while users’ clicks limited that exposure even more.\n\n【Tension本文】\nBoth care about what they see because it shapes how they understand their lives. But one risks losing time needed to stay informed; the other risks entering a narrow view without noticing. Follows and hides make personalization feel chosen, while the same ranking feels imposed. In a short window, measured political attitudes may not change, while years of exposure remain outside the picture. Two valid needs still leave no simple answer.\n\n【Closing本文】\nThe deeper question is who sets the boundaries of attention, and whether they feel chosen or quietly assigned. A private route may fit one morning perfectly, while making another reader wonder which roads have disappeared. The issue is not only what people read, but how much of the map they can see.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "通勤中の具体的な利用体験と、便利さ・不安の両方が人物の視点で描かれている。調査結果や外部データの説明には戻っていない。",
+      "quoted_evidence": ""
+    },
+    "voice_b": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "reasoning": "個人の不安から始まるが、途中から調査の割合やランキング研究の結果が前面に出ている。また、「Her unease has a concrete basis」は語り手が人物の感情を外側から分析する文になっている。一方、クリック履歴や広告収益への懸念自体は本人が持ちうる認識として成立しており、人物に不可能な内面を断定してはいない。",
+      "quoted_evidence": "“In the United States, about 60 percent of people in one survey worried about missing different views.”\n“Her unease has a concrete basis: under one news-feed ranking, people saw less news from different viewpoints than in friends’ shared content, while users’ clicks limited that exposure even more.”"
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "FAIL",
+      "reasoning": "全体の中心は二人の異なるリスクと、パーソナライズを選択と感じるか押し付けと感じるかの違いにある。ただし、測定期間と政治的態度の変化を述べる一文が研究上の分析へ戻っており、Discovery的な構文も混入している。",
+      "quoted_evidence": "“In a short window, measured political attitudes may not change, while years of exposure remain outside the picture.”"
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "注意の境界や見えなくなった道という比喩で問いを深めており、単なる要約や「人による」という結論ではない。Writer自身の具体的な解決策・妥協案も提案していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_narrator_analysis",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "個人の不安から始まるが、途中から調査の割合やランキング研究の結果が前面に出ている。また、「Her unease has a concrete basis」は語り手が人物の感情を外側から分析する文になっている。一方、クリック履歴や広告収益への懸念自体は本人が持ちうる認識として成立しており、人物に不可能な内面を断定してはいない。",
+      "quoted_evidence": "“In the United States, about 60 percent of people in one survey worried about missing different views.”\n“Her unease has a concrete basis: under one news-feed ranking, people saw less news from different viewpoints than in friends’ shared content, while users’ clicks limited that exposure even more.”"
+    },
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_discovery_syntax",
+        "leak_tension_reverts_to_research"
+      ],
+      "reasoning": "全体の中心は二人の異なるリスクと、パーソナライズを選択と感じるか押し付けと感じるかの違いにある。ただし、測定期間と政治的態度の変化を述べる一文が研究上の分析へ戻っており、Discovery的な構文も混入している。",
+      "quoted_evidence": "“In a short window, measured political attitudes may not change, while years of exposure remain outside the picture.”"
+    }
+  ],
+  "any_flagged": true
+}
