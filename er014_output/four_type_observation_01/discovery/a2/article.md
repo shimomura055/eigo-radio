@@ -24,11 +24,11 @@ So, the uncomfortable feeling may not come from silence alone. It may depend on 
 
 ### Quiet Does Not Always Mean Calmest
 
-A quiet room is not automatically the body’s lowest-arousal state. In a counterbalanced EKG experiment, parasympathetic activity was higher during fMRI acoustic noise than during silence, while sympathetic activity was higher during white noise than during fMRI noise. Feeling calm and producing the lowest physiological arousal are therefore different claims.
+A quiet room is not automatically the body’s lowest-arousal state. In an experiment that balanced the order of the sounds, heart measurements showed that the body’s rest-and-recovery system was more active during noise from an MRI scanner than during silence, while the body’s alerting system was more active during white noise than during the MRI noise. Feeling calm and having the lowest level of bodily activation are therefore different claims.
 
 ### The Person and the Relationship Matter
 
-Comfort with silence may reflect both personal orientation and the relationship involved. Enjoyment of thinking for pleasure was associated with need for cognition, openness, meditation experience, initial positive affect, and lower phone use—but these were correlates, not proven causes. Japanese respondents viewed silence more negatively with strangers than with close friends; Americans did not show that pattern. Yet a staged Japan–UK tutorial found similar tolerance and discomfort.
+Comfort with silence may reflect both personal orientation and the relationship involved. Enjoyment of thinking for pleasure was linked with a preference for thinking deeply, being open to new experiences, meditation experience, feeling more positive at the start, and using a phone less—but these were related factors, not proven causes. Japanese respondents viewed silence more negatively with strangers than with close friends; Americans did not show that pattern. Yet a staged Japan–UK tutorial found similar tolerance and discomfort.
 
 ## In one line
 

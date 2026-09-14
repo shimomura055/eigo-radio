@@ -1,0 +1,40 @@
+{
+  "status": "STOP_BUDGET_EXCEEDED_MIDRUN",
+  "budget_jpy": 130.0,
+  "this_task_cost_jpy": 157.32,
+  "a2_fix_status": "OK",
+  "a2_jargon_before_hit_count": 12,
+  "a2_jargon_after_hit_count": 0,
+  "a2_route_used": "local_rewrite_existing_path(rewrite_ng_item+apply_diff_qa_to_resolved_rewrite), both blocks accepted on first attempt (LEDGER_COMPLIANT), no manual escalation needed",
+  "a2_final_qa": {
+    "fact_checker_status": "FACT_CHECK_COMPLETED",
+    "fact_checker_verdict": "FAIL",
+    "fact_checker_note": "Contradiction cited is about the 'Sixty students watched a six-minute conversation' sentence in the FIRST paragraph of A2, which this task's jargon-fix did NOT touch (fix only modified the EKG/parasympathetic paragraph and the need-for-cognition paragraph). Likely a pre-existing Fact Checker A' finding (possibly non-determinism per OPEN-92) unrelated to this task's edits. Flagged for human review, not auto-blocked (this was a post-hoc re-check, not the gated Production pipeline).",
+    "ledger_deviation_overall_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_major_count": 0,
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED"
+  },
+  "b1b_status": "OK",
+  "b1b_word_count": 582,
+  "b1b_jargon_before_hit_count": 1,
+  "b1b_jargon_after_hit_count": 0,
+  "b1b_fix_applied": true,
+  "b1b_fix_route_used": "local_rewrite_existing_path(rewrite_ng_item+apply_diff_qa_to_resolved_rewrite), accepted on first attempt (LEDGER_COMPLIANT)",
+  "b1b_generation_qa_from_run_summary": {
+    "fact_verdict": "REVIEW_REQUIRED",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "directional_fact_precheck_status": "DIRECTION_REVIEW_REQUIRED",
+    "stage1_regen_attempts": 0,
+    "stage2_3_retry_attempts": 1
+  },
+  "b1b_post_fix_final_qa": {
+    "fact_checker_status": "FACT_CHECK_TECHNICAL_FAILED",
+    "fact_checker_note": "2 attempts, technical failure (not a content verdict), inconclusive.",
+    "ledger_deviation_check": "NOT_COMPLETED (budget guard fired during this call, RuntimeError, uncaught)",
+    "directional_fact_precheck": "NOT_RUN (never reached)"
+  },
+  "key_phrase_status": "NOT_REACHED (STOP before Key Phrase step)",
+  "key_phrase_a2_status": null,
+  "key_phrase_b1b_status": null,
+  "process_gap_note": "B1B pre-fix article text was not backed up to disk before being overwritten by the jargon-fix output (a2_before_fix/ backup was implemented, but no equivalent b1b_before_fix/ backup). This means the exact before/after diff for B1B's single jargon fix cannot be reconstructed after the crash; only the final (0-jargon) b1b/article.md is available."
+}

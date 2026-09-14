@@ -27,13 +27,17 @@ QA・費用・token等の技術詳細は本ページには含めていません�
 <a class="reportlink" href="../../EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md">EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md</a> を参照してください。</p>
 
 <h2>一覧表</h2>
+<p class="meta">2026-09-14 4TYPE補完(PM-CLOSEOUT-CONSOLIDATION-131)で以下を更新: News B1追加/Trend Ledger修正後の再生成(B1 OK、A2は再生成後もFAIL)/Discovery No Jargon修正A2+新規B1B/Voices 2V記事の実生成。詳細は
+<a class="reportlink" href="../../EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md">EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md</a> を参照してください。</p>
 <table>
 <tr><th>Article</th><th>Topic</th><th>Level</th><th>Article type</th><th>Word count</th><th>Status</th></tr>
-<tr><td>News</td><td>AI regulation vs AI race</td><td>A2</td><td>News (regulation/race tension)</td><td>406</td><td>OK</td></tr>
-<tr><td>Trend (main)</td><td>The end of the smartphone as the main interface</td><td>B1</td><td>Trend Synthesis</td><td>394</td><td>OK</td></tr>
-<tr><td>Trend (A2, 副産物)</td><td>同上</td><td>A2</td><td>Trend Synthesis</td><td>413</td><td>NG_REVIEW_REQUIRED(Fact Checker FAIL)</td></tr>
-<tr><td>Discovery</td><td>Why can silence feel uncomfortable?</td><td>A2</td><td>Discovery Focus S2</td><td>569</td><td>OK</td></tr>
-<tr><td>Voices (2 Voices)</td><td>Is personalized news good for us?</td><td>—</td><td>B-Family Voices (2V)</td><td>—</td><td>未生成(STOP、USER_DECISION_REQUIRED)</td></tr>
+<tr><td>News (A2)</td><td>AI regulation vs AI race</td><td>A2</td><td>News (regulation/race tension)</td><td>406</td><td>OK</td></tr>
+<tr><td>News (B1、新規)</td><td>同上</td><td>B1</td><td>News (regulation/race tension)</td><td>417</td><td>OK</td></tr>
+<tr><td>Trend (B1、Ledger修正後)</td><td>The end of the smartphone as the main interface</td><td>B1</td><td>Trend Synthesis</td><td>484</td><td>OK</td></tr>
+<tr><td>Trend (A2、Ledger修正後も再生成2回でFAIL)</td><td>同上</td><td>A2</td><td>Trend Synthesis</td><td>433</td><td>NG_REVIEW_REQUIRED(Fact Checker FAIL、Galaxy XR既提供との矛盾)</td></tr>
+<tr><td>Discovery (A2、No Jargon修正版)</td><td>Why can silence feel uncomfortable?</td><td>A2</td><td>Discovery Focus S2</td><td>634</td><td>OK(専門語0、ただしFact Checker A'がLedger精度不足指摘中)</td></tr>
+<tr><td>Discovery (B1B、新規)</td><td>同上</td><td>B1</td><td>Discovery Focus S2</td><td>616</td><td>OK(専門語0、ただしFact Checker A'がLedger精度不足指摘中)</td></tr>
+<tr><td>Voices (2 Voices)</td><td>Is personalized news good for us?</td><td>—</td><td>B-Family Voices (2V)</td><td>432</td><td>REVIEW_REQUIRED残存(3attempt上限到達、Production未採用)</td></tr>
 </table>
 
 <h2>News — AI regulation vs AI race(A2、OK)</h2>
@@ -69,66 +73,114 @@ Inside the companies, restraint and speed can exist together. OpenAI said it hel
 AI safety rules are becoming real in some places, but they do not form one global limit. The race continues, and one company’s restraint has not yet become a shared plan.
 </div>
 
-<h2>Trend — The end of the smartphone as the main interface(B1、OK)</h2>
+<h3>News — B1版(新規追加、369→417語、OK)</h3>
+<div class="note">2026-09-14追加。A2既存記事はそのまま(無変更)。B1は既存Research/Ledgerを再利用し新規生成(Production正式path、monkeypatchなし)。fact_verdict=REVIEW_REQUIRED(Ledgerとの矛盾ではなく表現精度の指摘)、ledger_status=LEDGER_COMPLIANT。A2/B1間の日付・数値・因果・方向性の直接的矛盾なし(手動突合15項目)。</div>
 <div class="article-body">
-# The Screen Is Still Here, but It Is No Longer Alone
+# Two Clocks, One AI Race
 
-Your phone is still in your hand. But it may no longer be where every digital task begins and ends.
+## Main Story
 
-Some companies are moving digital help into the spaces around us. Google says Gemini on Android will begin with selected Pixel and Samsung Galaxy phones, then extend to watches, cars, glasses, and laptops later in 2026. Google has also shown Android XR glasses that could handle messages, directions, photos, and translation without the user reaching for a phone.
+AI is moving quickly, but the rules are trying to keep up.
 
-Amazon is moving in a similar direction. Alexa+ is available in the United States through Alexa-enabled devices, the Alexa app, and Alexa.com. Amazon says it can help with tasks such as ordering takeout, booking rides, making restaurant reservations, and scheduling home repairs.
+In Europe, legal duties for general-purpose AI models started on 2 August 2025. Other parts of the EU AI Act began enforcement on 2 August 2026. These include rules on prohibited AI practices, some transparency duties, and certain duties for general-purpose models. But the timetable is staged. Not every rule began on the same day.
 
-The message is not that smartphones are disappearing. It is that the touchscreen is becoming just one doorway into digital services.
+International action is also growing, but it has a different role. The United Nations created an independent scientific panel with 40 members in August 2025. In a preliminary report released in July 2026, the panel warned that current safeguards cannot keep pace with the growth of AI capabilities. But the panel does not make or enforce international law.
 
-Voice, audio, cars, homes, and glasses are beginning to share that job. Meta says its Ray-Ban Meta glasses have sold millions of units since launch. Google also offers hands-free Gemini through Pixel Buds, while Gemini is being rolled out to Wear OS watches from several manufacturers.
+The technology itself is also advancing. In cyber evaluations, one institute found that the best models completed apprentice-level tasks about 50% of the time, compared with just over 10% in early 2024. The length of tasks they could complete without human direction was also doubling about every eight months. The institute found vulnerabilities in every system it tested, while safeguards varied.
 
-Taken together, these signals point to an early but broad change. Digital interaction is spreading across more places, even though some products are still only planned or being tested.
+This is the central tension. Rules, warnings, and safety work are expanding. At the same time, companies and governments still want faster development and deployment.
 
-### From opening apps to stating an outcome
+### Regulation is a map, not one stop sign
 
-The deeper change is not simply moving an assistant from a phone to a watch or speaker. It is moving from doing each step to stating the result you want. Google describes tools that can research or manage complex tasks with little oversight. Alexa+ can handle several real-world requests, and Google Home can create automations through natural language. The screen may remain, but it may no longer be the main workspace.
+Regulation is not one global brake. In the EU, duties for general-purpose model providers applied from 2 August 2025. Selected enforcement followed from 2 August 2026. Language models trained with more than 10^23 calculation steps are considered general-purpose models; above 10^25, a model is presumed to pose systemic risk, though that line is under review. The UN panel can assess the gap, but it cannot enforce a rule.
 
-### A gradual change, not one replacement gadget
+### Who decides how fast is fast enough?
 
-The shift is likely to be uneven and tied to specific situations. Amazon reports 600 million active Alexa endpoints, though that figure does not mean 600 million people. Google says Android Auto supports more than 250 million cars. These figures show reach in homes, cars, voice, and audio. At the same time, Google’s XR glasses remain a development-stage demonstration, even as Meta reports millions of glasses sold. Progress will be easier to see in repeated daily moments than in one dramatic product launch.
+One company reported releasing a new Flash model three weeks after its predecessor, with updated safeguards. Another said it held back larger Astra runs while raising safety and security requirements, then restarted the frontier run on 28 August 2026. It called for mandatory US testing and independent assessment. A third said industry-wide pacing would need a lawful, verifiable mechanism. US proposals range from rapid deployment to a temporary pause. These actions do not yet form a common brake.
 
 ## In one line…
 
-The smartphone is not being replaced; it is becoming one interface among many, with the strongest evidence pointing to a gradual and uneven shift beyond the touchscreen.
+AI governance is becoming a patchwork of dates, thresholds, company choices, and proposed controls. The race continues, while the argument over who can set a common speed limit remains open.
+</div>
+
+<h2>Trend — The end of the smartphone as the main interface(B1、Ledger修正後、OK)</h2>
+<div class="note">2026-09-14更新。旧B1(Ledger修正前)は<a class="reportlink" href="trend/run1_before_fix/reader_facing_article_b1b.txt">trend/run1_before_fix/reader_facing_article_b1b.txt</a>。Google公式発表(blog.google、2026-05-19、audio-only glasses 2026年秋発売)をLedgerへ反映して再生成。</div>
+<div class="article-body">
+# The Smartphone Stays. The Screen Steps Back.
+
+## Main Story
+
+The smartphone is still in the picture. But the screen is beginning to share its job.
+
+That is the interesting signal in announcements from Google, Amazon, Meta, and Apple. They do not describe one new gadget replacing the phone. They describe digital help spreading to ears, wrists, cars, homes, and glasses.
+
+Google announced Gemini Intelligence for Android. It will start on selected Samsung Galaxy and Google Pixel phones, with plans to reach watches, cars, glasses, and laptops later in 2026.
+
+Amazon says Alexa has 600 million active endpoints across devices, cars, offices, Fire TV, and Prime Video. Amazon’s measure counts endpoints, not unique people or households.
+
+For glasses, Meta says Ray-Ban Meta glasses have sold millions since launch. The company describes them as hands-free glasses with a camera, an AI assistant, a translator, and open-ear audio.
+
+Google has also announced a fall 2026 launch for the first audio-only product in its Android XR eyewear family. The camera-and-optional-display version is a separate product, and its launch date has not been confirmed.
+
+The same direction appears at home and in the car. Google’s Gemini for Home is designed for speakers, displays, cameras, doorbells, and the Google Home app. Google also says Android Auto supports more than 250 million cars, while more than 50 car models have Google built in.
+
+These numbers and announcements do not prove that people have stopped using phone screens. Some are company-reported figures, and some products are planned or still experimental. But together, they point to a change in location: digital interaction can happen wherever the person already is.
+
+### The screen can move without the phone disappearing
+
+Here is the useful distinction: screen displacement is not phone replacement. Pixel Buds 2a can give users hands-free access to Gemini, while Google’s headphone translation still needs a compatible device. Siri AI on Apple Watch requires a paired Apple Intelligence device. CarPlay Ultra still uses iPhone information in the vehicle. The near-term change may be fewer moments spent looking at or touching a phone screen, even when the phone remains connected.
+
+### From opening an app to stating a goal
+
+The deeper shift is from access to action. Gemini Intelligence, first on selected Android phones, is designed to automate rides and shopping. Google’s experimental desktop Agent Mode combines browsing, research, and Google apps. U.S. Alexa+ describes takeout orders, reservations, rides, and home repairs. Gemini for Home adds device control and automations. These are not proof of routine use. But they show the direction: state a goal, and let an assistant attempt the steps.
+
+## In one line…
+
+The smartphone is not being removed so much as repositioned: early evidence points to digital interaction spreading beyond its screen, while the phone often remains part of the system. The direction is clear in company strategy, but broad replacement of the screen is not yet established.
 </div>
 
 <details>
-<summary>Trend — A2版を表示(NG_REVIEW_REQUIRED、参考掲載)</summary>
-<div class="note">Fact Checker FAIL→NG_REVIEW_REQUIRED(GoogleのXRメガネの発売時期に関する記述が実際の発表内容と矛盾)。Production採用不可。参考として本文のみ掲載します。</div>
+<summary>Trend — A2版を表示(Ledger修正後も再生成2回でFAIL継続、NG_REVIEW_REQUIRED、参考掲載)</summary>
+<div class="note">Fact Checker FAIL(Ledger修正・記事全体retry 2回上限到達後も継続)。理由: 記事が「Googleの最初のAndroid XR製品は2026年秋の音声グラス」と一般化して記述したが、実際はSamsung Galaxy XRヘッドセットが既に提供中の"最初のデバイス"とGoogle公式が説明しており矛盾(元のFAIL理由とは別のWriter新規導入の一般化誤り)。ユーザーSTOP条件「Ledger修正だけでは解消できない」に該当しSTOP(USER_DECISION_REQUIRED)。旧A2(Ledger修正前)は<a class="reportlink" href="trend/run1_before_fix/reader_facing_article.txt">trend/run1_before_fix/reader_facing_article.txt</a>。Production採用不可、参考として本文のみ掲載します。</div>
 <div class="article-body">
-# The Phone Is Still Here, but the Screen Is No Longer Alone
+# The Phone Is Still Here, but It Is No Longer the Only Door
 
-Here is the surprising part of the new AI race: companies are not saying goodbye to smartphones. But they are giving digital tools more places to listen, speak, and act.
+## Main Story
 
-Google says Gemini Intelligence for Android will start on selected Pixel and Samsung Galaxy phones. Later in 2026, Google says it will extend the features to watches, cars, glasses, and laptops. Google also describes Agent Mode for desktop. It is experimental. It is designed to browse the web, do research, use Google apps, and handle a multi-step task with little help.
+For years, the smartphone screen was the main door to digital life.
 
-Amazon is building a similar idea around Alexa. The company says Alexa has 600 million active endpoints across devices, cars, offices, Fire TV, and Prime Video. “Endpoints” is Amazon’s term; it does not mean 600 million people. Alexa+ is available in the United States on Alexa devices, Alexa.com, and the Alexa app.
+Now, several companies are building other doors.
 
-The same direction appears in smaller devices. Meta says millions of Ray-Ban Meta glasses have sold. Google offers hands-free Gemini on Pixel Buds 2a and has begun bringing Gemini to Wear OS watches. Google has also shown XR glasses that could help with messages, directions, and translation without reaching for a phone. But those glasses are still a product demonstration, not a confirmed mass-market launch.
+This does not mean smartphones are disappearing. It means digital help can meet people in more places: in a car, at home, on a wrist, or through a voice.
 
-So the story is not “the smartphone is disappearing.” It is more careful. The phone remains an important starting point, while the act of using digital services is spreading to the ear, the wrist, and other parts of daily life.
+Google announced Gemini Intelligence for Android. It is designed to handle multi-step jobs. It will first come to selected Samsung Galaxy and Google Pixel phones. Google says it plans to bring the service to watches, cars, glasses, and laptops later in 2026.
 
-### From answering questions to finishing tasks
+That is a company plan, not proof that most people already use these features.
 
-The deeper change may be what an assistant does after it hears you. Amazon reports that customers talked to Alexa twice as much and completed purchases three times more often. Music streaming and smart-home use also increased. Alexa+ is described as handling ride bookings, restaurant reservations, and home repairs. These are Amazon’s figures, not a universal measure. The key question becomes: did the task get finished?
+Amazon has made Alexa+ available in the United States through Alexa-enabled devices, its website, and its app. Amazon describes help with tasks across these places.
 
-### The gradual route may run through places already built
+Google is also changing the home. Gemini for Home is designed for speakers, smart displays, cameras, doorbells, and the Google Home app.
 
-The route may be less dramatic than a new wearable taking over. Google says Android Auto supports more than 250 million cars, and Apple’s CarPlay Ultra can place iPhone and vehicle information across the car’s screens and controls. Google’s Gemini for Home targets speakers, displays, cameras, and doorbells made during the previous decade. By contrast, its XR glasses are still a demonstration. This points to a gradual path through places people already use.
+Cars show how large this direction could become. Google says more than 250 million cars support Android Auto. It also plans to bring Gemini to Android Auto and to cars with Google built-in.
+
+Seen together, these are early signs of a wider change: the smartphone screen is becoming one doorway among several.
+
+### The first step may be heard, not seen
+
+The hardware path may begin with simple actions. Pixel Buds can give hands-free access to Gemini. Google is testing live speech translation through headphones in more than 70 languages and 2,000 language pairs. Gemini is also rolling out on supported Wear OS watches. Google’s first Android XR product is planned as audio-only glasses for fall 2026. The camera-and-optional-display version is a separate product tier. The early path looks more like hearing and asking than wearing a full visual computer.
+
+### The phone may become the quiet helper
+
+Software is changing how tasks work. A person may ask for an outcome instead of opening several apps: book a ride or order takeout. Google’s Agent Mode is an experimental tool that uses web research and Google apps to handle complex tasks. Amazon says tens of millions joined Alexa+ Early Access and reports 600 million active Alexa endpoints. That term is not a count of people. These are signs of direction, not proof of routine delegation. The phone may stay in the background while the request becomes the visible action.
 
 ## In one line…
 
-The screen is not being replaced in one dramatic move; early evidence suggests digital interaction is spreading outward, step by step, while the smartphone remains part of the system.
+Digital interaction is spreading beyond the smartphone screen, but the evidence still points to a gradual, mixed shift—not the end of the smartphone.
 </div>
 </details>
 
-<h2>Discovery — Why can silence feel uncomfortable?(A2、OK)</h2>
+<h2>Discovery — Why can silence feel uncomfortable?(A2、No Jargon修正版、OK)</h2>
+<div class="note">2026-09-14更新(No Jargon修正)。専門語(EKG/parasympathetic/sympathetic activity/fMRI/counterbalanced/acoustic noise/need for cognition/physiological arousal/positive affect/correlates)を平易表現へ置換(hit_count 12→0、既存rewrite経路でLEDGER_COMPLIANT受理、Fact意味維持確認済み)。ただしA2/B1B共通で「60 students watched」の一文にFact Checker A'がLedger精度不足(N=60中動画視聴37)を指摘中、Key Phrase未生成(STOP、予算超過)。修正前版は<a class="reportlink" href="discovery/a2_before_fix/reader_facing_article.txt">discovery/a2_before_fix/reader_facing_article.txt</a>。</div>
 <div class="article-body">
 # When Silence Feels Too Loud
 
@@ -156,32 +208,82 @@ So, the uncomfortable feeling may not come from silence alone. It may depend on 
 
 ### Quiet Does Not Always Mean Calmest
 
-A quiet room is not automatically the body’s lowest-arousal state. In a counterbalanced EKG experiment, parasympathetic activity was higher during fMRI acoustic noise than during silence, while sympathetic activity was higher during white noise than during fMRI noise. Feeling calm and producing the lowest physiological arousal are therefore different claims.
+A quiet room is not automatically the body’s lowest-arousal state. In an experiment that balanced the order of the sounds, heart measurements showed that the body’s rest-and-recovery system was more active during noise from an MRI scanner than during silence, while the body’s alerting system was more active during white noise than during the MRI noise. Feeling calm and having the lowest level of bodily activation are therefore different claims.
 
 ### The Person and the Relationship Matter
 
-Comfort with silence may reflect both personal orientation and the relationship involved. Enjoyment of thinking for pleasure was associated with need for cognition, openness, meditation experience, initial positive affect, and lower phone use—but these were correlates, not proven causes. Japanese respondents viewed silence more negatively with strangers than with close friends; Americans did not show that pattern. Yet a staged Japan–UK tutorial found similar tolerance and discomfort.
+Comfort with silence may reflect both personal orientation and the relationship involved. Enjoyment of thinking for pleasure was linked with a preference for thinking deeply, being open to new experiences, meditation experience, feeling more positive at the start, and using a phone less—but these were related factors, not proven causes. Japanese respondents viewed silence more negatively with strangers than with close friends; Americans did not show that pattern. Yet a staged Japan–UK tutorial found similar tolerance and discomfort.
 
 ## In one line
 
 The quiet itself may be simple; the experience of it is not.
 </div>
 
-<h2>Voices — Is personalized news good for us?(2 Voices、未生成)</h2>
-<div class="stop">
-2 Voicesで新規トピックを書き起こす正式Production pathが存在しません(既存のa2/b1
-Production runnerは承認済み既存記事の音声再配線専用であり、新規トピックを書き起こす
-汎用Writerは3 Voices専用です)。このため本タスクでは記事を生成せずSTOPしました。
-対応方針はユーザー判断待ちです(USER_DECISION_REQUIRED)。
+<h3>Discovery — B1B版(新規追加、616語、OK)</h3>
+<div class="note">2026-09-14新規生成(既存Ledger再利用)。生成直後jargon hit_count=1→fix後0(同じrewrite経路、初回LEDGER_COMPLIANT受理)。A2と同じくFact Checker A'がLedger精度不足(N=60中動画視聴37)を指摘中、Key Phrase未生成(STOP、予算超過)。</div>
+<div class="article-body">
+# Why Silence Can Feel Uncomfortable
+
+A conversation can be going well. Then someone finishes a sentence, and no one answers.
+
+In one 2011 experiment, 102 undergraduate students imagined a group conversation. After a mildly controversial comment, some students read that the conversation continued normally. Others read that a brief silence followed. The silence group reported more feelings of rejection and negative emotion. They also reported less belonging, lower self-esteem, and less agreement with the group.
+
+A second experiment showed a similar pattern in a more realistic setting. Sixty students watched a six-minute conversation. In one version, a single silence lasted four seconds. Afterward, those students reported more rejection and negative emotion, and less positive emotion and belonging. Most were not aware of the exact pause.
+
+But a long pause does not always feel bad. A 2023 study looked at natural ten-minute conversations between strangers and friends. Gaps of more than two seconds were more common among friends. For strangers, these longer gaps reduced the feeling of connection. For friends, they increased it. People who watched the conversations also judged long pauses between strangers as more awkward.
+
+The same question appears when people are alone. Across 11 studies, participants generally did not enjoy spending six to fifteen minutes with nothing to do but think. They often rated simple activities as more enjoyable. In one study, 55 students sat alone for 15 minutes with the option of giving themselves a mild electric shock they had already experienced. Many chose the shock instead of remaining without outside stimulation. That was a result from this experiment, not a claim about everyone.
+
+At the same time, silence can also bring calm. In one study of 46 students, six minutes and 30 seconds of silence increased relaxation in both a university room and a city garden. The outdoor setting also brought less boredom and a stronger feeling of being in the present moment.
+
+Research on the body shows the same mixed picture. A review of 37 studies found that responses to silence depend on the kind of silence, the setting, familiarity, surrounding noise, and other personal factors. In a study that measured heart activity, one noise condition showed more activity linked with the body’s calming system than silence, while white noise showed more activity linked with its alerting system than that noise.
+
+People also differ across studies and cultures. In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use. In one Japan–United States survey, views of silence also changed depending on whether people were speaking with strangers or close friends.
+
+### When Quiet Has Structure
+
+The key distinction is not silence itself, but whether it is chosen and mentally structured. Across four studies, actively choosing solitude was associated with relaxation and lower stress. In another study, students told to occupy their thoughts for a brief period reported better mood, greater relaxation, and lower arousal afterward. Quiet can therefore function differently when people have agency and a mental path to follow.
+
+### Context Over Country
+
+A staged one-to-one tutorial complicates any simple cultural story. Japanese and UK undergraduates differed by only about seven seconds in their mean tolerance of an instructor’s silence. Both groups reported similar discomfort, around 4 on a six-point scale, and longer silence was not linked to greater discomfort. Nationality alone, then, is a weak guide when roles and setting change.
+
+## In one line
+
+Silence is not a universal signal; before judging the pause, listen for the situation that gives it meaning.
 </div>
-<table>
-<tr><th>Voice A</th><td>(未生成)</td></tr>
-<tr><th>Voice B</th><td>(未生成)</td></tr>
-</table>
+
+<h2>Voices — Is personalized news good for us?(2 Voices、実生成済み、REVIEW_REQUIRED残存)</h2>
+<div class="note">2026-09-14実生成(OPEN-151可変Writer実装によるProduction正式path呼び出し)。Writer 3attempts(Leakage Check是正retry)、Fact Checker verdict PASS→PASS→REVIEW_REQUIRED(3attempt上限到達、残存flagged項目あり)。Ledger Deviation Checker全attempt LEDGER_COMPLIANT(deviations=0)。Production採用には至っておらずPARTIAL扱い(Comment Contract未接続/3Vゲート2V不発と合わせ3点未充足、詳細は
+<a class="reportlink" href="../../EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01_REPORT.md">EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01_REPORT.md</a>)。</div>
+<div class="article-body">
+# The Feed That Knows What You Read
+
+## The Question
+
+On a morning train, one reader opens a news app and finds stories that fit her interests. Another opens a feed and notices the same kinds of stories again and again. Both live with news chosen by systems that learn from clicks, interests, and past activity. For one, that choice cuts through a crowded day. For the other, it raises a question: what is left outside the frame?
+
+### One voice: A feed that saves her time
+
+On the morning train, she opens Google News’s “For you” page. Stories about topics she follows are waiting, along with sources that matter to her. Past activity on Google services and YouTube can shape the page too. She does not search through everything before work. If a story misses the mark, she can ask for less, hide a source, or change what she follows. She is not seeing every headline, but the feed gives her a useful feeling: she is still keeping up. Personalization helps her reach relevant news before the day gets away.
+
+### Another voice: When the frame starts to close
+
+Another reader scrolls through her feed and stops. The opinions sound familiar, and the subjects repeat. She wonders whether the world is changing, or only the window through which she sees it. She wants to know what rules put each item there, but cannot see or change the ranking rules. The system may use clicks, likes, shares, search history, engagement, and advertising goals. The feed feels unlike an editor she can question. She does not need every story; she fears the same view will keep returning while other views fade from sight.
+
+## Why They See It Differently
+
+Both believe what they see can shape understanding and daily life. But one must keep up with relevant news in limited time; the other fears a narrow world closing around her. One experiences ranking through choices—follow, hide, ask for less. The other faces rules she cannot see or change. She also faces an awkward gap: political attitudes did not shift after one short feed change, but that brief test could not show what years of exposure might build. Their hopes do not make one answer.
+
+## What This Really Means
+
+The deeper question is not whether a personal feed is good or bad. It is who defines “relevant” when time is scarce, and what a partly hidden definition does to a reader’s sense of the whole. Personalization is also about control: which stories arrive, and whether a reader can notice what is missing.
+</div>
 
 <hr>
 <p class="meta">品質(QA verdict/retry/費用等)の詳細は
-<a class="reportlink" href="../../EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md">EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md</a> を参照してください。</p>
+<a class="reportlink" href="../../EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md">EDITORIAL-4TYPE-NEW-ARTICLE-PRODUCTION-OBSERVATION-01_REPORT.md</a>(初回run)および
+<a class="reportlink" href="../../EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md">EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md</a>(2026-09-14 4TYPE補完)を参照してください。</p>
 
 </body>
 </html>

@@ -1,0 +1,50 @@
+{
+  "management_id": "EDITORIAL-4TYPE-FOLLOWUP-01-NEWS-B1-ADDITION",
+  "definition": "News Production 1生成セット総原価 = 共通Research/Ledger(A2生成時に実測、B1B追加生成では再利用のため再計上しない) + A2直接費 + B1直接費。50:50配賦の擬似単価は作らない。",
+  "production_set_total_cost_jpy": 98.32,
+  "production_set_total_cost_jpy_note": "A2 observation.json cost_jpy_total(70.16、Research/Ledger込み) + B1B observation_b1b.json cost_jpy_total(28.16、Research/Ledger除く) = 98.32。",
+  "direct_cost_breakdown_jpy": {
+    "research_ledger": {
+      "cost_jpy": 42.52,
+      "source": "er014_output/four_type_observation_01/news/observation.json cost_breakdown_detail.research_ledger(A2生成時に1回だけ実測。B1Bは既存Ledgerを再利用しResearch/Verificationを再実行していないため追加計上なし)。",
+      "calls": 2
+    },
+    "a2_writer": {
+      "cost_jpy": 2.84,
+      "source": "observation.json cost_breakdown_detail.writer",
+      "calls": 3
+    },
+    "a2_qa": {
+      "cost_jpy": 24.80,
+      "source": "observation.json cost_breakdown_detail.qa(Point Value QA+Fact Checker+Ledger Deviation等)",
+      "calls": 3
+    },
+    "b1_writer": {
+      "cost_jpy": 2.34,
+      "source": "observation_b1b.json cost_breakdown_detail.writer",
+      "calls": 4
+    },
+    "b1_qa": {
+      "cost_jpy": 22.83,
+      "source": "observation_b1b.json cost_breakdown_detail.qa",
+      "calls": 4
+    },
+    "retry": {
+      "cost_jpy": null,
+      "note": "A2はarticle_point_overlap_retry_attempts=0のため追加費用ゼロ(no_retry_cost_jpy=70.16と機械的に一致)。B1Bはarticle_point_overlap_retry_attempts=1が発生し、retry前後のWriter/Evidence Compression呼び出しがWriter/QAカテゴリ内に混在しているため、aggregate_usage.py自体の仕様どおりretry_extra_cost_jpy/no_retry_cost_jpyはNone(手動の追加分離は本タスクでは実施していない、機械分離できる直接費のみを示す方針のため)。"
+    },
+    "rewrite_regeneration": {
+      "cost_jpy": 0.0,
+      "note": "A2/B1BともLocal Rewrite発火なし(local_rewrite_results/cyclesとも空)。"
+    },
+    "other_uncategorized": {
+      "cost_jpy": 3.00,
+      "note": "B1Bのみ。Point Overlap NGによるDiagnostic Full Retry発生時、1回目(破棄された)Writer試行に対応するEvidence Compression呼び出しの response_idが、audit/evidence_compression_editor_raw.json(1スロットのみ保持、2回目の値で上書きされる設計)に残っていないため、aggregate_usage.pyのresponse_id突合ロジック上uncategorizedに計上される(2 calls)。実際の生成コストの一部であり、除外や隠蔽はしていない。"
+    }
+  },
+  "direct_cost_breakdown_sum_jpy": 98.33,
+  "direct_cost_breakdown_sum_note": "各breakdownはA2側(observation.json)とB1B側(observation_b1b.json)で独立にround(値, 2)されているため、production_set_total_cost_jpy(98.32、2つのcost_jpy_totalの単純合算)との間に±0.01の丸め差がある。",
+  "b1_addition_actual_cost_jpy": 28.16,
+  "b1_addition_source": "er014_output/four_type_observation_01/news/observation_b1b.json cost_jpy_total(B1B追加生成のみの実費、Research/Ledger再利用分は含まない)",
+  "no_50_50_allocation": true
+}

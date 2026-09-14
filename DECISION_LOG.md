@@ -407,7 +407,8 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-128: 4記事タイプ正常生成観測(News/Trend/Discovery生成、Voices 2V path不在でUSER_DECISION_REQUIRED)+比較ページ+費用・token・Claude利用量REPORT
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-129: Family C Trial-08(自由生成5テーマ、VALIDATED)のGit記録+OPEN-147反映+transcript退避1件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-130: OPEN-149/150/151起票(Fact Check最適化MEDIUM・No Jargon LOW・Voices 2/3可変Writer APPROVED)+コスト報告『Production 1生成セット総原価』とClaude usage報告形式の恒久反映
-- [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: Voices Writerの2/3 Voices可変化(OPEN-151)配線完了(PRODUCTION_WIRED)+2V runtime evidence+3V byte不変regression
+- [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: Voices Writerの2/3 Voices可変化(OPEN-151)配線(Sonnet報告PRODUCTION_WIRED→PM-CLOSEOUT-CONSOLIDATION-131でPARTIALへ訂正)+2V runtime evidence+3V byte不変regression
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-131: 4TYPE補完(News B1追加/Trend Ledger修正再生成/Discovery No Jargon修正+B1B)統合+OPEN-151をPARTIALへ訂正+最終REPORT+比較ページ更新
 
 ---
 
@@ -7113,7 +7114,12 @@ PM-CLOSEOUT-CONSOLIDATION-130。ユーザー正式決定4件をSSOT反映: (1)OP
 
 EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01(OPEN-151)。
 ユーザー正式決定(2026-09-14、`APPROVED_FOR_PRODUCTION`)「Production Writerを
-2/3 Voices可変へ一般化する」に基づき配線した。結果`PRODUCTION_WIRED`。Gate 3
+2/3 Voices可変へ一般化する」に基づき配線した。**Sonnet報告はPRODUCTION_WIRED
+だったが、PM-CLOSEOUT-CONSOLIDATION-131(2026-09-14)でFable照合の結果
+`PARTIAL`へ訂正(未充足3点: Comment Contract整合[新規topic入口でComment
+未接続、3Vと同じ限界]/Gate辞書整合[3V保守版Fact Safetyゲートが2Vの5区切り
+構造で構造的に不発]/2V記事はREVIEW_REQUIRED+残存flagで3attempt上限到達)。**
+以下はSonnet報告時点のGate 3
 11項目照合: (1)2V新規topic正式Production path=✓(`main_b1_2v()`/level="b1_2v"、
 write_new_theme専用、既存main/main_a2/main_b1_3v無変更)。(2)3V既存挙動の
 Regressionなし=✓(byte不変テスト11件+3V専用関数source完全一致+全件回帰2668件中
@@ -7133,6 +7139,20 @@ retry¥52.03、TTS¥0[未実行、Writer-only入口のためTTS未配線])。回
 `er012*_test_*.py`174件PASS/`er011*_test_*.py`266件PASS/全件2668件中2665件
 PASS。commit `d5c4df57`。詳細
 `EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-131(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-131(4TYPE補完統合)。News B1追加OK(News 1生成
+セット¥98.32)。Trend: 限定Verificationで公式発表(blog.google 2026-05-19)
+確認→Ledger修正→B1 OK、A2は2回再生成後もFact Checker FAIL(Galaxy XR
+既提供との矛盾、記事側の一般化)→ユーザーSTOP条件『Ledger修正だけでは
+解消できない』該当でSTOP(UDR)。Discovery: No Jargon個別修正A2/B1B
+(既存rewrite経路、専門語0、Fact意味維持)、B1B追加OK、ただしLedger F002
+精度不足(N=60中動画視聴37)によるFact Checker FAILがA2/B1B共通→Key Phrase
+未実施、STOP(UDR)。Voices可変Writer: Sonnet報告PRODUCTION_WIRED→Fable
+照合でPARTIAL(Comment Contract未接続/3Vゲート2V不発/2V記事REVIEW_REQUIRED
+残存)。費用: 4TYPE補完合計¥359.74(A ¥28.16+B ¥75.25+C ¥157.32+E ¥99.01)、
+Claude Code usage別記。詳細: `EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md`。
 
 ## 参照元
 

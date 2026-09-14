@@ -1,0 +1,2 @@
+- Trend fix: 2026-09-14T06:15:30.064929+00:00 開始, 2026-09-14T06:25:55.875464+00:00 完了, status=NG_REVIEW_REQUIRED, 本run実費=¥59.33, production_set_total=¥108.06
+- Trend fix (cost correction, manual, post-run): production_set_cost.jsonを修正。ledger_fix_regen_cost_total_this_delegation_jpy=75.25(限定Verification試行1[wasted、¥9.77]+試行2[wasted、¥6.15]+試行3[成功、¥59.33、Ledger修正+A2/B1B Writer再実行+QA込み]の合算)。production_set_total_cost_jpy=123.98(=48.73+75.25)。cost_summary.json/run_result.json記載の「本run実費¥59.33」は最終(成功)driver呼び出し単体の値であり、試行1・2のVerification費用は含まない点に注意。

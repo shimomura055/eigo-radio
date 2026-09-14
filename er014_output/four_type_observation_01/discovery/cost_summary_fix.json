@@ -1,0 +1,65 @@
+{
+  "started_at": "2026-09-14T15:19:47+09:00 (JST wall clock approx, see run_result_fix.json for ISO)",
+  "status": "STOPPED_BUDGET_EXCEEDED",
+  "budget_jpy": 130.0,
+  "baseline_cost_jpy_excluded": 104.25,
+  "this_task_cost_jpy": 157.32,
+  "budget_exceeded": true,
+  "budget_overage_jpy": 27.32,
+  "new_api_calls": 30,
+  "cost_breakdown_by_stage_jpy": {
+    "a2_jargon_fix_rewrite": {
+      "calls": 2,
+      "cost_jpy": 0.38
+    },
+    "a2_jargon_fix_ledger_check": {
+      "calls": 2,
+      "cost_jpy": 0.43
+    },
+    "a2_jargon_fix_diff_qa": {
+      "calls": 4,
+      "cost_jpy": 14.45
+    },
+    "a2_final_fact_checker": {
+      "calls": 1,
+      "cost_jpy": 25.53
+    },
+    "a2_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 0.81
+    },
+    "stage_split_b1b": {
+      "calls": 13,
+      "cost_jpy": 55.71
+    },
+    "b1b_jargon_fix_rewrite": {
+      "calls": 1,
+      "cost_jpy": 0.17
+    },
+    "b1b_jargon_fix_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 0.34
+    },
+    "b1b_jargon_fix_diff_qa": {
+      "calls": 2,
+      "cost_jpy": 9.86
+    },
+    "b1b_final_fact_checker": {
+      "calls": 2,
+      "cost_jpy": 48.44
+    },
+    "b1b_final_ledger_check": {
+      "calls": 1,
+      "cost_jpy": 1.21
+    }
+  },
+  "model_ids": [
+    "gpt-5.6-luna"
+  ],
+  "tokens_total": {
+    "input": 756311,
+    "output": 68452,
+    "cached_input": 56257
+  },
+  "note": "main()がB1B post-fix final QA(Ledger Deviation Checker)呼び出し中にbudget guardRuntimeErrorで異常終了したため、Key Phrase生成(A2/B1B)は未実施。本ファイルはクラッシュ後、追加API呼び出しゼロでraw_usage_log.jsonlから手動再構成した。"
+}

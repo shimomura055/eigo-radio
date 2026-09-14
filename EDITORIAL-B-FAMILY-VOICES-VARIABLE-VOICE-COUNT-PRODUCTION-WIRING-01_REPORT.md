@@ -1,5 +1,14 @@
 # EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01(OPEN-151)
 
+> **Fable照合注記(2026-09-14、PM-CLOSEOUT-CONSOLIDATION-131)**: 本文はSonnet
+> 報告時点(到達Status`PRODUCTION_WIRED`)のまま無改変で残す。Fable照合の
+> 結果、到達Statusは**`PARTIAL`**(理由3点: (1)Comment Contract整合
+> [新規topic入口でComment未接続、3Vと同じ限界]、(2)Gate辞書整合[3V保守版
+> Fact Safetyゲートが2Vの5区切り構造で構造的に不発]、(3)2V記事は
+> REVIEW_REQUIRED+残存flagで3attempt上限到達)。SSOT側の正本は
+> `OPEN_ITEMS.md`OPEN-151行・`CURRENT_SPEC.md`・`DECISION_LOG.md`
+> PM-CLOSEOUT-CONSOLIDATION-131エントリを参照。
+
 ## 1. 到達Status
 
 **`PRODUCTION_WIRED`**。
