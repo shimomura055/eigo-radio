@@ -1,0 +1,108 @@
+{
+  "attempt_number": 1,
+  "route": "english_style_prefix_wide_margin",
+  "segment_id": "point_one",
+  "theme_id": "audio",
+  "level": "b1b",
+  "source_out_path": "er014_output/four_type_observation_01/discovery/audio/b1b/narration/point_one.wav",
+  "saved_at": "2026-09-14T19:59:50",
+  "sha256": "5535668afdad246dd495aaf98c12bd472f9e5b9721bd691360d6e553017dcf8b",
+  "loop_attempt_index": 1,
+  "max_attempts": 3,
+  "language": "en",
+  "model": "gemini-2.5-pro-preview-tts",
+  "voice": "Aoede",
+  "tts_execution_mode": "STANDARD",
+  "asr_text": "The key distinction is not silence itself, but whether it is chosen and mentally structured. In one study, actively choosing solitude was associated with relaxation and lower stress. In another study, students told to occupy their thoughts for a brief period reported better mood, greater relaxation, and lower arousal afterward. Quiet can therefore function differently when people have agency and a mental path to follow.",
+  "audio_classification": "EXACT_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 31.161,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " relaxation  and  lower",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 11.84,
+          "first_end_s": 13.28,
+          "second_start_s": 21.16,
+          "second_end_s": 22.78,
+          "gap_seconds": 7.88,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 65,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9956,
+          "time_a_seconds": 1.97,
+          "time_b_seconds": 5.88,
+          "lag_seconds": 3.91,
+          "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+          "similarity": 0.9952,
+          "time_a_seconds": 1.97,
+          "time_b_seconds": 26.56,
+          "lag_seconds": 24.59,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.995,
+          "time_a_seconds": 13.08,
+          "time_b_seconds": 22.52,
+          "lag_seconds": 9.44,
+          "run_length_seconds_at_thresh_0.85": 0.05
+        },
+        {
+          "similarity": 0.9948,
+          "time_a_seconds": 8.54,
+          "time_b_seconds": 14.38,
+          "lag_seconds": 5.84
+        },
+        {
+          "similarity": 0.9947,
+          "time_a_seconds": 25.51,
+          "time_b_seconds": 29.58,
+          "lag_seconds": 4.07
+        }
+      ],
+      "best_run_length_seconds": 0.05,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.25,
+      "time_a": 22.66,
+      "lag": 1.26,
+      "similarity_at_start": 0.7149,
+      "best_run_length_seconds": 0.25,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  }
+}

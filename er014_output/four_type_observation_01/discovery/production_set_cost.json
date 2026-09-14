@@ -144,5 +144,27 @@
       "cost_jpy": 3.11
     }
   },
-  "key_phrase_b1b_final_status_complete3": "KEY_WORDS_STRUCTURE_INVALID"
+  "key_phrase_b1b_final_status_complete3": "KEY_WORDS_STRUCTURE_INVALID",
+  "key_phrase_b1b_manual_selection_status": "COMPLETE(CANONICALIZATION_PASS, REDUNDANCY_PASS)",
+  "key_phrase_b1b_manual_selection_rationale_path": "er014_output/four_type_observation_01/discovery/key_phrases/b1b/manual_selection_rationale.md",
+  "audio_completion_cost_jpy": 101.83,
+  "audio_completion_cost_by_level_jpy": {
+    "a2": 38.88,
+    "b1b_partial_incomplete": 62.95
+  },
+  "production_set_total_cost_including_audio_jpy": 565.1,
+  "audio_completion_note": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY(+CONT1継続): A2は既存正式audio completion経路(er003_v1_n3_01_scaffold_generate/tts_generate/assemble、無変更)で完成episode+Web試聴playerまで到達した(gate_off=PASS, gate_on=PASS, duration=480.08s, consistency_all_pass=True, cost=¥38.88)。B1Bはfull_story_part2segmentがTTS→ASR検証で当初3回ともTRUE_CONTENT_MISMATCH。CONT1でTTS入力のみへ数字読み整形(discovery/audio/tts_reading_transforms.json、記事本文は無変更)を適用し既存関数で新規lockバージョンとして初回生成(3attempt)を試みたが、'In a study of 2,557 college students at 12 sites in 11 countries, ... phone use.'の文が3attemptとも音声から欠落し続けTRUE_CONTENT_MISMATCHのまま(review_lock=HUMAN_REVIEW_REQUIRED、新canonical_text_sha256)。ER-011-HUMAN-REVIEW-COST-GUARD-01に従い、approve_regenerate()を自己判断で呼ばずSTOPした。既に発生した実費(¥62.95、旧driver分¥46.63+CONT1追加分¥16.32)はここに計上する(完了していない分の課金を隠さない)。本文Writer/Fact Checker/QA(¥463.27)には50:50配賦しない。",
+  "audio_completion_cost_by_level_jpy_breakdown": {
+    "a2": {
+      "scaffold_a2": 0.65,
+      "tts_a2": 38.23
+    },
+    "b1b_partial_incomplete": {
+      "scaffold_b1b": 0.49,
+      "tts_b1b": 62.46
+    }
+  },
+  "b1b_audio_completion_status": "STOPPED(EPISODE_BLOCKED_BY_AUDIO_VALIDATION, segment=full_story_part2, TRUE_CONTENT_MISMATCH x3[旧canonical]+x3[CONT1新canonical、数字読み整形後]、review_lock state=HUMAN_REVIEW_REQUIRED, approve_regenerate() NOT called per ER-011-HUMAN-REVIEW-COST-GUARD-01, USER_DECISION_REQUIRED)",
+  "this_task_cont1_incremental_audio_cost_jpy": 16.32,
+  "this_task_cont1_diagnosis": "数字の読み整形(30->thirty等)は有効で、CONT1の3attemptでは'30 seconds'等の誤読は再発しなかった。しかし'In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more...phone use.'の1文(桁の多い数字+複数の修飾句を含む長い文)が3attempt全てで音声から完全に脱落した。これは数字読みの問題ではなく、TTSモデルがこの特定の長文を一貫して省略する別種の文欠落問題であり、segment分割(part3化等)は本タスクの禁止事項(構造変更)のためSTOPし、ユーザー判断を仰ぐ(USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1)。"
 }

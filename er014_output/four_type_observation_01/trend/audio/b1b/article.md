@@ -1,0 +1,27 @@
+# The Smartphone Is Still Here, but It Is No Longer the Only Door
+
+The strange thing about the next screen may be that it is not a screen at all. The smartphone is still part of the picture. But digital tasks are beginning to spread across the places where people already speak, listen, drive, and live.
+
+[Google says](https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/) Gemini Intelligence will begin on selected Samsung Galaxy and Google Pixel phones, then reach watches, cars, glasses, and laptops later in 2026. Google has also announced [Agent Mode](https://blog.google/products-and-platforms/products/gemini/gemini-app-updates-io-2025/), an experimental desktop feature for AI Ultra subscribers in the United States. It is designed to manage complex tasks with little oversight.
+
+[Amazon says](https://www.aboutamazon.com/news/devices/alexa-plus-available-free-prime-members-us?email_hash=0d7a7050906b225db2718485ca0f3472) Alexa+ is now available in the United States through Alexa devices, Alexa.com, and the Alexa app. The company is presenting it as an assistant that can take action, not only answer questions.
+
+[Google is also bringing Gemini](https://blog.google/products-and-platforms/platforms/wear-os/gemini-wear-os-watches/) to Wear OS watches and [Pixel Buds 2a](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-2a/). Meanwhile, [Google Home](https://blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/) is adding natural-language control for devices, cameras, and doorbells.
+
+These announcements do not show that smartphones are disappearing. They show something quieter: the phone is becoming one doorway among several.
+
+### From tapping through apps to handing over a task
+
+The deeper change is not simply a new gadget. It is a new way to act. Google describes Gemini as helping with research, shopping, and ride bookings across several steps. Alexa+ describes help with takeout, reservations, rides, and repairs. Google Home brings natural-language control and automation into the house. The assistant becomes the coordinator, while the screen becomes one doorway. If this develops, companies may compete over context and connections across devices, not only over screen time.
+
+### A transition moving at two speeds
+
+The scale is real in some places, but the timeline is uneven. Amazon reports 600 million active Alexa endpoints across devices, cars, offices, Fire TV, and Prime Video. “Active endpoints” is Amazon’s term, not a count of unique people. Amazon also reports that customers talked to Alexa twice as much and completed purchases on devices three times more often. Music streaming and smart-home use also rose. The company does not state the comparison period in the cited letter.
+
+Tens of millions joined Alexa+ Early Access before it became available to all U.S. customers. The company says millions of Ray-Ban Meta glasses have sold. But Google’s Android XR products are at different stages: the Galaxy XR headset is already available, audio-only glasses are planned for fall 2026, and the camera glasses with an optional lens display have no separate confirmed launch date in the cited evidence.
+
+That mix points to gradual layering, not one sudden replacement.
+
+## In one line
+
+Digital interaction is moving outward from the touchscreen, but the evidence points to a gradual handover—not the end of the smartphone.

@@ -1,0 +1,74 @@
+{
+  "comment_contract": {
+    "source": "er012_b_family_production_runner_01.py::run_comment_contract_for_new_theme(既存経路、無変更)による再生成(本タスクCONT1、comment_2のTTS読み飛ばし対応)。詳細: comment_2_regeneration.json",
+    "support_status_at_generation": {
+      "preview": "OK",
+      "comment_1": "OK",
+      "comment_2": "OK",
+      "comment_3": "OK",
+      "comment_4": "OK"
+    },
+    "deviation_overall_status_at_generation": "LEDGER_COMPLIANT",
+    "regeneration_attempts_used": 1,
+    "changed_segments": [
+      "preview",
+      "comment_1",
+      "comment_2",
+      "comment_3",
+      "comment_4"
+    ],
+    "unchanged_segments": [],
+    "texts": {
+      "preview": "This episode looks at personalized news feeds and how they shape a reader’s daily news. They may make it easier to find useful stories, while also raising questions about what a reader does not see and who sets those limits. By the end, you will have a clearer way to think about how a feed helps people stay informed and what may be missing.",
+      "comment_1": "As you listen, notice the two ideas being compared and how they are connected.",
+      "comment_2": "That question can feel different in everyday life. Now, listen to two readers speak for themselves, one after the other.",
+      "comment_3": "You have heard two people describe a news feed in very different ways. Instead of deciding which voice is right, let us look at why the same situation can feel helpful to one person and limiting to another.",
+      "comment_4": "So the question is not only who is right. We can also ask what is shaping this situation for each person."
+    },
+    "segment_files": {
+      "comment_1": "comment_1.wav",
+      "comment_2": "comment_2.wav",
+      "comment_3": "comment_3.wav",
+      "comment_4": "comment_4.wav"
+    },
+    "episode_timeline_start_seconds": {
+      "comment_1": 94.466,
+      "comment_2": 131.309,
+      "comment_3": 227.247,
+      "comment_4": 273.229
+    }
+  },
+  "fact_safety_gate": {
+    "mode": "Writer stage専用機構(記事生成時にのみ発火判定)。本driverは記事を再生成しないため新規判定は行わない(既存記録の転記のみ)。",
+    "run2_clean_record": "RESULT_PACKET_VOICES_VAR2.md 3節/EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md: 本記事(attempt3)ではMAJOR deviationがstage1/2条件に非該当だったためGate降格(Fact Safety Gate発動)は発生しなかった(Local Rewriteでdeviationが解消)。発火能力自体はoffline証明済み(9テストPASS)。",
+    "fired_in_this_article": false
+  },
+  "analytical_leakage_check_residual_flag": {
+    "source_file": "er014_output/four_type_observation_01/voices/run2_clean/b1_2v_new_theme_attempt3/analytical_leakage_check_2v_attempt3.json",
+    "any_flagged": true,
+    "flagged_items": [
+      {
+        "voice": "voice_b",
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_narrator_analysis",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "個人の不安から始まるが、途中から調査の割合やランキング研究の結果が前面に出ている。また、「Her unease has a concrete basis」は語り手が人物の感情を外側から分析する文になっている。一方、クリック履歴や広告収益への懸念自体は本人が持ちうる認識として成立しており、人物に不可能な内面を断定してはいない。",
+        "quoted_evidence": "“In the United States, about 60 percent of people in one survey worried about missing different views.”\n“Her unease has a concrete basis: under one news-feed ranking, people saw less news from different viewpoints than in friends’ shared content, while users’ clicks limited that exposure even more.”"
+      },
+      {
+        "voice": "tension",
+        "fail_fields": [
+          "leak_discovery_syntax",
+          "leak_tension_reverts_to_research"
+        ],
+        "reasoning": "全体の中心は二人の異なるリスクと、パーソナライズを選択と感じるか押し付けと感じるかの違いにある。ただし、測定期間と政治的態度の変化を述べる一文が研究上の分析へ戻っており、Discovery的な構文も混入している。",
+        "quoted_evidence": "“In a short window, measured political attitudes may not change, while years of exposure remain outside the picture.”"
+      }
+    ],
+    "note": "ユーザー承認: 追加Prompt改善・Gate緩和は行わず、PARTIALのままユーザー実検証へ進める。試聴対象から隠さず本ファイルとplayer.html双方に記録する。"
+  }
+}

@@ -191,5 +191,19 @@ class TestSupportMarkerInsertion(unittest.TestCase):
         self.assertEqual(following["source_paragraph_indices"], [10, 11, 12, 13])
 
 
+class TestPlayerHtmlWebDeliveryPaths(unittest.TestCase):
+    """USER-TEST-AUDIO-COMPLETION-01-FAMILYC: player.htmlの音声参照が
+    ローカル絶対パス(file:///・C:\\)ではなく、GitHub/raw.githack経由で
+    開ける相対パスであることを検証する(Web試聴導線修正、再生成なし)。"""
+
+    def test_player_html_has_no_local_absolute_paths(self):
+        with open(f"{run_mod.OUT_DIR}/player.html", "r", encoding="utf-8") as f:
+            html = f.read()
+        self.assertNotIn("file:///", html)
+        self.assertNotIn("C:\\", html)
+        self.assertIn("./web/family_c_home_robots_trial_09.mp3", html)
+        self.assertIn("./web/segments/", html)
+
+
 if __name__ == "__main__":
     unittest.main()

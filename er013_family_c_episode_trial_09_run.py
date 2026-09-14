@@ -48,6 +48,11 @@ import audio_review_player as player_mod
 ARTICLE_PATH = "er013_output/family_c_future_trial_08/home_robots/reader_facing_article.txt"
 OUT_DIR = "er013_output/family_c_episode_trial_09/home_robots"
 AUDIO_DIR = f"{OUT_DIR}/audio"
+# Web配信用相対パス(USER-TEST-AUDIO-COMPLETION-01-FAMILYC、file:///ローカル
+# 絶対パスをGitHub/raw.githack経由で開けるようにするための相対パス化。
+# 実体のmp3変換は本ファイルでは行わない。build_web_delivery.py::convert_all()
+# を別途実行してassembled wav/個別segment wavをmp3化すること)。
+WEB_SEG_URL_PREFIX = "./web/segments"
 ASSEMBLED_DIR = f"{OUT_DIR}/assembled"
 KEY_PHRASE_DIR = f"{OUT_DIR}/key_phrases"
 AUDIT_DIR = f"{OUT_DIR}/audit"
@@ -827,27 +832,26 @@ def build_player_html(seq_labels, story_segments, kp_items, preview_text, suppor
             rank = int(name.split("_")[-1])
             it = kp_by_rank[rank]
             script = f"{rank}. {it['used_form']} / {it.get('japanese_gloss')}"
-            audio_urls = [player_mod.abs_file_url(f"{AUDIO_DIR}/kp{rank}_number.wav"),
-                          player_mod.abs_file_url(f"{AUDIO_DIR}/kp{rank}_english.wav"),
-                          player_mod.abs_file_url(f"{AUDIO_DIR}/kp{rank}_japanese.wav")]
+            audio_urls = [f"{WEB_SEG_URL_PREFIX}/kp{rank}_number.mp3",
+                          f"{WEB_SEG_URL_PREFIX}/kp{rank}_english.mp3",
+                          f"{WEB_SEG_URL_PREFIX}/kp{rank}_japanese.mp3"]
             audio_html = player_mod.render_single_audio_html(audio_urls)
             rows.append(player_mod.render_timeline_row(start, name, "Aoede(number/en/ja gloss)",
                                                          script, audio_html))
             continue
         if name in label_to_text:
             text, voice_disp = label_to_text[name]
-            audio_path = f"{AUDIO_DIR}/{name}.wav"
-            audio_html = player_mod.render_single_audio_html(player_mod.abs_file_url(audio_path))
+            audio_html = player_mod.render_single_audio_html(f"{WEB_SEG_URL_PREFIX}/{name}.mp3")
             rows.append(player_mod.render_timeline_row(start, name, voice_disp, text, audio_html))
             continue
         seg = seg_by_id.get(name)
         if seg is not None:
             voice_disp = "Aoede(narrator)" if seg["voice"] == "narrator" else "Charon(robot)"
-            audio_html = player_mod.render_single_audio_html(player_mod.abs_file_url(seg["audio_path"]))
+            audio_html = player_mod.render_single_audio_html(f"{WEB_SEG_URL_PREFIX}/{seg['id']}.mp3")
             rows.append(player_mod.render_timeline_row(start, name, voice_disp, seg["tts_text"], audio_html))
 
     table_html = player_mod.render_timeline_table(rows)
-    episode_url = player_mod.abs_file_url(final_audio_path)
+    episode_url = "./web/family_c_home_robots_trial_09.mp3"
     html = f"""<!doctype html><html><head><meta charset="utf-8">
 <title>Family C Trial-09: Home Robots</title>
 <style>{player_mod.PLAYER_STANDARD_CSS}</style>

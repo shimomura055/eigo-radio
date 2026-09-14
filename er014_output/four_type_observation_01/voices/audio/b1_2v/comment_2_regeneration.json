@@ -1,0 +1,48 @@
+{
+  "reason": "comment_2のTTSが挿入句 \"one after the other. Each\" を3回とも読み飛ばしTRUE_CONTENT_MISMATCH -> Human Review Cost Guardで停止(前回run到達点)。記事本文は変更せず、Comment 1-4+Preview(補助生成テキスト)を既存の接続済みComment Contract経路で再生成し、読み飛ばしを誘発した文言を解消できるか確認する。同一テキストの再試行ではなく、既存経路による新規テキスト生成である(Human Review Lockはcanonical_text_sha256差分により新版として扱われる、approve_regenerate()は呼んでいない)。",
+  "max_attempts": 2,
+  "attempts": [
+    {
+      "attempt": 1,
+      "out_dir": "er014_output/four_type_observation_01/voices/audio/b1_2v/comment_regen/attempt1",
+      "support_status": {
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK"
+      },
+      "deviation_overall_status": "LEDGER_COMPLIANT"
+    }
+  ],
+  "attempts_used": 1,
+  "old_texts": {
+    "preview": "Today’s episode looks at how personalized news feeds shape what appears on our screens. They may help us find relevant stories, but they also raise a question about what we might not see. By the end, you will understand what these feeds change about the way people follow the news.",
+    "comment_1": "As you listen, notice both the helpful side and the possible concern.",
+    "comment_2": "Now, you will hear two people speak in their own words, one after the other. Each one brings a different view to the same question.",
+    "comment_3": "These voices do not give us a simple choice between right and wrong. They show that the same news feed can feel useful to one person and limiting to another, so next we will look at why the same situation can feel different to different people.",
+    "comment_4": "Instead of asking only who is right, let’s ask what is shaping this situation in the first place. That question takes us past the surface disagreement."
+  },
+  "new_texts": {
+    "preview": "This episode looks at personalized news feeds and how they shape a reader’s daily news. They may make it easier to find useful stories, while also raising questions about what a reader does not see and who sets those limits. By the end, you will have a clearer way to think about how a feed helps people stay informed and what may be missing.",
+    "comment_1": "As you listen, notice the two ideas being compared and how they are connected.",
+    "comment_2": "That question can feel different in everyday life. Now, listen to two readers speak for themselves, one after the other.",
+    "comment_3": "You have heard two people describe a news feed in very different ways. Instead of deciding which voice is right, let us look at why the same situation can feel helpful to one person and limiting to another.",
+    "comment_4": "So the question is not only who is right. We can also ask what is shaping this situation for each person."
+  },
+  "changed_flags": {
+    "preview": true,
+    "comment_1": true,
+    "comment_2": true,
+    "comment_3": true,
+    "comment_4": true
+  },
+  "changed_segments": [
+    "preview",
+    "comment_1",
+    "comment_2",
+    "comment_3",
+    "comment_4"
+  ],
+  "unchanged_segments": []
+}

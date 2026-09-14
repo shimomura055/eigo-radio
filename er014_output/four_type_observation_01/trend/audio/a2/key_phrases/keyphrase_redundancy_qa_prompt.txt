@@ -1,0 +1,92 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# The Smartphone Screen Is Still Here. It Is Just Sharing the Work
+
+The smartphone screen is still the familiar front door to digital life. But several company announcements and rollouts point to a change: digital services are opening more doors around it.
+
+[Google](https://blog.google/products-and-platforms/platforms/android/gemini-intelligence/) says Gemini Intelligence for Android will handle multi-step jobs such as booking rides and shopping. It will start on selected Galaxy and Pixel phones, then extend to watches, cars, glasses, and laptops in 2026.
+
+[Amazon](https://www.aboutamazon.com/news/devices/alexa-plus-available-free-prime-members-us?email_hash=0d7a7050906b225db2718485ca0f3472) describes Alexa+ as able to carry out tasks such as ordering takeout, booking rides, and making restaurant reservations. It works through Alexa devices, Alexa.com, and the Alexa app in the United States.
+
+Now look away from the phone.
+
+[Pixel Buds 2a](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-2a/) offer hands-free access to Gemini. A [Google Translate beta](https://blog.google/products-and-platforms/products/gemini/gemini-audio-model-updates/) sends translated speech through headphones in more than 70 languages. Gemini is also rolling out to [Wear OS watches](https://blog.google/products-and-platforms/platforms/wear-os/gemini-wear-os-watches/).
+
+[Meta](https://about.fb.com/news/2025/09/ray-ban-meta-gen-2-better-battery-life-video-capture/) says its Ray-Ban Meta glasses have sold millions of units. They combine a camera, an AI assistant, translation, and open-ear audio.
+
+[Google](https://blog.google/products-and-platforms/platforms/android/android-xr-gemini-glasses-headsets/) has shown glasses that could handle messages, appointments, directions, photos, and live translation without reaching for a phone. Google later announced a fall 2026 launch for the first audio-only eyewear product in that line.
+
+Cars and homes are joining this picture too. New assistant features are planned for car systems, and [Google Gemini for Home](https://blog.google/products-and-platforms/devices/google-nest/gemini-for-home-launch/) is coming to speakers, displays, cameras, and doorbells.
+
+Some of these products are available now. Others are beta tests, demonstrations, or future plans. So this is not proof that phones are being replaced. It is a group of signals pointing to a quieter change: the touchscreen is becoming less central.
+
+### When the task moves first
+
+The clearest pattern is about the task, not the gadget. A short translation, directions, an appointment, a purchase, or a home-control action can move to earbuds, glasses, a car, a watch, or a speaker. A screen can still be useful for reading and comparing. So the change can happen one moment at a time: the phone stays useful, while fewer moments must begin on its touchscreen.
+
+### Reach comes from places already in use
+
+Reach is the second story. Amazon reports 600 million active Alexa endpoints and says tens of millions joined Alexa+ Early Access before U.S. availability. “Endpoints” is Amazon’s term, not a count of unique people. Google says Android Auto supports over 250 million cars, while Gemini for Home targets devices made during the previous decade. These reports point to a strategy: add software to places people already use, not a replacement phone.
+
+## In one line
+
+The smartphone is not disappearing; the touchscreen is sharing more of the work. The direction looks real, but it is still early: the evidence mixes live products, experiments, plans, and company-reported numbers—not proof that phone screens have lost their place.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "roll out",
+    "japanese_gloss": "少しずつ提供していく",
+    "source_sentence": "Gemini is also rolling out to Wear OS watches."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "endpoint",
+    "japanese_gloss": "サービスにつながる機器や場所",
+    "source_sentence": "Amazon reports 600 million active Alexa endpoints and says tens of millions joined Alexa+ Early Access before U.S. availability."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "point to",
+    "japanese_gloss": "～を示している",
+    "source_sentence": "But several company announcements and rollouts point to a change: digital services are opening more doors around it."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "carry out",
+    "japanese_gloss": "実行する",
+    "source_sentence": "Amazon describes Alexa+ as able to carry out tasks such as ordering takeout, booking rides, and making restaurant reservations."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "hands-free access",
+    "japanese_gloss": "手を使わずに利用できること",
+    "source_sentence": "Pixel Buds 2a offer hands-free access to Gemini."
+  }
+]

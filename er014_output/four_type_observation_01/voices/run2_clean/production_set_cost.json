@@ -1,5 +1,5 @@
 {
-  "note": "Voices Production 1生成セット総原価= Research/Ledger(既存、run1_partial流用・再計算なし) + Writer/Comment/QA/Gate/retry(本run実測)",
+  "note": "Voices Production 1生成セット総原価= Research/Ledger(既存、run1_partial流用・再計算なし) + Writer/Comment/QA/Gate/retry(run2_clean実測) + Audio(run1音声化+CONT1音声化、いずれもUSER-TEST-AUDIO-COMPLETION-01-VOICES系タスク実測)。CONT1(2026-09-14)でcomment_2のTTS読み飛ばし対応(Comment Contract再生成+差し替えTTS+未生成だったKey Phrase音声補完)を行い、Assembly/Audio Validation Gate/完成episode/Web playerまで到達(Status=PARTIAL / USER TEST READY、詳細docs/pm/RESULT_PACKET_UT_VOICES_2.md)。",
   "research_ledger_cost_jpy_reused": 46.98,
   "new_spend_jpy_writer_comment_qa_gate": 93.41,
   "new_spend_token_summary": {
@@ -20,7 +20,11 @@
       "cached_input_tokens": 41272
     }
   },
-  "voices_production_set_total_cost_jpy": 140.39,
+  "voices_production_set_total_cost_jpy_before_audio": 140.39,
+  "audio_completion_run1_cost_jpy": 32.34,
+  "audio_completion_cont1_cost_jpy": 13.01,
+  "audio_completion_cont1_note": "comment_2 Comment Contract再生成(LLM)+preview/comment_1-4差し替えTTS+Key Phrase音声(kp1-5 en/ja)新規生成。cost_log_raw_cont1.jsonl実測(openai 0.65+gemini 11.73+openai_asr 0.63)。",
+  "voices_production_set_total_cost_jpy": 185.74,
   "budget_jpy_new_spend_only": 150.0,
-  "budget_status": "PASS"
+  "budget_status": "PASS(Writer/Comment/QA/Gate段階の予算。Audio段階の予算は別枠[run1上限150・CONT1上限60]で、いずれもPASS)"
 }

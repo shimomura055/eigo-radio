@@ -1,0 +1,35 @@
+{
+  "task_id": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1",
+  "level": "b1b",
+  "segment": "full_story_part2",
+  "note": "記事本文(article.md/parts.json)は変更しない。TTS入力(canonical_text)のみに数字の読み整形を適用する。canonical_textとしてtts_generation_results.jsonへ記録する値は既存Production規約どおり元の記事由来テキスト(original_text)のまま据え置き、読み整形後のテキスト(transformed_text)はTTS呼び出し引数としてのみ使う(既存の固有名詞発音override['Reicher'->'Riker']等と同じ設計、player/consistency checkの表示規約を崩さない)。",
+  "transforms": [
+    {
+      "original": "roughly 46 students",
+      "transformed": "roughly forty-six students",
+      "reason": "桁の多い算用数字が密集する箇所でTTSが誤読する疑いがあるため、数詞表記に読み整形(意味不変)。"
+    },
+    {
+      "original": "six minutes and 30 seconds",
+      "transformed": "six minutes and thirty seconds",
+      "reason": "3回中1回、ASRが'30 seconds'を'three seconds'と検出(TTS側の桁誤読が疑われる)。'30'を'thirty'に読み整形。"
+    },
+    {
+      "original": "A review of 37 studies",
+      "transformed": "A review of thirty-seven studies",
+      "reason": "同上の数字密集箇所対策として読み整形。"
+    },
+    {
+      "original": "In a study of 2,557 college students at 12 sites in 11 countries",
+      "transformed": "In a study of two thousand five hundred and fifty-seven college students at twelve sites in eleven countries",
+      "reason": "3回中2回、この文(桁区切りカンマ付き4桁数字+2つの2桁数字が密集)を含む文またはその前後が音声から欠落した。数詞表記へ読み整形し、TTSが桁の多い算用数字列を安定して発話できるようにする。"
+    }
+  ],
+  "original_text": "At the same time, silence can also bring calm. In one study of roughly 46 students, six minutes and 30 seconds of silence increased relaxation in both a university room and a city garden. The outdoor setting also brought less boredom and a stronger feeling of being in the present moment.\n\nResearch on the body shows the same mixed picture. A review of 37 studies found that responses to silence depend on the kind of silence, the setting, familiarity, surrounding noise, and other personal factors. In a study that measured heart activity, one noise condition showed more activity linked with the body’s calming system than silence, while white noise showed more activity linked with its alerting system than that noise.\n\nPeople also differ across studies and cultures. In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use. In one Japan–United States survey, Japanese respondents viewed silence more negatively with strangers than with close friends, while Americans did not show that difference.",
+  "transformed_text": "At the same time, silence can also bring calm. In one study of roughly forty-six students, six minutes and thirty seconds of silence increased relaxation in both a university room and a city garden. The outdoor setting also brought less boredom and a stronger feeling of being in the present moment.\n\nResearch on the body shows the same mixed picture. A review of thirty-seven studies found that responses to silence depend on the kind of silence, the setting, familiarity, surrounding noise, and other personal factors. In a study that measured heart activity, one noise condition showed more activity linked with the body’s calming system than silence, while white noise showed more activity linked with its alerting system than that noise.\n\nPeople also differ across studies and cultures. In a study of two thousand five hundred and fifty-seven college students at twelve sites in eleven countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use. In one Japan–United States survey, Japanese respondents viewed silence more negatively with strangers than with close friends, while Americans did not show that difference.",
+  "round_trip_reconstructed_text_equals_original": true,
+  "original_word_count": 197,
+  "transformed_word_count": 202,
+  "word_count_diff_explanation": "2,557のような桁の多い数字を英語の数詞へ展開すると単語数が増える(例: '2,557'1語 -> 'two thousand five hundred and fifty-seven'7語)。これは新しい主張・情報の追加ではなく、同じ数値の読み上げ表記の展開であり、round_trip_reconstructed_text_equals_original=Trueにより、逆変換で元のarticle本文と完全一致することを機械確認している。",
+  "generated_at": "2026-09-14T11:24:42.561766+00:00"
+}

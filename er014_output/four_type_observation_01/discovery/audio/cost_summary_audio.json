@@ -1,0 +1,32 @@
+{
+  "levels": {
+    "a2": {
+      "preview_comment_llm_jpy": 0.65,
+      "key_phrase_llm_jpy": 0.0,
+      "tts_jpy": 38.23,
+      "other_jpy": 0.0,
+      "total_jpy": 38.88,
+      "raw_stage_breakdown_jpy": {
+        "scaffold_a2": 0.6513,
+        "tts_a2": 38.2301
+      }
+    },
+    "b1b": {
+      "preview_comment_llm_jpy": 0.49,
+      "key_phrase_llm_jpy": 0.0,
+      "tts_jpy": 62.46,
+      "other_jpy": 0.0,
+      "total_jpy": 62.95,
+      "status": "STOPPED(未完成、USER_DECISION_REQUIRED)",
+      "raw_stage_breakdown_jpy": {
+        "scaffold_b1b": 0.4919,
+        "tts_b1b": 62.4603
+      },
+      "note": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1: full_story_part2のTTS入力へ数字読み整形(discovery/audio/tts_reading_transforms.json)を適用し既存関数で再度初回生成(3attempt)を行ったが、'In a study of 2,557 college students at 12 sites in 11 countries, ... phone use.'の文が3attemptとも音声から欠落しTRUE_CONTENT_MISMATCHのまま。approve_regenerate()は呼ばずSTOP(review_lock=HUMAN_REVIEW_REQUIRED)。tts_jpyのうち¥16.32がこのCONT1 attemptの追加実費(残り¥46.14は前回driverでのSTOPPED時点までの実費)。Assembly/Gate/episode/player未生成。"
+    }
+  },
+  "budget_jpy": 160.0,
+  "combined_total_jpy": 101.83,
+  "note": "Key Phrase(A2/B1B双方)は既存完成済み結果を再利用したため新規LLM呼び出し0件(key_phrase_llm_jpy=0はこのdriver内の再利用分。B1B人手選定時のcanonicalization/Redundancy QA 2呼び出し分は本ファイルの集計対象外、別途key_phrases/b1b/manual_selection_rationale.md「既知の限定事項」に記録済み)。",
+  "updated_at": "2026-09-14T20:27:28+00:00"
+}

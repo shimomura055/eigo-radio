@@ -1,0 +1,17 @@
+{
+  "reason": "[Fable診断(3)] TTSは正しく読んでいるがASRが\"assistants\"を\"assistance\"と誤認(3回とも同一箇所で再現)。記事本文[canonical article]は変更せず、Comment/Preview(補助生成テキスト)のみを既存Scaffold関数(er003_v1_b1_scaffold_01_generate.run_support_text、run_b1_scaffold内部でcomment_4に使っているのと同一の呼び出し)で単独再生成した。",
+  "old_comment_4_text": "Taken together, the points show that assistants may take on more tasks, while the change itself is arriving at different speeds. Now, let’s bring these ideas together and look at what they mean.",
+  "new_comment_4_text": "We have seen how assistants may help connect several actions across devices, rather than simply respond on a screen. At the same time, this change is arriving at different speeds, with some products available and others still planned. Now, let’s bring these ideas together in the closing summary.",
+  "scaffold_status": "OK",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "OK",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_04780325384c64dd006aa7db99881887d09363241732088b05",
+      "raw_text": "So far, we have seen that assistants may take on more tasks, while the move to these new devices is happening at different speeds. Now, let’s bring those ideas together and look at the bigger picture."
+    }
+  ],
+  "preview_and_comment_1_2_3_unchanged": true,
+  "note_fix": "CONT1のb1b再実行(consistency-checkバグ修正後の再実行)がfix_b1b_comment_4を冪等化する前に2回目のLLM呼び出しを行い、b1_support_texts.jsonのcomment_4を実際にASR検証済みの音声のテキスト(このnew_comment_4_text)とは異なる第3世代のテキストで一時的に上書きしていた。本ファイル・b1_support_texts.jsonとも、実際に生成・ASR検証済みの音声(canonical_text)と一致するテキストへ復元した(音声[wav/mp3]自体は最初から変更していない、実際の音声内容は一貫して正しい)。"
+}
