@@ -1,0 +1,74 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "検証対象の記事には本文および具体的な主張がなく、事実確認の対象となる記述はありません。",
+          "参考として、NIH・FDA・NCBIの公式情報を確認しましたが、記事内に照合すべき主張がないため、判定には影響しません。"
+        ],
+        "sources": [
+          "NIH: Brain-computer interfacesの概要 ([nih.gov](https://www.nih.gov/brain/about/vision/brain-2025-scientific-vision?utm_source=openai))",
+          "FDA: Implantable brain-computer interface devicesに関する指針 ([fda.gov](https://www.fda.gov/medical-devices/products-and-medical-procedures/neurological-devices?utm_source=openai))",
+          "NCBI MeSH: Brain-Computer Interfacesの定義 ([ncbi.nlm.nih.gov](https://www.ncbi.nlm.nih.gov/mesh?Cmd=ShowDetailView&Db=mesh&TermToSearch=68062207&utm_source=openai))"
+        ],
+        "notes": "記事にCURRENT FACT文および具体的な記述がないため、矛盾・未確認の主張はありません。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0fc3c7bd86b97400006aa7372ce1d487d09195ff616c082e36",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "site:nih.gov brain computer interface official overview",
+          "site:fda.gov brain computer interface official"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "No connecting narration is provided beyond the title and the evaluation question, so there is no technology-to-future leap to assess."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_03d155a37694982b006aa737339e5c87d08500025ee21569dd",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The scene is explicitly marked as taking place around 2035 and is written as speculative fiction, with future technologies and events presented within Mara’s imagined narrative rather than as claims about today."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0a25029afe1b211c006aa737357cc487d0b985abae22500ff3"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。",
+  "current_fact_layer_skip_note": "CURRENT FACT文0件(v7のデフォルト方針)。Fact Checker A'はプレースホルダテキストに対して形式的に実行されたのみで、実質的な検証対象は存在しない。Layer1 Ledger Deviation Checkerはfact_blocks空のため明示的にskipされている(current_fact_layer.layer1_deviation_check.skipped参照)。"
+}

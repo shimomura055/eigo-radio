@@ -1,0 +1,68 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "記事本文に、検証対象となる具体的な事実主張が記載されていません。"
+        ],
+        "sources": [],
+        "notes": "事実確認の対象となる記述がないため、信頼できる情報との矛盾や未確認の具体的主張はありません。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0377f7526167ecbf006aa73655f20c87d0839632d450c6385b",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "家庭用ロボット 家事 公式"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "The provided text contains only a title and does not make any technological claims or connections to an imagined future."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_040476fe896c31c5006aa7365c154c87d0b7336be7a2526a74",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The scene is explicitly marked as taking place around 2035 and is written as a hypothetical narrative about a future home robot. Nothing is presented as an existing fact today."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0485719f445df9fe006aa7365e1f3487d084f013400339cda6"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。",
+  "current_fact_layer_skip_note": "CURRENT FACT文0件(v7のデフォルト方針)。Fact Checker A'はプレースホルダテキストに対して形式的に実行されたのみで、実質的な検証対象は存在しない。Layer1 Ledger Deviation Checkerはfact_blocks空のため明示的にskipされている(current_fact_layer.layer1_deviation_check.skipped参照)。"
+}

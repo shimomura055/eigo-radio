@@ -403,6 +403,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01: Discovery S2 Production正式関数の正常完走runtime evidence(A2)取得+PRODUCTION_WIRED確定
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-125: Family C v6再設計Trial-06(VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-126: OPEN-148起票(Discovery S2量産単価のStage 2-3 retry上振れ、HIGH・意図的defer)+Discovery S2正式受入の記録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-127: Family C Trial-07(発想スケール比較、VALIDATED)のGit記録+OPEN-147反映+transcript退避2件
 
 ---
 
@@ -7074,6 +7075,12 @@ PM-CLOSEOUT-CONSOLIDATION-126。ユーザー判断: Discovery S2はPRODUCTION_WI
 として正式受入(確定)。量産単価上振れ問題(retryなし¥32.71→retryあり
 ¥55.30/A2、Stage 2-3全体retry起因)をOPEN-148としてPriority HIGH・
 意図的deferで登録。改善Trialは開始しない、CURRENT_SPEC変更なし。
+
+## PM-CLOSEOUT-CONSOLIDATION-127(2026-09-14)
+
+PM-CLOSEOUT-CONSOLIDATION-127。Family C Trial-07(発想スケール比較、
+VALIDATED、Production未採用)をGit記録・OPEN-147反映。CURRENT FACT
+本文契約撤廃はユーザー判断(2026-09-14)。transcript退避2件。
 
 ## 参照元
 

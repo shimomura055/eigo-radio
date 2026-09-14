@@ -1,0 +1,64 @@
+[Theme]
+the future of brain-computer interfaces
+
+[Inspiration note -- an idea a human reader found genuinely exciting in an unrelated free-form draft. Use only the *thinking style* below as inspiration. Do not reuse its wording, and do not write about this exact idea if the theme above points elsewhere.]
+When a brain connects directly to a machine, the privacy of a person's own unspoken thoughts becomes a new kind of problem -- not what a person says, but what a machine can read before they decide to say it.
+
+[Verified current-fact material -- background only, a guardrail for how far you may plausibly leap, not the subject of the article]
+[PRESENT_FACT] (Trial-06_bmi収集、事後Fact Checker A'検証対象)
+[CANDIDATE] BCI-001: The FDA’s 510(k) database lists Precision Neuroscience’s Layer 7-T cortical interface as cleared on March 30, 2025, under the Neurology review panel.
+  source: FDA 510(k) Premarket Notification: Layer 7-T (https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K242618)
+[CANDIDATE] BCI-002: Neuralink’s PRIME study remains listed as recruiting in ClinicalTrials.gov. It is a first-in-human early-feasibility study of the N1 brain implant and R1 surgical robot, with estimated enrollment of 15 participants.
+  source: ClinicalTrials.gov: PRIME Study, NCT06429735 (https://clinicaltrials.gov/study/NCT06429735)
+[CANDIDATE] BCI-003: A 2025 peer-reviewed study reported that an intracortical BCI decoded finger movements and enabled quadcopter-game control in an individual with paralysis; the work was conducted within the BrainGate2 clinical trial.
+  source: Nature Medicine: A high-performance brain–computer interface for finger decoding and quadcopter game control (https://pubmed.ncbi.nlm.nih.gov/39833405/)
+[CANDIDATE] BCI-004: A 2026 Nature Medicine study reported independent at-home use of an intracortical BCI by a person with ALS for more than 3,800 hours over nearly two years, supporting speech and computer-cursor control.
+  source: Nature Medicine: Long-term independent use of an intracortical brain–computer interface for speech and cursor control (https://pubmed.ncbi.nlm.nih.gov/42297978/)
+[CANDIDATE] BCI-005: In a published analysis of two participants in Synchron’s COMMAND trial, an endovascular Stentrode BCI recorded motor-related brain signals for three months and classified attempted movement versus rest with more than 90% accuracy for both participants.
+  source: PubMed: Motor activity in gamma and high gamma bands recorded with a Stentrode from the human motor cortex in two people with ALS (https://pubmed.ncbi.nlm.nih.gov/40048825/)
+
+[Five scales/lenses -- generate candidates for ALL FIVE]
+A_intimate: Intimate Future -- one person or one family's daily life, emotions, choices, and relationships change. Example seed: 'What if a robot understood your own daily life better than you do?'
+B_societal: Societal Future -- society-wide rules change: work, education, law, housing, family structure, the economy. Example seed: 'When home robots become completely normal, will the ability to do housework stop being counted as a life skill?'
+C_radical: Radical Future -- today's basic concept of daily life or common sense itself breaks down. Example seed: 'What if it is not the human who manages the house, but the house itself that autonomously runs a person's life?'
+D_second_order (parallel lens): Second-order Future (a parallel lens, not a constraint) -- the second- or third-order changes that happen only after the technology has become completely normal. Example seed: 'What happens 20 years after nobody has learned how to do housework anymore?'
+E_inversion (parallel lens): Inversion Future (a parallel lens, not a constraint) -- the success of the convenience/benefit itself becomes the new problem. Example seed: 'A robot understands a person so well that it starts prioritizing what is best for them over what they actually want.'
+
+[Task]
+Generate Core Provocation candidates about the theme above, distributed like this:
+- 3 to 4 candidates with scale="A_intimate"
+- 3 to 4 candidates with scale="B_societal"
+- 3 to 4 candidates with scale="C_radical"
+- 1 to 2 candidates with scale="D_second_order"
+- 1 to 2 candidates with scale="E_inversion"
+
+For a D_second_order or E_inversion candidate, you may optionally combine it with one
+of A_intimate/B_societal/C_radical (set combined_with to that scale's id, e.g. a
+D_second_order candidate combined with B_societal, or an E_inversion candidate
+combined with A_intimate or C_radical). Do NOT generate every possible combination --
+only combine when the combination is genuinely stronger than the lens alone. Otherwise
+set combined_with to null.
+
+For EACH candidate, write:
+- id: a short id like "CP-A1", "CP-B2", "CP-D1"
+- scale: one of the five scale/lens ids above
+- combined_with: null, or one of A_intimate/B_societal/C_radical (only for D/E candidates)
+- premise: 1-2 sentences describing a vivid, concrete Provocative Future Premise
+- core_provocation: exactly ONE sentence -- the strongest central question this future
+  situation raises for a reader
+- what_is_the_future: 1 short sentence -- what, concretely, is different from today
+- what_is_interesting: 1 short sentence -- why this is interesting, not just plausible
+- what_would_surprise_the_reader: 1 short sentence -- the specific twist or turn a
+  reader would not expect going in
+- what_happens_as_a_story: 1-2 short sentences -- concretely, what kind of scene or
+  event this would become if turned into a short story
+- reference_six_axis_scores: six scores from 0 (none) to 3 (very strong) -- these are
+  ONLY a secondary reference, NOT how you should decide which idea is best:
+  future_leap_score, excitement_score, tension_score, thought_provoking_score,
+  distance_from_current_score, evidence_connection_score
+- safety_boundary_note: one sentence on why this stays inside a safety boundary (it
+  must remain clearly an imagined future, not something stated as if it is already
+  true today)
+
+Do NOT select a single winner here -- that will be done separately, by relative
+ranking across all candidates.

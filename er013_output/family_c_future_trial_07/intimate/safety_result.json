@@ -1,0 +1,72 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "提示された記事には、検証対象となる具体的な事実主張・数値・日付・引用・比較表現が含まれていません。",
+          "「この記事にCURRENT FACT文はありません」という記載は記事内容に関するメタ情報であり、家庭用ロボットや家事に関する事実主張ではありません。"
+        ],
+        "sources": [
+          "iRobot公式の家庭用ロボット関連情報を補足的に確認しましたが、提示記事に検証対象の主張がないため、判定の直接根拠にはしていません。 ([irobot.com](https://www.irobot.com/en_US/irobot-os.html?utm_source=openai))"
+        ],
+        "notes": "記事本文に具体的な主張がないため、明確な矛盾や未確認の重要な主張はありません。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0bb142da31cacbe8006aa73612655c87d0b25c3bacce243c5b",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "site:irobot.com home robots housework official",
+          "site:dyson.com robot vacuum official home cleaning"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "No connecting narration is provided beyond the title, so there is no technological leap to evaluate."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_0ec858407c82b1a8006aa7361d498c87d0b2d49426b7da439a",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The timeframe markers explicitly place the scenes around 2035 and later, so the present-tense narration is understood as part of an imagined future rather than a claim about today."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0cfae77bd98f0ce1006aa7361f7a2087d0a0e97f780e08bac8"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。",
+  "current_fact_layer_skip_note": "CURRENT FACT文0件(v7のデフォルト方針)。Fact Checker A'はプレースホルダテキストに対して形式的に実行されたのみで、実質的な検証対象は存在しない。Layer1 Ledger Deviation Checkerはfact_blocks空のため明示的にskipされている(current_fact_layer.layer1_deviation_check.skipped参照)。"
+}

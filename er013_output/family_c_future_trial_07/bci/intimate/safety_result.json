@@ -1,0 +1,73 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "検証対象の記事には本文および具体的な主張が提示されておらず、確認対象となる事実主張はありません。",
+          "参考として、脳‐コンピュータ・インターフェース（BCI）は、脳活動を計測・解析し、外部機器の制御や通信に用いる技術として定義されています。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/32164849/?utm_source=openai))"
+        ],
+        "sources": [
+          "PubMed: Brain-computer interfaces: Definitions and principles ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/32164849/?utm_source=openai))",
+          "NCBI MeSH: Brain-Computer Interfaces ([ncbi.nlm.nih.gov](https://www.ncbi.nlm.nih.gov/mesh?Cmd=ShowDetailView&Db=mesh&TermToSearch=68062207&utm_source=openai))"
+        ],
+        "notes": "記事内にCURRENT FACT文はなく、検証可能な具体的主張もありません。そのため、矛盾または未確認の重要な主張は認められません。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_00c58510f1235898006aa736ead74487d09cb82cb833a19fa8",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "site:nih.gov brain computer interface overview",
+          "site:neuralink.com brain computer interface"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "The text contains only a heading and does not make any technological claims or connect present technology to an imagined future."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_0d144a1dc8d847f1006aa736f0639487d0ae98cf0f0788e8ce",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The scene is explicitly framed with a timeframe around 2035 and uses speculative, narrative language about a future BCI system. Nothing is presented as an established fact that exists today."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0d761c3c2c15a509006aa736f30a7887d0b2c27f0778a9f73f"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。",
+  "current_fact_layer_skip_note": "CURRENT FACT文0件(v7のデフォルト方針)。Fact Checker A'はプレースホルダテキストに対して形式的に実行されたのみで、実質的な検証対象は存在しない。Layer1 Ledger Deviation Checkerはfact_blocks空のため明示的にskipされている(current_fact_layer.layer1_deviation_check.skipped参照)。"
+}

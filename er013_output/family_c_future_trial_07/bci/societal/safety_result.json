@@ -1,0 +1,71 @@
+{
+  "current_fact_layer": {
+    "current_fact_text": "(この記事にCURRENT FACT文はありません)",
+    "fact_check": {
+      "parsed": {
+        "verdict": "PASS",
+        "contradictions": [],
+        "unsupported_specific_claims": [],
+        "verified_claims_summary": [
+          "検証対象の記事にはCURRENT FACT文がなく、確認すべき具体的な事実主張は存在しません。"
+        ],
+        "sources": [
+          "脳とコンピュータをつなぐ技術（BCI）の定義・概要を確認するため、PubMedおよび米国FDAの資料を参照しました。 ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/32164849/?utm_source=openai))"
+        ],
+        "notes": "記事内に具体的な主張がないため、内容面での矛盾や未確認の重要主張は確認されませんでした。"
+      },
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0456cc81d18122bf006aa73708734c87d0b0dd315d97682d43",
+      "search_usage": {
+        "web_search_call_count": 1,
+        "queries": [
+          "site:nih.gov brain-computer interface overview",
+          "site:fda.gov brain computer interface"
+        ]
+      }
+    },
+    "issue_classification": {
+      "contradictions": [],
+      "unsupported_specific_claims": []
+    },
+    "layer1_deviation_check": {
+      "skipped": true,
+      "reason": "この記事にCURRENT FACT文がないため対象外"
+    },
+    "layer_pass": true
+  },
+  "plausibility_bridge_layer": {
+    "parsed": {
+      "complete_leap_detected": false,
+      "flagged_sentences": [],
+      "notes": "The provided text contains only a section heading and the evaluation question; it makes no technological claim or connection to an imagined future."
+    },
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_08dba6fac9cb6643006aa73712422487d094152043b530b7b9",
+    "layer_pass": true
+  },
+  "imagined_future_layer": {
+    "decisive_1_no_fact_marker_inside_imagined": {
+      "pass": true,
+      "issues": []
+    },
+    "decisive_2_timeframe_present": {
+      "pass": true,
+      "missing_count": 0
+    },
+    "llm_light_judgment": {
+      "parsed": {
+        "misrepresented_as_current_fact": false,
+        "clearly_imagined": true,
+        "notes": "The scene is explicitly marked as occurring around 2035 and uses future-oriented framing such as “Later, the law may offer,” so it is not presented as a fact about today. The courtroom narrative is written vividly in the present tense, but the timeframe marker and speculative language make clear that it is an imagined future scenario."
+      },
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_077463ce46dcc8b6006aa737141fcc87d0a1771acf22813417"
+    },
+    "layer_pass": true
+  },
+  "overall_pass": true,
+  "current_fact_verdict_note": "REVIEW_REQUIREDは緩和判定に置き換えていない。CURRENT FACTに対する指摘か、IMAGINED側の誤混入疑いかをissue_classificationへ機械的に分類して記録している。",
+  "current_fact_layer_skip_note": "CURRENT FACT文0件(v7のデフォルト方針)。Fact Checker A'はプレースホルダテキストに対して形式的に実行されたのみで、実質的な検証対象は存在しない。Layer1 Ledger Deviation Checkerはfact_blocks空のため明示的にskipされている(current_fact_layer.layer1_deviation_check.skipped参照)。"
+}
