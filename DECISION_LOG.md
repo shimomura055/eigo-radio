@@ -411,6 +411,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-131: 4TYPE補完(News B1追加/Trend Ledger修正再生成/Discovery No Jargon修正+B1B)統合+OPEN-151をPARTIALへ訂正+最終REPORT+比較ページ更新
 - [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02: OPEN-151完成(Comment Contract接続+Fact Safetyゲート2V/3V対応+2V clean evidence、Status=PARTIAL[14/15、Leakage残存のみ未充足])
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-132: 4TYPE補完完成(Trend OK/Discovery OK[Key Phrase B1B未完成でUDR])+Family C Trial-09(home_robots完成episode、VALIDATED)のGit記録+Voices OPEN-151 -02結果参照+PM運用方針(既存仕様内個別修正は完成まで進める、2026-09-14ユーザー指示)追記+Family C運用clarification(AI固有名当該記事限り・語数は目安)記録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-133: USER-TEST-AUDIO-COMPLETION-01(Family C mp3/player Web試聴導線修正・Trend B1B完成/A2ロックSTOP・Discovery A2完成/B1Bロック STOP・Voices Comment 2再生成でPARTIAL/USER TEST READY到達)のGit記録・Web到達確認・SSOT反映+Human Review Lockの扱い(Fable判断)記録+OPEN-152/153新規登録
 
 ---
 
@@ -7312,6 +7313,75 @@ Trial-09¥96.30(Family C累計残額¥37.69)。
 `_2.md`/`_3.md`、`docs/pm/RESULT_PACKET_VOICES_VAR2.md`、`docs/pm/
 RESULT_PACKET_FC9.md`、`EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-
 SPEC-TRIAL-09_REPORT.md`。
+
+## PM-CLOSEOUT-CONSOLIDATION-133(2026-09-14)
+
+管理ID`PM-CLOSEOUT-CONSOLIDATION-133`(Sonnet委任、Git記録・Web到達確認・
+SSOT反映・REPORT作成担当、API呼び出しなし・費用¥0)。`USER-TEST-AUDIO-
+COMPLETION-01`(ユーザー実試聴用のFamily C/Trend/Discovery/Voices音声化)の
+成果物をGit記録し、GitHub上でのWeb到達確認(HTTP HEAD/GET)を実施した。
+
+**(1) Family C / Home robots**: Trial-09は引き続きVALIDATED(仕様変更なし)。
+WAV未収録の原因は`.gitignore`の`*.wav`ルールによる除外(未addではない)と判明。
+mp3化(完成episode+segment38件)・player相対パス化を行い、直接音声URL
+`https://raw.githubusercontent.com/shimomura055/eigo-radio/main/
+er013_output/family_c_episode_trial_09/home_robots/web/
+family_c_home_robots_trial_09.mp3`とplayer URL`https://raw.githack.com/
+shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_09/
+home_robots/player.html`がいずれもHTTP 200で到達可能であることを確認した。
+追加費用¥0。
+
+**(2) Trend**: B1Bが完成(Assembly PASS、Gate ON PASS、364.734秒)。A2は
+`point_two`(「Alexa+」表記揺れ)が読み整形後もASR側で解消せず、既存
+Production安全装置`ER-011-HUMAN-REVIEW-COST-GUARD-01`によりHUMAN_REVIEW_
+LOCKEDへ遷移したためSTOP。Trend Production 1生成セット総原価=¥334.18
+(本文¥174.03+音声化¥160.15、A2未完成分の実費含む)。
+
+**(3) Discovery**: B1B Key Phraseは人手選定完了(5件、have agency除外理由
+記録済み)。A2が完成(Gate PASS、480.082秒)。B1Bは`full_story_part2`の長文
+1文(「In a study of 2,557 college students…」)がTTSから3回とも脱落し、
+数字読み整形後も再発したためHUMAN_REVIEW_LOCKEDでSTOP。Discovery
+Production 1生成セット総原価=¥565.10(¥463.27+音声化¥85.51+¥16.32)。
+
+**(4) Voices**: Comment 2を既存Comment Contract経路(Preview+Comment1〜4
+全件)で再生成し、Gate PASS 14/14・Audio Validation Gate PASS・完成episode
+309.485秒に到達。Status=**PARTIAL / USER TEST READY**(`PRODUCTION_WIRED`
+ではない、OPEN-151のStatusはPARTIALのまま変更していない)。Analytical
+Leakage残存(voice_b 5項目/tension 2項目)は解消しておらず、player本文と
+`comment_fact_safety_evidence.json`に明記済み。総原価=¥185.74(¥140.39+
+¥32.34+¥13.01)。
+
+**(5) Human Review Lockの扱い(Fable判断)**: 全タスクで`approve_
+regenerate()`は未使用。読み整形・再生成後のテキストはcanonical_text_sha256
+が旧lockエントリと異なるため、`er011_human_review_lock_01.py`の既存仕様
+(「canonical_text changed since last lock; treated as new version」)により
+通常のAUTO_PROCESSING経路として扱われた。旧lockエントリはすべて無編集
+のまま残存。承認代行(`approve_regenerate()`のSonnet自己判断呼び出し)は
+一度も行っていない。
+
+**(6) 新規Open Item登録**: OPEN-152(Key Phrase選定Validatorが語彙動詞
+have/hasを有限助動詞ブロックリストで誤検知、Discovery B1Bで4回失敗・
+人手選定で回避、`USER_DECISION_REQUIRED`)。OPEN-153(音声化経路のTTS入力
+前処理・TTS読み飛ばし系gapの集約、サブ項目(a)〜(g)、Trend A2・Discovery
+B1Bの完成を直接阻害しているためBlocking/優先度HIGH、`USER_DECISION_
+REQUIRED`)。
+
+**(7) Web到達確認**: 直接音声4件(raw.githubusercontent.com)はHEADで
+いずれも初回でHTTP 200(Content-Type: audio/mpeg、Content-Lengthは
+実ファイルサイズと一致)。player4件(raw.githack.com)はHEADメソッド非対応
+(403 Forbidden)のためGETで確認し、いずれも初回でHTTP 200(Content-Type:
+text/html)。各player.html内の相対パス(`src=`)をraw.githubusercontent.com
+base URLで解決し、完成episodeと先頭segmentのHEADが200であることを確認した
+(Trend A2・Discovery B1Bはplayer/mp3とも未生成のため対象外)。CDN反映遅延
+による404は発生せず、再試行は不要だった。詳細:
+`docs/pm/web_playback_check_UT01.json`。
+
+**(8) 費用**: 本タスク自体はAPI呼び出しゼロ(¥0)。
+
+詳細: `USER-TEST-AUDIO-COMPLETION-01_REPORT.md`、`docs/pm/
+RESULT_PACKET_UT_FAMILYC.md`、`docs/pm/RESULT_PACKET_UT_TREND.md`/`_2.md`、
+`docs/pm/RESULT_PACKET_UT_DISCOVERY.md`/`_2.md`、`docs/pm/
+RESULT_PACKET_UT_VOICES.md`/`_2.md`、`docs/pm/web_playback_check_UT01.json`。
 
 ## 参照元
 

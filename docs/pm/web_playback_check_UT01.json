@@ -1,0 +1,126 @@
+{
+  "checked_at": "2026-09-14",
+  "management_id": "PM-CLOSEOUT-CONSOLIDATION-133",
+  "method": "curl.exe -sI (HEAD) for raw.githubusercontent.com direct mp3; curl.exe GET (raw.githack.com does not support HEAD, returns 403 on HEAD, 200 on GET) for player.html; browser actual playback confirmation is left to the user",
+  "direct_audio_checks": [
+    {
+      "target": "Family C / Home robots",
+      "url": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_09/home_robots/web/family_c_home_robots_trial_09.mp3",
+      "status_code": 200,
+      "content_length": 2717904,
+      "content_type": "audio/mpeg",
+      "attempts_to_pass": 1
+    },
+    {
+      "target": "Trend B1B",
+      "url": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/trend/audio/b1b/web/episode.mp3",
+      "status_code": 200,
+      "content_length": 4312968,
+      "content_type": "audio/mpeg",
+      "attempts_to_pass": 1
+    },
+    {
+      "target": "Discovery A2",
+      "url": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/discovery/audio/a2/web/episode.mp3",
+      "status_code": 200,
+      "content_length": 5398416,
+      "content_type": "audio/mpeg",
+      "attempts_to_pass": 1
+    },
+    {
+      "target": "Voices B1 2V",
+      "url": "https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/voices/audio/b1_2v/web/episode.mp3",
+      "status_code": 200,
+      "content_length": 3574800,
+      "content_type": "audio/mpeg",
+      "attempts_to_pass": 1
+    }
+  ],
+  "player_checks": [
+    {
+      "target": "Family C / Home robots",
+      "url": "https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_09/home_robots/player.html",
+      "head_status_code": 403,
+      "head_note": "raw.githack.com does not support HEAD method (returns 403 Forbidden for HEAD); confirmed via GET instead",
+      "get_status_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "relative_src_attrs_confirmed": true,
+      "file_uri_or_absolute_windows_path_count": 0
+    },
+    {
+      "target": "Trend B1B",
+      "url": "https://raw.githack.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/trend/audio/b1b/player.html",
+      "head_status_code": 403,
+      "head_note": "raw.githack.com does not support HEAD method",
+      "get_status_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "relative_src_attrs_confirmed": true,
+      "file_uri_or_absolute_windows_path_count": 0
+    },
+    {
+      "target": "Discovery A2",
+      "url": "https://raw.githack.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/discovery/audio/a2/player.html",
+      "head_status_code": 403,
+      "head_note": "raw.githack.com does not support HEAD method",
+      "get_status_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "relative_src_attrs_confirmed": true,
+      "file_uri_or_absolute_windows_path_count": 0
+    },
+    {
+      "target": "Voices B1 2V",
+      "url": "https://raw.githack.com/shimomura055/eigo-radio/main/er014_output/four_type_observation_01/voices/audio/b1_2v/player.html",
+      "head_status_code": 403,
+      "head_note": "raw.githack.com does not support HEAD method",
+      "get_status_code": 200,
+      "content_type": "text/html; charset=utf-8",
+      "relative_src_attrs_confirmed": true,
+      "file_uri_or_absolute_windows_path_count": 0
+    }
+  ],
+  "relative_reference_resolution_checks": [
+    {
+      "target": "Family C / Home robots",
+      "checked_paths": [
+        "web/family_c_home_robots_trial_09.mp3 (episode) -> 200",
+        "web/segments/kp1_english.mp3 -> 200",
+        "web/segments/kp1_japanese.mp3 -> 200",
+        "web/segments/kp1_number.mp3 -> 200"
+      ],
+      "all_pass": true
+    },
+    {
+      "target": "Trend B1B",
+      "checked_paths": [
+        "web/episode.mp3 -> 200",
+        "web/segments/comment_1.mp3 -> 200",
+        "web/segments/comment_2.mp3 -> 200",
+        "web/segments/comment_3.mp3 -> 200"
+      ],
+      "all_pass": true
+    },
+    {
+      "target": "Discovery A2",
+      "checked_paths": [
+        "web/episode.mp3 -> 200",
+        "web/segments/comment_1.mp3 -> 200",
+        "web/segments/comment_2.mp3 -> 200",
+        "web/segments/comment_3.mp3 -> 200"
+      ],
+      "all_pass": true
+    },
+    {
+      "target": "Voices B1 2V",
+      "checked_paths": [
+        "web/episode.mp3 -> 200",
+        "web/segments/comment_1.mp3 -> 200",
+        "web/segments/comment_2.mp3 -> 200",
+        "web/segments/comment_3.mp3 -> 200"
+      ],
+      "all_pass": true
+    }
+  ],
+  "cdn_propagation_delay_observed": false,
+  "retries_needed": 0,
+  "note": "Trend A2 has no player/mp3 (incomplete, HUMAN_REVIEW_LOCKED on point_two). Discovery B1B has no player/mp3 (incomplete, HUMAN_REVIEW_LOCKED on full_story_part2). Actual in-browser audio playback (listening) is left to the user; this check confirms HTTP-level reachability, Content-Type, and file size/header consistency only."
+}
