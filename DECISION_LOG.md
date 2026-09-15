@@ -414,6 +414,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-133: USER-TEST-AUDIO-COMPLETION-01(Family C mp3/player Web試聴導線修正・Trend B1B完成/A2ロックSTOP・Discovery A2完成/B1Bロック STOP・Voices Comment 2再生成でPARTIAL/USER TEST READY到達)のGit記録・Web到達確認・SSOT反映+Human Review Lockの扱い(Fable判断)記録+OPEN-152/153新規登録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-134: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02(Family C v1試聴NG→v2作成でVALIDATED候補・Trend A2承認付き再生成で完成+費用バグ補正・Discovery B1B短文化[脱落解消も言い回し差で継続STOP]+A2長さ調査・Voices 2V一人称Prompt不整合修正+r3確定でPARTIAL/USER TEST READY[一人称版])のGit記録・Web到達確認・SSOT反映+OPEN-120/135/151/153追記
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-135: USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03(Discovery A2再生成530語採用[604語版不採用]+B1 Human Review player+Family C A2 Comment3/4修正・B1 Trial episode[Comment3修正含む]+Trend B1表示統一+Spec Traceability監査)のGit記録・Web到達確認・SSOT反映+OPEN-154/155新規起票+Word-count報告ルール恒久化+B1命名ルール追加
+- [本ファイル内] ## FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Family C A2 v2 Robot選択肢二人称化(1箇所)+B1日本語タイトル削除・Comment 1〜3のeasy English化・Robot選択肢二人称化(ユーザー試聴Feedback反映、原因3点特定、A2/B1ともVALIDATED候補/Trial維持)
 
 ---
 
@@ -7567,6 +7568,59 @@ RESULT_PACKET_FU03_DISCOVERY.md`、`docs/pm/RESULT_PACKET_FU03_FAMILYC_A2.md`、
 `docs/pm/RESULT_PACKET_FU03_FAMILYC_B1.md`/`_2.md`、`docs/pm/
 RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`、
 `docs/pm/web_playback_check_FU03.json`。commit `60e274d7`(成果物本体)。
+
+## FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04
+
+- 日付: 2026-09-15
+- 種別: Trial記事修正(ユーザー試聴Feedback反映)、Status不変(A2 v2・B1とも
+  VALIDATED候補/Trial、Production未採用)
+- 決定/実施: (1) Family C A2 v2: Robot提示の選択肢文を三人称→二人称へ差し替え
+  (`CARE HOUSE: more sleep for you. HOME: more time with your mother.`、
+  Robot voice[Charon]再TTS、当該segment[story_015]以外のStory本文sha256不変
+  [`article_unchanged_sha256.json` identical=true維持])。今回の文脈上の整合
+  修正であり恒久仕様ではない。(2) Family C B1: 日本語タイトル削除(B1正式仕様
+  [CURRENT_SPEC「B1 Support」節622-628行]にはJapanese titleが無く、既存
+  Family A B1 production timeline[`er003_v1_n3_01_assemble.py`589-597行]も
+  Topic intro直後にNotification 1が続く構成、A2 v2からの流用が原因)、
+  Comment 1〜3を既存B1 Support easy English経路(`er003_v1_b1_scaffold_01_
+  generate.py`のCOMMENT_1/2/3_ROLE、Family C[Story形式]向けにNews/Point
+  参照のみ最小限削除)で再生成(`comments_en.md`新規)、Robot提示文を二人称へ
+  差し替え(併せてvoiceをnarrator→robotへ訂正、原因はStage(c)参照)。
+  (3) 原因: (a) B1 script(`er013_family_c_episode_trial_09b_b1_run.py`)の
+  `JAPANESE_TITLE_TEXT`/Stage A/timeline/player表示がA2 v2の日本語タイトル
+  資産・構成をそのまま流用していた。(b) B1のComment/Preview生成が
+  `a2gen`(=`er003_v1_iran01_a2_generate`、developer message="日本語の
+  Listening Support原稿を作成してください。")とA2用日本語role定数
+  (`COMMENT_1/2/3_ROLE_JA`)をそのまま呼んでおり、B1正式Support経路
+  (`er003_v1_b1_scaffold_01_generate`、developer message="英語の...")を
+  使っていなかった。(c) Family C B1 scaffoldの話者判定(`classify_quote_
+  voice`/`find_quote_spans`)は引用符の有無のみで判定する汎用アルゴリズムで、
+  A2/v2が持つ「UI選択肢表示paragraph→robot」特例(`UI_PARAGRAPH_INDEX`)に
+  相当する分岐が無く、引用符の無いRobot選択肢paragraphがnarratorへ
+  fallbackしていた。再発可能性: Family Cの次記事や他Family TrialでもB1
+  scaffoldを新規に書き起こす際、Comment/Previewの生成モジュール・
+  developer messageをA2用からB1用へ明示的に差し替えること、UI/選択肢
+  表示のような引用符を伴わない話者行を汎用speaker判定へどう倒すか
+  (narrator既定 or 明示的special case)を都度確認することが必要
+  (Production `er012_b_family_*`/`er003_v1_b1_scaffold_01_generate.py`
+  自体は無変更、本タスクはB1 Trial scaffold[`er013_family_c_episode_
+  trial_09b_b1_run.py`]内の最小修正のみ)。
+- Audio Validation: A2 PASS(duration=316.333秒、旧315.573秒から+0.76秒)、
+  B1 PASS(duration=389.175秒、旧388.502秒から+0.673秒、日本語タイトル区間
+  [約2.14秒]削除と英語Comment/Robot文の尺差分の純増分)
+- 費用: 本タスク実費¥41.7(内訳: A2側TTS¥0.9+ASR¥14.1[--reassemble未指定の
+  ため全segment再ASRが発生、次回同種修正時は--reassemble指定を徹底]、B1側
+  LLM¥5.4[Comment英語3件]+TTS¥3.6[Comment3件+Robot1件]+ASR¥17.7[同様に
+  --reassemble未指定])。¥60上限内。Family C累計¥235.50+¥41.7=**¥277.20**
+- 回帰: `run_project_regression.py --pattern
+  "er013_family_c_episode_trial_09b*_test_*.py"` collected=46 passed=46
+  failed=0(既存42件+新規4件: A2側`test_robot_choice_segment_matches_
+  second_person_fixed_text`、B1側`test_japanese_title_segment_is_absent`/
+  `test_comments_1_to_3_contain_no_japanese_characters`/
+  `test_robot_choice_segment_matches_second_person_fixed_text`)
+- 参照: `docs/pm/RESULT_PACKET.md`(本タスク)、
+  `FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04_REPORT.md`、commit `a417fab3`
+  (成果物本体)
 
 ## 参照元
 
