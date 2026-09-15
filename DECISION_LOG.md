@@ -7775,7 +7775,7 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - B1: A2本文をStory coreとしてB1独立生成Writer(`er013_family_c_future_writer_08_b1`)で新規生成(語数477語、目安400語比+19.3%、`WORD_ACCEPTABLE_RANGE(340,480)`内)。Fact Safety 3層overall_pass=True(CURRENT FACT 0件でskip)。Story core check 6項目全一致(all_found=true)。Voice割当はA2と同一(narrator=Aoede、twin Echo=Erinome)、話者判定キーワードは"echo"/"twin"/"digital twin"(委任Bの"robot"/"storage unit"追加と同型の個別記事対応)。B1 Support(Preview/Comment 1-3)はA2のtwin voice(Erinome)とは独立して既存B1正式仕様どおりCharon固定(本ファイル内`tts_support_charon`関数を新設、story本文がCharonを使わない記事構成のため)。日本語タイトルなし・Comment 4なし(既定動作)。Comment 2=累積語数40.7%、Comment 3=累積語数73.2%。個別対応(Voice assignment例外、OPEN-156として起票): `classify_quote_voice`のbefore windowが直前の別引用符区間の語("Echo")を誤って拾い、"“Echo,” Mara said, “begin with the first note.”"の後半(Mara自身の発話)をtwin voiceへ誤割当(story_051、1回目run時点でGate PASSしていたが目視監査で発見)。before windowを直近の閉じ引用符より後ろに限定する修正を実施し該当1segmentのみ削除・再生成、再度Gate PASS。Audio Validation PASS、duration=364.554秒(6.08分)。TTS/LLM/ASR診断累計2回run(TTS68件・LLM6件・ASR診断79件)。4者一致: 62行中60行完全一致、2行はASR表記揺れのみ(ten/10表記・em-dash/コンマ、意味差なし)。費用¥99.30(上限¥120以内)。Status=VALIDATED候補/Trial/USER_LISTENING_PENDING。
 - 新規Open Item: OPEN-156(B1話者判定`classify_quote_voice`の引用符境界またぎ誤判定、個別対応済み・恒久対応は未着手)。委任Bで記録した恒久対応候補2点(B1装置/twin呼称のWriter非保証、B1語数目安の正式値未確定)が本記事でも再現(件数2件目、新番号は追加せず)。
 - 費用合計¥177.30(A2¥78.00+B1¥99.30)。Family C累計¥400.80+¥177.30=¥578.10。
-- 参照: `docs/pm/RESULT_PACKET_UT06_C.md`、commit `2d2ae2a1`(A2)/B1は本エントリ追記と同時にcommit
+- 参照: `docs/pm/RESULT_PACKET_UT06_C.md`、commit `2d2ae2a1`(A2)/`5ecbeebb`(B1)
 
 ## 参照元
 

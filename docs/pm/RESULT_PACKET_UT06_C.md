@@ -51,19 +51,19 @@ FAIL(理由: 実行コマンドコードブロック検出パターン不一致+
 ## 8. Web到達確認
 | URL | status |
 |---|---|
-| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_a2/player.html` | (commit・push後に記録、下記参照) |
-| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_a2/web/family_c_twins_trial_10.mp3` | (同上) |
-| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_b1/player.html` | (同上) |
-| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_b1/web/family_c_twins_trial_10_b1.mp3` | (同上) |
+| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_a2/player.html` | 200 |
+| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_a2/web/family_c_twins_trial_10.mp3` | 200 |
+| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_b1/player.html` | 200 |
+| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/twins_b1/web/family_c_twins_trial_10_b1.mp3` | 200 |
 
-(実測値は本commit push後に追記する。)
+4件とも初回GETで200(CDN遅延・追加待機不要)。
 
 ## 9. 回帰結果
 `er013_family_c_episode_trial_10_twins_test_01.py`: B1完成後、全14 test pass/0 skip(A2完成のみの中間段階では11 pass/3 skip)、失敗0。`run_project_regression.py --pattern "er013_family_c_episode_trial_10_twins*_test_*.py"`で実行(collected=14 passed=14 failed=0 errors=0 skipped=0)。memory用・Home robots用テストは本タスクで触っていないため未再実行(委任文どおり)。
 
 ## 10. commit/push
 - A2完成分: commit `2d2ae2a1`「USER-TEST-FINAL-AUDIO-BATCH-06 (C-A2): Family C digital twins A2 episode完成(Trial-08本文固定)+Home robots B1 VALIDATED記録」、push済み。
-- B1完成分: 本ファイル確定と同時にcommit予定(hashは追記)。
+- B1完成分: commit `5ecbeebb`「USER-TEST-FINAL-AUDIO-BATCH-06 (C-B1): Family C digital twins B1 episode完成(Support easy English/Charon)」、push済み。Web到達確認(4 URL、上記)は本commit push後に実施し、本ファイルへ追記(小規模follow-up commitとして反映)。
 - 残差分: `er006_output/`・`er007_output/`・`er011_output/`等の既存M、`docs/pm/ACTIVE_TASK_*.md`/`RESULT_PACKET_*.md`等の既存??、`er002_output/`・`er003_output/`配下の無関係な既存untrackedファイルは本タスクと無関係のため触っていない(committed rangeは`er013_output/family_c_episode_trial_10/twins_a2`・`twins_b1`・新規スクリプト3件・SSOT3件[DECISION_LOG/OPEN_ITEMS/MODEL_ROUTING_TRIAL_LOG]・delegation_log2件・本RESULT_PACKET・FIX-05 REPORTのみ)。
 
 ## 11. unresolved issue・新規Open Item
