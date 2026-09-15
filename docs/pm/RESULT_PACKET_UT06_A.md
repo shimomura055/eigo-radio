@@ -60,7 +60,7 @@ Discovery配下の`er014*_test_*.py`パターン該当テストなし(既存パ�
 ## 9) commit/push
 - 対象: `DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`/`docs/pm/delegation_log/USER-TEST-FINAL-AUDIO-BATCH-06_A.md`(+`_check.json`)/`docs/pm/RESULT_PACKET_UT06_A.md`/`er014_output/four_type_observation_01/discovery/`配下(production_set_cost.json、run_discovery_a2_ut06_regen.py、run_discovery_b1b_part2_retry_ut06.py、audio/a2/**[wav除く]、audio/a2_before_regeneration_604w/**[wav除く]、audio/b1b/audit/**、audio/b1b/narration/attempts/*.json[新規3件]、key_phrases/a2/**、key_phrases/a2_before_regeneration_604w/**、audio/raw_usage_log_audio_completion.jsonl)。
 - wavは`.gitignore`(`*.wav`)により自動除外(確認済み)。
-- commit hash・push結果はこのRESULT_PACKET確定後にコミットするため、最終応答内で報告する。
+- commit `b45ef11d`(親: `edd85685`)、`git push origin main`成功(`edd85685..b45ef11d main -> main`)。残差分: 本タスク範囲内は0(`git status --porcelain`確認済み)。範囲外の既存`??`/`M`(他管理IDの並行タスク分)は無変更のまま維持。
 
 ## 10) 新規Open Item候補/未解決事項
 既存OPEN-135(Discovery A2)・OPEN-153(Discovery B1)へ追記のみ、新規番号は起票していない(症状/原因/今回の個別対応/将来の恒久対応候補は各追記文中に記載、実装は保留)。
