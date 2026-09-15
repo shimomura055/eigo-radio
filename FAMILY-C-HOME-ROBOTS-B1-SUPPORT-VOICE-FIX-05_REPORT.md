@@ -141,6 +141,7 @@ Family C累計: ¥285.00 + ¥4.80 = **¥289.80**
 - Family C B1: **VALIDATED候補 / Trial / USER_LISTENING_PENDING**
   (Production未採用、不変)。ユーザー再試聴待ち。
 - Family C A2 v2: ユーザー試聴OK済み・無変更(本タスクで一切変更なし)。
+- 2026-09-15 ユーザー再試聴OK→VALIDATED(Trial成果物、Production未採用)。
 
 ## 13. ユーザー再試聴用URL(Family C B1、1本のみ)
 

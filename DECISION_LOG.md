@@ -418,6 +418,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: Family C B1のPreview/Comment 1〜3をnarrator(Aoede)からB1正式仕様どおりCharon voiceへ(ユーザー正式判断、4segmentのみ再TTS+現物ASR4/4一致、story_017は本タスク限定bypass`--keep-robot-audio`でsha256不変を維持、B1はVALIDATED候補/Trial/USER_LISTENING_PENDING維持)
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任A): Family C Home robots A2 v2をVALIDATED記録(B1はFIX-05完了済み・作業なし)+Discovery B1 full_story_part2をユーザー承認でLock1回解除しattempt4再TTS(2,500人/11か国段落の欠落が2/3で再発、STOP)+Discovery A2 530語版でKey Phrase再選定・Support再生成・TTSを実行(full_story_part1/point_twoが3回上限までTRUE_CONTENT_MISMATCH、Assembly未到達でSTOP)、費用¥18.67+¥60.93
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任B): Family C「The future of memory」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Charon[装置]/Erinome[兄]共通、A2 duration290.6秒・B1 duration343.2秒、両方Audio Validation PASS、B1はeasy English Support/Support voice Charon/日本語タイトルなしを新規実装時から既定動作化、費用合計¥111.00)。
+- [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06-FOLLOWUP-01: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザー再試聴OK→VALIDATED記録(APPROVED_FOR_PRODUCTIONではない、追加修正・再TTSなし、¥0)。
 
 ---
 
@@ -7756,6 +7757,13 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 新規Open Item: なし(既存OPEN-147へ追記)
 - 費用合計¥111.00(A2¥48.30+B1¥62.70)。Family C累計¥289.80+¥111.00=¥400.80。
 - 参照: `docs/pm/RESULT_PACKET_UT06_B.md`、commit `fad57bb0`(A2)/B1は本エントリ追記と同時にcommit
+
+## USER-TEST-FINAL-AUDIO-BATCH-06-FOLLOWUP-01(Home robots B1 VALIDATED記録)
+
+- 日付: 2026-09-15
+- ユーザー判断: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザーが再試聴しOK→Trial成果物Gate 1分類=**VALIDATED**(APPROVED_FOR_PRODUCTIONではない。Family C全体のProduction採用判断ではない。A2 v2も既にVALIDATED)。追加修正・再TTSなし(¥0)。
+- 作業順序のユーザー判断: Family C残り2記事(memory/digital twins)完成→Discovery B1(part2を意味単位で2 segment分割、個別対応)→Discovery A2(NG 2 segmentのみ追加retry、2,557正読必須)。Family C完成前にDiscoveryを割り込ませない。
+- 参照: `FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05_REPORT.md`、`docs/pm/RESULT_PACKET_UT06_C.md`
 
 ## 参照元
 
