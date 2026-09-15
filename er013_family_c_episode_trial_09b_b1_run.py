@@ -208,6 +208,46 @@ Comment 3(役割: Story Meaning)を書いてください。
 
 COMMENT_ROLES_EN = {1: COMMENT_1_ROLE_EN, 2: COMMENT_2_ROLE_EN, 3: COMMENT_3_ROLE_EN}
 
+# FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(fix1、2026-09-15、Fable受入照合で
+# 発覚): PreviewもComment 1〜3と同一原因(a2gen.PREVIEW_ROLE[日本語]の流用)で
+# 日本語のままだった。CURRENT_SPEC「B1 Support」節(622-628行)の「Preview、
+# Comment 1〜4を平易な英語で」との明確な不整合としてユーザー指示4の範囲内で
+# 最小修正する。既存B1 Support正式経路(er003_v1_b1_scaffold_01_generate.
+# PREVIEW_ROLE)をベースに、Family C(Story形式、News/Point構造・In One Line
+# なし)向けの最小限の文言調整(「ニュース」→「物語(Story)」、「Main Story・
+# Points・In One Line」→「StoryとComment 1〜3」、「答えを先に言う」→
+# COMMENT_ROLES_ENと同じ「結末や主人公の選択を先に言う」、ニュース固有の
+# 「重要な数字を先出しする」は削除)を加えたものを使う。新規role文の独自
+# 作成ではなく、既存正式経路のPREVIEW_ROLEをベースにした最小改変
+# (Fable委任文の指示どおり)。
+PREVIEW_ROLE_EN = """あなたはPodcastの冒頭を担当するナビゲーターです。これからリスナーは、
+このエピソードの物語(Story)本文(Preview・Key Phrasesに続いてStoryと
+Comment 1〜3)を聞きます。エピソードの一番最初に流すPreviewを書いてください。
+
+役割: この物語の
+- theme(何についての話か)
+- problem(何が問題・論点か)
+- value(なぜ聞く価値があるか)
+- question(聞き終える頃に何が分かるようになるか)
+を短く提示し、リスナーの関心を引きます。
+
+【重要・分量】Previewは2〜3文程度の短い導入にしてください。要点を先出しし
+すぎず、この回で何を聞くのかが自然に伝わる内容を優先してください(記事の
+内容により多少の増減は許容します)。
+
+以下は避けてください:
+- 結末や主人公の選択を先に言う
+- turning point(展開の転換点)を先に明かす
+- 後で流れるComment 1・Comment 2と内容が重複する
+- 新しい設定・事実を追加する
+
+Comment 1・Comment 2は以下の通りです。これらと重複する内容にしないでください。
+【Comment 1】
+{comment_1}
+
+【Comment 2】
+{comment_2}"""
+
 # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Robotが提示する2つの選択肢は、
 # ロボットがMaya本人に向けて提示しているため、三人称(for Maya/her mother)
 # ではなく二人称(for you/your mother)にする(A2 v2と同じ考え方、今回の
@@ -496,12 +536,21 @@ def run_ja_comment_text(client, comment_num: int, article_text: str, budget,
     return result["text"].strip()
 
 
-def run_ja_preview_text(client, article_text: str, comment_1: str, comment_2: str, budget) -> str:
+def run_ja_preview_text(client, article_text: str, comment_1: str, comment_2: str, budget,
+                         use_english: bool = False) -> str:
     label = "preview_llm"
     budget.check_before(LLM_CALL_EST_JPY, label)
-    preview_role = a2gen.PREVIEW_ROLE.format(comment_1=comment_1, comment_2=comment_2)
     context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
-    result = a2gen.run_support_text(client, preview_role, context, model=a2gen.MODEL)
+    if use_english:
+        # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(fix1): 既存B1 Support easy
+        # English経路(er003_v1_b1_scaffold_01_generate、developer message=
+        # "英語のListening Support原稿を作成してください。")を使う(a2gen[日本語]
+        # は使わない、Comment 1〜3のfix1と同一方針)。
+        preview_role = PREVIEW_ROLE_EN.format(comment_1=comment_1, comment_2=comment_2)
+        result = b1sup.run_support_text(client, preview_role, context, model=b1sup.MODEL)
+    else:
+        preview_role = a2gen.PREVIEW_ROLE.format(comment_1=comment_1, comment_2=comment_2)
+        result = a2gen.run_support_text(client, preview_role, context, model=a2gen.MODEL)
     budget.add(label, "llm", 1, LLM_CALL_EST_JPY, {"status": result.get("status")})
     if result.get("status") != "OK":
         raise RuntimeError(f"PREVIEW_LLM_FAILED: {result}")
@@ -639,6 +688,14 @@ def main() -> None:
                               "二人称(for you/your mother)へ差し替え、voiceをrobotへ"
                               "上書きし、既存音声を無効化して当該segmentのみRobot voice"
                               "(Charon)で再TTSする")
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(fix1、2026-09-15新設)。
+    parser.add_argument("--preview-en", action="store_true",
+                         help="Previewを既存B1 Support easy English経路"
+                              "(er003_v1_b1_scaffold_01_generate.PREVIEW_ROLEベース)で"
+                              "再生成する(preview_en.txt新規保存、旧preview.txt[日本語、"
+                              "誤って日本語のまま生成されていたもの]はpreview_ja_prev.txtへ"
+                              "退避。segment名をpreview_enとし、旧preview_ja.wavは"
+                              "audio/prev/へ退避、narrator(Aoede)voiceは変更しない)")
     args = parser.parse_args()
 
     for d in (AUDIO_DIR, ASSEMBLED_DIR, KEY_PHRASE_DIR, AUDIT_DIR):
@@ -827,15 +884,48 @@ def main() -> None:
         comment_wavs[n] = (path, r)
 
     # --- Stage C: Preview(resumable) ---
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(fix1、2026-09-15): --preview-en
+    # 指定時はB1正式仕様(CURRENT_SPEC「B1 Support」節)どおりeasy Englishで
+    # 生成する(Comment 1〜3のfix1と同一原因。preview_en.txt新規保存、旧
+    # preview.txt[日本語]はpreview_ja_prev.txtへ退避。segment名はpreview_enとし
+    # 旧preview_ja.wavはaudio/prev/へ退避、既存の完了済みwav/.okマーカーは
+    # 削除しない)。
     preview_path = f"{OUT_DIR}/preview.txt"
-    if os.path.exists(preview_path):
-        with open(preview_path, encoding="utf-8") as f:
-            preview_text = f.read().strip()
+    preview_en_path = f"{OUT_DIR}/preview_en.txt"
+    preview_ja_prev_path = f"{OUT_DIR}/preview_ja_prev.txt"
+    preview_seg_id = "preview_en" if args.preview_en else "preview_ja"
+    preview_lang = "en" if args.preview_en else "ja"
+
+    if args.preview_en:
+        if os.path.exists(preview_en_path):
+            with open(preview_en_path, encoding="utf-8") as f:
+                preview_text = f.read().strip()
+        else:
+            if os.path.exists(preview_path) and not os.path.exists(preview_ja_prev_path):
+                shutil.copyfile(preview_path, preview_ja_prev_path)
+            preview_text = run_ja_preview_text(client, article_text, comment_texts[1], comment_texts[2],
+                                                budget, use_english=True)
+            save_text(preview_en_path, preview_text)
+        os.makedirs(f"{AUDIO_DIR}/prev", exist_ok=True)
+        old_preview_wav = f"{AUDIO_DIR}/preview_ja.wav"
+        archived_preview_wav = f"{AUDIO_DIR}/prev/preview_ja.wav"
+        if os.path.exists(old_preview_wav) and not os.path.exists(archived_preview_wav):
+            shutil.move(old_preview_wav, archived_preview_wav)
+            for suffix in (".ok", ".debug.json"):
+                stale_marker = old_preview_wav + suffix
+                if os.path.exists(stale_marker):
+                    shutil.move(stale_marker, archived_preview_wav + suffix)
     else:
-        preview_text = run_ja_preview_text(client, article_text, comment_texts[1], comment_texts[2], budget)
-        save_text(preview_path, preview_text)
-    r_preview = v2run.tts_narrator(preview_text, f"{AUDIO_DIR}/preview_ja.wav", "ja", "preview_ja", budget)
-    audit_segments["preview_ja"] = v2run._to_audit_entry(r_preview, preview_text)
+        if os.path.exists(preview_path):
+            with open(preview_path, encoding="utf-8") as f:
+                preview_text = f.read().strip()
+        else:
+            preview_text = run_ja_preview_text(client, article_text, comment_texts[1], comment_texts[2], budget)
+            save_text(preview_path, preview_text)
+
+    r_preview = v2run.tts_narrator(preview_text, f"{AUDIO_DIR}/{preview_seg_id}.wav", preview_lang,
+                                    preview_seg_id, budget)
+    audit_segments[preview_seg_id] = v2run._to_audit_entry(r_preview, preview_text)
 
     # --- Stage D: Key Phrase(resumable、既存正式経路+入口再呼び出し最大4回) ---
     kp_canon_path = f"{KEY_PHRASE_DIR}/keywords_canonicalized.json"
@@ -955,7 +1045,7 @@ def main() -> None:
         assert sr == MONO_SR, f"unexpected sample rate: {sr}"
         return mono
 
-    preview_mono = load_mono(f"{AUDIO_DIR}/preview_ja.wav")
+    preview_mono = load_mono(f"{AUDIO_DIR}/{preview_seg_id}.wav")
     first_story_mono = load_mono(segments[0]["audio_path"])
     target_rms = (p9a.rms(preview_mono) + p9a.rms(first_story_mono)) / 2
     gain_report["target_rms"] = round(float(target_rms), 5)
@@ -1001,7 +1091,7 @@ def main() -> None:
     sil(0.4)
     seq.append(("Preview intro (Charon)", gs(load_mono(f"{AUDIO_DIR}/preview_intro.wav"), "preview_intro")))
     sil(0.65)
-    seq.append(("Preview", gs(preview_mono, "preview_ja")))
+    seq.append(("Preview", gs(preview_mono, preview_seg_id)))
     sil(0.5)
     seq.append(("Notification 2", notification_gained))
     sil(0.4)
@@ -1118,7 +1208,8 @@ def main() -> None:
     ]
     if not args.drop_japanese_title:
         fixed_checks.append(("japanese_title", JAPANESE_TITLE_TEXT, "ja", None))
-    fixed_checks.append(("preview_ja", preview_text, "ja", audit_segments["preview_ja"].get("asr_text")))
+    fixed_checks.append((preview_seg_id, preview_text, preview_lang,
+                          audit_segments[preview_seg_id].get("asr_text")))
     for n in (1, 2, 3):
         fixed_checks.append((f"comment_{n}_ja", comment_texts[n], comment_lang,
                               audit_segments[f"comment_{n}_ja"].get("asr_text")))
@@ -1162,7 +1253,7 @@ def main() -> None:
         shutil.copyfile(old_player_path, f"{OUT_DIR}/player_prev_pre_comment3_fix.html")
     build_player_html_b1(seq_labels=[name for name, _ in seq], segments=segments,
                           kp_items=kp_items, comment_texts=comment_texts, run_summary=run_summary,
-                          preview_text=preview_text)
+                          preview_text=preview_text, preview_seg_id=preview_seg_id)
 
     # --- Stage P: cost_summary.json ---
     all_records = []
@@ -1226,7 +1317,8 @@ def convert_all_to_mp3_b1() -> dict:
     return web_result
 
 
-def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summary, preview_text) -> None:
+def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summary, preview_text,
+                          preview_seg_id: str = "preview_ja") -> None:
     rows = []
     seg_by_id = {s["id"]: s for s in segments}
     kp_by_rank = {it["rank"]: it for it in kp_items}
@@ -1242,7 +1334,7 @@ def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summ
     }
     name_to_seg_id = {
         "Welcome (Charon)": "welcome", "Topic intro": "topic_intro_en", "Japanese title": "japanese_title",
-        "Preview intro (Charon)": "preview_intro", "Preview": "preview_ja",
+        "Preview intro (Charon)": "preview_intro", "Preview": preview_seg_id,
         "Key phrases intro (Charon)": "key_phrases_intro", "Full story intro (Charon)": "full_story_intro",
         "Comment 1": "comment_1_ja", "Comment 2": "comment_2_ja", "Comment 3": "comment_3_ja",
     }
@@ -1267,7 +1359,7 @@ def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summ
                                                          script, audio_html))
             continue
         if name == "Preview":
-            audio_html = player_mod.render_single_audio_html("./web/segments/preview_ja.mp3")
+            audio_html = player_mod.render_single_audio_html(f"./web/segments/{preview_seg_id}.mp3")
             rows.append(player_mod.render_timeline_row(start, name, "Aoede(narrator)", preview_text, audio_html))
             continue
         if name in fixed_label_to_text:

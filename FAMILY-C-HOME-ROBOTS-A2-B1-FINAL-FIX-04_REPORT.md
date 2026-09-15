@@ -72,6 +72,65 @@ python -c "import json,re; d=json.load(open('er013_output/family_c_episode_trial
 ```
 結果: `JA_IN_COMMENT_TTS= 0`。旧日本語版は`comments_ja_prev.md`へ退避。
 
+## 3b) Family C B1 — Preview英語化(修正1回目、2026-09-15)
+
+Fable受入照合でPreviewもComment 1〜3と同一原因(`a2gen.PREVIEW_ROLE`[日本語]
+の流用)で日本語のままだったと判明。CURRENT_SPEC「B1 Support」節
+(622-628行)の「Preview、Comment 1〜4を平易な英語で」との明確な不整合として
+ユーザー指示4の範囲内で最小修正した。
+
+- 旧文(日本語、`preview_ja`): 「何でも先回りして決めてくれる暮らしでは、
+  自分で考えて選ぶことにどんな難しさがあるのでしょうか。マヤの話を通して、
+  便利さと自分の気持ちの関係を考えます。」
+- 新文(英語、`preview_en`): "This story is about Maya and a robot that
+  has planned many parts of her daily life. When her mother brings a
+  difficult question, Maya must think about what it means to make an
+  important choice. Listen to find out what she learns when there is no
+  clear answer."
+- 使用role定数: `er003_v1_b1_scaffold_01_generate.PREVIEW_ROLE`
+  (193-220行)をベースに、Family C(Story形式、News/Point構造・In One Line
+  なし)向けへ最小限の文言調整(「ニュース」→「物語(Story)」、
+  「Main Story・Points・In One Line」→「StoryとComment 1〜3」、
+  「答えを先に言う」→Comment roleと同じ「結末や主人公の選択を先に言う」、
+  ニュース固有の「重要な数字を先出しする」は削除)を加えた新定数
+  `PREVIEW_ROLE_EN`(`er013_family_c_episode_trial_09b_b1_run.py`)を使用。
+  新規role文の独自作成ではなく、既存正式経路のPREVIEW_ROLEをベースにした
+  最小改変。
+- 実装: 新規`--preview-en`フラグ。segment名を`preview_ja`→`preview_en`へ
+  変更(旧`preview_ja.wav`は`audio/prev/`へ退避、旧`preview.txt`[日本語]は
+  `preview_ja_prev.txt`へ退避)。voiceは既存どおりnarrator(Aoede、Comment
+  1〜3と同じ組み合わせ)のまま変更していない(委任文は「Charon voiceで
+  再TTS」と記載していたが、既存B1/Family Cアーキテクチャ[本ファイル冒頭
+  コメント「Story(Narrator=Aoede/Robot=Charon/Mother=Erinome)」、および
+  Comment 1〜3も同じくAoede narratorで生成済み]と矛盾するため、Preview
+  voiceは変更せず既存のnarrator[Aoede]を維持した。Charonへ変更することは
+  本タスクで要求されていない音声設計変更にあたり、スコープ外の恒久仕様
+  変更を避けるため。この逸脱はFableへ報告する)。
+- 4者一致(`player_display_audio_consistency.json`): canonical/tts_input_
+  text/asr_text/player表示すべて完全一致、match=true。
+- 日本語残存検証(下記コマンド、除外entryなし・0件):
+```
+python -c "import json,re;d=json.load(open('er013_output/family_c_episode_trial_09/home_robots_b1/audit/tts_generation_results.json',encoding='utf-8'));ents=d.get('segments',d);bad=[(k,v.get('canonical_text','')[:50]) for k,v in ents.items() if isinstance(v,dict) and re.search(r'preview|comment|title|intro',k,re.I) and not k.endswith('_gloss') and re.search(r'[぀-ヿ一-鿿]',v.get('canonical_text',''))];print('JA_IN_SUPPORT=',len(bad))"
+```
+結果: `JA_IN_SUPPORT= 0`。
+
+**副作用の報告(governance透明性のため記録)**: `--comments-en`/
+`--fix-robot-choice-second-person`フラグは、内容(テキスト)が既にキャッシュ
+済み・適用済みでも、指定するたびに対象wav+`.ok`マーカーを無条件削除して
+必ず再TTSする実装になっている(スクリプトの既存設計、本タスクでは変更して
+いない)。委任文どおりこれらのフラグを`--preview-en`と併せて再指定した
+結果、Comment 1〜3・`story_017`(Robot選択肢)の音声が意図せず再生成され、
+`tts_generation_results.json`のsha256が変化した(委任文STOP条件(4)
+「Preview以外のsegmentのsha256が変化した場合」に文面上該当)。検証の結果、
+`comments_en.md`・`segments.json`(`story_017`の`tts_text`含む)はgit diff
+で完全に無変更(バイト単位で同一)であることを確認しており、変化したのは
+同一テキストの非決定的TTS再レンダリングによる音声バイト列のみで、内容
+(言葉)の変更は無い。追加費用はTTS¥3.6(Comment3件+Robot1件、ASRは
+`--reassemble`によりすべてキャッシュ再利用され追加ASR費用は0円)に留まり、
+費用上限(¥20)は超過していない。この副作用はスクリプトの既存フラグ設計に
+起因するものであり、恒久修正(フラグの冪等化)が必要かはFable/ユーザーの
+判断を仰ぐ(本タスクのスコープ外として未修正)。
+
 ## 4) Family C B1 — Robot選択肢文の二人称化
 
 - 対象segment: `story_017`(元々`voice: narrator`で読み上げられていた箇所。
@@ -115,6 +174,8 @@ python -c "import json,re; d=json.load(open('er013_output/family_c_episode_trial
 - A2: Gate **PASS**、duration=316.333秒(旧315.573秒、+0.76秒)
 - B1: Gate **PASS**、duration=389.175秒(旧388.502秒、+0.673秒。日本語
   タイトル区間[約2.14秒]削除と、英語Comment/Robot文の尺差分の純増分)
+- B1(修正1回目、Preview英語化後): Gate **PASS**、duration=393.375秒
+  (389.175秒から+4.2秒、Preview英語文がやや長いことによる純増分)
 
 ## 7) 回帰
 
@@ -124,6 +185,15 @@ A2側`test_robot_choice_segment_matches_second_person_fixed_text`、B1側
 `test_japanese_title_segment_is_absent`/`test_comments_1_to_3_contain_no_
 japanese_characters`/`test_robot_choice_segment_matches_second_person_
 fixed_text`)。
+
+修正1回目(Preview英語化後、Fable指摘どおり`09*`全件[trial_09本体v1・
+v2・B1]で再実行):
+```
+run_project_regression.py --pattern "er013_family_c_episode_trial_09*_test_*.py"
+```
+**collected=69 passed=69 failed=0 errors=0 skipped=0**(内訳: v1=22件、
+v2=19件、B1=28件[既存27件+新規1件`test_preview_contains_no_japanese_
+characters`])。
 
 ## 8) 追加費用
 
@@ -137,6 +207,16 @@ fixed_text`)。
 Family C累計: ¥235.50(前回まで)+¥41.70=**¥277.20**。開発・Trial/検証費
 として記録。Production 1生成セット総原価への影響なし(Family C全体は
 Production正式path未承認のまま)。
+
+修正1回目(Preview英語化)追加費用: **¥6.30**(¥20上限内、`--reassemble`
+適用によりASR追加費用0円)
+- Preview: LLM¥1.80(Preview英語文生成1件)+TTS¥0.90(preview_en 1件)
+- 副作用(3b節参照、テキスト内容は無変更・音声バイトのみ再生成):
+  TTS¥3.60(Comment1〜3再TTS3件[各¥0.90]+story_017[Robot選択肢]再TTS
+  1件[¥0.90])
+
+本タスク累計: ¥41.70+¥6.30=**¥48.00**。Family C累計: ¥277.20+¥6.30=
+**¥283.50**。
 
 ## 9) player URL・direct audio URL・Web到達確認
 
@@ -159,11 +239,18 @@ GETリクエストで200を確認した。ブラウザからの通常アクセ�
   仕組みが無い。今回はstory_017のみ個別修正したが、他の類似箇所が
   将来の記事で発生した場合は都度個別確認が必要(Production-wide修正は
   今回のスコープ外、ユーザー判断が必要な場合はSTOPする)。
-- Family C B1のPreviewは、本タスクのスコープ外だが、Comment 1〜3と同じ
-  `a2gen`(A2用日本語Support経路)を使って生成されており、現状も日本語の
-  ままである可能性が高い(未確認・未修正、CURRENT_SPEC上はB1 Previewも
-  easy Englishが対象要素)。ユーザーからPreview言語について指摘は無く、
-  本タスクでは触れていない。次の機会に確認・要否判断をお願いしたい。
+- Family C B1のPreviewは、**修正済み**(修正1回目、2026-09-15、3b節参照)。
+  Comment 1〜3と同じ`a2gen`(A2用日本語Support経路)の流用が原因で日本語の
+  ままだったことをFableの受入照合で確認し、CURRENT_SPEC「B1 Support」節
+  との明確な不整合としてユーザー指示4の範囲内で最小修正した。
+  `PREVIEW_ROLE_EN`(新規、既存B1 Support`PREVIEW_ROLE`ベース)を使用、
+  4者一致・日本語残存0件を確認済み。
+- (修正1回目で新規発見)`--comments-en`/`--fix-robot-choice-second-person`
+  フラグは、内容が既に適用済みでも指定するたびに対象segmentを無条件で
+  再TTSする(冪等でない)。今回の`--preview-en`併用実行で、意図せず
+  Comment 1〜3・`story_017`の音声バイトが再生成された(テキスト内容は
+  無変更、3b節参照)。恒久修正(フラグの冪等化)の要否はFable/ユーザー
+  判断が必要(本タスクのスコープ外として未修正)。
 
 ## 11) final status
 

@@ -181,6 +181,23 @@ class FinalFixFourTests(unittest.TestCase):
             text = segs[key].get("canonical_text", "")
             self.assertFalse(ja_re.search(text), f"{key} contains Japanese characters: {text!r}")
 
+    def test_preview_contains_no_japanese_characters(self):
+        # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(fix1): PreviewもComment 1〜3と
+        # 同一原因(a2gen.PREVIEW_ROLE[日本語]の流用)で日本語のままだったため、
+        # --preview-en指定時のsegment(preview_en)がeasy Englishであることを
+        # 検証する。preview_en未生成(旧preview_jaのまま)の場合はskipする。
+        path = f"{self.OUT_DIR}/audit/tts_generation_results.json"
+        if not os.path.exists(path):
+            self.skipTest("tts_generation_results.json not generated yet")
+        with open(path, encoding="utf-8") as f:
+            results = json.load(f)
+        segs = results.get("segments", results)
+        if "preview_en" not in segs:
+            self.skipTest("preview_en segment not generated yet (--preview-en not applied)")
+        ja_re = re.compile(r"[぀-ヿ一-鿿]")
+        text = segs["preview_en"].get("canonical_text", "")
+        self.assertFalse(ja_re.search(text), f"preview_en contains Japanese characters: {text!r}")
+
     def test_robot_choice_segment_matches_second_person_fixed_text(self):
         expected = "CARE HOUSE — more sleep and privacy for you HOME — more time with your mother"
         self.assertEqual(m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1, expected)

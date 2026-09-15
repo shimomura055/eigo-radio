@@ -7621,6 +7621,24 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 参照: `docs/pm/RESULT_PACKET.md`(本タスク)、
   `FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04_REPORT.md`、commit `a417fab3`
   (成果物本体)
+- 2026-09-15 Fable修正指示1回目: Fable受入照合でB1 Previewが日本語のまま
+  (A2用`a2gen.PREVIEW_ROLE`流用、Comment 1〜3と同一原因)と判明。
+  CURRENT_SPEC「B1 Support」対象要素(Preview、Comment 1〜4を平易な英語で)
+  との明確な不整合としてユーザー指示4の範囲内で最小修正(既存B1 Support
+  経路`er003_v1_b1_scaffold_01_generate`のPreview roleをベースにFamily C
+  向け最小調整した`PREVIEW_ROLE_EN`、narrator[Aoede]voice維持[委任文の
+  「Charon voice」記載とは不一致だが、既存Preview/Comment音声設計との
+  整合を優先しvoice変更は見送った]、`--preview-en`)。Preview以外の
+  segmentはテキスト内容(canonical_text/segments.json/comments_en.md)は
+  無変更を確認したが、`--comments-en`/`--fix-robot-choice-second-person`
+  フラグが冪等でない既存実装のため、再指定によりComment 1〜3・
+  story_017(Robot選択肢)の音声バイトのみ意図せず再生成された(sha256は
+  変化したが言葉の内容は不変、詳細REPORT 3b節)。Audio Validation B1
+  PASS、duration=393.375秒(389.175秒から+4.2秒)。回帰`09*`全件
+  collected=69 passed=69 failed=0(v1=22/v2=19/B1=28)。追加費用¥6.30、
+  本タスク累計¥41.70+¥6.30=¥48.00、Family C累計¥277.20+¥6.30=¥283.50。
+  SSOTコミット確認: `8b941190`は実在しHEAD、push済み(ahead 0)、新規commit
+  不要と確認。commit(本追記含む成果物)は別途記録。
 
 ## 参照元
 
