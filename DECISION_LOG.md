@@ -420,6 +420,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任B): Family C「The future of memory」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Charon[装置]/Erinome[兄]共通、A2 duration290.6秒・B1 duration343.2秒、両方Audio Validation PASS、B1はeasy English Support/Support voice Charon/日本語タイトルなしを新規実装時から既定動作化、費用合計¥111.00)。
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06-FOLLOWUP-01: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザー再試聴OK→VALIDATED記録(APPROVED_FOR_PRODUCTIONではない、追加修正・再TTSなし、¥0)。
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任C): Family C「Digital twins」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Erinome[digital twin Echo]、B1 Support=Charon、A2 duration301.281秒・B1 duration364.554秒、両方Audio Validation PASS、B1側の話者判定バグ[OPEN-156]を発見し個別修正、費用合計¥177.30)。
+- [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任D): Discovery B1 full_story_part2を既存段落境界で2segment(2a/2b)に分割TTS(2aはPASSでdelete block解消、2bは「Japan–United」表記差のみでSTOP、¥13.55)+Discovery A2 full_story_part1個別retry(「silence」対「pause」の語置換のみでSTOP、point_twoはPart予算超過[¥21.01>=¥15]で未着手)、両方USER_DECISION_REQUIRED。
 
 ---
 
@@ -7776,6 +7777,14 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 新規Open Item: OPEN-156(B1話者判定`classify_quote_voice`の引用符境界またぎ誤判定、個別対応済み・恒久対応は未着手)。委任Bで記録した恒久対応候補2点(B1装置/twin呼称のWriter非保証、B1語数目安の正式値未確定)が本記事でも再現(件数2件目、新番号は追加せず)。
 - 費用合計¥177.30(A2¥78.00+B1¥99.30)。Family C累計¥400.80+¥177.30=¥578.10。
 - 参照: `docs/pm/RESULT_PACKET_UT06_C.md`、commit `2d2ae2a1`(A2)/`5ecbeebb`(B1)
+
+## USER-TEST-FINAL-AUDIO-BATCH-06(委任D: Discovery B1 part2分割TTS+A2 NG 2 segment retry)
+
+- 日付: 2026-09-15〜16
+- 種別: Discovery記事の音声完成(ユーザー判断FOLLOWUP-01項目4・5による個別対応、恒久対策なし)
+- Discovery B1: full_story_part2を既存段落境界(P1+P2/P3、2,500人/11か国段落はP3先頭)で2a/2bに分割してTTS(canonical不変、2a+2b連結=元part2と完全一致を検証)。ユーザー承認によりLock解除(2a/2bそれぞれ1回)。結果: 2aはHIGH_SIMILARITY_SAFEでPASS(段落丸ごと欠落=delete blockは解消)。2bは3回とも段落欠落なし(2,500/11か国/phone use全て含む)だが、3回とも「Japan–United」(enダッシュ)対「Japan-United」(ハイフン)の表記差のみでTRUE_CONTENT_MISMATCH、cascade上限(標準2+fallback1)到達でSTOP。Assembly/Audio Validation/player未実施(既存full_story_part2.wavは変更なし、2b未確定のため)。費用¥13.55(上限¥25以内)。Status=USER_DECISION_REQUIRED。恒久対策(長segment後半block omissionは分割で改善確認、enダッシュ正規化Gapは別課題)はOPEN-153へ事実追記のみ、defer。
+- Discovery A2: full_story_part1/point_twoのうちfull_story_part1のみ個別retry実施(標準2+fallback1、他14segment+kp10segmentのwav sha256は22/22件不変)。結果: 3回とも「silence」(canonical)対「pause」(実音声)の語置換のみでTRUE_CONTENT_MISMATCH、cascade上限到達でSTOP(内容欠落・Fact数字誤りではない)。point_twoはPart予算超過(実費¥21.01>=上限¥15)のため未着手のままSTOP(委任の費用上限超過STOP条件に該当)。Assembly/Audio Validation/player未実施。530語版本文・Support・Key Phraseは無変更。Discovery Production 1生成セット総原価=¥840.74(直前値)+¥13.55(B1)+¥21.01(A2)=¥875.30。Status=USER_DECISION_REQUIRED。恒久対策(TTSの同義語置換傾向、A2 slowdown post-process分の想定コスト過小)はOPEN-135へ事実追記のみ、defer。
+- 参照: `docs/pm/RESULT_PACKET_UT06_D.md`、commit `eabc3ffb`(D-B1)/`<D-A2 commit>`
 
 ## 参照元
 
