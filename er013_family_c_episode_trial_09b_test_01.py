@@ -118,6 +118,26 @@ class CommentStructureTests(unittest.TestCase):
         self.assertEqual(m.COMMENT_3_FIXED_TEXT_OVERRIDE, expected)
 
 
+class RobotChoiceSecondPersonTests(unittest.TestCase):
+    """FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Robot選択肢提示segmentが
+    二人称固定文であること(生成済みsegments.jsonにも反映されていること)の
+    決定的テスト(API呼び出しなし)。"""
+
+    def test_robot_choice_segment_matches_second_person_fixed_text(self):
+        expected = "CARE HOUSE: more sleep for you. HOME: more time with your mother."
+        self.assertEqual(m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE, expected)
+        self.assertNotIn("Maya", expected)
+        self.assertNotIn("her mother", expected)
+        path = f"{m.OUT_DIR}/segments.json"
+        if not os.path.exists(path):
+            self.skipTest("segments.json not generated yet")
+        with open(path, encoding="utf-8") as f:
+            segs = json.load(f)
+        texts = [s["tts_text"] for s in segs]
+        self.assertNotIn(m.ROBOT_CHOICE_OLD_TEXT, texts)
+        self.assertIn(m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE, texts)
+
+
 class NormalizeLooseTests(unittest.TestCase):
     def test_case_and_punctuation_insensitive(self):
         self.assertEqual(m._normalize_loose("Preference."), m._normalize_loose("preference"))

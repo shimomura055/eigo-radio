@@ -365,6 +365,17 @@ COMMENT_3_FIXED_TEXT_OVERRIDE = (
     "今回はいつものようにロボットが最適解を示してくれることはありませんでした。"
 )
 
+# FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(2026-09-15、ユーザー試聴Feedback):
+# Robotが提示する2つの選択肢(CARE HOUSE/HOME)は、ロボットがMaya本人に
+# 向けて提示しているため、三人称(for Maya/her mother)ではなく二人称
+# (for you/your mother)にする。今回の文脈上の整合修正であり、恒久仕様
+# ではない(--fix-robot-choice-second-person指定時のみ適用)。Story本文
+# (article_normalized.txt由来のarticle_text/paragraphs)自体は変更せず、
+# このsegmentのtts_textのみを差し替える(v1由来のreuse対象からも除外し、
+# Robot voice[Charon]で新規TTSする)。
+ROBOT_CHOICE_OLD_TEXT = "CARE HOUSE: more sleep for Maya. HOME: more time with her mother."
+ROBOT_CHOICE_FIXED_TEXT_OVERRIDE = "CARE HOUSE: more sleep for you. HOME: more time with your mother."
+
 
 def run_ja_comment_text(client, comment_num: int, article_text: str, budget: BudgetTracker) -> str:
     label = f"comment_{comment_num}_llm"
@@ -567,6 +578,11 @@ def main() -> None:
                               "変更箇所(Comment 3/4)のみ新規API呼び出しを行う低コスト"
                               "再Assemblyモード。TTS/LLM/ASRは全て既存関数・既存retry"
                               "構成をそのまま使う(フル再生成はしない)")
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(2026-09-15新設)。
+    parser.add_argument("--fix-robot-choice-second-person", action="store_true",
+                         help="Robotの選択肢提示segment(CARE HOUSE/HOME)を三人称から"
+                              "二人称(for you/your mother)へ差し替え、既存音声を無効化"
+                              "して当該segmentのみRobot voice(Charon)で再TTSする")
     args = parser.parse_args()
 
     os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -762,13 +778,43 @@ def main() -> None:
     reconstructed = reconstruct_article_from_story_segments(story_segments, len(paragraphs))
     assert reconstructed == article_text, "STORY_SEGMENT reconstruction mismatch(生成前チェック)"
 
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Robot選択肢の二人称化
+    # (--fix-robot-choice-second-person指定時のみ)。raw_text/paragraph_
+    # contributionsは変更しない(Story本文=article_text/article_normalized.txt
+    # は無変更のまま)、tts_textのみ差し替える。
+    robot_choice_overridden = False
+    robot_choice_seg_id = None
+    robot_choice_plan_index = None
+    if args.fix_robot_choice_second_person:
+        already_applied = any(s["tts_text"] == ROBOT_CHOICE_FIXED_TEXT_OVERRIDE for s in story_segments)
+        for seg in story_segments:
+            if seg["tts_text"] == ROBOT_CHOICE_OLD_TEXT:
+                seg["tts_text"] = ROBOT_CHOICE_FIXED_TEXT_OVERRIDE
+                robot_choice_overridden = True
+                robot_choice_seg_id = seg["id"]
+                robot_choice_plan_index = seg["plan_index"]
+        if not robot_choice_overridden and not already_applied:
+            raise RuntimeError(
+                "ROBOT_CHOICE_OLD_TEXT not found in story segments "
+                "(Story本文が想定と異なります、意図しない変更の可能性)")
+
+    reusable_plan_indices = set(V1_REUSABLE_PLAN_INDICES)
+    if robot_choice_overridden and robot_choice_plan_index is not None:
+        # 内容が変わったためv1音声のreuse対象から除外し、新規TTSさせる。
+        reusable_plan_indices.discard(robot_choice_plan_index)
+        stale_base = f"{AUDIO_DIR}/{robot_choice_seg_id}.wav"
+        for suffix in ("", ".ok", ".debug.json"):
+            stale_path = stale_base + suffix
+            if os.path.exists(stale_path):
+                os.remove(stale_path)
+
     reuse_log = []
     segs_by_plan = {}
     for seg in story_segments:
         segs_by_plan.setdefault(seg["plan_index"], []).append(seg)
 
     for plan_index, segs in segs_by_plan.items():
-        if plan_index in V1_REUSABLE_PLAN_INDICES:
+        if plan_index in reusable_plan_indices:
             v1_ids = V1_SEGMENT_IDS_BY_PLAN_INDEX[plan_index]
             assert len(v1_ids) == len(segs), f"plan_index={plan_index}: v1 segment数不一致"
             for seg, v1_id in zip(segs, v1_ids):

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import unittest
 
 import er013_family_c_episode_trial_09b_b1_run as m
@@ -144,6 +145,57 @@ class CommentStructureTests(unittest.TestCase):
         old_ambiguous_text = ("お金や仕事、睡眠、安全について答えても、今回はロボットの"
                                "いつものやり方だけでは答えが見つからないようです。")
         self.assertNotEqual(text, old_ambiguous_text)
+
+
+class FinalFixFourTests(unittest.TestCase):
+    """FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: 日本語タイトル不在・Comment
+    1〜3のeasy English化・Robot選択肢二人称化の決定的テスト(生成物が無い
+    場合はskip、APIコールなし)。"""
+
+    OUT_DIR = m.OUT_DIR
+
+    def test_japanese_title_segment_is_absent(self):
+        path = f"{self.OUT_DIR}/player.html"
+        segments_path = f"{self.OUT_DIR}/segments.json"
+        if not (os.path.exists(path) and os.path.exists(segments_path)):
+            self.skipTest("player.html/segments.json not generated yet")
+        with open(path, encoding="utf-8") as f:
+            html = f.read()
+        self.assertNotIn("japanese_title", html)
+        self.assertNotIn(m.JAPANESE_TITLE_TEXT, html)
+        with open(segments_path, encoding="utf-8") as f:
+            segs = json.load(f)
+        self.assertNotIn(m.JAPANESE_TITLE_TEXT, [s.get("tts_text") for s in segs])
+
+    def test_comments_1_to_3_contain_no_japanese_characters(self):
+        path = f"{self.OUT_DIR}/audit/tts_generation_results.json"
+        if not os.path.exists(path):
+            self.skipTest("tts_generation_results.json not generated yet")
+        with open(path, encoding="utf-8") as f:
+            results = json.load(f)
+        segs = results.get("segments", results)
+        ja_re = re.compile(r"[぀-ヿ一-鿿]")
+        for n in (1, 2, 3):
+            key = f"comment_{n}_ja"
+            self.assertIn(key, segs)
+            text = segs[key].get("canonical_text", "")
+            self.assertFalse(ja_re.search(text), f"{key} contains Japanese characters: {text!r}")
+
+    def test_robot_choice_segment_matches_second_person_fixed_text(self):
+        expected = "CARE HOUSE — more sleep and privacy for you HOME — more time with your mother"
+        self.assertEqual(m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1, expected)
+        self.assertNotIn("Maya", expected)
+        self.assertNotIn("her mother", expected)
+        path = f"{self.OUT_DIR}/segments.json"
+        if not os.path.exists(path):
+            self.skipTest("segments.json not generated yet")
+        with open(path, encoding="utf-8") as f:
+            segs = json.load(f)
+        texts = [s["tts_text"] for s in segs]
+        self.assertNotIn(m.ROBOT_CHOICE_OLD_TEXT_B1, texts)
+        self.assertIn(m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1, texts)
+        matching = [s for s in segs if s["tts_text"] == m.ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1]
+        self.assertEqual(matching[0]["voice"], "robot")
 
 
 class WriterB1ContractTests(unittest.TestCase):

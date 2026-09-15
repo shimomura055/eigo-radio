@@ -54,6 +54,8 @@ import numpy as np
 import er002_common as common
 import er003_b1_p9a_audio as p9a
 import er003_v1_iran01_a2_generate as a2gen
+import er003_v1_b1_scaffold_01_generate as b1sup  # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04:
+                                                    # 既存B1 Support easy English経路(Comment英語化用)
 import er003_v1_n3_01_assemble as assemble_mod
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er005_cost_logger as cl
@@ -155,6 +157,69 @@ COMMENT_3_FIXED_TEXT_OVERRIDE = (
     "ロボットがお金や仕事、睡眠、安全について問いかけ、マヤは一つずつ答え"
     "ましたが、今回はいつものようにロボットが最適解を示してくれることは"
     "ありませんでした。"
+)
+
+# FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(2026-09-15、ユーザー試聴Feedback):
+# B1のComment 1〜3はB1正式仕様(CURRENT_SPEC「B1 Support」節、622-628行)どおり
+# easy Englishである必要があるが、上のCOMMENT_1_ROLE_JA〜COMMENT_3_ROLE_JAは
+# A2用の日本語Support role(a2gen経由)をそのまま流用しており、日本語出力に
+# なっていた(原因、Part 4参照)。--comments-en指定時は、既存B1 Support生成
+# 経路(er003_v1_b1_scaffold_01_generate.py、SUPPORT_DEVELOPER_MESSAGE="英語の
+# Listening Support原稿を作成してください。")の本番Comment 1/2/3 role文を
+# ベースに、Family C(Story形式、News/Point構造なし)向けの最小限の文言調整
+# (「ニュースの本文」→「物語(Story)本文」、COMMENT_3のみ「Point One・Point
+# Two」「Bridge to Points」への言及を削除しStory Meaningのみに限定、C3は
+# Story後半[累積語数65%地点]に位置し物語はまだ続くためPointへの橋渡しは
+# 元々不要)を加えたものを使う。新規role文の独自作成ではなく、既存正式経路の
+# role文をベースにした最小改変(Fable委任文の指示どおり)。
+COMMENT_1_ROLE_EN = """あなたはPodcastのナビゲーターです。これから、ある物語(Story)本文の前半
+(易しくない自然な英語)をリスナーが聞きます。その直前に流す、Comment 1
+(役割: Listening Focus)を書いてください。
+
+役割: リスナーが次に何を聞けばよいか、注目点を示します。結末や主人公の選択を
+先に言ってはいけません。原則1文の、非常に短いListening Focusにしてください。
+新しい設定・事実・登場人物を追加しないでください。
+
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"のような制作内部の
+構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+
+COMMENT_2_ROLE_EN = """あなたはPodcastのナビゲーターです。リスナーは物語(Story)本文の前半を
+すでに聞き終わり、これから物語の続きを聞きます。その間に流す、
+Comment 2(役割: Mid-story Recovery + Next Question)を書いてください。
+
+役割: ここまで聞いた内容の核心を1点だけ短く回収し、これから何を聞けばよいかという
+問いを提示します。長いsummaryにしないでください。本文を英語で言い換え直して全部
+説明してはいけません。結末や主人公の選択を先に言ってはいけません。新しい設定・
+事実を追加しないでください。1〜2文にしてください。
+
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"のような制作内部の
+構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+
+COMMENT_3_ROLE_EN = """あなたはPodcastのナビゲーターです。リスナーは物語(Story)本文の前半を
+すでに聞き終わり、これから物語の後半(核心の場面)を聞きます。その間に流す、
+Comment 3(役割: Story Meaning)を書いてください。
+
+役割: ここまでの物語の意味を短く整理し、これから起こることへ軽く注意を向けます。
+結末や主人公の選択を先に言ってはいけません。新しいFactを追加しないでください。
+易しい英語で1〜2文にしてください。
+
+【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"のような制作内部の
+構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+
+COMMENT_ROLES_EN = {1: COMMENT_1_ROLE_EN, 2: COMMENT_2_ROLE_EN, 3: COMMENT_3_ROLE_EN}
+
+# FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Robotが提示する2つの選択肢は、
+# ロボットがMaya本人に向けて提示しているため、三人称(for Maya/her mother)
+# ではなく二人称(for you/your mother)にする(A2 v2と同じ考え方、今回の
+# 文脈上の整合修正であり恒久仕様ではない)。B1のこのsegmentはStory本文に
+# 引用符が無いため汎用speaker判定アルゴリズムでnarrator扱いになっていた
+# (原因、Part 4参照)。ユーザー指示どおりRobot voice(Charon)で再TTSする
+# ため、--fix-robot-choice-second-person指定時はvoiceもrobotへ上書きする。
+ROBOT_CHOICE_OLD_TEXT_B1 = (
+    "CARE HOUSE — more sleep and privacy for Maya HOME — more time with her mother"
+)
+ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1 = (
+    "CARE HOUSE — more sleep and privacy for you HOME — more time with your mother"
 )
 
 STORY_CORE_CHECKPOINTS = [
@@ -412,11 +477,19 @@ def reconstruct_article_from_story_segments(segments: list, paragraphs: list) ->
 # ============================================================
 # Stage 2: Comment 1〜3(日本語、新規LLM)
 # ============================================================
-def run_ja_comment_text(client, comment_num: int, article_text: str, budget) -> str:
+def run_ja_comment_text(client, comment_num: int, article_text: str, budget,
+                         use_english: bool = False) -> str:
     label = f"comment_{comment_num}_llm"
     budget.check_before(LLM_CALL_EST_JPY, label)
     context = f"【物語全文(参考、新しい設定・事実の追加禁止)】\n{article_text}"
-    result = a2gen.run_support_text(client, COMMENT_ROLES[comment_num], context, model=a2gen.MODEL)
+    if use_english:
+        # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: 既存B1 Support easy English
+        # 経路(er003_v1_b1_scaffold_01_generate、developer message="英語の
+        # Listening Support原稿を作成してください。")を使う(a2gen[日本語]は
+        # 使わない)。
+        result = b1sup.run_support_text(client, COMMENT_ROLES_EN[comment_num], context, model=b1sup.MODEL)
+    else:
+        result = a2gen.run_support_text(client, COMMENT_ROLES[comment_num], context, model=a2gen.MODEL)
     budget.add(label, "llm", 1, LLM_CALL_EST_JPY, {"status": result.get("status")})
     if result.get("status") != "OK":
         raise RuntimeError(f"COMMENT_{comment_num}_LLM_FAILED: {result}")
@@ -552,6 +625,20 @@ def main() -> None:
                               "変更箇所(Comment 3)のみ新規API呼び出しを行う低コスト"
                               "再Assemblyモード。TTS/LLM/ASRは全て既存関数・既存retry"
                               "構成をそのまま使う(フル再生成はしない)")
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(2026-09-15新設)。
+    parser.add_argument("--drop-japanese-title", action="store_true",
+                         help="B1正式仕様どおり日本語タイトルsegmentをtimeline/audit/"
+                              "player表示/segments.jsonから除去する")
+    parser.add_argument("--comments-en", action="store_true",
+                         help="Comment 1〜3を既存B1 Support easy English経路"
+                              "(er003_v1_b1_scaffold_01_generate)で再生成する"
+                              "(comments_en.md新規保存、旧comments_ja.mdは"
+                              "comments_ja_prev.mdへ退避)")
+    parser.add_argument("--fix-robot-choice-second-person", action="store_true",
+                         help="Robotの選択肢提示segment(CARE HOUSE/HOME)を三人称から"
+                              "二人称(for you/your mother)へ差し替え、voiceをrobotへ"
+                              "上書きし、既存音声を無効化して当該segmentのみRobot voice"
+                              "(Charon)で再TTSする")
     args = parser.parse_args()
 
     for d in (AUDIO_DIR, ASSEMBLED_DIR, KEY_PHRASE_DIR, AUDIT_DIR):
@@ -586,6 +673,31 @@ def main() -> None:
     if ambiguous_quotes:
         print(f"[WARNING] speaker判定が曖昧な引用符が{len(ambiguous_quotes)}件narratorへfallbackしました"
               "(audit/ambiguous_quotes.json参照、要目視確認)")
+
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Robot選択肢の二人称化
+    # (--fix-robot-choice-second-person指定時のみ)。raw_text/paragraph_
+    # contributionsは変更しない(reader_text/reconstructed一致は既に検証済み)、
+    # tts_textとvoiceのみ差し替える。
+    robot_choice_seg_id = None
+    if args.fix_robot_choice_second_person:
+        robot_choice_overridden = False
+        already_applied = any(s["tts_text"] == ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1 for s in segments)
+        for seg in segments:
+            if seg["tts_text"] == ROBOT_CHOICE_OLD_TEXT_B1:
+                seg["tts_text"] = ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1
+                seg["voice"] = "robot"
+                robot_choice_overridden = True
+                robot_choice_seg_id = seg["id"]
+        if not robot_choice_overridden and not already_applied:
+            raise RuntimeError(
+                "ROBOT_CHOICE_OLD_TEXT_B1 not found in story segments "
+                "(Story本文が想定と異なります、意図しない変更の可能性)")
+        if robot_choice_overridden and robot_choice_seg_id is not None:
+            stale_base = f"{AUDIO_DIR}/{robot_choice_seg_id}.wav"
+            for suffix in ("", ".ok", ".debug.json"):
+                stale_path = stale_base + suffix
+                if os.path.exists(stale_path):
+                    os.remove(stale_path)
 
     audit_segments: dict = {}
     audit_key_phrases: dict = {}
@@ -628,51 +740,89 @@ def main() -> None:
     })
 
     # --- Stage E: Comment 1〜3(resumable) ---
-    comments_md_path = f"{OUT_DIR}/comments_ja.md"
-    comments_md_prev_path = f"{OUT_DIR}/comments_ja_prev.md"
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04(2026-09-15): --comments-en指定時は
+    # B1正式仕様(CURRENT_SPEC「B1 Support」節)どおりeasy Englishで生成する
+    # (comments_en.md新規保存、旧comments_ja.md[誤って日本語のまま生成されて
+    # いたもの]はcomments_ja_prev.mdへ退避)。
+    comments_ja_path = f"{OUT_DIR}/comments_ja.md"
+    comments_ja_prev_path = f"{OUT_DIR}/comments_ja_prev.md"
+    comments_en_path = f"{OUT_DIR}/comments_en.md"
     comment_texts = {}
-    existing_md_text = None
-    if os.path.exists(comments_md_path):
-        with open(comments_md_path, encoding="utf-8") as f:
-            existing_md_text = f.read()
-        for n in (1, 2, 3):
-            marker = f"## Comment {n}\n\n"
-            after = existing_md_text.split(marker, 1)[1]
-            comment_texts[n] = after.split("\n\n", 1)[0].strip()
-    else:
-        for n in (1, 2, 3):
-            comment_texts[n] = run_ja_comment_text(client, n, article_text, budget)
-
-    # USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-B1(CONT1):
-    # --fix-comment3指定時、Comment 3を固定文へ差し替える(主語明確化)。
     comment3_overridden = False
-    if args.fix_comment3 and comment_texts.get(3) != COMMENT_3_FIXED_TEXT_OVERRIDE:
-        comment3_overridden = True
-        comment_texts[3] = COMMENT_3_FIXED_TEXT_OVERRIDE
 
-    if existing_md_text is None or comment3_overridden:
-        if existing_md_text is not None:
-            with open(comments_md_prev_path, "w", encoding="utf-8") as f:
-                f.write(existing_md_text)
-        with open(comments_md_path, "w", encoding="utf-8") as f:
+    if args.comments_en:
+        if os.path.exists(comments_en_path):
+            with open(comments_en_path, encoding="utf-8") as f:
+                existing_en_text = f.read()
             for n in (1, 2, 3):
-                f.write(f"## Comment {n}\n\n{comment_texts[n]}\n\n")
+                marker = f"## Comment {n}\n\n"
+                after = existing_en_text.split(marker, 1)[1]
+                comment_texts[n] = after.split("\n\n", 1)[0].strip()
+        else:
+            if os.path.exists(comments_ja_path) and not os.path.exists(comments_ja_prev_path):
+                shutil.copyfile(comments_ja_path, comments_ja_prev_path)
+            for n in (1, 2, 3):
+                comment_texts[n] = run_ja_comment_text(client, n, article_text, budget, use_english=True)
+            with open(comments_en_path, "w", encoding="utf-8") as f:
+                for n in (1, 2, 3):
+                    f.write(f"## Comment {n}\n\n{comment_texts[n]}\n\n")
+        # 旧Japanese音声(comment_N_ja.wav)は内容が別言語のため無条件で無効化し、
+        # 必ず新規Englishで再TTSする(_resumable_reuse()は内容一致を検証しない
+        # ため、削除せず放置すると古い日本語音声が再利用され続ける)。
+        for n in (1, 2, 3):
+            stale_base = f"{AUDIO_DIR}/comment_{n}_ja.wav"
+            for suffix in ("", ".ok", ".debug.json"):
+                stale_path = stale_base + suffix
+                if os.path.exists(stale_path):
+                    os.remove(stale_path)
+    else:
+        existing_md_text = None
+        if os.path.exists(comments_ja_path):
+            with open(comments_ja_path, encoding="utf-8") as f:
+                existing_md_text = f.read()
+            for n in (1, 2, 3):
+                marker = f"## Comment {n}\n\n"
+                after = existing_md_text.split(marker, 1)[1]
+                comment_texts[n] = after.split("\n\n", 1)[0].strip()
+        else:
+            for n in (1, 2, 3):
+                comment_texts[n] = run_ja_comment_text(client, n, article_text, budget)
 
-    if comment3_overridden:
-        # 内容が変わったため既存音声(stale)を無効化する(_resumable_reuse()は
-        # ファイル+.okマーカーの存在のみで判定し内容一致を検証しないため、
-        # 削除せずに放置すると古い本文の音声が再利用され続ける)。
-        stale_base = f"{AUDIO_DIR}/comment_3_ja.wav"
-        for suffix in ("", ".ok", ".debug.json"):
-            stale_path = stale_base + suffix
-            if os.path.exists(stale_path):
-                os.remove(stale_path)
+        # USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-B1(CONT1):
+        # --fix-comment3指定時、Comment 3を固定文へ差し替える(主語明確化)。
+        # --comments-en時はこの日本語固定文は適用しない(委任文の指示どおり)。
+        if args.fix_comment3 and comment_texts.get(3) != COMMENT_3_FIXED_TEXT_OVERRIDE:
+            comment3_overridden = True
+            comment_texts[3] = COMMENT_3_FIXED_TEXT_OVERRIDE
 
+        if existing_md_text is None or comment3_overridden:
+            if existing_md_text is not None:
+                with open(comments_ja_prev_path, "w", encoding="utf-8") as f:
+                    f.write(existing_md_text)
+            with open(comments_ja_path, "w", encoding="utf-8") as f:
+                for n in (1, 2, 3):
+                    f.write(f"## Comment {n}\n\n{comment_texts[n]}\n\n")
+
+        if comment3_overridden:
+            # 内容が変わったため既存音声(stale)を無効化する(_resumable_reuse()は
+            # ファイル+.okマーカーの存在のみで判定し内容一致を検証しないため、
+            # 削除せずに放置すると古い本文の音声が再利用され続ける)。
+            stale_base = f"{AUDIO_DIR}/comment_3_ja.wav"
+            for suffix in ("", ".ok", ".debug.json"):
+                stale_path = stale_base + suffix
+                if os.path.exists(stale_path):
+                    os.remove(stale_path)
+
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: --comments-en時はTTS言語を"en"へ
+    # (audio/segment idの"_ja"接尾辞は既存artifact命名との互換のためそのまま
+    # 残す、中身は英語)。Aoede(narrator)は既存A2/B1 pipelineで英語segment
+    # [topic_intro_en等]にも使われている既存の組み合わせ。
+    comment_lang = "en" if args.comments_en else "ja"
     comment_wavs = {}
     for n in (1, 2, 3):
         txt = comment_texts[n]
         path = f"{AUDIO_DIR}/comment_{n}_ja.wav"
-        r = v2run.tts_narrator(txt, path, "ja", f"comment_{n}_ja", budget)
+        r = v2run.tts_narrator(txt, path, comment_lang, f"comment_{n}_ja", budget)
         audit_segments[f"comment_{n}_ja"] = v2run._to_audit_entry(r, txt)
         comment_wavs[n] = (path, r)
 
@@ -740,8 +890,9 @@ def main() -> None:
     v2run.copy_shared_charon_nav(AUDIO_DIR)
     r_topic_en = v2run.reuse_v1_wav(f"{v2run.AUDIO_DIR}/topic_intro_en.wav", f"{AUDIO_DIR}/topic_intro_en.wav")
     audit_segments["topic_intro_en"] = v2run._to_audit_entry(r_topic_en, TOPIC_INTRO_EN_TEXT)
-    r_title = v2run.reuse_v1_wav(f"{v2run.AUDIO_DIR}/japanese_title.wav", f"{AUDIO_DIR}/japanese_title.wav")
-    audit_segments["japanese_title"] = v2run._to_audit_entry(r_title, JAPANESE_TITLE_TEXT)
+    if not args.drop_japanese_title:
+        r_title = v2run.reuse_v1_wav(f"{v2run.AUDIO_DIR}/japanese_title.wav", f"{AUDIO_DIR}/japanese_title.wav")
+        audit_segments["japanese_title"] = v2run._to_audit_entry(r_title, JAPANESE_TITLE_TEXT)
 
     # --- Comment placement(累積語数35%/65%、merge境界スナップ) ---
     c2_idx, c3_idx, total_words, cum_words = choose_comment_boundaries(segments)
@@ -838,8 +989,14 @@ def main() -> None:
     sil(0.5)
     seq.append(("Topic intro", gs(load_mono(f"{AUDIO_DIR}/topic_intro_en.wav"), "topic_intro_en")))
     sil(0.65)
-    seq.append(("Japanese title", gs(load_mono(f"{AUDIO_DIR}/japanese_title.wav"), "japanese_title")))
-    sil(0.5)
+    # FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: B1正式仕様(既存Family A B1
+    # production timeline、er003_v1_n3_01_assemble.py 589-597行)には日本語
+    # タイトルが無く、Topic intro直後はpause_0.65のままNotification 1へ続く。
+    # --drop-japanese-title指定時はこの構成に合わせる(sil(0.65)は共通のため
+    # 変更しない、Japanese title区間[本体+後続pause_0.5]のみ除去)。
+    if not args.drop_japanese_title:
+        seq.append(("Japanese title", gs(load_mono(f"{AUDIO_DIR}/japanese_title.wav"), "japanese_title")))
+        sil(0.5)
     seq.append(("Notification 1", notification_gained))
     sil(0.4)
     seq.append(("Preview intro (Charon)", gs(load_mono(f"{AUDIO_DIR}/preview_intro.wav"), "preview_intro")))
@@ -958,11 +1115,12 @@ def main() -> None:
         })
     fixed_checks = [
         ("topic_intro_en", TOPIC_INTRO_EN_TEXT, "en", audit_segments["topic_intro_en"].get("asr_text")),
-        ("japanese_title", JAPANESE_TITLE_TEXT, "ja", None),
-        ("preview_ja", preview_text, "ja", audit_segments["preview_ja"].get("asr_text")),
     ]
+    if not args.drop_japanese_title:
+        fixed_checks.append(("japanese_title", JAPANESE_TITLE_TEXT, "ja", None))
+    fixed_checks.append(("preview_ja", preview_text, "ja", audit_segments["preview_ja"].get("asr_text")))
     for n in (1, 2, 3):
-        fixed_checks.append((f"comment_{n}_ja", comment_texts[n], "ja",
+        fixed_checks.append((f"comment_{n}_ja", comment_texts[n], comment_lang,
                               audit_segments[f"comment_{n}_ja"].get("asr_text")))
     for key, (_fname, text) in v2run.SHARED_CHARON_NAV.items():
         fixed_checks.append((key, text, "en", None))

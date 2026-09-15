@@ -1,13 +1,13 @@
 {
-  "budget_cap_jpy": 10.0,
+  "budget_cap_jpy": 90.0,
   "warn_threshold_jpy": 70.0,
-  "total_estimate_jpy": 53.1,
+  "total_estimate_jpy": 68.1,
   "note": "raw_usage_log.jsonl全体(複数回のresume実行を含む)からの累計。",
-  "tts_call_count_estimate_basis": 27,
+  "tts_call_count_estimate_basis": 28,
   "llm_call_count_estimate_basis": 4,
-  "asr_diag_call_count_estimate_basis": 72,
+  "asr_diag_call_count_estimate_basis": 119,
   "methodology": "v1と同じ方式論(既存Production wrapper関数がtoken単位usageを返さないため、precedentベースの安全側単価推定)。加えて本タスク独自のASR診断呼び出し(Primary ASRのみ、player/display/audio consistency検証用)を¥0.3/call[precedentなし、暫定値]で計上した。",
   "gate_status": "PASS",
-  "v1_reused_segment_count": 16,
-  "v1_new_segment_count": 9
+  "v1_reused_segment_count": 15,
+  "v1_new_segment_count": 10
 }
