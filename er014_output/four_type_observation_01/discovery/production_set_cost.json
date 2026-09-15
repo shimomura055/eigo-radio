@@ -147,12 +147,12 @@
   "key_phrase_b1b_final_status_complete3": "KEY_WORDS_STRUCTURE_INVALID",
   "key_phrase_b1b_manual_selection_status": "COMPLETE(CANONICALIZATION_PASS, REDUNDANCY_PASS)",
   "key_phrase_b1b_manual_selection_rationale_path": "er014_output/four_type_observation_01/discovery/key_phrases/b1b/manual_selection_rationale.md",
-  "audio_completion_cost_jpy": 101.83,
+  "audio_completion_cost_jpy": 142.81,
   "audio_completion_cost_by_level_jpy": {
     "a2": 38.88,
-    "b1b_partial_incomplete": 62.95
+    "b1b_still_incomplete": 103.93
   },
-  "production_set_total_cost_including_audio_jpy": 565.1,
+  "production_set_total_cost_including_audio_jpy": 840.74,
   "audio_completion_note": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY(+CONT1継続): A2は既存正式audio completion経路(er003_v1_n3_01_scaffold_generate/tts_generate/assemble、無変更)で完成episode+Web試聴playerまで到達した(gate_off=PASS, gate_on=PASS, duration=480.08s, consistency_all_pass=True, cost=¥38.88)。B1Bはfull_story_part2segmentがTTS→ASR検証で当初3回ともTRUE_CONTENT_MISMATCH。CONT1でTTS入力のみへ数字読み整形(discovery/audio/tts_reading_transforms.json、記事本文は無変更)を適用し既存関数で新規lockバージョンとして初回生成(3attempt)を試みたが、'In a study of 2,557 college students at 12 sites in 11 countries, ... phone use.'の文が3attemptとも音声から欠落し続けTRUE_CONTENT_MISMATCHのまま(review_lock=HUMAN_REVIEW_REQUIRED、新canonical_text_sha256)。ER-011-HUMAN-REVIEW-COST-GUARD-01に従い、approve_regenerate()を自己判断で呼ばずSTOPした。既に発生した実費(¥62.95、旧driver分¥46.63+CONT1追加分¥16.32)はここに計上する(完了していない分の課金を隠さない)。本文Writer/Fact Checker/QA(¥463.27)には50:50配賦しない。",
   "audio_completion_cost_by_level_jpy_breakdown": {
     "a2": {
@@ -164,13 +164,9 @@
       "tts_b1b": 62.46
     }
   },
-  "b1b_audio_completion_status": "STOPPED(EPISODE_BLOCKED_BY_AUDIO_VALIDATION, segment=full_story_part2, TRUE_CONTENT_MISMATCH x3[旧canonical]+x3[CONT1新canonical、数字読み整形後]、review_lock state=HUMAN_REVIEW_REQUIRED, approve_regenerate() NOT called per ER-011-HUMAN-REVIEW-COST-GUARD-01, USER_DECISION_REQUIRED)",
+  "b1b_audio_completion_status": "STOPPED(USER_DECISION_REQUIRED、USER-TEST-FINAL-AUDIO-BATCH-06 item1: ユーザー承認によりHuman Review Lockを1回解除しfull_story_part2をattempt4として再TTSしたが、内部cascade3回中2回が2,500-students/11-countries paragraphの丸ごと欠落を再発、1回は同paragraphを含むが軽微な語の不一致[an→in等]でTRUE_CONTENT_MISMATCH。review_lock state=HUMAN_REVIEW_REQUIRED[cumulative_tts_attempts=6]、追加retryは実施せずSTOP。費用¥18.67)",
   "this_task_cont1_incremental_audio_cost_jpy": 16.32,
   "this_task_cont1_diagnosis": "数字の読み整形(30->thirty等)は有効で、CONT1の3attemptでは'30 seconds'等の誤読は再発しなかった。しかし'In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more...phone use.'の1文(桁の多い数字+複数の修飾句を含む長い文)が3attempt全てで音声から完全に脱落した。これは数字読みの問題ではなく、TTSモデルがこの特定の長文を一貫して省略する別種の文欠落問題であり、segment分割(part3化等)は本タスクの禁止事項(構造変更)のためSTOPし、ユーザー判断を仰ぐ(USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1)。",
-  "audio_completion_cost_jpy": 142.81,
-  "audio_completion_cost_by_level_jpy": {"a2": 38.88, "b1b_still_incomplete": 103.93},
-  "production_set_total_cost_including_audio_jpy": 606.08,
-  "b1b_audio_completion_status": "STOPPED(未完成、USER_DECISION_REQUIRED。USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY Attempt1/Attempt2ともTTS/ASR検証で不合格)",
   "this_task_fix02_incremental_audio_cost_jpy": 40.98,
   "this_task_fix02_status": "STOPPED",
   "this_task_fix02_diagnosis": "USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY: ユーザー指定の短文化候補(Attempt1: 'In a study of 2,557 college students at 12 sites in 11 countries...'→'In a study of about 2,500 college students in 11 countries...'、1文のまま)へcanonical article本文を変更し、Fact Checker A'/Ledger Deviation Checker(diff QA、blocks_acceptance=False)・Directional Fact Precheck(non-blocking、DIRECTION_REVIEW_REQUIRED)を通過したが、TTS/ASR検証は3attempt中3回ともTRUE_CONTENT_MISMATCHで不合格だった(この時点では文の脱落は解消せず)。委任文の指示どおりAttempt2(意味を変えない2文分割: 'In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure. This was true in every country tested.')へ切替え、QA再実行(PASS)後にTTSを再試行したところ、ASR書き起こし結果には該当する内容(数値・国・文の意味)は全て含まれていた(文の脱落は解消)ものの、'In a study'→'In one study'/'Japan–United States'→'Japan/U.S.'等の細部の言い回し差でTRUE_CONTENT_MISMATCH判定が継続し、3attempt中3回とも不合格のままだった。これ以上の構造変更(segment分割等)は委任文の禁止事項のためSTOPし、ユーザー判断を仰ぐ。現在のcanonical b1b/article.md本文はAttempt2(2文分割)の状態で確定している(QAはPASS、音声のみ未完成)。approve_regenerate()は呼んでいない。",
@@ -182,5 +178,9 @@
   "fu03_dev_trial_cost_jpy": 0.0,
   "fu03_dev_trial_note": "604語版(不採用)自体の生成費は前回(¥606.08内)に既に計上済みの過去費用であり、本タスクでの新規「不採用run」は発生していない(attempt2はbudget途中停止であり結果が出る前に中断、word count比較の対象にはなっていない)。",
   "fu03_running_total_after_part_b_jpy": 761.14,
-  "fu03_running_total_note": "606.08(前回までの累計) + 155.06(本タスクPart B、A2再生成テキスト実測) = 761.14。Part C(A2 Key Phrase再選定+音声再完成、委任文のnominal budget=¥60)は、Part B時点で合計¥180のtask全体費用上限のうち¥155.06を既に消費しており、残り headroom(¥24.94)がPart Cのnominal budgetを下回るため、本タスクではPart Cを実行せずSTOPした(委任文STOP条件「費用上限超過見込み」に該当、USER_DECISION_REQUIRED)。production_set_total_cost_including_audio_jpy(既存フィールド)はPart Cが未実行のため606.08のまま更新していない(Part C実行判断後に更新予定)。"
+  "fu03_running_total_note": "606.08(前回までの累計) + 155.06(本タスクPart B、A2再生成テキスト実測) = 761.14。Part C(A2 Key Phrase再選定+音声再完成、委任文のnominal budget=¥60)は、Part B時点で合計¥180のtask全体費用上限のうち¥155.06を既に消費しており、残り headroom(¥24.94)がPart Cのnominal budgetを下回るため、本タスクではPart Cを実行せずSTOPした(委任文STOP条件「費用上限超過見込み」に該当、USER_DECISION_REQUIRED)。production_set_total_cost_including_audio_jpy(既存フィールド)はPart Cが未実行のため606.08のまま更新していない(Part C実行判断後に更新予定)。",
+  "ut06a_part2_b1b_retry_attempt4_cost_jpy": 18.67,
+  "ut06a_part3_a2_regen_cost_jpy": 60.93,
+  "a2_audio_completion_status_ut06a": "STOPPED(USER_DECISION_REQUIRED、USER-TEST-FINAL-AUDIO-BATCH-06 item2: 530語版canonical本文でKey Phrase再選定[PASS]・Support生成[PASS]・TTSを実行したが、full_story_part1とpoint_twoの2segmentが標準+fallback計3回上限までTRUE_CONTENT_MISMATCH(内容ブロックの欠落ではなく、語の置換[silence→pause、2,557→2,527]・句読点差異が中心)。Audio Validation GateがEPISODE_BLOCKED_BY_AUDIO_VALIDATIONでAssemblyを正しくブロック、追加retryは実施せずSTOP。費用¥60.93。",
+  "ut06a_note": "USER-TEST-FINAL-AUDIO-BATCH-06(委任A): production_set_total_cost_including_audio_jpy を 761.14(FU-03時点)+18.67(Part2 B1B attempt4)+60.93(Part3 A2再生成) = 840.74 へ更新。両Partとも完成に至らずUSER_DECISION_REQUIRED。詳細はdocs/pm/RESULT_PACKET_UT06_A.md参照。"
 }

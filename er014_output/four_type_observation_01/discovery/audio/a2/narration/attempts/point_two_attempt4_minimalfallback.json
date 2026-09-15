@@ -1,0 +1,122 @@
+{
+  "attempt_number": 4,
+  "route": "minimal_fallback",
+  "segment_id": "point_two",
+  "theme_id": "audio",
+  "level": "a2",
+  "source_out_path": "er014_output/four_type_observation_01/discovery/audio/a2/narration/point_two.wav",
+  "saved_at": "2026-09-15T21:03:35",
+  "sha256": "09db6a25117f05d23fb02a9e2be9f88249dd2696f2a3c0e6aead876f93539e9e",
+  "loop_attempt_index": 1,
+  "max_attempts": 3,
+  "language": "en",
+  "model": "gemini-2.5-pro-preview-tts",
+  "voice": "Aoede",
+  "tts_execution_mode": "STANDARD",
+  "asr_text": "In a replication involving 2,557 college students at 12 sites in 11 countries, everyday activities were more enjoyable than thinking for pleasure in every country. Differences between countries were statistically explained by five factors: how much people tend to enjoy thinking; openness to new experiences; meditation experience; how positive they felt at the start; and reported phone use. Greater reported phone use was associated with less enjoyment of thinking. Quiet, then, is not equally easy for everyone.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "verified": false,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": true,
+    "duration_seconds": 38.621,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " reported  phone  use.",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 28.26,
+          "first_end_s": 29.48,
+          "second_start_s": 30.32,
+          "second_end_s": 31.44,
+          "gap_seconds": 0.84,
+          "canonical_repeat_count": 1,
+          "intentional": false,
+          "flagged": true
+        }
+      ],
+      "flagged": true,
+      "flagged_matches": [
+        {
+          "span_text": " reported  phone  use.",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 28.26,
+          "first_end_s": 29.48,
+          "second_start_s": 30.32,
+          "second_end_s": 31.44,
+          "gap_seconds": 0.84,
+          "canonical_repeat_count": 1,
+          "intentional": false,
+          "flagged": true
+        }
+      ],
+      "word_count": 78,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9976,
+          "time_a_seconds": 1.82,
+          "time_b_seconds": 20.17,
+          "lag_seconds": 18.35,
+          "run_length_seconds_at_thresh_0.85": 0.05
+        },
+        {
+          "similarity": 0.9974,
+          "time_a_seconds": 10.78,
+          "time_b_seconds": 20.19,
+          "lag_seconds": 9.41,
+          "run_length_seconds_at_thresh_0.85": 0.05
+        },
+        {
+          "similarity": 0.9971,
+          "time_a_seconds": 17.07,
+          "time_b_seconds": 33.27,
+          "lag_seconds": 16.2,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9969,
+          "time_a_seconds": 2.63,
+          "time_b_seconds": 33.23,
+          "lag_seconds": 30.6
+        },
+        {
+          "similarity": 0.9968,
+          "time_a_seconds": 19.81,
+          "time_b_seconds": 33.25,
+          "lag_seconds": 13.44
+        }
+      ],
+      "best_run_length_seconds": 0.05,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.41,
+      "time_a": 13.1,
+      "lag": 1.96,
+      "similarity_at_start": 0.8389,
+      "best_run_length_seconds": 0.41,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  }
+}

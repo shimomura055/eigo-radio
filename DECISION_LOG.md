@@ -416,6 +416,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-135: USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03(Discovery A2再生成530語採用[604語版不採用]+B1 Human Review player+Family C A2 Comment3/4修正・B1 Trial episode[Comment3修正含む]+Trend B1表示統一+Spec Traceability監査)のGit記録・Web到達確認・SSOT反映+OPEN-154/155新規起票+Word-count報告ルール恒久化+B1命名ルール追加
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Family C A2 v2 Robot選択肢二人称化(1箇所)+B1日本語タイトル削除・Comment 1〜3のeasy English化・Robot選択肢二人称化(ユーザー試聴Feedback反映、原因3点特定、A2/B1ともVALIDATED候補/Trial維持)
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: Family C B1のPreview/Comment 1〜3をnarrator(Aoede)からB1正式仕様どおりCharon voiceへ(ユーザー正式判断、4segmentのみ再TTS+現物ASR4/4一致、story_017は本タスク限定bypass`--keep-robot-audio`でsha256不変を維持、B1はVALIDATED候補/Trial/USER_LISTENING_PENDING維持)
+- [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任A): Family C Home robots A2 v2をVALIDATED記録(B1はFIX-05完了済み・作業なし)+Discovery B1 full_story_part2をユーザー承認でLock1回解除しattempt4再TTS(2,500人/11か国段落の欠落が2/3で再発、STOP)+Discovery A2 530語版でKey Phrase再選定・Support再生成・TTSを実行(full_story_part1/point_twoが3回上限までTRUE_CONTENT_MISMATCH、Assembly未到達でSTOP)、費用¥18.67+¥60.93
 
 ---
 
@@ -7703,6 +7704,46 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 参照: `docs/pm/RESULT_PACKET.md`、
   `FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05_REPORT.md`、commit
   `a1ea6df6`(成果物本体)
+
+## USER-TEST-FINAL-AUDIO-BATCH-06(委任A: Discovery B1/A2+Home robots Status)
+
+- 日付: 2026-09-15
+- 種別: ユーザー実検証用episode完成バッチ(週間Token枠逼迫下、恒久改善・
+  追加Trialなし、Sonnetのみ・Opus不使用)
+- Family C Home robots A2 v2: ユーザー最終試聴OK→Trial成果物Gate 1分類=
+  **VALIDATED**(APPROVED_FOR_PRODUCTIONではない。Family C全体のProduction
+  採用判断は未実施)。音声・テキスト無変更。
+- Family C Home robots B1: FIX-05(commit `a1ea6df6`/`edd85685`)でSupport
+  voice Charon化完了済み、本バッチで作業なし(git log/REPORT存在のみ確認)。
+  Status=VALIDATED候補/USER_LISTENING_PENDING(不変)。
+- Discovery B1: Human Reviewで2,500人/11か国研究段落の丸ごと欠落を
+  ユーザー確認(attempt1/3)→Human Review FAIL。ユーザー明示承認により
+  Human Review Lockを1回限り解除(`review_lock.approve_regenerate()`)し
+  full_story_part2をattempt4として再TTS(canonical本文・読み整形とも無変更、
+  `discovery/audio/tts_reading_transforms.json`のtransformed_textを再利用)。
+  結果: **STOP**(内部cascade3回中2回[sub-attempt2/3]が同paragraph丸ごと
+  欠落を再発、1回[sub-attempt1]は同paragraphを含むが軽微な語不一致
+  [an→in等]でTRUE_CONTENT_MISMATCH。3回ともverified=false)。
+  review_lock state=HUMAN_REVIEW_REQUIRED(cumulative_tts_attempts=6)。
+  委任文STOP条件(1)に該当のため追加retryは実施せず、Assembly以降には
+  進んでいない(既存音声のまま、B1は未完成)。費用¥18.67。
+- Discovery A2: 旧604語版不採用、530語版(ユーザー採用)を本文固定で音声化
+  (旧604語版由来artifactは`discovery/audio/a2_before_regeneration_604w/`・
+  `discovery/key_phrases/a2_before_regeneration_604w/`へ退避)。Key Phrase
+  再選定(`selection`/`canonicalization`/`redundancy_qa`全PASS)・
+  Support(Preview/Comment 1-4、全OK)を新規生成。word_count=530
+  (`WORD_COUNT_GE_500`該当、ユーザー承認済みのため再生成なし)。TTS:
+  16 segment中14 OK、`full_story_part1`と`point_two`の2segmentが標準+
+  fallback計3回上限までTRUE_CONTENT_MISMATCH(内容ブロックの欠落ではなく
+  語の置換[silence→pause、2,557→2,527]・句読点差異が中心)。Audio
+  Validation GateがEPISODE_BLOCKED_BY_AUDIO_VALIDATIONでAssemblyを正しく
+  ブロック。委任文に本失敗への追加retry許可の明示がないため、A2への
+  `approve_regenerate()`は実施せず**STOP**。費用¥60.93。
+- Discovery Production 1生成セット総原価=¥761.14(FU-03時点)+¥18.67
+  (Part2)+¥60.93(Part3)=**¥840.74**(`production_set_cost.json`
+  `production_set_total_cost_including_audio_jpy`)。
+- OPEN-154/155: DEFERRED / USER_DECISION_REQUIRED維持、本バッチで変更なし。
+- 参照: `docs/pm/RESULT_PACKET_UT06_A.md`
 
 ## 参照元
 
