@@ -131,6 +131,26 @@ python -c "import json,re;d=json.load(open('er013_output/family_c_episode_trial_
 起因するものであり、恒久修正(フラグの冪等化)が必要かはFable/ユーザーの
 判断を仰ぐ(本タスクのスコープ外として未修正)。
 
+**ASR実測(修正2回目、2026-09-15)**: 上記副作用で再TTSされた4segment
+(`comment_1_ja`/`comment_2_ja`/`comment_3_ja`/`story_017`)は、修正1回目の
+`--reassemble`実行時に`asr_diag`が1件も発生していなかった(Comment/Robot
+ASRキャッシュが**セグメント名/comment番号キー**で前回JSONを再利用する実装
+のため、音声バイトが変わっていても同名なら旧`asr_text`をそのまま再利用
+してしまう。`er013_family_c_episode_trial_09b_run.py`511-527行
+`_load_prior_asr_cache`、`er013_family_c_episode_trial_09b_b1_run.py`
+616-641行`_load_prior_seg_asr_cache`/`_load_prior_comment_asr_cache`)。
+現物wav(4件、`audio/`配下、mtime 2026-09-15T17:34〜17:35、`web/segments/`
+以下のmp3・episode本体mp3・`player.html`も同時刻に再Assembly済みで対応
+一致を確認)に対し、TTSを一切呼ばず既存`v2run.asr_diag`関数のみを直接
+呼ぶスニペットで再ASRを実施した結果、**4/4 match=true**
+(`comment_1_ja`のみASR文言が「choices, and」→「choices and」と微差、
+他3件は前回キャッシュ値と同一文言、いずれも大文字小文字・句読点の緩やか
+な正規化後に完全一致)。`comment_consistency.json`・
+`player_display_audio_consistency.json`の該当4entryを新しい`asr_text`へ
+更新した(値自体が前回と同一だった3件は数値上の差分なし、`comment_1_ja`
+のみ実差分あり)。追加費用¥1.50(診断ASR呼び出し5回、内訳は8節参照)。
+再Assembly・再TTSは行っていない(episode mp3・player.htmlは無変更)。
+
 ## 4) Family C B1 — Robot選択肢文の二人称化
 
 - 対象segment: `story_017`(元々`voice: narrator`で読み上げられていた箇所。
@@ -218,6 +238,16 @@ Production正式path未承認のまま)。
 本タスク累計: ¥41.70+¥6.30=**¥48.00**。Family C累計: ¥277.20+¥6.30=
 **¥283.50**。
 
+修正2回目(副作用再TTS4segmentのASR実測)追加費用: **¥1.50**(¥5上限内)
+- 診断ASR(`v2run.asr_diag`直接呼び出し)5回×¥0.30(`comment_1_ja`/
+  `comment_2_ja`/`comment_3_ja`/`story_017`の4件、うち`story_017`は
+  スクリプトのコンソール出力エンコード制約[em dash文字]により1回目実行が
+  結果保存前にクラッシュしたため同一内容で2回実行、TTS等の課金操作は
+  無く重複実行による実質的な内容差異はない)
+
+本タスク累計: ¥48.00+¥1.50=**¥49.50**。Family C累計: ¥283.50+¥1.50=
+**¥285.00**。
+
 ## 9) player URL・direct audio URL・Web到達確認
 
 - A2 v2 player: https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_09/home_robots_v2/player.html — HTTP 200(GET)
@@ -249,8 +279,11 @@ GETリクエストで200を確認した。ブラウザからの通常アクセ�
   フラグは、内容が既に適用済みでも指定するたびに対象segmentを無条件で
   再TTSする(冪等でない)。今回の`--preview-en`併用実行で、意図せず
   Comment 1〜3・`story_017`の音声バイトが再生成された(テキスト内容は
-  無変更、3b節参照)。恒久修正(フラグの冪等化)の要否はFable/ユーザー
-  判断が必要(本タスクのスコープ外として未修正)。
+  無変更、3b節参照)。**再生成音声4件はASR実測で一致確認済み(修正2回目、
+  2026-09-15、3b節参照、4/4 match=true)**。恒久修正(フラグの冪等化、
+  および既存ASRキャッシュがセグメント名キーで音声バイト変化を検知しない
+  設計)の要否はFable/ユーザー判断が必要(本タスクのスコープ外として
+  未修正)。
 
 ## 11) final status
 

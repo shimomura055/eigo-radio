@@ -7639,6 +7639,22 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
   本タスク累計¥41.70+¥6.30=¥48.00、Family C累計¥277.20+¥6.30=¥283.50。
   SSOTコミット確認: `8b941190`は実在しHEAD、push済み(ahead 0)、新規commit
   不要と確認。commit(本追記含む成果物)は別途記録。
+- 2026-09-15 Fable修正指示2回目: 修正1回目で副作用再TTSされたB1 Comment
+  1〜3・Robot選択肢(story_017)の4 segmentについて、現物音声でASR実測
+  (一致4/4)。ASRキャッシュキー=segment_id/comment番号などの名前
+  (音声sha256ではない、`er013_family_c_episode_trial_09b_run.py`511-527行、
+  `er013_family_c_episode_trial_09b_b1_run.py`616-641行)。修正1回目で
+  ASRが走らなかったのは、名前キーの前回JSON(`player_display_audio_
+  consistency.json`/`comment_consistency.json`)を`--reassemble`系再利用
+  ロジックが無条件に再利用したため(音声バイトが変わっても同名なら
+  古いasr_textを再利用する設計)。comment_1_jaのみ実際にASR文言が変化
+  (旧「choices, and」→新「choices and」、正規化後は一致)、他3件は
+  ASR文言も前回と同一。追加費用¥1.50(診断ASR5件、うちstory_017は
+  スクリプト側のコンソールエンコード制約により2回実行、内容重複なし)、
+  本タスク累計¥48.00+¥1.50=¥49.50、Family C累計¥283.50+¥1.50=¥285.00。
+  回帰`er013_family_c_episode_trial_09b_b1_test_*`collected=28 passed=28。
+  commit(本追記含む成果物)は別途記録(`docs/pm/ACTIVE_TASK.md`/
+  `docs/pm/RESULT_PACKET.md`参照)。
 
 ## 参照元
 
