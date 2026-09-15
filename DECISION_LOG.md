@@ -21,7 +21,7 @@ Hardening」(実装の堅牢化。サービス仕様は変えず、コードの�
 
 ## 索引(Index): 全Decisionエントリ一覧
 
-> 以下は全235件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
+> 以下は全236件の決定エントリを原文タイトル(見出し行、原文のまま)で列挙した索引である。要約は行っていない。「本ファイル内」は本体に残る直近25件、「履歴」は`DECISION_LOG_HISTORY.md`へ原文のまま移動した件を指す。管理IDでのGrepはどちらのファイルにあっても直接ヒットする。
 
 - [履歴] ## PM-GOVERNANCE-AUDIO-ARTIFACT-GATE7-CHECKLIST-10: 試聴artifact規則の主語明確化とGate 7受入チェックリスト追加
 - [履歴] ## PM-GOVERNANCE-AUDIO-REVIEW-PAGE-STANDARD-09: 試聴依頼ページは音声+完全スクリプト同一表示を標準化
@@ -421,6 +421,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06-FOLLOWUP-01: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザー再試聴OK→VALIDATED記録(APPROVED_FOR_PRODUCTIONではない、追加修正・再TTSなし、¥0)。
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任C): Family C「Digital twins」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Erinome[digital twin Echo]、B1 Support=Charon、A2 duration301.281秒・B1 duration364.554秒、両方Audio Validation PASS、B1側の話者判定バグ[OPEN-156]を発見し個別修正、費用合計¥177.30)。
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任D): Discovery B1 full_story_part2を既存段落境界で2segment(2a/2b)に分割TTS(2aはPASSでdelete block解消、2bは「Japan–United」表記差のみでSTOP、¥13.55)+Discovery A2 full_story_part1個別retry(「silence」対「pause」の語置換のみでSTOP、point_twoはPart予算超過[¥21.01>=¥15]で未着手)、両方USER_DECISION_REQUIRED。
+- [本ファイル内] ## FAMILY-C-MEMORY-A2-SEGMENT-COMMENT-TRIAL-11: Family C「The future of memory」A2限定のsegmentation統合(旧14→新10 segment、避けられる短segment3件を隣接統合)+Comment 1〜3を英文理解ガイド型へ変更(禁止語句0件)+兄Voice(Erinome→Algieba、ピッチ推定根拠)のTrial版を新出力先に作成(旧Trial-10版は無変更保存)、Audio Validation PASS(duration316.569秒)、費用¥23.10、Status=VALIDATED候補/USER_LISTENING_PENDING(Production未採用)。
 
 ---
 
@@ -7785,6 +7786,19 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - Discovery B1: full_story_part2を既存段落境界(P1+P2/P3、2,500人/11か国段落はP3先頭)で2a/2bに分割してTTS(canonical不変、2a+2b連結=元part2と完全一致を検証)。ユーザー承認によりLock解除(2a/2bそれぞれ1回)。結果: 2aはHIGH_SIMILARITY_SAFEでPASS(段落丸ごと欠落=delete blockは解消)。2bは3回とも段落欠落なし(2,500/11か国/phone use全て含む)だが、3回とも「Japan–United」(enダッシュ)対「Japan-United」(ハイフン)の表記差のみでTRUE_CONTENT_MISMATCH、cascade上限(標準2+fallback1)到達でSTOP。Assembly/Audio Validation/player未実施(既存full_story_part2.wavは変更なし、2b未確定のため)。費用¥13.55(上限¥25以内)。Status=USER_DECISION_REQUIRED。恒久対策(長segment後半block omissionは分割で改善確認、enダッシュ正規化Gapは別課題)はOPEN-153へ事実追記のみ、defer。
 - Discovery A2: full_story_part1/point_twoのうちfull_story_part1のみ個別retry実施(標準2+fallback1、他14segment+kp10segmentのwav sha256は22/22件不変)。結果: 3回とも「silence」(canonical)対「pause」(実音声)の語置換のみでTRUE_CONTENT_MISMATCH、cascade上限到達でSTOP(内容欠落・Fact数字誤りではない)。point_twoはPart予算超過(実費¥21.01>=上限¥15)のため未着手のままSTOP(委任の費用上限超過STOP条件に該当)。Assembly/Audio Validation/player未実施。530語版本文・Support・Key Phraseは無変更。Discovery Production 1生成セット総原価=¥840.74(直前値)+¥13.55(B1)+¥21.01(A2)=¥875.30。Status=USER_DECISION_REQUIRED。恒久対策(TTSの同義語置換傾向、A2 slowdown post-process分の想定コスト過小)はOPEN-135へ事実追記のみ、defer。
 - 参照: `docs/pm/RESULT_PACKET_UT06_D.md`、commit `eabc3ffb`(D-B1)/`c1584989`(D-A2)
+
+## FAMILY-C-MEMORY-A2-SEGMENT-COMMENT-TRIAL-11
+
+- 日付: 2026-09-16
+- 種別: Family C Memory A2限定の仕様変更Trial(ユーザー承認)。Production仕様へ自動採用しない。Status=VALIDATED候補/USER_LISTENING_PENDING。
+- 本文: Trial-08正本固定(sha256=`a9a646a798bfe44b632038c790d58680a3b278979ac39473339cace2733b2ea2`、一致確認)、Writer再実行なし。旧Trial-10成果物は`family_c_episode_trial_10/memory_a2/`に無変更で保存(`git status --porcelain`空で確認)、新版は`family_c_episode_trial_11/memory_a2/`。
+- Segmentation: 旧14 segment(最短2語/最長86語、`narrator11/device2/brother1`。旧RESULT_PACKET記載の「15件/brother2」はsegments.json実測と不一致だったため本タスクで訂正)→新10 segment(最短2語/最長89語、narrator7/device2/brother1)。Trial安全ガイド(概ね100語以内、120語を大きく超えない、150〜200語級なし)を適用、全segment120語以内。統合した短segment: 旧story_002(4語、device引用符直前のnarrator lead)・story_006(3語、trailing)・story_010(2語、trailing)の3件を隣接narrator segmentへ統合し独立segmentとして解消。残した境界: 話者Voice変化点(device2箇所・brother1箇所、分割不可避)、Comment挿入位置(C2=段落8/9境界・C3=段落23/24境界、Trial-10と同一の意味的位置を維持)。構造上やむを得ない例外1件のみ残存(story_003、段落3単独6語、前後とも別Voiceに挟まれ統合不能)。hard cap実装なし(Validator変更なし)。
+- Comment: Trial-11 Prompt(`COMMENT_1/2/3_ROLE_JA_TRIAL11`、英文理解ガイド役割・メタナレーション禁止語句明記)で1〜3を新規生成(各1回、再生成なし)。禁止語句(聞いてみましょう/耳を傾け/耳を澄ま/注目して/どうなるでしょう)0件。旧Prompt(`_TRIAL10_PREV`)は新スクリプト内に残置・未使用。Production正式Prompt(er003/er012系)は無変更。
+- Voice: 兄=Erinome(median F0推定約221Hz)→Algieba(median F0推定約112Hz)。既存承認Voice候補6種(Algieba/Erinome/Schedar/Sulafat/Aoede/Charon)についてSSOT(CURRENT_SPEC.md)に性別的印象の記載が無かったため、自己相関法によるピッチ推定(既存sample wav使用、追加TTS費用ゼロ)を代替根拠として実施し、Algiebaが装置Charon(約133Hz)より低く6候補中最低と確認、選定。装置Voice(Charon)は本記事で兄と別Voiceのため変更不要(共用衝突なし)。
+- Audio: Story segment全10件TTS(story_005[89語]が1回目STOPPED[TRUE_CONTENT_MISMATCH、ホモフォン・句読点差レベルの軽微差異]→2回目outer retryでOK、他9件は初回OK)。Comment 1-3 LLM/TTSとも初回OK。Audio Validation Gate PASS(level=`FAMILY_C_TRIAL_11_MEMORY_A2`)、duration=316.569秒(旧290.593秒+25.976秒、Story内容量増減なし・segment数減少に伴う無音境界減少が主因)。4者一致20行中15行完全一致、5行はASR表記揺れのみ(Lena/Linaホモフォン2件、句読点・under water/underwaterスペーシング1件、つらい/辛い・たちました/経ちました等漢字表記1件、意味差なし)。再生成: story_005のみ1回(cascade標準3回超えず)。費用¥23.10(LLM3+TTS13[再試行1含む]+ASR診断16、上限¥50以内)。Family C累計¥578.10+¥23.10=¥601.20。
+- 恒久課題候補(defer、起票せず記録のみ): (1)TTS segment最小/最大長の正式Production閾値、(2)同一Voice連結ルールの一般化(今回はMemory A2個別対応)、(3)Dialogue segmentation(narrator lead-in/trailing統合)の一般化、(4)Family C全体のComment Promptの正式仕様化(理解ガイド型への統一)。ユーザー試聴後に判断。
+- 副次修正(Production非該当、スコープ内): `er005_cost_logger.install()`初期化呼び出しの欠落(Trial-10 memory A2スクリプトには元々無く、Azure二次ASR cascadeへ到達する稀なケースでのみ顕在化する潜在gapだったため、Trial-11新スクリプト内でのみ、既存B1スクリプト[`er013_family_c_episode_trial_10_memory_b1_run.py`]と同一パターンで追加。er005/er006モジュール自体は無変更)。
+- 参照: `docs/pm/RESULT_PACKET.md`、commit (本エントリ登録時点で未commit、次コミットハッシュを参照)
 
 ## 参照元
 

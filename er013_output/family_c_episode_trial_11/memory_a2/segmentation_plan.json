@@ -1,0 +1,120 @@
+{
+  "policy": "Trial安全ガイド[概ね100語以内、120語を大きく超えない、150-200語級を作らない]。正式Production hard capではない。分割理由=話者Voice変化/Comment挿入位置/scene・semantic boundaryのみ。",
+  "segment_count": 10,
+  "min_word_count": 2,
+  "max_word_count": 89,
+  "comment_2_after_segment_id": "story_005",
+  "comment_3_after_segment_id": "story_009",
+  "segments": [
+    {
+      "id": "story_001",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        0,
+        2
+      ],
+      "word_count": 45,
+      "split_reason": "段落0-1のnarrator地の文+段落2のリード文(引用符直前)を統合。直後がdevice voiceへ変わるため、そこでのみ分割。"
+    },
+    {
+      "id": "story_002",
+      "voice": "device",
+      "kind": "split",
+      "paragraph_range": [
+        2,
+        2
+      ],
+      "word_count": 2,
+      "split_reason": "Voice変化点(device、段落2の引用句 'Return date?')。分割不可避。"
+    },
+    {
+      "id": "story_003",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        3,
+        3
+      ],
+      "word_count": 6,
+      "split_reason": "前後とも別Voice(device)に挟まれた孤立段落(段落3)。統合不可能な構造上やむを得ない例外(6語)。"
+    },
+    {
+      "id": "story_004",
+      "voice": "device",
+      "kind": "split",
+      "paragraph_range": [
+        4,
+        4
+      ],
+      "word_count": 3,
+      "split_reason": "Voice変化点(device、段落4の引用句 'Are you sure?')。分割不可避。"
+    },
+    {
+      "id": "story_005",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        4,
+        8
+      ],
+      "word_count": 89,
+      "split_reason": "段落4のトレイル文(引用符直後)+段落5-8のnarrator地の文を統合。Comment 2挿入位置(段落8/9境界、scene transition)の直前で分割。"
+    },
+    {
+      "id": "story_006",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        9,
+        13
+      ],
+      "word_count": 39,
+      "split_reason": "段落9-13のnarrator地の文を統合。直後がbrother voiceへ変わるため、そこでのみ分割。"
+    },
+    {
+      "id": "story_007",
+      "voice": "brother",
+      "kind": "split",
+      "paragraph_range": [
+        14,
+        14
+      ],
+      "word_count": 9,
+      "split_reason": "Voice変化点(brother、段落14の引用句 'Do not make my last day your whole life,')。Brother Voice変更対象。分割不可避。"
+    },
+    {
+      "id": "story_008",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        14,
+        19
+      ],
+      "word_count": 69,
+      "split_reason": "段落14のトレイル文(引用符直後)+段落15-19のnarrator地の文を統合(回想の帰還〜内的独白の終わりまで)。次のscene/semantic boundary(段落19/20境界、回想から現在の行動への回帰)で分割。"
+    },
+    {
+      "id": "story_009",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        20,
+        23
+      ],
+      "word_count": 53,
+      "split_reason": "段落20-23のnarrator地の文を統合(現在の行動の記述)。Comment 3挿入位置(段落23/24境界、turning point直前)の直前で分割。"
+    },
+    {
+      "id": "story_010",
+      "voice": "narrator",
+      "kind": "merge",
+      "paragraph_range": [
+        24,
+        28
+      ],
+      "word_count": 69,
+      "split_reason": "段落24-28のnarrator地の文(結末部)を統合。Trial-10と同一区切り(既存のComment後〜Outro前の構成を維持)。"
+    }
+  ]
+}
