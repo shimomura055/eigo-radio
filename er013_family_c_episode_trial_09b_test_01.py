@@ -102,6 +102,22 @@ class PlanStructureTests(unittest.TestCase):
         self.assertEqual(new_indices, {5, 6, 7, 14, 15, 16})
 
 
+class CommentStructureTests(unittest.TestCase):
+    """USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-A2: Comment 4を
+    恒久的に使用しないこと(Family C仕様)、Comment 3が固定差し替え文で
+    あることの決定的テスト(API呼び出しなし)。"""
+
+    def test_comment_4_does_not_exist(self):
+        self.assertEqual(m.COMMENT_NUMBERS, (1, 2, 3))
+        self.assertNotIn(4, m.COMMENT_ROLES)
+        self.assertFalse(hasattr(m, "COMMENT_4_ROLE_JA"))
+
+    def test_comment_3_fixed_text_is_the_user_specified_replacement(self):
+        expected = ("お金や睡眠、仕事、安全についてロボットが問いかけ、マヤは答えましたが、"
+                    "今回はいつものようにロボットが最適解を示してくれることはありませんでした。")
+        self.assertEqual(m.COMMENT_3_FIXED_TEXT_OVERRIDE, expected)
+
+
 class NormalizeLooseTests(unittest.TestCase):
     def test_case_and_punctuation_insensitive(self):
         self.assertEqual(m._normalize_loose("Preference."), m._normalize_loose("preference"))

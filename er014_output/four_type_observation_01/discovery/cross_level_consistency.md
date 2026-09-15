@@ -37,3 +37,17 @@ was more enjoyable than thinking for pleasure in every country tested.」のま�
 変更していない。両者の差(2,557 vs about 2,500、12 sitesの有無、1文 vs 2文)はLevel間の解像度差
 (A2はより正確な数値+siteを保持、B1BはTTS安定性のため丸め+分割を試行)であり、Ledger F007との
 矛盾ではない(Spoken-first Number Treatment原則の範囲内)。
+
+## USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-DISCOVERY A2再生成後のCross-Level Consistency
+
+A2はDiscovery S2正式Production path(同一Verified Fact Ledger、Research再実行なし)で再生成した
+(新word_count=530語、公式ロジック[見出し除外・本文のみ])。B1B(内部ID b1b)側は本タスクでは
+本文・音声とも変更していない(Part Aは既存attempt音声のHuman Review player作成のみ)。
+
+F007(college students study)該当文の引用:
+- A2(新版): college students at 12 sites in 11 countries, everyday activities were more enjoyable than thinking for pleasure in every country.
+- B1B(現行): college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure.
+
+両者の差(数値の丸め方・site数の有無・文分割)はLevel間の解像度差であり、Ledger F007との直接矛盾は
+本チェックの範囲では検出されなかった(簡易grepによる軽量再突合、旧cross_level_consistency.mdの
+詳細marker表[F001-F012]は本タスクでは再生成していない。フルの再生成が必要な場合はユーザー判断)。

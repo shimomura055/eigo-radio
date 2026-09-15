@@ -343,15 +343,27 @@ COMMENT_3_ROLE_JA = (
     "書いてください。断定的な予告にせず、自然な話し言葉にしてください。"
     "新しい設定・事実を追加しないでください。"
 )
-COMMENT_4_ROLE_JA = (
-    "あなたは英語学習者向け音声番組の、物語が終わった直後に置く短い"
-    "日本語コメントを書く担当です。物語の意味を説明したり、結論を"
-    "言い換えたりしないでください。物語の余韻を壊さないよう、1文程度・"
-    "30〜60字程度で、聞き手が自分で考えたくなるような短い問いかけ、"
-    "または短い一言だけを書いてください。Fact解説・現在の技術解説・"
-    "統計・研究の引用は行わないでください。"
+# Comment 4は恒久的に使用しない(Family C仕様、USER-TEST-FOLLOWUP-AND-SPEC-
+# TRACEABILITY-03-FAMILYC-A2、2026-09-15ユーザー正式決定)。構成原則:
+# Comment 1(導入理解補助)/Comment 2(Story途中の自然な節目)/Comment 3
+# (後半の自然な節目)/Comment 4なし。位置はsegment番号固定ではなく記事ごとの
+# semantic break・scene transition・turning point・前後text volume・
+# 前後audio durationで決める(本記事ではv1 story境界を踏襲)。
+COMMENT_ROLES = {1: COMMENT_1_ROLE_JA, 2: COMMENT_2_ROLE_JA, 3: COMMENT_3_ROLE_JA}
+COMMENT_NUMBERS = (1, 2, 3)  # Family C既定(Comment 4なし)
+
+# Comment 3の固定差し替え文(ユーザー指定、2026-09-15)。旧文は「お金や
+# 睡眠、仕事、安全について聞いても、今回はロボットのいつもの方法では
+# 答えが見つからないようです。」で、日本語として誰が質問したか曖昧
+# (マヤが質問したように読める)という指摘を受けた。新文は記事本文
+# ("The robot asked about money, sleep, work, and safety. Maya
+# answered. Still, no answer came.")の主語(ロボットが問いかけ、マヤが
+# 答えた)を明確にする。ユーザー原文をそのまま採用(意味・Factの微調整
+# なし、差分なし)。
+COMMENT_3_FIXED_TEXT_OVERRIDE = (
+    "お金や睡眠、仕事、安全についてロボットが問いかけ、マヤは答えましたが、"
+    "今回はいつものようにロボットが最適解を示してくれることはありませんでした。"
 )
-COMMENT_ROLES = {1: COMMENT_1_ROLE_JA, 2: COMMENT_2_ROLE_JA, 3: COMMENT_3_ROLE_JA, 4: COMMENT_4_ROLE_JA}
 
 
 def run_ja_comment_text(client, comment_num: int, article_text: str, budget: BudgetTracker) -> str:
@@ -485,6 +497,45 @@ def asr_diag(out_path: str, language: str, budget: BudgetTracker, label: str) ->
     return text
 
 
+def _load_prior_asr_cache(reassemble: bool) -> tuple[dict, dict]:
+    """--reassemble時のみ、既存key_phrase_consistency.json/player_display_
+    audio_consistency.jsonからasr_textを読み込み、内容が変わっていない
+    segmentの再ASR診断を避けるためのキャッシュを返す
+    (kp_cache: {rank_str: {"asr_en":..., "asr_ja":...}}、
+    seg_cache: {segment_id: asr_text})。"""
+    kp_cache: dict = {}
+    seg_cache: dict = {}
+    if not reassemble:
+        return kp_cache, seg_cache
+    kp_path = f"{OUT_DIR}/key_phrase_consistency.json"
+    if os.path.exists(kp_path):
+        with open(kp_path, encoding="utf-8") as f:
+            prior_kp = json.load(f)
+        for rank_str, row in prior_kp.items():
+            kp_cache[rank_str] = {"asr_en": row.get("asr_en"), "asr_ja": row.get("asr_ja")}
+    seg_path = f"{OUT_DIR}/player_display_audio_consistency.json"
+    if os.path.exists(seg_path):
+        with open(seg_path, encoding="utf-8") as f:
+            prior_rows = json.load(f)
+        for row in prior_rows:
+            seg_cache[row["segment_id"]] = row.get("asr_text")
+    return kp_cache, seg_cache
+
+
+def _load_prior_comment_asr_cache(reassemble: bool) -> dict:
+    """--reassemble時のみ、既存comment_consistency.jsonからasr_textを
+    読み込むキャッシュ({comment_number: asr_text})。"""
+    cache: dict = {}
+    if not reassemble:
+        return cache
+    path = f"{OUT_DIR}/comment_consistency.json"
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            for row in json.load(f):
+                cache[row["comment"]] = row.get("asr_text")
+    return cache
+
+
 def load_mono(path: str) -> np.ndarray:
     mono, sr, _, _ = common.read_wav_float(path)
     assert sr == MONO_SR, f"unexpected sample rate: {sr}"
@@ -502,6 +553,20 @@ def sha256_text_file(path: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--budget-jpy", type=float, default=90.0)
+    # USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-A2: Comment 3
+    # 固定差し替え+Comment 4恒久削除+既存artifact再利用による低コスト
+    # 再Assemblyの3フラグ(2026-09-15新設)。
+    parser.add_argument("--fix-comment3", action="store_true",
+                         help="Comment 3をCOMMENT_3_FIXED_TEXT_OVERRIDEへ差し替え、"
+                              "既存Comment 3音声を無効化して再TTSする")
+    parser.add_argument("--drop-comment4", action="store_true",
+                         help="既存comments_ja.mdにComment 4が含まれる場合の削除移行を"
+                              "明示的に許可する(Family CはComment 4を恒久的に使用しない)")
+    parser.add_argument("--reassemble", action="store_true",
+                         help="既存の完了済みartifact(音声/consistency結果)を再利用し、"
+                              "変更箇所(Comment 3/4)のみ新規API呼び出しを行う低コスト"
+                              "再Assemblyモード。TTS/LLM/ASRは全て既存関数・既存retry"
+                              "構成をそのまま使う(フル再生成はしない)")
     args = parser.parse_args()
 
     os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -532,6 +597,12 @@ def main() -> None:
     audit_key_phrases: dict = {}
     gain_report: dict = {}
     consistency_rows: list = []  # player/display/audio consistency用
+
+    # --reassemble時: 前回完了runが残したconsistency結果をASR再照合の
+    # キャッシュとして使う(Comment 3/4以外は内容が変わっていないため、
+    # 既存artifactのasr_textをそのまま再利用しASR診断コストを避ける)。
+    kp_asr_cache, seg_asr_cache = _load_prior_asr_cache(args.reassemble)
+    prior_comment_asr_cache = _load_prior_comment_asr_cache(args.reassemble)
 
     client = a2gen.get_client()
 
@@ -608,7 +679,11 @@ def main() -> None:
         en_asr = r_en_kp.get("asr_text")
         ja_asr = r_ja_kp.get("asr_text")
         if en_asr is None:
+            en_asr = kp_asr_cache.get(str(rank), {}).get("asr_en")
+        if en_asr is None:
             en_asr = asr_diag(en_path, "en", budget, f"kp{rank}_english_asr_diag")
+        if ja_asr is None:
+            ja_asr = kp_asr_cache.get(str(rank), {}).get("asr_ja")
         if ja_asr is None:
             ja_asr = asr_diag(ja_path, "ja", budget, f"kp{rank}_japanese_asr_diag")
         kp_consistency[str(rank)] = {
@@ -621,29 +696,61 @@ def main() -> None:
     with open(f"{OUT_DIR}/key_phrase_consistency.json", "w", encoding="utf-8") as f:
         json.dump(kp_consistency, f, ensure_ascii=False, indent=2)
 
-    # === Stage E: Comment 1〜4(日本語、新規LLM+TTS) ===
+    # === Stage E: Comment 1〜3(日本語、新規LLM+TTS。Comment 4は恒久的に
+    # 使用しない、COMMENT_NUMBERS参照) ===
     # resumability: comments_ja.mdが既に存在する場合はテキストを再利用する
     # (v1のpreview/support同様の設計。再実行のたびにLLMを呼び直して確定済み
     # テキストと音声が食い違う[本タスクで発見したv1 preview_jaの不整合と
     # 同種の]事故を防ぐ)。
     comments_md_path = f"{OUT_DIR}/comments_ja.md"
+    comments_md_prev_path = f"{OUT_DIR}/comments_ja_prev.md"
     comment_texts = {}
+    existing_md_text = None
+    existing_md_has_comment4 = False
     if os.path.exists(comments_md_path):
         with open(comments_md_path, encoding="utf-8") as f:
-            _md = f.read()
-        for n in (1, 2, 3, 4):
+            existing_md_text = f.read()
+        existing_md_has_comment4 = "## Comment 4\n\n" in existing_md_text
+        if existing_md_has_comment4 and not args.drop_comment4:
+            raise RuntimeError(
+                "既存comments_ja.mdにComment 4が含まれています。Family CはComment 4を"
+                "恒久的に使用しません(ユーザー正式決定、USER-TEST-FOLLOWUP-AND-SPEC-"
+                "TRACEABILITY-03-FAMILYC-A2)。この移行には--drop-comment4を明示的に"
+                "指定してください。")
+        for n in COMMENT_NUMBERS:
             marker = f"## Comment {n}\n\n"
-            after = _md.split(marker, 1)[1]
+            after = existing_md_text.split(marker, 1)[1]
             comment_texts[n] = after.split("\n\n", 1)[0].strip()
     else:
-        for n in (1, 2, 3, 4):
+        for n in COMMENT_NUMBERS:
             comment_texts[n] = run_ja_comment_text(client, n, article_text, budget)
+
+    comment3_overridden = False
+    if args.fix_comment3 and comment_texts.get(3) != COMMENT_3_FIXED_TEXT_OVERRIDE:
+        comment3_overridden = True
+        comment_texts[3] = COMMENT_3_FIXED_TEXT_OVERRIDE
+
+    if existing_md_text is None or existing_md_has_comment4 or comment3_overridden:
+        if existing_md_text is not None:
+            with open(comments_md_prev_path, "w", encoding="utf-8") as f:
+                f.write(existing_md_text)
         with open(comments_md_path, "w", encoding="utf-8") as f:
-            for n in (1, 2, 3, 4):
+            for n in COMMENT_NUMBERS:
                 f.write(f"## Comment {n}\n\n{comment_texts[n]}\n\n")
 
+    if comment3_overridden:
+        # 内容が変わったため既存音声(stale)を無効化する。_resumable_reuse()
+        # はファイル+.okマーカーの存在のみで判定し内容一致を検証しないため、
+        # 削除せずに放置するとv1で発見したKey Phrase/Previewの resumability
+        # bugと同種の事故(古い本文の音声が再利用され続ける)が起きる。
+        stale_base = f"{AUDIO_DIR}/comment_3_ja.wav"
+        for suffix in ("", ".ok", ".debug.json"):
+            stale_path = stale_base + suffix
+            if os.path.exists(stale_path):
+                os.remove(stale_path)
+
     comment_wavs = {}
-    for n in (1, 2, 3, 4):
+    for n in COMMENT_NUMBERS:
         txt = comment_texts[n]
         path = f"{AUDIO_DIR}/comment_{n}_ja.wav"
         r = tts_narrator(txt, path, "ja", f"comment_{n}_ja", budget)
@@ -818,9 +925,11 @@ def main() -> None:
             seq.append(("Comment 3", gs(load_mono(c3_path), "comment_3")))
             sil(0.8)
 
-    sil(1.0)  # pause_1.0_en_to_ja(A2既存値)
-    c4_path, c4_r = comment_wavs[4]
-    seq.append(("Comment 4", gs(load_mono(c4_path), "comment_4")))
+    # Comment 4は恒久的に使用しない(Family C仕様、USER-TEST-FOLLOWUP-AND-
+    # SPEC-TRACEABILITY-03-FAMILYC-A2、2026-09-15ユーザー正式決定)。
+    # Story終了後は既存Family A構成どおりpause→Outroとする(Comment4→
+    # Outro遷移で使っていたpause_0.5秒[A2既存値]をStory末尾→Outroへ
+    # そのまま適用、Story直前のpause_1.0_en_to_jaは不要になったため削除)。
     sil(0.5)  # pause_0.5(A2既存値、Outro直前)
     seq.append(("Outro", outro_gained))
 
@@ -833,6 +942,18 @@ def main() -> None:
         json.dump(safety_result["report"], f, ensure_ascii=False, indent=2)
 
     final_path = f"{ASSEMBLED_DIR}/family_c_home_robots_trial_09b.wav"
+    # 旧assembled(Comment 4を含んでいた旧版)はweb/prevへ退避してから上書き
+    # する(USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-A2の指示、
+    # 旧wav/mp3は削除せず履歴として残す)。
+    if os.path.exists(final_path):
+        prev_dir = f"{WEB_DIR}/prev"
+        os.makedirs(prev_dir, exist_ok=True)
+        shutil.copyfile(final_path, f"{prev_dir}/family_c_home_robots_trial_09b_comment4.wav")
+    old_episode_mp3 = f"{WEB_DIR}/family_c_home_robots_trial_09b.mp3"
+    if os.path.exists(old_episode_mp3):
+        prev_dir = f"{WEB_DIR}/prev"
+        os.makedirs(prev_dir, exist_ok=True)
+        shutil.copyfile(old_episode_mp3, f"{prev_dir}/family_c_home_robots_trial_09b_comment4.mp3")
     common.write_wav_float(final_path, safety_result["assembled"], SR, 2)
 
     run_summary = {
@@ -879,10 +1000,14 @@ def main() -> None:
         }, f, ensure_ascii=False, indent=2)
 
     # === Stage K: player/display/audio consistency(story segment分) ===
+    # --reassemble時: 内容が変わっていないsegmentはseg_asr_cache(前回の
+    # player_display_audio_consistency.json)からasr_textを再利用し、
+    # 変更が無いのにASR診断を再課金しない。
     for seg in story_segments:
         asr_text = audit_segments[seg["id"]].get("asr_text")
         if asr_text is None:
-            lang = "ja" if seg["voice"] == "narrator" and False else "en"  # story本文は全segment英語
+            asr_text = seg_asr_cache.get(seg["id"])
+        if asr_text is None:
             asr_text = asr_diag(seg["audio_path"], "en", budget, f"{seg['id']}_asr_diag")
             audit_segments[seg["id"]]["asr_text"] = asr_text
         consistency_rows.append({
@@ -897,13 +1022,15 @@ def main() -> None:
         ("japanese_title", JAPANESE_TITLE_TEXT, "ja", None),
         ("preview_ja", preview_text, "ja", None),
     ]
-    for n in (1, 2, 3, 4):
+    for n in COMMENT_NUMBERS:
         fixed_checks.append((f"comment_{n}_ja", comment_texts[n], "ja",
                               audit_segments[f"comment_{n}_ja"].get("asr_text")))
     for key, (_fname, text) in SHARED_CHARON_NAV.items():
         fixed_checks.append((key, text, "en", None))
     for name, text, lang, precomputed in fixed_checks:
         asr_text = precomputed
+        if asr_text is None:
+            asr_text = seg_asr_cache.get(name)
         if asr_text is None:
             path = f"{AUDIO_DIR}/{name}.wav"
             asr_text = asr_diag(path, lang, budget, f"{name}_asr_diag")
@@ -917,10 +1044,14 @@ def main() -> None:
         json.dump(consistency_rows, f, ensure_ascii=False, indent=2)
 
     # === Stage L: Comment consistency(表示/canonical/TTS input/ASR/位置/前後volume) ===
+    # --reassemble時: comment_1/2は内容不変のためprior_comment_asr_cache
+    # (前回comment_consistency.json)のasr_textを再利用する。comment_3は
+    # 新規TTS結果のasr_textをそのまま使う(キャッシュ参照不要)。
     comment_consistency = []
-    for n in (1, 2, 3, 4):
+    for n in COMMENT_NUMBERS:
         path, r = comment_wavs[n]
-        asr_text = r.get("asr_text") or asr_diag(path, "ja", budget, f"comment_{n}_reconfirm_asr")
+        asr_text = r.get("asr_text") or prior_comment_asr_cache.get(n) \
+            or asr_diag(path, "ja", budget, f"comment_{n}_reconfirm_asr")
         comment_consistency.append({
             "comment": n, "player_display_text": comment_texts[n], "canonical_text": comment_texts[n],
             "tts_input_text": comment_texts[n], "asr_text": asr_text,
@@ -944,7 +1075,7 @@ def main() -> None:
         (3, "v1 story_017/018境界相当(段落22/23境界)",
          V1_SEGMENT_IDS_BY_PLAN_INDEX[COMMENT_3_AFTER_PLAN_INDEX][-1],
          [s["id"] for s in story_segments if s["plan_index"] == COMMENT_3_AFTER_PLAN_INDEX + 1][0]),
-        (4, "Story終了後", story_segments[-1]["id"], None),
+        # Comment 4は恒久的に使用しない(2026-09-15)ためエントリなし。
     ]
     for n, desc, before_id, after_id in boundary_defs:
         before_words = len(story_segments[[s["id"] for s in story_segments].index(before_id)]["tts_text"].split()) \
@@ -967,6 +1098,11 @@ def main() -> None:
 
     # === Stage O: mp3化 + player再生成 ===
     web_result = convert_all_to_mp3()
+    # 旧player.html(Comment 4を含んでいた旧版)はplayer_prev_comment4.html
+    # として保存する(履歴保持は不要、上書きでよい)。
+    old_player_path = f"{OUT_DIR}/player.html"
+    if os.path.exists(old_player_path):
+        shutil.copyfile(old_player_path, f"{OUT_DIR}/player_prev_comment4.html")
     build_player_html(seq_labels=[name for name, _ in seq], story_segments=story_segments,
                        kp_items=kp_items, comment_texts=comment_texts, run_summary=run_summary)
 
@@ -1052,10 +1188,11 @@ def write_family_a_reuse_map() -> None:
          "assemble_mod.A2_KEY_PHRASE_NUMBERING_PAUSE_SECONDS", "そのまま流用(v1も既に流用済み)"),
         ("Comment前後pause(1.0秒 en→ja、0.8秒 ja→en)",
          "er003_v1_n3_01_assemble.py::build_a2_timeline pause_1.0_en_to_ja/pause_0.8_ja_to_en",
-         "Comment1〜4の前後遷移にそのまま適用(v1のsupport_1/2は0.6/0.8秒で"
-         "Family A値と不一致だった)"),
+         "Comment1〜3(Comment4は恒久的に使用しない、2026-09-15)の前後遷移に"
+         "そのまま適用(v1のsupport_1/2は0.6/0.8秒でFamily A値と不一致だった)"),
         ("Outro直前pause(0.5秒)", "build_a2_timeline pause_0.5(In One Line→Outro)",
-         "Comment4→Outroの遷移にそのまま適用"),
+         "Story末尾→Outroの遷移にそのまま適用(Comment4削除後、既存Family A"
+         "構成どおりpause→Outroとした)"),
         ("Assembly/Gate/player", "assemble_with_timeline/apply_headroom_safety_valve/"
          "verify_episode_audio_validation_gate/audio_review_player.py", "そのまま流用(無変更)"),
     ]
@@ -1110,16 +1247,18 @@ def build_player_html(seq_labels, story_segments, kp_items, comment_texts, run_s
         "Full story intro (Charon)": (SHARED_CHARON_NAV["full_story_intro"][1], "Charon(nav)"),
         "Notification 1": ("(SFX、通知音)", "SFX"), "Notification 2": ("(SFX、通知音)", "SFX"),
         "Notification 3": ("(SFX、通知音)", "SFX"),
-        "Comment 1": (comment_texts[1], "Aoede(narrator)"), "Comment 2": (comment_texts[2], "Aoede(narrator)"),
-        "Comment 3": (comment_texts[3], "Aoede(narrator)"), "Comment 4": (comment_texts[4], "Aoede(narrator)"),
     }
+    # Comment 1〜3(Comment 4は恒久的に使用しない、comment_texts辞書自体が
+    # COMMENT_NUMBERSのkeyしか持たないため自然に除外される)。
+    for _n, _txt in comment_texts.items():
+        fixed_label_to_text[f"Comment {_n}"] = (_txt, "Aoede(narrator)")
     name_to_seg_id = {
         "Welcome (Charon)": "welcome", "Topic intro": "topic_intro_en", "Japanese title": "japanese_title",
         "Preview intro (Charon)": "preview_intro", "Preview": "preview_ja",
         "Key phrases intro (Charon)": "key_phrases_intro", "Full story intro (Charon)": "full_story_intro",
-        "Comment 1": "comment_1_ja", "Comment 2": "comment_2_ja", "Comment 3": "comment_3_ja",
-        "Comment 4": "comment_4_ja",
     }
+    for _n in comment_texts:
+        name_to_seg_id[f"Comment {_n}"] = f"comment_{_n}_ja"
 
     for entry in run_summary["timeline"]:
         name = entry["part"]

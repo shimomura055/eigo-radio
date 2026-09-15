@@ -1,0 +1,38 @@
+[
+  {
+    "comment": 1,
+    "position_description": "導入部(Preview後・Story前、Full story introの直後、固定配置)",
+    "selection_reason": "Comment 1は物語の理解補助として常にStory先頭固定(v2と同一方針)。",
+    "before_segment_id": null,
+    "after_segment_id": "story_001",
+    "before_segment_word_count": null,
+    "after_segment_word_count": 46,
+    "comment_duration_seconds": 5.65,
+    "comment_word_count_ja_chars": 35
+  },
+  {
+    "comment": 2,
+    "position_description": "story_011(segment index 10)の直後",
+    "selection_reason": "累積語数が記事全体の約35%へ到達した直後の、直近の地の文段落(merge種別、会話を含まない自然な段落境界)へスナップして自動選定(semantic breakの機械的近似、目視確認結果はRESULT_PACKETに記載)。",
+    "before_segment_id": "story_011",
+    "after_segment_id": "story_012",
+    "before_segment_word_count": 56,
+    "after_segment_word_count": 24,
+    "comment_duration_seconds": 7.88,
+    "comment_word_count_ja_chars": 46,
+    "cumulative_word_fraction_at_boundary": 0.38
+  },
+  {
+    "comment": 3,
+    "position_description": "story_027(segment index 26)の直後",
+    "selection_reason": "累積語数が記事全体の約65%へ到達した直後の、直近の地の文段落(merge種別)へスナップして自動選定(story後半・結末直前の自然な節目の機械的近似、目視確認結果はRESULT_PACKETに記載)。",
+    "before_segment_id": "story_027",
+    "after_segment_id": "story_028",
+    "before_segment_word_count": 50,
+    "after_segment_word_count": 17,
+    "comment_duration_seconds": 14.65,
+    "comment_word_count_ja_chars": 76,
+    "cumulative_word_fraction_at_boundary": 0.672,
+    "note": "位置決定方式(累積語数35%/65%→直近merge境界へのスナップ)はsemantic break/volume balanceの暫定Trial実装であり、恒久仕様ではない。USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03-FAMILYC-B1(継続CONT1)でComment 3のテキストのみ主語明確化のため差し替えた(位置[story_027/028境界]は変更していない)。"
+  }
+]
