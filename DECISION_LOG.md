@@ -7702,7 +7702,7 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
   非該当、story_017は`--keep-robot-audio`で回避済み)。
 - 参照: `docs/pm/RESULT_PACKET.md`、
   `FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05_REPORT.md`、commit
-  `<pending>`(本エントリ後にpush、詳細はRESULT_PACKET参照)
+  `a1ea6df6`(成果物本体)
 
 ## 参照元
 
