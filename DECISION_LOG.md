@@ -413,6 +413,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-132: 4TYPE補完完成(Trend OK/Discovery OK[Key Phrase B1B未完成でUDR])+Family C Trial-09(home_robots完成episode、VALIDATED)のGit記録+Voices OPEN-151 -02結果参照+PM運用方針(既存仕様内個別修正は完成まで進める、2026-09-14ユーザー指示)追記+Family C運用clarification(AI固有名当該記事限り・語数は目安)記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-133: USER-TEST-AUDIO-COMPLETION-01(Family C mp3/player Web試聴導線修正・Trend B1B完成/A2ロックSTOP・Discovery A2完成/B1Bロック STOP・Voices Comment 2再生成でPARTIAL/USER TEST READY到達)のGit記録・Web到達確認・SSOT反映+Human Review Lockの扱い(Fable判断)記録+OPEN-152/153新規登録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-134: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02(Family C v1試聴NG→v2作成でVALIDATED候補・Trend A2承認付き再生成で完成+費用バグ補正・Discovery B1B短文化[脱落解消も言い回し差で継続STOP]+A2長さ調査・Voices 2V一人称Prompt不整合修正+r3確定でPARTIAL/USER TEST READY[一人称版])のGit記録・Web到達確認・SSOT反映+OPEN-120/135/151/153追記
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-135: USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03(Discovery A2再生成530語採用[604語版不採用]+B1 Human Review player+Family C A2 Comment3/4修正・B1 Trial episode[Comment3修正含む]+Trend B1表示統一+Spec Traceability監査)のGit記録・Web到達確認・SSOT反映+OPEN-154/155新規起票+Word-count報告ルール恒久化+B1命名ルール追加
 
 ---
 
@@ -7464,6 +7465,108 @@ RESULT_PACKET_FIX02_FAMILYC.md`、`docs/pm/RESULT_PACKET_FIX02_TREND.md`、
 `docs/pm/RESULT_PACKET_FIX02_DISCOVERY.md`、`docs/pm/
 RESULT_PACKET_FIX02_VOICES.md`/`_2.md`、
 `docs/pm/web_playback_check_FIX02.json`。commit `ccf43e8c`(成果物本体)。
+
+## PM-CLOSEOUT-CONSOLIDATION-135(2026-09-15)
+
+管理ID`PM-CLOSEOUT-CONSOLIDATION-135`(Sonnet委任、Git記録・Web到達確認・
+SSOT反映・最終REPORT作成担当、API呼び出しなし・費用¥0)。
+`USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03`(Sonnet分割委任6件:
+DISCOVERY/FAMILYC-A2/FAMILYC-B1[+CONT1]/TREND-NAMING/SPEC-AUDITの成果物)
+をGit記録し、Web到達確認・SSOT反映・最終REPORT作成を行った。
+
+**(1) Discovery**: Part A(B1 Human Review player、¥0)は既存3attempt音声
+(attempt1/3は文ブロック欠落、attempt2は内容完備で言い回し差のみ)を
+canonical/ASR/diff/seek/個別再生付きplayerで比較可能にし、人間試聴承認
+方式へ移行(現時点でStatusは変更しない)。Part B(A2再生成、¥155.06)は
+既存Discovery S2正式path(`run_one_pattern_staged_discovery_focus`、
+同一Ledger・Prompt無変更)でattempt1=530語(No Jargon修正込み、
+word_count_flag=WORD_COUNT_GE_500)を採用、旧604語版は
+`discovery/a2_before_regeneration_604w/`へ履歴保持し**最新候補としては
+提示しない**。attempt2はbudget guard発火でSTOP(テキスト未生成)。
+Discovery Production 1生成セット総原価=¥606.08(前回まで)+¥155.06=
+**¥761.14**(Part C[A2音声再完成]未反映)。Part C(A2音声再完成)は
+費用上限超過見込み(残headroom¥24.94 < nominal¥60)でSTOP、
+`USER_DECISION_REQUIRED`。
+
+**(2) Family C**: A2 v2でComment 3をユーザー指定文へ差し替え(ASR一致・
+表示一致)、Comment 4を除去(pause→Outro)。**ユーザー正式決定として
+恒久化**: Family C A2/B1ともComment構成は1〜3(Comment 4なし)を正式仕様
+とし、Comment位置決定原則(semantic break/scene transition/turning
+point/前後text volume/前後audio duration)を恒久記録する(詳細
+`home_robots_v2/spec/episode_spec_v2.md`)。B1 Trial episode(597語、
+Trial目安約400語を24%超過)を新規生成、Comment 3もA2 v2と同種の主語
+曖昧問題をFable照合で検出し主語明示版へ修正済み(CONT1)。いずれも
+Audio Validation Gate PASS、VALIDATED候補(ユーザー試聴待ち)。
+**Family C全体はProduction正式path未承認のまま**(`APPROVED_FOR_PRODUCTION`
+は人間ユーザーのみ決定、Comment 4なしの決定自体はユーザー正式Decision
+として記録するがPRODUCTION_WIRED昇格はしない)。本タスク実費
+(A2 Comment3修正¥0.90+B1初回Trial¥85.20+B1 Comment3修正¥0.90)=¥86.20、
+Family C累計=¥148.50(FIX-02時点)+¥86.20+既存¥0.90=**¥235.50**
+(予算枠¥133.99を¥101.51超過、超過はFIX-02時点で既に発生済み)。
+
+**(3) Trend**: A2/B1とも試聴OK・追加作業なし。「B1B」表示のユーザー
+向け文言をTrend player(`trend/audio/b1b/player.html`)で「B1」へ統一
+(内部識別子`b1b`は変更なし、既存`docs/pm/PM_GOVERNANCE.md` 9-9節の
+命名ルールの未適用箇所を洗い出し実装したもの、新方針ではない)。
+`CURRENT_SPEC.md`「B1(独立生成Natural Spoken News English)」節に
+命名ルール1段落を追加(内部ID=b1b/ユーザー向け名称=B1、既存の定義行・
+604-605/844行の歴史的記述は変更しない)。
+
+**(4) Voices**: 2V v2はPreview以外OK。Preview(約65語・3文)は現行Prompt
+「2〜3文程度」の範囲内だが過去実績(Trial 38語・Production wiring
+runtime evidence 46語)より長く、ユーザーは**当該記事1件限りの個別例外**
+として承認した(再生成なし・音声再作成なし、**将来の新規記事・再生成
+の前例にはしない**)。OPEN-151は`PARTIAL / USER TEST READY`のまま維持、
+`PRODUCTION_WIRED`は宣言しない。
+
+**(5) Spec Traceability監査(read-only、¥0)**: 限定監査5領域(Preview
+length/Family C/Voices 2V-3V/Discovery S2/Audio-TTS)を実施し、
+OPEN-154(B1 Preview語数目安のB1/A2非対称、67語→38語→46語→65語の実績
+推移、具体的word-count正式値は本タスクでは決定しない)・OPEN-155
+(User Decision→Formal Spec反映漏れの再発リスク、明確な実例=Discovery
+A2/S2 length soft target定数の生成経路未配線+Open Item番号未採番、
+Family CのCURRENT_SPEC不掲載はTrial段階ゆえの可能性があり断定しない)
+を新規起票した。OPEN-155に付随する再発防止案5件のうち4件は新しい
+強制Gateに該当するため**案の提示のみでSTOP**(`PM_GOVERNANCE.md`への
+実装は行っていない)。
+
+**(6) Word-count報告ルール(ユーザー正式決定、2026-09-15)**: A2記事の
+語数が**280語以下**または**500語以上**の場合、完成報告時に必ず明示する。
+**hard gateではない**(生成を停止させない、既存のA2語数仕様[上限なし・
+`DECIDED`]自体は変更しない)、報告義務のみ。`docs/pm/PM_GOVERNANCE.md`
+9-11節へ追記。実例: Discovery A2再生成530語(WORD_COUNT_GE_500該当)。
+
+**(7) SSOT反映**: `OPEN_ITEMS.md` OPEN-135(Discovery A2 604語版不採用
+→530語版採用の結果を反映)/OPEN-147(Family C全体サマリ追記)/OPEN-151
+(Voices Preview個別例外の記録)/OPEN-152(Family C B1 Key Phrase Validator
+参考evidence)/OPEN-153(Discovery B1 Human Review player移行の記録)へ
+追記、OPEN-154/OPEN-155を新規起票(298-299行)。OPEN-120は本タスクの
+検証範囲内で新規evidenceを確認できなかったため追記を見送った(理由は
+`docs/pm/RESULT_PACKET.md`に記録)。`CURRENT_SPEC.md`B1本文節にB1命名
+ルール1段落を追加(既存定義行は無変更)。`docs/pm/PM_GOVERNANCE.md`
+9-11節にWord-count報告ルールを追記(新Gateではなく報告義務として)。
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`にDiscovery A2 regen/Family C B1の
+行を追加。
+
+**(8) Web到達確認**: 直接音声3件(raw.githubusercontent.com、Family C
+A2 v2/Family C B1/Discovery B1 Human Review attempt2)・player4件
+(raw.githack.com、Family C A2 v2/Family C B1/Discovery B1 Human Review/
+Trend B1)いずれも初回HTTP 200(CDN遅延による再試行は発生せず)。各player
+内相対参照(episode segment 3件×2 player+Human Review attempt mp3 3件、
+計9件)も全件HTTP 200。詳細: `docs/pm/web_playback_check_FU03.json`。
+
+**(9) 費用**: 本タスク自体はAPI呼び出しゼロ(¥0)。反映元タスクの実費用は
+上記(1)〜(4)に記載のとおり(合算推定はしない)。
+
+**(10) Closeoutチェック(ユーザー指定10項目)**: `docs/pm/
+closeout_check_FU03.md`に記録(詳細は同ファイル、要約は
+`USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03_REPORT.md`のCloseout表参照)。
+
+詳細: `USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03_REPORT.md`、`docs/pm/
+RESULT_PACKET_FU03_DISCOVERY.md`、`docs/pm/RESULT_PACKET_FU03_FAMILYC_A2.md`、
+`docs/pm/RESULT_PACKET_FU03_FAMILYC_B1.md`/`_2.md`、`docs/pm/
+RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`、
+`docs/pm/web_playback_check_FU03.json`。commit `60e274d7`(成果物本体)。
 
 ## 参照元
 

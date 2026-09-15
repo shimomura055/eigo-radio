@@ -1021,6 +1021,24 @@ STATUS-INVENTORY`エントリ参照)により新設。
 恒久ルールとして正式決定した(原文全文は`DECISION_LOG.md`同管理ID
 エントリ参照)。
 
+### 9-11. A2記事の語数報告義務(word-count報告ルール、2026-09-15
+ユーザー正式決定)
+
+- A2記事の語数が**280語以下**または**500語以上**の場合、完成報告時に
+  必ず明示する。
+- これは**hard gateではない**(生成を停止させたり、Validatorとして
+  ブロックしたりしない)。**報告義務のみ**であり、既存のA2語数仕様
+  (`CURRENT_SPEC.md`「A2本文全体語数」節、上限なし・意図的に削らない、
+  `DECIDED`)自体を変更するものではない。
+- 報告形式の例: 「(語数XXX語、報告ルール該当: WORD_COUNT_LE_280 /
+  WORD_COUNT_GE_500)」のように、完成報告のどこかに一目で分かる形で
+  明記する。
+- **経緯**: 2026-09-15、`PM-CLOSEOUT-CONSOLIDATION-135`
+  (USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03)にてユーザーが恒久
+  ルールとして正式決定した(原文全文は`DECISION_LOG.md`同管理ID
+  エントリ参照)。実例: Discovery A2再生成530語(`WORD_COUNT_GE_500`
+  該当、`docs/pm/RESULT_PACKET_FU03_DISCOVERY.md`)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜

@@ -604,6 +604,21 @@ Support」という理解は誤りであり、正式には採用しない。
 | News本文の生成方式 | Verified Fact Ledgerから直接1回のWriter呼び出しでNatural English本文を生成する(「B1-B Direct Generation」)。B2を別段階として先に生成し、それをB1へ流用する旧来の2段階パイプラインは使用しない。過去のP-series記事(A01/A02/ADD03)ではCEFR-B2が別途独立生成されているが、これは旧アーキテクチャの記録であり、新規記事のNews本文生成方式ではない | `DECIDED` | ER-003-A2-B1-N3-01(3ジャンル横展開で採用・検証) | 2026-08-17 |
 | B1-B Direction Control原則 | 診断的原則であり、新しいhard ruleは追加しない: Clause Density(1文1主要アイデア+限定的な補足情報)、Long-distance Dependency(長い挿入節は分割)、Abstract Noun Chains(名詞化表現は聞き取りを妨げる場合のみ動詞化、機械的ルール化しない)、Logical Flow(必要な箇所のみ明示的接続詞)、Concept Density(新概念を詰め込みすぎない)、Passage Rebuilding(同じFact/Story Coreから自由に構成し直してよいが、Ledgerにない事実・因果・意図・評価を追加しない)。禁止する新規hard rule: 1文語数上限、CEFR外語彙禁止、受動態禁止、1文1事実の強制。平均文長は診断記録のみで、gateとして強制しない | `DECIDED` | ER-003-A2-B1-N3-01 §7-9 | 2026-08-17 |
 
+**命名ルール(ユーザー向け名称=B1、内部ID=b1b、2026-09-15追記、
+PM-CLOSEOUT-CONSOLIDATION-135)**: 記事レベル「B1」に言及するユーザー向け
+文言(REPORT本文・RESULT_PACKET・player HTML・PM_BRIEF等)では常に「B1」を
+使い、「B1B」「B1-B」は使わない。内部識別子(ディレクトリ名`b1b`/dict
+key/定数名/CLI引数/article_id等)は引き続き既存のまま(`b1b`、
+`B1_B_DIRECT_INSTRUCTION`等)でよく、renameしない。ユーザー向け文中で
+内部IDへ触れる必要がある場合のみ「B1(internal id: b1b)」のように小さく
+併記してよい(必須ではない)。「B1-B」という名前自体の由来は、
+2026-08-17 ER-003-B1-B2-SCOPE-FIX-01で確定した「B1-A方式(旧2段階、
+廃止)」対「B1-B方式(Direct Generation、正式採用)」比較Trialの名残
+(844行参照、歴史的記述としてそのまま残す)であり、B1-A廃止後はユーザー
+向けに区別する意味はない。既存の`docs/pm/PM_GOVERNANCE.md` 9-9節
+(2026-09-13)の命名ルールと同一方針であり、新方針ではなく具体例の追加
+(詳細: `docs/pm/b1b_naming_investigation.md`)。
+
 ### B1 Support(Preview / Comment 1-4)
 
 | 項目 | 現在値 | 状態 | 根拠Decision | 最終更新日 |
