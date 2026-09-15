@@ -52,7 +52,7 @@ Part 1・Part 2ともAssembly未完了のため、B1の`player.html`は依然と
 ## 7) commit・push・残差分
 
 - commit(D-B1): `eabc3ffb`(push済み)。
-- commit(D-A2): 本RESULT_PACKET保存後にcommit予定、hashは下記追記または次回参照。
+- commit(D-A2): `c1584989`(push予定)。
 - 残差分: `er014_output/four_type_observation_01/discovery/audio/a2/narration/full_story_part1.wav`と関連attempt wav(gitignore対象、コミット外)、review_lock_state.json/tts_generation_results.json等の監査jsonのみ変更。本タスクに無関係な既存差分(er006_output/er011_output配下等)は触っていない。
 
 ## 8) unresolved issue(恒久defer事項)
