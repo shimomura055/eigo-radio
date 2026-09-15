@@ -419,6 +419,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任A): Family C Home robots A2 v2をVALIDATED記録(B1はFIX-05完了済み・作業なし)+Discovery B1 full_story_part2をユーザー承認でLock1回解除しattempt4再TTS(2,500人/11か国段落の欠落が2/3で再発、STOP)+Discovery A2 530語版でKey Phrase再選定・Support再生成・TTSを実行(full_story_part1/point_twoが3回上限までTRUE_CONTENT_MISMATCH、Assembly未到達でSTOP)、費用¥18.67+¥60.93
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任B): Family C「The future of memory」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Charon[装置]/Erinome[兄]共通、A2 duration290.6秒・B1 duration343.2秒、両方Audio Validation PASS、B1はeasy English Support/Support voice Charon/日本語タイトルなしを新規実装時から既定動作化、費用合計¥111.00)。
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06-FOLLOWUP-01: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザー再試聴OK→VALIDATED記録(APPROVED_FOR_PRODUCTIONではない、追加修正・再TTSなし、¥0)。
+- [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任C): Family C「Digital twins」A2+B1完成(Trial-08本文固定・修正なし、Voice=Aoede/Erinome[digital twin Echo]、B1 Support=Charon、A2 duration301.281秒・B1 duration364.554秒、両方Audio Validation PASS、B1側の話者判定バグ[OPEN-156]を発見し個別修正、費用合計¥177.30)。
 
 ---
 
@@ -7764,6 +7765,17 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - ユーザー判断: Family C Home robots B1(FIX-05 Support voice Charon版)をユーザーが再試聴しOK→Trial成果物Gate 1分類=**VALIDATED**(APPROVED_FOR_PRODUCTIONではない。Family C全体のProduction採用判断ではない。A2 v2も既にVALIDATED)。追加修正・再TTSなし(¥0)。
 - 作業順序のユーザー判断: Family C残り2記事(memory/digital twins)完成→Discovery B1(part2を意味単位で2 segment分割、個別対応)→Discovery A2(NG 2 segmentのみ追加retry、2,557正読必須)。Family C完成前にDiscoveryを割り込ませない。
 - 参照: `FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05_REPORT.md`、`docs/pm/RESULT_PACKET_UT06_C.md`
+
+## USER-TEST-FINAL-AUDIO-BATCH-06(委任C: Family C「Digital twins」A2+B1)
+
+- 日付: 2026-09-15
+- 種別: Family C Trial記事のepisode完成(ユーザー実検証用、委任B[memory]確立の構成を適用、Trial・Production正式仕様ではない)
+- 本文: Trial-08 `digital_twins/reader_facing_article.txt`を正本候補として固定。再生成・書き換えなし。A2本文sha256 `b22e5f8e5f6951df302a31f7e83d1a6c9bef0d871dcfee65be480298d38a00b3`(不変)。
+- A2: 語数380(既存WORD_COUNT_LE_280/GE_500いずれにも非該当)、Voice割当=narrator(Mara本人台詞含む)=Aoede、digital twin Echo=Erinome(選定理由: narratorと区別、CharonはB1 Support/装置voice慣例枠のため今回のstory本文では不使用、既存4Voice候補の範囲内)。Comment 1=導入固定/Comment 2=段落13/14境界(scene transition、私的な会話からオーディション会場外への場所・時間転換、累計語数約43%)/Comment 3=段落22/23境界(turning point直前、"The door opened."の直後・入室決断場面の手前、累計語数約73%、結末は明かさない)。Comment 4なし。日本語タイトル「デジタルツイン」。Audio Validation PASS、duration=301.281秒(5.02分)。TTS/LLM/ASR診断累計2回run(TTS42件・LLM15件・ASR診断44件)、再生成1回(Preview/Comment 1-3のみ、下記個別対応)。4者一致: 32行中30行完全一致、2行はASR表記揺れのみ(waited/weightedホモフォン等、意味差なし)。費用¥78.00(上限¥80以内)。個別対応: 日本語Support文中の英字"Echo"表記・「十年間」表記がTTS/ASR不一致(TRUE_CONTENT_MISMATCH/ASR_VALIDATION_UNCERTAIN)を招きGate BLOCKED(1回目¥55.50)、role instructionへ片仮名「エコー」・算用数字表記の指示を追加しPreview/Comment 1-3のみ再生成して解消。Status=VALIDATED候補/Trial/USER_LISTENING_PENDING。
+- B1: A2本文をStory coreとしてB1独立生成Writer(`er013_family_c_future_writer_08_b1`)で新規生成(語数477語、目安400語比+19.3%、`WORD_ACCEPTABLE_RANGE(340,480)`内)。Fact Safety 3層overall_pass=True(CURRENT FACT 0件でskip)。Story core check 6項目全一致(all_found=true)。Voice割当はA2と同一(narrator=Aoede、twin Echo=Erinome)、話者判定キーワードは"echo"/"twin"/"digital twin"(委任Bの"robot"/"storage unit"追加と同型の個別記事対応)。B1 Support(Preview/Comment 1-3)はA2のtwin voice(Erinome)とは独立して既存B1正式仕様どおりCharon固定(本ファイル内`tts_support_charon`関数を新設、story本文がCharonを使わない記事構成のため)。日本語タイトルなし・Comment 4なし(既定動作)。Comment 2=累積語数40.7%、Comment 3=累積語数73.2%。個別対応(Voice assignment例外、OPEN-156として起票): `classify_quote_voice`のbefore windowが直前の別引用符区間の語("Echo")を誤って拾い、"“Echo,” Mara said, “begin with the first note.”"の後半(Mara自身の発話)をtwin voiceへ誤割当(story_051、1回目run時点でGate PASSしていたが目視監査で発見)。before windowを直近の閉じ引用符より後ろに限定する修正を実施し該当1segmentのみ削除・再生成、再度Gate PASS。Audio Validation PASS、duration=364.554秒(6.08分)。TTS/LLM/ASR診断累計2回run(TTS68件・LLM6件・ASR診断79件)。4者一致: 62行中60行完全一致、2行はASR表記揺れのみ(ten/10表記・em-dash/コンマ、意味差なし)。費用¥99.30(上限¥120以内)。Status=VALIDATED候補/Trial/USER_LISTENING_PENDING。
+- 新規Open Item: OPEN-156(B1話者判定`classify_quote_voice`の引用符境界またぎ誤判定、個別対応済み・恒久対応は未着手)。委任Bで記録した恒久対応候補2点(B1装置/twin呼称のWriter非保証、B1語数目安の正式値未確定)が本記事でも再現(件数2件目、新番号は追加せず)。
+- 費用合計¥177.30(A2¥78.00+B1¥99.30)。Family C累計¥400.80+¥177.30=¥578.10。
+- 参照: `docs/pm/RESULT_PACKET_UT06_C.md`、commit `2d2ae2a1`(A2)/B1は本エントリ追記と同時にcommit
 
 ## 参照元
 

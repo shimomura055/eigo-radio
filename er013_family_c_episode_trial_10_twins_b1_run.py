@@ -409,7 +409,18 @@ def find_quote_spans(paragraph_text: str) -> list:
 
 
 def classify_quote_voice(paragraph_text: str, start: int, end: int) -> str:
-    before = paragraph_text[max(0, start - 80):start].lower()
+    before_raw = paragraph_text[max(0, start - 80):start]
+    # 個別対応(2026-09-15、本記事専用のVoice assignment例外): 同一段落内に
+    # 直前の引用符区間がある場合("“Echo,” Mara said, “begin with the first
+    # note.”"のように、Echoへの呼びかけの直後にMara自身の発話が続く形)、
+    # before windowがその直前の引用符内の語("Echo")まで拾ってしまい、
+    # 実際はMara(narrator)の発話をtwinと誤判定する。直近の閉じ引用符より
+    # 後ろだけをbefore windowとして使うことでこれを避ける(本記事専用の
+    # 個別修正、新しい汎用機構ではない)。
+    last_close = max(before_raw.rfind("”"), before_raw.rfind('"'))
+    if last_close != -1:
+        before_raw = before_raw[last_close + 1:]
+    before = before_raw.lower()
     after = paragraph_text[end:end + 80].lower()
     window = before + " " + after
     # USER-TEST-FINAL-AUDIO-BATCH-06(委任C、個別記事対応): B1 Writerは
