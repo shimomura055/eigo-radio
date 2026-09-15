@@ -417,6 +417,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Family C A2 v2 Robot選択肢二人称化(1箇所)+B1日本語タイトル削除・Comment 1〜3のeasy English化・Robot選択肢二人称化(ユーザー試聴Feedback反映、原因3点特定、A2/B1ともVALIDATED候補/Trial維持)
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: Family C B1のPreview/Comment 1〜3をnarrator(Aoede)からB1正式仕様どおりCharon voiceへ(ユーザー正式判断、4segmentのみ再TTS+現物ASR4/4一致、story_017は本タスク限定bypass`--keep-robot-audio`でsha256不変を維持、B1はVALIDATED候補/Trial/USER_LISTENING_PENDING維持)
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任A): Family C Home robots A2 v2をVALIDATED記録(B1はFIX-05完了済み・作業なし)+Discovery B1 full_story_part2をユーザー承認でLock1回解除しattempt4再TTS(2,500人/11か国段落の欠落が2/3で再発、STOP)+Discovery A2 530語版でKey Phrase再選定・Support再生成・TTSを実行(full_story_part1/point_twoが3回上限までTRUE_CONTENT_MISMATCH、Assembly未到達でSTOP)、費用¥18.67+¥60.93
+- [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任B): Family C「The future of memory」A2 episode完成(Trial-08本文固定・修正なし、Voice=Aoede/Charon[装置]/Erinome[兄]、Comment2=scene transition[5年後]・Comment3=turning point直前、Audio Validation PASS duration290.6秒、費用¥48.30)。B1は後続で実施。
 
 ---
 
@@ -7744,6 +7745,17 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
   `production_set_total_cost_including_audio_jpy`)。
 - OPEN-154/155: DEFERRED / USER_DECISION_REQUIRED維持、本バッチで変更なし。
 - 参照: `docs/pm/RESULT_PACKET_UT06_A.md`
+
+## USER-TEST-FINAL-AUDIO-BATCH-06(委任B: Family C「The future of memory」A2+B1)
+
+- 日付: 2026-09-15
+- 種別: Family C Trial記事のepisode完成(ユーザー実検証用、Home robots確認済み構成を適用、Trial・Production正式仕様ではない)
+- 本文: Trial-08 `memory/reader_facing_article.txt`を正本候補として固定(ユーザー指示)。修正なし(本文sha256は不変のまま使用、`a9a646a7...b2ea2`)。
+- A2: 語数384(既存WORD_COUNT_LE_280/GE_500いずれにも非該当)、Voice割当=narrator/Lena本人台詞=Aoede、装置(記憶保管画面)=Charon、兄=Erinome。Comment 1=導入固定/Comment 2=段落8/9境界(scene transition、5年後の時間跳躍、累計語数約39%)/Comment 3=段落23/24境界(turning point直前、累計語数約82%、結末[ボタンを押さない]は明かさない)。Comment 4なし。日本語タイトル「記憶の未来」。Audio Validation PASS、duration=290.6秒(4.84分)。TTS 30件・LLM 11件・ASR診断5件、再生成0回(全segment 1回で成功)。4者一致: 24行中18行完全一致、6行はASR表記揺れのみ(Lena/Linaホモフォン2件、ハイフン正規化1件、句読点差1件、日本語かな/漢字表記揺れ2件、意味差なし)。費用¥48.30(上限¥80以内)。Status=VALIDATED候補/Trial/USER_LISTENING_PENDING。
+- B1: (委任B後続タスクで実施、本エントリは委任B全体の索引として追記予定)
+- 新規Open Item: なし(既存OPEN-147へ追記)
+- 費用(A2)¥48.30。Family C累計¥289.80+¥48.30=¥338.10(B1完了後に再集計)。
+- 参照: `docs/pm/RESULT_PACKET_UT06_B.md`
 
 ## 参照元
 

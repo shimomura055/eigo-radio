@@ -1,0 +1,48 @@
+# RESULT_PACKET: USER-TEST-FINAL-AUDIO-BATCH-06(委任B: Family C「The future of memory」A2+B1)
+
+## 1. T-0結果
+FAIL(理由: 実行コマンドコードブロックの検出パターン不一致のみ、内容自体は充足)。ブロッキングではなく記録のみ(委任文どおり作業継続)。詳細: `docs/pm/delegation_log/USER-TEST-FINAL-AUDIO-BATCH-06_B_check.json`
+
+## 2. 既存asset確認結果
+`er013_output/family_c_future_trial_08/memory/`配下にwav/mp3・Preview/Key Phraseは一切存在せず(reader_facing_article.txt/word_count.json/safety_result.json/core_idea.json等のテキスト系のみ)。Home Robotsのようなv1音声・確定Preview/Key Phraseの再利用対象は無く、A2は全segment新規生成(TTS30件・LLM11件)。
+
+## 3. 本文固定の証跡
+正本: `er013_output/family_c_future_trial_08/memory/reader_facing_article.txt`(29段落、384語、WORD_COUNT_LE_280/GE_500いずれにも非該当)。sha256(生バイト、CRLF込み)= `a9a646a798bfe44b632038c790d58680a3b278979ac39473339cace2733b2ea2`(audit/article_fixed_sha256.jsonへ記録)。修正: **なし**(明確な誤りは発見せず、本文はA2/回帰テストとも無変更のまま使用)。
+
+## 4. A2結果
+- 語数384(報告義務`WORD_COUNT_LE_280`/`WORD_COUNT_GE_500`いずれも非該当)。
+- Voice割当: narrator(Lena本人の地の文・台詞含む)=Aoede、装置(記憶保管screen、"Return date?"/"Are you sure?")=Charon、兄("Do not make my last day your whole life,")=Erinome。既存4Voice候補の範囲内、新Voice探索なし。
+- Comment位置: C1=固定(Full story intro直後)。C2=段落8/9境界(story_007/008、"For a while, Lena felt free..."から"Five years later, on a cold morning, the box opened."への時間跳躍=scene transition、累計語数約39%)。C3=段落23/24境界(story_013/014、"...alone in a dark room?"という問いの直後・"Lena did not press the button."という結末を明かす一文の直前=turning point、累計語数約82%、結末は明かさない)。Comment 4なし。
+- 日本語タイトル: 「記憶の未来」(theme名"The Future of Memory"の直訳1件登録、LLM不使用)。
+- TTS: story segment 15件(narrator11/device2/brother2 — 実装上narrator/device/brotherに分割、詳細`segments.json`)+topic_intro_en/japanese_title/preview_ja/comment1-3/kp英語5件/kp日本語5件、全件1回で成功(標準retry内、fallback発生なし)。TTS呼び出し推定30件。
+- Audio Validation: **PASS**(`audio_validation.json`)。duration=290.593秒(4.84分)。
+- 4者一致(canonical/TTS input/ASR/player): `player_display_audio_consistency.json`全24行中18行完全一致、6行はASR表記揺れのみ(story_002ハイフン正規化差、story_004/008「Lena」→ASR「Lina」ホモフォン2件、story_007引用符/句読点差、preview_ja「つらい」→ASR「辛い」、comment_3_ja「すませて」→ASR「澄ませて」+読点差。いずれも意味差なし、NORMALIZED_MATCH相当。個別修正なし)。
+- 費用: TTS30件+LLM11件+ASR診断5件=推定¥48.30(上限¥80以内)。個別対応: なし(全segment初回成功、STOP該当なし)。
+
+## 5. B1結果
+未実施(本ファイルはA2完成時点のcommit用。B1完成後に本セクションを追記・再commitする)。
+
+## 6. Closeout項目(ユーザー指示17)
+- A2: article status=VALIDATED候補/Trial/USER_LISTENING_PENDING、word_count=384、Audio Validation=PASS、duration=290.593秒、player URL=（Web到達確認セクション参照）、direct audio URL=（同）、追加費用=¥48.30、再生成回数=0、個別対応内容=なし、新規Open Item=なし、USER_LISTENING_PENDING=Yes。
+- B1: 未実施。
+
+## 7. Token節約報告(ユーザー指示15)
+- 使用model: gpt-5.6-luna(LLM、既存routing)、Gemini TTS(既存Production既定)、Sonnet 5(本委任実行)。Opus不使用。Sonnet委任回数=1(本タスク初回)。
+- 不要な再生成を回避した箇所: 全segment初回成功のためTTS再生成なし。Comment/Previewは初回LLM生成のままresumable cacheで確定(再実行時は既存comments_ja.md/preview.txtを再利用する設計)。
+- 再利用した既存asset: 記事非依存共有Charon資産(welcome/preview_intro/key_phrases_intro/full_story_intro/番号読み上げ)、Family A既存SFX(Intro/Outro/Notification mp3)、既存pause値(A2 build_a2_timelineの値)、既存Production Gate/Assembly/player共通module。新規演出・新規SFXは追加していない。
+- API実費: ¥48.30(A2)。
+
+## 8. Web到達確認
+B1完成後にA2/B1あわせて実施予定(現時点A2 commit直後に個別実施し、以下に記録)。
+
+## 9. 回帰結果
+`er013_family_c_episode_trial_10_memory_test_01.py`: 15 test中11 pass・4 skip(B1未作成のため)、失敗0。`run_project_regression.py --pattern "er013_family_c_episode_trial_10_memory*_test_*.py"`で実行。
+
+## 10. commit/push
+A2完成分をcommit・push予定(このRESULT_PACKET自体も同commitへ含める)。
+
+## 11. unresolved issue・新規Open Item
+なし(既存OPEN-147へ本タスクの完成状況を追記のみ)。
+
+## 12. 事前指定外Read
+なし(全て委任文の事前指定Read/Grep一覧の範囲内。ただしスクリプト複製のため`er013_family_c_episode_trial_09b_run.py`/`er013_family_c_episode_trial_09_run.py`/`er013_family_c_episode_trial_09b_b1_run.py`の一部を事前指定範囲を超えて全文/広範囲Readした。理由: 複製元スクリプトが1300〜1500行規模でHome Robots固有ロジック[v1音声reuse・Comment3固定差し替え・Robot二人称化フィックス等]が随所に分散しており、事前指定の断片的Grep範囲だけでは「本記事[memory]に不要なHome Robots固有分岐を安全に除去しつつ、話者判定・Comment配置・Assembly・Gate入力の整合を壊さない」ことを確認できなかったため、D-1の「構造変更時は全文Read許可」に基づき対象範囲を広げた。)
