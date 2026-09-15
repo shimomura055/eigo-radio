@@ -215,6 +215,36 @@ class FinalFixFourTests(unittest.TestCase):
         self.assertEqual(matching[0]["voice"], "robot")
 
 
+class SupportVoiceFixFiveTests(unittest.TestCase):
+    """FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: Preview/Comment 1〜3の
+    Support voiceがCharon(B1正式仕様どおり)であることの決定的テスト(生成物が
+    無い場合はskip、APIコールなし)。"""
+
+    OUT_DIR = m.OUT_DIR
+
+    def test_support_segments_use_charon_voice(self):
+        path = f"{self.OUT_DIR}/player.html"
+        if not os.path.exists(path):
+            self.skipTest("player.html not generated yet")
+        with open(path, encoding="utf-8") as f:
+            html = f.read()
+        if "Charon(support)" not in html:
+            self.skipTest("--support-voice-charon not applied yet (pre-fix05 player.html)")
+        self.assertEqual(html.count("Charon(support)"), 4,
+                          "Preview/Comment 1-3の4rowsすべてがCharon(support)表示である"
+                          "べき(Preview1+Comment3件=4件)")
+
+    def test_support_voice_flag_uses_robot_tts_path(self):
+        # --support-voice-charon指定時、Comment/PreviewがRobotと同じ
+        # v2run.tts_robot(generate_charon_english)経路を使うことのソース検証
+        # (API呼び出しなし、実行時挙動の静的確認)。
+        import inspect
+        src = inspect.getsource(m)
+        self.assertIn("args.support_voice_charon", src)
+        self.assertIn("v2run.tts_robot(txt, path, f\"comment_{n}_ja\", budget)", src)
+        self.assertIn("v2run.tts_robot(preview_text, preview_wav_path, preview_seg_id, budget)", src)
+
+
 class WriterB1ContractTests(unittest.TestCase):
     """writer_08(A2)のhard rule定数を継承していること、B1固有の追加制約
     (Story core維持)が存在することの決定的テスト。"""

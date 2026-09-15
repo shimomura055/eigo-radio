@@ -696,6 +696,25 @@ def main() -> None:
                               "誤って日本語のまま生成されていたもの]はpreview_ja_prev.txtへ"
                               "退避。segment名をpreview_enとし、旧preview_ja.wavは"
                               "audio/prev/へ退避、narrator(Aoede)voiceは変更しない)")
+    # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05(2026-09-15新設、ユーザー正式判断)。
+    parser.add_argument("--support-voice-charon", action="store_true",
+                         help="B1正式仕様(Navigator/Support=Charon)に整合させるため、"
+                              "Preview(preview_en)とComment 1〜3(comment_1_ja〜"
+                              "comment_3_ja、実体は英語Comment 1〜3)のTTSをnarrator"
+                              "(Aoede)からRobotと同じCharon経路(v2run.tts_robot→"
+                              "voice01.generate_charon_english)へ切り替える。canonical"
+                              "text(comments_en.md/preview_en.txt)は変更せず、当該4"
+                              "wav+.okのみ削除して再TTSする(旧Aoede音声はaudio/prev/へ"
+                              "退避)。他segmentは対象外。")
+    parser.add_argument("--keep-robot-audio", action="store_true",
+                         help="FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05限定bypass: "
+                              "--fix-robot-choice-second-personを再指定せずに、Robot"
+                              "選択肢segment(story_017)のtts_text/voiceメタデータを"
+                              "既存の二人称固定文/robotへ復元するが、既存wav+.okは削除"
+                              "せず再TTSしない(story_017 wav sha256を本タスクで不変に"
+                              "保つための限定措置。--fix-robot-choice-second-personは"
+                              "指定するたび無条件再TTSする既存実装[非冪等、別タスクで"
+                              "恒久修正予定]のため、今回は代わりにこちらを使う)。")
     args = parser.parse_args()
 
     for d in (AUDIO_DIR, ASSEMBLED_DIR, KEY_PHRASE_DIR, AUDIT_DIR):
@@ -736,7 +755,7 @@ def main() -> None:
     # contributionsは変更しない(reader_text/reconstructed一致は既に検証済み)、
     # tts_textとvoiceのみ差し替える。
     robot_choice_seg_id = None
-    if args.fix_robot_choice_second_person:
+    if args.fix_robot_choice_second_person or args.keep_robot_audio:
         robot_choice_overridden = False
         already_applied = any(s["tts_text"] == ROBOT_CHOICE_FIXED_TEXT_OVERRIDE_B1 for s in segments)
         for seg in segments:
@@ -749,7 +768,10 @@ def main() -> None:
             raise RuntimeError(
                 "ROBOT_CHOICE_OLD_TEXT_B1 not found in story segments "
                 "(Story本文が想定と異なります、意図しない変更の可能性)")
-        if robot_choice_overridden and robot_choice_seg_id is not None:
+        # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: --keep-robot-audio指定時は
+        # (本タスク限定bypass)tts_text/voiceメタデータのみ復元し、既存wav+.okは
+        # 削除しない(story_017音声sha256を不変に保つため)。
+        if args.fix_robot_choice_second_person and robot_choice_overridden and robot_choice_seg_id is not None:
             stale_base = f"{AUDIO_DIR}/{robot_choice_seg_id}.wav"
             for suffix in ("", ".ok", ".debug.json"):
                 stale_path = stale_base + suffix
@@ -828,6 +850,19 @@ def main() -> None:
         # ため、削除せず放置すると古い日本語音声が再利用され続ける)。
         for n in (1, 2, 3):
             stale_base = f"{AUDIO_DIR}/comment_{n}_ja.wav"
+            # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: --support-voice-charon
+            # 指定時は、この既存の無条件削除ロジック(--comments-en指定のたび
+            # 再TTSする非冪等な既存副作用、別タスクで恒久修正予定)で消える前に、
+            # 旧Aoede音声をaudio/prev/へ退避する(初回のみ、既存退避を上書きしない)。
+            if args.support_voice_charon and os.path.exists(stale_base):
+                os.makedirs(f"{AUDIO_DIR}/prev", exist_ok=True)
+                archived_base = f"{AUDIO_DIR}/prev/comment_{n}_ja_aoede.wav"
+                if not os.path.exists(archived_base):
+                    shutil.copyfile(stale_base, archived_base)
+                    for suffix in (".ok", ".debug.json"):
+                        src = stale_base + suffix
+                        if os.path.exists(src):
+                            shutil.copyfile(src, archived_base + suffix)
             for suffix in ("", ".ok", ".debug.json"):
                 stale_path = stale_base + suffix
                 if os.path.exists(stale_path):
@@ -879,7 +914,26 @@ def main() -> None:
     for n in (1, 2, 3):
         txt = comment_texts[n]
         path = f"{AUDIO_DIR}/comment_{n}_ja.wav"
-        r = v2run.tts_narrator(txt, path, comment_lang, f"comment_{n}_ja", budget)
+        if args.support_voice_charon:
+            # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05(ユーザー正式判断):
+            # narrator(Aoede)からRobotと同じCharon経路(v2run.tts_robot)へ切替。
+            # canonical text(txt)は不変。旧Aoede音声はaudio/prev/へ退避(初回のみ、
+            # 既存退避を上書きしない)。
+            os.makedirs(f"{AUDIO_DIR}/prev", exist_ok=True)
+            archived_base = f"{AUDIO_DIR}/prev/comment_{n}_ja_aoede.wav"
+            if os.path.exists(path) and not os.path.exists(archived_base):
+                shutil.copyfile(path, archived_base)
+                for suffix in (".ok", ".debug.json"):
+                    src = path + suffix
+                    if os.path.exists(src):
+                        shutil.copyfile(src, archived_base + suffix)
+            for suffix in ("", ".ok", ".debug.json"):
+                stale_path = path + suffix
+                if os.path.exists(stale_path):
+                    os.remove(stale_path)
+            r = v2run.tts_robot(txt, path, f"comment_{n}_ja", budget)
+        else:
+            r = v2run.tts_narrator(txt, path, comment_lang, f"comment_{n}_ja", budget)
         audit_segments[f"comment_{n}_ja"] = v2run._to_audit_entry(r, txt)
         comment_wavs[n] = (path, r)
 
@@ -923,8 +977,28 @@ def main() -> None:
             preview_text = run_ja_preview_text(client, article_text, comment_texts[1], comment_texts[2], budget)
             save_text(preview_path, preview_text)
 
-    r_preview = v2run.tts_narrator(preview_text, f"{AUDIO_DIR}/{preview_seg_id}.wav", preview_lang,
-                                    preview_seg_id, budget)
+    preview_wav_path = f"{AUDIO_DIR}/{preview_seg_id}.wav"
+    if args.support_voice_charon:
+        # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05(ユーザー正式判断):
+        # narrator(Aoede)からRobotと同じCharon経路(v2run.tts_robot)へ切替。
+        # canonical text(preview_text)は不変。旧Aoede音声はaudio/prev/へ退避
+        # (初回のみ、既存退避を上書きしない)。
+        os.makedirs(f"{AUDIO_DIR}/prev", exist_ok=True)
+        archived_preview_aoede = f"{AUDIO_DIR}/prev/{preview_seg_id}_aoede.wav"
+        if os.path.exists(preview_wav_path) and not os.path.exists(archived_preview_aoede):
+            shutil.copyfile(preview_wav_path, archived_preview_aoede)
+            for suffix in (".ok", ".debug.json"):
+                src = preview_wav_path + suffix
+                if os.path.exists(src):
+                    shutil.copyfile(src, archived_preview_aoede + suffix)
+        for suffix in ("", ".ok", ".debug.json"):
+            stale_path = preview_wav_path + suffix
+            if os.path.exists(stale_path):
+                os.remove(stale_path)
+        r_preview = v2run.tts_robot(preview_text, preview_wav_path, preview_seg_id, budget)
+    else:
+        r_preview = v2run.tts_narrator(preview_text, preview_wav_path, preview_lang,
+                                        preview_seg_id, budget)
     audit_segments[preview_seg_id] = v2run._to_audit_entry(r_preview, preview_text)
 
     # --- Stage D: Key Phrase(resumable、既存正式経路+入口再呼び出し最大4回) ---
@@ -1215,13 +1289,23 @@ def main() -> None:
                               audit_segments[f"comment_{n}_ja"].get("asr_text")))
     for key, (_fname, text) in v2run.SHARED_CHARON_NAV.items():
         fixed_checks.append((key, text, "en", None))
+    # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: 今回voiceを変更した4segment
+    # (Preview+Comment1〜3)は、名前ベースキャッシュ(ユーザー指示8で恒久修正は
+    # 別タスク)をbypassし、precomputed/seg_asr_cacheを使わず必ず現物音声への
+    # 再ASRを強制する。
+    support_voice_names = ({preview_seg_id, "comment_1_ja", "comment_2_ja", "comment_3_ja"}
+                            if args.support_voice_charon else set())
     for name, text, lang, precomputed in fixed_checks:
-        asr_text = precomputed
-        if asr_text is None and not (name == "comment_3_ja" and comment3_overridden):
-            asr_text = seg_asr_cache.get(name)
-        if asr_text is None:
+        if name in support_voice_names:
             path = f"{AUDIO_DIR}/{name}.wav"
             asr_text = v2run.asr_diag(path, lang, budget, f"{name}_asr_diag")
+        else:
+            asr_text = precomputed
+            if asr_text is None and not (name == "comment_3_ja" and comment3_overridden):
+                asr_text = seg_asr_cache.get(name)
+            if asr_text is None:
+                path = f"{AUDIO_DIR}/{name}.wav"
+                asr_text = v2run.asr_diag(path, lang, budget, f"{name}_asr_diag")
         consistency_rows.append({
             "segment_id": name, "voice": "nav/fixed",
             "player_display_text": text, "canonical_text": text, "tts_input_text": text,
@@ -1247,13 +1331,25 @@ def main() -> None:
     save_json(f"{OUT_DIR}/comment_consistency.json", comment_consistency)
 
     # --- Stage O: mp3化 + player再生成 ---
+    # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: 旧episode mp3(Aoede Support
+    # voice版)をweb/prev/へ退避(初回のみ、既存退避を上書きしない)。
+    old_ep_mp3 = f"{WEB_DIR}/family_c_home_robots_trial_09b_b1.mp3"
+    archived_ep_mp3 = f"{WEB_DIR}/prev/family_c_home_robots_trial_09b_b1_support_aoede.mp3"
+    if args.support_voice_charon and os.path.exists(old_ep_mp3) and not os.path.exists(archived_ep_mp3):
+        os.makedirs(f"{WEB_DIR}/prev", exist_ok=True)
+        shutil.copyfile(old_ep_mp3, archived_ep_mp3)
     web_result = convert_all_to_mp3_b1()
     old_player_path = f"{OUT_DIR}/player.html"
     if comment3_overridden and os.path.exists(old_player_path):
         shutil.copyfile(old_player_path, f"{OUT_DIR}/player_prev_pre_comment3_fix.html")
+    if args.support_voice_charon and os.path.exists(old_player_path):
+        archived_player = f"{OUT_DIR}/player_prev_support_aoede.html"
+        if not os.path.exists(archived_player):
+            shutil.copyfile(old_player_path, archived_player)
     build_player_html_b1(seq_labels=[name for name, _ in seq], segments=segments,
                           kp_items=kp_items, comment_texts=comment_texts, run_summary=run_summary,
-                          preview_text=preview_text, preview_seg_id=preview_seg_id)
+                          preview_text=preview_text, preview_seg_id=preview_seg_id,
+                          support_voice_charon=args.support_voice_charon)
 
     # --- Stage P: cost_summary.json ---
     all_records = []
@@ -1318,10 +1414,13 @@ def convert_all_to_mp3_b1() -> dict:
 
 
 def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summary, preview_text,
-                          preview_seg_id: str = "preview_ja") -> None:
+                          preview_seg_id: str = "preview_ja", support_voice_charon: bool = False) -> None:
     rows = []
     seg_by_id = {s["id"]: s for s in segments}
     kp_by_rank = {it["rank"]: it for it in kp_items}
+    # FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05(ユーザー正式判断): Preview/
+    # Comment 1〜3のplayer表示voiceをsupport_voice_charon指定時はCharonへ。
+    support_voice_disp = "Charon(support)" if support_voice_charon else "Aoede(narrator)"
     fixed_label_to_text = {
         "Welcome (Charon)": (v2run.SHARED_CHARON_NAV["welcome"][1], "Charon(nav)"),
         "Topic intro": (TOPIC_INTRO_EN_TEXT, "Aoede(narrator)"),
@@ -1329,8 +1428,8 @@ def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summ
         "Preview intro (Charon)": (v2run.SHARED_CHARON_NAV["preview_intro"][1], "Charon(nav)"),
         "Key phrases intro (Charon)": (v2run.SHARED_CHARON_NAV["key_phrases_intro"][1], "Charon(nav)"),
         "Full story intro (Charon)": (v2run.SHARED_CHARON_NAV["full_story_intro"][1], "Charon(nav)"),
-        "Comment 1": (comment_texts[1], "Aoede(narrator)"), "Comment 2": (comment_texts[2], "Aoede(narrator)"),
-        "Comment 3": (comment_texts[3], "Aoede(narrator)"),
+        "Comment 1": (comment_texts[1], support_voice_disp), "Comment 2": (comment_texts[2], support_voice_disp),
+        "Comment 3": (comment_texts[3], support_voice_disp),
     }
     name_to_seg_id = {
         "Welcome (Charon)": "welcome", "Topic intro": "topic_intro_en", "Japanese title": "japanese_title",
@@ -1360,7 +1459,7 @@ def build_player_html_b1(seq_labels, segments, kp_items, comment_texts, run_summ
             continue
         if name == "Preview":
             audio_html = player_mod.render_single_audio_html(f"./web/segments/{preview_seg_id}.mp3")
-            rows.append(player_mod.render_timeline_row(start, name, "Aoede(narrator)", preview_text, audio_html))
+            rows.append(player_mod.render_timeline_row(start, name, support_voice_disp, preview_text, audio_html))
             continue
         if name in fixed_label_to_text:
             text, voice_disp = fixed_label_to_text[name]

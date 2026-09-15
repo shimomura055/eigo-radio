@@ -415,6 +415,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-134: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02(Family C v1試聴NG→v2作成でVALIDATED候補・Trend A2承認付き再生成で完成+費用バグ補正・Discovery B1B短文化[脱落解消も言い回し差で継続STOP]+A2長さ調査・Voices 2V一人称Prompt不整合修正+r3確定でPARTIAL/USER TEST READY[一人称版])のGit記録・Web到達確認・SSOT反映+OPEN-120/135/151/153追記
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-135: USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03(Discovery A2再生成530語採用[604語版不採用]+B1 Human Review player+Family C A2 Comment3/4修正・B1 Trial episode[Comment3修正含む]+Trend B1表示統一+Spec Traceability監査)のGit記録・Web到達確認・SSOT反映+OPEN-154/155新規起票+Word-count報告ルール恒久化+B1命名ルール追加
 - [本ファイル内] ## FAMILY-C-HOME-ROBOTS-A2-B1-FINAL-FIX-04: Family C A2 v2 Robot選択肢二人称化(1箇所)+B1日本語タイトル削除・Comment 1〜3のeasy English化・Robot選択肢二人称化(ユーザー試聴Feedback反映、原因3点特定、A2/B1ともVALIDATED候補/Trial維持)
+- [本ファイル内] ## FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05: Family C B1のPreview/Comment 1〜3をnarrator(Aoede)からB1正式仕様どおりCharon voiceへ(ユーザー正式判断、4segmentのみ再TTS+現物ASR4/4一致、story_017は本タスク限定bypass`--keep-robot-audio`でsha256不変を維持、B1はVALIDATED候補/Trial/USER_LISTENING_PENDING維持)
 
 ---
 
@@ -7655,6 +7656,53 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
   回帰`er013_family_c_episode_trial_09b_b1_test_*`collected=28 passed=28。
   commit(本追記含む成果物)は別途記録(`docs/pm/ACTIVE_TASK.md`/
   `docs/pm/RESULT_PACKET.md`参照)。
+
+## FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05
+
+- 日付: 2026-09-15
+- 種別: Trial記事修正(ユーザー正式判断の反映)、Status不変(Family C B1=
+  VALIDATED候補/Trial/USER_LISTENING_PENDING、Production未採用。A2 v2は
+  ユーザー試聴OK済み・無変更)
+- ユーザー正式判断: Family C B1のPreview/Comment 1〜3は既存B1正式仕様
+  (CURRENT_SPEC「B1 Voice」節: Navigator/Support=Charon)どおりCharon voice
+  とする(修正1回目でnarrator[Aoede]のまま維持した判断を上書き)。Aoede使用は
+  不採用。Family CでRobotもCharonであることを理由にSupport voiceを別voiceへ
+  変えない(Preview/Comment 1〜3/Robot=すべてCharon)。
+- 実施: `er013_family_c_episode_trial_09b_b1_run.py`へ`--support-voice-charon`
+  フラグを追加し、4 segment(preview_en/comment_1_ja/comment_2_ja/
+  comment_3_ja[英語Comment 1〜3])のみRobotと同じCharon経路(`v2run.tts_robot`
+  →`voice01.generate_charon_english`)で再TTS。canonical text不変
+  (`comments_en.md`/`preview_en.txt`のgit diff無し=バイト一致)。他65 wav
+  (story_017含む)のsha256/mtime不変(69件中65件不変、差分4件=対象のみ)。
+  4 segmentは現物音声でASR実測(4/4 match=true、`comment_consistency.json`も
+  3/3 match=true)。Voice evidence上の4 segment Aoede残存0件(player.html
+  Aoede(narrator)行数40→36、新規Charon(support)行数4件)。旧Aoede音声は
+  `audio/prev/*_aoede.wav`、旧episode mp3/playerは`web/prev/
+  ..._support_aoede.mp3`/`player_prev_support_aoede.html`へ退避。Robot選択肢
+  segment(story_017)は`--fix-robot-choice-second-person`(指定するたび無条件
+  再TTSする非冪等な既存実装)を再指定せず、本タスク限定bypass
+  `--keep-robot-audio`(tts_text/voiceメタデータのみ二人称/robotへ復元、
+  既存wav+.okは削除しない)を新設して再TTSを回避(sha256/mtime完全一致で確認)。
+- Audio Validation: B1 **PASS**、duration=395.105秒(前回393.375秒から
+  +1.73秒、再TTS音声の尺差分)
+- 費用: 本修正実費¥4.80(TTS4件[comment×3+preview]×¥0.90=¥3.60、ASR4件×
+  ¥0.30=¥1.20、その他¥0、`raw_usage_log.jsonl`実測値)。Family C累計
+  ¥285.00+¥4.80=**¥289.80**
+- 回帰: `run_project_regression.py --pattern
+  "er013_family_c_episode_trial_09*_test_*.py"` collected=71 passed=71
+  failed=0(既存69件+新規2件: `test_support_segments_use_charon_voice`/
+  `test_support_voice_flag_uses_robot_tts_path`)。A2 v2 artifact無変更確認
+  (`git status --porcelain er013_output/.../home_robots_v2/`空)。
+- 未修正(別タスク、ユーザー指示8): Trial scriptの非冪等再生成(`--comments-en`
+  再指定時のComment 1〜3無条件再TTS、本タスクでも発生済で影響を吸収する
+  設計[archival→delete→re-TTSの順に処理]で対応)/ASR cache名前キー(本タスクは
+  当該4segmentをbypassして直接再ASRすることで回避、恒久修正はしていない)/
+  引用符なしRobot話者判定/A2退避上書き。本タスクでの影響: 上記の非冪等
+  再生成は元々今回の対象4segmentの範囲内で発生したため実害なし(STOP条件(2)
+  非該当、story_017は`--keep-robot-audio`で回避済み)。
+- 参照: `docs/pm/RESULT_PACKET.md`、
+  `FAMILY-C-HOME-ROBOTS-B1-SUPPORT-VOICE-FIX-05_REPORT.md`、commit
+  `<pending>`(本エントリ後にpush、詳細はRESULT_PACKET参照)
 
 ## 参照元
 
