@@ -1,0 +1,331 @@
+{
+  "overall_status": "DIRECTION_REVIEW_REQUIRED",
+  "results": [
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "higher",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "lower",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F001",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "conflicts": [
+        {
+          "axis": "magnitude",
+          "category": "threshold",
+          "reference_bucket": "high",
+          "candidate_bucket": "low",
+          "threshold_only": true
+        }
+      ],
+      "reason": "thresholdカテゴリ(at least/at most等)のみの衝突であり、主語が逆数関係にある可能性を排除できないためHuman Reviewへ回す(FAILへは格上げしない): [{'axis': 'magnitude', 'category': 'threshold', 'reference_bucket': 'high', 'candidate_bucket': 'low', 'threshold_only': True}]",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "lower",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "below",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "downgraded_from_reversal": true,
+      "fact_id": "F002",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "increased",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "fact_id": "F003",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "MATCH",
+      "conflicts": [],
+      "reason": "共有する軸で方向の衝突なし",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "increased",
+          "confidence": "high",
+          "category": "trend"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "fact_id": "F004",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F005",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "lower",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F010",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "increased",
+          "confidence": "high",
+          "category": "trend"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F011",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "higher",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "higher",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F013",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "fact_id": "F014",
+      "layer": "vfl_internal_claim_vs_conditions"
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "below",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "conditions: The silence was shown only within the videotaped conversation seen by the 37 fluent/disrupted-flow participants; the source states that four seconds was selected to remain below conscious awareness while still disrupting perceived conversational flow.",
+      "script_sentence": "A review of 37 studies found that responses to silence depend on the kind of silence, the setting, familiarity, surrounding noise, and other personal factors.",
+      "shared_numbers": [
+        "37"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [],
+      "candidate_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more than",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "scope: Participants across 11 experimental studies; the paper's abstract does not provide one combined sample size",
+      "script_sentence": "In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure.",
+      "shared_numbers": [
+        "11"
+      ]
+    },
+    {
+      "verdict": "DIRECTION_REVIEW_REQUIRED",
+      "reference_signals": [
+        {
+          "axis": "magnitude",
+          "bucket": "high",
+          "term": "more",
+          "confidence": "high",
+          "category": "threshold"
+        },
+        {
+          "axis": "magnitude",
+          "bucket": "low",
+          "term": "lower",
+          "confidence": "high",
+          "category": "threshold"
+        }
+      ],
+      "candidate_signals": [],
+      "conflicts": [],
+      "reason": "片方にのみ方向表現があり、機械的に一致/不一致を判定できない",
+      "layer": "ledger_vs_script",
+      "ledger_sentence": "The reduced high-arousal-affect finding spans the four studies; the more specific 'chosen solitude -> relaxation and lower stress' finding should be attributed to one study in this research program (Study 4), not generalized to all four.",
+      "script_sentence": "Both groups reported similar discomfort, around 4 on a six-point scale, and longer silence was not linked to greater discomfort.",
+      "shared_numbers": [
+        "4"
+      ]
+    }
+  ]
+}

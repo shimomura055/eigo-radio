@@ -14,19 +14,21 @@
     "b1b": {
       "preview_comment_llm_jpy": 0.49,
       "key_phrase_llm_jpy": 0.0,
-      "tts_jpy": 62.46,
-      "other_jpy": 0.0,
-      "total_jpy": 62.95,
+      "tts_jpy": 101.31,
+      "other_jpy": 2.14,
+      "total_jpy": 103.93,
       "status": "STOPPED(未完成、USER_DECISION_REQUIRED)",
       "raw_stage_breakdown_jpy": {
         "scaffold_b1b": 0.4919,
-        "tts_b1b": 62.4603
+        "tts_b1b": 101.3062,
+        "b1b_fix02_1sentence_diffqa": 1.0933,
+        "b1b_fix02_2split_diffqa": 1.0435
       },
-      "note": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1: full_story_part2のTTS入力へ数字読み整形(discovery/audio/tts_reading_transforms.json)を適用し既存関数で再度初回生成(3attempt)を行ったが、'In a study of 2,557 college students at 12 sites in 11 countries, ... phone use.'の文が3attemptとも音声から欠落しTRUE_CONTENT_MISMATCHのまま。approve_regenerate()は呼ばずSTOP(review_lock=HUMAN_REVIEW_REQUIRED)。tts_jpyのうち¥16.32がこのCONT1 attemptの追加実費(残り¥46.14は前回driverでのSTOPPED時点までの実費)。Assembly/Gate/episode/player未生成。"
+      "note": "USER-TEST-AUDIO-COMPLETION-01-DISCOVERY-CONT1: full_story_part2のTTS入力へ数字読み整形(discovery/audio/tts_reading_transforms.json)を適用し既存関数で再度初回生成(3attempt)を行ったが、'In a study of 2,557 college students at 12 sites in 11 countries, ... phone use.'の文が3attemptとも音声から欠落しTRUE_CONTENT_MISMATCHのまま。approve_regenerate()は呼ばずSTOP(review_lock=HUMAN_REVIEW_REQUIRED)。tts_jpyのうち¥16.32がこのCONT1 attemptの追加実費(残り¥46.14は前回driverでのSTOPPED時点までの実費)。Assembly/Gate/episode/player未生成。 [USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY] canonical記事本文をユーザー指定短文化候補(Attempt1: 1文短文化、Attempt2: 2文分割・意味不変)へ変更し、Fact Checker A'/Ledger Deviation Checker(diff QA)・Directional Fact Precheckはいずれも通過(blocks_acceptance=False)したが、TTS/ASR検証(既存上限3回)はAttempt1・Attempt2とも通らず(TRUE_CONTENT_MISMATCH)、B1B音声は引き続き未完成のままSTOPした(approve_regenerate()は呼んでいない)。この追加実費=¥40.98(TTS¥38.85+diffQA¥2.14)。Assembly/Gate/episode/player未生成のまま。現在のcanonical b1b/article.mdはAttempt2(2文分割)の文面で確定している。"
     }
   },
   "budget_jpy": 160.0,
-  "combined_total_jpy": 101.83,
+  "combined_total_jpy": 142.81,
   "note": "Key Phrase(A2/B1B双方)は既存完成済み結果を再利用したため新規LLM呼び出し0件(key_phrase_llm_jpy=0はこのdriver内の再利用分。B1B人手選定時のcanonicalization/Redundancy QA 2呼び出し分は本ファイルの集計対象外、別途key_phrases/b1b/manual_selection_rationale.md「既知の限定事項」に記録済み)。",
-  "updated_at": "2026-09-14T20:27:28+00:00"
+  "updated_at": "2026-09-15T00:00:00+00:00"
 }

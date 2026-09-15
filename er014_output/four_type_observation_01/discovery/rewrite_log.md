@@ -128,3 +128,15 @@ b1b/article.md・各audit JSON]のみから手動再構成した。
 
 
 # Discovery Complete 3 (CONT2: A2 final QA + Key Phrase A2/B1B completion) - addendum
+
+# USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY(B1B短文化、Part 1)
+## Attempt 1(1文短文化)
+  旧: In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.
+  新: In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.
+  結果: ok=False stage=tts
+
+## Attempt 2(2文分割、意味不変)
+  旧: In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.
+  新: In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure. This was true in every country tested.
+  結果: ok=False stage=tts
+

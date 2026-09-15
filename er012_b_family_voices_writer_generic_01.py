@@ -579,6 +579,17 @@ Voiceの本文は、"For [a/an] person who..."のような、その人物のこ�
 こと・直面していること・使っているもの、目にする光景)から書き始め、そこからその人の感覚・
 必要性が自然に浮かび上がるようにしてください。反論のための藁人形にしないでください。
 
+【人称(重要、B-Family Voices正式仕様、2026-09-08ユーザー正式決定[Voice A/Bの一人称
+"I"記述]、APPROVED_FOR_PRODUCTION)】
+2つのVoiceセクション(1つ目・2つ目のVoice)の本文はすべて、その人物自身が"I"で語る
+一人称で書いてください。三人称("The reader feels...", "She worries...", "He must
+choose...")ではなく、"I look at...", "I know...", "I cannot..."のように、その人物
+自身の声として書いてください。この一人称の書き方は、Voiceの人物を主語にする描写(この
+Focus Module全体の中心原則、上記【Voiceの書き始め方】【Narrator(語り手)が...】参照)を、
+文法的にも一人称で徹底するものです。Hook("## The Question")・Tension・Closingは、
+この記事の他の指示どおり三人称・語り手の声のまま変更しないでください(一人称にするのは
+Voiceセクション本文のみ)。
+
 【Narrator(語り手)がVoiceの人物を外側から要約・分析しないこと(重要)】
 Voiceのセクション内で、語り手がその人物の必要・感情・責任を外側から定義づけるような文
 ("The need is...", "She is protecting...", "This person must choose between..."のような、
@@ -655,6 +666,8 @@ Tension(上記構造要素すべて)・Closingの深さを犠牲にしてまで�
 - "Voice A"/"Voice B"/"Perspective A"のような固定ラベル・番号ラベル
 - 文の主語がEvidence(survey/report/data/study)になる文(Tensionの段落を含む)
 - Narrator(語り手)がVoiceの人物を外側から要約・分析する文
+- Voiceセクションの本文を三人称("The reader...", "She...", "He...")で書くこと
+  (Voiceセクションは一人称"I"で書くこと。Hook/Tension/Closingは対象外)
 - Voiceのセクションへ第三者(設計者・コンサルタント)の視点を持ち込むこと、または
   どちらのVoiceの人物であっても具体的な解決策・妥協案をVoice本文内・Tension・Closing内で
   提案すること

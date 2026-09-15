@@ -739,42 +739,112 @@
     ]
   },
   "point_two": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "a30e5742a5e7a08f38eb386ec0016fefcfc4d4386cdd8ee100078eb33b49424b",
     "language": "en",
     "theme_id": "audio",
     "level": "a2",
     "segment_id": "point_two",
-    "updated_at": "2026-09-14T20:25:16",
-    "reason": "最終status=ASR_VALIDATION_UNCERTAIN。同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)",
-    "final_status": "ASR_VALIDATION_UNCERTAIN",
+    "updated_at": "2026-09-15T08:56:47",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er014_output/four_type_observation_01/trend/audio/a2/narration/point_two.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 35.411,
-        "asr_text": "Reach is the second story. Amazon reports 600 million active Alexa endpoints and says tens of millions joined Alexa+ early access before U.S. availability. Endpoints is Amazon's term, not a count of unique people. Google says Android Auto supports over 250 million cars, while Gemini for Home targets devices made during the previous decade. These reports point to a strategy: add software to places people already use, not a replacement phone.",
-        "asr_text_length": 444,
+        "duration_seconds": 37.131,
+        "asr_text": "Reach is the second story. Amazon reports 600 million active Alexa endpoints and says tens of millions joined Alexa Plus early access before U.S. availability. Endpoints is Amazon's term, not a count of unique people. Google says Android Auto supports over 250 million cars, while Gemini for Home targets devices made during the previous decade. These reports point to a strategy: add software to places people already use, not a replacement phone.",
+        "asr_text_length": 448,
         "max_len": 508,
         "substring_ok": null,
         "length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
-        "verified": false,
+        "verified": true,
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 37.131,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 72,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9961,
+                "time_a_seconds": 5.22,
+                "time_b_seconds": 22.5,
+                "lag_seconds": 17.28,
+                "run_length_seconds_at_thresh_0.85": 0.07
+              },
+              {
+                "similarity": 0.9955,
+                "time_a_seconds": 8.91,
+                "time_b_seconds": 16.33,
+                "lag_seconds": 7.42,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9949,
+                "time_a_seconds": 5.27,
+                "time_b_seconds": 22.6,
+                "lag_seconds": 17.33,
+                "run_length_seconds_at_thresh_0.85": 0.06
+              },
+              {
+                "similarity": 0.9948,
+                "time_a_seconds": 17.29,
+                "time_b_seconds": 22.94,
+                "lag_seconds": 5.65
+              },
+              {
+                "similarity": 0.9947,
+                "time_a_seconds": 17.33,
+                "time_b_seconds": 26.65,
+                "lag_seconds": 9.32
+              }
+            ],
+            "best_run_length_seconds": 0.07,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.29,
+            "time_a": 21.18,
+            "lag": 1.22,
+            "similarity_at_start": 0.7915,
+            "best_run_length_seconds": 0.29,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
         "asr_prompt_applied": false,
         "non_latin_cascade_enabled": false,
         "non_latin_cascade_invoked": false,
-        "attempt_audio_path": "er014_output/four_type_observation_01/trend/audio/a2/narration/attempts/point_two_attempt4_custom35d6860b.wav"
+        "attempt_audio_path": "er014_output/four_type_observation_01/trend/audio/a2/narration/attempts/point_two_attempt7_custom35d6860b.wav"
       }
     ]
   },

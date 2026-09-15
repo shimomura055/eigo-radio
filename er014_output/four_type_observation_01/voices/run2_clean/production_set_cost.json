@@ -26,5 +26,27 @@
   "audio_completion_cont1_note": "comment_2 Comment Contract再生成(LLM)+preview/comment_1-4差し替えTTS+Key Phrase音声(kp1-5 en/ja)新規生成。cost_log_raw_cont1.jsonl実測(openai 0.65+gemini 11.73+openai_asr 0.63)。",
   "voices_production_set_total_cost_jpy": 185.74,
   "budget_jpy_new_spend_only": 150.0,
-  "budget_status": "PASS(Writer/Comment/QA/Gate段階の予算。Audio段階の予算は別枠[run1上限150・CONT1上限60]で、いずれもPASS)"
+  "budget_status": "PASS(Writer/Comment/QA/Gate段階の予算。Audio段階の予算は別枠[run1上限150・CONT1上限60]で、いずれもPASS)",
+  "fix02_voices_first_person_task": {
+    "note": "USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES(2026-09-15)。三人称化のProduction不整合修正(2V Focus ModuleへVoice本人一人称\"I\"指示blockを追加、3V無変更)後、既存2V正式経路(main_b1_2v()のwrite_new_theme、Ledger再利用)で記事再生成を2回試行(run3_first_person・run3_first_person_r2)。いずれもVoiceセクションの一人称化は機械確認で成功(pov_check.json参照)したが、Voiceセクションとは無関係なTension section内の事実精度で既存Fact Safety Gate(run3_first_person: Fact Checker FAIL)・既存Ledger Deviation Local Rewrite(run3_first_person_r2: 該当claimの自動位置特定失敗によりhuman_review_required=True)がそれぞれ正しく作動し、両方ともNG_REVIEW_REQUIREDで停止。Gate・上限回数(MAX_WRITER_ATTEMPTS=3)は無変更のまま独自に緩和・回避していない。音声化(TTS/Assembly)は最終記事未確定のため未実施(実費ゼロ)。",
+    "run3_first_person_new_spend_jpy": 47.76,
+    "run3_first_person_r2_new_spend_jpy": 28.86,
+    "task_total_new_spend_jpy": 76.62,
+    "audio_new_spend_jpy": 0.0,
+    "status": "BLOCKED_NG_REVIEW_REQUIRED / no new audio produced this task",
+    "voices_cumulative_reference_total_before_this_task_jpy": 185.74
+  },
+  "fix02_voices_first_person_task_cont1": {
+    "note": "USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES-CONT1(2026-09-15)。同一Ledger再利用・Prompt無変更のまま3回目の再生成(run3_first_person_r3、run_voices_2v_b1_v2.py --reuse-ledger --out-subdir run3_first_person_r3)を実施し、Writer status=OK/Fact Checker A' verdict=PASS/Ledger Deviation=LEDGER_COMPLIANT/Comment Contract deviation=LEDGER_COMPLIANTに到達(escalation経路は不要だった)。pov_check_final.jsonで一人称化を再確認(Voice1=10件/Voice2=9件、三人称0件)。Analytical Leakage Checkはvoice_b/tensionでflagged残存(OPEN-151既知の残存事象、記録のみ・Gate緩和なし)。音声化はrun_voices_2v_audio_completion_3.py(run_voices_2v_audio_completion.pyから派生、--article-dir引数化)で実施し、Assembly/Audio Validation Gate(PASS)/mp3/player.html/comment_fact_safety_evidence.jsonまで完了。",
+    "run3_first_person_r3_writer_new_spend_jpy": 55.82,
+    "audio_completion_new_spend_jpy": 36.54,
+    "task_total_new_spend_jpy": 92.36,
+    "status": "PARTIAL_USER_TEST_READY(PRODUCTION_WIRED未承認、Analytical Leakage残存)",
+    "voices_total_cost_jpy_breakdown": {
+      "before_fix02_series": 185.74,
+      "fix02_r1_r2_blocked_attempts": 76.62,
+      "fix02_cont1_r3_plus_audio": 92.36,
+      "voices_grand_total_jpy": 354.72
+    }
+  }
 }

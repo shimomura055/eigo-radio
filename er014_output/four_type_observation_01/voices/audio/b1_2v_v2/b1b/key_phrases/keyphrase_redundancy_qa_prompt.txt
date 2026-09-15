@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# When Personalized News Feels Helpful — and Narrow
+
+## The Question
+
+Each morning, a commuter opens a news feed between stops. Stories linked to recent interests appear first, while other news stays out of sight. For one reader, this is a shortcut through an endless stream. For another, the same sorting raises a harder question: what might never reach the screen?
+
+### One Voice: A Feed That Saves Time
+
+On my morning commute, I open a news app’s “For you” page and find stories that fit what I follow. It uses my interests, followed sources, and past activity on Google services and YouTube. I do not have to search through everything before work.
+
+I can follow topics, ask for more or less of a subject, or hide a source. I cannot see every signal behind the order, but I can adjust the feed when I have time. Most days, I feel up to date.
+
+### Another Voice: When the Feed Feels Smaller
+
+On my phone, I keep seeing the same stories, arguments, and sources. I start to wonder if my world is getting smaller without my permission. I want to know why one item appears above another, but I cannot change the system’s hidden settings.
+
+I worry the feed may be tuned for clicks and advertising, not only to help me understand the news. In an analysis of more than ten million US users, feed ranking reduced exposure to different political sides, though users’ own clicks played an even larger role. During the election period studied, like-minded sources made up most of what active adults saw.
+
+## Why They See It Differently
+
+Both readers share one belief: what appears on screen shapes what they understand and how well news fits daily life. But the stakes split. One needs relevant news within limited time; the other fears being closed inside a narrow view without noticing. One experiences ranking as partly her choice—follow this, hide that. The other faces rules she cannot see. In short experiments, some political attitudes did not measurably change, while effects building over years remained outside those tests. Their wishes do not make one simple answer.
+
+## What the Feed Is Really Deciding
+
+The deeper issue is not simply whether personalized news is good or bad. It is who gets to define what counts as relevant, and how visible that power is to the person reading. Convenience is not only about speed. It also arrives with a hidden shape—and that shape is part of the news experience itself.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "like-minded sources",
+    "japanese_gloss": "似た立場の情報源",
+    "source_sentence": "During the election period studied, like-minded sources made up most of what active adults saw."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "be tuned for clicks",
+    "japanese_gloss": "クリックを集めるように調整される",
+    "source_sentence": "I worry the feed may be tuned for clicks and advertising, not only to help me understand the news."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "make up most of",
+    "japanese_gloss": "大半を占める",
+    "source_sentence": "During the election period studied, like-minded sources made up most of what active adults saw."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "exposure to different political sides",
+    "japanese_gloss": "異なる政治的立場に触れること",
+    "source_sentence": "In an analysis of more than ten million US users, feed ranking reduced exposure to different political sides, though users’ own clicks played an even larger role."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "be closed inside",
+    "japanese_gloss": "閉じ込められる",
+    "source_sentence": "One needs relevant news within limited time; the other fears being closed inside a narrow view without noticing."
+  }
+]

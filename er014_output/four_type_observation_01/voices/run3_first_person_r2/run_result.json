@@ -1,0 +1,156 @@
+{
+  "writer_status": {
+    "label": "B1B",
+    "status": "NG_REVIEW_REQUIRED",
+    "metrics": {
+      "word_count": 420,
+      "sentence_count": 31,
+      "avg_sentence_length": 13.6,
+      "max_sentence_length": 27
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "PASS",
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 1,
+        "newly_discovered_claims": [
+          "「ルールは私には見えない」「その設定を自分では変えられない」「同じランキング過程が両者に不均等なコントロールを与える」"
+        ],
+        "results": [
+          {
+            "cycle": 1,
+            "item_idx": 1,
+            "original_ng_sentence": "「ルールは私には見えない」「その設定を自分では変えられない」「同じランキング過程が両者に不均等なコントロールを与える」",
+            "issue": "Ledgerは、事業者が行動シグナルや事業目標に基づいてアルゴリズムを調整できること、またGoogle Newsや一部のオンラインプラットフォームで利用者がパーソナライズやレコメンダーの選択肢に影響できることを保証しているが、この特定の利用者がルールを見られず変更もできないことや、両者のコントロールが不均等であることまでは確認していない。",
+            "explanation": "アルゴリズムの事業者側の調整可能性や利用者向けの選択肢から、当該利用者の不可視・変更不能と両者の不均等なコントロールを具体的事実として追加している。Hookとしての場面描写ではなく、本文の明示的な主張なので緩和しない。",
+            "attempts": [],
+            "final_text": null,
+            "resolved": false,
+            "human_review_required": true,
+            "location_method": "not_found"
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "point_overlap_qa_monitoring": {
+      "qa_status": "OK",
+      "note": "EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: monitoring専用(合否判定には使わない、N=1で閾値を決めない)。有向ペア2(Permutation(2,2))+ vs Hook 2 = 4値。lexical_overlap_ratio()はProduction関数(er008_point_overlap_qa_18.py)を無変更のまま使用(3V版run_overlap_monitoring_3vと同一ロジック、voice_keysのみ異なる)。",
+      "directed_voice_pair_count": 2,
+      "voice_vs_hook_count": 2,
+      "any_flagged": false,
+      "directed_voice_pairs": {
+        "voice_a_vs_voice_b": {
+          "overlap_ratio": 0.191,
+          "shared_words": [
+            "about",
+            "follow",
+            "getting",
+            "like",
+            "missing",
+            "search",
+            "stories",
+            "subjects",
+            "worry"
+          ],
+          "point_word_count": 47,
+          "story_word_count": 59,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_b_vs_voice_a": {
+          "overlap_ratio": 0.153,
+          "shared_words": [
+            "about",
+            "follow",
+            "getting",
+            "like",
+            "missing",
+            "search",
+            "stories",
+            "subjects",
+            "worry"
+          ],
+          "point_word_count": 59,
+          "story_word_count": 47,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      },
+      "voice_vs_hook": {
+        "voice_a_vs_hook": {
+          "overlap_ratio": 0.191,
+          "shared_words": [
+            "app",
+            "commute",
+            "feed",
+            "morning",
+            "news",
+            "stories",
+            "subjects",
+            "through",
+            "waiting"
+          ],
+          "point_word_count": 47,
+          "story_word_count": 39,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_b_vs_hook": {
+          "overlap_ratio": 0.153,
+          "shared_words": [
+            "another",
+            "clicks",
+            "different",
+            "familiar",
+            "feel",
+            "opinions",
+            "past",
+            "stories",
+            "subjects"
+          ],
+          "point_word_count": 59,
+          "story_word_count": 39,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      }
+    },
+    "elapsed_seconds": 300.0
+  },
+  "total_attempts": 2,
+  "comment_contract_summary": null,
+  "support_texts_present": false,
+  "support_ledger_deviation_overall_status": null,
+  "cost_summary": {
+    "research_ledger_cost_jpy_reused": 46.98,
+    "new_spend_jpy_writer_comment_qa_gate": 28.86,
+    "new_spend_token_summary": {
+      "driver_log": {
+        "path": "er014_output/four_type_observation_01/voices/run3_first_person_r2/raw_usage_log.jsonl",
+        "cost_jpy": 0.0,
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_input_tokens": 0
+      },
+      "writer_log_incl_comment_contract": {
+        "path": "er014_output/four_type_observation_01/voices/run3_first_person_r2/b1_2v_new_theme/raw_usage_log_writer.jsonl",
+        "cost_jpy": 28.86,
+        "calls": 10,
+        "input_tokens": 158111,
+        "output_tokens": 44928,
+        "cached_input_tokens": 28688
+      }
+    },
+    "voices_production_set_total_cost_jpy": 75.84,
+    "budget_jpy_new_spend_only": 110.0,
+    "budget_status": "PASS"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "level": "a2",
+  "article_structure_roundtrip_match": true,
+  "content_segments_checked": [
+    {
+      "segment": "topic_intro",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "japanese_title",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "preview",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "comment_1",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "comment_2",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "comment_3",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "comment_4",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "full_story_part1",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "full_story_part2",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "point_one_heading",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "point_one",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "point_two_heading",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "point_two",
+      "status": "OK",
+      "verified": null
+    },
+    {
+      "segment": "in_one_line",
+      "status": "OK",
+      "verified": null
+    }
+  ],
+  "content_segments_unverified": [],
+  "key_phrases_checked": [
+    {
+      "rank": "1",
+      "en_status": "OK",
+      "ja_status": "OK"
+    },
+    {
+      "rank": "2",
+      "en_status": "OK",
+      "ja_status": "OK"
+    },
+    {
+      "rank": "3",
+      "en_status": "OK",
+      "ja_status": "OK"
+    },
+    {
+      "rank": "4",
+      "en_status": "OK",
+      "ja_status": "OK"
+    },
+    {
+      "rank": "5",
+      "en_status": "OK",
+      "ja_status": "OK"
+    }
+  ],
+  "key_phrases_unverified": [],
+  "all_pass": true,
+  "note": "article.mdを再読込しsplit_article_text()を再実行した結果とparts.json(TTS入力の元)がbyte-identicalであること、かつ全content segment/Key Phraseの生成ステータスがOK/verifiedであることを確認した(既存Production TTS関数内部でASR verify済みのため、本チェックはstatus/verifiedフラグの再確認+記事構造の再突合のみ行う)。[CONT1修正] base.build_consistency_check()のB1B key_phrases構造(kpv[\"japanese\"]、A2のkpv[\"japanese_meaning\"]とはキー名が異なる)対応バグを本ファイル内のローカル版で修正して使用(base側ファイルは無変更)。",
+  "reading_transforms_applied_segments": [
+    "full_story_part1",
+    "full_story_part2",
+    "point_two"
+  ],
+  "reading_transforms_word_safety_all_pass": true,
+  "reading_transforms_reference": "er014_output/four_type_observation_01/trend/audio/tts_reading_transforms.json"
+}

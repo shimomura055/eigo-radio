@@ -129,9 +129,19 @@ class TwoVoiceFocusModuleBlockTests(unittest.TestCase):
         self.assertIn("## [Closingの見出し", self.block)
 
     def test_does_not_mention_three_person_wording(self):
-        # 3V専用の「3人」「一人称"I"」指示が2Vへ混入していないことを確認する。
+        # 3V専用の「3人」wording(人数表現)が2Vへ混入していないことを確認する。
         self.assertNotIn("3人", self.block)
-        self.assertNotIn('一人称"I"', self.block)
+
+    def test_first_person_instruction_present(self):
+        # USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES(OPEN-151是正):
+        # 2026-09-08ユーザー正式決定[Voice A/Bの一人称"I"記述、
+        # APPROVED_FOR_PRODUCTION]が2V Focus Module本文へ実際に反映されて
+        # いることを確認する(Production不整合修正。旧テストは逆に
+        # 一人称"I"指示が"混入していない"ことをassertNotInで固定しており、
+        # これが本バグの一因だった)。
+        self.assertIn('一人称', self.block)
+        self.assertIn('"I"', self.block)
+        self.assertIn("三人称", self.block)
 
     def test_experiential_claim_grounding_block_present(self):
         # 恒久Writer原則(Voice数非依存)は2Vでも常時含まれる。

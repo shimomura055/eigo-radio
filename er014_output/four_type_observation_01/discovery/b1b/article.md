@@ -14,7 +14,7 @@ At the same time, silence can also bring calm. In one study of roughly 46 studen
 
 Research on the body shows the same mixed picture. A review of 37 studies found that responses to silence depend on the kind of silence, the setting, familiarity, surrounding noise, and other personal factors. In a study that measured heart activity, one noise condition showed more activity linked with the body’s calming system than silence, while white noise showed more activity linked with its alerting system than that noise.
 
-People also differ across studies and cultures. In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use. In one Japan–United States survey, Japanese respondents viewed silence more negatively with strangers than with close friends, while Americans did not show that difference.
+People also differ across studies and cultures. In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure. This was true in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use. In one Japan–United States survey, Japanese respondents viewed silence more negatively with strangers than with close friends, while Americans did not show that difference.
 
 ### When Quiet Has Structure
 

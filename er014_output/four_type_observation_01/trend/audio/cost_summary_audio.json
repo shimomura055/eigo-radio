@@ -1,27 +1,38 @@
 {
   "levels": {
     "b1b": {
-      "preview_comment_llm_jpy": 1.01,
-      "key_phrase_llm_jpy": 5.95,
-      "tts_jpy": 111.8,
-      "other_jpy": 41.4,
-      "total_jpy": 160.16,
+      "preview_comment_llm_jpy": 0.44,
+      "key_phrase_llm_jpy": 3.7,
+      "tts_jpy": 50.21,
+      "other_jpy": 15.19,
+      "total_jpy": 69.54,
       "raw_stage_breakdown_jpy": {
-        "scaffold_a2": 0.5704,
-        "keyphrase_a2": 2.2475,
-        "tts_a2": 61.5864,
         "scaffold_b1b": 0.4401,
         "keyphrase_b1b": 3.6975,
         "tts_b1b": 50.2096,
         "tts_b1b_retry": 3.402,
-        "tts_a2_reading_fix": 26.2156,
         "scaffold_b1b_comment4_fix": 0.1666,
         "tts_b1b_comment4_fix": 1.7742,
         "tts_b1b_reading_fix": 9.8438
       }
+    },
+    "a2": {
+      "preview_comment_llm_jpy": 0.57,
+      "key_phrase_llm_jpy": 2.25,
+      "tts_jpy": 61.59,
+      "other_jpy": 29.57,
+      "total_jpy": 93.98,
+      "raw_stage_breakdown_jpy": {
+        "scaffold_a2": 0.5704,
+        "keyphrase_a2": 2.2475,
+        "tts_a2": 61.5864,
+        "tts_a2_reading_fix": 26.2156,
+        "tts_a2_point_two_time_variance": 3.3552
+      }
     }
   },
   "budget_jpy": 150.0,
-  "combined_total_jpy": 160.16,
-  "updated_at": "2026-09-14T11:36:19.998940+00:00"
+  "combined_total_jpy": 163.52,
+  "updated_at": "2026-09-14T23:56:56.424154+00:00",
+  "level_cost_aggregation_bug_fix_note": "[FIX02-COST-AGGREGATION-DISCOVERY] base.cost_breakdown_by_stage()はlevelで絞り込まず共有ログ全件を返すため、base.update_shared_outputs()を複数levelで呼ぶとlevelごとのtotal_jpyが二重・混入計上される(本タスクで発見)。本ファイルはstage名の\"_a2\"/\"_b1b\"トークンで絞り込んだ正しいlevel別集計へ補正済み。補正前(base.update_shared_outputs()直後、誤った値)の levels totals={'b1b': 160.16, 'a2': 163.52}"
 }

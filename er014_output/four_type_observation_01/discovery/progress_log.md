@@ -1,0 +1,2 @@
+- Discovery FIX-02 Part 1(b1b sentence fix): STOPPED, Attempt1(1文短文化)/Attempt2(2文分割)ともQA PASSしたがTTS/ASR検証(3attempt)不合格、この追加実費=¥40.98 (管理ID: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY)
+- Discovery FIX-02 Part 2(a2 length investigation): official_word_count=604語(soft_range 280-420語比1.438倍)、既存仕様は全体語数上限なしとDECIDED(意図的)、TOTAL_SOFT_LOWER/UPPERはstaged経路未配線・record-onlyのgap、短縮候補は生成条件不成立のためSTOP (管理ID: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY)

@@ -1,0 +1,78 @@
+{
+  "purpose": "Voiceセクション本文の一人称(I/my/me)・三人称(she/he/her/his/the reader)代名詞出現数を機械カウントし、Writer Prompt修正(2V Focus Moduleへ人称指示block追加)の効果を検証する。USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES。",
+  "method": "見出し(###=Voice1/2、##=Hook/Tension/Closing)で本文を分割し、正規表現で代名詞をカウント(簡易)。",
+  "results": {
+    "run3_first_person_attempt3_BLOCKED_fact_checker_fail": {
+      "path": "er014_output/four_type_observation_01/voices/run3_first_person/b1_2v_new_theme_attempt3/article.md",
+      "sections": {
+        "hook": {
+          "first_person_count": 0,
+          "third_person_count": 1
+        },
+        "voice_1": {
+          "first_person_count": 13,
+          "third_person_count": 0
+        },
+        "voice_2": {
+          "first_person_count": 13,
+          "third_person_count": 0
+        },
+        "tension": {
+          "first_person_count": 0,
+          "third_person_count": 1
+        },
+        "closing": {
+          "first_person_count": 0,
+          "third_person_count": 0
+        }
+      }
+    },
+    "run3_first_person_r2_attempt2_BLOCKED_ledger_deviation_human_review": {
+      "path": "er014_output/four_type_observation_01/voices/run3_first_person_r2/b1_2v_new_theme_attempt2/article.md",
+      "sections": {
+        "hook": {
+          "first_person_count": 0,
+          "third_person_count": 0
+        },
+        "voice_1": {
+          "first_person_count": 13,
+          "third_person_count": 0
+        },
+        "voice_2": {
+          "first_person_count": 12,
+          "third_person_count": 0
+        },
+        "tension": {
+          "first_person_count": 0,
+          "third_person_count": 1
+        }
+      }
+    },
+    "ORIGINAL_run2_clean_attempt3_BASELINE_pre_fix_third_person_bug": {
+      "path": "er014_output/four_type_observation_01/voices/run2_clean/b1_2v_new_theme_attempt3/article.md",
+      "sections": {
+        "hook": {
+          "first_person_count": 0,
+          "third_person_count": 0
+        },
+        "voice_1": {
+          "first_person_count": 0,
+          "third_person_count": 8
+        },
+        "voice_2": {
+          "first_person_count": 0,
+          "third_person_count": 4
+        },
+        "tension": {
+          "first_person_count": 0,
+          "third_person_count": 0
+        },
+        "closing": {
+          "first_person_count": 0,
+          "third_person_count": 0
+        }
+      }
+    }
+  },
+  "conclusion": "修正前(baseline): Voice 1/2セクションはいずれも一人称0件・三人称(she/her等)8件/4件で完全に三人称化していた。修正後(2件の独立regenerate、いずれもWriter Prompt修正後の同一Production経路): Voice 1/2セクションはいずれも一人称13件前後・三人称0件となり、Voice本人が一人称で語る構造へ是正されたことを確認した。Hook/Tension/Closingは仕様どおり三人称・語り手の声のまま維持(変更対象外)。ただし両regenerateとも、Voiceセクションとは無関係なTension section内の事実精度(Fact Checker FAIL、または Ledger Deviation Local Rewrite未解決=human_review_required)によりPipeline全体のstatusはNG_REVIEW_REQUIREDで停止しており、Production最終記事としては未確定(音声化は未実施)。"
+}

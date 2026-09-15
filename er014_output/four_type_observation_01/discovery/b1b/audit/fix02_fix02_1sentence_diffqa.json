@@ -1,0 +1,47 @@
+{
+  "original_ng_sentence": "In a study of 2,557 college students at 12 sites in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.",
+  "issue": "Operator escalation for F007 (human_review_required after diff QA blocked acceptance in the prior task run). USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY: ユーザー指定の短文化候補。Ledger F007の実測値(N=2,557; 12 sites; 11 countries)を、精度自体に意味がないため丸め・簡略化する(Spoken-first Number Treatment原則、CURRENT_SPEC.md該当節と同種)。'about 2,500'は2,557の概数化(丸め)、'at 12 sites'の省略は情報の削減であり、Ledgerとの矛盾ではない(サイト数を偽らない、単に言及しないだけ)。'in 11 countries'・'an everyday activity was enjoyed more than thinking for pleasure in every country tested'は不変。CONT1(数字読み整形のみ)で3attempt中3回この文が音声から脱落したため、文自体を短くしてTTSの安定性を改善することを試みる。",
+  "explanation": "USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-DISCOVERY: ユーザー指定の短文化候補。Ledger F007の実測値(N=2,557; 12 sites; 11 countries)を、精度自体に意味がないため丸め・簡略化する(Spoken-first Number Treatment原則、CURRENT_SPEC.md該当節と同種)。'about 2,500'は2,557の概数化(丸め)、'at 12 sites'の省略は情報の削減であり、Ledgerとの矛盾ではない(サイト数を偽らない、単に言及しないだけ)。'in 11 countries'・'an everyday activity was enjoyed more than thinking for pleasure in every country tested'は不変。CONT1(数字読み整形のみ)で3attempt中3回この文が音声から脱落したため、文自体を短くしてTTSの安定性を改善することを試みる。",
+  "flags": [],
+  "attempts": [
+    {
+      "attempt": "operator",
+      "text": "In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.",
+      "ledger_status": "OPERATOR_PROVIDED"
+    }
+  ],
+  "final_text": "In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested.",
+  "resolved": true,
+  "human_review_required": false,
+  "fact_id": "F007",
+  "diff_qa": {
+    "applied": true,
+    "diff_qa_calls": 1,
+    "window_text": "People also differ across studies and cultures. In a study of about 2,500 college students in 11 countries, an everyday activity was enjoyed more than thinking for pleasure in every country tested. Still, differences between countries were linked with personal factors such as openness, meditation experience, starting mood, and phone use.",
+    "fact_check_status": "FACT_CHECK_COMPLETED",
+    "fact_check_verdict": "PASS",
+    "fact_check_model": "gpt-5.6-luna",
+    "fact_check_response_id": "resp_0f4b4519d16e0809006aa88a0f052887d0a623f3e366963533",
+    "fact_check_search_usage": {
+      "web_search_call_count": 2,
+      "queries": [
+        "\"thinking for pleasure\" 11 countries 2500 students everyday activity phone use meditation openness",
+        "site:psycnet.apa.org thinking for pleasure 11 countries college students phone use meditation experience",
+        "\"thinking for pleasure\" \"11 countries\""
+      ]
+    },
+    "ledger_check_full": {
+      "deviations": [],
+      "overall_status": "LEDGER_COMPLIANT"
+    },
+    "ledger_check_target_eval": {
+      "overall_status": "LEDGER_COMPLIANT",
+      "window_overall_status": "LEDGER_COMPLIANT",
+      "target_deviations": [],
+      "adjacent_deviations": [],
+      "ambiguous_deviations": [],
+      "match_fallback": false
+    },
+    "blocks_acceptance": false
+  }
+}

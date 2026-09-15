@@ -1,0 +1,70 @@
+{
+  "first_person_fix_context": {
+    "note": "USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES: 2V Focus Moduleに一人称\"I\"指示block欠落(2026-09-08 APPROVED_FOR_PRODUCTION仕様(4)未反映)というProduction不整合を発見・修正(前回タスク、Writer Prompt修正・単体テスト44件/回帰185件PASS)。今回(継続CONT1)、修正後Promptで3回目の再生成(r3)を実施し、Writer status=OK/Fact Checker verdict=PASS/Ledger Deviation=LEDGER_COMPLIANTで記事を確定、本driverで音声化した。",
+    "fact_checker_a_prime_result": "PASS",
+    "ledger_deviation_overall_status": "LEDGER_COMPLIANT"
+  },
+  "comment_contract": {
+    "source": "er014_output/four_type_observation_01/voices/run3_first_person_r3/b1_2v_new_theme/audit/new_theme_comment_contract_summary.json + b1_support_texts.json(既存生成、run_voices_2v_b1_v2.py実行時のComment Contract結果、再生成なし)",
+    "support_status_at_generation": {
+      "preview": "OK",
+      "comment_1": "OK",
+      "comment_2": "OK",
+      "comment_3": "OK",
+      "comment_4": "OK"
+    },
+    "deviation_overall_status_at_generation": "LEDGER_COMPLIANT",
+    "texts": {
+      "preview": "Today, we look at personalized news feeds and the way they shape what people see each day. These feeds can make it easier to find relevant stories, but they also raise questions about what may stay out of view and who decides what matters. By the end, you will understand the main question behind this experience: how much should a news feed choose for us?",
+      "comment_1": "Listen for two different ways of looking at the same experience.",
+      "comment_2": "To explore that question, let’s hear from two different voices. Each person will speak from their own point of view.",
+      "comment_3": "Instead of deciding which voice is right, let’s ask a different question: Why can the same kind of feed feel different to different people? The next part looks more closely at that question.",
+      "comment_4": "So the question is not only which reader is right. It is also what makes each person’s experience possible, including the choices and limits they face. That takes us one step deeper than the disagreement itself."
+    },
+    "segment_files": {
+      "comment_1": "comment_1.wav",
+      "comment_2": "comment_2.wav",
+      "comment_3": "comment_3.wav",
+      "comment_4": "comment_4.wav"
+    },
+    "episode_timeline_start_seconds": {
+      "comment_1": 106.186,
+      "comment_2": 131.229,
+      "comment_3": 226.837,
+      "comment_4": 277.539
+    }
+  },
+  "fact_safety_gate": {
+    "mode": "Writer stage専用機構(記事生成時に発火判定)。r1(run3_first_person)ではFact Checker A'がFAILし(Tension文の政治的態度変化claimが2026-02のNature論文と矛盾)、r2(run3_first_person_r2)ではLedger Deviation Local Rewriteの自動位置特定が失敗しhuman_review_required=Trueとなった(いずれもGateが実際に発火・停止したevidence、OPEN-120)。r3(本記事)ではFact Checker A' verdict=PASS/Ledger Deviation=LEDGER_COMPLIANTで、Gate発火なしに記事が確定した。詳細: docs/pm/RESULT_PACKET_FIX02_VOICES_2.md。",
+    "fired_in_this_article": false,
+    "fired_in_prior_attempts_same_task": true
+  },
+  "analytical_leakage_check_residual_flag": {
+    "source_file": "er014_output/four_type_observation_01/voices/run3_first_person_r3/b1_2v_new_theme_attempt3/analytical_leakage_check_2v_attempt3.json",
+    "any_flagged": true,
+    "flagged_items": [
+      {
+        "voice": "voice_b",
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "前半は不安や不信感の経験として成立しているが、後半で大規模分析の結果と比較を詳しく説明しており、当事者の視点から調査解説へ移っている。特に研究結果が人物の具体的な経験と同程度以上に目立つ。",
+        "quoted_evidence": "In an analysis of more than ten million US users, feed ranking reduced exposure to different political sides, though users’ own clicks played an even larger role. During the election period studied, like-minded sources made up most of what active adults saw."
+      },
+      {
+        "voice": "tension",
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "二人の時間制約と、見えない偏りへの恐れという対立は明確で、中心は両者が異なる答えに至る理由にある。ただし、短期実験の結果と長期効果の限界を述べる一文が、研究結果を説明する構文として混入している。",
+        "quoted_evidence": "In short experiments, some political attitudes did not measurably change, while effects building over years remained outside those tests."
+      }
+    ],
+    "note": "ユーザー承認: 追加Prompt改善・Gate緩和は行わず、PARTIALのままユーザー実検証へ進める。試聴対象から隠さず本ファイルとplayer.html双方に記録する(OPEN-151残存事象)。"
+  }
+}

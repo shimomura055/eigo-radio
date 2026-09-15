@@ -1,0 +1,45 @@
+{
+  "purpose": "Voiceセクション本文の一人称(I/my/me)・三人称(she/he/her/his/the reader)代名詞出現数を機械カウントし、Writer Prompt修正(2V Focus Moduleへ人称指示block追加)の効果を検証する。USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES(継続CONT1でr3=最終確定記事の結果を追加)。",
+  "method": "見出し(###=Voice1/2、##=Hook/Tension/Closing)で本文を分割し、正規表現で代名詞をカウント(簡易)。",
+  "results": {
+    "run3_first_person_attempt3_BLOCKED_fact_checker_fail": {
+      "path": "er014_output/four_type_observation_01/voices/run3_first_person/b1_2v_new_theme_attempt3/article.md",
+      "sections": {
+        "hook": {"first_person_count": 0, "third_person_count": 1},
+        "voice_1": {"first_person_count": 13, "third_person_count": 0},
+        "voice_2": {"first_person_count": 13, "third_person_count": 0},
+        "tension": {"first_person_count": 0, "third_person_count": 1},
+        "closing": {"first_person_count": 0, "third_person_count": 0}
+      }
+    },
+    "run3_first_person_r2_attempt2_BLOCKED_ledger_deviation_human_review": {
+      "path": "er014_output/four_type_observation_01/voices/run3_first_person_r2/b1_2v_new_theme_attempt2/article.md",
+      "sections": {
+        "hook": {"first_person_count": 0, "third_person_count": 0},
+        "voice_1": {"first_person_count": 13, "third_person_count": 0},
+        "voice_2": {"first_person_count": 12, "third_person_count": 0},
+        "tension": {"first_person_count": 0, "third_person_count": 1}
+      }
+    },
+    "ORIGINAL_run2_clean_attempt3_BASELINE_pre_fix_third_person_bug": {
+      "path": "er014_output/four_type_observation_01/voices/run2_clean/b1_2v_new_theme_attempt3/article.md",
+      "sections": {
+        "hook": {"first_person_count": 0, "third_person_count": 0},
+        "voice_1": {"first_person_count": 0, "third_person_count": 8},
+        "voice_2": {"first_person_count": 0, "third_person_count": 4}
+      }
+    },
+    "run3_first_person_r3_attempt3_FINAL_status_OK_CONFIRMED_ARTICLE": {
+      "path": "er014_output/four_type_observation_01/voices/run3_first_person_r3/b1_2v_new_theme_attempt3/article.md",
+      "note": "本タスク(CONT1)で新規再生成。Writer段final_status=OK、Fact Checker A' verdict=PASS、Ledger Deviation overall_status=LEDGER_COMPLIANT。escalationは不要だった(status=OKのため)。Analytical Leakage Checkはvoice_b/tensionでflagged残存(OPEN-151既知の残存事象、記録のみ・許容)。",
+      "sections": {
+        "hook": {"first_person_count": 0, "third_person_count": 0},
+        "voice_1": {"first_person_count": 10, "third_person_count": 0},
+        "voice_2": {"first_person_count": 9, "third_person_count": 0},
+        "tension": {"first_person_count": 0, "third_person_count": 3},
+        "closing": {"first_person_count": 0, "third_person_count": 0}
+      },
+      "conclusion": "Voice 1/Voice 2とも一人称(I/my)のみで三人称0件。Hook/Tension/Closingは仕様どおり三人称(narrator)のまま不変。一人称化は継続して成功している。"
+    }
+  }
+}
