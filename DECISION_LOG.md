@@ -412,6 +412,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02: OPEN-151完成(Comment Contract接続+Fact Safetyゲート2V/3V対応+2V clean evidence、Status=PARTIAL[14/15、Leakage残存のみ未充足])
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-132: 4TYPE補完完成(Trend OK/Discovery OK[Key Phrase B1B未完成でUDR])+Family C Trial-09(home_robots完成episode、VALIDATED)のGit記録+Voices OPEN-151 -02結果参照+PM運用方針(既存仕様内個別修正は完成まで進める、2026-09-14ユーザー指示)追記+Family C運用clarification(AI固有名当該記事限り・語数は目安)記録
 - [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-133: USER-TEST-AUDIO-COMPLETION-01(Family C mp3/player Web試聴導線修正・Trend B1B完成/A2ロックSTOP・Discovery A2完成/B1Bロック STOP・Voices Comment 2再生成でPARTIAL/USER TEST READY到達)のGit記録・Web到達確認・SSOT反映+Human Review Lockの扱い(Fable判断)記録+OPEN-152/153新規登録
+- [本ファイル内] ## PM-CLOSEOUT-CONSOLIDATION-134: USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02(Family C v1試聴NG→v2作成でVALIDATED候補・Trend A2承認付き再生成で完成+費用バグ補正・Discovery B1B短文化[脱落解消も言い回し差で継続STOP]+A2長さ調査・Voices 2V一人称Prompt不整合修正+r3確定でPARTIAL/USER TEST READY[一人称版])のGit記録・Web到達確認・SSOT反映+OPEN-120/135/151/153追記
 
 ---
 
@@ -7382,6 +7383,87 @@ base URLで解決し、完成episodeと先頭segmentのHEADが200であること
 RESULT_PACKET_UT_FAMILYC.md`、`docs/pm/RESULT_PACKET_UT_TREND.md`/`_2.md`、
 `docs/pm/RESULT_PACKET_UT_DISCOVERY.md`/`_2.md`、`docs/pm/
 RESULT_PACKET_UT_VOICES.md`/`_2.md`、`docs/pm/web_playback_check_UT01.json`。
+
+## PM-CLOSEOUT-CONSOLIDATION-134(2026-09-15)
+
+管理ID`PM-CLOSEOUT-CONSOLIDATION-134`(Sonnet委任、Git記録・Web到達確認・
+SSOT反映・最終REPORT作成担当、API呼び出しなし・費用¥0)。
+`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02`(CONS-133で発見した4対象の課題への
+修正、Sonnet分割委任4件: FAMILYC/TREND/DISCOVERY/VOICES[+CONT1])の成果物
+をGit記録し、Web到達確認・SSOT反映・最終REPORT作成を行った。
+
+**(1) Family C / Home robots**: ユーザー試聴の結果、v1(Trial-09)は**NG**
+(Key Phrase/Preview音声が表示文と異なる内容を再生)。原因は
+`_resumable_reuse()`がファイル+`.ok`マーカーの存在のみで再利用可否を
+判定しテキスト内容を照合しないバグと判明(Key Phrase選定パイプラインの
+再試行中に生成された古いattemptの音声が最終選定結果と無関係に使われ
+続けていた)。**v1のVALIDATED扱いは取り消し**、v2(`home_robots_v2/`、
+Key Phrase/Preview音声を全件新規生成、Mother Voice=Erinome分離、
+Comment前後pause・Outro直前pauseをFamily A[A2]既存値へ統一)を新規作成。
+Audio Validation Gate PASS(319.593秒)、Key Phrase 4者照合(表示文/
+canonical/TTS input/ASR)5件全一致、Story本文sha256不変確認済み。
+Status=**VALIDATED候補(Trial、ユーザー試聴待ち)**、Production採用は
+引き続き禁止。本タスク実費¥52.20、Family C累計¥148.50が予算枠¥133.99を
+¥14.51超過。
+
+**(2) Trend**: A2の`point_two`(「Alexa+」表記揺れ)につき、ユーザー承認の
+`approve_regenerate()`を1回のみ実施(同一canonical text、sha256一致を
+機械確認済み)。今回はASRが"Alexa Plus"と書き起こしcanonicalと一致し
+PASS(前回runはASRが"Alexa+"のまま書き起こしロック、表記揺れが
+**双方向**であることが判明)。A2音声完成(Gate PASS、415.42秒)。B1Bは
+既存(2026-09-14完成分)のまま。本タスクで**cost aggregation bug**
+(level別費用二重計上)を発見・補正: Trend総原価=¥174.03(本文)+
+¥163.52(A2¥93.98+B1B¥69.54)=**¥337.55**(旧報告¥334.18/¥334.19は
+誤り、本タスクの実追加支出は+¥3.36のみ)。
+
+**(3) Discovery**: B1Bの`full_story_part2`(2,557 college students文)を
+1文短縮/2文分割の2パターンで試行。2文分割版(現在のcanonical、diff QA・
+Ledger整合PASS)は文の丸ごと脱落は解消したが、TTS/ASRの細部言い回し差
+(「In a study」→「In one study」、「Japan–United States」→「Japan/U.S.」)
+により3回とも不合格が継続、依然HUMAN_REVIEW_LOCKEDのまま
+(`USER_DECISION_REQUIRED`)。あわせてA2本文語数(604語、目安280-420の
+約1.44倍)を調査: 既存仕様上A2全体語数に上限はなく(`CURRENT_SPEC.md`
+541行目、`DECIDED`)、length soft target定数は生成経路(staged経路)に
+未配線、QAは長さを判定しない。「大幅超過時に完成報告で明示」する運用は
+未規定(既存仕様と矛盾はしないが規定もされていない、ユーザー判断待ちの
+候補としてOPEN-135末尾に記載、新規Open Item番号は登録していない)。
+短縮候補は生成せず(¥0)。本タスク実費¥40.98、Discovery総原価=
+¥565.10+¥40.98=**¥606.08**。
+
+**(4) Voices**: 一人称"I"は2026-09-08ユーザー正式決定済みの
+`APPROVED_FOR_PRODUCTION`仕様。2V用Writer template
+(`COMMON_INTRO_AND_STRUCTURE_BLOCK_TEMPLATE_2V`)に指示ブロックが丸ごと
+欠落していたProduction不整合を発見・修正(diff+13行、3V無変更、テスト
+44件+回帰185件PASS実測)。新規topicで既存2V正式経路を3回試行: r1/r2は
+Tension文の事実精度に関するFact Safety Gate/Local Rewriteが実際に発火し
+NG_REVIEW_REQUIRED(OPEN-120のevidence)、r3で全QA PASS・記事確定
+(pov_check機械確認で一人称化成功)。音声化完了(Gate PASS 14/14、
+321.105秒)。Analytical Leakage(voice_b 5項目/tension 2項目)は3attempt
+上限到達後も残存(Gate緩和なし)。Status=**PARTIAL / USER TEST
+READY(一人称版)**、OPEN-151は`PARTIAL`のまま、`PRODUCTION_WIRED`は
+宣言しない。本タスク実費¥76.62(r1/r2)+¥92.36(r3+音声化)、Voices総原価=
+¥185.74+¥76.62+¥92.36=**¥354.72**。
+
+**(5) Web到達確認**: 直接音声5件(raw.githubusercontent.com)・
+player5件(raw.githack.com)いずれも初回HTTP 200(CDN遅延による再試行は
+発生せず)。各player内相対参照(episode+先頭3 segment、計20件)も全件
+HTTP 200。詳細: `docs/pm/web_playback_check_FIX02.json`。
+
+**(6) SSOT反映**: OPEN-135(A2 length運用ルール候補を末尾記載)/
+OPEN-151(Voices r1/r2/r3結果)/OPEN-153(観測仮説+再発例)/OPEN-120
+(Voices 2V Fact Safety Gate実発火evidence)へ追記。OPEN-152は保持
+(変更なし)。`CURRENT_SPEC.md`B-Family Voices 2V節末尾にProduction
+不整合修正の記録を追加(仕様自体は不変)。新規Open Item番号(OPEN-154等)
+は起票していない(A2 length運用ルールの採否はユーザー判断待ちのため
+候補記載のみ)。
+
+**(7) 費用**: 本タスク自体はAPI呼び出しゼロ(¥0)。
+
+詳細: `USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`、`docs/pm/
+RESULT_PACKET_FIX02_FAMILYC.md`、`docs/pm/RESULT_PACKET_FIX02_TREND.md`、
+`docs/pm/RESULT_PACKET_FIX02_DISCOVERY.md`、`docs/pm/
+RESULT_PACKET_FIX02_VOICES.md`/`_2.md`、
+`docs/pm/web_playback_check_FIX02.json`。commit `ccf43e8c`(成果物本体)。
 
 ## 参照元
 

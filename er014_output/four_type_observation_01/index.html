@@ -30,6 +30,7 @@ QA・費用・token等の技術詳細は本ページには含めていません�
 <p class="meta">2026-09-14 4TYPE補完完成(PM-CLOSEOUT-CONSOLIDATION-132)で以下を更新: Trend A2をGalaxy XR headset fixで再生成しOK化(旧FAIL版は撤去)/Discovery A2・B1BをLedger修正(F002/F009/F011/F014)後の最終版へ差し替え+Key Phrase A2追加(B1Bは未完成)/Voices記事をclean 2V run(run2_clean)版へ差し替え/Family C Trial-09(完成episode、home_robots)を新規追加。詳細は
 <a class="reportlink" href="../../EDITORIAL-4TYPE-FOLLOWUP-02_REPORT.md">EDITORIAL-4TYPE-FOLLOWUP-02_REPORT.md</a>(最新)・
 <a class="reportlink" href="../../EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md">EDITORIAL-4TYPE-FOLLOWUP-01_REPORT.md</a>(前回分)を参照してください。</p>
+<p class="meta">2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02で以下を更新: Trend A2音声完成(承認付き再生成)/Discovery B1B短文化(2文分割、TTS/ASR言い回し差は未解消のためSTOP継続)/Voices一人称版(2V Writer template修正+新規topic再生成r3+音声化)/Family C Trial-09をv2へ差し替え(v1試聴NG判定)。詳細は<a class="reportlink" href="../../USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md">USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md</a>を参照してください。</p>
 <table>
 <tr><th>Article</th><th>Topic</th><th>Level</th><th>Article type</th><th>Word count</th><th>Status</th></tr>
 <tr><td>News (A2)</td><td>AI regulation vs AI race</td><td>A2</td><td>News (regulation/race tension)</td><td>406</td><td>OK</td></tr>
@@ -39,17 +40,17 @@ QA・費用・token等の技術詳細は本ページには含めていません�
 <tr><td>Discovery (A2、Ledger修正後最終版)</td><td>Why can silence feel uncomfortable?</td><td>A2</td><td>Discovery Focus S2</td><td>628</td><td>OK(Key Phrase 5件PASS)</td></tr>
 <tr><td>Discovery (B1B、Ledger修正後最終版)</td><td>同上</td><td>B1</td><td>Discovery Focus S2</td><td>611</td><td>OK(本文/QAはPASS、Key Phraseのみ未完成)</td></tr>
 <tr><td>Voices (2 Voices、clean run)</td><td>Is personalized news good for us?</td><td>—</td><td>B-Family Voices (2V)</td><td>374</td><td>PARTIAL(Leakage残存flag、Production未採用)</td></tr>
-<tr><td>Family C Trial-09(完成episode、音声込み)</td><td>Home robots(便利さが人間から選択を奪う)</td><td>A2</td><td>Family C(Future、フィクション)</td><td>429</td><td>VALIDATED(Trial、Audio Gate PASS、Production未採用)</td></tr>
+<tr><td>Family C Trial-09 v2(完成episode、音声込み)</td><td>Home robots(便利さが人間から選択を奪う)</td><td>A2</td><td>Family C(Future、フィクション)</td><td>429</td><td>VALIDATED候補(Trial、ユーザー試聴待ち、v1はNG判定で取消・Production未採用)</td></tr>
 </table>
 
 <h2>Production 1生成セット総原価(PM_GOVERNANCE 15-8形式、50:50配賦なし)</h2>
 <table>
 <tr><th>Family</th><th>総原価</th><th>備考</th></tr>
 <tr><td>News</td><td>¥98.32</td><td>A2+B1</td></tr>
-<tr><td>Trend</td><td>¥334.18</td><td>本文¥174.03(Research/Ledger¥48.73+Ledger-Fix-Regen¥75.25+Galaxy-XR-Fix-Regen¥50.05)+音声化¥160.15(B1B完成分含む、A2未完成分の実費含む、2026-09-14 USER-TEST-AUDIO-COMPLETION-01)</td></tr>
-<tr><td>Discovery</td><td>¥565.10</td><td>本文¥463.27(Research/Ledger〜Key Phrase試行まで累計)+音声化¥85.51+¥16.32(A2完成分含む、B1B未完成分の実費含む、2026-09-14 USER-TEST-AUDIO-COMPLETION-01)</td></tr>
-<tr><td>Voices(2V)</td><td>¥185.74</td><td>本文¥140.39(Research/Ledger¥46.98再利用+Writer/Comment/QA/Gate/retry¥93.41)+音声化¥32.34+¥13.01(comment_2再生成でGate PASS到達、2026-09-14 USER-TEST-AUDIO-COMPLETION-01)</td></tr>
-<tr><td>Family C Trial-09(参考、別予算枠)</td><td>¥96.30</td><td>推定合算(token単位実測不能)、Family C残額¥133.99→¥37.69</td></tr>
+<tr><td>Trend</td><td>¥337.55</td><td>本文¥174.03(Research/Ledger¥48.73+Ledger-Fix-Regen¥75.25+Galaxy-XR-Fix-Regen¥50.05)+音声化¥163.52(A2¥93.98+B1B¥69.54、2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02でlevel別費用二重計上バグを発見・補正。A2/B1Bとも完成、追加実支出は+¥3.36のみ)</td></tr>
+<tr><td>Discovery</td><td>¥606.08</td><td>本文¥463.27(Research/Ledger〜Key Phrase試行まで累計)+音声化¥85.51+¥16.32(A2完成分)+¥40.98(2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02、B1B短文化Trial、音声は依然未完成)</td></tr>
+<tr><td>Voices(2V)</td><td>¥354.72</td><td>本文¥140.39(Research/Ledger¥46.98再利用+Writer/Comment/QA/Gate/retry¥93.41)+音声化¥32.34+¥13.01(既存)+¥76.62(r1/r2、一人称修正後の再生成試行)+¥92.36(r3確定+音声化、2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02)</td></tr>
+<tr><td>Family C Trial-09(参考、別予算枠)</td><td>¥148.50</td><td>v1¥96.30+v2¥52.20(2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02)、Family C残額¥37.69→予算枠¥133.99を¥14.51超過</td></tr>
 </table>
 
 <h2>News — AI regulation vs AI race(A2、OK)</h2>
@@ -116,7 +117,7 @@ AI governance is becoming a patchwork of dates, thresholds, company choices, and
 </div>
 
 <h2>Trend — The Smartphone Screen Is Still Here. It Is Just Sharing the Work.(A2、Galaxy XR headset fix後、OK)</h2>
-<div class="note">2026-09-14更新(CONS-132、EDITORIAL-4TYPE-FOLLOWUP-02B-TREND-COMPLETE)。前回runで残っていたA2 Fact Checker FAIL(Galaxy XRヘッドセット既提供中との矛盾)をLedger修正(F008_FIX2、android.com/xr FAQ・blog.google Galaxy XR記事を根拠)で解消し再生成。fact_verdict=REVIEW_REQUIRED(non-blocking)、Ledger Deviation=MAJOR1件→Local Rewriteで解消しLEDGER_COMPLIANT。Cross-Level Consistency=矛盾なし(<a class="reportlink" href="trend/cross_level_consistency.md">trend/cross_level_consistency.md</a>、Local Rewrite後の最終テキストへ本タスクで訂正済み)。修正前(run2)版は<a class="reportlink" href="trend/run2_before_galaxy_fix/">trend/run2_before_galaxy_fix/</a>。Trend Production 1生成セット総原価=¥334.18(本文¥174.03+音声化¥160.15)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: A2音声は`point_two`(「Alexa+」表記揺れ)がHuman Review Cost Guardでロックされ未完成のままSTOP(試聴用player未生成)。</div>
+<div class="note">2026-09-14更新(CONS-132、EDITORIAL-4TYPE-FOLLOWUP-02B-TREND-COMPLETE)。前回runで残っていたA2 Fact Checker FAIL(Galaxy XRヘッドセット既提供中との矛盾)をLedger修正(F008_FIX2、android.com/xr FAQ・blog.google Galaxy XR記事を根拠)で解消し再生成。fact_verdict=REVIEW_REQUIRED(non-blocking)、Ledger Deviation=MAJOR1件→Local Rewriteで解消しLEDGER_COMPLIANT。Cross-Level Consistency=矛盾なし(<a class="reportlink" href="trend/cross_level_consistency.md">trend/cross_level_consistency.md</a>、Local Rewrite後の最終テキストへ本タスクで訂正済み)。修正前(run2)版は<a class="reportlink" href="trend/run2_before_galaxy_fix/">trend/run2_before_galaxy_fix/</a>。Trend Production 1生成セット総原価=¥337.55(本文¥174.03+音声化¥163.52、費用バグ補正後)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: A2音声は`point_two`(「Alexa+」表記揺れ)がHuman Review Cost Guardでロックされ未完成のままSTOP。2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02: ユーザー承認の`approve_regenerate()`を1回実施(同一canonical text)、今回はASRが"Alexa Plus"と書き起こしPASS(表記揺れは双方向、詳細`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`)。A2音声完成(Gate PASS、415.42秒)。試聴用player: <a class="reportlink" href="trend/audio/a2/player.html">trend/audio/a2/player.html</a>。</div>
 <div class="article-body">
 # The Smartphone Screen Is Still Here. It Is Just Sharing the Work
 
@@ -234,7 +235,7 @@ The quiet itself may be simple; the experience of it is not.
 </table>
 
 <h3>Discovery — B1B版(611語、本文/QAはOK、Key Phraseは人手選定完了・音声は未完成)</h3>
-<div class="note">Ledger修正: F002・F009(chosen solitude→Study 4限定である旨を反映しStage本文を一般化から限定化)・F011・F014(本文側の一般化を修正)。Fact Checker A'=PASS、Ledger Deviation=LEDGER_COMPLIANT、No Jargon=0/0維持。<strong>Key Phrase B1B</strong>: 自動選定は"have agency"の語彙動詞haveが既存Validatorの有限助動詞ブロックリストに誤って一致し4回連続`KEY_WORDS_STRUCTURE_INVALID`となったため、2026-09-14に人手選定へ切替え5件確定(nothing to do but think/reduced the feeling of connection/being in the present moment/actively choosing solitude/complicates any simple cultural story、have agencyは除外)。Validator誤検知はOPEN-152として登録(USER_DECISION_REQUIRED)。<strong>B1B音声</strong>は`full_story_part2`の長文1文がTTSから3回とも脱落しHuman Review Cost Guardでロックされ未完成のままSTOP(試聴用player未生成、OPEN-153参照)。</div>
+<div class="note">Ledger修正: F002・F009(chosen solitude→Study 4限定である旨を反映しStage本文を一般化から限定化)・F011・F014(本文側の一般化を修正)。Fact Checker A'=PASS、Ledger Deviation=LEDGER_COMPLIANT、No Jargon=0/0維持。<strong>Key Phrase B1B</strong>: 自動選定は"have agency"の語彙動詞haveが既存Validatorの有限助動詞ブロックリストに誤って一致し4回連続`KEY_WORDS_STRUCTURE_INVALID`となったため、2026-09-14に人手選定へ切替え5件確定(nothing to do but think/reduced the feeling of connection/being in the present moment/actively choosing solitude/complicates any simple cultural story、have agencyは除外)。Validator誤検知はOPEN-152として登録(USER_DECISION_REQUIRED)。<strong>B1B音声</strong>は`full_story_part2`の長文1文がTTSから3回とも脱落しHuman Review Cost Guardでロックされ未完成のままSTOP(OPEN-153参照)。2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02: 対象文を1文短縮/2文分割の2パターンで試行(2文分割が現在のcanonical、Ledger整合・diff QA PASS)、2文分割版では文の丸ごと脱落は解消したが、TTS/ASRの細部言い回し差(「In a study」→「In one study」、「Japan–United States」→「Japan/U.S.」等)により3回とも不合格が継続、依然HUMAN_REVIEW_LOCKEDのまま(試聴用player未生成、USER_DECISION_REQUIRED)。詳細`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`3節。</div>
 <div class="article-body">
 # Why Silence Can Feel Uncomfortable
 
@@ -269,7 +270,7 @@ Silence is not a universal signal; before judging the pause, listen for the situ
 
 <h2>Voices — Is personalized news good for us?(2 Voices、clean run、PARTIAL)</h2>
 <div class="note">2026-09-14更新(EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02、run2_clean)。Comment Contract接続・Fact Safety Gate 2V/3V一般化後に同一Ledgerで再生成。Fact Checker verdict=PASS(前回REVIEW_REQUIREDから改善)、Ledger Deviation Checker=LEDGER_COMPLIANT、Comment Contract検証=LEDGER_COMPLIANT。ただしAnalytical Leakage Check(voice_b/tension)は3attempt上限到達後もflagged残存(構造的限界)。Status=PARTIAL(15項目中14項目✓)、Production未採用。詳細は
-<a class="reportlink" href="../../EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md">EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md</a>)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: comment_2を既存Comment Contract経路で再生成しAudio Validation Gate PASS(14/14)、完成episode 309.485秒に到達。Status=PARTIAL / USER TEST READY(PRODUCTION_WIREDではない)。Analytical Leakage(voice_b/tension)は残存したままplayer本文に明記。総原価=¥185.74。試聴用player: <a class="reportlink" href="voices/audio/b1_2v/player.html">voices/audio/b1_2v/player.html</a>。</div>
+<a class="reportlink" href="../../EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md">EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-02_REPORT.md</a>)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: comment_2を既存Comment Contract経路で再生成しAudio Validation Gate PASS(14/14)、完成episode 309.485秒に到達。総原価=¥185.74。試聴用player(旧・三人称混在の課題が残る版): <a class="reportlink" href="voices/audio/b1_2v/player.html">voices/audio/b1_2v/player.html</a>。2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02: 2V用Writer templateに一人称"I"指示ブロックが欠落していたProduction不整合を修正(`er012_b_family_voices_writer_generic_01.py`、3V無変更)、新規topicで再生成(r1/r2はTension文の事実精度でFact Safety Gate/Local Rewriteが実際に発火しNG_REVIEW_REQUIRED、r3で全QA PASS・記事確定、pov_check機械確認で一人称化成功)、音声化まで完了(Gate PASS 14/14、321.105秒)。Analytical Leakage(voice_b 5項目/tension 2項目)は3attempt上限到達後も残存(Gate緩和なし)。Status=**PARTIAL / USER TEST READY(一人称版)**(PRODUCTION_WIREDではない)。総原価=¥354.72。試聴用player(新・一人称版): <a class="reportlink" href="voices/audio/b1_2v_v2/player.html">voices/audio/b1_2v_v2/player.html</a>。詳細`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`4節。</div>
 <div class="article-body">
 # When the News Feed Knows You
 
@@ -297,7 +298,7 @@ The deeper question is who sets the boundaries of attention, and whether they fe
 <h2>Family C Trial-09 — Home robots(完成episode、VALIDATED、Production未採用)</h2>
 <div class="note">2026-09-14新規(EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-SPEC-TRIAL-09)。Trial-08で選定したhome_robotsテーマから完成episode(音声込み)を構築。2-voice(narrator=Aoede/robot発話のみCharon)、Audio Validation Gate PASS(38/38セグメント、4分18秒、clipping無し)。A2語数429語(許容300〜420語を超過、Trial-08由来の既知事実、今回は許容・超過は毎回報告)。試聴用player:
 <a class="reportlink" href="../../er013_output/family_c_episode_trial_09/home_robots/player.html">er013_output/family_c_episode_trial_09/home_robots/player.html</a>。詳細は
-<a class="reportlink" href="../../EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-SPEC-TRIAL-09_REPORT.md">EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-SPEC-TRIAL-09_REPORT.md</a>を参照してください(本ページには記事本文を掲載しません、Family C記事はFuture/フィクション区分のためNews/Trend/Discovery/Voicesとは性質が異なります)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: WAVが`.gitignore`の`*.wav`で除外されGitHub未収録だった問題を修正(mp3化+player相対パス化、追加費用¥0)、直接音声URLはGitHub上でHTTP到達確認済み。</div>
+<a class="reportlink" href="../../EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-SPEC-TRIAL-09_REPORT.md">EDITORIAL-FUTURE-FAMILY-C-HOME-ROBOTS-EPISODE-SPEC-TRIAL-09_REPORT.md</a>を参照してください(本ページには記事本文を掲載しません、Family C記事はFuture/フィクション区分のためNews/Trend/Discovery/Voicesとは性質が異なります)。2026-09-14 USER-TEST-AUDIO-COMPLETION-01: WAVが`.gitignore`の`*.wav`で除外されGitHub未収録だった問題を修正(mp3化+player相対パス化、追加費用¥0)、直接音声URLはGitHub上でHTTP到達確認済み。2026-09-15 USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02: ユーザー試聴の結果NG(Key Phrase/Preview音声が表示文と異なる内容を再生)。原因は`_resumable_reuse()`がテキスト内容を照合せずファイル+`.ok`マーカーのみで再利用可否を判定するバグと判明。v1のVALIDATED扱いは取り消し、v2(`home_robots_v2/`、Key Phrase/Preview音声を全件新規生成、Mother=Erinome分離、Family A標準pause値へ統一)を新規作成。Audio Validation Gate PASS(319.593秒)、Key Phrase 4者照合(表示文/canonical/TTS input/ASR)5件全一致。Status=**VALIDATED候補(Trial、ユーザー試聴待ち)**、Production採用は引き続き禁止。試聴用player(v2): <a class="reportlink" href="../../er013_output/family_c_episode_trial_09/home_robots_v2/player.html">er013_output/family_c_episode_trial_09/home_robots_v2/player.html</a>。詳細`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`1節。</div>
 
 <hr>
 <p class="meta">品質(QA verdict/retry/費用等)の詳細は

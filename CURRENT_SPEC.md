@@ -662,6 +662,20 @@ Hook/Voice A/Voice B/Tension/Closing)を持つEditorial Type。B1は
 | Tension任意パターン: 外部制約統合(3人以上のVoice構成向け、任意適用) | Tensionの「共通前提→分岐点→非対称性」の3段構造(design.md B-7)に続けて、規制・監査・制度等の外部制約(fairness/bias/accountability/law/compliance)を、3人(以上)それぞれの選択肢を制約する実質的な力として統合する4段目のパターン(3V Person-Voice版Trial-02の`leak_tension_constraint_integration`基準に対応)。**3V共通の必須恒久ルールにはしない**。「3人のVoiceだけでは単純な陣営分解ができず、Ledger上、規制・監査・制度等の外部制約が重要な場合に使える構成パターンの1つ」として、Ledger内容・テーマごとにFableが任意適用を判断する(design.md自身が本パターンの記事本文レベル検証を「未実施」と明記しており、1記事[AI採用選考]でのGate1通過のみでは恒久ルール化の十分な根拠にならないため) | `DECIDED`(任意パターンとして確定、恒久ルール化はしない。今後のN増しで再現性・必要性が確認できた場合に恒久ルール化の要否を改めて判断する) | ユーザー決定2026-09-12(EDITORIAL-B-FAMILY-VOICES-3V-PRODUCTION-WIRING-PHASE1B-04-GENERALIZATION-AND-REGRESSION) | 2026-09-12 |
 | 3V Fact Safety保守版ゲート(`voice_fact_safety_gate_mode`) | 段階1/2の条件(一人称・certainty系flagのみ、または第三者主語なしでrole合成のみ)に一致するMAJORのみMINORへ再分類する保守版ゲート(判定基準・prompt本体・`MAX_REWRITE_CYCLES`等は無変更)を、B-Family 3V Production経路(`er012_b_family_editorial_type_registry_01.py::VOICE_FACT_SAFETY_GATE_MODE_DEFAULT`)で既定ONへ切替した。A-Family経路はこのフラグ・関連関数(`er012_b_family_voices_writer_generic_01.py::_apply_b_family_voice_safety_gate()`)を一切参照しない(grepで無影響を再確認済み) | `APPROVED_FOR_PRODUCTION`(配線実装済み、Gate3項目4/6[Production runtimeでの実発火・runtime evidence]は次のB-Family実記事生成時の自然発火待ち、OPEN-145と同じ扱い) | ユーザー正式判断2026-09-13(PM-CLOSEOUT-CONSOLIDATION-105)原文「1. 3V Fact Safety: 追加Trialは不要です。offlineでは有効性が確認できているため、次のB-Family実記事生成時に自然発火した場合にruntime evidenceを取得・確認する方針としてください。」、詳細`OPEN-141-TARGET-SENTENCE-DIFF-QA-PRODUCTION-WIRING-01_REPORT.md` | 2026-09-13 |
 
+**Production不整合の修正記録(2026-09-15、PM-CLOSEOUT-CONSOLIDATION-134、
+USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02-VOICES)**: 一人称"I"は上記OPEN-151行
+記載のとおり2026-09-08ユーザー正式決定済みの`APPROVED_FOR_PRODUCTION`
+仕様であり、本節の追記は**仕様自体の変更ではない**。2V用Writer
+template(`er012_b_family_voices_writer_generic_01.py::COMMON_INTRO_
+AND_STRUCTURE_BLOCK_TEMPLATE_2V`)に、3V用テンプレートには存在する
+【人称】指示block・禁止事項1行が丸ごと欠落しており、既存Prompt実装が
+承認済み仕様を反映できていなかったProduction不整合を発見・修正した
+(diff +13行、3V関数・3Vテンプレートは無変更)。テスト44件+関連回帰
+185件PASS実測。修正後、新規topicで既存2V正式経路を3回試行しr3で記事
+確定・音声化まで到達(pov_check機械確認で一人称化成功)。詳細:
+`USER-TEST-AUDIO-HUMAN-REVIEW-FIX-02_REPORT.md`4節、OPEN-151行、
+`docs/pm/RESULT_PACKET_FIX02_VOICES.md`/`_2.md`。commit `ccf43e8c`。
+
 **最終更新: 2026-09-13(PM-CLOSEOUT-CONSOLIDATION-105、3V Fact Safety保守版ゲート既定ON化)、2026-09-09(EDITORIAL-B-FAMILY-VOICES-A2-PRODUCTION-WIRING-01、
 Gate 3配線)**: ユーザー承認(2026-09-09、`APPROVED_FOR_PRODUCTION`)に
 基づき、B-Family A2(「フリーアドレス vs 固定席」A2、Trial-02/03/04で
