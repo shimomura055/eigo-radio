@@ -51,15 +51,17 @@ FAIL(理由: 実行コマンドコードブロックの検出パターン不一�
 |---|---|
 | `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_a2/player.html` | 200 |
 | `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_a2/web/family_c_memory_trial_10.mp3` | 200 |
-| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_b1/player.html` | (B1 push後に確認、下記コミット参照) |
-| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_b1/web/family_c_memory_trial_10_b1.mp3` | (同上) |
+| `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_b1/player.html` | 200 |
+| `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_10/memory_b1/web/family_c_memory_trial_10_b1.mp3` | 200 |
+
+4件とも初回GETで200(CDN遅延・追加待機不要)。
 
 ## 9. 回帰結果
 `er013_family_c_episode_trial_10_memory_test_01.py`: 15 test全件pass(A2実行後は11 pass/4 skip、B1完成後は全15 pass)、失敗0。`run_project_regression.py --pattern "er013_family_c_episode_trial_10_memory*_test_*.py"`で実行。
 
 ## 10. commit/push
 - A2完成分: commit `fad57bb0`「USER-TEST-FINAL-AUDIO-BATCH-06 (B-A2): Family C memory A2 episode完成(Trial-08本文固定)」、push済み。
-- B1完成分: 本RESULT_PACKET更新と合わせてcommit「USER-TEST-FINAL-AUDIO-BATCH-06 (B-B1): Family C memory B1 episode完成(Support easy English/Charon)」、push予定。
+- B1完成分: commit `4196d718`「USER-TEST-FINAL-AUDIO-BATCH-06 (B-B1): Family C memory B1 episode完成(Support easy English/Charon)」、push済み。Web到達確認(4 URL、上記)は本commit push後に実施し、本ファイルへ追記(小規模follow-up commitとして反映)。
 - 残差分: `er006_output/`・`er011_output/`の既存M、`docs/pm/ACTIVE_TASK_*.md`/`RESULT_PACKET_*.md`等の既存??は本タスクと無関係のため触っていない(committed rangeは`er013_output/family_c_episode_trial_10/`・新規スクリプト2件・テスト1件・SSOT3件・delegation_log2件・本RESULT_PACKETのみ)。
 
 ## 11. unresolved issue・新規Open Item
