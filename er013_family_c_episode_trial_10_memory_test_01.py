@@ -134,9 +134,10 @@ class B1SpecTests(unittest.TestCase):
 
     def test_b1_output_dir_has_no_japanese_title_file_after_run(self):
         out_dir = getattr(self.b1m, "OUT_DIR", None)
-        if out_dir is None or not os.path.exists(f"{out_dir}/audio/japanese_title.wav"):
-            self.skipTest("B1 run未実行、またはjapanese_title.wav不在(想定どおり)")
-        self.fail("B1にjapanese_title.wavが生成されています(B1は日本語タイトルなしが正式仕様)")
+        if out_dir is None or not os.path.isdir(f"{out_dir}/audio"):
+            self.skipTest("B1 run未実行(audio dir不在)")
+        self.assertFalse(os.path.exists(f"{out_dir}/audio/japanese_title.wav"),
+                          "B1にjapanese_title.wavが生成されています(B1は日本語タイトルなしが正式仕様)")
 
     def test_b1_comments_and_preview_contain_no_japanese(self):
         out_dir = getattr(self.b1m, "OUT_DIR", None)
