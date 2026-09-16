@@ -132,6 +132,30 @@ function renderVoicesFull(rows){
  flushQuestion();
  return {body,sec:seq[0]?.sec};
 }
+function isFamilyCB1(){
+ return level.startsWith('B1') && /family_c_episode_trial_(?:09\/home_robots_b1|12\/memory_b1|12\/twins_b1)/.test(src||'');
+}
+function renderFamilyCFull(rows){
+ const fullIdx=rows.findIndex(r=>/full story intro/i.test(r.label));
+ const seq=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r));
+ let body='';
+ for(const r of seq){
+   if(/^Comment\s*\d+/i.test(r.label)){
+     const n=(r.label.match(/Comment\s*\d+/i)||['Comment'])[0];
+     body+='<div class="comment"><strong>'+esc(n)+'</strong><div>'+esc(displayText(r.text))+'</div></div>';
+     continue;
+   }
+   if(/^story[_ -]?\d+$/i.test(r.label)){
+     body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+     continue;
+   }
+   if(/outro|notification/i.test(r.label))continue;
+   const label=displayLabel(r.label);
+   if(label)body+='<h3>'+esc(label)+'</h3>';
+   body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+ }
+ return {body,sec:seq[0]?.sec};
+}
 function timelineRender(doc,base){
  const t=chooseTimeline(doc), rows=rowData(t), audio=chooseAudio(doc,t); if(!audio)throw new Error('完成episode音声を特定できませんでした。');
  document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
@@ -146,6 +170,7 @@ function timelineRender(doc,base){
  if(kps.length){const kphtml='<div class="kp">'+kps.map(r=>{const p=kpParts(r.text);return '<div class="kpitem"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>'}).join('')+'</div>';out+=card('Key Phrases',kphtml,kps[0]?.sec)}
  if(full.length){
    if(isVoicesB1()){const v=renderVoicesFull(rows);out+=card('Full Story',v.body,v.sec)}
+   else if(isFamilyCB1()){const v=renderFamilyCFull(rows);out+=card('Full Story',v.body,v.sec)}
    else{let body='';for(const r of full){const label=displayLabel(r.label);const cls=/comment/i.test(r.label)&&/[ぁ-んァ-ヶ一-龠]/.test(r.text)?'jp':'script';if(label)body+='<h3>'+esc(label)+'</h3>';body+='<p class="'+cls+'">'+esc(displayText(r.text))+'</p>'}out+=card('Full Script',body,full[0]?.sec)}
  }
  return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
