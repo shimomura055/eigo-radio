@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIが仕事と人の間に立つとき｜A2 User Test</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#18202a;--muted:#667085;--line:#e4e7ec;--accent:#315efb;--soft:#eef3ff;--jp:#f8fafc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.75}
+.wrap{max-width:860px;margin:0 auto;padding:28px 18px 72px}
+.hero{background:linear-gradient(135deg,#18202a,#344054);color:#fff;padding:30px;border-radius:18px;margin-bottom:18px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+h1{font-size:30px;line-height:1.35;margin:8px 0 6px}
+.sub{font-size:15px;opacity:.82}
+.player{position:sticky;top:0;z-index:10;background:rgba(246,247,249,.96);backdrop-filter:blur(10px);padding:12px 0 14px}
+.playerbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(16,24,40,.08)}
+.playerbox strong{display:block;font-size:14px;margin-bottom:8px}
+audio{width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0}
+.card h2{font-size:19px;margin:0 0 14px}
+.card h3{font-size:16px;margin:22px 0 8px}
+.label{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:var(--soft);padding:3px 9px;border-radius:999px;margin-bottom:10px}
+.jp{background:var(--jp);border-left:4px solid #98a2b3;padding:12px 14px;border-radius:8px}
+.script{white-space:pre-line}
+.kp{display:grid;gap:10px}
+.kpitem{display:grid;grid-template-columns:1fr 1fr;gap:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpitem b{font-size:15px}
+.seek{border:0;background:var(--soft);color:var(--accent);font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:8px}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}
+@media(max-width:640px){h1{font-size:25px}.card{padding:18px}.kpitem{grid-template-columns:1fr}.hero{padding:24px}}
+</style>
+<script>
+function jump(sec){const a=document.getElementById('episode');a.currentTime=sec;a.play();}
+</script>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">English Your Way · A2 · User Test</div>
+    <h1>AIが仕事と人の間に立つとき</h1>
+    <div class="sub">When AI Sits Between a Job and a Person</div>
+  </section>
+
+  <div class="player">
+    <div class="playerbox">
+      <strong>▶ 全体を再生</strong>
+      <audio id="episode" controls preload="none" src="a2/web/episode.mp3"></audio>
+    </div>
+  </div>
+
+  <section class="card">
+    <span class="label">INTRO</span>
+    <p class="script">Welcome to English Your Way.
+
+Today's topic is When AI Sits Between a Job and a Person.</p>
+    <p class="jp">AIが仕事と人の間に立つとき</p>
+  </section>
+
+  <section class="card">
+    <div class="sectionhead"><h2>Preview</h2><button class="seek" onclick="jump(25.758)">▶ ここから再生</button></div>
+    <p class="script">Here's a quick preview.</p>
+    <p class="jp">採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや、問題が起きたときの説明を誰が担うのかが問われています。</p>
+  </section>
+
+  <section class="card">
+    <div class="sectionhead"><h2>Key Phrases</h2><button class="seek" onclick="jump(46.709)">▶ ここから再生</button></div>
+    <p class="script">Here are today's key phrases.</p>
+    <div class="kp">
+      <div class="kpitem"><b>1. opt-out</b><span>利用を断る選択肢</span></div>
+      <div class="kpitem"><b>2. screen a résumé</b><span>履歴書を事前に選別する</span></div>
+      <div class="kpitem"><b>3. be reduced to a score</b><span>点数だけで判断される</span></div>
+      <div class="kpitem"><b>4. answer for</b><span>～の責任を負う</span></div>
+      <div class="kpitem"><b>5. make the final call</b><span>最終的に決める</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sectionhead"><h2>Full Story</h2><button class="seek" onclick="jump(97.455)">▶ ここから再生</button></div>
+    <p class="script">Now, the full story.</p>
+
+    <h3>Comment 1</h3>
+    <p class="jp">聞くときは、立場が変わると見え方がどう変わるかに注目してください。</p>
+
+    <h3>The Question</h3>
+    <p class="script">A job application may go through software before a person sees it. Software may check a résumé. It may score a personality test. It may judge a video by a person's face, voice, and movements.
+
+The applicant sees a chance for a job. The recruiter sees many applications waiting. The owner sees a choice that can affect the company. The same screen gives three people three different experiences.</p>
+
+    <h3>Comment 2</h3>
+    <p class="jp">ここからは、この問いをめぐる異なる立場の声を、順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。</p>
+
+    <h3>The Applicant's Voice: Under the Camera</h3>
+    <p class="script">I speak to a camera. Software scores my voice, face, and movements. I read about a woman who did well on a skills test. But AI gave her low scores for her movements and facial expressions. Then the company rejected her. She was without work for a long time.
+
+I know about another applicant. This person said AI scored their reliability and honesty. They had no way to say no to the system. They also had no way to challenge the result. I want people to see my skills and character. I do not want them changed into one score.</p>
+
+    <h3>Another Voice: The Recruiter</h3>
+    <p class="script">I start with résumés and an AI tool. It sorts them. It sets interview times. It matches people with jobs. It helps when applications come faster than my team can read them.
+
+But a score is not the end of my work. I may prepare a simple summary of a fairness check. I may answer candidates' questions. One company's public notice shows this duty clearly.
+
+I also think about résumés written by AI. Is this a useful skill? Or did the person make too little effort? I run the tool. But I do not decide if the company uses it.</p>
+
+    <h3>A Third Voice: The Business Owner</h3>
+    <p class="script">I often look at the hiring dashboard. It shows time, cost, and the people we still need. If hiring slows, the work does not stop.
+
+I have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores. So I look again at my own choice. If people question this choice, my name is attached. I am protecting the company's future. But I also carry the risk of being wrong.</p>
+
+    <h3>Comment 3</h3>
+    <p class="jp">ここまで、同じ採用の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これから、その違いに目を向けます。</p>
+
+    <h3>Why They See It Differently</h3>
+    <p class="script">All three want the right person in the right job. But each person faces a different problem. The applicant may lose a fair chance. The recruiter must keep work moving and explain the system. The owner must keep the company running and answer for the choice.
+
+The applicant cannot choose the system. The recruiter runs it and may help with the decision to use it. The owner may make the final choice. Rules outside the company limit all three roles.
+
+In New York City, an employer must have a recent fairness check. It must also give the public a simple summary and give notice before using an automated hiring tool. The recruiter cannot use it in secret. The owner cannot rely on speed alone. The applicant still cannot control the score. One company stopped a tool after it gave women lower scores. These different views do not give one easy answer.</p>
+
+    <h3>Comment 4</h3>
+    <p class="jp">ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。</p>
+
+    <h3>What This Question Really Means</h3>
+    <p class="script">This is not only about a machine reading a résumé or a face. It is about who decides what a fair chance means. It is about who must explain the system. It is about who must deal with the results if the system fails.
+
+Hiring is not only a choice about a tool. It is also about power, proof, and responsibility.</p>
+  </section>
+
+  <footer>ユーザ実検証用 Trial page · 効果音・ジングル・技術情報は表示していません。</footer>
+</div>
+</body>
+</html>
