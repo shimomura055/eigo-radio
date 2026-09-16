@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>English Your Way · User Test</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#18202a;--muted:#667085;--line:#e4e7ec;--accent:#315efb;--soft:#eef3ff;--jp:#f8fafc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.75}
+.wrap{max-width:860px;margin:0 auto;padding:28px 18px 72px}.hero{background:linear-gradient(135deg,#18202a,#344054);color:#fff;padding:30px;border-radius:18px;margin-bottom:18px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}h1{font-size:30px;line-height:1.35;margin:8px 0 6px}.sub{font-size:15px;opacity:.82}
+.player{position:sticky;top:0;z-index:10;background:rgba(246,247,249,.96);backdrop-filter:blur(10px);padding:12px 0 14px}.playerbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(16,24,40,.08)}.playerbox strong{display:block;font-size:14px;margin-bottom:8px}audio{width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0}.card h2{font-size:19px;margin:0 0 14px}.card h3{font-size:16px;margin:22px 0 8px}
+.label{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:var(--soft);padding:3px 9px;border-radius:999px;margin-bottom:10px}
+.jp{background:var(--jp);border-left:4px solid #98a2b3;padding:12px 14px;border-radius:8px}.script{white-space:pre-line}.kp{display:grid;gap:10px}.kpitem{display:grid;grid-template-columns:1fr 1fr;gap:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpitem b{font-size:15px}
+.seek{border:0;background:var(--soft);color:var(--accent);font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.note{font-size:13px;color:var(--muted);margin-top:8px}.error{background:#fff4f2;border:1px solid #fecdca;color:#b42318;border-radius:12px;padding:16px}
+footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}@media(max-width:640px){h1{font-size:25px}.card{padding:18px}.kpitem{grid-template-columns:1fr}.hero{padding:24px}.sectionhead{align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero"><div class="eyebrow" id="eyebrow">English Your Way · User Test</div><h1 id="jaTitle">Loading…</h1><div class="sub" id="enTitle"></div></section>
+<div class="player"><div class="playerbox"><strong>▶ 全体を再生</strong><audio id="episode" controls preload="none"></audio></div></div>
+<div id="content"><div class="card"><p>コンテンツを読み込んでいます…</p></div></div>
+<footer>ユーザ実検証用ページ · 効果音・ジングル・技術情報は表示していません。</footer>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+const src=q.get('src'), level=(q.get('level')||'').toUpperCase(), en=q.get('en')||'', ja=q.get('ja')||'';
+document.getElementById('eyebrow').textContent='English Your Way · '+(level||'')+' · User Test';
+document.getElementById('jaTitle').textContent=ja||en||'English Your Way';
+document.getElementById('enTitle').textContent=en;
+document.title=(ja||en||'English Your Way')+'｜'+(level||'')+' User Test';
+function rootBase(){const p=location.pathname;const marker='/user_test/unified.html';return location.origin+p.slice(0,p.indexOf(marker));}
+function sourceUrl(){return rootBase()+'/'+src.replace(/^\/+/, '');}
+function abs(u,base){try{return new URL(u,base).href}catch(e){return u}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function clean(s){return String(s||'').replace(/\(TTS[^)]*\)/gi,'').replace(/\s+/g,' ').trim()}
+function jump(sec){const a=document.getElementById('episode');a.currentTime=Number(sec);a.play()}
+function seekButton(sec){return sec==null?'':'<button class="seek" data-sec="'+esc(sec)+'">▶ ここから再生</button>'}
+function bind(){document.querySelectorAll('.seek[data-sec]').forEach(b=>b.onclick=()=>jump(b.dataset.sec))}
+function card(title,body,sec,label){return '<section class="card">'+(label?'<span class="label">'+esc(label)+'</span>':'')+'<div class="sectionhead"><h2>'+esc(title)+'</h2>'+seekButton(sec)+'</div>'+body+'</section>'}
+function chooseTimeline(doc){
+ const tables=[...doc.querySelectorAll('table.timeline')]; if(!tables.length)return null;if(tables.length===1)return tables[0];
+ const want=level.startsWith('A2')?/\bA2\b/i:/\bB1(?:B)?\b/i;
+ for(const t of tables){let n=t.previousElementSibling;while(n&& !/^H[12]$/.test(n.tagName))n=n.previousElementSibling;if(n&&want.test(n.textContent))return t}
+ return level.startsWith('A2')?tables[0]:tables[tables.length-1];
+}
+function chooseAudio(doc,table){
+ const aud=[...doc.querySelectorAll('audio.main, audio[id*="episode"]')]; if(!aud.length)return doc.querySelector('audio');
+ if(aud.length===1)return aud[0];
+ const re=level.startsWith('A2')?/a2/i:/b1/i;return aud.find(a=>re.test(a.id||'')||re.test(a.getAttribute('src')||''))||aud[aud.length-1];
+}
+function rowData(table){
+ return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:(td[2].innerText||td[2].textContent||'').trim(),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
+}
+function isSfx(r){return /notification|\bintro\b.*sfx|music|jingle/i.test(r.label)||/効果音|ジングル|SFX/i.test(r.text)}
+function isKP(r){return /key[ _-]?phrase\s*\d|^kp\d|^key_phrase_\d/i.test(r.label)}
+function kpParts(t){let x=t.replace(/日本語gloss\(表示用\):/g,'日本語:').replace(/^\d+[.)]\s*/,'').trim();let m=x.match(/英語:\s*([^\n]+)[\s\S]*?日本語:\s*([^\n]+)/);if(m)return [clean(m[1]),clean(m[2])];let a=x.split(/\s*\/\s*/);if(a.length>=2)return [clean(a[0]),clean(a.slice(1).join(' / '))];return [clean(x),'']}
+function timelineRender(doc,base){
+ const t=chooseTimeline(doc), rows=rowData(t), audio=chooseAudio(doc,t); if(!audio)throw new Error('完成episode音声を特定できませんでした。');
+ document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
+ const intro=rows.filter(r=>/welcome|topic intro|japanese title/i.test(r.label)&&!isSfx(r));
+ const preview=rows.find(r=>/^preview$/i.test(r.label)||(/^preview/i.test(r.label)&&!/intro/i.test(r.label)));
+ const kps=rows.filter(isKP);
+ const fullIdx=rows.findIndex(r=>/full story intro|full script intro|story intro/i.test(r.label));
+ const full=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r)&&!/preview|key phrases? intro|welcome|topic intro|japanese title/i.test(r.label));
+ let out='';
+ if(intro.length){out+=card('Intro',intro.map(r=>'<p class="'+(/japanese/i.test(r.label)?'jp':'script')+'">'+esc(r.text)+'</p>').join(''),intro[0]?.sec,'INTRO')}
+ if(preview)out+=card('Preview','<p class="'+(/[ぁ-んァ-ヶ一-龠]/.test(preview.text)?'jp':'script')+'">'+esc(preview.text)+'</p>',preview.sec);
+ if(kps.length){const kphtml='<div class="kp">'+kps.map(r=>{const p=kpParts(r.text);return '<div class="kpitem"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>'}).join('')+'</div>';out+=card('Key Phrases',kphtml,kps[0]?.sec)}
+ if(full.length){let body='';for(const r of full){const internal=/^story[_ -]?\d+$/i.test(r.label)||/^full story part \d+/i.test(r.label);const cls=/comment/i.test(r.label)&&/[ぁ-んァ-ヶ一-龠]/.test(r.text)?'jp':'script';if(!internal&&r.label)body+='<h3>'+esc(r.label)+'</h3>';body+='<p class="'+cls+'">'+esc(r.text)+'</p>'}out+=card('Full Script',body,full[0]?.sec)}
+ return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
+}
+function simpleRender(doc,base){
+ const audio=doc.querySelector('audio[id*="episode"], .player audio, audio');if(!audio)throw new Error('完成episode音声を特定できませんでした。');document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
+ let out='';const cards=[...doc.querySelectorAll('section.card')];for(const c of cards){const h=c.querySelector('h2');if(!h)continue;const title=clean(h.textContent);if(!/preview|key phrases|full story|full script/i.test(title))continue;const clone=c.cloneNode(true);clone.querySelectorAll('button,audio').forEach(x=>x.remove());clone.querySelector('h2')?.remove();if(/key phrases/i.test(title)){out+=card('Key Phrases',clone.innerHTML)}else if(/preview/i.test(title)){out+=card('Preview',clone.innerHTML)}else{out+=card('Full Script',clone.innerHTML)}}
+ return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
+}
+(async()=>{
+ try{
+  if(!src)throw new Error('src parameter is required');
+  const url=sourceUrl(),res=await fetch(url);if(!res.ok)throw new Error('元playerを取得できませんでした ('+res.status+')');
+  const text=await res.text(),doc=new DOMParser().parseFromString(text,'text/html'),base=new URL('.',url).href;
+  const t=chooseTimeline(doc);document.getElementById('content').innerHTML=t?timelineRender(doc,base):simpleRender(doc,base);bind();
+ }catch(e){document.getElementById('content').innerHTML='<div class="error"><strong>表示エラー</strong><br>'+esc(e.message)+'</div>'}
+})();
+</script>
+</body></html>
