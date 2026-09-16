@@ -56,7 +56,18 @@ function rowData(table){
 }
 function isSfx(r){return /notification|\bintro\b.*sfx|music|jingle/i.test(r.label)||/効果音|ジングル|SFX/i.test(r.text)}
 function isKP(r){return /key[ _-]?phrase\s*\d|^kp\d|^key_phrase_\d/i.test(r.label)}
-function kpParts(t){let x=t.replace(/日本語gloss\(表示用\):/g,'日本語:').replace(/^\d+[.)]\s*/,'').trim();let m=x.match(/英語:\s*([^\n]+)[\s\S]*?日本語:\s*([^\n]+)/);if(m)return [clean(m[1]),clean(m[2])];let a=x.split(/\s*\/\s*/);if(a.length>=2)return [clean(a[0]),clean(a.slice(1).join(' / '))];return [clean(x),'']}
+function kpParts(t){
+ let x=String(t||'').replace(/\r/g,'').replace(/^\s*\d+[.)]\s*/,'').trim();
+ let m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語gloss(?:\(表示用\))?\s*:\s*([^\n]+)/i);
+ if(m)return [clean(m[1]),clean(m[2])];
+ m=x.match(/EN\s*:\s*([^\n]+)[\s\S]*?JA(?:\(表示\))?\s*:\s*([^\n]+)/i);
+ if(m)return [clean(m[1]),clean(m[2])];
+ m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語\s*:\s*([^\n]+)/i);
+ if(m)return [clean(m[1]),clean(m[2])];
+ let a=x.split(/\s*\/\s*/);
+ if(a.length>=2)return [clean(a[0]),clean(a.slice(1).join(' / '))];
+ return [clean(x),''];
+}
 function timelineRender(doc,base){
  const t=chooseTimeline(doc), rows=rowData(t), audio=chooseAudio(doc,t); if(!audio)throw new Error('完成episode音声を特定できませんでした。');
  document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
