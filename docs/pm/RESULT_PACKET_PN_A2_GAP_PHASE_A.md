@@ -113,7 +113,7 @@
 
 ## 11. Git commit/push
 
-コミット後に追記(下記参照)。
+commit `9fffaa1e`(main、`222d4cbe`から進行)。push成功(`222d4cbe..9fffaa1e main -> main`)。
 
 ## 12. 到達Status
 
