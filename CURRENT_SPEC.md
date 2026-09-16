@@ -960,6 +960,72 @@ runtime_evidence_02/`)で通常LedgerによるA2完走を確認し、Gate 3全�
 充足によりPRODUCTION_WIRED確定。詳細:
 `FAMILY-A-DISCOVERY-S2-PRODUCTION-HAPPY-PATH-EVIDENCE-01_REPORT.md`。
 
+## Family C(Future Story)Production — 2026-09-16新設(FAMILY-C-SEGMENT-COMMENT-PRODUCTION-WIRING-AND-USER-TEST-INVENTORY-01委任A)
+
+ユーザー正式決定(2026-09-16、Trial-11/12の3 episode[Memory B1/Digital
+Twins A2/Digital Twins B1]試聴OK)により、Family C(Future Story)で
+Trial検証していた以下2仕様を`APPROVED_FOR_PRODUCTION`とし、Family C正式
+Production経路へ配線した(Family A/Bへは横展開しない)。
+
+**対象要素**: Family C(`er013_family_c_future_*`/`er013_family_c_episode_*`
+系列)のStory本文TTS分割(segmentation)、およびA2 Comment 1〜3の生成
+Prompt/Contract。
+
+**仕様A: Story TTS segmentation原則**(承認原則、運用目安であり
+hard capではない): 同一Voiceの自然な連続性を優先する/不要な短segmentを
+避ける/Voice変更点では分割する/Comment挿入位置・scene・semantic
+boundaryを考慮する/word countだけで機械的に細分化しない/概ね100語以内を
+運用目安とし120語を大きく超えない/150〜200語級の長segmentは避ける/
+Voice境界による不可避な短segmentは許容する。語数目安
+(target_words=100/soft_max_words=120/hard_avoid_words=150)は生成を
+ブロックしない。soft_max超過はwarning記録のみ、hard_avoid超過は複数段落に
+またがる場合のみ最も近い段落境界へ自動分割し、単一段落で分割不能な場合は
+warning記録のみで生成は継続する。記事固有のVoice/scene boundary・
+Comment挿入位置は呼び出し側(記事ごとのProduction設定)が指定し、本原則が
+固定値で上書きすることはない。
+
+**仕様B: A2 Comment理解ガイド型Contract**(Family C A2限定、B1へは
+適用しない): 「聞いてみましょう」「耳を澄ませましょう」等の聞く行為
+だけを促すメタナレーションではなく、次の英語理解に必要な具体的context
+(現在の場所・状況/人物関係/場面転換/次の英文理解に重要な行動/選択・
+対立点)を、必要なものだけ簡潔な日本語(2〜3文・80〜110字程度)で提供する。
+禁止・回避: 「聞いてみましょう」「耳を傾けて」「耳を澄ませて」
+「注目してみましょう」「これからどうなるでしょう」等の言い回し、雰囲気
+だけの抽象的誘導、無内容な予告、結末の先出し、StoryにないFact追加、
+不要な長文化。B1 Commentは本Contractを一切参照せず、既存B1 Support経路
+(`er003_v1_b1_scaffold_01_generate`、「B1 Support(Preview / Comment
+1-4)」節)をそのまま使用する(誤適用防止をコード構造で担保)。
+
+**Production経路**:
+- 共通module: `er013_family_c_production_01.py`
+  - `plan_story_segments()`(仕様Aの正式実装、`build_flat_voice_chunks()`/
+    `classify_quote_voice_window()`/`split_paragraph_by_quotes()`と組み
+    合わせて使用)
+  - `FAMILY_C_A2_COMMENT_ROLE_JA_1/2/3`・`check_a2_comment_quality()`・
+    `generate_family_c_a2_comment()`(仕様Bの正式実装。初回生成・retry・
+    regeneration・fallbackのいずれも本関数を経由し、禁止語句検出時は
+    同一Contractで内部的に再生成する)
+  - `guard_a2_only()`(B1誤適用防止の構造的ガード)
+  - Trial script(`er013_family_c_episode_trial_1[012]_*.py`)を一切
+    import・参照しない
+- runner: `er013_family_c_production_runner_01.py`(A2/B1を`--level`で
+  分岐、記事設定は`er013_output/family_c_production/<article>/
+  article_config.json`から読み込み、記事固有のVoice keyword・scene
+  boundary・Comment content facts等を固定値で上書きしない)
+- test: `er013_family_c_production_test_01.py`
+
+**Status**: `PRODUCTION_WIRED`(Gate 3完了判定、根拠:
+`docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`、`DECISION_LOG.md`
+`FAMILY-C-SEGMENT-COMMENT-PRODUCTION-WIRING-AND-USER-TEST-INVENTORY-01`
+エントリ)。runtime evidence(¥0のsegmentation plan 6記事+A2 Comment
+実LLM呼び出し1記事分)・Regression 306件PASS(新規22件含む)・Dangling
+Reference Check・Trial script非依存・Trial-10/11/12成果物無変更を確認
+済み。Twins A2「The door opened.」(3語segment、Voice境界+scene
+boundary保持のための意図的単独segment)は2026-09-16ユーザー正式決定に
+より現状維持で採用(追加再TTS・Comment位置変更なし)。
+
+日付: 2026-09-16。
+
 ## Cross-level仕様(A2/B1/B2共通)
 
 以下はA2の検証で発見・試作したが、**特定レベル固有ではなく番組全体

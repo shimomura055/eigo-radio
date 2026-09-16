@@ -1,0 +1,120 @@
+{
+  "policy": "Family C Story TTS segmentation原則(APPROVED_FOR_PRODUCTION、2026-09-16)。同一Voice連続を優先して統合し、Voice変化点・呼び出し側指定のforce_split_before_paragraphs(Comment挿入位置・scene boundary)でのみ分割する。概ね100語以内を運用目安とし、120語を大きく超えない。150語超過は自動分割を試み、単一段落で分割不能な場合のみwarningとして記録する(生成をブロックしない)。",
+  "segment_count": 10,
+  "min_word_count": 2,
+  "max_word_count": 89,
+  "warning_count": 0,
+  "reconstruction_matches_original": true,
+  "segments": [
+    {
+      "id": "story_001",
+      "voice": "narrator",
+      "paragraph_range": [
+        0,
+        2
+      ],
+      "word_count": 45,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_002",
+      "voice": "device",
+      "paragraph_range": [
+        2,
+        2
+      ],
+      "word_count": 2,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_003",
+      "voice": "narrator",
+      "paragraph_range": [
+        3,
+        3
+      ],
+      "word_count": 6,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_004",
+      "voice": "device",
+      "paragraph_range": [
+        4,
+        4
+      ],
+      "word_count": 3,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_005",
+      "voice": "narrator",
+      "paragraph_range": [
+        4,
+        8
+      ],
+      "word_count": 89,
+      "split_reason": "comment_or_scene_boundary(呼び出し側指定のforce_split_before_paragraphs)",
+      "warnings": []
+    },
+    {
+      "id": "story_006",
+      "voice": "narrator",
+      "paragraph_range": [
+        9,
+        13
+      ],
+      "word_count": 39,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_007",
+      "voice": "brother",
+      "paragraph_range": [
+        14,
+        14
+      ],
+      "word_count": 9,
+      "split_reason": "voice_boundary(分割不可避)",
+      "warnings": []
+    },
+    {
+      "id": "story_008",
+      "voice": "narrator",
+      "paragraph_range": [
+        14,
+        19
+      ],
+      "word_count": 69,
+      "split_reason": "comment_or_scene_boundary(呼び出し側指定のforce_split_before_paragraphs)",
+      "warnings": []
+    },
+    {
+      "id": "story_009",
+      "voice": "narrator",
+      "paragraph_range": [
+        20,
+        23
+      ],
+      "word_count": 53,
+      "split_reason": "comment_or_scene_boundary(呼び出し側指定のforce_split_before_paragraphs)",
+      "warnings": []
+    },
+    {
+      "id": "story_010",
+      "voice": "narrator",
+      "paragraph_range": [
+        24,
+        28
+      ],
+      "word_count": 69,
+      "split_reason": "article_end(直前の分割点から続く同一Voice区間)",
+      "warnings": []
+    }
+  ]
+}
