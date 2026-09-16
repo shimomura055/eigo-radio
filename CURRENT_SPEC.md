@@ -1011,18 +1011,58 @@ Comment挿入位置は呼び出し側(記事ごとのProduction設定)が指定�
 - runner: `er013_family_c_production_runner_01.py`(A2/B1を`--level`で
   分岐、記事設定は`er013_output/family_c_production/<article>/
   article_config.json`から読み込み、記事固有のVoice keyword・scene
-  boundary・Comment content facts等を固定値で上書きしない)
+  boundary・Comment content facts等を固定値で上書きしない)。
+  `--plan-only`/`--comments-only --no-tts`に加え、フラグ無し呼び出しで
+  全体生成経路(Story TTS→ASR整合→Comment→Assembly→Audio Validation
+  Gate→player→web_delivery)を実行する。Story TTSは`tts_call_for_voice()`
+  経由で既存Production関数(narrator=`generate_narration_snippet_
+  verified_strict`、device=`generate_charon_english`、その他は
+  article_config `voice_tts_names`で指定したvoice_nameで
+  `generate_voice_body_wide_margin`)へ分岐し、いずれも内部にASR検証+
+  attempt cascadeを内包する。resumeは`.ok`+`tts_text`のsha256一致判定
+  (`resumable_reuse()`)、regenerationは`--only-segments <id>...`が
+  該当segmentのwav/.ok/metaのみ削除して強制再生成する
+  (`purge_segment_outputs()`)。ASRキャッシュは音声sha256一致時のみ再利用
+  (`get_or_run_asr()`、名前のみキャッシュ不使用)。B1経路はA2 Comment
+  理解ガイド型Contract(`fam_c.generate_family_c_a2_comment`)を構造的に
+  一切呼ばない(`run_comments_stage_a2`はlevel=="a2"分岐からのみ呼ばれる、
+  Grep実測で確認)。Key Phrase選定等のcontent curationおよび
+  reuse_from/共有Production資産のいずれにも存在しないasset素材の
+  from-scratch生成は本Wiring委任のスコープ外(明示的エラーで停止する
+  設計、静かに諦めない)。
 - test: `er013_family_c_production_test_01.py`
 
-**Status**: `PRODUCTION_WIRED`(Gate 3完了判定、根拠:
-`docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`、`DECISION_LOG.md`
-`FAMILY-C-SEGMENT-COMMENT-PRODUCTION-WIRING-AND-USER-TEST-INVENTORY-01`
-エントリ)。runtime evidence(¥0のsegmentation plan 6記事+A2 Comment
-実LLM呼び出し1記事分)・Regression 306件PASS(新規22件含む)・Dangling
-Reference Check・Trial script非依存・Trial-10/11/12成果物無変更を確認
-済み。Twins A2「The door opened.」(3語segment、Voice境界+scene
-boundary保持のための意図的単独segment)は2026-09-16ユーザー正式決定に
-より現状維持で採用(追加再TTS・Comment位置変更なし)。
+**Status**: `APPROVED_FOR_PRODUCTION / WIRING_INCOMPLETE`(2026-09-16、
+差し戻し1回目時点。根拠: `docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`
+「## 差し戻し1回目」節、`DECISION_LOG.md` `FAMILY-C-SEGMENT-COMMENT-
+PRODUCTION-WIRING-AND-USER-TEST-INVENTORY-01`エントリ)。**経緯**: 初回
+委任(commit `a04c9221`/`0156ceea`)時点のrunnerは`--plan-only`/
+`--comments-only --no-tts`のみを実装しており、Story TTS本体(初回生成/
+retry/fallback/regeneration/resume)がProduction経路に存在しなかった
+ため、Fable受入照合により`PRODUCTION_WIRED`判定を一旦`APPROVED_FOR_
+PRODUCTION / WIRING_INCOMPLETE`へ差し戻した。差し戻し1回目で全体生成
+経路(上記runner欄)を実装し、Memory A2でresume全体生成(TTS全segment
+skip、ASRキャッシュ全件hit、Gate PASS、生成episode wavがTrial-11承認
+済みepisode wavとsha256完全一致[316.569秒]、費用¥0)のruntime evidence
+を取得した。B1経路がA2 Contractを呼ばないことはGrepで構造確認済み。
+**不足**: `--only-segments story_002`によるregeneration(実TTS発火)の
+live runtime evidenceは本セッション内で未取得。2回試行したが、いずれも
+既存Production TTS関数(`generate_charon_english`、Gemini Batch API
+経由)への実呼び出し自体は発生した(CPU使用時間の推移から確認、ネット
+ワークI/O待ちで停止していたわけではない)ものの、Batch APIの応答が
+90分・15分(2回目)を経過しても完了せず、費用記録(`raw_usage_log.jsonl`)
+も一切生成されなかったため、安全側に倒しプロセスを終了した。regeneration
+の**コード実装**(`purge_segment_outputs()`が対象segmentのwav/.ok/meta
+のみ削除して強制再生成をtriggerすること、`tts_call_for_voice()`が
+voice種別ごとに正しい既存Production関数へ分岐すること)は決定的単体
+テスト(モック使用)でPASS済みだが、実際にstory_002.wavが再生成され
+Gateが再PASSする一連の**live**証跡は未取得(Batch TTS APIの当日の
+レイテンシという既存インフラ側の外部要因、本委任のコード欠陥ではない)。
+詳細な数値・テスト結果・完了判定12項目チェック表は
+`docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`「## 差し戻し1回目」節参照。
+Twins A2「The door opened.」(3語segment、Voice境界+scene boundary保持
+のための意図的単独segment)は2026-09-16ユーザー正式決定により現状維持で
+採用(追加再TTS・Comment位置変更なし)。
 
 日付: 2026-09-16。
 
