@@ -19,8 +19,9 @@
 
 6. PM Closeout: Priority1=USER_LISTENING_PENDING。Priority2=未着手(USER_LISTENING対象外)。未処理USER_DECISION_REQUIRED=なし。Production変更なし(`git status --porcelain er012_b_family_*.py er003_*.py er012_b_family_editorial_type_registry_01.py`は空、確認済み)。新規Open Item起票なし(OPEN-151行へ追記のみ、Open Item候補はDECISION_LOG本エントリに1行記録)。不要な追加調査(broad audit・新規Theme探索・Validator新設等)は実施していない。
 
-7. Git: commit hashは本コミット後に追記(下記参照)。push: `origin/main`へ実施予定。Web到達確認: push後に実施(結果は本ファイル末尾または次回報告で追記)。事前指定外Read: (a) `er012_editorial_b_voices_a2_trial02_writer.py`(A2翻案Writerのorchestrationパターン確認のため、事前指定の`er012_b_family_voices_a2_production_01.py`だけでは3V用prompt構築の実装方針が確定できず、既存Trial実装パターンの参照が必要だった)。(b) `er003_v1_n3_01_tts_generate.py`内`generate_a2_segments`(標準A2のHeading/Hook/Closing生成パターン確認、A2用A2slowdown適用範囲を確定するため)。(c) `er014_output/four_type_observation_01/trend/run_trend_audio_completion.py`(Web配信用mp3変換パターンの確認、player.htmlをraw.githack経由で試聴可能にする実装方式を確定するため)。(d) `er012_b_family_editorial_type_registry_01.py`のCOMMENT_ROLES本文(Voice数非依存へ一般化済みか確認するため)。
+7. Git: commit `fa09934c`(Priority 1、94 files changed、wav除外・mp3 32件含む)。push: `origin/main`成功(`27aa6c80..fa09934c`)。Web到達確認: 下記参照(両方200)。事前指定外Read: (a) `er012_editorial_b_voices_a2_trial02_writer.py`(A2翻案Writerのorchestrationパターン確認のため、事前指定の`er012_b_family_voices_a2_production_01.py`だけでは3V用prompt構築の実装方針が確定できず、既存Trial実装パターンの参照が必要だった)。(b) `er003_v1_n3_01_tts_generate.py`内`generate_a2_segments`(標準A2のHeading/Hook/Closing生成パターン確認、A2用A2slowdown適用範囲を確定するため)。(c) `er014_output/four_type_observation_01/trend/run_trend_audio_completion.py`(Web配信用mp3変換パターンの確認、player.htmlをraw.githack経由で試聴可能にする実装方式を確定するため)。(d) `er012_b_family_editorial_type_registry_01.py`のCOMMENT_ROLES本文(Voice数非依存へ一般化済みか確認するため)。
 
-## Web到達確認(push後追記)
+## Web到達確認(push後)
 
-(commit・push後にraw.githack到達確認を実施し、この節を更新する)
+- `https://raw.githack.com/shimomura055/eigo-radio/main/er012_output/user_test_voices_a2_minimal_01/ai_hiring_3v_a2/player.html` → 200
+- `https://raw.githack.com/shimomura055/eigo-radio/main/er012_output/user_test_voices_a2_minimal_01/ai_hiring_3v_a2/a2/web/episode.mp3` → 200(Content-Length=4891776 bytes)
