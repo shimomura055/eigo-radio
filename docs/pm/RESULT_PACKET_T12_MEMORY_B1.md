@@ -44,7 +44,7 @@ Audio Validation Gate: PASS(level=`FAMILY_C_TRIAL_12_MEMORY_B1`)。
 duration: 331.793秒(旧Trial-10 343.248秒から11.455秒減、segment数減少[36→10]に伴う無音境界減少が主因)。
 player URL: `https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/memory_b1/player.html`
 direct audio URL: `https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/memory_b1/web/family_c_memory_trial_12_b1.mp3`
-Web到達確認: 下記6.参照。
+Web到達確認: player.html(raw.githack)HTTP 200(3回確認)、mp3(raw.githack)HTTP 200、mp3(raw.githubusercontent)HTTP 200。
 追加費用: ¥18.30(Story TTS10件+ASR診断1件、上限¥40以内)。Family C累計¥601.20+¥18.30=¥619.50。
 
 ## 6. PM
@@ -52,7 +52,7 @@ Status=USER_LISTENING_PENDING、VALIDATED候補。Production採用なし(`APPROV
 
 ## 7. 回帰・Git
 回帰: `er013_family_c_episode_trial_12_memory_b1_test_01.py`新規作成、18 tests PASS(`run_project_regression.py --pattern "er013_family_c_episode_trial_12*_test_*.py"`)。
-commit: (本ファイル記載後にcommit・push実施、後述のGitコマンド結果を参照)
+commit: `3b33f6f2`(push成功、`89bbffcb..3b33f6f2 main -> main`)。
 残差分要約: `er013_output/family_c_episode_trial_12/`新規、`er013_family_c_episode_trial_12_memory_b1_run.py`/`_test_01.py`新規、`DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/ACTIVE_TASK.md`更新。無関係な既存差分(`er006_output/`・`er011_output/`のM、他タスクの`docs/pm/ACTIVE_TASK_*.md`等)は未編集。
 
 ## 8. 事前指定外Read(理由付き)

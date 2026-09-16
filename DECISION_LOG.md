@@ -7812,7 +7812,7 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - Audio: 新Story segment10件TTS、初回全件OK(cascade再試行なし)。ASR 4者一致相当: 19行中16行完全一致、3行はASR表記揺れのみ(story_001/006: Lena→Linaホモフォン、句読点["—"↔":"/"."]差、"memory-storage"↔"memory storage"のハイフン差、意味差なし)。Audio Validation Gate PASS(level=`FAMILY_C_TRIAL_12_MEMORY_B1`)。duration=331.793秒(旧Trial-10 343.248秒から11.455秒減、segment数減少[36→10]に伴う無音境界減少が主因)。費用¥18.30(Story TTS10件[一部cascade内retry含む、tts_call_count=20]+ASR診断1件、上限¥40以内)。Family C累計¥601.20+¥18.30=¥619.50。
 - 修正: 実装時にnarrator segmentが複数段落を跨ぐ際、段落境界の空白が失われ"robot.Lena"のような結合文になるバグを発見・修正(段落境界に半角スペース1個を補う)。修正前の1回のみ実行で発覚(story_003がASR不一致でSTOPPED)、修正後に全10 story segmentを再生成(このバグ修正に伴う再生成であり、理由なき再生成ではない)。
 - Status: Memory B1=VALIDATED候補/USER_LISTENING_PENDING。
-- 参照: `docs/pm/RESULT_PACKET_T12_MEMORY_B1.md`、commit (本エントリ登録時点で未commit、次コミットハッシュを参照)
+- 参照: `docs/pm/RESULT_PACKET_T12_MEMORY_B1.md`、commit `3b33f6f2`
 
 ## 参照元
 
