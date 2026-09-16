@@ -94,7 +94,7 @@ Trial-onlyのみに仕様が存在する状態・retryのみ新仕様参照・va
 - 費用(LLM実費): ¥9.00(Memory A2 Comment 1〜3、各1回、上限¥10/タスク上限¥25以内)。segmentation runtime evidenceは¥0(`--plan-only`、TTS/LLM呼び出しなし)。
 - Trial-10/11/12成果物無変更: `git status --porcelain er013_output/family_c_episode_trial_10/ er013_output/family_c_episode_trial_11/ er013_output/family_c_episode_trial_12/` = 空(出力なし)。
 - 回帰結果: 306 tests OK(新規`er013_family_c_production_test_01.py` 22件含む16ファイル)。
-- commit hash: `<COMMIT_HASH_PLACEHOLDER>`(このメッセージ確定後にcommitし、下記「commit実行結果」に反映)。push: origin/main。
+- commit hash: `a04c9221`。push: origin/main。
 - 残差分要約: Home Robots(A2/B1)は既存承認済み音声を再生成せず、新原則適用時の「参考計画」としてのみ提示(旧segmentationとは一致しない、理由は2節記載)。これは委任文が明示的に許容する範囲(「Home robotsはTrial-10方式のまま承認済みのため『新原則を適用した場合の計画』として提示のみ」)。
 
 ## 8. STOP該当有無・事前指定外Read

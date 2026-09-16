@@ -7835,7 +7835,7 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - Dangling Reference Check: `plan_story_segments`/`check_a2_comment_quality`/`generate_family_c_a2_comment`/`FAMILY_C_A2_COMMENT_ROLE_JA_*`の参照元はいずれも本委任で新設した3ファイル(module本体・runner・test)のみ(Grep実測)。CURRENT_SPEC新節→module/runner/test→OPEN-157/158→本エントリの相互参照は実在確認済み(詳細表は`docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`)。Trial-only定義への依存・retryのみ新仕様・validatorのみ新仕様前提・A2 Comment仕様のB1誤適用・OPEN-157/158のみに仕様存在、のいずれも該当なし。
 - SSOT: `CURRENT_SPEC.md`「Family C(Future Story)Production」節新設(Status`PRODUCTION_WIRED`)。`OPEN_ITEMS.md`: OPEN-147へ配線結果追記(採用判断待ちを解消)、OPEN-157/158を「Family C: PRODUCTION_WIRED(正式仕様、CURRENT_SPEC Family C節)/他Family: DEFERRED、次回Trial待ち」に区別更新(いずれもcloseしない)。
 - Gate判定: **`PRODUCTION_WIRED`**(Production正式初回path実装/retry・fallback・regeneration整合/Trial専用script依存なし/runtime evidenceあり/Regression 306件PASS/model・routing証跡あり/CURRENT_SPEC・DECISION_LOG・OPEN_ITEMS更新/Dangling Referenceなし/Git commit・push確認/ユーザー承認内容とProduction挙動一致、を全て充足)。
-- 参照: `docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`、commit `<PENDING>`
+- 参照: `docs/pm/RESULT_PACKET_WIRING_FAMILY_C.md`、commit `a04c9221`
 
 ## 参照元
 
