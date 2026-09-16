@@ -43,8 +43,12 @@
 
 ## 9. 回帰・commit・Web到達確認
 - 回帰: `run_project_regression.py --pattern "er013_family_c_episode_trial_12_twins*_test_*.py"` → 25 tests OK(A2 12件+B1 13件)。
-- commit: A2=`e275c43b`(push済み)。B1=下記コマンド実行後に追記。
-- Web到達確認(push後実施、結果は本ファイル更新または口頭報告で補足)。
+- commit: A2=`e275c43b`。B1=`e3443cda`(いずれもpush済み、`origin/main`反映確認)。
+- Web到達確認(raw.githack、User-Agent付きGET、1回目で全件成功): twins_a2 player.html=200、twins_b1 player.html=200、twins_a2 episode mp3=200、twins_b1 episode mp3=200。
+  - https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/twins_a2/player.html
+  - https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/twins_b1/player.html
+  - https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/twins_a2/web/family_c_twins_trial_12.mp3
+  - https://raw.githack.com/shimomura055/eigo-radio/main/er013_output/family_c_episode_trial_12/twins_b1/web/family_c_twins_trial_12_b1.mp3
 
 ## 10. 事前指定外Read
 - なし(事前指定Read/Grep一覧の範囲内で完結)。
