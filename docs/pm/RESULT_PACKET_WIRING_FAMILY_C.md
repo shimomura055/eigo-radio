@@ -198,3 +198,7 @@ TTS skip(resume)10/10、ASRキャッシュ10/10 hit(story segment分。Comment 3
 
 - STOP該当: 非該当(費用上限超過なし・新仕様決定不要・既存Production関数との衝突なし)。ただし、regeneration live evidence取得についてはBatch TTS APIの当日の応答遅延という外部要因により、安全側に倒し2回試行の時点で打ち切った(「STOP条件」に列挙された3類型のいずれにも該当しないため独自の運用判断として記録するが、Gate判定は`WIRING_INCOMPLETE`として不足を明示した)。
 - 事前指定外Read: `er013_family_c_episode_trial_12_twins_b1_run.py`の`SHARED_CHARON_NAV`/`B1_SHARED_SOURCE_DIR`定義(行82-96)および`er003_v1_n3_01_assemble.py`の`B1_SHARED_SOURCE_DIR`/`B1_SHARED_NAMES`(行38-52): 記事非依存の共有Production資産の実在確認のため、事前指定Grep一覧(retry|fallback等)に無い追加Read(理由: 委任文が「既存Production関数で生成」と指示する「非Story共通asset」の実体を正確に特定する必要があったため)。`er013_family_c_episode_trial_11_memory_run.py`の`player_display_audio_consistency.json`/`comment_consistency.json`書き込みロジック(行880-910相当): ASRキャッシュのasr_text実体がどのファイルに記録されているか特定するため追加Read(tts_generation_results.jsonのasr_textが多くの場合Noneであることの発見に必要)。
+
+### commit / push
+
+commit `34089364`(親`0156ceea`)。`git push origin main`成功(`0156ceea..34089364 main -> main`)。
