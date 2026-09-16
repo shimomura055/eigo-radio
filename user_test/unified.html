@@ -36,6 +36,23 @@ function sourceUrl(){return rootBase()+'/'+src.replace(/^\/+/, '');}
 function abs(u,base){try{const s=String(u||'');const m=s.match(/^https:\/\/raw\.githubusercontent\.com\/shimomura055\/eigo-radio\/main\/(.+)$/);if(m)return rootBase()+'/'+m[1];return new URL(s,base).href}catch(e){return u}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function clean(s){return String(s||'').replace(/\(TTS[^)]*\)/gi,'').replace(/\s+/g,' ').trim()}
+function displayText(s){
+ return String(s||'')
+  .replace(/\r/g,'')
+  .replace(/\(TTS読み上げ用:[^)]*\)/gi,'')
+  .replace(/\(人手供給[^)]*\)/gi,'')
+  .replace(/\(本継続run[^)]*\)/gi,'')
+  .replace(/※本継続run[^\n]*/gi,'')
+  .replace(/\s+$/gm,'')
+  .trim();
+}
+function displayLabel(s){
+ const x=clean(s);
+ let m=x.match(/^(Comment\s*\d+)/i); if(m)return m[1];
+ m=x.match(/^(In One Line)/i); if(m)return 'In One Line';
+ if(/^(Full Story Part|Hook Part|Voice .* body|Narrator:|Closing|Tension|story[_ -]?\d+)/i.test(x))return '';
+ return x.replace(/\s*\([^)]*(?:Aoede|Charon|Algieba|Erinome|voice|Narrator|Japanese|English|A2|B1|no heading)[^)]*\)\s*$/i,'');
+}
 function jump(sec){const a=document.getElementById('episode');a.currentTime=Number(sec);a.play()}
 function seekButton(sec){return sec==null?'':'<button class="seek" data-sec="'+esc(sec)+'">▶ ここから再生</button>'}
 function bind(){document.querySelectorAll('.seek[data-sec]').forEach(b=>b.onclick=()=>jump(b.dataset.sec))}
@@ -52,21 +69,21 @@ function chooseAudio(doc,table){
  const re=level.startsWith('A2')?/a2/i:/b1/i;return aud.find(a=>re.test(a.id||'')||re.test(a.getAttribute('src')||''))||aud[aud.length-1];
 }
 function rowData(table){
- return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:(td[2].innerText||td[2].textContent||'').trim(),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
+ return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:displayText(td[2].innerText||td[2].textContent||''),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
 }
 function isSfx(r){return /notification|\bintro\b.*sfx|music|jingle/i.test(r.label)||/効果音|ジングル|SFX/i.test(r.text)}
 function isKP(r){return /key[ _-]?phrase\s*\d|^kp\d|^key_phrase_\d/i.test(r.label)}
 function kpParts(t){
  let x=String(t||'').replace(/\r/g,'').replace(/^\s*\d+[.)]\s*/,'').trim();
- let m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語gloss(?:\(表示用\))?\s*:\s*([^\n]+)/i);
- if(m)return [clean(m[1]),clean(m[2])];
- m=x.match(/EN\s*:\s*([^\n]+)[\s\S]*?JA(?:\(表示\))?\s*:\s*([^\n]+)/i);
- if(m)return [clean(m[1]),clean(m[2])];
- m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語\s*:\s*([^\n]+)/i);
- if(m)return [clean(m[1]),clean(m[2])];
+ let m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語gloss(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ m=x.match(/EN\s*:\s*([^\n]+)[\s\S]*?JA(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
  let a=x.split(/\s*\/\s*/);
- if(a.length>=2)return [clean(a[0]),clean(a.slice(1).join(' / '))];
- return [clean(x),''];
+ if(a.length>=2)return [displayText(a[0]),displayText(a.slice(1).join(' / '))];
+ return [displayText(x),''];
 }
 function timelineRender(doc,base){
  const t=chooseTimeline(doc), rows=rowData(t), audio=chooseAudio(doc,t); if(!audio)throw new Error('完成episode音声を特定できませんでした。');
@@ -77,10 +94,10 @@ function timelineRender(doc,base){
  const fullIdx=rows.findIndex(r=>/full story intro|full script intro|story intro/i.test(r.label));
  const full=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r)&&!/preview|key phrases? intro|welcome|topic intro|japanese title/i.test(r.label));
  let out='';
- if(intro.length){out+=card('Intro',intro.map(r=>'<p class="'+(/japanese/i.test(r.label)?'jp':'script')+'">'+esc(r.text)+'</p>').join(''),intro[0]?.sec,'INTRO')}
- if(preview)out+=card('Preview','<p class="'+(/[ぁ-んァ-ヶ一-龠]/.test(preview.text)?'jp':'script')+'">'+esc(preview.text)+'</p>',preview.sec);
+ if(intro.length){out+=card('Intro',intro.map(r=>'<p class="'+(/japanese/i.test(r.label)?'jp':'script')+'">'+esc(displayText(r.text))+'</p>').join(''),intro[0]?.sec,'INTRO')}
+ if(preview)out+=card('Preview','<p class="'+(/[ぁ-んァ-ヶ一-龠]/.test(preview.text)?'jp':'script')+'">'+esc(displayText(preview.text))+'</p>',preview.sec);
  if(kps.length){const kphtml='<div class="kp">'+kps.map(r=>{const p=kpParts(r.text);return '<div class="kpitem"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>'}).join('')+'</div>';out+=card('Key Phrases',kphtml,kps[0]?.sec)}
- if(full.length){let body='';for(const r of full){const internal=/^story[_ -]?\d+$/i.test(r.label)||/^full story part \d+/i.test(r.label);const cls=/comment/i.test(r.label)&&/[ぁ-んァ-ヶ一-龠]/.test(r.text)?'jp':'script';if(!internal&&r.label)body+='<h3>'+esc(r.label)+'</h3>';body+='<p class="'+cls+'">'+esc(r.text)+'</p>'}out+=card('Full Script',body,full[0]?.sec)}
+ if(full.length){let body='';for(const r of full){const label=displayLabel(r.label);const cls=/comment/i.test(r.label)&&/[ぁ-んァ-ヶ一-龠]/.test(r.text)?'jp':'script';if(label)body+='<h3>'+esc(label)+'</h3>';body+='<p class="'+cls+'">'+esc(displayText(r.text))+'</p>'}out+=card('Full Script',body,full[0]?.sec)}
  return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
 }
 function simpleRender(doc,base){
