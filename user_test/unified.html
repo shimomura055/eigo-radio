@@ -33,7 +33,7 @@ document.getElementById('enTitle').textContent=en;
 document.title=(ja||en||'English Your Way')+'｜'+(level||'')+' User Test';
 function rootBase(){const p=location.pathname;const marker='/user_test/unified.html';return location.origin+p.slice(0,p.indexOf(marker));}
 function sourceUrl(){return rootBase()+'/'+src.replace(/^\/+/, '');}
-function abs(u,base){try{return new URL(u,base).href}catch(e){return u}}
+function abs(u,base){try{const s=String(u||'');const m=s.match(/^https:\/\/raw\.githubusercontent\.com\/shimomura055\/eigo-radio\/main\/(.+)$/);if(m)return rootBase()+'/'+m[1];return new URL(s,base).href}catch(e){return u}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function clean(s){return String(s||'').replace(/\(TTS[^)]*\)/gi,'').replace(/\s+/g,' ').trim()}
 function jump(sec){const a=document.getElementById('episode');a.currentTime=Number(sec);a.play()}
