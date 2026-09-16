@@ -116,6 +116,19 @@ Status・重要背景を省略せず再掲する(同12-4-1、2026-09-12新設)�
 基本方針にせず積極的に統合・検証する(同16節)。ChatGPTはユーザーの
 明示依頼がある場合のみClaude/Fable向け指示文を作成する(同17節)。
 
+## 実装方針の優先順位(2026-09-17更新、`PERSONALIZED-NEWS-A2-
+E2E-GAP-RESOLUTION-01`、ユーザー正式決定)
+
+Claude Codeの週間利用上限を理由とした「最小実装」「最小token」優先は
+不要になった。今後のProduction実装判断は、品質・Production整合性・
+Family横断の共通性(上記PM_GOVERNANCE.md 18節)・保守性・再利用性・
+regression安全性を優先する。ただし「制限がない」は無制限Trial可という
+意味ではなく、無意味な再実行・不要なAPI消費・目的のない試行錯誤は
+引き続き避ける。上記「Fableの読み方(コスト抑制)」節(SSOT全文を読まず
+Grepで必要箇所だけ読む、というFable自身のcontext/token効率化の習慣)は
+本方針変更と別軸であり、そのまま維持する(SSOT読み込み効率化と、
+Production実装の設計優先順位は別の話)。
+
 ## 委任文標準(D-2、2026-09-13ユーザー正式採用・PRODUCTION_WIRED)
 
 Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に

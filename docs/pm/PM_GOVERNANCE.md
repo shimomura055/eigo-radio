@@ -1900,6 +1900,38 @@ CONSOLIDATION-103`、ユーザー正式決定の要旨。原文は`DECISION_LOG.
   RECONCILIATION-PM-CRITERIA-CHATGPT-RULE`エントリの「ユーザー回答
   原文(verbatim)」項目9を参照。
 
+## 18. Family横断共通化原則(2026-09-17新設、
+`PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01`、ユーザー正式決定)
+
+仕様・Production設計を検討する際は、常に他Family(A/News・Discovery・
+Trend、B/Voices、C/Future Story、その他既存Production Family)を横断
+確認し、共通化できる部分は可能な限り共通仕様・共通Production primitive
+として設計する。特定Familyだけを見て最小実装をせず、Family固有である
+必要がない処理(例: Research/Verified Fact Ledger作成、Fact Checker/
+Ledger Deviation Checker、TTS/ASR安全機構、Audio Validation Gate、
+Human Review Lock)は、Family専用実装を増やすより既存共通primitiveの
+再利用・共通contract化を優先する。ただし既存Production挙動を壊すような
+過剰一般化はしない。共通化範囲は、実装前に既存仕様(`CURRENT_SPEC.md`)・
+runtime evidence・regression影響を確認したうえで決める。本原則は今後の
+すべての新規Family・新規Editorial Type・新規topic対応の設計判断に適用
+する(2026-09-17ユーザー正式決定、原文: 「今後、仕様・Production設計を
+考える際は常に、他Familyを横にらみし、共通化できる部分は可能な限り
+共通仕様・共通Production primitiveとして設計する」)。
+
+- 実例(2026-09-17時点、`PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01`
+  Phase A横断監査で確認): 通常News/Discovery/Trend(A-Family系列)は
+  いずれもResearch→Verified Fact Ledger(`er002_ja_web_research_r3.py`+
+  `er003_v1_en_direct_vfl_01_generate.py`)という同一Production primitive
+  を共有し、A2/B1は同一Ledgerから別Writer(`er003_v1_n3_01_articles_
+  generate.py::build_common_block()`+level別instruction)でそれぞれ
+  独立生成する。これはeigo-radio全体としての支配的な共通パターンであり、
+  「B1完成記事からA2へ翻案する」方式は、B-Family(Voices)Trial実装
+  (`run_writer_adapt()`)にのみ存在する例外的方式であって、eigo-radio
+  共通設計ではない。Family横断共通化原則に照らすと、新規Family・新規
+  topicのA2生成方式は、B1→A2翻案ではなく、既存共通パターン
+  (Ledger→A2 Writer直接生成)への統一を優先候補とする(詳細は
+  `docs/pm/RESULT_PACKET_PN_A2_GAP_PHASE_A.md`)。
+
 ## 変更履歴
 
 - 2026-09-05(PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01): 新設。PM Gate 1〜7・

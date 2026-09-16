@@ -424,6 +424,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-FINAL-AUDIO-BATCH-06(委任D): Discovery B1 full_story_part2を既存段落境界で2segment(2a/2b)に分割TTS(2aはPASSでdelete block解消、2bは「Japan–United」表記差のみでSTOP、¥13.55)+Discovery A2 full_story_part1個別retry(「silence」対「pause」の語置換のみでSTOP、point_twoはPart予算超過[¥21.01>=¥15]で未着手)、両方USER_DECISION_REQUIRED。
 - [本ファイル内] ## FAMILY-C-MEMORY-A2-SEGMENT-COMMENT-TRIAL-11: Family C「The future of memory」A2限定のsegmentation統合(旧14→新10 segment、避けられる短segment3件を隣接統合)+Comment 1〜3を英文理解ガイド型へ変更(禁止語句0件)+兄Voice(Erinome→Algieba、ピッチ推定根拠)のTrial版を新出力先に作成(旧Trial-10版は無変更保存)、Audio Validation PASS(duration316.569秒)、費用¥23.10、Status=VALIDATED候補/USER_LISTENING_PENDING(Production未採用)。
 - [本ファイル内] ## USER-TEST-VOICES-A2-MINIMAL-01: Voices 3V「AI hiring」既存B1→A2翻案Trial artifact完成(記事+音声+player、VALIDATED候補/USER_LISTENING_PENDING)、Voices 2V「Personalized news」A2はPriority 2未着手。
+- [本ファイル内] ## PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01: Family横断A2生成方式監査結果、B1→A2翻案は共通設計ではないと確認(現時点で不採用)、Family横断共通化原則(PM_GOVERNANCE 18節)新設、コスト制約(実装方針)変更(PM_BRIEF反映)
 
 ---
 
@@ -7859,6 +7860,62 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 実測cost(raw_usage_log.jsonl、Space Weapons theme計152件): 約¥182.35(openai ¥106.63/gemini ¥70.85/openai_asr ¥4.87、azure・perplexity計7件はpricing_snapshot.json未収載でunpriced=0円計上・過小評価あり)。累計¥900上限に対し十分な余裕。
 - Status: Space Weapons A2=`USER_TEST_READY候補`(Gate PASSだが4本完成が受入条件のため単独ではUSER_TEST_READY未確定)。Space Weapons B1=`USER_DECISION_REQUIRED`(新規Human Review Lock 2件)。AI Control(Theme 2)=`未着手`。固有名詞・人名発音基盤=`DEFERRED`(OPEN-159)。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_2EP_RESUME.md`、`docs/pm/delegation_log/USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-02.md`、commit `a1f9f975`。
+
+## PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01(Phase A: Family横断A2生成方式監査+E2E設計案+ユーザー正式判断3点のSSOT記録)
+
+- 日付: 2026-09-17
+- 種別: サービス・生成仕様に関わる設計判断+PM運用原則。前段
+  `PERSONALIZED-NEWS-A2-E2E-PREFLIGHT-01`(`docs/pm/RESULT_PACKET_PN_A2_
+  PREFLIGHT.md`)で判明したB-Family(Voices)A2新規topic正式Writer入口
+  不在(`USER_DECISION_REQUIRED`)を受け、Family横断でA2生成方式を
+  read-only監査し、共通化可能な正式パターンを確認したうえでの
+  ユーザー正式決定3点を記録する。
+- **ユーザー決定(1) B1→A2翻案方式を現時点で採用しない**: 「B1完成記事→
+  A2翻案入口を正式配線」という前回提案は、実装量が少ないという理由
+  だけでは採用しない。他Family横断確認の結果、通常News/Discovery/
+  Trend(A-Family系列、`er014_output/four_type_observation_01/news`
+  `/discovery`/`/trend`の`run_*_a2.py`、`er014_output/user_test_news_
+  2ep_01/space_weapons/run_pipeline.py`)はいずれもResearch→Verified
+  Fact Ledger(`er002_ja_web_research_r3.py`+`er003_v1_en_direct_vfl_
+  01_generate.py`)を共有し、A2/B1は同一Ledgerから別Writer
+  (`er003_v1_n3_01_articles_generate.py::build_common_block()`+
+  level別instruction)でそれぞれ独立生成する共通パターンであることを
+  確認した(CURRENT_SPEC.md「B1」節603行「A2とB1は同一のVerified
+  Fact Ledgerを共有するが、別Writerでそれぞれ独立生成する」)。Family
+  C(Future Story、`er013_family_c_production_runner_01.py`)もA2/B1
+  それぞれ独立の`article_path`を持ち、B1→A2翻案ではない(ただし
+  Family CはFictionのためResearch/Ledger自体を使わない構造的特殊例)。
+  「A2=B1翻案」はB-Family(Voices)のTrialスクリプト
+  (`er012_b_family_voices_a2_production_01.py::run_writer_adapt()`、
+  Production runner未呼出)にのみ存在する例外的方式であり、eigo-radio
+  共通設計ではないと確認した。Personalized News(B-Family)のA2生成
+  方式は、この横断監査結果を踏まえた設計案として別途
+  `docs/pm/RESULT_PACKET_PN_A2_GAP_PHASE_A.md`で提示し、方式選択は
+  ユーザー承認を経て決定する(本エントリでは方式そのものを確定しない)。
+- **ユーザー決定(2) Family横断共通化原則の新設**: 今後、仕様・
+  Production設計を検討する際は常に他Family(A/B/C、その他既存
+  Production Family)を横断確認し、共通化できる部分は可能な限り共通
+  仕様・共通Production primitiveとして設計する(特定Familyだけを見た
+  最小実装を優先しない)。ただし既存Production挙動を壊す過剰一般化は
+  しない。詳細は`docs/pm/PM_GOVERNANCE.md`18節「Family横断共通化
+  原則」(新設)へ正式記録した。
+- **ユーザー決定(3) コスト制約(実装方針)の変更**: Claude Code週間
+  利用上限を理由とした「最小実装」「最小token」優先は不要になった。
+  今後は品質・Production整合・Family横断の共通性・保守性・再利用性・
+  regression安全性を優先する(無意味な再実行・不要なAPI消費は引き
+  続き避ける)。詳細は`docs/pm/PM_BRIEF.md`「実装方針の優先順位」節
+  (新設)へ正式記録した。
+- 状態: `DECIDED`(ユーザー決定1〜3、いずれもPM運用原則・設計方針の
+  確定)。A2 E2E Production設計自体は`USER_DECISION_REQUIRED`
+  (Personalized Newsを含む新規topic A2生成の具体的な実装方式は
+  Fable/ユーザーの選択待ち、詳細は`docs/pm/RESULT_PACKET_PN_A2_GAP_
+  PHASE_A.md`参照)。
+- Production/Promptコード変更: なし(本タスクは横断監査+設計提案+
+  SSOT原則記録のみ、`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/er0*.py無変更)。
+- 参照: `docs/pm/RESULT_PACKET_PN_A2_GAP_PHASE_A.md`、
+  `docs/pm/RESULT_PACKET_PN_A2_PREFLIGHT.md`、
+  `docs/pm/delegation_log/PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01.md`、
+  `docs/pm/delegation_log/PERSONALIZED-NEWS-A2-E2E-PREFLIGHT-01.md`。
 
 ## 参照元
 
