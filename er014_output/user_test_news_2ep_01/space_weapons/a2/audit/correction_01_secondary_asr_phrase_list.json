@@ -1,0 +1,89 @@
+{
+  "task_id": "USER-TEST-NEWS-2EP-COMPLETION-01-CORRECTION-01",
+  "purpose": "既存Production仕様(Pronunciation Ledger -> Azure Secondary ASR + Phrase List)の是正確認。TTS再生成なし。",
+  "wav_path": "er014_output/user_test_news_2ep_01/space_weapons/a2/narration/full_story_part1.wav",
+  "wav_sha256": "5f5632e633009efb627d20747e11235be66d5a4fec1c265bb8b4fd17090de07c",
+  "wav_source_attempt": "full_story_part1_attempt3_minimalfallback.json (=現行final wavとsha256一致、fallback[minimal instruction]route)",
+  "note_discrepancy": "事前調査で対象とされたfull_story_part1_attempt2_custom35d6860b.json(standard route、'Troy Mink')は、現行final wav(full_story_part1.wav)のsha256とは一致しない。現行final wavは fallback(minimal instruction) attempt3('Troy Mike')である。本検証は review_lock_state.json の wav_path と一致する現行final wavに対して実施した。",
+  "canonical_text_raw": "The most important question in the new space-security story is not simply whether satellites can be attacked.\n\nIt is this:\n\nIs the weapon itself in orbit?\n\nOn September 14, 2026, U.S. Air Force Secretary Troy Meink said that the United States was deploying space-control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions.\n\nAn official U.S. Space Force article published the next day described this as the first public acknowledgment that the Space Force had put weapons in orbit.",
+  "canonical_text_for_compare_tts_safe_news_en": "The most important question in the new space-security story is not simply whether satellites can be attacked. It is this: Is the weapon itself in orbit? On September 14, 2026, U.S. Air Force Secretary Troy Meink said that the United States was deploying space-control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions. An official U.S. Space Force article published the next day described this as the first public acknowledgment that the Space Force had put weapons in orbit.",
+  "primary_1_asr_text_reused_no_new_call": "The most important question in the new space security story is not simply whether satellites can be attacked—it is this: Is the weapon itself in orbit? On September 14, 2026, U.S. Air Force Secretary Troy Mike said that the United States was deploying space control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions. An official U.S. Space Force article published the next day described this as the first public acknowledgment that the Space Force had put weapons in orbit.",
+  "ledger_get_hint_for_text_min_confidence_low": [],
+  "ledger_get_hint_for_text_min_confidence_medium": [],
+  "ledger_get_hint_for_text_returned_meink": false,
+  "manual_ledger_phrases_passed_to_cascade": [
+    "Meink"
+  ],
+  "cascade_result": {
+    "verified": false,
+    "stop_retrying": true,
+    "final_status": "ASR_VALIDATION_UNCERTAIN",
+    "cascade_invoked": true,
+    "human_review_required": true,
+    "cost_guard_triggered": false,
+    "classification_reason": "固有名詞らしき語にのみ音訳差がある(retryでは解決しない可能性が高い): [{'type': 'replace', 'canonical': 'meink', 'asr': 'mike', 'entity_like': True, 'homophone_candidate': False}]",
+    "steps": [
+      {
+        "step": "primary_1",
+        "provider": "openai_asr",
+        "text": "The most important question in the new space security story is not simply whether satellites can be attacked—it is this: Is the weapon itself in orbit? On September 14, 2026, U.S. Air Force Secretary Troy Mike said that the United States was deploying space control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions. An official U.S. Space Force article published the next day described this as the first public acknowledgment that the Space Force had put weapons in orbit.",
+        "classification": "ASR_VALIDATION_UNCERTAIN"
+      },
+      {
+        "step": "primary_2",
+        "provider": "openai_asr",
+        "text": "The most important question in the new space security story is not simply whether satellites can be attacked; it is this: is the weapon itself in orbit? On September 14th, 2026, U.S. Air Force Secretary Troy Mike said that the United States was deploying space control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions. An official U.S. Space Force article published the next day described this as the first public acknowledgement that the Space Force had put weapons in orbit.",
+        "classification": "ASR_VALIDATION_UNCERTAIN"
+      },
+      {
+        "step": "secondary_1",
+        "provider": "azure",
+        "text": "The most important question in the new space security story is not simply whether satellites can be attacked. It is this is the weapon itself in orbit. On September 14th, 2026, US Air Force Secretary Troy Mike said that the United States was deploying space control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions.An official US Space Force article published the next day described this as the first public acknowledgment.That the Space Force had put weapons in orbit.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "phrase_list_used": true
+      },
+      {
+        "step": "secondary_2",
+        "provider": "azure",
+        "text": "The most important question in the new space security story is not simply whether satellites can be attacked. It is this is the weapon itself in orbit. On September 14th, 2026, US Air Force Secretary Troy Mike said that the United States was deploying space control weapons in orbit. He said they were meant to protect U.S. forces from hostile actions.An official US Space Force article published the next day described this as the first public acknowledgment.That the Space Force had put weapons in orbit.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "phrase_list_used": true
+      }
+    ]
+  },
+  "pronunciation_lookups": {
+    "meink": {
+      "surface": "meink",
+      "entity_type": "cascade_unresolved_entity",
+      "source_context": "",
+      "canonical_spelling": "Meink",
+      "language_origin": "likely Germanic surname; exact origin not confirmed",
+      "expected_pronunciation_ipa": "/ˈmeɪŋk/",
+      "pronunciation_hint": "MAY-ngk",
+      "alternate_pronunciations": [
+        "/ˈmɪŋk/ (possible surname-pattern reading; not directly verified)"
+      ],
+      "confidence": "low",
+      "ambiguity_note": "本人の音声確認は見つからず、テキストの検索結果と一般的な英語表記パターンに基づく。検索では Troy Meink（米空軍長官）の記事・インタビューが見つかったが、発音そのものを示す本人音声は確認できなかった。一次情報源は音声ではなくテキスト中心、二次情報源として発音サイトに /mˈeɪ.ŋk/ が掲載されている。",
+      "sources": [
+        "https://www.howtopronounce.com/meink",
+        "https://en.wiktionary.org/wiki/mienk",
+        "https://www.wordreference.com/ennl/mink",
+        "https://www.airandspaceforces.com/interview-meink-cites-progress-after-first-year-as-secaf/",
+        "https://www.complex.com/music/a/milly-mcmahon/miink-interview",
+        "https://theaviationist.com/2026/08/08/exclusive-interview-secretary-us-air-force/",
+        "https://www.politico.com/news/2025/04/25/musk-meink-ethics-concerns-00309302",
+        "https://podcasts.apple.com/mx/podcast/frank-meeink-reformed-neo-nazi/id1513477929?i=1000660381789",
+        "https://wissenschaftspodcasts.de/podcasts/i-am-scientist/alexander-meinke-doomsday-alex_8532509/",
+        "https://www.airandspaceforces.com/article/meet-troy-meink/",
+        "https://www.bbc.com/audio/play/p0p9n98m",
+        "https://www.airandspaceforces.com/article/meink-reflects-on-first-year-as-secaf/",
+        "https://podcasts.apple.com/us/podcast/dungeon-of-doom-a-detroit-lions-podcast-from-mlive/id1594683060?l=es-MX",
+        "https://www.turi2.de/aktuell/hoer-tipp-waz-podcast-erzaehlt-die-thyssenkrupp-story/",
+        "https://www.pronouncenames.com/requestedlist.php?alpha=m&page_selected=136"
+      ],
+      "updated_at": "2026-09-16T19:54:48"
+    }
+  },
+  "elapsed_seconds": 35.23
+}
