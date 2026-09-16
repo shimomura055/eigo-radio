@@ -88,7 +88,7 @@ function kpParts(t){
  return [displayText(x),''];
 }
 function isVoicesB1(){
- return level.startsWith('B1') && /editorial_b_family_production_phase1_02|four_type_observation_01\/voices\/audio\/b1_2v_v2/.test(src||'');
+ return level.startsWith('B1') && /editorial_b_family_production_phase1_02|four_type_observation_01\/voices\/audio\/b1_2v_v2|editorial_b_voices_3v_audio_trial_01/.test(src||'');
 }
 function renderVoicesFull(rows){
  const fullIdx=rows.findIndex(r=>/full story intro/i.test(r.label));
@@ -108,11 +108,11 @@ function renderVoicesFull(rows){
    }
    if(/^Hook Part/i.test(r.label)){questionParts.push(r);continue}
    flushQuestion();
-   if(/^Narrator:\s*One Voice/i.test(r.label)||/^Narrator:\s*Another Voice/i.test(r.label)){
+   if(/^Narrator:\s*(?:One Voice|Another Voice|Voice \d+|A Third Voice)/i.test(r.label)){
      body+='<h3>'+esc(displayText(r.text))+'</h3>';
      continue;
    }
-   if(/^Voice [AB] body/i.test(r.label)){
+   if(/^Voice (?:[AB]|\d+) body/i.test(r.label)){
      body+='<p class="script">'+esc(displayText(r.text))+'</p>';
      continue;
    }
