@@ -7799,6 +7799,20 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - 恒久課題候補(defer、起票せず記録のみ): (1)TTS segment最小/最大長の正式Production閾値、(2)同一Voice連結ルールの一般化(今回はMemory A2個別対応)、(3)Dialogue segmentation(narrator lead-in/trailing統合)の一般化、(4)Family C全体のComment Promptの正式仕様化(理解ガイド型への統一)。ユーザー試聴後に判断。
 - 副次修正(Production非該当、スコープ内): `er005_cost_logger.install()`初期化呼び出しの欠落(Trial-10 memory A2スクリプトには元々無く、Azure二次ASR cascadeへ到達する稀なケースでのみ顕在化する潜在gapだったため、Trial-11新スクリプト内でのみ、既存B1スクリプト[`er013_family_c_episode_trial_10_memory_b1_run.py`]と同一パターンで追加。er005/er006モジュール自体は無変更)。
 - 参照: `docs/pm/RESULT_PACKET.md`、commit (本エントリ登録時点で未commit、次コミットハッシュを参照)
+- 2026-09-16追記: ユーザー試聴OK(「問題なし」)→Trial成果物としてVALIDATEDと記録。新仕様(Segmentation/Comment)全体のProduction採用は未確定のまま(残りFamily C対象[Memory B1/Digital Twins A2/Digital Twins B1]のユーザー試聴OKが条件、詳細は`FAMILY-C-SEGMENT-COMMENT-TRIAL-12`参照)。
+
+## FAMILY-C-SEGMENT-COMMENT-TRIAL-12(委任1: Memory B1)
+
+- 日付: 2026-09-16
+- 種別: Trial-11(Memory A2、ユーザー試聴OK→VALIDATED)のStory segmentation方式をMemory B1へ展開する仕様Trial。B1英語Comment/Preview/Key Phraseは内容・Prompt変更なし(Trial-10既存音声assetをbyte-identicalコピーでreuse、再TTS・再ASRなし)。新仕様(segmentation/Comment)はProduction未採用のまま(残り2episode[Digital Twins A2/B1]のユーザー試聴OK後に正式採用対象A[segmentation]/B[A2 Comment]をAPPROVED_FOR_PRODUCTION扱いとし、別途Production wiringを行う。本Trialでは先回りしない)。
+- 本文: Trial-10 B1本文固定(sha256=`89c4259a798b05f7b1db697f2b5894ce424f6971e84bbf6b4a93f77095b87f20`、一致確認)、Writer再実行なし。旧Trial-10成果物`family_c_episode_trial_10/memory_b1/`は無変更で保存(`git status --porcelain`空で確認)、新版は`family_c_episode_trial_12/memory_b1/`。
+- Segmentation: 旧36 segment(最短1語["No,"]/最長57語、narrator多数[細かいdialogue分割含む]/device2/brother1)→新10 segment(最短2語/最長91語、narrator7/device2/brother1)。Voice変化点(device2箇所[p3,p7]・brother1箇所[p16]、分割不可避)に加え、Trial安全ガイド(概ね100語以内・120語を大きく超えない)遵守のため3箇所にscene boundary force splitを追加(p10/p11: 「安堵→自由」反応の完結点、p12/p13: "Then, five years later"の時間跳躍、p20/p21: 兄・若い自分の言葉の場面→装置が新日付を提示する決断場面への切替)。統合代表例: 旧story_004/005/006(narrator lead-in"asked the storage robot."+device quote前後の細切れ)や旧story_013〜016(narrator"Lena closed her eyes."+"No,"+"she said."+"But I cannot carry it now."の4分割)を、それぞれ隣接narrator segmentへ統合。残した短segment: device2件(2語/3語)・brother1件(9語)はVoice変化点のため分割不可避。最長segment=story_010(91語)、安全ガイド内。話者判定はOPEN-156修正(直近の閉じ引用符より後ろをbefore windowにする)を移植(個別修正)、本記事では複数引用符段落[p8,p20]を確認したが割当変化なし。Comment位置: C2は累積語数35%到達点が旧story_017/018境界(cum179語、fraction0.371)から新segment境界のためstory_005直後(cum193語、fraction0.400)へ移動(017と018が同一narrator segmentへ統合され、その間の旧境界が消滅したため)。C3は旧story_023直後(cum314語、fraction0.651)→新story_007直後(cum314語、fraction0.651)で実質不変(たまたま新segment境界と一致)。
+- Comment: Memory B1はComment変更なし(内容・Promptとも無変更、Trial-10既存Charon音声[comment_1〜3_en.wav]・preview_en.wav・key_phrases音声をbyte-identicalコピーでreuse。再TTS・再ASRなし、既存consistency記録[比較結果含む、Lena/Linaホモフォン等の既存軽微差異も含め]をそのまま引き継ぎ)。
+- Voice: 兄=Erinome→Algieba(Memory A2 Trial-11と統一、`bvoices.generate_voice_body_wide_margin`経由、新Voice比較Trialなし)。装置=Charon、narrator=Aoede。speaker_map.json/tts_generation_results.jsonでAlgieba採用を確認。
+- Audio: 新Story segment10件TTS、初回全件OK(cascade再試行なし)。ASR 4者一致相当: 19行中16行完全一致、3行はASR表記揺れのみ(story_001/006: Lena→Linaホモフォン、句読点["—"↔":"/"."]差、"memory-storage"↔"memory storage"のハイフン差、意味差なし)。Audio Validation Gate PASS(level=`FAMILY_C_TRIAL_12_MEMORY_B1`)。duration=331.793秒(旧Trial-10 343.248秒から11.455秒減、segment数減少[36→10]に伴う無音境界減少が主因)。費用¥18.30(Story TTS10件[一部cascade内retry含む、tts_call_count=20]+ASR診断1件、上限¥40以内)。Family C累計¥601.20+¥18.30=¥619.50。
+- 修正: 実装時にnarrator segmentが複数段落を跨ぐ際、段落境界の空白が失われ"robot.Lena"のような結合文になるバグを発見・修正(段落境界に半角スペース1個を補う)。修正前の1回のみ実行で発覚(story_003がASR不一致でSTOPPED)、修正後に全10 story segmentを再生成(このバグ修正に伴う再生成であり、理由なき再生成ではない)。
+- Status: Memory B1=VALIDATED候補/USER_LISTENING_PENDING。
+- 参照: `docs/pm/RESULT_PACKET_T12_MEMORY_B1.md`、commit (本エントリ登録時点で未commit、次コミットハッシュを参照)
 
 ## 参照元
 
