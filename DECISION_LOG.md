@@ -435,6 +435,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02: B1語順script修正(実audio基準)でB1完成・ユーザー品質承認、A2 point_two Oimo再生成(AI while/Canele維持)で候補確保もA2必須slowdown post-process未PASSでHuman Review継続
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FINALIZE-A2: A2 point_two "Oimo no Canele"/"AI while"ユーザー正式承認(USER APPROVED)→Human Approval記録+Assembly/Gate PASS+player/E2E完成、A2/B1ともUSER_TEST_READY、OPEN-168新規登録
 - [本ファイル内] ## USER-TEST-REVIEW-PAGE-FORMAT-RULE-01: Key Phrasesラベル残存(unified.htmlのkpParts旧regex不備)+Level生表示(human_review.html)を恒久ルール化・E2Eチェッカー新設・対象9本を新SHAで再発行
+- [本ファイル内] ## USER-TEST-14-ARTICLE-FORMAT-RECHECK-01: Sheet掲載14記事(26ページ)のGate 7(n)表示フォーマットをunified.html経由でE2E全件PASS確認、Family A/C・Voicesの独自player.htmlは無修正で適合(unified.html汎用パーサ側で吸収)、AI hiring B1 Key Phrase 4のラベル混入バグ1件を発見しunified.htmlのrowData()を修正(commit`240e0723`)、VERIFIED
 
 ---
 
@@ -8199,6 +8200,125 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - **SSOT反映**: `docs/pm/PM_GOVERNANCE.md` 2節Gate 7補足へ(n)「ユーザー試聴ページ表示フォーマット」を新設(Key Phrases 2列・ラベル禁止、Level表示Standard/Advanced、恒久チェッカー名を明記)、9-12節へ確認ページのlevel表示も同ルールとする旨を1行追記、変更履歴節に1行追記。`CURRENT_SPEC.md`は既存precedent(L1339「試聴player標準フォーマット」行、2026-09-08決定=正式な列・CSS仕様は本ファイルへ新設せず共通moduleとPM_GOVERNANCEを参照する方針)に倣い、新規行を追加しなかった(Grep確認: `unified.html`/`build_web_player_common`/`Web Player`いずれも既存の専用仕様行なし)。`ARTIFACT_REGISTRY.md`の対象9本のURL行をSHA`55c8a324`へ更新。恒久チェッカー導入が完了したため`OPEN_ITEMS.md`への新規登録は行っていない(未解決の残課題は上記Legacy level表示のみで、修正スコープ外の確認記録として本エントリに残す)。
 - Status: `USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`=完了(9本全PASS、SSOT反映済み)。Legacy level表示の不整合=`CONFIRMED_NOT_FIXED`(スコープ外、報告のみ)。
 - 参照: `docs/pm/RESULT_PACKET_REVIEW_PAGE_FORMAT_01.md`、`docs/pm/delegation_log/USER-TEST-REVIEW-PAGE-FORMAT-RULE-01.md`、`docs/pm/tools/user_test_page_e2e_check.py`、`docs/pm/closeout_136_e2e/format_rule_01/`。
+
+## USER-TEST-14-ARTICLE-FORMAT-RECHECK-01: Sheet掲載14記事のGate 7(n)表示フォーマット再確認・26ページ全件PASS・unified.htmlバグ1件修正
+
+- 日付: 2026-09-17
+- 種別: ユーザー管理Google Sheet「ユーザーテスト記事一覧_2026-09-16」掲載14記事の視聴ページ表示フォーマット(Gate 7(n))を実ブラウザE2Eで再確認。並行Agentなし、API呼び出し0、音声再生成0、記事本文変更0。Sheet自体はrepo外・API手段なしのためSheetのリンク整合自体はスコープ外(最新URL表の提供まで)。
+
+### 1. 14記事対応表(repo内dir・Standard(A2)/Advanced(B1)存在有無)
+
+| # | Sheet記事名 | 系統/dir | Standard(A2) | Advanced(B1) |
+|---|---|---|---|---|
+| 1 | AI Beyond the Smartphone | Family A/Trend `er014_output/four_type_observation_01/trend/audio/` | ○ USER_LISTENING_DONE | ○ USER_LISTENING_DONE |
+| 2 | Why Young Travelers Are Slowing Down | Family A/Trend `er011_output/family_a_completion_a2_trend_end_to_end_01/` | ○ 完成(試聴記録未確認、記事完成自体はGate PASS) | ○ 同左 |
+| 3 | How Often Should You Wash Towels? | Family A/Discovery `er011_output/discovery_generalization_towels_trial_11/player_std/` | ○ USER_LISTENING_DONE | ○ USER_LISTENING_DONE |
+| 4 | Why We Wake Before the Alarm | Family A/Discovery `er011_output/discovery_generalization_wake_before_alarm_trial_12/player_std/` | ○ USER_LISTENING_DONE | ○ USER_LISTENING_DONE |
+| 5 | Why the Crisper Drawer Is at the Bottom | Household `er011_output/household_unified_final_candidate_01/` | ○ USER_LISTENING_DONE | ○ USER_LISTENING_DONE |
+| 6 | Free-Address or Assigned Desks? | Voices 2V `er012_output/editorial_b_family_voices_a2_production_wiring_01/`(A2)・`editorial_b_family_production_phase1_02/`(B1) | ○ 完成(APPROVED_FOR_PRODUCTION候補) | ○ USER_LISTENING_DONE |
+| 7 | Personalized News: Useful or Narrowing? | B-Family `er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/` | ○ USER_TEST_READY(新版) | — (OPEN-166、旧B1非掲載・再生成しない) |
+| 8 | When AI Helps Choose Who Gets Hired | Voices 3V `er012_output/editorial_b_voices_3v_audio_trial_01/` | — (A2生成経路なし) | ○ USER_LISTENING_DONE |
+| 9 | Home Robots: What They May Change | Family C `er013_output/family_c_episode_trial_09/home_robots_v2/`(A2)・`home_robots_b1/`(B1) | ○ VALIDATED候補・USER_LISTENING_DONE | ○ 同左 |
+| 10 | How Technology May Change Memory | Family C `er013_output/family_c_episode_trial_11/memory_a2/`(A2)・`trial_12/memory_b1/`(B1) | ○ USER_LISTENING_DONE | ○ VALIDATED候補(ユーザー正式決定でUSER_LISTENING_DONE) |
+| 11 | Digital Twins: A Copy of the Real World | Family C `er013_output/family_c_episode_trial_12/twins_a2/`・`twins_b1/` | ○ VALIDATED候補(ユーザー正式決定でUSER_LISTENING_DONE) | ○ 同左 |
+| 12 | AI in the Convenience-Store Kitchen | News-family `er014_output/user_test_news_convenience_ai_01/convenience_ai/` | ○ USER_TEST_READY | ○ USER_TEST_READY |
+| 13 | Are Tiny Bags Really Back? | News-family `er014_output/user_test_news_light_01/tiny_bags/` | ○ USER_TEST_READY | ○ USER_TEST_READY |
+| 14 | Weapons in Orbit: What Has Actually Changed? | News-family `er014_output/user_test_news_2ep_01/space_weapons/` | ○ USER_TEST_READY | ○ USER_TEST_READY |
+
+Family C の3記事(9〜11)の一部行(Home Robots A2/B1・Memory B1・Twins A2/B1)の
+`USER_LISTENING_DONE`は`FAMILY-C-SEGMENT-COMMENT-PRODUCTION-WIRING-01`項目0の
+ユーザー正式決定に基づく(`USER-TEST-INVENTORY-01_REPORT.md`Fable注記、本タスクでは
+新たな試聴記録の追加確認はしていない、既存記録の引用)。#2(Young Travelers)は
+2026-09-09完成後の試聴記録が repo 内に見当たらないため試聴要否はユーザー判断
+(既知の未解決事項、新規ではない)。
+
+### 2. 検証方法・結果(26ページ=14記事×A2/B1、存在するもののみ)
+
+`unified.html`(SHA`240e0723`)経由で`docs/pm/tools/user_test_page_e2e_check.py`を
+実行。Family A/C・Voicesの独自テンプレート(`table.timeline`形式の監査用
+player.html、`English:`/`英語:`/`EN:`等の生ラベルやA2/B1B生表示を含む)は
+**無修正のまま**`unified.html`の汎用パーサ(`kpParts()`・`chooseTimeline()`・
+`levelLabel`マッピング・既存の`isFamilyCB1()`/`isVoicesB1()`特殊レンダラ)経由で
+Gate 7(n)へ適合することを確認した(想定どおり、テンプレート個別修正は不要だった)。
+
+| 項目 | 結果 |
+|---|---|
+| 1. level表示(Standard/Advanced、A2/B1生表示なし) | 26/26 PASS |
+| 2. Key Phrases(英日2列、ラベル文字列なし) | 26/26 PASS(検証中に1件のラベル混入バグを発見・修正、下記3節) |
+| 3. Play開始・currentTime進行・error無し | 26/26 PASS |
+| 4. script/Key Phrases/Comment表示・表示崩れなし(screenshot確認) | 26/26 PASS |
+| 5. 最新URL確定(旧main branch参照→pinned SHA`240e0723`) | 26/26 完了 |
+
+詳細JSON: `docs/pm/closeout_136_e2e/format_rule_01/e2e_result_14articles.json`、
+screenshot: `docs/pm/closeout_136_e2e/format_rule_01/screenshots_14/`、
+urls一覧: `docs/pm/closeout_136_e2e/format_rule_01/urls_14articles.txt`。
+
+### 3. 発見・修正したバグ(unified.html、14記事以外へも影響する共通コード)
+
+Voices 3V「AI hiring」B1(#8)のKey Phrase 4は生データが
+`EN: answer for<br>JA(表示): ～の責任を負う<br>JA(TTS用): なになにの責任を負う`
+という3行構成(表示用glossとTTS専用textが別行)だった。`unified.html`の
+`rowData()`は`td.innerText||td.textContent`で行テキストを取得していたが、
+detached DOM(`DOMParser`生成、レイアウト未計算)では`innerText`が機能せず
+`textContent`にフォールバックし、`<br>`が改行として保持されずEN/JA/JA(TTS)が
+連結されていた。`kpParts()`の正規表現`[^\n]+`は改行が無いため貪欲マッチで
+末尾のJA行までバックトラックし、英語列に`answer forJA(表示): ～の責任を負う`
+というラベル断片が漏れて表示されるバグを引き起こしていた(自動チェッカーの
+ラベル判定は行頭一致のみだったため機械的には見逃され、screenshot目視で発見)。
+**修正**: `rowData()`に`<br>`を実改行`\n`へ変換してから`textContent`を取る
+`textWithBreaks()`を追加(`user_test/unified.html`、commit`240e0723`)。
+音声・記事本文・segment sha256は無変更(diff範囲は`unified.html`7行のみ、
+`git diff --stat 74298923..240e0723`で確認)。修正後、ローカルサーバー
+(`http://127.0.0.1:8791`)と本番CDN(SHA`240e0723`)の両方で26/26 PASSを再確認。
+
+### 4. Sheet貼付用・最新URL表(SHA`240e0723`固定、pinned commit URL)
+
+| 記事 | Standard(A2) URL | Advanced(B1) URL |
+|---|---|---|
+| AI Beyond the Smartphone | `https://rawcdn.githack.com/shimomura055/eigo-radio/240e0723/user_test/unified.html?src=er014_output%2Ffour_type_observation_01%2Ftrend%2Faudio%2Fa2%2Fplayer.html&level=A2&en=...&ja=...`(01_smartphone_a2) | 同上src末尾`b1b`(01_smartphone_b1) |
+| Why Young Travelers Are Slowing Down | src=`er011_output/family_a_completion_a2_trend_end_to_end_01/a2/rerun_01/player.html`&level=A2(02_young_travelers_a2) | src=`.../b1b/kp5_regen_and_completion_01/player.html`&level=B1(02_young_travelers_b1) |
+| How Often Should You Wash Towels? | src=`er011_output/discovery_generalization_towels_trial_11/player_std/index.html`&level=A2(03_towels_a2) | 同src&level=B1(03_towels_b1) |
+| Why We Wake Before the Alarm | src=`er011_output/discovery_generalization_wake_before_alarm_trial_12/player_std/index.html`&level=A2(04_wake_alarm_a2) | 同src&level=B1(04_wake_alarm_b1) |
+| Why the Crisper Drawer Is at the Bottom | src=`er011_output/household_unified_final_candidate_01/player.html`&level=A2(05_crisper_a2) | 同src&level=B1(05_crisper_b1) |
+| Free-Address or Assigned Desks? | src=`er012_output/editorial_b_family_voices_a2_production_wiring_01/player.html`&level=A2(06_free_address_a2) | src=`er012_output/editorial_b_family_production_phase1_02/player.html`&level=B1(06_free_address_b1) |
+| Personalized News: Useful or Narrowing? | src=`er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/player.html`&level=A2(07_personalized_news_a2) | — (OPEN-166、対象外) |
+| When AI Helps Choose Who Gets Hired | — (生成経路なし) | src=`er012_output/editorial_b_voices_3v_audio_trial_01/player.html`&level=B1(08_ai_hiring_b1) |
+| Home Robots: What They May Change | src=`er013_output/family_c_episode_trial_09/home_robots_v2/player.html`&level=A2(09_home_robots_a2) | src=`er013_output/family_c_episode_trial_09/home_robots_b1/player.html`&level=B1(09_home_robots_b1) |
+| How Technology May Change Memory | src=`er013_output/family_c_episode_trial_11/memory_a2/player.html`&level=A2(10_memory_a2) | src=`er013_output/family_c_episode_trial_12/memory_b1/player.html`&level=B1(10_memory_b1) |
+| Digital Twins: A Copy of the Real World | src=`er013_output/family_c_episode_trial_12/twins_a2/player.html`&level=A2(11_twins_a2) | src=`er013_output/family_c_episode_trial_12/twins_b1/player.html`&level=B1(11_twins_b1) |
+| AI in the Convenience-Store Kitchen | src=`er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/player.html`&level=A2(12_convenience_ai_a2、旧SHA`55c8a324`→更新) | src=`.../convenience_ai/b1b/player.html`&level=B1(12_convenience_ai_b1、旧SHA→更新) |
+| Are Tiny Bags Really Back? | src=`er014_output/user_test_news_light_01/tiny_bags/a2/player.html`&level=A2(13_tiny_bags_a2、旧SHA→更新) | src=`.../tiny_bags/b1b/player.html`&level=B1(13_tiny_bags_b1、旧SHA→更新) |
+| Weapons in Orbit: What Has Actually Changed? | src=`er014_output/user_test_news_2ep_01/space_weapons/a2/player.html`&level=A2(14_space_weapons_a2、旧SHA→更新) | src=`.../space_weapons/b1b/player.html`&level=B1(14_space_weapons_b1、旧SHA→更新) |
+
+完全なクエリ文字列(en=/ja=のURLエンコード済みタイトル込み)は
+`docs/pm/closeout_136_e2e/format_rule_01/urls_14articles.txt`に1行1URLで記録
+(name列が上表の括弧内識別子と対応)。#12〜14(News-family)は
+`USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`時点のSHA`55c8a324`→今回`240e0723`へ
+更新(`ARTIFACT_REGISTRY.md`本文のURLも本エントリで更新済み)。#1〜11は
+今回のタスクで初めてunified.html経由のURLとして整理・付番した(既存の
+`main`branch参照URLも引き続き有効、pinned SHA版はキャッシュ安定性のため追加)。
+
+### 5. 対象外・参考情報(修正していない)
+
+`USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`で報告済みのLegacy 4記事(6ページ、
+A02/ADD03/Hanshin/Health)は今回の14記事に含まれないため確認・修正の対象外
+(既存記録のとおりlevel生表示が`CONFIRMED_NOT_FIXED`のまま、変更なし)。
+
+### 6. Git・SSOT反映
+
+commit 1(テンプレ修正、`240e0723`、`user_test/unified.html`7行のみ)、
+commit 2(SSOT反映、本エントリ+`ARTIFACT_REGISTRY.md`+evidence一式)。
+`git diff --stat 74298923..240e0723`は`unified.html`1ファイルのみ(mp3/wav/
+記事本文の差分なし)。`OPEN_ITEMS.md`は新規登録なし(新たなUSER_DECISION_
+REQUIREDは発生していない)。
+- Status: `VERIFIED`(バグ1件発見・その場で修正・再検証まで完了したため
+  厳密には`FIXED_AND_VERIFIED`にも該当するが、対象14記事の**player.html
+  自体は無修正**でunified.html側の共通バグ修正のみのため、記事単位としては
+  `VERIFIED`と分類する)。
+- 参照: `docs/pm/delegation_log/USER-TEST-14-ARTICLE-FORMAT-RECHECK-01.md`、
+  `docs/pm/RESULT_PACKET_14_ARTICLE_FORMAT_RECHECK_01.md`、
+  `docs/pm/closeout_136_e2e/format_rule_01/`(urls_14articles.txt・
+  e2e_result_14articles.json・screenshots_14/)。
 
 ## 参照元
 
