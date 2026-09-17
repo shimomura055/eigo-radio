@@ -129,3 +129,39 @@ G18. **ユーザー判断 A/B**: (A)仕様・Product・実装判断待ち: OPEN-
 G19. **無変更証跡/lock記録/事前指定外Read**: `docs/pm/locks/audio_stage.lock`は、タスク開始時に既存lock無しを確認したのみで、**本タスクでは原子的作成・削除を実施しなかった**(委任文の指示に対する本タスクの手続き上の不備、正直に報告する)。事後確認として、共有audit file(`er006_output/pronunciation_ledger_01/ledger.json`)の差分を確認したところ、純粋な1件追加(`familymart`、`cascade_unresolved_entity`、既存Secondary ASR cascadeの自動登録機構による本タスク自身の副作用と時刻[15:15:28]から特定、他タスクとの衝突ではない)のみで、削除や既存キーの上書きは無く、データ破損・キー競合は確認されなかった。`er006_output/master_audio_store_01/manifest.json`は本タスク中に変更なし(diff無し)。`git status --porcelain -- '*.py'`はB1語順修正・A2再生成に使った新規`fix_02_pipeline.py`のみ(既存`er0*.py` Production moduleは無変更)。`git status --porcelain -- user_test/unified.html` `user_test/human_review.html`はいずれも空(無変更、既存ページをそのまま再利用)。事前指定外Read: `er003_v1_crosslevel_audio_02_common.py`(L1-260、A2英語segment生成のstandard/fallback cascade全体構造とreview_lock decoratorの適用範囲を確認するため)、`er003_v1_repro01_main_generate.py`(L194-420、`generate_narration_snippet_verified_strict`のASR cascade呼び出し箇所を確認するため)、`er011_human_review_lock_01.py`(L1-420、`approve_regenerate()`/`check_before_generation()`/`record_outcome()`のReview Lock状態遷移を正確に理解するため)。いずれも委任文の「既存retry/fallback機構との整合を確認」「新規配線をしない」という指示を安全に遵守するために必要な確認であり、Gate回避や独自ロジック追加はしていない。
 
 ★★★★報告ここまで★★★★
+
+## FINALIZE-A2
+
+管理ID`USER-TEST-NEWS-CONVENIENCE-AI-01-FINALIZE-A2`(ユーザー正式判断2026-09-17に基づく)。以下は累積Full Report(本節が最新の完全な状態を表す。上記の初回・FIX-01・FIX-02報告は履歴として保持)。
+
+★★★★報告ここから★★★★
+
+H1. **A2 Oimo=USER APPROVED**: FIX-02確認ページで提示した新候補(attempt9由来、6% slowdown適用済み)をユーザーが試聴し「Oimo no」= OK/承認。よって「Oimo no Canele」全体・「AI while」ともUSER APPROVED(追加TTS再生成なし)。記録箇所: `DECISION_LOG.md`の本エントリ。
+
+H2. **point_two final採用**: 承認対象のwav(`audit_fix_02/candidate_attempt9_poststretch.wav`、sha256=`ed816a60746ba3b52b8414e07a28e70e42f1f48bb57bec9f2c93dc90c6bed4c9`)と、現在の`a2/narration/point_two.wav`が完全一致することを確認した(確認ページ提示音声と同一)。`point_two_original.wav`(sha256=`e233dec4e5fc9fce96efdc584bb9256b30db648cdea0aa5db8469cb38061ca98`)がattempt9生wavと完全一致することも確認済み。
+
+H3. **slowdown適用結果**: duration比=1.0591(pre=20.461s→post=21.671s、目標6%)であり、既に既存Production関数`apply_a2_slowdown_postprocess()`で適用済みと判断し、**本タスクでは再適用していない(二重適用回避)**。内蔵Primary ASR再検証(単発、post-process内部と同一ロジック)をfreshに1回実行した結果は`ASR_VALIDATION_UNCERTAIN`(asr_text中"Kanere"表記ゆれ、Oimo自体は問題なし)。追加でLedger Phrase List付きSecondary ASR cascade(`evaluate_attempt_with_cascade`、fallback経路と同一関数)を1回実行した結果は`NORMALIZED_MATCH`/verified_content=True("Oimo no Canele"/"AI while"ともslowdown後も転写上維持を確認)。詳細: `er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/audit_finalize_a2/finalize_a2_point_two_summary.json`。
+
+H4. **Assembly/Gate**: `run_pipeline.assembly_stage("a2")`(既存関数、無変更)実行結果=`status=OK`、duration=323.279秒、peak=0.95344、clippingなし。Gate opt-in(構造完全性チェック込み)=`PASS`(MISSING_MANDATORY_A2_SLOWDOWN等のブロックなし、Human Approval記録によるHUMAN_APPROVED判定経由)。
+
+H5. **Browser E2E evidence**: Playwright headless Chromiumでrawcdn.githackの「External Content Notice」中継確認(`button.url-action-button`クリック)を経由し実ブラウザ確認。再生4秒後`currentTime=2.89秒`・`duration=323.279秒`(Assembly実測と一致)・`error=null`・`readyState=4`、60秒seek後`currentTime=61.45秒`、本文中に"is scheduled to go on sale"/"Oimo no Canele"を含むことを確認、Key Phrase/Comment関連マーカーも表示確認。evidence: `docs/pm/closeout_136_e2e/convenience_ai_a2_finalize.json`+`.png`。
+
+H6. **A2 final player URL**: `https://rawcdn.githack.com/shimomura055/eigo-radio/437d6b71/user_test/unified.html?src=er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/player.html&level=A2&en=Pickles%20in%20a%20Lemon%20Tart%3F%20When%20AI%20Joins%20the%20Convenience-Store%20Kitchen&ja=%E6%97%A5%E6%9C%AC%E3%81%AE%E3%82%B3%E3%83%B3%E3%83%93%E3%83%8B%E3%80%81AI%E3%81%A7%E6%96%B0%E3%81%97%E3%81%84%E5%91%B3%E3%82%92%E9%96%8B%E7%99%BA`。
+
+H7. **B1 script/audio整合確認(再試聴なし)**: `b1b/article.md`/`b1b/parts.json`/`b1b/player.html`がいずれも"Then Lawson planned a sale of the finished product."で一致することを確認。B1 player URL(SHA`187d51b4`)がHTTP 200で到達可能であることを確認済み(既存E2E evidence`b1b/human_review/e2e_evidence_fix02.json`は無変更のまま参照)。再build・再試聴は実施していない。
+
+H8. **A2/B1 USER_TEST_READY**: コンビニAI A2/B1 = **`USER_TEST_READY`**としてcloseout(記事品質のユーザー判断待ちなし)。
+
+H9. **Sheet行確定**: 記事タイトル(English)="Pickles in a Lemon Tart? When AI Joins the Convenience-Store Kitchen"、記事タイトル(日本語)="日本のコンビニ、AIで新しい味を開発"、記事の概要(日本語)="ローソンがAIに提案させた意外な組み合わせ(レモンタルト+ピクルス)を人間が試作・調整して商品化予定。ファミリーマートは販売データを使う別のAI活用法。"、Family=News、ノーマル(A2)URL=H6参照、Advanced(B1)URL=`https://rawcdn.githack.com/shimomura055/eigo-radio/187d51b4/user_test/unified.html?src=er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/player.html&level=B1&en=A%20Lemon%20Tart%2C%20Pickles%2C%20and%20an%20AI%20Suggestion&ja=...`、備考="最新ニュース"。専用記事一覧ファイルは存在しないため`ARTIFACT_REGISTRY.md`のみ更新。
+
+H10. **SSOT/Git SHA**: `DECISION_LOG.md`へ`## USER-TEST-NEWS-CONVENIENCE-AI-01-FINALIZE-A2`エントリ(索引+本体)追加。`OPEN_ITEMS.md`へ`OPEN-168`新規登録(A2必須6% slowdown post-processの内蔵再検証がLedger Phrase List付きSecondary ASR cascadeを使わず固有名詞segmentを誤ってブロックし続ける設計ギャップ、`CURRENT_SPEC.md` L1287の既知ギャップを実例と共に独立Open Item化、Blocking対象なし)+OPEN-159へ参照追記。`ARTIFACT_REGISTRY.md`のConvenience AI A2/B1行を`USER_TEST_READY`+最終URL+E2E evidenceパスへ更新。`CURRENT_SPEC.md`は変更不要と確認(L1287の既存記述で本件のgapは既に正確に記録済み、無変更証跡)。Git: `437d6b71`(Human Approval記録・Assembly/Gate/player/web export・finalize script、push済み)。SSOT反映commitは別途。
+
+H11. **未処理USER_DECISION_REQUIRED**: なし(A2/B1とも記事内容・音声ともUSER_TEST_READY。OPEN-168は量産開始前のユーザー判断待ちとして新規登録、記事完成はブロックしない)。
+
+H12. **cost**: 本タスク差分は内蔵Primary ASR再検証1回+Secondary ASR cascade(Primary 2回+Azure 1回)のみ(TTS新規生成なし)、¥1未満(openai_asr 2回分、azureは`pricing_snapshot`未収載のため¥0扱い)。累計¥201.73+微増。上限¥30に対し十分な余裕。
+
+H13. **ユーザー判断 A/B**: (A)仕様・Product・実装判断待ち: `OPEN-168`(post-slowdown内蔵再検証へLedger Phrase List付きSecondary ASR cascadeを配線するか、現状の「簡易チェック不合格→Human Approval」運用を恒久方針として維持するか)。(B)ユーザー試聴・品質確認待ち: なし(A2/B1ともユーザー正式承認済み、USER_TEST_READY)。
+
+H14. **無変更証跡/lock記録/事前指定外Read**: `docs/pm/locks/audio_stage.lock`を`open(path, "x")`で原子的作成(タスク開始時に既存lock無しを確認)、タスク完了時に削除。`git status --porcelain -- '*.py'`は新規`finalize_a2_pipeline.py`のみ(既存`er0*.py` Production moduleは無変更)。`git status --porcelain -- user_test/unified.html`は空(無変更、既存ページをそのまま再利用)。事前指定外Read: `er003_v1_n3_01_tts_generate.py`の`apply_a2_slowdown_postprocess`/`generate_a2_segment_with_slowdown`本体(内蔵再検証ロジックを正確に再現するため)、`er003_v1_crosslevel_audio_02_common.py`の`generate_english_segment_with_fallback`(Secondary ASR cascade呼び出しパターン確認のため)、`er006_secondary_asr_01.py`の`evaluate_attempt_with_cascade`/`is_homophone_candidate_mismatch`シグネチャ確認。いずれも委任文の「既存関数を無変更で再利用」「新規配線をしない」を安全に遵守するために必要な確認であり、Gate回避や独自ロジック追加はしていない。追加で、`tts_generation_results.json`のpoint_twoエントリに`status="HUMAN_REVIEW_REQUIRED_CANDIDATE"`という非標準値が残っていたためGateがUNVALIDATED判定していたことを発見し、実態(標準cascade PASS・post-slowdown簡易再検証UNCERTAIN)に即した`status="STOPPED"`へ是正した(事実の変更ではなく記録形式の是正、正直に報告する)。
+
+★★★★報告ここまで★★★★
