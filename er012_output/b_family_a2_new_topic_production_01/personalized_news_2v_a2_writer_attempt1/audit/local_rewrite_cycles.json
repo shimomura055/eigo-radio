@@ -3,60 +3,21 @@
     "cycle": 1,
     "targeted_major_count": 1,
     "newly_discovered_claims": [
-      "I cannot simply stop the ranking."
+      "“I cannot ... switch the system off.”"
     ],
     "results": [
       {
-        "original_ng_sentence": "I cannot simply stop the ranking.",
-        "issue": "ランキング自体を停止・無効化できないという具体的な利用者制約を述べているが、Ledgerが確認しているのは、トピックやソース等の調整機能と、一部の大規模プラットフォーム等におけるプロファイリング非依存の選択肢であり、ランキングを止められないことではない。",
-        "explanation": "Ledgerにない利用者の操作制限を、具体的かつ断定的に追加している。文脈上の懸念表明ではあるが、単なるHookではないため通常どおり判定した。",
+        "original_ng_sentence": "I want to know why one article comes before another, but I cannot see all the signals behind the order or switch the system off.",
+        "issue": "利用者がパーソナライズ機能を停止できないという具体的事実はLedgerに確認されていない。LedgerのEU法の記述は、一定の大規模プラットフォーム等にプロファイリングに基づかないレコメンダーの選択肢を求めるものであり、一般的な「システムを切れない」という事実は保証しない。",
+        "explanation": "「システムを停止できない」という新しい具体的主張を追加している。Hookではなく、Ledgerの確認範囲外である。",
         "flags": [
           "changed_fact",
-          "changed_scope",
-          "changed_certainty",
           "unsupported_new_claim"
         ],
         "attempts": [
           {
             "attempt": 1,
-            "text": "I may not be able to simply turn off or fully control the ranking.",
-            "ledger_status": "LEDGER_DEVIATION",
-            "ledger_status_window": "LEDGER_DEVIATION",
-            "target_sentence_eval": {
-              "overall_status": "LEDGER_DEVIATION",
-              "window_overall_status": "LEDGER_DEVIATION",
-              "target_deviations": [
-                {
-                  "claim_in_article": "I may not be able to simply turn off or fully control the ranking.",
-                  "issue": "利用者がランキングを完全に停止または制御できない可能性を示しているが、LedgerはGoogle Newsで一定の調整機能があることと、特定の大規模プラットフォーム等で非プロファイリング型の選択肢が必要とされることまでを確認しており、この具体的な利用者の能力については確認していない。",
-                  "severity": "MAJOR",
-                  "changed_fact": true,
-                  "changed_scope": false,
-                  "changed_causality": false,
-                  "changed_certainty": false,
-                  "changed_number": false,
-                  "changed_actor": false,
-                  "changed_negation": false,
-                  "changed_comparison": false,
-                  "changed_time": false,
-                  "unsupported_new_claim": true,
-                  "explanation": "ランキングを『単にオフにする／完全に制御する』ことができないという具体的主張はLedgerに存在せず、未確認の新規主張に当たる。Hookとしての緩和は適用していない。",
-                  "treated_as_hook": false,
-                  "auto_downgraded": false,
-                  "_role_classification": {
-                    "role": "target",
-                    "method": "exact_substring"
-                  }
-                }
-              ],
-              "adjacent_deviations": [],
-              "ambiguous_deviations": [],
-              "match_fallback": false
-            }
-          },
-          {
-            "attempt": 2,
-            "text": "I want more control over how the ranking works.",
+            "text": "I want to know why one article comes before another, but I cannot see all the signals behind the order or how much control I have over the recommendations.",
             "ledger_status": "LEDGER_COMPLIANT",
             "ledger_status_window": "LEDGER_COMPLIANT",
             "target_sentence_eval": {
@@ -69,34 +30,27 @@
             }
           }
         ],
-        "final_text": "I want more control over how the ranking works.",
+        "final_text": "I want to know why one article comes before another, but I cannot see all the signals behind the order or how much control I have over the recommendations.",
         "resolved": true,
         "human_review_required": false,
         "diff_qa": {
           "applied": true,
           "diff_qa_calls": 1,
-          "window_text": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I want more control over how the ranking works. I want to protect my chance to meet ideas outside my usual screen.",
+          "window_text": "I begin to wonder about stories outside that circle. I want to know why one article comes before another, but I cannot see all the signals behind the order or how much control I have over the recommendations. Clicks, likes, shares, and search history can shape what appears.",
           "fact_check_status": "FACT_CHECK_COMPLETED",
-          "fact_check_verdict": "PASS",
+          "fact_check_verdict": "REVIEW_REQUIRED",
           "fact_check_model": "gpt-5.6-luna",
-          "fact_check_response_id": "resp_05e31268ea4c4097006aab2ac23b3087d0b4618277b5745739",
+          "fact_check_response_id": "resp_0bb251ac5df98836006aab6eb9c25c87d087a91305e418657e",
           "fact_check_search_usage": {
-            "web_search_call_count": 9,
+            "web_search_call_count": 2,
             "queries": [
-              "\"59 percent\" personalization \"miss\" different views news",
-              "\"personalization\" \"different views\" news 59 percent U.S. respondents",
-              "\"I want more control\" personalization ranking news views survey",
-              "news personalization survey U.S. respondents miss different views percentage",
-              "xd8Dh/2 Datawrapper 59 USA personalised news challenging viewpoints",
-              "site:datawrapper.dwcdn.net/xd8Dh \"USA\"",
-              "Reuters Digital News Report 2023 59% USA challenging viewpoints personalization",
-              "\"59%\" \"challenging viewpoints\" personalised news USA",
-              "\"59 percent\" \"challenging viewpoints\" personalized news US",
-              "\"miss out on challenging viewpoints\" USA 59",
-              "\"personalised news\" \"59%\" USA",
-              "site:reutersinstitute.politics.ox.ac.uk/digital-news-report/2026 personalisation news challenging viewpoints",
-              "Reuters Institute Digital News Report 2026 personalized news miss challenging viewpoints USA",
-              "2026 survey US personalized news miss different viewpoints algorithm control"
+              "site:support.google.com Google Discover activity search history likes follows personalize content official",
+              "site:transparency.meta.com Facebook Feed ranking likes comments shares clicks official",
+              "site:help.x.com timeline recommendations likes clicks official",
+              "site:support.tiktok.com For You feed interactions search history official",
+              "site:about.fb.com/news feed ranking signals likes comments shares clicks official Meta",
+              "site:transparency.meta.com how Facebook Feed ranking works likes comments shares clicks",
+              "site:engineering.fb.com feed ranking signals Facebook likes comments shares official"
             ]
           },
           "ledger_check_full": {
@@ -117,56 +71,47 @@
           "applicable": true,
           "point": "point_two",
           "overlap_vs_full_story": {
-            "overlap_ratio": 0.094,
+            "overlap_ratio": 0.098,
             "shared_words": [
               "another",
-              "clicks",
+              "each",
               "first",
+              "know",
               "morning",
               "news",
-              "other",
               "question",
               "reader",
               "same",
-              "screen",
+              "stories",
               "what"
             ],
-            "point_word_count": 117,
-            "story_word_count": 38,
+            "point_word_count": 112,
+            "story_word_count": 33,
             "flagged": false,
             "threshold": 0.4
           },
           "overlap_vs_other_point": {
-            "overlap_ratio": 0.214,
+            "overlap_ratio": 0.143,
             "shared_words": [
               "also",
-              "ask",
-              "behind",
-              "cannot",
               "controls",
               "feed",
+              "feel",
+              "first",
               "follow",
               "hide",
-              "know",
-              "less",
-              "list",
-              "make",
-              "more",
               "morning",
-              "ranking",
-              "reach",
-              "reaches",
+              "news",
+              "open",
+              "out",
               "see",
               "sources",
-              "start",
-              "story",
-              "unfollow",
-              "want",
-              "what",
-              "worry"
+              "stories",
+              "time",
+              "want"
             ],
-            "point_word_count": 117,
-            "story_word_count": 61,
+            "point_word_count": 112,
+            "story_word_count": 49,
             "flagged": false,
             "threshold": 0.4
           },
@@ -174,9 +119,9 @@
         },
         "cycle": 1,
         "item_idx": 1,
-        "location_method": "exact_substring",
+        "location_method": "sentence_fallback(overlap=0.27)",
         "point_context_found": true,
-        "point_context": "### Another Voice: The reader who sees the feed narrowing\n\nI scroll, and I see the same kinds of claims again. I see the same voices and the same side of the story. After a while, I start asking what is not there.\n\nI want to know why one article is above another. I also want to know which settings I can change. Instead, the rules behind the list stay out of sight. I worry that the feed may be shaped not only to help me understand the news, but also to win clicks and advertising money. I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I cannot simply stop the ranking. I want to protect my chance to meet ideas outside my usual screen."
+        "point_context": "### Another Voice: The reader who sees the feed narrowing\n\nEach time I scroll, I see familiar arguments and sources. I begin to wonder about stories outside that circle. I want to know why one article comes before another, but I cannot see all the signals behind the order or switch the system off. Clicks, likes, shares, and search history can shape what appears. The service may also be tuned for engagement and advertising income. That makes me uneasy. A hidden order may be choosing what I notice first. I want to protect my chance to meet views I would not normally open."
       }
     ],
     "full_recheck_overall_status": "LEDGER_COMPLIANT",

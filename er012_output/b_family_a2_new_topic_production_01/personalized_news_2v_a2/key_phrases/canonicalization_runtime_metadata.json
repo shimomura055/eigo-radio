@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-5.6-luna",
-  "response_id": "resp_05a2851d527d9363006aab2f53b16887d0a1998d24e3094c3e",
+  "response_id": "resp_00a7884fa490e638006aab6fddc25087d0a6ab90eb37ef1b6c",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -17,10 +17,10 @@
         "items": [
           {
             "rank": 1,
-            "key_phrase": "personalization",
+            "key_phrase": "be tuned for engagement",
             "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "単独で成立する抽象名詞であり、記事固有の限定語も残っていない。意味理解に必要な語を追加する必要はない。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "「be tuned for engagement」は受動構文として自然で、engagementが調整の目的を具体化するため削除しない。方式Lで整えられた基本形として、そのまま採用する。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -36,10 +36,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "put a number to",
+            "key_phrase": "signals behind the order",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "数量化する意味を担う定型的な動詞句であり、toを削ると用法が変わる。本文固有の対象語を加えなくても、再利用可能な学習単位として成立する。",
+            "reasoning": "「the order」は順序の背後にある仕組みを指す名詞句の一部であり、theを削ると「behind order」となって不自然になる。全体で、順序の背後にある信号という自然な学習単位を保っている。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -55,10 +55,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "serve clicks and ad money",
+            "key_phrase": "meet views",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "クリックや広告収入を目的・対象として扱う意味がこのまとまりに含まれており、serveだけに短縮すると中心的な意味が失われる。表示形は自然で十分な動詞句である。",
+            "reasoning": "「meet views」は動詞と対象が揃い、「見解に接する」という意味の核を示す。後続の修飾節は記事固有の対象限定であり、5語以内の学習単位として復元する必要はない。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -74,10 +74,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "narrowing window",
+            "key_phrase": "be left out",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "狭まりつつある見通し・範囲という比喩的な意味を保つ自然な名詞句であり、文脈限定の冠詞を戻す必要はない。narrowingまたはwindowのいずれかを削ると意味が変わる。",
+            "reasoning": "「be left out」は「除外される／抜け落ちる」を表す自然な受動表現で、storyなどを補わなくても成立する。意味の核であるbe left out全体を維持するため変更しない。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -93,10 +93,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "contact with views",
+            "key_phrase": "stay out of view",
             "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "異なる見解に触れることを表す前置詞付き名詞句として成立しており、viewsを削ると接触の対象が失われる。本文固有のoutside that routeまで復元する必要はない。",
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "「stay out of view」は「見えない状態にとどまる」という自然な単位であり、out of viewだけにすると状態継続の意味が失われる。方式Lで整えられた基本形をそのまま維持する。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -113,7 +113,7 @@
         ]
       },
       "model": "gpt-5.6-luna",
-      "response_id": "resp_05a2851d527d9363006aab2f53b16887d0a1998d24e3094c3e"
+      "response_id": "resp_00a7884fa490e638006aab6fddc25087d0a6ab90eb37ef1b6c"
     }
   ]
 }
