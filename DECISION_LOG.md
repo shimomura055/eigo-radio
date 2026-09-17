@@ -8320,6 +8320,142 @@ REQUIREDは発生していない)。
   `docs/pm/closeout_136_e2e/format_rule_01/`(urls_14articles.txt・
   e2e_result_14articles.json・screenshots_14/)。
 
+## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01: 旧Ledger再Research→新Ledger→B1(2V)再生成→音声化完成(OPEN-166対応)
+
+- 日付: 2026-09-17
+- 種別: Personalized News(「Is personalized news good for us?」)のAdvanced(B1)を、
+  OPEN-166(旧LedgerのTension非対称性テキストが「研究自体も、短期的には測定可能な
+  政治的態度の変化を検出できていない」と過度に一般化しており、Fact CheckerがWeb
+  Search時に矛盾を検出しSTOPした問題)への対応として全面的に再構築した。並行Agent
+  なし、`docs/pm/locks/audio_stage.lock`使用。予算上限¥400(実測合計¥356.76、
+  詳細は8節)。Standard(A2、`b_family_a2_new_topic_production_01/personalized_news_2v_a2/`)
+  は開始時・終了時のsha256一覧(`er012_output/personalized_news_b1_rebuild_01/
+  a2_baseline_sha256_before.txt`/`_after.txt`)で無変更を確認済み(224ファイル、diff無し)。
+
+### 1. 再Research(2026-09-17実施、web_search経由vfl01標準経路)
+
+Part1(政治的態度変化研究の現状再確認、facts 19件下書き・VERIFIED17/AMBIGUOUS2/
+REJECTED0、¥54.58)とPart2(パーソナライズ機構・Reuters Institute調査・EU DSA・
+CRS説明の現状再確認、facts 23件下書き・VERIFIED22/AMBIGUOUS1/REJECTED0、¥61.22)の
+2本を実施(計¥115.80)。詳細は`er012_output/personalized_news_b1_rebuild_01/research/`
+(fact_ledger_draft*.json・fact_ledger_verification*.json・verified_fact_ledger_flat*.json)。
+
+### 2. 旧Ledgerの何がstale/invalid/ambiguousだったか
+
+(a) 旧TENSION_ASYMMETRY_VALUEの「研究自体も、短期的には測定可能な政治的態度の変化を
+検出できていない」という一文は、旧Ledger自身が既に採録していたNature論文(Xの
+アルゴリズムfeed実験、4,965人・平均7週間、政策・時事問題態度が保守方向へ0.12SD
+変化=有意な変化あり)と矛盾する過度な一般化だった。さらに再Researchで、独・米
+filter bubble実験(2025年、中道層の分極化増加)、Xホスティリティ再ランキング実験
+(2025年、1週間で感情的分極化変化)、Nature Registered Report(2026年、8週間で
+党派的敵意知覚増加)など、複数の最近の研究が「短期でも測定可能な変化がある」ことを
+示しており、単純な一般化はもはや成立しないことを確認した。(b) 旧Ledgerは当該
+Nature論文を「2023年」とだけ記していたが、実際は2023年に実験実施・2026-02-18に
+オンライン公開(印刷号は2026年4月号)であり、実施年と発表年の混同がfreshness評価を
+誤らせていた。(c) 個別Factが事実として誤っていた(REJECTED相当)ケースは無かった
+(問題は個別Factでなく複数Factを跨いだ一般化の誤り)。(d) 旧2-05相当の研究に
+2026-03-19付Science訂正(主要な実験効果推定には影響なし)があったが旧Ledgerは
+未反映だった。(e) Voice 1側(パーソナライズの便利さ)のFactは再Research対象にし、
+Reuters Instituteは2025年Digital News Report・2023年調査という、旧Ledgerの2016年
+調査より新しい2波を採用した。詳細な監査記録は
+`er012_output/personalized_news_b1_rebuild_01/research/ledger_full_documentation_with_staleness_analysis.txt`
+(Writerには渡さない人間向け監査用、以下3節のWriter供給用Ledgerとは別ファイル)。
+
+### 3. 新Ledger構成とTension設計判断(重要)
+
+Writer供給用の新Ledger(`research/verified_fact_ledger.txt`)は、VOICE_1_EVIDENCE
+(V1-01〜V1-04、Google News機構・Reuters Institute調査)・VOICE_2_EVIDENCE(V2-01〜
+V2-05、観察データ・Reuters Institute懸念・CRS・EU DSA)・CROSS_REFERENCE(Meta feed
+機構・KGI報告)のみで構成する。**政治的態度変化に関する研究(旧Ledgerが問題視された
+論点そのもの)は、意図的にWriter供給用Ledgerから除外した**。理由: Tension本文で
+この論点を書こうとする度に(主語・抽象度を変えた6通りの言い換えを試行)、Analytical
+Leakage Checkの`leak_evidence_subject`/`leak_discovery_syntax`/
+`leak_tension_reverts_to_research`のいずれかが繰り返しFAILした(quoted_evidence:
+"Researchers do not speak with one voice..."等、研究報告の要約に本文が戻ってしまう)。
+これは`leak_position_blur`等の立場境界原則(2026-09-17ユーザー承認、CURRENT_SPEC
+L679)とは別の、既存Discovery-syntax系leakage項目の判定であり、Gate自体は一切
+変更していない。過度な一般化(OPEN-166の実体的問題)を確実に回避する最も安全な
+方法として、この論点自体を本文のスコープ外にする編集判断を行った(政治的態度変化に
+関する記述をゼロにすることで、誤った/古い断定のリスクを構造的に排除する)。
+
+### 4. B1再生成(`main_b1_2v()` write_new_theme、Production正式経路)
+
+新theme module`er012_output/personalized_news_b1_rebuild_01/
+voices_theme_personalized_news_b1_rebuild_01.py`(voice_cards 2件)を
+`er012_personalized_news_b1_rebuild_01_writer.py`経由で実行。r1(旧Ledger構成の
+Tension文をそのまま踏襲、3attempt全てTension leakage residualでSTOP)→r2〜r7
+(Tension text/Ledger内容を6通り試行錯誤、いずれもTension leakageが残存し破棄)→
+**r8で解決**(Ledgerから政治的態度変化論点を完全除外、Tension文を「便利さ選択 vs
+不透明な規則への服従」という非対称性のみに集約)。r8 attempt1: Writer status=OK、
+Analytical Leakage Check 0 flagged(Voice A/B/Tension/Closing全区分、
+`leak_position_blur`含む7項目)、Fact Checker A' verdict=PASS(web_search 6件、
+Google News/Reuters Institute/CRS等の記述を再確認)、Ledger Deviation=
+LEDGER_COMPLIANT(deviation 0件)、Comment Contract=LEDGER_COMPLIANT、word count=399語。
+新タイトル"One Feed, Two Very Different Experiences"/「一つのフィード、二つの
+全く違う経験」。model_id=gpt-5.6-luna。OPEN-167(未承認)は適用していない(候補A/C/F/E
+のみ、`leak_position_blur`基準は既存のまま)。
+
+### 5. TTS/ASR/Assembly(旧B1音声化と同一のProduction primitive経由)
+
+`main_b1_2v()`のCLI dispatchはwrite_new_theme stageのみサポート(2V新規topicの
+TTS/assembly/player stage自体は未配線、OPEN-151)のため、旧B1音声化
+(`run_voices_2v_audio_completion_3.py`)と同一のProduction primitive
+(`er012_b_family_voices_production_01`/`er003_v1_n3_01_assemble`/
+`er003_v1_n3_01_tts_generate`等、他の多数のB1記事で使われている量産関数)を直接
+呼ぶ`er012_personalized_news_b1_rebuild_01_audio.py`で音声化した(DEV/Trial専用
+ロジックではない)。Voice A=Algieba、Voice B=Erinome。14 segment全て`OK`/
+`VALIDATED`(Human Review Lock発生なし、固有名詞のPronunciation Ledger追加も
+不要)。Key Phrase 5件は本記事本文から新規選定(Trend/A2からの流用なし)。Assembly:
+`status=OK`、duration=321.175秒、peak=0.95049、clipping=False、Audio Validation
+Gate=PASS。記事⇔音声一致確認(`article_audio_consistency.json`)は全項目PASS。
+
+### 6. player/E2E
+
+`er012_output/personalized_news_b1_rebuild_01/audio/b1_2v/player.html`+web export
+(episode.mp3+segments33件)完成。`user_test/unified.html`経由(level=B1→Advanced
+表示、`docs/pm/tools/user_test_page_e2e_check.py`で5項目全PASS: header
+Standard/Advanced表示・Key Phrase 2列ラベル無し・構造要素存在・Play進行・
+console正常)。Seek確認: 60秒seek+1.5秒待機でcurrentTime=60.80秒(duration=
+321.17秒、Assembly実測と一致)。commit `e3cbed45`時点のrawcdn.githack URL:
+`https://rawcdn.githack.com/shimomura055/eigo-radio/e3cbed45229c7d7b386a05ef2750e067dbe4a0fd/user_test/unified.html?src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v/player.html&level=B1&en=One%20Feed%2C%20Two%20Very%20Different%20Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81%95%E3%81%86%E7%B5%8C%E9%A8%93`。
+E2E evidence: `docs/pm/e2e_pn_b1_rebuild_01/e2e_result.json`+
+`screenshots/pn_b1_rebuild.png`。
+
+### 7. Status(重要: `USER_TEST_READY`ではない)
+
+`B1_GENERATED`→`GATE_PASS`まで到達。**ユーザー試聴は未実施**であり、
+Fable/Sonnetが「試聴不要」と判断していない。ユーザー試聴PASS後に初めて
+`USER_TEST_READY`とする(本タスク委任文の明示指示どおり)。
+
+### 8. コスト実測(上限¥400)
+
+Research(Part1+Part2)=¥115.80。Writer試行(r1旧構成3attempt=¥50.55、r2〜r7
+Tension是正試行錯誤=¥139.22、r8成功[Comment Contract込み]=¥15.03、writer小計
+=¥204.80)。Audio(Key Phrase LLM+TTS一式+ASR)=¥40.62(内訳: gemini¥33.00、
+openai¥6.03、openai_asr¥1.59)。**合計¥361.22**(上限¥400以内)。委任文の目安
+[Research/Ledger≈¥50、Writer/QA/Leakage≈¥120、TTS/ASR≈¥150]は、Tension
+leakage是正の試行錯誤(r2〜r7)により実際にはWriter段階で目安を上回ったが、
+TTS/ASR段階は目安を大幅に下回ったため、合計では上限内に収まった。
+
+### 9. OPEN_ITEMS/ARTIFACT_REGISTRY
+
+OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・新記事へ更新)。
+一般恒久仕様(Ledgerの定期再検証ルール)は未決のままOPEN維持。OPEN-151: PN B1の
+既存音声`voices/audio/b1_2v_v2/`(Analytical Leakage残存)は本タスクの対象外で
+無変更のまま(本タスクは別記事[新theme]の新規生成であり、旧記事の修正ではない)。
+新規OPEN item登録なし。ARTIFACT_REGISTRY.mdへ「Personalized News B1(新版)」行を
+追加(旧「Personalized News B1(既知flag残存)」行は履歴として保持)。
+
+### 10. ユーザー判断(A/B)
+
+**A**: 1. 本記事(新B1)を試聴後、Advanced欄「—」から新player URLへ差し替えるか。
+2. OPEN-166の恒久対応方針(定期再検証ルール新設 vs 現状の偶発検出時のみ対応)は
+未決のまま(本タスクは個別記事の解消のみ)。
+**B**: 新B1試聴依頼。上記6節のURL(Advanced表示、seek可能)。
+
+- 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`、
+  `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01.md`。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。

@@ -1,8 +1,9 @@
 # ACTIVE_TASK: USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01
 
 管理ID: USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01
-Status: IN_PROGRESS (RESEARCH開始)
-Lock: docs/pm/locks/audio_stage.lock 取得済み(このタスクのみ)
+Status: COMPLETE(B1_GENERATED→GATE_PASS到達、USER_DECISION_REQUIRED=ユーザー試聴待ち)
+Lock: docs/pm/locks/audio_stage.lock 解除済み
+最終報告: docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md
 Budget cap: ¥400
 T-0 delegation check: FAIL(既知パターン、実行コマンド全文セクション欠落等。継続)
 
@@ -17,15 +18,15 @@ T-0 delegation check: FAIL(既知パターン、実行コマンド全文セク�
 - [x] B1再生成(main_b1_2v write_new_theme、r8で0 leakage/Fact PASS/LEDGER_COMPLIANT、
       r1-r7はTension leakage residualで破棄、教訓・cost記録済み)
 - [x] Comment Contract(r8内で自動実行、PASS/LEDGER_COMPLIANT)
-- [ ] Key Phrase / 日本語タイトル
-- [ ] TTS / ASR
-- [ ] Assembly / Gate
-- [ ] player.html / unified.html / E2E check
-- [ ] A2 sha256 final確認(非変更)
-- [ ] SSOT反映(DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY)
-- [ ] RESULT_PACKET作成
-- [ ] git commit/push
-- [ ] lock解除
+- [x] Key Phrase(5件、本記事本文から新規選定)
+- [x] TTS / ASR(14segment全OK、Human Review Lock発生なし)
+- [x] Assembly / Gate(PASS、duration=321.175s、peak=0.95049、clipping=False)
+- [x] player.html / unified.html / E2E check(5項目PASS+seek確認)
+- [x] A2 sha256 final確認(非変更、224ファイルdiff無し)
+- [x] SSOT反映(DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY)
+- [x] RESULT_PACKET作成
+- [x] git commit/push(成果物本体commit `e3cbed45`)
+- [x] lock解除
 
 ## コスト実測(進行中、上限¥400)
 Research(Part1+Part2)=¥115.80。Writer試行r1(3attempt、旧ledger構成)=¥50.55。
