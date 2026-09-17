@@ -119,6 +119,26 @@ PRODUCTION`)や`editorial_mode="discovery_why"`の正式registry登録を
   「試聴した音質・内容に問題がない」ことのみを意味し、公開可否とは
   別の判断であることに注意([PROJECT_INDEX.md](PROJECT_INDEX.md)参照)。
 
+## News-family(Space Weapons/AI Control/Personalized News A2、2026-09-17追加)
+
+以下は`er014_output/user_test_news_2ep_01/`(Space Weapons/AI Control)・
+`er012_output/b_family_a2_new_topic_production_01/`(Personalized News A2)
+配下の通常News/B-Family新規topic正式Production経路の成果物である。
+上記P-series/N3-01/Household表とは別系統(別のRunner/正式経路)のため、
+別表として管理する。`User Quality`列はユーザー本人による通し試聴の
+結果(`USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01`、2026-09-17)。
+
+| Article | Level | Full Audio | Gate結果 | User Quality | URL / player path |
+|---|---|---|---|---|---|
+| Space Weapons | A2 | 完成(365.408秒、clippingなし。タイトルTTS区切り修正[title_tts]適用済み、それ以外[article/scaffold/key_phrases/comment/full_story/他segment音声]は無変更を`c2af33f2..6d088d2e`diff+segment sha256比較で確認済み) | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`。タイトル以外無変更確認後の条件付きPASS) | `https://rawcdn.githack.com/shimomura055/eigo-radio/dd153c7b905f575c30e9497324e61ca00273e424/user_test/unified.html?src=er014_output/user_test_news_2ep_01/space_weapons/a2/player.html&level=A2&...`(全文は`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+| Space Weapons | B1 | 完成(382.98秒、内容・音声無変更。視聴ページComment box表示レイアウトのみ修正) | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`、再試聴不要) | `.../space_weapons/b1b/player.html`(同URL形式、`level=B1`、`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+| AI Control | A2 | 完成 | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`。ただし情報密度・概念負荷の重大指摘あり→OPEN-164) | `.../ai_control/a2/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+| AI Control | B1 | 完成(RESUME-06でen=表題誤り[A2表題流用]をB1自身の表題へ是正済み) | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`。OPEN-164同様の指摘あり) | `.../ai_control/b1b/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+| Personalized News A2 | A2(B-Family新規topic、2V) | 完成(Human Review Lock 2件[見出しASR脱落]をstandard+minimal fallback二段retryで解消し完走) | Audio Validation Gate PASS(Analytical Leakage Check残存flag[voice_a/voice_b、3attempt上限]は既存3V/2V仕様と同型、記事完成はブロックしない) | **NG**(`REJECTED_AS_CURRENT_OUTPUT`、2026-09-17。理由=Voices構造根本問題[VoiceがSurvey/統計/外部Evidenceを引用、立場がぼやける]、個別修正せず仕様見直し中`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`。実装基盤`main_a2_2v()`配線自体は`WIRING_INCOMPLETE`のまま[記事品質と別軸]) | `.../personalized_news_2v_a2/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+
+上記5本は`publication_status`(公開承認)の判断対象ではない(既存の
+「User Quality≠Publication」原則を維持、`NOT_APPROVED`のまま)。
+
 ## 参照元
 
 [ER-003-REPRO_BASELINE.md](ER-003-REPRO_BASELINE.md)、

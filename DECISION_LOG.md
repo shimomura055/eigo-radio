@@ -425,6 +425,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## FAMILY-C-MEMORY-A2-SEGMENT-COMMENT-TRIAL-11: Family C「The future of memory」A2限定のsegmentation統合(旧14→新10 segment、避けられる短segment3件を隣接統合)+Comment 1〜3を英文理解ガイド型へ変更(禁止語句0件)+兄Voice(Erinome→Algieba、ピッチ推定根拠)のTrial版を新出力先に作成(旧Trial-10版は無変更保存)、Audio Validation PASS(duration316.569秒)、費用¥23.10、Status=VALIDATED候補/USER_LISTENING_PENDING(Production未採用)。
 - [本ファイル内] ## USER-TEST-VOICES-A2-MINIMAL-01: Voices 3V「AI hiring」既存B1→A2翻案Trial artifact完成(記事+音声+player、VALIDATED候補/USER_LISTENING_PENDING)、Voices 2V「Personalized news」A2はPriority 2未着手。
 - [本ファイル内] ## PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01: Family横断A2生成方式監査結果、B1→A2翻案は共通設計ではないと確認(現時点で不採用)、Family横断共通化原則(PM_GOVERNANCE 18節)新設、コスト制約(実装方針)変更(PM_BRIEF反映)
+- [本ファイル内] ## USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01: AI Control A2/B1・Space Weapons A2/B1ユーザー試聴PASS記録(USER_TEST_READY)+Personalized News A2現行版はVoices構造根本問題によりユーザー品質NG(基盤PRODUCTION_WIREDは維持)+News情報密度/理解可能性の新規Open Item(OPEN-164)登録
 
 ---
 
@@ -8031,6 +8032,22 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - **cost実測**: `raw_usage_log.jsonl`ベースで¥173.47(Research/Ledger+A2/B1 Writer/Fact Checker/Ledger Deviation[openai]=¥95.97、TTS[gemini]=¥72.57、ASR[openai_asr]=¥4.93)。Scaffold(Preview/Comment)・Key Phrase選定/canonicalizationはこのdriverの cost_stage() 計測対象外(`er003_v1_n3_01_scaffold_generate.py`がcl.record非経由、Space Weapons/AI Control等既存driverと同型の既知計測ギャップであり本タスクで新規に発生させたものではない)。上限¥600に対し実測分は十分な余裕、未計測分を含めても総額は¥250目安以内と推定。
 - Status: `USER_DECISION_REQUIRED`(音声Human Review Lock 2件、STOP)。記事(A2/B1本文・Ledger・QA・Scaffold・Key Phrase・日本語タイトル)は完成。音声はA2/B1とも1 segmentずつ未解決、episode/player/URL未生成。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_LIGHT_01.md`、`docs/pm/delegation_log/USER-TEST-NEWS-LIGHT-TOPIC-01.md`。
+
+## USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01: AI Control A2/B1・Space Weapons A2/B1ユーザー試聴PASS記録+Personalized News A2現行版品質NG+OPEN-164登録
+
+- 日付: 2026-09-17
+- 種別: PM運用Gate(Gate 7)closeout整合作業(Sonnet委任、SSOT・Git担当、API呼び出し0、Productionコード変更0、記事再生成0)。ユーザーが2026-09-17に試聴・確認した5本(Space Weapons A2/B1、AI Control A2/B1、Personalized News A2)へのFeedbackをSSOTへ反映した。
+- **AI Control A2/B1**: ユーザー試聴OK、両方とも`USER_TEST_READY`(ユーザー試聴PASS)として記録する。ただし内容が難しすぎる(前提知識依存・情報詰め込み・専門用語以外の難しい一般語も多い・AI知識のあるユーザー自身がscriptを見ても理解困難)という重大な指摘があり、これを理由に今回は再生成しない(下記OPEN-164として別管理)。ユーザーによる語彙・文長制御の確認結果: A2は平易な一般語優先・平均文長11語以下・最長18語以下・1文1メッセージ・単純構文・spoken-first(`CURRENT_SPEC.md` L538-542)、B1はB1-B Direction Control原則(診断的原則、hard ruleではない、`CURRENT_SPEC.md` L606)。いずれもCEFR外語彙の機械的禁止方式やwordlistは採用していない(`CURRENT_SPEC.md` L538「厳密なCEFR語彙数上限・wordlistは意図的に設けない…数値ルール化は`REJECTED`」)。**結論**: AI Controlが難しかったのは「レベル調整(CEFR言語難易度制御)が未実施だったから」ではなく、既存の語彙・文長制御は仕様どおり機能した上での情報設計・概念負荷(何を・どれだけ詰め込むか)の問題であると整理する。
+- **Space Weapons A2**: `USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-06`(commit`6d088d2e`)がタイトルTTS(`title_tts`)の区切り修正のみを行ったことを、`c2af33f2..6d088d2e`の`git diff --stat`(19ファイル変更、いずれもaudit/web成果物・attempt記録・regenスクリプト)、`parts.json`diff(`title_tts`フィールド追加1行のみ、`title`/`part1`/`part2`等は無変更)、`article.md`/`a2_support_texts.json`/`key_phrases/`のdiff(差分なし)、`tts_generation_results.json`の全segment sha256比較(`topic_intro`のみsha256変更、他13narration segment+10 support segment全て一致)で確認した。`episode.mp3`/`topic_intro.mp3`の変更はtopic_intro差し替えに伴う再assemblyの結果であり、他segmentの音源は不変。よって「タイトルTTS以外は無変更」が確認できたため`USER_TEST_READY`(ユーザー試聴PASS)として記録する。
+- **Space Weapons B1**: `player.html`の場所変更(`b1b/web/player.html`→`b1b/player.html`、0行差分のrename)のみでComment box表示レイアウト修正が適用されており、内容・音声は無変更。ユーザーが修正後レイアウトをOKとしたため`USER_TEST_READY`(ユーザー試聴PASS、再試聴不要)として記録する。
+- **Personalized News A2**: 現行成果物(`er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`)はユーザーNGとする(`REJECTED_AS_CURRENT_OUTPUT`)。理由は個別文言ではなくVoices構造の根本問題(VoiceがSurvey/統計/外部Evidenceを引用、各Voiceの立場がぼやけている)であり、個別修正は行わず仕様見直しを別委任`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`で継続する(`USER_DECISION_REQUIRED`想定)。**重要**: 記事品質NGでも、新規topic A2 E2E Production wiring(`main_a2_2v()`、OPEN-151行、Status=`WIRING_INCOMPLETE`)はこの判断により変更しない。実装基盤(配線)のStatusと、今回生成された記事1本の品質判定は別軸で管理する。
+- **News Listening Comprehension / Information Density問題(OPEN-164新規登録)**: CEFR言語難易度調整とは別に、Listening Newsとしての情報密度・前提知識依存・概念密度・難語密度を制御する仕組みが無いという構造的Open Itemを新規登録した。詳細は`OPEN_ITEMS.md` OPEN-164行を参照。優先度=中〜高、期限=量産開始前に改善方針を決める。今回のAI Control A2/B1はユーザーOK(`USER_TEST_READY`)のため再生成しない。
+- **OPEN-151追記**: Personalized News A2の現行記事ユーザーNGと、仕様見直しタスク`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`で継続審議中である旨を追記した(`OPEN_ITEMS.md` OPEN-151行末尾)。
+- **CURRENT_SPEC.md**: 新規のProduction仕様変更・Voice役割の新仕様は書いていない(今回はSSOT状態更新のみ)。B-Family A2新規topic経路(`main_a2_2v()`)の`PRODUCTION_WIRED`行は無変更のまま維持。
+- **ARTIFACT_REGISTRY.md**: 既存のP-series(A01/A02/ADD03)・N3-01・Household向けの表とは別に、News-family(Space Weapons/AI Control/Personalized News A2)向けの新規セクションを追加し、5本のUser Quality(PASS×4、NG×1)とURL・Gate結果を記録した。
+- API呼び出し: 0(SSOT編集・Git操作・grep/diff確認のみ)。
+- Status: AI Control A2/B1=`USER_TEST_READY`。Space Weapons A2=`USER_TEST_READY`(タイトルTTS以外無変更を確認)。Space Weapons B1=`USER_TEST_READY`。Personalized News A2=現行成果物`REJECTED_AS_CURRENT_OUTPUT`(基盤`WIRING_INCOMPLETE`は無変更)。
+- 参照: `docs/pm/RESULT_PACKET_FEEDBACK_CLOSEOUT_01.md`、`docs/pm/delegation_log/USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01_closeout.md`。
 
 ## 参照元
 
