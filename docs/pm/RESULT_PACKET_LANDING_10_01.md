@@ -25,8 +25,8 @@
 10. 全20リンク一致: `docs/pm/closeout_136_e2e/landing_10_01/href_match.json` overall=PASS(10/10行、Standard/Advanced取り違えなし)。加えて全20 URL HTTP GET 200(`http200_check.json`)。
 11. Personalized News Advanced FIX-01一致: TSVのadvanced_urlはDECISION_LOG `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`のcanonical URL(commit`7ea8bd7a`)と文字列完全一致。
 12. Browser E2E結果(evidenceパス): `docs/pm/closeout_136_e2e/landing_10_01/e2e_result.json`(PC/スマホとも全項目PASS)、screenshot `pc_full.png`・`mobile_full.png`(目視確認済み、崩れなし)。
-13. Git commit: `b78f3cb5`(HTML+SSOT TSV+href_match.json+http200_check.json)push済み。SSOT反映(DECISION_LOG/ARTIFACT_REGISTRY)は別commitで追加予定。
-14. main=origin/main: push直前`git fetch origin`で衝突なし確認、push成功(`56aa528d..b78f3cb5`)。
+13. Git commit: `b78f3cb5`(HTML+SSOT TSV+href_match.json+http200_check.json)push済み。`b271203f`(DECISION_LOG/ARTIFACT_REGISTRY/E2E evidence/RESULT_PACKET/delegation_log)push済み。
+14. main=origin/main: 各pushの直前に`git fetch origin`で衝突なし確認。最終push成功(`b78f3cb5..b271203f`)、push後の`git fetch origin`でmain=origin/main=`b271203f`を確認済み。
 15. SSOT/Decision Log更新内容: `DECISION_LOG.md`に`## USER-TEST-ARTICLE-LANDING-10-01`索引+本体エントリ追加。`ARTIFACT_REGISTRY.md`に「ユーザーテスト一覧ページ(10記事、2026-09-18)」行追加。`OPEN_ITEMS.md`/`CURRENT_SPEC.md`は変更なし(新規問題なし)。
 16. 未解決事項: なし(本タスク範囲内)。
 17. USER_DECISION_REQUIRED残存有無: なし。
