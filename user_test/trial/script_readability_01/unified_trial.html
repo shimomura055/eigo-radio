@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>English Your Way · User Test (Trial: Script Readability)</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#18202a;--muted:#667085;--line:#e4e7ec;--accent:#315efb;--soft:#eef3ff;--jp:#f8fafc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;line-height:1.75}
+.wrap{max-width:860px;margin:0 auto;padding:28px 18px 72px}.hero{background:linear-gradient(135deg,#18202a,#344054);color:#fff;padding:30px;border-radius:18px;margin-bottom:18px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}h1{font-size:30px;line-height:1.35;margin:8px 0 6px}.sub{font-size:15px;opacity:.82}
+.player{position:sticky;top:0;z-index:10;background:rgba(246,247,249,.96);backdrop-filter:blur(10px);padding:12px 0 14px}.playerbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 6px 24px rgba(16,24,40,.08)}.playerbox strong{display:block;font-size:14px;margin-bottom:8px}audio{width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0}.card h2{font-size:19px;margin:0 0 14px}.card h3{font-size:16px;margin:22px 0 8px}
+.label{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:var(--soft);padding:3px 9px;border-radius:999px;margin-bottom:10px}
+.jp{background:var(--jp);border-left:4px solid #98a2b3;padding:12px 14px;border-radius:8px}.comment{background:#f8fafc;border:1px solid #d0d5dd;border-left:4px solid #667085;padding:14px 16px;border-radius:10px;margin:14px 0}.comment strong{display:block;font-size:13px;color:#475467;margin-bottom:6px}.script{white-space:pre-line}.kp{display:grid;gap:10px}.kpitem{display:grid;grid-template-columns:1fr 1fr;gap:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpitem b{font-size:15px}
+.seek{border:0;background:var(--soft);color:var(--accent);font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.note{font-size:13px;color:var(--muted);margin-top:8px}.error{background:#fff4f2;border:1px solid #fecdca;color:#b42318;border-radius:12px;padding:16px}
+footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}@media(max-width:640px){h1{font-size:25px}.card{padding:18px}.kpitem{grid-template-columns:1fr}.hero{padding:24px}.sectionhead{align-items:flex-start}}
+/* --- Trial: script readability additions (USER-TEST-SCRIPT-READABILITY-TRIAL-01) --- */
+mark.kp-hl{background:#fff3a3;padding:0 1px;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+hr.trans-divider{border:0;border-top:2px dashed var(--line);margin:34px 0 18px}
+.trans-section h2{margin-bottom:6px}
+.trans-section .trans-intro{font-size:13px;color:var(--muted);margin:0 0 14px}
+.repost-label{display:inline-block;font-size:11px;font-weight:700;color:#667085;background:#eef0f3;padding:2px 9px;border-radius:999px;margin-bottom:8px}
+.jacomment-repost{background:#f2f3f5;border:1px solid #d0d5dd;border-left:4px solid #98a2b3;color:#5b6472;padding:12px 14px;border-radius:10px;margin:14px 0}
+.jacomment-repost>div{color:#5b6472}
+.trial-badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:999px;margin-left:8px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero"><div class="eyebrow" id="eyebrow">English Your Way · User Test</div><h1 id="jaTitle">Loading…</h1><div class="sub" id="enTitle"></div></section>
+<div class="player"><div class="playerbox"><strong>▶ 全体を再生</strong><audio id="episode" controls preload="none"></audio></div></div>
+<div id="content"><div class="card"><p>コンテンツを読み込んでいます…</p></div></div>
+<footer>ユーザ実検証用ページ(Trial: script readability) · 効果音・ジングル・技術情報は表示していません。</footer>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+const src=q.get('src'), level=(q.get('level')||'').toUpperCase(), en=q.get('en')||'', ja=q.get('ja')||'', trial=q.get('trial')||'';
+const levelLabel=level.startsWith('A2')?'Standard':level.startsWith('B1')?'Advanced':level;
+document.getElementById('eyebrow').innerHTML=esc('English Your Way · '+(levelLabel||'')+' · User Test')+(trial?'<span class="trial-badge">Trial: Script Readability</span>':'');
+document.getElementById('jaTitle').textContent=ja||en||'English Your Way';
+document.getElementById('enTitle').textContent=en;
+document.title=(ja||en||'English Your Way')+'｜'+(levelLabel||'')+' User Test (Trial)';
+function rootBase(){const p=location.pathname;const marker='/user_test/trial/script_readability_01/unified_trial.html';const idx=p.indexOf(marker);if(idx>=0)return location.origin+p.slice(0,idx);const marker2='/user_test/unified.html';return location.origin+p.slice(0,p.indexOf(marker2))}
+function sourceUrl(){return rootBase()+'/'+src.replace(/^\/+/, '');}
+function abs(u,base){try{const s=String(u||'');const m=s.match(/^https:\/\/raw\.githubusercontent\.com\/shimomura055\/eigo-radio\/main\/(.+)$/);if(m)return rootBase()+'/'+m[1];return new URL(s,base).href}catch(e){return u}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function clean(s){return String(s||'').replace(/\(TTS[^)]*\)/gi,'').replace(/\s+/g,' ').trim()}
+function displayText(s){
+ return String(s||'')
+  .replace(/\r/g,'')
+  .replace(/\(TTS読み上げ用:[^)]*\)/gi,'')
+  .replace(/\(人手供給[^)]*\)/gi,'')
+  .replace(/\(本継続run[^)]*\)/gi,'')
+  .replace(/※本継続run[^\n]*/gi,'')
+  .replace(/【内部記録:[\s\S]*?】/g,'')
+  .replace(/\[内部記録:[\s\S]*?\]/g,'')
+  .replace(/\s+$/gm,'')
+  .trim();
+}
+function displayLabel(s){
+ const x=clean(s);
+ let m=x.match(/^(Comment\s*\d+)/i); if(m)return m[1];
+ m=x.match(/^(In One Line)/i); if(m)return 'In One Line';
+ if(/^(Full Story Part|Hook Part|Voice .* body|Narrator:|Closing|Tension|story[_ -]?\d+)/i.test(x))return '';
+ return x.replace(/\s*\([^)]*(?:Aoede|Charon|Algieba|Erinome|voice|Narrator|Japanese|English|A2|B1|no heading)[^)]*\)\s*$/i,'');
+}
+function jump(sec){const a=document.getElementById('episode');a.currentTime=Number(sec);a.play()}
+function seekButton(sec){return sec==null?'':'<button class="seek" data-sec="'+esc(sec)+'">▶ ここから再生</button>'}
+function bind(){document.querySelectorAll('.seek[data-sec]').forEach(b=>b.onclick=()=>jump(b.dataset.sec))}
+function card(title,body,sec,label){return '<section class="card">'+(label?'<span class="label">'+esc(label)+'</span>':'')+'<div class="sectionhead"><h2>'+esc(title)+'</h2>'+seekButton(sec)+'</div>'+body+'</section>'}
+function chooseTimeline(doc){
+ const tables=[...doc.querySelectorAll('table.timeline')]; if(!tables.length)return null;if(tables.length===1)return tables[0];
+ const want=level.startsWith('A2')?/\bA2\b/i:/\bB1(?:B)?\b/i;
+ for(const t of tables){let n=t.previousElementSibling;while(n&& !/^H[12]$/.test(n.tagName))n=n.previousElementSibling;if(n&&want.test(n.textContent))return t}
+ return level.startsWith('A2')?tables[0]:tables[tables.length-1];
+}
+function chooseAudio(doc,table){
+ const aud=[...doc.querySelectorAll('audio.main, audio[id*="episode"]')]; if(!aud.length)return doc.querySelector('audio');
+ if(aud.length===1)return aud[0];
+ const re=level.startsWith('A2')?/a2/i:/b1/i;return aud.find(a=>re.test(a.id||'')||re.test(a.getAttribute('src')||''))||aud[aud.length-1];
+}
+function textWithBreaks(el){
+ const clone=el.cloneNode(true);
+ clone.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+ return clone.textContent||'';
+}
+function rowData(table){
+ return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:displayText(textWithBreaks(td[2])),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
+}
+function isSfx(r){return /notification|\bintro\b.*sfx|music|jingle/i.test(r.label)||/効果音|ジングル|SFX/i.test(r.text)}
+function isKP(r){return /key[ _-]?phrase\s*\d|^kp\d|^key_phrase_\d/i.test(r.label)}
+function kpParts(t){
+ let x=String(t||'').replace(/\r/g,'').replace(/^\s*\d+[.)]\s*/,'').trim();
+ let m=x.match(/English\s*:\s*([\s\S]*?)\s*日本語(?:gloss)?(?:\([^)]*\))?\s*:\s*([\s\S]+)$/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語gloss(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ m=x.match(/EN\s*:\s*([^\n]+)[\s\S]*?JA(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ m=x.match(/英語\s*:\s*([^\n]+)[\s\S]*?日本語(?:\([^)]*\))?\s*:\s*([^\n]+)/i);
+ if(m)return [displayText(m[1]),displayText(m[2])];
+ let a=x.split(/\s*\/\s*/);
+ if(a.length>=2)return [displayText(a[0]),displayText(a.slice(1).join(' / '))];
+ return [displayText(x),''];
+}
+function isVoicesB1(){
+ return level.startsWith('B1') && /editorial_b_family_production_phase1_02|four_type_observation_01\/voices\/audio\/b1_2v_v2|editorial_b_voices_3v_audio_trial_01/.test(src||'');
+}
+function renderVoicesFull(rows){
+ const fullIdx=rows.findIndex(r=>/full story intro/i.test(r.label));
+ const seq=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r));
+ let body='', questionOpen=false, questionParts=[];
+ function flushQuestion(){
+   if(!questionParts.length)return;
+   body+='<h3>The Question</h3><p class="script">'+esc(questionParts.map(x=>displayText(x.text)).join('\n\n'))+'</p>';
+   questionParts=[];
+ }
+ for(const r of seq){
+   if(/^Comment\s*\d+/i.test(r.label)){
+     flushQuestion();
+     const n=(r.label.match(/Comment\s*\d+/i)||['Comment'])[0];
+     body+='<div class="comment"><strong>'+esc(n)+'</strong><div>'+esc(displayText(r.text))+'</div></div>';
+     continue;
+   }
+   if(/^Hook Part/i.test(r.label)){questionParts.push(r);continue}
+   flushQuestion();
+   if(/^Narrator:\s*(?:One Voice|Another Voice|Voice \d+|A Third Voice)/i.test(r.label)){
+     body+='<h3>'+esc(displayText(r.text))+'</h3>';
+     continue;
+   }
+   if(/^Voice (?:[AB]|\d+) body/i.test(r.label)){
+     body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+     continue;
+   }
+   if(/^Tension:/i.test(r.label)){
+     body+='<h3>Why They See It Differently</h3><p class="script">'+esc(displayText(r.text))+'</p>';
+     continue;
+   }
+   if(/^Closing:/i.test(r.label)){
+     body+='<h3>What This Question Really Means</h3><p class="script">'+esc(displayText(r.text))+'</p>';
+     continue;
+   }
+   if(!/point notification|outro/i.test(r.label)){
+     const lbl=displayLabel(r.label);if(lbl)body+='<h3>'+esc(lbl)+'</h3>';
+     body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+   }
+ }
+ flushQuestion();
+ return {body,sec:seq[0]?.sec};
+}
+function isFamilyCB1(){
+ return level.startsWith('B1') && /family_c_episode_trial_(?:09\/home_robots_b1|12\/memory_b1|12\/twins_b1)/.test(src||'');
+}
+function renderFamilyCFull(rows){
+ const fullIdx=rows.findIndex(r=>/full story intro/i.test(r.label));
+ const seq=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r));
+ let body='';
+ for(const r of seq){
+   if(/^Comment\s*\d+/i.test(r.label)){
+     const n=(r.label.match(/Comment\s*\d+/i)||['Comment'])[0];
+     body+='<div class="comment"><strong>'+esc(n)+'</strong><div>'+esc(displayText(r.text))+'</div></div>';
+     continue;
+   }
+   if(/^story[_ -]?\d+$/i.test(r.label)){
+     body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+     continue;
+   }
+   if(/outro|notification/i.test(r.label))continue;
+   const label=displayLabel(r.label);
+   if(label)body+='<h3>'+esc(label)+'</h3>';
+   body+='<p class="script">'+esc(displayText(r.text))+'</p>';
+ }
+ return {body,sec:seq[0]?.sec};
+}
+function timelineRender(doc,base){
+ const t=chooseTimeline(doc), rows=rowData(t), audio=chooseAudio(doc,t); if(!audio)throw new Error('完成episode音声を特定できませんでした。');
+ document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
+ const intro=rows.filter(r=>/welcome|topic intro|japanese title/i.test(r.label)&&!isSfx(r));
+ const preview=rows.find(r=>/^preview$/i.test(r.label)||(/^preview/i.test(r.label)&&!/intro/i.test(r.label)));
+ const kps=rows.filter(isKP);
+ const fullIdx=rows.findIndex(r=>/full story intro|full script intro|story intro/i.test(r.label));
+ const full=(fullIdx>=0?rows.slice(fullIdx+1):rows).filter(r=>!isSfx(r)&&!isKP(r)&&!/preview|key phrases? intro|welcome|topic intro|japanese title/i.test(r.label));
+ let out='';
+ if(intro.length){out+=card('Intro',intro.map(r=>'<p class="'+(/japanese/i.test(r.label)?'jp':'script')+'">'+esc(displayText(r.text))+'</p>').join(''),intro[0]?.sec,'INTRO')}
+ if(preview)out+=card('Preview','<p class="'+(/[ぁ-んァ-ヶ一-龠]/.test(preview.text)?'jp':'script')+'">'+esc(displayText(preview.text))+'</p>',preview.sec);
+ if(kps.length){const kphtml='<div class="kp">'+kps.map(r=>{const p=kpParts(r.text);return '<div class="kpitem"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>'}).join('')+'</div>';out+=card('Key Phrases',kphtml,kps[0]?.sec)}
+ if(full.length){
+   if(isVoicesB1()){const v=renderVoicesFull(rows);out+=card('Full Story',v.body,v.sec)}
+   else if(isFamilyCB1()){const v=renderFamilyCFull(rows);out+=card('Full Story',v.body,v.sec)}
+   else{let body='';for(const r of full){const label=displayLabel(r.label);const cls=/comment/i.test(r.label)&&/[ぁ-んァ-ヶ一-龠]/.test(r.text)?'jp':'script';
+     if(/^Comment\s*\d+/i.test(r.label)){
+       const n=(r.label.match(/Comment\s*\d+/i)||['Comment'])[0];
+       body+='<div class="comment"><strong>'+esc(n)+'</strong><div class="'+cls+'">'+esc(displayText(r.text))+'</div></div>';
+       continue;
+     }
+     if(label)body+='<h3>'+esc(label)+'</h3>';body+='<p class="'+cls+'">'+esc(displayText(r.text))+'</p>'}out+=card('Full Script',body,full[0]?.sec)}
+ }
+ return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
+}
+function simpleRender(doc,base){
+ const audio=doc.querySelector('audio[id*="episode"], .player audio, audio');if(!audio)throw new Error('完成episode音声を特定できませんでした。');document.getElementById('episode').src=abs(audio.getAttribute('src'),base);
+ let out='';const cards=[...doc.querySelectorAll('section.card')];for(const c of cards){const h=c.querySelector('h2');if(!h)continue;const title=clean(h.textContent);if(!/preview|key phrases|full story|full script/i.test(title))continue;const clone=c.cloneNode(true);clone.querySelectorAll('button,audio').forEach(x=>x.remove());clone.querySelector('h2')?.remove();if(/key phrases/i.test(title)){out+=card('Key Phrases',clone.innerHTML)}else if(/preview/i.test(title)){out+=card('Preview',clone.innerHTML)}else{out+=card('Full Script',clone.innerHTML)}}
+ return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
+}
+
+/* ===== Trial-only additions: Key Phrase highlight + Japanese translation section =====
+   USER-TEST-SCRIPT-READABILITY-TRIAL-01。canonical player.html/parts.json/
+   key_phrases側は変更しない。取得失敗時は既存Player機能(音声再生)へ影響を
+   与えないよう、呼び出し側で個別try/catchする。 */
+function escapeRegex(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function tolerantPattern(phrase){
+ return phrase.split(/\s+/).map(w=>escapeRegex(w).replace(/['’]/g,"['’]")).join('[\\s-]+');
+}
+async function fetchJsonFirst(urls){
+ for(const u of urls){
+   try{const r=await fetch(u);if(r.ok)return await r.json();}catch(e){/* try next candidate */}
+ }
+ return null;
+}
+async function highlightKeyPhrases(base){
+ // Trial範囲は既知の2記事のみ。ディレクトリ構成の違い(A2=key_phrases/直下、
+ // B1=b1b/key_phrases/配下)を吸収するため候補パスを両方試す
+ // (共通化する場合はplayer.html側にkey_phrases jsonへの相対パスを明示する
+ // 仕組みが必要、Trialでの発見事項として報告)。
+ const candidates=['key_phrases/keywords_canonicalized.json','b1b/key_phrases/keywords_canonicalized.json'];
+ const urls=candidates.map(c=>new URL(c,base).href);
+ const data=await fetchJsonFirst(urls);
+ const report={phrases:[],card_found:false,source_found:!!data};
+ if(!data||!Array.isArray(data.items)){window.__kpHighlightReport=report;return report;}
+ const phrases=data.items.map(it=>it.used_form).filter(Boolean);
+ const cardEl=[...document.querySelectorAll('#content .card')].find(c=>{const h=c.querySelector('h2');return h&&/Full Script|Full Story/i.test(h.textContent)});
+ report.card_found=!!cardEl;
+ if(!cardEl){window.__kpHighlightReport=report;return report;}
+ const paras=[...cardEl.querySelectorAll('p.script')];
+ const combined=paras.map(p=>p.textContent).join('\n');
+ const phraseInfo=phrases.map(p=>{
+   let matchType=null;
+   if(combined.includes(p))matchType='exact';
+   else{const re=new RegExp(tolerantPattern(p),'i');if(re.test(combined))matchType='normalized';}
+   return {phrase:p,matchType};
+ });
+ const counts=new Map();
+ for(const p of paras){
+   const text=p.textContent;
+   const spans=[];
+   for(const info of phraseInfo){
+     if(!info.matchType)continue;
+     const flags=info.matchType==='exact'?'g':'gi';
+     const pattern=info.matchType==='exact'?escapeRegex(info.phrase):tolerantPattern(info.phrase);
+     const re=new RegExp(pattern,flags);
+     let m;
+     while((m=re.exec(text))){
+       spans.push({start:m.index,end:m.index+m[0].length,phrase:info.phrase});
+       if(m[0].length===0)re.lastIndex++;
+     }
+   }
+   spans.sort((a,b)=>a.start-b.start||(b.end-b.start)-(a.end-a.start));
+   const kept=[];let lastEnd=-1;
+   for(const s of spans){if(s.start>=lastEnd){kept.push(s);lastEnd=s.end;}}
+   if(kept.length){
+     let html='',pos=0;
+     for(const s of kept){
+       html+=esc(text.slice(pos,s.start));
+       html+='<mark class="kp-hl" data-kp="'+esc(s.phrase)+'">'+esc(text.slice(s.start,s.end))+'</mark>';
+       pos=s.end;
+       counts.set(s.phrase,(counts.get(s.phrase)||0)+1);
+     }
+     html+=esc(text.slice(pos));
+     p.innerHTML=html;
+   }
+ }
+ report.phrases=phraseInfo.map(info=>({phrase:info.phrase,matchType:info.matchType,count:counts.get(info.phrase)||0,unmatched:!info.matchType}));
+ window.__kpHighlightReport=report;
+ return report;
+}
+async function renderTranslationSection(){
+ const path=level.startsWith('A2')?'personalized_news_a2/translation_ja.json':level.startsWith('B1')?'personalized_news_b1/translation_ja.json':null;
+ if(!path)throw new Error('未対応のlevelのため日本語訳データがありません: '+level);
+ const url=new URL(path,location.href).href;
+ const res=await fetch(url);
+ if(!res.ok)throw new Error('translation_ja.json取得に失敗しました ('+res.status+')');
+ const data=await res.json();
+ const sections=Array.isArray(data.sections)?data.sections:[];
+ const hr=document.createElement('hr');hr.className='trans-divider';
+ document.getElementById('content').appendChild(hr);
+ const section=document.createElement('section');section.className='card trans-section';
+ let body='<h2>日本語訳</h2><p class="trans-intro">英語スクリプトの構造(Hook/Voice A/Voice B/Tension/Comment/In One Line等)に沿って、対応する日本語訳を掲載します。</p>';
+ for(const s of sections){
+   if(s.type==='existing_comment_repost'){
+     body+='<div class="jacomment-repost"><span class="repost-label">既存Comment(再掲、翻訳ではありません)</span><div>'+esc(s.text_ja)+'</div></div>';
+   }else{
+     body+='<h3>'+esc(s.heading_ja||'')+'</h3><p class="script">'+esc(s.text_ja||'')+'</p>';
+   }
+ }
+ section.innerHTML=body;
+ document.getElementById('content').appendChild(section);
+ window.__translationSectionCount=sections.length;
+}
+
+(async()=>{
+ try{
+  if(!src)throw new Error('src parameter is required');
+  const url=sourceUrl(),res=await fetch(url);if(!res.ok)throw new Error('元playerを取得できませんでした ('+res.status+')');
+  const text=await res.text(),doc=new DOMParser().parseFromString(text,'text/html'),base=new URL('.',url).href;
+  const t=chooseTimeline(doc);document.getElementById('content').innerHTML=t?timelineRender(doc,base):simpleRender(doc,base);bind();
+  if(trial){
+   try{
+    await highlightKeyPhrases(base);
+    await renderTranslationSection();
+   }catch(e){
+    console.error('trial enhancement error',e);
+    const note=document.createElement('div');
+    note.className='error';
+    note.style.marginTop='16px';
+    note.innerHTML='<strong>Trial表示エラー(音声再生には影響しません)</strong><br>'+esc(e.message);
+    document.getElementById('content').appendChild(note);
+   }
+  }
+ }catch(e){document.getElementById('content').innerHTML='<div class="error"><strong>表示エラー</strong><br>'+esc(e.message)+'</div>'}
+})();
+</script>
+</body></html>

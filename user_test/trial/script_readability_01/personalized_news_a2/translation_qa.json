@@ -1,0 +1,57 @@
+{
+  "level": "A2",
+  "article": "The Same Feed, Two Different Mornings",
+  "checker": "Sonnet self-check (no external LLM call)",
+  "checks": [
+    {
+      "section_id": "hook",
+      "numbers": "原文に数字表現なし。訳文にも数字追加なし",
+      "proper_nouns": "固有名詞なし",
+      "negation": "否定表現なし",
+      "stance": "中立的な導入描写。立場逆転なし",
+      "result": "PASS"
+    },
+    {
+      "section_id": "voice_a",
+      "numbers": "原文に数字表現なし。訳文にも数字追加なし",
+      "proper_nouns": "Google News / Google / YouTube を維持",
+      "negation": "'do not want to sort through' -> '関係のない記事をより分けたくはない'(否定維持)",
+      "stance": "Voice A(通勤者・肯定/実用重視の立場)を維持、逆転なし",
+      "result": "PASS"
+    },
+    {
+      "section_id": "voice_b",
+      "numbers": "原文に数字表現なし。訳文にも数字追加なし",
+      "proper_nouns": "固有名詞なし",
+      "negation": "'I cannot see all the signals' -> '材料のすべてを見ることはできない'(否定維持)",
+      "stance": "Voice B(懸念・批判的な立場)を維持、逆転なし",
+      "result": "PASS"
+    },
+    {
+      "section_id": "tension",
+      "numbers": "原文に数字表現なし。訳文にも数字追加なし",
+      "proper_nouns": "固有名詞なし",
+      "negation": "'Neither is wrong' -> 'どちらも間違っていない'(否定維持)、'cannot reach the ranking rules' -> '手が届かず'(否定維持)",
+      "stance": "両Voiceの対比を維持、優劣付けなし",
+      "result": "PASS"
+    },
+    {
+      "section_id": "closing",
+      "numbers": "原文に数字表現なし。訳文にも数字追加なし",
+      "proper_nouns": "固有名詞なし",
+      "negation": "'is not simply whether' -> '単純な話ではない'(否定維持)",
+      "stance": "結論の中立的な問い直しを維持、新規主張の追加なし",
+      "result": "PASS"
+    },
+    {
+      "section_id": "comment_1_4",
+      "numbers": "既存日本語Commentをそのまま再掲(翻訳ではない)。改変なし",
+      "proper_nouns": "N/A(既存テキスト再掲)",
+      "negation": "N/A(既存テキスト再掲)",
+      "stance": "N/A(既存テキスト再掲、a2_support_texts.jsonと文字列一致)",
+      "result": "PASS"
+    }
+  ],
+  "overall_result": "PASS",
+  "additions_or_omissions": "原文にない主張・補足の追加、および欠落は確認されなかった(段落単位で原文の情報量と対応関係を確認)。"
+}
