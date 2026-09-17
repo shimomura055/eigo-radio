@@ -71,8 +71,13 @@ function chooseAudio(doc,table){
  if(aud.length===1)return aud[0];
  const re=level.startsWith('A2')?/a2/i:/b1/i;return aud.find(a=>re.test(a.id||'')||re.test(a.getAttribute('src')||''))||aud[aud.length-1];
 }
+function textWithBreaks(el){
+ const clone=el.cloneNode(true);
+ clone.querySelectorAll('br').forEach(br=>br.replaceWith('\n'));
+ return clone.textContent||'';
+}
 function rowData(table){
- return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:displayText(td[2].innerText||td[2].textContent||''),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
+ return [...table.querySelectorAll('tbody tr')].map(tr=>{const td=tr.querySelectorAll('td');if(td.length<3)return null;return {label:clean(td[1].querySelector('b')?.textContent||td[1].textContent),text:displayText(textWithBreaks(td[2])),sec:tr.querySelector('button[data-sec]')?.dataset.sec??null}}).filter(Boolean);
 }
 function isSfx(r){return /notification|\bintro\b.*sfx|music|jingle/i.test(r.label)||/効果音|ジングル|SFX/i.test(r.text)}
 function isKP(r){return /key[ _-]?phrase\s*\d|^kp\d|^key_phrase_\d/i.test(r.label)}
