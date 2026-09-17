@@ -1,0 +1,254 @@
+USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01 — Verified Fact Ledger(2 Voices、B1 Advanced再構築版)
+
+テーマ: パーソナライズされたニュース(Is personalized news good for us?)。本Ledgerは
+2026-09-17時点で旧Ledger(er014_output/four_type_observation_01/voices/research/
+verified_fact_ledger.txt、2026-09-14作成)を全面的に再Researchした結果である
+(OPEN-166: 旧Ledgerの「短期テストでは政治的態度の測定可能な変化は確認されていない」
+という一般化が、後続の研究[本Ledger2-08系]と矛盾しうると判定されSTOPした問題への対応)。
+
+============================================================
+0. 旧Ledgerの何がstale/invalid/ambiguousだったか(必須報告事項)
+============================================================
+(a) STALE(記述自体は当時正しいが、その後の追加研究を踏まえると誤解を招く一般化になって
+    いた): 旧TENSION_ASYMMETRY_VALUEの「研究自体も、短期的には測定可能な政治的態度の
+    変化を検出できていない」という一文。旧Ledgerの2-05(Facebook 23,377人、3か月、有意な
+    変化なし)のみを念頭に「研究自体も」と一般化していたが、旧Ledger自身が2-08として
+    既に採録していたNature論文(X利用者4,965人、平均7週間、政策・時事問題態度が保守方向へ
+    0.12SD変化=有意な変化あり)と矛盾する。さらに本Ledgerの再Researchで、2025年の独・米
+    filter bubble実験(F009、中道層のイデオロギー分極化が増加)、2025年のXホスティリティ
+    再ランキング実験(F010、1週間で感情的分極化が変化)、2026年Nature Registered Report
+    (F016、8週間で党派的敵意知覚が増加・規範認識精度が低下)など、複数の最近の研究が
+    「短期でも測定可能な変化がある」ことを示しており、単純な一般化はもはや成立しない。
+(b) AMBIGUOUS(日付表記が不正確): 旧Ledgerは2-08のNature論文を「2023年」とだけ記していたが、
+    実際は2023年に実験を実施し、Nature誌への掲載(オンライン公開)は2026-02-18、印刷号は
+    2026年4月号である。研究実施年と発表年の混同がfreshness評価を誤らせていた
+    (Fact CheckerのWeb Search時に「2026-02-18公開の新しいNature論文」という表現で検出
+    されたのはこの論文そのものであり、「新しい別の論文」ではなく「発表日の解釈違い」が
+    根本原因だった)。
+(c) INVALID化はなし: 旧Ledgerの個別Factが事実として誤っていた(REJECTED相当)ケースは
+    見つからなかった。問題は個別Factの正確性ではなく、複数Factを跨いだ一般化・要約の
+    誤りだった。
+(d) 未反映の追加コンテキスト: 2023年Facebook/Instagram研究(旧2-05相当)には2026-03-19付
+    のScience誌訂正(Instagramのcarousel投稿分類法の追加修正、主要な実験効果推定には
+    影響なし)があるが、旧Ledgerはこれを反映していなかった(本LedガーではF007として明示)。
+(e) Voice 1側(パーソナライズの便利さ)のFact自体(旧1-01〜1-06、Google Newsの仕組み・
+    Reuters Institute調査)は、政治的態度変化のような時間経過で覆るタイプの主張ではなく
+    (製品機能説明・過去実施済み調査の記録)、本タスクでも再Research対象とし(Part 2、
+    GF-*/MF-*/RI-*/EU-*/CRS-*)、Reuters Instituteは2025年Digital News Report(RI-001〜
+    RI-003、47市場平均)・2023年調査(RI-004/RI-005)という、旧Ledgerの2016年調査よりも
+    新しい2つの調査波を採用した(数値がわずかに異なる=経年変化も観測できる)。
+
+============================================================
+1. 作成方法
+============================================================
+Part 1: er012_personalized_news_b1_rebuild_01_research.py(vfl01標準Researcher→
+Verification、web_search 13クエリ)。焦点=政治的態度変化研究の現状再確認。
+facts 19件下書き、VERIFIED=17、AMBIGUOUS=2(F014[発表日解釈]、F019[複数Factの総合
+所見、個別Factとしては不採用しLedger本文の総括説明に反映])、REJECTED=0。
+費用実測: ¥54.58。
+
+Part 2: er012_personalized_news_b1_rebuild_01_research_part2.py(同経路)。焦点=
+Google News/Facebook Feedの仕組み・Reuters Institute最新調査・EU DSA現行条文・
+CRS説明の現在時点での再確認。facts 23件下書き、VERIFIED=22、AMBIGUOUS=1(EU-004、
+EUR-Lex記載形式の解釈のみでArticles 27/38の内容自体には影響なし)、REJECTED=0。
+費用実測: ¥61.22。
+
+raw結果: research/fact_ledger_draft.json・fact_ledger_verification.json・
+verified_fact_ledger_flat.json(Part1)、research/fact_ledger_draft_part2.json・
+fact_ledger_verification_part2.json・verified_fact_ledger_flat_part2.json(Part2)。
+
+以下のVOICE_n_EVIDENCEタグは、VERIFIED分類のfactをFable/Sonnetが人手でVoice 1
+(パーソナライズの便利さ・関連性を支持する立場)寄りか、Voice 2(filter bubble/
+worldview narrowing/editorial controlを懸念する立場)寄りかで分類したもの(新しい
+事実の創作・数字の改変は一切していない)。
+
+タグ体系: [VOICE_1_EVIDENCE]/[VOICE_2_EVIDENCE]/[CROSS_REFERENCE]/[CONTESTED_RESEARCH_AREA]
+(政治的態度変化への短期効果の有無について、研究間で結果が割れている領域、Tensionでのみ
+使用し、いずれか一方の結論として断定しない)。
+
+各Factの注記形式: claim / source / date(実施年・発表年を区別) / population・scope /
+evidence type(causal_strength) / verification verdict / freshness(取得日2026-09-17) /
+B1使用可否。
+
+============================================================
+=== VOICE_1_EVIDENCE(パーソナライズされたfeedに日々頼る読者を支える事実) ===
+============================================================
+
+[VOICE_1_EVIDENCE] V1-01(GF-001,GF-002,GF-003): Google Newsは現在も、ログイン中の
+利用者について、設定した興味・フォロー中のソースに加え、Googleサービス・YouTubeでの
+過去のアクティビティに基づき「For you」等をパーソナライズすると説明しており、トピック・
+地域・ソースのフォロー/フォロー解除、「More/Fewer stories like this」、ソース非表示など、
+利用者が調整できる操作を提供している。source: Google Newsヘルプ(現行、2026-09-17
+アクセス確認)。population: Google News全利用者(ログイン時)。evidence type:
+仕様説明(NOT_APPLICABLE)。verification: VERIFIED。freshness: 現行仕様として確認
+(2026-09-17)。B1使用可否: 可(concrete_scene用、本人が実際に使う操作の描写に自然に
+使える)。
+
+[VOICE_1_EVIDENCE] V1-02(RI-001): Reuters Institute Digital News Report 2025による
+と、過去の嗜好に基づき自動選択されるニュースサイト・アプリについて、平均49%が
+comfortable、34%がneither、18%がuncomfortableと回答した(複数市場平均)。source:
+Reuters Institute Digital News Report 2025。population: 対象市場の一般ニュース利用者
+(複数国平均値)。evidence type: 調査(NOT_APPLICABLE)。verification: VERIFIED。
+freshness: 2025年調査(旧Ledgerの2016年調査より新しい)。B1使用可否: 可(ただし
+Voice本文では外部統計を論証材料にしないB-Family原則Cにより、本人の感覚の裏付けとして
+Comment/Tension側で使うことを想定、Voice本文には数字そのものを持ち込まない)。
+
+[VOICE_1_EVIDENCE] V1-03(RI-002): 同じ2025年調査の自由記述で、パーソナライズを
+肯定する主な理由は、関連性の高さ、時間・労力の節約、人的編集者より偏りが少ないという
+認識、より多様なトピック・視点に出会えるという認識だった。source: 同上。evidence
+type: 調査自由記述(NOT_APPLICABLE)。verification: VERIFIED。freshness: 2025年。
+B1使用可否: 可(本人の実感の言語化として自然、Voice1の"need"の裏付けに使える)。
+
+[VOICE_1_EVIDENCE] V1-04(RI-004): Reuters Institute 2023年調査で、自動選択を
+「ニュースを得る良い方法」と答えた人は30%で、編集者選択(27%)・友人経由(19%)を
+上回った。source: Reuters Institute(2023年調査)。population: 調査対象国平均。
+evidence type: 調査(NOT_APPLICABLE)。verification: VERIFIED。freshness: 2023年
+(旧Ledgerの2016年37%/22%/17%より新しい数値、絶対値は下がったが順位[自動選択>編集者
+>友人]は維持)。B1使用可否: 可(Comment/Tension用、Voice本文には数字を持ち込まない)。
+
+[VOICE_1_EVIDENCE] V1-05(F008): 2025年PNAS研究(実際のYouTube推薦ネットワークを
+用いた研究者構築環境、4実験・米国参加者8,883人)は、バランス型推薦と思想的に偏った
+推薦を比較し、視聴選択・滞在時間には影響したが、短期的な政策態度・感情的分極化・
+メディア信頼には一貫した大きな変化を生じさせなかった。source: "Short-term exposure
+to filter-bubble recommendation systems has limited polarization effects"(PNAS、
+2025-02発表)。population: 米国参加者8,883人(CloudResearch/MTurk・YouGov)、実験は
+2021-2024年に実施。evidence type: CAUSAL_STATED_BY_SOURCE(ただし短期・特定プラット
+フォーム限定)。verification: VERIFIED。freshness: 2025年発表(新規、旧Ledgerに未収録)。
+B1使用可否: 条件付き可(「短期・このプラットフォーム設計では」という限定を明示する場合
+のみ、Tension/Closingで使用。一般化して「アルゴリズムは無害」と断定しない)。
+
+============================================================
+=== VOICE_2_EVIDENCE(自分のfeedが狭まっていくことを懸念する読者を支える事実) ===
+============================================================
+
+[VOICE_2_EVIDENCE] V2-01(F004): 2020年の観察データで、米国成人Facebook利用者の
+中央値は、受け取る投稿の50.4%が政治的に同類の情報源から、14.7%が対立側の情報源から
+だった(ニュース投稿に限ると同類47%)。source: "Like-minded sources on Facebook are
+prevalent but not polarizing"(Nature/Science系、2023年発表)。population: 米国の
+Facebook利用者(2020年8月17日以前30日にログインした成人全体)。evidence type:
+OBSERVED_REPORTED(アルゴリズム単独の因果効果ではない、利用者自身の選択も含む)。
+verification: VERIFIED。B1使用可否: 可(narrowingの実感描写の裏付け)。
+
+[VOICE_2_EVIDENCE] V2-02(RI-003): 2025年調査の自由記述で、パーソナライズへの懸念
+として、関心に従うことで重要な問題を見落とす可能性、偏った・操作された情報や
+echo chamberを生む可能性、プライバシー侵害が挙げられた。source: Reuters Institute
+Digital News Report 2025。evidence type: 調査自由記述(NOT_APPLICABLE)。
+verification: VERIFIED。B1使用可否: 可。
+
+[VOICE_2_EVIDENCE] V2-03(RI-005): Reuters Institute 2023年調査で、48%がより
+パーソナライズされたニュースで重要な情報を見落とすことを、46%が異なる視点を見落とす
+ことを心配すると回答した(旧Ledgerの2016年調査60%/59%より下がったが、依然として
+半数近くが懸念)。source: 同上。evidence type: 調査(NOT_APPLICABLE)。verification:
+VERIFIED。freshness: 2023年(旧Ledgerより新しい)。B1使用可否: 可(Comment/Tension用)。
+
+[VOICE_2_EVIDENCE] V2-04(CRS-001,CRS-002,CRS-004): 米議会調査局(2025年更新報告)は、
+SNS運営者がユーザー数・エンゲージメント・広告収益を高める経済的インセンティブを持ち、
+行動データに基づくアルゴリズムを内部インセンティブ・外部圧力に応じて調整できると
+説明している。source: Congressional Research Service(2025年更新)。evidence type:
+公式報告の説明(NOT_APPLICABLE)。verification: VERIFIED。freshness: 2025年(旧Ledgerの
+CRS報告年より新しい版)。B1使用可否: 可。
+
+[VOICE_2_EVIDENCE] V2-05(EU-001,EU-002,EU-003): 現行のEU Digital Services Act
+(Regulation (EU) 2022/2065)Article 27は、recommender systemを使うオンライン
+プラットフォームに主なパラメータ・ユーザーが変更できる選択肢の説明を義務付け、
+Article 38は非常に大規模なプラットフォーム・検索エンジンに、プロファイリングに
+基づかないrecommender systemの選択肢を少なくとも1つ提供するよう義務付けている
+(2026-09-17時点で有効)。source: EUR-Lex、Regulation (EU) 2022/2065。evidence
+type: 現行法令(NOT_APPLICABLE)。verification: VERIFIED(EU-004[施行形式の記載]の
+みAMBIGUOUS、条文内容自体には影響なし)。B1使用可否: 可。
+
+[VOICE_2_EVIDENCE] V2-06(F009): 2025年発表の独・米比較実験(ドイツ1,786人、米国
+1,306人)で、政治的嗜好に合わせたニュース推薦は、政治的に中道的な参加者のイデオロギー
+分極化を両国で小幅に増加させた。source: "Putting 'filter bubble' effects to the
+test..."(2025-01-28オンライン発表)。population: 独・米の実験参加者、移民をテーマに
+した記事を使用。evidence type: CAUSAL_STATED_BY_SOURCE。verification: VERIFIED。
+freshness: 2025年(新規、旧Ledgerに未収録)。B1使用可否: 可(「政治的に中道の層で」
+という対象範囲を明示する場合のみ)。
+
+[VOICE_2_EVIDENCE] V2-07(F010): 2025年11月発表のScience研究で、2024年米大統領選前の
+X利用者1,256人を対象に、党派的敵意を示す投稿への曝露を1週間増減させたところ、増やすと
+対立政党への感情的評価が有意に冷たくなった(0-100点スケールで2点超の変化)。source:
+"Reranking partisan animosity in algorithmic social media feeds alters affective
+polarization"(Science、2025-11-27)。population: 米国X利用者1,256人、2024年選挙前。
+evidence type: CAUSAL_STATED_BY_SOURCE。verification: VERIFIED。freshness: 2025年
+(新規)。B1使用可否: 可(短期[1週間]・特定介入[敵意コンテンツの増減]という限定付き)。
+
+[VOICE_2_EVIDENCE] V2-08(F011,F012,F013): 2026年Nature論文(2026-02-18オンライン
+公開)は、2023年に米国の活動的X利用者を無作為に時系列/アルゴリズムfeedへ割り当て、
+平均7週間追跡した(事後調査完了者4,965人)。時系列からアルゴリズムfeedへ切り替えた
+群は、政策・時事問題への態度が保守方向へ0.12標準偏差変化した(感情的分極化・自己申告
+党派性には有意差なし)。アルゴリズムfeedでは保守的投稿が2.9pt・政治活動家の投稿が
+5.9pt多く出現し、伝統的ニュース組織の投稿は15.5pt少なかった。source: "The political
+effects of X's feed algorithm"(Nature、2026-02-18オンライン公開/2026年4月号)。
+population: 米国の活動的X利用者4,965人(66%が毎日利用、全国代表標本ではない)。
+evidence type: CAUSAL_STATED_BY_SOURCE。verification: VERIFIED。freshness: 2026年
+(最新、本Ledger再構築の直接の理由となった論文)。B1使用可否: 可(プラットフォーム
+[X]・期間[7週間]・対象[活動的利用者]を明示する場合のみ、一般化しない)。
+
+[VOICE_2_EVIDENCE] V2-09(F014,F015): 2026年Nature論文(TikTok監査、2026-05-06
+オンライン公開)は、米国3州で2024年選挙期の推薦フィードを27週間調べ、政治的に異なる
+初期条件のアカウント間で党派的コンテンツ露出に系統的な非対称性があると報告した
+(利用者の政治的態度そのものへの影響は研究範囲外)。source: "Systematic partisan
+content skews in TikTok during the 2024 US elections"。population: 米国3州の監査用
+アカウント323件+利用者調査1,008人。evidence type: OBSERVED_REPORTED。verification:
+AMBIGUOUS(発表日の記載のみ、露出差自体の内容はVERIFIED相当)。B1使用可否: 条件付き可
+(「露出の差はあるが、それが読者の考え方を変えるかは未確認」という限定を必ず添える)。
+
+[VOICE_2_EVIDENCE] V2-10(F016): 2026年Nature Registered Report(2026-05-27発表)は、
+2024年米大統領選前後に米国参加者2,000人を8週間、研究者構築のフィードへ無作為割当した。
+エンゲージメント型フィードは逆時系列型より、集団間・道徳化・感情的情報、毒性コンテンツ、
+道徳的怒りを増幅し、党派的敵意の知覚を高め、規範認識の正確さを下げた。source:
+"Redesigning algorithms to intervene on social norm misperceptions during a national
+election"(Nature)。population: 米国参加者2,000人、8週間、2024年選挙前後。evidence
+type: CAUSAL_STATED_BY_SOURCE(Registered Report、事前登録済み実験)。verification:
+VERIFIED。freshness: 2026年(新規、旧Ledgerに未収録、方法論的に高信頼)。B1使用可否:
+可。
+
+[VOICE_2_EVIDENCE] V2-11(F017): 2026年CHI研究(2026-04-13発表)は、米国住民が
+ランダム・エンゲージメント型・個人化エンゲージメント型・橋渡し型・知性正確性型の
+フィードを比較する二段階実験を行い、個人化エンゲージメント型フィードは他の設計より
+政治的に分極化し集団の事実判断が不正確になる傾向と関連したが、利用者からは最も
+「洞察的」と評価された。source: "Simple changes to content curation algorithms
+affect the beliefs people form in a collaborative filtering experiment"(CHI 2026)。
+population: 米国住民(第1段階500人・第2段階1,000人)。evidence type:
+CAUSAL_STATED_BY_SOURCE。verification: VERIFIED。freshness: 2026年(新規)。B1使用
+可否: 可(Closingでの「代替設計もありうる」という論点にも使える)。
+
+============================================================
+=== CROSS_REFERENCE(Hook・Tension・Closingで横断参照してよい共通背景事実) ===
+============================================================
+
+[CROSS_REFERENCE] X-01(MF-001,MF-002,MF-003,MF-004): Metaの現行の公開説明では、
+Facebook利用者1人あたり候補投稿は1,000件超、評価シグナルは数千種類とされ、軽量モデルが
+約500件に絞った後スコア化・ランキングする。目的はユーザーが興味・エンゲージする可能性が
+高く「meaningful and relevant」と予測される内容の表示とされる。source: Meta公式
+説明("How Does News Feed Predict What You Want to See?"、2023年公開・2025年一部
+更新)。evidence type: 仕様説明(NOT_APPLICABLE、Meta自身の開示であり完全な現行モデル
+の開示ではない)。verification: VERIFIED。freshness: 現行(2026-09-17時点でMeta公式
+ヘルプに掲載確認)。
+
+[CROSS_REFERENCE] X-02(F001,F003): パーソナライズニュース推薦は、利用者の関心に合う
+記事の提示と情報過多の軽減を目的とする技術として定義される。2025年のKnight-Georgetown
+Institute報告は、推薦アルゴリズムが利用者が何を見るかを大きく決めており、一部
+プラットフォームは予測エンゲージメント最大化を重視しうると指摘している。source:
+学術論文(2024-2025年)、Knight-Georgetown Institute報告(2025-03-04)。evidence
+type: NOT_APPLICABLE/OBSERVED_REPORTED。verification: VERIFIED。
+
+[CONTESTED_RESEARCH_AREA] C-01: 「アルゴリズム/パーソナライズされたフィードは短期間で
+政治的態度を測定可能なほど変えるか」という問いについて、2025-2026年時点の研究は
+一方向の結論を示していない。「変化なし」側: 米国Facebook3か月実験23,377人(V2-01の
+元研究、感情的・イデオロギー的分極化指標に有意差なし)、Facebook/Instagram逆時系列
+feed実験(3か月、有意差なし)、YouTube類似環境4実験8,883人(V1-05、一貫した大きな
+効果なし)、Facebook利用停止実験(2024年、4,278人観測、政治態度にほぼ無効)。「変化
+あり」側: X 7週間実験4,965人(V2-08、政策態度が保守方向へ0.12SD)、独・米filter
+bubble実験(V2-06、中道層の分極化増加)、Xホスティリティ再ランキング実験(V2-07、
+1週間で感情的分極化変化)、8週間Registered Report(V2-10、党派的敵意知覚増加・
+規範認識精度低下)。プラットフォーム・介入の種類(フィード順序 vs コンテンツの感情的
+トーン vs 推薦の思想的偏り)・対象母集団(全国代表標本ではない活動的利用者が多い)・
+期間(1週間〜8週間)がいずれも研究間で異なり、単純に「効果がある/ない」と一般化できない。
+B1使用可否: Tension限定(いずれか一方の結論として断定せず、両方の代表的研究を挙げた
+上で「研究間で結果が割れている」ことを明示する)。
+
+この Ledgerで使わない情報: Part1のF014(発表日記載のみAMBIGUOUS、内容はV2-09として
+使用可)、F019(個別Factではなく複数Factの総合所見のためLedger本文[本節C-01]へ吸収)、
+Part2のEU-004(施行形式の記載のみAMBIGUOUS、Article 27/38の内容自体はVERIFIED)。

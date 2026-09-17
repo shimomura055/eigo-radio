@@ -1,0 +1,82 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# One Feed, Two Very Different Experiences
+
+## The Question
+
+On a morning commute, one reader opens a feed and finds stories that fit the few minutes she has. Later, another scrolls through a feed and notices the same kinds of views appearing again and again. Both use systems that rank news based on past interests and behavior. The question is not simply whether personalized news is good or bad. It is what each person gains—and fears losing.
+
+### One Voice: The reader who relies on her personalized feed
+
+On my commute, I open Google News’s “For you” page and find stories about subjects I follow. The feed can also reflect my activity on Google services and YouTube. I can ask for more or fewer similar stories, or hide a source. That gives me some control. I am busy, and personalization gives me a quick, relevant path through a huge amount of news. Sometimes it even feels less biased than a human editor. I worry I may miss something important, but I do not want to sort through everything myself.
+
+### Another Voice: The reader who worries her feed is closing in
+
+Some mornings, I scroll through my feed and notice the pattern: another post with the same kind of argument, then another. I want to know why these stories are in front of me, but I cannot see the full rules behind the ranking. I keep thinking about how platforms can adjust it around engagement and advertising goals. I cannot change those deeper settings myself. I want news that helps me understand views unlike my own, not only views that already fit. If my window on the world is narrowing, I may notice only after it has happened.
+
+## Why the Same Feed Feels Different
+
+Both readers want what they see to help them understand the world and manage daily life. Neither is simply wrong. But the stakes are different: one is trying to keep up with relevant news in limited time; the other fears being quietly locked into a narrow view. The same kind of ranking feels like choices and settings to one, but hidden rules to the other. One feels some power to adjust it, while the other feels forced to accept the deeper system.
+
+## What the Choice Really Means
+
+The deeper issue is not only what appears in a feed. It is whether convenience can feel like control when the path to those choices is partly hidden. Personalized news becomes a question of place: is the reader shaping what appears, or riding a route set elsewhere? The tension is between access and visibility, not simply good and bad news.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "stakes",
+    "japanese_gloss": "この問題でかかっているもの",
+    "source_sentence": "But the stakes are different: one is trying to keep up with relevant news in limited time; the other fears being quietly locked into a narrow view."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "engagement",
+    "japanese_gloss": "利用者がどれだけ反応したか",
+    "source_sentence": "I keep thinking about how platforms can adjust it around engagement and advertising goals."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "be locked into",
+    "japanese_gloss": "何かに縛られる",
+    "source_sentence": "But the stakes are different: one is trying to keep up with relevant news in limited time; the other fears being quietly locked into a narrow view."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "keep up with",
+    "japanese_gloss": "～に遅れずについていく",
+    "source_sentence": "But the stakes are different: one is trying to keep up with relevant news in limited time; the other fears being quietly locked into a narrow view."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "sort through",
+    "japanese_gloss": "たくさんのものに目を通して選ぶ",
+    "source_sentence": "I am busy, and personalization gives me a quick, relevant path through a huge amount of news. Sometimes it even feels less biased than a human editor. I worry I may miss something important, but I do not want to sort through everything myself."
+  }
+]

@@ -1,0 +1,108 @@
+{
+  "attempt_number": 1,
+  "route": "english_style_prefix_wide_margin",
+  "segment_id": "full_story_part1",
+  "theme_id": "b1_2v",
+  "level": "b1b",
+  "source_out_path": "er012_output/personalized_news_b1_rebuild_01/audio/b1_2v/b1b/narration/full_story_part1.wav",
+  "saved_at": "2026-09-17T20:31:47",
+  "sha256": "e8e95d1713cdb77760a0489263914b0ae504353ee3259624472bb585cab74190",
+  "loop_attempt_index": 1,
+  "max_attempts": 3,
+  "language": "en",
+  "model": "gemini-2.5-pro-preview-tts",
+  "voice": "Aoede",
+  "tts_execution_mode": "STANDARD",
+  "asr_text": "On a morning commute, one reader opens a feed and finds stories that fit the few minutes she has. Later, another scrolls through a feed and notices the same kinds of views appearing again and again.",
+  "audio_classification": "EXACT_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 12.691,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " a  feed  and",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 2.5,
+          "first_end_s": 3.28,
+          "second_start_s": 8.08,
+          "second_end_s": 8.7,
+          "gap_seconds": 4.8,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 36,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9919,
+          "time_a_seconds": 3.25,
+          "time_b_seconds": 8.75,
+          "lag_seconds": 5.5,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9916,
+          "time_a_seconds": 1.08,
+          "time_b_seconds": 2.48,
+          "lag_seconds": 1.4,
+          "run_length_seconds_at_thresh_0.85": 0.06
+        },
+        {
+          "similarity": 0.9913,
+          "time_a_seconds": 3.61,
+          "time_b_seconds": 8.68,
+          "lag_seconds": 5.07,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9893,
+          "time_a_seconds": 7.18,
+          "time_b_seconds": 10.07,
+          "lag_seconds": 2.89
+        },
+        {
+          "similarity": 0.9888,
+          "time_a_seconds": 1.01,
+          "time_b_seconds": 8.75,
+          "lag_seconds": 7.74
+        }
+      ],
+      "best_run_length_seconds": 0.06,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.28,
+      "time_a": 11.48,
+      "lag": 0.62,
+      "similarity_at_start": 0.9075,
+      "best_run_length_seconds": 0.28,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  }
+}
