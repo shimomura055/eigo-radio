@@ -18,7 +18,7 @@
 
 8. 難易度調整の既存仕様確認: `CURRENT_SPEC.md` L538(vocabulary、CEFR外語彙・wordlist数値ルール化は`REJECTED`、これがユーザー言及の「過去Trial却下」の裏付け。DECISION_LOG独立エントリはgrepで見つからず、CURRENT_SPEC.md本文内へインラインで記録されている形)、L539-542(平均文長11語以下/最長18語以下/1文1メッセージ、生成方針でありgateではない)、L606(B1-B Direction Control原則、診断的原則・hard rule追加禁止)。結論=AI Controlの難しさはレベル調整未実施ではなく情報設計・概念負荷の問題(OPEN-164として分離)。
 
-9. Git SHA: 作業前HEAD=`ce33f48a`(origin/mainと一致、fetch確認済み、マージ不要)。SSOT明示add(CURRENT_SPEC.md/DECISION_LOG.md/OPEN_ITEMS.md/ARTIFACT_REGISTRY.md)+delegation_log+RESULT_PACKET+ACTIVE_TASK.mdをcommit・push予定(本報告作成後に実行)。
+9. Git SHA: 作業前HEAD=`ce33f48a`(origin/mainと一致、fetch確認済み、マージ不要)。commit=`609794fb`(SSOT4ファイル+ARTIFACT_REGISTRY.md+delegation_log2件+本RESULT_PACKET、計7ファイル)、`git push origin main`成功(`ce33f48a..609794fb`)。`docs/pm/ACTIVE_TASK.md`は`.gitignore`対象のためcommit対象外(想定どおり)。
 
 10. API 0証跡: 本タスクはgrep/diff/git操作・ファイル編集のみ、外部API呼び出し・TTS実行なし(コマンド履歴上、`.venv`実行はcheck_delegation_prompt.py[ローカルツール]のみ)。
 
