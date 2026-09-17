@@ -431,6 +431,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01: Fable受入照合3点是正(時制/未発売事実誤り・A2文長超過・B1見出し混入)、B1完成、A2は別要因でHuman Review Lock継続
 - [本ファイル内] ## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01: Voiceの立場境界(A/C/F)+leak_position_blur+Acceptance Gate正式配線、Personalized News A2再生成でLeakage 0件確認・音声化完了、Personalized News B1再生成はFact Checker FAILでSTOP
 - [本ファイル内] ## USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03: Tiny Bags B1ユーザー試聴PASS記録+A2 Toteme/Kallmeyer Human Review承認→Assembly/Gate/player/E2E完成
+- [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02: B1語順script修正(実audio基準)でB1完成・ユーザー品質承認、A2 point_two Oimo再生成(AI while/Canele維持)で候補確保もA2必須slowdown post-process未PASSでHuman Review継続
 
 ---
 
@@ -8092,6 +8093,19 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - **cost実測**: FIX-01分の増分は約¥50(内訳: openai[Ledger Deviation/Fact Checker再実行]=¥31.17、gemini[TTS再生成4segment]=¥17.50、openai_asr=¥1.30、perplexity/azureは`pricing_snapshot`未収載のため¥0扱い)。上限¥100に対し余裕あり。
 - Status: B1=`USER_TEST_READY`相当(技術的完成、ユーザー未試聴)。A2=`USER_DECISION_REQUIRED`(Human Review Lock継続、STOP)。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_CONVENIENCE_AI_01.md`「## FIX-01」節、`docs/pm/delegation_log/USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01.md`。
+
+## USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02: B1語順script修正(実audio基準)でB1完成・ユーザー品質承認、A2 point_two Oimo再生成(AI while/Canele維持)で候補確保もA2必須slowdown post-process未PASSでHuman Review継続
+
+- 日付: 2026-09-17
+- 種別: ユーザー実試聴後の正式判断(2026-09-17)に基づく修正・再生成。B1は記事全体OK/承認、ただしscript表示とユーザーが実際に聞いた音声の語順が不一致という指摘。A2 `point_two`は3語("AI while"/"Canele"/"Oimo no")のうち"AI while"と"Canele"はUSER APPROVED(修正対象外)、"Oimo no"のみUSER REJECTED/REGEN REQUIRED(「Yomono no」寄りに聞こえ「お芋」相当に聞こえない)。B1版の"Oimo"実読はユーザー確認済みでreferenceとして使用可。
+- **B1 `full_story_part1`語順修正**: FIX-01再生成後の`audit/tts_generation_results.json`(Production ASR cascade結果)、および独立local verbatim(`er008_disfluency_qa_18.transcribe_verbatim`、faster-whisper、追加課金なし)の両方で、実音声が"Then Lawson planned a sale of the finished product."であり、表示script"Lawson then planned..."とは語順が異なることを確認した。実audioを正として`article.md`/`parts.json`のcanonical textを語順修正した(内容・事実は無変更、`sc.split_article_text()`の差分は`part1`キーのみと確認済み)。TTS再生成なし。player再build(`build_web_player_common.py`、既存wav/mp3を再利用)、Playwright実ブラウザE2Eでscript表示が新文言であること・再生(4秒後currentTime=3.86秒、duration=287.77秒[Assembly実測と一致]、error=null、readyState=4)を確認。B1 Status=ユーザー品質承認済み(語順整合修正のみ、内容再確認不要)。
+- **A2 `point_two` Oimo再生成**: `er011_human_review_lock_01.approve_regenerate()`で明示承認のうえ、既存Production経路(`crosslevel_audio_02_common.generate_english_segment_with_fallback`系、standard 2+fallback 1、Ledger→Secondary ASR Phrase List使用、TTS Pronunciation Hint注入への新規配線は行わず)で複数サイクル(4サイクル、raw take 8〜19番)の再TTSを実施した。B1側の生成経路(`news_tail_fix.generate_news_narration_wide_margin`)とA2側の主な条件差は、生成関数自体とA2固有の必須6% slowdown post-process(`apply_a2_slowdown_postprocess()`)の有無であり、Ledger登録内容・phrase_list連携は両者共通で確認できた(TTS instruction上の特別な発音指示差は無し)。
+- **判定根拠**: 各raw takeについて、(1) Production標準cascade(Secondary ASR、Ledger Phrase List使用)によるNORMALIZED_MATCH/verified判定、(2) Ledgerの影響を一切受けない独立local ASR(faster-whisper、追加課金なし)による「Oimo」寄りか否かの確認、の両方を実施した。修正前の音声は独立local ASRで一貫して"Yomo"/"OEMO"/"Emo"寄りに転写され、ユーザー指摘と一致した。再生成後の複数raw takeのうち、attempt9(standard経路)はSecondary ASR cascadeでNORMALIZED_MATCH/verified=trueを達成し、独立local ASRでも"Oimo no Canele"とほぼ完全一致の転写を得た(既存の他segment・他記事の許容水準と同等)。この最終候補に既存Production関数`apply_a2_slowdown_postprocess()`(無変更)で6% slowdownを適用し、手動でSecondary ASR cascade(Ledger Phrase List使用)を再実行した結果もNORMALIZED_MATCH/verified=trueだった(`audit_fix_02/manual_candidate_secondary_asr_check.json`)。
+- **未解決の技術的観測(新規、Oimoとは別要因)**: `apply_a2_slowdown_postprocess()`自体の内蔵簡易再検証(Ledger Phrase List不使用、Primary ASR単発呼び出しのみ)は、この最終候補を含む全ての再生成サイクルで安定してPASSしなかった(ASR呼び出しごとの表記ゆれ["Canele"→"Kanēre"等]が原因、Oimo部分自体の問題ではないことを確認済み)。このためReview Lockの状態は`HUMAN_REVIEW_REQUIRED`のまま(既存の安全装置・Gateを独自判断で回避・上書きしていない)。OPEN-159へ本観測(日本語ローマ字商品名のTTS読みのばらつき、Phrase Listが実際の誤発音を覆い隠しうる懸念、`apply_a2_slowdown_postprocess()`の簡易再検証の設計ギャップ)を追記した。
+- **Human Review確認ページ更新**: `a2/human_review/point_two_review.json`+mp3を、新候補音声・新根拠(Secondary ASR cascade結果・独立local ASR比較・B1 referenceとの比較・修正前音声との比較)で更新した。Playwright実ブラウザE2Eで、canonical script中の"Oimo no Canele"表示・highlight・音声再生(3秒後currentTime=2.89秒、duration=21.67秒、error=null、readyState=4)を確認済み。承認代行はしていない。
+- **cost実測**: FIX-02分の増分は約¥30(`raw_usage_log.jsonl`ベースの累計¥201.73[前回FIX-01時点の累計¥172.12+約¥50から算出]、内訳はgemini[TTS再生成]・openai_asr[Primary ASR]が中心、azure/perplexityは`pricing_snapshot`未収載のため¥0扱い)。上限¥100に対し十分な余裕。
+- Status: B1=**ユーザー品質承認済み**(語順修正済み、再試聴要求不要)。A2 `point_two`=引き続き`USER_DECISION_REQUIRED`(Human Review確認ページで許容/再生成/その他を判断、Oimo発音自体は改善エビデンス有り、残る技術的ブロッカーはA2 slowdown post-processの検証設計)。
+- 参照: `docs/pm/RESULT_PACKET_NEWS_CONVENIENCE_AI_01.md`「## FIX-02」節、`docs/pm/delegation_log/USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02.md`。
 
 ## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01: Voiceの立場境界(A/C/F)+leak_position_blur+Acceptance Gate正式配線、Personalized News A2再生成でLeakage 0件確認・音声化完了、Personalized News B1再生成はFact Checker FAILでSTOP
 
