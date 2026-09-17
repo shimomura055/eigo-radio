@@ -4,11 +4,11 @@
 
 1. Space Weapons A2差分確認: `c2af33f2..6d088d2e`は19ファイル変更、全てaudit/web成果物・attempt記録・regenスクリプト。`parts.json`は`title_tts`1行追加のみ、`title`/`part1`/`part2`等は無変更。`article.md`/`a2_support_texts.json`/`key_phrases/`は差分なし。`tts_generation_results.json`全segment sha256比較で`topic_intro`のみ変更、他13narration+10support segmentは全一致。episode.mp3/topic_intro.mp3の変更はtopic_intro差し替えに伴う再assemblyの結果。→タイトル以外無変更を確認、`USER_TEST_READY`。
 
-2. Status整理: AI Control A2/B1=`USER_TEST_READY`(試聴PASS、情報密度の重大指摘→OPEN-164)。Space Weapons A2=`USER_TEST_READY`(1節の確認後)。Space Weapons B1=`USER_TEST_READY`(レイアウト修正のみ、再試聴不要)。Personalized News A2=`REJECTED_AS_CURRENT_OUTPUT`(Voices構造根本問題、実装基盤`main_a2_2v()`は`WIRING_INCOMPLETE`のまま変更なし)。
+2. Status整理: AI Control A2/B1=`USER_TEST_READY`(試聴PASS、情報密度の重大指摘→OPEN-164)。Space Weapons A2=`USER_TEST_READY`(1節の確認後)。Space Weapons B1=`USER_TEST_READY`(レイアウト修正のみ、再試聴不要)。Personalized News A2=`REJECTED_AS_CURRENT_OUTPUT`(Voices構造根本問題、実装基盤`main_a2_2v()`は`WIRING_INCOMPLETE`のまま変更なし)。**訂正(PM-CLOSEOUT-CONSOLIDATION-137、Fable受入照合)**: 「実装基盤`WIRING_INCOMPLETE`」は誤記。FIX-01で`PRODUCTION_WIRED`到達済み(CURRENT_SPEC L669、OPEN_ITEMS.md OPEN-151行参照)。
 
 3. OPEN-164全文: `OPEN_ITEMS.md`新規行(OPEN-163直後)。要旨=CEFR言語難易度調整とは別にListening Newsとしての情報密度・前提知識依存・概念密度・難語密度制御が必要。観点(information density/prerequisite knowledge/conceptual load/number density/difficult but non-technical vocabulary/abstract concept density/論点数/audio-only理解可能性/script不要理解/Fact全部入れない編集判断/Storytelling Firstとのバランス)を明記。優先度=中〜高、期限=量産開始前。今回のAI Control A2/B1は再生成しない。
 
-4. OPEN-151追記: 「Personalized News A2現行版ユーザーNG、`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`で仕様見直し継続中(USER_DECISION_REQUIRED想定)、実装基盤`WIRING_INCOMPLETE`は不変」を該当行末尾へ追記(`OPEN_ITEMS.md` L295相当行)。
+4. OPEN-151追記: 「Personalized News A2現行版ユーザーNG、`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`で仕様見直し継続中(USER_DECISION_REQUIRED想定)、実装基盤`WIRING_INCOMPLETE`は不変」を該当行末尾へ追記(`OPEN_ITEMS.md` L295相当行)。**訂正(PM-CLOSEOUT-CONSOLIDATION-137、Fable受入照合)**: 「実装基盤`WIRING_INCOMPLETE`は不変」は誤記だった。実際はFIX-01で基盤Status=`PRODUCTION_WIRED`へ到達済みであり、OPEN-151行を訂正済み。
 
 5. DECISION_LOG行: 新規エントリ`## USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01`(索引行+本体エントリ、ファイル末尾`## 参照元`直前に追加)。5本のStatus・OPEN-164新規登録・AI Control難易度問題の整理結論を記録。
 
