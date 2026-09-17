@@ -287,6 +287,47 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
 1つでも欠ければ受入せず差し戻す。新構造(Lane B等)向けには
 `REQUIRED_SEGMENTS`相当の機械checkを委任文で要求する。
 
+(n) **ユーザー試聴ページ表示フォーマット(2026-09-17、ユーザー正式決定、
+    恒久ルール、`USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`)**。
+    - Key Phrases: 左列=英語、右列=日本語の2列形式のみ(グリッド/テーブル等の
+      構造は問わない)。「English: X / 日本語: Y」のような1行連結表示は不可。
+      表示上、`English:`/`英語:`/`EN:`/`日本語:`/`日本語gloss:`/`JA:`等の
+      ラベル文字列を出さない(内部canonical/TTS用データや音声そのものに
+      含まれていてもよいが、視聴ページ表示では必ず除去する。ラベルが音声
+      そのもので読み上げられている場合は表示修正の対象外であり、STOPして
+      報告する)。
+    - Level表示: 視聴ページ上はA2→**Standard**、B1/B1B→**Advanced**と表示
+      する。A2/B1は内部管理・routing(URLの`level=`パラメータ等)に使って
+      よいが、ユーザー向け画面には原則表示しない。
+    - 実装箇所: `user_test/unified.html`(`kpParts()`関数でEnglish/英語/EN
+      各ラベル+日本語/日本語gloss/JA各ラベルの組を正規表現除去、
+      `levelLabel`変数でA2/B1をStandard/Advancedへ表示マッピング)、
+      `user_test/human_review.html`(同様の`levelLabel`マッピングを
+      eyebrow表示へ適用)。個別の`player.html`(`build_web_player_common.py`
+      等生成テンプレート)側の`<h2>Key Phrases</h2>`専用テーブルは元々
+      2列・ラベル無し形式であり無変更(ラベル付き表示は`unified.html`が
+      タイムライン表の生スクリプト列から抽出する際に発生していた不具合で
+      あり、抽出元テンプレート自体の作り直しではない)。
+    - 恒久チェッカー: `docs/pm/tools/user_test_page_e2e_check.py`
+      (Playwright headless Chromium、githack中継URL対応、Key Phrase領域の
+      ラベル正規表現不在・2列要素数一致・ヘッダーのStandard/Advanced表示・
+      再生進行・script/Key Phrases/Comment要素存在をDOM assertionとして
+      機械判定)。新規/既存player提示前に本チェッカーでPASSを確認する
+      (Gate 7 (a)〜(m)の到達確認に加えて満たすべき追加要件、既存要件を
+      置き換えるものではない)。
+    - 経緯: `er014_output/user_test_news_light_01/tiny_bags/`等で、
+      `unified.html`の`kpParts()`が「English:」+「日本語:」ラベル形式を
+      未対応(旧regexは「英語:」+「日本語gloss:」等のみ対応)だったため、
+      Key Phrases表示が「English: push off the stage日本語: 大きな
+      バッグが主役の座を奪う」のようにラベル付き・1列連結表示になっていた
+      (ユーザーが2026-09-17に指摘、直後にユーザー自身が`unified.html`へ
+      直接修正[commit `5f9b9add`でKey Phraseラベル解析追加、`38f2cf97`で
+      Standard/Advanced表示追加]。本タスクはその修正の恒久チェッカー化・
+      `human_review.html`への同ルール適用漏れの是正・対象9本のURL再発行・
+      SSOT反映を担う)。TTS音声側の`used_form`/`japanese_gloss`は元々
+      ラベル無しで生成されており(`tts_generation_results.json`実測確認)、
+      音声再生成は不要・実施していない。
+
 **13項目監査はplayer提示前の必須手順(2026-09-13追記、
 `PM-CLOSEOUT-CONSOLIDATION-99`)**: 上記(a)〜(m)の音声artifact受入
 チェックリスト(通称「13項目」)は、player HTML/mp3のHTTP到達確認
@@ -1115,6 +1156,9 @@ STATUS-INVENTORY`エントリ参照)により新設。
   設計だが別ファイル、`unified.html`自体は無変更)。実例:
   `er014_output/user_test_news_light_01/tiny_bags/a2/human_review/`
   (A2 `full_story_part2`のToteme/Kallmeyer発音確認)。
+- **確認ページのlevel表示も2節Gate 7補足(n)のユーザー試聴ページ表示
+  フォーマットルールと同一とする**(A2→Standard、B1/B1B→Advanced、
+  2026-09-17追記、`USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`)。
 
 ## 10. commit / push運用
 
@@ -2623,3 +2667,13 @@ REQUIREDにする理由にしない。
   作成への改善指示、Key Phrase stageを音声段階に含める原則、TTS/ASR/
   Ledger/Key Phrase系タスク同士の並列起動禁止)。詳細は`DECISION_LOG.md`
   同管理IDエントリ、`docs/pm/RESULT_PACKET_NEWS_LIGHT_03.md`参照。
+- 2026-09-17(`USER-TEST-REVIEW-PAGE-FORMAT-RULE-01`): 2節Gate 7補足へ
+  (n)「ユーザー試聴ページ表示フォーマット」を新設(Key Phrases英日2列・
+  ラベル文字列禁止、Level表示A2→Standard/B1→Advanced、恒久チェッカー
+  `docs/pm/tools/user_test_page_e2e_check.py`)。9-12へ確認ページの
+  level表示も同ルールとする旨を追記。`user_test/unified.html`の
+  `kpParts()`ラベル解析漏れ(ユーザー自身が直接commit `5f9b9add`/
+  `38f2cf97`で先行修正済み)を受け、`user_test/human_review.html`の
+  level表示未対応分を追加修正し、USER_TEST_READY9本を新SHAで再発行した。
+  詳細は`DECISION_LOG.md`同管理IDエントリ、
+  `docs/pm/RESULT_PACKET_REVIEW_PAGE_FORMAT_01.md`参照。

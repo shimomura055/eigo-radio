@@ -61,6 +61,27 @@ def parse_urls_file(path: str) -> list[tuple[str, str]]:
     return items
 
 
+def dismiss_githack_interstitial(page) -> bool:
+    """raw.githack.com/rawcdn.githack.comが初回アクセス時に出す
+    「External Content Notice」警告ページ(POSTフォームで`__Http-phish`
+    cookieをセットして再読込するとバイパスされる、リポジトリ提供側では
+    制御不可能な第三者サービス側の挙動)を検知し、ボタンを押して通過する。
+    警告ページでなければ何もせずFalseを返す。
+    """
+    try:
+        btn = page.query_selector("form button.url-action-button")
+    except Exception:  # noqa: BLE001
+        btn = None
+    if not btn:
+        return False
+    btn.click()
+    try:
+        page.wait_for_load_state("load", timeout=8000)
+    except Exception:  # noqa: BLE001
+        pass  # 広告等の無関係な保留リソースでloadが遅延しても、DOM自体は既に来ている
+    return True
+
+
 def check_one(page, name: str, url: str, screenshot_dir: str | None,
               play_wait_seconds: float) -> dict:
     result: dict = {"name": name, "url": url, "checks": {}, "reasons": []}
@@ -68,8 +89,20 @@ def check_one(page, name: str, url: str, screenshot_dir: str | None,
     page.on("console", lambda msg: console_errors.append(msg.text) if msg.type == "error" else None)
 
     try:
-        page.goto(url, wait_until="load", timeout=30000)
-        page.wait_for_selector("#content .card", timeout=15000)
+        page.goto(url, wait_until="domcontentloaded", timeout=20000)
+        if dismiss_githack_interstitial(page):
+            result["githack_interstitial_dismissed"] = True
+        # unified.htmlは初期表示として「コンテンツを読み込んでいます…」という
+        # `#content .card`プレースホルダを即座に描画するため、単純な
+        # `#content .card`待機では実際のfetch完了を待てない。実データ描画
+        # (h2見出し付きcard)またはエラー表示のいずれかが出るまで待つ。
+        page.wait_for_function(
+            "() => document.querySelector('#content .card h2') || document.querySelector('#content .error')",
+            timeout=20000,
+        )
+        if page.query_selector("#content .error"):
+            err_text = page.eval_on_selector("#content .error", "el => el.textContent")
+            raise RuntimeError(f"unified.html表示エラー: {err_text}")
     except Exception as e:  # noqa: BLE001
         result["status"] = "FAIL"
         result["reasons"].append(f"page load/content待機に失敗: {e}")
@@ -138,7 +171,10 @@ def check_one(page, name: str, url: str, screenshot_dir: str | None,
             "#episode",
             "a => ({currentTime: a.currentTime, paused: a.paused, error: a.error && a.error.code})",
         )
-        page.eval_on_selector("#episode", "a => a.play()")
+        # a.play()が返すPromiseをawaitすると、headless環境でautoplay policyにより
+        # 無期限に未解決のままハングすることがあるため、Promiseはawaitせず
+        # catchだけ付けてfire-and-forgetする(同期的な再生開始効果は変わらない)。
+        page.eval_on_selector("#episode", "a => { a.play().catch(()=>{}); return true; }")
         page.wait_for_timeout(int(play_wait_seconds * 1000))
         after = page.eval_on_selector(
             "#episode",
@@ -189,14 +225,29 @@ def main() -> int:
     results = {}
     with sync_playwright() as p:
         browser = p.chromium.launch()
+        # 同一contextを使い回すことで、raw.githack.comの初回警告ページ通過で
+        # セットされる`__Http-phish` cookieを以後のURLでも再利用する
+        # (page単位でcontextが分かれると毎回警告ページを踏み直すため)。
+        context = browser.new_context()
         for name, url in items:
-            page = browser.new_page()
+            page = context.new_page()
+            page.set_default_timeout(20000)
             try:
                 results[name] = check_one(
                     page, name, url, args.screenshot_dir, args.play_wait_seconds
                 )
             finally:
                 page.close()
+            r = results[name]
+            print(f"[{r['status']}] {name}", flush=True)
+            for reason in r.get("reasons", []):
+                print(f"    - {reason}", flush=True)
+            # 途中経過を都度書き出す(長時間run時に外部から進捗確認できるように)
+            partial = {"overall": "IN_PROGRESS", "results": results}
+            Path(args.out).write_text(
+                json.dumps(partial, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+        context.close()
         browser.close()
 
     all_pass = all(r["status"] == "PASS" for r in results.values())
