@@ -8456,6 +8456,125 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`、
   `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01.md`。
 
+## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01: ユーザー試聴Feedback3点修正(代名詞・本文一文削除)+全14segment・Key Phrase音声再生成
+
+- 日付: 2026-09-17。予算上限を¥400→¥500へ更新(2026-09-17ユーザー決定、+¥100)。
+  並行Agentなし、`docs/pm/locks/audio_stage.lock`使用。
+- ユーザー試聴Feedback(全文要旨): (1)人物設定の整合(Voice A=男性・Voice B=
+  女性)のため、Hook「fit the few minutes she has」→「he has」、Voice A
+  heading「her personalized feed」→「his personalized feed」に修正(Voice B
+  heading「her feed is closing in」は無変更)。(2)Voice A本文から
+  「I worry I may miss something important, but」を削除(削除前:
+  「Sometimes it even feels less biased than a human editor. I worry I may
+  miss something important, but I do not want to sort through everything
+  myself.」→削除後:「Sometimes it even feels less biased than a human
+  editor. I do not want to sort through everything myself.」、Ledger claim
+  変更なし・Voice Aの便利さ支持の立場不変)。単純置換ではなくHook→Voice A→
+  Voice B全体の人物整合(一人目=男性、二人目=女性)を確認し、manual wording
+  adjustmentは不要だった(元の文がそのまま自然につながった)。(3)全segment
+  でプツッという機械音/音切れ/品質ばらつきの指摘→全TTS再生成。
+- Script整合: 修正後canonical(`er012_output/personalized_news_b1_rebuild_01/
+  b1_2v_new_theme_r8_attempt1/article.md`)に対しgrep証跡化(旧文言「I worry
+  I may miss something important」・旧代名詞「she has」「her personalized
+  feed」いずれも0件、Voice Bの「her feed」は維持)。既存Validator
+  (Analytical Leakage Check 2V 7項目・Ledger Deviation Checker)をWriter
+  再生成なしでoffline再実行(`er012_output/personalized_news_b1_rebuild_01/
+  fix01_offline_validator_recheck.py`、`vfl01.run_deviation_check()`+
+  `writer_generic.run_analytical_leakage_check_2v()`を直接呼び出すのみ、
+  Local Rewrite loopは不使用): any_flagged=False(0件)、
+  overall_status=LEDGER_COMPLIANT(deviation 0件)。costは¥0.92(openai
+  gpt-5.6-luna、2 API call)。Comment/Previewは旧文言を引用していなかった
+  ため再生成不要(b1_support_texts.json確認済み)。
+- Key Phrase選定初回がKEY_WORDS_STRUCTURE_INVALID(rank1候補
+  "the stakes are different"に有限助動詞"are"を含む、既存の方式L hard
+  requirement違反)。既存前例(`er011_no18_b1_kp_retry_01.py`、
+  `er003_v1_iran01_a2_kp_retry.py`)と同一の手当てとして、実Production関数
+  `er003_v1_n3_01_scaffold_generate.run_key_phrases()`をそのまま再呼び出す
+  最小retry(`fix01_kp_retry.py`)を実施し、retry 1回目でCANONICALIZATION_
+  PASS(新5件: locked into a narrow view/engagement/the stakes/sort
+  through/keep up with)。新しい仕様判断・Gate緩和は行っていない。cost=
+  ¥2.89(openai)。
+- 全TTS再生成: 14segment(topic_intro/preview/comment_1-4/point_one_heading/
+  point_two_heading/point_one/point_two/full_story_part1/full_story_part2/
+  tension_reflection/in_one_line)+Key Phrase音声(EN5+JA5=10件)を、正式
+  Production音声経路(`er012_personalized_news_b1_rebuild_01_audio.py`、
+  Production primitive直接呼び出し、変更なし)で`audio/b1_2v_fix01/`へ新規
+  生成(旧`audio/b1_2v/`は履歴保持、無変更)。Voice A=Algieba(男性)/Voice
+  B=Erinome(女性)、fallback発火なし。全segment初回attemptでOK(14件中13件は
+  attempt1、point_two_headingのみASR誤認識"her feet"→"her feed"で
+  attempt2 minimal_fallbackへ、既存retry機構内で解決、Human Review Lock
+  発生なし)。TTS/KP/ASR cost=¥30.47(gemini¥28.00+openai¥1.33+openai_asr
+  ¥1.15、内Key Phrase選定初回失敗分の¥4.10相当を含む)。
+- QA(API成功=PASSにしない): (a) 全14segmentをlocal faster-whisper verbatim
+  (`er008_disfluency_qa_18.transcribe_verbatim`)で個別に語単位転写
+  (`fix01_disfluency_full_scan.py`)。adjacent word repetition
+  0件・欠落/重複なし(word count差はcomment_3の"news feed"→ASRが
+  "newsfeed"と結合トークン化、full_story_part2の"gains—and"を検証用
+  canonical文字列側の.split()がハイフンで分割しなかった単純な集計上の
+  差であり、実際の発話内容の欠落・重複ではないことをtranscript全文で確認
+  済み)。(b) 波形解析(`fix01_audio_qa_waveform.py`、
+  `audit_fix01/audio_qa.json`): 当初の素朴な閾値(隣接サンプル間ジャンプ
+  ≥0.3)は24kHz音声の摩擦音(s/f/th等、ナイキスト近傍高域エネルギー)を
+  click/popとして大量誤検知した(実測: preview.wav単体で4966件、手動
+  サンプル確認でidx=536409付近が正常な摩擦音の高域振動と判明)ため、
+  21サンプル(≈0.875ms)移動平均で高域成分を抑制した後に隣接ジャンプ
+  ≥0.08を判定する方式へ改訂(同じpreview.wavで平滑化後の最大ジャンプは
+  0.055に低下、閾値0.08で0件)。改訂後: 33ファイル(14segment+9共有
+  narration+10 Key Phrase)全件でclick/pop 0件・1.5秒超無音0件・音量
+  変動係数(CV)閾値0.6超0件・clipping 0件。segment境界(assembled
+  episode、50ms窓RMS比>3.0)は15箇所flagged、内訳は全て意図的な
+  pause_X(無音区間)⇄speech/SFXの境界であり(pause側RMSは0.00000〜
+  0.0004の設計上の無音)、speech同士・speech⇄SFX cue間の予期しない
+  段差は0件。(c) 重点確認: A「I do not want to sort through everything
+  myself.」のdo/not/want語単位timestampが連続(27.10s終端→27.10s開始→
+  27.28s開始、gap/overlapなし、confidence 0.85-0.99)、click/pop 0件。
+  B 直前文「Sometimes it even feels less biased than a human editor.」
+  との接続も同一segment内で連続生成・ASR EXACT/NORMALIZED_MATCH。
+  C Hookの「he has」はASR EXACT_MATCHで確認。D Voice A headingの「his」
+  はASR NORMALIZED_MATCHで確認("One voice, the reader who relies on his
+  personalized feed.")。E Voice B=Erinome(女性)は`voice_resolution.json`
+  で維持確認。異音・切断の残存なし。
+- Gate再実行: Assembly `status=OK`、duration=321.155秒、peak=0.94082、
+  clipping=False、headroom safety valve適用なし(閾値0.98未満、cause_
+  piece=Intro[ジングル、無関係])。Audio Validation Gate=PASS(14segment
+  全てVALIDATED)。記事⇔音声一致確認(`article_audio_consistency.json`)
+  全項目PASS。player.html確認(script欄に新文言のみ・旧文言なしを目視
+  確認)。Browser E2E(`docs/pm/tools/user_test_page_e2e_check.py`、
+  `docs/pm/e2e_pn_b1_rebuild_01_fix01/e2e_result.json`)5項目全PASS
+  (header Standard/Advanced表示、Key Phrase 2列ラベル無し5件、構造要素
+  [Intro/Preview/Key Phrases/Full Script card・comment4件]存在、Play
+  進行[0→2.89秒/4秒待機、error=null])。追加seek確認
+  (`seek_and_text_check.json`): 60秒seek+1.5秒待機でcurrentTime=60.79秒
+  (duration=321.15秒、Assembly実測と一致)、表示script全文に新文言
+  (he has/his personalized feed/her feed is closing in/do not want)を
+  含み旧文言(she has/deleted clause)を含まないことをDOM textContentで
+  機械確認。screenshot(`docs/pm/e2e_pn_b1_rebuild_01_fix01/screenshots/
+  pn_b1_rebuild_fix01.png`)でlayout崩れなし確認。
+- A2無変更証跡: `er012_output/personalized_news_b1_rebuild_01/
+  a2_baseline_sha256_fix01_before.txt`/`_after.txt`(各224ファイル)の
+  diff結果=差分なし(exit 0)。
+- コスト実測: offline validator recheck ¥0.92 + Key Phrase retry ¥2.89 +
+  TTS/KP/ASR ¥30.47 = **合計¥34.28**。本管理ID累計(親タスク¥361.22+
+  本FIX-01¥34.28)=**¥395.50**(上限¥500以内、残≈¥104.50)。
+- Dangling Reference Check: 使用したValidator(Analytical Leakage Check
+  2V、Ledger Deviation Checker、Key Phrase方式L hard requirement、
+  Audio Validation Gate、user_test_page_e2e_check.py)はいずれも既存の
+  正式仕様として存在し、新規追加・緩和なし。retry/fallback(Key Phrase
+  再選定・TTS outer retry・point_two_heading minimal fallback)は既存の
+  上限・パターンのみ使用し新原則を追加していない。Writer/TTS/Validator/
+  retry間の不整合は確認されなかった。`CURRENT_SPEC.md`は無変更。
+- Status: `GATE_PASS → USER_DECISION_REQUIRED`(修正・全Gate通過後も
+  `USER_TEST_READY`にしない、再試聴待ちでSTOP)。
+- 新Advanced URL: `https://rawcdn.githack.com/shimomura055/eigo-radio/
+  7ea8bd7ac3f3cab60890057cac82a08b68ac619e/user_test/unified.html?
+  src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/
+  player.html&level=B1&en=One%20Feed%2C%20Two%20Very%20Different%20
+  Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC
+  %E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81
+  %95%E3%81%86%E7%B5%8C%E9%A8%93`。
+- 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`(FIX-01節)、
+  `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01.md`。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。

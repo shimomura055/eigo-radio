@@ -215,3 +215,172 @@ Writer段階はTension leakage是正の試行錯誤(r2〜r7)により目安を�
   適切な難度・情報密度か。
 
 ★★★★報告ここまで★★★★
+
+## FIX-01
+
+管理ID: `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01`(ユーザー試聴Feedback修正)。
+以下が最新の累積Full Report(このブロックだけで現状を把握可能)。
+
+★★★★報告ここから★★★★
+
+**背景**: 上記(初回)のPersonalized News B1をユーザーが試聴し、(1)人物設定の
+不整合(代名詞)、(2)Voice A本文の不要な一文、(3)複数segmentでのプツッという
+機械音/音切れ、の3点をFeedback。本節はその修正結果。
+
+1. **Hook修正前→後**: 「On a morning commute, one reader opens a feed and
+   finds stories that fit the few minutes **she** has.」→「…**he** has.」
+
+2. **Voice A heading修正前→後**: 「One Voice: The reader who relies on
+   **her** personalized feed」→「…on **his** personalized feed」
+
+3. **Voice B heading無変更の証跡**: 「Another Voice: The reader who worries
+   **her** feed is closing in」は修正前後で完全に同一(diffなし)。grep
+   `her feed`は`article.md`・`parts.json`・`audio/b1_2v_fix01/`配下全体で
+   Voice B関連箇所にのみ出現し、Voice A関連の「her personalized feed」は
+   0件(grep証跡確認済み)。
+
+4. **Voice A本文の削除前全文**: 「On my commute, I open Google News's "For
+   you" page and find stories about subjects I follow. The feed can also
+   reflect my activity on Google services and YouTube. I can ask for more
+   or fewer similar stories, or hide a source. That gives me some control.
+   I am busy, and personalization gives me a quick, relevant path through
+   a huge amount of news. Sometimes it even feels less biased than a human
+   editor. **I worry I may miss something important, but** I do not want
+   to sort through everything myself.」
+
+5. **削除対象**: 「I worry I may miss something important, but」全体
+   (butのみの削除ではなく、この節全体を削除)。
+
+6. **修正後全文**: 「On my commute, I open Google News's "For you" page and
+   find stories about subjects I follow. The feed can also reflect my
+   activity on Google services and YouTube. I can ask for more or fewer
+   similar stories, or hide a source. That gives me some control. I am
+   busy, and personalization gives me a quick, relevant path through a
+   huge amount of news. Sometimes it even feels less biased than a human
+   editor. I do not want to sort through everything myself.」
+
+7. **manual wording adjustmentの有無・理由**: **なし**。「Sometimes it even
+   feels less biased than a human editor. I do not want to sort through
+   everything myself.」は削除後もそのまま自然につながったため、意味を変える
+   追加調整は不要と判断した。
+
+8. **男性Voice A/女性Voice Bの人物整合確認(Hook→A→B)**: Hookの一人目
+   (「he has」)→Voice A heading(「his personalized feed」、同一人物=男性)
+   →Voice B heading(「her feed is closing in」、Hookの二人目=女性)という
+   代名詞連鎖が一貫していることを記事全文の通読で確認した。Voice A/B本文自体
+   は一人称「I」のみで性別を示す代名詞を含まないため、本文側の追加修正は不要。
+
+9. **全TTS再生成segment数**: 記事固有14segment全件(topic_intro/preview/
+   comment_1-4/point_one_heading/point_two_heading/point_one/point_two/
+   full_story_part1/full_story_part2/tension_reflection/in_one_line)+
+   Key Phrase音声10件(EN5+JA5、新5件: locked into a narrow
+   view/engagement/the stakes/sort through/keep up with)。Master Audio
+   Store共通ナレーション(Welcome/Preview intro/Full story intro/Key
+   phrases intro/番号読み上げ5件、計9件)は仕様どおり既存共有素材を再利用
+   (新規音声生成なし、記事固有分と区別してMaster Store既存ファイルへ直接
+   接続)。
+
+10. **使用voice**: Voice A=Algieba(男性)、Voice B=Erinome(女性)。
+    `audit/voice_resolution.json`でfallback発火なしを確認(旧版から無変更)。
+
+11. **「do not want」箇所の再検証結果**: 転写(faster-whisper
+    verbatim、word-level timestamp)で"do"(26.98–27.10s)→"not"
+    (27.10–27.28s)→"want"(27.28–27.48s)がgap/overlapなく連続、
+    confidence 0.85〜0.99。波形解析(改訂後の平滑化ジャンプ方式)で
+    point_one.wav全体のclick/pop候補は0件。境界(前文「…human editor.」
+    との接続を含む)も同一segment内の単一生成のため不連続なし。ASR
+    classification=NORMALIZED_MATCH、verified=True、disfluency
+    flagged=False。実聴相当確認(Sonnetによる波形+転写ベースの異常
+    有無判定、音声を実際に聴取したものではない)として異常なしと判定。
+
+12. **click/pop/音切れQA結果(手法・閾値・検出箇所・処置)**: 手法は
+    `fix01_audio_qa_waveform.py`(21サンプル[≈0.875ms]移動平均で高域
+    [摩擦音]成分を抑制した後、隣接ジャンプ≥0.08を判定)。**改訂経緯**:
+    当初案(隣接サンプル間ジャンプ≥0.3、委任文記載の例示閾値)は24kHz
+    音声の摩擦音(s/f/th等)を大量誤検知した(実測: preview.wav単体で
+    4966件、手動サンプル確認で正常な摩擦音の高域振動と判明)ため、上記の
+    平滑化方式へ改訂(同ファイルで平滑化後最大ジャンプ0.055、閾値0.08で
+    0件)。結果: 33ファイル(14segment+9共有narration+10 Key Phrase)
+    全件でclick/pop・1.5秒超無音・音量変動係数(CV>0.6)・clipping、
+    いずれも0件flagged。assembled episodeのsegment境界(前後50ms RMS比
+    >3.0)は15箇所flagged、内訳は全て意図的なpause_X(無音、RMS
+    0.00000〜0.0004)⇄speech/SFXの境界であり、speech同士・speech⇄SFX
+    cue間の予期しない段差は0件(処置不要と判断)。詳細:
+    `audio/b1_2v_fix01/b1b/audit_fix01/audio_qa.json`。
+
+13. **ASR結果(segment別)**: 14segment全て`OK`/`VALIDATED`。13件は
+    attempt1でOK、point_two_headingのみASR誤認識("her feet"、実際の
+    発話は正しく"her feed")によりattempt2(minimal_fallback)で
+    NORMALIZED_MATCHへ解決(既存retry機構内、Human Review Lock発生なし)。
+    加えて全14segmentをfaster-whisper verbatimで個別再転写
+    (`audit_fix01/disfluency_full_scan.json`)、adjacent word
+    repetition 0件、word count差(comment_3/full_story_part2)は
+    "news feed"→"newsfeed"のASRトークン結合、およびcanonical文字列側
+    `.split()`のハイフン非分割という集計上の差であり、transcript全文
+    確認により実際の欠落・重複でないことを確認。
+
+14. **Assembly/Gate(duration/peak/clipping)**: status=OK、
+    duration=321.155秒、peak=0.94082(閾値0.98未満、headroom safety
+    valve適用なし、cause_piece=Intro[ジングル、narrationと無関係])、
+    clipping=False。Audio Validation Gate=PASS(14segment全て
+    VALIDATED)。記事⇔音声一致確認(`article_audio_consistency.json`)
+    全項目PASS。
+
+15. **Browser E2E**: `docs/pm/tools/user_test_page_e2e_check.py`
+    5項目全PASS(header Standard/Advanced表示、Key Phrase 2列ラベル
+    無し5件、構造要素[Intro/Preview/Key Phrases/Full Script card・
+    comment4件]存在、Play進行[0→2.89秒/4秒待機、error=null])。
+    追加seek確認: 60秒seek+1.5秒待機でcurrentTime=60.79秒
+    (duration=321.15秒、Assembly実測と一致、error=null)。表示script
+    全文に新文言(he has/his personalized feed/her feed is closing
+    in/do not want to sort through)を含み、旧文言(she has/deleted
+    clause)を含まないことをDOM textContentで機械確認。screenshotで
+    layout崩れなし確認。evidence:
+    `docs/pm/e2e_pn_b1_rebuild_01_fix01/e2e_result.json`+
+    `seek_and_text_check.json`+`screenshots/pn_b1_rebuild_fix01.png`。
+
+16. **A2無変更証拠**: `er012_output/personalized_news_b1_rebuild_01/
+    a2_baseline_sha256_fix01_before.txt`/`_after.txt`(各224ファイル)の
+    diff結果=差分なし(exit 0)。
+
+17. **Git SHA/SSOT(予算¥500記録含む)/Dangling Reference Check**:
+    コード+成果物本体commit=`7ea8bd7a`(push済み、`origin/main`一致)。
+    SSOT反映(DECISION_LOG/ARTIFACT_REGISTRY/本RESULT_PACKET/E2E
+    evidence)は本コミット後に追加commitで反映(下記参照)。
+    `DECISION_LOG.md`へ`## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-
+    FIX-01`セクション新設(予算¥400→¥500更新記録含む)。
+    `ARTIFACT_REGISTRY.md`のPersonalized News B1行を新版[FIX-01]行へ
+    更新(初回版行は`REPLACED_BY_FIX01`として履歴保持)。
+    Dangling Reference Check: 使用したValidator(Analytical Leakage
+    Check 2V・Ledger Deviation Checker・Key Phrase方式L hard
+    requirement・Audio Validation Gate・user_test_page_e2e_check.py)は
+    いずれも既存の正式仕様。retry/fallback(Key Phrase再選定・TTS outer
+    retry・point_two_heading minimal fallback)は既存の上限・パターンの
+    みを使用し新原則を追加していない。Writer/TTS/Validator/retry間の
+    不整合なし。`CURRENT_SPEC.md`は無変更。
+
+18. **新Advanced試聴URL**:
+    `https://rawcdn.githack.com/shimomura055/eigo-radio/7ea8bd7ac3f3cab60890057cac82a08b68ac619e/user_test/unified.html?src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/player.html&level=B1&en=One%20Feed%2C%20Two%20Very%20Different%20Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81%95%E3%81%86%E7%B5%8C%E9%A8%93`
+
+19. **未解決事項**: (1)OPEN-166恒久対応方針(定期再検証ルール新設 vs
+    現状の偶発検出時のみ対応)は未決のまま(本FIX-01の対象外)。
+    (2)`voices/audio/b1_2v_v2/`(OPEN-151)の取り扱いは引き続き未決。
+    (3)波形QA(click/pop検出方式)は本タスク限定の記事dir配下スクリプト
+    であり、新Production仕様として恒久化はしていない(必要なら別途
+    ユーザー判断)。
+
+20. **USER_DECISION_REQUIRED一覧+cost実測**:
+    **B(ユーザー試聴・品質確認待ち)**: 18節の新Advanced URLで再試聴依頼。
+    確認観点: (i)代名詞修正(he/his)が自然か、(ii)Voice A本文の削除後の
+    つながりが自然か、(iii)機械音/音切れが解消されているか。
+    **A(仕様・Product判断待ち)**: 上記19節(1)(2)は既存のまま未決
+    (本FIX-01で新規に発生した仕様判断待ちはなし)。
+    **cost実測**: offline validator recheck ¥0.92 + Key Phrase retry
+    ¥2.89 + TTS/KP/ASR ¥30.47 = **本FIX-01合計¥34.28**。本管理ID累計
+    (親タスク¥361.22+本FIX-01¥34.28)=**¥395.50**(予算上限¥500以内、
+    残≈¥104.50)。
+
+**Status**: `GATE_PASS → USER_DECISION_REQUIRED`(修正・全Gate通過後も
+`USER_TEST_READY`にしない、新試聴URL[18節]を提示してSTOP)。
+
+★★★★報告ここまで★★★★
