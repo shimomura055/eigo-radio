@@ -1980,6 +1980,33 @@ runtime evidence・regression影響を確認したうえで決める。本原則
   (Ledger→A2 Writer直接生成)への統一を優先候補とする(詳細は
   `docs/pm/RESULT_PACKET_PN_A2_GAP_PHASE_A.md`)。
 
+## 19. 自明な修正・一般化の自律実施基準(2026-09-17新設、
+`PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B`、ユーザー正式決定)
+
+上位方針・承認済み原則から明確に導ける/他Familyとの共通化・整合に沿う/
+ネガティブ影響ほぼ無し/既存Production挙動を壊さない/追加API費用が目安
+100円以内/時間を大きく消費しない/新Product方針・UX判断を伴わない/
+品質・安全性を下げない/Gate緩和でない/承認済み仕様を変更しない——を
+すべて満たす内容(config一般化、固定path除去、共通primitive再利用、
+明らかなSSOT整合、typo/plumbing/parameterization、regression追加、
+docs整合、既存方針から一意に導ける実装判断)は、Fable/Claude側で判断
+して同時に進めてよく、毎回`USER_DECISION_REQUIRED`にしない。
+
+`USER_DECISION_REQUIRED`にすべきは: 新Product仕様の新設/既存承認仕様の
+変更/複数案に明確な品質・UXトレードオフ/Gate緩和/Family共通原則の新設・
+変更/大きなregression risk/大きなコスト/大きな時間消費/品質低下の可能性/
+ユーザー方針から一意に導けない場合のみ。「念のため確認」はUSER_DECISION_
+REQUIREDにする理由にしない。
+
+- 実例(`PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B`):
+  `run_writer_stage_generic()`への`instruction`引数追加(既定値で既存
+  挙動を完全維持、新規topic呼び出し元のみ明示指定)、`generate_japanese_
+  title_for_new_topic()`/`run_key_phrases_a2_from_own_text()`の新設
+  (既存固定辞書・B1 KP dirコピー専用関数は無変更のまま維持し、新規関数を
+  追加するだけの一般化)は、ユーザー正式決定済みの3点(A2生成方式/Key
+  Phrase選定元/日本語タイトル供給方式)から一意に導ける実装判断であり、
+  都度確認を求めず実施した。
+
 ## 変更履歴
 
 - 2026-09-05(PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01): 新設。PM Gate 1〜7・
@@ -2524,3 +2551,8 @@ runtime evidence・regression影響を確認したうえで決める。本原則
   Prompt変更なし。詳細は`DECISION_LOG.md`同管理IDエントリ、
   `OPEN_ITEMS.md`OPEN-121/136/122/141/120行、`docs/pm/RESULT_PACKET.md`
   参照。
+- 2026-09-17(`PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B`): 19節
+  「自明な修正・一般化の自律実施基準」を新設(ユーザー正式判断3点から
+  一意に導ける実装判断は都度USER_DECISION_REQUIREDにしない、という
+  PM自律判断方針をSSOTへ記録)。詳細は`DECISION_LOG.md`同管理IDエントリ、
+  `docs/pm/RESULT_PACKET_PN_A2_PHASE_B.md`参照。

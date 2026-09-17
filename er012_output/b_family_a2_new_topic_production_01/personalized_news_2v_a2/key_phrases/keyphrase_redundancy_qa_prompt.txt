@@ -1,0 +1,88 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# The News You See, and the News You Miss
+
+## The Question
+
+On a morning train, a reader opens a news feed. Articles about followed topics are near the top. Another reader opens a similar feed and sees the same familiar arguments again. Both meet a system that uses past clicks, interests, and actions to decide what appears first. The same system can feel like a shortcut to one reader and a narrowing window to another.
+
+### One Voice: My morning news route
+
+On the train, I open the “For you” page before my stop. Topics I follow are near the top, so I can scan headlines instead of searching. The page uses my chosen interests and sources, as well as past activity from other services. I can follow or unfollow a topic, ask for more or less of a story, or hide a source.
+
+That gives me a useful feeling: my short morning belongs to me. I still worry that an important story may never reach my screen. With little time, this feels practical. I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable.
+
+### Another Voice: What is missing?
+
+Sometimes when I open my feed, I see similar kinds of claims from similar kinds of sources. I scroll, then stop. What is missing? I cannot see why one story comes before another.
+
+I worry the order may serve clicks and ad money, not just my understanding. I want different views, even when they challenge me. I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information. My clicks may narrow what returns, but I cannot see or change the basic rules.
+
+## Why They See It Differently
+
+Both readers start with the same hope: what appears in a feed should help them understand the world. Then the stakes split. One is protecting a manageable morning and a sense of control over a personal news route. The other is protecting contact with views outside that route.
+
+Their power is not equal. One can follow, hide, or ask for more or less. The other cannot see or change the rules behind the ranking, even though those rules may shape what stays outside view.
+
+## What This Really Means
+
+This is not simply a fight over whether personalized news is good or bad. It is a question about the borders of a daily picture of the world: who can adjust them, and who can even see where they are. Convenience and concern are two experiences of the same hidden route through public news.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "personalization",
+    "japanese_gloss": "人に合わせて情報を変えること",
+    "source_sentence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "put a number to",
+    "japanese_gloss": "不安を数字で表す",
+    "source_sentence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "serve clicks and ad money",
+    "japanese_gloss": "クリック数や広告収入を優先する",
+    "source_sentence": "I worry the order may serve clicks and ad money, not just my understanding."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "narrowing window",
+    "japanese_gloss": "見える世界を狭めるもの",
+    "source_sentence": "The same system can feel like a shortcut to one reader and a narrowing window to another."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "contact with views",
+    "japanese_gloss": "異なる意見に触れること",
+    "source_sentence": "The other is protecting contact with views outside that route."
+  }
+]

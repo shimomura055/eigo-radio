@@ -1,0 +1,174 @@
+[
+  {
+    "original_ng_sentence": "I cannot simply stop the ranking.",
+    "issue": "ランキング自体を停止・無効化できないという具体的な利用者制約を述べているが、Ledgerが確認しているのは、トピックやソース等の調整機能と、一部の大規模プラットフォーム等におけるプロファイリング非依存の選択肢であり、ランキングを止められないことではない。",
+    "explanation": "Ledgerにない利用者の操作制限を、具体的かつ断定的に追加している。文脈上の懸念表明ではあるが、単なるHookではないため通常どおり判定した。",
+    "flags": [
+      "changed_fact",
+      "changed_scope",
+      "changed_certainty",
+      "unsupported_new_claim"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "I may not be able to simply turn off or fully control the ranking.",
+        "ledger_status": "LEDGER_DEVIATION",
+        "ledger_status_window": "LEDGER_DEVIATION",
+        "target_sentence_eval": {
+          "overall_status": "LEDGER_DEVIATION",
+          "window_overall_status": "LEDGER_DEVIATION",
+          "target_deviations": [
+            {
+              "claim_in_article": "I may not be able to simply turn off or fully control the ranking.",
+              "issue": "利用者がランキングを完全に停止または制御できない可能性を示しているが、LedgerはGoogle Newsで一定の調整機能があることと、特定の大規模プラットフォーム等で非プロファイリング型の選択肢が必要とされることまでを確認しており、この具体的な利用者の能力については確認していない。",
+              "severity": "MAJOR",
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true,
+              "explanation": "ランキングを『単にオフにする／完全に制御する』ことができないという具体的主張はLedgerに存在せず、未確認の新規主張に当たる。Hookとしての緩和は適用していない。",
+              "treated_as_hook": false,
+              "auto_downgraded": false,
+              "_role_classification": {
+                "role": "target",
+                "method": "exact_substring"
+              }
+            }
+          ],
+          "adjacent_deviations": [],
+          "ambiguous_deviations": [],
+          "match_fallback": false
+        }
+      },
+      {
+        "attempt": 2,
+        "text": "I want more control over how the ranking works.",
+        "ledger_status": "LEDGER_COMPLIANT",
+        "ledger_status_window": "LEDGER_COMPLIANT",
+        "target_sentence_eval": {
+          "overall_status": "LEDGER_COMPLIANT",
+          "window_overall_status": "LEDGER_COMPLIANT",
+          "target_deviations": [],
+          "adjacent_deviations": [],
+          "ambiguous_deviations": [],
+          "match_fallback": false
+        }
+      }
+    ],
+    "final_text": "I want more control over how the ranking works.",
+    "resolved": true,
+    "human_review_required": false,
+    "diff_qa": {
+      "applied": true,
+      "diff_qa_calls": 1,
+      "window_text": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I want more control over how the ranking works. I want to protect my chance to meet ideas outside my usual screen.",
+      "fact_check_status": "FACT_CHECK_COMPLETED",
+      "fact_check_verdict": "PASS",
+      "fact_check_model": "gpt-5.6-luna",
+      "fact_check_response_id": "resp_05e31268ea4c4097006aab2ac23b3087d0b4618277b5745739",
+      "fact_check_search_usage": {
+        "web_search_call_count": 9,
+        "queries": [
+          "\"59 percent\" personalization \"miss\" different views news",
+          "\"personalization\" \"different views\" news 59 percent U.S. respondents",
+          "\"I want more control\" personalization ranking news views survey",
+          "news personalization survey U.S. respondents miss different views percentage",
+          "xd8Dh/2 Datawrapper 59 USA personalised news challenging viewpoints",
+          "site:datawrapper.dwcdn.net/xd8Dh \"USA\"",
+          "Reuters Digital News Report 2023 59% USA challenging viewpoints personalization",
+          "\"59%\" \"challenging viewpoints\" personalised news USA",
+          "\"59 percent\" \"challenging viewpoints\" personalized news US",
+          "\"miss out on challenging viewpoints\" USA 59",
+          "\"personalised news\" \"59%\" USA",
+          "site:reutersinstitute.politics.ox.ac.uk/digital-news-report/2026 personalisation news challenging viewpoints",
+          "Reuters Institute Digital News Report 2026 personalized news miss challenging viewpoints USA",
+          "2026 survey US personalized news miss different viewpoints algorithm control"
+        ]
+      },
+      "ledger_check_full": {
+        "deviations": [],
+        "overall_status": "LEDGER_COMPLIANT"
+      },
+      "ledger_check_target_eval": {
+        "overall_status": "LEDGER_COMPLIANT",
+        "window_overall_status": "LEDGER_COMPLIANT",
+        "target_deviations": [],
+        "adjacent_deviations": [],
+        "ambiguous_deviations": [],
+        "match_fallback": false
+      },
+      "blocks_acceptance": false
+    },
+    "diff_qa_point_overlap": {
+      "applicable": true,
+      "point": "point_two",
+      "overlap_vs_full_story": {
+        "overlap_ratio": 0.094,
+        "shared_words": [
+          "another",
+          "clicks",
+          "first",
+          "morning",
+          "news",
+          "other",
+          "question",
+          "reader",
+          "same",
+          "screen",
+          "what"
+        ],
+        "point_word_count": 117,
+        "story_word_count": 38,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "overlap_vs_other_point": {
+        "overlap_ratio": 0.214,
+        "shared_words": [
+          "also",
+          "ask",
+          "behind",
+          "cannot",
+          "controls",
+          "feed",
+          "follow",
+          "hide",
+          "know",
+          "less",
+          "list",
+          "make",
+          "more",
+          "morning",
+          "ranking",
+          "reach",
+          "reaches",
+          "see",
+          "sources",
+          "start",
+          "story",
+          "unfollow",
+          "want",
+          "what",
+          "worry"
+        ],
+        "point_word_count": 117,
+        "story_word_count": 61,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "flagged": false
+    },
+    "cycle": 1,
+    "item_idx": 1,
+    "location_method": "exact_substring",
+    "point_context_found": true,
+    "point_context": "### Another Voice: The reader who sees the feed narrowing\n\nI scroll, and I see the same kinds of claims again. I see the same voices and the same side of the story. After a while, I start asking what is not there.\n\nI want to know why one article is above another. I also want to know which settings I can change. Instead, the rules behind the list stay out of sight. I worry that the feed may be shaped not only to help me understand the news, but also to win clicks and advertising money. I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I cannot simply stop the ranking. I want to protect my chance to meet ideas outside my usual screen."
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_08ff807a32ddda61006aab2b5d5d7c87d0973b3d1aade874db",
+  "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nI open the “For you” page while my train is moving. The topics I follow are already near the top, so I can scan the headlines before I reach my station. My morning is short. I do not want to spend it pushing past stories that have little to do with me.\n\nThe app lets me follow or unfollow topics and sources. I can ask for more or less of a story, or hide a source. Those controls make me feel that I am steering the list. I know the app also uses my past activity on Google services and YouTube, and I cannot see every signal behind the ranking. Still, the feed helps me start the day. My worry is simple: what if an important story never reaches me?\n\n【Voice B本文】\nI scroll, and I see the same kinds of claims again. I see the same voices and the same side of the story. After a while, I start asking what is not there.\n\nI want to know why one article is above another. I also want to know which settings I can change. Instead, the rules behind the list stay out of sight. I worry that the feed may be shaped not only to help me understand the news, but also to win clicks and advertising money. I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I want more control over how the ranking works. I want to protect my chance to meet ideas outside my usual screen.\n\n【Tension本文】\nBoth readers want the same basic thing: for the feed to help shape a useful understanding of the world. Neither is wrong. But the stakes split. One is protecting a manageable morning and a feeling of control. The other is protecting views outside the usual feed. One can follow, unfollow, ask for more or less, and hide sources. The other cannot reach the rules behind the ranking, even if those rules may quietly shape the picture.\n\n【Closing本文】\nThe question is larger than “Is personalization good?” It is also about who controls the first version of the news that reaches a reader. A useful list can save attention, while a hidden list can leave some doors out of view. The deeper tension is between limited time and the need to know what lies beyond the screen.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "全体が一人称で、通勤中の利用状況、操作感、重要なニュースを逃す不安として描かれている。調査結果や外部の分析が前面に出ていない。",
+      "quoted_evidence": ""
+    },
+    "voice_b": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "一人称の経験と不安が中心だが、途中で回答者比率を主語にした調査結果が挿入されている。59％という数値と調査報告の文型は、本人の視点からDiscovery記事的な説明へ漏れている。",
+      "quoted_evidence": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "reasoning": "調査データの説明には戻らず、限られた時間と多様な視点へのアクセスという異なる優先事項が、二人の答えを分ける理由として整理されている。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単に『人による』と結論づけず、便利さと見えない情報の排除の緊張を問いとして残している。Writerによる具体的な解決策や妥協案の提案もない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "一人称の経験と不安が中心だが、途中で回答者比率を主語にした調査結果が挿入されている。59％という数値と調査報告の文型は、本人の視点からDiscovery記事的な説明へ漏れている。",
+      "quoted_evidence": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views."
+    }
+  ],
+  "any_flagged": true
+}

@@ -1,0 +1,133 @@
+[
+  {
+    "cycle": 1,
+    "targeted_major_count": 1,
+    "newly_discovered_claims": [
+      "Each time I open my feed, I see similar claims from familiar sources."
+    ],
+    "results": [
+      {
+        "original_ng_sentence": "Each time I open my feed, I see similar claims from familiar sources.",
+        "issue": "Ledgerが確認しているのは、特定の時期・米国Facebook利用者集団における、似た意見のソースの露出の多さです。この文はそれを、個人のフィードで毎回起きる現在の経験であるかのように強めています。",
+        "explanation": "Hook的な場面描写として扱っても、\"Each time\"は特定条件下の調査結果を反復的・一般的な事実へ強めるため、changed_certaintyとchanged_time、およびLedgerにない個人の反復経験の追加に該当します。Hook緩和はchanged_scopeには適用しました。",
+        "flags": [
+          "changed_fact",
+          "changed_certainty",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "At times, my feed may show similar claims from familiar sources.",
+            "ledger_status": "LEDGER_COMPLIANT",
+            "ledger_status_window": "LEDGER_COMPLIANT",
+            "target_sentence_eval": {
+              "overall_status": "LEDGER_COMPLIANT",
+              "window_overall_status": "LEDGER_COMPLIANT",
+              "target_deviations": [],
+              "adjacent_deviations": [],
+              "ambiguous_deviations": [],
+              "match_fallback": false
+            }
+          }
+        ],
+        "final_text": "At times, my feed may show similar claims from familiar sources.",
+        "resolved": true,
+        "human_review_required": false,
+        "diff_qa": {
+          "applied": true,
+          "diff_qa_calls": 1,
+          "window_text": "Still, those controls help me feel that I am steering my morning. At times, my feed may show similar claims from familiar sources. At first, it feels familiar.",
+          "fact_check_status": "FACT_CHECK_COMPLETED",
+          "fact_check_verdict": "REVIEW_REQUIRED",
+          "fact_check_model": "gpt-5.6-luna",
+          "fact_check_response_id": "resp_07f6816b5c5e6d66006aab2c5a3bfc87d08ebf800ffc10fee2",
+          "fact_check_search_usage": {
+            "web_search_call_count": 2,
+            "queries": [
+              "site:science.org personalized news recommendations like-minded sources study filter bubble",
+              "site:pnas.org personalized news feed ideological diversity study",
+              "site:dl.acm.org news recommender user control personalization study source diversity",
+              "site:reutersinstitute.politics.ox.ac.uk news personalization user control familiar sources study",
+              "algorithmic news recommendations source diversity familiar sources empirical study",
+              "personalized news feed repeated exposure same sources empirical study",
+              "news recommender systems filter bubble source diversity user study paper",
+              "algorithmic curation news source familiarity repeated claims study"
+            ]
+          },
+          "ledger_check_full": {
+            "deviations": [],
+            "overall_status": "LEDGER_COMPLIANT"
+          },
+          "ledger_check_target_eval": {
+            "overall_status": "LEDGER_COMPLIANT",
+            "window_overall_status": "LEDGER_COMPLIANT",
+            "target_deviations": [],
+            "adjacent_deviations": [],
+            "ambiguous_deviations": [],
+            "match_fallback": false
+          },
+          "blocks_acceptance": false
+        },
+        "diff_qa_point_overlap": {
+          "applicable": true,
+          "point": "point_two",
+          "overlap_vs_full_story": {
+            "overlap_ratio": 0.151,
+            "shared_words": [
+              "another",
+              "both",
+              "day",
+              "familiar",
+              "feed",
+              "morning",
+              "news",
+              "out",
+              "reader",
+              "sight",
+              "similar",
+              "sorting",
+              "stays",
+              "stories",
+              "want",
+              "what"
+            ],
+            "point_word_count": 106,
+            "story_word_count": 39,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "overlap_vs_other_point": {
+            "overlap_ratio": 0.094,
+            "shared_words": [
+              "cannot",
+              "feel",
+              "hide",
+              "morning",
+              "ranking",
+              "see",
+              "shape",
+              "sources",
+              "stories",
+              "story"
+            ],
+            "point_word_count": 106,
+            "story_word_count": 50,
+            "flagged": false,
+            "threshold": 0.4
+          },
+          "flagged": false
+        },
+        "cycle": 1,
+        "item_idx": 1,
+        "location_method": "exact_substring",
+        "point_context_found": true,
+        "point_context": "### Another Voice: The reader who looks beyond the feed\n\nEach time I open my feed, I see similar claims from familiar sources. At first, it feels familiar. Then I wonder what is missing.\n\nI cannot see why one story rises above another, or whether the ranking serves my understanding or a platform’s clicks and ad income. In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends.\n\nMy own clicks could narrow the view further. I want to know that stories outside my usual path have not disappeared."
+      }
+    ],
+    "full_recheck_overall_status": "LEDGER_COMPLIANT",
+    "full_recheck_major_count": 0,
+    "full_recheck_remaining_major_claims": []
+  }
+]

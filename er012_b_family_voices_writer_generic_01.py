@@ -1940,10 +1940,21 @@ def run_pipeline_2v(client, theme_id: str, label: str, base_prompt: str, verifie
             "attempt_history": attempt_history, "total_attempts": len(attempt_history)}
 
 
-def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str = "B1B") -> dict:
+def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str = "B1B",
+                              instruction: str | None = None) -> dict:
     """新テーマ用エントリポイント(Writerのみ、TTSは行わない)。`theme_config`
     (`make_theme_config()`の戻り値)からLedger・Voice Card・Tension contentを
-    読み取り、汎用テンプレートで記事を生成する。TTSは呼ばない。"""
+    読み取り、汎用テンプレートで記事を生成する。TTSは呼ばない。
+
+    `instruction`(PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B新設、
+    既定None): 既定Noneの場合は従来どおり`gen.B1_B_DIRECT_INSTRUCTION`を使う
+    (既存呼び出し元[`main_b1_2v()`/`main_b1_3v()`のwrite_new_theme stage]は
+    引数を渡さないため挙動不変)。B-Family新規topic A2入口(`main_a2_2v()`)は
+    `gen.A2_KAI1_INSTRUCTION`(A-Family全体で既に共有されているLedger直接
+    生成用A2難易度instruction、新規文言の創作ではない)を明示的に渡す。
+    Focus Module本体(5/6区切り構造・Voice原則・禁止事項等)はinstructionの
+    値に関わらず無変更(instructionは【難易度指示】節としてのみ末尾に
+    追加される、`build_candidate_prompt`参照)。"""
     ledger_path = theme_config["ledger_path"]
     if not os.path.exists(ledger_path):
         raise SystemExit(f"Ledger not found at {ledger_path}. STOP条件(Ledger未確定)。")
@@ -1975,7 +1986,7 @@ def run_writer_stage_generic(theme_config: dict, out_dir_base: str, label: str =
 
     candidate_prompt = build_candidate_prompt(
         phase_a["candidate_template"], master_full_text, theme_config["topic_ja"], verified_ledger_text,
-        gen.B1_B_DIRECT_INSTRUCTION)
+        instruction if instruction is not None else gen.B1_B_DIRECT_INSTRUCTION)
     with open(f"{out_dir_base}/audit_candidate_prompt_base.txt", "w", encoding="utf-8") as f:
         f.write(candidate_prompt)
 

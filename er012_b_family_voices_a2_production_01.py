@@ -60,6 +60,8 @@ import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_evidence_compression_editor as ec_editor
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as n3_tts
+import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er003_v1_sing01_point_headings_aoede as point_headings
 import er005_cost_logger as cl
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
@@ -538,6 +540,24 @@ def generate_japanese_title(theme_key: str, out_path: str) -> dict:
 
 
 # ============================================================
+# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B(ユーザー正式決定3、
+# 2026-09-17): 新規topic A2 Production経路用の日本語タイトル関数。既存
+# `generate_japanese_title()`(固定辞書`registry...["japanese_titles"]`への
+# 人手登録が前提、free_address専用経路)は無変更のまま維持する。新規topic
+# 経路では、呼び出し側(runner)が記事生成時のconfig/引数として直訳テキストを
+# 直接供給する(固定辞書への追加登録は不要という一般化)。生成方式自体
+# (標準A2既存規約: `n3_tts.generate_a2_japanese_with_reading_safety`)・
+# タイトル規約(英語タイトルの自然な直訳のみ、新しい主張・数字を追加しない)は
+# 一切変更しない。
+# ============================================================
+def generate_japanese_title_for_new_topic(japanese_title_text: str, out_path: str) -> dict:
+    result = n3_tts.generate_a2_japanese_with_reading_safety(
+        japanese_title_text, out_path, n3_tts.expected_substring_ja(japanese_title_text), max_extra_chars=30)
+    result["canonical_text"] = japanese_title_text
+    return result
+
+
+# ============================================================
 # Step I: Key Phrase A2経路(選定はB1 Phase 1と同一、英語Componentは既存
 # Master Audio Store cache経由[voice=Aoede]、日本語glossのみ標準A2 Aoede
 # 経路で新規生成)
@@ -574,6 +594,56 @@ def reuse_key_phrases_a2(kp_source_dir: str, kp_dir: str, narration_dir: str) ->
 
 
 # ============================================================
+# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B(ユーザー正式決定2、
+# 2026-09-17): 新規topic A2用Key Phrase経路。`reuse_key_phrases_a2()`
+# (B1 Key Phrase dirからのcopy専用、無変更のまま維持)とは異なり、A2自身の
+# 確定本文からA-Family標準のStrategy L(Listening Blocker Ranking)+
+# Canonicalization経路(`sc.run_key_phrases`、既存共有primitive、B1側の
+# `run_content_integrity_and_key_phrase()`がprocess="B1_SUPPORT"で使うのと
+# 同一関数)をprocess="A2_SUPPORT"で呼び出し、新規選定する。選定後の英語
+# Component(Master Audio Store経由、Aoede)・日本語gloss(標準A2 Aoede
+# 経路)のTTS生成手順自体は`reuse_key_phrases_a2()`の該当ループと同一
+# (新規TTSロジックの創作ではない)。
+# ============================================================
+def run_key_phrases_a2_from_own_text(article_text: str, kp_dir: str, narration_dir: str, article_id: str) -> dict:
+    os.makedirs(kp_dir, exist_ok=True)
+    os.makedirs(narration_dir, exist_ok=True)
+    kp = sc.run_key_phrases(article_text, kp_dir, article_id,
+                             "B-Family A2(new-topic, Ledger直接生成)", process="A2_SUPPORT")
+    canonicalization = kp.get("canonicalization") or {}
+    kp_merged = canonicalization.get("merged")
+    if kp_merged is None:
+        return {
+            "selection_pipeline": kp, "items": None, "results": None,
+            "status": kp.get("status") or (kp.get("selection") or {}).get("status")
+            or (canonicalization.get("status")) or "KEY_PHRASE_SELECTION_FAILED",
+        }
+
+    results = {}
+    for item in kp_merged["items"]:
+        rank = item["rank"]
+        used_form = item["used_form"]
+        ja_gloss = item["japanese_gloss"]
+        ja_gloss_tts, ja_gloss_tts_fallback = n3_tts.resolve_key_phrase_ja_gloss_tts(item)
+
+        with cl.segment_context(f"kp{rank}_english"):
+            en_r = shared_narration.ensure_key_phrase_english_component(
+                n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+        en_r["used_form"] = used_form
+
+        with cl.segment_context(f"kp{rank}_japanese"):
+            ja_r = n3_tts.generate_a2_japanese_with_reading_safety(
+                ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_aoede.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
+                max_extra_chars=30, known_key_phrase_terms=[used_form])
+        ja_r["display_gloss"] = ja_gloss
+        ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
+        results[rank] = {"english": en_r, "japanese": ja_r}
+
+    return {"selection_pipeline": kp, "items": kp_merged["items"], "results": results,
+            "status": kp.get("redundancy_qa", {}).get("status") if kp.get("redundancy_qa") else "OK"}
+
+
+# ============================================================
 # Step J: Voice A/B本文(point_one/point_two相当)へ標準A2の既存6%
 # slowdownを適用する合成関数。既存関数2つを順に呼ぶだけ(新規TTS/ASR/
 # time-stretchロジックなし)。EDITORIAL-B-FAMILY-VOICES-A2-SLOWDOWN-AND-
@@ -585,6 +655,35 @@ def generate_voice_body_wide_margin_with_a2_slowdown(name: str, tts_input: str, 
         tts_input, out_path, voice_name,
         style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
         enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
+    return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
+
+
+# ============================================================
+# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B: CURRENT_SPEC.md
+# 「B-Family(Voices)Editorial Type」節(既存`APPROVED_FOR_PRODUCTION`/
+# `PRODUCTION_WIRED`仕様、2026-09-09)は、Voice A/B本文だけでなく「全英語
+# segment(Narrator見出し・Hook Part1/2・Tension・Closing)」へ既存6%
+# slowdown仕様を適用すると明記している。新規topic経路ではこれらのsegmentを
+# 実際に新規生成する必要があるため、上のVoice A/B用合成関数と同じ設計
+# パターン(既存TTS関数+`n3_tts.apply_a2_slowdown_postprocess`の合成のみ、
+# 新規TTS/ASR/time-stretchロジックは追加しない)で、Narrator見出し用・
+# Hook/Tension/Closing用の合成関数を追加する。free_address経路
+# (`main_a2()`)はこれらのsegmentを承認済みbyteとして再利用するため
+# 呼ばない(新規topic経路専用)。
+# ============================================================
+def generate_narrator_heading_with_a2_slowdown(name: str, tts_input: str, out_path: str) -> dict:
+    result = point_headings.generate(tts_input, out_path)
+    return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
+
+
+def generate_narration_wide_margin_with_a2_slowdown(name: str, tts_input: str, out_path: str,
+                                                      disfluency_qa: bool = False,
+                                                      enable_connected_speech_equivalence_layer: bool = False,
+                                                      enable_repetition_qa: bool = False) -> dict:
+    result = news_tail_fix.generate_news_narration_wide_margin(
+        tts_input, out_path, disfluency_qa=disfluency_qa,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        enable_repetition_qa=enable_repetition_qa)
     return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
 
 

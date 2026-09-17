@@ -1,0 +1,561 @@
+{
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "out_dir": "er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2_writer_attempt1",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_08ff807a32ddda61006aab2b5d5d7c87d0973b3d1aade874db",
+        "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nI open the “For you” page while my train is moving. The topics I follow are already near the top, so I can scan the headlines before I reach my station. My morning is short. I do not want to spend it pushing past stories that have little to do with me.\n\nThe app lets me follow or unfollow topics and sources. I can ask for more or less of a story, or hide a source. Those controls make me feel that I am steering the list. I know the app also uses my past activity on Google services and YouTube, and I cannot see every signal behind the ranking. Still, the feed helps me start the day. My worry is simple: what if an important story never reaches me?\n\n【Voice B本文】\nI scroll, and I see the same kinds of claims again. I see the same voices and the same side of the story. After a while, I start asking what is not there.\n\nI want to know why one article is above another. I also want to know which settings I can change. Instead, the rules behind the list stay out of sight. I worry that the feed may be shaped not only to help me understand the news, but also to win clicks and advertising money. I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views. I want more control over how the ranking works. I want to protect my chance to meet ideas outside my usual screen.\n\n【Tension本文】\nBoth readers want the same basic thing: for the feed to help shape a useful understanding of the world. Neither is wrong. But the stakes split. One is protecting a manageable morning and a feeling of control. The other is protecting views outside the usual feed. One can follow, unfollow, ask for more or less, and hide sources. The other cannot reach the rules behind the ranking, even if those rules may quietly shape the picture.\n\n【Closing本文】\nThe question is larger than “Is personalization good?” It is also about who controls the first version of the news that reaches a reader. A useful list can save attention, while a hidden list can leave some doors out of view. The deeper tension is between limited time and the need to know what lies beyond the screen.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "全体が一人称で、通勤中の利用状況、操作感、重要なニュースを逃す不安として描かれている。調査結果や外部の分析が前面に出ていない。",
+            "quoted_evidence": ""
+          },
+          "voice_b": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称の経験と不安が中心だが、途中で回答者比率を主語にした調査結果が挿入されている。59％という数値と調査報告の文型は、本人の視点からDiscovery記事的な説明へ漏れている。",
+            "quoted_evidence": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "reasoning": "調査データの説明には戻らず、限られた時間と多様な視点へのアクセスという異なる優先事項が、二人の答えを分ける理由として整理されている。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単に『人による』と結論づけず、便利さと見えない情報の排除の緊張を問いとして残している。Writerによる具体的な解決策や妥協案の提案もない。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "一人称の経験と不安が中心だが、途中で回答者比率を主語にした調査結果が挿入されている。59％という数値と調査報告の文型は、本人の視点からDiscovery記事的な説明へ漏れている。",
+            "quoted_evidence": "I am not alone: 59 percent of U.S. respondents said personalization might make them miss different views."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 2,
+      "out_dir": "er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2_writer_attempt2",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0db75c572f67e8ca006aab2ca3c86087d08db4b91861d4b85b",
+        "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn my train ride, I open the “For you” page before the next station. Topics I follow are near the top, so I can scan headlines instead of searching through stories I did not ask for.\n\nThe app uses my chosen interests and followed sources, plus past activity on its services and YouTube, to shape those pages. I can follow or unfollow a topic, ask for more or less of a story, or hide a source.\n\nI cannot see every detail behind the ranking. Still, those controls help me feel that I am steering my morning.\n\n【Voice B本文】\nAt times, my feed may show similar claims from familiar sources. At first, it feels familiar. Then I wonder what is missing.\n\nI cannot see why one story rises above another, or whether the ranking serves my understanding or a platform’s clicks and ad income. In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends.\n\nMy own clicks could narrow the view further. I want to know that stories outside my usual path have not disappeared.\n\n【Tension本文】\nBoth readers want the same thing: a feed that helps them understand the day. Neither is wrong to want it. Their stakes differ. The commuter protects a manageable morning and a feeling of control. The other reader protects views outside the usual feed. Their control is not equal: the commuter can change follows, hide sources, and adjust what appears. The other cannot touch the ranking rules, though those rules may shape the view.\n\n【Closing本文】\nThe deeper issue is not whether a feed is good or bad. It is who gets to define a complete day of news when time is short and the sorting is partly hidden. Personalization changes where the news seems to end. That can feel useful to one reader and worrying to another, while the process stays out of sight.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "通勤中の利用場面や、表示を自分で調整できる感覚を一人称で描いており、調査結果や外部の分析が主語になっていません。アプリの仕組みに触れる部分も、本人が利用者として把握している範囲の説明に収まっています。",
+            "quoted_evidence": ""
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "全体は本人の不安や欲求を一人称で描いていますが、研究結果を導入して比較的な発見を報告する一文だけは、Discovery記事のような構文に戻っています。研究の記述は一箇所に限られ、本人の「何が欠けているのか」という懸念の方が中心です。",
+            "quoted_evidence": "In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "reasoning": "調査や数値を説明せず、二人が同じ理解を求めながら、片方は朝の扱いやすさと操作感を、もう片方は見落としの回避を重視する理由を対比しています。両者の操作可能性の差も、対立の背景として機能しています。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単に『人によって違う』とまとめるのではなく、短時間のニュース環境で誰が完全な一日を定義するのかという未解決の論点を提示しています。Writer自身の具体的な解決策や妥協案も提案していません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "全体は本人の不安や欲求を一人称で描いていますが、研究結果を導入して比較的な発見を報告する一文だけは、Discovery記事のような構文に戻っています。研究の記述は一箇所に限られ、本人の「何が欠けているのか」という懸念の方が中心です。",
+            "quoted_evidence": "In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    },
+    {
+      "attempt": 3,
+      "out_dir": "er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2_writer_attempt3",
+      "status": "OK",
+      "leakage_check": {
+        "model": "gpt-5.6-luna",
+        "response_id": "resp_0bab72fb75a8091a006aab2dedb66887d0a0fe0b6442880548",
+        "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn the train, I open the “For you” page before my stop. Topics I follow are near the top, so I can scan headlines instead of searching. The page uses my chosen interests and sources, as well as past activity from other services. I can follow or unfollow a topic, ask for more or less of a story, or hide a source.\n\nThat gives me a useful feeling: my short morning belongs to me. I still worry that an important story may never reach my screen. With little time, this feels practical. I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable.\n\n【Voice B本文】\nSometimes when I open my feed, I see similar kinds of claims from similar kinds of sources. I scroll, then stop. What is missing? I cannot see why one story comes before another.\n\nI worry the order may serve clicks and ad money, not just my understanding. I want different views, even when they challenge me. I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information. My clicks may narrow what returns, but I cannot see or change the basic rules.\n\n【Tension本文】\nBoth readers start with the same hope: what appears in a feed should help them understand the world. Then the stakes split. One is protecting a manageable morning and a sense of control over a personal news route. The other is protecting contact with views outside that route.\n\nTheir power is not equal. One can follow, hide, or ask for more or less. The other cannot see or change the rules behind the ranking, even though those rules may shape what stays outside view.\n\n【Closing本文】\nThis is not simply a fight over whether personalized news is good or bad. It is a question about the borders of a daily picture of the world: who can adjust them, and who can even see where they are. Convenience and concern are two experiences of the same hidden route through public news.\n",
+        "parsed": {
+          "voice_a": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "全体は一人称の通勤中の経験と、便利さ・不安の実感を中心に書かれている。ただし末尾で、個人の経験から国際調査の結果を示すDiscovery型の構文へ移っている。",
+            "quoted_evidence": "I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable."
+          },
+          "voice_b": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "reasoning": "一人称の不安や、ランキングの仕組みが見えないという経験は具体的に描かれている。一方、恐怖を外部調査の数値で裏付けており、数値提示と調査結果の報告がVoice内に前面化している。",
+            "quoted_evidence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "reasoning": "調査結果の説明には戻らず、片方は朝の管理しやすさを、もう片方は経路の外にある視点への接触を守ろうとする理由を対比している。両者の権限の非対称性も、対立の背景として機能している。",
+            "quoted_evidence": ""
+          },
+          "closing": {
+            "leak_closing_simple_summary": "PASS",
+            "reasoning": "単に『人による』とまとめたり妥協案を提案したりせず、日々のニュース経路の境界を誰が調整・認識できるのかという解釈的な問いで締めている。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "voice": "voice_a",
+            "fail_fields": [
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "全体は一人称の通勤中の経験と、便利さ・不安の実感を中心に書かれている。ただし末尾で、個人の経験から国際調査の結果を示すDiscovery型の構文へ移っている。",
+            "quoted_evidence": "I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable."
+          },
+          {
+            "voice": "voice_b",
+            "fail_fields": [
+              "leak_numbers_foreground",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "一人称の不安や、ランキングの仕組みが見えないという経験は具体的に描かれている。一方、恐怖を外部調査の数値で裏付けており、数値提示と調査結果の報告がVoice内に前面化している。",
+            "quoted_evidence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+          }
+        ],
+        "any_flagged": true
+      },
+      "any_flagged": true
+    }
+  ],
+  "total_attempts": 3,
+  "final_attempt_dir": "er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2_writer_attempt3",
+  "final_result": {
+    "label": "A2",
+    "status": "OK",
+    "metrics": {
+      "word_count": 408,
+      "sentence_count": 31,
+      "avg_sentence_length": 13.2,
+      "max_sentence_length": 26
+    },
+    "fact_status": "FACT_CHECK_COMPLETED",
+    "fact_verdict": "REVIEW_REQUIRED",
+    "fact_check_result": {
+      "final_status": "FACT_CHECK_COMPLETED",
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0da7d68e341596be006aab2d11e81087d09167932492d8d4ec",
+      "web_search_call_count": 3,
+      "attempts": 1,
+      "result": {
+        "verdict": "REVIEW_REQUIRED",
+        "contradictions": [],
+        "unsupported_specific_claims": [
+          "「The other cannot see or change the rules behind the ranking」「I cannot see or change the basic rules」という表現は、プラットフォームや法域を特定しないまま、利用者がランキングの仕組みを見たり影響を与えたりできないと一般化している。Google Newsにはフォロー、表示量の増減、ソース非表示などの調整機能があり、EUデジタルサービス法第27条はオンラインプラットフォームに推薦システムの主要パラメータと利用者が影響を与える選択肢の説明を求めている。第38条はVLOP/VLOSEにプロファイリングに基づかない選択肢を少なくとも1つ求める。ただし、これらはすべてのサービス・利用者にランキングの全ルールの閲覧や変更を認めるものではないため、記事の表現は明確な全面否定というより、条件不足による過度な一般化である。 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))"
+        ],
+        "verified_claims_summary": [
+          "Google Newsは、ユーザーの関心・フォロー中のソース・GoogleサービスやYouTubeでの過去の活動を用いて、「For you」や「Following」などの表示をパーソナライズし、記事の表示順もアルゴリズムで決めている。記事のOne Voice部分はこの内容と実質的に対応している。 ([support.google.com](https://support.google.com/googlenews/answer/9005749?hl=en&utm_source=openai))",
+          "Google Newsには、トピック・地域・ソースのフォローまたは解除、「より多く／少なく表示」、ソース全体の非表示といった利用者向けの調整機能がある。 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))",
+          "Reuters Instituteの2025年調査は27市場を対象とし、過去の好みに基づくニュースの自動選択について、回答者の「ほぼ半数」が快適だと回答した。また、自由回答では関連性や、関心のない話題を避けて時間を節約できる効率性が利点として挙げられている。 ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/how-audiences-think-about-news-personalisation-ai-era?utm_source=openai))",
+          "Reuters Instituteの2016年米国調査では、60%がパーソナライズによって重要な情報を見逃す可能性を懸念し、59%が異なる視点を見逃す可能性を懸念した。記事中の「60%」という数値は確認できる。 ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/archive/essays/2016/people-want-personalised-recommendations/?utm_source=openai))",
+          "米議会調査局は、ソーシャルメディアのアルゴリズムがクリック、いいね、シェア、検索履歴などの行動データを用い、エンゲージメントや広告収益の最大化などの事業目標に合わせて調整され得ると説明している。記事のAnother Voiceにおける懸念の背景と整合するが、記事は特定サービスについて実際に広告収益がランキングを決めると断定してはいない。 ([congress.gov](https://www.congress.gov/crs_external_products/R/PDF/R46662/R46662.9.pdf?utm_source=openai))"
+        ],
+        "sources": [
+          "Google News公式ヘルプ「How Google News stories are selected」 ([support.google.com](https://support.google.com/googlenews/answer/9005749?hl=en&utm_source=openai))",
+          "Google News公式ヘルプ「Customize what you find on Google News」 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))",
+          "Reuters Institute「How audiences think about news personalisation in the AI era」(2025年、27市場) ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/how-audiences-think-about-news-personalisation-ai-era?utm_source=openai))",
+          "Reuters Institute「People Want Personalised Recommendations (Even as They Worry about the Consequences)」(2016年) ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/archive/essays/2016/people-want-personalised-recommendations/?utm_source=openai))",
+          "米議会調査局「Social Media: Content Dissemination and Moderation Practices」 ([congress.gov](https://www.congress.gov/crs_external_products/R/PDF/R46662/R46662.9.pdf?utm_source=openai))",
+          "EUR-Lex、Regulation (EU) 2022/2065 第27条・第38条 ([eur-lex.europa.eu](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32022R2065&utm_source=openai))"
+        ],
+        "notes": "記事の中心的なVoice表現の大部分は、指定されたVoice別Ledgerの内容および独立確認できる一次・準一次情報と対応している。60%という数値、2025年調査の「ほぼ半数」、Google Newsのパーソナライズと調整機能はいずれも確認でき、明確な矛盾はない。一方、記事後半の「Another Voiceはランキングのルールを見たり変えたりできない」という地の文に近い客観的表現は、サービスや法域を示さずに一般化されているため、REVIEW_REQUIREDと判定する。"
+      },
+      "attempts_detail": [
+        {
+          "fact_check_attempt": 1,
+          "status": "FACT_CHECK_COMPLETED",
+          "verdict": "REVIEW_REQUIRED",
+          "search_usage": {
+            "web_search_call_count": 3,
+            "queries": [
+              "site:support.google.com/googlenews how Google News stories are selected past activity YouTube For you Following",
+              "site:support.google.com/googlenews customize what you find on Google News follow hide source more less",
+              "site:reutersinstitute.politics.ox.ac.uk news personalisation AI era 2025 comfort automatic selection past preferences 27 markets",
+              "Reuters Institute 2016 People Want Personalised Recommendations Even as They Worry about the Consequences 60% important information",
+              "site:reutersinstitute.politics.ox.ac.uk/digital-news-report/2025 \"How audiences think about news personalisation in the AI era\"",
+              "site:reutersinstitute.politics.ox.ac.uk \"about half\" comfortable automatic selection news personalization 27 markets 2025",
+              "site:reutersinstitute.politics.ox.ac.uk/digital-news-report/2025 personalization news comfort past preferences efficiency",
+              "site:crsreports.congress.gov \"Social Media: Content Dissemination and Moderation Practices\" clicks likes shares search history engagement advertising revenue",
+              "site:congress.gov CRS Social Media Content Dissemination Moderation Practices algorithms engagement advertising revenue",
+              "site:eur-lex.europa.eu Regulation 2022/2065 Article 27 Article 38 recommender systems parameters non profiling"
+            ]
+          },
+          "sources": [
+            {
+              "title": "Customize what you find on Google News - Computer - Google News Help",
+              "url": "https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai"
+            },
+            {
+              "title": "How Google News stories are selected - Google News Help",
+              "url": "https://support.google.com/googlenews/answer/9005749?hl=en&utm_source=openai"
+            },
+            {
+              "title": "How audiences think about news personalisation in the AI era | Reuters Institute for the Study of Journalism",
+              "url": "https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/how-audiences-think-about-news-personalisation-ai-era?utm_source=openai"
+            },
+            {
+              "title": "People Want Personalised Recommendations - Reuters Institute Digital News Report",
+              "url": "https://reutersinstitute.politics.ox.ac.uk/digital-news-report/archive/essays/2016/people-want-personalised-recommendations/?utm_source=openai"
+            },
+            {
+              "title": "Social Media: Content Dissemination and",
+              "url": "https://www.congress.gov/crs_external_products/R/PDF/R46662/R46662.9.pdf?utm_source=openai"
+            },
+            {
+              "title": "Regulation - 2022/2065 - FI - DSA - EUR-Lex",
+              "url": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32022R2065&utm_source=openai"
+            }
+          ],
+          "raw_text": "{\"verdict\":\"REVIEW_REQUIRED\",\"contradictions\":[],\"unsupported_specific_claims\":[\"「The other cannot see or change the rules behind the ranking」「I cannot see or change the basic rules」という表現は、プラットフォームや法域を特定しないまま、利用者がランキングの仕組みを見たり影響を与えたりできないと一般化している。Google Newsにはフォロー、表示量の増減、ソース非表示などの調整機能があり、EUデジタルサービス法第27条はオンラインプラットフォームに推薦システムの主要パラメータと利用者が影響を与える選択肢の説明を求めている。第38条はVLOP/VLOSEにプロファイリングに基づかない選択肢を少なくとも1つ求める。ただし、これらはすべてのサービス・利用者にランキングの全ルールの閲覧や変更を認めるものではないため、記事の表現は明確な全面否定というより、条件不足による過度な一般化である。 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))\"],\"verified_claims_summary\":[\"Google Newsは、ユーザーの関心・フォロー中のソース・GoogleサービスやYouTubeでの過去の活動を用いて、「For you」や「Following」などの表示をパーソナライズし、記事の表示順もアルゴリズムで決めている。記事のOne Voice部分はこの内容と実質的に対応している。 ([support.google.com](https://support.google.com/googlenews/answer/9005749?hl=en&utm_source=openai))\",\"Google Newsには、トピック・地域・ソースのフォローまたは解除、「より多く／少なく表示」、ソース全体の非表示といった利用者向けの調整機能がある。 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))\",\"Reuters Instituteの2025年調査は27市場を対象とし、過去の好みに基づくニュースの自動選択について、回答者の「ほぼ半数」が快適だと回答した。また、自由回答では関連性や、関心のない話題を避けて時間を節約できる効率性が利点として挙げられている。 ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/how-audiences-think-about-news-personalisation-ai-era?utm_source=openai))\",\"Reuters Instituteの2016年米国調査では、60%がパーソナライズによって重要な情報を見逃す可能性を懸念し、59%が異なる視点を見逃す可能性を懸念した。記事中の「60%」という数値は確認できる。 ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/archive/essays/2016/people-want-personalised-recommendations/?utm_source=openai))\",\"米議会調査局は、ソーシャルメディアのアルゴリズムがクリック、いいね、シェア、検索履歴などの行動データを用い、エンゲージメントや広告収益の最大化などの事業目標に合わせて調整され得ると説明している。記事のAnother Voiceにおける懸念の背景と整合するが、記事は特定サービスについて実際に広告収益がランキングを決めると断定してはいない。 ([congress.gov](https://www.congress.gov/crs_external_products/R/PDF/R46662/R46662.9.pdf?utm_source=openai))\"],\"sources\":[\"Google News公式ヘルプ「How Google News stories are selected」 ([support.google.com](https://support.google.com/googlenews/answer/9005749?hl=en&utm_source=openai))\",\"Google News公式ヘルプ「Customize what you find on Google News」 ([support.google.com](https://support.google.com/googlenews/answer/9010862?co=GENIE.Platform%3DDesktop&hl=en&utm_source=openai))\",\"Reuters Institute「How audiences think about news personalisation in the AI era」(2025年、27市場) ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/how-audiences-think-about-news-personalisation-ai-era?utm_source=openai))\",\"Reuters Institute「People Want Personalised Recommendations (Even as They Worry about the Consequences)」(2016年) ([reutersinstitute.politics.ox.ac.uk](https://reutersinstitute.politics.ox.ac.uk/digital-news-report/archive/essays/2016/people-want-personalised-recommendations/?utm_source=openai))\",\"米議会調査局「Social Media: Content Dissemination and Moderation Practices」 ([congress.gov](https://www.congress.gov/crs_external_products/R/PDF/R46662/R46662.9.pdf?utm_source=openai))\",\"EUR-Lex、Regulation (EU) 2022/2065 第27条・第38条 ([eur-lex.europa.eu](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32022R2065&utm_source=openai))\"],\"notes\":\"記事の中心的なVoice表現の大部分は、指定されたVoice別Ledgerの内容および独立確認できる一次・準一次情報と対応している。60%という数値、2025年調査の「ほぼ半数」、Google Newsのパーソナライズと調整機能はいずれも確認でき、明確な矛盾はない。一方、記事後半の「Another Voiceはランキングのルールを見たり変えたりできない」という地の文に近い客観的表現は、サービスや法域を示さずに一般化されているため、REVIEW_REQUIREDと判定する。\"}",
+          "model": "gpt-5.6-luna",
+          "response_id": "resp_0da7d68e341596be006aab2d11e81087d09167932492d8d4ec"
+        }
+      ],
+      "fact_attribution_mode_enabled": true
+    },
+    "ledger_status": "LEDGER_COMPLIANT",
+    "ledger_deviation_count": 0,
+    "local_rewrite_cycles": [
+      {
+        "cycle": 1,
+        "targeted_major_count": 1,
+        "newly_discovered_claims": [
+          "Each time I open my feed, I see the same kind of claim from the same kind of source."
+        ],
+        "results": [
+          {
+            "original_ng_sentence": "Each time I open my feed, I see the same kind of claim from the same kind of source.",
+            "issue": "Ledgerで確認されているのは、特定の研究・選挙期における、似た意見のソースへの露出やクロスカッティングなニュースへの接触減少であり、利用者がフィードを開くたびに必ず同じ種類の主張・ソースを見るという事実ではない。「Each time」によって限定された研究結果が常態的・絶対的な経験へ強められている。",
+            "explanation": "F010・F011の限定された研究結果を、毎回の個人的経験という未確認の具体的主張に拡張している。場面描写として読めても、Hookで緩和できるのはscope/comparisonのみであり、「Each time」による確実性の強化は通常どおり検査対象となる。",
+            "flags": [
+              "changed_fact",
+              "changed_certainty",
+              "unsupported_new_claim"
+            ],
+            "attempts": [
+              {
+                "attempt": 1,
+                "text": "Sometimes when I open my feed, I see similar kinds of claims from similar kinds of sources.",
+                "ledger_status": "LEDGER_COMPLIANT",
+                "ledger_status_window": "LEDGER_COMPLIANT",
+                "target_sentence_eval": {
+                  "overall_status": "LEDGER_COMPLIANT",
+                  "window_overall_status": "LEDGER_COMPLIANT",
+                  "target_deviations": [],
+                  "adjacent_deviations": [],
+                  "ambiguous_deviations": [],
+                  "match_fallback": false
+                }
+              }
+            ],
+            "final_text": "Sometimes when I open my feed, I see similar kinds of claims from similar kinds of sources.",
+            "resolved": true,
+            "human_review_required": false,
+            "diff_qa": {
+              "applied": true,
+              "diff_qa_calls": 1,
+              "window_text": "I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable. Sometimes when I open my feed, I see similar kinds of claims from similar kinds of sources. I scroll, then stop.",
+              "fact_check_status": "FACT_CHECK_COMPLETED",
+              "fact_check_verdict": "REVIEW_REQUIRED",
+              "fact_check_model": "gpt-5.6-luna",
+              "fact_check_response_id": "resp_085c84b1c7ad721e006aab2d8b594487d08ba796c049a27f2b",
+              "fact_check_search_usage": {
+                "web_search_call_count": 2,
+                "queries": [
+                  "\"automatic choices based on past preferences\" comfortable survey",
+                  "international survey comfortable recommendations based on past preferences news feed",
+                  "survey people comfortable with personalization based on past behavior news recommendations international",
+                  "\"past preferences\" \"comfortable\" algorithm survey"
+                ]
+              },
+              "ledger_check_full": {
+                "deviations": [],
+                "overall_status": "LEDGER_COMPLIANT"
+              },
+              "ledger_check_target_eval": {
+                "overall_status": "LEDGER_COMPLIANT",
+                "window_overall_status": "LEDGER_COMPLIANT",
+                "target_deviations": [],
+                "adjacent_deviations": [],
+                "ambiguous_deviations": [],
+                "match_fallback": false
+              },
+              "blocks_acceptance": false
+            },
+            "diff_qa_point_overlap": {
+              "applicable": true,
+              "point": "point_two",
+              "overlap_vs_full_story": {
+                "overlap_ratio": 0.117,
+                "shared_words": [
+                  "about",
+                  "another",
+                  "appears",
+                  "both",
+                  "clicks",
+                  "feed",
+                  "morning",
+                  "news",
+                  "question",
+                  "same",
+                  "similar",
+                  "what"
+                ],
+                "point_word_count": 103,
+                "story_word_count": 37,
+                "flagged": false,
+                "threshold": 0.4
+              },
+              "overlap_vs_other_point": {
+                "overlap_ratio": 0.155,
+                "shared_words": [
+                  "ask",
+                  "before",
+                  "follow",
+                  "hide",
+                  "important",
+                  "less",
+                  "more",
+                  "morning",
+                  "open",
+                  "other",
+                  "people",
+                  "sources",
+                  "stop",
+                  "story",
+                  "survey",
+                  "worry"
+                ],
+                "point_word_count": 103,
+                "story_word_count": 58,
+                "flagged": false,
+                "threshold": 0.4
+              },
+              "flagged": false
+            },
+            "cycle": 1,
+            "item_idx": 1,
+            "location_method": "exact_substring",
+            "point_context_found": true,
+            "point_context": "### Another Voice: What is missing?\n\nEach time I open my feed, I see the same kind of claim from the same kind of source. I scroll, then stop. What is missing? I cannot see why one story comes before another.\n\nI worry the order may serve clicks and ad money, not just my understanding. I want different views, even when they challenge me. I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information. My clicks may narrow what returns, but I cannot see or change the basic rules."
+          }
+        ],
+        "full_recheck_overall_status": "LEDGER_COMPLIANT",
+        "full_recheck_major_count": 0,
+        "full_recheck_remaining_major_claims": []
+      }
+    ],
+    "local_rewrite_cycle_exhausted": false,
+    "point_overlap_qa_monitoring": {
+      "qa_status": "OK",
+      "note": "EDITORIAL-B-FAMILY-VOICES-VARIABLE-VOICE-COUNT-PRODUCTION-WIRING-01: monitoring専用(合否判定には使わない、N=1で閾値を決めない)。有向ペア2(Permutation(2,2))+ vs Hook 2 = 4値。lexical_overlap_ratio()はProduction関数(er008_point_overlap_qa_18.py)を無変更のまま使用(3V版run_overlap_monitoring_3vと同一ロジック、voice_keysのみ異なる)。",
+      "directed_voice_pair_count": 2,
+      "voice_vs_hook_count": 2,
+      "any_flagged": false,
+      "directed_voice_pairs": {
+        "voice_a_vs_voice_b": {
+          "overlap_ratio": 0.172,
+          "shared_words": [
+            "before",
+            "important",
+            "open",
+            "people",
+            "source",
+            "stop",
+            "story",
+            "survey",
+            "time",
+            "worry"
+          ],
+          "point_word_count": 58,
+          "story_word_count": 47,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_b_vs_voice_a": {
+          "overlap_ratio": 0.213,
+          "shared_words": [
+            "before",
+            "important",
+            "open",
+            "people",
+            "source",
+            "stop",
+            "story",
+            "survey",
+            "time",
+            "worry"
+          ],
+          "point_word_count": 47,
+          "story_word_count": 58,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      },
+      "voice_vs_hook": {
+        "voice_a_vs_hook": {
+          "overlap_ratio": 0.138,
+          "shared_words": [
+            "interests",
+            "morning",
+            "near",
+            "past",
+            "top",
+            "topics",
+            "train",
+            "uses"
+          ],
+          "point_word_count": 58,
+          "story_word_count": 36,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "voice_b_vs_hook": {
+          "overlap_ratio": 0.106,
+          "shared_words": [
+            "another",
+            "clicks",
+            "feed",
+            "same",
+            "what"
+          ],
+          "point_word_count": 47,
+          "story_word_count": 36,
+          "flagged": false,
+          "threshold": 0.4
+        }
+      }
+    },
+    "directional_fact_precheck_status": "PASS",
+    "elapsed_seconds": 280.7,
+    "analytical_leakage_check": {
+      "model": "gpt-5.6-luna",
+      "response_id": "resp_0bab72fb75a8091a006aab2dedb66887d0a0fe0b6442880548",
+      "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn the train, I open the “For you” page before my stop. Topics I follow are near the top, so I can scan headlines instead of searching. The page uses my chosen interests and sources, as well as past activity from other services. I can follow or unfollow a topic, ask for more or less of a story, or hide a source.\n\nThat gives me a useful feeling: my short morning belongs to me. I still worry that an important story may never reach my screen. With little time, this feels practical. I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable.\n\n【Voice B本文】\nSometimes when I open my feed, I see similar kinds of claims from similar kinds of sources. I scroll, then stop. What is missing? I cannot see why one story comes before another.\n\nI worry the order may serve clicks and ad money, not just my understanding. I want different views, even when they challenge me. I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information. My clicks may narrow what returns, but I cannot see or change the basic rules.\n\n【Tension本文】\nBoth readers start with the same hope: what appears in a feed should help them understand the world. Then the stakes split. One is protecting a manageable morning and a sense of control over a personal news route. The other is protecting contact with views outside that route.\n\nTheir power is not equal. One can follow, hide, or ask for more or less. The other cannot see or change the rules behind the ranking, even though those rules may shape what stays outside view.\n\n【Closing本文】\nThis is not simply a fight over whether personalized news is good or bad. It is a question about the borders of a daily picture of the world: who can adjust them, and who can even see where they are. Convenience and concern are two experiences of the same hidden route through public news.\n",
+      "parsed": {
+        "voice_a": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "全体は一人称の通勤中の経験と、便利さ・不安の実感を中心に書かれている。ただし末尾で、個人の経験から国際調査の結果を示すDiscovery型の構文へ移っている。",
+          "quoted_evidence": "I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable."
+        },
+        "voice_b": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "FAIL",
+          "leak_narrator_analysis": "PASS",
+          "leak_unknowable_analysis": "PASS",
+          "leak_discovery_syntax": "FAIL",
+          "leak_evidence_memorable": "PASS",
+          "reasoning": "一人称の不安や、ランキングの仕組みが見えないという経験は具体的に描かれている。一方、恐怖を外部調査の数値で裏付けており、数値提示と調査結果の報告がVoice内に前面化している。",
+          "quoted_evidence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+        },
+        "tension": {
+          "leak_evidence_subject": "PASS",
+          "leak_numbers_foreground": "PASS",
+          "leak_discovery_syntax": "PASS",
+          "leak_evidence_memorable": "PASS",
+          "leak_tension_reverts_to_research": "PASS",
+          "reasoning": "調査結果の説明には戻らず、片方は朝の管理しやすさを、もう片方は経路の外にある視点への接触を守ろうとする理由を対比している。両者の権限の非対称性も、対立の背景として機能している。",
+          "quoted_evidence": ""
+        },
+        "closing": {
+          "leak_closing_simple_summary": "PASS",
+          "reasoning": "単に『人による』とまとめたり妥協案を提案したりせず、日々のニュース経路の境界を誰が調整・認識できるのかという解釈的な問いで締めている。",
+          "quoted_evidence": ""
+        }
+      },
+      "flagged_items": [
+        {
+          "voice": "voice_a",
+          "fail_fields": [
+            "leak_discovery_syntax"
+          ],
+          "reasoning": "全体は一人称の通勤中の経験と、便利さ・不安の実感を中心に書かれている。ただし末尾で、個人の経験から国際調査の結果を示すDiscovery型の構文へ移っている。",
+          "quoted_evidence": "I am not alone: many people in an international survey also found automatic choices based on past preferences comfortable."
+        },
+        {
+          "voice": "voice_b",
+          "fail_fields": [
+            "leak_numbers_foreground",
+            "leak_discovery_syntax"
+          ],
+          "reasoning": "一人称の不安や、ランキングの仕組みが見えないという経験は具体的に描かれている。一方、恐怖を外部調査の数値で裏付けており、数値提示と調査結果の報告がVoice内に前面化している。",
+          "quoted_evidence": "I can put a number to that fear: 60% of people in a U.S. survey worried that personalization might make them miss important information."
+        }
+      ],
+      "any_flagged": true
+    }
+  }
+}

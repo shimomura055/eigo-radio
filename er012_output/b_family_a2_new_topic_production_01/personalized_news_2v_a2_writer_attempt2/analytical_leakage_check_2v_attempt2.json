@@ -1,0 +1,52 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0db75c572f67e8ca006aab2ca3c86087d08db4b91861d4b85b",
+  "prompt": "以下は、あるVoices/Perspective型記事(2 Voices版)の4つのsection本文\n(Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice A・Voice Bに共通で適用する6項目】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合\n  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n\n両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に\nなっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの\nいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:\n  上記と同じ意味(Tension本文に対して判定)\n- leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice A本文】\nOn my train ride, I open the “For you” page before the next station. Topics I follow are near the top, so I can scan headlines instead of searching through stories I did not ask for.\n\nThe app uses my chosen interests and followed sources, plus past activity on its services and YouTube, to shape those pages. I can follow or unfollow a topic, ask for more or less of a story, or hide a source.\n\nI cannot see every detail behind the ranking. Still, those controls help me feel that I am steering my morning.\n\n【Voice B本文】\nAt times, my feed may show similar claims from familiar sources. At first, it feels familiar. Then I wonder what is missing.\n\nI cannot see why one story rises above another, or whether the ranking serves my understanding or a platform’s clicks and ad income. In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends.\n\nMy own clicks could narrow the view further. I want to know that stories outside my usual path have not disappeared.\n\n【Tension本文】\nBoth readers want the same thing: a feed that helps them understand the day. Neither is wrong to want it. Their stakes differ. The commuter protects a manageable morning and a feeling of control. The other reader protects views outside the usual feed. Their control is not equal: the commuter can change follows, hide sources, and adjust what appears. The other cannot touch the ranking rules, though those rules may shape the view.\n\n【Closing本文】\nThe deeper issue is not whether a feed is good or bad. It is who gets to define a complete day of news when time is short and the sorting is partly hidden. Personalization changes where the news seems to end. That can feel useful to one reader and worrying to another, while the process stays out of sight.\n",
+  "parsed": {
+    "voice_a": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "通勤中の利用場面や、表示を自分で調整できる感覚を一人称で描いており、調査結果や外部の分析が主語になっていません。アプリの仕組みに触れる部分も、本人が利用者として把握している範囲の説明に収まっています。",
+      "quoted_evidence": ""
+    },
+    "voice_b": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "reasoning": "全体は本人の不安や欲求を一人称で描いていますが、研究結果を導入して比較的な発見を報告する一文だけは、Discovery記事のような構文に戻っています。研究の記述は一箇所に限られ、本人の「何が欠けているのか」という懸念の方が中心です。",
+      "quoted_evidence": "In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "reasoning": "調査や数値を説明せず、二人が同じ理解を求めながら、片方は朝の扱いやすさと操作感を、もう片方は見落としの回避を重視する理由を対比しています。両者の操作可能性の差も、対立の背景として機能しています。",
+      "quoted_evidence": ""
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単に『人によって違う』とまとめるのではなく、短時間のニュース環境で誰が完全な一日を定義するのかという未解決の論点を提示しています。Writer自身の具体的な解決策や妥協案も提案していません。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_b",
+      "fail_fields": [
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "全体は本人の不安や欲求を一人称で描いていますが、研究結果を導入して比較的な発見を報告する一文だけは、Discovery記事のような構文に戻っています。研究の記述は一箇所に限られ、本人の「何が欠けているのか」という懸念の方が中心です。",
+      "quoted_evidence": "In one study I read, the ranking showed people fewer stories from different political sides than they saw in posts shared by friends."
+    }
+  ],
+  "any_flagged": true
+}
