@@ -430,6 +430,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01: コンビニAI商品開発News A2/B1、記事完成・音声はHuman Review Lock 2件でSTOP
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01: Fable受入照合3点是正(時制/未発売事実誤り・A2文長超過・B1見出し混入)、B1完成、A2は別要因でHuman Review Lock継続
 - [本ファイル内] ## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01: Voiceの立場境界(A/C/F)+leak_position_blur+Acceptance Gate正式配線、Personalized News A2再生成でLeakage 0件確認・音声化完了、Personalized News B1再生成はFact Checker FAILでSTOP
+- [本ファイル内] ## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01-CLOSEOUT: Voices基盤PRODUCTION_WIRED確定+Personalized News A2ユーザー正式承認+Personalized News B1をOPEN-166へ分離+OPEN-167(Position Clarity)登録
 - [本ファイル内] ## USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03: Tiny Bags B1ユーザー試聴PASS記録+A2 Toteme/Kallmeyer Human Review承認→Assembly/Gate/player/E2E完成
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02: B1語順script修正(実audio基準)でB1完成・ユーザー品質承認、A2 point_two Oimo再生成(AI while/Canele維持)で候補確保もA2必須slowdown post-process未PASSでHuman Review継続
 
@@ -8140,6 +8141,27 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - **cost実測**: 本タスク分は追加ASR呼び出し1回のみ(約¥0.3、`er014_output/user_test_news_light_01/tiny_bags/audio_fix/raw_usage_log_audio_fix.jsonl`)。累計¥300上限に対し十分な余裕。
 - Status: B1=ユーザー試聴PASS(完成、記事内容としてのユーザー品質承認)。A2=完成(Human Review承認済み、Assembly/Gate PASS、E2E確認済み)。両方とも`publication_status`(公開承認)の判断対象ではない(既存の「User Quality≠Publication」原則を維持、`NOT_APPROVED`のまま)。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_LIGHT_03.md`、`docs/pm/delegation_log/USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03.md`。
+
+## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01-CLOSEOUT: Voices基盤PRODUCTION_WIRED確定+Personalized News A2ユーザー正式承認+Personalized News B1をOPEN-166へ分離+OPEN-167(Position Clarity)登録
+
+- 日付: 2026-09-17
+- 種別: ユーザー正式判断(2026-09-17)の反映。並行Agentなし、API呼び出し0、Productionコード変更0(SSOT・記録のみのcloseoutタスク)。
+- **Personalized News A2新版=USER APPROVED**: `er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`(SHA `a54d0201`のplayer、`docs/pm/RESULT_PACKET_VOICES_SPEC_01.md`6節のE2E evidence)をユーザーが試聴し、成果物として正式承認(`USER_TEST_READY`)。ユーザー指摘: 肯定派Voiceに「I still worry an important story could be left out.」(反対側の中心懸念の取り込み)が残存するが、今回は記事全体として許容し、**記事の再生成・修正はしない**(OPEN-167で仕様論点として継続検討)。
+- **Voices基盤=PRODUCTION_WIRED確定**: `B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01`(候補A/C/F/E、`leak_position_blur`、Acceptance Gate)を`CURRENT_SPEC.md` L679の`APPROVED_FOR_PRODUCTION`から`PRODUCTION_WIRED`へ確定した。根拠(Dangling Reference/Closeout確認a〜i、evidence付き):
+  - a. CURRENT_SPEC.md L679に候補A/C/F/Eの正式仕様が存在(確認済み、行全文参照)。
+  - b. `main_a2_2v()`(`er012_b_family_production_runner_01.py` L1947-)/`main_b1_2v()`(L1254-)/`main_b1_3v()`(L1119-、write_new_theme分岐)の3入口はいずれも`writer_generic.run_writer_stage_generic()`を経由し、`theme_config["voice_cards"]`件数(2/3)で`run_pipeline_2v()`/`run_pipeline_3v()`へ分岐する単一実装(`er012_b_family_voices_writer_generic_01.py` L2039-)。新原則Prompt・Validator・Acceptance Gateはこの共通関数内に実装されており、3入口すべてに自動適用される。
+  - c. retry(corrective retry、attempt 1〜MAX_WRITER_ATTEMPTS=3)は`run_pipeline_3v()`(L1876-)/`run_pipeline_2v()`(L1960-)内の単一ループで、`build_leakage_corrective_note_2v/_3v`(新原則「立場境界」優先事項1行を含む)を都度再生成して同一schemaを参照する。旧schemaへの参照は無い(grep確認、`leak_position_blur`はVOICE_LEAKAGE_FIELDS[L965-968]経由でVoiceセクション全箇所へ単一定義)。
+  - d. `leak_position_blur`はschema(`VOICE_LEAKAGE_FIELDS`)→check prompt(L1028/1192の7項目説明文)→corrective note→Acceptance Gate判定(L1933-1945/L2016-2028の`leakage_residual`/`LEAKAGE_RESIDUAL_STOP`)まで一貫して接続されており孤立していない。
+  - e. Tension field集合(`TENSION_LEAKAGE_FIELDS_BASE`/`_2V`)は無変更(`leak_position_blur`はVoiceセクション限定)、Tension役割文言への候補F明文化のみ追加。
+  - f. `FACT_ATTRIBUTION_MODE_DEFAULT = False`(`er012_b_family_editorial_type_registry_01.py` L373)、既定OFF据え置きを確認。ON時の両立条件はCURRENT_SPEC L679に「別途設計」注記済み。
+  - g. `er012_b_family_production_runner_01.py`/`er012_b_family_voices_writer_generic_01.py`/`er012_b_family_voices_a2_production_01.py`のimport文にTrialモジュール(`er012_editorial_b_voices_*trial*`)は存在しない(grep確認、`NoTrialOrFixedTopicImportTests`3件PASSでも確認)。
+  - h. 本管理IDに紐づく`APPROVED_FOR_PRODUCTION`残件はCURRENT_SPEC.md上でL679のみ(grep確認)であり、本Decisionで`PRODUCTION_WIRED`化。OPEN_ITEMS上もPersonalized News B1はOPEN-166へ分離済み(下記参照)。
+  - i. `run_project_regression.py`全件再実行は不要と判断し、直近結果(`docs/pm/delegation_log/voices_spec01_regression_summary.json`、2897件収集・2894 PASS・既知FAIL3件のみ)を引用。ターゲット3テストファイル(`er012_b_family_voices_writer_generic_01_test_01.py`/`er012_b_family_voices_variable_voice_count_test_01.py`/`er012_b_family_voices_a2_new_topic_production_01_test_01.py`)を`.venv/Scripts/python.exe -m unittest`で個別再実行し、**94件全PASS**を確認(closeout時点の実測)。
+- **Personalized News B1=OPEN-166へ分離**: 既存Ledger鮮度問題(2026-02-18公開のNature論文と矛盾)によるSTOPは、Voices仕様(候補A/C/F/E)自体の欠陥ではないと判断し、`OPEN-166`(Ledger freshness)として分離管理する。既存B1音声(古いFact+Leakage flag残存)はユーザーテスト対象から除外のまま、再Research/Ledger更新/B1再生成は別タスクとする(本closeoutでは着手しない)。
+- **OPEN-151の扱い**: `CLOSE`しない(OPEN_ITEMS.md該当行に理由を追記)。2/3 Voices可変一般化という当初の技術的ギャップは解消済みだが、本行が累積追跡してきた既存音声`voices/audio/b1_2v_v2/`のAnalytical Leakage残存flag(voice_b 5項目/tension 2項目)は本closeoutでも未着手のまま残るため、可視性維持のためOPEN状態を維持する。
+- **新規Open Item`OPEN-167`登録**: 「Voices: Position Clarity / Synthetic Opinion Construction(Voiceの立場をどこまで純化するか)」。Personalized News A2新版の肯定派Voiceが相手側の中心懸念を語っている点を踏まえ、Voices教育的構造(立場の代表性・理解しやすさ)とnuance許容範囲の恒久ルール化について7つの検討論点を整理し、`OPEN / DEFERRED`として登録(今回Production実装しない、全文はOPEN_ITEMS.md参照)。
+- Status: Voices基盤=`PRODUCTION_WIRED`。Personalized News A2(新版)=`USER APPROVED`/`USER_TEST_READY`。Personalized News B1=`OPEN-166`管理下でユーザーテスト対象外のまま。OPEN-151=`OPEN`のまま維持(理由付記)。OPEN-167=新規`OPEN / DEFERRED`。
+- 参照: `docs/pm/RESULT_PACKET_VOICES_SPEC_01.md`、`docs/pm/RESULT_PACKET_VOICES_SPEC_01_CLOSEOUT.md`、`docs/pm/delegation_log/B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01-CLOSEOUT.md`。
 
 ## 参照元
 
