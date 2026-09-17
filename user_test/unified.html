@@ -27,10 +27,11 @@ footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}@medi
 <script>
 const q=new URLSearchParams(location.search);
 const src=q.get('src'), level=(q.get('level')||'').toUpperCase(), en=q.get('en')||'', ja=q.get('ja')||'';
-document.getElementById('eyebrow').textContent='English Your Way · '+(level||'')+' · User Test';
+const levelLabel=level.startsWith('A2')?'Standard':level.startsWith('B1')?'Advanced':level;
+document.getElementById('eyebrow').textContent='English Your Way · '+(levelLabel||'')+' · User Test';
 document.getElementById('jaTitle').textContent=ja||en||'English Your Way';
 document.getElementById('enTitle').textContent=en;
-document.title=(ja||en||'English Your Way')+'｜'+(level||'')+' User Test';
+document.title=(ja||en||'English Your Way')+'｜'+(levelLabel||'')+' User Test';
 function rootBase(){const p=location.pathname;const marker='/user_test/unified.html';return location.origin+p.slice(0,p.indexOf(marker));}
 function sourceUrl(){return rootBase()+'/'+src.replace(/^\/+/, '');}
 function abs(u,base){try{const s=String(u||'');const m=s.match(/^https:\/\/raw\.githubusercontent\.com\/shimomura055\/eigo-radio\/main\/(.+)$/);if(m)return rootBase()+'/'+m[1];return new URL(s,base).href}catch(e){return u}}
