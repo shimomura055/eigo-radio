@@ -690,6 +690,30 @@ Trial・開発作業と、量産Production runでは、コスト最適化の目�
   再発防止のため恒久ルール化、`PM-CLOSEOUT-CONSOLIDATION-75-NEWS-
   TRIAL-14`で明文化)。
 
+**共有working tree・lockのレース・Key Phrase stageの音声書き込みに関する
+実測教訓(2026-09-17追記)**:
+
+- (a) 本環境では並列Agentが同一working tree/同一ローカルgit checkoutを
+  共有するため、相手タスクの未commit変更が自タスクのcommitに混在しうる
+  (実例: `86cbd93d`にVoicesタスクの共有ストア[Pronunciation Ledger/
+  Master Audio Store]追記が混在、削除なし・破損なしを確認済み)。
+- (b) `docs/pm/locks/audio_stage.lock`はcheck-then-write(存在確認後に
+  書き込む2ステップ)のためレースが発生した実例がある(同時刻帯に両者が
+  「lock無し」を確認した直後にそれぞれ書き込み、後勝ちで上書き)。以後
+  lockは原子的作成(`open(path, "x")`相当、既に存在すればFileExistsError)
+  で取得し、取得失敗時はpollする方式へ改めること。
+- (c) Key Phrase選定stageはtext-onlyに見えるが、実装上Master Audio Store/
+  Pronunciation Ledgerへ書き込むため、並列起動の可否判定では「音声段階」
+  に含めて扱う(text stageと誤認して先に実行しない)。
+- (d) 原則: TTS/ASR/Ledger/Key Phraseのいずれかのstageを含むタスク同士は
+  並列起動しない(text-onlyタスク[記事執筆・QA・SSOT整理等]同士の並列の
+  みFableの判断で許可する)。SSOT編集はfetch+merge直後に行い、編集後は
+  間を置かず即commit/pushする(他タスクの並行編集との衝突window最小化)。
+- 経緯: 2026-09-17、`USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01`と
+  `B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01`が同時稼働し、上記(a)
+  (b)(c)が実際に発生した(いずれも実害[データ破損・キー競合]は無かった
+  ことを両タスクが個別に確認済み、`DECISION_LOG.md`該当エントリ参照)。
+
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
 Fableがユーザーへ報告・説明する際は、Sonnetの技術レポートをそのまま転記しない。
@@ -2593,3 +2617,9 @@ REQUIREDにする理由にしない。
   いたが、9-9は既存(ユーザー向け表記の命名ルール、2026-09-13)のため
   次の空き番号9-12へ採番した。詳細は`DECISION_LOG.md`同管理IDエントリ、
   `docs/pm/RESULT_PACKET_NEWS_LIGHT_02.md`参照。
+- 2026-09-17(`USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03`): 8節へ
+  「共有working tree・lockのレース・Key Phrase stageの音声書き込みに
+  関する実測教訓」を追記(相手タスク未commit分の混入実例、lockの原子的
+  作成への改善指示、Key Phrase stageを音声段階に含める原則、TTS/ASR/
+  Ledger/Key Phrase系タスク同士の並列起動禁止)。詳細は`DECISION_LOG.md`
+  同管理IDエントリ、`docs/pm/RESULT_PACKET_NEWS_LIGHT_03.md`参照。
