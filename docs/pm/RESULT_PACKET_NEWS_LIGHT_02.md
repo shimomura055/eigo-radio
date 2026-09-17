@@ -38,7 +38,7 @@
 13. **cost実測(内訳)**: 本タスク(`audio_fix/raw_usage_log_audio_fix.jsonl`)分=¥6.78(openai_asr ¥0.80、gemini_batch[TTS] ¥4.97、openai[deviation check] ¥1.01、azure[Secondary ASR]はpricing_snapshot未収載のため¥0扱い)。前回¥173.47と合算で**約¥180.25**、上限¥300に対し余裕あり。
 14. **PM_GOVERNANCE 9-12/CURRENT_SPEC注記の反映箇所**: `docs/pm/PM_GOVERNANCE.md`9-12節(新設、「## 10. commit / push運用」直前)+変更履歴節末尾1行。委任文では「9-9」指定だったが既存(2026-09-13)のため次の空き番号9-12へ採番(理由を9-12節と変更履歴に明記)。`CURRENT_SPEC.md`「Human Review Route」行末尾に参照注記1行追加(仕様本文は無変更)。
 15. **DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY**: `DECISION_LOG.md`に`## USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02`エントリ追加(`## 参照元`直前)。`OPEN_ITEMS.md`OPEN-159行へ「Toteme/Kallmeyer実例(caseを直してもTotemeは解決しなかった)」を追記(新規Open Item化はせず)。`ARTIFACT_REGISTRY.md`News-familyセクションへTiny Bags B1(完成)/A2(未完成、Human Review確認ページURL付き)の2行を追加。
-16. **Git SHA**: 成果物+SSOT一式をpush済み。人力レビュー用主要SHA: `8be0ed8e`(B1完成+A2診断+Human Reviewページ初版+PM_GOVERNANCE 9-12)、`e858649a`(human_review.htmlの相対パス解決bug修正、E2E確認済みURLはこのSHA使用)、最終SSOT反映commitのSHAは本ファイルの末尾に追記する。
+16. **Git SHA**: 成果物+SSOT一式をpush済み。`8be0ed8e`(B1完成+A2診断+Human Reviewページ初版+PM_GOVERNANCE 9-12)→`e858649a`(human_review.htmlの相対パス解決bug修正、E2E確認済みURLはこのSHA使用)→`5f3fd8bc`(DECISION_LOG/OPEN-159追記/ARTIFACT_REGISTRY/E2E evidence/本RESULT_PACKET、**最終main**、push済み・origin/main反映確認済み、fast-forward)。
 17. **ユーザー判断**:
     - (A) 仕様・Product・実装判断待ち: なし(既存Production正式retry/Gate/Human Review経路の範囲内)。
     - (B) ユーザー試聴・品質確認待ち: **B1**=上記7項のplayer URLで試聴しPASS/NG判断。**A2**=上記9項のHuman Review確認ページでTotemeの読みを聴取し「許容/再生成/その他」を判断(判断後、許容ならAssembly実行、再生成なら追加タスクとして依頼)。
