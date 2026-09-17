@@ -30,7 +30,7 @@
 
 12. **model/routing**: Research/Verification/Writer/Fact Checker/Ledger Deviation=`gpt-5.6-luna`(openai、既存Production routing無変更)。TTS=`gemini-2.5-pro-preview-tts`(英語Aoede/A2)、B1 Charon/Aoede構成(既存Production routing)。ASR=`openai_asr`(既存Production構成)。全て既存Production routing、Trial/新規routingの導入なし。
 
-13. **Git SHA**: 本パケット提出時点で未commit(下記手順どおり最後にまとめてcommit・push予定)。commit後、実SHAを次回報告で追記する。
+13. **Git SHA**: `f693647d`(成果物一式+DECISION_LOG+本RESULT_PACKET、push済み、origin/main反映確認済み、fast-forward)。
 
 14. **SSOT**: `DECISION_LOG.md`に`## USER-TEST-NEWS-LIGHT-TOPIC-01`エントリを追加(`## PM-CLOSEOUT-CONSOLIDATION-136...`エントリの直後・`## 参照元`節の直前)。`OPEN_ITEMS.md`/`CURRENT_SPEC.md`/`docs/pm/PM_GOVERNANCE.md`は無変更(`git status --porcelain`で確認済み、下記17節)。独立した新規仕様問題は発見していない(既知のOPEN-160/161系誤検知パターンの再確認のみ、追加Open Item化は不要と判断)。
 
