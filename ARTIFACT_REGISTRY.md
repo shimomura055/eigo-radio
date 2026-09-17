@@ -148,6 +148,8 @@ PRODUCTION`)や`editorial_mode="discovery_why"`の正式registry登録を
 ではない(既存の「User Quality≠Publication」原則を維持、`NOT_APPROVED`
 のまま)。Tiny Bags B1/A2・Convenience AI A2/B1も同様に`NOT_APPROVED`。
 
+| ユーザーテスト一覧ページ(10記事、2026-09-18、`USER-TEST-ARTICLE-LANDING-10-01`) | N/A(10記事へのリンク集約ページ) | 既存10記事(音声・player)への正式導線ページ本体を新規作成 | 全20リンクSSOT完全一致(`href_match.json` PASS)+全20 URL HTTP 200(`http200_check.json`)+Browser E2E PC/スマホ両方PASS(`e2e_result.json`) | **PRODUCTION_WIRED**(2026-09-18。SSOT=`docs/user_test/ユーザーテスト記事一覧_2026-0918_選定10.tsv`をユーザー確定。リンク先10記事は個別に`USER_TEST_READY`/`user_quality_status`を保持、本行はそれらへの一覧導線ページ自体の状態) | ページ: `user_test/articles_2026_0918.html`、公開URL: `https://rawcdn.githack.com/shimomura055/eigo-radio/b78f3cb5918856fceaba934d337f51ea9756af42/user_test/articles_2026_0918.html`(evidence: `docs/pm/closeout_136_e2e/landing_10_01/`配下href_match.json/http200_check.json/e2e_result.json/pc_full.png/mobile_full.png) |
+
 ## USER-TEST-14-ARTICLE-FORMAT-RECHECK-01(2026-09-17、Gate 7(n)表示フォーマット14記事再確認)
 
 ユーザー管理Sheet「ユーザーテスト記事一覧_2026-09-16」掲載の14記事について、

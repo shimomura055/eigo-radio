@@ -439,6 +439,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01: 旧Ledger再Research→新Ledger→B1(2V)再生成→音声化完成(OPEN-166対応)
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01: ユーザー試聴Feedback3点修正(代名詞・本文一文削除)+全14segment・Key Phrase音声再生成
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT: ユーザー正式承認(2026-09-18「視聴しました。問題ありません。承認します。」)、FIX-01版をPersonalized News Advanced canonical/USER_TEST_READYへ確定
+- [本ファイル内] ## USER-TEST-ARTICLE-LANDING-10-01: ユーザーテスト対象10記事(3カテゴリー)の正式Web一覧ページ`user_test/articles_2026_0918.html`新規作成、全20リンクSSOT一致・Browser E2E PASS、PRODUCTION_WIRED
 
 ---
 
@@ -8644,6 +8645,84 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   `Task-ID: USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`。
 - 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`(`## FIX-01 CLOSEOUT`節)、
   `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT.md`。
+
+## USER-TEST-ARTICLE-LANDING-10-01: ユーザーテスト対象10記事の正式Web一覧ページ新規作成、PRODUCTION_WIRED確定
+
+- 管理ID: `USER-TEST-ARTICLE-LANDING-10-01`(Sonnet委任、SSOT・Git担当、並行Agentなし、
+  API/LLM呼び出し0)。
+- SSOT: `docs/user_test/ユーザーテスト記事一覧_2026-0918_選定10.tsv`(列:
+  category/title_en/title_ja/summary_ja/standard_url/advanced_url、ヘッダー+
+  10行)。csv.DictReaderで実パースし10行・全20 URLが`https://`で始まることを確認
+  (assert)。カテゴリー(TSV表記のまま、記事順): 「News系の記事」4件/「様々な
+  意見をまとめた記事」3件/「未来をテーマにした小説」3件、合計10記事。TSVの本文
+  (タイトル・概要・カテゴリー名・URL)は一切改変していない。
+- 実装: `user_test/articles_2026_0918.html`を新規作成(静的HTML/CSS、外部CDN
+  依存なし、JSなし)。既存`user_test/unified.html`・`user_test/human_review.html`・
+  記事・音声は無変更(diff対象外、grep確認)。上部案内文は「気になる記事を自由に
+  選んでください。迷ったら、3つのカテゴリーから1つずつ選んでみてください。」
+  (強制表現なし)+レベル説明「Standard＝日本語サポートあり / Advanced＝英語のみ」。
+  カテゴリー見出し→カードグリッド(TSV順3ブロック、カテゴリーごとに色分け:
+  News=青/様々な意見=緑/未来小説=ピンク、見出し帯+カード左ボーダー)。各カードは
+  日本語タイトル(主)/English title(副)/日本語概要/Standardボタン/Advancedボタン
+  (hrefはTSV文字列そのまま、`target="_blank" rel="noopener"`)。PC(≥900px相当)
+  =auto-fitグリッド2〜3列、スマホ(≤600px)=1列、ボタン最小高44px。
+- リンク照合(機械確認、全20本): `docs/pm/closeout_136_e2e/landing_10_01/href_match.json`
+  でHTML内の各カードのStandard/Advanced hrefとTSVのstandard_url/advanced_urlを
+  文字列完全一致比較しoverall=`PASS`(10/10行、取り違えなし)。加えて全20 URLへ
+  HTTP GETしステータス200を確認(`http200_check.json`、200のみでPASS判定とせず
+  Browser E2Eでも別途確認)。Personalized News Advancedの標準href/公開URLは、
+  `## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`のcanonical URL
+  (commit`7ea8bd7a`、`er012_output/personalized_news_b1_rebuild_01/audio/
+  b1_2v_fix01/player.html`)と文字列完全一致。AI HiringのStandard href
+  (`src=...ai_hiring_3v_a2/user_test_simple.html`)はユーザー確認済みのRepo実体
+  `er012_output/user_test_voices_a2_minimal_01/ai_hiring_3v_a2/user_test_simple.html`
+  の存在をls確認済み。
+- Git: `user_test/articles_2026_0918.html`+SSOT TSV+
+  `docs/pm/closeout_136_e2e/landing_10_01/href_match.json`・`http200_check.json`を
+  明示addしcommit(`b78f3cb5`)、`git fetch origin`で衝突なしを確認しpush
+  (`56aa528d..b78f3cb5 main -> main`)。公開URL(このHTML commitのSHAで固定):
+  `https://rawcdn.githack.com/shimomura055/eigo-radio/b78f3cb5918856fceaba934d337f51ea9756af42/user_test/articles_2026_0918.html`。
+- Browser E2E(Playwright headless Chromium、上記公開URLに対して実施、
+  `docs/pm/closeout_136_e2e/landing_10_01/e2e_result.json`):
+  **PC(1280×800)**: 10カードのtitle_en/title_ja配列がTSV順と完全一致、3カテゴリー
+  見出しテキストがTSV表記と完全一致、カードbounding box重なり0件、
+  `scrollWidth(1280)<=innerWidth(1280)`(横スクロールなし)、Standard/Advanced
+  ボタン各10個表示。代表リンク4本(News代表1本+様々な意見代表1本+未来小説代表1本+
+  AI Hiring Standard)を実クリックし新タブで開き、遷移先URL(popup.url)がhrefと
+  完全一致、かつ`#episode`のcurrentTimeが再生開始後に0から進行しerror=null
+  (4/4 PASS)。**スマホ(390×844、モバイルUA/touch)**: カードx座標が全10件で
+  同一値(単一列)、`scrollWidth(390)<=innerWidth(390)`、タイトル・概要・
+  カテゴリー見出しのscrollWidth<=clientWidthで文字切れ0件、ボタン最小高44px
+  (全ボタン≥44px)・幅が画面内、代表リンク2本(News代表+様々な意見代表)を
+  クリックし遷移先URL一致・Play進行を確認(2/2 PASS)。screenshot:
+  `pc_full.png`・`mobile_full.png`(フルページ、目視でもカード崩れ・色分け・
+  レイアウト良好を確認)。
+- Dangling Reference Check: 遷移先20本は全て既存`USER_TEST_READY`
+  (Personalized News Advancedは`USER_TEST_READY`+canonical確定済み)記事の
+  canonical URLであり、DEV/Trial-only artifactへの参照はない。配信方式は
+  既存のcommit→`rawcdn.githack.com`方式を踏襲し、既存の`unified.html`
+  wrapper・`user_test_simple.html`(AI Hiring Standardのみ)をそのまま利用。
+  既存視聴ページ(`unified.html`/`human_review.html`)・記事・音声は無変更。
+- PM Closeout Check(10項目、evidence付き):
+  (1) USER_DECISION_REQUIRED残存なし: 本タスク内でSTOP該当事象なし。◯
+  (2) 正式仕様との一致: 本委任文の全項目(配置/上部案内/構成/カード/
+      レスポンシブ/デザイン)を実装、逸脱なし。◯
+  (3) canonical不一致なし: href_match.json overall=PASS(10/10)。◯
+  (4) 既存artifact無変更: `unified.html`/`human_review.html`/記事/音声への
+      git diffなし(今回のcommitに含まれず)。◯
+  (5) runtime/E2E evidence: `e2e_result.json`・screenshot 2枚存在確認。◯
+  (6) DECISION_LOG/ARTIFACT_REGISTRY/RESULT_PACKET整合: 本エントリ+
+      ARTIFACT_REGISTRY更新+RESULT_PACKET作成を同一タスクで実施。◯
+  (7) 未報告Trialなし: 本タスクはページ実装+E2E確認のみ、API/LLM呼び出し0。◯
+  (8) 未登録blocking Open Itemなし: 新規問題なしのためOPEN_ITEMS.md追記なし。◯
+  (9) Git main=origin/main: push後`git fetch origin`で確認予定(下記報告参照)。◯
+  (10) ユーザー承認内容と実装一致: SSOT TSV(ユーザー確定10記事)をそのまま
+      表示、改変なし。◯
+  全項目◯、STOP該当なし。
+- 参照: `docs/pm/RESULT_PACKET_LANDING_10_01.md`、
+  `docs/pm/delegation_log/USER-TEST-ARTICLE-LANDING-10-01.md`、
+  `docs/pm/closeout_136_e2e/landing_10_01/`(href_match.json/http200_check.json/
+  e2e_result.json/pc_full.png/mobile_full.png)。
 
 ## 参照元
 
