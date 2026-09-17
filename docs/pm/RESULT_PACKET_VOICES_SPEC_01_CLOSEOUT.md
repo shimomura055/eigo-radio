@@ -69,7 +69,9 @@ before: `APPROVED_FOR_PRODUCTION`→Gate 3配線状況はRESULT_PACKET_VOICES_SP
 
 ## 8. Git
 
-コミット未実施(このセクションはコミット後に更新予定→下記実施結果参照)。
+commit `a036e0e2db3d7183f9d4da793b2039272bdc003e`(SSOT4ファイル+RESULT_PACKET+ACTIVE_TASK+
+delegation log 2ファイル、明示add、`git add -A`不使用)。push済み(`origin/main`と一致、
+`542d557b`→`a036e0e2`、fast-forward、fetch時点で競合なし)。
 
 ## 9. 未処理USER_DECISION_REQUIRED有無
 
