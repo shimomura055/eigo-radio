@@ -8724,6 +8724,56 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   `docs/pm/closeout_136_e2e/landing_10_01/`(href_match.json/http200_check.json/
   e2e_result.json/pc_full.png/mobile_full.png)。
 
+### FIX-01: Fable受入照合による差し戻し1回目、ボタン文言折返し修正(CSSのみ)
+
+- 管理ID: `USER-TEST-ARTICLE-LANDING-10-01-FIX-01`(Sonnet委任、並行Agentなし、
+  API呼び出し0)。
+- 差し戻し理由: Fable受入照合(`docs/pm/closeout_136_e2e/landing_10_01/pc_full.png`)
+  でPC 1280px幅・3列グリッド時、10カード全ての「Advanced｜英語のみ」ボタンが
+  「Advanced｜英語の」+「み」の2行に折り返し、「Standard｜日本語サポートあり」も
+  2行になっていた(スマホ390pxは問題なし)。
+- 修正内容(CSSのみ、`user_test/articles_2026_0918.html`): `.btnrow`を横並び
+  (`display:flex;gap:10px;flex-wrap:wrap`)から縦積み
+  (`flex-direction:column;gap:8px`)へ変更、`.btn`を`flex:1 1 130px`から
+  `width:100%`(カード幅いっぱい)へ変更しボタン内の利用可能幅を拡大、
+  font-sizeを13.5px→14pxへ引き上げ、`white-space:nowrap`を追加してテキストの
+  途中折返しを構造的に防止。スマホ用メディアクエリの重複記述
+  (`.btnrow{flex-direction:column}`/`.btn{flex:1 1 auto}`)は既定値と同一に
+  なったため削除(実効挙動は変化なし)。カード3列グリッド自体・hrefは無変更。
+- 新公開URL(このCSS修正commitのSHAで固定):
+  `https://rawcdn.githack.com/shimomura055/eigo-radio/41594eecc7d5e5dc07b506e52d38f895c473eb0e/user_test/articles_2026_0918.html`
+  (HTTP 200確認済み、fetch結果のCSSが修正後の内容であることを直接確認)。
+- Browser E2E再実施(Playwright headless Chromium、
+  `docs/pm/closeout_136_e2e/landing_10_01/e2e_result_fix01.json`): **PC
+  (1280×800)**: 前回同様の全項目(10カードtitle_en/title_ja完全一致、3カテゴリー
+  見出し一致、カード重なり0件、横スクロールなし、Standard/Advancedボタン各10個、
+  グリッド3列維持)に加え、新規判定として各ボタンの`getClientRects().length`と
+  テキストRangeの`getClientRects().length`が両方1(=1行収まり)であることを
+  20ボタン全件で確認(`btn_single_line_all_pass:true, fail_count:0`)。代表4本
+  (News代表+様々な意見代表+未来小説代表+AI Hiring Standard)を実クリックし
+  新タブ遷移URL一致・Play進行(currentTime>0、error=null)を4/4確認(初回試行時に
+  1本だけ`preload="none"`起因の読み込み遅延で一時的にcurrentTime=0となる事象が
+  あったため、再生開始をポーリング待機する形にテスト側を調整し4/4 PASSを確認。
+  ページ側の音声・player.htmlは無変更)。**スマホ(390×844)**: 同様に単一列・
+  横スクロールなし・テキスト切れ0件・ボタン全て≥44px・ボタン1行収まり20/20を
+  確認、代表2本実クリックでPlay進行2/2確認。screenshot: `pc_full_fix01.png`
+  (目視でも10ボタン全て1行表示を確認)・`mobile_full_fix01.png`。
+- 全20 href再確認: `docs/pm/closeout_136_e2e/landing_10_01/href_match_fix01.json`
+  でTSVとHTMLを再パース・再比較しoverall=`PASS`(10/10行、hrefは無変更のため
+  当然一致)。
+- 無変更証跡: `git diff`で変更ファイルが`user_test/articles_2026_0918.html`
+  (CSSブロックのみ、+2/-4行)のみであることを確認。SSOT TSV・`unified.html`・
+  記事本文・音声・hrefは本タスクのcommitに含まれず無変更。
+- Git: `user_test/articles_2026_0918.html`+E2E evidence4点
+  (`href_match_fix01.json`/`e2e_result_fix01.json`/`pc_full_fix01.png`/
+  `mobile_full_fix01.png`)を明示addしcommit(`41594eec`)、`git fetch origin`で
+  衝突なしを確認しpush(`a96beadd..41594eec main -> main`)。push後
+  `git fetch origin`でmain=origin/main=`41594eec`を確認済み。
+- 最終Status: `PRODUCTION_WIRED`(Gate 3該当項目、CSS修正後も全て◯)。
+- 参照: `docs/pm/RESULT_PACKET_LANDING_10_01.md`(## FIX-01節)、
+  `docs/pm/closeout_136_e2e/landing_10_01/`(href_match_fix01.json/
+  e2e_result_fix01.json/pc_full_fix01.png/mobile_full_fix01.png)。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。
