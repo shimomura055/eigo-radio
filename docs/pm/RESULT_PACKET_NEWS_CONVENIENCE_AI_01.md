@@ -81,3 +81,51 @@ F14. **ユーザー判断**: (A)Human Review確認待ち: A2 `point_two`(F6のUR
 F15. **無変更証跡/lock記録/事前指定外Read**: `git status --porcelain -- '*.py'`はFIX-01用に新規作成した`fix_01_pipeline.py`のみ(既存`er0*.py` Production moduleは無変更)。`git status --porcelain -- user_test/unified.html`は空(無変更)。**並行衝突観測(重要)**: `docs/pm/locks/audio_stage.lock`をタスク開始時(既存lock無し確認済み)に自タスク名で作成したが、TTS/ASR実行中に別タスク(`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01`)のlockへ上書きされていたことを事後確認した(同時刻帯のレース、両タスクとも「lock無し」を確認した直後に書き込んだ可能性)。共有audit file(`pronunciation_ledger_01/ledger.json`・`master_audio_store_01/manifest.json`等)のJSON妥当性・自タスクが追加した全キーの整合性を直接確認し、実害(データ破損・キー競合)は確認されなかった(ledger.jsonの新規23件目"oimo"は自タスクのcascade自動登録と確認済み、他タスクとの衝突ではない)。lockファイル自体は現在他タスクの識別子を保持しているため、自タスクの判断では削除していない(他タスクの管理領域と判断)。事前指定外Read: なし(事前指定Read一覧の範囲内で完結、追加でPronunciation Ledger登録API[`er006_pronunciation_ledger_01.py`/`er006_pronunciation_research_01.py`]・TTS segment呼び出しシグネチャ[`er003_v1_n3_01_tts_generate.py`該当関数]を確認したが、いずれも委任文の「Ledger正式経路」「影響segmentのみ再TTS」の実装に直接必要な確認であり、事前指定Read対象[driver等]の自然な延長と判断)。
 
 ★★★★報告ここまで★★★★
+
+## FIX-02
+
+管理ID`USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02`(ユーザー正式判断2026-09-17に基づく)。以下は累積Full Report(本節が最新の完全な状態を表す。上記の初回・FIX-01報告は履歴として保持)。
+
+★★★★報告ここから★★★★
+
+0. **T-0**: 委任文を`docs/pm/delegation_log/USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02.md`へ保存。`check_delegation_prompt.py`結果=`FAIL`(「性質」見出し欠落・固定ブロックラベルE-1/D-1/G-1/F-1欠落。内容自体はRead対象・SSOT・Git・報告項目を全て含む、初回/FIX-01と同様non-blockingとして続行)。JSON: 同ディレクトリの`_check.json`。事前指定Read一式(本RESULT_PACKET FIX-01節、`fix_01_pipeline.py`、両`parts.json`/`article.md`、`audit/tts_generation_results.json`[A2/B1]、`audit_fix_01/retts_*_result.json`、`er006_pronunciation_ledger_01.py`、`er003_v1_n3_01_tts_generate.py`のA2/B1 point_two生成関数、`docs/pm/RESULT_PACKET_NEWS_LIGHT_03.md`、`docs/pm/closeout_136_e2e/`)は全て実施。
+
+G1. **B1実audio確認結果**: FIX-01再生成後の`b1b/audit/tts_generation_results.json`(Production ASR cascade、`asr_text`/`attempts_log`とも)は一貫して"Then Lawson planned a sale of the finished product."。独立local verbatim(`er008_disfluency_qa_18.transcribe_verbatim`、faster-whisper、追加課金なし)でも同様に"Then, Lawson planned a sale of the finished product."を確認し、表示script"Lawson then planned..."とは語順が異なることを直接確認した(ユーザー報告と一致)。
+
+G2. **B1 script修正前後**: `b1b/article.md`/`b1b/parts.json`(part1)を"Lawson then planned a sale of the finished product."→"Then Lawson planned a sale of the finished product."へ最小修正(語順のみ、事実・内容は無変更)。バックアップ`.pre_fix_02.bak`保存。`sc.split_article_text()`で再構築したparts.jsonの差分キーは`part1`のみと確認済み(他キー無変更)。TTS再生成なし。
+
+G3. **audio/script一致**: 修正後のcanonical textは実際のASR転写("Then Lawson planned...")と完全一致。Ledgerの意味整合(語順のみで事実は不変)も`research/verified_fact_ledger.txt`のF3(Lawson発売情報)と照合し問題なし。
+
+G4. **player再build+E2E**: `build_web_player_common.player_level("b1", ...)`(既存Production関数、無変更)でplayer.htmlを再build(既存wav/mp3を再利用、TTS/ASR呼び出しなし)。Playwright実ブラウザE2E(headless Chromium、githack「Open the page」中継確認を経由): player script内に新文言"Then Lawson planned a sale of the finished product."が表示され旧文言は不在であることを確認、再生4秒後`currentTime=3.86s`・`duration=287.77s`(Assembly実測と一致)・`error=null`・`readyState=4`。evidence: `b1b/human_review/e2e_evidence_fix02.json`+`e2e_screenshot_fix02.png`。
+
+G5. **B1 final status**: **ユーザー品質承認済み**(記事全体は既にOK/承認、語順のみの技術的整合修正)。再試聴要求不要。URL: `https://rawcdn.githack.com/shimomura055/eigo-radio/187d51b4/user_test/unified.html?src=er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/player.html&level=B1&en=A%20Lemon%20Tart%2C%20Pickles%2C%20and%20an%20AI%20Suggestion&ja=...`。
+
+G6. **A2 Oimo再生成attempt(回数/分類)**: `er011_human_review_lock_01.approve_regenerate()`で計4回明示承認し、既存Production経路(`generate_a2_segment_with_slowdown`→`generate_english_segment_with_fallback`、standard 2+fallback 1、Ledger→Secondary ASR Phrase List使用)で計4サイクル(raw take番号8〜19)を再TTSした。分類の内訳: サイクル1(attempt8 TRUE_CONTENT_MISMATCH→attempt9 NORMALIZED_MATCH[cascade PASS]→post-slowdown再検証ASR_VALIDATION_UNCERTAIN→attempt10 ASR_VALIDATION_UNCERTAIN→attempt11 NORMALIZED_MATCH[fallback、cascade PASS]→post-slowdown再検証も未PASSで最終HUMAN_REVIEW_LOCKED)、サイクル2(attempt12 TRUE_CONTENT_MISMATCH→attempt13/14/15いずれもNORMALIZED_MATCH[cascade PASS]だが各post-slowdown再検証は全てASR_VALIDATION_UNCERTAIN、最終STOPPED)、サイクル3(attempt16-18相当、最終ASR_VALIDATION_UNCERTAIN)。詳細: `audit_fix_02/retts_a2_point_two_result_attempt{1,2,3}.json`+`retts_a2_point_two_result.json`(最終サイクル)。
+
+G7. **B1 referenceとの比較(TTS条件差+転写差)**: B1側point_twoの生成関数は`news_tail_fix.generate_news_narration_wide_margin`(voice=Aoede単体)、A2側は`crosslevel_audio_02_common.generate_english_segment_with_fallback`系(A2固有の6% slowdown post-process付き、`A2_ENGLISH_STYLE_PREFIX_SLOWER`instruction)であり、生成関数自体とA2固有post-processの有無が主な条件差(TTS発音指示自体に特別な差はない、Ledger phrase_list連携は両者共通で確認済み)。転写差: 修正前のA2音声を独立local verbatim(faster-whisper、Ledger非依存)で再確認したところ"Yomo no Canele"(ユーザー報告"Yomono"と整合)。B1 referenceの同一チェックは"Oimo No Cannelé"。再生成後の最終候補(attempt9由来)は同チェックで"Oymo no Canele"/Primary ASR再実行では"Oimo no Kanele"と、B1 reference側に近い転写へ明確に改善した。
+
+G8. **Primary/Secondary ASR(phrase_list_used)**: 最終候補(attempt9を6% slowdown適用したもの)についてSecondary ASR cascade(Azure、Ledger Phrase List="Oimo no Canele"を明示指定、`phrase_list_used=true`)を手動で再実行した結果、`verified=true`・`classification=NORMALIZED_MATCH`(`audit_fix_02/manual_candidate_secondary_asr_check.json`)。Primary ASR(OpenAI)再実行では"Oimo no Kanele"(canonical"Canele"とほぼ一致、既存の他segmentと同水準の表記ゆれ)。
+
+G9. **final pronunciation判定(根拠)**: 最終候補は(1)Production標準cascade(Ledger Phrase List使用)でNORMALIZED_MATCH/verified=true、(2)Ledgerの影響を一切受けない独立local ASR(faster-whisper)でも"Oimo"寄りの転写、の両根拠を満たす。修正前(Yomo/OEMO/Emo寄り)からの明確な改善をこの独立チェックで確認しており、ユーザー指摘の核心("Oimo"が"Yomono"寄りに聞こえる)は解消したと判断できる根拠がある。ただしA2必須6% slowdown post-process自体の簡易再検証(Ledger Phrase List不使用、Primary ASR単発呼び出しのみ)は複数回とも安定してPASSせず(原因は"Canele"→"Kanēre"等の呼び出しごとのASR表記ゆれであり、Oimo自体の問題ではないことを個別確認済み)、Review Lockは`HUMAN_REVIEW_REQUIRED`のまま(既存Gateを独自判断で回避・上書きしていない)。
+
+G10. **AI while維持確認**: 再生成後の全attempt(8〜18)のPrimary/Secondary ASR転写で"AI while"部分は一貫して正しく転写されており(例: "It used sales data with AI while developing..."、canonical一致)、FIX-01で問題になった"a I Well"のような新規不一致は再発していない。
+
+G11. **Assembly/Gate(duration/peak/clipping)**: A2は`point_two`が`HUMAN_REVIEW_REQUIRED`のままのためAssembly実行結果は引き続き`GATE_BLOCKED`(override無し、`error`メッセージで`point_two=UNVALIDATED`を確認)。B1はFIX-01時点のAssembly PASS(287.774秒、peak=0.95、clippingなし)を維持(音声無変更のため再Assembly不要)。
+
+G12. **player URL**: A2は未生成(episode/player.html未完成、Human Review継続のため)。B1はG5参照。
+
+G13. **E2E evidence**: B1=`b1b/human_review/e2e_evidence_fix02.json`+`e2e_screenshot_fix02.png`(G4参照)。A2 Human Review確認ページ=`a2/human_review/e2e_evidence_fix02.json`+`e2e_screenshot_fix02.png`(Playwright実ブラウザ、canonical script中の"Oimo no Canele"表示・highlight1件確認、再生3秒後`currentTime=2.89s`・`duration=21.67s`[6% slowdown後の実長と整合]・`error=null`・`readyState=4`)。
+
+G14. **Human Review残**: A2 `point_two`が継続(理由: Oimo発音自体は改善エビデンスありだが、A2必須slowdown post-processの簡易再検証が未PASSのため)。確認ページ: `https://rawcdn.githack.com/shimomura055/eigo-radio/187d51b4/user_test/human_review.html?src=er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/human_review/point_two_review.json`(新候補音声・新根拠[cascade結果/独立local ASR/B1比較/修正前比較]で更新済み)。承認代行はしていない。
+
+G15. **Sheet行/記事一覧**: B1が新たに完成状態へ移行したため、Sheet投入用情報は前回(FIX-01 F9)と同一のB1分をそのまま維持(タイトル/概要/URLはG5参照)。A2分は引き続き音声完成後に別途確定。専用の記事一覧管理表ファイルは存在しないため(`RESULT_PACKET_NEWS_LIGHT_03.md`item 7で確認済み)、`ARTIFACT_REGISTRY.md`のConvenience AI A2/B1行を本タスクの管理IDへ更新した。
+
+G16. **SSOT/Git SHA**: `DECISION_LOG.md`へ`## USER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02`エントリ(索引+本体)追加。`OPEN_ITEMS.md`のOPEN-159行へ日本語ローマ字商品名のTTS読みのばらつき+`apply_a2_slowdown_postprocess()`の簡易再検証設計ギャップの観測を追記(新規Open Item化はせず追記のみ)。`ARTIFACT_REGISTRY.md`のConvenience AI A2/B1行を更新。Git: `187d51b4`(B1語順修正・player再build・A2再生成候補・Human Review確認ページ更新・attempt監査ログ、push済み)→`cd8a1b55`(DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY/ACTIVE_TASK+E2E evidence、push済み・origin/main反映確認済み、fast-forward)。
+
+G17. **cost実測**: `raw_usage_log.jsonl`ベースの累計¥201.73(前回FIX-01時点の累計約¥172からの増分は約¥30、内訳はgemini[TTS再生成4サイクル分]・openai_asr[Primary ASR多数回]が中心、azure/perplexityは`pricing_snapshot`未収載のため¥0扱い)。上限¥100に対し十分な余裕。
+
+G18. **ユーザー判断 A/B**: (A)仕様・Product・実装判断待ち: OPEN-159(既存、継続deferred)に加え、今回の観測(TTS Pronunciation Hint注入の正式配線、または`apply_a2_slowdown_postprocess()`へのLedger Phrase List付きSecondary ASR cascade組み込み)は新Product判断が必要なため本タスクでは実装せず、観測記録のみ。(B)ユーザー試聴・品質確認待ち: B1は再試聴不要(既にOK/承認済み、語順修正のみ)。A2 `point_two`はG14の確認ページで新候補の"Oimo"読みを確認し、許容/再生成/その他をご判断いただく必要がある(Tiny Bags側の未解決事項は無し)。
+
+G19. **無変更証跡/lock記録/事前指定外Read**: `docs/pm/locks/audio_stage.lock`は、タスク開始時に既存lock無しを確認したのみで、**本タスクでは原子的作成・削除を実施しなかった**(委任文の指示に対する本タスクの手続き上の不備、正直に報告する)。事後確認として、共有audit file(`er006_output/pronunciation_ledger_01/ledger.json`)の差分を確認したところ、純粋な1件追加(`familymart`、`cascade_unresolved_entity`、既存Secondary ASR cascadeの自動登録機構による本タスク自身の副作用と時刻[15:15:28]から特定、他タスクとの衝突ではない)のみで、削除や既存キーの上書きは無く、データ破損・キー競合は確認されなかった。`er006_output/master_audio_store_01/manifest.json`は本タスク中に変更なし(diff無し)。`git status --porcelain -- '*.py'`はB1語順修正・A2再生成に使った新規`fix_02_pipeline.py`のみ(既存`er0*.py` Production moduleは無変更)。`git status --porcelain -- user_test/unified.html` `user_test/human_review.html`はいずれも空(無変更、既存ページをそのまま再利用)。事前指定外Read: `er003_v1_crosslevel_audio_02_common.py`(L1-260、A2英語segment生成のstandard/fallback cascade全体構造とreview_lock decoratorの適用範囲を確認するため)、`er003_v1_repro01_main_generate.py`(L194-420、`generate_narration_snippet_verified_strict`のASR cascade呼び出し箇所を確認するため)、`er011_human_review_lock_01.py`(L1-420、`approve_regenerate()`/`check_before_generation()`/`record_outcome()`のReview Lock状態遷移を正確に理解するため)。いずれも委任文の「既存retry/fallback機構との整合を確認」「新規配線をしない」という指示を安全に遵守するために必要な確認であり、Gate回避や独自ロジック追加はしていない。
+
+★★★★報告ここまで★★★★
