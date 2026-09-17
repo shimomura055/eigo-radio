@@ -7932,6 +7932,21 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - Status: Space Weapons A2/B1=Gate PASS(2/4完成)。Theme 2(AI Control)=`USER_DECISION_REQUIRED`(A2記事本文のLedger Deviation human_review_required、B1未着手)。QA誤検知2件=`OPEN-160`/`OPEN-161`(DEFERRED)登録。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_2EP_RESUME3.md`、`docs/pm/delegation_log/USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-03.md`。
 
+## USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-05
+
+- 日付: 2026-09-17
+- 種別: 実装バグ修正(Implementation Hardening、player配置)+PM運用ルール明確化+QA厳格さのOpen Item化。
+- **ユーザー報告**: Space Weapons A2/B1のrawcdn unified.html URLはページ到達・Playボタン表示までできるが、Playしても音声再生が始まらない(A2/B1同症状)。
+- **原因**: 既存標準(`er011_output/household_unified_final_candidate_01/player.html`等)ではplayer.htmlをlevel dir直下に置き、mp3は`web/`配下(`web/episode.mp3`)へ配置し、player.html内のaudio srcを`web/episode.mp3`という相対pathで参照する規約になっている。Space Weapons A2/B1では`build_web_player_common.py`呼び出し時にplayer.html自体を誤って`web/`配下(`.../a2/web/player.html`)へ書き出したため、audio src(`web/episode.mp3`)がplayer.html自身の場所基準で二重解決され、ブラウザが実際に要求するURLが`.../a2/web/web/episode.mp3`となり404になっていた。Playwright(headless Chromium)で旧commit(`c2af33f2`)のURLを実操作し、`audio.src`が二重pathであること・`audio.error.code=4`(再生開始せず)・`currentTime`が進まないことを実証(再現)。household既存player(`episode_audio_a2`)は同条件で正常再生(`currentTime`進行・`error=null`)することも確認し、Space Weapons固有の配置誤りであると特定した。
+- **修正**: `build_web_player_common.py`・`user_test/unified.html`は無変更(共通ロジックの不具合ではなく、個別呼び出し時の出力先path誤りのため)。`er014_output/user_test_news_2ep_01/space_weapons/a2/web/player.html`→`.../a2/player.html`、`.../b1b/web/player.html`→`.../b1b/player.html`へ`git mv`で移動(TTS/Assembly再生成不要、ファイル内容は無変更)。commit `8493ce60`。
+- **修正後runtime evidence(Playwright実操作、headless Chromium)**: 新commit(`8493ce60`、後続の証跡追加commit`7ac6b6ac`)のrawcdn URLに対しA2/B1双方でPlay操作→4秒後`currentTime`>0・`paused=false`・`readyState=4`・`error=null`・`duration`取得済み(A2=364.848秒、B1=382.984秒)を確認。seek操作(60秒)後も`currentTime`が追従し再生継続。Key Phrase表示・Full Script(4 card)・seekボタンも表示確認。証跡: `er014_output/user_test_news_2ep_01/space_weapons/a2/web/e2e_playback_evidence.json`/`.png`、`.../b1b/web/e2e_playback_evidence.json`/`.png`。household既存player(`episode_audio_a2`)でも同commit時点で正常再生を再確認(回帰なし)。
+- **新URL(最終commit `7ac6b6ac`)**: A2=`https://rawcdn.githack.com/shimomura055/eigo-radio/7ac6b6acd94a058d56b5c9f43ee29ee9557317c9/user_test/unified.html?src=er014_output/user_test_news_2ep_01/space_weapons/a2/player.html&level=A2&en=...&ja=...`、B1=同URLの`src`を`.../space_weapons/b1b/player.html`・`level=B1`に置換したもの(詳細は`docs/pm/RESULT_PACKET_NEWS_2EP_RESUME5.md`)。
+- **PM_GOVERNANCE更新**: 9-1の4「ユーザー判断」直後(2026-09-17ユーザー再指示)へ、判断待ちをA(仕様・Product・実装判断待ち)/B(ユーザー試聴・品質確認待ち)の2区分で必ず分けて記載し、片方が空でも「ユーザー判断なし」と書かない旨を追記。Gate 7補足「13項目監査」直後へ、HTTP 200/206・Gate PASSだけで「ユーザー試聴可能」と判定せず、Play実再生のE2E evidence(ブラウザ実操作またはJSロジック静的追跡+audio URL直接確認)を要する旨を追記。
+- **OPEN-162登録**: Fact/Ledger Checkerが厳格すぎることで意味的に妥当な一般化・背景説明・概念整理・非事実的bridgeまで過剰に停止させる可能性(AI Control A2でsuperintelligence/intelligence explosion/singularityの概念名を含む一文がMAJOR停止した事例)。優先度=低、期限=量産開始まで、Validator/Prompt/Gate無変更・AI Control完成をブロックしない。
+- **cost**: API実行なし(TTS/Writer/Research呼び出しゼロ、`git mv`とPlaywright dev tooling[repo非commit]のみ)。実費¥0。
+- Status: Space Weapons A2/B1=技術的player再生確認済み/ユーザー試聴・品質確認待ち(`USER_TEST_READY`最終確定・記事完成扱いにはしない)。
+- 参照: `docs/pm/RESULT_PACKET_NEWS_2EP_RESUME5.md`、`docs/pm/delegation_log/USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-05.md`。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。
