@@ -1,0 +1,42 @@
+{
+  "ledger_phrases": [
+    "Oimo no Canele"
+  ],
+  "verified": true,
+  "stop_retrying": false,
+  "classification": "NORMALIZED_MATCH",
+  "detail": {
+    "verified": true,
+    "stop_retrying": false,
+    "classification": "ClassificationResult(classification='NORMALIZED_MATCH', normalized_ratio=1.0, protected=ProtectedCheckResult(passed=True, number_mismatches=[], negation_mismatches=[], content_word_diffs=[]), should_pass=True, should_retry=False, reason='複合語の分かち書き・ハイフン位置の差のみ(空白除去後に一致)', connected_speech_info=None)",
+    "cascade_invoked": true,
+    "steps": [
+      {
+        "step": "primary_1",
+        "provider": "openai_asr",
+        "text": "FamilyMart took a different path. It used sales data with AI while developing Oimo no Kanele with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
+        "classification": "ASR_VALIDATION_UNCERTAIN"
+      },
+      {
+        "step": "primary_2",
+        "provider": "openai_asr",
+        "text": "Family Mart took a different path. It used sales data with AI while developing Oimo no Kanere with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
+        "classification": "ASR_VALIDATION_UNCERTAIN"
+      },
+      {
+        "step": "secondary_1",
+        "provider": "azure",
+        "text": "Family Mart took a different path. It used sales data with AI while developing Oimo No Canele with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
+        "classification": "NORMALIZED_MATCH",
+        "phrase_list_used": true
+      }
+    ],
+    "final_status": "NORMALIZED_MATCH",
+    "human_review_required": false,
+    "canonical_text": "FamilyMart took a different path. It used sales data with AI while developing Oimo no Canele — with Caramel Sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity-limited. This search started with what people had bought before, not with a wish to surprise.",
+    "wav_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/narration/point_two.wav",
+    "cost_guard_triggered": false,
+    "non_latin_cascade_invoked": false,
+    "connected_speech_equivalence_layer_invoked": false
+  }
+}

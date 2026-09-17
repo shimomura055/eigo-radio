@@ -1311,70 +1311,29 @@
       "canonical_text": "At Lawson, the first search was not about finding a sure hit. The company did not use past sales or market data at that stage. Instead, it asked AI for combinations and flavors that might make people say, “What is this?” That made AI useful for opening the door to ideas the team might not have considered."
     },
     "point_two": {
-      "status": "ASR_VALIDATION_UNCERTAIN",
+      "status": "HUMAN_REVIEW_REQUIRED_CANDIDATE",
       "text": "FamilyMart took a different path. It used sales data with AI while developing Oimo no Canele — with Caramel Sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity-limited. This search started with what people had bought before, not with a wish to surprise.",
       "path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/narration/point_two.wav",
-      "model": "gemini-2.5-pro-preview-tts",
-      "voice": "Aoede",
-      "call_count": 1,
-      "retry_count": 0,
-      "sha256": "860ade5f2050603bc91834529a2d6c7dc0a75e611eeb3a13a8ccc5d22782d81d",
-      "duration_seconds": 22.651,
-      "trim_info": {
-        "raw_duration_seconds": 22.651,
-        "raw_leading_silence_seconds": 0.24,
-        "raw_trailing_silence_seconds": 0.3,
-        "trimmed_duration_seconds": 22.651,
-        "leading_margin_retained_seconds": 0.24,
-        "trailing_margin_retained_seconds": 0.3
+      "sha256": "ed816a60746ba3b52b8414e07a28e70e42f1f48bb57bec9f2c93dc90c6bed4c9",
+      "note": "USER-REVIEW-FIX-02: ユーザーがOimoの読みをREGEN REQUIREDと判断したため、approve_regenerate()経由で複数4回の正式サイクルを実施した（attempt8-19、全て既存Production経路）。このファイルは、attempt9（standard経路、Secondary ASR cascade[Ledger Phrase List使用]でNORMALIZED_MATCH、verified=trueを公式に達成済み）の生音声に、既存Production関数apply_a2_slowdown_postprocess()（無変更）の6%time-stretchを適用したもの。apply_a2_slowdown_postprocess()自体の簡易再検証（Ledger Phrase List不使用、Primary ASR 1回のみ）は今回もASR_VALIDATION_UNCERTAINとなったため、Review Lockは引き続きHUMAN_REVIEW_REQUIREDです（自己判断でGateを回避・上書きしていません）。同一音声に対して手動で再度Secondary ASR cascade（Ledger Phrase List使用）を実行した結果はNORMALIZED_MATCH/verified=trueであり（詳細: audit_fix_02/manual_candidate_secondary_asr_check.json）、独立のローカル文字起こし（faster-whisper、Ledgerの影響を受けない）も「Oymo no Canele」と、Oimo寄りの読みであることを確認済み。Human Review確認ページ: a2/human_review/point_two_review.json。人間承認待ち。",
+      "candidate_source_attempt": "point_two_attempt9_custom35d6860b.wav (standard route, cycle2 of FIX-02)",
+      "candidate_secondary_asr_cascade_manual_recheck": {
+        "classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "stop_retrying": false,
+        "ledger_phrases": [
+          "Oimo no Canele"
+        ],
+        "detail_ref": "audit_fix_02/manual_candidate_secondary_asr_check.json"
       },
-      "clipping_detected": false,
-      "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
-      "asr_verified": false,
-      "asr_text": "FamilyMart took a different path. It used sales data with AI while developing Iyomo no Kanele with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
-      "fallback_used": true,
-      "standard_attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "duration_seconds": 21.821,
-          "asr_text": "FamilyMart took a different path. It used sales data with AI while developing Oimo no Kanēre with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
-          "asr_text_length": 301,
-          "max_len": 363,
-          "substring_ok": null,
-          "length_ok": true,
-          "phonetic_verdict": null,
-          "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-          "connected_speech_info": null,
-          "reading_resolver_info": null,
-          "verified": false,
-          "disfluency_checked": false,
-          "disfluency_evidence": null,
-          "repetition_qa_checked": false,
-          "repetition_qa_evidence": null,
-          "asr_prompt_applied": false,
-          "non_latin_cascade_enabled": false,
-          "non_latin_cascade_invoked": false,
-          "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/narration/attempts/point_two_attempt3_custom35d6860b.wav"
-        }
-      ],
-      "fallback_attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "asr_text": "FamilyMart took a different path. It used sales data with AI while developing Iyomo no Kanele with caramel sauce. The product is scheduled to go on sale across Japan in September 2026, but it will be quantity limited. This search started with what people had bought before, not with a wish to surprise.",
-          "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-          "verified": false,
-          "disfluency_checked": false,
-          "disfluency_evidence": null,
-          "repetition_qa_checked": false,
-          "repetition_qa_evidence": null,
-          "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/a2/narration/attempts/point_two_attempt4_minimalfallback.wav"
-        }
-      ],
-      "reason": "同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)",
-      "slowdown_attempts_log": [],
-      "canonical_text": "FamilyMart took a different path. It used sales data with AI while developing “Oimo no Canele — with Caramel Sauce.” The product is scheduled to go on sale across Japan in September 2026, but it will be quantity-limited. This search started with what people had bought before, not with a wish to surprise."
+      "candidate_local_verbatim_unbiased_check": "FamilyMart took a different path. It used sales data with AI while developing Oymo no Canele with caramel sauce...(faster_whisper_small_local_verbatim)",
+      "prior_fix01_local_verbatim_for_comparison": "Family Mart took a different path. It used sales data with AI while developing Yomo no Canele with caramel sauce...(faster_whisper_small_local_verbatim)",
+      "all_fix02_attempts_ref": [
+        "audit_fix_02/retts_a2_point_two_result_attempt1.json",
+        "audit_fix_02/retts_a2_point_two_result_attempt2.json",
+        "audit_fix_02/retts_a2_point_two_result_attempt3.json",
+        "audit_fix_02/retts_a2_point_two_result.json"
+      ]
     },
     "in_one_line": {
       "status": "OK",

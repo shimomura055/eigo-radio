@@ -6,13 +6,13 @@
   "canonical_script": "FamilyMart took a different path. It used sales data with AI while developing “**Oimo no Canele** — with Caramel Sauce.” The product is scheduled to go on sale across Japan in September 2026, but it will be quantity-limited. This search started with what people had bought before, not with a wish to surprise.",
   "highlighted_terms": ["Oimo no Canele"],
   "confirmation_points": [
-    "本segmentはUSER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01で、記事本文の事実修正(未発売の商品を発売済みと誤記していた時制の誤りをLedgerに沿って是正: 「launched...」→「is scheduled to go on sale...」)に伴い、canonical textが変わったため再生成しました。",
-    "この再生成の前に、Pronunciation Ledgerへ「Oimo no Canele」を正式登録し(surface/entity_type=product、Perplexity調査、confidence=low、hint='oh-EE-moh noh kah-nuh-LAY')、Secondary ASRへPhrase Listとして明示的に渡しました(phrase_list_used=trueを確認済み)。",
-    "結果: Secondary ASR(Azure、Phrase List有り、2回とも)は「Oimo no Canele」を公式表記どおり完全一致で書き起こしました(Phrase List登録が効果を発揮したことを確認)。",
-    "しかし今回は、別の箇所で新たなASR不一致が発生しました。Secondary ASRが「AI while」を「a I Well」と書き起こし、この部分がTRUE_CONTENT_MISMATCH(内容語の不一致)として検出されました。Primary ASR(OpenAI、2回)は商品名部分を「Oimo no Kanēre」「Oimo no Kanari」と書き起こし、こちらも表記ゆれです。",
-    "Cascade(Primary x2→Secondary x2、Phrase List使用)を尽くしても最終classificationはASR_VALIDATION_UNCERTAINのままで、Human Review Lockへ戻りました(TTS再生成は標準+fallback各上限まで実施済み、これ以上の自動再生成は既存の安全装置[PRODUCTION_MAX_TTS_ATTEMPTS]により行いません)。",
-    "実際の音声を聴いて、(a)商品名「Oimo no Canele」の読み方、(b)「AI while」の部分の発音・聞き取りやすさ、の両方が記事の内容として許容できるかをご確認ください。真の内容誤り(単語の欠落・意味の変化)ではなく、いずれもASR側の書き起こしゆれの可能性が高いです。",
-    "許容/再生成のいずれかをご判断ください。追加のTTS再生成をご希望の場合は追加タスクとして扱います。"
+    "本ページはUSER-TEST-NEWS-CONVENIENCE-AI-01-USER-REVIEW-FIX-02で更新しました。ユーザーが実際に試聴したFIX-01時点の音声は、商品名「Oimo no Canele」の「Oimo」部分が『Yomono』のように聞こえ、『お芋』相当の読みに聞こえない、とのご指摘でした(『AI while』『Canele』は現状のまま許容、修正対象外)。",
+    "B1版point_two(既にユーザーが正しい『お芋』読みとして確認済み)の実音声・ASR転写を確認したところ、B1のTTS呼び出しは既存Production関数(news_tail_fix.generate_news_narration_wide_margin、Ledgerのphrase_list連携あり)で生成されており、A2側(crosslevel_audio_02_common.generate_english_segment_with_fallback系、6% slowdown post-process付き)とは別の生成経路・別声(Aoede単体 vs. Aoede/Charon構成)でした。B1側の追加のTTS instruction上の特別な発音指示は無く、両者の主な条件差は生成経路とA2固有の6% slowdown post-processの有無です。",
+    "TTS Pronunciation Hint注入(スタイルprefixへ発音ヒント文字列を直接混ぜ込む機構)はProduction側で配線されていない(CURRENT_SPEC L1276、NOT_WIRED)ため、本タスクでは新規配線を行わず、既存の正式承認済み経路(approve_regenerate()による再TTS、Ledger→Secondary ASR Phrase List)のみを使いました。",
+    "ユーザー承認のうえ、Production経路(既存retry/fallback、上限内)でpoint_twoの再TTSを複数回実施しました。今回選んだ最終候補音声は、Secondary ASR(Azure、Ledger Phrase List使用、phrase_list_used=true)を含む正式cascadeでNORMALIZED_MATCH(verified=true)として検証済みです。加えて、Ledgerやcanonical spellingの影響を受けない完全に独立したローカル文字起こし(faster-whisper、追加課金なしのオープンソースモデル、ASR cascadeとは別系統)でも、この最終候補は「Oymo no Canele」/「Oimo no Kanele」と、明確に『Oimo』寄りの読みとして確認できました(修正前の同種チェックでは『Yomono』『OEMO』『Emo』寄りに転写されており、ユーザー指摘と一致する明確な違いがありました)。",
+    "一方、A2固有の必須6% slowdown post-process自体の簡易再検証(Ledger Phrase Listを使わない、Primary ASR 1回のみの簡易チェック)は、今回複数回の再生成のいずれでも安定してPASSしませんでした(『Canele』が『Kanēre』等に転写されるASR呼び出しごとのばらつきが原因と考えられ、Oimo部分自体の再検証結果ではありません)。このためReview Lockの状態としては引き続きHUMAN_REVIEW_REQUIREDのままです(既存の安全装置を独自判断で回避・上書きしていません)。",
+    "最終候補音声は「①Secondary ASR cascade[Ledger Phrase List使用]でNORMALIZED_MATCH」「②独立ローカル文字起こしでもOimo寄りの転写」の両方の根拠を満たしていますが、A2必須post-processの自動PASSには至っていないため、Assembly Gateは自動では通過できません。実際の音声を聴いていただき、Oimoの読みが許容できるかをご確認ください。",
+    "許容いただける場合は、この音声のまま人間承認(record_human_approval())→6% slowdown post-processの確定的な再適用(既存Production関数、TTS新規生成なし)→Assembly、という既存の正式手順(Tiny Bags等の先例と同型)で完成させます。許容いただけない場合や追加の再生成をご希望の場合は、追加タスクとして扱います。"
   ],
   "pronunciation_info": [
     {
@@ -22,7 +22,7 @@
       "kana_cue": "オ・イ・モ・ノ・カ・ヌ・レ",
       "alternate_pronunciations": ["/ˌoʊ.i.moʊ noʊ ka.ne.le/"],
       "confidence": "low",
-      "ambiguity_note": "一次情報源の音声確認は見つからず、テキストの綴りと日本語の語形成、ならびに『canelé』の二次的発音解説に基づく推定(USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01でPronunciation Ledgerへ正式登録)。",
+      "ambiguity_note": "一次情報源の音声確認は見つからず、テキストの綴りと日本語の語形成、ならびに『canelé』の二次的発音解説に基づく推定(USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01でPronunciation Ledgerへ正式登録、ledger_id=b8069b0cdf6a0911)。",
       "sources": [
         "https://howtosayguide.com/how-to-say-canele/",
         "https://www.howtopronounce.com/french/canel%C3%A9",
@@ -31,12 +31,13 @@
     }
   ],
   "asr_results": {
-    "primary_1": "...developing Oimo no Kanēre with caramel sauce...",
-    "primary_2": "...developing Oimo no Kanari with caramel sauce...",
-    "secondary_1_with_phrase_list": "...with a I Well developing Oimo no Canele with caramel sauce...",
-    "secondary_2_with_phrase_list": "...with a I Well developing Oimo no Canele with caramel sauce...",
-    "note": "'Oimo no Canele'部分はSecondary ASR(Phrase List有り、2回とも)で公式表記と完全一致(Ledger登録が奏功)。一方、直前の'AI while'が'a I Well'と書き起こされる新たな不一致がSecondary側でTRUE_CONTENT_MISMATCHと判定され、cascade全体としてはASR_VALIDATION_UNCERTAINで確定した。"
+    "candidate_secondary_asr_with_phrase_list": "Familymart took a different path. It used sales data with AI while developing Oimo No Canele with caramel sauce... (classification=NORMALIZED_MATCH, phrase_list_used=true)",
+    "candidate_primary_asr_openai": "...developing Oimo no Kanele with caramel sauce...",
+    "candidate_local_verbatim_faster_whisper_no_ledger_bias": "...developing OYMO no Canele with caramel sauce... (Ledgerの影響を受けない独立チェック、追加課金なし)",
+    "b1_reference_local_verbatim_no_ledger_bias": "...developing sweet potato cannele... Oimo No Cannelé, with caramel sauce... (ユーザーが正しいお芋読みとして確認済みのB1音声、同じ独立ローカルチェックでの転写)",
+    "prior_fix01_candidate_local_verbatim_for_comparison": "...developing Yomo no Canele with caramel sauce... (ユーザーがYomono寄りに聞こえると指摘した、修正前の音声の同じ独立ローカルチェックでの転写。今回の候補との違いが分かるよう比較として記載)",
+    "note": "「Oimo」部分は、Ledgerの影響を受けない独立ローカル文字起こしで比較すると、修正前(Yomo/OEMO/Emo寄り)から今回の最終候補(Oymo/Oimo寄り)へ明確に改善しています。一方『Canele』部分は、A2必須6% slowdown post-processの簡易ASR再検証(Ledger Phrase List不使用、1回のみ)で呼び出しごとにばらつきがあり、これが自動PASSを妨げている技術的要因です(Oimo自体の問題ではありません)。"
   },
-  "final_status_before_review": "ASR_VALIDATION_UNCERTAIN(Human Review Lock、FIX-01でcanonical変更に伴い1回再TTS実施、Cascade[Secondary ASR+Phrase List]を尽くしたが未解決)",
-  "options": ["許容(現在の音声のまま採用)", "再生成(追加タスクとして依頼)", "その他コメント"]
+  "final_status_before_review": "HUMAN_REVIEW_REQUIRED(USER-REVIEW-FIX-02: Oimoユーザー再生成要求に対応し複数回re-TTS。最終候補はSecondary ASR cascade[Ledger Phrase List]でNORMALIZED_MATCH済みだが、A2必須6% slowdown post-processの簡易再検証は未PASSのままHuman Review Lock継続)",
+  "options": ["許容(この音声のまま人間承認へ進める)", "再生成(追加タスクとして依頼)", "その他コメント"]
 }

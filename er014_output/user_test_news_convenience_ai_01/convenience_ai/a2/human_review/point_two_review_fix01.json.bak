@@ -1,0 +1,42 @@
+{
+  "theme": "AI Is Helping Japan's Convenience Stores Invent New Food (A2)",
+  "level": "A2",
+  "segment_id": "point_two",
+  "audio_url": "point_two.mp3",
+  "canonical_script": "FamilyMart took a different path. It used sales data with AI while developing “**Oimo no Canele** — with Caramel Sauce.” The product is scheduled to go on sale across Japan in September 2026, but it will be quantity-limited. This search started with what people had bought before, not with a wish to surprise.",
+  "highlighted_terms": ["Oimo no Canele"],
+  "confirmation_points": [
+    "本segmentはUSER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01で、記事本文の事実修正(未発売の商品を発売済みと誤記していた時制の誤りをLedgerに沿って是正: 「launched...」→「is scheduled to go on sale...」)に伴い、canonical textが変わったため再生成しました。",
+    "この再生成の前に、Pronunciation Ledgerへ「Oimo no Canele」を正式登録し(surface/entity_type=product、Perplexity調査、confidence=low、hint='oh-EE-moh noh kah-nuh-LAY')、Secondary ASRへPhrase Listとして明示的に渡しました(phrase_list_used=trueを確認済み)。",
+    "結果: Secondary ASR(Azure、Phrase List有り、2回とも)は「Oimo no Canele」を公式表記どおり完全一致で書き起こしました(Phrase List登録が効果を発揮したことを確認)。",
+    "しかし今回は、別の箇所で新たなASR不一致が発生しました。Secondary ASRが「AI while」を「a I Well」と書き起こし、この部分がTRUE_CONTENT_MISMATCH(内容語の不一致)として検出されました。Primary ASR(OpenAI、2回)は商品名部分を「Oimo no Kanēre」「Oimo no Kanari」と書き起こし、こちらも表記ゆれです。",
+    "Cascade(Primary x2→Secondary x2、Phrase List使用)を尽くしても最終classificationはASR_VALIDATION_UNCERTAINのままで、Human Review Lockへ戻りました(TTS再生成は標準+fallback各上限まで実施済み、これ以上の自動再生成は既存の安全装置[PRODUCTION_MAX_TTS_ATTEMPTS]により行いません)。",
+    "実際の音声を聴いて、(a)商品名「Oimo no Canele」の読み方、(b)「AI while」の部分の発音・聞き取りやすさ、の両方が記事の内容として許容できるかをご確認ください。真の内容誤り(単語の欠落・意味の変化)ではなく、いずれもASR側の書き起こしゆれの可能性が高いです。",
+    "許容/再生成のいずれかをご判断ください。追加のTTS再生成をご希望の場合は追加タスクとして扱います。"
+  ],
+  "pronunciation_info": [
+    {
+      "surface": "Oimo no Canele",
+      "canonical_spelling": "Oimo no Canele",
+      "ipa": "/ˌoʊ.i.moʊ noʊ kæ.nəˈleɪ/",
+      "kana_cue": "オ・イ・モ・ノ・カ・ヌ・レ",
+      "alternate_pronunciations": ["/ˌoʊ.i.moʊ noʊ ka.ne.le/"],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源の音声確認は見つからず、テキストの綴りと日本語の語形成、ならびに『canelé』の二次的発音解説に基づく推定(USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01でPronunciation Ledgerへ正式登録)。",
+      "sources": [
+        "https://howtosayguide.com/how-to-say-canele/",
+        "https://www.howtopronounce.com/french/canel%C3%A9",
+        "https://furansu-go.com/canele/"
+      ]
+    }
+  ],
+  "asr_results": {
+    "primary_1": "...developing Oimo no Kanēre with caramel sauce...",
+    "primary_2": "...developing Oimo no Kanari with caramel sauce...",
+    "secondary_1_with_phrase_list": "...with a I Well developing Oimo no Canele with caramel sauce...",
+    "secondary_2_with_phrase_list": "...with a I Well developing Oimo no Canele with caramel sauce...",
+    "note": "'Oimo no Canele'部分はSecondary ASR(Phrase List有り、2回とも)で公式表記と完全一致(Ledger登録が奏功)。一方、直前の'AI while'が'a I Well'と書き起こされる新たな不一致がSecondary側でTRUE_CONTENT_MISMATCHと判定され、cascade全体としてはASR_VALIDATION_UNCERTAINで確定した。"
+  },
+  "final_status_before_review": "ASR_VALIDATION_UNCERTAIN(Human Review Lock、FIX-01でcanonical変更に伴い1回再TTS実施、Cascade[Secondary ASR+Phrase List]を尽くしたが未解決)",
+  "options": ["許容(現在の音声のまま採用)", "再生成(追加タスクとして依頼)", "その他コメント"]
+}
