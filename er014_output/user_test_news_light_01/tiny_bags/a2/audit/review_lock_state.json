@@ -542,7 +542,9 @@
         "non_latin_cascade_invoked": false,
         "attempt_audio_path": "er014_output/user_test_news_light_01/tiny_bags/a2/narration/attempts/full_story_part2_attempt2_custom35d6860b.wav"
       }
-    ]
+    ],
+    "human_approval_reference": "ユーザー判断2026-09-17(USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03)によりHuman Approval記録済み(audit/human_approved_segments.json)。TTS再生成なし、既存attempt3[minimalfallback]採用(sha256=f55c90250480a9cffcc892bb81582606d336634ce2f58f5b0e12ee9854358b87、narration/full_story_part2.wavと一致)。RESUME-02のHuman Review確認ページ(user_test/human_review.html)でToteme/Kallmeyerの実読を確認したうえでの許容判断。proper-name一般課題(OPEN-159)は本件のみclose、本体は継続。",
+    "CLOSEOUT_03_A2_SLOWDOWN_APPLY_NOTE": "[2026-09-17T14:31:18] USER-TEST-NEWS-LIGHT-TOPIC-01-CLOSEOUT-03: ユーザー承認済み音声(narration/full_story_part2.wav)へ、A2必須6% time-stretch post-processを適用した(既存Production関数apply_a2_slowdown_postprocess()、無変更)。適用後のpost_slowdown_classification=ASR_VALIDATION_UNCERTAIN(status=STOPPED)。state/final_status(HUMAN_REVIEW_REQUIRED/ASR_VALIDATION_UNCERTAIN)自体はここでは変更していない(Gateの実際の許可判定はaudit/human_approved_segments.jsonのHuman Approval記録によるHUMAN_APPROVED分岐で行われる、record_human_approval()の既存設計どおり)。詳細はtts_generation_results.json segments.full_story_part2参照。"
   },
   "point_one": {
     "state": "RESOLVED",
