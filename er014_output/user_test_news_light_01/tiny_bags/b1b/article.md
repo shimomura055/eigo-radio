@@ -18,7 +18,7 @@ The careful answer is yes, in terms of visibility. But the evidence does not sho
 
 ### Two sizes, two jobs
 
-Fashion’s current bag story is easier to read as two lanes. Tiny evening bags can work as visual or occasion pieces, with room for only a few essentials. Another report highlighted shoulder bags large enough for a laptop. A retail report also said the adoption of oversized clutches rose 152%. This is not a command to downsize. It is a choice between fashion expression and carrying capacity.
+Fashion’s current bag story is easier to read as two lanes. Tiny evening bags can work as visual or occasion pieces, with room for just a few essentials. Another report highlighted shoulder bags large enough for a laptop. A retail report also said the adoption of oversized clutches rose 152%. This is not a command to downsize. It is a choice between fashion expression and carrying capacity.
 
 ### Why small bags attract so much attention
 

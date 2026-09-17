@@ -1,0 +1,54 @@
+{
+  "theme": "Are Tiny Bags Back? (Light News)",
+  "level": "A2",
+  "segment_id": "full_story_part2",
+  "audio_url": "full_story_part2.mp3",
+  "canonical_script": "The same pattern appeared in 2026. Small pouches appeared at Prada, Loewe, Miu Miu, and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, **Toteme**, Stella McCartney, and **Kallmeyer**. Some Fall/Winter 2026 shoulder bags from Chanel, Miu Miu, and Bottega Veneta were even large enough for a laptop.\n\nMini bags also received strong attention from fashion editors. One fashion magazine called them a major Fall 2026 styling direction. But another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top-handle bags in the picture.\n\nOne trend company also reported a 152% rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint.\n\nThe clearest answer is this: tiny bags are gaining attention in some fashion spaces, but they are not winning everywhere. Small and large bags are appearing side by side.",
+  "highlighted_terms": ["Toteme", "Kallmeyer"],
+  "confirmation_points": [
+    "ハイライトされた2つのブランド名(Toteme、Kallmeyer)の読み方が、記事の内容として許容できるかを確認してください。",
+    "Kallmeyerは、Phrase List付きSecondary ASR(Azure)で2回とも綴りが完全一致しました(下記参照)。TTSは正しく読んでいると考えられます。",
+    "Totemeは、Primary ASR(2回)・Secondary ASR(Phrase List付き、2回)・独立したローカルASR(faster-whisper、1回)の合計5回全てで「Totem」(綴りの終わりの-eが脱落した、実在する英単語)として認識されました。発音調査(Perplexity、confidence=low、一次情報源[本人音声]なし)によると、Totemeの読み方は複数の案内が併存しており(下記IPA参照)、そのうち1つは「TOH-tem」(綴り上のtotemと同じ音)です。TTSがこの読み方を採用している可能性が高いですが、これが『ブランドとして公式に正しい』読み方だと断定できる一次情報源は見つかっていません。",
+    "許容/再生成のいずれかをご判断ください。TTS再生成は本タスクの範囲では実施していません(A2記事のTTS再生成なし、との方針のため)。再生成をご希望の場合は追加タスクとして扱います。"
+  ],
+  "pronunciation_info": [
+    {
+      "surface": "Toteme",
+      "canonical_spelling": "TOTEME",
+      "ipa": "ˈtoʊ.teɪm ~ ˈtoʊ.tɛm",
+      "kana_cue": "トウ・テイム / トウ・テム",
+      "alternate_pronunciations": ["TOH-tuh-m", "TOH-teem"],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源(本人音声)の確認は見つからず、二次情報源(発音サイト・辞書解説)に基づく。地域・話者で読みが揺れうる。",
+      "sources": [
+        "https://howtosayguide.com/how-to-say-toteme/",
+        "https://www.howtopronounce.com/toteme",
+        "https://dictionary.cambridge.org/pronunciation/english/totem",
+        "https://toteme.com/pages/our-story"
+      ]
+    },
+    {
+      "surface": "Kallmeyer",
+      "canonical_spelling": "Kallmeyer",
+      "ipa": "ˈkæl.maɪ.ər",
+      "kana_cue": "カル・マイ・アー",
+      "alternate_pronunciations": ["/ˈkɑːl.maɪ.ər/", "/ˈkæl.meɪ.ər/"],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源(本人音声)の確認は見つからず、二次情報源のみ。ただしSecondary ASR(Phrase List付き)がTTS音声から2回とも綴り完全一致で聞き取れており、TTSの発音自体は安定していると考えられる。",
+      "sources": [
+        "https://www.howtopronounce.com/kallmeyer",
+        "https://www.ancestry.de/last-name-meaning/kallmeyer"
+      ]
+    }
+  ],
+  "asr_results": {
+    "primary_1": "...At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney, and Kolmeyer...",
+    "primary_2": "...At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney, and Commeire...",
+    "secondary_1_with_phrase_list": "...At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney and Kallmeyer...",
+    "secondary_2_with_phrase_list": "...At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney and Kallmeyer...",
+    "local_faster_whisper_verbatim": "...At the same time, very large bags appeared at Celine, Al Tuzara, Totem, Stella McCartney and Callmeyer...",
+    "note": "Kallmeyerはphrase_list_used=trueのSecondary ASRで2回とも綴り完全一致(正しく認識)。Totemeは5回全ての独立したASR結果で綴りが一致しなかった(いずれも'Totem'または近い異表記)。"
+  },
+  "final_status_before_review": "ASR_VALIDATION_UNCERTAIN(Human Review Lock、TTS再生成は行っていない)",
+  "options": ["許容(現在の音声のまま採用)", "再生成(追加タスクとして依頼)", "その他コメント"]
+}

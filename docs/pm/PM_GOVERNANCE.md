@@ -1062,6 +1062,36 @@ STATUS-INVENTORY`エントリ参照)により新設。
   エントリ参照)。実例: Discovery A2再生成530語(`WORD_COUNT_GE_500`
   該当、`docs/pm/RESULT_PACKET_FU03_DISCOVERY.md`)。
 
+### 9-12. Human Review試聴提示ルール(2026-09-17、ユーザー正式決定、
+`USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02`)
+
+- (1) Human Review/pronunciation/segment品質確認の依頼は、raw mp3/wavの
+  ダウンロード直リンクではなく、ブラウザ上でPlay可能+canonical script
+  同一ページ表示+確認ポイント明示の確認ページ(segment単位簡易playerで
+  可)で提示する。
+- (2) 最低要件: Play button/該当segment音声/canonical script/問題箇所
+  highlight/発音問題なら正しいIPA/確認ポイント。
+- (3) 提示前に実ブラウザE2E(page load/Play開始/currentTime進行/audio
+  errorなし/script表示)必須。HTTP 200のみでの確認は不可(Gate 7 E2E
+  要件の適用)。
+- (4) **発音判断を求める場合、正しい発音情報(canonical spelling/IPA/
+  カタカナcue/source/Primary・Secondary ASR結果/TTS実読)を事前提示せず
+  に「この読みでいいですか」だけを聞くことは禁止**。
+- (5) Primary ASR mismatchだけでproper nameをHuman Reviewへ上げない
+  (`CURRENT_SPEC.md`「ASR-first Retry Policy」の再確認、Secondary ASR
+  cascadeまで実行してから判断する)。
+- 既存9-5(Artifact/playerリンク必須)・9-7(`file:///`禁止、GitHub raw
+  配布)・Gate 7(m)との関係: 9-7(4)のGitHub raw配布は「HTML確認ページの
+  配布経路」として引き続き有効だが、**音声ファイル自体のraw直リンク
+  提示はHuman Review用途では不可**とする(9-7の更新ではなく本節による
+  具体化)。
+- 適用範囲: 今後のPR/Trial/Production QA全般。
+- 参考実装: `user_test/human_review.html`(query param `src=<json path>`
+  でJSONを読み込む再利用可能ページ、`user_test/unified.html`と同型の
+  設計だが別ファイル、`unified.html`自体は無変更)。実例:
+  `er014_output/user_test_news_light_01/tiny_bags/a2/human_review/`
+  (A2 `full_story_part2`のToteme/Kallmeyer発音確認)。
+
 ## 10. commit / push運用
 
 - 通常のcommit/pushは、原則としてClaude側(Fable→sonnet-worker)が適宜
@@ -2556,3 +2586,10 @@ REQUIREDにする理由にしない。
   一意に導ける実装判断は都度USER_DECISION_REQUIREDにしない、という
   PM自律判断方針をSSOTへ記録)。詳細は`DECISION_LOG.md`同管理IDエントリ、
   `docs/pm/RESULT_PACKET_PN_A2_PHASE_B.md`参照。
+- 2026-09-17(`USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02`): 9-12節
+  「Human Review試聴提示ルール」を新設(raw音声直リンク提示禁止、
+  確認ページ必須要件、正しい発音情報の事前提示義務、Primary ASR
+  mismatchのみでのHuman Review計上禁止)。委任文では「9-9」と指定されて
+  いたが、9-9は既存(ユーザー向け表記の命名ルール、2026-09-13)のため
+  次の空き番号9-12へ採番した。詳細は`DECISION_LOG.md`同管理IDエントリ、
+  `docs/pm/RESULT_PACKET_NEWS_LIGHT_02.md`参照。

@@ -1,0 +1,119 @@
+{
+  "wav_path": "er014_output/user_test_news_light_01/tiny_bags/a2/narration/attempts/full_story_part2_attempt3_minimalfallback.wav",
+  "canonical_text": "The same pattern appeared in 2026. Small pouches appeared at Prada, Loewe, Miu Miu, and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, Toteme, Stella McCartney, and Kallmeyer. Some Fall/Winter 2026 shoulder bags from Chanel, Miu Miu, and Bottega Veneta were even large enough for a laptop.\n\nMini bags also received strong attention from fashion editors. One fashion magazine called them a major Fall 2026 styling direction. But another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top-handle bags in the picture.\n\nOne trend company also reported a 152% rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint.\n\nThe clearest answer is this: tiny bags are gaining attention in some fashion spaces, but they are not winning everywhere. Small and large bags are appearing side by side.",
+  "ledger_phrases_passed": [
+    "Prada",
+    "Loewe",
+    "Miu Miu",
+    "Valentino",
+    "Celine",
+    "Altuzarra",
+    "Toteme",
+    "Stella McCartney",
+    "Kallmeyer",
+    "Chanel",
+    "Bottega Veneta"
+  ],
+  "steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "The same pattern appeared in 2026: small pouches appeared at Prada, Loewe, Miu Miu, and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney, and Kolmeyer. Some Fall/Winter 2026 shoulder bags from Chanel, Miu Miu, and Bottega Veneta were even large enough for a laptop. Mini bags also received strong attention from fashion editors. One fashion magazine called them a major Fall 2026 styling direction. But another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top handle bags in the picture. One trend company also reported a 152 percent rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint: the clearest answer is this: tiny bags are gaining attention in some fashion spaces, but they are not winning everywhere. Small and large bags are appearing side by side.",
+      "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+      "step": "primary_2",
+      "provider": "openai_asr",
+      "text": "The same pattern appeared in 2026: small pouches appeared at Prada, Loewe, Miu Miu, and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney, and Commeire. Some fall/winter 2026 shoulder bags from Chanel, Miu Miu, and Bottega Veneta are even large enough for a laptop. Mini bags also received strong attention from fashion editors. One fashion magazine called them a major fall 2026 styling direction, but another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top-handle bags in the picture. One trend company also reported a 152% rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint: the clearest answer is this: tiny bags are gaining attention in some fashion spaces, but they are not winning everywhere. Small and large bags are appearing side by side.",
+      "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "The same pattern appeared in 2026. Small pouches appeared at Prada, Loewe, Miu Miu and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney and Kallmeyer. Some fall, winter 2026 shoulder bags from Chanel, Miu, Miu Miu and Bottega Veneta, or even large enough for a laptop. Many bags also received strong attention from fashion editors. One fashion magazine called.Them a major fall 2026 styling direction. But another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top handle bags in the picture. 1 Trend Company also reported a 152% rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint. The clearest answer is this. Tiny bags are gaining attention.In some fashion spaces, but they are not winning. Everywhere small and large bags are appearing side by side.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "phrase_list_used": true
+    },
+    {
+      "step": "secondary_2",
+      "provider": "azure",
+      "text": "The same pattern appeared in 2026. Small pouches appeared at Prada, Loewe, Miu Miu and Valentino. At the same time, very large bags appeared at Celine, Altuzarra, Totem, Stella McCartney and Kallmeyer. Some fall, winter 2026 shoulder bags from Chanel, Miu, Miu Miu and Bottega Veneta, or even large enough for a laptop. Many bags also received strong attention from fashion editors. One fashion magazine called.Them a major fall 2026 styling direction. But another offered a more mixed view, saying that autumn was bringing back larger bags while still keeping smaller clutches and top handle bags in the picture. 1 Trend Company also reported a 152% rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint. The clearest answer is this. Tiny bags are gaining attention.In some fashion spaces, but they are not winning. Everywhere small and large bags are appearing side by side.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "phrase_list_used": true
+    }
+  ],
+  "final_status": "ASR_VALIDATION_UNCERTAIN",
+  "verified": false,
+  "cascade_invoked": true,
+  "human_review_required": true,
+  "cost_guard_triggered": false,
+  "pronunciation_lookups": {
+    "toteme": {
+      "surface": "toteme",
+      "entity_type": "cascade_unresolved_entity",
+      "source_context": "",
+      "canonical_spelling": "TOTEME",
+      "language_origin": "Swedish brand name; visually related to French/English \"totem\" but official brand styling is Scandinavian fashion brand TOTEME",
+      "expected_pronunciation_ipa": "ˈtoʊ.teɪm ~ ˈtoʊ.tɛm",
+      "pronunciation_hint": "TOH-taym / TOH-tem",
+      "alternate_pronunciations": [
+        "TOH-tuh-m",
+        "TOH-teem"
+      ],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源の音声確認は見つからず、公開されている二次情報源の発音解説とブランド公式情報(綴り確認)に基づく。ブランド名は英語圏では /ˈtoʊ.teɪm/ または /ˈtoʊ.tɛm/ に近い読みが示唆される一方、一般の解説では『toe-tem』系の案内が見られるため、地域・話者で揺れがありうる。",
+      "sources": [
+        "https://howtosayguide.com/how-to-say-toteme/",
+        "https://www.dictionnaire-academie.fr/article/A9T1556",
+        "https://ashleykane.com/an-ode-to-toteme/",
+        "https://www.dictionnaire-academie.fr/article/A8T0831",
+        "https://ru.howtopronounce.com/tot%C3%AAme",
+        "https://www.cnrtl.fr/definition/TOTEM",
+        "https://en.wikipedia.org/wiki/Elin_Kling",
+        "https://www.howtopronounce.com/toteme",
+        "https://www.exionnaire.com/totem.html",
+        "https://en.wiktionary.org/wiki/totemo",
+        "https://toteme.com/blogs/info/info-about",
+        "https://toteme.com/pages/our-story",
+        "https://www.reddit.com/r/handbags/comments/1e6jwgr/tods_or_toteme/ldtxamu/",
+        "https://www.businessoffashion.com/people/elin-kling-karl-lindman/",
+        "https://dictionary.cambridge.org/pronunciation/english/totem"
+      ],
+      "updated_at": "2026-09-17T11:03:47"
+    },
+    "kallmeyer": {
+      "surface": "kallmeyer",
+      "entity_type": "cascade_unresolved_entity",
+      "source_context": "",
+      "canonical_spelling": "Kallmeyer",
+      "language_origin": "German",
+      "expected_pronunciation_ipa": "/ˈkæl.maɪ.ər/",
+      "pronunciation_hint": "KAL-my-er",
+      "alternate_pronunciations": [
+        "/ˈkɑːl.maɪ.ər/",
+        "/ˈkæl.meɪ.ər/"
+      ],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源として本人の音声確認は見つからず、二次情報源のみでの推定です。英語圏の姓としてはドイツ系由来で、英語TTSでは『KALL-my-er』寄りと『KAL-may-er』寄りの両解釈があり得ます。",
+      "sources": [
+        "https://www.howtopronounce.com/kallmeyer",
+        "https://www.ancestry.de/last-name-meaning/kallmeyer",
+        "https://www.ancestry.ca/last-name-meaning/kallmeyer",
+        "https://discover.23andme.com/last-name/Kallmeyer",
+        "https://www.listennotes.com/podcasts/voices-of-vr/1619-deploying-snap-g6us3Bj2zPO/",
+        "https://de.namespedia.com/details/Kallmeyer",
+        "https://forebears.io/de/surnames/kallmeyer",
+        "https://namecensus.com/last-names/kallmeyer-surname-popularity/",
+        "https://namensherkunft.info/namensherkunft-kallmeyer/",
+        "https://de.nomorigine.com/herkunft-des-nachnamens/kallmeyer/",
+        "https://kanji.reader.bz/pronunciations/method,theory",
+        "https://www.names.org/n/kollmeyer/about",
+        "https://familienaam.info/naam/kalmeijer",
+        "https://www.iheart.com/podcast/867-voices-of-vr-109047983/episode/1619-deploying-snap-spectacles-in-verse-288386799/",
+        "https://www.workingclassaudio.com/wca-021-with-doug-kallmeyer/"
+      ],
+      "updated_at": "2026-09-17T11:03:52"
+    }
+  },
+  "local_faster_whisper_verbatim": "The same pattern appeared in 2026. Small pouches appeared at Prada, Lowev, Mew Mew and Valentino. At the same time, very large bags appeared at Celine, Al Tuzara, Totem, Stella McCartney and Callmeyer. Some fall -winter 2026 shoulder bags from Chanel, Mew Mew and Bottega Veneta, or even large enough for a laptop. Many bags also received strong attention from fashion editors. winners. One fashion magazine called them a major fall 2026 styling direction, but another offered a more mixed view, saying that Autumn was bringing back larger bags while still keeping smaller clutches and top handlebags in the picture. One trend company also reported a 152 percent rise in retail adoption for oversized clutches in 2026. That is a company estimate, but it adds an important counterpoint. The clearest answer is this. Tiny bags are gaining attention in some fashion spaces, but they are not winning everywhere. Small and large bags are appearing side by side."
+}
