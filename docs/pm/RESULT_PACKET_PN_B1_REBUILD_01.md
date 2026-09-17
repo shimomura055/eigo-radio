@@ -166,9 +166,10 @@ OPEN-167は不採用のまま)。
 
 ## 15. SSOT/Git SHA
 
-コード+成果物本体(記事・音声・player・E2E evidence): `e3cbed45229c7d7b386a05ef2750e067dbe4a0fd`
-(push済み、`origin/main`と一致)。SSOT反映(DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY/
-本RESULT_PACKET/lock解除)はこの後別commitで追加予定。
+コード+成果物本体(記事・音声・player・E2E evidence): `e3cbed45229c7d7b386a05ef2750e067dbe4a0fd`。
+SSOT反映(DECISION_LOG/OPEN_ITEMS/ARTIFACT_REGISTRY/本RESULT_PACKET/E2E evidence/
+A2非変更sha256/lock解除): `e9eca526e48d00324483921e6b916687cca650fa`。いずれも
+push済みで`origin/main`と一致(`git fetch origin`で確認済み)。
 
 ## 16. コスト(内訳、上限¥400)
 
