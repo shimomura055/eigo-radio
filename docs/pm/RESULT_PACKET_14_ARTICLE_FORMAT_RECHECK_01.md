@@ -26,7 +26,8 @@
    全件、生の一覧は`docs/pm/closeout_136_e2e/format_rule_01/urls_14articles.txt`。
 8. 未処理USER_DECISION_REQUIRED: なし。
 9. 到達Status: VERIFIED。
-10. Git SHA: `240e0723`(push済み、origin/main一致)。
+10. Git SHA: `78c44732`(push済み、origin/main一致。テンプレ修正=`240e0723`、
+    SSOT+evidence=`78c44732`の2commit)。
 11. ユーザー判断A/B: なし。
 12. 事前指定外Read: `USER-TEST-INVENTORY-01_REPORT.md`・
     `USER-TEST-FOLLOWUP-AND-SPEC-TRACEABILITY-03_REPORT.md`(14記事の
