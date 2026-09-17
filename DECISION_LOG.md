@@ -440,6 +440,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01: ユーザー試聴Feedback3点修正(代名詞・本文一文削除)+全14segment・Key Phrase音声再生成
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT: ユーザー正式承認(2026-09-18「視聴しました。問題ありません。承認します。」)、FIX-01版をPersonalized News Advanced canonical/USER_TEST_READYへ確定
 - [本ファイル内] ## USER-TEST-ARTICLE-LANDING-10-01: ユーザーテスト対象10記事(3カテゴリー)の正式Web一覧ページ`user_test/articles_2026_0918.html`新規作成、全20リンクSSOT一致・Browser E2E PASS、PRODUCTION_WIRED
+- [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-TRIAL-01: Key Phraseハイライト+日本語訳セクションのTrial実施、採否未決(ユーザー確認待ち)
 
 ---
 
@@ -8773,6 +8774,94 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 参照: `docs/pm/RESULT_PACKET_LANDING_10_01.md`(## FIX-01節)、
   `docs/pm/closeout_136_e2e/landing_10_01/`(href_match_fix01.json/
   e2e_result_fix01.json/pc_full_fix01.png/mobile_full_fix01.png)。
+
+## USER-TEST-SCRIPT-READABILITY-TRIAL-01: Key Phraseハイライト+日本語訳セクションのTrial実施、採否未決(ユーザー確認待ち)
+
+- 管理ID: `USER-TEST-SCRIPT-READABILITY-TRIAL-01`(**Trial**。Production正式
+  採用ではない、Sonnet委任、並行Agentなし、外部API/TTS/LLM呼び出し0。日本語訳は
+  Sonnetが自作、外部LLM APIは呼んでいない)。対象: Personalized News 1記事ペア
+  (Standard=A2、Advanced=B1)のみ。到達Status: 技術的には`VALIDATED`
+  (機能・runtime evidence上は成功)、Production採用は`USER_DECISION_REQUIRED`
+  (ユーザー確認前)。
+- 目的: ユーザーテスト視聴ページのスクリプト理解しやすさ改善Trial。
+  (A)本文中のKey Phrase該当箇所ハイライト、(B)スクリプト下部への構造対応付き
+  日本語訳セクション追加。
+- 対象canonical(読み取り専用、無変更): Standard=
+  `er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`、
+  Advanced=`er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/`。
+  `user_test/unified.html`・`user_test/articles_2026_0918.html`・canonical URL
+  は無変更(sha256 before/after一致、下記参照)。
+- Trial copy: `user_test/trial/script_readability_01/`(新規dir)。
+  `unified_trial.html`(`unified.html`をベースに機能追加、canonical player.html
+  は`src=`で読み取り専用参照、mp3は複製せず)、
+  `personalized_news_{a2,b1}/translation_ja.json`(日本語訳データ、
+  section_id/heading_ja/source_en/text_ja/type)、同ディレクトリの
+  `translation_qa.json`(段落単位の数字/固有名詞/否定/立場セルフチェック、
+  全件PASS)。
+- 実装A(Key Phraseハイライト): 各levelのcanonical
+  `key_phrases/keywords_canonicalized.json`の`used_form`をfetchし(A2は
+  `key_phrases/`直下、B1は`b1b/key_phrases/`配下という構成差を2候補パスの
+  順次試行で吸収)、Full Script内の該当英語表現をexact match優先→
+  正規化(大小文字/空白・ハイフン混同/引用符)によるtolerant matchで
+  `<mark class="kp-hl">`(淡い黄色`#fff3a3`、下線なし、
+  `box-decoration-break:clone`)を用いてDOMテキストノード単位で包む
+  (本文テキスト自体は変更しない、HTMLタグ跨ぎマッチなし)。活用形・語形変化等の
+  曖昧一致は実装せず、unmatchedとして一覧化して報告する設計とした。
+- 実装B(日本語訳セクション): 既存のPlayer/英語スクリプト/Key Phrase一覧表示は
+  現在位置のまま変更せず、ページ最下部に区切り線+「日本語訳」セクションを追加。
+  記事構造(Hook/Voice A/Voice B/Tension/Comment/In One Line)ごとに見出し付きで
+  英語側と同じ順序に対応付けて表示。Standardは本文和訳+既存日本語Comment
+  1〜4を「既存Comment(再掲、翻訳ではありません)」ラベル付きグレー表示で再掲。
+  Advancedは本文和訳+英語Comment1〜4(全件)の日本語訳を追加。翻訳は
+  Sonnetが原文(`parts.json`・`a2_support_texts.json`・player.html記載の英語
+  Comment本文)から作成し、数字・固有名詞・否定・立場の反転が無いことを段落単位で
+  セルフチェック(`translation_qa.json`、全件PASS)。
+- Trial機能はメイン描画処理と別のtry/catchで分離し、fetch失敗時も既存Player
+  (音声再生・Seek)には影響しないよう実装。
+- Runtime evidence: rawcdn.githack経由でPlaywright headless Chromiumを用い
+  PC(1280×800)/スマホ(390×844)×Standard/Advancedの4パターンを実URLで確認
+  (`docs/pm/closeout_136_e2e/script_readability_trial_01/e2e_result.json`+
+  screenshot4枚)。結果: 両level・両viewportで日本語訳section表示
+  (`translation_section_count=9`)、Key Phraseハイライト成功(Standard 4/5
+  exact、Advanced 5/5 exact)、横スクロールなし、Play開始後currentTime進行・
+  error=null・4秒後not paused、seek(60秒)後currentTime≒60で正常動作、
+  Key Phrase一覧は既存どおり2列・ラベル無し表示を維持。Standard Comment再掲は
+  computed styleで文字色`rgb(91,100,114)`・背景`rgb(242,243,245)`のグレー系を
+  確認(4件)。
+- unmatched Key Phrase: Standardの`stay out of view`(canonical used_form)は
+  本文実際の表記が三人称単数現在形`stays out of view`であり、活用形の差のため
+  意図的に曖昧一致を実装していない設計により未ハイライト(spec通りの安全側動作、
+  誤ハイライトではない)。Advancedは5/5全件exact matchでunmatchedなし。
+- canonical無変更の証跡: 開始時/終了時に
+  `er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`・
+  `er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/`の全ファイル
+  sha256一覧、および`user_test/unified.html`・`user_test/articles_2026_0918.html`
+  のsha256を取得し、両時点で完全一致(diff結果ゼロ行)を確認した。
+- 共通化上の課題(将来の全記事展開時の検討事項、今回は実装しない):
+  (1) Key Phrase jsonへの相対パスがA2/B1で構成差があり(`key_phrases/`直下 vs
+  `b1b/key_phrases/`配下)、Trialでは2候補パスの順次試行で吸収したが、記事数が
+  増える場合はplayer.html側にkey_phrases jsonへの相対パスを明示する仕組みが
+  望ましい。(2) 日本語訳データの読み込みパスをlevelから決め打ちしており
+  (`personalized_news_a2|b1/translation_ja.json`)、他記事への展開には
+  記事ごとの翻訳データ配置規約が必要。(3) 活用形等の曖昧一致を意図的に
+  実装していないため、Key Phraseの用言活用形が本文表記と異なる記事では
+  unmatchedが発生し得る(誤ハイライトを避けるための設計上のトレードオフ)。
+  (4) 翻訳生成は今回Sonnetが手動作成しており、記事数が増える場合の翻訳生成・
+  QA運用(誰が作成しどう検証するか)は未検討。
+- Git: `bf5c1e3b`(Trial実装、`user_test/trial/script_readability_01/`一式+
+  `docs/pm/delegation_log/USER-TEST-SCRIPT-READABILITY-TRIAL-01.md`+
+  `docs/pm/ACTIVE_TASK_SCRIPT_READABILITY_TRIAL_01.md`を明示add)。push後
+  `git fetch origin`でmain=origin/main=`bf5c1e3b`を確認済み。mp3/wav追加なし。
+- Trial URL(commit`bf5c1e3b`で固定):
+  Standard: `https://rawcdn.githack.com/shimomura055/eigo-radio/bf5c1e3b/user_test/trial/script_readability_01/unified_trial.html?src=er012_output%2Fb_family_a2_new_topic_production_01%2Fpersonalized_news_2v_a2%2Fplayer.html&level=A2&en=The+Same+Feed%2C+Two+Different+Mornings&ja=%E5%90%8C%E3%81%98%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E9%81%95%E3%81%86%E6%9C%9D&trial=script_readability_01`
+  Advanced: `https://rawcdn.githack.com/shimomura055/eigo-radio/bf5c1e3b/user_test/trial/script_readability_01/unified_trial.html?src=er012_output%2Fpersonalized_news_b1_rebuild_01%2Faudio%2Fb1_2v_fix01%2Fplayer.html&level=B1&en=One+Feed%2C+Two+Very+Different+Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81%95%E3%81%86%E7%B5%8C%E9%A8%93&trial=script_readability_01`
+- 到達Status: `VALIDATED`(技術結果)。ユーザーによるTrial実物確認・採否判断は
+  未実施のため`USER_DECISION_REQUIRED`。`APPROVED_FOR_PRODUCTION`/
+  `PRODUCTION_WIRED`へは進めていない(10記事一覧・他9記事への展開も未実施)。
+- 参照: `docs/pm/RESULT_PACKET_SCRIPT_READABILITY_TRIAL_01.md`、
+  `docs/pm/delegation_log/USER-TEST-SCRIPT-READABILITY-TRIAL-01.md`、
+  `docs/pm/closeout_136_e2e/script_readability_trial_01/`(e2e_result.json+
+  screenshot4枚)。
 
 ## 参照元
 
