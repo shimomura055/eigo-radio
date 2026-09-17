@@ -436,6 +436,9 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FINALIZE-A2: A2 point_two "Oimo no Canele"/"AI while"ユーザー正式承認(USER APPROVED)→Human Approval記録+Assembly/Gate PASS+player/E2E完成、A2/B1ともUSER_TEST_READY、OPEN-168新規登録
 - [本ファイル内] ## USER-TEST-REVIEW-PAGE-FORMAT-RULE-01: Key Phrasesラベル残存(unified.htmlのkpParts旧regex不備)+Level生表示(human_review.html)を恒久ルール化・E2Eチェッカー新設・対象9本を新SHAで再発行
 - [本ファイル内] ## USER-TEST-14-ARTICLE-FORMAT-RECHECK-01: Sheet掲載14記事(26ページ)のGate 7(n)表示フォーマットをunified.html経由でE2E全件PASS確認、Family A/C・Voicesの独自player.htmlは無修正で適合(unified.html汎用パーサ側で吸収)、AI hiring B1 Key Phrase 4のラベル混入バグ1件を発見しunified.htmlのrowData()を修正(commit`240e0723`)、VERIFIED
+- [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01: 旧Ledger再Research→新Ledger→B1(2V)再生成→音声化完成(OPEN-166対応)
+- [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01: ユーザー試聴Feedback3点修正(代名詞・本文一文削除)+全14segment・Key Phrase音声再生成
+- [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT: ユーザー正式承認(2026-09-18「視聴しました。問題ありません。承認します。」)、FIX-01版をPersonalized News Advanced canonical/USER_TEST_READYへ確定
 
 ---
 
@@ -8574,6 +8577,73 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   %95%E3%81%86%E7%B5%8C%E9%A8%93`。
 - 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`(FIX-01節)、
   `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01.md`。
+
+## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT: ユーザー正式承認によりFIX-01版をPersonalized News Advanced canonical/USER_TEST_READYへ確定
+
+- 日付: 2026-09-18。管理ID`USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`
+  (Sonnet委任、SSOT・記録のみ、API 0円、音声・記事・player変更0、並行Agentなし)。
+- ユーザー原文(2026-09-18): 「視聴しました。問題ありません。承認します。」。対象は
+  `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01`(直上エントリ)の新Advanced URL
+  (代名詞修正[he/his]・Voice A本文一文削除・全14segment+Key Phrase音声再生成版)。
+  Trial評価ではなく**正式なユーザー承認**として記録する。
+- Status更新: `GATE_PASS → USER_DECISION_REQUIRED` → **`USER_TEST_READY`**。FIX-01版
+  (`er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/`、commit
+  `7ea8bd7a`)をPersonalized News Advancedの**正式なユーザーテスト採用版
+  (canonical user-test artifact)**として確定する。旧Advanced版
+  (`er014_output/four_type_observation_01/voices/audio/b1_2v_v2/`、および本管理ID
+  初回版`audio/b1_2v/`)はcanonical扱いにしない(履歴として保持、Statusは
+  `REPLACED_BY_FIX01`/対象外を維持)。
+- 採用対象の一致確認(sha256/grep証跡): canonical記事
+  `b1_2v_new_theme_r8_attempt1/article.md`+`audio/b1_2v_fix01/b1b/parts.json`に
+  Hook「he has」・Voice A heading「his personalized feed」・Voice B heading
+  「The reader who worries her feed is closing in」(無変更)が存在し、削除対象句
+  「I worry I may miss something important, but」はarticle.md/parts.jsonいずれにも
+  0件(grep exit 1)であることを確認した。`audio/b1_2v_fix01/audit/voice_resolution.json`
+  でVoice A=Algieba(男性)/Voice B=Erinome(女性)、fallback発火なし(reasons={})を確認。
+  A2(`er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`)は
+  `a2_baseline_sha256_fix01_after.txt`(224ファイル)と現在のsha256を再計算し差分なし
+  (diff exit 0、Standard側は無変更)。
+- 試聴済みURL(canonical、無変更):
+  `https://rawcdn.githack.com/shimomura055/eigo-radio/7ea8bd7ac3f3cab60890057cac82a08b68ac619e/user_test/unified.html?src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/player.html&level=B1&en=One%20Feed%2C%20Two%20Very%20Different%20Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81%95%E3%81%86%E7%B5%8C%E9%A8%93`
+- 既存evidence維持確認: `audio/b1_2v_fix01/audio_validation.json`(Audio Validation Gate
+  PASS)・`docs/pm/e2e_pn_b1_rebuild_01_fix01/`(E2E result/seek check/screenshot)が
+  いずれも存在し、本closeoutでの再生成・再実行は行っていない(記録のみ)。
+- Open Items: 本記事固有のblocking itemは残存なし(grep確認)。**OPEN-166(Verified
+  Fact Ledger定期再検証ルールの一般恒久方針)・OPEN-151(2/3 Voices可変化に紐づく
+  旧B1 artifact`voices/audio/b1_2v_v2/`の取り扱い)・波形QA(click/pop検出方式)の
+  恒久仕様化判断は、いずれも今回のユーザー承認とは別の未決事項として維持する
+  (close しない)**。`OPEN_ITEMS.md`側は「Personalized News B1新版[FIX-01]は
+  2026-09-18 `USER_TEST_READY`到達」の状態注記のみ追加し、一般論の結論は変更しない。
+- `CURRENT_SPEC.md`は無変更(Family-wide仕様として追加していない、grep差分なしで
+  確認済み)。
+- `ARTIFACT_REGISTRY.md`のPersonalized News B1(FIX-01)行のUser Qualityを
+  「ユーザー試聴待ち」から**PASS(2026-09-18ユーザー正式承認、`USER_TEST_READY`、
+  canonical)**へ更新。初回版・旧版行は非canonicalのまま維持(変更なし)。
+- PM Closeout Check(10項目、evidence付き):
+  (1) USER_DECISION_REQUIRED残存なし: 本記事分は本エントリで解消。◯
+  (2) 採用版=FIX-01であること: 12節/URL/commit`7ea8bd7a`で確認。◯
+  (3) 旧版がcanonical扱いになっていないこと: ARTIFACT_REGISTRY該当行(139/140行)は
+      `REPLACED_BY_FIX01`/対象外のまま。◯
+  (4) A2/Standard無変更: sha256 diff exit 0(224ファイル)。◯
+  (5) runtime/Gate/E2E evidence維持: `audio_validation.json`・
+      `docs/pm/e2e_pn_b1_rebuild_01_fix01/`存在確認。◯
+  (6) DECISION_LOG/ARTIFACT_REGISTRY/RESULT_PACKET整合: 本エントリ+
+      ARTIFACT_REGISTRY更新+RESULT_PACKET追記を同一commitで実施。◯
+  (7) 未報告Trialなし: 本タスクはSSOT記録のみ、新規Trial実施なし。◯
+  (8) 未登録blocking Open Itemなし: grep確認(本記事固有の新規blocking item無し)。◯
+  (9) Git main=origin/main: `git fetch origin`後に確認(下記commit SHA参照)。◯
+  (10) ユーザー承認内容と実際のartifact一致: grep(he has/his personalized feed/
+      her feed is closing in/削除句不在)+`tts_generation_results.json`/
+      `voice_resolution.json`(Voice A=Algieba/Voice B=Erinome)で確認。◯
+  全項目◯、STOP該当なし。
+- Dangling Reference Check: 本タスクはSSOT編集のみ(Validator/Gate/retry機構への
+  変更なし)。既存の安全装置(Gate、retry上限)を回避・無効化していない。
+- Git: 明示add(DECISION_LOG.md/ARTIFACT_REGISTRY.md/OPEN_ITEMS.md/
+  RESULT_PACKET_PN_B1_REBUILD_01.md/ACTIVE_TASK_PN_B1_REBUILD_01.md/
+  delegation_log 2ファイル)、`git add -A`不使用。trailer
+  `Task-ID: USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`。
+- 参照: `docs/pm/RESULT_PACKET_PN_B1_REBUILD_01.md`(`## FIX-01 CLOSEOUT`節)、
+  `docs/pm/delegation_log/USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT.md`。
 
 ## 参照元
 

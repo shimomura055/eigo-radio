@@ -1,6 +1,7 @@
 # RESULT_PACKET: USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01(累積Full Report)
 
-管理ID: `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01`
+管理ID: `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01`(最終Status: `USER_TEST_READY`、
+2026-09-18ユーザー正式承認。最新の状態は末尾「## FIX-01 CLOSEOUT」節を参照)
 
 ★★★★報告ここから★★★★
 
@@ -382,5 +383,78 @@ Writer段階はTension leakage是正の試行錯誤(r2〜r7)により目安を�
 
 **Status**: `GATE_PASS → USER_DECISION_REQUIRED`(修正・全Gate通過後も
 `USER_TEST_READY`にしない、新試聴URL[18節]を提示してSTOP)。
+
+★★★★報告ここまで★★★★
+
+## FIX-01 CLOSEOUT(ユーザー承認)
+
+管理ID: `USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`。
+
+★★★★報告ここから★★★★
+
+**ユーザー正式判断(2026-09-18)**: 「視聴しました。問題ありません。承認します。」
+= FIX-01版に対する**正式なユーザー承認**(Trial評価ではない)。
+
+1. **最終Status**: `GATE_PASS → USER_DECISION_REQUIRED` → **`USER_TEST_READY`**。
+
+2. **canonical Advanced artifact**: 記事`er012_output/personalized_news_b1_rebuild_01/
+   b1_2v_new_theme_r8_attempt1/article.md`(FIX-01修正後)。音声
+   `er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/`
+   (episode.mp3/segments/player.html、commit`7ea8bd7a`)。旧版
+   (初回版`audio/b1_2v/`、既存`voices/audio/b1_2v_v2/`)は非canonicalのまま
+   (履歴保持、`REPLACED_BY_FIX01`/対象外)。
+
+3. **canonical試聴URL**:
+   `https://rawcdn.githack.com/shimomura055/eigo-radio/7ea8bd7ac3f3cab60890057cac82a08b68ac619e/user_test/unified.html?src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/player.html&level=B1&en=One%20Feed%2C%20Two%20Very%20Different%20Experiences&ja=%E4%B8%80%E3%81%A4%E3%81%AE%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%80%81%E4%BA%8C%E3%81%A4%E3%81%AE%E5%85%A8%E3%81%8F%E9%81%95%E3%81%86%E7%B5%8C%E9%A8%93`
+
+4. **SSOT更新内容**: `DECISION_LOG.md`索引3行+本体
+   `## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT`新設
+   (PM Closeout Check10項目含む)。`ARTIFACT_REGISTRY.md`Personalized News B1
+   (FIX-01)行のUser Qualityを「ユーザー試聴待ち」→「PASS(2026-09-18承認、
+   `USER_TEST_READY`、canonical)」へ更新。`OPEN_ITEMS.md`OPEN-166行へ
+   「FIX-01版`USER_TEST_READY`到達、一般恒久仕様は別途未決のまま」を追記
+   (closeしない)。`CURRENT_SPEC.md`は無変更(diff確認済み)。
+
+5. **Git**: commit予定(本節と合わせてpush)。push後`git fetch origin`で
+   main=origin/mainを確認。
+
+6. **Personalized News Standard/Advanced最終状態**: Standard(A2)は既存URL
+   (`er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/`)
+   維持・無変更(sha256 diff一致、224ファイル)。Advanced(B1)はFIX-01版
+   (3節URL)をGoogle Sheet等へ掲載可。
+
+7. **残存Open Items**(いずれも今回の承認とは別、closeしない):
+   OPEN-166(Verified Fact Ledger定期再検証ルールの一般恒久方針、OPEN/DEFERRED)、
+   OPEN-151(2/3 Voices可変化に紐づく旧B1 artifact`voices/audio/b1_2v_v2/`の
+   取り扱い、`APPROVED_FOR_PRODUCTION`未配線)、波形QA(click/pop検出方式)の
+   Production恒久化判断(本タスク限定スクリプトのまま、恒久化はしていない)。
+
+8. **USER_DECISION_REQUIRED残存有無**: **本記事分はなし**(今回の承認で解消)。
+   上記7節のOpen Itemsは一般恒久方針としてUSER_DECISION_REQUIRED状態のまま
+   残るが、記事完成・ユーザーテスト採用自体をブロックしない。
+
+9. **PM Closeout Check(10項目、全て◯、evidence付き)**:
+   (1) USER_DECISION_REQUIRED残存なし=◯(本記事分は本closeoutで解消)。
+   (2) 採用版=FIX-01=◯(URL/commit`7ea8bd7a`)。
+   (3) 旧版がcanonical扱いでない=◯(ARTIFACT_REGISTRY該当行は
+       `REPLACED_BY_FIX01`/対象外のまま)。
+   (4) A2/Standard無変更=◯(`a2_baseline_sha256_fix01_after.txt`224ファイルと
+       現在sha256の再比較でdiff exit 0)。
+   (5) runtime/Gate/E2E evidence維持=◯(`audio/b1_2v_fix01/audio_validation.json`、
+       `docs/pm/e2e_pn_b1_rebuild_01_fix01/`の存在確認)。
+   (6) DECISION_LOG/ARTIFACT_REGISTRY/RESULT_PACKET整合=◯(同一commitで反映)。
+   (7) 未報告Trialなし=◯(本タスクはSSOT記録のみ、新規Trial実施なし)。
+   (8) 未登録blocking Open Itemなし=◯(grep確認、本記事固有の新規blocking item無し)。
+   (9) Git main=origin/main=◯(push後fetch確認)。
+   (10) ユーザー承認内容と実際のartifact一致=◯(grep: `he has`/
+       `his personalized feed`/`her feed is closing in`存在、削除句
+       「I worry I may miss something important, but」は article.md・
+       parts.json双方で0件[grep exit 1]。`voice_resolution.json`で
+       Voice A=Algieba/Voice B=Erinome、fallback発火なし[reasons={}]を確認)。
+
+10. **無変更証跡**: 音声(`audio/b1_2v_fix01/`は本closeoutで再生成せず、
+    commit`7ea8bd7a`のまま)・記事(article.md無変更)・player(player.html
+    無変更)・`CURRENT_SPEC.md`(git diff空、無変更)・A2(sha256 diff exit 0、
+    224ファイル)、いずれも本closeoutでの変更は0件(SSOT・記録のみ)。
 
 ★★★★報告ここまで★★★★
