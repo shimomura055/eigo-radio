@@ -31,7 +31,7 @@ cost累計約¥180.25。
 
 9. **cost**: 追加ASR呼び出し1回のみ(openai_asr、約$0.002≈¥0.3、`er014_output/user_test_news_light_01/tiny_bags/audio_fix/raw_usage_log_audio_fix.jsonl`実測)。上限¥50に対し十分な余裕。
 
-10. **Git SHA**: `6ae84b80`(A2 Human Approval記録+slowdown post-process+Assembly/Gate PASS+player/web export)→`9ae8fa55`(SSOT反映+PM_GOVERNANCE 8節+E2E evidence、**最終main**、push済み・origin/main反映確認済み、fast-forward)。
+10. **Git SHA**: `6ae84b80`(A2 Human Approval記録+slowdown post-process+Assembly/Gate PASS+player/web export)→`9ae8fa55`(SSOT反映+PM_GOVERNANCE 8節+E2E evidence)→`bed35ec8`(本RESULT_PACKET追加、**最終main**、push済み・origin/main反映確認済み、fast-forward)。
 
 11. **PM Closeout Mandatory Check(12項目)**:
     1. B1ユーザー承認記録済み: ○(DECISION_LOG該当エントリ、ARTIFACT_REGISTRY User Quality=PASS)
