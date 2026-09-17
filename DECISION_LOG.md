@@ -428,6 +428,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-FEEDBACK-CLOSEOUT-AND-VOICES-SPEC-REVIEW-01: AI Control A2/B1・Space Weapons A2/B1ユーザー試聴PASS記録(USER_TEST_READY)+Personalized News A2現行版はVoices構造根本問題によりユーザー品質NG(基盤PRODUCTION_WIREDは維持)+News情報密度/理解可能性の新規Open Item(OPEN-164)登録
 - [本ファイル内] ## USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02: Tiny Bags B1完成(only→just)+A2 Toteme/Kallmeyer発音診断+Human Review試聴提示ルール(PM_GOVERNANCE 9-12)新設
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01: コンビニAI商品開発News A2/B1、記事完成・音声はHuman Review Lock 2件でSTOP
+- [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01: Fable受入照合3点是正(時制/未発売事実誤り・A2文長超過・B1見出し混入)、B1完成、A2は別要因でHuman Review Lock継続
 
 ---
 

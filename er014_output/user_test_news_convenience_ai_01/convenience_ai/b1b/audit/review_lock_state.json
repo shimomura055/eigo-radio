@@ -326,15 +326,15 @@
     ]
   },
   "full_story_part1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
-    "canonical_text_sha256": "f22043e378d62b4f867aefa2b44808ccccc8b533e58d9204109f73ff1b2453b1",
+    "state": "RESOLVED",
+    "canonical_text_sha256": "9d157b77aa52bd9ab7b53ab42867871c6b3c17a3fa667660bb2f259b00fd0504",
     "language": "en",
     "theme_id": "convenience_ai",
     "level": "b1b",
     "segment_id": "full_story_part1",
-    "updated_at": "2026-09-17T13:05:52",
-    "reason": "最終status=ASR_VALIDATION_UNCERTAIN。同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)",
-    "final_status": "ASR_VALIDATION_UNCERTAIN",
+    "updated_at": "2026-09-17T13:52:43",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/full_story_part1.wav",
     "cumulative_tts_attempts": 1,
     "cumulative_asr_calls": 1,
@@ -343,25 +343,95 @@
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "A lemon tart with chopped pickles sounds like a joke, or at least a strange snack, but Lawson says an AI program suggested the pairing, and it became the starting point for a real convenience store product. The idea did not stay on a computer screen. Human product specialists made samples, tasted them, and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
+        "asr_text": "A lemon tart with chopped pickles sounds like a joke, or at least a strange snack. But Lawson says an AI program suggested the pairing, and it became the starting point for a real convenience store product. The idea did not stay on a computer screen. Human product specialists made samples, tasted them, and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "audio_classification": "HIGH_SIMILARITY_SAFE",
         "connected_speech_info": null,
         "length_ok": true,
-        "verified": false,
+        "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 25.411,
-          "raw_leading_silence_seconds": 0.28,
-          "raw_trailing_silence_seconds": 0.52,
-          "trimmed_duration_seconds": 25.241,
-          "leading_margin_retained_seconds": 0.28,
+          "raw_duration_seconds": 24.931,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.46,
+          "trimmed_duration_seconds": 24.821,
+          "leading_margin_retained_seconds": 0.26,
           "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/full_story_part1_attempt1_englishstyleprefixwidemargin.wav"
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 24.821,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 68,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9977,
+                "time_a_seconds": 11.75,
+                "time_b_seconds": 14.1,
+                "lag_seconds": 2.35,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9964,
+                "time_a_seconds": 11.76,
+                "time_b_seconds": 20.57,
+                "lag_seconds": 8.81,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9949,
+                "time_a_seconds": 9.64,
+                "time_b_seconds": 11.96,
+                "lag_seconds": 2.32,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9946,
+                "time_a_seconds": 16.39,
+                "time_b_seconds": 22.43,
+                "lag_seconds": 6.04
+              },
+              {
+                "similarity": 0.9946,
+                "time_a_seconds": 7.46,
+                "time_b_seconds": 19.94,
+                "lag_seconds": 12.48
+              }
+            ],
+            "best_run_length_seconds": 0.05,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.37,
+            "time_a": 11.15,
+            "lag": 0.56,
+            "similarity_at_start": 0.7065,
+            "best_run_length_seconds": 0.37,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/full_story_part1_attempt2_englishstyleprefixwidemargin.wav"
       }
     ]
   },
@@ -477,12 +547,12 @@
   },
   "point_one": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "f6f95bcc40ebdbb9be1629203322b667c69a4abbd1966b9f41080c6a9a963bea",
+    "canonical_text_sha256": "5b8ad3d8aa772aa5c7da76baa83e54420d7be9f0ef3b1396654e27d5142ef0aa",
     "language": "en",
     "theme_id": "convenience_ai",
     "level": "b1b",
     "segment_id": "point_one",
-    "updated_at": "2026-09-17T13:07:02",
+    "updated_at": "2026-09-17T13:53:13",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/point_one.wav",
@@ -493,26 +563,26 @@
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "The pickle idea was not a computer error. Lawson asked its AI to search for combinations that might make people say, what is this? Lemon tart, pickle flavor, was planned for September 29th, 2026, at about 4,700 stores in parts of the Kanto region, Niigata, Yamanashi, and Nagano. It was a regional launch, not evidence of a permanent nationwide product.",
+        "asr_text": "The pickle idea was not a computer error. Lawson asked its AI to search for combinations that might make people say, what is this? Lemon tart pickle flavor was planned for September 29th, 2026, at about 4,700 stores in parts of the Kanto region, Niigata, Yamanashi, and Nagano. This will be a regional launch, not evidence of a nationwide product.",
         "instruction_type": "english_style_prefix_wide_margin",
         "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 27.891,
-          "raw_leading_silence_seconds": 0.1,
-          "raw_trailing_silence_seconds": 0.06,
-          "trimmed_duration_seconds": 27.891,
-          "leading_margin_retained_seconds": 0.1,
-          "trailing_margin_retained_seconds": 0.06
+          "raw_duration_seconds": 26.771,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.34,
+          "trimmed_duration_seconds": 26.771,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.34
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 27.891,
+          "duration_seconds": 26.771,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -524,147 +594,37 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9968,
-                "time_a_seconds": 20.17,
-                "time_b_seconds": 24.72,
-                "lag_seconds": 4.55,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9965,
-                "time_a_seconds": 8.61,
-                "time_b_seconds": 12.5,
-                "lag_seconds": 3.89,
+                "similarity": 0.9974,
+                "time_a_seconds": 1.05,
+                "time_b_seconds": 16.44,
+                "lag_seconds": 15.39,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9965,
-                "time_a_seconds": 1.56,
-                "time_b_seconds": 20.16,
-                "lag_seconds": 18.6,
-                "run_length_seconds_at_thresh_0.85": 0.04
+                "similarity": 0.9956,
+                "time_a_seconds": 16.42,
+                "time_b_seconds": 22.99,
+                "lag_seconds": 6.57,
+                "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9958,
-                "time_a_seconds": 1.66,
-                "time_b_seconds": 20.16,
-                "lag_seconds": 18.5
+                "similarity": 0.9955,
+                "time_a_seconds": 16.42,
+                "time_b_seconds": 22.2,
+                "lag_seconds": 5.78,
+                "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
                 "similarity": 0.9954,
-                "time_a_seconds": 1.54,
-                "time_b_seconds": 24.71,
-                "lag_seconds": 23.17
-              }
-            ],
-            "best_run_length_seconds": 0.04,
-            "min_lag_seconds": 1.0,
-            "sim_threshold": 0.85,
-            "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": false,
-            "local_asr_confirmation": null,
-            "flagged": false
-          },
-          "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.34,
-            "time_a": 19.84,
-            "lag": 1.02,
-            "similarity_at_start": 0.7714,
-            "best_run_length_seconds": 0.34,
-            "lag_range_seconds": [
-              0.5,
-              2.0
-            ],
-            "sim_threshold": 0.7,
-            "decision_threshold_seconds": 0.6,
-            "flagged": false
-          },
-          "method_c_v2_window_check": null
-        },
-        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/point_one_attempt1_englishstyleprefixwidemargin.wav"
-      }
-    ]
-  },
-  "point_two": {
-    "state": "RESOLVED",
-    "canonical_text_sha256": "fd19ebd48c50d42fd6015ccfb472be16d73a335e9e6f89bf461b4b532dd10645",
-    "language": "en",
-    "theme_id": "convenience_ai",
-    "level": "b1b",
-    "segment_id": "point_two",
-    "updated_at": "2026-09-17T13:07:44",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
-    "wav_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/point_two.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
-    "budget_guard_triggered": false,
-    "last_attempts_log": [
-      {
-        "attempt": 1,
-        "status": "OK",
-        "asr_text": "FamilyMart used AI differently. It used sales information to help make a sweet potato canelé that might sell well. Oimo no Canelé with Caramel Sauce launched nationwide on September 22, 2026, as a limited quantity product. Separately, FamilyMart's AI recommend ordering began at 500 stores in late June 2025. It uses past sales, weather, nearby foot traffic, and calendar information to suggest products and order amounts. Staff can change the suggestions.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "NORMALIZED_MATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": true,
-        "trim_info": {
-          "raw_duration_seconds": 35.931,
-          "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.3,
-          "trimmed_duration_seconds": 35.931,
-          "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.3
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": true,
-        "repetition_qa_evidence": {
-          "flagged": false,
-          "duration_seconds": 35.931,
-          "method_a_ngram": {
-            "matches": [],
-            "flagged": false,
-            "flagged_matches": [],
-            "word_count": 73,
-            "canonical_known": true,
-            "min_words": 3
-          },
-          "method_d_spectral_long_lag": {
-            "top_matches": [
-              {
-                "similarity": 0.9958,
-                "time_a_seconds": 13.27,
-                "time_b_seconds": 31.19,
-                "lag_seconds": 17.92,
-                "run_length_seconds_at_thresh_0.85": 0.03
+                "time_a_seconds": 17.08,
+                "time_b_seconds": 21.02,
+                "lag_seconds": 3.94
               },
               {
-                "similarity": 0.9949,
-                "time_a_seconds": 14.01,
-                "time_b_seconds": 21.92,
-                "lag_seconds": 7.91,
-                "run_length_seconds_at_thresh_0.85": 0.01
-              },
-              {
-                "similarity": 0.9946,
-                "time_a_seconds": 12.71,
-                "time_b_seconds": 20.52,
-                "lag_seconds": 7.81,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9946,
-                "time_a_seconds": 22.45,
-                "time_b_seconds": 34.72,
-                "lag_seconds": 12.27
-              },
-              {
-                "similarity": 0.994,
-                "time_a_seconds": 5.86,
-                "time_b_seconds": 13.99,
-                "lag_seconds": 8.13
+                "similarity": 0.9953,
+                "time_a_seconds": 0.28,
+                "time_b_seconds": 19.09,
+                "lag_seconds": 18.81
               }
             ],
             "best_run_length_seconds": 0.03,
@@ -676,11 +636,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.3,
-            "time_a": 0.81,
-            "lag": 1.74,
-            "similarity_at_start": 0.7103,
-            "best_run_length_seconds": 0.3,
+            "run_length_seconds": 0.41,
+            "time_a": 18.56,
+            "lag": 1.04,
+            "similarity_at_start": 0.7403,
+            "best_run_length_seconds": 0.41,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -691,7 +651,117 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/point_two_attempt1_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/point_one_attempt2_englishstyleprefixwidemargin.wav"
+      }
+    ]
+  },
+  "point_two": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "a37d9c9996fc152e264350d97a52f9e25abfe51481cf484720f102a6a929baa4",
+    "language": "en",
+    "theme_id": "convenience_ai",
+    "level": "b1b",
+    "segment_id": "point_two",
+    "updated_at": "2026-09-17T13:53:54",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/point_two.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "FamilyMart used AI differently. It used sales information to help make a sweet potato canelé that might sell well. Oimo no Canelé with caramel sauce is scheduled to go on sale nationwide on September 22, 2026, as a limited quantity product. Separately, FamilyMart's AI recommend ordering began at 500 stores in late June 2025. It uses past sales, weather, nearby foot traffic, and calendar information to suggest products and order amounts. Staff can change the suggestions.",
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 36.251,
+          "raw_leading_silence_seconds": 0.34,
+          "raw_trailing_silence_seconds": 0.28,
+          "trimmed_duration_seconds": 36.251,
+          "leading_margin_retained_seconds": 0.34,
+          "trailing_margin_retained_seconds": 0.28
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 36.251,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 78,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.996,
+                "time_a_seconds": 21.52,
+                "time_b_seconds": 31.78,
+                "lag_seconds": 10.26,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9958,
+                "time_a_seconds": 24.43,
+                "time_b_seconds": 28.58,
+                "lag_seconds": 4.15,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9949,
+                "time_a_seconds": 12.51,
+                "time_b_seconds": 30.7,
+                "lag_seconds": 18.19,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9949,
+                "time_a_seconds": 13.35,
+                "time_b_seconds": 35.01,
+                "lag_seconds": 21.66
+              },
+              {
+                "similarity": 0.9948,
+                "time_a_seconds": 24.43,
+                "time_b_seconds": 28.62,
+                "lag_seconds": 4.19
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.31,
+            "time_a": 19.33,
+            "lag": 1.25,
+            "similarity_at_start": 0.8335,
+            "best_run_length_seconds": 0.31,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er014_output/user_test_news_convenience_ai_01/convenience_ai/b1b/narration/attempts/point_two_attempt2_englishstyleprefixwidemargin.wav"
       }
     ]
   },
