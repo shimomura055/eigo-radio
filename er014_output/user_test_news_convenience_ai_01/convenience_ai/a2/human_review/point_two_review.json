@@ -1,0 +1,41 @@
+{
+  "theme": "AI Is Helping Japan's Convenience Stores Invent New Food (A2)",
+  "level": "A2",
+  "segment_id": "point_two",
+  "audio_url": "point_two.mp3",
+  "canonical_script": "FamilyMart took a different path. It used sales data with AI while developing “**Oimo no Canele** — with Caramel Sauce.” The product launched across Japan in September 2026, but it was quantity-limited. This search started with what people had bought before, not with a wish to surprise.",
+  "highlighted_terms": ["Oimo no Canele"],
+  "confirmation_points": [
+    "ハイライトされた商品名「Oimo no Canele」(おいものカヌレ)の読み方が、記事の内容として許容できるかを確認してください。",
+    "Primary ASR(OpenAI、2回)は綴りを「Oimo no Kanele」(C→Kの表記ゆれ、発音としてはCaneleと同音)として書き起こしました。",
+    "Secondary ASR(Azure、Phrase List無し、2回とも)は「OEMO No Canele」として書き起こし、こちらは'Canele'部分の綴りは公式表記と完全一致しましたが、日本語由来の'Oimo'の部分が英語的な綴りに引っ張られました。",
+    "Phrase List(pronunciation_lookups由来のcanonical spelling候補)は本segment生成時点でLedgerに未登録だったため、Secondary ASR呼び出し時にphrase_list_used=falseとなっています(OPEN-159の大文字小文字bugではなく、初出語のため元々ヒットする候補が無かったことを確認済み)。",
+    "4回のASR(Primary x2, Secondary x2)いずれも真の内容誤り(単語の欠落・意味の変化)ではなく、外来語由来の固有名詞・商品名の綴りゆれのみです。TTS自体の実際の発話が問題かどうかを、音声を聴いてご確認ください。",
+    "許容/再生成のいずれかをご判断ください。TTS再生成は本タスクの範囲では実施していません(固有名詞ASR表記ゆれのみでの再生成禁止、CURRENT_SPEC.md L1279)。再生成をご希望の場合は追加タスクとして扱います。"
+  ],
+  "pronunciation_info": [
+    {
+      "surface": "canele",
+      "canonical_spelling": "canelé (「Oimo no Canele」の一部)",
+      "ipa": "/ˌkænəˈleɪ/",
+      "kana_cue": "カヌ・レイ / カ・ネ・レ",
+      "alternate_pronunciations": ["kahn-eh-LAY", "kahn-leh"],
+      "confidence": "low",
+      "ambiguity_note": "一次情報源(本人音声)の確認は見つからず、公開された発音解説・辞書系の二次情報に基づく。フランス語由来の菓子名で、英語圏では語末を/leɪ/で読む案内が複数ある。",
+      "sources": [
+        "https://howtosayguide.com/how-to-say-canele/",
+        "https://www.howtopronounce.com/canele",
+        "https://en.wiktionary.org/wiki/cannelle"
+      ]
+    }
+  ],
+  "asr_results": {
+    "primary_1": "...developing Oimo no Kanele with caramel sauce...",
+    "primary_2": "...developing Oimo no Kanele with caramel sauce...",
+    "secondary_1_no_phrase_list": "...developing OEMO No Canele with caramel sauce...",
+    "secondary_2_no_phrase_list": "...developing OEMO No Canele with caramel sauce...",
+    "note": "'Canele'部分はSecondary ASRで公式綴りと完全一致(2回とも)。'Oimo'部分はSecondary ASRで大文字化されたローマ字表記(OEMO)になったが、いずれも真の内容誤りではなく外来語のASR表記ゆれ。"
+  },
+  "final_status_before_review": "ASR_VALIDATION_UNCERTAIN(Human Review Lock、TTS再生成は行っていない)",
+  "options": ["許容(現在の音声のまま採用)", "再生成(追加タスクとして依頼)", "その他コメント"]
+}

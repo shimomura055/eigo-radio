@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Pickles in a Lemon Tart? When AI Joins the Convenience-Store Kitchen
+
+What would you do if a computer program suggested putting pickles in a lemon tart?
+
+That surprising idea came from AI at Lawson, one of Japan’s major convenience-store chains. It became the starting point for a real product called “Lemon Tart (Pickle Flavor).”
+
+At first, this sounds like a computer making a food decision. But that is not what happened.
+
+Lawson’s human developers made samples, tried them, and tested them repeatedly. They adjusted the taste and appearance before finishing the product. The AI offered an idea. People decided what to do with it.
+
+Lawson scheduled the product for September 29, 2026. It was planned for about 4,700 stores in Tokyo and nearby prefectures, with some areas of Niigata and Nagano excluded. Natural Lawson was also excluded. The price was 270 yen, including tax.
+
+So this was a regional launch, not a nationwide or permanent product. But it shows one way some major Japanese convenience-store chains are using AI around food: a computer can suggest a starting idea, while people decide whether it belongs on the shelf.
+
+### Surprise was the goal
+
+At Lawson, the first search was not about finding a sure hit. The company did not use past sales or market data at that stage. Instead, it asked AI for combinations and flavors that might make people say, “What is this?” That made AI useful for opening the door to ideas the team might not have considered.
+
+### A different question: What might sell?
+
+FamilyMart took a different path. It used sales data with AI while developing “Oimo no Canele — with Caramel Sauce.” The product launched across Japan in September 2026, but it was quantity-limited. This search started with what people had bought before, not with a wish to surprise.
+
+## In one line…
+
+AI can help find a strange idea or suggest a product with a better chance of selling. People still decide what actually reaches the shelf.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "a sure hit",
+    "japanese_gloss": "確実に売れるもの",
+    "source_sentence": "At Lawson, the first search was not about finding a sure hit."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "open the door to ideas",
+    "japanese_gloss": "新しいアイデアを生み出すきっかけを作る",
+    "source_sentence": "That made AI useful for opening the door to ideas the team might not have considered."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "quantity-limited",
+    "japanese_gloss": "数量に限りがある",
+    "source_sentence": "The product launched across Japan in September 2026, but it was quantity-limited."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "regional launch",
+    "japanese_gloss": "限られた地域での発売",
+    "source_sentence": "So this was a regional launch, not a nationwide or permanent product."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "belong on the shelf",
+    "japanese_gloss": "店頭に並べてよい",
+    "source_sentence": "But it shows one way some major Japanese convenience-store chains are using AI around food: a computer can suggest a starting idea, while people decide whether it belongs on the shelf."
+  }
+]

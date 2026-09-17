@@ -1,0 +1,24 @@
+{
+  "theme": "A Lemon Tart, Pickles, and an AI Suggestion (B1)",
+  "level": "B1",
+  "segment_id": "full_story_part1",
+  "audio_url": "full_story_part1.mp3",
+  "canonical_script": "A lemon tart with chopped pickles sounds like a joke—or at least a strange snack. But Lawson says an AI program suggested the pairing, and it became the starting point for a real convenience-store product.\n\nThe idea did not stay on a computer screen. Human product specialists made samples, tasted them, and adjusted the taste and appearance. **Lawson then planned** a sale of the finished product.",
+  "highlighted_terms": ["Lawson then planned"],
+  "confirmation_points": [
+    "問題箇所はブランド名の読み間違いではなく、語順です。canonical textは「Lawson then planned a sale...」ですが、4回のASR(Primary x2、Secondary/Phrase List無し x2)すべてが一貫して「Then Lawson planned a sale...」(Lawsonとthenの語順が入れ替わっている)と書き起こしました。",
+    "4回とも同じ語順違いが再現しているため、これはASRの誤認識ではなく、TTS音声そのものがこの語順で発話された可能性が高いと考えられます。意味・事実関係は変わりません(誰が・何を・いつ、の内容は同一)。",
+    "音声を再生し、この語順の違いが許容できるか(内容が変わらないため許容可、または正確なcanonical語順での再生成を希望するか)をご判断ください。",
+    "別途、この記事のparts.json生成過程で、Main見出し「## Main Story」の文字列がpart1のcanonical_text冒頭に混入している技術的な不具合を発見しました(`er003_v1_n3_01_scaffold_generate.py::split_article_text()`が、Writerが任意で挿入した`## Main Story`のような`##`小見出しを本文から分離しない既知の未対応パターン)。4回のASR結果いずれにも「Main Story」という発話は一切出現していないため、実際の音声にはこの文字列は含まれていない可能性が高いですが、念のため音声冒頭も確認してください。この技術的な発見はSonnetからの報告事項であり、Production側の修正はユーザー判断待ちです(本Human Review自体の対象は語順の方です)。"
+  ],
+  "pronunciation_info": [],
+  "asr_results": {
+    "primary_1": "...Human product specialists made samples, tasted them, and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
+    "primary_2": "...Human product specialists made samples, tasted them, and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
+    "secondary_1_no_phrase_list": "...Human product specialists made samples, tasted them and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
+    "secondary_2_no_phrase_list": "...Human product specialists made samples, tasted them and adjusted the taste and appearance. Then Lawson planned a sale of the finished product.",
+    "note": "4回全てのASR結果が「Then Lawson planned」の語順で一致しており、真の内容変化(欠落・追加・意味の反転)ではなく語順のみの違い。固有名詞の読み間違いではないためPronunciation Ledgerの対象外。"
+  },
+  "final_status_before_review": "ASR_VALIDATION_UNCERTAIN(Human Review Lock、TTS再生成は行っていない)",
+  "options": ["許容(現在の音声のまま採用)", "再生成(追加タスクとして依頼)", "その他コメント"]
+}
