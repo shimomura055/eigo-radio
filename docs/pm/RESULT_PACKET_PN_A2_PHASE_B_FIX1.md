@@ -197,8 +197,10 @@ E2E Playwright/web export(mp3変換)はAPI呼び出しを伴わないため追�
 - 成果物commit: `194d502270c0e452a060fe543d09e20d067b4f0a`(コード修正2
   ファイル+新規test+delegation log+runtime artifacts[wav除外]、57
   files changed)。push済み(`c2aa1416..194d5022 main -> main`)。
-- SSOT反映commit: 本RESULT_PACKET保存後に別途commit・push(完了後、末尾
-  に追記)。
+- SSOT反映commit: `ece3871976cf7ce4348490964e60b65d6b7951e7`(main、
+  `194d5022..ece38719`、push済み、`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+  `OPEN_ITEMS.md`/本RESULT_PACKET/`ACTIVE_TASK.md`[gitignore対象のため
+  commit対象外、ローカルのみ更新]/E2E evidence json+png)。
 
 ## 11. SSOT更新
 
