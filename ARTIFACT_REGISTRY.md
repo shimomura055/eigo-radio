@@ -135,9 +135,12 @@ PRODUCTION`)や`editorial_mode="discovery_why"`の正式registry登録を
 | AI Control | A2 | 完成 | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`。ただし情報密度・概念負荷の重大指摘あり→OPEN-164) | `.../ai_control/a2/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
 | AI Control | B1 | 完成(RESUME-06でen=表題誤り[A2表題流用]をB1自身の表題へ是正済み) | Audio Validation Gate PASS | **PASS**(2026-09-17、`USER_TEST_READY`。OPEN-164同様の指摘あり) | `.../ai_control/b1b/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
 | Personalized News A2 | A2(B-Family新規topic、2V) | 完成(Human Review Lock 2件[見出しASR脱落]をstandard+minimal fallback二段retryで解消し完走) | Audio Validation Gate PASS(Analytical Leakage Check残存flag[voice_a/voice_b、3attempt上限]は既存3V/2V仕様と同型、記事完成はブロックしない) | **NG**(`REJECTED_AS_CURRENT_OUTPUT`、2026-09-17。理由=Voices構造根本問題[VoiceがSurvey/統計/外部Evidenceを引用、立場がぼやける]、個別修正せず仕様見直し中`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-REVIEW-01`。実装基盤`main_a2_2v()`配線自体は`PRODUCTION_WIRED`(FIX-01到達)[記事品質と別軸、訂正: PM-CLOSEOUT-CONSOLIDATION-137]) | `.../personalized_news_2v_a2/player.html`(`docs/pm/RESULT_PACKET_CLOSEOUT_136.md`1節) |
+| Tiny Bags(`USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02`) | B1 | 完成(325.734秒、peak=0.73052、clippingなし。`point_one`は"only"5/6attempt脱落によりcanonical微修正[only→just]後1attempt目でNORMALIZED_MATCH) | Audio Validation Gate PASS | 未試聴(技術的完成のみ、E2E再生確認済み) | `https://rawcdn.githack.com/shimomura055/eigo-radio/e858649a/user_test/unified.html?src=er014_output/user_test_news_light_01/tiny_bags/b1b/player.html&level=B1&en=Are%20Tiny%20Bags%20Really%20Back%3F%20Fashion%27s%20Answer%20Comes%20With%20a%20Catch&ja=...`(evidence: `er014_output/user_test_news_light_01/tiny_bags/b1b/e2e/e2e_evidence.json`) |
+| Tiny Bags(`USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02`) | A2 | **未完成**(`full_story_part2`のToteme/Kallmeyer、TTS再生成なしでSecondary ASR cascade[Phrase List明示指定]まで実行。Kallmeyerは解決、Totemeは5系統全ASRで未解決のためHuman Review確認ページへ) | Audio Validation Gateブロック中(未解消のため未実行) | Human Review待ち(発音確認ページ) | 確認ページ: `https://rawcdn.githack.com/shimomura055/eigo-radio/e858649a/user_test/human_review.html?src=er014_output/user_test_news_light_01/tiny_bags/a2/human_review/full_story_part2_review.json`(evidence: `.../a2/human_review/e2e_evidence.json`) |
 
-上記5本は`publication_status`(公開承認)の判断対象ではない(既存の
-「User Quality≠Publication」原則を維持、`NOT_APPROVED`のまま)。
+上記5本(News-family既存分)は`publication_status`(公開承認)の判断対象
+ではない(既存の「User Quality≠Publication」原則を維持、`NOT_APPROVED`
+のまま)。Tiny Bags B1/A2も同様に`NOT_APPROVED`。
 
 ## 参照元
 
