@@ -535,9 +535,13 @@ class VoiceCardNumberOptionalRenderingTests(unittest.TestCase):
         self.assertNotIn("上記【Evidenceは脇役であること】参照", text)
 
     def test_upper_bound_rule_unchanged_max_one_number(self):
+        # B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー
+        # 正式承認)で、上限規定(最大1つ)自体は維持したまま、その1つの数字が
+        # 「本人の経験に属する数値」に限られるという条件(候補C)を明確化する
+        # 見出し・本文へ更新した(意図的な文言変更、上限規定そのものは不変)。
         block = wg.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
-        self.assertIn("Voice内の数字は最大1つ(重要、4V版から継続)", block)
-        self.assertIn("最大1つだけにし、必ずその人", block)
+        self.assertIn("Voice内の数字は最大1つ・本人の経験に属する数字のみ(重要、", block)
+        self.assertIn("最大1つだけにし、かつその数字は必ずその人物自身が実際に経験した数値", block)
 
 
 if __name__ == "__main__":

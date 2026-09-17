@@ -101,9 +101,11 @@ THEME_CONFIG = writer_generic.make_theme_config(
     tension_asymmetry_value=TENSION_ASYMMETRY_VALUE,
 )
 
-# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B(ユーザー正式決定3):
-# 日本語タイトルはconfig供給。write_new_theme stage実行後、A2 Writerが
-# 実際に確定した英語タイトル("The News You See, and the News You Miss"、
-# attempt3/最終article.md)の自然な直訳へ更新した(新しい主張・数字は
-# 追加しない)。
-JAPANESE_TITLE_A2 = "見えているニュースと、見えていないニュース"
+# B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17)による記事再生成後:
+# 新タイトル"The Same Feed, Two Different Mornings"(write_new_theme stage
+# attempt1/最終article.md、Analytical Leakage Check 0件で確定)の自然な
+# 直訳へ更新した(新しい主張・数字は追加しない)。旧題("The News You See,
+# and the News You Miss"/「見えているニュースと、見えていないニュース」、
+# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B時点)は本タスクの
+# 再生成で置き換えられた。
+JAPANESE_TITLE_A2 = "同じフィード、二つの違う朝"

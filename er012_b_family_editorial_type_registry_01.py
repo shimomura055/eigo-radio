@@ -362,6 +362,14 @@ B_FAMILY_B1_3V_CONFIG = {
 # へ渡す。A-Family経路(er006_pool_pilot_01_writer.py等)はこのフラグ・
 # 関数を一切参照しない。
 # ============================================================
+# B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー正式承認)
+# 注記: 本タスクで確定した候補C(Voice内の数字は本人の経験に属する数値のみ許可、
+# survey/external statisticsをVoice自身の論証材料にしない)と、Fact attribution
+# A'(本フラグ、「Voice本文は出典明記不要」というopt-inルール)は方向性が異なる
+# (A'は将来的にVoiceへ統計の帰属を許す設計思想、Cは統計そのものをVoiceの論証
+# 材料にしない制約)。本フラグは既定OFFのまま据え置く。将来ONにする場合は、
+# Cとの両立条件(統計を扱うVoiceにのみ限定適用する等)を別途設計する必要がある
+# (現状OFFのため未設計、CURRENT_SPEC.md B-Family Voices節に同旨を記載)。
 FACT_ATTRIBUTION_MODE_DEFAULT = False  # opt-in、既定OFF(mandatory化していない)
 
 # Ledger中の[VOICE_n_EVIDENCE]タグ行を抽出する正規表現。3V/4Vも

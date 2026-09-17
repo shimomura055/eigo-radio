@@ -267,12 +267,23 @@ Voiceのセクション内で、語り手がその人物の必要・感情・責
 Voiceの人物を三人称で要約・分析する文)を書かないでください。すべての文は、その人が実際に
 その瞬間にしていること・気づいていること・感じていることの描写として書いてください。
 
-【Evidenceは脇役であること・Voice内の数字は最大1つ(重要、4V版から継続)】
+【Evidenceは脇役であること・Voice内の数字は最大1つ・本人の経験に属する数字のみ(重要、
+4V版から継続、2026-09-17ユーザー正式決定[候補C]で数字の許可条件を明確化)】
 1つのVoiceの中で、Evidenceの紹介そのものが主役になる文を連続させないでください。文の
 主語が調査・報告・データ("A survey found...", "One report described...", "The data
 show...")になる文は書かないでください。1つのVoiceのセクション全体を通して、具体的な数字は
-最大1つだけにし、必ずその人/その立場の人々の実感に折り込み、話し言葉で書いてください。
-3人全員について例外なくこのルールを適用してください。
+最大1つだけにし、かつその数字は必ずその人物自身が実際に経験した数値(自分が経験した回数・
+期間・費用等)に限ってください。survey/report/study等の外部統計を、その人の実感の代わりに
+使わないでください。使う場合は必ずその人/その立場の人々の実感に折り込み、話し言葉で
+書いてください。3人全員について例外なくこのルールを適用してください。
+
+【Voiceは自分の経験・立場に徹すること、相手側の中心的懸念はTensionへ(重要、B-Family
+Voices共通の恒久原則、2026-09-17ユーザー正式決定[候補A/E/F]、Voice数・テーマ非依存)】
+各Voiceは、自分自身の経験・価値観・立場から見えている範囲だけを語ってください。自分の
+立場の中にある迷い・葛藤(nuance)を書くことは構いませんが、他のVoiceが中心的に抱えている
+懸念・反論そのものを、このVoiceの中心的な主張として先取りして語らないでください。他の
+Voiceの中心的な懸念・反論は、この記事ではTension(下記【Tensionの役割】参照)が引き受ける
+役割です。
 
 {experiential_claim_grounding_block}
 
@@ -301,8 +312,11 @@ Hook("## The Question")は、これから3つの立場を紹介するテーマ�
 人物と、彼らの合理性を制約する力であり、Evidence(survey/research/data/percentage)
 そのものの説明ではありません。**Tensionの段落を、"A survey found...", "The data show..."
 のような、調査・データそのものを主語にした文で始めたり、その説明へ立ち戻ったりしないで
-ください。Tensionは、必ず以下の要素を、この順序で(ただし本文に「第1段」等のラベルは
-書かず、地の文としてひとつづきに)含めてください:
+ください。**Tensionは、各Voiceが中心的に抱えている懸念・反論を、それぞれ公平に受け止める
+場所でもあります(2026-09-17ユーザー正式決定[候補F])。あるVoiceが自分の立場に徹したことで
+書ききれなかった、他のVoiceの中心的な懸念・反論があれば、ここで扱ってください。**Tensionは、
+必ず以下の要素を、この順序で(ただし本文に「第1段」等のラベルは書かず、地の文として
+ひとつづきに)含めてください:
 
 1. 共通前提: 3人とも、本当は同じこと({tension_common_ground_value})を望んでいる、という
    出発点を示してください(この時点では誰も間違っていない、という前提の共有)。
@@ -351,6 +365,11 @@ Closingの深さを犠牲にしてまで厳密に一致させる必要はあり�
   提案すること
 - Hookに企業名・統計・パーセントを入れること
 - 1つのVoiceのセクション内で具体的な数字を2つ以上使うこと
+- 本人自身が実際に経験していない数字(survey/report/study等の外部統計)を、Voice本文の
+  論証材料として使うこと
+- 他のVoiceが中心的に抱えている懸念・反論を、自分のVoiceの中心的な主張として先取りして
+  語ること(自分の立場の中の迷い・葛藤の範囲を超えて、相手側の中心論点そのものを
+  抱え込むこと)
 - 3人を単純に2対1のような陣営へ分けること
 {tension_external_constraint_prohibition_block}- Closingを「人による」という結び方だけで終わらせること
 - 特定のVoiceを、具体的な状況・賭け金・責任を持つ一人の人物としてではなく、抽象的な立場・
@@ -419,9 +438,11 @@ def _voice_card_block_text(card: dict) -> str:
         f"- Constraint(制約): {card['constraint']}",
         f"- Concrete lived scene(具体的な場面、Ledgerに根拠あり): {card['concrete_scene']}",
         f"- Supporting evidence(裏付け専用、Voice本文の主役にしない): {card['supporting_evidence']}"
-        "この裏付けの中から、自然に人を主語にした話し言葉へ織り込める場合に限り、具体的な"
-        "数字を1つだけ使ってください。無理に数字を使う必要はなく、数字を使わずにその人の"
-        "実感だけで書いても構いません(詳細ルールは下記【Evidenceは脇役であること】参照)。",
+        "この裏付けの中に、この人物自身が実際に経験した数値(自分の経験に属する回数・期間・"
+        "費用等)が含まれ、かつ自然に人を主語にした話し言葉へ織り込める場合に限り、具体的な"
+        "数字を1つだけ使ってください。調査・統計等、本人の経験に属さない数字はここでは"
+        "使わないでください。無理に数字を使う必要はなく、数字を使わずにその人の実感だけで"
+        "書いても構いません(詳細ルールは下記【Evidenceは脇役であること】参照)。",
     ]
     return "\n".join(lines)
 
@@ -596,12 +617,23 @@ Voiceのセクション内で、語り手がその人物の必要・感情・責
 Voiceの人物を三人称で要約・分析する文)を書かないでください。すべての文は、その人が実際に
 その瞬間にしていること・気づいていること・感じていることの描写として書いてください。
 
-【Evidenceは脇役であること・Voice内の数字は最大1つ(重要)】
+【Evidenceは脇役であること・Voice内の数字は最大1つ・本人の経験に属する数字のみ(重要、
+2026-09-17ユーザー正式決定[候補C]で数字の許可条件を明確化)】
 1つのVoiceの中で、Evidenceの紹介そのものが主役になる文を連続させないでください。文の
 主語が調査・報告・データ("A survey found...", "One report described...", "The data
 show...")になる文は書かないでください。1つのVoiceのセクション全体を通して、具体的な数字は
-最大1つだけにし、必ずその人/その立場の人々の実感に折り込み、話し言葉で書いてください。
-両方のVoiceについて例外なくこのルールを適用してください。
+最大1つだけにし、かつその数字は必ずその人物自身が実際に経験した数値(自分が経験した回数・
+期間・費用等)に限ってください。survey/report/study等の外部統計を、その人の実感の代わりに
+使わないでください。使う場合は必ずその人/その立場の人々の実感に折り込み、話し言葉で
+書いてください。両方のVoiceについて例外なくこのルールを適用してください。
+
+【Voiceは自分の経験・立場に徹すること、相手側の中心的懸念はTensionへ(重要、B-Family
+Voices共通の恒久原則、2026-09-17ユーザー正式決定[候補A/E/F]、Voice数・テーマ非依存)】
+各Voiceは、自分自身の経験・価値観・立場から見えている範囲だけを語ってください。自分の
+立場の中にある迷い・葛藤(nuance)を書くことは構いませんが、もう一方のVoiceが中心的に
+抱えている懸念・反論そのものを、このVoiceの中心的な主張として先取りして語らないでください。
+もう一方のVoiceの中心的な懸念・反論は、この記事ではTension(下記【Tensionの役割】参照)が
+引き受ける役割です。
 
 {experiential_claim_grounding_block}
 
@@ -630,8 +662,11 @@ Hook("## The Question")は、これから2つの立場を紹介するテーマ�
 2人の人物と、彼らの合理性を制約する力であり、Evidence(survey/research/data/percentage)
 そのものの説明ではありません。**Tensionの段落を、"A survey found...", "The data show..."
 のような、調査・データそのものを主語にした文で始めたり、その説明へ立ち戻ったりしないで
-ください。Tensionは、必ず以下の要素を、この順序で(ただし本文に「第1段」等のラベルは
-書かず、地の文としてひとつづきに)含めてください:
+ください。**Tensionは、両方のVoiceが中心的に抱えている懸念・反論を、それぞれ公平に受け止める
+場所でもあります(2026-09-17ユーザー正式決定[候補F])。あるVoiceが自分の立場に徹したことで
+書ききれなかった、もう一方のVoiceの中心的な懸念・反論があれば、ここで扱ってください。**
+Tensionは、必ず以下の要素を、この順序で(ただし本文に「第1段」等のラベルは書かず、地の文と
+してひとつづきに)含めてください:
 
 1. 共通前提: 2人とも、本当は同じこと({tension_common_ground_value})を望んでいる、という
    出発点を示してください(この時点では誰も間違っていない、という前提の共有)。
@@ -673,6 +708,11 @@ Tension(上記構造要素すべて)・Closingの深さを犠牲にしてまで�
   提案すること
 - Hookに企業名・統計・パーセントを入れること
 - 1つのVoiceのセクション内で具体的な数字を2つ以上使うこと
+- 本人自身が実際に経験していない数字(survey/report/study等の外部統計)を、Voice本文の
+  論証材料として使うこと
+- もう一方のVoiceが中心的に抱えている懸念・反論を、自分のVoiceの中心的な主張として先取り
+  して語ること(自分の立場の中の迷い・葛藤の範囲を超えて、相手側の中心論点そのものを
+  抱え込むこと)
 - 特定のVoiceを、具体的な状況・賭け金・責任を持つ一人の人物としてではなく、抽象的な立場・
   機能の代弁者として書くこと(該当するVoiceがある場合は、そのVoice Cardの冒頭指示に従う
   こと)"""
@@ -915,9 +955,17 @@ def run_overlap_monitoring_2v(sections: dict, out_dir: str) -> dict:
 # `leak_tension_constraint_integration`基準自体を対象から外す(適用対象で
 # ない基準についてFAIL/PASSを機械的に強制しないため、新QA基準の追加ではない)。
 # ============================================================
+# B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー正式承認):
+# leak_position_blurを追加(候補D/Eの機械検知field、7項目化)。相手側Voiceが
+# 中心的に抱えている懸念・反論を、このVoiceが自分の中心的な主張として先取りして
+# 抱え込んでいないかを判定する(nuance[自分の立場の中の迷い]は許容、相手側の
+# 中心論点の代弁のみFAIL対象)。Voice数非依存の共通fieldなので2V/3V双方の
+# Voiceセクションへ自動的に適用される(build_leakage_schema_2v/_3vが本tupleを
+# 共有しているため)。
 VOICE_LEAKAGE_FIELDS = (
     "leak_evidence_subject", "leak_numbers_foreground", "leak_narrator_analysis",
     "leak_unknowable_analysis", "leak_discovery_syntax", "leak_evidence_memorable",
+    "leak_position_blur",
 )
 TENSION_LEAKAGE_FIELDS_BASE = (
     "leak_evidence_subject", "leak_numbers_foreground", "leak_discovery_syntax",
@@ -977,23 +1025,31 @@ def build_leakage_check_prompt_3v(sections: dict, external_constraint_enabled: b
 (Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください
 (それぞれPASS/FAIL)。
 
-【Voice 1〜3に共通で適用する6項目】
+【Voice 1〜3に共通で適用する7項目(2026-09-17ユーザー正式決定で候補C/leak_position_blur追加)】
 - leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS
-- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合
-  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)
+- leak_numbers_foreground: 具体的な数字が、その人物自身の経験に属する数値であり、かつその人の
+  経験の描写より前面に出ていない場合PASS(数字が0個、またはその人物自身の経験に属する数字が
+  1個だけ実感として自然に織り込まれている場合はPASS。survey/report/study等、本人の経験に
+  属さない外部統計をVoice内で論証材料として使っている場合はFAIL)
 - leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS
 - leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の
   Perspectiveとして書いていない場合PASS
 - leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS
 - leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS
+- leak_position_blur: このVoiceが、自分の立場の中の迷い・葛藤(nuance)の範囲を超えて、他の
+  Voice(相手側)が中心的に抱えている懸念・反論そのものを、自分の中心的な主張として代弁して
+  いない場合PASS(相手側の中心論点をこのVoiceが実質的に引き受けてしまっている場合はFAIL)
 
 いずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な
 代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax
 のいずれかでFAILとしてください)。
 
 【Tensionに適用する項目】
-- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:
-  上記と同じ意味(Tension本文に対して判定)
+- leak_evidence_subject / leak_discovery_syntax / leak_evidence_memorable: 上記と同じ意味
+  (Tension本文に対して判定)
+- leak_numbers_foreground(Tension用): 具体的な数字・比較結果が、3人の合理性を制約する力の
+  描写より前面に出ていない場合PASS(Tensionは1人の経験ではなく複数人の力関係を扱うため、
+  Voice用の「本人の経験に属する数値」限定はここでは適用しない)
 - leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって
   おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS
 - leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS
@@ -1087,6 +1143,9 @@ def build_leakage_corrective_note_3v(leakage_result: dict, voice_cards: list) ->
         "根拠がない事柄(自分の評判・信用が具体的にどうなるか等)は体験・感情・判断として書いてください。\n"
         "- 各Voiceの役割: 抽象的な立場の解説ではなく、具体的な状況・賭け金・責任を持つ一人の人物として"
         "書いてください(該当するVoiceがある場合はVoice Card冒頭の指示に従うこと)。\n"
+        "- 立場境界(2026-09-17ユーザー正式決定): 各Voiceは自分の経験・立場に徹してください。"
+        "他のVoiceが中心的に抱えている懸念・反論はTensionへ譲り、Voice内の数字は本人の経験に"
+        "属する数値に限ってください(survey/report/study等の外部統計は使わないでください)。\n"
         "- Closingの役割: 単なる要約や「人による」で終わらせず、この問題が実は何についての問題なのかという"
         "再定義そのものから書き始めてください。解決策の提案はしないでください。"
     )
@@ -1130,23 +1189,31 @@ def build_leakage_check_prompt_2v(sections: dict) -> str:
 (Voice A/Voice B/Tension/Closing)です。それぞれについて、指定された項目を判定してください
 (それぞれPASS/FAIL)。
 
-【Voice A・Voice Bに共通で適用する6項目】
+【Voice A・Voice Bに共通で適用する7項目(2026-09-17ユーザー正式決定で候補C/leak_position_blur追加)】
 - leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS
-- leak_numbers_foreground: 具体的な数字・比較結果が、その人の経験の描写より前面に出ていない場合
-  PASS(数字が0個、または1個だけがその人の実感として自然に織り込まれている場合はPASS)
+- leak_numbers_foreground: 具体的な数字が、その人物自身の経験に属する数値であり、かつその人の
+  経験の描写より前面に出ていない場合PASS(数字が0個、またはその人物自身の経験に属する数字が
+  1個だけ実感として自然に織り込まれている場合はPASS。survey/report/study等、本人の経験に
+  属さない外部統計をVoice内で論証材料として使っている場合はFAIL)
 - leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS
 - leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の
   Perspectiveとして書いていない場合PASS
 - leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS
 - leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS
+- leak_position_blur: このVoiceが、自分の立場の中の迷い・葛藤(nuance)の範囲を超えて、もう一方の
+  Voice(相手側)が中心的に抱えている懸念・反論そのものを、自分の中心的な主張として代弁して
+  いない場合PASS(相手側の中心論点をこのVoiceが実質的に引き受けてしまっている場合はFAIL)
 
 両方のVoiceについて、他方と同一の基準で判定してください(特定の立場が抽象的な代弁者の解説に
 なっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntaxの
 いずれかでFAILとしてください)。
 
 【Tensionに適用する項目】
-- leak_evidence_subject / leak_numbers_foreground / leak_discovery_syntax / leak_evidence_memorable:
-  上記と同じ意味(Tension本文に対して判定)
+- leak_evidence_subject / leak_discovery_syntax / leak_evidence_memorable: 上記と同じ意味
+  (Tension本文に対して判定)
+- leak_numbers_foreground(Tension用): 具体的な数字・比較結果が、2人の合理性を制約する力の
+  描写より前面に出ていない場合PASS(Tensionは1人の経験ではなく2人の力関係を扱うため、
+  Voice用の「本人の経験に属する数値」限定はここでは適用しない)
 - leak_tension_reverts_to_research: Tensionの中心が、2人がなぜ違う答えに至るのかの掘り下げになって
   おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS
 
@@ -1233,6 +1300,9 @@ def build_leakage_corrective_note_2v(leakage_result: dict, voice_cards: list) ->
         "根拠がない事柄(自分の評判・信用が具体的にどうなるか等)は体験・感情・判断として書いてください。\n"
         "- 各Voiceの役割: 抽象的な立場の解説ではなく、具体的な状況・賭け金・責任を持つ一人の人物として"
         "書いてください(該当するVoiceがある場合はVoice Card冒頭の指示に従うこと)。\n"
+        "- 立場境界(2026-09-17ユーザー正式決定): 各Voiceは自分の経験・立場に徹してください。"
+        "もう一方のVoiceが中心的に抱えている懸念・反論はTensionへ譲り、Voice内の数字は本人の"
+        "経験に属する数値に限ってください(survey/report/study等の外部統計は使わないでください)。\n"
         "- Closingの役割: 単なる要約や「人による」で終わらせず、この問題が実は何についての問題なのかという"
         "再定義そのものから書き始めてください。解決策の提案はしないでください。"
     )
@@ -1858,8 +1928,21 @@ def run_pipeline_3v(client, theme_id: str, label: str, base_prompt: str, verifie
             print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: Analytical Leakage Check flagged項目なし。確定。")
             break
         if attempt == MAX_WRITER_ATTEMPTS:
-            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 最大attempt数に到達。flagged項目が残った状態の"
-                  f"記事を最終結果として記録します(Report側でUSER_DECISION_REQUIRED候補として扱う)。")
+            # B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー
+            # 正式承認、Acceptance Gate): MAX_ATTEMPTS到達後もAnalytical Leakage
+            # Check flagged項目が残存する場合、final_resultへ`leakage_residual=True`
+            # +`status="LEAKAGE_RESIDUAL_STOP"`を記録する。呼び出し元
+            # (run_writer_stage_generic経由のmain_a2_2v()/main_b1_2v()/
+            # main_b1_3v()のwrite_new_theme stage)は既存どおり
+            # `final_result.get("status") == "OK"`を後続stage進行の条件にして
+            # いるため、この値変更のみで自動的に後続stage(comment/key_phrases/
+            # japanese_title/voice_check/tts/assemble/player)へ進めずSTOPする
+            # (MAX_ATTEMPTS自体・Gate基準は変更しない。retry上限到達後の記事を
+            # 前例踏襲だけでユーザー試聴へ進めないためのGate)。
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 最大attempt数に到達。flagged項目が残存する"
+                  f"ため、Acceptance Gateにより後続stageへ進めず記事をLEAKAGE_RESIDUAL_STOPとして記録します。")
+            final_result["leakage_residual"] = True
+            final_result["status"] = "LEAKAGE_RESIDUAL_STOP"
             break
         corrective_note = build_leakage_corrective_note_3v(leakage, voice_cards)
 
@@ -1928,8 +2011,21 @@ def run_pipeline_2v(client, theme_id: str, label: str, base_prompt: str, verifie
             print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: Analytical Leakage Check flagged項目なし。確定。")
             break
         if attempt == MAX_WRITER_ATTEMPTS:
-            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 最大attempt数に到達。flagged項目が残った状態の"
-                  f"記事を最終結果として記録します(Report側でUSER_DECISION_REQUIRED候補として扱う)。")
+            # B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー
+            # 正式承認、Acceptance Gate): MAX_ATTEMPTS到達後もAnalytical Leakage
+            # Check flagged項目が残存する場合、final_resultへ`leakage_residual=True`
+            # +`status="LEAKAGE_RESIDUAL_STOP"`を記録する。呼び出し元
+            # (run_writer_stage_generic経由のmain_a2_2v()/main_b1_2v()/
+            # main_b1_3v()のwrite_new_theme stage)は既存どおり
+            # `final_result.get("status") == "OK"`を後続stage進行の条件にして
+            # いるため、この値変更のみで自動的に後続stage(comment/key_phrases/
+            # japanese_title/voice_check/tts/assemble/player)へ進めずSTOPする
+            # (MAX_ATTEMPTS自体・Gate基準は変更しない。retry上限到達後の記事を
+            # 前例踏襲だけでユーザー試聴へ進めないためのGate)。
+            print(f"[B-FAMILY-VOICES-WRITER-GENERIC] attempt {attempt}: 最大attempt数に到達。flagged項目が残存する"
+                  f"ため、Acceptance Gateにより後続stageへ進めず記事をLEAKAGE_RESIDUAL_STOPとして記録します。")
+            final_result["leakage_residual"] = True
+            final_result["status"] = "LEAKAGE_RESIDUAL_STOP"
             break
         corrective_note = build_leakage_corrective_note_2v(leakage, voice_cards)
 

@@ -336,35 +336,67 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
     def setUpClass(cls):
         cls.wg_before = _load_before_module()
 
-    def test_build_focus_module_block_3v_byte_identical(self):
+    # B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー正式
+    # 承認)により、`build_focus_module_block_3v`(Voice原則A/C/F文言追加)・
+    # `build_leakage_schema_3v`/`build_leakage_check_prompt_3v`
+    # (leak_position_blur追加・leak_numbers_foreground基準文言更新)は
+    # 意図的に変更した。したがって以下3テストは、旧来の「byte単位で完全一致」
+    # から「意図した変更点が実際に反映されており、かつ変更対象外の構造契約
+    # (見出し区切り数・Voice Card内容の反映等)は保たれている」ことを確認する
+    # 契約テストへ更新する(除外理由は本コメントで明記、下記
+    # `test_source_of_untouched_3v_functions_unchanged`のnamesリストからも
+    # この3関数を除外済み)。
+
+    def test_build_focus_module_block_3v_reflects_position_boundary_spec(self):
         before = self.wg_before.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
         after = wg.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
-        self.assertEqual(before, after)
+        # 意図的な変更のため、旧版とはbyte単位で一致しないことをまず確認する。
+        self.assertNotEqual(before, after)
+        # SPEC-01で追加した新規原則文言(A/E/F: 立場境界・Tensionへの誘導、
+        # C: 本人経験由来の数字限定)が実際に含まれていること。
+        self.assertIn("Voiceは自分の経験・立場に徹すること", after)
+        self.assertIn("本人の経験に属する数字のみ", after)
+        self.assertIn("他のVoiceが中心的に抱えている懸念・反論を、自分のVoiceの中心的な主張として先取りして", after)
+        # 変更対象外の既存構造契約(6区切り・Voice Card内容反映)は保たれていること。
+        self.assertIn("### [1人目のVoiceの見出し", after)
+        self.assertIn(theme_ai_screening.VOICE_CARD_1["situation"], after)
 
-    def test_build_candidate_template_byte_identical(self):
-        block_before = self.wg_before.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
+    def test_build_candidate_template_function_itself_unchanged(self):
+        """build_candidate_template自体(pure wrapper関数)のsourceは無変更
+        であることを、同一の(意図的に変更後の)入力を渡した出力一致で確認する
+        (入力[focus_module_block_3vの出力]は本SPECタスクで意図的に変更した
+        ため、旧来のように新旧の入力同士を比較するのではなく、関数自体の
+        不変性を直接検証する)。"""
         block_after = wg.build_focus_module_block_3v(theme_ai_screening.THEME_CONFIG)
-        cand_before = self.wg_before.build_candidate_template(block_before)
+        cand_before = self.wg_before.build_candidate_template(block_after)
         cand_after = wg.build_candidate_template(block_after)
         self.assertEqual(cand_before, cand_after)
 
-    def test_leakage_schema_3v_identical(self):
+    def test_leakage_schema_3v_adds_leak_position_blur_to_voice_sections_only(self):
         sb_on, fb_on = self.wg_before.build_leakage_schema_3v(True)
         sa_on, fa_on = wg.build_leakage_schema_3v(True)
-        self.assertEqual(sb_on, sa_on)
-        self.assertEqual(fb_on, fa_on)
+        self.assertNotIn("leak_position_blur", fb_on["voice_1"])
+        self.assertIn("leak_position_blur", fa_on["voice_1"])
+        self.assertIn("leak_position_blur", fa_on["voice_2"])
+        self.assertIn("leak_position_blur", fa_on["voice_3"])
+        # Tension/Closingのfield集合はleak_position_blur追加前後で不変
+        # (Voice数非依存の共通fieldはVoiceセクションのみに適用する設計)。
+        self.assertEqual(fb_on["tension"], fa_on["tension"])
+        self.assertEqual(fb_on["closing"], fa_on["closing"])
         sb_off, fb_off = self.wg_before.build_leakage_schema_3v(False)
         sa_off, fa_off = wg.build_leakage_schema_3v(False)
-        self.assertEqual(sb_off, sa_off)
+        self.assertIn("leak_position_blur", fa_off["voice_1"])
+        self.assertEqual(fb_off["tension"], fa_off["tension"])
 
-    def test_leakage_check_prompt_3v_identical(self):
+    def test_leakage_check_prompt_3v_explains_leak_position_blur(self):
         sections = {
             "voice_1_body": "v1 body text.", "voice_2_body": "v2 body text.",
             "voice_3_body": "v3 body text.", "tension_body": "t body.", "closing_body": "c body.",
         }
         before = self.wg_before.build_leakage_check_prompt_3v(sections, True)
         after = wg.build_leakage_check_prompt_3v(sections, True)
-        self.assertEqual(before, after)
+        self.assertNotIn("leak_position_blur", before)
+        self.assertIn("leak_position_blur", after)
 
     def test_ledger_fragment_visible_voices_only_identical(self):
         ledger_text = (
@@ -401,14 +433,30 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
         一般化」のためsourceを意図的に変更したので、このリストからは除外
         する(3V側の判定ロジック・出力が不変であることは、直後の
         `VoiceSafetyGate2V3VParserGeneralizationTests`で挙動不変性として
-        別途証明する)。"""
+        別途証明する)。
+
+        B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01(2026-09-17、ユーザー
+        正式承認)で以下5関数のsourceを意図的に変更したため、本リストから
+        除外する(除外理由、それぞれ上記`ThreeVoiceByteInvarianceAgainstHeadTests`
+        の対応する契約テストで新内容を個別に確認済み):
+        - `build_focus_module_block_3v`: Voice原則A(立場に徹する)・
+          C(数字は本人経験由来のみ)・F(相手側懸念はTensionへ)の文言追加、
+          Tension役割文言・禁止事項まとめへの追記。
+        - `build_leakage_schema_3v`/`build_leakage_check_prompt_3v`:
+          `leak_position_blur`をVoice section fieldへ追加(`VOICE_LEAKAGE_
+          FIELDS`定数経由)、`leak_numbers_foreground`の基準文言をCに
+          合わせて更新。
+        - `build_leakage_corrective_note_3v`: 是正メモの「この記事全体で
+          必ず守るContractの優先事項」へ「立場境界」bulletを追加。
+        - `run_pipeline_3v`: Acceptance Gate(MAX_ATTEMPTS到達後もflagged
+          項目が残存する場合、`final_result["leakage_residual"]=True`+
+          `final_result["status"]="LEAKAGE_RESIDUAL_STOP"`を記録)を追加。"""
         import inspect
         names = [
-            "build_focus_module_block_3v", "run_fact_check_a_prime_3v",
-            "run_overlap_monitoring_3v", "build_leakage_schema_3v",
-            "build_leakage_check_prompt_3v", "run_analytical_leakage_check_3v",
-            "build_leakage_corrective_note_3v", "run_voices_pattern_3v",
-            "run_pipeline_3v", "run_ledger_deviation_and_local_rewrite",
+            "run_fact_check_a_prime_3v",
+            "run_overlap_monitoring_3v", "run_analytical_leakage_check_3v",
+            "run_voices_pattern_3v",
+            "run_ledger_deviation_and_local_rewrite",
             "_generate_and_compress_article_3v",
             "split_six_voice_sections", "build_ledger_fragment_visible_voices_only",
             "run_phase_a", "build_candidate_prompt",
@@ -417,6 +465,18 @@ class ThreeVoiceByteInvarianceAgainstHeadTests(unittest.TestCase):
             before_src = inspect.getsource(getattr(self.wg_before, name))
             after_src = inspect.getsource(getattr(wg, name))
             self.assertEqual(before_src, after_src, f"{name}のsourceが変更されています")
+
+    def test_run_pipeline_3v_acceptance_gate_added(self):
+        """`run_pipeline_3v`のsourceが、B-FAMILY-VOICES-POSITION-AND-
+        EVIDENCE-SPEC-01のAcceptance Gate(leakage_residual/
+        LEAKAGE_RESIDUAL_STOP)を含むよう意図的に変更されていることを確認する
+        (旧versionには存在しないことも合わせて確認)。"""
+        import inspect
+        before_src = inspect.getsource(self.wg_before.run_pipeline_3v)
+        after_src = inspect.getsource(wg.run_pipeline_3v)
+        self.assertNotIn("LEAKAGE_RESIDUAL_STOP", before_src)
+        self.assertIn("LEAKAGE_RESIDUAL_STOP", after_src)
+        self.assertIn("leakage_residual", after_src)
 
 
 # ============================================================
