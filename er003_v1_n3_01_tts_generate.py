@@ -811,10 +811,22 @@ def generate_a2_segments(theme: dict) -> dict:
     results = {}
 
     topic_intro_text = f"Today's topic is {parts['title']}."
+    # USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-06: タイトルにcolonを含む
+    # 場合、TTSが意味区切りと異なる位置(colon直前ではなくその前の名詞句
+    # 内)で不自然な間を置くユーザー試聴Feedbackへの対応。表示・記事本文・
+    # canonical(ASR照合対象)は`parts['title']`のまま一切変更しない。
+    # `parts.json`に任意で`title_tts`(TTS入力専用の言い換え、例: colonを
+    # ピリオドへ置換)がある場合のみTTS入力の構築にそれを使う(既存の
+    # japanese_gloss/japanese_gloss_tts分離[er003_key_words_
+    # canonicalization.convert_display_gloss_to_tts_text]と同じ設計を
+    # 踏襲した後方互換フィールドで、`title_tts`が無い既存テーマ・既存
+    # runの挙動は完全に無変更)。
+    topic_intro_tts_title = parts.get("title_tts", parts["title"])
+    topic_intro_tts_text = f"Today's topic is {topic_intro_tts_title}."
     print(f"[N3-TTS][{theme_id}/a2] topic_intro生成(Aoede、A2既存単一Voice)...")
     with cl.segment_context("topic_intro"):
         results["topic_intro"] = c.generate_english_segment_with_fallback(
-            tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav",
+            tts_safe_number_words_en(tts_safe_en(topic_intro_tts_text)), f"{narration_dir}/topic_intro.wav",
             first_words(parts["title"], 3), max_extra_chars=30)
     results["topic_intro"]["canonical_text"] = topic_intro_text
 

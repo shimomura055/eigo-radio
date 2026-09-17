@@ -1,0 +1,211 @@
+{
+  "management_id": "USER-TEST-NEWS-2EP-COMPLETION-01-RESUME-06",
+  "purpose": "A2 topic_intro title phrase-boundary fix runtime evidence (user listening feedback 2026-09-17)",
+  "method": "faster_whisper small model, local, word_timestamps=True, condition_on_previous_text=False, vad_filter=False (same method as er008_disfluency_qa_18.transcribe_verbatim used by existing disfluency QA)",
+  "canonical_title_unchanged": "The New Space Question: Is the Weapon in Orbit?",
+  "canonical_topic_intro_text_unchanged": "Today's topic is The New Space Question: Is the Weapon in Orbit?.",
+  "tts_input_before": "Today's topic is The New Space Question: Is the Weapon in Orbit?.",
+  "tts_input_after": "Today's topic is The New Space Question. Is the Weapon in Orbit?.",
+  "parts_json_field_added": "title_tts (TTS-input-only, does not affect display/canonical title)",
+  "before": {
+    "wav_path": "er014_output/user_test_news_2ep_01/space_weapons/a2/narration/attempts/topic_intro_attempt2_standard.wav",
+    "sha256": "c5aaf13e338378aa2a24b2da49d8065a3d03bd570f2464ef7ba7779b91d35a5d",
+    "note": "This is the exact audio that was in the previously committed narration/topic_intro.wav (sha256 match confirmed) before this fix.",
+    "words": [
+      {
+        "text": " Today's",
+        "start": 0.0,
+        "end": 0.62,
+        "probability": 0.9792875945568085
+      },
+      {
+        "text": " topic",
+        "start": 0.62,
+        "end": 0.88,
+        "probability": 0.9979129433631897
+      },
+      {
+        "text": " is",
+        "start": 0.88,
+        "end": 1.32,
+        "probability": 0.9986999034881592
+      },
+      {
+        "text": " the",
+        "start": 1.32,
+        "end": 1.7,
+        "probability": 0.614146888256073
+      },
+      {
+        "text": " new",
+        "start": 1.7,
+        "end": 1.98,
+        "probability": 0.8202195167541504
+      },
+      {
+        "text": " space.",
+        "start": 1.98,
+        "end": 2.4,
+        "probability": 0.991587221622467
+      },
+      {
+        "text": " Question",
+        "start": 2.86,
+        "end": 3.18,
+        "probability": 0.9633360505104065
+      },
+      {
+        "text": " is",
+        "start": 3.18,
+        "end": 3.72,
+        "probability": 0.9007995128631592
+      },
+      {
+        "text": " the",
+        "start": 3.72,
+        "end": 3.86,
+        "probability": 0.9710213541984558
+      },
+      {
+        "text": " weapon",
+        "start": 3.86,
+        "end": 4.16,
+        "probability": 0.9918191432952881
+      },
+      {
+        "text": " in",
+        "start": 4.16,
+        "end": 4.5,
+        "probability": 0.9974260926246643
+      },
+      {
+        "text": " orbit.",
+        "start": 4.5,
+        "end": 4.8,
+        "probability": 0.9985085129737854
+      }
+    ],
+    "gap_space_to_question": {
+      "word_a": "space.",
+      "word_a_end": 2.4,
+      "word_b": "Question",
+      "word_b_start": 2.86,
+      "gap_seconds": 0.46
+    },
+    "gap_question_to_is": {
+      "word_a": "Question",
+      "word_a_end": 3.18,
+      "word_b": "is",
+      "word_b_start": 3.18,
+      "gap_seconds": 0.0
+    },
+    "judgement": "BAD: pause occurs BEFORE Question (0.46s) instead of after it; no pause before Is (0.0s). This reproduces the user-reported bad boundary (\"The New Space / Question: Is the Weapon in Orbit?\")."
+  },
+  "after": {
+    "wav_path": "er014_output/user_test_news_2ep_01/space_weapons/a2/narration/topic_intro.wav",
+    "words": [
+      {
+        "text": " Today's",
+        "start": 0.0,
+        "end": 0.78,
+        "probability": 0.9507855176925659
+      },
+      {
+        "text": " topic",
+        "start": 0.78,
+        "end": 1.12,
+        "probability": 0.9966061115264893
+      },
+      {
+        "text": " is",
+        "start": 1.12,
+        "end": 1.64,
+        "probability": 0.9970597624778748
+      },
+      {
+        "text": " the",
+        "start": 1.64,
+        "end": 2.04,
+        "probability": 0.8867337703704834
+      },
+      {
+        "text": " new",
+        "start": 2.04,
+        "end": 2.38,
+        "probability": 0.7985410094261169
+      },
+      {
+        "text": " space",
+        "start": 2.38,
+        "end": 2.78,
+        "probability": 0.9477099180221558
+      },
+      {
+        "text": " question.",
+        "start": 2.78,
+        "end": 3.4,
+        "probability": 0.9942850470542908
+      },
+      {
+        "text": " Is",
+        "start": 4.04,
+        "end": 4.24,
+        "probability": 0.9774301052093506
+      },
+      {
+        "text": " the",
+        "start": 4.24,
+        "end": 4.4,
+        "probability": 0.9984254837036133
+      },
+      {
+        "text": " weapon",
+        "start": 4.4,
+        "end": 4.7,
+        "probability": 0.9890522360801697
+      },
+      {
+        "text": " in",
+        "start": 4.7,
+        "end": 5.0,
+        "probability": 0.9329613447189331
+      },
+      {
+        "text": " orbit?",
+        "start": 5.0,
+        "end": 5.32,
+        "probability": 0.9995291233062744
+      }
+    ],
+    "gap_space_to_question": {
+      "word_a": "space",
+      "word_a_end": 2.78,
+      "word_b": "question.",
+      "word_b_start": 2.78,
+      "gap_seconds": 0.0
+    },
+    "gap_question_to_is": {
+      "word_a": "question.",
+      "word_a_end": 3.4,
+      "word_b": "Is",
+      "word_b_start": 4.04,
+      "gap_seconds": 0.64
+    },
+    "judgement": "GOOD: no pause after Space (0.0s, \"The New Space Question\" reads as one unit); clear pause before Is (0.64s). Matches user-requested boundary (\"The New Space Question / Is the Weapon in Orbit?\")."
+  },
+  "candidate_exploration": {
+    "note": "Before committing to the production regeneration, 2 candidate TTS-input rewordings (colon->period, colon->dash) were each sample-generated 3 times via a low-level isolated call (er003_b1_p9a_audio.generate_narration_snippet, output to a scratchpad path, not writing to any shared store/narration dir) to check robustness across TTS stochastic variation before spending a production attempt slot.",
+    "period_candidate_samples": 3,
+    "period_candidate_result": "gap_space_to_question=0.0 in all 3 samples; gap_question_to_is in {0.40, 0.30, 0.44}s (all clearly positive). Selected as production candidate (simplest substitution, first suggested in the delegation).",
+    "dash_candidate_samples": 3,
+    "dash_candidate_result": "gap_space_to_question=0.0 in all 3 samples; gap_question_to_is in {0.40, 0.44, 0.24}s (all clearly positive). Not needed since period candidate already worked reliably.",
+    "attempts_used_against_candidate_note": "This exploration used ad-hoc single-shot calls outside the production ASR-validation-gated cascade (er003_v1_repro01_main_generate.generate_narration_snippet_verified_strict), and therefore did not consume any of the Human Review Lock 3-attempt production budget for the topic_intro segment (that budget was used exactly once, successfully, for the real production regeneration below)."
+  },
+  "production_regeneration": {
+    "status": "OK",
+    "audio_classification": "NORMALIZED_MATCH",
+    "asr_text_production_validator": "Today's topic is the new space question, is the weapon in orbit?",
+    "attempts_used": 1,
+    "attempt_audio_path": "er014_output/user_test_news_2ep_01/space_weapons/a2/narration/attempts/topic_intro_attempt3_standard.wav"
+  }
+}
