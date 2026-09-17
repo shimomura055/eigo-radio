@@ -1,20 +1,14 @@
-管理ID: USER-TEST-NEWS-CONVENIENCE-AI-01
-Status: 完了(記事完成、音声はHuman Review Lock 2件でSTOP、USER_DECISION_REQUIRED)。
-  A2/B1とも記事本文・Ledger・QA・Scaffold・Key Phrase・日本語タイトルは完成。
-  A2 point_two(Oimo no Canele、外来語ASR表記ゆれ)・B1 full_story_part1
-  (Lawson then/Then Lawson語順差分)がASR_VALIDATION_UNCERTAINで確定、
-  Assembly Gate BLOCKED(override無し)。Human Review確認ページ作成・
-  Playwright E2E確認済み(commit 468482a6)。
-UDR-blocking: USER-TEST-NEWS-CONVENIENCE-AI-01(音声Human Review Lock2件、
-  承認代行していない。DECISION_LOG該当エントリ・RESULT_PACKET_
-  NEWS_CONVENIENCE_AI_01.md参照)
-新規Open Item: OPEN-165(split_article_text()が任意`##`小見出しを本文から
-  分離しない技術的発見、Blocking対象なし)
-並行衝突回避: docs/pm/locks/audio_stage.lockを使用(他タスクは既にcommit
-  済みだったためpoll待機なし)。TTS/ASR段階終了後にlock削除済み。
-次アクション: ユーザーが(a)A2 point_twoの"Oimo no Canele"読み上げ、
-  (b)B1 full_story_part1の語順("Lawson then"/"Then Lawson")を、
-  Human Review確認ページのmp3で確認し、許容/再生成/その他を判断後、
-  Assembly/Gate→player→web export→URL→browser E2Eを再実行して完成させる。
-報告単位Status: コンビニAI商品開発News=記事完成・音声Human Review Lock待ち
+管理ID: USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01
+Status: B1完成(player URL到達、Playwright E2E PASS)。A2は`point_two`が
+  別要因のASR不一致(商品名"Oimo no Canele"表記ゆれは解消、"AI while"→
+  "a I Well"の新規不一致)でHuman Review Lock継続、USER_DECISION_REQUIRED。
+Fable受入照合3点(時制/未発売事実誤り、A2文長超過1文、B1見出し混入)は
+  是正済み(Ledger Deviation Checker/Fact Checker再実行で確認)。
+UDR-blocking: A2 point_two Human Review(確認ページURL・E2E evidence
+  はRESULT_PACKET_NEWS_CONVENIENCE_AI_01.md「## FIX-01」節F6参照)。
+承認代行していない。
+次アクション: ユーザーが(a)B1 playerを試聴、(b)A2 point_two確認ページで
+  音声を確認し許容/再生成/その他を判断。
+Git SHA: 86cbd93d(記事修正・Ledger登録・再TTS・B1完成・SSOT push済み)。
+報告単位Status: コンビニAI商品開発News=B1完成・A2 Human Review Lock継続
   (USER_DECISION_REQUIRED)

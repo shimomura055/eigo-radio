@@ -429,6 +429,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-NEWS-LIGHT-TOPIC-01-RESUME-02: Tiny Bags B1完成(only→just)+A2 Toteme/Kallmeyer発音診断+Human Review試聴提示ルール(PM_GOVERNANCE 9-12)新設
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01: コンビニAI商品開発News A2/B1、記事完成・音声はHuman Review Lock 2件でSTOP
 - [本ファイル内] ## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01: Fable受入照合3点是正(時制/未発売事実誤り・A2文長超過・B1見出し混入)、B1完成、A2は別要因でHuman Review Lock継続
+- [本ファイル内] ## B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01: Voiceの立場境界(A/C/F)+leak_position_blur+Acceptance Gate正式配線、Personalized News A2再生成でLeakage 0件確認・音声化完了、Personalized News B1再生成はFact Checker FAILでSTOP
 
 ---
 
@@ -8075,6 +8076,21 @@ RESULT_PACKET_FU03_TREND_NAMING.md`、`docs/pm/RESULT_PACKET_FU03_SPEC_AUDIT.md`
 - **cost実測**: `raw_usage_log.jsonl`ベースで**¥122.12**(Research/Ledger+A2/B1 Writer/Fact Checker/Ledger Deviation[openai]=¥74.46、TTS[gemini]=¥44.55、ASR[openai_asr]=¥3.11、azure[Secondary ASR]はpricing_snapshot未収載のため¥0扱い[7件unpriced])。Scaffold(Preview/Comment)・Key Phrase選定/canonicalizationはこのdriverの`cost_stage()`計測対象外(既知の計測ギャップ、Tiny Bags/Space Weapons等既存driverと同型)。上限¥600に対し十分な余裕。**運用上の注意点**: 本タスク実行中、`tts_stage()`等の個別stage関数をdriver `main()`経由ではなく直接呼び出した際、`er005_cost_logger.install()`(cost計測の初期化)を呼び忘れ、Azure Secondary ASRの直接`cl.record()`呼び出しでRuntimeErrorが発生し1回クラッシュした(A2 TTSの一部segmentが計測なしで実行される結果となり、その回のGemini TTS/OpenAI Primary ASR実費用はraw_usage_log.jsonlに記録されていない)。`cl.install()`を明示的に呼んでから全stageを再実行して完了させたため最終成果物・cascade結果には影響しないが、実測¥122.12は最初のクラッシュ分の未計測費用を含まない過小評価である可能性がある点を記録する(Production コード自体の不具合ではなく、本タスクでのstage呼び出し順序の誤りによるもの)。
 - Status: `USER_DECISION_REQUIRED`(音声Human Review Lock2件、STOP)。記事(A2/B1本文・Ledger・QA・Scaffold・Key Phrase・日本語タイトル)は完成。音声はA2/B1とも1 segmentずつ未解決、episode/player/URL未生成。
 - 参照: `docs/pm/RESULT_PACKET_NEWS_CONVENIENCE_AI_01.md`、`docs/pm/delegation_log/USER-TEST-NEWS-CONVENIENCE-AI-01.md`。
+
+## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01: Fable受入照合3点是正、B1完成・A2は別要因でHuman Review Lock継続
+
+- 日付: 2026-09-17
+- 種別: Fable受入照合による差し戻し(1回目)。ユーザー試聴前にFableが発見した3点(時制・未発売事実の誤り、A2の18語超過1文、B1 `parts.json`見出し混入)を是正。
+- **(1) 時制・事実の誤り是正**: A2記事のLawson発売部分("Lawson scheduled..."/"It was planned for..."/"So this was a regional launch, not a nationwide or permanent product.")とFamilyMart部分("The product launched across Japan...")、B1記事のLawson部分("It was a regional launch, not evidence of a permanent nationwide product.")とFamilyMart部分("...launched nationwide on September 22, 2026...")を、Verified Fact Ledgerに沿って最小限のtense fix(is scheduled to sell/is scheduled to go on sale等)へ修正し、根拠のない「非恒久(not permanent)」という記事側の解釈を削除した(新Fact追加なし)。正式Local Rewrite経路(`er010_ledger_local_rewrite_09`)はLedger Deviation Checkerが検出したMAJOR deviation専用でありFact Checker[時制]指摘には使えないため、委任文の指示どおり最小限の手動編集+同経路のdiff QA相当(Ledger Deviation Checker全文再実行[Hook-aware]+Fact Checker全文再実行)を実施した。結果: A2/B1とも`LEDGER_COMPLIANT`維持(MAJOR=0)。Fact Checkerの時制指摘(B1のcontradictions含む)は解消し、残る`REVIEW_REQUIRED`は無関係な軽微な解釈差のみ(advisory、non-blocking、既存ER-010-NO9方針どおり)。
+- **(2) A2文長超過の是正**: A2 32語の1文("But it shows one way...while people decide whether it belongs on the shelf.")を3文(14/7/9語)へ分割。同一段落内で診断上限(18語)を超えていた別の1文(4,700店舗の説明、20語)も発見し同様に2文へ分割した(delegation「他にも18語超の文があれば同様に分割」の指示範囲内)。分割後の全文が18語以内であることを`re.findall(r"[A-Za-z']+", sentence)`による個別カウントで確認済み。B1は元々診断上限内のため変更なし(delegation指示どおり)。
+- **(3) B1見出し混入の是正**: `er003_v1_n3_01_scaffold_generate.py::split_article_text()`が`## Main Story`見出しを本文から分離しない既知の技術的発見(OPEN-165)について、`parts.json`のcanonical text(part1)からのみ`## Main Story\n\n`を除去した(artifact側対応、`article.md`本体の見出し・Production関数自体は無変更、Production修正はユーザー判断待ちのまま据え置き)。
+- **Pronunciation Ledger登録**: "Oimo no Canele"(surface、entity_type=product)をLedger正式経路(Perplexity調査、cache miss→新規登録)で登録した(confidence=low、hint="oh-EE-moh noh kah-nuh-LAY"、ledger_id=`b8069b0cdf6a0911`)。登録後、A2/B1のpoint_two本文双方で`get_hint_for_text()`によるヒットを確認し、Secondary ASR呼び出し時に`phrase_list_used=true`を実際に確認した。
+- **再TTS結果(影響segmentのみ、正式cascade経由)**: A2 `full_story_part2`=OK(`NORMALIZED_MATCH`)。A2 `point_two`=`ASR_VALIDATION_UNCERTAIN`継続(Secondary ASR[Phrase List]は今回"Oimo no Canele"を完全一致で書き起こし商品名の課題自体は解消したが、同じSecondary ASR結果内で"AI while"→"a I Well"という別の新規不一致が`TRUE_CONTENT_MISMATCH`と判定され、cascade全体としては`ASR_VALIDATION_UNCERTAIN`のまま確定、Human Review Lockへ差し戻し)。B1 `full_story_part1`=OK(`HIGH_SIMILARITY_SAFE`、既知の"Lawson then"/"Then Lawson"語順差分は今回のASR/Validatorで許容判定されRESOLVED)。B1 `point_one`/`point_two`=OK(`NORMALIZED_MATCH`)。Human Review Lock中だった2segment(A2 point_two・B1 full_story_part1)は、canonical text変更に伴う正当な再生成として`er011_human_review_lock_01.approve_regenerate()`で承認記録した(ユーザー承認代行ではない、既存の正式手順)。
+- **完成状態**: B1はAssembly PASS(287.774秒、peak=0.95、clipping無し)・Audio Validation Gate PASS・player.html生成・Playwright実ブラウザE2E確認済み(`"Main Story"`文字列が実際のplayer scriptに一切表示されないことも直接確認、OPEN-165の実害なしを実証)。A2はpoint_two未解決のためAssembly `GATE_BLOCKED`(override無し)のまま、Human Review確認ページを新canonical・新ASR結果で更新し、Playwright実ブラウザE2Eで動作確認済み。承認代行はしていない。
+- **並行タスク注意**: `docs/pm/locks/audio_stage.lock`を開始時(既存lock無し確認済み)に作成したが、TTS/ASR実行中に並行タスク(`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01`)のlockへ上書きされていたことを事後確認した(同時刻帯のレース、両者とも「lock無し」を確認した直後に書き込んだと推定)。共有audit file(Pronunciation Ledger・Master Audio Store等)のJSON妥当性と自タスク追加分の整合性を直接確認し、実害(データ破損・キー競合)は無かった。lockファイルは現在他タスクの識別子を保持しているため自タスクの判断では削除していない。
+- **cost実測**: FIX-01分の増分は約¥50(内訳: openai[Ledger Deviation/Fact Checker再実行]=¥31.17、gemini[TTS再生成4segment]=¥17.50、openai_asr=¥1.30、perplexity/azureは`pricing_snapshot`未収載のため¥0扱い)。上限¥100に対し余裕あり。
+- Status: B1=`USER_TEST_READY`相当(技術的完成、ユーザー未試聴)。A2=`USER_DECISION_REQUIRED`(Human Review Lock継続、STOP)。
+- 参照: `docs/pm/RESULT_PACKET_NEWS_CONVENIENCE_AI_01.md`「## FIX-01」節、`docs/pm/delegation_log/USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01.md`。
 
 ## 参照元
 
