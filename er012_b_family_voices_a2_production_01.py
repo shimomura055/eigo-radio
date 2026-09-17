@@ -671,9 +671,30 @@ def generate_voice_body_wide_margin_with_a2_slowdown(name: str, tts_input: str, 
 # (`main_a2()`)はこれらのsegmentを承認済みbyteとして再利用するため
 # 呼ばない(新規topic経路専用)。
 # ============================================================
+# PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B-FIX-01: 是正。
+# 旧実装はpoint_headings.generate()(単一attempts_logループ内でstandard→
+# minimal_fallbackを切り替える設計、er003_v1_sing01_point_headings_aoede.py)
+# を直接呼んでいたため、1回目の試行でsecondary_asr側がstop_retrying=True
+# を返すと、minimal_fallback側を一度も試さずにASR_VALIDATION_UNCERTAINで
+# 即座に終了してしまっていた(2026-09-17実データ、point_one_heading/
+# point_two_headingがattempt1のみでHuman Review Lockへ遷移)。
+# 一方、承認済みfree_address経路(A01/ADD03、本モジュールと同じ
+# n3_tts.py内、834-845行目)のNarrator見出しは、standard経路
+# (generate_narration_snippet_verified_strict)とminimal instruction
+# fallback経路(repro01.generate_english_component_minimal_instruction)を
+# 明確に分離した`n3_tts.generate_a2_segment_with_slowdown()`
+# (内部でc.generate_english_segment_with_fallback()を呼ぶ)を使っており、
+# standard側が(stop_retryingの早期打ち切りを含め)不合格で終わっても、
+# fallback側は独立した予算で必ず試行される。本関数を、新規ロジックを
+# 追加せず、この既存承認済み呼び出しパターンへ合わせる(呼び出し引数も
+# n3_tts.py 842-844行目のPoint見出し呼び出しと同一: expected_substring=
+# first_words(text, 3)、max_extra_chars=20、style_prefix_override=
+# A2_ENGLISH_STYLE_PREFIX_SLOWER、disfluency_qa=True)。
+# ============================================================
 def generate_narrator_heading_with_a2_slowdown(name: str, tts_input: str, out_path: str) -> dict:
-    result = point_headings.generate(tts_input, out_path)
-    return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
+    return n3_tts.generate_a2_segment_with_slowdown(
+        tts_input, out_path, n3_tts.first_words(tts_input, 3), max_extra_chars=20,
+        style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER, disfluency_qa=True)
 
 
 def generate_narration_wide_margin_with_a2_slowdown(name: str, tts_input: str, out_path: str,

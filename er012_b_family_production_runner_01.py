@@ -1860,7 +1860,17 @@ def build_player_html_a2_2v_new_topic(assemble_summary: dict, timeline: list, pa
         reason_note = "<p style='color:#b00'><b>Voice変更理由(fallback発火):</b> " + \
                        " / ".join(f"{k}: {v}" for k, v in voice_resolution_reasons.items()) + "</p>"
 
-    episode_audio_url = abs_url(assemble_summary["out_path"])
+    # PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B-FIX-01: Episode audio
+    # (unified.htmlがchooseAudio()で選ぶaudio.main要素)だけは、file:///絶対
+    # パス(ローカル監査専用、リモートでは解決不能)ではなく、player.html自身の
+    # 配置場所(out_dir_base直下)を基準にした相対パス"web/episode.mp3"を使う
+    # (export_web_delivery_a2_2v_new_topic()が同じout_dir_base/web/episode.mp3
+    # へ実際に書き出す、既存の命名規約と一致させるのみ、新規ロジックなし)。
+    # 個別segment行の音声(audio_html、下記rows構築)はunified.html側で参照
+    # されない(chooseAudioはaudio.main/audio[id*=episode]のみを見る設計、
+    # rowDataはtext+seek秒のみ抽出)ため、ローカル監査用のfile:///のまま
+    # 無変更とする(householdと同じくplayer.htmlは記事dir直下に配置)。
+    episode_audio_url = "web/episode.mp3"
     html = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B player</title>

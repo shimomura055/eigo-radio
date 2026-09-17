@@ -183,5 +183,95 @@ class KeyPhraseSelectionSourceTests(unittest.TestCase):
         self.assertIsNot(a2prod.run_key_phrases_a2_from_own_text, a2prod.reuse_key_phrases_a2)
 
 
+class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
+    """PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B-FIX-01: 新規topic
+    経路のNarrator見出し(point_one_heading/point_two_heading)TTSが、承認済み
+    free_address経路(er003_v1_n3_01_tts_generate.py 834-845行目)と同一の
+    retry/fallback policy(n3_tts.generate_a2_segment_with_slowdown、standard
+    経路とminimal instruction fallback経路が分離されており、standard側が
+    stop_retrying等で早期終了してもfallback側は独立予算で必ず試行される)を
+    経由することを確認する。旧実装(point_headings.generate単体、standardと
+    fallbackが単一attempts_logループ内にあり、stop_retrying=Trueで
+    fallbackへ到達せず即座にHuman Review Lockへ落ちていた)へ回帰しないための
+    regressionを兼ねる。"""
+
+    def test_generate_narrator_heading_calls_generate_a2_segment_with_slowdown(self):
+        captured = {}
+
+        def fake_generate_a2_segment_with_slowdown(tts_input, out_path, expected_substring,
+                                                     max_extra_chars=60, style_prefix_override=None,
+                                                     disfluency_qa=False, **kwargs):
+            captured.update({
+                "tts_input": tts_input, "out_path": out_path, "expected_substring": expected_substring,
+                "max_extra_chars": max_extra_chars, "style_prefix_override": style_prefix_override,
+                "disfluency_qa": disfluency_qa,
+            })
+            return {"status": "OK", "text": tts_input, "path": out_path}
+
+        with patch.object(a2prod.n3_tts, "generate_a2_segment_with_slowdown",
+                           side_effect=fake_generate_a2_segment_with_slowdown) as mocked, \
+             patch.object(a2prod.point_headings, "generate") as mocked_old_fn:
+            result = a2prod.generate_narrator_heading_with_a2_slowdown(
+                "point_one_heading", "One Voice: My morning news route.",
+                "narration_dir/point_one_heading.wav")
+
+        # 新実装は既存の承認済み合成primitiveのみを呼び、新規TTS/ASR/
+        # time-stretchロジックを内部に持たない(合成呼び出しの確認)。
+        mocked.assert_called_once()
+        # 旧実装(point_headings.generate直接呼び出し)へは戻っていないこと。
+        mocked_old_fn.assert_not_called()
+        self.assertEqual(result["status"], "OK")
+
+        # 呼び出し引数が、承認済みfree_address経路の呼び出しパターン
+        # (n3_tts.py 842-844行目: expected_substring=first_words(text, 3)、
+        # max_extra_chars=20、style_prefix_override=A2_ENGLISH_STYLE_PREFIX_SLOWER、
+        # disfluency_qa=True)と一致することを確認する。
+        self.assertEqual(captured["expected_substring"],
+                          a2prod.n3_tts.first_words("One Voice: My morning news route.", 3))
+        self.assertEqual(captured["max_extra_chars"], 20)
+        self.assertEqual(captured["style_prefix_override"], a2prod.n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)
+        self.assertEqual(captured["disfluency_qa"], True)
+
+    def test_standard_stop_retrying_does_not_skip_fallback_budget(self):
+        """secondary_asr側がstandard経路1回目でstop_retrying=Trueを返しても、
+        fallback(minimal instruction)経路が独立予算で少なくとも1回試行される
+        (旧point_headings.generate単体ループのように、fallbackへ到達せず
+        即座にASR_VALIDATION_UNCERTAINで終了しない)ことを、実際の合成関数
+        n3_tts.generate_a2_segment_with_slowdown -> generate_english_segment_
+        with_fallbackの経路で確認する(standard側のTTS/ASRのみmockし、
+        fallback側の existing実装はそのまま実行させることで、両者が
+        構造的に分離されていることを検証)。"""
+        import er003_v1_crosslevel_audio_02_common as crosslevel
+        import er003_v1_repro01_main_generate as repro01
+
+        def fake_standard(text, language, out_path, expected_substring, max_attempts=2,
+                           max_extra_chars=60, style_prefix_override=None, disfluency_qa=False,
+                           enable_connected_speech_equivalence_layer=False, enable_repetition_qa=False):
+            # standard側がstop_retryingにより1回のみでASR_VALIDATION_UNCERTAIN
+            # を返した状態を模擬する(fallbackへの到達可否だけを検証したいため、
+            # 実際のTTS/ASR APIは呼ばない)。
+            return {"status": "ASR_VALIDATION_UNCERTAIN", "attempts_log": [{"attempt": 1}]}
+
+        fallback_calls = {"count": 0}
+
+        def fake_minimal_instruction(text, out_path):
+            fallback_calls["count"] += 1
+            return {"status": "OK"}
+
+        with patch.object(crosslevel, "generate_narration_snippet_verified_strict", side_effect=fake_standard), \
+             patch.object(repro01, "generate_english_component_minimal_instruction",
+                           side_effect=fake_minimal_instruction), \
+             patch.object(crosslevel.routing, "transcribe", return_value=("One voice, a desk.", None)), \
+             patch.object(crosslevel.secondary_asr, "evaluate_attempt_with_cascade",
+                           return_value=(True, False, type("Cls", (), {"classification": "NORMALIZED_MATCH"})())):
+            result = crosslevel.generate_english_segment_with_fallback(
+                "One Voice: A desk that helps me start.", "narration_dir/point_one_heading.wav",
+                "One Voice:", max_extra_chars=20)
+
+        self.assertGreaterEqual(fallback_calls["count"], 1)
+        self.assertEqual(result["status"], "OK")
+        self.assertTrue(result.get("fallback_used"))
+
+
 if __name__ == "__main__":
     unittest.main()
