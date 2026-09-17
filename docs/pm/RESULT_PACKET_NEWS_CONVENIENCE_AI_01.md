@@ -72,7 +72,7 @@ F10. **情報密度再計測**: A2=語数310(元299から微増、tense fix分)�
 
 F11. **cost**: FIX-01分の増分=**約¥49.97**(`raw_usage_log.jsonl`の新規27レコード分、openai[Local Rewrite相当のLedger Deviation/Fact Checker再実行]=¥31.17、gemini[TTS再生成4segment]=¥17.50、openai_asr=¥1.30、perplexity[Pronunciation Ledger調査]・azure[Secondary ASR]は`pricing_snapshot`未収載のため¥0扱い[実費はこれよりわずかに高い可能性、既知ギャップ])。上限¥100に対し十分な余裕。累計(初回¥122.12+今回約¥50)=約¥172。
 
-F12. **Git SHA**: `86cbd93d`(記事修正・Ledger登録・再TTS成果物・B1 player/web・SSOT[OPEN_ITEMS/DECISION_LOG]、push済み・origin/main反映確認済み)。E2E evidence・RESULT_PACKET最終版・ARTIFACT_REGISTRY更新は後続commitで反映(下記参照)。
+F12. **Git SHA**: `86cbd93d`(記事修正・Ledger登録・再TTS成果物・B1 player/web・SSOT[OPEN_ITEMS/DECISION_LOG]、push済み)、`58885794`(DECISION_LOG本体・ARTIFACT_REGISTRY・RESULT_PACKET最終版・E2E evidence、push済み・origin/main反映確認済み)。両commitの間に並行タスク`B-FAMILY-VOICES-POSITION-AND-EVIDENCE-SPEC-01`のcommit(`9c642f16`/`a54d0201`)が同一ローカルリポジトリ上で挟まったが、`git diff --stat`で自タスクの変更箇所(DECISION_LOG/ARTIFACT_REGISTRY/OPEN_ITEMS)が意図どおりの追記のみであることを確認済み(F15参照)。
 
 F13. **SSOT**: `DECISION_LOG.md`に`## USER-TEST-NEWS-CONVENIENCE-AI-01-FIX-01`エントリ追加(索引+本体)。`OPEN_ITEMS.md`のOPEN-162行へ「本件ではFact Checker REVIEW_REQUIRED[時制]が真陽性だった」観測を追記、OPEN-165行へ「artifact側で見出し除去し対応、Production修正は据え置き」を追記。`ARTIFACT_REGISTRY.md`のA2/B1行を更新(B1=完成・URL反映、A2=Human Review Lock継続で理由更新)。
 
