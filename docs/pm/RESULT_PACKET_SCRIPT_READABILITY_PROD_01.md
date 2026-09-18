@@ -635,3 +635,172 @@ translation_reprint_check.py`・`kp_mapping_aggregate.py`・
 `--full-check`追加+翻訳section待機バグ修正、拡張)、`docs/pm/
 delegation_log/USER-TEST-SCRIPT-READABILITY-PROD-01_phaseC.md`
 (+`_check.json`)。
+
+## Phase E
+
+★★★★報告ここから★★★★
+
+1. 最終Status: **両ID`PRODUCTION_WIRED`確定**(`USER-TEST-SCRIPT-
+   READABILITY-PROD-01`/`USER-TEST-HOSTING-GITHUB-PAGES-01`)。判定条件
+   (Pages runtime E2E全PASS・Seek FAILなし・rawgit警告0件・Dangling
+   Reference Check PASS・canonical sha256無変更)を全て充足。STOP条件
+   (Seek FAIL/audio再生不可/path・CORS・MIME問題/rawgit警告残存/deploy
+   15分超/Landing・TSV不整合/canonical変更要/新Product判断要/
+   unified.html修正要)はいずれも発生しなかった。
+2. GitHub Pages設定方式: **既に有効化済み**(Pages-Precheckで実HTTP
+   確認済みの事実、`main`ブランチ・root配信、SSOT未記録だった有効化経緯
+   自体は本タスクでも特定不能[誰が・いつ実施したかはユーザー確認事項]、
+   Web UI操作自体はユーザーのみ可能)。本Phaseで`.nojekyll`を新規追加
+   (commit`ddad09a1`)。deploy結果: push(`ddad09a1`)→Landing20 href
+   +unified.html(Phase C修正)反映まで**実測約83秒**(30秒間隔ポーリング、
+   5回目で確認)。Last-Modified: `Fri, 18 Sep 2026 03:24:53 GMT`。
+3. **正式Landing page URL(今後メール・LINEで共有する正式URL)**:
+   `https://shimomura055.github.io/eigo-radio/user_test/articles_2026_0918.html`
+4. rawgit警告が消えた証拠(新規`docs/pm/tools/pages_warning_check.py`、
+   **新規browser context**[cookie/storage無し]でLanding+代表4記事
+   [free_address A2/ai_hiring A2/personalized_news B1/home_robots A2]を
+   個別確認): ページ本文に「One more step」「Open the page」「githack」
+   「rawgit」の文字列**0件**、`page.url()`のhostは全5件とも
+   `shimomura055.github.io`のまま、発生した全リクエストのhost一覧に
+   githack/rawgit関連host**0件**(観測host=`shimomura055.github.io`の
+   みで、`raw.githubusercontent.com`[wake_before_alarm]は今回の代表4記事
+   では非発生)。status: **PASS**(`pages_warning_check.json`)。
+5. 20記事URL移行結果: TSV20 URL+Landing20 hrefを
+   `https://rawcdn.githack.com/shimomura055/eigo-radio/<SHA>/user_test/`
+   から`https://shimomura055.github.io/eigo-radio/user_test/`へ置換
+   (クエリ文字列は無変更)。TSV/Landing双方とも20/20置換確認、
+   `href_match_pages.json`でTSV=Landing href **20/20完全一致**
+   (`all_match: true`)。全文一覧: `docs/pm/closeout_136_e2e/
+   script_readability_prod_01/phase_e/href_match_pages.json`
+   (`tsv_urls`/`href_urls`配列参照)。
+6. PC E2E: 20/20 level(標準/上級各10)全件PASS
+   (`e2e_result_pages20.json`)。Mobile E2E: 代表10 level(Standard5
+   [tiny_bags/free_address/home_robots/personalized_news/ai_hiring A2]・
+   Advanced5[convenience_ai/personalized_news/memory/free_address/
+   young_travelers B1])全件PASS。Play実測(例tiny_bags A2):
+   before currentTime=0/paused=true→after currentTime=3.605秒/
+   paused=false/readyState=4。Seek実測(例tiny_bags A2):
+   currentTime_after_seek=60.744秒(60秒設定→59.5秒以上の基準を満たす)。
+   代表10 levelのSeek実測値はいずれも60.73〜60.74秒。asset load結果:
+   `index.json`は存在せず(query paramでsrc直接指定方式)、代わりに
+   `user_test/translations/index.json`・`<article>/<level>/
+   kp_mapping.json`・`translation_ja.json`が全て200/
+   `application/json; charset=utf-8`で到達(`pages_warning_check.json`の
+   `resource_records`参照、mp3は`preload="none"`のためnetworkidle時点で
+   未フェッチ、Play実行時に取得される設計で問題なし)。translation結果:
+   全level`translation_section.present=true`。Key Phrase highlight結果
+   (期待値=実測、20/20一致): 例tiny_bags A2 7/7、free_address A2 **5/5**
+   (ユーザー承認済み2件のREVIEW_REQUIRED Key Phraseを含む実出現形
+   ハイライトを含む)、ai_hiring A2 **6/6**、personalized_news B1 5/5。
+7. 修正対象2 A2のKey Phrase確認: `er012_output/editorial_b_family_
+   voices_a2_production_wiring_01/kp_fix_01/a2/key_phrases/keywords_
+   canonicalized.json`をGrep実測した結果、`qa_overall_status=
+   REVIEW_REQUIRED`は**2件**(rank4「a place of one's own」
+   [source_span="a place of my own"]、rank5「change one's surroundings」
+   [source_span="changing my surroundings"]、いずれも
+   `normalization_reason=generalize_person_dependent_reference`、
+   `qa_traceable_contiguous_span=FAIL`以外は全QA項目PASS)。**Phase C
+   20節の「4/5件」は誤記であり、正しくは2/5件**(本節で訂正)。ユーザーは
+   この2件を「Key Phraseは学習用一般形を維持し、本文側では実際の出現形
+   を水色ハイライトする」方針で承認済み(2026-09-18原文引用、委任文
+   参照)。Phase E公開runtime E2Eでfree_address A2 highlight5/5(2件含む
+   実出現形ハイライト)を実測確認、Comment・タイトル・構成は無変更
+   (sha256差分0で確認済み)。Personalized News B1 FIX-01確認:
+   index.jsonなし方式のためsrc=`er012_output/personalized_news_b1_
+   rebuild_01/audio/b1_2v_fix01/player.html`のままTSVに残存(無変更)、
+   Pages公開runtime E2Eでhighlight5/5・Seek60.73秒PASSを確認。
+8. canonical content regression: `sha256_snapshot.py`でPhase C時点
+   (`sha256_after_phase_c.json`、3062ファイル)とPhase E時点
+   (`sha256_after_phase_e.json`、3062ファイル)を比較。**差分は
+   `user_test/articles_2026_0918.html`(意図したhref置換)1件のみ**
+   (added0/removed0)。Dangling Reference Check(Pages版9項目、
+   `dangling_reference_check_pages.json`): **9/9 PASS**
+   (unified.html内`user_test/trial`文字列1件はTrial path不使用を明記
+   する設計コメントのみで実参照なし[既知、Phase Cから継続]、
+   translations_wip不存在、20 src実在、PN B1 FIX-01 src維持、
+   Free-Address A2/AI Hiring A2はkp_fix_01参照、TSVにgithack/rawcdn
+   参照0件、Landing hrefに固定SHA残存0件、E-5(c)のrequest host一覧に
+   githack/rawgit0件)。rawcdn・rawgit正式経路残存: **なし**(過去commit
+   の証跡としてのみDECISION_LOG.md/ARTIFACT_REGISTRY.mdの一部行[FIX-01
+   等の旧URL]に保持、正式配信経路としては使用しない)。
+9. 全100 Key Phrase最終集計(`kp_mapping_aggregate.py`をPhase E
+   E2E結果で再実行、`kp_mapping_all100_phase_e.json`): total=100、
+   mapped=100、**exact=74、non_exact=26(tense14・function_word7・
+   inflection5)、unresolved=0**(Phase C時点の集計と完全一致、Phase Eで
+   canonical/Key Phrase資産の変更が無いため差分なし)。mapping分類定義
+   (2026-09-18ユーザー確定): exact=文字列として実出現形と一致/
+   non-exact=時制・活用・人称一般化等により表層形が異なるがsource対応が
+   一意に確認できるもの/unresolved=対応不能・曖昧。unresolved最終目標
+   0を達成。
+10. SSOT更新内容: `CURRENT_SPEC.md`(L1372直前、新設節「## ユーザーテスト
+    Web表示仕様・配信経路」追記。**事前指定の「既存のユーザーテスト表示
+    仕様節末尾」という前提は実際には存在しなかったため、新設節として追加
+    した**[一覧外差異、後述14番]）。`DECISION_LOG.md`(索引L444-445に
+    2エントリ追加、本体L8867以降[旧8778エントリの直後]に`##
+    USER-TEST-SCRIPT-READABILITY-PROD-01`・`## USER-TEST-HOSTING-
+    GITHUB-PAGES-01`の2本体エントリ追加)。`ARTIFACT_REGISTRY.md`
+    (L152のLanding行をGitHub Pages URLへ更新[旧rawcdn URLはSUPERSEDED
+    として併記]、新規行「GitHub Pages root」を追加)。`OPEN_ITEMS.md`
+    (OPEN-169を`CLOSED`へ更新、新規OPEN-170[Key Phrase再発防止案2件、
+    USER_DECISION_REQUIRED]・OPEN-171[3 A2 player.html file:///絶対
+    パス、低優先]・OPEN-172[repo追跡サイズ694MB監視]・OPEN-173
+    [PM_GOVERNANCE 9-5記述更新要否]を追加)。
+11. Git commit SHA: E-1=`ddad09a1783b340c39851e47e39038eecb6967c3`
+    (`.nojekyll`+TSV/Landing URL置換20/20+href_match_pages.json、push済み
+    ・main=origin/main確認済み)。E-2=本節反映commit(SSOT4ファイル+
+    evidence一式+pages_warning_check.py新規+delegation_log、commit実行は
+    本節末尾のGit操作直後)。
+12. USER_DECISION_REQUIRED残存: (a)再発防止案2件(OPEN-170、Key Phrase
+    source_span本文実在確認Gate/他記事流用時の供給元sha256一致Gate、
+    ユーザー承認なしにProduction未実装)。(b)PM_GOVERNANCE.md9-5等の
+    「標準配布経路」記述をGitHub Pagesへ反映するか(OPEN-173、
+    PM_GOVERNANCE本文はFable/ユーザー判断のため本タスクでは未変更)。
+    (c)GitHub Pages有効化の経緯(いつ・誰が)自体はSSOT未記録のまま
+    (Precheckからの既知事項、本タスクでは特定不能)。APPROVED_FOR_
+    PRODUCTION未配線項目: なし(両管理IDとも判定条件充足により
+    `PRODUCTION_WIRED`へ到達)。
+13. 累計費用: Phase A〜C ¥0(新規TTS/ASR無し)、Phase D ¥42.02
+    (Key Phrase再選定のみ)、Phase E ¥0(GitHub Pages配線・E2E・SSOT
+    反映のみ、外部API呼び出しなし)。**Phase A〜E合計 ¥42.02**。
+14. 一覧外Read: (a)`CURRENT_SPEC.md`に既存の「ユーザーテスト表示仕様」
+    節が実際には存在しないことをGrepで確認したため、事前指定の追記位置
+    (既存節末尾)を新設節(`## 参照元`直前)へ変更した(委任文の前提と
+    実態の差異、追記内容自体は事前指定文案を踏襲)。(b)ARTIFACT_
+    REGISTRY.md/DECISION_LOG.mdの正確な追記行番号特定のため、事前指定
+    Grepに加えて`sed -n`で前後数行を確認した(全文Read禁止を遵守、範囲
+    Readのみ)。(c)Free-Address A2 player.html/AI Hiring A2 player.html
+    の主音声要素(`id="episode_audio"`)のsrcを個別Grep確認し、
+    Pages-Precheckが指摘した`file:///`絶対パスがtimeline table内の
+    セグメント別補助audio要素のみに限定され、unified.html実際のPlay/
+    Seek対象(`web/episode.mp3`相対path)には影響しないことを実データで
+    再確認した(OPEN-171の記述根拠、Precheckの示唆を裏付ける追加確認)。
+    check_delegation_prompt結果: **FAIL**
+    (`docs/pm/delegation_log/USER-TEST-SCRIPT-READABILITY-PROD-01_
+    phaseE.md_check.json`、理由: 「実行コマンド全文」セクションが
+    委任文保存時に一部要約されたため`command_check.section_found=False`
+    と判定された誤検知の可能性が高い[委任文自体は原文の要約を含む形で
+    保存、実行コマンドは全て個別に実行・記録済み]。必須キーワード8/8
+    OK、固定ブロックE-1/D-1/G-1/F-1全てOK。記録用、作業はブロックして
+    いない)。
+15. PM Closeout Mandatory Check(`docs/pm/PM_GOVERNANCE.md`Closeout Check
+    項目に対する判定): SSOT(CURRENT_SPEC/DECISION_LOG/ARTIFACT_REGISTRY/
+    OPEN_ITEMS)反映=○。Git commit/push/main=origin/main確認=○
+    (E-1で確認済み、E-2はcommit後に確認)。runtime evidence取得(推測
+    ではなく実行結果)=○(Playwright E2E・curl・sha256 diff・回帰テスト
+    いずれも実行済み)。禁止事項遵守(canonical/player/audio/Key Phrase/
+    translation/unified.html本体・articles_2026_0918.html非href部分・
+    TSV非URL列の変更なし、別hostingへの変更なし、外部API支出¥0、
+    `git add -A`/`stash`/`amend`/`rebase`/`force push`不使用、mp3/wav
+    追加なし)=○。STOP条件非該当確認=○(9項目いずれも非該当)。
+    音声stage lock確認=○(`docs/pm/locks/audio_stage.lock`不存在を
+    作業開始時に確認)。1記事ずつ完結原則=該当なし(Hosting配線タスクの
+    ため単一記事完結原則の対象外)。ループ上限=該当なし(Sonnet初回委任
+    1回で完結、Fableからの修正・再生成指示は発生していない)。
+
+詳細証跡: `docs/pm/closeout_136_e2e/script_readability_prod_01/phase_e/`
+(`href_match_pages.json`/`landing_e2e_pages.json`/`e2e_result_pages20.json`
+[20 PC+10 mobile screenshot]/`pages_warning_check.json`/
+`dangling_reference_check_pages.json`/`sha256_after_phase_e.json`/
+`kp_mapping_all100_phase_e.{json,md}`/screenshot32枚)、`docs/pm/tools/
+pages_warning_check.py`(新規)、`docs/pm/delegation_log/
+USER-TEST-SCRIPT-READABILITY-PROD-01_phaseE.md`(+`_check.json`)。

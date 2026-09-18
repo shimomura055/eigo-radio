@@ -1369,6 +1369,47 @@ Translation pipeline・CEFR/spoken-first系の過去の実験タスク等、こ�
 した箇所は、既存のSol既定値のまま変更していない(該当箇所は
 ER-006-MODEL-ROUTING-CONTRACT-01完了報告のAudit一覧を参照)。
 
+## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
+
+**表示仕様**: Key Phraseハイライトは`user_test/unified.html`の
+`applyKeyPhraseHighlight`が`kp_mapping.json`の`matched_text`を大小文字・
+apostrophe種のみ許容する決定論的完全一致検索で本文(`p.script`)に適用し、
+水色`mark.kp-hl`(`#dff2fb`)で表示する。表層差(語形変化・人称一般化等)が
+ある場合は`mapping_type`(exact/tense/inflection/function_word等)に
+分類し、`matched_text`は常に本文の実際の表記に追従させる(Key Phrase
+一覧の見出し語[`phrase`]と本文表記が乖離してもハイライト側は本文優先。
+分類定義2026-09-18確定: exact=文字列として実出現形と一致/non-exact=
+時制・活用・人称一般化等により表層形が異なるがsource対応が一意に確認
+できるもの/unresolved=対応不能・曖昧。全100 Key Phrase実測: exact74・
+non_exact26[tense14・function_word7・inflection5]・unresolved0)。
+日本語訳は`translation_ja.json`から`.trans-section`として描画し、
+Standardの既存Comment再掲(`type: reprint`または
+`existing_comment_repost`)はグレー(`color:#5b6472`/
+`background:#f2f3f5`)+「既存Comment(再掲、翻訳ではありません)」ラベル
+付きで表示、Advancedの英語Commentは通常の翻訳文として表示する。
+Status: `PRODUCTION_WIRED`(2026-09-18、USER-TEST-SCRIPT-READABILITY-
+PROD-01、20 level全件で公開runtime E2E確認済み)。
+
+**配信経路**: ユーザーテストWeb Hosting=**GitHub Pages**
+(`https://shimomura055.github.io/eigo-radio/`、リポジトリ`main`ブランチ・
+root配信、`.nojekyll`あり)。GitHub Pages自体の有効化(Source/Branch設定)
+はユーザーがGitHub Web UIで実施した操作(実施時期・詳細設定内容はSSOT未
+記録のまま2026-09-18時点で稼働確認、`docs/pm/RESULT_PACKET_SCRIPT_
+READABILITY_PROD_01_pages_precheck.md`参照)。正式入口URL(stable、
+commitごとに変更不要)=
+`https://shimomura055.github.io/eigo-radio/user_test/articles_2026_0918.html`。
+個別記事URL=
+`https://shimomura055.github.io/eigo-radio/user_test/unified.html?src=<src>&level=<lvl>&en=<en>&ja=<ja>`
+(固定SHA不要、常に最新main。実測deploy遅延: push→反映まで約83秒
+[2026-09-18実測、commit`ddad09a1`]、`Cache-Control: max-age=600`により
+更新直後最大10分程度のCDNキャッシュが残る可能性あり)。
+`rawcdn.githack.com`/`raw.githack.com`は正式ユーザーテスト配信経路として
+使用しない(過去commitの証跡としてのみDecision Log等に残存する)。
+Status: `PRODUCTION_WIRED`(2026-09-18、USER-TEST-HOSTING-GITHUB-PAGES-01、
+判定条件[Pages runtime E2E全PASS・rawgit警告0件・Dangling Reference
+Check PASS・canonical sha256無変更]を全て充足した場合のみ。詳細:
+`docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01.md`の`## Phase E`節)。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、

@@ -441,6 +441,8 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-PERSONALIZED-NEWS-B1-REBUILD-01-FIX-01-CLOSEOUT: ユーザー正式承認(2026-09-18「視聴しました。問題ありません。承認します。」)、FIX-01版をPersonalized News Advanced canonical/USER_TEST_READYへ確定
 - [本ファイル内] ## USER-TEST-ARTICLE-LANDING-10-01: ユーザーテスト対象10記事(3カテゴリー)の正式Web一覧ページ`user_test/articles_2026_0918.html`新規作成、全20リンクSSOT一致・Browser E2E PASS、PRODUCTION_WIRED
 - [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-TRIAL-01: Key Phraseハイライト+日本語訳セクションのTrial実施、採否未決(ユーザー確認待ち)
+- [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-PROD-01: Trial VALIDATED後ユーザー正式承認・Production採用、Free-Address A2/AI Hiring A2のKey Phrase-本文不整合を本文優先で是正(Phase D)、Landing/TSV反映(Phase C)、REVIEW_REQUIRED2件ユーザー承認・GitHub Pages配線(Phase E)でPRODUCTION_WIRED確定
+- [本ファイル内] ## USER-TEST-HOSTING-GITHUB-PAGES-01: ユーザーテスト公開経路をrawcdn.githack.comからGitHub Pagesへ正式移行、rawgit「One more step」警告解消、PRODUCTION_WIRED確定
 
 ---
 
@@ -8862,6 +8864,159 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   `docs/pm/delegation_log/USER-TEST-SCRIPT-READABILITY-TRIAL-01.md`、
   `docs/pm/closeout_136_e2e/script_readability_trial_01/`(e2e_result.json+
   screenshot4枚)。
+
+## USER-TEST-SCRIPT-READABILITY-PROD-01: Key Phraseハイライト+日本語訳のTrial技術結果VALIDATED後にユーザー正式承認・Production採用、Free-Address A2/AI Hiring A2のKey Phrase-本文不整合を本文優先で是正、GitHub Pages配線でPRODUCTION_WIRED確定
+
+- 管理ID: `USER-TEST-SCRIPT-READABILITY-PROD-01`(Sonnet委任、複数Phase[A/B1/B2/C/D/E]、
+  並行Agentなし)。日付: 2026-09-18。
+- 経緯: 上記`USER-TEST-SCRIPT-READABILITY-TRIAL-01`(技術結果`VALIDATED`)を
+  ユーザーが正式承認・Production採用へ進めることを決定。Phase A実装時、
+  Free-Address A2(5件中一部)・AI Hiring A2(旧canonical)でKey Phrase資産と
+  現行canonical本文の不整合(exact-only解釈ではハイライト不能)を発見し
+  UNRESOLVEDとして記録。ユーザー判断:「本文を正としてKey Phraseを本文に
+  合わせて修正する」。
+- Phase D(Key Phrase再選定、既存Production pipeline
+  `run_key_phrases_a2_from_own_text`のみ使用、本文・本文音声は無変更のまま
+  byte再利用): Free-Address A2 5件・AI Hiring A2複数件を新Key Phrase
+  assetへ差し替え。費用実測¥42.02(上限¥150の約28%)、Pronunciation
+  Ledger登録0件・Human Review 0件。
+- Phase C(Landing/TSV全面反映): 翻訳asset20 level配置、reprint照合10/10
+  PASS、Advanced Comment数一致10/10、mapping_type再判定(free_address/A2
+  5件中3件をexactから是正: tense1・function_word1・inflection1)、全100
+  Key Phrase集計(exact74・non_exact26[tense14・function_word7・
+  inflection5]・unresolved0)、`unified.html`表示バグ1件修正
+  (Standard Comment再掲がグレー表示されない不具合、`renderTranslation
+  Section`1行)、Landing href20/20・TSV20 URLをrawcdn.githack.com新SHAへ
+  更新、公開runtime E2E(rawcdn経由)20 URL機械確認+代表10 levelフル判定
+  全PASS。commit`9891a2db`/`72d9f8b8`/`361c169f`。
+- ユーザー追加判断(2026-09-18、SCRIPT-READABILITY追加判断): (1)
+  Free-Address A2のREVIEW_REQUIRED2件「a place of one's own(本文対応:
+  "a place of my own")」「change one's surroundings(本文対応:
+  "changing my surroundings")」をユーザー承認済みとして採用(Key Phraseは
+  学習用一般形を維持、本文側では実際の出現形を水色ハイライト。本文・本文
+  音声・Comment・タイトル・構成は無変更)。原文:「以下2件はユーザー承認
+  済みとして採用する。(中略)Key Phraseは学習用一般形を維持し、本文側では
+  実際の出現形を水色ハイライトする。本文・本文音声・Comment・タイトル・
+  構成は変更しない。これにより本件のUSER_DECISION_REQUIREDは解消。」
+  (2) mapping分類定義確定: exact=文字列として実出現形と一致/non-exact=
+  時制・活用・人称一般化等により表層形が異なるがsource対応が一意に確認
+  できるもの/unresolved=対応不能・曖昧。
+- Phase C 20節の「Free-Address A2のKey Phrase4/5件がREVIEW_REQUIRED」は
+  誤記であり、Phase E実測で実際は**2/5件**(`qa_overall_status=
+  REVIEW_REQUIRED`は`er012_output/editorial_b_family_voices_a2_
+  production_wiring_01/kp_fix_01/a2/key_phrases/keywords_canonicalized.json`
+  でGrep実測)であることを訂正する。
+- Phase E(公開runtime最終配線、`USER-TEST-HOSTING-GITHUB-PAGES-01`と統合
+  実施): GitHub Pages正式URLで20 level全件E2E(highlight件数一致・Seek・
+  Play・translation・no JS error)PASS、Free-Address A2 highlight5/5・
+  AI Hiring A2 highlight6/6実測確認(ユーザー承認済み2件のハイライト表示を
+  含む)。詳細は`## USER-TEST-HOSTING-GITHUB-PAGES-01`エントリおよび
+  `docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01.md`の`## Phase E`節
+  参照。
+- 到達Status: `PRODUCTION_WIRED`(2026-09-18、Phase E判定条件[Pages
+  runtime E2E全PASS・rawgit警告0件・Dangling Reference Check PASS・
+  canonical sha256無変更]を全て充足)。
+- 再発防止案(ユーザー提示のみ、Production未実装、`USER_DECISION_
+  REQUIRED`候補): (a)本文変更後、Key Phrase source_span本文実在確認Gate
+  新設、(b)他記事Key Phrase流用時、供給元本文sha256一致Gate新設。
+  いずれもユーザー承認なしに恒久Production仕様へ追加しない。
+- Git: commit1`9891a2db`(Phase C翻訳asset+mapping再判定)、commit2
+  `72d9f8b8`(Phase C Landing/TSV更新)、commit3`361c169f`(Phase C仕上げ)、
+  Phase E commit群は下記`USER-TEST-HOSTING-GITHUB-PAGES-01`エントリ参照
+  (両管理IDはPhase EでGit操作を共有)。
+- 参照: `docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01.md`(## Phase A
+  〜## Phase E各節)、`docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01_
+  pages_precheck.md`、`docs/pm/closeout_136_e2e/script_readability_
+  prod_01/`(phase_c/・phase_e/配下)。
+
+## USER-TEST-HOSTING-GITHUB-PAGES-01: ユーザーテスト公開経路をrawcdn.githack.comからGitHub Pagesへ正式移行、rawgit「One more step」警告解消、PRODUCTION_WIRED確定
+
+- 管理ID: `USER-TEST-HOSTING-GITHUB-PAGES-01`(Sonnet委任、
+  `USER-TEST-SCRIPT-READABILITY-PROD-01` Phase Eと統合実施、並行Agentなし)。
+  日付: 2026-09-18。
+- 背景: 実ユーザーがユーザーテストリンクを開いた際、rawcdn.githack.comの
+  「One more step」確認画面(interstitial)が表示され、実ユーザー体験を
+  損ねていた。ユーザーはGitHub Pagesへの正式移行を`APPROVED_FOR_
+  PRODUCTION`として事前承認済み。
+- Precheck(`docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01_pages_
+  precheck.md`)結果: GitHub Pagesは**既に稼働中**(`main`ブランチ・
+  リポジトリroot配信)であることを実HTTP確認したが、SSOT(`DECISION_
+  LOG.md`/`OPEN_ITEMS.md`/`CURRENT_SPEC.md`/`PM_GOVERNANCE.md`)には
+  いつ・誰が有効化したかの記録が存在しなかった(SSOT未記録の状態で実態が
+  先行していた事実)。本環境(Claude Code、`gh`/token無し)からはGitHub
+  リポジトリ設定の変更・確認は実行不能。実音声ファイルへの`Range`付き
+  GETで206 Partial Content(Seekに必要なRange対応)を実データで確認。
+  repo追跡サイズ694.1MB(Pages推奨1GB以内、余裕率約32%)。
+- 実施内容: (E-1)repo rootに`.nojekyll`追加(Jekyll処理無効化)。TSV
+  (`docs/user_test/ユーザーテスト記事一覧_2026-0918_選定10.tsv`)の20 URL
+  ・Landing(`user_test/articles_2026_0918.html`)の20 hrefを、
+  `https://rawcdn.githack.com/shimomura055/eigo-radio/<SHA>/user_test/`
+  から`https://shimomura055.github.io/eigo-radio/user_test/`へ置換
+  (クエリ文字列[src/level/en/ja]は無変更、20/20置換・`href_match_
+  pages.json`で20/20一致確認)。commit`ddad09a1`、push後main=origin/main
+  確認。(E-4)push→deploy反映を実測: 約83秒でLanding(20 href)・
+  unified.html(Phase C修正反映)ともに新content配信を確認
+  (Last-Modified: 2026-09-18T03:24:53Z)。
+- 公開runtime E2E(GitHub Pages URLで実施、rawcdnではない):
+  20 level全件PC機械確認PASS+代表10 level(Standard5/Advanced5)PC/mobile
+  フル判定PASS(highlight件数一致・日本語訳section・Standard Comment再掲
+  グレー・Seek[currentTime≒60.7秒]・Play進行・no JS error)。Landing
+  E2E PASS(PC/mobile、category3・article10・TSVとの完全一致、代表4
+  クリック遷移URL=期待Pages URL完全一致+Play進行)。
+- rawgit警告回避確認(新規`docs/pm/tools/pages_warning_check.py`、
+  **新規browser context**[cookie/storage無し]でLanding+代表4記事
+  [free_address A2/ai_hiring A2/personalized_news B1/home_robots A2]を
+  開き実施): ページ本文に「One more step」「Open the page」「githack」
+  「rawgit」の文字列0件、`page.url()`のhostは全件`shimomura055.
+  github.io`のまま、発生した全リクエストのhost一覧に`githack`/`rawgit`
+  関連hostは**0件**(観測host=`shimomura055.github.io`のみ)。
+  status: `PASS`。
+- Dangling Reference Check(Pages版9項目、`dangling_reference_check_
+  pages.json`): 9/9 **PASS**(unified.html/articles_2026_0918.html/
+  translations/index.jsonにgithack|rawgit参照無し[unified.html内の
+  1件はTrial path不使用を明記する設計コメント文言のみで実参照ではない、
+  既知]、TSVにgithack|rawcdn無し、Landing hrefに固定SHA残存無し、
+  `user_test/trial`実参照無し、`translations_wip`不存在、20 src実在、
+  Personalized News B1はFIX-01 src維持、Free-Address A2/AI Hiring A2は
+  kp_fix_01参照、E-5(c)のrequest host一覧にgithack/rawgit0件)。
+- canonical無変更証拠: `sha256_snapshot.py`でPhase C時点
+  (`sha256_after_phase_c.json`、3062ファイル)とPhase E時点
+  (`sha256_after_phase_e.json`、3062ファイル)を比較し、差分は
+  `user_test/articles_2026_0918.html`(意図したhref置換)**1件のみ**
+  (added0/removed0)。
+- 回帰テスト: `run_project_regression.py --pattern "er0*_test_*.py"`
+  collected=2897/passed=2894/failed=3/errors=0(失敗3件は既知
+  [`er003_test_bad`意図的失敗fixture+`er003_test_p2j_investigate`
+  collection件数不一致2件]、新規失敗0件)。
+- 正式入口URL(**今後メール・LINEで共有する正式URL**):
+  `https://shimomura055.github.io/eigo-radio/user_test/articles_
+  2026_0918.html`。個別記事URLパターン:
+  `https://shimomura055.github.io/eigo-radio/user_test/unified.html?src=<src>&level=<lvl>&en=<en>&ja=<ja>`。
+  固定SHA不要のstable URL(commitごとの差し替え作業が不要)であることを
+  正式仕様として採用する。
+- 到達Status: `PRODUCTION_WIRED`(2026-09-18、判定条件[Pages runtime
+  E2E全PASS・Seek FAILなし・rawgit警告0件・Dangling Reference Check
+  PASS・canonical sha256無変更]を全て充足)。`rawcdn.githack.com`の
+  URLは正式ユーザーテスト配信経路として使用しない(過去commit証跡として
+  本エントリ・`ARTIFACT_REGISTRY.md`の一部行にのみ残置)。
+- Open Item新規登録: GitHub Pages有効化の経緯(いつ・誰が)がSSOT未記録
+  だった事実、free_address A2/personalized_news A2/ai_hiring A2の3
+  player.html内セグメント別補助audio要素の`file:///`絶対パス参照
+  (unified.html経路には影響なし、player.html単体を直接開いた場合のみの
+  低優先事項)、repo追跡サイズ694MB監視、`PM_GOVERNANCE.md`9-5等の
+  「標準配布経路」記述更新要否は`OPEN_ITEMS.md`新規Open Item参照。
+- Git: commit1`ddad09a1`(`.nojekyll`+TSV/Landing URL置換+
+  href_match_pages.json)、commit2は本エントリ・CURRENT_SPEC/
+  ARTIFACT_REGISTRY/OPEN_ITEMS反映+evidence一式(SHA・詳細は
+  `docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01.md`の`## Phase E`
+  節11番参照)。
+- 参照: `docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01_pages_
+  precheck.md`、`docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01.md`
+  (## Phase E節)、`docs/pm/closeout_136_e2e/script_readability_prod_01/
+  phase_e/`(href_match_pages.json/landing_e2e_pages.json/
+  e2e_result_pages20.json/pages_warning_check.json/
+  dangling_reference_check_pages.json/sha256_after_phase_e.json+
+  screenshot32枚)、`docs/pm/tools/pages_warning_check.py`(新規)。
 
 ## 参照元
 
