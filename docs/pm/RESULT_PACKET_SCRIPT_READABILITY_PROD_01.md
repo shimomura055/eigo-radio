@@ -329,8 +329,16 @@ USER-TEST-SCRIPT-READABILITY-PROD-01_phaseA.md`(+`_check.json`)。
     (2026-09-18、`open(path,"x")`でatomic取得、既存なし確認済み)。解放:
     Phase D完了時に削除(commit直前に実施)。
 
-14. Git: commit実行後に本節へcommit SHA/main=origin/main確認/混入なし
-    確認を追記。
+14. Git: commit `456b528d`をpush、push後`git fetch origin`でmain=
+    origin/main一致確認済み(`456b528d`)。混入確認: 本commitの137ファイル
+    は全てPhase D対象(新canonical 2artifact一式+kp_mapping.json 2件+
+    index.json+delegation log+報告物+新規driver/toolスクリプト+共有
+    append-onlyログ2件[`reuse_telemetry.jsonl`/`attempt_history.jsonl`、
+    いずれも既存エントリの削除なし・自分のtheme_id分のみ追加確認済み])
+    のみで、他タスクの`??`未追跡ファイル(多数の`ACTIVE_TASK_*`/
+    `RESULT_PACKET_*`等)は一切含まれない(commit前に`git status
+    --porcelain`で個別ファイルリストを目視確認済み)。`.wav`ファイルの
+    混入なし(確認済み)。
 
 15. 再発防止案(報告のみ、採用はユーザー判断): 原因は本文改訂(A2平易化・
     翻案)後にKey Phrase資産の追従更新を必須化するチェックが存在しな
