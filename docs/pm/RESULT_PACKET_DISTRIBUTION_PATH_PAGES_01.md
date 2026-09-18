@@ -9,7 +9,7 @@
 7. DECISION_LOG.md: `USER-TEST-HOSTING-GITHUB-PAGES-01`本体エントリ末尾へ「### 追記(2026-09-18)」ブロックを追加(Pages有効化=ユーザー操作の事実確定・OPEN-173解消を記録)。索引+本体に新規`## PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01`エントリを追加(決定内容・変更ファイル一覧・Dangling Check概要)。
 8. Dangling Reference Check(`docs/pm/closeout_136_e2e/distribution_path_pages_01/dangling_reference_check.json`、生ヒット`dangling_raw_hits.json`): primary scope 39件+DECISION_LOG(HOSTING以降)追加確認25件+templates/agents 0件。分類=(a)NG(標準経路として新規主張)0件/(b)OK(過去証跡・明示的非使用文・エビデンス記録)62件/(c)開発用ファイル参照0件(該当なし)/(d)判断保留2件。
 9. 正式Landing URL到達再確認: `https://shimomura055.github.io/eigo-radio/user_test/articles_2026_0918.html` → HTTP 200、content-type=text/html; charset=utf-8。
-10. Git: 別途コミット後に追記(下記参照)。main=origin/origin確認済み(fetch後)。
+10. Git: commit `1a249bb7`、push完了。fetch後`main`=`origin/main`=`1a249bb7`確認済み。
 11. USER_DECISION_REQUIRED候補(非ブロッキング、Fable/ユーザー判断待ち):
     a) `ARTIFACT_REGISTRY.md` L139: Personalized News B1「ユーザーテスト対象外」明記済み非canonical行のURLが依然`raw.githack.com`のまま(grep対象が`rawcdn`13箇所限定だったため今回のG-4スコープ外、機械的に無変更)。統一のため注記追加/置換要否。
     b) `docs/pm/PM_GOVERNANCE.md` L325: Gate 7(n)恒久チェッカーの説明文「githack中継URL対応」がPages対応に触れていない(標準経路の主張ではなく機能説明。更新要否は今回のスコープ[標準配布経路記述の更新]外と判断し無変更)。
