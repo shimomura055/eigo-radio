@@ -130,8 +130,8 @@
     収集件数を突き合わせる歴史的整合性テストで、テスト総数が2897件へ増加
     し続けていること自体が原因の既知の経年不一致。`er003_test_p2k_
     regression_entry.py`はPASSしており本タスクによる新規破壊ではない)。
-14. Git: commit SHA <push後に追記>、push後`git fetch origin`でmain=
-    origin/main一致確認<追記>。
+14. Git: commit `b374ac1d`をpush、push後`git fetch origin`でmain=
+    origin/main=`b374ac1d`を確認済み。
 15. 一覧外Read: `CURRENT_SPEC.md`「Family C(Future Story)」節をgrep
     (family名称の正式呼称確認のため、事前指定Read一覧外だが軽微)。
     check_delegation_prompt結果: FAIL(理由: 実行コマンド内「ローカル
