@@ -94,15 +94,19 @@ def check_one(page, name: str, url: str, expect: dict, screenshot_dir: str | Non
         if page.query_selector("#content .error"):
             err_text = page.eval_on_selector("#content .error", "el => el.textContent")
             raise RuntimeError(f"unified.html表示エラー: {err_text}")
-        # enhanceReadability()はcontent描画後にasync fetchするため、
-        # translation sectionが増えるまで少し待つ(存在しないケースはtimeoutして続行)
-        try:
-            page.wait_for_timeout(600)
-            page.wait_for_function(
-                "() => document.querySelector('.trans-section') || true", timeout=3000
-            )
-        except Exception:
-            pass
+        # enhanceReadability()はcontent描画後にasync fetch(index.json→
+        # kp_mapping.json→translation_ja.jsonの直列3回)を行うため、公開CDN
+        # (rawcdn.githack.com)の初回コールドキャッシュ等でローカルより遅い
+        # ことがある。expect_translationがTrueの場合は`.trans-section`が
+        # 実際に出現するまで明示的に待つ(旧実装は`|| true`で常に即時
+        # 解決してしまい待機になっていなかったバグを修正)。
+        if expect.get("expect_translation"):
+            try:
+                page.wait_for_selector(".trans-section", timeout=15000)
+            except Exception as e:
+                result["reasons"].append(f"翻訳section出現待機がtimeout: {e}")
+        else:
+            page.wait_for_timeout(800)
     except Exception as e:
         result["status"] = "FAIL"
         result["reasons"].append(f"page load/content待機に失敗: {e}")

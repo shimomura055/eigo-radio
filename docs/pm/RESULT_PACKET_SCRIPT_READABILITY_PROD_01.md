@@ -384,3 +384,255 @@ ai_hiring}.json`)、`er012_output/editorial_b_family_voices_a2_
 production_wiring_01/kp_fix_01/`、`er012_output/user_test_voices_a2_
 minimal_01/ai_hiring_3v_a2/kp_fix_01/`、`docs/pm/delegation_log/
 USER-TEST-SCRIPT-READABILITY-PROD-01_phaseD.md`(+`_check.json`)。
+
+## Phase C
+
+★★★★報告ここから★★★★
+
+1. Phase C Status: `PHASE_C_DONE`(STOPなし。全20 level配線・Landing/TSV
+   更新・公開runtime E2E PASS。ユーザー指示どおり`PRODUCTION_WIRED`は
+   宣言しない。Free-Address A2のKey Phrase2件[qa_overall_status=
+   REVIEW_REQUIRED、人称一般化由来]のユーザー確認はFable経由で別途進行中
+   のため、SSOT反映+最終Status確定はPhase Eで実施予定)。
+2. 翻訳asset配置結果: `user_test/translations_wip/`配下18 level
+   (ai_hiring/convenience_ai/digital_twins/free_address/home_robots/
+   memory/tiny_bags/wake_before_alarm/young_travelers × A2/B1、各
+   `translation_ja.json`+`translation_qa.json`)を`user_test/translations/
+   <article_id>/<level>/`へ移動。Personalized News A2/B1(Phase A配置済み)
+   と合わせ20/20 level全てで`translation_ja.json`が存在することを確認
+   (`find user_test/translations -name translation_ja.json | wc -l` = 20)。
+   `user_test/translations_wip/`は移動後に削除し、存在しないことを確認済み
+   (Dangling Reference Check項目2)。
+3. reprint照合(新規`docs/pm/tools/translation_reprint_check.py`):
+   10 Standard level全てで`type=reprint`(Phase A形式の`personalized_news`
+   は`type=existing_comment_repost`、内容契約は同一のため両方を有効な
+   reprint型として扱う)の`text_ja`が現行canonical player DOM
+   (free_address A2 / ai_hiring A2はPhase Dの新`kp_fix_01/a2/player.html`)
+   のComment原文と完全一致(10/10 PASS)。Advanced 10 levelは`type=
+   translation`の`comment_N`section数=DOM上のComment件数が完全一致
+   (10/10 PASS)。`wake_before_alarm`は1ファイル(`player_std/index.html`)
+   にA2/B1両方のtimeline tableが同居する構成のため、`<table class=
+   "timeline">`の出現順+`id="episode_audio_a2"`/`"episode_audio_b1b"`
+   マーカーでlevel別に区間を切り出すロジックをcheckerに実装(初回実行時に
+   誤って両level混在で不一致検出→修正して再実行しPASSを確認)。overall:
+   `PASS`(証跡`phase_c/reprint_check.json`)。
+4. mapping_type再判定: `free_address/A2`の5件中3件を`exact`から是正
+   (`belong there`→`belonged there`=`tense`、`a place of one's own`→
+   `a place of my own`=`function_word`[人称一般化one's→my]、`change
+   one's surroundings`→`changing my surroundings`=`inflection`[語形
+   変化+人称一般化の複合、代表分類をinflectionとした]、残り`source of
+   stability`/`on paper`は表示phraseと本文が正規化後に完全一致するため
+   `exact`のまま)。`ai_hiring/A2`は5件とも表示phraseと本文が同一文字列
+   であることを個別確認し`exact`維持(rationale追記のみ)。`matched_text`/
+   `occurrences`は無変更。summary再計算: free_address/A2は
+   exact=2/non_exact=3(tense1・function_word1・inflection1)、
+   ai_hiring/A2はexact=5/non_exact=0(無変更)。
+5. 全100 Key Phrase集計(新規`docs/pm/tools/kp_mapping_aggregate.py`、
+   `docs/pm/closeout_136_e2e/script_readability_prod_01/phase_c/
+   kp_mapping_all100.{json,md}`): total=100, mapped=100, exact=74,
+   non_exact=26(tense14・function_word7・inflection5), **unresolved=0**。
+   `highlighted`列は公開runtime E2E(後述11)で該当articleの水色ハイライト
+   総数が期待値(occurrences合計)と完全一致したことを確認できたものに
+   限り、決定論的完全一致検索(fuzzy無し・overlap除去あり、`unified.html`
+   `applyKeyPhraseHighlight`実装)の性質上、article単位の合計一致から
+   phrase単位も必ず一致すると判断し`occurrences`と同値を記録(20/20
+   article全てで一致確認済みのため100/100行に値あり、null無し)。
+6. ローカルE2E(Range対応サーバ、新規`docs/pm/tools/range_http_server.py`
+   +`user_test_readability_check.py`に`--index`モード追加): 20 level×
+   PC(1280×800)/mobile(390×844)=40通り全てPASS(header/Key Phrase2列・
+   ラベル無し/水色ハイライト数一致/日本語訳section存在/section数一致/
+   Standard reprint件数=Comment数かつグレーcomputed style[color rgb(91,
+   100,114)/background rgb(242,243,245)]+ラベル表示/Advanced Comment訳
+   件数=Comment数/横スクロールなし/Play進行/**Seek**/JS errorなし)。
+   例(`tiny_bags_A2_pc`実測): highlight 7/7、repost_count=4・
+   repost_style={color:'rgb(91, 100, 114)', background:'rgb(242, 243,
+   245)'}、seek currentTime_after_seek=60.735、play after.currentTime=
+   3.956/paused=false。証跡: `phase_c/local/e2e_result_local20.json`+
+   screenshot40枚。作業開始時、ポート8765に前フェーズ由来の
+   `python -m http.server`が停止されずに残存(2listener併存)しており
+   Range応答が不安定だったため、該当プロセスをkillしてから
+   `range_http_server.py`単体で起動し直した(詳細20節)。
+7. wrapper修正(`user_test/unified.html`、`renderTranslationSection`
+   1行のみ): 既存実装が`s.type==='existing_comment_repost'`のみを
+   グレー再掲boxとして描画しており、Phase B1/B2が作成した18 levelの
+   `type:"reprint"`セクションが(表示上は通常の翻訳見出しとして描画され)
+   ユーザー指示の「Standard Comment再掲はグレー表示+ラベル」を満たさない
+   **表示不具合**をローカルE2E設計中に発見。
+   `if(s.type==='existing_comment_repost'){`を
+   `if(s.type==='existing_comment_repost'||s.type==='reprint'){`に修正
+   (1行のみ、Trial機能の混入無し)。checker側`expect_repost_count`も
+   同様に両type受理へ修正。修正後、全20 levelでreprint件数=グレー表示件数
+   が一致することを確認(6節)。
+8. commit 1 SHA1: `9891a2dbd1d22d8e5933c5c6cd582d1fe262fa08`(push済み、
+   `git fetch origin`後main=origin/main一致確認)。20 URL全文:
+   `docs/pm/closeout_136_e2e/script_readability_prod_01/phase_c/
+   url_list_20.txt`参照(記事タイトル+Standard/Advanced+完全URL)。
+9. TSV diff要約: `docs/user_test/ユーザーテスト記事一覧_2026-0918_
+   選定10.tsv`は10行×`standard_url`/`advanced_url`の20セルのみ変更
+   (ヘッダー行・category/title_en/title_ja/summary_ja列・行順は無変更、
+   列単位diffで検証済み)。Landing diff要約: `user_test/
+   articles_2026_0918.html`は20 href属性のみ変更(20 insertions/20
+   deletions、他のCSS・ボタンclass・target/rel・タイトル・概要・
+   カテゴリー見出しは無変更、diff目視確認済み)。en/jaクエリ値はTSV/
+   Landing双方とも旧値をそのまま引き継ぎ(意図的に不変)。
+   `href_match.json`: 20/20完全一致(`all_match: true`)。
+10. commit 2 SHA2: `72d9f8b8376e3c70550c8a24e9b21f16f2e94208`(push済み、
+    main=origin/main一致確認)。Landing公開URL:
+    `https://rawcdn.githack.com/shimomura055/eigo-radio/
+    72d9f8b8376e3c70550c8a24e9b21f16f2e94208/user_test/
+    articles_2026_0918.html`。
+11. 公開runtime確認(`user_test_readability_check.py`に`--urls-from`/
+    `--full-check`オプションを新規追加。TSVのURLをそのまま[`--base`
+    置換なし]で開き、実際のrawcdn.githack.com配信物を検証):
+    20 URL全件PC機械確認PASS(HTTP到達・src/level解決・kp_mapping/
+    translation asset load・水色ハイライト数一致・日本語訳section表示・
+    JS errorなし)。代表10 level(Standard: tiny_bags/free_address[修正
+    対象]/home_robots/personalized_news/ai_hiring[修正対象] A2、
+    Advanced: convenience_ai/personalized_news/memory/free_address/
+    young_travelers B1)はPC+mobile+Play+Seekまでフル判定、全てPASS
+    (計30エントリ、overall PASS)。初回実行時、CDN初回コールドキャッシュ
+    による応答遅延で翻訳section待機ロジックの潜在バグ
+    (`wait_for_function("...||true")`が常に即時解決してしまい実質待機に
+    なっていなかった)が顕在化し17件FAIL→`expect_translation`に応じて
+    `wait_for_selector('.trans-section', timeout=15000)`へ修正し全件
+    再実行、overall PASSを確認(証跡`phase_c/public/
+    e2e_result_public20.json`+screenshot30枚)。Landing公開ページ
+    (SHA2、新規`docs/pm/tools/landing_page_e2e_check.py`): PC/mobileとも
+    category_count=3・article_count=10・TSVとのtitle_en/title_ja/
+    summary_ja/href完全一致(mismatches=0)・横スクロールなし。代表4
+    クリック(young_travelers/free_address[修正対象]/ai_hiring[修正対象]/
+    home_robots のStandardリンク)全て遷移先URL=期待URL完全一致+Play進行
+    確認(`phase_c/public/landing_e2e.json`、status PASS)。
+12. Play/Seek regression(公開rawcdn.githack.com URLでの実測、全20 URLで
+    play/seekとも実測、代表10のみ厳密判定対象だが残り10も同一処理で
+    play_pass/seek_passともTrue): 20/20 URLでPlay進行(currentTime増加・
+    not paused)・Seek(`currentTime=60`設定後59.5s以上)ともPASS。詳細は
+    `phase_c/public/e2e_result_public20.json`の`checks.play_progresses`/
+    `checks.seek`参照。
+13. canonical無変更証拠: Phase A使用の旧TSV(commit1時点の内容、
+    `git show 9891a2db:...tsv`)からsrc一覧を再抽出し、対応ディレクトリ
+    配下を再スキャンした`sha256_after_oldsrcs.json`(3322ファイル)を
+    Phase Aの`sha256_before.json`(3056ファイル)と diff。結果:
+    **`changed: []`(0件)**、`removed: []`(0件、Landing pageのみ
+    `--extra`指定で意図的な`changed`1件として検出)、`added: 266`件
+    (全件`.../kp_fix_01/`配下の新規ファイルのみ、free_address132件+
+    ai_hiring134件で内訳確認済み)。すなわち**旧20canonical player配下は
+    1バイトも変更されておらず**、追加分は全てPhase Dで新設した
+    kp_fix_01の範囲に限定されることを機械確認した(証跡`phase_c/
+    sha256_diff_vs_phase_a.json`)。加えて指示どおり現行(更新後)TSV基準
+    の`sha256_after_phase_c.json`(3062ファイル)も別途生成済み。
+    `kp_fix_01_inventory.json`: free_address_a2=132ファイル、
+    ai_hiring_a2=134ファイル、双方ハッシュ一覧を記録。
+14. Dangling Reference Check(9項目、`phase_c/
+    dangling_reference_check.json`): 9/9 **PASS**。
+    (1)`unified.html`に`user_test/trial`文字列は1件のみでその内容は
+    「参照しない」という設計コメント自体(実参照なし)、
+    (2)`translations_wip`削除済み・コード上の参照0件、
+    (3)index.json 20 srcの実在確認(missing=0)、
+    (4)free_address A2/ai_hiring A2ともkp_fix_01配下の修正済みKey
+    Phrase assetを参照、
+    (5)旧Key Phrase asset(旧player.html/user_test_simple.html)への
+    参照はindex.json/TSV/Landingいずれにも残存無し(ディスク上は
+    SUPERSEDEDとして保持のみ)、
+    (6)(7)Landing/TSVに旧SHA(`240e0723`/`7ea8bd7a`/`bf5c1e3b`)の残存
+    無し、
+    (8)Personalized News B1はFIX-01 src無変更、
+    (9)AI Hiring A2はkp_fix_01標準player形式を参照。
+15. Personalized News B1 FIX-01維持: index.json src=
+    `er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/
+    player.html`(無変更、公開URL到達確認済み)。AI Hiring A2新canonical
+    参照: index.json src=`er012_output/user_test_voices_a2_minimal_01/
+    ai_hiring_3v_a2/kp_fix_01/a2/player.html`(標準player形式、公開URL
+    到達・highlight/translation asset load確認済み)。
+16. 回帰テスト結果: `run_project_regression.py --pattern
+    "er0*_test_*.py"` collected=2897/passed=2894/failed=3/errors=0。
+    失敗3件は`er003_test_bad.FixtureTests.test_case_0`(意図的失敗
+    fixture)+`er003_test_p2j_investigate`の`CollectionCountTests`/
+    `ReconciliationArithmeticTests`2件(既知の経年collection件数不一致、
+    Phase A/D報告と同一の既知3件)であり、本Phaseによる新規失敗は0件。
+17. commit 3 SHA: 本節コミット後に追記(下記コマンド実行→
+    `git rev-parse HEAD`)。push後`git fetch origin`でmain=origin/main
+    一致を確認する。
+18. 一覧外Read: なし(事前指定Read一覧の範囲内で完結)。
+    check_delegation_prompt結果: **PASS**(`docs/pm/delegation_log/
+    USER-TEST-SCRIPT-READABILITY-PROD-01_phaseC.md_check.json`、
+    reasons無し)。
+19. Phase E向けSSOT追記文案:
+    (a) `CURRENT_SPEC.md`「ユーザーテスト表示仕様」追記案: 「Key Phrase
+    ハイライトは`user_test/unified.html`の`applyKeyPhraseHighlight`が
+    `kp_mapping.json`の`matched_text`を大小文字・apostrophe種のみ許容する
+    決定論的完全一致検索で本文(`p.script`)に適用し、水色`mark.kp-hl`
+    (`#dff2fb`)で表示する。表層差(語形変化・人称一般化等)がある場合は
+    `mapping_type`(exact/tense/inflection/function_word等)に分類し、
+    `matched_text`は常に本文の実際の表記に追従させる(Key Phrase一覧の
+    見出し語[`phrase`]と本文表記が乖離してもハイライト側は本文優先)。
+    日本語訳は`translation_ja.json`から`.trans-section`として描画し、
+    Standardの既存Comment再掲(`type: reprint`または
+    `existing_comment_repost`)はグレー(`color:#5b6472`/
+    `background:#f2f3f5`)+「既存Comment(再掲、翻訳ではありません)」
+    ラベル付きで表示、Advancedの英語Commentは通常の翻訳文として表示する。」
+    (b) `DECISION_LOG.md`エントリ案: 「USER-TEST-SCRIPT-READABILITY-
+    PROD-01: Trial(20 level)VALIDATED後、ユーザーが正式承認・Production
+    採用。Phase A実装時にfree_address A2(5件)・ai_hiring A2(4件)で
+    Key Phrase資産と現行canonical本文の不整合(exact-only解釈では
+    ハイライト不能)を発見しUNRESOLVEDとして記録。ユーザー判断: 本文を
+    正としてKey Phraseを本文に合わせて修正(Phase D、既存Production
+    pipeline `run_key_phrases_a2_from_own_text`のみ使用、本文・本文音声は
+    無変更のままbyte再利用)。ユーザーがURL変更(固定SHA更新)を許可し、
+    Landing/TSVへの完全反映(Phase C)まで実施。Phase A〜D費用実測:
+    Phase D ¥42.02(上限¥150の約28%)、Phase A/B/Cは新規TTS/ASR無しで
+    ¥0。」
+    (c) `ARTIFACT_REGISTRY.md`行案: 「Production wrapper:
+    `user_test/unified.html`(Key Phraseハイライト+日本語訳表示、
+    2026-09-18更新)。Translation assets: `user_test/translations/
+    <article_id>/<level>/{translation_ja.json,translation_qa.json,
+    kp_mapping.json,source_sections.json}`(20 level)。新canonical:
+    `er012_output/editorial_b_family_voices_a2_production_wiring_01/
+    kp_fix_01/a2/`(Free-Address A2)、`er012_output/
+    user_test_voices_a2_minimal_01/ai_hiring_3v_a2/kp_fix_01/a2/`
+    (AI Hiring A2)。旧artifact(`.../player.html`
+    [Free-Address旧]・`.../user_test_simple.html`[AI Hiring旧])は
+    SUPERSEDED(削除せず保持、正式経路からの参照のみ除去)。Landing:
+    `user_test/articles_2026_0918.html`(20 href、SHA
+    `72d9f8b8376e3c70550c8a24e9b21f16f2e94208`時点)。」
+    (d) `OPEN_ITEMS.md`: OPEN-169 close文案「Free-Address A2/AI Hiring
+    A2のKey Phrase-本文不整合(UNRESOLVED計9件)はPhase Dで本文に合わせた
+    Key Phrase再選定により解消(unresolved=0/100)。Landing/TSV反映まで
+    Phase Cで完了。CLOSE。」。再発防止新規Open Item案(Phase D 15節の
+    (a)(b)を正式Open化するかはユーザー判断): 「Key Phrase Assembly直前
+    のsource_span本文実在Gate新設」「他記事Key Phrase流用時の供給元
+    article本文sha256一致必須化」。
+20. 未解決事項・注意点: (a) Free-Address A2の4/5 Key Phraseが
+    `qa_overall_status=REVIEW_REQUIRED`(人称一般化由来)である点の
+    ユーザー最終確認はFable経由で別進行中、確認後にPhase EでStatus確定
+    (本Phaseでは`PHASE_C_DONE`までで打ち止め)。(b) Phase D で観測された
+    ローカル環境(`python -m http.server`、Range非対応)でのSeek FAILは、
+    本Phaseの公開URL(rawcdn.githack.com実配信、CDN側Range対応)および
+    ローカルRange対応サーバの両方で**再現せず、20/20 Seek PASS**を実測
+    (11-12節)。したがってPhase D時点の懸念(「実運用[raw.githack CDN
+    配信、Range header対応]への影響有無」)は本Phaseで解消したと判断する
+    (Production配信経路では問題なし)。(c) 副次的発見:
+    作業開始時、ポート8765に前フェーズ由来と見られる`python -m
+    http.server`プロセスが停止されずに残存し、Rangeサーバと2重bindして
+    いた(Windows環境でSO_REUSEADDR的挙動により複数プロセスが同一ポートに
+    bindでき、リクエストがランダムに振り分けられ得ることを確認)。今回は
+    kill後に再実行し解決、今後のPhase運用では「ローカルサーバ停止漏れ」
+    がある可能性を踏まえ、次回以降は作業開始前に`netstat -ano | grep
+    <port>`で確認することを推奨(報告のみ、ブロッキング事項ではない)。
+    (d) `unified.html`の修正(7節、1行)はPhase Cで発見した表示不具合の
+    修正であり、Trial機能の混入や新規仕様の追加ではない(既存Phase A設計
+    [Comment再掲はグレー表示]の実装漏れ修正)。
+
+詳細証跡: `docs/pm/closeout_136_e2e/script_readability_prod_01/phase_c/`
+(`reprint_check.json`/`kp_mapping_all100.{json,md}`/`href_match.json`/
+`sha256_after_oldsrcs.json`/`sha256_diff_vs_phase_a.json`/
+`sha256_after_phase_c.json`/`kp_fix_01_inventory.json`/
+`dangling_reference_check.json`/`url_list_20.txt`/`local/`[40
+screenshot+`e2e_result_local20.json`]/`public/`[30screenshot+
+`e2e_result_public20.json`+`landing_e2e.json`])、`docs/pm/tools/
+translation_reprint_check.py`・`kp_mapping_aggregate.py`・
+`range_http_server.py`・`landing_page_e2e_check.py`(新規)、
+`docs/pm/tools/user_test_readability_check.py`(`--index`/`--urls-from`/
+`--full-check`追加+翻訳section待機バグ修正、拡張)、`docs/pm/
+delegation_log/USER-TEST-SCRIPT-READABILITY-PROD-01_phaseC.md`
+(+`_check.json`)。

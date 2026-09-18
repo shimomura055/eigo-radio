@@ -1,0 +1,16 @@
+{
+  "items": [
+    {"id": 1, "desc": "Production unified.htmlがTrial path(user_test/trial/...)参照なし", "status": "PASS", "evidence": "grep 'user_test/trial' user_test/unified.html => 1件、内容は禁止事項を明記した設計コメント文字列自体であり実参照ではない(fetch/importの対象パスとしては不使用)。grep 'trial'全3件中残り2件はcanonical出力ディレクトリ名(editorial_b_voices_3v_audio_trial_01/family_c_episode_trial_09等、Production採用済み正式artifact名)でありuser_test/trial/とは無関係。"},
+    {"id": 2, "desc": "translation asset正式path(user_test/translations/、_wipではない)", "status": "PASS", "evidence": "user_test/translations_wip は削除済み(存在しないことを確認)。grep 'translations_wip' user_test/unified.html => 0件。"},
+    {"id": 3, "desc": "20 levelすべてが正しいasset参照(index.jsonのsrc全件が実在)", "status": "PASS", "evidence": "index.json 20 itemsのsrc全件についてPath.is_file()==Trueを確認(missing=0件)。"},
+    {"id": 4, "desc": "修正済みKey Phrase asset参照(free_address A2/ai_hiring A2がkp_fix_01を参照)", "status": "PASS", "evidence": "index.jsonのfree_address A2 key_phrase_asset_path=.../kp_fix_01/a2/key_phrases/keywords_canonicalized.json、ai_hiring A2 src/key_phrase_asset_pathともkp_fix_01/a2配下を参照。"},
+    {"id": 5, "desc": "古いKey Phrase assetが正式経路(index.json/unified.html/TSV/Landing)に残っていない", "status": "PASS", "evidence": "index.json/TSV/Landingいずれもfree_address A2の旧src(editorial_b_family_voices_a2_production_wiring_01/player.html)・ai_hiring A2の旧src(ai_hiring_3v_a2/user_test_simple.html)を参照していない(grep該当なし)。旧artifact自体はディスク上にSUPERSEDEDとして削除せず保持(Phase D方針どおり、正式経路からの参照のみ除去)。"},
+    {"id": 6, "desc": "Landing pageが旧SHA記事を参照していない", "status": "PASS", "evidence": "grep '240e0723\\|7ea8bd7a\\|bf5c1e3b' user_test/articles_2026_0918.html => 0件。20 href全てSHA1(9891a2db...)。"},
+    {"id": 7, "desc": "TSVが旧SHA URLを保持していない", "status": "PASS", "evidence": "grep '240e0723\\|7ea8bd7a\\|bf5c1e3b' docs/user_test/ユーザーテスト記事一覧_2026-0918_選定10.tsv => 0件。20 URL全てSHA1(9891a2db...)。"},
+    {"id": 8, "desc": "Personalized News B1がFIX-01を維持", "status": "PASS", "evidence": "index.json personalized_news B1 src=er012_output/personalized_news_b1_rebuild_01/audio/b1_2v_fix01/player.html(無変更)。"},
+    {"id": 9, "desc": "AI Hiring A2が修正後canonical(kp_fix_01)を参照", "status": "PASS", "evidence": "index.json ai_hiring A2 src=er012_output/user_test_voices_a2_minimal_01/ai_hiring_3v_a2/kp_fix_01/a2/player.html(新標準player形式)。"}
+  ],
+  "overall": "PASS",
+  "pass_count": 9,
+  "fail_count": 0
+}

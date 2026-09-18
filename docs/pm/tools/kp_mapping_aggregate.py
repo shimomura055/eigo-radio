@@ -25,20 +25,25 @@ import json
 from pathlib import Path
 
 
-def load_highlight_counts(e2e_result_path: str | None) -> dict:
-    """readability checkerの結果JSON(--out相当)から
-    {name(=f"{article_id}_{level}"): highlight_count} を取り出す。"""
+def load_highlight_verified_articles(e2e_result_path: str | None) -> set:
+    """readability checkerの結果JSON(--out相当)から、DOM上の水色ハイライト
+    総数(mark.kp-hl件数)が期待値(kp_mapping.jsonのoccurrences合計)と
+    完全一致した(article_id,level) 名前の集合を返す。決定論的な完全一致
+    検索(matched_textのregex、fuzzy無し)のため、article単位の合計が
+    一致していればphrase単位の内訳も必ず一致する(overlap/重複カウントの
+    余地がない設計、user_test/unified.htmlのapplyKeyPhraseHighlight実装
+    より)。"""
     if not e2e_result_path:
-        return {}
+        return set()
     data = json.loads(Path(e2e_result_path).read_text(encoding="utf-8"))
-    out = {}
+    out = set()
     for key, r in data.get("results", {}).items():
         if key.endswith("_mobile"):
             continue
         name = r.get("name")
         hl = r.get("checks", {}).get("highlight_count", {})
-        if name and hl:
-            out[name] = hl.get("actual")
+        if name and hl.get("pass"):
+            out.add(name)
     return out
 
 
@@ -52,7 +57,7 @@ def main() -> int:
     args = ap.parse_args()
 
     tdir = Path(args.translations)
-    highlight_counts = load_highlight_counts(args.e2e_result)
+    verified_articles = load_highlight_verified_articles(args.e2e_result)
 
     rows = []
     total = mapped = exact = non_exact = unresolved = 0
@@ -83,7 +88,7 @@ def main() -> int:
                 "matched_text": kp.get("matched_text"),
                 "mapping_type": mtype,
                 "occurrences": kp.get("occurrences"),
-                "highlighted": highlight_counts.get(name),
+                "highlighted": (kp.get("occurrences") if name in verified_articles and mtype not in ("UNRESOLVED", None) else None),
                 "unresolved": mtype == "UNRESOLVED" or mtype is None,
                 "rationale": kp.get("rationale"),
             })
