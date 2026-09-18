@@ -913,7 +913,7 @@ def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: flo
     level_string = f"FAMILY_C_PRODUCTION_{level.upper()}"
     gate_error = None
     try:
-        assemble_mod.verify_episode_audio_validation_gate(out_dir, level_string)
+        assemble_mod.verify_episode_audio_validation_gate(out_dir, level_string, article_text=article_text)
         gate_status = "PASS"
     except RuntimeError as e:
         gate_status = "BLOCKED"

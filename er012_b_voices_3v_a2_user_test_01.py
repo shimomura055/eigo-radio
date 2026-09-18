@@ -358,7 +358,7 @@ def stage_article(budget_jpy_cap: float) -> dict:
           f"deviations={len(deviation.get('deviations', []))}")
 
     print("[USER-TEST-3V-A2][QA] Key Phrase reuse(3V B1 Audio Trial-01選定を再利用、新規選定なし)...")
-    kp = a2prod.reuse_key_phrases_a2(KP_SOURCE_DIR_3V, KP_DIR, NARRATION_DIR)
+    kp = a2prod.reuse_key_phrases_a2(KP_SOURCE_DIR_3V, KP_DIR, NARRATION_DIR, target_article_text=article_text)
     save_json(f"{AUDIT_DIR}/kp_tts_results.json", kp)
     kp_merged = load_json(f"{KP_DIR}/keywords_canonicalized.json")
     assert_budget_ok(budget_jpy_cap, "after Key Phrase reuse")

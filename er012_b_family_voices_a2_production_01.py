@@ -53,6 +53,7 @@ import re
 
 import er002_ja_web_research_r3 as r3
 import er003_b1_p9a_audio as p9a
+import er003_key_phrase_source_gate_01 as kp_gate
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_iran01_a2_generate as a2gen
@@ -562,10 +563,33 @@ def generate_japanese_title_for_new_topic(japanese_title_text: str, out_path: st
 # Master Audio Store cache経由[voice=Aoede]、日本語glossのみ標準A2 Aoede
 # 経路で新規生成)
 # ============================================================
-def reuse_key_phrases_a2(kp_source_dir: str, kp_dir: str, narration_dir: str) -> dict:
+def reuse_key_phrases_a2(kp_source_dir: str, kp_dir: str, narration_dir: str,
+                          target_article_text: str | None = None) -> dict:
+    """KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (b): `target_article_text`
+    が渡された場合、`kp_source_dir/article.md`(流用元本文)とのsha256一致を
+    必須化する(不一致なら`assert_key_phrase_reuse_source_matches`が
+    RuntimeError[KEY_PHRASE_REUSE_SOURCE_MISMATCH]を送出し、流用しない)。
+    `target_article_text`未指定(既存呼び出し、後方互換)の場合はGate (b)を
+    実行しない(2026-09-18以前の挙動のまま)。背景: AI Hiring A2で3V B1
+    Audio Trial-01の選定をB1→A2翻案後の本文を確認せずそのまま流用していた
+    事故(USER-TEST-SCRIPT-READABILITY-PROD-01、OPEN-170)の再発防止。"""
     import shutil
     os.makedirs(kp_dir, exist_ok=True)
     os.makedirs(narration_dir, exist_ok=True)
+
+    if target_article_text is not None:
+        source_article_path = f"{kp_source_dir}/article.md"
+        if not os.path.exists(source_article_path):
+            raise RuntimeError(
+                f"KEY_PHRASE_REUSE_SOURCE_MISMATCH: Key Phrase流用元({kp_source_dir})の"
+                "article.mdが見つからないため供給元本文を解決できません(流用不可、"
+                "KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
+        with open(source_article_path, encoding="utf-8") as f:
+            source_article_text = f.read()
+        kp_gate.assert_key_phrase_reuse_source_matches(
+            source_article_text, target_article_text,
+            context=f"reuse_key_phrases_a2:{kp_source_dir}->{kp_dir}")
+
     shutil.copyfile(f"{kp_source_dir}/key_phrases/keywords_canonicalized.json",
                      f"{kp_dir}/keywords_canonicalized.json")
     with open(f"{kp_dir}/keywords_canonicalized.json", encoding="utf-8") as f:

@@ -1,0 +1,26 @@
+test_different_text_raises (er003_test_key_phrase_source_gate_01.AssertKeyPhraseReuseSourceMatchesTests.test_different_text_raises) ... ok
+test_identical_text_passes (er003_test_key_phrase_source_gate_01.AssertKeyPhraseReuseSourceMatchesTests.test_identical_text_passes) ... ok
+test_all_present_pass (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_all_present_pass) ... ok
+test_falls_back_to_source_sentence_when_source_span_absent (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_falls_back_to_source_sentence_when_source_span_absent) ... ok
+test_missing_source_span_fails (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_missing_source_span_fails)
+本文が平易化・書き換えされ、旧source_spanが本文から消えた ... ok
+test_mixed_present_and_missing (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_mixed_present_and_missing) ... ok
+test_no_source_field_available_is_reported_not_silently_passed (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_no_source_field_available_is_reported_not_silently_passed) ... ok
+test_normalization_differences_still_pass (er003_test_key_phrase_source_gate_01.CheckKeyPhraseSourcePresenceTests.test_normalization_differences_still_pass)
+大小文字/apostrophe/entity/空白の表記ゆれがあってもPASSする。 ... ok
+test_apostrophe_variants (er003_test_key_phrase_source_gate_01.NormalizeTextTests.test_apostrophe_variants) ... ok
+test_case_insensitive (er003_test_key_phrase_source_gate_01.NormalizeTextTests.test_case_insensitive) ... ok
+test_collapse_whitespace (er003_test_key_phrase_source_gate_01.NormalizeTextTests.test_collapse_whitespace) ... ok
+test_dash_variants (er003_test_key_phrase_source_gate_01.NormalizeTextTests.test_dash_variants) ... ok
+test_html_entity_unescape (er003_test_key_phrase_source_gate_01.NormalizeTextTests.test_html_entity_unescape) ... ok
+test_gate_passes_when_source_span_present_in_article_file (er003_test_key_phrase_source_gate_01.VerifyEpisodeAudioValidationGateIntegrationTests.test_gate_passes_when_source_span_present_in_article_file) ... ok
+test_gate_raises_when_article_rewritten_without_key_phrase_update (er003_test_key_phrase_source_gate_01.VerifyEpisodeAudioValidationGateIntegrationTests.test_gate_raises_when_article_rewritten_without_key_phrase_update)
+本文平易化後にKey Phraseが追従していないケースを再現する。 ... ok
+test_gate_skips_silently_when_no_key_phrase_asset (er003_test_key_phrase_source_gate_01.VerifyEpisodeAudioValidationGateIntegrationTests.test_gate_skips_silently_when_no_key_phrase_asset) ... ok
+test_gate_uses_caller_supplied_article_text_over_file (er003_test_key_phrase_source_gate_01.VerifyEpisodeAudioValidationGateIntegrationTests.test_gate_uses_caller_supplied_article_text_over_file)
+呼び出し側がarticle_textを明示的に渡した場合、それを優先する ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.045s
+
+OK
