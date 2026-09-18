@@ -259,22 +259,35 @@ artifact(player等)を受け入れる前に、Fableは以下の必須要素を�
     ユーザー側ChatGPT/会話画面からアクセスできないため、ユーザー向け
     試聴リンクとして不可(内部証跡パスとしてのみ記録可、9-5・9-7参照)。
     Fableは試聴依頼前に必ず「これはユーザー環境から実際に開けるリンクか」
-    を確認する(標準はGitHub blob/raw URL、将来Artifact対応環境では
-    Artifact)。開ける形式を用意できない環境では試聴依頼(Human Review
-    依頼)自体を行わない。
+    を確認する(標準はGitHub Pages、将来Artifact対応環境ではArtifact)。
+    開ける形式を用意できない環境では試聴依頼(Human Review依頼)自体を
+    行わない。
     **補足(2026-09-12、PM-CLOSEOUT-CONSOLIDATION-85)**: `file:///`禁止
     (本項目)は、既存の標準player要件(TRIAL-09形式・完全スクリプト・
     (a)〜(l))を置き換えるものではなく、それらに加えて満たすべき追加要件
     である。試聴依頼は、Gate 7全項目((a)〜(l))+本項目(m)の到達確認の
-    両方を満たすまで「(ユーザーへ)提示した」と扱わない。標準配布経路:
-    player本体(HTML)は`raw.githubusercontent.com`だと`text/plain`で
-    配信されHTMLとして描画されないため、`raw.githack.com`
+    両方を満たすまで「(ユーザーへ)提示した」と扱わない。
+    **標準配布経路(2026-09-18更新、`PM-GOVERNANCE-DISTRIBUTION-PATH-
+    PAGES-01`、下記参照)**: 正式ユーザーテスト配布経路はGitHub Pages
+    (`https://shimomura055.github.io/eigo-radio/`配下、正式Landing URL=
+    `https://shimomura055.github.io/eigo-radio/user_test/
+    articles_2026_0918.html`、個別記事=`.../user_test/unified.html?
+    src=&level=&en=&ja=`、固定SHA不要・常に最新main・反映遅延目安=deploy
+    数分+Cache-Control 600秒)。`rawcdn.githack.com`/`raw.githack.com`/
+    `raw.githubusercontent.com`/GitHub blob URLはユーザーテスト配布・
+    試聴依頼の標準経路として使用しない(ユーザー環境でrawgit「One more
+    step」確認画面が出るため、`USER-TEST-HOSTING-GITHUB-PAGES-01`、
+    2026-09-18ユーザー決定)。開発用ファイル参照(CLAUDE.mdのraw URL添付
+    ルール)は別扱いで変更なし。
+    (旧経路の記録、2026-09-12時点の決定として維持): player本体(HTML)は
+    `raw.githubusercontent.com`だと`text/plain`で配信されHTMLとして
+    描画されないため、`raw.githack.com`
     (`https://raw.githack.com/<owner>/<repo>/<branch>/<path>`、公開repo・
-    設定不要の無料proxy、Trial試聴用途)を用いる。音声ファイル(mp3/wav等の
-    バイナリ)は`raw.githubusercontent.com`のraw URLをそのまま`<audio src>`
-    として使用してよい(HTMLレンダリング解釈が不要なため問題ない)。将来的な
-    恒久経路としてGitHub Pages(要ユーザー承認の上で有効化)またはArtifact
-    対応環境への移行を検討する。
+    設定不要の無料proxy)を用いていた(Trial試聴用途、2026-09-18時点で
+    SUPERSEDED)。音声ファイル(mp3/wav等のバイナリ)は
+    `raw.githubusercontent.com`のraw URLをそのまま`<audio src>`として
+    使用してよいとされていたが、2026-09-18以降の正式ユーザーテスト配布
+    経路はGitHub Pagesであり、上記が優先する。
 
 **補足(2026-09-08、ユーザー決定、PM-GOVERNANCE-REVIEW-LINK-REQUIRED-AND-
 AUTOCOMPACT-50-12)**: ユーザーへ音声・artifact・比較結果等の確認を求める
@@ -1015,13 +1028,22 @@ eigo-radio/...`形式のローカルURLを「クリック可能なリンク」�
 3. ユーザー側から開けるArtifactを生成できない環境の場合は、「試聴リンクを
    提示した」と扱わない。Human Review依頼を行わず、利用可能な配布方法
    (下記4)を整えてから報告する。
-4. **標準配布経路**: Claude Artifact生成ツールが使えない環境では、GitHub
+4. **標準配布経路(2026-09-18更新、`PM-GOVERNANCE-DISTRIBUTION-PATH-
+   PAGES-01`)**: 正式ユーザーテスト配布経路はGitHub Pages
+   (`https://shimomura055.github.io/eigo-radio/`配下、正式Landing URL=
+   `https://shimomura055.github.io/eigo-radio/user_test/
+   articles_2026_0918.html`、固定SHA不要・常に最新main)であり、
+   `rawcdn.githack.com`/`raw.githack.com`/`raw.githubusercontent.com`/
+   GitHub blob URLは標準経路として使用しない(rawgit「One more step」
+   確認画面がユーザー環境で出るため)。将来Artifact生成ツールが使える
+   環境では、そちらを優先する。
+   (旧経路の記録、2026-09-12時点の決定として維持、2026-09-18時点で
+   SUPERSEDED): Claude Artifact生成ツールが使えない環境では、GitHub
    経由の配布(commit・push後の`https://github.com/<owner>/<repo>/blob/
    main/<path>`および`https://raw.githubusercontent.com/<owner>/<repo>/
-   main/<path>`)を用いる。用いる際は当該repoの公開/非公開設定を確認し
-   (非公開の場合は未認証アクセス不可である旨を明記)、実際にHTTPで
-   200が返るかを確認した結果を報告に含める。将来Artifact生成ツールが
-   使える環境では、そちらを優先する。
+   main/<path>`)を用いていた。用いる際は当該repoの公開/非公開設定を
+   確認し(非公開の場合は未認証アクセス不可である旨を明記)、実際に
+   HTTPで200が返るかを確認した結果を報告に含める運用だった。
 5. Fableは試聴依頼前に必ずGate 7(2節、補足(m))で「これはユーザー環境
    から実際に開けるリンクか」を確認する。
 
@@ -1145,11 +1167,11 @@ STATUS-INVENTORY`エントリ参照)により新設。
 - (5) Primary ASR mismatchだけでproper nameをHuman Reviewへ上げない
   (`CURRENT_SPEC.md`「ASR-first Retry Policy」の再確認、Secondary ASR
   cascadeまで実行してから判断する)。
-- 既存9-5(Artifact/playerリンク必須)・9-7(`file:///`禁止、GitHub raw
-  配布)・Gate 7(m)との関係: 9-7(4)のGitHub raw配布は「HTML確認ページの
-  配布経路」として引き続き有効だが、**音声ファイル自体のraw直リンク
-  提示はHuman Review用途では不可**とする(9-7の更新ではなく本節による
-  具体化)。
+- 既存9-5(Artifact/playerリンク必須)・9-7(`file:///`禁止、標準配布経路)・
+  Gate 7(m)との関係: 9-7(4)の標準配布経路(2026-09-18以降はGitHub
+  Pages)は「HTML確認ページの配布経路」として引き続き有効だが、
+  **音声ファイル自体のraw直リンク提示はHuman Review用途では不可**とする
+  (9-7の更新ではなく本節による具体化)。
 - 適用範囲: 今後のPR/Trial/Production QA全般。
 - 参考実装: `user_test/human_review.html`(query param `src=<json path>`
   でJSONを読み込む再利用可能ページ、`user_test/unified.html`と同型の

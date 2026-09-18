@@ -443,6 +443,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-TRIAL-01: Key Phraseハイライト+日本語訳セクションのTrial実施、採否未決(ユーザー確認待ち)
 - [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-PROD-01: Trial VALIDATED後ユーザー正式承認・Production採用、Free-Address A2/AI Hiring A2のKey Phrase-本文不整合を本文優先で是正(Phase D)、Landing/TSV反映(Phase C)、REVIEW_REQUIRED2件ユーザー承認・GitHub Pages配線(Phase E)でPRODUCTION_WIRED確定
 - [本ファイル内] ## USER-TEST-HOSTING-GITHUB-PAGES-01: ユーザーテスト公開経路をrawcdn.githack.comからGitHub Pagesへ正式移行、rawgit「One more step」警告解消、PRODUCTION_WIRED確定
+- [本ファイル内] ## PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01: 標準配布経路をGitHub Pages基準へPM_GOVERNANCE/PM_BRIEF/CURRENT_SPEC/ARTIFACT_REGISTRY/OPEN_ITEMSで更新、GitHub Pages有効化=ユーザー操作を事実記録、Dangling Reference Check実施、OPEN-173 close
 
 ---
 
@@ -9017,6 +9018,88 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   e2e_result_pages20.json/pages_warning_check.json/
   dangling_reference_check_pages.json/sha256_after_phase_e.json+
   screenshot32枚)、`docs/pm/tools/pages_warning_check.py`(新規)。
+
+### 追記(2026-09-18、`PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01`)
+
+**GitHub Pagesはユーザー自身の操作により有効化された(ユーザー確認済み
+事実)**。上記「Open Item新規登録」に記載した「GitHub Pages有効化の経緯
+(いつ・誰が)がSSOT未記録だった事実」は、`CURRENT_SPEC.md`「ユーザー
+テストWeb表示仕様・配信経路」節へ本文言で追記して解消した(有効化操作の
+実施時期・GitHub Web UI上の詳細設定内容そのものは引き続きSSOT未記録だが、
+「誰が有効化したか」はユーザー確認済み事実として確定)。あわせて、
+「`PM_GOVERNANCE.md`9-5等の『標準配布経路』記述更新要否」
+(`OPEN_ITEMS.md` OPEN-173)をユーザー正式決定により解消し、標準配布経路
+記述を`PM_GOVERNANCE.md`(2節Gate 7補足(m)・9-7節(4))・`PM_BRIEF.md`・
+`ARTIFACT_REGISTRY.md`へGitHub Pages基準で反映した。詳細は下記
+`PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01`エントリを参照。
+
+## PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01: 標準配布経路をGitHub Pages基準へ更新、GitHub Pages有効化=ユーザー操作を事実記録、Dangling Reference Check実施、OPEN-173 close
+
+- 管理ID: `PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01`(ユーザー正式決定
+  2026-09-18)。
+- 背景: `USER-TEST-HOSTING-GITHUB-PAGES-01`でユーザーテスト公開経路を
+  GitHub Pagesへ正式移行したが、`PM_GOVERNANCE.md`/`PM_BRIEF.md`には
+  なお「標準配布経路=GitHub blob/raw URL」「player本体はraw.githack.com」
+  等の旧記述が残存し(`OPEN-173`)、`ARTIFACT_REGISTRY.md`にも
+  `rawcdn.githack.com`固定SHA URLを現在の正式URLとして掲載する行が
+  複数残っていた。
+- ユーザー指示: (1)標準配布経路の記述をGitHub Pages基準へ更新し、
+  rawgit/rawcdn/raw/blobを新しいProduction仕様上の標準経路として参照
+  しないこと(過去証跡としてDecision Log等に残すのは可)、(2)GitHub
+  Pages有効化はユーザー自身の操作であり、推測表現ではなくユーザー確認
+  済み事実としてSSOTへ記録すること、(3)Dangling Reference Checkを実施
+  しPM_GOVERNANCE以外(CURRENT_SPEC/DECISION_LOG/ARTIFACT_REGISTRY/
+  OPEN_ITEMS等)の不整合も確認すること。
+- 実施内容:
+  - `PM_GOVERNANCE.md`: 2節Gate 7補足(m)の標準配布経路定義、9-7節(4)の
+    標準配布経路定義、9-12節の9-7(4)参照箇所を、正式ユーザーテスト配布
+    経路=GitHub Pages(Landing URL=
+    `https://shimomura055.github.io/eigo-radio/user_test/
+    articles_2026_0918.html`)、rawcdn.githack.com/raw.githack.com/
+    raw.githubusercontent.com/GitHub blob URLは標準経路として使用しない
+    旨へ更新。旧記述(2026-09-12時点の決定)は「SUPERSEDED」注記付きで
+    本文中に保持し、削除しない。Gate 7に多数出現する他の「実務報告受入
+    判定」としてのGate 7言及(配布経路と無関係な箇所)は無変更。
+  - `PM_BRIEF.md`: L90-95相当の同旨記述を同様に更新。
+  - `CURRENT_SPEC.md`: 「ユーザーテストWeb表示仕様・配信経路」節へ
+    「GitHub Pagesはユーザー自身の操作により有効化された(ユーザー確認
+    済み事実、2026-09-18)」を追記。既存の`rawcdn.githack.com`/
+    `raw.githack.com`不使用の記述(証跡的記述)は無変更(既に新方針と
+    整合していたため)。
+  - `ARTIFACT_REGISTRY.md`: `rawcdn`出現13箇所を分類し、(i)10記事
+    (`docs/user_test/ユーザーテスト記事一覧_2026-0918_選定10.tsv`)に
+    含まれるPersonalized News A2/B1・Tiny Bags A2/B1・Convenience AI
+    A2/B1の計6箇所をGitHub Pages URLへ置換(旧rawcdn URLは
+    「旧経路(〜2026-09-18、SUPERSEDED)」として併記・保持)、
+    (ii)既に「旧URL/REPLACED_BY_FIX01/TRIAL」等と明記済みの2箇所
+    (Personalized News B1初回版・Script Readability Trialの2リンク)は
+    無変更、(iii)10記事セット以外(Space Weapons A2/B1・AI Control
+    A2/B1)の4箇所はURLを書き換えず「旧rawcdn経路。2026-09-18以降の
+    正式ユーザーテスト配布経路はGitHub Pages、Pages URL未発行」を注記
+    追加、Landing行(1箇所)は既にPages URLを正式・rawcdnをSUPERSEDED
+    併記済みで無変更。
+  - `OPEN_ITEMS.md`: `OPEN-173`を`CLOSED`化(標準配布経路記述を更新
+    済み)。「GitHub Pages有効化の経緯未記録」は`OPEN_ITEMS.md`側に
+    独立したOPEN Item行が存在しないことを確認したため、`OPEN_ITEMS.md`
+    側の追加変更は行わず、本エントリおよび`CURRENT_SPEC.md`への事実
+    追記のみで対応した。
+  - `DECISION_LOG.md`: `USER-TEST-HOSTING-GITHUB-PAGES-01`エントリ末尾へ
+    追記ブロックを追加(上記参照)。
+- Dangling Reference Check: `PM_GOVERNANCE.md`/`PM_BRIEF.md`/
+  `CURRENT_SPEC.md`/`ARTIFACT_REGISTRY.md`/`OPEN_ITEMS.md`/
+  `docs/pm/templates/*.md`/`.claude/agents/*.md`に対し
+  `rawcdn|githack|rawgit|raw\.githubusercontent|blob/main`を再Grepし、
+  残存箇所を(a)正式経路として参照(NG)/(b)過去証跡・旧経路注記付き
+  (OK)/(c)開発用ファイルリンク(OK)/(d)判断保留に分類。結果は
+  `docs/pm/closeout_136_e2e/distribution_path_pages_01/
+  dangling_reference_check.json`に記録(分類(a)=0件を確認)。
+- Status: `PRODUCTION_WIRED`(文書更新完了、判断保留(d)分がある場合は
+  該当分のみ`USER_DECISION_REQUIRED`として別途報告)。
+- 変更範囲: 文書編集のみ(コード・HTML・TSV・canonical artifact変更
+  禁止を遵守)。追加API費用¥0。
+- 参照: `docs/pm/RESULT_PACKET_DISTRIBUTION_PATH_PAGES_01.md`、
+  `docs/pm/delegation_log/PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01.md`、
+  `docs/pm/closeout_136_e2e/distribution_path_pages_01/`配下。
 
 ## 参照元
 

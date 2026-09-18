@@ -1,0 +1,64 @@
+{
+  "task_id": "PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01",
+  "date": "2026-09-18",
+  "pattern": "rawcdn|githack|rawgit|raw\\.githubusercontent|blob/main",
+  "scope_primary": [
+    "docs/pm/PM_GOVERNANCE.md",
+    "docs/pm/PM_BRIEF.md",
+    "CURRENT_SPEC.md",
+    "ARTIFACT_REGISTRY.md",
+    "OPEN_ITEMS.md",
+    "docs/pm/templates/*.md",
+    ".claude/agents/*.md"
+  ],
+  "scope_additional": [
+    "DECISION_LOG.md (## USER-TEST-HOSTING-GITHUB-PAGES-01 以降のエントリのみ)"
+  ],
+  "raw_hit_files": {
+    "primary_scope_total": 39,
+    "decision_log_additional_total": 25,
+    "templates_and_agents_hits": 0
+  },
+  "classification_summary": {
+    "a_ng_referenced_as_official_standard_path": 0,
+    "b_ok_historical_or_explicit_nonuse_statement": 62,
+    "c_ok_dev_file_reference": 0,
+    "d_judgment_call_reported": 2
+  },
+  "classification_detail": {
+    "a_ng_count_0_reason": "全ヒットを確認した結果、rawcdn/githack/rawgit/raw.githubusercontent/blob URLを『現在の正式・標準経路』として新規に主張している箇所は0件。PM_GOVERNANCE.md/PM_BRIEF.mdの新記述は『使用しない』という明示的否定文、CURRENT_SPEC.md 1408行は既存の否定文(無変更)、ARTIFACT_REGISTRY.mdの10記事関連行はGitHub Pages URLへ置換済み(旧URLはSUPERSEDED注記付きで併記)、DECISION_LOG.mdは全て過去エントリ内の経緯記録(ユーザー許可済み)。",
+    "b_examples": [
+      "docs/pm/PM_GOVERNANCE.md:276-278,1036-1037,1057(PM_BRIEF類似) — 新記述内の明示的否定文(『使用しない』)",
+      "docs/pm/PM_GOVERNANCE.md:283-288,1043 — '(旧経路の記録、2026-09-12時点の決定として維持)'と明記した歴史的記述",
+      "docs/pm/PM_GOVERNANCE.md:2591-2599 — 2026-09-12時点の決定を記録した過去のchangelogナラティブ(無変更方針どおり)",
+      "docs/pm/PM_BRIEF.md:95 — 新記述内の明示的否定文",
+      "CURRENT_SPEC.md:670 — 2026-09-09時点のE2E実行証跡としての言及(過去実測記録)",
+      "CURRENT_SPEC.md:1408 — 既存の明示的否定文(無変更、既に新方針と整合)",
+      "CURRENT_SPEC.md:1411 — Statusブロック内のPASS判定条件列挙(rawgit警告0件を要求する記述であり、標準経路の主張ではない)",
+      "ARTIFACT_REGISTRY.md:133-136 — 10記事セット外(Space Weapons/AI Control)、URL無変更+『旧rawcdn経路。正式配布経路はGitHub Pages、Pages URL未発行』注記追加",
+      "ARTIFACT_REGISTRY.md:138,141,143-146 — 10記事セット内、GitHub Pages URLへ置換し旧rawcdn URLをSUPERSEDED注記付きで併記",
+      "ARTIFACT_REGISTRY.md:140,142 — 既に『REPLACED_BY_FIX01』『TRIAL』と明記済みの非canonical行、無変更",
+      "ARTIFACT_REGISTRY.md:152 — Landing行、既にPages URLを正式・rawcdnをSUPERSEDED併記済み(前回タスクで対応済み、無変更)",
+      "ARTIFACT_REGISTRY.md:153 — GitHub Pages root行、無変更(既にPages正式記載)",
+      "OPEN_ITEMS.md:278,279,291,295 — 各OPEN Item本文中の過去のTrial/検証証跡URL(evidence記録、標準経路の主張ではない)",
+      "OPEN_ITEMS.md:322 — 本タスクで追記したOPEN-173 CLOSE本文(明示的否定文)",
+      "DECISION_LOG.md:8933以降(HOSTING entry本体+追記+新規PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01エントリ、計25箇所) — 過去証跡としてDecision Logに残すことをユーザーが明示的に許可した記述"
+    ],
+    "c_dev_file_reference_count_0_reason": "templates/agentsディレクトリにヒットなし。CLAUDE.mdは委任範囲外のため本チェック対象外(別扱いで変更なし、指示どおり)。",
+    "d_judgment_call_list": [
+      {
+        "file": "ARTIFACT_REGISTRY.md",
+        "line": 139,
+        "text": "Personalized News B1(既知flag残存、非canonical・『ユーザーテスト対象外』明記済み)行の既存player URLが raw.githack.com のまま(grep対象は`rawcdn`13箇所のみだったため本タスクのG-4置換対象外)。",
+        "note": "該当記事(Personalized News)自体は10記事に含まれるが、この行は非canonical版(canonicalはFIX-01=141行)であり『ユーザーテスト対象外』と明記済み。rawcdn」grep範囲外だったため機械的には無変更のまま残置。正式経路の主張ではないため(a)には該当しないが、他行との統一(注記追加/置換)要否はFable/ユーザー判断を仰ぐ。"
+      },
+      {
+        "file": "docs/pm/PM_GOVERNANCE.md",
+        "line": 325,
+        "text": "Gate 7(n)恒久チェッカー`user_test_page_e2e_check.py`の説明『Playwright headless Chromium、githack中継URL対応』",
+        "note": "チェッカーツールの技術的機能説明であり『標準配布経路』の主張ではないため(a)には該当しない。GitHub Pages移行後もこの記述が『githack対応』のみで良いか(Pages URL対応も明記すべきか)は本タスクのスコープ(標準配布経路記述の更新)には含まれないと判断し無変更。要否はFable/ユーザー判断を仰ぐ。"
+      }
+    ]
+  },
+  "conclusion": "分類(a)=0件。GitHub Pagesを標準配布経路として明示し、rawcdn/rawgit/raw/blobを新Production標準経路として参照する記述は残存しない。(d)2件はどちらも技術的に問題ない(標準経路の主張ではない)が、統一性の観点でUSER_DECISION_REQUIRED候補として報告する。"
+}

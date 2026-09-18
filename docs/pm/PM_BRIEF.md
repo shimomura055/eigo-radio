@@ -88,11 +88,14 @@ Trial/開発=Standard同期(速度・デバッグ性優先)・量産Production=B
 場合にのみ行い、必ずクリックできるArtifact/playerリンクを提示する
 (ローカルpathのみは不可、`docs/pm/PM_GOVERNANCE.md`9-5)。
 `file:///C:/...`・`C:\...`はユーザー環境から開けないため、ユーザー向け
-試聴リンクとして使用禁止(内部証跡パスとしてのみ記録可)。標準配布経路は
-GitHub blob URL(`https://github.com/<repo>/blob/main/<path>`)・raw URL
-(`https://raw.githubusercontent.com/<repo>/main/<path>`)であり、依頼前に
-実際にユーザー環境から開けるかをGate 7で確認する(2026-09-12、
-PM-CLOSEOUT-CONSOLIDATION-83で明確化)。報告単位(Lane/
+試聴リンクとして使用禁止(内部証跡パスとしてのみ記録可)。正式ユーザー
+テスト配布経路はGitHub Pages(`https://shimomura055.github.io/eigo-radio/`
+配下、正式Landing URL=`https://shimomura055.github.io/eigo-radio/
+user_test/articles_2026_0918.html`)であり、GitHub blob URL・
+`raw.githubusercontent.com`・`raw.githack.com`/`rawcdn.githack.com`は
+標準経路として使用しない(2026-09-18、`PM-GOVERNANCE-DISTRIBUTION-PATH-
+PAGES-01`、旧経路[2026-09-12、PM-CLOSEOUT-CONSOLIDATION-83]からの更新)。
+依頼前に実際にユーザー環境から開けるかをGate 7で確認する。報告単位(Lane/
 Workstream/Feature/Trial群等)を基準に
 した即時報告・未回答フル再掲・Next Action/Reminder提示の正式SSOTは
 `docs/pm/PM_GOVERNANCE.md`「12. 報告単位管理ルール(Reporting Unit

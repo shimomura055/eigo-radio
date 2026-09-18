@@ -1392,10 +1392,12 @@ PROD-01、20 level全件で公開runtime E2E確認済み)。
 
 **配信経路**: ユーザーテストWeb Hosting=**GitHub Pages**
 (`https://shimomura055.github.io/eigo-radio/`、リポジトリ`main`ブランチ・
-root配信、`.nojekyll`あり)。GitHub Pages自体の有効化(Source/Branch設定)
-はユーザーがGitHub Web UIで実施した操作(実施時期・詳細設定内容はSSOT未
-記録のまま2026-09-18時点で稼働確認、`docs/pm/RESULT_PACKET_SCRIPT_
-READABILITY_PROD_01_pages_precheck.md`参照)。正式入口URL(stable、
+root配信、`.nojekyll`あり)。**GitHub Pagesはユーザー自身の操作により
+有効化された(ユーザー確認済み事実、2026-09-18、`PM-GOVERNANCE-
+DISTRIBUTION-PATH-PAGES-01`)**。Source/Branch設定の実施時期・詳細設定
+内容そのものはSSOT未記録だが、稼働確認は2026-09-18時点で完了している
+(`docs/pm/RESULT_PACKET_SCRIPT_READABILITY_PROD_01_pages_precheck.md`
+参照)。正式入口URL(stable、
 commitごとに変更不要)=
 `https://shimomura055.github.io/eigo-radio/user_test/articles_2026_0918.html`。
 個別記事URL=
