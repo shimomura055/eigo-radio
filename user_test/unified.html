@@ -15,6 +15,14 @@
 .jp{background:var(--jp);border-left:4px solid #98a2b3;padding:12px 14px;border-radius:8px}.comment{background:#f8fafc;border:1px solid #d0d5dd;border-left:4px solid #667085;padding:14px 16px;border-radius:10px;margin:14px 0}.comment strong{display:block;font-size:13px;color:#475467;margin-bottom:6px}.script{white-space:pre-line}.kp{display:grid;gap:10px}.kpitem{display:grid;grid-template-columns:1fr 1fr;gap:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpitem b{font-size:15px}
 .seek{border:0;background:var(--soft);color:var(--accent);font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;margin-right:8px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.note{font-size:13px;color:var(--muted);margin-top:8px}.error{background:#fff4f2;border:1px solid #fecdca;color:#b42318;border-radius:12px;padding:16px}
 footer{font-size:12px;color:var(--muted);text-align:center;margin-top:30px}@media(max-width:640px){h1{font-size:25px}.card{padding:18px}.kpitem{grid-template-columns:1fr}.hero{padding:24px}.sectionhead{align-items:flex-start}}
+/* --- Script readability additions (USER-TEST-SCRIPT-READABILITY-PROD-01 Phase A) --- */
+mark.kp-hl{background:#dff2fb;color:inherit;padding:0 1px;border-radius:2px;text-decoration:none;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+hr.trans-divider{border:0;border-top:2px dashed var(--line);margin:34px 0 18px}
+.trans-section h2{margin-bottom:6px}
+.trans-section .trans-intro{font-size:13px;color:var(--muted);margin:0 0 14px}
+.repost-label{display:inline-block;font-size:11px;font-weight:700;color:#667085;background:#eef0f3;padding:2px 9px;border-radius:999px;margin-bottom:8px}
+.jacomment-repost{background:#f2f3f5;border:1px solid #d0d5dd;border-left:4px solid #98a2b3;color:#5b6472;padding:12px 14px;border-radius:10px;margin:14px 0}
+.jacomment-repost>div{color:#5b6472}
 </style>
 </head>
 <body>
@@ -194,12 +202,91 @@ function simpleRender(doc,base){
  let out='';const cards=[...doc.querySelectorAll('section.card')];for(const c of cards){const h=c.querySelector('h2');if(!h)continue;const title=clean(h.textContent);if(!/preview|key phrases|full story|full script/i.test(title))continue;const clone=c.cloneNode(true);clone.querySelectorAll('button,audio').forEach(x=>x.remove());clone.querySelector('h2')?.remove();if(/key phrases/i.test(title)){out+=card('Key Phrases',clone.innerHTML)}else if(/preview/i.test(title)){out+=card('Preview',clone.innerHTML)}else{out+=card('Full Script',clone.innerHTML)}}
  return out||'<section class="card"><p>表示可能なスクリプトが見つかりませんでした。</p></section>';
 }
+/* ===== Production: Key Phrase highlight (水色) + 日本語訳section =====
+   USER-TEST-SCRIPT-READABILITY-PROD-01 Phase A。canonical player.html/parts.json/
+   key_phrases側は変更しない。asset(user_test/translations/index.json配下)が
+   存在しない(src,level)組では何もしない(エラー表示なし、console.warnのみ)。
+   Trial path(user_test/trial/...)は一切参照・fallbackしない。 */
+function escapeRegex(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function aposFlexPattern(s){return escapeRegex(s).replace(/['’‘]/g,"['’‘]")}
+async function fetchJsonOrNull(url){
+ try{const r=await fetch(url);if(!r.ok)return null;return await r.json();}catch(e){return null}
+}
+async function resolveArticleAssetBase(){
+ const idxUrl=rootBase()+'/user_test/translations/index.json';
+ const idx=await fetchJsonOrNull(idxUrl);
+ if(!idx||!Array.isArray(idx.items)){console.warn('translations/index.json unavailable');return null}
+ const normSrc=String(src||'').replace(/^\/+/, '');
+ const item=idx.items.find(it=>it.src===normSrc && String(it.level||'').toUpperCase()===level);
+ if(!item){console.warn('no translations/index.json entry for src/level',src,level);return null}
+ return {articleId:item.article_id, base:rootBase()+'/user_test/translations/'+item.article_id+'/'+level+'/'};
+}
+function findFullScriptCard(){
+ return [...document.querySelectorAll('#content .card')].find(c=>{const h=c.querySelector('h2');return h&&/Full Script|Full Story/i.test(h.textContent)});
+}
+function applyKeyPhraseHighlight(mapping){
+ const cardEl=findFullScriptCard();
+ if(!cardEl||!mapping||!Array.isArray(mapping.key_phrases))return;
+ const entries=mapping.key_phrases.filter(k=>k.matched_text && k.mapping_type!=='UNRESOLVED');
+ if(!entries.length)return;
+ const paras=[...cardEl.querySelectorAll('p.script')];
+ for(const p of paras){
+  const text=p.textContent;
+  const spans=[];
+  for(const entry of entries){
+   const re=new RegExp(aposFlexPattern(entry.matched_text),'gi');
+   let m;
+   while((m=re.exec(text))){
+    spans.push({start:m.index,end:m.index+m[0].length});
+    if(m[0].length===0)re.lastIndex++;
+   }
+  }
+  if(!spans.length)continue;
+  spans.sort((a,b)=>a.start-b.start||(b.end-b.start)-(a.end-a.start));
+  const kept=[];let lastEnd=-1;
+  for(const s of spans){if(s.start>=lastEnd){kept.push(s);lastEnd=s.end;}}
+  let html='',pos=0;
+  for(const s of kept){html+=esc(text.slice(pos,s.start));html+='<mark class="kp-hl">'+esc(text.slice(s.start,s.end))+'</mark>';pos=s.end;}
+  html+=esc(text.slice(pos));
+  p.innerHTML=html;
+ }
+}
+function renderTranslationSection(data){
+ const sections=Array.isArray(data.sections)?data.sections:[];
+ if(!sections.length)return;
+ const hr=document.createElement('hr');hr.className='trans-divider';
+ document.getElementById('content').appendChild(hr);
+ const section=document.createElement('section');section.className='card trans-section';
+ let body='<h2>日本語訳</h2><p class="trans-intro">英語スクリプトの構造に沿って、対応する日本語訳を掲載します。</p>';
+ for(const s of sections){
+  if(s.type==='existing_comment_repost'){
+   body+='<div class="jacomment-repost"><span class="repost-label">既存Comment(再掲、翻訳ではありません)</span><div>'+esc(s.text_ja||'')+'</div></div>';
+  }else{
+   body+='<h3>'+esc(s.heading_ja||'')+'</h3><p class="script">'+esc(s.text_ja||'')+'</p>';
+  }
+ }
+ section.innerHTML=body;
+ document.getElementById('content').appendChild(section);
+}
+async function enhanceReadability(){
+ try{
+  if(!src)return;
+  const resolved=await resolveArticleAssetBase();
+  if(!resolved)return;
+  const mapping=await fetchJsonOrNull(resolved.base+'kp_mapping.json');
+  if(mapping)applyKeyPhraseHighlight(mapping);else console.warn('kp_mapping.json unavailable for',resolved.articleId,level);
+  const translation=await fetchJsonOrNull(resolved.base+'translation_ja.json');
+  if(translation)renderTranslationSection(translation);else console.warn('translation_ja.json unavailable for',resolved.articleId,level);
+ }catch(e){console.error('enhanceReadability error (音声再生には影響しません)',e)}
+}
+
 (async()=>{
  try{
   if(!src)throw new Error('src parameter is required');
   const url=sourceUrl(),res=await fetch(url);if(!res.ok)throw new Error('元playerを取得できませんでした ('+res.status+')');
   const text=await res.text(),doc=new DOMParser().parseFromString(text,'text/html'),base=new URL('.',url).href;
   const t=chooseTimeline(doc);document.getElementById('content').innerHTML=t?timelineRender(doc,base):simpleRender(doc,base);bind();
+  await enhanceReadability();
  }catch(e){document.getElementById('content').innerHTML='<div class="error"><strong>表示エラー</strong><br>'+esc(e.message)+'</div>'}
 })();
 </script>

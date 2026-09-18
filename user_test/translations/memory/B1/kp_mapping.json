@@ -1,0 +1,58 @@
+{
+  "article_id": "memory",
+  "level": "B1",
+  "key_phrases": [
+    {
+      "phrase": "return date",
+      "phrase_ja": "記憶が戻ってくる日",
+      "matched_text": "return date",
+      "mapping_type": "exact",
+      "occurrences": 2,
+      "rationale": null,
+      "candidates": null
+    },
+    {
+      "phrase": "make something one's whole life",
+      "phrase_ja": "何かを人生のすべてにする",
+      "matched_text": "make my last day your whole life",
+      "mapping_type": "function_word",
+      "occurrences": 1,
+      "rationale": "本文は物語中の会話台詞で具体的な名詞・代名詞(my last day / your)を使用。used_formは辞書的一般形(something / one's)に正規化されているのみで、動詞句の核(make ... whole life)は同一。Key Phrase資産のsource_sentenceが本文の当該台詞と完全一致しており対応箇所は一意。",
+      "candidates": null
+    },
+    {
+      "phrase": "lock away",
+      "phrase_ja": "鍵をかけてしまっておく",
+      "matched_text": "locked it away",
+      "mapping_type": "tense",
+      "occurrences": 1,
+      "rationale": "過去形+目的語代名詞挿入(locked it away)。句動詞の核(lock away)は同一で、Key Phrase資産のsource_spanが本文と完全一致するため対応箇所は一意。",
+      "candidates": null
+    },
+    {
+      "phrase": "carry a memory",
+      "phrase_ja": "記憶を心に抱え続ける",
+      "matched_text": "the memory she could no longer carry",
+      "mapping_type": "inflection",
+      "occurrences": 1,
+      "rationale": "本文では関係節構造(the memory she could no longer carry)としてcarryとmemoryが離れて出現する。Key Phrase資産のsource_spanが本文の当該関係節と完全一致し(qa_traceable_contiguous_span PASS済み)、他に同一文脈の候補は無いため対応箇所として一意に特定できる(本文中の別箇所\"I cannot carry it now\"は資産のsource_sentenceと一致せずKey Phrase抽出元ではないため対象外)。",
+      "candidates": null
+    },
+    {
+      "phrase": "be relieved",
+      "phrase_ja": "ほっとする",
+      "matched_text": "being relieved",
+      "mapping_type": "tense",
+      "occurrences": 1,
+      "rationale": "現在分詞形(being relieved)への活用差。本文中の対応箇所は一意。",
+      "candidates": null
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "mapped": 5,
+    "exact": 1,
+    "non_exact": 4,
+    "unresolved": 0
+  }
+}
