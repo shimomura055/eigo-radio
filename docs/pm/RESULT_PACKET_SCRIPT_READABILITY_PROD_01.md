@@ -550,9 +550,8 @@ USER-TEST-SCRIPT-READABILITY-PROD-01_phaseD.md`(+`_check.json`)。
     fixture)+`er003_test_p2j_investigate`の`CollectionCountTests`/
     `ReconciliationArithmeticTests`2件(既知の経年collection件数不一致、
     Phase A/D報告と同一の既知3件)であり、本Phaseによる新規失敗は0件。
-17. commit 3 SHA: 本節コミット後に追記(下記コマンド実行→
-    `git rev-parse HEAD`)。push後`git fetch origin`でmain=origin/main
-    一致を確認する。
+17. commit 3 SHA: `361c169f137cd2ec3641d77b76e26e5febd7aa83`(push済み、
+    `git fetch origin`後main=origin/main一致確認済み)。
 18. 一覧外Read: なし(事前指定Read一覧の範囲内で完結)。
     check_delegation_prompt結果: **PASS**(`docs/pm/delegation_log/
     USER-TEST-SCRIPT-READABILITY-PROD-01_phaseC.md_check.json`、
