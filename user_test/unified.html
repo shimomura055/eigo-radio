@@ -259,7 +259,7 @@ function renderTranslationSection(data){
  const section=document.createElement('section');section.className='card trans-section';
  let body='<h2>日本語訳</h2><p class="trans-intro">英語スクリプトの構造に沿って、対応する日本語訳を掲載します。</p>';
  for(const s of sections){
-  if(s.type==='existing_comment_repost'){
+  if(s.type==='existing_comment_repost'||s.type==='reprint'){
    body+='<div class="jacomment-repost"><span class="repost-label">既存Comment(再掲、翻訳ではありません)</span><div>'+esc(s.text_ja||'')+'</div></div>';
   }else{
    body+='<h3>'+esc(s.heading_ja||'')+'</h3><p class="script">'+esc(s.text_ja||'')+'</p>';

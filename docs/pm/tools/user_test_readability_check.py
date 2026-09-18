@@ -77,8 +77,9 @@ def build_unified_url(base: str, src: str, level: str, en: str, ja: str) -> str:
 
 
 def check_one(page, name: str, url: str, expect: dict, screenshot_dir: str | None,
-              play_wait_seconds: float, mobile: bool) -> dict:
-    result: dict = {"name": name, "url": url, "checks": {}, "reasons": [], "expect": expect}
+              play_wait_seconds: float, mobile: bool, strict_play_seek: bool = True) -> dict:
+    result: dict = {"name": name, "url": url, "checks": {}, "reasons": [], "expect": expect,
+                     "informational_reasons": []}
     console_errors: list[str] = []
     page.on("console", lambda msg: console_errors.append(msg.text) if msg.type == "error" else None)
 
@@ -203,7 +204,8 @@ def check_one(page, name: str, url: str, expect: dict, screenshot_dir: str | Non
         result["reasons"].append(f"Play確認に失敗: {e}")
     result["checks"]["play_progresses"] = play_result
     if not play_result["pass"]:
-        result["reasons"].append(f"Playが進行しなかった: {play_result}")
+        msg = f"Playが進行しなかった: {play_result}"
+        (result["reasons"] if strict_play_seek else result["informational_reasons"]).append(msg)
 
     seek_result = {"pass": False}
     try:
@@ -216,7 +218,8 @@ def check_one(page, name: str, url: str, expect: dict, screenshot_dir: str | Non
         seek_result["error"] = str(e)
     result["checks"]["seek"] = seek_result
     if not seek_result["pass"]:
-        result["reasons"].append(f"Seek確認に失敗: {seek_result}")
+        msg = f"Seek確認に失敗: {seek_result}"
+        (result["reasons"] if strict_play_seek else result["informational_reasons"]).append(msg)
 
     # 「Failed to load resource: ... 404」はtranslation_ja.json/kp_mapping.jsonの
     # 存在確認fetch(意図的なprobe、資産が無いlevelでは仕様どおり404になる)由来の
@@ -243,10 +246,43 @@ def check_one(page, name: str, url: str, expect: dict, screenshot_dir: str | Non
     return result
 
 
+def build_expect(tdir: Path, article_id: str, lvl: str) -> tuple[dict, bool, bool]:
+    mapping_path = tdir / (article_id or "") / lvl / "kp_mapping.json"
+    trans_path = tdir / (article_id or "") / lvl / "translation_ja.json"
+    has_mapping = mapping_path.is_file()
+    has_trans = trans_path.is_file()
+    expect: dict = {}
+    if has_mapping:
+        mp = json.loads(mapping_path.read_text(encoding="utf-8"))
+        expect["expect_highlight_count"] = sum(
+            (k.get("occurrences") or 0) for k in mp["key_phrases"] if k.get("mapping_type") != "UNRESOLVED"
+        )
+    if has_trans:
+        td = json.loads(trans_path.read_text(encoding="utf-8"))
+        expect["expect_translation"] = True
+        expect["expect_repost_count"] = sum(
+            1 for s in td.get("sections", []) if s.get("type") in ("existing_comment_repost", "reprint")
+        )
+    else:
+        expect["expect_translation"] = False
+    return expect, has_mapping, has_trans
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--base", required=True)
-    ap.add_argument("--tsv", required=True)
+    ap.add_argument("--base", default=None, help="--tsv/--index使用時は必須。--urls-fromでは不要(実URLをそのまま使う)")
+    ap.add_argument("--tsv", default=None,
+                     help="記事一覧TSV(標準モード)。--indexと併用不可、どちらか一方を指定")
+    ap.add_argument("--index", default=None,
+                     help="user_test/translations/index.jsonを正としてsrcを解決するモード"
+                          "(TSVのURLがまだ更新されていない場合のPhase Cローカル確認用)")
+    ap.add_argument("--urls-from", default=None,
+                     help="TSVのstandard_url/advanced_urlを実URLのまま(--baseで置換せず)開いて"
+                          "公開runtime確認するモード(Phase C-10)。--full-checkで指定した"
+                          "(article_id:level)のみPC+mobile+Play/Seekまで厳密判定し、"
+                          "それ以外はPCのみ・Play/Seekは参考情報(overall判定に含めない)とする。")
+    ap.add_argument("--full-check", default=None,
+                     help="--urls-from使用時、厳密フルチェック対象を'article_id:level,...'形式で指定")
     ap.add_argument("--translations", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--screenshots", default=None)
@@ -254,6 +290,10 @@ def main() -> int:
                      help="translation_ja.json/kp_mapping.jsonが両方存在する(src,level)のみ実行")
     ap.add_argument("--play-wait-seconds", type=float, default=4.0)
     args = ap.parse_args()
+    if not args.tsv and not args.index and not args.urls_from:
+        raise SystemExit("--tsv / --index / --urls-from のいずれかを指定してください")
+    if not args.urls_from and not args.base:
+        raise SystemExit("--tsv/--indexモードでは--baseが必須です")
 
     from playwright.sync_api import sync_playwright
 
@@ -262,41 +302,73 @@ def main() -> int:
     index_data = json.loads(index_path.read_text(encoding="utf-8"))
     index_by_key = {(it["src"], it["level"]): it for it in index_data["items"]}
 
-    rows = parse_tsv(args.tsv)
+    full_check_set = set()
+    if args.full_check:
+        for tok in args.full_check.split(","):
+            tok = tok.strip()
+            if tok:
+                full_check_set.add(tuple(tok.split(":")))
+
     targets = []
-    for row in rows:
-        for col, level in (("standard_url", "A2"), ("advanced_url", "B1")):
-            u = row.get(col, "").strip()
-            if not u:
-                continue
-            qs = parse_qs_from_unified_url(u)
-            src = qs.get("src", "")
-            lvl = qs.get("level", level).upper()
-            en = qs.get("en", "")
-            ja = qs.get("ja", "")
-            item = index_by_key.get((src, lvl))
-            article_id = item["article_id"] if item else None
-            mapping_path = tdir / (article_id or "") / lvl / "kp_mapping.json"
-            trans_path = tdir / (article_id or "") / lvl / "translation_ja.json"
-            has_mapping = mapping_path.is_file()
-            has_trans = trans_path.is_file()
+    if args.urls_from:
+        rows = parse_tsv(args.urls_from)
+        for row in rows:
+            for col, level in (("standard_url", "A2"), ("advanced_url", "B1")):
+                u = row.get(col, "").strip()
+                if not u:
+                    continue
+                qs = parse_qs_from_unified_url(u)
+                src = qs.get("src", "")
+                lvl = qs.get("level", level).upper()
+                item = index_by_key.get((src, lvl))
+                article_id = item["article_id"] if item else None
+                expect, has_mapping, has_trans = build_expect(tdir, article_id or "", lvl)
+                if args.only_with_assets and not (has_mapping and has_trans):
+                    continue
+                name = f"{article_id or 'unknown'}_{lvl}"
+                is_full = (article_id, lvl) in full_check_set
+                targets.append({"name": name, "url": u, "level": lvl, "expect": expect,
+                                 "has_mapping": has_mapping, "has_trans": has_trans, "full_check": is_full})
+    elif args.index:
+        # index.json正 (article_id/level/src)を直接使う。en/jaは表示title用の
+        # 装飾文字列に過ぎず判定に影響しないため、translation_ja.jsonのarticle
+        # フィールド(なければarticle_id)を流用する。
+        for it in index_data["items"]:
+            article_id = it["article_id"]
+            lvl = it["level"]
+            src = it["src"]
+            trans_path = tdir / article_id / lvl / "translation_ja.json"
+            en = article_id
+            if trans_path.is_file():
+                td_peek = json.loads(trans_path.read_text(encoding="utf-8"))
+                en = td_peek.get("article") or article_id
+            ja = ""
+            expect, has_mapping, has_trans = build_expect(tdir, article_id, lvl)
             if args.only_with_assets and not (has_mapping and has_trans):
                 continue
-            expect = {}
-            if has_mapping:
-                mp = json.loads(mapping_path.read_text(encoding="utf-8"))
-                expect["expect_highlight_count"] = sum(
-                    (k.get("occurrences") or 0) for k in mp["key_phrases"] if k.get("mapping_type") != "UNRESOLVED"
-                )
-            if has_trans:
-                td = json.loads(trans_path.read_text(encoding="utf-8"))
-                expect["expect_translation"] = True
-                expect["expect_repost_count"] = sum(1 for s in td.get("sections", []) if s.get("type") == "existing_comment_repost")
-            else:
-                expect["expect_translation"] = False
-            name = f"{article_id or 'unknown'}_{lvl}"
+            name = f"{article_id}_{lvl}"
             targets.append({"name": name, "src": src, "level": lvl, "en": en, "ja": ja, "expect": expect,
                              "has_mapping": has_mapping, "has_trans": has_trans})
+    else:
+        rows = parse_tsv(args.tsv)
+        for row in rows:
+            for col, level in (("standard_url", "A2"), ("advanced_url", "B1")):
+                u = row.get(col, "").strip()
+                if not u:
+                    continue
+                qs = parse_qs_from_unified_url(u)
+                src = qs.get("src", "")
+                lvl = qs.get("level", level).upper()
+                en = qs.get("en", "")
+                ja = qs.get("ja", "")
+                item = index_by_key.get((src, lvl))
+                article_id = item["article_id"] if item else None
+                expect, has_mapping, has_trans = build_expect(tdir, article_id or "", lvl)
+                if args.only_with_assets and not (has_mapping and has_trans):
+                    continue
+                name = f"{article_id or 'unknown'}_{lvl}"
+                targets.append({"name": name, "src": src, "level": lvl, "en": en, "ja": ja, "expect": expect,
+                                 "has_mapping": has_mapping, "has_trans": has_trans})
 
     results = {}
     with sync_playwright() as p:
@@ -304,12 +376,21 @@ def main() -> int:
         for viewport, mobile in ((  {"width": 1280, "height": 800}, False), ({"width": 390, "height": 844}, True)):
             context = browser.new_context(viewport=viewport)
             for t in targets:
-                url = build_unified_url(args.base, t["src"], t["level"], t["en"], t["ja"])
+                if mobile and args.urls_from and not t.get("full_check"):
+                    continue  # urls-fromモード: full-check対象外はPCのみ
+                if "url" in t:
+                    url = t["url"]
+                else:
+                    url = build_unified_url(args.base, t["src"], t["level"], t["en"], t["ja"])
+                strict = True
+                if args.urls_from:
+                    strict = bool(t.get("full_check"))
                 page = context.new_page()
                 page.set_default_timeout(20000)
                 key = t["name"] + ("_mobile" if mobile else "_pc")
                 try:
-                    results[key] = check_one(page, t["name"], url, t["expect"], args.screenshots, args.play_wait_seconds, mobile)
+                    results[key] = check_one(page, t["name"], url, t["expect"], args.screenshots,
+                                              args.play_wait_seconds, mobile, strict_play_seek=strict)
                 finally:
                     page.close()
                 r = results[key]

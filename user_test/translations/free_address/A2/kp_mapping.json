@@ -8,16 +8,16 @@
       "matched_text": "source of stability",
       "mapping_type": "exact",
       "occurrences": 1,
-      "rationale": null,
+      "rationale": "表示phraseと本文が正規化後に完全一致(語形変化・人称一般化なし)。",
       "candidates": null
     },
     {
       "phrase": "belong there",
       "phrase_ja": "そこが自分の居場所だと感じる",
       "matched_text": "belonged there",
-      "mapping_type": "exact",
+      "mapping_type": "tense",
       "occurrences": 1,
-      "rationale": null,
+      "rationale": "本文は過去形belongedで出現(表示phraseは原形belong)、語形変化のみでtense。",
       "candidates": null
     },
     {
@@ -26,33 +26,38 @@
       "matched_text": "on paper",
       "mapping_type": "exact",
       "occurrences": 1,
-      "rationale": null,
+      "rationale": "表示phraseと本文が正規化後に完全一致(語形変化・人称一般化なし)。",
       "candidates": null
     },
     {
       "phrase": "a place of one's own",
       "phrase_ja": "自分だけの居場所",
       "matched_text": "a place of my own",
-      "mapping_type": "exact",
+      "mapping_type": "function_word",
       "occurrences": 1,
-      "rationale": null,
+      "rationale": "one's→myへの人称一般化(所有格の機能語のみ差異、動詞語形変化なし)。",
       "candidates": null
     },
     {
       "phrase": "change one's surroundings",
       "phrase_ja": "周りの環境を変える",
       "matched_text": "changing my surroundings",
-      "mapping_type": "exact",
+      "mapping_type": "inflection",
       "occurrences": 1,
-      "rationale": null,
+      "rationale": "change→changingの語形変化に加えone's→myの人称一般化を伴う複合差異、代表分類はinflection。",
       "candidates": null
     }
   ],
   "summary": {
     "total": 5,
     "mapped": 5,
-    "exact": 5,
-    "non_exact": 0,
-    "unresolved": 0
+    "exact": 2,
+    "non_exact": 3,
+    "unresolved": 0,
+    "non_exact_breakdown": {
+      "tense": 1,
+      "function_word": 1,
+      "inflection": 1
+    }
   }
 }
