@@ -9223,6 +9223,93 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   `docs/pm/delegation_log/KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01.md`、
   `docs/pm/closeout_136_e2e/key_phrase_source_gate_01/`配下。
 
+### FIX-01(Fable差し戻し1回目、2026-09-18)
+
+- 差し戻し理由: 初回実装のGate (a)(b)が「silentlyスキップ/既定無効」の
+  経路を残しており、ユーザー要件『1件でも不在ならFAILで停止』『供給元
+  本文sha256不一致なら流用せずFAIL』を満たしていなかった
+  (`er003_v1_n3_01_assemble.py::verify_key_phrase_source_gate()`はKP
+  asset不在/本文解決不能で`return None`しAssemblyを継続、
+  `er012_b_family_voices_a2_production_01.py::reuse_key_phrases_a2()`は
+  `target_article_text`既定`None`でGate (b)自体が無効化されていた)。加えて
+  初回evidence`gate_a_canonical20.json`はCLI独自の本文解決ロジックで
+  取得したもので、実Assembly経路(`verify_episode_audio_validation_gate`
+  が各Production driverの実引数で呼ぶ経路)での再現ではなかった。
+- 修正内容(fail-closed化):
+  - Gate (a)適用要否を「当該episodeがKey Phrase segmentを持つか」
+    (`tts_generation_results.json`の`key_phrases`が非空、または
+    `key_phrases/keywords_canonicalized.json`存在)で判定するよう明文化。
+    該当時はKP asset不在→`RuntimeError(KEY_PHRASE_SOURCE_GATE_ASSET_
+    MISSING)`、本文解決不能→`RuntimeError(KEY_PHRASE_SOURCE_GATE_
+    ARTICLE_TEXT_UNAVAILABLE)`で停止(silentlyスキップを廃止)。
+    非該当時(KP無しfixture等)のみ`audit/key_phrase_source_gate.json`に
+    `{"status":"NOT_APPLICABLE"}`を記録して続行する(理由を残す)。
+  - Gate (b)(`reuse_key_phrases_a2`)は`target_article_text`未指定でも
+    Gateを無効化せず、`narration_dir`の親ディレクトリの`article.md`から
+    流用先本文を自動解決し、それも無ければ`RuntimeError
+    (KEY_PHRASE_REUSE_TARGET_TEXT_UNAVAILABLE)`で流用不可とする
+    (Gate (b)を迂回できる経路を除去)。
+  - `reuse_key_phrases`/`reuse_key_phrases_3v`/`reuse_approved_a2_assets`
+    (`er012_b_family_production_runner_01.py` 190-198行/704-712行/
+    1375-1385行)が、供給元/流用先本文sha256不一致時に常時`RuntimeError
+    ([TEXT_HASH_MISMATCH])`を送出する(引数省略で無効化できない)ことを
+    コードで確認済み(既存機構、変更不要)。他のKey Phrase assetコピー
+    経路(`copyfile.*keywords`/`copytree.*key_phrases`)をGrepで洗い出し、
+    Production経路のうち`er011_family_a_completion_a2_trend_end_to_end_
+    01_run.py`(継続run、コピー元old_a2_dirは事前にSOURCE_ARTICLEとの
+    sha256一致を確認済み)と`er013_family_c_production_runner_01.py`
+    (`reuse_from`は同一記事の過去level出力、Assembly呼び出し916行目で
+    `article_text=`を明示、Gate (a)が現在の本文と照合するため保護
+    済み)を確認し、いずれもfail-closedであることを確認(変更不要)。
+    Trial/履歴driver(`er005_e2e_tts_cost_quality_01.py`、
+    `er011_no18_evidence_compression_a_precision_21r_audio_stage.py`、
+    `er012_editorial_b_voices_a2_trial02_runner.py`、`er012_editorial_b_
+    voices_trial_08/09_audio.py`、`er013_family_c_episode_trial_12_
+    twins_b1_run.py`/`memory_b1_run.py`)は変更していない。
+  - `reuse_key_phrases_a2`の唯一のProduction呼び出し元
+    (`er012_b_voices_3v_a2_user_test_01.py:361`)は既に`target_article_
+    text=article_text`を明示しており変更不要。
+- 実Assembly経路での再検証: 新規`docs/pm/tools/kp_gate_wrapper_
+  evidence_01.py`が`verify_key_phrase_source_gate(out_dir, level)`を
+  各Production driverと同じ引数形で直接呼び、20 canonical out_dir
+  (`user_test/translations/index.json`由来、young_travelers B1のみ実際の
+  Assembly呼び出し[`er011_family_a_completion_a2_trend_end_to_end_01_
+  run.py`601行目]に合わせ`b1b`親ディレクトリをout_dirとして使用)全件で
+  20/20 PASS(NOT_APPLICABLE 0件、article_sourceはarticle.md 14件/
+  article_normalized.txt 6件、いずれもGate自身のfallback解決でPASS。
+  Production driverへの`article_text`明示渡し追加は不要だった)、旧2
+  out_dir(旧Free-Address A2/旧AI Hiring A2)は引き続きtrue positive FAIL
+  (`KEY_PHRASE_SOURCE_MISSING`)を確認した。evidence:
+  `docs/pm/closeout_136_e2e/key_phrase_source_gate_01/gate_a_
+  canonical20_via_wrapper.json`。
+- テスト: `er003_test_key_phrase_source_gate_01.py`へfail-closed化に伴う
+  新規/更新テスト9件追加(NOT_APPLICABLE記録・KP asset不在時
+  RuntimeError・article_text解決不能時RuntimeError・Gate (b)の
+  target未指定時自動解決/解決不能RuntimeError/同一本文流用成功[TTS
+  mock])、計22件PASS。既存Gateテスト4ファイル(`er008_audio_validation_
+  gate_05_test.py`/`er008_a2_slowdown_invariant_19_test_01.py`/
+  `er008_n8_qa_hardening_21_gate_test_01.py`/`er011_open129_structural_
+  completeness_production_wiring_01_test_01.py`)は、fail-closed化で
+  KP segmentを含むfixtureがGate (a)に新たに引っかかったため、
+  `write_temp_results()`/`_write_results()`ヘルパーへsource_span一致の
+  最小限`article.md`+`keywords_canonicalized.json`を併置する修正を行い
+  (各テストの本来の検証対象[structural completeness/disfluency QA]には
+  無関係)、4ファイル計63件PASS。
+- 回帰: `run_project_regression.py --pattern "er0*_test_*.py"`
+  collected=2919 passed=2916 failed=3 errors=0(既知3件
+  `er003_test_bad`・`er003_test_p2j_investigate`2件のみ、新規failureなし)。
+- 費用: ¥0(API呼び出しなし、既存artifactへのローカル比較・実関数呼び
+  出しのみ)。
+- SSOT: `CURRENT_SPEC.md`「Key Phrase source整合Gate」行をfail-closed
+  仕様へ訂正(silentlyスキップ/既定None=無効の記述を削除)。
+  `OPEN_ITEMS.md` OPEN-170は元々silent skipの誤記述が無かったため本文
+  未変更(`CLOSED`のまま)。
+- Git: commit(FIX-01実装)+commit(SSOT訂正)、詳細SHAは
+  `docs/pm/RESULT_PACKET_KEY_PHRASE_SOURCE_GATE_01.md`の`## FIX-01`節
+  参照。main=origin/main確認済み。
+- Status: `PRODUCTION_WIRED`(fail-closed化完了、実Assembly経路20/20
+  再検証・テスト・回帰・SSOT・Git反映すべて完了)。
+
 ## 参照元
 
 - PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01(2026-09-13、¥0): 復元transcriptでsonnet-worker委任Before357件/After33件を100%取得し再測定。Fable判定: E-1=現状効果なし(同一ファイル再読率 中央値33.9%→40.8%)、D-1=弱い改善シグナルあり・評価不足(全文Read率59.9%→47.9%、Read1回あたり文字数▲37%、N小)、G-1=効果なし(元々寄与小)、総合『まだ評価不足』。累積usage中央値430万→532万(+24%)はtool_uses中央値50→68(+36%)の増加と相関+0.93で、タスク複雑化が主因の可能性。After委任文へのE-1/D-1/G-1明記率55%(18/33)はFable側の運用不徹底として是正対象。全文Read率とusageの相関−0.047(Read削減は総消費に直結しない)。施策1(tool_uses削減)/施策2(D-1徹底)のTrial設計はユーザー判断待ち。根拠: `PM-TOKEN-EFFICIENCY-E1-D1-REMEASUREMENT-01_REPORT.md`。
