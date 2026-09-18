@@ -179,12 +179,104 @@ class VerifyEpisodeAudioValidationGateIntegrationTests(unittest.TestCase):
         asm.verify_episode_audio_validation_gate(self.out_dir, "A2",
                                                   article_text="Many chose to opt out entirely.")
 
-    def test_gate_skips_silently_when_no_key_phrase_asset(self):
+    def test_gate_not_applicable_when_no_key_phrase_segments_and_no_asset(self):
+        """FIX-01: KP segmentもKP assetも無いepisodeはNOT_APPLICABLEを記録
+        して続行する(silent skipではなく理由を残す)。"""
         shutil.rmtree(f"{self.out_dir}/key_phrases")
         self._write_article("Any text at all.")
-        # keywords_canonicalized.jsonが無い場合はGate (a)をスキップする
-        # (後方互換、例外を出さない)。
         asm.verify_episode_audio_validation_gate(self.out_dir, "A2")
+        with open(f"{self.out_dir}/audit/key_phrase_source_gate.json", encoding="utf-8") as f:
+            result = json.load(f)
+        self.assertEqual(result["status"], "NOT_APPLICABLE")
+
+    def test_gate_raises_when_key_phrase_segments_present_but_asset_missing(self):
+        """FIX-01: tts_generation_results.jsonにKey Phrase segmentが記録
+        されているのにkeywords_canonicalized.jsonが無い場合はfail-closed
+        (silentlyスキップしない)。"""
+        shutil.rmtree(f"{self.out_dir}/key_phrases")
+        _write_json(f"{self.out_dir}/audit/tts_generation_results.json", {
+            "segments": {},
+            "key_phrases": {"1": {
+                "english": {"status": "OK", "disfluency_checked": True},
+                "japanese": {"status": "OK", "disfluency_checked": True},
+            }},
+        })
+        self._write_article("Any text at all.")
+        with self.assertRaises(RuntimeError) as ctx:
+            asm.verify_episode_audio_validation_gate(self.out_dir, "A2")
+        self.assertIn("KEY_PHRASE_SOURCE_GATE_ASSET_MISSING", str(ctx.exception))
+
+    def test_gate_raises_when_key_phrase_segments_present_and_article_text_unresolvable(self):
+        """FIX-01: KP segmentがあり、KP assetもあるが、article_textを
+        本文からもcaller指定からも解決できない場合はfail-closed。"""
+        _write_json(f"{self.out_dir}/audit/tts_generation_results.json", {
+            "segments": {},
+            "key_phrases": {"1": {
+                "english": {"status": "OK", "disfluency_checked": True},
+                "japanese": {"status": "OK", "disfluency_checked": True},
+            }},
+        })
+        # article.md/article_normalized.txtのどちらも書かない(未resolve)。
+        with self.assertRaises(RuntimeError) as ctx:
+            asm.verify_episode_audio_validation_gate(self.out_dir, "A2")
+        self.assertIn("KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE", str(ctx.exception))
+
+
+class ReuseKeyPhrasesA2GateBTests(unittest.TestCase):
+    """FIX-01: `reuse_key_phrases_a2`のGate (b)常時有効化(target未指定でも
+    解決不能なら流用不可)を確認する。実TTS呼び出しはmock化する。"""
+
+    def setUp(self):
+        import er012_b_family_voices_a2_production_01 as a2prod
+        self.a2prod = a2prod
+        self.tmp = tempfile.mkdtemp()
+        self.kp_source_dir = f"{self.tmp}/source_episode"
+        os.makedirs(f"{self.kp_source_dir}/key_phrases", exist_ok=True)
+        with open(f"{self.kp_source_dir}/article.md", "w", encoding="utf-8") as f:
+            f.write("Many chose to opt out entirely.")
+        _write_json(f"{self.kp_source_dir}/key_phrases/keywords_canonicalized.json",
+                    _kp_items([(1, "opt out", "opt out")]))
+        self.target_a2_dir = f"{self.tmp}/target_episode/a2"
+        self.kp_dir = f"{self.target_a2_dir}/key_phrases"
+        self.narration_dir = f"{self.target_a2_dir}/narration"
+        os.makedirs(self.target_a2_dir, exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_raises_when_target_text_unspecified_and_unresolvable(self):
+        """target_article_text未指定かつtarget_a2_dir/article.mdも無い
+        場合、流用を実行せずRuntimeErrorで停止する(Gate (b)迂回不可)。"""
+        with self.assertRaises(RuntimeError) as ctx:
+            self.a2prod.reuse_key_phrases_a2(self.kp_source_dir, self.kp_dir, self.narration_dir)
+        self.assertIn("KEY_PHRASE_REUSE_TARGET_TEXT_UNAVAILABLE", str(ctx.exception))
+
+    def test_raises_on_mismatch_when_target_text_resolved_from_article_md(self):
+        """target_article_text未指定でも、target_a2_dir/article.mdから
+        解決した本文が供給元と不一致ならRuntimeError(流用しない)。"""
+        with open(f"{self.target_a2_dir}/article.md", "w", encoding="utf-8") as f:
+            f.write("A completely different target article body.")
+        with self.assertRaises(RuntimeError) as ctx:
+            self.a2prod.reuse_key_phrases_a2(self.kp_source_dir, self.kp_dir, self.narration_dir)
+        self.assertIn("KEY_PHRASE_REUSE_SOURCE_MISMATCH", str(ctx.exception))
+
+    def test_reuse_succeeds_when_source_and_target_text_match(self):
+        """同一本文なら流用成功する(英語/日本語TTS呼び出しはmock)。"""
+        import unittest.mock as mock
+        with mock.patch.object(
+                self.a2prod.shared_narration, "ensure_key_phrase_english_component",
+                return_value={"status": "OK"}), \
+             mock.patch.object(
+                self.a2prod.n3_tts, "generate_a2_japanese_with_reading_safety",
+                return_value={"status": "OK"}), \
+             mock.patch.object(
+                self.a2prod.n3_tts, "resolve_key_phrase_ja_gloss_tts",
+                return_value=("テスト", False)):
+            result = self.a2prod.reuse_key_phrases_a2(
+                self.kp_source_dir, self.kp_dir, self.narration_dir,
+                target_article_text="Many chose to opt out entirely.")
+        self.assertIn(1, result)
+        self.assertEqual(result[1]["english"]["status"], "OK")
 
 
 if __name__ == "__main__":

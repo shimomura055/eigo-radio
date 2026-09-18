@@ -565,30 +565,50 @@ def generate_japanese_title_for_new_topic(japanese_title_text: str, out_path: st
 # ============================================================
 def reuse_key_phrases_a2(kp_source_dir: str, kp_dir: str, narration_dir: str,
                           target_article_text: str | None = None) -> dict:
-    """KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (b): `target_article_text`
-    が渡された場合、`kp_source_dir/article.md`(流用元本文)とのsha256一致を
+    """KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (b)(FIX-01でfail-closed化):
+    `kp_source_dir/article.md`(流用元本文)と流用先本文のsha256一致を常時
     必須化する(不一致なら`assert_key_phrase_reuse_source_matches`が
     RuntimeError[KEY_PHRASE_REUSE_SOURCE_MISMATCH]を送出し、流用しない)。
-    `target_article_text`未指定(既存呼び出し、後方互換)の場合はGate (b)を
-    実行しない(2026-09-18以前の挙動のまま)。背景: AI Hiring A2で3V B1
+
+    `target_article_text`が未指定の場合、Gate (b)を無効化して流用する
+    (旧2026-09-18以前の挙動)ことはしない。代わりに`narration_dir`の親
+    ディレクトリ配下の`article.md`から流用先本文を解決する。それも
+    存在せず本文を解決できない場合は流用不可としてRuntimeError
+    [KEY_PHRASE_REUSE_TARGET_TEXT_UNAVAILABLE]で停止する(fail-closed、
+    Gate (b)を迂回できる経路を残さない)。背景: AI Hiring A2で3V B1
     Audio Trial-01の選定をB1→A2翻案後の本文を確認せずそのまま流用していた
     事故(USER-TEST-SCRIPT-READABILITY-PROD-01、OPEN-170)の再発防止。"""
     import shutil
     os.makedirs(kp_dir, exist_ok=True)
     os.makedirs(narration_dir, exist_ok=True)
 
-    if target_article_text is not None:
-        source_article_path = f"{kp_source_dir}/article.md"
-        if not os.path.exists(source_article_path):
-            raise RuntimeError(
-                f"KEY_PHRASE_REUSE_SOURCE_MISMATCH: Key Phrase流用元({kp_source_dir})の"
-                "article.mdが見つからないため供給元本文を解決できません(流用不可、"
-                "KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
-        with open(source_article_path, encoding="utf-8") as f:
-            source_article_text = f.read()
-        kp_gate.assert_key_phrase_reuse_source_matches(
-            source_article_text, target_article_text,
-            context=f"reuse_key_phrases_a2:{kp_source_dir}->{kp_dir}")
+    resolved_target_text = target_article_text
+    resolved_target_from = "caller_supplied" if resolved_target_text is not None else None
+    if resolved_target_text is None:
+        target_article_path = f"{os.path.dirname(narration_dir.rstrip('/'))}/article.md"
+        if os.path.exists(target_article_path):
+            with open(target_article_path, encoding="utf-8") as f:
+                resolved_target_text = f.read()
+            resolved_target_from = target_article_path
+    if resolved_target_text is None:
+        raise RuntimeError(
+            "KEY_PHRASE_REUSE_TARGET_TEXT_UNAVAILABLE: Key Phrase流用先の本文を解決できない"
+            f"ため(target_article_text未指定、かつ{os.path.dirname(narration_dir.rstrip('/'))}/"
+            "article.mdも存在しない)、流用を中止します。呼び出し側でtarget_article_textを"
+            "明示してください(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
+
+    source_article_path = f"{kp_source_dir}/article.md"
+    if not os.path.exists(source_article_path):
+        raise RuntimeError(
+            f"KEY_PHRASE_REUSE_SOURCE_MISMATCH: Key Phrase流用元({kp_source_dir})の"
+            "article.mdが見つからないため供給元本文を解決できません(流用不可、"
+            "KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
+    with open(source_article_path, encoding="utf-8") as f:
+        source_article_text = f.read()
+    kp_gate.assert_key_phrase_reuse_source_matches(
+        source_article_text, resolved_target_text,
+        context=f"reuse_key_phrases_a2:{kp_source_dir}->{kp_dir}"
+                f"(target_resolved_from={resolved_target_from})")
 
     shutil.copyfile(f"{kp_source_dir}/key_phrases/keywords_canonicalized.json",
                      f"{kp_dir}/keywords_canonicalized.json")

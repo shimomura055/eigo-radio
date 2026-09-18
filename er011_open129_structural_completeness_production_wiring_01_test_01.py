@@ -44,6 +44,20 @@ def write_temp_results(data: dict) -> str:
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False)
+    # KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 FIX-01: このfixtureは
+    # `data["key_phrases"]`(kp1..kp5)を常に含み、Gate (a)がfail-closed化
+    # されたため、当該Gateを本テスト(structural completenessが主眼)で
+    # 不必要にFAILさせないよう、常にsource_spanが一致する最小限の
+    # `key_phrases/keywords_canonicalized.json`+`article.md`も併置する
+    # (テスト対象のstructural completeness判定ロジック自体には無関係)。
+    os.makedirs(f"{out_dir}/key_phrases", exist_ok=True)
+    kp_items = [{"rank": r, "used_form": f"phrase{r}", "source_span": f"phrase{r} appears here",
+                 "source_sentence": f"phrase{r} appears here", "display_phrase": f"phrase{r}",
+                 "key_phrase": f"phrase{r}", "japanese_gloss": "テスト"} for r in range(1, 6)]
+    with open(f"{out_dir}/key_phrases/keywords_canonicalized.json", "w", encoding="utf-8") as f:
+        json.dump({"items": kp_items, "overall_status": "PASS"}, f, ensure_ascii=False)
+    with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+        f.write(" ".join(f"phrase{r} appears here." for r in range(1, 6)))
     return out_dir
 
 

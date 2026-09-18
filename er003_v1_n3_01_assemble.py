@@ -382,23 +382,55 @@ def derive_a_family_required_structure(level: str) -> dict:
     return {"segments": segs, "key_phrase_ranks": 5, "key_phrase_subkey_count": 2}
 
 
-def verify_key_phrase_source_gate(out_dir: str, level: str, article_text: str | None = None) -> dict | None:
-    """KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (a): Assembly直前に
-    `key_phrases/keywords_canonicalized.json`の各Key Phraseの`source_span`
-    (無ければ`source_sentence`)が「現行本文」に実在するかを機械確認する。
-    1件でも不在なら`RuntimeError`(KEY_PHRASE_SOURCE_MISSING)で停止する。
+def verify_key_phrase_source_gate(out_dir: str, level: str, article_text: str | None = None,
+                                   has_key_phrase_segments: bool | None = None) -> dict | None:
+    """KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (a)(FIX-01でfail-closed化):
+    Assembly直前に`key_phrases/keywords_canonicalized.json`の各Key Phraseの
+    `source_span`(無ければ`source_sentence`)が「現行本文」に実在するかを
+    機械確認する。1件でも不在なら`RuntimeError`(KEY_PHRASE_SOURCE_MISSING)
+    で停止する。
 
-    `article_text`を呼び出し側がin-memoryで持っている場合は明示的に渡す
-    ことを推奨する(呼び出し時点の実際の本文と厳密に一致させるため)。
-    渡されない場合は`out_dir/article.md`→`out_dir/article_normalized.txt`
-    の順にfallback解決する。どちらも存在しない、または`key_phrases/
-    keywords_canonicalized.json`自体が存在しない場合は、Gate (a)は
-    silentlyスキップする(既存の`tts_generation_results.json`未存在時の
-    早期returnと同様、検証対象が揃っていない段階を許容する後方互換)。
-    Gate結果は`out_dir/audit/key_phrase_source_gate.json`へ保存する。"""
+    適用要否の判定: 当該episodeがKey Phrase segmentを持つかどうかで決める。
+    `has_key_phrase_segments`が明示されればそれを使う(`verify_episode_
+    audio_validation_gate`が`tts_generation_results.json`の`key_phrases`
+    キーから判定して渡す)。明示されない場合は、本関数が`out_dir/audit/
+    tts_generation_results.json`の`key_phrases`を読むか、`key_phrases/
+    keywords_canonicalized.json`が存在するかで判定する。
+
+    Key Phraseを持つepisodeでは、以下はいずれもRuntimeErrorでfail-closed
+    停止する(silentlyスキップしない、FIX-01):
+    - `keywords_canonicalized.json`が存在しない → KEY_PHRASE_SOURCE_GATE_ASSET_MISSING
+    - `article_text`未指定かつ`article.md`/`article_normalized.txt`も
+      存在せず本文を解決できない → KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE
+    - source_spanが本文に実在しない → KEY_PHRASE_SOURCE_MISSING(既存)
+
+    Key Phraseを持たないepisode(fixture等)では、Gateは`NOT_APPLICABLE`を
+    `out_dir/audit/key_phrase_source_gate.json`に記録して続行する(理由を
+    残す。silent skipとは異なる)。"""
     kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
-    if not os.path.exists(kp_path):
-        return None
+    kp_asset_exists = os.path.exists(kp_path)
+
+    if has_key_phrase_segments is None:
+        results_path = f"{out_dir}/audit/tts_generation_results.json"
+        has_key_phrase_segments = False
+        if os.path.exists(results_path):
+            data = load_json(results_path) or {}
+            has_key_phrase_segments = bool(data.get("key_phrases"))
+
+    gate_required = bool(has_key_phrase_segments) or kp_asset_exists
+
+    if not gate_required:
+        result = {"status": "NOT_APPLICABLE", "reason": "no key phrase segments/asset"}
+        os.makedirs(f"{out_dir}/audit", exist_ok=True)
+        with open(f"{out_dir}/audit/key_phrase_source_gate.json", "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        return result
+
+    if not kp_asset_exists:
+        raise RuntimeError(
+            f"KEY_PHRASE_SOURCE_GATE_ASSET_MISSING: {level}のepisode assemblyを中止しました。"
+            f"Key Phrase segmentを含むepisodeですが、{kp_path}が存在しません"
+            "(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
 
     resolved_text = article_text
     resolved_from = "caller_supplied" if resolved_text is not None else None
@@ -411,7 +443,11 @@ def verify_key_phrase_source_gate(out_dir: str, level: str, article_text: str | 
                 resolved_from = candidate_path
                 break
     if resolved_text is None:
-        return None
+        raise RuntimeError(
+            f"KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE: {level}のepisode assemblyを"
+            f"中止しました。{out_dir}にarticle.md/article_normalized.txtが無く、article_text"
+            "も呼び出し側から渡されていないため、Gate (a)の本文照合ができません。呼び出し側で"
+            "article_textを明示してください(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。")
 
     result = kp_gate.check_key_phrase_source_presence(resolved_text, kp_path)
     result["article_source"] = resolved_from
@@ -481,7 +517,10 @@ def verify_episode_audio_validation_gate(out_dir: str, level: str, required_stru
     # KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 Gate (a): 上記の既存Audio
     # Validation Gateを通過した場合のみ実行する(既存の`blocked`集計とは
     # 独立したRuntimeError種別[KEY_PHRASE_SOURCE_MISSING]で報告するため)。
-    verify_key_phrase_source_gate(out_dir, level, article_text=article_text)
+    # `has_key_phrase_segments`は上でparseした`data["key_phrases"]`から判定
+    # し明示的に渡す(ファイル再読込を避け、FIX-01の適用要否判定を確定させる)。
+    verify_key_phrase_source_gate(out_dir, level, article_text=article_text,
+                                   has_key_phrase_segments=bool(data.get("key_phrases")))
 
 
 def copy_b1_shared_assets(narration_dir: str) -> None:

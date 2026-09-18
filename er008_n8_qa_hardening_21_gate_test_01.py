@@ -21,6 +21,24 @@ def _write_results(out_dir: str, segments: dict = None, key_phrases: dict = None
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": segments or {}, "key_phrases": key_phrases or {}}, f, ensure_ascii=False, indent=2)
+    # KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 FIX-01: Gate (a)がfail-closed化
+    # されたため、key_phrasesを持つfixtureには常にsource_spanの一致する
+    # `key_phrases/keywords_canonicalized.json`+`article.md`も併置する
+    # (本テストの主眼であるdisfluency QA/asset hash判定とは無関係)。
+    if key_phrases:
+        os.makedirs(f"{out_dir}/key_phrases", exist_ok=True)
+        kp_items = []
+        source_texts = []
+        for rank, subs in key_phrases.items():
+            eng_text = (subs.get("english") or {}).get("text") or f"phrase{rank}"
+            kp_items.append({"rank": int(rank), "used_form": eng_text, "source_span": eng_text,
+                              "source_sentence": eng_text, "display_phrase": eng_text,
+                              "key_phrase": eng_text, "japanese_gloss": "テスト"})
+            source_texts.append(f"{eng_text}.")
+        with open(f"{out_dir}/key_phrases/keywords_canonicalized.json", "w", encoding="utf-8") as f:
+            json.dump({"items": kp_items, "overall_status": "PASS"}, f, ensure_ascii=False)
+        with open(f"{out_dir}/article.md", "w", encoding="utf-8") as f:
+            f.write(" ".join(source_texts))
 
 
 class MandatoryDisfluencyQaTests(unittest.TestCase):
