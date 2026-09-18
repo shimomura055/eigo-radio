@@ -444,6 +444,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-SCRIPT-READABILITY-PROD-01: Trial VALIDATED後ユーザー正式承認・Production採用、Free-Address A2/AI Hiring A2のKey Phrase-本文不整合を本文優先で是正(Phase D)、Landing/TSV反映(Phase C)、REVIEW_REQUIRED2件ユーザー承認・GitHub Pages配線(Phase E)でPRODUCTION_WIRED確定
 - [本ファイル内] ## USER-TEST-HOSTING-GITHUB-PAGES-01: ユーザーテスト公開経路をrawcdn.githack.comからGitHub Pagesへ正式移行、rawgit「One more step」警告解消、PRODUCTION_WIRED確定
 - [本ファイル内] ## PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01: 標準配布経路をGitHub Pages基準へPM_GOVERNANCE/PM_BRIEF/CURRENT_SPEC/ARTIFACT_REGISTRY/OPEN_ITEMSで更新、GitHub Pages有効化=ユーザー操作を事実記録、Dangling Reference Check実施、OPEN-173 close
+- [本ファイル内] ## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01: Key Phrase source整合Gate(a)(b)をProduction経路へ実装、OPEN-170 close
 
 ---
 
@@ -9100,6 +9101,127 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 参照: `docs/pm/RESULT_PACKET_DISTRIBUTION_PATH_PAGES_01.md`、
   `docs/pm/delegation_log/PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01.md`、
   `docs/pm/closeout_136_e2e/distribution_path_pages_01/`配下。
+
+## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01: Key Phrase source整合Gate(a)(b)をProduction経路へ実装、OPEN-170 close
+
+- 決定(ユーザー原文引用、2026-09-18): 「1. Key Phrase追従漏れ防止Gate →
+  採用する。Productionへ以下2 Gateを実装してください。(a) Assembly直前に
+  keywords_canonicalized.json の source_span が現行本文に実在するかを
+  機械確認する。1件でも不在ならFAILで停止すること。(b) 他記事からKey
+  Phraseを流用する経路では、供給元本文sha256一致を必須化する。不一致なら
+  流用せずFAILで停止すること。今回見つかった『本文平易化後にKey Phraseが
+  古いまま残る』事故の再発防止が目的。API追加支出は発生させないこと。
+  重要: ユーザー正式採用済みなので、APPROVED_FOR_PRODUCTIONとして扱う。
+  ただし、Gate実装・Production正式path反映・必要test・runtime evidence・
+  CURRENT_SPEC / DECISION_LOG / OPEN_ITEMS / Git反映まで完了して初めて
+  PRODUCTION_WIREDとする。」背景: OPEN-170(USER-TEST-SCRIPT-READABILITY-
+  PROD-01 Phase D/Eで発見、Free-Address A2は旧versionのbyte reuse・AI
+  Hiring A2は`reuse_key_phrases_a2()`によるB1→A2翻案後の本文未確認流用で、
+  いずれも本文とKey Phraseが不整合のまま出荷されていた)。
+- 2-1 Reconciliation Check: `verify_episode_audio_validation_gate()`
+  (共有Audio Validation Gate)・disfluency QA・A2 slowdown必須チェック・
+  asset hash staleness チェック・OPEN-129構造完全性チェックのいずれも、
+  「Key Phraseのsource_spanが現行本文に実在するか」を検査していないことを
+  確認した(新規failure mode、既存対策と重複なし)。`er012_b_family_
+  production_runner_01.py`の`reuse_key_phrases`/`reuse_key_phrases_3v`は、
+  流用元/流用先本文のsha256比較による`[TEXT_HASH_MISMATCH]`という
+  Gate (b)と同等のfail-closed機構を既に実装済みであることを確認し、
+  重複実装を避けるため既存機構をそのまま維持した(変更なし)。
+- 実装: 新規`er003_key_phrase_source_gate_01.py`(API呼び出しなし、
+  ローカル文字列比較・sha256比較のみ)。
+  - Gate (a) `check_key_phrase_source_presence(article_text, keywords_path)`:
+    各Key Phraseの`source_span`(無ければ`source_sentence`)を正規化
+    (小文字化・HTML entity unescape・apostrophe種統一・ダッシュ種統一・
+    連続空白統一)したうえで本文への部分文字列一致を判定。
+  - Gate (b) `assert_key_phrase_reuse_source_matches(source_article_text,
+    target_article_text)`: sha256比較、不一致なら`RuntimeError
+    (KEY_PHRASE_REUSE_SOURCE_MISMATCH)`。
+  - 挿入(a): `er003_v1_n3_01_assemble.py::verify_episode_audio_validation_
+    gate()`(既存の`blocked`判定通過後にのみ実行)へ新設ラッパー
+    `verify_key_phrase_source_gate(out_dir, level, article_text=None)`を
+    追加し、不在時`RuntimeError(KEY_PHRASE_SOURCE_MISSING)`。本文解決は
+    呼び出し側の明示`article_text`優先、未指定時は`out_dir/article.md`→
+    `out_dir/article_normalized.txt`の順でfallback、いずれも無い場合は
+    後方互換のためsilentlyスキップ。この1関数はNews/B-Family(2V・3V
+    A2/B1)/Family C/Family A Trend/Discoveryの全Production driverが
+    共通で呼ぶ関数であるため、Family別の個別コピー実装は作っていない
+    (Family Cのみ`out_dir`にarticle.mdを永続化しないため、`er013_family_
+    c_production_runner_01.py`の呼び出しへ`article_text=article_text`を
+    明示的に追加)。
+  - 挿入(b): `er012_b_family_voices_a2_production_01.py::reuse_key_phrases_
+    a2()`へ後方互換の任意引数`target_article_text: str | None = None`
+    (既定`None`=Gate (b)無効、既存呼び出しは無変更のまま)を追加。唯一の
+    実呼び出し元`er012_b_voices_3v_a2_user_test_01.py`(AI Hiring A2事故の
+    発生経路そのもの)を`target_article_text=article_text`で明示的に
+    有効化した。
+- Production経路カバレッジ: `verify_episode_audio_validation_gate()`は
+  以下の全Productionドライバから呼ばれているため、Gate (a)は追加の
+  個別配線なしで全て対象化される: `er012_b_family_production_runner_01.py`
+  (`main_a2`/`run_assembly`/`run_assembly_3v`/`run_assembly_a2`/
+  `run_assembly_a2_2v_new_topic`経由)、`er013_family_c_production_
+  runner_01.py`(Family C、article_text明示渡しに変更)、`er011_family_a_
+  completion_a2_trend_end_to_end_01_run.py`(Family A Trend)、`er014_
+  output/four_type_observation_01/discovery/run_discovery_audio_
+  completion.py`(Discovery)、`er014_output/user_test_news_convenience_
+  ai_01/convenience_ai/run_pipeline.py`ほかNews各driver。Trial/履歴
+  driver(`er014_output/**/runner_before_v2.py`等の旧versionコピー、
+  `*_trial_*`)は対象外(Production経路ではないため変更していない)。
+- 後続経路整合(実装ではなく確認、必要最小の呼び出し追加のみ):
+  Local Rewrite(本文変更あり)→再Assembly時にGate (a)が走ることを
+  `verify_episode_audio_validation_gate()`共通経路により確認。Human
+  Review `approve_regenerate`(segment再生成、本文無変更)→再Assembly時に
+  Gate (a)が走ることを確認(本文が変わらない場合は既存source_spanのまま
+  PASSし続ける設計)。`apply_a2_slowdown_postprocess`(本文無変更、音声
+  post-processのみ)→Key Phrase対象外であることを確認。Phase D KP再生成
+  driver(`er012_b_voices_a2_kp_fix_free_address_01.py`/`er012_b_voices_
+  3v_a2_kp_fix_ai_hiring_01.py`、本文無変更のままKey Phraseのみ本文から
+  再選定)→Assembly入口でGate (a)が走ることを確認(いずれも新Key
+  Phraseは現行本文由来のためPASS想定)。TTS retry cascade/fallback
+  (本文無変更)→対象外であることを確認。
+- テスト: 新規`er003_test_key_phrase_source_gate_01.py`17件PASS(正規化
+  差[大小文字/apostrophe/entity/ダッシュ/空白]でPASS、source_span欠落で
+  FAIL、`source_sentence`fallback、`source_span`/`source_sentence`両欠落
+  時の明示的報告、Gate (b)一致/不一致、`verify_episode_audio_validation_
+  gate()`統合テスト[本文をわざと改変したfixtureでRuntimeError、caller
+  供給article_text優先、KP asset不在時はsilentlyスキップ])。
+- runtime evidence(`docs/pm/closeout_136_e2e/key_phrase_source_gate_01/`
+  配下、API呼び出しなし・費用¥0):
+  - Gate (a) 20 canonical asset(`user_test/translations/index.json`)
+    全件PASS(`gate_a_canonical20.json`、total=20 pass=20 fail=0
+    skipped=0、CLI側の祖先ディレクトリ探索`_resolve_article_text_climb`
+    でTrend young_travelers B1のKey Phrase再選定サブディレクトリ配置も
+    正しく解決)。
+  - Gate (a) 旧Free-Address A2(`editorial_b_family_voices_a2_
+    production_wiring_01/a2`)でFAIL、missing 5/5
+    (`gate_a_old_free_address_a2.json`、期待通りtrue positive)。
+  - Gate (a) 旧AI Hiring A2(`user_test_voices_a2_minimal_01/
+    ai_hiring_3v_a2/a2`)でFAIL、missing 4/5(present 1)
+    (`gate_a_old_ai_hiring_a2.json`、期待通りtrue positive)。
+  - Gate (b) 同一本文比較→PASS、3V B1 Audio Trial-01(流用元)vs旧AI
+    Hiring A2(流用先)比較→FAIL(`gate_b_evidence.json`、実際の事故構図を
+    再現したtrue positive)。
+- 回帰: `run_project_regression.py --pattern "er0*_test_*.py"`
+  collected=2914 passed=2911 failed=3 errors=0(既知3件`er003_test_bad`
+  [自己テスト用fixture]・`er003_test_p2j_investigate`[OPEN-77既知
+  meta-test集計バグ2件]のみ、本タスクによる新規failureなし)。
+- `source_span`を持たない旧形式assetの扱い: 20 canonical assetには
+  該当なし(全項目`source_span`保有)。将来該当assetが見つかった場合は
+  `reason="NO_SOURCE_FIELD_AVAILABLE"`としてFAIL報告するのみで自動PASS
+  化はしない(`USER_DECISION_REQUIRED`候補として別途報告する設計、今回は
+  実データで未発生のため独自判断していない)。
+- 費用: ¥0(API呼び出しなし、既存artifactへのローカル比較のみ)。
+- SSOT: `CURRENT_SPEC.md`「Key Phrase」節へ新行「Key Phrase source整合
+  Gate(OPEN-170再発防止)」を追加(`PRODUCTION_WIRED`)、既存共有Audio
+  Validation Gate節へ1行参照追記。`OPEN_ITEMS.md` OPEN-170を`CLOSED`化。
+  `ARTIFACT_REGISTRY.md`へ新規モジュール・テスト・evidenceディレクトリを
+  追記。
+- Git: commit `8f197a74`(実装+テスト+evidence)。main=origin/main確認済み
+  (push後)。
+- Status: `PRODUCTION_WIRED`(Gate実装・Production正式path反映・test・
+  runtime evidence・SSOT反映・Git反映すべて完了)。
+- 参照: `docs/pm/RESULT_PACKET_KEY_PHRASE_SOURCE_GATE_01.md`、
+  `docs/pm/delegation_log/KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01.md`、
+  `docs/pm/closeout_136_e2e/key_phrase_source_gate_01/`配下。
 
 ## 参照元
 

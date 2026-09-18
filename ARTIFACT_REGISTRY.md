@@ -176,6 +176,23 @@ Personalized News B1は生成経路が存在しないため「—」。詳細な
 最新URL表・確認結果表は`DECISION_LOG.md`
 `## USER-TEST-14-ARTICLE-FORMAT-RECHECK-01`参照。
 
+## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01(2026-09-18、OPEN-170再発防止Gate新設)
+
+新規モジュール[er003_key_phrase_source_gate_01.py](er003_key_phrase_source_gate_01.py)
+(Gate (a)`check_key_phrase_source_presence()`/Gate (b)`assert_key_phrase_
+reuse_source_matches()`、API呼び出しなし)と新規テスト
+[er003_test_key_phrase_source_gate_01.py](er003_test_key_phrase_source_gate_01.py)
+(17件PASS)を追加。共有`er003_v1_n3_01_assemble.py::verify_episode_audio_
+validation_gate()`へGate (a)を統合(新設`verify_key_phrase_source_gate()`)、
+`er012_b_family_voices_a2_production_01.py::reuse_key_phrases_a2()`へ
+Gate (b)を配線。runtime evidence(20 canonical asset全件PASS、旧
+Free-Address A2/旧AI Hiring A2でtrue positive FAIL、Gate (b) PASS/FAIL
+各1ケース)は
+[docs/pm/closeout_136_e2e/key_phrase_source_gate_01/](docs/pm/closeout_136_e2e/key_phrase_source_gate_01/)
+配下。詳細は`DECISION_LOG.md`
+`## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01`、`OPEN_ITEMS.md` OPEN-170
+(CLOSED)参照。commit `8f197a74`。
+
 ## 参照元
 
 [ER-003-REPRO_BASELINE.md](ER-003-REPRO_BASELINE.md)、
