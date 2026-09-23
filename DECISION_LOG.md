@@ -445,6 +445,7 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## USER-TEST-HOSTING-GITHUB-PAGES-01: ユーザーテスト公開経路をrawcdn.githack.comからGitHub Pagesへ正式移行、rawgit「One more step」警告解消、PRODUCTION_WIRED確定
 - [本ファイル内] ## PM-GOVERNANCE-DISTRIBUTION-PATH-PAGES-01: 標準配布経路をGitHub Pages基準へPM_GOVERNANCE/PM_BRIEF/CURRENT_SPEC/ARTIFACT_REGISTRY/OPEN_ITEMSで更新、GitHub Pages有効化=ユーザー操作を事実記録、Dangling Reference Check実施、OPEN-173 close
 - [本ファイル内] ## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01: Key Phrase source整合Gate(a)(b)をProduction経路へ実装、OPEN-170 close
+- [本ファイル内] ## PM-USER-VALIDATION-DIRECTION-RECORD-01: 2026-09-23ユーザ実検証(9名分)・DMM Daily News競合確認を踏まえた開発方向性のPM記録(docs/pm/USER_VALIDATION_DIRECTION_2026-09-23.md)、個別仕様のProduction採用ではない
 
 ---
 
@@ -9309,6 +9310,16 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   参照。main=origin/main確認済み。
 - Status: `PRODUCTION_WIRED`(fail-closed化完了、実Assembly経路20/20
   再検証・テスト・回帰・SSOT・Git反映すべて完了)。
+
+## PM-USER-VALIDATION-DIRECTION-RECORD-01: 2026-09-23ユーザ実検証(9名分)・DMM Daily News競合確認を踏まえた開発方向性のPM記録(個別仕様のProduction採用ではない)
+
+- 日付: 2026-09-23
+- 区分: PM運用(記録のみ。サービス・生成仕様の変更なし、Implementation Hardeningなし)
+- 内容: 2026-09-23時点のユーザ実検証9名分(有料モニター分は回答完了、追加回答の可能性あり、最終結果ではない)およびDMM Daily News競合確認を踏まえ、今後の開発判断では、記事自体の魅力、Topic Selection、Core-Idea-first編集、音声向け情報設計、Audio＋Screen Learningの両立を重要な方向性として考慮する。詳細は`docs/pm/USER_VALIDATION_DIRECTION_2026-09-23.md`(PM背景記録、SSOTではない)を参照。
+- 状態: `RECORDED`(PM背景情報)。本エントリは個別仕様のProduction採用(`APPROVED_FOR_PRODUCTION`)を意味しない。新News方式・Future→Fiction再定義・Key Phrase仕様変更・Learning UI仕様のいずれも未確定であり、個別に別管理IDでTrial・ユーザー判断・Production Gateを適用する。
+- 実施範囲: PM記録ファイル新規作成+本エントリ追加のみ。コード・Production・`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は無変更、新規Trial・API支出なし(¥0)。
+- 関連: `OPEN-164`(News情報密度、既起票)、`OPEN-167`(Voices Position Clarity)、`OPEN-143`(量産APIコスト、trigger「ユーザー実検証後」)、`PM-USER-VALIDATION-DIRECTION-RECONCILE-01`(2026-09-23 read-only照合、`docs/pm/RESULT_PACKET.md`一時記録)。
+- commit: (commit後にSHAを追記)
 
 ## 参照元
 
