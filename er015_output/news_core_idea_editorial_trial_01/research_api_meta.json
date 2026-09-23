@@ -1,0 +1,95 @@
+{
+  "prompt": "今回のテーマについて、Webで調査し、Fact Ledgerを作成してください。\n\n【テーマ】\n老朽化する下水道をめぐり、一部自治体が合併浄化槽への切り替えを検討\n\n【必ずカバーすべき観点(確認できないものはLedgerに入れないこと)】\n1. 南伊豆町の事例(何を検討/決定したか、時期)\n2. 国(国土交通省・環境省)の下水道→浄化槽転換に関する方針・制度・時期\n3. 人口減少と下水道の維持費・更新の関係(数字は出典付きで1〜2件まで)\n4. 合併処理浄化槽の仕組み(台所・風呂の排水も処理)\n5. 転換・撤去費用への支援の有無\n6. 他自治体の検討件数(「32自治体・54区域」という数字は、出典を実際に\n   web_searchで確認できた場合のみ含めること。確認できなければこの数字は\n   Ledgerに入れないこと)\n7. 国会での議論の有無\n\n上記のいずれについても、web_searchで確認できない場合は無理に事実を\n作らず、Ledgerに含めないこと。数字・日付は出典に実際に書かれている\nとおりに書き、推測で丸めたり補ったりしないこと。\n\n各Factについて、id(F1, F2, ...)・category・claim・date_or_period・\ncausal_strength・source_title・source_url・quote(出典本文からの短い引用、\n120字以内)・ambiguity(該当なければnull)を埋めてください。\n番号id・出典は必ず全件埋め、quoteは出典に実在する表現の引用にしてください。\n10〜15件を目安にしてください。",
+  "developer_message": "あなたはFact Researcherです。記事本文・比喩・Narrativeは一切書かず、web_searchツールで実際に確認できた事実だけを、出典URL・出典中の該当箇所の短い引用(quote)とともに構造化してください。確認できない事項は含めないでください。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_00ad129eafff4c21006ab3a939055887d08fd4c69cb41fb99d",
+  "usage": {
+    "input_tokens": 115684,
+    "output_tokens": 8423,
+    "total_tokens": 124107
+  },
+  "web_search_usage": {
+    "web_search_call_count": 13,
+    "queries": [
+      "南伊豆町 下水道 合併浄化槽 切り替え 検討",
+      "国土交通省 環境省 下水道 浄化槽 転換 方針 制度 2024 2025",
+      "人口減少 下水道 維持費 更新 浄化槽 自治体 32自治体 54区域",
+      "国会 下水道 浄化槽 転換 合併処理浄化槽",
+      "site:mlit.go.jp 下水道 浄化槽 切り替え 区域 法改正 2025",
+      "site:env.go.jp 下水道 浄化槽 転換 下水道法 浄化槽法 2025",
+      "site:mlit.go.jp 集約型から分散型への転換 浄化槽 32自治体 54区域",
+      "32自治体 54区域 浄化槽 下水道",
+      "\"32自治体\" \"54区域\" 浄化槽",
+      "\"54区域\" \"浄化槽\" 下水道",
+      "\"32自治体・54区域\"",
+      "\"54区域\" 下水道 浄化槽 自治体",
+      "site:env.go.jp 合併処理浄化槽 台所 風呂 排水 仕組み",
+      "site:env.go.jp 浄化槽 し尿 雑排水 台所 風呂 合併処理",
+      "site:mlit.go.jp 合併処理浄化槽 台所 風呂 排水",
+      "site:mlit.go.jp 下水道 人口減少 維持管理費 改築更新費 増加",
+      "site:mlit.go.jp 下水道 人口減少 使用料収入 維持管理 更新 数字",
+      "site:mlit.go.jp 下水道 50万km 老朽化 維持管理 人口減少",
+      "site:shugiin.go.jp 下水道 浄化槽 転換 集合処理 個別処理",
+      "site:sangiin.go.jp 下水道 浄化槽 転換 人口減少",
+      "site:shugiin.go.jp 南伊豆町 浄化槽 下水道",
+      "国会 下水道から浄化槽 転換 2025",
+      "site:mlit.go.jp 令和8年 下水道法等 改正 浄化槽 集合処理 個別処理 成立",
+      "site:shugiin.go.jp 令和8年 下水道法等 改正 法律 公布 浄化槽",
+      "site:sangiin.go.jp 下水道法等 改正 令和8年 浄化槽",
+      "site:mlit.go.jp \"令和８年度より\" \"下水道から公共浄化槽\" \"1/3\" \"1/2\"",
+      "site:env.go.jp \"下水道から公共浄化槽\" \"1/3から1/2\"",
+      "\"下水道から公共浄化槽へ転換\" \"1/3から1/2\""
+    ]
+  },
+  "sources": [
+    {
+      "title": "",
+      "url": "https://www.mlit.go.jp/mizukokudo/sewerage/content/001912069.pdf"
+    },
+    {
+      "title": "広域化・共同化計画（案・ページあり）_221123(微修正221130)→確定221202",
+      "url": "https://www.pref.shizuoka.jp/_res/projects/default_project/_page_/001/047/799/kouikikakeikaku.pdf"
+    },
+    {
+      "title": "第198回国会　環境委員会　第8号（令和元年6月4日（火曜日））",
+      "url": "https://www.shugiin.go.jp/internet/itdb_kaigiroku.nsf/html/kaigiroku/001719820190604008.htm"
+    },
+    {
+      "title": "上下水道：下水道事業における長期収支見通しの推計モデル（通称：Model G）について - 国土交通省",
+      "url": "https://www.mlit.go.jp/mizukokudo/sewerage/mizukokudo_sewerage_tk_000554.html"
+    },
+    {
+      "title": "4 下水道整備の推進による快適な生活の実現",
+      "url": "https://www.mlit.go.jp/hakusyo/mlit/r03/hakusho/r04/html/n2844000.html"
+    },
+    {
+      "title": "",
+      "url": "https://www.env.go.jp/recycle/jokaso/manual/inspection/pdf/houteikensa-jirei202303.pdf?utm_source=openai"
+    },
+    {
+      "title": "",
+      "url": "https://www.env.go.jp/recycle/jokaso/publicity/event/pdf/20251028_koen_niigata_01.pdf"
+    },
+    {
+      "title": "事業マネジメント推進室の取組",
+      "url": "https://www.mlit.go.jp/mizukokudo/sewerage/content/002001421.pdf?utm_source=openai"
+    },
+    {
+      "title": "報道発表資料：「下水道法等の一部を改正する法律案」を閣議決定<br>～強靱で持続可能な下水道の実現及び安全かつ円滑な道路交通の確保に向けて～ - 国土交通省",
+      "url": "https://www.mlit.go.jp/report/press/mizukokudo13_hh_000722.html"
+    },
+    {
+      "title": "閣法 第221回国会 38 下水道法等の一部を改正する法律案",
+      "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE2362.htm"
+    },
+    {
+      "title": "第221回国会　環境委員会　第8号（令和8年5月15日（金曜日））",
+      "url": "https://www.shugiin.go.jp/internet/itdb_kaigiroku.nsf/html/kaigiroku/001722120260515008.htm"
+    },
+    {
+      "title": "第221回国会　国土交通委員会　第10号（令和8年5月22日（金曜日））",
+      "url": "https://www.shugiin.go.jp/internet/itdb_kaigiroku.nsf/html/kaigiroku/009922120260522010.htm"
+    }
+  ]
+}
