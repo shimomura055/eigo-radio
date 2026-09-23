@@ -9319,7 +9319,7 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 状態: `RECORDED`(PM背景情報)。本エントリは個別仕様のProduction採用(`APPROVED_FOR_PRODUCTION`)を意味しない。新News方式・Future→Fiction再定義・Key Phrase仕様変更・Learning UI仕様のいずれも未確定であり、個別に別管理IDでTrial・ユーザー判断・Production Gateを適用する。
 - 実施範囲: PM記録ファイル新規作成+本エントリ追加のみ。コード・Production・`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は無変更、新規Trial・API支出なし(¥0)。
 - 関連: `OPEN-164`(News情報密度、既起票)、`OPEN-167`(Voices Position Clarity)、`OPEN-143`(量産APIコスト、trigger「ユーザー実検証後」)、`PM-USER-VALIDATION-DIRECTION-RECONCILE-01`(2026-09-23 read-only照合、`docs/pm/RESULT_PACKET.md`一時記録)。
-- commit: (commit後にSHAを追記)
+- commit: a89fff98
 
 ## 参照元
 
