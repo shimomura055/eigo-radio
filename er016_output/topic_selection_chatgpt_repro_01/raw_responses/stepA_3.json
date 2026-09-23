@@ -1,0 +1,95 @@
+{
+  "prompt": "対象窓(JST、固定): 2026-09-22T21:05:00+09:00 〜 2026-09-23T21:05:00+09:00\nこの窓に公開・話題化した候補を探してください。検索query・調査の過程で\n「2026年9月23日」等の日付語を積極的に使ってください。窓より前や後に\n公開された記事は候補にしないでください。公開時刻が確認できない場合は\n無理に断定せず、time_uncertain: trueと正直に記してください。\n\n【今回探索するサブレーン】\n3. AI・Technology・Science: AI・Technology・Science\n\n【全サブレーン一覧(参考、今回はこのサブレーンだけを探索してください)】\n- 1: 国内一般News — 日本国内News(社会・経済・地域)\n- 2: 海外一般・国際・経済 — 海外一般News・国際・経済\n- 3: AI・Technology・Science — AI・Technology・Science\n- 4: Health・睡眠・医療・調査結果 — Health・睡眠・医療・調査結果\n- 5: 生活・Consumer・Food・コンビニ・新商品・新サービス — 生活・Consumer・Food・コンビニ・新商品・新サービス(PR TIMES等のリリース含む。PRそのものではなく背景に一般化できる問いがあるかは後工程で判断する)\n- 6: Travel・Fashion・Culture・Lifestyle — Travel・Fashion・Culture・Lifestyle\n- 7: Entertainment・Sports・ゲーム・芸能 — Entertainment・Sports・ゲーム・芸能\n- 8: SNS・Trend Signal — SNS・Trend Signal(Phase 0で得た2026-09-23話題テーマの実体をニュース・記事・商品ページで確認する。Signalの根拠URLと実体URLを分けて記録する)\n\n【目的】\nEnglish Your Way = 日本人向け英語学習音声番組のNews候補選定Trial。その時点で世の中に出ている話題をできるだけ広く拾い、その後でEnglish Your Wayに合うものを厳選します。カテゴリを均等に埋めることが目的ではありません。\n\n\n日本語媒体を優先し、英語媒体も含めてください。候補は幅広く、重要度で\n絞らないでください。\n\nこのサブレーンで、対象窓内に公開・話題化した候補を12〜15件、JSONで\n返してください。各候補について、title(原題)・source_name・url\n(検索結果の引用に現れたURLのみ)・published_time_as_shown(ページ表示の\n時刻表記そのまま)・published_time_iso(推定ISO8601、不明ならnull)・\ntime_uncertain(bool)・summary_ja(記事内容に基づく2〜3文)・sublane\n(整数 3)・country_scope(日本/世界/特定国名など)・is_pr_or_ad\n(広告/PR記事らしければtrue)を埋めてください。",
+  "developer_message": "あなたはNews Discovery担当です。web_searchツールで実際に見つけた記事・話題だけを報告してください。存在しない記事やURLを作らないでください。候補のurlは検索結果の引用に実際に現れたURLのみを使用し、記憶や推測でURLを組み立てないでください。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_08c8c7f241dbd850006ab4617aad3487d09b8ad7bd219ac791",
+  "usage": {
+    "input_tokens": 69144,
+    "output_tokens": 4589,
+    "total_tokens": 73733
+  },
+  "web_search_usage": {
+    "web_search_call_count": 8,
+    "queries": [
+      "2026年9月23日 AI テクノロジー 科学 ニュース",
+      "2026年9月23日 AI 技術 科学 発表",
+      "September 23 2026 AI technology science news",
+      "2026年9月22日 AI テクノロジー 科学 ニュース",
+      "site:techcrunch.com 2026/09/23 AI",
+      "site:theverge.com 2026/09/23 AI technology",
+      "site:technologyreview.com 2026/09/23 AI",
+      "site:nature.com/articles 23 September 2026 science technology",
+      "\"Landmark map of human brain’s gene activity holds clues to Alzheimer’s disease and more\"",
+      "\"Gravitational tug-of-war inside Earth is changing the length of our days\"",
+      "\"Best clock ever: timekeeper based on lutetium atoms wows researchers\"",
+      "\"This weird form of boron is a million times more conductive than chemists expected\"",
+      "site:nature.com/articles/d41586-026 \"23 September 2026\" AI",
+      "site:nature.com/articles/d41586-026 \"22 September 2026\" technology",
+      "site:apnews.com/article \"Sep 23, 2026\" AI technology science",
+      "site:theguardian.com/technology/2026/sep/23 \"AI\"",
+      "\"My (complicated) relationship with AI\" Guardian 23 September 2026",
+      "\"New UK agency to fight ‘information warfare’\" Guardian 23 September 2026",
+      "\"Big tech says AI can find a cure for cancer. So where is it?\"",
+      "\"Using AI to ‘talk to animals’\" Guardian September 22 2026",
+      "\"A quadruped robot designed to complete a marathon on a single battery charge\"",
+      "\"Microscopic robots that sense and reshape their environment\"",
+      "\"Anomalous metal and superconducting phases in rhombohedral graphene\"",
+      "\"Lifespan single-cell transcriptomic atlas of the human prefrontal cortex\""
+    ]
+  },
+  "sources": [
+    {
+      "title": "China's Alibaba unveils new powerful chip and ambitious AI model plans",
+      "url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab?utm_source=openai"
+    },
+    {
+      "title": "MIT’s tiny flying robot gets 450% faster with AI | ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/09/260921081114.htm"
+    },
+    {
+      "title": "Landmark map of human brain’s gene activity holds clues to Alzheimer’s disease and more | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02947-x?utm_source=openai"
+    },
+    {
+      "title": "Gravitational tug-of-war inside Earth is changing the length of our days | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-03018-x?utm_source=openai"
+    },
+    {
+      "title": "Best clock ever: timekeeper based on lutetium atoms wows researchers | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-03019-w?utm_source=openai"
+    },
+    {
+      "title": "This weird form of boron is a million times more conductive than chemists expected | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-03001-6?utm_source=openai"
+    },
+    {
+      "title": "How to stay smart in the age of AI: the science of critical thinking | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02930-6?utm_source=openai"
+    },
+    {
+      "title": "In praise of human teachers: universities must resist outsourcing everything to AI | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02949-9?utm_source=openai"
+    },
+    {
+      "title": "Anomalous metal and superconducting phases in rhombohedral graphene | Nature",
+      "url": "https://www.nature.com/articles/s41586-026-11033-1?utm_source=openai"
+    },
+    {
+      "title": "Microscopic robots inspired by fireflies, cilia, sync to reshape surroundings | Department of Physics",
+      "url": "https://physics.cornell.edu/news/microscopic-robots-inspired-fireflies-cilia-sync-reshape-surroundings?utm_source=openai"
+    },
+    {
+      "title": "Watch a robot dog run a marathon faster than the average human | Scientific American",
+      "url": "https://www.scientificamerican.com/article/watch-a-robot-dog-run-a-marathon-faster-than-the-average-human/?utm_source=openai"
+    },
+    {
+      "title": "This super-cold microscope could spur a quantum revolution | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02942-2?utm_source=openai"
+    },
+    {
+      "title": "DeepMind’s new genome ‘atlas’ charts effects of all nine billion human gene mutations | Nature",
+      "url": "https://www.nature.com/articles/d41586-026-02835-4?utm_source=openai"
+    }
+  ]
+}

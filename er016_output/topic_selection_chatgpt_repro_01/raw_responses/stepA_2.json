@@ -1,0 +1,83 @@
+{
+  "prompt": "対象窓(JST、固定): 2026-09-22T21:05:00+09:00 〜 2026-09-23T21:05:00+09:00\nこの窓に公開・話題化した候補を探してください。検索query・調査の過程で\n「2026年9月23日」等の日付語を積極的に使ってください。窓より前や後に\n公開された記事は候補にしないでください。公開時刻が確認できない場合は\n無理に断定せず、time_uncertain: trueと正直に記してください。\n\n【今回探索するサブレーン】\n2. 海外一般・国際・経済: 海外一般News・国際・経済\n\n【全サブレーン一覧(参考、今回はこのサブレーンだけを探索してください)】\n- 1: 国内一般News — 日本国内News(社会・経済・地域)\n- 2: 海外一般・国際・経済 — 海外一般News・国際・経済\n- 3: AI・Technology・Science — AI・Technology・Science\n- 4: Health・睡眠・医療・調査結果 — Health・睡眠・医療・調査結果\n- 5: 生活・Consumer・Food・コンビニ・新商品・新サービス — 生活・Consumer・Food・コンビニ・新商品・新サービス(PR TIMES等のリリース含む。PRそのものではなく背景に一般化できる問いがあるかは後工程で判断する)\n- 6: Travel・Fashion・Culture・Lifestyle — Travel・Fashion・Culture・Lifestyle\n- 7: Entertainment・Sports・ゲーム・芸能 — Entertainment・Sports・ゲーム・芸能\n- 8: SNS・Trend Signal — SNS・Trend Signal(Phase 0で得た2026-09-23話題テーマの実体をニュース・記事・商品ページで確認する。Signalの根拠URLと実体URLを分けて記録する)\n\n【目的】\nEnglish Your Way = 日本人向け英語学習音声番組のNews候補選定Trial。その時点で世の中に出ている話題をできるだけ広く拾い、その後でEnglish Your Wayに合うものを厳選します。カテゴリを均等に埋めることが目的ではありません。\n\n\n日本語媒体を優先し、英語媒体も含めてください。候補は幅広く、重要度で\n絞らないでください。\n\nこのサブレーンで、対象窓内に公開・話題化した候補を12〜15件、JSONで\n返してください。各候補について、title(原題)・source_name・url\n(検索結果の引用に現れたURLのみ)・published_time_as_shown(ページ表示の\n時刻表記そのまま)・published_time_iso(推定ISO8601、不明ならnull)・\ntime_uncertain(bool)・summary_ja(記事内容に基づく2〜3文)・sublane\n(整数 2)・country_scope(日本/世界/特定国名など)・is_pr_or_ad\n(広告/PR記事らしければtrue)を埋めてください。",
+  "developer_message": "あなたはNews Discovery担当です。web_searchツールで実際に見つけた記事・話題だけを報告してください。存在しない記事やURLを作らないでください。候補のurlは検索結果の引用に実際に現れたURLのみを使用し、記憶や推測でURLを組み立てないでください。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_03b63117d7cb9947006ab46147ac9087d0b2cd5500b603eda8",
+  "usage": {
+    "input_tokens": 52303,
+    "output_tokens": 5435,
+    "total_tokens": 57738
+  },
+  "web_search_usage": {
+    "web_search_call_count": 5,
+    "queries": [
+      "2026年9月23日 海外 ニュース 国際 経済",
+      "2026年9月23日 世界 経済 ニュース",
+      "September 23 2026 international news economy",
+      "2026年9月22日 海外ニュース 国際 経済",
+      "site:reuters.com/world 2026/09/23 \"Sept 23\" international",
+      "site:apnews.com 2026/09/23 world economy",
+      "2026年9月23日 国際 ニュース 時事通信",
+      "2026年9月23日 海外ニュース ロイター"
+    ]
+  },
+  "sources": [
+    {
+      "title": "Tigray rebels seize airport and clash with federal forces as fighting in Ethiopia reignites | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/tigray-rebels-seize-airport-and-clash-with-federal-forces-as-fighting-in-ethiopia-reignite"
+    },
+    {
+      "title": "Turkey arrests Tera chairman as ‘Ponzi-like’ fund probe affects 450,000 investors | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/turkey-arrests-tera-chairman-as-ponzi-like-fund-probe-affects-450000-investors"
+    },
+    {
+      "title": "Kallas urges free passage through Strait of Hormuz after talks with Iran's FM | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/kallas-urges-free-passage-through-hormuz-after-talks-with-iran"
+    },
+    {
+      "title": "AI chatbots serve up content from Russia's sanctioned state-run outlets, RSF finds | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/ai-chatbots-serve-up-content-from-russias-sanctioned-state-run-outlets-rsf-finds"
+    },
+    {
+      "title": "Azerbaijan pardons French citizen Martin Ryan following Usmanov's delisting | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/azerbaijan-pardons-french-citizen-martin-ryan-following-usmanovs-delisting"
+    },
+    {
+      "title": "Von der Leyen says Hungary 'strengthened rule of law', unlocks €4.2bn in EU funding | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/von-der-leyen-says-hungary-strengthened-rule-of-law-unlocks-42bn-in-eu-funding"
+    },
+    {
+      "title": "Killer robots or super intelligence? Trump and world leaders clash over AI | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/killer-robots-or-super-intelligence-trump-and-world-leaders-clash-over-ai"
+    },
+    {
+      "title": "Erdoğan tells UN that Europe cannot be safe without Turkey | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/erdogan-urges-un-to-abolish-security-council-veto-power-ahead-of-general-assembly-address"
+    },
+    {
+      "title": "Alibaba’s AI push reaches deeper into Europe with new cloud regions and data centres | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/alibabas-ai-push-reaches-deeper-into-europe-with-new-cloud-regions-and-data-centres"
+    },
+    {
+      "title": "For the first time in a decade, more Europeans travel by train than by bus | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/for-the-first-time-in-a-decade-more-europeans-travel-by-train-than-by-bus"
+    },
+    {
+      "title": "The Trump-Xi summit: Why Europe has so much at stake | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/the-trump-xi-summit-why-europe-has-so-much-at-stake"
+    },
+    {
+      "title": "Oil falls below $100 after Trump reports talks with Iran | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/oil-falls-below-100-after-trump-reports-talks-with-iran"
+    },
+    {
+      "title": "Europe may avoid wider jet fuel shortage, but smaller airports remain at risk | Euronews",
+      "url": "https://www.euronews.com/2026/09/23/europe-may-avoid-wider-jet-fuel-shortage-but-smaller-airports-remain-at-risk"
+    },
+    {
+      "title": "イランホルムズ海峡を「7日以内に開放」米に提案軍事的な圧力緩和、港湾封鎖解除で",
+      "url": "https://www.asahi.co.jp/webnews/pages/ann_000535255.html?utm_source=openai"
+    }
+  ]
+}
