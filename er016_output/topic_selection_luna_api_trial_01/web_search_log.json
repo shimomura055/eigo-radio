@@ -1,0 +1,144 @@
+{
+  "note": "explicit_responses_create_call=Sonnetが明示的に発行したweb_searchツール付きresponses.create呼び出し(全stageで実施)。internal_web_search_call_countはモデル(gpt-5.6-luna)が1回のcall内で自律的に行った内部検索回数(制御不能、記録のみ)。phase2/phase3はweb_search未使用のためinternal=0。",
+  "entries": [
+    {
+      "stage": "phase0_probe",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 3,
+      "queries": [
+        "Google Trends 日本 急上昇 2026年9月24日",
+        "Yahoo!リアルタイム検索 話題 2026年9月24日",
+        "日本 SNS 話題 2026年9月24日 トレンド"
+      ],
+      "sources_cited_count": 0
+    },
+    {
+      "stage": "phase1_general",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 4,
+      "queries": [
+        "2026年9月24日 ニュース 最新 国内 世界 経済 国際 社会",
+        "September 23 2026 latest world news Reuters AP BBC",
+        "site:nhk.or.jp 2026年9月24日 ニュース",
+        "site:asahi.com 2026年9月24日 ニュース",
+        "site:reuters.com/world 2026-09-23 Reuters September 23 2026 UN Iran AI China US",
+        "site:apnews.com 2026/09/23 AP September 23 2026 world news",
+        "site:kyodonews.jp 2026年9月23日 ニュース",
+        "site:mainichi.jp 2026年9月23日 ニュース",
+        "\"2026年9月23日\" \"公開\" ニュース 国内 23日",
+        "\"2026年9月24日\" \"ニュース\" \"9月23日\" 経済",
+        "\"Sep 23, 2026\" Reuters world news",
+        "\"September 23, 2026\" \"news\" Reuters AI UN",
+        "site:newsdig.tbs.co.jp/articles 2026年9月23日 15:00 ニュース",
+        "site:newsdig.tbs.co.jp/articles 2026年9月23日 2026 速報",
+        "site:mainichi.jp/articles/20260923 2026年9月23日",
+        "site:news.yahoo.co.jp 2026年9月23日 国内 ニュース"
+      ],
+      "sources_cited_count": 0
+    },
+    {
+      "stage": "phase1_everyday",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 5,
+      "queries": [
+        "site:reuters.com lifestyle OR consumer OR food OR travel OR education OR money September 23 2026",
+        "2026年9月23日 生活 ニュース 食品 旅行 家庭 教育 お金",
+        "2026年9月24日 生活 ニュース 消費者 食品 旅行 家庭",
+        "September 23 2026 lifestyle consumer food travel work education money news",
+        "site:apnews.com lifestyle September 23 2026 food travel consumer",
+        "site:theguardian.com/lifeandstyle/2026/sep/23 OR site:theguardian.com/food/2026/sep/23 OR site:theguardian.com/travel/2026/sep/23",
+        "site:bbc.com/worklife OR site:bbc.com/travel OR site:bbc.com/news/business September 23 2026",
+        "site:nytimes.com/2026/09/23 lifestyle food travel money",
+        "\"Iced coffee sparks debate over job interview etiquette\"",
+        "\"We've simplified it\" Education Dept rolls out FAFSA form earlier than ever before",
+        "\"What are the financial benefits of higher interest rates?\" experts explain September 23 2026",
+        "\"As Japan swelters, farmers turn to new heat-resistant rice varieties\""
+      ],
+      "sources_cited_count": 14
+    },
+    {
+      "stage": "phase1_scitech",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 4,
+      "queries": [
+        "site:reuters.com technology OR science OR health September 23 2026",
+        "site:apnews.com science technology health September 23 2026",
+        "site:nhk.or.jp 科学 技術 医療 2026年9月23日",
+        "site:nature.com news September 23 2026 science",
+        "science technology health news \"September 23, 2026\"",
+        "AI technology news \"September 24, 2026\" OR \"September 23, 2026\"",
+        "site:sciencedaily.com September 23 2026 science",
+        "site:phys.org September 23 2026 science news"
+      ],
+      "sources_cited_count": 0
+    },
+    {
+      "stage": "phase1_light",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 6,
+      "queries": [
+        "site:reuters.com entertainment OR sports OR lifestyle September 23 2026",
+        "site:apnews.com entertainment OR sports OR lifestyle September 23 2026",
+        "2026年9月23日 エンタメ スポーツ ファッション 話題 ニュース",
+        "2026年9月24日 エンタメ スポーツ 商品 サービス 話題",
+        "site:oricon.co.jp/news/ 2026年9月23日 エンタメ 2026",
+        "site:sponichi.co.jp 2026年9月23日 芸能 スポーツ",
+        "site:mdpr.jp 2026/09/23 ニュース",
+        "site:fashion-press.net/news 2026年9月23日 新商品",
+        "site:news.tv-asahi.co.jp/news_geinou/articles/900200 2026年9月23日",
+        "site:dengekionline.com/articles/ 2026-09-23 23:26",
+        "site:vogue.co.jp/article 2026年9月23日 Vogue World 2026",
+        "site:the-ans.jp/news 2026年9月23日 スポーツ"
+      ],
+      "sources_cited_count": 11
+    },
+    {
+      "stage": "phase1_sns",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 3,
+      "queries": [
+        "site:news.google.com 2026年9月24日 話題 SNS トレンド",
+        "2026年9月24日 SNS 話題 急上昇 日本 ニュース",
+        "site:trends.google.com/trends/trendingsearches 2026-09-24 Japan",
+        "site:x.com 2026年9月24日 トレンド 日本",
+        "2026年9月24日 JCOM 障害 復旧 ニュース",
+        "2026年9月24日 ANA機 緊急着陸 那覇空港 ニュース",
+        "2026年9月24日 米倉涼子 指パッチン ギネス",
+        "2026年9月24日 日本 北朝鮮戦 SNS 懸念",
+        "\"歌の感謝祭\" 2026 9月23日",
+        "\"スケスケ展\" 2026 9月24日",
+        "\"プレミアムパス特典\" 2026 9月24日",
+        "\"片田舎のおっさん\" 2026 9月24日"
+      ],
+      "sources_cited_count": 0
+    },
+    {
+      "stage": "phase2_hooks",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 0,
+      "queries": [],
+      "sources_cited_count": 0
+    },
+    {
+      "stage": "phase3_rank",
+      "explicit_responses_create_call": true,
+      "model_actual": "gpt-5.6-luna",
+      "internal_web_search_call_count": 0,
+      "queries": [],
+      "sources_cited_count": 0
+    }
+  ],
+  "total_explicit_responses_create_calls": 8,
+  "total_explicit_web_search_enabled_calls": 6,
+  "delegation_limit_phase0": 2,
+  "delegation_limit_phase1": 5,
+  "delegation_limit_total": 7,
+  "total_internal_web_search_call_count": 25
+}

@@ -1,0 +1,34 @@
+{
+  "prompt": "現在の日時は 2026-09-24T07:48:25.677927+09:00(JST)です。\n直近24時間の基準時刻(T_cut)は 2026-09-23T07:48:25.677927+09:00(JST)です。\nT_cutより前に公開された記事は候補にしないでください。公開時刻が\n確認できない場合は無理に断定せず、time_uncertain: trueと正直に記して\nください。\n\n【今回探索するレーン】\ngeneral: General/Hard News(日本国内・世界・経済・国際・社会)\n\n【全レーン一覧(参考、今回はこのレーンだけを探索してください)】\n- general: General/Hard News(日本国内・世界・経済・国際・社会)\n- everyday: Everyday/Curiosity(生活・Consumer・Food・Travel・Work・Education・Money・家庭・睡眠・健康)\n- scitech: Science/Technology(Science・Health・AI・Technology・Environment)\n- light: Light/Popular(Entertainment・Sports・Culture・Fashion・Lifestyle・商品・サービス・軽い話題・俗っぽいNews)\n- sns: Trend/SNS Discovery(Google Trends等急上昇、SNSで急速に注目、TikTok/X/Threads等で話題化、ネット上で議論・共有されている身近な話題)\n\n【目的】\nEnglish Your Way = 日本人向け英語学習音声番組のNews候補選定Trial。派手さより『内容に裏づけられた知りたい問い』を作れる素材を探しています。\n\n\n検索しやすい大手英語媒体だけに偏らず、日本語媒体・専門媒体・地方媒体も\n対象にしてください。\n\nこのレーンで、直近24時間以内に公開・話題化した候補を10〜15件、JSONで\n返してください。各候補について、title(原題)・source_name・url・\npublished_time_as_shown(ページ表示の時刻表記そのまま)・\npublished_time_iso(推定ISO8601、不明ならnull)・time_uncertain(bool)・\nsummary_ja(記事内容に基づく2〜3文)・lane(このレーン名 \"general\" を\n入れる)・country_scope(日本/世界/特定国名など)・is_pr_or_ad(広告/PR\n記事らしければtrue)を埋めてください。",
+  "developer_message": "あなたはNews Discovery担当です。web_searchツールで実際に見つけた記事・話題だけを報告してください。存在しない記事を作らないでください。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_0513721322308c43006ab45761000887d0b9942fdabc70ebe6",
+  "usage": {
+    "input_tokens": 38056,
+    "output_tokens": 4053,
+    "total_tokens": 42109
+  },
+  "web_search_usage": {
+    "web_search_call_count": 4,
+    "queries": [
+      "2026年9月24日 ニュース 最新 国内 世界 経済 国際 社会",
+      "September 23 2026 latest world news Reuters AP BBC",
+      "site:nhk.or.jp 2026年9月24日 ニュース",
+      "site:asahi.com 2026年9月24日 ニュース",
+      "site:reuters.com/world 2026-09-23 Reuters September 23 2026 UN Iran AI China US",
+      "site:apnews.com 2026/09/23 AP September 23 2026 world news",
+      "site:kyodonews.jp 2026年9月23日 ニュース",
+      "site:mainichi.jp 2026年9月23日 ニュース",
+      "\"2026年9月23日\" \"公開\" ニュース 国内 23日",
+      "\"2026年9月24日\" \"ニュース\" \"9月23日\" 経済",
+      "\"Sep 23, 2026\" Reuters world news",
+      "\"September 23, 2026\" \"news\" Reuters AI UN",
+      "site:newsdig.tbs.co.jp/articles 2026年9月23日 15:00 ニュース",
+      "site:newsdig.tbs.co.jp/articles 2026年9月23日 2026 速報",
+      "site:mainichi.jp/articles/20260923 2026年9月23日",
+      "site:news.yahoo.co.jp 2026年9月23日 国内 ニュース"
+    ]
+  },
+  "sources": []
+}
