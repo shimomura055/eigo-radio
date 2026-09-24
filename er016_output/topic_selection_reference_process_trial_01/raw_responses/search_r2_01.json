@@ -1,0 +1,45 @@
+{
+  "prompt": "対象窓(JST、固定): 2026-09-22T21:05:00+09:00 〜 2026-09-24T15:39:48.604448+09:00\n以下の検索クエリを使って、この窓内に公開・話題化した記事・話題を探して\nください。\n\n【検索クエリ】\nニュージーランド 今年の鳥 チャタムヒタキ 個体数5羽から回復\n(このクエリを設計した意図: Source差替え: R1_003(NZ鳥)の個別記事URLを探す)\n\n窓より前や後に公開された記事は候補にしないでください。公開時刻が確認\nできない場合は無理に断定せず、time_uncertain: trueとしてください。\n\n最大10件、JSONで返してください。該当が少なければ無理に埋めず、実際に\n見つかった件数だけ返してください。各候補にtitle・source_name・url\n(検索結果の引用に実際に現れたURLのみ)・published_time_as_shown・\npublished_time_iso・time_uncertain・summary_2sent_ja(1〜2文)・\nwhy_interesting_ja(なぜ気になるか1文。専門性・重要性だけでなく、\n具体性・自分事性・意外性・話したくなるかという観点で書くこと)・\ncountry_scope(日本/世界/特定国名)・is_pr_or_ad_guess(PR・広告・\nアフィリエイト・個人ブログ・SNS投稿一覧らしいか)を埋めてください。",
+  "developer_message": "あなたはNews Discovery担当です。web_searchツールで実際に見つけた記事・話題・投稿だけを報告してください。存在しない記事やURLを作らないでください。候補のurlは検索結果の引用に実際に現れたURLのみを使用し、記憶や推測でURLを組み立てないでください。候補のurlは、必ず個別記事の本文ページ(permalink)にしてください。一覧・カテゴリ・タグ・キーワードページ(例: /topics/category/…、/topics/keyword/…、/fringe/ のような一覧URL)は候補として使わないでください。個別記事URLが検索結果に見つからない場合は、その候補は報告しないでください。検索は必要最小限(1〜2回)にしてください。1回のクエリで幅広い候補を見つけ、見つかった記事の中から最大10件、多様な話題を返してください(同じニュースの重複掲載は避けてください)。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_0d16391148ff76a8006ab4c6e74c7087d0a56142ebd496c1d3",
+  "usage": {
+    "input_tokens": 31630,
+    "output_tokens": 3146,
+    "total_tokens": 34776
+  },
+  "web_search_usage": {
+    "web_search_call_count": 3,
+    "queries": [
+      "ニュージーランド 今年の鳥 チャタムヒタキ 個体数5羽から回復",
+      "New Zealand Bird of the Year Chatham black robin population recovered from five September 2026",
+      "\"black robin\" \"Bird of the Year\" September 23 2026",
+      "\"karure\" \"Bird of the Year\" \"Sep 24, 2026\""
+    ]
+  },
+  "sources": [
+    {
+      "title": "個体数5羽から驚異的な回復、NZの今年の鳥は真っ黒な「チャタムヒタキ」 - CNN.co.jp",
+      "url": "https://www.cnn.co.jp/fringe/35252841.html"
+    },
+    {
+      "title": "Black Robin, Once Down to Five Birds, Wins NZ Bird of the Year",
+      "url": "https://www.hngn.com/articles/273328/20260922/black-robin-once-down-five-birds-wins-nz-bird-year.htm"
+    },
+    {
+      "title": "New Zealanders pick robin brought back from near-extinction as Bird of the Year | Euronews",
+      "url": "https://www.euronews.com/2026/09/22/new-zealanders-pick-robin-brought-back-from-near-extinction-as-bird-of-the-year?utm_source=openai"
+    },
+    {
+      "title": "In September 2026, the Chatham Island black robin — down to five birds and one breeding pair in 1980 — won New Zealand's Bird of the Year; about 350 adults now live on two pest-free islands - ScienceBlog.com",
+      "url": "https://scienceblog.com/j-2026-chatham-black-robin-bird-of-year-350/"
+    },
+    {
+      "title": "FROM FIVE BIRDS TO NUMBER ONE: KARURE CROWNED AOTEAROA’S FAVOURITE MANU - Waatea News: Māori Radio Station",
+      "url": "https://waateanews.com/2026/09/24/from-five-birds-to-number-one-karure-crowned-aotearoas-favourite-manu/"
+    }
+  ],
+  "context_size_requested": "low",
+  "context_size_accepted": true
+}

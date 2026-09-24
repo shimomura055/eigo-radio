@@ -1,0 +1,34 @@
+{
+  "prompt": "対象窓(JST、固定): 2026-09-22T21:05:00+09:00 〜 2026-09-24T15:39:48.604448+09:00\n以下の検索クエリを使って、この窓内に公開・話題化した記事・話題を探して\nください。\n\n【検索クエリ】\n予想と逆の結果になった 意外な調査結果 最近\n(このクエリを設計した意図: 非動物系のReversal型を探す)\n\n窓より前や後に公開された記事は候補にしないでください。公開時刻が確認\nできない場合は無理に断定せず、time_uncertain: trueとしてください。\n\n最大10件、JSONで返してください。該当が少なければ無理に埋めず、実際に\n見つかった件数だけ返してください。各候補にtitle・source_name・url\n(検索結果の引用に実際に現れたURLのみ)・published_time_as_shown・\npublished_time_iso・time_uncertain・summary_2sent_ja(1〜2文)・\nwhy_interesting_ja(なぜ気になるか1文。専門性・重要性だけでなく、\n具体性・自分事性・意外性・話したくなるかという観点で書くこと)・\ncountry_scope(日本/世界/特定国名)・is_pr_or_ad_guess(PR・広告・\nアフィリエイト・個人ブログ・SNS投稿一覧らしいか)を埋めてください。",
+  "developer_message": "あなたはNews Discovery担当です。web_searchツールで実際に見つけた記事・話題・投稿だけを報告してください。存在しない記事やURLを作らないでください。候補のurlは検索結果の引用に実際に現れたURLのみを使用し、記憶や推測でURLを組み立てないでください。候補のurlは、必ず個別記事の本文ページ(permalink)にしてください。一覧・カテゴリ・タグ・キーワードページ(例: /topics/category/…、/topics/keyword/…、/fringe/ のような一覧URL)は候補として使わないでください。個別記事URLが検索結果に見つからない場合は、その候補は報告しないでください。検索は必要最小限(1〜2回)にしてください。1回のクエリで幅広い候補を見つけ、見つかった記事の中から最大10件、多様な話題を返してください(同じニュースの重複掲載は避けてください)。",
+  "model_requested": "gpt-5.6-luna",
+  "response_model_actual": "gpt-5.6-luna",
+  "response_id": "resp_0287a8c0aa085115006ab4c7e925f087d09d15af8ca89e4bc7",
+  "usage": {
+    "input_tokens": 20075,
+    "output_tokens": 1438,
+    "total_tokens": 21513
+  },
+  "web_search_usage": {
+    "web_search_call_count": 2,
+    "queries": [
+      "予想と逆の結果になった 意外な調査結果 最近",
+      "意外な調査結果 予想に反して 2026年9月24日 OR 2026年9月23日 OR 2026年9月22日",
+      "\"2026年9月23日\" 調査結果 予想外 OR 意外 OR 予想に反して -動物",
+      "\"2026年9月24日\" 調査結果 意外 OR 予想外 -動物",
+      "\"2026年9月22日\" 調査結果 意外 OR 予想外 -動物"
+    ]
+  },
+  "sources": [
+    {
+      "title": "デジタル安全意識に関する消費者調査「2026年版 アバスト セーフテックレポート」を発表　AIによる偽情報を見抜く自信の低さとは裏腹に、個人情報の共有には抵抗感が薄い傾向に | 株式会社ノートンライフロックのプレスリリース",
+      "url": "https://prtimes.jp/main/html/rd/p/000000087.000069936.html?utm_source=openai"
+    },
+    {
+      "title": "〖ライフスタイル〗生成AIの不満「誤情報」40%に増加、確かめながら使う姿勢の広がりも(2026年9月24日)",
+      "url": "https://tda000073-prd.ad.at.nttdocomo.co.jp/project/lifestyle/20260924.html?utm_source=openai"
+    }
+  ],
+  "context_size_requested": "low",
+  "context_size_accepted": true
+}
