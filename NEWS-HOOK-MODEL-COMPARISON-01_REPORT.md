@@ -221,14 +221,16 @@ Reference 20件の既存User Score(Dataset R)は、本Dataset内の
 
 ## §G Fable記入欄
 
-- モデル別特徴: `[Fable記入]`
-- Reference再現性(Reference級/採用可能だがReference未満/弱い、具体例付き): `[Fable記入]`
-- QCD: `[Fable記入]`
-- 推奨: `[Fable記入]`
+- 条件: H3 Prompt逐語流用、reasoning effort `medium`、各モデル20素材×独立呼出で計6 call。`response.model`実値6/6一致(routing取り違えなし)。Reference Hook非混入検査137文字列検出0。
+- Fable判定(Reference級/採用可能/弱いの3分類): Luna 3/3/14(採用可能計6/20)、Terra 6/7/7(採用可能計13/20)、Sol 7/8/5(採用可能計15/20)。
+- モデル別特徴: Luna=短いが見出しの疑問文化に留まる、読点で2句を継ぐ不自然形が頻出。Terra=一段深い見方への移行が最多だが素材離れ・素材外補完あり。Sol=会話的自然さと具体保持の両立だが長め・口語の癖・断定気味。3モデルともReferenceの「具体場面化」には届かず(Prompt側の余地)。
+- Reference再現性(Reference級/採用可能だがReference未満/弱い、具体例付き): 上記の通りモデルごとに分布が異なる。Sol/Terraは採用可能率が高いがReference級は少数、Lunaは弱い判定が過半数(14/20)。3モデルともReference級「具体場面化」には届かない構造的な弱さがある。
+- QCD: cost Luna ¥0.74(20素材、月額換算¥22)/Sol ¥20.41(月額換算¥612)/Terra単価UNKNOWN(token数のみ記録)。latency 3モデルとも20件一括で約40秒前後。
+- 推奨: Trial当時はSol第一候補。ただし2026-09-24 `NEWS-HOOK-POLICY-DECISION-01`により、本Trialの評価(Topic概要→Hook方式が前提)は単独ではProduction model選定根拠として確定しないとユーザーが正式決定した。理由は`NEWS-R2-TO-HOOK-TRIAL-01`で、生成順序を「R2完成記事→Hook」へ変更するとモデル間の差が縮小することが判明したため。Sol/Terra採用判断はDEFERRED/HOLD(OPEN-176)。
 
 ## §H Status
 
-`[Fable分類待ち]`(到達上限`VALIDATED`。Production採用はユーザー判断)。
+`VALIDATED`(Trial、到達上限)。Production採用はユーザー判断であり、`NEWS-HOOK-POLICY-DECISION-01`(2026-09-24)によりSol/Terra採用はDEFERRED/HOLD、正式表示はR2 Titleを使用、Luna Side output(比較観測用)を採用。詳細はDECISION_LOG.mdの`NEWS-HOOK-POLICY-DECISION-01`/`NEWS-HOOK-MODEL-COMPARISON-01`エントリ、OPEN-176参照。
 
 ## §I Production変更なし宣言
 

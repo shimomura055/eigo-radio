@@ -447,6 +447,9 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01: Key Phrase source整合Gate(a)(b)をProduction経路へ実装、OPEN-170 close
 - [本ファイル内] ## PM-USER-VALIDATION-DIRECTION-RECORD-01: 2026-09-23ユーザ実検証(9名分)・DMM Daily News競合確認を踏まえた開発方向性のPM記録(docs/pm/USER_VALIDATION_DIRECTION_2026-09-23.md)、個別仕様のProduction採用ではない
 - [本ファイル内] ## NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01: News記事Entertainment生成方式(Original→Entertainment revision→Further entertainment revision、2回目revisionを最終記事とする)のユーザー正式採用(APPROVED_FOR_PRODUCTION、配線未完了)
+- [本ファイル内] ## NEWS-HOOK-MODEL-COMPARISON-01: Hook 2段生成(Topic概要→面白い見方→短いHook)のLuna/Terra/Sol同一条件比較(Reference 20素材、Reference Hook非混入)、VALIDATED(Trial)、Sol/Terra採用は保留
+- [本ファイル内] ## NEWS-R2-TO-HOOK-TRIAL-01: 2回目revision完成記事(R2)を入力にしたHook生成のLuna/Terra/Sol比較(3記事)、VALIDATED(Trial)、生成順序「R2完成記事→Hook」の優位を確認
+- [本ファイル内] ## NEWS-HOOK-POLICY-DECISION-01: News正式表示Hook=2回目revision後タイトル(R2 Title)をそのまま使用、R2完成後にLunaで比較観測用Hookを1本Side output生成(正式Hookではない)、Sol/Terra採用はDEFERRED/HOLD(ユーザー正式決定、2026-09-24)
 
 ---
 
@@ -9340,4 +9343,48 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Open Item起票: OPEN-174(広告・購買誘導が主目的のSourceのNews素材混入、`USER_DECISION_REQUIRED / Open Item`)、OPEN-175(Original Prompt「これ、ちょっと面白くない？」の本文冒頭復唱監視、`OPEN / MONITORING`)。いずれもWriter Prompt変更は行わず、Open Item登録のみ。
 - Phase 0 recon結果(read-only、Production code変更なし): (a) 日本語Entertainment読み物記事(Trial P7方式)を生成する既存Production経路は`CURRENT_SPEC.md`上に存在しない(該当なし、Grep「日本語|読み物|ja_free|er002」で該当節なし)。(b) ER-002系Japanese生成経路は2026-08-06付でER-003アーキテクチャへ全面移行済みの`HISTORICAL`(`DECISION_LOG_HISTORY.md` 3485-3494行「ER-002実験(A01・A02の初回音声)を破棄し、ER-003アーキテクチャへ全面移行」)であり、現行Productionではない。(c) 既存Production Writer経路(B-Family Voices A2/B1、`er012_b_family_production_runner_01.py`/`er012_b_family_voices_writer_generic_01.py`)は、Verified Fact Ledger必須・Focus Module・Voice Cards構成・`MAX_WRITER_ATTEMPTS=3`(初回1回+是正再実行最大2回)・Analytical Leakage Check等のGate群を持つ、Trial P7方式(Ledgerなし・単純な修正指示連鎈)とは構造が異なる英語主体の生成経路である。(d) Production code内に`previous_response_id`の使用前例なし(Grep該当は`er015_*`/`er016_*`のTrial scriptのみ)。Phase 0 recon詳細の根拠元は`CURRENT_SPEC.md`(Grep「日本語|読み物|ja_free|er002」該当なし)、`DECISION_LOG_HISTORY.md` 3485-3494行、`er012_b_family_production_runner_01.py`(`main_a2_2v()`)、`er012_b_family_voices_writer_generic_01.py`(`MAX_WRITER_ATTEMPTS`)、`er006_model_routing_contract_01.py`(`WRITER_MODEL`)。
 - Status: **`APPROVED_FOR_PRODUCTION / WIRING INCOMPLETE`**(`PRODUCTION_WIREDはGate 3全項目充足後にユーザーへ報告して確定する`)。未充足項目: 配線先Production経路の確定(上記reconのとおり既存の日本語読み物News経路が存在しないため、新規Production module設計要否を含めFable/ユーザー判断が必要)・実装・retry/fallback/regeneration整合・R3がProductionで呼ばれないことの保証・Production runtime evidence・regression/integration PASS・actual model_id確認・Audio pipelineへの受け渡し方法確定。
+- commit: (本コミットで反映)
+
+## NEWS-HOOK-MODEL-COMPARISON-01: Hook 2段生成(Topic概要→面白い見方→短いHook)のLuna/Terra/Sol同一条件比較(Reference 20素材、Reference Hook非混入)、VALIDATED(Trial)、Sol/Terra採用は保留
+
+- 日付: 2026-09-24
+- 区分: Trial(Production採用判断ではない)。Hook 2段生成Prompt(H3、Topic概要→面白い見方→短いHook)をLuna/Terra/Solの3モデルへ同一条件で適用し、Reference 20素材で比較した。
+- 条件: H3 Prompt逐語流用、reasoning effort `medium`、各モデル20素材×独立呼出で計6 call。`response.model`実値6/6一致(routing取り違えなし)。Reference Hook非混入検査137文字列検出0(素材・出力へのReference混入なし)。
+- 結果(Fable判定、Reference級/採用可能/弱いの3分類): Luna 3/3/14(採用可能計6/20)、Terra 6/7/7(採用可能計13/20)、Sol 7/8/5(採用可能計15/20)。
+- モデル別特徴: Luna=短いが見出しの疑問文化に留まる、読点で2句を継ぐ不自然形が頻出。Terra=一段深い見方への移行が最多だが素材離れ・素材外補完あり。Sol=会話的自然さと具体保持の両立だが長め・口語の癖・断定気味。3モデルともReferenceの「具体場面化」には届かず(Prompt側の余地として残る)。
+- cost: Luna ¥0.74(20素材、月額換算¥22)、Sol ¥20.41(月額換算¥612)、Terra単価UNKNOWN(token数のみ記録、単価未確定)。
+- latency: 3モデルとも20件一括で約40秒前後。
+- Fable推奨(Trial当時): Sol第一候補。**本日`NEWS-HOOK-POLICY-DECISION-01`(2026-09-24)により、Sol/Terra採用はDEFERRED/HOLDへ変更、Luna Side output観測方針へ移行**(理由は`NEWS-R2-TO-HOOK-TRIAL-01`参照。Topic概要→Hook方式を前提とした本Trialの評価は、R2完成記事→Hook方式ではモデル間の差が縮小することが判明したため、単独ではProduction model選定根拠として確定しない)。
+- Status: `VALIDATED`(Trial)、Production採用なし。
+- dataset保存: `docs/pm/topic_selection_user_eval_dataset.json`。
+- commit: `fd0d82a1`。
+
+## NEWS-R2-TO-HOOK-TRIAL-01: 2回目revision完成記事(R2)を入力にしたHook生成のLuna/Terra/Sol比較(3記事)、VALIDATED(Trial)、生成順序「R2完成記事→Hook」の優位を確認
+
+- 日付: 2026-09-24
+- 区分: Trial(Production採用判断ではない)。`NEWS-HOOK-MODEL-COMPARISON-01`(Topic概要→Hook)との比較のため、生成順序を「R2完成記事(2回目revision後の最終記事)→Hook」へ変更し、同じLuna/Terra/Solで再比較した。
+- 条件: 入力=テーマ文+R2全文のみ(Reference/過去Hook非混入)。Prompt逐語(REPORT `NEWS-R2-TO-HOOK-TRIAL-01_REPORT.md` §0参照)。3記事×3モデル=9 call独立実行。`response.model`実値9/9一致。非混入検査177文字列検出0。
+- 結果: 比較可能な2記事(AI電話代行・旅行の荷物)×3モデル=6/6で旧方式(Topic概要→Hook)より改善。旧方式で最弱だったLunaが、R2入力ではReference級に到達する例あり(AI電話代行「AIに任せた電話、実は人間が話していたら？」)。下水道記事は3モデルとも失敗(R2記事の中心が比喩[洗濯機/大動脈]のため、Hookが比喩を持ち込み主語「下水道」が消えた。R2タイトル「"合併"するのは町じゃない？下水道の大引っ越し作戦」の方が優れる)。R2タイトル自体は3/3で既にHook級の材料を持つ。
+- Q&A(Fable評価): Q1(R2記事を読ませることでHookは改善するか)=はい(6/6)。Q2(Reference Hookの特徴「具体的な場面へ落とす」ことが増えるか)=2/3で増加。Q3(Lunaでも十分なHookが作れるようになるか)=R2記事自体が具体場面・逆転を含む場合は十分。Q4(それでもTerra/Solとの差は残るか)=ほぼ消える(簡潔さの差のみ残る)。Q5(差が残るなら原因はどこか)=第一にR2記事の内容差、第二にPrompt(主語明示・答え先出し抑制の条件がない)、Model差は最小。
+- 観察: R2由来Hookは記事の答えを先に明かしがちな傾向がある(Referenceの「問いだけで終える」型と性格差がある)。
+- cost: Luna ¥0.19(3記事、1 Hookあたり¥0.063)、Sol ¥3.18(1 Hookあたり¥1.06)、Terra UNKNOWN(単価未確定)。latency: 1 Hookあたり2〜3秒。
+- Fable推奨(Trial当時): 生成順序はR2完成記事後、モデルはLunaで足りる可能性がある。**本日`NEWS-HOOK-POLICY-DECISION-01`(2026-09-24)で、正式表示=R2 Title、Luna Hook=比較観測用Side outputと正式決定**。
+- Status: `VALIDATED`(Trial)。
+- commit: `8f2d246e`。
+
+## NEWS-HOOK-POLICY-DECISION-01: News正式表示Hook=2回目revision後タイトル(R2 Title)をそのまま使用、R2完成後にLunaで比較観測用Hookを1本Side output生成(正式Hookではない)、Sol/Terra採用はDEFERRED/HOLD(ユーザー正式決定、2026-09-24)
+
+- 日付: 2026-09-24
+- 区分: ユーザー正式決定(SSOT記録のみ、Production code・Prompt・Router・Search・Writer変更なし、配線なし、API呼出なし¥0)。`NEWS-HOOK-MODEL-COMPARISON-01`/`NEWS-R2-TO-HOOK-TRIAL-01`の2 Hook Trialを踏まえたユーザー正式判断。
+- ユーザー指示原文(要旨、項目別):
+  1. 正式表示: 当面、Newsの正式表示Hook/見出しとしては、**2回目Revision後のR2タイトルをそのまま使用する**。別Hook Generatorの出力を正式表示には使わない。
+  2. 比較観測用Hook: 今後、新しいNews記事を生成する際は、**R2完成後にLunaで比較観測用Hookを1本生成する**。これはProduction正式Hookではなく、Side outputとして扱う。用途は「R2 Title vs Luna Hook」の比較観測・蓄積。以下には使わない: UI正式表示/Audio正式Hook/Production記事の合否判定/Validator判定/fallback条件。Hook生成に失敗しても、記事生成自体は成功扱いとする。
+  3. Hookモデル判断: `NEWS-R2-TO-HOOK-TRIAL-01`により、Topic概要→Hook より R2完成記事→Hook の方が明確に改善するEvidenceが得られた。特に、R2入力ではLunaでも採用可能〜Reference級に到達するケースが確認されたため、**Sol/TerraのProduction採用判断はいったん保留する**。以前の「Sol第一候補」は、Topic概要→Hook方式を前提とした評価なので、現時点ではProduction model選定根拠として確定しない。
+  4. Status整理: Hook生成順序「R2完成記事→Hook」→`VALIDATED`。正式表示「R2 Titleを使用」→ユーザー正式決定。Luna Side Output観測「R2後にLuna Hookを1本生成し比較保存」→ユーザー正式決定。Luna Hookを正式表示へ採用→未承認。Sol/Terra Production採用→保留。
+  5. 記録: DECISION_LOG/OPEN_ITEMS/Hook関連Trialのcloseoutへ反映(本エントリ・OPEN-176・REPORT2件§G/§H・§E/§F)。Luna Hook Side Outputは「正式Hook機能」ではなく「比較観測用」であることを明確に残す。Sol/Terra比較は`DEFERRED / HOLD`として管理し、未処理USER_DECISION_REQUIREDとして毎回再掲し続けない状態へ整理する。
+  6. Production wiringについて: Side output Hookを量産Lineへ追加する場合も、Main article pathと分離/failure non-blocking/正式出力を変更しない/R2 Titleを正式表示として維持/Hook Prompt・model・outputをログ保存 とする(配線時の必須条件)。ただし、現在進行中のNews Writer/R2 Production Trial(`NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01`)を邪魔しないこと。Side output実装が別変更を必要とする場合は、勝手に配線せずSTOPして報告する(配線は本エントリでは実施しない。`NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01`の設計判断後に別途行う)。
+  7. 今後の判断材料(蓄積項目): 今後の記事ごとに最低限 R2 Title/Luna Hook/どちらが良かったか/Hookが明確に改善したか/主語消失・答え先出し等の失敗有無 を蓄積する。十分な記事数が集まった段階で R2 Titleだけでよいか/Luna Hookを正式採用する価値があるか/Sol・Terraを再検討する必要があるか を改めて判断する。今回の判断だけを根拠に追加Hook Trialを自動実施しない。
+- Status整理表: 生成順序=R2完成記事→Hook(`VALIDATED`)/正式表示=R2 Title使用(ユーザー正式決定)/Luna Side Output観測=R2後にLuna Hook1本生成し比較保存(ユーザー正式決定)/Luna Hookの正式表示採用=未承認/Sol・Terra Production採用=保留(`DEFERRED / HOLD`)。
+- 関連: `NEWS-HOOK-MODEL-COMPARISON-01`、`NEWS-R2-TO-HOOK-TRIAL-01`、`TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02`(Hook部分)、OPEN-176。
+- Status: 本決定自体は**ユーザー正式決定**(記録完了)。Side output配線は未実施(`NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01`の設計判断後に別途実施、本エントリでは配線なし)。
 - commit: (本コミットで反映)

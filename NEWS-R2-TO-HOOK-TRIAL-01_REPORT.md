@@ -100,20 +100,22 @@ Production変更なし。
 
 ## §E Fable記入欄
 
-- Q1(R2記事を読ませることでHookは改善するか): [Fable記入]
-- Q2(Reference Hookの特徴「具体的な場面へ落とす」ことが増えるか): [Fable記入]
-- Q3(Lunaでも十分なHookが作れるようになるか): [Fable記入]
-- Q4(それでもTerra/Solとの差は残るか): [Fable記入]
-- Q5(差が残るなら原因はどこか): [Fable記入]
-- Referenceへの近さ: [Fable記入]
-- R2タイトルそのものとの比較(別途Hook生成が必要か/そのまま使えるか/短縮のみでよいか): [Fable記入]
-- 推奨: [Fable記入]
+- 条件: 入力=テーマ文+R2全文のみ(Reference/過去Hook非混入)。Prompt逐語(本REPORT §0参照)。3記事×3モデル=9 call独立実行。`response.model`実値9/9一致。非混入検査177文字列検出0。
+- 結果概要: 比較可能な2記事(AI電話代行・旅行の荷物)×3モデル=6/6で旧方式(Topic概要→Hook、`NEWS-HOOK-MODEL-COMPARISON-01`)より改善。旧方式で最弱だったLunaが、R2入力ではReference級に到達する例あり(AI電話代行「AIに任せた電話、実は人間が話していたら？」)。下水道記事は3モデルとも失敗(R2記事の中心が比喩[洗濯機/大動脈]のため、Hookが比喩を持ち込み主語「下水道」が消えた)。
+- Q1(R2記事を読ませることでHookは改善するか): はい(比較可能な6/6で改善)。
+- Q2(Reference Hookの特徴「具体的な場面へ落とす」ことが増えるか): 2/3記事で増加。
+- Q3(Lunaでも十分なHookが作れるようになるか): R2記事自体が具体場面・逆転を含む場合は十分(AI電話代行で確認)。R2記事が比喩中心の場合は3モデルとも不十分(下水道)。
+- Q4(それでもTerra/Solとの差は残るか): ほぼ消える(簡潔さの差のみ残る)。
+- Q5(差が残るなら原因はどこか): 第一にR2記事の内容差(具体場面・逆転の有無)、第二にPrompt側(主語明示・答え先出し抑制の条件がない)。Model差は最小。
+- Referenceへの近さ: 比較可能な2記事ではReference級〜採用可能に到達する例が複数あり、旧方式より明確に近づいた。ただし下水道のように記事の中心が比喩の場合はまだ届かない。
+- R2タイトルそのものとの比較(別途Hook生成が必要か/そのまま使えるか/短縮のみでよいか): R2タイトルは3/3で既にHook級の材料を持つ。下水道は「"合併"するのは町じゃない？下水道の大引っ越し作戦」のようにR2タイトルの方がHook生成結果より優れる例がある。R2由来Hookは記事の答えを先に明かしがちな傾向があり(Reference「問いだけで終える」型と性格差)、R2タイトルの方が安定して使える。
+- 推奨: 生成順序は「R2完成記事→Hook」を採用。モデルはLunaで足りる可能性がある(cost最小)。ただし2026-09-24 `NEWS-HOOK-POLICY-DECISION-01`で、正式表示にはHook生成を使わずR2タイトルをそのまま使用し、Luna Hookは比較観測用Side outputとしてのみ生成する方針がユーザー正式決定された。
 
 ---
 
 ## §F Status
 
-`[Fable分類待ち]`(到達上限`VALIDATED`。Hook Productionモデル・生成順序・R2タイトル流用のいずれもProduction採用しない。)
+`VALIDATED`(Trial、到達上限)。生成順序「R2完成記事→Hook」の優位性は確認されたが、Hook Productionモデル・生成順序のProduction採用、R2タイトル流用のいずれも本Trial単独では確定しない。2026-09-24 `NEWS-HOOK-POLICY-DECISION-01`(ユーザー正式決定)により、正式表示=R2 Title使用、Luna Hook=比較観測用Side output(UI正式表示・Audio正式Hook・合否判定・Validator・fallbackには不使用、失敗しても記事生成は成功扱い)、Sol/Terra採用はDEFERRED/HOLDと整理された。詳細はDECISION_LOG.mdの`NEWS-HOOK-POLICY-DECISION-01`/`NEWS-R2-TO-HOOK-TRIAL-01`エントリ、OPEN-176参照。
 
 ---
 
