@@ -1,0 +1,78 @@
+{
+  "usd_to_jpy": 160,
+  "cost_ceiling_jpy": 30,
+  "by_model": {
+    "luna": {
+      "model_id_requested": "gpt-5.6-luna",
+      "actual_model_ids": [
+        "gpt-5.6-luna"
+      ],
+      "calls": 3,
+      "input_tokens": 2619,
+      "cached_input_tokens": 0,
+      "output_tokens": 531,
+      "reasoning_tokens": 289,
+      "latency_seconds_by_call": {
+        "sewer_luna": 3.339,
+        "ai_phone_luna": 2.909,
+        "travel_bag_luna": 1.664
+      },
+      "latency_seconds_total": 7.912,
+      "price_status": "KNOWN",
+      "price_source": "er005_output/cost_baseline_01/pricing_snapshot.json",
+      "total_usd": 0.00116,
+      "total_jpy": 0.19,
+      "per_hook_jpy": 0.063
+    },
+    "terra": {
+      "model_id_requested": "gpt-5.6-terra",
+      "actual_model_ids": [
+        "gpt-5.6-terra"
+      ],
+      "calls": 3,
+      "input_tokens": 2619,
+      "cached_input_tokens": 0,
+      "output_tokens": 223,
+      "reasoning_tokens": 0,
+      "latency_seconds_by_call": {
+        "sewer_terra": 1.925,
+        "ai_phone_terra": 2.09,
+        "travel_bag_terra": 1.808
+      },
+      "latency_seconds_total": 5.823,
+      "price_status": "UNKNOWN",
+      "price_note": "gpt-5.6-terraの単価がpricing_snapshot.jsonに無い。token数のみ記録(単価を捏造しない)。",
+      "price_probe_evidence": {
+        "attempted": true,
+        "fetch_url": "https://platform.openai.com/docs/pricing",
+        "resolution_status": "AMBIGUOUS_NOT_ADOPTED",
+        "reason": "前タスク(NEWS-HOOK-MODEL-COMPARISON-01, 2026-09-24)と同一調査結果を踏襲。ページ内にgpt-5.6-terraを含む数値セットが複数存在し、tier/列構成が機械的に確定できないため、誤った単価を確定値として記録するリスクを避け、terra_price_status=UNKNOWNのまま採用しない。",
+        "reused_from": "er016_output/news_hook_model_comparison_01/cost.json (by_model.terra.price_probe_evidence)"
+      }
+    },
+    "sol": {
+      "model_id_requested": "gpt-5.6-sol",
+      "actual_model_ids": [
+        "gpt-5.6-sol"
+      ],
+      "calls": 3,
+      "input_tokens": 2619,
+      "cached_input_tokens": 0,
+      "output_tokens": 227,
+      "reasoning_tokens": 0,
+      "latency_seconds_by_call": {
+        "sewer_sol": 2.313,
+        "ai_phone_sol": 1.731,
+        "travel_bag_sol": 1.877
+      },
+      "latency_seconds_total": 5.921,
+      "price_status": "KNOWN",
+      "price_source": "er005_output/cost_baseline_01/pricing_snapshot.json",
+      "total_usd": 0.0199,
+      "total_jpy": 3.18,
+      "per_hook_jpy": 1.06
+    }
+  },
+  "total_jpy_known_models_only": 3.37,
+  "within_cost_ceiling_known_models_only": true
+}
