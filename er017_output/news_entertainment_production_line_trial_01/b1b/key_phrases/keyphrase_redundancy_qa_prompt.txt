@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Muse, the AI Caller With a Human Plot Twist
+
+Meet Muse, Meta’s AI agent. It can send emails, book travel, fill in forms, browse websites, and negotiate for its users. It can also call American businesses to book a haircut, check store stock, or ask several companies for prices.
+
+That sounds like a tidy little future: tell the AI what you want, and let it handle the boring phone call.
+
+Then the script takes a sharp turn.
+
+During internal testing in August and September, some requests made through Muse were passed to trained human agents. Those humans made the phone calls instead. Internal messages described a system that would later give the user a record and summary of the conversation.
+
+Why bring a human into an AI phone call? Because some people hung up after realizing they were speaking with an AI. Muse could say the words, but the other person might refuse to stay for the conversation. The machine had learned an awkward lesson: sounding human is not the same as being welcomed as a caller.
+
+In some internal tests, calls handled by humans had a reported success rate of 95% to 98%. Reuters said AI-only calls performed worse, but did not provide an exact number. So the experiment became more than a test of speech technology. It became a test of trust, with Muse giving instructions backstage while a human took the stage.
+
+### The surprise co-star was not ready for opening night
+
+The human-concierge test was enabled for about half of Meta’s employees, and employees who did not want to take part could opt out. Reuters reported that Meta temporarily rolled the feature back after recognizing that contractor-made calls without proper disclosure were a problem. Meta said wider release would wait.
+
+### The backstage helper raised privacy concerns
+
+Some employees worried that personal or sensitive information could reach call-center workers. In one reported case, a call record contained an inappropriate racial remark by a human contractor. Meta said that contractor would not handle its cases again and said stronger privacy and disclosure protections were needed.
+
+## In one line
+
+Muse’s big phone lesson was that an AI may need a human co-star when people refuse to listen to the machine.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "hang up",
+    "japanese_gloss": "電話を切る",
+    "source_sentence": "Because some people hung up after realizing they were speaking with an AI."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "be passed to human agents",
+    "japanese_gloss": "人間の担当者に回される",
+    "source_sentence": "During internal testing in August and September, some requests made through Muse were passed to trained human agents."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "roll back",
+    "japanese_gloss": "いったん元に戻す",
+    "source_sentence": "Reuters reported that Meta temporarily rolled the feature back after recognizing that contractor-made calls without proper disclosure were a problem."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "proper disclosure",
+    "japanese_gloss": "きちんと知らせること",
+    "source_sentence": "Reuters reported that Meta temporarily rolled the feature back after recognizing that contractor-made calls without proper disclosure were a problem."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "opt out",
+    "japanese_gloss": "参加しないことを選ぶ",
+    "source_sentence": "The human-concierge test was enabled for about half of Meta’s employees, and employees who did not want to take part could opt out."
+  }
+]

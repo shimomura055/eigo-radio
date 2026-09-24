@@ -1,0 +1,140 @@
+{
+  "stage": 2,
+  "parser_status": "PARSE_OK",
+  "structure": {
+    "status": "STRUCTURE_PASS",
+    "h3_count": 2,
+    "headings": [
+      "The surprise co-star was not ready for opening night",
+      "The backstage helper raised privacy concerns"
+    ],
+    "reasons": []
+  },
+  "deviation": {
+    "overall_status": "LEDGER_COMPLIANT",
+    "major_count": 0,
+    "minor_count": 0,
+    "major_items": [],
+    "minor_items": [],
+    "model": "gpt-5.6-luna",
+    "response_id": "resp_00e019b51fe3d778006ab49e66a6a887d0bdf952e8620471c3"
+  },
+  "fact_check_block": {
+    "canonical_spelling_block_present": false,
+    "canonical_spelling_block_text": "",
+    "note": "Ledgerにcanonical_en_spelling行が無いため空文字が正常(local検査、API呼び出しなし)"
+  },
+  "point_overlap_qa": {
+    "status": "OK",
+    "note": "検査のみで実行(POINT_ONLY_REGENERATION_ENABLED=False、Productionの既定値のまま、再生成は発生しない)",
+    "report": {
+      "point_one_vs_point_two": {
+        "overlap_ratio": 0.219,
+        "shared_words": [
+          "contractor",
+          "disclosure",
+          "employees",
+          "human",
+          "meta",
+          "reported",
+          "said"
+        ],
+        "point_word_count": 32,
+        "story_word_count": 29,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_two_vs_point_one": {
+        "overlap_ratio": 0.241,
+        "shared_words": [
+          "contractor",
+          "disclosure",
+          "employees",
+          "human",
+          "meta",
+          "reported",
+          "said"
+        ],
+        "point_word_count": 29,
+        "story_word_count": 32,
+        "flagged": false,
+        "threshold": 0.4
+      },
+      "point_one": {
+        "before_overlap": {
+          "overlap_ratio": 0.312,
+          "shared_words": [
+            "after",
+            "calls",
+            "human",
+            "made",
+            "meta",
+            "reported",
+            "reuters",
+            "said",
+            "test",
+            "want"
+          ],
+          "point_word_count": 32,
+          "story_word_count": 113,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.219,
+          "shared_words": [
+            "contractor",
+            "disclosure",
+            "employees",
+            "human",
+            "meta",
+            "reported",
+            "said"
+          ],
+          "point_word_count": 32,
+          "story_word_count": 29,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      },
+      "point_two": {
+        "before_overlap": {
+          "overlap_ratio": 0.276,
+          "shared_words": [
+            "call",
+            "handle",
+            "human",
+            "meta",
+            "record",
+            "reported",
+            "said",
+            "some"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 113,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "cross_point_overlap": {
+          "overlap_ratio": 0.241,
+          "shared_words": [
+            "contractor",
+            "disclosure",
+            "employees",
+            "human",
+            "meta",
+            "reported",
+            "said"
+          ],
+          "point_word_count": 29,
+          "story_word_count": 32,
+          "flagged": false,
+          "threshold": 0.4
+        },
+        "applied": false
+      }
+    }
+  },
+  "stage_pass": true
+}

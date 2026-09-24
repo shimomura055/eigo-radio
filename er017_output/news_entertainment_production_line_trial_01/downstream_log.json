@@ -1,0 +1,60 @@
+{
+  "theme_id": "entertainment_trial_meta_muse",
+  "steps": [
+    {
+      "step": "copy_article",
+      "status": "OK"
+    },
+    {
+      "step": "split_article_text",
+      "status": "OK"
+    },
+    {
+      "step": "scaffold",
+      "status": "OK",
+      "support_status": {
+        "preview": "OK",
+        "comment_1": "OK",
+        "comment_2": "OK",
+        "comment_3": "OK",
+        "comment_4": "OK"
+      }
+    },
+    {
+      "step": "key_phrases",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "redundancy_qa_status": "REDUNDANCY_PASS"
+    },
+    {
+      "step": "tts",
+      "result_keys": [
+        "segment_status",
+        "key_phrase_status"
+      ]
+    },
+    {
+      "step": "assemble",
+      "result": {
+        "status": "GATE_BLOCKED",
+        "gate_off_result": "BLOCKED",
+        "error": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: B1のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['full_story_part2=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。"
+      }
+    },
+    {
+      "step": "audio_validation_gate_opt_in",
+      "result": {
+        "gate_on_result": "SKIPPED(gate_off_blocked)"
+      }
+    }
+  ],
+  "status": "COMPLETED",
+  "gate_off_result": "BLOCKED",
+  "gate_on_result": "SKIPPED(gate_off_blocked)",
+  "jpy_so_far": 42.42890399999999,
+  "by_provider_jpy": {
+    "openai": 11.36,
+    "gemini": 29.54,
+    "openai_asr": 1.53
+  }
+}
