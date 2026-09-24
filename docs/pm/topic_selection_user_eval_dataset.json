@@ -1,0 +1,593 @@
+{
+  "metadata": {
+    "evaluator": "User(shimomura055)",
+    "scale": "1-10",
+    "threshold_note": "5以上=現時点では採用可能相当",
+    "evaluation_target": "Topic + 現在付いているHook の総合評価(素材だけの評価ではない)",
+    "caveat": "5未満でもHookの付け方によって点数が上がる可能性がある。score<5→当該Topic類型を検索除外、のような機械利用は禁止",
+    "usage": "Search教師データとして使用可(素材が弱い/Hookが弱い/両方弱いを区別する教師データ)",
+    "production_status": "Production scoring ruleとしては未承認(NOT_APPROVED)",
+    "prompt_injection": "Hook生成・Selection Promptへ本datasetの点数・Hook・Reference Hookを直接投入することは禁止(汚染防止)",
+    "management_id": "NEWS-HOOK-MODEL-COMPARISON-01(保存時)",
+    "source_management_ids": {
+      "dataset_r": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02(Reference 20)",
+      "dataset_a": "NEWS-HOOK-MODEL-COMPARISON-01",
+      "dataset_b": "NEWS-HOOK-MODEL-COMPARISON-01"
+    },
+    "recorded_at": "2026-09-24",
+    "production_selection_rule_warning": "このUser Scoreから新しいProduction Selection Rule(「商品記事除外」「芸能除外」「5点以下カテゴリ検索除外」等)を自動生成することを禁止する。あくまで次のSearch Trial設計に使うEvidence。"
+  },
+  "dataset_r": [
+    {
+      "dataset_id": "R",
+      "item_no": 1,
+      "topic_ja": "MetaのAI「Muse」が電話代行の一部を人間スタッフに担当させる実験",
+      "hook_ja": "AIに店への電話を頼んだら、裏では人間が話していた？",
+      "user_score": 8,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 2,
+      "topic_ja": "AI企業トップが国連安保理で「AIが人間の制御を超える可能性」を議論",
+      "hook_ja": "AIの危険を話し合う場所が、ついに国連安保理になったのはなぜ？",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 3,
+      "topic_ja": "米中首脳会談でAI・貿易・安全保障が主要テーマに",
+      "hook_ja": "アメリカと中国は、なぜAIで\"別々の世界\"を作ろうとしている？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 4,
+      "topic_ja": "AIが癌治療を大きく変えるという期待と医師側の慎重論",
+      "hook_ja": "AIは本当に\"癌を治す\"ところまで来ている？",
+      "user_score": 8,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 5,
+      "topic_ja": "世界初、宇宙飛行中に診断用X線撮影に成功",
+      "hook_ja": "宇宙で骨折したら、どうやって病院に行く？",
+      "user_score": 5,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 6,
+      "topic_ja": "WHOが避妊方法について新推奨、将来の男性用避妊法にも言及",
+      "hook_ja": "避妊は、なぜ今も女性側の負担が大きい？",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 7,
+      "topic_ja": "日本で「秋になっていびきが増えた」と答える人が多い調査",
+      "hook_ja": "秋になると、いびきが増える人がいるのはなぜ？",
+      "user_score": 6,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 8,
+      "topic_ja": "日本で「睡眠障害」が診療科名として標榜可能に",
+      "hook_ja": "眠れないだけで、病院に行っていいの？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 9,
+      "topic_ja": "大谷翔平が負傷者リストから約2週間ぶりに復帰予定",
+      "hook_ja": "トップ選手は\"完全に治る\"まで待たずに、どう復帰を決める？",
+      "user_score": 6,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 10,
+      "topic_ja": "Threadsで「20年使えるカレンダー」を18年後に見返した投稿が14万回超表示",
+      "hook_ja": "20年前の\"未来\"を今見ると、何が一番変わって見える？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 11,
+      "topic_ja": "ローソンの「おかず1種類だけ」一点突破弁当がSNSで賛否",
+      "hook_ja": "おかずが1種類しかない弁当は、\"貧しい\"のか\"合理的\"なのか？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 12,
+      "topic_ja": "無印良品の小型保冷バッグがSNS・口コミで人気",
+      "hook_ja": "なぜ今、\"小さい保冷バッグ\"が欲しい人が増えている？",
+      "user_score": 5,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 13,
+      "topic_ja": "旅行用の圧縮ポーチが人気",
+      "hook_ja": "旅行の荷物は、なぜ毎回バッグいっぱいになる？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 14,
+      "topic_ja": "帝国ホテルの高級感あるエコバッグが話題",
+      "hook_ja": "ただのエコバッグに、人はなぜ\"高級感\"を求める？",
+      "user_score": 8,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 15,
+      "topic_ja": "XのAI界隈で「Jev」という意思決定特化型AIが急速に話題化",
+      "hook_ja": "AIは\"大きく賢くする\"より、仕事を一つに絞った方が速い？",
+      "user_score": 5,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 16,
+      "topic_ja": "日本香堂が日本の香文化ベースの香水をパリで世界展開",
+      "hook_ja": "日本の\"お香\"は、なぜ海外では香水になる？",
+      "user_score": 6,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 17,
+      "topic_ja": "ゲーム『アニモ』スマホ版配信開始、クロスプレイ対応",
+      "hook_ja": "ゲームはもう\"どのゲーム機を持っているか\"を気にしなくなる？",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 18,
+      "topic_ja": "米倉涼子が映画イベントで「指パッチン」のギネス記録",
+      "hook_ja": "\"指パッチン\"にも世界記録がある？",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 19,
+      "topic_ja": "旅行業界で「安さだけでは選ばれない」消費行動変化を議論",
+      "hook_ja": "旅行は安いほどいい――ではなくなっている？",
+      "user_score": 5,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    },
+    {
+      "dataset_id": "R",
+      "item_no": 20,
+      "topic_ja": "職場などに人工クラゲ水槽を置くサービス",
+      "hook_ja": "オフィスに\"偽物のクラゲ\"を置くと、本当に癒やされる？",
+      "user_score": 7,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 (Reference 20)",
+      "generated_by": "ChatGPT (Reference作成)"
+    }
+  ],
+  "dataset_a": [
+    {
+      "dataset_id": "A",
+      "item_no": 1,
+      "topic_ja": "AIに何を食べるか相談する人が増え、スナック選びまで変化",
+      "hook_ja": "今日のおやつまでAIに決めてもらう時代が来ている？",
+      "user_score": 6,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 2,
+      "topic_ja": "MetaのAIエージェント「Muse」が買い物・旅行予約などを代行",
+      "hook_ja": "検索する代わりに、AIに「全部やって」と頼む時代になる？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 3,
+      "topic_ja": "カメラを外したスマートグラスをMetaが投入",
+      "hook_ja": "スマートグラスから「カメラ」を外したら、逆に売れる？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 4,
+      "topic_ja": "AIエージェントが豪州政府サイトへ不正アクセス",
+      "hook_ja": "AIが自分で政府サイトに侵入する時代、誰が責任を取る？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 5,
+      "topic_ja": "ペットの気持ちをAIで推測する首輪型デバイス",
+      "hook_ja": "犬や猫の「今の気分」、AIなら本当に分かる？",
+      "user_score": 6,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 6,
+      "topic_ja": "秋になっていびきが増えた人が多いという調査",
+      "hook_ja": "秋になると、いびきが増える人がいるのはなぜ？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 7,
+      "topic_ja": "おにぎりブーム沈静化後も売れる店の仕掛け",
+      "hook_ja": "ただのおにぎりなのに、「わざわざ買いに行く店」は何が違う？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 8,
+      "topic_ja": "国道を題材にしたトレーディングカードが約10分で完売",
+      "hook_ja": "国道に「レアカード」を作ったら、10分で売り切れた？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 9,
+      "topic_ja": "会社の水・ティッシュを持ち帰る社員への対応",
+      "hook_ja": "会社のティッシュを家に持ち帰るのは、どこから「盗み」になる？",
+      "user_score": 7,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 10,
+      "topic_ja": "若手とベテランの間で職場の距離が広がる問題",
+      "hook_ja": "職場で「仲良くしない若者」は、本当に冷たいのか？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 11,
+      "topic_ja": "メールの返信忘れをAIで防ぐ活用法",
+      "hook_ja": "メールを返し忘れる人ほど、AIに任せた方がいい？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 12,
+      "topic_ja": "JCOM障害でネットだけでなくサポート窓口もつながりにくく",
+      "hook_ja": "ネットが落ちたとき、「問い合わせ先までつながらない」のはなぜ？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 13,
+      "topic_ja": "Appleがロンドンにライブ会場を開設",
+      "hook_ja": "Appleはなぜ、音楽配信会社なのに「ライブ会場」まで作る？",
+      "user_score": 3,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 14,
+      "topic_ja": "アジア大会の競歩コースにカラス約1000羽、鷹匠を投入",
+      "hook_ja": "競歩大会を守るために、1000羽のカラスと「タカ」が戦う？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 15,
+      "topic_ja": "クマが海を泳いで無人島へ上陸",
+      "hook_ja": "クマは海を泳いで、島まで渡れる？",
+      "user_score": 3,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 16,
+      "topic_ja": "「ダチョウが逃げた」と通報、実際は体長約2mのエミュー",
+      "hook_ja": "街に「ダチョウ」が出たと思ったら、別の鳥だった？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 17,
+      "topic_ja": "チーターの赤ちゃんを見るため約1700人が行列",
+      "hook_ja": "赤ちゃんチーターを見るために、なぜ1700人も並ぶ？",
+      "user_score": 4,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 18,
+      "topic_ja": "台風後に観光客が一気に戻る「リベンジ観光」",
+      "hook_ja": "雨で潰れた休日、人は次の日に「取り返すように」出かける？",
+      "user_score": 3,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 19,
+      "topic_ja": "カラスの巣は枝だけでなくハンガーなども利用",
+      "hook_ja": "カラスの巣をあまり見かけないのは、どこに隠しているから？",
+      "user_score": 3,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    },
+    {
+      "dataset_id": "A",
+      "item_no": 20,
+      "topic_ja": "中国の若者で交際・恋愛を避ける傾向",
+      "hook_ja": "恋愛まで「コスパが悪い」と思う若者が増えている？",
+      "user_score": 5,
+      "source_trial": "REPRO-01系 stepE_final_fix01相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "ChatGPT API Search"
+    }
+  ],
+  "dataset_b": [
+    {
+      "dataset_id": "B",
+      "item_no": 1,
+      "topic_ja": "立川談春、なりすまし投資勧誘に注意喚起",
+      "hook_ja": "本人に見える投資勧誘、信じる前に確認を——立川談春が「無視して」と呼びかけた理由。",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 2,
+      "topic_ja": "9月も汗ばむ暑さ、10月に秋の空気",
+      "hook_ja": "9月はまだ半袖、10月には秋服？衣替えの正解が「カレンダー通り」にならない理由。",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 3,
+      "topic_ja": "防災グッズ「さりげなく備える」売上1.3倍",
+      "hook_ja": "防災グッズは隠す時代から「普段使い」へ？売れ行きが伸びる用品の共通点。",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 4,
+      "topic_ja": "玄関ドアに100均フック収納",
+      "hook_ja": "玄関ドアが収納場所に変わる？100均フックで「置き場所がない」を解決する4つの使い方。",
+      "user_score": 2,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 5,
+      "topic_ja": "丸亀製麺10/1限定半額",
+      "hook_ja": "丸亀製麺の釜揚げうどんが190円から——10月1日だけ半額になる理由。",
+      "user_score": 1,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 6,
+      "topic_ja": "AIで鋼製シャフト疲労寿命予測",
+      "hook_ja": "40分かかる解析を約15秒に？",
+      "user_score": 2,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 7,
+      "topic_ja": "2000体エージェント「Fuga v2」",
+      "hook_ja": "AIを1体ではなく2000体動かす？",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 8,
+      "topic_ja": "100均マグネットでミニ紙袋収納",
+      "hook_ja": "捨てるはずのミニ紙袋が壁収納に？",
+      "user_score": 2,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 9,
+      "topic_ja": "コールマン小さめバッグがSNSで「ちょうどいい」",
+      "hook_ja": "リュックほど大げさでなく、水筒は入る——「小さめバッグ」がちょうどいい理由。",
+      "user_score": 4,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 10,
+      "topic_ja": "シャインマスカットはいつまで買える？",
+      "hook_ja": "シャインマスカットは、秋ならいつでも旬とは限らない？",
+      "user_score": 2,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 11,
+      "topic_ja": "ローソン今週の新商品・一点突破弁当等",
+      "hook_ja": "肉に振り切った弁当から海鮮焼そばまで——今週は「全部盛り」が目立つ。",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 12,
+      "topic_ja": "トイレに木板DIYでスマホ置き場",
+      "hook_ja": "トイレの「ちょい置き」を5分DIY",
+      "user_score": 2,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 13,
+      "topic_ja": "井上和香、インフルは大人の方がつらい",
+      "hook_ja": "子どもより大人のほうがつらい？インフルエンザから回復して感じた「ダメージ」。",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 14,
+      "topic_ja": "ローソン先行・森永こだわり食感",
+      "hook_ja": "今日は「カリッ」、別の日は「ザクザク」",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 15,
+      "topic_ja": "明治ミルクチョコのエコバッグ付録",
+      "hook_ja": "明治のチョコが食べ物ではなく付録に？",
+      "user_score": 3,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 16,
+      "topic_ja": "Driver Booster 14",
+      "hook_ja": "ゲームが起動しない原因を「DLL不足」から直す",
+      "user_score": 1,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    },
+    {
+      "dataset_id": "B",
+      "item_no": 17,
+      "topic_ja": "HDMI 2.2「Ultra 96」国内初",
+      "hook_ja": "映像ケーブルが最大96Gbps対応へ",
+      "user_score": 1,
+      "source_trial": "TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02 final_new相当",
+      "source_note": "ユーザー提示表を転記",
+      "generated_by": "Luna"
+    }
+  ],
+  "summary_observed_facts_only": {
+    "dataset_r": {
+      "n": 20,
+      "mean_score": 5.95,
+      "count_score_ge_5": 16
+    },
+    "dataset_a": {
+      "n": 20,
+      "mean_score": 4.5,
+      "count_score_ge_5": 10
+    },
+    "dataset_b": {
+      "n": 17,
+      "mean_score": 2.53,
+      "count_score_ge_5": 0
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "usd_to_jpy": 160,
+  "cost_ceiling_jpy": 100,
+  "by_model": {
+    "luna": {
+      "model_id_requested": "gpt-5.6-luna",
+      "actual_model_ids": [
+        "gpt-5.6-luna"
+      ],
+      "calls": 2,
+      "input_tokens": 3087,
+      "cached_input_tokens": 0,
+      "output_tokens": 3358,
+      "reasoning_tokens": 715,
+      "latency_seconds_by_stage": {
+        "luna_stage1": 17.368,
+        "luna_stage2": 23.882
+      },
+      "latency_seconds_total": 41.25,
+      "price_status": "KNOWN",
+      "price_source": "er005_output/cost_baseline_01/pricing_snapshot.json",
+      "total_usd": 0.00465,
+      "total_jpy": 0.74,
+      "per_hook_jpy": 0.037,
+      "monthly_estimate_jpy_20_hooks_x_30days": 22.2
+    },
+    "terra": {
+      "model_id_requested": "gpt-5.6-terra",
+      "actual_model_ids": [
+        "gpt-5.6-terra"
+      ],
+      "calls": 2,
+      "input_tokens": 3251,
+      "cached_input_tokens": 0,
+      "output_tokens": 3391,
+      "reasoning_tokens": 410,
+      "latency_seconds_by_stage": {
+        "terra_stage1": 17.121,
+        "terra_stage2": 21.216
+      },
+      "latency_seconds_total": 38.337,
+      "price_status": "UNKNOWN",
+      "price_note": "gpt-5.6-terraの単価がpricing_snapshot.jsonに無い。token数のみ記録(単価を捏造しない)。",
+      "price_probe_evidence": {
+        "attempted": true,
+        "fetch_url": "https://platform.openai.com/docs/pricing",
+        "fetched_at_jst_note": "2026-09-24 (本タスク実行時、curl -sLで1回取得)",
+        "resolution_status": "AMBIGUOUS_NOT_ADOPTED",
+        "reason": "ページ内に'gpt-5.6-terra'を含む数値セットが複数(4パターン)存在し、同時に含まれるgpt-5.6-sol/gpt-5.6-lunaの数値がどの候補も既存pricing_snapshot.json(OFFICIAL_SOURCE)の値と一致しなかった(tier/列構成が不明)。誤った単価を確定値として記録するリスクを避けるため、terra_price_status=UNKNOWNのまま採用しない。",
+        "raw_candidate_number_sets_usd_per_1M_tokens": {
+          "note": "各セット=[terra_input, terra_cached_input, terra_col3_unknown, terra_output](該当行の同時掲載sol/luna数値も既存snapshotと不一致だったため出典比較不能)",
+          "candidate_1": [
+            2,
+            0.2,
+            2.5,
+            12
+          ],
+          "candidate_2": [
+            1,
+            0.1,
+            1.25,
+            6
+          ],
+          "candidate_3": [
+            1,
+            0.1,
+            1.25,
+            6
+          ],
+          "candidate_4": [
+            4,
+            0.4,
+            5,
+            24
+          ]
+        }
+      }
+    },
+    "sol": {
+      "model_id_requested": "gpt-5.6-sol",
+      "actual_model_ids": [
+        "gpt-5.6-sol"
+      ],
+      "calls": 2,
+      "input_tokens": 3098,
+      "cached_input_tokens": 0,
+      "output_tokens": 3736,
+      "reasoning_tokens": 942,
+      "latency_seconds_by_stage": {
+        "sol_stage1": 21.196,
+        "sol_stage2": 26.127
+      },
+      "latency_seconds_total": 47.323,
+      "price_status": "KNOWN",
+      "price_source": "er005_output/cost_baseline_01/pricing_snapshot.json",
+      "total_usd": 0.12757,
+      "total_jpy": 20.41,
+      "per_hook_jpy": 1.02,
+      "monthly_estimate_jpy_20_hooks_x_30days": 612.0
+    }
+  },
+  "total_jpy_known_models_only": 21.15,
+  "within_cost_ceiling_known_models_only": true
+}
