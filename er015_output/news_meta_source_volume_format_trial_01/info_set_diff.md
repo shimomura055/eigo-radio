@@ -1,0 +1,37 @@
+# 条件3要点 vs 条件4 Ledger 情報集合差(機械抽出、観察事実のみ)
+
+{
+  "numbers_in_ledger_not_in_cond3": [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18"
+  ],
+  "numbers_in_cond3_not_in_ledger": [
+    "22",
+    "404"
+  ],
+  "proper_nouns_in_ledger_not_in_cond3": [],
+  "proper_nouns_in_cond3_not_in_ledger": [
+    "404 Media",
+    "MarketScreener",
+    "Reuters",
+    "about.fb.com",
+    "rolled back",
+    "契約スタッフ"
+  ],
+  "fact_block_count_ledger": 18
+}

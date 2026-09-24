@@ -2,6 +2,8 @@
 
 目標件数: 10 / 到達件数: 8
 
+**注記(fix01委任): 目標10記事に対し補充検索後も8記事にとどまった。委任文により10未満でもSTOPとせず、条件3・条件4は『8記事(目標10、到達8)』として続行する。**
+
 ## S01: MarketScreener(Reuters配信)
 
 - URL: https://www.marketscreener.com/news/meta-testing-a-human-concierge-for-its-new-personal-ai-agent-muse-ce785ad8de8cf025

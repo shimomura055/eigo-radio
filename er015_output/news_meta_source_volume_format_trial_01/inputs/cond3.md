@@ -1,0 +1,9 @@
+[N記事(目標10、到達8)]
+・(MarketScreener(Reuters配信)) Reuters(2026年9月22日、NEW YORK発)によると、Metaは個人向けAIエージェント「Muse」の電話代行機能について、一部の通話を人間の契約スタッフが裏で担当する「人間コンシェルジュ」の試験を社内で行っていたことが、Reutersが確認した社内投稿で判明した。従業員から通話内容の外部流出などプライバシー面の懸念が示され、Meta幹部はこの機能を一旦取りやめた(rolled back)と説明した。
+・(about.fb.com(Meta公式)) Metaは、目標達成を支援し、提案やタスク実行を行う個人向けAIエージェント「Muse」を発表した。Museは専用の「Muse Secure VM」上で動作し、メール送信や旅行予約、ブラウザ操作などを行うほか、重要な操作の前に本人の承認を求め、監査履歴も表示する。米国でiOS、Android、muse.ai向けに展開され、年内には本人だけが鍵を持つ「Muse Confidential VM」も導入予定。
+・(404 Media) MetaのAIエージェント「Muse」は、飲食店の予約などを代行する電話機能を発表したが、実際には訓練を受けた人間の担当者が電話をかける仕組みもテストしている。社内では、利用者の依頼や機密情報が人間に共有されることや、人間が電話した事実を利用者に事前に知らせていなかったことへの懸念が出ている。Metaは、公開前に安全性やプライバシー保護、適切な開示を整えるとしている。
+・(Meta's Muse AI calls businesses for you, sometimes with a human doing the talking | TechSpot) Metaは、個人向けAIエージェント「Muse」の通話機能で、AIの代わりに請負業者が企業へ電話する人間コンシェルジュを試験導入したが、明確な説明がなくプライバシー上の懸念が出たため、現在は撤回している。試験中には請負業者による人種差別的発言もあり、Metaは謝罪し、その担当者を同社のプロジェクトから外した。
+・(Meta testing a 'human concierge' for its new personal AI agent, Muse - The Business Times) Metaは、個人向けAIアシスタント「Muse」が電話をかける機能で、人間の契約作業員が一部の通話を代行する「人間コンシェルジュ」を試験していた。従業員から、通話中に機密情報が漏れる懸念や、人間作業員による差別的発言への指摘があり、Metaは適切な開示なしに試験を始めたとして機能をいったん停止した。
+・(Meta let human contractors quietly place some of Muse's AI calls | ANOTHER News) MetaのAIエージェント「Muse」が米国の事業者に電話する機能で、社内テスト中、一部の通話を人間の委託業者が密かに代行していたことが分かった。人間が通話すると成功率が95〜98％に上がる一方、個人情報の共有や不適切な発言への懸念が出たため、Metaは適切な開示なしに始めたテストをいったん撤回した。
+・(Meta is testing human callers behind its Muse AI agent, Reuters reports) Metaは、AIエージェント「Muse」が美容院などに電話する機能で、一部の通話を請負業者の人間オペレーターが引き継ぐ「人間コンシェルジュ」を従業員向けに試験している。社内では機密情報がコールセンター業者に伝わる懸念も出ており、Metaは一般公開前に安全性やプライバシー保護策を整えるとしている。
+・(Muse AI now hands over phone calls to human agents: Meta tests new feature in its personal assistant | Mint) Metaは、個人向けAIアシスタント「Muse」が一部の電話依頼を訓練を受けた人間の請負業者に引き継ぐ「ヒューマン・コンシェルジュ」機能を試験している。社内ではプライバシーへの懸念も出ており、Metaは一般公開前に安全性とプライバシー保護を改善し、適切な説明を行うとしている。
