@@ -3,10 +3,12 @@
 管理ID: `TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01`
 実行日: 2026-09-24(初回)/2026-09-24(修正1回目=再開、`.env`にJEV_API_KEY追加後)
 /2026-09-24(修正2回目=再開、ユーザー提示のJev公式API仕様で接続実装)
-Status: **USER_DECISION_REQUIRED**(修正2回目でJev接続自体には成功したが、
-60件一括抽出が429/502で解決せずSTOP。加えてLuna/Terra/Sol rerankの
-既存実装・既存Promptがrepo内に一切存在しないことが判明し、これも
-Fable/ユーザー判断が必要なスコープ外事項としてSTOP。詳細は§5・§12参照)
+/2026-09-24〜25(修正3回目=最終、ユーザー方針変更でJev正式DEFERRED、
+Luna/Terra/Sol 3-way rerankを新規実装・実行)
+Status: **USER_DECISION_REQUIRED**(修正3回目でLuna/Terra/Sol 3-way rerankを
+完了[全60件score取得・欠落なし・予算¥100内]。Jev armは公式access不可のため
+DEFERREDのまま。ユーザーが`USER_EVAL_RERANK_POOL.md`へ実評価するまで、
+どのモデルが最良かは判断しない。詳細は§4・§6〜§9・§12参照)
 Production変更: なし
 
 ## §1 Teacher Data確認
@@ -58,20 +60,52 @@ SSOT: `docs/pm/topic_selection_user_eval_dataset.json`。機械確認結果は
 
 ## §4 Prompt全文・model実値(L/T/S)
 
-**未実行、かつ実行不能(スコープ外)**。修正2回目の委任文は「前回設計どおり
-`--step rerank --arms L,T,S`」「Luna/Terra/Sol部分は変更しない」と指示して
-いるが、`er016_topic_selection_user_preference_rerank_trial_01.py`の
-`cmd_rerank`は過去2commit(`ad33fc4e`/`df0140ec`)を含め一貫して
-`arms[0]=="J"`のguardのみで、L/T/S用のPrompt文字列・rerank呼び出しロジックは
-**一度も実装されたことがない**(機械確認: `git show <commit>:<file> | grep`
-でL/T/S関連のPrompt定数・関数が存在しないことを確認)。「変更しない」対象と
-なる既存実装が存在しないため、新規にPrompt設計・実装することは本委任で
-指示された範囲(Jev client実装)を超える拡大と判断し、`cmd_rerank`は
-arms=L/T/Sを検知した時点で明示的なSTOPメッセージを出して終了するよう実装
-した(推測でPromptを新規作成することはしていない)。Fable/ユーザーの判断
-(誰がL/T/S Promptを設計するか)を仰ぐ。
+修正3回目委任文(`_fix03.md`)は、初回委任文`docs/pm/delegation_log/
+TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01.md`「STEP 3 Preference
+Prompt」節のdeveloper文・user文・JSON schemaを**逐語で実装せよ**と明示的に
+指示しており(§4で述べた過去の「既存実装が無いため新規設計はスコープ外」
+というSTOP判断は、この修正3回目委任により解消された)、新規設計ではなく
+既存の委任文本文をそのままコード化する作業として実装した。
+
+- developer(L/T/S共通、一字一句同一):
+  `You predict how much one specific listener would want to keep listening
+  to an English-learning news audio piece about each topic.`
+- user(L/T/S完全同一の1本のPromptを共有。地の文は委任文STEP 3を逐語転記し、
+  `[Rated examples]`にTeacher Data 57件[dataset_id/topic_ja/hook_ja/
+  user_scoreのJSON Lines]、`[Candidates]`にCandidate Pool 60件[id/topic_ja/
+  summary_ja/media(=source_name)のJSON Lines]を埋め込んだもの)。全文:
+  `er016_output/topic_selection_user_preference_rerank_trial_01/prompts/
+  rerank_lts_shared_prompt.json`
+- **3モデル入力文字列の完全同一性**: L/T/S各arm `api_meta.json`の
+  `prompt_user_sha256`はいずれも
+  `490c07d8f1c24a6f3b2a33e574178b1eb042c085728b53903ccdb91d984f7ddb`で一致
+  (機械確認済み)。
+- JSON schema(strict): `{"preference_summary": string, "predictions":
+  [{"id": string, "predicted_score": number, "reason": string}]}`
+  (`additionalProperties: false`、`required`全項目指定)
+- effort: `medium`(EFFORT_DEFAULT、L/T/S共通)。web_search機能は`call_model()`
+  に含めておらず未使用。
+- 60件は3モデルとも1 callで収まり、分割は発生しなかった。
+- `response.model`実値: L=`gpt-5.6-luna`、T=`gpt-5.6-terra`、S=`gpt-5.6-sol`
+  (いずれも`model_requested`と完全一致、`call_model()`内で不一致時は例外を
+  投げる設計のため不一致は発生し得ない)。
+- 60件すべてにscoreがあるか検証: L/T/Sいずれも初回callで60/60件取得、
+  欠落0件(再実行なし、`missing_ids_final=[]`)。
+- 詳細api_meta: `arms/{L,T,S}/api_meta.json`(response_id/usage/latency等)。
 
 ## §5 Jev設定・decision schema・接続確認・rate limit状況
+
+**修正3回目(2026-09-25)追記**: ユーザー方針変更により、Jev armは正式に
+**DEFERRED**となった。理由: TypeSafe公式Jevは現在新規登録不可・公式API
+access取得不可であり、非公式Jevサービス(`www.jevai.org`、下記参照)は
+比較対象に使用しない(ユーザー決定)。本委任ではJevへの接続・呼び出しは
+一切行っていない(`JEV_API_KEY`も読んでいない、`--env-file`未使用)。
+既存Jev client実装(`cmd_rerank_jev`/`call_jev`等)は削除せず保持し、
+`cmd_rerank`は`--arms`にJが含まれる場合、即座に`DEFERRED`メッセージを
+出して終了するようguardを更新した(`JEV_DEFERRED_MSG`)。以下は前回まで
+(修正2回目)のJev接続試行の履歴記録であり、Jev arm自体は今回未実施。
+詳細: `er016_output/topic_selection_user_preference_rerank_trial_01/
+jev_deferred.md`、`OPEN_ITEMS.md` OPEN-178。
 
 ### 初回実行時(key不在)
 - `JEV_API_KEY`環境変数: **存在しない**(`bool(os.environ.get("JEV_API_KEY"))=False`。
@@ -156,57 +190,106 @@ arms=L/T/Sを検知した時点で明示的なSTOPメッセージを出して終
 
 ## §6 各モデルTop20
 
-**未生成**(L/T/S/J全arm、`predictions.json`/`top20.json`ともに未生成)。
-参考値としてJevのC001〜C005のみ実測済み(`predicted_score_1_10`):
-C001=5.0, C002=5.19, C003=3.27, C004=3.88, C005=6.45(`jev_probe_batch5.json`)。
-これは5件のみのTop20相当ではなく、60件中の一部の実測に過ぎない。
+`arms/{L,T,S}/top20.json`より転記(id / predicted_score、降順)。
+
+**Arm L(Luna)Top20**: C028=8, C002=7, C005=7, C006=7, C009=7, C034=7,
+C042=7, C048=7, C049=7, C055=7, C001=6, C013=6, C021=6, C029=6, C032=6,
+C046=6, C052=6, C058=6, C010=5, C012=5
+
+**Arm T(Terra)Top20**: C002=7, C005=7, C042=7, C001=6, C006=6, C009=6,
+C021=6, C028=6, C029=6, C049=6, C052=6, C055=6, C003=5, C013=5, C018=5,
+C032=5, C033=5, C034=5, C046=5, C048=5
+
+**Arm S(Sol)Top20**: C042=7, C001=6, C002=6, C005=6, C009=6, C021=6,
+C028=6, C029=6, C048=6, C049=6, C055=6, C003=5, C018=5, C030=5, C034=5,
+C052=5, C006=4, C012=4, C013=4, C014=4
+
+Top10は各Top20の先頭10件(`arms/{L,T,S}/top10.json`にも個別保存)。
 
 ## §7 全件predicted score表
 
-**未生成**(60件抽出が§5の理由でSTOPしたため)。
+60件全件×3モデル(L/T/S)のpredicted_score一覧表: `er016_output/
+topic_selection_user_preference_rerank_trial_01/predicted_scores_all.md`
+(`--step assemble`で生成、`cmd_assemble`)。各arm個別の全件データは
+`arms/{L,T,S}/predictions.json`(id/predicted_score/reason)。
 
 ## §8 モデル間一致率
 
-**未計算**(同上)。
+`model_agreement.md`より(3ペア、Top20/Top10重複数、全60件Spearman):
+
+| ペア | Top20重複 | Top10重複 | Spearman(n=60) |
+|---|---|---|---|
+| L vs T | 17/20 | 7/10 | 0.9119 |
+| L vs S | 16/20 | 7/10 | 0.8684 |
+| T vs S | 17/20 | 9/10 | 0.9063 |
+
+3モデルとも高い相関(Spearman 0.87〜0.91)・高いTop20重複(16〜17/20)を
+示しており、L/T/S間でのモデル差は大きくない(ただしこれはモデル自身の
+predicted_score同士の一致率であり、ユーザーの実評価との一致とは別。
+モデル自身のscoreだけで勝敗を決めない設計、§11参照)。
 
 ## §9 cost・latency
 
-- 開始前概算: Search≤¥30、Reranking主費用(Luna/Terra/Sol各1 call+Jev)を
-  想定していたが、L/T/Sのスコープ問題とJevの60件抽出STOPによりreranking
-  自体を完了できていない。
-- OpenAI実績: pool step(Source Gate Luna分類4 call+contamination判定1
-  call、計6 call、全てgpt-5.6-luna)のみで **¥2.93**(変更なし、今回追加
-  call無し)。
-- Jev実績: 合計3回のJev call成功(1件probe+5件probe+N=20 batch_00)+
-  複数回の失敗call(429/502、課金対象か不明)。usage/costフィールドが
-  応答に一切含まれないため **`jev_cost_status="Jev cost UNKNOWN"`**
-  (`cost_estimate.json`)。合計費用は¥2.93(OpenAI分)+Jev分UNKNOWN。
-  ¥150予算に対し、判明している範囲では大幅に余裕がある。
-- latency実測(成功call): jev-probe 843.3ms、jev-probe-batch5 789.6ms
-  (429×2の待機時間[計10秒]は別途)、rerank batch_00(N=20、1回目成功分)は
-  429×2待機後success。失敗call(502)は500ms前後で即時応答(Cloudflareの
-  ゲートウェイ層で拒否されているため)。
+- 開始前(本Trial全体の)概算: Search≤¥30、Reranking主費用(Luna/Terra/Sol
+  各1 call+Jev)を想定。修正3回目ではJev armはDEFERREDのためL/T/S各1 call
+  のみ実施。
+- L/T/S実績(`arms/{L,T,S}/api_meta.json`、`response.model`実値は
+  `model_requested`と完全一致):
+  - L(`gpt-5.6-luna`): input=12,364 / output=2,669 / total=15,033 tokens、
+    elapsed=24.453秒、response_id=`resp_086acac1bba50ec1006ab5a28a70fc87d0b7e55ec41bbad081`
+  - T(`gpt-5.6-terra`): input=12,364 / output=2,941 / total=15,305 tokens、
+    elapsed=34.775秒、response_id=`resp_0975e1a7bbd564cd006ab5a2a2069087d09e70ea5e2acdc7ce`。
+    **Terra単価はpricing_snapshot.jsonにUNKNOWN**(`gpt-5.6-terra`の価格行が
+    存在しない。過去のcurl調査[`er016_news_hook_model_comparison_01.py`
+    `TERRA_PRICE_PROBE_EVIDENCE`]でも複数候補間の不一致により未確定)。
+    JPY算出はできず、tokens実測のみ記録。
+  - S(`gpt-5.6-sol`): input=12,364 / output=3,190 / total=15,554 tokens、
+    elapsed=37.364秒、response_id=`resp_0f9e770a45b38e78006ab5a2c4dde087d0beba04245779f12e`
+  - 3 arm入力token数が完全一致(12,364)している点は、§4の
+    `prompt_user_sha256`一致(=入力文字列完全同一)と整合する。
+- 費用(`cost_estimate.json`、known price modelsのみ合算): Luna実績合計
+  ¥3.836352(pool step計6 call+rerank_L 1 call、計7 call)、Terra=1 call
+  UNKNOWN_PRICING(合算対象外)、Sol実績合計¥25.2032(rerank_S 1 call)。
+  **合計(known models)= ¥29.04**、予算¥100以内(within_budget=true)。
+  Jev実績: 本Trialでは新規callなし(`jev_cost_status="Jev cost UNKNOWN"`
+  のまま、前回までの履歴分のみ§5参照)。
+- **修正3回目で発見・修正した集計バグ**: `cmd_cost_estimate`(旧実装)は
+  `raw_usage_log.jsonl`の`model_id`フィールドではなく存在しない`model`
+  フィールドを参照していたため、常に`None`→`MODEL_LUNA`へフォールバック
+  し、Terra/Sol呼び出しの実績costをLuna単価で誤集計する潜在バグがあった
+  (これまでLuna単発callのみで運用されていたため顕在化していなかった)。
+  本Trial実行中に発覚し、`e.get("model_id") or e.get("model") or
+  MODEL_LUNA`へ修正した上で全costを再計算した(上記数値は修正後の正しい値。
+  budget-jpy STOPチェック自体は修正前でも実行時の合計¥100を超えておらず、
+  実害[予算超過を見逃す等]は発生していない)。
+- latency: L=24.5秒、T=34.8秒、S=37.4秒(いずれも1 callのみ、リトライなし)。
 
 ## §10 ブラインド一覧・評価scriptの所在
 
 - ブラインド一覧: `C:\Users\tensh\eigo-radio\USER_EVAL_RERANK_POOL.md`
-  (60件、ランダム順、モデルscore・順位・理由は含まない)
-- 対応表: `C:\Users\tensh\eigo-radio\er016_output\topic_selection_user_preference_rerank_trial_01\user_eval_id_map.json`
-- 評価script: `C:\Users\tensh\eigo-radio\er016_rerank_eval_01.py`
-- dry-run結果(ダミーpredicted_score/user_scoreによる動作確認専用、
+  (60件、ランダム順、モデルscore・順位・理由は含まない)。**修正3回目でも
+  無変更**(commit差分なしをgit diffで確認)。
+- 対応表: `C:\Users\tensh\eigo-radio\er016_output\topic_selection_user_preference_rerank_trial_01\user_eval_id_map.json`(無変更)
+- 評価script: `C:\Users\tensh\eigo-radio\er016_rerank_eval_01.py`(**無変更**、
+  委任文の「再作成禁止・そのまま使用」対象)
+- dry-run再実行結果(ダミーuser_score、L/T/Sは今回生成した実predicted_score、
+  Jは依然predictions.json未生成のためdummy predicted_scoreで動作確認のみ、
   Trial評価としては扱わない):
   `er016_output/topic_selection_user_preference_rerank_trial_01/eval_results_DRYRUN.md`
-  でPearson/Spearman/Top20・Top10 5点以上率/Recall/Top20内3点以下件数が
-  全arm分正しく計算されることを確認済み。
+  でL/T/S/J全arm分のPearson/Spearman/Top20・Top10 5点以上率/Recall/Top20内
+  3点以下件数が正しく計算され、スクリプトが無変更のまま動作することを確認済み。
 
 ## §11 評価方法(ユーザー評価取得後)
 
 `er016_rerank_eval_01.py --out-dir <dir> --user-scores <id→scoreのjson>`
 (dry-runなし)を実行し、各モデル(arms/{L,T,S,J}/predictions.jsonが存在する
 場合のみ)についてPearson/Spearman相関、Top20内5点以上率、Top10内5点以上率、
-ユーザー7点以上のRecall、Top20内3点以下件数を算出する。ただし本Trialは
-Jev arm実施不能によりSTOPしており、現時点でpredictions.jsonは1件も
-存在しない(arms/フォルダ自体未作成)。
+ユーザー7点以上のRecall、Top20内3点以下件数を算出する。修正3回目時点で
+`arms/L`・`arms/T`・`arms/S`のpredictions.jsonは生成済み(§4・§6・§7)。
+`arms/J`は§5のとおりJev armがDEFERREDのため生成されていない
+(4-way目のJ列は今後access取得時のみ追加可能)。ユーザーが
+`USER_EVAL_RERANK_POOL.md`へ実評価するまで、上記コマンドの実評価(dry-run
+なし)は実行していない。
 
 ## §12 Limitation
 
@@ -215,29 +298,19 @@ Jev arm実施不能によりSTOPしており、現時点でpredictions.jsonは1�
   当該Topic類型を検索除外、のような機械利用は禁止」「評価対象はTopic+Hook
   の総合」)。本Trialが測っているのは「Hook前のTopic Selectionとして、
   誰がユーザー嗜好を最も理解できるか」の一側面のみ。
-- **L/T/S(Luna/Terra/Sol)rerankの既存実装・既存Promptがrepo内に一切
-  存在しない**ことが今回判明した。過去2commitとも`cmd_rerank`はJev arm用
-  guardのみでL/T/S分岐が未実装であり、「前回設計どおり」という委任文の
-  前提が事実と異なっていた。新規にPromptを設計することは本委任(Jev client
-  実装)の指示範囲を超えるため実施していない。4-way比較を行うには、まず
-  L/T/S用のrerank Prompt設計を別途Fable/ユーザーが決定する必要がある。
-- **Jevの60件一括抽出(rerank --arms J)が429/502で完了しなかった**。
-  単発・5件は成功したが、10件以上のquestionsをまとめて送るcallが
-  Cloudflare層の502または429で繰り返し失敗した(N=20/N=10、計4回の
-  独立試行、時間を空けた再試行を含む)。原因はコミュニティサイト側の
-  レート制限・処理能力の可能性が高いが、docsに仕様記載が無いため確定
-  できない。より小さいbatch(例: N=5、5件probeで実績あり)であれば成功
-  する可能性が高いが、60÷5=12 callとなり、本委任のwarn基準
-  (残りcall数<=15なら続行)は満たすため次回試行の選択肢になり得る
-  (今回は独自判断で追加のbatch size変更試行を続けることはせず、
-  USER_DECISION_REQUIREDとして報告する)。
-- `www.jevai.org`は自称「community site、not the official product site」
-  であることがページ自身の記述から判明した(§5参照)。ユーザー提示の
-  接続仕様とdocs記載は完全一致しているため接続自体は継続したが、
-  Jev/TypeSafe AI社の"公式"APIとして扱ってよいかはユーザー確認が望ましい
-  (Open Item候補)。
-- 上記2点(L/T/Sの未実装・Jev大量callの不安定性)により、4-way比較・
-  モデル間一致率算出は本セッションでは完了していない。
+- **モデル自身のpredicted_score同士の一致(§8)だけで勝敗を決めない**。
+  L/T/S間のSpearman相関は0.87〜0.91と高いが、これは3モデルが互いに似た
+  判断をしていることを示すのみで、実際のユーザー嗜好との一致度(§11、
+  ユーザー評価取得後)とは独立した指標である。
+- **Jev armはDEFERRED**(§5・OPEN-178)。TypeSafe公式Jevが新規登録不可の
+  ため、公式Jevとの比較は今回実施できていない。非公式wrapperを比較対象に
+  使わない方針のため、access取得までJevとの比較データは存在しない。
+- 60件のCandidate Poolはユーザーの既存Search Trial成果物から構成されて
+  おり(§2)、RERANK方式そのものの評価とは別に、Poolの元となったSearch
+  品質自体の限界(OPEN-174の広告混入問題等)は本Trialの範囲外。
+- §9で記録したとおり、Terra単価はpricing_snapshot.jsonにUNKNOWNのまま
+  未確定であり、Terra分のJPYコストは今回もtokens実測のみで確定額を出せて
+  いない。
 
 ## §13 Fable記入欄
 
@@ -246,9 +319,13 @@ Jev arm実施不能によりSTOPしており、現時点でpredictions.jsonは1�
 ## §14 Production変更なし
 
 本Trialは`er016_topic_selection_user_preference_rerank_trial_01.py`
-(新規)、`er016_rerank_eval_01.py`(新規)、`er016_output/
+(既存Trialスクリプトへの追記。`verify-fixed`step追加、L/T/S rerank実装
+`cmd_rerank_lts`追加、`cmd_assemble`をL/T/S 3arm対応へ更新、Jev arm
+guardをDEFERRED即終了へ更新、cost集計の`model_id`フィールド参照バグ修正)、
+`er016_rerank_eval_01.py`(無変更、再実行のみ)、`er016_output/
 topic_selection_user_preference_rerank_trial_01/`配下の成果物のみを
-生成した。daily runner・er011_*/er014_*等のProduction正式pathは一切
-変更していない。既存script(search_trial_03/reference_process_trial_01/
+生成・更新した。daily runner・er011_*/er014_*等のProduction正式pathは
+一切変更していない。既存script(search_trial_03/reference_process_trial_01/
 chatgpt_repro_01/chatgpt_repro_01_cont02)もimport/readのみで無変更。
-SSOT(`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`)への追記なし。
+SSOT追記は`OPEN_ITEMS.md`のみ(OPEN-178: Jev DEFERRED記録、OPEN-179: 旧Trial
+USER_DECISION_REQUIRED整理)。`CURRENT_SPEC.md`/`DECISION_LOG.md`は無変更。

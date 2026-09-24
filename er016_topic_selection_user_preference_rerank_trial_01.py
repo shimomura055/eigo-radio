@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import hashlib
+import itertools
 import json
 import os
 import re
@@ -334,6 +335,88 @@ def jev_score_to_1_10(raw_score) -> float | None:
         return round(float(raw_score) + 1, 4)
     except (TypeError, ValueError):
         return None
+
+
+# ------------------------------------------------------------
+# Preference Prompt (Luna/Terra/Sol、fix03委任文STEP 3の逐語)
+# ------------------------------------------------------------
+PREFERENCE_DEVELOPER = (
+    "You predict how much one specific listener would want to keep "
+    "listening to an English-learning news audio piece about each topic."
+)
+
+PREFERENCE_SCHEMA = {
+    "name": "preference_rerank",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "preference_summary": {"type": "string"},
+            "predictions": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string"},
+                        "predicted_score": {"type": "number"},
+                        "reason": {"type": "string"},
+                    },
+                    "required": ["id", "predicted_score", "reason"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["preference_summary", "predictions"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+
+def build_preference_user(teacher_items: list, pool_sorted: list) -> str:
+    """委任文STEP 3のuser Promptを逐語構築する(地の文は一字一句そのまま、
+    [Rated examples]/[Candidates]のみ実データのJSON Linesで埋める)。
+    """
+    rated_lines = [
+        json.dumps({
+            "dataset_id": it.get("dataset_id"),
+            "topic_ja": it.get("topic_ja"),
+            "hook_ja": it.get("hook_ja"),
+            "user_score": it.get("user_score"),
+        }, ensure_ascii=False)
+        for it in teacher_items
+    ]
+    cand_lines = [
+        json.dumps({
+            "id": c["id"],
+            "topic_ja": c.get("topic_ja"),
+            "summary_ja": c.get("summary_ja"),
+            "media": c.get("source_name"),
+        }, ensure_ascii=False)
+        for c in pool_sorted
+    ]
+    return (
+        "Below are 57 topics that this listener has already rated from 1 "
+        "(would not want to listen) to 10 (would definitely want to "
+        "listen). Each item shows the topic, the hook that was attached at "
+        "the time, and the listener's score. Note: the score reflects the "
+        "topic together with that hook, so a low score does not always "
+        "mean the topic itself is bad.\n\n"
+        "[Rated examples]\n"
+        + "\n".join(rated_lines) + "\n\n"
+        "First, in 5–8 sentences, describe in your own words what "
+        "separates the topics this listener rates high from the ones they "
+        "rate low. Do not use a fixed checklist; infer it from the "
+        "examples.\n\n"
+        "Then, for each candidate below, predict the score this listener "
+        "would give it as a topic for an English-learning news audio piece "
+        "(1–10), and give one short reason. Predict the listener's "
+        "wish to keep listening — not the topic's social importance "
+        "or news value.\n\n"
+        "[Candidates]\n"
+        + "\n".join(cand_lines) + "\n\n"
+        'Return JSON: {"preference_summary": string, "predictions": '
+        '[{"id": string, "predicted_score": number, "reason": string}]}.'
+    )
 
 
 # ------------------------------------------------------------
@@ -973,6 +1056,53 @@ def cmd_pool(args):
 
 
 # ------------------------------------------------------------
+# verify-fixed (fix03委任文: 再作成禁止の固定物を機械再確認)
+# ------------------------------------------------------------
+def cmd_verify_fixed(args):
+    out_dir = args.out_dir
+    pool_path = out_path(out_dir, "candidate_pool.json")
+    sha_path = out_path(out_dir, "candidate_pool_sha256.json")
+    if not os.path.exists(pool_path) or not os.path.exists(sha_path):
+        raise SystemExit(
+            "STOP: candidate_pool.json/candidate_pool_sha256.jsonが存在しない"
+            "(既存Poolを再作成せず使うのが前提のため、無ければ先に--step pool "
+            "を実行済みの出力を確認すること)。"
+        )
+    pool = load_json(pool_path)
+    recomputed_pool_sha = hashlib.sha256(
+        json.dumps(pool, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    recorded_pool_sha = load_json(sha_path)["sha256"]
+    pool_sha_match = recomputed_pool_sha == recorded_pool_sha
+    pool_n_ok = len(pool) == 60
+
+    d = load_json(TEACHER_PATH)
+    teacher_n = sum(len(d.get(k, [])) for k in ("dataset_r", "dataset_a", "dataset_b"))
+    teacher_ok = teacher_n == 57
+
+    ok = pool_sha_match and pool_n_ok and teacher_ok
+    result = {
+        "pool_sha256_recorded": recorded_pool_sha,
+        "pool_sha256_recomputed": recomputed_pool_sha,
+        "pool_sha256_match": pool_sha_match,
+        "pool_n": len(pool),
+        "pool_n_ok": pool_n_ok,
+        "teacher_total_n": teacher_n,
+        "teacher_ok": teacher_ok,
+        "overall_ok": ok,
+        "checked_at_jst": datetime.now(JST).isoformat(),
+    }
+    save_json(out_path(out_dir, "verify_fixed.json"), result)
+    print(f"[{'OK' if ok else 'STOP'}] verify-fixed: pool_sha_match="
+          f"{pool_sha_match} pool_n={len(pool)} teacher_n={teacher_n}")
+    if not ok:
+        raise SystemExit(
+            f"STOP: verify-fixed不一致(委任文STOP条件『Candidate Poolが変わる/"
+            f"Teacher Dataが変わる』に該当)。詳細={result}"
+        )
+
+
+# ------------------------------------------------------------
 # cost-estimate
 # ------------------------------------------------------------
 def _price(pricing, provider, model, meter):
@@ -984,8 +1114,12 @@ def _price(pricing, provider, model, meter):
         return None
 
 
-def cmd_cost_estimate(args):
-    out_dir = args.out_dir
+def compute_actual_cost_jpy(out_dir: str) -> dict:
+    """raw_usage_log.jsonl(THEME_TAG分)から実績costを集計する。単価が
+    pricing_snapshot.jsonに無いモデル(Terra等)はjpyを合計へ含めず
+    'UNKNOWN_PRICING'として件数のみ記録する(捏造しない)。cmd_cost_estimate
+    と--step rerank(L/T/S)の予算上限チェックの両方から呼ばれる共通ロジック。
+    """
     pricing = load_json("er005_output/cost_baseline_01/pricing_snapshot.json")["prices"]
 
     def model_prices(model_name):
@@ -1010,7 +1144,12 @@ def cmd_cost_estimate(args):
     for e in entries:
         if e.get("provider") != "openai" or not e.get("success", True):
             continue
-        model_name = e.get("model") or MODEL_LUNA
+        # 注記(2026-09-25実測で発覚・修正): er005_cost_logger.record()は
+        # モデルIDを"model_id"キーで書き込む("model"キーは存在しない)。旧
+        # 実装はe.get("model")を参照しており常にNoneとなりMODEL_LUNAへ
+        # フォールバックしていたため、Terra/Sol呼び出しの実績costがLuna単価
+        # で誤集計されていた(Luna単発callのみだった従来利用では顕在化せず)。
+        model_name = e.get("model_id") or e.get("model") or MODEL_LUNA
         prices = model_prices(model_name)
         if any(p is None for p in prices):
             by_model.setdefault(model_name, {"calls": 0, "jpy": "UNKNOWN_PRICING"})
@@ -1031,6 +1170,16 @@ def cmd_cost_estimate(args):
         entry["jpy"] += jpy
         total_jpy += jpy
 
+    return {"total_jpy_known_models_only": round(total_jpy, 2), "by_model": by_model}
+
+
+def cmd_cost_estimate(args):
+    out_dir = args.out_dir
+    cost = compute_actual_cost_jpy(out_dir)
+    total_jpy = cost["total_jpy_known_models_only"]
+    by_model = cost["by_model"]
+    budget = getattr(args, "budget_jpy", BUDGET_JPY)
+
     jev_cost_status = "NOT_YET_PROBED"
     batch5_path = out_path(out_dir, "jev_probe_batch5.json")
     if os.path.exists(batch5_path):
@@ -1038,18 +1187,21 @@ def cmd_cost_estimate(args):
         jev_cost_status = b5.get("usage_status", "UNKNOWN")
 
     result = {
-        "budget_jpy": BUDGET_JPY,
-        "actual_so_far_jpy": round(total_jpy, 2),
+        "budget_jpy": budget,
+        "actual_so_far_jpy": total_jpy,
         "by_model": by_model,
         "jev_cost_status": jev_cost_status,
-        "within_budget": total_jpy <= BUDGET_JPY,
-        "note": "OpenAI課金分(pool step他)の実績。Jevはresponseにusage/cost"
-                "フィールドが無い場合jev_cost_statusに'Jev cost UNKNOWN'を"
-                "記録する(APIキー課金体系は別途ユーザー確認が必要)。",
+        "within_budget": total_jpy <= budget,
+        "note": "OpenAI課金分(pool step・rerank L/T/S等)の実績(known price "
+                "modelsのみ合算)。Terra等、pricing_snapshot.jsonに単価が無い"
+                "モデルはjpyへ含めず'UNKNOWN_PRICING'として件数のみ記録する"
+                "(捏造しない)。Jevはresponseにusage/costフィールドが無い場合"
+                "jev_cost_statusに'Jev cost UNKNOWN'を記録する(本Trialでは"
+                "Jev armはDEFERRED、新規callは発生しない)。",
     }
     save_json(out_path(out_dir, "cost_estimate.json"), result)
-    print(f"[OK] cost-estimate: actual_so_far={round(total_jpy,2)} JPY "
-          f"(budget={BUDGET_JPY}) jev_cost_status={jev_cost_status}")
+    print(f"[OK] cost-estimate: actual_so_far={total_jpy} JPY "
+          f"(budget={budget}) jev_cost_status={jev_cost_status}")
 
 
 # ------------------------------------------------------------
@@ -1162,63 +1314,216 @@ def cmd_rerank_jev(args):
           f"{len(batch_meta)} batch、top20保存。")
 
 
+JEV_DEFERRED_MSG = (
+    "DEFERRED: Jev armは2026-09-25のユーザー方針変更により正式にDEFERRED。"
+    "理由: TypeSafe公式Jevは現在新規登録不可・公式API access取得不可であり、"
+    "非公式Jevサービス(www.jevai.org)は比較対象に使用しない。既存Jev client"
+    "実装(cmd_rerank_jev/call_jev等)は削除せず保持するが、このguardにより "
+    "--arms にJを含む呼び出しは即座に終了しJevへは接続しない。access取得後、"
+    "同じ60件Pool・同じTeacher Data・同じ評価条件で追加測定可能。詳細は "
+    "jev_deferred.md参照。"
+)
+
+
+def cmd_rerank_lts(args, arms: list):
+    """Luna/Terra/Sol(L/T/S)のrerank(fix03委任文STEP 3逐語Prompt)。"""
+    out_dir = args.out_dir
+    budget_jpy = args.budget_jpy
+    install_logger(out_dir)
+
+    model_map = {"L": MODEL_LUNA, "T": MODEL_TERRA, "S": MODEL_SOL}
+    unknown_arms = [a for a in arms if a not in model_map]
+    if unknown_arms:
+        raise SystemExit(f"STOP: 未対応のarm指定: {unknown_arms}(対応: L,T,S)")
+
+    pool = load_json(out_path(out_dir, "candidate_pool.json"))
+    pool_sha = load_json(out_path(out_dir, "candidate_pool_sha256.json"))["sha256"]
+    pool_sorted = sorted(pool, key=lambda c: c["id"])
+    teacher = build_teacher_state()["preference_examples"]
+    prompt_user = build_preference_user(teacher, pool_sorted)
+    prompt_sha256 = hashlib.sha256(prompt_user.encode("utf-8")).hexdigest()
+    save_json(out_path(out_dir, "prompts", "rerank_lts_shared_prompt.json"), {
+        "developer": PREFERENCE_DEVELOPER,
+        "user": prompt_user,
+        "user_sha256": prompt_sha256,
+        "note": "L/T/Sで完全同一の入力文字列(sha256一致で保証)。",
+    })
+
+    client = None
+    for arm in arms:
+        arm_dir = out_path(out_dir, "arms", arm)
+        pred_path = os.path.join(arm_dir, "predictions.json")
+        if skip_if_exists(pred_path, args.force):
+            continue
+
+        cost_so_far = compute_actual_cost_jpy(out_dir)["total_jpy_known_models_only"]
+        if cost_so_far >= budget_jpy:
+            raise SystemExit(
+                f"STOP: 予算上限到達(budget_jpy={budget_jpy}, "
+                f"actual_so_far_jpy={cost_so_far})。arm={arm}の呼び出し前に停止"
+                "(委任文STOP条件『¥100超過見込み』)。"
+            )
+        if client is None:
+            client = get_client()
+        model_id = model_map[arm]
+        t0 = time.time()
+        resp = call_model(client, PREFERENCE_DEVELOPER, prompt_user,
+                           schema=PREFERENCE_SCHEMA, stage=f"rerank_{arm}",
+                           model=model_id, effort=EFFORT_DEFAULT)
+        elapsed = time.time() - t0
+        data = json.loads(resp.output_text)
+        preds = data.get("predictions", [])
+        pool_ids = {c["id"] for c in pool_sorted}
+        got_ids = {p.get("id") for p in preds}
+        missing_ids = sorted(pool_ids - got_ids)
+
+        retry_note = None
+        if missing_ids:
+            print(f"[RETRY] arm={arm}: {len(missing_ids)}件score欠落。同一Prompt"
+                  "で1回のみ再実行。")
+            t1 = time.time()
+            resp_retry = call_model(client, PREFERENCE_DEVELOPER, prompt_user,
+                                     schema=PREFERENCE_SCHEMA,
+                                     stage=f"rerank_{arm}_retry",
+                                     model=model_id, effort=EFFORT_DEFAULT)
+            elapsed_retry = time.time() - t1
+            data_retry = json.loads(resp_retry.output_text)
+            preds_retry = data_retry.get("predictions", [])
+            got_ids_retry = {p.get("id") for p in preds_retry}
+            still_missing = sorted(pool_ids - got_ids_retry)
+            retry_note = {
+                "reason": "初回callで60件中一部score欠落",
+                "first_call_missing_ids": missing_ids,
+                "first_call_missing_n": len(missing_ids),
+                "retry_call_missing_ids": still_missing,
+                "retry_call_missing_n": len(still_missing),
+                "retry_elapsed_seconds": round(elapsed_retry, 3),
+            }
+            if len(got_ids_retry) >= len(got_ids):
+                data, preds, resp, elapsed = data_retry, preds_retry, resp_retry, elapsed_retry
+                missing_ids = still_missing
+
+        os.makedirs(arm_dir, exist_ok=True)
+        save_json(pred_path, preds)
+        ranked = sorted(
+            [p for p in preds if isinstance(p.get("predicted_score"), (int, float))],
+            key=lambda p: p["predicted_score"], reverse=True,
+        )
+        save_json(os.path.join(arm_dir, "top20.json"), ranked[:20])
+        save_json(os.path.join(arm_dir, "top10.json"), ranked[:10])
+        with open(os.path.join(arm_dir, "preference_summary.txt"),
+                  "w", encoding="utf-8") as f:
+            f.write(data.get("preference_summary", ""))
+        save_json(os.path.join(arm_dir, "api_meta.json"), response_meta(resp, {
+            "arm": arm,
+            "model_requested": model_id,
+            "effort": EFFORT_DEFAULT,
+            "prompt_user_sha256": prompt_sha256,
+            "pool_sha256": pool_sha,
+            "elapsed_seconds": round(elapsed, 3),
+            "n_candidates": len(pool_sorted),
+            "n_predictions": len(preds),
+            "missing_ids_final": missing_ids,
+            "retry": retry_note,
+        }))
+        cost_after = compute_actual_cost_jpy(out_dir)["total_jpy_known_models_only"]
+        print(f"[OK] rerank arm={arm} model_requested={model_id} "
+              f"model_actual={resp.model} n_predictions={len(preds)} "
+              f"missing_final={len(missing_ids)} cost_so_far_jpy={cost_after}")
+
+
 def cmd_rerank(args):
     out_dir = args.out_dir
     arms = [a for a in args.arms.split(",") if a]
-    if arms == ["J"]:
-        cmd_rerank_jev(args)
-        return
-    if "J" in arms and arms[0] != "J":
-        raise SystemExit("STOP: armsにJを含む場合は先頭がJである必要がある(委任文指定)。")
-    if any(a in ("L", "T", "S") for a in arms):
-        missing_dirs = [
-            a for a in ("L", "T", "S")
-            if a in arms and not os.path.exists(
-                out_path(out_dir, "arms", a, "predictions.json"))
-        ]
-        raise SystemExit(
-            "STOP(スコープ外の実装が必要): Luna/Terra/Sol(L/T/S)のrerank "
-            "Prompt・実装は本リポジトリに一切存在しない(過去commit "
-            "ad33fc4e/df0140ec のcmd_rerankもarms=Jのguardのみで、L/T/S "
-            "は未実装)。委任文は『前回設計どおり --step rerank --arms L,T,S』"
-            "『Luna/Terra/Sol部分は変更しない』と指示しているが、変更しない"
-            "対象となる既存実装・既存Promptが存在しないため、新規に設計する"
-            "ことは本委任の指示された範囲を超える(Fable/ユーザー判断が必要"
-            f"な拡大)。未実装のarm: {missing_dirs}。Jev arm(--arms J)のみ"
-            "実行済み。"
-        )
+    if "J" in arms:
+        print(f"[DEFERRED] {JEV_DEFERRED_MSG}")
+        raise SystemExit(1)
+    cmd_rerank_lts(args, arms)
+
+
+def spearman_all(xs: list, ys: list):
+    n = len(xs)
+    if n < 2:
+        return None
+
+    def rank(vals):
+        order = sorted(range(len(vals)), key=lambda i: vals[i])
+        ranks = [0.0] * len(vals)
+        i = 0
+        while i < len(order):
+            j = i
+            while j + 1 < len(order) and vals[order[j + 1]] == vals[order[i]]:
+                j += 1
+            avg_rank = (i + j) / 2 + 1
+            for k in range(i, j + 1):
+                ranks[order[k]] = avg_rank
+            i = j + 1
+        return ranks
+
+    rx, ry = rank(xs), rank(ys)
+    d2 = sum((a - b) ** 2 for a, b in zip(rx, ry))
+    return round(1 - (6 * d2) / (n * (n ** 2 - 1)), 4)
 
 
 def cmd_assemble(args):
     out_dir = args.out_dir
-    arm_ids = ["L", "T", "S", "J"]
-    present = {a: os.path.exists(out_path(out_dir, "arms", a, "predictions.json"))
-               for a in arm_ids}
-    missing = [a for a, ok in present.items() if not ok]
-    if missing:
+    candidate_arms = ["L", "T", "S"]
+    arm_ids = [a for a in candidate_arms
+               if os.path.exists(out_path(out_dir, "arms", a, "predictions.json"))]
+    if len(arm_ids) < 2:
         raise SystemExit(
-            f"STOP: assembleは4 arm(L/T/S/J)全ての predictions.json が必要。"
-            f"未生成のarm: {missing}。L/T/Sは本委任のスコープ外(rerank stepの"
-            "STOPメッセージ参照、既存Prompt/実装が repo に存在しないため新規"
-            "設計は未実施)。Jevのみ完了している場合はその旨を報告し、4-way "
-            "比較は完了とみなさない。"
+            f"STOP: assembleには最低2 arm(L/T/Sのうち)のpredictions.jsonが"
+            f"必要。現状存在するarm: {arm_ids}。"
         )
-    # (4 arm全て揃った場合の集計ロジック。本セッションでは到達しない。)
-    predictions = {a: {p["id"]: p for p in load_json(
-        out_path(out_dir, "arms", a, "predictions.json"))} for a in arm_ids}
-    tops = {a: [p["id"] for p in load_json(out_path(out_dir, "arms", a, "top20.json"))]
-            for a in arm_ids}
-    import itertools
-    lines = ["# model_agreement (4 arm, 6 pairs)\n"]
+
+    pool = load_json(out_path(out_dir, "candidate_pool.json"))
+    all_ids = sorted(c["id"] for c in pool)
+
+    scores = {a: {p["id"]: p["predicted_score"]
+                  for p in load_json(out_path(out_dir, "arms", a, "predictions.json"))
+                  if isinstance(p.get("predicted_score"), (int, float))}
+              for a in arm_ids}
+    tops20 = {a: [p["id"] for p in load_json(out_path(out_dir, "arms", a, "top20.json"))]
+              for a in arm_ids}
+    tops10 = {a: [p["id"] for p in load_json(out_path(out_dir, "arms", a, "top10.json"))]
+              for a in arm_ids}
+
+    lines = [f"# model_agreement (arms present: {','.join(arm_ids)})\n\n"]
+    pair_results = []
     for a, b in itertools.combinations(arm_ids, 2):
-        overlap = set(tops[a]) & set(tops[b])
-        lines.append(f"- {a} vs {b}: top20重複={len(overlap)}/20\n")
-    save_json(out_path(out_dir, "preference_summary.json"), {
-        "arms": arm_ids, "top20": tops,
-    })
+        overlap20 = set(tops20[a]) & set(tops20[b])
+        overlap10 = set(tops10[a]) & set(tops10[b])
+        common_ids = [i for i in all_ids if i in scores[a] and i in scores[b]]
+        rho = spearman_all([scores[a][i] for i in common_ids],
+                            [scores[b][i] for i in common_ids])
+        pair_results.append({
+            "pair": f"{a} vs {b}", "top20_overlap": len(overlap20),
+            "top10_overlap": len(overlap10), "n_common": len(common_ids),
+            "spearman": rho,
+        })
+        lines.append(f"- {a} vs {b}: top20重複={len(overlap20)}/20, "
+                      f"top10重複={len(overlap10)}/10, "
+                      f"Spearman(n={len(common_ids)})={rho}\n")
     with open(out_path(out_dir, "model_agreement.md"), "w", encoding="utf-8") as f:
         f.writelines(lines)
-    print("[OK] assemble: model_agreement.md / preference_summary.json 保存。")
+
+    table_lines = [
+        "# predicted_scores_all (全60件candidate、arm別predicted_score)\n\n",
+        "| id | " + " | ".join(arm_ids) + " |\n",
+        "|---|" + "---|" * len(arm_ids) + "\n",
+    ]
+    for cid in all_ids:
+        row = [cid] + [str(scores[a].get(cid, "")) for a in arm_ids]
+        table_lines.append("| " + " | ".join(row) + " |\n")
+    with open(out_path(out_dir, "predicted_scores_all.md"), "w", encoding="utf-8") as f:
+        f.writelines(table_lines)
+
+    save_json(out_path(out_dir, "preference_summary.json"), {
+        "arms": arm_ids, "top20": tops20, "top10": tops10,
+        "pair_agreement": pair_results,
+    })
+    print(f"[OK] assemble: arms={arm_ids} model_agreement.md / "
+          "predicted_scores_all.md / preference_summary.json 保存。")
 
 
 def main():
@@ -1226,7 +1531,7 @@ def main():
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--step", required=True,
                         choices=["teacher-check", "jev-probe",
-                                 "jev-probe-batch5", "pool",
+                                 "jev-probe-batch5", "pool", "verify-fixed",
                                  "cost-estimate", "rerank", "assemble"])
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--target", type=int, default=50)
@@ -1251,6 +1556,8 @@ def main():
         cmd_jev_probe_batch5(args)
     elif args.step == "pool":
         cmd_pool(args)
+    elif args.step == "verify-fixed":
+        cmd_verify_fixed(args)
     elif args.step == "cost-estimate":
         cmd_cost_estimate(args)
     elif args.step == "rerank":

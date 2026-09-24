@@ -1,13 +1,21 @@
 {
-  "budget_jpy": 150.0,
-  "actual_so_far_jpy": 2.93,
+  "budget_jpy": 100.0,
+  "actual_so_far_jpy": 29.04,
   "by_model": {
     "gpt-5.6-luna": {
-      "calls": 6,
-      "jpy": 2.928256
+      "calls": 7,
+      "jpy": 3.836352
+    },
+    "gpt-5.6-terra": {
+      "calls": 1,
+      "jpy": "UNKNOWN_PRICING"
+    },
+    "gpt-5.6-sol": {
+      "calls": 1,
+      "jpy": 25.2032
     }
   },
   "jev_cost_status": "Jev cost UNKNOWN",
   "within_budget": true,
-  "note": "OpenAI課金分(pool step他)の実績。Jevはresponseにusage/costフィールドが無い場合jev_cost_statusに'Jev cost UNKNOWN'を記録する(APIキー課金体系は別途ユーザー確認が必要)。"
+  "note": "OpenAI課金分(pool step・rerank L/T/S等)の実績(known price modelsのみ合算)。Terra等、pricing_snapshot.jsonに単価が無いモデルはjpyへ含めず'UNKNOWN_PRICING'として件数のみ記録する(捏造しない)。Jevはresponseにusage/costフィールドが無い場合jev_cost_statusに'Jev cost UNKNOWN'を記録する(本TrialではJev armはDEFERRED、新規callは発生しない)。"
 }
