@@ -9388,3 +9388,20 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 関連: `NEWS-HOOK-MODEL-COMPARISON-01`、`NEWS-R2-TO-HOOK-TRIAL-01`、`TOPIC-SELECTION-CHATGPT-REPRO-01-CONT-02`(Hook部分)、OPEN-176。
 - Status: 本決定自体は**ユーザー正式決定**(記録完了)。Side output配線は未実施(`NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01`の設計判断後に別途実施、本エントリでは配線なし)。
 - commit: (本コミットで反映)
+
+## NEWS-STANDARD-A2-PROMPT-V2-TRIAL-01: User formally approved Natural English Adaptation as Advanced (B1)、SSOT正式記録(ユーザー正式決定、2026-09-24)
+
+- 日付: 2026-09-24
+- 区分: ユーザー正式決定(Advanced Natural English AdaptationをSSOTへ正式記録。Production Prompt・routing・retry/fallback・Audio配線は無変更。配線未完了のため`PRODUCTION_WIRED`ではない)。あわせてStandard A2 Prompt v2 Trialを実施(到達上限`VALIDATED`、Production採用は別途ユーザー判断)。
+- ユーザー指示原文(要旨):
+  1. Advanced Natural English Adaptationは、既にユーザーが正式採用(`APPROVED_FOR_PRODUCTION`)している。今回、CURRENT_SPEC/DECISION_LOG/OPEN_ITEMSへ正式記録する。ただしProduction wiring未完のため`PRODUCTION_WIRED`には変更しない。
+  2. Standard Prompt v1(`NEWS-NATURAL-ADVANCED-STANDARD-A2-TRIAL-01`)は`REJECTED`(英語の簡略化が不十分。Story保持は成功したがAdvancedとの平均語/文差が小さい[下水道13.62→13.48語/文、Meta13.20→12.50語/文])。
+  3. Standard Prompt v2(本管理ID)は、全文書き直し・平均9〜11語/文・高頻度語彙を明示したPromptで再検証する。到達上限`VALIDATED`、ユーザー承認なしにProduction採用しない。
+- status: `APPROVED_FOR_PRODUCTION`(Advanced Natural English Adaptation、Advanced=B1のみ。Standard=A2は引き続き`APPROVED_FOR_PRODUCTION`ではない)
+- approval date: 2026-09-24
+- supporting Trial: `NEWS-JA-TO-EN-ADAPTATION-TRIAL-01`(arm3 Natural、Meta AI Call記事)、`NEWS-NATURAL-ADVANCED-STANDARD-A2-TRIAL-01`(下水道記事で再現確認)
+- Production wiring incomplete(`PRODUCTION_WIRED`ではない): Production official initial path wiring/retry・fallback consistency/Production contract付与/Audio path/runtime evidence/Fact・Ledger consistency/final regression・integration testsが未着手(詳細OPEN-177)。
+- Standard(A2): v1 `REJECTED`(簡略化不十分)。v2は本管理IDでTrial実施、budget STOP(下水道Standard v2生成1call[¥1.0828]の時点で上限¥1を超過したため、Meta Standard v2は未生成)。下水道単体の機械計測では平均語/文がAdvanced比13.62→9.51語/文(-4.11語)へ明確に縮小し9〜11語/文目標を達成、Story構造・中心比喩(main artery/washing machine)・Ending logicは保持、Fact drift(数字0件・scope word件数一致)は未検出。Meta記事は未検証のため2記事横断の最終判断には至っていない。
+- 関連: `NEWS-ITERATIVE-R2-PRODUCTION-WIRING-01`(Entertainment日本語生成方式)、OPEN-177(Advanced配線残項目、新設)。
+- Status: 本決定(Advanced Natural English Adaptation正式記録)は**ユーザー正式決定**(記録完了)。Standard v2 Trialは`STOP`(budget、2call中1callのみ実施)、最終採否は未定(`USER_DECISION_REQUIRED`)。
+- commit: (本コミットで反映)
