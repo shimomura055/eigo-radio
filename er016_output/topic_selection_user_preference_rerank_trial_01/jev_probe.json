@@ -1,8 +1,89 @@
 {
-  "checked_at_jst": "2026-09-24T20:35:22.689387+09:00",
+  "checked_at_jst": "2026-09-24T20:57:15.906604+09:00",
   "jev_api_key_present": true,
-  "repo_integration_found": false,
-  "official_docs_finding": "jev.ai はドメインパーキングページ(title=\"Parking Landing\")であり、Jev社の公式API仕様(endpoint/認証ヘッダ/request-response schema/料金/rate limit)を外部から特定できなかった。Repo内には Jev用clientコード・環境変数例・仕様メモは一切存在しない(`docs/pm/topic_selection_user_eval_dataset.json` dataset_r item_no=15の話題[Xで話題化した意思決定特化型AI「Jev」]としての言及のみで、実在API連携の記録ではない)。",
-  "attempted_min_request": true,
-  "connection_result": "NOT_IMPLEMENTED: keyはあるがJev公式API仕様(endpoint等)が特定できないため接続実装なし。"
+  "endpoint": "https://www.jevai.org/api/v1/decisions",
+  "docs_notes_path": "er016_output/topic_selection_user_preference_rerank_trial_01\\jev_api_notes.md",
+  "task_text_verbatim": "このユーザーが英語学習用News Audioとして続きを聞きたいと思う度合いを、次のcandidateについて評価してください。",
+  "evaluation_objective_verbatim": "このユーザーが英語学習用News Audioとして続きを聞きたいと思う度合いを評価してください。",
+  "state_bytes": 11866,
+  "call_result": {
+    "stage": "jev_probe_1call",
+    "status_code": 200,
+    "elapsed_ms": 843.3,
+    "request_body_bytes": 12788,
+    "rate_limit_headers": {},
+    "response_headers_content_type": "application/json",
+    "response_json": {
+      "code": 0,
+      "message": "ok",
+      "data": {
+        "answers": {
+          "C001": {
+            "type": "score",
+            "score": 4.17,
+            "confidence": 0.16,
+            "legend": {
+              "0": "Level 1",
+              "1": "Level 2",
+              "2": "Level 3",
+              "3": "Level 4",
+              "4": "Level 5",
+              "5": "Level 6",
+              "6": "Level 7",
+              "7": "Level 8",
+              "8": "Level 9",
+              "9": "Level 10"
+            },
+            "probabilities": {
+              "0": 0.02,
+              "1": 0.09,
+              "2": 0.13,
+              "3": 0.15,
+              "4": 0.1,
+              "5": 0.2,
+              "6": 0.21000000000000002,
+              "7": 0.07,
+              "8": 0.02,
+              "9": 0.01
+            }
+          }
+        }
+      }
+    },
+    "response_text_if_not_json": null,
+    "waits_429": 0,
+    "key_leak_found_in_response": false
+  },
+  "code_ok": true,
+  "answers_c001_raw": {
+    "type": "score",
+    "score": 4.17,
+    "confidence": 0.16,
+    "legend": {
+      "0": "Level 1",
+      "1": "Level 2",
+      "2": "Level 3",
+      "3": "Level 4",
+      "4": "Level 5",
+      "5": "Level 6",
+      "6": "Level 7",
+      "7": "Level 8",
+      "8": "Level 9",
+      "9": "Level 10"
+    },
+    "probabilities": {
+      "0": 0.02,
+      "1": 0.09,
+      "2": 0.13,
+      "3": 0.15,
+      "4": 0.1,
+      "5": 0.2,
+      "6": 0.21000000000000002,
+      "7": 0.07,
+      "8": 0.02,
+      "9": 0.01
+    }
+  },
+  "scale_note": "response['data']['answers']['C001']['score']はdocs記載どおり0始まりprobability-weighted average(0〜9連続値)と推定。predicted_score_1_10 = raw_score + 1 の線形変換を適用する(この変換はTop20の相対順位に影響しない)。",
+  "predicted_score_1_10": 5.17
 }

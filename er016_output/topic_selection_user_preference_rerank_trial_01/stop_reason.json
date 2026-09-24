@@ -1,6 +1,14 @@
 {
-  "reason": "JEV_ARM_INFEASIBLE",
-  "detail": "JEV_API_KEYは環境変数に存在する(bool=True、値はlog/report非出力)が、endpoint/auth方式を指定する変数(JEV_BASE_URL等)が.envに存在せず、Jev公式API仕様(endpoint/認証/schema/料金/rate limit)を外部公式ドキュメントからも特定できなかった(jev.aiはドメインパーキングページ)。Repo内にもJev client実装・仕様記録は存在しない。委任文の該当STOP条件『Jevのendpoint/auth/schemaが依然として不明な場合はSTOP』に該当。鍵を推測hostへ送る接続試行は行っていない。",
-  "action": "USER_DECISION_REQUIRED。Pool作成(STEP 2)までは完了し、Luna/Terra/Solのrerank(STEP 3以降)は実行しない。",
-  "checked_at_jst": "2026-09-24T20:35:22.689387+09:00"
+  "reason": "JEV_RERANK_RATE_LIMITED_OR_UNSTABLE",
+  "detail": "batch_00(N=10件)でcode!=0(status_code=502)。理由: HTTP 502(5xxインフラエラー、Retry-Afterヘッダ=60)。単一candidate probe(jev-probe)と5件probe(jev-probe-batch5)は成功したが、60件抽出用の複数questions一括call(N=20およびN=10で試行)は複数回・時間を空けた再試行(N=20で60秒超待機後の再試行含む)でも429または502(Cloudflare Bad Gateway、Retry-After:60)が解消しなかった。委任文STOP条件『429が解決しない(Retry-Afterに従い最大2回待機、連打禁止)』に該当すると判断しSTOPする。",
+  "action": "USER_DECISION_REQUIRED。",
+  "checked_at_jst": "2026-09-24T21:05:06.990810+09:00",
+  "attempted_batch_sizes": [
+    20,
+    10
+  ],
+  "successful_calls": [
+    "jev_probe (1 candidate)",
+    "jev_probe_batch5 (5 candidates)"
+  ]
 }

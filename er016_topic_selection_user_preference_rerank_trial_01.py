@@ -34,6 +34,7 @@ import re
 import time
 from datetime import datetime, timedelta, timezone
 
+import requests
 from dotenv import load_dotenv
 
 import er002_ja_web_research_r3 as r3
@@ -53,6 +54,29 @@ TEACHER_PATH = "docs/pm/topic_selection_user_eval_dataset.json"
 WINDOW_START_JST = "2026-09-22T21:05:00+09:00"
 BUDGET_JPY = 150.0
 USD_TO_JPY = 160
+
+# --------------------------------------------------------------
+# Jev Native Decisions API(ユーザー提示仕様、fix02委任文より逐語転記)
+# --------------------------------------------------------------
+JEV_BASE_URL = "https://www.jevai.org"
+JEV_DECISIONS_PATH = "/api/v1/decisions"
+JEV_MAX_BODY_BYTES = 32 * 1024
+# score questionのcriteriaは2〜10レベル制約(jev_api_notes.md)。
+# Luna等の1〜10スケールに近づけるため10レベルを採用し、返る0始まりの
+# probability-weighted averageへ+1する線形変換をpredicted_score_1_10に使う。
+JEV_SCORE_LEVELS = [f"Level {i}" for i in range(1, 11)]
+JEV_EVAL_OBJECTIVE_JA = (
+    "このユーザーが英語学習用News Audioとして続きを聞きたいと思う度合いを"
+    "評価してください。"
+)
+JEV_TASK_TEXT_JA = (
+    "このユーザーが英語学習用News Audioとして続きを聞きたいと思う度合いを、"
+    "次のcandidateについて評価してください。"
+)
+JEV_BATCH_N = 10  # 60件を6 batch(10件ずつ)。根拠はjev_decision_schema.md
+                  # (当初32 KiB制約からN=20を選んだが、実接続でN=20の20問
+                  # 一括callが502[Cloudflare Bad Gateway]を繰り返し、N=5の
+                  # batch5 probeは成功したため、信頼性を優先しN=10へ変更)。
 
 # UGCドメイン(委任文指定)
 UGC_DOMAIN_RE = re.compile(
@@ -167,6 +191,152 @@ def normalize_url(u: str) -> str:
 
 
 # ------------------------------------------------------------
+# Jev client ヘルパー
+# ------------------------------------------------------------
+def build_teacher_state() -> dict:
+    """全stepで共通・byte単位で同一のstateを返す(委任文『同一stateを維持』)。"""
+    d = load_json(TEACHER_PATH)
+    items = []
+    for key in ("dataset_r", "dataset_a", "dataset_b"):
+        for it in d.get(key, []):
+            items.append({
+                "dataset_id": it.get("dataset_id"),
+                "topic_ja": it.get("topic_ja"),
+                "hook_ja": it.get("hook_ja"),
+                "user_score": it.get("user_score"),
+            })
+    return {
+        "evaluation_objective": JEV_EVAL_OBJECTIVE_JA,
+        "preference_examples": items,
+    }
+
+
+def jev_score_question(candidate: dict) -> dict:
+    return {
+        "type": "score",
+        "instructions": {
+            "task": JEV_TASK_TEXT_JA,
+            "candidate": {
+                "topic_ja": candidate.get("topic_ja"),
+                "summary_ja": candidate.get("summary_ja"),
+                "source_name": candidate.get("source_name"),
+            },
+        },
+        "criteria": JEV_SCORE_LEVELS,
+    }
+
+
+def mask_key_in_obj(obj, key: str):
+    """objをJSON文字列化してkey(および先頭8文字)の出現有無を確認し、
+    見つかった場合はマスクした上で再パースして返す。戻り値: (masked_obj, leak_found)。
+    """
+    if not key:
+        return obj, False
+    text = json.dumps(obj, ensure_ascii=False)
+    leak_found = False
+    if key in text:
+        leak_found = True
+        text = text.replace(key, "***MASKED_JEV_API_KEY***")
+    prefix8 = key[:8]
+    if len(prefix8) >= 8 and prefix8 in text:
+        leak_found = True
+        text = text.replace(prefix8, "***MASKED_JEV_KEY_PREFIX***")
+    return json.loads(text), leak_found
+
+
+def call_jev(api_key: str, state: dict, questions: dict, stage: str,
+             max_429_waits: int = 2):
+    """Jev Native Decisions API(POST /api/v1/decisions)を1回呼ぶ。
+    429時のみRetry-Afterに従い最大max_429_waits回待機して再試行する
+    (連打禁止、委任文STOP条件)。戻り値はdictで、鍵は一切含めない。
+    """
+    url = JEV_BASE_URL + JEV_DECISIONS_PATH
+    body = {"state": state, "questions": questions}
+    body_bytes = json.dumps(body, ensure_ascii=False).encode("utf-8")
+    if len(body_bytes) > JEV_MAX_BODY_BYTES:
+        raise SystemExit(
+            f"STOP: Jev request body({len(body_bytes)} bytes)が32 KiB上限を"
+            f"超過(stage={stage})。委任文STOP条件『Teacher 57件が32 KiBに"
+            "収まらない』に準じ、送信を中止する。"
+        )
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    waits = 0
+    attempts = []
+
+    def _filtered_headers(h):
+        return {
+            k: v for k, v in h.items()
+            if "rate" in k.lower() or "retry" in k.lower() or "limit" in k.lower()
+        }
+
+    while True:
+        t0 = time.time()
+        resp = requests.post(url, data=body_bytes, headers=headers, timeout=30)
+        elapsed_ms = round((time.time() - t0) * 1000, 1)
+        attempts.append({
+            "status_code": resp.status_code,
+            "elapsed_ms": elapsed_ms,
+            "rate_limit_headers": _filtered_headers(resp.headers),
+        })
+        if resp.status_code == 429 and waits < max_429_waits:
+            retry_after = resp.headers.get("Retry-After")
+            wait_s = float(retry_after) if retry_after and retry_after.isdigit() else 5.0
+            print(f"[429] {stage}: Retry-After={retry_after} -> {wait_s}s待機"
+                  f"({waits + 1}/{max_429_waits})")
+            time.sleep(wait_s)
+            waits += 1
+            continue
+        break
+    rate_limit_headers = _filtered_headers(resp.headers)
+    try:
+        resp_json = resp.json()
+    except ValueError:
+        resp_json = None
+    result = {
+        "stage": stage,
+        "status_code": resp.status_code,
+        "elapsed_ms": elapsed_ms,
+        "request_body_bytes": len(body_bytes),
+        "rate_limit_headers": rate_limit_headers,
+        "response_headers_content_type": resp.headers.get("Content-Type"),
+        "response_json": resp_json,
+        "response_text_if_not_json": None if resp_json is not None else resp.text[:2000],
+        "waits_429": waits,
+        "attempts": attempts,
+    }
+    masked, leak_found = mask_key_in_obj(result, api_key)
+    masked["key_leak_found_in_response"] = leak_found
+    return masked
+
+
+def extract_jev_answers(resp_json) -> dict:
+    """response.dataからanswersを抽出する(実測schemaに合わせflexibleに探す)。"""
+    if not isinstance(resp_json, dict):
+        return {}
+    data = resp_json.get("data")
+    if isinstance(data, dict):
+        if isinstance(data.get("answers"), dict):
+            return data["answers"]
+        return data
+    result = resp_json.get("result")
+    if isinstance(result, dict) and isinstance(result.get("answers"), dict):
+        return result["answers"]
+    return {}
+
+
+def jev_score_to_1_10(raw_score) -> float | None:
+    if raw_score is None:
+        return None
+    try:
+        return round(float(raw_score) + 1, 4)
+    except (TypeError, ValueError):
+        return None
+
+
+# ------------------------------------------------------------
 # STEP 0: teacher-check
 # ------------------------------------------------------------
 def cmd_teacher_check(args):
@@ -213,7 +383,7 @@ def cmd_teacher_check(args):
 
 
 # ------------------------------------------------------------
-# STEP 1: jev-probe
+# STEP 1: jev-probe(1件接続確認、fix02: ユーザー提示仕様で実接続)
 # ------------------------------------------------------------
 def cmd_jev_probe(args):
     out_dir = args.out_dir
@@ -225,58 +395,154 @@ def cmd_jev_probe(args):
     result = {
         "checked_at_jst": datetime.now(JST).isoformat(),
         "jev_api_key_present": key_present,
-        "repo_integration_found": False,
-        "official_docs_finding": (
-            "jev.ai はドメインパーキングページ(title=\"Parking Landing\")で"
-            "あり、Jev社の公式API仕様(endpoint/認証ヘッダ/request-response "
-            "schema/料金/rate limit)を外部から特定できなかった。Repo内には "
-            "Jev用clientコード・環境変数例・仕様メモは一切存在しない"
-            "(`docs/pm/topic_selection_user_eval_dataset.json` dataset_r "
-            "item_no=15の話題[Xで話題化した意思決定特化型AI「Jev」]としての"
-            "言及のみで、実在API連携の記録ではない)。"
-        ),
-        "attempted_min_request": False,
-        "connection_result": None,
+        "endpoint": JEV_BASE_URL + JEV_DECISIONS_PATH,
+        "docs_notes_path": out_path(out_dir, "jev_api_notes.md"),
+        "task_text_verbatim": JEV_TASK_TEXT_JA,
+        "evaluation_objective_verbatim": JEV_EVAL_OBJECTIVE_JA,
     }
-    if key_present:
-        # 仕様上ここで最小request(候補1件・Teacher例5件程度)を1回だけ実施する
-        # 設計だが、JEV_API_KEY不在のため到達しない分岐。将来key設定時に
-        # 実装追加が必要(未実装、Fable/ユーザー判断待ち)。
-        result["attempted_min_request"] = True
-        result["connection_result"] = "NOT_IMPLEMENTED: keyはあるがJev公式" \
-            "API仕様(endpoint等)が特定できないため接続実装なし。"
-    stop = not key_present or result["connection_result"] in (
-        None, "NOT_IMPLEMENTED",
-    ) or (result["connection_result"] or "").startswith("NOT_IMPLEMENTED")
-    save_json(probe_path, result)
-    if stop:
-        key_clause = (
-            "JEV_API_KEYが環境変数に存在しない(bool=False)。加えて、"
-            if not key_present else
-            "JEV_API_KEYは環境変数に存在する(bool=True、値はlog/report非出力)"
-            "が、endpoint/auth方式を指定する変数(JEV_BASE_URL等)が.envに"
-            "存在せず、"
-        )
+    if not key_present:
         stop_reason = {
-            "reason": "JEV_ARM_INFEASIBLE",
+            "reason": "JEV_KEY_MISSING",
+            "detail": "JEV_API_KEYが環境変数に存在しない(bool=False)。",
+            "action": "USER_DECISION_REQUIRED。",
+            "checked_at_jst": result["checked_at_jst"],
+        }
+        save_json(probe_path, result)
+        save_json(stop_path, stop_reason)
+        print("[STOP] JEV_API_KEY不在。")
+        return
+
+    api_key = os.environ["JEV_API_KEY"]
+    state = build_teacher_state()
+    pool = load_json(out_path(out_dir, "candidate_pool.json"))
+    c001 = next(c for c in pool if c["id"] == "C001")
+    questions = {"C001": jev_score_question(c001)}
+    call_result = call_jev(api_key, state, questions, stage="jev_probe_1call")
+    result["state_bytes"] = len(json.dumps(state, ensure_ascii=False).encode("utf-8"))
+    result["call_result"] = call_result
+    resp_json = call_result.get("response_json")
+    code_ok = isinstance(resp_json, dict) and resp_json.get("code") == 0
+    answers = extract_jev_answers(resp_json) if code_ok else {}
+    c001_answer = answers.get("C001")
+    result["code_ok"] = code_ok
+    result["answers_c001_raw"] = c001_answer
+    if isinstance(c001_answer, dict) and "score" in c001_answer:
+        result["scale_note"] = (
+            "response['data']['answers']['C001']['score']はdocs記載どおり"
+            "0始まりprobability-weighted average(0〜9連続値)と推定。"
+            "predicted_score_1_10 = raw_score + 1 の線形変換を適用する"
+            "(この変換はTop20の相対順位に影響しない)。"
+        )
+        result["predicted_score_1_10"] = jev_score_to_1_10(c001_answer.get("score"))
+    else:
+        result["scale_note"] = (
+            "response構造がdocs記載のscore fieldと一致しなかった。実測値を"
+            "answers_c001_rawに保存し、後続stepで実応答構造に合わせて解析"
+            "する。"
+        )
+    save_json(probe_path, result)
+    if not code_ok:
+        stop_reason = {
+            "reason": "JEV_CONNECTION_FAILED",
             "detail": (
-                key_clause +
-                "Jev公式API仕様(endpoint/認証/schema/料金/rate limit)を"
-                "外部公式ドキュメントからも特定できなかった(jev.aiはドメイン"
-                "パーキングページ)。Repo内にもJev client実装・仕様記録は"
-                "存在しない。委任文の該当STOP条件"
-                "『Jevのendpoint/auth/schemaが依然として不明な場合はSTOP』"
-                "に該当。鍵を推測hostへ送る接続試行は行っていない。"
+                f"1件接続確認でcode==0を得られなかった(status_code="
+                f"{call_result.get('status_code')}、response="
+                f"{json.dumps(resp_json, ensure_ascii=False)[:500]})。"
+                "委任文STOP条件『仕様と実応答が不一致でschemaを特定できない』"
+                "に該当する可能性がある。"
             ),
-            "action": "USER_DECISION_REQUIRED。Pool作成(STEP 2)までは完了し、"
-                      "Luna/Terra/Solのrerank(STEP 3以降)は実行しない。",
+            "action": "USER_DECISION_REQUIRED。",
             "checked_at_jst": result["checked_at_jst"],
         }
         save_json(stop_path, stop_reason)
-        print("[STOP] Jev arm実施不能。stop_reason.json保存。"
-              "USER_DECISION_REQUIRED。Pool作成までは継続する。")
-    else:
-        print("[OK] jev-probe: 接続確認成功(この分岐は現状到達しない)。")
+        print(f"[STOP] jev-probe: 接続確認失敗(status_code="
+              f"{call_result.get('status_code')})。stop_reason.json保存。")
+        return
+    print(f"[OK] jev-probe: code==0確認、status_code="
+          f"{call_result.get('status_code')}、elapsed_ms="
+          f"{call_result.get('elapsed_ms')}、"
+          f"predicted_score_1_10={result.get('predicted_score_1_10')}")
+
+
+# ------------------------------------------------------------
+# STEP 1b: jev-probe-batch5(C001〜C005、payload/latency/rate limit確認)
+# ------------------------------------------------------------
+def cmd_jev_probe_batch5(args):
+    out_dir = args.out_dir
+    out_p = out_path(out_dir, "jev_probe_batch5.json")
+    stop_path = out_path(out_dir, "stop_reason.json")
+    if skip_if_exists(out_p, args.force):
+        return
+    probe_path = out_path(out_dir, "jev_probe.json")
+    if not os.path.exists(probe_path):
+        raise SystemExit("STOP: jev-probe未実行。先に --step jev-probe を実行すること。")
+    probe = load_json(probe_path)
+    if not probe.get("code_ok"):
+        print("[STOP] jev-probe未成功のためbatch5を実行しない。")
+        return
+    api_key = os.environ["JEV_API_KEY"]
+    state = build_teacher_state()
+    pool = load_json(out_path(out_dir, "candidate_pool.json"))
+    five = [c for c in pool if c["id"] in ("C001", "C002", "C003", "C004", "C005")]
+    questions = {c["id"]: jev_score_question(c) for c in five}
+    # 採用方式: 1 call・questions 5問(理由はresult["batch_method_reason"]参照)。
+    call_result = call_jev(api_key, state, questions, stage="jev_probe_batch5")
+    resp_json = call_result.get("response_json")
+    code_ok = isinstance(resp_json, dict) and resp_json.get("code") == 0
+    answers = extract_jev_answers(resp_json) if code_ok else {}
+    has_usage_info = False
+    if isinstance(resp_json, dict):
+        text_repr = json.dumps(resp_json, ensure_ascii=False).lower()
+        has_usage_info = any(
+            k in text_repr for k in ("usage", "\"cost\"", "token", "billing", "credit")
+        )
+    result = {
+        "checked_at_jst": datetime.now(JST).isoformat(),
+        "batch_method": "1_call_5_questions",
+        "batch_method_reason": (
+            "docs(/docs, /jev-api)はPOST /api/v1/decisionsが単一requestで"
+            "複数named questionsを受け付けると明記しており("
+            "'questions[id]: One typed judgment'、複数id可)、questions数の"
+            "上限記載はbody 32 KiBの制約のみ。5件は32 KiB制約内に収まるため"
+            "(実測bytesはrequest_body_bytes参照)、5回の個別callより1 call・"
+            "5 questionsの方がcall数を抑えられ、委任のstep4『60件を決定論的"
+            "batchで処理』とも整合するため採用した。"
+        ),
+        "code_ok": code_ok,
+        "call_result": call_result,
+        "answers_raw": answers,
+        "has_usage_or_cost_info": has_usage_info,
+        "usage_status": "PRESENT" if has_usage_info else "Jev cost UNKNOWN",
+    }
+    save_json(out_p, result)
+    if not code_ok:
+        stop_reason = {
+            "reason": "JEV_BATCH5_FAILED",
+            "detail": f"batch5でcode!=0(status_code={call_result.get('status_code')})。",
+            "action": "USER_DECISION_REQUIRED。",
+            "checked_at_jst": result["checked_at_jst"],
+        }
+        save_json(stop_path, stop_reason)
+        print("[STOP] jev-probe-batch5: 失敗。stop_reason.json保存。")
+        return
+    # 残りcall見込み: 60件をJEV_BATCH_N(=20)ずつで処理 => ceil(60/20)=3 call
+    remaining_calls = -(-60 // JEV_BATCH_N)
+    if not has_usage_info and remaining_calls > 15:
+        stop_reason = {
+            "reason": "JEV_COST_UNKNOWN_AND_TOO_LARGE",
+            "detail": (
+                f"usage/cost情報が応答に含まれず(Jev cost UNKNOWN)、残りの"
+                f"想定call数({remaining_calls})が15を超えるため¥150管理不能"
+                "と判断しSTOPする。"
+            ),
+            "action": "USER_DECISION_REQUIRED。",
+            "checked_at_jst": result["checked_at_jst"],
+        }
+        save_json(stop_path, stop_reason)
+        print("[STOP] Jev cost UNKNOWN かつ 残りcall数が15超。")
+        return
+    print(f"[OK] jev-probe-batch5: code==0、has_usage_info={has_usage_info}、"
+          f"想定残りcall数={remaining_calls}(<=15のため続行)。")
 
 
 # ------------------------------------------------------------
@@ -765,52 +1031,215 @@ def cmd_cost_estimate(args):
         entry["jpy"] += jpy
         total_jpy += jpy
 
+    jev_cost_status = "NOT_YET_PROBED"
+    batch5_path = out_path(out_dir, "jev_probe_batch5.json")
+    if os.path.exists(batch5_path):
+        b5 = load_json(batch5_path)
+        jev_cost_status = b5.get("usage_status", "UNKNOWN")
+
     result = {
         "budget_jpy": BUDGET_JPY,
         "actual_so_far_jpy": round(total_jpy, 2),
         "by_model": by_model,
+        "jev_cost_status": jev_cost_status,
         "within_budget": total_jpy <= BUDGET_JPY,
-        "note": "pool step(Luna gate分類+contamination判定)実行後の実績。"
-                "rerank(L/T/S/J)は未実行(Jev arm実施不能によりSTOP)。",
+        "note": "OpenAI課金分(pool step他)の実績。Jevはresponseにusage/cost"
+                "フィールドが無い場合jev_cost_statusに'Jev cost UNKNOWN'を"
+                "記録する(APIキー課金体系は別途ユーザー確認が必要)。",
     }
     save_json(out_path(out_dir, "cost_estimate.json"), result)
     print(f"[OK] cost-estimate: actual_so_far={round(total_jpy,2)} JPY "
-          f"(budget={BUDGET_JPY})")
+          f"(budget={BUDGET_JPY}) jev_cost_status={jev_cost_status}")
 
 
 # ------------------------------------------------------------
-# rerank (guard: Jevを最初に実行し、失敗時は残りを実行せず非0終了)
+# rerank
 # ------------------------------------------------------------
+def cmd_rerank_jev(args):
+    out_dir = args.out_dir
+    arm_dir = out_path(out_dir, "arms", "J")
+    pred_path = os.path.join(arm_dir, "predictions.json")
+    if skip_if_exists(pred_path, args.force):
+        return
+    stop_path = out_path(out_dir, "stop_reason.json")
+    if os.path.exists(stop_path):
+        print(f"[STOP] Jev arm実施不能(理由: {stop_path}参照)。")
+        raise SystemExit(1)
+    probe_path = out_path(out_dir, "jev_probe.json")
+    if not os.path.exists(probe_path) or not load_json(probe_path).get("code_ok"):
+        raise SystemExit("STOP: jev-probeが成功していない。先に --step jev-probe を実行すること。")
+
+    api_key = os.environ["JEV_API_KEY"]
+    state = build_teacher_state()
+    pool = load_json(out_path(out_dir, "candidate_pool.json"))
+    pool_sha = load_json(out_path(out_dir, "candidate_pool_sha256.json"))["sha256"]
+    pool_sorted = sorted(pool, key=lambda c: c["id"])  # id昇順(委任文指定)
+
+    predictions = {}
+    batch_meta = []
+    model_actual_values = set()
+    for bi, start in enumerate(range(0, len(pool_sorted), JEV_BATCH_N)):
+        if bi > 0:
+            # 実測(2026-09-24): N=20(20問一括)は502(Cloudflare Bad Gateway)
+            # を繰り返した。N=10へ縮小した上でbatch間8秒間隔を設ける
+            # (連打回避)。この経緯はjev_decision_schema.mdへ記録する。
+            time.sleep(8)
+        batch = pool_sorted[start:start + JEV_BATCH_N]
+        questions = {c["id"]: jev_score_question(c) for c in batch}
+        call_result = call_jev(api_key, state, questions,
+                                stage=f"jev_rerank_batch_{bi:02d}")
+        save_json(os.path.join(arm_dir, "raw", f"batch_{bi:02d}.json"), call_result)
+        resp_json = call_result.get("response_json")
+        code_ok = isinstance(resp_json, dict) and resp_json.get("code") == 0
+        if not code_ok:
+            sc = call_result.get("status_code")
+            reason = (
+                "429が最大待機後も解決しない(委任文STOP条件)"
+                if sc == 429 else
+                f"HTTP {sc}(5xxインフラエラー、Retry-Afterヘッダ="
+                f"{call_result.get('rate_limit_headers', {}).get('Retry-After')})"
+                if sc and sc >= 500 else
+                "仕様と実応答が不一致でschemaを特定できない(委任文STOP条件)"
+            )
+            save_json(stop_path, {
+                "reason": "JEV_RERANK_RATE_LIMITED_OR_UNSTABLE",
+                "detail": (
+                    f"batch_{bi:02d}(N={JEV_BATCH_N}件)でcode!=0"
+                    f"(status_code={sc})。理由: {reason}。単一candidate probe"
+                    "(jev-probe)と5件probe(jev-probe-batch5)は成功したが、"
+                    "60件抽出用の複数questions一括call(N=20およびN=10で試行)"
+                    "は複数回・時間を空けた再試行(N=20で60秒超待機後の再試行"
+                    "含む)でも429または502(Cloudflare Bad Gateway、"
+                    "Retry-After:60)が解消しなかった。委任文STOP条件"
+                    "『429が解決しない(Retry-Afterに従い最大2回待機、連打"
+                    "禁止)』に該当すると判断しSTOPする。"
+                ),
+                "action": "USER_DECISION_REQUIRED。",
+                "checked_at_jst": datetime.now(JST).isoformat(),
+                "attempted_batch_sizes": [20, 10],
+                "successful_calls": ["jev_probe (1 candidate)",
+                                      "jev_probe_batch5 (5 candidates)"],
+            })
+            raise SystemExit(
+                f"STOP: rerank batch_{bi:02d}でcode!=0(status_code={sc})。理由: {reason}。"
+            )
+        if isinstance(resp_json, dict) and isinstance(resp_json.get("data"), dict):
+            model_actual_values.add(resp_json["data"].get("model"))
+        answers = extract_jev_answers(resp_json)
+        for c in batch:
+            ans = answers.get(c["id"], {})
+            raw_score = ans.get("score") if isinstance(ans, dict) else None
+            predictions[c["id"]] = {
+                "id": c["id"],
+                "predicted_score_1_10": jev_score_to_1_10(raw_score),
+                "raw_score": raw_score,
+                "reason": ans.get("legend") if isinstance(ans, dict) else None,
+            }
+        batch_meta.append({
+            "batch_idx": bi,
+            "candidate_ids": [c["id"] for c in batch],
+            "request_body_bytes": call_result.get("request_body_bytes"),
+            "elapsed_ms": call_result.get("elapsed_ms"),
+            "status_code": call_result.get("status_code"),
+        })
+
+    save_json(pred_path, list(predictions.values()))
+    ranked = sorted(
+        [p for p in predictions.values() if p["predicted_score_1_10"] is not None],
+        key=lambda p: p["predicted_score_1_10"], reverse=True,
+    )
+    save_json(os.path.join(arm_dir, "top20.json"), ranked[:20])
+    save_json(os.path.join(arm_dir, "api_meta.json"), {
+        "endpoint": JEV_BASE_URL + JEV_DECISIONS_PATH,
+        "model_field": "omitted(service default)",
+        "response_model_actual_values": list(model_actual_values),
+        "batch_count": len(batch_meta),
+        "batch_n": JEV_BATCH_N,
+        "pool_sha256": pool_sha,
+        "batches": batch_meta,
+    })
+    print(f"[OK] rerank arms=J: {len(predictions)}件scored、"
+          f"{len(batch_meta)} batch、top20保存。")
+
+
 def cmd_rerank(args):
     out_dir = args.out_dir
-    arms = args.arms.split(",")
-    if arms[0] != "J":
-        raise SystemExit("STOP: arms先頭はJ(Jev)である必要がある(委任文指定)。")
-    stop_path = out_path(out_dir, "stop_reason.json")
-    probe_path = out_path(out_dir, "jev_probe.json")
-    if os.path.exists(stop_path):
-        stop = load_json(stop_path)
-        print(f"[STOP] Jev arm実施不能(理由: {stop_path}参照)。"
-              "Luna/Terra/Solを含む残りのarmを実行せず終了する"
-              "(委任文: 「先行完了させて4-way比較完了としない」)。")
-        raise SystemExit(1)
-    if not os.path.exists(probe_path):
-        raise SystemExit("STOP: jev-probe未実行。先に --step jev-probe を実行すること。")
-    raise SystemExit("STOP: Jev arm実装は現状未到達(key不在のため)。")
+    arms = [a for a in args.arms.split(",") if a]
+    if arms == ["J"]:
+        cmd_rerank_jev(args)
+        return
+    if "J" in arms and arms[0] != "J":
+        raise SystemExit("STOP: armsにJを含む場合は先頭がJである必要がある(委任文指定)。")
+    if any(a in ("L", "T", "S") for a in arms):
+        missing_dirs = [
+            a for a in ("L", "T", "S")
+            if a in arms and not os.path.exists(
+                out_path(out_dir, "arms", a, "predictions.json"))
+        ]
+        raise SystemExit(
+            "STOP(スコープ外の実装が必要): Luna/Terra/Sol(L/T/S)のrerank "
+            "Prompt・実装は本リポジトリに一切存在しない(過去commit "
+            "ad33fc4e/df0140ec のcmd_rerankもarms=Jのguardのみで、L/T/S "
+            "は未実装)。委任文は『前回設計どおり --step rerank --arms L,T,S』"
+            "『Luna/Terra/Sol部分は変更しない』と指示しているが、変更しない"
+            "対象となる既存実装・既存Promptが存在しないため、新規に設計する"
+            "ことは本委任の指示された範囲を超える(Fable/ユーザー判断が必要"
+            f"な拡大)。未実装のarm: {missing_dirs}。Jev arm(--arms J)のみ"
+            "実行済み。"
+        )
+
+
+def cmd_assemble(args):
+    out_dir = args.out_dir
+    arm_ids = ["L", "T", "S", "J"]
+    present = {a: os.path.exists(out_path(out_dir, "arms", a, "predictions.json"))
+               for a in arm_ids}
+    missing = [a for a, ok in present.items() if not ok]
+    if missing:
+        raise SystemExit(
+            f"STOP: assembleは4 arm(L/T/S/J)全ての predictions.json が必要。"
+            f"未生成のarm: {missing}。L/T/Sは本委任のスコープ外(rerank stepの"
+            "STOPメッセージ参照、既存Prompt/実装が repo に存在しないため新規"
+            "設計は未実施)。Jevのみ完了している場合はその旨を報告し、4-way "
+            "比較は完了とみなさない。"
+        )
+    # (4 arm全て揃った場合の集計ロジック。本セッションでは到達しない。)
+    predictions = {a: {p["id"]: p for p in load_json(
+        out_path(out_dir, "arms", a, "predictions.json"))} for a in arm_ids}
+    tops = {a: [p["id"] for p in load_json(out_path(out_dir, "arms", a, "top20.json"))]
+            for a in arm_ids}
+    import itertools
+    lines = ["# model_agreement (4 arm, 6 pairs)\n"]
+    for a, b in itertools.combinations(arm_ids, 2):
+        overlap = set(tops[a]) & set(tops[b])
+        lines.append(f"- {a} vs {b}: top20重複={len(overlap)}/20\n")
+    save_json(out_path(out_dir, "preference_summary.json"), {
+        "arms": arm_ids, "top20": tops,
+    })
+    with open(out_path(out_dir, "model_agreement.md"), "w", encoding="utf-8") as f:
+        f.writelines(lines)
+    print("[OK] assemble: model_agreement.md / preference_summary.json 保存。")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--step", required=True,
-                        choices=["teacher-check", "jev-probe", "pool",
+                        choices=["teacher-check", "jev-probe",
+                                 "jev-probe-batch5", "pool",
                                  "cost-estimate", "rerank", "assemble"])
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--target", type=int, default=50)
     parser.add_argument("--max-search-calls", type=int, default=4)
     parser.add_argument("--budget-jpy", type=float, default=BUDGET_JPY)
     parser.add_argument("--arms", default="J,L,T,S")
+    parser.add_argument("--env-file", default=None,
+                         help="指定時、load_dotenv(path, override=True)で明示読込"
+                              "(値はログ・出力に一切含めない)。")
     args = parser.parse_args()
+
+    if args.env_file:
+        load_dotenv(args.env_file, override=True)
 
     os.makedirs(args.out_dir, exist_ok=True)
 
@@ -818,6 +1247,8 @@ def main():
         cmd_teacher_check(args)
     elif args.step == "jev-probe":
         cmd_jev_probe(args)
+    elif args.step == "jev-probe-batch5":
+        cmd_jev_probe_batch5(args)
     elif args.step == "pool":
         cmd_pool(args)
     elif args.step == "cost-estimate":
@@ -825,10 +1256,7 @@ def main():
     elif args.step == "rerank":
         cmd_rerank(args)
     elif args.step == "assemble":
-        raise SystemExit(
-            "STOP: assembleはrerank(L/T/S/J全arm)完了後の工程。"
-            "Jev arm実施不能によりSTOPしているため未実行。"
-        )
+        cmd_assemble(args)
 
 
 if __name__ == "__main__":
