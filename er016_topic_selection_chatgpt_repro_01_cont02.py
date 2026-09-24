@@ -924,6 +924,12 @@ H2_STAGE2_SCHEMA = {
 def cmd_hook_test(args):
     out_dir = args.out_dir
     which = args.which
+    # Round 2追加(既存h1/h2の挙動は変更しない): --modelはNone/未指定なら
+    # 従来通りcall_model側のMODEL_LUNAデフォルトを使う。--out-suffixは
+    # 出力ファイル名にのみ影響し、未指定なら従来のファイル名と完全一致する。
+    model = getattr(args, "model", None)
+    out_suffix = getattr(args, "out_suffix", "") or ""
+    suffix_tag = f"_{out_suffix}" if out_suffix else ""
     base.install_logger(out_dir)
     client = base.get_client()
 
@@ -953,8 +959,11 @@ def cmd_hook_test(args):
         save_json(out_path(out_dir, "raw_responses", "hook_test_h1.json"), meta)
         print(f"[OK] hook_test[h1]: results={len(parsed['results'])} model={meta['response_model_actual']}")
 
-    elif which == "h2":
-        stage1_path = out_path(out_dir, "hook_test_h2_stage1.json")
+    elif which in ("h2", "h3"):
+        # h3はRound 2追加(Fable設計): Stage 1はh2と同一Prompt(独立call)、
+        # Stage 2のみ言い回し指定を変えた別Prompトにする。
+        stage1_name = f"hook_test_{which}{suffix_tag}_stage1"
+        stage1_path = out_path(out_dir, f"{stage1_name}.json")
         if not skip_if_exists(stage1_path, args.force):
             developer1 = "あなたはNews分析担当です。"
             user1 = f"""以下20件は、Newsの素材概要(見出し相当)だけです。各素材に
@@ -968,17 +977,17 @@ def cmd_hook_test(args):
 reference_idについて出力してください。"""
 
             response1 = call_model(client, developer1, user1, schema=H2_STAGE1_SCHEMA,
-                                    web_search=False, stage="hook_test_h2_stage1", out_dir=out_dir)
+                                    web_search=False, stage=stage1_name, model=model, out_dir=out_dir)
             parsed1 = json.loads(response1.output_text)
             meta1 = base.response_meta(response1, user1, developer1)
             save_json(stage1_path, {"results": parsed1["results"]})
-            save_json(out_path(out_dir, "prompts", "hook_test_h2_stage1.json"),
+            save_json(out_path(out_dir, "prompts", f"{stage1_name}.json"),
                       {"developer": developer1, "user": user1})
-            save_json(out_path(out_dir, "raw_responses", "hook_test_h2_stage1.json"), meta1)
-            print(f"[OK] hook_test[h2-stage1]: results={len(parsed1['results'])} "
+            save_json(out_path(out_dir, "raw_responses", f"{stage1_name}.json"), meta1)
+            print(f"[OK] hook_test[{which}{suffix_tag}-stage1]: results={len(parsed1['results'])} "
                   f"model={meta1['response_model_actual']}")
 
-        stage2_path = out_path(out_dir, "hook_test_h2.json")
+        stage2_path = out_path(out_dir, f"hook_test_{which}{suffix_tag}.json")
         if skip_if_exists(stage2_path, args.force):
             return
         stage1_results = load_json(stage1_path)["results"]
@@ -989,7 +998,8 @@ reference_idについて出力してください。"""
             for rid in sorted(angle_by_id)
         ]
         developer2 = "あなたはHook Writerです。"
-        user2 = f"""以下は各Newsの素材概要と、Stage 1で見つけた「最も面白い見方」
+        if which == "h2":
+            user2 = f"""以下は各Newsの素材概要と、Stage 1で見つけた「最も面白い見方」
 です。その見方を、答えを知りたくなる一文のHookにしてください。
 
 {json.dumps(stage2_input, ensure_ascii=False, indent=2)}
@@ -1002,16 +1012,33 @@ reference_idについて出力してください。"""
 各reference_idについてhook_ja・hook_en・answer_in_source(素材概要の
 内容で実質的に答えられる部分の要約。答えられない場合は"NOT_IN_SOURCE")
 を返してください。全reference_idについて出力してください。"""
+        else:  # h3: Stage 2の言い回し指定のみFable委任文の指示に置換
+            user2 = f"""以下は各Newsの素材概要と、Stage 1で見つけた「最も面白い見方」
+です。それぞれの見方を、友人に話しかけるような短い一文の問いにして
+ください。目安は30字前後。「〜でしょうか」は使わず、「〜？」で終える
+形にしてください。
 
+{json.dumps(stage2_input, ensure_ascii=False, indent=2)}
+
+【絶対条件】
+(1) 釣りタイトル・誇張を禁止する。
+(2) 素材概要では答えられない疑問を作らない。
+(3) Fact以上の断定をしない。
+
+各reference_idについてhook_ja・hook_en・answer_in_source(素材概要の
+内容で実質的に答えられる部分の要約。答えられない場合は"NOT_IN_SOURCE")
+を返してください。全reference_idについて出力してください。"""
+
+        stage2_name = f"hook_test_{which}{suffix_tag}_stage2"
         response2 = call_model(client, developer2, user2, schema=H2_STAGE2_SCHEMA, web_search=False,
-                                stage="hook_test_h2_stage2", out_dir=out_dir)
+                                stage=stage2_name, model=model, out_dir=out_dir)
         parsed2 = json.loads(response2.output_text)
         meta2 = base.response_meta(response2, user2, developer2)
         save_json(stage2_path, {"results": parsed2["results"], "stage1_input_used": stage2_input})
-        save_json(out_path(out_dir, "prompts", "hook_test_h2_stage2.json"),
+        save_json(out_path(out_dir, "prompts", f"{stage2_name}.json"),
                   {"developer": developer2, "user": user2})
-        save_json(out_path(out_dir, "raw_responses", "hook_test_h2_stage2.json"), meta2)
-        print(f"[OK] hook_test[h2-stage2]: results={len(parsed2['results'])} "
+        save_json(out_path(out_dir, "raw_responses", f"{stage2_name}.json"), meta2)
+        print(f"[OK] hook_test[{which}{suffix_tag}-stage2]: results={len(parsed2['results'])} "
               f"model={meta2['response_model_actual']}")
     else:
         raise ValueError(f"unknown --which: {which}")
@@ -1100,7 +1127,89 @@ def _pool_inclusion(pool: list, ref_list: list) -> list:
     return results
 
 
+# Round 2追加: 前回(b)列は`RESULT_PACKET_TSCR.md`254-283行由来で
+# Round 1 REPORT §Eの表(TOPIC-SELECTION-CHATGPT-REPRO-01_REPORT.md
+# 525-544行)に既に転記済みの値をそのまま再利用する(再Readしない、
+# スクリプト内では新規に導出しない静的な前Round確定値)。
+PREV_B_HOOKS = {
+    1: "AIに店への電話を頼んだら、裏では人間が話している？",
+    2: "AIが人間の制御を超える可能性を、各国はどう議論している？",
+    3: "AIはなぜ、米中首脳会談で貿易や安全保障と並ぶ議題になった？",
+    4: "癌治療を変えるAIに、医師たちが慎重な見方を示すのはなぜ？",
+    5: "宇宙でX線撮影ができると、診断の可能性はどう広がる？",
+    6: "避妊の選択肢に、将来は男性向けの方法も加わる？",
+    7: "季節の変わり目に、いびきの増加を感じる人は多い？",
+    8: "睡眠の悩みを専門に診る「睡眠障害科」が、病院に増える？",
+    9: "大谷翔平は、約2週間の離脱を経ていつ復帰する？",
+    10: "18年前のカレンダーが、なぜ今になって14万回以上見られた？",
+    11: "おかずが一種類だけの弁当は、なぜ賛否を呼ぶ？",
+    12: "小さな保冷バッグが、無印良品の人気商品になった理由は？",
+    13: "旅行の荷物は、圧縮ポーチでどこまで小さくできる？",
+    14: "帝国ホテルのエコバッグは、なぜ高級品のように注目されている？",
+    15: "意思決定に特化したAI「Jev」は、なぜ急速に話題になった？",
+    16: "日本の香文化は、パリでどんな香水として世界に広がる？",
+    17: "スマホ版『アニモ』は、異なる端末のプレイヤーとも遊べる？",
+    18: "指パッチンは、ギネス記録になるほどの技なのか？",
+    19: "旅行先は、安さだけでは選ばれない時代になった？",
+    20: "職場に人工クラゲの水槽を置くサービスは、何を生み出す？",
+}
+
+
+def _hook_ja_by_id(out_dir: str, filename: str) -> dict:
+    data = load_json(out_path(out_dir, filename))
+    return {r["reference_id"]: r["hook_ja"] for r in data["results"]}
+
+
+def cmd_aggregate_round2(out_dir: str, force: bool) -> None:
+    path_md = out_path(out_dir, "round2_compare.md")
+    if skip_if_exists(path_md, force):
+        return
+    ref = {r["id"]: r["hook_ja"] for r in base.REFERENCE_20}
+    h1 = _hook_ja_by_id(out_dir, "hook_test_h1.json")
+    h2_luna = _hook_ja_by_id(out_dir, "hook_test_h2.json")
+    h3_luna = _hook_ja_by_id(out_dir, "hook_test_h3.json")
+    h2_sol = _hook_ja_by_id(out_dir, "hook_test_h2_sol.json")
+    h3_sol = _hook_ja_by_id(out_dir, "hook_test_h3_sol.json")
+
+    columns = [
+        ("Reference Hook", ref),
+        ("前回(b)", PREV_B_HOOKS),
+        ("H1", h1),
+        ("H2(Luna)", h2_luna),
+        ("H3(Luna)", h3_luna),
+        ("H2(Sol)", h2_sol),
+        ("H3(Sol)", h3_sol),
+    ]
+
+    lines = ["# CONT-02 Round 2 比較表(8列×20行、観察事実のみ・評価なし)", "",
+             "| # | " + " | ".join(name for name, _ in columns) + " |",
+             "|---|" + "|".join(["---"] * len(columns)) + "|"]
+    for rid in range(1, 21):
+        row = [str(rid)] + [str(d.get(rid, "N/A")) for _, d in columns]
+        lines.append("| " + " | ".join(row) + " |")
+
+    lines += ["", "## 形式集計(観察事実、評価はしない)", "",
+              "| 列 | 「でしょうか」件数 | 疑問文でない件数(文末が「？」でない) | 平均字数 |",
+              "|---|---|---|---|"]
+    for name, d in columns:
+        texts = [str(d.get(rid, "")) for rid in range(1, 21)]
+        # 「でしょうか」件数: 文末の句読点(。？?)を除いた末尾が「でしょうか」で
+        # 終わるかで判定(H2系は「でしょうか。」のように句点で終わるため、
+        # 句読点を剥がしてから判定する)。
+        deshou = sum(1 for t in texts if t.rstrip("。？?").endswith("でしょうか"))
+        not_question = sum(1 for t in texts if not (t.endswith("？") or t.endswith("?")))
+        avg_len = round(sum(len(t) for t in texts) / len(texts), 1) if texts else 0.0
+        lines.append(f"| {name} | {deshou} | {not_question} | {avg_len} |")
+
+    with open(path_md, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    print(f"[OK] aggregate --round2: rows=20 columns={len(columns)} -> {path_md}")
+
+
 def cmd_aggregate(args):
+    if getattr(args, "round2", False):
+        cmd_aggregate_round2(args.out_dir, args.force)
+        return
     out_dir = args.out_dir
     path_json = out_path(out_dir, "aggregate.json")
     if skip_if_exists(path_json, args.force):
@@ -1229,7 +1338,12 @@ def cmd_cost(args):
         if e.get("provider") != "openai" or not e.get("success", True):
             continue
         stage = e.get("stage") or "unknown"
-        model_name = e.get("model") or MODEL_LUNA
+        # 実装上の注記(バグ修正、評価対象外): raw_usage_log.jsonlの実フィールド名は
+        # "model_id"であり、"model"キーは存在しない。従来コード(base script含む)は
+        # e.get("model")がNoneになりMODEL_LUNAへ常にフォールバックしていたため、
+        # Sol call混在時に誤ってLuna単価で計算する不具合があった。Round 2でSol call
+        # を導入したため本ファイル内でのみ修正する(baseファイル自体は無変更)。
+        model_name = e.get("model_id") or e.get("model") or MODEL_LUNA
         if model_name not in price_cache:
             try:
                 price_cache[model_name] = model_prices(model_name)
@@ -1342,12 +1456,18 @@ def main():
 
     p_ht = sub.add_parser("hook_test")
     p_ht.add_argument("--out-dir", required=True)
-    p_ht.add_argument("--which", required=True, choices=["h1", "h2"])
+    p_ht.add_argument("--which", required=True, choices=["h1", "h2", "h3"])
+    p_ht.add_argument("--model", default=None,
+                       help="Round 2追加: 省略時はMODEL_LUNA(既存挙動を維持)")
+    p_ht.add_argument("--out-suffix", default="",
+                       help="Round 2追加: 出力ファイル名末尾に付与(例: sol)")
     p_ht.add_argument("--force", action="store_true")
     p_ht.set_defaults(func=cmd_hook_test)
 
     p_agg = sub.add_parser("aggregate")
     p_agg.add_argument("--out-dir", required=True)
+    p_agg.add_argument("--round2", action="store_true",
+                        help="Round 2追加: round2_compare.md(8列比較表+形式集計)を生成する")
     p_agg.add_argument("--force", action="store_true")
     p_agg.set_defaults(func=cmd_aggregate)
 
