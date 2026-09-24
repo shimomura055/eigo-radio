@@ -1,8 +1,9 @@
 # TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01 REPORT
 
 管理ID: `TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01`
-実行日: 2026-09-24
-Status: **USER_DECISION_REQUIRED**(Jev arm実施不能によりSTOP。Pool作成までは完了)
+実行日: 2026-09-24(初回)/2026-09-24(修正1回目=再開、`.env`にJEV_API_KEY追加後)
+Status: **USER_DECISION_REQUIRED**(再開後もJev arm実施不能によりSTOP継続。
+Pool作成までは完了。詳細は§5参照)
 Production変更: なし
 
 ## §1 Teacher Data確認
@@ -60,22 +61,35 @@ Prompt自体は委任文どおり固定して設計・保存済み(developer/use
 
 ## §5 Jev設定・decision schema・接続確認・rate limit状況
 
+### 初回実行時(key不在)
 - `JEV_API_KEY`環境変数: **存在しない**(`bool(os.environ.get("JEV_API_KEY"))=False`。
   key本文は当然表示・保存していない)
+- 接続確認: **未実施**(key不在のため最小requestを送信できる状態にない)
+
+### 修正1回目=再開時(2026-09-24、ユーザーが`.env`にJEV_API_KEY追加後)
+- `JEV_API_KEY`環境変数: **存在する**(`bool(os.environ.get("JEV_API_KEY"))=True`。
+  key本文・値は表示・log・report・commitのいずれにも出力していない。
+  `.env`は`.gitignore`1行目に登録済みでcommit対象外)
+- endpoint/auth方式: `.env`内に`JEV_BASE_URL`/`JEV_ENDPOINT`/`JEV_MODEL`等の
+  関連変数は**存在しない**(`.env`内のJEV_始まり変数は`JEV_API_KEY`のみ)。
 - Repo内Jev統合: `Grep -i "jev"`でRepo全体を検索した結果、実在するのは
   `docs/pm/topic_selection_user_eval_dataset.json`のdataset_r item_no=15
   (「XのAI界隈で『Jev』という意思決定特化型AIが急速に話題化」という
   **ニューストピックとしての言及**)と、`er016_topic_selection_chatgpt_repro_01.py`の
   `REFERENCE_CONTAMINATION_KEYWORDS`内の同語のみ。実際のJev API client・
   環境変数例・接続仕様メモは一切存在しない。
-- 公式ドキュメント調査: `jev.ai`へcurlでアクセス可能だったが、内容は
-  ドメインパーキングページ(`<title>Parking Landing</title>`)であり、
+- 公式ドキュメント調査(前回調査を再確認、今回新たな追加調査は行っていない):
+  `jev.ai`はドメインパーキングページ(`<title>Parking Landing</title>`)であり、
   Jev社の公式API(endpoint/認証ヘッダ/request-response schema/料金/
   rate limit)は特定できなかった。
-- 接続確認: **未実施**(key不在のため最小requestを送信できる状態にない)
+- 接続確認: **試行せず**(委任文の安全条項どおり、endpointが確定できない
+  状態で鍵を推測hostへ送る接続試行は行っていない。鍵漏洩リスク回避のため)。
 - decision schema: **未定義**(API仕様が特定できないため作成不能)
-- 結論: `docs/pm/tools`該当なし。委任文STOP条件「Jev arm実施不能(接続不可・
-  API仕様が特定できない)」に該当。`stop_reason.json`保存済み。
+- rate limit状況: 接続試行なしのため該当なし。
+- 結論: keyは存在するがendpoint/auth/schemaが依然不明のため、委任文STOP条件
+  「Jevのendpoint/auth/schemaが依然として不明な場合はSTOP」に該当。
+  `stop_reason.json`を更新し、STEP 2(cost-estimate)以降・Luna/Terra/Solの
+  rerankは実行していない。
 - 参照: `jev_probe.json`、`stop_reason.json`
   (`er016_output/topic_selection_user_preference_rerank_trial_01/`配下)
 

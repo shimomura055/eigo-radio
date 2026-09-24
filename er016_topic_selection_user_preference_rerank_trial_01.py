@@ -250,15 +250,23 @@ def cmd_jev_probe(args):
     ) or (result["connection_result"] or "").startswith("NOT_IMPLEMENTED")
     save_json(probe_path, result)
     if stop:
+        key_clause = (
+            "JEV_API_KEYが環境変数に存在しない(bool=False)。加えて、"
+            if not key_present else
+            "JEV_API_KEYは環境変数に存在する(bool=True、値はlog/report非出力)"
+            "が、endpoint/auth方式を指定する変数(JEV_BASE_URL等)が.envに"
+            "存在せず、"
+        )
         stop_reason = {
             "reason": "JEV_ARM_INFEASIBLE",
             "detail": (
-                "JEV_API_KEYが環境変数に存在しない(bool=False)。加えて、"
+                key_clause +
                 "Jev公式API仕様(endpoint/認証/schema/料金/rate limit)を"
                 "外部公式ドキュメントからも特定できなかった(jev.aiはドメイン"
                 "パーキングページ)。Repo内にもJev client実装・仕様記録は"
                 "存在しない。委任文の該当STOP条件"
-                "『Jev arm実施不能(接続不可・API仕様が特定できない)』に該当。"
+                "『Jevのendpoint/auth/schemaが依然として不明な場合はSTOP』"
+                "に該当。鍵を推測hostへ送る接続試行は行っていない。"
             ),
             "action": "USER_DECISION_REQUIRED。Pool作成(STEP 2)までは完了し、"
                       "Luna/Terra/Solのrerank(STEP 3以降)は実行しない。",
