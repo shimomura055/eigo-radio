@@ -238,6 +238,10 @@ Word例外は、記事テーマの根幹語彙をStandardでも保持したい�
       D境界・Topic Core境界いずれも実行間で揺れうるという既知の限界が
       継続している(§7-4)。
 
-## §10 [Fable記入]
+## §10 Fable評価
 
-## §11 [Fable記入]
+(1)期待どおり: sewer/sewers=KEEP(Topic Core、justificationは題名・記事の中心対比の引用で具体的)、artery=SIMPLIFY(D不使用、is_metaphor=True)、Meta本文・判定は前回と完全一致(concierges=C、onstage=A)。12,000候補数はv2と同一で形骸化なし。Fact tokens check・目視ともFact/Storytelling不変。費用¥1.48。(2)留意点a: artery→pipe の結果 "A sewer is like an invisible main pipe" と直喩がほぼ同語反復になり英文が平板化。仕様どおりの帰結だがAdvancedらしさのわずかな低下として記録。留意点b: wastewater がA(waste+water)ではなくE(Topic Core)でKEEPされ、Sewer候補5語中4語がE該当(80%)。本文結果は同じだが、Eが本来Aで済む語を吸収しており、単一記事ではEの広さ(万能逃げ道化の有無)を検証しきれない。留意点c: septic はv1 KEEP-D→v2 SIMPLIFY→v3 KEEP-E と3回とも判定が変わり、境界語の揺れが継続(本仕様の欠陥ではなくLLM判定の分散)。(3)STOP条件(新例外/定義拡張/Standard同時反映/個別語対応)には非該当。
+
+## §11 分類
+
+**VALIDATED**(Trial範囲内の評価。Production採用判断ではなく、Production Prompt/Validator/Standard側へは未反映)。ユーザー判断事項: ①本仕様候補(12,000ライン+A〜D+Topic Core Word+Metaphor非KEEP、優先順位 根幹語>比喩>その他)をAdvancedのAPPROVED_FOR_PRODUCTIONにするか。②留意点a(比喩の平板化)を許容するか、比喩語の平易化時に「直喩自体を外す/言い換える」ことを許すか(新ルールになるためユーザー判断)。③留意点b/cの検証のため別記事1本で追加Trialするか(¥2程度)。Fable推奨: ①は②③の判断後。
