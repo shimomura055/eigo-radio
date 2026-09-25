@@ -119,16 +119,30 @@ Keep every fact exactly as it is: names, numbers, who did what, cause and effect
 
 The result must still sound natural when read aloud. Do not write like a children's book, and do not write a flat list of short sentences.
 
+Keep the same Markdown structure (the "# " title, the two "### " sections, and the final "## In one line" section); do not add or remove sections.
+
 Output only the English title and the English body.
 
 [Article]
 {advanced_article}"""
 
-# LF正規化済み("DEVELOPER:\n"+DEVELOPER+"\n\n"+"USER TEMPLATE (...):\n"+USER_TEMPLATE)
-# のsha256。er015_output/news_standard_a2_vocab_6000_cutoff_trial_01/
-# prompt_standard_v5_6000.txt(CRLF保存)をLF正規化して読み込んだ場合と
-# 一致することをテストで確認する。
-STANDARD_A2_PROMPT_SHA256 = "cbb72357449dea9bcf0912c55aaf7e5b8ea52f6e157c37ae71180768dc13c589"
+# NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01(2026-09-25、delegation D3)で、
+# v5 user promptの末尾「Output only...」の直前に構造保持行
+# `Keep the same Markdown structure (...); do not add or remove sections.`
+# を追加した(ADAPTATION Trial[NEWS-JA-TO-EN-ADAPTATION-TRIAL-01]の
+# REVISION_CONTRACT_LINEと同種の文言)。v5の語彙・簡略化指示は一字も
+# 変えていない。この追加に伴いSTANDARD_A2_PROMPT_SHA256を更新した
+# (旧値: cbb72357449dea9bcf0912c55aaf7e5b8ea52f6e157c37ae71180768dc13c589、
+# NEWS-STANDARD-A2-VOCAB-6000-CUTOFF-PRODUCTION-WIRING-01で記録)。
+# 新しい構造保持行を含むPrompt全文はTrial fileとしては存在しないため、
+# 旧v5との差分をテストで確認する(reconstruct_prompt_file_text()の
+# 出力が旧v5 Trial fileの内容+挿入行と一致することを検証)。
+#
+# retry primitive: NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D4
+# により、Advanced段と同じ`vfl01.run_writer_with_technical_retry()`
+# (構造Gate付きretry、###見出しちょうど2つを要求)を使うよう変更した
+# (旧: run_writer_no_search()への独自「空応答→1回retry」ループ)。
+STANDARD_A2_PROMPT_SHA256 = "ff860ab60a0d1d4ffa4e93a30e53af37fe87afa8c4e01a99bf54e06897a42353"
 
 
 def reconstruct_prompt_file_text() -> str:
@@ -271,6 +285,7 @@ class StandardA2Result:
     retried: bool
     fallback_detected: bool
     elapsed_seconds: float
+    structure_status: str = ""
     checks: dict = field(default_factory=dict)
 
 
@@ -279,16 +294,17 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
     """Advanced(CEFR B1 Natural English Adaptation)記事本文からStandard
     (CEFR A2、v5 6,000語ライン+自然さ優先)版を生成する。
 
-    API呼び出しは`vfl01.run_writer_no_search()`(既存Production依存
-    モジュール)を再利用する。空応答は`vfl01.run_writer_no_search()`が
-    RuntimeErrorを送出するため、それを捕捉してmax_retries回まで同一
-    Promptで再試行する(既定1回)。fallbackモデルは定義しない
-    (`routing.PROCESS_MODEL_MAP`に定義が無いため)。
+    API呼び出しは`vfl01.run_writer_with_technical_retry()`(既存Production
+    primitive、NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D4で
+    Advanced段と統一。以前はrun_writer_no_search()への独自「空応答→1回
+    retry」ループだったが、v5 promptへ構造保持行を追加したことに伴い、
+    Advanced段と同じ構造Gate付きretry[### 見出しちょうど2つ]を使う)。
+    fallbackモデルは定義しない(`routing.PROCESS_MODEL_MAP`に定義が無いため)。
 
     `effort`引数は`vfl01.REASONING_EFFORT`(= "high"、既存Production
     Writer/Support共通のreasoning effort)との整合を起動時に確認する
-    ためだけに使う。vfl01.run_writer_no_search()はeffort引数を持たず
-    モジュール既定のREASONING_EFFORTを常に使うため、呼び出し前に
+    ためだけに使う。vfl01.run_writer_with_technical_retry()はeffort引数を
+    持たずモジュール既定のREASONING_EFFORTを常に使うため、呼び出し前に
     `effort`が`vfl01.REASONING_EFFORT`と一致することをassertする
     (不一致の場合はvfl01側のグローバル設定を勝手に書き換えず、
     ValueErrorとしてSTOPする)。
@@ -296,8 +312,8 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
     if effort != vfl01.REASONING_EFFORT:
         raise ValueError(
             f"[STOP] effort='{effort}'はvfl01.REASONING_EFFORT='{vfl01.REASONING_EFFORT}'と"
-            "不一致です。vfl01.run_writer_no_search()はeffort引数を取らずモジュール既定値を"
-            "常に使うため、呼び出し側で異なるeffortを指定することはできません。"
+            "不一致です。vfl01.run_writer_with_technical_retry()はeffort引数を取らずモジュール"
+            "既定値を常に使うため、呼び出し側で異なるeffortを指定することはできません。"
         )
     if client is None:
         client = vfl01.get_client()
@@ -306,32 +322,29 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
     prompt = build_prompt(advanced_text)
     price_fn = _load_pricing()
 
-    attempts = 0
-    retried = False
-    last_error = None
-    result = None
     t0 = time.time()
-    for attempt in range(1, max_retries + 2):  # 初回+max_retries回
-        attempts = attempt
-        try:
-            result = vfl01.run_writer_no_search(
-                client, prompt, model=requested_model, developer=STANDARD_A2_DEVELOPER)
-            break
-        except Exception as e:  # noqa: BLE001 - 既存run_writer_no_searchの例外方針に合わせる
-            last_error = e
-            if attempt < max_retries + 1:
-                retried = True
-                time.sleep(2)
-                continue
-            raise RuntimeError(
-                f"[STANDARD_A2_ADAPTATION] {max_retries + 1}回試行しても生成に失敗しました: "
-                f"{type(e).__name__}: {e}"
-            ) from e
+    result = vfl01.run_writer_with_technical_retry(
+        client, prompt, max_attempts=max_retries + 1, model=requested_model,
+        developer=STANDARD_A2_DEVELOPER)
     elapsed = round(time.time() - t0, 3)
+
+    if result["status"] not in ("STRUCTURE_PASS", "STRUCTURE_INVALID"):
+        raise RuntimeError(
+            f"[STANDARD_A2_ADAPTATION] {max_retries + 1}回試行しても生成に失敗しました: "
+            f"status={result['status']} attempts={result['attempts']}"
+        )
+    if result["status"] != "STRUCTURE_PASS":
+        raise RuntimeError(
+            f"[STANDARD_A2_ADAPTATION] {max_retries + 1}回試行してもcontract構造"
+            f"(### 見出しちょうど2つ)を満たせませんでした: attempts={result['attempts']}"
+        )
 
     text = result["raw_text"]
     model_actual = result["model"]
     response_id = result["response_id"]
+    attempts_detail = result["attempts"]
+    attempts = len(attempts_detail)
+    retried = attempts > 1
 
     # ER-006-MODEL-ROUTING-CONTRACT-01: fallback未定義のため、実際の応答
     # modelがrequested_modelと異なる場合は観測のみ行い(fallback_detected)、
@@ -363,6 +376,7 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
         retried=retried,
         fallback_detected=fallback_detected,
         elapsed_seconds=elapsed,
+        structure_status=result["status"],
         checks=checks,
     )
 

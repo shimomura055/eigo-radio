@@ -88,6 +88,11 @@ PROCESS_MODEL_MAP = {
     # (CEFR A2、v5 6,000語ライン+自然さ優先Prompt)を生成する工程。
     # B1/A2 Writerと同じ信頼度・同じLunaを使う(新規モデル追加なし)。
     "STANDARD_A2_ADAPTATION": WRITER_MODEL,
+    # NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01(2026-09-25)で追加。日本語
+    # 完成Entertainment記事(R2)からAdvanced(Natural English Adaptation、
+    # CEFR B1)を生成する工程。B1/A2 Writerと同じ信頼度・同じLunaを使う
+    # (新規モデル追加なし)。
+    "NATURAL_ENGLISH_ADAPTATION": WRITER_MODEL,
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

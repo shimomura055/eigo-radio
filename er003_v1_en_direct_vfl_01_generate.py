@@ -400,11 +400,17 @@ def run_writer_no_search(client, user_message: str, model: str = MODEL,
     }
 
 
-def run_writer_with_technical_retry(client, user_message: str, max_attempts: int = 2, model: str = MODEL) -> dict:
+def run_writer_with_technical_retry(client, user_message: str, max_attempts: int = 2, model: str = MODEL,
+                                     developer: str = WRITER_DEVELOPER_MESSAGE) -> dict:
+    """developerはNEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01(2026-09-25)で
+    追加した完全後方互換の任意引数(既定値=既存WRITER_DEVELOPER_MESSAGE)。
+    既存呼び出し側(developerを渡さない全箇所)の挙動は一切変わらない
+    (NEWS-STANDARD-A2-VOCAB-6000-CUTOFF-PRODUCTION-WIRING-01で
+    run_writer_no_search()に同種の後方互換引数を追加した前例を踏襲)。"""
     attempts = []
     for attempt in range(1, max_attempts + 1):
         try:
-            result = run_writer_no_search(client, user_message, model=model)
+            result = run_writer_no_search(client, user_message, model=model, developer=developer)
         except Exception as e:
             attempts.append({"attempt": attempt, "status": "TECHNICAL_FAILED", "error": f"{type(e).__name__}: {e}"})
             if attempt < max_attempts:

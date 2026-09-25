@@ -1,0 +1,84 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI handle a phone call sounds like a convenient service from the future. You tell it what you need, and the AI makes the call for you. That was the kind of phone service being prepared at Meta.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta was trying to give Muse a feature that would make calls on a user’s behalf.
+
+But when people looked behind the stage, they found something unexpected.
+
+In internal tests, some parts of the calls were handled not by AI, but by human contract workers. Meta called these workers “human concierges.” The sign out front said “AI phone service.” Yet, in part, a human was making the call. The AI only appeared to be performing alone.
+
+### The hidden performer inside the phone call
+
+That is the most surprising part of the story. The call looked like a one-person performance, but another performer was hidden inside the piano. Human help is not automatically a bad thing: people can fill in the areas where AI is still weak. As an approach, that is understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees raised concerns that call details might be leaked outside the company. People might also be surprised to learn that a contract worker, not AI alone, had listened and responded to a conversation they thought they had handed to AI. According to internal posts reviewed by Reuters, a Meta executive said the company had put the feature on hold.
+
+For AI phone service, the important question may not be only whether it can make a call. Who is speaking onstage? And who is behind the curtain? The more convenient the service, the more its explanation may matter before people can truly feel safe leaving a task to it.
+
+## In one line
+
+AI may make the call, but people also need to know who is really behind the voice.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "human concierges",
+    "japanese_gloss": "人間の対応係",
+    "source_sentence": "Meta called these workers “human concierges.”"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "put on hold",
+    "japanese_gloss": "いったん保留にする",
+    "source_sentence": "According to internal posts reviewed by Reuters, a Meta executive said the company had put the feature on hold."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "behind the curtain",
+    "japanese_gloss": "表に出ていない裏側の存在",
+    "source_sentence": "And who is behind the curtain?"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "fill in",
+    "japanese_gloss": "足りない部分を補う",
+    "source_sentence": "Human help is not automatically a bad thing: people can fill in the areas where AI is still weak."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "on a user’s behalf",
+    "japanese_gloss": "利用者に代わって",
+    "source_sentence": "Meta was trying to give Muse a feature that would make calls on a user’s behalf."
+  }
+]

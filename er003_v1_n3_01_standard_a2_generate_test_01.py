@@ -25,6 +25,18 @@ PROMPT_FILE = os.path.join(
 
 ADVANCED_TEXT = "Title Here\n\nThis is an advanced article with 12 pipes and John Smith."
 
+GOOD_STRUCTURE_TEXT = (
+    "Standard Title\n\n"
+    "Main story paragraph one.\n\n"
+    "Main story paragraph two.\n\n"
+    "### First point heading\n"
+    "First point body.\n\n"
+    "### Second point heading\n"
+    "Second point body.\n\n"
+    "## In one line\n"
+    "One closing sentence."
+)
+
 
 def _fake_response(text: str, model: str = "gpt-5.6-luna", response_id: str = "resp_1",
                     input_tokens: int = 100, output_tokens: int = 50):
@@ -60,14 +72,27 @@ class _FakeClient:
 
 
 class PromptSha256Tests(unittest.TestCase):
-    def test_prompt_sha256_matches_trial_file(self):
+    def test_prompt_equals_trial_file_plus_inserted_structure_line(self):
+        # NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D3: v5の
+        # トライアルfile(旧sha256 cbb723...で確認済み)に、構造保持行1行を
+        # 「Output only...」の直前へ挿入したものが、現行STANDARD_A2_PROMPT_V5
+        # と一致することを確認する(v5の語彙・簡略化指示は無変更)。
         with open(PROMPT_FILE, "r", encoding="utf-8", newline=None) as f:
             trial_text = f.read()
-        trial_sha256 = hashlib.sha256(trial_text.encode("utf-8")).hexdigest()
+        inserted_line = (
+            'Keep the same Markdown structure (the "# " title, the two "### " '
+            'sections, and the final "## In one line" section); do not add or '
+            'remove sections.\n\n'
+        )
+        anchor = "Output only the English title and the English body."
+        self.assertIn(anchor, trial_text)
+        expected_text = trial_text.replace(anchor, inserted_line + anchor)
         reconstructed = std_a2.reconstruct_prompt_file_text()
-        self.assertEqual(reconstructed, trial_text,
-                          "reconstructed prompt text differs from trial file (LF-normalized)")
-        self.assertEqual(trial_sha256, std_a2.STANDARD_A2_PROMPT_SHA256)
+        self.assertEqual(reconstructed, expected_text,
+                          "reconstructed prompt text differs from trial file + inserted structure line")
+
+    def test_prompt_sha256_matches_constant(self):
+        reconstructed = std_a2.reconstruct_prompt_file_text()
         reconstructed_sha256 = hashlib.sha256(reconstructed.encode("utf-8")).hexdigest()
         self.assertEqual(reconstructed_sha256, std_a2.STANDARD_A2_PROMPT_SHA256)
 
@@ -95,7 +120,7 @@ class BuildPromptTests(unittest.TestCase):
 
 class GenerateStandardA2Tests(unittest.TestCase):
     def test_success_no_retry(self):
-        good = _fake_response("Standard Title\n\nThis is a simple article with 12 pipes and John Smith.")
+        good = _fake_response(GOOD_STRUCTURE_TEXT)
         client = _FakeClient([good])
         with mock.patch.object(std_a2.routing, "require_model", side_effect=lambda process, model: model), \
              mock.patch.object(std_a2, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)):
@@ -104,6 +129,7 @@ class GenerateStandardA2Tests(unittest.TestCase):
         self.assertEqual(result.attempts, 1)
         self.assertFalse(result.retried)
         self.assertFalse(result.fallback_detected)
+        self.assertEqual(result.structure_status, "STRUCTURE_PASS")
         self.assertTrue(result.text.startswith("Standard Title"))
         self.assertEqual(len(client.responses.calls), 1)
         sent = client.responses.calls[0]
@@ -112,35 +138,35 @@ class GenerateStandardA2Tests(unittest.TestCase):
         self.assertEqual(sent["input"][1]["role"], "user")
         self.assertIn("This is an advanced article", sent["input"][1]["content"])
 
-    def test_retries_once_on_empty_output_then_succeeds(self):
-        empty = _fake_response("")
-        good = _fake_response("Standard Title\n\nSimplified body.")
-        client = _FakeClient([empty, good])
+    def test_retries_once_on_bad_structure_then_succeeds(self):
+        bad = _fake_response("Standard Title\n\nOnly one ### section here.\n### only one\nbody")
+        good = _fake_response(GOOD_STRUCTURE_TEXT)
+        client = _FakeClient([bad, good])
         with mock.patch.object(std_a2.routing, "require_model", side_effect=lambda process, model: model), \
              mock.patch.object(std_a2, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)), \
-             mock.patch.object(std_a2.time, "sleep", return_value=None):
+             mock.patch.object(std_a2.vfl01.time, "sleep", return_value=None):
             result = std_a2.generate_standard_a2(ADVANCED_TEXT, client=client, model="gpt-5.6-luna",
                                                    max_retries=1)
 
         self.assertEqual(result.attempts, 2)
         self.assertTrue(result.retried)
-        self.assertTrue(result.text.startswith("Standard Title"))
+        self.assertEqual(result.structure_status, "STRUCTURE_PASS")
         self.assertEqual(len(client.responses.calls), 2)
 
-    def test_fails_after_max_retries(self):
-        empty1 = _fake_response("")
-        empty2 = _fake_response("")
-        client = _FakeClient([empty1, empty2])
+    def test_fails_after_max_retries_structure_invalid(self):
+        bad1 = _fake_response("Standard Title\n\nno sections at all")
+        bad2 = _fake_response("Standard Title\n\nstill no sections")
+        client = _FakeClient([bad1, bad2])
         with mock.patch.object(std_a2.routing, "require_model", side_effect=lambda process, model: model), \
              mock.patch.object(std_a2, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)), \
-             mock.patch.object(std_a2.time, "sleep", return_value=None):
+             mock.patch.object(std_a2.vfl01.time, "sleep", return_value=None):
             with self.assertRaises(RuntimeError):
                 std_a2.generate_standard_a2(ADVANCED_TEXT, client=client, model="gpt-5.6-luna",
                                              max_retries=1)
         self.assertEqual(len(client.responses.calls), 2)
 
     def test_fallback_detected(self):
-        different_model = _fake_response("Standard Title\n\nBody.", model="gpt-5.6-other")
+        different_model = _fake_response(GOOD_STRUCTURE_TEXT, model="gpt-5.6-other")
         client = _FakeClient([different_model])
         with mock.patch.object(std_a2.routing, "require_model", side_effect=lambda process, model: model), \
              mock.patch.object(std_a2, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)):
