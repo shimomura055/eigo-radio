@@ -83,6 +83,11 @@ PROCESS_MODEL_MAP = {
     # 生成する工程。B1/A2 Writerと同じ信頼度・同じLunaを使う(新規モデル
     # 追加なし)。
     "SHARED_POINT_BLUEPRINT": WRITER_MODEL,
+    # NEWS-STANDARD-A2-VOCAB-6000-CUTOFF-PRODUCTION-WIRING-01(2026-09-25)で
+    # 追加。Advanced(Natural English Adaptation、CEFR B1)からStandard
+    # (CEFR A2、v5 6,000語ライン+自然さ優先Prompt)を生成する工程。
+    # B1/A2 Writerと同じ信頼度・同じLunaを使う(新規モデル追加なし)。
+    "STANDARD_A2_ADAPTATION": WRITER_MODEL,
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

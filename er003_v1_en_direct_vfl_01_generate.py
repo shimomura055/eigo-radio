@@ -356,23 +356,48 @@ def build_writer_prompt(master_full_text: str, verified_ledger_text: str) -> str
     )
 
 
-def run_writer_no_search(client, user_message: str, model: str = MODEL) -> dict:
+def run_writer_no_search(client, user_message: str, model: str = MODEL,
+                          developer: str = WRITER_DEVELOPER_MESSAGE) -> dict:
     """Web検索toolを渡さない(tools引数を省略するだけで実現でき、技術的障害はなかった)。
     modelはER-006-MODEL-ROUTING-CONTRACT-01以降、呼び出し側がSSOT
     (er006_model_routing_contract_01)経由で明示指定できる(未指定時は
-    モジュール既定のMODEL)。"""
+    モジュール既定のMODEL)。developerはNEWS-STANDARD-A2-VOCAB-6000-
+    CUTOFF-PRODUCTION-WIRING-01(2026-09-25)で追加した完全後方互換の
+    任意引数(既定値=既存WRITER_DEVELOPER_MESSAGE)。既存呼び出し側
+    (developerを渡さない全箇所)の挙動は一切変わらない。戻り値へ
+    `usage`(input_tokens/cached_input_tokens/output_tokens/
+    reasoning_tokens)を追加した(既存キーraw_text/model/response_idは
+    無変更、追加キーのみでbackward compatible)。"""
     response = client.responses.create(
         model=model,
         reasoning={"effort": REASONING_EFFORT},
         input=[
-            {"role": "developer", "content": WRITER_DEVELOPER_MESSAGE},
+            {"role": "developer", "content": developer},
             {"role": "user", "content": user_message},
         ],
     )
     text = response.output_text
     if not text or not text.strip():
         raise RuntimeError("writer応答が空です")
-    return {"raw_text": text, "model": response.model, "response_id": response.id}
+    usage = getattr(response, "usage", None)
+    input_tokens = getattr(usage, "input_tokens", None) if usage else None
+    output_tokens = getattr(usage, "output_tokens", None) if usage else None
+    cached_tokens = None
+    reasoning_tokens = None
+    if usage is not None:
+        in_details = getattr(usage, "input_tokens_details", None)
+        if in_details is not None:
+            cached_tokens = getattr(in_details, "cached_tokens", None)
+        out_details = getattr(usage, "output_tokens_details", None)
+        if out_details is not None:
+            reasoning_tokens = getattr(out_details, "reasoning_tokens", None)
+    return {
+        "raw_text": text, "model": response.model, "response_id": response.id,
+        "usage": {
+            "input_tokens": input_tokens, "cached_input_tokens": cached_tokens,
+            "output_tokens": output_tokens, "reasoning_tokens": reasoning_tokens,
+        },
+    }
 
 
 def run_writer_with_technical_retry(client, user_message: str, max_attempts: int = 2, model: str = MODEL) -> dict:
