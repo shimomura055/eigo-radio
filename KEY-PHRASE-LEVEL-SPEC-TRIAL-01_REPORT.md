@@ -320,13 +320,30 @@ to ...`↔`hand the call to AI`(部分的に近い)の2件のみ。
 ---
 
 ## §11 Fable参考評価
-`[Fable記入]`
+
+### 11.1 一致判定(Fable、同義・学習単位を含む)
+- Sewer Standard: instead of(一致)/take care of the rest(学習単位は take care of と同じだが不要語付加=切り方×)/joining together・hard to find・grow old(不一致、汎用句としては妥当)。Topic Word(sewer)未選択。→ **2/5 FAIL**。
+- Sewer Advanced: replace A with B(完全一致)/take care of the rest(Standard級かつ不要語付加)/hard to find where A is damaged(記事固有の固定化)/come in・move A closer to B(不一致)。main artery / treatment plant / be connected to / septic tank すべて未選択。→ **1/5 FAIL**。
+- Meta Standard: 期待の in other words / put ... on hold / raise concerns / there is nothing wrong with … / AI agent はいずれも未選択。not always a bad thing は意味的に近いが別Phrase、contain personal information はAdvanced期待の personal information に近い。→ **0〜1/5 FAIL**。
+- Meta Advanced: raise concerns(raise privacy concerns と同一学習単位、切り方は許容)/put A on hold(一致)/on A's behalf(良い汎用句)/fill in・appear to be(不一致)。behind the curtain / personal information / human concierge 未選択。→ **2/5 FAIL**。
+- 全体: 5/20(25%)。目安60%を大きく下回る。
+
+### 11.2 構造的な観察
+- **Topic Word枠が4回とも未使用**: 「任意」と書いたため、記事の中心テーマ語(sewer / septic tank / AI agent / human concierge)がすべて落ちた。
+- **句の種類が動詞句に偏る**: 「1 Phrase=1学習ポイント」「不要語を付けない」の指示が、名詞複合語(treatment plant / personal information / main artery)や談話標識(in other words)を避ける方向に働いた。
+- **レベル配分が期待と逆転**: put ... on hold / raise concerns はStandard期待だったがAdvancedで選ばれ、Standardは tell … what you need / feel safe など基本動詞句に寄った。
+- **Prompt内の禁止例が守られない**: Advanced Promptで明示した「take care of the rest ではなく take care of」が、Sewer Standard/Advanced両方で take care of the rest として出現。指示の「例」だけでは抑止できていない。
+- 費用¥1.13、4 callとも`gpt-5.6-luna`。Production変更ゼロ確認済み。
 
 ## §12 分類
-`[Fable記入]`
+
+**REJECTED(Trial Prompt v1)**。ユーザーの選定方針そのものではなく、方針をPromptに落とした第1版が狙いのPhraseを再現できなかった(全4セットFAIL、25%)。Production変更なし。
 
 ## §13 USER_DECISION_REQUIRED
-`[Fable記入]`
+
+1. Prompt v2での再Trial(4 call、¥2以内)を承認するか。v2の変更候補(Fable案、答えの漏洩は避け一般例のみ): (a) Topic Wordを「記事に中心テーマ語があれば通常1個含める」に変更、(b) 句の種類の多様性を要求(談話標識/句動詞/コロケーション/再利用しやすい名詞複合語 から偏らずに選ぶ、他分野の一般例で示す)、(c) 「不要語を付けない」の禁止例を、例示ではなく出力後の自己点検指示(各Phraseから記事固有語・余分な語を削れるか確認)に変更、(d) Standard/Advancedの差を「Advancedは基本句(A2級)を避け、Standardで選びそうな句は除く」と明示、(e) 記事固有の固定化(hard to find where A is damaged型)の禁止を明示。
+2. 想定セット自体の妥当性確認: Meta Standard期待の in other words / there is nothing wrong with … は談話・定型表現であり、現Promptの「再利用性」定義に含まれることを明記する必要がある(ユーザーの意図確認)。
+3. 既存Production Key Phrase仕様との関係: 現行Production(記事固有の中心語を上位に選ぶ傾向)を置き換える前提か、併存(Topic Word枠)か(方針確認、今回は判断不要)。
 
 **Sonnetからの参考事実(判断はしない)**: 全体一致率(目視込み仮判定)
 25%(5/20)はユーザー指定の目安60%を大きく下回り、4セット全てが
