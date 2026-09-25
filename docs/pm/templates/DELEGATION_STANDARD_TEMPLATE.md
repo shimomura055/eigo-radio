@@ -19,13 +19,16 @@ Fableは全委任文(Sonnet/Opusへの委任)を本テンプレートの見出�
 APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED/USER_DECISION_REQUIRED等]、
 禁止事項[対象外ファイル不可・費用上限・破壊的操作禁止等]を明記する。)
 
-## 固定ブロック(E-1/D-1/G-1/F-1/T-0/T-1)
+## 固定ブロック(E-1/D-1/G-1/F-1/T-0/T-1/T-2)
 
 `docs/pm/templates/DELEGATION_READ_EFFICIENCY_BLOCK.md`の本文をそのまま
-貼る(E-1/D-1/G-1/F-1/T-0は常時、T-1は施策1 Trial対象タスクのみ)。
+貼る(E-1/D-1/G-1/F-1/T-0/T-2は常時、T-1は施策1 Trial対象タスクのみ)。
 T-0は委任文標準の検証手順(受領した委任文を`docs/pm/delegation_log/
 <管理ID>.md`へ保存し`check_delegation_prompt.py`で検証)であり、
-本文言は`DELEGATION_READ_EFFICIENCY_BLOCK.md`側が正本。
+本文言は`DELEGATION_READ_EFFICIENCY_BLOCK.md`側が正本。T-2(2026-09-25、
+`PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01`)はTTS Standard同期
+明示の再確認であり、本文言も`DELEGATION_READ_EFFICIENCY_BLOCK.md`側が
+正本。
 
 ## ユーザー指示(原文)
 

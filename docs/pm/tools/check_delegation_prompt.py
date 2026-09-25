@@ -185,11 +185,37 @@ def check_commands_have_args_or_paths(text: str) -> dict:
     }
 
 
+TTS_MENTION_RE = re.compile(r"TTS|tts|音声化|narration")
+TTS_STANDARD_EXPLICIT_RE = re.compile(r"TTS_EXECUTION_MODE\s*=\s*STANDARD")
+TTS_BATCH_REASON_RE = re.compile(r"batch-reason", re.IGNORECASE)
+
+
+def check_tts_standard_mode_reminder(text: str) -> dict:
+    """PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01(2026-09-25)。
+
+    委任文がTTS生成に言及している(`TTS`/`tts`/`音声化`/`narration`)のに、
+    `TTS_EXECUTION_MODE=STANDARD`の明示も`batch-reason`(PM_GOVERNANCE.md
+    7-2の例外理由明示)の言及も無い場合に警告する。ブロッキングではない
+    (status/PASS判定には影響しない、`warnings`にのみ記録する)。
+    """
+    mentions_tts = bool(TTS_MENTION_RE.search(text))
+    has_standard_explicit = bool(TTS_STANDARD_EXPLICIT_RE.search(text))
+    has_batch_reason = bool(TTS_BATCH_REASON_RE.search(text))
+    triggered = mentions_tts and not has_standard_explicit and not has_batch_reason
+    return {
+        "triggered": triggered,
+        "mentions_tts": mentions_tts,
+        "has_standard_explicit": has_standard_explicit,
+        "has_batch_reason": has_batch_reason,
+    }
+
+
 def run_check(text: str) -> dict:
     keyword_results = check_required_keywords(text)
     fixed_block = check_fixed_block(text)
     placeholder_hits = check_placeholders(text)
     command_check = check_commands_have_args_or_paths(text)
+    tts_mode_check = check_tts_standard_mode_reminder(text)
 
     missing_keywords = [r["label"] for r in keyword_results if not r["present"]]
     missing_fixed_labels = [
@@ -214,15 +240,26 @@ def run_check(text: str) -> dict:
     if not command_check["section_found"]:
         reasons.append("「実行コマンド全文」セクションが見つからない")
 
+    # 警告(FAILにしない、statusには影響させない。reasonsとは別のwarningsへ記録する)
+    warnings = []
+    if tts_mode_check["triggered"]:
+        warnings.append(
+            "TTSを伴う委任文だが TTS_EXECUTION_MODE=STANDARD の明示も "
+            "batch-reason の記載も見つからない(PM_GOVERNANCE.md 7-1/7-2、"
+            "PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01)"
+        )
+
     status = "PASS" if not reasons else "FAIL"
 
     return {
         "status": status,
         "reasons": reasons,
+        "warnings": warnings,
         "required_keywords": keyword_results,
         "fixed_block": fixed_block,
         "placeholder_hits": placeholder_hits,
         "command_check": command_check,
+        "tts_mode_check": tts_mode_check,
     }
 
 
@@ -234,6 +271,12 @@ def format_human_readable(result: dict) -> str:
             lines.append(f"  - {r}")
     else:
         lines.append("reasons: (none)")
+    if result.get("warnings"):
+        lines.append("warnings:")
+        for w in result["warnings"]:
+            lines.append(f"  - {w}")
+    else:
+        lines.append("warnings: (none)")
     lines.append("required_keywords:")
     for r in result["required_keywords"]:
         mark = "OK" if r["present"] else "MISSING"

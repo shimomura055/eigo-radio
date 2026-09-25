@@ -659,6 +659,13 @@ Trial・開発作業と、量産Production runでは、コスト最適化の目�
   site」と定義するファイル・`er012_b_family_production_runner_01.py`等)
   はBatch既定のまま変更しない。
 
+運用是正履歴: 2026-09-25 `PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01`
+(既存7-1/7-2の再確認・運用是正、新仕様ではない。E2E runner
+[`er012_e_family_entertainment_two_level_runner_01.py`]に`--tts-mode`
+[既定STANDARD]・`--batch-reason`必須化を追加し、委任テンプレートへT-2を
+新設、133ファイルの横展開点検を実施。詳細: `docs/pm/tts_mode_audit_
+2026-09-25.md`、`DECISION_LOG.md`同管理ID)。
+
 ## 8. Agent並列起動の原則
 
 - 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の

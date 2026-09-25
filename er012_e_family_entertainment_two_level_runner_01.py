@@ -30,7 +30,16 @@
 #       --ja-article <path> --slug <sewer|meta> --out-dir <dir> \
 #       [--ledger-file <既存Ledger再利用path>] [--source-id <管理ID>] \
 #       [--budget-jpy 300] [--stage ledger|writer|scaffold|tts|assemble|player|all] \
-#       [--regenerate-stage advanced|standard]
+#       [--regenerate-stage advanced|standard] \
+#       [--tts-mode STANDARD|BATCH(既定STANDARD)] [--batch-reason "<PM_GOVERNANCE 7-2の理由>"]
+#
+# TTS実行方式(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01、2026-09-25):
+# 既定は--tts-mode STANDARD(TTS_EXECUTION_MODE=STANDARD、PM_GOVERNANCE.md
+# 7-1「正式リリース前は原則Standard同期」)。--tts-mode BATCHを使う場合は
+# --batch-reasonでPM_GOVERNANCE.md 7-2の例外条件(1〜4)に該当する理由を
+# 明示すること(未指定時はエラーで停止)。低レベル実装
+# `er006_batch_tts_wiring_01.DEFAULT_TTS_EXECUTION_MODE`(=BATCH、量産
+# Production既定)には依存しない。
 # ============================================================
 from __future__ import annotations
 
@@ -605,7 +614,7 @@ Standard=A2 v5(6,000語ライン+自然さ優先)。</p>
 # ------------------------------------------------------------
 # CLI
 # ------------------------------------------------------------
-def main() -> None:
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--ja-article", required=True)
     parser.add_argument("--slug", required=True)
@@ -620,7 +629,24 @@ def main() -> None:
     parser.add_argument("--stage", default="all",
                          choices=("ledger", "writer", "scaffold", "tts", "assemble", "player", "all"))
     parser.add_argument("--regenerate-stage", default=None, choices=("advanced", "standard"))
+    parser.add_argument("--tts-mode", default="STANDARD", choices=("STANDARD", "BATCH"),
+                         help="TTS実行方式(既定STANDARD、PM_GOVERNANCE.md 7-1: 正式リリース前は"
+                              "原則Standard同期)。BATCH指定時は--batch-reason必須(7-2の例外条件)。")
+    parser.add_argument("--batch-reason", default=None,
+                         help="--tts-mode BATCH指定時に必須。PM_GOVERNANCE.md 7-2の例外条件"
+                              "(1〜4のいずれか)に該当する理由を明記する。")
+    return parser
+
+
+def main() -> None:
+    parser = build_arg_parser()
     args = parser.parse_args()
+
+    if args.tts_mode == "BATCH" and not args.batch_reason:
+        parser.error("--tts-mode BATCH を指定する場合は --batch-reason で"
+                      "PM_GOVERNANCE.md 7-2の例外条件に該当する理由を明示すること。")
+
+    os.environ["TTS_EXECUTION_MODE"] = args.tts_mode
 
     os.makedirs(args.out_dir, exist_ok=True)
     cl.install(f"{args.out_dir}/raw_usage_log.jsonl")
@@ -637,6 +663,8 @@ def main() -> None:
         "slug": args.slug,
         "japanese_title": japanese_title,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "tts_execution_mode": args.tts_mode,
+        "tts_batch_reason": args.batch_reason,
     })
 
     theme = {

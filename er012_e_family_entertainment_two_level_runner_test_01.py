@@ -16,6 +16,8 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 from dataclasses import dataclass, field
@@ -193,6 +195,49 @@ class RunWriterStageTests(unittest.TestCase):
         m_std.assert_called_once_with(ADVANCED_TEXT, client=mock.ANY)
         self.assertIn("standard", evidence)
         self.assertNotIn("advanced", evidence)
+
+
+class TtsModeCliTests(unittest.TestCase):
+    """PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01: --tts-modeの既定は
+    STANDARD(PM_GOVERNANCE.md 7-1)であり、BATCH指定時は--batch-reasonが
+    必須であることを検証する(実API呼び出し・実TTS生成は行わない)。"""
+
+    def test_default_tts_mode_is_standard(self):
+        parser = runner.build_arg_parser()
+        args = parser.parse_args([
+            "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+        ])
+        self.assertEqual(args.tts_mode, "STANDARD")
+        self.assertIsNone(args.batch_reason)
+
+    def test_explicit_batch_mode_with_reason_parses_ok(self):
+        parser = runner.build_arg_parser()
+        args = parser.parse_args([
+            "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+            "--tts-mode", "BATCH", "--batch-reason", "PM_GOVERNANCE 7-2(1) Batch固有挙動の検証",
+        ])
+        self.assertEqual(args.tts_mode, "BATCH")
+        self.assertEqual(args.batch_reason, "PM_GOVERNANCE 7-2(1) Batch固有挙動の検証")
+
+    def test_invalid_tts_mode_value_rejected_by_argparse(self):
+        parser = runner.build_arg_parser()
+        with self.assertRaises(SystemExit):
+            parser.parse_args([
+                "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+                "--tts-mode", "SOMETHING_ELSE",
+            ])
+
+    def test_batch_mode_without_reason_errors_via_subprocess(self):
+        script = os.path.join(os.path.dirname(runner.__file__),
+                               "er012_e_family_entertainment_two_level_runner_01.py")
+        result = subprocess.run(
+            [sys.executable, script,
+             "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+             "--tts-mode", "BATCH"],
+            capture_output=True, text=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--batch-reason", result.stderr)
 
 
 class TtsStageJapaneseTitleInjectionTests(unittest.TestCase):
