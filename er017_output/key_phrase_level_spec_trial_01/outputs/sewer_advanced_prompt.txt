@@ -1,0 +1,35 @@
+DEVELOPER:
+You choose Key Phrases for an English-learning news audio program for Japanese adult learners. The goal of Key Phrases is not only to understand this article, but to take away English that the learner can reuse in other situations.
+
+USER:
+Choose exactly 5 Key Phrases from the article below for ADVANCED level learners (CEFR B1).
+
+Priorities:
+- Compared with basic level, prefer slightly more advanced vocabulary, natural collocations, and expressions that are easy to reuse in news or explanatory writing and speech.
+- Reusability and learning value come first. Do not choose a word only because it is difficult, and do not choose a word only because it is specific to this article.
+- "Advanced" does not mean longer. Keep each phrase about as short as a basic-level phrase: one learning point per phrase. Do not pack two points into one phrase (for example, do not combine "consider" and "replace A with B"). Do not attach unnecessary words when the real learning point is shorter (for example, "take care of", not "take care of the rest"). But keep a natural collocation together when it is worth learning as a unit (for example, "raise privacy concerns").
+- Do not fix article-specific nouns into a general phrase if that lowers reusability. Use "A", "B", or "..." for slots (for example, "replace A with B").
+- At most ONE of the 5 may be a Topic Word: a theme-specific word that is worth learning for this article even though it is not a general expression. A Topic Word is optional, not required.
+
+For each phrase give: phrase, is_topic_word (true/false), example_sentence (the sentence from the article that contains it), reason_ja (one short line in Japanese on why it was chosen), explanation_en (a short, simple English explanation of the meaning — one sentence, plain words, easier than the phrase itself; not a dictionary definition. Example style: "raise privacy concerns" -> "to make people worry about how personal information is used or protected").
+
+Return JSON only: {"key_phrases": [ {...} x5 ]}.
+
+[Article]
+“Merger”? Not Towns, but Household Wastewater
+
+When a news report mentions a “combined septic tank,” you may wonder if it is about towns joining together. But the things being combined are not municipalities. They are toilet water, and water from the kitchen and bath.
+
+Some municipalities are now considering replacing aging sewer systems with combined septic tanks. This does not mean getting rid of all sewers. In some areas, it means considering a change from a system that connects the whole town to one that treats wastewater near each home.
+
+A sewer is like an invisible main artery beneath the town. It collects water from homes in underground pipes and carries it to a distant treatment plant. Most of the time, we hardly think about it. Turn on the tap, flush the toilet, and the underground system takes care of the rest.
+
+But when those pipes grow old, the situation changes. Because they are underground, it is hard to find where they are damaged. Repairs are not easy, either. Since the system is connected over a long distance, the repairs can also become large-scale.
+
+That is where combined septic tanks come in. They are small water-treatment facilities placed near homes. They treat not only toilet water, but also water from the kitchen and bath, for each home. Instead of sending the water to a distant treatment plant, they clean it near where it comes out.
+
+It is like placing a small washing machine in each home instead of putting one huge washing machine in the town. The idea is to divide one large system into several smaller ones.
+
+Of course, having a septic tank does not mean that nothing more is needed. Installation, inspections, and cleaning are still necessary. For people who use sewers, this also means that the hidden part of daily life will change.
+
+Still, the interesting point is this: to protect convenience, we do not always need to make the system bigger. Instead of forcing an aging underground main artery to keep going, we can move water treatment closer to home. The future of sewers may arrive in a surprisingly familiar place—right near us.

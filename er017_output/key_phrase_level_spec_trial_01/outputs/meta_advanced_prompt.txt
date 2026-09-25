@@ -1,0 +1,41 @@
+DEVELOPER:
+You choose Key Phrases for an English-learning news audio program for Japanese adult learners. The goal of Key Phrases is not only to understand this article, but to take away English that the learner can reuse in other situations.
+
+USER:
+Choose exactly 5 Key Phrases from the article below for ADVANCED level learners (CEFR B1).
+
+Priorities:
+- Compared with basic level, prefer slightly more advanced vocabulary, natural collocations, and expressions that are easy to reuse in news or explanatory writing and speech.
+- Reusability and learning value come first. Do not choose a word only because it is difficult, and do not choose a word only because it is specific to this article.
+- "Advanced" does not mean longer. Keep each phrase about as short as a basic-level phrase: one learning point per phrase. Do not pack two points into one phrase (for example, do not combine "consider" and "replace A with B"). Do not attach unnecessary words when the real learning point is shorter (for example, "take care of", not "take care of the rest"). But keep a natural collocation together when it is worth learning as a unit (for example, "raise privacy concerns").
+- Do not fix article-specific nouns into a general phrase if that lowers reusability. Use "A", "B", or "..." for slots (for example, "replace A with B").
+- At most ONE of the 5 may be a Topic Word: a theme-specific word that is worth learning for this article even though it is not a general expression. A Topic Word is optional, not required.
+
+For each phrase give: phrase, is_topic_word (true/false), example_sentence (the sentence from the article that contains it), reason_ja (one short line in Japanese on why it was chosen), explanation_en (a short, simple English explanation of the meaning — one sentence, plain words, easier than the phrase itself; not a dictionary definition. Example style: "raise privacy concerns" -> "to make people worry about how personal information is used or protected").
+
+Return JSON only: {"key_phrases": [ {...} x5 ]}.
+
+[Article]
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI handle a phone call sounds like a convenient service from the future. You tell it what you need, and the AI makes the call for you. That was the kind of phone service being prepared at Meta.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta was trying to give Muse a feature that would make calls on a user’s behalf.
+
+But when people looked behind the stage, they found something unexpected.
+
+In internal tests, some parts of the calls were handled not by AI, but by human contract workers. Meta called these workers “human concierges.” The sign out front said “AI phone service.” Yet, in part, a human was making the call. The AI only appeared to be performing alone.
+
+### The hidden performer inside the phone call
+
+That is the most surprising part of the story. The call looked like a one-person performance, but another performer was hidden inside the piano. Human help is not automatically a bad thing: people can fill in the areas where AI is still weak. As an approach, that is understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees raised concerns that call details might be leaked outside the company. People might also be surprised to learn that a contract worker, not AI alone, had listened and responded to a conversation they thought they had handed to AI. According to internal posts reviewed by Reuters, a Meta executive said the company had put the feature on hold.
+
+For AI phone service, the important question may not be only whether it can make a call. Who is speaking onstage? And who is behind the curtain? The more convenient the service, the more its explanation may matter before people can truly feel safe leaving a task to it.
+
+## In one line
+
+AI may make the call, but people also need to know who is really behind the voice.

@@ -1,0 +1,43 @@
+DEVELOPER:
+You choose Key Phrases for an English-learning news audio program for Japanese adult learners. The goal of Key Phrases is not only to understand this article, but to take away English that the learner can reuse in other situations.
+
+USER:
+Choose exactly 5 Key Phrases from the article below for STANDARD level learners (CEFR A2).
+
+Priorities:
+- Reusability: prefer basic expressions that the learner can use again in everyday life or in news on other topics.
+- Learning value and natural English chunks (e.g., phrasal verbs, common collocations, useful function phrases).
+- Fit for A2 level. Do not choose a word only because it is difficult, and do not choose a word only because it is specific to this article.
+- Keep each phrase short: one learning point per phrase. Do not pack two grammar or vocabulary points into one phrase. Do not attach article-specific nouns to a general phrase when the general phrase is the real learning point. Use "..." for a slot when needed (for example, "put ... on hold").
+- At most ONE of the 5 may be a Topic Word: a theme-specific word that is worth learning for this article even though it is not a general expression. A Topic Word is optional, not required.
+
+For each phrase give: phrase (as written in the article, with "..." for slots), is_topic_word (true/false), example_sentence (the sentence from the article that contains it), reason_ja (one short line in Japanese on why it was chosen), explanation_ja (a short Japanese explanation of the meaning and how to use it).
+
+Return JSON only: {"key_phrases": [ {...} x5 ]}.
+
+[Article]
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI take a phone call sounds like a future service. You tell it what you need, and AI calls for you. That was the kind of phone service Meta was preparing.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta wanted to give Muse a feature for making calls for users.
+
+But people who looked backstage found something unexpected.
+
+In internal tests, human contract workers handled some parts of the calls. Meta called these workers “human concierges.” The sign outside said “AI phone service.” But a human was making part of the call. The AI only seemed to perform alone.
+
+### The hidden performer inside the phone call
+
+This was the story’s most surprising part. The call looked like a one-person performance. But another performer was hidden inside the piano. Human help is not always a bad thing. People can help where AI is still weak. That makes this approach understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees worried that call details might leak outside the company. People might be surprised that a contract worker had listened to the conversation. The worker had also responded. They thought they had handed the call to AI.
+
+Reuters reviewed internal posts about the feature. A Meta executive spoke about it in those posts. The executive said the company had paused the feature.
+
+For AI phone service, one question is whether it can make a call. But that is not the only important question. Who is speaking onstage? And who is behind the curtain? The more convenient the service is, the more its explanation may matter. People may need that explanation before they truly feel safe giving it a task.
+
+## In one line
+
+AI may make the call. People also need to know who is behind the voice.
