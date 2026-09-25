@@ -1,0 +1,78 @@
+DEVELOPER:
+You are an editor testing a candidate vocabulary-difficulty rule for CEFR B1 ("Advanced") level news articles written for Japanese adult English learners. This rule is a draft under evaluation, not yet approved. For the specific difficult words listed below, you decide word by word whether to keep the word or replace it with a simpler, natural alternative, following the rule exactly. You must not change anything else in the article.
+
+USER:
+Candidate difficulty rule (draft, under evaluation, v2 revision):
+
+Words that rank below roughly the top 12,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.
+
+A word ranked beyond ~12,000 may still be KEPT (not simplified) if one of these applies:
+A. Its meaning can easily be guessed from an already-easy word it is built from (for example: "onstage" = on + stage, "wastewater" = waste + water, "understandable" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.
+B. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.
+C. It is a proper noun (a person's name, a company or product name, a place name), OR it is a word inside quotation marks, or a title, designation, or nickname that a specific person or organization is reported to have actually used (for example, if the article states that Meta called certain workers "human concierges", the word "concierges" here is part of that reported fact, not an ordinary vocabulary choice). Such reported facts must not be simplified even if the word appears in the candidate list below.
+D. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because "it is a technical term" -- if a simple, natural, meaning-preserving substitute exists, simplify it.
+
+Do NOT use "it is part of a fixed expression / idiom" as its own exception category. (For example, if "curtain" in "behind the curtain" is kept, the reason must be B [established Japanese loanword], never "it is part of an idiom.") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.
+
+In addition to A/B/C/D above, this revision of the rule (v2) adds one more exception and one restriction:
+
+E. Topic Core Word: a word ranked beyond ~12,000 may also be KEPT if it is so central to what THIS SPECIFIC article's theme actually is that losing it would weaken "what this article is about" or "the reason for learning this topic." This is NOT simply "a word that appears often in the article." Judge it by: (i) whether the word names the topic itself, (ii) whether it is central to understanding the article or the topic, (iii) whether it would have high value for a future Topic Word / meaning explanation about this topic. If, and only if, you decide a word is a Topic Core Word, you must give a concrete, article-specific explanation of exactly why this word is central to THIS article's topic, in the "topic_core_justification" output field. A vague or generic statement (for example, "it's an important word in the article") is not acceptable and must not be used as the justification.
+
+Metaphor restriction: if a word's use in the article is part of a metaphor or storytelling device that the AI writer created for explanatory or storytelling effect, do NOT keep the word only because "the metaphor should be preserved" or "it reads nicely as storytelling." Beyond ~12,000, a word used only for such a metaphor is, by default, a candidate for simplification, unless one of exceptions A/B/C/D/E genuinely applies to it for a reason that is independent of the metaphor itself. If you rely on exception D for a word that is part of a metaphor, your reasoning must explicitly state that you are NOT keeping it merely to preserve the metaphor or the storytelling, and must instead name the specific, non-metaphor reason the word is indispensable.
+
+Priority when more than one consideration could apply to the same word: judge each word by its actual semantic role in this article, not by deciding individual words in advance. A word that is central to the article's theme (exception E, Topic Core Word) outranks a word that is merely part of a metaphor, which in turn outranks other considerations.
+
+For each candidate word listed below, decide:
+- "KEEP -- topic core word" (exception E)
+- "KEEP -- predictable morphology/compound" (exception A)
+- "KEEP -- established Japanese loanword" (exception B)
+- "KEEP -- proper noun / quoted designation" (exception C)
+- "KEEP -- indispensable / natural replacement unavailable" (exception D)
+- "SIMPLIFY" (replace it with a simpler, natural word or phrase)
+- "BORDERLINE" (only if you are genuinely unsure; explain why in notes_on_ambiguous_cases)
+
+For each candidate word, also fill in these additional fields:
+- "is_metaphor" (boolean): true if this word's use in the article is part of a metaphor or storytelling device created by the AI writer, false otherwise.
+- "exception_used" (string): which single reason this decision is actually based on -- "A", "B", "C", "D", "E", or "none" (use "none" for SIMPLIFY/BORDERLINE decisions).
+- "topic_core_justification" (string): if exception_used is "E", a concrete, article-specific explanation (as described above) of why this word is central to the article's topic; otherwise leave this field as an empty string.
+
+Structure contract (must not change): one `# ` title line, then body paragraphs, then exactly two `### ` subheadings each followed by its paragraph, then a `## In one line` section with its one closing sentence. Keep every heading's text unchanged unless a heading itself contains a candidate word you decide to SIMPLIFY (none of the candidate words appear in a heading in this article). Keep the same number of paragraphs and, as much as possible, the same sentence count.
+
+Only change the specific candidate words you decide to SIMPLIFY (and, only where grammatically necessary, a minimal amount of immediately surrounding wording so the sentence still reads naturally). Do not do a general rewrite of sentences that contain no candidate word. Do not add new facts, explanations, examples, or opinions. Do not remove any fact. Do not change the meaning, the tone, the storytelling, or the ending logic -- except that, under this rule, a word used only for a metaphor or storytelling device is a normal simplification candidate once it ranks beyond ~12,000, unless exception A/B/C/D/E genuinely applies to it for a reason independent of the metaphor (see the Metaphor restriction above). Keep the title unchanged unless it contains a candidate word you decide to SIMPLIFY.
+
+Output:
+- "decisions": exactly one entry per candidate word listed below, in the same order, each with word, actual_form, frequency_rank (copy the frequency_rank value exactly as given below -- do not recompute or guess it), decision, is_metaphor, exception_used, topic_core_justification, reasoning (one or two sentences, in English), before_sentence (the exact original sentence that contains this word), after_sentence (the resulting sentence in your rewritten article -- for KEEP decisions this should be identical or nearly identical to before_sentence).
+- "after_text": the full rewritten article (title + body), in the same format as the original.
+- "notes_on_ambiguous_cases": a short note (can be empty) on any word where the KEEP/SIMPLIFY line was genuinely hard to draw.
+
+[Candidate words -- rank below ~12,000, decide KEEP or SIMPLIFY for each]
+- word="concierges" actual_form="concierges" frequency_rank="> 20,000 (zipf=1.70, extremely rare)"
+- word="onstage" actual_form="onstage" frequency_rank="15,670"
+
+[Reference only -- words ranked 10,000-12,000 (near the threshold), shown so you can calibrate the rule; these are NOT candidates and do not need a decision unless they also appear in the candidate list above]
+- word="understandable" actual_form="understandable" frequency_rank="10,629"
+
+[Article]
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI handle a phone call sounds like a convenient service from the future. You tell it what you need, and the AI makes the call for you. That was the kind of phone service being prepared at Meta.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta was trying to give Muse a feature that would make calls on a user’s behalf.
+
+But when people looked behind the stage, they found something unexpected.
+
+In internal tests, some of the calls were handled not by AI, but by human contract workers. Meta called these workers “human concierges.” The sign out front said “AI phone service.” Yet, in part, a human was making the call. The AI only appeared to be performing alone.
+
+### The hidden performer inside the phone call
+
+That is the most surprising part of the story. The call looked like a one-person performance, but another performer was hidden inside the piano. Human help is not automatically a bad thing: people can fill in the areas where AI is still weak. As an approach, that is understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees raised concerns that call details might be leaked outside the company. People might also be surprised to learn that a contract worker, not AI alone, had listened and responded to a conversation they thought they had handed to AI. According to internal posts reviewed by Reuters, a Meta executive said the company had put the feature on hold.
+
+For AI phone service, the important question may not be only whether it can make a call. Who is speaking onstage? And who is behind the curtain? The more convenient the service, the more its explanation may matter before people can truly feel safe leaving a task to it.
+
+## In one line
+
+AI may make the call, but people also need to know who is really behind the voice.
