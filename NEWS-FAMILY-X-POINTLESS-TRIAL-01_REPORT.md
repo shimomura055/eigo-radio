@@ -231,6 +231,13 @@ GATE_BLOCKED、§6-1)。これは受入条件の「安全装置を回避しな�
 暗黙の前提には合致しているが、「完成音声の試聴」という意味では
 未達であることを明示する。
 
+[Fable注記] 受入条件「E2Eで音声まで完成」は**×**(未達)。comment_4の
+canonical "bring the main point together" をASRが3回ともHuman Review
+Lock(ER-011、無変更)で正しく終端しGATE_BLOCKEDとなったため。個別
+segmentはplayer.htmlで試聴可能だがfull episode wavは未生成。安全装置は
+回避していない(正しい挙動)。(Sonnet判定「VALIDATED(条件付き、上限)」は
+上記のとおり残す。)
+
 ## §8 QCD
 
 - Quality: Comment 1-4/Preview/Full Story Part1-3/In One Lineの
@@ -254,8 +261,55 @@ Family Xという設計として許容するか。
 
 ## §10 Fable評価
 
-[Fable記入]
+(1)Family X構造(Point系0・Key Phrase0・本文3分割39/40/48語・Comment4本・
+In One Line維持・効果音/リード/ブリッジ新規追加なし)はユーザー指示どおり
+成立。Family A側12ファイル無変更(git status差分0)、共有ファイルへの
+追記もゼロ。unit test 10件PASS。費用¥16.52(上限¥35内、STANDARD TTS)。
+
+(2)受入条件のうち「E2Eで音声まで完成」は**未達**: comment_4のcanonical
+"bring the main point together" をASRが3回とも "points" と書き起こし、
+Human Review Lock(ER-011、無変更)で正しく終端(GATE_BLOCKED)。個別
+segmentはplayer.htmlで試聴可能だがfull episode wavは未生成。安全装置は
+回避していない(正しい挙動)。
+
+(3)Point文言チェックの弱点: grepは "Point"/"point one/two" を対象と
+しており、comment_4の "main point" は検出外。Point構造ラベルではない
+慣用句だが、ユーザー要件「旧Pointへの誘導表現が残っていない」の趣旨
+からは避けるべき語で、Comment生成時に "point" という語自体を避ける
+扱いが必要かはユーザー判断。
+
+(4)**最重要**: 入力選定の誤り(Fable決定に起因)。Family A版Meta記事の
+Main Storyのみを流用しPoint節を内容ごと破棄したが、comparison_meta_b1.md
+の文単位対照で、Point One/Twoの本文(特に「Metaが機能を一時停止した」
+というReuters由来の事実)はMain Storyに含まれない物語本体の情報であり、
+Family Xではこの情報が失われた。これはユーザー指示「Point内容を本文3へ
+移植しない」の帰結ではなく、Meta記事ではFamily A contractが物語本体の
+一部をPoint節へ押し込んでいたことによる。Family Xの本来の入力は
+「Point contractなしの元記事全文」(例: NEWS-JA-TO-EN-ADAPTATION-TRIAL-01
+arm3のAdvanced Natural adaptation全文、sha256 20b7ac01…)であるべきで、
+その3分割ならPoint節への移植ではなく元本文そのものの分割になる。
+
+(5)Sonnet裁量: full_story_part3へOPEN-121/122のConnected Speech
+Equivalence/Repetition QAを同種body segmentとして適用範囲拡大。Fable
+判定: Trial内では妥当(Production変更なし)。ただしFamily X仕様化時に
+明記が必要。
+
+(6)Volume: 3分割は均等(39/40/48)だが記事が127語と短く、1パート約40語は
+音声として短い。200語級記事での再確認が望ましい。
 
 ## §11 分類
 
-[Fable記入]
+**USER_DECISION_REQUIRED**(構造は成立したが、E2E音声未完成[Human
+Review Lock]と入力選定に起因する情報欠落があるため、VALIDATEDにしない)。
+
+ユーザー判断事項:
+①入力を「Point contractなしの元記事全文」(arm3 Advanced adaptation)に
+差し替えて再実行するか(Comment再生成+TTS、¥20以内見込み。Fable推奨:
+**実施**。理由: 現状の比較はFamily A版に対して情報量で不利であり、
+Family Xの本来評価にならない)。
+②comment_4 "main point" の扱い: Human Review承認で通すか、Comment生成で
+"point" という語を避けるか(Fable推奨: ①の再実行で再生成されるため、
+再実行時に "point" 語をComment promptの禁止語にせず、結果を観察。ただし
+ユーザーが「point という語自体を避ける」を要件にするなら明示)。
+③A2レベルも同様に実施するか(¥15〜20、Fable推奨: ①の結果後)。
+④200語級のNews記事(hanshin等)でも1本試すか(Fable推奨: ①③後)。
