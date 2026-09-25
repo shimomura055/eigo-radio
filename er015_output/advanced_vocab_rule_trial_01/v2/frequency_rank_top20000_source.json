@@ -1,0 +1,12 @@
+{
+  "source_package": "wordfreq",
+  "source_package_version": "3.1.1",
+  "license": "Apache-2.0",
+  "method": "wordfreq.top_n_list('en', 20000) (v1と同一method・同一version)",
+  "ranking_unit": "rank = min(rank(surface form), rank(best lemma candidate)). lemma候補は-s/-es/-ies/-ed/-ing/-ly の単純規則のみで生成(-er/-est比較級除去は使わない、理由はer015_advanced_vocab_rule_trial_01_v2.py 冒頭コメント参照。v1のFable差し戻し修正A)。",
+  "rank_threshold": 12000,
+  "borderline_band": [
+    10000,
+    12000
+  ]
+}
