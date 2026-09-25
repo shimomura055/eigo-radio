@@ -173,6 +173,59 @@ def test_unrelated_kanji_reading_not_confirmed():
     print("PASS: test_unrelated_kanji_reading_not_confirmed")
 
 
+# ============================================================
+# NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b:
+# expected_readingsがCascadeの全ステップ(Primary#1〜Secondary#2)へ
+# 正しく転送されることの確認(単なる転送だが、Primary#1以外のステップで
+# 抜け落ちていないかを直接検証する)。
+# ============================================================
+def test_expected_readings_forwarded_to_primary_2_step():
+    """Primary#1は辞書登録トークン(Meta->メタ)が正しく、無関係な
+    entity_like差(スラッジ->スラッシ)だけでCascadeが起動する。Primary#2で
+    辞書トークンが「メタン」に化けた場合、expected_readingsが転送されて
+    いれば直ちにTRUE_CONTENT_MISMATCHと判定されるはず(転送されていなければ
+    従来通りentity_like扱いのままになる)。"""
+    import er006_asr_provider_routing_01 as routing
+    orig = routing._transcribe_openai_mini
+    p2_text = "スラッシについて、メタンが説明しました。"
+    routing._transcribe_openai_mini = lambda *a, **k: (p2_text, None)
+    try:
+        canon = "スラッジについて、Metaが説明しました。"
+        asr1 = "スラッシについて、メタが説明しました。"
+        r_with = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
+            canon, asr1, "dummy.wav", cascade_enabled=True, expected_readings={"meta": "メタ"})
+        r_without = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
+            canon, asr1, "dummy.wav", cascade_enabled=True)
+        p2_step_with = next(s for s in r_with["steps"] if s["step"] == "primary_2")
+        p2_step_without = next(s for s in r_without["steps"] if s["step"] == "primary_2")
+        assert p2_step_with["classification"] == "TRUE_CONTENT_MISMATCH", p2_step_with
+        assert p2_step_without["classification"] != "TRUE_CONTENT_MISMATCH", p2_step_without
+    finally:
+        routing._transcribe_openai_mini = orig
+    print("PASS: test_expected_readings_forwarded_to_primary_2_step")
+
+
+def test_expected_readings_none_is_fully_backward_compatible():
+    """expected_readings未指定(既定None)時、Meta->メタンのentity_like
+    Cascade偶然一致挙動が変わらないこと(recon_reading_validation_
+    wiring_01.md 1.2節の再現、既存artifactの挙動を壊さないことの確認)。"""
+    import er006_asr_provider_routing_01 as routing
+    orig = routing._transcribe_openai_mini
+    # Primary#2が読みの完全一致する表記を返せば、従来どおり無条件PASS
+    # (TTSの内容自体は変わらないため辞書チェック抜きでは救済されてしまう、
+    # という既存の欠落挙動そのものを回帰確認する)。
+    routing._transcribe_openai_mini = lambda *a, **k: ("メタが説明しました。", None)
+    try:
+        canon = "Metaが説明しました。"
+        asr1 = "メタンが説明しました。"
+        r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
+            canon, asr1, "dummy.wav", cascade_enabled=True)  # expected_readings渡さない
+        assert r["verified"] is True, "expected_readings未指定時は既存の挙動(偶然一致PASS)を変えない"
+    finally:
+        routing._transcribe_openai_mini = orig
+    print("PASS: test_expected_readings_none_is_fully_backward_compatible")
+
+
 def test_single_engine_repetition_does_not_confirm_orthographic_variant():
     # 「同一エンジンが同じ表記を繰り返しただけ」では確定させない
     # (少なくとも2つの異なるエンジンでの裏付けを要求する)。OpenAI
@@ -211,4 +264,6 @@ if __name__ == "__main__":
     test_koro_kanji_variant_confirmed_by_reading_candidates()
     test_unrelated_kanji_reading_not_confirmed()
     test_single_engine_repetition_does_not_confirm_orthographic_variant()
+    test_expected_readings_forwarded_to_primary_2_step()
+    test_expected_readings_none_is_fully_backward_compatible()
     print("ALL TESTS PASSED")

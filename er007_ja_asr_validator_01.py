@@ -176,7 +176,39 @@ _READING_CONTEXT_CHARS = 4  # 単独の漢字1文字は文脈なしでは正し�
                              # 崩れない)。
 
 
-def protected_check_ja(canonical_norm: str, asr_norm: str) -> ProtectedCheckResultJA:
+def _reading_dictionary_token_diff(c_span: str, a_span: str,
+                                    expected_readings: dict) -> dict | None:
+    """opcode差分(c_span/a_span、パディング前の生spanを使う)が、辞書登録
+    トークン(expected_readings、キーは小文字)単体である場合のみ、登録
+    読み(カタカナ)とASR側表記の読み一致判定を行う。判定対象外(トークンが
+    0/複数含まれる、トークン以外の文字がc_spanに混じっている、辞書未登録)
+    の場合はNoneを返す(この場合、呼び出し側は従来のentity_like判定へ
+    フォールバックする)。
+    NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 「メタ」が確定読みとして
+    辞書登録されているのに、TTS入力にもASR照合にも一切使われず、Latin
+    表記"Meta" vs カタカナ"メタン"のentity_like差がCascadeの偶然一致で
+    無条件PASSしていた欠落を修正する(recon_reading_validation_wiring_01.md
+    2.1節、推奨案どおり)。"""
+    tokens = safety._LATIN_TOKEN_RE.findall(c_span)
+    if len(tokens) != 1:
+        return None
+    token = tokens[0]
+    remainder = c_span.replace(token, "", 1)
+    if remainder.strip():
+        return None
+    expected_reading = expected_readings.get(token.lower())
+    if not expected_reading:
+        return None
+    matched = _reading_equal_allowing_voicing(expected_reading, a_span)
+    return {"token": token, "expected_reading": expected_reading, "matched": matched}
+
+
+def protected_check_ja(canonical_norm: str, asr_norm: str,
+                        expected_readings: dict | None = None) -> ProtectedCheckResultJA:
+    """expected_readings(既定None): 辞書登録トークン(小文字キー、値は
+    確定カタカナ読み)。Noneの場合は一切新チェックを行わず、完全に従来
+    どおりの挙動になる(NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b、
+    後方互換)。"""
     result = ProtectedCheckResultJA(passed=True)
     sm = difflib.SequenceMatcher(None, canonical_norm, asr_norm, autojunk=False)
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
@@ -214,6 +246,28 @@ def protected_check_ja(canonical_norm: str, asr_norm: str) -> ProtectedCheckResu
             # 漢字/ひらがな表記ゆれ等、読みが変わらない差は許容差
             continue
 
+        # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 辞書登録トークン
+        # (expected_readings)単体のopcode差分に限り、entity_likeヒューリ
+        # スティック(Cascade対象=無条件PASSの余地あり)より先に、確定読み
+        # との直接照合を行う。辞書未登録トークン・複数トークン混在等は
+        # Noneが返り、下の従来ロジックへフォールバックする(regressionなし)。
+        if expected_readings:
+            dict_diff = _reading_dictionary_token_diff(c_span, a_span, expected_readings)
+            if dict_diff is not None:
+                if dict_diff["matched"]:
+                    # 確定読みどおりに発話された(許容差、既存reading_equal
+                    # と同じ扱い)。
+                    continue
+                result.content_diffs.append({
+                    "type": tag, "canonical": c_span, "asr": a_span,
+                    "entity_like": False, "phonetic_uncertain": False,
+                    "cascade_eligible": False,
+                    "reading_dictionary_mismatch": True,
+                    "reading_dictionary_token": dict_diff["token"],
+                    "reading_dictionary_expected_reading": dict_diff["expected_reading"],
+                })
+                continue
+
         entity_like = _is_katakana_or_acronym(c_span) and _is_katakana_or_acronym(a_span)
         # ER-007-JA-ASR-TTS-RETRY-PATH-FIX-01 Part B: 読みが完全一致は
         # しないが、濁点/半濁点(連濁)の有無だけが異なる場合は、TTSの
@@ -241,7 +295,12 @@ def protected_check_ja(canonical_norm: str, asr_norm: str) -> ProtectedCheckResu
 
 
 def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
-                           tts_failure_threshold: float = 0.4) -> ClassificationResultJA:
+                           tts_failure_threshold: float = 0.4,
+                           expected_readings: dict | None = None) -> ClassificationResultJA:
+    """expected_readings(既定None): NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02
+    Phase 3b、辞書登録トークン(小文字キー、値は確定カタカナ読み)。
+    protected_check_ja()へそのまま転送するだけで、他のロジックは一切
+    変更しない(Noneの場合は完全後方互換)。"""
     if asr_text is None:
         return ClassificationResultJA("TRUE_CONTENT_MISMATCH", 0.0, ProtectedCheckResultJA(passed=False),
                                        should_pass=False, should_retry=True,
@@ -261,7 +320,7 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
 
     ratio = difflib.SequenceMatcher(None, c_norm, a_norm, autojunk=False).ratio()
 
-    protected = protected_check_ja(c_norm, a_norm)
+    protected = protected_check_ja(c_norm, a_norm, expected_readings=expected_readings)
 
     if not protected.passed:
         # OPEN-145-JA-ASR-ORTHOGRAPHIC-VARIANT-PRODUCTION-WIRING-01(2026-09-12

@@ -15,6 +15,7 @@ from __future__ import annotations
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 import er003_audio_tts_asr_safety as safety
 import er003_v1_n3_01_tts_generate as tg
@@ -59,6 +60,18 @@ class ClassifyForeignTokensCoreTests(unittest.TestCase):
         findings = safety.classify_foreign_tokens_in_japanese_text("自宅のWi-Fiが遅いという相談です。")
         self.assertTrue(any(f["category"] == READING_DICT for f in findings))
         self.assertFalse(safety.foreign_token_gate_requires_stop(findings))
+
+    def test_4b_reading_dictionary_finding_has_structured_reading_field(self):
+        # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: READING_DICTIONARY
+        # findingへ構造化フィールド"reading"が追加され、値が
+        # DEFAULT_JA_READING_DICTIONARYの登録値と一致すること(reasonの
+        # 文字列パースに頼らず直接照合できることの確認)。
+        findings = safety.classify_foreign_tokens_in_japanese_text("このサービスをMetaが準備していました。")
+        dict_findings = [f for f in findings if f["category"] == READING_DICT]
+        self.assertTrue(dict_findings)
+        for f in dict_findings:
+            self.assertIn("reading", f)
+            self.assertEqual(f["reading"], safety.DEFAULT_JA_READING_DICTIONARY[f["token"].lower()])
 
     def test_5_known_key_phrase_term_classified_as_english_pronunciation(self):
         text = "この記事の重要表現はstandard deviationです。"
@@ -235,6 +248,80 @@ class MetaReadingDictionaryEntryTests(unittest.TestCase):
 
     def test_16_meta_dictionary_reading_value(self):
         self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get("meta"), "メタ")
+
+
+class ExpectedReadingsExtractionAndWiringTests(unittest.TestCase):
+    """NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: findings(READING_
+    DICTIONARY分類)からexpected_readingsを算出し、TTS呼び出し(voice01.
+    generate_charon_japanese/generate_a2_japanese_with_fallback)まで
+    正しく転送されることの確認。TTS/ASR自体はmockで、実API呼び出しは
+    一切発生しない。"""
+
+    def test_a2_expected_readings_extracted_and_forwarded(self):
+        text = "このサービスをMetaが準備していました。"
+        with mock.patch.object(tg, "generate_a2_japanese_with_fallback",
+                                return_value={"status": "OK", "attempts_log": []}) as mock_fallback:
+            tg.generate_a2_japanese_with_reading_safety(text, "dummy.wav", "この")
+        mock_fallback.assert_called_once()
+        self.assertEqual(mock_fallback.call_args.kwargs.get("expected_readings"), {"meta": "メタ"})
+
+    def test_b1_expected_readings_extracted_and_forwarded(self):
+        text = "このサービスをMetaが準備していました。"
+        with mock.patch.object(tg.voice01, "generate_charon_japanese",
+                                return_value={"status": "OK", "attempts_log": []}) as mock_charon:
+            tg.generate_charon_japanese_with_reading_safety(text, "dummy.wav", "この")
+        mock_charon.assert_called_once()
+        self.assertEqual(mock_charon.call_args.kwargs.get("expected_readings"), {"meta": "メタ"})
+
+    def test_no_reading_dictionary_token_yields_none(self):
+        # 辞書登録トークンが1件もない場合、expected_readingsはNone(空dictでは
+        # なく完全にNone)で転送される(既定挙動と区別せず、下流の`if
+        # expected_readings:`分岐が確実にFalseになることを保証する)。
+        text = "これは普通の日本語の文章です。"
+        with mock.patch.object(tg, "generate_a2_japanese_with_fallback",
+                                return_value={"status": "OK", "attempts_log": []}) as mock_fallback:
+            tg.generate_a2_japanese_with_reading_safety(text, "dummy.wav", "これ")
+        self.assertIsNone(mock_fallback.call_args.kwargs.get("expected_readings"))
+
+
+class ExpectedReadingsFallbackAndStandardPathForwardingTests(unittest.TestCase):
+    """generate_a2_japanese_with_fallback()が、標準経路(c.generate_
+    narration_snippet_verified_strict)・fallback経路(minimal instruction
+    + ja_secondary.evaluate_attempt_ja_with_cascade)の両方へexpected_
+    readingsをそのまま転送すること。"""
+
+    def test_standard_path_receives_expected_readings(self):
+        with mock.patch.object(tg.c, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "OK", "attempts_log": [{"attempt": 1}]}) as mock_std:
+            tg.generate_a2_japanese_with_fallback(
+                "テスト文", "dummy.wav", "テス", expected_readings={"meta": "メタ"})
+        self.assertEqual(mock_std.call_args.kwargs.get("expected_readings"), {"meta": "メタ"})
+
+    def test_fallback_path_receives_expected_readings(self):
+        realistic_attempts_log = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
+        with mock.patch.object(tg.c, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "STOPPED", "attempts_log": realistic_attempts_log}), \
+             mock.patch.object(tg, "_generate_a2_japanese_minimal_instruction",
+                                return_value={"status": "OK", "text": "テスト文", "path": "dummy.wav"}), \
+             mock.patch.object(tg.routing, "transcribe", return_value=("ダミー書き起こし", None)), \
+             mock.patch.object(tg.ja_secondary, "evaluate_attempt_ja_with_cascade",
+                                return_value=(True, False, _FakeCls("PHONETIC_MATCH"))) as mock_cascade:
+            tg.generate_a2_japanese_with_fallback(
+                "テスト文", "dummy.wav", "テス", expected_readings={"meta": "メタ"})
+        self.assertEqual(mock_cascade.call_args.kwargs.get("expected_readings"), {"meta": "メタ"})
+
+    def test_default_expected_readings_none_unchanged_behavior(self):
+        # expected_readings未指定(既定None)の既存呼び出しは、下流へ
+        # 明示的にNoneを転送するだけで、挙動自体は完全に従来どおり。
+        with mock.patch.object(tg.c, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "OK", "attempts_log": [{"attempt": 1}]}) as mock_std:
+            tg.generate_a2_japanese_with_fallback("テスト文", "dummy.wav", "テス")
+        self.assertIsNone(mock_std.call_args.kwargs.get("expected_readings"))
+
+
+class _FakeCls:
+    def __init__(self, classification):
+        self.classification = classification
 
 
 if __name__ == "__main__":

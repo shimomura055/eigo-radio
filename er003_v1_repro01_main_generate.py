@@ -229,6 +229,12 @@ def generate_narration_snippet_verified_strict(
     # qa_gate()参照(方式A[n-gram句・文単位反復]+D[spectral long-lag]+
     # D'[spectral short-lag/false start型]、既存dq18と同一のANDゲート)。
     enable_repetition_qa: bool = False,
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 日本語(language=="ja")
+    # 分岐のみが使用する(既定None、他の全呼び出し元・英語分岐は無変更)。
+    # 辞書登録トークン(READING_DICTIONARY分類)の確定読み(小文字キー、
+    # カタカナ値)。ja_secondary.evaluate_attempt_ja_with_cascade()へ
+    # そのまま転送するだけで、ここでは解釈しない。
+    expected_readings: dict | None = None,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -294,7 +300,8 @@ def generate_narration_snippet_verified_strict(
             # Cascade方式へ置き換える(protected_check_jaが数字・否定・
             # 固有名詞らしさ・読みをopcode単位で個別に判定する)。
             verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
-                text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+                text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
+                expected_readings=expected_readings)
             verified = verified_content and length_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)

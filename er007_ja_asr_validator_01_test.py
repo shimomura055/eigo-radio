@@ -255,6 +255,39 @@ READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES = [
 ]
 
 
+# ------------------------------------------------------------
+# READING_DICTIONARY fixtures(NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b:
+# expected_readingsを渡した場合の辞書登録トークン直接読み照合。
+# recon_reading_validation_wiring_01.md 5.1節のtest計画に対応)。
+# ------------------------------------------------------------
+READING_DICTIONARY_EXPECTED = {"meta": "メタ"}
+
+READING_DICTIONARY_MATCH_FIXTURES = [
+    {"name": "「メタ」(canonical Meta) vs 「メタ」(ASR、辞書読み完全一致) -> PASS",
+     "canonical": "このサービスを、Metaが準備していたという話です。",
+     "asr": "このサービスを、メタが準備していたという話です。"},
+]
+
+READING_DICTIONARY_MISMATCH_FIXTURES = [
+    {"name": "実データ再現(comment_3): 「Meta」(canonical) vs 「メタン」(ASR) -> "
+             "expected_readingsありの場合はFAIL(TRUE_CONTENT_MISMATCH)",
+     "canonical": "このニュースは、AIが人の代わりに電話をするサービスを、Metaが準備していたという話です。",
+     "asr": "このニュースは、AIが人の代わりに電話をするサービスをメタンが準備していたという話です。"},
+]
+
+# 同じ不一致ペアを、expected_readingsを渡さない場合(後方互換の確認、既存
+# ASR Cascade[entity_like扱い]の挙動が一切変わらないこと)。
+READING_DICTIONARY_BACKWARD_COMPAT_FIXTURES = READING_DICTIONARY_MISMATCH_FIXTURES
+
+# 辞書に無いLatin token(未登録"XYZ")でのentity_like挙動が、expected_readings
+# 指定時(無関係な"meta"キーのみ)でも従来どおりであること(regressionなし)。
+READING_DICTIONARY_UNRELATED_TOKEN_FIXTURES = [
+    {"name": "辞書未登録トークン(XYZ)はexpected_readings指定時も従来どおりentity_like扱い",
+     "canonical": "このXYZという略語について説明します。",
+     "asr": "このエックスワイジーという略語について説明します。"},
+]
+
+
 def run_group(label, fixtures, expect_should_pass):
     print(f"\n=== {label} ===")
     failures = []
@@ -359,10 +392,55 @@ if __name__ == "__main__":
         if not ok:
             all_failures.append(fx["name"])
 
+    print("\n=== READING_DICTIONARY_MATCH fixtures (expected_readingsあり、辞書読み完全一致 -> PASS) ===")
+    for fx in READING_DICTIONARY_MATCH_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"], expected_readings=READING_DICTIONARY_EXPECTED)
+        ok = r.should_pass is True and not any(
+            d.get("reading_dictionary_mismatch") for d in r.protected.content_diffs)
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== READING_DICTIONARY_MISMATCH fixtures (expected_readingsあり -> FAIL"
+          "[TRUE_CONTENT_MISMATCH、既存retry経路へ]) ===")
+    for fx in READING_DICTIONARY_MISMATCH_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"], expected_readings=READING_DICTIONARY_EXPECTED)
+        ok = r.classification == "TRUE_CONTENT_MISMATCH" and r.should_pass is False and r.should_retry is True
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass} "
+              f"should_retry={r.should_retry}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== READING_DICTIONARY backward-compat fixtures (expected_readingsなし -> "
+          "従来どおりASR_VALIDATION_UNCERTAIN/entity_like扱い、後方互換の確認) ===")
+    for fx in READING_DICTIONARY_BACKWARD_COMPAT_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])  # expected_readings渡さない
+        ok = r.classification != "TRUE_CONTENT_MISMATCH"
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== READING_DICTIONARY unrelated-token fixtures (無関係な辞書指定時もregressionなし) ===")
+    for fx in READING_DICTIONARY_UNRELATED_TOKEN_FIXTURES:
+        r_with_dict = javal.classify_ja_asr_match(fx["canonical"], fx["asr"], expected_readings=READING_DICTIONARY_EXPECTED)
+        r_without_dict = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r_with_dict.classification == r_without_dict.classification and r_with_dict.should_pass == r_without_dict.should_pass
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: with_dict={r_with_dict.classification} without_dict={r_without_dict.classification}")
+        if not ok:
+            all_failures.append(fx["name"])
+
     total = (len(POSITIVE_FIXTURES) + len(NEGATIVE_FIXTURES) + len(ENTITY_LIKE_FIXTURES)
              + len(PHONETIC_UNCERTAIN_FIXTURES) + len(KNOWN_TRADEOFF_FIXTURES) + len(NOT_PHONETIC_UNCERTAIN_FIXTURES)
              + len(READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES)
-             + len(WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES) + len(WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES))
+             + len(WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES) + len(WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES)
+             + len(READING_DICTIONARY_MATCH_FIXTURES) + len(READING_DICTIONARY_MISMATCH_FIXTURES)
+             + len(READING_DICTIONARY_BACKWARD_COMPAT_FIXTURES) + len(READING_DICTIONARY_UNRELATED_TOKEN_FIXTURES))
     if all_failures:
         print(f"\n{len(all_failures)}件のfixture/checkが期待通りに分類されなかった: {all_failures}")
     else:

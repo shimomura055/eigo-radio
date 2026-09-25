@@ -772,6 +772,11 @@ def classify_foreign_tokens_in_japanese_text(text: str, known_key_phrase_terms=N
             findings.append({
                 "token": token, "category": FOREIGN_TOKEN_READING_DICTIONARY,
                 "reason": f"読み方辞書に登録済みの表記です(読み: {dictionary[token.lower()]})",
+                # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: reasonの文字列
+                # パース(脆弱)に頼らず、辞書登録読みを構造化フィールドとして
+                # 追加する。既存呼び出し元(token/category/reasonのみ参照)には
+                # 無影響(追加フィールドは無視される)。
+                "reading": dictionary[token.lower()],
             })
         else:
             findings.append({

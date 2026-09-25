@@ -319,7 +319,15 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
             "canonical_text": text, "foreign_token_findings": foreign_token_findings,
         }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
-    r = voice01.generate_charon_japanese(tts_input, out_path, expected_substring, max_attempts=max_attempts)
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 辞書登録トークン
+    # (READING_DICTIONARY分類)の確定読みを、ASR照合(classify_ja_asr_match)
+    # まで素通し配線する(recon_reading_validation_wiring_01.md 2.1節)。
+    expected_readings = {
+        f["token"].lower(): f["reading"] for f in foreign_token_findings
+        if f.get("category") == safety.FOREIGN_TOKEN_READING_DICTIONARY and f.get("reading")
+    } or None
+    r = voice01.generate_charon_japanese(tts_input, out_path, expected_substring, max_attempts=max_attempts,
+                                          expected_readings=expected_readings)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)
@@ -377,7 +385,8 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
 def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 40,
                                         max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
-                                        standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS) -> dict:
+                                        standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
+                                        expected_readings: dict | None = None) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
@@ -400,7 +409,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = c.generate_narration_snippet_verified_strict(
-        text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars)
+        text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
+        expected_readings=expected_readings)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -425,7 +435,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01: 旧prefix
         # (substring)+phonetic方式から全文Validator+Cascade方式へ置き換える。
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
-            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
+            expected_readings=expected_readings)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification,
@@ -505,8 +516,16 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
             "canonical_text": text, "foreign_token_findings": foreign_token_findings,
         }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 辞書登録トークン
+    # (READING_DICTIONARY分類)の確定読みを、ASR照合まで素通し配線する
+    # (recon_reading_validation_wiring_01.md 2.1節)。
+    expected_readings = {
+        f["token"].lower(): f["reading"] for f in foreign_token_findings
+        if f.get("category") == safety.FOREIGN_TOKEN_READING_DICTIONARY and f.get("reading")
+    } or None
     r = generate_a2_japanese_with_fallback(
-        tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars)
+        tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
+        expected_readings=expected_readings)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)

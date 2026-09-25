@@ -104,12 +104,17 @@ def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional
 def evaluate_attempt_ja_with_cascade_detail(
     canonical_text: str, primary_asr_text: Optional[str], wav_path: str,
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。
+    # 辞書登録トークンの確定読み(小文字キー、カタカナ値)。Primary#1・
+    # Primary#2・Secondary#1・Secondary#2の全ステップのclassify_ja_asr_
+    # match呼び出しへ同じ値をそのまま転送する。
+    expected_readings: dict | None = None,
 ) -> dict:
     """Primary(OpenAI)#1の判定結果を受け取り、entity-likeなASR_VALIDATION_
     UNCERTAINであれば、TTSを再生成せず同じ音声に対してCascade(Primary#2->
     Secondary#1->Secondary#2)を追加実行する。cascade_enabled=Falseなら
     classify_ja_asr_matchの結果をそのまま返す(後方互換)。"""
-    cls = javal.classify_ja_asr_match(canonical_text, primary_asr_text)
+    cls = javal.classify_ja_asr_match(canonical_text, primary_asr_text, expected_readings=expected_readings)
     cls = _apply_variant_layer_voicing_upgrade(canonical_text, primary_asr_text, cls)
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": primary_asr_text,
               "classification": cls.classification}]
@@ -149,7 +154,8 @@ def evaluate_attempt_ja_with_cascade_detail(
 
     # --- Primary #2(同じ音声、OpenAI、TTSは再生成しない) ---
     text_p2, err_p2 = routing._transcribe_openai_mini(wav_path, "ja-JP", "gpt-4o-mini-transcribe")
-    cls_p2 = javal.classify_ja_asr_match(canonical_text, text_p2) if text_p2 is not None else None
+    cls_p2 = javal.classify_ja_asr_match(
+        canonical_text, text_p2, expected_readings=expected_readings) if text_p2 is not None else None
     cls_p2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_p2, cls_p2)
     steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
                    "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
@@ -160,7 +166,8 @@ def evaluate_attempt_ja_with_cascade_detail(
 
     # --- Secondary #1(Azure) ---
     text_s1, err_s1 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
-    cls_s1 = javal.classify_ja_asr_match(canonical_text, text_s1) if text_s1 is not None else None
+    cls_s1 = javal.classify_ja_asr_match(
+        canonical_text, text_s1, expected_readings=expected_readings) if text_s1 is not None else None
     cls_s1 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s1, cls_s1)
     steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
                    "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE"})
@@ -175,7 +182,8 @@ def evaluate_attempt_ja_with_cascade_detail(
 
     # --- Secondary #2(Azure、同じ音声を再度) ---
     text_s2, err_s2 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
-    cls_s2 = javal.classify_ja_asr_match(canonical_text, text_s2) if text_s2 is not None else None
+    cls_s2 = javal.classify_ja_asr_match(
+        canonical_text, text_s2, expected_readings=expected_readings) if text_s2 is not None else None
     cls_s2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s2, cls_s2)
     steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
                    "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE"})
@@ -196,11 +204,14 @@ def evaluate_attempt_ja_with_cascade_detail(
 def evaluate_attempt_ja_with_cascade(
     canonical_text: str, primary_asr_text: Optional[str], wav_path: str,
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。
+    expected_readings: dict | None = None,
 ) -> tuple[bool, bool, "javal.ClassificationResultJA"]:
     """Production retry loop向けのdrop-in互換ラッパー(English版
     evaluate_attempt_with_cascade()と同じ形の戻り値)。"""
     detail = evaluate_attempt_ja_with_cascade_detail(
-        canonical_text, primary_asr_text, wav_path, cascade_enabled=cascade_enabled)
+        canonical_text, primary_asr_text, wav_path, cascade_enabled=cascade_enabled,
+        expected_readings=expected_readings)
     if detail["human_review_required"]:
         _log_human_review(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]

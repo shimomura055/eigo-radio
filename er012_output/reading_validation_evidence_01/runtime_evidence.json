@@ -1,0 +1,109 @@
+{
+  "management_id": "NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02",
+  "phase": "Phase 3b runtime evidence",
+  "canonical_text": "このニュースは、AIが人の代わりに電話をするサービスを、Metaが準備していたという話です。ところが、実際のテストでは、AIだけでなく人も電話の一部を担当していました。これから、その電話の中で起きていたことと、プライバシーの心配について見ていきます。",
+  "tts_input_text": "このニュースは、AIが人の代わりに電話をするサービスを、Metaが準備していたという話です。ところが、実際のテストでは、AIだけでなく人も電話の一部を担当していました。これから、その電話の中で起きていたことと、プライバシーの心配について見ていきます。",
+  "foreign_token_findings": [
+    {
+      "token": "AI",
+      "category": "READING_DICTIONARY",
+      "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
+      "reading": "エーアイ"
+    },
+    {
+      "token": "Meta",
+      "category": "READING_DICTIONARY",
+      "reason": "読み方辞書に登録済みの表記です(読み: メタ)",
+      "reading": "メタ"
+    },
+    {
+      "token": "AI",
+      "category": "READING_DICTIONARY",
+      "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
+      "reading": "エーアイ"
+    }
+  ],
+  "expected_readings": {
+    "ai": "エーアイ",
+    "meta": "メタ"
+  },
+  "gate_blocks_before_tts": false,
+  "tts_execution_mode": "STANDARD",
+  "standard_attempts": 1,
+  "max_attempts": 1,
+  "out_path": "er012_output/reading_validation_evidence_01/comment_3.wav",
+  "started_at": "2026-09-25T21:44:06",
+  "generation_result": {
+    "status": "OK",
+    "text": "このニュースは、AIが人の代わりに電話をするサービスを、Metaが準備していたという話です。ところが、実際のテストでは、AIだけでなく人も電話の一部を担当していました。これから、その電話の中で起きていたことと、プライバシーの心配について見ていきます。",
+    "language": "ja",
+    "path": "er012_output/reading_validation_evidence_01/comment_3.wav",
+    "model": "gemini-3.1-flash-tts-preview",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "64e90f77c382bf619b822af39020708df825e37e9be5fc5643e0ca6ad0758b42",
+    "duration_seconds": 21.52,
+    "trim_info": {
+      "raw_duration_seconds": 21.52,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.28,
+      "trimmed_duration_seconds": 21.52,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.28
+    },
+    "clipping_detected": false,
+    "asr_verified": true,
+    "asr_text": "このニュースは、AIが人の代わりに電話をするサービスをメタが準備していたという話です。 ところが、実際のテストでは、AIだけでなく、人も電話の一部を担当していました。 これから、その電話の中で起きていたことと、プライバシーの心配について見ていきます。",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 21.52,
+        "asr_text": "このニュースは、AIが人の代わりに電話をするサービスをメタが準備していたという話です。 ところが、実際のテストでは、AIだけでなく、人も電話の一部を担当していました。 これから、その電話の中で起きていたことと、プライバシーの心配について見ていきます。",
+        "asr_text_length": 125,
+        "max_len": 165,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PHONETIC_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "attempt_audio_path": null
+      }
+    ],
+    "audio_classification": "PHONETIC_MATCH",
+    "connected_speech_info": null,
+    "reading_resolver_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "fallback_used": false
+  },
+  "finished_at": "2026-09-25T21:44:23",
+  "cost_breakdown": [
+    {
+      "provider": "gemini",
+      "model": "gemini-3.1-flash-tts-preview",
+      "usd": 0.014279
+    },
+    {
+      "provider": "openai_asr",
+      "model": "gpt-4o-mini-transcribe",
+      "usd": 0.000699
+    }
+  ],
+  "total_cost_usd": 0.014978,
+  "total_cost_jpy": 2.3964,
+  "api_call_count": 2,
+  "within_5_yen_budget": true
+}

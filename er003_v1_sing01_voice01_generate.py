@@ -210,7 +210,8 @@ def generate_charon_japanese_minimal_instruction(text: str, out_path: str) -> di
 @review_lock.guarded_generate("ja")
 def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
                               max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
-                              standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS) -> dict:
+                              standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
+                              expected_readings: dict | None = None) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、
     voiceだけCharonへ差し替える(p9a.generate_narration_snippetは
@@ -280,7 +281,8 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         # 略語らしき語のみの差はTTSを再生成せず、Cascade(Primary#2->
         # Secondary Azure#1->#2)で同じ音声のASRだけをやり直す。
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
-            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
+            expected_readings=expected_readings)
         verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "length_ok": length_ok, "audio_classification": cls.classification,
@@ -323,7 +325,8 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
-            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI)
+            text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
+            expected_readings=expected_readings)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "length_ok": length_ok, "audio_classification": cls.classification,
