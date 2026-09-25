@@ -9465,3 +9465,23 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 未解決事項(事実列挙、Fable/ユーザー判断待ち): (1) `er012_b_family_voices_a2_production_01.py`/`er012_b_family_voices_production_01.py`をimportする28ファイルのうち、確認できた主要呼び出し元`er012_b_family_production_runner_01.py`は既に`TTS_EXECUTION_MODE=STANDARD`をハードコード済みだが、他の呼び出し元は個別確認していない。(2) `er013_family_c_production_runner_01.py`は本タスクのGrepパターン外で発見した独立Production runnerであり、`TTS_EXECUTION_MODE`設定有無を未確認。(3) 実行済みBatch Run(`er012_output/e_family_two_level_wiring_01/`等)は本タスクで変更・再実行していない。
 - 関連: `NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`(契機)、`PM_GOVERNANCE.md` 7-1/7-2/7-4(既存ルール本体)。
 - commit: (本コミットで反映)
+
+## TOPIC-DISCOVERY-MANUAL-SELECTION-OPERATING-POLICY-01: Topic Selection量産初期運用方針(手動選定)をDECIDED / OPERATING_POLICY_ONLYとして記録(ユーザー正式決定、2026-09-25)
+
+- 日付: 2026-09-25
+- 区分: ユーザー正式決定(運用方針の記録のみ。Production Search実装・自動選定ロジック・フォームUI・rerank等は一切実装しない)。Status: `DECIDED / OPERATING_POLICY_ONLY`(Production仕様[`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`]ではない)。
+- ユーザー指示原文(逐語要旨、11項目):
+  1. 完全自動Topic Selectionは未実施。AI単独の選定精度が未安定なため、数十件の教師例でPromptを複雑化せず、実運用で数百件規模のユーザー選定データを蓄積してから自動化精度を高める方針。
+  2. 量産初期の基本フロー: AIが複数の定点Sensorサイトを巡回→各サイト原則3記事程度+日本トップ3件+世界トップ3件を候補へ→AIが候補ごとにHook/仮タイトル・概要・切口を提示→ユーザーがフォーム等で10記事程度を選定→AIが記事生成。ユーザー対応不可時はAI自動選定fallbackを将来用意。選定実績を蓄積し十分なデータ後に完全自動化を再検討。フォーム仕様・実行タイミング・自動化条件は未設計。
+  3. 学習データ: 選択された候補(Positive)と、候補に出たが未選択(Negative)の両方を保存。数百例蓄積後に改善。
+  4. Sensorサイト候補: 海外(404 Media/Oddity Central/PsyPost/Axios/Semafor/Ars Technica)、国内(GIGAZINE/ナゾロジー/デイリーポータルZ/カラパイア/Togetter/ITmedia NEWS/東洋経済オンライン)。除外済み: Know Your Meme/まいどなニュース/Jタウンネット。Poolは今後変更可、恒久固定仕様ではない。
+  5. 候補抽出の優先順位: 優先1はサイト自身の人気・注目シグナル(24時間ランキング/Access Ranking/Most Read/Popular/Editor's Pick/Top Stories等)を入口に。優先2は無ければAIが直近記事から判断(Hookの強さ/一般読者への広さ/Self relevance/「え、そうなの？」感/自然なAngle展開/話したくなるか/日本人読者との接点/教育的説明で終わらないか)。人気ランキングをそのまま採用せず、その中からeigo-radio向け候補を選ぶ。
+  6. 直近性: 原則直近24時間中心。更新頻度が低い媒体・Evergreen媒体・非常に強い題材の扱いは後日。厳格な24時間ルールをProduction仕様として固定しない。
+  7. タイトル/Hookの固有名詞方針: 不要な固有名詞を避ける(例: freeeが止まったら？→給料日に会計ソフトが止まったら、会社はどうなる？/美味しんぼの海原雄山→昔の人気漫画の"厳しい名物キャラ"、今ならカスハラ？/GoogleがAIデータセンターを宇宙へ→AIデータセンターは、ついに宇宙へ行く？)。理由: 固有名詞を知らない読者は自分に関係ないと判断しやすい。完全禁止ではなくTrump/ChatGPT/iPhone/大谷翔平のように広い認知・集客力がある場合は可。判断原則: その固有名詞を知らなくてもTopicの魅力が伝わるか。
+  8. Topic Discovery思想: 記事は完成TopicではなくSeed。Source発見→面白いAngle→必要なら追加検索→一般人との接点→Hook/Topic Package化。記事タイトルをそのまま採用しない。Big News→自分事へ/科学→驚き・人間との接点へ/Tech→技術説明ではなく生活変化へ/SNS→Fact SourceではなくTopic Sensor/小ネタ→可愛い・珍しいで終わらずWhyへ。
+  9. 日本/世界トップニュース枠: 毎回日本3件+世界3件を候補に追加。Sensorサイトの取りこぼし補完。Big Newsもそのまま採用せず「なぜ一般人に関係するのか」までAngle化。
+  10. 今回確認できた好例12件: 悪い言葉でも、笑えると集中を邪魔しなくなる？/人は「いいね」より「イマイチ」に流されやすい？/自己主張が強い人ほどリーダーになる。でも実力とは別？/憧れの車中泊、実際にやったら一睡もできなかった？/イランは戦争を終わらせる道筋を米国に示した？/40年間禁止だったサッカー観戦中のビールが復活する？/アルツハイマーの兆候は、検査で見つかる7年前から脳に出ている？/量子コンピュータが来る前に、暗号をもっと速く破る方法が見つかった？/火事なのに、鳥は炎へ向かって飛んでいく？/金星は、自分の月を食べてしまった？/AIデータセンターを宇宙へ？/80歳まで住宅ローンを払うのが普通になる？。固定ルールや少数Teacherだけで過学習させない。
+  11. 未決: フォーム具体設計/入力タイミング/候補件数の正式値/選定件数の正式値/自動選定fallback条件/完全自動化へ移行する件数・基準/Sensor巡回頻度/24時間条件の厳密性/人気ランキング取得方式/保存schema/自動学習・rerank実装方式。勝手に仕様化・実装しない。
+- 実装: なし(SSOT記録のみ)。`CURRENT_SPEC.md`「Topic Selection量産初期運用方針」節を新設、`OPEN_ITEMS.md`へOPEN-180(未設計11項目)を新設。既存`TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01`・OPEN-178/179・既存Topic Discovery Trial結果は上書きしない。
+- 関連: OPEN-180(新設)、OPEN-178/179(既存、変更なし)。
+- commit: (本コミットで反映)
