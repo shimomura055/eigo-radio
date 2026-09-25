@@ -292,3 +292,163 @@ Meta Advancedはもともと平易で、帯C/Dの異なり語はAdvanced 6→v4 
   機械集計(`fact_diff_machine.json`)の妥当性を手動確認した(事前指定
   Read一覧の範囲内での確認作業であり、追加ファイルの新規Readは行って
   いない)。
+
+## §14 Sewer v4(ユーザー承認後の追加検証、修正2回目)
+
+§1–§13は本セクション追加にあたり変更していない(既存内容は無変更)。
+本セクションはユーザー承認(2026-09-25)により、Sewer Advancedから
+Standard v4を1回追加生成し、Metaでは検証できなかった「頻度帯ごとの
+扱い分け/不自然な言い換え抑止/難語→別の難語への単なる置換抑止」が
+難語の多いSewer記事でも機能するかを確認した結果。
+
+### 14.1 生成条件・cost
+
+- 入力: `er015_output/news_natural_advanced_standard_a2_trial_01/a1_advanced_sewer.md`
+  (Sewer Advanced、改変禁止)。sha256実測=
+  `7e5aed46d6cb275629e61c7af99bedc0ced9482eb5063ca42305cb883eba1c6d`
+  (`sewer_v4_generation_sources.json`に記録。`sources.json`にはこの
+  ファイルに対応する期待値エントリが無いため突合対象ではなく実測値の
+  記録)。
+- v4 Prompt: Meta実行時(修正1回目)に書き込まれた
+  `prompt_standard_v4.txt`とsha256一致を確認済み
+  (`7bd8d2429b87aea80c4d042177bcc31dd077bb521061f1ba3ca8ebee1a7b792f`、
+  一字も変えていない)。DEVELOPER/USER TEMPLATEともMeta用と完全同一の
+  Python定数(`DEVELOPER_STD_V4`/`STANDARD_USER_TEMPLATE_V4`)を再利用。
+- `a2v4_standard_sewer.meta.json`より: model_requested = model実値 =
+  `gpt-5.6-luna`(fallback_detected=false)、effort=high、retried=false
+  (空出力なし、1回で成功)、input_tokens=945 / cached_input_tokens=0 /
+  output_tokens=4082(reasoning_tokens内数3624)、elapsed_seconds=34.383、
+  cost_usd=0.005087 / cost_jpy=0.814。
+- 追加LLM call数: **1**(`cost_sewer.json`: additional_llm_call_count=1、
+  total_cost_jpy=0.814、budget_jpy=100、within_budget=true)。予算上限
+  ¥100に対し十分に内側。Web Search未使用(web_search_used=false)。
+- 実行時の作業ミス(記録): 初回コマンド実行時、bashのバックスラッシュ
+  解釈により`--out-dir`が誤ったディレクトリ名
+  (`er015_outputnews_standard_a2_vocab_banding_trial_01`)に展開され、
+  生成物が一時的にそこへ書かれた。直後に正しい出力先
+  (`er015_output/news_standard_a2_vocab_banding_trial_01/`)へファイル
+  移動(内容の改変なし、sha256で同一性確認済み)し、誤ったディレクトリは
+  削除した。API再呼び出しは発生していない(追加call数1のまま)。
+
+### 14.2 Sewer v4全文(+Advanced/v3全文並置)
+
+`comparison_sewer_v3_v4.md`(Advanced→Standard v3→Standard v4の3段階
+全文)を参照。
+
+### 14.3 帯別残存語(Sewer Advanced / v3 / v4)
+
+`vocab_bands_sewer_all.json`(帯別測定生データ)/
+`vocab_bands_sewer_evaluate.md`(帯表+3段階推移)より:
+
+| 記事 | content word(延べ/異なり) | 帯A | 帯B | 帯C | 帯D |
+|---|---|---|---|---|---|
+| Sewer Advanced | 178 / 122 | 98 | 10 | 8 | 6 |
+| Sewer Standard v3 | 179 / 113 | 95 | 10 | 2 | 6 |
+| Sewer Standard v4 | 183 / 120 | 99 | 11 | 3 | 7 |
+
+帯C/D(異なり語)の3段階推移: Advanced 14語 → v3 8語 → v4 10語。
+- Advancedのみ(v3・v4いずれにも残らない): distant, divide, inspections,
+  installation, invisible, municipalities(=いずれも何らかの形で簡略化
+  された語、詳細は§14.4)。
+- Advanced/v3/v4いずれも帯C/Dのまま: artery, flush, septic, sewer,
+  sewers, surprisingly, wastewater(意図的な比喩・主題語の保持)。
+- v4で新たに帯C/Dになった語: faraway(Advanced単独比較上は新規だが、
+  実際はv3で既に導入済み。§14.4参照), unseen(Advanced/v3いずれにも
+  なく、v4で新規に発生。invisible→hidden[v3]→unseenの逆行、§14.4)。
+- v3では帯C/Dだがv4では帯C/Dでない語: (なし)。
+
+### 14.4 語彙遷移表(9語+帯B/C/D全件)
+
+詳細は`vocab_transition_sewer_v4.md`(全文)。要点:
+
+- ユーザー指定3件のうち、**collects→gathers**と**distant→faraway**は
+  v4でも一言一句同じ表現のまま再現され、解消されなかった(難語→別の
+  難語、v3から変化なし)。
+- **installation→put(ting) in**は語選択の型としてはv3と同一(自然な
+  置換)。ただしv3の"putting in, checks, and cleaning"(動名詞+名詞+
+  動名詞の混在で既存Trialが「やや不自然な句」と指摘)に対し、v4は
+  "put in, checked, and cleaned"(過去分詞3つに統一)と文法的な
+  自然さは改善されていた。
+- 新規発見: **invisible→hidden(v3、良好)→unseen(v4)**。v4は
+  Advanced本体(invisible, rank6153)より難しい語(unseen, rank12884)を
+  導入しており、v3の改善を後退させた。v4 Promptの
+  「明確に簡単で自然な代替がある場合のみ置換する」というself-check
+  指示が、この事例では機能しなかった。
+- **convenience**(v3は"life easy"へ言い換えて回避、v4はAdvancedのまま
+  保持)、**rid**("getting rid of"、v3は"removing"へ簡略化、v4は
+  Advanced表現へ後退)でも、v3の改善がv4で失われた。
+- **municipalities→towns**(v3は2箇所とも統一)に対し、v4は1回目
+  "towns or cities"(原文に無い"cities"を追加)、2回目"local
+  governments"と、同一語に2通りの訳語が混在(一貫性の乱れ)。
+- 一方、記事の中心比喩(main artery/washing machine)・主題語(septic/
+  sewer/sewers/wastewater本文)は全版で一貫して保持された。
+- 帯B/C/D全24語(Advanced基準)の集計: そのまま残った14語/自然に
+  置換7語/難語→別の難語2語/v3の改善がv4で後退2語(rid, convenience。
+  上記4分類のどれにも完全一致しないため別掲)。
+
+### 14.5 Level指標
+
+`level_metrics_sewer.md`より:
+
+| 記事 | words | sentences | avg words/sent | FK grade(heuristic) |
+|---|---|---|---|---|
+| Sewer Advanced | 354 | 26 | 13.62 | 7.22 |
+| Sewer Standard v3 | 331 | 34 | 9.74 | 5.07 |
+| Sewer Standard v4 | 354 | 39 | 9.08 | 4.68 |
+
+平均語/文はv3(9.74)→v4(9.08)でさらに短縮(-0.66語)。FK gradeも
+5.07→4.68とやや低下。ただしword数はAdvancedと同じ354語までv4で増加
+(v3は331語)しており、短い文を多数積み重ねる方向(sentences 34→39)で
+簡略化が進んだことが分かる(§14.6の段落数増加と符合)。
+
+### 14.6 Story・比喩・Ending
+
+`structure_map_sewer.md`より:
+- 段落数: Advanced 8段落 / v3 8段落 / **v4 14段落**。v4は1文単位の
+  改行・短い段落分割が大幅に増えており、v1/v3までの「まとまった段落の
+  feature記事」的な体裁から、より箇条書きに近い体裁に変化している。
+- 比喩語保持: main artery / washing machineはAdvanced/v3/v4すべてで
+  保持され、直喩(like/as)構文も維持(事実文化していない)。
+- Reveal("combined septic tanks come in"以降の説明段落)は内容として
+  v4でも保持されている(Sonnet目視確認)。機械チェックはv3の逐語表現
+  ("small water-treatment"等)との一致を見るため×判定だが、これは
+  v3自身がAdvancedの逐語("small water-treatment facilities")を
+  既に言い換えていたためのv3・v4共通の既知の弱点であり、v4固有の
+  問題ではない。
+- Ending: "surprisingly familiar place"という結びは、v4で
+  "The future of sewers may arrive in a familiar place. It may be
+  surprisingly close—right near us."と2文に分割され、"surprisingly"の
+  係り先が"familiar"(意外にも身近だった、という趣旨)から"close"
+  (距離的な近さ)へ変化している。結末のニュアンスがわずかに変わって
+  おり、Fact drift(事実誤り)ではないが物語的な余韻の変化として記録
+  する。
+
+### 14.7 Fact drift
+
+`fact_diff_machine_sewer.json`(advanced_to_v4)より:
+- numbers: 増減なし(Advanced/v4とも数値表現なし)。
+- proper_nouns(機械ヒューリスティック、文頭大文字語の集合差分に近い):
+  Advancedのみ(Because/Installation/Instead/Of/Since/When)、v4のみ
+  (Flush/Having/So/Then/To/We/You)。実質的にはいずれも文頭語の検出
+  ノイズであり、真の固有名詞の欠落・追加ではない(この記事にはもともと
+  地名・組織名等の真の固有名詞は登場しない)。
+- negation("not"): Advanced 6 → v4 7(増加、脱落なし)。
+- scope word: "some"2/"all"1/"part"1は維持。"only"はAdvanced1→v4 0
+  だが、これはv3の時点で既に"not only...but also"構文が失われており
+  (v3も"only"0)、v4固有の新規脱落ではない。
+- 通読による確認: municipalities→"towns or cities"の1回目の訳で
+  "cities"という原文に無い語が加わっている点は、軽微な意味の拡張
+  (事実追加とまでは言えないが、厳密には「一言一句の事実保持」からの
+  逸脱)として§14.4と合わせて記録する。
+
+### 14.8 Fable最終評価
+
+[Fable記入]
+
+### 14.9 最終分類
+
+[Fable記入]
+
+### 14.10 USER_DECISION_REQUIRED
+
+[Fable記入]

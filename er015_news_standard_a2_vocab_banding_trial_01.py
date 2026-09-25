@@ -93,6 +93,14 @@ BASELINE_ARTICLE_PATHS = {
     "meta_advanced_baseline": META_ADVANCED_PATH,
 }
 
+# ------------------------------------------------------------
+# 追加(修正2回目、ユーザー承認): Sewer記事へv4を適用するための入力path
+# 既存のMeta処理(上記まで)は一字も変更していない。以下はすべて追加のみ。
+# SEWER_ADVANCED_PATHはv3mod(既存Trial)で定義済みの値をそのまま再利用
+# (改変禁止の入力なので新規に定義しない)。
+# ------------------------------------------------------------
+SEWER_ADVANCED_PATH = v3mod.SEWER_ADVANCED_PATH
+
 BAND_EDGES = [("A", 3000), ("B", 5000), ("C", 10000)]  # D = >10000 (残り)
 
 
@@ -371,6 +379,88 @@ def cmd_generate_v4(out_dir: str, budget_jpy: float, force: bool) -> None:
 
 
 # ------------------------------------------------------------
+# 追加(修正2回目、ユーザー承認): --article sewer 用のgenerate-v4/evaluate
+# 以降のcmd_generate_v4/cmd_evaluate*(Meta用)は一切変更していない。
+# 全て新規関数の追加のみ。v4 Prompt(DEVELOPER_STD_V4/STANDARD_USER_
+# TEMPLATE_V4)はMeta用と完全に同一のものをそのまま再利用する(一字も
+# 変えない)。
+# ------------------------------------------------------------
+def _verify_or_write_prompt_v4_file(out_dir: str) -> str:
+    """v4 Prompt(developer+user template)を文字列として構築し、既存の
+    prompt_standard_v4.txt(Meta実行時に書き込み済み)とsha256が一致する
+    か確認する(『v4 Promptをそのまま、一字も変えず使う』制約の機械的
+    証跡)。一致すれば上書きしない。ファイルが無い場合のみ新規に書き込む
+    (bands-baseline/generate-v4[meta]が未実行のケースのフォールバック)。
+    """
+    import hashlib
+    composed = ("DEVELOPER:\n" + DEVELOPER_STD_V4 + "\n\n"
+                "USER TEMPLATE ({advanced_article} is substituted):\n" +
+                STANDARD_USER_TEMPLATE_V4)
+    composed_sha = hashlib.sha256(composed.encode("utf-8")).hexdigest()
+    dst = out_path(out_dir, "prompt_standard_v4.txt")
+    if os.path.exists(dst):
+        existing_sha = v1mod._sha256_of_file(dst)
+        if existing_sha != composed_sha:
+            raise SystemExit(
+                "[STOP] prompt_standard_v4.txt sha256 mismatch (v4 Promptを"
+                "一字も変えず使う制約に違反する可能性): "
+                f"existing={existing_sha} composed={composed_sha}")
+    else:
+        v1mod.save_text(dst, composed)
+        existing_sha = composed_sha
+    return existing_sha
+
+
+def cmd_generate_v4_sewer(out_dir: str, budget_jpy: float, force: bool) -> None:
+    os.makedirs(out_dir, exist_ok=True)
+    prompt_sha = _verify_or_write_prompt_v4_file(out_dir)
+
+    sewer_adv_text = v1mod.load_text(SEWER_ADVANCED_PATH)
+    sewer_adv_sha = v1mod._sha256_of_file(SEWER_ADVANCED_PATH)
+
+    v1mod.save_json(out_path(out_dir, "sewer_v4_generation_sources.json"), {
+        "sewer_advanced_path": SEWER_ADVANCED_PATH,
+        "sewer_advanced_sha256": sewer_adv_sha,
+        "prompt_standard_v4_sha256": prompt_sha,
+        "note": ("sewer_advancedのsha256は、sources.json(Meta用、"
+                 "news_natural_advanced_standard_a2_trial_01)に既存の期待値"
+                 "エントリが無いため、突合対象ではなく実測値の記録(逐語"
+                 "入力の証跡)。prompt_standard_v4_sha256はMeta実行時に"
+                 "書き込まれたprompt_standard_v4.txtとの一致を確認済み"
+                 "(一字も変えていない)。"),
+    })
+
+    install_logger(out_dir)
+    client = v1mod.vfl01.get_client()
+    pricing = v1mod.er015base._load_pricing()
+
+    a2v4_user = STANDARD_USER_TEMPLATE_V4.format(advanced_article=sewer_adv_text)
+    a2v4_output = out_path(out_dir, "a2v4_standard_sewer.md")
+    a2v4_meta = out_path(out_dir, "a2v4_standard_sewer.meta.json")
+    m = v1mod._call_and_record(client, pricing, DEVELOPER_STD_V4, a2v4_user,
+                                "a2v4_standard_sewer", a2v4_output, a2v4_meta,
+                                force)
+    total_jpy = m.get("cost_jpy", 0.0)
+    if total_jpy > budget_jpy:
+        stop = {"stop_reason": "budget exceeded after sewer v4 call",
+                "total_jpy": total_jpy, "budget_jpy": budget_jpy}
+        v1mod.save_json(out_path(out_dir, "stop_reason_sewer.json"), stop)
+        print(f"[STOP] budget exceeded after sewer v4: {total_jpy} > {budget_jpy}")
+        raise SystemExit(1)
+    text = v1mod.load_text(a2v4_output)
+    if not text.strip():
+        stop = {"stop_reason": "empty output after retry (sewer v4)"}
+        v1mod.save_json(out_path(out_dir, "stop_reason_sewer.json"), stop)
+        print("[STOP] empty output after retry (sewer v4)")
+        raise SystemExit(1)
+
+    print(f"[DONE] generate-v4 (sewer) complete. cost_jpy={round(total_jpy, 4)} "
+          f"budget_jpy={budget_jpy} retried={m.get('retried')} "
+          f"model={m.get('response_model_actual')} "
+          f"sewer_advanced_sha256={sewer_adv_sha[:16]}...")
+
+
+# ------------------------------------------------------------
 # STEP: evaluate
 # ------------------------------------------------------------
 def cmd_evaluate_bands(out_dir: str) -> dict:
@@ -590,6 +680,217 @@ def cmd_evaluate(out_dir: str) -> None:
 
 
 # ------------------------------------------------------------
+# 追加(修正2回目、ユーザー承認): --article sewer 用のevaluate一式
+# 上のcmd_evaluate*(Meta用)は無変更。すべて新規関数の追加のみ。
+# ------------------------------------------------------------
+def cmd_evaluate_sewer_bands(out_dir: str) -> dict:
+    import wordfreq
+    top20000 = wordfreq.top_n_list("en", 20000)
+    rank_map = _build_lemma_rank_map(top20000)
+
+    sewer_adv_text = v1mod.load_text(SEWER_ADVANCED_PATH)
+    sewer_v3_text = v1mod.load_text(SEWER_V3_PATH)
+    sewer_v4_text = v1mod.load_text(out_path(out_dir, "a2v4_standard_sewer.md"))
+
+    result = {
+        "sewer_advanced": measure_bands(sewer_adv_text, rank_map),
+        "sewer_standard_v3": measure_bands(sewer_v3_text, rank_map),
+        "sewer_standard_v4": measure_bands(sewer_v4_text, rank_map),
+    }
+    v1mod.save_json(out_path(out_dir, "vocab_bands_sewer_all.json"), result)
+
+    lines = ["# vocab_bands_sewer_evaluate.md — Sewer 頻度帯別測定 "
+             "(Advanced / Standard v3 / Standard v4、3段階)\n"]
+    lines += _bands_md_table("Sewer Advanced", result["sewer_advanced"])
+    lines += _bands_md_table("Sewer Standard v3", result["sewer_standard_v3"])
+    lines += _bands_md_table("Sewer Standard v4", result["sewer_standard_v4"])
+
+    def hard_words(m, bands):
+        s = set()
+        for b in bands:
+            for w in m["bucket_words"][b]:
+                s.add(w["word"])
+        return s
+
+    for bands, label in [(["C", "D"], "C/D"), (["B", "C", "D"], "B/C/D")]:
+        adv_hard = hard_words(result["sewer_advanced"], bands)
+        v3_hard = hard_words(result["sewer_standard_v3"], bands)
+        v4_hard = hard_words(result["sewer_standard_v4"], bands)
+        lines.append(f"\n## 帯{label}(異なり語)の3段階推移(Advanced -> v3 -> v4)\n")
+        lines.append(f"- 異なり語数: Advanced {len(adv_hard)} -> v3 {len(v3_hard)} "
+                     f"-> v4 {len(v4_hard)}")
+        lines.append(f"- Advancedのみ(v3・v4いずれにも帯{label}として残らない): "
+                     f"{', '.join(sorted(adv_hard - v3_hard - v4_hard)) or '(なし)'}")
+        lines.append(f"- Advanced/v3/v4いずれも帯{label}のまま(そのまま残存の候補): "
+                     f"{', '.join(sorted(adv_hard & v3_hard & v4_hard)) or '(なし)'}")
+        lines.append(f"- Advancedでは帯{label}でなく、v4で新たに帯{label}になった語"
+                     f"(難語化候補): "
+                     f"{', '.join(sorted(v4_hard - adv_hard)) or '(なし)'}")
+        lines.append(f"- v3では帯{label}だがv4では帯{label}でない語"
+                     f"(v3->v4で解消された候補): "
+                     f"{', '.join(sorted(v3_hard - v4_hard)) or '(なし)'}")
+        lines.append(f"- Advancedでは帯{label}だったがv3で既に解消され、v4でも"
+                     f"帯{label}のままに戻っていない語: "
+                     f"{', '.join(sorted((adv_hard - v3_hard) - v4_hard)) or '(なし)'}")
+
+    v1mod.save_text(out_path(out_dir, "vocab_bands_sewer_evaluate.md"),
+                     "\n".join(lines))
+    print("[OK] evaluate-sewer-bands written "
+          f"(adv/v3/v4 distinct C/D="
+          f"{len(hard_words(result['sewer_advanced'], ['C','D']))}/"
+          f"{len(hard_words(result['sewer_standard_v3'], ['C','D']))}/"
+          f"{len(hard_words(result['sewer_standard_v4'], ['C','D']))})")
+    return result
+
+
+def cmd_evaluate_sewer_levels(out_dir: str) -> dict:
+    files = {
+        "sewer_advanced": SEWER_ADVANCED_PATH,
+        "sewer_standard_v3": SEWER_V3_PATH,
+        "sewer_standard_v4": out_path(out_dir, "a2v4_standard_sewer.md"),
+    }
+    metrics = {}
+    for key, path in files.items():
+        text = v1mod.load_text(path)
+        metrics[key] = v1mod._level_metrics(text)
+    v1mod.save_json(out_path(out_dir, "level_metrics_sewer.json"), metrics)
+
+    label_map = {
+        "sewer_advanced": "Sewer Advanced",
+        "sewer_standard_v3": "Sewer Standard v3",
+        "sewer_standard_v4": "Sewer Standard v4",
+    }
+    md_lines = ["# level_metrics_sewer.md — Level比較(Sewer 3段階、参考値、"
+                "機械判定は最終判断に用いない)\n",
+                "| 記事 | words | sentences | avg words/sent | avg syll/word | "
+                "long-sent(>=20w)率 | subordinator/100w | FK grade(heuristic) |",
+                "|---|---|---|---|---|---|---|---|"]
+    for key in ["sewer_advanced", "sewer_standard_v3", "sewer_standard_v4"]:
+        m = metrics[key]
+        md_lines.append(
+            f"| {label_map[key]} | {m['word_count']} | {m['sentence_count']} | "
+            f"{m['avg_sentence_length_words']} | {m['avg_syllables_per_word_heuristic']} | "
+            f"{m['long_sentence_ratio_ge20words']} | {m['subordinators_per_100_words']} | "
+            f"{m['flesch_kincaid_grade_heuristic']} |")
+
+    adv_avg = metrics["sewer_advanced"]["avg_sentence_length_words"]
+    v3_avg = metrics["sewer_standard_v3"]["avg_sentence_length_words"]
+    v4_avg = metrics["sewer_standard_v4"]["avg_sentence_length_words"]
+    md_lines.append("\n## 平均語/文の変化(参考)\n")
+    md_lines.append(f"- Advanced {adv_avg} -> Standard v3 {v3_avg} -> "
+                     f"Standard v4 {v4_avg} (v3比 {round(v4_avg - v3_avg, 2):+.2f}語)")
+    v1mod.save_text(out_path(out_dir, "level_metrics_sewer.md"),
+                     "\n".join(md_lines))
+    print("[OK] level_metrics_sewer.json / level_metrics_sewer.md written")
+    return metrics
+
+
+def cmd_evaluate_sewer_fact_diff(out_dir: str) -> dict:
+    adv = v1mod._fact_tokens(v1mod.load_text(SEWER_ADVANCED_PATH))
+    v4 = v1mod._fact_tokens(
+        v1mod.load_text(out_path(out_dir, "a2v4_standard_sewer.md")))
+    result = {
+        "advanced_to_v4": {
+            "advanced": adv,
+            "v4": v4,
+            "numbers_missing_in_v4": sorted(set(adv["numbers"]) - set(v4["numbers"])),
+            "numbers_added_in_v4": sorted(set(v4["numbers"]) - set(adv["numbers"])),
+            "proper_nouns_missing_in_v4": sorted(
+                set(adv["proper_nouns"]) - set(v4["proper_nouns"])),
+            "proper_nouns_added_in_v4": sorted(
+                set(v4["proper_nouns"]) - set(adv["proper_nouns"])),
+        }
+    }
+    v1mod.save_json(out_path(out_dir, "fact_diff_machine_sewer.json"), result)
+    print("[OK] fact_diff_machine_sewer.json written (advanced_to_v4)")
+    return result
+
+
+def cmd_evaluate_sewer_structure_map(out_dir: str) -> None:
+    sewer_adv = v1mod.load_text(SEWER_ADVANCED_PATH)
+    sewer_v3 = v1mod.load_text(SEWER_V3_PATH)
+    sewer_v4 = v1mod.load_text(out_path(out_dir, "a2v4_standard_sewer.md"))
+
+    def para_count(text: str) -> int:
+        _, body = v1mod._strip_title(text)
+        return len([p for p in body.split("\n\n") if p.strip()])
+
+    lines = ["# structure_map_sewer.md — 段落対応・Reveal/比喩/Ending保持確認・"
+             "比喩語保持有無(Sewer 3段階: Advanced/v3/v4)\n"]
+    lines.append("## 段落数対応\n")
+    lines.append(f"- Advanced {para_count(sewer_adv)}段落 / "
+                 f"Standard v3 {para_count(sewer_v3)}段落 / "
+                 f"Standard v4 {para_count(sewer_v4)}段落")
+
+    lines.append("\n## 比喩語保持有無(語単位、大小無視の部分一致、"
+                 "v2mod.METAPHOR_WORDSをそのまま再利用)\n")
+    lines.append("| 語 | Advanced | v3 | v4 |")
+    lines.append("|---|---|---|---|")
+    sets = {
+        "adv": v2mod._metaphor_presence(sewer_adv),
+        "v3": v2mod._metaphor_presence(sewer_v3),
+        "v4": v2mod._metaphor_presence(sewer_v4),
+    }
+    for w in v2mod.METAPHOR_WORDS:
+        row = [w]
+        for key in ["adv", "v3", "v4"]:
+            row.append("○" if sets[key].get(w) else "-")
+        lines.append("| " + " | ".join(row) + " |")
+
+    lines.append("\n## Reveal / 中心比喩(main artery / washing machine)の直喩維持 "
+                 "/ Ending 位置(手動確認、○×。v3mod既存Trialの判定文言を再利用し"
+                 "v4にも同じ基準を適用)\n")
+    v4_lower = sewer_v4.lower()
+    reveal_ok = ("combined septic tank" in v4_lower and
+                 "small water-treatment" in v4_lower)
+    metaphor_marker_ok = (("like a hidden main artery" in v4_lower or
+                            "is like" in v4_lower) and
+                           "washing machine" in v4_lower)
+    ending_ok = "surprisingly familiar place" in v4_lower
+    lines.append(f"- Reveal(下水道->合併浄化槽への切り替え説明段落、v3で使われた"
+                 f"表現がv4にもあるか): {'○' if reveal_ok else '×(要確認、本文参照)'}")
+    lines.append(f"- 中心比喩(main artery / washing machineが直喩[like/as]のまま"
+                 f"保持され、事実文化していないか): "
+                 f"{'○' if metaphor_marker_ok else '×(要確認、本文参照)'}")
+    lines.append(f"- Ending logic(\"surprisingly familiar place\"の結び、v3と同じ"
+                 f"表現がv4にもあるか): {'○' if ending_ok else '×(要確認、本文参照)'}")
+    lines.append("\n(注: reveal/ending判定はv3で使われた逐語表現の残存チェックで"
+                 "あり、v4がv3と異なる自然な言い回しで同じ内容を表現していても"
+                 "×になり得る。機械判定であり、最終判断はSonnet目視"
+                 "[§本文参照]・Fable評価に委ねる。)")
+
+    v1mod.save_text(out_path(out_dir, "structure_map_sewer.md"),
+                     "\n".join(lines))
+    print(f"[OK] structure_map_sewer.md written. reveal={reveal_ok} "
+          f"metaphor_marker={metaphor_marker_ok} ending={ending_ok}")
+
+
+def cmd_evaluate_sewer_comparison_md(out_dir: str) -> None:
+    sewer_adv = v1mod.load_text(SEWER_ADVANCED_PATH)
+    sewer_v3 = v1mod.load_text(SEWER_V3_PATH)
+    sewer_v4 = v1mod.load_text(out_path(out_dir, "a2v4_standard_sewer.md"))
+    md = (
+        "# comparison_sewer_v3_v4.md — Sewer: Advanced -> Standard v3 -> "
+        "Standard v4\n\n"
+        "## Advanced (改変禁止Baseline)\n\n" + sewer_adv + "\n\n---\n\n"
+        "## Standard v3 (NEWS-STANDARD-A2-VOCAB-EFFECTIVENESS-TRIAL-01、"
+        "改変禁止)\n\n" + sewer_v3 + "\n\n---\n\n"
+        "## Standard v4 (NEWS-STANDARD-A2-VOCAB-BANDING-TRIAL-01、本Trial"
+        "追加)\n\n" + sewer_v4 + "\n"
+    )
+    v1mod.save_text(out_path(out_dir, "comparison_sewer_v3_v4.md"), md)
+    print("[OK] comparison_sewer_v3_v4.md written")
+
+
+def cmd_evaluate_sewer(out_dir: str) -> None:
+    cmd_evaluate_sewer_bands(out_dir)
+    cmd_evaluate_sewer_levels(out_dir)
+    cmd_evaluate_sewer_fact_diff(out_dir)
+    cmd_evaluate_sewer_structure_map(out_dir)
+    cmd_evaluate_sewer_comparison_md(out_dir)
+
+
+# ------------------------------------------------------------
 # STEP: assemble (cost.json)
 # ------------------------------------------------------------
 def cmd_assemble(out_dir: str) -> None:
@@ -616,6 +917,37 @@ def cmd_assemble(out_dir: str) -> None:
 
 
 # ------------------------------------------------------------
+# 追加(修正2回目、ユーザー承認): --article sewer 用のassemble
+# 既存のcmd_assemble(Meta用、cost.json)は無変更。Sewer分はcost_sewer.json
+# へ別ファイルとして記録し、既存のcost.jsonを上書きしない。
+# ------------------------------------------------------------
+def cmd_assemble_sewer(out_dir: str) -> None:
+    meta_path = out_path(out_dir, "a2v4_standard_sewer.meta.json")
+    calls = []
+    total_jpy = 0.0
+    if os.path.exists(meta_path):
+        m = v1mod.load_json(meta_path)
+        calls.append(m)
+        total_jpy += m.get("cost_jpy", 0.0)
+    else:
+        print(f"[WARN] missing meta: {meta_path}")
+    cost = {
+        "calls": calls,
+        "additional_llm_call_count": len(calls),
+        "total_cost_jpy": round(total_jpy, 4),
+        "budget_jpy": 100,
+        "within_budget": total_jpy <= 100,
+        "note": ("本Trial(修正2回目、Sewer article)専用のcost記録。Meta分"
+                 "(修正1回目、既存cost.json)とは別ファイル。合算する場合は"
+                 "cost.json.total_cost_jpy + このファイルのtotal_cost_jpy。"),
+    }
+    v1mod.save_json(out_path(out_dir, "cost_sewer.json"), cost)
+    print(f"[OK] cost_sewer.json written. total_cost_jpy={round(total_jpy, 4)} "
+          f"within_budget={cost['within_budget']} "
+          f"additional_llm_call_count={len(calls)}")
+
+
+# ------------------------------------------------------------
 # main
 # ------------------------------------------------------------
 def main():
@@ -626,16 +958,30 @@ def main():
                               "evaluate", "assemble"])
     ap.add_argument("--budget-jpy", type=float, default=100.0)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--article", choices=["meta", "sewer"], default="meta",
+                     help=("追加[修正2回目、ユーザー承認]: 対象記事。meta="
+                           "既存Meta処理(無変更)、sewer=Sewer記事へv4を"
+                           "適用する新規追加パス。省略時はmetaでありMeta"
+                           "処理は従来通り。"))
     args = ap.parse_args()
 
     if args.step == "bands-baseline":
         cmd_bands_baseline(args.out_dir)
     elif args.step == "generate-v4":
-        cmd_generate_v4(args.out_dir, args.budget_jpy, args.force)
+        if args.article == "sewer":
+            cmd_generate_v4_sewer(args.out_dir, args.budget_jpy, args.force)
+        else:
+            cmd_generate_v4(args.out_dir, args.budget_jpy, args.force)
     elif args.step == "evaluate":
-        cmd_evaluate(args.out_dir)
+        if args.article == "sewer":
+            cmd_evaluate_sewer(args.out_dir)
+        else:
+            cmd_evaluate(args.out_dir)
     elif args.step == "assemble":
-        cmd_assemble(args.out_dir)
+        if args.article == "sewer":
+            cmd_assemble_sewer(args.out_dir)
+        else:
+            cmd_assemble(args.out_dir)
 
 
 if __name__ == "__main__":
