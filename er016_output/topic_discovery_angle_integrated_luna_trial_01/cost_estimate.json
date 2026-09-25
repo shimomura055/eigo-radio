@@ -1,0 +1,34 @@
+{
+  "budget_jpy": 100.0,
+  "prompt_sha256": "91b8206d80c7fdb10bef2096716fd690914c46c59af055c15d47a72228fe9a35",
+  "prompt_chars_developer_plus_user": 6997,
+  "reference_process_baseline_prompt_chars": 7498,
+  "base_extra_chars_vs_baseline": 0,
+  "chars_per_token_calibrated": 1.7138,
+  "ref_process_linear_fit": {
+    "intercept_jpy": 0.2145,
+    "marginal_jpy_per_search": 1.9678,
+    "source": "3WAY trialのcost_estimate.jsonと同一の最小二乗fit(er016_output/topic_selection_reference_process_trial_01/cost.json由来)を再利用。本scriptでの再計算はしていない。"
+  },
+  "note": "Sol/Terra外挿は行わない(今回Luna単独Trialのため不要)。3WAY trialのcost_estimate.json(2026-09-25作成)におけるluna_est_jpy(low=39.57/mid=49.41/high=59.25)と同一の計算式で、本scriptが独立に再計算した値。",
+  "scenarios": {
+    "low": {
+      "assumed_internal_search_count": 20,
+      "luna_est_jpy": 39.57,
+      "within_budget": true
+    },
+    "mid": {
+      "assumed_internal_search_count": 25,
+      "luna_est_jpy": 49.41,
+      "within_budget": true
+    },
+    "high": {
+      "assumed_internal_search_count": 30,
+      "luna_est_jpy": 59.25,
+      "within_budget": true
+    }
+  },
+  "decision": "GO",
+  "decision_note": "全シナリオでbudget内に収まる見込みのため、Luna実行に進む。",
+  "computed_at_jst": "2026-09-25T11:05:51.870769+09:00"
+}

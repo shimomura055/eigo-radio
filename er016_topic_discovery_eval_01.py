@@ -128,28 +128,44 @@ def compute_eval(blind_map: dict, user_eval: dict) -> dict:
 def cmd_eval(args):
     out_dir = args.out_dir
     blind_map_path = out_path(out_dir, "blind_map.json")
-    is_dummy = False
+    blind_map_is_dummy = False
     if args.dry_run and not os.path.exists(blind_map_path):
         blind_map_path, generated_user_eval_path = _generate_dummy(out_dir)
-        is_dummy = True
+        blind_map_is_dummy = True
         print(f"[DUMMY] blind_map.jsonが無いためダミーを生成: {blind_map_path}")
         if not args.user_eval:
             args.user_eval = generated_user_eval_path
 
     blind_map = load_json(blind_map_path)
     user_eval = load_json(args.user_eval)
+    # user_eval側がDUMMY(ダミー評価値、実ユーザー判定ではない)かどうかを
+    # "_note"フィールドの文言で判定する(既存の集計ロジックは変更しない。
+    # LUNA-TRIAL-01のように、blind_map.jsonは実データだがuser_evalは
+    # dry-run用DUMMYというケースを正しく明記するための追加のみ)。
+    user_eval_is_dummy = "DUMMY" in str(user_eval.get("_note", ""))
+    is_dummy = blind_map_is_dummy or user_eval_is_dummy
 
     result = compute_eval(blind_map, user_eval)
+    if blind_map_is_dummy:
+        note = ("blind_map.json自体がダミー生成(候補一覧が実データとして"
+                 "存在しない)。本結果はロジック動作確認のみであり、実際の"
+                 "モデル品質を示すものではない。TOPIC-DISCOVERY-ANGLE-"
+                 "INTEGRATED-3WAY-TRIAL-01はcost_estimate.jsonの時点でSTOP"
+                 "したため、実データは存在しない。")
+    elif user_eval_is_dummy:
+        note = ("blind_map.json(候補一覧)自体は実データだが、user_eval"
+                 "(○/△/×の評価値)はdry-run動作確認用のDUMMY値であり、"
+                 "実ユーザー評価ではない。本結果はscript動作確認のみで"
+                 "あり、実際のモデル品質・ユーザー評価を示すものではない。")
+    else:
+        note = "実データ・実ユーザー評価による集計。"
     output = {
         "dry_run": bool(args.dry_run),
         "is_dummy_data": is_dummy,
         "blind_map_path_used": blind_map_path,
         "user_eval_path_used": args.user_eval,
         "per_model": result,
-        "note": "is_dummy_data=trueの場合、本結果はロジック動作確認のみで"
-                "あり、実際のモデル品質を示すものではない。"
-                "TOPIC-DISCOVERY-ANGLE-INTEGRATED-3WAY-TRIAL-01は"
-                "cost_estimate.jsonの時点でSTOPしたため、実データは存在しない。",
+        "note": note,
     }
     save_json(out_path(out_dir, "eval_result.json" if not is_dummy
                         else "eval_result_DUMMY.json"), output)
