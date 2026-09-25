@@ -271,15 +271,23 @@ web_search_used=false(両call)。
 
 ## §12 Fable参考評価
 
-`[Fable記入]`
+### 12.1 Fable参考評価(Sewer v5・Meta v5を通読)
+- 語彙: 6,000語ラインは意図どおり「必要語は残し、不要な難語だけ落とす」方向に働いた。Sewerでは municipalities が消え(towns / local governments)、installation・checks・convenient は自然なまま残存。残る6,000超語は surprisingly / convenience / flush / sewer / artery / wastewater / invisible で、いずれも主題語・比喩語・自然な一般語であり置換不要と見る。Metaの6,000超は leak / curtain / backstage / Reuters のみで全て必要語。
+- 不自然な置換・難語→難語置換: v3/v4で問題だった installation→putting in、collects→gathers、invisible→unseen/hidden は発生せず、Advancedの語がそのまま残った。唯一の逸脱は distant(6,000以内)→faraway(表外)が2箇所中1箇所で残ったこと(もう1箇所は distant のまま)。文書内の訳語不統一(towns / local governments)は残る。
+- 文長: Sewer 9.91語/文・FK 5.43、Meta 9.66語/文・FK 5.25 で、v3/v4と同水準の簡略化を維持。段落数はAdvancedと同じ8(v4の断片化が解消)。
+- Story・比喩・Reveal・Ending: 両記事とも維持(main artery / washing machine / lead role / backstage / understudy / curtain / piano)。
+- Fact・意味: 数字・固有名詞・引用句の欠落なし。Metaで "some parts of the calls"(Baseline)が "parts of some calls" に変わり、曖昧文の読みが「一部の通話の一部」へ寄った(Baselineの意味保持という条件からはズレ。OPEN-177の曖昧性と関連)。Meta末尾 "can it make a call? That may not be the only important question." の分割はやや不自然。
+- 総評: v5は v3(語彙改善はあるが不自然置換あり)と v4(帯設計、後退あり)の問題を、より短いルールで回避しており、2記事横断で再現した。
 
 ## §13 分類
 
-`[Fable記入]`(候補: VALIDATED / REJECTED / USER_DECISION_REQUIRED)
+**VALIDATED**(Trial上限)。「6,000語ライン+自然さ維持」の簡素ルールは、不要な難語(municipalities)を落としつつ必要語(installation / artery / wastewater / 比喩語)を壊さず、不自然置換・難語→難語置換を2記事で起こさなかった。残課題は distant→faraway 1件と Meta "parts of some calls" の意味の寄り。Production採用ではない。
 
 ## §14 USER_DECISION_REQUIRED
 
-`[Fable記入]`
+1. Standard A2 Promptの現時点の最良候補を v3 から **v5(6000-cutoff)** に更新してよいか(Fable推奨: 更新。Trial上の候補であり、Production採用ではない)。
+2. Meta v5 の "parts of some calls": Baselineの "some parts of the calls" を保持する方針(OPEN-177の一次情報確認まで)に照らし、(a) 許容 (b) v5 Promptに「範囲語の位置を変えない」旨を足す (c) Baseline側の曖昧性解消(一次情報確認)を先に行う、のどれか(Fable推奨: (c)。Prompt側で個別対応するより、Baselineの曖昧性を解くのが根本)。
+3. Advanced(Natural)+Standard(v5候補)の2段階をProduction配線(OPEN-177)へ進める設計着手の可否(着手時期はユーザー判断)。
 
 ## §15 Open Item候補・未解決
 
