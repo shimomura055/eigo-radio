@@ -691,6 +691,12 @@ DEFAULT_JA_READING_DICTIONARY = {
     "dx": "ディーエックス", "gps": "ジーピーエス", "sns": "エスエヌエス", "pc": "ピーシー",
     "gdp": "ジーディーピー", "eu": "イーユー", "nasa": "ナサ", "ar": "エーアール",
     "vr": "ブイアール", "esg": "イーエスジー", "nft": "エヌエフティー",
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-01 Phase B(2026-09-25、ユーザー承認済み
+    # =APPROVED_FOR_PRODUCTION、辞書エントリ追加のみでGateロジック自体は不変、
+    # 前例ER-009-JA-READING-DICTIONARY-ACRONYM-EXPANSION-AND-TREND-A2-RESUME-01
+    # と同型)。企業名「Meta」の日本語読み「メタ」を登録(Meta a2記事の
+    # comment_1/2/3がHUMAN_REVIEW判定でGATE_BLOCKEDとなっていたものを解消)。
+    "meta": "メタ",
 }
 
 

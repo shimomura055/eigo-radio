@@ -195,5 +195,23 @@ class AcronymDictionaryExpansionTests(unittest.TestCase):
                 self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get(key), reading)
 
 
+class MetaReadingDictionaryEntryTests(unittest.TestCase):
+    """NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-01 Phase B(2026-09-25、ユーザー承認)
+    で追加した「meta」→「メタ」がREADING_DICTIONARYへ正しく分類され、
+    Meta a2記事のcomment_1/2/3を塞いでいたHUMAN_REVIEW判定が解消される
+    ことを確認する。API/TTS呼び出しは一切発生しない(pure-Python)。"""
+
+    def test_15_meta_token_classified_as_reading_dictionary(self):
+        text = "Metaはこの機能を一時停止しました。"
+        findings = safety.classify_foreign_tokens_in_japanese_text(text)
+        categories = [f["category"] for f in findings]
+        self.assertIn(READING_DICT, categories)
+        self.assertNotIn(HUMAN_REVIEW, categories)
+        self.assertFalse(safety.foreign_token_gate_requires_stop(findings))
+
+    def test_16_meta_dictionary_reading_value(self):
+        self.assertEqual(safety.DEFAULT_JA_READING_DICTIONARY.get("meta"), "メタ")
+
+
 if __name__ == "__main__":
     unittest.main()

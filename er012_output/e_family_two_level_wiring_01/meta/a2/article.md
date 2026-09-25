@@ -6,7 +6,7 @@ The main character was Muse, Meta’s AI agent for individual users. Meta wanted
 
 But people who looked backstage found something unexpected.
 
-In internal tests, human contract workers handled some parts of the calls. Meta called these workers “human concierges.” The sign outside said “AI phone service.” But a human was making part of the call. The AI only seemed to perform alone.
+In internal tests, human contract workers handled some of the calls. Meta called these workers “human concierges.” The sign outside said “AI phone service.” But a human was making part of the call. The AI only seemed to perform alone.
 
 ### The hidden performer inside the phone call
 
