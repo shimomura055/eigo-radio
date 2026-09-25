@@ -159,8 +159,39 @@ Gate結果を記載する。
 
 TTS_MENTION_WITH_STANDARD_SAMPLE = TTS_MENTION_NO_MODE_SAMPLE.replace(
     "## SSOT追記文",
-    "## 補足\nTTS_EXECUTION_MODE=STANDARD を明示する。\n\n## SSOT追記文",
+    "## 補足\nTTS_EXECUTION_MODE=STANDARD を明示する。差分再生成が可能か"
+    "確認済み。--budget-jpy 10 を明示する。\n\n## SSOT追記文",
 )
+
+
+TTS_MENTION_WITH_BUDGET_SAMPLE = TTS_MENTION_NO_MODE_SAMPLE.replace(
+    "## SSOT追記文",
+    "## 補足\n差分再生成が可能か確認済み。--budget-jpy 10 を明示する。\n\n## SSOT追記文",
+)
+
+
+class CheckTtsBudgetDeviationReminderTest(unittest.TestCase):
+    def test_tts_mention_without_diff_regen_or_budget_triggers_warning_not_fail(self):
+        result = cdp.run_check(TTS_MENTION_NO_MODE_SAMPLE)
+        self.assertTrue(result["tts_budget_check"]["triggered"])
+        self.assertTrue(
+            any("差分再生成" in w for w in result["warnings"])
+        )
+        # 警告はFAILの理由(reasons)には積まない(ブロッキングではない)
+        self.assertFalse(
+            any("差分再生成" in r for r in result["reasons"])
+        )
+
+    def test_tts_mention_with_budget_and_diff_regen_does_not_warn(self):
+        result = cdp.run_check(TTS_MENTION_WITH_BUDGET_SAMPLE)
+        self.assertFalse(result["tts_budget_check"]["triggered"])
+        self.assertFalse(
+            any("差分再生成" in w for w in result["warnings"])
+        )
+
+    def test_no_tts_mention_does_not_warn(self):
+        result = cdp.run_check(FAIL_SAMPLE_MISSING_GREP)
+        self.assertFalse(result["tts_budget_check"]["triggered"])
 
 
 class CheckTtsStandardModeReminderTest(unittest.TestCase):

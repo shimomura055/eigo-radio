@@ -12,6 +12,8 @@
 # returnするため、実際のAPI呼び出しは一切発生しない(pure-Python test)。
 from __future__ import annotations
 
+import os
+import tempfile
 import unittest
 
 import er003_audio_tts_asr_safety as safety
@@ -121,12 +123,31 @@ class WiringStopsBeforeTtsCallTests(unittest.TestCase):
     notation()と同じ設計)を確認する。STOPPED分岐はTTS/ASR呼び出しの
     手前でreturnするため、実際のAPI呼び出しは発生しない。"""
 
+    def setUp(self):
+        # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02(P1-3): このクラスの2テストは
+        # safety.log_foreign_token_human_review()を実際に呼び出し、既定では
+        # 本番ログ`er009_output/ja_foreign_token_gate_01/human_review_
+        # queue.jsonl`へダミー行を追記してしまう(テスト混入)。テスト側のみで
+        # 書き込み先を一時ファイルへ差し替え、tearDownで既定値へ確実に戻す
+        # (Production code側の関数シグネチャ・既定挙動は無変更)。
+        self._orig_log_path = safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH
+        self._tmp_dir = tempfile.TemporaryDirectory()
+        safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = os.path.join(
+            self._tmp_dir.name, "human_review_queue.jsonl")
+
+    def tearDown(self):
+        safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = self._orig_log_path
+        self._tmp_dir.cleanup()
+
     def test_a2_human_review_text_stops_before_tts_and_logs(self):
         text = "これはGloobargaxxx社に関する日本語の説明文です。"
         r = tg.generate_a2_japanese_with_reading_safety(text, "does_not_matter.wav", "これは")
         self.assertEqual(r["status"], "STOPPED")
         self.assertIn("foreign_token_findings", r)
         self.assertTrue(any(f["category"] == HUMAN_REVIEW for f in r["foreign_token_findings"]))
+        # 一時ファイルへ書かれ、本番ログへは書かれていないことを確認する。
+        self.assertTrue(os.path.exists(safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH))
+        self.assertNotEqual(safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH, self._orig_log_path)
 
     def test_b1_human_review_text_stops_before_tts_and_logs(self):
         text = "これはGloobargaxxx社に関する日本語の説明文です。"
@@ -134,6 +155,9 @@ class WiringStopsBeforeTtsCallTests(unittest.TestCase):
         self.assertEqual(r["status"], "STOPPED")
         self.assertIn("foreign_token_findings", r)
         self.assertTrue(any(f["category"] == HUMAN_REVIEW for f in r["foreign_token_findings"]))
+        # 一時ファイルへ書かれ、本番ログへは書かれていないことを確認する。
+        self.assertTrue(os.path.exists(safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH))
+        self.assertNotEqual(safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH, self._orig_log_path)
 
     def test_a2_needs_paraphrase_only_does_not_early_stop(self):
         # NEEDS_JAPANESE_PARAPHRASEだけの場合はgate自体はブロックしない

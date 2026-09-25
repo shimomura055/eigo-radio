@@ -666,6 +666,44 @@ Trial・開発作業と、量産Production runでは、コスト最適化の目�
 新設、133ファイルの横展開点検を実施。詳細: `docs/pm/tts_mode_audit_
 2026-09-25.md`、`DECISION_LOG.md`同管理ID)。
 
+### 7-5. TTSを伴う委任の予算逸脱再発防止(2026-09-25追加)
+
+**管理ID: NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02(ユーザー正式決定)**
+
+契機: `NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-01` Phase Bで、承認上限¥10に対し
+`--stage tts`実行により実測¥54.66を消費する予算逸脱が発生した。原因は
+「text未変更segmentは再生成をスキップする」という未実行の推測(Phase A
+recon)に基づき、コード上の実際の挙動(差分フィルタ機構が存在せず
+全segment無条件再生成、かつ既存Human Review Lockのstate=RESOLVED分岐は
+API呼び出し自体を省略するキャッシュ層ではない)を実行前に確認しなかった
+ことにある(詳細: `er012_output/e_family_two_level_wiring_01/meta/audit/
+phase_b_budget_deviation.md`)。7-1〜7-4(TTS方式の選択)とは別に、TTSを
+伴う委任では以後**必須**とする:
+
+1. 実行前に、対象コード上で「差分(変更箇所のみ)再生成が実際に可能か」を
+   確認する(推測で「差分のみ再生成される見込み」と判断しない。全segment
+   無条件再生成であれば、その前提でコスト見積もりを行う)。
+2. 実行前に、既存の音声再利用キャッシュ(reuse機構)の有無を確認する
+   (存在しない場合、その前提でコスト見積もりを行う)。
+3. 対象コードに`--budget`/`--budget-jpy`等のコード側予算上限引数が
+   存在する場合、タスク固有の承認上限(Fable/PM運用層が設定した上限)に
+   合わせて明示的に指定する(コード側既定値[例: ¥300]に依存しない。
+   既定値とタスク固有上限は別物であり、既定値のままでは既定値以下で
+   あれば逸脱を検知できない)。
+4. 実行前の確認(1・2・3)の結果、承認上限を超える可能性がある「想定外の
+   全再生成」であると判明した場合は、API実行前に**STOP**しFable/ユーザー
+   へ報告する(実行してから予算逸脱を事後報告しない)。
+
+上記4点は既存7-1〜7-4(Standard同期/Batch APIの選択基準)を置き換える
+ものではなく、TTS方式の選択とは独立に、予算逸脱の再発防止として追加する。
+
+運用反映: `docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`のT-2ブロック
+へ本4点のチェック行を追加。`docs/pm/tools/check_delegation_prompt.py`へ、
+委任文がTTSへ言及するにもかかわらず「差分再生成可否の確認」または
+「`--budget`明示」への言及が見つからない場合の**警告**(WARN、ブロッキング
+ではない)を追加。契機の詳細: `er012_output/e_family_two_level_wiring_01/
+meta/audit/phase_b_budget_deviation.md`。
+
 ## 8. Agent並列起動の原則
 
 - 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の

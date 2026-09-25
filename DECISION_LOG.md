@@ -9485,3 +9485,15 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 実装: なし(SSOT記録のみ)。`CURRENT_SPEC.md`「Topic Selection量産初期運用方針」節を新設、`OPEN_ITEMS.md`へOPEN-180(未設計11項目)を新設。既存`TOPIC-SELECTION-USER-PREFERENCE-RERANK-TRIAL-01`・OPEN-178/179・既存Topic Discovery Trial結果は上書きしない。
 - 関連: OPEN-180(新設)、OPEN-178/179(既存、変更なし)。
 - commit: (本コミットで反映)
+
+## NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02-SEWER-EXCLUSION-01: SewerをProduction E2E代表記事から除外(ユーザー正式決定、2026-09-25)
+
+- 日付: 2026-09-25
+- 区分: ユーザー正式決定(記事選定範囲の確定のみ。Writer Prompt・Ledger構築方式・Fact Safety Gate・retry上限等の既存仕組みは一切変更しない)。
+- 内容: `NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`でLedger deviation check(MAJOR)により生成STOPしていたSewer(下水道)記事を、以後**Production E2E代表記事から除外**する。
+- 理由: (1) Sewer記事の元Sourceが存在しない。`docs/evidence/news_iterative_r2_adoption_2026-09-24/prompts.md` L38-39に記録されている通り、テーマ文1行のみ(Source URL・一次情報の引用なし)から創作された記事であり、他のNews記事(Meta等、一次報道を出典に持つ)とは前提が異なる。(2) そのため、通常のSource起点Production運用(一次情報→Ledger→Writer)を代表しない。(3) 後から実Sourceを使って構築したLedgerとの不一致(deviation MAJOR)は、Production配線自体のバグではなく、この記事固有の前提(Source不在)に起因するものであり、E2Eバグとして扱わない。
+- 影響範囲: Production E2E代表記事は以後Meta(B1完走、A2はPhase B後status=OK・詳細OPEN-177(10)参照)のみとする。Sewer本文は、実測語彙を一般英語頻出順位で並べる用途(`ADVANCED-VOCAB-DIFFICULTY-AUDIT-01`等、Advanced Vocabulary Trialの語彙検証サンプル)としてのみ引き続き使用可(Production代表復帰ではない)。既存`er012_output/e_family_two_level_wiring_01/sewer/`配下のartifact(Ledger・deviation_check.json等)は削除せず履歴として保持する。
+- 実施: `OPEN_ITEMS.md` OPEN-177(10)のSewer関連記述へ本決定への追記(サブ項目close扱い)、全体Status行・残課題要約の実態反映。`CURRENT_SPEC.md` L829(Entertainment英語版生成方式(Advanced))へ「代表記事はMetaのみ」の旨を最小限追記。
+- 未解決事項: なし(本決定自体はSewer記事の事実的妥当性そのものを裁定するものではなく、代表記事選定からの除外のみ。Sewer記事本文を今後正式に修正・差し替えるかどうかは別途判断が必要になった場合にのみ検討する)。
+- 関連: OPEN-177(10)、`NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`(Sewer deviation STOPの原記録)、`ADVANCED-VOCAB-DIFFICULTY-AUDIT-01`(Sewer本文のVocabulary Trial利用)、`docs/evidence/news_iterative_r2_adoption_2026-09-24/prompts.md`。
+- commit: (本コミットで反映)

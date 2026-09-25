@@ -210,12 +210,37 @@ def check_tts_standard_mode_reminder(text: str) -> dict:
     }
 
 
+TTS_DIFF_REGEN_RE = re.compile(r"差分再生成")
+TTS_BUDGET_FLAG_RE = re.compile(r"--budget")
+
+
+def check_tts_budget_deviation_reminder(text: str) -> dict:
+    """PM_GOVERNANCE.md 7-5(2026-09-25、`NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02`)。
+
+    委任文がTTS生成に言及している(`TTS`/`tts`/`音声化`/`narration`)のに、
+    「差分再生成」の確認への言及も`--budget`(または`--budget-jpy`等)の
+    明示への言及も無い場合に警告する。ブロッキングではない(status/PASS
+    判定には影響しない、`warnings`にのみ記録する)。
+    """
+    mentions_tts = bool(TTS_MENTION_RE.search(text))
+    has_diff_regen_mention = bool(TTS_DIFF_REGEN_RE.search(text))
+    has_budget_flag_mention = bool(TTS_BUDGET_FLAG_RE.search(text))
+    triggered = mentions_tts and not has_diff_regen_mention and not has_budget_flag_mention
+    return {
+        "triggered": triggered,
+        "mentions_tts": mentions_tts,
+        "has_diff_regen_mention": has_diff_regen_mention,
+        "has_budget_flag_mention": has_budget_flag_mention,
+    }
+
+
 def run_check(text: str) -> dict:
     keyword_results = check_required_keywords(text)
     fixed_block = check_fixed_block(text)
     placeholder_hits = check_placeholders(text)
     command_check = check_commands_have_args_or_paths(text)
     tts_mode_check = check_tts_standard_mode_reminder(text)
+    tts_budget_check = check_tts_budget_deviation_reminder(text)
 
     missing_keywords = [r["label"] for r in keyword_results if not r["present"]]
     missing_fixed_labels = [
@@ -248,6 +273,12 @@ def run_check(text: str) -> dict:
             "batch-reason の記載も見つからない(PM_GOVERNANCE.md 7-1/7-2、"
             "PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01)"
         )
+    if tts_budget_check["triggered"]:
+        warnings.append(
+            "TTSを伴う委任文だが「差分再生成」確認への言及も --budget 明示への"
+            "言及も見つからない(PM_GOVERNANCE.md 7-5、"
+            "NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02)"
+        )
 
     status = "PASS" if not reasons else "FAIL"
 
@@ -260,6 +291,7 @@ def run_check(text: str) -> dict:
         "placeholder_hits": placeholder_hits,
         "command_check": command_check,
         "tts_mode_check": tts_mode_check,
+        "tts_budget_check": tts_budget_check,
     }
 
 
