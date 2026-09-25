@@ -1,0 +1,15 @@
+{
+  "source_package": "wordfreq",
+  "source_package_version": "3.1.1",
+  "license": "Apache-2.0",
+  "retrieved": "既存install再利用(NEWS-STANDARD-A2-VOCAB-EFFECTIVENESS-TRIAL-01で新規pip installしたもの。本Trialでは追加installなし)",
+  "method": "wordfreq.top_n_list('en', 20000)",
+  "band_edges": {
+    "A": "rank<=3000",
+    "B": "3001<=rank<=5000",
+    "C": "5001<=rank<=10000",
+    "D": "rank>10000 (表外=20,000超を含む)"
+  },
+  "lemma_rank_map_size": 14601,
+  "note": "順位はlemma単位(simple_lemma()による規則活用正規化のみ、不規則活用は非対応)の最小順位(=最も高頻度な活用形の順位)を採用。simple_lemma_candidates()による複数候補のいずれかがrank_mapに存在すればその最小値を使う。"
+}
