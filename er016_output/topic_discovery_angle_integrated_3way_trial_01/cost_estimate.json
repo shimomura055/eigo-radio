@@ -1,0 +1,45 @@
+{
+  "budget_jpy": 200.0,
+  "prompt_sha256": "91b8206d80c7fdb10bef2096716fd690914c46c59af055c15d47a72228fe9a35",
+  "prompt_chars_developer_plus_user": 6997,
+  "reference_process_baseline_prompt_chars": 7498,
+  "base_extra_chars_vs_baseline": 0,
+  "chars_per_token_calibrated": 1.7138,
+  "ref_process_linear_fit": {
+    "intercept_jpy": 0.2145,
+    "marginal_jpy_per_search": 1.9678,
+    "source": "er016_output/topic_selection_reference_process_trial_01/cost.json (by_stage, n=20 rows with web_search_call_count>0, least squares fit computed by Sonnet in this task; command recorded in delegation_log)"
+  },
+  "price_ratio_note": "pricing_snapshot.json直接比較: Sol/Luna input=5.0/0.2=25.0x, output=30.0/1.2=25.0x。Terra単価はpricing_snapshot.json未収載(terra_in=None)=UNKNOWN。実測2件平均比(EMPIRICAL_SOL_LUNA_RATIO)=27.665xを採用(委任文記載の6.6xは実測と不一致のため不採用)。Terra単価UNKNOWNのため、安全側判定としてSolと同額と仮置きする(委任文指定)。",
+  "empirical_sol_luna_ratio_used": 27.665,
+  "delegation_stated_ratio_not_used": 6.6,
+  "scenarios": {
+    "low": {
+      "assumed_internal_search_count": 20,
+      "luna_est_jpy": 39.57,
+      "sol_est_jpy": 1094.7,
+      "terra_est_jpy_placeholder_same_as_sol": 1094.7,
+      "total_3way_est_jpy": 2228.97,
+      "within_budget": false
+    },
+    "mid": {
+      "assumed_internal_search_count": 25,
+      "luna_est_jpy": 49.41,
+      "sol_est_jpy": 1366.93,
+      "terra_est_jpy_placeholder_same_as_sol": 1366.93,
+      "total_3way_est_jpy": 2783.27,
+      "within_budget": false
+    },
+    "high": {
+      "assumed_internal_search_count": 30,
+      "luna_est_jpy": 59.25,
+      "sol_est_jpy": 1639.15,
+      "terra_est_jpy_placeholder_same_as_sol": 1639.15,
+      "total_3way_est_jpy": 3337.55,
+      "within_budget": false
+    }
+  },
+  "decision": "STOP",
+  "decision_note": "3シナリオ(internal search 20/25/30)すべてでtotal_3way_est_jpyがbudget_jpy=200.0を超過するため、Sol/Terraはおろか3-way全体が予算上限内で完了できない見込み。委任文STOP条件『¥200超過見込み』に該当するため、Luna実行前にSTOPする。",
+  "computed_at_jst": "2026-09-25T09:06:49.487315+09:00"
+}
