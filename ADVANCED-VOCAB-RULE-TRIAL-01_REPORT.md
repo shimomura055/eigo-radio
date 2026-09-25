@@ -416,4 +416,8 @@ SIMPLIFY対象として妥当な判断である。ただし`sewer_fact_tokens_ch
 
 ## §10 [Fable記入]
 
+Fable評価: (1)12,000ラインは候補抽出として機能。(2)onstage/wastewater型はA例外で正しくKEEP、piano/curtain型は順位<12,000で候補外(B例外の判定自体は未検証)。(3)artery型はv1/v2ともD(中心比喩の保持)でKEEPされ、ユーザー期待「原則平易化候補」と不一致。修正と無関係な仕様解釈論点。(4)D判定はseptic(v1 KEEP→v2 SIMPLIFY)のように実行間で揺れる。(5)sewer/sewersを全箇所フレーズ化し冗長(仕様上は正当なSIMPLIFY)。(6)Fact/Storytelling: v2はfact_tokens_check+目視でMeta完全一致、Sewerはseptic置換に伴う1件のみ。(7)v1の2欠陥(表層形順位=前処理条件違反、concierge呼称のFact変更見逃し)はfix01で解消をevidence確認。(8)Standard適用所見: D例外の揺れがそのまま持ち込まれるため、明文化なしには不安定。
+
 ## §11 [Fable記入]
+
+分類: **USER_DECISION_REQUIRED**。判断事項3件: ①D例外に「中心比喩の保持」を含めるか(Fable推奨: 含めない、Dは意味精度・自然さの明確な損失に限定)、②主題語(sewer/septic等タイトル・中核語)の扱い: 仕様どおりフレーズ化か、初出で残し易しい言い換えを添える新例外を設けるか(Fable推奨: 後者を仕様候補に追加、ただし新例外のためユーザー判断)、③B/C例外の実証を別記事1本で行うか(Fable推奨: ①②決定後に同じTrialで検証)。Production採用ではない。Standard側へも未反映。
