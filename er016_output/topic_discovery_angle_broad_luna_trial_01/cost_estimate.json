@@ -1,0 +1,46 @@
+{
+  "budget_jpy": 100.0,
+  "prompt_sha256": "7f8ec518b0a671b8252ede1d71e39c868ef2b3317df0a78073752ce697fde926",
+  "prompt_chars_developer_plus_user": 8353,
+  "reference_process_baseline_prompt_chars": 7498,
+  "base_extra_chars_vs_baseline": 855,
+  "chars_per_token_calibrated": 1.7138,
+  "ref_process_linear_fit": {
+    "intercept_jpy": 0.2145,
+    "marginal_jpy_per_search": 1.9678,
+    "source": "3WAY trial / 前回LUNA-TRIAL-01のcost_estimate.jsonと同一の最小二乗fit(er016_output/topic_selection_reference_process_trial_01/cost.json由来)を再利用。本scriptでの再計算はしていない。"
+  },
+  "prev_trial_actual": {
+    "management_id": "TOPIC-DISCOVERY-ANGLE-INTEGRATED-LUNA-TRIAL-01",
+    "actual_jpy": 4.62,
+    "max_tool_calls": 30,
+    "web_search_call_count": 8,
+    "note": "前回実績を参考値として記録(今回はmax_tool_calls=40・Prompt文字数が異なるため、そのままの外挿ではなく別途線形fitで再計算している)。"
+  },
+  "note": "8系統探索によりweb_search呼び出し回数が前回(8回)より増える可能性があるため、ASSUMED_INTERNAL_SEARCH_RANGE(20/25/30)のシナリオで判定する。",
+  "scenarios": {
+    "low": {
+      "assumed_internal_search_count": 20,
+      "luna_est_jpy": 39.59,
+      "within_budget": true
+    },
+    "mid": {
+      "assumed_internal_search_count": 25,
+      "luna_est_jpy": 49.43,
+      "within_budget": true
+    },
+    "high": {
+      "assumed_internal_search_count": 30,
+      "luna_est_jpy": 59.26,
+      "within_budget": true
+    }
+  },
+  "worst_case_2calls_jpy_if_check_retries_once": {
+    "low": 79.18,
+    "mid": 98.86,
+    "high": 118.52
+  },
+  "decision": "GO",
+  "decision_note": "全シナリオでbudget内に収まる見込みのため、Luna実行に進む(checkでの追加1 callまで含めても2call合計の最悪ケースは118.52JPY)。",
+  "computed_at_jst": "2026-09-25T12:41:13.361479+09:00"
+}

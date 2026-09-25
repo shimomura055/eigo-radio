@@ -1,0 +1,14 @@
+{
+  "stopped": true,
+  "stopped_at_step": "check",
+  "reason": "委任文STOP条件「探索カテゴリを満たせない」に該当。正当な実call #1(attempt_1)・正当な実call #2(attempts/attempt_2_original_call_partial_record.mdに部分復元)のいずれも、8系統のうちcategory 8(エンタメ・スポーツ)を明示的に検索したqueryが0件だった。委任文ルールにより、1回の再実行後も違反が残る場合は追加の再実行を行わずSTOP扱いとする。",
+  "additional_deviation": "Sonnetのスクリプトバグ(--forceの安全装置無効化 + attempt_1判定のroot誤参照)により、意図しない実call #3が発生し、attempts/attempt_2/の内容を上書きした。詳細はattempts/attempt_2/PROCESS_DEVIATION_NOTICE.mdおよびcheck_result.jsonのprocess_deviationフィールドを参照。バグは修正済み。",
+  "authorized_calls": 2,
+  "actual_calls": 3,
+  "cumulative_cost_jpy": 11.34,
+  "budget_jpy": 100.0,
+  "budget_exceeded": false,
+  "category_8_missing_in_all_calls": true,
+  "note": "予算超過によるSTOPではない。探索カテゴリ未達成(category 8)によるSTOPであり、加えてプロセス逸脱(未許可の3回目call)が発生した。両方をユーザーへ開示しSTOPとする。",
+  "logged_at_jst_note": "REPORT作成時点で記録。実行時刻はraw_usage_log.jsonl参照。"
+}
