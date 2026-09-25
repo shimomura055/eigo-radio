@@ -1,0 +1,64 @@
+DEVELOPER:
+You are an editor testing a candidate vocabulary-difficulty rule for CEFR B1 ("Advanced") level news articles written for Japanese adult English learners. This rule is a draft under evaluation, not yet approved. For the specific difficult words listed below, you decide word by word whether to keep the word or replace it with a simpler, natural alternative, following the rule exactly. You must not change anything else in the article.
+
+USER:
+Candidate difficulty rule (draft, under evaluation):
+
+Words that rank below roughly the top 12,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.
+
+A word ranked beyond ~12,000 may still be KEPT (not simplified) if one of these applies:
+A. Its meaning can easily be guessed from an already-easy word it is built from (for example: "onstage" = on + stage, "wastewater" = waste + water, "understandable" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.
+B. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.
+C. It is a proper noun (a person's name, a company or product name, a place name).
+D. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because "it is a technical term" -- if a simple, natural, meaning-preserving substitute exists, simplify it.
+
+Do NOT use "it is part of a fixed expression / idiom" as its own exception category. (For example, if "curtain" in "behind the curtain" is kept, the reason must be B [established Japanese loanword], never "it is part of an idiom.") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.
+
+For each candidate word listed below, decide:
+- "KEEP -- predictable morphology/compound" (reason A)
+- "KEEP -- established Japanese loanword" (reason B)
+- "KEEP -- proper noun" (reason C)
+- "KEEP -- indispensable / natural replacement unavailable" (reason D)
+- "SIMPLIFY" (replace it with a simpler, natural word or phrase)
+- "BORDERLINE" (only if you are genuinely unsure; explain why in notes_on_ambiguous_cases)
+
+Structure contract (must not change): one `# ` title line, then body paragraphs, then exactly two `### ` subheadings each followed by its paragraph, then a `## In one line` section with its one closing sentence. Keep every heading's text unchanged unless a heading itself contains a candidate word you decide to SIMPLIFY (none of the candidate words appear in a heading in this article). Keep the same number of paragraphs and, as much as possible, the same sentence count.
+
+Only change the specific candidate words you decide to SIMPLIFY (and, only where grammatically necessary, a minimal amount of immediately surrounding wording so the sentence still reads naturally). Do not do a general rewrite of sentences that contain no candidate word. Do not add new facts, explanations, examples, or opinions. Do not remove any fact. Do not change the meaning, the tone, the storytelling, the central metaphor, or the ending logic. Keep the title unchanged unless it contains a candidate word you decide to SIMPLIFY.
+
+Output:
+- "decisions": exactly one entry per candidate word listed below, in the same order, each with word, actual_form, frequency_rank (copy the frequency_rank value exactly as given below -- do not recompute or guess it), decision, reasoning (one or two sentences, in English), before_sentence (the exact original sentence that contains this word), after_sentence (the resulting sentence in your rewritten article -- for KEEP decisions this should be identical or nearly identical to before_sentence).
+- "after_text": the full rewritten article (title + body), in the same format as the original.
+- "notes_on_ambiguous_cases": a short note (can be empty) on any word where the KEEP/SIMPLIFY line was genuinely hard to draw.
+
+[Candidate words -- rank below ~12,000, decide KEEP or SIMPLIFY for each]
+- word="concierges" actual_form="concierges" frequency_rank="> 20,000 (zipf=1.70, extremely rare)"
+- word="onstage" actual_form="onstage" frequency_rank="15,670"
+
+[Reference only -- words ranked 10,000-12,000 (near the threshold), shown so you can calibrate the rule; these are NOT candidates and do not need a decision unless they also appear in the candidate list above]
+- word="understandable" actual_form="understandable" frequency_rank="10,629"
+
+[Article]
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI handle a phone call sounds like a convenient service from the future. You tell it what you need, and the AI makes the call for you. That was the kind of phone service being prepared at Meta.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta was trying to give Muse a feature that would make calls on a user’s behalf.
+
+But when people looked behind the stage, they found something unexpected.
+
+In internal tests, some of the calls were handled not by AI, but by human contract workers. Meta called these workers “human concierges.” The sign out front said “AI phone service.” Yet, in part, a human was making the call. The AI only appeared to be performing alone.
+
+### The hidden performer inside the phone call
+
+That is the most surprising part of the story. The call looked like a one-person performance, but another performer was hidden inside the piano. Human help is not automatically a bad thing: people can fill in the areas where AI is still weak. As an approach, that is understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees raised concerns that call details might be leaked outside the company. People might also be surprised to learn that a contract worker, not AI alone, had listened and responded to a conversation they thought they had handed to AI. According to internal posts reviewed by Reuters, a Meta executive said the company had put the feature on hold.
+
+For AI phone service, the important question may not be only whether it can make a call. Who is speaking onstage? And who is behind the curtain? The more convenient the service, the more its explanation may matter before people can truly feel safe leaving a task to it.
+
+## In one line
+
+AI may make the call, but people also need to know who is really behind the voice.

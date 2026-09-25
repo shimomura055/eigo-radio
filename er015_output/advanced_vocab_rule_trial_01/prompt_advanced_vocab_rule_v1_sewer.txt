@@ -1,0 +1,64 @@
+DEVELOPER:
+You are an editor testing a candidate vocabulary-difficulty rule for CEFR B1 ("Advanced") level news articles written for Japanese adult English learners. This rule is a draft under evaluation, not yet approved. For the specific difficult words listed below, you decide word by word whether to keep the word or replace it with a simpler, natural alternative, following the rule exactly. You must not change anything else in the article.
+
+USER:
+Candidate difficulty rule (draft, under evaluation):
+
+Words that rank below roughly the top 12,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.
+
+A word ranked beyond ~12,000 may still be KEPT (not simplified) if one of these applies:
+A. Its meaning can easily be guessed from an already-easy word it is built from (for example: "onstage" = on + stage, "wastewater" = waste + water, "understandable" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.
+B. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.
+C. It is a proper noun (a person's name, a company or product name, a place name).
+D. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because "it is a technical term" -- if a simple, natural, meaning-preserving substitute exists, simplify it.
+
+Do NOT use "it is part of a fixed expression / idiom" as its own exception category. (For example, if "curtain" in "behind the curtain" is kept, the reason must be B [established Japanese loanword], never "it is part of an idiom.") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.
+
+For each candidate word listed below, decide:
+- "KEEP -- predictable morphology/compound" (reason A)
+- "KEEP -- established Japanese loanword" (reason B)
+- "KEEP -- proper noun" (reason C)
+- "KEEP -- indispensable / natural replacement unavailable" (reason D)
+- "SIMPLIFY" (replace it with a simpler, natural word or phrase)
+- "BORDERLINE" (only if you are genuinely unsure; explain why in notes_on_ambiguous_cases)
+
+Structure contract (must not change): this article has NO markdown headings (no `#`, `###`, or `##` lines) -- it is a plain title line followed by flowing body paragraphs. Keep it exactly that way: one plain title line, then the same number of body paragraphs in the same order, with the same paragraph breaks. Do not add any heading.
+
+Only change the specific candidate words you decide to SIMPLIFY (and, only where grammatically necessary, a minimal amount of immediately surrounding wording so the sentence still reads naturally). Do not do a general rewrite of sentences that contain no candidate word. Do not add new facts, explanations, examples, or opinions. Do not remove any fact. Do not change the meaning, the tone, the storytelling, the central metaphor, or the ending logic. Keep the title unchanged unless it contains a candidate word you decide to SIMPLIFY.
+
+Output:
+- "decisions": exactly one entry per candidate word listed below, in the same order, each with word, actual_form, frequency_rank (copy the frequency_rank value exactly as given below -- do not recompute or guess it), decision, reasoning (one or two sentences, in English), before_sentence (the exact original sentence that contains this word), after_sentence (the resulting sentence in your rewritten article -- for KEEP decisions this should be identical or nearly identical to before_sentence).
+- "after_text": the full rewritten article (title + body), in the same format as the original.
+- "notes_on_ambiguous_cases": a short note (can be empty) on any word where the KEEP/SIMPLIFY line was genuinely hard to draw.
+
+[Candidate words -- rank below ~12,000, decide KEEP or SIMPLIFY for each]
+- word="septic" actual_form="septic" frequency_rank="> 20,000 (zipf=3.21, extremely rare)"
+- word="sewers" actual_form="sewers" frequency_rank="> 20,000 (zipf=3.22, extremely rare)"
+- word="artery" actual_form="artery" frequency_rank="12,006"
+- word="municipalities" actual_form="municipalities" frequency_rank="12,279"
+- word="sewer" actual_form="sewer" frequency_rank="12,324"
+- word="inspections" actual_form="inspections" frequency_rank="12,446"
+- word="collects" actual_form="collects" frequency_rank="13,117"
+- word="wastewater" actual_form="wastewater" frequency_rank="18,216"
+
+[Reference only -- words ranked 10,000-12,000 (near the threshold), shown so you can calibrate the rule; these are NOT candidates and do not need a decision unless they also appear in the candidate list above]
+(none in this band for this article)
+
+[Article]
+“Merger”? Not Towns, but Household Wastewater
+
+When a news report mentions a “combined septic tank,” you may wonder if it is about towns joining together. But the things being combined are not municipalities. They are toilet water, and water from the kitchen and bath.
+
+Some municipalities are now considering replacing aging sewer systems with combined septic tanks. This does not mean getting rid of all sewers. In some areas, it means considering a change from a system that connects the whole town to one that treats wastewater near each home.
+
+A sewer is like an invisible main artery beneath the town. It collects water from homes in underground pipes and carries it to a distant treatment plant. Most of the time, we hardly think about it. Turn on the tap, flush the toilet, and the underground system takes care of the rest.
+
+But when those pipes grow old, the situation changes. Because they are underground, it is hard to find where they are damaged. Repairs are not easy, either. Since the system is connected over a long distance, the repairs can also become large-scale.
+
+That is where combined septic tanks come in. They are small water-treatment facilities placed near homes. They treat not only toilet water, but also water from the kitchen and bath, for each home. Instead of sending the water to a distant treatment plant, they clean it near where it comes out.
+
+It is like placing a small washing machine in each home instead of putting one huge washing machine in the town. The idea is to divide one large system into several smaller ones.
+
+Of course, having a septic tank does not mean that nothing more is needed. Installation, inspections, and cleaning are still necessary. For people who use sewers, this also means that the hidden part of daily life will change.
+
+Still, the interesting point is this: to protect convenience, we do not always need to make the system bigger. Instead of forcing an aging underground main artery to keep going, we can move water treatment closer to home. The future of sewers may arrive in a surprisingly familiar place—right near us.
