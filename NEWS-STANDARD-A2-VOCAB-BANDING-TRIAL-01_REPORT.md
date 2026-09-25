@@ -241,13 +241,26 @@ is behind the curtain?"の結び)は○で維持。比喩語保持は§5(c)の�
 - 累計 total_cost_jpy = 0.2994(予算上限¥100に対し十分に内側)
 
 ## §10 Fable参考評価
-`[Fable記入]`
+
+### 10.1 Fable参考評価(Meta v4本文を通読)
+- 自然さ: v4は不自然な一語置換(Sewer v3の installation→putting in 型)を起こしていない。"put on hold"→"paused"、"on a person's behalf"→"for people" など自然な置換のみ。文長9.68語/文・FK 5.06でSewer v3と同水準。
+- 比喩・Story: lead role / backstage / understudy / curtain / piano をすべて保持し、v1で弱化した "lead role" も "The lead role belonged to Muse" として維持。Reveal・Endingは同位置。
+- Fact: 機械diffの「not ×2脱落」「some脱落」は言い換えによるもので、通読では意味は保持されている("it would not be surprising if they were shocked"→"people might be shocked"、"the important question may not be only"→"it may not be enough to ask"、"some parts of the calls"→"some parts of calls"[定冠詞のみ脱落])。事実誤りなし。
+- ニュアンスの軽微な弱化2件: (1) "leak outside the company"→"leave the company"(日本語R2「流出」の含意が薄れる)、(2) "According to internal posts reviewed by Reuters, a Meta executive said…"→"Reuters reviewed internal posts. A Meta executive said…"(発言の出典関係が分割で緩む)。いずれもFact driftではなく表現の弱化。
+- "some parts of the calls" の意味はBaselineどおり維持(OPEN-177サブ項目のまま、本Trialでは修正していない)。
+
+### 10.2 頻度帯指標について
+Meta Advancedはもともと平易で、帯C/Dの異なり語はAdvanced 6→v4 7(固有名詞ヒューリスティックの誤判定"Reuters"と、"paused"のような自然だが順位上は高帯の語を含む)。この記事では頻度帯指標が方針の効果を示せず、指標側の限界(固有名詞判定・自然な語の順位ノイズ)も判明した。v4の「自然さ優先」が Sewer の不自然置換を実際に解消するかは、Sewerでv4を再生成しないと確認できない(本Trialの範囲外)。
 
 ## §11 分類
-`[Fable記入]`
+
+**VALIDATED(部分)**。別Topic(Meta)でも v4方針は Story・比喩・自然さを保ちつつ文長簡略化を再現し、不自然な一語置換を起こさなかった。ただし頻度帯別の語彙削減効果はこの記事では実証されず、Sewerでの不自然置換解消も未検証。Production採用ではない。
 
 ## §12 USER_DECISION_REQUIRED
-`[Fable記入]`
+
+1. 決定的な検証として、Sewer AdvancedからStandard v4を1本生成し(1 call、概算¥0.5)、v3の installation→putting in / collects→gathers / distant→faraway 型が解消するかを確認するか(Fable推奨: 実施。v4の主目的はこの型の抑止であり、Metaでは元々発生していなかった)。
+2. ニュアンス弱化(leak→leave、出典関係の分割)を許容するか、v4 Promptに「否定・出典・漏えい等の意味を弱めない」旨の1行を足すか(Fable推奨: 1のSewer結果を見てから判断)。
+3. 頻度帯指標の固有名詞判定(文頭位置依存)の改善は測定器側の課題として記録のみ(Open Item候補)。
 
 ## §13 未解決
 
