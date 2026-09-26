@@ -154,6 +154,10 @@ ADVANCED_VOCAB_RULE_V2_BLOCK。**Production変更はしない、所見のみ。*
 3. 記事2本(Meta/Sewer各1本)のみのTrialであり、他ジャンル・他記事での
    汎化性は未確認。
 
-## §10 [Fable記入]
+## §10 Fable評価
 
-## §11 [Fable記入]
+(1)regressionなし: Meta候補10語・Sewer候補8語がすべてKEEP、Before=After完全一致、Fact tokens一致。v5の仕組みで既に到達している状態でA〜Dを明示しても本文は変わらなかった。(2)留意: 候補18語すべてに例外理由が付いた=例外が全候補を吸収する傾向の再現。pause→B「ポーズ」・leak→B「リーク」は拡大解釈、septic→C「引用符内の呼称」は誤用(一般技術用語の引用)、arteryはDの理由に比喩保持を使用(Advanced Trial-02でユーザーが退けた論理がD経由で再登場)。A2では curtain / artery / leak に平易化余地がある。(3)思想差(所見): v5に「引用符内の呼称」明記なし/v5固有「難語への説明追加禁止」がAdvancedに無い/Advanced固有「定型表現例外禁止」がv5に無い/A・Bのカテゴリ名と具体例がv5に無い。費用¥2.54。
+
+## §11 分類
+
+**VALIDATED**(Standardへ同思想を適用しても既存v5本文にregressionなし。Production Prompt変更なし)。ユーザー判断事項: ①Standard v5 promptへA〜D文言を追加するか(Fable推奨: 保留。追加しても本文は変わらず、A〜Dは全候補を吸収しがち)。②Advanced v2側へ v5固有の「難語への説明追加禁止」を加えるか(Fable推奨: 次回Production Run観察後、OPEN-182と同時)。

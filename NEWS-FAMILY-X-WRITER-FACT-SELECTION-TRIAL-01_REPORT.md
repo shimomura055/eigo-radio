@@ -186,8 +186,8 @@ Sonnet暫定分類: **VALIDATED**(Trial範囲内。1テーマ1回のみの実行
 
 ## §10 Fable評価
 
-[Fable記入]
+(1)B(414語、Fact 7/18、必須欠落0、Storyline外混入0、drift 0)はControl(404語、Fact 3/18、「なぜ人間が必要か」の因果が欠落)を Fact completeness で上回り、Storytelling は同等(いずれもStoryline一本)。A(461語、目標超過、Fact 14/18、Storyline外7件)より詰め込みが明確に少ない。ユーザー定義の採用条件「B ≥ Control」を3点とも満たす。(2)留意: Bの題名「The Final Boss…」はやや軽く、焦点が「開示/プライバシー」から「AIと分かった相手との信頼」へ寄った(Brief選定時のStoryline設定の帰結)。1テーマのみで再現性未検証。Research費用¥0(既存Ledger再利用)、合計¥3.09。
 
 ## §11 分類(Fable最終判断)
 
-[Fable記入]
+**VALIDATED**(Trial範囲、1テーマ。Production採用ではない)。ユーザー判断事項: ①B方式(Selected Fact Brief)をFamily X Writer入力のProduction候補として、別テーマ1〜2本で再現確認(¥5程度)へ進めるか(Fable推奨: 進める)。②Brief作成時のStoryline選定を AI自動 / 人間1行指定 のどちらにするか(Fable推奨: 当面は人間1行指定、Topic Selection手動運用と整合)。
