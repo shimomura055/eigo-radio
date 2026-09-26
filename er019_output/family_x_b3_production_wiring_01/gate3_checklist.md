@@ -27,7 +27,7 @@ runtime evidence run: `er019_output/family_x_b3_production_wiring_01/run_01/`
 | 19 | CURRENT_SPEC | `CURRENT_SPEC.md` L828行(Entertainment Writer方式)への追記 | 反映済み(WIRING INCOMPLETE維持、PRODUCTION_WIREDへは変更していない) |
 | 20 | DECISION_LOG | `DECISION_LOG.md`新規エントリ(NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01) | 反映済み |
 | 21 | OPEN_ITEMS | `OPEN_ITEMS.md` OPEN-177(1)更新+OPEN-183新設(記事ユーザー確認待ち) | 反映済み |
-| 22 | Git commit・push | (本タスク完了後に実施、raw URL報告) | 未実施(本チェックリスト作成時点) |
+| 22 | Git commit・push | commit `365b572d6fc67da39c39999fd4d8b04cac9faded`、`git push origin main`実行済み(`8975bd8b..365b572d`) | 完了 |
 | 23 | Dangling Reference Check | `NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01_REPORT.md`§Dangling Reference | Grep結果を別途記録 |
 | 24 | ユーザー承認仕様との一致 | 本委任文ユーザー確定事項1〜13との対応表(REPORT参照) | Sonnet仮判定のみ、正式判定はFable/ユーザー |
 
