@@ -1,4 +1,5 @@
 {
+  "_superseded_note": "SUPERSEDED(Fable差し戻し1回目、Gate 3 #13、2026-09-26): 本ファイルは手動再構成版であり、Gate 3 #13の指摘(runtime evidenceが手作業で補われた状態はProduction配線証跡として認められない)を受けて、正式なwriter_run_summary.jsonは er019_writer_run_summary_reconstruction_01.py によるプログラムでの再構成へ置き換えた。本ファイルは削除せず、手動再構成が行われた事実の記録として残す(2-3 Artifact supersession)。正式な再構成結果は同dir直下のwriter_run_summary.json(_reconstruction_provenanceキー付き)を参照。",
   "note": "run_writer_stage()をonly=advanced/only=standardの2回に分けてcost stage分離目的で呼んだため、既存Production挙動として各呼び出し末尾のsave_json(writer_run_summary.json)が前回分を上書きするasymmetry(advanced単体では未修正、standard呼び出し後はadvancedキーが失われる)が判明した。本ファイルはraw_usage_log.jsonl+成果物ファイルから手動再構成したAdvanced最終evidence(observation、Gate3チェックリスト・REPORTへ記載)。",
   "response_id_final_accepted": "resp_02f11b18ddc1c555006ab76f3150a887d0a4bb1dc19cb5b20e",
   "response_id_attempt1_rejected_major": "resp_0d51952213aa455c006ab76ebdf09887d0a0fd9c9ed3cb45b7",

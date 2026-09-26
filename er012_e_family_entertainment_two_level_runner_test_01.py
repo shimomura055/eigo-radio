@@ -196,6 +196,41 @@ class RunWriterStageTests(unittest.TestCase):
         self.assertIn("standard", evidence)
         self.assertNotIn("advanced", evidence)
 
+    def test_writer_run_summary_json_merges_across_separate_only_calls(self):
+        """NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
+        Gate 3 #13): run_writer_stage(only="advanced")の後にrun_writer_stage(
+        only="standard")を別呼び出しした場合でも、writer_run_summary.jsonへ
+        両stageのevidenceキーが両方残ること(旧実装は後勝ち上書きでadvancedキーが
+        消えていた)を検証する。"""
+        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
+        std_result = _FakeWriterResult(text=STANDARD_TEXT)
+        summary_path = os.path.join(self.theme["out_dir"], "writer_run_summary.json")
+
+        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result), \
+             mock.patch.object(runner.vfl01, "run_deviation_check",
+                                return_value=_deviation_result("LEDGER_COMPLIANT")), \
+             mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
+                                     ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only="advanced")
+
+        with open(summary_path, encoding="utf-8") as f:
+            summary_after_advanced = json.load(f)
+        self.assertIn("advanced", summary_after_advanced)
+        self.assertNotIn("standard", summary_after_advanced)
+
+        with mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result), \
+             mock.patch.object(runner.vfl01, "run_deviation_check",
+                                return_value=_deviation_result("LEDGER_COMPLIANT")), \
+             mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
+                                     ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only="standard")
+
+        with open(summary_path, encoding="utf-8") as f:
+            summary_after_standard = json.load(f)
+        self.assertIn("advanced", summary_after_standard,
+                       "standard単独呼び出し後もadvancedキーが残らなければならない(マージ保存)")
+        self.assertIn("standard", summary_after_standard)
+
 
 class TtsModeCliTests(unittest.TestCase):
     """PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01: --tts-modeの既定は

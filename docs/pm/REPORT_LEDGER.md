@@ -48,7 +48,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
 | STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
-| NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 進行中 | 未 | 未 | Y | B3(最小核基準)Production採用後のwiring作業。Phase 0(本行作成タスク)は調査のみ。 |
+| NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 記事ユーザー確認待ち(OPEN-183)、配線はGate 3 #13修正後に再判定。 |
 | FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回(True Crime再生成)後に初回報告。 |
 | TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
 | NEWS-VOCAB-BAND-6000-10000-14000-TRIAL-01 | 2026-09-26 | 未 | 未 | Y | 語彙Band(6,000/10,000/14,000)を生成時点で制約するTrial。Meta記事は実質超過語0/0/0、Sewer記事は3条件とも実質超過語が残った(1〜6)。Band 10,000のSewerで引用句"combined septic tank,"が消失する事例あり。 |

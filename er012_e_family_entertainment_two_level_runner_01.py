@@ -359,7 +359,17 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
         }
         assert_budget_ok(out_dir, budget_jpy, "after standard writer+deviation")
 
-    save_json(f"{out_dir}/writer_run_summary.json", evidence)
+    # NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
+    # Gate 3 #13): run_writer_stage(only=...)を段階分割で複数回呼ぶ運用
+    # (er019 production runnerが--stop-after advanced後に--regenerate-stage
+    # standardで再実行する等)では、旧実装(evidenceのみをそのまま上書き保存)だと
+    # 既存stageのevidenceキーが消える。既存ファイルとマージして保存する
+    # (呼び出し元への戻り値evidenceは従来通りそのstage分のみで変更しない)。
+    existing_summary = {}
+    if os.path.exists(f"{out_dir}/writer_run_summary.json"):
+        existing_summary = load_json(f"{out_dir}/writer_run_summary.json")
+    merged_summary = {**existing_summary, **evidence}
+    save_json(f"{out_dir}/writer_run_summary.json", merged_summary)
     return evidence
 
 

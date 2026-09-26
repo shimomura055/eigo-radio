@@ -166,6 +166,34 @@ class SelectedBriefMarkdownTests(unittest.TestCase):
         self.assertIn("Storyline line here.", md)
         self.assertIn("Brief text referencing FACT-001", md)
 
+    def test_build_selected_brief_markdown_does_not_duplicate_storyline_when_llm_prepends_it(self):
+        """NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
+        Gate 3 #2): Prompt指示によりLLMがselected_fact_brief自体の冒頭へ
+        Storyline文をそのまま含めて返すケース(run_01で実際に発生)で、
+        「## Selected Facts」見出し直下にStorylineが重複表示されないことを検証する。"""
+        parsed = _make_parsed(["FACT-001"], ["FACT-001", "FACT-002"],
+                               storyline="A repeated storyline sentence.")
+        parsed["selected_fact_brief"] = (
+            "A repeated storyline sentence.\n\n- Fact one detail.\n- Fact two detail."
+        )
+        md = b3.build_selected_brief_markdown({"parsed": parsed})
+        self.assertEqual(md.count("A repeated storyline sentence."), 1,
+                          "Storyline文はBrief全体で1回だけ出現しなければならない")
+        self.assertIn("- Fact one detail.", md)
+        self.assertIn("- Fact two detail.", md)
+
+    def test_build_selected_brief_markdown_keeps_fact_brief_unchanged_when_no_exact_prefix_match(self):
+        """selected_fact_briefの冒頭がStoryline文と完全一致しない(LLMが言い換えた等)
+        場合は、憶測で本文を書き換えず元のテキストをそのまま使う。"""
+        parsed = _make_parsed(["FACT-001"], ["FACT-001", "FACT-002"],
+                               storyline="Original storyline sentence.")
+        parsed["selected_fact_brief"] = (
+            "A paraphrased opening that differs from the storyline.\n\n- Fact one detail."
+        )
+        md = b3.build_selected_brief_markdown({"parsed": parsed})
+        self.assertIn("A paraphrased opening that differs from the storyline.", md)
+        self.assertIn("- Fact one detail.", md)
+
 
 class JaWriterVerbatimTests(unittest.TestCase):
     def test_r0_prompt_verbatim_matches_trial_source(self):

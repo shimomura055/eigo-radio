@@ -85,17 +85,80 @@ Trialとの差分(P7本体・語数目安・出力形式・Revision方式自体�
 
 **観察事項(事実記録のみ、仕様変更なし)**: (1) `run_writer_stage(only=...)`をコスト分離
 目的で2回に分けて呼んだため、既存`writer_run_summary.json`保存ロジック(呼び出し末尾で
-毎回上書き)により最終的に"advanced"キーが失われた。raw_usage_log.jsonl+成果物から
-`b1b/audit/final_advanced_summary_reconstructed.json`へ手動再構成した。(2) Advanced段の
-Ledger Deviation Check(LLM判定)は同種の文言に対し実行のたびに判定が変動した(1回目
-run時はLEDGER_COMPLIANT、2回目run[`--regenerate-stage advanced`]では同種表現がMAJOR→
-再生成後PASS)。既知のLLM判定非決定性であり、本タスクで調整・変更は行っていない。
+毎回上書き)により最終的に"advanced"キーが失われた。**Fable差し戻し1回目でこの旧実装
+(手作業での側面ファイル補完)はGate 3 #13未充足と判定され、下記4.1のとおり修正済み**。
+(2) Advanced段のLedger Deviation Check(LLM判定)は同種の文言に対し実行のたびに判定が
+変動した(1回目run時はLEDGER_COMPLIANT、2回目run[`--regenerate-stage advanced`]では
+同種表現がMAJOR→再生成後PASS)。既知のLLM判定非決定性であり、本タスクで調整・変更は
+行っていない(詳細は下記4.2 Fact drift結果)。
 (3) 初回run(`--stage all`)はStandard段でMAJOR×2(初回+1retry)でSTOPしたため、Full
 Ledger/Selected Brief/JA記事を再利用しつつ`--regenerate-stage advanced`を再実行し
 (重複Research・重複Storyline+B3 callは発生させていない)、最終的にAdvanced→Standardが
 両方PASSする形でRuntime evidenceを完成させた。既存の「1回retry→STOP」capは回避・
 無効化していない(各呼び出し内部のGate・retry上限は無変更、既存`--regenerate-stage`
 機能を通常運用同様に再度呼び出しただけ)。
+
+### 4.1 Gate 3 #13修正履歴(Fable差し戻し1回目)
+
+**指摘**: `run_writer_stage(only=...)`を2回に分けて呼んだ結果生じた"advanced"キー
+消失を、手作業で別ファイル(`b1b/audit/final_advanced_summary_reconstructed.json`)へ
+補完していた。runtime evidenceが手作業で補われた状態はGate 3 #13の充足と認められない。
+
+**修正内容**:
+1. `er012_e_family_entertainment_two_level_runner_01.run_writer_stage()`を、
+   `writer_run_summary.json`への保存時に既存ファイルとマージする(既存キーを消さない)
+   よう修正。unit test`test_writer_run_summary_json_merges_across_separate_only_calls`を
+   `er012_e_family_entertainment_two_level_runner_test_01.py`へ追加(43/43 PASS)。
+2. run_01の`writer_run_summary.json`自体を、手動再構成ではなく**プログラムで**再構成する
+   新規スクリプト`er019_writer_run_summary_reconstruction_01.py`を作成。raw_usage_log.jsonl
+   のAPI呼び出し順序(コード上の不変条件: generate→deviation_check、MAJORなら再度
+   generate→deviation_check)とattempt_numberのプロセス起動ごとのリセットを根拠に、
+   最終invocationのgenerate call(response_id)を特定し、既存の`b1b/audit/deviation_check.json`
+   /`a2/audit/deviation_check.json`/`article.md`と突き合わせてevidenceを再構成する
+   (推測ではない、コード読解に基づく不変条件のみを使用。不変条件が崩れる異常系は
+   `ambiguous_stages`として明示しキーを追加しない)。unit test8件
+   (`er019_writer_run_summary_reconstruction_01_test_01.py`、8/8 PASS)。
+3. run_01へ実行し、`writer_run_summary.json`を再生成(由来は`_reconstruction_provenance`
+   キーへ記録)。旧(バグで壊れた)ファイルは`writer_run_summary_pre_gate3_fix_buggy_overwrite.json`
+   として保持(削除しない)。手動再構成版(`final_advanced_summary_reconstructed.json`)は
+   `b1b/audit/final_advanced_summary_manual_reconstructed_superseded.json`へrenameし、
+   supersededである旨を追記して保持。
+
+### 4.2 Fact drift結果(記録のみ、再生成しない)
+
+Ledger `MUSE-HC-012`は「機能を当面ロールバックした」(完了・過去形)。JA R2は
+「人間のコンシェルジュ機能は当面ロールバックされます」(未来形・受身)、Advanced/
+Standardは"The human concierge feature will be rolled back for now."(未来形)。
+Advanced 1回目のdeviation checkはこの時制不一致を含む2件をMAJORと指摘したが、
+既存Production実装(`run_writer_stage`)の仕様上、却下された1回目の判定内容は
+ディスクへ保存されない設計であり、retry後の本文(同じ時制表現のまま)は2回目の
+判定でLEDGER_COMPLIANTとなった(判定の非決定性、本タスクでは調整していない)。
+逐語・Ledger該当行・retry後の保存済みJSONは
+`er019_output/family_x_b3_production_wiring_01/run_01/audit/fable_editorial_findings.md`
+「指摘3」に記録(**修正案・実装は行っていない、ユーザー判断待ち**)。
+
+### 4.3 Selected Brief整形バグ修正(Fable差し戻し1回目、Gate 3 #2)
+
+`storyline_b3/selected_brief.md`の「## Selected Facts」冒頭でStoryline文が重複出力
+されるバグを確認(Prompt指示5「冒頭にStorylineの1行を含める」によりLLM出力
+`selected_fact_brief`自体がStoryline文で始まるため)。`build_selected_brief_markdown()`を、
+`selected_fact_brief`の先頭がStoryline文と完全一致する場合のみ重複部分を除去するよう
+修正(完全一致しない場合は憶測で改変しない)。unit test2件追加(重複除去ケース/
+非一致時の非改変ケース)。run_01の`selected_brief.md`原本(Writerへ実際に渡した実物)は
+再生成せず不変のまま保持し、修正後ロジックを同run_01の実データへオフライン適用した
+結果を`storyline_b3/selected_brief_fixed_format_preview.md`として参照用に追加保存
+(Writer未使用と明記、API呼び出し0)。
+
+### 4.4 Storyline観察(記録のみ、Fable差し戻し1回目)
+
+AIが決定したrun_01のStorylineは、Trial-02の`CORE_STORYLINE`が含んでいた
+「AIだと気付かれると切られることがある→人間スタッフへ引き渡す」という**人間を
+使った理由(なぜ人間なのか)**の因果連鎖を含まない。MUSE-HC-009(AIだと気づかれ
+電話を切られる個別報告)はTest2=NOで除外されており、これがStoryline選定手順
+そのものの欠陥か、今回のFull Ledgerの記述粒度・Fact構成による結果かは、本記録
+だけからは判断できない。Trial-02 Storylineとの差分・MUSE-HC-009の4テスト理由文
+(逐語)は`run_01/audit/fable_editorial_findings.md`「指摘4」に記録
+(**判断は書いていない、ユーザー判断待ち**)。
 
 ## 5. コスト表
 
@@ -124,6 +187,13 @@ Sonnet仮判定: 1〜18(技術的証跡)は今回のN=1 runで充足。19〜21(S
 反映済み。22(Git commit/push)は本Report作成後に実施。23(Dangling Reference)は下記7節。
 24(ユーザー承認仕様との一致)は下記8節。**`PRODUCTION_WIRED`の正式判定はFable/ユーザー**。
 
+**Fable差し戻し1回目での更新**: #13(runtime evidenceの整合性、手作業補完を解消)・#2
+(Selected Brief整形バグ修正)を修正し、#17/#18の証跡を更新した(詳細は上記4.1/4.3、
+チェックリスト該当行)。#18(regression test)は`failures=3`だが、いずれも本タスクが
+一切変更していない`er003_v1_n3_01_tts_generate.py`/`er003_v1_sing01_voice01_generate.py`
+(並行稼働中の別Agent[TTS配線]による未commit差分)を検知するguard testの失敗であり、
+`git status`で本タスクの変更対象外であることを確認済み。
+
 ## 7. Dangling Reference Check
 
 - `er019_family_x_storyline_b3_fact_selection_01.py`/`er019_family_x_ja_writer_o_r1_r2_01.py`/
@@ -148,11 +218,15 @@ Sonnet仮判定: 1〜18(技術的証跡)は今回のN=1 runで充足。19〜21(S
 
 ## 9. Sonnet仮判定
 
-技術的Gate 3項目(1〜18)は今回のN=1 runで充足していると判断する(仮)。ただし
-(a) N=1記事のみのruntime evidenceであること、(b) Advanced/Standard段のLedger Deviation
-Check非決定性という既知の限界があること、(c) 記事内容自体(Storyline選定・Fact選定・
-文章)はユーザー未確認であることから、**`PRODUCTION_WIRED`の正式宣言は行わない**。
-記事は`OPEN_ITEMS.md` OPEN-183としてユーザー確認待ち。
+技術的Gate 3項目(1〜18)は今回のN=1 runで充足していると判断する(仮、Fable差し戻し
+1回目で指摘されたGate 3 #13[runtime evidence手作業補完]・#2[Selected Brief重複バグ]
+は本ラウンドで修正済み)。ただし(a) N=1記事のみのruntime evidenceであること、
+(b) Advanced/Standard段のLedger Deviation Check非決定性という既知の限界があること
+(4.2 Fact drift結果参照)、(c) run_01のAI決定StorylineがTrial-02のCore Storylineと
+異なり「なぜ人間を使ったか」を説明していない観察があること(4.4参照)、(d) 記事内容
+自体(Storyline選定・Fact選定・文章)はユーザー未確認であることから、
+**`PRODUCTION_WIRED`の正式宣言は行わない**。記事は`OPEN_ITEMS.md` OPEN-183として
+ユーザー確認待ち。
 
 ## 10. Fable評価
 

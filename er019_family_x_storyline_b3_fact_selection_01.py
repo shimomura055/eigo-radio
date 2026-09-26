@@ -250,14 +250,29 @@ def build_full_ledger_record(topic: str, ledger_text: str, ledger_fact_ids: list
 
 
 def build_selected_brief_markdown(selection_result: dict) -> str:
+    """NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
+    Gate 3 #2バグ修正): Prompt指示5「(採用したFactだけを使って)Selected Fact
+    Briefを作成してください...冒頭にStorylineの1行を含める」に従い、LLMが返す
+    selected_fact_brief自体の先頭にStoryline文をそのまま含めてくることがある
+    (実測: run_01で完全一致で確認)。本関数は別途「## Storyline」見出しで
+    Storylineを1回だけ明示するため、selected_fact_briefの先頭がStoryline文と
+    完全一致する場合はその重複部分を取り除く(LLMが言い換えて完全一致しない
+    場合は元のテキストをそのまま使い、憶測で改変しない)。"""
     parsed = selection_result["parsed"]
+    storyline = parsed["selected_storyline"]
+    fact_brief = parsed["selected_fact_brief"]
+
+    fact_brief_dedup = fact_brief
+    if fact_brief.startswith(storyline):
+        fact_brief_dedup = fact_brief[len(storyline):].lstrip("\n")
+
     lines = [
         f"# Selected Fact Brief",
         "",
         f"## Storyline",
-        parsed["selected_storyline"],
+        storyline,
         "",
         "## Selected Facts",
-        parsed["selected_fact_brief"],
+        fact_brief_dedup,
     ]
     return "\n".join(lines) + "\n"

@@ -1,4 +1,26 @@
 {
+  "advanced": {
+    "process_label": "NATURAL_ENGLISH_ADAPTATION",
+    "model_id_requested": "gpt-5.6-luna",
+    "model_id_actual": "gpt-5.6-luna",
+    "fallback_detected": false,
+    "response_id": "resp_02f11b18ddc1c555006ab76f3150a887d0a4bb1dc19cb5b20e",
+    "structure_status": "STRUCTURE_PASS",
+    "attempts": 1,
+    "retried": false,
+    "retried_for_deviation": true,
+    "deviation_overall_status": "LEDGER_COMPLIANT",
+    "usage": {
+      "input_tokens": 1502,
+      "cached_input_tokens": 1499,
+      "output_tokens": 3171,
+      "reasoning_tokens": 2697
+    },
+    "cost_usd": 0.003836,
+    "cost_jpy": 0.6137,
+    "elapsed_seconds": 35.425,
+    "title": "We Thought It Was AI—But There Was a Person Inside Meta’s Muse"
+  },
   "standard": {
     "process_label": "STANDARD_A2_ADAPTATION",
     "model_id_requested": "gpt-5.6-luna",
@@ -18,7 +40,8 @@
     },
     "cost_usd": 0.002005,
     "cost_jpy": 0.3208,
-    "elapsed_seconds": 19.171,
+    "elapsed_seconds": 19.17,
+    "title": "We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
     "checks": {
       "title": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
       "checks_failed": [],
@@ -35,7 +58,39 @@
         "They",
         "We"
       ]
+    }
+  },
+  "_reconstruction_provenance": {
+    "method": "programmatic_reconstruction_from_raw_logs",
+    "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+    "reconstructed_by": "er019_writer_run_summary_reconstruction_01.reconstruct_writer_run_summary",
+    "reconstructed_at": "2026-09-26T16:30:12",
+    "source_files": {
+      "raw_usage_log": "er019_output/family_x_b3_production_wiring_01/run_01/raw_usage_log.jsonl",
+      "advanced_article": "er019_output/family_x_b3_production_wiring_01/run_01/b1b/article.md",
+      "advanced_deviation_check": "er019_output/family_x_b3_production_wiring_01/run_01/b1b/audit/deviation_check.json",
+      "standard_article": "er019_output/family_x_b3_production_wiring_01/run_01/a2/article.md",
+      "standard_deviation_check": "er019_output/family_x_b3_production_wiring_01/run_01/a2/audit/deviation_check.json"
     },
-    "title": "We Thought It Was AI—But There Was a Person Inside Meta’s Muse"
+    "source_response_ids": {
+      "advanced": {
+        "generate_response_id": "resp_02f11b18ddc1c555006ab76f3150a887d0a4bb1dc19cb5b20e",
+        "invocation_group_size": 4,
+        "invocation_group_index_used": 1,
+        "total_invocation_groups_found": 2
+      },
+      "standard": {
+        "generate_response_id": "resp_0976b3a2e36cd3f9006ab76f6ea85087d0a93e6b992a754852",
+        "invocation_group_size": 2,
+        "invocation_group_index_used": 1,
+        "total_invocation_groups_found": 2
+      }
+    },
+    "ambiguous_stages": {},
+    "invariants_relied_upon": [
+      "run_writer_stage()内のAPI呼び出し順序はgenerate->deviation_check(MAJORなら再度generate->deviation_check)で固定(コード読解により確認、推測ではない)。",
+      "er005_cost_logger.attempt_numberはプロセス起動ごとに1から再カウントされる(_ATTEMPT_COUNTERSがモジュールレベルでプロセス生存期間のみ有効)ため、attempt_number==1を新invocationの開始境界として利用できる。",
+      "ディスク上のarticle.md/deviation_check.jsonは、そのstageで最後に成功した呼び出しの成果物(persistent MAJOR停止時は保存されないため)。"
+    ]
   }
 }
