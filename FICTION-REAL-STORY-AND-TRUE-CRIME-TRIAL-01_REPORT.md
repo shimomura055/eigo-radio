@@ -3,6 +3,8 @@
 Status: **完走(3-A Real Story 1本 + 3-B Historical True Crime 1本、Sonnet仮分類
 VALIDATED、詳細は§6)**。Trial専用、未承認draft実装。Production Fiction仕様への
 反映は本タスクの対象外。到達上限VALIDATED。TTS/音声は使用していない(TTS call 0)。
+**True Crime(3-B)はFable差し戻し(修正1回目)を受け改訂済み(284語→334語、
+§4参照)。Real Story(3-A)は修正1回目の対象外であり不変。**
 
 ## §1 目的
 
@@ -139,24 +141,42 @@ Authority(`id.loc.gov`、Cloudflare非対象)で確認。日本の著作権法�
 - 著者: Camden Pelham(pseud)、1841年出版。日本: 公表後70年(1911年)で満了。
   米国: Project Gutenberg #46585の権利表示でPublic domain確認。
 
-### Story全文(284語、`true_crime/story.md`)
+### Story全文(改訂版、334語、`true_crime/story.md`)
+
+**改訂履歴**: attempt1(271語)→attempt2(284語、Fable初回レビューで却下。指摘:
+「事件の面白さを消すほど無難」「最終段落が全体の再要約」)→Fable差し戻し
+(修正1回目)を受けattempt3-9で試行錯誤(263/350[日付欠落]/259/288/245/259/292語、
+いずれもSeed側の指示強化の途中経過。破棄せず`stories/true_crime_eugene_aram/
+story_attempt{1..9}_*.md`に保存)→**attempt10(334語)を採用**。旧版284語は
+`true_crime/story_attempt2_284w.md`に保存(破棄していない)。
+
+改訂で反映したFable指摘3点: (1) Housemanが骨を手渡され叫んだ資料の逐語台詞
+"This is no more Daniel Clarke's bone than it is mine!"と、それがなぜ疑いを
+招いたか(Clarkeの骨でないとどうして分かるのか)、および「頭はさらに右」という
+具体的埋葬地点の指示に従って掘ると指示どおりの位置から第二の骨格が出たこと、を
+本文に明示。(2) 末尾を全体の再要約ではなく、執行の事実+短い結びに変更。
+(3) 語数を280-420語の下限付近(284語)から300-400語目標の範囲内(334語)へ。
 
 ```
-## The Bones at St. Robert's Cave
+### The Second Skeleton
 
-Eugene Aram and Richard Houseman murdered Daniel Clarke. They had persuaded Clarke to go out at night with them. They said they wanted to discuss silver and jewels. After that night, Clarke disappeared.
+In the eighteenth century, in England, Daniel Clarke had silver and jewels. Eugene Aram and Richard Houseman persuaded him to walk out at night to discuss how to dispose of them. On that night, Aram and Houseman murdered Clarke.
 
-For fourteen years, Aram continued to live a respectable life. He worked as a teacher. The murder was not solved, and there was no body to prove what had happened. Aram's public life gave no clear sign of the crime.
+At first, no one knew what had happened. People believed Clarke had disappeared. Eugene Aram, however, remained apparently respectable. He worked as a teacher. Fourteen years passed, and the missing man was still believed to be gone.
 
-Then a labourer found human bones at St. Robert's Cave near Knaresborough. This discovery changed the case. The bones could be connected to the missing man, so people questioned Richard Houseman.
+Then, near St. Robert's Cave, a labourer was digging for stone. He accidentally found a human skeleton. A coroner's inquest began. This was an official investigation into a death. Soon, suspicion fell on Aram and Houseman.
 
-Houseman panicked when he was questioned. He then confessed and gave information about another burial site. His information led people to a second place where evidence of the crime could be found. The case now returned to Eugene Aram, who was arrested.
+At the inquest, nobody could yet say that the first skeleton was Clarke. The discovery gave no clear name to the dead person. It only made the old disappearance seem connected to the two men.
 
-At his trial, Aram gave an eloquent defence. He spoke in a learned and careful way. His defence was strong in words. But the physical evidence was stronger. The bones and Houseman's confession gave the jury a clear answer. The jury was convinced quickly, and Aram was found guilty.
+During the inquiry, Richard Houseman was asked to handle a bone. He exclaimed, "This is no more Daniel Clarke's bone than it is mine!" His words made people suspicious. How could Houseman know it was not Clarke's bone? They wondered if he had seen the real bones before.
 
-Aram's public defence was not the end of the story. Before he was executed, he privately admitted his guilt. He was executed at York on 16 August 1759.
+The first skeleton did not answer the main question. Was it Clarke? The people needed more evidence. Houseman's answer suggested that he knew more than he should. His strange certainty turned attention to the place where Clarke might really be buried.
 
-For fourteen years, Eugene Aram had continued as a teacher while Daniel Clarke's fate remained hidden. Then a labourer found bones in a cave. Houseman's confession led to a second burial site, and the evidence finally broke through Aram's respectable public life. A missing man had left almost no answer -- until the ground gave one.
+Houseman later confessed. His confession identified the true burial place. Clarke's head was a little farther to the right than the first skeleton. Men dug there. They found a second skeleton exactly where Houseman said it was.
+
+Eugene Aram was arrested and brought to trial. He wrote an eloquent written defence. It did not save him. He was quickly convicted. In private, he confessed his guilt to clergymen.
+
+On 16 August 1759, Eugene Aram was executed at York. The ground had kept its secret for fourteen years. Then Houseman's strange words helped uncover it.
 ```
 
 ### 忠実性(照合表は`fidelity_true_crime.md`)
@@ -177,32 +197,40 @@ Fiction家族全体のルールを変更したものではなく、True Crimeと
 
 ## §5 QCD
 
-- **実行**: Seed化2 call + Story生成2 call + 品質判断による手動再生成1 call
+- **実行(初回)**: Seed化2 call + Story生成2 call + 品質判断による手動再生成1 call
   (true_crime、1回目271語・末尾反復のため同一prompt/model/effortで再生成) =
   Luna API call合計5回、すべて技術的に成功。
+- **実行(Fable差し戻し・修正1回目)**: True Crime(Eugene Aram)のみ対象、
+  Real Story(Nellie Bly)は再生成していない(`--only-key true_crime_eugene_aram`
+  を追加し限定実行、`stories_all.md`のNellie Bly節が不変であることを確認済み)。
+  Seed側(source_brief/conversion_plan)へ(1)Housemanの逐語台詞と疑いの因果関係、
+  (2)具体的埋葬地点一致の詳細、(3)末尾反復禁止、(4)300-400語の目標、を段階的に
+  強化する指示を追加しながらSeed化4回+Story生成8回(263/350[日付欠落を検知し
+  さらに指示追加]/259/288/245/259/292/334語、最終334語を採用)を実行。すべて
+  技術的に成功、全試行を破棄せず保存。
 - **一次テキスト調査**: すべて直接HTTP GET(`requests`)、web_search呼び出し
   **0回・$0**。候補発見の補助にWikipedia API(著者没年・刊行年確認、
   検索エンジンではなく百科事典APIへの直接HTTP GET)、および
   `id.loc.gov`(Cloudflare非対象)を著者典拠確認にのみ使用。
   `chroniclingamerica.loc.gov`/`www.loc.gov`検索エンドポイントはCloudflare
   403で利用不可だった(詳細は§4方法論注記、`runtime_evidence.json`)。
-- **費用**: 累計**$0.007988(約¥1.28)**。委任文の実測見込み(¥40-90)を
-  大幅に下回った(web_search不使用のため)。上限¥200(Guardrail)に対し
-  1.28/200 = 約0.6%。`cost.json`: `{"total_usd": 0.007988, "total_jpy": 1.28,
-  "record_count": 5, "web_search_call_total": 0}`。
-- **語数**: Real Story 388語、True Crime 284語(いずれも280-420語の範囲内)。
+- **費用**: 累計**$0.034513(約¥5.52)**(初回¥1.28+修正1回目の追加分約¥4.24)。
+  修正1回目のGuardrail上限¥10に対し約55%。`cost.json`:
+  `{"total_usd": 0.034513, "total_jpy": 5.52, "record_count": 17,
+  "web_search_call_total": 0}`。
+- **語数**: Real Story 388語(不変)、True Crime 334語(300-400語の目標範囲内、
+  280-420語のGate範囲内)。
 - **オフラインテスト**: `er018_fiction_real_story_and_true_crime_trial_01_test_01.py`
   (SEEDS構造検証・語数Gate判定関数・True Crime実名テンプレート分岐の5テスト)
-  すべてPASS(API呼び出しなし)。
+  すべてPASS(API呼び出しなし、修正後のスクリプトに対して再実行済み)。
 - **check_delegation_prompt.py**: `docs/pm/ACTIVE_TASK_FRC.md`に対し実行、
-  status=FAIL(WARN扱いで記録)。本委任文はDELEGATION_STANDARD_TEMPLATE.md
-  の固定ラベル(E-1/D-1/G-1/F-1)形式ではなく、Fable-PM独自の自由記述形式
-  (管理ID+固定ルール+前提+3-A/3-B+成果物+RESULT_PACKET見出し)で書かれて
-  いたため、ツールの必須キーワード検出(事前指定Read一覧・Grep一覧・実行
-  コマンド全文セクション等)が該当せずFAILと判定された。委任文自体の内容は
-  具体的かつ実行可能であり(URL・budget・成果物パスがすべて明記)、
-  実質的な委任文の質の問題ではなくテンプレート形式不一致によるものと判断
-  し、そのまま作業を継続した。詳細はRESULT_PACKET_FRC.md参照。
+  status=FAIL(WARN扱いで記録、初回delegationと同じ理由)。本委任文は
+  DELEGATION_STANDARD_TEMPLATE.mdの固定ラベル(E-1/D-1/G-1/F-1)形式ではなく、
+  Fable-PM独自の自由記述形式で書かれているため、ツールの必須キーワード検出が
+  該当せずFAILと判定された。修正1回目の差し戻し文も同様の自由記述形式で
+  あったため同じくFAILだったが、内容自体は具体的かつ実行可能であり、実質的な
+  委任文の質の問題ではないと判断しそのまま作業を継続した。詳細は
+  RESULT_PACKET_FRC.md参照。
 
 ## §6 Sonnet仮分類
 

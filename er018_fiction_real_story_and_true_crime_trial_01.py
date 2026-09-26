@@ -177,8 +177,49 @@ SEEDS = [
             "in plain sight, the accidental discovery of the bones, Houseman's panic "
             "and confession, Aram's arrest and the contrast between his eloquent "
             "defence and the simple physical evidence against him, and the outcome. "
-            "Third person, matter-of-fact and not sensationalized, around 300-350 "
-            "words."
+            "Third person, matter-of-fact and not sensationalized. "
+            "IMPORTANT (editorial revision after review): the previous draft flattened "
+            "the case's most striking real detail into a vague phrase like 'gives "
+            "information that leads to the second burial site,' which loses what "
+            "made this case land. When listing seed_elements, keep two things concrete "
+            "and specific rather than paraphrased away: (1) Houseman's exact "
+            "exclamation as a direct quotation -- 'This is no more Daniel Clarke's "
+            "bone than it is mine!' -- and the fact that this single remark is what "
+            "first made people suspicious of him (they wondered how he could possibly "
+            "know that, unless he had seen the real bones himself); and (2) the "
+            "concrete, verifiable detail that Houseman's confession specified exactly "
+            "where the true burial spot was (the head lying a little further to the "
+            "right than the first skeleton found), and that when people dug there, a "
+            "second skeleton was found in exactly that spot -- this precise match "
+            "between what Houseman said and what was found is the detail that makes "
+            "the case striking, and it must survive into the final story as a "
+            "concrete beat, not a summary sentence. Also: the final story should not "
+            "end by restating or summarizing the whole case again -- it should close "
+            "with one or two sentences that end the story plainly instead of "
+            "repeating what has already been told. Aim for about 320-380 words "
+            "(never below 300 words, and keep it under 420 words). This word count "
+            "is a hard floor, not a soft suggestion: a previous draft came in at "
+            "only 263 words and was rejected as too thin. If your draft feels short, "
+            "do not pad it with repetition or a restated summary -- instead add more "
+            "concrete narrative detail that is already implied by the case (for "
+            "example, a beat or two more on the questioning, the digging, or the "
+            "trial) without inventing new facts, dialogue, or motives. Two more "
+            "firm requirements from editorial review of an earlier draft: (a) the "
+            "specific execution date and place must appear explicitly near the end, "
+            "in words close to 'executed at York on 16 August 1759' -- do not just "
+            "say 'he was executed' without the date and place; (b) the very last "
+            "paragraph must be only 1-2 sentences, and it must not repeat any fact "
+            "already stated earlier in the piece (for example, do not say again that "
+            "he lived as a respected schoolmaster or that fourteen years passed) -- "
+            "it should simply close the story, not recap it. FINAL CHECK BEFORE YOU "
+            "ANSWER: several earlier drafts came in far too short (245, 259, and 263 "
+            "words) and were all rejected for being too thin -- count the words in "
+            "your draft before finalizing it, and if it is under 320 words, add 2 to "
+            "4 more full sentences of concrete, source-consistent detail (for "
+            "example: a little more on the night walk out of town, the coroner's "
+            "inquest itself, the moment of digging at the cave, or the courtroom "
+            "scene) until you reach at least 320 words -- do not submit a short "
+            "draft, and do not reach the target by inventing new facts."
         ),
     },
 ]
@@ -276,13 +317,14 @@ def call_seed(client, seed_spec: dict) -> dict:
             "response_id": response.id}
 
 
-def step_seed(out_dir: str, budget_jpy: float) -> None:
+def step_seed(out_dir: str, budget_jpy: float, only_key: str | None = None) -> None:
     log_path = f"{out_dir}/raw_usage_log.jsonl"
     cl.install(log_path)
     budget_guard("start_seed", out_dir, log_path, budget_jpy)
     client = vfl01.get_client()
 
-    for seed_spec in SEEDS:
+    seeds = [s for s in SEEDS if s["key"] == only_key] if only_key else SEEDS
+    for seed_spec in seeds:
         sys_dir = f"{out_dir}/stories/{seed_spec['key']}"
         result = call_seed(client, seed_spec)
         seed = dict(result["parsed"])
@@ -430,13 +472,14 @@ def build_story_prompt(seed: dict, seed_key: str) -> str:
     )
 
 
-def step_story(out_dir: str, budget_jpy: float) -> None:
+def step_story(out_dir: str, budget_jpy: float, only_key: str | None = None) -> None:
     log_path = f"{out_dir}/raw_usage_log.jsonl"
     cl.install(log_path)
     budget_guard("start_story", out_dir, log_path, budget_jpy)
     client = vfl01.get_client()
 
-    for seed_spec in SEEDS:
+    seeds = [s for s in SEEDS if s["key"] == only_key] if only_key else SEEDS
+    for seed_spec in seeds:
         sys_dir = f"{out_dir}/stories/{seed_spec['key']}"
         seed = e_axis.load_json(f"{sys_dir}/seed.json")
         story_model = routing.require_model_or_override(
@@ -568,12 +611,16 @@ def main():
     parser.add_argument("--step", required=True,
                          choices=["seed", "story", "assemble"])
     parser.add_argument("--budget-jpy", type=float, default=200.0)
+    parser.add_argument("--only-key", default=None,
+                         help="指定した場合、SEEDSのうち該当keyのみを処理する"
+                              "(修正1回目: True Crimeのみ再生成しReal Story"
+                              "[Nellie Bly]は再生成しないため)")
     args = parser.parse_args()
 
     if args.step == "seed":
-        step_seed(args.out_dir, args.budget_jpy)
+        step_seed(args.out_dir, args.budget_jpy, only_key=args.only_key)
     elif args.step == "story":
-        step_story(args.out_dir, args.budget_jpy)
+        step_story(args.out_dir, args.budget_jpy, only_key=args.only_key)
     elif args.step == "assemble":
         step_assemble(args.out_dir)
 

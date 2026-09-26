@@ -17,19 +17,31 @@
     {"url": "https://id.loc.gov/search/?q=Camden+Pelham&format=json", "purpose": "Camden Pelhamがpseudonymであることの典拠確認(Cloudflare非対象)"}
   ],
   "api_calls_luna": {
-    "seed_calls": 2,
-    "story_calls": 2,
-    "manual_quality_retry_calls": 1,
+    "seed_calls_initial": 2,
+    "story_calls_initial": 2,
+    "manual_quality_retry_calls_initial": 1,
     "manual_quality_retry_reason": "true_crime_eugene_aram の1回目Story生成が271語(280-420語Gate下限をわずかに下回る)かつ末尾段落が反復的だったため、同一prompt/model/effortでSonnetが手動で1回再生成した(call_with_retry()の自動リトライ対象外の品質判断による再生成)。1回目はstories/true_crime_eugene_aram/story_attempt1_below_word_floor_271w.mdとして保持し破棄していない。",
-    "total_luna_calls": 5
+    "total_luna_calls_initial": 5,
+    "revision_1_fable_rejection": {
+      "scope": "true_crime_eugene_aram のみ(--only-key true_crime_eugene_aram でReal Story/Nellie Blyは再生成していない)",
+      "seed_calls": 4,
+      "story_calls": 8,
+      "reason": "Fable差し戻し(修正1回目): Housemanの逐語台詞・具体的埋葬地点一致が平板化、末尾が全体の再要約、語数284語が下限ぎりぎり、との指摘。Seed側(source_brief/conversion_plan)へ段階的に指示を強化しながら再生成(300-400語の目標達成と反復禁止の徹底のため8回のStory試行を要した)。",
+      "story_word_counts_all_attempts": [263, 350, 259, 288, 245, 259, 292, 334],
+      "adopted_word_count": 334,
+      "total_luna_calls_revision_1": 12
+    },
+    "total_luna_calls_grand_total": 17
   },
   "final_word_counts": {
     "real_story_nellie_bly": 388,
-    "true_crime_eugene_aram": 284
+    "true_crime_eugene_aram": 334
   },
-  "cost_jpy_final": 1.28,
-  "cost_jpy_budget_cap": 200,
-  "cost_jpy_estimate_at_delegation_time": "40-90",
-  "cost_note": "実測費用(¥1.28)は委任文の実測見込み(¥40-90)を大幅に下回った。理由: 候補調査を全てHTTP GET($0)で行いweb_searchを1回も使わなかったため、課金対象はLuna(Seed化+Story生成、5 call)のtoken費用のみだったこと。上限¥200のGuardrailに対しても大幅な余裕(超過の懸念なし)。",
+  "cost_jpy_final": 5.52,
+  "cost_jpy_budget_cap_initial": 200,
+  "cost_jpy_budget_cap_revision_1": 10,
+  "cost_jpy_estimate_at_delegation_time_initial": "40-90",
+  "cost_jpy_estimate_at_delegation_time_revision_1": "1-3",
+  "cost_note": "初回実測費用(¥1.28)は委任文の実測見込み(¥40-90)を大幅に下回った。修正1回目は追加で約¥4.24(seed4回+story8回、true_crime_eugene_aramのみ)を要し、累計¥5.52。修正1回目のGuardrail上限¥10に対し約55%(超過なし)。理由: 候補調査を全てHTTP GET($0)で行いweb_searchを1回も使わなかったため、課金対象は全期間を通じLuna(Seed化+Story生成、合計17 call)のtoken費用のみだったこと。",
   "tts_calls": 0
 }
