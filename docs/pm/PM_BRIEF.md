@@ -132,6 +132,12 @@ Grepで必要箇所だけ読む、というFable自身のcontext/token効率化�
 本方針変更と別軸であり、そのまま維持する(SSOT読み込み効率化と、
 Production実装の設計優先順位は別の話)。
 
+## 予算Cap(2026-09-26追記)
+
+予算Cap(費用上限)は「暴走防止のためのGuardrail」であり、Cap到達だけを
+理由に自動STOPしない(継続条件・STOP条件・優先順位は
+`docs/pm/PM_GOVERNANCE.md` 7-6、`PM-BUDGET-CAP-GUARDRAIL-POLICY-01`)。
+
 ## 委任文標準(D-2、2026-09-13ユーザー正式採用・PRODUCTION_WIRED)
 
 Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に

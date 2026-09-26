@@ -704,6 +704,53 @@ phase_b_budget_deviation.md`)。7-1〜7-4(TTS方式の選択)とは別に、TTS�
 ではない)を追加。契機の詳細: `er012_output/e_family_two_level_wiring_01/
 meta/audit/phase_b_budget_deviation.md`。
 
+### 7-6. 予算Cap=暴走防止Guardrail(自動STOP閾値ではない、2026-09-26追加)
+
+**管理ID: PM-BUDGET-CAP-GUARDRAIL-POLICY-01(ユーザー正式決定)**
+
+契機: `FICTION-EXTERNAL-STORY-SEED-TRIAL-01`で、web_search手数料により
+予算上限¥30へ到達し、委任文の禁止事項「超えそうなら実行前STOP」に
+従いS-1のみでSTOPした。ユーザーがCapを¥200へ変更し続行を指示した
+(2026-09-26)。
+
+**Budget Cap = runaway prevention guardrail, not an automatic stop
+threshold.**(ユーザー正式決定、以下は逐語ベース)
+
+- 各Trial/Production作業の予算Capは「数十円を節約するためのHard STOP
+  ライン」ではなく、「想定外のloop・大量検索・異常retry・scope逸脱等に
+  よるコスト暴走を早期検知するためのGuardrail」である。
+- **Cap到達だけではSTOPしない**: 作業がユーザー承認済みscope内/原因が
+  把握できている/無限loopや異常retryではない/残作業が明確/追加費用が
+  合理的な範囲/作業継続によるQCD上の便益が明らか、であればCap到達のみを
+  理由にSTOPせず、必要なら予算超過を記録したうえで正常な作業を継続する。
+- **STOPすべきケース**(暴走疑いに限定): 想定外のAPI/Web Search大量発火/
+  同じ失敗を繰り返す無意味なretry loop/費用増加の原因が説明できない/
+  scope外処理が始まっている/残費用の見通しが立たない/明らかにQCD上
+  不合理な追加処理/バグ等によって費用が継続的に増加する恐れ。この場合は
+  STOPし、原因・既使用額・想定追加額・残作業を報告する。
+- **Cost最適化の優先順位**: 数十円程度の追加費用を避けるためにTrial
+  中断・ユーザー判断増・開発遅延・品質確認省略をしない。「小さなAPI
+  費用の最小化より、開発速度・品質・意思決定速度を優先する。開発遅延
+  による機会損失の方がはるかに大きい」。無駄なcall・重複検索・不要な
+  再生成は引き続き避ける。
+
+**既存STOP条件との関係**: 本節は予算Cap(数値上限)そのものの位置づけを
+定めるものであり、既存の暴走検知系STOP条件を無効化・緩和しない。7-5(4)
+「実行前の確認の結果、承認上限を超える可能性がある『想定外の全再生成』で
+あると判明した場合は、API実行前にSTOPしFable/ユーザーへ報告する」は、
+まさに本節の「想定外の大量API発火」に該当する暴走検知条件であるため
+維持し、位置づけを「Guardrail(暴走検知)」として本節と整合させる。
+ループ上限(11節)・Opus診断1回上限・Gate 1〜7・Human Review Lock等、
+予算Cap以外の既存安全装置も本決定によって変更・緩和されない。
+
+運用反映: `docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`/
+`DELEGATION_READ_EFFICIENCY_BLOCK.md`の予算Cap記載の定型文をGuardrail
+文言へ改訂(T-3新設、詳細は両ファイル)。`docs/pm/tools/
+check_delegation_prompt.py`へ、旧文言(「超えそうなら実行前STOP」のみで
+継続条件・Guardrail表記が無いもの)が残っていた場合の**警告**(WARN、
+ブロッキングではない)を追加。詳細: `DECISION_LOG.md`
+`PM-BUDGET-CAP-GUARDRAIL-POLICY-01`。
+
 ## 8. Agent並列起動の原則
 
 - 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の

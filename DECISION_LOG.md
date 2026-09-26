@@ -9529,3 +9529,15 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Dangling Reference Check: `CURRENT_SPEC.md` L829(Entertainment英語版生成方式[Advanced])・L830(Standard/A2、参照のみ・無変更)・`er006_model_routing_contract_01.PROCESS_MODEL_MAP["NATURAL_ENGLISH_ADAPTATION"]`(既存、無変更)。
 - 関連: `docs/pm/recon_advanced_vocab_v2_wiring_01.md`、`ADVANCED-VOCAB-DIFFICULTY-AUDIT-01`/`ADVANCED-VOCAB-RULE-TRIAL-01`(v1/v2 Trial出典)/`ADVANCED-VOCAB-RULE-TRIAL-02`(v3、本エントリでREJECTED確定)、`NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`(Advanced Production module本体)、`OPEN_ITEMS.md` OPEN-177(Advanced全体WIRING INCOMPLETE、無変更)・OPEN-182(新設)。
 - commit: (本コミットで反映)
+
+## PM-BUDGET-CAP-GUARDRAIL-POLICY-01: 予算Cap=暴走防止Guardrail(自動STOP閾値ではない)をユーザー正式決定として記録(2026-09-26)
+
+- 日付: 2026-09-26
+- 区分: ユーザー正式決定(運用方針の記録のみ。コード・Production変更なし、追加API費用¥0)。
+- 契機: `FICTION-EXTERNAL-STORY-SEED-TRIAL-01`で、web_search手数料により予算上限¥30へ到達し、委任文の禁止事項「超えそうなら実行前STOP」に従いS-1のみでSTOPした(`FICTION-EXTERNAL-STORY-SEED-TRIAL-01_REPORT.md`)。ユーザーがこれに対しCapを¥200へ変更し続行を指示した。
+- ユーザー指示原文(逐語、核心文):「Budget Cap = runaway prevention guardrail, not an automatic stop threshold.」各Trial/Production作業の予算Capは「数十円を節約するためのHard STOPライン」ではなく、「想定外のloop・大量検索・異常retry・scope逸脱等によるコスト暴走を早期検知するためのGuardrail」である。**Cap到達だけではSTOPしない**: 作業がユーザー承認済みscope内/原因が把握できている/無限loopや異常retryではない/残作業が明確/追加費用が合理的な範囲/作業継続によるQCD上の便益が明らか、であればCap到達のみを理由にSTOPせず、必要なら予算超過を記録したうえで正常な作業を継続する。**STOPすべきケース**(暴走疑いに限定): 想定外のAPI/Web Search大量発火/同じ失敗を繰り返す無意味なretry loop/費用増加の原因が説明できない/scope外処理が始まっている/残費用の見通しが立たない/明らかにQCD上不合理な追加処理/バグ等によって費用が継続的に増加する恐れ。この場合はSTOPし、原因・既使用額・想定追加額・残作業を報告する。**Cost最適化の優先順位**: 数十円程度の追加費用を避けるためにTrial中断・ユーザー判断増・開発遅延・品質確認省略をしない。「小さなAPI費用の最小化より、開発速度・品質・意思決定速度を優先する。開発遅延による機会損失の方がはるかに大きい」。無駄なcall・重複検索・不要な再生成は引き続き避ける。
+- 影響範囲: 以後の全Trial/Production委任(Sonnet/Opus)。既存の1記事ずつ完結原則・安全≠成功原則・ループ上限(11節)・Opus診断1回上限・Gate 1〜7・Human Review Lock等、予算Cap以外の既存STOP条件・安全装置は本決定によって変更・緩和されない(暴走検知に該当する既存STOP条件、例:`PM_GOVERNANCE.md`7-5(4)「想定外の全再生成が判明したらAPI実行前にSTOP」は維持し、位置づけを「Guardrail」として明記する)。
+- 実装: `PM_GOVERNANCE.md`へ新節(7-6「予算Cap=暴走防止Guardrail」)を新設し継続条件・STOP条件・優先順位を明記、7-5(4)の位置づけをGuardrailとして整合。委任テンプレート`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`/`DELEGATION_READ_EFFICIENCY_BLOCK.md`の予算Cap記載の定型文をGuardrail文言へ改訂(T-3新設)。`docs/pm/tools/check_delegation_prompt.py`へ、旧文言(「超えそうなら実行前STOP」のみで継続条件・Guardrail表記が無いもの)が残っていた場合のWARN(FAILにしない)を追加。`docs/pm/PM_BRIEF.md`へ参照1行追加。矛盾チェック実施: `CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`CLAUDE.md`に「予算上限到達=必ずSTOP」を絶対条件とする記述は見つからず(既存の費用上限¥関連記述はいずれも過去の実績報告またはGate技術挙動の説明であり、本決定と矛盾する統治規則ではない)、追加修正なし。
+- 未解決事項: なし。
+- 関連: `FICTION-EXTERNAL-STORY-SEED-TRIAL-01`(契機)、`PM_GOVERNANCE.md` 7-5(既存、位置づけ整合)・7-6(新設)。
+- commit: (本コミットで反映)

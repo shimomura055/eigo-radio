@@ -234,6 +234,28 @@ def check_tts_budget_deviation_reminder(text: str) -> dict:
     }
 
 
+BUDGET_OLD_STOP_PHRASE_RE = re.compile(r"超えそうなら[^。\n]{0,15}(実行前)?STOP")
+BUDGET_GUARDRAIL_WORDING_RE = re.compile(r"Guardrail|継続条件")
+
+
+def check_budget_cap_guardrail_wording(text: str) -> dict:
+    """PM-BUDGET-CAP-GUARDRAIL-POLICY-01(2026-09-26)。
+
+    委任文の費用上限(Cap)記載が、旧文言「上限¥X、超えそうなら実行前STOP」
+    (継続条件・Guardrail表記の書き分けが無いもの)のまま残っている場合に
+    警告する。ブロッキングではない(status/PASS判定には影響しない、
+    `warnings`にのみ記録する)。PM_GOVERNANCE.md 7-6/T-3参照。
+    """
+    has_old_phrase = bool(BUDGET_OLD_STOP_PHRASE_RE.search(text))
+    has_guardrail_wording = bool(BUDGET_GUARDRAIL_WORDING_RE.search(text))
+    triggered = has_old_phrase and not has_guardrail_wording
+    return {
+        "triggered": triggered,
+        "has_old_phrase": has_old_phrase,
+        "has_guardrail_wording": has_guardrail_wording,
+    }
+
+
 def run_check(text: str) -> dict:
     keyword_results = check_required_keywords(text)
     fixed_block = check_fixed_block(text)
@@ -241,6 +263,7 @@ def run_check(text: str) -> dict:
     command_check = check_commands_have_args_or_paths(text)
     tts_mode_check = check_tts_standard_mode_reminder(text)
     tts_budget_check = check_tts_budget_deviation_reminder(text)
+    budget_cap_wording_check = check_budget_cap_guardrail_wording(text)
 
     missing_keywords = [r["label"] for r in keyword_results if not r["present"]]
     missing_fixed_labels = [
@@ -279,6 +302,12 @@ def run_check(text: str) -> dict:
             "言及も見つからない(PM_GOVERNANCE.md 7-5、"
             "NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02)"
         )
+    if budget_cap_wording_check["triggered"]:
+        warnings.append(
+            "費用上限(Cap)記載が旧文言「超えそうなら実行前STOP」のままで、"
+            "Guardrail/継続条件への言及が見つからない(PM_GOVERNANCE.md 7-6、"
+            "PM-BUDGET-CAP-GUARDRAIL-POLICY-01)"
+        )
 
     status = "PASS" if not reasons else "FAIL"
 
@@ -292,6 +321,7 @@ def run_check(text: str) -> dict:
         "command_check": command_check,
         "tts_mode_check": tts_mode_check,
         "tts_budget_check": tts_budget_check,
+        "budget_cap_wording_check": budget_cap_wording_check,
     }
 
 

@@ -216,5 +216,39 @@ class CheckTtsStandardModeReminderTest(unittest.TestCase):
         self.assertFalse(result["tts_mode_check"]["triggered"])
 
 
+BUDGET_OLD_STOP_PHRASE_SAMPLE = FAIL_SAMPLE_MISSING_GREP.replace(
+    "性質: テスト用の不合格サンプル(Grep一覧欠落)。",
+    "性質: テスト用サンプル(費用上限¥30、超えそうなら実行前STOPする)。",
+)
+
+BUDGET_GUARDRAIL_WORDING_SAMPLE = FAIL_SAMPLE_MISSING_GREP.replace(
+    "性質: テスト用の不合格サンプル(Grep一覧欠落)。",
+    "性質: テスト用サンプル(費用上限¥30、Guardrail。継続条件を満たせば"
+    "超過を記録して継続、暴走疑い時のみSTOPして報告する)。",
+)
+
+
+class CheckBudgetCapGuardrailWordingTest(unittest.TestCase):
+    """PM-BUDGET-CAP-GUARDRAIL-POLICY-01(2026-09-26)。"""
+
+    def test_old_stop_only_phrase_triggers_warning_not_fail(self):
+        result = cdp.run_check(BUDGET_OLD_STOP_PHRASE_SAMPLE)
+        self.assertTrue(result["budget_cap_wording_check"]["triggered"])
+        self.assertTrue(
+            any("Guardrail" in w for w in result["warnings"])
+        )
+        # 警告はFAILの理由(reasons)には積まない(ブロッキングではない)
+        self.assertFalse(any("Guardrail" in r for r in result["reasons"]))
+
+    def test_guardrail_wording_present_does_not_warn(self):
+        result = cdp.run_check(BUDGET_GUARDRAIL_WORDING_SAMPLE)
+        self.assertFalse(result["budget_cap_wording_check"]["triggered"])
+        self.assertFalse(any("Guardrail" in w for w in result["warnings"]))
+
+    def test_no_budget_cap_mention_does_not_warn(self):
+        result = cdp.run_check(FAIL_SAMPLE_MISSING_GREP)
+        self.assertFalse(result["budget_cap_wording_check"]["triggered"])
+
+
 if __name__ == "__main__":
     unittest.main()
