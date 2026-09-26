@@ -1,0 +1,568 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_test2",
+  "segment_role_label": "segment 'comment_test2'",
+  "canonical_text": "The price rose to two point three million dollars, a fifteen percent increase from last year.",
+  "last_asr_text": "The price rose to $2.3 million, a 15% increase from last year.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "price rose to 2 point 3000000xdollarx a 15xpercentx increase",
+    "asr_span_with_context": "price rose to 2xdecimalpointx3xdollarx 1000000 a 15xpercentx increase",
+    "canonical_changed_words": [
+      "2",
+      "point",
+      "3000000xdollarx"
+    ],
+    "asr_changed_words": [
+      "2xdecimalpointx3xdollarx",
+      "1000000"
+    ],
+    "context_window_word_indices": [
+      1,
+      10
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "The price rose to two point three million bucks, a fifteen percent increase from last year.",
+        "changed_span_before": "dollars",
+        "changed_span_after": "bucks",
+        "rationale": "Replaces the problematic currency word with a natural conversational alternative while preserving the exact amount and meaning."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The price rose to two million three hundred thousand dollars, a fifteen percent increase from last year.",
+        "changed_span_before": "two point three million dollars",
+        "changed_span_after": "two million three hundred thousand dollars",
+        "rationale": "Spells out the decimal amount as whole-number units, which is natural spoken English and less likely to trigger the same numeric recognition error."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The price rose to two million three hundred thousand dollars, a fifteen percent jump from last year.",
+        "changed_span_before": "two point three million dollars, a fifteen percent increase",
+        "changed_span_after": "two million three hundred thousand dollars, a fifteen percent jump",
+        "rationale": "Uses a clear whole-number amount and a natural spoken synonym for increase without changing the facts."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The price rose to two million three hundred thousand dollars, up fifteen percent from last year.",
+        "changed_span_before": "two point three million dollars, a fifteen percent increase",
+        "changed_span_after": "two million three hundred thousand dollars, up fifteen percent",
+        "rationale": "Recasts the percentage information in a concise, idiomatic spoken form while making the amount easier to recognize."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The price rose to a total of two million three hundred thousand dollars, fifteen percent higher than last year.",
+        "changed_span_before": "two point three million dollars, a fifteen percent increase from last year",
+        "changed_span_after": "a total of two million three hundred thousand dollars, fifteen percent higher than last year",
+        "rationale": "Restructures both troublesome numeric expressions into a natural spoken sentence while preserving the amount and comparison exactly."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The price rose to two point three million bucks, a fifteen percent increase from last year.\",\"changed_span_before\":\"dollars\",\"changed_span_after\":\"bucks\",\"rationale\":\"Replaces the problematic currency word with a natural conversational alternative while preserving the exact amount and meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The price rose to two million three hundred thousand dollars, a fifteen percent increase from last year.\",\"changed_span_before\":\"two point three million dollars\",\"changed_span_after\":\"two million three hundred thousand dollars\",\"rationale\":\"Spells out the decimal amount as whole-number units, which is natural spoken English and less likely to trigger the same numeric recognition error.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The price rose to two million three hundred thousand dollars, a fifteen percent jump from last year.\",\"changed_span_before\":\"two point three million dollars, a fifteen percent increase\",\"changed_span_after\":\"two million three hundred thousand dollars, a fifteen percent jump\",\"rationale\":\"Uses a clear whole-number amount and a natural spoken synonym for increase without changing the facts.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The price rose to two million three hundred thousand dollars, up fifteen percent from last year.\",\"changed_span_before\":\"two point three million dollars, a fifteen percent increase\",\"changed_span_after\":\"two million three hundred thousand dollars, up fifteen percent\",\"rationale\":\"Recasts the percentage information in a concise, idiomatic spoken form while making the amount easier to recognize.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The price rose to a total of two million three hundred thousand dollars, fifteen percent higher than last year.\",\"changed_span_before\":\"two point three million dollars, a fifteen percent increase from last year\",\"changed_span_after\":\"a total of two million three hundred thousand dollars, fifteen percent higher than last year\",\"rationale\":\"Restructures both troublesome numeric expressions into a natural spoken sentence while preserving the amount and comparison exactly.\"}]}",
+    "_model_id": "gpt-5.6-luna",
+    "_response_id": "resp_0f92a869f524164d006ab78576bdd887d0b5ec3a0d1f2553d4",
+    "_prompt": "Segment role: segment 'comment_test2'\n\nFull segment (contains the problem span):\n\"The price rose to two point three million dollars, a fifteen percent increase from last year.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['2xdecimalpointx3xdollarx', '1000000'] instead of ['2', 'point', '3000000xdollarx']):\n\"price rose to 2 point 3000000xdollarx a 15xpercentx increase\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Bucks” is an informal but equivalent term for dollars, and all numerical and factual content is unchanged."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a factual comment reporting the price and its year-over-year increase."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original claim or introduce conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains self-contained and coherent."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Two point three million bucks” is natural spoken English, though informal."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Two point three million dollars is exactly equivalent to two million three hundred thousand dollars."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It retains the same role of stating the price and comparing it with last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The numerical amount and percentage match the original exactly."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence connects naturally as a standalone statement."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Two million three hundred thousand dollars” is a common and natural way to say the amount aloud."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“A fifteen percent jump” conveys the same fifteen percent increase, with no material change to the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a comment reporting the price and its increase from last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the original amount and percentage and introduces no contradiction."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains coherent on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“A fifteen percent jump from last year” is idiomatic spoken English."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Up fifteen percent from last year” expresses the same fifteen percent increase."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It continues to function as a factual comment about the price change."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It matches the original amount and percentage without adding conflicting information."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the wording remains naturally connected as a complete statement."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Up fifteen percent from last year” is concise and natural in spoken narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The total amount is equivalent to two point three million dollars, and “fifteen percent higher than last year” preserves the original comparison."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a factual comment stating the price and its increase relative to last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any amount or percentage in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is coherent and self-contained."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Rose to a total of” and “fifteen percent higher than last year” are natural phrasing in spoken narration."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Bucks” is an informal but equivalent term for dollars, and all numerical and factual content is unchanged.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a factual comment reporting the price and its year-over-year increase.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original claim or introduce conflicting facts.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains self-contained and coherent.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Two point three million bucks” is natural spoken English, though informal.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"Two point three million dollars is exactly equivalent to two million three hundred thousand dollars.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It retains the same role of stating the price and comparing it with last year.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The numerical amount and percentage match the original exactly.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence connects naturally as a standalone statement.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Two million three hundred thousand dollars” is a common and natural way to say the amount aloud.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“A fifteen percent jump” conveys the same fifteen percent increase, with no material change to the claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a comment reporting the price and its increase from last year.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It preserves the original amount and percentage and introduces no contradiction.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains coherent on its own.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“A fifteen percent jump from last year” is idiomatic spoken English.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Up fifteen percent from last year” expresses the same fifteen percent increase.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It continues to function as a factual comment about the price change.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It matches the original amount and percentage without adding conflicting information.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the wording remains naturally connected as a complete statement.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Up fifteen percent from last year” is concise and natural in spoken narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"The total amount is equivalent to two point three million dollars, and “fifteen percent higher than last year” preserves the original comparison.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a factual comment stating the price and its increase relative to last year.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any amount or percentage in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence is coherent and self-contained.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Rose to a total of” and “fifteen percent higher than last year” are natural phrasing in spoken narration.\"}}]}",
+    "_model_id": "gpt-5.6-luna",
+    "_response_id": "resp_038fcf11eb607e9f006ab785adacbc87d0b7143bda43f22944",
+    "_prompt": "Segment role: segment 'comment_test2'\n\nORIGINAL segment:\n\"The price rose to two point three million dollars, a fifteen percent increase from last year.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"The price rose to two point three million bucks, a fifteen percent increase from last year.\"\n- candidate_id='2': \"The price rose to two million three hundred thousand dollars, a fifteen percent increase from last year.\"\n- candidate_id='3': \"The price rose to two million three hundred thousand dollars, a fifteen percent jump from last year.\"\n- candidate_id='4': \"The price rose to two million three hundred thousand dollars, up fifteen percent from last year.\"\n- candidate_id='5': \"The price rose to a total of two million three hundred thousand dollars, fifteen percent higher than last year.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The price rose to two point three million bucks, a fifteen percent increase from last year.",
+      "changed_span_before": "dollars",
+      "changed_span_after": "bucks",
+      "rationale": "Replaces the problematic currency word with a natural conversational alternative while preserving the exact amount and meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Bucks” is an informal but equivalent term for dollars, and all numerical and factual content is unchanged."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a factual comment reporting the price and its year-over-year increase."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original claim or introduce conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains self-contained and coherent."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Two point three million bucks” is natural spoken English, though informal."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          7
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9375
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The price rose to two million three hundred thousand dollars, a fifteen percent increase from last year.",
+      "changed_span_before": "two point three million dollars",
+      "changed_span_after": "two million three hundred thousand dollars",
+      "rationale": "Spells out the decimal amount as whole-number units, which is natural spoken English and less likely to trigger the same numeric recognition error.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Two point three million dollars is exactly equivalent to two million three hundred thousand dollars."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It retains the same role of stating the price and comparing it with last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The numerical amount and percentage match the original exactly."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence connects naturally as a standalone statement."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Two million three hundred thousand dollars” is a common and natural way to say the amount aloud."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          7
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.875
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The price rose to two million three hundred thousand dollars, a fifteen percent jump from last year.",
+      "changed_span_before": "two point three million dollars, a fifteen percent increase",
+      "changed_span_after": "two million three hundred thousand dollars, a fifteen percent jump",
+      "rationale": "Uses a clear whole-number amount and a natural spoken synonym for increase without changing the facts.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“A fifteen percent jump” conveys the same fifteen percent increase, with no material change to the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a comment reporting the price and its increase from last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the original amount and percentage and introduces no contradiction."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains coherent on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“A fifteen percent jump from last year” is idiomatic spoken English."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          10
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8125
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The price rose to two million three hundred thousand dollars, up fifteen percent from last year.",
+      "changed_span_before": "two point three million dollars, a fifteen percent increase",
+      "changed_span_after": "two million three hundred thousand dollars, up fifteen percent",
+      "rationale": "Recasts the percentage information in a concise, idiomatic spoken form while making the amount easier to recognize.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Up fifteen percent from last year” expresses the same fifteen percent increase."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It continues to function as a factual comment about the price change."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It matches the original amount and percentage without adding conflicting information."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the wording remains naturally connected as a complete statement."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Up fifteen percent from last year” is concise and natural in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          10
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.75
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The price rose to a total of two million three hundred thousand dollars, fifteen percent higher than last year.",
+      "changed_span_before": "two point three million dollars, a fifteen percent increase from last year",
+      "changed_span_after": "a total of two million three hundred thousand dollars, fifteen percent higher than last year",
+      "rationale": "Restructures both troublesome numeric expressions into a natural spoken sentence while preserving the amount and comparison exactly.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The total amount is equivalent to two point three million dollars, and “fifteen percent higher than last year” preserves the original comparison."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a factual comment stating the price and its increase relative to last year."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any amount or percentage in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is coherent and self-contained."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Rose to a total of” and “fifteen percent higher than last year” are natural phrasing in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": false,
+        "criterion6_diff_token_range": [
+          4,
+          11
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": false,
+        "unchanged_ratio": 0.6875
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": false,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The price rose to two point three million bucks, a fifteen percent increase from last year.",
+      "changed_span_before": "dollars",
+      "changed_span_after": "bucks",
+      "rationale": "Replaces the problematic currency word with a natural conversational alternative while preserving the exact amount and meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Bucks” is an informal but equivalent term for dollars, and all numerical and factual content is unchanged."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a factual comment reporting the price and its year-over-year increase."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original claim or introduce conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains self-contained and coherent."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Two point three million bucks” is natural spoken English, though informal."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          7
+        ],
+        "criterion6_allowed_window": [
+          1,
+          10
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9375
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は4件(['1', '2', '3', '4'])。unchanged_ratio=0.9375(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Two point three million bucks” is natural spoken English, though informal.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "retts_result": {
+    "status": "ASR_VALIDATION_UNCERTAIN",
+    "text": "The price rose to two point three million bucks, a fifteen percent increase from last year.",
+    "path": "er020_output/tts_local_rewrite_production_wiring_01/a2/evidence_theme_01/a2/narration/comment_test2.wav",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "77601b0627caa5c4eeab2508ad71fff448b49326ba0f0db64b7da4048bcdaabd",
+    "duration_seconds": 6.531,
+    "trim_info": {
+      "raw_duration_seconds": 6.531,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.22,
+      "trimmed_duration_seconds": 6.531,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.22
+    },
+    "clipping_detected": false,
+    "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+    "asr_text": "The price rose to $2.3 million, a 15% increase from last year.",
+    "audio_classification": "TRUE_CONTENT_MISMATCH",
+    "asr_verified": false,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null
+  },
+  "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
+}

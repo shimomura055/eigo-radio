@@ -174,7 +174,7 @@ comment_4_cooldown_local_rewrite_evidence.json`・`roles_evidence.json`・
 | 4 | Local Rewrite | 充足 | §4(b) |
 | 5 | Natural English QA | 充足 | §4(b)(7 Gateの1つ、独立Gate) |
 | 6 | Luna actual model_id | 充足 | `gpt-5.6-luna`(§4(b)) |
-| 7 | retry・fallback・regeneration整合 | 充足(B1) / **一部Gap(A2)** | §2既知Gap |
+| 7 | retry・fallback・regeneration整合 | 充足(B1・A2とも、修正1回目) | §2既知Gap→§12で解消 |
 | 8 | 5 roleすべてでConnected Speech発火 | 充足 | §4(a)(b) |
 | 9 | Heading・Key Phraseには非適用 | 充足 | §4(a)(inspect.signatureで引数不在を確認) |
 | 10 | Human Review前にLocal Rewrite recovery | 充足 | §4(b)(review_lock_state.json= RESOLVED) |
@@ -183,9 +183,9 @@ comment_4_cooldown_local_rewrite_evidence.json`・`roles_evidence.json`・
 | 13 | CURRENT_SPEC | 充足 | §7 |
 | 14 | DECISION_LOG | 充足 | §7 |
 | 15 | OPEN_ITEMS | 充足 | §7 |
-| 16 | Git反映 / Dangling Reference Check | commit後に充足(本コミットで反映) | §7、下記commit |
+| 16 | Git反映 / Dangling Reference Check | commit後に充足(本コミットで反映) | §7、下記commit(修正1回目分も同様) |
 
-## 9. Sonnet仮判定
+## 9. Sonnet仮判定(初回、参考)
 
 B1経路(Comment/Preview/Topic intro/Full Story/In One Line、5 role)は
 Checklist16項目のうち15項目を充足し、Git反映(#16)は本commitで満たされる。
@@ -193,7 +193,177 @@ Checklist16項目のうち15項目を充足し、Git反映(#16)は本commitで�
 Rewrite回復コード未配線のGapあり)**。よってSonnet仮判定は
 **「B1経路: `PRODUCTION_WIRED`相当の技術的証跡は揃っている」「A2経路:
 `WIRING INCOMPLETE`」**とする(`PRODUCTION_WIRED`の正式宣言はFable/ユーザー
-判断)。
+判断)。**→修正1回目(§12)でA2側のGapを解消した。以下は初回判定として
+そのまま保持し、更新後の仮判定は§12末尾を参照。**
+
+## 12. 修正1回目(Fable差し戻し対応、2026-09-26)
+
+### 12.1 Fable指摘
+
+ユーザー承認仕様は「Production正式TTS初回/retry path」全体と「role差による
+漏れがない形」を要求しており、A2(Standard)経路
+`generate_english_segment_with_fallback`に cool-down/Local Rewrite/Natural
+English QA 回復が未配線のままでは Checklist #1/#7 未充足で
+`PRODUCTION_WIRED`にできない、との差し戻し。
+
+### 12.2 配線構成(A2経路)
+
+`er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback`
+は、標準経路(`generate_narration_snippet_verified_strict`、最大2回)+
+fallback(minimal instruction)経路(最大1回)で総予算3回を構成する既存設計
+(標準2+fallback1=3)。fallbackのこの1回が総予算3回の実質最終attemptに
+あたるため、ここへB1と**同一の**`er020_tts_retry_local_rewrite_01`関数を
+配線した(第3の複製実装ではない)。
+
+- fallbackループの各attempt直前で`retry_primitive.maybe_cooldown_before_
+  attempt(overall_attempt, max_attempts, enable_connected_speech_
+  equivalence_layer)`を呼ぶ(`overall_attempt`=標準側消費済みattempts数+
+  fallback側のloop attempt番号)。
+- fallback単体の本体ロジック(既存コードをそのまま移設)を
+  `_run_a2_minimal_fallback_attempt()`という共通ヘルパーへ抽出し、通常の
+  fallbackループと、Local Rewrite回復の再TTS(retts_fn)の両方から同じ
+  ヘルパーを呼ぶ(コード重複を避ける、B1側`voice01.py`/`news_tail_fix.py`
+  は無変更)。
+- 標準+fallbackとも不合格の場合(stop_retrying経由の早期終了、または
+  fallback予算exhaustionの2経路とも)、`enable_connected_speech_
+  equivalence_layer=True`のときのみ`_local_rewrite_recovery_for_english_
+  segment_with_fallback()`(新規ヘルパー)を呼び、内部で`retry_primitive.
+  run_local_rewrite_recovery()`(B1と同一関数)を実行する。回復成功時は
+  status="OK"のまま返し、失敗時はNoneを返して従来通りHuman Review Lockへ
+  進む(B1と同一のHuman Review Lock到達条件)。
+- あわせて、A2 topic_intro呼び出し(`er003_v1_n3_01_tts_generate.py::
+  generate_a2_segments`)が`enable_connected_speech_equivalence_layer`
+  引数自体を渡していなかった漏れ(role差による構造的な非適用)を修正し、
+  B1側(`generate_b1_segments`)と同様`retry_primitive.connected_speech_
+  enabled_for("topic_intro")`を参照するようにした。
+
+**構造的事実(Gapではなく記事構成自体の違い、隠蔽せず記録)**: A2の
+Preview/Comment(1-4)は英語ナレーションとして存在しない
+(`generate_a2_japanese_with_reading_safety`経由の日本語音声、
+`generate_a2_segments`のコード自体がそうなっている)。よってA2側で
+「5 role」のうち実際に適用され得るのはFull Story(Point本文含む)/
+Topic intro/In One Lineの3 roleのみであり、Comment/Previewの2 roleは
+A2側にそもそも適用対象が存在しない。
+
+### 12.3 Runtime evidence(実API、`er020_output/tts_local_rewrite_production_wiring_01/a2/`)
+
+**差分再生成チェック**: 対象は評価用に新規作成した架空theme
+(`evidence_theme_01/a2`)のsegmentのみ。既存記事・既存Family X/Family A
+artifactへの再生成は一切発生していない。**キャッシュ確認**:
+narration_dirは本タスクで新規作成、既存キャッシュなし。**予算**:
+Guardrail上限¥100(超過見込み時STOP)。
+
+**(a) A2で実在する3 role(各1 segment、attempt1でOK)**:
+
+| segment | role | 結果 | 備考 |
+|---|---|---|---|
+| full_story_part1(相当) | FULL_STORY | OK(attempt1) | `enable_connected_speech_equivalence_layer=True`受理 |
+| topic_intro | TOPIC_INTRO | OK(attempt1) | 同上(旧: 引数自体が渡っていなかった漏れを修正) |
+| in_one_line | IN_ONE_LINE | OK(attempt1) | 同上 |
+
+詳細: `er020_output/tts_local_rewrite_production_wiring_01/a2/
+roles_evidence.json`。
+
+**(b) cool-down→Local Rewrite→QA→再TTS→ASR再検証の実end-to-end経路**:
+
+架空theme上の新規segment(数値表記の言い換えが必要なテキスト、"The price
+rose to two point three million dollars, a fifteen percent increase from
+last year.")で実行。
+
+- 標準経路2回とも、ASRが正しく意味を捉えつつ数字表記(digit形式)で
+  書き起こすため`TRUE_CONTENT_MISMATCH`(2回とも同一)。
+- fallback(3回目)直前で実測cool-down: `cooldown_actual_seconds=600.004`
+  (`cooldown_started_at=2026-09-26T17:32:19+09:00` →
+  `cooldown_ended_at=2026-09-26T17:42:19+09:00`、JST)。
+- fallback(3回目)も同一signatureでNG。
+- Local Rewrite候補生成(Luna`gpt-5.6-luna`、5候補)→7 Gate QA(Luna
+  `gpt-5.6-luna`)で`candidate_2`("two million three hundred thousand
+  dollars"、全7 Gate PASS)を選定。
+- 再TTS(cool-downなし、1回)を実行したが、post-retts ASR再検証も不一致
+  (依然digit/spelled-out表記差)。最終`status`は
+  `HUMAN_REVIEW_LOCKED_RETTS_FAILED`(`run_local_rewrite_recovery()`が
+  定義する4分岐の1つ、Human Review Lockへ正しく進む正常な終端)。
+- 総wall clock: 707.8秒。
+
+同一回復パイプラインを、別の話題(homophone想定の"forty"、court merger
+の平易文)でも実行し、いずれも標準経路attempt1で合格(cool-down/Local
+Rewriteは発火せず、既定の正常系動作を再確認)。詳細:
+`er020_output/tts_local_rewrite_production_wiring_01/a2/
+comment_test2_probe.json`(cool-down+Local Rewrite発火分)・
+`er011_output/local_rewrite_recovery/evidence_theme_01/a2/
+local_rewrite_recovery_comment_test2.json`(候補生成/QA/選定の全ログ)。
+
+**正直な報告**: B1の"boil it down to the main idea"のような
+`RESOLVED_BY_LOCAL_REWRITE`(完全解決)への到達は、A2側の実行では確認
+できなかった(今回選んだ失敗モードが数字表記形式の差[digit vs
+spelled-out]であり、言い換えでは解決しにくい性質だったため、と観察
+している。既存の6% slowdown post-process再検証[`apply_a2_slowdown_
+postprocess`]と同種の傾向)。ただし、cool-down実測・Local Rewrite候補
+生成/QA(Luna実model_id)・再TTS・ASR再検証という回復パイプライン全工程
+が実際に発火し、`run_local_rewrite_recovery()`が定義する正しい終端状態
+(`HUMAN_REVIEW_LOCKED_RETTS_FAILED`)へ到達することは実証した(配線
+自体の正しさの証跡)。
+
+### 12.4 Natural English Gate "main idea"整合性確認(記録のみ、再生成なし)
+
+Fable指摘(Trial-02で"main idea"を含む候補がFAILした経緯と、run_01の
+comment_4で"main idea"を含む候補がPASSした経緯の整合性)について、両方の
+実際のLuna判定ログを突き合わせ、`er020_output/tts_local_rewrite_
+production_wiring_01/natural_english_gate_main_idea_reconciliation.md`
+に記録した。結論: 矛盾ではない。両runとも、"bring...together"型の
+機械的な単語置換("bring the main idea together")は一貫してNatural
+English Gate FAILと判定され、"boil it down to"/"distill...into"のような
+別の慣用的な言い換えは一貫してPASSしている。
+
+### 12.5 テスト(修正1回目分)
+
+新規`er007_ja_tts_retry_path_fix_test_01.py::A2CooldownLocalRewriteWiringTests`
+(5件: cooldown非発火[gate=False]・cooldown発火[実際の`maybe_cooldown_
+before_attempt`呼び出し引数を検証]・Local Rewrite回復RESOLVED分岐・
+Local Rewrite回復失敗分岐・gate=FalseでのLocal Rewrite非発火)、
+`A2TopicIntroConnectedSpeechRoleWiringTests`(1件、topic_introのrole配線
+regression guard)、`er020_tts_retry_local_rewrite_01_test_01.py`に
+A2側`_local_rewrite_recovery_for_english_segment_with_fallback`の非標準
+layout安全性テスト1件を追加。全件オフラインmock(API呼び出し¥0)。
+既存regression `python -m unittest discover -s . -p "*_test_01.py"`
+実行(詳細は下記QCD/commit hash欄参照)。
+
+### 12.6 SSOT変更
+
+`CURRENT_SPEC.md` L1262(A2経路配線・topic_intro修正・A2の構造的事実
+[Preview/Comment非該当]を追記)。`OPEN_ITEMS.md` OPEN-122(A2側Gap解消を
+追記)。`DECISION_LOG.md`(本管理IDエントリへ修正1回目の要旨を追記)。
+
+### 12.7 費用(修正1回目分、実API)
+
+| 項目 | 内訳(概算、cost logger未使用のためrun_01の単価から概算) |
+|---|---|
+| 3 role評価(a) | TTS 3回+ASR 3回 |
+| cool-down+Local Rewrite経路(b、comment_test2) | TTS 4回(標準2+fallback1+retts1)+ASR 4回+Luna 2回(候補生成+QA) |
+| 追加probe(comment_test3/4、正常系再確認) | TTS 2回+ASR 2回 |
+| 概算合計 | 約¥15〜20(run_01実測¥7.15[TTS/ASR/Luna計8回相当]を基準に呼び出し数で按分した概算値。予算上限¥100に対し十分な余裕) |
+
+### 12.8 Checklist16項目(修正1回目後)
+
+#7(retry・fallback・regeneration整合)・#8(5 role Connected Speech発火)は
+A2経路の配線完了+runtime evidenceにより充足(A2側Comment/Previewは
+「非該当」という構造的事実であり、非充足ではない)。他項目は§8のまま。
+
+### 12.9 STOP条件該当の有無
+
+該当なし(新しいConnected Speech仕様の追加は発生していない、既存Human
+Review Lock/ASR cascade/Foreign Token Gateとの矛盾は確認されていない、
+想定外の全segment再生成は発生していない)。
+
+### 12.10 Sonnet仮判定(修正1回目後)
+
+B1経路・A2経路とも、Checklist16項目のうち15項目(#1-15)を技術的に充足
+し、Git反映(#16)は本commitで満たされる。A2経路のcool-down/Local
+Rewrite回復パイプラインは実際に発火し正しい終端状態へ到達することを
+実証したが、**A2側での`RESOLVED_BY_LOCAL_REWRITE`(完全解決)の実例は
+今回未取得**(§12.3「正直な報告」)。よってSonnet仮判定は「B1経路・A2
+経路とも`PRODUCTION_WIRED`相当の技術的配線・証跡は揃っている」とする
+(`PRODUCTION_WIRED`の正式宣言はFable/ユーザー判断)。
 
 ## 10. Fable評価
 

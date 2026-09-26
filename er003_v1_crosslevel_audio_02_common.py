@@ -40,6 +40,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
+import er020_tts_retry_local_rewrite_01 as retry_primitive
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -115,33 +116,38 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     max_len = len(text) + max_extra_chars
     fallback_attempts = []
     fallback_classification_history = []
+    # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目、
+    # 2026-09-26): cool-down実測を記録する(enable_connected_speech_
+    # equivalence_layer=Falseの既存呼び出し元は常に空リストのまま)。
+    cooldown_events = []
     fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
     for attempt in range(1, fallback_budget + 1):
-        r = repro01.generate_english_component_minimal_instruction(text, out_path)
-        if r.get("status") != "OK":
+        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目):
+        # A2経路は「標準経路2回+fallback(minimal instruction)経路最大1回」
+        # で総予算(既定3回)を構成するため、fallback側のこのループが実質的に
+        # 総予算の最終attemptにあたる。B1経路(voice01.generate_charon_
+        # english/news_tail_fix.generate_news_narration_wide_margin)と
+        # 同じer020_tts_retry_local_rewrite_01.maybe_cooldown_before_
+        # attempt()を呼ぶ(複製実装ではなく同一module関数)。
+        # enable_connected_speech_equivalence_layer=False(既定)の既存
+        # 呼び出し元は即座にNoneを返すだけで、挙動は無変更。
+        overall_attempt = len(standard.get("attempts_log") or []) + attempt
+        cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
+            overall_attempt, max_attempts, enable_connected_speech_equivalence_layer)
+        if cooldown_record:
+            cooldown_events.append(cooldown_record)
+        outcome = _run_a2_minimal_fallback_attempt(
+            text, out_path, max_len, fallback_classification_history,
+            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa)
+        r = outcome["result"]
+        if not outcome["ok"]:
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
-        asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
-        length_ok = asr_text is not None and len(asr_text) <= max_len
-        ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
-        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
-        # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
-        # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
-        # path側は変更しない、追加コストはfallback発動時のみ)。
-        verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
-            text, asr_text, fallback_classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            force_secondary=True,
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
-        verified = verified_content and length_ok
-        gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
-        verified = gate["verified"]
-        # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
-        # gateと同一のANDゲートパターン。enable_repetition_qa=False(既定)
-        # の場合は追加コスト・追加処理なしでverifiedをそのまま返す。
-        rep_gate = repetition_qa.apply_repetition_qa_gate(
-            verified, out_path, text, language="en", enabled=enable_repetition_qa)
-        verified = rep_gate["verified"]
+        asr_text = outcome["asr_text"]
+        cls = outcome["classification"]
+        verified = outcome["verified"]
+        gate = outcome["disfluency_gate"]
+        rep_gate = outcome["repetition_gate"]
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification, "verified": verified,
                                    "disfluency_checked": gate["disfluency_checked"],
@@ -155,7 +161,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": outcome["length_ok"], "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
             "repetition_qa_checked": rep_gate["repetition_qa_checked"],
@@ -173,8 +179,9 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             r["disfluency_evidence"] = gate.get("disfluency_evidence")
             r["repetition_qa_checked"] = rep_gate["repetition_qa_checked"]
             r["repetition_qa_evidence"] = rep_gate.get("repetition_qa_evidence")
+            r["cooldown_events"] = cooldown_events
             return r
-        if stop_retrying:
+        if outcome["stop_retrying"]:
             r["status"] = "ASR_VALIDATION_UNCERTAIN"
             r["asr_verified"] = False
             r["asr_text"] = asr_text
@@ -183,11 +190,130 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             r["fallback_attempts_log"] = fallback_attempts
             r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                             f"(最終classification={cls.classification})")
+            r["cooldown_events"] = cooldown_events
+            # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01
+            # (修正1回目、ユーザー承認済み仕様D): Human Review Lock到達前に
+            # Local Rewrite回復を試みる(B1と同一のretry_primitive.
+            # run_local_rewrite_recovery()を呼ぶ)。
+            if enable_connected_speech_equivalence_layer:
+                recovered = _local_rewrite_recovery_for_english_segment_with_fallback(
+                    text, out_path, asr_text, max_extra_chars, enable_connected_speech_equivalence_layer,
+                    disfluency_qa, enable_repetition_qa, standard.get("attempts_log"), fallback_attempts,
+                    cooldown_events)
+                if recovered is not None:
+                    return recovered
             return r
-    return {"status": "STOPPED",
-            "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
-                      f"(合計上限{max_attempts}回)とも不合格",
-            "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts}
+    last_asr_text = fallback_attempts[-1].get("asr_text") if fallback_attempts else None
+    if last_asr_text is None:
+        _std_log = standard.get("attempts_log") or []
+        last_asr_text = _std_log[-1].get("asr_text") if _std_log else None
+    stopped_result = {
+        "status": "STOPPED",
+        "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
+                  f"(合計上限{max_attempts}回)とも不合格",
+        "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts,
+        "cooldown_events": cooldown_events,
+    }
+    if enable_connected_speech_equivalence_layer:
+        recovered = _local_rewrite_recovery_for_english_segment_with_fallback(
+            text, out_path, last_asr_text, max_extra_chars, enable_connected_speech_equivalence_layer,
+            disfluency_qa, enable_repetition_qa, standard.get("attempts_log"), fallback_attempts,
+            cooldown_events)
+        if recovered is not None:
+            return recovered
+    return stopped_result
+
+
+def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
+                                      classification_history: list,
+                                      enable_connected_speech_equivalence_layer: bool,
+                                      disfluency_qa: bool, enable_repetition_qa: bool) -> dict:
+    """generate_english_segment_with_fallback()のfallback(minimal
+    instruction)経路、1 attempt分の本体。通常のfallbackループと、Local
+    Rewrite回復の再TTS(retts_fn、下記)の両方から呼ぶ共通処理として抽出
+    した(TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 修正1
+    回目。第3の複製実装を避けるための共通化であり、ロジック自体は元の
+    ループ本体をそのまま移設しただけで無変更)。"""
+    r = repro01.generate_english_component_minimal_instruction(text, out_path)
+    if r.get("status") != "OK":
+        return {"ok": False, "result": r}
+    asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
+    length_ok = asr_text is not None and len(asr_text) <= max_len
+    ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+    # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
+    # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
+    # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
+    # path側は変更しない、追加コストはfallback発動時のみ)。
+    verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+        text, asr_text, classification_history, out_path, language="en-US",
+        ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+        force_secondary=True,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+    verified = verified_content and length_ok
+    gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+    verified = gate["verified"]
+    # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
+    # gateと同一のANDゲートパターン。enable_repetition_qa=False(既定)
+    # の場合は追加コスト・追加処理なしでverifiedをそのまま返す。
+    rep_gate = repetition_qa.apply_repetition_qa_gate(
+        verified, out_path, text, language="en", enabled=enable_repetition_qa)
+    verified = rep_gate["verified"]
+    return {"ok": True, "result": r, "verified": verified, "stop_retrying": stop_retrying,
+            "asr_text": asr_text, "classification": cls, "length_ok": length_ok,
+            "disfluency_gate": gate, "repetition_gate": rep_gate}
+
+
+def _local_rewrite_recovery_for_english_segment_with_fallback(
+        text: str, out_path: str, last_asr_text: str | None, max_extra_chars: int,
+        enable_connected_speech_equivalence_layer: bool, disfluency_qa: bool, enable_repetition_qa: bool,
+        standard_attempts_log: list | None, fallback_attempts_log: list, cooldown_events: list) -> dict | None:
+    """generate_english_segment_with_fallback()専用のLocal Rewrite回復
+    ヘルパー(ユーザー承認済み仕様D、Human Review Lock到達前の回復経路)。
+    voice01._local_rewrite_recovery_for_charon_english/news_tail_fix.
+    同名ヘルパー(B1経路)と同じ設計パターンで、同じretry_primitive.
+    run_local_rewrite_recovery()を呼ぶ(第3の複製実装ではない)。標準
+    経路(2回)+fallback経路(cool-down後の最大1回)ともASR検証に合格
+    しなかった場合のみ呼ばれる。回復成功時はstatus="OK"の完全なdictを
+    返し、呼び出し元はそのままreturnする(Human Review Lockへは到達
+    しない)。回復不可の場合はNoneを返し、呼び出し元は従来通りSTOPPED/
+    ASR_VALIDATION_UNCERTAINをHuman Review Lockへ進める。"""
+    if not review_lock._has_valid_narration_layout(out_path):
+        return None
+    theme_id, level, segment_id = review_lock.derive_segment_key(out_path)
+    retts_classification_history: list = []
+
+    def _retts_fn(rewritten_text: str) -> dict:
+        retts_max_len = len(rewritten_text) + max_extra_chars
+        outcome = _run_a2_minimal_fallback_attempt(
+            rewritten_text, out_path, retts_max_len, retts_classification_history,
+            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa)
+        r = dict(outcome["result"])
+        if not outcome["ok"]:
+            return r
+        r["asr_text"] = outcome["asr_text"]
+        r["audio_classification"] = outcome["classification"].classification
+        r["asr_verified"] = outcome["verified"]
+        r["status"] = "OK" if outcome["verified"] else "ASR_VALIDATION_UNCERTAIN"
+        r["disfluency_checked"] = outcome["disfluency_gate"]["disfluency_checked"]
+        r["disfluency_evidence"] = outcome["disfluency_gate"].get("disfluency_evidence")
+        r["repetition_qa_checked"] = outcome["repetition_gate"]["repetition_qa_checked"]
+        r["repetition_qa_evidence"] = outcome["repetition_gate"].get("repetition_qa_evidence")
+        return r
+
+    recovery = retry_primitive.run_local_rewrite_recovery(
+        segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
+        retts_fn=_retts_fn, out_dir=f"er011_output/local_rewrite_recovery/{theme_id}/{level}")
+    if recovery["status"] != "RESOLVED_BY_LOCAL_REWRITE":
+        return None
+    resolved = dict(recovery["retts_result"])
+    resolved["local_rewrite_recovery"] = recovery
+    resolved["canonical_text_before_local_rewrite"] = text
+    resolved["fallback_used"] = True
+    resolved["standard_attempts_log"] = standard_attempts_log
+    resolved["fallback_attempts_log"] = fallback_attempts_log
+    resolved["cooldown_events"] = cooldown_events
+    return resolved
+
 
 A01_NARRATION_DIR = repro01.A01_NARRATION_DIR  # "er003_output/b1_p9a/A01/narration"(サービス共通、記事非依存)
 SERVICE_LEVEL_NARRATION_NAMES = repro01.SERVICE_LEVEL_NARRATION_NAMES

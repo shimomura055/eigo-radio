@@ -280,6 +280,18 @@ class CallSiteHelperSafetyTest(unittest.TestCase):
             "some text", "/tmp/not_a_standard_layout.wav", "some asr text", 15, False, True, False)
         self.assertIsNone(result)
 
+    def test_a2_english_segment_fallback_helper_returns_none_for_nonstandard_path(self):
+        """TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目):
+        A2経路(er003_v1_crosslevel_audio_02_common.
+        generate_english_segment_with_fallback)専用のLocal Rewrite回復
+        ヘルパーも、B1側の2ヘルパーと同じ安全設計(標準layout外はAPI呼び出し
+        無しでNone)であることを確認する。"""
+        import er003_v1_crosslevel_audio_02_common as crosslevel_common
+        result = crosslevel_common._local_rewrite_recovery_for_english_segment_with_fallback(
+            "some text", "/tmp/not_a_standard_layout.wav", "some asr text", 60, True, False, False,
+            [{"attempt": 1}, {"attempt": 2}], [{"attempt": 1}], [])
+        self.assertIsNone(result)
+
 
 if __name__ == "__main__":
     unittest.main()

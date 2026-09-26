@@ -22,6 +22,7 @@
 # ============================================================
 from __future__ import annotations
 
+import contextlib
 import types
 import unittest
 from unittest import mock
@@ -368,6 +369,148 @@ class EnglishSegmentFallbackStandard2Fallback1Tests(unittest.TestCase):
 
         mock_min.assert_not_called()
         self.assertFalse(result["fallback_used"])
+
+
+class A2CooldownLocalRewriteWiringTests(unittest.TestCase):
+    """TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目、
+    Fable差し戻し対応): er003_v1_crosslevel_audio_02_common.
+    generate_english_segment_with_fallback()のfallback(minimal
+    instruction)経路へ配線したcool-down(er020_tts_retry_local_rewrite_01.
+    maybe_cooldown_before_attempt、B1と同一のmodule関数)とLocal Rewrite
+    回復(run_local_rewrite_recovery、同上)の回帰確認。"""
+
+    REALISTIC_STANDARD_LOG = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
+
+    def _enter_base_mocks(self, stack):
+        """standard(2回)+fallback(1回)がともにASR不一致で終わる状況を
+        再現する、共通のmock(cool-down/Local Rewrite以外)を1つの
+        contextlib.ExitStackへまとめて入れる(patch対象の重複を避ける)。"""
+        stack.enter_context(mock.patch.object(
+            crosslevel_common, "generate_narration_snippet_verified_strict",
+            return_value={"status": "STOPPED", "attempts_log": list(self.REALISTIC_STANDARD_LOG)}))
+        stack.enter_context(mock.patch.object(
+            crosslevel_common.repro01, "generate_english_component_minimal_instruction",
+            return_value={"status": "OK", "text": "test text", "path": "dummy.wav"}))
+        stack.enter_context(mock.patch.object(
+            crosslevel_common.routing, "transcribe", return_value=("wrong text", None)))
+        stack.enter_context(mock.patch.object(
+            crosslevel_common.pronun_ledger, "get_hint_for_text", return_value=[]))
+        stack.enter_context(mock.patch.object(
+            crosslevel_common.secondary_asr, "evaluate_attempt_with_cascade",
+            return_value=(False, False, _fake_cls("TRUE_CONTENT_MISMATCH"))))
+
+    def test_cooldown_not_invoked_when_connected_speech_disabled(self):
+        """既存呼び出し元(enable_connected_speech_equivalence_layer=False
+        既定)は、fallbackの3回目attemptに到達しても実sleepが一切発生しない
+        (cooldown_gate_enabled=Falseのため即座にNoneを返すだけ)。"""
+        with contextlib.ExitStack() as stack:
+            self._enter_base_mocks(stack)
+            mock_sleep = stack.enter_context(mock.patch("time.sleep"))
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "dummy_out.wav", "test", enable_connected_speech_equivalence_layer=False)
+        mock_sleep.assert_not_called()
+        self.assertEqual(result.get("cooldown_events"), [])
+
+    def test_cooldown_invoked_before_fallback_when_connected_speech_enabled(self):
+        """enable_connected_speech_equivalence_layer=Trueの場合、fallback
+        (総予算3回の実質最終attempt)の直前でretry_primitive.
+        maybe_cooldown_before_attempt(B1と同一のmodule関数)が実際に
+        正しい引数(overall_attempt=3, max_attempts=3, gate=True)で呼ばれる
+        ことを確認する。実sleepを避けるため、関数自体はwrapsで包み内部の
+        sleep_fnだけ明示的にmockへ差し替える(maybe_cooldown_before_
+        attempt自身がsleep_fnを引数化しているのはこのテストのため)。"""
+        real_fn = crosslevel_common.retry_primitive.maybe_cooldown_before_attempt
+        mock_sleep = mock.Mock()
+
+        def _wrapped(attempt, max_attempts, cooldown_gate_enabled, sleep_fn=mock_sleep, **kw):
+            return real_fn(attempt, max_attempts, cooldown_gate_enabled, sleep_fn=sleep_fn, **kw)
+
+        with contextlib.ExitStack() as stack:
+            self._enter_base_mocks(stack)
+            mock_cooldown_fn = stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "maybe_cooldown_before_attempt", side_effect=_wrapped))
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "dummy_out.wav", "test", enable_connected_speech_equivalence_layer=True)
+        mock_sleep.assert_called_once_with(600.0)
+        mock_cooldown_fn.assert_called_once_with(3, 3, True)
+        self.assertEqual(len(result.get("cooldown_events") or []), 1,
+                          "総予算3回のうちfallback(3回目)の直前で1回だけcool-downが発火する")
+        self.assertEqual(result["cooldown_events"][0]["cooldown_requested_seconds"], 600.0)
+        self.assertEqual(result["cooldown_events"][0]["attempt_after_cooldown"], 3)
+
+    def test_local_rewrite_recovery_resolves_before_human_review(self):
+        """Local Rewrite回復(run_local_rewrite_recovery)がRESOLVED_BY_
+        LOCAL_REWRITEを返した場合、fallback失敗後もstatus="OK"のまま確定し
+        (Human Review Lockへ進まない、ユーザー承認済み仕様D)、B1と同じ
+        retry_primitive.run_local_rewrite_recoveryが実際に呼ばれる。"""
+        recovered = {"status": "RESOLVED_BY_LOCAL_REWRITE",
+                     "retts_result": {"status": "OK", "text": "rewritten", "path": "dummy_out.wav"}}
+        with contextlib.ExitStack() as stack:
+            self._enter_base_mocks(stack)
+            stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "maybe_cooldown_before_attempt", return_value=None))
+            mock_recovery = stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "run_local_rewrite_recovery", return_value=recovered))
+            # _local_rewrite_recovery_for_english_segment_with_fallback()は
+            # review_lock._has_valid_narration_layout()が標準layout
+            # (".../<theme>/<level>/narration/<segment>.wav")の場合のみ
+            # run_local_rewrite_recoveryを呼ぶ設計(B1の2ヘルパーと同じ
+            # 安全設計)のため、テストでも標準layoutのpathを使う。
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "unittest_scratch_theme/a2/narration/test_segment.wav", "test",
+                enable_connected_speech_equivalence_layer=True)
+        self.assertTrue(mock_recovery.called)
+        self.assertEqual(result["status"], "OK")
+        self.assertEqual(result.get("local_rewrite_recovery"), recovered)
+        self.assertTrue(result.get("fallback_used"))
+
+    def test_local_rewrite_recovery_failure_still_reaches_human_review(self):
+        """Local Rewrite回復が失敗(RESOLVED_BY_LOCAL_REWRITE以外)の場合は、
+        従来通りSTOPPEDのままHuman Review Lockへ進む(B1と同一のHuman
+        Review Lock到達条件)。"""
+        failed_recovery = {"status": "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA"}
+        with contextlib.ExitStack() as stack:
+            self._enter_base_mocks(stack)
+            stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "maybe_cooldown_before_attempt", return_value=None))
+            mock_recovery = stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "run_local_rewrite_recovery", return_value=failed_recovery))
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "unittest_scratch_theme/a2/narration/test_segment.wav", "test",
+                enable_connected_speech_equivalence_layer=True)
+        self.assertTrue(mock_recovery.called)
+        self.assertEqual(result["status"], "STOPPED")
+        self.assertNotIn("local_rewrite_recovery", result)
+
+    def test_local_rewrite_recovery_not_attempted_when_connected_speech_disabled(self):
+        """既存呼び出し元(enable_connected_speech_equivalence_layer=False
+        既定)は、fallbackが失敗してもrun_local_rewrite_recovery自体が
+        一切呼ばれない(既存挙動を変えない)。"""
+        with contextlib.ExitStack() as stack:
+            self._enter_base_mocks(stack)
+            mock_recovery = stack.enter_context(mock.patch.object(
+                crosslevel_common.retry_primitive, "run_local_rewrite_recovery"))
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "test text", "dummy_out.wav", "test", enable_connected_speech_equivalence_layer=False)
+        mock_recovery.assert_not_called()
+        self.assertEqual(result["status"], "STOPPED")
+
+
+class A2TopicIntroConnectedSpeechRoleWiringTests(unittest.TestCase):
+    """TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目):
+    A2 topic_introが、B1(er003_v1_n3_01_tts_generate.generate_b1_segments)
+    と同じくrole→適用判定を必ずretry_primitive.connected_speech_
+    enabled_for()経由で参照すること(旧: 引数自体を渡していなかった漏れ)
+    のregression guard(ソースベース確認、既存の`test_key_phrase_
+    component_verified_does_not_reference_standard2_split`と同じ手法)。"""
+
+    def test_a2_topic_intro_call_references_connected_speech_enabled_for(self):
+        import inspect
+        source = inspect.getsource(n3.generate_a2_segments)
+        # topic_intro呼び出し直後にenable_connected_speech_equivalence_layer
+        # 引数が渡されていることを確認する(ハードコードされたFalse/省略ではない)。
+        topic_intro_block = source.split('results["topic_intro"]', 1)[1].split(")\n", 1)[0]
+        self.assertIn("connected_speech_enabled_for", topic_intro_block)
 
 
 class KeyPhraseSpecUnaffectedTests(unittest.TestCase):

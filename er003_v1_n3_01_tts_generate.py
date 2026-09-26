@@ -859,9 +859,16 @@ def generate_a2_segments(theme: dict) -> dict:
     topic_intro_tts_text = f"Today's topic is {topic_intro_tts_title}."
     print(f"[N3-TTS][{theme_id}/a2] topic_intro生成(Aoede、A2既存単一Voice)...")
     with cl.segment_context("topic_intro"):
+        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(修正1回目、
+        # 2026-09-26): B1側(line 717-719)と同様、role→適用判定は必ず
+        # retry_primitive.connected_speech_enabled_for()を参照する(要件3、
+        # 経路ごとの個別ハードコード条件式は書かない)。従来この呼び出しは
+        # 本引数自体を渡していなかった(常に既定Falseのまま=構造的に
+        # Connected Speechが非適用だった、role差による漏れ)。
         results["topic_intro"] = c.generate_english_segment_with_fallback(
             tts_safe_number_words_en(tts_safe_en(topic_intro_tts_text)), f"{narration_dir}/topic_intro.wav",
-            first_words(parts["title"], 3), max_extra_chars=30)
+            first_words(parts["title"], 3), max_extra_chars=30,
+            enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for("topic_intro"))
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     ja_title = JAPANESE_TITLES[theme_id]
@@ -908,20 +915,18 @@ def generate_a2_segments(theme: dict) -> dict:
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
                 disfluency_qa=(name == "in_one_line"),
                 # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01
-                # (2026-09-26): role→適用判定は必ずretry_primitive.
-                # connected_speech_enabled_for()を参照する(要件3)。
-                # in_one_lineが新たに対象になる(旧: 対象外)。**既知の
-                # scope注記**: A2経路の実TTS呼び出しはgenerate_a2_segment_
-                # with_slowdown経由でc.generate_english_segment_with_
-                # fallback(er003_v1_crosslevel_audio_02_common.py)に
-                # 到達するが、本管理IDのcool-down+Local Rewrite回復の
-                # コード自体は、voice01.generate_charon_english/
-                # news_tail_fix.generate_news_narration_wide_marginの
-                # 2関数のみへ実装した(B1経路)。A2側は本フラグにより
-                # Equivalence Layerの判定(既存機構)は引き続き有効だが、
-                # cool-down/Local Rewrite回復はA2側の別関数へ未配線のまま
-                # (RESULT_PACKET/REPORTのGap欄に明記、必要な場合は別途
-                # 拡張の要否をFable/ユーザーへ確認する)。
+                # (2026-09-26、修正1回目で更新): role→適用判定は必ず
+                # retry_primitive.connected_speech_enabled_for()を参照する
+                # (要件3)。in_one_lineが新たに対象になる(旧: 対象外)。
+                # A2経路の実TTS呼び出しはgenerate_a2_segment_with_slowdown
+                # 経由でc.generate_english_segment_with_fallback
+                # (er003_v1_crosslevel_audio_02_common.py)に到達する。
+                # 修正1回目で、cool-down+Local Rewrite回復のコード
+                # (er020_tts_retry_local_rewrite_01.maybe_cooldown_before_
+                # attempt/run_local_rewrite_recovery、B1と同一のmodule
+                # 関数)をgenerate_english_segment_with_fallback自体
+                # (fallback[minimal instruction]経路、総予算3回のうち実質
+                # 最終attempt)へ配線した(旧: A2側は未配線のGapだったが解消)。
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                 # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 本管理ID
                 # (Connected Speech)とは別仕様のため、適用範囲は変更しない。
