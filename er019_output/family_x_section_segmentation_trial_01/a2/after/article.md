@@ -1,0 +1,31 @@
+# Different Jobs for Different Bags: Mini Bags Catch Eyes, Large Bags Carry Things
+
+In 2026 fashion, mini bags look especially lively. Palm-sized clutches, tiny pouches, and eye-catching minaudières stand out. They appear in runway shows and fashion reports. In a bag store, you may ask, “Can something this small really be enough?”
+
+But mini bags are not taking over from large bags. In 2026, small and large bags seem to have different jobs.
+
+ELLE called mini bags one trend in fall/winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s unusual minaudière.
+
+With so little space, carrying many things is hard. They mainly hold basic items: a phone, wallet, keys, and lip products. They cannot compete with bags that hold a lot.
+
+### Mini bags are there to set the scene
+
+So what are mini bags for? Their look matters more than what they carry. A mini bag makes an outfit feel special. It also makes the outfit stand out.
+
+A large bag is the luggage carrier. It says, “I carry what you need.” A mini bag sets the scene. It says, “This is the mood today.”
+
+### Large bags are still doing their job
+
+Still, large bags have not disappeared. Vogue also showed many kinds of bags in that 2026 season.
+
+Vogue showed small pouches from Prada and Loewe. It also showed Celine’s Ultra Maxi and a large shoulder bag from Altuzarra. It showed roomy totes from Toteme and other brands.
+
+This shows that small and large bags appeared together. Mini bags did not replace large ones.
+
+This does not mean mini bags are used widely across the whole market. We are seeing their return in fashion coverage and on some runways. Even so, the way we see trends has changed.
+
+Bags are no longer a game with one size on the throne. Large bags handle storage, while mini bags handle attention and mood. One carries things, and the other sets the scene. In 2026, runways openly show this division of jobs.
+
+## In one line
+
+In 2026, large bags carry the load while mini bags set the scene.
