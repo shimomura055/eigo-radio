@@ -1,0 +1,56 @@
+{
+  "management_id": "NEWS-FAMILY-X-B3-DIVERSITY-TRIAL-01",
+  "budget_jpy_cap": 150.0,
+  "budget_estimate_jpy": "30-90",
+  "components": {
+    "small_bag_run_01": {
+      "note": "Full pipeline (storyline_b3 -> ja_writer -> advanced -> standard). research_ledger cost = 0 (reused verbatim, no Research/Verification API calls).",
+      "by_stage_jpy": {
+        "storyline_b3": 1.485,
+        "ja_original": 0.208,
+        "ja_r1": 0.218,
+        "ja_r2": 0.285,
+        "advanced": 1.326,
+        "standard": 1.406
+      },
+      "total_jpy": 4.928
+    },
+    "hormuz_run_01_partial": {
+      "note": "storyline_b3 + ja_writer completed. Advanced stage STOPPED (RuntimeError) after 1 technical retry due to Ledger Deviation MAJOR (existing Production Gate, not bypassed). Standard stage never reached. research_ledger cost = 0 (reused verbatim).",
+      "by_stage_jpy": {
+        "storyline_b3": 1.047,
+        "ja_original": 0.189,
+        "ja_r1": 0.221,
+        "ja_r2": 0.26,
+        "advanced": 4.05
+      },
+      "total_jpy": 5.766
+    },
+    "small_bag_scaffold_text": {
+      "note": "Comment C1-C4 + Preview generation (A2 and B1B levels), text only, no TTS.",
+      "by_stage_jpy": {
+        "small_bag_a2_scaffold": 0.911,
+        "small_bag_b1_scaffold": 0.403
+      },
+      "total_jpy": 1.314
+    },
+    "meta_scaffold_text": {
+      "note": "Comment C1-C4 + Preview generation (A2 and B1B levels) for the already-existing Meta run_01 article (post fact-fidelity-fix), text only, no TTS.",
+      "by_stage_jpy": {
+        "meta_a2_scaffold": 0.533,
+        "meta_b1_scaffold": 0.421
+      },
+      "total_jpy": 0.954
+    },
+    "meta_fact_fidelity_fix_recheck": {
+      "note": "Re-run of existing vfl01.run_deviation_check (Full Ledger) on the manually-corrected MUSE-HC-012 tense fix (A2 + B1B), verification only, no regeneration.",
+      "by_stage_jpy": {
+        "deviation_recheck_b1b": 0.323,
+        "deviation_recheck_a2": 1.244
+      },
+      "total_jpy": 1.568
+    }
+  },
+  "grand_total_jpy": 14.53,
+  "grand_total_note": "4.928 + 5.766 + 1.314 + 0.954 + 1.568 = 14.53 JPY. Well within the 150 JPY guardrail cap and below the 30-90 JPY rough estimate (Ledger reuse for both articles avoided Research/Verification cost entirely)."
+}

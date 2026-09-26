@@ -24,7 +24,7 @@ As AI becomes able to make calls or reservations for us, this question will beco
 
 ### Meta admits a mistake
 
-A Meta executive admitted that starting the test without clearly telling users was a mistake. The human concierge feature has been rolled back for now. In the AI age, we need more than technology that makes a voice sound human: we need to be told, at the start, who is on the other end of the call.
+A Meta executive admitted that starting the test without clearly telling users was a mistake. The human concierge feature will be rolled back for now. In the AI age, we need more than technology that makes a voice sound human: we need to be told, at the start, who is on the other end of the call.
 
 ## In one line
 
