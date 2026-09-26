@@ -32,3 +32,7 @@ runtime evidence run: `er019_output/family_x_b3_production_wiring_01/run_01/`
 | 24 | ユーザー承認仕様との一致 | 本委任文ユーザー確定事項1〜13との対応表(REPORT参照) | Sonnet仮判定のみ、正式判定はFable/ユーザー |
 
 **Status(Sonnet仮)**: 上記1〜18は技術的証跡として充足(N=1記事のrun)。19〜21はSSOT反映済み。22は本Report作成後に実施。24はREPORT参照。**`PRODUCTION_WIRED`の正式判定はFable/ユーザーが行う**(Sonnetは自称しない)。記事内容自体はOPEN-183によりユーザー確認待ち。
+
+## Fable最終判定(2026-09-26)
+
+24/24項目充足、**`PRODUCTION_WIRED`**(配線)。判定根拠: #13(runtime evidence)は修正1回目で`writer_run_summary.json`のマージ保存を共有module側で恒久修正し、run_01のsummaryを生ログ(raw_usage_log.jsonl)からプログラム再構成(由来記録付き)したことで充足。#2/#5(Brief整形)はStoryline重複を修正(run_01原本は監査目的で不変)して充足。#18(regression)はTTS配線commit後の全体regression全PASSで充足。#20(DECISION_LOG)は修正1回目エントリ(commit`bac7c296`)で充足。#24(ユーザー承認仕様との一致)はユーザー確定事項13項目と一致を確認。配線とは別に、記事本体には時制ドリフト(Ledger「ロールバックした」→本文"will be rolled back")とAI Storylineが「なぜ人間を使ったか(009)」を含まない点があり、`run_01/audit/fable_editorial_findings.md`に記録済み。記事は再生成せずユーザー判断(X-1/X-2)待ち。記事内容(Storyline・Fact選定・文章そのもの)のユーザー確認は本判定と別であり、`OPEN_ITEMS.md` OPEN-183のまま継続する。詳細: `NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01_REPORT.md` §10-11。

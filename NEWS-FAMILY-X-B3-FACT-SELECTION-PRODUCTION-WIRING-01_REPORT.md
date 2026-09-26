@@ -230,8 +230,8 @@ Sonnet仮判定: 1〜18(技術的証跡)は今回のN=1 runで充足。19〜21(S
 
 ## 10. Fable評価
 
-[Fable記入]
+(1) Gate 3 24項目を照合。#13(runtime evidence)は修正1回目で`writer_run_summary.json`のマージ保存を共有module側で恒久修正し、run_01のsummaryを生ログ(raw_usage_log.jsonl)からプログラム再構成(由来記録付き)したことで充足。#2/#5(Brief整形)はStoryline重複を修正(run_01原本は監査目的で不変)して充足。#18(regression)はTTS配線commit後の全体regression全PASSで充足。#20(DECISION_LOG)は修正1回目エントリ(commit`bac7c296`)で充足。#24(ユーザー承認仕様との一致): Storyline AI決定・LLM 1 call・B3 4テスト・Selected Brief/Full Ledger分離・O→R1→R2同時配線・Family A不変・記事完成でMandatory STOP、いずれも確定指示13項目と一致。(2) 配線とは別に、記事本体には時制ドリフト(Ledger「ロールバックした」→本文"will be rolled back")とAI Storylineが「なぜ人間を使ったか(009)」を含まない点があり、`run_01/audit/fable_editorial_findings.md`に記録。記事は再生成せずユーザー判断(X-1/X-2)待ち。(3) 費用¥40.00/記事(B3増分¥0.67)。
 
 ## 11. 分類
 
-[Fable記入]
+**配線: PRODUCTION_WIRED**(Fable Gate 3判定、2026-09-26)。**記事: ユーザー記事確認待ち(OPEN-183)、音声化へ進まない。**
