@@ -9642,3 +9642,16 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - ユーザー判断待ち: **A-T**(Trial起票要否)。(a) Phase Aのみ先行(¥5〜10)/(b) Phase A+B(¥10〜15、Fable推奨)/(c) 起票せず保留。
 - 関連: `EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`、`docs/pm/recon_en_asr_semantic_equivalence_01.md`(commit`ba549f05`)、`docs/pm/recon_en_asr_semantic_equivalence_02_tier2_tier3.md`(commit`76eb3a39`)。
 - commit: (本コミットでSSOT反映[`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`/`DECISION_LOG.md`]を実施)
+
+## PM-USER-DECISIONS-SSOT-CONSOLIDATION-04: Family X音声構造(SE-1 CLOSED・本文1/2/3区切り定義)ユーザー正式決定のSSOT記録+Section Segmentation候補/Fact Check方針の記録(2026-09-26)
+
+- 日付: 2026-09-26
+- 区分: ユーザー正式決定のSSOT記録のみ(¥0、コード・Prompt変更なし、判断内容の書き換えではなく逐語記録)。
+- **A. Family X音声構造・効果音(SE-1 CLOSED、ユーザー正式決定、逐語)**: 「Family Xでは、本文以降に新しい効果音は入れない。Family Xの構造はComment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Lineとし、Commentで自然につなぐ設計を採用する。Point One/Two用Notification音はFamily Xでは使わない/本文1/2/3の前後にも新しい効果音は追加しない/In One Line前にも新しい効果音は追加しない/現時点では本文以降の効果音なし。まずこの状態で音声化して試聴する。その後、ユーザー試聴で『区切りが弱い』『流れが分かりにくい』等の問題が実際に出た場合のみ、効果音追加を再検討する。現時点ではSE-1はCLOSED。追加Trialは不要。今後USER_DECISION_REQUIREDとして再掲しない。」Status: ユーザー決定=`APPROVED_FOR_PRODUCTION`(Family Xの後工程[3分割・Comment配置・Assembly]仕様として)。配線は未着手(現行`er019_family_x_entertainment_production_runner_01.py`は`--stop-after standard`で停止し後工程未実装)。`PRODUCTION_WIRED`ではない。既存Family A仕様(Point One/Two直前Notification音等)はFamily Aのまま無変更、Family X固有の差分として記載した。
+- **B. Family X本文1/2/3の区切り定義(既決定の再確認)**: 「本文1=タイトル+1つ目の見出し直前まで/本文2=1つ目の見出し+2つ目の見出し直前まで/本文3=2つ目の見出し+In One Line直前まで/In One Line=別枠。Comment配置はComment→本文1→Comment→本文2→Comment→本文3→Comment→In One Lineを基準。50%/25%/25%は理想目安であり、現時点ではValidator/Gate化しない。今後Production記事で明らかなアンバランスが多発した場合のみ再検討。この比率を理由に追加Trialや自動補正を始めない。」`DECIDED`として記載、Gate化しない旨を明記した。
+- **C. Section Segmentation仕様候補(参考、Trial中)**: 「Family Xでは、見出しがある場合、その見出しで扱う新しい論点・新しいFact・新しい役割の開始文は、原則として見出しの後に置く。見出し前で次Sectionの具体内容を実質的に開始しない。ただし単なるBridge・『次は〜を見る』のような予告まで禁止しない。」Status: `NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01`としてTrial中(最大`VALIDATED`、Production採用ではない、ユーザー確認後に採否)。CURRENT_SPECには候補(Trial中)として1行のみ記載し、正式仕様本文には入れていない。
+- **D. Family X Fact Check方針(参考、コスト確認中)**: 「JA Original生成後+JA R2確定後のダブルチェックを基本案とする。JA側が正しい場合のみ英訳工程だけにFocusしてChecker検出のmust-fixをWriterへ渡してRetry。JA R2が誤っている場合は英訳Writerに直させずJA側へ戻す。ホルムズのLedger外断定も検証対象。」実装・Trial未開始、コスト確認(`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`)後にユーザーが正式採用するまでProduction変更しない。CURRENT_SPECの新設「Family X(Entertainment News)音声構造」節へ方針の存在のみ記録し、`OPEN_ITEMS.md` OPEN-187(既存項目、Family X Writer経路のJA段Ledger照合Gate不在論点)は本タスクの編集対象外のため未編集のまま据え置いた(範囲外への拡大を避けるため。OPEN-187への正式反映要否はFable/ユーザー判断待ち)。
+- SSOT反映: `CURRENT_SPEC.md`へ新設「## Family X(Entertainment News)音声構造」節(Family C節とFamily Z節の間)を追加し、上記A〜Dを記載した。`OPEN_ITEMS.md` OPEN-183備考へ備考4(SE-1 CLOSED・本文1/2/3定義・Section Segmentation Trial状況)を追記、OPEN-177の全体Status注記へFamily X新Point構造確定+後工程配線未着手である旨を追記した。`docs/pm/REPORT_LEDGER.md`の`NEWS-FAMILY-X-B3-DIVERSITY-TRIAL-01`行のFeedback列を更新した(下記参照)。
+- Dangling Reference Check: 上記反映テキストは、Section Segmentation候補(`NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01`、Trial中)・Fact Check方針(コスト確認中、Trial未開始)をいずれも「Trial中」「未実装」と明記した文脈でのみ参照しており、Production正式仕様として書いていないことを確認した。
+- 関連: `docs/pm/ACTIVE_TASK_SSOTE.md`(本委任転記)、`docs/pm/RESULT_PACKET_SSOTE.md`。
+- commit: (本コミットでSSOT反映[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`]を実施)

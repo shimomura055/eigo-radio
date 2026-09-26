@@ -1077,6 +1077,54 @@ Twins A2「The door opened.」(3語segment、Voice境界+scene boundary保持
 
 日付: 2026-09-16。
 
+## Family X(Entertainment News)音声構造 — 2026-09-26新設(ユーザー確定ルールのSSOT記録、`PM-USER-DECISIONS-SSOT-CONSOLIDATION-04`)
+
+**Status**: 本節は2026-09-26にユーザーが確定した、Family X(日本語
+Entertainment読み物、Original→R1→R2→Advanced→Standardの生成方式。
+既存節「News記事(日本語Entertainment読み物)のEntertainment生成方式」
+`CURRENT_SPEC.md` L828-830参照)の後工程(3分割・Comment配置・音声
+Assembly)仕様である。**配線は未着手**(現行正式入口
+`er019_family_x_entertainment_production_runner_01.py`は`--stop-after
+standard`でStandard生成完了時に構造的に停止し、scaffold/TTS/assemble/
+player関連の後工程コードは一切実装されていない)。ユーザー決定=
+`APPROVED_FOR_PRODUCTION`だが`PRODUCTION_WIRED`ではない。Family A
+(News Major/Daily/Trend Synthesis)の既存音声仕様(Point One/Two直前
+Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり、
+以下はFamily X固有の差分としてのみ適用する。
+
+1. **音声構造・効果音(SE-1 CLOSED)**: Family Xの構造は
+   Comment1 → 本文1 → Comment2 → 本文2 → Comment3 → 本文3 →
+   Comment4 → In One Line とし、Commentで自然につなぐ設計を採用する。
+   Point One/Two用Notification音はFamily Xでは使用しない。本文1/2/3の
+   前後・In One Line前にも新しい効果音は追加しない(現時点では本文以降
+   の効果音なし)。まずこの状態で音声化し、ユーザー試聴で「区切りが弱い」
+   「流れが分かりにくい」等の問題が実際に出た場合のみ、効果音追加を
+   再検討する(`DECIDED`、`APPROVED_FOR_PRODUCTION`。SE-1はCLOSED、
+   追加Trial不要、以後USER_DECISION_REQUIREDとして再掲しない)。
+2. **本文1/2/3の区切り定義**: 本文1=タイトル+1つ目の見出し直前まで/
+   本文2=1つ目の見出し+2つ目の見出し直前まで/本文3=2つ目の見出し+
+   In One Line直前まで/In One Line=別枠。Comment配置はComment→本文1→
+   Comment→本文2→Comment→本文3→Comment→In One Lineを基準とする
+   (`DECIDED`)。50%/25%/25%は理想目安であり、**Validator/Gate化しない**
+   (Production記事で明らかなアンバランスが多発した場合のみ再検討する。
+   この比率を理由に追加Trial・自動補正を開始しない)。
+3. **Section Segmentation(見出し境界)候補**: 見出しがある場合、その
+   見出しで扱う新しい論点・新しいFact・新しい役割の開始文は原則として
+   見出しの後に置く(見出し前で次Sectionの具体内容を実質的に開始しない。
+   単なるBridge・予告文までは禁止しない)。**Status: Trial中止まり
+   (`NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01`、最大`VALIDATED`、
+   Production採用ではない、ユーザー確認後に採否)**。正式仕様本文には
+   含めない(候補記録のみ)。
+4. **Fact Check方針(コスト確認中)**: JA Original生成後+JA R2確定後の
+   ダブルチェック案(JA側が正しい場合のみ英訳工程Focusでmust-fix retry、
+   JA R2が誤っている場合はJA側へ差し戻し)は実装・Trial未着手。コスト
+   確認(`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`)後にユーザーが
+   正式採用するまでProduction変更しない。関連: `OPEN_ITEMS.md`
+   OPEN-187(本方針は同Itemの対策検討と関連するが、本節では方針の存在
+   記録のみ)。
+
+根拠: ユーザー決定(2026-09-26、`PM-USER-DECISIONS-SSOT-CONSOLIDATION-04`)。
+
 ## Family Z(Fiction)— 2026-09-26新設(ユーザー確定ルールのSSOT記録、`FICTION-FAMILY-Z-PRODUCTION-E2E-01`)
 
 **Status**: 本節の内容(1〜7)は2026-09-26にユーザーが逐語で確定した
