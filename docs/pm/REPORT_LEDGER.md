@@ -38,15 +38,19 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 
 | 管理ID | Trial/作業完了日 | 初回正式報告(日時/有無) | ユーザーFeedback(日時/有無) | 累積再掲対象(Y/N) | 備考 |
 |---|---|---|---|---|---|
-| FICTION-EXTERNAL-SEED-SELECTION-CRITERIA-TRIAL-02 | 2026-09-26 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | 初期行作成時点の把握(2026-09-26)。日時はFableが確認し次第補記。 |
-| TTS-LOCAL-REWRITE-NATURAL-ENGLISH-QA-TRIAL-02 | 2026-09-26 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | 同上。 |
-| VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01 | 2026-09-26以前 | **未**(本件是正対象、2026-09-26時点で未報告と判明) | 未 | Y | 本タスク(PM-REPORTING-LEDGER-INITIAL-VS-RESTATE-01)の契機事案。次回★★★★報告★★★★で結果本体を省略せず初回報告すること。 |
-| NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-02 | 2026-09-26以前 | **未**(本件是正対象、2026-09-26時点で未報告と判明) | 未 | Y | 同上。次回★★★★報告★★★★で結果本体を省略せず初回報告すること。 |
-| FICTION-EXTERNAL-STORY-SEED-TRIAL-01 | 2026-09-26以前 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | `DECISION_LOG.md` PM-BUDGET-CAP-GUARDRAIL-POLICY-01の契機として言及済み。 |
-| STANDARD-VOCAB-ABCD-ALIGNMENT-TRIAL-01 | 2026-09-26以前 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | |
-| TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01 | 2026-09-26以前 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | |
-| NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | |
-| ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(要Fable確認: 正確な日時未特定) | 済(要Fable確認: 正確な日時未特定) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
+| FICTION-EXTERNAL-SEED-SELECTION-CRITERIA-TRIAL-02 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | 初期行作成時点の把握(2026-09-26)。 |
+| TTS-LOCAL-REWRITE-NATURAL-ENGLISH-QA-TRIAL-02 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | 同上。 |
+| VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26) | 済(2026-09-26: 方針変更→`STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01`へ) | N | 本タスク(PM-REPORTING-LEDGER-INITIAL-VS-RESTATE-01)の契機事案。初回正式報告・Feedbackとも完了。 |
+| NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-02 | 2026-09-26以前 | 済(2026-09-26) | 済(2026-09-26: B3[最小核基準]を`APPROVED_FOR_PRODUCTION`) | N | 同上。初回正式報告・Feedbackとも完了(Production採用はB3のみ、配線は別管理ID`NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01`)。 |
+| FICTION-EXTERNAL-STORY-SEED-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md` PM-BUDGET-CAP-GUARDRAIL-POLICY-01の契機として言及済み。 |
+| STANDARD-VOCAB-ABCD-ALIGNMENT-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
+| TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
+| NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
+| ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
+| STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 進行中 | 未 | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
+| NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 進行中 | 未 | 未 | Y | B3(最小核基準)Production採用後のwiring作業。Phase 0(本行作成タスク)は調査のみ。 |
+| FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
+| TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
 
 ## 違反事例記録
 
