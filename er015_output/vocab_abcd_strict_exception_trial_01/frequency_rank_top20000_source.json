@@ -1,0 +1,21 @@
+{
+  "source_package": "wordfreq",
+  "source_package_version": "3.1.1",
+  "license": "Apache-2.0",
+  "method": "wordfreq.top_n_list('en', 20000) (既存install再利用、追加installなし、STANDARD-VOCAB-ABCD-ALIGNMENT-TRIAL-01/ADVANCED-VOCAB-RULE-TRIAL-01 v2と同一method・同一version)",
+  "ranking_unit": "rank = min(rank(surface form), rank(best lemma candidate))。lemma候補は-s/-es/-ies/-ed/-ing/-ly の単純規則のみ(-er/-est比較級除去は使わない)。er015_advanced_vocab_rule_trial_01_v2.pyのlemma_candidates_v2/rank_of_word_v2をそのまま流用、Standard/Advanced共通(思想差ゼロ)。",
+  "level_threshold": {
+    "standard": 6000,
+    "advanced": 12000
+  },
+  "level_borderline_band": {
+    "standard": [
+      5000,
+      6000
+    ],
+    "advanced": [
+      10000,
+      12000
+    ]
+  }
+}
