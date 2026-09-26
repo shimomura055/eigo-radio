@@ -47,9 +47,9 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
-| STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 進行中 | 未 | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
+| STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
 | NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 進行中 | 未 | 未 | Y | B3(最小核基準)Production採用後のwiring作業。Phase 0(本行作成タスク)は調査のみ。 |
-| FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
+| FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。Sonnet完了→Fable差し戻し1回目(True Crime再生成)進行中、初回報告未。 |
 | TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
 
 ## 違反事例記録

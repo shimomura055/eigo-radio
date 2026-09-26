@@ -321,11 +321,47 @@ Trialの結果は「Bが機能しないことの反証にはならないが、A�
 
 ## §8 Fable評価
 
-(空欄、Fable記入待ち)
+(1) 入力の由来: 委任時に指定したBefore本文が現行Advanced v2 Production
+Prompt出力ではないとSonnetが事前調査で発見し、日本語R2原文から現行
+Advanced v2で再生成して入力に用いた逸脱は妥当(Fable追認)。以後Standard
+関連Trialの入力は現行Advanced v2出力を正とする。(2) 最重要所見: 前回
+Trial(VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01)で問題となった意味変化型
+置換(flush→use、septic tank→treatment tank、sewer→underground pipe
+system)は、A(現行Standard v5)・B(Generation-First)のどちらでも発生
+しなかった。すなわち前回の意味変化は、Standard A2 Rewrite本体ではなく、
+その後段として試した語彙単位のA/B/C/D事後置換パスに起因していたことが
+切り分けられた。(3) A/B差: 6,000語超残存語数はMeta 10/10、Sewer 10/9で
+実質同等、残存語はいずれも固有名詞・主題語(septic/sewer)・中心比喩
+(artery/curtain/performer/onstage)・動作精度語(flush)で不要な難語は
+0件。Bで"installed→put in"、"inspect→check"の自然な平易化が観測された
+一方、Aは文の機械的分割(Meta "…onstage. And who is behind the
+curtain." / "People might be surprised to learn this. Contract workers
+had listened and answered.")がやや目立ち、Sewer Aは"It must be
+installed…"→"Workers must install…"と主語(Workers)を補って原文にない
+行為者を追加している(minor)。Bは原文の1文構造・受動態を保持。(4) 語数:
+Meta Advanced 329→A 290/B 321、Sewer 328→A 322/B 324。Aは平均文長9.06
+(Meta)でやや短文化が強い。FK概算は同等(5.77/5.79、6.3/6.31)。(5) B
+プロンプトの注意点: ユーザー仕様の逐語反映として `(for example, turning
+"flush" into "use")` という個別語の例示がBプロンプトに含まれる。Sewer
+記事でBが"flush"を保持した結果はこの例示の影響を受けている可能性があり、
+Bの証拠としては割り引く必要がある(AもflushをPromptなしで保持している
+ため方式全体の結論は変わらない)。(6) 費用¥3.09、6 call全て初回成功。
+(7) 汎化性: 2記事のみ、Metaは元々難語が少なく判別材料として弱い。
 
 ## §9 分類
 
-(空欄、Fable記入待ち)
+**VALIDATED**(Trial範囲。Production変更なし。Standard A2の意味変化
+問題はA/B/C/D事後置換パス由来と切り分けられ、生成一体型(A/Bとも)では
+再現しなかった)。ユーザー判断事項: S-1 試読のうえ、Production候補の
+Standard A2 PromptをA(現行v5維持)/B(Generation-First版へ差し替え)の
+どちらにするか(Fable推奨: 明確な客観差がないためA維持を基本とし、Bの
+「意味を変えない/冗長説明に逃げない/Storytelling維持」の3文だけをv5へ
+追加する折衷案を次Trialで確認)。S-2 語彙単位のA/B/C/D事後置換パス
+(Standard側)をProduction候補から正式に外すか(Fable推奨: 外す。
+Advanced v2のPRODUCTION_WIRED済み語彙ルールブロックは本Trialの対象外で
+変更しない)。S-3 Bプロンプト内の個別語例示 `"flush" into "use"` を残す
+か一般表現へ置き換えるか(Fable推奨: 一般表現へ置換、個別語名はPromptに
+書かない原則を維持)。
 
 ## 付録: 入力の由来の詳細記録(委任文からの逸脱点)
 
