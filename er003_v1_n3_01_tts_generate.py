@@ -46,6 +46,7 @@ import er003_b1_p9a_audio as p9a
 import er006_preprod_hardening_01_validation as en_validator
 import er006_secondary_asr_01 as secondary_asr
 import er008_a2_postprocess_slowdown_01 as a2_slowdown
+import er020_tts_retry_local_rewrite_01 as retry_primitive
 
 # ============================================================
 # ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06 Part G: A2英語のみ、
@@ -710,8 +711,12 @@ def generate_b1_segments(theme: dict) -> dict:
     topic_intro_text = f"Today's topic is {parts['title']}."
     print(f"[N3-TTS][{theme_id}/b1b] topic_intro生成(Charon)...")
     with cl.segment_context("topic_intro"):
+        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: role→
+        # 適用判定は必ずretry_primitive.connected_speech_enabled_for()を
+        # 参照する(経路ごとの個別ハードコード条件式は書かない、要件3)。
         results["topic_intro"] = voice01.generate_charon_english(
-            tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav")
+            tts_safe_number_words_en(tts_safe_en(topic_intro_text)), f"{narration_dir}/topic_intro.wav",
+            enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for("topic_intro"))
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
@@ -730,7 +735,11 @@ def generate_b1_segments(theme: dict) -> dict:
                 # Previewで採用済みのcalm/clear/unhurried style instructionを
                 # Comment1-4にも正式採用(ユーザー試聴・承認済み)。
                 style_prefix_override=B1_PREVIEW_STYLE_PREFIX_CALM,
-                disfluency_qa=True)
+                disfluency_qa=True,
+                # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01:
+                # Comment/Previewは、この単一関数によりOPEN-122 Equivalence
+                # Layer + cool-down + Local Rewrite回復が初めて有効になる。
+                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name))
         results[name]["canonical_text"] = text
 
     for name in ("point_one_heading", "point_two_heading"):
@@ -761,14 +770,20 @@ def generate_b1_segments(theme: dict) -> dict:
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
                 disfluency_qa=(name == "in_one_line"),
-                # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
-                # ユーザー承認済み範囲(B1英語本文segment=full_story_part1/2・
-                # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
-                enable_connected_speech_equivalence_layer=(
-                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")),
-                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
-                # のみ対象(ユーザー承認済み範囲、Key Phrase・日本語・
-                # Comment/Preview/Title/In One Line等は対象外)。
+                # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01
+                # (2026-09-26、ユーザー承認済み範囲の更新): role→適用判定は
+                # 必ずretry_primitive.connected_speech_enabled_for()を参照する
+                # (経路ごとの個別ハードコード条件式は書かない、要件3)。この
+                # 更新により、in_one_line(旧: 対象外)が新たにOPEN-122
+                # Equivalence Layer + cool-down + Local Rewrite回復の対象になる
+                # (旧OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-
+                # WIRING-01コメント「in_one_lineは本文ではないため対象外」は、
+                # 本管理IDのユーザー承認済み5 role適用範囲により上書きされた)。
+                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 本管理ID
+                # (Connected Speech)とは別仕様のため、適用範囲(full_story_
+                # part1/2・point_one・point_two)は変更しない(in_one_lineは
+                # 引き続き対象外のまま、既存条件式を維持)。
                 enable_repetition_qa=(
                     name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text
@@ -892,14 +907,24 @@ def generate_a2_segments(theme: dict) -> dict:
                 # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: in_one_lineのみ対象
                 # (full_story/point本文は「短文」対象外、承認済み範囲を超えない)。
                 disfluency_qa=(name == "in_one_line"),
-                # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
-                # ユーザー承認済み範囲(A2英語本文segment=full_story_part1/2・
-                # point_one・point_two)のみ対象。in_one_lineは本文ではないため対象外。
-                enable_connected_speech_equivalence_layer=(
-                    name in ("full_story_part1", "full_story_part2", "point_one", "point_two")),
-                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
-                # のみ対象(ユーザー承認済み範囲、Key Phrase・日本語・
-                # Comment/Preview/Title/In One Line等は対象外)。
+                # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01
+                # (2026-09-26): role→適用判定は必ずretry_primitive.
+                # connected_speech_enabled_for()を参照する(要件3)。
+                # in_one_lineが新たに対象になる(旧: 対象外)。**既知の
+                # scope注記**: A2経路の実TTS呼び出しはgenerate_a2_segment_
+                # with_slowdown経由でc.generate_english_segment_with_
+                # fallback(er003_v1_crosslevel_audio_02_common.py)に
+                # 到達するが、本管理IDのcool-down+Local Rewrite回復の
+                # コード自体は、voice01.generate_charon_english/
+                # news_tail_fix.generate_news_narration_wide_marginの
+                # 2関数のみへ実装した(B1経路)。A2側は本フラグにより
+                # Equivalence Layerの判定(既存機構)は引き続き有効だが、
+                # cool-down/Local Rewrite回復はA2側の別関数へ未配線のまま
+                # (RESULT_PACKET/REPORTのGap欄に明記、必要な場合は別途
+                # 拡張の要否をFable/ユーザーへ確認する)。
+                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 本管理ID
+                # (Connected Speech)とは別仕様のため、適用範囲は変更しない。
                 enable_repetition_qa=(
                     name in ("full_story_part1", "full_story_part2", "point_one", "point_two")))
         results[name]["canonical_text"] = text

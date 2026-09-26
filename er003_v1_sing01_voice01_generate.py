@@ -34,6 +34,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er020_tts_retry_local_rewrite_01 as retry_primitive
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -48,7 +49,20 @@ def generate_charon_english(text: str, out_path: str,
                              # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: B1 Previewなど
                              # 短文でpartial repetitionが目立ちやすいsegmentのみ呼び出し側
                              # からTrueを渡す(既定Falseで既存の全呼び出しに影響なし)。
-                             disfluency_qa: bool = False) -> dict:
+                             disfluency_qa: bool = False,
+                             # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01:
+                             # 呼び出し側は必ずer020_tts_retry_local_rewrite_01.
+                             # connected_speech_enabled_for(segment_id)の戻り値を渡す
+                             # (既定False、他の全呼び出し元は無変更)。この関数自身が
+                             # Comment/Preview/Topic introの生成経路であるため、本引数の
+                             # 追加により、これら3 roleが初めてConnected Speech
+                             # Equivalence Layer(OPEN-122)の対象になれる(従来は
+                             # secondary_asr.evaluate_attempt_with_cascadeへこの引数
+                             # 自体を渡せていなかった、docs/pm/recon_connected_speech_
+                             # scope_01.md「事実1」参照)。同じ引数値で、10分cool-down
+                             # (attempt3の直前のみ)とLocal Rewrite回復(3回とも不合格
+                             # だった場合、Human Review Lock到達前)もあわせて有効になる。
+                             enable_connected_speech_equivalence_layer: bool = False) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
@@ -70,7 +84,16 @@ def generate_charon_english(text: str, out_path: str,
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
+    cooldown_events = []
     for attempt in range(1, max_attempts + 1):
+        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
+        # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
+        # attempt3)。enable_connected_speech_equivalence_layer=Falseの
+        # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
+        cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
+            attempt, max_attempts, enable_connected_speech_equivalence_layer)
+        if cooldown_record:
+            cooldown_events.append(cooldown_record)
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはgclient.make_tts_call_fn(CHARON)と同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, CHARON, output_path=out_path)
@@ -124,7 +147,14 @@ def generate_charon_english(text: str, out_path: str,
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+            # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: 従来
+            # この関数はこの引数自体を渡せず、Comment/Preview/Topic intro
+            # 経路(この関数経由)ではOPEN-122 Equivalence Layerが構造的に
+            # 発火し得なかった(docs/pm/recon_connected_speech_scope_01.md
+            # 「事実1」)。呼び出し側がconnected_speech_enabled_for()で
+            # 判定した値をそのまま転送する。
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
@@ -156,17 +186,72 @@ def generate_charon_english(text: str, out_path: str,
                     "connected_speech_info": getattr(cls, "connected_speech_info", None),
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
-                    "disfluency_evidence": gate.get("disfluency_evidence")}
+                    "disfluency_evidence": gate.get("disfluency_evidence"),
+                    "cooldown_events": cooldown_events}
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+            if enable_connected_speech_equivalence_layer:
+                recovered = _local_rewrite_recovery_for_charon_english(
+                    text, out_path, asr_text, style_prefix_override, disfluency_qa,
+                    enable_connected_speech_equivalence_layer, attempts_log)
+                if recovered is not None:
+                    recovered["cooldown_events"] = cooldown_events
+                    return recovered
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "voice": CHARON,
                     "asr_verified": False, "asr_text": asr_text, "attempts_log": attempts_log,
                     "instruction_type": instruction_type, "trim_info": trim_info,
                     "clipping_detected": metrics["clipping_detected"],
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
-                              f"(最終classification={cls.classification})"}
+                              f"(最終classification={cls.classification})",
+                    "cooldown_events": cooldown_events}
+    if enable_connected_speech_equivalence_layer:
+        last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
+        recovered = _local_rewrite_recovery_for_charon_english(
+            text, out_path, last_asr_text, style_prefix_override, disfluency_qa,
+            enable_connected_speech_equivalence_layer, attempts_log)
+        if recovered is not None:
+            recovered["cooldown_events"] = cooldown_events
+            return recovered
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log}
+            "attempts_log": attempts_log, "cooldown_events": cooldown_events}
+
+
+def _local_rewrite_recovery_for_charon_english(
+        text: str, out_path: str, last_asr_text: str | None,
+        style_prefix_override: str, disfluency_qa: bool,
+        enable_connected_speech_equivalence_layer: bool, main_loop_attempts_log: list | None = None) -> dict | None:
+    """generate_charon_english()専用のLocal Rewrite回復ヘルパー(ユーザー
+    承認済み仕様D: Human Review Lock到達前の回復経路)。3回とも(または
+    stop_retryingで)ASR検証に合格しなかった場合のみ呼ばれる。回復成功時は
+    status="OK"の完全なdictを返す(呼び出し元はそのままreturnし、
+    review_lock.record_outcomeはRESOLVEDへ遷移する)。回復不可の場合は
+    Noneを返し、呼び出し元は従来通りHuman Review Lockへ進む。"""
+    if not review_lock._has_valid_narration_layout(out_path):
+        return None
+    theme_id, level, segment_id = review_lock.derive_segment_key(out_path)
+
+    def _retts_fn(rewritten_text: str) -> dict:
+        return generate_charon_english.__wrapped__(
+            rewritten_text, out_path, max_attempts=1,
+            style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+
+    recovery = retry_primitive.run_local_rewrite_recovery(
+        segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
+        retts_fn=_retts_fn, out_dir=f"er011_output/local_rewrite_recovery/{theme_id}/{level}")
+    if recovery["status"] != "RESOLVED_BY_LOCAL_REWRITE":
+        return None
+    resolved = dict(recovery["retts_result"])
+    resolved["local_rewrite_recovery"] = recovery
+    resolved["canonical_text_before_local_rewrite"] = text
+    # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(runtime
+    # evidence実行時に発見): retts_result単独のattempts_log(1件)だけを
+    # 上位へ返すと、review_lock.record_outcome()の累積TTS/ASR call数
+    # guard(Part F、MAX_CUMULATIVE_TTS_ATTEMPTS)が、実際に消費した
+    # メインループ分のattemptを数え落とす。メインループ+re-TTSの両方を
+    # 連結し、実消費回数を正しく反映する。
+    resolved["attempts_log"] = list(main_loop_attempts_log or []) + (resolved.get("attempts_log") or [])
+    return resolved
 
 
 # ER-003-N3-ROOT-FIX-01(2026-08-17): 短い単独の日本語フレーズ(Key

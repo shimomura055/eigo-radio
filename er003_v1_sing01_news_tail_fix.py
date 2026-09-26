@@ -37,6 +37,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
+import er020_tts_retry_local_rewrite_01 as retry_primitive
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -77,7 +78,16 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []
+    cooldown_events = []
     for attempt in range(1, max_attempts + 1):
+        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
+        # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
+        # attempt3)。enable_connected_speech_equivalence_layer=Falseの
+        # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
+        cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
+            attempt, max_attempts, enable_connected_speech_equivalence_layer)
+        if cooldown_record:
+            cooldown_events.append(cooldown_record)
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
         # p9a._make_english_call_fn()と同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
@@ -163,21 +173,74 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "disfluency_checked": gate["disfluency_checked"],
                     "disfluency_evidence": gate.get("disfluency_evidence"),
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"],
-                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence")}
+                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+                    "cooldown_events": cooldown_events}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
             # 基づく期待発音との比較)に一本化したため、ここでの追加retry・
             # 追加corroborationは行わない(他7関数と同じ、即座に停止)。
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
+            if enable_connected_speech_equivalence_layer:
+                recovered = _local_rewrite_recovery_for_news_narration(
+                    text, out_path, asr_text, max_extra_chars, disfluency_qa,
+                    enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log)
+                if recovered is not None:
+                    recovered["cooldown_events"] = cooldown_events
+                    return recovered
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "asr_verified": False,
                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"],
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
-                              f"(最終classification={cls.classification})"}
+                              f"(最終classification={cls.classification})",
+                    "cooldown_events": cooldown_events}
+    if enable_connected_speech_equivalence_layer:
+        last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
+        recovered = _local_rewrite_recovery_for_news_narration(
+            text, out_path, last_asr_text, max_extra_chars, disfluency_qa,
+            enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log)
+        if recovered is not None:
+            recovered["cooldown_events"] = cooldown_events
+            return recovered
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log}
+            "attempts_log": attempts_log, "cooldown_events": cooldown_events}
+
+
+def _local_rewrite_recovery_for_news_narration(
+        text: str, out_path: str, last_asr_text: str | None, max_extra_chars: int,
+        disfluency_qa: bool, enable_connected_speech_equivalence_layer: bool,
+        enable_repetition_qa: bool, main_loop_attempts_log: list | None = None) -> dict | None:
+    """generate_news_narration_wide_margin()専用のLocal Rewrite回復
+    ヘルパー(generate_charon_english側と対になる実装、ユーザー承認済み
+    仕様D)。Full Story/Point本文/In One Lineが対象。回復成功時は
+    status="OK"の完全なdictを返し(呼び出し元はそのままreturn)、失敗時は
+    Noneを返す(呼び出し元は従来通りHuman Review Lockへ進む)。"""
+    if not review_lock._has_valid_narration_layout(out_path):
+        return None
+    theme_id, level, segment_id = review_lock.derive_segment_key(out_path)
+
+    def _retts_fn(rewritten_text: str) -> dict:
+        return generate_news_narration_wide_margin.__wrapped__(
+            rewritten_text, out_path, max_attempts=1, max_extra_chars=max_extra_chars,
+            disfluency_qa=disfluency_qa,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            enable_repetition_qa=enable_repetition_qa)
+
+    recovery = retry_primitive.run_local_rewrite_recovery(
+        segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
+        retts_fn=_retts_fn, out_dir=f"er011_output/local_rewrite_recovery/{theme_id}/{level}")
+    if recovery["status"] != "RESOLVED_BY_LOCAL_REWRITE":
+        return None
+    resolved = dict(recovery["retts_result"])
+    resolved["local_rewrite_recovery"] = recovery
+    resolved["canonical_text_before_local_rewrite"] = text
+    # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(runtime
+    # evidence実行時に発見): review_lock.record_outcome()の累積TTS/ASR
+    # call数guardが正しく機能するよう、メインループ+re-TTSのattempts_log
+    # を連結する(generate_charon_english側と同じ修正)。
+    resolved["attempts_log"] = list(main_loop_attempts_log or []) + (resolved.get("attempts_log") or [])
+    return resolved
 
 
 def tail_rms(path: str, ms: int = 10) -> float:

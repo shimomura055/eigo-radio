@@ -1,0 +1,666 @@
+{
+  "wall_clock_seconds": 702.4,
+  "result": {
+    "status": "OK",
+    "text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+    "path": "er020_output/tts_local_rewrite_production_wiring_01/evidence_theme_01/b1b/narration/comment_4.wav",
+    "voice": "Charon",
+    "asr_verified": true,
+    "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 9.651,
+          "raw_leading_silence_seconds": 0.14,
+          "raw_trailing_silence_seconds": 0.38,
+          "trimmed_duration_seconds": 9.621,
+          "leading_margin_retained_seconds": 0.14,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 26,
+          "transcript": "The  service  looked  like  AI,  but  the  work  behind  it  was  not  always  done  by  AI  alone.  Now  let's  boil  it  down  to  the  main  idea.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er020_output/tts_local_rewrite_production_wiring_01/evidence_theme_01/b1b/narration/attempts/comment_4_attempt4_englishstyleprefix.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix",
+    "trim_info": {
+      "raw_duration_seconds": 9.651,
+      "raw_leading_silence_seconds": 0.14,
+      "raw_trailing_silence_seconds": 0.38,
+      "trimmed_duration_seconds": 9.621,
+      "leading_margin_retained_seconds": 0.14,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "audio_classification": "EXACT_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 26,
+      "transcript": "The  service  looked  like  AI,  but  the  work  behind  it  was  not  always  done  by  AI  alone.  Now  let's  boil  it  down  to  the  main  idea.",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "cooldown_events": [
+      {
+        "cooldown_requested_seconds": 600.0,
+        "cooldown_actual_seconds": 600.009,
+        "cooldown_started_at": "2026-09-26T16:48:31+09:00",
+        "cooldown_ended_at": "2026-09-26T16:58:31+09:00",
+        "attempt_before_cooldown": 2,
+        "attempt_after_cooldown": 3
+      }
+    ],
+    "local_rewrite_recovery": {
+      "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+      "segment_id": "comment_4",
+      "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+      "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main point together.",
+      "last_asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main points together.",
+      "ng_span": {
+        "found": true,
+        "diff_tag": "replace",
+        "canonical_span_with_context": "bring the main point together",
+        "asr_span_with_context": "bring the main points together",
+        "canonical_changed_words": [
+          "point"
+        ],
+        "asr_changed_words": [
+          "points"
+        ],
+        "context_window_word_indices": [
+          20,
+          25
+        ]
+      },
+      "candidate_gen": {
+        "candidates": [
+          {
+            "id": "candidate_1",
+            "rewrite_type": "single_word_swap",
+            "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main idea together.",
+            "changed_span_before": "bring the main point together",
+            "changed_span_after": "bring the main idea together",
+            "rationale": "Replaces the error-prone word while preserving the original meaning and keeping the recap structure."
+          },
+          {
+            "id": "candidate_2",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's sum up the key message.",
+            "changed_span_before": "bring the main point together",
+            "changed_span_after": "sum up the key message",
+            "rationale": "Uses a natural spoken summary phrase that directly conveys the main point."
+          },
+          {
+            "id": "candidate_3",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+            "changed_span_before": "bring the main point together",
+            "changed_span_after": "boil it down to the main idea",
+            "rationale": "Provides an idiomatic conversational transition into a concise summary without changing the message."
+          },
+          {
+            "id": "candidate_4",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's state the central idea.",
+            "changed_span_before": "bring the main point together",
+            "changed_span_after": "state the central idea",
+            "rationale": "Clearly introduces the central takeaway in a concise, natural way suitable for a closing recap."
+          },
+          {
+            "id": "candidate_5",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's distill it into one main idea.",
+            "changed_span_before": "bring the main point together",
+            "changed_span_after": "distill it into one main idea",
+            "rationale": "Naturally expresses the act of reducing the story to its single central takeaway."
+          }
+        ],
+        "_raw_model_response_text": "{\"candidates\":[{\"id\":\"candidate_1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main idea together.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"bring the main idea together\",\"rationale\":\"Replaces the error-prone word while preserving the original meaning and keeping the recap structure.\"},{\"id\":\"candidate_2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's sum up the key message.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"sum up the key message\",\"rationale\":\"Uses a natural spoken summary phrase that directly conveys the main point.\"},{\"id\":\"candidate_3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"boil it down to the main idea\",\"rationale\":\"Provides an idiomatic conversational transition into a concise summary without changing the message.\"},{\"id\":\"candidate_4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's state the central idea.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"state the central idea\",\"rationale\":\"Clearly introduces the central takeaway in a concise, natural way suitable for a closing recap.\"},{\"id\":\"candidate_5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's distill it into one main idea.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"distill it into one main idea\",\"rationale\":\"Naturally expresses the act of reducing the story to its single central takeaway.\"}]}",
+        "_model_id": "gpt-5.6-luna",
+        "_response_id": "resp_0c540be9d26722e8006ab77b35191887d0826e78dc19a2801e",
+        "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main point together.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['points'] instead of ['point']):\n\"bring the main point together\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+      },
+      "qa": {
+        "evaluations": [
+          {
+            "candidate_id": "candidate_1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It retains the same recap and transition-to-summary meaning as the original."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a brief narrator comment that bridges into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no facts or claims that contradict the original or its context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It connects the story recap to the upcoming main-point summary."
+            },
+            "natural_english": {
+              "pass": false,
+              "reason": "“Bring the main idea together” is understandable but not idiomatic in this narration context; native speakers would more naturally say “sum up” or “bring the main points together.”"
+            }
+          },
+          {
+            "candidate_id": "candidate_2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Sum up the key message” preserves the original meaning of gathering the main point into a summary."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a short narrator comment that bridges to the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It adds no factual claims and contradicts nothing in the original or surrounding context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The transition naturally leads from the recap into a summary of the key message."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s sum up the key message” is common and natural spoken narration."
+            }
+          },
+          {
+            "candidate_id": "candidate_3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Boil it down to the main idea” conveys the same concise-summarization meaning as the original."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It functions as a brief recap-to-summary transition."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no conflicting facts or claims."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It naturally connects the preceding discussion with the forthcoming one-line summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s boil it down to the main idea” is idiomatic and natural in spoken narration."
+            }
+          },
+          {
+            "candidate_id": "candidate_4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "Stating the central idea preserves the original intention to present the story’s main point."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a narrator transition into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It makes no new factual claims and does not contradict the context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It provides a clear transition from the recap to the central takeaway."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s state the central idea” is grammatically and idiomatically acceptable in this narration context."
+            }
+          },
+          {
+            "candidate_id": "candidate_5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea of condensing the preceding discussion into its main point."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a short narrator remark leading into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It adds no facts and contradicts nothing in the original or surrounding context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It naturally moves from the recap toward a single distilled takeaway."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s distill it into one main idea” is natural and idiomatic spoken English."
+            }
+          }
+        ],
+        "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"candidate_1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same recap and transition-to-summary meaning as the original.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief narrator comment that bridges into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no facts or claims that contradict the original or its context.\"},\"context_connection\":{\"pass\":true,\"reason\":\"It connects the story recap to the upcoming main-point summary.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“Bring the main idea together” is understandable but not idiomatic in this narration context; native speakers would more naturally say “sum up” or “bring the main points together.”\"}},{\"candidate_id\":\"candidate_2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Sum up the key message” preserves the original meaning of gathering the main point into a summary.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator comment that bridges to the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no factual claims and contradicts nothing in the original or surrounding context.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The transition naturally leads from the recap into a summary of the key message.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Let’s sum up the key message” is common and natural spoken narration.\"}},{\"candidate_id\":\"candidate_3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Boil it down to the main idea” conveys the same concise-summarization meaning as the original.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It functions as a brief recap-to-summary transition.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting facts or claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"It naturally connects the preceding discussion with the forthcoming one-line summary.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Let’s boil it down to the main idea” is idiomatic and natural in spoken narration.\"}},{\"candidate_id\":\"candidate_4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"Stating the central idea preserves the original intention to present the story’s main point.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a narrator transition into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It makes no new factual claims and does not contradict the context.\"},\"context_connection\":{\"pass\":true,\"reason\":\"It provides a clear transition from the recap to the central takeaway.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Let’s state the central idea” is grammatically and idiomatically acceptable in this narration context.\"}},{\"candidate_id\":\"candidate_5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It preserves the idea of condensing the preceding discussion into its main point.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark leading into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no facts and contradicts nothing in the original or surrounding context.\"},\"context_connection\":{\"pass\":true,\"reason\":\"It naturally moves from the recap toward a single distilled takeaway.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Let’s distill it into one main idea” is natural and idiomatic spoken English.\"}}]}",
+        "_model_id": "gpt-5.6-luna",
+        "_response_id": "resp_0b6a5755e137c842006ab77b5a0c6c87d092946ee763ba19cc",
+        "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main point together.\"\n\nCandidates to evaluate:\n- candidate_id='candidate_1': \"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main idea together.\"\n- candidate_id='candidate_2': \"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's sum up the key message.\"\n- candidate_id='candidate_3': \"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.\"\n- candidate_id='candidate_4': \"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's state the central idea.\"\n- candidate_id='candidate_5': \"The service looked like AI, but the work behind it was not always done by AI alone. Now, let's distill it into one main idea.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+      },
+      "candidates": [
+        {
+          "id": "candidate_1",
+          "rewrite_type": "single_word_swap",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main idea together.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "bring the main idea together",
+          "rationale": "Replaces the error-prone word while preserving the original meaning and keeping the recap structure.",
+          "qa_llm": {
+            "candidate_id": "candidate_1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It retains the same recap and transition-to-summary meaning as the original."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a brief narrator comment that bridges into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no facts or claims that contradict the original or its context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It connects the story recap to the upcoming main-point summary."
+            },
+            "natural_english": {
+              "pass": false,
+              "reason": "“Bring the main idea together” is understandable but not idiomatic in this narration context; native speakers would more naturally say “sum up” or “bring the main points together.”"
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              23,
+              24
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.9583
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": false,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": false
+        },
+        {
+          "id": "candidate_2",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's sum up the key message.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "sum up the key message",
+          "rationale": "Uses a natural spoken summary phrase that directly conveys the main point.",
+          "qa_llm": {
+            "candidate_id": "candidate_2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Sum up the key message” preserves the original meaning of gathering the main point into a summary."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a short narrator comment that bridges to the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It adds no factual claims and contradicts nothing in the original or surrounding context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The transition naturally leads from the recap into a summary of the key message."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s sum up the key message” is common and natural spoken narration."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              20,
+              25
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8333
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "candidate_3",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "boil it down to the main idea",
+          "rationale": "Provides an idiomatic conversational transition into a concise summary without changing the message.",
+          "qa_llm": {
+            "candidate_id": "candidate_3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Boil it down to the main idea” conveys the same concise-summarization meaning as the original."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It functions as a brief recap-to-summary transition."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no conflicting facts or claims."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It naturally connects the preceding discussion with the forthcoming one-line summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s boil it down to the main idea” is idiomatic and natural in spoken narration."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              20,
+              25
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.875
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "candidate_4",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's state the central idea.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "state the central idea",
+          "rationale": "Clearly introduces the central takeaway in a concise, natural way suitable for a closing recap.",
+          "qa_llm": {
+            "candidate_id": "candidate_4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "Stating the central idea preserves the original intention to present the story’s main point."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a narrator transition into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It makes no new factual claims and does not contradict the context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It provides a clear transition from the recap to the central takeaway."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s state the central idea” is grammatically and idiomatically acceptable in this narration context."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              20,
+              25
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8333
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "candidate_5",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's distill it into one main idea.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "distill it into one main idea",
+          "rationale": "Naturally expresses the act of reducing the story to its single central takeaway.",
+          "qa_llm": {
+            "candidate_id": "candidate_5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea of condensing the preceding discussion into its main point."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a short narrator remark leading into the closing summary."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It adds no facts and contradicts nothing in the original or surrounding context."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It naturally moves from the recap toward a single distilled takeaway."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s distill it into one main idea” is natural and idiomatic spoken English."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              20,
+              25
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8333
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        }
+      ],
+      "selection": {
+        "selected": {
+          "id": "candidate_3",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+          "changed_span_before": "bring the main point together",
+          "changed_span_after": "boil it down to the main idea",
+          "rationale": "Provides an idiomatic conversational transition into a concise summary without changing the message.",
+          "qa_llm": {
+            "candidate_id": "candidate_3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Boil it down to the main idea” conveys the same concise-summarization meaning as the original."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It functions as a brief recap-to-summary transition."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no conflicting facts or claims."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "It naturally connects the preceding discussion with the forthcoming one-line summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Let’s boil it down to the main idea” is idiomatic and natural in spoken narration."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              20,
+              25
+            ],
+            "criterion6_allowed_window": [
+              20,
+              25
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.875
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        "status": "SELECTED",
+        "selection_rationale": "全7 Gate PASSの候補は4件(['candidate_2', 'candidate_3', 'candidate_4', 'candidate_5'])。unchanged_ratio=0.875(最小限の変更)が最大の'candidate_3'を採用。Natural English Gate理由: “Let’s boil it down to the main idea” is idiomatic and natural in spoken narration.",
+        "all_passing_candidate_ids": [
+          "candidate_2",
+          "candidate_3",
+          "candidate_4",
+          "candidate_5"
+        ]
+      },
+      "retts_result": {
+        "status": "OK",
+        "text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+        "path": "er020_output/tts_local_rewrite_production_wiring_01/evidence_theme_01/b1b/narration/comment_4.wav",
+        "voice": "Charon",
+        "asr_verified": true,
+        "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+        "attempts_log": [
+          {
+            "attempt": 1,
+            "status": "OK",
+            "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's boil it down to the main idea.",
+            "instruction_type": "english_style_prefix",
+            "audio_classification": "EXACT_MATCH",
+            "connected_speech_info": null,
+            "length_ok": true,
+            "verified": true,
+            "trim_info": {
+              "raw_duration_seconds": 9.651,
+              "raw_leading_silence_seconds": 0.14,
+              "raw_trailing_silence_seconds": 0.38,
+              "trimmed_duration_seconds": 9.621,
+              "leading_margin_retained_seconds": 0.14,
+              "trailing_margin_retained_seconds": 0.35
+            },
+            "disfluency_checked": true,
+            "disfluency_evidence": {
+              "flagged": false,
+              "repeats": [],
+              "word_count": 26,
+              "transcript": "The  service  looked  like  AI,  but  the  work  behind  it  was  not  always  done  by  AI  alone.  Now  let's  boil  it  down  to  the  main  idea.",
+              "method": "faster_whisper_small_local_verbatim"
+            },
+            "attempt_audio_path": "er020_output/tts_local_rewrite_production_wiring_01/evidence_theme_01/b1b/narration/attempts/comment_4_attempt4_englishstyleprefix.wav"
+          }
+        ],
+        "instruction_type": "english_style_prefix",
+        "trim_info": {
+          "raw_duration_seconds": 9.651,
+          "raw_leading_silence_seconds": 0.14,
+          "raw_trailing_silence_seconds": 0.38,
+          "trimmed_duration_seconds": 9.621,
+          "leading_margin_retained_seconds": 0.14,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "clipping_detected": false,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 26,
+          "transcript": "The  service  looked  like  AI,  but  the  work  behind  it  was  not  always  done  by  AI  alone.  Now  let's  boil  it  down  to  the  main  idea.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "cooldown_events": []
+      },
+      "status": "RESOLVED_BY_LOCAL_REWRITE"
+    },
+    "canonical_text_before_local_rewrite": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main point together."
+  }
+}

@@ -50,7 +50,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
 | NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 記事ユーザー確認待ち(OPEN-183)、配線はGate 3 #13修正後に再判定。 |
 | FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回(True Crime再生成)後に初回報告。 |
-| TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(仮ID) | 進行中 | 未 | 未 | Y | 仮ID(正式管理ID未確定)。 |
+| TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 | 2026-09-26 | 未 | 未 | Y | Production配線完了(Sonnet仮判定)、Fable評価待ち。既知Gap: A2経路cool-down/Local Rewrite回復未配線。 |
 | NEWS-VOCAB-BAND-6000-10000-14000-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 語彙Band(6,000/10,000/14,000)を生成時点で制約するTrial。Meta記事は実質超過語0/0/0、Sewer記事は3条件とも実質超過語が残った(1〜6)。Band 10,000のSewerで引用句"combined septic tank,"が消失する事例あり。 |
 
 ## 違反事例記録
