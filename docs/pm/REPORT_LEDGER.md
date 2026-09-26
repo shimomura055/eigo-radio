@@ -52,6 +52,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回(True Crime再生成)後に初回報告。 |
 | TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回目(A2経路cool-down/Local Rewrite配線+topic_intro role漏れ修正)後、Fable Gate最終判定`PRODUCTION_WIRED`。 |
 | NEWS-VOCAB-BAND-6000-10000-14000-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 語彙Band(6,000/10,000/14,000)を生成時点で制約するTrial。Meta記事は実質超過語0/0/0、Sewer記事は3条件とも実質超過語が残った(1〜6)。Band 10,000のSewerで引用句"combined septic tank,"が消失する事例あり。 |
+| FICTION-FAMILY-Z-PRODUCTION-E2E-01 | 進行中(2026-09-26、Phase 0完了+ユーザー確定ルールSSOT記録のみ) | 済(2026-09-26) | 未 | Y | ユーザー確定ルール(Family定義/Story内容方針/Seed必須条件/外国人名ルール/story_type/TTS適用/PRODUCTION_WIRED条件)を`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`(OPEN-185)へ記録。Production配線は未実装、権利(走れメロス米国status)・構造(Family C関係/In One Line設計)論点が`USER_DECISION_REQUIRED`のまま残存。 |
 
 ## 違反事例記録
 

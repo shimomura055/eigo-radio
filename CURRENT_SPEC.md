@@ -1077,6 +1077,87 @@ Twins A2「The door opened.」(3語segment、Voice境界+scene boundary保持
 
 日付: 2026-09-16。
 
+## Family Z(Fiction)— 2026-09-26新設(ユーザー確定ルールのSSOT記録、`FICTION-FAMILY-Z-PRODUCTION-E2E-01`)
+
+**Status**: 本節の内容(1〜7)は2026-09-26にユーザーが逐語で確定した
+Production仕様である。ただしProduction配線自体は**未実装**(Phase 0
+[read-only事前調査]完了のみ、`USER_DECISION_REQUIRED`。理由: 権利論点
+[下記1-8-2参照]および構造論点[Family Cとの関係・Connected Speech
+segment_id規約・In One Line新規設計]が未解決)。Trial結果(`VALIDATED`等)
+をこの仕様の`PRODUCTION_WIRED`と誤認しないこと。
+
+1. **Family定義**: Fiction系を既存Future Family(Family C=Future Story)
+   から独立させ、**Family Z = Fiction**(Literature/Public Domain文学・
+   Real Story・Historical True Crime)とする。基本方式は外部Seed方式で
+   あり、AI完全自由創作を標準方式にしない。Family Yは将来Voices系を
+   想定した別Familyであり、Family Zとは分離管理する。
+   **既存記述との相互参照**: `DECISION_LOG.md`
+   `PM-USER-VALIDATION-DIRECTION-RECORD-01`(9324行付近)が記録する
+   「Future→Fiction再定義は未確定」は、本Family Z新設により整理される
+   (Family C=Future Story個別の再定義ではなく、Fiction専用の新Family
+   Zを別途新設する方針。Family Cの位置づけ自体は無変更)。
+2. **Story内容の基本方針**: 元作品・元エピソードを無理に変更しない
+   (人物名変更・舞台変更・結末変更・不要な設定変更をしない。知って
+   いる物語を英語で聞く体験にも価値がある)。許容する編集は、尺に
+   収めるための脇筋削除・登場人物整理・背景説明圧縮・心理描写圧縮・
+   重複場面削除のみ。中心Story・因果関係・重要な人物関係・結末・
+   原作の魅力を壊さない。
+3. **Seed必須条件**(4項目、Seedは以下すべて満たすこと): (a)
+   Original/primary textを直接確認できる、(b)日本法+米国法双方で
+   利用可能、(c)短編化しても中心Storyを保持できる、(d)Story品質基準
+   4項目中原則3項目以上を満たす。検索要約だけをSeedにしない。一次
+   資料を確認できない候補はNG。
+4. **Fiction共通の外国人名ルール(正式)**: 外国人の人名は本文中では
+   First name/Last nameのどちらか一方だけを使用する(例: Eugene Aram
+   → Aram、Richard Houseman → Houseman、Daniel Clarke → Clarke。
+   First name側への統一も可)。例外(フルネーム可)は、(i)同姓人物が
+   複数いて区別不能、(ii)片方だけでは事実関係が曖昧、(iii)固有名称
+   としてフルネーム自体が重要、のいずれかに該当する場合のみ。単なる
+   慣習でフルネームを使わない。適用実績: 「The Second Skeleton」
+   (`er018_output/fiction_real_story_and_true_crime_trial_01/
+   true_crime/story.md`)への追従修正(commit `6c0b0e02`、意味・Fact
+   不変、Daniel Clarke/Eugene Aram/Richard Houseman → Clarke/Aram/
+   Houseman)。
+5. **Story Type metadata**: `story_type`フィールドを持つ。
+   `literature`(Literature/Fiction)= UI表示なし・音声冒頭追加なし。
+   `real_story`= UI「REAL STORY」表示・音声冒頭に固定文言"This is a
+   true story."を追加。`true_crime`= UI「TRUE CRIME」表示・音声冒頭に
+   固定文言"This is a true crime story."を追加。Writer本文へこの説明
+   文自体を書かせず、Production側がmetadataに基づき自動的にUI表示・
+   音声introを切り替える。
+6. **TTS**: Family Zでも既承認TTS Production仕様
+   (`TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01`、本
+   CURRENT_SPEC.md該当節)をそのまま使用する。attempt1→即時attempt2→
+   10分cool-down→attempt3→NGならLocal Rewrite+Natural English QA
+   (Luna 1 call)。Connected Speechは5 role(Full Story/Comment/
+   Preview/Topic intro/In One Line)へ適用し、Heading readout/Key
+   Phraseへは適用しない。
+7. **PRODUCTION_WIRED条件**: 以下すべてを満たすこと。Production正式
+   初回path/retry・fallback・regeneration経路が存在すること、
+   story_type分岐・外国人名ルール・TTS仕様(上記6)が実装されている
+   こと、runtime evidence・tests・CURRENT_SPEC/DECISION_LOG/
+   OPEN_ITEMS反映・Git commit・Dangling Reference Checkが揃っている
+   こと。Trial script(text生成のみ)だけで成立した場合は
+   `PRODUCTION_WIRED`と認めない。
+
+**Phase 0事前調査結果(事実記録、判断はしない)**:
+`docs/pm/recon_family_z_production_e2e_01.md`(commit `5284391b`)参照。
+要旨: (a)現行E2E候補「走れメロス」(太宰治、1940年公表・1948年没)は
+Trial-02の権利確認が日本法のみで、米国法(URAA)ではCornell Public
+Domainチャートに基づく判定で2035年末まで保護の可能性が高い
+(2036年PD)。(b)Fiction専用のProduction entry pointは存在せず、最も
+近い既存機構はFamily C(`plan_story_segments()`/A2 Comment仕様B/
+Key Phrase共有module/Assembly〜player経路)だが、Family Cは"Future
+Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在しない。
+(c)`story_type`フィールド・外国人名ルールの自動チェックは既存コード
+に存在しない。(d)`er020_tts_retry_local_rewrite_01.py`の
+`resolve_narrative_role()`はsegment_id完全一致判定のため、Family C
+既存の命名規約(`story_001`等)ではConnected Speechが適用されない
+(Family Zで新設する場合も、segment_id命名を規約に合わせるかresolver
+側へパターン追加するかの判断が必要)。
+
+日付: 2026-09-26。
+
 ## Cross-level仕様(A2/B1/B2共通)
 
 以下はA2の検証で発見・試作したが、**特定レベル固有ではなく番組全体
