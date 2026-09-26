@@ -1,6 +1,7 @@
 # fidelity_true_crime.md -- Historical True Crime(Eugene Aram case)
 
-Trial専用。Story本文は`true_crime/story.md`(改訂版、334語。改訂履歴は本ファイル
+Trial専用。Story本文は`true_crime/story.md`(改訂版、326語。2026-09-26に
+Family Z共通人名ルール追従修正[334語→326語、下記末尾参照]。改訂履歴は本ファイル
 末尾および`FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01_REPORT.md`参照)。委任文
 3-Bの要求どおり、Storyの各主要事実→資料(Camden Pelham, *The Chronicles of
 Crime; or, The New Newgate Calendar*, vol.1, 1841, Project Gutenberg #46585)の
@@ -60,3 +61,15 @@ Crime; or, The New Newgate Calendar*, vol.1, 1841, Project Gutenberg #46585)の
   執行の事実(日付・場所)+短い(2文の)結びに変更(「The ground had kept its secret
   for fourteen years. Then Houseman's strange words helped uncover it.」)。
   (3) 語数を334語とし、300〜400語の目標を満たした(上限420語以内)。
+
+## 追従修正(Family Z人名ルール、2026-09-26)
+
+- 人名表記のみ変更(Family Z共通人名ルール追従、2026-09-26)。管理ID
+  FICTION-FAMILY-Z-PRODUCTION-E2E-01の追従修正指示により、本文中の外国人
+  フルネーム(Daniel Clarke / Eugene Aram / Richard Houseman、計8箇所)から
+  First nameを削除し、Last name(Clarke / Aram / Houseman)のみに統一した
+  (334語→326語)。上記照合表・引用の資料的事実・Story本文の出来事の順序は
+  一切変更していない(名前の表記形式のみの変更)。修正前の全文は
+  `true_crime/story_fullname_superseded.md`、文単位の差分は
+  `true_crime/naming_rule_diff.md`に保存。音声化(TTS)は本追従修正では
+  未実施。

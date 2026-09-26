@@ -248,3 +248,38 @@ Fiction家族全体のルールを変更したものではなく、True Crimeと
 ## §8 分類
 
 **VALIDATED**(Trial範囲。Production Fiction仕様への反映ではない。Story品質の最終判断はユーザー試読)。ユーザー判断事項: F-1 Real Story「Ten Days Inside」(Nellie Bly)の試読評価(Livingstone比)。F-2 True Crime「The Second Skeleton」(Eugene Aram)の試読評価。F-3 True Crimeにおける実名全保持を、Fiction家族命名規則(主人公のみ固有名)の正式な例外として記録するか(Fable推奨: 記録する。理由: 「事実を勝手に改変しない」条件と両立するのは実名保持のみ)。F-4 Chronicling Americaが直接取得不可の場合、Newgate Calendar系等のPD犯罪記録集を正規の代替Sourceとして認めるか(Fable推奨: 認める。ただしLOC APIの別経路[loc.gov JSON API等]を次回Trialで再試行)。
+
+## §追従修正: Family Z人名ルール適用(2026-09-26)
+
+- **管理ID**: FICTION-FAMILY-Z-PRODUCTION-E2E-01(追従修正、6/16節)。API呼び出し0回・¥0・再生成なし(既存本文の部分編集のみ)。
+- **対象**: `true_crime/story.md`(The Second Skeleton)のみ。ユーザー正式ルール
+  「外国人の人名は本文中でFirst name / Last nameのどちらか一方だけを使用する」
+  (Fiction家族共通)に追従し、本文中のフルネーム表記
+  (Daniel Clarke / Eugene Aram / Richard Houseman、計8箇所)からFirst nameを
+  削除し、Last name(Clarke / Aram / Houseman、歴史上の通称に合わせて統一)
+  のみへ変更した(334語→326語)。
+- **意味・Factへの影響**: なし。日付(1759年8月16日)・地名(St. Robert's Cave、
+  York)・事件の経過・引用("This is no more Clarke's bone than it is mine!"、
+  資料の逐語引用を人名部分のみ簡略化)は全て変更前と同一。文単位の
+  Before/After表と意味差の確認は`true_crime/naming_rule_diff.md`参照。
+  修正前の全文は`true_crime/story_fullname_superseded.md`に保存(supersession)。
+- **§4「命名規則の逸脱」との関係**: §4/§7(5)/F-3で記録した「True Crimeは
+  Fiction家族の『主人公のみ固有名、他は役割名』規則を適用せず実名を全保持する」
+  という判断は、今回のFamily Zルール(表記形式をFirst/Lastどちらかへ統一する
+  ルール)と矛盾しない。実名(Clarke/Aram/Houseman)自体は保持したまま、
+  表記の冗長性(フルネーム併記)のみを解消したものであり、F-3の
+  ユーザー判断待ち事項に変更は生じていない。
+- **他Fiction Trial作品への影響調査**: `er018_output/**/{story,blind}.md`を
+  Grepし、外国人フルネーム(First+Last)が本文に出現する作品を確認した結果、
+  対象は本作(The Second Skeleton、`true_crime/story.md`および同一内容の
+  複製`stories/true_crime_eugene_aram/story.md`)のみ。他のFiction Trial作品
+  (fiction_core_provocation_*、fiction_story_dna_*、
+  fiction_external_seed_selection_criteria_trial_02、
+  fiction_external_story_seed_trial_01等)は、いずれも単一のFirst nameのみ
+  (Mara, Lina, Maya, Daniel等、役割名相当の創作名)または無名(Real Story
+  「Ten Days Inside」はNellieを含め本文中に人名なし)であり、フルネーム表記は
+  0件。今回の修正は`true_crime/story.md`のみに実施し、他作品は変更していない
+  (`stories/true_crime_eugene_aram/story.md`はThe Second Skeletonと同一内容の
+  複製であり、委任範囲外のため未修正。要ユーザー/Fable判断: この複製も同様に
+  修正するか)。
+- **音声化**: 本追従修正では未実施(TTS不使用、委任文の指示どおり)。
