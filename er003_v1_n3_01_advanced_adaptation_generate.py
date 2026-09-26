@@ -116,6 +116,95 @@ ADVANCED_ARM3_BLOCK = (
     "nothing that is not in the Japanese article."
 )
 
+# ------------------------------------------------------------
+# 語彙ルール v2(ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01、2026-09-26、
+# ユーザー正式決定によりAPPROVED_FOR_PRODUCTION)
+# ------------------------------------------------------------
+# 出典: `er015_output/advanced_vocab_rule_trial_01/v2/
+# prompt_advanced_vocab_rule_v2_meta.txt`(fix01のv2、"v2の文言を正とする"
+# というユーザー決定に基づく逐語ベース)。Trial(v1/v2)は「既存Advanced本文+
+# 順位付き候補語リストを渡す改稿pass」だったが、本Production組み込みは
+# 方式(i)(Standard v5と同型、Adaptation prompt本体へルール文言を追加する
+# 直接生成、候補語リストなし=モデル自身の語感に依存)を暫定採用した
+# (判断根拠: `docs/pm/recon_advanced_vocab_v2_wiring_01.md`、(ii)[改稿pass
+# 追加]の要否は次回以降の通常Production Runでの観察後に判断、OPEN_ITEMS
+# 残置)。v2固有の追加(引用符内の実際の呼称の扱い、C[固有名詞]の一種として
+# 明確化)は含む。v3(Trial-02、Topic Core Word例外+Metaphor専用ルール)は
+# ユーザーによりREJECTEDのため一切含まない。
+#
+# 逐語部分からの調整(候補語リスト/decisions出力schemaに依存する記述の
+# 除去のみ、判定基準の文言自体は変更していない):
+#   - 「Words that appear inside quotation marks...」段落から、
+#     「even if it appears in the candidate list below」と「and mark it
+#     "KEEP -- proper noun", explaining in reasoning that...」を除去した
+#     (直接生成にはcandidate語リストもdecisions出力もないため)。
+#   - decisions出力schema・candidate語リスト・BORDERLINE等の出力形式指示は
+#     含めない(直接生成であり、改稿passのような語ごとの判定出力を要求
+#     しないため)。
+ADVANCED_VOCAB_RULE_V2_BLOCK = (
+    "Vocabulary difficulty rule: words that rank below roughly the top "
+    "12,000 most frequent general English words are, in principle, "
+    "candidates for simplification. This is NOT a mechanical ban list. As "
+    "with the existing Standard-level vocabulary policy, simplification "
+    "should be strongly preferred only when a simpler, natural expression "
+    "exists without harming meaning or naturalness; it must not be forced "
+    "when it would.\n"
+    "\n"
+    "A word ranked beyond ~12,000 may still be KEPT (not simplified) if one "
+    "of these applies:\n"
+    "A. Its meaning can easily be guessed from an already-easy word it is "
+    "built from (for example: \"onstage\" = on + stage, \"wastewater\" = "
+    "waste + water, \"understandable\" = understand + -able). Do not "
+    "exclude a word just because it LOOKS decomposable if the meaning "
+    "cannot actually be guessed that way.\n"
+    "B. It is a word that has become well established in Japanese, and its "
+    "meaning can easily be guessed from its English pronunciation (for "
+    "example: piano, curtain, privacy). Simply having a katakana spelling "
+    "is not enough -- the word must be an established, commonly understood "
+    "Japanese word, easily connected to its English sound.\n"
+    "C. It is a proper noun (a person's name, a company or product name, a "
+    "place name).\n"
+    "D. Replacing it with an easier word would clearly hurt meaning "
+    "precision or the naturalness of the English -- it is indispensable. Do "
+    "not keep a word only because \"it is a technical term\" -- if a "
+    "simple, natural, meaning-preserving substitute exists, simplify it.\n"
+    "\n"
+    "Words that appear inside quotation marks in the article, and titles, "
+    "designations, or nicknames that a specific person or organization is "
+    "reported to have actually used (for example, if the article states "
+    "that Meta called certain workers \"human concierges\", the word "
+    "\"concierges\" here is part of that reported fact, not an ordinary "
+    "vocabulary choice) are facts of the article. Do not simplify such a "
+    "word; treat it under exception C (a proper noun / quoted "
+    "designation).\n"
+    "\n"
+    "Do NOT use \"it is part of a fixed expression / idiom\" as its own "
+    "exception category. (For example, if \"curtain\" in \"behind the "
+    "curtain\" is kept, the reason must be B [established Japanese "
+    "loanword], never \"it is part of an idiom.\") A word inside a fixed "
+    "expression that is still hard to guess should be judged normally, "
+    "exactly like any other word."
+)
+
+ADVANCED_VOCAB_RULE_V2_SHA256 = (
+    "d536f4b8a7780771232a95d35611606262d8041371ad8d0a1a4563b7948fb581"
+)
+
+
+def _compute_vocab_rule_v2_sha256() -> str:
+    return hashlib.sha256(ADVANCED_VOCAB_RULE_V2_BLOCK.encode("utf-8")).hexdigest()
+
+
+def _assert_vocab_rule_v2_sha256() -> None:
+    actual = _compute_vocab_rule_v2_sha256()
+    if actual != ADVANCED_VOCAB_RULE_V2_SHA256:
+        raise RuntimeError(
+            "[STOP] ADVANCED_VOCAB_RULE_V2_SHA256 mismatch: "
+            f"expected={ADVANCED_VOCAB_RULE_V2_SHA256} actual={actual}. "
+            "ADVANCED_VOCAB_RULE_V2_BLOCKがv2正式決定テキストと一致しません。"
+        )
+
+
 # Production contract接尾ブロック(NEWS-ENTERTAINMENT-PRODUCTION-LINE-
 # TRIAL-01 CONTRACT_LINESと一字一句同一。出典コメント参照)。
 ADVANCED_CONTRACT_SUFFIX_LINES = [
@@ -166,6 +255,7 @@ def _assert_unchanged_portion_sha256() -> None:
 
 
 _assert_unchanged_portion_sha256()  # import時にfail-closedで検証する
+_assert_vocab_rule_v2_sha256()  # import時にfail-closedで検証する
 
 
 def build_prompt(ja_article_text: str) -> str:
@@ -175,6 +265,7 @@ def build_prompt(ja_article_text: str) -> str:
     )
     return (
         common_block_general + "\n\n" + ADVANCED_ARM3_BLOCK + "\n\n" +
+        ADVANCED_VOCAB_RULE_V2_BLOCK + "\n\n" +
         ADVANCED_CONTRACT_SUFFIX + "\n\n[Japanese article]\n" + ja_article_text
     )
 

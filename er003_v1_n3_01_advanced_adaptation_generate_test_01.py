@@ -118,14 +118,66 @@ class BuildPromptTests(unittest.TestCase):
         idx_common = prompt.find("Adapt the Japanese article below into English.")
         idx_bullets = prompt.find("the central metaphor or storytelling device")
         idx_arm3 = prompt.find("Adaptation level: NATURAL ENGLISH.")
+        idx_vocab = prompt.find("Vocabulary difficulty rule:")
         idx_contract = prompt.find("Format (Markdown): start with")
         idx_article = prompt.find("[Japanese article]\n" + JA_TEXT)
-        self.assertTrue(idx_common < idx_bullets < idx_arm3 < idx_contract < idx_article)
+        self.assertTrue(idx_common < idx_bullets < idx_arm3 < idx_vocab < idx_contract < idx_article)
 
     def test_build_prompt_does_not_contain_meta_specific_bullets(self):
         prompt = adv.build_prompt(JA_TEXT)
         self.assertNotIn("AI makes the phone call", prompt)
         self.assertNotIn("understudy", prompt)
+
+
+class VocabRuleV2Tests(unittest.TestCase):
+    """ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01: v2語彙ルールがPrompt本体に
+    含まれ、v3(Trial-02、Topic Core Word例外+Metaphor専用ルール)固有の
+    文言・フィールド名は一切含まれないことを確認する。"""
+
+    def test_vocab_rule_v2_block_present_in_prompt(self):
+        prompt = adv.build_prompt(JA_TEXT)
+        self.assertIn(adv.ADVANCED_VOCAB_RULE_V2_BLOCK, prompt)
+
+    def test_vocab_rule_v2_contains_12000_line_and_abcd(self):
+        text = adv.ADVANCED_VOCAB_RULE_V2_BLOCK
+        self.assertIn("12,000", text)
+        for marker in ("A. Its meaning can easily be guessed",
+                        "B. It is a word that has become well established",
+                        "C. It is a proper noun",
+                        "D. Replacing it with an easier word"):
+            self.assertIn(marker, text)
+        self.assertIn("Words that appear inside quotation marks", text)
+
+    def test_vocab_rule_v2_does_not_contain_v3_topic_core_or_metaphor_exception(self):
+        # v3固有のフィールド名・見出し(Trial-02由来)が一切含まれないこと。
+        # 「central metaphor」は既存ARM3_BLOCK/一般形bulletの正規表現(記事の
+        # 中心的な比喩を保持せよという既存Preserve指示)であり、v3の
+        # Metaphor専用例外ルール(is_metaphor/exception_used等)とは無関係
+        # なので、ここではv3固有マーカーのみを確認する。
+        prompt = adv.build_prompt(JA_TEXT)
+        for v3_marker in ("Topic Core", "topic_core", "is_metaphor",
+                           "exception_used", "Metaphor restriction"):
+            self.assertNotIn(v3_marker, prompt)
+
+    def test_vocab_rule_v2_sha256_assert_does_not_raise(self):
+        adv._assert_vocab_rule_v2_sha256()
+
+    def test_vocab_rule_v2_sha256_mismatch_raises(self):
+        original = adv.ADVANCED_VOCAB_RULE_V2_SHA256
+        try:
+            adv.ADVANCED_VOCAB_RULE_V2_SHA256 = "0" * 64
+            with self.assertRaises(RuntimeError):
+                adv._assert_vocab_rule_v2_sha256()
+        finally:
+            adv.ADVANCED_VOCAB_RULE_V2_SHA256 = original
+
+    def test_standard_a2_module_unchanged_sha256(self):
+        # er003_v1_n3_01_standard_a2_generate.py(Standard v5)は本タスクで
+        # 変更しない。既存のSTANDARD_A2_PROMPT_SHA256 assertが引き続き
+        # 無エラーで通ることで、本タスクによる意図しない変更が無いことを
+        # 確認する(直接diffはこのテストの責務外、Git側で別途確認)。
+        import er003_v1_n3_01_standard_a2_generate as std
+        std._assert_prompt_sha256()  # 無エラーならOK
 
 
 class GenerateAdvancedAdaptationTests(unittest.TestCase):
