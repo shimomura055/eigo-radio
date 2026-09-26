@@ -9631,3 +9631,14 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Dangling Reference Check: 上記反映テキストは「(1)〜(5)」「A-1/A-2/A-3」「§13」等の参照先をいずれも本エントリ内または既存REPORTの実在節としてのみ使用しており、未作成の節・存在しない管理IDへの参照は確認されなかった。
 - 関連: `FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md`、`NEWS-FAMILY-X-B3-ADVANCED-RETRY-ROOTCAUSE-01_REPORT.md`、`er019_output/family_x_b3_diversity_trial_01/NEWS-FAMILY-X-B3-DIVERSITY-TRIAL-01_REPORT.md`、`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`、`docs/pm/recon_en_asr_semantic_equivalence_02_tier2_tier3.md`、`er013_family_c_production_01.py`。
 - commit: (本コミットでSSOT反映[CURRENT_SPEC.md/DECISION_LOG.md/OPEN_ITEMS.md/docs/pm/REPORT_LEDGER.md]+3件のREPORTファイル追記を実施)
+
+## EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01: Fable最終レビュー完了(3層全面案、Tier 2含む)、Status REVIEW_COMPLETED・Trial deferred(2026-09-26)
+
+- 日付: 2026-09-26
+- 区分: Fable最終レビューの転記・Status更新のみ(¥0、実装・Trial・Production変更なし)。
+- 内容: 会話ログ(`f1538907-8efe-486d-9790-ef5c6cd789fa.jsonl`)から最後に出現する、Tier 1(recon_01)+Tier 2/3安全性補完(`docs/pm/recon_en_asr_semantic_equivalence_02_tier2_tier3.md`、commit`76eb3a39`)を踏まえたFable最終レビューの「★★★★報告ここから」〜「ここまで」ブロックを逐語抽出し、`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`へ「## Part 2 Fable最終レビュー(3層全面案、Tier 2含む)」として追記した(Part 1の初回レビュー本文は削除せず保持)。
+- レビュー結論要旨: Tier 1(数値・通貨・%等の決定論的等価)は前回レビューどおり有効。Tier 2(口語縮約)は「閉じたリスト+展開後完全一致+否定・法助動詞に触れない+corroboration必須+ratio/トークン数緩和なし」の5条件下で`wanna⇔want to`/`gonna⇔going to`のみ採用候補、その他(`'cause`/`ya`/`ain't`/`dunno`/`kinda`/`sorta`/`gotta`)は除外。Tier 3(時制・否定・値の保護)は9/9実測でTRUE_CONTENT_MISMATCH、規則的複数形・固有名詞音訳差はSecondary corroboration前提の`PASS_WITH_WARNING`候補。新発見: 既存Production採用済み(OPEN-123)の標準contraction展開(`'d`→常にwould、`'s`→常にis)に、時制解釈が食い違ってもPASSし得るfalse accept構造が実測で確認された(recon_02 T2-2-1c)。同音語救済ロジックは本Reconの例文で実測不能(コードコメントとの齟齬の可能性、別件記録)。推奨: 段階導入Phase A(観測性修正+Tier 1数値early-exit)/Phase B(Tier 3救済)/Phase C(Tier 2口語縮約+`'d`/`'s`是正)、いずれもTrial gate付き・Production採用は別途ユーザー承認。
+- SSOT反映: `OPEN_ITEMS.md` OPEN-186のStatusを`REVIEW_PENDING`→`REVIEW_COMPLETED`(Trial deferred)へ更新し、備考へ上記推奨・ユーザー判断待ち(A-T)・新発見2件を追記。`docs/pm/REPORT_LEDGER.md`該当行を「初回正式報告 済(2026-09-26 最終レビュー報告)、Feedback 未(A-T)、累積再掲対象 Y」へ更新。
+- ユーザー判断待ち: **A-T**(Trial起票要否)。(a) Phase Aのみ先行(¥5〜10)/(b) Phase A+B(¥10〜15、Fable推奨)/(c) 起票せず保留。
+- 関連: `EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`、`docs/pm/recon_en_asr_semantic_equivalence_01.md`(commit`ba549f05`)、`docs/pm/recon_en_asr_semantic_equivalence_02_tier2_tier3.md`(commit`76eb3a39`)。
+- commit: (本コミットでSSOT反映[`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`/`DECISION_LOG.md`]を実施)
