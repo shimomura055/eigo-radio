@@ -1,0 +1,31 @@
+# We Thought It Was AI—But There Was a Person Inside Meta’s Muse
+
+Ring, ring. A call came from an AI agent—or so it seemed. As the conversation went on, the voice on the other end was not AI. It was a person.
+
+Meta had run a test that created exactly this surprise.
+
+The test involved the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers placed the calls instead of AI. They carried the conversations through to the end.
+
+It was as if someone took off an AI costume. A person stepped out.
+
+Having a person take over is not always bad. A human can handle situations that AI alone finds difficult. As part of a system, that may even be useful.
+
+But this is where the problem began. When a human staff member handled a call, sensitive information from the user could be shared with a contract worker at a call center.
+
+Speaking because you think you are talking to a machine is very different. It is different from speaking when you know someone is listening. People may share their names, plans, or personal situations. So it matters who is on the other end.
+
+### The hidden person behind the AI sign
+
+Here was the reveal. The test began without a clear enough notice. It did not say that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI.
+
+It sounded like a story from the future. But the main question was very basic. Had users clearly been told who was making the call?
+
+As AI becomes able to make calls or reservations for us, this question will become more common. The more useful the feature is, the more people will want to know one thing. Is the other side AI or a human?
+
+### Meta admits a mistake
+
+A Meta executive admitted that starting the test without clearly telling users was a mistake. The human concierge feature will be rolled back for now. In the AI age, technology that makes a voice sound human is not enough. We also need to know, at the start, who is on the other end of the call.
+
+## In one line
+
+Before AI speaks for us, we need to know whether the voice belongs to AI or a person.
