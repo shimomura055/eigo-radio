@@ -47,12 +47,16 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
-| STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。 |
-| NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 配線PRODUCTION_WIRED(2026-09-26)、記事ユーザー確認待ち。 |
-| FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回(True Crime再生成)後に初回報告。 |
-| TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 差し戻し1回目(A2経路cool-down/Local Rewrite配線+topic_intro role漏れ修正)後、Fable Gate最終判定`PRODUCTION_WIRED`。 |
-| NEWS-VOCAB-BAND-6000-10000-14000-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | 語彙Band(6,000/10,000/14,000)を生成時点で制約するTrial。Meta記事は実質超過語0/0/0、Sewer記事は3条件とも実質超過語が残った(1〜6)。Band 10,000のSewerで引用句"combined septic tank,"が消失する事例あり。 |
-| FICTION-FAMILY-Z-PRODUCTION-E2E-01 | 進行中(2026-09-26、Phase 0完了+ユーザー確定ルールSSOT記録のみ) | 済(2026-09-26) | 未 | Y | ユーザー確定ルール(Family定義/Story内容方針/Seed必須条件/外国人名ルール/story_type/TTS適用/PRODUCTION_WIRED条件)を`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`(OPEN-185)へ記録。Production配線は未実装、権利(走れメロス米国status)・構造(Family C関係/In One Line設計)論点が`USER_DECISION_REQUIRED`のまま残存。 |
+| STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26: `NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01`方針で上書き) | N | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。S-1/S-2/S-3はユーザー決定済み(上書き)。 |
+| NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26: X-2決着、X-1はDiversity Trial/原因調査へ移管) | N(移管先で報告) | 配線PRODUCTION_WIRED(2026-09-26)、記事ユーザー確認待ち。 |
+| FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26) | N | 差し戻し1回(True Crime再生成)後に初回報告。F-1/F-2 `VALIDATED`、F-3不採用(Family Z人名ルールへsupersede)、F-4条件付き採用。 |
+| TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26 `PRODUCTION_WIRED`確定) | N | 差し戻し1回目(A2経路cool-down/Local Rewrite配線+topic_intro role漏れ修正)後、Fable Gate最終判定`PRODUCTION_WIRED`にユーザー異議なし確定。 |
+| NEWS-VOCAB-BAND-6000-10000-14000-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26: `NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01`方針で上書き) | N | 語彙Band(6,000/10,000/14,000)を生成時点で制約するTrial。Meta記事は実質超過語0/0/0、Sewer記事は3条件とも実質超過語が残った(1〜6)。Band 10,000のSewerで引用句"combined septic tank,"が消失する事例あり。VB-1/VB-2/VB-3はユーザー決定済み(上書き)。 |
+| FICTION-FAMILY-Z-PRODUCTION-E2E-01 | 進行中(2026-09-26、Phase 0完了+ユーザー確定ルールSSOT記録のみ) | 済(2026-09-26) | 一部済(2026-09-26: Z-2/Z-3/Z-4 `APPROVED_FOR_PRODUCTION`、Z-1のみ`FICTION-FAMILY-Z-RIGHTS-RECHECK-01`で継続) | Y(Z-1のみ) | ユーザー確定ルール(Family定義/Story内容方針/Seed必須条件/外国人名ルール/story_type/TTS適用/PRODUCTION_WIRED条件)を`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`(OPEN-185)へ記録。Production配線は未実装、権利(走れメロス米国status)のみ`USER_DECISION_REQUIRED`として残存(構造論点[Family C関係/In One Line設計/Dialogue Voice]は2026-09-26決定済み)。 |
+| EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01 | 2026-09-26 | 済(2026-09-26) | 未 | Y | read-only Recon+Fable批判レビュー22項目完了、実装なし。`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01_REPORT.md`新規作成、`OPEN_ITEMS.md` OPEN-186新設(OPEN-184を吸収)。A-1範囲/A-2 Tier2除外維持/A-3 Trial実施可否が判断待ち。 |
+| NEWS-FAMILY-X-B3-ADVANCED-RETRY-ROOTCAUSE-01 | 進行中(2026-09-26起票) | 未 | 未 | Y | Family X B3 X-1(時制ドリフト)の原因調査、進行中。 |
+| FICTION-FAMILY-Z-RIGHTS-RECHECK-01 | 進行中(2026-09-26起票) | 未 | 未 | Y | Family Z Z-1(走れメロス米国著作権status)の確認作業、進行中。 |
+| NEWS-FAMILY-X-B3-DIVERSITY-TRIAL-01 | 2026-09-26(Sonnet作業完了。small_bag完全成功、hormuzはAdvanced段でLedger Deviation MAJOR→既存Gate STOP[本文なし]、meta既存run_01のFact fidelity修正[MUSE-HC-012時制]込み) | 未 | 未 | Y | Trial、最大VALIDATED。効果音仕様はUSER_DECISION_REQUIRED(Productionへ戻さない)。X-1(時制ドリフト)のFact fidelity修正対応を含む。詳細は`er019_output/family_x_b3_diversity_trial_01/NEWS-FAMILY-X-B3-DIVERSITY-TRIAL-01_REPORT.md`。 |
 
 ## 違反事例記録
 
