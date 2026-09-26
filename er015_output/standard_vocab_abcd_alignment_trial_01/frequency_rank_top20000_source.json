@@ -1,0 +1,16 @@
+{
+  "source_package": "wordfreq",
+  "source_package_version": "3.1.1",
+  "license": "Apache-2.0",
+  "method": "wordfreq.top_n_list('en', 20000) (既存install再利用、er015_output/news_standard_a2_vocab_banding_trial_01/frequency_rank_top20000.jsonと同一method・同一version)",
+  "ranking_unit": "rank = min(rank(surface form), rank(best lemma candidate))。lemma候補は-s/-es/-ies/-ed/-ing/-ly の単純規則のみ(-er/-est比較級除去は使わない)。er015_advanced_vocab_rule_trial_01_v2.pyのlemma_candidates_v2/rank_of_word_v2をそのまま流用。",
+  "rank_threshold": 6000,
+  "borderline_band": [
+    5000,
+    6000
+  ],
+  "article_source_note": {
+    "meta": "Standard v5 Before。Production E2E版(\"some of the calls\"文言を含む、er012_output/e_family_two_level_wiring_01/meta/a2/article.md)。",
+    "sewer": "Standard v5 Before(6,000語ラインで生成済みのSewer代表記事、er015_output/news_standard_a2_vocab_6000_cutoff_trial_01/a2v5_standard_sewer.md)。"
+  }
+}

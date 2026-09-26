@@ -1,0 +1,69 @@
+DEVELOPER:
+You are an editor testing a candidate vocabulary-difficulty rule for CEFR A2 ("Standard") level news articles written for Japanese adult English learners. This rule is a draft under evaluation, not yet approved. For the specific difficult words listed below, you decide word by word whether to keep the word or replace it with a simpler, natural alternative, following the rule exactly. You must not change anything else in the article.
+
+USER:
+Candidate difficulty rule (draft, under evaluation):
+
+Words that rank below roughly the top 6,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.
+
+A word ranked beyond ~6,000 may still be KEPT (not simplified) if one of these applies:
+A. Its meaning can easily be guessed from an already-easy word it is built from (for example: "onstage" = on + stage, "wastewater" = waste + water, "understandable" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.
+B. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.
+C. It is a proper noun (a person's name, a company or product name, a place name).
+D. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because "it is a technical term" -- if a simple, natural, meaning-preserving substitute exists, simplify it.
+
+Words that appear inside quotation marks in the article, and titles, designations, or nicknames that a specific person or organization is reported to have actually used (for example, if the article states that Meta called certain workers "human concierges", the word "concierges" here is part of that reported fact, not an ordinary vocabulary choice) are facts of the article. Do not simplify such a word even if it appears in the candidate list below; treat it under exception C (a proper noun / quoted designation) and mark it "KEEP -- proper noun", explaining in reasoning that it is a quoted designation that must be kept exactly as reported.
+
+Do NOT use "it is part of a fixed expression / idiom" as its own exception category. (For example, if "curtain" in "behind the curtain" is kept, the reason must be B [established Japanese loanword], never "it is part of an idiom.") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.
+
+For each candidate word listed below, decide:
+- "KEEP -- predictable morphology/compound" (reason A)
+- "KEEP -- established Japanese loanword" (reason B)
+- "KEEP -- proper noun" (reason C)
+- "KEEP -- indispensable / natural replacement unavailable" (reason D)
+- "SIMPLIFY" (replace it with a simpler, natural word or phrase)
+- "BORDERLINE" (only if you are genuinely unsure; explain why in notes_on_ambiguous_cases)
+
+Structure contract (must not change): this article has NO markdown headings (no `#`, `###`, or `##` lines) -- it is a plain title line followed by flowing body paragraphs. Keep it exactly that way: one plain title line, then the same number of body paragraphs in the same order, with the same paragraph breaks. Do not add any heading.
+
+Only change the specific candidate words you decide to SIMPLIFY (and, only where grammatically necessary, a minimal amount of immediately surrounding wording so the sentence still reads naturally). Do not do a general rewrite of sentences that contain no candidate word. Do not add new facts, explanations, examples, or opinions. Do not remove any fact. Do not change the meaning, the tone, the storytelling, the central metaphor, or the ending logic. Keep the title unchanged unless it contains a candidate word you decide to SIMPLIFY.
+
+Output:
+- "decisions": exactly one entry per candidate word listed below, in the same order, each with word, actual_form, frequency_rank (copy the frequency_rank value exactly as given below -- do not recompute or guess it), decision, reasoning (one or two sentences, in English), before_sentence (the exact original sentence that contains this word), after_sentence (the resulting sentence in your rewritten article -- for KEEP decisions this should be identical or nearly identical to before_sentence).
+- "after_text": the full rewritten article (title + body), in the same format as the original.
+- "notes_on_ambiguous_cases": a short note (can be empty) on any word where the KEEP/SIMPLIFY line was genuinely hard to draw.
+
+[Candidate words -- rank below ~12,000, decide KEEP or SIMPLIFY for each]
+- word="faraway" actual_form="faraway" frequency_rank="> 20,000 (zipf=2.99, extremely rare)"
+- word="septic" actual_form="septic" frequency_rank="> 20,000 (zipf=3.21, extremely rare)"
+- word="invisible" actual_form="invisible" frequency_rank="6,153"
+- word="flush" actual_form="flush" frequency_rank="9,610"
+- word="artery" actual_form="artery" frequency_rank="12,006"
+- word="sewer" actual_form="sewer" frequency_rank="12,324"
+- word="sewers" actual_form="sewers" frequency_rank="12,324"
+- word="wastewater" actual_form="wastewater" frequency_rank="18,216"
+
+[Reference only -- words ranked 5,000-6,000 (near the threshold), shown so you can calibrate the rule; these are NOT candidates and do not need a decision unless they also appear in the candidate list above]
+- word="distant" actual_form="distant" frequency_rank="5,212"
+- word="installation" actual_form="installation" frequency_rank="5,508"
+- word="convenient" actual_form="convenient" frequency_rank="5,588"
+- word="divide" actual_form="divide" frequency_rank="5,876"
+
+[Article]
+“Merger”? Not Towns, but Household Wastewater
+
+When a news report says “combined septic tank,” you may wonder. Is it about towns joining together? But towns are not the things being combined. They are toilet water, kitchen water, and bath water.
+
+Some local governments are considering replacing old sewer systems with combined septic tanks. This does not mean removing all sewers. In some areas, they are considering another kind of system. It would treat wastewater near each home, instead of connecting the whole town.
+
+A sewer is like an invisible main artery beneath the town. It collects water from homes in underground pipes. Then it carries the water to a faraway treatment plant. Most of the time, we hardly think about it. We turn on the tap and flush the toilet. The underground system takes care of the rest.
+
+But when those pipes grow old, the situation changes. Because they are underground, damaged places are hard to find. Repairs are not easy, either. The system reaches a long way and stays connected. So repairs can also become very large jobs.
+
+That is where combined septic tanks come in. They are small places that treat water near homes. They treat toilet, kitchen, and bath water for each home. The water does not go to a distant treatment plant. Instead, it is cleaned near the home.
+
+It is like putting a small washing machine in every home. This is instead of one huge washing machine for the town. The idea is to divide one large system into several smaller ones.
+
+Of course, a septic tank does not mean nothing else is needed. It still needs installation, checks, and cleaning. For people who use sewers, a hidden part of daily life will change too.
+
+Still, the interesting point is this: to keep life convenient, we do not always need a bigger system. We do not have to make an old underground main artery keep going. We can move water treatment closer to home. The future of sewers may arrive in a surprisingly familiar place—right near us.

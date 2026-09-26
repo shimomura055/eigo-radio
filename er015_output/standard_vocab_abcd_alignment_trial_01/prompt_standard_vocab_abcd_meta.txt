@@ -1,0 +1,76 @@
+DEVELOPER:
+You are an editor testing a candidate vocabulary-difficulty rule for CEFR A2 ("Standard") level news articles written for Japanese adult English learners. This rule is a draft under evaluation, not yet approved. For the specific difficult words listed below, you decide word by word whether to keep the word or replace it with a simpler, natural alternative, following the rule exactly. You must not change anything else in the article.
+
+USER:
+Candidate difficulty rule (draft, under evaluation):
+
+Words that rank below roughly the top 6,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.
+
+A word ranked beyond ~6,000 may still be KEPT (not simplified) if one of these applies:
+A. Its meaning can easily be guessed from an already-easy word it is built from (for example: "onstage" = on + stage, "wastewater" = waste + water, "understandable" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.
+B. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.
+C. It is a proper noun (a person's name, a company or product name, a place name).
+D. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because "it is a technical term" -- if a simple, natural, meaning-preserving substitute exists, simplify it.
+
+Words that appear inside quotation marks in the article, and titles, designations, or nicknames that a specific person or organization is reported to have actually used (for example, if the article states that Meta called certain workers "human concierges", the word "concierges" here is part of that reported fact, not an ordinary vocabulary choice) are facts of the article. Do not simplify such a word even if it appears in the candidate list below; treat it under exception C (a proper noun / quoted designation) and mark it "KEEP -- proper noun", explaining in reasoning that it is a quoted designation that must be kept exactly as reported.
+
+Do NOT use "it is part of a fixed expression / idiom" as its own exception category. (For example, if "curtain" in "behind the curtain" is kept, the reason must be B [established Japanese loanword], never "it is part of an idiom.") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.
+
+For each candidate word listed below, decide:
+- "KEEP -- predictable morphology/compound" (reason A)
+- "KEEP -- established Japanese loanword" (reason B)
+- "KEEP -- proper noun" (reason C)
+- "KEEP -- indispensable / natural replacement unavailable" (reason D)
+- "SIMPLIFY" (replace it with a simpler, natural word or phrase)
+- "BORDERLINE" (only if you are genuinely unsure; explain why in notes_on_ambiguous_cases)
+
+Structure contract (must not change): one `# ` title line, then body paragraphs, then exactly two `### ` subheadings each followed by its paragraph, then a `## In one line` section with its one closing sentence. Keep every heading's text unchanged unless a heading itself contains a candidate word you decide to SIMPLIFY (none of the candidate words appear in a heading in this article). Keep the same number of paragraphs and, as much as possible, the same sentence count.
+
+Only change the specific candidate words you decide to SIMPLIFY (and, only where grammatically necessary, a minimal amount of immediately surrounding wording so the sentence still reads naturally). Do not do a general rewrite of sentences that contain no candidate word. Do not add new facts, explanations, examples, or opinions. Do not remove any fact. Do not change the meaning, the tone, the storytelling, the central metaphor, or the ending logic. Keep the title unchanged unless it contains a candidate word you decide to SIMPLIFY.
+
+Output:
+- "decisions": exactly one entry per candidate word listed below, in the same order, each with word, actual_form, frequency_rank (copy the frequency_rank value exactly as given below -- do not recompute or guess it), decision, reasoning (one or two sentences, in English), before_sentence (the exact original sentence that contains this word), after_sentence (the resulting sentence in your rewritten article -- for KEEP decisions this should be identical or nearly identical to before_sentence).
+- "after_text": the full rewritten article (title + body), in the same format as the original.
+- "notes_on_ambiguous_cases": a short note (can be empty) on any word where the KEEP/SIMPLIFY line was genuinely hard to draw.
+
+[Candidate words -- rank below ~12,000, decide KEEP or SIMPLIFY for each]
+- word="concierges" actual_form="concierges" frequency_rank="> 20,000 (zipf=1.70, extremely rare)"
+- word="leak" actual_form="leak" frequency_rank="6,160"
+- word="pause" actual_form="pause" frequency_rank="7,166"
+- word="paused" actual_form="paused" frequency_rank="7,166"
+- word="reuters" actual_form="Reuters" frequency_rank="8,719"
+- word="curtain" actual_form="curtain" frequency_rank="8,776"
+- word="performer" actual_form="performer" frequency_rank="9,646"
+- word="understandable" actual_form="understandable" frequency_rank="10,629"
+- word="backstage" actual_form="backstage" frequency_rank="12,912"
+- word="onstage" actual_form="onstage" frequency_rank="15,670"
+
+[Reference only -- words ranked 5,000-6,000 (near the threshold), shown so you can calibrate the rule; these are NOT candidates and do not need a decision unless they also appear in the candidate list above]
+- word="convenient" actual_form="convenient" frequency_rank="5,588"
+
+[Article]
+# “Hello, This Is AI”—But a Human Was Speaking Behind the Voice
+
+Letting AI take a phone call sounds like a future service. You tell it what you need, and AI calls for you. That was the kind of phone service Meta was preparing.
+
+The main character was Muse, Meta’s AI agent for individual users. Meta wanted to give Muse a feature for making calls for users.
+
+But people who looked backstage found something unexpected.
+
+In internal tests, human contract workers handled some of the calls. Meta called these workers “human concierges.” The sign outside said “AI phone service.” But a human was making part of the call. The AI only seemed to perform alone.
+
+### The hidden performer inside the phone call
+
+This was the story’s most surprising part. The call looked like a one-person performance. But another performer was hidden inside the piano. Human help is not always a bad thing. People can help where AI is still weak. That makes this approach understandable.
+
+### Privacy concerns led Meta to pause the feature
+
+Phone calls can contain personal information. Meta employees worried that call details might leak outside the company. People might be surprised that a contract worker had listened to the conversation. The worker had also responded. They thought they had handed the call to AI.
+
+Reuters reviewed internal posts about the feature. A Meta executive spoke about it in those posts. The executive said the company had paused the feature.
+
+For AI phone service, one question is whether it can make a call. But that is not the only important question. Who is speaking onstage? And who is behind the curtain? The more convenient the service is, the more its explanation may matter. People may need that explanation before they truly feel safe giving it a task.
+
+## In one line
+
+AI may make the call. People also need to know who is behind the voice.
