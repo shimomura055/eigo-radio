@@ -442,8 +442,8 @@ VALIDATED(仮)。根拠: (1)前Trial(Generation-First)で確認された
 
 ## §9 Fable評価
 
-(空欄)
+(1) 最重要所見(設計上のギャップ): 本Trialの共通Promptは語彙Bandの制約のみで、Standard v5が持つ文構造の再構築指示(平均9〜11語・1文1アイデア・長節分割)を含まない。その結果、3 Band版とも構文はAdvanced入力とほぼ同一で、FK概算はMeta 7.53→7.24/7.14/7.09、Sewer 7.6→7.35/7.81/6.9と難易度差がほとんど出なかった。**6,000語版はそのままではStandard(A2)候補にならない**(語彙Bandだけでは体感難易度は下がらず、難易度差の主因は構文にある)。Band制約は「語彙の上限」としては機能したが、Standard/Advancedの境界を語彙Bandだけで決めることはできない、が本Trialの結論。(2) Meta: 3 Bandとも実質超過語0。ただし理由はAdvanced入力が元々ほぼBand内(固有名詞・比喩語を除く)だったためで、変更は少数の語置換("leak"→"get outside"[6k]、"onstage"→"in front"[10k]、"responded"→"replied"等)に留まる。(3) Sewer: 主題語(sewer/septic/artery/flush)は「firm principle」の指示にもかかわらず3 Bandとも保持され、モデルは主題語の維持をBand制約より優先した。実質超過語は6k=4(境界含め6)/10k=2/14k=1。10kのみ引用句"combined septic tank"が説明句"a combined tank that cleans household wastewater"へ置換され消失(fact_tokens_check検出)、FK概算も最高値(7.81)。「1語を長い説明句で回避する」禁止パターンの実例で、Band制約を守ろうとした唯一の箇所で品質が下がった。(4) 要約化・段落数変化・比喩喪失は2記事×3 Bandとも無し。FAIL該当は無し(Sewer 10kの1箇所が要注意)。(5) 費用¥2.73、6 call全て初回成功。(6) 運用注記: 本TrialのSonnet作業中、並行Agentがstage済みだった無関係ファイルが最初のcommitに混入し、Sonnetが`git reset --soft`+`git restore --staged`で除去した(push前のローカルcommitに対する操作で共有履歴の書き換えではないが、`reset`は本プロジェクトの禁止操作に該当する。以後は混入に気づいた時点で追加commitによる訂正か、Fableへ報告して指示を仰ぐこと)。
 
 ## §10 分類
 
-(空欄)
+**VALIDATED**(Trial範囲。語彙Band制約の効き方[題材依存、主題語は残る、構文は変わらない]を計測できた。Production Prompt無変更)。ユーザー判断事項: VB-1 3 Band版の試読評価と、Standard/Advanced境界としてのBandの適否(Fable所見: 語彙Bandだけでは難易度差が出ず、境界は「構文(v5の文再構築)+語彙Band」の組合せで決める必要がある)。VB-2 次Trialとして「Standard v5の文再構築指示+firmな6,000語Band+3除外条件」版をMeta/Sewer+一般ニュース1記事で比較するか(Fable推奨: 実施、¥5以内)。VB-3 専門主題語(sewer/septic等)が全Bandで残る事実を、Band制約の「主題語は保持される」既定挙動として許容するか、別途扱いを決めるか(Fable推奨: 現時点は許容し、VB-2の結果と併せて判断)。
