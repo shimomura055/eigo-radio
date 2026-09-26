@@ -1,0 +1,79 @@
+{
+  "original": {
+    "prompt": "以下のニュースを、友人に「これ、ちょっと面白くない？」と話すような読み物にしてください。\n\nニュースの中から、最も意外な事実ではなく、最も面白い「見方」を一つ選んでください。その見方に必要な事実だけを使い、ニュース全体を説明しようとしないでください。\n\n語り口は自然で軽快にします。新聞、行政資料、学校教材のような文章にはしません。難しい内容は、短く簡単な日本語に言い換えてください。日本語を勉強している外国人が、音声で一度聞いて理解できる程度を目安にします。\n\n遠い地域だけの特殊な話に見える場合は、読者の暮らしや、より大きな社会の変化とのつながりを一度だけ示してください。ただし、話を無理に広げる必要はありません。\n\n事実関係は厳守し、架空の出来事や発言は加えません。\n\nテーマ：MetaのAI電話代行が、通話の一部を裏で人間スタッフに担当させる実験を行っている\n\n長さ：800～1000字\n\n出力はタイトルと本文のみ。\n\n[ニュース]\nReuters(2026年9月22日、NEW YORK発)によると、Metaは個人向けAIエージェント「Muse」の電話代行機能について、一部の通話を人間の契約スタッフが裏で担当する「人間コンシェルジュ」の試験を社内で行っていたことが、Reutersが確認した社内投稿で判明した。従業員から通話内容の外部流出などプライバシー面の懸念が示され、Meta幹部はこの機能を一旦取りやめた(rolled back)と説明した。",
+    "developer_message": "あなたは日本語のニュースを分かりやすく面白く伝える書き手です。",
+    "model_requested": "gpt-5.6-luna",
+    "response_model_actual": "gpt-5.6-luna",
+    "response_id": "resp_0da3e786faf766a0006ab733219c0487d080f464882252b391",
+    "usage": {
+      "input_tokens": 462,
+      "output_tokens": 997,
+      "total_tokens": 1459
+    },
+    "web_search_usage": {
+      "web_search_call_count": 0,
+      "queries": []
+    },
+    "sources": [],
+    "condition": "control",
+    "stage": "original",
+    "effort_requested": "high"
+  },
+  "r1": {
+    "prompt": "この記事を、事実関係は変えずに、もっとエンターテインメント性の高い記事に修正してください。",
+    "developer_message": "あなたは日本語のニュースを分かりやすく面白く伝える書き手です。",
+    "model_requested": "gpt-5.6-luna",
+    "response_model_actual": "gpt-5.6-luna",
+    "response_id": "resp_0da3e786faf766a0006ab7332ef15487d0b60c2dfa4b63d13d",
+    "usage": {
+      "input_tokens": 1494,
+      "output_tokens": 900,
+      "total_tokens": 2394
+    },
+    "web_search_usage": {
+      "web_search_call_count": 0,
+      "queries": []
+    },
+    "sources": [],
+    "condition": "control",
+    "stage": "r1",
+    "effort_requested": "high",
+    "chain_method": "previous_response_id",
+    "previous_response_id_used": "resp_0da3e786faf766a0006ab733219c0487d080f464882252b391"
+  },
+  "r2": {
+    "prompt": "この記事を、事実関係は変えずに、さらにもっとエンターテインメント性の高い記事に修正してください。",
+    "developer_message": "あなたは日本語のニュースを分かりやすく面白く伝える書き手です。",
+    "model_requested": "gpt-5.6-luna",
+    "response_model_actual": "gpt-5.6-luna",
+    "response_id": "resp_0da3e786faf766a0006ab733392d5c87d0aedc7677c76029fe",
+    "usage": {
+      "input_tokens": 2430,
+      "output_tokens": 962,
+      "total_tokens": 3392
+    },
+    "web_search_usage": {
+      "web_search_call_count": 0,
+      "queries": []
+    },
+    "sources": [],
+    "condition": "control",
+    "stage": "r2",
+    "effort_requested": "high",
+    "chain_method": "previous_response_id",
+    "previous_response_id_used": "resp_0da3e786faf766a0006ab7332ef15487d0b60c2dfa4b63d13d"
+  },
+  "english": {
+    "prompt": "Adapt the Japanese article below into English.\n\nDo not rewrite the article from scratch. Do not add new ideas, claims, background, general observations, examples, or facts that are not in the Japanese article. Preserve the Japanese article's editorial angle, structure, and sense of surprise:\n- the opening expectation the article sets up at the beginning;\n- the reversal or turn partway through the story;\n- the central metaphor or storytelling device the article uses;\n- the order in which information and details are revealed;\n- the ending and how it resolves or lands the story.\nKeep every fact exactly as in the Japanese article. Use short, simple English that a learner could understand by listening once.\n\nOutput only the English title and the English body.\n\nAdaptation level: NATURAL ENGLISH.\nMake the piece read like a natural English news feature. Keep the central metaphor, the theme, the facts, the selection of information, and the conclusion. You may reorder, merge, or reshape paragraphs, and adjust the wording of metaphors where English needs it. Still add nothing that is not in the Japanese article.\n\nVocabulary difficulty rule: words that rank below roughly the top 12,000 most frequent general English words are, in principle, candidates for simplification. This is NOT a mechanical ban list. As with the existing Standard-level vocabulary policy, simplification should be strongly preferred only when a simpler, natural expression exists without harming meaning or naturalness; it must not be forced when it would.\n\nA word ranked beyond ~12,000 may still be KEPT (not simplified) if one of these applies:\nA. Its meaning can easily be guessed from an already-easy word it is built from (for example: \"onstage\" = on + stage, \"wastewater\" = waste + water, \"understandable\" = understand + -able). Do not exclude a word just because it LOOKS decomposable if the meaning cannot actually be guessed that way.\nB. It is a word that has become well established in Japanese, and its meaning can easily be guessed from its English pronunciation (for example: piano, curtain, privacy). Simply having a katakana spelling is not enough -- the word must be an established, commonly understood Japanese word, easily connected to its English sound.\nC. It is a proper noun (a person's name, a company or product name, a place name).\nD. Replacing it with an easier word would clearly hurt meaning precision or the naturalness of the English -- it is indispensable. Do not keep a word only because \"it is a technical term\" -- if a simple, natural, meaning-preserving substitute exists, simplify it.\n\nWords that appear inside quotation marks in the article, and titles, designations, or nicknames that a specific person or organization is reported to have actually used (for example, if the article states that Meta called certain workers \"human concierges\", the word \"concierges\" here is part of that reported fact, not an ordinary vocabulary choice) are facts of the article. Do not simplify such a word; treat it under exception C (a proper noun / quoted designation).\n\nDo NOT use \"it is part of a fixed expression / idiom\" as its own exception category. (For example, if \"curtain\" in \"behind the curtain\" is kept, the reason must be B [established Japanese loanword], never \"it is part of an idiom.\") A word inside a fixed expression that is still hard to guess should be judged normally, exactly like any other word.\n\nWrite in English.\nLength: about 280-420 words in total, counting the full story and the \"## In one line\" section together.\nFormat (Markdown): start with \"# \" followed by the title; then the full story as continuous prose paragraphs (no subheadings, no bullet points, no numbered lists); then a final section headed exactly \"## In one line\" containing one sentence.\nDo not pad or add filler sentences just to reach the word count.\n\n[Japanese article]\nAIに電話を頼んだら、舞台袖から人間が出てきた\n\n「この電話、AIにお願い」。そんな未来の風景を思い浮かべたら、次の瞬間、舞台の裏から人間のスタッフが登場する――。Metaが社内で試していたのは、そんな少し不思議な仕組みでした。\n\nMetaの個人向けAIエージェント「Muse」には、電話を代わりにかけてもらう機能があります。ところが、その一部の通話を、人間の契約スタッフが裏で担当する実験をしていたのです。Metaは、この仕組みを「人間コンシェルジュ」と呼んでいました。\n\n例えるなら、AIが主役の舞台です。電話の表側ではAIのサービスが進みます。でも、難しい場面になると、舞台袖にいる人間のスタッフがそっと出てきて、代わりに電話をする。観客にはAIのショーに見えても、舞台裏では人間がせりふを話しているわけです。\n\nこれは、AIがまだ一人ではうまくできない仕事を、人間が支える方法とも言えます。AIの看板を掲げたサービスの中に、昔ながらの電話対応が隠れている。そう考えると、未来の話なのに、やっていることは意外に身近です。\n\nただ、ここで幕を止めたのがプライバシーでした。Metaの従業員から、通話の内容が外部に流れる心配があるという声が出たのです。電話には、予約や問い合わせだけでなく、個人的な事情が入り込むこともあります。誰が聞いているのか、どこまで内容を見ているのかが分からなければ、不安になるのも当然です。\n\nReutersが確認した社内投稿によると、Metaの幹部は、この機能をいったん取りやめたと説明しました。\n\nこのニュースの面白さは、AIが人間を超えたかどうかではありません。AIの魔法を見せるために、人間が舞台裏で働いていたこと。そして、その舞台裏を、利用者にどう伝えるのかが問題になったことです。\n\nこれから電話や予約をAIに任せる機会が増えるほど、便利さだけでなく、「実際には誰が対応しているのか」も、サービスへの信頼を決める大事なポイントになりそうです。",
+    "developer_message": "You are an editor who adapts finished Japanese feature articles into natural English for listeners who are learning English.",
+    "model_requested": "gpt-5.6-luna",
+    "response_model_actual": "gpt-5.6-luna",
+    "response_id": "resp_0b889de92c0ef8dc006ab7339b227887d0877aaf463be5017c",
+    "usage": {
+      "input_tokens": 1429,
+      "cached_input_tokens": 0,
+      "output_tokens": 1495,
+      "reasoning_tokens": 1034
+    }
+  }
+}
