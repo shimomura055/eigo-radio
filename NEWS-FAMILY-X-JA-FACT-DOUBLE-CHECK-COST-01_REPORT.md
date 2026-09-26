@@ -245,3 +245,15 @@ prompt/schemaへのHOOK_CLAUSE追加有無)の2つのみ。**reasoning effort(`"
 - `NEWS-FAMILY-X-B3-ADVANCED-RETRY-ROOTCAUSE-01_REPORT.md` §10(must-fix constraint未実装の確認元)
 - 今回新規生成(このタスクの実測証跡、Trial用out-dir): `er019_output/ja_fact_double_check_cost_01/summary.json`・
   `ja_original_deviation_check_full.json`・`ja_r2_deviation_check_full.json`
+
+## §6 Fable評価(2026-09-26)
+
+コスト報告として受領。固定費: 既存Checker単発 中央値¥0.90(n=12、¥0.32〜¥1.65)、
+latency中央値33秒。JA直接実測: Original後¥1.65/84.9秒、R2後¥0.55/25.2秒、ダブル
+¥2.20/110秒。中央値換算1/10/30/100記事=¥1.80/¥18/¥54/¥180。変動費: JA Rewrite
+1段¥0.19〜0.29、英訳retry(生成+Checker)¥0.31〜¥1.86。既存Checkerは日本語入力を
+無変更で受け付ける(実測でOriginalのMAJOR[changed_causality]検出、R2はCOMPLIANT)。
+重要な観察: この1サンプルでCheckerは既知の時制ドリフト(ロールバックされます)を
+検出しなかった。JA段チェックは有効だがChecker判定の揺らぎ(ROOTCAUSE-01 §9-B)は
+残る。Status: コスト報告完了・STOP(ユーザーのJAダブルチェック正式採用判断待ち、
+Production変更なし)。

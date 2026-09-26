@@ -293,4 +293,20 @@ Reportでは推奨を書かない(指示通り)。USER_DECISION_REQUIRED項目�
 
 ---
 
+## §9 Fable評価(2026-09-26)
+
+Fable分類: VALIDATED(Phase A)/VALIDATED-offline(Phase B)。Phase A:
+corpus POSITIVE 34/34・NEGATIVE false accept 0/34、OPEN-123 fixture 59件
+無回帰、全体regression 1,218件OK、実API probe 6件中2件(billion+decimal+
+currency、年のペア読み)で実NGを救済、既存$2.3M probeは3attemptすべて
+attempt 1でPASSに変わる(Human Review Lock回避)。runtime: baselineより
+遅くならない(0.09〜0.41ms)。Phase B: Tier 3 corroboration救済はオフライン
+(corpus 4件+実本番証跡逐語)とunittestでのみ検証、生きたSecondary/Local
+ASR経由の実NG再現は未取得(Primary ASRが誤らなかったため)。安全側の縮小
+(単独"I"除外、通貨型一致要求、時刻はam/pm必須)は妥当。Production採用・
+配線範囲(role/segment、retry/Local Rewrite/Human Review Lockへの接続)は
+ユーザー判断、Production module無変更(sha256確認)。
+
+---
+
 Management-ID: EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01

@@ -9655,3 +9655,17 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Dangling Reference Check: 上記反映テキストは、Section Segmentation候補(`NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01`、Trial中)・Fact Check方針(コスト確認中、Trial未開始)をいずれも「Trial中」「未実装」と明記した文脈でのみ参照しており、Production正式仕様として書いていないことを確認した。
 - 関連: `docs/pm/ACTIVE_TASK_SSOTE.md`(本委任転記)、`docs/pm/RESULT_PACKET_SSOTE.md`。
 - commit: (本コミットでSSOT反映[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`]を実施)
+
+## PM-CLOSEOUT-CONSOLIDATION-2026-09-26-B: 3件のTrial/コスト確認(EN-ASR意味等価性Trial・Family X JA Fact Double Checkコスト・Family X Section Segmentation Trial)のFable評価転記・SSOT反映(2026-09-26)
+
+- 日付: 2026-09-26
+- 区分: closeout(SSOT/LEDGER更新+不整合点検)。新仕様提案なし、Production code/Prompt変更なし、API ¥0。
+- 内容: 以下3件のFable評価(逐語)を各REPORT末尾へ追記し、`OPEN_ITEMS.md`・`docs/pm/REPORT_LEDGER.md`へ反映した。
+  1. **NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01**: コスト報告として受領。固定費: 既存Checker単発中央値¥0.90(n=12)、JA直接実測でダブル¥2.20/110秒。中央値換算100記事=¥180。既存Checkerは日本語入力を無変更で受け付け、実測でOriginalのMAJOR検出・R2はCOMPLIANT。ただし既知の時制ドリフトをCheckerが検出しなかった1件を観察(Checker判定の揺らぎは残課題)。Status: コスト報告完了・STOP(ユーザーのJAダブルチェック正式採用判断待ち)。
+  2. **NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01**: Fable分類VALIDATED(small_bag・この構造パターン範囲内)。方式A(段落を見出し直後へ移動、語句無変更)のみで先取りが解消、Bridge文は見出し直後に保持、文の追加削除0・Full Ledger再照合LEDGER_COMPLIANT、Production Prompt/module無変更(sha256)。1テーマ・1見出しの検証であり他テーマ・他Familyへの一般化は未検証。採用はユーザー確認後。
+  3. **EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01**: Fable分類VALIDATED(Phase A)/VALIDATED-offline(Phase B)。Phase A: corpus POSITIVE 34/34・NEGATIVE false accept 0/34、OPEN-123 fixture 59件・全体regression 1,218件無回帰、実API probe 6件中2件で実NGを救済、既存$2.3M probeがattempt 1でPASSに変わる(Human Review Lock回避)。Phase Bのcorroboration救済は生きたSecondary/Local ASR経由の実NG再現が未取得(オフライン検証のみ)。Production採用・配線範囲はユーザー判断、Production module無変更(sha256確認)。
+- SSOT反映: `OPEN_ITEMS.md` OPEN-186のStatusを`REVIEW_COMPLETED`→`TRIAL_VALIDATED`(採用判断待ち)へ更新(追記3)。OPEN-187備考へコスト確認完了・ユーザー基本方針提示済みを追記。OPEN-183備考5へsmall_bag After版(segmentation適用)もユーザー試読対象である旨を追記。新規OPEN-188(Family X Section Segmentation仕様候補、Status=`TRIAL_VALIDATED`)を追加。`docs/pm/REPORT_LEDGER.md`に3件の新規行を追加し、`EN-ASR-SEMANTIC-EQUIVALENCE-REVIEW-01`行のFeedback列を「済(A-T回答済み、Trial実施)」・累積再掲対象を`N`へ更新した。
+- ユーザー判断待ち: (a) EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01のProduction採用可否・配線範囲(OPEN-186)、(b) Family X JAダブルチェック運用の正式採用可否(OPEN-187)、(c) Family X Section Segmentation方式Aの採否・追加Trial要否(OPEN-188)。
+- 不整合点検(read-only、修正はFable/ユーザー判断): `docs/pm/RESULT_PACKET_CLB.md`の(a)〜(d)表に列挙した(USER_DECISION_REQUIRED/TRIAL_VALIDATED一覧、APPROVED_FOR_PRODUCTIONだがPRODUCTION_WIREDでない項目一覧、REPORT_LEDGER未報告Trial、SSOT間不整合候補)。本エントリでは修正を一切実施していない。
+- 関連: `docs/pm/ACTIVE_TASK_CLB.md`(本委任転記)、`docs/pm/RESULT_PACKET_CLB.md`、`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01_REPORT.md` §6、`NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01_REPORT.md` §10、`EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01_REPORT.md` §9。
+- commit: (本コミットでSSOT反映[`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`/3件のREPORT]を実施)

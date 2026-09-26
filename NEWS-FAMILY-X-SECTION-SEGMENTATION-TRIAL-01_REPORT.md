@@ -370,3 +370,13 @@ unpriced_records 0)。目安¥10・Guardrail¥30の範囲内(方式A[¥0]のみ�
 
 本Trialは既存記事(small_bagテーマ)の構造検証のみであり、新規記事テーマ
 選定には該当しない(`PM_GOVERNANCE.md` 13節の対象外)。
+
+## §10 Fable評価(2026-09-26)
+
+Fable分類: VALIDATED(small_bag・この構造パターン範囲内)。方式A(段落を
+見出し直後へ移動、語句無変更)のみで先取りが解消し、Bridge「Yet this does
+not mean large bags have vanished.」は見出し直後に保持、切断の不自然さ
+なし。両レベルで文の追加削除0、数字・引用句・固有名詞一致、Full Ledger
+再照合LEDGER_COMPLIANT、語数不変、¥1.33、Production Prompt/module無変更
+(sha256)。採用(APPROVED_FOR_PRODUCTION)はユーザー確認後。1テーマ・1見出し
+の検証であり他テーマ・他Familyへの一般化は未検証。
