@@ -212,6 +212,41 @@ role taxonomyのいずれもProduction未配線のまま。実データ1例
 アポストロフィ非対応)は本Trialのharness内バグであり、Production側の
 `classify_asr_match`等には影響しない(git diffで無変更を確認済み)。
 
-## 11. [Fable記入]
+## 11. Fable評価
 
-## 12. [Fable記入]
+(1)ユーザー決定仕様どおりの順序(attempt1→即時attempt2→10分待機→attempt3→
+Local Rewrite→局所QA→再TTS)を実データで実証。10分待機はtime.sleep(600)
+実行、timestamp差611秒で確認。Human介入なし。記録項目(segment/canonical/
+attempt/timestamp/gap/model/voice/route/input hash/ASR/classification/
+PASS-NG/human intervention)は網羅。(2)cool-down自体の効果: attempt1〜3は
+すべて同じ誤認識(point→points)で、10分待機ではTTS/ASRの結果は変わらな
+かった(この語の場合は時間依存の揺れではなく、TTSの発話とASRの単複判定に
+由来する再現性のあるNG)。cool-downデータは1例のみで、有効性の判断は蓄積
+待ち。(3)Local Rewrite: span特定は当初harnessのトークナイズ不一致(曲線
+アポストロフィ)で誤span(let's)を書き換えるバグがあり、修正後に正しい
+span(point→idea)へ収束。unchanged_ratio 0.96で全文書き換えでないことを
+機械確認。局所QA PASS(意味・role・接続維持)。再TTSでNORMALIZED_MATCH
+PASS、Human Review到達前に解決。『bring the main idea together』は意味
+保持だが英語としてやや珍しい表現(『pull the main idea together』等が
+より自然)—局所QAが自然さを厳しく見ていない可能性を留意点として記録。
+(4)Connected Speech: role taxonomy(NARRATIVE_ENGLISH/HEADING_READOUT/
+KEY_PHRASE)を設計。実態は『role単位ではなく関数単位』で適用が決まって
+おり(comment群はvoice01.generate_charon_english経由で等価層引数なし)、
+Production配線時はここを関数横断のrole判定へ変える必要がある(未配線)。
+point→pointsが等価層で救済されないことは実行時evidenceでも一致。
+(5)harnessバグ2件(STOPPED分岐のasr_text復元、トークナイズ)を修正・
+test 17件で固定。無駄TTS 1回(mkdir漏れ)を含め¥4.66。
+
+## 12. 分類
+
+**VALIDATED**(Trial限定。cool-down・Local Rewrite・role taxonomyは
+Production未配線)。ユーザー判断事項: ①cool-down+Local Rewrite経路を
+Production retry仕様の候補(APPROVED_FOR_PRODUCTION)にするか、それとも
+他segment・他NG種別での追加データ(2〜3例、¥10程度)を先に取るか(Fable
+推奨: 追加データを先に取る。理由: cool-downの効果は1例では判断できず、
+Local Rewriteの自然さQAも1例)。②Connected Speech適用範囲をrole単位へ
+変更するProduction改修(Full Story/Comment/Preview/Topic intro/In One
+Line=適用、見出し読み/Key Phrase=対象外)を着手するか(Fable推奨: ①の
+追加データと同時に設計、実装はユーザー承認後)。③Local Rewrite局所QAに
+『英語としての自然さ』の明示基準を加えるか(Fable推奨: 加える、ただし
+Comment等の非Fact segment限定)。
