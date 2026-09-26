@@ -246,3 +246,18 @@ Grepした結果、Fiction/Family Zの権利要件と関連付けた配信基盤
   https://www.aozora.gr.jp/cards/000035/card1567.html 、
   https://en.wikipedia.org/wiki/Copyright_law_of_Japan 、
   https://copyright.cornell.edu/publicdomain
+
+---
+
+## §6 ユーザー決定(2026-09-26)
+
+「日本人向け・日本国内向けサービスであるため、Family Zの権利条件は
+以下で正式採用: (1)日本国内でPublic Domain、または日本国内で適法に
+利用可能であることを必須条件とする (2)米国PDは必須条件にしない (3)
+海外向け配信・提供を将来行う場合のみ、その対象法域のrights確認を
+追加する (4)原作がPDでも、現代の第三者翻訳・英訳・挿絵等は別著作物
+として扱い、権利未確認のものは流用しない (5)Family Zのadaptationは、
+確認済み原文/正式Seedから自前生成する。走れメロスは日本でPD確認済み
+のため初回Family Z E2E対象として継続、差し替え不要。本rights方針は
+`APPROVED_FOR_PRODUCTION`。Family Z自体はZ-2/Z-3/Z-4と合わせ、
+Production wiringとE2E evidence完了まで`PRODUCTION_WIRED`にしない。」

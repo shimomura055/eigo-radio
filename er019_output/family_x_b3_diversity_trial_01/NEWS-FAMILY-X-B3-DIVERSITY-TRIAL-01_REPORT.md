@@ -644,4 +644,36 @@ Deviation check(修正後再実行): `overall_status: LEDGER_COMPLIANT`。
 - 効果音仕様は分析(候補提示)のみで、判断・実装は行っていない
   (USER_DECISION_REQUIRED)。
 
-(§Fable評価・§分類は空欄、Fable記入待ち)
+## 8. Fable評価
+
+1. 分類: small_bag=VALIDATED(Storyline+B3→Advanced/Standard
+LEDGER_COMPLIANT、Storyline外Fact混入なし)。meta=VALIDATED(Fact
+fidelity修正[MUSE-HC-012時制]後、Full Ledger再照合LEDGER_COMPLIANT、
+再生成なし)。hormuz=NOT_COMPLETED(Advanced段で既存Full Ledger
+Deviation GateがMAJOR 3件を検出し1回retry後STOP。Gateの正常動作で
+あり、Sonnetが回避しなかった判断を支持)。Trial全体=VALIDATED(検証
+目的達成、hormuzは未達成部分を明記)。
+2. 最重要所見: hormuzのMAJOR 3件(断定的因果・比較・Ledger外の下流
+影響)はいずれもJA R2時点で既に存在していた。Meta記事の時制ドリフト
+もJA Original段で発生していた(`NEWS-FAMILY-X-B3-ADVANCED-RETRY-
+ROOTCAUSE-01`)。すなわち観測された逸脱2件/2件がJA Writer段で発生し、
+Full Ledger照合はAdvanced段で初めて掛かるため、英訳段のretry(同一
+JA入力の再翻訳)では構造的に解消できない。これはB3仕様の問題ではなく
+Writer経路のGate配置の問題。
+3. small_bag: 3/17 Factで単一比喩(荷物係/演出係)に一貫、Fact
+stuffingは解消。一方、同趣旨の言い換えが後半で3回繰り返される冗長が
+観察され、Fact削減が「言い換えによる水増し」に転じ得る兆候。旧記事
+(検証型・反証多め)との優劣は用途が異なり断定しない。
+4. 構成比率: 4本すべてでPoint2が最大(21〜26%)、Point語数が診断的
+目安(30〜60語)を大きく超える例(128〜134語)が3件。Gate違反ではない
+が、Storyline+B3方式ではPointが長くなる傾向として記録。
+5. 効果音: 候補提示のみ。Fable所見: 現行DECIDED(Comment前後は専用
+効果音なし)を変更する根拠は本Trialからは得られず、変更しない案を
+推奨。
+6. 費用¥14.53(Ledger再利用でResearch¥0)。想定¥30〜90を下回った
+理由は明確。
+
+## 9. 分類
+
+small_bag: VALIDATED / meta: VALIDATED(修正後) / hormuz:
+NOT_COMPLETED(Gate STOP) / 効果音: USER_DECISION_REQUIRED(提案のみ)

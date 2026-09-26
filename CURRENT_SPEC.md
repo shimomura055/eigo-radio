@@ -1103,10 +1103,24 @@ segment_id規約・In One Line新規設計]が未解決)。Trial結果(`VALIDATE
    重複場面削除のみ。中心Story・因果関係・重要な人物関係・結末・
    原作の魅力を壊さない。
 3. **Seed必須条件**(4項目、Seedは以下すべて満たすこと): (a)
-   Original/primary textを直接確認できる、(b)日本法+米国法双方で
-   利用可能、(c)短編化しても中心Storyを保持できる、(d)Story品質基準
-   4項目中原則3項目以上を満たす。検索要約だけをSeedにしない。一次
-   資料を確認できない候補はNG。
+   Original/primary textを直接確認できる、(b)**日本国内でPublic Domain、
+   または日本国内で適法に利用可能であること**(米国PDは必須条件にしない。
+   海外向け配信・提供を将来行う場合のみ、その対象法域のrights確認を
+   追加する。原作がPDでも、現代の第三者翻訳・英訳・挿絵等は別著作物
+   として扱い、権利未確認のものは流用しない。Family Zのadaptationは、
+   確認済み原文/正式Seedから自前生成する)、(c)短編化しても中心Story
+   を保持できる、(d)Story品質基準4項目中原則3項目以上を満たす。検索
+   要約だけをSeedにしない。一次資料を確認できない候補はNG。
+   **旧: 「日本法+米国法双方で利用可能」(2026-09-26
+   `FICTION-FAMILY-Z-RIGHTS-RECHECK-01`で根拠記載なしと確認、同日
+   ユーザー決定[日本人向け・日本国内向けサービスであるため、米国PDを
+   必須条件にしない]で上記(b)へ置換。走れメロスは日本でPD確認済み
+   のため初回Family Z E2E対象として継続、差し替え不要)。**
+   **rights記録ブロックの説明**: Seedのrights記録には、日本国内status
+   (必須条件)に加えて、米国等の他法域のstatusを**条件ではなく記録
+   事項として**残す(例: 走れメロスはURAA回復により2035年末まで米国
+   保護の可能性があるが、これは法的最終判断ではなく記録事項であり、
+   日本国内向けサービスとしてのSeed採否には影響しない)。
 4. **Fiction共通の外国人名ルール(正式)**: 外国人の人名は本文中では
    First name/Last nameのどちらか一方だけを使用する(例: Eugene Aram
    → Aram、Richard Houseman → Houseman、Daniel Clarke → Clarke。
@@ -1150,14 +1164,18 @@ segment_id規約・In One Line新規設計]が未解決)。Trial結果(`VALIDATE
   (Voiceごとに複製しない)。ただしDialogue部分(会話文)は、既に承認済み
   のspeaker/male-female Voice assignmentルールに従う。`APPROVED_FOR_
   PRODUCTION`。既存Voiceルールを再利用し、新しいVoice仕様を作らない。
-  **未特定事項**: 当該「既存承認済みspeaker/male-female Voice assignment
-  ルール」の正式名称・CURRENT_SPEC上の所在は、本タスクのGrep調査
-  (B-Family Voices A/B/Narrator固定[Algieba/Erinome/Aoede、本ファイル
-  「B-Family」節]・Family C article_config単位のVoice指定[`voice_
-  tts_names`]・記事ごとのpitch推定による性別的印象判断[`DECISION_LOG.md`
-  該当エントリ7826行付近]を確認)では単一のSSOTルールとして断定できな
-  かった。**既存承認済みVoice assignmentルールに従う(参照先はFable確認
-  中)**。Family Z Production配線の実装時までにFableが参照先を確定する。
+  **参照先(Fable確認結果、2026-09-26)**: Family C(Future Story)で
+  運用実績のあるDialogue Voice割当機構 — narrator=Aoede、登場人物台詞=
+  Erinome/Charon等を`classify_quote_voice_window()`(話者判定、
+  `er013_family_c_production_01.py` L66-95、引用符前後windowのキーワード
+  一致で判定)で割り当て、記事ごとに`voice_tts_names`で人物→Voiceを
+  指定する(DECISION_LOG `USER-TEST-FINAL-AUDIO-BATCH-06` 委任B/C、
+  Status=`VALIDATED`[Trial]、既知課題OPEN-156[引用符境界またぎ誤判定、
+  `classify_quote_voice_window`は当該修正の汎用化版]、性別印象はSSOT
+  未記載のためピッチ推定で代替した経緯あり[DECISION_LOG該当エントリ
+  7826行付近])。Family ZはZ-2の方針どおりこの既存関数を再利用し、
+  新しいVoice仕様を作らない。ユーザーが別ルールを意図している場合は
+  訂正を受け付ける。
 - 上記によりOPEN-185の未決論点(2)(3)(4)は解消。残るのは(1)権利論点
   (走れメロス米国著作権status)のみで、別管理ID
   `FICTION-FAMILY-Z-RIGHTS-RECHECK-01`で確認中。Production配線

@@ -249,3 +249,36 @@ Retry後Checker呼び出し(`raw_usage_log.jsonl` L16): `response_id="resp_0d6c4
 - `er003_v1_n3_01_advanced_adaptation_generate.py`(L261-270 `build_prompt()`, L337-380 `generate_advanced_adaptation()`)
 - `er003_v1_en_direct_vfl_01_generate.py`(L359-400 `run_writer_no_search()`, L403-431 `run_writer_with_technical_retry()`, L448-493 `DEVIATION_FLAG_KEYS`/`DEVIATION_JSON_SCHEMA`, L495-541 プロンプト定数, L634-657 `run_deviation_check()`)
 - `docs/pm/ACTIVE_TASK_FXB3.md`(Fable委任文からのparaphrase引用、出典は`fable_editorial_findings.md`経由)
+
+---
+
+## §13 Fableレビュー(2026-09-26)
+
+「(1) 原因分析の妥当性: 支持。根本原因は2点。①Retryが1回目MAJORの
+内容を一切受け取らず同一入力(JA R2)で英訳を再生成するだけで、
+must-fix契約もissue追跡も存在しない。②逸脱の発生源がJA Original段
+(Selected Brief/Full Ledgerは正しい)であり、JA Writer段にLedger照合
+Gateが無いため、英訳段のretryでは原理的に自己修復不能。hormuz
+(Diversity Trial)のMAJOR 3件もJA R2時点で存在しており、2件/2件が
+同じ構造で説明できる。
+(2) 訂正: 「1回目Checkerが時制差をMAJORとして正しく検出した」という
+前提は、1回目Checkerの生JSONが保存されない設計のため未検証(Fableの
+前回報告の記述は実行時ログのparaphraseだった)。
+(3) Checker側: 1回目/2回目の設定は完全同一で、差はarticle_textと
+判定の非決定性のみ。`changed_time`/`changed_certainty`の定義が
+「単一事象の完了/未来」を名指ししていない曖昧さは妥当な仮説。
+(4) 最小対策の推奨: [a] 観測性修正(全deviation check結果[attempt
+1/2、raw JSON含む]を保存)=挙動変更なし、Production直接修正可、¥0。
+[b] 挙動修正=Trial必須: (i) JA Writer段(R2確定前)にSelected Brief/
+Full Ledger照合とmust-fix retryを追加(発生源で止める)、(ii) 英訳段
+retryにmust-fix constraint+issue persistence(1回目MAJORの各項目が
+解消したかを2回目で個別再確認、残存なら自動FAIL継続)。[c]
+deterministic時制チェック(案3)は現時点で不採用(ER-009-N1の誤検知
+経緯、false positiveリスク)。Trial対象はMeta run_01(JA段から再生成)
+とhormuz(STOP済み事例)、想定¥20〜40。
+(5) リスク: [b-i]はJA段の追加LLM呼び出し1〜2回/記事(+¥0.5〜1、
++20〜40秒)。[b-ii]はChecker誤検知がそのまま修正指示になるfalse
+positive連鎖の懸念があり、must-fix指示は「Ledger原文を提示して
+整合させる」形に限定する。retry上限1回・STOP条件は維持。
+(6) Production直接修正の可否: [a]のみ可。[b]はTrial後にユーザー
+承認。」
