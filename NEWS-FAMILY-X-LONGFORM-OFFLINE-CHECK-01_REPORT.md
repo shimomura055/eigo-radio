@@ -144,7 +144,20 @@ FK gradeは`er015_news_natural_advanced_standard_a2_trial_01.py`の
   Production採用可否・3分割以降の実施可否はFable/ユーザー判断に委ねる。
 
 ## §10 Fable評価
-[Fable記入]
+
+「(1)322語・6段落・24文・FK 7.34。旧127語版の約2.5倍、arm3(330語)と同
+水準。(2)Fact: JA原文10段落すべてに対応、追加事実なし、『some of the
+calls』を正しく使用、『human concierges』維持。『Meta executives』(複数)
+は訳語選択の記録。(3)水増し: 言い換え1文(原文構成由来)、装飾0。ただし
+『a human understudy was waiting backstage』はJA原文にない新規比喩の
+追加(装飾に分類すべき1文)であり、Sonnetの装飾0判定はこの点で甘い。
+(4)Storytelling: R2の流れ(導入→舞台裏→比喩→懸念→停止→問い)を保持。
+(5)3分割・Comment・TTS等は未実施、Online流用禁止を明記。費用¥0.18。」
 
 ## §11 Fableの最終判定
-[Fable記入]
+
+「**VALIDATED(Offline確認としての所見、1サンプル)**。Point構造なしで
+260–340語へ長文化すること自体に品質問題は見られない。次工程(Online/
+Production相当経路からの新規生成とOffline本文との比較)はユーザー判断後
+に別管理IDで実施。ユーザー判断事項: ①Online生成へ進めるか(¥1〜2、TTS
+なし)。②長さ目標を260–340語で固定するか。」
