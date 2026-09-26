@@ -161,7 +161,9 @@ Fableは、`docs/pm/ACTIVE_TASK.md`を上書きする全ての委任で、ファ
 20〜30行・300〜800 token以内(2026-09-10、報告単位管理ルール追加に伴い
 15〜25行から緩和)。ヘッダは要約であり、詳細はSSOT(`OPEN_ITEMS.md`等)を
 必要箇所だけGrepして確認する(鵜呑みにしない)。compact直後の復帰手順は
-`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。
+`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。報告前には
+`docs/pm/REPORT_LEDGER.md`を確認し、初回報告未の管理IDを要約・再掲扱い
+にしない(`docs/pm/PM_GOVERNANCE.md` 12-12節、2026-09-26追記)。
 
 ### 書式
 

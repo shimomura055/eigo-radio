@@ -9541,3 +9541,14 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 未解決事項: なし。
 - 関連: `FICTION-EXTERNAL-STORY-SEED-TRIAL-01`(契機)、`PM_GOVERNANCE.md` 7-5(既存、位置づけ整合)・7-6(新設)。
 - commit: (本コミットで反映)
+
+## PM-REPORTING-LEDGER-INITIAL-VS-RESTATE-01: 「初回報告」と「再掲」の混同禁止、REPORT_LEDGERによる状態管理(ユーザー正式決定、2026-09-26)
+
+- 日付: 2026-09-26
+- 区分: ユーザー正式決定(運用違反の再発防止記録のみ。コード・Production変更なし、追加API費用¥0)。
+- 事象: `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`と`NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-02`の2件について、Trial結果本体をユーザーへ一度も★★★★報告★★★★していなかったにもかかわらず、Fableが累積報告の中で「前回までの未確認判断事項(再掲・要約)」として数行の要約のみを提示した。RepoにREPORTファイルが存在する・commit済み・Fable内部では完了している、ということは「ユーザーへ報告済み」を意味しない。
+- ユーザー明確化ルール(逐語): (1) 「初回報告」と「再掲」を絶対に混同しない。未報告なら初回報告として必要な結果を省略せず提示する(要約のみ・「詳細はREPORT参照」は不可)。(2) 再掲時は勝手に要約しない。前回`★★★★報告★★★★`内の内容を基本そのままコピーする。(3) REPORTファイルの存在・commit・Fable内部での完了は「報告済み」を意味しない。ユーザー向け`★★★★報告★★★★`ブロックに実際に載せたかで判断する。(4) 「初回報告済みか/ユーザーFeedback済みか/累積再掲対象か」を区別できる最低限の仕組みを入れる(過剰な新システムは不要)。
+- 実装: `docs/pm/REPORT_LEDGER.md`(新設、管理IDごとの初回正式報告/ユーザーFeedback/累積再掲対象を管理する最小台帳。初期行に直近9管理ID、うち`VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`/`NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-02`の2件を「初回報告未」として記録)。`docs/pm/PM_GOVERNANCE.md` 12-12節(新設、本ルールの恒久化)。`docs/pm/PM_BRIEF.md`のACTIVE_TASK固定ヘッダ節へ「報告前にREPORT_LEDGER.mdを確認」の1行追加。`docs/pm/templates/USER_REPORT_CHECKLIST.md`(新設、★★★★報告★★★★を出す前の固定チェック5項目)。
+- 未解決事項: なし(本件は運用ルールの明文化・再発防止記録のみ。`VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`/`NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-02`自体の初回正式報告は、本エントリとは別に次回★★★★報告★★★★で実施する)。
+- 関連: `docs/pm/REPORT_LEDGER.md`(新設)、`docs/pm/templates/USER_REPORT_CHECKLIST.md`(新設)、`docs/pm/PM_GOVERNANCE.md` 12節(12-3/12-4/12-4-1/12-11既存、12-12新設)、`docs/pm/PM_BRIEF.md`。
+- commit: (本コミットで反映)
