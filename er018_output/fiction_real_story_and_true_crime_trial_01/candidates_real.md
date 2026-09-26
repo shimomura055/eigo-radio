@@ -1,0 +1,18 @@
+# FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 -- candidates_real.md (3-A Real Story)
+
+Trial専用。Production Fiction仕様への反映は本タスクの対象外。到達上限VALIDATED。
+Gate定義はFICTION-EXTERNAL-SEED-SELECTION-CRITERIA-TRIAL-02(VALIDATED)を流用。
+Livingstone「The Lion That Rose Again」(同Trial-02採用済み)とは重複しない新規素材。
+
+## 候補表
+
+| Source | 一次テキスト確認(URL/HTTP status/冒頭または該当箇所引用、約200語) | 著者・没年 | 権利(日本/米国) | G1〜G4 | 採用/非採用 | 理由 |
+|---|---|---|---|---|---|---|
+| **[採用]** Feigning insanity to expose an asylum(Nellie Bly, *Ten Days in a Mad-House; or, Nellie Bly's Experience on Blackwell's Island*, 1887) | https://www.gutenberg.org/ebooks/59899.txt.utf-8 / HTTP 200 / 冒頭(Ch.II): "But to return to my work and my mission... I flew to the mirror and examined my face... I opened mine as wide as possible and stared unblinkingly at my own reflection... I consoled myself with the thought that in a few nights more I would not be there, but locked up in a cell with a lot of lunatics."(全文はprimary_text_evidence/nellie_bly_excerpt_opening_ch2.txt) | Elizabeth Cochrane Seaman(pen name Nellie Bly)、1864-01922年1月27日没(Wikipedia、"Nellie Bly"記事で確認) | 日本: 没後1922+70=1992年で著作権満了済み(Wikipedia没年で確認)。米国: Public domain in the USA(Gutenberg #59899の権利表示で確認、1887年公表・1931年より大幅に前) | G1 PASS(HTTP 200・全文直接取得・確認)/G2 PASS(日米とも満了)/G3 PASS(280-420語へ十分圧縮可能な単一arc)/G4: A是(central event=潜入取材の顛末)・B是(高い読者関心=投獄詐術+暴露報道)・C是(変化=「正直に話すほど狂人扱いされる」という逆説的発見、退所時の同情心)・D是(圧縮耐性あり) | **採用** | Livingstoneの動物襲撃サバイバル譚とはジャンルが異なる(潜入取材・社会正義テーマ)ため新鮮味があり、G1〜G4すべてPASS(4/4)。皮肉な中心的転換(正気を主張するほど狂気の証拠と誤認される)が明確で、280-420語への圧縮にも十分耐える。 |
+| Across South Georgia(Ernest Shackleton, *South*, Ch.X「Across South Georgia」, 1919) | https://www.gutenberg.org/ebooks/5199.txt.utf-8 / HTTP 200 / 該当箇所(Ch.X末尾): "I know that during that long and racking march of thirty-six hours over the unnamed mountains and glaciers of South Georgia it seemed to me often that we were four, not three... afterwards Worsley said to me, 'Boss, I had a curious feeling on the march that there was another person with us.' Crean confessed to the same idea."(全文チャプターはprimary_text_evidence/manifest.jsonのハッシュで参照、抜粋は本表内引用のみ保存) | Ernest Henry Shackleton、1874-1922年1月5日没(Wikipedia確認) | 日本: 没後1922+70=1992年満了。米国: Public domain in the USA(Gutenberg #5199の権利表示で確認、原著1919年刊、1931年より大幅に前、Gutenberg該当ページのWikipedia link "South (book)" でも刊行年確認) | G1 PASS/G2 PASS/G3 PASS(単一章・単一arcで圧縮容易)/G4: A是(中心事件=36時間の氷河横断)・B是(生死を分ける遭難劇)・C是(疲労困憊から救済への変化、「第四の同行者」という神秘的体験)・D是 | 採用可能(今回は非選択) | G1〜G4すべてPASS(4/4)だが、Livingstoneの「動物に襲われるが恐怖を感じない」というテーマと同じ「肉体的サバイバル」路線であり、ユーザーが弱いと感じた前回作との差別化という観点でNellie Blyの方が新鮮(社会正義・欺瞞・皮肉というテーマ)と判断し、今回はNellie Blyを優先した。 |
+| Unbeaten Tracks in Japan(Isabella Bird, letters/travelogue, 1880) | https://www.gutenberg.org/ebooks/2184.txt.utf-8 / HTTP 200(729,612文字) / 複数箇所を実際に読んで確認(冒頭・"bear"/"horse"等のキーワード周辺・目次相当箇所)。単一の劇的事件を示す一節は見つからず、代表的な一節: "My last visitors were Sir Harry and Lady Parkes, who brought sunshine and kindliness into the room..."(日常来訪の記述)のような書簡体の記述が中心。全数照合ではなく代表箇所の確認である旨を明記する。 | Isabella Lucy Bishop(旧姓Bird)、1831-1904年10月7日没(Wikipedia確認) | 日本: 没後1904+70=1974年満了。米国: Public domain(Gutenberg #2184の権利表示で確認、原著1880年刊) | G1 PASS(直接取得・複数箇所読了)/G2 PASS/**G3 中間〜FAIL**(書簡体の紀行文であり、単一の中心事件に乏しい。280-420語に圧縮できる明確な単一arcを複数箇所の確認では発見できなかった)/G4: A否〜中(単一事件が薄い)・B中・C否(明確な変化に乏しい)・D否(圧縮対象の核が定まらない) | **非採用** | Trial-02で非採用となった「年代記のみで場面・対話・単一事件が皆無」な日記型候補と同種の弱点。全文(約73万字)の網羅的読了はしていないため、他の章に強い単一事件が存在する可能性は排除できないが、複数箇所を確認した限りでは中心事件が薄い書簡体紀行文であり、今回は優先度を下げた。 |
+
+## 費用・調査方法
+
+- 一次テキスト取得はすべて直接HTTP GET(`requests`、Project Gutenberg `.txt.utf-8`)で実施し、web_search呼び出しは0回・$0。
+- 候補発見の補助にWikipedia API(`en.wikipedia.org/w/api.php`、`action=query`/`action=parse`)を著者没年・刊行年の確認および外部リンク(Gutenberg ID)発見のために使用した(これはGoogle的な検索エンジンではなく百科事典APIへの直接HTTP GETであり、費用$0)。
