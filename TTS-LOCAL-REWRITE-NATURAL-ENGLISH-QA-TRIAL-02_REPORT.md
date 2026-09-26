@@ -264,8 +264,28 @@ Production未配線のまま。実データ1例(comment_4)で、独立judgeが�
 
 ## 12. Fable評価
 
-[Fable記入]
+(1)Natural English Gateを独立必須Gateにしたことで、前回『TTSが通ったから
+採用』だった "bring the main idea together" が不合格となり、自然な候補
+(採用: "sum up the key lesson")へ置き換わった。候補複数生成→7 QA→1件の
+みTTSの流れは無駄な課金を抑えつつ機能(¥3.09、TTS attempt1でPASS)。
+(2)留意: 判定はLuna 1 callの自己判定で人間評価・クロスチェックなし。Fable
+の見立てでは候補1 "bring the main threads together"・候補2 "sum up the
+story's main takeaway" が原文の意味(まとめる)に最も近く、採用候補の
+"key lesson" は『教訓』へ意味がわずかに寄る(Commentのrole上は許容範囲)。
+採用はTTS安定性ヒューリスティック(threadsの複数形/s/リスク回避)による
+もので合理的。
+(3)harnessバグ1件(候補が全文でなく置換句のみ返る)を修正し安全網+test 3件
+で固定、test 14件PASS。
+(4)n=1 segment・1種類のNG(単複)のみ。
+(5)Co-Authored-Byトレーラー欠落は運用上必須ではなく対応不要。
 
 ## 13. 分類
 
-[Fable記入]
+**VALIDATED**(Trial限定、Production未配線)。ユーザー判断事項:
+①cool-down+Local Rewrite(7項目QA、候補複数生成→Natural English Gate→
+1件TTS)をProduction retry仕様候補にするか、他segment・他NG種別で追加
+データ(2〜3例、¥10)を先に取るか(Fable推奨: 追加データ先行)。
+②Connected Speech適用範囲のrole単位改修の着手(Fable推奨: ①と同時に設計、
+実装は承認後)。
+③Natural English判定を同一モデル1 callのままにするか、2回一致等を入れるか
+(Fable推奨: 追加データ取得時に2回一致を試す)。
