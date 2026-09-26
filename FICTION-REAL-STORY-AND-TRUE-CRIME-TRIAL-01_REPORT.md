@@ -243,8 +243,8 @@ Fiction家族全体のルールを変更したものではなく、True Crimeと
 
 ## §7 Fable評価
 
-(空欄、Fable記入待ち)
+(1) 選定Gate: Real Story(Nellie Bly "Ten Days in a Mad-House"、1887、著者1922年没→日本PD 1992年満了・米国PD)/True Crime(Eugene Aram事件、Camden Pelham "The Chronicles of Crime" 1841、筆名・1841年刊→日本PD公表後70年・米国PD)とも一次テキストをHTTP GETで直接確認(Gutenberg #59899/#46585)、日本+米国の権利根拠が明記されており、Trial-02のGate(一次テキスト・権利・短編化・4基準)を満たす。web_search 0回・費用合計¥5.52。(2) Real Story: 388語、原文Ch.XVIの中心的皮肉(正気を訴えるほど疑われる)を保持、忠実性表あり。編集者・医師・看護人は役割名(改名ではなく省略)で、人物名の無意味な変更はない。(3) True Crime: 初版(284語)はFableのEditorial Gateで差し戻し(核心ディテール[Housemanの一言"This is no more Daniel Clarke's bone than it is mine!"と指示どおりの場所からの第2骨格]の平板化、末尾の再要約、語数下限ぎりぎり)。修正版(334語、attempt10)はこの3点を解消し、実名・日付・経緯は資料どおり、創作台詞・動機なし。ただし第4段落と第6段落(「第1の骨格がClarkeとは断定できない」)がやや重複しており、Storytellingとしては引き締め余地がある(Fable所見、事実には影響なし)。(4) 語数の不安定性: True Crime再生成でLunaの出力語数が245〜350語でばらつき、Seed指示を4段階強化して300語超に到達(試行10回、全て保存)。True Crime系Seedは語数下限の指示を最初から強く入れる必要がある(運用所見)。(5) 命名規則: True Crimeでは「事実改変なし」を優先し実名を全保持(Fiction家族の「主人公のみ固有名」規則からの意図的逸脱)。正式化はユーザー判断。(6) Chronicling America/loc.gov検索エンドポイントはCloudflare 403でHTTP GET不可。代替(Newgate Calendar系PDコレクション)を使用。
 
 ## §8 分類
 
-(空欄、Fable記入待ち)
+**VALIDATED**(Trial範囲。Production Fiction仕様への反映ではない。Story品質の最終判断はユーザー試読)。ユーザー判断事項: F-1 Real Story「Ten Days Inside」(Nellie Bly)の試読評価(Livingstone比)。F-2 True Crime「The Second Skeleton」(Eugene Aram)の試読評価。F-3 True Crimeにおける実名全保持を、Fiction家族命名規則(主人公のみ固有名)の正式な例外として記録するか(Fable推奨: 記録する。理由: 「事実を勝手に改変しない」条件と両立するのは実名保持のみ)。F-4 Chronicling Americaが直接取得不可の場合、Newgate Calendar系等のPD犯罪記録集を正規の代替Sourceとして認めるか(Fable推奨: 認める。ただしLOC APIの別経路[loc.gov JSON API等]を次回Trialで再試行)。
