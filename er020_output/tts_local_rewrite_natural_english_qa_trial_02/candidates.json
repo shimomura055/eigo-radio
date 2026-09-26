@@ -1,0 +1,464 @@
+[
+  {
+    "id": "1",
+    "rewrite_type": "single_word_swap",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main threads together.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "bring the main threads together",
+    "rationale": "Replacing only “point” with “threads” creates a natural narrative expression for synthesizing the story’s key strands before the closing summary.",
+    "qa_llm": {
+      "candidate_id": "1",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "The wording still conveys that the comment is bringing together the central strands of the story before the concluding line."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It remains a story recap followed by a transition into the In One Line conclusion."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It introduces no factual claim that conflicts with the segment or its surrounding context."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "The synthesis of the story's main threads connects naturally from the discussion of human involvement to the concluding point about who is behind the voice."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'bring the main threads together' is an established way to describe synthesizing a story in narration."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        23,
+        24
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.96
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "bring",
+        "main",
+        "threads",
+        "together"
+      ],
+      "plural_s_risk_words": [
+        "bring",
+        "main",
+        "together"
+      ],
+      "word_final_plosive_consonant_words": [
+        "bring"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "bring": true,
+        "main": true,
+        "together": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  {
+    "id": "2",
+    "rewrite_type": "short_phrase_rewrite",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the story’s main takeaway.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "sum up the story’s main takeaway",
+    "rationale": "This is a direct, natural spoken way to introduce a recap of the story’s central message.",
+    "qa_llm": {
+      "candidate_id": "2",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "'The story's main takeaway' is an equivalent expression for the original segment's main point, and 'sum up' preserves the intended concluding synthesis."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It still recaps the story and clearly bridges to the In One Line statement."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It does not add or contradict any factual information."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "A spoken transition to the story's takeaway follows naturally from the preceding explanation and leads into the one-line conclusion."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'sum up' is a common spoken transition and 'main takeaway' is idiomatic in explanatory narration."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        20,
+        25
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.88
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "sum",
+        "up",
+        "story",
+        "s",
+        "main",
+        "takeaway"
+      ],
+      "plural_s_risk_words": [
+        "story",
+        "main",
+        "takeaway"
+      ],
+      "word_final_plosive_consonant_words": [
+        "up"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "story": true,
+        "main": true,
+        "takeaway": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  {
+    "id": "3",
+    "rewrite_type": "short_phrase_rewrite",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the central message into focus.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "bring the central message into focus",
+    "rationale": "This idiomatic phrasing preserves the function of highlighting the key message before the one-line summary.",
+    "qa_llm": {
+      "candidate_id": "3",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "'The central message' is equivalent to the original main point, and bringing it into focus preserves the intended move toward a concise conclusion."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It continues to function as a recap and bridge to the final one-line message."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It makes no claim that conflicts with the story or the surrounding context."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "The phrase naturally prepares the listener for the central message stated immediately afterward."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'bring the central message into focus' is a standard, idiomatic collocation for a concluding narration."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        22,
+        25
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.88
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "bring",
+        "central",
+        "message",
+        "into",
+        "focus"
+      ],
+      "plural_s_risk_words": [
+        "bring",
+        "central",
+        "message",
+        "into"
+      ],
+      "word_final_plosive_consonant_words": [
+        "bring"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "bring": true,
+        "central": true,
+        "message": true,
+        "into": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  {
+    "id": "4",
+    "rewrite_type": "short_phrase_rewrite",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main lesson home.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "bring the main lesson home",
+    "rationale": "“Bring the lesson home” is natural spoken English for making the story’s key takeaway clear and memorable.",
+    "qa_llm": {
+      "candidate_id": "4",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "In this explanatory context, the main lesson is the same central point the original comment is preparing to state, and 'bring it home' preserves the concluding emphasis."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It remains a comment that recaps the story and transitions into the In One Line takeaway."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It adds no contradictory factual content."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "The idea of emphasizing the lesson connects naturally to the following statement about transparency regarding the voice behind the call."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'bring the main lesson home' uses an idiomatic emphasis expression, whereas 'bring the main idea together' is awkward."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        23,
+        25
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.92
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "bring",
+        "main",
+        "lesson",
+        "home"
+      ],
+      "plural_s_risk_words": [
+        "bring",
+        "main",
+        "lesson",
+        "home"
+      ],
+      "word_final_plosive_consonant_words": [
+        "bring"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "bring": true,
+        "main": true,
+        "lesson": true,
+        "home": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  {
+    "id": "5",
+    "rewrite_type": "short_phrase_rewrite",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the key lesson.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "sum up the key lesson",
+    "rationale": "This concise, idiomatic rewrite clearly signals a final recap and leads naturally into the closing summary.",
+    "qa_llm": {
+      "candidate_id": "5",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "'The key lesson' functions as an equivalent of the original main point in this context, and 'sum up' retains the intended concluding summary."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It still performs the same story-recovery and bridge-to-conclusion function."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It contains no factual claim that contradicts the segment or its context."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "Summing up the key lesson leads naturally into the following one-line explanation."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'sum up the key lesson' is a normal concluding phrase in spoken explanatory English."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        20,
+        25
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.84
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "sum",
+        "up",
+        "key",
+        "lesson"
+      ],
+      "plural_s_risk_words": [
+        "lesson"
+      ],
+      "word_final_plosive_consonant_words": [
+        "up"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "lesson": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  {
+    "id": "candidate_main_idea_previous",
+    "rewrite_type": "single_word_swap",
+    "source": "TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01(read-only参照、変更なし)",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main idea together.",
+    "changed_span_before": "point",
+    "changed_span_after": "idea",
+    "rationale": "前回Trialで採用された1語置換(point->idea)。当時のQAは意味保持/role/Fact非矛盾/前後接続の4項目のみで、Natural English Gateは独立Gateとして課されていなかった。今回は比較対象として同一の7 QAを適用する。",
+    "prior_tts_result": {
+      "final_status": "RESOLVED_BY_LOCAL_REWRITE",
+      "classification": "NORMALIZED_MATCH",
+      "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now let's bring the main idea together."
+    },
+    "qa_llm": {
+      "candidate_id": "candidate_main_idea_previous",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "It retains the original intended meaning of bringing the central idea together before the conclusion."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It still serves as a story recap and bridge to the In One Line section."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It introduces no factual information that conflicts with the surrounding context."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "Its intended transition connects to the following concluding statement, although the wording is awkward."
+      },
+      "natural_english": {
+        "pass": false,
+        "reason": "It is equally natural as the plain point-to-idea swap because it is exactly that swap, but both versions sound unnatural and stilted. A native speaker would more likely say 'sum up the main idea' or 'bring the main idea into focus.' "
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        23,
+        24
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.96
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "idea"
+      ],
+      "plural_s_risk_words": [
+        "idea"
+      ],
+      "word_final_plosive_consonant_words": [],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "idea": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": false,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": false
+  }
+]

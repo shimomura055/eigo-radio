@@ -1,0 +1,48 @@
+{
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main threads together.",
+      "changed_span_before": "bring the main point together",
+      "changed_span_after": "bring the main threads together",
+      "rationale": "Replacing only “point” with “threads” creates a natural narrative expression for synthesizing the story’s key strands before the closing summary."
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the story’s main takeaway.",
+      "changed_span_before": "bring the main point together",
+      "changed_span_after": "sum up the story’s main takeaway",
+      "rationale": "This is a direct, natural spoken way to introduce a recap of the story’s central message."
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the central message into focus.",
+      "changed_span_before": "bring the main point together",
+      "changed_span_after": "bring the central message into focus",
+      "rationale": "This idiomatic phrasing preserves the function of highlighting the key message before the one-line summary."
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main lesson home.",
+      "changed_span_before": "bring the main point together",
+      "changed_span_after": "bring the main lesson home",
+      "rationale": "“Bring the lesson home” is natural spoken English for making the story’s key takeaway clear and memorable."
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the key lesson.",
+      "changed_span_before": "bring the main point together",
+      "changed_span_after": "sum up the key lesson",
+      "rationale": "This concise, idiomatic rewrite clearly signals a final recap and leads naturally into the closing summary."
+    }
+  ],
+  "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main threads together.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"bring the main threads together\",\"rationale\":\"Replacing only “point” with “threads” creates a natural narrative expression for synthesizing the story’s key strands before the closing summary.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the story’s main takeaway.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"sum up the story’s main takeaway\",\"rationale\":\"This is a direct, natural spoken way to introduce a recap of the story’s central message.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the central message into focus.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"bring the central message into focus\",\"rationale\":\"This idiomatic phrasing preserves the function of highlighting the key message before the one-line summary.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main lesson home.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"bring the main lesson home\",\"rationale\":\"“Bring the lesson home” is natural spoken English for making the story’s key takeaway clear and memorable.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the key lesson.\",\"changed_span_before\":\"bring the main point together\",\"changed_span_after\":\"sum up the key lesson\",\"rationale\":\"This concise, idiomatic rewrite clearly signals a final recap and leads naturally into the closing summary.\"}]}",
+  "_model_id": "gpt-5.6-luna",
+  "_response_id": "resp_0f6512d81bd1ce3a006ab74b3f75d487d0861b4dff3744bb32",
+  "_prompt": "Segment role: Comment(Story Recovery + Bridge to In One Line)\n\nContext immediately BEFORE this segment (full_story_part3):\n\"In internal tests, some of the calls were handled not by AI, but by human contract workers. Meta called these workers “human concierges.” The sign out front said “AI phone service.” Yet, in part, a human was making the call. The AI only appeared to be performing alone.\"\n\nFull segment (comment_4, contains the problem phrase):\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.\"\n\nContext immediately AFTER this segment (in_one_line):\n\"AI may make the call, but people also need to know who is really behind the voice.\"\n\nProblem phrase (ASR keeps mis-hearing 'point' as 'points' here):\n\"bring the main point together\"\n\nPropose exactly 5 candidates as described in the system instructions. Return the JSON object described in the system instructions."
+}

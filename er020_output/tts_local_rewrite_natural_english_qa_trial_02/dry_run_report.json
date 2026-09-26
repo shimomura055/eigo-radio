@@ -1,0 +1,20 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-NATURAL-ENGLISH-QA-TRIAL-02",
+  "budget_jpy": 15.0,
+  "max_total_tts_attempts": 4,
+  "tts_execution_mode": "STANDARD(固定、BATCH禁止)",
+  "planned_target_segment": "comment_4",
+  "planned_sequence": [
+    "候補生成(Luna 1 call、json_schema strict、新規5件)",
+    "前回'main idea'版(read-only流用)を候補6件目として追加",
+    "局所QA(Luna 1 call、6候補まとめて5 LLM Gate判定)",
+    "harness側でcriterion6(局所性)・criterion7(非全文)を機械判定",
+    "TTS安定性ヒューリスティックを機械的に注記",
+    "全7 Gate PASSの候補から最終候補を1件選定",
+    "採用候補のみTTS(cool-downなし、attempt上限2)+ASR"
+  ],
+  "planned_luna_calls": 2,
+  "planned_max_tts_calls_for_selected_candidate": 2,
+  "human_intervention": "一切行わない(常にFalse)",
+  "production_modules_touched": "0件(read-onlyでimportし、Review Lockデコレータの外側[.__wrapped__]のみ呼ぶ)"
+}

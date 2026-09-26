@@ -1,0 +1,84 @@
+{
+  "selected": {
+    "id": "5",
+    "rewrite_type": "short_phrase_rewrite",
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s sum up the key lesson.",
+    "changed_span_before": "bring the main point together",
+    "changed_span_after": "sum up the key lesson",
+    "rationale": "This concise, idiomatic rewrite clearly signals a final recap and leads naturally into the closing summary.",
+    "qa_llm": {
+      "candidate_id": "5",
+      "meaning_preserved": {
+        "pass": true,
+        "reason": "'The key lesson' functions as an equivalent of the original main point in this context, and 'sum up' retains the intended concluding summary."
+      },
+      "role_preserved": {
+        "pass": true,
+        "reason": "It still performs the same story-recovery and bridge-to-conclusion function."
+      },
+      "fact_non_contradiction": {
+        "pass": true,
+        "reason": "It contains no factual claim that contradicts the segment or its context."
+      },
+      "context_connection": {
+        "pass": true,
+        "reason": "Summing up the key lesson leads naturally into the following one-line explanation."
+      },
+      "natural_english": {
+        "pass": true,
+        "reason": "This sounds more natural than a plain point-to-idea swap because 'sum up the key lesson' is a normal concluding phrase in spoken explanatory English."
+      }
+    },
+    "is_full_segment_format_valid": true,
+    "locality_check": {
+      "criterion6_localized_to_problem_span": true,
+      "criterion6_diff_token_range": [
+        20,
+        25
+      ],
+      "criterion6_allowed_window": [
+        17,
+        25
+      ],
+      "criterion7_not_full_rewrite": true,
+      "unchanged_ratio": 0.84
+    },
+    "tts_stability_heuristic": {
+      "content_words_checked": [
+        "sum",
+        "up",
+        "key",
+        "lesson"
+      ],
+      "plural_s_risk_words": [
+        "lesson"
+      ],
+      "word_final_plosive_consonant_words": [
+        "up"
+      ],
+      "would_be_classified_benign_plural_pair_if_asr_added_s": {
+        "lesson": true
+      },
+      "caveat_diagnostic_evidence": "本Trialで実行時に直接確認した事実: 'point'/'points'はer006_preprod_hardening_01_validation.protected_check()内では既に_is_benign_plural_pair()によりbenignな複数形ゆれと判定される(content_word_diffsに計上されない)。しかしclassify_asr_match()全体の結果は依然ASR_VALIDATION_UNCERTAINだった(正規化後の一致率0.96が合格閾値に届かないため)。よって「benign plural pairに該当する」ことは合格を保証しない。この見立ては機械的なヒューリスティックの注記であり、最終判断は必ず実TTS/ASR結果(Part Fで採用候補のみに対して実行)で行う。"
+    },
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true
+  },
+  "status": "SELECTED",
+  "selection_rationale": "全7 Gate PASSの候補は5件(['1', '2', '3', '4', '5'])。その中でTTS安定性ヒューリスティックのrisk flag数が最少(plural_s_risk=['lesson'], word_final_plosive=['up'])かつunchanged_ratio=0.84(より最小限の変更)である'5'を採用。Natural English Gateの理由: This sounds more natural than a plain point-to-idea swap because 'sum up the key lesson' is a normal concluding phrase in spoken explanatory English.",
+  "all_passing_candidate_ids": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+  ]
+}
