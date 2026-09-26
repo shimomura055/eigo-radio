@@ -1,0 +1,20 @@
+{
+  "management_id": "TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01",
+  "budget_jpy": 20.0,
+  "max_total_tts_attempts": 12,
+  "tts_execution_mode": "STANDARD(固定、BATCH禁止)",
+  "planned_target_segment": "comment_4",
+  "planned_sequence": [
+    "attempt1(即時)",
+    "attempt2(NGなら即時)",
+    "cool-down 600秒(NGなら固定、実sleep)",
+    "attempt3(NGならLocal Rewriteへ)",
+    "Local Rewrite(Luna、spanのみ)+局所QA(Luna)",
+    "再TTS attempt4相当(局所QA PASS時のみ)"
+  ],
+  "planned_max_tts_calls_for_primary_target": 4,
+  "fallback_historical_examples_max": 2,
+  "fallback_note": "attempt1がPASSし再現しない場合のみ、TTSを追加せずread-onlyでer011_output/**を検索する。",
+  "human_intervention": "一切行わない(常にFalse)",
+  "production_modules_touched": "0件(read-onlyでimportし、Review Lockデコレータの外側[.__wrapped__]のみ呼ぶ)"
+}

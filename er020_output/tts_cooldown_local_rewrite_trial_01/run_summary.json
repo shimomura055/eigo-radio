@@ -1,0 +1,183 @@
+{
+  "management_id": "TTS-COOLDOWN-LOCAL-REWRITE-TRIAL-01",
+  "target": {
+    "segment_id": "comment_4",
+    "segment_role": "Comment(Story Recovery + Bridge to In One Line)",
+    "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.",
+    "source": "er019_output/family_x_pointless_trial_01/meta/b1b/audit/tts_generation_results.json#segments.comment_4.canonical_text",
+    "prior_real_run_note": "2026-09-26の実Family X本番run(comment_4)で、attempt1-3すべてがASR_VALIDATION_UNCERTAIN(canonical 'the main point together' をASRが一貫して'the main points together'と聞き取る)でHUMAN_REVIEW_REQUIREDへ到達済み(review_lock_state.json参照)。本Trialはこれとは独立した、harness自身の新規TTS/ASR呼び出しで再現を試みる。"
+  },
+  "cooldown_sequence_status": "REPRODUCED_3_NG",
+  "attempts": [
+    {
+      "segment": "comment_4",
+      "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.",
+      "attempt": 1,
+      "timestamp": "2026-09-26T12:00:55+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Charon",
+      "route": "english_style_prefix",
+      "tts_execution_mode": "STANDARD",
+      "tts_input_sha256": "19a661194dc720c77e255f71366fc5df0dfce223d5df88f8affafdcc8805e443",
+      "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main points together.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "classification_reason": "内容語の差は検出されないが、一致率がPASS基準に届かない",
+      "cascade_audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "pass": false,
+      "human_intervention": false,
+      "raw_status": "STOPPED",
+      "raw_reason": "1回試行してもASR検証に合格しませんでした",
+      "attempt_wav_path": "er020_output/tts_cooldown_local_rewrite_trial_01/target_family_x_comment_4/attempt1/narration/comment_4.wav",
+      "disfluency_checked": false,
+      "gap_seconds_from_previous_attempt": null
+    },
+    {
+      "segment": "comment_4",
+      "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.",
+      "attempt": 2,
+      "timestamp": "2026-09-26T12:01:06+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Charon",
+      "route": "english_style_prefix",
+      "tts_execution_mode": "STANDARD",
+      "tts_input_sha256": "19a661194dc720c77e255f71366fc5df0dfce223d5df88f8affafdcc8805e443",
+      "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main points together.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "classification_reason": "内容語の差は検出されないが、一致率がPASS基準に届かない",
+      "cascade_audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "pass": false,
+      "human_intervention": false,
+      "raw_status": "STOPPED",
+      "raw_reason": "1回試行してもASR検証に合格しませんでした",
+      "attempt_wav_path": "er020_output/tts_cooldown_local_rewrite_trial_01/target_family_x_comment_4/attempt2/narration/comment_4.wav",
+      "disfluency_checked": false,
+      "gap_seconds_from_previous_attempt": 11.0
+    },
+    {
+      "segment": "comment_4",
+      "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.",
+      "attempt": 3,
+      "timestamp": "2026-09-26T12:11:17+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Charon",
+      "route": "english_style_prefix",
+      "tts_execution_mode": "STANDARD",
+      "tts_input_sha256": "19a661194dc720c77e255f71366fc5df0dfce223d5df88f8affafdcc8805e443",
+      "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let's bring the main points together.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "classification_reason": "内容語の差は検出されないが、一致率がPASS基準に届かない",
+      "cascade_audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "pass": false,
+      "human_intervention": false,
+      "raw_status": "STOPPED",
+      "raw_reason": "1回試行してもASR検証に合格しませんでした",
+      "attempt_wav_path": "er020_output/tts_cooldown_local_rewrite_trial_01/target_family_x_comment_4/attempt3/narration/comment_4.wav",
+      "disfluency_checked": false,
+      "gap_seconds_from_previous_attempt": 611.0
+    }
+  ],
+  "historical_examples_used": null,
+  "local_rewrite": {
+    "rewritten_segment": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main idea together.",
+    "changed_span_before": "point",
+    "changed_span_after": "idea",
+    "unchanged_ratio": 0.9583,
+    "_raw_model_response_text": "{\"rewritten_segment\":\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main idea together.\",\"changed_span_before\":\"point\",\"changed_span_after\":\"idea\",\"unchanged_ratio\":0.9583}",
+    "_model_id": "gpt-5.6-luna",
+    "_response_id": "resp_070ffb5f6bee27ca006ab73984ec4c87d0b242d3fba8a544ec",
+    "_prompt": "Full segment (role: Comment, bridges to the closing 'In One Line'):\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['points'] instead of ['point']):\n\"bring the main point together\"\n\nRewrite only the minimal problematic word(s) with an unambiguous alternative that keeps the same meaning and role. Return the JSON object described in the system instructions.",
+    "harness_computed_unchanged_ratio": 0.96,
+    "is_local_not_full_rewrite": true
+  },
+  "local_qa": {
+    "pass": true,
+    "reasons": [
+      "Meaning is fully preserved; “main idea” conveys the same point as “main point.”",
+      "The segment still functions as a comment that summarizes the story and bridges to “In One Line.”",
+      "The rewrite introduces no contradiction or changed claim.",
+      "It connects naturally to the preceding discussion and the following summary."
+    ],
+    "_raw_model_response_text": "{\"pass\":true,\"reasons\":[\"Meaning is fully preserved; “main idea” conveys the same point as “main point.”\",\"The segment still functions as a comment that summarizes the story and bridges to “In One Line.”\",\"The rewrite introduces no contradiction or changed claim.\",\"It connects naturally to the preceding discussion and the following summary.\"]}",
+    "_model_id": "gpt-5.6-luna",
+    "_response_id": "resp_0ba1c534269cd0d4006ab7398c306487d0afd3467722fe1ad8",
+    "_prompt": "Segment role: Comment(Story Recovery + Bridge to In One Line)\n\nOriginal segment:\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together.\"\n\nLocally-rewritten segment:\n\"The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main idea together.\"\n\nEvaluate the 4 criteria and return the JSON object described in the system instructions."
+  },
+  "retts_attempt": {
+    "segment": "comment_4",
+    "canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main idea together.",
+    "attempt": 5,
+    "timestamp": "2026-09-26T12:18:54+09:00",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Charon",
+    "route": "english_style_prefix",
+    "tts_execution_mode": "STANDARD",
+    "tts_input_sha256": "6f4887d4042d1c6ad0a5ee22d92305cdf9db2eb95f6d664ac98e8e4dca9ca9c3",
+    "asr_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now let's bring the main idea together.",
+    "classification": "NORMALIZED_MATCH",
+    "classification_reason": "表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致",
+    "cascade_audio_classification": "NORMALIZED_MATCH",
+    "pass": true,
+    "human_intervention": false,
+    "raw_status": "OK",
+    "raw_reason": null,
+    "attempt_wav_path": "er020_output/tts_cooldown_local_rewrite_trial_01/target_family_x_comment_4/attempt5_rewrite_corrected/narration/comment_4.wav",
+    "disfluency_checked": true,
+    "pre_rewrite_canonical_text": "The service looked like AI, but the work behind it was not always done by AI alone. Now, let’s bring the main point together."
+  },
+  "final_status": "RESOLVED_BY_LOCAL_REWRITE",
+  "connected_speech_equivalence_check": {
+    "would_rescue": false,
+    "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+    "raw_result": {
+      "layer_judgment": "NOT_A_PHONEME_PREFIX_DROP",
+      "source": "equivalence_layer",
+      "existing_result": {
+        "diff": {
+          "index": 3,
+          "canonical_word": "point",
+          "asr_word": "points",
+          "prev_word": "main",
+          "next_word": "together"
+        },
+        "expected_phoneme_boundary": null,
+        "rule": null,
+        "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+        "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+      },
+      "equivalence_layer_info": null,
+      "diff": {
+        "index": 3,
+        "canonical_word": "point",
+        "asr_word": "points",
+        "prev_word": "main",
+        "next_word": "together"
+      }
+    }
+  },
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "bring the main point together",
+    "asr_span_with_context": "bring the main points together",
+    "canonical_changed_words": [
+      "point"
+    ],
+    "asr_changed_words": [
+      "points"
+    ],
+    "context_window_word_indices": [
+      20,
+      25
+    ]
+  },
+  "cost": {
+    "total_jpy": 4.664,
+    "by_provider": {
+      "gemini": 4.18,
+      "openai_asr": 0.21,
+      "openai": 0.27
+    },
+    "budget_jpy": 20.0
+  },
+  "correction_note": "実行時に発見したバグ(identify_ng_spanの独自正規表現が曲線アポストロフィ’を単語構成文字に含めず、本当のNG原因[point/points]より先に無関係なアポストロフィ字形差[let’s(canonical) vs let's(ASR)]を最初の不一致として誤検出していた。既存tokenize()[classify_asr_matchが使う正規化と同一]を呼び出すよう修正)を修正した後の訂正実行。attempt1-3(cool-down 10分含む)は修正前から正当なため再実行していない。旧attempt4(誤ったspanに基づくLocal Rewrite+再TTS)はlocal_rewrite_attempt4_span_bug_archive/に保存済み(削除していない)。新attempt5が、正しいspan([point]->[points])に基づく訂正後の最終結果。"
+}
