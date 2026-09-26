@@ -367,8 +367,8 @@ Rewrite回復パイプラインは実際に発火し正しい終端状態へ到�
 
 ## 10. Fable評価
 
-(空欄)
+(1) Checklist16項目はB1経路・A2経路とも証跡が揃っている(#7/#8はA2側を修正1回目で充足。A2のPreview/Commentは英語ナレーションが存在しない構造的事実であり非充足ではない)。role→Connected Speech適用判定が単一関数`connected_speech_enabled_for()`に集約され、経路別フラグが廃止された点、cool-down(固定600秒)→Local Rewrite→7 Gate QA(Natural English含む、Luna 1 call)→再TTS→未解消時のみHuman Review Lock、の順序がB1・A2で同一moduleにより保証されている点を確認。(2) runtime evidence: B1(comment_4)で実600.009秒cool-down→Local Rewrite→再TTS ASR一致→`RESOLVED`の完全経路、A2で実600.004秒cool-down→Local Rewrite→再TTS→`HUMAN_REVIEW_LOCKED_RETTS_FAILED`(正常終端)の経路を確認。A2側で`RESOLVED_BY_LOCAL_REWRITE`の実例は未取得だが、同一module関数の発火・終端到達が実証されており配線証跡としては充足。(3) 留保2点(配線Statusには影響しない記録事項): ①A2 evidenceの失敗モードが「数字表記(digit)とspelled-outのASR不一致」で、Local Rewriteでは解決しにくい種類。ASR照合の数値正規化(`classify_asr_match`のbenign扱い)は別Open項目として記録する。②A2 evidenceの費用がcost logger未使用の概算(¥15〜20)。以後のTTS runtime evidenceは必ずcost loggerを通す。(4) Natural English Gateの"main idea"判定(Trial-02 FAIL vs 本番PASS)は候補文全体が異なり一貫した判定と確認済み。(5) 費用: 初回¥7.15+修正1回目概算¥15〜20。
 
 ## 11. 分類
 
-(空欄)
+**PRODUCTION_WIRED**(Fable Gate判定、2026-09-26。ユーザー承認仕様[Local Rewrite+Natural English QA、10分cool-down、Connected Speech 5役割適用/Heading・Key Phrase非適用]との一致を確認。B1・A2両経路)。
