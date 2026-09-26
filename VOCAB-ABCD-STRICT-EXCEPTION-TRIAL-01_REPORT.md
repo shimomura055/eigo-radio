@@ -201,8 +201,8 @@ BORDERLINE 0件という結果になった。Level間対照でも閾値差以外
 
 ## §11 Fable評価
 
-[Fable記入]
+(1)C厳格化: `septic`→C の誤判定は解消(Standard/Advancedとも候補として扱われSIMPLIFY)。原因分析(v2のC定義「引用符内の語は事実として扱う」が単独十分条件として読めた)は妥当。(2)B厳格化: `pause/paused` はBから外れSIMPLIFY(→temporarily turn off)、`leak`・`curtain` はB維持。leakは「リーク=情報漏れ」としてA2学習者が迷わず結び付けられるか境界的で、Fableは境界例として記録(定義の拡大解釈ではない)。(3)D厳格化: 4記事合計でKEEP-D 0件。過剰救済は消えたが、**振れ過ぎの兆候**あり: ①Standard Sewer `flush the toilet`→`use the toilet` は意味変化(流す≠使う)で、Dの「事実精度・必要なニュアンスが明確に壊れる」に該当するはずの語まで置換された。②`septic tank`→`treatment tank` は具体物の名称を一般語へ薄める精度低下(記事の主題語)。③Advanced Sewerで `sewer(s)`→`wastewater collection system(s)` は、18,216位の `wastewater` を含む句への置換で実質的な難語→難語(new_rare_words=0は既出語のため検出外)。(4)Level間一貫性: 両Levelで候補になった7語はすべて同一判定、閾値差以外の非一貫性なし。(5)実行漏れ: Advanced Sewerで宣言済みSIMPLIFY語 `septic` が4箇所中1箇所未置換(モデル側)。(6)Standard Metaで見出し1本が変化(`pause`)。Fact tokens(数字・固有名詞)は4記事とも一致。費用¥5.86。
 
 ## §12 分類
 
-[Fable記入]
+**USER_DECISION_REQUIRED**(C誤判定解消とD過剰救済の解消は確認できたが、Dが逆方向に振れ、意味変化(flush→use)と主題語の希薄化(septic tank→treatment tank)が発生したため、この文言のままVALIDATEDとしない)。ユーザー判断事項: ①D定義に「動作・物の名称を別の意味の語へ置き換えることは不可(例: 動詞の意味が変わる置換)」「記事の主題である具体物の名称は精度低下とみなす」の趣旨を加えるか(Fable推奨: 加える。個別語は書かない)。②主題語(sewer/septic)の扱い: 厳格Dで置換対象になった結果、Standard/Advancedとも冗長な句(underground pipe system(s)/wastewater collection system(s))へ変わった。「主題語は初出で残し易しい言い換えを添える」方式(以前保留)を再検討するか(Fable推奨: ①の再Trialで結果を見てから)。③`leak` のB維持を許容するか(Fable推奨: 許容、境界例として記録)。④宣言済みSIMPLIFY語の全文一貫性チェック(機械)をTrial harnessへ追加するか(Fable推奨: 追加、¥0)。
