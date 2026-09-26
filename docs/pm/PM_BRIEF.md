@@ -21,6 +21,10 @@
      `OPEN_ITEMS_HISTORY.md`(同じroot直下、別の管理場所ではなく
      `OPEN_ITEMS.md`各行の切り出し先)へ原文のまま移動した
      (PM-TOKEN-EFFICIENCY-T1-OPEN-ITEMS-RESTRUCTURE-01、2026-09-10)。
+     各項目はPOST_USER_VALIDATION(境界日2026-09-14以降に起票、優先)/
+     PRE_USER_VALIDATION(境界日より前、棚卸しで`still relevant`確認まで
+     機械的に再実装しない)へ区分済み(`docs/pm/PM_GOVERNANCE.md`20節、
+     PM-OPEN-ITEMS-RECLASSIFICATION-01、2026-09-27)。
    - `HISTORY_INDEX.md` — 履歴索引
    - `ER-*_REPORT.md` — 個別タスクの正式な詳細報告・証跡
 5. `docs/pm/MODEL_ROUTING_TRIAL_LOG.md` — モデル選定(Haiku/Sonnet/Opus)運用

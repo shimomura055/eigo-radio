@@ -9669,3 +9669,17 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 不整合点検(read-only、修正はFable/ユーザー判断): `docs/pm/RESULT_PACKET_CLB.md`の(a)〜(d)表に列挙した(USER_DECISION_REQUIRED/TRIAL_VALIDATED一覧、APPROVED_FOR_PRODUCTIONだがPRODUCTION_WIREDでない項目一覧、REPORT_LEDGER未報告Trial、SSOT間不整合候補)。本エントリでは修正を一切実施していない。
 - 関連: `docs/pm/ACTIVE_TASK_CLB.md`(本委任転記)、`docs/pm/RESULT_PACKET_CLB.md`、`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01_REPORT.md` §6、`NEWS-FAMILY-X-SECTION-SEGMENTATION-TRIAL-01_REPORT.md` §10、`EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01_REPORT.md` §9。
 - commit: (本コミットでSSOT反映[`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`/3件のREPORT]を実施)
+
+## PM-OPEN-ITEMS-RECLASSIFICATION-01: OPEN_ITEMSのPOST_USER_VALIDATION/PRE_USER_VALIDATION区分反映+OPEN-189新規登録(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: SSOT管理方法の変更(ユーザー決定の反映)。Production code/Prompt変更なし、API ¥0。
+- ユーザー決定(逐語): 「OPEN_ITEMSを今後、『ユーザ実検証後に発生・顕在化したOpen Item』と『ユーザ実検証前から存在する旧Open Item』に明確に区分すること。今後、開発が一段落した際の改善優先順位は、原則としてユーザ実検証後のOpen Itemを上位とする。理由は、ユーザ実検証後に仕様を大きく変更しており、旧Open Itemには現在の仕様ですでに解決済み・別仕様へ吸収済み・NAとなっているものが多数含まれる可能性があるため。旧Open Itemを機械的に再実装しないこと。後日棚卸しする際に、現仕様と照合して、still relevant / resolved / superseded / N/A を確認する。」「『JA Fact Check固定費・latency最適化』を新しいOpen Itemとして登録すること。これは『ユーザ実検証後』の改善項目に分類する。」
+- 境界日: 2026-09-14(最初のUSER-TEST系管理ID`USER-TEST-AUDIO-COMPLETION-01`の日付。根拠: `USER-TEST-AUDIO-COMPLETION-01_REPORT.md`冒頭「日付: 2026-09-14」、本DECISION_LOG`PM-CLOSEOUT-CONSOLIDATION-133`(2026-09-14)エントリ、`docs/pm/delegation_log/USER-TEST-AUDIO-COMPLETION-01-*.md`各ファイル)。
+- 区分件数: 全191物理行(番号重複2件`OPEN-90`/`OPEN-91`含む)を全数点検。`PRE_USER_VALIDATION`149件(OPEN-01〜OPEN-147系、起票日不明0件)、`POST_USER_VALIDATION`42件(OPEN-148〜OPEN-189系、新規OPEN-189を含む)。各項目の起票日は本文中の日付・言及管理ID(ER-*/USER-TEST-*等)から全件判別できた(起票日不明としてPRE扱いにした項目はなし)。
+- SSOT反映: `OPEN_ITEMS.md`冒頭テーブル直前へ「区分方針」節(ユーザー決定逐語・境界日・優先順位ルール・棚卸し4分類ルール・旧項目再実装禁止)を新設。3種類のテーブル(6列メイン・Cross-level3列・resumed6列×2)全ての見出し行・区切り行へ「区分」「棚卸し」列を追加し、全191項目行へ`区分: POST_USER_VALIDATION|PRE_USER_VALIDATION`と`棚卸し: 未実施`を末尾列として追加(既存6列/3列の内容・順序は無変更、追加のみ)。新規**OPEN-189**(「Family X JA Fact Check固定費・latency最適化」、区分`POST_USER_VALIDATION`、Status`OPEN(改善候補、ユーザ実検証後)`)を末尾行として追加。内容: `NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`実測(固定費約¥2.20/記事[Original後¥1.65・84.9秒+R2後¥0.55・25.2秒]、latency約110秒)に基づき、候補方向4点(reasoning effort外出し/片方省略条件/Checker入力縮約/非同期化)を記録のみで登録(いずれも未着手・未承認、Production変更なし)。
+- `docs/pm/PM_GOVERNANCE.md`: 新設「20. Open Item区分と優先順位(2026-09-27ユーザー決定)」節(ユーザー決定逐語・境界日・区分件数・優先順位運用・棚卸しルール・OPEN-189登録の記録)を追加し、変更履歴へ追記。
+- `docs/pm/PM_BRIEF.md`: `OPEN_ITEMS.md`の記載箇所へ2行追記(区分方針・優先順位・棚卸しルールへの参照、`docs/pm/PM_GOVERNANCE.md`20節参照)。
+- Dangling Reference Check: 各Open Item本文(既存記述内容)は無変更(区分・棚卸し欄の追加のみ)であり、項目の並び替え・削除・Status変更は行っていない。追加した「区分方針」節・OPEN-189は他SSOT(`CURRENT_SPEC.md`等)からの参照先変更を伴わないため、Dangling Referenceの新規発生なし。
+- 関連: `docs/pm/ACTIVE_TASK_OIR.md`(本委任転記)、`docs/pm/RESULT_PACKET_OIR.md`。
+- commit: (本コミットでSSOT反映[`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/PM_GOVERNANCE.md`/`docs/pm/PM_BRIEF.md`]を実施)

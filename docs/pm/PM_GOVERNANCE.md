@@ -2260,6 +2260,45 @@ REQUIREDにする理由にしない。
   Phrase選定元/日本語タイトル供給方式)から一意に導ける実装判断であり、
   都度確認を求めず実施した。
 
+## 20. Open Item区分と優先順位(2026-09-27ユーザー決定)
+
+ユーザー決定(逐語、2026-09-27): 「OPEN_ITEMSを今後、『ユーザ実検証後に発生・
+顕在化したOpen Item』と『ユーザ実検証前から存在する旧Open Item』に明確に
+区分すること。今後、開発が一段落した際の改善優先順位は、原則としてユーザ
+実検証後のOpen Itemを上位とする。理由は、ユーザ実検証後に仕様を大きく変更
+しており、旧Open Itemには現在の仕様ですでに解決済み・別仕様へ吸収済み・
+NAとなっているものが多数含まれる可能性があるため。旧Open Itemを機械的に
+再実装しないこと。後日棚卸しする際に、現仕様と照合して、still relevant /
+resolved / superseded / N/A を確認する。」
+
+管理ID`PM-OPEN-ITEMS-RECLASSIFICATION-01`で以下を`OPEN_ITEMS.md`へ反映した:
+
+- **境界日**: 2026-09-14(最初のUSER-TEST系管理ID`USER-TEST-AUDIO-
+  COMPLETION-01`の日付)。境界日以降に起票された項目、または本文が
+  「ユーザー試聴/試読」「USER-TEST」由来と明記する項目を
+  `POST_USER_VALIDATION`、それ以外(境界日より前に起票)を
+  `PRE_USER_VALIDATION`とする。起票日が本文から判別できない項目は
+  `PRE_USER_VALIDATION(起票日不明)`とする。
+- **区分結果**: 全191項目(物理行、番号重複2件[OPEN-90/91]を含む)中、
+  `PRE_USER_VALIDATION`149件(OPEN-01〜OPEN-147系、起票日不明0件)、
+  `POST_USER_VALIDATION`42件(OPEN-148〜OPEN-189系)。各項目の`OPEN_ITEMS.md`
+  該当行へ`区分`列(値は上記2分類のいずれか)と`棚卸し`列(初期値`未実施`)を
+  末尾列として追加した(既存6列テーブル・Cross-level3列テーブルとも列追加、
+  既存列の内容・順序は無変更)。
+- **優先順位運用**: 開発が一段落した際の改善優先順位は、原則として
+  `POST_USER_VALIDATION`区分を`PRE_USER_VALIDATION`区分より上位とする。
+- **棚卸しルール(新規起票時・後日棚卸し時ともに適用)**: 新規Open Item起票時は
+  区分(`POST_USER_VALIDATION`/`PRE_USER_VALIDATION`)を必須記載する。後日
+  棚卸しを行う際は、`棚卸し`列を`still relevant`(現仕様下でも有効)/
+  `resolved`(解消済み)/`superseded`(別仕様へ吸収済み)/`N/A`(該当なし)の
+  いずれかへ更新する。**`PRE_USER_VALIDATION`項目(旧Open Item)は、棚卸しで
+  `still relevant`と確認されるまで機械的に再実装しない**(現在の仕様では
+  既に解決済み・別仕様へ吸収済み・NAとなっている可能性があるため)。
+- 新規Open Item**OPEN-189**(「Family X JA Fact Check固定費・latency最適化」、
+  `POST_USER_VALIDATION`)を`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`の
+  実測(固定費約¥2.20/記事、latency約110秒)に基づき新規登録した。詳細は
+  `OPEN_ITEMS.md`OPEN-189行、`DECISION_LOG.md`同管理IDエントリ参照。
+
 ## 変更履歴
 
 - 2026-09-05(PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01): 新設。PM Gate 1〜7・
@@ -2832,3 +2871,8 @@ REQUIREDにする理由にしない。
   level表示未対応分を追加修正し、USER_TEST_READY9本を新SHAで再発行した。
   詳細は`DECISION_LOG.md`同管理IDエントリ、
   `docs/pm/RESULT_PACKET_REVIEW_PAGE_FORMAT_01.md`参照。
+- 2026-09-27(`PM-OPEN-ITEMS-RECLASSIFICATION-01`): 20節「Open Item区分と
+  優先順位」を新設(ユーザー決定に基づき`OPEN_ITEMS.md`をPOST_USER_
+  VALIDATION/PRE_USER_VALIDATIONへ区分、境界日2026-09-14、棚卸し4分類・
+  旧項目再実装禁止ルール)。新規OPEN-189登録。詳細は`DECISION_LOG.md`
+  同管理IDエントリ参照。
