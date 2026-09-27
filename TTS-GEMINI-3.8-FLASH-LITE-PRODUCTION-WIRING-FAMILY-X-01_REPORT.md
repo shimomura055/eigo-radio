@@ -332,3 +332,45 @@ Production `.venv`変更0件)。
 PRODUCTION-WIRING-FAMILY-X-01_02.md`、`er025_pronunciation_
 resolution_phase3_b1b_en_wiring_01_test_01.py`(既存pronunciation
 resolver wiring test、本Phaseのbugfix対象)。
+
+### Phase 1 post-commit独立検証(2026-09-28、別Agentセッションによる
+セカンドオピニオン、追加コード変更なし)
+
+「Phase 1が未commitのまま停止した」という前提で再開委任を受けたが、
+作業開始後、commit `f548541e4567ff70f53bec1966836310101eb81a`
+(2026-09-28 00:28:32、Management-ID trailer付き、origin/main反映済み)
+が既に前Agent(または並行dispatchされた別インスタンス)によって完了・
+push済みであることが判明した。追加のコード変更は行わず、以下を
+commit `f548541e`のHEAD状態に対して独立に再実行し、正当性を確認した。
+
+- Gatekeeper diff review: `er033_tts_flash_lite_backend_wiring_01.py`/
+  `er033_tts_flash_lite_family_x_styles_01.py`/role別style値
+  (Stage3 `ROLE_ATTEMPT1_STYLE`/`FALLBACK_STYLES`とbyte一致)/model_id
+  (`gemini-3.8-flash-lite-tts`、routing contractと一致)/
+  `resolve_tts_call_and_prompt`のmock.patch互換設計を確認。問題なし。
+- 新規test 46件+OPEN-197/198 pronunciation resolver wiring test 29件+
+  既存修正7ファイル関連suite 192件+`er003_test_v1_n3_01_tts_generate`
+  23件(新規`ActHeadingDigitReadingRegressionTests`含む)を個別実行、
+  全PASS。
+- `run_project_regression.py`(collected=3398)再実行:
+  passed=3390 failed=6 errors=2。内訳はPhase 1節記載のpre-existing
+  baseline(p2j件数照合4件[1件はERROR]、er011_open112 baseline一致3件、
+  er015 module-level import RuntimeError 1件)と完全一致。
+  `test_combined_equals_sum_of_er002_and_er003`の根本原因を追加確認: 
+  `er0NN_test_*.py`という旧命名規則専用globを使っており、er007以降の
+  新命名規則(`er0NN_説明_test_NN.py`)ファイルを一切カウントできない
+  (常に0件)という構造的欠陥であり、本Phase起因ではない
+  (pre-existing、将来的な別タスクでのテスト側修正を提案するに留める)。
+- git-diff系ガードテスト3件(`er019_family_x_pointless_01_test_01.
+  FamilyAUnchangedTest`/`er020_tts_cooldown_local_rewrite_trial_01_
+  test_01.ProductionModuleUnchangedTest`/`er020_tts_local_rewrite_
+  natural_english_qa_trial_02_test_01.ProductionModuleUnchangedTest`)
+  を個別実行し、post-commit状態でPASSであることを明示的に再確認した
+  (前Agentの「commit後に自然解消する見込み」という予測の直接的な
+  裏付け)。
+
+結論: Phase 1のcommit・push内容に問題は見つからず、独立検証により
+正当性を確認した。追加のコード変更・追加commitは行っていない
+(paperwork commit[本追記+delegation_log `_03.md`]のみ)。詳細は
+`docs/pm/delegation_log/2026-09-27_TTS-GEMINI-3.8-FLASH-LITE-
+PRODUCTION-WIRING-FAMILY-X-01_03.md`。
