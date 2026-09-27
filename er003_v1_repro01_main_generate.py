@@ -36,6 +36,8 @@ import er007_ja_secondary_asr_01 as ja_secondary
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)
+import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -273,6 +275,19 @@ def generate_narration_snippet_verified_strict(
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []
+    # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    # 英語(language=="en")のみ、初回TTS生成前にPronunciation Ledgerの
+    # 発音ヒントをstyle_prefixへ実配線する(recon 3.3節。従来はLedgerへの
+    # 書き込みはreactive lookupのみで、TTS生成前にcache参照する経路が
+    # 存在しなかった)。hintが1件も無い場合はstyle_prefix_overrideを一切
+    # 変更せず、既存呼び出し元・既存promptへの影響をゼロに保つ。
+    en_pronunciation_resolver_info = None
+    if language == "en":
+        base_style_prefix = style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX
+        augmented_style_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
+            base_style_prefix, text)
+        if en_pronunciation_resolver_info.get("hints_applied"):
+            style_prefix_override = augmented_style_prefix
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Standard同期呼び出し
     # (client.models.generate_content)からGemini Batch API
     # (client.batches.create)へ実行方式を切り替える。model/voiceは
@@ -392,6 +407,7 @@ def generate_narration_snippet_verified_strict(
                     "audio_classification": audio_classification,
                     "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
                     "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
@@ -399,10 +415,11 @@ def generate_narration_snippet_verified_strict(
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={audio_classification})"}
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証(内容+長さ)に合格しませんでした",
-           "attempts_log": attempts_log}
+           "attempts_log": attempts_log, "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
 
 
 def stage_c_generate_new_narrations() -> dict:

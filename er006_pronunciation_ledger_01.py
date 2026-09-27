@@ -54,7 +54,13 @@ def lookup(key: LedgerKey) -> Optional[dict]:
 
 
 def upsert(key: LedgerKey, entry: dict) -> str:
-    """research結果をLedgerへ登録/更新する。戻り値はledger_id。"""
+    """research結果をLedgerへ登録/更新する。戻り値はledger_id。
+
+    PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2、
+    recon 3.4節): JA/EN両対応のため新規フィールドを追加する(いずれも
+    既定値で後方互換、既存フィールドは無変更)。既存呼び出し元
+    (upsert_research_result等、entryにこれらキーを含まない)には一切
+    影響しない。"""
     ledger = _load()
     ledger_id = key.ledger_id()
     ledger[ledger_id] = {
@@ -68,6 +74,12 @@ def upsert(key: LedgerKey, entry: dict) -> str:
         "ambiguity_note": entry.get("ambiguity_note", ""),
         "sources": entry.get("sources", []),
         "updated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        # 以下、Phase 2新規フィールド(既定値で後方互換)
+        "ja_reading_katakana": entry.get("ja_reading_katakana", ""),
+        "ja_reading_confidence": entry.get("ja_reading_confidence", ""),
+        "ja_reading_sources": entry.get("ja_reading_sources", []),
+        "resolution_method": entry.get("resolution_method", ""),
+        "resolved_at_stage": entry.get("resolved_at_stage", ""),
     }
     _save(ledger)
     return ledger_id
@@ -93,13 +105,49 @@ def upsert_research_result(entities: list[dict], research_items: list[dict], sou
 def get_hint_for_text(text: str, min_confidence: str = "medium") -> list[dict]:
     """textの中にLedger登録済みのsurfaceが含まれていれば、そのentryを
     返す(confidence順、min_confidence未満は除外)。TTSへ渡すpronunciation
-    hintの選定に使う。"""
+    hintの選定に使う。
+
+    PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    大文字小文字を区別しない比較へ変更する(既存はcase-sensitive、
+    reactive lookup由来のentry[entity_type="cascade_unresolved_entity"]は
+    surfaceが小文字で保存されるため[例: "toteme"]、本文中の実際の表記
+    [例: "Toteme"]とcase-sensitiveでは一致せず、pre_tts配線後も発火しない
+    実例をruntime evidenceで確認した)。大文字小文字を区別しないことで
+    一致範囲は既存のcase-sensitive一致を包含する形でのみ広がる(既存の
+    一致が消えることはない、fail-safe方向の変更)。"""
     conf_rank = {"high": 3, "medium": 2, "low": 1}
     min_rank = conf_rank[min_confidence]
     ledger = _load()
+    text_lower = (text or "").lower()
     hits = []
     for entry in ledger.values():
-        if entry["surface"] in text and conf_rank.get(entry["confidence"], 0) >= min_rank:
+        if entry["surface"].lower() in text_lower and conf_rank.get(entry["confidence"], 0) >= min_rank:
             if entry.get("pronunciation_hint"):
                 hits.append(entry)
     return hits
+
+
+def get_low_confidence_entries_for_text(text: str) -> list[dict]:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    confidenceに関わらず、textの中にLedger登録済みのsurfaceが含まれる
+    entryを全て返す(get_hint_for_textのmin_confidenceフィルタを通さない
+    版)。低confidence entryへの再research要否判定に使う(呼び出し側で
+    confidence=="low"のものだけを対象に絞る)。"""
+    ledger = _load()
+    text_lower = (text or "").lower()
+    return [entry for entry in ledger.values() if entry["surface"] and entry["surface"].lower() in text_lower]
+
+
+def get_ja_reading_entry(surface: str) -> Optional[dict]:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    JA読み解決コア専用の単純lookup(entity_type="ja_reading_katakana"固定、
+    source_contextなし)。surface小文字一致。"""
+    key = LedgerKey(surface=surface, entity_type="ja_reading_katakana")
+    return lookup(key)
+
+
+def upsert_ja_reading_entry(surface: str, entry: dict) -> str:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    JA読み解決コア専用の単純upsert(get_ja_reading_entryと対の書き込み)。"""
+    key = LedgerKey(surface=surface, entity_type="ja_reading_katakana")
+    return upsert(key, entry)

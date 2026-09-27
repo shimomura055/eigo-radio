@@ -386,7 +386,16 @@ if __name__ == "__main__":
           "Reading Resolverが正しく解決できることの確認) ===")
     for fx in READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES:
         r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
-        ok = r.classification == "READING_RESOLVED_MATCH" and r.should_pass is True
+        # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+        # 新設Candidate E(er011_ja_asr_variant_layer_01、漢字候補読みの
+        # 決定的総当たり、LLM不要)が、paid LLM resolver(READING_RESOLVED_
+        # MATCH)より先に、より安価に同じ結論(かな正規化後の完全一致)へ
+        # 到達できる場合はPHONETIC_MATCHを返す(Candidate Eが対応できない
+        # 組合せ[_MAX_KANJI_CANDIDATE_COMBINATIONS超過等]の場合のみ、従来
+        # 通りREADING_RESOLVED_MATCHへfall throughする)。どちらの
+        # classificationでもshould_pass=Trueであれば「文脈に基づく正しい
+        # 選択の結果としてのみPASSする」という本fixtureの主旨は損なわれない。
+        ok = r.classification in ("READING_RESOLVED_MATCH", "PHONETIC_MATCH") and r.should_pass is True
         status = "OK" if ok else "FAIL"
         print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
         if not ok:

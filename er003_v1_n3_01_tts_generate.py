@@ -38,6 +38,8 @@ import er011_human_review_lock_01 as review_lock
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)
+import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 import er006_asr_provider_routing_01 as routing
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_batch_tts_wiring_01 as batch_wiring
@@ -323,12 +325,21 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
                       + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
             "canonical_text": text, "symbol_findings": symbol_findings,
         }
+    # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    # 未対応の外来語トークンが即HUMAN_REVIEWになる前に、共通resolver core
+    # (cache -> Ledger -> web lookup -> confidence判定)で解決を試み、
+    # 高/中confidenceの読みだけをreading_dictionaryへその場で追加する
+    # (recon 3.2節。既存Gate関数自体[classify_foreign_tokens_in_japanese_
+    # text]は無改変、この呼び出し元だけが辞書を拡張して渡す)。
+    ja_pronunciation_resolver_info = pron_resolver_core.resolve_unknown_ja_tokens(
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text)
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する。
     # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
     # で止める(カテゴリ1〜3は検出・記録のみに留め、生成をブロックしない)。
     foreign_token_findings = safety.classify_foreign_tokens_in_japanese_text(
-        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms)
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms,
+        reading_dictionary=ja_pronunciation_resolver_info["reading_dictionary"])
     if safety.foreign_token_gate_requires_stop(foreign_token_findings):
         safety.log_foreign_token_human_review(text, out_path, foreign_token_findings)
         return {
@@ -336,6 +347,7 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
             "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない"
                       "外来語/記号表記が残っています(Human Review待ち)。",
             "canonical_text": text, "foreign_token_findings": foreign_token_findings,
+            "ja_pronunciation_resolver_info": ja_pronunciation_resolver_info,
         }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 辞書登録トークン
@@ -352,6 +364,7 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
     r["reading_safety_changed_text"] = (tts_input != text)
     if foreign_token_findings:
         r["foreign_token_findings"] = foreign_token_findings
+    r["ja_pronunciation_resolver_info"] = ja_pronunciation_resolver_info
     return r
 
 
@@ -529,6 +542,12 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
                       + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
             "canonical_text": text, "symbol_findings": symbol_findings,
         }
+    # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    # B1側(generate_charon_japanese_with_reading_safety)と同じresolver
+    # coreをA2側にも適用する(japanese_title/comment/Key Phrase meaning等、
+    # いずれもこの経路を通る)。
+    ja_pronunciation_resolver_info = pron_resolver_core.resolve_unknown_ja_tokens(
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text)
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する
     # (この関数はgenerate_a2_japanese_with_fallback経由でminimal instruction
@@ -536,7 +555,8 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
     # で止める(カテゴリ1〜3は検出・記録のみに留め、生成をブロックしない)。
     foreign_token_findings = safety.classify_foreign_tokens_in_japanese_text(
-        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms)
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms,
+        reading_dictionary=ja_pronunciation_resolver_info["reading_dictionary"])
     if safety.foreign_token_gate_requires_stop(foreign_token_findings):
         safety.log_foreign_token_human_review(text, out_path, foreign_token_findings)
         return {
@@ -544,6 +564,7 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
             "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない"
                       "外来語/記号表記が残っています(Human Review待ち)。",
             "canonical_text": text, "foreign_token_findings": foreign_token_findings,
+            "ja_pronunciation_resolver_info": ja_pronunciation_resolver_info,
         }
     tts_input = safety.to_tts_safe_japanese_fraction_reading(placeholder_safe)
     # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 辞書登録トークン
@@ -561,6 +582,7 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     r["reading_safety_changed_text"] = (tts_input != text)
     if foreign_token_findings:
         r["foreign_token_findings"] = foreign_token_findings
+    r["ja_pronunciation_resolver_info"] = ja_pronunciation_resolver_info
     return r
 
 

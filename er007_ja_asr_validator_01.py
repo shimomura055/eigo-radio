@@ -188,14 +188,27 @@ def _reading_dictionary_token_diff(c_span: str, a_span: str,
     辞書登録されているのに、TTS入力にもASR照合にも一切使われず、Latin
     表記"Meta" vs カタカナ"メタン"のentity_like差がCascadeの偶然一致で
     無条件PASSしていた欠落を修正する(recon_reading_validation_wiring_01.md
-    2.1節、推奨案どおり)。"""
+    2.1節、推奨案どおり)。
+
+    PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+    従来はLatin文字トークン(_LATIN_TOKEN_RE)が単体で含まれる場合のみを
+    対象としていたが、resolver/辞書で読みが確定している語は漢字/カタカナ
+    表記の場合もありうる(例: 固有名詞の共通resolver coreがexpected_
+    readingsへ追加するケース)。Latin単一トークンが見つからない場合、
+    c_span全体(前後空白除去)がexpected_readingsのキーそのものと完全一致
+    する場合に限り対象に含める(部分一致・複数語混在は対象外のまま、
+    誤爆リスクを増やさない)。既存のLatin単一トークン判定は無変更。"""
     tokens = safety._LATIN_TOKEN_RE.findall(c_span)
-    if len(tokens) != 1:
-        return None
-    token = tokens[0]
-    remainder = c_span.replace(token, "", 1)
-    if remainder.strip():
-        return None
+    if len(tokens) == 1:
+        token = tokens[0]
+        remainder = c_span.replace(token, "", 1)
+        if remainder.strip():
+            return None
+    else:
+        stripped = c_span.strip()
+        if not stripped or stripped.lower() not in expected_readings:
+            return None
+        token = stripped
     expected_reading = expected_readings.get(token.lower())
     if not expected_reading:
         return None

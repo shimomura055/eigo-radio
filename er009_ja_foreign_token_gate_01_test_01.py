@@ -147,10 +147,27 @@ class WiringStopsBeforeTtsCallTests(unittest.TestCase):
         self._tmp_dir = tempfile.TemporaryDirectory()
         safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = os.path.join(
             self._tmp_dir.name, "human_review_queue.jsonl")
+        # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+        # tg.generate_a2_japanese_with_reading_safety/generate_charon_
+        # japanese_with_reading_safetyは、Gate判定の前に共通resolver core
+        # (pron_resolver_core.resolve_unknown_ja_tokens)を呼ぶよう拡張された
+        # (このファイルより新しい変更)。本クラスの docstring が明言する
+        # 「実際のAPI呼び出しは発生しない」を維持するため、このクラスの
+        # 全テストで該当呼び出しをno-opへ差し替える(架空語Gloobargaxxxへの
+        # 実web lookupを避ける。Gate自体の判定[HUMAN_REVIEW->STOPPED]は
+        # reading_dictionaryが空のままなので従来どおり)。
+        self._orig_resolve_unknown_ja_tokens = tg.pron_resolver_core.resolve_unknown_ja_tokens
+
+        def _noop_resolve_unknown_ja_tokens(text, known_key_phrase_terms=None,
+                                             extra_dictionary=None, context="", client=None):
+            return {"reading_dictionary": dict(extra_dictionary or {}), "resolved": [],
+                    "unresolved_human_review": [], "web_lookup_called": False, "research_meta": None}
+        tg.pron_resolver_core.resolve_unknown_ja_tokens = _noop_resolve_unknown_ja_tokens
 
     def tearDown(self):
         safety.FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH = self._orig_log_path
         self._tmp_dir.cleanup()
+        tg.pron_resolver_core.resolve_unknown_ja_tokens = self._orig_resolve_unknown_ja_tokens
 
     def test_a2_human_review_text_stops_before_tts_and_logs(self):
         text = "これはGloobargaxxx社に関する日本語の説明文です。"

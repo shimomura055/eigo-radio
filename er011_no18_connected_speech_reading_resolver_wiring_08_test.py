@@ -90,8 +90,18 @@ print("\n=== A2 Reading Resolver ===")
 r9 = javal.classify_ja_asr_match(
     "スマートフォンの通知音のあとに作業へ戻ることについて話します。",
     "スマートフォンの通知音の後に作業へ戻ることについて話します。")
-check("9. 後->あと(comment_1相当) -> READING_RESOLVED_MATCH",
-      r9.classification == "READING_RESOLVED_MATCH" and r9.should_pass is True, r9.classification)
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
+# 新設Candidate E(er011_ja_asr_variant_layer_01、漢字候補読みの決定的
+# 総当たり、LLM不要)が、この入力(canonical側が既にひらがな「あと」、
+# ASR側の単漢字「後」のkanwadict候補に「あと」が含まれる)を、paid LLM
+# resolverより先により安価に解決するため、classificationはPHONETIC_MATCH
+# になる(READING_RESOLVED_MATCHへは到達しない=この入力に関してはLLM
+# 呼び出し自体が発生しなくなった、意図した挙動)。LLM resolver本体の
+# fail-safe動作はtest 11-13(reading_resolver.resolve_reading_diffの
+# 直接呼び出し)で引き続き検証される。
+check("9. 後->あと(comment_1相当) -> READING_RESOLVED_MATCH or PHONETIC_MATCH(Candidate E)",
+      r9.classification in ("READING_RESOLVED_MATCH", "PHONETIC_MATCH") and r9.should_pass is True,
+      r9.classification)
 
 # 10. 正常segment -> Resolver未発火(機械変換の時点で既に一致)
 r10 = javal.classify_ja_asr_match("今日は天気がいいですね。", "今日は天気がいいですね。")

@@ -344,7 +344,76 @@ def try_rescue_before_resolver(canonical_text: str, asr_text: str,
         return _cascade("(JA ASR Variant Layer/Candidate D-1)漢数字一般正規化後、形態素解析ベースの"
                          "読みが濁点/半濁点の有無を除き一致(Cascade対象、即PASSにはしない)")
 
+    # --- Candidate E: 漢字1文字ごとの読み候補総当たり(決定的、LLM不要) ---
+    # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)。
+    # 既存Resolver(LLM、er011_a2_reading_resolver_01._resolve_side)は
+    # 複合語の差分chunk(例:「封鎖」)について、先頭の漢字だけLLMに候補選択
+    # させ、残りの文字は文脈なしの機械変換(孤立読み)で再構成するため、
+    # 2文字目以降が孤立読みと異なる複合語(例:「風」を「ふう」ではなく
+    # 既定の「かぜ」で再構成)では誤って読みを再構成し、本来一致するはず
+    # の読みを不一致と判定してしまう既知の限界がある(実例: Hormuz B1B
+    # Key Phrase 2「海からの封鎖」vs ASR「海からの風さ」、3回連続STOPPED)。
+    # ここではLLMを呼ばず、残っている差分span同士について、各文字の
+    # pykakasi内蔵辞書(kanwadict)候補読みを総当たり(cartesian product、
+    # 組合せ上限あり=fail-safe)し、候補集合の共通部分(=かな正規化後の
+    # 完全一致)が1つでもあればPHONETIC_MATCHとする。新しいconfidence概念・
+    # LLM呼び出しは追加しない(候補はpykakasi内蔵辞書に既に登録されている
+    # 読みのみを使うため、false acceptを増やすリスクは既存Resolverの
+    # single_char_candidates()と同等)。
+    remaining_diffs = [d for d in protected.content_diffs if not d["cascade_eligible"]]
+    if remaining_diffs and all(
+        _span_pair_reading_variant_match(d["canonical"], d["asr"]) for d in remaining_diffs
+    ):
+        return _pass("PHONETIC_MATCH",
+                     "(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み"
+                     "(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR双方に共通する読みが"
+                     "見つかったため一致と判定(LLM不要、決定的)")
+
     return None
+
+
+_MAX_KANJI_CANDIDATE_COMBINATIONS = 64  # 組合せ爆発防止(超えたら諦めるだけ、fail-safe)
+
+
+def _char_reading_candidates(ch: str) -> list[str]:
+    """1文字chの読み候補一覧(決定的、LLM不要)。漢字はpykakasi内蔵辞書
+    (kanwadict、reading_resolver.single_char_candidates)から取得し、候補が
+    無ければその文字自体の機械変換読み(孤立読み)へfallbackする。非漢字は
+    カタカナ->ひらがな正規化した1文字(reading_resolver._KATAKANA_TO_
+    HIRAGANA、無ければそのまま)。"""
+    import er011_a2_reading_resolver_01 as reading_resolver
+    if reading_resolver.contains_kanji_char(ch):
+        candidates = reading_resolver.single_char_candidates(ch)
+        if candidates:
+            return candidates
+        return [reading_resolver.hira_string(reading_resolver.mechanical_chunks(ch))]
+    return [reading_resolver._KATAKANA_TO_HIRAGANA.get(ch, ch)]
+
+
+def _kanji_candidate_reading_variants(text: str):
+    """textの各文字について読み候補を総当たりし、あり得る読み(ひらがな)の
+    集合を返す。組み合わせ数が上限を超える場合はNone(fail-safe、この
+    チェックを諦めるだけで既存判定には一切影響しない)。"""
+    if not text:
+        return set()
+    per_char = [_char_reading_candidates(ch) for ch in text]
+    total = 1
+    for c in per_char:
+        total *= max(1, len(c))
+        if total > _MAX_KANJI_CANDIDATE_COMBINATIONS:
+            return None
+    from itertools import product
+    return {"".join(combo) for combo in product(*per_char)}
+
+
+def _span_pair_reading_variant_match(c_span: str, a_span: str) -> bool:
+    """c_span/a_spanそれぞれの漢字候補読み総当たり集合が1つでも共通すれば
+    True(決定的、LLM不要、かな正規化後の完全一致のみを許容する)。"""
+    c_variants = _kanji_candidate_reading_variants(c_span)
+    a_variants = _kanji_candidate_reading_variants(a_span)
+    if c_variants is None or a_variants is None:
+        return False
+    return bool(c_variants & a_variants)
 
 
 # ------------------------------------------------------------
