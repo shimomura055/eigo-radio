@@ -104,6 +104,71 @@ db_match_countではなく`wordfreq`のzipf頻度(低いほど希少=内容語�
 
 ---
 
+### 3.1 種別別集計(追記、6種別・再抽出なし)
+
+ユーザー指示により、word/phrase合算ではなく**single word / multiword
+phrase / phrasal verb / idiom / collocation・chunk / discourse・
+formulaic expression**の6種別で再集計した(既存の
+`candidates_word_group.json`/`candidates_phrase_group_B.json`/
+`final_selection.json`から集計のみ、再抽出・API呼び出しなし)。
+
+**主種別決定規則**: 候補に複数の`db_categories`(idiom/phrasal_verb/
+multiword_term等)が同時に付与されている場合、以下の優先順位で主種別を
+1つに決める。
+
+`phrasal_verb > idiom > collocation > discourse > multiword phrase > word`
+
+実測で確認した事実: 既存の抽出パイプラインが付与する`unit_type`
+フィールドは、複数`db_categories`が重複した候補(例:
+`speaks for`・`stepped out`は`idiom`+`phrasal_verb`の両方に一致)に対して、
+**この優先順位と一致する形で既にphrasal_verbを主種別として確定していた**
+(`candidates_phrase_group_*.json`の生データで確認)。そのため本追記の
+集計は`unit_type`をそのまま主種別として用いている。
+
+**collocation・chunk / discourse・formulaic expressionが常に0件になる
+理由(重要な事実)**: 本Trialの群1DB(CEFR-J・NGSL/NAWL/BSL/NGSL-Spoken・
+Wiktionary idioms/phrasal verbs/proverbs/multiword terms)には、
+「collocation」も「discourse marker」もカテゴリとして存在しない
+(`db_categories`の全出現値は`{phrasal_verb, idiom, multiword_term}`の
+3種類のみ、`unit_type`の全出現値は`{word, phrase, idiom, phrasal_verb}`
+の4種類のみ、いずれも全6本文の生JSONを走査して確認)。したがって
+collocation・chunkとdiscourse・formulaic expressionは、6本文すべてで
+Gate通過後候補数・最終候補数とも**構造的に0件**であり、これはDB選定の
+質が低いからではなく、**参照している辞書ソース自体にこの2区分の
+情報源が含まれていない**ためである(Oxford Phrase Listもphrase単位の
+リストであり、collocation/discourseを個別タグ付けしてはいない)。
+
+**表A: Gate通過後候補数(6種別、条件B=群1+Wiktionary multiword targeted
+lookup込み、rule判定による構造的Gate通過後・人間判断前)**
+
+| article | single word | multiword phrase | phrasal verb | idiom | collocation・chunk | discourse・formulaic | 合計 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| meta_a2 | 131 | 1 | 6 | 4 | 0 | 0 | 142 |
+| meta_b1b | 140 | 0 | 8 | 7 | 0 | 0 | 155 |
+| hormuz_a2 | 141 | 3 | 4 | 3 | 0 | 0 | 151 |
+| hormuz_b1b | 140 | 3 | 5 | 3 | 0 | 0 | 151 |
+| small_bag_a2 | 111 | 0 | 4 | 1 | 0 | 0 | 116 |
+| small_bag_b1b | 116 | 0 | 5 | 1 | 0 | 0 | 122 |
+| **合計** | **779** | **7** | **32** | **19** | **0** | **0** | **837** |
+
+**表B: 最終候補数(6種別、`final_selection.json`の`final_A`、B条件で
+変化なし)**
+
+| article | single word | multiword phrase | phrasal verb | idiom | collocation・chunk | discourse・formulaic | 合計 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| meta_a2 | 0 | 1 | 4 | 0 | 0 | 0 | 5 |
+| meta_b1b | 0 | 0 | 5 | 0 | 0 | 0 | 5 |
+| hormuz_a2 | 0 | 2 | 2 | 1 | 0 | 0 | 5 |
+| hormuz_b1b | 0 | 2 | 2 | 1 | 0 | 0 | 5 |
+| small_bag_a2 | 3 | 0 | 1 | 1 | 0 | 0 | 5 |
+| small_bag_b1b | 3 | 0 | 1 | 1 | 0 | 0 | 5 |
+| **合計** | **6** | **5** | **15** | **4** | **0** | **0** | **30** |
+
+集計の生データ・計算根拠(主種別決定規則の適用結果を含む)は
+`er023_output/key_phrase_db_trial_01/per_type_summary.json`に保存した。
+
+---
+
 ## 4. fallback発動率とphrase系件数(Fableレビュー論点4対応、実測)
 
 | article | phrase群件数(B条件) | 除外Gate通過後の総survivors | fallback発動 |
@@ -340,5 +405,39 @@ chunk価値のあるphraseを優先するという設計方針を反映)。
   への配線(`APPROVED_FOR_PRODUCTION`はユーザーのみが決定)。Oxford/EVP
   データの永続保存・Production組込み(本Trialのlookup結果は評価専用、
   再利用しない、§0参照)。
+
+---
+
+## 12. Fable評価(2026-09-27)
+
+- 委任条件照合: 6本文・A/B比較・Fableレビュー条件5件・Oxford照会上限・
+  EVP不成立の正直な報告・費用¥0・Production無変更=いずれも充足。種別別
+  集計は§3.1で補完。
+- 分類: **VALIDATED**(Trialとしては設計どおり完了し、計測目的を達成)。
+  ただしProduction採用は推奨しない(理由は次項)。
+- 事実からのFable判断:
+  (1) Oxford/EVP: 本サンプルでは新規phrase候補0件。「Oxford/EVPがなくても
+  実用上十分」に該当し、ライセンス交渉・契約は不要と判断(EVPは技術的に
+  未照会だが、Oxford Phrase Listで0件だった以上、EVPで状況が変わる見込み
+  は低い)。
+  (2) 設計の前提が実測で崩れた点: 除外Gate6項目中4項目は100%人間判断が
+  必要で、本Trialではその「人間判断」をSonnet(LLM)が代行した。すなわち
+  DB照合方式は「候補生成」からAI主観を除いたが、「最終選定」の主観は
+  除けておらず、Productionで自動化するには結局LLM判定(または人手)が
+  必要になる。当初の目的(AI主観の削減)に対する効果は限定的。
+  (3) 品質の傾向: DB方式の最終候補は汎用的な句動詞(pulled back/take
+  over/stepped out等)に寄り、既存Production(Strategy L)の選定
+  (brent crude futures/stand at center stage/take a sharp turn等)の方が
+  記事に根ざしたchunkを拾えている。重複率20〜40%。phrase供給はWiktionary
+  単独依存で全候補の7%、誤検出(bags out)・検出漏れ(gave back)も実証。
+  (4) 費用面の利点(fallback 0/6、LLM call削減)は事実だが、(2)により
+  Productionでは選定LLM callが残るため削減幅は設計値どおりにならない。
+- 次に進めてよい/いけない: Production配線は行わない。追加Trialはユーザー
+  承認がある場合のみ(候補: DB照合結果を既存Strategy L選定promptへ
+  「候補根拠」として渡すhybrid Trial)。
+- CEFR-J取得の透明性: zipは同意クリックなしで直接取得できたが、引用条件
+  (『CEFR-J Wordlist Version 1.6』東京外国語大学投野由紀夫研究室、
+  URL・取得年月)は`db_licenses.md`に記録済みで遵守。Trial専用データで
+  あり再配布・Production組込みはしていない。
 
 Management-ID: KEY-PHRASE-DB-BASED-SELECTION-TRIAL-01
