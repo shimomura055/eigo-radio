@@ -9683,3 +9683,70 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Dangling Reference Check: 各Open Item本文(既存記述内容)は無変更(区分・棚卸し欄の追加のみ)であり、項目の並び替え・削除・Status変更は行っていない。追加した「区分方針」節・OPEN-189は他SSOT(`CURRENT_SPEC.md`等)からの参照先変更を伴わないため、Dangling Referenceの新規発生なし。
 - 関連: `docs/pm/ACTIVE_TASK_OIR.md`(本委任転記)、`docs/pm/RESULT_PACKET_OIR.md`。
 - commit: (本コミットでSSOT反映[`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/PM_GOVERNANCE.md`/`docs/pm/PM_BRIEF.md`]を実施)
+
+## NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: JA段Full Ledger照合Fact Check+must-fix retry+issue persistenceのProduction配線、Stage 1(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: Production配線(実装)。ユーザー基本方針(2026-09-26提示、OPEN-187)採用に基づく実装、API実測¥7.93。
+- 内容: Family X JA Writer経路(Original→R2)へ、既存`vfl01.run_deviation_check`(Full Ledger照合)を拡張(`prior_issues`/`include_related_fact_id`/`source_article_text`引数追加、既定None/False・既存呼び出し互換、`deviation_audit_record()`新設)して配線した。`er019_family_x_ja_writer_o_r1_r2_01.py::run_ja_writer_o_r1_r2`にOriginal/R2各段でFact Check+must-fix 1回retry(なおMAJORなら`JAFactCheckStopError`でSTOP)を実装。English側(`er012_e_family_entertainment_two_level_runner_01.py::run_writer_stage`)にもmust-fix retry+origin判定(JA由来なら`JARecheckRequiredError`でSTOP、盲目retryなし)を実装。Advanced/Standard生成関数(`er003_v1_n3_01_advanced_adaptation_generate.py`/`standard_a2_generate.py`)へは`must_fix`引数の受け口のみ追加(Prompt本体は無変更)。英訳段(Advanced/Standard)自体の実行は本Stageのスコープ外。
+- Runtime evidence(実API、JA段のみ): Meta run_02(`er019_output/family_x_b3_production_wiring_01/run_02/`、Original/R2ともLEDGER_COMPLIANT、cost=¥1.925。開発中の1回目実行ではOriginal段でmust-fix後も別issueでMAJOR継続→`JAFactCheckStopError`実発火を確認済み)。Hormuz run_02(`er019_output/family_x_b3_diversity_trial_01/hormuz/run_02/`、Original/R2とも実際に断定表現を検知→must-fix→LEDGER_COMPLIANT、cost=¥6.002、旧記事[run_01]で英語Advanced段まで伝播していた問題がJA段で先に捕捉されることを確認)。model_id_actual=`gpt-5.6-luna`(fallback無し)。
+- Tests: 新規unit test 77件全PASS、全体regression`unittest discover -s . -p "*_test_01.py"` 1292件中1291 PASS(残り1件は本タスクで正当に編集済み・未commit差分の検知のみ、commit後解消)。
+- Fable Gate 3判定(2026-09-27): `PRODUCTION_WIRED`(Stage 1、JA段)。根拠: 正式runner経由の拡張・既存retry/fallback上限維持・Production module本体への実装・実API runtime evidence・test PASS・Dangling Reference Check済み。English側must-fix retry・`JARecheckRequiredError`のlive発火は未観測(mock検証+Meta run_01での偶発的発火1件のみ)。固定費約¥2.20/記事・latency約110秒(改善候補OPEN-189)。観察: must-fix後に別Factで新MAJORが出る「issue churn」でSTOPに至る場合がある(Meta run_02開発中)。
+- SSOT反映: `CURRENT_SPEC.md` L828該当節(JA Original/R2生成方式行)・「Family X(Entertainment News)音声構造」節(Fact Check方針)へ追記。`OPEN_ITEMS.md` OPEN-187を`CLOSED`(→`PRODUCTION_WIRED`)、OPEN-183へ備考6追記。
+- 関連: `docs/pm/RESULT_PACKET_FXJ.md`、`docs/pm/ACTIVE_TASK_CLC.md`(本closeout委任転記)。
+- commit: `6087e764`
+
+## NEWS-FAMILY-X-SECTION-SEGMENTATION-SPEC-DESIGN-01 / NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01: 見出し境界一般Contractの設計+Advanced/Standard Production配線(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: 設計doc(read-only、コード・Prompt・SSOT変更なし、API ¥0)+Production配線(ユーザー事前許可「仕様→Trial成功→Production実装」に基づく実装)。
+- 内容: `NEWS-FAMILY-X-SECTION-SEGMENTATION-SPEC-DESIGN-01`(commit`f09f23eb`)で、Family X(Advanced/Standard)の見出し境界の一般仕様(方式A: 見出しで扱う新しい内容の開始文は見出し後、Bridge・予告文は見出し前を許容)を設計docとして整理(`docs/pm/design_family_x_section_segmentation_spec_01.md`§3.1/§3.2/§5)。続く`NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01`で、Advancedへ`ADVANCED_SECTION_BOUNDARY_CONTRACT`(独立ブロック、design doc§3.1逐語、commit`9cec45f1`)、Standardへ境界維持1文`STANDARD_A2_SECTION_PRESERVE_SENTENCE`(design doc§3.2逐語、commit`e7311d37`)を追加した。sha256: Advanced新ブロック`bba08c02...`、Standard新Prompt`cbe73fc4...`(旧`ff860ab6...`)。Advanced既存ブロック(v2語彙・contract suffix)は不変。
+- Runtime evidence: small_bag run_02で既知NG(先取り)解消・Fact tokens一致・両レベルdeviation COMPLIANT。Meta正常ケース回帰でover-correctionなし。Hormuz run_02でも境界OK。設計doc§5の追加mechanism要否条件A〜Dはいずれも非該当(Prompt文言追加のみで安定)。
+- Fable Gate 3判定(2026-09-27): `PRODUCTION_WIRED`。根拠: 一般Contractを両レベルへ適用・回帰無問題・追加Checkerなし・STOP該当なし。
+- SSOT反映: `CURRENT_SPEC.md`のAdvanced行(L829)・Standard行(L830)・「Family X(Entertainment News)音声構造」節(Section Segmentation Contract)へ追記。`OPEN_ITEMS.md` OPEN-188を`CLOSED`(→`PRODUCTION_WIRED`)。
+- 関連: `docs/pm/RESULT_PACKET_S2.md`、`NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01_REPORT.md`。
+- commit: `f09f23eb`(設計doc)、`9cec45f1`(Advanced)、`e7311d37`(Standard境界維持文、Vocab Stage 2と合併コミット)
+
+## NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01(Stage 2): Standard firm 6,000語Band Generation-FirstのProduction配線(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: Production配線(実装)。ユーザー正式決定(2026-09-26、CURRENT_SPEC.md L830追記)の実装反映。
+- 内容: `er003_v1_n3_01_standard_a2_generate.py`の`STANDARD_A2_PROMPT_V5`語彙段落を、firm 6,000語Band+3除外条件(固有名詞/推測容易な派生・複合語/日本語定着語、個別語例なし)の生成一体型(事後の一語置換ではない)Prompt文言へ置換した(sha256`cbe73fc4...`、旧`ff860ab6...`、`STANDARD_A2_PROMPT_SHA256`更新)。10,000語Band・Advanced側一律14,000語Band・生成後の単語単位事後置換パス・Promptへの個別語ハードコードはいずれも不採用のまま。Advancedは無変更(既存`ADVANCED_VOCAB_RULE_V2_BLOCK`のまま)。
+- Runtime evidence: Meta run_01 Standard再生成(正式path、COMPLIANT、語数-3.3%、Advanced無変更・v2ブロックsha256不変)、Hormuz run_02(COMPLIANT、+3.8%)。
+- **観察(正直に記載)**: Hormuzで6k超残存語12語中、固有名詞3語を除く9語(flashy/withdrawal/crude/disliked/Reuters/curtain/shipments/blockade/tanker)が置換されず不変。Fact/Story/構造/語数の受入条件は満たすが、「firm」Bandの実効性はサンプル2記事の限定的証跡。
+- Fable Gate 3判定(2026-09-27): Standard語彙・境界実装部分は`PRODUCTION_WIRED`。全体E2E downstream(scaffold/TTS/Assembly/Audio Validation Gate/player、`NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`管轄)の`WIRING INCOMPLETE`状態はそれ自体変更なし(OPEN-177(10)参照)。
+- SSOT反映: `CURRENT_SPEC.md` Standard行(L830)を更新。`OPEN_ITEMS.md` OPEN-177(9)の後へ(11)追加、新規OPEN-190(POST_USER_VALIDATION、Bandの実効性観測、実装提案なし)を登録。
+- 関連: `docs/pm/RESULT_PACKET_S2.md`、`NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01_REPORT.md`§3.2/§5。
+- commit: `e7311d37`
+
+## EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: B1/A2全生成経路への配線完了、Fable Gate 3判定(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: Production配線(実装、ユーザー`APPROVED_FOR_PRODUCTION`承認済みPhase A+Bの配線範囲拡張)。
+- 内容: 初回配線(commit`014bb9e5`)に続き、Fable差し戻しに基づき2回の修正を実施。修正1回目(commit`81530e4e`)でA2標準経路(`crosslevel_audio_02_common.generate_english_segment_with_fallback()`/`_run_a2_minimal_fallback_attempt()`)の未配線Gapを解消。修正2回目(commit`b5a132e1`)でB1側同型Gap(`er003_v1_sing01_news_tail_fix.py::generate_news_narration_wide_margin`)を解消。これによりB1/A2のProduction初回生成path全経路(標準attempt・fallback・post-slowdown再検証・Local Rewrite回復)が配線済みとなった。残る未配線はlegacy単発resume script(`er008_n8_a2_resume_01.py`/`er008_n8_b1_resume_01.py`、実際の(再)生成コールパス外)のみ。
+- Runtime evidence: B1実probe5/5救済(初回4件+Full Story 1件)+対照1件非救済(role非適用の正しい非救済)、A2実probe2件救済(fallback予算0でもattempt1でPASS)。実測合計¥4.21(初回¥2.72+修正1回目¥0.97+修正2回目¥0.52)。retry/fallback/regeneration整合は`StringComparisonSafetyTest`等で確認、既存cascade_eligible/should_stop_retryingへの非干渉を実証。
+- Tests: 新規test合計(23+15等)全PASS、既存全体regressionも本タスク起因の新規failureなし。
+- Fable Gate 3判定(2026-09-27): `APPROVED_FOR_PRODUCTION / WIRING COMPLETE(runtime)`。`PRODUCTION_WIRED`の最終判定はPhase B(規則的複数形・固有名詞corroboration)のlive発火telemetry取得後とする(未充足、mock検証+Meta run_01での偶発的発火1件のみ)。取得予定: Family X音声化Stage 3。
+- SSOT反映: `CURRENT_SPEC.md`「TTS Retry条件」節近傍へ新規行(English ASR Semantic Equivalence Layer)追加。`OPEN_ITEMS.md` OPEN-186のStatusを`TRIAL_VALIDATED`→`WIRING IN PROGRESS(telemetry待ち)`へ更新。
+- 関連: `EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01_REPORT.md`§8.6。
+- commit: `014bb9e5`、`81530e4e`、`b5a132e1`
+
+## NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01: Stage 1実装(3分割・Comment役割・TTS/Assembly配線)+Meta dry-run(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: Production配線(実装、Stage 1)。実API呼び出しゼロ(¥0)。Stage 3(実runtime evidence)は並行Agentが実行中。
+- 内容: Family X(Entertainment News)後工程(3分割・Comment配置・TTS・Assembly)のProduction配線をStage 1として実装。`er019_family_x_audio_plan_01.py`(article.md分割[Title+本文1/見出し+本文2/見出し+本文3/In One Line]、Family X用Comment3/4 role[Point前提除去]、既存Family A default前後構成+Point構造なしのsegment順序plan)、`er019_family_x_audio_production_runner_01.py`(CLI runner、plan/scaffold/tts/assemble stage。既存Production低レベル関数[`voice01.generate_charon_english`/`news_tail_fix.generate_news_narration_wide_margin`/`crosslevel_common.generate_english_segment_with_fallback`/`n3_tts.generate_a2_japanese_with_reading_safety`等]をそのまま呼ぶのみ、既存Production module無変更・importのみ)を新設。unit test 25件(分割エラー処理・segment_id→narrative role解決・順序plan・Comment role文言・dry-run E2E)全PASS。Meta dry-run(`er019_output/family_x_b3_production_wiring_01/run_01`入力、`--dry-run`、API呼び出しなし)でplan JSON保存まで確認。
+- 解釈注記(Stage 1解釈、試聴後に見直し可): 本文2/3の見出しは本文segment内で読み上げる(見出しを独立segment化しない)。
+- Status: Stage 1完了、`PRODUCTION_WIRED`の最終判定はStage 3の実runtime evidence(実TTS/Assembly)取得後。
+- SSOT反映: `CURRENT_SPEC.md`「Family X(Entertainment News)音声構造」節冒頭のStatus記述(「配線は未着手」→「配線: runner実装済み、runtime evidence取得中」)へ更新。`OPEN_ITEMS.md` OPEN-183へ備考6として言及。
+- 関連: `docs/pm/RESULT_PACKET_FXA.md`(一時ファイル)。
+- commit: `32430691`
+
+## PM-CLOSEOUT-CONSOLIDATION-2026-09-27-A: Stage 1/2完了Production配線5件のSSOT反映+LEDGER(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: closeout(SSOT/LEDGER更新)。新仕様提案なし、コード変更なし、API ¥0。
+- 内容: 上記5件(`NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01`/`NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01`[+`NEWS-FAMILY-X-SECTION-SEGMENTATION-SPEC-DESIGN-01`]/`NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01`Stage 2/`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01`/`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`Stage 1)のFable Gate 3判定を、各REPORTの「SSOT記載案」節(`docs/pm/RESULT_PACKET_FXJ.md`/`docs/pm/RESULT_PACKET_S2.md`/`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01_REPORT.md`§8.6/`NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01_REPORT.md`§6/`NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01_REPORT.md`§5)を一次資料として`CURRENT_SPEC.md`/`OPEN_ITEMS.md`(OPEN-183備考6・OPEN-186・OPEN-187・OPEN-188・OPEN-177(11)・新規OPEN-190)/`docs/pm/REPORT_LEDGER.md`へ反映した。
+- Dangling Reference Check: 正式仕様本文へTrial限定用語(A/B/C/D、10k/14k、Trial-01のPrompt B等)を参照する記載を追加していないことを確認。
+- 関連: `docs/pm/ACTIVE_TASK_CLC.md`(本委任転記)、`docs/pm/RESULT_PACKET_CLC.md`。
+- commit: (本コミットでSSOT反映[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`]を実施)
