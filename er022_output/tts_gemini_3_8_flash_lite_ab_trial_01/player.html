@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<title>TTS-GEMINI-3.8-FLASH-LITE-AB-TRIAL-01: segment別A/B試聴</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+audio { width: 100%; }
+.segid { color: #888; font-size: 0.8em; }
+.status-OK { color: green; font-weight: bold; }
+.status-STOPPED { color: red; font-weight: bold; }
+.status-ASR_VALIDATION_UNCERTAIN { color: orange; font-weight: bold; }
+</style></head>
+<body>
+<h1>TTS-GEMINI-3.8-FLASH-LITE-AB-TRIAL-01: segment別A/B試聴(Trial、Production非採用)</h1>
+<p>対象記事: 「AIが採用を選ぶとき」Standard(A2)版。A=現行Production
+(gemini-2.5-pro-preview-tts / gemini-3.1-flash-tts-preview)。
+B=Gemini 3.8 Flash-Lite TTS(gemini-3.8-flash-lite-tts、同一テキスト・
+同一Voice・同一instruction、モデルIDのみ差し替え)。B列のstatusは
+既存Production ASR検証パイプラインの判定結果(STOPPED=3回試行後も
+不一致/異常検知)。</p>
+<table>
+<tr><th>Segment</th><th>A(現行Production)</th><th>B(Gemini 3.8 Flash-Lite、Trial)</th></tr>
+
+        <tr>
+          <td>Topic intro (Charon, EN)<br><span class="segid">topic_intro</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/topic_intro.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/topic_intro.mp3"></audio><br><span class="status status-ASR_VALIDATION_UNCERTAIN">ASR_VALIDATION_UNCERTAIN</span></td>
+        </tr>
+        <tr>
+          <td>Japanese title (Aoede, JA)<br><span class="segid">japanese_title</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/japanese_title.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/japanese_title.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Preview (Aoede, JA)<br><span class="segid">preview</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/preview.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/preview.mp3"></audio><br><span class="status status-OK">OK</span></td>
+        </tr>
+        <tr>
+          <td>Comment 1 (Aoede, JA)<br><span class="segid">comment_1</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/comment_1.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/comment_1.mp3"></audio><br><span class="status status-OK">OK</span></td>
+        </tr>
+        <tr>
+          <td>Hook Part 1 (Aoede, EN, A2 slowdown)<br><span class="segid">full_story_part1</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/full_story_part1.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/full_story_part1.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Hook Part 2 (Aoede, EN, A2 slowdown)<br><span class="segid">full_story_part2</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/full_story_part2.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/full_story_part2.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Comment 2 (Aoede, JA)<br><span class="segid">comment_2</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/comment_2.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/comment_2.mp3"></audio><br><span class="status status-OK">OK</span></td>
+        </tr>
+        <tr>
+          <td>Voice 1 heading (Aoede, EN, A2 slowdown)<br><span class="segid">point_one_heading</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_one_heading.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_one_heading.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Voice 1 body (Algieba, A2 slowdown)<br><span class="segid">point_one</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_one.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_one.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Voice 2 heading (Aoede, EN, A2 slowdown)<br><span class="segid">point_two_heading</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_two_heading.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_two_heading.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Voice 2 body (Erinome, A2 slowdown)<br><span class="segid">point_two</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_two.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_two.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Voice 3 heading (Aoede, EN, A2 slowdown)<br><span class="segid">point_three_heading</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_three_heading.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_three_heading.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Voice 3 body (Schedar, A2 slowdown)<br><span class="segid">point_three</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/point_three.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/point_three.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Comment 3 (Aoede, JA)<br><span class="segid">comment_3</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/comment_3.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/comment_3.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Tension reflection (Aoede, EN, A2 slowdown)<br><span class="segid">tension_reflection</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/tension_reflection.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/tension_reflection.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>Comment 4 (Aoede, JA)<br><span class="segid">comment_4</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/comment_4.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/comment_4.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+        <tr>
+          <td>In one line (Aoede, EN, A2 slowdown)<br><span class="segid">in_one_line</span></td>
+          <td><audio controls preload="none" src="segments_mp3/a/in_one_line.mp3"></audio></td>
+          <td><audio controls preload="none" src="segments_mp3/b/in_one_line.mp3"></audio><br><span class="status status-STOPPED">STOPPED</span></td>
+        </tr>
+</table>
+</body></html>

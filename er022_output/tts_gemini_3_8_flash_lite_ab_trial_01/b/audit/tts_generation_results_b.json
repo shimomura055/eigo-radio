@@ -1,0 +1,1027 @@
+{
+  "model_b": "gemini-3.8-flash-lite-tts",
+  "model_a_english": "gemini-2.5-pro-preview-tts",
+  "model_a_japanese": "gemini-3.1-flash-tts-preview",
+  "segments": {
+    "topic_intro": {
+      "status": "ASR_VALIDATION_UNCERTAIN",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or a movie trailer.",
+          "asr_error": null,
+          "verified": false,
+          "elapsed_seconds": 3.838,
+          "duration_seconds": 13.1264
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+          "asr_error": null,
+          "verified": false,
+          "elapsed_seconds": 3.882,
+          "duration_seconds": 12.6864
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+          "asr_error": null,
+          "verified": false,
+          "elapsed_seconds": 4.183,
+          "duration_seconds": 14.2464
+        }
+      ],
+      "text": "Today's topic is When AI Sits Between a Job and a Person.",
+      "model": "gemini-3.8-flash-lite-tts",
+      "voice": "Charon",
+      "path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/topic_intro.wav",
+      "canonical_text": "Today's topic is When AI Sits Between a Job and a Person."
+    },
+    "japanese_title": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(125.37秒)が、テキスト量から見積もった妥当な上限(19.80秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 15.8464,
+          "asr_text": "The message below has two clearly separated sections. The message below has two clearly separated sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+          "asr_text_length": 245,
+          "max_len": 44,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/japanese_title_attempt1_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. 次の文章だけを翻訳・言い換え・追加をせず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。AIが仕事と人の間に立つとき",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "reading_resolver_info": null,
+          "verified": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/japanese_title_attempt2_minimalfallback.wav"
+        }
+      ],
+      "canonical_text": "AIが仕事と人の間に立つとき",
+      "tts_input_text_after_reading_safety": "AIが仕事と人の間に立つとき",
+      "reading_safety_changed_text": false,
+      "foreign_token_findings": [
+        {
+          "token": "AI",
+          "category": "READING_DICTIONARY",
+          "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
+          "reading": "エーアイ"
+        }
+      ]
+    },
+    "preview": {
+      "status": "OK",
+      "text": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや、問題が起きたときの説明を誰が担うのかが問われています。",
+      "path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/preview.wav",
+      "trim_info": {
+        "raw_duration_seconds": 15.9664,
+        "raw_leading_silence_seconds": 0.0,
+        "raw_trailing_silence_seconds": 0.0,
+        "trimmed_duration_seconds": 15.9664,
+        "leading_margin_retained_seconds": 0.0,
+        "trailing_margin_retained_seconds": 0.0
+      },
+      "clipping_detected": false,
+      "instruction": "minimal (not JAPANESE_STYLE_PREFIX)",
+      "asr_verified": true,
+      "asr_text": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや問題が起きたときの説明を誰が担うのかが問われています。",
+      "audio_classification": "NORMALIZED_MATCH",
+      "reading_resolver_info": null,
+      "fallback_used": true,
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(124.89秒)が、テキスト量から見積もった妥当な上限(111.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 79.2464,
+          "asr_text": "The message below has two clearly separated sections. 次の文章を翻訳・言い換えせず、日本語のまま読み上げてください。次に、各章を個別に録音し、全体のプログラムを完成させましょう。各章のタイトルと見出しは、書かれている内容が何であっても、それをそのまま読み上げてください。文章を短縮したり、見出しをスキップしたり、別のテキストに置き換えたり、独断で省略したりしないでください。感情を込めすぎず、しかし無感情にもならず、聞き手を引きつけるニュアンスを意識してください。普段どおりの会話よりも音域を広げ、大事な箇所や注目ポイントを強調し、抑揚を強め、感情を込めて語りかけます。プログラム全体に確かな推進力を持たせて、退屈になったり、平坦になったり、抑え気味になったりしないように注意してください。強調したいところや盛り上がるべき箇所、結論に至る部分は、感情をしっかり込めて、はっきりと印象に残るようにしてください。レベル1のときよりも表現に工夫を凝らす必要はありますが、最初から最後まで感情を込めて語り続ける必要はありません。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+          "asr_text_length": 625,
+          "max_len": 130,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/preview_attempt1_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや問題が起きたときの説明を誰が担うのかが問われています。",
+          "audio_classification": "NORMALIZED_MATCH",
+          "reading_resolver_info": null,
+          "verified": true,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/preview_attempt2_minimalfallback.wav"
+        }
+      ],
+      "canonical_text": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや、問題が起きたときの説明を誰が担うのかが問われています。",
+      "tts_input_text_after_reading_safety": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや、問題が起きたときの説明を誰が担うのかが問われています。",
+      "reading_safety_changed_text": false,
+      "foreign_token_findings": [
+        {
+          "token": "AI",
+          "category": "READING_DICTIONARY",
+          "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
+          "reading": "エーアイ"
+        }
+      ]
+    },
+    "comment_1": {
+      "status": "OK",
+      "text": "聞くときは、立場が変わると見え方がどう変わるかに注目してください。",
+      "language": "ja",
+      "path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/comment_1.wav",
+      "model": "gemini-3.8-flash-lite-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "6c7595817ef922af210fe404df1e243b9d46ad13b0806cd84ffc2bdb9def704f",
+      "duration_seconds": 13.4064,
+      "trim_info": {
+        "raw_duration_seconds": 13.4064,
+        "raw_leading_silence_seconds": 0.0,
+        "raw_trailing_silence_seconds": 0.0,
+        "trimmed_duration_seconds": 13.4064,
+        "leading_margin_retained_seconds": 0.0,
+        "trailing_margin_retained_seconds": 0.0
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "聞くときは、立場が変わると見え方がどう変わるかに注目してください。",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(143.97秒)が、テキスト量から見積もった妥当な上限(42.60秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 13.4064,
+          "asr_text": "聞くときは、立場が変わると見え方がどう変わるかに注目してください。",
+          "asr_text_length": 33,
+          "max_len": 73,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "EXACT_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_1_attempt1_standard.wav"
+        }
+      ],
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": false,
+      "repetition_qa_evidence": null,
+      "fallback_used": false,
+      "canonical_text": "聞くときは、立場が変わると見え方がどう変わるかに注目してください。",
+      "tts_input_text_after_reading_safety": "聞くときは、立場が変わると見え方がどう変わるかに注目してください。",
+      "reading_safety_changed_text": false
+    },
+    "comment_2": {
+      "status": "OK",
+      "text": "ここからは、この問いをめぐる異なる立場の声を、順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+      "path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/comment_2.wav",
+      "trim_info": {
+        "raw_duration_seconds": 9.8864,
+        "raw_leading_silence_seconds": 0.0,
+        "raw_trailing_silence_seconds": 0.0,
+        "trimmed_duration_seconds": 9.8864,
+        "leading_margin_retained_seconds": 0.0,
+        "trailing_margin_retained_seconds": 0.0
+      },
+      "clipping_detected": false,
+      "instruction": "minimal (not JAPANESE_STYLE_PREFIX)",
+      "asr_verified": true,
+      "asr_text": "ここからは、この問いをめぐる異なる立場の声を順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+      "audio_classification": "NORMALIZED_MATCH",
+      "reading_resolver_info": null,
+      "fallback_used": true,
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 16.0064,
+          "asr_text": "The message below has two clearly separated sections. Thank you. ありがとうございます。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+          "asr_text_length": 214,
+          "max_len": 105,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_2_attempt1_standard.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 42.8864,
+          "asr_text": "次の文章を翻訳・言い換えせず、日本語のまま読み上げてください。会議のテーマは新しいアイデア出しです。参加者はプロダクトマネージャーが5名とデザイナーが4名の計9名でした。チームを3つに分けてアイデアを出してもらったところ、どれも素晴らしいものでした。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. ここからは、この問いをめぐる異なる立場の声を順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+          "asr_text_length": 328,
+          "max_len": 105,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_2_attempt2_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "ここからは、この問いをめぐる異なる立場の声を順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+          "audio_classification": "NORMALIZED_MATCH",
+          "reading_resolver_info": null,
+          "verified": true,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_2_attempt3_minimalfallback.wav"
+        }
+      ],
+      "canonical_text": "ここからは、この問いをめぐる異なる立場の声を、順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+      "tts_input_text_after_reading_safety": "ここからは、この問いをめぐる異なる立場の声を、順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+      "reading_safety_changed_text": false
+    },
+    "comment_3": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(122.53秒)が、テキスト量から見積もった妥当な上限(119.40秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 65.2064,
+          "asr_text": "次の文章を本訳言い換えせず、日本語のまま読み上げてください。 皆さん、こんにちは。この数年で環境ががらりと変わったと感じる方はたくさんいると思います。 そんな中で、これからの仕事や生活がどうなっていくのかを考える必要が出てきたのではないでしょうか。人との関わり方、働き方が大きく変わる中で、私たちにはこの新しい生活様式に適応していくことが求められているのだと思います。多くの人とのふれあいや、人との絆、それらが新しい自分を形作る大切なものになっていくのではないでしょうか。 ここまで話を聞いてくださり、ありがとうございました。このお話をぜひこれからの人生の参考にしていただけると嬉しいです。 ここまで同じ採用の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これからその違いに目を向けます。",
+          "asr_text_length": 391,
+          "max_len": 137,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_3_attempt1_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. この文章だけを翻訳、言い換え、追加をせず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。 ここまで同じ作業の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これからその違いに目を向けます。",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "reading_resolver_info": null,
+          "verified": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_3_attempt2_minimalfallback.wav"
+        }
+      ],
+      "canonical_text": "ここまで、同じ採用の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これから、その違いに目を向けます。",
+      "tts_input_text_after_reading_safety": "ここまで、同じ採用の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これから、その違いに目を向けます。",
+      "reading_safety_changed_text": false
+    },
+    "comment_4": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 17.2864,
+          "asr_text": "The message below has two clearly separate sections. The message below has two clearly separated sections. ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+          "asr_text_length": 171,
+          "max_len": 104,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_4_attempt1_standard.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 41.8464,
+          "asr_text": "次の文章を翻訳言い換えせず、日本語のまま読み上げてください。次回のストーリーへの布石として、今回のお話では特に印象的な描写がなされています。登場人物の個性を際立たせ、ドラマの核となるテーマを視聴者に投げかけるように慎重に構成されています。このストーリーをしっかりと体験できる、この物語を存分に堪能できる素晴らしいものだと思います。ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+          "asr_text_length": 229,
+          "max_len": 104,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_4_attempt2_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. 文章だけを翻訳・言い換え・追加せず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "reading_resolver_info": null,
+          "verified": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/comment_4_attempt3_minimalfallback.wav"
+        }
+      ],
+      "canonical_text": "ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+      "tts_input_text_after_reading_safety": "ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+      "reading_safety_changed_text": false
+    },
+    "point_one_heading": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(52.61秒)が、テキスト量から見積もった妥当な上限(13.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "生成音声長(62.21秒)が、テキスト量から見積もった妥当な上限(13.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections: the applicant's voice, under the camera.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_one_heading_attempt1_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [],
+      "slowdown_attempts_log": [],
+      "canonical_text": "The Applicant's Voice: Under the Camera."
+    },
+    "point_two_heading": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(37.05秒)が、テキスト量から見積もった妥当な上限(10.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "生成音声長(28.65秒)が、テキスト量から見積もった妥当な上限(10.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_two_heading_attempt1_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [],
+      "slowdown_attempts_log": [],
+      "canonical_text": "Another Voice: The Recruiter."
+    },
+    "point_three_heading": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(30.33秒)が、テキスト量から見積もった妥当な上限(13.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "生成音声長(32.25秒)が、テキスト量から見積もった妥当な上限(13.00秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections: a third voice, the business owner.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_three_heading_attempt1_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [],
+      "slowdown_attempts_log": [],
+      "canonical_text": "A Third Voice: The Business Owner."
+    },
+    "point_one": {
+      "status": "STOPPED",
+      "reason": "3回試行してもASR検証に合格しませんでした",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. It can be daunting to dive into something new, to face the uncertainty of how things will unfold. That's a feeling a lot of us are familiar with. But what's really fascinating is how the human brain actually handles that change, how it finds ways to adapt to the unexpected. Our brains are always looking for patterns. It's one of the ways they help us get by, making sense of a world that is so constantly in flux. Research shows that one of the ways we do that is with something called neuroplasticity. That is, essentially, our brains learning and changing to adapt to the world around us. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 61.0864,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 61.0864,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_one_attempt1_englishstyleprefixwidemargin.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Now, let's explore how to identify this subtle difference. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": true,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 29.9264,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 29.9264,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_one_attempt2_englishstyleprefixwidemargin.wav"
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. And here's the entire text, ready for your attention. So, I just checked the mail and saw something that could be interesting. It's a mysterious letter with no return address, just a vague stamp. I almost threw it out, but I'm glad I didn't. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional. I speak to a camera. Software scores my voice, face, and movements. I read about a woman who did well on a skills test, but AI gave her low scores for her movements and facial expressions. Then the company rejected her. She was without work for a long time. I know about another applicant. This person said AI scored their reliability and honesty. They had no way to say no to the system. They also had no way to challenge the result. I want people to see my skills and character. I do not want them changed into one score.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 80.2064,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 80.2064,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_one_attempt3_englishstyleprefixwidemargin.wav"
+        }
+      ],
+      "voice": "Algieba",
+      "canonical_text": "I speak to a camera. Software scores my voice, face, and movements. I read about a woman who did well on a skills test. But AI gave her low scores for her movements and facial expressions. Then the company rejected her. She was without work for a long time.\n\nI know about another applicant. This person said AI scored their reliability and honesty. They had no way to say no to the system. They also had no way to challenge the result. I want people to see my skills and character. I do not want them changed into one score."
+    },
+    "point_two": {
+      "status": "STOPPED",
+      "reason": "3回試行してもASR検証に合格しませんでした",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. It can be a massive adjustment when a family moves for work. You're uprooting kids who might feel apprehensive about leaving their friends, the school, and the neighborhood that's been their home. So many of us have experienced this exact shift, so let's explore ways to turn this big move into an adventure for the whole family. One great way to approach this is to help the kids build a positive association with the move. We're all conditioned to look for the things we're gonna miss, but a new place is full of fresh opportunities. Try to get them involved in looking for things like the closest park or an ice cream shop that's a bit of an upgrade from the one they're leaving behind. You'll also wanna prioritize finding activities that help your kids ease into the move, like camps, rec leagues, and clubs. This will help them find their people and allow you to foster more connections in the neighborhood too. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 84.4064,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 84.4064,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_two_attempt1_englishstyleprefixwidemargin.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. For many people in recovery, getting a regular job can be a huge step. Often, you're looking for stability and purpose, but you also want to be able to make a decent living. But there are some other issues to consider, like finding a job that doesn't just treat you like a cog in a machine. So, are we talking about menial labor? Not at all. In fact, it's quite the opposite. A meaningful career is possible for anyone. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional. I start with resumes and an AI tool. It sorts them, it sets interview times, it matches people with jobs. It helps when applications come faster than my team can read them. But a score is not the end of my work. I may prepare a simple summary of a fairness check. I may answer candidates' questions. One company's public notice shows this duty clearly. I also think about resumes written by AI. Is this a useful skill, or did the person make too little effort? I run the tool, but I do not decide if the company uses it.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 90.1264,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 90.1264,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_two_attempt2_englishstyleprefixwidemargin.wav"
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. It can be a little daunting the first time you step inside the store. So many options, so little time. But it's really the most perfect way to spend a morning. You'll see things you've never even heard of, learn about flavors you've only dreamed about, and hopefully leave with enough stuff to enjoy the rest of the day and tomorrow too. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 46.7664,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 46.7664,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_two_attempt3_englishstyleprefixwidemargin.wav"
+        }
+      ],
+      "voice": "Erinome",
+      "canonical_text": "I start with résumés and an AI tool. It sorts them. It sets interview times. It matches people with jobs. It helps when applications come faster than my team can read them.\n\nBut a score is not the end of my work. I may prepare a simple summary of a fairness check. I may answer candidates' questions. One company's public notice shows this duty clearly.\n\nI also think about résumés written by AI. Is this a useful skill? Or did the person make too little effort? I run the tool. But I do not decide if the company uses it."
+    },
+    "point_three": {
+      "status": "STOPPED",
+      "reason": "3回試行してもASR検証に合格しませんでした",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separate sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.\n\nI often look at the hiring dashboard. It shows time, cost, and the people we still need. If hiring slows, the work does not stop. I have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores, so I look again at my own choice. If people question this choice, my name is attached. I am protecting the company's future, but I also carry the risk of being wrong.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 59.0864,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 59.0864,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_three_attempt1_englishstyleprefixwidemargin.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "発話区間検出失敗",
+          "instruction_type": "english_style_prefix_wide_margin"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Speak the following text aloud naturally and clearly, in a warm, podcast announcer voice. Do not add, omit, or change any words.\n\nI often look at the hiring dashboard. It shows time, cost, and the people we still need. If hiring slows, the work does not stop. I have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores, so I look again at my own choice. If people question this choice, my name is attached. I am protecting the company’s future, but I also carry the risk of being wrong.",
+          "instruction_type": "minimal_fallback",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 142.0064,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 142.0064,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_three_attempt2_minimalfallback.wav"
+        },
+        {
+          "attempt": 3,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. TTS the following complete story in natural, engaging English. Speak directly to one interested listener, rather than announcing to a large crowd. Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words. Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts while keeping important contrasts and turning points clear. Treat the narration as one continuous program, even when it is generated in separate sections. Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text. Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style. Give the narration a noticeably animated, emotionally present, and expressive delivery. Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy. Make the listener feel that the story matters, and that you genuinely want them to keep listening. Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained. Allow the most important moments, contrasts, and conclusions to land with clear emotional impact. Use stronger expression than level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses, or sound instructional.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "length_ok": false,
+          "verified": false,
+          "trim_info": {
+            "raw_duration_seconds": 129.2864,
+            "raw_leading_silence_seconds": 0.0,
+            "raw_trailing_silence_seconds": 0.0,
+            "trimmed_duration_seconds": 129.2864,
+            "leading_margin_retained_seconds": 0.0,
+            "trailing_margin_retained_seconds": 0.0
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/point_three_attempt3_englishstyleprefixwidemargin.wav"
+        }
+      ],
+      "voice": "Schedar",
+      "canonical_text": "I often look at the hiring dashboard. It shows time, cost, and the people we still need. If hiring slows, the work does not stop.\n\nI have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores. So I look again at my own choice. If people question this choice, my name is attached. I am protecting the company's future. But I also carry the risk of being wrong."
+    },
+    "full_story_part1": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 33.8064,
+          "asr_text": "The message below has two clearly separated sections. In a world where even the most mundane routines can be completely transformative, there's a reason we're all being called to something deeper. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "asr_text_length": 518,
+          "max_len": 251,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/full_story_part1_attempt1_custom35d6860b.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "生成音声長(91.05秒)が、テキスト量から見積もった妥当な上限(56.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. Speak the following text aloud, naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words. A job application may go through software before a person sees it. Software may check a resume. It may score a personality test. It may judge a video by a person's face, voice, and movements.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/full_story_part1_attempt2_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [
+        {
+          "cooldown_requested_seconds": 600.0,
+          "cooldown_actual_seconds": 600.004,
+          "cooldown_started_at": "2026-09-27T11:26:56+09:00",
+          "cooldown_ended_at": "2026-09-27T11:36:56+09:00",
+          "attempt_before_cooldown": 2,
+          "attempt_after_cooldown": 3
+        }
+      ],
+      "slowdown_attempts_log": [],
+      "canonical_text": "A job application may go through software before a person sees it. Software may check a résumé. It may score a personality test. It may judge a video by a person's face, voice, and movements."
+    },
+    "full_story_part2": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "STOPPED",
+          "reason": "生成音声長(57.69秒)が、テキスト量から見積もった妥当な上限(53.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        },
+        {
+          "attempt": 2,
+          "status": "STOPPED",
+          "reason": "生成音声長(81.53秒)が、テキスト量から見積もった妥当な上限(53.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. The applicant sees a chance for a job. The recruiter sees many applications waiting. The owner sees a choice that can affect the company. The same screen gives three people three different experiences.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/full_story_part2_attempt1_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [
+        {
+          "cooldown_requested_seconds": 600.0,
+          "cooldown_actual_seconds": 600.004,
+          "cooldown_started_at": "2026-09-27T11:38:09+09:00",
+          "cooldown_ended_at": "2026-09-27T11:48:09+09:00",
+          "attempt_before_cooldown": 2,
+          "attempt_after_cooldown": 3
+        }
+      ],
+      "slowdown_attempts_log": [],
+      "canonical_text": "The applicant sees a chance for a job. The recruiter sees many applications waiting. The owner sees a choice that can affect the company. The same screen gives three people three different experiences."
+    },
+    "tension_reflection": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 136.6464,
+          "asr_text": "The message below has two clearly separated sections. It can be daunting to talk about money with a partner, but there's a reason they say that being on the same page about your finances is like relationship gold. So we asked relationship experts what the biggest issues that come up are and what you can do about them. First, there's the big one, which is really common. People argue about money because it means very different things to each of us. Most of us learned about money from our parents, either directly or indirectly. So if your partner grew up in a household where money was a source of stress and anxiety, they may feel like money is something to be managed or hoarded. If your parents treated money casually, you might not worry about it as much. A lack of communication is another common trap. You may not feel comfortable talking about money because it's embarrassing to you, or because you never saw it as a thing to talk about. It can be a scary thing, like wondering if your partner would be okay if you suddenly lost your income. Money is a reflection of power, too. It's natural to defer to the partner who makes more money in a relationship, but over time, that may lead to the other partner feeling like they've lost their voice. Here's where it helps to be honest about what you want your life together to look like. This is a way to look past all the history you might carry about money and to find a future together that fits both of you. And a lot of experts suggest starting that conversation right now. All three want the right person in the right job, but each person faces a different problem. The applicant may lose a fair chance. The recruiter must keep work moving and explain the system. The owner must keep the company running and answer for the choice. The applicant cannot choose the system. The recruiter runs it and may help with the decision to use it. The owner may make the final choice. Rules outside the company limit all three roles. In New York City, an employer must have a recent fairness check. It must also give the public a simple summary and give notice before using an automated hiring tool. The recruiter cannot use it in secret. The owner cannot rely on speed alone. The applicant still cannot control the score. One company stopped a tool after it gave women lower scores. These different views do not give one easy answer.",
+          "asr_text_length": 2382,
+          "max_len": 900,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/tension_reflection_attempt1_custom35d6860b.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 78.8464,
+          "asr_text": "The message below has two clearly separated sections. Now, I know things were looking pretty bleak the past few years, so we really wanted to check in and see how everyone is doing. So, we're doing things a little bit differently in this issue. We really want to lean into the positives and look ahead to some of the great things that are on the horizon. All three want the right person in the right job, but each person faces a different problem. The applicant may lose a fair chance. The recruiter must keep work moving and explain the system. The owner must keep the company running and answer for the choice. The applicant cannot choose the system. The recruiter runs it and may help with the decision to use it. The owner may make the final choice. Rules outside the company limit all three roles. In New York City, an employer must have a recent fairness check. It must also give the public a simple summary and give notice before using an automated hiring tool. The recruiter cannot use it in secret. The owner cannot rely on speed alone. The applicant still cannot control the score. One company stopped a tool after it gave women lower scores. These different views do not give one easy answer.",
+          "asr_text_length": 1203,
+          "max_len": 900,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/tension_reflection_attempt2_custom35d6860b.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/tension_reflection_attempt3_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [],
+      "slowdown_attempts_log": [],
+      "canonical_text": "All three want the right person in the right job. But each person faces a different problem. The applicant may lose a fair chance. The recruiter must keep work moving and explain the system. The owner must keep the company running and answer for the choice.\n\nThe applicant cannot choose the system. The recruiter runs it and may help with the decision to use it. The owner may make the final choice. Rules outside the company limit all three roles.\n\nIn New York City, an employer must have a recent fairness check. It must also give the public a simple summary and give notice before using an automated hiring tool. The recruiter cannot use it in secret. The owner cannot rely on speed alone. The applicant still cannot control the score. One company stopped a tool after it gave women lower scores. These different views do not give one easy answer."
+    },
+    "in_one_line": {
+      "status": "STOPPED",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 32.4864,
+          "asr_text": "The message below has two clearly separated sections. So, I was thinking about maybe trying out that hiking trail we talked about last week, you know, if the weather holds up this coming weekend.",
+          "asr_text_length": 195,
+          "max_len": 368,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/in_one_line_attempt1_custom35d6860b.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 33.8064,
+          "asr_text": "The message below has two clearly separated sections. It can be so easy to get caught up in everything you have to get done, the big things and the small things. So try to take a moment and find that inner calm. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+          "asr_text_length": 533,
+          "max_len": 368,
+          "substring_ok": null,
+          "length_ok": false,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/in_one_line_attempt2_custom35d6860b.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "The message below has two clearly separated sections. This is not only about a machine reading a resume or a face. It is about who decides what a fair chance means. It is about who must explain the system. It is about who must deal with the results if the system fails. Hiring is not only a choice about a tool; it is also about power, proof, and responsibility.",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "attempt_audio_path": "er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/narration/attempts/in_one_line_attempt3_minimalfallback.wav"
+        }
+      ],
+      "cooldown_events": [],
+      "slowdown_attempts_log": [],
+      "canonical_text": "This is not only about a machine reading a résumé or a face. It is about who decides what a fair chance means. It is about who must explain the system. It is about who must deal with the results if the system fails.\n\nHiring is not only a choice about a tool. It is also about power, proof, and responsibility."
+    }
+  },
+  "timing_seconds": {
+    "topic_intro": 14.959,
+    "japanese_title": 47.368,
+    "preview": 71.264,
+    "comment_1": 45.774,
+    "comment_2": 36.92,
+    "comment_3": 59.292,
+    "comment_4": 24.467,
+    "point_one_heading": 28.403,
+    "point_two_heading": 17.419,
+    "point_three_heading": 17.414,
+    "point_one": 62.8,
+    "point_two": 53.596,
+    "point_three": 95.792,
+    "full_story_part1": 675.09,
+    "full_story_part2": 682.424,
+    "tension_reflection": 53.117,
+    "in_one_line": 26.07
+  }
+}
