@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<title>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 3(1記事全12segment)A/B試聴</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+audio { width: 100%; }
+.status-OK { color: green; font-weight: bold; }
+.status-STOPPED { color: red; font-weight: bold; }
+.missing { color: #a33; font-style: italic; }
+.full-track { margin: 16px 0; padding: 12px; background: #f7f7f7; border: 1px solid #ddd; }
+</style></head>
+<body>
+<h1>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 3(Family X Hormuz B1B、記事全12segment)
+A/B試聴(Trial、Production非採用)</h1>
+<p>A=現行Production(gemini-2.5-pro-preview-tts、role別style prefix[Charon系=
+B1_PREVIEW_STYLE_PREFIX_CALM、Aoede系=ENGLISH_STYLE_PREFIX素]、既存artifact
+そのまま)。B=Gemini 3.8 Flash-Lite TTS(gemini-3.8-flash-lite-tts、
+speech_metadataによるverbatim transcript方式、role別最小style
+[Full Story=calm steady news narration/Comment・Preview=calm conversational/
+Heading=brief and clear/In One Line=concise clear/Topic Intro=brief clear
+engaging]、attempt1がこのrole別style、attempt2/3はStage1/2と同じ
+fallback style)。B列のstatusは既存Production ASR検証パイプライン
+(英語6分類Validator、Tier 1数値等価role gate込み)の判定結果。</p>
+
+<div class="full-track">
+<h2>記事全体 連続再生(delegation文Stage3内容5)</h2>
+<p>B(Trial、全12segment、0.4秒無音区切り)
+duration=201.4s:</p>
+<audio class="full-track" controls preload="none" src="full_article_b.mp3"></audio>
+<p>A(現行Production、既存音声がある11segmentのみを同順で結合。
+full_story_part2は既存音声が無いためgapとして省略=既存Productionもこの
+segmentは未完成であることを反映)duration=185.431s:</p>
+<audio class="full-track" controls preload="none" src="full_article_a_existing_only.mp3"></audio>
+</div>
+
+<table>
+<tr><th>Segment</th><th>A(現行Production)</th><th>B(Gemini 3.8 Flash-Lite、Trial)</th></tr>
+<tr>
+  <td>topic_intro<br><span style="color:#888;font-size:0.8em">role: TOPIC_INTRO / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/topic_intro.mp3"></audio><br>5.941s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/topic_intro.mp3"></audio><br>5.52s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>preview<br><span style="color:#888;font-size:0.8em">role: PREVIEW / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/preview.mp3"></audio><br>15.531s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/preview.mp3"></audio><br>12.68s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>comment_1<br><span style="color:#888;font-size:0.8em">role: COMMENT / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/comment_1.mp3"></audio><br>6.021s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/comment_1.mp3"></audio><br>5.2s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>full_story_part1<br><span style="color:#888;font-size:0.8em">role: FULL_STORY / voice: Aoede / attempts: 2</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/full_story_part1.mp3"></audio><br>49.241s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/full_story_part1.mp3"></audio><br>41.8s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>comment_2<br><span style="color:#888;font-size:0.8em">role: COMMENT / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/comment_2.mp3"></audio><br>12.081s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/comment_2.mp3"></audio><br>11.2s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>full_story_part2_heading<br><span style="color:#888;font-size:0.8em">role: HEADING_READOUT / voice: Aoede / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/full_story_part2_heading.mp3"></audio><br>3.571s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/full_story_part2_heading.mp3"></audio><br>2.64s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>full_story_part2<br><span style="color:#888;font-size:0.8em">role: FULL_STORY / voice: Aoede / attempts: 1</span></td>
+  <td><span class="missing">既存Production音声なし</span></td>
+  <td><audio controls preload="none" src="segments_mp3/b/full_story_part2.mp3"></audio><br>42.8s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>comment_3<br><span style="color:#888;font-size:0.8em">role: COMMENT / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/comment_3.mp3"></audio><br>24.411s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/comment_3.mp3"></audio><br>20.0s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>full_story_part3_heading<br><span style="color:#888;font-size:0.8em">role: HEADING_READOUT / voice: Aoede / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/full_story_part3_heading.mp3"></audio><br>2.891s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/full_story_part3_heading.mp3"></audio><br>2.36s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>full_story_part3<br><span style="color:#888;font-size:0.8em">role: FULL_STORY / voice: Aoede / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/full_story_part3.mp3"></audio><br>25.931s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/full_story_part3.mp3"></audio><br>25.52s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>comment_4<br><span style="color:#888;font-size:0.8em">role: COMMENT / voice: Charon / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/comment_4.mp3"></audio><br>14.711s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/comment_4.mp3"></audio><br>11.0s<br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>in_one_line<br><span style="color:#888;font-size:0.8em">role: IN_ONE_LINE / voice: Aoede / attempts: 1</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/in_one_line.mp3"></audio><br>21.101s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/in_one_line.mp3"></audio><br>16.28s<br><span class="status status-OK">OK</span></td>
+</tr>
+</table>
+</body></html>

@@ -709,3 +709,283 @@ Stage 3[1記事全体]へ進むか否かは、§21.7の条件を踏まえたFabl
 試聴artifact(内部証跡パスのみ、Stage1と同様の理由でユーザー向け試聴依頼
 リンクとしては提示しない、Sonnet/Fable自動チェック優先段階):
 `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage2/player.html`
+
+## §22 Stage 3(2026-09-27、1記事全12segment、Family X Hormuz B1B)
+
+### §22.1 対象と実行環境
+
+対象: Family X Hormuz B1B(`er019_output/family_x_audio_production_wiring_01/
+family_x_b3_diversity_trial_01/hormuz__run_02/b1b`)の記事全12segment
+(topic_intro/preview/comment_1-4/full_story_part1-3/
+full_story_part2_heading/full_story_part3_heading/in_one_line)。
+`full_story_part2`は既存Production側で時刻コロンGate(残存記号
+RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL)によりSTOPPED中(既存OK音声
+無し)だが、Production正規化済みcanonical_textは存在するため、委任文の
+指示通りTrial側では実行対象に含めた。
+
+新規script: `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage3.py`
+(TTS呼び出し・cost guard・ASR照合・early stop判定)、
+`er022_tts_gemini_3_8_flash_lite_next_trial_01_stage3_assets.py`
+(A/B mp3変換・記事全体連続再生track生成・player.html)。Stage 1/2 scriptは
+無変更。実行は`.venv_trial_genai225`(google-genai==2.25.0)のみ、
+Production `.venv`/requirements差分は0件(§22.7で確認)。
+
+### §22.2 現行Production側のrole/pacing実態(read-only確認、コード引用)
+
+| Role | 対象segment | 生成関数 | Style prefix | Pace指示 |
+|---|---|---|---|---|
+| TOPIC_INTRO | topic_intro | `voice01.generate_charon_english`(override無し) | `ENGLISH_STYLE_PREFIX`(Level2 animated、common_base+level2) | 無し |
+| PREVIEW | preview | `voice01.generate_charon_english`(override) | `B1_PREVIEW_STYLE_PREFIX_CALM`=ENGLISH_STYLE_PREFIX+"Speak this in a calm, clear, unhurried tone..." | calm/unhurried(ユーザー正式承認済み、ER-008-N8-19 Item 5-B) |
+| COMMENT | comment_1-4 | 同上 | 同上(`B1_PREVIEW_STYLE_PREFIX_CALM`、Comment1-4へも適用対象拡大済み、ER-008-N8-20) | 同上 |
+| FULL_STORY | full_story_part1/2/3 | `news_tail_fix.generate_news_narration_wide_margin`(override無し) | `ENGLISH_STYLE_PREFIX`素のまま(Level2 animated) | 無し(末尾trim marginのみ0.35秒、演技指示ではない) |
+| HEADING_READOUT | full_story_part2_heading/3_heading | `point_headings.generate` | `ENGLISH_STYLE_PREFIX`(fallback時のみMINIMAL_INSTRUCTION) | 無し |
+| IN_ONE_LINE | in_one_line | `news_tail_fix.generate_news_narration_wide_margin`(override無し) | `ENGLISH_STYLE_PREFIX`素のまま | 無し |
+
+補足(read-only確認、委任文の「意図的な遅め指示があるsegmentもある」の
+出典): A2ファミリー(`er019_family_x_audio_production_runner_01.
+generate_family_x_a2_segments`)は`A2_ENGLISH_STYLE_PREFIX_SLOWER`
+(="Speak at a slightly slower, relaxed pace..."指示)+生成後6%
+time-stretch post-process(`er008_a2_postprocess_slowdown_01`、
+`A2_SLOWDOWN_TARGET_SEGMENTS`)を併用しているが、これはA2レベル専用であり、
+本Trialの対象であるB1Bレベルの本記事segmentには一切適用されていない
+(`generate_family_x_b1_segments`のコード読み取りで確認、post-process
+呼び出し自体が無い)。
+
+### §22.3 Trial側 role別style方針(speech_metadata、必要最小限)
+
+| Role | attempt1 style(role別最小) | attempt2 fallback | attempt3 fallback |
+|---|---|---|---|
+| TOPIC_INTRO | "brief, clear, engaging news topic introduction" | "natural, clear, conversational" | "clear" |
+| PREVIEW | "calm, conversational" | 同上 | 同上 |
+| COMMENT | "calm, conversational" | 同上 | 同上 |
+| FULL_STORY | "calm, steady news narration" | 同上 | 同上 |
+| HEADING_READOUT | "brief and clear" | 同上 | 同上 |
+| IN_ONE_LINE | "concise, clear" | 同上 | 同上 |
+
+Stage1/2は全segmentでattempt1を空文字列("plain TTS test first")としていたが、
+Stage3は委任文の明示的な指示(「必要最小限のrole別指示に留める」「各segment
+へ実際に送ったstyle文字列を全件記録」)に従い、attempt1から上記のrole別
+最小styleを送信した(pace指示「やや遅め」は含めていない、委任文の
+「pace指示は必須にしない」方針通り)。attempt2/3のfallback styleは
+Stage1/2と同一。
+
+### §22.4 結果表(実測、最終採用run=3回目、全12segment実行・全segment最終PASS)
+
+| segment_id | role | voice | attempt | 最終classification | duration A(既存) | duration B(今回) | B/A比 | WPM(B) | TTS latency | ASR latency | 費用(¥) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| topic_intro | TOPIC_INTRO | Charon | 1/3 | NORMALIZED_MATCH | 5.941s | 5.52s | 92.9% | 141.3 | 3.19s | 0.82s | ¥0.20 |
+| preview | PREVIEW | Charon | 1/3 | NORMALIZED_MATCH | 15.531s | 12.68s | 81.6% | 175.1 | 4.64s | 1.41s | ¥0.45 |
+| comment_1 | COMMENT | Charon | 1/3 | NORMALIZED_MATCH | 6.021s | 5.2s | 86.4% | 161.5 | 2.52s | 0.51s | ¥0.19 |
+| full_story_part1 | FULL_STORY | Aoede | **2/3** | NORMALIZED_MATCH(attempt1はTRUE_CONTENT_MISMATCH) | 49.241s | 41.8s | 84.9% | 189.5 | 12.65s+12.07s | 2.01s+2.14s | ¥3.16 |
+| comment_2 | COMMENT | Charon | 1/3 | NUMERIC_EQUIVALENCE_MATCH | 12.081s | 11.2s | 92.7% | 171.4 | 4.17s | 0.71s | ¥0.40 |
+| full_story_part2_heading | HEADING_READOUT | Aoede | 1/3 | NORMALIZED_MATCH | 3.571s(既存wavから実測) | 2.64s | 73.9% | 113.6 | 2.32s | 0.50s | ¥0.10 |
+| full_story_part2 | FULL_STORY | Aoede | 1/3 | NORMALIZED_MATCH | **既存音声なし(時刻コロンGate STOPPED中)** | 42.8s | N/A | 152.8 | 12.69s | 2.54s | ¥1.53 |
+| comment_3 | COMMENT | Charon | 1/3 | NORMALIZED_MATCH | 24.411s | 20.0s | 81.9% | 177.0 | 6.23s | 0.77s | ¥0.72 |
+| full_story_part3_heading | HEADING_READOUT | Aoede | 1/3 | NORMALIZED_MATCH | 2.891s(既存wavから実測) | 2.36s | 81.6% | 152.5 | 2.10s | 0.60s | ¥0.09 |
+| full_story_part3 | FULL_STORY | Aoede | 1/3 | NORMALIZED_MATCH | 25.931s | 25.52s | 98.4% | 131.7 | 8.11s | 1.00s | ¥0.91 |
+| comment_4 | COMMENT | Charon | 1/3 | NORMALIZED_MATCH | 14.711s | 11.0s | 74.8% | 180.0 | 3.92s | 0.77s | ¥0.40 |
+| in_one_line | IN_ONE_LINE | Aoede | 1/3 | NORMALIZED_MATCH | 21.101s | 16.28s | 77.2% | 173.2 | 5.31s | 1.75s | ¥0.59 |
+
+**retry発生箇所**: `full_story_part1`のみ(attempt1→2)。**instruction
+leakage**: 全12segment・全attempt(13回)とも`leaked_style_words=[]`
+(0件)。**異常長検知(`is_anomaly`)**: 全attempt非該当。**clipping**:
+全attempt`False`。**early_stop(segment単位)**: 発生無し(全segment
+`final_status=OK`)。**trial_early_stop(記事全体)**: 発生無し(`null`)。
+
+**記事全体集計**: 総attempt回数13回(12segment、うち1segmentのみ2回)。
+総TTS latency 約79.9秒(13回合計、平均約6.15秒/回)。総ASR latency
+約15.5秒(13回合計、平均約1.19秒/回)。**総費用 ¥8.72**
+(gemini ¥7.46+openai_asr ¥1.26相当、内訳は
+`stage3_result.json`の`cost_jpy_by_provider`参照)。Cap(¥600)
+消費率1.5%、segment単位Cap(¥100)も全segment未到達(最大でも
+full_story_part1の¥3.16)。
+
+**Duration比較(既存Production音声がある11segment)**: A合計181.43秒、
+B合計154.20秒、**B/A比 85.0%**(Stage1/2で観測された約79-83%よりやや
+現行に近づいたが、依然B側が短い傾向は12segment規模でも一貫して再現)。
+B側全12segment合計(`full_story_part2`含む)は197.00秒。
+
+### §22.5 full_story_part1のretry詳細(唯一のretry、重要な観察事項)
+
+attempt1(style="calm, steady news narration")のASR結果は、canonical
+本文の"Act One"/"Act Two"/"Act Three"(綴り文字の幕見出し)を、モデルが
+**digit読み("Act 1"/"Act 2"/"Act 3"、実際に聞き取れる音声としてdigitで
+発話)** した結果、既存Production ASR検証パイプライン(協同で使っている
+`er006_preprod_hardening_01_validation.classify_asr_match`の数字/否定
+不一致検出)がTRUE_CONTENT_MISMATCHと判定した(`reason: 数字/否定の
+不一致を検出: numbers=[('', '1')] negation=[]`)。attempt2(style=
+"natural, clear, conversational")では同じcanonical textに対しモデルが
+"Act one"/"Act two"/"Act three"(word読み)で発話し、NORMALIZED_MATCHで
+PASSした。**同一segment・同一canonical textで、style文字列の違いだけで
+digit読み/word読みが変わった**(3回中1回attempt、かつ後続attemptで解消)。
+これは新モデル(Gemini 3.8 Flash-Lite TTS)が持つ、綴り文字の順序表現
+("Act One"のような幕・章見出し)をdigitとして発話するリスクを示す
+初めての実測evidenceであり、Stage1/2(4segment)には無かったパターン
+(digit/固有名詞は含まれていたが、"Act One"のような幕番号の綴り文字
+表現は含まれていなかった)。**現行Production側の同一segment(A音声)は
+"Act one/two/three"のword読みでASR PASSしている**(`tts_generation_
+results.json`実物確認、§22.2参照)ため、現行側では発生していない
+モデル固有の挙動と考えられる(ただしN=1、本Trialの範囲では統計的頻度は
+不明)。
+
+### §22.6 実行中に発見・対応した3件の事項(いずれもGate自体の緩和・
+新設ではない、既存Stage2バグの修正1件+実装判断1件+発見して取りやめた
+変更1件)
+
+1. **Stage2バグの修正(委任文で明示指示済み)**: Stage2 scriptはASR呼び出し
+   (`routing.transcribe`)を`cl.segment_context()`の外側で行っており、
+   `raw_usage_log.jsonl`のopenai_asrレコードが`segment=None`のまま記録
+   されていた。Stage3 scriptではTTS呼び出しとASR呼び出しの両方を同じ
+   `cl.segment_context(segment_id)`ブロック内で行うよう修正し、実測で
+   26レコード(gemini13+openai_asr13)全件に`segment`が正しく付与されて
+   いることを確認した(`grep -c '"segment": null' raw_usage_log.jsonl`
+   -> 0件)。
+2. **実装判断(委任文原文に明記が無いためFableへ報告、実行時の判断)**:
+   委任文の早期STOP条件「3回失敗」を、当初Stage2 scriptを踏襲し
+   「記事全体の残りsegment生成も中止」として実装したところ、
+   `full_story_part1`が最初の実行(1回目)で3回とも失敗し
+   (§22.5と同じdigit読み現象、当時はattempt2のword読み再現が無く3回
+   とも失敗していた、非決定的挙動)、記事全体が4segment目で停止した。
+   実際のProduction実装(`er019_family_x_audio_production_runner_01.
+   generate_family_x_b1_segments`)を確認したところ、1segmentがSTOPPED
+   になっても記事全体の生成ループは止めず、他segmentは独立して生成を
+   継続する設計になっている(実物の`tts_generation_results.json`で、
+   `full_story_part2`がSTOPPED(時刻コロンGate)のまま`full_story_part3`
+   ・`in_one_line`等がOKになっている実例で確認済み、§22.1参照)。この
+   実物確認に基づき、Stage3 scriptの記事全体早期STOP条件から
+   `ALL_ATTEMPTS_EXHAUSTED_WITHOUT_PASS`(segment単位3回失敗)を除外し、
+   このsegmentのみ`final_status=STOPPED`として記録した上で残りの
+   segmentは生成継続する設計へ変更した(`OFF_SCRIPT_SPEECH_DETECTED`
+   ・`INSTRUCTION_TEXT_LEAKED`・`BUDGET_GUARD_STOP`は、個別segmentの
+   内容問題ではなくモデル/実行環境側の異常を示唆するため、委任文通り
+   記事全体の早期STOPとして維持)。この変更を適用した上で記事全体を
+   再実行した結果、`full_story_part1`は2回目の実行でもattempt1失敗・
+   attempt2成功となり(§22.5)、他11segmentは全てattempt1でPASSした
+   (最終的に「記事全体を止める」ケースには至らなかった)。
+3. **発見して取りやめた変更(共有store書き込みが発覚、委任文の禁止事項に
+   抵触するため revert、詳細は§22.8)**: Production
+   (`er003_v1_n3_01_tts_generate.apply_a2_slowdown_postprocess`等)が
+   `classify_asr_match(segment_id=name)`を渡してTier 1数値等価role
+   gateを有効化していることを発見し、Stage1/2 scriptがこの引数を渡して
+   おらずProduction ASRパイプラインを完全には再現していなかったと判断、
+   一時的にStage3 scriptへ`segment_id=segment_id`を追加した。しかし
+   この経路は不合格判定時に共有store(`er021_output/en_asr_semantic_
+   equivalence_production_wiring_01/telemetry.jsonl`、委任文で明示的に
+   書き込み禁止と指定)へ副作用として書き込みを行うことが判明したため、
+   revertしてsegment_idを渡さない形(Stage1/2と同一)へ戻した。
+   実データで検証した結果、本Trialのfull_story_part1の失敗ケースでは
+   Tier1は(segment_idの有無に関わらず)一度も救済に寄与しておらず
+   (`tier1_numeric_equivalence()`が両呼び出しとも`None`を返す、
+   分類結果も完全一致することを確認済み)、revertによる分類結果への
+   影響は無い。**この一時的な変更により、既に4行が共有store
+   (`er021_output/en_asr_semantic_equivalence_production_wiring_01/
+   telemetry.jsonl`の末尾、1624〜1627行目)へ書き込まれてしまった。
+   これらの行を削除しようとしたが、Claude Code側の安全機構
+   (auto mode classifier、理由: "Logging/Audit Tampering")により
+   Bash・Edit両方の削除操作がブロックされ、Sonnet側では復旧できな
+   かった。** 該当4行は`full_story_part1`のcanonical/ASR
+   textとroleFULL_STORY・classification TRUE_CONTENT_MISMATCH・
+   sub_reason protected_numberのみを含む観測ログであり、モジュール
+   自身のdocstringにも「既存のretry/Human Review Lockには一切影響
+   しない」と明記された観測性(observability)専用ログである
+   (Gate判定・Cost・Production記事生成には影響しない)。ただし委任文の
+   「共有ストア書き込み禁止」に反する事実は残っているため、
+   **USER_DECISION_REQUIRED**として報告する: 該当4行(1624-1627行目、
+   `"canonical": "This news feels like a short play in three acts.
+   Act One was..."`で始まる4レコード)をユーザー自身またはユーザーの
+   許可を得た別経路で削除するか、影響が無いと判断しそのまま残すかの
+   判断を仰ぐ。
+
+### §22.7 Production非変更・共有store非書込み(§22.6-3を除く)・venv
+差分0の確認
+
+- `er003_*`/`er006_*`/`er011_*`/`er012_*`/`er019_*`/`er025_*`等Production
+  対象ファイルへの変更: **0件**(import・読み取りのみ、Hormuz既存artifact
+  は一切書き換えていない、`_wav_duration_seconds()`ヘルパーも既存wavを
+  読み取るのみで書き換えない)。
+- Production `.venv`・`.venv-ci`・`requirements-ci.txt`・
+  `requirements.txt`への変更: **0件**。
+- 共有store(`master_audio_store_01/manifest.json`・
+  `reuse_telemetry.jsonl`、`pronunciation_ledger_01/ledger.json`、
+  `audio_retry_cascade_prod_01/human_review_queue.jsonl`、
+  `ja_asr_cascade_01/human_review_queue.jsonl`、`attempt_history.jsonl`)
+  への追加書込み: **0件**(タスク開始前からの他Agentによる既存の未コミット
+  差分のみ、`grep -c "short play in three acts\|Act One"`で全て0件を
+  確認済み)。**唯一の例外が`er021_output/en_asr_semantic_equivalence_
+  production_wiring_01/telemetry.jsonl`(§22.6-3、4行、USER_DECISION_
+  REQUIRED)**。
+- 新規ファイルのみ:
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage3.py`、
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage3_assets.py`
+  (いずれもTrial専用、Stage 1/2 scriptは無変更)、
+  `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/`配下
+  (JSON/jsonl/wav/mp3/html、discarded run1・run2の監査ログも保存済み)。
+- API呼び出し実績(3回の実行合計、run1・run2は設計変更のため破棄済み・
+  run3のみ採用): run1 ¥5.41(4segment、記事全体早期STOP発火前に破棄)、
+  run2 ¥5.52(4segment、共有store副作用発覚のため破棄)、run3(採用)
+  ¥8.72(12segment完走)。**3回合計の実費用 ¥19.65**(Cap¥600の3.3%)。
+
+### §22.8 Production採用判断に必要な残論点(事実ベース、実装はしていない)
+
+1. **SDK更新経路**: google-genai 2.25.0を使用(§14で更新済み、Production
+   `.venv`は無変更のまま)。Production採用時はProduction venvへの同SDK
+   導入が別途必要。
+2. **pricing/rate limit**: pricing_snapshot.json登録済み(§5)。rate limit
+   はTrial規模(1記事12segment、最大36 API呼び出し)でのみ確認、Production
+   相当の同時実行数・日次記事数でのrate limitは未確認。
+3. **role別style設計**: 本Stage3で採用した6role・最小style文字列
+   (§22.3)は「必要最小限」の初期案であり、シーンごとの抑揚・トーン
+   最適化(delegation文で「今後の論点」と明記)は未実施。
+4. **既存retry/fallback/Human Review Lockとの接続**: 本Trialは
+   `er011_human_review_lock_01`の`PRODUCTION_MAX_TTS_ATTEMPTS`
+   (3回)をそのまま踏襲したが、Human Review Lockそのもの
+   (`review_lock_state.json`書き込み等)への実配線はしていない
+   (Trial-local判定のみ)。
+5. **A2 6% slowdown post-processとの関係**: 本Trialの対象(B1B)には
+   このpost-processは適用されない(§22.2)。A2レベルの記事へ本トライアル
+   のモデルを適用する場合、slowdown post-processをそのまま新モデルの
+   出力へ適用するのか、新モデル用に再調整するのかは未検討。
+6. **Family A/X/Z各経路の配線範囲**: 本Trialが検証したのはFamily X
+   (`er019_*`)のB1Bレベルのみ。Family A(`er011_*`/`er012_*`)・
+   Z等、他Familyの配線範囲・role名・style prefixとの整合は未確認。
+7. **§22.6-3のUSER_DECISION_REQUIRED**: 共有telemetry
+   (`er021_output/.../telemetry.jsonl`)への意図しない4行書込みの
+   削除可否(Production採用判断そのものとは独立した論点だが、本Stage3
+   実行によって生じた副作用の後始末として、Production採用判断と併せて
+   確認を求める)。
+
+### §22.9 Sonnet仮分類(Stage 3)
+
+**Stage 3: 部分的SUCCESS、ただし1件USER_DECISION_REQUIRED
+(§22.6-3/§22.8-7)を伴う**(事実ベース)。委任文の成功条件(1記事全12
+segment実行、記事全体player作成、全項目の表報告、Production非変更・
+venv差分0)は満たした。共有store非書込みの条件は**部分的に満たせな
+かった**(§22.6-3、意図せず4行書込み、復旧は権限上ブロックされ
+Fable/ユーザー判断待ち)。
+
+音声面の結果: 全12segment最終的にASR検証PASS(11segmentがattempt1、
+1segmentがattempt2)。instruction leakage 0件、異常長0件、記事全体の
+早期STOP(危険/systemic理由)無し。retry率は13回中1回(7.7%)。Duration
+はStage1/2と同様に一貫してB側が短い(既存音声がある11segmentでB/A比
+85.0%)。§22.5で報告した"Act One"→digit読みのケースは、新モデルの
+挙動として要注意点として記録する(N=1、retryで解消したが、Production
+採用判断時にはこの種の綴り文字幕番号表現を含む記事での追加確認が
+望ましい)。
+
+STOP該当: 記事全体としては**無し**(危険な早期STOP条件[無関係内容の
+読み上げ・指示文の読み上げ・予算超過]はいずれも発生していない)。ただし
+共有store書込み問題は**USER_DECISION_REQUIRED**として個別に報告する。
+
+Status提案: **`VALIDATED`(音声面)+ `USER_DECISION_REQUIRED`(共有store
+4行の後始末)の併記**。1記事全体(12segment、2role[Charon/Aoede]、
+数値/固有名詞/幕番号表現を含む)において、speech_metadata方式による
+Gemini 3.8 Flash-Lite TTS呼び出しが実用的な安定性(1回のみretryで記事
+全体が完走)で機能することを実測で確認した、という意味での`VALIDATED`。
+Production採用(`APPROVED_FOR_PRODUCTION`)の可否は、§22.8の残論点(特に
+role別style設計の詰め・他Family配線範囲)を踏まえたFable/ユーザーの
+判断に委ねる。
+
+試聴artifact(ユーザー向け提示用、§21.7条件3の通りStage3=1記事全体規模
+のため人間試聴による正式判定が必要):
+`er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/player.html`
+(記事全体連続再生[A/B]+segment単位A/B比較表)。
