@@ -251,7 +251,10 @@ class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
                            # (crosslevel.generate_english_segment_with_fallback)がキーワード引数として
                            # segment_idを渡すようになったため、fakeの固定シグネチャを前方互換にする
                            # (挙動確認ロジックは無変更)。
-                           segment_id=None):
+                           segment_id=None,
+                           # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)で
+                           # 追加された新規opt-in引数(既定値付き)。このFakeは受理して無視するだけでよい。
+                           tts_backend="structured_separation"):
             # standard側がstop_retryingにより1回のみでASR_VALIDATION_UNCERTAIN
             # を返した状態を模擬する(fallbackへの到達可否だけを検証したいため、
             # 実際のTTS/ASR APIは呼ばない)。
@@ -259,7 +262,7 @@ class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
 
         fallback_calls = {"count": 0}
 
-        def fake_minimal_instruction(text, out_path):
+        def fake_minimal_instruction(text, out_path, **kwargs):
             fallback_calls["count"] += 1
             return {"status": "OK"}
 

@@ -246,6 +246,12 @@ def generate_narration_snippet_verified_strict(
     # equivalence_role()がer020.resolve_narrative_role()を参照して行う、
     # ここでは解釈しない)。
     segment_id: str | None = None,
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
+    # 既定"structured_separation"で既存挙動とbyte-identical): Family X
+    # runnerのみが明示的に"speech_metadata_flash_lite"を渡す(既存呼び
+    # 出し元は無変更のまま)。p9a.generate_narration_snippet()自身のopt-in
+    # 分岐へそのまま転送する。
+    tts_backend: str = "structured_separation",
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -295,11 +301,24 @@ def generate_narration_snippet_verified_strict(
     # _make_japanese_call_fn)と同一値をそのまま使い、tts_call_fn引数
     # 経由で差し込む(声・モデル・instruction・spoken textは無変更)。
     batch_model_name = p9a.ENGLISH_MODEL_NAME if language == "en" else p9a.JAPANESE_MODEL_NAME
-    batch_call_fn = batch_wiring.make_batch_tts_call_fn(batch_model_name, p9a.VOICE_NAME, output_path=out_path)
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
+    # backend(structured_separation)ではここでbatch_call_fnを事前に組み
+    # 立ててp9a.generate_narration_snippet()へtts_call_fn=として渡す
+    # (既存挙動、byte-identical)。Family X runnerがspeech_metadata_
+    # flash_liteを渡した場合のみtts_call_fn=Noneのままにし、
+    # p9a.generate_narration_snippet()自身のopt-in分岐(resolve_tts_
+    # call_and_prompt経由)へ委ねる。
+    batch_call_fn = (batch_wiring.make_batch_tts_call_fn(batch_model_name, p9a.VOICE_NAME, output_path=out_path)
+                      if tts_backend == "structured_separation" else None)
+    # 設計書§(g): 実際に使われたmodel_idをresult["model"]/attempt audit
+    # の"model"フィールドへ記録する(既存フィールドの流用、新規スキーマなし)。
+    import er033_tts_flash_lite_backend_wiring_01 as flw
+    actual_model_name = flw.resolve_actual_model_name(batch_model_name, tts_backend)
     for attempt in range(1, max_attempts + 1):
         r = p9a.generate_narration_snippet(text, language, out_path, tts_call_fn=batch_call_fn,
                                             safety_margin_seconds=safety_margin_seconds,
-                                            style_prefix_override=style_prefix_override)
+                                            style_prefix_override=style_prefix_override,
+                                            tts_backend=tts_backend)
         if r.get("status") != "OK":
             attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
@@ -377,7 +396,7 @@ def generate_narration_snippet_verified_strict(
             "custom_" + hashlib.md5(style_prefix_override.encode("utf-8")).hexdigest()[:8])
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, _route_label, {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": language,
-            "model": batch_model_name, "voice": p9a.VOICE_NAME,
+            "model": actual_model_name, "voice": p9a.VOICE_NAME, "tts_backend": tts_backend,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "instruction_text": style_prefix_override,
             "asr_text": asr_text, "audio_classification": audio_classification,
@@ -490,6 +509,10 @@ def generate_english_component_minimal_instruction(
     # (crosslevel_audio_02_common.generate_english_segment_with_fallback、
     # B1 scaffold等)は無変更のまま。
     enable_pronunciation_resolver: bool = False,
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
+    # 既定"structured_separation"で既存挙動とbyte-identical): Family X
+    # runnerのみが明示的に"speech_metadata_flash_lite"を渡す。
+    tts_backend: str = "structured_separation",
 ) -> dict:
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
@@ -507,10 +530,16 @@ def generate_english_component_minimal_instruction(
             MINIMAL_INSTRUCTION_PREFIX, text)
         if en_pronunciation_resolver_info.get("hints_applied"):
             instruction_prefix = augmented_prefix
-    prompt = p4c.build_tts_prompt(text, instruction_prefix)
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
     # p9a._make_english_call_fn()と同一のENGLISH_MODEL_NAME/VOICE_NAMEを使う)。
-    call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定backend
+    # では上記2行(batch_wiring.make_batch_tts_call_fn + build_tts_prompt)と
+    # byte-identical。
+    import er033_tts_flash_lite_backend_wiring_01 as flw
+    call_fn, prompt = flw.resolve_tts_call_and_prompt(
+        text, instruction_prefix, p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, out_path, tts_backend=tts_backend,
+        build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
+    actual_model_name = flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
@@ -531,11 +560,11 @@ def generate_english_component_minimal_instruction(
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {
-        "status": "OK", "text": text, "path": out_path, "model": p9a.ENGLISH_MODEL_NAME,
+        "status": "OK", "text": text, "path": out_path, "model": actual_model_name,
         "voice": p9a.VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
         "sha256": p8a.sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
-        "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+        "instruction": "minimal (not ENGLISH_STYLE_PREFIX)", "tts_backend": tts_backend,
         "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
     }
 

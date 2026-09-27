@@ -169,6 +169,57 @@ class ProductionValidatorIntegrationAfterHyphenFixTests(unittest.TestCase):
             ("EXACT_MATCH", "NORMALIZED_MATCH", "HIGH_SIMILARITY_SAFE"))
 
 
+class ActHeadingDigitReadingRegressionTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01 Phase 1
+    (設計書§(h)): TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01 Stage3
+    §22.5で実測した唯一のretryケース(Family X Hormuz B1B
+    full_story_part1、attempt1)のtext-only regression fixture。
+
+    音声合成は行わない(¥0、追加API呼び出し無し)。実測されたcanonical
+    text("Act One"/"Act Two"/"Act Three"、綴り文字の幕見出し)と、
+    Flash-Liteがattempt1で実際にdigit読みした結果のASR書き起こし文字列
+    ("Act 1"/"Act 2"/"Act 3")の組を人工的に再現し、既存Production
+    Validator(classify_asr_match)が正しくTRUE_CONTENT_MISMATCHとして
+    停止させることを確認する(REPORT実測: reason="数字/否定の不一致を
+    検出: numbers=[('', '1')] negation=[]"、REPORT§22.5)。"""
+
+    def test_act_heading_digit_reading_is_true_content_mismatch(self):
+        canonical = (
+            "The play unfolds in three acts. Act One introduces the "
+            "characters. Act Two raises the stakes. Act Three resolves "
+            "the conflict."
+        )
+        asr_text_digit_form = (
+            "The play unfolds in three acts. Act 1 introduces the "
+            "characters. Act 2 raises the stakes. Act 3 resolves "
+            "the conflict."
+        )
+        result = en_validator.classify_asr_match(canonical, asr_text_digit_form)
+        self.assertEqual(result.classification, "TRUE_CONTENT_MISMATCH")
+        self.assertFalse(result.should_pass)
+
+    def test_act_heading_word_reading_passes(self):
+        # REPORT§22.5のattempt2相当(同一canonical、word読みのASR結果)。
+        # 同じsegmentがstyleの違いだけでdigit読み/word読みの間を往復した
+        # ことを踏まえ、word読み側がPASSすることも合わせて確認する
+        # (このfixtureがGate自体を過剰に厳しくしていないことの裏付け)。
+        canonical = (
+            "The play unfolds in three acts. Act One introduces the "
+            "characters. Act Two raises the stakes. Act Three resolves "
+            "the conflict."
+        )
+        asr_text_word_form = (
+            "The play unfolds in three acts. Act one introduces the "
+            "characters. Act two raises the stakes. Act three resolves "
+            "the conflict."
+        )
+        result = en_validator.classify_asr_match(canonical, asr_text_word_form)
+        self.assertIn(
+            result.classification,
+            ("EXACT_MATCH", "NORMALIZED_MATCH", "HIGH_SIMILARITY_SAFE"))
+        self.assertTrue(result.should_pass)
+
+
 class ResolveKeyPhraseJaGlossTtsTests(unittest.TestCase):
     """KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01: Key Phrase日本語
     glossのTTS用フィールド解決(新規artifact=japanese_gloss_ttsをそのまま

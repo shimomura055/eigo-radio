@@ -835,7 +835,10 @@ class _FakeClassification:
 
 def _fake_generate_narration_snippet(content: bytes = b"AUDIO"):
     def fake(text, language, out_path, tts_call_fn=None, safety_margin_seconds=None,
-             style_prefix_override=None):
+             style_prefix_override=None,
+             # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)で
+             # 追加された新規opt-in引数(既定値付き)。このFakeは受理して無視するだけでよい。
+             tts_backend="structured_separation"):
         with open(out_path, "wb") as f:
             f.write(content)
         return {"status": "OK", "text": text, "language": language, "path": out_path,
@@ -1016,7 +1019,7 @@ class GenerateEnglishSegmentWithFallbackScopeTests(unittest.TestCase):
         crosslevel_common.generate_narration_snippet_verified_strict = \
             lambda *a, **k: {"status": "STOPPED", "attempts_log": []}
 
-        def fake_minimal(text, out_path):
+        def fake_minimal(text, out_path, **_kw):
             with open(out_path, "wb") as f:
                 f.write(b"AUDIO")
             return {"status": "OK", "text": text, "path": out_path}

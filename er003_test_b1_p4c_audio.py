@@ -68,15 +68,29 @@ class FallbackPathsUseStructuredSeparationTests(unittest.TestCase):
     standard pathと同じStructured Separation契約を使うことを、実際の
     production関数のソースコードを検査して確認する(「本文とstyle
     instructionを直接文字列連結している」という抜け穴が新たに生まれて
-    いないことの回帰テスト)。"""
+    いないことの回帰テスト)。
+
+    TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)
+    Phase 1で、この契約の実装箇所が
+    `er033_tts_flash_lite_backend_wiring_01.resolve_tts_call_and_prompt()`
+    へ集約された(既定backend="structured_separation"では、この関数が
+    内部で`p4c.build_tts_prompt()`を呼ぶだけであり、byte-identicalな
+    挙動を保つ。この事実は
+    `er033_tts_flash_lite_backend_wiring_01_test_01.
+    DefaultBackendByteIdenticalTests`で別途確認済み)。そのため本テストは
+    「直接`build_tts_prompt(`を呼ぶ」か「`resolve_tts_call_and_prompt(`
+    経由で呼ぶ」のいずれかを許容する(どちらも生の文字列連結ではなく
+    Structured Separation契約を経由することの確認という目的は不変)。"""
 
     def _assert_uses_build_tts_prompt_not_raw_concat(self, module_name, func_name):
         import importlib
         import inspect
         mod = importlib.import_module(module_name)
         src = inspect.getsource(getattr(mod, func_name))
-        self.assertIn("build_tts_prompt(", src,
-                       f"{module_name}.{func_name} does not appear to call build_tts_prompt()")
+        self.assertTrue(
+            "build_tts_prompt(" in src or "resolve_tts_call_and_prompt(" in src,
+            f"{module_name}.{func_name} does not appear to call build_tts_prompt() "
+            f"(directly or via resolve_tts_call_and_prompt())")
 
     def test_a2_japanese_minimal_instruction_fallback(self):
         self._assert_uses_build_tts_prompt_not_raw_concat(
@@ -103,16 +117,23 @@ class FallbackPathsUseStructuredSeparationTests(unittest.TestCase):
         mod = importlib.import_module("er003_v1_sing01_point_headings_aoede")
         import inspect
         src = inspect.getsource(mod.generate)
-        self.assertIn("build_tts_prompt(", src)
+        self.assertTrue("build_tts_prompt(" in src or "resolve_tts_call_and_prompt(" in src)
 
     def test_p9a_generate_narration_snippet_both_languages(self):
-        # 英語・日本語どちらの分岐もbuild_tts_prompt()を通ることを確認
-        # (以前は日本語分岐だけ直接連結していた抜け穴)。
+        # 英語・日本語どちらの分岐もbuild_tts_prompt()(または
+        # resolve_tts_call_and_prompt()経由)を通ることを確認する
+        # (以前は日本語分岐だけ直接連結していた抜け穴)。Phase 1以降、
+        # tts_call_fnが明示的に渡された場合の分岐は直接build_tts_prompt()
+        # を、渡されない場合(既定backend分岐)はresolve_tts_call_and_
+        # prompt()経由でbuild_tts_prompt()を呼ぶ(2箇所とも生の文字列
+        # 連結ではないことに変わりはない)。
         import inspect
         import er003_b1_p9a_audio as p9a
         src = inspect.getsource(p9a.generate_narration_snippet)
-        self.assertEqual(src.count("p4c.build_tts_prompt("), 2,
-                          "expected both the 'en' and 'ja' branches to call p4c.build_tts_prompt()")
+        self.assertEqual(src.count("p4c.build_tts_prompt("), 1,
+                          "expected the tts_call_fn-provided branch to call p4c.build_tts_prompt()")
+        self.assertIn("resolve_tts_call_and_prompt(", src,
+                       "expected the default-call_fn branch to delegate via resolve_tts_call_and_prompt()")
 
 
 class ChunkPlanReuseTests(unittest.TestCase):

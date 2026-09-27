@@ -355,7 +355,11 @@ class A2StandardPathProductionWiringFixTest(unittest.TestCase):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def _fake_generate_narration_snippet(self, text, language, out_path, tts_call_fn=None,
-                                          safety_margin_seconds=None, style_prefix_override=None):
+                                          safety_margin_seconds=None, style_prefix_override=None,
+                                          # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                          # (2026-09-27)で追加された新規opt-in引数(既定値付き)。
+                                          # このFakeは受理して無視するだけでよい。
+                                          tts_backend="structured_separation"):
         self.tts_call_count += 1
         with open(out_path, "wb") as f:
             f.write(f"FAKE_AUDIO_ATTEMPT_{self.tts_call_count}".encode("utf-8"))

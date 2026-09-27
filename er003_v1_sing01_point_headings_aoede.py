@@ -44,7 +44,16 @@ NARRATION_DIR = f"{OUT_DIR}/narration"
 def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
              # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Point見出しはPRODUCTION
              # 承認済みのdisfluency QA対象segmentのため既定True。
-             disfluency_qa: bool = True) -> dict:
+             disfluency_qa: bool = True,
+             # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
+             # 既定None=p9a.ENGLISH_STYLE_PREFIXのまま、既存挙動と完全に同一):
+             # Family X runnerのみが、HEADING_READOUT role style定数を明示的に
+             # 渡す用途を想定した追加パラメータ。
+             style_prefix_override: str = None,
+             # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(既定
+             # "structured_separation"で既存挙動とbyte-identical): Family X
+             # runnerのみが明示的に"speech_metadata_flash_lite"を渡す。
+             tts_backend: str = "structured_separation") -> dict:
     # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
     # Gate、2026-09-27): Point見出し(point_one_heading/point_two_heading)へ
     # 適用する。呼び出し側がtts_safe_enでNormalizerを適用済みの前提で、
@@ -70,15 +79,21 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         use_minimal = attempt > minimal_after
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはgclient.make_tts_call_fn(AOEDE)と同一)。
-        call_fn = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, AOEDE, output_path=out_path)
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
+        # backendでは元の2行(batch_wiring.make_batch_tts_call_fn +
+        # build_tts_prompt)とbyte-identical。
+        import er033_tts_flash_lite_backend_wiring_01 as flw
         if use_minimal:
             # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
             # Structured Separationを適用する。
-            prompt = p4c.build_tts_prompt(text, repro01.MINIMAL_INSTRUCTION_PREFIX)
+            style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
             instruction_type = "minimal_fallback"
         else:
-            prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
+            style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
             instruction_type = "english_style_prefix"
+        call_fn, prompt = flw.resolve_tts_call_and_prompt(
+            text, style_prefix, common.MODEL_NAME, AOEDE, out_path, tts_backend=tts_backend,
+            build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         trimmed = None
@@ -112,8 +127,8 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
-            "model": common.MODEL_NAME, "voice": AOEDE,
-            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend), "voice": AOEDE,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
@@ -127,7 +142,8 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
                     "max_len": max_len,
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
-                    "disfluency_evidence": gate.get("disfluency_evidence")}
+                    "disfluency_evidence": gate.get("disfluency_evidence"), "tts_backend": tts_backend,
+                    "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
         if stop_retrying:
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "voice": AOEDE,
                     "asr_verified": False, "asr_text": asr_text, "attempts_log": attempts_log,

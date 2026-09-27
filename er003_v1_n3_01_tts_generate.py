@@ -49,6 +49,7 @@ import er006_preprod_hardening_01_validation as en_validator
 import er006_secondary_asr_01 as secondary_asr
 import er008_a2_postprocess_slowdown_01 as a2_slowdown
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er033_tts_flash_lite_backend_wiring_01 as flw
 
 # ============================================================
 # ER-008-EVIDENCE-COMPRESSION-PROD-AND-N7-AUDIO-06 Part G: A2英語のみ、
@@ -211,7 +212,15 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
                                         # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 呼び出し側が
                                         # A2英語本文segment(full_story_part1/2・point_one・point_two)
                                         # でのみTrueを渡す(既定False)。
-                                        enable_repetition_qa: bool = False) -> dict:
+                                        enable_repetition_qa: bool = False,
+                                        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                        # (2026-09-27、既定"structured_separation"で既存挙動と
+                                        # byte-identical): Family X runnerのみが明示的に
+                                        # "speech_metadata_flash_lite"を渡す。post-process
+                                        # (apply_a2_slowdown_postprocess)自体はbackend非依存
+                                        # (既に生成済みの音声ファイルへ後段で適用するだけ、
+                                        # 設計書§(e))のため無変更。
+                                        tts_backend: str = "structured_separation") -> dict:
     """通常ペースでの生成(generate_english_segment_with_fallback、既存の
     standard/fallback retry込み)→6% time-stretch→post-process後ASR
     再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
@@ -241,7 +250,7 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            enable_repetition_qa=enable_repetition_qa)
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
@@ -299,7 +308,12 @@ def resolve_key_phrase_ja_gloss_tts(item: dict) -> tuple:
 
 def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                                    max_attempts: int = 6, known_key_phrase_terms=None,
-                                                   source_context: str = "") -> dict:
+                                                   source_context: str = "",
+                                                   # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                                   # (2026-09-27、既定"structured_separation"で既存挙動と
+                                                   # byte-identical): Family X runnerのみが明示的に
+                                                   # "speech_metadata_flash_lite"を渡す。
+                                                   tts_backend: str = "structured_separation") -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: 先頭以外に残った項変数記法(「〜」「…」等)は
     # 機械的に削除すると文法が壊れるため、TTS呼び出し自体を行わずSTOPPEDで
@@ -360,7 +374,7 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
         if f.get("category") == safety.FOREIGN_TOKEN_READING_DICTIONARY and f.get("reading")
     } or None
     r = voice01.generate_charon_japanese(tts_input, out_path, expected_substring, max_attempts=max_attempts,
-                                          expected_readings=expected_readings)
+                                          expected_readings=expected_readings, tts_backend=tts_backend)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)
@@ -383,17 +397,28 @@ _A2_JA_MINIMAL_INSTRUCTION_PREFIX = (
 )
 
 
-def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
+def _generate_a2_japanese_minimal_instruction(
+        text: str, out_path: str,
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(設計書§(b)
+        # の見落とし箇所として明示された経路。既定"structured_separation"で
+        # 既存挙動とbyte-identical): Family X runnerのみが明示的に
+        # "speech_metadata_flash_lite"を渡す。
+        tts_backend: str = "structured_separation") -> dict:
     import er002_common as common
     import er003_b1_p3u_audio as p3u
     import er003_b1_p4c_audio as p4c
     import er003_b1_p9a_audio as p9a
+    import er033_tts_flash_lite_backend_wiring_01 as flw
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
-    prompt = p4c.build_tts_prompt(text, _A2_JA_MINIMAL_INSTRUCTION_PREFIX)
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
     # (声・モデルはp9a._make_japanese_call_fn()と同一)。
-    call_fn = batch_wiring.make_batch_tts_call_fn(p9a.JAPANESE_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
+    # backendでは上記2行とbyte-identical。
+    call_fn, prompt = flw.resolve_tts_call_and_prompt(
+        text, _A2_JA_MINIMAL_INSTRUCTION_PREFIX, p9a.JAPANESE_MODEL_NAME, p9a.VOICE_NAME, out_path,
+        tts_backend=tts_backend,
+        build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
@@ -413,7 +438,8 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {"status": "OK", "text": text, "path": out_path, "trim_info": trim_info,
-            "clipping_detected": metrics["clipping_detected"], "instruction": "minimal (not JAPANESE_STYLE_PREFIX)"}
+            "clipping_detected": metrics["clipping_detected"], "instruction": "minimal (not JAPANESE_STYLE_PREFIX)",
+            "tts_backend": tts_backend, "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend)}
 
 
 # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
@@ -440,7 +466,15 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                         max_extra_chars: int = 40,
                                         max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                                         standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
-                                        expected_readings: dict | None = None) -> dict:
+                                        expected_readings: dict | None = None,
+                                        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                        # (2026-09-27、既定"structured_separation"で既存挙動と
+                                        # byte-identical): Family X runnerのみが明示的に
+                                        # "speech_metadata_flash_lite"を渡す。標準経路
+                                        # (c.generate_narration_snippet_verified_strict)・
+                                        # fallback経路(_generate_a2_japanese_minimal_instruction)
+                                        # の両方に転送する。
+                                        tts_backend: str = "structured_separation") -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
@@ -464,7 +498,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
-        expected_readings=expected_readings)
+        expected_readings=expected_readings, tts_backend=tts_backend)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -480,7 +514,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     fallback_attempts = []
     fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
     for attempt in range(1, fallback_budget + 1):
-        r = _generate_a2_japanese_minimal_instruction(text, out_path)
+        r = _generate_a2_japanese_minimal_instruction(text, out_path, tts_backend=tts_backend)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
             continue
@@ -500,8 +534,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "ja",
-            "model": p9a.JAPANESE_MODEL_NAME, "voice": p9a.VOICE_NAME,
-            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
@@ -539,7 +573,12 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
 
 def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                               max_extra_chars: int = 40, max_attempts: int = 6,
-                                              known_key_phrase_terms=None, source_context: str = "") -> dict:
+                                              known_key_phrase_terms=None, source_context: str = "",
+                                              # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                              # (2026-09-27、既定"structured_separation"で既存挙動と
+                                              # byte-identical): Family X runnerのみが明示的に
+                                              # "speech_metadata_flash_lite"を渡す。
+                                              tts_backend: str = "structured_separation") -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
     # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
@@ -599,7 +638,7 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     } or None
     r = generate_a2_japanese_with_fallback(
         tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
-        expected_readings=expected_readings)
+        expected_readings=expected_readings, tts_backend=tts_backend)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)

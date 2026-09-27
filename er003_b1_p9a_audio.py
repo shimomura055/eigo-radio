@@ -199,7 +199,17 @@ def _make_japanese_call_fn(client=None):
 def generate_narration_snippet(text: str, language: str, out_path: str,
                                 tts_call_fn=None, sleep_function=None,
                                 safety_margin_seconds: float = p3u.EN_TRIM_SAFETY_MARGIN_SECONDS,
-                                style_prefix_override: str = None) -> dict:
+                                style_prefix_override: str = None,
+                                # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                # (2026-09-27、既定"structured_separation"で既存挙動と
+                                # byte-identical): tts_call_fn引数が明示的に渡された場合
+                                # (呼び出し側が既にcall_fn/promptの組み立てを済ませている
+                                # 場合)はこの引数は無視される。呼び出し側がtts_call_fnを
+                                # 渡さない場合のみ、この関数自身がresolve_tts_call_and_
+                                # promptで分岐する。Family X runnerのみが明示的に
+                                # "speech_metadata_flash_lite"を渡す(Family A/B/C
+                                # [legacy]は無変更)。
+                                tts_backend: str = "structured_separation") -> dict:
     """language: 'en' または 'ja'。既存の確立済みinstruction/モデル/voiceを
     そのまま使う(新規styleは作らない)。safety_margin_secondsの既定値は
     従来通り(p3u.EN_TRIM_SAFETY_MARGIN_SECONDS=0.08秒)。呼び出し側で
@@ -213,17 +223,33 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
     fallback経路は無変更、B1側はこの引数を渡さないため影響なし)。"""
     if language == "en":
         style_prefix, model_name = style_prefix_override or ENGLISH_STYLE_PREFIX, ENGLISH_MODEL_NAME
-        call_fn = tts_call_fn or _make_english_call_fn()
-        prompt = p4c.build_tts_prompt(text, style_prefix)
+        default_call_fn_factory = _make_english_call_fn
     elif language == "ja":
         style_prefix, model_name = JAPANESE_STYLE_PREFIX, JAPANESE_MODEL_NAME
-        call_fn = tts_call_fn or _make_japanese_call_fn()
+        default_call_fn_factory = _make_japanese_call_fn
+    else:
+        raise ValueError(f"unsupported language: {language}")
+
+    if tts_call_fn is not None or tts_backend == "structured_separation":
+        # 既存挙動と完全に同一(byte-identical): tts_call_fnが明示的に
+        # 渡された場合はそれを使い、渡されない場合のみ既定call_fnを
+        # 生成する。tts_backend="structured_separation"(既定)では、
+        # 呼び出し元がtts_call_fnを渡す/渡さないに関わらずこの分岐に
+        # 入り、既存コードパスを一切変更しない。
+        call_fn = tts_call_fn or default_call_fn_factory()
         # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: 英語分岐と同じ
         # build_tts_prompt()経由にする(以前は直接連結しており、
         # 日本語だけStructured Separationが適用されない抜け穴だった)。
         prompt = p4c.build_tts_prompt(text, style_prefix)
     else:
-        raise ValueError(f"unsupported language: {language}")
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: ここへ
+        # 到達するのはtts_call_fn=None かつ tts_backend が既定以外の場合
+        # のみ(Phase 1時点でそのような呼び出し元は存在しない、Family X
+        # runnerは常にtts_call_fnを明示的に渡さずこの関数自身の分岐を
+        # 経由する設計のため到達しうる)。
+        import er033_tts_flash_lite_backend_wiring_01 as flw
+        call_fn, prompt = flw.resolve_tts_call_and_prompt(
+            text, style_prefix, model_name, VOICE_NAME, out_path, tts_backend=tts_backend)
 
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=MAX_TTS_TECHNICAL_RETRY, sleep_fn=sleep_function)
@@ -244,11 +270,18 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
 
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+    # 設計書§(g): 実際に使われたmodel_idを記録する(既定backendでは
+    # model_nameのまま=既存挙動と完全に同一)。
+    if tts_backend == "structured_separation":
+        actual_model_name = model_name
+    else:
+        import er033_tts_flash_lite_backend_wiring_01 as flw
+        actual_model_name = flw.resolve_actual_model_name(model_name, tts_backend)
     return {
         "status": "OK", "text": text, "language": language, "path": out_path,
-        "model": model_name, "voice": VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
+        "model": actual_model_name, "voice": VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
         "sha256": sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
-        "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
+        "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"], "tts_backend": tts_backend,
     }
 
 

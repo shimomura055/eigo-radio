@@ -86,7 +86,21 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # hintが1件も無い場合はp9a.ENGLISH_STYLE_PREFIXのまま(既存
                                          # 呼び出し元・既存promptへの影響ゼロ)。他の全呼び出し元は
                                          # 無変更(既定False)。
-                                         enable_pronunciation_resolver: bool = False) -> dict:
+                                         enable_pronunciation_resolver: bool = False,
+                                         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                         # (2026-09-27、既定None=p9a.ENGLISH_STYLE_PREFIXのまま、
+                                         # 既存挙動と完全に同一): Family X runnerのみが、6-role
+                                         # style定数(FULL_STORY/IN_ONE_LINE役)を明示的に渡す
+                                         # 用途を想定した追加パラメータ(voice01.generate_charon_
+                                         # englishの既存style_prefix_overrideと同型のパターン)。
+                                         style_prefix_override: str = None,
+                                         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                         # (既定"structured_separation"で既存挙動とbyte-identical):
+                                         # Family X runnerのみが明示的に"speech_metadata_flash_lite"
+                                         # を渡す。標準分岐・fallback(minimal instruction)分岐
+                                         # (generate_english_component_minimal_instruction)の両方に
+                                         # 転送する。
+                                         tts_backend: str = "structured_separation") -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -111,10 +125,10 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
     # 1件も無い場合はp9a.ENGLISH_STYLE_PREFIXのまま変更しない(既存呼び
     # 出し元・既存promptへの影響をゼロに保つ)。
     en_pronunciation_resolver_info = None
-    standard_style_prefix = p9a.ENGLISH_STYLE_PREFIX
+    standard_style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
     if enable_pronunciation_resolver:
         augmented_style_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
-            p9a.ENGLISH_STYLE_PREFIX, text)
+            standard_style_prefix, text)
         if en_pronunciation_resolver_info.get("hints_applied"):
             standard_style_prefix = augmented_style_prefix
     max_len = len(text) + max_extra_chars
@@ -132,8 +146,12 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             cooldown_events.append(cooldown_record)
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
         # p9a._make_english_call_fn()と同一)。
-        call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
-        prompt = p4c.build_tts_prompt(text, standard_style_prefix)
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
+        # backendでは上記2行とbyte-identical。
+        import er033_tts_flash_lite_backend_wiring_01 as flw
+        call_fn, prompt = flw.resolve_tts_call_and_prompt(
+            text, standard_style_prefix, p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, out_path, tts_backend=tts_backend,
+            build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix_wide_margin"
@@ -155,7 +173,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": str(err) if not ok else "発話区間検出失敗",
                                   "instruction_type": instruction_type})
             r = repro01.generate_english_component_minimal_instruction(
-                text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver)
+                text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver,
+                tts_backend=tts_backend)
             instruction_type = "minimal_fallback"
             if r.get("status") != "OK":
                 attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
@@ -206,8 +225,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
-            "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
-            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
@@ -230,7 +249,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"],
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
-                    "cooldown_events": cooldown_events}
+                    "cooldown_events": cooldown_events, "tts_backend": tts_backend,
+                    "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend)}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
@@ -242,7 +262,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     text, out_path, asr_text, max_extra_chars, disfluency_qa,
                     enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
                     enable_pronunciation_resolver=enable_pronunciation_resolver,
-                    en_pronunciation_resolver_info=en_pronunciation_resolver_info)
+                    en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
                 if recovered is not None:
                     recovered["cooldown_events"] = cooldown_events
                     return recovered
@@ -260,7 +280,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             text, out_path, last_asr_text, max_extra_chars, disfluency_qa,
             enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
             enable_pronunciation_resolver=enable_pronunciation_resolver,
-            en_pronunciation_resolver_info=en_pronunciation_resolver_info)
+            en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
         if recovered is not None:
             recovered["cooldown_events"] = cooldown_events
             return recovered
@@ -279,7 +299,11 @@ def _local_rewrite_recovery_for_news_narration(
         # __wrapped__の再TTS呼び出しへ転送する(既定False、既存呼び出し
         # 元には一切影響しない)。
         enable_pronunciation_resolver: bool = False,
-        en_pronunciation_resolver_info: dict | None = None) -> dict | None:
+        en_pronunciation_resolver_info: dict | None = None,
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(既定
+        # "structured_separation"で既存挙動とbyte-identical、設計書§(b):
+        # regeneration経路も同一backend経由)。
+        tts_backend: str = "structured_separation") -> dict | None:
     """generate_news_narration_wide_margin()専用のLocal Rewrite回復
     ヘルパー(generate_charon_english側と対になる実装、ユーザー承認済み
     仕様D)。Full Story/Point本文/In One Lineが対象。回復成功時は
@@ -295,7 +319,7 @@ def _local_rewrite_recovery_for_news_narration(
             disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             enable_repetition_qa=enable_repetition_qa,
-            enable_pronunciation_resolver=enable_pronunciation_resolver)
+            enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend)
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,

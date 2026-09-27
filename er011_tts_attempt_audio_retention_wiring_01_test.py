@@ -146,7 +146,10 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         state = {"n": 0}
 
         def fake(text, language, out_path, tts_call_fn=None, safety_margin_seconds=None,
-                 style_prefix_override=None):
+                 style_prefix_override=None,
+                 # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)で
+                 # 追加された新規opt-in引数(既定値付き)。このFakeは受理して無視するだけでよい。
+                 tts_backend="structured_separation"):
             idx = state["n"]
             state["n"] += 1
             with open(out_path, "wb") as f:

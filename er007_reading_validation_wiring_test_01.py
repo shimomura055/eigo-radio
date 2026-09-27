@@ -102,7 +102,13 @@ class Repro01JaBranchExpectedReadingsForwardingTests(unittest.TestCase):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def _fake_generate_narration_snippet(self, text, language, out_path, tts_call_fn=None,
-                                          safety_margin_seconds=None, style_prefix_override=None):
+                                          safety_margin_seconds=None, style_prefix_override=None,
+                                          # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                          # (2026-09-27)で追加された新規opt-in引数。既定値付きの
+                                          # ため、このFakeも受理するだけで無視してよい(byte-identical
+                                          # な既存挙動の確認が本test群の目的であり、tts_backend自体は
+                                          # 検証対象ではない)。
+                                          tts_backend="structured_separation"):
         with open(out_path, "wb") as f:
             f.write(b"FAKE_AUDIO")
         return {"status": "OK", "text": text, "language": language, "path": out_path,

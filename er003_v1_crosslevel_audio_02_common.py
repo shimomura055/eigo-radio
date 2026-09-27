@@ -91,7 +91,18 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                             enable_connected_speech_equivalence_layer: bool = False,
                                             # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
                                             # のみが明示的にTrueを渡す想定の引数(既定False)。
-                                            enable_repetition_qa: bool = False) -> dict:
+                                            enable_repetition_qa: bool = False,
+                                            # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                            # (2026-09-27、既定"structured_separation"で既存挙動と
+                                            # byte-identical): Family X runnerのみが明示的に
+                                            # "speech_metadata_flash_lite"を渡す。標準経路
+                                            # (generate_narration_snippet_verified_strict)・
+                                            # fallback経路(_run_a2_minimal_fallback_attempt→
+                                            # generate_english_component_minimal_instruction)・
+                                            # Local Rewrite回復経路のいずれにも転送する
+                                            # (retry/fallback/regenerationとも同一backend経由、
+                                            # 設計書§(b))。
+                                            tts_backend: str = "structured_separation") -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -132,7 +143,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id)
+        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id, tts_backend=tts_backend)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -169,7 +180,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             cooldown_events.append(cooldown_record)
         outcome = _run_a2_minimal_fallback_attempt(
             text, out_path, max_len, fallback_classification_history,
-            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa)
+            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
+            tts_backend=tts_backend)
         r = outcome["result"]
         if not outcome["ok"]:
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
@@ -230,7 +242,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                 recovered = _local_rewrite_recovery_for_english_segment_with_fallback(
                     text, out_path, asr_text, max_extra_chars, enable_connected_speech_equivalence_layer,
                     disfluency_qa, enable_repetition_qa, standard.get("attempts_log"), fallback_attempts,
-                    cooldown_events)
+                    cooldown_events, tts_backend=tts_backend)
                 if recovered is not None:
                     return recovered
             return r
@@ -249,7 +261,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         recovered = _local_rewrite_recovery_for_english_segment_with_fallback(
             text, out_path, last_asr_text, max_extra_chars, enable_connected_speech_equivalence_layer,
             disfluency_qa, enable_repetition_qa, standard.get("attempts_log"), fallback_attempts,
-            cooldown_events)
+            cooldown_events, tts_backend=tts_backend)
         if recovered is not None:
             return recovered
     return stopped_result
@@ -258,14 +270,17 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
 def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
                                       classification_history: list,
                                       enable_connected_speech_equivalence_layer: bool,
-                                      disfluency_qa: bool, enable_repetition_qa: bool) -> dict:
+                                      disfluency_qa: bool, enable_repetition_qa: bool,
+                                      # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                      # (既定"structured_separation"で既存挙動とbyte-identical)。
+                                      tts_backend: str = "structured_separation") -> dict:
     """generate_english_segment_with_fallback()のfallback(minimal
     instruction)経路、1 attempt分の本体。通常のfallbackループと、Local
     Rewrite回復の再TTS(retts_fn、下記)の両方から呼ぶ共通処理として抽出
     した(TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 修正1
     回目。第3の複製実装を避けるための共通化であり、ロジック自体は元の
     ループ本体をそのまま移設しただけで無変更)。"""
-    r = repro01.generate_english_component_minimal_instruction(text, out_path)
+    r = repro01.generate_english_component_minimal_instruction(text, out_path, tts_backend=tts_backend)
     if r.get("status") != "OK":
         return {"ok": False, "result": r}
     asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
@@ -304,7 +319,11 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
 def _local_rewrite_recovery_for_english_segment_with_fallback(
         text: str, out_path: str, last_asr_text: str | None, max_extra_chars: int,
         enable_connected_speech_equivalence_layer: bool, disfluency_qa: bool, enable_repetition_qa: bool,
-        standard_attempts_log: list | None, fallback_attempts_log: list, cooldown_events: list) -> dict | None:
+        standard_attempts_log: list | None, fallback_attempts_log: list, cooldown_events: list,
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(既定
+        # "structured_separation"で既存挙動とbyte-identical、設計書§(b):
+        # regeneration経路も同一backend経由)。
+        tts_backend: str = "structured_separation") -> dict | None:
     """generate_english_segment_with_fallback()専用のLocal Rewrite回復
     ヘルパー(ユーザー承認済み仕様D、Human Review Lock到達前の回復経路)。
     voice01._local_rewrite_recovery_for_charon_english/news_tail_fix.
@@ -324,7 +343,8 @@ def _local_rewrite_recovery_for_english_segment_with_fallback(
         retts_max_len = len(rewritten_text) + max_extra_chars
         outcome = _run_a2_minimal_fallback_attempt(
             rewritten_text, out_path, retts_max_len, retts_classification_history,
-            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa)
+            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
+            tts_backend=tts_backend)
         r = dict(outcome["result"])
         if not outcome["ok"]:
             return r

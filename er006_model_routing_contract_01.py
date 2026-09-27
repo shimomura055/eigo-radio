@@ -93,6 +93,15 @@ PROCESS_MODEL_MAP = {
     # CEFR B1)を生成する工程。B1/A2 Writerと同じ信頼度・同じLunaを使う
     # (新規モデル追加なし)。
     "NATURAL_ENGLISH_ADAPTATION": WRITER_MODEL,
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)
+    # Phase 1で追加。既存TTS_MODEL/PROCESS_PROVIDER_MAP["TTS"]の汎用単一値
+    # 契約は変更しない(Family別モデルを許容する構造変更はしない、設計書
+    # §(g))。Family Xランナーがtts_backend="speech_metadata_flash_lite"を
+    # 明示的に選択した場合のみ、この専用processキー経由でfail-closedに
+    # model_idを検証する(er033_tts_flash_lite_backend_wiring_01.
+    # make_speech_metadata_call_fn)。Family A/B/C(legacy)はこのキーを
+    # 一切参照しない。
+    "FAMILY_X_FLASH_LITE_TTS": "gemini-3.8-flash-lite-tts",
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,
