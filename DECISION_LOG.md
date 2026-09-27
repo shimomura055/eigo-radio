@@ -10556,3 +10556,54 @@ Production採用(Family X、Primary/Fallback配線、Phase 1、2026-09-27)
   `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`
   §7・§8。
 - commit: 本コミット(修正1回目、code+test+SSOT反映)。
+
+## NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01: Stage 3f(OPEN-193/204
+Assembly Gate配線漏れ修正+Hormuz A2/B1B・Meta A2 Assembly実行、
+2026-09-27、実測¥0)
+
+- **性質**: Implementation Hardening(サービス仕様は変えず、既存
+  KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01[commit`8f197a74`/`1d69aa97`]
+  へのFamily X runner側追従漏れをGate呼び出し引数の転送のみで是正)。
+- **決定**: `load_family_x_a2_sources`/`load_family_x_b1_sources`
+  (`er019_family_x_audio_production_runner_01.py`)へ`source_dir`引数を
+  追加し、`source_dir/{level}/article.md`(記事本文の正規ソース、TTS生成
+  時に実際に使う本文そのもの)を読み込み`article_text`として
+  `asm.verify_episode_audio_validation_gate()`へ転送するよう修正。
+  OPEN-193が提案した「out_dirへのarticle.md自動コピー」案は不採用とし、
+  Gateが既にサポートする`article_text`直接引数方式(`resolved_from=
+  "caller_supplied"`、`er013_family_c_production_runner_01.py`に既存
+  先例あり)を採用した(コピーという中間状態によるStale化リスクを
+  そもそも作らない、より強い解消)。`source_dir`省略時は`article_text=
+  None`のまま既存fallback解決(out_dir直下article.md等)に委ねる
+  (後方互換、fail-closed維持)。共有Assemblyモジュール
+  (`er003_v1_n3_01_assemble.py`)・Family A/B/C legacy呼び出しは無変更。
+- **副次的に発見した既存バグの修正**: `--slug`にサブディレクトリ区切り
+  "/"を含む場合(Hormuz/small_bag)、Assembly出力filenameの組み立てに
+  "/"が残り`FileNotFoundError`になる別の既存バグを発見(Gate修正前は
+  Assembly自体が全STOPしていたため未発見だった)。
+  `_assembled_filename_theme_component()`を新設しfilenameのみ
+  sanitize(directory構造・player.html表示は無変更)。
+- **test**: `er019_family_x_audio_production_runner_01_test_01.py`へ
+  `ArticleTextGateWiringTests`(4件)・`AssembledFilenameTheme
+  ComponentTests`(2件)を追加。既存36 test+新規6 test=**計38 test全
+  PASS**(¥0)。
+- **Runtime evidence**(実測¥0、`TTS_EXECUTION_MODE=STANDARD`固定、
+  Guardrail¥20): Hormuz A2/B1B(`--slug family_x_b3_diversity_trial_01/
+  hormuz --run run_02`)・Meta A2(`--slug family_x_b3_production_
+  wiring_01 --run run_01`)の3レベルで`--stage assemble`を実行し、
+  いずれもGate`PASS`(`article_source=caller_supplied`)→wav生成まで
+  完了(theme累計cost実行前後で完全不変、assembly stageはAPI呼び出しを
+  含まないため)。`--stage player`も再実行しplayer.htmlにA2/B1両行の
+  参照を確認。small_bag A2/B1BはHuman Review STOP中のため未実行
+  (意図的)。Meta B1Bは既存assembled wav(Stage 3e以前の手動配置
+  workaround経由で生成済み)の存在のみ再確認、再実行はしていない。
+- **反映範囲**: `OPEN_ITEMS.md`(OPEN-193・OPEN-204を`CLOSED`へ更新)、
+  `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`(「## Stage 3f」
+  新設)、`docs/pm/REPORT_LEDGER.md`(該当行更新)、本エントリ新設。
+- **STOP該当**: 無し(本修正はGate引数転送+filename sanitizeのみ、
+  既存retry/Lock機構・Production採用可否には影響しない)。
+- **根拠**: ユーザー正式決定(委任文、2026-09-27、`docs/pm/delegation_
+  log/2026-09-27_NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_07.md`
+  Part Aに保存)、`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`
+  「## Stage 3f」。
+- commit: 本コミット(Stage 3f、code+test+assembly artifact+SSOT反映)。

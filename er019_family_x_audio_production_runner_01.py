@@ -686,10 +686,35 @@ import er003_b1_p9a_audio as p9a  # noqa: E402
 SR = asm.SR
 
 
-def load_family_x_b1_sources(theme_out_dir: str) -> dict:
+def _assembled_filename_theme_component(theme_id: str) -> str:
+    """Stage 3f実行時に発見(OPEN-193/204のGate修正で初めて到達したcode
+    path): `--slug`にサブディレクトリ区切り(例: `family_x_b3_diversity_
+    trial_01/hormuz`)を含む場合、`theme_id.upper()`をそのまま組み立てた
+    出力filenameに"/"が残り、`{out_dir}/assembled/`配下に存在しない
+    親directoryへの書き込みとしてFileNotFoundErrorになる(Assembly Gate
+    修正前はこのcode pathへ到達しなかったため未発見だった、Family X
+    以外の既存A/B/C Familyのfilename生成ロジックには影響しない)。
+    filenameとしてのみ"/"を"_"に置換する(directory構造・player.html
+    表示用theme_idは無変更)。"""
+    return theme_id.upper().replace("/", "_")
+
+
+def load_family_x_b1_sources(theme_out_dir: str, source_dir: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/b1b"
     narration_dir = f"{out_dir}/narration"
-    asm.verify_episode_audio_validation_gate(out_dir, "B1")
+    # OPEN-193/OPEN-204(2026-09-27起票、Stage 3f修正): article.mdをout_dirへ
+    # 手動コピーする回避策(OPEN-193)に頼らず、run_plan_stage/run_theme_
+    # scaffoldと同じ正規ソース(source_dir/b1b/article.md)を直接読み込み、
+    # article_textとしてGateへ渡す(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01
+    # commit 8f197a74/1d69aa97にFamily X runner側が未追従だった配線漏れ
+    # [OPEN-204]を解消)。source_dir省略時は既存の出力先候補
+    # [out_dir/article.md等]によるfallback解決に委ねる(後方互換)。
+    article_text = None
+    if source_dir is not None:
+        article_path = f"{source_dir}/b1b/article.md"
+        if os.path.exists(article_path):
+            article_text = load_text(article_path)
+    asm.verify_episode_audio_validation_gate(out_dir, "B1", article_text=article_text)
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
@@ -847,7 +872,7 @@ def build_family_x_b1_timeline(parts: dict) -> list:
     return seq
 
 
-def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str) -> dict:
+def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/b1b"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
@@ -863,14 +888,14 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str) -> dict:
                              "本runnerはこのGateを回避しません)。"}
         save_json(f"{out_dir}/run_summary_assemble.json", summary)
         return summary
-    sources = load_family_x_b1_sources(theme_out_dir)
+    sources = load_family_x_b1_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_b1_gain(sources)
     seq = build_family_x_b1_timeline(parts)
     result = asm.assemble_with_timeline(seq)
     headroom = asm.apply_headroom_safety_valve(result["assembled"], seq)
     assembled = headroom["assembled"]
 
-    out_path = f"{out_dir}/assembled/Family_X_Audio_B1_{theme_id.upper()}.wav"
+    out_path = f"{out_dir}/assembled/Family_X_Audio_B1_{_assembled_filename_theme_component(theme_id)}.wav"
     save_json(f"{out_dir}/audit/gain_report.json", parts["gain_report"])
     save_json(f"{out_dir}/audit/timeline.json", result["timeline"])
     save_json(f"{out_dir}/audit/headroom_report.json", headroom["report"])
@@ -886,10 +911,17 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str) -> dict:
     return summary
 
 
-def load_family_x_a2_sources(theme_out_dir: str) -> dict:
+def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
-    asm.verify_episode_audio_validation_gate(out_dir, "A2")
+    # OPEN-193/OPEN-204(2026-09-27起票、Stage 3f修正): load_family_x_b1_
+    # sources()と同じ理由でarticle_textを正規ソースから読み込みGateへ渡す。
+    article_text = None
+    if source_dir is not None:
+        article_path = f"{source_dir}/a2/article.md"
+        if os.path.exists(article_path):
+            article_text = load_text(article_path)
+    asm.verify_episode_audio_validation_gate(out_dir, "A2", article_text=article_text)
 
     intro = p9a.load_and_resample_to_target(p9a.INTRO_MP3_PATH)
     notification = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
@@ -1042,7 +1074,7 @@ def build_family_x_a2_timeline(parts: dict) -> list:
     return seq
 
 
-def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str) -> dict:
+def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/a2"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
@@ -1055,14 +1087,14 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str) -> dict:
                              "本runnerはこのGateを回避しません)。"}
         save_json(f"{out_dir}/run_summary_assemble.json", summary)
         return summary
-    sources = load_family_x_a2_sources(theme_out_dir)
+    sources = load_family_x_a2_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_a2_gain(sources)
     seq = build_family_x_a2_timeline(parts)
     result = asm.assemble_with_timeline(seq)
     headroom = asm.apply_headroom_safety_valve(result["assembled"], seq)
     assembled = headroom["assembled"]
 
-    out_path = f"{out_dir}/assembled/Family_X_Audio_A2_{theme_id.upper()}.wav"
+    out_path = f"{out_dir}/assembled/Family_X_Audio_A2_{_assembled_filename_theme_component(theme_id)}.wav"
     save_json(f"{out_dir}/audit/gain_report.json", parts["gain_report"])
     save_json(f"{out_dir}/audit/timeline.json", result["timeline"])
     save_json(f"{out_dir}/audit/headroom_report.json", headroom["report"])
@@ -1404,9 +1436,9 @@ def main() -> None:
     if args.stage in ("assemble", "all"):
         for level in levels:
             if level == "b1b":
-                stage_assemble_family_x_b1(out_dir, args.slug)
+                stage_assemble_family_x_b1(out_dir, args.slug, source_dir=source_dir)
             else:
-                stage_assemble_family_x_a2(out_dir, args.slug)
+                stage_assemble_family_x_a2(out_dir, args.slug, source_dir=source_dir)
 
     if args.stage in ("player", "all"):
         player_path = build_player_html(out_dir, args.slug, japanese_title)

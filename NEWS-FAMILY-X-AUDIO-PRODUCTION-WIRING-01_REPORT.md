@@ -800,5 +800,143 @@ web_search実API呼び出しゼロ)。
 | small_bag B1B `full_story_part2` | Human Review正常落ち(同上) | 同上 |
 | small_bag B1B Key Phrase 5件 | Human Review正常落ち(既存仕様上Structure Gateに自動retryなし、"have"文法issue) | 記事本文側の言い換え、またはGate仕様変更要否のユーザー判断待ち |
 | small_bag A2 `meaning_5` | Lock状態表示の既存不整合(cache側はOK、Lock側は旧HUMAN_REVIEW_REQUIREDのまま、本Stageでは無変更) | 実害なし、次回何らかのapprove_regenerate操作時に上書きされ解消される見込み |
-| **全5レベルのAssembly** | **新規発見: `KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE`で全レベル実行不能(5節、Family X本流Phase 3/Stage 3eの対象外の既存Gap)** | Fable/ユーザー判断待ち。`load_family_x_a2_sources`/`load_family_x_b1_sources`が`article_text`を渡すよう追従修正が必要(未実装) |
+| **全5レベルのAssembly** | **新規発見: `KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE`で全レベル実行不能(5節、Family X本流Phase 3/Stage 3eの対象外の既存Gap)** | Fable/ユーザー判断待ち。`load_family_x_a2_sources`/`load_family_x_b1_sources`が`article_text`を渡すよう追従修正が必要(未実装) → **Stage 3fで修正・実行完了(下記「## Stage 3f」参照)** |
+
+## Stage 3f(2026-09-27): OPEN-193/204(Assembly Gate配線漏れ)修正+Assembly実行
+
+管理ID: `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`(本Stage、委任文全文
+`docs/pm/delegation_log/2026-09-27_NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_07.md`
+Part A)。Guardrail¥20(Part A自体は実API呼び出しを伴わない想定)に対し、
+実測純増costは**¥0**(assembly stageはローカル音声結合処理のみで、
+`compute_cost_jpy_so_far()`の累計費用は実行前後で完全に不変であることを
+各レベルで確認、後述2節)。
+
+### 1. 修正内容(`er019_family_x_audio_production_runner_01.py`、最小差分)
+
+**根本原因**: OPEN-204で特定済みのとおり、既存commit`8f197a74`
+(`KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01`)+`1d69aa97`(同FIX-01)が
+`er003_v1_n3_01_assemble.py::verify_episode_audio_validation_gate()`へ
+`article_text`必須化のGateを追加したが、Family X runner側の
+`load_family_x_a2_sources()`/`load_family_x_b1_sources()`はこの2 commit
+当時に追従修正されず、`article_text`引数無しのままGateを呼んでいた。
+
+**採用した方式(OPEN-193の「out_dirへのarticle.md自動コピー」案ではなく、
+Gate自身が既にサポートしている`article_text`直接引数方式を採用)**: Gate
+実装(`er003_v1_n3_01_assemble.py`465-450行)は`article_text`が明示的に
+渡された場合、`out_dir`配下の`article.md`/`article_normalized.txt`探索を
+一切せず`resolved_from="caller_supplied"`として直接採用する設計に既に
+なっている(`er013_family_c_production_runner_01.py:916`に既存の同型
+先例あり)。Family X runnerは`run_plan_stage()`/`run_theme_scaffold()`が
+既に`source_dir/{level}/article.md`(記事本文の正規ソース、TTS生成時に
+実際に分割・読み上げられる本文そのもの)を読み込んでいるため、Assembly
+stageでも同じ`source_dir/{level}/article.md`を直接読み込み
+`article_text`としてGateへ渡す方式を採用した。
+
+この方式を選んだ根拠:
+- OPEN-193が提案する「out_dirへのarticle.mdコピーを自動化する」案は、
+  コピー元とコピー先の2箇所に本文が存在することになり、将来的な
+  article.md改訂時にコピー先だけが古いまま残る(Stale)リスクを新たに
+  持ち込む。
+- `article_text`直接引数方式は、Gateが元々想定していた経路
+  (`caller_supplied`)であり、コピーという中間状態を経由しない分
+  シンプルかつStale化リスクが無い。
+- source_dirは`--slug`/`--run`から決定論的に導出可能(`main()`冒頭で
+  常に計算済み、stageの種類に依らず利用可能)であり、単体で
+  `--stage assemble`のみを実行する既存の運用形態とも矛盾しない。
+
+**実装**: `load_family_x_b1_sources()`/`load_family_x_a2_sources()`へ
+`source_dir: str | None = None`引数を追加し、指定時は
+`{source_dir}/{level}/article.md`を読み込み`article_text`として
+`asm.verify_episode_audio_validation_gate()`へ転送する。`source_dir`省略時
+(既存呼び出し元との後方互換)は`article_text=None`のまま渡し、Gate内の
+既存fallback解決(`out_dir`直下の`article.md`等)に委ねる(挙動を変えない、
+fail-closedのまま)。`stage_assemble_family_x_b1()`/
+`stage_assemble_family_x_a2()`・`main()`のassemble呼び出し箇所も同じ
+`source_dir`引数を伝播するよう修正した。Family A/B/C legacy呼び出し
+(`er012_*`/`er013_*`等)・共有Assemblyモジュール本体
+(`er003_v1_n3_01_assemble.py`)は無変更。
+
+**副次的に発見した別の既存バグ(本Stageで併せて最小修正)**: 上記Gate修正
+後に実際に`--stage assemble`を実行したところ、`--slug`にサブディレクトリ
+区切り"/"を含む場合(例: `family_x_b3_diversity_trial_01/hormuz`)、
+出力filenameを組み立てる`f"{out_dir}/assembled/Family_X_Audio_A2_
+{theme_id.upper()}.wav"`に"/"がそのまま残り、存在しない親directoryへの
+書き込みとして`FileNotFoundError`になることが判明した(Gate修正前は
+Assembly自体が全レベルでSTOPしていたため、このcode pathへ到達せず
+未発見だった)。`_assembled_filename_theme_component(theme_id)`
+(`theme_id.upper().replace("/", "_")`)を新設し、B1/A2両方のfilename
+組み立てにのみ適用した(directory構造・player.html表示用theme_idは
+無変更、Family X以外の既存Familyには影響しない)。
+
+### 2. Unit test(`er019_family_x_audio_production_runner_01_test_01.py`、¥0)
+
+新規クラス2件を追加(既存34 testに追加、計38 test全PASS):
+- `ArticleTextGateWiringTests`(4 test): `asm.verify_episode_audio_
+  validation_gate`をmonkeypatchし、`load_family_x_a2_sources`/
+  `load_family_x_b1_sources`が`source_dir`指定時に正しい`article.md`内容を
+  `article_text`として転送すること、`source_dir`省略時は`article_text=
+  None`のまま(既存fallback委譲、後方互換)、`source_dir`指定でも
+  `article.md`が存在しない異常系では`article_text=None`のまま
+  (黙って本文ありと偽装しない、fail-closed維持)を確認。
+- `AssembledFilenameThemeComponentTests`(2 test): "/"を含む/含まない
+  `theme_id`双方でfilename sanitizeが正しく動作することを確認。
+
+実行結果: `.venv/Scripts/python.exe -m unittest
+er019_family_x_audio_production_runner_01_test_01 -v` → `Ran 38 tests ...
+OK`(修正前36 test全PASSも維持)。
+
+### 3. Assembly実行結果(実行コマンド・実測、Guardrail¥20に対し実測¥0)
+
+対象: Hormuz A2/B1B(`--slug family_x_b3_diversity_trial_01/hormuz --run
+run_02`)、Meta A2(`--slug family_x_b3_production_wiring_01 --run
+run_01`)。small_bag A2/B1BはHuman Review STOP中のため本Stageでは
+未実行(委任文の指示どおり)。Meta B1Bは既存assembled wav(Stage 3e以前に
+`article.md`手動配置workaroundで生成済み)の存在のみ確認し、再実行はして
+いない。
+
+実行コマンド(`TTS_EXECUTION_MODE=STANDARD`固定、逐語):
+```
+TTS_EXECUTION_MODE=STANDARD ./.venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug family_x_b3_diversity_trial_01/hormuz --run run_02 --level both --stage assemble --budget-jpy 160
+TTS_EXECUTION_MODE=STANDARD ./.venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug family_x_b3_production_wiring_01 --run run_01 --level a2 --stage assemble --budget-jpy 300
+```
+続けて`--stage player`を両themeで実行しplayer.htmlを再生成した(A2/B1両行の
+参照を確認、費用¥0)。
+
+| レベル | 結果 | Gate | 出力 | duration | cost実測(実行前→実行後) |
+|---|---|---|---|---|---|
+| Hormuz A2 | **OK** | `PASS`(5/5、`article_source=caller_supplied`) | `.../hormuz__run_02/a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 355.762秒 | ¥136.45→¥136.45(不変) |
+| Hormuz B1B | **OK** | `PASS`(5/5、`article_source=caller_supplied`) | `.../hormuz__run_02/b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 314.61秒 | 同上(theme合算、不変) |
+| Meta A2 | **OK** | `PASS`(5/5、`article_source=caller_supplied`) | `.../family_x_b3_production_wiring_01__run_01/a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_PRODUCTION_WIRING_01.wav` | 325.129秒 | ¥88.88→¥88.88(不変) |
+| Meta B1B | 既完成(再実行なし) | `PASS`(既存、`article_source=<out_dir>/b1b/article.md`、Stage 3e以前の手動配置経由) | `.../family_x_b3_production_wiring_01__run_01/b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_PRODUCTION_WIRING_01.wav`(既存ファイル、更新なし) | - | - |
+| small_bag A2/B1B | 未実行(Human Review STOP中、委任文の指示どおり) | - | - | - | - |
+
+いずれもclipping未検出・headroom safety valve未発動(peak最大0.950、
+閾値0.98未満)。全て`common.write_wav_float`まで正常完了しRuntimeErrorなし。
+
+生成物のうち`.wav`は`.gitignore`(`*.wav`ルール)により追跡対象外(既存
+リポジトリ運用どおり)。`run_summary_assemble.json`/
+`audit/key_phrase_source_gate.json`/`audit/gain_report.json`/
+`audit/timeline.json`/`audit/headroom_report.json`はtracked。
+
+### 4. Gate 3 checklist(本Stage分)
+
+| Gate 3項目 | evidence | Status |
+|---|---|---|
+| Production正式初回経路 | `er019_family_x_audio_production_runner_01.py --stage assemble`(既存CLI)をそのまま実行、修正は`source_dir`引数追加のみ | 充足 |
+| retry・fallback・regenerationとの整合 | 本修正はGate呼び出し引数の転送のみで、既存retry予算・Human Review Lock機構には一切触れていない | 充足 |
+| Production runtimeでの実発火 | 3節で実測(Hormuz A2/B1B・Meta A2の3レベルで実際に`--stage assemble`を実行しGate PASS→wav生成まで確認) | 充足 |
+| コスト影響評価 | 実測¥0(assembly stageはAPI呼び出しを含まない、実行前後のtheme累計costが完全一致) | 充足 |
+| SSOT | OPEN-193/204 → CLOSED(本タスク)、DECISION_LOG追記、REPORT_LEDGER更新(別途反映) | 別途反映 |
+| Git | `er019_family_x_audio_production_runner_01.py`・test file・SSOT 3点をpath指定add(`git add -A`不使用) | 充足 |
+| Dangling Reference Check | 共有Assemblyモジュール(`er003_v1_n3_01_assemble.py`)・Family A/B/C legacy呼び出しは無変更 | 充足 |
+
+### 5. 残STOP一覧(更新、Stage 3f時点)
+
+| segment/項目 | 分類 | 次のアクション |
+|---|---|---|
+| small_bag A2 `full_story_part2`/`full_story_part3` | Human Review正常落ち(Stage 3e既報、変化なし) | 追加のLock解除要否はFable/ユーザー判断 |
+| small_bag B1B `full_story_part2` | Human Review正常落ち(同上) | 同上 |
+| small_bag B1B Key Phrase 5件 | Human Review正常落ち(既存仕様上Structure Gateに自動retryなし、Stage 3e既報) | 記事本文側の言い換え、またはGate仕様変更要否のユーザー判断待ち |
+| small_bag A2 `meaning_5` | Lock状態表示の既存不整合(Stage 3e既報、実害なし) | 次回何らかのapprove_regenerate操作時に解消見込み |
+| small_bag A2/B1B Assembly | 上記Human Review STOPにより`keywords_canonicalized.json`等が未生成のため、Assembly Gate自体は修正済みでも実行不能なまま(未実行、意図的) | small_bagのHuman Review再Lock解消後に改めて`--stage assemble`実行 |
 

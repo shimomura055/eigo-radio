@@ -460,5 +460,93 @@ class SourceArticleMissingTests(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class ArticleTextGateWiringTests(unittest.TestCase):
+    """OPEN-193/OPEN-204(2026-09-27起票、NEWS-FAMILY-X-AUDIO-PRODUCTION-
+    WIRING-01 Stage 3f修正)の回帰防止: load_family_x_a2_sources/
+    load_family_x_b1_sourcesが、source_dir/{level}/article.mdを読み込み
+    article_textとしてasm.verify_episode_audio_validation_gateへ転送する
+    こと(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 commit 8f197a74/1d69aa97への
+    Family X runner側の追従漏れを解消)。asm.verify_episode_audio_
+    validation_gate自体はmonkeypatchで差し替え、Gate呼び出し直後に例外を
+    投げて以降の実wav読み込みへは進ませない(音声fixtureが無いため)。"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="family_x_article_text_gate_")
+        self.source_dir = os.path.join(self.tmpdir, "source")
+        self.theme_out_dir = os.path.join(self.tmpdir, "out")
+        os.makedirs(os.path.join(self.source_dir, "a2"), exist_ok=True)
+        os.makedirs(os.path.join(self.source_dir, "b1b"), exist_ok=True)
+        with open(os.path.join(self.source_dir, "a2", "article.md"), "w", encoding="utf-8") as f:
+            f.write("A2 ARTICLE TEXT MARKER")
+        with open(os.path.join(self.source_dir, "b1b", "article.md"), "w", encoding="utf-8") as f:
+            f.write("B1B ARTICLE TEXT MARKER")
+
+        self.captured = {}
+        self.original_gate = runner.asm.verify_episode_audio_validation_gate
+
+        def fake_gate(out_dir, level, required_structure=None, article_text=None):
+            self.captured["out_dir"] = out_dir
+            self.captured["level"] = level
+            self.captured["article_text"] = article_text
+            raise RuntimeError("STOP_AFTER_GATE_FOR_TEST")
+
+        runner.asm.verify_episode_audio_validation_gate = fake_gate
+
+    def tearDown(self):
+        runner.asm.verify_episode_audio_validation_gate = self.original_gate
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_load_family_x_a2_sources_forwards_article_text_from_source_dir(self):
+        with self.assertRaises(RuntimeError) as ctx:
+            runner.load_family_x_a2_sources(self.theme_out_dir, source_dir=self.source_dir)
+        self.assertEqual(str(ctx.exception), "STOP_AFTER_GATE_FOR_TEST")
+        self.assertEqual(self.captured["article_text"], "A2 ARTICLE TEXT MARKER")
+        self.assertEqual(self.captured["level"], "A2")
+
+    def test_load_family_x_b1_sources_forwards_article_text_from_source_dir(self):
+        with self.assertRaises(RuntimeError) as ctx:
+            runner.load_family_x_b1_sources(self.theme_out_dir, source_dir=self.source_dir)
+        self.assertEqual(str(ctx.exception), "STOP_AFTER_GATE_FOR_TEST")
+        self.assertEqual(self.captured["article_text"], "B1B ARTICLE TEXT MARKER")
+        self.assertEqual(self.captured["level"], "B1")
+
+    def test_source_dir_omitted_keeps_legacy_fallback_behavior(self):
+        """source_dir省略時(既存呼び出し元との後方互換)はarticle_text=Noneの
+        まま渡し、既存Gate内fallback解決(out_dir直下のarticle.md等)に委ねる
+        (挙動を変えない)。"""
+        with self.assertRaises(RuntimeError) as ctx:
+            runner.load_family_x_a2_sources(self.theme_out_dir)
+        self.assertEqual(str(ctx.exception), "STOP_AFTER_GATE_FOR_TEST")
+        self.assertIsNone(self.captured["article_text"])
+
+    def test_missing_article_file_at_source_dir_keeps_article_text_none_fail_closed(self):
+        """source_dirは渡されたがarticle.mdがまだ存在しない場合(異常系)は、
+        article_text=Noneのまま渡す(黙って本文ありと偽装しない)。以降の
+        fail-closed判定[KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE等]は
+        既存Gate側の責務のまま変えない。"""
+        empty_source_dir = os.path.join(self.tmpdir, "empty_source")
+        os.makedirs(os.path.join(empty_source_dir, "a2"), exist_ok=True)
+        with self.assertRaises(RuntimeError) as ctx:
+            runner.load_family_x_a2_sources(self.theme_out_dir, source_dir=empty_source_dir)
+        self.assertEqual(str(ctx.exception), "STOP_AFTER_GATE_FOR_TEST")
+        self.assertIsNone(self.captured["article_text"])
+
+
+class AssembledFilenameThemeComponentTests(unittest.TestCase):
+    """Stage 3f実行時に発見した既存バグ(サブディレクトリ区切り"/"を含む
+    --slug[例: Hormuz/small_bag]でAssembly出力filenameがFileNotFoundError
+    になる)の回帰防止。"""
+
+    def test_slash_in_theme_id_is_sanitized_for_filename(self):
+        self.assertEqual(
+            runner._assembled_filename_theme_component("family_x_b3_diversity_trial_01/hormuz"),
+            "FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ")
+
+    def test_theme_id_without_slash_is_unchanged_aside_from_uppercasing(self):
+        self.assertEqual(
+            runner._assembled_filename_theme_component("family_x_b3_production_wiring_01"),
+            "FAMILY_X_B3_PRODUCTION_WIRING_01")
+
+
 if __name__ == "__main__":
     unittest.main()
