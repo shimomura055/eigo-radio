@@ -1567,34 +1567,33 @@
         "transcript": "The  20 %  plan  changes  overnight.",
         "method": "faster_whisper_small_local_verbatim"
       },
-      "canonical_text": "The 20% plan changes overnight"
+      "canonical_text": "The 20% plan changes overnight",
+      "reused_from_previous_run": true
     },
     "full_story_part2": {
-      "status": "STOPPED",
-      "reason": "canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
-      "canonical_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
-      "symbol_findings": [
-        {
-          "token": ":",
-          "category": "RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL",
-          "reason": "未変換のplaceholder/ポーズ記号が残っています: ':'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。"
-        },
-        {
-          "token": "%",
-          "category": "NUMERIC_SYMBOL_OBSERVE",
-          "reason": "数値記号が残っています(observe専用、ブロックしません): '%'"
-        },
-        {
-          "token": "%",
-          "category": "NUMERIC_SYMBOL_OBSERVE",
-          "reason": "数値記号が残っています(observe専用、ブロックしません): '%'"
-        },
-        {
-          "token": "$",
-          "category": "NUMERIC_SYMBOL_OBSERVE",
-          "reason": "数値記号が残っています(observe専用、ブロックしません): '$'"
-        }
-      ]
+      "status": "HUMAN_REVIEW_LOCKED",
+      "human_review_lock_status": "HUMAN_REVIEW_REQUIRED",
+      "reason": "[ER-011-HUMAN-REVIEW-COST-GUARD-01] このsegmentは既にHUMAN_REVIEW_REQUIRED状態です。明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません(0 API call)。詳細: 最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
+      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2.wav",
+      "asr_verified": false,
+      "locked_entry": {
+        "state": "HUMAN_REVIEW_REQUIRED",
+        "canonical_text_sha256": "16ebfa49b8052037608a09f102f446b0719f338ae5a9357ce7bbd01da7a5a5fc",
+        "language": "en",
+        "theme_id": "hormuz__run_02",
+        "level": "b1b",
+        "segment_id": "full_story_part2",
+        "updated_at": "2026-09-27T15:36:31",
+        "reason": "最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
+        "final_status": "STOPPED",
+        "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2.wav",
+        "cumulative_tts_attempts": 0,
+        "cumulative_asr_calls": 0,
+        "budget_guard_triggered": false,
+        "last_attempts_log": []
+      },
+      "attempts_log": [],
+      "canonical_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz."
     },
     "full_story_part3_heading": {
       "status": "OK",
@@ -1632,7 +1631,8 @@
         "transcript": "The  chart  refuses  to  stay  down.",
         "method": "faster_whisper_small_local_verbatim"
       },
-      "canonical_text": "The chart refuses to stay down"
+      "canonical_text": "The chart refuses to stay down",
+      "reused_from_previous_run": true
     },
     "full_story_part3": {
       "status": "OK",
@@ -1823,7 +1823,8 @@
         "method_c_v2_window_check": null
       },
       "cooldown_events": [],
-      "canonical_text": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before."
+      "canonical_text": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
+      "reused_from_previous_run": true
     }
   },
   "key_phrases": {
@@ -2389,5 +2390,6 @@
         "reused_from_previous_run": true
       }
     }
-  }
+  },
+  "kp_scaffold_status": "OK"
 }

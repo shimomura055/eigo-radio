@@ -1096,7 +1096,28 @@ margin`/`crosslevel_common.generate_english_segment_with_fallback`/
 API呼び出しゼロ)まで完了(commit`32430691`)。実API runtime evidence
 (TTS/Assembly実行)はStage 3で取得中。**解釈注記(Stage 1解釈、試聴後に
 見直し可)**: 本文2/3の見出しは本文segment内で読み上げる(見出しを
-独立segment化しない)。ユーザー決定=`APPROVED_FOR_PRODUCTION`、
+独立segment化しない)。**更新(2026-09-27、`NEWS-FAMILY-X-AUDIO-
+PRODUCTION-WIRING-01`Stage 3c、runtime evidenceに基づき見直し)**:
+Stage 3bのHormuz実行で、見出し句と本文冒頭の反復をrepetition QA/ASRが
+誤検知しHUMAN_REVIEW_REQUIREDへ到達する事象を実測したため、上記解釈を
+「見出しを独立sub-segment(`full_story_part2_heading`/
+`full_story_part3_heading`、plan_role=HEADING_READOUT)として本文2/3の
+直前に分離する」へ変更した(構造・順序・効果音方針そのものは無変更)。
+実装はFamily A既存の`point_one_heading`機構(B1B=Aoede経由の
+`point_headings.generate()`、A2=`generate_a2_segment_with_slowdown`)を
+そのまま再利用し、新規TTS経路は作っていない。見出し→本文間のpauseも
+Family A既存定数(`HEADING_TO_BODY_PAUSE_SECONDS_B1`/
+`POINT_EXPLANATION_PAUSE_SECONDS`、いずれも0.7秒)を再利用する。
+Hormuz実測では、分離後の`full_story_part3`が両level(A2/B1B)とも1回の
+試行でクリーンにOK(Stage 3bはB1BのみLocal Rewriteを要した)となり、
+故障モード解消の直接的な証拠を得た。対象runner
+(`er019_family_x_audio_production_runner_01.py`)のunit testは25→32件
+(7件追加)、32/32 PASS。Stage 3dで、この構造のMeta run_01 B1B
+(`family_x_b3_production_wiring_01__run_01`)実データでのAssembly完走
+(全segment OK、`assembled/Family_X_Audio_B1_FAMILY_X_B3_PRODUCTION_
+WIRING_01.wav`・player.html生成済み)を確認した。詳細
+`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`Stage 3c/3d。
+ユーザー決定=`APPROVED_FOR_PRODUCTION`、
 `PRODUCTION_WIRED`はStage 3のruntime evidence取得後にFable Gate 3が
 判定する。Family A
 (News Major/Daily/Trend Synthesis)の既存音声仕様(Point One/Two直前

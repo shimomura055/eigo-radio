@@ -374,3 +374,216 @@ segmentの音声は、後続の再実行でcanonical text不一致検知(§1の�
 | SSOT記載案 | CURRENT_SPEC.md「Family X音声構造」節の`DESIGN NOTE`(現行「本文2/3の見出しは本文segment内で読み上げる」)を「見出しをsub-segment(`full_story_part2_heading`/`full_story_part3_heading`)として分離する(Family A point_one_heading同一機構)」へ更新する案。Fable/ユーザー判断待ち、本タスクではSSOT自体は編集していない | 提案のみ(未反映) |
 | Git | 所有ファイル(plan/runner/test)+出力ディレクトリ配下のJSON/audit/raw_usage_log(wav除く)+REPORT追記のみpath指定add | 充足 |
 | Dangling Reference Check | 既存関数(point_headings/generate_a2_segment_with_slowdown/asm定数/crosslevel_common定数)は無変更のままimport、新規参照のみ追加 | 充足 |
+
+## Stage 3d(2026-09-27): 残STOP解消の試行とAssembly状況確認
+
+管理ID: `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`。委任文全文は
+`docs/pm/delegation_log/2026-09-27_NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_05.md`
+に保存済み。Guardrail¥300に対し、本Stageの実測純増costは**¥0**(全ての
+実行がHuman Review Lockにより0 API callでブロックされたか、既存cache
+再利用[0 API call]だったため)。
+
+### 0. Lock棚卸し(実行前、¥0)
+
+3記事×A2/B1Bの全segmentについて`review_lock_state.json`を走査した結果:
+
+| 記事/level | HUMAN_REVIEW_REQUIRED(Locked)なsegment | 原因分類 |
+|---|---|---|
+| Meta A2 | `japanese_title`(final=STOPPED, attempts=2) | OPEN-199待ち(句読点ギャップ、本Stageでは触らない) |
+| Meta B1B | (無し、全segment RESOLVED/OK) | — |
+| Hormuz A2 | `full_story_part2`(final=STOPPED, attempts=0) | 時刻コロンGate STOP由来のLock(本Stage対象外、後述) |
+| Hormuz B1B | `full_story_part2`(final=STOPPED, attempts=0)、`kp2_ja_charon`(final=STOPPED, attempts=3) | 前者=時刻コロンGate STOP由来のLock(本Stage対象)。後者=「海からの封鎖」ASR誤認識、既にPhase 2 JA-3で回復見込み確認済みだが**ユーザー承認待ちLock解除** |
+| small_bag A2 | `comment_2`/`full_story_part2`(final=STOPPED, attempts=2)、`full_story_part3`(final=ASR_VALIDATION_UNCERTAIN, attempts=2) | ブランド名ASR失敗由来のLock(本Stage対象) |
+| small_bag B1B | `full_story_part2`/`full_story_part3`(final=ASR_VALIDATION_UNCERTAIN, attempts=1) | ブランド名ASR失敗(EN resolverはA2英語経路のみ配線、B1B英語[`voice01.generate_charon_english`経由]は未配線のため対象外、Phase 2 REPORT §21既知の残課題) |
+| small_bag B1B | Key Phrase 5件(未生成) | scaffold Key Phrase構造Gate STOP(後述、item 2) |
+
+**「ユーザー承認待ち」としてLock解除を保留したsegment(本Stageでは
+`approve_regenerate()`等の解除操作を一切行っていない)**:
+`hormuz__run_02/b1b`の`kp2_ja_charon`(「海からの封鎖」、Phase 2 JA-3で
+Candidate Eが正しく機能することを確認済み、ユーザーが承認すれば次回
+再生成時にPASSする見込みが高い)。
+
+**発見(本Stageで判明、既存の別ファイル間の不整合、修正はしていない)**:
+small_bag A2の`meaning_5`(Key Phrase5 日本語gloss「目を引く」)は
+`review_lock_state.json`上は`HUMAN_REVIEW_REQUIRED`/`STOPPED`
+(attempts=2)のまま**更新されていない**が、実際の最終結果を保持する
+`tts_generation_results.json`(`key_phrases["5"]["japanese_meaning"]`)
+は`status="OK"`(fallback attempt3、`audio_classification=EXACT_MATCH`、
+Stage 3c実行時の2026-09-27T16:21頃に確定済み)。原因: Key Phrase
+Japanese meaning経路は標準2回分のみ内側の`generate_narration_snippet_
+verified_strict`(`@review_lock.guarded_generate_with_language_arg`で
+guard)で完結してrecord_outcome()が先に(不合格として)確定してしまい、
+その後さらに実行されるfallback(minimal instruction)側の成功が、外側の
+呼び出し元では別途guardされていないためLock storeへ反映されない、という
+既存コードの構造的なギャップと判断する(Key Phrase英語Component
+[`generate_key_phrase_component_verified`]はreentrancy guardで二重会計を
+防いでいるが、Key Phrase Japanese meaning経路には同じ保護が無い可能性)。
+本Stageではこの経路のコード自体は変更していない(Production module
+修正はスコープ外、Fableへ報告のみ)。実害としては、Assembly Gate
+(`verify_episode_audio_validation_gate`)は`tts_generation_results.json`
+(正しい方の"OK")を参照するため、`meaning_5`がAssemblyを誤ってブロック
+することは無いことを§5で確認した。
+
+### 1. Hormuz B1B `full_story_part2`(時刻コロン修正後の再TTS)
+
+実行コマンド(逐語):
+```
+set -a && source .env && set +a && TTS_EXECUTION_MODE=STANDARD ./.venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug family_x_b3_diversity_trial_01/hormuz --run run_02 --level b1b --stage tts --budget-jpy 160
+```
+結果: 累計cost=127.27円→127.27円(**変化なし、0 API call**)。
+`full_story_part2`の結果は`status="HUMAN_REVIEW_LOCKED"`
+(`human_review_lock_status="HUMAN_REVIEW_REQUIRED"`)。
+
+**重要な発見(想定外、正直に報告)**: Symbol Normalization Gateの修正
+(`TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`修正1・2回目、
+時刻コロンを`RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`から除外)は既に
+Production配線済みだが、**Human Review Lock(`er011_human_review_lock_01.
+py`)は、canonical text(script本文)が変更されない限り、Gate側の修正が
+入ったかどうかに関わらず、以前STOPPEDに到達したsegmentへの新規TTS/ASR
+呼び出しを一律ブロックする**設計になっている
+(`check_before_generation()`: `canonical_text_sha256`が前回Lock時と
+一致する限りstate=`HUMAN_REVIEW_REQUIRED`のままproceed=Falseを返す、
+`generate_english_segment_with_fallback`/相当のB1関数もこの返り値を見て
+fallbackにも進まない設計)。本文自体は書き換えていない(article.md不変)
+ため、canonical textは前回と完全一致し、この安全装置が正しく作動した。
+コードを読んで検証し、実際に上記コマンドを実行して**0 API call・Lockの
+まま**であることを実測で確認した(推測ではない)。
+
+**結論・必要な判断**: Symbol Gateの修正自体は正しく機能する状態にあるが、
+**このLockを解除しない限り、`full_story_part2`は再TTSされない**。
+選択肢(実装はしていない):
+  (a) ユーザーが`er011_human_review_lock_01.approve_regenerate()`を
+  明示的に承認する(次回`--stage tts`実行1回に限り再挑戦を許可)、
+  (b) 承認しない場合は現状のHuman Review Lockのまま維持する。
+Sonnet単独ではLockを解除していない。Hormuz A2側の`full_story_part2`
+(同じ時刻コロン原因、委任文では対象外のため本Stageでは触っていない)も
+同一の理由で同じLock状態のまま残っている。
+
+### 2. small_bag B1B Key Phrase構造Gate("have")
+
+`er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_
+trial_01/small_bag__run_02/b1b/key_phrases/keywords_runtime_metadata.json`
+を確認した。rank1候補`"have a big moment"`(source_span
+`"having a big moment"`)が、`er003_key_words_production.py`の構造
+validatorにより「有限助動詞(is/are/was/were/has/have/had/will/would/
+can/could/should/may/might/must)が含まれている」で`KEY_WORDS_STRUCTURE_
+INVALID`と判定されている(`attempts_detail`は1件のみ)。
+
+既存コードを確認した結果、この構造Gate自体には内部retryが無い
+(`er003_v1_n3_01_scaffold_generate.py`の`run_key_phrase_selection()`が
+`prod.run_production_selection_gate(..., max_attempts=1)`で単発呼び出し
+[190-215行付近])。呼び出し元`run_key_phrases()`(同ファイル322-341行
+付近)が持つ`KEY_PHRASE_REDUNDANCY_RETRY_MAX`回の再選定ループは、
+**Redundancy QA(5件相互の意味重複)がNGだった場合のみ**選定からやり直す
+設計であり、`sel["status"] != "KEY_WORDS_STRUCTURE_PASS"`の場合は
+即座に`return`してこのループへ入らない(340-341行)。すなわち
+**Structure Gate段には既存仕様として自動再選定経路が存在しない**
+(Fable委任文の想定どおり)。
+
+Gateを回避・独自の再試行実装は行っていない。本Stageでの対応はSTOP
+(コード読解による確認のみ、追加API呼び出し・追加cost無し)。Key Phrase
+5件は引き続き未生成のまま(`kp_scaffold_status="KEY_WORDS_STRUCTURE_
+INVALID"`)。
+
+### 3. small_bag A2 `comment_2`/`full_story_part2`/`full_story_part3`(EN resolver経由の再TTS)
+
+実行コマンド(逐語):
+```
+set -a && source .env && set +a && TTS_EXECUTION_MODE=STANDARD ./.venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug family_x_b3_diversity_trial_01/small_bag --run run_02 --level a2 --stage tts --budget-jpy 160
+```
+結果: 累計cost=148.47円→148.47円(**変化なし、0 API call**、
+`perplexity`provider列も0.0のまま=EN resolverのweb lookup発火0件)。
+3segmentとも`status="HUMAN_REVIEW_LOCKED"`
+(`human_review_lock_status="HUMAN_REVIEW_REQUIRED"`)。
+
+Stage 3d §1と同一の理由(Human Review Lockがcanonical text不変を検知し
+即ブロック)により、**Phase 2で配線されたEN resolver
+(`pron_resolver_core.resolve_and_augment_en_style_prefix`)は、
+`generate_narration_snippet_verified_strict()`関数本体の冒頭
+(288行付近)で呼ばれる設計だが、その手前にある`@review_lock.
+guarded_generate_with_language_arg`デコレータのLockチェックが先に
+ブロックするため、resolverのコード自体が実行される機会が無かった**
+(0 lookup、0 hint注入、これも実測で確認した想定外の事実であり、
+"EN resolverを通して再TTSする"という委任文item 3の前提が、Lock解除
+無しでは成立しないことが判明した)。ブランド名(Altuzarra/minaudière等)
+自体は既にPhase 2 EN-3 evidence(`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-
+FAMILIES-PRODUCTION-01_REPORT.md`§17 EN-3)で「これらの語を含む本番文で
+hits=0」と確認済みであり、そもそも現状のPronunciation Ledgerには
+Altuzarra/minaudière自体の発音hintがまだ登録されていない(誤guessを
+注入する誤動作の心配は無いが、資すべき有用なhintも無い)。
+
+**結論・必要な判断**: item 3も同じくLock解除がなければ実行の余地が
+無い。選択肢(実装はしていない): (a)ユーザーが`approve_regenerate()`を
+承認する、(b)現状のHuman Review Lockのまま維持する(既存retry予算内で
+不合格の最終結果として確定済み扱い)。Sonnet単独ではLockを解除していない。
+
+### 4. Meta A2 `japanese_title`(Muse)
+
+OPEN-199(JA ASR Validatorの句読点処理ギャップ、`PRONUNCIATION-
+RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`§17 JA-1/§22-1
+既述)が未修正のため、委任文の指示どおり**再TTSを実行していない**
+(0 API call、現状維持)。`review_lock_state.json`は
+`state=HUMAN_REVIEW_REQUIRED`, `final_status=STOPPED`, `attempts=2`の
+まま。
+
+### 5. Assembly状況
+
+| 記事/level | Assembly | 詳細 |
+|---|---|---|
+| **Meta B1B** | **完了(既存artifact確認)** | `b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_PRODUCTION_WIRING_01.wav`(duration=303.468s, peak=0.8456, clipping無し)・`run_summary_assemble.json`(`status="OK"`)・`player.html`が既に存在(mtime 2026-09-27 14:12〜14:13、`kp1_ja_charon`のLock更新[14:10:06]の直後)。**本Stageで新規に生成したものではない**(既存artifactを読み取り検証したのみ、生成主体は本Stage開始前の別プロセス[時刻から推定するとStage 3c完了後〜本Stage開始前の間]。生成し直してはいない)。全16 narration segment[見出し2件含む]がRESOLVED/OKであることをLock棚卸しで確認済み、`run_summary_assemble.json`のstatus="OK"と整合。 |
+| Meta A2 | 未完(既存) | `run_summary_assemble.json`不在(=Gate遮断のためsummary書き込み前に中止、既存仕様どおり)。`player.html`は`status=NOT_ATTEMPTED_OR_GATE_BLOCKED_BEFORE_SUMMARY_WRITE`と表示。原因: `japanese_title`STOPPED(§4、OPEN-199待ち) |
+| Hormuz A2 | 未完(再確認) | `--stage assemble`を実行し`RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION`(`['full_story_part2=UNVALIDATED']`)を実測確認(既存Gate、無改変)。原因: §1のLock(ユーザー承認待ち) |
+| Hormuz B1B | 未完(再確認) | 同上、`RuntimeError`(`['full_story_part2=UNVALIDATED', 'kp2_japanese=UNVALIDATED']`)。原因: §1のLock+`kp2_ja_charon`Lock(いずれもユーザー承認待ち) |
+| small_bag A2 | 未完(再確認) | 同上、`RuntimeError`(`['comment_2=UNVALIDATED', 'full_story_part2=UNVALIDATED', 'full_story_part3=UNVALIDATED']`)。`meaning_5`はブロックリストに含まれない(§0の発見どおり、Assembly Gateは正しい方[tts_generation_results.json]を見ている証拠)。原因: §3のLock(ユーザー承認待ち) |
+| small_bag B1B | 未完(再確認) | RuntimeErrorは発生せず`run_summary_assemble.json`に`status="BLOCKED_KP_SCAFFOLD_MISSING"`相当の防御的記録(Stage 3c実装のまま、既存挙動を再確認)。原因: Key Phrase未生成(§2)+`full_story_part2`/`full_story_part3`のASR_VALIDATION_UNCERTAIN |
+
+4件の再確認assemble実行(Hormuz A2/B1B、small_bag A2/B1B)はいずれも
+API呼び出しを伴わない(Gate判定のみ)ため、cost増分は0円。
+
+### 6. CURRENT_SPEC「Family X音声構造」DESIGN NOTE追記
+
+実行前に`git status -- CURRENT_SPEC.md DECISION_LOG.md OPEN_ITEMS.md`を
+確認し、未commit差分が無いことを確認した上で、`CURRENT_SPEC.md`
+「Family X(Entertainment News)音声構造」節の解釈注記(旧:「本文2/3の
+見出しは本文segment内で読み上げる」)へ、Stage 3cで実装したsub-segment
+分離方式への更新を追記した(構造・順序・効果音方針は無変更、既存
+`point_one_heading`機構の再利用である旨・unit test 25→32件・Meta run_01
+B1BでのAssembly完走[§5]を根拠として明記)。`DECISION_LOG.md`/
+`OPEN_ITEMS.md`への追加記載は行っていない(Fable/ユーザー判断に委ねる、
+本Stageの委任範囲はCURRENT_SPECの当該箇所のみ)。
+
+### 7. 費用まとめ
+
+| 項目 | 費用 |
+|---|---|
+| Lock棚卸し(§0、read-only) | ¥0 |
+| Hormuz B1B `full_story_part2`再TTS試行(§1) | ¥0(0 API call、Lockブロック) |
+| small_bag B1B Key Phrase Gate確認(§2、コード読解のみ) | ¥0 |
+| small_bag A2 3segment再TTS試行(§3) | ¥0(0 API call、Lockブロック) |
+| Meta A2 `japanese_title`(§4、実行せず) | ¥0 |
+| Assembly再確認4件(§5、Gate判定のみ) | ¥0 |
+| **本Stage合計** | **¥0**(Guardrail¥300に対し十分小さい) |
+
+### 8. Gate 3 checklist(本Stage分)
+
+| # | 項目 | 状態 |
+|---|---|---|
+| retry/fallback/regeneration整合 | Human Review Lock・Audio Validation Gate・Key Phrase構造Gateはいずれも無改変。`approve_regenerate()`は一切呼んでいない | 充足 |
+| runtime evidence | §1/§3で実際にコマンドを実行し、cost不変・`HUMAN_REVIEW_LOCKED`応答を実測確認(推測ではない) | 充足 |
+| Production module変更 | 無し(本Stageはコード変更ゼロ、SSOT追記[§6]のみ) | 充足 |
+| SSOT | `CURRENT_SPEC.md`Family X音声構造節へ追記(§6)。`DECISION_LOG.md`/`OPEN_ITEMS.md`は未編集(Fable判断待ち) | 一部(SSOT本体のみ反映) |
+| Git | 変更ファイル(REPORT・CURRENT_SPEC・delegation_log・review_lock_state.json等の出力JSON)のみpath指定add | 充足 |
+| Dangling Reference Check | コード変更ゼロのため対象なし | 該当なし |
+
+### 9. 残STOP一覧(分類、Stage 3d時点)
+
+| segment | 分類 | 次のアクション |
+|---|---|---|
+| Meta A2 `japanese_title` | OPEN-199待ち | OPEN-199修正後に再検討 |
+| Hormuz A2 `full_story_part2` | ユーザー承認待ちLock解除 | `approve_regenerate()`承認後に`--stage tts --level a2`再実行 |
+| Hormuz B1B `full_story_part2` | ユーザー承認待ちLock解除 | `approve_regenerate()`承認後に`--stage tts --level b1b`再実行 |
+| Hormuz B1B `kp2_ja_charon` | ユーザー承認待ちLock解除(Phase 2 JA-3でPASS見込み確認済み) | 承認後に再実行 |
+| small_bag A2 `comment_2`/`full_story_part2`/`full_story_part3` | ユーザー承認待ちLock解除 | 承認後に`--stage tts --level a2`再実行(EN resolverはLock解除後に初めて発火する) |
+| small_bag B1B `full_story_part2`/`full_story_part3` | Human Review正常落ち(既存retry予算exhausted、EN resolver未配線[B1B英語経路]) | Fable/ユーザー判断待ち(resolver配線拡大の要否含む) |
+| small_bag B1B Key Phrase 5件 | Human Review正常落ち(既存仕様上Structure Gateに自動retryなし) | 人手でのKey Phrase再選定またはGate仕様変更要否のユーザー判断待ち |
+
