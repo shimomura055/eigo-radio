@@ -190,7 +190,8 @@ def get_client():
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
                               process: str = None, diagnostic_note: str = None,
-                              kp_backend: str = "strategy_l") -> dict:
+                              kp_backend: str = "strategy_l", synthetic: bool = False,
+                              shortlist_cache: dict = None) -> dict:
     """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
     渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
     このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
@@ -210,15 +211,27 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     Fallback)へ自動的に切り替える(失敗理由は
     `er030_output/kp_backend_telemetry_01/telemetry.jsonl`へ記録する)。
     既定値を変更していないため、Family X以外の全既存呼び出し元
-    (Family A/B/C/News/Z等)は無変更のまま影響を受けない。"""
+    (Family A/B/C/News/Z等)は無変更のまま影響を受けない。
+
+    修正1回目(Opus L2所見B1/S8、2026-09-27): 呼び出し経路によらず
+    (`kp_backend`の値にかかわらず)常に1回`_log_kp_backend_telemetry()`を
+    記録する(既定"strategy_l"経路が無記録だった観測性の欠落を解消)。
+    `synthetic`(既定False)は、evidence/testスクリプトが強制failure注入
+    等でこの呼び出しを発生させた場合にTrueを渡す(本番実行との区別)。
+    `shortlist_cache`はdb_hybrid経路のみで使う(S8、Redundancy QA retry
+    時のStage1再計算を避ける、Strategy L経路では無視される)。"""
     if kp_backend == "db_hybrid":
         return _run_key_phrase_selection_db_hybrid_with_fallback(
             article_text, out_dir, article_id, source_level, process=process,
-            diagnostic_note=diagnostic_note)
+            diagnostic_note=diagnostic_note, synthetic=synthetic, shortlist_cache=shortlist_cache)
     result = _run_key_phrase_selection_strategy_l(
         article_text, out_dir, article_id, source_level, process=process,
         diagnostic_note=diagnostic_note)
     result["kp_backend_used"] = "strategy_l"
+    _log_kp_backend_telemetry(
+        article_id, source_level, requested_backend="strategy_l", backend_used="strategy_l",
+        final_status=result.get("status"), fallback_triggered=False,
+        model_id=result.get("model_id"), cost_jpy=None, synthetic=synthetic)
     return result
 
 
@@ -254,7 +267,7 @@ def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, articl
     with open(f"{out_dir}/keywords_runtime_metadata.json", "w", encoding="utf-8") as f:
         json.dump(runtime_metadata, f, ensure_ascii=False, indent=2)
 
-    result = {"status": status, "parsed": parsed}
+    result = {"status": status, "parsed": parsed, "model_id": model_id}
     if status != "KEY_WORDS_STRUCTURE_PASS":
         return result
     result["original_items"] = parsed["items"]
@@ -263,42 +276,96 @@ def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, articl
 
 KP_BACKEND_TELEMETRY_PATH = os.path.join("er030_output", "kp_backend_telemetry_01", "telemetry.jsonl")
 
+# 修正1回目(Opus L2所見B1、2026-09-27): telemetry各行にspec_idを付与し、
+# 将来別specがtelemetry.jsonlを共有する場合でも起源を区別できるようにする。
+KP_BACKEND_SPEC_ID = "KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01"
 
-def _log_kp_backend_telemetry(article_id: str, source_level: str, backend: str,
-                               fallback_triggered: bool, **extra) -> None:
-    """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: DB Hybrid方式の
-    使用実績・fallback発火をjsonlへ追記する(記事・レベル・backend・
-    fallback理由・cost・model_idの観測可能性を確保する。fallbackが
-    silentlyに通常経路化しないよう、常にこの1ファイルへ記録する)。"""
+
+def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_backend: str,
+                               backend_used: str, final_status, fallback_triggered: bool,
+                               fallback_reason_code: str = None, model_id: str = None,
+                               cost_jpy: float = None, synthetic: bool = False, **extra) -> None:
+    """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: Key Phrase選定
+    backendの使用実績・fallback発火をjsonlへ追記する。
+
+    修正1回目(Opus L2所見B1、2026-09-27): 既定"strategy_l"経路も含め、
+    `run_key_phrase_selection`のすべての呼び出しで必ず1行記録する
+    (旧: db_hybrid経路のみ記録、legacy既定経路は無記録だった観測性の
+    欠落を解消)。全エントリが`requested_backend`/`backend_used`/
+    `final_status`/`fallback_triggered`/`fallback_reason_code`/
+    `synthetic`(bool)/`spec_id`/`article_id`/`level`/`model_id`/
+    `cost_jpy`を持つ(fallbackが黙示的に通常経路化しないよう、常にこの
+    1ファイルへ記録する)。"""
     os.makedirs(os.path.dirname(KP_BACKEND_TELEMETRY_PATH), exist_ok=True)
     entry = {
-        "timestamp": time.time(), "article_id": article_id, "source_level": source_level,
-        "backend": backend, "fallback_triggered": fallback_triggered,
+        "timestamp": time.time(), "spec_id": KP_BACKEND_SPEC_ID,
+        "article_id": article_id, "level": source_level,
+        "requested_backend": requested_backend, "backend_used": backend_used,
+        "final_status": final_status, "fallback_triggered": fallback_triggered,
+        "fallback_reason_code": fallback_reason_code, "model_id": model_id, "cost_jpy": cost_jpy,
+        "synthetic": bool(synthetic),
         **extra,
     }
     with open(KP_BACKEND_TELEMETRY_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
+def _merge_kp_backend_metadata_into_runtime_file(out_dir: str, extra: dict) -> None:
+    """修正1回目(Opus L2所見B2、2026-09-27): {kp_dir}/keywords_runtime_
+    metadata.json(per-article traceability、既存Strategy L/db_hybrid
+    どちらも書き込む正式ファイル)へ、kp_backend関連のfield(kp_backend/
+    kp_backend_used/fallback_reason_code/cost_jpy/model_id/attempt履歴等)
+    を追記型(既存内容を保持したままdictをupdate)で記録する。db_hybrid
+    成功時は新規作成、fallback時は既存Strategy L出力へ「db_hybridを
+    試して失敗した事実」を追記する。"""
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, "keywords_runtime_metadata.json")
+    existing = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            existing = json.load(f)
+    existing.update(extra)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(existing, f, ensure_ascii=False, indent=2)
+
+
 def _run_key_phrase_selection_db_hybrid_with_fallback(
         article_text: str, out_dir: str, article_id: str, source_level: str,
-        process: str = None, diagnostic_note: str = None) -> dict:
+        process: str = None, diagnostic_note: str = None, synthetic: bool = False,
+        shortlist_cache: dict = None) -> dict:
     """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: Primary=DB
     Hybrid方式(`er030_key_phrase_db_hybrid_selector_01`)を試み、
-    `DbHybridFailure`が送出された場合のみFallback=既存Strategy L全文方式
-    (`_run_key_phrase_selection_strategy_l`、無変更)へ切り替える。
-    いずれの経路でもtelemetryへ1行記録する(fallbackの黙示的な通常経路化
-    を防ぐ)。"""
+    `DbHybridFailure`が送出された場合、`fallback_allowed`が真であれば
+    Fallback=既存Strategy L全文方式(`_run_key_phrase_selection_
+    strategy_l`、無変更)へ切り替える。`fallback_allowed`が偽(修正1回目、
+    Opus L2所見B3: モデルルーティング契約違反等)の場合はfallbackせず
+    そのまま再raiseしてSTOPする(fail-closed)。いずれの経路でも
+    telemetry・per-article metadataへ記録する(fallbackの黙示的な通常
+    経路化を防ぐ)。"""
     import er030_key_phrase_db_hybrid_selector_01 as db_hybrid
 
     try:
         result = db_hybrid.run_db_hybrid_selection(
             article_text, os.path.join(out_dir, "key_phrases_db_hybrid"), article_id, source_level,
-            process=process, diagnostic_note=diagnostic_note)
+            process=process, diagnostic_note=diagnostic_note, shortlist_cache=shortlist_cache)
     except db_hybrid.DbHybridFailure as e:
-        _log_kp_backend_telemetry(article_id, source_level, "db_hybrid", True,
-                                   fallback_reason_code=e.reason_code, fallback_reason=str(e),
-                                   **e.telemetry)
+        if not e.fallback_allowed:
+            _log_kp_backend_telemetry(
+                article_id, source_level, requested_backend="db_hybrid", backend_used="db_hybrid",
+                final_status="STOP", fallback_triggered=False, fallback_reason_code=e.reason_code,
+                fallback_reason=str(e), synthetic=synthetic, **e.telemetry)
+            _merge_kp_backend_metadata_into_runtime_file(out_dir, {
+                "kp_backend": "db_hybrid", "kp_backend_used": None,
+                "kp_backend_fallback_allowed": False, "kp_backend_stop_reason_code": e.reason_code,
+                "kp_backend_stop_reason": str(e),
+            })
+            print(f"[KP-BACKEND][STOP] db_hybrid selectorがfallback不可の理由で失敗しました"
+                  f"({e.reason_code}: {e})。安全のためfallbackせず処理を停止します({article_id})。")
+            raise
+        _log_kp_backend_telemetry(
+            article_id, source_level, requested_backend="db_hybrid", backend_used="strategy_l_fallback",
+            final_status="FALLBACK_TRIGGERED", fallback_triggered=True, fallback_reason_code=e.reason_code,
+            fallback_reason=str(e), synthetic=synthetic, **e.telemetry)
         print(f"[KP-BACKEND] db_hybrid selectorが失敗しました({e.reason_code}: {e})。"
               f"Strategy L全文方式へfallbackします({article_id})。")
         result = _run_key_phrase_selection_strategy_l(
@@ -306,12 +373,28 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
             diagnostic_note=diagnostic_note)
         result["kp_backend_used"] = "strategy_l_fallback"
         result["kp_backend_fallback_reason_code"] = e.reason_code
+        _merge_kp_backend_metadata_into_runtime_file(out_dir, {
+            "kp_backend": "db_hybrid_attempted", "kp_backend_used": "strategy_l_fallback",
+            "kp_backend_fallback_reason_code": e.reason_code, "kp_backend_fallback_reason": str(e),
+            "kp_backend_attempted_telemetry": e.telemetry,
+        })
         return result
 
-    _log_kp_backend_telemetry(article_id, source_level, "db_hybrid", False,
-                               cost_jpy=result.get("cost_jpy"), model_id=result.get("model_id"),
-                               shortlist_total_count=result.get("shortlist_total_count"))
+    _log_kp_backend_telemetry(
+        article_id, source_level, requested_backend="db_hybrid", backend_used="db_hybrid",
+        final_status=result.get("status"), fallback_triggered=False,
+        cost_jpy=result.get("cost_jpy"), model_id=result.get("model_id"), synthetic=synthetic,
+        shortlist_total_count=result.get("shortlist_total_count"),
+        cost_guard_exceeded=result.get("cost_guard_exceeded"))
     result["kp_backend_used"] = "db_hybrid"
+    _merge_kp_backend_metadata_into_runtime_file(out_dir, {
+        "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
+        "kp_backend_fallback_reason_code": None,
+        "kp_backend_cost_jpy": result.get("cost_jpy"), "kp_backend_model_id": result.get("model_id"),
+        "kp_backend_shortlist_total_count": result.get("shortlist_total_count"),
+        "kp_backend_cost_guard_exceeded": result.get("cost_guard_exceeded"),
+        "kp_backend_attempts_detail": result.get("attempts_detail"),
+    })
     return result
 
 
@@ -404,7 +487,8 @@ def detect_key_phrase_symbol_findings(merged_items: list) -> list:
 
 
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
-                     process: str = None, kp_backend: str = "strategy_l") -> dict:
+                     process: str = None, synthetic: bool = False,
+                     kp_backend: str = "strategy_l") -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
 
@@ -419,12 +503,38 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
     kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01追加):
     意味はrun_key_phrase_selection()と同じ。retry(選定からやり直す
     ループ)でも同じkp_backendが一貫して使われる(既定"strategy_l"は
-    全既存呼び出し元で無変更)。"""
+    全既存呼び出し元で無変更)。
+
+    修正1回目(Opus L2所見S4/S8、2026-09-27): (1)本関数スコープで
+    article_id単位の累積コスト(db_hybrid選定+fallback選定の合算、
+    canonicalization/Redundancy QA自体は既存Productionが元々cost計測
+    していないため対象外[N5])を追跡し、`KP_ARTICLE_COST_CAP_JPY`
+    (既定¥15.0、`er030_key_phrase_db_hybrid_selector_01`定数)を超えた
+    場合はfallbackではなく`status="KP_ARTICLE_COST_CAP_EXCEEDED"`で
+    STOPする(retryを続けない)。(2)`shortlist_cache`(本関数ローカル、
+    article_textのsha256をkeyとするdict)をretryループ全体で共有し、
+    db_hybrid経路のStage1/Wiktionary lookup再計算を防ぐ(retryは
+    prompt[diagnostic_note]再生成のみ)。"""
     redundancy_retry_log = []
     diagnostic_note = None
+    shortlist_cache: dict = {}
+    cumulative_cost_jpy = 0.0
     for attempt in range(0, KEY_PHRASE_REDUNDANCY_RETRY_MAX + 1):
         sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process,
-                                        diagnostic_note=diagnostic_note, kp_backend=kp_backend)
+                                        diagnostic_note=diagnostic_note, kp_backend=kp_backend,
+                                        synthetic=synthetic, shortlist_cache=shortlist_cache)
+        cumulative_cost_jpy += (sel.get("cost_jpy") or 0.0)
+        if kp_backend == "db_hybrid":
+            import er030_key_phrase_db_hybrid_selector_01 as _db_hybrid_mod
+            if cumulative_cost_jpy > _db_hybrid_mod.KP_ARTICLE_COST_CAP_JPY:
+                print(f"[KP-BACKEND][STOP] {article_id}: 記事単位の累積コスト"
+                      f"(JPY {cumulative_cost_jpy:.4f})が上限(JPY "
+                      f"{_db_hybrid_mod.KP_ARTICLE_COST_CAP_JPY})を超過しました。"
+                      "fallbackせず処理を停止します。")
+                return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
+                        "redundancy_retry_log": redundancy_retry_log,
+                        "status": "KP_ARTICLE_COST_CAP_EXCEEDED",
+                        "cumulative_cost_jpy": round(cumulative_cost_jpy, 4)}
         if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
             return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
                      "redundancy_retry_log": redundancy_retry_log}

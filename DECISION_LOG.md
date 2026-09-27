@@ -10448,3 +10448,111 @@ Production採用(Family X、Primary/Fallback配線、Phase 1、2026-09-27)
   EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_03.md`に保存)。
 - commit: `eb7825d7`(Phase 3修正2回目、code+test)、本コミット
   (Stage 3e runtime artifact+SSOT反映)。
+
+## KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: 修正1回目
+(Mandatory Opus L2所見反映、2026-09-27、¥0)
+
+- **性質**: 共有KP層変更に伴うMandatory Opus L2レビュー(Fable発火)の
+  結果を反映するSonnet修正1回目。BLOCKER 3件・SHOULD_FIX 8件・
+  N項目4件へ対応。API/LLM呼び出しなし、¥0。
+- **Fable判定**: BLOCKER 3件(B1 telemetry観測性/B2 per-article
+  traceability/B3 routing違反のfallback吸収)解消前は`PRODUCTION_WIRED`
+  不可。
+- **B1(telemetry観測性)**: `_log_kp_backend_telemetry()`のスキーマを
+  `requested_backend`/`backend_used`/`final_status`/
+  `fallback_triggered`/`fallback_reason_code`/`synthetic`(bool)/
+  `spec_id`/`article_id`/`level`/`model_id`/`cost_jpy`へ統一。既定
+  strategy_l経路(`run_key_phrase_selection`)からも1回記録するよう
+  追加(旧: db_hybrid経路のみ記録)。unit testは
+  `mock.patch.object(sc, "KP_BACKEND_TELEMETRY_PATH", tmp)`へ切替。
+  旧telemetry 11行(test偽エントリ・合成fallback含む)は
+  `er030_output/kp_backend_telemetry_01/telemetry_bootstrap_
+  evidence_2026-09-27.jsonl`へ退避、`telemetry.jsonl`は空から再開。
+  強制failure注入runのevidenceスクリプトは`synthetic=True`を渡すよう
+  修正。
+- **B2(per-article traceability)**: `_merge_kp_backend_metadata_
+  into_runtime_file()`新設(追記型)。db_hybrid成功/fallback/STOP
+  いずれの経路でも`{kp_dir}/keywords_runtime_metadata.json`へ
+  `kp_backend`/`kp_backend_used`/`fallback_reason_code`/cost/
+  model_id/attempt詳細を記録(fallback時は「db_hybridを試して失敗した
+  事実」も残す)。`er019_family_x_audio_production_runner_01.py::
+  run_theme_scaffold()`の`result[level]`へ`kp_backend_used`追加、
+  `main()`がscaffold完了後に`entry_point.json`へ
+  `kp_backend_used_by_level`をmerge。
+- **B3(routing違反のfallback吸収)**: `_make_instrumented_selector_
+  factory`に`contract_violation_sink`(可変list)を追加。
+  `prod.run_production_selection_gate`は内部で`SelectorModelMismatch
+  Error`を`TECHNICAL_GENERATION_FAILED`へ吸収してしまう既存挙動
+  (Strategy L経路も同様、無変更)のため、`run_db_hybrid_selection`が
+  gate呼び出し直後に`contract_violation_sink`を独立確認し、非空なら
+  `DbHybridFailure("MODEL_CONTRACT_VIOLATION", fallback_allowed=
+  False)`を送出する。`DbHybridFailure`に`fallback_allowed`(既定True)
+  を追加、`_run_key_phrase_selection_db_hybrid_with_fallback`は
+  `fallback_allowed=False`ならfallbackせず再raiseしてSTOPする
+  (fail-closed)。
+- **SHOULD_FIX(Fable決定分含む)**:
+  - S1: `LightweightPromptByteIdenticalToTrial04Tests`新設、12
+    fixture全件で`er029.build_lightweight_user_message_v4`と
+    `er030.build_lightweight_user_message`の出力文字列完全一致を実測
+    確認(旧「byte-identical shortlist」はcandidate列一致の意味、
+    prompt文字列一致は本修正で新規に実測)。
+  - S2: `_fake_multiword_lookup`/`_fake_unigram_lookup`新設、
+    `CoreEquivalenceWithTrial04Tests`/`LightweightPromptByteIdentical
+    ToTrial04Tests`へ適用(実測506秒→約221秒[test全体]に短縮)。
+    実測値検証目的の`FamilyXNoRegressionOnRealArticlesTests`等は
+    意図的に対象外のまま実API使用継続。
+  - S3: `_verify_source_spans_against_raw_article()`新設
+    (`er003_key_phrase_source_gate_01.normalize_text`再利用)。選定
+    gate PASS直後・canonicalization前に実施、不一致は
+    `DbHybridFailure("SOURCE_SPAN_NOT_IN_RAW_ARTICLE")`(fallback可)。
+  - S4(Fable決定): `DEFAULT_COST_GUARD_JPY`(¥5.0)はPASS済み結果を
+    破棄せず`cost_guard_exceeded=true`のみ記録(より高価な全文方式
+    への再課金回避)。新設`KP_ARTICLE_COST_CAP_JPY`(既定¥15.0)を
+    `run_key_phrases`スコープで記事単位累積JPY監視、超過時は
+    fallbackせず`status="KP_ARTICLE_COST_CAP_EXCEEDED"`で打ち切り。
+  - S5(Fable決定): `MIN_SHORTLIST_COUNT`を8→12、新設
+    `MIN_SHORTLIST_PHRASE_PLUS_IMPORTANT_COUNT=5`を追加。Trial-04
+    実測12本文(total最小20、phrase+important最小7[twins_b1])から
+    導出(実測表は`KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-
+    WIRING-01_REPORT.md`§8-2)。
+  - S6(a): `SELECTION_GUIDANCE`/util 4関数を`er028_key_phrase_db_
+    hybrid_trial_03_run.py`(Trial run script)から`er030_key_phrase_
+    db_hybrid_selector_01.py`へ移設(Trial側は無変更のまま残す)。
+    `Er028UtilByteParityTests`でbyte一致・import静的チェックを固定
+    回帰化、Production moduleからTrial run scriptへのimportをゼロに
+    した(er030 coreの`er023`/`er027`/`er028`[`_stage1`接尾辞]への
+    既存依存は候補生成アルゴリズムの純粋関数であり対象外)。
+  - S7: REPORT/DECISION_LOG/CURRENT_SPECの内訳・参照test名を実測
+    (本修正後のtest名・件数)に整合させた。
+  - S8: `run_key_phrase_selection`/`run_db_hybrid_selection`へ
+    `shortlist_cache`(`run_key_phrases`ローカル、article_text sha256
+    key)を追加、Redundancy QA retry時のStage1/Wiktionary lookup
+    再計算を回避(retryはprompt再生成のみ)。
+- **N項目**: N5→`OPEN_ITEMS.md`へ新規OPEN-206登録(KP工程cost計測
+  欠落、全Family共通の既存限界)。N2→OPEN-202へ追記(ad-hoc retry
+  script群によるstrategy_l迂回実行の観測可能性がB1により向上した旨)。
+  N7→`db_hybrid_stage1_debug.json`は無変更のまま継続(監査証跡)。
+  N6→fixtureの`skipTest`退避を全箇所`fail`へ変更(無自覚なカバレッジ
+  喪失防止)。
+- **test**: `er030_key_phrase_db_hybrid_family_x_production_wiring_01_
+  test.py`(Phase 1時点15件→本修正で**32件**、全PASS、¥0)。
+  `run_project_regression.py`(collected 3344、passed 3335、failed 7、
+  errors 2。内訳はPhase 1時点と同一の既知の無関係failureのみ
+  [`test_family_a_files_have_no_working_tree_diff`はcommit前の
+  一時的な未commit差分検知、commit後に解消見込み]、新規regression
+  なし)。
+- **反映範囲**: `CURRENT_SPEC.md`(「Key Phrase」節Fallback条件・cost
+  意味論・shortlist条件・telemetry項目・per-article metadata記述を
+  更新)、`OPEN_ITEMS.md`(OPEN-206新規登録、OPEN-202追記)、
+  `docs/pm/REPORT_LEDGER.md`(該当行更新)、
+  `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`
+  (§7 Opus L2所見逐語・§8修正1回目照合表を新設、§5 Gate 3表更新)、
+  本エントリ新設。
+- **STOP該当**: 無し(BLOCKER 3件は本修正で解消したとSonnetは判断。
+  `PRODUCTION_WIRED`の正式宣言はFable/ユーザーの最終確認後)。
+- **根拠**: Fable Mandatory Opus L2レビュー委任文(2026-09-27、
+  `docs/pm/delegation_log/2026-09-27_KEY-PHRASE-DB-HYBRID-FAMILY-X-
+  PRODUCTION-WIRING-01_02.md`に保存)、
+  `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`
+  §7・§8。
+- commit: 本コミット(修正1回目、code+test+SSOT反映)。

@@ -332,8 +332,13 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
 
+        # 修正1回目(Opus L2所見B2、2026-09-27): result[level]へ
+        # kp_backend_usedを載せる(entry_point.jsonへの反映はmain()側で
+        # scaffold stage完了後に行う)。
+        kp_backend_used = (kp.get("selection") or {}).get("kp_backend_used")
+
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
-                          "key_phrases_status": kp_status}
+                          "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
     return result
 
@@ -1369,8 +1374,19 @@ def main() -> None:
 
     if args.stage in ("scaffold", "all"):
         with cl.logging_context(args.slug, "scaffold"):
-            run_theme_scaffold(client, source_dir, out_dir, levels)
+            scaffold_result = run_theme_scaffold(client, source_dir, out_dir, levels)
         assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
+        # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
+        # entry_point.jsonへlevelごとのkp_backend_usedを追記する
+        # (per-article traceability、既存フィールドは保持したまま追加)。
+        entry_point_path = f"{out_dir}/entry_point.json"
+        if os.path.exists(entry_point_path):
+            with open(entry_point_path, encoding="utf-8") as f:
+                entry_point = json.load(f)
+            entry_point["kp_backend_used_by_level"] = {
+                level: (scaffold_result.get(level) or {}).get("kp_backend_used") for level in levels
+            }
+            save_json(entry_point_path, entry_point)
 
     if args.stage in ("tts", "all"):
         with cl.logging_context(args.slug, "tts"):

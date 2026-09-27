@@ -54,9 +54,11 @@ def run_one(article_key: str, article_path: str, level: str, process: str, force
 
     t0 = time.time()
     if force_fallback:
+        # 修正1回目(Opus L2所見B1、2026-09-27): 強制failure注入runは
+        # telemetryへsynthetic=trueで記録し、本番実行と区別する。
         with mock.patch.object(db_hybrid, "DEFAULT_COST_GUARD_JPY", 0.0001):
             kp = sc.run_key_phrases(article_text, out_dir, article_id, level, process=process,
-                                     kp_backend="db_hybrid")
+                                     kp_backend="db_hybrid", synthetic=True)
     else:
         kp = sc.run_key_phrases(article_text, out_dir, article_id, level, process=process,
                                  kp_backend="db_hybrid")
