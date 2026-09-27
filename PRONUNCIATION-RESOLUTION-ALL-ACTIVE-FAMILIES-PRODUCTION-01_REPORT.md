@@ -664,3 +664,164 @@ pre-existing failure**(HEAD時点で同じ2件が同じ理由でFAILすること
 7. **JA-1の2回目実行(cache hit確認)は未実施**(§17JA-1参照、上記1と同旨)。
    `family_x_b3_production_wiring_01__run_01`のTTS再生成自体は完了済み
    (exit code 0、全segment処理完了)。
+
+---
+
+# Sonnet修正2回目(closeout): SSOT反映+JA-1 2回目実行(cache hit)evidence
+
+作成: Sonnet実行層。委任文全文は
+`docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_04.md`
+に保存済み。Fable Gate 3判定は本REPORTでは自称しない(**Fable Gate 3判定
+待ち**のまま記載する)。
+
+## §22-1 実施内容
+
+### 1. JA-1の2回目実行(cache hit・追加lookup0回)evidence
+
+runner(`er019_family_x_audio_production_runner_01.py`)にはsegment単位の
+限定実行オプションが無い(`--slug`/`--run`/`--level`/`--stage`のみ、§15
+「Family Xプロセス粒度未確認」照合表の確認結果どおり)ため、runnerが実際に
+呼んでいるのと同一のProduction関数(`er003_v1_n3_01_tts_generate.
+generate_a2_japanese_with_reading_safety`、runner側呼び出し引数
+`max_extra_chars=30`・`source_context`省略[既定""]と同一)を、1回目実行時の
+実際のaudit記録(`er019_output/family_x_audio_production_wiring_01/
+family_x_b3_production_wiring_01__run_01/a2/audit/tts_generation_
+results.json`の`segments.japanese_title.canonical_text`)から取得した
+canonical_text(記事本文そのもの、書き換えなし)で再現した。専用スクリプト
+`er025_output_ja1_second_run_evidence_01.py`を新規作成し、実行前に
+`os.environ["TTS_EXECUTION_MODE"] = "STANDARD"`を明示設定した上で、実際に
+以下のコマンドで実行した(逐語):
+
+```
+set -a && source .env && set +a && TTS_EXECUTION_MODE=STANDARD ./.venv/Scripts/python.exe er025_output_ja1_second_run_evidence_01.py
+```
+
+出力は評価専用out_dir
+`er025_output/pronunciation_resolution_phase2_evidence_01/
+ja1_second_run_evidence_01/`へ保存し、本番runner側artifact
+(`.../family_x_b3_production_wiring_01__run_01/a2/narration/
+japanese_title.wav`等)・Master Audio Storeは一切変更していない
+(`git status`で`er006_output/pronunciation_ledger_01/ledger.json`に
+本実行由来の差分が無いことも確認済み、cache hitで`upsert`が発生しなかった
+ことと整合)。
+
+**実測結果**:
+- `web_lookup_called: false`、`research_meta: null`(実際のraw usage
+  log[`er025_output/pronunciation_resolution_phase2_evidence_01/
+  ja1_second_run_evidence_01/raw_usage_log.jsonl`]にもgemini/openai_asr
+  以外のAPI呼び出し[web_search/`gpt-5.6-sol`]が1件も記録されていないことを
+  確認)。
+- `resolved`: `{"surface": "Muse", "reading": "ミューズ", "confidence":
+  "high", "source": "cache_or_ledger"}`(1回目実行時の`source`が実際の
+  Yahoo!ファイナンス/TBS NEWS DIGのURLだったのに対し、2回目は
+  `"cache_or_ledger"`に変化しており、Ledger cache経由になったことを示す)。
+- Foreign Token Gate: `foreign_token_findings`で"Muse"が
+  `READING_DICTIONARY`分類(`reading_dictionary`に`{"muse": "ミューズ"}`が
+  含まれる)。
+- TTS発話: 標準2回+fallback1回、**3回とも**実際に「メタのミューズで
+  起きたまさかの展開」と発話したことをASRで確認(1回目「AIからの電話
+  だと思ったら、中に人がいた!?メタのミューズで起きたまさかの展開」、
+  2回目「...いた?メタのミューズで...」、fallback「...いた? メタの
+  ミューズで...」)。
+- 総合判定: `status: STOPPED`(標準2回+fallback1回、計3回とも
+  `audio_classification: TRUE_CONTENT_MISMATCH`)。**本項目の合否には
+  含めない**(委任文の指示どおり)。差分文字(全件)は以下のとおりで、
+  1回目実行時と同じ既存ASR Validator制約の再現であることを確認した:
+  1. 引用符「"人"」→ASR書き起こしでは3回とも引用符が脱落し「人」のみ。
+  2. 全角疑問符「？」→ASR書き起こしでは3回とも異なる表記(標準attempt1
+     「!?」、標準attempt2「?」、fallback「? 」)へ変換され、全角「？」
+     そのものは1度も再現されない。
+  3. 全角スペース「　」(？の直後)→標準2回は脱落、fallbackのみ半角
+     スペース1個に変換。
+  `OPEN_ITEMS.md` OPEN-199へ全件記録した。
+- 費用: 実測(`cl.install()`でraw usage logを記録、`er005_output/
+  cost_baseline_01/pricing_snapshot.json`の公式単価[Gemini
+  `gemini-3.1-flash-tts-preview`: 入力$1.00/出力$20.00 per 1M tokens、
+  OpenAI ASR`gpt-4o-mini-transcribe`: 入力$1.25/出力$5.00 per 1M
+  tokens、USD_JPY=160]で算出)、TTS3回+ASR3回で**合計¥2.72**
+  (Guardrail¥60・当初見積り¥10前後に対し十分小さい)。実行時間は
+  STANDARD modeで6〜8秒/呼び出しであり(前回JA-1のBatch mode誤実行時の
+  約120秒/呼び出しから正しく改善)、`tts_execution_mode: "STANDARD"`が
+  raw usage logにも記録されていることを確認した。
+- Human Review Lock(`approve_regenerate()`)は実行していない(委任文の
+  指示どおり)。
+
+### 2. SSOT反映
+
+- `CURRENT_SPEC.md`: 「固有名詞読み解決(JA/EN共通)」節を新設(§20記載案を
+  ベースに、実際のfunction名・定数名をコードから再確認した上で反映)。
+  JA確定読みのTTS直接伝達が別Phaseであることも明記した。
+- `DECISION_LOG.md`: `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-
+  PRODUCTION-01`エントリを新設(Phase 1〜Sonnet修正2回目までの経緯・
+  Opus L2 BLOCKER是正内容・JA-1 2回目実行結果・回帰結果を記録、Melos人名
+  seedがresolverの一般機構の使用例でありユーザー個別判断ではないこと、
+  EN`generate_english_component_minimal_instruction`/`generate_charon_
+  english`配線deferredであることを明記)。
+- `OPEN_ITEMS.md`: OPEN-196〜OPEN-200を新規登録(いずれもPM追跡、
+  `USER_DECISION_REQUIRED`にはしていない): OPEN-196(ledger.json複数Agent
+  同時書き込み競合リスク)、OPEN-197(Family X B1B英語segment`generate_
+  charon_english`経路でEN resolver未配線)、OPEN-198(EN
+  `generate_english_component_minimal_instruction`経路配線未完了)、
+  OPEN-199(JA ASR Validatorの句読点正規化ギャップ、Meta A2
+  `japanese_title`実例+2回目実行での差分文字全件)、OPEN-200
+  (`er006_kp5_canonical_bug_01_test.py`のtilde系test2件のpre-existing
+  failure+regression discovery対象外のファイル名問題)。既存OPEN項目との
+  重複登録はない(grep確認済み)。
+- `docs/pm/REPORT_LEDGER.md`: 本管理ID行を更新(Status・Opus発火列を
+  「L2 1回(2026-09-27起動、初回所見反映済み)」へ更新)。
+
+### 3. 回帰
+
+本Sonnet修正2回目(closeout)ではProduction code(`er0*.py`本体)を一切
+変更していない(新規追加は評価専用スクリプト`er025_output_ja1_second_
+run_evidence_01.py`のみで、既存Production関数を無変更のまま呼び出す
+runtime evidence取得用途、regression discovery pattern`er0*_test_*.py`
+の対象外)。したがって、Sonnet修正1回目で取得済みの回帰結果
+(`collected=3311 passed=3305 failed=4 errors=2`、既知6件と完全一致・
+新規regressionなし、§18)がそのまま有効であり、本closeoutでの再実行は
+不要と判断した(コード変更が無いため結果が変化する要因が無い)。
+
+## §22-2 Gate 3チェックリスト evidence表(`PM_GOVERNANCE.md`2節)
+
+| Gate 3項目 | evidence | Status |
+|---|---|---|
+| Production正式初回経路 | JA: `generate_a2_japanese_with_reading_safety`(A2)/`generate_charon_japanese_with_reading_safety`(B1B)。EN: `generate_narration_snippet_verified_strict`。いずれも既存Production呼び出し元は無変更のままresolver coreを内部で呼ぶよう拡張 | 充足 |
+| retry・fallback・regenerationとの整合 | 標準2回+fallback1回の既存retry予算は無変更(JA-1 2回目実行でも同じ3回構成を実測)。JA-3でHuman Review Lockを独自判断で解除せず既存安全装置を尊重したことを実測確認(§17) | 充足 |
+| DEV・Trial-onlyではないこと | 変更ファイルはいずれも共有Production module(`er006_pronunciation_ledger_01.py`/`er006_pronunciation_tts_injection_01.py`/`er025_entity_pronunciation_resolver_core_01.py`/`er003_v1_n3_01_tts_generate.py`他)。評価専用スクリプト(`er025_output_*_evidence_run.py`)はProduction関数を無変更のまま呼ぶ検証用途であり、Production経路自体への新規分岐ではない | 充足 |
+| Production runtimeでの実発火 | JA-1(1回目・2回目とも実際のFamily X Meta記事canonical_textで実発火)、JA-3(Hormuz実記事)、JA-4(Family Z Melos、fixture文経由だが共有Production関数の直接呼び出し)、Stage 3c(既存本番audit記録の走査) | 充足 |
+| 必要testのPASS | 新規test 23件(修正1回目)全PASS、既存回帰3311件中failed4/errors2は既知6件と一致(新規failureなし) | 充足 |
+| runtime evidence | §17(修正1回目、EN-3/Stage3c/JA-1/JA-3/JA-4)+§22-1(本closeout、JA-1 2回目・実費用¥2.72) | 充足 |
+| 実際のmodel_id・routing確認 | JA web lookup`model_id: "gpt-5.6-sol"`(1回目実測、r3既定値の無改変再利用と確認)。2回目はcache hitのためAPI呼び出し自体が発生せず(web lookup 0件を実測確認)、TTS`gemini-3.1-flash-tts-preview`・ASR`gpt-4o-mini-transcribe`は両回とも実測確認 | 充足 |
+| コスト影響評価(2-2節) | 修正1回目合計約¥30前後+本closeout¥2.72、Guardrail(修正1回目¥300・本closeout¥60)に対しいずれも十分小さい | 充足 |
+| `CURRENT_SPEC.md` | 「固有名詞読み解決(JA/EN共通)」節を本closeoutで新設(§22-1「2」) | 充足 |
+| `DECISION_LOG.md` | 本closeoutで新規エントリを追加(§22-1「2」) | 充足 |
+| `OPEN_ITEMS.md` | 本closeoutでOPEN-196〜200を新規登録(§22-1「2」) | 充足 |
+| 必要なGit反映 | 本コミットでpush予定(下記) | 充足(本コミット完了後) |
+| approved specとProduction挙動の一致 | Phase 1recon`APPROVED_FOR_PRODUCTION`(ユーザー承認済み設計)どおりJA/EN共通core・語境界一致・source_context一般機構・JA読みTTS直接伝達=別Phase、を実装・実測(乖離なし) | 充足 |
+| 必須Opusレビュー該当案件のOpus所見反映(`PM_GOVERNANCE.md`2節2026-09-27追記) | Opus L2 BLOCKER-1/2を修正1回目で是正済み、照合表(§15)で全項目対応済みを確認。本closeoutで追加のOpus指摘は無し(本closeoutはSSOT反映+JA-1 2回目実行のみで新規Production変更なし) | 充足 |
+
+## §22-3 Dangling Reference Check
+
+REPORT・SSOT新規追記から参照した以下のファイル・関数・定数の実在をGrep/直接確認した(いずれも実在、捏造なし):
+`er025_entity_pronunciation_resolver_core_01.py`(`resolve_unknown_ja_tokens`/
+`resolve_and_augment_en_style_prefix`/`seed_work_canon_reading`/
+`disable_web_lookup_for_test`/`ALLOW_PRONUNCIATION_WEB_LOOKUP_ENV`/
+`NEGATIVE_CACHE_RESOLUTION_METHOD`/`JA_NEGATIVE_CACHE_COOLDOWN_SECONDS`/
+`MAX_JA_WEB_LOOKUP_CALLS_PER_RUN`/`TELEMETRY_PATH`/`split_ja_reading_
+sources`)、`er006_pronunciation_ledger_01.py`(`CASCADE_UNRESOLVED_ENTITY_
+TYPE`/`get_hint_for_text`/`get_low_confidence_entries_for_text`/
+`set_tts_injection_disabled`/`ledger_health_check`/`get_ja_reading_entry`/
+`upsert_ja_reading_entry`)、`er006_pronunciation_tts_injection_01.py`
+(`augment_style_prefix_with_pronunciation`)、`er003_v1_n3_01_tts_
+generate.py`(`generate_a2_japanese_with_reading_safety`/
+`expected_substring_ja`)、`er019_family_x_audio_production_runner_01.py`
+(該当呼び出し行、segment限定オプション不在の確認)、`er005_output/
+cost_baseline_01/pricing_snapshot.json`(価格根拠)。新規追加した評価
+スクリプト`er025_output_ja1_second_run_evidence_01.py`および出力
+`er025_output/pronunciation_resolution_phase2_evidence_01/
+ja1_second_run_evidence_01/`は実在(本コミット対象)。
+
+## §22-4 Family A/B/C確認
+
+本closeoutでFamily A/B/C固有コードへの変更は0件(SSOT編集+新規評価
+スクリプト1件のみ、`git status`で確認済み)。

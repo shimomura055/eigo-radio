@@ -82,7 +82,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | KEY-PHRASE-DB-HYBRID-TRIAL-02 | 2026-09-27 | 済(2026-09-27) | 済(2026-09-27: TRIAL-03[軽量化・bug一般化修正・回帰・新記事Trial]へ継続指示) | N | DB+機械screening→既存Strategy L 1回のHybrid方式Trial(6本文、390〜779件→20〜24件、重要名詞句保持・採用、1本文1 call)。Fable評価`VALIDATED`(留保付き: 重複率55%は品質証明ではない、費用は現行同等〜わずかに高い、discontinuous phrasal verb残存等のノイズ、small_bag_b1bは既存Gateで双方INVALID)。詳細`KEY-PHRASE-DB-HYBRID-TRIAL-02_REPORT.md`§12。 | 無 |
 | KEY-PHRASE-DB-HYBRID-TRIAL-03 | 実行中(2026-09-27) | 未 | 未 | Y | TRIAL-02の留保事項(軽量化・bug一般化修正・回帰・新記事Trial)への継続対応。実行中。 | 無 |
 
-| PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01 | 進行中(2026-09-27、Phase 1完了) | 済(2026-09-27[Phase 1報告]) | 未 | Y | 読み解決(JA/EN)の全Active Family共通化棚卸し+設計recon(read-only、commit`acd63308`)。Fable評価`APPROVED_FOR_PRODUCTION` / Phase 2実装中。詳細は`docs/pm/recon_pronunciation_resolution_01.md`。 | L2(2026-09-27起動) |
+| PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01 | 進行中(2026-09-27、Sonnet修正2回目[closeout]完了、Fable Gate 3判定待ち) | 済(2026-09-27[Phase 1報告]) | 未 | Y | 読み解決(JA/EN)共通core新設+配線(Phase 2、commit`cc30d6b8`系)。必須Opus L2レビューでBLOCKER-1(Ledger語境界なし部分一致誤爆)/BLOCKER-2(JA読みLedgerKeyに文脈なし)を検出、Sonnet修正1回目(commit`1aead031`)で是正+runtime evidence(EN-3/Stage3c/JA-1/JA-3/JA-4)取得。Sonnet修正2回目(closeout)でJA-1の2回目実行(cache hit・web lookup0回、実費用¥2.72、`TTS_EXECUTION_MODE=STANDARD`明示)+`CURRENT_SPEC.md`「固有名詞読み解決(JA/EN共通)」節新設+`DECISION_LOG.md`エントリ新設+`OPEN_ITEMS.md`新規OPEN-196〜200登録を実施。回帰3311件中failed4/errors2(既知6件と一致、新規regressionなし)。`PRODUCTION_WIRED`確定はFable Gate 3判定待ち。詳細は`docs/pm/recon_pronunciation_resolution_01.md`、`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`(§1-22)。 | L2 1回(2026-09-27起動、初回所見反映済み) |
 
 ## 違反事例記録
 

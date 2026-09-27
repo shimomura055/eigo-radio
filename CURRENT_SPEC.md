@@ -1693,6 +1693,85 @@ retry)・Family B/C共有TTS層(Layer 1・3・4)。Family Bは日本語segment�
 詳細・runtime evidence・費用・回帰確認は
 `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01_REPORT.md`参照。
 
+## 固有名詞読み解決(JA/EN共通) — 2026-09-27新設・Status: `APPROVED_FOR_PRODUCTION`
+(実装済み・実データrunning evidence取得済み、`PRODUCTION_WIRED`確定判定は
+Fable Gate 3判定待ち。`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-
+PRODUCTION-01`)
+
+Phase 1 recon(`docs/pm/recon_pronunciation_resolution_01.md`)で確認された
+「JA: `DEFAULT_JA_READING_DICTIONARY`(静的・手動追加のみ)+Foreign Token
+Gateで未登録語は無条件HUMAN_REVIEW」「EN: Pronunciation Ledger/Researchは
+実装済みだがProduction初回TTS経路からは一度も呼ばれていなかった」という
+2つのギャップに対し、JA/EN共通core(`er025_entity_pronunciation_resolver_
+core_01.py`)を新設し両言語のProduction TTS入口へ配線した(Phase 2)。
+必須Opus L2レビューでBLOCKER-1/2を検出し、Sonnet修正1回目でこれを是正した
+(詳細・照合表は`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_
+REPORT.md`§14-16)。
+
+**確定内容(Phase 2、Opus L2 BLOCKER是正込み)**:
+- Ledger検索(`er006_pronunciation_ledger_01.get_hint_for_text`/
+  `get_low_confidence_entries_for_text`)は、surfaceがASCII(英数字主体)の
+  場合は語境界一致、非ASCII(漢字・アクセント付きラテン文字等)は部分一致
+  とする(`_surface_matches_text()`)。是正前は語境界なしの部分一致であり、
+  ASR Secondary Cascade由来の短い誤entry(surface="plus"/"mini"/"ganis"等)
+  が無関係な語(surplus/minister/organisation等)へ誤爆する経路があった。
+- TTS発音注入経路(`augment_style_prefix_with_pronunciation`)は、ASR
+  Secondary Cascade Human Review packaging専用のentity_type
+  `cascade_unresolved_entity`(`er006_pronunciation_ledger_01.
+  CASCADE_UNRESOLVED_ENTITY_TYPE`)を対象に含まない
+  (`exclude_entity_types`引数、`apply_tts_injection_filter=True`)。ASR
+  Secondary CascadeのPhrase List用途では引き続き含まれる(用途ごとに
+  `exclude_entity_types`/`apply_tts_injection_filter`引数で制御、呼び出し元
+  シグネチャは無変更)。
+- 本番Ledger(`er006_output/pronunciation_ledger_01/ledger.json`)内の
+  上記誤entryは削除ではなく`tts_injection_disabled=true`+
+  `tts_injection_disabled_reason`による隔離フラグで分離した
+  (`set_tts_injection_disabled()`、`get_hint_for_text(...,
+  apply_tts_injection_filter=True)`で除外)。
+- LedgerKeyへ`source_context`を一般機構として追加した(`(surface,
+  source_context)`の組がキー、既定`source_context=""`は既存呼び出し元と
+  完全後方互換)。同一綴りが文脈により異なる読みを持つ場合(例:
+  "Dionysius"が史実表記と特定作品の確定読みで異なる)に対応する。
+- `seed_work_canon_reading(surface, ja_katakana, en_hint, source_context,
+  sources)`(`er025_entity_pronunciation_resolver_core_01.py`)により、
+  作品固有の確定読みをWeb lookupを介さず`resolution_method="work_canon"`・
+  `confidence="high"`として事前登録できる(一般機構、特定作品のハード
+  コードではない)。
+- Negative cache: web lookupを実際に呼んだが未解決だった語は
+  `JA_NEGATIVE_CACHE_COOLDOWN_SECONDS`(6時間)の間、再lookupしない
+  (`NEGATIVE_CACHE_RESOLUTION_METHOD`)。
+- Run単位のJA web lookup上限: 1プロセス(記事1本のtts stage呼び出し相当)
+  あたり最大`MAX_JA_WEB_LOOKUP_CALLS_PER_RUN=5`回。上限到達後は
+  fail-safe側(未解決・HUMAN_REVIEW)へ倒れる。
+- テスト用web lookup禁止スイッチ: `ALLOW_PRONUNCIATION_WEB_LOOKUP`環境変数
+  (既定"1"、"0"で無効化)+`disable_web_lookup_for_test()`(contextmanager)。
+  既存test(`er006_kp5_canonical_bug_01_test.py`等)が意図せず実APIを呼び
+  本番Ledgerへ書き込む問題を防止する。
+- `ledger_health_check()`(`er006_pronunciation_ledger_01.py`)により、
+  `cascade_unresolved_entity`型でcanonical_spellingがsurfaceと乖離する
+  entryや、`tts_injection_disabled`のentry一覧を機械的に検出できる
+  (read-only)。
+- telemetry: `er025_output/pronunciation_resolution_core_telemetry_01/
+  telemetry.jsonl`(best-effort、書き込み失敗時も本処理は継続)。
+
+**別Phase(本Phaseの範囲外、ユーザー既決)**: JA確定読みをTTSへ直接供給する
+方式は別Phaseとする。現状はForeign Token Gate解除+ASR期待読み
+(`expected_readings`)の付与のみで、実際にGemini TTSが発話する音自体は
+変わらない。Melos(`source_context="family_z_melos"`)のruntime evidenceで、
+resolverが正しく"work_canon"読み(ディオニス)を解決してもGemini TTSは
+その場で英語ふうの読み(ディオニシウス系)を発話し、seedした読みが実際の
+発話には反映されなかったことを実測確認した(`OPEN_ITEMS.md`参照)。
+
+**Production配線範囲**: EN側resolver(`resolve_and_augment_en_style_
+prefix`)が実際に配線されているのは`generate_narration_snippet_verified_
+strict`(A2英語標準+fallback、Key Phrase Componentを含む全EN経路)経由の
+みである。`generate_english_component_minimal_instruction`(B1
+scaffold/crosslevel/news_tail_fix等が呼ぶ)・`generate_charon_english`
+(B1B、`voice01`経由)には未配線(`OPEN_ITEMS.md`参照)。
+
+詳細・runtime evidence・費用・回帰確認は
+`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`参照。
+
 ## 試聴Artifact(ユーザー提示用ページ)仕様 — 2026-08-29新設(ER-008-N8-CLOSEOUT-GOVERNANCE-25)
 
 | 項目 | 内容 | 状態 | 根拠Decision | 最終更新日 |

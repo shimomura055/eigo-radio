@@ -10078,3 +10078,88 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 根拠: `KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01_REPORT.md`、
   Fable評価(2026-09-27、`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-C`)。
 - commit: `0699af47`(実装)、本コミット(SSOT反映)。
+
+## PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01: 固有名詞読み解決(JA/EN共通)Phase 2 Sonnet修正1回目(Opus L2 BLOCKER-1/2是正)+SSOT反映(Sonnet修正2回目=closeout)
+
+- 日付: 2026-09-27
+- 区分: Production機構新設(JA/EN共通pronunciation resolver core)。Status=
+  `APPROVED_FOR_PRODUCTION`(ユーザー承認済み設計、Phase 1 recon経由)。
+  `PRODUCTION_WIRED`最終判定はFableが行う(本エントリは事実整理のみ)。
+- 内容: Phase 1 recon(`docs/pm/recon_pronunciation_resolution_01.md`、
+  commit`acd63308`)で確認された「JA: 未知語→即HUMAN_REVIEW」「EN:
+  Ledger/Researchは実装済みだが未配線」の2ギャップに対し、共通core
+  `er025_entity_pronunciation_resolver_core_01.py`を新設しJA/EN双方へ配線
+  した(Phase 2)。必須Opus L2レビュー(`PM-OPUS-ESCALATION-3TIER-AND-
+  EXISTING-SPEC-CHECK-GATE-2026-09-27`の初回適用対象)がBLOCKER-1(Ledger
+  語境界なし部分一致がASR Secondary Cascade由来の誤entryに誤爆しTTS発音を
+  破壊する経路)・BLOCKER-2(JA読みLedgerKeyに文脈が無く同綴り複数読みを
+  表現できない)を検出し、Sonnetによる修正1回目(commit`1aead031`)でこれを
+  是正した。是正内容: (i) 語境界一致検索(ASCII surfaceのみ、非Latinは
+  既存どおり部分一致)、(ii) TTS発音注入経路からASR Cascade専用entity_type
+  `cascade_unresolved_entity`を除外(ASR Phrase List用途は維持)、(iii)
+  本番`ledger.json`の誤entry6件を削除ではなく`tts_injection_disabled`
+  フラグで隔離、(iv) LedgerKeyへ`source_context`引数を一般機構として追加
+  し、`seed_work_canon_reading()`で作品固有読み(「走れメロス」登場人物名
+  3件、source_context="family_z_melos"、太宰治原文読み)をWeb lookupなしで
+  事前登録可能にした。あわせてFigma confidence鏡写し不整合のbackfill+
+  cache-hit時自己修復、negative cache(6時間)+run単位web lookup上限(5回)+
+  telemetry、テスト用web lookup禁止スイッチ(`ALLOW_PRONUNCIATION_WEB_
+  LOOKUP`/`disable_web_lookup_for_test()`)、`ledger_health_check()`、JA
+  読みsourcesの複数URL対応(`split_ja_reading_sources()`)を追加した。
+- **人名読みのseed根拠(明確化)**: Melos人物名(ディオニス等)のseedは
+  resolverの一般機構`seed_work_canon_reading()`(作品固有読みを事前登録する
+  既存機構の使用例の1つ)であり、ユーザー個別判断による仕様追加ではない。
+- **EN側の残存Gap(明確化)**: `generate_english_component_minimal_
+  instruction`(B1 scaffold/crosslevel/news_tail_fix等が呼ぶ)・
+  `generate_charon_english`(B1B、`voice01`経由)への配線は本Phaseでは
+  deferredのまま(`OPEN_ITEMS.md`新規Open Item参照)。
+- runtime evidence(実データ・実API、Sonnet修正1回目+2回目合計で実測合計
+  約¥33、Guardrail¥300に対し十分小さい): EN-3(Ledger読み取りのみ、¥0、
+  誤注入ゼロを回帰fixture+Family X実segmentで確認)、Stage 3c点検(¥0、
+  Phase 2由来の誤発音注入が実際には1件も本番audit記録に存在しないことを
+  確認)、JA-1(Meta記事`family_x_b3_production_wiring_01__run_01`の
+  a2/japanese_title、実際にOpenAI web_search実行[`model_id:
+  "gpt-5.6-sol"`]→confidence=high→自動使用→Gemini TTSが実際に「ミューズ」
+  と発話したことをASR 3回で確認、Ledger保存)、JA-3(Hormuz B1B「海からの
+  封鎖」、Candidate E`PHONETIC_MATCH`を無改変のまま再確認)、JA-4(Melos
+  seed後、共有Production関数`generate_a2_japanese_with_reading_safety`を
+  直接呼び、web lookup0回・cache hit・confidence=high・Gate通過を確認。
+  ただし実際の発話音自体はseed読みと異なりTRUE_CONTENT_MISMATCHで
+  STOPPED、fail-safe側へ正しく倒れたことを確認)。JA-1の2回目実行
+  (cache hit確認、Sonnet修正2回目=closeoutで実施、`TTS_EXECUTION_MODE=
+  STANDARD`を明示設定): 同一canonical_text(`family_x_b3_production_
+  wiring_01__run_01`のa2/japanese_title実物、runnerにsegment限定実行
+  オプションが無いため同一Production関数`generate_a2_japanese_with_
+  reading_safety`の直接呼び出しで再現、`er025_output_ja1_second_run_
+  evidence_01.py`)で、`web_lookup_called=false`(実際のusage logでweb_
+  search呼び出し0件を確認)・`resolved`の`source="cache_or_ledger"`
+  (1回目のURL根拠から変化、実際にLedger cache経由になったことを示す)・
+  Foreign Token Gateが`Muse`を`READING_DICTIONARY`分類・TTS3回とも
+  「メタのミューズで起きたまさかの展開」と正しく発話、を実測確認した
+  (実費用¥2.72、`pricing_snapshot.json`の公式単価で算出)。総合判定は
+  1回目と同じ`TRUE_CONTENT_MISMATCH`/`STOPPED`だったが、原因は"Muse"の
+  発音ではなく句読点・引用符・全角クエスチョンマークがASR書き起こしに
+  再現されない既存の一般的なASR Validator制約であり、resolver/Gate機構
+  自体の合否には含めない(`OPEN_ITEMS.md`新規Open Item参照、差分文字を
+  全件記録)。
+- 回帰: `run_project_regression.py`(pattern `er0*_test_*.py`)
+  `collected=3311 passed=3305 failed=4 errors=2`。新規失敗は0件、既知6件
+  (`er003_test_bad`自己診断fixture・`er003_test_p2j_investigate`3件の
+  bookkeeping既存不整合・pattern discovery ERROR・`er015_standard_a2_
+  6000_generation_first_trial_01_test_01`既知loader error・Family X working
+  tree diff self-check[commit後解消])と完全一致。`er006_kp5_canonical_
+  bug_01_test.py`(命名規則上`run_project_regression.py`の収集対象外)の
+  tilde系test2件は、直前の別管理ID`TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-
+  PRODUCTION-WIRING-01`(commit`19e638b5`)による`tts_safe_ja()`仕様変更
+  (全位置「～」置換)とテスト前提が矛盾した**本タスク着手前からの
+  pre-existing failure**であることをHEAD時点で確認済み(本タスクでは
+  修正していない、別管理IDの担当範囲としてOPEN登録)。
+- 反映範囲: `CURRENT_SPEC.md`(「固有名詞読み解決(JA/EN共通)」節新設)、
+  `OPEN_ITEMS.md`(新規Open Item登録、詳細は同ファイル該当行)、
+  `docs/pm/REPORT_LEDGER.md`(本管理ID行更新)、本エントリ新設。
+- 根拠: `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_
+  REPORT.md`(§1-22)、ユーザー承認(2026-09-27、Phase 1 recon経由の
+  `APPROVED_FOR_PRODUCTION`+Opus L2所見への修正着手承認)。**Fable Gate 3
+  判定待ち**(`PRODUCTION_WIRED`確定はFableが行う)。
+- commit: `acd63308`(Phase 1 recon)、`1aead031`(Sonnet修正1回目)、本コミット
+  (Sonnet修正2回目=closeout、SSOT反映)。
