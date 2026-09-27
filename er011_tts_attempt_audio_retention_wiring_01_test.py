@@ -164,7 +164,11 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                            cascade_enabled=None, force_secondary=False,
                            enable_non_latin_cascade=False,
-                           enable_connected_speech_equivalence_layer=False, detail_out=None):
+                           enable_connected_speech_equivalence_layer=False, detail_out=None,
+                           # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                           # generate_narration_snippet_verified_strict()の標準呼び出しが
+                           # 新たにsegment_idを転送するようになったための後方互換パラメータ。
+                           segment_id=None):
             cls = cls_sequence.pop(0)
             verified = (cls.classification == "exact")
             return verified, False, cls
@@ -203,7 +207,11 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                            cascade_enabled=None, force_secondary=False,
                            enable_non_latin_cascade=False,
-                           enable_connected_speech_equivalence_layer=False, detail_out=None):
+                           enable_connected_speech_equivalence_layer=False, detail_out=None,
+                           # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                           # generate_narration_snippet_verified_strict()の標準呼び出しが
+                           # 新たにsegment_idを転送するようになったための後方互換パラメータ。
+                           segment_id=None):
             return True, False, _FakeClassification("exact")
 
         with mock.patch.object(p9a, "generate_narration_snippet", side_effect=fake_snippet), \
@@ -226,7 +234,11 @@ class ProductionWiringIntegrationTests(unittest.TestCase):
         def fake_evaluate(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                            cascade_enabled=None, force_secondary=False,
                            enable_non_latin_cascade=False,
-                           enable_connected_speech_equivalence_layer=False, detail_out=None):
+                           enable_connected_speech_equivalence_layer=False, detail_out=None,
+                           # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                           # generate_narration_snippet_verified_strict()の標準呼び出しが
+                           # 新たにsegment_idを転送するようになったための後方互換パラメータ。
+                           segment_id=None):
             return True, False, _FakeClassification("exact")
 
         with mock.patch.object(p9a, "generate_narration_snippet", side_effect=fake_snippet), \

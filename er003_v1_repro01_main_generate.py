@@ -235,6 +235,15 @@ def generate_narration_snippet_verified_strict(
     # カタカナ値)。ja_secondary.evaluate_attempt_ja_with_cascade()へ
     # そのまま転送するだけで、ここでは解釈しない。
     expected_readings: dict | None = None,
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目、既定
+    # None、他の全呼び出し元は無変更): A2標準経路(generate_english_
+    # segment_with_fallback)がこの関数の標準呼び出しにも渡せるよう追加
+    # したkeyword-only引数。language=="en"の場合のみsecondary_asr.
+    # evaluate_attempt_with_cascade()へ転送する(role gating判定自体は
+    # er006_preprod_hardening_01_validation._resolve_semantic_
+    # equivalence_role()がer020.resolve_narrative_role()を参照して行う、
+    # ここでは解釈しない)。
+    segment_id: str | None = None,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -282,7 +291,10 @@ def generate_narration_snippet_verified_strict(
                 ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
                 enable_non_latin_cascade=enable_non_latin_cascade,
                 enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-                detail_out=cascade_detail)
+                detail_out=cascade_detail,
+                # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                # segment_id=None(既定)の既存呼び出し元は無変更のまま。
+                segment_id=segment_id)
             verified = verified_content and length_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]

@@ -97,11 +97,23 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     によらず、対象Production経路は例外なくTOTAL3回上限に統一する
     (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目、既知Gap
+    # 解消): 標準経路(このgenerate_narration_snippet_verified_strict呼び
+    # 出し)にもsegment_idを渡す。_run_a2_minimal_fallback_attempt()と同じ
+    # 導出方法(out_pathが標準命名慣習に従わない場合はNoneのまま=role gate
+    # 非適用、既存挙動と完全に同じ)。これにより、A2の英語本文segment
+    # (full_story_part1/2・point_one/two・topic_intro・in_one_line)が
+    # attempt1/2(標準経路)の時点からTier1 early-exitの恩恵を受けられる
+    # (修正前は標準経路2回がTRUE_CONTENT_MISMATCHで尽きた後、fallback
+    # 経路でしか救済されなかった)。
+    segment_id = None
+    if review_lock._has_valid_narration_layout(out_path):
+        _, _, segment_id = review_lock.derive_segment_key(out_path)
     standard = generate_narration_snippet_verified_strict(
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        enable_repetition_qa=enable_repetition_qa)
+        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard

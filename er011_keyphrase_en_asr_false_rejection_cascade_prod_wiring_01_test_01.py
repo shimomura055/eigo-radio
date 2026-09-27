@@ -70,7 +70,11 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
         def fake_cascade(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                           cascade_enabled=None, force_secondary=False,
                           enable_non_latin_cascade=False,
-                          enable_connected_speech_equivalence_layer=False, detail_out=None):
+                          enable_connected_speech_equivalence_layer=False, detail_out=None,
+                          # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                          # generate_narration_snippet_verified_strict()の標準呼び出しが
+                          # 新たにsegment_idを転送するようになったための後方互換パラメータ。
+                          segment_id=None):
             captured["enable_non_latin_cascade"] = enable_non_latin_cascade
             captured["enable_connected_speech_equivalence_layer"] = enable_connected_speech_equivalence_layer
             if detail_out is not None:
@@ -110,7 +114,11 @@ class NarrationSnippetVerifiedStrictScopeTests(unittest.TestCase):
         def fake_cascade(text, asr_text, history, out_path, language=None, ledger_phrases=None,
                           cascade_enabled=None, force_secondary=False,
                           enable_non_latin_cascade=False,
-                          enable_connected_speech_equivalence_layer=False, detail_out=None):
+                          enable_connected_speech_equivalence_layer=False, detail_out=None,
+                          # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
+                          # generate_narration_snippet_verified_strict()の標準呼び出しが
+                          # 新たにsegment_idを転送するようになったための後方互換パラメータ。
+                          segment_id=None):
             captured["enable_non_latin_cascade"] = enable_non_latin_cascade
             captured["enable_connected_speech_equivalence_layer"] = enable_connected_speech_equivalence_layer
             if detail_out is not None:

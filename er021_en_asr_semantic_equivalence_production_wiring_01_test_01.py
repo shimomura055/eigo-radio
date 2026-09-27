@@ -12,8 +12,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import shutil
+import tempfile
 import unittest
+from unittest import mock
 
+import er003_b1_p9a_audio as p9a
+import er003_v1_crosslevel_audio_02_common as crosslevel
+import er003_v1_repro01_main_generate as repro01
 import er006_preprod_hardening_01_validation as val
 import er006_secondary_asr_01 as secondary_asr
 import er020_tts_retry_local_rewrite_01 as retry_primitive
@@ -320,6 +327,103 @@ class StringComparisonSafetyTest(unittest.TestCase):
         self.assertTrue(detail["verified"])
         self.assertFalse(detail["cascade_invoked"])
         self.assertEqual(detail["classification"].classification, "NUMERIC_EQUIVALENCE_MATCH")
+
+
+class A2StandardPathProductionWiringFixTest(unittest.TestCase):
+    """修正1回目(Fable差し戻し、EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-
+    WIRING-01): 既知Gap「A2標準経路(er003_v1_crosslevel_audio_02_common.
+    generate_english_segment_with_fallback()の標準呼び出し部分)には
+    segment_idが未配線」を解消したことを、実際の呼び出し経路そのもの
+    (crosslevel.generate_english_segment_with_fallback()
+    -> repro01.generate_narration_snippet_verified_strict())を通して
+    固定する。TTS(p9a.generate_narration_snippet)とPrimary ASR
+    (repro01.routing.transcribe)のみモックし、Tier1判定
+    (secondary_asr.evaluate_attempt_with_cascade/val.classify_asr_match)
+    は実ロジックをそのまま通す(API呼び出しなし、¥0)。"""
+
+    CANONICAL = "The price rose to two point three million dollars this year."
+    ASR_NUMERIC_EQUIVALENT = "The price rose to $2.3 million this year."
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp(prefix="er021w2_a2_standard_path_test_")
+        self.narration_dir = os.path.join(self.tmp_dir, "wiring_theme_asrw2", "a2", "narration")
+        os.makedirs(self.narration_dir, exist_ok=True)
+        self.tts_call_count = 0
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def _fake_generate_narration_snippet(self, text, language, out_path, tts_call_fn=None,
+                                          safety_margin_seconds=None, style_prefix_override=None):
+        self.tts_call_count += 1
+        with open(out_path, "wb") as f:
+            f.write(f"FAKE_AUDIO_ATTEMPT_{self.tts_call_count}".encode("utf-8"))
+        return {"status": "OK", "text": text, "language": language, "path": out_path,
+                "model": "fake-en-model", "voice": "Aoede", "duration_seconds": 1.0,
+                "sha256": "dummy"}
+
+    def test_full_story_part1_numeric_diff_rescued_at_attempt1_no_cooldown_no_fallback(self):
+        # 修正前: 標準経路2回ともTRUE_CONTENT_MISMATCH -> 600秒cool-down ->
+        # fallback(minimal instruction)経路でTier1がようやくPASS、という
+        # 無駄な経路だった(Fable差し戻し理由そのもの)。
+        # 修正後: 標準経路attempt1の時点でsegment_id="full_story_part1"
+        # (role=FULL_STORY、5role適用対象)が渡り、Tier1 early-exitが
+        # attempt1で直接発火する。
+        out_path = os.path.join(self.narration_dir, "full_story_part1.wav").replace("\\", "/")
+        with mock.patch.object(p9a, "generate_narration_snippet",
+                                side_effect=self._fake_generate_narration_snippet), \
+             mock.patch.object(repro01.routing, "transcribe",
+                                return_value=(self.ASR_NUMERIC_EQUIVALENT, None)):
+            result = crosslevel.generate_english_segment_with_fallback(
+                self.CANONICAL, out_path, "The price rose", max_extra_chars=60)
+
+        self.assertEqual(result["status"], "OK")
+        self.assertTrue(result["asr_verified"])
+        self.assertEqual(result["audio_classification"], "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertFalse(result.get("fallback_used"))
+        self.assertEqual(len(result["attempts_log"]), 1,
+                          "attempt1(標準経路1回目)で救済され、attempt2すら不要であるべき")
+        self.assertNotIn("cooldown_events", result,
+                          "fallback(cool-down対象)経路へ一切進んでいないこと")
+        self.assertEqual(self.tts_call_count, 1, "TTS呼び出しは標準経路attempt1の1回のみであるべき")
+
+    def test_point_one_heading_non_applicable_role_regression_unaffected(self):
+        # role gatingの回帰確認: HEADING(非適用role)のsegment_idでは、
+        # 同じ数値差ペアでも本修正の影響を受けず、既存挙動(Tier1不発火、
+        # 複数attempt消費)のまま。Family A/非対象roleへの副作用が無いことを
+        # 実際の生成経路(標準呼び出し部分)で直接確認する。
+        out_path = os.path.join(self.narration_dir, "point_one_heading.wav").replace("\\", "/")
+        with mock.patch.object(p9a, "generate_narration_snippet",
+                                side_effect=self._fake_generate_narration_snippet), \
+             mock.patch.object(repro01.routing, "transcribe",
+                                return_value=(self.ASR_NUMERIC_EQUIVALENT, None)):
+            core = repro01.generate_narration_snippet_verified_strict.__wrapped__
+            result = core(self.CANONICAL, "en", out_path, "The price rose",
+                          max_attempts=2, segment_id="point_one_heading")
+
+        self.assertEqual(result["status"], "STOPPED",
+                          "非適用roleではTier1が発火せず、既存通り2回とも不合格で尽きるべき")
+        self.assertEqual(len(result["attempts_log"]), 2)
+        self.assertEqual(self.tts_call_count, 2, "非適用roleでは救済されず標準2回とも実際に消費するべき")
+        for entry in result["attempts_log"]:
+            self.assertNotEqual(entry.get("audio_classification"), "NUMERIC_EQUIVALENCE_MATCH")
+
+    def test_no_segment_id_default_unchanged_family_a_regression(self):
+        # segment_id未指定(Family A等、この修正の対象外呼び出し元)は
+        # 従来通り無変更であることを、生成経路(repro01の標準関数)を直接
+        # 通して確認する(既存のRoleGatingTestはclassify_asr_match単体
+        # 呼び出しでの確認、本testは生成関数レベルでの確認)。
+        out_path = os.path.join(self.narration_dir, "unrelated_family_a_segment.wav").replace("\\", "/")
+        with mock.patch.object(p9a, "generate_narration_snippet",
+                                side_effect=self._fake_generate_narration_snippet), \
+             mock.patch.object(repro01.routing, "transcribe",
+                                return_value=(self.ASR_NUMERIC_EQUIVALENT, None)):
+            core = repro01.generate_narration_snippet_verified_strict.__wrapped__
+            result = core(self.CANONICAL, "en", out_path, "The price rose", max_attempts=2)
+
+        self.assertEqual(result["status"], "STOPPED")
+        self.assertEqual(len(result["attempts_log"]), 2)
+        self.assertEqual(self.tts_call_count, 2)
 
 
 if __name__ == "__main__":
