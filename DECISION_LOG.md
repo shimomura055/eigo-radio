@@ -10216,3 +10216,65 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   `docs/pm/flash_lite_production_adoption_packet_01.md`、ユーザー既決
   (2026-09-27、telemetry4行残置承認・比較パケット作成承認・試聴結果)。
 - commit: 本コミット(比較パケット作成、SSOT反映)。
+
+## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: Production採用
+決定のSSOT反映+配線設計(Phase 0、2026-09-27、`APPROVED_FOR_PRODUCTION`)
+
+- **性質**: SSOT反映+配線設計書作成のみ。¥0(API呼び出し0件、Production
+  code変更0件、SDK更新0件)。実装は次Phase(Phase 1以降)。
+- **ユーザー正式決定(2026-09-27、逐語要旨)**:
+  1. Gemini 3.8 Flash-Lite TTS(`gemini-3.8-flash-lite-tts`、
+     `speech_metadata`方式)を**Family Xから段階導入承認**。Status
+     `VALIDATED` → **`APPROVED_FOR_PRODUCTION`**(`PRODUCTION_WIRED`では
+     ない。宣言はGate 3全項目完了後のみ、Fable判定)。
+  2. Family A/B/C(legacy)は新規配線対象外。Family ZはFamily X完了後に
+     別判断(今は配線しない)。
+  3. role別styleはStage3の最小6-role案
+     (`TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01_REPORT.md`§22.3)を初期
+     Production仕様として採用。抑揚・トーン最適化は別Trialとして後日。
+  4. Production Wiringで必須確認(16項目、詳細は`CURRENT_SPEC.md`
+     「Gemini 3.8 Flash-Lite TTS」行・下記配線設計書参照): 正式初回path
+     実装/retry・fallback・regenerationでの同一実装経由/Human Review
+     Lock整合/Pronunciation・Reading Resolver統合/voice指定/role別
+     style/A2 6% slowdown post-process/ASR validation流用/cost
+     ledger・telemetry正式統合/SDK 2.25.0 Production `.venv`導入/フル
+     回帰/実際のmodel_id・routing runtime evidence/rate limit・
+     concurrency確認/Act One型digit読みのregression fixture化/現行
+     モデルとの公平な1回完成cost比較/rollback可能性確認。
+  5. Mandatory Opus L2(Productionモデル/SDK切替)を実装後に実施、
+     BLOCKERがあればSTOP。
+- **配線設計書新規作成**: `docs/pm/design_flash_lite_family_x_wiring_01.md`
+  (Family X実関数チェーン特定[`er019_family_x_audio_production_runner_01.
+  py` → `er003_v1_sing01_voice01_generate.generate_charon_english`/
+  `er003_v1_sing01_news_tail_fix.generate_news_narration_wide_margin`/
+  `er003_v1_n3_01_tts_generate.generate_a2_japanese_with_reading_safety`/
+  `generate_a2_segment_with_slowdown`/`er003_v1_crosslevel_audio_02_
+  common.generate_english_segment_with_fallback`等]、retry/fallback/
+  regeneration[Human Review Lock `approve_regenerate()`経由]が同一関数を
+  通ることの確認、Pronunciation Resolver統合設計[英語:
+  `augment_style_prefix_with_pronunciation()`の出力を`speech_metadata.
+  style`へ渡す形に置換可能、Structured Separationの「本文verbatim・
+  style非発話」原則と矛盾しない/日本語: reading resolverはtext自体への
+  置換[`to_tts_safe_japanese_fraction_reading`等]でありspeech_metadata方式
+  への移行と無関係、変更不要]、role別style定数の専用体系化[Trial専用
+  styleをProductionが参照しないDangling Reference Check]、SDK 2.25.0
+  導入計画[Production `.venv`のみ更新対象、`requirements-ci.txt`/
+  Trial venvとは別系統]、model routing([`er006_model_routing_contract_01.
+  require_provider("TTS",...)`は現状どのProduction call siteからも
+  呼ばれておらず未配線であることをコードで確認済み]、pricing_snapshot.
+  json登録済み単価をそのまま使用)、Phase分割案)。
+- **USER_DECISION候補**: 配線設計書末尾に分離して記録(§本エントリでは
+  詳細を再掲しない、新規仕様判断が必要な論点のみを個別列挙)。
+- **反映範囲**: `CURRENT_SPEC.md`(「Gemini 3.8 Flash-Lite TTS」行を
+  `APPROVED_FOR_PRODUCTION`へ更新、`PRODUCTION_WIRED`未到達を明記)、
+  `OPEN_ITEMS.md`(OPEN-201をAPPROVED_FOR_PRODUCTION/配線追跡中へ更新、
+  Production採用可否のUSER_DECISION_REQUIREDを解除)、`docs/pm/
+  REPORT_LEDGER.md`(新規管理ID行追加)、`docs/pm/design_flash_lite_
+  family_x_wiring_01.md`(新規)、`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-
+  WIRING-FAMILY-X-01_REPORT.md`(新規)、本エントリ新設。
+- **STOP該当**: 無し(Phase 0の範囲[SSOT反映+設計]はコード変更・API
+  呼び出しを伴わないため)。
+- **根拠**: ユーザー正式決定(2026-09-27、逐語)、`docs/pm/flash_lite_
+  production_adoption_packet_01.md`、`TTS-GEMINI-3.8-FLASH-LITE-NEXT-
+  TRIAL-01_REPORT.md`(§14-§23)。
+- commit: 本コミット(Phase 0、SSOT反映+配線設計)。
