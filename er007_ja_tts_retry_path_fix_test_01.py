@@ -23,6 +23,9 @@
 from __future__ import annotations
 
 import contextlib
+import os
+import shutil
+import tempfile
 import types
 import unittest
 from unittest import mock
@@ -381,6 +384,32 @@ class A2CooldownLocalRewriteWiringTests(unittest.TestCase):
 
     REALISTIC_STANDARD_LOG = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
 
+    def setUp(self):
+        # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+        # PUNCT-01(修正2回目): generate_english_segment_with_fallback()に
+        # review_lock.guarded_generate("en")を追加したことで、標準命名
+        # 慣習(".../<theme>/<level>/narration/<segment>.wav")に従う
+        # out_pathを使うテスト(下記2件、_local_rewrite_recovery_for_
+        # english_segment_with_fallback()の`_has_valid_narration_layout`
+        # 分岐を実際に踏むために意図的に本物のlayoutを使う)は、Lock
+        # store(review_lock_state.json)を実際に読み書きするようになった。
+        # 従来はリポジトリ直下の固定パス"unittest_scratch_theme/..."を
+        # 共有していたが、これは(1)テストごとに一意なtempdirを使わないと
+        # 同一canonical_text+同一segment_idの2つのtest methodが同じLock
+        # entryを共有しHUMAN_REVIEW_REQUIRED状態が後続testをブロックして
+        # しまう(review_lock._has_valid_narration_layoutのdocstringが
+        # 警告する既知の罠と同型)、(2)実行のたびにリポジトリへ実ファイルが
+        # 残ってしまう、という2つの問題を持っていたため、test毎に独立した
+        # tempdirを使うよう修正した(pre-existing testのロジック自体は
+        # 無変更)。
+        self._tmpdir = tempfile.mkdtemp(prefix="a2_cooldown_local_rewrite_wiring_")
+        self.narration_out_path = os.path.join(
+            self._tmpdir, "unittest_scratch_theme", "a2", "narration", "test_segment.wav")
+        os.makedirs(os.path.dirname(self.narration_out_path), exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self._tmpdir, ignore_errors=True)
+
     def _enter_base_mocks(self, stack):
         """standard(2回)+fallback(1回)がともにASR不一致で終わる状況を
         再現する、共通のmock(cool-down/Local Rewrite以外)を1つの
@@ -457,7 +486,7 @@ class A2CooldownLocalRewriteWiringTests(unittest.TestCase):
             # run_local_rewrite_recoveryを呼ぶ設計(B1の2ヘルパーと同じ
             # 安全設計)のため、テストでも標準layoutのpathを使う。
             result = crosslevel_common.generate_english_segment_with_fallback(
-                "test text", "unittest_scratch_theme/a2/narration/test_segment.wav", "test",
+                "test text", self.narration_out_path, "test",
                 enable_connected_speech_equivalence_layer=True)
         self.assertTrue(mock_recovery.called)
         self.assertEqual(result["status"], "OK")
@@ -476,7 +505,7 @@ class A2CooldownLocalRewriteWiringTests(unittest.TestCase):
             mock_recovery = stack.enter_context(mock.patch.object(
                 crosslevel_common.retry_primitive, "run_local_rewrite_recovery", return_value=failed_recovery))
             result = crosslevel_common.generate_english_segment_with_fallback(
-                "test text", "unittest_scratch_theme/a2/narration/test_segment.wav", "test",
+                "test text", self.narration_out_path, "test",
                 enable_connected_speech_equivalence_layer=True)
         self.assertTrue(mock_recovery.called)
         self.assertEqual(result["status"], "STOPPED")

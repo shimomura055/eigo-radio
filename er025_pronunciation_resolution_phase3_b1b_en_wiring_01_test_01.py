@@ -33,6 +33,7 @@ import tempfile
 import unittest
 from unittest import mock
 
+import er003_v1_crosslevel_audio_02_common as crosslevel_common
 import er003_v1_n3_01_tts_generate as n3_tts
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
@@ -239,6 +240,196 @@ class GenerateNewsNarrationWideMarginResolverThreadingTests(unittest.TestCase):
         mock_fn.assert_called_once()
         _, kwargs = mock_fn.call_args
         self.assertTrue(kwargs.get("enable_pronunciation_resolver"))
+
+
+class GenerateNewsNarrationWideMarginStandardBranchResolverWiringTests(unittest.TestCase):
+    """修正2回目(標準ENGLISH_STYLE_PREFIX分岐への配線): news_tail_fix.
+    generate_news_narration_wide_margin()の標準分岐自体にも、voice01.
+    generate_charon_englishと同一のhook(同じ関数・同じconfidence gate・
+    同じtelemetry形状en_pronunciation_resolver_info)が追加されたことを
+    確認する。実TTS/ASR/trim/measureはすべてmockし、標準分岐の
+    build_tts_promptへ実際に渡されたstyle_prefixだけを検証する。"""
+
+    def _run(self, text: str, enable: bool, out_path: str = "dummy_wide_standard.wav"):
+        captured = {}
+
+        def fake_build_tts_prompt(txt, style_prefix):
+            captured["style_prefix"] = style_prefix
+            return style_prefix + txt
+
+        with mock.patch.object(news_tail_fix, "p4c") as fake_p4c, \
+             mock.patch.object(news_tail_fix.safety, "detect_prohibited_symbols", return_value=[]), \
+             mock.patch.object(news_tail_fix.safety, "symbol_gate_requires_stop", return_value=False), \
+             mock.patch.object(news_tail_fix.safety, "detect_duration_anomaly", return_value={"is_anomaly": False}), \
+             mock.patch.object(news_tail_fix.retry_primitive, "maybe_cooldown_before_attempt", return_value=None), \
+             mock.patch.object(news_tail_fix.batch_wiring, "make_batch_tts_call_fn", return_value=lambda *a, **k: None), \
+             mock.patch.object(news_tail_fix.common, "_call_tts_with_retry", return_value=(b"pcm", 0, True, None)), \
+             mock.patch.object(news_tail_fix.common, "pcm_bytes_to_float_mono", return_value=[0.0]), \
+             mock.patch.object(news_tail_fix.p3u, "trim_english_keyword_silence",
+                                return_value=([0.0], {"raw_duration_seconds": 1.0})), \
+             mock.patch.object(news_tail_fix.common, "write_wav_float"), \
+             mock.patch.object(news_tail_fix.common, "read_wav_float", return_value=([0.0], 24000, 1, 2)), \
+             mock.patch.object(news_tail_fix.routing, "transcribe", return_value=(text, None)), \
+             mock.patch.object(news_tail_fix.secondary_asr, "evaluate_attempt_with_cascade") as fake_cascade, \
+             mock.patch.object(news_tail_fix.dq18, "apply_disfluency_gate",
+                                return_value={"verified": True, "disfluency_checked": False,
+                                              "disfluency_evidence": None}), \
+             mock.patch.object(news_tail_fix.repetition_qa, "apply_repetition_qa_gate",
+                                return_value={"verified": True, "repetition_qa_checked": False,
+                                              "repetition_qa_evidence": None}), \
+             mock.patch.object(news_tail_fix.common, "measure_metrics", return_value={"clipping_detected": False}), \
+             mock.patch.object(news_tail_fix.review_lock, "save_tts_attempt_audio", return_value=None):
+            fake_p4c.build_tts_prompt.side_effect = fake_build_tts_prompt
+            fake_cls = mock.Mock()
+            fake_cls.classification = "EXACT_MATCH"
+            fake_cls.connected_speech_info = None
+            fake_cascade.return_value = (True, False, fake_cls)
+            result = news_tail_fix.generate_news_narration_wide_margin(
+                text, out_path, max_attempts=1, enable_pronunciation_resolver=enable)
+        return result, captured.get("style_prefix")
+
+    def test_default_disabled_resolver_never_invoked_and_prompt_unchanged(self):
+        def run():
+            key = ledger.LedgerKey(surface="Altuzarra", entity_type="brand")
+            ledger.upsert(key, {"pronunciation_hint": "al-too-ZAR-ah", "confidence": "high"})
+            with mock.patch.object(pron_resolver_core, "resolve_and_augment_en_style_prefix",
+                                    side_effect=AssertionError(
+                                        "enable_pronunciation_resolver=False(既定)ではresolverを"
+                                        "呼んではいけない")):
+                result, style_prefix = self._run("We discussed the Altuzarra collection.", enable=False)
+            self.assertEqual(result["status"], "OK")
+            self.assertIsNone(result.get("en_pronunciation_resolver_info"))
+            self.assertNotIn("Altuzarra", style_prefix or "")
+        _use_temp_ledger(run)
+
+    def test_enabled_with_cache_hit_augments_standard_style_prefix(self):
+        def run():
+            with pron_resolver_core.disable_web_lookup_for_test():
+                key = ledger.LedgerKey(surface="Altuzarra", entity_type="brand")
+                ledger.upsert(key, {"pronunciation_hint": "al-too-ZAR-ah", "confidence": "high"})
+                result, style_prefix = self._run("We discussed the Altuzarra collection.", enable=True)
+            self.assertEqual(result["status"], "OK")
+            info = result.get("en_pronunciation_resolver_info")
+            self.assertIsNotNone(info)
+            self.assertTrue(info["hints_applied"])
+            self.assertIn("Altuzarra", style_prefix)
+            self.assertIn("al-too-ZAR-ah", style_prefix)
+        _use_temp_ledger(run)
+
+    def test_enabled_no_matching_hint_leaves_standard_prompt_unchanged(self):
+        def run():
+            with pron_resolver_core.disable_web_lookup_for_test():
+                result, style_prefix = self._run("This text mentions nobody special.", enable=True)
+            self.assertEqual(result["status"], "OK")
+            info = result.get("en_pronunciation_resolver_info")
+            self.assertIsNotNone(info)
+            self.assertFalse(info["hints_applied"])
+        _use_temp_ledger(run)
+
+    def test_enabled_low_confidence_entry_does_not_trigger_web_lookup_when_disabled(self):
+        """cache-onlyスイッチ確認: ALLOW_PRONUNCIATION_WEB_LOOKUP=0
+        (disable_web_lookup_for_test())の間は、confidence=lowのentryが
+        text中に存在してもresearch_pronunciations()(有料API)を一切
+        呼ばないこと(安全側のfail-safeで戻る)を確認する。"""
+        def run():
+            with pron_resolver_core.disable_web_lookup_for_test(), \
+                 mock.patch.object(pron_resolver_core.en_research, "research_pronunciations",
+                                    side_effect=_fail_if_web_lookup_called):
+                key = ledger.LedgerKey(surface="minaudiere", entity_type="product")
+                ledger.upsert(key, {"pronunciation_hint": "mee-noh-dyair", "confidence": "low"})
+                result, style_prefix = self._run("The minaudiere was mentioned.", enable=True)
+            self.assertEqual(result["status"], "OK")
+            info = result.get("en_pronunciation_resolver_info")
+            self.assertIsNotNone(info)
+            self.assertFalse(info["hints_applied"])
+            self.assertFalse(info["low_confidence_retry_attempted"])
+        _use_temp_ledger(run)
+
+
+class EnglishSegmentWithFallbackLockRecordingFixTests(unittest.TestCase):
+    """EN側Lock記録の同型ギャップ是正確認(修正2回目、報告のみで委任外
+    だった§2-5の残課題): crosslevel_common.generate_english_segment_
+    with_fallback()に review_lock.guarded_generate("en")を追加したことで、
+    JA側(generate_a2_japanese_with_fallback)と同様、標準経路が失敗した
+    後に自前のfallback(minimal instruction)が実際に成功した場合、
+    review_lock_state.jsonへ最終結果(RESOLVED)が正しく反映されることを、
+    実際のnarration layout+実際のLock store読み書きで確認する(TTS/ASR
+    自体はmock、Lock機構自体は本物)。"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="en_segment_fallback_lock_fix_")
+        self.out_path = os.path.join(self.tmpdir, "theme1", "b1", "narration", "full_story_part1.wav")
+        os.makedirs(os.path.dirname(self.out_path), exist_ok=True)
+        self.attempt_history_path = os.path.join(self.tmpdir, "attempt_history.jsonl")
+        self._orig_attempt_history_path = review_lock.ATTEMPT_HISTORY_PATH
+        review_lock.ATTEMPT_HISTORY_PATH = self.attempt_history_path
+
+    def tearDown(self):
+        review_lock.ATTEMPT_HISTORY_PATH = self._orig_attempt_history_path
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def _lock_store_path(self):
+        level_out_dir = os.path.dirname(os.path.dirname(self.out_path))
+        return os.path.join(level_out_dir, "audit", "review_lock_state.json")
+
+    def test_fallback_success_after_standard_exhausted_is_recorded_as_resolved(self):
+        realistic_standard_attempts_log = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
+        fake_cls = mock.Mock()
+        fake_cls.classification = "PHONETIC_MATCH"
+        fallback_outcome = {
+            "ok": True, "result": {"status": "OK", "text": "hello", "path": self.out_path},
+            "verified": True, "stop_retrying": False, "asr_text": "hello",
+            "classification": fake_cls, "length_ok": True,
+            "disfluency_gate": {"disfluency_checked": False, "disfluency_evidence": None},
+            "repetition_gate": {"repetition_qa_checked": False, "repetition_qa_evidence": None},
+        }
+        with mock.patch.object(crosslevel_common, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "STOPPED", "attempts_log": realistic_standard_attempts_log}), \
+             mock.patch.object(crosslevel_common, "_run_a2_minimal_fallback_attempt",
+                                return_value=fallback_outcome):
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "hello", self.out_path, "hel")
+
+        self.assertEqual(result["status"], "OK")
+        self.assertTrue(result["fallback_used"])
+
+        store_path = self._lock_store_path()
+        self.assertTrue(os.path.exists(store_path), "Lock storeが書き込まれていません")
+        with open(store_path, encoding="utf-8") as f:
+            store = __import__("json").load(f)
+        segment = store.get("full_story_part1")
+        self.assertIsNotNone(segment, "full_story_part1のLock entryが見つかりません")
+        self.assertEqual(segment["state"], "RESOLVED",
+                          f"fallback成功後もLock stateがRESOLVEDになっていません(修正前バグの再現): {segment}")
+
+    def test_both_standard_and_fallback_fail_is_recorded_as_human_review_required(self):
+        """regression確認: 標準・fallbackとも不合格の既存挙動(HUMAN_REVIEW_
+        REQUIREDへ正しく落ちること)は本修正で変わらない。"""
+        realistic_standard_attempts_log = [{"attempt": 1, "status": "OK"}, {"attempt": 2, "status": "OK"}]
+        fake_cls = mock.Mock()
+        fake_cls.classification = "TRUE_CONTENT_MISMATCH"
+        fallback_outcome = {
+            "ok": True, "result": {"status": "OK", "text": "hello", "path": self.out_path},
+            "verified": False, "stop_retrying": True, "asr_text": "different",
+            "classification": fake_cls, "length_ok": True,
+            "disfluency_gate": {"disfluency_checked": False, "disfluency_evidence": None},
+            "repetition_gate": {"repetition_qa_checked": False, "repetition_qa_evidence": None},
+        }
+        with mock.patch.object(crosslevel_common, "generate_narration_snippet_verified_strict",
+                                return_value={"status": "STOPPED", "attempts_log": realistic_standard_attempts_log}), \
+             mock.patch.object(crosslevel_common, "_run_a2_minimal_fallback_attempt",
+                                return_value=fallback_outcome):
+            result = crosslevel_common.generate_english_segment_with_fallback(
+                "hello", self.out_path, "hel")
+
+        self.assertEqual(result["status"], "ASR_VALIDATION_UNCERTAIN")
+
+        store_path = self._lock_store_path()
+        with open(store_path, encoding="utf-8") as f:
+            store = __import__("json").load(f)
+        segment = store.get("full_story_part1")
+        self.assertIsNotNone(segment)
+        self.assertEqual(segment["state"], "HUMAN_REVIEW_REQUIRED")
 
 
 class FamilyXRunnerKwargWiringTests(unittest.TestCase):

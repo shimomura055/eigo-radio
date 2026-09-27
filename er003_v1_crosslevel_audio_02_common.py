@@ -57,6 +57,25 @@ tail_energy_profile = audio02._tail_energy_profile
 # フォールバック(repro01.MINIMAL_INSTRUCTION_PREFIX、声・モデルは
 # 変えない)を、Key Phrase以外の英語ナレーションセグメントにも一般化して
 # 適用する(新しいinstructionを新設せず、既存の確立済み対症療法を再利用)。
+#
+# PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+# (修正2回目、EN側Lock記録の同型ギャップ是正): この関数は内側で
+# review_lock.guarded_generate_with_language_arg済みのgenerate_narration_
+# snippet_verified_strict(標準経路)を呼んだ後、さらに自前の(未guardの)
+# fallback(minimal instruction、_run_a2_minimal_fallback_attempt)ループを
+# 実行する。tts_generate.generate_a2_japanese_with_fallback()のJA側と
+# 完全に同型の構造的ギャップ(従来はこの関数自身がguardされておらず、
+# 標準経路のみでrecord_outcome()が確定してしまい、その後fallbackが実際に
+# 成功してもreview_lock_state.jsonへ反映されない)であるため、同じ最小差分
+# (関数自身をguarded_generate("en")で包む)で修正する。内側の呼び出しは
+# 既存のreentrancy guard(同一out_pathが_ACTIVE_GUARDED_OUT_PATHSに入って
+# いる間は二重にcheck_before_generation/record_outcomeしない、OPEN-105
+# fix)により自動的にスキップされ、record_outcome()はこの関数全体の最終
+# 結果(fallback成功後の結果を含む)で一度だけ呼ばれるようになる。
+# out_pathが標準命名慣習に従わない場合(既存test群の"dummy.wav"等)は
+# check_before_generation/record_outcome双方でbypassされ無変更のまま。
+# 状態ファイル(review_lock_state.json)自体はこの修正では書き換えない。
+@review_lock.guarded_generate("en")
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
                                             max_extra_chars: int = 60,
                                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,

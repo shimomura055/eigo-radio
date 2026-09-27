@@ -38,6 +38,7 @@ import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -77,9 +78,14 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # production runnerのみが明示的にTrueを渡す。技術的
                                          # fallback(発話区間検出失敗時のみ)経路の
                                          # repro01.generate_english_component_minimal_instruction
-                                         # 呼び出しへそのまま転送するだけで、この関数自身の標準
-                                         # (ENGLISH_STYLE_PREFIX)経路は変更しない。他の全呼び出し元
-                                         # は無変更。
+                                         # 呼び出しへそのまま転送する(修正1回目時点の挙動)。
+                                         # 修正2回目(標準ENGLISH_STYLE_PREFIX分岐への配線): この
+                                         # 関数自身の標準分岐にも、voice01.generate_charon_english
+                                         # と同一のhook(pron_resolver_core.resolve_and_augment_en_
+                                         # style_prefixを1回だけ、confidence gateも同一)を追加した。
+                                         # hintが1件も無い場合はp9a.ENGLISH_STYLE_PREFIXのまま(既存
+                                         # 呼び出し元・既存promptへの影響ゼロ)。他の全呼び出し元は
+                                         # 無変更(既定False)。
                                          enable_pronunciation_resolver: bool = False) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
@@ -96,6 +102,21 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                       + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
             "canonical_text": text, "symbol_findings": symbol_findings,
         }
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+    # (修正2回目、標準ENGLISH_STYLE_PREFIX分岐への配線): voice01.
+    # generate_charon_englishと同一のhook(同じ関数・同じconfidence gate
+    # [augment_style_prefix_with_pronunciationのmin_confidence="medium"]・
+    # 同じtelemetry形状en_pronunciation_resolver_info)を、opt-in引数が
+    # Trueの場合のみ、標準分岐(このプロンプト構築)にも適用する。hintが
+    # 1件も無い場合はp9a.ENGLISH_STYLE_PREFIXのまま変更しない(既存呼び
+    # 出し元・既存promptへの影響をゼロに保つ)。
+    en_pronunciation_resolver_info = None
+    standard_style_prefix = p9a.ENGLISH_STYLE_PREFIX
+    if enable_pronunciation_resolver:
+        augmented_style_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
+            p9a.ENGLISH_STYLE_PREFIX, text)
+        if en_pronunciation_resolver_info.get("hints_applied"):
+            standard_style_prefix = augmented_style_prefix
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []
@@ -112,7 +133,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
         # p9a._make_english_call_fn()と同一)。
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
-        prompt = p4c.build_tts_prompt(text, p9a.ENGLISH_STYLE_PREFIX)
+        prompt = p4c.build_tts_prompt(text, standard_style_prefix)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix_wide_margin"
@@ -208,6 +229,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "disfluency_evidence": gate.get("disfluency_evidence"),
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"],
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
@@ -228,6 +250,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "clipping_detected": metrics["clipping_detected"],
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={cls.classification})",
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events}
     if enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
@@ -238,7 +261,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             recovered["cooldown_events"] = cooldown_events
             return recovered
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log, "cooldown_events": cooldown_events}
+            "attempts_log": attempts_log, "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
+            "cooldown_events": cooldown_events}
 
 
 def _local_rewrite_recovery_for_news_narration(
