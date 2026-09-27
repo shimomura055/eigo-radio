@@ -1,0 +1,198 @@
+{
+  "_meta": {
+    "management_id": "KEY-PHRASE-DB-BASED-SELECTION-TRIAL-01",
+    "generated_for": "report section 13 (4-stage breakdown addendum, 2026-09-27)",
+    "cost_jpy": 0,
+    "method": "deterministic re-scan of existing 6-article texts + existing Wiktionary DB dump + manual context read (Sonnet), no re-extraction, no LLM calls, no new API access"
+  },
+  "irregular_verb_plus_particle_misses": {
+    "meta_a2": [
+      {
+        "surface": "went on",
+        "base_form_would_match_db_as": "go on",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "phrasal_verb"
+        ],
+        "context": "But as the conversation went on the voice was not"
+      },
+      {
+        "surface": "took off",
+        "base_form_would_match_db_as": "take off",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "phrasal_verb"
+        ],
+        "context": "It was like someone took off an AI costume"
+      }
+    ],
+    "meta_b1b": [
+      {
+        "surface": "went on",
+        "base_form_would_match_db_as": "go on",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "phrasal_verb"
+        ],
+        "context": "As the conversation went on the voice on the"
+      },
+      {
+        "surface": "made through",
+        "base_form_would_match_db_as": "make through",
+        "confirmed_miss_due_to_irregular_lemma": false,
+        "db_categories_of_base_form": [],
+        "context": "In some calls made through Muse trained contract workers"
+      },
+      {
+        "surface": "took off",
+        "base_form_would_match_db_as": "take off",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "phrasal_verb"
+        ],
+        "context": "was as if someone took off an AI costume and"
+      }
+    ],
+    "hormuz_a2": [
+      {
+        "surface": "taken back",
+        "base_form_would_match_db_as": "take back",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "phrasal_verb"
+        ],
+        "context": "Plan Taken Back but the Oil Chart"
+      },
+      {
+        "surface": "rose on",
+        "base_form_would_match_db_as": "rise on",
+        "confirmed_miss_due_to_irregular_lemma": false,
+        "db_categories_of_base_form": [],
+        "context": "The curtain rose on July"
+      },
+      {
+        "surface": "gave back",
+        "base_form_would_match_db_as": "give back",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "idiom",
+          "phrasal_verb"
+        ],
+        "context": "Brent crude futures briefly gave back some gains"
+      }
+    ],
+    "hormuz_b1b": [
+      {
+        "surface": "rose on",
+        "base_form_would_match_db_as": "rise on",
+        "confirmed_miss_due_to_irregular_lemma": false,
+        "db_categories_of_base_form": [],
+        "context": "The curtain rose on July"
+      },
+      {
+        "surface": "gave back",
+        "base_form_would_match_db_as": "give back",
+        "confirmed_miss_due_to_irregular_lemma": true,
+        "db_categories_of_base_form": [
+          "idiom",
+          "phrasal_verb"
+        ],
+        "context": "Brent crude futures briefly gave back some of their gains"
+      }
+    ],
+    "small_bag_a2": [],
+    "small_bag_b1b": []
+  },
+  "context_false_positive_addendum_beyond_logged_example": {
+    "meta_a2": [
+      {
+        "candidate": "you think",
+        "unit_type": "idiom",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "subject+verb sequence coincides with a Wiktionary idiom title; not used idiomatically in context"
+      }
+    ],
+    "meta_b1b": [
+      {
+        "candidate": "you think",
+        "unit_type": "idiom",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "same pattern as meta_a2"
+      },
+      {
+        "candidate": "kind of",
+        "unit_type": "idiom",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "literal noun-phrase use vs Wiktionary hedging-adverb idiom sense"
+      }
+    ],
+    "hormuz_a2": [
+      {
+        "candidate": "play in",
+        "unit_type": "phrasal_verb",
+        "cause": "pos_mismatch_no_pos_tagging",
+        "note": "noun 'play' used, not verb+particle"
+      },
+      {
+        "candidate": "move in",
+        "unit_type": "phrasal_verb",
+        "cause": "pos_mismatch_no_pos_tagging",
+        "note": "noun 'move' used, not verb+particle"
+      },
+      {
+        "candidate": "say what",
+        "unit_type": "idiom",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "verb+wh-complement vs interjection idiom sense"
+      }
+    ],
+    "hormuz_b1b": [
+      {
+        "candidate": "play in",
+        "unit_type": "phrasal_verb",
+        "cause": "pos_mismatch_no_pos_tagging",
+        "note": "same as hormuz_a2"
+      },
+      {
+        "candidate": "move in",
+        "unit_type": "phrasal_verb",
+        "cause": "pos_mismatch_no_pos_tagging",
+        "note": "same as hormuz_a2"
+      },
+      {
+        "candidate": "happened on",
+        "unit_type": "phrasal_verb",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "temporal 'on [day]' vs phrasal verb 'happen on'=discover by chance"
+      }
+    ],
+    "small_bag_a2": [
+      {
+        "candidate": "back in",
+        "unit_type": "phrasal_verb",
+        "cause": "sense_mismatch_no_wsd",
+        "note": "adverb 'back' + prep 'in' vs Wiktionary phrasal verb 'back in'"
+      },
+      {
+        "candidate": "line In",
+        "unit_type": "phrasal_verb",
+        "cause": "tokenizer_heading_merge_artifact",
+        "note": "heading without terminal punctuation merges with next paragraph, creating spurious 2-gram"
+      }
+    ],
+    "small_bag_b1b": [
+      {
+        "candidate": "bags out",
+        "unit_type": "phrasal_verb",
+        "cause": "discontinuous_phrasal_verb_misidentification",
+        "note": "already logged explicitly in final_selection.json excluded_false_positive_example"
+      },
+      {
+        "candidate": "line In",
+        "unit_type": "phrasal_verb",
+        "cause": "tokenizer_heading_merge_artifact",
+        "note": "same heading-merge artifact as small_bag_a2"
+      }
+    ]
+  }
+}

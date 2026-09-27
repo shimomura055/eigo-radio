@@ -440,4 +440,219 @@ chunk価値のあるphraseを優先するという設計方針を反映)。
   URL・取得年月)は`db_licenses.md`に記録済みで遵守。Trial専用データで
   あり再配布・Production組込みはしていない。
 
+---
+
+## 13. 4段階切り分け評価(追加整理、2026-09-27)
+
+前提: 2026-09-27付ユーザー指示により、本Trial結果を「DB方式はダメ」と
+一括評価せず、(1)Candidate Generation、(2)Normalization/Matching、
+(3)Context false-positive removal、(4)Final Selectionの4段階へ分離して
+事実整理する。本節は既存証跡(`candidates_*.json`・`extraction_summary.json`・
+`final_selection.json`・`per_type_summary.json`)の再集計、および¥0の
+決定的(deterministic)再走査(再抽出・LLM呼び出し・API利用は一切なし)
+のみで構成する。追加再走査の生データは
+`er023_output/key_phrase_db_trial_01/phase4_breakdown_addendum_2026-09-27.json`
+に保存した。事実として把握済みのとおり、phrase候補自体は6本文すべてで
+必要数(4〜5件)以上取得できている(§4参照)。
+
+### 13.1 Candidate Generation(候補生成そのものの性能)
+
+| article | word候補 | phrase候補(B条件) | phrase必要数(4-5)充足 |
+|---|---:|---:|---|
+| meta_a2 | 131 | 11 | 充足(11件) |
+| meta_b1b | 140 | 15 | 充足(15件) |
+| hormuz_a2 | 141 | 10 | 充足(10件) |
+| hormuz_b1b | 140 | 11 | 充足(11件) |
+| small_bag_a2 | 111 | 5 | 充足(5件、6本文中最少) |
+| small_bag_b1b | 116 | 6 | 充足(6件) |
+| **合計** | **779** | **58** | **6/6本文で充足** |
+
+- 供給源DB別寄与(phrase候補58件の内訳、再集計): **Wiktionary単独56件
+  (97%)・CEFR-J多語見出し単独2件(3%、いずれも"no one")・両方一致0件**。
+  既存§6「単語:phrase比率」の記述は正しいが、§6本文中「DB別寄与:
+  Wiktionary(全phrase候補の供給源)」という表現は厳密には不正確
+  (2件はCEFR-Jの多語見出しが単独ソース)だったため、本節で数値を訂正する。
+- Oxford Phrase List追加分の効果: 新規phrase候補0件(既存§5のとおり、
+  "take over"の裏付けのみ)。
+- 群1DBの構造的限界: `db_categories`の全出現値は
+  `{phrasal_verb, idiom, multiword_term}`の3種のみで、collocation・
+  discourse markerの情報源がDB自体に存在しない(既存§3.1で確認済み、
+  6本文ともcollocation・chunk/discourse・formulaicは構造的に0件)。
+- **候補生成としての性能(事実のみ、主観語を避ける)**: 6本文すべてで
+  phrase候補が必要数を上回った。ただし供給源はWiktionary1つにほぼ
+  全面依存(97%)しており、供給源の多様性は低い。small_bag系2本文は
+  他4本文より明確にphrase候補が少ない(5〜6件 vs 10〜15件、記事ジャンル
+  [ファッション]がphrasal verb/idiom使用頻度の低い文体であるため)。
+
+### 13.2 Normalization / Matching(抽出・正規化ロジックの実装状況)
+
+**表: 実装済み/未実装**
+
+| 項目 | 実装状況 | 対応範囲 |
+|---|---|---|
+| n-gram生成(1〜5-gram) | 実装済み | 文境界内で機械的に全生成 |
+| 単語lemma化(`lemma_candidates_v2`) | 実装済み | 規則語尾のみ(-s/-es/-ies/-ed/-ing/-ly)。比較級-er/-estは意図的に不使用 |
+| 複数語表現のlemma化(`lemma_candidates_for_phrase`) | 実装済み(限定的) | 先頭語のみ/末尾語のみ/両方/全語、の4パターンをそれぞれ規則語尾のみで生成 |
+| 不規則動詞のlemma還元(gave→give, took→take等) | **未実装** | 規則語尾ロジックには不規則活用表が存在しない(`lemma_candidates_v2`にhardcodeされた不規則動詞辞書なし) |
+| discontinuous phrasal verb(例: push...out) | **未実装** | 設計docで明記済みの既知の未対応範囲 |
+| ハイフン/所有格等の表記ゆれ吸収 | 部分実装 | `'s`除去のみ(`lemma_candidates_v2`冒頭)、ハイフン語は未対応 |
+
+**不規則動詞+particleパターンの機械的全件洗い出し(¥0、本追記で新規実施、
+再抽出なし)**: 6本文の文境界トークン列に対し、一般的な不規則動詞
+(約90語の不規則活用表、本追記で新規作成)+前置詞/不変化詞(particle)の
+隣接2-gramを全走査し、その基本形(base form)がWiktionary phrasal_verb/
+idiom DBに実在するかを機械的に確認した。
+
+| article | 不規則動詞+particle候補(走査対象) | うちDB本来一致するはずだった件数(=検出漏れ) | 具体例 |
+|---|---:|---:|---|
+| meta_a2 | 2 | 2 | "went on"→go on、"took off"→take off |
+| meta_b1b | 3 | 2 | "went on"→go on、"took off"→take off(3件目"made through"はDB側に基本形一致なし、誤検出扱いではなく非該当) |
+| hormuz_a2 | 3 | 2 | "taken back"→take back、"gave back"→give back(3件目"rose on"はDB側に基本形一致なし) |
+| hormuz_b1b | 2 | 1 | "gave back"→give back(2件目"rose on"はDB側に基本形一致なし) |
+| small_bag_a2 | 0 | 0 | 該当なし(1件"split in"はDB側に基本形一致なし、かつ形態も一致しない) |
+| small_bag_b1b | 0 | 0 | 該当なし |
+| **合計** | **10** | **7件(4種の不規則動詞句: go on/take off/take back/give back)** | 全件`candidates_phrase_group_*.json`に一切出現しないことを確認済み(完全な検出漏れ) |
+
+既存§6で報告済みの"give back"(hormuz)は上記7件のうちの一部であり、
+本追記により**meta系の"go on"/"take off"、hormuz_a2の"take back"が
+新たに未報告の検出漏れとして判明した**。
+
+**修正難易度**: 小〜中。不規則動詞の活用表(約150〜200語)は公開の
+言語学リソース(例: Wiktionary自体の"English irregular verbs"一覧、
+既存ライセンス表記の延長で追加取得可能)から構築でき、新規ライセンス
+交渉は不要と見込まれる。実装は`lemma_candidates_for_word`/
+`lemma_candidates_for_phrase`への辞書ルックアップ追加で対応可能
+(既存資産の拡張、アーキテクチャ変更は不要)。ただし同綴語の曖昧性
+(例: "left"=leaveの過去形 vs 形容詞「左の」、"lay"=lieの過去形 vs
+動詞"lay"の原形)には要注意で、単純な辞書引きだけでは新たな誤検出を
+生む可能性がある(POSタグ付けなしでは完全な解消は困難、13.3参照)。
+discontinuous phrasal verb対応は中〜大(語順入れ替えパターンの構文解析が
+別途必要、既存資産の延長では難しい)。
+
+### 13.3 Context false-positive removal(誤検出除去)
+
+**本Trialの実行ログに明示的に残っている誤検出例は1件のみ**
+(`small_bag_b1b/final_selection.json`の`excluded_false_positive_example`:
+"bags out"、discontinuous phrasal verb "push...out"との取り違え、
+規則では検出不可、人間判断[Sonnet代行]で除外)。
+
+ユーザー指示「final_selection.jsonの除外理由から全件抽出」に対し
+上記1件が全件だが、原因分類(discontinuous phrasal verb取り違え/
+Wiktionaryタグ精度/文脈不一致)を厚くするため、**本追記で新たに
+Gate通過後・最終未選定のphrase系候補58件を人間(Sonnet)が文脈と
+突き合わせる追加re-scanを行った(¥0、再抽出・LLM呼び出しなし)**。
+結果、ログに残っていなかった追加の誤検出候補が見つかった。
+
+| article | 追加で見つかった誤検出候補 | 原因分類 |
+|---|---|---|
+| meta_a2 | "you think" | 文脈不一致(主語+動詞の並びが偶然idiom見出しと一致、実際は非慣用句) |
+| meta_b1b | "you think"、"kind of" | 同上/文脈不一致("kind of"は「〜のようなもの」の名詞句用法、Wiktionary側は「まあまあ」の副詞的idiom義) |
+| hormuz_a2 | "play in"、"move in"、"say what" | play in/move inはPOS不一致(名詞"play"/"move"を動詞+particleと誤認、POSタグ付けなしが原因)。say whatは文脈不一致(疑問詞節 vs 間投詞idiom) |
+| hormuz_b1b | "play in"、"move in"、"happened on" | play in/move inは同上。happened onは文脈不一致("happen on"=偶然発見、本文は時間前置詞) |
+| small_bag_a2 | "back in"、"line In" | back inは文脈不一致。line Inは**Wiktionaryタグ精度でもdiscontinuous phrasal verbでもない第4の原因**(下記) |
+| small_bag_b1b | "bags out"(既存ログ)、"line In" | bags outはdiscontinuous phrasal verb取り違え(既存)。line Inは第4の原因(下記) |
+
+**件数集計(原因分類別、既存ログの1件を含む合計13件)**:
+
+| 原因分類 | 件数 | 規則で排除できたか |
+|---|---:|---|
+| discontinuous phrasal verb取り違え | 1件("bags out") | 不可、人間判断のみ(既存ログどおり) |
+| Wiktionaryタグ精度/文脈不一致(語義違い・センス不一致) | 8件("you think"×2/"kind of"/"say what"/"happened on"/"back in") | 不可、人間判断のみ(WSD[語義曖昧性解消]機能が未実装) |
+| POS不一致(名詞/動詞の混同、POSタグ付け未実装) | 4件("play in"×2/"move in"×2) | 不可、人間判断のみ(構造的にPOSタグ付けをしていないため規則排除は不可能) |
+| **抽出パイプラインの構造的アーティファクト(第4の原因、新規発見)** | 2件("line In"×2) | 不可、ただし原因はDBタグ精度ではなくトークナイザ側("## In one line"見出しに終端句読点がないため次段落"In 2026,..."と文境界検出上つながり、偶発的に実在するWiktionary phrasal_verbエントリと一致した) | 
+
+**総括**: Gate通過後phrase系候補58件中、明示ログ1件+本追記発見12件=
+**13件(22%)が何らかの意味で「誤検出」相当**であり、その内訳は
+discontinuous phrasal verb取り違えが最も少なく(1件)、Wiktionary側の
+語義粒度の粗さ(1見出しが複数の語義・レジスターをカバーし、本文の
+実際の用法とズレる)とPOSタグ付け未実装が主要因(12件)、加えて
+トークナイザの文境界検出の弱点(見出し+次段落の連結)による構造的
+アーティファクトが2件observed。**全13件とも規則では排除できず、
+人間判断(本Trialでは実行者=Sonnetが代行)が必要だった**(既存§2の
+Gate6項目中4項目が常に人間判断必須、という結果と整合)。
+
+なお、"at all"/"need to"/"other side"/"as if"/"talking to"/"end of"/
+"no one"/"come from"/"look at"・"looking at"(6本文合計15件)は、
+文脈上の意味は一致しており「誤検出」ではないが、機能語的・汎用的な
+コロケーションで記事固有の再利用価値が低い(Gate項目
+`low_value_as_chunk`/`too_easy_or_common`相当)。これは誤検出とは別軸の
+問題であり、本節では区別して記録するにとどめる(推奨は行わない)。
+
+### 13.4 Final Selection(最終選定の質)
+
+本Trialの最終選定手順: (a) 除外Gate通過後、word群/phrase群を別々に
+ソート(word群はwordfreq希少度優先、phrase群はchunk価値・記事文脈
+適合を優先)、(b) その順序を土台に、**実行者[Sonnet]が記事文脈・
+自然さ・再利用価値を判断して4〜5件を確定**(`final_selection.json`の
+各`reason`フィールドが示すとおり、"記事文脈で自然"「記事の主題に直結」
+等の意味判断コメントが全件に付されている)。
+
+**Sonnet判断が介在した件数/本文**: **30/30件(6/6本文で100%)**。
+本Trialのdeterministicロジック単独(規則のみ)で最終候補が確定した
+件数は**0件**。理由: 既存§2のとおりGate6項目中4項目(`proper_noun`/
+`article_specific_low_reuse`/`semantic_functional_duplicate_of`/
+`low_value_as_chunk`)は6本文すべてでrule_determined=0%であり、
+survivorsのうちどれを実際に「良い」候補として残すかの判断は必ず
+人間(本Trialでは実行者=Sonnet)が行っている。すなわち**DB照合方式は
+「候補生成」からAI主観を除いたが、「最終選定」の主観は除けていない**
+(既存§12(2)Fable評価どおり、本追記で数値[0/30 vs 30/30]として再確認)。
+
+**既存Production(Strategy L)との重複率(既存§7の再掲)**:
+
+| article | 重複率 | 差分例 |
+|---|---:|---|
+| meta_a2 | 20%(1/5) | `pulled back`≈`pull back`(活用形差のみ) |
+| meta_b1b | 40%(2/5) | `rolled back`≈`be rolled back`、`turned out`≈`turn out not to be` |
+| hormuz_a2 | 20%(1/5) | `brent crude`≈`brent crude futures`(部分一致) |
+| hormuz_b1b | 20%(1/5) | `center stage`≈`stand at center stage`(部分一致) |
+| small_bag_a2/b1b | N/A | 既存Production Key Phraseが存在せず比較不可 |
+| **平均(4本文)** | **25%** | |
+
+**「どちらが良質か」は本REPORTでは判定しない**。既存§12のとおり、
+「既存Strategy Lの方が質が良い」という評価は**Fable/Sonnetによる
+主観的判断であり、本Trialの決定的ロジックが機械的に導いた結論ではない**
+(ユーザー指示により本節で改めて明示する)。
+
+**代替案(実装せず、入力形式案のみ)**: DB照合結果を既存Strategy L
+選定promptへ「候補根拠(evidence)」として渡すhybrid方式の入力形式案:
+
+```json
+{
+  "db_verified_candidates": [
+    {
+      "surface_form": "brent crude",
+      "unit_type": "phrase",
+      "db_categories": ["multiword_term"],
+      "db_source": "wiktionary",
+      "note": "DB上で実在が確認された表現。最終選定への採用義務はない、参考情報として提示"
+    }
+  ]
+}
+```
+
+Strategy Lのpromptに上記リストを追記し、「これらはDB上で実在確認済みの
+候補です。採用してもしなくても構いませんが、検討時の参考にしてください」
+という指示文を添える案(未実装、Fable/ユーザー承認があれば別Trialとして
+着手可能)。
+
+### 13.5 総括表
+
+| 段階 | 事実 | 実装不足か性能限界か | 改善に必要な作業規模 |
+|---|---|---|---|
+| (1) Candidate Generation | 6本文全てでphrase候補が必要数(4-5件)を上回った(5〜15件)。ただし供給源はWiktionary単独が97%で多様性が低く、collocation/discourse情報源はDB自体に存在しない | 実装不足ではなく**群1DB構成の性能限界**(参照辞書に該当カテゴリが存在しない) | 大(collocation/discourse専用DB[群2以上]の追加契約・調査が必要) |
+| (2) Normalization/Matching | 不規則動詞+particleの検出漏れが4種7件(go on/take off/take back/give back)確認された。全件が既存候補ファイルに一切出現しない完全な検出漏れ | **実装不足**(不規則動詞lemma表が未実装、既知の設計制約) | 小〜中(既存資産[辞書ルックアップ追加]で対応可能。ただし同綴語曖昧性の副作用に注意) |
+| (3) Context false-positive removal | Gate通過後phrase候補58件中13件(22%)が誤検出相当(discontinuous 1件・語義/センス不一致8件・POS不一致4件・トークナイザ構造的アーティファクト2件)。全件が規則で排除不可、人間判断のみ | **実装不足**(WSD・POSタグ付け・文境界検出の精度不足、いずれも設計時に想定されていた既知の制約の実測確認) | 中(POSタグ付け・簡易WSDライブラリの導入が必要、discontinuous対応は別途大) |
+| (4) Final Selection | 最終候補30件全件[100%]にSonnetの意味判断が介在、規則のみで確定した件数は0件。既存Production[Strategy L]との重複率25%(4本文平均)。質の優劣は本REPORTでは判定しない(評価主体はFable/Sonnet) | **設計目的[AI主観の削減]に対する限定的効果**(候補生成の主観は削減できたが、最終選定の主観は残存) | 中〜大(自動化するなら結局LLM判定[またはPOS+WSD規則の大幅拡張]が必要、費用削減幅は設計値どおりにならない) |
+
+---
+
+## Status(2026-09-27更新)
+
+**追加整理・報告待ち(ユーザー判断は本切り分け報告後)**。§12「Fable評価」の
+「VALIDATED(Production採用非推奨)」は履歴としてそのまま残す。
+**2026-09-27ユーザー指示により最終判断は保留、§13参照**。ユーザーは本
+切り分け報告(§13)を受けたうえで、DB候補生成を残すか/Strategy Lと
+組み合わせるか/hybrid Trialをするか/Oxford・EVPをさらに評価するかを
+判断する。
+
 Management-ID: KEY-PHRASE-DB-BASED-SELECTION-TRIAL-01
