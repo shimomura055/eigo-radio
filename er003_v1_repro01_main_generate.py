@@ -483,27 +483,51 @@ def generate_english_component_minimal_instruction(
     # 無影響。generate_english_segment_with_fallback(A2英語segmentの
     # fallback経路)は明示指定していないため、この既定値変更で救われる。
     safety_margin_seconds: float = p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS,
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+    # (OPEN-198是正、既定False): Family X production runnerが到達する
+    # 経路(news_tail_fix.generate_news_narration_wide_marginの技術的
+    # fallback呼び出し)のみが明示的にTrueを渡す。他の全呼び出し元
+    # (crosslevel_audio_02_common.generate_english_segment_with_fallback、
+    # B1 scaffold等)は無変更のまま。
+    enable_pronunciation_resolver: bool = False,
 ) -> dict:
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
-    prompt = p4c.build_tts_prompt(text, MINIMAL_INSTRUCTION_PREFIX)
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+    # (OPEN-198是正): A2英語標準経路(generate_narration_snippet_verified_
+    # strict)と同一のhook(同じ関数・同じconfidence gate・同じtelemetry
+    # 形状en_pronunciation_resolver_info)を、opt-in引数がTrueの場合のみ
+    # MINIMAL_INSTRUCTION_PREFIXへ適用する。hintが1件も無い場合は
+    # instruction_prefixを一切変更しない(既存呼び出し元・既存promptへの
+    # 影響をゼロに保つ)。
+    instruction_prefix = MINIMAL_INSTRUCTION_PREFIX
+    en_pronunciation_resolver_info = None
+    if enable_pronunciation_resolver:
+        augmented_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
+            MINIMAL_INSTRUCTION_PREFIX, text)
+        if en_pronunciation_resolver_info.get("hints_applied"):
+            instruction_prefix = augmented_prefix
+    prompt = p4c.build_tts_prompt(text, instruction_prefix)
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
     # p9a._make_english_call_fn()と同一のENGLISH_MODEL_NAME/VOICE_NAMEを使う)。
     call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, output_path=out_path)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
-        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
+        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}",
+                "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
     trimmed, trim_info = p3u.trim_english_keyword_silence(
         samples_raw, common.SAMPLE_RATE, safety_margin_seconds=safety_margin_seconds)
     if trimmed is None:
-        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした",
+                "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
     # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長音声を
     # ASR実行前に検知して破棄する。
     anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
     if anomaly["is_anomaly"]:
-        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly}
+        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly,
+                "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {
@@ -512,6 +536,7 @@ def generate_english_component_minimal_instruction(
         "sha256": p8a.sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
         "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+        "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
     }
 
 

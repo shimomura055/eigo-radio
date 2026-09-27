@@ -35,6 +35,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -62,7 +63,12 @@ def generate_charon_english(text: str, out_path: str,
                              # scope_01.md「事実1」参照)。同じ引数値で、10分cool-down
                              # (attempt3の直前のみ)とLocal Rewrite回復(3回とも不合格
                              # だった場合、Human Review Lock到達前)もあわせて有効になる。
-                             enable_connected_speech_equivalence_layer: bool = False) -> dict:
+                             enable_connected_speech_equivalence_layer: bool = False,
+                             # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+                             # PUNCT-01(OPEN-197是正、既定False): Family X production
+                             # runner(topic_intro/preview/comment_1-4呼び出し)のみが明示的に
+                             # Trueを渡す。Family A/B/C(legacy)の既存呼び出し元は無変更のまま。
+                             enable_pronunciation_resolver: bool = False) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
@@ -104,6 +110,20 @@ def generate_charon_english(text: str, out_path: str,
     segment_id = None
     if review_lock._has_valid_narration_layout(out_path):
         _, _, segment_id = review_lock.derive_segment_key(out_path)
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+    # (OPEN-197是正): A2英語標準経路(repro01.generate_narration_snippet_
+    # verified_strict)と同一のhook(同じ関数・同じconfidence gate[augment_
+    # style_prefix_with_pronunciationのmin_confidence="medium"]・同じ
+    # telemetry形状en_pronunciation_resolver_info)を、opt-in引数が
+    # Trueの場合のみ適用する。hintが1件も無い場合はstyle_prefix_override
+    # を一切変更しない(既存呼び出し元・既存promptへの影響をゼロに保つ)。
+    en_pronunciation_resolver_info = None
+    if enable_pronunciation_resolver:
+        base_style_prefix = style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX
+        augmented_style_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
+            base_style_prefix, text)
+        if en_pronunciation_resolver_info.get("hints_applied"):
+            style_prefix_override = augmented_style_prefix
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
@@ -212,6 +232,7 @@ def generate_charon_english(text: str, out_path: str,
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
                     "disfluency_evidence": gate.get("disfluency_evidence"),
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events}
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
@@ -228,6 +249,7 @@ def generate_charon_english(text: str, out_path: str,
                     "clipping_detected": metrics["clipping_detected"],
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={cls.classification})",
+                    "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events}
     if enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
@@ -238,7 +260,8 @@ def generate_charon_english(text: str, out_path: str,
             recovered["cooldown_events"] = cooldown_events
             return recovered
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
-            "attempts_log": attempts_log, "cooldown_events": cooldown_events}
+            "attempts_log": attempts_log, "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
+            "cooldown_events": cooldown_events}
 
 
 def _local_rewrite_recovery_for_charon_english(

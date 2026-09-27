@@ -51,6 +51,72 @@ POSITIVE_FIXTURES = [
 ]
 
 # ------------------------------------------------------------
+# PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+# (OPEN-199是正): 引用符・省略記号(ellipsis)の正規化ギャップfixture。
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md
+# §17 JA-1/§22-1(2回目実行)で実測された差分文字(引用符脱落、「…」の
+# NFKC分解由来"..."、全角スペース)をそのまま再現する。
+# ------------------------------------------------------------
+POSITIVE_PUNCTUATION_FIXTURES = [
+    {"name": "カーリー引用符の脱落(ASRは引用符を音声化しない、単純ケース)",
+     "canonical": "中に“人” がいた",
+     "asr": "中に人がいた"},
+    {"name": "ASCIIストレート引用符の脱落",
+     "canonical": '中に"人"がいた',
+     "asr": "中に人がいた"},
+    {"name": "「…」(ellipsis)がNFKCで\"...\"へ分解された後、ASRでは読点に変換",
+     "canonical": "電話だと思ったら…中にいた",
+     "asr": "電話だと思ったら、中にいた"},
+    {"name": "「…」(ellipsis)がASRでは完全脱落",
+     "canonical": "電話だと思ったら…中にいた",
+     "asr": "電話だと思ったら中にいた"},
+    {"name": "全角スペース(？直後)の脱落(既存NFKC+\\sで対応済み、regression確認、"
+             "固有名詞を含まない単純ケースで分離確認)",
+     "canonical": "いた？　それからどうなった",
+     "asr": "いた?それからどうなった"},
+]
+
+# 単独の小数点は句読点除去の対象に含めない(数値一致判定への影響回避、
+# regressionなしの確認)。
+NOT_ELLIPSIS_SINGLE_PERIOD_FIXTURES = [
+    {"name": "単独の小数点は除去されない(3.5 vs 3.6、数値相違を引き続き検出)",
+     "canonical": "気温は3.5度でした",
+     "asr": "気温は3.6度でした"},
+]
+
+# 実データ再現(JA-1、Phase 2修正2回目closeoutで実測、PRONUNCIATION-
+# RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md §22-1の差分文字
+# 全件[引用符脱落・「…」・全角スペース]をそのまま含む、実際の3回のASR
+# attempt文字列)。Meta/Museはexpected_readings指定なしではentity_like
+# 扱いのためASR_VALIDATION_UNCERTAIN(Cascade対象)までの回復を確認し、
+# expected_readings指定時(READING_DICTIONARY_MATCH_FIXTURESへ別途追加)は
+# should_pass=Trueまで回復することを確認する。
+JA1_REAL_DATA_PUNCTUATION_REGRESSION_FIXTURES = [
+    {"name": "JA-1実データ1回目実行attempt1(標準経路)",
+     "canonical": "AIからの電話だと思ったら…中に“人”がいた？　Metaの"
+                  "Museで起きたまさかの展開",
+     "asr": "AIからの電話だと思ったら、中に人がいた!?メタのミューズで"
+            "起きたまさかの展開"},
+    {"name": "JA-1実データ1回目実行attempt2(標準経路)",
+     "canonical": "AIからの電話だと思ったら…中に“人”がいた？　Metaの"
+                  "Museで起きたまさかの展開",
+     "asr": "AIからの電話だと思ったら、中に人がいた?メタのミューズで"
+            "起きたまさかの展開"},
+    {"name": "JA-1実データ1回目実行fallback(minimal instruction)",
+     "canonical": "AIからの電話だと思ったら…中に“人”がいた？　Metaの"
+                  "Museで起きたまさかの展開",
+     "asr": "AIからの電話だと思ったら、中に人がいた? メタのミューズで"
+            "起きたまさかの展開"},
+]
+
+# JA1_REAL_DATA_PUNCTUATION_REGRESSION_FIXTURESと同一canonical/asr組を、
+# 実際のProduction経路(er025_entity_pronunciation_resolver_core_01.
+# resolve_unknown_ja_tokens())が実データJA-1実行で生成したexpected_
+# readings(AI/Meta/Muse)付きで再検証する(専用dict、他のREADING_
+# DICTIONARY_*fixturesとは独立)。
+JA1_EXPECTED_READINGS = {"ai": "エーアイ", "meta": "メタ", "muse": "ミューズ"}
+
+# ------------------------------------------------------------
 # NEGATIVE: 前タスクのBlind Spot 6カテゴリ+追加必須ケース
 # ------------------------------------------------------------
 BASE = ("解約を難しくする壁は、「スラッジ」と考えられます。では、FTCがこの問題を変えるために"
@@ -310,6 +376,38 @@ if __name__ == "__main__":
     all_failures = []
     all_failures += run_group("POSITIVE fixtures (should_pass=True)", POSITIVE_FIXTURES, True)
     all_failures += run_group("NEGATIVE fixtures (should_pass=False, TRUE_CONTENT_MISMATCH)", NEGATIVE_FIXTURES, False)
+    all_failures += run_group(
+        "OPEN-199 PUNCTUATION_NORMALIZATION fixtures (should_pass=True、"
+        "引用符・ellipsis・全角スペースの正規化ギャップ是正確認)",
+        POSITIVE_PUNCTUATION_FIXTURES, True)
+    all_failures += run_group(
+        "OPEN-199 regression: 単独の小数点は除去されない(should_pass=False維持)",
+        NOT_ELLIPSIS_SINGLE_PERIOD_FIXTURES, False)
+
+    print("\n=== OPEN-199 JA-1実データ再現(expected_readingsなし、entity_likeまで回復"
+          "[TRUE_CONTENT_MISMATCHで即STOPしない]ことの確認) ===")
+    for fx in JA1_REAL_DATA_PUNCTUATION_REGRESSION_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"])
+        ok = r.classification != "TRUE_CONTENT_MISMATCH"
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"])
+
+    print("\n=== OPEN-199 JA-1実データ再現(expected_readingsあり[AI/Meta/Muse]、"
+          "should_pass=Trueまで回復することの確認、実際のProduction JA-1 2回目"
+          "実行[cache hit]evidenceと同一の差分文字を再現) ===")
+    for fx in JA1_REAL_DATA_PUNCTUATION_REGRESSION_FIXTURES:
+        r = javal.classify_ja_asr_match(fx["canonical"], fx["asr"], expected_readings=JA1_EXPECTED_READINGS)
+        ok = r.should_pass is True
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] {fx['name']}: classification={r.classification} should_pass={r.should_pass}")
+        if r.protected.content_diffs:
+            print(f"       content_diffs={r.protected.content_diffs}")
+        if not ok:
+            all_failures.append(fx["name"] + " (with expected_readings)")
 
     print("\n=== ENTITY_LIKE fixtures (should_pass=False だが entity_like=True で Cascade対象) ===")
     for fx in ENTITY_LIKE_FIXTURES:
@@ -449,7 +547,9 @@ if __name__ == "__main__":
              + len(READING_RESOLVER_CORRECTLY_RESOLVES_FIXTURES)
              + len(WHOLE_TEXT_SCRIPT_MISMATCH_FIXTURES) + len(WHOLE_TEXT_SCRIPT_MISMATCH_NEGATIVE_FIXTURES)
              + len(READING_DICTIONARY_MATCH_FIXTURES) + len(READING_DICTIONARY_MISMATCH_FIXTURES)
-             + len(READING_DICTIONARY_BACKWARD_COMPAT_FIXTURES) + len(READING_DICTIONARY_UNRELATED_TOKEN_FIXTURES))
+             + len(READING_DICTIONARY_BACKWARD_COMPAT_FIXTURES) + len(READING_DICTIONARY_UNRELATED_TOKEN_FIXTURES)
+             + len(POSITIVE_PUNCTUATION_FIXTURES) + len(NOT_ELLIPSIS_SINGLE_PERIOD_FIXTURES)
+             + len(JA1_REAL_DATA_PUNCTUATION_REGRESSION_FIXTURES) * 2)
     if all_failures:
         print(f"\n{len(all_failures)}件のfixture/checkが期待通りに分類されなかった: {all_failures}")
     else:

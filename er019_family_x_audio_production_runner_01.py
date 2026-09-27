@@ -413,7 +413,11 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                 n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
                 f"{narration_dir}/topic_intro.wav",
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
-                    "topic_intro")), expected_text=topic_intro_text)
+                    "topic_intro"),
+                # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                # VALIDATOR-PUNCT-01(OPEN-197是正): Family X runnerのみが
+                # 明示的にTrueを渡す(Family A/B/C legacy呼び出し元は無変更)。
+                enable_pronunciation_resolver=True), expected_text=topic_intro_text)
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -423,7 +427,10 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                 _cached, name, f"{narration_dir}/{name}.wav", lambda text=text, name=name: voice01.generate_charon_english(
                     n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
                     style_prefix_override=n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True,
-                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name)),
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                    # VALIDATOR-PUNCT-01(OPEN-197是正): Family X runnerのみ。
+                    enable_pronunciation_resolver=True),
                 expected_text=text)
         results[name]["canonical_text"] = text
 
@@ -437,7 +444,12 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                     n3_tts.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
-                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)), expected_text=text)
+                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES),
+                    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                    # VALIDATOR-PUNCT-01(OPEN-198是正): Family X runnerのみ。
+                    # 技術的fallback(発話区間検出失敗時のみ)経路にのみ効く
+                    # (標準ENGLISH_STYLE_PREFIX経路は無変更、§本Phase範囲外)。
+                    enable_pronunciation_resolver=True), expected_text=text)
         results[name]["canonical_text"] = text
 
     # Stage 3c: 本文2/3は見出しsub-segment(独立TTS呼び出し、Family A
@@ -465,7 +477,10 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                     n3_tts.tts_safe_news_en(body_text), f"{narration_dir}/{body_name}.wav",
                     disfluency_qa=False,
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
-                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES)), expected_text=body_text)
+                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES),
+                    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                    # VALIDATOR-PUNCT-01(OPEN-198是正): Family X runnerのみ。
+                    enable_pronunciation_resolver=True), expected_text=body_text)
         results[body_name]["canonical_text"] = body_text
 
     kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached) if kp is not None else {}

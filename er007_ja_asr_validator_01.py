@@ -47,7 +47,21 @@ VALID_CLASSIFICATIONS_JA = (
 # (secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED等と同じ設計)。
 FEATURE_FLAG_A2_READING_RESOLVER_ENABLED = True
 
-_PUNCT_RE = re.compile(r"[、。・「」『』（）()\s！？!?…—―‥～〜/／]")
+# PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+# (OPEN-199是正): 引用符(ASCIIストレート・カーリー両方)と全角スペースを
+# 追加する(全角スペースはNFKC正規化で半角スペースへ変換済みのため\sで
+# 既に除去されるが、既存の全角！？等と同じ防御的な明示のため追加する)。
+# 中点(・)は既存どおり対象(変更なし、Phase 3の点検で既存挙動を確認済み)。
+_PUNCT_RE = re.compile(
+    r"[、。・「」『』（）()\s！？!?…—―‥～〜/／"
+    r"　“”‘’\"']"
+)
+# NFKC正規化により「…」(U+2026、ellipsis)は視覚的に2つ以上のASCIIピリオド
+# へ分解される(例:「…」1文字->"..."3文字)。単独の"."は小数点等、意味を
+# 持つ数字表記の一部である可能性があるため除去対象に含めない(_DIGIT_RE
+# による数値一致判定への影響を避ける)。「…」由来の2文字以上連続する
+# ピリオドの並びだけを、非発話の省略記号として除去する。
+_ELLIPSIS_RUN_RE = re.compile(r"\.{2,}")
 _KATAKANA_RE = re.compile(r"[゠-ヿ]+")
 _LATIN_ACRONYM_RE = re.compile(r"[A-Za-z]{2,}")
 _DIGIT_RE = re.compile(r"\d+")
@@ -80,8 +94,16 @@ class ClassificationResultJA:
 
 def normalize_ja(text: str) -> str:
     """句読点・空白等の非発話記号のみを除去する(内容語は一切変更しない)。
-    カーリー引用符はストレートへ、全角/半角の数字は正規化する。英字の
-    大文字/小文字は発話上の意味を持たないため吸収する(例:"INE"/"ine")。
+    全角/半角の数字は正規化する。英字の大文字/小文字は発話上の意味を
+    持たないため吸収する(例:"INE"/"ine")。
+    PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+    PUNCT-01(OPEN-199是正): 引用符(ASCIIストレート"'・カーリー
+    “”‘’、日本語の「」『』は既存どおり)は句読点と
+    同様、非発話記号として除去する(ASRが引用符自体を音声化しないため、
+    canonical側にだけ引用符が残ると常に不一致になっていた)。「…」
+    (ellipsis)はNFKC正規化で視覚的に"..."(ASCIIピリオド2文字以上)へ
+    分解されるため、これも同じ層で除去する(単独の"."は小数点等の可能性が
+    あるため対象外のまま)。
     閉じた助数詞リスト(つ/泊/回/件/年/時間/か月/週/歳)の直前に来る単独
     漢数字(一〜九)だけは算用数字へ揃える(例: "二つ"->"2つ"、"二泊"->
     "2泊")。助数詞の直前という文脈があるため、意味・読み・数量が完全に
@@ -95,6 +117,7 @@ def normalize_ja(text: str) -> str:
     if not text:
         return ""
     t = unicodedata.normalize("NFKC", text)  # 全角英数字->半角、全角記号統一
+    t = _ELLIPSIS_RUN_RE.sub("", t)
     t = _PUNCT_RE.sub("", t)
     t = re.sub(r"[A-Za-z]+", lambda m: m.group(0).lower(), t)
     t = safety.normalize_kanji_counter_numerals_ja(t)

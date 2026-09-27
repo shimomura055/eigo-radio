@@ -71,7 +71,16 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          enable_connected_speech_equivalence_layer: bool = False,
                                          # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 同上4segment
                                          # のみが明示的にTrueを渡す想定の引数(既定False)。
-                                         enable_repetition_qa: bool = False) -> dict:
+                                         enable_repetition_qa: bool = False,
+                                         # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                                         # VALIDATOR-PUNCT-01(OPEN-198是正、既定False): Family X
+                                         # production runnerのみが明示的にTrueを渡す。技術的
+                                         # fallback(発話区間検出失敗時のみ)経路の
+                                         # repro01.generate_english_component_minimal_instruction
+                                         # 呼び出しへそのまま転送するだけで、この関数自身の標準
+                                         # (ENGLISH_STYLE_PREFIX)経路は変更しない。他の全呼び出し元
+                                         # は無変更。
+                                         enable_pronunciation_resolver: bool = False) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -124,7 +133,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         if trimmed is None:
             attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": str(err) if not ok else "発話区間検出失敗",
                                   "instruction_type": instruction_type})
-            r = repro01.generate_english_component_minimal_instruction(text, out_path)
+            r = repro01.generate_english_component_minimal_instruction(
+                text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver)
             instruction_type = "minimal_fallback"
             if r.get("status") != "OK":
                 attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),

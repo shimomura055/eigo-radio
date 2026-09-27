@@ -416,6 +416,26 @@ def _generate_a2_japanese_minimal_instruction(text: str, out_path: str) -> dict:
             "clipping_detected": metrics["clipping_detected"], "instruction": "minimal (not JAPANESE_STYLE_PREFIX)"}
 
 
+# PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
+# (Stage 3d副次発見の是正): この関数は内側でreview_lock.guarded_generate_
+# with_language_arg済みのc.generate_narration_snippet_verified_strict
+# (標準経路)を呼んだ後、さらに自前の(未guardの)fallback(minimal
+# instruction)ループを実行する。従来はこの関数自身がguardされておらず、
+# 標準経路のみでrecord_outcome()が(不合格として)確定してしまい、その後
+# fallbackが実際に成功しても、Lock storeへ反映されないギャップがあった
+# (small_bag A2 meaning_5で実測、review_lock_state.jsonはSTOPPEDのまま
+# tts_generation_results.jsonは実際にはstatus=OK)。この関数自身を
+# guarded_generate("ja")で包むことで、内側の呼び出しは既存の reentrancy
+# guard(同一out_pathが_ACTIVE_GUARDED_OUT_PATHSに入っている間は二重に
+# check_before_generation/record_outcomeしない、OPEN-105 fix)により
+# 自動的にスキップされ、record_outcome()はこの関数全体の最終結果
+# (fallback成功後の結果を含む)で一度だけ呼ばれるようになる。既存の
+# 呼び出し元(generate_a2_japanese_with_reading_safety、唯一のProduction
+# 呼び出し元)・既存test(out_path="dummy.wav"等の非標準layoutはcheck_
+# before_generation/record_outcome双方でbypassされ無変更のまま)への
+# 影響はない。状態ファイル(review_lock_state.json)自体はこの修正では
+# 書き換えない(次回実行時から正しく記録されるようになるだけ)。
+@review_lock.guarded_generate("ja")
 def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 40,
                                         max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
