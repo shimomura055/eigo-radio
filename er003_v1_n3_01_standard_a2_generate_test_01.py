@@ -72,24 +72,57 @@ class _FakeClient:
 
 
 class PromptSha256Tests(unittest.TestCase):
-    def test_prompt_equals_trial_file_plus_inserted_structure_line(self):
-        # NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D3: v5の
-        # トライアルfile(旧sha256 cbb723...で確認済み)に、構造保持行1行を
-        # 「Output only...」の直前へ挿入したものが、現行STANDARD_A2_PROMPT_V5
-        # と一致することを確認する(v5の語彙・簡略化指示は無変更)。
+    def test_prompt_equals_trial_file_plus_structure_line_plus_vocab_and_boundary_update(self):
+        # NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01(Stage 2)+
+        # NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01: v5の
+        # トライアルfile(旧sha256 cbb723...で確認済み)に対し、(1) 構造保持行
+        # (NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D3で追加済み)、
+        # (2) 旧語彙段落(7行)を6k Generation-First+3除外条件の新語彙段落へ置換、
+        # (3) 構造保持行の直後にSection境界維持の1文を追加、の3点を適用した
+        # ものが現行STANDARD_A2_PROMPT_V5と一致することを確認する。
         with open(PROMPT_FILE, "r", encoding="utf-8", newline=None) as f:
             trial_text = f.read()
-        inserted_line = (
+
+        old_vocab_block = (
+            "Prefer words within roughly the 6,000 most common English words.\n"
+            "If a word is clearly outside that range, replace it when a simpler "
+            "natural alternative exists.\n"
+            "Do not force a replacement if it makes the sentence less natural or "
+            "changes the meaning.\n"
+            "Proper names are excluded from this rule.\n"
+            "Essential technical terms may remain when a simpler equivalent would "
+            "lose important meaning.\n"
+            "Do not add an explanation for a hard word; make the sentence around "
+            "it simple instead.\n"
+            "Keep the metaphor words when they are simple enough for A2 learners "
+            "(for example, stage, backstage, lead role, curtain)."
+        )
+        self.assertIn(old_vocab_block, trial_text,
+                      "Trial fileの旧語彙段落テキストが想定と異なります")
+        new_vocab_block = std_a2.STANDARD_A2_NEW_VOCAB_BLOCK
+        expected_text = trial_text.replace(old_vocab_block, new_vocab_block)
+
+        inserted_structure_line = (
             'Keep the same Markdown structure (the "# " title, the two "### " '
             'sections, and the final "## In one line" section); do not add or '
             'remove sections.\n\n'
         )
         anchor = "Output only the English title and the English body."
-        self.assertIn(anchor, trial_text)
-        expected_text = trial_text.replace(anchor, inserted_line + anchor)
+        self.assertIn(anchor, expected_text)
+        expected_text = expected_text.replace(anchor, inserted_structure_line + anchor)
+
+        section_boundary_sentence = std_a2.STANDARD_A2_SECTION_PRESERVE_SENTENCE
+        old_structure_line = (
+            'Keep the same Markdown structure (the "# " title, the two "### " '
+            'sections, and the final "## In one line" section); do not add or '
+            'remove sections.\n\n'
+        )
+        expected_text = expected_text.replace(
+            old_structure_line, old_structure_line[:-1] + section_boundary_sentence + "\n\n", 1)
+
         reconstructed = std_a2.reconstruct_prompt_file_text()
         self.assertEqual(reconstructed, expected_text,
-                          "reconstructed prompt text differs from trial file + inserted structure line")
+                          "reconstructed prompt text differs from trial file + all 3 delegated changes")
 
     def test_prompt_sha256_matches_constant(self):
         reconstructed = std_a2.reconstruct_prompt_file_text()
@@ -108,6 +141,66 @@ class PromptSha256Tests(unittest.TestCase):
                 std_a2._assert_prompt_sha256()
         finally:
             std_a2.STANDARD_A2_PROMPT_SHA256 = original
+
+
+class NewVocabBlockTests(unittest.TestCase):
+    """NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01(Stage 2): 6k Generation-First
+    +3除外条件(カテゴリ記述のみ)の新語彙段落が、意図通りの文言を含み、
+    不採用方式(10k/14k Band、A/B/C/D事後置換、個別英単語例、Trial名参照)を
+    一切含まないことを確認する。"""
+
+    def test_firm_basic_principle_wording_present(self):
+        self.assertIn("As a basic principle", std_a2.STANDARD_A2_NEW_VOCAB_BLOCK)
+
+    def test_three_exclusion_conditions_present(self):
+        text = std_a2.STANDARD_A2_NEW_VOCAB_BLOCK
+        self.assertIn("(1) it is a proper noun", text)
+        self.assertIn("(2) its meaning can easily be guessed from an easier word", text)
+        self.assertIn("(3) it is a word that has become well established in Japanese", text)
+
+    def test_generation_first_and_meaning_preservation_present(self):
+        text = std_a2.STANDARD_A2_NEW_VOCAB_BLOCK
+        self.assertIn("build the whole sentence around simpler words", text)
+        self.assertIn("Do not change the meaning", text)
+        self.assertIn("Keep the storytelling", text)
+
+    def test_no_abcd_labels_present(self):
+        text = std_a2.STANDARD_A2_NEW_VOCAB_BLOCK
+        for marker in ("A. Its meaning can easily be guessed", "B. It is a word that has become",
+                       "C. It is a proper noun", "D. Replacing it with an easier word",
+                       "KEEP-A", "KEEP-B", "KEEP-C", "KEEP-D"):
+            self.assertNotIn(marker, text)
+
+    def test_no_10000_or_14000_band_present(self):
+        text = std_a2.STANDARD_A2_PROMPT_V5
+        self.assertNotIn("10,000", text)
+        self.assertNotIn("14,000", text)
+        self.assertNotIn("12,000", text)
+
+    def test_no_individual_english_word_examples_present(self):
+        text = std_a2.STANDARD_A2_NEW_VOCAB_BLOCK
+        for example_word in ("wastewater", "surprisingly", "piano", "curtain", "onstage",
+                              "understandable", "privacy", "flush", "stage, backstage"):
+            self.assertNotIn(example_word, text)
+
+    def test_no_trial_name_or_topic_core_markers_present(self):
+        text = std_a2.STANDARD_A2_PROMPT_V5
+        for marker in ("Generation-First", "GEN_FIRST", "Trial", "Topic Core", "topic_core",
+                       "is_metaphor", "BORDERLINE", "exception_used"):
+            self.assertNotIn(marker, text)
+
+    def test_sentence_structure_simplification_lines_still_present(self):
+        text = std_a2.STANDARD_A2_PROMPT_V5
+        self.assertIn("Rebuild the sentences", text)
+        self.assertIn("Aim for an average sentence length of about 9–11 words", text)
+        self.assertIn("Use mostly one main idea per sentence", text)
+
+    def test_section_preserve_sentence_present_and_follows_structure_line(self):
+        text = std_a2.STANDARD_A2_PROMPT_V5
+        idx_structure = text.find("do not add or remove sections.")
+        idx_boundary = text.find(std_a2.STANDARD_A2_SECTION_PRESERVE_SENTENCE)
+        self.assertGreater(idx_boundary, idx_structure)
+        self.assertIn("Do not move a sentence across a \"### \" heading boundary", text)
 
 
 class BuildPromptTests(unittest.TestCase):

@@ -97,19 +97,60 @@ STANDARD_A2_DEVELOPER = (
     "enjoyable as the original."
 )
 
-STANDARD_A2_PROMPT_V5 = """Rewrite this entire article for CEFR A2 learners.
+# NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01(Stage 2)で置換した語彙段落。
+# `STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01`(VALIDATED)Prompt Bの原則
+# (生成一体型・意味不変・長い説明での回避禁止・Storytelling維持)を土台に、
+# Band除外条件を(1)固有名詞(2)推測容易な派生・複合語(3)日本語定着語の
+# 3種のみ(カテゴリ記述のみ、個別英単語の具体例なし)へ明示化した。
+# 10,000/14,000語Band・A/B/C/D事後置換方式(Advanced側とは別方式)は
+# 含まない。単独の名前付き定数として残置テストから参照できるようにする。
+STANDARD_A2_NEW_VOCAB_BLOCK = (
+    "As a basic principle, write naturally using words within roughly the "
+    "top 6,000 most common English words. Do not generate a hard word "
+    "first and then swap out only that one word afterward; instead, from "
+    "the first draft, build the whole sentence around simpler words so its "
+    "meaning is expressed naturally from the start.\n"
+    "Do not change the meaning: keep the same action, cause and effect, "
+    "actor, object, quantity, time, and facts.\n"
+    "Do not escape one hard word by repeatedly adding long, unnatural "
+    "explanatory phrases; that makes the writing heavy. Keep it light and "
+    "direct, the way the rest of the article already reads.\n"
+    "Keep the storytelling: this is not a summary. Do not cut an "
+    "interesting detail or part of the storyline, and do not mechanically "
+    "remove a metaphor. Simplify only the wording, not the story.\n"
+    "A word outside the top 6,000 words may still stay if any of the "
+    "following applies: (1) it is a proper noun -- a person's name, a "
+    "company or product name, a place name, or an official title; (2) its "
+    "meaning can easily be guessed from an easier word, or word parts, "
+    "that it is built from; (3) it is a word that has become well "
+    "established in Japanese and whose meaning is easily connected to its "
+    "English pronunciation.\n"
+    "Judge this naturally as you write; do not sort every word into a "
+    "fixed label, and do not list candidate words or output a per-word "
+    "classification. Writing one naturally good CEFR A2 article matters "
+    "more than labeling exceptions."
+)
+
+# NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01で追加した
+# 見出しをまたぐ内容移動禁止の1文。出典:
+# `docs/pm/design_family_x_section_segmentation_spec_01.md` §3.2と一字一句
+# 同一(Fable承認済み)。単独の名前付き定数として残置テストから参照できる
+# ようにする。
+STANDARD_A2_SECTION_PRESERVE_SENTENCE = (
+    "Keep every fact, example, figure, quotation, and named source in the "
+    "same section as in the original article: before or after the same "
+    "\"### \" heading as before. Do not move a sentence across a \"### \" "
+    "heading boundary in either direction, and do not move a section's "
+    "first concrete point to before its own heading."
+)
+
+STANDARD_A2_PROMPT_V5 = ("""Rewrite this entire article for CEFR A2 learners.
 Simplify the English, not the story.
 
 Rebuild the sentences. Do not just replace difficult words. Write every sentence again using simpler grammar and shorter structures.
 Aim for an average sentence length of about 9–11 words across the whole article. Some sentences may be longer or shorter; do not force every sentence to the same length.
 Use mostly one main idea per sentence. Split long clauses. Do not pack a cause, an extra detail, an exception, and a result into one sentence.
-Prefer words within roughly the 6,000 most common English words.
-If a word is clearly outside that range, replace it when a simpler natural alternative exists.
-Do not force a replacement if it makes the sentence less natural or changes the meaning.
-Proper names are excluded from this rule.
-Essential technical terms may remain when a simpler equivalent would lose important meaning.
-Do not add an explanation for a hard word; make the sentence around it simple instead.
-Keep the metaphor words when they are simple enough for A2 learners (for example, stage, backstage, lead role, curtain).
+""" + STANDARD_A2_NEW_VOCAB_BLOCK + """
 
 Preserve the same story structure, the same interesting angle, the same surprise in the same place, the important metaphor or storytelling device, the same order of information, the same selection of facts, and the same ending logic.
 Do not turn the article into a summary.
@@ -120,11 +161,12 @@ Keep every fact exactly as it is: names, numbers, who did what, cause and effect
 The result must still sound natural when read aloud. Do not write like a children's book, and do not write a flat list of short sentences.
 
 Keep the same Markdown structure (the "# " title, the two "### " sections, and the final "## In one line" section); do not add or remove sections.
+""" + STANDARD_A2_SECTION_PRESERVE_SENTENCE + """
 
 Output only the English title and the English body.
 
 [Article]
-{advanced_article}"""
+{advanced_article}""")
 
 # NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01(2026-09-25、delegation D3)で、
 # v5 user promptの末尾「Output only...」の直前に構造保持行
@@ -134,15 +176,39 @@ Output only the English title and the English body.
 # 変えていない。この追加に伴いSTANDARD_A2_PROMPT_SHA256を更新した
 # (旧値: cbb72357449dea9bcf0912c55aaf7e5b8ea52f6e157c37ae71180768dc13c589、
 # NEWS-STANDARD-A2-VOCAB-6000-CUTOFF-PRODUCTION-WIRING-01で記録)。
-# 新しい構造保持行を含むPrompt全文はTrial fileとしては存在しないため、
-# 旧v5との差分をテストで確認する(reconstruct_prompt_file_text()の
-# 出力が旧v5 Trial fileの内容+挿入行と一致することを検証)。
+#
+# NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01(Stage 2、2026-09-27、ユーザー正式
+# 決定)で、語彙段落(旧「Prefer words within roughly the 6,000...」〜
+# 「...stage, backstage, lead role, curtain).」の7行)を、
+# `STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01`(VALIDATED)のPrompt Bの
+# 原則(生成一体型: 難語を先に書いてから事後に一語置換するのではなく、
+# 最初の下書きから簡単な語と構文で文全体を組み立てる/意味[主体・対象・
+# 因果・数量・時間・事実]を変えない/長い説明でごまかさない/Storytelling
+# 維持)を土台に、Band除外条件を(1)固有名詞(2)推測容易な派生・複合語
+# (3)日本語定着語の3種のみ(カテゴリ記述のみ、個別英単語の具体例は一切
+# 含まない)へ明示化した6行へ置換した(Trial Bにあった単一の混在例外文
+# [固有名詞/主題必須語/意味精度必須語を1文に混在]と、記事固有の個別語例
+# ["flush"→"use"、"stage, backstage, lead role, curtain"]は除去)。
+# 10,000/14,000語Band、A/B/C/D事後置換方式は不採用のためPromptに含めない
+# (Advanced側`ADVANCED_VOCAB_RULE_V2_BLOCK`のA〜D方式とは別物、Standardは
+# 3条件のみ)。構文簡易化行(平均文長9-11語・1文1アイデア等)・Fact/Story
+# 保持行・構造保持行は無変更。
+#
+# 同タスクで、構造保持行の直後に見出しをまたぐ内容移動禁止の1文
+# (`NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01`、
+# `docs/pm/design_family_x_section_segmentation_spec_01.md` §3.2と一字一句
+# 同一)を追加した。この追加に伴いSTANDARD_A2_PROMPT_SHA256を再度更新した
+# (前値: ff860ab60a0d1d4ffa4e93a30e53af37fe87afa8c4e01a99bf54e06897a42353)。
+# 新しい語彙段落・境界維持行を含むPrompt全文はTrial fileとしては存在しない
+# ため、旧v5(構造保持行込み)との差分をテストで確認する
+# (reconstruct_prompt_file_text()の出力が旧v5 Trial file+挿入行+今回の
+# 置換/追加と一致することを検証)。
 #
 # retry primitive: NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01 delegation D4
 # により、Advanced段と同じ`vfl01.run_writer_with_technical_retry()`
 # (構造Gate付きretry、###見出しちょうど2つを要求)を使うよう変更した
 # (旧: run_writer_no_search()への独自「空応答→1回retry」ループ)。
-STANDARD_A2_PROMPT_SHA256 = "ff860ab60a0d1d4ffa4e93a30e53af37fe87afa8c4e01a99bf54e06897a42353"
+STANDARD_A2_PROMPT_SHA256 = "cbe73fc46f2c3c57c087c521df132ed734b8967a6ef09338c187349d35fecc33"
 
 
 def reconstruct_prompt_file_text() -> str:
