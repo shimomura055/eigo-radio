@@ -298,7 +298,8 @@ def resolve_key_phrase_ja_gloss_tts(item: dict) -> tuple:
 
 
 def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
-                                                   max_attempts: int = 6, known_key_phrase_terms=None) -> dict:
+                                                   max_attempts: int = 6, known_key_phrase_terms=None,
+                                                   source_context: str = "") -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: 先頭以外に残った項変数記法(「〜」「…」等)は
     # 機械的に削除すると文法が壊れるため、TTS呼び出し自体を行わずSTOPPEDで
@@ -332,7 +333,8 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
     # (recon 3.2節。既存Gate関数自体[classify_foreign_tokens_in_japanese_
     # text]は無改変、この呼び出し元だけが辞書を拡張して渡す)。
     ja_pronunciation_resolver_info = pron_resolver_core.resolve_unknown_ja_tokens(
-        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text)
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text,
+        source_context=source_context)
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する。
     # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
@@ -517,7 +519,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
 
 def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_substring: str,
                                               max_extra_chars: int = 40, max_attempts: int = 6,
-                                              known_key_phrase_terms=None) -> dict:
+                                              known_key_phrase_terms=None, source_context: str = "") -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
     # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
@@ -547,7 +549,8 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     # coreをA2側にも適用する(japanese_title/comment/Key Phrase meaning等、
     # いずれもこの経路を通る)。
     ja_pronunciation_resolver_info = pron_resolver_core.resolve_unknown_ja_tokens(
-        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text)
+        placeholder_safe, known_key_phrase_terms=known_key_phrase_terms, context=text,
+        source_context=source_context)
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する
     # (この関数はgenerate_a2_japanese_with_fallback経由でminimal instruction

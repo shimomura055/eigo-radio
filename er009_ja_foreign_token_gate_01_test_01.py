@@ -159,7 +159,8 @@ class WiringStopsBeforeTtsCallTests(unittest.TestCase):
         self._orig_resolve_unknown_ja_tokens = tg.pron_resolver_core.resolve_unknown_ja_tokens
 
         def _noop_resolve_unknown_ja_tokens(text, known_key_phrase_terms=None,
-                                             extra_dictionary=None, context="", client=None):
+                                             extra_dictionary=None, context="", client=None,
+                                             source_context=""):
             return {"reading_dictionary": dict(extra_dictionary or {}), "resolved": [],
                     "unresolved_human_review": [], "web_lookup_called": False, "research_meta": None}
         tg.pron_resolver_core.resolve_unknown_ja_tokens = _noop_resolve_unknown_ja_tokens

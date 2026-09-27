@@ -10,6 +10,13 @@ from __future__ import annotations
 import er003_audio_tts_asr_safety as safety
 import er003_v1_n3_01_tts_generate as tts_gen
 import er003_v1_sing01_voice01_generate as voice01
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正1回目、
+# Opus L2所見「テスト時web lookup禁止スイッチ」是正): 以下のtestは
+# generate_charon_japanese_with_reading_safety()を無mockで直接呼ぶため、
+# 内部で発火するresolve_unknown_ja_tokens()が実際に外来語トークンを検出した
+# 場合、実API呼び出し・本番Ledger書き込みが起きうる(現状のfixture文には
+# 外来語が無いため無害だが、将来のfixture変更に備えた恒久的な安全策)。
+import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
 
 def test_detect_finds_mid_string_ellipsis_and_wave_dash():
@@ -89,8 +96,9 @@ def test_generate_charon_japanese_gate_allows_normal_gloss_through():
 
     voice01.generate_charon_japanese = fake_generate_charon_japanese
     try:
-        r = tts_gen.generate_charon_japanese_with_reading_safety(
-            "その場を立ち去る", "dummy_out.wav", "立ち去る")
+        with pron_resolver_core.disable_web_lookup_for_test():
+            r = tts_gen.generate_charon_japanese_with_reading_safety(
+                "その場を立ち去る", "dummy_out.wav", "立ち去る")
         assert r["status"] == "OK", r
         assert calls["n"] == 1
         assert calls["text"] == "その場を立ち去る"
@@ -113,8 +121,9 @@ def test_generate_charon_japanese_gate_allows_leading_tilde_after_strip():
 
     voice01.generate_charon_japanese = fake_generate_charon_japanese
     try:
-        r = tts_gen.generate_charon_japanese_with_reading_safety(
-            "〜によって説明される", "dummy_out.wav", "説明される")
+        with pron_resolver_core.disable_web_lookup_for_test():
+            r = tts_gen.generate_charon_japanese_with_reading_safety(
+                "〜によって説明される", "dummy_out.wav", "説明される")
         assert r["status"] == "OK", r
         assert calls["n"] == 1
         assert calls["text"] == "によって説明される"

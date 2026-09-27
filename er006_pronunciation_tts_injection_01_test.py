@@ -92,10 +92,43 @@ def test_multiple_entities_all_included():
     print("PASS: test_multiple_entities_all_included")
 
 
+def test_cascade_unresolved_entity_excluded_even_high_confidence():
+    # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet
+    # 修正1回目、Opus L2 BLOCKER-1是正(ii)): entity_type=
+    # "cascade_unresolved_entity"(ASR Cascade Human Review packaging専用)
+    # のentryは、confidenceが高くてもTTS注入対象にならないこと。
+    def run():
+        key = ledger.LedgerKey(surface="Kristie Tse", entity_type="cascade_unresolved_entity")
+        ledger.upsert(key, {"pronunciation_hint": "KRIS-tee see", "confidence": "high"})
+        style_prefix = "Speak naturally."
+        text = "Kristie Tse gave an interview yesterday."
+        augmented, hits = inject.augment_style_prefix_with_pronunciation(style_prefix, text)
+        assert augmented == style_prefix
+        assert hits == []
+    _use_temp_ledger(run)
+    print("PASS: test_cascade_unresolved_entity_excluded_even_high_confidence")
+
+
+def test_tts_injection_disabled_entry_excluded():
+    def run():
+        key = ledger.LedgerKey(surface="Ottoni", entity_type="person")
+        ledger_id = ledger.upsert(key, {"pronunciation_hint": "oh-TOH-nee", "confidence": "high"})
+        ledger.set_tts_injection_disabled(ledger_id, "test isolation")
+        style_prefix = "Speak naturally."
+        text = "Ottoni and colleagues published a study in 2016."
+        augmented, hits = inject.augment_style_prefix_with_pronunciation(style_prefix, text)
+        assert augmented == style_prefix
+        assert hits == []
+    _use_temp_ledger(run)
+    print("PASS: test_tts_injection_disabled_entry_excluded")
+
+
 if __name__ == "__main__":
     test_no_hint_when_no_entity_present()
     test_hint_added_when_entity_present()
     test_spoken_text_never_modified()
     test_low_confidence_excluded_by_default()
     test_multiple_entities_all_included()
+    test_cascade_unresolved_entity_excluded_even_high_confidence()
+    test_tts_injection_disabled_entry_excluded()
     print("ALL TESTS PASSED")

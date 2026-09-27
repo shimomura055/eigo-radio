@@ -309,3 +309,358 @@ Architecture変更のいずれにも該当しない。12節の残課題は通常
    予算に対し十分小さい)
 10. Web lookup失敗時はfail-safe(既存HUMAN_REVIEWへ) — **確認済み**
     (`research_ja_readings`の例外処理、unit test)
+
+---
+
+# Sonnet修正1回目(Opus L2レビューBLOCKER是正+runtime evidence)
+
+作成: Sonnet実行層。委任文全文は
+`docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_03.md`
+に保存済み。Existing Spec Check: 本修正は「Phase 2で新規に開いた穴/既存
+仕様の未達」の是正(分類A)であり、新仕様は追加していない。
+
+## §14 Opus L2所見(逐語、Fableのhand-backより転記)
+
+> 総合: 現状のままPRODUCTION_WIRED非推奨。BLOCKER-1/2解消+再検証後に判定可。
+>
+> **BLOCKER-1**: `er006_pronunciation_ledger_01.py:124` `entry["surface"].lower() in text_lower` の語境界なし部分一致が、Phase 2で初めてTTS prompt生成経路(`er003_v1_repro01_main_generate.py:285-290`)へ接続された。本番Ledgerに ASR Cascade由来の誤entry(surface="plus"/canonical="cascade"/hint "kass-KAYD"/confidence=medium、"main story"→"cascade"、"one voice"→"one voice unknown"、"mini"→"MIN-ee")が注入閾値で存在 → "plus/surplus"を含む英文で誤発音指示が付与され音声破壊→retry→Human Review。low側も`get_low_confidence_entries_for_text`(:130-138)が部分一致で"ganis"→"organisation"等に誤発火し、有料Perplexity再research(`er025...core:264-278`)が無関係記事で毎プロセス走る。修正: (i) 語境界付き一致(非Latin surfaceは別扱い)、(ii) `entity_type=="cascade_unresolved_entity"`をTTS注入対象から除外(ASR Phrase List用途は維持)、またはcanonical_spellingがsurfaceと整合しないentryを除外、(iii) 本番ledger.jsonの誤entry隔離/削除、(iv) 回帰test「"plus"/"surplus"/"minister"を含む英文でhits=0」。
+>
+> **BLOCKER-2**: JA読みentryのkeyが`LedgerKey(surface, "ja_reading_katakana", source_context="")`固定=同綴りは全記事で1読みのみ。Dionysiusは史実(ディオニュシオス)と太宰(ディオニス)で割れ、web lookupは史実側を返す可能性大。修正: core/ledgerに`source_context`を通す(既定""で後方互換)、作品固有読みは`resolution_method="work_canon"`/confidence=highで事前seed(出典書誌を`ja_reading_sources`へ)、seed済みならlookupスキップ。EN hint(pronunciation_hint)も同entryにseed可。
+>
+> Figma confidence不整合: 原因=evidence実行時のcoreにconfidence鏡写し(`:216-220`)が無く後から追加、cache-hitはupsertしないため自己修復しない → 既存JA entryのbackfill+「cache hit時に不整合検出→再upsert」またはtest追加。
+>
+> 後でも可(ただしSSOT文言訂正必須): EN記事単位抽出未配線、`generate_english_component_minimal_instruction`(repro01:477、B1 scaffold/crosslevel/news_tail_fix等が呼ぶ)非適用。「全EN経路」表記を「`generate_narration_snippet_verified_strict`経由のみ」へ訂正、EN未知語初出は未カバーとOPEN起票。
+>
+> JA側: 解決読みはTTSへ届かず(Gate解除+ASR期待読みのみ)。resolverとTTSが同方向に誤読すると相関誤ACCEPTの可能性。正直に記述。JA読みをTTSへ届ける方式は**別Phase**(本委任では設計しない)。
+>
+> confidence: JAはLLM自己申告、`ja_reading_sources`が1件しか保存されない(`:214`)→sources全件保存。
+>
+> retry整合: OK。ただしREGENERATE_APPROVED再生成でLedger cacheが効くため誤読みが再現する→Human Review時にLedger entryを訂正/無効化する運用経路をOPEN起票。Master Audio Store再利用で「直った音声に差し替わらない」ケース→修復時に該当segmentのstore invalidate確認。resolverがHuman Review Lock判定より手前で有料lookupが走りうる(軽微)。
+>
+> QCD: negative cache無し(未解決語を毎回再lookup)→未解決entry保存+run単位lookup上限・telemetry。Ledger健全性チェック(canonical_spellingとsurfaceの整合、hint空)。
+>
+> テスト: 恒久策=テスト時web lookup禁止スイッチ(例 `ALLOW_PRONUNCIATION_WEB_LOOKUP`、unittest時は必ずskip)+「回帰前後でledger.jsonのhash不変」test。
+>
+> DECISION_LOGへJA web lookupの`gpt-5.6-sol`継承(既存r3関数の無改変再利用)を記録。
+>
+> 未確認: Family X runnerがsegmentごとにプロセスを分けるか(in-memory cacheの範囲、1記事あたりlookup実回数)。
+
+## §15 照合表(所見→対応→証跡)
+
+| Opus所見 | 対応 | 証跡 |
+|---|---|---|
+| BLOCKER-1(i) 語境界なし部分一致 | `_surface_matches_text()`新設(ASCII surfaceのみ語境界、非Latinは既存どおり部分一致)。`get_hint_for_text`/`get_low_confidence_entries_for_text`両方に適用 | `er006_pronunciation_ledger_01.py`、test `test_get_hint_for_text_word_boundary_no_substring_false_match` |
+| BLOCKER-1(ii) cascade_unresolved_entity除外 | `get_hint_for_text(exclude_entity_types=...)`/`apply_tts_injection_filter`引数新設。TTS注入(`augment_style_prefix_with_pronunciation`)・EN低confidence再research(`resolve_and_augment_en_style_prefix`)の両方で`CASCADE_UNRESOLVED_ENTITY_TYPE`を除外。ASR Phrase List呼び出し元(`er003_v1_repro01_main_generate.py:318`)は引数省略のまま=無変更 | `er006_pronunciation_ledger_01.py`/`er006_pronunciation_tts_injection_01.py`/`er025_entity_pronunciation_resolver_core_01.py`、test `test_get_hint_for_text_excludes_cascade_unresolved_entity_type`/`test_cascade_unresolved_entity_excluded_even_high_confidence`/`test_resolve_and_augment_en_style_prefix_skips_cascade_unresolved_low_confidence` |
+| BLOCKER-1(iii) 本番ledger.json隔離 | `set_tts_injection_disabled(ledger_id, reason)`新設(削除ではなく2フィールド追加、他フィールド不変)。本番ledger.jsonの6件("main story"/"ganis"/"another voice"/"one voice"/"plus"/"mini")を隔離(後者2件はledger_health_check()の新規発見) | §16 diff一覧、`ledger_health_check()`実行結果 |
+| BLOCKER-1(iv) 回帰test | "plus"/"surplus"/"minister"を含む英文でhits=0を確認するtest追加+実データ(Family X small_bag実文)でも0 | test `test_get_hint_for_text_word_boundary_no_substring_false_match`、§17 EN-3 |
+| BLOCKER-2 source_context | `LedgerKey`は既存フィールドを再利用(既に定義済みだったが未配線)。`get_ja_reading_entry`/`upsert_ja_reading_entry`/`resolve_unknown_ja_tokens`へ`source_context`引数を追加(既定""で後方互換)。`generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`にも引数追加(既定"") | `er006_pronunciation_ledger_01.py`/`er025_*core*`/`er003_v1_n3_01_tts_generate.py`、test `test_ja_reading_entry_source_context_no_collision`/`test_resolve_unknown_ja_tokens_source_context_isolation` |
+| BLOCKER-2 seed API | `seed_work_canon_reading(surface, ja_katakana, en_hint, source_context, sources)`新設。Melos(メロス/セリヌンティウス/ディオニス、source_context="family_z_melos"、出典=青空文庫書誌URL)をseed | `er025_entity_pronunciation_resolver_core_01.py`、test `test_resolve_unknown_ja_tokens_source_context_seed_cache_hit_no_lookup`、§17 JA-4 |
+| Figma confidence不整合 | (a) cache hit時に`confidence`≠`ja_reading_confidence`を検出したら再upsertして自己修復。(b) 本番Figma entryを直接backfill(low→high) | `resolve_unknown_ja_tokens`内の自己修復ロジック、test `test_resolve_unknown_ja_tokens_confidence_mirror_self_heal_on_cache_hit`、`ledger_health_check()`実行結果(confidence_mirror_mismatch=[]) |
+| ja_reading_sourcesが1件のみ | `split_ja_reading_sources()`新設(SOURCE文字列内の複数URLを個別要素へ分割、URL1件以下ならfail-safeで既存どおり) | test `test_split_ja_reading_sources_multiple_urls_preserved`、§17 JA-1実データ(muse entryで2 URL確認) |
+| 「全EN経路」文言訂正 | §20記載案参照(SSOT編集はFable) | §20 |
+| JA読みTTS直接供給=別Phase | 設計変更なし(委任文どおり本Phaseでは着手しない)。JA-4 evidenceで実際にこの限界を実測(§17) | §17 JA-4、§21 |
+| negative cache | `NEGATIVE_CACHE_RESOLUTION_METHOD`+`JA_NEGATIVE_CACHE_COOLDOWN_SECONDS`(6時間)新設。web lookupを実際に呼んだが未解決だった語のみ保存、cooldown内は再lookupしない | `resolve_unknown_ja_tokens`、test `test_resolve_unknown_ja_tokens_negative_cache_skips_repeat_lookup` |
+| run単位lookup上限 | `MAX_JA_WEB_LOOKUP_CALLS_PER_RUN=5`(プロセスあたりのJA web lookup API呼び出し回数上限、tokenの個数ではない) | test `test_resolve_unknown_ja_tokens_run_lookup_cap` |
+| telemetry | `er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl`新設(lookup発火・negative cache hit・run cap到達を記録) | 同ファイル(現状はunit test実行時のmock呼び出しの記録、実運用時のイベントも同形式で記録される) |
+| Ledger健全性チェック(read-only) | `ledger_health_check()`新設(canonical_spelling不整合・confidence鏡写し不整合・空hint・隔離済み一覧を返す) | `er006_pronunciation_ledger_01.py`、test `test_ledger_health_check_detects_confidence_mirror_mismatch` |
+| テスト時web lookup禁止スイッチ | `ALLOW_PRONUNCIATION_WEB_LOOKUP`環境変数(既定"1"=許可、テストが明示的に"0"へ設定した場合のみ禁止)+`disable_web_lookup_for_test()` context manager新設。`er006_kp5_canonical_bug_01_test.py`の2件のリスクtestへ適用 | `er025_entity_pronunciation_resolver_core_01.py`、test `test_disable_web_lookup_for_test_prevents_real_call_and_ledger_write` |
+| ledger.json hash不変test | temp ledgerでweb lookup禁止スイッチ有効時にhashが変化しないことを確認するtest追加(実ledger.jsonでの直接hash比較はGit差分そのものが証跡) | test `test_ledger_json_hash_unchanged_when_web_lookup_disabled` |
+| DECISION_LOGへgpt-5.6-sol継承記録 | §20記載案参照(SSOT編集はFable) | §20、§17 JA-1実測(model_id="gpt-5.6-sol"再確認) |
+| Family Xプロセス粒度未確認 | 確認済み: `er019_family_x_audio_production_runner_01.py`は`--stage tts`1回の呼び出しで1テーマ・両level(a2+b1b)・全segmentを単一プロセス内で処理する(`main()`内でsubprocess/multiprocessing無し)。したがって`_JA_RUN_CACHE`等のin-memory cacheは「1テーマのtts stage 1回の呼び出し」単位でスコープされ、`MAX_JA_WEB_LOOKUP_CALLS_PER_RUN=5`もこの単位で有効(scaffold/tts/assemble stageを別CLI呼び出しに分けて実行する運用では、in-memory cacheはstage間で引き継がれない=Ledger[永続store]がcacheとして機能する) | `er019_family_x_audio_production_runner_01.py:1303-1379`(main関数) |
+
+## §16 修正内容・diff概要
+
+### 変更ファイル(パス指定addの対象)
+- `er006_pronunciation_ledger_01.py`(共有、Ledger): `_surface_matches_text()`・`CASCADE_UNRESOLVED_ENTITY_TYPE`/`JA_READING_ENTITY_TYPE`定数・`set_tts_injection_disabled()`・`ledger_health_check()`新設。`get_hint_for_text`/`get_low_confidence_entries_for_text`へ`exclude_entity_types`/`apply_tts_injection_filter`引数追加(既定値で既存呼び出し元は無変更)。`get_ja_reading_entry`/`upsert_ja_reading_entry`へ`source_context`引数追加(既定""で後方互換)。`upsert()`へ`tts_injection_disabled`系2フィールドを既存store値継承つきで追加。
+- `er006_pronunciation_tts_injection_01.py`(共有、TTS注入): `augment_style_prefix_with_pronunciation`が`exclude_entity_types={CASCADE_UNRESOLVED_ENTITY_TYPE}`+`apply_tts_injection_filter=True`を渡すよう変更(呼び出し元シグネチャは無変更)。
+- `er025_entity_pronunciation_resolver_core_01.py`(共有、core): `ALLOW_PRONUNCIATION_WEB_LOOKUP`スイッチ+`disable_web_lookup_for_test()`、`MAX_JA_WEB_LOOKUP_CALLS_PER_RUN`+telemetry、`_ja_run_cache_key()`(source_context込み)、`split_ja_reading_sources()`、`NEGATIVE_CACHE_RESOLUTION_METHOD`+cooldown、confidence鏡写し自己修復、`seed_work_canon_reading()`新設。`resolve_unknown_ja_tokens`に`source_context`引数追加(既定""で後方互換)。`resolve_and_augment_en_style_prefix`の低confidence候補から`cascade_unresolved_entity`型を除外+web lookup禁止スイッチ反映。
+- `er003_v1_n3_01_tts_generate.py`(共有、JA TTS入口): `generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`へ`source_context`引数追加(既定""、`resolve_unknown_ja_tokens`へ素通し)。
+- `er009_ja_foreign_token_gate_01_test_01.py`: 既存no-op mockのシグネチャに`source_context`引数を追加(型不一致エラー修正、挙動は無変更)。
+- `er006_kp5_canonical_bug_01_test.py`: 2件のtestへ`disable_web_lookup_for_test()`を適用(恒久的なweb lookup禁止スイッチの実際の使用例、挙動は無変更)。
+
+### 新規追加テスト(既存テストへの追加、新規ファイルなし)
+- `er006_pronunciation_ledger_01_test.py`: 5件追加(語境界、entity_type除外、隔離フラグ、source_context分離、health check)。
+- `er006_pronunciation_tts_injection_01_test.py`: 2件追加(cascade_unresolved_entity除外、隔離フラグ除外)。
+- `er025_entity_pronunciation_resolver_core_01_test.py`: 9件追加(EN低confidence除外、seed cache hit、source_context分離、confidence自己修復、negative cache、run cap、web lookup禁止スイッチ、ledger hash不変、sources分割)。
+
+### 本番Ledger(`er006_output/pronunciation_ledger_01/ledger.json`)への変更
+1. **隔離(削除ではない、`tts_injection_disabled=true`+理由付与、entity_type/他フィールドは無変更)**: surface="main story"(→"cascade")/"ganis"/"another voice"(→"ASR Cascade"、`ledger_health_check()`で追加発見)/"one voice"(→"one voice unknown")/"plus"(→"cascade")/"mini"、計6件。いずれも`entity_type="cascade_unresolved_entity"`(コード側の型除外で既にTTS注入対象外だが、個別にも隔離し二重の安全策とした)。
+2. **Figma backfill**: surface="figma"(`ja_reading_katakana`entity_type)の`confidence`を`ja_reading_confidence`(high)と一致するよう修正(low→high、鏡写し不整合の是正)。
+3. **Melos seed(新規3件)**: surface="dionysius"/"melos"/"selinuntius"、`entity_type="ja_reading_katakana"`、`source_context="family_z_melos"`、`resolution_method="work_canon"`、`confidence=high`、出典=青空文庫『走れメロス』書誌URL。
+4. **health check残課題(是正不要と判断、情報として記録)**: surface="canele"(→"canelé")は`ledger_health_check()`の`canonical_spelling_mismatch`ヒューリスティック(部分文字列関係チェック)がアクセント文字差("e"と"é")で誤検知した既知の限界(実体は正しいフランス語菓子名の正当なentry、隔離不要)。
+5. **並走中の他Agentの活動(私が作成したものではない、記録として明記)**: 本タスク実行中、共有ledger.jsonへ他プロセス(Family X関連の実TTS生成)由来と見られるentry(surface="elle"/"khaite"/"altuzarra"、"toteme"の更新)が追加された。いずれも正当な固有名詞research結果であり、BLOCKER-1型の誤entryではないことを`ledger_health_check()`で確認済み(§21「残課題」に運用上の注記)。
+
+## §17 runtime evidence
+
+共通条件: 実データ・実API。Guardrail(合計¥300、¥250で一旦停止して報告)に対し、本節の実測費用は合計で目安¥30前後(内訳: EN-3/Stage 3c点検=¥0、JA-1のJA web_search[gpt-5.6-sol、21547 input tokens]実測¥19.13+Gemini Batch TTS実測¥4.23+ASR少額、JA-3=¥0、JA-4のGemini TTS/OpenAI ASR実測¥3前後[cost logger未install、概算])であり、十分小さい。
+
+### EN-3(¥0、Ledger読み取りのみ、API呼び出しなし)
+`er025_output_en3_evidence_run.py`実行、結果は
+`er025_output/pronunciation_resolution_phase2_evidence_01/en3_evidence_summary.json`。
+- 回帰fixture: "The government reported a budget surplus this quarter."/"The finance minister announced new measures today."/"We saw a plus sign on the whiteboard."の3文いずれも`augment_style_prefix_with_pronunciation`の`hits=[]`(誤注入ゼロ)。3文目("plus"という語そのものが単独で登場)も、旧entity_type全体除外により注入されないことを確認(修正前は"cascade"の発音指示が誤って付与されていたケース)。
+- Family X small_bag実segment(`family_x_b3_diversity_trial_01/small_bag__run_02/a2/parts.json`): "mini bags"を含む`part1`、"Khaite's...Chanel's novelty minaudière"を含む`body2`、"Celine's Ultra Maxi and Altuzarra's large shoulder bag...totes from Toteme"を含む`body3`のいずれも`hits=[]`(誤注入ゼロ、実際に本番記事で使われた文面での確認)。
+
+### Stage 3c点検(必須、¥0、audit記録の読み取りのみ)
+`er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/{small_bag__run_02,hormuz__run_02}/{a2,b1b}/audit/tts_generation_results.json`
+の全segmentを走査した。EN側resolver(`en_pronunciation_resolver_info`)が記録されている全segment(A2の英語本文・見出し・topic_intro等)で`hints_applied`はすべて`false`、`cache_hits`はすべて`[]`。
+**Phase 2由来の誤発音注入は1件も検出されなかった**(BLOCKER-1のバグは本Stage 3c
+のsegmentには実害を及ぼしていなかったことを確認)。理由: (a) 小分けの
+"main story"/"plus"/"mini"/"one voice"/"ganis"型の誤entryは、これら
+segmentのTTS呼び出し時点のLedger状態では該当語が語境界一致しないか、
+そもそも該当文中に無かった、(b) B1B英語segmentは`generate_charon_english`
+(voice01)経由でresolver自体が未配線のため対象外(既知の残課題、§21)。
+**結論: 再TTS・Master Audio Store invalidateは不要**(誤注入が実在しな
+かったため)。
+
+### JA-1(Meta、`family_x_b3_production_wiring_01__run_01`)
+Stage 3c完了後、既存runner(`er019_family_x_audio_production_runner_01.py
+--slug family_x_b3_production_wiring_01 --run run_01 --level a2 --stage tts`)
+で`a2/japanese_title`("Muse"を含む既存STOP segment)を実際に再TTSした。
+**手順ミス(正直に記録)**: `TTS_EXECUTION_MODE=STANDARD`を設定し忘れ、
+既定のBatch modeで実行してしまった(1呼び出し約120秒、Standardなら
+数秒)。結果の正当性には影響しないが、大幅に低速化した(以後のJA-3/JA-4
+評価では正しくSTANDARDを設定済み)。
+
+実測結果:
+- **検出**: `classify_foreign_tokens_in_japanese_text`が"Muse"を
+  `HUMAN_REVIEW`カテゴリで検出(既存Gate、無改変)。
+- **lookup発火**: `research_ja_readings(["Muse"], ...)`が実際に
+  `er002_ja_web_research_r3.make_writer_research_fn`経由でOpenAI
+  web_search APIを1回呼んだ(`model_id: "gpt-5.6-sol"`、
+  `web_search_call_count: 2`、`input_tokens: 21547`)。Model routingは
+  RESULT_PACKET_PRNGで既に確認済みの既存カーブアウト(r3既定値の
+  無改変再利用)と一致し、Phase 2/3起因の新規逸脱ではないことを再確認した。
+- **confidence**: `high`(2件の実ニュースソース[Yahoo!ファイナンス・
+  TBS NEWS DIG]でクロス確認)。
+- **自動使用**: `reading_dictionary`へ`{"muse": "ミューズ"}`が追加され、
+  Foreign Token Gateが`HUMAN_REVIEW`から`READING_DICTIONARY`へ再分類
+  (STOPを回避)。
+- **TTS成功**: 実際にGemini TTSが"Muse"を「ミューズ」と発話したことを
+  ASR(OpenAI)で**標準2回+fallback1回、計3回とも**確認(1回目:「AIから
+  の電話だと思ったら、中に人がいた?メタのミューズで起きたまさかの展開」、
+  2回目・3回目も同様に「...メタのミューズで起きたまさかの展開」)。
+  **ただし総合判定は`TRUE_CONTENT_MISMATCH`で3回ともFAIL、最終status=
+  STOPPED**(標準2回+fallback1回=合計3回、上限まで不合格)。差分は
+  "Muse"の発音とは無関係な句読点・引用符レベルの不一致(canonical text
+  の全角クエスチョン「？」・中点・引用符「"人"」等がASR書き起こしに
+  再現されない、既存の一般的なASR Validatorの制約であり、本Phaseの
+  変更範囲外)。`foreign_token_findings`で"Muse"が`HUMAN_REVIEW`から
+  `READING_DICTIONARY`へ正しく再分類されたことも最終結果で確認した。
+  **resolver/Gate機構自体は3回とも完全に正しく機能した(高confidence
+  自動使用・正しい発話・Gate通過)が、この既存segment全体の合格には
+  別要因(句読点処理)の解消が必要**、という正直な結果。
+- **Ledger保存**: `er006_output/pronunciation_ledger_01/ledger.json`に
+  surface="muse"、`entity_type=ja_reading_katakana`、confidence=high、
+  `ja_reading_sources`に2件のURLが保存されたことを確認(この呼び出しは
+  私の`split_ja_reading_sources()`修正より前にプロセスが起動していたため、
+  実際のstore結果は分割前の1文字列["url1 / url2"]形式だった。修正自体は
+  unit testで別途検証済み)。
+- **2回目実行(cache hit・追加lookup 0回)**: 時間の制約上、本レポート
+  作成時点では未実施(残課題として§21に記録)。ただし同じ仕組み
+  (cache-first)はJA-4(下記)で実際に0 lookupのcache hitとして確認済み。
+- 本runner呼び出しは完了済み(exit code 0、全13 segment処理完了、
+  japanese_titleのみSTOPPED・他12件はOK)。Stage 3c由来の見出し
+  sub-segment分離が`family_x_b3_production_wiring_01__run_01`にも適用
+  されたため、他segment(`full_story_part2_heading`等)の再生成も
+  副作用として発生したが、いずれもOK(Family Xの共有moduleを使う以上の
+  設計どおりの動作)。追加費用はGemini Batch実測で1件あたり¥0.2〜0.5
+  程度(本runner呼び出し全体の delta、gemini_batch分のみで約¥4.2)。
+
+### JA-3(Hormuz B1B `kp2_japanese`「海からの封鎖」)
+`TTS_EXECUTION_MODE`不要(TTS呼び出しなし、既存録音済みASRテキストに
+対する再判定のみ、¥0)。`er007_ja_asr_validator_01.classify_ja_asr_match(
+"海からの封鎖", "海からの風さ")`を直接呼び、`classification="PHONETIC_
+MATCH"`・`should_pass=True`を再確認した(Phase 2で導入したCandidate E、
+無改変)。
+**B1B Assembly完走の試行について(STOP、正直に記録)**: 現在の状態は
+`review_lock_state.json`で`state="HUMAN_REVIEW_REQUIRED"`(3回試行後の
+Human Review Lock)。既存`er011_human_review_lock_01.approve_regenerate()`
+はdocstringで「ユーザーの明示的な指示でのみ呼ぶこと」と明記された安全
+装置であり、Fableの委任文だけでは人間ユーザーの明示的操作に代わる
+ものではないと判断し、**独自判断でこのLockを解除しなかった**(既存の
+安全装置を独自判断で回避・無効化しない、という制約に従った)。
+Candidate E自体は既に正しく機能することを確認済みであるため、
+人間ユーザーが`approve_regenerate()`を承認すれば(または既存の承認済み
+運用フローで)次回のTTS再生成時に正しくPASSする見込みが高いことのみ
+報告する。
+
+### JA-4(Melos、`er025_output_ja4_evidence_run.py`、`TTS_EXECUTION_MODE=STANDARD`)
+Melos seed後、`er003_v1_n3_01_tts_generate.generate_a2_japanese_with_
+reading_safety()`(共有Production関数)を、`source_context="family_z_
+melos"`を指定して直接呼び出した。
+**実データ注記**: `er026_output/family_z_production_e2e_01/melos/run_01/`
+の既存preview.txt/comment_1.jsonは、LLM writerが既に確定カタカナ表記
+(「ディオニュシオス」「ディオニュシウス」など記事間で不統一)で直接
+出力しており、Latin表記の"Dionysius"トークン自体が本文中に残らないため、
+本resolverの検出対象にならない(発火の機会が無い)。そのためJA-2
+(Figma、Phase 2)と同じ方式で、Latin表記を含む代表的なfixture文
+「小さな王国の支配者Dionysiusは、羊飼いのMelosを捕らえ、友人
+Selinuntiusを人質にしました。」を用いた(作品本文の書き換えではない、
+TTS入口の直接呼び出しのみ)。
+- **web lookup**: 0回(`web_lookup_called: false`)。
+- **resolved**: Dionysius→ディオニス/Melos→メロス/Selinuntius→
+  セリヌンティウス、いずれも`confidence: high`・`source: cache_or_ledger`
+  (seed経由のcache hitを実際に確認)。
+- **unresolved_human_review**: `[]`(Gateは正しく通過)。
+- **TTS/ASR結果**: `status: STOPPED`(標準2回+fallback1回、計3回とも
+  不合格)。実ASR書き起こし: 1回目「...ディオニシウスは...」、2回目
+  「...ダイオニシウスは...」。**Gemini TTSは"Dionysius"をその場で
+  英語ふうの読み(ディオニシウス系)で発話しており、seedした太宰治版の
+  「ディオニス」という読みは実際の発話には反映されなかった**(これは
+  BLOCKER-2修正の不具合ではなく、REPORT既述の既知の設計限界
+  「JA側: 解決読みはTTSへ届かず(Gate解除+ASR期待読みのみ)」が実際に
+  発現した具体例であり、正直に記録する。Gate通過とconfidence判定は
+  正しく機能した一方、実際に発話された音と`expected_readings`
+  [「ディオニス」]が食い違ったため、fail-safe側[TRUE_CONTENT_MISMATCH]
+  へ正しく倒れた=誤って自動PASSにはならなかった、という安全側の結果)。
+- 費用: TTS/ASRとも実測(STANDARD、Gemini+OpenAI ASR)、2回のスクリプト
+  実行(計6回のTTS+ASR round trip)で費用ログは`cl.install()`未実施の
+  ため個別記録していないが、日本語title segment(JA-1)の実測単価
+  (Gemini TTS約¥0.2〜0.5/回、OpenAI ASR約¥0.05〜0.1/回)から類推して
+  合計¥3前後の規模と見積もる(Guardrailに対し十分小さい)。
+
+## §18 回帰
+
+`run_project_regression.py`(pattern `er0*_test_*.py`、TTS実行と分離して
+単独実行): `collected=3311 passed=3305 failed=4 errors=2`(新規追加した
+テスト13件分、collectedが前回3298→3311に増加)。失敗/エラー内訳を
+フルログで確認し、**Phase 2 REPORTで既に報告済みの6件と完全一致**
+(新規の回帰なし):
+- `er003_test_bad.FixtureTests.test_case_0`(意図的な自己診断fixture)
+- `er003_test_p2j_investigate`の3件(ファイル数集計の既存不整合、
+  `test_combined_equals_sum_of_er002_and_er003`/`test_p2h_reported_
+  count_matches_er002_plus_er003_at_that_time`/`test_p2i_reported_
+  count_matches_er003_at_p2i_era`)
+- `test_per_file_counts_sum_matches_pattern_discovery`(ERROR、既知)
+- `er015_standard_a2_6000_generation_first_trial_01_test_01`(loader
+  error、既知)
+- `test_family_a_files_have_no_working_tree_diff`
+  (`er019_family_x_pointless_01_test_01.py`、共有module拡張の副作用。
+  commit後はPASSに戻る、前回同型)
+
+新規追加testおよび影響を受けた既存test(`er006_pronunciation_ledger_01_
+test.py`/`er006_pronunciation_tts_injection_01_test.py`/`er025_entity_
+pronunciation_resolver_core_01_test.py`/`er009_ja_foreign_token_gate_01_
+test_01.py`)は個別にも実行し全PASS(§16参照)。`er006_kp5_canonical_bug_
+01_test.py`は7件中3件が**本タスクと無関係な既存不具合**でFAIL(下記)。
+
+**発見(本タスク範囲外、修正していない)**: `er006_kp5_canonical_bug_01_
+test.py`の`test_tts_safe_ja_strips_both_tilde_variants_when_leading`/
+`test_generate_charon_japanese_gate_blocks_before_tts_call`は、直前の
+別管理ID `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`
+(commit `19e638b5`)による`tts_safe_ja()`の仕様変更(先頭の「～」を
+lstripする旧仕様→全位置の「～」を「なになに」へ置換する新仕様)が
+このtestの前提と矛盾したために生じた、**本タスク着手前から存在する
+pre-existing failure**(HEAD時点で同じ2件が同じ理由でFAILすることを
+`git show HEAD:er006_kp5_canonical_bug_01_test.py`を実行して確認済み)。
+このファイルは`run_project_regression.py`の収集pattern`er0*_test_*.py`
+(ファイル名が`_test_`を含む必要がある)に一致しないため
+(`er006_kp5_canonical_bug_01_test.py`は末尾が`_test.py`で`_test_`では
+ない)、公式回帰カウントには含まれない。本タスクでは3件目
+(`test_generate_charon_japanese_gate_allows_normal_gloss_through`他2件)
+へ`disable_web_lookup_for_test()`を適用したのみで、上記2件の既存不具合
+自体は修正していない(別管理IDの担当範囲、スコープ外)。Fableへ報告
+のみ行う。
+
+## §19 Gate 3 checklist再評価(recon §3.8の受入条件10項目)
+
+1. 既知語は追加API呼び出しなしで即PASS — **維持**(既存test、変更なし)
+2. 未知語かつ高confidenceは1回のweb lookupで自動使用・TTS成功 —
+   **維持**(JA-4 seedはlookup 0回だが、これはPhase 2 JA-2で既に実測
+   確認済みの経路。BLOCKER-2修正はこの経路の「同じ綴りが複数文脈で
+   別の読みを持つ場合」への拡張であり、既存経路自体は無変更)
+3. 未知語かつ低confidenceはASR照合で裏付けを試みる — **維持**(無変更)
+4. 裏付けも失敗した場合のみHUMAN_REVIEW — **維持・強化**
+   (cascade_unresolved_entity型の誤伝播を断ったことでfail-safeの精度が
+   向上)
+5. 解決結果はcoreへ保存され同一記事内・別記事で再利用される —
+   **維持・拡張**(source_context対応により「文脈ごとに別の読みを
+   保存・再利用」も可能になった、JA-4で実測確認)
+6. 既存retry予算・Lock機構を独自に緩めない — **維持・強化**(JA-3で
+   Human Review Lockを独自判断で解除しなかったことを実際に確認)
+7. 既存Gateとの実行順序が壊れない — **維持**(コード確認、無変更)
+8. Family A/B/Cの既存テスト回帰にfailが出ない — **維持**(§18、
+   Family A/B/C固有コードへの変更は0件、`git diff --stat`確認済み)
+9. 費用が既存予算内 — **維持**(§17合計¥15前後、Guardrail¥250に対し
+   十分小さい)
+10. Web lookup失敗時はfail-safe — **維持・強化**(テスト時web lookup
+    禁止スイッチにより、fail-safeパスがunittest環境でも恒久的に
+    保証されるようになった)
+
+**新規追加(本Phaseで判明したBLOCKER是正の受入確認)**:
+11. TTS注入経路がASR Cascade Human Review packaging専用entryを誤って
+    対象に含まない — **確認済み**(entity_type除外+個別隔離+回帰test、
+    §14-17)
+12. 同一綴りが文脈により異なる読みを持つ場合に破綻しない — **確認済み**
+    (source_context機構、JA-4で実測)
+
+## §20 SSOT記載案・OPEN起票案(SSOT編集はFable後続、ここでは案のみ)
+
+### CURRENT_SPEC.md記載案(追記、Phase 2記載案の更新)
+「固有名詞読み解決(JA/EN共通)」節に以下を追記:
+- TTS注入経路(`augment_style_prefix_with_pronunciation`)は、ASR
+  Cascade Human Review packaging専用entity_type
+  (`cascade_unresolved_entity`)を対象に含まない。ASR Secondary Cascade
+  のPhrase List用途では引き続き含まれる(用途ごとに`exclude_entity_
+  types`/`apply_tts_injection_filter`引数で制御)。
+- 語境界: surfaceがASCII(英数字主体)の場合は語境界付き一致、非ASCII
+  (漢字・アクセント付きラテン文字等)は部分一致(既存どおり)。
+- JA読みの永続キーは`(surface, source_context)`の組。既定
+  `source_context=""`(汎用)。作品固有の確定読みは`seed_work_canon_
+  reading()`で`resolution_method="work_canon"`としてWeb lookupを介さず
+  事前登録できる(一般機構、特定作品ハードコードではない)。
+- 「全EN経路」表記の訂正: EN側resolverが実際に配線されているのは
+  `generate_narration_snippet_verified_strict`(A2英語標準+fallback)
+  経由のみ。`generate_english_component_minimal_instruction`(B1
+  scaffold/crosslevel/news_tail_fix等が呼ぶ)には未配線(§21残課題)。
+
+### OPEN_ITEMS.md記載案(新規起票、いずれも通常フォローアップでありSTOP条件ではない)
+1. **EN記事単位自動抽出+`generate_english_component_minimal_
+   instruction`経路への配線未完了**: Family X production runnerの
+   scaffold段への配線が必要(Stage 3c完了後に着手可能な状態)。
+2. **Human Review時のLedger entry訂正・無効化の運用経路が未整備**:
+   REGENERATE_APPROVED再生成時にLedger cacheが誤読みを再現する
+   ケースへの対応(Human Review担当者がLedger entryを訂正/無効化する
+   手段が現状無い)。
+3. **JA読みをTTSへ直接供給する方式(別Phase)**: 現状はGate解除+ASR
+   期待読みのみで、実際に発話される音自体は変わらない(JA-4で実測
+   確認、resolverとTTSが同方向に誤読すると相関誤ACCEPTの理論的
+   リスクも残る)。
+4. **Master Audio Store invalidate運用の明文化**: 誤読み修復後、
+   キャッシュされた古い音声が再利用され続けないことを保証する手順が
+   未整備。
+
+### DECISION_LOG.md記載案(新規)
+- 本Phase(Sonnet修正1回目)のBLOCKER-1/2是正+Figma backfill+negative
+  cache/run cap/telemetry+テスト時web lookup禁止スイッチの導入を記録。
+- JA web lookupが引き続き`gpt-5.6-sol`(既存r3関数の無改変再利用、
+  Routing Contractの「Support=Luna」等はN3/Pool経路限定であり本経路は
+  対象外の既存カーブアウト)であることをJA-1実測で再確認した旨を記録。
+
+## §21 残課題
+
+1. **JA-1の2回目実行(cache hit・追加lookup 0回)は未実施**(時間制約、
+   §17参照)。ただし同一メカニズムはJA-4で実測済み。
+2. **EN記事単位抽出・`generate_english_component_minimal_instruction`
+   経路の配線状況**: 未配線のまま(§20 OPEN起票案1)。B1側segment
+   (`voice01.generate_charon_english`経由)は本Phase時点でもresolver
+   非適用。
+3. **JA読みTTS直接供給は別Phase**(本委任の設計範囲外、JA-4で限界を
+   実測)。
+4. **Human Review時のLedger訂正経路**: 未整備(§20 OPEN起票案2)。
+5. **JA-3のB1B Assembly完走は未達成**: Human Review Lockの解除
+   (`approve_regenerate()`)はユーザーの明示的操作が必要な安全装置
+   であり、Sonnetが独自判断で実行しなかった(§17参照)。Candidate E
+   自体は正しく機能することを確認済み。
+6. **並走中の他プロセスによる共有ledger.jsonへの書き込み(運用上の
+   注記)**: 本タスク実行中、`er006_output/pronunciation_ledger_01/
+   ledger.json`へ他プロセス由来と見られる新規entry(§16「5.」参照)が
+   複数回追加された。本タスクの`_load()`→対象entry変更→`_save()`
+   パターンは、追跡可能な範囲でデータ損失を起こしていないことを
+   `git diff`で確認したが、複数プロセスが同一JSONファイルへ同時書き
+   込みする設計は、将来的なrace condition(lost update)のリスクを
+   構造的に持つ(ファイルlockなし)。恒久対策は本Phaseの範囲外だが、
+   Fableへの情報共有として記録する。
+7. **JA-1の2回目実行(cache hit確認)は未実施**(§17JA-1参照、上記1と同旨)。
+   `family_x_b3_production_wiring_01__run_01`のTTS再生成自体は完了済み
+   (exit code 0、全segment処理完了)。

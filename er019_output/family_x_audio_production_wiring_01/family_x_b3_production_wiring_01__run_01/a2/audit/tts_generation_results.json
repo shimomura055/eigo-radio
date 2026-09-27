@@ -60,8 +60,69 @@
     },
     "japanese_title": {
       "status": "STOPPED",
-      "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない外来語/記号表記が残っています(Human Review待ち)。",
+      "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+      "standard_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 7.33,
+          "asr_text": "AIからの電話だと思ったら、中に人がいた?メタのミューズで起きたまさかの展開",
+          "asr_text_length": 38,
+          "max_len": 73,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/japanese_title_attempt1_standard.wav"
+        },
+        {
+          "attempt": 2,
+          "status": "OK",
+          "duration_seconds": 7.64,
+          "asr_text": "AIからの電話だと思ったら、中に人がいた!? メタのミューズで起きたまさかの展開",
+          "asr_text_length": 40,
+          "max_len": 73,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": false,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": null,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/japanese_title_attempt2_standard.wav"
+        }
+      ],
+      "fallback_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "AIからの電話だと思ったら、中に人がいた!?メタのミューズで起きたまさかの展開",
+          "audio_classification": "TRUE_CONTENT_MISMATCH",
+          "reading_resolver_info": null,
+          "verified": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/japanese_title_attempt3_minimalfallback.wav"
+        }
+      ],
       "canonical_text": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+      "tts_input_text_after_reading_safety": "AIからの電話だと思ったら、中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+      "reading_safety_changed_text": true,
       "foreign_token_findings": [
         {
           "token": "AI",
@@ -77,10 +138,53 @@
         },
         {
           "token": "Muse",
-          "category": "HUMAN_REVIEW",
-          "reason": "日本語canonical text中の未対応の英字/記号表記です: 'Muse'。機械的に「言い換え」「辞書対応」「意図的な英語発話」のいずれとも判定できないため、人による確認が必要です。"
+          "category": "READING_DICTIONARY",
+          "reason": "読み方辞書に登録済みの表記です(読み: ミューズ)",
+          "reading": "ミューズ"
         }
-      ]
+      ],
+      "ja_pronunciation_resolver_info": {
+        "reading_dictionary": {
+          "muse": "ミューズ"
+        },
+        "resolved": [
+          {
+            "surface": "Muse",
+            "reading": "ミューズ",
+            "confidence": "high",
+            "source": "https://finance.yahoo.co.jp/news/detail/32028ec6edf29817b80d1ebd15461ae830d60564 / https://newsdig.tbs.co.jp/articles/withbloomberg/2963426?display=1"
+          }
+        ],
+        "unresolved_human_review": [],
+        "web_lookup_called": true,
+        "research_meta": {
+          "raw_text": "READING: Muse = ミューズ | CONFIDENCE: high | SOURCE: https://finance.yahoo.co.jp/news/detail/32028ec6edf29817b80d1ebd15461ae830d60564 / https://newsdig.tbs.co.jp/articles/withbloomberg/2963426?display=1",
+          "model": "gpt-5.6-sol",
+          "response_id": "resp_0bb45047217b5179006ab8db2eccd087d0a844524feeeb4206",
+          "search_usage": {
+            "web_search_call_count": 2,
+            "queries": [
+              "Meta Muse AI 電話 人間 日本語 ミューズ",
+              "site:meta.com/ja-jp Muse Meta ミューズ",
+              "Muse Meta AI phone calls human inside",
+              "\"Muse（ミューズ）\" Meta AI",
+              "\"Muse（ミューズ\" \"Meta\"",
+              "メタ \"ミューズ\" AIエージェント",
+              "Meta Muse ミューズ ロイター 日本語"
+            ]
+          },
+          "sources": [],
+          "parsed": [
+            {
+              "surface": "Muse",
+              "reading": "ミューズ",
+              "confidence": "high",
+              "source": "https://finance.yahoo.co.jp/news/detail/32028ec6edf29817b80d1ebd15461ae830d60564 / https://newsdig.tbs.co.jp/articles/withbloomberg/2963426?display=1"
+            }
+          ],
+          "skipped": false
+        }
+      }
     },
     "preview": {
       "status": "OK",
@@ -745,493 +849,6 @@
       "canonical_text": "Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.",
       "reused_from_previous_run": true
     },
-    "full_story_part2": {
-      "status": "OK",
-      "text": "The hidden person behind the AI sign Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-      "language": "en",
-      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2.wav",
-      "model": "gemini-2.5-pro-preview-tts",
-      "voice": "Aoede",
-      "call_count": 1,
-      "retry_count": 0,
-      "sha256": "848ad5c320c35b4c652749ab18d54caf5ab5cfce9a757e51e612b022212ec7b4",
-      "duration_seconds": 52.946,
-      "trim_info": {
-        "raw_duration_seconds": 52.957,
-        "raw_leading_silence_seconds": 0.254,
-        "raw_trailing_silence_seconds": 0.382,
-        "trimmed_duration_seconds": 52.946,
-        "leading_margin_retained_seconds": 0.254,
-        "trailing_margin_retained_seconds": 0.371
-      },
-      "clipping_detected": false,
-      "asr_verified": true,
-      "asr_text": "The hidden person behind the AI sign. Here was the reveal: the test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic: Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-      "attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "duration_seconds": 47.931,
-          "asr_text": "The hidden person behind the AI sign. Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a human was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic. Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-          "asr_text_length": 675,
-          "max_len": 735,
-          "substring_ok": null,
-          "length_ok": true,
-          "phonetic_verdict": null,
-          "audio_classification": "TRUE_CONTENT_MISMATCH",
-          "connected_speech_info": null,
-          "reading_resolver_info": null,
-          "verified": false,
-          "disfluency_checked": false,
-          "disfluency_evidence": null,
-          "repetition_qa_checked": false,
-          "repetition_qa_evidence": null,
-          "asr_prompt_applied": false,
-          "non_latin_cascade_enabled": false,
-          "non_latin_cascade_invoked": false,
-          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part2_attempt1_custom35d6860b.wav"
-        },
-        {
-          "attempt": 2,
-          "status": "OK",
-          "duration_seconds": 49.961,
-          "asr_text": "The hidden person behind the AI sign. Here was the reveal: The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic. Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-          "asr_text_length": 676,
-          "max_len": 735,
-          "substring_ok": null,
-          "length_ok": true,
-          "phonetic_verdict": null,
-          "audio_classification": "NORMALIZED_MATCH",
-          "connected_speech_info": null,
-          "reading_resolver_info": null,
-          "verified": true,
-          "disfluency_checked": false,
-          "disfluency_evidence": null,
-          "repetition_qa_checked": true,
-          "repetition_qa_evidence": {
-            "flagged": false,
-            "duration_seconds": 49.961,
-            "method_a_ngram": {
-              "matches": [
-                {
-                  "span_text": " will  want  to  know",
-                  "n_words": 4,
-                  "category": "phrase",
-                  "first_start_s": 43.68,
-                  "first_end_s": 44.68,
-                  "second_start_s": 46.82,
-                  "second_end_s": 47.74,
-                  "gap_seconds": 2.14,
-                  "canonical_repeat_count": 2,
-                  "intentional": true,
-                  "flagged": false
-                }
-              ],
-              "flagged": false,
-              "flagged_matches": [],
-              "word_count": 129,
-              "canonical_known": true,
-              "min_words": 3
-            },
-            "method_d_spectral_long_lag": {
-              "top_matches": [
-                {
-                  "similarity": 0.9967,
-                  "time_a_seconds": 2.07,
-                  "time_b_seconds": 22.39,
-                  "lag_seconds": 20.32,
-                  "run_length_seconds_at_thresh_0.85": 0.08
-                },
-                {
-                  "similarity": 0.9966,
-                  "time_a_seconds": 15.67,
-                  "time_b_seconds": 29.28,
-                  "lag_seconds": 13.61,
-                  "run_length_seconds_at_thresh_0.85": 0.03
-                },
-                {
-                  "similarity": 0.9965,
-                  "time_a_seconds": 0.3,
-                  "time_b_seconds": 39.47,
-                  "lag_seconds": 39.17,
-                  "run_length_seconds_at_thresh_0.85": 0.01
-                },
-                {
-                  "similarity": 0.9962,
-                  "time_a_seconds": 31.06,
-                  "time_b_seconds": 47.48,
-                  "lag_seconds": 16.42
-                },
-                {
-                  "similarity": 0.996,
-                  "time_a_seconds": 8.1,
-                  "time_b_seconds": 47.49,
-                  "lag_seconds": 39.39
-                }
-              ],
-              "best_run_length_seconds": 0.08,
-              "min_lag_seconds": 1.0,
-              "sim_threshold": 0.85,
-              "decision_threshold_seconds": 0.12,
-              "acoustic_flagged": false,
-              "local_asr_confirmation": null,
-              "flagged": false
-            },
-            "method_d_prime_spectral_short_lag": {
-              "run_length_seconds": 0.36,
-              "time_a": 22.17,
-              "lag": 0.6,
-              "similarity_at_start": 0.8215,
-              "best_run_length_seconds": 0.36,
-              "lag_range_seconds": [
-                0.5,
-                2.0
-              ],
-              "sim_threshold": 0.7,
-              "decision_threshold_seconds": 0.6,
-              "flagged": false
-            },
-            "method_c_v2_window_check": null
-          },
-          "asr_prompt_applied": false,
-          "non_latin_cascade_enabled": false,
-          "non_latin_cascade_invoked": false,
-          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part2_attempt2_custom35d6860b.wav"
-        }
-      ],
-      "audio_classification": "NORMALIZED_MATCH",
-      "connected_speech_info": null,
-      "reading_resolver_info": null,
-      "disfluency_checked": false,
-      "disfluency_evidence": null,
-      "repetition_qa_checked": true,
-      "repetition_qa_evidence": {
-        "flagged": false,
-        "duration_seconds": 49.961,
-        "method_a_ngram": {
-          "matches": [
-            {
-              "span_text": " will  want  to  know",
-              "n_words": 4,
-              "category": "phrase",
-              "first_start_s": 43.68,
-              "first_end_s": 44.68,
-              "second_start_s": 46.82,
-              "second_end_s": 47.74,
-              "gap_seconds": 2.14,
-              "canonical_repeat_count": 2,
-              "intentional": true,
-              "flagged": false
-            }
-          ],
-          "flagged": false,
-          "flagged_matches": [],
-          "word_count": 129,
-          "canonical_known": true,
-          "min_words": 3
-        },
-        "method_d_spectral_long_lag": {
-          "top_matches": [
-            {
-              "similarity": 0.9967,
-              "time_a_seconds": 2.07,
-              "time_b_seconds": 22.39,
-              "lag_seconds": 20.32,
-              "run_length_seconds_at_thresh_0.85": 0.08
-            },
-            {
-              "similarity": 0.9966,
-              "time_a_seconds": 15.67,
-              "time_b_seconds": 29.28,
-              "lag_seconds": 13.61,
-              "run_length_seconds_at_thresh_0.85": 0.03
-            },
-            {
-              "similarity": 0.9965,
-              "time_a_seconds": 0.3,
-              "time_b_seconds": 39.47,
-              "lag_seconds": 39.17,
-              "run_length_seconds_at_thresh_0.85": 0.01
-            },
-            {
-              "similarity": 0.9962,
-              "time_a_seconds": 31.06,
-              "time_b_seconds": 47.48,
-              "lag_seconds": 16.42
-            },
-            {
-              "similarity": 0.996,
-              "time_a_seconds": 8.1,
-              "time_b_seconds": 47.49,
-              "lag_seconds": 39.39
-            }
-          ],
-          "best_run_length_seconds": 0.08,
-          "min_lag_seconds": 1.0,
-          "sim_threshold": 0.85,
-          "decision_threshold_seconds": 0.12,
-          "acoustic_flagged": false,
-          "local_asr_confirmation": null,
-          "flagged": false
-        },
-        "method_d_prime_spectral_short_lag": {
-          "run_length_seconds": 0.36,
-          "time_a": 22.17,
-          "lag": 0.6,
-          "similarity_at_start": 0.8215,
-          "best_run_length_seconds": 0.36,
-          "lag_range_seconds": [
-            0.5,
-            2.0
-          ],
-          "sim_threshold": 0.7,
-          "decision_threshold_seconds": 0.6,
-          "flagged": false
-        },
-        "method_c_v2_window_check": null
-      },
-      "fallback_used": false,
-      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_original.wav",
-      "slowdown_applied": true,
-      "slowdown_info": {
-        "slowdown_pct_target": 6.0,
-        "slowdown_pct_actual": 5.974,
-        "src_duration_seconds": 49.961,
-        "dst_duration_seconds": 52.946,
-        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_original.wav",
-        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2.wav"
-      },
-      "post_slowdown_asr_text": "The hidden person behind the AI sign. Here was the reveal: the test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic: Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-      "post_slowdown_classification": "NORMALIZED_MATCH",
-      "post_slowdown_semantic_equivalence": null,
-      "slowdown_attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "post_slowdown_classification": "NORMALIZED_MATCH"
-        }
-      ],
-      "canonical_text": "The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
-      "reused_from_previous_run": true
-    },
-    "full_story_part3": {
-      "status": "OK",
-      "text": "Meta admits a mistake A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.",
-      "language": "en",
-      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3.wav",
-      "model": "gemini-2.5-pro-preview-tts",
-      "voice": "Aoede",
-      "call_count": 1,
-      "retry_count": 0,
-      "sha256": "5b9437406de1048547f6af8fe0019f68c95b08b62c690f89309a65e8e470ffc6",
-      "duration_seconds": 25.984,
-      "trim_info": {
-        "raw_duration_seconds": 26.079,
-        "raw_leading_silence_seconds": 0.254,
-        "raw_trailing_silence_seconds": 0.466,
-        "trimmed_duration_seconds": 25.984,
-        "leading_margin_retained_seconds": 0.254,
-        "trailing_margin_retained_seconds": 0.371
-      },
-      "clipping_detected": false,
-      "asr_verified": true,
-      "asr_text": "Meta admits a mistake. A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
-      "attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "duration_seconds": 24.521,
-          "asr_text": "Meta admits a mistake. A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
-          "asr_text_length": 298,
-          "max_len": 359,
-          "substring_ok": null,
-          "length_ok": true,
-          "phonetic_verdict": null,
-          "audio_classification": "NORMALIZED_MATCH",
-          "connected_speech_info": null,
-          "reading_resolver_info": null,
-          "verified": true,
-          "disfluency_checked": false,
-          "disfluency_evidence": null,
-          "repetition_qa_checked": true,
-          "repetition_qa_evidence": {
-            "flagged": false,
-            "duration_seconds": 24.521,
-            "method_a_ngram": {
-              "matches": [],
-              "flagged": false,
-              "flagged_matches": [],
-              "word_count": 55,
-              "canonical_known": true,
-              "min_words": 3
-            },
-            "method_d_spectral_long_lag": {
-              "top_matches": [
-                {
-                  "similarity": 0.9955,
-                  "time_a_seconds": 0.92,
-                  "time_b_seconds": 2.84,
-                  "lag_seconds": 1.92,
-                  "run_length_seconds_at_thresh_0.85": 0.05
-                },
-                {
-                  "similarity": 0.995,
-                  "time_a_seconds": 12.38,
-                  "time_b_seconds": 20.51,
-                  "lag_seconds": 8.13,
-                  "run_length_seconds_at_thresh_0.85": 0.06
-                },
-                {
-                  "similarity": 0.9948,
-                  "time_a_seconds": 0.86,
-                  "time_b_seconds": 6.53,
-                  "lag_seconds": 5.67,
-                  "run_length_seconds_at_thresh_0.85": 0.02
-                },
-                {
-                  "similarity": 0.9946,
-                  "time_a_seconds": 0.94,
-                  "time_b_seconds": 14.47,
-                  "lag_seconds": 13.53
-                },
-                {
-                  "similarity": 0.9943,
-                  "time_a_seconds": 3.36,
-                  "time_b_seconds": 6.5,
-                  "lag_seconds": 3.14
-                }
-              ],
-              "best_run_length_seconds": 0.06,
-              "min_lag_seconds": 1.0,
-              "sim_threshold": 0.85,
-              "decision_threshold_seconds": 0.12,
-              "acoustic_flagged": false,
-              "local_asr_confirmation": null,
-              "flagged": false
-            },
-            "method_d_prime_spectral_short_lag": {
-              "run_length_seconds": 0.45,
-              "time_a": 19.29,
-              "lag": 1.94,
-              "similarity_at_start": 0.7272,
-              "best_run_length_seconds": 0.45,
-              "lag_range_seconds": [
-                0.5,
-                2.0
-              ],
-              "sim_threshold": 0.7,
-              "decision_threshold_seconds": 0.6,
-              "flagged": false
-            },
-            "method_c_v2_window_check": null
-          },
-          "asr_prompt_applied": false,
-          "non_latin_cascade_enabled": false,
-          "non_latin_cascade_invoked": false,
-          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part3_attempt1_custom35d6860b.wav"
-        }
-      ],
-      "audio_classification": "NORMALIZED_MATCH",
-      "connected_speech_info": null,
-      "reading_resolver_info": null,
-      "disfluency_checked": false,
-      "disfluency_evidence": null,
-      "repetition_qa_checked": true,
-      "repetition_qa_evidence": {
-        "flagged": false,
-        "duration_seconds": 24.521,
-        "method_a_ngram": {
-          "matches": [],
-          "flagged": false,
-          "flagged_matches": [],
-          "word_count": 55,
-          "canonical_known": true,
-          "min_words": 3
-        },
-        "method_d_spectral_long_lag": {
-          "top_matches": [
-            {
-              "similarity": 0.9955,
-              "time_a_seconds": 0.92,
-              "time_b_seconds": 2.84,
-              "lag_seconds": 1.92,
-              "run_length_seconds_at_thresh_0.85": 0.05
-            },
-            {
-              "similarity": 0.995,
-              "time_a_seconds": 12.38,
-              "time_b_seconds": 20.51,
-              "lag_seconds": 8.13,
-              "run_length_seconds_at_thresh_0.85": 0.06
-            },
-            {
-              "similarity": 0.9948,
-              "time_a_seconds": 0.86,
-              "time_b_seconds": 6.53,
-              "lag_seconds": 5.67,
-              "run_length_seconds_at_thresh_0.85": 0.02
-            },
-            {
-              "similarity": 0.9946,
-              "time_a_seconds": 0.94,
-              "time_b_seconds": 14.47,
-              "lag_seconds": 13.53
-            },
-            {
-              "similarity": 0.9943,
-              "time_a_seconds": 3.36,
-              "time_b_seconds": 6.5,
-              "lag_seconds": 3.14
-            }
-          ],
-          "best_run_length_seconds": 0.06,
-          "min_lag_seconds": 1.0,
-          "sim_threshold": 0.85,
-          "decision_threshold_seconds": 0.12,
-          "acoustic_flagged": false,
-          "local_asr_confirmation": null,
-          "flagged": false
-        },
-        "method_d_prime_spectral_short_lag": {
-          "run_length_seconds": 0.45,
-          "time_a": 19.29,
-          "lag": 1.94,
-          "similarity_at_start": 0.7272,
-          "best_run_length_seconds": 0.45,
-          "lag_range_seconds": [
-            0.5,
-            2.0
-          ],
-          "sim_threshold": 0.7,
-          "decision_threshold_seconds": 0.6,
-          "flagged": false
-        },
-        "method_c_v2_window_check": null
-      },
-      "fallback_used": false,
-      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_original.wav",
-      "slowdown_applied": true,
-      "slowdown_info": {
-        "slowdown_pct_target": 6.0,
-        "slowdown_pct_actual": 5.968,
-        "src_duration_seconds": 24.521,
-        "dst_duration_seconds": 25.984,
-        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_original.wav",
-        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3.wav"
-      },
-      "post_slowdown_asr_text": "Meta admits a mistake. A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
-      "post_slowdown_classification": "NORMALIZED_MATCH",
-      "post_slowdown_semantic_equivalence": null,
-      "slowdown_attempts_log": [
-        {
-          "attempt": 1,
-          "status": "OK",
-          "post_slowdown_classification": "NORMALIZED_MATCH"
-        }
-      ],
-      "canonical_text": "Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.",
-      "reused_from_previous_run": true
-    },
     "in_one_line": {
       "status": "OK",
       "text": "Before AI speaks for us, we need to know whether the voice belongs to AI or a person.",
@@ -1321,6 +938,674 @@
       ],
       "canonical_text": "Before AI speaks for us, we need to know whether the voice belongs to AI or a person.",
       "reused_from_previous_run": true
+    },
+    "full_story_part2_heading": {
+      "status": "OK",
+      "text": "The hidden person behind the AI sign",
+      "language": "en",
+      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_heading.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "290852be0bc8dc35c799d7941f7a8cb96966d81adde96c87589de28f0c34005a",
+      "duration_seconds": 3.975,
+      "trim_info": {
+        "raw_duration_seconds": 3.986,
+        "raw_leading_silence_seconds": 0.275,
+        "raw_trailing_silence_seconds": 0.38,
+        "trimmed_duration_seconds": 3.975,
+        "leading_margin_retained_seconds": 0.275,
+        "trailing_margin_retained_seconds": 0.37
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "The hidden person behind the AI sign.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 3.761,
+          "asr_text": "The hidden person behind the AI sign.",
+          "asr_text_length": 37,
+          "max_len": 56,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": true,
+          "disfluency_evidence": {
+            "flagged": false,
+            "repeats": [],
+            "word_count": 7,
+            "transcript": "the  hidden  person  behind  the  AI  sign.",
+            "method": "faster_whisper_small_local_verbatim"
+          },
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part2_heading_attempt1_custom35d6860b.wav"
+        }
+      ],
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "disfluency_checked": true,
+      "disfluency_evidence": {
+        "flagged": false,
+        "repeats": [],
+        "word_count": 7,
+        "transcript": "the  hidden  person  behind  the  AI  sign.",
+        "method": "faster_whisper_small_local_verbatim"
+      },
+      "repetition_qa_checked": false,
+      "repetition_qa_evidence": null,
+      "fallback_used": false,
+      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_heading_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.689,
+        "src_duration_seconds": 3.761,
+        "dst_duration_seconds": 3.975,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_heading_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_heading.wav"
+      },
+      "post_slowdown_asr_text": "The hidden person behind the AI sign.",
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_semantic_equivalence": null,
+      "slowdown_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "post_slowdown_classification": "NORMALIZED_MATCH"
+        }
+      ],
+      "canonical_text": "The hidden person behind the AI sign"
+    },
+    "full_story_part2": {
+      "status": "OK",
+      "text": "Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future. But the main question was very basic. Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
+      "language": "en",
+      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "7e0295df6d0569870234a8134bb5c366bb0adeede699f1aad68a44bb76d7e9c3",
+      "duration_seconds": 45.182,
+      "trim_info": {
+        "raw_duration_seconds": 45.193,
+        "raw_leading_silence_seconds": 0.318,
+        "raw_trailing_silence_seconds": 0.381,
+        "trimmed_duration_seconds": 45.182,
+        "leading_margin_retained_seconds": 0.318,
+        "trailing_margin_retained_seconds": 0.371
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Here was the reveal: the test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic: had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 42.641,
+          "asr_text": "Here was the reveal: The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI. Even though a person was involved, AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic: Had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
+          "asr_text_length": 638,
+          "max_len": 698,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": true,
+          "repetition_qa_evidence": {
+            "flagged": false,
+            "duration_seconds": 42.641,
+            "method_a_ngram": {
+              "matches": [
+                {
+                  "span_text": " will  want  to  know",
+                  "n_words": 4,
+                  "category": "phrase",
+                  "first_start_s": 37.08,
+                  "first_end_s": 37.94,
+                  "second_start_s": 39.94,
+                  "second_end_s": 40.6,
+                  "gap_seconds": 2.0,
+                  "canonical_repeat_count": 2,
+                  "intentional": true,
+                  "flagged": false
+                }
+              ],
+              "flagged": false,
+              "flagged_matches": [],
+              "word_count": 122,
+              "canonical_known": true,
+              "min_words": 3
+            },
+            "method_d_spectral_long_lag": {
+              "top_matches": [
+                {
+                  "similarity": 0.9974,
+                  "time_a_seconds": 9.25,
+                  "time_b_seconds": 14.03,
+                  "lag_seconds": 4.78,
+                  "run_length_seconds_at_thresh_0.85": 0.03
+                },
+                {
+                  "similarity": 0.997,
+                  "time_a_seconds": 4.36,
+                  "time_b_seconds": 37.73,
+                  "lag_seconds": 33.37,
+                  "run_length_seconds_at_thresh_0.85": 0.05
+                },
+                {
+                  "similarity": 0.9969,
+                  "time_a_seconds": 8.53,
+                  "time_b_seconds": 27.14,
+                  "lag_seconds": 18.61,
+                  "run_length_seconds_at_thresh_0.85": 0.04
+                },
+                {
+                  "similarity": 0.9968,
+                  "time_a_seconds": 16.71,
+                  "time_b_seconds": 36.78,
+                  "lag_seconds": 20.07
+                },
+                {
+                  "similarity": 0.9966,
+                  "time_a_seconds": 6.41,
+                  "time_b_seconds": 13.47,
+                  "lag_seconds": 7.06
+                }
+              ],
+              "best_run_length_seconds": 0.05,
+              "min_lag_seconds": 1.0,
+              "sim_threshold": 0.85,
+              "decision_threshold_seconds": 0.12,
+              "acoustic_flagged": false,
+              "local_asr_confirmation": null,
+              "flagged": false
+            },
+            "method_d_prime_spectral_short_lag": {
+              "run_length_seconds": 0.37,
+              "time_a": 33.29,
+              "lag": 1.31,
+              "similarity_at_start": 0.714,
+              "best_run_length_seconds": 0.37,
+              "lag_range_seconds": [
+                0.5,
+                2.0
+              ],
+              "sim_threshold": 0.7,
+              "decision_threshold_seconds": 0.6,
+              "flagged": false
+            },
+            "method_c_v2_window_check": null
+          },
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part2_attempt3_custom35d6860b.wav"
+        }
+      ],
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 42.641,
+        "method_a_ngram": {
+          "matches": [
+            {
+              "span_text": " will  want  to  know",
+              "n_words": 4,
+              "category": "phrase",
+              "first_start_s": 37.08,
+              "first_end_s": 37.94,
+              "second_start_s": 39.94,
+              "second_end_s": 40.6,
+              "gap_seconds": 2.0,
+              "canonical_repeat_count": 2,
+              "intentional": true,
+              "flagged": false
+            }
+          ],
+          "flagged": false,
+          "flagged_matches": [],
+          "word_count": 122,
+          "canonical_known": true,
+          "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+          "top_matches": [
+            {
+              "similarity": 0.9974,
+              "time_a_seconds": 9.25,
+              "time_b_seconds": 14.03,
+              "lag_seconds": 4.78,
+              "run_length_seconds_at_thresh_0.85": 0.03
+            },
+            {
+              "similarity": 0.997,
+              "time_a_seconds": 4.36,
+              "time_b_seconds": 37.73,
+              "lag_seconds": 33.37,
+              "run_length_seconds_at_thresh_0.85": 0.05
+            },
+            {
+              "similarity": 0.9969,
+              "time_a_seconds": 8.53,
+              "time_b_seconds": 27.14,
+              "lag_seconds": 18.61,
+              "run_length_seconds_at_thresh_0.85": 0.04
+            },
+            {
+              "similarity": 0.9968,
+              "time_a_seconds": 16.71,
+              "time_b_seconds": 36.78,
+              "lag_seconds": 20.07
+            },
+            {
+              "similarity": 0.9966,
+              "time_a_seconds": 6.41,
+              "time_b_seconds": 13.47,
+              "lag_seconds": 7.06
+            }
+          ],
+          "best_run_length_seconds": 0.05,
+          "min_lag_seconds": 1.0,
+          "sim_threshold": 0.85,
+          "decision_threshold_seconds": 0.12,
+          "acoustic_flagged": false,
+          "local_asr_confirmation": null,
+          "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+          "run_length_seconds": 0.37,
+          "time_a": 33.29,
+          "lag": 1.31,
+          "similarity_at_start": 0.714,
+          "best_run_length_seconds": 0.37,
+          "lag_range_seconds": [
+            0.5,
+            2.0
+          ],
+          "sim_threshold": 0.7,
+          "decision_threshold_seconds": 0.6,
+          "flagged": false
+        },
+        "method_c_v2_window_check": null
+      },
+      "fallback_used": false,
+      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.959,
+        "src_duration_seconds": 42.641,
+        "dst_duration_seconds": 45.182,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part2.wav"
+      },
+      "post_slowdown_asr_text": "Here was the reveal: the test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved. AI had not learned to speak like a human. A human stood behind the sign that said AI. It seemed like a story from the future, but the main question was very basic: had users been clearly told who was making the call? As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_semantic_equivalence": null,
+      "slowdown_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "post_slowdown_classification": "NORMALIZED_MATCH"
+        }
+      ],
+      "canonical_text": "Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human."
+    },
+    "full_story_part3_heading": {
+      "status": "OK",
+      "text": "Meta admits a mistake",
+      "language": "en",
+      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_heading.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "0ccb7677f501aa655af958c93e272ac086bb8c9f1c35459a781a4cc1d74b629f",
+      "duration_seconds": 2.478,
+      "trim_info": {
+        "raw_duration_seconds": 2.499,
+        "raw_leading_silence_seconds": 0.379,
+        "raw_trailing_silence_seconds": 0.379,
+        "trimmed_duration_seconds": 2.478,
+        "leading_margin_retained_seconds": 0.369,
+        "trailing_margin_retained_seconds": 0.369
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "Meta admits a mistake.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 2.351,
+          "asr_text": "Meta admits a mistake.",
+          "asr_text_length": 22,
+          "max_len": 41,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": true,
+          "disfluency_evidence": {
+            "flagged": false,
+            "repeats": [],
+            "word_count": 4,
+            "transcript": "Meta  admits  a  mistake.",
+            "method": "faster_whisper_small_local_verbatim"
+          },
+          "repetition_qa_checked": false,
+          "repetition_qa_evidence": null,
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part3_heading_attempt1_custom35d6860b.wav"
+        }
+      ],
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "disfluency_checked": true,
+      "disfluency_evidence": {
+        "flagged": false,
+        "repeats": [],
+        "word_count": 4,
+        "transcript": "Meta  admits  a  mistake.",
+        "method": "faster_whisper_small_local_verbatim"
+      },
+      "repetition_qa_checked": false,
+      "repetition_qa_evidence": null,
+      "fallback_used": false,
+      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_heading_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.388,
+        "src_duration_seconds": 2.351,
+        "dst_duration_seconds": 2.478,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_heading_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_heading.wav"
+      },
+      "post_slowdown_asr_text": "Meta admits a mistake.",
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_semantic_equivalence": null,
+      "slowdown_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "post_slowdown_classification": "NORMALIZED_MATCH"
+        }
+      ],
+      "canonical_text": "Meta admits a mistake"
+    },
+    "full_story_part3": {
+      "status": "OK",
+      "text": "A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.",
+      "language": "en",
+      "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3.wav",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "bf00513f61d922e931d5415167f3b73516cb3196c1c75b03b8571eb28140c55c",
+      "duration_seconds": 22.344,
+      "trim_info": {
+        "raw_duration_seconds": 22.355,
+        "raw_leading_silence_seconds": 0.297,
+        "raw_trailing_silence_seconds": 0.382,
+        "trimmed_duration_seconds": 22.344,
+        "leading_margin_retained_seconds": 0.297,
+        "trailing_margin_retained_seconds": 0.371
+      },
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the Human Concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 21.081,
+          "asr_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
+          "asr_text_length": 275,
+          "max_len": 337,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": true,
+          "repetition_qa_evidence": {
+            "flagged": false,
+            "duration_seconds": 21.081,
+            "method_a_ngram": {
+              "matches": [],
+              "flagged": false,
+              "flagged_matches": [],
+              "word_count": 51,
+              "canonical_known": true,
+              "min_words": 3
+            },
+            "method_d_spectral_long_lag": {
+              "top_matches": [
+                {
+                  "similarity": 0.9999,
+                  "time_a_seconds": 3.03,
+                  "time_b_seconds": 6.67,
+                  "lag_seconds": 3.64,
+                  "run_length_seconds_at_thresh_0.85": 0.05
+                },
+                {
+                  "similarity": 0.9998,
+                  "time_a_seconds": 3.02,
+                  "time_b_seconds": 7.35,
+                  "lag_seconds": 4.33,
+                  "run_length_seconds_at_thresh_0.85": 0.07
+                },
+                {
+                  "similarity": 0.9998,
+                  "time_a_seconds": 6.68,
+                  "time_b_seconds": 19.26,
+                  "lag_seconds": 12.58,
+                  "run_length_seconds_at_thresh_0.85": 0.04
+                },
+                {
+                  "similarity": 0.9998,
+                  "time_a_seconds": 2.97,
+                  "time_b_seconds": 6.65,
+                  "lag_seconds": 3.68
+                },
+                {
+                  "similarity": 0.9997,
+                  "time_a_seconds": 3.11,
+                  "time_b_seconds": 11.15,
+                  "lag_seconds": 8.04
+                }
+              ],
+              "best_run_length_seconds": 0.07,
+              "min_lag_seconds": 1.0,
+              "sim_threshold": 0.85,
+              "decision_threshold_seconds": 0.12,
+              "acoustic_flagged": false,
+              "local_asr_confirmation": null,
+              "flagged": false
+            },
+            "method_d_prime_spectral_short_lag": {
+              "run_length_seconds": 0.33,
+              "time_a": 10.59,
+              "lag": 1.76,
+              "similarity_at_start": 0.7134,
+              "best_run_length_seconds": 0.33,
+              "lag_range_seconds": [
+                0.5,
+                2.0
+              ],
+              "sim_threshold": 0.7,
+              "decision_threshold_seconds": 0.6,
+              "flagged": false
+            },
+            "method_c_v2_window_check": null
+          },
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/attempts/full_story_part3_attempt2_custom35d6860b.wav"
+        }
+      ],
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 21.081,
+        "method_a_ngram": {
+          "matches": [],
+          "flagged": false,
+          "flagged_matches": [],
+          "word_count": 51,
+          "canonical_known": true,
+          "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+          "top_matches": [
+            {
+              "similarity": 0.9999,
+              "time_a_seconds": 3.03,
+              "time_b_seconds": 6.67,
+              "lag_seconds": 3.64,
+              "run_length_seconds_at_thresh_0.85": 0.05
+            },
+            {
+              "similarity": 0.9998,
+              "time_a_seconds": 3.02,
+              "time_b_seconds": 7.35,
+              "lag_seconds": 4.33,
+              "run_length_seconds_at_thresh_0.85": 0.07
+            },
+            {
+              "similarity": 0.9998,
+              "time_a_seconds": 6.68,
+              "time_b_seconds": 19.26,
+              "lag_seconds": 12.58,
+              "run_length_seconds_at_thresh_0.85": 0.04
+            },
+            {
+              "similarity": 0.9998,
+              "time_a_seconds": 2.97,
+              "time_b_seconds": 6.65,
+              "lag_seconds": 3.68
+            },
+            {
+              "similarity": 0.9997,
+              "time_a_seconds": 3.11,
+              "time_b_seconds": 11.15,
+              "lag_seconds": 8.04
+            }
+          ],
+          "best_run_length_seconds": 0.07,
+          "min_lag_seconds": 1.0,
+          "sim_threshold": 0.85,
+          "decision_threshold_seconds": 0.12,
+          "acoustic_flagged": false,
+          "local_asr_confirmation": null,
+          "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+          "run_length_seconds": 0.33,
+          "time_a": 10.59,
+          "lag": 1.76,
+          "similarity_at_start": 0.7134,
+          "best_run_length_seconds": 0.33,
+          "lag_range_seconds": [
+            0.5,
+            2.0
+          ],
+          "sim_threshold": 0.7,
+          "decision_threshold_seconds": 0.6,
+          "flagged": false
+        },
+        "method_c_v2_window_check": null
+      },
+      "fallback_used": false,
+      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.992,
+        "src_duration_seconds": 21.081,
+        "dst_duration_seconds": 22.344,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/a2/narration/full_story_part3.wav"
+      },
+      "post_slowdown_asr_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users. For now, Meta has pulled back the Human Concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know at the start who is on the other end.",
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_semantic_equivalence": null,
+      "slowdown_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "post_slowdown_classification": "NORMALIZED_MATCH"
+        }
+      ],
+      "canonical_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end."
     }
   },
   "key_phrases": {
@@ -2017,5 +2302,6 @@
         "reused_from_previous_run": true
       }
     }
-  }
+  },
+  "kp_scaffold_status": "OK"
 }

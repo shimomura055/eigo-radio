@@ -12,11 +12,47 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 from dataclasses import dataclass
 from typing import Optional
 
 LEDGER_PATH = "er006_output/pronunciation_ledger_01/ledger.json"
+
+# PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正1回目、
+# Opus L2 BLOCKER-1是正): Stage 2(ASR Cascade Human Review packaging)専用の
+# entity_type。この種のentryは「解決できなかった固有名詞をHuman Review
+# パッケージに補足情報として載せる」ためだけに作られ(er006_secondary_asr_01.
+# _resolve_unresolved_entity_for_review参照)、TTS発音ヒント注入の裏付けとして
+# 設計されたものではない。Phase 2でget_hint_for_text()がTTS注入経路へ初めて
+# 接続された際、この設計意図に反してTTS注入対象に混入した(実データで
+# surface="plus"/"mini"/"main story"/"one voice"/"ganis"の誤entryが本番Ledger
+# へ実際に混入し、"surplus"/"minister"等を含む無関係な英文で誤発音指示が
+# 付与される実害を確認)。
+CASCADE_UNRESOLVED_ENTITY_TYPE = "cascade_unresolved_entity"
+
+# surfaceが英数字・空白・一部記号のみで構成される場合(Latin表記)は語境界
+# 付き一致を使う。非Latin(漢字・キリル文字・アクセント付きラテン文字等)を
+# 含む場合は、語境界の概念が単純な正規表現では安全に定義できないため、
+# 既存どおりの部分一致(substring match)にfall backする(fail-safe: 既存の
+# 一致範囲を狭める方向にのみ変更し、非Latin側の挙動は変えない)。
+_ASCII_SURFACE_RE = re.compile(r"^[A-Za-z0-9 '\-.,&]+$")
+
+
+def _surface_matches_text(surface: str, text_lower: str) -> bool:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正
+    1回目、Opus L2 BLOCKER-1是正(i)): 語境界なしの`surface in text`部分一致
+    (旧実装)は、"plus"が"surplus"に、"mini"が"minister"に、"ganis"が
+    "organisation"に、それぞれ誤って一致してしまう(実データで確認済みの
+    実害)。surfaceが完全にASCII(英数字+一部記号)の場合のみ、前後が
+    英数字でない位置での一致(語境界相当)を要求する。"""
+    s = (surface or "").strip().lower()
+    if not s:
+        return False
+    if _ASCII_SURFACE_RE.match(s):
+        pattern = r"(?<![A-Za-z0-9])" + re.escape(s) + r"(?![A-Za-z0-9])"
+        return re.search(pattern, text_lower) is not None
+    return s in text_lower
 
 
 @dataclass
@@ -63,6 +99,7 @@ def upsert(key: LedgerKey, entry: dict) -> str:
     影響しない。"""
     ledger = _load()
     ledger_id = key.ledger_id()
+    existing = ledger.get(ledger_id, {})
     ledger[ledger_id] = {
         "surface": key.surface, "entity_type": key.entity_type, "source_context": key.source_context,
         "canonical_spelling": entry.get("canonical_spelling", key.surface),
@@ -80,9 +117,31 @@ def upsert(key: LedgerKey, entry: dict) -> str:
         "ja_reading_sources": entry.get("ja_reading_sources", []),
         "resolution_method": entry.get("resolution_method", ""),
         "resolved_at_stage": entry.get("resolved_at_stage", ""),
+        # Sonnet修正1回目(Opus L2 BLOCKER-1是正(iii)): 誤entryの隔離フラグ。
+        # entryが明示的に指定しない限り、既存storeの値をそのまま引き継ぐ
+        # (set_tts_injection_disabled()で立てたフラグが、無関係な後続の
+        # upsert[例: 低confidence再research]で黙って消えないようにする)。
+        "tts_injection_disabled": entry.get("tts_injection_disabled", existing.get("tts_injection_disabled", False)),
+        "tts_injection_disabled_reason": entry.get(
+            "tts_injection_disabled_reason", existing.get("tts_injection_disabled_reason", "")),
     }
     _save(ledger)
     return ledger_id
+
+
+def set_tts_injection_disabled(ledger_id: str, reason: str) -> None:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正
+    1回目、Opus L2 BLOCKER-1是正(iii)): 本番Ledgerの特定entryを削除せず
+    隔離する(entity_typeはそのまま維持、ASR Phrase List用途は維持し、
+    TTS注入対象からのみ除外する)。upsert()を経由せず該当entryの2
+    フィールドだけを直接更新することで、entry内の既存フィールド(sources
+    等)を一切変更しない。"""
+    ledger = _load()
+    if ledger_id not in ledger:
+        raise KeyError(f"ledger_id not found in ledger: {ledger_id}")
+    ledger[ledger_id]["tts_injection_disabled"] = True
+    ledger[ledger_id]["tts_injection_disabled_reason"] = reason
+    _save(ledger)
 
 
 def upsert_research_result(entities: list[dict], research_items: list[dict], sources: list[str]) -> list[str]:
@@ -102,10 +161,14 @@ def upsert_research_result(entities: list[dict], research_items: list[dict], sou
     return ids
 
 
-def get_hint_for_text(text: str, min_confidence: str = "medium") -> list[dict]:
+def get_hint_for_text(text: str, min_confidence: str = "medium",
+                       exclude_entity_types: Optional[set] = None,
+                       apply_tts_injection_filter: bool = False) -> list[dict]:
     """textの中にLedger登録済みのsurfaceが含まれていれば、そのentryを
     返す(confidence順、min_confidence未満は除外)。TTSへ渡すpronunciation
-    hintの選定に使う。
+    hintの選定と、ASR Secondary Cascade用Phrase Listの選定の両方で使われる
+    共有関数(呼び出し元ごとに用途が異なるため、以下の2引数は既定値では
+    従来どおり無効=ASR Phrase List用途を維持する)。
 
     PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
     大文字小文字を区別しない比較へ変更する(既存はcase-sensitive、
@@ -114,40 +177,115 @@ def get_hint_for_text(text: str, min_confidence: str = "medium") -> list[dict]:
     [例: "Toteme"]とcase-sensitiveでは一致せず、pre_tts配線後も発火しない
     実例をruntime evidenceで確認した)。大文字小文字を区別しないことで
     一致範囲は既存のcase-sensitive一致を包含する形でのみ広がる(既存の
-    一致が消えることはない、fail-safe方向の変更)。"""
+    一致が消えることはない、fail-safe方向の変更)。
+
+    Sonnet修正1回目(Opus L2 BLOCKER-1是正)追加引数:
+      exclude_entity_types: このentity_typeのentryは対象から除外する
+        (TTS注入呼び出し元は`{CASCADE_UNRESOLVED_ENTITY_TYPE}`を渡す。
+        ASR Phrase List呼び出し元[er003_v1_repro01_main_generate.py]は
+        既定Noneのまま=従来どおり除外しない、既存のASR Phrase List用途を
+        維持する)。
+      apply_tts_injection_filter: Trueの場合、`tts_injection_disabled`が
+        真のentryも対象から除外する(本番Ledger内の既知の誤entry隔離用、
+        4節参照)。ASR Phrase List用途では既定Falseのまま除外しない
+        (誤entryでも代替spellingとしてASR認識には有用なため)。"""
     conf_rank = {"high": 3, "medium": 2, "low": 1}
     min_rank = conf_rank[min_confidence]
+    exclude_entity_types = exclude_entity_types or set()
     ledger = _load()
     text_lower = (text or "").lower()
     hits = []
     for entry in ledger.values():
-        if entry["surface"].lower() in text_lower and conf_rank.get(entry["confidence"], 0) >= min_rank:
+        if entry.get("entity_type") in exclude_entity_types:
+            continue
+        if apply_tts_injection_filter and entry.get("tts_injection_disabled"):
+            continue
+        if _surface_matches_text(entry["surface"], text_lower) and conf_rank.get(entry["confidence"], 0) >= min_rank:
             if entry.get("pronunciation_hint"):
                 hits.append(entry)
     return hits
 
 
-def get_low_confidence_entries_for_text(text: str) -> list[dict]:
+def get_low_confidence_entries_for_text(text: str, exclude_entity_types: Optional[set] = None) -> list[dict]:
     """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
     confidenceに関わらず、textの中にLedger登録済みのsurfaceが含まれる
     entryを全て返す(get_hint_for_textのmin_confidenceフィルタを通さない
     版)。低confidence entryへの再research要否判定に使う(呼び出し側で
-    confidence=="low"のものだけを対象に絞る)。"""
+    confidence=="low"のものだけを対象に絞る)。
+
+    Sonnet修正1回目(Opus L2 BLOCKER-1是正): 語境界付き一致へ変更
+    (`_surface_matches_text`、"ganis"が"organisation"に部分一致し無関係な
+    記事で毎回Perplexity再researchが発火していた実害への対応)。
+    exclude_entity_types(既定None)を渡すと、そのentity_typeのentryは
+    再research対象から除外できる(呼び出し側`resolve_and_augment_en_style_
+    prefix`が`{CASCADE_UNRESOLVED_ENTITY_TYPE}`を渡す)。"""
+    exclude_entity_types = exclude_entity_types or set()
     ledger = _load()
     text_lower = (text or "").lower()
-    return [entry for entry in ledger.values() if entry["surface"] and entry["surface"].lower() in text_lower]
+    return [entry for entry in ledger.values()
+            if entry.get("entity_type") not in exclude_entity_types
+            and entry["surface"] and _surface_matches_text(entry["surface"], text_lower)]
 
 
-def get_ja_reading_entry(surface: str) -> Optional[dict]:
-    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
-    JA読み解決コア専用の単純lookup(entity_type="ja_reading_katakana"固定、
-    source_contextなし)。surface小文字一致。"""
-    key = LedgerKey(surface=surface, entity_type="ja_reading_katakana")
+JA_READING_ENTITY_TYPE = "ja_reading_katakana"
+
+
+def get_ja_reading_entry(surface: str, source_context: str = "") -> Optional[dict]:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2、
+    Sonnet修正1回目でsource_context引数を追加、Opus L2 BLOCKER-2是正):
+    JA読み解決コア専用の単純lookup(entity_type="ja_reading_katakana"固定)。
+    surface小文字一致。source_context既定""は既存呼び出し元と完全後方互換
+    (同じ綴りは全記事で1読みのみ、という旧挙動のまま)。作品固有の読み
+    (例: 太宰治『走れメロス』の"ディオニス")のように、同じ綴りが文脈により
+    異なる読みを持つ場合のみ、呼び出し側が非空のsource_contextを渡す。"""
+    key = LedgerKey(surface=surface, entity_type=JA_READING_ENTITY_TYPE, source_context=source_context)
     return lookup(key)
 
 
-def upsert_ja_reading_entry(surface: str, entry: dict) -> str:
-    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2):
-    JA読み解決コア専用の単純upsert(get_ja_reading_entryと対の書き込み)。"""
-    key = LedgerKey(surface=surface, entity_type="ja_reading_katakana")
+def upsert_ja_reading_entry(surface: str, entry: dict, source_context: str = "") -> str:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2、
+    Sonnet修正1回目でsource_context引数を追加): JA読み解決コア専用の単純
+    upsert(get_ja_reading_entryと対の書き込み)。"""
+    key = LedgerKey(surface=surface, entity_type=JA_READING_ENTITY_TYPE, source_context=source_context)
     return upsert(key, entry)
+
+
+def ledger_health_check() -> dict:
+    """PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正
+    1回目、Opus L2所見「QCD」フォローアップ): 本番Ledgerの健全性を読み取り
+    専用でチェックし、報告用の所見リストを返す(何も書き換えない)。
+    - `cascade_unresolved_entity`型で、canonical_spellingがsurfaceと
+      文字列として無関係(互いに部分文字列関係にない)なentry
+      (BLOCKER-1のような取り違え混入の兆候)。
+    - `ja_reading_katakana`型で、`confidence`と`ja_reading_confidence`が
+      不一致なentry(Figma鏡写し不整合と同種の問題)。
+    - `pronunciation_hint`が空のまま(TTS注入に使えない)entry。
+    - `tts_injection_disabled`が真のentry(隔離済み一覧、参考情報)。"""
+    ledger = _load()
+    canonical_mismatch, confidence_mismatch, empty_hint, disabled = [], [], [], []
+    for ledger_id, entry in ledger.items():
+        surface = (entry.get("surface") or "").strip().lower()
+        canonical = (entry.get("canonical_spelling") or "").strip().lower()
+        if entry.get("entity_type") == CASCADE_UNRESOLVED_ENTITY_TYPE and surface and canonical:
+            if surface not in canonical and canonical not in surface:
+                canonical_mismatch.append({"ledger_id": ledger_id, "surface": entry.get("surface"),
+                                            "canonical_spelling": entry.get("canonical_spelling")})
+        if entry.get("entity_type") == JA_READING_ENTITY_TYPE:
+            ja_conf = entry.get("ja_reading_confidence")
+            top_conf = entry.get("confidence")
+            if ja_conf and top_conf and ja_conf != top_conf:
+                confidence_mismatch.append({"ledger_id": ledger_id, "surface": entry.get("surface"),
+                                             "confidence": top_conf, "ja_reading_confidence": ja_conf})
+        if not entry.get("pronunciation_hint") and entry.get("entity_type") != JA_READING_ENTITY_TYPE:
+            empty_hint.append({"ledger_id": ledger_id, "surface": entry.get("surface"),
+                                "entity_type": entry.get("entity_type")})
+        if entry.get("tts_injection_disabled"):
+            disabled.append({"ledger_id": ledger_id, "surface": entry.get("surface"),
+                              "reason": entry.get("tts_injection_disabled_reason")})
+    return {
+        "total_entries": len(ledger),
+        "canonical_spelling_mismatch": canonical_mismatch,
+        "confidence_mirror_mismatch": confidence_mismatch,
+        "empty_pronunciation_hint": empty_hint,
+        "tts_injection_disabled": disabled,
+    }

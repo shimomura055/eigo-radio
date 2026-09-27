@@ -32,8 +32,20 @@ def augment_style_prefix_with_pronunciation(style_prefix: str, text: str,
                                              min_confidence: str = "medium") -> tuple[str, list[dict]]:
     """textの中にLedger登録済みの固有名詞があれば、style_prefixの末尾へ
     発音ヒントを追記して返す。無ければstyle_prefixをそのまま返す。
-    戻り値は(拡張後style_prefix, 使用したLedger entryのリスト)。"""
-    hits = ledger.get_hint_for_text(text, min_confidence=min_confidence)
+    戻り値は(拡張後style_prefix, 使用したLedger entryのリスト)。
+
+    PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Sonnet修正
+    1回目、Opus L2 BLOCKER-1是正(ii)): `entity_type=="cascade_unresolved_
+    entity"`(ASR Cascade Human Review packaging専用、TTS注入用に設計
+    されたものではない)のentryはTTS注入対象から除外する(ASR Phrase
+    List用途[er003_v1_repro01_main_generate.pyの直接呼び出し]は
+    `get_hint_for_text`を素通しで呼ぶため引き続き対象内、この関数
+    経由のTTS注入のみを絞る)。あわせて、本番Ledgerで個別に隔離済み
+    (`tts_injection_disabled=true`)のentryも除外する(4節)。"""
+    hits = ledger.get_hint_for_text(
+        text, min_confidence=min_confidence,
+        exclude_entity_types={ledger.CASCADE_UNRESOLVED_ENTITY_TYPE},
+        apply_tts_injection_filter=True)
     if not hits:
         return style_prefix, []
     lines = [PRONUNCIATION_BLOCK_HEADER.strip()]
