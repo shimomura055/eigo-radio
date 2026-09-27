@@ -1,0 +1,25 @@
+{
+  "management_id": "KEY-PHRASE-DB-BASED-SELECTION-TRIAL-01",
+  "llm_calls": 0,
+  "llm_fallback_triggered_articles": [],
+  "llm_cost_jpy": 0,
+  "web_access_cost_jpy": 0,
+  "web_access_calls": {
+    "cefr_j_download": 1,
+    "ngsl_family_csv_downloads": 4,
+    "wiktionary_categorymembers_api_calls": 37,
+    "wiktionary_multiword_targeted_lookup_api_calls_total": 12,
+    "oxford_wordlist_page_fetches": 1,
+    "oxford_phrase_list_page_fetches": 1,
+    "evp_fetches": 0
+  },
+  "total_cost_jpy": 0,
+  "budget_cap_jpy": 300,
+  "budget_stop_threshold_jpy": 200,
+  "budget_status": "well_under_cap_no_stop_triggered",
+  "note": "Fable設計docF-2のfallback発動条件(Gate通過後候補<4件)が、6本文いずれでも" +
+          "成立しなかった(rule-Gate通過後survivorsが常に100件超、phrase単独でも" +
+          "常に5件以上)ため、LLM呼び出しは1回も発生しなかった。Web取得はすべて" +
+          "無償の公開API/公開ページ(Wiktionary MediaWiki API・NGSL公式サイト直リンク・" +
+          "CEFR-J公式zip・Oxford公開Webページ)であり、有償API呼び出しは0回。"
+}
