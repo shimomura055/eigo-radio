@@ -34,9 +34,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 
+import audio_review_player as player_common
 import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_crosslevel_audio_02_common as crosslevel_common
 import er003_v1_iran01_a2_generate as a2gen
@@ -104,6 +106,43 @@ def derive_out_dir(source_slug: str, source_run: str, out_dir_override: str | No
     if out_dir_override:
         return out_dir_override
     return f"er019_output/family_x_audio_production_wiring_01/{source_slug}__{source_run}"
+
+
+def sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+# ------------------------------------------------------------
+# Stage 3a(実行時に判明した所有ファイル内バグの最小修正、実行本体は
+# 別途RESULT_PACKETへ報告):
+#   1. A2 segment_id="japanese_title"(FAMILY_X_A2_SEGMENT_ORDER)の実際の
+#      読み上げ対象は日本語タイトルでなければならないが、Stage 1時点の
+#      main()はa2/article.mdの英語titleをそのまま渡すplaceholderだった
+#      (Stage 1では--stage all未実行のため顕在化しなかった)。本Runの
+#      入力directory(source_dir直下)には既存正式path
+#      (NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01)が生成した
+#      ja_writer/runtime_evidence.json["title"]が存在するため、これを
+#      日本語タイトルの一次ソースとする(無ければrevision2.md/original.md
+#      の一行目、それも無ければ旧placeholder動作にfall backしてログへ
+#      警告を残す)。
+#   2. run_plan_stage()のarticle_sha256が常にNone固定になっていたため、
+#      実際のsha256を計算するよう修正する(入力article.md不変性の記録用)。
+# ------------------------------------------------------------
+def derive_japanese_title(source_dir: str) -> dict:
+    """戻り値: {"japanese_title": str, "source": str}。"""
+    evidence_path = f"{source_dir}/ja_writer/runtime_evidence.json"
+    if os.path.exists(evidence_path):
+        evidence = load_json(evidence_path)
+        title = evidence.get("title")
+        if title:
+            return {"japanese_title": title, "source": evidence_path}
+    for name in ("revision2.md", "revision1.md", "original.md"):
+        p = f"{source_dir}/ja_writer/{name}"
+        if os.path.exists(p):
+            first_line = load_text(p).splitlines()[0].strip()
+            if first_line:
+                return {"japanese_title": first_line, "source": p}
+    return {"japanese_title": None, "source": None}
 
 
 # ============================================================
@@ -175,7 +214,7 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str]) -> dict:
         segment_plan = build_segment_plan(level, parts, support)
         save_json(f"{out_dir}/{level}/segment_plan.json", segment_plan)
         result[level] = {"status": "OK", "article_path": article_path,
-                          "article_sha256": None, "segment_plan": segment_plan}
+                          "article_sha256": sha256_text(article_text), "segment_plan": segment_plan}
     return result
 
 
@@ -820,6 +859,229 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str) -> dict:
 
 
 # ============================================================
+# コスト計測(er012_e_family_entertainment_two_level_runner_01.pyと同一
+# ロジック[PRICING_SNAPSHOT_PATH/USD_JPY]、本runner専用ログへ適用する
+#独立実装。既存ファイルは編集しない)。
+# ============================================================
+PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
+USD_JPY = 160.0
+
+
+def _load_pricing():
+    prices = load_json(PRICING_SNAPSHOT_PATH)["prices"]
+
+    def price(provider, model, meter):
+        return next(p["price"] for p in prices
+                    if p["provider"] == provider and p["model"] == model and p["meter"] == meter
+                    and p.get("tier", "Standard") == "Standard")
+    return price
+
+
+def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
+    if not os.path.exists(cost_log_path):
+        return 0.0, {}
+    price = _load_pricing()
+    total_usd = 0.0
+    by_provider = {}
+    with open(cost_log_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            provider = rec.get("provider")
+            model = rec.get("model_id") or rec.get("model")
+            usd = 0.0
+            try:
+                if provider in ("gemini", "openai", "openai_asr") and model:
+                    in_tok = rec.get("input_tokens") or 0
+                    out_tok = rec.get("output_tokens") or 0
+                    usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
+                        + out_tok * price(provider, model, "output_tokens") / 1e6
+            except StopIteration:
+                usd = 0.0
+            total_usd += usd
+            by_provider[provider] = by_provider.get(provider, 0.0) + usd
+    jpy = total_usd * USD_JPY
+    return jpy, {k: round(v * USD_JPY, 2) for k, v in by_provider.items()}
+
+
+def assert_budget_ok(out_dir: str, budget_jpy: float, note: str = "") -> float:
+    cost_log_path = f"{out_dir}/raw_usage_log.jsonl"
+    jpy, by_provider = compute_cost_jpy_so_far(cost_log_path)
+    print(f"[FAMILY-X-AUDIO-RUNNER][cost] so far={jpy:.2f} JPY by_provider={by_provider} ({note})")
+    if jpy > budget_jpy:
+        raise RuntimeError(
+            f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+    return jpy
+
+
+# ============================================================
+# player.html(既存Family A/Family X標準フォーマット、audio_review_
+# player.py[player_common]を再利用。Gate 7 (a)〜(l)必須列を満たす)。
+# ============================================================
+def _load_assemble_summary(path: str) -> dict:
+    if not os.path.exists(path):
+        return {"status": "NOT_ATTEMPTED_OR_GATE_BLOCKED_BEFORE_SUMMARY_WRITE"}
+    return load_json(path)
+
+
+def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narration_dir: str,
+                        kp_by_rank: dict, japanese_title: str | None) -> dict:
+    voice = "Charon" if level == "b1b" else "Aoede"
+    if label in ("Intro", "Outro"):
+        return {"text": "音楽ジングル/固定音源(読み上げなし)。", "voice": None, "audio": None, "sfx": True}
+    if label.startswith("Notification"):
+        return {"text": "効果音(読み上げなし)", "voice": None, "audio": None, "sfx": True}
+    if label == "Welcome":
+        return {"text": "(共有固定Welcome)", "voice": voice, "audio": None, "sfx": False}
+    if label.startswith("Topic intro"):
+        return {"text": f"Today's topic is {parts['title']}.", "voice": voice,
+                "audio": f"{narration_dir}/topic_intro.wav", "sfx": False}
+    if label == "Japanese title":
+        return {"text": japanese_title or "(未取得)", "voice": voice,
+                "audio": f"{narration_dir}/japanese_title.wav", "sfx": False}
+    if label.startswith("Preview intro"):
+        return {"text": "(共有固定Preview intro)", "voice": voice, "audio": None, "sfx": False}
+    if label.startswith("Preview"):
+        return {"text": support["preview"], "voice": voice, "audio": f"{narration_dir}/preview.wav", "sfx": False}
+    if label.startswith("Key phrases intro"):
+        return {"text": "(共有固定Key phrases intro)", "voice": voice, "audio": None, "sfx": False}
+    if label.startswith("Key Phrase "):
+        rank = int(label.split(" ")[-1])
+        kp = kp_by_rank[rank]
+        idx = sorted(kp_by_rank).index(rank) + 1
+        text = f"EN: {kp['used_form']}<br>JA: {kp['japanese_gloss']}"
+        if level == "b1b":
+            audio = (f"{narration_dir}/kp{rank}_en.wav", f"{narration_dir}/kp{rank}_ja_charon.wav")
+        else:
+            audio = (f"{narration_dir}/kp{rank}_en.wav", f"{narration_dir}/meaning_{idx}.wav")
+        return {"text": text, "voice": voice, "audio": audio, "sfx": False}
+    if label.startswith("Full story intro"):
+        return {"text": "(共有固定Full story intro)", "voice": voice, "audio": None, "sfx": False}
+    for i in (1, 2, 3, 4):
+        if label.startswith(f"Comment {i}"):
+            return {"text": support[f"comment_{i}"], "voice": voice,
+                    "audio": f"{narration_dir}/comment_{i}.wav", "sfx": False}
+    for i in (1, 2, 3):
+        if label.startswith(f"Full Story Part {i}"):
+            return {"text": parts[f"part{i}"], "voice": voice,
+                    "audio": f"{narration_dir}/full_story_part{i}.wav", "sfx": False}
+    if label.startswith("In One Line"):
+        return {"text": parts["in_one_line"], "voice": voice,
+                "audio": f"{narration_dir}/in_one_line.wav", "sfx": False}
+    return {"text": "(共有固定segment、記事固有scriptなし)", "voice": None, "audio": None, "sfx": False}
+
+
+# 既存player_common.SEEK_SCRIPTは単一id("episode_audio")固定のため、
+# 1ページにAdvanced/Standard 2レベル分のepisode音声を並べる本player
+# (既存player_common利用側の慣例id"episode_audio_b1b"/"episode_audio_a2"、
+# docs/pm/tools/translation_reprint_check.py参照)では使えない。button側に
+# data-target属性を追加しレベル別に正しいaudio要素へseekする、本runner
+# 専用の小さなJSへ差し替える(player_common本体は無編集)。
+_TWO_LEVEL_SEEK_SCRIPT = """
+function seekTarget(sec, targetId) {
+  var id = targetId || 'episode_audio';
+  var a = document.getElementById(id);
+  if (!a) return;
+  a.currentTime = parseFloat(sec);
+  a.play();
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("button.seek").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      seekTarget(btn.getAttribute("data-sec"), btn.getAttribute("data-target"));
+    });
+  });
+});
+""".strip("\n")
+
+
+def _add_seek_target(table_html: str, target_id: str) -> str:
+    return table_html.replace(
+        '<button class="seek" data-sec="', f'<button class="seek" data-target="{target_id}" data-sec="')
+
+
+def _build_level_table(level_dir: str, level: str, japanese_title: str | None = None) -> str:
+    assemble_summary = load_json(f"{level_dir}/run_summary_assemble.json")
+    if assemble_summary.get("status") != "OK":
+        return f"<p style='color:#b00'>Assembly未完了(status={assemble_summary.get('status')})。table省略。</p>"
+    timeline = load_json(f"{level_dir}/audit/timeline.json")
+    parts = load_json(f"{level_dir}/parts.json")
+    narration_dir = f"{level_dir}/narration"
+    kp = load_json(f"{level_dir}/key_phrases/keywords_canonicalized.json")
+    kp_by_rank = {item["rank"]: item for item in kp["items"]}
+    abs_url = player_common.abs_file_url
+    support = load_json(f"{level_dir}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
+
+    rows = []
+    for entry in timeline:
+        label = entry["part"]
+        if label.startswith("pause_"):
+            continue
+        info = _row_info_family_x(label, level, parts, support, narration_dir, kp_by_rank, japanese_title)
+        sec = entry["start_seconds"]
+        voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
+        if info["sfx"] or not info["audio"]:
+            audio_html = "—"
+        elif isinstance(info["audio"], tuple):
+            audio_html = player_common.render_single_audio_html(tuple(abs_url(p) for p in info["audio"]))
+        else:
+            audio_html = player_common.render_single_audio_html(abs_url(info["audio"]))
+        rows.append(player_common.render_timeline_row(sec, label, voice_disp, info["text"], audio_html, missing=False))
+    return player_common.render_timeline_table(rows)
+
+
+def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None) -> str:
+    abs_url = player_common.abs_file_url
+    b1b_summary = _load_assemble_summary(f"{theme_out_dir}/b1b/run_summary_assemble.json")
+    a2_summary = _load_assemble_summary(f"{theme_out_dir}/a2/run_summary_assemble.json")
+
+    b1b_audio_html = f'<h2>Advanced(B1)</h2><p style="color:#b00">status={b1b_summary.get("status")}</p>'
+    if b1b_summary.get("status") == "OK":
+        b1b_table = _add_seek_target(_build_level_table(f"{theme_out_dir}/b1b", "b1b"), "episode_audio_b1b")
+        b1b_audio_html = (f'<h2>Advanced(B1)</h2>'
+                           f'<audio id="episode_audio_b1b" class="main" controls preload="none" '
+                           f'src="{abs_url(b1b_summary["out_path"])}"></audio>'
+                           f'<p class="note">duration={b1b_summary["duration_seconds"]}s '
+                           f'peak={b1b_summary["peak"]} clipping={b1b_summary["clipping_detected"]}</p>'
+                           f'{b1b_table}')
+
+    a2_audio_html = f'<h2>Standard(A2)</h2><p style="color:#b00">status={a2_summary.get("status")}</p>'
+    if a2_summary.get("status") == "OK":
+        a2_table = _add_seek_target(
+            _build_level_table(f"{theme_out_dir}/a2", "a2", japanese_title), "episode_audio_a2")
+        a2_audio_html = (f'<h2>Standard(A2)</h2>'
+                          f'<audio id="episode_audio_a2" class="main" controls preload="none" '
+                          f'src="{abs_url(a2_summary["out_path"])}"></audio>'
+                          f'<p class="note">duration={a2_summary["duration_seconds"]}s '
+                          f'peak={a2_summary["peak"]} clipping={a2_summary["clipping_detected"]}</p>'
+                          f'{a2_table}')
+
+    html = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>{MANAGEMENT_ID} player({theme_id})</title>
+<style>
+{player_common.PLAYER_STANDARD_CSS}
+</style>
+<script>
+{_TWO_LEVEL_SEEK_SCRIPT}
+</script>
+</head><body>
+<h1>{MANAGEMENT_ID}({theme_id})</h1>
+<p class="note">Family X(Entertainment News)音声構造Stage 3a runtime。
+Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
+{b1b_audio_html}
+{a2_audio_html}
+</body></html>
+"""
+    out_path = f"{theme_out_dir}/player.html"
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return out_path
+
+
+# ============================================================
 # CLI
 # ============================================================
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -829,11 +1091,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
                               "(例: family_x_b3_production_wiring_01)。")
     parser.add_argument("--run", required=True, help="例: run_01")
     parser.add_argument("--level", default="both", choices=("a2", "b1b", "both"))
-    parser.add_argument("--stage", default="plan", choices=("plan", "scaffold", "tts", "assemble", "all"))
+    parser.add_argument("--stage", default="plan",
+                         choices=("plan", "scaffold", "tts", "assemble", "player", "all"))
     parser.add_argument("--dry-run", action="store_true",
                          help="API呼び出しを一切行わずplanのみ出力する(--stage plan相当を強制)。")
     parser.add_argument("--out-dir", default=None,
                          help="既定: er019_output/family_x_audio_production_wiring_01/<slug>__<run>")
+    parser.add_argument("--budget-jpy", type=float, default=150.0,
+                         help="scaffold/tts stage後のBudget Guard上限(既定150円、超過でRuntimeError)。")
     return parser
 
 
@@ -847,10 +1112,19 @@ def main() -> None:
 
     levels = ["a2", "b1b"] if args.level == "both" else [args.level]
 
+    ja_title_info = derive_japanese_title(source_dir)
+    japanese_title = ja_title_info["japanese_title"]
+    if "a2" in levels and not japanese_title:
+        print(f"[FAMILY-X-AUDIO-RUNNER][WARN] japanese_titleが取得できませんでした"
+              f"(source_dir={source_dir}/ja_writer 不在)。A2のJapanese title segmentは"
+              f"英語placeholderのまま生成されるため、実行前に要確認。")
+
     save_json(f"{out_dir}/entry_point.json", {
         "runner": "er019_family_x_audio_production_runner_01.py",
         "management_id": MANAGEMENT_ID, "slug": args.slug, "run": args.run,
         "source_dir": source_dir, "levels": levels, "stage": args.stage, "dry_run": args.dry_run,
+        "japanese_title": japanese_title, "japanese_title_source": ja_title_info["source"],
+        "budget_jpy": args.budget_jpy,
     })
 
     if args.dry_run or args.stage == "plan":
@@ -863,23 +1137,29 @@ def main() -> None:
 
     # scaffold/tts/assemble stageは実API呼び出しを伴う(Stage 1では
     # 呼び出さない。Stage 2以降で本CLIから--stage scaffold等を実行する)。
+    # cost loggerのinstall/raw_usage_log.jsonl作成もこの分岐以降のみ行う
+    # (--dry-run/--stage planは常に¥0・副作用ゼロを維持する既存契約を保つ)。
+    cl.install(f"{out_dir}/raw_usage_log.jsonl")
     import er003_v1_en_direct_vfl_01_generate as vfl01
     client = vfl01.get_client()
 
     if args.stage in ("scaffold", "all"):
-        run_theme_scaffold(client, source_dir, out_dir, levels)
+        with cl.logging_context(args.slug, "scaffold"):
+            run_theme_scaffold(client, source_dir, out_dir, levels)
+        assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
 
     if args.stage in ("tts", "all"):
-        for level in levels:
-            if level == "b1b":
-                generate_family_x_b1_segments(out_dir)
-            else:
-                article_text = load_text(f"{source_dir}/a2/article.md")
-                title = plan.split_family_x_article_text(article_text)["title"]
-                # 日本語titleは呼び出し元(実行スクリプト)がJAPANESE_TITLES
-                # 相当の由来から明示的に渡す(Family A同様、記事固有の翻訳
-                # ロジックは追加しない)。Stage 1では未使用のためplaceholder。
-                generate_family_x_a2_segments(out_dir, japanese_title=title)
+        with cl.logging_context(args.slug, "tts"):
+            for level in levels:
+                if level == "b1b":
+                    generate_family_x_b1_segments(out_dir)
+                else:
+                    # 日本語titleは実行時に決定したja_title_info(ja_writer正式path
+                    # 由来)を使う(以前はa2/article.mdの英語titleをそのまま渡す
+                    # placeholderだった、Stage 3aで判明したbugの最小修正)。
+                    generate_family_x_a2_segments(
+                        out_dir, japanese_title=japanese_title or "(japanese title unavailable)")
+        assert_budget_ok(out_dir, args.budget_jpy, "after tts")
 
     if args.stage in ("assemble", "all"):
         for level in levels:
@@ -888,7 +1168,13 @@ def main() -> None:
             else:
                 stage_assemble_family_x_a2(out_dir, args.slug)
 
-    print(f"[FAMILY-X-AUDIO-RUNNER] stage={args.stage} 完了。out_dir={out_dir}")
+    if args.stage in ("player", "all"):
+        player_path = build_player_html(out_dir, args.slug, japanese_title)
+        print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
+
+    final_jpy, by_provider = compute_cost_jpy_so_far(f"{out_dir}/raw_usage_log.jsonl")
+    print(f"[FAMILY-X-AUDIO-RUNNER] stage={args.stage} 完了。out_dir={out_dir} "
+          f"累計費用(JPY)={final_jpy:.2f} by_provider={by_provider}")
 
 
 if __name__ == "__main__":
