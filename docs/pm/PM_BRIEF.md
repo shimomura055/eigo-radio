@@ -38,6 +38,11 @@
 新規実装しない・無理にRegression更新しない、read-only参照のみ可)。詳細は
 `CURRENT_SPEC.md`「Family体系(2026-09-27ユーザー決定)」節参照。
 
+**並列実行原則(2026-09-27ユーザー決定)**: 技術的競合・出戻り・Gate・
+コスト等の具体的リスクがない独立工程は原則並列実行し、PM上の優先順位
+だけを理由に並列可能なタスクを未着手状態にしない(詳細は
+`docs/pm/PM_GOVERNANCE.md`8節「8-X. 並列実行原則」参照)。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。
