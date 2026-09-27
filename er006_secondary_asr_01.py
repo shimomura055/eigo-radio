@@ -272,6 +272,14 @@ def _log_human_review(detail: dict) -> None:
         # pronunciation_ipa/pronunciation_hint/confidence/sources等を
         # そのまま添付する(「正しく聞こえますか?」だけを提示しない)。
         "pronunciation_lookups": detail.get("pronunciation_lookups", {}),
+        # S3(additive、PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-
+        # AND-ASR-ENTITY-LIKE-01 修正1回目): 最終classificationのentity_like
+        # 根拠カテゴリ(capitalized/loanword等)。各stepにも同名キーが個別に
+        # 付与済み(steps[*].entity_like_source)なので、ここは「最終判定」の
+        # 要約として追加する(既存キーは無変更)。
+        "entity_like_source": (
+            val.aggregate_entity_like_sources(detail["classification"].protected.content_word_diffs)
+            if detail.get("classification") is not None else []),
     }
     with open(HUMAN_REVIEW_LOG_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
@@ -518,7 +526,9 @@ def evaluate_attempt_with_cascade_detail(
         segment_id=segment_id)
 
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
-              "classification": cls.classification}]
+              "classification": cls.classification,
+              # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
+              "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
     cumulative_cost_usd = 0.0
 
     result = {
@@ -611,7 +621,9 @@ def evaluate_attempt_with_cascade_detail(
                     wav_path, language=language, phrases=ledger_phrases)
                 cumulative_cost_usd += 0.00001  # Azure概算単価(既存cascadeと同じ見積もり)
                 steps.append({"step": "tier3_corroboration_secondary", "provider": "azure",
-                               "text": text_corr, "sub_reason": sub_reason})
+                               "text": text_corr, "sub_reason": sub_reason,
+                               "entity_like_source": val.aggregate_entity_like_sources(
+                                   cls.protected.content_word_diffs)})
                 corroborated_by = []
                 if text_corr is not None:
                     supports = semantic_equivalence.corroboration_supports(
@@ -653,6 +665,10 @@ def evaluate_attempt_with_cascade_detail(
                         "classification": cls.classification, "sub_reason": sub_reason,
                         "diff_span": diff_loc, "corroborated_by": corroborated_by,
                         "step": "tier3_corroboration",
+                        # S3(additive): PRONUNCIATION-RESOLUTION-PHASE-4-A2-
+                        # FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01 修正1回目。
+                        "entity_like_source": val.aggregate_entity_like_sources(
+                            cls.protected.content_word_diffs),
                     })
                 except OSError:
                     pass  # telemetry書き込み失敗は判定・retry挙動に影響させない(安全側)
@@ -667,7 +683,9 @@ def evaluate_attempt_with_cascade_detail(
         steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
                        "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
                        "phrase_list_used": bool(ledger_phrases),
-                       "non_latin_info": non_latin_dominance_info(asr_text)})
+                       "non_latin_info": non_latin_dominance_info(asr_text),
+                       "entity_like_source": (val.aggregate_entity_like_sources(cls_nl.protected.content_word_diffs)
+                                               if cls_nl else [])})
         if cls_nl is not None and cls_nl.should_pass:
             result["verified"] = True
             result["stop_retrying"] = False
@@ -688,7 +706,9 @@ def evaluate_attempt_with_cascade_detail(
         cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced, segment_id=segment_id) if text_s_forced is not None else None
         steps.append({"step": "secondary_forced", "provider": "azure", "text": text_s_forced,
                        "classification": cls_s_forced.classification if cls_s_forced else "TTS_FAILURE",
-                       "phrase_list_used": bool(ledger_phrases)})
+                       "phrase_list_used": bool(ledger_phrases),
+                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s_forced.protected.content_word_diffs)
+                                               if cls_s_forced else [])})
         if cls_s_forced is not None and cls_s_forced.should_pass:
             # Primary/Secondaryが一致 -> 従来どおりPASS
             return result
@@ -726,7 +746,9 @@ def evaluate_attempt_with_cascade_detail(
     cumulative_cost_usd += cost_guess
     cls_p2 = val.classify_asr_match(canonical_text, text_p2, segment_id=segment_id) if text_p2 is not None else None
     steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
-                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
+                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE",
+                   "entity_like_source": (val.aggregate_entity_like_sources(cls_p2.protected.content_word_diffs)
+                                           if cls_p2 else [])})
     if cls_p2 is not None and cls_p2.should_pass:
         result["verified"] = True
         result["stop_retrying"] = False
@@ -755,7 +777,9 @@ def evaluate_attempt_with_cascade_detail(
     cls_s1 = val.classify_asr_match(canonical_text, text_s1, segment_id=segment_id) if text_s1 is not None else None
     steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
                    "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE",
-                   "phrase_list_used": bool(ledger_phrases)})
+                   "phrase_list_used": bool(ledger_phrases),
+                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s1.protected.content_word_diffs)
+                                           if cls_s1 else [])})
     if cls_s1 is not None and cls_s1.should_pass:
         result["verified"] = True
         result["stop_retrying"] = False
@@ -784,7 +808,9 @@ def evaluate_attempt_with_cascade_detail(
     cls_s2 = val.classify_asr_match(canonical_text, text_s2, segment_id=segment_id) if text_s2 is not None else None
     steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
                    "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE",
-                   "phrase_list_used": bool(ledger_phrases)})
+                   "phrase_list_used": bool(ledger_phrases),
+                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s2.protected.content_word_diffs)
+                                           if cls_s2 else [])})
     if cls_s2 is not None and cls_s2.should_pass:
         result["verified"] = True
         result["stop_retrying"] = False

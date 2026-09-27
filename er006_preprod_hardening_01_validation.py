@@ -519,6 +519,22 @@ def loanword_flags(text: str) -> set[str]:
     return flags
 
 
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+# LIKE-01 修正1回目(ユーザー判断 2026-09-28): A-1(a)(Ledger登録済み
+# surfaceをentity_like判定へ使う経路)は、Production既定では**OFF**にする。
+# Status: DEFERRED / NOT_ADOPTED(将来S1/量産telemetryで「必要」かつ
+# 「安全な追加条件でfalse accept非増加」の証拠が出たら再検討)。
+# ledger_registered_entity_flags()自体はread-only診断ヘルパーとして残す
+# (直接呼び出す既存test・将来の再検討用の実装は削除しない)が、下記の
+# 明示的なフラグがTrueにならない限り、_classify_asr_match_core()の
+# entity_tokens合流箇所には到達しない(=本フラグOFFの間、Ledgerディスク
+# 読込[er006_pronunciation_ledger_01._load()]がこの分類経路から発生する
+# ことは無い)。A-1(b)(loanword_flags、非ASCII外来語)は影響を受けない
+# (別経路のまま変更なし)。Ledger自体は読み解決/Resolverでは引き続き
+# 使用する(この分類目的のフラグとは独立)。
+LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION = False
+
+
 def ledger_registered_entity_flags(text: str) -> set[str]:
     """A-1(a): Pronunciation Ledger(er006_pronunciation_ledger_01)に登録
     済みのsurfaceが本文中に語境界一致(get_low_confidence_entries_for_
@@ -627,8 +643,18 @@ def _is_benign_plural_pair(a: str, b: str) -> bool:
 
 
 def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
-                     entity_tokens: set[str] | None = None) -> ProtectedCheckResult:
+                     entity_tokens: set[str] | None = None,
+                     entity_tokens_by_source: dict[str, set[str]] | None = None) -> ProtectedCheckResult:
+    """entity_tokens_by_source(PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-
+    WIRING-AND-ASR-ENTITY-LIKE-01 修正1回目、S3、既定None=後方互換):
+    {"capitalized": set(...), "loanword": set(...), ...}形式で、
+    entity_tokensを構成した各カテゴリの語彙集合を渡すと、各content_word_
+    diffsエントリへ`entity_like_source`(entity_like=Trueの根拠となった
+    カテゴリ名のsorted list、observability専用の追加キー)を付与する。
+    分類ロジック本体(entity_like/should_pass/should_retry等)は一切変更
+    しない(既存の同一entity_tokens判定と完全に同じ挙動)。"""
     entity_tokens = entity_tokens or set()
+    entity_tokens_by_source = entity_tokens_by_source or {}
     result = ProtectedCheckResult(passed=True)
     sm = difflib.SequenceMatcher(None, canonical_tokens, asr_tokens, autojunk=False)
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
@@ -669,6 +695,15 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                 # TRUE_CONTENT_MISMATCH(retry対象)のままにする
                 # ("increase"→"decrease"のような対義語誤りを見逃さないため)。
                 entity_like = bool(canon_content) and set(canon_content).issubset(entity_tokens)
+                # S3(observability専用、既定{}なら常に空list): entity_likeの
+                # 根拠となったカテゴリ名(capitalized/loanword等)。分類結果
+                # (entity_like自体)には一切影響しない付加情報。
+                entity_like_source: list[str] = []
+                if entity_like and entity_tokens_by_source:
+                    canon_content_set = set(canon_content)
+                    entity_like_source = sorted(
+                        src for src, toks in entity_tokens_by_source.items()
+                        if canon_content_set & toks)
                 # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J:
                 # 単一語同士の置換差(wait/weight等)で、CMU Pronouncing
                 # Dictionaryの発音(ARPAbet)が完全一致する場合のみ
@@ -682,8 +717,23 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                 result.content_word_diffs.append({
                     "type": tag, "canonical": " ".join(canon_content), "asr": " ".join(asr_content),
                     "entity_like": entity_like, "homophone_candidate": homophone_candidate,
+                    "entity_like_source": entity_like_source,
                 })
     return result
+
+
+def aggregate_entity_like_sources(content_word_diffs: list[dict]) -> list[str]:
+    """S3(observability専用): content_word_diffs全体から、entity_like=True
+    だった各エントリの`entity_like_source`の和集合をsorted listで返す
+    (telemetry/cascade steps/human_review_queueへ additive keyとして
+    伝播させる際の共通ヘルパー、分類ロジックには一切影響しない)。
+    entity_like_sourceキーが無い古いdict[dict形式が変わる前に生成された
+    content_word_diffs]が混ざっていても安全にスキップする(.get使用)。"""
+    sources: set[str] = set()
+    for d in content_word_diffs or []:
+        if d.get("entity_like"):
+            sources |= set(d.get("entity_like_source") or [])
+    return sorted(sources)
 
 
 # ------------------------------------------------------------
@@ -958,18 +1008,29 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
                                      reason="冠詞等を除いた内容語の複合語分かち書き差のみ(空白除去後に一致)")
 
     # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
-    # LIKE-01(A-1): 従来の「大文字始まり」ヒューリスティック
-    # (capitalized_flags)に、(b)小文字外来語(非ASCII文字を含む語、
-    # loanword_flags)と(a)Pronunciation Ledger登録済みsurface(同形一般語
-    # ガード付き、ledger_registered_entity_flags)を合流する。いずれも
-    # entity_tokensという同一の語彙集合へ加わるだけで、以降の
-    # protected_check()・分類ロジック自体は無変更(entity_likeの対象が
-    # 広がるだけであり、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出は
-    # 従来通り)。
-    entity_tokens = (capitalized_flags(canonical_text)
-                      | loanword_flags(canonical_text)
-                      | ledger_registered_entity_flags(canonical_text))
-    protected = protected_check(canon_tokens, asr_tokens, entity_tokens=entity_tokens)
+    # LIKE-01(A-1、修正1回目でLedger条件をOFFに変更): 従来の「大文字始まり」
+    # ヒューリスティック(capitalized_flags)に、(b)小文字外来語(非ASCII
+    # 文字を含む語、loanword_flags)を合流する。(a)Pronunciation Ledger
+    # 登録済みsurface(ledger_registered_entity_flags)は、ユーザー判断
+    # (2026-09-28)によりProduction既定でOFF(LEDGER_ENTITY_FLAGS_ENABLED_
+    # FOR_CLASSIFICATION、Status: DEFERRED/NOT_ADOPTED)。フラグがFalseの
+    # 間はledger_registered_entity_flags()自体を呼ばない(Ledgerディスク
+    # 読込がこの分類経路から発生しないことを保証するため、結果を捨てるの
+    # ではなく呼び出し自体を省略する)。entity_tokensという同一の語彙集合
+    # へ加わるだけで、以降のprotected_check()・分類ロジック自体は無変更
+    # (entity_likeの対象が広がるだけであり、数値/否定/一般内容語の
+    # TRUE_CONTENT_MISMATCH検出は従来通り)。
+    capitalized_set = capitalized_flags(canonical_text)
+    loanword_set = loanword_flags(canonical_text)
+    if LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION:
+        ledger_set = ledger_registered_entity_flags(canonical_text)
+    else:
+        ledger_set = set()
+    entity_tokens = capitalized_set | loanword_set | ledger_set
+    entity_tokens_by_source = {"capitalized": capitalized_set, "loanword": loanword_set,
+                                "ledger": ledger_set}
+    protected = protected_check(canon_tokens, asr_tokens, entity_tokens=entity_tokens,
+                                 entity_tokens_by_source=entity_tokens_by_source)
 
     if not protected.passed:
         # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
@@ -1203,6 +1264,9 @@ def classify_asr_match(canonical_text: str, asr_text: str,
                 "canonical": canonical_text, "asr": asr_text, "role": resolved_role,
                 "classification": result.classification, "sub_reason": sub_reason,
                 "diff_span": diff_loc,
+                # S3(additive、既存キーは無変更): entity_likeと判定された
+                # content_word_diffsの根拠カテゴリ(capitalized/loanword等)。
+                "entity_like_source": aggregate_entity_like_sources(result.protected.content_word_diffs),
             })
         except OSError:
             pass  # telemetry書き込み失敗は既存の判定・retry挙動に影響させない(安全側)

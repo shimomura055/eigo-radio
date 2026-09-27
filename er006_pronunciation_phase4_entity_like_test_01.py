@@ -11,8 +11,16 @@
 #   - loanword_flags()          (A-1(b): 非ASCII文字を含む小文字外来語)
 #   - ledger_registered_entity_flags()
 #                                (A-1(a): Ledger登録済みsurface、
-#                                 同形一般語ガード付き)
+#                                 同形一般語ガード付き。修正1回目で
+#                                 Production既定OFFになったが、関数自体は
+#                                 read-only診断ヘルパーとして残る)
 #   - classify_asr_match() の entity_tokens 合流箇所
+#   - protected_check() の entity_like_source(S3、provenance）
+#
+# 修正1回目(ユーザー判断 2026-09-28)で追加: `LedgerConditionOffTests`
+# (Ledger条件が既定OFFであること・分類経路からLedgerディスク読込が
+# 発生しないことの固定test)、`EntityLikeSourceProvenanceTests`
+# (content_word_diffs[*].entity_like_sourceの内容確認)。
 #
 # 実行方法:
 #   python er006_pronunciation_phase4_entity_like_test_01.py
@@ -23,6 +31,7 @@ from __future__ import annotations
 import os
 import shutil
 import unittest
+from unittest import mock
 
 import er006_preprod_hardening_01_validation as validation
 import er006_pronunciation_ledger_01 as ledger
@@ -241,11 +250,118 @@ class ClassifyAsrMatchEntityLikeGeneralizationTests(unittest.TestCase):
         _use_temp_ledger(run)
 
 
+class LedgerConditionOffTests(unittest.TestCase):
+    """修正1回目(ユーザー判断 2026-09-28): Ledger登録surface条件は
+    Production既定OFF(DEFERRED/NOT_ADOPTED)であることを固定するtest。"""
+
+    def test_flag_is_false_by_default(self):
+        self.assertFalse(validation.LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION,
+                          "LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATIONは既定Falseのまま"
+                          "であること(Ledger surface条件のProduction再有効化は別途"
+                          "ユーザー承認が必要)")
+
+    def test_ledger_only_entity_not_rescued_end_to_end(self):
+        # capitalized_flags/loanword_flagsのどちらにも該当しない(本文中で
+        # 小文字・非ASCII文字を含まない)が、Ledgerにのみ大文字始まりの
+        # canonical_spellingで登録済みのsurfaceは、Ledger条件OFFの間は
+        # entity_like扱いされず、従来通りTRUE_CONTENT_MISMATCH(retry対象)
+        # のままであることを確認する(LedgerRegisteredEntityFlagsTests.
+        # test_word_boundary_not_lowercase_in_this_text_still_rescuedが
+        # 関数単体では引き続き救済されることの裏返し=classify_asr_match
+        # 経由では到達しないことの確認)。
+        def run():
+            ledger.upsert(ledger.LedgerKey(surface="wibblotron", entity_type="product"),
+                          {"canonical_spelling": "Wibblotron", "confidence": "high"})
+            r = validation.classify_asr_match(
+                "The team unveiled a new wibblotron device at the show.",
+                "The team unveiled a new wibbleatron device at the show.")
+            self.assertEqual(r.classification, "TRUE_CONTENT_MISMATCH")
+            self.assertTrue(r.should_retry)
+        _use_temp_ledger(run)
+
+    def test_classify_asr_match_does_not_touch_ledger_disk_when_flag_off(self):
+        # フラグOFFの間、_classify_asr_match_core()のentity_tokens合流箇所は
+        # ledger_registered_entity_flags()自体を呼ばない(=er006_pronunciation_
+        # ledger_01.get_low_confidence_entries_for_text()経由のディスク読込
+        # [_load()]が発生しない)ことを、call countで確認する(例外を
+        # ledger_registered_entity_flags()自身のtry/exceptに握りつぶされない
+        # よう、side_effectで例外を上げるのではなくmock呼び出し回数で判定する)。
+        with mock.patch.object(ledger, "get_low_confidence_entries_for_text") as mock_fn:
+            r = validation.classify_asr_match(
+                "Prices tend to increase after the trial period.",
+                "Prices tend to decrease after the trial period.")
+            self.assertEqual(r.classification, "TRUE_CONTENT_MISMATCH")
+            mock_fn.assert_not_called()
+
+    def test_ledger_registered_entity_flags_function_itself_still_callable(self):
+        # 関数自体は削除しない(将来Ledger surface条件を再検討する際に
+        # 再利用できるよう残す)。フラグOFFでも直接呼び出せば従来通り動く
+        # ことを確認する(read-only診断ヘルパーとしての独立性)。
+        def run():
+            ledger.upsert(ledger.LedgerKey(surface="khaite", entity_type=ledger.CASCADE_UNRESOLVED_ENTITY_TYPE),
+                          {"canonical_spelling": "KHAITE", "confidence": "medium"})
+            flags = validation.ledger_registered_entity_flags(
+                "Its examples included Khaite's palm-sized evening clutch.")
+            self.assertIn("khaite", flags)
+        _use_temp_ledger(run)
+
+
+class EntityLikeSourceProvenanceTests(unittest.TestCase):
+    """S3: content_word_diffs[*].entity_like_source(capitalized/loanwordの
+    集合)がobservability用に正しく付与されることを確認する(分類結果
+    [entity_like自体]には影響しないことも合わせて確認)。"""
+
+    def test_capitalized_source_only(self):
+        def run():
+            r = validation.classify_asr_match(
+                "The designer Altuzarra unveiled a new bag line this season.",
+                "The designer Alta Zara's unveiled a new bag line this season.")
+            entity_diffs = [d for d in r.protected.content_word_diffs if d["entity_like"]]
+            self.assertTrue(entity_diffs)
+            for d in entity_diffs:
+                self.assertEqual(d["entity_like_source"], ["capitalized"])
+        _use_temp_ledger(run)
+
+    def test_loanword_source_only(self):
+        def run():
+            r = validation.classify_asr_match(
+                "Chanel showed a novelty minaudière at the event.",
+                "Chanel showed a novelty minidier at the event.")
+            entity_diffs = [d for d in r.protected.content_word_diffs if d["entity_like"]]
+            self.assertTrue(entity_diffs)
+            for d in entity_diffs:
+                self.assertEqual(d["entity_like_source"], ["loanword"])
+        _use_temp_ledger(run)
+
+    def test_non_entity_diff_has_empty_source(self):
+        def run():
+            r = validation.classify_asr_match(
+                "Prices tend to increase after the trial period.",
+                "Prices tend to decrease after the trial period.")
+            for d in r.protected.content_word_diffs:
+                if not d["entity_like"]:
+                    self.assertEqual(d["entity_like_source"], [])
+        _use_temp_ledger(run)
+
+    def test_aggregate_entity_like_sources_helper(self):
+        diffs = [
+            {"entity_like": True, "entity_like_source": ["capitalized"]},
+            {"entity_like": True, "entity_like_source": ["loanword"]},
+            {"entity_like": False, "entity_like_source": []},
+        ]
+        self.assertEqual(validation.aggregate_entity_like_sources(diffs), ["capitalized", "loanword"])
+        self.assertEqual(validation.aggregate_entity_like_sources([]), [])
+        # 古い形式(entity_like_sourceキーが無い)が混ざっても例外を出さない。
+        self.assertEqual(
+            validation.aggregate_entity_like_sources([{"entity_like": True}]), [])
+
+
 def run():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
     for cls in (LoanwordFlagsTests, LedgerRegisteredEntityFlagsTests,
-                ClassifyAsrMatchEntityLikeGeneralizationTests):
+                ClassifyAsrMatchEntityLikeGeneralizationTests,
+                LedgerConditionOffTests, EntityLikeSourceProvenanceTests):
         suite.addTests(loader.loadTestsFromTestCase(cls))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if not result.wasSuccessful():

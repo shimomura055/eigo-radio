@@ -1,9 +1,11 @@
 # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01
 
 管理ID: `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01`
-Status: 実装完了(A-1・A-2とも)。**`APPROVED_FOR_PRODUCTION`のままGate 3
-closeoutへ進行中。Opus L2レビュー・`PRODUCTION_WIRED`最終判定は未実施
-(Fable判断待ち)**。Human Review Lockの解除は本タスクでは一切行っていない。
+Status: 実装完了(初回: A-1・A-2とも。修正1回目: Opus L2所見反映、
+§8参照)。**`APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ進行中。
+Opus L2レビューはBLOCKER0件で実施済み(§8)。`PRODUCTION_WIRED`最終判定は
+未実施(Fable判断待ち)**。Human Review Lockの解除・small_bag再実行は
+本タスク(初回・修正1回目とも)では一切行っていない。
 
 対象: `RESULT_PACKET_FXD1.md`(`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`
 Stage 3e後の診断)で分類Aとされた2件の実装穴。
@@ -284,3 +286,126 @@ TTS事前注入されない。A-1(entity_like一般化)は、たとえ注入さ�
 - Guardrail案: ¥50(3 segment、Local Rewrite Recovery余裕込み)。
 - **Human Review Lockの解除はユーザー再承認後の別委任で実施すること
   (本タスクの範囲外、実施しない)**。
+
+## §8 修正1回目(2026-09-28、Opus L2所見反映。¥0・API呼び出しなし・
+Human Review Lock解除なし・small_bag再実行なし)
+
+### §8-1 Opus L2所見照合表
+
+Opus L2レビュー(BLOCKER 0件)を踏まえたユーザー正式決定に基づく対応表。
+S2・N4〜N7は本委任(Sonnet修正1回目)の実装対象としては指示されなかった
+項目であり、内容を本Reportで創作していない(Fable/Opus側の粒度・
+判断のまま、Sonnet側では「対応不要/別途Fable判断」として扱う)。
+
+| # | 所見概要 | 対応 | 決定/Status |
+|---|---|---|---|
+| BLOCKER | 0件(全経路同一hook確認済み、A-2はそのまま維持) | 対応不要 | 該当なし |
+| A-1 Ledger surface条件 | Ledger登録surfaceをentity_like判定に使う設計(A-1(a))の妥当性 | Production既定`OFF`へ変更(`LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION = False`)。関数自体は残置、read-only診断ヘルパーとして独立 | `DEFERRED / NOT_ADOPTED`(将来S1/量産telemetryでの追加証拠待ち、OPEN_ITEMS新規項目案は§8-4参照) |
+| S1 | 既存NG記録のオフライン再判定(Ledger条件OFF前提での実データ影響測定) | `er025_phase4_s1_offline_reclassification_01.py`新設・実行。母数4115/反転20/`_case_a_entity_pass`0/loanword-only0 | 実施済み(§8-2) |
+| S2 | (本委任の実装対象外。Fable/Opus側の粒度のまま、Sonnet側では追加実装を行っていない) | 対応なし(本委任範囲外) | `別途Fable判断`(Sonnet未着手) |
+| S3 | `content_word_diffs`にentity_like根拠(capitalized/loanword)を持たせるprovenance付与 | `entity_like_source`をprotected_check/telemetry/cascade各step/human_review_queueへadditive伝播 | 実施済み(§8-3) |
+| N1 | entity_like拡張がcascade起動条件・既存自動PASS機構(`_case_a_entity_pass`、ARPAbet完全一致条件)の入力域も広げる事実の明記 | CURRENT_SPEC/DECISION_LOG/本REPORTへ明記 | 実施済み(記録のみ、機構自体は無変更) |
+| N2 | evidence記述の是正(Lock回避でattempt音声保存・segment_id role gateも無効化されていた点) | CURRENT_SPEC/DECISION_LOGへ明記 | 実施済み(記録のみ) |
+| N3 | `ALLOW_PRONUNCIATION_WEB_LOOKUP`既定`"1"`でfallbackが初回lookup発火点になりうる点 | CURRENT_SPEC/DECISION_LOGへ明記 | 実施済み(記録のみ) |
+| N4〜N7 | (本委任の実装対象外) | 対応なし(本委任範囲外) | `別途Fable判断`(Sonnet未着手) |
+
+### §8-2 S1実測結果(¥0・read-only)
+
+`er025_phase4_s1_offline_reclassification_01.py`(unit test:
+`er025_phase4_s1_offline_reclassification_01_test_01.py`、6件全PASS)で、
+以下2ファイルの全NG記録(canonical/ASR保持分)を現行コード(Ledger条件
+OFF)で再判定した(実TTS/ASR/LLM呼び出し0件、入力ファイルは一切書き
+込んでいない)。
+
+| 入力ファイル | 母数 |
+|---|---|
+| `er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl` | 3875 |
+| `er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl`(steps単位) | 240 |
+| **合計** | **4115** |
+
+| 指標 | 件数 |
+|---|---|
+| entity_like反転(記録当時TRUE_CONTENT_MISMATCH→現行コードでASR_VALIDATION_UNCERTAIN) | 20 |
+| そのうち`_case_a_entity_pass`(CMU辞書ARPAbet完全一致)でPASS化しうる件数 | 0 |
+| そのうちloanword根拠のみによる反転(一般語誤りが隠れるリスクの保守的な注意フラグ、確定判定ではない) | 0 |
+
+出力: `er025_output/phase4_s1_offline_01/summary.json`・
+`flips_detail.jsonl`(反転20件の詳細、監査用)。
+
+### §8-3 S3実装範囲
+
+`protected_check()`の`content_word_diffs[*]`へ`entity_like_source`
+(sorted list、Ledger条件OFFの間は`"ledger"`が出現することはない)を
+追加し、`aggregate_entity_like_sources()`ヘルパー経由で以下へadditive
+伝播した(既存キー・分類結果自体は無変更):
+
+- er021 telemetry record(`er006_preprod_hardening_01_validation.py`の
+  role gate経路、`er006_secondary_asr_01.py`のtier3_corroboration経路の
+  2箇所)。
+- `er006_secondary_asr_01.py`のcascade各step
+  (`primary_1`/`primary_2`/`secondary_1`/`secondary_2`/
+  `tier3_corroboration_secondary`/`non_latin_secondary`/
+  `secondary_forced`)。
+- human_review_queueレコード(`_log_human_review()`のtop-level要約
+  キー、および`steps`経由で各stepの値も伝播)。
+
+### §8-4 test/回帰
+
+新規test 14件追加(`er006_pronunciation_phase4_entity_like_test_01.py`
+に`LedgerConditionOffTests`4件+`EntityLikeSourceProvenanceTests`4件で
+計23件、新規`er025_phase4_s1_offline_reclassification_01_test_01.py`
+6件)、いずれも全PASS。既存関連test 201件+本体fixture57件+
+`er006_secondary_asr_01_test.py`29件を再実行し全PASS(cascade各stepへの
+`entity_like_source`追加後もdict厳密比較を要求するtestは無かったため
+互換)。
+
+`run_project_regression.py`: `collected=3432 passed=3422 failed=7
+errors=3`。内訳は既知baseline(`er003_test_p2j_investigate`3 FAIL+
+1 ERROR・`er003_test_bad`1 FAIL・`er011_open112_trend_synthesis_mode_
+production_wiring_01_test_01`3 FAIL・`er015_standard_a2_6000_
+generation_first_trial_01_test_01`loader 1 ERROR)+環境依存flake1件
+(`er012_e_family_entertainment_two_level_runner_test_01`、cp932
+subprocess、本タスク無関係)に加え、新規に1件
+(`er019_family_x_pointless_01_test_01.FamilyAUnchangedTest.
+test_family_a_files_have_no_working_tree_diff`)。この新規1件は
+`er003_v1_n3_01_scaffold_generate.py`に本タスク**以外**の別Agent作業
+(`KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-*`系)による未commit
+差分が存在することが原因であり(`git status`で本タスク開始前から
+未commitだったことを確認済み、本タスクでは当該ファイルを一切編集して
+いない)、本タスクのcode regressionではない。本タスクが変更した
+ファイル(`er006_preprod_hardening_01_validation.py`/`er006_secondary_
+asr_01.py`)起因の新規code regressionは0件。
+
+### §8-5 SSOT・OPEN_ITEMS反映状況
+
+CURRENT_SPEC.md・DECISION_LOG.mdへ本修正1回目の内容を反映した。
+`OPEN_ITEMS.md`は、本タスク着手前から`OPEN-202`行に別Agent
+(`KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-*`系)の未commit差分が
+存在することを`git status`で確認し(委任文の指示どおり)、待機後も
+解消しなかったため、本タスクでは`OPEN_ITEMS.md`を編集していない
+(他Agentの未commit差分を巻き込んで一緒にcommitすることを避けるため)。
+反映すべき内容の記載案はRESULT_PACKET側に記録し、Fableへ引き継ぐ。
+
+### §8-6 Gate 3チェックリスト最終表
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | コード実装(A-1・A-2、修正1回目でLedger条件OFF化) | 済 |
+| 2 | Unit test(新規23+6件、既存201件+本体57件+cascade29件) | 済、全PASS |
+| 3 | Fixture(proper noun/loanword/同形一般語ガード/negative control/実transcript/Ledger条件OFF固定) | 済 |
+| 4 | Runtime evidence(A-2実発火、初回のみ。修正1回目は¥0コード変更のためAPI呼び出しなし) | 済(初回§5) |
+| 5 | Regression(新規code regression0件を確認、他Agent起因1件を除外し記録) | 済(§8-4) |
+| 6 | SSOT反映(CURRENT_SPEC/DECISION_LOG/REPORT_LEDGER) | 済。`OPEN_ITEMS.md`は他Agent未commit差分のため今回は未反映(§8-5、記載案はRESULT_PACKET) |
+| 7 | Git(delegation_log保存・path指定commit・push) | 本REPORT完成後に実施 |
+| 8 | **Opus L2レビュー** | **実施済み(BLOCKER0件、§8-1)** |
+| 9 | `PRODUCTION_WIRED`最終判定 | **未実施(Fable判断待ち)** |
+
+### §8-7 再実行候補(実施しない、見積のみ)
+
+初回§8の見積(3segment・上限¥45程度・Guardrail案¥50)から変更なし。
+Ledger条件をOFFへ変更したことによる追加の期待救済・リスクの差分は
+無い(該当3segmentのkhaite/altuzarraはいずれも`capitalized_flags`
+(本文中で大文字始まり)で既にentity_like扱いされており、A-1(a)
+[Ledger条件]の有効/無効に影響を受けない。§4のtest fixtureで確認済み)。
+Human Review Lockの解除はユーザー再承認後の別委任で実施すること
+(本タスクの範囲外、実施しない)。

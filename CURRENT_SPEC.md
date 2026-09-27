@@ -1863,19 +1863,50 @@ Status: 実装完了・`APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ
   した(修正前はfallback経路で情報が戻り値へ一切現れなかった)。
 - **A-1(ASR `entity_like`判定の一般化、安全側classification/cascade
   対象の拡張。自動acceptにはしない)**: 従来の「本文中で大文字始まり」
-  ヒューリスティック(`capitalized_flags`)に加え、(a)Pronunciation
-  Ledger登録済みsurface(語境界一致、`tts_injection_disabled`の有無や
-  `entity_type`[`cascade_unresolved_entity`含む]に関わらず分類目的では
-  登録事実を使う。ただしLedger entry自身の`canonical_spelling`が大文字
-  始まりの語として確認できる場合のみ加える「同形一般語ガード」付き
-  [`ledger_registered_entity_flags()`]、これによりsurface="us"/
-  canonical_spelling="unknown"のような既知の誤登録[OPEN-207]は自動的に
-  除外される)、(b)小文字外来語(非ASCII文字を含む語、例:
-  "minaudière"、`loanword_flags()`)を`entity_like`に含める
-  (`er006_preprod_hardening_01_validation.py`)。効果は「entity不一致が
-  TRUE_CONTENT_MISMATCHへ格上げされず、既存のentity_only→ASR_
-  VALIDATION_UNCERTAIN→cascade/Human Review経路へ回る」までであり、
-  数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出力は無変更。
+  ヒューリスティック(`capitalized_flags`)に加え、(b)小文字外来語
+  (非ASCII文字を含む語、例: "minaudière"、`loanword_flags()`)を
+  `entity_like`に含める(`er006_preprod_hardening_01_validation.py`)。
+  効果は「entity不一致がTRUE_CONTENT_MISMATCHへ格上げされず、既存の
+  entity_only→ASR_VALIDATION_UNCERTAIN→cascade/Human Review経路へ回る」
+  までであり、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出力は無変更。
+  **(a)Pronunciation Ledger登録済みsurface条件は、修正1回目
+  (ユーザー判断2026-09-28)によりProduction既定`OFF`
+  (`LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION = False`)。Status:
+  `DEFERRED / NOT_ADOPTED`(将来S1/量産telemetryで「必要」かつ「安全な
+  追加条件でfalse accept非増加」の証拠が出たら再検討。関数
+  `ledger_registered_entity_flags()`自体は同形一般語ガード付きのまま
+  read-only診断ヘルパーとして実装は残すが、フラグがTrueにならない限り
+  分類経路[`_classify_asr_match_core()`のentity_tokens合流箇所]には
+  到達せず、Ledgerディスク読込[`get_low_confidence_entries_for_text()`
+  経由の`_load()`]もこの経路からは発生しない。Ledger自体は読み解決/
+  Resolverでは引き続き使用し、この分類目的のフラグとは独立)。**
+- **S3(修正1回目、observability専用の追加キー)**: `protected_check()`の
+  `content_word_diffs[*]`へ`entity_like_source`(entity_like=Trueの根拠
+  カテゴリ`capitalized`/`loanword`のsorted list、Ledger条件OFFの間は
+  `ledger`が出現することはない)を追加し、`aggregate_entity_like_sources()`
+  ヘルパー経由でer021 telemetry record・cascade各step
+  (`er006_secondary_asr_01.py`の`primary_1`/`primary_2`/`secondary_1`/
+  `secondary_2`/`tier3_corroboration_secondary`/`non_latin_secondary`/
+  `secondary_forced`)・human_review_queueレコードへadditive keyとして
+  伝播する(既存キー・分類結果自体は無変更)。
+- **N1(既存自動PASS機構への影響の明記)**: entity_like判定の一般化
+  (A-1(b)、および将来Ledger条件を再有効化した場合の(a))は、
+  `is_entity_like_mismatch()`/cascade起動条件(`evaluate_attempt_with_
+  cascade_detail`)だけでなく、CMU辞書ARPAbet完全一致による既存自動PASS
+  機構(`er006_secondary_asr_01._case_a_entity_pass()`、`PROPER_NOUN_
+  ENTITY_ARPABET_CONFIRMED`)の入力域も同時に広げる。entity_like判定の
+  対象が広がるほど、この自動PASS機構へ到達しうる差分の母集団も広がる
+  (ARPAbet完全一致という強いgate自体は変更していないが、gateの手前に
+  来る候補数が増える点に留意)。
+- **N2/N3(evidence記述の是正・記録)**: 初回commit(535bb391)のruntime
+  evidence(`er025_output/phase4_evidence_01/`)は、Human Review Lock
+  機構([_has_valid_narration_layout()](er011_human_review_lock_01.py)
+  が構造的にFalseを返すパス配置)・segment_id role gateの両方を意図的に
+  無効化した状態で取得したものであり、通常のProduction経路の初回lookup
+  発火点([ALLOW_PRONUNCIATION_WEB_LOOKUP]既定`"1"`)を経由していない
+  ことをここに明記する(evidence自体の結論[resolver hookが呼ばれ情報が
+  伝播すること]は変わらないが、Lock/role gate無効化という前提条件を
+  Opus L2レビュー向けに明示する)。
 - runtime evidence: small_bag A2 `full_story_part2`の実canonical text
   (Stage 3eで観測されたkhaite/minaudière同時誤認識)を使い、(1)A-2
   fallback resolverの実発火(実TTS1回+実ASR、Guardrail¥15内。cache-only
@@ -1883,9 +1914,17 @@ Status: 実装完了・`APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ
   注入されないが、resolverが呼ばれ情報が伝播することを確認)、(2)A-1に
   よる再分類(この実transcriptがTRUE_CONTENT_MISMATCH→ASR_VALIDATION_
   UNCERTAINへ変わることをunit testで確認)の両方を実測した。
-- 詳細・呼び出しチェーン表・fixture結果・Gate 3チェックリストは
-  `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
-  LIKE-01_REPORT.md`参照。
+- S1(修正1回目、¥0・read-only): 既存telemetry/human_review_queueの
+  全NG記録(canonical/ASR保持分、denominator=4115)を現行コード(Ledger
+  条件OFF)でオフライン再判定した結果、entity_like反転
+  (TRUE_CONTENT_MISMATCH→ASR_VALIDATION_UNCERTAIN)は20件、そのうち
+  `_case_a_entity_pass`でPASS化しうる件数は0件、loanword根拠のみによる
+  反転(一般語誤りが隠れるリスクの保守的な注意フラグ)は0件だった
+  (`er025_phase4_s1_offline_reclassification_01.py`、出力`er025_output/
+  phase4_s1_offline_01/`)。
+- 詳細・呼び出しチェーン表・fixture結果・Gate 3チェックリスト・Opus所見
+  照合表・再実行候補は`PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-
+  WIRING-AND-ASR-ENTITY-LIKE-01_REPORT.md`(初回+修正1回目)参照。
 
 詳細・runtime evidence・費用・回帰確認は
 `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`

@@ -1,0 +1,18 @@
+{
+  "management_id": "PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01",
+  "phase": "S1(修正1回目、read-only offline reclassification)",
+  "ledger_entity_flags_enabled_for_classification": false,
+  "input_files": [
+    "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl",
+    "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"
+  ],
+  "denominator_total": 4115,
+  "denominator_by_source_file": {
+    "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl": 3875,
+    "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": 240
+  },
+  "entity_like_flip_count_true_content_mismatch_to_uncertain": 20,
+  "of_which_case_a_entity_pass_could_auto_pass": 0,
+  "of_which_loanword_only_flip_candidate_hidden_general_word_risk": 0,
+  "methodology_note": "現行コード(classify_asr_match、Ledger surface条件OFF)で、canonical/ASR文字列を保持している既存NG記録を再判定した。実TTS/ASR呼び出しは一切行っていない(記録済み文字列の再比較のみ)。「一般語誤りが隠れる件数」はloanword_flagsのみを根拠とする反転の件数であり、保守的な注意フラグ(確定判定ではない)。"
+}

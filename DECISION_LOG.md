@@ -10925,3 +10925,106 @@ Gitのいずれかが未完了の間は`PRODUCTION_WIRED`を宣言しない、�
   RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_01.md`、
   `docs/pm/RESULT_PACKET_FXD1.md`、`PRONUNCIATION-RESOLUTION-PHASE-4-
   A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_REPORT.md`。
+
+## PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01: 修正1回目(Opus L2所見反映、Ledger surface条件をDEFERRED化)
+
+ユーザー正式決定(2026-09-28、Opus L2レビュー[BLOCKER 0件]を踏まえた
+修正1回目、**¥0・API呼び出しなし・Human Review Lock解除なし・small_bag
+再実行なし**)。
+
+- **A-1 Ledger登録surface条件をDEFERRED / NOT_ADOPTEDへ変更**: 初回
+  commit(535bb391)で実装した`ledger_registered_entity_flags()`の
+  entity_tokens合流(A-1(a))を、Production既定`OFF`にする決定
+  (`er006_preprod_hardening_01_validation.LEDGER_ENTITY_FLAGS_ENABLED_
+  FOR_CLASSIFICATION = False`、新設フラグ)。関数自体は同形一般語ガード
+  付きのままread-only診断ヘルパーとして実装を残すが、フラグがTrueに
+  ならない限り分類経路(`_classify_asr_match_core()`)には到達せず、
+  Ledgerディスク読込(`get_low_confidence_entries_for_text()`経由の
+  `_load()`)もこの経路からは発生しない(unit testで固定)。Ledger自体は
+  読み解決/Resolverでは引き続き使用し、この分類目的のフラグとは独立。
+  将来、S1/量産telemetryで「必要」かつ「安全な追加条件でfalse accept
+  非増加」の証拠が出れば再検討する(OPEN_ITEMSへ新規追跡項目を起票)。
+  A-1(b)(`loanword_flags()`、非ASCII外来語)はこの決定の影響を受けず、
+  Production既定のまま変更なし。A-2(A2 fallback resolver配線)も
+  Opus L2でBLOCKERなし・全経路同一hook確認済みのためそのまま維持する。
+- **S1(¥0、read-only offline reclassification)**: 新設スクリプト
+  `er025_phase4_s1_offline_reclassification_01.py`で、既存
+  `er021_output/en_asr_semantic_equivalence_production_wiring_01/
+  telemetry.jsonl`(3875件)・`er006_output/audio_retry_cascade_prod_01/
+  human_review_queue.jsonl`(steps単位で240件)の全NG記録(canonical/ASR
+  保持分、合計denominator=4115)を、現行コード(Ledger条件OFF)で
+  read-onlyに再判定した。entity_like反転(記録当時TRUE_CONTENT_
+  MISMATCH→現行コードでASR_VALIDATION_UNCERTAIN)は20件、そのうち
+  `_case_a_entity_pass`(CMU辞書ARPAbet完全一致)でPASS化しうる件数は
+  0件、loanword根拠のみによる反転(一般語誤りが隠れるリスクの保守的な
+  注意フラグ、確定判定ではない)は0件だった。入力ファイルは一切書き込んで
+  いない(read-onlyであることをunit testでも固定)。出力:
+  `er025_output/phase4_s1_offline_01/`(`summary.json`・
+  `flips_detail.jsonl`)。
+- **S3(¥0、observability専用の追加キー)**: `protected_check()`の
+  `content_word_diffs[*]`へ`entity_like_source`(entity_like=Trueの
+  根拠カテゴリ`capitalized`/`loanword`のsorted list、分類結果自体には
+  影響しない)を追加し、新設ヘルパー`aggregate_entity_like_sources()`
+  経由でer021 telemetry record(2箇所)・`er006_secondary_asr_01.py`の
+  cascade各step(`primary_1`/`primary_2`/`secondary_1`/`secondary_2`/
+  `tier3_corroboration_secondary`/`non_latin_secondary`/
+  `secondary_forced`)・human_review_queueレコード(top-level要約+
+  steps経由)へadditive keyとして伝播した。既存キー・分類結果自体は
+  無変更。Ledger条件OFFのため、この修正時点で`ledger`という値が
+  出現することはない。
+- **N1(記録)**: entity_like判定の一般化(A-1(b))は、cascade起動条件
+  (`is_entity_like_mismatch`/`evaluate_attempt_with_cascade_detail`)
+  だけでなく、CMU辞書ARPAbet完全一致による既存自動PASS機構
+  (`er006_secondary_asr_01._case_a_entity_pass()`、`PROPER_NOUN_ENTITY_
+  ARPABET_CONFIRMED`)の入力域も同時に広げる事実をCURRENT_SPEC/REPORT/
+  本エントリに明記した(ARPAbet完全一致というgate自体は変更していない)。
+- **N2/N3(記録)**: 初回commitのruntime evidence(`er025_output/
+  phase4_evidence_01/`)がHuman Review Lock機構・segment_id role gateを
+  意図的に無効化した状態で取得したものである点、`ALLOW_PRONUNCIATION_
+  WEB_LOOKUP`既定`"1"`によりfallbackが初回lookup発火点になりうる点を
+  CURRENT_SPEC/REPORTへ明記した(evidence自体の結論は変わらない)。
+- **test更新**: 新規test 8件追加(`er006_pronunciation_phase4_entity_
+  like_test_01.py`、`LedgerConditionOffTests`4件+`EntityLikeSource
+  ProvenanceTests`4件、計23件全PASS)。新規`er025_phase4_s1_offline_
+  reclassification_01_test_01.py`(6件全PASS、read-only性・denominator/
+  flip集計の正しさを固定)。既存関連test 201件+本体fixture57件+
+  `er006_secondary_asr_01_test.py`(29件、cascade各stepの`entity_like_
+  source`追加後も全PASS)を再実行し全PASS。
+- **Regression**: `run_project_regression.py`
+  `collected=3432 passed=3422 failed=7 errors=3`(新規test+8[entity_like_
+  test_01のLedgerConditionOffTests/EntityLikeSourceProvenanceTests]+
+  6[S1 unit test]=14件が収集対象に加わったことに伴うcollected増)。
+  内訳は既知baseline(`er003_test_p2j_investigate`3 FAIL+1 ERROR・
+  `er003_test_bad`1 FAIL・`er011_open112_trend_synthesis_mode_
+  production_wiring_01_test_01`3 FAIL・`er015_standard_a2_6000_
+  generation_first_trial_01_test_01`loader 1 ERROR)+環境依存flake1件
+  (`er012_e_family_entertainment_two_level_runner_test_01`、cp932
+  subprocess、本タスク無関係)に加え、新規に1件
+  (`er019_family_x_pointless_01_test_01.FamilyAUnchangedTest.
+  test_family_a_files_have_no_working_tree_diff`)。この新規1件は
+  `er003_v1_n3_01_scaffold_generate.py`に本タスク**以外**の別Agent作業
+  (`KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-*`系、`git status`で
+  本タスク開始前から未commitの状態だったことを確認済み、本タスクでは
+  一切編集していない)による未commit差分が存在することが原因であり、
+  本タスクのcode regressionではない。本タスクが変更したファイル
+  (`er006_preprod_hardening_01_validation.py`/`er006_secondary_asr_
+  01.py`)起因の新規code regressionは0件。
+- **反映範囲**: `er006_preprod_hardening_01_validation.py`(フラグ新設・
+  entity_tokens_by_source・entity_like_source)、`er006_secondary_asr_
+  01.py`(cascade各step・human_review_queueレコードへのentity_like_source
+  伝播)、`er006_pronunciation_phase4_entity_like_test_01.py`(test追加)、
+  `er025_phase4_s1_offline_reclassification_01.py`(新規)、
+  `er025_phase4_s1_offline_reclassification_01_test_01.py`(新規)、
+  `er025_output/phase4_s1_offline_01/`(S1出力artifact)、`CURRENT_SPEC.md`、
+  `OPEN_ITEMS.md`、`docs/pm/REPORT_LEDGER.md`、
+  `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+  LIKE-01_REPORT.md`(§8修正1回目追記)、本エントリ新設。
+- **STOP該当**: 無し(¥0、API呼び出しなし)。
+- **未完了・Fable判断待ち**: `PRODUCTION_WIRED`最終判定、small_bag A2
+  `full_story_part2`/`full_story_part3`・small_bag B1B `full_story_
+  part2`(3 segment)の再Lock解除・再実行要否(本タスクでは未実施、
+  見積・Guardrail案はREPORT §9参照)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_PRONUNCIATION-
+  RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_02.md`、
+  `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+  LIKE-01_REPORT.md`(§8修正1回目)。
