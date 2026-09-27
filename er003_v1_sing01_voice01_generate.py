@@ -156,7 +156,19 @@ def generate_charon_english(text: str, out_path: str,
             call_fn2 = batch_wiring.make_batch_tts_call_fn(common.MODEL_NAME, CHARON, output_path=out_path)
             # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
             # Structured Separationを適用する。
-            prompt2 = p4c.build_tts_prompt(text, repro01.MINIMAL_INSTRUCTION_PREFIX)
+            fallback_style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
+            # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+            # VALIDATOR-PUNCT-01(修正2回目、Opus L2所見S3是正・非対称
+            # 解消): 標準style_prefix(style_prefix_override)側にのみ
+            # 発音ヒントが注入され、この技術的fallback(MINIMAL_
+            # INSTRUCTION_PREFIX)には反映されない非対称を解消する。関数
+            # 冒頭で既に算出済みのcache_hitsを、新規Ledger読み取り・
+            # 新規web lookupなしで同一hookによりそのまま適用する。
+            if enable_pronunciation_resolver and en_pronunciation_resolver_info \
+                    and en_pronunciation_resolver_info.get("cache_hits"):
+                fallback_style_prefix = pron_resolver_core.augment_style_prefix_with_cached_hits(
+                    fallback_style_prefix, en_pronunciation_resolver_info["cache_hits"])
+            prompt2 = p4c.build_tts_prompt(text, fallback_style_prefix)
             pcm2, retries2, ok2, err2 = common._call_tts_with_retry(
                 call_fn2, prompt2, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
             instruction_type = "minimal_fallback"
@@ -239,7 +251,8 @@ def generate_charon_english(text: str, out_path: str,
             if enable_connected_speech_equivalence_layer:
                 recovered = _local_rewrite_recovery_for_charon_english(
                     text, out_path, asr_text, style_prefix_override, disfluency_qa,
-                    enable_connected_speech_equivalence_layer, attempts_log)
+                    enable_connected_speech_equivalence_layer, attempts_log,
+                    en_pronunciation_resolver_info=en_pronunciation_resolver_info)
                 if recovered is not None:
                     recovered["cooldown_events"] = cooldown_events
                     return recovered
@@ -255,7 +268,8 @@ def generate_charon_english(text: str, out_path: str,
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_charon_english(
             text, out_path, last_asr_text, style_prefix_override, disfluency_qa,
-            enable_connected_speech_equivalence_layer, attempts_log)
+            enable_connected_speech_equivalence_layer, attempts_log,
+            en_pronunciation_resolver_info=en_pronunciation_resolver_info)
         if recovered is not None:
             recovered["cooldown_events"] = cooldown_events
             return recovered
@@ -267,7 +281,15 @@ def generate_charon_english(text: str, out_path: str,
 def _local_rewrite_recovery_for_charon_english(
         text: str, out_path: str, last_asr_text: str | None,
         style_prefix_override: str, disfluency_qa: bool,
-        enable_connected_speech_equivalence_layer: bool, main_loop_attempts_log: list | None = None) -> dict | None:
+        enable_connected_speech_equivalence_layer: bool, main_loop_attempts_log: list | None = None,
+        # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+        # PUNCT-01(修正2回目、Opus L2所見S2是正): 呼び出し元(generate_
+        # charon_english)が関数冒頭で算出済みのtelemetryをそのまま渡す。
+        # hint自体(style_prefix_override)は既にこの関数の引数として保持
+        # されているため再TTSのpromptには反映済みだが、telemetryフィールド
+        # 自体はこの関数配下の__wrapped__呼び出し(enable_pronunciation_
+        # resolver既定False)からは伝播されないため、戻りdictへ別途注入する。
+        en_pronunciation_resolver_info: dict | None = None) -> dict | None:
     """generate_charon_english()専用のLocal Rewrite回復ヘルパー(ユーザー
     承認済み仕様D: Human Review Lock到達前の回復経路)。3回とも(または
     stop_retryingで)ASR検証に合格しなかった場合のみ呼ばれる。回復成功時は
@@ -292,6 +314,15 @@ def _local_rewrite_recovery_for_charon_english(
     resolved = dict(recovery["retts_result"])
     resolved["local_rewrite_recovery"] = recovery
     resolved["canonical_text_before_local_rewrite"] = text
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+    # PUNCT-01(修正2回目、Opus L2所見S2是正): __wrapped__呼び出しは
+    # enable_pronunciation_resolver既定Falseのため、resolved自身の
+    # en_pronunciation_resolver_infoは常にNoneのまま返る。呼び出し元
+    # (generate_charon_english)が既に算出済みの値を、resolvedが未設定
+    # (None)の場合のみ注入する(hint自体はstyle_prefix_override経由で
+    # 既にpromptへ反映済み、ここではtelemetryフィールドのみを補う)。
+    if resolved.get("en_pronunciation_resolver_info") is None:
+        resolved["en_pronunciation_resolver_info"] = en_pronunciation_resolver_info
     # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01(runtime
     # evidence実行時に発見): retts_result単独のattempts_log(1件)だけを
     # 上位へ返すと、review_lock.record_outcome()の累積TTS/ASR call数

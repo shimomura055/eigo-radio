@@ -91,6 +91,16 @@ def disable_web_lookup_for_test():
 MAX_JA_WEB_LOOKUP_CALLS_PER_RUN = 5
 _JA_WEB_LOOKUP_CALL_COUNT = 0
 
+# ------------------------------------------------------------
+# Sonnet修正2回目(Opus L2所見S4(a)是正、JA同型): EN側
+# (resolve_and_augment_en_style_prefixのlow-confidence再research、
+# en_research.research_pronunciations経由のPerplexity呼び出し)にも
+# 1プロセスあたりの上限を設ける。既定値・仕組みはJA側と同一
+# (超過時はfail-safeで既存の「解決できなかった」扱いへ倒す)。
+# ------------------------------------------------------------
+MAX_EN_WEB_LOOKUP_CALLS_PER_RUN = 5
+_EN_WEB_LOOKUP_CALL_COUNT = 0
+
 TELEMETRY_PATH = "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl"
 
 
@@ -124,10 +134,11 @@ def reset_run_caches() -> None:
     """test/新しい記事runの開始時にin-memory cacheをクリアする(既定では
     呼ばれない。プロセスが記事ごとに再起動される現行運用では通常不要だが、
     同一プロセス内で複数記事を扱うテスト・将来のバッチ実行向けに用意する)。"""
-    global _JA_WEB_LOOKUP_CALL_COUNT
+    global _JA_WEB_LOOKUP_CALL_COUNT, _EN_WEB_LOOKUP_CALL_COUNT
     _JA_RUN_CACHE.clear()
     _EN_LOW_CONFIDENCE_RETRY_DONE.clear()
     _JA_WEB_LOOKUP_CALL_COUNT = 0
+    _EN_WEB_LOOKUP_CALL_COUNT = 0
 
 
 # ============================================================
@@ -468,14 +479,33 @@ def resolve_and_augment_en_style_prefix(style_prefix: str, text: str, context: s
     if not _web_lookup_allowed():
         return augmented, info
 
+    global _EN_WEB_LOOKUP_CALL_COUNT
+    if _EN_WEB_LOOKUP_CALL_COUNT >= MAX_EN_WEB_LOOKUP_CALLS_PER_RUN:
+        # Sonnet修正2回目(Opus L2所見S4(a)是正): JA側と同じ「1プロセス
+        # あたりの上限」。超過時はfail-safeでlow_confidence_retry_
+        # attempted=Falseのまま(=このrunでは再research不能だった)扱いに
+        # する。`_EN_LOW_CONFIDENCE_RETRY_DONE`へは追加しない(このrun内で
+        # 恒久的にブロックするのではなく、単に今回分のweb lookup予算切れ
+        # であることを示すため。次のプロセス[記事]では上限がリセットされ、
+        # 通常どおり再試行できる)。
+        _log_telemetry({"event": "en_run_lookup_cap_reached",
+                         "surfaces": [e["surface"] for e in low_conf_candidates],
+                         "cap": MAX_EN_WEB_LOOKUP_CALLS_PER_RUN})
+        return augmented, info
+
     info["low_confidence_retry_attempted"] = True
     entities = [{"surface": e["surface"], "entity_type": e.get("entity_type", "unknown"),
                  "risk_reason": "既存Ledgerでconfidence=lowのため、pre_tts配線時に再research"}
                 for e in low_conf_candidates]
     for e in low_conf_candidates:
         _EN_LOW_CONFIDENCE_RETRY_DONE.add(e["surface"].lower())
+    _EN_WEB_LOOKUP_CALL_COUNT += 1
     research_result = en_research.research_pronunciations(entities)
     info["research_meta"] = research_result
+    _log_telemetry({"event": "en_web_lookup_call",
+                     "surfaces": [e["surface"] for e in low_conf_candidates],
+                     "run_call_count": _EN_WEB_LOOKUP_CALL_COUNT,
+                     "status": research_result.get("status")})
     if research_result.get("status") != "OK":
         return augmented, info
 
@@ -499,3 +529,14 @@ def resolve_and_augment_en_style_prefix(style_prefix: str, text: str, context: s
         info["hints_applied"] = bool(hits2)
         return augmented2, info
     return augmented, info
+
+
+def augment_style_prefix_with_cached_hits(style_prefix: str, hits: list) -> str:
+    """Sonnet修正2回目(Opus L2所見S3是正、非対称解消): `generate_charon_
+    english`等が既にresolve_and_augment_en_style_prefix()で算出済みの
+    `cache_hits`を、Ledgerへ再アクセスせずそのまま別のbase style_prefix
+    (技術的fallbackのMINIMAL_INSTRUCTION_PREFIX等)へ適用するための薄い
+    wrapper。新規web lookup・新規Ledger読み取りは一切発生しない(純粋な
+    文字列整形のみ、`en_injection.apply_precomputed_hints_to_style_
+    prefix`をそのまま呼ぶ)。hitsが空ならstyle_prefixをそのまま返す。"""
+    return en_injection.apply_precomputed_hints_to_style_prefix(style_prefix, hits)

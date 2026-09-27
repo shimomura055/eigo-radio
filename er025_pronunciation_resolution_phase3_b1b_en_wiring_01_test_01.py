@@ -141,6 +141,220 @@ class GenerateCharonEnglishResolverWiringTests(unittest.TestCase):
         _use_temp_ledger(run)
 
 
+class GenerateCharonEnglishFallbackResolverAugmentationTests(unittest.TestCase):
+    """修正2回目(Opus L2所見S3是正、非対称解消): generate_charon_english
+    の技術的fallback(発話区間検出失敗時のみ発火するMINIMAL_INSTRUCTION_
+    PREFIX経路)にも、関数冒頭で算出済みのcache_hitsが同一hook
+    (pron_resolver_core.augment_style_prefix_with_cached_hits、新規
+    web lookup・新規Ledger読み取りなし)で適用されることを確認する。"""
+
+    def _run(self, text: str, enable: bool, out_path: str = "dummy_fallback.wav"):
+        captured_prefixes = []
+
+        def fake_build_tts_prompt(txt, style_prefix):
+            captured_prefixes.append(style_prefix)
+            return style_prefix + txt
+
+        with mock.patch.object(voice01, "p4c") as fake_p4c, \
+             mock.patch.object(voice01.batch_wiring, "make_batch_tts_call_fn", return_value=lambda *a, **k: None), \
+             mock.patch.object(voice01.common, "_call_tts_with_retry", return_value=(b"pcm", 0, True, None)), \
+             mock.patch.object(voice01.common, "pcm_bytes_to_float_mono", return_value=[0.0]), \
+             mock.patch.object(voice01.p3u, "trim_english_keyword_silence",
+                                side_effect=[(None, None), ([0.0], {"raw_duration_seconds": 1.0})]), \
+             mock.patch.object(voice01.safety, "detect_duration_anomaly", return_value={"is_anomaly": False}), \
+             mock.patch.object(voice01.common, "write_wav_float"), \
+             mock.patch.object(voice01.routing, "transcribe", return_value=(text, None)), \
+             mock.patch.object(voice01.secondary_asr, "evaluate_attempt_with_cascade") as fake_cascade, \
+             mock.patch.object(voice01.dq18, "apply_disfluency_gate",
+                                return_value={"verified": True, "disfluency_checked": False,
+                                              "disfluency_evidence": None}), \
+             mock.patch.object(voice01.common, "measure_metrics", return_value={"clipping_detected": False}), \
+             mock.patch.object(voice01.review_lock, "save_tts_attempt_audio", return_value=None):
+            fake_p4c.build_tts_prompt.side_effect = fake_build_tts_prompt
+            fake_cls = mock.Mock()
+            fake_cls.classification = "EXACT_MATCH"
+            fake_cascade.return_value = (True, False, fake_cls)
+            result = voice01.generate_charon_english.__wrapped__(
+                text, out_path, max_attempts=1, enable_pronunciation_resolver=enable)
+        return result, captured_prefixes
+
+    def test_enabled_with_cache_hit_augments_fallback_prefix_too(self):
+        def run():
+            with pron_resolver_core.disable_web_lookup_for_test():
+                key = ledger.LedgerKey(surface="Ottoni", entity_type="person")
+                ledger.upsert(key, {"pronunciation_hint": "oh-TOH-nee", "confidence": "high"})
+                result, prefixes = self._run("We spoke with Ottoni about the plan.", enable=True)
+            self.assertEqual(result["status"], "OK")
+            self.assertEqual(result.get("instruction_type"), "minimal_fallback")
+            self.assertEqual(len(prefixes), 2, "標準分岐+技術的fallbackの2回、build_tts_promptが呼ばれるはず")
+            # 標準分岐(1回目、発話区間検出失敗で捨てられる)も技術的
+            # fallback(2回目、実際にTTSされる)も同じhintを含むこと。
+            self.assertIn("Ottoni", prefixes[0])
+            self.assertIn("Ottoni", prefixes[1])
+            self.assertIn("oh-TOH-nee", prefixes[1])
+        _use_temp_ledger(run)
+
+    def test_disabled_fallback_prefix_unchanged(self):
+        def run():
+            key = ledger.LedgerKey(surface="Ottoni", entity_type="person")
+            ledger.upsert(key, {"pronunciation_hint": "oh-TOH-nee", "confidence": "high"})
+            result, prefixes = self._run("We spoke with Ottoni about the plan.", enable=False)
+            self.assertEqual(result["status"], "OK")
+            self.assertEqual(len(prefixes), 2)
+            self.assertNotIn("Ottoni", prefixes[1])
+        _use_temp_ledger(run)
+
+
+class GenerateCharonEnglishLocalRewriteRecoveryCallSiteTests(unittest.TestCase):
+    """修正2回目(Opus L2所見S2是正、呼び出し元側配線): generate_charon_
+    englishがstop_retrying時、_local_rewrite_recovery_for_charon_english
+    へ関数冒頭で算出済みのen_pronunciation_resolver_infoをkwargとして
+    渡すことを確認する。"""
+
+    def test_passes_computed_resolver_info_to_recovery_helper(self):
+        def run():
+            with pron_resolver_core.disable_web_lookup_for_test():
+                key = ledger.LedgerKey(surface="Ottoni", entity_type="person")
+                ledger.upsert(key, {"pronunciation_hint": "oh-TOH-nee", "confidence": "high"})
+                with mock.patch.object(voice01, "p4c") as fake_p4c, \
+                     mock.patch.object(voice01.batch_wiring, "make_batch_tts_call_fn",
+                                        return_value=lambda *a, **k: None), \
+                     mock.patch.object(voice01.common, "_call_tts_with_retry",
+                                        return_value=(b"pcm", 0, True, None)), \
+                     mock.patch.object(voice01.common, "pcm_bytes_to_float_mono", return_value=[0.0]), \
+                     mock.patch.object(voice01.p3u, "trim_english_keyword_silence",
+                                        return_value=([0.0], {"raw_duration_seconds": 1.0})), \
+                     mock.patch.object(voice01.safety, "detect_duration_anomaly",
+                                        return_value={"is_anomaly": False}), \
+                     mock.patch.object(voice01.common, "write_wav_float"), \
+                     mock.patch.object(voice01.routing, "transcribe",
+                                        return_value=("Something else entirely", None)), \
+                     mock.patch.object(voice01.secondary_asr, "evaluate_attempt_with_cascade") as fake_cascade, \
+                     mock.patch.object(voice01.common, "measure_metrics",
+                                        return_value={"clipping_detected": False}), \
+                     mock.patch.object(voice01.review_lock, "save_tts_attempt_audio", return_value=None), \
+                     mock.patch.object(voice01, "_local_rewrite_recovery_for_charon_english",
+                                        return_value=None) as fake_recovery:
+                    fake_p4c.build_tts_prompt.return_value = "prompt"
+                    fake_cls = mock.Mock()
+                    fake_cls.classification = "TRUE_CONTENT_MISMATCH"
+                    fake_cascade.return_value = (False, True, fake_cls)
+                    voice01.generate_charon_english.__wrapped__(
+                        "We spoke with Ottoni about the plan.", "dummy_out_recovery.wav", max_attempts=1,
+                        enable_connected_speech_equivalence_layer=True,
+                        enable_pronunciation_resolver=True)
+                fake_recovery.assert_called_once()
+                _, kwargs = fake_recovery.call_args
+                info = kwargs.get("en_pronunciation_resolver_info")
+                self.assertIsNotNone(info)
+                self.assertTrue(info["hints_applied"])
+        _use_temp_ledger(run)
+
+
+class LocalRewriteRecoveryForCharonEnglishTelemetryInjectionTests(unittest.TestCase):
+    """修正2回目(Opus L2所見S2是正): _local_rewrite_recovery_for_charon_
+    english()自体の戻りdictへのtelemetry注入ロジック(hint自体はstyle_
+    prefix_override経由で既に保持されているため__wrapped__へは転送しない、
+    telemetryフィールドのみをresolvedが未設定[None]の場合に限り補う)を
+    直接確認する。"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="charon_local_rewrite_resolver_")
+        self.out_path = os.path.join(self.tmpdir, "theme1", "b1b", "narration", "preview.wav")
+        os.makedirs(os.path.dirname(self.out_path), exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_injects_outer_info_when_wrapped_result_missing_key(self):
+        outer_info = {"hints_applied": True, "cache_hits": [{"surface": "Ottoni"}]}
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE", "retts_result": {"status": "OK"}}
+        with mock.patch.object(voice01.retry_primitive, "run_local_rewrite_recovery", return_value=fake_recovery):
+            result = voice01._local_rewrite_recovery_for_charon_english(
+                "text", self.out_path, "asr", "style", False, True, [],
+                en_pronunciation_resolver_info=outer_info)
+        self.assertEqual(result["en_pronunciation_resolver_info"], outer_info)
+
+    def test_does_not_override_when_wrapped_result_already_has_value(self):
+        inner_info = {"hints_applied": True, "cache_hits": [{"surface": "Toteme"}]}
+        outer_info = {"hints_applied": False, "cache_hits": []}
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE",
+                          "retts_result": {"status": "OK", "en_pronunciation_resolver_info": inner_info}}
+        with mock.patch.object(voice01.retry_primitive, "run_local_rewrite_recovery", return_value=fake_recovery):
+            result = voice01._local_rewrite_recovery_for_charon_english(
+                "text", self.out_path, "asr", "style", False, True, [],
+                en_pronunciation_resolver_info=outer_info)
+        self.assertEqual(result["en_pronunciation_resolver_info"], inner_info)
+
+
+class LocalRewriteRecoveryForNewsNarrationResolverForwardingTests(unittest.TestCase):
+    """修正2回目(Opus L2所見S1是正): _local_rewrite_recovery_for_news_
+    narration()がenable_pronunciation_resolverを__wrapped__の再TTS呼び
+    出しへ転送し、戻りdictにen_pronunciation_resolver_infoが無い場合は
+    呼び出し元の値をsetdefaultで補うことを確認する。"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="news_narration_local_rewrite_resolver_")
+        self.out_path = os.path.join(self.tmpdir, "theme1", "b1b", "narration", "full_story_part2.wav")
+        os.makedirs(os.path.dirname(self.out_path), exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_forwards_enable_pronunciation_resolver_to_wrapped_retts(self):
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE",
+                          "retts_result": {"status": "OK", "en_pronunciation_resolver_info": {"hints_applied": True}}}
+        with mock.patch.object(news_tail_fix.retry_primitive, "run_local_rewrite_recovery",
+                                return_value=fake_recovery) as fake_run, \
+             mock.patch.object(news_tail_fix.generate_news_narration_wide_margin, "__wrapped__") as fake_wrapped:
+            fake_wrapped.return_value = {"status": "OK"}
+            news_tail_fix._local_rewrite_recovery_for_news_narration(
+                "text", self.out_path, "asr", 15, False, True, False, [],
+                enable_pronunciation_resolver=True, en_pronunciation_resolver_info={"hints_applied": False})
+            _, kwargs = fake_run.call_args
+            retts_fn = kwargs["retts_fn"]
+            retts_fn("rewritten text")
+        _, wrapped_kwargs = fake_wrapped.call_args
+        self.assertTrue(wrapped_kwargs.get("enable_pronunciation_resolver"))
+
+    def test_default_disabled_forwards_false_to_wrapped_retts(self):
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE", "retts_result": {"status": "OK"}}
+        with mock.patch.object(news_tail_fix.retry_primitive, "run_local_rewrite_recovery",
+                                return_value=fake_recovery) as fake_run, \
+             mock.patch.object(news_tail_fix.generate_news_narration_wide_margin, "__wrapped__") as fake_wrapped:
+            fake_wrapped.return_value = {"status": "OK"}
+            news_tail_fix._local_rewrite_recovery_for_news_narration(
+                "text", self.out_path, "asr", 15, False, True, False, [])
+            _, kwargs = fake_run.call_args
+            retts_fn = kwargs["retts_fn"]
+            retts_fn("rewritten text")
+        _, wrapped_kwargs = fake_wrapped.call_args
+        self.assertFalse(wrapped_kwargs.get("enable_pronunciation_resolver"))
+
+    def test_setdefault_injects_outer_info_when_missing(self):
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE",
+                          "retts_result": {"status": "STOPPED", "reason": "symbol gate"}}
+        outer_info = {"hints_applied": True, "cache_hits": [{"surface": "X"}]}
+        with mock.patch.object(news_tail_fix.retry_primitive, "run_local_rewrite_recovery",
+                                return_value=fake_recovery):
+            result = news_tail_fix._local_rewrite_recovery_for_news_narration(
+                "text", self.out_path, "asr", 15, False, True, False, [],
+                enable_pronunciation_resolver=True, en_pronunciation_resolver_info=outer_info)
+        self.assertEqual(result["en_pronunciation_resolver_info"], outer_info)
+
+    def test_does_not_override_when_already_present(self):
+        inner_info = {"hints_applied": True, "cache_hits": [{"surface": "Y"}]}
+        fake_recovery = {"status": "RESOLVED_BY_LOCAL_REWRITE",
+                          "retts_result": {"status": "OK", "en_pronunciation_resolver_info": inner_info}}
+        outer_info = {"hints_applied": False, "cache_hits": []}
+        with mock.patch.object(news_tail_fix.retry_primitive, "run_local_rewrite_recovery",
+                                return_value=fake_recovery):
+            result = news_tail_fix._local_rewrite_recovery_for_news_narration(
+                "text", self.out_path, "asr", 15, False, True, False, [],
+                enable_pronunciation_resolver=True, en_pronunciation_resolver_info=outer_info)
+        self.assertEqual(result["en_pronunciation_resolver_info"], inner_info)
+
+
 class GenerateEnglishComponentMinimalInstructionResolverWiringTests(unittest.TestCase):
     """OPEN-198是正: repro01.generate_english_component_minimal_instruction()
     のopt-in resolver配線。"""

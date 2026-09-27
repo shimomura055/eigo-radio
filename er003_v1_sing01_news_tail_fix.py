@@ -240,7 +240,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             if enable_connected_speech_equivalence_layer:
                 recovered = _local_rewrite_recovery_for_news_narration(
                     text, out_path, asr_text, max_extra_chars, disfluency_qa,
-                    enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log)
+                    enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
+                    enable_pronunciation_resolver=enable_pronunciation_resolver,
+                    en_pronunciation_resolver_info=en_pronunciation_resolver_info)
                 if recovered is not None:
                     recovered["cooldown_events"] = cooldown_events
                     return recovered
@@ -256,7 +258,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_news_narration(
             text, out_path, last_asr_text, max_extra_chars, disfluency_qa,
-            enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log)
+            enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
+            enable_pronunciation_resolver=enable_pronunciation_resolver,
+            en_pronunciation_resolver_info=en_pronunciation_resolver_info)
         if recovered is not None:
             recovered["cooldown_events"] = cooldown_events
             return recovered
@@ -268,7 +272,14 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
 def _local_rewrite_recovery_for_news_narration(
         text: str, out_path: str, last_asr_text: str | None, max_extra_chars: int,
         disfluency_qa: bool, enable_connected_speech_equivalence_layer: bool,
-        enable_repetition_qa: bool, main_loop_attempts_log: list | None = None) -> dict | None:
+        enable_repetition_qa: bool, main_loop_attempts_log: list | None = None,
+        # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+        # PUNCT-01(修正2回目、Opus L2所見S1是正): 呼び出し元(generate_
+        # news_narration_wide_margin)が受け取ったopt-in引数をそのまま
+        # __wrapped__の再TTS呼び出しへ転送する(既定False、既存呼び出し
+        # 元には一切影響しない)。
+        enable_pronunciation_resolver: bool = False,
+        en_pronunciation_resolver_info: dict | None = None) -> dict | None:
     """generate_news_narration_wide_margin()専用のLocal Rewrite回復
     ヘルパー(generate_charon_english側と対になる実装、ユーザー承認済み
     仕様D)。Full Story/Point本文/In One Lineが対象。回復成功時は
@@ -283,7 +294,8 @@ def _local_rewrite_recovery_for_news_narration(
             rewritten_text, out_path, max_attempts=1, max_extra_chars=max_extra_chars,
             disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            enable_repetition_qa=enable_repetition_qa)
+            enable_repetition_qa=enable_repetition_qa,
+            enable_pronunciation_resolver=enable_pronunciation_resolver)
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
@@ -298,6 +310,14 @@ def _local_rewrite_recovery_for_news_narration(
     # call数guardが正しく機能するよう、メインループ+re-TTSのattempts_log
     # を連結する(generate_charon_english側と同じ修正)。
     resolved["attempts_log"] = list(main_loop_attempts_log or []) + (resolved.get("attempts_log") or [])
+    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+    # PUNCT-01(修正2回目、Opus L2所見S1是正): __wrapped__呼び出しは
+    # enable_pronunciation_resolverを転送済みのため、大半の戻り値パスは
+    # 自身のen_pronunciation_resolver_infoを持つ。ただし禁止記号gate等、
+    # resolver hookより前で早期returnする戻り値パスはこのキー自体を
+    # 持たないため、呼び出し元(generate_news_narration_wide_margin)が
+    # 関数冒頭で算出済みの値を安全網としてsetdefaultで補う。
+    resolved.setdefault("en_pronunciation_resolver_info", en_pronunciation_resolver_info)
     return resolved
 
 

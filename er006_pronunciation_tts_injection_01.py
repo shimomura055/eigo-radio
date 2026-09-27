@@ -28,6 +28,27 @@ PRONUNCIATION_BLOCK_HEADER = (
 )
 
 
+def _format_hints_block(hits: list[dict]) -> str:
+    lines = [PRONUNCIATION_BLOCK_HEADER.strip()]
+    for h in hits:
+        lines.append(f'- "{h["surface"]}" is pronounced approximately "{h["pronunciation_hint"]}".')
+    return "\n".join(lines)
+
+
+def apply_precomputed_hints_to_style_prefix(style_prefix: str, hits: list[dict]) -> str:
+    """PRONUNCIATION-RESOLUTION-PHASE-3(修正2回目、Opus L2所見S3是正):
+    既に(Ledgerアクセス済みで)確定しているhitsリスト(`get_hint_for_text`/
+    `augment_style_prefix_with_pronunciation`が返したものと同じ形状、
+    `surface`/`pronunciation_hint`キーを持つdictのlist)を、Ledgerへ
+    再アクセスせずそのまま別のbase style_prefix(技術的fallbackの
+    MINIMAL_INSTRUCTION_PREFIX等)へ適用するための純粋な文字列整形
+    ヘルパー。新規web lookup・新規Ledger読み取りは一切発生しない。
+    hitsが空ならstyle_prefixをそのまま返す。"""
+    if not hits:
+        return style_prefix
+    return style_prefix.rstrip() + "\n\n" + _format_hints_block(hits)
+
+
 def augment_style_prefix_with_pronunciation(style_prefix: str, text: str,
                                              min_confidence: str = "medium") -> tuple[str, list[dict]]:
     """textの中にLedger登録済みの固有名詞があれば、style_prefixの末尾へ
@@ -48,8 +69,4 @@ def augment_style_prefix_with_pronunciation(style_prefix: str, text: str,
         apply_tts_injection_filter=True)
     if not hits:
         return style_prefix, []
-    lines = [PRONUNCIATION_BLOCK_HEADER.strip()]
-    for h in hits:
-        lines.append(f'- "{h["surface"]}" is pronounced approximately "{h["pronunciation_hint"]}".')
-    augmented = style_prefix.rstrip() + "\n\n" + "\n".join(lines)
-    return augmented, hits
+    return apply_precomputed_hints_to_style_prefix(style_prefix, hits), hits

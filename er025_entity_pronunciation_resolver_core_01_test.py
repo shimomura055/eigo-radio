@@ -234,6 +234,65 @@ def test_resolve_and_augment_en_style_prefix_skips_cascade_unresolved_low_confid
     print("PASS: test_resolve_and_augment_en_style_prefix_skips_cascade_unresolved_low_confidence")
 
 
+def test_resolve_and_augment_en_style_prefix_run_lookup_cap():
+    # Sonnet修正2回目(Opus L2所見S4(a)是正、JA同型): 1プロセスあたりの
+    # EN web lookup(research_pronunciations)実行回数がMAX_EN_WEB_LOOKUP_
+    # CALLS_PER_RUNを超えたら、それ以上は呼ばずfail-safeで
+    # low_confidence_retry_attempted=Falseのまま倒すこと。
+    def run():
+        import er006_pronunciation_research_01 as en_research
+
+        calls = []
+
+        def fake_research(entities, model="sonar", timeout=60.0):
+            calls.append(list(entities))
+            return {"status": "OK", "items": [], "citations": [], "model": "sonar",
+                     "response_id": "fake", "elapsed_seconds": 0.01, "usage": {}}
+        orig = en_research.research_pronunciations
+        en_research.research_pronunciations = fake_research
+        try:
+            for i in range(core.MAX_EN_WEB_LOOKUP_CALLS_PER_RUN + 2):
+                surface = f"Uniqxxxbrand{i}"
+                key = ledger.LedgerKey(surface=surface, entity_type="brand")
+                ledger.upsert(key, {"pronunciation_hint": "", "confidence": "low"})
+                style_prefix = "Speak naturally."
+                text = f"The brand {surface} was mentioned in the article."
+                augmented, info = core.resolve_and_augment_en_style_prefix(style_prefix, text)
+                if i >= core.MAX_EN_WEB_LOOKUP_CALLS_PER_RUN:
+                    assert info["low_confidence_retry_attempted"] is False, (
+                        f"上限超過後もlow_confidence_retry_attemptedがTrueになっている(i={i})")
+            assert len(calls) == core.MAX_EN_WEB_LOOKUP_CALLS_PER_RUN, (
+                f"run単位上限{core.MAX_EN_WEB_LOOKUP_CALLS_PER_RUN}回を超えて呼ばれた: {len(calls)}")
+        finally:
+            en_research.research_pronunciations = orig
+    _use_temp_ledger(run)
+    print("PASS: test_resolve_and_augment_en_style_prefix_run_lookup_cap")
+
+
+def test_augment_style_prefix_with_cached_hits_no_new_ledger_access():
+    # Sonnet修正2回目(Opus L2所見S3是正、非対称解消): 算出済みhitsを
+    # 別のbase style_prefixへ適用するwrapperが、Ledgerへ一切アクセスせず
+    # 純粋な文字列整形のみで動作すること。
+    def run():
+        import er006_pronunciation_ledger_01 as ledger_mod
+
+        def fail_if_called(*args, **kwargs):
+            raise AssertionError("cached hits適用はLedgerへ再アクセスしてはいけない")
+        orig = ledger_mod.get_hint_for_text
+        ledger_mod.get_hint_for_text = fail_if_called
+        try:
+            hits = [{"surface": "Ottoni", "pronunciation_hint": "oh-TOH-nee"}]
+            augmented = core.augment_style_prefix_with_cached_hits("Speak the following text.", hits)
+            assert "Ottoni" in augmented and "oh-TOH-nee" in augmented
+            assert "Speak the following text." in augmented
+            empty = core.augment_style_prefix_with_cached_hits("Speak the following text.", [])
+            assert empty == "Speak the following text."
+        finally:
+            ledger_mod.get_hint_for_text = orig
+    _use_temp_ledger(run)
+    print("PASS: test_augment_style_prefix_with_cached_hits_no_new_ledger_access")
+
+
 def test_resolve_unknown_ja_tokens_source_context_seed_cache_hit_no_lookup():
     # Sonnet修正1回目(Opus L2 BLOCKER-2是正): seed_work_canon_reading()で
     # 事前seedした作品固有読みは、同じsource_contextで呼ぶとweb lookupを
@@ -401,6 +460,8 @@ if __name__ == "__main__":
     test_resolve_and_augment_en_style_prefix_low_confidence_retry_improves_and_dedupes()
     test_resolve_and_augment_en_style_prefix_no_entity_no_change()
     test_resolve_and_augment_en_style_prefix_skips_cascade_unresolved_low_confidence()
+    test_resolve_and_augment_en_style_prefix_run_lookup_cap()
+    test_augment_style_prefix_with_cached_hits_no_new_ledger_access()
     test_resolve_unknown_ja_tokens_source_context_seed_cache_hit_no_lookup()
     test_resolve_unknown_ja_tokens_source_context_isolation()
     test_resolve_unknown_ja_tokens_confidence_mirror_self_heal_on_cache_hit()

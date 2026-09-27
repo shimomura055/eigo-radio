@@ -4,12 +4,15 @@
 `docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_01.md`
 に、Fable修正指示1回目の委任文全文は
 `docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_02.md`
+に、Fable修正指示2回目(Opus L2所見反映)の委任文全文は
+`docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_03.md`
 に保存済み。**¥0**(コード・test・fixtureのみ、TTS/ASR/LLM実行なし、Human
 Review Lock解除なし、共有ストア書込みなし)。Fable Gate 3判定は本REPORTでは
-自称しない(**Fable Gate 3判定待ち**のまま記載する)。本commit後にOpus L2
-レビュー(共有ASR/TTS層変更のため必須)を予定。§1〜§7は初回commit
-(b3cb2308)時点の記述のまま残す。修正1回目の内容は§8「修正1回目」に
-記録する。
+自称しない(**Fable Gate 3判定待ち**のまま記載する)。§1〜§7は初回commit
+(b3cb2308)時点の記述のまま残す。修正1回目の内容は§8「修正1回目」に、
+Opus L2所見は§10、修正2回目の内容は§11に記録する(修正1回目commit
+[8da4b190]後にOpus L2レビューを実施し、その所見をFableが本ラウンドの
+委任文で中継した)。
 
 ## §1 既存資産照合(分類A: 既存承認仕様の実装穴、新仕様ではない)
 
@@ -478,23 +481,246 @@ guardされていなかったためこの問題は表面化していなかった
 | 4 | 本ラウンド | `generate_english_segment_with_fallback`にLock decoratorを追加した結果、既存test(`er007_ja_tts_retry_path_fix_test_01.py`)2件が標準命名慣習の`out_path`を使っていたため、実際にreview_lock_state.jsonをリポジトリ直下へ書き込み、かつ2 test間でLock状態を共有してしまう副作用が判明した(§8-2末尾) | tempdir隔離で修正済み(test対象のロジック自体は無変更)。Opusには「他にも同様の`_has_valid_narration_layout`を満たす`out_path`を使う既存testが、本タスクで確認した範囲外に残っていないか」の横断確認を依頼したい(本ラウンドはGrepで実引数呼び出し元のみ確認、既存test全件の網羅的監査はスコープ外) |
 | 5 | 本ラウンド | §6のruntime evidence計画をLock対象6 segment+japanese_title+KP再選定1 callへ拡張し、Guardrail見積りを¥150へ更新した(§8-5) | 未実施(Lock解除はユーザー操作待ち)。Opusには「見積り¥150が実際のcache hit想定([EN低確信度entryのweb lookup発火可能性]を含む)と整合しているか」の確認を依頼したい |
 
-## §9 変更ファイル一覧(初回+修正1回目、累積)
+## §10 Opus L2所見(逐語、修正2回目)
+
+**正直な限界**: Sonnet実行層はOpus L2の生レビュー出力そのものには直接
+アクセスしていない。以下は、Fableが委任文
+(`docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_03.md`
+に保存済み)で中継したOpus L2所見の記述を、Sonnetが改変・要約せずそのまま
+転記したものである(「逐語」の対象は委任文の当該箇所であり、Opus自身の
+生ログ全文ではない)。
+
+> S1: `er003_v1_sing01_news_tail_fix.py` `_local_rewrite_recovery_for_
+> news_narration`(L281-286付近)へ `enable_pronunciation_resolver` を
+> 引数追加し `__wrapped__` へ転送、戻りdictに `en_pronunciation_
+> resolver_info` を `setdefault` で注入。
+>
+> S2: `er003_v1_sing01_voice01_generate.py` `_local_rewrite_recovery_
+> for_charon_english` の戻りdictに `en_pronunciation_resolver_info` を
+> 注入(hint自体は既に保持)。
+>
+> S3: 同ファイル `generate_charon_english` の技術的fallback(L159
+> `MINIMAL_INSTRUCTION_PREFIX`)を、算出済みhitsで同一hookにより
+> augment(非対称解消)。
+>
+> S4(a): `er025_entity_pronunciation_resolver_core_01.py` EN低confidence
+> web lookupに `MAX_EN_WEB_LOOKUP_CALLS_PER_RUN`(JA同型、既定5)+
+> telemetryを追加。
+>
+> N6/N7: blocked時戻り値形状の変化と累積会計(2→最大3/call)をREPORTに
+> 記録(コード変更なし)。
+>
+> N4: fullwidth dead codeは現状維持。
+>
+> S5: (§8-6既存表項目5、Guardrail見積り¥150の整合性確認、Part 2
+> runtime着手時に扱う)。
+
+BLOCKERは無し、SHOULD_FIXがS1〜S5(うちS1〜S4がPart 1のコード対応対象、
+S5はPart 2のGuardrail運用確認対象)、N4/N6/N7/N8/N9/N12はNOTE(N4/N6/N7は
+本ラウンドで記録のみ、N8/N9/N12はPart 2 runtime着手時の事前措置対象)。
+
+## §11 修正2回目(2026-09-27、Opus L2所見S1〜S4反映)
+
+Fable判定: 修正1回目でOpus L2レビューへ提出した3件の申し送り事項(§8-6の
+表)に対し、Opusが上記S1〜S5・N4・N6〜N9・N12を返した。BLOCKERは無かった
+ため、SHOULD_FIX(S1〜S4)をコードへ反映する。**¥0**(コード・test
+のみ、TTS/ASR/LLM実行なし、Human Review Lock解除なし、SSOT編集なし)。
+
+### 1. S1: `_local_rewrite_recovery_for_news_narration`のresolver転送+telemetry注入
+
+`er003_v1_sing01_news_tail_fix.py`の`_local_rewrite_recovery_for_news_
+narration()`へ`enable_pronunciation_resolver: bool = False`と
+`en_pronunciation_resolver_info: dict | None = None`の2引数を追加した
+(前者が委任文で明示された追加引数、後者はsetdefault注入のフォール
+バック値を保持するための付随引数)。
+
+- `_retts_fn`内の`generate_news_narration_wide_margin.__wrapped__(...)`
+  呼び出しへ`enable_pronunciation_resolver=enable_pronunciation_resolver`
+  をそのまま転送した。これにより、Local Rewrite回復時の再TTS
+  (`rewritten_text`に対する1回のみのattempt)でも、標準分岐の
+  resolver hookが(呼び出し元がTrueを渡していれば)実際に発火する
+  ようになった(修正前は常にFalseで固定され、書き換え後テキストに対する
+  発音ヒント再解決が一切行われていなかった)。
+- 呼び出し元(`generate_news_narration_wide_margin`本体、2箇所)を
+  `enable_pronunciation_resolver=enable_pronunciation_resolver,
+  en_pronunciation_resolver_info=en_pronunciation_resolver_info`を渡す
+  よう更新した。
+- 戻り値`resolved`へ`resolved.setdefault("en_pronunciation_resolver_
+  info", en_pronunciation_resolver_info)`を追加した。`__wrapped__`の
+  ほとんどの戻り値パス(OK/ASR_VALIDATION_UNCERTAIN/STOPPED)は転送した
+  引数により自身のen_pronunciation_resolver_infoを持つが、禁止記号gate
+  (symbol_findings)等、resolver hookより前で早期returnするパスは
+  このキー自体を持たないため、呼び出し元が関数冒頭で算出済みの値を
+  安全網として補う。
+
+### 2. S2: `_local_rewrite_recovery_for_charon_english`のtelemetry注入
+
+`er003_v1_sing01_voice01_generate.py`の`_local_rewrite_recovery_for_
+charon_english()`へ`en_pronunciation_resolver_info: dict | None = None`
+引数を追加した(委任文の記述どおり、hint自体[style_prefix_override]は
+既にこの関数の既存引数として保持・転送されているため、`enable_
+pronunciation_resolver`自体を`__wrapped__`へ新たに転送する変更は行って
+いない)。呼び出し元2箇所を`en_pronunciation_resolver_info=en_
+pronunciation_resolver_info`を渡すよう更新し、戻り値`resolved`へ
+`resolved.get("en_pronunciation_resolver_info") is None`の場合のみ
+呼び出し元の値を注入するガードを追加した(`__wrapped__`呼び出しは
+`enable_pronunciation_resolver`既定Falseのため、resolved自身の当該
+キーは常にNoneで返る。単純な`dict.setdefault()`はキーが既に存在すると
+[値がNoneでも]上書きしないため、ここでは明示的な条件分岐を使った)。
+
+### 3. S3: `generate_charon_english`技術的fallbackへのcache_hits適用(非対称解消)
+
+`generate_charon_english`は関数冒頭で`en_pronunciation_resolver_info`
+(cache_hitsを含む)を1回だけ算出するが、修正前はこの結果を標準style_
+prefix(`style_prefix_override`)にのみ適用し、発話区間検出失敗時の技術的
+fallback(`repro01.MINIMAL_INSTRUCTION_PREFIX`ベース)には一切適用して
+いなかった(非対称)。
+
+是正のため、`er006_pronunciation_tts_injection_01.py`の
+`augment_style_prefix_with_pronunciation()`から、hitsを既存base
+prefixへ適用する部分を`apply_precomputed_hints_to_style_prefix(style_
+prefix, hits)`として抽出した(純粋な文字列整形のみ、Ledgerアクセス
+なし)。`er025_entity_pronunciation_resolver_core_01.py`にこれを
+呼び出す薄いwrapper`augment_style_prefix_with_cached_hits(style_prefix,
+hits)`を追加した。`generate_charon_english`の技術的fallback直前で、
+`enable_pronunciation_resolver`かつ`en_pronunciation_resolver_info`に
+`cache_hits`がある場合のみ、算出済みのcache_hitsをこのwrapper経由で
+`repro01.MINIMAL_INSTRUCTION_PREFIX`へ適用する。**新規Ledger読み取り・
+新規web lookupは一切発生しない**(既に確定済みのhitsをそのまま文字列
+整形するだけ)。
+
+### 4. S4(a): EN web lookup run単位上限+telemetry
+
+`er025_entity_pronunciation_resolver_core_01.py`の`resolve_and_augment_
+en_style_prefix()`のlow-confidence再research経路(`en_research.
+research_pronunciations`呼び出し)に、JA側`MAX_JA_WEB_LOOKUP_CALLS_PER_
+RUN`と同型の`MAX_EN_WEB_LOOKUP_CALLS_PER_RUN`(既定5)+`_EN_WEB_LOOKUP_
+CALL_COUNT`(run単位カウンタ、`reset_run_caches()`でリセット)を追加
+した。上限到達時はfail-safeで`low_confidence_retry_attempted=False`の
+まま(=再research不能)扱いにし、既存Gate(HUMAN_REVIEW/通常TTS)は一切
+緩めない。`_log_telemetry()`(既存の`er025_output/pronunciation_
+resolution_core_telemetry_01/telemetry.jsonl`へのbest-effort追記、JA側
+と同一機構)で`en_run_lookup_cap_reached`/`en_web_lookup_call`の2
+イベントを記録するようにした。上限超過時は`_EN_LOW_CONFIDENCE_RETRY_
+DONE`へは追加しない(このrun内で恒久的にブロックするのではなく、単に
+今回分のweb lookup予算切れであることを示すため)。
+
+### 5. N4/N6/N7の記録(コード変更なし、委任文の指示どおり)
+
+- **N4**: JA ASR Validatorのfullwidth`！？（）`除去規則は、初回§3で
+  報告したとおりNFKC正規化後は実質dead codeだが、既存コードの防御的
+  記述スタイルを踏襲し現状維持のまま(本ラウンドでも変更していない)。
+- **N6/N7**: 「blocked時戻り値形状の変化」「累積会計(2→最大3/call)」
+  について、Fableからの委任文はこの2点を「REPORTに記録(コード変更
+  なし)」とのみ指示しており、Opusの生ログ自体にSonnetは直接アクセス
+  していないため、具体的な該当箇所・数値の内訳をSonnet自身の解釈で
+  断定することは避ける(誤った憶測を記録しない)。委任文の文言をその
+  まま§10に転記したことをもって記録完了とし、詳細な原因分析・要否判断
+  はFable/Opusへ差し戻す。
+
+### 6. Test結果
+
+- `er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py`
+  (既存ファイルへ追加、**29件**[修正1回目20件+本ラウンド9件]、全PASS):
+  S3(技術的fallbackへのcache_hits適用あり/なしの2件)・S2呼び出し元
+  配線(stop_retrying時に`_local_rewrite_recovery_for_charon_english`
+  へ算出済み`en_pronunciation_resolver_info`が渡ることを1件)・S2
+  telemetry注入ロジック単体(2件)・S1転送+setdefault注入(4件、
+  デフォルトFalse転送・True転送・setdefault注入・既存値の非上書き)を
+  追加。cache-only(`disable_web_lookup_for_test()`使用、API呼び出し
+  0件)。
+- `er025_entity_pronunciation_resolver_core_01_test.py`(既存ファイルへ
+  追加、print方式、**20件**[既存18件+本ラウンド2件]、全PASS): S4(a)
+  のrun単位上限test(`test_resolve_and_augment_en_style_prefix_run_
+  lookup_cap`、`en_research.research_pronunciations`をmockし、上限
+  到達後は呼ばれないことを実カウントで確認)・S3の`augment_style_
+  prefix_with_cached_hits`単体test(`test_augment_style_prefix_with_
+  cached_hits_no_new_ledger_access`、`ledger.get_hint_for_text`を
+  意図的に例外化しLedger非アクセスを保証)を追加。
+- 既存test個別実行(全PASS、変更/参照ファイルを含む): `er007_ja_tts_
+  retry_path_fix_test_01.py`(28件)・`er009_ja_foreign_token_gate_01_
+  test_01.py`(26件)・`er012_editorial_b_family_production_phase1_
+  test_01.py`・`er012_editorial_b_family_voices_3v_production_wiring_
+  phase1_test_01.py`・`er013_family_c_production_test_01.py`(39件)・
+  `er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`
+  (29件)。
+- `er020_tts_cooldown_local_rewrite_trial_01_test_01.py`(17件中16件
+  PASS、1件は既知の自己診断FAIL): `ProductionModuleUnchangedTest.test_
+  production_modules_have_no_uncommitted_diff_caused_by_this_trial`が、
+  本ラウンドのuncommitted diff(`er003_v1_sing01_voice01_generate.py`が
+  保護listに含まれる)により一時的にFAILした。修正1回目・Phase 2
+  closeoutと同型の既知パターンであり、本commit後にPASSへ戻る想定。
+- `run_project_regression.py`: 実行結果`collected=3344 passed=3333
+  failed=9 errors=2`(153ファイル超規模、他Agentの並行作業由来の
+  test増減を含むため、修正1回目時点の`collected=3335`からの純増分は
+  本タスク起因の9件[新規unittest]と一致しない。詳細はGrep/個別実行で
+  内訳を確認する)。詳細は次項参照。
+
+### 7. `run_project_regression.py`の詳細内訳(既知カテゴリのみ、新規regressionなし)
+
+代表実行(`-v 1`)のFAIL/ERROR一覧をGrepで抽出し、以下のみであることを
+確認した。ログを精査した結果、`test_case_0
+(er003_test_bad.FixtureTests.test_case_0)`は独立した4件目の失敗では
+なく、`er003_test_p2j_investigate.py`の実test methodが自分自身の
+内部で(カウント整合性を検証するため)動的に生成・実行する**入れ子の
+合成fixture**(`unittest.TextTestRunner`をtest method内部から呼ぶ
+自己完結runで、"Ran 3 tests ... FAILED (failures=1)"という別summaryを
+標準出力へ印字する)の一部であり、その入れ子run自体の意図的な失敗
+[assertTrue(False)]を出力しているだけで、outer(=`run_project_
+regression.py`が実際に集計する)3344件のsuiteの`result.failures`には
+含まれない。したがってPhase 2既知baselineの実際の件数は3 FAIL(=
+`er003_test_p2j_investigate`のtest method 3件、いずれも上記の入れ子
+runの結果とouter記録済みcountの整合性を検証するアサーションで実際に
+FAILしている)+2 ERRORである(修正1回目REPORT §4の表記「4 FAIL+2
+ERROR=6」は、この入れ子printを誤って独立の1件として数えていたための
+誤記と判明した。SonnetはREPORT §1〜§8の既存記述自体は書き換えない
+方針のためそのまま残すが、本ラウンドの集計はここで訂正した正しい
+内訳を使う):
+
+| カテゴリ | 件数 | 内容 |
+|---|---|---|
+| Phase 2既知baseline(不変、内訳は上記の訂正済み) | 3 FAIL + 2 ERROR = 5 | `er003_test_p2j_investigate`3件・`test_per_file_counts_sum_matches_pattern_discovery`(ERROR)・`er015_standard_a2_6000_generation_first_trial_01_test_01`(loader ERROR) |
+| 本タスクのuncommitted diffによる一時的自己診断FAIL(commit後にPASSへ戻る、既知パターン) | 3 | `er019_family_x_pointless_01_test_01.test_family_a_files_have_no_working_tree_diff`・`er020_tts_cooldown_local_rewrite_trial_01_test_01`/`er020_tts_local_rewrite_natural_english_qa_trial_02_test_01`の同型git diff self-check(いずれも本ラウンドで変更した`er003_v1_sing01_voice01_generate.py`等が保護listに含まれるため) |
+| 本タスク無関係の既存pre-existing failure | 3 | `er011_open112_trend_synthesis_mode_production_wiring_01_test_01.TestBuildCommonBlockDefaultByteParity`3件 |
+
+合計9 FAIL+2 ERROR=11件、実行結果`collected=3344 passed=3333 failed=9
+errors=2`と完全一致する。修正1回目時点(実行結果`collected=3335 failed=7
+errors=2`、内訳は上記の訂正済みbaselineで数え直すと3 FAIL+2 ERROR+
+自己診断FAIL1件+pre-existing3件=7 FAIL+2 ERROR)と比べ、自己診断FAILが
+1件→3件に増えているのは、本ラウンドで新たに`er003_v1_sing01_voice01_
+generate.py`(`_local_rewrite_recovery_for_charon_english`・技術的
+fallback augmentation)を変更した影響で、このファイルを保護listに含む
+複数の既存git-diff self-checkが同時にFAILするようになったため(commit
+後は全て解消しPASSへ戻る想定、Phase 2 closeoutと同型の既知パターン)。
+新規の実装regressionは無い。
+
+## §12 変更ファイル一覧(初回+修正1回目+修正2回目、累積)
 
 - `er003_v1_sing01_voice01_generate.py`(初回、OPEN-197: `generate_
-  charon_english`へresolver配線)
+  charon_english`へresolver配線。**修正2回目**: S2[`_local_rewrite_
+  recovery_for_charon_english`の戻りdictへのtelemetry注入]・S3
+  [技術的fallbackへの`augment_style_prefix_with_cached_hits`適用]を追加)
 - `er003_v1_repro01_main_generate.py`(初回、OPEN-198: `generate_
   english_component_minimal_instruction`へresolver配線)
 - `er003_v1_sing01_news_tail_fix.py`(初回: `generate_news_narration_
   wide_margin`の技術的fallbackへの引数転送。**修正1回目**: 同関数の
-  標準ENGLISH_STYLE_PREFIX分岐自体にもresolver hookを追加)
+  標準ENGLISH_STYLE_PREFIX分岐自体にもresolver hookを追加。**修正2回目**:
+  S1[`_local_rewrite_recovery_for_news_narration`への`enable_
+  pronunciation_resolver`引数追加+`__wrapped__`転送+setdefault注入])
 - `er003_v1_crosslevel_audio_02_common.py`(**修正1回目、新規**:
   `generate_english_segment_with_fallback`へEN側Lock記録fixの
   `@review_lock.guarded_generate("en")`を追加)
+- `er006_pronunciation_tts_injection_01.py`(**修正2回目、新規**: S3向け
+  `apply_precomputed_hints_to_style_prefix()`を抽出、`augment_style_
+  prefix_with_pronunciation()`はこれを呼ぶよう内部委譲)
+- `er025_entity_pronunciation_resolver_core_01.py`(**修正2回目、新規**:
+  S4(a)[`MAX_EN_WEB_LOOKUP_CALLS_PER_RUN`+telemetry]・S3向け
+  `augment_style_prefix_with_cached_hits()`wrapperを追加)
 - `er019_family_x_audio_production_runner_01.py`(初回: Family X B1B
   runnerが`generate_charon_english`/`generate_news_narration_wide_
   margin`へ`enable_pronunciation_resolver=True`を渡すよう配線。修正
-  1回目でのコード変更は無し[標準分岐配線は既存の呼び出し引数がそのまま
-  効く])
+  1回目・修正2回目でのコード変更は無し[標準分岐配線・recovery配線は
+  既存の呼び出し引数がそのまま効く])
 - `er003_v1_n3_01_tts_generate.py`(初回、Stage 3d副次発見: `generate_
   a2_japanese_with_fallback`のLock記録漏れ是正)
 - `er007_ja_asr_validator_01.py`(初回、OPEN-199: 引用符・ellipsis
@@ -505,4 +731,8 @@ guardされていなかったためこの問題は表面化していなかった
   させるためtempdir隔離へ修正[試験ロジック自体は無変更])
 - `er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py`
   (初回、OPEN-197/198配線+Lock記録fixのunittest新設。**修正1回目**:
-  標準分岐resolver配線test4件+EN側Lock記録fix test2件を追加、計20件)
+  標準分岐resolver配線test4件+EN側Lock記録fix test2件を追加、計20件。
+  **修正2回目**: S1〜S3向けunittest9件を追加、計29件)
+- `er025_entity_pronunciation_resolver_core_01_test.py`(**修正2回目**:
+  S4(a)のrun単位上限test・S3の`augment_style_prefix_with_cached_hits`
+  単体testを追加、計20件)
