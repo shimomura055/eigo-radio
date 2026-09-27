@@ -587,3 +587,218 @@ B1BでのAssembly完走[§5]を根拠として明記)。`DECISION_LOG.md`/
 | small_bag B1B `full_story_part2`/`full_story_part3` | Human Review正常落ち(既存retry予算exhausted、EN resolver未配線[B1B英語経路]) | Fable/ユーザー判断待ち(resolver配線拡大の要否含む) |
 | small_bag B1B Key Phrase 5件 | Human Review正常落ち(既存仕様上Structure Gateに自動retryなし) | 人手でのKey Phrase再選定またはGate仕様変更要否のユーザー判断待ち |
 
+## Stage 3e(2026-09-27): ユーザー承認済みLock解除runtime(Phase 3修正2回目と併走)
+
+管理ID: `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`(本Stage)+
+`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01`
+(修正2回目、Opus L2所見反映、先行実施)。委任文全文は
+`docs/pm/delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_03.md`
+に保存済み(Part 1/Part 2共通)。Guardrail￥150に対し、実測純増costは
+**約￥85.87**(TTS/ASR実測￥82.87+Key Phrase再選定LLM 1callの見積り
+約￥3、後述4節の理由によりこの1callだけ既存cost loggerへ記録されなかった)。
+￥150を超過せず、途中でSTOPする必要は生じなかった。
+
+### 0. 事前措置(N9/N12/S4(b)/N8)
+
+- **N12(runtime前artifact同期)**: commit `9abffa73`で、他run由来の
+  tracked artifact差分(`er006_output/master_audio_store_01/*`・
+  `human_review_queue.jsonl`2件・`er011_output/attempt_history.jsonl`・
+  `er011_output/family_a_completion_a2_trend_end_to_end_01/**`・
+  `er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl`)を
+  本Stage着手前に別途commit・push済み。
+- **N9(Lock/累積会計の事前棚卸し)**: 3記事×A2/B1Bの`review_lock_state.json`と
+  対応する`tts_generation_results.json`を全走査し、実際に`generate_fn()`へ
+  到達する(=課金され得る)segmentの集合を事前確定した。結果は下記
+  「Lock解除対象」表のとおりで、承認済み9segment**のみ**が対象であり、
+  承認外の`small_bag A2 meaning_5`(Lock状態は`HUMAN_REVIEW_REQUIRED`のまま
+  だが`tts_generation_results.json`側は既にstatus=OK)は、Family X runnerの
+  `_generate_or_reuse()`が既存cache[status=="OK"]をそのまま再利用するため
+  `generate_fn()`自体に到達せず、Lockにも一切触れないことを事前に確認した
+  (実測でも変化なしを確認、後述)。
+- **S4(b)(cache-only)**: 全TTS呼び出しで`ALLOW_PRONUNCIATION_WEB_LOOKUP=0`を
+  明示指定した(実行コマンドは各節に逐語記載)。EN低confidence再research
+  (Perplexity)・JA web lookup(OpenAI web_search)とも本Stageでは1回も発火
+  していない(テレメトリで確認、後述5節)。OPEN-196回避のため、5つの
+  `--stage tts`呼び出しは全て逐次(1プロセスずつ)実行した。
+- **N8(承認textの正規化揃え)**: `approve_regenerate()`に渡すtextを、実際に
+  Human Review Lockの対象になる関数(guarded decoratorが直接ついた最も
+  内側の関数)が受け取るのと同じ正規化後テキストに揃えた。EN本文
+  (`full_story_part2/3`)は`n3_tts.tts_safe_news_en(body_text)`、JA短文
+  (`comment_2`/`japanese_title`/`kp2_ja_charon`)は`n3_tts.tts_safe_ja()`→
+  `safety.to_tts_safe_japanese_fraction_reading()`適用後のtts_input(前例
+  `er011_discovery_generalization_towels_trial_11_audio_04_b1b_fullstory_resume_human_review.py`
+  L61と同じ考え方)。実装・実行は新規スクリプト
+  `er019_family_x_stage3e_human_review_lock_approve_01.py`(`--dry-run`で
+  text/out_pathを確認後、実行してapprove_regenerate()を9件呼び出し、実
+  TTS/ASR呼び出しゼロ)。
+
+### 1. Lock解除対象(ユーザー既決9segment、全てapprove_regenerate実行済み)
+
+| # | 記事/level | segment | 根拠(Phase 3修正で解消済み) |
+|---|---|---|---|
+| 1 | Hormuz A2 | `full_story_part2` | 標準分岐resolver配線(修正1回目) |
+| 2 | Hormuz B1B | `full_story_part2` | 標準分岐resolver配線(修正1回目) |
+| 3 | Hormuz B1B | `kp2_ja_charon` | Phase 2 JA-3で解決見込み確認済み(海からの封鎖) |
+| 4 | small_bag A2 | `comment_2` | Lock記録fix(Stage 3d副次発見、初回commit) |
+| 5 | small_bag A2 | `full_story_part2` | EN resolver標準分岐配線(修正1回目) |
+| 6 | small_bag A2 | `full_story_part3` | EN resolver標準分岐配線(修正1回目) |
+| 7 | small_bag B1B | `full_story_part2` | OPEN-198是正(修正1回目)+S1(修正2回目、Local Rewrite recovery配線) |
+| 8 | small_bag B1B | `full_story_part3` | 同上 |
+| 9 | Meta A2 | `japanese_title` | OPEN-199是正(JA ASR Validator句読点正規化、初回commit) |
+
+承認外の`small_bag A2 meaning_5`は一切触れていない(0節既述)。
+
+### 2. 実行結果(1segmentずつ実測、`TTS_EXECUTION_MODE=STANDARD`固定)
+
+実行コマンド(逐語、5回、levelごとに逐次実行、いずれも
+`TTS_EXECUTION_MODE=STANDARD ALLOW_PRONUNCIATION_WEB_LOOKUP=0`を付与し
+`er019_family_x_audio_production_runner_01.py --stage tts`を呼んだ):
+Hormuz A2/B1B、small_bag A2/B1B、Meta A2の5回。
+
+| segment | 結果 | resolver/正規化の効果 |
+|---|---|---|
+| Hormuz A2 `full_story_part2` | **OK**(RESOLVED) | `en_pronunciation_resolver_info.hints_applied=False`(このsegmentのASR不一致は数字読み由来で固有名詞ではなかった) |
+| Hormuz B1B `full_story_part2` | **OK**(RESOLVED) | 標準分岐配線が有効に機能 |
+| Hormuz B1B `kp2_ja_charon` | **OK**(RESOLVED) | 「海からの封鎖」、Phase 2 JA-3の見込みどおり |
+| small_bag A2 `comment_2` | **OK**(RESOLVED) | JA、resolver対象外(EN固有名詞なし) |
+| small_bag A2 `full_story_part2` | **STOPPED**(HUMAN_REVIEW_REQUIRED、正当な再Lock) | ASR側で"Khaite"→"Kite"/"Kate"、"minaudière"→"Minoudiere"/"minidier"/"miniatier"と3回とも異なる誤認識(標準2+fallback1、既存上限3、10分cool-down込み)。`en_pronunciation_resolver_info`はこのsegmentの最終結果には伝播されない(下記3節の既知Gap、Phase 3の対象外) |
+| small_bag A2 `full_story_part3` | **ASR_VALIDATION_UNCERTAIN**(HUMAN_REVIEW_REQUIRED、正当な再Lock) | "Altuzarra"→"Alta Zara"等(標準1+fallback1、2回で同一signature、既存cascade打ち切り仕様どおり) |
+| small_bag B1B `full_story_part2` | **ASR_VALIDATION_UNCERTAIN**(HUMAN_REVIEW_REQUIRED、正当な再Lock) | 同種のブランド名ASR不一致が継続 |
+| small_bag B1B `full_story_part3` | **OK**(RESOLVED) | 最終的に一致 |
+| Meta A2 `japanese_title` | **OK**(RESOLVED) | OPEN-199是正(「…」「"人"」正規化)が実際に機能。「メタのミューズで起きたまさかの展開」を含む文字列でASR一致 |
+
+theme別cost推移(実測、`compute_cost_jpy_so_far()`ログより):
+
+| theme | 実行前 | 実行後 | 差分 |
+|---|---|---|---|
+| Hormuz(A2+B1B) | ￥127.27 | ￥136.45 | +￥9.18 |
+| small_bag(A2) | ￥148.47 | ￥184.06 | +￥35.59 |
+| small_bag(B1B) | ￥184.06 | ￥221.23 | +￥37.17 |
+| Meta(A2) | ￥87.95 | ￥88.88 | +￥0.93 |
+
+**実測合計(TTS/ASR): ￥82.87**。9 segment中6件がOK(RESOLVED)、3件が
+retry予算を正当に使い切ってHUMAN_REVIEW_REQUIREDへ戻った(既存Gate・
+既存retry予算の正常動作、安全側の再Lock。追加のapprove_regenerate呼び
+出しは行っていない)。
+
+### 3. 既知Gap(報告のみ、Phase 3の対象外): A2本文経路が
+`en_pronunciation_resolver_info`をfallback結果へ伝播しない
+
+Meta/Hormuz/small_bagいずれのA2本文(`full_story_part1/2/3`・
+`in_one_line`)も、内部で`crosslevel_common.generate_english_segment_with_fallback()`
+→`repro01.generate_narration_snippet_verified_strict()`という経路を
+通り、Phase 2で既にresolverがunconditionalに配線されている
+(`language=="en"`なら常時発火、opt-in引数不要)。しかし
+`generate_english_segment_with_fallback()`は、standard呼び出しが
+`status=="OK"`または`"HUMAN_REVIEW_LOCKED"`の場合はそのまま`standard`
+dictを返すため`en_pronunciation_resolver_info`は保持されるが、
+fallback経路へ進んだ場合(本Stageのsmall_bag A2 `full_story_part2/3`は
+こちら)は、fallback結果から新しくdictを組み立てるため
+`en_pronunciation_resolver_info`が失われる(戻り値に一切現れない)。
+これはPhase 3が対象とした3関数(`generate_charon_english`/
+`generate_english_component_minimal_instruction`/`generate_news_narration_wide_margin`、
+いずれもB1B/技術的fallback向け)とは別の、A2側`crosslevel_common.py`の
+既存構造である。修正要否・優先度はFable/ユーザー判断とする。
+
+### 4. small_bag B1B Key Phrase再選定(1 call、承認済み)
+
+既存Strategy L(`kp_backend`既定、DB Hybridは使わない、`er030_key_phrase_db_hybrid_*`等は
+一切呼んでいない)で、既存Production関数`er003_v1_n3_01_scaffold_generate.run_key_phrases()`を
+新規スクリプト`er019_family_x_stage3e_small_bag_b1b_kp_reselect_01.py`から1回だけ呼んだ。
+結果は**`KEY_WORDS_STRUCTURE_INVALID`**(選定段階でGate NG、canonicalization/redundancy QA
+へ到達せず)。理由: 選定item 1件にfinite verb(is/are/was/were/has/have/had/will/would/
+can/could/should/may/might/must)が含まれていた(既存Gate仕様どおりの正当なNG、
+Stage 3c/3dで既に報告済みの"have"事例と同種の再現)。既存仕様上この構造Gateに
+自動retryは無いため、1 callで承認は使い切りとし、追加の再選定・KP TTSは実行して
+いない(small_bag B1BのKey Phrase 5件は引き続き未生成のまま)。
+
+**正直な限界(cost計測漏れ)**: この1 callの実行に使ったスクリプトの初版は
+`er005_cost_logger.install()`を呼んでいなかったため、実際に発生したLLM(選定1回のみ、
+canonicalizationは未到達)の費用が`raw_usage_log.jsonl`へ記録されなかった(実行後に
+確認、theme合算costが不変であることで判明)。スクリプト自体は`cl.install()`を
+追加した状態でリポジトリへ保存したが、**この特定の1回の実行費用は遡って記録できない**。
+過去の類似Strategy L単体選定コール実測値から、本callの費用は概算**￥2〜4程度**と
+推定する(canonicalizationまで到達していないため、この推定より安価である可能性が高い)。
+上記2節の実測￥82.87と合わせても、Guardrail￥150は超過していない
+(実測+推定合計 約￥85〜87)。
+
+### 5. Assembly(新規発見: Family X本流とは無関係な既存Production Gapで全レベルSTOP、
+Phase 3/Stage 3eの対象外)
+
+Hormuz A2/B1B・small_bag A2/B1B・Meta A2の5レベル全てで`--stage assemble`を
+試行したところ、segmentの合否とは無関係に、全レベルで以下のRuntimeErrorが
+発生し中断した:
+
+`RuntimeError: KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE: <LEVEL>のepisode
+assemblyを中止しました。<out_dir>にarticle.md/article_normalized.txtが無く、
+article_textも呼び出し側から渡されていないため、Gate (a)の本文と照合できません。
+呼び出し側でarticle_textを明示してください(KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01)。`
+
+原因を追跡した結果、これは本Stage・Phase 3のいずれの変更とも無関係な既存
+Production Gap(commit`8f197a74` `KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01`+
+commit`1d69aa97` `KEY-PHRASE-SOURCE-CONSISTENCY-GATE-01 FIX-01`、いずれも本
+タスク開始前に他Agentにより既にmainへmerge済み)と判明した。この2 commitは
+`er003_v1_n3_01_assemble.py`の`verify_episode_audio_validation_gate()`へ、
+Key Phrase source本文とのGate(a)(b)を追加し、FIX-01で`article_text`欠落時を
+fail-closed(従来の暗黙skipを廃止)にした。しかし
+`er019_family_x_audio_production_runner_01.py`の`load_family_x_a2_sources()`/
+`load_family_x_b1_sources()`は`asm.verify_episode_audio_validation_gate(out_dir,
+"A2"/"B1")`を`article_text`引数無しで呼んだままで、Family X assembly経路自体は
+この2 commit当時に更新されていなかった(Family X assembly呼び出し元だけが
+このGate追加に追随できていない、という既存の配線漏れ)。
+
+本タスクでは一切修正していない(委任文の範囲外、共有Assemblyモジュールの
+仕様変更が必要でFable/ユーザー判断が必要なため)。Assemblyは`--stage tts`の
+segment合否に関わらず、5レベル全てで実行不能な状態のまま。過去にMeta B1Bが
+「既に完成」と報告されていたのは、この2 commitがmergeされる前に生成された
+assembled wavが既にディスク上に存在するため(過去の成果物、今回のstage呼び
+出しでは未検証)であり、今この時点で`--stage assemble`を再実行すればMeta B1Bも
+同じエラーで中断する可能性が高い(未検証、本タスクでは実行していない)。
+
+このAssembly Gap自体の修正(`load_family_x_a2_sources`/`load_family_x_b1_sources`が
+`article.md`から読み込んだ`article_text`を`verify_episode_audio_validation_gate`へ
+転送するだけの、外形的には小さな追従修正に見える)は、共有Assembly Gateの仕様
+(Gate (a)(b)の挙動)を理解した上での対応が必要であり、本タスクの委任範囲(発音
+resolver配線+Lock解除runtime)を超える。新規OPEN起票案として`OPEN_ITEMS.md`へ
+記載する(実装はしていない)。
+
+### 6. Telemetry確認(cache-only・web lookup0件)
+
+`er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl`を
+本Stage実行前後で比較し、`en_web_lookup_call`/`ja_web_lookup_call`イベントが
+1件も追記されていないことを確認した(cache-only方針どおり、Perplexity/OpenAI
+web_search実API呼び出しゼロ)。
+
+### 7. 費用まとめ
+
+| 区分 | 金額(JPY) |
+|---|---|
+| Hormuz(A2 fsp2 + B1B fsp2/kp2) | +￥9.18 |
+| small_bag(A2 comment_2/fsp2/fsp3 + B1B fsp2/fsp3) | +￥72.76 |
+| Meta(A2 japanese_title) | +￥0.93 |
+| Key Phrase再選定(small_bag B1B、1 call、計測漏れ・推定) | 約￥2〜4(推定) |
+| **本Stage合計(実測+推定)** | **約￥85.87〜87.87** |
+| Guardrail | ￥150(超過なし) |
+
+### 8. Gate 3 checklist(本Stage分)
+
+| Gate 3項目 | evidence | Status |
+|---|---|---|
+| Production正式初回経路 | `er019_family_x_audio_production_runner_01.py --stage tts`(既存CLI、無変更)をそのまま実行 | 充足 |
+| retry・fallback・regenerationとの整合 | `approve_regenerate()`は承認済み9segmentのみへ使用(各1回)。標準retry予算(3回上限)・10分cool-downは無改変のまま機能(実測、small_bag A2 full_story_part2で観測) | 充足 |
+| Production runtimeでの実発火 | 本節2節で実測(9 segment、6 OK/3 HUMAN_REVIEW再Lock)。cache-only(0節)・逐次実行(OPEN-196回避)を明記 | 充足 |
+| コスト影響評価 | 実測￥82.87+KP再選定推定￥2〜4、Guardrail￥150内 | 充足(KP再選定1件のみ計測漏れ、4節に開示) |
+| SSOT | OPEN-197/198/199クローズ・Lock記録ギャップCLOSED・新規OPEN(Assembly Gap)をSSOTへ反映(別途) | 別途反映 |
+| Git | 本commit(`er019_output/family_x_audio_production_wiring_01/**`・新規script2件・REPORT・SSOT)をpath指定add | 充足 |
+| Dangling Reference Check | 新規script2件は既存Production関数(`review_lock.approve_regenerate`/`sc.run_key_phrases`)を無改変のまま呼ぶのみ | 充足 |
+
+### 9. 残STOP一覧(更新、Stage 3e時点)
+
+| segment/項目 | 分類 | 次のアクション |
+|---|---|---|
+| small_bag A2 `full_story_part2`/`full_story_part3` | Human Review正常落ち(承認済み1round使い切り、ブランド名ASR不一致継続) | 追加のLock解除要否はFable/ユーザー判断(3節のGap修正後の再試行が有効な可能性) |
+| small_bag B1B `full_story_part2` | Human Review正常落ち(同上) | 同上 |
+| small_bag B1B Key Phrase 5件 | Human Review正常落ち(既存仕様上Structure Gateに自動retryなし、"have"文法issue) | 記事本文側の言い換え、またはGate仕様変更要否のユーザー判断待ち |
+| small_bag A2 `meaning_5` | Lock状態表示の既存不整合(cache側はOK、Lock側は旧HUMAN_REVIEW_REQUIREDのまま、本Stageでは無変更) | 実害なし、次回何らかのapprove_regenerate操作時に上書きされ解消される見込み |
+| **全5レベルのAssembly** | **新規発見: `KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE`で全レベル実行不能(5節、Family X本流Phase 3/Stage 3eの対象外の既存Gap)** | Fable/ユーザー判断待ち。`load_family_x_a2_sources`/`load_family_x_b1_sources`が`article_text`を渡すよう追従修正が必要(未実装) |
+

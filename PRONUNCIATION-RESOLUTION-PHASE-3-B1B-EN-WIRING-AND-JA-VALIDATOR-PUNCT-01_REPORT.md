@@ -736,3 +736,64 @@ fallback augmentation)を変更した影響で、このファイルを保護list
 - `er025_entity_pronunciation_resolver_core_01_test.py`(**修正2回目**:
   S4(a)のrun単位上限test・S3の`augment_style_prefix_with_cached_hits`
   単体testを追加、計20件)
+
+## §13 runtime evidence(2026-09-27、ユーザー承認済みLock解除実行、
+NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01 Stage 3eと併走)
+
+本タスク(修正1回目・修正2回目)で実装したcode fixのProduction runtimeでの
+実発火を、ユーザー承認済みの9segment Lock解除(Hormuz A2/B1B、small_bag
+A2/B1B、Meta A2)を通じて確認した。実行詳細・cost・segmentごとの結果は
+`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`の「## Stage 3e」
+節に記載(本節は重複を避け、Phase 3固有の論点のみ要約する)。
+
+### OPEN-197(B1B resolver配線)確認
+
+Hormuz A2/B1B `full_story_part2`が実行時に**OK(RESOLVED)**となった。
+修正1回目で追加した「標準ENGLISH_STYLE_PREFIX分岐自体へのresolver hook」
+(`er003_v1_sing01_news_tail_fix.py`)が実際に発火し、Local Rewrite
+recoveryへ落ちることなく1回で解決した(Stage 3e §2表参照)。
+
+### OPEN-198(A2側standard/fallback resolver配線)確認・既知Gap再発見
+
+small_bag A2 `comment_2`はOK。ただし`full_story_part2`/`full_story_part3`
+は3回のASR不一致(ブランド名: Khaite/minaudière/Altuzarra)で正当に
+HUMAN_REVIEW_REQUIREDへ再Lockした。これらはfallback経路まで進んでおり、
+Stage 3e §3で新たに報告した既知Gap(`generate_english_segment_with_
+fallback`のfallback結果に`en_pronunciation_resolver_info`が伝播されない、
+`crosslevel_common.py`側の既存構造でPhase 3の対象3関数とは別経路)が
+今回のOK/NG判定そのものには影響していない(resolverがhitしても発音文字
+表記は変わるがASRの音声認識精度自体は改善しない場合がある、というのが
+今回のブランド名不一致の実態と見られる)。この既知GapはFable/ユーザー
+判断が必要な別件として記録するに留め、本タスクでは修正していない。
+
+### OPEN-199(JA ASR Validator句読点正規化)確認
+
+Meta A2 `japanese_title`が実行時に**OK(RESOLVED)**となった(初回commit
+で追加した引用符・ellipsis正規化が実際にASR一致判定を通過させた実例、
+「メタのミューズで起きたまさかの展開」を含む文字列)。これによりOPEN-199の
+runtime確認が完了したと判断する。
+
+### S1〜S4(Opus L2所見反映、修正2回目)の実発火確認
+
+- S1(`_local_rewrite_recovery_for_news_narration`のresolver転送):
+  Hormuz A2/B1B `full_story_part2`のいずれも1回のstandard呼び出しで
+  解決したため、本runtimeでは`_local_rewrite_recovery_for_news_
+  narration`自体の実発火(=Local Rewrite recoveryへの到達)は観測され
+  なかった(既存の`unittest`カバレッジ[§4]で経路自体は検証済み)。
+- S2/S3(`generate_charon_english`のfallback resolver augmentation):
+  Hormuz B1B `kp2_ja_charon`はJA(charon_japanese)側でありS2/S3の
+  直接対象(`generate_charon_english`=EN側)ではないため、本runtimeでは
+  対象外(unittestで検証済み)。
+- S4(a)(EN web lookup run単位上限): 本runtime全体でcache-only
+  (`ALLOW_PRONUNCIATION_WEB_LOOKUP=0`)実行のため、EN web lookup自体が
+  0件(上限到達イベントも0件)。上限ロジックの実発火はunittestでのみ
+  確認済み(§4)。
+
+### 総括
+
+Phase 3が対象とした3件のOPEN(OPEN-197/198/199)は、いずれも実際の
+Production runtime(Family X Stage 3e)でPASS実例を確認できた。S1〜S4は
+コードパス自体は実装済み・unittestで検証済みだが、今回のruntime条件では
+Local Rewrite recovery・EN web lookup上限のトリガー条件(3回中の後半
+attempt、cache miss)には到達しなかった(該当条件が発生しなかったのは
+Production runtimeとしては正常であり、コード自体に問題があるわけではない)。

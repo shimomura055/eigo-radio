@@ -894,33 +894,231 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "The 20% plan changes overnight"
+      "canonical_text": "The 20% plan changes overnight",
+      "reused_from_previous_run": true
     },
     "full_story_part2": {
-      "status": "HUMAN_REVIEW_LOCKED",
-      "human_review_lock_status": "HUMAN_REVIEW_REQUIRED",
-      "reason": "[ER-011-HUMAN-REVIEW-COST-GUARD-01] このsegmentは既にHUMAN_REVIEW_REQUIRED状態です。明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません(0 API call)。詳細: 最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
+      "status": "OK",
+      "text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees. The change was sudden. But the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.",
+      "language": "en",
       "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/full_story_part2.wav",
-      "asr_verified": false,
-      "locked_entry": {
-        "state": "HUMAN_REVIEW_REQUIRED",
-        "canonical_text_sha256": "e461085dc8be7ac942138e37daa7ce3fe739878ac10de78e35efb76296913d00",
-        "language": "en",
-        "theme_id": "hormuz__run_02",
-        "level": "a2",
-        "segment_id": "full_story_part2",
-        "updated_at": "2026-09-27T15:18:52",
-        "reason": "最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
-        "final_status": "STOPPED",
-        "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/full_story_part2.wav",
-        "cumulative_tts_attempts": 0,
-        "cumulative_asr_calls": 0,
-        "budget_guard_triggered": false,
-        "last_attempts_log": []
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Aoede",
+      "call_count": 1,
+      "retry_count": 0,
+      "sha256": "4096058858ea0a38d86a2b4ed9d8d20950a3fa0f4c2a3e1e7058a411f4ad52c9",
+      "duration_seconds": 56.6,
+      "trim_info": {
+        "raw_duration_seconds": 56.6,
+        "raw_leading_silence_seconds": 0.254,
+        "raw_trailing_silence_seconds": 0.297,
+        "trimmed_duration_seconds": 56.6,
+        "leading_margin_retained_seconds": 0.254,
+        "trailing_margin_retained_seconds": 0.297
       },
-      "attempts_log": [],
+      "clipping_detected": false,
+      "asr_verified": true,
+      "asr_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees. The change was sudden, but the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "duration_seconds": 53.411,
+          "asr_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the strait. He said he disliked fees. The change was sudden, but the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.",
+          "asr_text_length": 662,
+          "max_len": 719,
+          "substring_ok": null,
+          "length_ok": true,
+          "phonetic_verdict": null,
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "reading_resolver_info": null,
+          "verified": true,
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": true,
+          "repetition_qa_evidence": {
+            "flagged": false,
+            "duration_seconds": 53.411,
+            "method_a_ngram": {
+              "matches": [],
+              "flagged": false,
+              "flagged_matches": [],
+              "word_count": 126,
+              "canonical_known": true,
+              "min_words": 3
+            },
+            "method_d_spectral_long_lag": {
+              "top_matches": [
+                {
+                  "similarity": 0.998,
+                  "time_a_seconds": 29.09,
+                  "time_b_seconds": 44.83,
+                  "lag_seconds": 15.74,
+                  "run_length_seconds_at_thresh_0.85": 0.02
+                },
+                {
+                  "similarity": 0.998,
+                  "time_a_seconds": 22.76,
+                  "time_b_seconds": 29.23,
+                  "lag_seconds": 6.47,
+                  "run_length_seconds_at_thresh_0.85": 0.05
+                },
+                {
+                  "similarity": 0.9979,
+                  "time_a_seconds": 1.95,
+                  "time_b_seconds": 12.88,
+                  "lag_seconds": 10.93,
+                  "run_length_seconds_at_thresh_0.85": 0.05
+                },
+                {
+                  "similarity": 0.9979,
+                  "time_a_seconds": 22.55,
+                  "time_b_seconds": 34.85,
+                  "lag_seconds": 12.3
+                },
+                {
+                  "similarity": 0.9978,
+                  "time_a_seconds": 22.17,
+                  "time_b_seconds": 35.67,
+                  "lag_seconds": 13.5
+                }
+              ],
+              "best_run_length_seconds": 0.05,
+              "min_lag_seconds": 1.0,
+              "sim_threshold": 0.85,
+              "decision_threshold_seconds": 0.12,
+              "acoustic_flagged": false,
+              "local_asr_confirmation": null,
+              "flagged": false
+            },
+            "method_d_prime_spectral_short_lag": {
+              "run_length_seconds": 0.32,
+              "time_a": 26.85,
+              "lag": 1.72,
+              "similarity_at_start": 0.7663,
+              "best_run_length_seconds": 0.32,
+              "lag_range_seconds": [
+                0.5,
+                2.0
+              ],
+              "sim_threshold": 0.7,
+              "decision_threshold_seconds": 0.6,
+              "flagged": false
+            },
+            "method_c_v2_window_check": null
+          },
+          "asr_prompt_applied": false,
+          "non_latin_cascade_enabled": false,
+          "non_latin_cascade_invoked": false,
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/attempts/full_story_part2_attempt6_custom35d6860b.wav"
+        }
+      ],
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 53.411,
+        "method_a_ngram": {
+          "matches": [],
+          "flagged": false,
+          "flagged_matches": [],
+          "word_count": 126,
+          "canonical_known": true,
+          "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+          "top_matches": [
+            {
+              "similarity": 0.998,
+              "time_a_seconds": 29.09,
+              "time_b_seconds": 44.83,
+              "lag_seconds": 15.74,
+              "run_length_seconds_at_thresh_0.85": 0.02
+            },
+            {
+              "similarity": 0.998,
+              "time_a_seconds": 22.76,
+              "time_b_seconds": 29.23,
+              "lag_seconds": 6.47,
+              "run_length_seconds_at_thresh_0.85": 0.05
+            },
+            {
+              "similarity": 0.9979,
+              "time_a_seconds": 1.95,
+              "time_b_seconds": 12.88,
+              "lag_seconds": 10.93,
+              "run_length_seconds_at_thresh_0.85": 0.05
+            },
+            {
+              "similarity": 0.9979,
+              "time_a_seconds": 22.55,
+              "time_b_seconds": 34.85,
+              "lag_seconds": 12.3
+            },
+            {
+              "similarity": 0.9978,
+              "time_a_seconds": 22.17,
+              "time_b_seconds": 35.67,
+              "lag_seconds": 13.5
+            }
+          ],
+          "best_run_length_seconds": 0.05,
+          "min_lag_seconds": 1.0,
+          "sim_threshold": 0.85,
+          "decision_threshold_seconds": 0.12,
+          "acoustic_flagged": false,
+          "local_asr_confirmation": null,
+          "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+          "run_length_seconds": 0.32,
+          "time_a": 26.85,
+          "lag": 1.72,
+          "similarity_at_start": 0.7663,
+          "best_run_length_seconds": 0.32,
+          "lag_range_seconds": [
+            0.5,
+            2.0
+          ],
+          "sim_threshold": 0.7,
+          "decision_threshold_seconds": 0.6,
+          "flagged": false
+        },
+        "method_c_v2_window_check": null
+      },
       "fallback_used": false,
-      "slowdown_attempts_log": [],
+      "original_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/full_story_part2_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.971,
+        "src_duration_seconds": 53.411,
+        "dst_duration_seconds": 56.6,
+        "src_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/full_story_part2_original.wav",
+        "dst_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/narration/full_story_part2.wav"
+      },
+      "post_slowdown_asr_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees. The change was sudden, but the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.",
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_semantic_equivalence": null,
+      "slowdown_attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "post_slowdown_classification": "NORMALIZED_MATCH"
+        }
+      ],
       "canonical_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees.\n\nThe change was sudden. But the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz."
     },
     "full_story_part3_heading": {
@@ -1017,7 +1215,8 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "The chart refuses to stay down"
+      "canonical_text": "The chart refuses to stay down",
+      "reused_from_previous_run": true
     },
     "full_story_part3": {
       "status": "OK",
@@ -1241,7 +1440,8 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before."
+      "canonical_text": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
+      "reused_from_previous_run": true
     }
   },
   "key_phrases": {
@@ -1930,5 +2130,6 @@
         "reused_from_previous_run": true
       }
     }
-  }
+  },
+  "kp_scaffold_status": "OK"
 }

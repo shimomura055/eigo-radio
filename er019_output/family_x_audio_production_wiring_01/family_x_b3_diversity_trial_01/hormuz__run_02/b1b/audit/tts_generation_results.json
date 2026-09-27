@@ -1571,28 +1571,201 @@
       "reused_from_previous_run": true
     },
     "full_story_part2": {
-      "status": "HUMAN_REVIEW_LOCKED",
-      "human_review_lock_status": "HUMAN_REVIEW_REQUIRED",
-      "reason": "[ER-011-HUMAN-REVIEW-COST-GUARD-01] このsegmentは既にHUMAN_REVIEW_REQUIRED状態です。明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません(0 API call)。詳細: 最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
+      "status": "OK",
+      "text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees. The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
       "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2.wav",
-      "asr_verified": false,
-      "locked_entry": {
-        "state": "HUMAN_REVIEW_REQUIRED",
-        "canonical_text_sha256": "16ebfa49b8052037608a09f102f446b0719f338ae5a9357ce7bbd01da7a5a5fc",
-        "language": "en",
-        "theme_id": "hormuz__run_02",
-        "level": "b1b",
-        "segment_id": "full_story_part2",
-        "updated_at": "2026-09-27T15:36:31",
-        "reason": "最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
-        "final_status": "STOPPED",
-        "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2.wav",
-        "cumulative_tts_attempts": 0,
-        "cumulative_asr_calls": 0,
-        "budget_guard_triggered": false,
-        "last_attempts_log": []
+      "asr_verified": true,
+      "asr_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14th, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited \"very productive discussions\" with Middle Eastern leaders. He also said no one should charge ships in the Strait and that he disliked fees. The change was sudden, but to read the oil move, the dates must be kept separate. On July 13th, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+      "attempts_log": [
+        {
+          "attempt": 1,
+          "status": "OK",
+          "asr_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14th, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited \"very productive discussions\" with Middle Eastern leaders. He also said no one should charge ships in the Strait and that he disliked fees. The change was sudden, but to read the oil move, the dates must be kept separate. On July 13th, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+          "instruction_type": "english_style_prefix_wide_margin",
+          "audio_classification": "NORMALIZED_MATCH",
+          "connected_speech_info": null,
+          "length_ok": true,
+          "verified": true,
+          "trim_info": {
+            "raw_duration_seconds": 45.691,
+            "raw_leading_silence_seconds": 0.28,
+            "raw_trailing_silence_seconds": 0.3,
+            "trimmed_duration_seconds": 45.691,
+            "leading_margin_retained_seconds": 0.28,
+            "trailing_margin_retained_seconds": 0.3
+          },
+          "disfluency_checked": false,
+          "disfluency_evidence": null,
+          "repetition_qa_checked": true,
+          "repetition_qa_evidence": {
+            "flagged": false,
+            "duration_seconds": 45.691,
+            "method_a_ngram": {
+              "matches": [],
+              "flagged": false,
+              "flagged_matches": [],
+              "word_count": 117,
+              "canonical_known": true,
+              "min_words": 3
+            },
+            "method_d_spectral_long_lag": {
+              "top_matches": [
+                {
+                  "similarity": 0.9994,
+                  "time_a_seconds": 28.04,
+                  "time_b_seconds": 29.86,
+                  "lag_seconds": 1.82,
+                  "run_length_seconds_at_thresh_0.85": 0.01
+                },
+                {
+                  "similarity": 0.9994,
+                  "time_a_seconds": 23.01,
+                  "time_b_seconds": 29.86,
+                  "lag_seconds": 6.85,
+                  "run_length_seconds_at_thresh_0.85": 0.02
+                },
+                {
+                  "similarity": 0.9993,
+                  "time_a_seconds": 23.01,
+                  "time_b_seconds": 28.04,
+                  "lag_seconds": 5.03,
+                  "run_length_seconds_at_thresh_0.85": 0.01
+                },
+                {
+                  "similarity": 0.9992,
+                  "time_a_seconds": 29.86,
+                  "time_b_seconds": 34.13,
+                  "lag_seconds": 4.27
+                },
+                {
+                  "similarity": 0.9992,
+                  "time_a_seconds": 18.83,
+                  "time_b_seconds": 29.86,
+                  "lag_seconds": 11.03
+                }
+              ],
+              "best_run_length_seconds": 0.02,
+              "min_lag_seconds": 1.0,
+              "sim_threshold": 0.85,
+              "decision_threshold_seconds": 0.12,
+              "acoustic_flagged": false,
+              "local_asr_confirmation": null,
+              "flagged": false
+            },
+            "method_d_prime_spectral_short_lag": {
+              "run_length_seconds": 0.26,
+              "time_a": 3.61,
+              "lag": 1.7,
+              "similarity_at_start": 0.7045,
+              "best_run_length_seconds": 0.26,
+              "lag_range_seconds": [
+                0.5,
+                2.0
+              ],
+              "sim_threshold": 0.7,
+              "decision_threshold_seconds": 0.6,
+              "flagged": false
+            },
+            "method_c_v2_window_check": null
+          },
+          "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part2_attempt6_englishstyleprefixwidemargin.wav"
+        }
+      ],
+      "instruction_type": "english_style_prefix_wide_margin",
+      "trim_info": {
+        "raw_duration_seconds": 45.691,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.3,
+        "trimmed_duration_seconds": 45.691,
+        "leading_margin_retained_seconds": 0.28,
+        "trailing_margin_retained_seconds": 0.3
       },
-      "attempts_log": [],
+      "safety_margin_seconds": 0.35,
+      "clipping_detected": false,
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 45.691,
+        "method_a_ngram": {
+          "matches": [],
+          "flagged": false,
+          "flagged_matches": [],
+          "word_count": 117,
+          "canonical_known": true,
+          "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+          "top_matches": [
+            {
+              "similarity": 0.9994,
+              "time_a_seconds": 28.04,
+              "time_b_seconds": 29.86,
+              "lag_seconds": 1.82,
+              "run_length_seconds_at_thresh_0.85": 0.01
+            },
+            {
+              "similarity": 0.9994,
+              "time_a_seconds": 23.01,
+              "time_b_seconds": 29.86,
+              "lag_seconds": 6.85,
+              "run_length_seconds_at_thresh_0.85": 0.02
+            },
+            {
+              "similarity": 0.9993,
+              "time_a_seconds": 23.01,
+              "time_b_seconds": 28.04,
+              "lag_seconds": 5.03,
+              "run_length_seconds_at_thresh_0.85": 0.01
+            },
+            {
+              "similarity": 0.9992,
+              "time_a_seconds": 29.86,
+              "time_b_seconds": 34.13,
+              "lag_seconds": 4.27
+            },
+            {
+              "similarity": 0.9992,
+              "time_a_seconds": 18.83,
+              "time_b_seconds": 29.86,
+              "lag_seconds": 11.03
+            }
+          ],
+          "best_run_length_seconds": 0.02,
+          "min_lag_seconds": 1.0,
+          "sim_threshold": 0.85,
+          "decision_threshold_seconds": 0.12,
+          "acoustic_flagged": false,
+          "local_asr_confirmation": null,
+          "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+          "run_length_seconds": 0.26,
+          "time_a": 3.61,
+          "lag": 1.7,
+          "similarity_at_start": 0.7045,
+          "best_run_length_seconds": 0.26,
+          "lag_range_seconds": [
+            0.5,
+            2.0
+          ],
+          "sim_threshold": 0.7,
+          "decision_threshold_seconds": 0.6,
+          "flagged": false
+        },
+        "method_c_v2_window_check": null
+      },
+      "en_pronunciation_resolver_info": {
+        "hints_applied": false,
+        "cache_hits": [],
+        "low_confidence_retry_attempted": false,
+        "low_confidence_retry_improved": false,
+        "research_meta": null
+      },
+      "cooldown_events": [],
       "canonical_text": "About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz."
     },
     "full_story_part3_heading": {
@@ -1984,98 +2157,41 @@
         "reused_from_previous_run": true
       },
       "japanese": {
-        "status": "HUMAN_REVIEW_LOCKED",
-        "human_review_lock_status": "HUMAN_REVIEW_REQUIRED",
-        "reason": "[ER-011-HUMAN-REVIEW-COST-GUARD-01] このsegmentは既にHUMAN_REVIEW_REQUIRED状態です。明示的なapprove_regenerate()呼び出しが無い限り、TTS/ASRは一切呼び出しません(0 API call)。詳細: 最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+        "status": "OK",
+        "text": "海からの封鎖",
         "path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/kp2_ja_charon.wav",
-        "asr_verified": false,
-        "locked_entry": {
-          "state": "HUMAN_REVIEW_REQUIRED",
-          "canonical_text_sha256": "fba8483ba088fdc654a7e520a737a23a139b12fb16dc045aa8ce659d5bf24eea",
-          "language": "ja",
-          "theme_id": "hormuz__run_02",
-          "level": "b1b",
-          "segment_id": "kp2_ja_charon",
-          "updated_at": "2026-09-27T12:39:27",
-          "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
-          "final_status": "STOPPED",
-          "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/kp2_ja_charon.wav",
-          "cumulative_tts_attempts": 3,
-          "cumulative_asr_calls": 3,
-          "budget_guard_triggered": false,
-          "last_attempts_log": [
-            {
-              "attempt": 1,
-              "status": "OK",
-              "asr_text": "海からの風さ",
-              "length_ok": true,
-              "audio_classification": "TRUE_CONTENT_MISMATCH",
-              "verified": false,
-              "trim_info": {
-                "raw_duration_seconds": 2.32,
-                "raw_leading_silence_seconds": 0.62,
-                "raw_trailing_silence_seconds": 0.46,
-                "trimmed_duration_seconds": 1.94,
-                "leading_margin_retained_seconds": 0.35,
-                "trailing_margin_retained_seconds": 0.35
-              },
-              "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp2_ja_charon_attempt1_standard.wav"
-            },
-            {
-              "attempt": 2,
-              "status": "OK",
-              "asr_text": "海からの風さ",
-              "length_ok": true,
-              "audio_classification": "TRUE_CONTENT_MISMATCH",
-              "verified": false,
-              "trim_info": {
-                "raw_duration_seconds": 1.92,
-                "raw_leading_silence_seconds": 0.36,
-                "raw_trailing_silence_seconds": 0.4,
-                "trimmed_duration_seconds": 1.86,
-                "leading_margin_retained_seconds": 0.35,
-                "trailing_margin_retained_seconds": 0.35
-              },
-              "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp2_ja_charon_attempt2_standard.wav"
-            }
-          ]
-        },
+        "voice": "Charon",
+        "asr_verified": true,
+        "asr_text": "海からのふうさ",
         "attempts_log": [
           {
             "attempt": 1,
             "status": "OK",
-            "asr_text": "海からの風さ",
+            "asr_text": "海からのふうさ",
             "length_ok": true,
-            "audio_classification": "TRUE_CONTENT_MISMATCH",
-            "verified": false,
+            "audio_classification": "PHONETIC_MATCH",
+            "verified": true,
             "trim_info": {
-              "raw_duration_seconds": 2.32,
-              "raw_leading_silence_seconds": 0.62,
-              "raw_trailing_silence_seconds": 0.46,
-              "trimmed_duration_seconds": 1.94,
+              "raw_duration_seconds": 2.92,
+              "raw_leading_silence_seconds": 0.82,
+              "raw_trailing_silence_seconds": 0.84,
+              "trimmed_duration_seconds": 1.96,
               "leading_margin_retained_seconds": 0.35,
               "trailing_margin_retained_seconds": 0.35
             },
-            "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp2_ja_charon_attempt1_standard.wav"
-          },
-          {
-            "attempt": 2,
-            "status": "OK",
-            "asr_text": "海からの風さ",
-            "length_ok": true,
-            "audio_classification": "TRUE_CONTENT_MISMATCH",
-            "verified": false,
-            "trim_info": {
-              "raw_duration_seconds": 1.92,
-              "raw_leading_silence_seconds": 0.36,
-              "raw_trailing_silence_seconds": 0.4,
-              "trimmed_duration_seconds": 1.86,
-              "leading_margin_retained_seconds": 0.35,
-              "trailing_margin_retained_seconds": 0.35
-            },
-            "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp2_ja_charon_attempt2_standard.wav"
+            "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp2_ja_charon_attempt4_standard.wav"
           }
         ],
+        "trim_info": {
+          "raw_duration_seconds": 2.92,
+          "raw_leading_silence_seconds": 0.82,
+          "raw_trailing_silence_seconds": 0.84,
+          "trimmed_duration_seconds": 1.96,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "clipping_detected": false,
+        "fallback_used": false,
         "canonical_text": "海からの封鎖",
         "tts_input_text_after_reading_safety": "海からの封鎖",
         "reading_safety_changed_text": false,

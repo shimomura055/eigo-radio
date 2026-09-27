@@ -1787,13 +1787,40 @@ resolverが正しく"work_canon"読み(ディオニス)を解決してもGemini 
 
 **Production配線範囲**: EN側resolver(`resolve_and_augment_en_style_
 prefix`)が実際に配線されているのは`generate_narration_snippet_verified_
-strict`(A2英語標準+fallback、Key Phrase Componentを含む全EN経路)経由の
-みである。`generate_english_component_minimal_instruction`(B1
-scaffold/crosslevel/news_tail_fix等が呼ぶ)・`generate_charon_english`
-(B1B、`voice01`経由)には未配線(`OPEN_ITEMS.md`参照)。
+strict`(A2英語標準+fallback、Key Phrase Componentを含む全EN経路)、
+`generate_english_component_minimal_instruction`(B1 scaffold/
+crosslevel/news_tail_fix等が呼ぶ、opt-in、Phase 3で標準分岐+Local
+Rewrite recoveryにも配線完了)、`generate_charon_english`(B1B、
+`voice01`経由、opt-in、Phase 3でLocal Rewrite recovery+技術的fallback
+にも配線完了)である(いずれも`enable_pronunciation_resolver=True`を
+渡すFamily Xのみ有効化のopt-in方式)。既知の限界: A2英語本文の自前
+fallback経路(`crosslevel_common.generate_english_segment_with_
+fallback()`)は、fallback結果へ`en_pronunciation_resolver_info`を
+伝播しない(`OPEN-203`参照、resolver自体は発火するがtelemetryから
+hit有無を追跡しづらいのみで音声・Gate合否には影響しない)。
+
+**Phase 3追記(2026-09-27、`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-
+WIRING-AND-JA-VALIDATOR-PUNCT-01`)**: B1B側`generate_charon_english`・
+`generate_news_narration_wide_margin`双方の標準分岐+Local Rewrite
+recovery(retry cascadeの後段)+技術的fallbackへresolver telemetryを
+一貫して転送するよう修正(`_local_rewrite_recovery_for_charon_english`/
+`_local_rewrite_recovery_for_news_narration`が`en_pronunciation_
+resolver_info`を保持・転送し、技術的fallbackでは`augment_style_prefix_
+with_cached_hits()`でcache済みhitsのみを再利用し新規web lookupは発生
+させない)。EN web lookupにもrun単位上限
+`MAX_EN_WEB_LOOKUP_CALLS_PER_RUN=5`をJA同様に新設。JA ASR Validator
+(`er007_ja_asr_validator_01.py`)の引用符・ellipsis正規化ギャップを
+修正(OPEN-199是正)。いずれもFamily X Stage 3e実runtime(2026-09-27、
+ユーザー承認済みLock解除9segment)でPASS実例を確認済み(Hormuz A2/B1B
+`full_story_part2`・Meta A2`japanese_title`等)。詳細は
+`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-
+PUNCT-01_REPORT.md`、`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_
+REPORT.md`「## Stage 3e」参照。
 
 詳細・runtime evidence・費用・回帰確認は
-`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`参照。
+`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`
+(Phase 2)、`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+VALIDATOR-PUNCT-01_REPORT.md`(Phase 3)参照。
 
 ## 試聴Artifact(ユーザー提示用ページ)仕様 — 2026-08-29新設(ER-008-N8-CLOSEOUT-GOVERNANCE-25)
 

@@ -10394,3 +10394,57 @@ Production採用(Family X、Primary/Fallback配線、Phase 1、2026-09-27)
   `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`。
 - commit: 本コミット(Phase 1、Production module昇格+opt-in配線+
   test+runtime evidence)。
+
+## PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01: 修正2回目(Opus L2所見S1-S4反映)+NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01 Stage 3e(ユーザー承認済みLock解除runtime、2026-09-27)
+
+- **決定**: Opus L2所見(2回目)S1〜S4(`_local_rewrite_recovery_for_
+  news_narration`/`_local_rewrite_recovery_for_charon_english`への
+  resolver telemetry転送、技術的fallbackへの`augment_style_prefix_
+  with_cached_hits`適用、EN web lookup run単位上限)をSonnet修正
+  2回目として実装(commit`eb7825d7`)。N6/N7は記録のみ(コード変更
+  なし)、N4(全角dead code)は現状維持。
+- **ユーザー承認事項(既決、本エントリで確定)**: `NEWS-FAMILY-X-
+  AUDIO-PRODUCTION-WIRING-01`Stage 3eとして、Guardrail¥150の下で
+  以下9segmentのHuman Review Lock解除(`approve_regenerate()`)を
+  承認: Hormuz A2/B1B`full_story_part2`、Hormuz B1B`kp2_ja_charon`、
+  small_bag A2`comment_2`/`full_story_part2`/`full_story_part3`、
+  small_bag B1B`full_story_part2`/`full_story_part3`、Meta A2
+  `japanese_title`。あわせてsmall_bag B1B Key Phrase再選定(既存
+  Strategy L、1 callのみ)を承認。`small_bag A2 meaning_5`は明示的に
+  承認対象外(未実施を確認済み)。
+- **Runtime evidence**(2026-09-27、Guardrail¥150、実測純増cost
+  約¥85.87[TTS/ASR実測¥82.87+KP再選定推定¥2〜4、後者は
+  `er005_cost_logger`未installによる計測漏れとして開示]、`TTS_
+  EXECUTION_MODE=STANDARD`固定、`ALLOW_PRONUNCIATION_WEB_LOOKUP=0`
+  [cache-only]、5レベルとも逐次実行[OPEN-196回避]): 9segment中6件が
+  OK(RESOLVED、Hormuz A2/B1B`full_story_part2`・Hormuz B1B
+  `kp2_ja_charon`・small_bag A2`comment_2`・small_bag B1B
+  `full_story_part3`・Meta A2`japanese_title`)、3件が既存retry予算
+  (標準+fallback、10分cool-down込み)を正当に使い切りHUMAN_REVIEW_
+  REQUIREDへ再Lock(small_bag A2`full_story_part2`/`full_story_
+  part3`・small_bag B1B`full_story_part2`、いずれもブランド名[Khaite/
+  minaudière/Altuzarra等]のASR不一致継続)。small_bag B1B Key Phrase
+  再選定(1 call、既存Strategy L)は`KEY_WORDS_STRUCTURE_INVALID`
+  (finite verb issue、既存構造Gateどおりの正当なNG、既存仕様上自動
+  retryなし)。`--stage assemble`は5レベル全てで、本タスクとは無関係な
+  既存Production Gap(`KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE`、
+  commit`8f197a74`/`1d69aa97`由来、Family X assembly呼び出し元の
+  未追従)により実行不能と判明(新規発見、本タスクでは未修正)。全件
+  詳細は`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`
+  「## Stage 3e」節、`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-
+  WIRING-AND-JA-VALIDATOR-PUNCT-01_REPORT.md`§13。
+- **反映範囲**: `OPEN_ITEMS.md`(OPEN-197/198/199を`CLOSED`へ更新、
+  OPEN-203[A2 fallback resolver_info未伝播、新規]・OPEN-204
+  [Assembly全体Blocking、新規]・OPEN-205[Lock記録漏れ2件+KP再選定
+  cost計測漏れ、記録即CLOSED]を新規登録)、`CURRENT_SPEC.md`
+  (固有名詞読み解決節へPhase 3追記)、`docs/pm/REPORT_LEDGER.md`
+  (両管理ID行更新・新設)、両REPORT本体、本エントリ新設。
+- **STOP該当**: `KEY_PHRASE_SOURCE_GATE_ARTICLE_TEXT_UNAVAILABLE`
+  (OPEN-204)によりFamily X Assemblyが全レベルブロックされている件は
+  Fable/ユーザー判断が必要(共有Assembly Gateの追従修正、本タスクの
+  委任範囲外のため未実装)。
+- **根拠**: ユーザー正式決定(委任文、2026-09-27、`docs/pm/
+  delegation_log/2026-09-27_PRONUNCIATION-RESOLUTION-PHASE-3-B1B-
+  EN-WIRING-AND-JA-VALIDATOR-PUNCT-01_03.md`に保存)。
+- commit: `eb7825d7`(Phase 3修正2回目、code+test)、本コミット
+  (Stage 3e runtime artifact+SSOT反映)。
