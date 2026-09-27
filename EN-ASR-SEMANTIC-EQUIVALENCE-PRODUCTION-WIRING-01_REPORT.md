@@ -188,4 +188,193 @@ fallback予算0(標準経路attempt1回のみ)という最も厳しい条件下�
 
 ---
 
+## §8 修正2回目(Fable差し戻し、B1側Gap最終解消)
+
+### §8.0 差し戻し理由(再掲)
+Fable判断: (1)`er012_b_family_voices_a2_new_topic_production_01_test_01.py`のfake関数へ
+`segment_id=None`を追加して修正する。(2)B1の`er003_v1_sing01_news_tail_fix.py::
+generate_news_narration_wide_margin`(Full Story part1/2/3・In One Line=Family X本文の主要経路)の
+同型Gap(§7.2・§7.5で報告済み、所有範囲外のため未実装のまま報告のみだった)を、本管理ID内で
+今すぐ解消する(B1 Full Storyは「Production初回path」の中核であり、未配線のまま`PRODUCTION_WIRED`
+にできない)。
+
+### §8.1 実装
+
+1. **`er012_b_family_voices_a2_new_topic_production_01_test_01.py`**: `fake_standard()`の
+   固定シグネチャへ`segment_id=None`をキーワード引数として追加(挙動確認ロジックは無変更)。
+   `test_standard_stop_retrying_does_not_skip_fallback_budget`が単体で再びPASSすることを確認済み
+   (15件中1件のpiece test、`.venv/Scripts/python.exe -m unittest
+   er012_b_family_voices_a2_new_topic_production_01_test_01 -v` = Ran 15 tests, OK)。
+
+2. **`er003_v1_sing01_news_tail_fix.py::generate_news_narration_wide_margin`**: `routing.transcribe()`
+   呼び出し直後・`secondary_asr.evaluate_attempt_with_cascade()`呼び出し直前に、A2修正1回目
+   (`er003_v1_crosslevel_audio_02_common.py`)と同一の導出方法(`review_lock._has_valid_narration_
+   layout(out_path)`が真の場合のみ`review_lock.derive_segment_key(out_path)`でsegment_idを導出、
+   従わない場合はNoneのまま=既存挙動)を追加し、`evaluate_attempt_with_cascade(..., segment_id=
+   segment_id)`として転送する1箇所の変更。
+
+   この関数は標準attempt・TTS技術的fallback(minimal_instruction、trimmed is Noneの場合の
+   `repro01.generate_english_component_minimal_instruction`)・Local Rewrite回復再帰呼び出し
+   (`_local_rewrite_recovery_for_news_narration`が`generate_news_narration_wide_margin.__wrapped__`を
+   再帰呼び出し)の全経路が、単一のforループ内にある単一の`evaluate_attempt_with_cascade`呼び出しを
+   共有する設計(A2の`_run_a2_minimal_fallback_attempt`のような別関数化されたfallback経路は
+   存在しない)。そのため、この1箇所の修正だけでB1本文の全attempt経路(初回・fallback・
+   Local Rewrite再帰)がTier1 early-exit/Phase B corroborationの恩恵を受ける。
+
+### §8.2 配線一覧表(最終、全経路)
+
+**B1側**
+
+| ファイル | 関数 | 状態 | 備考 |
+|---|---|---|---|
+| `er003_v1_sing01_voice01_generate.py` | `generate_charon_english()` | 配線済み(初回報告時点、無変更) | preview/comment_1-4/topic_intro/in_one_lineのB1英語roleが対象 |
+| `er003_v1_sing01_news_tail_fix.py` | `generate_news_narration_wide_margin()`(standard attempt・TTS技術的fallback・Local Rewrite回復再帰の全経路共通) | **修正2回目で配線** | full_story_part1/2/3・point_one/two・in_one_line(B1本文5role)の初回attemptからTier1が有効 |
+| `er008_n8_b1_resume_01.py` | `_verify_existing()` | 未配線(所有ファイル外) | legacy一回限りのincident resume script。retry/cooldownを伴わない単発reuse判定のみ、対象外(A2の`er008_n8_a2_resume_01.py`と同型・同じ判断) |
+| `er007_ja_secondary_asr_01.py` | `evaluate_attempt_ja_with_cascade()` | 対象外 | 日本語専用path、Tier1は英語専用設計のため非該当 |
+
+**A2側(修正1回目で既に全解消、再掲)**
+
+| ファイル | 関数 | 状態 |
+|---|---|---|
+| `er003_v1_repro01_main_generate.py` | `generate_narration_snippet_verified_strict()` | 配線済み(修正1回目) |
+| `er003_v1_crosslevel_audio_02_common.py` | `generate_english_segment_with_fallback()`標準経路 | 配線済み(修正1回目) |
+| `er003_v1_crosslevel_audio_02_common.py` | `_run_a2_minimal_fallback_attempt()`(fallback経路) | 配線済み(初回報告時点) |
+| `er003_v1_n3_01_tts_generate.py` | `apply_a2_slowdown_postprocess()`(post-slowdown再検証) | 配線済み(初回報告時点) |
+| `er008_n8_a2_resume_01.py` | `_verify_existing()` | 未配線(所有ファイル外、legacy単発reuse判定のみ、対象外) |
+
+**結論**: B1/A2ともに、Production初回生成path(標準attempt・retry・fallback・再検証・Local Rewrite回復)は
+**全経路が配線済み**。未配線として残るのは、いずれも「実際の(再)生成コールパスの一部ではない
+legacy単発resume script」(`er008_n8_a2_resume_01.py`/`er008_n8_b1_resume_01.py`、実際の(再)生成時は
+配線済みの正式generate関数を経由する)のみであり、これらはretry/cooldownを伴わない性質から
+対象外と判断する(修正1回目と同一の判断基準)。
+
+### §8.3 tests
+
+`er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`へ`NewsTailFixB1WiringFixTest`
+(3件)を追加(既存29件と合わせて32件、API課金なし)。TTSパイプライン
+(`common._call_tts_with_retry`/`p3u.trim_english_keyword_silence`/`safety.detect_duration_anomaly`)と
+Primary ASR(`routing.transcribe`)のみモックし、Tier1判定(`secondary_asr.evaluate_attempt_with_cascade`/
+`val.classify_asr_match`)は実ロジックをそのまま通す設計(既存の
+`er011_open121_repetition_qa_production_wiring_01_test_01.GenerateNewsNarrationWideMarginScopeTests`と
+同一のモック方式)。
+
+- `test_full_story_part1_numeric_diff_rescued_at_attempt1_no_cooldown`: 数値差segment
+  (segment_id="full_story_part1"、標準命名慣習パス)がattempt1で`NUMERIC_EQUIVALENCE_MATCH`、
+  `attempts_log`長1、`cooldown_events == []`(cool-down不発火)、TTS呼び出し1回のみであることを固定。
+- `test_point_one_heading_non_applicable_role_regression_unaffected`: 同じ数値差ペアでも
+  非適用role(point_one_heading)では既存通り不合格のまま(role gatingの回帰確認)。
+- `test_no_valid_narration_layout_segment_id_none_unchanged`: 標準命名慣習に従わないout_path
+  (単体テストのダミーパス等)ではsegment_id=Noneのまま、既存挙動と完全に同じであることを確認。
+
+`er012_b_family_voices_a2_new_topic_production_01_test_01.py`修正(fake_standard()へ
+`segment_id=None`追加)により、同ファイル15件がPASS(修正前は
+`test_standard_stop_retrying_does_not_skip_fallback_budget`が`TypeError`)。
+
+**regression実行結果**:
+1. `er021_..._test_01.py`単体: 32件PASS(追加3件込み)。
+2. `er012_b_family_voices_a2_new_topic_production_01_test_01.py`単体: 15件PASS。
+3. 全体(`python -m unittest discover -s . -p "*_test_01.py"`): **Ran 1314 tests, failures=1,
+   errors=1**。内訳確認済み、いずれも本タスクと無関係:
+   - `er015_standard_a2_6000_generation_first_trial_01_test_01`(loader ImportError): `git status`で
+     確認した結果、`er003_v1_n3_01_standard_a2_generate.py`/`er003_v1_n3_01_advanced_adaptation_
+     generate.py`が並行Agent(JA Fact Check配線)により未commitで変更中であることが原因。本タスクは
+     これらのファイルを一切所有・変更していない。
+   - `er019_family_x_pointless_01_test_01.FamilyAUnchangedTest.test_family_a_files_have_no_working_
+     tree_diff`(1件): このguard testは「共有Production module(`er003_v1_sing01_news_tail_fix.py`含む)
+     に一切diffが無いこと」を保証する設計であり、本タスクがFableの明示的指示(§8.0)に基づき
+     `er003_v1_sing01_news_tail_fix.py`へ正規の最小差分を加えたこと自体を正しく検知している(design
+     通りの反応、本タスクの欠陥ではない。初回報告§2で同種の反応が記録され、commit後に解消したのと
+     同じパターン。本修正2回目のcommit後も同様に解消する見込み)。
+
+### §8.4 runtime evidence(実TTS/ASR、実測¥0.52、TTS_EXECUTION_MODE=STANDARD)
+
+専用out-dir`er021_output/en_asr_semantic_equivalence_production_wiring_01/probes_fix2/`
+(既存記事artifact無変更)。`news_tail_fix.generate_news_narration_wide_margin(canonical, out_path,
+max_attempts=1)`を、正式generate関数そのもの経由で実際に呼び出した(判定層の個別呼び出しではない)。
+オーケストレーション: `er021_en_asr_semantic_equivalence_production_wiring_01_fix2_run.py`。
+
+| segment_id(role) | canonical | 実Primary ASR逐語 | 結果 |
+|---|---|---|---|
+| full_story_part1(FULL_STORY) | "The company reported profits of four point seven billion dollars last year." | "The company reported profits of $4.7 billion last year." | `NUMERIC_EQUIVALENCE_MATCH`、status=OK、attempts_log_len=1、cooldown_events=[]（不発火） |
+
+max_attempts=1(唯一の試行)という最も厳しい条件下でPASSしたことは、修正前であれば必ず
+`STOPPED`になっていたはずの経路が、attempt1の時点でTier1 early-exitにより救済されていることの
+直接証拠である。
+
+telemetry.jsonl(observability、role適用かつTier1不一致の場合のみ追記される既存設計)の行数は、
+本probe実行前後で512→512と不変だった。これは設計どおりの挙動である(Tier1でPASSした場合は
+observability対象外、既存Phase A実装時からの仕様)。telemetry機構自体が生きていることは、本タスクの
+regression実行(§8.3、role適用NEGATIVE corpusを実ロジック経由で通す既存test群)で434→512行へ
+実際に増加したことにより別途確認済み(実行前後の差分は本タスクの新規テスト実行によるものであり、
+既存の観測性機構が正しく動作し続けていることを示す)。
+
+**cost logger実測**: gemini(TTS)¥0.49 + openai_asr(Primary ASR)¥0.03 = **¥0.52**
+(目安予算¥3以内、Guardrail¥10以内)。詳細: `er021_output/en_asr_semantic_equivalence_production_
+wiring_01/runtime_evidence_results_fix2.json`、`audit/raw_usage_log_fix2.jsonl`。
+
+### §8.5 Gate 3最終照合表
+
+| 項目 | 状態 | 根拠 |
+|---|---|---|
+| B1側同型Gap(`generate_news_narration_wide_margin`) | **解消** | §8.1・§8.4(max_attempts=1でも実際にattempt1でPASS) |
+| A2標準経路Gap(修正1回目で解消済み) | 解消済み | §7 |
+| `er012`fake関数破壊 | **解消** | §8.1・§8.3(15件PASS) |
+| B1/A2全経路配線一覧(要件2) | 完成、未配線はlegacy単発resume scriptのみ(対象外理由明記) | §8.2 |
+| retry/fallback/regeneration整合 | 確認済み | §8.3(role非適用・segment_id未指定の既存挙動維持を回帰test化) |
+| runtime evidence | 取得済み | §8.4(実測¥0.52) |
+| regression | 実施済み、残差2件はいずれも本タスク外要因(git statusで確認・確定) | §8.3 |
+| Git | 所有ファイルのみpath指定add(次節) | §8.6 |
+
+未充足項目: なし。STOP該当: なし(false accept・安全性問題は未検出)。
+
+### §8.6 SSOT記載案(編集は未実施、Fable/ユーザー判断待ち、最終版)
+
+#### CURRENT_SPEC.md(§5の既存案を以下へ差し替え)
+
+> | English ASR Semantic Equivalence Layer(OPEN-186、数値/通貨/%/年/時刻/分数/ローマ数字/略語の
+> Tier1値等価+規則的複数形・固有名詞のTier3 corroboration救済) | ユーザー正式承認
+> (`APPROVED_FOR_PRODUCTION`、2026-09-27)。`er006_preprod_hardening_01_validation.py::
+> classify_asr_match()`ラッパー冒頭に、role gating(5role: Full Story/Comment/Preview/Topic
+> intro/In One Line、Key Phrase/Heading非適用、判定はer020`resolve_narrative_role()`を再利用)付き
+> Tier1 early-exit(`NUMERIC_EQUIVALENCE_MATCH`)を追加。Tier3(規則的複数形・固有名詞のみの1トークン差、
+> Secondary ASR corroboration必須)は`er006_secondary_asr_01.py::evaluate_attempt_with_cascade_
+> detail()`のConnected Speech Equivalence Layer後段に配線(`SECONDARY_ASR_CORROBORATED_MATCH`、
+> warning付き)。**適用箇所(B1/A2の英語本文segment生成、初回attempt・fallback・post-slowdown再検証・
+> Local Rewrite回復の全経路)**: `voice01.generate_charon_english()`/`news_tail_fix.generate_news_
+> narration_wide_margin()`(B1 Full Story part1/2/3・Point・In One Line)/`crosslevel_audio_02_common.
+> generate_english_segment_with_fallback()`(A2標準経路+`_run_a2_minimal_fallback_attempt()`fallback
+> 経路)/`repro01.generate_narration_snippet_verified_strict()`/`er003_v1_n3_01_tts_generate.py::
+> apply_a2_slowdown_postprocess()`。既知Gapなし(legacy単発resume script[`er008_n8_a2_resume_01.py`/
+> `er008_n8_b1_resume_01.py`]のみ対象外、実際の(再)生成は上記配線済み経路を経由)。Runtime evidence:
+> B1実probe5/5救済(初回4件+Full Story 1件)+対照1件非救済、A2実probe2件救済(fallback予算0でも
+> attempt1でPASS)、実測合計¥4.21(初回¥2.72+修正1回目¥0.97+修正2回目¥0.52、詳細は各節)。
+> 詳細`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01_REPORT.md` | `APPROVED_FOR_PRODUCTION`
+> (実装・全経路配線完了、`PRODUCTION_WIRED`はFable Gate 3最終判定待ち) |
+> EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01(Trial・VALIDATED)、EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-
+> WIRING-01(Production配線) | 2026-09-27 |
+
+#### OPEN_ITEMS.md(OPEN-186行への追記案、最終)
+
+> **追記5(2026-09-27、`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01`修正2回目)**: B1側同型Gap
+> (`er003_v1_sing01_news_tail_fix.py::generate_news_narration_wide_margin`)を解消し、B1/A2の
+> Production初回生成path(標準attempt・fallback・post-slowdown再検証・Local Rewrite回復)が全経路
+> 配線済みになった。残る未配線はlegacy単発resume script(実際の(再)生成コールパス外)のみ。
+> Fable Gate 3最終判定待ち(`PRODUCTION_WIRED`確定は次段階)。
+
+#### DECISION_LOG.mdへの追記案(最終、1エントリ)
+
+> 2026-09-27(`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01`修正2回目): Fable差し戻しに基づき
+> B1側同型Gap(`news_tail_fix.generate_news_narration_wide_margin`)を解消。B1/A2ともにProduction
+> 初回生成path全経路が配線済みとなった。commit(本コミットhash、§8.7参照)。詳細
+> `EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01_REPORT.md` §8。
+
+### §8.7 Git(修正2回目)
+所有ファイルのみ`git add`(`git add -A`不使用)。対象: `er003_v1_sing01_news_tail_fix.py`/
+`er012_b_family_voices_a2_new_topic_production_01_test_01.py`/`er021_en_asr_semantic_equivalence_
+production_wiring_01_test_01.py`/`er021_en_asr_semantic_equivalence_production_wiring_01_fix2_run.py`/
+`EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01_REPORT.md`/evidence out-dir新規・更新ファイル
+(`er021_output/en_asr_semantic_equivalence_production_wiring_01/`配下)。
+
+---
+
 Management-ID: EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01

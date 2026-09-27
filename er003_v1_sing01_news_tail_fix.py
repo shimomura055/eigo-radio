@@ -126,10 +126,22 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         # から正規化+6分類+Protected Check+retry guardrail方式へ切り替え。
         length_ok = asr_text is not None and len(asr_text) <= max_len
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正2回目、B1
+        # 側の同型Gap解消): crosslevel_audio_02_common.
+        # generate_english_segment_with_fallback()の標準経路と同じ導出
+        # 方法(out_pathが標準命名慣習に従わない場合はNoneのまま=role gate
+        # 非適用、既存挙動と完全に同じ)。これにより、B1本文
+        # (full_story_part1/2・point_one/two・in_one_line)がstandard
+        # attempt(このループ、fallback/post-slowdown以前)からTier1
+        # early-exitの恩恵を受ける。
+        segment_id = None
+        if review_lock._has_valid_narration_layout(out_path):
+            _, _, segment_id = review_lock.derive_segment_key(out_path)
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            segment_id=segment_id)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]

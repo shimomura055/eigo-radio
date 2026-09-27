@@ -246,7 +246,12 @@ class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
 
         def fake_standard(text, language, out_path, expected_substring, max_attempts=2,
                            max_extra_chars=60, style_prefix_override=None, disfluency_qa=False,
-                           enable_connected_speech_equivalence_layer=False, enable_repetition_qa=False):
+                           enable_connected_speech_equivalence_layer=False, enable_repetition_qa=False,
+                           # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正2回目): 呼び出し側
+                           # (crosslevel.generate_english_segment_with_fallback)がキーワード引数として
+                           # segment_idを渡すようになったため、fakeの固定シグネチャを前方互換にする
+                           # (挙動確認ロジックは無変更)。
+                           segment_id=None):
             # standard側がstop_retryingにより1回のみでASR_VALIDATION_UNCERTAIN
             # を返した状態を模擬する(fallbackへの到達可否だけを検証したいため、
             # 実際のTTS/ASR APIは呼ばない)。

@@ -21,6 +21,7 @@ from unittest import mock
 import er003_b1_p9a_audio as p9a
 import er003_v1_crosslevel_audio_02_common as crosslevel
 import er003_v1_repro01_main_generate as repro01
+import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er006_preprod_hardening_01_validation as val
 import er006_secondary_asr_01 as secondary_asr
 import er020_tts_retry_local_rewrite_01 as retry_primitive
@@ -424,6 +425,106 @@ class A2StandardPathProductionWiringFixTest(unittest.TestCase):
         self.assertEqual(result["status"], "STOPPED")
         self.assertEqual(len(result["attempts_log"]), 2)
         self.assertEqual(self.tts_call_count, 2)
+
+
+class NewsTailFixB1WiringFixTest(unittest.TestCase):
+    """修正2回目(Fable差し戻し、EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-
+    WIRING-01): 既知Gap「B1本文(`er003_v1_sing01_news_tail_fix.py::
+    generate_news_narration_wide_margin`、Full Story/Point/In One Line
+    生成の主経路)にはsegment_idが未配線」を解消したことを、実際の関数
+    そのもの経由で固定する。TTSパイプライン(`common._call_tts_with_retry`/
+    `p3u.trim_english_keyword_silence`/`safety.detect_duration_anomaly`)と
+    Primary ASR(`routing.transcribe`)のみモックし、Tier1判定
+    (`secondary_asr.evaluate_attempt_with_cascade`/`val.classify_asr_match`)
+    は実ロジックをそのまま通す(API呼び出しなし、¥0、モック方式は既存の
+    `er011_open121_repetition_qa_production_wiring_01_test_01.
+    GenerateNewsNarrationWideMarginScopeTests`と同一)。"""
+
+    CANONICAL = "The price rose to two point three million dollars this year."
+    ASR_NUMERIC_EQUIVALENT = "The price rose to $2.3 million this year."
+
+    def setUp(self):
+        import numpy as np
+        self.np = np
+        self.tmp_dir = tempfile.mkdtemp(prefix="er021w3_news_tail_fix_wiring_test_")
+        self.tts_call_count = 0
+
+        self.orig_call_tts = news_tail_fix.common._call_tts_with_retry
+        self.orig_trim = news_tail_fix.p3u.trim_english_keyword_silence
+        self.orig_anomaly = news_tail_fix.safety.detect_duration_anomaly
+        self.orig_transcribe = news_tail_fix.routing.transcribe
+
+        def _fake_call_tts_with_retry(call_fn, prompt, max_retry=None, sleep_fn=None):
+            self.tts_call_count += 1
+            fake_pcm = self.np.zeros(4000, dtype=self.np.int16).tobytes()
+            return fake_pcm, 0, True, None
+
+        news_tail_fix.common._call_tts_with_retry = _fake_call_tts_with_retry
+        news_tail_fix.p3u.trim_english_keyword_silence = lambda samples, sr, safety_margin_seconds=None: (
+            self.np.zeros(sr, dtype=self.np.float32), {"raw_duration_seconds": 1.0})
+        news_tail_fix.safety.detect_duration_anomaly = lambda *a, **k: {"is_anomaly": False}
+        news_tail_fix.routing.transcribe = lambda *a, **k: (self.ASR_NUMERIC_EQUIVALENT, None)
+
+    def tearDown(self):
+        news_tail_fix.common._call_tts_with_retry = self.orig_call_tts
+        news_tail_fix.p3u.trim_english_keyword_silence = self.orig_trim
+        news_tail_fix.safety.detect_duration_anomaly = self.orig_anomaly
+        news_tail_fix.routing.transcribe = self.orig_transcribe
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def test_full_story_part1_numeric_diff_rescued_at_attempt1_no_cooldown(self):
+        # 修正前: standard attempt 1・2ともTRUE_CONTENT_MISMATCHで
+        # (enable_connected_speech_equivalence_layer=Falseのため)即STOPPED、
+        # role gate自体が一切適用されなかった(Fable差し戻し理由と同型の
+        # B1側Gap)。修正後: out_pathが".../<theme>/<level>/narration/
+        # full_story_part1.wav"という標準命名慣習に従っていれば、
+        # segment_id="full_story_part1"(role=FULL_STORY、5role適用対象)が
+        # attempt1から渡り、Tier1 early-exitが直接発火する。
+        narration_dir = os.path.join(self.tmp_dir, "wiring_theme_asrw3", "b1b", "narration")
+        os.makedirs(narration_dir, exist_ok=True)
+        out_path = os.path.join(narration_dir, "full_story_part1.wav").replace("\\", "/")
+
+        result = news_tail_fix.generate_news_narration_wide_margin(self.CANONICAL, out_path, max_attempts=3)
+
+        self.assertEqual(result["status"], "OK")
+        self.assertTrue(result["asr_verified"])
+        self.assertEqual(result["audio_classification"], "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertEqual(len(result["attempts_log"]), 1,
+                          "attempt1で救済され、attempt2以降のcool-downへ一切進まないこと")
+        self.assertEqual(result.get("cooldown_events"), [],
+                          "cool-downが不発火であること(enable_connected_speech_equivalence_layer=False既定、"
+                          "かつattempt1で即PASSのため)")
+        self.assertEqual(self.tts_call_count, 1, "TTS呼び出しはattempt1の1回のみであるべき")
+
+    def test_point_one_heading_non_applicable_role_regression_unaffected(self):
+        # role gatingの回帰確認: HEADING(非適用role)のsegment_idでは、
+        # 同じ数値差ペアでも本修正の影響を受けず、既存挙動(Tier1不発火)の
+        # まま。
+        narration_dir = os.path.join(self.tmp_dir, "wiring_theme_asrw3", "b1b", "narration")
+        os.makedirs(narration_dir, exist_ok=True)
+        out_path = os.path.join(narration_dir, "point_one_heading.wav").replace("\\", "/")
+
+        result = news_tail_fix.generate_news_narration_wide_margin(self.CANONICAL, out_path, max_attempts=1)
+
+        self.assertNotEqual(result.get("status"), "OK",
+                             "非適用roleではTier1が発火せず、既存通り不合格のままであるべき")
+        self.assertEqual(len(result["attempts_log"]), 1)
+        self.assertNotEqual(result["attempts_log"][0].get("audio_classification"), "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertEqual(self.tts_call_count, 1)
+
+    def test_no_valid_narration_layout_segment_id_none_unchanged(self):
+        # out_pathが標準命名慣習("<theme>/<level>/narration/<segment>.wav")
+        # に従わない場合(既存呼び出し元の一部、単体テストのダミーパス等)は
+        # segment_id=Noneのまま(role gate非適用)、既存挙動と完全に同じで
+        # あることを確認する。
+        out_path = os.path.join(self.tmp_dir, "dummy_out_no_layout.wav").replace("\\", "/")
+
+        result = news_tail_fix.generate_news_narration_wide_margin(self.CANONICAL, out_path, max_attempts=1)
+
+        self.assertNotEqual(result.get("status"), "OK")
+        self.assertEqual(len(result["attempts_log"]), 1)
+        self.assertNotEqual(result["attempts_log"][0].get("audio_classification"), "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertEqual(self.tts_call_count, 1)
 
 
 if __name__ == "__main__":
