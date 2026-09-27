@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Japan’s Young Travelers and the Short-Stay Paradox
+
+By September 2026, Japan’s travel picture contains a quiet contradiction. A slower, more personal style is becoming visible among young people, especially young men. But the stays measured in travel surveys remain short. The data suggests that some young travelers are changing what they want from a trip before they change how long they stay.
+
+The contrast appears when people are asked to imagine having more time. In a 2024 summer survey, the most common answer to “How long would you travel if you had a month off?” was about one week. About one in four respondents chose it.
+
+But a separate autumn survey of people planning domestic trips found a much shorter plan. The average stay was 1.8 nights, with a median of two nights.
+
+These are different questions, but they point to the same unresolved tension. The wish for a slower experience is clearer than any broad move toward longer stays.
+
+Japan’s 2025 Tourism White Paper also says the country needs more trips per person and longer stays. That wording matters. Official policy still treats longer stays as work to do, not as a completed change.
+
+The surveys should not be read as proof that sightseeing has already been replaced. For now, the preference is clear, but the stay-length data does not show the same shift.
+
+### Slow can mean control
+
+Slow travel can mean control, not simply a longer trip. One survey found that solo travel and hobby-focused travel were each chosen by about one in four men aged 29 and under. Another survey found that about nine in ten Gen Z respondents wanted free time on an overseas tour; most of them wanted at least half a day. The change may be how limited time is used.
+
+### One generation, different travel tastes
+
+The same age group is not one market. Among women aged 29 and under, gourmet travel was the top choice at about half, while visiting famous destinations remained high at about 45%. That is different from the pattern seen among young men. This difference points to varied Gen Z travel preferences, from flexible, interest-led travel to continued interest in landmark-based itineraries.
+
+## In one line…
+
+Japan’s young travelers are showing a clearer pull toward personal, slower experiences, but the evidence is firmer on changing preferences than on longer stays. It is a direction taking shape, not a completed shift.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "quiet contradiction",
+    "japanese_gloss": "目立たない矛盾",
+    "source_sentence": "By September 2026, Japan’s travel picture contains a quiet contradiction."
+  },
+  {
+    "rank": 2,
+    "key_phrase": "be read as proof",
+    "japanese_gloss": "証拠だと受け取られる",
+    "source_sentence": "The surveys should not be read as proof that sightseeing has already been replaced."
+  },
+  {
+    "rank": 3,
+    "key_phrase": "median",
+    "japanese_gloss": "真ん中の値",
+    "source_sentence": "The average stay was 1.8 nights, with a median of two nights."
+  },
+  {
+    "rank": 4,
+    "key_phrase": "landmark-based itineraries",
+    "japanese_gloss": "名所を中心にした旅程",
+    "source_sentence": "This difference points to varied Gen Z travel preferences, from flexible, interest-led travel to continued interest in landmark-based itineraries."
+  },
+  {
+    "rank": 5,
+    "key_phrase": "take shape",
+    "japanese_gloss": "形になり始める",
+    "source_sentence": "It is a direction taking shape, not a completed shift."
+  }
+]
