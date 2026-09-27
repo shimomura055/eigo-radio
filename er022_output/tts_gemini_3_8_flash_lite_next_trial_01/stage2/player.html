@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<title>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 2 A/B試聴</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+audio { width: 100%; }
+.status-OK { color: green; font-weight: bold; }
+.status-STOPPED { color: red; font-weight: bold; }
+</style></head>
+<body>
+<h1>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 2(2〜3 segment)A/B試聴
+(Trial、Production非採用)</h1>
+<p>A=現行Production(gemini-2.5-pro-preview-tts、Structured Separation prompt)。
+B=Gemini 3.8 Flash-Lite TTS(gemini-3.8-flash-lite-tts、speech_metadataによる
+verbatim transcript方式、style=""[plain TTS、全segment attempt1で即PASS])。
+B列のstatusは既存Production ASR検証パイプライン(英語6分類Validator)の判定結果。</p>
+<table>
+<tr><th>Segment</th><th>A(現行Production)</th><th>B(Gemini 3.8 Flash-Lite、Trial)</th></tr>
+<tr>
+  <td>hormuz_full_story_part1<br><span style="color:#888;font-size:0.8em">Voice: Aoede</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/hormuz_full_story_part1.mp3"></audio><br>49.241s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/hormuz_full_story_part1.mp3"></audio><br>40.68s
+      <br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>ai_hiring_point_two_body<br><span style="color:#888;font-size:0.8em">Voice: Erinome</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/ai_hiring_point_two_body.mp3"></audio><br>44.063s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/ai_hiring_point_two_body.mp3"></audio><br>35.84s
+      <br><span class="status status-OK">OK</span></td>
+</tr>
+<tr>
+  <td>ai_hiring_full_story_part1<br><span style="color:#888;font-size:0.8em">Voice: Aoede</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/ai_hiring_full_story_part1.mp3"></audio><br>15.898s</td>
+  <td><audio controls preload="none" src="segments_mp3/b/ai_hiring_full_story_part1.mp3"></audio><br>12.6s
+      <br><span class="status status-OK">OK</span></td>
+</tr>
+</table>
+</body></html>

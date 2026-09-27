@@ -533,3 +533,179 @@ Cap ¥500に対し十分小さい。Sonnet推奨: Stage 1の結果(§16-§18)を
   呼び出し0件)。
 - `.venv_trial_genai225/`: `.gitignore`の既存`.venv_trial*/`パターンに
   合致するため追加のGit操作不要(確認済み)。
+
+## §21 Stage 2(2026-09-27、2〜3 segment)
+
+### §21.1 選定segmentと理由
+
+委任文Stage2内容1の基準に従い、以下3segmentを選定(全て実行、STOP発火無し)。
+
+| segment_id | 対象 | Voice | 選定理由 |
+|---|---|---|---|
+| `hormuz_full_story_part1`(必須) | Family X Hormuz B1B `full_story_part1`(`hormuz__run_02`) | Aoede | 数値[3 acts/20%/2/3/July 13/10:16 a.m.]と固有名詞[Trump/Strait of Hormuz/United States/US]を含む必須segment。既存OK音声・textが確認できたため計画doc§5の代替候補は使わず採用。 |
+| `ai_hiring_point_two_body`(必須) | ai_hiring A2 `point_two_body` | Erinome | Narrator(Aoede)以外のVoice。3 Voices記事のキャラクター読み上げの代表。 |
+| `ai_hiring_full_story_part1`(任意) | ai_hiring A2 `part1` | Aoede | 予算内(実測合計¥3.20 ≪ Cap¥1,500)であったため実施。「Full Story」名称のNarrator通常品質の基準点。 |
+
+canonical textの選定について、Hormuz `full_story_part1`はraw
+`parts.json`の`part1`(綴り文字表記の"Act Two"・全角引用符付き)ではなく、
+`audit/tts_generation_results.json`に記録されたProductionが実際にTTSへ
+送信した正規化済みtext(TTS-SYMBOL-NORMALIZATION適用後、"20%"/"Act 2"等
+digit表記、652文字)を採用した。理由: A側音声(既存Production完成音声)は
+この正規化済みtextから生成されており、raw parts.json側の文言を使うと
+A/B比較の対象content自体が変わってしまう(ER-005「内容は変えず区切り方
+だけ変える」原則に反する)ため。ai_hiring側2segmentは数字を含まず
+(計画doc§5で確認済み)、raw `parts.json`とProduction送信textの間に
+語彙差分が無いため、Stage 1と同じくraw `parts.json`をそのまま使用した。
+
+### §21.2 結果表(実測、全segment attempt1回で成功)
+
+| segment_id | attempt | ASR分類 | duration A(既存) | duration B(今回) | B/A比 | TTS latency | ASR latency | input/output tokens | 費用(¥) |
+|---|---|---|---|---|---|---|---|---|---|
+| hormuz_full_story_part1 | 1/3 | NORMALIZED_MATCH | 49.241秒 | **40.68秒** | 82.6% | 11.415秒 | 2.413秒 | 167/1302 | ¥1.47(gemini¥1.26+asr¥0.21) |
+| ai_hiring_point_two_body | 1/3 | NORMALIZED_MATCH | 44.063秒 | **35.84秒** | 81.3% | 9.828秒 | 1.858秒 | 124/1147 | ¥1.28(gemini¥1.11+asr¥0.17) |
+| ai_hiring_full_story_part1 | 1/3 | NORMALIZED_MATCH | 15.898秒 | **12.6秒** | 79.3% | 4.916秒 | 1.34秒 | 44/404 | ¥0.45(gemini¥0.39+asr¥0.06) |
+
+3segmentとも: 指示文漏れ無し(`leaked_style_words=[]`)・異常長検知非該当
+(`is_anomaly=False`)・`TRUE_CONTENT_MISMATCH`非発生・早期STOP非発火
+(`trial_early_stop=null`)。ASR差分はいずれも句読点・大文字小文字・
+発音区別符号(résumé→resume等)レベルの表記正規化のみで、語彙・文意の
+食い違いは無い。**Stage 2合計費用: ¥3.20**(gemini¥2.77+openai_asr¥0.43)、
+Cap(¥1,500)消費率0.21%。segment単位Cap(¥500)も全segment未到達
+(最大でも¥1.47)。
+
+結果JSON: `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage2/audit/stage2_result.json`。
+raw usage log: `stage2/audit/raw_usage_log.jsonl`。生成音声:
+`stage2/narration/{segment_id}.wav`。
+
+### §21.3 Stage 1との比較
+
+| 項目 | Stage 1(1segment) | Stage 2(3segment) |
+|---|---|---|
+| 成功率 | 1/1(attempt1で即PASS) | 3/3(全segment attempt1で即PASS) |
+| duration B/A比 | 78.9%(62.25→49.08秒) | 79.3%〜82.6%(3segmentとも同水準) |
+| Voice多様性 | Aoede 1件のみ | Aoede 2件 + Erinome 1件(Narrator以外も確認) |
+| 数値・固有名詞 | 無し(New Yorkのみ、数字は本文に無い記事) | **有り**(hormuz segment、"20%"/"3 acts"/"July 13"/"10:16 a.m."/"Trump"/"Strait of Hormuz"が全てASRで正しく認識・NORMALIZED_MATCH判定) |
+| 指示文漏れ | 無し | 無し(3segment全て) |
+| 累積実費用(Phase0+Stage1+Stage2) | ¥1.76 | **¥4.96**(Phase0 ¥0 + Stage1 ¥1.76 + Stage2 ¥3.20) |
+
+Stage 1で確認された「attempt1(style無し)で即PASS」「duration短縮
+(A比約79%)」というパターンが、Voice違い(Erinome)・数値/固有名詞を含む
+segment(Hormuz)の両方で**再現した**。前回Trial(AB-01、17segment中14が
+STOPPED)とは対照的に、4segment(Stage1+Stage2合計)全てが1回目の
+attemptでASR検証PASSに到達しており、`speech_metadata`方式(verbatim
+transcript+構造化style)への切替がhallucination/指示文混入の問題を
+解消したという仮説(REPORT§2/計画doc§2)を追加のsegmentでも裏付ける
+結果となった。
+
+### §21.4 発見した問題(観察、Production非影響)
+
+1. **duration短縮の一貫性**: 4segment全てでB(Gemini 3.8 Flash-Lite)が
+   A(現行Production)より約17〜21%短い(79.3%〜82.6%)。これはstyle無し
+   (attempt1のみで成功、pace調整は今回未実施)による自然な発話速度の
+   違いである可能性が高いが、「不自然に速すぎないか」は自動チェック
+   (ASR PASS・異常長非該当・指示文漏れ無し)だけでは判定できず、人間
+   試聴でしか確認できない(計画doc§8の方針通り、本Trial段階では
+   人間試聴を求めていない)。
+2. **Cost loggerのsegmentタグ付け漏れ(Trial script側の軽微な実装差、
+   Production非該当)**: 本Stage2 scriptの`run_segment()`内で、TTS呼び出し
+   のみを`cl.segment_context(segment_id)`で囲み、直後のASR呼び出し
+   (`routing.transcribe`)を同じcontext内に含めていなかったため、
+   `raw_usage_log.jsonl`内のopenai_asrレコードは`segment=None`のまま
+   記録された。**Cap判定(`assert_budget_ok`)は全体合計
+   [`compute_cost_jpy_so_far(None)`]でも二重にチェックしているため、
+   実際の予算安全性には影響していない**(Cap到達は無かったことを
+   §21.2で確認済み)。上表の segment別費用(¥1.47/¥1.28/¥0.45)は、
+   3segmentが順番に1 TTS呼び出し+1 ASR呼び出しずつを行った実行順序に
+   基づき、raw usage logを手動で対応付けて算出した(算出方法:
+   各segmentの直後に記録されたopenai_asrレコード1件をそのsegmentに
+   帰属させる、計算結果の合計¥3.20は`stage2_result.json`の
+   `cost_jpy_total`と一致することを確認済み)。次にStage 2 script相当を
+   拡張する場合は、ASR呼び出しも`segment_context`で囲むよう修正すべき
+   (Production非該当、Trial script改善事項として記録のみ)。
+
+### §21.5 共有ストア非書込みの確認
+
+- `er006_output/master_audio_store_01/manifest.json` /
+  `reuse_telemetry.jsonl`、`er006_output/pronunciation_ledger_01/ledger.json`、
+  `er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl`、
+  `er007_output/ja_asr_cascade_01/human_review_queue.jsonl`、
+  `er011_output/attempt_history.jsonl`、
+  `er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl`:
+  本タスク実行前後で`git status`上の差分無し(他Agentによる既存の未コミット
+  差分のみが残っており、本Stage2実行による追加変更は0件)。
+- `er006_asr_provider_routing_01.transcribe()`はモジュールコードを確認済み
+  (§前提)で、共有store・共有telemetryへの書き込みロジックを一切持たない
+  (`_transcribe_openai_mini`はOpenAI API呼び出しの結果をそのまま返すのみ)。
+- `er005_cost_logger.install()`はTrial専用パス
+  (`stage2/audit/raw_usage_log.jsonl`)へのみ書き込み(`init_logger()`が
+  `_LOG_PATH`をこのパスへ設定、モンキーパッチ自体はプロセス内で共有だが
+  ログ出力先は本パスのみ)。
+
+### §21.6 Production非変更の確認(Stage 2、追加分)
+
+- `er003_*`/`er006_*`/`er011_*`/`er012_*`/`er019_*`等Production対象
+  ファイルへの変更: **0件**(import・読み取りのみ、Hormuz/ai_hiring既存
+  artifactは一切書き換えていない)。
+- Production `.venv`・`.venv-ci`・`requirements-ci.txt`・
+  `requirements.txt`への変更: **0件**(`git status`で無差分)。
+- 他Agentが編集中と通知された`er025_entity_pronunciation_resolver_core_01.py`
+  等への変更: **0件**(本タスクでは一切開いていない、既存の未コミット
+  差分は本タスク開始前から存在する他Agentの作業分)。
+- 新規ファイルのみ:
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage2.py`、
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage2_assets.py`
+  (いずれもTrial専用、Stage 1 scriptは無変更)、
+  `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage2/`配下
+  (JSON/jsonl/wav/mp3/html)。
+- API呼び出し: Stage 2でTTS(gemini)3回・ASR(openai_asr)3回、合計¥3.20。
+
+### §21.7 Stage 3(1記事全segment)へ進む場合の見積
+
+Stage1+Stage2の実測4segment(累積¥4.96)から、平均費用は
+**約¥1.24/segment**(attempt1回で成功するケースが継続する場合)。
+対象記事候補ごとの見積:
+
+| 記事候補 | 総segment数(既存tts_generation_results.json実測) | 平均ケース見積 | worst-case見積(3attempt×¥15.7×segment数、計画doc§10) |
+|---|---|---|---|
+| ai_hiring A2(3 Voices) | 17segment | 約¥21 | 約¥800 |
+| Hormuz B1B(Family X) | 12segment | 約¥15 | 約¥560 |
+
+いずれもCap再設定(計画doc§10「段階3へ進む場合はCap再設定または追加承認を
+ユーザーに諮る」)が必要な水準(worst-case ¥500超)。Stage 2まで実施した
+4segment全てがattempt1回で成功しており平均ケース見積は十分小さいが、
+17segment/12segment規模で同じ成功率が維持されるかは未検証(Stage 3自体が
+その検証)。
+
+**Stage 3実施の条件(提案、Sonnetの裁量では実施しない)**:
+1. Cap再設定(worst-case見積[¥560〜¥800]をカバーする新しいCap、または
+   段階的に半分程度[6〜8segment]ずつ実施しworst-case発生時点で都度停止
+   する分割実行)をユーザーが承認すること。
+2. Stage 1・Stage 2で確認された「attempt1で即PASS」パターンが崩れた場合
+   (retryが発生し始めた場合)、その時点でPause してユーザーへ中間報告
+   すること(委任文の早期STOP条件[3回失敗/本文外発話/指示文漏れ]に加えて、
+   本Trialの1つの追加観察事項として明記)。
+3. Stage 3の音声は人間試聴による正式判定が必要になる規模(1記事丸ごと)
+   であるため、Stage 3完了後は`docs/pm/PM_GOVERNANCE.md` 9-5に従い、
+   ユーザーへ試聴可能なartifactリンクを提示すること。
+
+### §21.8 Sonnet仮分類(Stage 2)
+
+**Stage 2: SUCCESS**(事実ベース)。委任文の成功条件(3segment[数値+固有
+名詞/Narrator以外Voice/任意1件]がASR検証PASS、異常長非該当、本文外発話
+無し、指示文漏れ無し、費用実測記録)を全て満たした。Stage 1の結果が
+単一segmentの偶然ではなく、Voice違い・数値/固有名詞を含むcontentでも
+再現することが確認できた点で、Stage 3(1記事全体)への進行判断材料として
+有効な追加evidenceとなった。
+
+STOP該当: **無し**。
+
+Status提案: **`VALIDATED`**(Stage 1・Stage 2の範囲[4segment、Voice2種、
+数値/固有名詞含む]において、`speech_metadata`方式によるGemini 3.8
+Flash-Lite TTS呼び出しが成功することを実測で確認、との意味での
+`VALIDATED`。Production採用[`APPROVED_FOR_PRODUCTION`]の可否および
+Stage 3[1記事全体]へ進むか否かは、§21.7の条件を踏まえたFable/ユーザーの
+判断に委ねる)。
+
+試聴artifact(内部証跡パスのみ、Stage1と同様の理由でユーザー向け試聴依頼
+リンクとしては提示しない、Sonnet/Fable自動チェック優先段階):
+`er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage2/player.html`
