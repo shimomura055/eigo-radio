@@ -9972,15 +9972,34 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   - `delegation_log`保存欠落の修復運用明記+2026-09-27分backfill:
     充足(29ファイル、全文欠落と明記・捏造なし)
   - 初回発火evidence(3段階ルール運用後の初回L2レビューがGate 3判定へ
-    実際に反映されたことの確認): **未充足**。Pronunciation Phase 2の
-    Opus L2所見受領後にFableが本エントリへ追記する
-    (`OPEN_ITEMS.md`新規Open Item[POST_USER_VALIDATION]で追跡)。
+    実際に反映されたことの確認): **未充足(2026-09-27時点、修正実行中)**。
+    Pronunciation Phase 2のOpus L2所見受領後にFableが本エントリへ追記する
+    (`OPEN_ITEMS.md`新規Open Item[POST_USER_VALIDATION]で追跡。
+    **追記(2026-09-27、`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-C`)**:
+    OPEN-195のStatusは「初回L2所見のGate 3反映確認」がPM側の追跡項目
+    でありユーザー判断ではないため`USER_DECISION_REQUIRED`から
+    `OPEN`[PM追跡、Fable担当]へ是正した)。
+- **初回L2発火evidence所見要旨(2026-09-27、対象=読み解決Phase 2
+  [commit`cc30d6b8`]、Opus L2レビュー結果)**: 総合判定=現状のまま
+  `PRODUCTION_WIRED`化は非推奨。**BLOCKER-1**: Ledger部分一致×cascade
+  由来ゴミentryにより、EN発音ヒントが誤注入される経路を検出。
+  **BLOCKER-2**: JA読みkeyに文脈が無く、Figma confidence不整合の原因を
+  特定。**後でも可**: EN記事単位抽出が未配線、minimal_instruction経路、
+  sol継承記録の3点は許容範囲。**推奨**: negative cache導入、テスト時
+  lookup禁止スイッチ、Human Review時のLedger訂正経路の3点。ユーザーが
+  2026-09-27にこの所見を承認し、Sonnetによる修正1回目を実行中(合計
+  最大4回のうち1回目、`PM_GOVERNANCE.md`3節ループ上限に従う)。
 - 反映範囲: `docs/pm/PM_GOVERNANCE.md`(11-2節新設・2節Gate 3追記・3節
   Closeout Check項目23〜26追加・12-13節新設・21節新設・変更履歴追記)、
   `docs/pm/PM_BRIEF.md`(11-2節・21節参照行、compact復帰手順への1行追加)、
   `docs/pm/REPORT_LEDGER.md`(Opus発火列追加)、`docs/pm/delegation_log/`
   (2026-09-27分backfill 29ファイル+運用ルール明記)、`OPEN_ITEMS.md`
-  (新規Open Item登録)。`CURRENT_SPEC.md`は変更していない。
+  (新規Open Item登録。2026-09-27追記でOPEN-195のStatus是正)。
+  `CURRENT_SPEC.md`は変更していない(本ルール自体としては。ただし
+  別管理ID`KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-
+  WIRING-FIX-01`による`CURRENT_SPEC.md`追記は本節の決定2[Existing
+  Spec / Prior Trial Check Gate]が指摘した実例そのものであり、
+  当該エントリ・下記参照)。
   `.claude/agents/opus-consultant.md`は発火条件チェックリストの逐語記述が
   元々存在しないため変更していない(frontmatter/tools/model・本文とも
   無変更)。
@@ -9990,3 +10009,36 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   [2026-09-09〜09-12に集中、09-13以降0件]、delegation_log 09-19以降欠落)
   参照。
 - commit: 本コミット。
+
+## KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01: 人称一般化(`generalize_person_dependent_reference`)の未発火をQA定義側ギャップとして整合(既存仕様の初発火、commit`0699af47`)
+
+- 日付: 2026-09-27
+- 区分: 実装堅牢化(Implementation Hardening、既存資産照合=分類A。
+  `PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27`
+  決定2[Existing Spec / Prior Trial Check Gate]が想定した実例)。
+- 内容: `CURRENT_SPEC.md`(2026-09-02、ER-011-NO18-PRODUCTION-SPEC-
+  IMPROVEMENT-01)で導入済みの人称代名詞・所有格一般化仕様
+  (`generalize_person_dependent_reference`、閉じた語彙集合の1対1置換)
+  は、導入時点では実際の置換発火が未観測(単体テストのみで安全性確認
+  済み)のまま残っていた。Family Z Melos runで初めて発火条件に合致する
+  候補が選定されたが、LLM自己申告QA`qa_traceable_contiguous_span`の
+  PASS条件が人称一般化後の表層形を「source_spanの連続部分文字列」と
+  一致しないものとして扱い、QA定義側が本来許可すべき人称一般化の
+  存在を反映していなかったギャップが判明した(新しい仕様ではなく、
+  既存Rule7の例外パス`_is_valid_person_generalization`と
+  `qa_traceable_contiguous_span`の整合漏れ)。決定論的後処理+
+  prompt template追記により整合した(LLM判断へ新たな自由度を追加する
+  ものではない)。
+- 対応: 既存145件のcanonicalization結果を再判定し、14件がFAIL→PASSへ
+  変化(全て正当な人称一般化、誤PASS化なし)。Family X既存4件は無変化
+  (無回帰)。
+- Status: `PRODUCTION_WIRED`(共有Key Phrase canonicalization
+  moduleへ配線済み、既存回帰260件PASS、全体regressionは次回closeout
+  で確認)。
+- 反映範囲: `CURRENT_SPEC.md`(L1416付近「人称代名詞・所有格の一般化」行へ
+  2026-09-27追記)、本エントリ新設、
+  `KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01_REPORT.md`
+  末尾へFable評価追記、`docs/pm/REPORT_LEDGER.md`行追加。
+- 根拠: `KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01_REPORT.md`、
+  Fable評価(2026-09-27、`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-C`)。
+- commit: `0699af47`(実装)、本コミット(SSOT反映)。

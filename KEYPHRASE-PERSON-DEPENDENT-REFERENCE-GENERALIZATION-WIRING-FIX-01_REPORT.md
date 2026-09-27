@@ -164,3 +164,12 @@ artifact(145ファイル、er003/005/006/011/012/013/014/017/019/026配下、
 
 Fable/ユーザーの判断を仰ぎたい点: 上記追記を実際に`CURRENT_SPEC.md`へ
 反映するか(反映自体はSSOT編集のため本タスクのスコープ外)。
+
+## 7. Fable評価
+
+Fable評価: 分類A(既存仕様の未発火)として妥当。既存145件再判定で
+14件FAIL→PASS(全て正当な一般化)、Family X 4件無変化=無回帰。SSOT
+反映済み。Status: `PRODUCTION_WIRED`(共有Key Phrase canonicalization
+module、回帰260件PASS、全体regressionは次回closeoutで確認)。
+
+Management-ID: KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01

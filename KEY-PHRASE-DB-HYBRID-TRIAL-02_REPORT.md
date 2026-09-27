@@ -462,6 +462,17 @@ Baseline両方)は、STOP該当ではないが「未解決のまま残った事�
 - まだ進めてはいけない: 本設計・Trial結果のProduction Key Phrase経路
   への配線(`APPROVED_FOR_PRODUCTION`はユーザーのみが決定)。
 
+**Fable評価(2026-09-27、`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-C`)**:
+`VALIDATED`(Trialとして目標達成: 390〜779件→20〜24件、重要名詞句保持・
+採用、1本文1 call、STOP条件7項目非該当)。留保: (1) 現行Productionとの
+重複率55%は同じStrategy Lが選定器のため品質証明ではない、(2) 費用は
+現行同等〜わずかに高く「現行より安く」は未達(article全文+候補で入力
++1,000〜1,300 token)、(3) discontinuous phrasal verb残存・
+Wiktionary multiwordタグのノイズ・possessive noise、(4)
+small_bag_b1bは既存Gate(有限助動詞)で双方INVALID。ユーザー指示により
+TRIAL-03(軽量化・bug一般化修正・回帰・新記事Trial)へ継続。Production
+採用は未決。
+
 ---
 
 ## Status
