@@ -9826,3 +9826,44 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   REPORT.md`(§0〜§11、Phase 3で§11追記)、`docs/pm/recon_tts_symbol_
   normalization_01.md`。
 - commit: Phase 2=`19e638b5`、Phase 3(本SSOT反映)=本コミット。
+
+## PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27: Family A/B/CをLegacy/Backup化、Active Production FamilyをX/Y/Zへ移行(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: PM運用・SSOT整理(ユーザー決定のSSOT反映のみ)。新規Production
+  Prompt・コード変更なし、API ¥0。
+- ユーザー決定: Family A/B/Cから Family X/Y/Zへ移行する。Family A/B/Cは
+  今後のActive Production Familyではなく、バックアップ・過去資産として
+  保持するだけとする。以後: (1)Family A/B/Cを最新仕様へ追従させない、
+  (2)Family A/B/C向けに新規実装しない、(3)Family A/B/CをRegression対象
+  として無理に更新しない、(4)必要であればread-onlyの参照元として使う
+  だけとする。Active側はFamily X/Y/Z、現時点の開発中心はFamily X/Z、
+  Family Yは未着手のため不要に新規開発を始めない。共通機構(記号正規化・
+  読み解決等)はActive Production Family側で共通利用できる形を優先する。
+- 影響1(Family C Layer 2不要化): Family Cの「Writer出力Validator
+  (Layer 2)新設」(`OPEN_ITEMS.md` OPEN-191、
+  `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`起票)は、
+  legacy/backup側のため新規retry loop創設は行わない(実施不要)と確定
+  した。OPEN-191は`CLOSED(legacy化、ユーザー決定2026-09-27、実施不要)`
+  へ更新。
+- 影響2(Family A/B/C向け新規実装の停止): Family A/B/Cを前提とした
+  新規実装・追加実装は今後行わない。既存OPEN項目のうちFamily A/B/C向け
+  追加実装を前提とするもの(OPEN-135・OPEN-147・OPEN-153等)は、各行へ
+  「2026-09-27 legacy注記」を追記し、棚卸し時のsuperseded候補として記録
+  した(Status自体は本タスクでは変更していない、最終判断はユーザー/
+  Fable)。
+- 注記(ロールバックしない例外): `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-
+  PRODUCTION-WIRING-01`Phase 2(commit`19e638b5`)は本決定より前
+  (2026-09-27同日だが時系列上先行)に実施済みであり、Family A本文
+  Writer・Family C Writerへ禁止記号Promptブロック(Layer 1)を追加して
+  いる。これは本決定以前の変更であるためロールバックしない。legacy側
+  (Family A/C)への最後の追従として扱う(以後、Family A/C個別コードへの
+  新規追従は行わない)。
+- 反映範囲: `CURRENT_SPEC.md`(「Family体系(2026-09-27ユーザー決定)」
+  節新設)・`OPEN_ITEMS.md`(OPEN-191クローズ、OPEN-194備考追記、
+  OPEN-135/OPEN-147/OPEN-153等へlegacy注記追記)・`docs/pm/PM_BRIEF.md`。
+- Dangling Reference Check: 既存Family A/B/C仕様記述は削除・書き換えせず
+  legacy仕様(参照用)として残置。Active Family(X/Z)側の仕様・共有module
+  参照は無変更。
+- 根拠: ユーザー決定(2026-09-27)。
+- commit: 本コミット。

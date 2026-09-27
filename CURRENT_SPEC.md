@@ -1292,6 +1292,45 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
 
 日付: 2026-09-26。
 
+## Family体系(2026-09-27ユーザー決定、`PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)
+
+**Status**: ユーザー決定のSSOT反映(2026-09-27)。コード変更・Production挙動変更は伴わない。
+
+- **Active Production Family = X/Y/Z**。開発中心は現時点でFamily X
+  (Entertainment News)とFamily Z(Fiction)。Family Yは将来Voices系を
+  想定した別Familyであり(本ファイル「Family Z(Fiction)」節参照)、着手済み
+  実装は存在しないため、不要にFamily Yの新規開発を始めない。
+- **Legacy/Backup = Family A/B/C**(本節より前に定義された既存Family。News
+  Major/Daily・Trend Synthesis・Discovery/Why等のFamily A Editorial Type、
+  B-Family(Voices)、Family C(Future Story)を含む)。Family A/B/Cは今後の
+  Active Production Familyではなく、バックアップ・過去資産として保持する
+  だけとし、以後は以下4条件に従う。
+  1. Family A/B/Cを最新仕様へ追従させない。
+  2. Family A/B/C向けに新規実装を行わない。
+  3. Family A/B/CをRegression対象として無理に更新しない。
+  4. 必要であればread-onlyの参照元として使うだけとする(例: Family Z
+     Z-2/Z-4がFamily C既存関数`plan_story_segments()`/
+     `classify_quote_voice_window()`を再利用する場合等)。
+- **Family C「Writer出力Validator(Layer 2)新設」(`OPEN_ITEMS.md`
+  OPEN-191)は、上記2により実施不要(legacy化)と確定した**
+  (`OPEN_ITEMS.md`当該行のStatus更新参照)。
+- **共有module(共通機構)の扱い**: `er003_audio_tts_asr_safety.py`の
+  TTS記号正規化Layer 1・3・4、Key Phrase共有module等、Active Production
+  Family側で共通利用できる形の共有moduleを優先する。その変更が結果的に
+  Family A/B/Cの経路へも及ぶ場合、共有層側の変更自体は妨げない。ただし
+  Family A/B/C個別のコード(Writer/QA/Validator等の固有モジュール)は
+  個別に新規変更しない。**注記**: `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-
+  PRODUCTION-WIRING-01`Phase 2(commit`19e638b5`)は本決定より前に実施済み
+  であり、Family A本文Writer・Family C Writerへの禁止記号Prompt予防
+  (Layer 1)追加を含むが、これは本決定以前の変更のためロールバックせず、
+  legacy側への最後の追従として扱う(詳細は`DECISION_LOG.md`
+  `PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`エントリ参照)。
+- 既存のFamily A/B/C仕様記述(本ファイル内の該当節、B-Family(Voices)/
+  News Editorial Mode/通常News/Discovery/Family C(Future Story)等)は、
+  削除・書き換えを行わず**legacy仕様(参照用)**として残置する。
+- 根拠: ユーザー決定(2026-09-27、
+  `PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)。
+
 ## Cross-level仕様(A2/B1/B2共通)
 
 以下はA2の検証で発見・試作したが、**特定レベル固有ではなく番組全体

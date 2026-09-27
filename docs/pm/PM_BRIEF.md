@@ -33,6 +33,11 @@
 `ACTIVE_TASK.md`と`RESULT_PACKET.md`はタスクごとに上書きされる一時ファイルであり、
 正式記録ではない。正式反映は必ず上記SSOTへ行う。
 
+**Family体系(2026-09-27ユーザー決定)**: Active Production Family = X/Y/Z
+(開発中心X/Z、Yは未着手)。Legacy/Backup = A/B/C(最新仕様へ追従させない・
+新規実装しない・無理にRegression更新しない、read-only参照のみ可)。詳細は
+`CURRENT_SPEC.md`「Family体系(2026-09-27ユーザー決定)」節参照。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。
