@@ -1845,6 +1845,48 @@ with_cached_hits()`でcache済みhitsのみを再利用し新規web lookupは発
 PUNCT-01_REPORT.md`、`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_
 REPORT.md`「## Stage 3e」参照。
 
+**Phase 4追記(2026-09-28、`PRONUNCIATION-RESOLUTION-PHASE-4-A2-
+FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01`、ユーザー承認2026-09-28。
+Status: 実装完了・`APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ
+進行中。Opus L2レビュー・`PRODUCTION_WIRED`最終判定は未実施、Fable
+判断待ち)**:
+- **A-2(OPEN-203是正)**: A2英語本文fallback経路
+  (`crosslevel_common._run_a2_minimal_fallback_attempt()`)が
+  `repro01.generate_english_component_minimal_instruction()`を呼ぶ際に
+  `enable_pronunciation_resolver=True`を渡すよう修正した(標準経路
+  [`generate_narration_snippet_verified_strict`]がlanguage=="en"で
+  既に無条件配線済み[Phase 2]という既存方針に合わせ、新規opt-inフラグは
+  追加していない。legacy呼び出し元[B1 scaffold/iran01/sing01等]は
+  この関数を直接呼ばないため無変更)。あわせて`fallback_attempts_log`
+  各entryと最終STOPPED結果のtop-level(`fallback_en_pronunciation_
+  resolver_info`)へも`en_pronunciation_resolver_info`を伝播するように
+  した(修正前はfallback経路で情報が戻り値へ一切現れなかった)。
+- **A-1(ASR `entity_like`判定の一般化、安全側classification/cascade
+  対象の拡張。自動acceptにはしない)**: 従来の「本文中で大文字始まり」
+  ヒューリスティック(`capitalized_flags`)に加え、(a)Pronunciation
+  Ledger登録済みsurface(語境界一致、`tts_injection_disabled`の有無や
+  `entity_type`[`cascade_unresolved_entity`含む]に関わらず分類目的では
+  登録事実を使う。ただしLedger entry自身の`canonical_spelling`が大文字
+  始まりの語として確認できる場合のみ加える「同形一般語ガード」付き
+  [`ledger_registered_entity_flags()`]、これによりsurface="us"/
+  canonical_spelling="unknown"のような既知の誤登録[OPEN-207]は自動的に
+  除外される)、(b)小文字外来語(非ASCII文字を含む語、例:
+  "minaudière"、`loanword_flags()`)を`entity_like`に含める
+  (`er006_preprod_hardening_01_validation.py`)。効果は「entity不一致が
+  TRUE_CONTENT_MISMATCHへ格上げされず、既存のentity_only→ASR_
+  VALIDATION_UNCERTAIN→cascade/Human Review経路へ回る」までであり、
+  数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出力は無変更。
+- runtime evidence: small_bag A2 `full_story_part2`の実canonical text
+  (Stage 3eで観測されたkhaite/minaudière同時誤認識)を使い、(1)A-2
+  fallback resolverの実発火(実TTS1回+実ASR、Guardrail¥15内。cache-only
+  +`cascade_unresolved_entity`除外設計によりkhaite/altuzarra自体は今回も
+  注入されないが、resolverが呼ばれ情報が伝播することを確認)、(2)A-1に
+  よる再分類(この実transcriptがTRUE_CONTENT_MISMATCH→ASR_VALIDATION_
+  UNCERTAINへ変わることをunit testで確認)の両方を実測した。
+- 詳細・呼び出しチェーン表・fixture結果・Gate 3チェックリストは
+  `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+  LIKE-01_REPORT.md`参照。
+
 詳細・runtime evidence・費用・回帰確認は
 `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01_REPORT.md`
 (Phase 2)、`PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-

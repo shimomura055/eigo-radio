@@ -184,7 +184,14 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             tts_backend=tts_backend)
         r = outcome["result"]
         if not outcome["ok"]:
-            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
+                                       # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-
+                                       # ASR-ENTITY-LIKE-01(A-2): TTS失敗等の早期returnでも
+                                       # generate_english_component_minimal_instruction()は
+                                       # en_pronunciation_resolver_infoを含めて返すため(同関数の
+                                       # 全return文で既に対応済み)、ここでも記録する(OPEN-203
+                                       # の可視化、Dangling Referenceなし)。
+                                       "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info")})
             continue
         asr_text = outcome["asr_text"]
         cls = outcome["classification"]
@@ -196,7 +203,11 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                    "disfluency_checked": gate["disfluency_checked"],
                                    "disfluency_evidence": gate.get("disfluency_evidence"),
                                    "repetition_qa_checked": rep_gate["repetition_qa_checked"],
-                                   "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence")})
+                                   "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+                                   # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-
+                                   # ASR-ENTITY-LIKE-01(A-2、OPEN-203可視化): resolver発火
+                                   # 有無・hits/hints_appliedをattempt単位で記録する。
+                                   "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
@@ -256,6 +267,17 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                   f"(合計上限{max_attempts}回)とも不合格",
         "standard_attempts_log": standard.get("attempts_log"), "fallback_attempts_log": fallback_attempts,
         "cooldown_events": cooldown_events,
+        # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-
+        # ENTITY-LIKE-01(A-2、OPEN-203是正): 最終STOPPED結果のtop-level
+        # にも直近fallback attemptのresolver情報を昇格する(修正前は
+        # このtop-levelキー自体が存在せず、artifact[tts_generation_
+        # results.json]から資格発火の有無を確認できなかった、
+        # RESULT_PACKET_FXD1 2-1節)。標準経路側の情報は既にstandard dict
+        # 自体(standard_attempts_logとは別、standard.get(...)経由で
+        # 呼び出し元が参照可能)にあるため、ここではfallback側のみを
+        # 昇格する。
+        "fallback_en_pronunciation_resolver_info": (
+            fallback_attempts[-1].get("en_pronunciation_resolver_info") if fallback_attempts else None),
     }
     if enable_connected_speech_equivalence_layer:
         recovered = _local_rewrite_recovery_for_english_segment_with_fallback(
@@ -280,7 +302,24 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
     した(TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 修正1
     回目。第3の複製実装を避けるための共通化であり、ロジック自体は元の
     ループ本体をそのまま移設しただけで無変更)。"""
-    r = repro01.generate_english_component_minimal_instruction(text, out_path, tts_backend=tts_backend)
+    # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+    # LIKE-01(A-2、OPEN-203是正): 標準経路(generate_narration_snippet_
+    # verified_strict、repro01.py 293行目)はlanguage=="en"であれば
+    # opt-inフラグ無しに常にresolve_and_augment_en_style_prefix()を適用
+    # する(PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01
+    # Phase 2で確立した無条件配線)。A2のこのfallback(minimal
+    # instruction)経路だけがenable_pronunciation_resolver引数(Phase 3、
+    # 既定False)を渡していなかったため、EN resolver自体が一度も呼ばれず、
+    # 情報が「落ちる」のではなく「そもそも実行されない」実装穴になって
+    # いた(RESULT_PACKET_FXD1 2-1節)。標準経路の既存方針(無条件適用)に
+    # 合わせ、opt-inフラグを新設せずここで直接Trueを渡す(既存の
+    # enable_pronunciation_resolver既定Falseはnews_tail_fix.
+    # generate_news_narration_wide_margin[B1B技術的fallback]専用のまま
+    # 変更しない。er003_v1_b1_scaffold_audio_01/03_generate.py・
+    # er003_v1_iran01_b1_audio_fix.py・er003_v1_sing01_audio_generate.py
+    # 等のlegacy[Family A]呼び出しはこの関数を直接呼ばないため無変更)。
+    r = repro01.generate_english_component_minimal_instruction(
+        text, out_path, tts_backend=tts_backend, enable_pronunciation_resolver=True)
     if r.get("status") != "OK":
         return {"ok": False, "result": r}
     asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)

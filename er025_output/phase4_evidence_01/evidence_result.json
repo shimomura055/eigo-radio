@@ -1,0 +1,85 @@
+{
+  "management_id": "PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01",
+  "purpose": "A-2: A2 fallback経路(_run_a2_minimal_fallback_attempt)のEN resolver実発火runtime evidence",
+  "started_at": "2026-09-28T07:12:24",
+  "finished_at": "2026-09-28T07:13:21",
+  "env": {
+    "ALLOW_PRONUNCIATION_WEB_LOOKUP": "0",
+    "TTS_EXECUTION_MODE": "STANDARD"
+  },
+  "model_id_en_tts": "gemini-2.5-pro-preview-tts",
+  "voice": "Aoede",
+  "asr_provider_routing": null,
+  "standard_path_mocked": true,
+  "standard_path_mock_call_count": 1,
+  "out_path": "er025_output/phase4_evidence_01/audio_not_narration_layout/full_story_part2.wav",
+  "narration_layout_detected": false,
+  "canonical_text": "ELLE included mini bags among its fall and winter 2026 style trends. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mostly hold the basics: a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, “This is today’s mood.”\n\nWe see the season more clearly by looking at bags beside them.",
+  "result": {
+    "status": "ASR_VALIDATION_UNCERTAIN",
+    "text": "ELLE included mini bags among its fall and winter 2026 style trends. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mostly hold the basics: a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, “This is today’s mood.”\n\nWe see the season more clearly by looking at bags beside them.",
+    "path": "er025_output/phase4_evidence_01/audio_not_narration_layout/full_story_part2.wav",
+    "model": "gemini-2.5-pro-preview-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "549851e4e51edf1c2b1734f98e0f52250e15b20e74045ddebfcc991e3cfea3f9",
+    "duration_seconds": 31.121,
+    "trim_info": {
+      "raw_duration_seconds": 31.131,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 31.121,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+    "tts_backend": "structured_separation",
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "asr_verified": false,
+    "asr_text": "Elle included mini bags among its fall and winter 2026 style trends. Its examples included Kite's palm-sized evening clutch and Chanel's novelty minaudière. They mostly hold the basics, a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, this is today's mood. We see the season more clearly by looking at bags beside them.",
+    "fallback_used": true,
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "audio_classification": "TRUE_CONTENT_MISMATCH"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "audio_classification": "TRUE_CONTENT_MISMATCH"
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "Elle included mini bags among its fall and winter 2026 style trends. Its examples included Kite's palm-sized evening clutch and Chanel's novelty minaudière. They mostly hold the basics, a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, this is today's mood. We see the season more clearly by looking at bags beside them.",
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "en_pronunciation_resolver_info": {
+          "hints_applied": false,
+          "cache_hits": [],
+          "low_confidence_retry_attempted": false,
+          "low_confidence_retry_improved": false,
+          "research_meta": null
+        },
+        "attempt_audio_path": null
+      }
+    ],
+    "reason": "同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=ASR_VALIDATION_UNCERTAIN)",
+    "cooldown_events": []
+  }
+}

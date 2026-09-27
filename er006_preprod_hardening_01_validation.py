@@ -30,6 +30,12 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01
+# (A-1): entity_like判定の一般化(ledger_registered_entity_flags()内でのみ
+# 使用、read-only)。er006_pronunciation_ledger_01はstdlibのみに依存し
+# このファイル(val)を一切importしないため、module-level importでも循環
+# importは発生しない。
+import er006_pronunciation_ledger_01 as pronun_ledger
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
 import er011_b1_connected_speech_validator_01 as connected_speech
 # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、ユーザー
@@ -483,6 +489,86 @@ def capitalized_flags(text: str) -> set[str]:
 
 
 # ------------------------------------------------------------
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+# LIKE-01(A-1): entity_like判定の一般化。診断(RESULT_PACKET_FXD1 2-3節)
+# で判明した「大文字始まり」ヒューリスティックのみでは、`minaudière`の
+# ような小文字の外来語普通名詞や、Pronunciation Ledgerに既に登録済みの
+# 固有名詞(reactive cascade由来、本文中では大文字始まりでない場合がある)
+# を拾えず、同一発話内で通常の内容語誤りと同時発生するとTRUE_CONTENT_
+# MISMATCH(retry消費・安全弁なし)に格上げされてしまう問題への対応。
+# ここで拾った語は既存のcapitalized_flags()と同じ「entity_tokens」の
+# 語彙集合(diacritics除去済み小文字トークン)へ合流するだけであり、
+# 分類本体(_classify_asr_match_core)側のロジックは無変更(entity_like
+# の対象がやや広がるだけで、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH
+# 検出そのものは一切変更しない)。
+# ------------------------------------------------------------
+def loanword_flags(text: str) -> set[str]:
+    """A-1(b): 大文字始まりではない小文字の外来語(例: "Chanel's novelty
+    minaudière"のように、ブランド名ではなく物品の一般名詞として本文に
+    現れる借用語)は、capitalized_flags()の大文字始まりヒューリスティック
+    では一切拾えない。原文中で非ASCII文字(発音区別符号付きラテン文字等)
+    を1文字でも含む語は、ASR側が正しい綴りを持たない可能性が高い外来語
+    らしい語として扱い、entity_like判定の対象に含める(diacritics除去後
+    の小文字形で返す、capitalized_flagsと同じ語彙形式)。"us"/"mark"の
+    ような通常のASCII一般語は非ASCII文字を含まないため、この関数の対象に
+    は一切ならない(同形一般語ガードを別途必要としない)。"""
+    flags = set()
+    for w in _WORD_RE.findall(text):
+        if any(ord(ch) > 127 for ch in w):
+            flags.add(strip_diacritics(w.lower()))
+    return flags
+
+
+def ledger_registered_entity_flags(text: str) -> set[str]:
+    """A-1(a): Pronunciation Ledger(er006_pronunciation_ledger_01)に登録
+    済みのsurfaceが本文中に語境界一致(get_low_confidence_entries_for_
+    text()、既存の_surface_matches_textを再利用)で含まれていれば、その
+    surfaceを構成する語をentity_like判定の対象に含める。
+
+    tts_injection_disabledの有無やentity_type(cascade_unresolved_entity
+    を含む)には関わらず「登録事実」のみを使う(TTS事前注入対象からの
+    除外[er006_pronunciation_tts_injection_01.augment_style_prefix_with_
+    pronunciation()の`exclude_entity_types`フィルタ]とは独立のチャンネル
+    であり、この関数はLedgerへ一切書き込まない、read-only診断ヘルパー)。
+
+    同形一般語ガード(タスク仕様で明示的に要求): 本番Ledgerには過去の
+    reactive lookup誤登録(例: surface="us"/canonical_spelling="unknown"
+    [OPEN-207]、surface="plus"/canonical_spelling="cascade"、
+    surface="main story"/canonical_spelling="cascade"、いずれもBLOCKER-1
+    系の既知の混入)が実在し、これらのsurfaceは一般的な英単語と同形である
+    ため、無条件にentity_tokensへ加えると一般語の内容誤り検出力を損なう。
+    ガードとして、surfaceを構成する各語のうち、そのLedger entry自身が
+    記録しているcanonical_spellingの中で「大文字始まり」だった語
+    (capitalized_flags()と同一関数を再利用、判定ロジックを複製しない)
+    としても確認できる語だけをentity_tokensへ加える。上記の誤登録entry
+    はcanonical_spellingが軒並み小文字の一般語(unknown/cascade等)の
+    ため、capitalized_flags()が空集合を返し自動的に除外される
+    (khaite/KHAITE、altuzarra/Altuzarra、familymart/FamilyMart等の正規の
+    entryはcanonical_spellingが大文字始まりのため引き続き救済される)。
+    canonical_spellingが本来lowercaseの外来語普通名詞(例: canelé)である
+    場合はA-1(b)のloanword_flags()側で別途拾われるため、ここで漏れても
+    安全側(entity_like=Falseのまま、従来通りTRUE_CONTENT_MISMATCH側)。"""
+    flags: set[str] = set()
+    try:
+        entries = pronun_ledger.get_low_confidence_entries_for_text(text)
+    except Exception:
+        # read-only診断ヘルパーであり、Ledger読み込み失敗(壊れたJSON等)
+        # によってASR分類全体(retry/Human Reviewの安全動作)を止めては
+        # いけない(fail-safe: 何も追加せず従来の分類のまま)。
+        return flags
+    for entry in entries:
+        surface = (entry.get("surface") or "").strip()
+        if not surface:
+            continue
+        allowed = capitalized_flags(entry.get("canonical_spelling") or "")
+        if not allowed:
+            continue
+        surface_tokens = {strip_diacritics(w.lower()) for w in _WORD_RE.findall(surface)}
+        flags |= (surface_tokens & allowed)
+    return flags
+
+
+# ------------------------------------------------------------
 # Protected check: 数字・否定・内容語の欠落/追加/置換を検出する
 # ------------------------------------------------------------
 @dataclass
@@ -871,7 +957,18 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
                                      should_pass=True, should_retry=False,
                                      reason="冠詞等を除いた内容語の複合語分かち書き差のみ(空白除去後に一致)")
 
-    entity_tokens = capitalized_flags(canonical_text)
+    # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+    # LIKE-01(A-1): 従来の「大文字始まり」ヒューリスティック
+    # (capitalized_flags)に、(b)小文字外来語(非ASCII文字を含む語、
+    # loanword_flags)と(a)Pronunciation Ledger登録済みsurface(同形一般語
+    # ガード付き、ledger_registered_entity_flags)を合流する。いずれも
+    # entity_tokensという同一の語彙集合へ加わるだけで、以降の
+    # protected_check()・分類ロジック自体は無変更(entity_likeの対象が
+    # 広がるだけであり、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出は
+    # 従来通り)。
+    entity_tokens = (capitalized_flags(canonical_text)
+                      | loanword_flags(canonical_text)
+                      | ledger_registered_entity_flags(canonical_text))
     protected = protected_check(canon_tokens, asr_tokens, entity_tokens=entity_tokens)
 
     if not protected.passed:

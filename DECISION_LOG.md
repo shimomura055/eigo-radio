@@ -10828,3 +10828,100 @@ JPY 2.6010)
 - **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-01_05.md`、`TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-01_REPORT.md`Phase 3節。
+
+## PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01: A-2(A2 fallback経路resolver配線)+A-1(ASR entity_like判定の一般化)
+
+ユーザー正式承認(2026-09-28): 既承認仕様「初回/retry/fallback/
+regenerationを含む全Production経路でresolver適用」の未配線修正A-2
+(`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`診断`RESULT_PACKET_FXD1.md`
+で発見したOPEN-203相当の実装穴)と、ASR `entity_like`判定の一般化A-1を
+実施する委任。Status `APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ
+進めるが、Opus L2レビュー・runtime evidence精査・Regression・SSOT・
+Gitのいずれかが未完了の間は`PRODUCTION_WIRED`を宣言しない、という
+条件付きの承認。
+
+- **A-2(OPEN-203是正)**: `er003_v1_crosslevel_audio_02_common.py`
+  `_run_a2_minimal_fallback_attempt()`が`repro01.generate_english_
+  component_minimal_instruction()`を呼ぶ箇所へ`enable_pronunciation_
+  resolver=True`を明示的に追加した。標準経路
+  (`generate_narration_snippet_verified_strict`)がlanguage=="en"であれば
+  既に無条件でresolverを適用している(Phase 2で確立した既存方針)ことに
+  合わせ、新規opt-inフラグ・独自スイッチは追加していない。既存の
+  `enable_pronunciation_resolver`既定Falseはnews_tail_fix経由のB1B技術的
+  fallback専用のまま変更せず、legacy(B1 scaffold/iran01/sing01等)呼び
+  出し元はこの関数を直接呼ばないため無変更。あわせて
+  `generate_english_segment_with_fallback()`の`fallback_attempts_log`
+  各entryと最終STOPPED結果のtop-level(新規キー`fallback_en_
+  pronunciation_resolver_info`)へ`en_pronunciation_resolver_info`を
+  伝播するようにした(修正前はfallback経路で情報が戻り値へ一切現れず、
+  artifactからresolver発火の有無を確認できなかった)。
+- **A-1(ASR `entity_like`判定の一般化)**: `er006_preprod_hardening_01_
+  validation.py`の`_classify_asr_match_core()`が使う`entity_tokens`を、
+  従来の`capitalized_flags()`(大文字始まり)単独から、新設した
+  `loanword_flags()`(非ASCII文字を含む小文字外来語、例:
+  "minaudière")と`ledger_registered_entity_flags()`(Pronunciation
+  Ledger登録済みsurface、語境界一致)の3つの合流集合へ拡張した。
+  `ledger_registered_entity_flags()`は`tts_injection_disabled`の有無や
+  `entity_type`(`cascade_unresolved_entity`含む)に関わらず「登録事実」
+  のみを使うが、同形一般語ガード(Ledger entry自身の`canonical_
+  spelling`が大文字始まりの語として`capitalized_flags()`で確認できる
+  語のみを採用)により、surface="us"/canonical_spelling="unknown"
+  (OPEN-207)のような既知の誤登録は自動的に除外される。効果は
+  「entity不一致がTRUE_CONTENT_MISMATCHへ格上げされず、既存のentity_
+  only→ASR_VALIDATION_UNCERTAIN→cascade/Human Review経路へ回る」までで
+  あり、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH検出力(既存の
+  安全側動作)は無変更。
+- **runtime evidence**(Guardrail¥15、evidenceモード、Human Review Lock
+  解除なし): small_bag A2 `full_story_part2`の実canonical text
+  (Stage 3eで観測されたkhaite/minaudière同時誤認識)を使い、(1)A-2の
+  実発火をProduction相当の呼び出しチェーン(`generate_english_segment_
+  with_fallback()`、標準経路のみmockしfallback経路へ強制進入、実TTS1回
+  +実Primary ASR1回+実Secondary ASR[Azure]2回)で確認した
+  (`er025_pronunciation_resolution_phase4_a2_fallback_evidence_01_
+  run.py`、out_pathを標準narration層構造にわざと従わせないことで
+  Human Review Lock機構を構造的に無効化、Production artifact/Lock
+  stateは非上書き)。cache-only+`cascade_unresolved_entity`除外設計に
+  より今回のkhaite自体はTTS注入されないが、`en_pronunciation_resolver_
+  info`(`hints_applied=False`)がfallback結果へ実際に伝播することを
+  確認した。(2)A-1による再分類は、この実transcript(Stage 3e artifact)
+  を使ったunit testで、修正前はTRUE_CONTENT_MISMATCHだった判定が
+  修正後はASR_VALIDATION_UNCERTAIN(entity_only、khaite/minaudière両方
+  entity_like=True)へ変わることを確認した(`er006_pronunciation_
+  phase4_entity_like_test_01.py`
+  `test_small_bag_a2_full_story_part2_real_asr_transcript`)。
+- **test/回帰**: 新規unit test 15件(A-1、`er006_pronunciation_phase4_
+  entity_like_test_01.py`、regression自動探索対象)、既存の関連test
+  201件(er021/er012/er011/er025/er007/er020/er008系crosslevel関連)を
+  個別実行し全PASS。`run_project_regression.py`:
+  `collected=3418 passed=3409 failed=6 errors=3`。failed6件・errors2件は
+  既知baseline(`er003_test_p2j_investigate`3件+1件・`er003_test_bad`1件・
+  `er011_open112_trend_synthesis_mode_production_wiring_01_test_01`3件)と
+  一致。errors3件目(`er012_e_family_entertainment_two_level_runner_
+  test_01.TtsModeCliTests.test_batch_mode_without_reason_errors_via_
+  subprocess`)は本タスクで変更したいずれのファイルもimportしておらず、
+  実行環境のcp932コンソールencoding起因の既存subprocess読み取りエラー
+  (本タスク無関係の環境依存flake)であることを個別実行で確認した。
+  新規のcode regressionは0件。
+- **反映範囲**: `er003_v1_crosslevel_audio_02_common.py`(A-2)、
+  `er006_preprod_hardening_01_validation.py`(A-1)、`er006_pronunciation_
+  phase4_entity_like_test_01.py`(新規test)、`er025_pronunciation_
+  resolution_phase4_a2_fallback_evidence_01_run.py`(新規runtime
+  evidence script)、`er025_output/phase4_evidence_01/`(evidence
+  artifact)、`CURRENT_SPEC.md`(固有名詞読み解決節へPhase 4追記)、
+  `OPEN_ITEMS.md`(OPEN-203を`CLOSED`、OPEN-207へ関連緩和の追記)、
+  `docs/pm/REPORT_LEDGER.md`、`PRONUNCIATION-RESOLUTION-PHASE-4-A2-
+  FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_REPORT.md`(新規)、本エントリ
+  新設。
+- **STOP該当**: 無し(guardrail¥15に対し実測はAzure Secondary ASR分の
+  みcost_logger記録[2回、31秒×2、既知単価で軽微]、Gemini TTS・Primary
+  ASRは既存cost_loggerの記録対象外だが過去実績[OPEN-201: 同モデル
+  13segment¥10.49≈¥0.8/segment]からGuardrail内と判断)。
+- **未完了・Fable判断待ち**: Opus L2レビュー実施要否・タイミング、
+  `PRODUCTION_WIRED`最終判定、khaite/altuzarra/Toteme等3 segment
+  (small_bag A2 `full_story_part2`/`full_story_part3`・small_bag B1B
+  `full_story_part2`)の再Lock解除・再実行要否(別委任、Human Review
+  Lockの解除は本タスクでは行っていない)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_PRONUNCIATION-
+  RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_01.md`、
+  `docs/pm/RESULT_PACKET_FXD1.md`、`PRONUNCIATION-RESOLUTION-PHASE-4-
+  A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_REPORT.md`。
