@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import hashlib
 
+import er003_audio_tts_asr_safety as safety
 import er005_cost_logger as cl
 import er003_v1_en_direct_vfl_01_generate as vfl01
 
@@ -73,6 +74,23 @@ REVISION_INSTRUCTIONS = {
     "r1": "この記事を、事実関係は変えずに、もっとエンターテインメント性の高い記事に修正してください。",
     "r2": "この記事を、事実関係は変えずに、さらにもっとエンターテインメント性の高い記事に修正してください。",
 }
+
+# TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 1、
+# 2026-09-27): R0_PROMPT/DEVELOPER_MESSAGE/REVISION_INSTRUCTIONSは
+# Trialからの逐語コピー(verbatim_shas()で監査)であり、文言自体は変更
+# しない。この予防ブロックは、build_original_prompt()・r1/r2
+# instructionの組み立て時に別途追記する(既存の逐語コピーは無変更)。
+SYMBOL_PREVENTION_BLOCK_JA = (
+    "\n\n【音声化できない記号の禁止】\nこの記事は音声(TTS)で読み上げられます。"
+    "タイトル・本文で以下の記号を使用しないでください:\n"
+    "- 波ダッシュ「〜」「～」は、具体的な内容を省略した言い換えとして使わないでください。"
+    "書くべき内容を実際に書いてください。\n"
+    "- 三点リーダー「…」「……」は使わないでください。間を置きたい場合は句点・読点で表現してください。\n"
+    "- スラッシュ「/」は使わないでください。「と」「または」で書いてください。\n"
+    "- 括弧「()」「（）」「[]」は使わないでください(鉤括弧「」は対象外です)。\n"
+    "- コロン「:」「：」・セミコロン「;」「；」は使わないでください。\n"
+    "- URLやメールアドレスは書かないでください。絵文字も使わないでください。"
+)
 
 
 def sha256_text(text: str) -> str:
@@ -125,6 +143,7 @@ def build_original_prompt(storyline_line: str, selected_fact_brief_text: str,
                  for line in lines]
     prompt = "\n".join(new_lines)
     prompt += "\n\n[ニュース]\n" + selected_fact_brief_text
+    prompt += SYMBOL_PREVENTION_BLOCK_JA
     if must_fix:
         prompt += "\n\n" + build_must_fix_block(must_fix, full_ledger_text or "")
     return prompt
@@ -273,12 +292,43 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
             "must_fix_used": must_fix_used, "final_status": final_status,
         }
 
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+    # 2026-09-27): Fact Checkとは独立に(full_ledger_text=Noneの後方互換
+    # 呼び出しでも常に)、音声化禁止記号を検出する。1回だけmust-fixで
+    # 再生成し、なお解消しなければJAFactCheckStopErrorでSTOPする(既存の
+    # Fact Check must-fix機構と同型のretry 1回→再Check→STOPパターン)。
+    original_symbol_findings = safety.detect_prohibited_symbols(original_text, language="ja")
+    if safety.symbol_gate_requires_stop(original_symbol_findings):
+        print(f"[JA-WRITER][ja_original] 音声化禁止記号を検出。must-fixで1回だけ再生成します"
+              f"(count={len(original_symbol_findings)})...")
+        symbol_prompt = build_original_prompt(storyline_line, selected_fact_brief_text) + (
+            "\n\n" + safety.build_symbol_violation_prompt_note(original_symbol_findings))
+        response_sym = call_fresh(client, DEVELOPER_MESSAGE, symbol_prompt, WRITER_EFFORT,
+                                   "ja_original_symbol_must_fix")
+        rewritten_sym = response_sym.output_text.strip()
+        recheck_findings = safety.detect_prohibited_symbols(rewritten_sym, language="ja")
+        if safety.symbol_gate_requires_stop(recheck_findings):
+            raise JAFactCheckStopError(
+                stage="original_symbol",
+                message="[STOP] JA_SYMBOL_CHECK_STOP: JA Original音声化禁止記号Check、"
+                        f"must-fix Rewrite後も禁止記号が残りました(findings={recheck_findings})。"
+                        "本文を手で直さずSTOPします。",
+                rejected_text=rewritten_sym, checks=[], must_fix_used=original_symbol_findings,
+            )
+        original_text = rewritten_sym
+        stages["original"] = {
+            **stages["original"], "text": original_text, "response_id": response_sym.id,
+            "model": response_sym.model, "symbol_must_fix_applied": True,
+            "symbol_findings": original_symbol_findings,
+            "pre_symbol_must_fix_response_id": stages["original"]["response_id"],
+        }
+
     prev_id = stages["original"]["response_id"]
     prev_text = original_text
     chain_method = None
 
     for stage_key in ("r1", "r2"):
-        instruction = REVISION_INSTRUCTIONS[stage_key]
+        instruction = REVISION_INSTRUCTIONS[stage_key] + SYMBOL_PREVENTION_BLOCK_JA
         used_method = None
         response = None
         if chain_method != "fallback_full_text":
@@ -368,6 +418,53 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
         fact_checks["r2"] = {
             "checks": checksR2_log, "must_fix_applied": must_fix_applied_r2,
             "must_fix_used": must_fix_used_r2, "final_status": finalR2_status,
+        }
+
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+    # 2026-09-27): originalと同じ理由で、R2(=最終final_text、japanese_
+    # titleの抽出元)にもFact Checkと独立に音声化禁止記号Validatorを適用
+    # する(Meta STOP実例のA2 japanese_title「…」は、まさにこのR2最終
+    # テキストのtitleから抽出されたもの)。
+    r2_final_text = stages["r2"]["text"]
+    r2_symbol_findings = safety.detect_prohibited_symbols(r2_final_text, language="ja")
+    if safety.symbol_gate_requires_stop(r2_symbol_findings):
+        print(f"[JA-WRITER][ja_r2] 音声化禁止記号を検出。R1からのrevisionとしてmust-fixで"
+              f"1回だけ再生成します(count={len(r2_symbol_findings)})...")
+        r2_symbol_instruction = (
+            REVISION_INSTRUCTIONS["r2"] + SYMBOL_PREVENTION_BLOCK_JA + "\n\n"
+            + safety.build_symbol_violation_prompt_note(r2_symbol_findings)
+        )
+        r1_response_id_for_symbol = stages["r1"]["response_id"]
+        used_method_sym = None
+        response_sym = None
+        try:
+            response_sym = call_with_previous_response_id(
+                client, r2_symbol_instruction, WRITER_EFFORT, r1_response_id_for_symbol, "ja_r2_symbol_must_fix")
+            used_method_sym = "previous_response_id"
+        except Exception as exc:  # noqa: BLE001 - 技術的失敗時のみフォールバック
+            print(f"[WARN][ja_writer] previous_response_id失敗、フォールバックへ切替"
+                  f"(ja_r2_symbol_must_fix): {exc}")
+            response_sym = None
+        if response_sym is None:
+            fallback_user = f"以下の記事:\n\n{stages['r1']['text']}\n\n{r2_symbol_instruction}"
+            response_sym = call_fresh(client, DEVELOPER_MESSAGE, fallback_user, WRITER_EFFORT,
+                                       "ja_r2_symbol_must_fix")
+            used_method_sym = "fallback_full_text"
+        rewritten_r2_sym = response_sym.output_text.strip()
+        recheck_r2_findings = safety.detect_prohibited_symbols(rewritten_r2_sym, language="ja")
+        if safety.symbol_gate_requires_stop(recheck_r2_findings):
+            raise JAFactCheckStopError(
+                stage="r2_symbol",
+                message="[STOP] JA_SYMBOL_CHECK_STOP: JA R2音声化禁止記号Check、"
+                        f"must-fix Rewrite後も禁止記号が残りました(findings={recheck_r2_findings})。"
+                        "本文を手で直さずSTOPします。",
+                rejected_text=rewritten_r2_sym, checks=[], must_fix_used=r2_symbol_findings,
+            )
+        stages["r2"] = {
+            **stages["r2"], "text": rewritten_r2_sym, "response_id": response_sym.id,
+            "model": response_sym.model, "symbol_must_fix_applied": True,
+            "symbol_findings": r2_symbol_findings, "symbol_must_fix_chain_method": used_method_sym,
+            "pre_symbol_must_fix_response_id": stages["r2"]["response_id"],
         }
 
     result = {

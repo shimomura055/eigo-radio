@@ -75,6 +75,18 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): full_story/point/in_one_line等、本関数を経由する
+    # 全segmentへ適用する。呼び出し側がtts_safe_news_enでNormalizerを
+    # 適用済みの前提で、通過後になお残る禁止記号を検出する。
+    symbol_findings = safety.detect_prohibited_symbols(text, language="en")
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []

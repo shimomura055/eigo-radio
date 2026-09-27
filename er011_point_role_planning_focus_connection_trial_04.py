@@ -89,9 +89,11 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 
 import er002_ja_web_research_r3 as r3
+import er003_audio_tts_asr_safety as safety
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_n3_01_articles_generate as prod_gen
@@ -286,10 +288,26 @@ def run_one_pattern_connected(client, theme_id: str, label: str, prompt: str, ve
                 json.dump(value_qa_result, f, ensure_ascii=False, indent=2, default=str)
             value_qa_flagged = value_qa_result["status"] == "NG"
 
-        still_flagged = lexical_flagged or value_qa_flagged
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+        # 2026-09-27): Writer出力(article_text)直後に音声化禁止記号を検出
+        # する。既存のPoint overlap/value QA retryループへ同じ「NG理由を
+        # promptへ追記して記事全体を再生成する」パターンで接続する(新しい
+        # Retry上限・新しいLockは作らない、POINT_OVERLAP_ARTICLE_RETRY_MAXを
+        # そのまま共有する)。Markdown見出し行(#/##/###)はスキャン対象から
+        # 除外する(見出し自体は本文Writer出力を音声化前に別工程
+        # [sc.clean_heading/point_headings.generate、Layer 4で別途Gate済み]
+        # が処理するためであり、旧世代の「## In one line…」のような見出し
+        # 装飾[Phase 1 recon 1.9節で確認済み、直近350件の本文中では0件]を
+        # 誤検知しないための除外)。
+        body_only_for_symbol_scan = re.sub(r"^#{1,4}\s.*$", "", article_text, flags=re.MULTILINE)
+        symbol_findings = safety.detect_prohibited_symbols(body_only_for_symbol_scan, language="en")
+        symbol_flagged = safety.symbol_gate_requires_stop(symbol_findings)
+
+        still_flagged = lexical_flagged or value_qa_flagged or symbol_flagged
         log_entry = {
             "attempt": retry_attempt, "qa_status": point_qa_result["status"], "flagged": still_flagged,
             "lexical_flagged": lexical_flagged, "value_qa_flagged": value_qa_flagged,
+            "symbol_flagged": symbol_flagged, "symbol_findings": symbol_findings,
             "report": overlap_report,
             "value_qa_status": value_qa_result["status"] if value_qa_result else None,
         }
@@ -298,26 +316,40 @@ def run_one_pattern_connected(client, theme_id: str, label: str, prompt: str, ve
             break
         retry_attempt += 1
         print(f"[N3-01][{theme_id}] {label}: Point overlap/value QA NG"
-              f"(lexical={lexical_flagged}, value_qa={value_qa_flagged})。"
+              f"(lexical={lexical_flagged}, value_qa={value_qa_flagged}, symbol={symbol_flagged})。"
               f"Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します"
               f"(article retry {retry_attempt}/{prod_gen.POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
 
-        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)
-        point_overlap_result = {
-            "point_one": overlap_report["point_one"]["before_overlap"],
-            "point_two": overlap_report["point_two"]["before_overlap"],
-        }
-        diagnostic_prompt = prod_gen.build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)。
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27
+        # 修正): lexical_flaggedがFalseの場合(value_qa_flagged/symbol_flagged
+        # のみでretryへ入った場合)、overlap_report["point_one"]["before_
+        # overlap"]は「重複なし」の結果でありbuild_diagnostic_retry_prompt
+        # が前提とする診断用フィールド(shared_words等)を持たない場合がある
+        # ため、lexical_flaggedがTrueの場合のみlexical診断を組み込む
+        # (既存のoverlap診断機構自体は無変更、呼び出し条件のみ修正)。
+        point_overlap_result = None
+        if lexical_flagged:
+            point_overlap_result = {
+                "point_one": overlap_report["point_one"]["before_overlap"],
+                "point_two": overlap_report["point_two"]["before_overlap"],
+            }
+            diagnostic_prompt = prod_gen.build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        else:
+            diagnostic_prompt = prompt
         if value_qa_flagged:
             diagnostic_prompt = diagnostic_prompt + "\n\n" + point_planning.build_value_qa_diagnostic_note(
                 value_qa_result)
+        if symbol_flagged:
+            diagnostic_prompt = diagnostic_prompt + "\n\n" + prod_gen.build_symbol_violation_diagnostic_note(
+                symbol_findings)
         log_entry["diagnostic_used"] = {
-            "point_one_score": point_overlap_result["point_one"]["overlap_ratio"],
-            "point_one_flagged": point_overlap_result["point_one"]["flagged"],
-            "point_two_score": point_overlap_result["point_two"]["overlap_ratio"],
-            "point_two_flagged": point_overlap_result["point_two"]["flagged"],
+            "point_one_score": point_overlap_result["point_one"]["overlap_ratio"] if point_overlap_result else None,
+            "point_one_flagged": point_overlap_result["point_one"]["flagged"] if point_overlap_result else None,
+            "point_two_score": point_overlap_result["point_two"]["overlap_ratio"] if point_overlap_result else None,
+            "point_two_flagged": point_overlap_result["point_two"]["flagged"] if point_overlap_result else None,
             "point_one_vs_point_two_flagged": overlap_report.get("point_one_vs_point_two", {}).get("flagged"),
-            "value_qa_flagged": value_qa_flagged,
+            "value_qa_flagged": value_qa_flagged, "symbol_flagged": symbol_flagged,
         }
 
         # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Diagnostic Full Retryは
@@ -641,6 +673,7 @@ def run_one_pattern_connected(client, theme_id: str, label: str, prompt: str, ve
         "point_overlap_article_retry_attempts": retry_attempt,
         "directional_fact_precheck_status": directional_precheck_status,
     }
+
 
 
 if __name__ == "__main__":

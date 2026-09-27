@@ -51,6 +51,7 @@ import re
 import unicodedata
 from typing import Any, Callable, Optional
 
+import er003_audio_tts_asr_safety as safety
 import er003_key_words_min_unit as p2g
 import er003_key_words_production as prod
 import er003_ja_to_en_translation as er003
@@ -163,28 +164,34 @@ _WORD_TOKEN_RE = p2g._WORD_TOKEN_RE
 # 表示用glossから、決定論的な規則変換のみでTTS読み上げ用テキストを導出する
 # (LLMは使わない)。
 #
-# 変換対象は「文頭、または読点「、」の直後にある「～」「〜」」のみ
-# (verb+目的語省略型のplaceholder、例: 「～を示す」)。それ以外の位置の
-# 「～」「〜」(例: 数値placeholder型「ソロ旅行を～％とする」、範囲表記
-# 「中～高強度」)、および「…」は一切変換しない。これらは変換せずに
-# `er003_audio_tts_asr_safety.detect_gloss_placeholder_notation`ゲートへ
-# そのまま渡し、既存どおりTTS呼び出し前にブロックさせる(ゲートを弱める
-# 変更ではない、OPEN-117-KEYPHRASE-DISPLAY-TTS-SEPARATION-TRIAL-01/-02で
-# Trial検証済みの規則をそのままProductionへ移植したもの)。
-_LEADING_TILDE_RE = re.compile(r"(?:^|(?<=、))[～〜]")
-
-# TTS読み上げ用の言い換え語。「～」「〜」1文字をこの語で置換する
-# (例: 「～を示す」→「なになにを示す」)。
-_TILDE_TTS_REPLACEMENT = "なになに"
+# TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Phase 2、
+# Fableレビュー2026-09-27)で設計変更: 当初(2026-09-06)は「文頭、または
+# 読点「、」の直後にある「～」「〜」」のみを変換し、それ以外の位置
+# (数値placeholder型「ソロ旅行を～％とする」、範囲表記「中～高強度」)は
+# 変換せず既存gateでブロックする非対称設計だった。ユーザー決定
+# (「placeholder用途は位置を問わず『なになに』、OPEN-117を文中ケースまで
+# 一般化」)により、この非対称設計は不採用となった。対策の発端自体が
+# Key Phrase glossの文中「〜」(例:「結局〜ではないと分かる」)であるため、
+# 本関数も全位置の「～」「〜」を「なになに」へ変換する(範囲表記・数値
+# placeholder型も区別しない。個別の意味判断はしない方針、実例が出た場合は
+# 別途報告する)。実際の変換規則は`er003_audio_tts_asr_safety.
+# normalize_tilde_placeholder_ja()`(本文Writer出力等、他の全経路と共通の
+# 規則)へ委譲し、Key Phrase専用の別規則を維持しない(重複実装を避ける)。
+# 「…」は本関数では変換しない(引き続き無変換のまま
+# `detect_gloss_placeholder_notation`ゲートへ渡す設計を維持する)。ただし
+# `japanese_gloss_tts`は後段で`generate_charon_japanese_with_reading_
+# safety`内の`tts_safe_ja()`を必ず経由するため、そちらの共通Normalizerが
+# 「…」を句読点へ変換する(TTS呼び出し直前の最終防御はそちらが担う)。
 
 
 def convert_display_gloss_to_tts_text(display_gloss: Optional[str]) -> str:
     """表示用gloss(japanese_gloss)から、TTS読み上げ用テキスト
-    (japanese_gloss_tts)を決定論的な規則変換だけで導出する。文頭・読点
-    直後の「～」「〜」だけを「なになに」へ置換し、それ以外は無変更で
-    返す(display_gloss自体に「～」「〜」「…」が全く含まれない場合は
-    display_glossとの完全一致になる)。"""
-    return _LEADING_TILDE_RE.sub(_TILDE_TTS_REPLACEMENT, display_gloss or "")
+    (japanese_gloss_tts)を決定論的な規則変換だけで導出する。「～」「〜」は
+    位置を問わず全て「なになに」へ置換する(2026-09-27、全位置変換へ一般化、
+    上記コメント参照)。「…」は本関数では無変換のまま返す(display_gloss
+    自体に「～」「〜」が全く含まれない場合はdisplay_glossとの完全一致に
+    なる)。"""
+    return safety.normalize_tilde_placeholder_ja(display_gloss or "")
 
 
 def load_prompt_template(path: str = PROMPT_TEMPLATE_PATH) -> str:

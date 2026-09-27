@@ -76,6 +76,12 @@ class Gate4SourceReconstructionTests(unittest.TestCase):
         "normalize_article_formatting", "POINT_OVERLAP_ARTICLE_RETRY_MAX", "POINT_TARGET_LOWER",
         "POINT_TARGET_UPPER", "POINT_TOLERANCE_LOWER", "POINT_TOLERANCE_UPPER", "TOTAL_SOFT_LOWER",
         "TOTAL_SOFT_UPPER", "REASONING_EFFORT",
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27
+        # 追加): Production run_one_patternへ新設した音声化禁止記号
+        # Validator(Layer 2)のprod_gen内部ヘルパー。`safety.*`はモジュール
+        # 参照(r3/vfl01/point_planning等と同じ既存パターン)であり、本
+        # ファイルも同名でimport済みのため置換対象に含めない。
+        "build_symbol_violation_diagnostic_note",
     ]
 
     def _reconstruct(self) -> tuple:

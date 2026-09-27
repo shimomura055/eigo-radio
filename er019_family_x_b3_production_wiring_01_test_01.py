@@ -245,13 +245,13 @@ class JaWriterChainTests(unittest.TestCase):
         client.responses.create.side_effect = [
             original_resp,
             RuntimeError("previous_response_id not supported"),
-            self._mock_response("Revision1 body (fallback).", "r_1b"),
-            self._mock_response("Revision2 body (fallback).", "r_2b"),
+            self._mock_response("Revision1 body fallback.", "r_1b"),
+            self._mock_response("Revision2 body fallback.", "r_2b"),
         ]
         result = jaw.run_ja_writer_o_r1_r2(client, "Storyline.", "Brief.")
         self.assertEqual(result["chain_method"], "fallback_full_text")
         self.assertEqual(result["stages"]["r1"]["chain_method"], "fallback_full_text")
-        self.assertEqual(result["final_text"], "Revision2 body (fallback).")
+        self.assertEqual(result["final_text"], "Revision2 body fallback.")
 
 
 class RunnerStageOrderTests(unittest.TestCase):

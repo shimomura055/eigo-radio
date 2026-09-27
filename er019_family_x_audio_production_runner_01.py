@@ -326,6 +326,43 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str])
 _BODY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2", "full_story_part3")
 
 
+# ============================================================
+# TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27):
+# 前回run(同一out_dir)でstatus=="OK"だったsegment/Key Phrase componentは
+# TTS呼び出しをスキップして再利用する(既存Gateの再判定自体は回避しない
+# ——前回STOPPEDだったsegmentは対象外のまま常にgenerate_fn()で再実行し、
+# 新Normalizer/GateでOKになるかを実際に確認する。wavファイルが実在しない
+# 場合も再実行する)。
+# ============================================================
+def _load_cached_tts_results(out_dir: str) -> dict | None:
+    cache_path = f"{out_dir}/audit/tts_generation_results.json"
+    if not os.path.exists(cache_path):
+        return None
+    try:
+        return load_json(cache_path)
+    except Exception:
+        return None
+
+
+def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn):
+    cached_result = (cached.get("segments") or {}).get(name) if cached else None
+    if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
+        reused = dict(cached_result)
+        reused["reused_from_previous_run"] = True
+        return reused
+    return generate_fn()
+
+
+def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: str, generate_fn):
+    kp_cache = (cached.get("key_phrases") or {}) if cached else {}
+    cached_result = (kp_cache.get(str(rank)) or kp_cache.get(rank) or {}).get(role) if kp_cache else None
+    if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
+        reused = dict(cached_result)
+        reused["reused_from_previous_run"] = True
+        return reused
+    return generate_fn()
+
+
 def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
     """既存Production低レベル関数(voice01.generate_charon_english/
     news_tail_fix.generate_news_narration_wide_margin)をそのまま呼ぶ。
@@ -340,23 +377,27 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
 
     shared_narration.ensure_all_shared_narration_b1(narration_dir)
+    _cached = _load_cached_tts_results(out_dir)
 
     results = {}
     topic_intro_text = f"Today's topic is {parts['title']}."
     with cl.segment_context("topic_intro"):
-        results["topic_intro"] = voice01.generate_charon_english(
-            n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
-            f"{narration_dir}/topic_intro.wav",
-            enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for("topic_intro"))
+        results["topic_intro"] = _generate_or_reuse(
+            _cached, "topic_intro", f"{narration_dir}/topic_intro.wav", lambda: voice01.generate_charon_english(
+                n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
+                f"{narration_dir}/topic_intro.wav",
+                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
+                    "topic_intro")))
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
         with cl.segment_context(name):
-            results[name] = voice01.generate_charon_english(
-                n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
-                style_prefix_override=n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True,
-                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name))
+            results[name] = _generate_or_reuse(
+                _cached, name, f"{narration_dir}/{name}.wav", lambda text=text, name=name: voice01.generate_charon_english(
+                    n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                    style_prefix_override=n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True,
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name)))
         results[name]["canonical_text"] = text
 
     for name, text in (
@@ -364,14 +405,16 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
         ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
     ):
         with cl.segment_context(name):
-            results[name] = news_tail_fix.generate_news_narration_wide_margin(
-                n3_tts.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
-                disfluency_qa=(name == "in_one_line"),
-                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
-                enable_repetition_qa=(name in _BODY_SEGMENT_NAMES))
+            results[name] = _generate_or_reuse(
+                _cached, name, f"{narration_dir}/{name}.wav",
+                lambda text=text, name=name: news_tail_fix.generate_news_narration_wide_margin(
+                    n3_tts.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
+                    disfluency_qa=(name == "in_one_line"),
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)))
         results[name]["canonical_text"] = text
 
-    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir)
+    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached)
 
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese"].get("status")}
@@ -381,7 +424,7 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
     return {"segment_status": all_status, "key_phrase_status": kp_status}
 
 
-def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str) -> dict:
+def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     kp_results = {}
     for item in kp_items:
@@ -389,12 +432,17 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str) -> dict:
         used_form = item["used_form"]
         ja_gloss_tts, ja_gloss_tts_fallback = n3_tts.resolve_key_phrase_ja_gloss_tts(item)
         with cl.segment_context(f"kp{rank}_english"):
-            en_r = shared_narration.ensure_key_phrase_english_component(
-                n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+            en_r = _generate_or_reuse_kp(
+                cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
+                lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav"))
         with cl.segment_context(f"kp{rank}_japanese"):
-            ja_r = n3_tts.generate_charon_japanese_with_reading_safety(
-                ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_charon.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
-                known_key_phrase_terms=[used_form])
+            ja_r = _generate_or_reuse_kp(
+                cached, rank, "japanese", f"{narration_dir}/kp{rank}_ja_charon.wav",
+                lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
+                rank=rank: n3_tts.generate_charon_japanese_with_reading_safety(
+                    ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_charon.wav",
+                    n3_tts.expected_substring_ja(ja_gloss_tts), known_key_phrase_terms=[used_form]))
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese": ja_r}
@@ -414,28 +462,36 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
     kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
 
     shared_narration.ensure_all_shared_narration_a2(narration_dir)
+    _cached = _load_cached_tts_results(out_dir)
 
     results = {}
     topic_intro_tts_title = parts.get("title_tts", parts["title"])
     topic_intro_text = f"Today's topic is {parts['title']}."
     topic_intro_tts_text = f"Today's topic is {topic_intro_tts_title}."
     with cl.segment_context("topic_intro"):
-        results["topic_intro"] = crosslevel_common.generate_english_segment_with_fallback(
-            n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text)),
-            f"{narration_dir}/topic_intro.wav", n3_tts.first_words(parts["title"], 3), max_extra_chars=30,
-            enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for("topic_intro"))
+        results["topic_intro"] = _generate_or_reuse(
+            _cached, "topic_intro", f"{narration_dir}/topic_intro.wav",
+            lambda: crosslevel_common.generate_english_segment_with_fallback(
+                n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text)),
+                f"{narration_dir}/topic_intro.wav", n3_tts.first_words(parts["title"], 3), max_extra_chars=30,
+                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
+                    "topic_intro")))
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     with cl.segment_context("japanese_title"):
-        results["japanese_title"] = n3_tts.generate_a2_japanese_with_reading_safety(
-            japanese_title, f"{narration_dir}/japanese_title.wav",
-            n3_tts.expected_substring_ja(japanese_title), max_extra_chars=30)
+        results["japanese_title"] = _generate_or_reuse(
+            _cached, "japanese_title", f"{narration_dir}/japanese_title.wav",
+            lambda: n3_tts.generate_a2_japanese_with_reading_safety(
+                japanese_title, f"{narration_dir}/japanese_title.wav",
+                n3_tts.expected_substring_ja(japanese_title), max_extra_chars=30))
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
         with cl.segment_context(name):
-            results[name] = n3_tts.generate_a2_japanese_with_reading_safety(
-                text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text))
+            results[name] = _generate_or_reuse(
+                _cached, name, f"{narration_dir}/{name}.wav",
+                lambda text=text: n3_tts.generate_a2_japanese_with_reading_safety(
+                    text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text)))
 
     for name, text in (
         ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
@@ -444,15 +500,17 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
         tts_input = n3_tts.tts_safe_news_en(text)
         sub = n3_tts.first_words(text)
         with cl.segment_context(name):
-            results[name] = n3_tts.generate_a2_segment_with_slowdown(
-                tts_input, f"{narration_dir}/{name}.wav", sub,
-                style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
-                disfluency_qa=(name == "in_one_line"),
-                enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
-                enable_repetition_qa=(name in _BODY_SEGMENT_NAMES))
+            results[name] = _generate_or_reuse(
+                _cached, name, f"{narration_dir}/{name}.wav",
+                lambda tts_input=tts_input, sub=sub, name=name: n3_tts.generate_a2_segment_with_slowdown(
+                    tts_input, f"{narration_dir}/{name}.wav", sub,
+                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    disfluency_qa=(name == "in_one_line"),
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)))
         results[name]["canonical_text"] = text
 
-    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir)
+    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached)
 
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
@@ -462,7 +520,7 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
     return {"segment_status": all_status, "key_phrase_status": kp_status}
 
 
-def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str) -> dict:
+def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     kp_results = {}
     for i, item in enumerate(kp_items, start=1):
@@ -470,12 +528,17 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str) -> dict:
         used_form = item["used_form"]
         ja_gloss_tts, ja_gloss_tts_fallback = n3_tts.resolve_key_phrase_ja_gloss_tts(item)
         with cl.segment_context(f"kp{rank}_english"):
-            en_r = shared_narration.ensure_key_phrase_english_component(
-                n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav")
+            en_r = _generate_or_reuse_kp(
+                cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
+                lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav"))
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
-            ja_r = n3_tts.generate_a2_japanese_with_reading_safety(
-                ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
-                max_extra_chars=30, known_key_phrase_terms=[used_form])
+            ja_r = _generate_or_reuse_kp(
+                cached, rank, "japanese_meaning", f"{narration_dir}/meaning_{i}.wav",
+                lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
+                i=i: n3_tts.generate_a2_japanese_with_reading_safety(
+                    ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
+                    max_extra_chars=30, known_key_phrase_terms=[used_form]))
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}

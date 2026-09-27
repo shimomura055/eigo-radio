@@ -254,6 +254,21 @@ def generate_narration_snippet_verified_strict(
     # (STOPPEDとは区別し、Human Review対象として扱う)。日本語(ja)は
     # 既存のphonetic_verdict方式を維持する(このvalidatorは英語専用の
     # ため)。
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): Key Phrase英語Component(generate_key_phrase_
+    # component_verified)・A2英語segment(generate_english_segment_with_
+    # fallback経由)・A2日本語meaning_N等、本関数を経由する全経路へ適用
+    # する。呼び出し側でtts_safe_*によるNormalizer適用済みの前提で、
+    # 通過後になお残る禁止記号を検出する。%$¥はEnglishのみobserve専用
+    # (ブロックしない)。
+    symbol_findings = safety.detect_prohibited_symbols(text, language=language)
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     asr_language = "en-US" if language == "en" else "ja-JP"
     max_len = len(text) + max_extra_chars
     attempts_log = []

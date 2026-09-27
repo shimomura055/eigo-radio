@@ -45,6 +45,18 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
              # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Point見出しはPRODUCTION
              # 承認済みのdisfluency QA対象segmentのため既定True。
              disfluency_qa: bool = True) -> dict:
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): Point見出し(point_one_heading/point_two_heading)へ
+    # 適用する。呼び出し側がtts_safe_enでNormalizerを適用済みの前提で、
+    # 通過後になお残る禁止記号を検出する。
+    symbol_findings = safety.detect_prohibited_symbols(text, language="en")
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []

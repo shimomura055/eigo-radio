@@ -382,6 +382,38 @@ canonical text自体は変更しない)。
 
 ---
 
+### Fable修正(2026-09-27): 4(c)節「意図的な非対称設計」の撤回と実装内容
+
+Phase 2実装はFableの明示的な設計修正(9項目のうち#1)により、上記
+4(c)節1.が提案した「Key Phrase gloss=既存の保守的ルール維持/本文=新規
+汎用ルール」という**非対称設計を撤回**した。実際の採用方針は次の通り。
+
+1. 〜/～は**全位置で**「なになに」に統一変換する(Key Phrase glossを
+   含め、範囲表記・数値placeholder位置も例外なく機械的に変換する。
+   個別の意味判断は行わない。実際に`er003_audio_tts_asr_safety.py`へ
+   `normalize_tilde_placeholder_ja()`[全位置対応の汎用版]を新設し、
+   `er003_key_words_canonicalization.py`の`convert_display_gloss_to_
+   tts_text()`はこの汎用版へ委譲するよう書き換えた[旧`_LEADING_TILDE_
+   RE`による先頭限定変換は廃止]。`tts_safe_ja()`も同じ関数を呼ぶ)。
+2. 範囲表記(「中〜高」等)・数値placeholder(「〜%」等)で生じうる
+   非文リスクは、Normalizer側の個別判断ではなく**Writer Prompt側での
+   使用禁止**(本文中で「〜」「～」を一切使わない指示)で予防する
+   方針へ変更した(4(c)節1.が想定した「個別判断が必要なケース」を、
+   そもそも本文Writerに書かせない予防で解消する設計)。
+3. 英語側の%/$/¥は、4(c)節の記載どおりPrompt予防を主とする方針を
+   維持しつつ、TTS Validatorは検出・ログのみ行い生成を止めない
+   (`detect_prohibited_symbols(..., language="en")`が
+   `NUMERIC_SYMBOL_OBSERVE`カテゴリとして検出するが、
+   `symbol_gate_requires_stop()`の対象カテゴリには含めていない)。
+4. 3層(Prompt予防/Validator/Normalizer)に加え、TTS直前の決定論的
+   残存記号Gate(第4層)を新設した(`detect_prohibited_symbols`+
+   `symbol_gate_requires_stop`、括弧・スラッシュ・URL/email・絵文字・
+   未変換の〜/～/…/：；残存を対象)。詳細な実装ファイル一覧は
+   `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01_REPORT.md`
+   参照。
+
+---
+
 ## 5. TTS側pause機構の公式確認(HTTP GET実施)
 
 **取得日時**: 2026-09-27(本タスク実施時)。
@@ -501,6 +533,48 @@ leakage・hallucinationを起こして**Sonnet仮分類REJECTED**となってい
    $=23ファイル)には既に記号が残っている可能性があり、遡及的な
    書き換えを行うかは既存artifactの扱い方針(過去artifact不再生成の
    既存原則)との整合を含めユーザー判断が必要。
+
+---
+
+### Fable修正(2026-09-27): 7節の各項目に対する実際の解消方針
+
+Fableの明示的な設計修正(9項目)を受け、上記1〜6は次の方針で
+Phase 2へ反映した(個別の意味判断を新設せず、既存の判断枠組みの
+範囲内で解消)。
+
+1. **範囲表記「中〜高」**: 個別判断はしない。Writer Prompt側で
+   「〜」「～」の使用そのものを禁止し(本文Writer=
+   `er003_v1_n3_01_articles_generate.py`の`COMMON_BLOCK_TEMPLATE`、
+   Family C=`er013_family_c_future_writer_08.py`/`_08_b1.py`)、
+   Normalizer/Gate側は位置に関わらず一律「なになに」変換または
+   残存Gate停止のいずれかとする(委任文の指示どおり)。実例は本タスク
+   でも見つからなかった(9)。
+2. **数値placeholder「〜%」**: 上記1と同じくWriter Prompt予防で解消
+   (個別ルール新設なし)。
+3. **固有名称の記号**: 一般化せず個別報告する方針を維持。今回の
+   runtime evidence(Family X Meta run再実行)で、`a2/japanese_title`の
+   canonical textに含まれる"Muse"という未登録外来語トークンが
+   `ER-009-JA-FOREIGN-TOKEN-GATE-01`のHUMAN_REVIEWカテゴリで
+   ブロックされる事象を新規に発見した(本タスクのSymbol Gateとは
+   別のGateであり、本タスクの記号正規化が正しく動作した結果、その
+   先にあった別の既存Gateが可視化されたもの)。個別報告のみ行い、
+   本タスクの範囲では修正しない(詳細はREPORT.mdのSTOP項目参照)。
+4. **既存仕様との競合(Key Phrase gloss〜/～許容 vs 本文の使用禁止)**:
+   Fable修正#1により、Key Phrase gloss側も全位置変換の対象に含める
+   ことで非対称性を解消した(「許容」ではなく「全位置で機械的に
+   『なになに』へ変換する」という単一ルールに統合)。
+5. **:;の実際の使用実態**: Phase 2で実コーパス分類を実施した結果、
+   英語本文側(Family A body Writer出力)ではコロン・セミコロンの
+   実使用が確認され(見出し由来ではない本文中の実例)、Normalizerの
+   「実質的に効く」対象であることを確認した。一方、日本語Key Phrase
+   gloss側では実質的な出現がほぼ確認されなかった(fixture検証のみで
+   足りると判断)。JSON構造上のコロン(見出しキー等)は本文スキャン
+   対象外(Markdown見出し行を除外してからスキャンする設計、
+   `er008_n8_point_overlap_article_retry_22_test_01`回帰で確認済みの
+   挙動)。
+6. **英語%$¥の自然語化・既存artifactの遡及書き換え**: 既存artifactは
+   遡及的に書き換えない(委任文の指示#6どおり)。新規生成分のみ
+   Prompt予防+Validator観測ログ(停止はしない)で対応する。
 
 ---
 

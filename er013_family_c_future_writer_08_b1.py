@@ -147,6 +147,15 @@ follow: avoid introducing more named people than necessary, avoid jumping betwee
 different times or places, avoid long strings of abstract explanation, and try to keep \
 it reasonably clear at each point whose perspective the reader/listener is in.
 
+[Symbols that cannot be read aloud -- this article will be converted to speech (TTS)]
+Do not use these symbols anywhere in the article: the wave dash "~" as a stand-in for \
+unwritten content (write the actual words instead); ellipsis "..." (use a period or \
+comma instead if you want a pause); the slash "/" (write "and" or "or" instead); \
+parentheses "(" ")" or square brackets "[" "]" (fold the extra information into a \
+normal sentence instead); the colon ":" or semicolon ";" (use a period, or start a new \
+sentence instead); percent/dollar/yen symbols (%, $, ¥ -- prefer natural words \
+like "fifty percent" when practical); URLs or email addresses; and emoji.
+
 {improvement_note}
 Write the article now. Do not add a title unless it helps the story -- if you do, keep \
 it short."""

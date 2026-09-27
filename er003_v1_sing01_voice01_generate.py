@@ -81,6 +81,20 @@ def generate_charon_english(text: str, out_path: str,
                       "(Human Review待ち): " + ", ".join(f["token"] for f in label_findings),
             "canonical_text": text, "internal_label_findings": label_findings,
         }
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): 呼び出し側(tts_generate.py等)がtts_safe_en/
+    # tts_safe_news_enでNormalizerを適用した後のtextがここへ渡る想定。
+    # Normalizer通過後になお残る禁止記号(括弧・スラッシュ・URL/email・
+    # 絵文字・未変換のplaceholder/ポーズ記号残存)を検出する。%$¥は
+    # observe専用でブロックしない(Fableレビュー決定3)。
+    symbol_findings = safety.detect_prohibited_symbols(text, language="en")
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None、
     # out_pathが標準命名慣習に従わない場合[単体テストのダミーパス等]は
     # Noneのまま=role gate非適用、既存挙動と完全に同じ): narration wav

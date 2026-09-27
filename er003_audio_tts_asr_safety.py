@@ -41,6 +41,7 @@ import json
 import os
 import re
 import time
+import unicodedata
 
 # ============================================================
 # A. TTS入力正規化(TTS呼び出し直前のみに適用する)
@@ -852,3 +853,203 @@ def log_foreign_token_human_review(canonical_text: str, wav_path: str, findings:
     }
     with open(FOREIGN_TOKEN_HUMAN_REVIEW_LOG_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+
+
+# ============================================================
+# G. TTS音声化禁止記号の正規化・検出(TTS Symbol Prohibition Gate)
+# ============================================================
+# TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Status起点=
+# ユーザー承認済みAPPROVED_FOR_PRODUCTION、2026-09-27)。
+#
+# ユーザー方針:「使う必要のない曖昧記号は、そもそも原稿に生成させない。
+# そのうえで必要な記号だけを決定論的にTTS変換する」。対象はNews全Family
+# (A/B/C/X)・Key Phrase・title・heading等、Productionで音声化される全経路
+# (docs/pm/recon_tts_symbol_normalization_01.md Phase 1 recon、Fable
+# レビュー修正指示[2026-09-27]反映)。
+#
+# 3層構成のうち、本セクションは(3)許可記号の決定論的Normalizer(TTS呼び
+# 出し直前で使い捨てコピーへ適用する)と、(4)Normalizer通過後に残る禁止
+# 記号を検出するGateの2つを提供する。(1)Prompt予防・(2)Writer出力直後の
+# Validatorは各Writerモジュール側で本セクションの関数を呼び出す形で配線
+# する(このモジュール自体は既存方針どおりProductionのTTS/Writer呼び出し
+# 関数をimportしない)。
+#
+# Fableレビュー(2026-09-27)による設計修正点(Phase 1 recon 4(c)からの
+# 変更、詳細はrecon docの「Fable修正(2026-09-27)」節参照):
+#   1. 〜/～の非対称設計(本文=全位置変換、Key Phrase gloss=文頭/読点
+#      直後のみ)は不採用。全位置変換に統一する(Key Phrase gloss側は
+#      er003_key_words_canonicalization.convert_display_gloss_to_tts_text
+#      が本モジュールのnormalize_tilde_placeholder_ja()を呼ぶ形で同じ
+#      規則を適用する)。範囲表記「中〜高」・数値placeholder「〜%」も
+#      区別せず一律「なになに」に変換する(個別の意味判断はしない。
+#      既存記事corpusに実例なし、実例が出た場合は個別に報告する)。
+#   2. …/……は、文末なら句点、文中なら読点へ変換する(pauseタグ
+#      <short pause>は現行Production採用モデルでの解釈可否が未確認の
+#      ため不採用、句読点による代替を正式採用)。
+#   3. ：；は句点へ変換する(日英とも)。ただし時刻表記等の誤爆を避ける
+#      ため、前後が数字の場合は変換しない(例:"9:30"は対象外)。
+#   4. 英語の%$¥はWriter予防を優先し、TTS側Gateはブロックしない
+#      (observe/logのみ。既存の確定本文で読み上げ実績があるため)。
+
+# ------------------------------------------------------------
+# G1. Normalizer(許可記号の決定論的変換)
+# ------------------------------------------------------------
+
+_TILDE_CHARS_RE = re.compile(r"[〜～]")
+TILDE_TTS_PLACEHOLDER_REPLACEMENT = "なになに"
+
+
+def normalize_tilde_placeholder_ja(text: str) -> str:
+    """日本語text中の波ダッシュ「〜」(U+301C)「～」(U+FF5E)を、位置を問わず
+    全て「なになに」へ置換する(全位置変換、Key Phrase gloss/本文/title等
+    どの経路でも同じ規則)。呼び出し側はTTS呼び出し直前の使い捨てコピーに
+    のみ適用すること(canonical/表示用テキストは変更しない)。"""
+    return _TILDE_CHARS_RE.sub(TILDE_TTS_PLACEHOLDER_REPLACEMENT, text or "")
+
+
+# 三点リーダー(U+2026、1文字以上連続)・ASCII三点以上のドット("..."等)を
+# 対象とする。文末判定は「後続に、閉じ引用符・句読点・感嘆符・疑問符以外の
+# 文字が残っていないか」で行う(簡易ヒューリスティック、過剰に複雑な文末
+# 判定は行わない)。
+_ELLIPSIS_RE = re.compile(r"(?:…+|\.{3,})")
+_JA_SENTENCE_END_TAIL_RE = re.compile(r'^[」』"\'？！?!\s]*$')
+_EN_SENTENCE_END_TAIL_RE = re.compile(r'^[")\'?!\s]*$')
+
+
+def _normalize_ellipsis_pause(text: str, period: str, comma: str, tail_re: re.Pattern) -> str:
+    text = text or ""
+
+    def _sub(m: re.Match) -> str:
+        tail = text[m.end():]
+        return period if tail_re.match(tail) else comma
+
+    return _ELLIPSIS_RE.sub(_sub, text)
+
+
+def normalize_ellipsis_pause_ja(text: str) -> str:
+    """日本語text中の「…」「……」「...」を、文末なら句点「。」、文中なら
+    読点「、」へ決定論的に置換する(TTS呼び出し直前のみに適用)。"""
+    return _normalize_ellipsis_pause(text, "。", "、", _JA_SENTENCE_END_TAIL_RE)
+
+
+def normalize_ellipsis_pause_en(text: str) -> str:
+    """英語text中の"..."(またはU+2026)を、文末ならピリオド、文中なら
+    カンマへ決定論的に置換する(TTS呼び出し直前のみに適用)。"""
+    return _normalize_ellipsis_pause(text, ".", ",", _EN_SENTENCE_END_TAIL_RE)
+
+
+# コロン・セミコロン(全角/半角)を句点へ変換する。時刻表記("9:30")等の
+# 誤爆を避けるため、直前・直後が数字の場合は変換しない。
+_JA_COLON_SEMICOLON_RE = re.compile(r"(?<![0-9０-９])[:;：;；](?![0-9０-９])")
+_EN_COLON_SEMICOLON_RE = re.compile(r"(?<!\d)[:;](?!\d)")
+
+
+def normalize_colon_semicolon_pause_ja(text: str) -> str:
+    """日本語text中のコロン「:」「：」・セミコロン「;」「；」を句点
+    「。」へ置換する(時刻表記等、前後が数字の場合は対象外)。"""
+    return _JA_COLON_SEMICOLON_RE.sub("。", text or "")
+
+
+def normalize_colon_semicolon_pause_en(text: str) -> str:
+    """英語text中のコロン「:」・セミコロン「;」をピリオド「.」へ置換する
+    (時刻表記等、前後が数字の場合は対象外)。"""
+    return _EN_COLON_SEMICOLON_RE.sub(".", text or "")
+
+
+# ------------------------------------------------------------
+# G2. Gate(Normalizer通過後に残る禁止記号の検出。Writer出力直後の
+#      Validator[Layer 2]・TTS呼び出し直前のGate[Layer 4]の両方で
+#      共用する)
+# ------------------------------------------------------------
+
+SYMBOL_CATEGORY_BRACKET = "BRACKET"
+SYMBOL_CATEGORY_SLASH = "SLASH"
+SYMBOL_CATEGORY_URL_EMAIL = "URL_EMAIL"
+SYMBOL_CATEGORY_EMOJI = "EMOJI"
+SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER = "RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL"
+SYMBOL_CATEGORY_NUMERIC_OBSERVE = "NUMERIC_SYMBOL_OBSERVE"
+
+# ブロック対象カテゴリ(1件でもあればTTS呼び出し/Writer出力を止める)。
+# NUMERIC_SYMBOL_OBSERVE(英語の%$¥)はここに含めない(observe専用)。
+_SYMBOL_STOP_CATEGORIES = (
+    SYMBOL_CATEGORY_BRACKET, SYMBOL_CATEGORY_SLASH, SYMBOL_CATEGORY_URL_EMAIL,
+    SYMBOL_CATEGORY_EMOJI, SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER,
+)
+
+# 半角/全角の丸括弧・角括弧のみを対象にする(日本語の鉤括弧「」『』は、
+# Prompt側の禁止リストにも含まれない通常の日本語句読点のため対象外)。
+_BRACKET_RE = re.compile(r"[()（）\[\]]")
+_SLASH_RE = re.compile(r"/")
+_URL_RE = re.compile(r"(?:https?://\S+|www\.\S+)", re.IGNORECASE)
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
+_EN_NUMERIC_SYMBOL_RE = re.compile(r"[%$¥]")
+# Normalizer(G1)が変換すべき記号がTTS呼び出し直前になお残っている場合の
+# 残存検出(既存detect_gloss_placeholder_notationと役割が重なるが、対象を
+# 本文Writer出力・title・heading等の一般テキストへ広げた汎用版)。
+_RESIDUAL_PLACEHOLDER_RE = re.compile(r"[〜～]|(?:…+|\.{3,})|[:;：;；]")
+
+
+def _find_emoji_chars(text: str) -> list:
+    return [ch for ch in text if unicodedata.category(ch) == "So"]
+
+
+def detect_prohibited_symbols(text: str, language: str) -> list:
+    """本文Writer出力(Layer 2、Normalizer適用前)・TTS呼び出し直前
+    (Layer 4、Normalizer[G1]適用後)の両方で共用する、音声化禁止記号の
+    検出。language: "ja" | "en"。
+
+    戻り値: 検出0件なら空list。各検出は{"token","category","reason"}の
+    辞書(既存classify_foreign_tokens_in_japanese_textと同じ形式)。
+    カテゴリNUMERIC_SYMBOL_OBSERVE(英語の%$¥)はobserve専用であり、
+    symbol_gate_requires_stop()はブロックしない(TTS-SYMBOL-
+    NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01 Fableレビュー決定3:
+    既存確定本文で読み上げ実績があるため、後退を避ける)。"""
+    text = text or ""
+    findings = []
+
+    for m in _URL_RE.finditer(text):
+        findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_URL_EMAIL,
+                          "reason": f"URLが本文に残っています: {m.group(0)!r}。書かないでください。"})
+    for m in _EMAIL_RE.finditer(text):
+        findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_URL_EMAIL,
+                          "reason": f"メールアドレスが本文に残っています: {m.group(0)!r}。書かないでください。"})
+    for m in _BRACKET_RE.finditer(text):
+        findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_BRACKET,
+                          "reason": f"括弧が本文に残っています: {m.group(0)!r}。"
+                                    "補足情報は通常の文として本文に統合してください。"})
+    for m in _SLASH_RE.finditer(text):
+        findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_SLASH,
+                          "reason": "スラッシュ「/」が本文に残っています。「and」「or」"
+                                    "(日本語は「と」「または」)で書き直してください。"})
+    for ch in _find_emoji_chars(text):
+        findings.append({"token": ch, "category": SYMBOL_CATEGORY_EMOJI,
+                          "reason": f"絵文字/装飾記号が本文に残っています: {ch!r}"})
+    for m in _RESIDUAL_PLACEHOLDER_RE.finditer(text):
+        findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER,
+                          "reason": f"未変換のplaceholder/ポーズ記号が残っています: {m.group(0)!r}。"
+                                    "波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。"})
+    if language == "en":
+        for m in _EN_NUMERIC_SYMBOL_RE.finditer(text):
+            findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_NUMERIC_OBSERVE,
+                              "reason": f"数値記号が残っています(observe専用、ブロックしません): {m.group(0)!r}"})
+    return findings
+
+
+def symbol_gate_requires_stop(findings: list) -> bool:
+    """ブロック対象カテゴリ(_SYMBOL_STOP_CATEGORIES)が1件でもあれば、
+    TTS呼び出し/Writer出力の受理自体をブロックすべきと判定する。
+    NUMERIC_SYMBOL_OBSERVEのみの場合はブロックしない。"""
+    return any(f.get("category") in _SYMBOL_STOP_CATEGORIES for f in (findings or []))
+
+
+def build_symbol_violation_prompt_note(findings: list) -> str:
+    """Writer出力直後のValidator(Layer 2)が検出結果を、既存のmust-fix/
+    Diagnostic Full Retryプロンプトへ追記するNG理由ブロックへ整形する
+    共通ヘルパー(Family A本文Writer・Family X ja_writer等、複数Writerで
+    再利用する。呼び出し側固有のフォーマットは持たない)。"""
+    lines = ["【音声化できない記号が検出されました(必ず解消してください)】",
+              "以下の記号が本文に残っています。音声(TTS)で読み上げられないため、"
+              "該当箇所を記号を使わない自然な文章へ書き直してください。"]
+    for i, f in enumerate(findings or [], start=1):
+        lines.append(f"{i}. {f.get('category')}: {f.get('token')!r} — {f.get('reason')}")
+    return "\n".join(lines)

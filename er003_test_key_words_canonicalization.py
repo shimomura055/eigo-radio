@@ -287,9 +287,11 @@ class MergeCanonicalizationResultTests(unittest.TestCase):
 
 
 class ConvertDisplayGlossToTtsTextTests(unittest.TestCase):
-    """KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01: 文頭・読点直後の
-    「～」「〜」だけを「なになに」へ変換する決定論的規則(OPEN-117
-    Phase 1/2 Trialで検証済み、Productionへそのまま移植)。"""
+    """TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Phase 2、
+    2026-09-27、Fableレビュー): 「～」「〜」を位置を問わず全て「なになに」
+    へ変換する(全位置変換、非対称設計[文頭/読点直後のみ]は不採用)。
+    旧KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01(2026-09-06)の
+    文頭/読点直後ケースは新規則の部分集合として引き続きPASSする。"""
 
     def test_leading_tilde_converted(self):
         self.assertEqual(kc.convert_display_gloss_to_tts_text("～を示す"), "なになにを示す")
@@ -302,17 +304,29 @@ class ConvertDisplayGlossToTtsTextTests(unittest.TestCase):
             kc.convert_display_gloss_to_tts_text("～を示す、～を指し示す"),
             "なになにを示す、なになにを指し示す")
 
-    def test_numeric_placeholder_position_not_converted(self):
-        # ER-011-KP-VALIDATOR系Phase 2 B1 rank2の実例。文中(数値の直前)の
-        # 「～」は変換対象外のまま残り、既存のplaceholder gateに委ねる。
+    def test_mid_string_tilde_now_converted(self):
+        # 2026-09-27design変更: 対策の発端そのものである文中ケース
+        # (「結局〜ではないと分かる」型)を、以前の非対称設計では変換
+        # できなかった。全位置変換への一般化によりPASSする。
+        self.assertEqual(
+            kc.convert_display_gloss_to_tts_text("地元の店を〜と結びつける"),
+            "地元の店をなになにと結びつける")
+
+    def test_numeric_placeholder_position_now_converted(self):
+        # ER-011-KP-VALIDATOR系Phase 2 B1 rank2の実例。以前は変換対象外
+        # だったが、2026-09-27の全位置変換への一般化によりPASSする
+        # (個別の意味判断はしない方針、実例が出た場合は別途報告する)。
         self.assertEqual(
             kc.convert_display_gloss_to_tts_text("ソロ旅行を～％とする"),
-            "ソロ旅行を～％とする")
+            "ソロ旅行をなになに％とする")
 
-    def test_range_notation_position_not_converted(self):
-        self.assertEqual(kc.convert_display_gloss_to_tts_text("中～高強度"), "中～高強度")
+    def test_range_notation_position_now_converted(self):
+        self.assertEqual(kc.convert_display_gloss_to_tts_text("中～高強度"), "中なになに高強度")
 
-    def test_ellipsis_never_converted(self):
+    def test_ellipsis_never_converted_by_this_function(self):
+        # 本関数自体は「…」を変換しない(無変換のまま返す)。ただし
+        # japanese_gloss_ttsは後段のtts_safe_ja()が「…」を句読点へ変換
+        # するため、TTS呼び出し直前には残らない(モジュールdocstring参照)。
         self.assertEqual(kc.convert_display_gloss_to_tts_text("…と結びつける"), "…と結びつける")
 
     def test_no_placeholder_returns_unchanged(self):
@@ -329,12 +343,13 @@ class ConvertDisplayGlossToTtsTextTests(unittest.TestCase):
         tts_text = kc.convert_display_gloss_to_tts_text("～を示す、～を指し示す")
         self.assertFalse(safety.detect_gloss_placeholder_notation(tts_text)["has_placeholder"])
 
-    def test_numeric_placeholder_case_still_triggers_placeholder_gate(self):
-        # 数値placeholder型は変換されないため、既存gateが引き続きブロック
-        # できることを確認する(ゲートを弱めない)。
+    def test_numeric_placeholder_case_no_longer_triggers_placeholder_gate(self):
+        # 2026-09-27design変更: 数値placeholder型も全位置変換の対象になった
+        # ため、変換後は既存gateも発火しなくなる(意図的、Gate自体は
+        # 「…」等の残存検出用として無変更のまま維持)。
         import er003_audio_tts_asr_safety as safety
         tts_text = kc.convert_display_gloss_to_tts_text("ソロ旅行を～％とする")
-        self.assertTrue(safety.detect_gloss_placeholder_notation(tts_text)["has_placeholder"])
+        self.assertFalse(safety.detect_gloss_placeholder_notation(tts_text)["has_placeholder"])
 
 
 class MergeCanonicalizationResultIncludesTtsGlossTests(unittest.TestCase):
@@ -369,12 +384,14 @@ class MergeCanonicalizationResultIncludesTtsGlossTests(unittest.TestCase):
         self.assertEqual(item["japanese_gloss"], "抜け出す")
         self.assertEqual(item["japanese_gloss_tts"], "抜け出す")
 
-    def test_numeric_placeholder_gloss_yields_unconverted_tts_field(self):
+    def test_numeric_placeholder_gloss_yields_converted_tts_field(self):
+        # 2026-09-27design変更(全位置変換への一般化)により、数値
+        # placeholder型も表示用は無変更のままTTS用フィールドだけ変換される。
         original_items = self._items_with_gloss({1: "ソロ旅行を～％とする"})
         merged = kc.merge_canonicalization_result(original_items, [self._canon_item(1)])
         item = merged["items"][0]
         self.assertEqual(item["japanese_gloss"], "ソロ旅行を～％とする")
-        self.assertEqual(item["japanese_gloss_tts"], "ソロ旅行を～％とする")
+        self.assertEqual(item["japanese_gloss_tts"], "ソロ旅行をなになに％とする")
 
 
 class RunCanonicalizationGateFakeClientTests(unittest.TestCase):

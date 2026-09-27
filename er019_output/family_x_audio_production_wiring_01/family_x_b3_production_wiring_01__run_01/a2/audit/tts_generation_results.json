@@ -55,19 +55,32 @@
       "repetition_qa_checked": false,
       "repetition_qa_evidence": null,
       "fallback_used": false,
-      "canonical_text": "Today's topic is We Thought It Was AI—But There Was a Person Inside Meta’s Muse."
+      "canonical_text": "Today's topic is We Thought It Was AI—But There Was a Person Inside Meta’s Muse.",
+      "reused_from_previous_run": true
     },
     "japanese_title": {
       "status": "STOPPED",
-      "reason": "canonical_textに未発話のplaceholder記号が残っています: ['…']",
+      "reason": "canonical textに、言い換え・辞書対応・意図的英語発話のいずれとも機械的に判定できない外来語/記号表記が残っています(Human Review待ち)。",
       "canonical_text": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
-      "placeholder_check": {
-        "has_placeholder": true,
-        "found_chars": [
-          "…"
-        ],
-        "text": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開"
-      }
+      "foreign_token_findings": [
+        {
+          "token": "AI",
+          "category": "READING_DICTIONARY",
+          "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
+          "reading": "エーアイ"
+        },
+        {
+          "token": "Meta",
+          "category": "READING_DICTIONARY",
+          "reason": "読み方辞書に登録済みの表記です(読み: メタ)",
+          "reading": "メタ"
+        },
+        {
+          "token": "Muse",
+          "category": "HUMAN_REVIEW",
+          "reason": "日本語canonical text中の未対応の英字/記号表記です: 'Muse'。機械的に「言い換え」「辞書対応」「意図的な英語発話」のいずれとも判定できないため、人による確認が必要です。"
+        }
+      ]
     },
     "preview": {
       "status": "OK",
@@ -140,7 +153,8 @@
           "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
           "reading": "エーアイ"
         }
-      ]
+      ],
+      "reused_from_previous_run": true
     },
     "comment_1": {
       "status": "OK",
@@ -207,7 +221,8 @@
           "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
           "reading": "エーアイ"
         }
-      ]
+      ],
+      "reused_from_previous_run": true
     },
     "comment_2": {
       "status": "OK",
@@ -274,7 +289,8 @@
           "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
           "reading": "エーアイ"
         }
-      ]
+      ],
+      "reused_from_previous_run": true
     },
     "comment_3": {
       "status": "OK",
@@ -347,7 +363,8 @@
           "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
           "reading": "エーアイ"
         }
-      ]
+      ],
+      "reused_from_previous_run": true
     },
     "comment_4": {
       "status": "OK",
@@ -414,7 +431,8 @@
           "reason": "読み方辞書に登録済みの表記です(読み: エーアイ)",
           "reading": "エーアイ"
         }
-      ]
+      ],
+      "reused_from_previous_run": true
     },
     "full_story_part1": {
       "status": "OK",
@@ -724,7 +742,8 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens."
+      "canonical_text": "Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.",
+      "reused_from_previous_run": true
     },
     "full_story_part2": {
       "status": "OK",
@@ -992,7 +1011,8 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human."
+      "canonical_text": "The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.",
+      "reused_from_previous_run": true
     },
     "full_story_part3": {
       "status": "OK",
@@ -1209,7 +1229,8 @@
           "post_slowdown_classification": "NORMALIZED_MATCH"
         }
       ],
-      "canonical_text": "Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end."
+      "canonical_text": "Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.",
+      "reused_from_previous_run": true
     },
     "in_one_line": {
       "status": "OK",
@@ -1298,7 +1319,8 @@
           "post_slowdown_classification": "EXACT_MATCH"
         }
       ],
-      "canonical_text": "Before AI speaks for us, we need to know whether the voice belongs to AI or a person."
+      "canonical_text": "Before AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+      "reused_from_previous_run": true
     }
   },
   "key_phrases": {
@@ -1373,7 +1395,8 @@
         "primary_instruction_type": "MINIMAL",
         "reused": false,
         "master_audio_id": "45df241a1b06fb7debe3cf68",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "reused_from_previous_run": true
       },
       "japanese_meaning": {
         "status": "OK",
@@ -1442,7 +1465,8 @@
           }
         ],
         "display_gloss": "AIの仮面を脱ぐ",
-        "japanese_gloss_tts_fallback_derived": false
+        "japanese_gloss_tts_fallback_derived": false,
+        "reused_from_previous_run": true
       }
     },
     "2": {
@@ -1516,7 +1540,8 @@
         "primary_instruction_type": "MINIMAL",
         "reused": false,
         "master_audio_id": "7a32e7d336d511247118793a",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "reused_from_previous_run": true
       },
       "japanese_meaning": {
         "status": "OK",
@@ -1577,7 +1602,8 @@
         "tts_input_text_after_reading_safety": "契約で働く人",
         "reading_safety_changed_text": false,
         "display_gloss": "契約で働く人",
-        "japanese_gloss_tts_fallback_derived": false
+        "japanese_gloss_tts_fallback_derived": false,
+        "reused_from_previous_run": true
       }
     },
     "3": {
@@ -1651,7 +1677,8 @@
         "primary_instruction_type": "MINIMAL",
         "reused": false,
         "master_audio_id": "ab755bc4087b2f75fff35d71",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "reused_from_previous_run": true
       },
       "japanese_meaning": {
         "status": "OK",
@@ -1712,7 +1739,8 @@
         "tts_input_text_after_reading_safety": "人が対応する案内機能",
         "reading_safety_changed_text": false,
         "display_gloss": "人が対応する案内機能",
-        "japanese_gloss_tts_fallback_derived": false
+        "japanese_gloss_tts_fallback_derived": false,
+        "reused_from_previous_run": true
       }
     },
     "4": {
@@ -1786,7 +1814,8 @@
         "primary_instruction_type": "MINIMAL",
         "reused": false,
         "master_audio_id": "691a89148f127312047554e2",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "reused_from_previous_run": true
       },
       "japanese_meaning": {
         "status": "OK",
@@ -1847,7 +1876,8 @@
         "tts_input_text_after_reading_safety": "他人に知られたくない情報",
         "reading_safety_changed_text": false,
         "display_gloss": "他人に知られたくない情報",
-        "japanese_gloss_tts_fallback_derived": false
+        "japanese_gloss_tts_fallback_derived": false,
+        "reused_from_previous_run": true
       }
     },
     "5": {
@@ -1921,7 +1951,8 @@
         "primary_instruction_type": "MINIMAL",
         "reused": false,
         "master_audio_id": "69f1d034ffb885acf34d1d73",
-        "cache_miss_reason": "no_existing_master"
+        "cache_miss_reason": "no_existing_master",
+        "reused_from_previous_run": true
       },
       "japanese_meaning": {
         "status": "OK",
@@ -1982,7 +2013,8 @@
         "tts_input_text_after_reading_safety": "取り下げる",
         "reading_safety_changed_text": false,
         "display_gloss": "取り下げる",
-        "japanese_gloss_tts_fallback_derived": false
+        "japanese_gloss_tts_fallback_derived": false,
+        "reused_from_previous_run": true
       }
     }
   }

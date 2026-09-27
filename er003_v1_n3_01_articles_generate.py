@@ -22,6 +22,7 @@ import time
 from dotenv import load_dotenv
 
 import er002_ja_web_research_r3 as r3
+import er003_audio_tts_asr_safety as safety
 import er003_v1_en_direct_ab_01_generate as ab01
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er003_v1_n3_01_evidence_compression_editor as ec_editor
@@ -170,6 +171,16 @@ scope/certainty/比較の方向を変えないでください。これはKey Phr
 - 絵文字(emoji)。タイトル先頭の 💳 などを含む、全ての絵文字を禁止します
 - 装飾目的の不要なMarkdown bold (`**...**`)。必要な正式Markdown構造(##・###・####の見出し)は維持してください
 本記事を含め、eigo-radioの完成記事フォーマットルールは、装飾を避けた平易で聞きやすい英文を基本とします。
+
+【音声化できない記号の禁止(TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01で正式採用)】
+この記事は音声(TTS)で読み上げられます。記事本文・タイトルで以下の記号を使用しないでください:
+- 波ダッシュ「〜」「～」は、具体的な内容を省略した空欄・言い換えの代わりとして使わないでください(例:「〜の場合」のような未確定な言い回し、「中〜高」のような範囲表記)。書くべき内容を実際に書いてください(例:「中程度から高程度」)。
+- 三点リーダー「…」「……」は使わないでください。間を置きたい場合は通常の句点・読点で表現してください。
+- スラッシュ「/」は使わないでください。「and」「or」で書いてください。
+- 括弧「()」「（）」「[]」は使わないでください。補足情報は通常の文として本文に統合してください(日本語の鉤括弧「」は対象外です)。
+- コロン「:」・セミコロン「;」は使わないでください。文を区切りたい場合は句点、または別の文にしてください。
+- パーセント・ドル・円などの数値は、可能な限り記号(%、$、¥)ではなく自然な言葉(例: "50 percent")で書いてください。
+- URLやメールアドレスは書かないでください。
 
 【Main Storyの役割(重要)】
 Main Storyでは、何が起きるのか・誰が対象か・どのような仕組みか・現在どういう状態か、という
@@ -684,6 +695,17 @@ def build_diagnostic_retry_prompt(original_prompt: str, previous_article_text: s
     return original_prompt + "\n\n" + diagnostic_section
 
 
+def build_symbol_violation_diagnostic_note(findings: list) -> str:
+    """TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2):
+    音声化禁止記号Validatorの検出結果を、既存のDiagnostic Full Retry
+    prompt(build_diagnostic_retry_prompt)へ追記するNG理由ブロックへ整形
+    する(point_planning.build_value_qa_diagnostic_noteと同じ「NG理由を
+    prompt末尾へ追記して全文再生成させる」パターン)。実際の整形は
+    複数Writerで共有するsafety.build_symbol_violation_prompt_note()へ
+    委譲する(重複実装を避ける)。"""
+    return safety.build_symbol_violation_prompt_note(findings)
+
+
 def split_common_sections_for_point_qa(article_text: str) -> dict | None:
     """run_one_patternが生成するarticle_text(Title + Main Story + ###
     Point見出し×2 + ## In one line、COMMON_BLOCK_TEMPLATE共通構造)から、
@@ -940,10 +962,26 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
                 json.dump(value_qa_result, f, ensure_ascii=False, indent=2, default=str)
             value_qa_flagged = value_qa_result["status"] == "NG"
 
-        still_flagged = lexical_flagged or value_qa_flagged
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+        # 2026-09-27): Writer出力(article_text)直後に音声化禁止記号を検出
+        # する。既存のPoint overlap/value QA retryループへ同じ「NG理由を
+        # promptへ追記して記事全体を再生成する」パターンで接続する(新しい
+        # Retry上限・新しいLockは作らない、POINT_OVERLAP_ARTICLE_RETRY_MAXを
+        # そのまま共有する)。Markdown見出し行(#/##/###)はスキャン対象から
+        # 除外する(見出し自体は本文Writer出力を音声化前に別工程
+        # [sc.clean_heading/point_headings.generate、Layer 4で別途Gate済み]
+        # が処理するためであり、旧世代の「## In one line…」のような見出し
+        # 装飾[Phase 1 recon 1.9節で確認済み、直近350件の本文中では0件]を
+        # 誤検知しないための除外)。
+        body_only_for_symbol_scan = re.sub(r"^#{1,4}\s.*$", "", article_text, flags=re.MULTILINE)
+        symbol_findings = safety.detect_prohibited_symbols(body_only_for_symbol_scan, language="en")
+        symbol_flagged = safety.symbol_gate_requires_stop(symbol_findings)
+
+        still_flagged = lexical_flagged or value_qa_flagged or symbol_flagged
         log_entry = {
             "attempt": retry_attempt, "qa_status": point_qa_result["status"], "flagged": still_flagged,
             "lexical_flagged": lexical_flagged, "value_qa_flagged": value_qa_flagged,
+            "symbol_flagged": symbol_flagged, "symbol_findings": symbol_findings,
             "report": overlap_report,
             "value_qa_status": value_qa_result["status"] if value_qa_result else None,
         }
@@ -952,26 +990,40 @@ def run_one_pattern(client, theme_id: str, label: str, prompt: str, verified_led
             break
         retry_attempt += 1
         print(f"[N3-01][{theme_id}] {label}: Point overlap/value QA NG"
-              f"(lexical={lexical_flagged}, value_qa={value_qa_flagged})。"
+              f"(lexical={lexical_flagged}, value_qa={value_qa_flagged}, symbol={symbol_flagged})。"
               f"Point Role Planningを再計画し、Diagnostic Full Retryで全文再生成します"
               f"(article retry {retry_attempt}/{POINT_OVERLAP_ARTICLE_RETRY_MAX})...")
 
-        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)
-        point_overlap_result = {
-            "point_one": overlap_report["point_one"]["before_overlap"],
-            "point_two": overlap_report["point_two"]["before_overlap"],
-        }
-        diagnostic_prompt = build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        # Diagnostic section を build(lexical overlap診断は既存機構をそのまま使用)。
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27
+        # 修正): lexical_flaggedがFalseの場合(value_qa_flagged/symbol_flagged
+        # のみでretryへ入った場合)、overlap_report["point_one"]["before_
+        # overlap"]は「重複なし」の結果でありbuild_diagnostic_retry_prompt
+        # が前提とする診断用フィールド(shared_words等)を持たない場合がある
+        # ため、lexical_flaggedがTrueの場合のみlexical診断を組み込む
+        # (既存のoverlap診断機構自体は無変更、呼び出し条件のみ修正)。
+        point_overlap_result = None
+        if lexical_flagged:
+            point_overlap_result = {
+                "point_one": overlap_report["point_one"]["before_overlap"],
+                "point_two": overlap_report["point_two"]["before_overlap"],
+            }
+            diagnostic_prompt = build_diagnostic_retry_prompt(prompt, article_text, point_overlap_result)
+        else:
+            diagnostic_prompt = prompt
         if value_qa_flagged:
             diagnostic_prompt = diagnostic_prompt + "\n\n" + point_planning.build_value_qa_diagnostic_note(
                 value_qa_result)
+        if symbol_flagged:
+            diagnostic_prompt = diagnostic_prompt + "\n\n" + build_symbol_violation_diagnostic_note(
+                symbol_findings)
         log_entry["diagnostic_used"] = {
-            "point_one_score": point_overlap_result["point_one"]["overlap_ratio"],
-            "point_one_flagged": point_overlap_result["point_one"]["flagged"],
-            "point_two_score": point_overlap_result["point_two"]["overlap_ratio"],
-            "point_two_flagged": point_overlap_result["point_two"]["flagged"],
+            "point_one_score": point_overlap_result["point_one"]["overlap_ratio"] if point_overlap_result else None,
+            "point_one_flagged": point_overlap_result["point_one"]["flagged"] if point_overlap_result else None,
+            "point_two_score": point_overlap_result["point_two"]["overlap_ratio"] if point_overlap_result else None,
+            "point_two_flagged": point_overlap_result["point_two"]["flagged"] if point_overlap_result else None,
             "point_one_vs_point_two_flagged": overlap_report.get("point_one_vs_point_two", {}).get("flagged"),
-            "value_qa_flagged": value_qa_flagged,
+            "value_qa_flagged": value_qa_flagged, "symbol_flagged": symbol_flagged,
         }
 
         # ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: Diagnostic Full Retryは

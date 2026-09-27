@@ -309,6 +309,20 @@ def generate_charon_japanese_with_reading_safety(text: str, out_path: str, expec
             "canonical_text": text,
             "placeholder_check": placeholder_check,
         }
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): 上記tts_safe_ja()のNormalizer通過後になお残る
+    # 禁止記号(括弧・スラッシュ・URL/email・絵文字・未変換のplaceholder/
+    # ポーズ記号残存)を検出する。placeholder_check(上記、〜/～/…専用)とは
+    # 対象が重なるが、汎用版はKey Phrase以外の一般テキストにも同じ規則で
+    # 適用でき、括弧・スラッシュ・URL/email・絵文字も追加でカバーする。
+    symbol_findings = safety.detect_prohibited_symbols(placeholder_safe, language="ja")
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical_textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する。
     # HUMAN_REVIEW相当の確信が持てる場合のみTTS呼び出し自体を行わずSTOPPED
@@ -504,6 +518,17 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
             "canonical_text": text,
             "placeholder_check": placeholder_check,
         }
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
+    # Gate、2026-09-27): B1側と同じ汎用Gateをa2側にも適用する(1.6節
+    # japanese_title[Meta STOP実例]・A2 comment等が本経路を通る)。
+    symbol_findings = safety.detect_prohibited_symbols(placeholder_safe, language="ja")
+    if safety.symbol_gate_requires_stop(symbol_findings):
+        return {
+            "status": "STOPPED",
+            "reason": "canonical_textに音声化禁止記号が残っています(Normalizer通過後の残存): "
+                      + ", ".join(f"{f['category']}:{f['token']}" for f in symbol_findings),
+            "canonical_text": text, "symbol_findings": symbol_findings,
+        }
     # ER-009-JA-FOREIGN-TOKEN-GATE-01: 制作内部ラベル("Part 1"等)や未対応の
     # 外来語表記がcanonical textに残っていないかを、TTS呼び出し前に検出する
     # (この関数はgenerate_a2_japanese_with_fallback経由でminimal instruction
@@ -573,7 +598,16 @@ def first_words(text: str, n: int = 4) -> str:
 def tts_safe_en(text: str) -> str:
     # カーリーシングル/ダブルクォートはASRの書き起こしに現れない
     # (発音されない記号のため)、期待文字列側からも取り除く。
-    return text.replace("’", "'").replace("‘", "'").replace("“", "").replace("”", "")
+    text = text.replace("’", "'").replace("‘", "'").replace("“", "").replace("”", "")
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01
+    # (2026-09-27): 「...」/「…」を文末はピリオド・文中はカンマへ、
+    # 「:」「;」をピリオドへ、決定論的に変換する(全Family共通の汎用
+    # Normalizer、TTS呼び出し直前の使い捨てコピーにのみ適用)。この関数は
+    # first_words()(ASR期待文字列側)でも使われるため、TTS入力・期待
+    # 文字列の両方が同じ変換後テキストで一致比較される(既存契約を維持)。
+    text = safety.normalize_ellipsis_pause_en(text)
+    text = safety.normalize_colon_semicolon_pause_en(text)
+    return text
 
 
 # 追加で確立した2件のTTS入力専用normalization(Health themeで発見):
@@ -659,12 +693,19 @@ def tts_safe_kp_en(text: str) -> str:
 
 
 def tts_safe_ja(text: str) -> str:
-    # ER-006-KP5-CANONICAL-BUG-01: 先頭のtilde placeholderは、実際に使われて
-    # いる文字がU+FF5E(全角チルダ「～」)とU+301C(波ダッシュ「〜」)の
-    # どちらであっても除去する(見た目がほぼ同じため、生成元によって
-    # どちらが使われるかが揺れる。従来はU+FF5Eのみを対象にしており、
-    # U+301Cを使う出力(kp5_ja等)を取りこぼしていた)。
-    return text.lstrip("～〜").replace("’", "'")
+    # ER-006-KP5-CANONICAL-BUG-01(旧設計): 先頭のtilde placeholder
+    # (U+FF5E全角チルダ「～」/U+301C波ダッシュ「〜」)を除去するだけだった。
+    # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27、
+    # Fableレビュー)により、Key Phrase gloss限定の非対称設計([文頭のみ]
+    # vs[全位置])は不採用となり、本関数も全位置の「～」「〜」を
+    # 「なになに」へ置換する汎用Normalizerへ拡張した(全Family共通)。
+    # あわせて「…」→句読点、「：」「；」→句点への決定論的変換も統合する
+    # (er003_audio_tts_asr_safety.normalize_*_ja、詳細は同モジュールの
+    # セクションGコメント参照)。
+    text = safety.normalize_tilde_placeholder_ja(text or "")
+    text = safety.normalize_ellipsis_pause_ja(text)
+    text = safety.normalize_colon_semicolon_pause_ja(text)
+    return text.replace("’", "'")
 
 
 _JA_KANJI_NUMERALS = set("一二三四五六七八九十百千万億〇")

@@ -29,6 +29,7 @@ import json
 import os
 import re
 
+import er003_audio_tts_asr_safety as safety
 import er003_b1_p2_keywords as bk
 import er003_key_words_canonicalization as kc
 import er003_key_words_production as prod
@@ -300,6 +301,24 @@ def run_key_phrase_redundancy_qa(article_text: str, merged_items: list, out_dir:
 KEY_PHRASE_REDUNDANCY_RETRY_MAX = gen.POINT_OVERLAP_ARTICLE_RETRY_MAX
 
 
+def detect_key_phrase_symbol_findings(merged_items: list) -> list:
+    """TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+    2026-09-27): canonicalization後のKey Phrase 5件(used_form英語・
+    japanese_gloss_tts)に音声化禁止記号が残っていないかを検出する
+    (〜/～は`convert_display_gloss_to_tts_text`が既に全位置変換するため
+    ここでは主に括弧・スラッシュ・URL/email・絵文字・残存placeholderを
+    捕捉する)。戻り値の各findingにrank/fieldを付与する(既存
+    classify_foreign_tokens_in_japanese_text等と同じ「findings配列」
+    パターン)。"""
+    findings = []
+    for it in merged_items:
+        for f in safety.detect_prohibited_symbols(it.get("used_form") or "", language="en"):
+            findings.append({**f, "rank": it["rank"], "field": "used_form"})
+        for f in safety.detect_prohibited_symbols(it.get("japanese_gloss_tts") or "", language="ja"):
+            findings.append({**f, "rank": it["rank"], "field": "japanese_gloss_tts"})
+    return findings
+
+
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
@@ -331,7 +350,17 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
         redundancy_retry_log.append({"attempt": attempt, "status": redundancy["status"],
                                       "duplicate_pairs": redundancy["duplicate_pairs"]})
 
-        if redundancy["status"] != "REDUNDANCY_NG":
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 2、
+        # 2026-09-27): Redundancy QAとは独立に、音声化禁止記号を検出する。
+        # 既存のRedundancy QA NG retryと同じループ(選定からやり直す、上限
+        # KEY_PHRASE_REDUNDANCY_RETRY_MAXを共有)へ接続する(新しいRetry
+        # 上限は作らない)。
+        symbol_findings = detect_key_phrase_symbol_findings(merged_items)
+        symbol_flagged = safety.symbol_gate_requires_stop(symbol_findings)
+        redundancy_retry_log[-1]["symbol_flagged"] = symbol_flagged
+        redundancy_retry_log[-1]["symbol_findings"] = symbol_findings
+
+        if redundancy["status"] != "REDUNDANCY_NG" and not symbol_flagged:
             return {"selection": sel, "canonicalization": canon, "redundancy_qa": redundancy,
                      "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": attempt}
 
@@ -341,11 +370,16 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
                      "status": "NG_REVIEW_REQUIRED"}
 
         items_by_rank = {it["rank"]: it for it in merged_items}
-        diagnostic_note = redundancy_qa.build_redundancy_diagnostic_note(
-            redundancy["duplicate_pairs"], items_by_rank)
-        print(f"[N3-01][{article_id}] Key Phrase Set Redundancy QA NG "
-              f"(重複ペア: {redundancy['duplicate_pairs']})。選定からやり直します"
-              f"(retry {attempt + 1}/{KEY_PHRASE_REDUNDANCY_RETRY_MAX})...")
+        diagnostic_note = ""
+        if redundancy["status"] == "REDUNDANCY_NG":
+            diagnostic_note += redundancy_qa.build_redundancy_diagnostic_note(
+                redundancy["duplicate_pairs"], items_by_rank)
+        if symbol_flagged:
+            diagnostic_note += ("\n\n" if diagnostic_note else "") + safety.build_symbol_violation_prompt_note(
+                symbol_findings)
+        print(f"[N3-01][{article_id}] Key Phrase Set Redundancy/Symbol QA NG "
+              f"(重複ペア: {redundancy['duplicate_pairs']}, symbol_flagged={symbol_flagged})。"
+              f"選定からやり直します(retry {attempt + 1}/{KEY_PHRASE_REDUNDANCY_RETRY_MAX})...")
 
     # ループはreturnで抜けるため、ここへは到達しない想定
     raise RuntimeError("run_key_phrases: 予期しないループ終了")

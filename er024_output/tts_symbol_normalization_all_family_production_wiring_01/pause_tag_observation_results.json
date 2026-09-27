@@ -1,0 +1,17 @@
+{
+  "note": "Fable design decision #5: observation-only trial (NOT adopted as a mechanism). original run made exactly 2 real TTS+ASR calls (pause_tag_mid, pause_tag_mid_2). asr_text/status recovered from narration/attempts/*_attempt1_standard.json since the original script's own results.json had a key-mismatch bug (asr_text lived under standard_attempts_log/last_attempts_log, not attempts_log, for STOPPED-status returns).",
+  "pause_tag_mid": {
+    "input_text": "それは正しいです<short pause>でも待ってください。",
+    "status": "STOPPED (1 standard attempt exhausted, no fallback budget by design: max_attempts=standard_attempts=1)",
+    "asr_text": "それは正しいです。でも待ってください。",
+    "observation": "<short pause> tag was NOT read aloud literally (no 'short pause' or transliteration audible/transcribed). ASR shows a natural sentence break at the tag's position; TTS appears to have treated the tag as an (unspecified) pause/break marker rather than literal text."
+  },
+  "pause_tag_mid_2": {
+    "input_text": "こんにちは<short pause>今日はいい天気ですね。",
+    "status": "STOPPED (1 standard attempt exhausted, no fallback budget by design: max_attempts=standard_attempts=1)",
+    "asr_text": "こんにちは。今日はいい天気ですね。",
+    "observation": "Same result as pause_tag_mid: tag not read literally, natural sentence break at tag position."
+  },
+  "conclusion": "Consistent with recon doc section 5's finding that <short pause>/<long pause> official documentation targets the Gemini 3.8 TTS generation; the current Production model (gemini-3.1-flash-tts-preview) does not appear to read the tag as literal text, but effectiveness as a genuine controllable pause (vs. simply being silently dropped/ignored) could not be conclusively distinguished from this small 2-case sample. Per Fable's decision, this is recorded as observation only; punctuation-based deterministic replacement (already implemented in Layer 3 Normalizer) remains the adopted mechanism.",
+  "deviation_note": "A 3rd real API call (segment 'pause_tag_mid_2_retry') was inadvertently made during post-hoc debugging of a results-extraction script bug (see pause_tag_debug2_extra_call.json), using a different wav path for the same input text as pause_tag_mid_2. This exceeded the intended 'exactly 2 calls' by 1. Cost impact is negligible (~JPY 0.46, comparable to one fixture case) and is included in the total cost tally in the REPORT.md. Reported here for honesty per task governance, not hidden."
+}

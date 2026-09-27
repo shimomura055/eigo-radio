@@ -436,5 +436,174 @@ class JapaneseShortSegmentPhoneticMatchTests(unittest.TestCase):
         self.assertEqual(r["verdict"], safety.ASR_UNCERTAIN_JA)
 
 
+# ============================================================
+# TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Phase 2、
+# 2026-09-27): セクションGのNormalizer/Gate回帰テスト
+# ============================================================
+class NormalizeTildePlaceholderJaTests(unittest.TestCase):
+    def test_leading_position_converted(self):
+        self.assertEqual(safety.normalize_tilde_placeholder_ja("～を示す"), "なになにを示す")
+
+    def test_wave_dash_leading_position_converted(self):
+        self.assertEqual(safety.normalize_tilde_placeholder_ja("〜を指し示す"), "なになにを指し示す")
+
+    def test_mid_string_now_converted(self):
+        # 対策の発端そのもの(Key Phrase gloss「結局〜ではないと分かる」型)。
+        self.assertEqual(
+            safety.normalize_tilde_placeholder_ja("地元の店を〜と結びつける"),
+            "地元の店をなになにと結びつける")
+
+    def test_range_notation_converted(self):
+        # 個別の意味判断はしない方針(全位置一律変換、Fableレビュー決定1)。
+        self.assertEqual(safety.normalize_tilde_placeholder_ja("中〜高強度"), "中なになに高強度")
+
+    def test_numeric_placeholder_converted(self):
+        self.assertEqual(
+            safety.normalize_tilde_placeholder_ja("ソロ旅行を～％とする"),
+            "ソロ旅行をなになに％とする")
+
+    def test_no_tilde_returns_unchanged(self):
+        self.assertEqual(safety.normalize_tilde_placeholder_ja("その場を立ち去る"), "その場を立ち去る")
+
+    def test_none_input_returns_empty_string(self):
+        self.assertEqual(safety.normalize_tilde_placeholder_ja(None), "")
+
+
+class NormalizeEllipsisPauseTests(unittest.TestCase):
+    def test_ja_mid_string_converted_to_touten(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_ja("それは…違う"), "それは、違う")
+
+    def test_ja_meta_title_example_mid_string(self):
+        # Stage 3a実例(NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01)、A2
+        # japanese_titleのSTOP原因だった"…"。
+        title = "AIからの電話だと思ったら…中に“人”がいた?"
+        result = safety.normalize_ellipsis_pause_ja(title)
+        self.assertNotIn("…", result)
+        self.assertIn("、", result)
+
+    def test_ja_sentence_end_converted_to_kuten(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_ja("それは違う…"), "それは違う。")
+
+    def test_ja_multiple_dots_ascii_style(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_ja("それは...違う"), "それは、違う")
+
+    def test_en_mid_string_converted_to_comma(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_en("Wait... that's wrong"), "Wait, that's wrong")
+
+    def test_en_sentence_end_converted_to_period(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_en("I was not sure..."), "I was not sure.")
+
+    def test_no_ellipsis_returns_unchanged(self):
+        self.assertEqual(safety.normalize_ellipsis_pause_en("Nothing to see here"), "Nothing to see here")
+
+
+class NormalizeColonSemicolonPauseTests(unittest.TestCase):
+    def test_ja_colon_converted_to_kuten(self):
+        self.assertEqual(
+            safety.normalize_colon_semicolon_pause_ja("理由は3つ:予算、人手、時間"),
+            "理由は3つ。予算、人手、時間")
+
+    def test_en_colon_converted_to_period(self):
+        self.assertEqual(
+            safety.normalize_colon_semicolon_pause_en("Three reasons: budget, staff, time"),
+            "Three reasons. budget, staff, time")
+
+    def test_en_semicolon_converted_to_period(self):
+        self.assertEqual(
+            safety.normalize_colon_semicolon_pause_en("Argentina advanced; England were sent home"),
+            "Argentina advanced. England were sent home")
+
+    def test_time_expression_not_mangled_ja(self):
+        self.assertEqual(safety.normalize_colon_semicolon_pause_ja("9:30に会議"), "9:30に会議")
+
+    def test_time_expression_not_mangled_en(self):
+        self.assertEqual(
+            safety.normalize_colon_semicolon_pause_en("The time is 9:30 today"),
+            "The time is 9:30 today")
+
+
+class DetectProhibitedSymbolsTests(unittest.TestCase):
+    def test_bracket_detected_and_blocks(self):
+        findings = safety.detect_prohibited_symbols("値上がり(値段が上がること)", "ja")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_BRACKET, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_slash_detected_and_blocks(self):
+        findings = safety.detect_prohibited_symbols("AとB/Cのどちらか", "ja")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_SLASH, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_url_detected_and_blocks(self):
+        findings = safety.detect_prohibited_symbols("visit https://example.com now", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_URL_EMAIL, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_email_detected_and_blocks(self):
+        findings = safety.detect_prohibited_symbols("email me at a@b.com", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_URL_EMAIL, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_emoji_detected_and_blocks(self):
+        findings = safety.detect_prohibited_symbols("素晴らしい\U0001F60A", "ja")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_EMOJI, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_residual_ellipsis_detected_and_blocks(self):
+        # Normalizer未適用のtextを直接渡した場合(Layer 2、Writer出力直後)。
+        findings = safety.detect_prohibited_symbols("それは…違う", "ja")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_numeric_symbols_observe_only_does_not_block_en(self):
+        findings = safety.detect_prohibited_symbols("50% of users paid $83", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_NUMERIC_OBSERVE, categories)
+        self.assertFalse(safety.symbol_gate_requires_stop(findings))
+
+    def test_numeric_symbols_not_checked_for_ja(self):
+        # language="ja"の場合、%$¥はobserveカテゴリとしても検出しない
+        # (英語専用の設計、日本語本文にこれらの記号が出た場合は別記号の
+        # 扱いとして今後実例が出れば個別報告する)。
+        findings = safety.detect_prohibited_symbols("50%のユーザー", "ja")
+        self.assertFalse(any(f["category"] == safety.SYMBOL_CATEGORY_NUMERIC_OBSERVE for f in findings))
+
+    def test_clean_text_after_normalizer_yields_no_findings(self):
+        text = safety.normalize_colon_semicolon_pause_en(
+            safety.normalize_ellipsis_pause_en("Wait... that's wrong: really"))
+        findings = safety.detect_prohibited_symbols(text, "en")
+        self.assertEqual(findings, [])
+
+    def test_normalized_key_phrase_gloss_no_longer_blocked(self):
+        # 全位置変換後は既存detect_gloss_placeholder_notationだけでなく、
+        # 汎用symbol Gateも通過できることを確認する(Layer 3が先に走る
+        # という既存契約どおり)。
+        text = safety.normalize_tilde_placeholder_ja("地元の店を〜と結びつける")
+        findings = safety.detect_prohibited_symbols(text, "ja")
+        self.assertEqual(findings, [])
+
+    def test_empty_findings_list_does_not_require_stop(self):
+        self.assertFalse(safety.symbol_gate_requires_stop([]))
+
+
+class BuildSymbolViolationPromptNoteTests(unittest.TestCase):
+    def test_note_contains_category_and_token(self):
+        findings = [{"token": "(", "category": safety.SYMBOL_CATEGORY_BRACKET, "reason": "reason text"}]
+        note = safety.build_symbol_violation_prompt_note(findings)
+        self.assertIn("BRACKET", note)
+        self.assertIn("(", note)
+        self.assertIn("reason text", note)
+
+    def test_empty_findings_returns_header_only(self):
+        note = safety.build_symbol_violation_prompt_note([])
+        self.assertIsInstance(note, str)
+        self.assertGreater(len(note), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
