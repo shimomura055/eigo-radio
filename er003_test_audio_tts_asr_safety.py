@@ -560,6 +560,37 @@ class DetectProhibitedSymbolsTests(unittest.TestCase):
         self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
         self.assertTrue(safety.symbol_gate_requires_stop(findings))
 
+    def test_time_expression_colon_not_flagged_en(self):
+        # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01
+        # 修正1回目(2026-09-27): 時刻表記(H:MM)のコロンは数値表記として
+        # 許容し、RESIDUAL_PLACEHOLDERとして検出しない(Family X Hormuz
+        # "11:04 a.m."の実例)。
+        findings = safety.detect_prohibited_symbols(
+            "The plan changed at 11:04 a.m.", "en")
+        self.assertEqual(findings, [])
+
+    def test_time_expression_colon_not_flagged_ja(self):
+        findings = safety.detect_prohibited_symbols("午前11:04に予定が変わった", "ja")
+        self.assertEqual(findings, [])
+
+    def test_non_time_colon_still_blocks(self):
+        # 時刻表記以外のコロン(前後どちらかが数字でない通常の区切り用法)
+        # は、引き続きRESIDUAL_PLACEHOLDERとして検出しブロックする
+        # (今回の修正が一般化しすぎていないことの回帰確認)。
+        findings = safety.detect_prohibited_symbols(
+            "Three reasons: budget", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_ratio_style_colon_not_generalized(self):
+        # 比率表記("3:1")は、分に相当する側がちょうど2桁ではないため
+        # 今回のH:MM許容ルールの対象外のまま(意図的に一般化しない)。
+        findings = safety.detect_prohibited_symbols("The score was 3:1", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
     def test_numeric_symbols_observe_only_does_not_block_en(self):
         findings = safety.detect_prohibited_symbols("50% of users paid $83", "en")
         categories = {f["category"] for f in findings}

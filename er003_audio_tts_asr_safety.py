@@ -988,6 +988,24 @@ _EN_NUMERIC_SYMBOL_RE = re.compile(r"[%$¥]")
 # 本文Writer出力・title・heading等の一般テキストへ広げた汎用版)。
 _RESIDUAL_PLACEHOLDER_RE = re.compile(r"[〜～]|(?:…+|\.{3,})|[:;：;；]")
 
+# 時刻表記(H:MM、時1〜2桁+分ちょうど2桁)のコロンは、記号が不可避な実例
+# (数値表記)としてGateの検出対象から除外する(TTS-SYMBOL-NORMALIZATION-
+# ALL-FAMILY-PRODUCTION-WIRING-01 修正1回目、2026-09-27。Family X Hormuz
+# "11:04 a.m."がRESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOLで誤ってSTOPしていた
+# 実例に対応)。前後が数字でないことを要求する既存Normalizer
+# (_EN_COLON_SEMICOLON_RE等)の判定条件と同じ考え方をGate側にも適用する。
+# 分がちょうど2桁であることを要求するため、比率表記("3:1")・聖書引用等
+# への一般化は行わない(単桁の分はこの許容から自然に外れる)。後続の
+# a.m./p.m./AM/PM等の有無はコロン自体の正当性判定には影響しない。
+_TIME_HMM_COLON_RE = re.compile(r"(?<!\d)\d{1,2}(:)\d{2}(?!\d)")
+
+
+def _time_hmm_colon_offsets(text: str) -> set:
+    """text中で時刻表記(H:MM)の一部と判定できるコロンの文字位置(offset)
+    集合を返す(detect_prohibited_symbolsのRESIDUAL_PLACEHOLDER判定から
+    除外するために使う)。"""
+    return {m.start(1) for m in _TIME_HMM_COLON_RE.finditer(text or "")}
+
 
 def _find_emoji_chars(text: str) -> list:
     return [ch for ch in text if unicodedata.category(ch) == "So"]
@@ -1024,7 +1042,13 @@ def detect_prohibited_symbols(text: str, language: str) -> list:
     for ch in _find_emoji_chars(text):
         findings.append({"token": ch, "category": SYMBOL_CATEGORY_EMOJI,
                           "reason": f"絵文字/装飾記号が本文に残っています: {ch!r}"})
+    _time_colon_offsets = _time_hmm_colon_offsets(text)
     for m in _RESIDUAL_PLACEHOLDER_RE.finditer(text):
+        if m.group(0) == ":" and m.start() in _time_colon_offsets:
+            # 時刻表記(H:MM)のコロンは数値表記として無変換のまま許容する
+            # (Normalizer側も同じ理由で既に変換対象外、上記_TIME_HMM_
+            # COLON_RE参照)。
+            continue
         findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER,
                           "reason": f"未変換のplaceholder/ポーズ記号が残っています: {m.group(0)!r}。"
                                     "波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。"})

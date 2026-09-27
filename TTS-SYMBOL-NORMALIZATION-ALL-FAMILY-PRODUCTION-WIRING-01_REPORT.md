@@ -357,3 +357,119 @@ Trialスクリプトのout_path重複チェックを推奨するが、Production
 `DECISION_LOG.md`本管理IDエントリ追加、`OPEN_ITEMS.md`(OPEN-117・
 OPEN-118へ拡張済み追記、OPEN-183備考7、新規OPEN-191〜194)、
 `docs/pm/REPORT_LEDGER.md`本管理ID行追加。
+
+---
+
+## §12 修正1回目(2026-09-27): 時刻表記コロン
+
+### 既存資産照合(分類)
+
+`CURRENT_SPEC.md`「TTS記号正規化(全Family共通)」節(1622-1629行付近)は
+既に「コロン「:」「：」・セミコロン「;」「；」: 句点へ変換する(数字直前
+直後は対象外、時刻表記等を保護)」と記述しており、`er003_audio_tts_asr_
+safety.py`の`normalize_colon_semicolon_pause_en`/`_ja`(953-956行/947-950行)
+も、既に`(?<!\d)[:;](?!\d)`(英語)・`(?<![0-9０-９])[:;：;；](?![0-9０-９])`
+(日本語)という前後数字除外の実装を**既に持っていた**(コメント「時刻表記
+("9:30")等の誤爆を避けるため」)。
+
+一方、TTS呼び出し直前の残存記号Gate(`detect_prohibited_symbols`内の
+`_RESIDUAL_PLACEHOLDER_RE = re.compile(r"[〜～]|(?:…+|\.{3,})|[:;：;；]")`、
+修正前989行)は、コロン・セミコロンを**前後の数字を考慮せず無条件に
+`RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`として検出**していた。このため、
+Normalizerが意図的に無変換のまま残した時刻表記のコロン(例:
+"11:04 a.m.")を、直後のGateが「未変換の残存記号」と誤認してSTOPする
+という、**Normalizerの既存意図とGateの検出条件が不整合**な状態だった。
+
+**分類: A(既存仕様の実装範囲の穴)**。「:;→ポーズ」ルールの対象は句読点
+としてのコロンであり、時刻表記(H:MM)のコロンは既存仕様が明記する
+「記号が不可避な実例(数値表記)」に該当する。ユーザー仕様は「新しい
+一般化ルールを作らず、まず報告する」ことを求めており、本修正は既存
+Normalizerが既に持っていた前後数字除外の考え方をGate側にも一貫して
+適用する対応であり、新規仕様の新設ではない。
+
+### 実例
+
+Family X Hormuz `full_story_part2`(A2/B1B、`NEWS-FAMILY-X-AUDIO-
+PRODUCTION-WIRING-01_REPORT.md` §Stage 3c参照)の本文中の時刻表記
+"11:04 a.m."が、`RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`カテゴリで
+TTS呼び出し前にSTOPしていた(同じコロンはStage 3bの旧combined textにも
+存在し、見出し分離作業とは無関係)。
+
+既存記事corpusでの時刻表記を含む音声実例の有無を`grep`で確認したが、
+`er0XX_output/**/article.md`本文・`parts.json`等の本文相当ファイルに
+"[0-9]{1,2}:[0-9]{2}"形式の時刻表記そのものは本タスクでは発見できなかった
+(**未検証**、Family X Hormuz再TTS実行時に別途確認を推奨)。すなわち
+「既存確定本文で時刻表記の読み上げ実績がある」という積極的な裏付けは
+今回は得られておらず、本修正は既存Normalizerのコメント・既存fixture
+(`er003_test_audio_tts_asr_safety.py`の`test_time_expression_not_
+mangled_en`/`_ja`、9:30の実例)に基づく既存意図の一貫適用という位置づけ
+にとどまる。
+
+### diff(最小差分、`er003_audio_tts_asr_safety.py`)
+
+- `_RESIDUAL_PLACEHOLDER_RE`定義の直後に、時刻表記(H:MM、時1〜2桁+分
+  ちょうど2桁、前後が数字でないことを要求)のコロン位置を検出する
+  `_TIME_HMM_COLON_RE`/`_time_hmm_colon_offsets()`を新設。
+- `detect_prohibited_symbols()`内、`_RESIDUAL_PLACEHOLDER_RE.finditer`の
+  ループへ、マッチが":"かつその位置が時刻表記コロンのoffset集合に含まれる
+  場合はfindingsへ追加せず`continue`する分岐を追加。
+- 比率表記("3:1"等)・聖書引用等への一般化は**行っていない**(分がちょうど
+  2桁であることを要求するため、単桁の分[例: "3:1"]は自然に対象外のまま)。
+- `normalize_colon_semicolon_pause_en`/`_ja`自体は**無変更**(既に前後数字
+  除外を持っていたため)。
+
+### fixture(`er003_test_audio_tts_asr_safety.py`、`DetectProhibitedSymbolsTests`)
+
+新規4件:
+- `test_time_expression_colon_not_flagged_en`: "The plan changed at
+  11:04 a.m." → findings空(修正前は`RESIDUAL_PLACEHOLDER_OR_PAUSE_
+  SYMBOL`で検出されSTOP対象だったことを、修正前コードで手動確認済み)。
+- `test_time_expression_colon_not_flagged_ja`: 「午前11:04に予定が変わった」
+  → findings空。
+- `test_non_time_colon_still_blocks`: "Three reasons: budget"(既存の
+  否定例、時刻表記ではない通常の区切り用法)→引き続き
+  `RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`で検出・STOP対象(無回帰確認)。
+- `test_ratio_style_colon_not_generalized`: "The score was 3:1"(比率表記)
+  →引き続き検出・STOP対象(H:MM許容ルールが比率表記へ一般化されていない
+  ことの確認)。
+
+決定論性: 上記関数群はいずれも純粋な正規表現ベースの決定論的処理であり
+(API呼び出し・乱数・時刻依存なし)、同一入力に対し常に同一出力を返す
+(`.venv/Scripts/python.exe -m unittest er003_test_audio_tts_asr_safety`
+を2回実行し同一結果[100 tests, OK]であることを確認)。
+
+### 回帰
+
+`.venv/Scripts/python.exe -m unittest er003_test_audio_tts_asr_safety -v`:
+**100 tests, OK**(新規4件を含む、既存96件すべて無回帰)。既存9 fixture
+(`NormalizeColonSemicolonPauseTests`・`DetectProhibitedSymbolsTests`の
+既存ケース)含め無回帰を確認。`er024_tts_symbol_normalization_all_family_
+production_wiring_01_fixtures.py`は実TTS/実ASR APIを呼び出すruntime
+evidence scriptであり、本委任の制約(TTS実行なし・¥0)に反するため
+**実行しなかった**(単体testのみで回帰確認、全体regressionは他Agent並走
+のため次回closeoutで実施)。
+
+### SSOT記載案(未反映、ユーザー承認待ち)
+
+`CURRENT_SPEC.md`「TTS記号正規化(全Family共通)」節の「コロン「:」「：」・
+セミコロン「;」「；」: 句点へ変換する(数字直前直後は対象外、時刻表記等を
+保護)」の一文の直後へ、以下の追記案:
+
+> **2026-09-27追記(TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-
+> WIRING-01 修正1回目)**: 時刻表記(H:MM、時1〜2桁+分ちょうど2桁、後続の
+> a.m./p.m./AM/PM等の有無は不問)のコロンは数値表記として無変換のまま
+> 許容し、TTS直前の残存記号Gate(Layer 4、`detect_prohibited_symbols`)も
+> 同じ条件でこれを禁止記号として検出しない(Family X Hormuz
+> `full_story_part2`の"11:04 a.m."が誤ってSTOPしていた実例に対応)。
+> 比率表記("3:1"等)・聖書引用等への一般化は行わない(分がちょうど2桁で
+> あることを要求するため、単桁の分はこの許容から自然に外れる)。
+
+`DECISION_LOG.md`への追加要否・`OPEN_ITEMS.md`該当行(OPEN-117/118)への
+追記要否はFable/ユーザー判断に委ねる(本委任はコード+テスト+fixture+
+REPORT追記のみが範囲のため、SSOT本体は編集していない)。
+
+### Family X Hormuz再TTSについて
+
+本修正はコード・テスト・fixtureのみであり、Family X Hormuz
+`full_story_part2`(A2/B1B)の実際の再TTS実行は、本修正commit後の
+**別委任**で実施する(本タスクの範囲外、¥0を維持)。
