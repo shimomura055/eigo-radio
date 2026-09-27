@@ -342,6 +342,36 @@ def _is_valid_person_generalization(key_phrase: str, display_phrase: str) -> boo
     return changed_any
 
 
+# ============================================================
+# KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01
+# (2026-09-27、既存仕様の未発火修正。新しい仕様ではない)
+# ============================================================
+# ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01(2026-09-02、DECIDED/
+# PRODUCTION_WIRED)で、人称代名詞・所有格の一般化
+# (normalization_reason="generalize_person_dependent_reference")は既に
+# 正当な変換として承認され、構造validator側(_is_valid_person_generalization、
+# 上記)は既にこれを例外として許可していた。しかしQAフィールド
+# qa_traceable_contiguous_span(「key_phraseがsource_spanから追跡可能か」)は
+# LLMの自己申告値をそのまま採用しており、この例外がQA側には反映されて
+# いなかった。ER-011-NO18の実データでは人称代名詞を含む候補が選ばれず
+# 未観測だったこの発火経路が、Family Z Melos run(2026-09-27)で初めて
+# 実際に発火し、"gave my word"→"give one's word"のような正当な一般化が
+# qa_traceable_contiguous_spanだけFAILとなりREVIEW_REQUIREDに倒れる事象が
+# 判明した。本関数は、既に承認済みのこの1件の例外(閉じた語彙集合による
+# 1対1置換で説明できる場合のみ)をqa_traceable_contiguous_spanの実効値に
+# 反映する、決定論的な後処理である。他のQAフィールド・他のFAIL理由には
+# 一切影響しない(何かを新たに免除・緩和するものではなく、既存承認済み
+# 例外をQA側でも認識させるだけ)。
+def _qa_field_effective_verdict(field: str, verdict: str, key_phrase: str, display_phrase: str,
+                                 normalization_reason: Optional[str]) -> str:
+    if field != "qa_traceable_contiguous_span" or verdict != "FAIL":
+        return verdict
+    if (normalization_reason == "generalize_person_dependent_reference"
+            and _is_valid_person_generalization(key_phrase, display_phrase)):
+        return "PASS"
+    return verdict
+
+
 def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str,
                                     normalization_reason: Optional[str] = None) -> dict:
     """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
@@ -450,7 +480,12 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         if this_reasons:
             item_reasons.append({"index": i, "rank": item.get("rank"), "reasons": this_reasons})
             ok = False
-        elif any(item[field] == "FAIL" for field in QA_FIELDS):
+        elif any(
+            _qa_field_effective_verdict(
+                field, item[field], item["key_phrase"], display_phrase, item.get("normalization_reason")
+            ) == "FAIL"
+            for field in QA_FIELDS
+        ):
             has_qa_fail = True
             items_requiring_review.append(item.get("rank"))
 
@@ -551,7 +586,11 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         canon = canon_by_rank[rank]
         display_phrase = original.get("display_phrase") or original.get("canonical_english")
         japanese_gloss = original.get("ja_gloss") or original.get("japanese_gloss")
-        qa = {field: canon[field] for field in QA_FIELDS}
+        qa = {
+            field: _qa_field_effective_verdict(
+                field, canon[field], canon["key_phrase"], display_phrase, canon.get("normalization_reason"))
+            for field in QA_FIELDS
+        }
         item_review_required = any(v == "FAIL" for v in qa.values())
         any_review_required = any_review_required or item_review_required
         merged_items.append({

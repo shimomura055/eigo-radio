@@ -28,7 +28,7 @@
 - qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
 - qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)
 - qa_reusable_other_context: 別の文脈でも再利用可能な表現か
-- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する(この場合、display_phrase自体が方式L選定時点で既に確立された正規化形であるため、source_spanとの文字列表記の違い[時制・単数複数・語順等]を理由にFAILにしないでください)、(b) key_phraseがsource_span内の連続した文字列として存在する。
+- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する(この場合、display_phrase自体が方式L選定時点で既に確立された正規化形であるため、source_spanとの文字列表記の違い[時制・単数複数・語順等]を理由にFAILにしないでください)、(b) key_phraseがsource_span内の連続した文字列として存在する、(c) key_phraseが上記ルール3(人称代名詞・所有格の一般化)に従って生成されたものである(この場合、一般化後の語[one's/someone's/oneself等]がsource_span中の生の人称代名詞・所有格[my/your/his等]と文字列として一致しないのは意図した正当な変換であり、それを理由にFAILにしないでください)。
 - qa_listening_blocker_value_preserved: Listening Blockerとしての学習価値を維持しているか
 - qa_standalone_comprehensibility: このkey_phraseをKey Phrasesセクションで単独提示した際、学習者が何を意味する表現なのか十分に理解できるか
 - qa_not_over_minimized: source_spanから語を削りすぎたことで、意味が抽象化・不完全化していないか(削りすぎていなければPASS)

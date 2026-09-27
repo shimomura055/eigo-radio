@@ -167,6 +167,132 @@ class PersonReferenceGeneralizationTests(unittest.TestCase):
         self.assertEqual(result["status"], "CANONICALIZATION_PASS", result)
 
 
+class QaTraceableSpanPersonGeneralizationOverrideTests(unittest.TestCase):
+    """KEYPHRASE-PERSON-DEPENDENT-REFERENCE-GENERALIZATION-WIRING-FIX-01
+    (2026-09-27、既存仕様[ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01]の
+    未発火修正、新しい仕様ではない)。
+
+    構造validator(_is_valid_person_generalization)は既に人称一般化を
+    正当な変換として許可していたが、qa_traceable_contiguous_spanは
+    LLMの自己申告値をそのまま採用しており、この例外が反映されて
+    いなかった。Family Z Melos run(rank3 "gave my word"→"give one's
+    word")で実際に発火した事象を再現する回帰テスト。"""
+
+    def _melos_rank3_qa(self):
+        qa = _good_qa()
+        qa["qa_traceable_contiguous_span"] = "FAIL"
+        return qa
+
+    def test_effective_verdict_overrides_fail_for_my_to_ones(self):
+        # 実データ再現: source_span "gave my word" / display_phrase
+        # "give my word" / key_phrase "give one's word"
+        result = kc._qa_field_effective_verdict(
+            "qa_traceable_contiguous_span", "FAIL",
+            "give one's word", "give my word",
+            "generalize_person_dependent_reference")
+        self.assertEqual(result, "PASS")
+
+    def test_effective_verdict_overrides_fail_for_your_his_her_their(self):
+        cases = [
+            ("catch someone's attention", "catch your attention"),
+            ("in someone's place", "in his place"),
+            ("a piece of someone's mind", "a piece of her mind"),
+            ("catch someone's attention", "catch their attention"),
+        ]
+        for key_phrase, display_phrase in cases:
+            with self.subTest(display_phrase=display_phrase):
+                result = kc._qa_field_effective_verdict(
+                    "qa_traceable_contiguous_span", "FAIL",
+                    key_phrase, display_phrase,
+                    "generalize_person_dependent_reference")
+                self.assertEqual(result, "PASS")
+
+    def test_effective_verdict_keeps_fail_when_reason_mismatched(self):
+        # 一般化として正しい置換に見えても、normalization_reasonが
+        # generalize_person_dependent_reference以外ならFAILのまま
+        # (既存の安全側の挙動を維持、勝手な免除範囲拡大をしない)。
+        result = kc._qa_field_effective_verdict(
+            "qa_traceable_contiguous_span", "FAIL",
+            "give one's word", "give my word",
+            "none")
+        self.assertEqual(result, "FAIL")
+
+    def test_effective_verdict_keeps_fail_for_fabricated_phrase(self):
+        # 本文にない語の捏造(人称一般化とは無関係)はFAILのまま
+        # (false acceptが増えないことの確認)。
+        result = kc._qa_field_effective_verdict(
+            "qa_traceable_contiguous_span", "FAIL",
+            "ask out", "opt out",
+            "other")
+        self.assertEqual(result, "FAIL")
+
+    def test_effective_verdict_does_not_touch_other_qa_fields(self):
+        # このカテゴリはqa_traceable_contiguous_span専用であり、他の
+        # QAフィールドのFAILには一切影響しない。
+        result = kc._qa_field_effective_verdict(
+            "qa_listening_blocker_value_preserved", "FAIL",
+            "give one's word", "give my word",
+            "generalize_person_dependent_reference")
+        self.assertEqual(result, "FAIL")
+
+    def test_response_validator_yields_pass_for_melos_rank3_reproduction(self):
+        items = [{"rank": 1, "display_phrase": "give my word", "source_span": "gave my word",
+                  "source_sentence": "“No,” Melos said. “I gave my word.”"}]
+        response = {"items": [
+            {"rank": 1, "key_phrase": "give one's word",
+             "normalization_reason": "generalize_person_dependent_reference",
+             "changed_from_display_phrase": True,
+             "reasoning": "「my」は本文の話者Melosに依存するため一般形へ置換した。",
+             **self._melos_rank3_qa()},
+        ]}
+        result = kc.validate_canonicalization_response(response, items)
+        self.assertEqual(result["status"], "CANONICALIZATION_PASS", result)
+        self.assertEqual(result["items_requiring_review"], [])
+
+    def test_response_validator_still_flags_review_when_unrelated_field_fails(self):
+        # 人称一般化のoverrideが、他の理由によるREVIEW_REQUIREDまで
+        # 消してしまわないことの確認(無回帰)。
+        items = [{"rank": 1, "display_phrase": "give my word", "source_span": "gave my word",
+                  "source_sentence": "“No,” Melos said. “I gave my word.”"}]
+        qa = self._melos_rank3_qa()
+        qa["qa_traceable_contiguous_span"] = "PASS"
+        qa["qa_listening_blocker_value_preserved"] = "FAIL"
+        response = {"items": [
+            {"rank": 1, "key_phrase": "give one's word",
+             "normalization_reason": "generalize_person_dependent_reference",
+             "changed_from_display_phrase": True, "reasoning": "R", **qa},
+        ]}
+        result = kc.validate_canonicalization_response(response, items)
+        self.assertEqual(result["status"], "CANONICALIZATION_REVIEW_REQUIRED", result)
+        self.assertEqual(result["items_requiring_review"], [1])
+
+    def test_merge_result_yields_pass_for_melos_rank3_reproduction(self):
+        original_items = [{"rank": 1, "display_phrase": "give my word", "source_span": "gave my word",
+                            "source_sentence": "“No,” Melos said. “I gave my word.”"}]
+        canon_items = [{"rank": 1, "key_phrase": "give one's word",
+                         "normalization_reason": "generalize_person_dependent_reference",
+                         "changed_from_display_phrase": True, "reasoning": "R",
+                         **self._melos_rank3_qa()}]
+        merged = kc.merge_canonicalization_result(original_items, canon_items)
+        self.assertEqual(merged["overall_status"], "PASS", merged)
+        self.assertEqual(merged["items"][0]["qa_overall_status"], "PASS")
+        self.assertEqual(merged["items"][0]["qa"]["qa_traceable_contiguous_span"], "PASS")
+
+    def test_merge_result_keeps_review_required_for_fabricated_phrase(self):
+        # 無回帰確認: 人称一般化に該当しないqa_traceable_contiguous_span
+        # FAILは、従来通りREVIEW_REQUIREDのまま(false acceptしない)。
+        original_items = [{"rank": 1, "display_phrase": "opt out", "source_span": "opt out",
+                            "source_sentence": "Teenagers could opt out."}]
+        qa = _good_qa()
+        qa["qa_traceable_contiguous_span"] = "FAIL"
+        canon_items = [{"rank": 1, "key_phrase": "ask out",
+                         "normalization_reason": "other",
+                         "changed_from_display_phrase": True, "reasoning": "R", **qa}]
+        merged = kc.merge_canonicalization_result(original_items, canon_items)
+        self.assertEqual(merged["overall_status"], "REVIEW_REQUIRED", merged)
+        self.assertEqual(merged["items"][0]["qa"]["qa_traceable_contiguous_span"], "FAIL")
+
+
 class ValidateCanonicalizationResponseTests(unittest.TestCase):
     def _good_response(self):
         return {
