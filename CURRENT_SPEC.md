@@ -1554,6 +1554,68 @@ TTS・ASR・retry/regeneration単価・月次試算・A2/B1 pair単価・100/500
 今後、新規に作成するコスト集計・報告コード/ドキュメントは、この
 `USD_TO_JPY`定数を参照して円表示を主表示とすること。
 
+## TTS記号正規化(全Family共通) — 2026-09-27新設・Fable判定`PRODUCTION_WIRED`
+(`TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`、Family C Layer 2は例外)
+
+TTS読み上げに不適切な記号(canonical textには残すが、TTSへ渡す直前にのみ
+機械的に処理する対象)を全Family共通で扱う基本原則・採用ルールを本節で
+正式化する。**canonical text自体(記事本文・Key Phrase gloss等の保存データ)
+は変更しない**(TTS直前の使い捨てNormalizerでのみ処理し、副作用を後段へ
+残さない)。
+
+**基本原則**: (1) 生成前のPrompt予防(Layer 1、Writer/選定Promptで対象記号を
+そもそも使わないよう指示)→(2) Writer出力に対するValidator+既存retryループ
+への統合(Layer 2、Family A/X/Key Phraseの既存retry予算内で検知・再生成)→
+(3) TTS直前の決定論的Normalizer(Layer 3、`er003_audio_tts_asr_safety.py`、
+LLM不使用の規則変換)→(4) TTS直前の決定論的Gate(Layer 4、
+`symbol_gate_requires_stop`、未変換の残存記号を検出しSTOP、既存Audio
+Validation Gate/Human Review Lockへ合流)の3層(実質4層)構成とする。
+
+**採用ルール一覧**:
+- 波ダッシュ「〜」「～」: 位置に関わらず**全て**「なになに」へ機械的に変換
+  する(Key Phrase glossを含む)。**2026-09-06 OPEN-117決定(文頭・読点直後
+  のみ変換)は本タスクにより全位置ルールへ拡張・統合された**(下記「拡張前
+  の記述」注記および`OPEN_ITEMS.md` OPEN-117参照、旧記述は上書きせず残す)。
+- 「…」「……」: 文末相当なら句点「。」、それ以外は読点「、」へ変換する。
+- コロン「:」「：」・セミコロン「;」「；」: 句点へ変換する(数字直前直後は
+  対象外、時刻表記等を保護)。
+- 英語%/$/¥: Writer Prompt予防のみ(自然語[percent/dollars等]での表記を
+  指示)。Validatorは検出・ログのみで生成を止めない(既存retry予算を消費
+  しない)。
+- URL・email・絵文字・Markdown記号: 禁止(Prompt予防+Gate検出)。
+- 括弧・スラッシュ: 禁止(Prompt予防+Gate検出)。
+- 省略形は通常の読み(TTS自然発話に委ねる、追加ルールなし)。
+
+**pause機構**: 上記の句読点置換(コロン/セミコロン→句点、「…」→句点/読点)を
+TTSのpause(間)表現として正式採用する。`<short pause>`等の明示的pauseタグは
+本タスクで観測のみ実施し(fixture 2件、意図せぬ3回目呼び出し込み約¥0.46)、
+**採用していない**(観測結果はSTOP項目として記録のみ、Production化しない)。
+
+**対象経路**: Family A本文Writer(Point Overlap article retry)・Key Phrase
+選定(Redundancy QA retry)・Family X `ja_writer`(JA Fact Check must-fix
+retry)・Family B/C共有TTS層(Layer 1・3・4)。Family Bは日本語segmentが
+存在しないため対象外。**例外**: Family C Layer 2(Writer-output Validator、
+`er013_family_c_future_writer_08.py`/`_08_b1.py`対象)は、Family A/Xのような
+既存Writer-output retryループがFamily Cの実Writerに存在しないため未実装
+(Prompt予防[Layer 1]+Normalizer[Layer 3]+Gate[Layer 4]のみ適用。新規OPEN
+項目として`OPEN_ITEMS.md`で追跡、詳細は同REPORT §8・§9)。
+
+**Family Z Writer実装時の必須適用**: Family Z(Fiction)のProduction Writerを
+実装する際は、上記Prompt予防+Normalizer+Gateの3層(実質4層)を同様に適用
+することを必須とする(未着手、`CURRENT_SPEC.md`「Family Z(Fiction)」節参照)。
+
+**拡張前の記述(旧、上書きせず参考として残す)**: OPEN-117の下、
+「Key Phrase日本語gloss 表示用/TTS用分離」行(本ファイル「Key Phrase」節)
+には、2026-09-06時点の実装として「変換対象は文頭または読点『、』直後の
+『～』『〜』のみ、数値placeholder型・範囲表記中の文中位置は無変換のまま
+既存gateへ渡す」という記述が残っている。この記述は**2026-09-27時点では
+拡張前の履歴**であり、実際の変換ルールは上記「全位置」ルールへ置き換え
+られている(Key Phrase gloss側の「〜/～は許容」という表示用/TTS用の
+非対称緩和も撤回済み)。当該行自体は履歴として上書きしない。
+
+詳細・runtime evidence・費用・回帰確認は
+`TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01_REPORT.md`参照。
+
 ## 試聴Artifact(ユーザー提示用ページ)仕様 — 2026-08-29新設(ER-008-N8-CLOSEOUT-GOVERNANCE-25)
 
 | 項目 | 内容 | 状態 | 根拠Decision | 最終更新日 |

@@ -9750,3 +9750,79 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - Dangling Reference Check: 正式仕様本文へTrial限定用語(A/B/C/D、10k/14k、Trial-01のPrompt B等)を参照する記載を追加していないことを確認。
 - 関連: `docs/pm/ACTIVE_TASK_CLC.md`(本委任転記)、`docs/pm/RESULT_PACKET_CLC.md`。
 - commit: (本コミットでSSOT反映[`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`DECISION_LOG.md`/`docs/pm/REPORT_LEDGER.md`]を実施)
+
+## TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01: TTS記号正規化(全Family共通)をProduction配線、Family C Layer 2を例外化(2026-09-27)
+
+- 日付: 2026-09-27
+- 区分: サービス・生成仕様(TTS読み上げ前の記号処理、番組の聞こえ方に関わる)。
+- ユーザー決定: ユーザーが2026-09-27に、記号正規化の包括対策を
+  `APPROVED_FOR_PRODUCTION`と正式決定(Phase 1 recon `recon_tts_
+  symbol_normalization_01.md`を一次資料)。
+- Fable設計修正: Fableが承認前にPhase 1 recon案へ9項目の設計修正を実施
+  (中心はKey Phrase glossの表示用/TTS用非対称設計[OPEN-117、文頭・読点
+  直後のみ変換]の撤回、全位置統一への変更)。修正済み案を`docs/pm/
+  recon_tts_symbol_normalization_01.md`へannotationとして反映済み。
+- 実装(Phase 2、commit`19e638b5`): Prompt予防(Layer 1)→Writer出力
+  Validator+既存retryループ統合(Layer 2)→TTS直前Normalizer(Layer 3)→
+  TTS直前残存記号Gate(Layer 4)の3層(実質4層)を`er003_audio_tts_asr_
+  safety.py`中心に実装。Family A本文Writer(Point Overlap article retry)・
+  Family X `ja_writer`(JA Fact Check must-fix retry)・Key Phrase
+  (Redundancy QA retry)の既存retryループへ統合、Family C実Writer(A2/B1)
+  はPrompt予防のみ(Layer 2は例外、下記参照)。
+- 採用ルール: 波ダッシュ「〜」「～」は全位置で「なになに」変換(OPEN-117の
+  2026-09-06決定[文頭・読点直後のみ]を撤回・全位置へ拡張)、「…」「……」は
+  文末相当なら句点・それ以外は読点、コロン/セミコロン(数字前後除く)は
+  句点、英語%/$/¥はPrompt予防のみ(Validatorはログのみ)、URL/email/絵文字/
+  Markdown/括弧/スラッシュは禁止。詳細は`CURRENT_SPEC.md`「TTS記号正規化
+  (全Family共通)」節参照。
+- pause機構: コロン/セミコロン→句点等の句読点置換を正式なpause表現として
+  採用。`<short pause>`等の明示的pauseタグは観測のみ(fixture 2件、意図せぬ
+  3回目呼び出し込み約¥0.46)で、採用していない。
+- runtime evidence(Phase 2、実TTS+実ASR): fixture 9件全OK、Family X Meta
+  「Muse human concierge」記事の実行re-run(`er019_output/family_x_audio_
+  production_wiring_01/family_x_b3_production_wiring_01__run_01/`)で
+  `b1b/kp1_japanese`のSTOPが解消しOK化、`a2/japanese_title`は元の
+  placeholder STOPは解消したが別の既存Gate(`ER-009-JA-FOREIGN-TOKEN-
+  GATE-01`、"Muse"未登録外来語)が新規に検出しHUMAN_REVIEWのままSTOPPED
+  (本タスクの対象外、既存Gateの正常動作)。B1B Assemblyは完走
+  (`player.html`/`timeline.json`生成)、A2はAudio Validation Gateにより
+  正しくブロック継続(Gate回避なし)。
+- 費用: 実測合計約¥5.93(fixture+pause-tag観測+Meta run再実行の限界費用、
+  上限¥250内)。
+- 回帰(Phase 3、commit後の単独再実行、`er024_output/tts_symbol_
+  normalization_all_family_production_wiring_01/regression_post_commit.log`):
+  collected=3291 passed=3286 failed=3 errors=2。Phase 2時点(commit前)の
+  git diff guard 3件のFAILは、本commit(`19e638b5`)後の再実行で全て解消
+  したことを確認した(commit待ちの一時的FAILであったことを実証)。残る
+  FAIL 3件(`test_combined_equals_sum_of_er002_and_er003`等、件数集計
+  bookkeeping)は2026-09-04/09-11時点の既存regression log(`er011_output/
+  23_full_regression.log`等)でも同一パターンで失敗しており、本タスク
+  以前からの既存baseline定数陳腐化(pre-existing)と確認した(修正せず、
+  `OPEN_ITEMS.md`へ記録)。残るERROR 2件(`er003_test_p2j_investigate.
+  PerFileCountsTests...`/`er015_standard_a2_6000_generation_first_trial_
+  01_test_01`)は、本タスクが一切変更していない別Trialファイル自身の
+  自己guard(意図的なRuntimeError、依存モジュール未使用時のimport連鎖)に
+  起因し、本タスクの変更(`19e638b5`)には含まれないファイルであることを
+  コード上確認した(pre-existing/無関係)。機能的regressionは0件。
+- Fable評価・最終Status: `PRODUCTION_WIRED`(適用範囲: Family A本文
+  Writer/Key Phrase/Family X `ja_writer`/Family B・C共有TTS層[Layer 1・
+  3・4])。**例外**: Family C Layer 2(Writer-output Validator)は、
+  Family A/Xのような既存Writer-output retryループがFamily Cの実Writer
+  (`er013_family_c_future_writer_08.py`/`_08_b1.py`)に存在しないため
+  未実装のまま(新規retry loop創設は既存安全機構の独自拡張にあたるため
+  今回は行わない、`OPEN_ITEMS.md`新規項目で追跡)。Meta A2
+  `japanese_title`の"Muse"HUMAN_REVIEWは、本配線の未達ではなく既存
+  `ER-009-JA-FOREIGN-TOKEN-GATE-01`の正常動作。
+- Dangling Reference Check: 新設関数(`detect_prohibited_symbols`/
+  `symbol_gate_requires_stop`/`build_symbol_violation_prompt_note`)は
+  既存の共有安全モジュール(`er003_audio_tts_asr_safety.py`)内に配置し、
+  未承認Trial仕様への参照は作っていない。Family C Layer 2の意図的未実装は
+  dangling referenceではない(元々そのretryループを持たないため)。
+- 反映範囲: `CURRENT_SPEC.md`(「TTS記号正規化(全Family共通)」節新設、
+  OPEN-117関連の旧記述[文頭・読点直後限定]は上書きせず「拡張前の記述」
+  として残置)・`OPEN_ITEMS.md`(OPEN-117・OPEN-118へ拡張済み追記、
+  OPEN-183備考7、新規OPEN-191〜194)・`docs/pm/REPORT_LEDGER.md`。
+- 根拠レポート: `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01_
+  REPORT.md`(§0〜§11、Phase 3で§11追記)、`docs/pm/recon_tts_symbol_
+  normalization_01.md`。
+- commit: Phase 2=`19e638b5`、Phase 3(本SSOT反映)=本コミット。

@@ -314,3 +314,46 @@ future_writer_08*.py]がFamily A/Xのような既存retryループを持たな�
   narration/[wav除きjson]、audit/review_lock_state.json)
 - `er019_output/family_x_audio_production_wiring_01/family_x_b3_production_wiring_01__run_01/`
   (b1b/player.html, b1b/audit/timeline.json, a2/audit/tts_generation_results.json 他)
+
+---
+
+## 11. Fable評価・最終Status(2026-09-27)
+
+**判定**: `PRODUCTION_WIRED`(適用範囲: Family A本文Writer/Key Phrase/Family X
+`ja_writer`/Family B・C共有TTS層[Layer 1・3・4])。**例外**: Family C
+Layer 2(Writer出力Validator)は既存retryループ不在のため未実装のまま
+(新規OPEN-191で追跡、Family Cで将来Fact Check/QAループが新設された際に
+統合を推奨)。Meta A2 `japanese_title`の"Muse"HUMAN_REVIEWは、本配線の
+未達ではなく既存`ER-009-JA-FOREIGN-TOKEN-GATE-01`の正常動作(§5・§8・
+OPEN-183備考7参照)。
+
+**回帰確定(Phase 3、commit`19e638b5`後の単独再実行)**:
+`er024_output/tts_symbol_normalization_all_family_production_wiring_01/
+regression_post_commit.log`。
+
+| 種別 | §4(commit前) | Phase 3(commit後、単独再実行) |
+|---|---|---|
+| collected/passed/failed/errors | 3291/3283/6/2 | 3291/3286/3/2 |
+| git diff guard 3件(er019_family_a_files_have_no_working_tree_diff等) | FAIL | **解消(PASS)** — commit後の再実行で予測どおり消滅を確認 |
+| 件数集計bookkeeping 3件(test_combined_equals_sum_of_er002_and_er003等) | FAIL | FAIL継続。2026-09-04(`er011_output/23_full_regression.log`)・2026-09-11(`er011_output/25_full_regression.log`)の既存logで同一3件が同一原因(baseline定数陳腐化)で既にFAILしていたことを確認、**pre-existing**と確定(修正せず、新規OPEN-192へ記録) |
+| er015 loader ERROR / er003_test_p2j PerFileCounts ERROR | ERROR | ERROR継続。本タスクの変更(commit`19e638b5`の変更ファイル一覧)に該当2ファイルは含まれておらず、無関係な既存Trialファイル自身の自己guard(意図的RuntimeError・import連鎖)によるものと確認、**pre-existing/無関係** |
+
+機能的regression(上記4分類以外のFAIL/ERROR)は0件。
+
+**pause-tag観測の意図せぬ3回目呼び出し**(§9-4): 約¥0.46の追加費用を軽微
+(minor)として記録。今後同様の抽出スクリプトbugが再発しないよう、観測系
+Trialスクリプトのout_path重複チェックを推奨するが、Productionコードには
+影響しないため追加対応なし。
+
+**en_colon fixtureの観測**: 英語コロンfixture(例: "Three reasons. budget"
+のように文中コロンが句点化される変換結果)は、ASR一致・意味理解に問題なし
+(fixture_results.json実測)。将来的に文中コロンを句点ではなく読点へ変換する
+方が自然な場合があるかは、実際のFamily A本文でのコロン使用パターンが
+蓄積してから再検討する観測事項として記録する(新規Production変更は今回
+実施しない)。
+
+**SSOT反映**: `CURRENT_SPEC.md`「TTS記号正規化(全Family共通)」節新設
+(OPEN-117関連の旧記述は上書きせず「拡張前の記述」として残置)、
+`DECISION_LOG.md`本管理IDエントリ追加、`OPEN_ITEMS.md`(OPEN-117・
+OPEN-118へ拡張済み追記、OPEN-183備考7、新規OPEN-191〜194)、
+`docs/pm/REPORT_LEDGER.md`本管理ID行追加。
