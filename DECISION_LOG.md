@@ -9867,3 +9867,55 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   参照は無変更。
 - 根拠: ユーザー決定(2026-09-27)。
 - commit: 本コミット。
+
+# PM-CLOSEOUT-CONSOLIDATION-2026-09-27-B: SSOT/LEDGERの小規模同期(表記反映のみ、新規判断なし)
+
+- 日付: 2026-09-27
+- 区分: PM運用・SSOT整理(既決事項の表記同期のみ)。新規Production
+  Prompt・コード変更なし、API ¥0。
+- 反映1(`docs/pm/REPORT_LEDGER.md`): (a)
+  `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`行を追加
+  (初回正式報告=済2026-09-27[Phase 1報告]、Fable評価=
+  `APPROVED_FOR_PRODUCTION` / Phase 2実装中、Feedback=未、累積再掲対象
+  =Y)。(b) `KEY-PHRASE-DB-BASED-SELECTION-TRIAL-01`行のFable評価を
+  「`VALIDATED`→4段階切り分け報告済み(§13、2026-09-27)、ユーザー判断
+  待ち(DB候補生成維持/hybrid Trial/Oxford・EVP再評価)。Production配線
+  禁止」へ更新(既存記述は履歴として残置)。(c)
+  `FICTION-FAMILY-Z-PRODUCTION-E2E-01`行へ2026-09-27追記(テキスト工程の
+  Production配線を並列着手[WIRING IN PROGRESS]、音声工程は読み解決
+  Phase 2 commit後)。(d) `PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`
+  (commit`c4007168`)・`TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-
+  WIRING-01`(`PRODUCTION_WIRED`確定commit`2b11e0bb`を追記)・
+  `PM-REPORT-FORMAT-FIXED-RULE-2026-09-27`(commit`77db147e`)の行を追加/
+  更新した。
+- 反映2(`OPEN_ITEMS.md`): OPEN-124(古い未追跡ファイルの扱い)へ
+  2026-09-27追記(`docs/pm/ACTIVE_TASK_*.md` 8件・`RESULT_PACKET_*.md`
+  80件超がGit追跡済みのまま残存。FXA3誤commit是正時に発見、
+  commit`64ab8566`で`.gitignore`パターン追加済み。追跡解除は履歴書き
+  換えなしの`git rm --cached`で可能、本項目の棚卸し時に一括処理する。
+  単独のユーザー判断項目としては扱わない)。OPEN-185(Family Z)へ
+  2026-09-27追記(テキスト工程をFamily Xと並列着手、TTS以降は読み解決
+  Phase 2共有TTS入口commit後に接続。Status表記:
+  `APPROVED_FOR_PRODUCTION` / WIRING IN PROGRESS)。OPEN-183(Meta記事)へ
+  2026-09-27追記(A2 japanese_titleの"Muse" HUMAN_REVIEWは読み解決一般
+  機構[`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`]の
+  runtime evidenceとして解決予定、手登録しない)。
+- 反映3(`CURRENT_SPEC.md`「Family Z(Fiction)」節): 冒頭Status欄が
+  「Phase 0のみ完了・`USER_DECISION_REQUIRED`」のまま更新されていなかった
+  ため、表記同期のみ実施した。「Status(2026-09-27同期): 仕様(1)〜(4)
+  [Z-1権利Gate/Z-2/Z-3/Z-4]は`APPROVED_FOR_PRODUCTION`(2026-09-26決着、
+  OPEN-185・本ファイル参照)。Production wiring: テキスト工程 WIRING IN
+  PROGRESS(2026-09-27着手)、音声工程は読み解決Phase 2後。
+  `PRODUCTION_WIRED`ではない」を追記し、旧Status記述は
+  「(旧表記、2026-09-26以前)」と注記して残置した(上書きしない)。
+  併せて「Family Z Writer/音声経路の新設時に、TTS記号正規化
+  (`PRODUCTION_WIRED`)と読み解決resolver(`APPROVED_FOR_PRODUCTION`、
+  Phase 2実装中)を必須適用する」の1行を追記した。
+- 注記(commit`c4007168`のトレーラー欠落): commit`c4007168`
+  (`PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)は機械可読
+  トレーラー行(`Management-ID:`)が欠落している(本文コミット
+  メッセージには管理ID記載あり)。履歴書き換え禁止のためamendせず、
+  本エントリで追跡を補完する。
+- 根拠: すべてFable/ユーザー既決事項の表記同期であり、新しい判断は
+  含まない(Fable指示、管理ID`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-B`)。
+- commit: 本コミット。

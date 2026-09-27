@@ -1153,12 +1153,21 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
 
 ## Family Z(Fiction)— 2026-09-26新設(ユーザー確定ルールのSSOT記録、`FICTION-FAMILY-Z-PRODUCTION-E2E-01`)
 
-**Status**: 本節の内容(1〜7)は2026-09-26にユーザーが逐語で確定した
-Production仕様である。ただしProduction配線自体は**未実装**(Phase 0
-[read-only事前調査]完了のみ、`USER_DECISION_REQUIRED`。理由: 権利論点
-[下記1-8-2参照]および構造論点[Family Cとの関係・Connected Speech
-segment_id規約・In One Line新規設計]が未解決)。Trial結果(`VALIDATED`等)
-をこの仕様の`PRODUCTION_WIRED`と誤認しないこと。
+**Status(旧表記、2026-09-26以前)**: 本節の内容(1〜7)は2026-09-26に
+ユーザーが逐語で確定したProduction仕様である。ただしProduction配線
+自体は**未実装**(Phase 0[read-only事前調査]完了のみ、
+`USER_DECISION_REQUIRED`。理由: 権利論点[下記1-8-2参照]および構造論点
+[Family Cとの関係・Connected Speech segment_id規約・In One Line新規
+設計]が未解決)。Trial結果(`VALIDATED`等)をこの仕様の`PRODUCTION_WIRED`
+と誤認しないこと。
+
+**Status(2026-09-27同期)**: 仕様(1)〜(4)[Z-1権利Gate/Z-2/Z-3/Z-4]は
+`APPROVED_FOR_PRODUCTION`(2026-09-26決着、`OPEN_ITEMS.md` OPEN-185・
+`DECISION_LOG.md`参照)。Production wiring: テキスト工程 WIRING IN
+PROGRESS(2026-09-27着手)、音声工程は読み解決Phase 2後。
+`PRODUCTION_WIRED`ではない。**Family Z Writer/音声経路の新設時に、
+TTS記号正規化(`PRODUCTION_WIRED`)と読み解決resolver
+(`APPROVED_FOR_PRODUCTION`、Phase 2実装中)を必須適用する。**
 
 1. **Family定義**: Fiction系を既存Future Family(Family C=Future Story)
    から独立させ、**Family Z = Fiction**(Literature/Public Domain文学・
