@@ -1,0 +1,76 @@
+{
+  "management_id": "TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01",
+  "phase": "Phase 0 SDK check (実費用¥0、ネットワーク呼び出し0件)",
+  "genai_version": {
+    "installed_version": "2.14.0",
+    "expected": "2.14.0",
+    "matches_expected": true
+  },
+  "probe_generate_content_api": {
+    "api": "GenerateContent (client.models.generate_content)",
+    "field": "part.speech_metadata",
+    "attempts": {
+      "part_kwarg": {
+        "accepted": false,
+        "error_type": "ValidationError",
+        "error": "1 validation error for Part\nspeech_metadata\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'style': 'calm'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden"
+      },
+      "content_model_validate": {
+        "accepted": false,
+        "error_type": "ValidationError",
+        "error": "1 validation error for Content\nparts.0.speech_metadata\n  Extra inputs are not permitted [type=extra_forbidden, input_value={'style': 'calm'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden"
+      }
+    },
+    "conclusion": "REJECTED_CLIENT_SIDE (pydantic extra_forbidden)"
+  },
+  "probe_interactions_api": {
+    "api": "Interactions (client.interactions.create)",
+    "variants": {
+      "annotations_array": {
+        "intercepted_before_network": true,
+        "network_calls_made": 0,
+        "wire_body_input_content_item": {
+          "text": "Hello world, this is a probe test sentence.",
+          "annotations": [
+            {
+              "type": "UNKNOWN",
+              "raw": {
+                "type": "speech_metadata",
+                "style": "calm, natural"
+              },
+              "is_unknown": true
+            }
+          ],
+          "type": "text"
+        },
+        "speech_metadata_annotation_preserved_correctly": false,
+        "speech_metadata_sibling_field_preserved": false
+      },
+      "sibling_field": {
+        "intercepted_before_network": true,
+        "network_calls_made": 0,
+        "wire_body_input_content_item": {
+          "text": "Hello world, this is a probe test sentence.",
+          "type": "text"
+        },
+        "speech_metadata_annotation_preserved_correctly": false,
+        "speech_metadata_sibling_field_preserved": false
+      }
+    },
+    "conclusion": "SDK側は client側validationでは拒否しないが、実際にネットワークへ送信されるwire body上ではspeech_metadataが失われる/破損する(annotations経路は{type:UNKNOWN,raw:{...}}へ変質、sibling field経路は完全に消失)。現行google-genai==2.14.0のPython SDK経由では、公式ドキュメント記載のspeech_metadataを正しい形でサーバへ送信する手段が無い。"
+  },
+  "existing_unit_tests": {
+    "note": "実行コマンドと結果はREPORT側に記録(本関数は対象リストの記録のみ)",
+    "target_test_modules": [
+      "er002_test_common",
+      "er003_test_b1_p3v_capability",
+      "er003_test_b1_p4c_audio",
+      "er003_test_b1_p7a_audio",
+      "er003_test_b1_p9a_audio",
+      "er003_test_b1_p9a_r1_audio",
+      "er003_test_audio_tts_asr_safety",
+      "er003_test_v1_n3_01_tts_generate",
+      "er003_test_key_words_canonicalization"
+    ]
+  }
+}
