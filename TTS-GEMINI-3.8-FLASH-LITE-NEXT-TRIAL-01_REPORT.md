@@ -989,3 +989,48 @@ role別style設計の詰め・他Family配線範囲)を踏まえたFable/ユー�
 のため人間試聴による正式判定が必要):
 `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/player.html`
 (記事全体連続再生[A/B]+segment単位A/B比較表)。
+
+## §23 Production採用判断比較パケット(2026-09-27、`APPROVED_FOR_
+PRODUCTION`ではない)
+
+ユーザー試聴結果(逐語、2026-09-27):「自然で全く問題なし。シーンごとの
+抑揚・トーンは今後詰めるが、現時点Trialを止めるものではない」。
+
+ユーザー既決(2026-09-27、再質問しない): §22.6-3で発生した共有telemetry
+(`er021_output/en_asr_semantic_equivalence_production_wiring_01/
+telemetry.jsonl`末尾1624-1627行)の意図しない4行書込みは「ユーザー承認
+済み: 残置」(削除しない、観測専用ログでProduction品質・Gate結果に
+影響しないためclose扱い)。
+
+上記2点とStage1-3の全実測(§14-§22)を踏まえ、Production採用の可否・
+採用範囲・role別style方針をユーザーが判断できる状態にするための比較
+パケットを新規作成した: `docs/pm/flash_lite_production_adoption_packet_01.md`
+(A. 品質比較、B. Cost比較、C. Latency/throughput、D. SDK/Runtime影響、
+E. Production配線案、F. Dangling Reference Check、G. Production採用前の
+残作業、H. 推奨案[Fable向け素案]、I. Status/PM)。
+
+要点(詳細は同パケット参照): (1) 品質面はStage1-3の範囲(Family X B1B、
+12segment、Voice2種、数値/固有名詞/幕番号表現含む)で現行同等以上
+(instruction leakage/hallucination 0件、ユーザー試聴で自然と評価)。
+(2) コスト面はHormuz B1B実測比較(現行約¥87.7[TTSのみ、retry履歴混入の
+可能性あり] vs Flash-Lite実測¥8.72)で明確に有利、ただし公平比較として
+厳密ではない旨を明記。(3) SDKはProduction `.venv`(2.11.0)・`.venv-ci`
+(2.14.0)・Trial(2.25.0)の3系統が並存しており、採用時はProduction venv
+更新+フル回帰(現状Trialは既存TTS関連unit test 9ファイルのみ確認、
+`run_project_regression.py`の全体[3300+件規模]は未実行)が必要。
+(4) Human Review Lock・pronunciation resolver・A2 slowdown post-process・
+cost logger共有storeとの実配線は未接続(Trial独立実装のみ)。(5) role別
+style(Stage3の6role最小案)はProduction仕様への格上げ未実施の初期案
+(Dangling Reference Check済み、既存`ENGLISH_STYLE_PREFIX`等とは別体系)。
+
+Status: Flash-Lite=**`VALIDATED`のまま**(Production採用ではない)。
+新規USER_DECISION_REQUIRED: (a) Production採用可否、(b) 採用範囲、
+(c) role別style方針。§22.6-3の4行残置は既に「ユーザー承認済み: 残置」
+としてclose済み(再度の判断は求めない)。
+
+Production非変更の確認(本タスク追加分): ¥0(API呼び出し0件、TTS/ASR/LLM
+実行なし)。新規ファイルは本パケット1件のみ。既存Trial artifact
+(`er022_output/tts_gemini_3_8_flash_lite_next_trial_01/`配下)は読み取りの
+みで変更していない。SSOT(`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`)への反映は本節と同時に実施
+(該当エントリ参照)。

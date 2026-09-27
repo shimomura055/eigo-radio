@@ -10163,3 +10163,56 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   判定待ち**(`PRODUCTION_WIRED`確定はFableが行う)。
 - commit: `acd63308`(Phase 1 recon)、`1aead031`(Sonnet修正1回目)、本コミット
   (Sonnet修正2回目=closeout、SSOT反映)。
+
+## TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 2/3実測+Production採用
+判断比較パケット作成(2026-09-27、`APPROVED_FOR_PRODUCTION`ではない)
+
+- **性質**: Trial限定・比較パケット作成。¥0(API呼び出し0件、TTS/ASR/LLM
+  実行なし、Production変更なし、SDK更新なし)。Status引き続き
+  `VALIDATED`(Production採用ではない)。
+- **Stage 2(2〜3segment)・Stage 3(Family X Hormuz B1B 1記事全12segment)
+  実測(既にcommit済み、本エントリで初めてSSOTへ反映)**: Stage2は3segment
+  (数値・固有名詞含むHormuz `full_story_part1`、Narrator以外Voice
+  [Erinome]のai_hiring `point_two_body`、任意1件)全てattempt1回で
+  ASR PASS、実費用¥3.20。Stage3はFamily X Hormuz B1B全12segmentを実行し、
+  11segmentがattempt1・1segment(`full_story_part1`)のみattempt2でPASS
+  (retry率7.7%)、instruction leakage/hallucination/異常長/clipping
+  いずれも0件、実費用¥8.72。唯一のretryは、canonical本文の章見出し表現
+  "Act One/Two/Three"(綴り文字)をattempt1でdigit読み("Act 1"等)した
+  ことを既存ASR数値検証が正しく検出しSTOP、attempt2でword読みに戻り
+  PASSしたもの(既存安全網が意図どおり機能、N=1で再現性は未検証)。
+  duration実測はStage1-3を通じ一貫してB(Flash-Lite)がA(現行)より短い
+  (既存音声のある11segmentでB/A比85.0%)。
+- **ユーザー試聴結果(逐語、2026-09-27)**: 「自然で全く問題なし。シーン
+  ごとの抑揚・トーンは今後詰めるが、現時点Trialを止めるものではない」。
+- **共有telemetry4行の残置(ユーザー既決、2026-09-27)**: Stage3実行中、
+  一時的なコード変更(Tier1数値等価role gate有効化の検証、§22.6-3)により
+  意図せず`er021_output/en_asr_semantic_equivalence_production_wiring_01/
+  telemetry.jsonl`末尾1624-1627行へ4行書き込まれてしまった事象について、
+  ユーザーが「承認済み: 残置」と正式決定した(削除しない。観測専用ログで
+  Production品質・Gate結果に影響しないためclose扱い、由来・行番号は
+  `OPEN_ITEMS.md` OPEN-201に記録)。**再度USER_DECISION_REQUIREDへ戻さない**。
+- **Production採用判断比較パケット新規作成**: `docs/pm/flash_lite_
+  production_adoption_packet_01.md`(A.品質比較/B.Cost比較/C.Latency・
+  throughput/D.SDK・Runtime影響/E.Production配線案/F.Dangling Reference
+  Check/G.Production採用前の残作業/H.推奨案[Fable向け素案]/I.Status/PM)。
+  要点: 品質面はStage1-3の範囲で現行同等以上(instruction leakage/
+  hallucination 0件)、コスト面はHormuz B1B実測比較(現行約¥87.7[TTSのみ、
+  retry履歴混入の可能性あり] vs Flash-Lite実測¥8.72)で有利。ただしSDK
+  (Production `.venv`2.11.0/`.venv-ci`2.14.0/Trial2.25.0の3系統並存)・
+  既存retry/Human Review Lock/pronunciation resolver/A2 slowdown
+  post-processとの実配線・role別styleの正式仕様化はいずれも未着手。
+  Sonnet素案(Fable向け、最終採否はユーザー): Family X先行の段階導入を
+  推奨するが、最終判断はユーザーへ委ねる。
+- **反映範囲**: `CURRENT_SPEC.md`(「TTS Instruction/Spoken Text分離」節の
+  直後へ1行追加、採用と誤読されない表現)、`OPEN_ITEMS.md`(新規OPEN-201:
+  Production採用判断+telemetry4行残置の来歴)、`docs/pm/REPORT_LEDGER.md`
+  (本管理ID行更新)、`TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01_REPORT.md`
+  §23新設、本エントリ新設。
+- **STOP該当**: 無し(比較に必要な現行Production実測値は取得できた
+  [一部は集計方法の限界を明記した上で]、新規仕様判断が必要な項目は
+  USER_DECISION_REQUIREDとして個別に報告)。
+- **根拠**: `TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01_REPORT.md`(§14-§23)、
+  `docs/pm/flash_lite_production_adoption_packet_01.md`、ユーザー既決
+  (2026-09-27、telemetry4行残置承認・比較パケット作成承認・試聴結果)。
+- commit: 本コミット(比較パケット作成、SSOT反映)。
