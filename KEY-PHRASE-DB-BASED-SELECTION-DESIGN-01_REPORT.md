@@ -114,9 +114,56 @@ Trialを提案。既存のKey Phrase選定結果と並べて比較する。実�
    ユーザーの事業判断次第。推奨: 現時点では「非公開の内部照合専用」
    という運用ルールを明記した上でTrialへ進める。
 
-## 9. リスク
+## 9. リスク(Fableレビュー、2026-09-27)
 
-(Fableレビュー欄、空欄)
+1. AI主観性の削減: Selection段階の候補生成はdeterministic化され、既存
+   Strategy Lの「重要そうな表現をAIが選ぶ」主観は除去される。ただし
+   残る主観が2箇所ある。(a) 除外Gate(「簡単すぎ」「記事固有・
+   再利用性低」「chunk価値低」)のProduction時の判定主体が未定義。
+   Trialでは人間目視でよいが、Productionで規則化できない項目はLLM
+   判定に戻る可能性があり、その場合は主観が形を変えて残る。(b)
+   Canonicalizationの1 LLM callは既存契約どおり維持(設計範囲外として
+   妥当)。→ Trial条件: 除外Gate各項目について「規則で判定できた/
+   人間判断が必要だった」を分けて記録すること。
+2. DB偏り: 群1のうち2系統(CEFR-J・NGSL系)はword-onlyのため、
+   「複数DB一致(db_match_count>=2)」は構造上ほぼ単語にしか成立しない。
+   D-2ランキング規則1(複数DB一致を最優先)と規則2(chunk価値のある
+   phraseを単語より先に見る)は矛盾しており、設計内でも認識されて
+   いるが未解消。→ Trial条件: 複数DB一致をword群とphrase群で別集計し、
+   DB一致数で単語がphraseを押しのけないよう、順位付けはword/phrase
+   各群内に留めて観測する(閾値決定ではなく観測設計の修正)。
+3. phrase抽出の漏れ: discontinuous phrasal verb検出・複数語表現の
+   活用形正規化・Wiktionaryのphrase/idiomカテゴリタグ精度はいずれも
+   未実装・未検証(設計は正直に明記)。加えてWiktionaryデータの取り
+   込み方法(dump解析かAPI/カテゴリ抽出か)が設計に未記載で、セット
+   アップ工数がTrial費用見積に計上されていない。→ Trial着手前に
+   Wiktionary抽出方法と所要時間目安を確定すること。
+4. 単語偏重: 論点2と同根。phrase候補の供給源が実質Wiktionary単独に
+   依存するため、Wiktionary側のカバー率が低い本文ではfallback(LLM)
+   発動率が高くなり、「AI主観削減」の効果が薄れる可能性がある。→
+   Trial観測項目「fallback発動率」と「phrase系件数」を本文別に必ず
+   並記する。
+5. Production処理負荷: hash set照合で1記事1秒以内・メモリ数十MB見込み、
+   n-gram 1,500件/記事は問題ない規模。DB更新(Wiktionary改訂・CEFR-J
+   改訂版)の保守運用は設計外(Production採用時に別途決める)。
+6. ライセンスリスク: Oxford系除外、EVP/PHRASE List/PHaVE List/ACL未使用
+   は正しい判断。NGSL旧ドメイン(.org)の第三者乗っ取りを検出し.comのみ
+   を参照元とした点は良い。残点: NGSLのCC変種(BY/BY-SA)番号未確認
+   (BY-SAならWiktionary同様ShareAlike扱い)、CEFR-J引用表記の掲載場所
+   (内部docでよいか、公開物にも必要か)が未定。いずれもTrial前STOP
+   要件ではないが、Production採用前には確定が必要。
+7. AI fallback範囲: 4件未満時のみ・主観的指示なし・既存hard
+   requirement流用、という限定は指示どおり。→ Trial条件: fallback
+   由来候補もDB一致候補と同じevidence schemaで記録し、
+   `matched_dbs=[]`・`final_selection_reason="llm_fallback"`を明示する
+   こと(DB由来とAI由来を後から区別できること)。
+8. 除外閾値未決の遵守: E節で閾値を決めておらず、D-2はスコア式ではなく
+   2軸保持のtie-break順序に留まっている。指示に整合。
+9. Standard/Advanced独立: C-2手順1で「レベルごとに独立」と明記。OK。
+
+Fable判定: `DESIGN_READY_FOR_TRIAL`(条件付き)。Trial着手前提条件は
+上記1・2・3・4・7の「→ Trial条件」5件。Trialの実施可否はユーザー判断
+(§8参照、Fable推奨はRESULT_PACKETではなくユーザー報告で提示)。
 
 ## 10. 次に進めてよい作業・まだ進めてはいけない作業
 
