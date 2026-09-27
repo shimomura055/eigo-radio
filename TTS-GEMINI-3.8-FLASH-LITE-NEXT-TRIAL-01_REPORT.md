@@ -217,3 +217,175 @@ Fable/ユーザーの判断を仰ぐ。Sonnetの裁量で1・2以降へ自動的
 `er005_output/cost_baseline_01/pricing_snapshot.json`、`.gitignore`。
 `ACTIVE_TASK_FLT.md`/`RESULT_PACKET_FLT.md`・`.venv_trial_genai214/`は
 commit対象外。
+
+## §12 補足調査(SDK最新版・REST経路、2026-09-27)
+
+本節はすべてread-only HTTP GETのみで実施(TTS/ASR課金API呼び出し0件、
+実費用¥0)。`.venv_trial_genai214`への**インストールは行っていない**
+(委任文の明示指示どおり、`pip index versions`によるクエリのみ、既存の
+`google-genai==2.14.0`のまま無変更。確認コマンド`pip show google-genai`
+実行結果: `Version: 2.14.0`のまま)。
+
+### §12.1 PyPI公開バージョン一覧(2.14.0より新しい版の有無)
+
+`.venv_trial_genai214`のpipで`pip index versions google-genai`実行
+(2026-09-27 05:02 UTC)。結果: **2.14.0より新しい版が11件存在**
+(INSTALLED: 2.14.0、LATEST: 2.25.0)。PyPI JSON API
+(`https://pypi.org/pypi/google-genai/json`、取得日時2026-09-27 05:02 UTC)
+による各バージョンの公開日時(`upload_time_iso_8601`):
+
+| version | upload_time (UTC) |
+|---|---|
+| 2.14.0(Trial導入版) | 2026-07-22T21:35:42Z |
+| 2.15.0 | 2026-07-29T17:43:20Z |
+| 2.16.0 | 2026-07-30T14:34:35Z |
+| 2.17.0 | 2026-08-06T05:10:39Z |
+| 2.18.0 | 2026-08-13T00:12:51Z |
+| 2.18.1 | 2026-08-13T22:13:48Z |
+| 2.19.0 | 2026-08-19T23:05:41Z |
+| 2.20.0 | 2026-08-25T21:28:25Z |
+| 2.21.0 | 2026-08-31T21:49:12Z |
+| 2.22.0 | 2026-09-02T18:06:00Z |
+| 2.23.0 | 2026-09-10T22:55:29Z |
+| 2.24.0 | 2026-09-16T22:38:35Z |
+| 2.25.0(最新) | 2026-09-22T17:22:59Z |
+
+### §12.2 CHANGELOG.md(googleapis/python-genai)の`speech_metadata`関連記述(逐語引用)
+
+出典: `https://raw.githubusercontent.com/googleapis/python-genai/main/CHANGELOG.md`
+(取得日時2026-09-27 05:03 UTC、HTTP 200)。
+
+**該当あり**。バージョン`2.25.0`(2026-09-22公開、リポジトリの
+Compareリンク`https://github.com/googleapis/python-genai/compare/v2.24.0...v2.25.0`)
+のFeatures節に、以下の逐語記述:
+
+> `## [2.25.0](https://github.com/googleapis/python-genai/compare/v2.24.0...v2.25.0) (2026-09-22)`
+>
+> `### Features`
+>
+> `* Expose SpeechMetadata, VoiceConfig.voice, and SpeechAnnotation in public GenAI SDKs ([a6d3243](https://github.com/googleapis/python-genai/commit/a6d32434b848ada0a635dae38406811dbf4a7c67))`
+
+(同じFeatures節に`Add sample_audio to Voice in GAOS SDK`
+`Add Voices API resource to GAOS SDK`
+`Wire voice into sdk`等、関連機能追加も並記されている。)
+
+`2.14.0`〜`2.24.0`のChangelogエントリ内には`speech_metadata`/
+`SpeechMetadata`の文字列は出現しない(`grep -in`でCHANGELOG全文
+2,207行を検索、`2.25.0`エントリの上記1箇所のみがヒット)。
+
+**解釈(推測ではなく上記引用に基づく事実関係の整理)**: 本Trial
+(Phase 0)がSDK 2.14.0で確認した「GenerateContent APIの`types.Part`が
+`speech_metadata`フィールドを持たずpydanticが`extra_forbidden`で
+拒否する」という制約は、2.25.0のこのChangelogエントリの内容
+(「SpeechMetadataを公開SDKへexposeした」)と符合する。すなわち、
+`speech_metadata`自体はより新しいバージョンのSDKで型定義として
+追加されている可能性が高い(§12.4のREST側裏付けと合わせて記録、
+ただし2.25.0を実際にインストールして検証してはいないため、
+「動作する」との断定はしていない)。
+
+### §12.3 REST APIリファレンス(`ai.google.dev/api/generate-content`)の記載(逐語引用)
+
+出典: `https://ai.google.dev/api/generate-content`(取得日時2026-09-27
+05:04 UTC、HTTP 200)。
+
+**該当あり**。`Part`型のJSON representationセクションに、`text`と
+並ぶ**sibling field**として`speechMetadata`が明記されている(逐語、
+HTML構造上のプロパティ列挙。委任文の「(Interactions APIの)
+contentのsibling fieldとして`speech_metadata`を直接置いた場合」の
+実験と同じ形状が、実は**GenerateContent APIのPart型自体に正式に
+存在する**ことが分かった):
+
+```
+"speechMetadata": {
+    object (SpeechMetadata)
+},
+// data
+"text": string,
+```
+
+`Part.FIELDS.speech_metadata`セクションの説明文(逐語):
+
+> `Optional. Metadata applied to text parts to customize how they should be spoken or synthesized, such as specifying speaker identity or speaking style.`
+
+`SpeechMetadata`型自体の定義(逐語):
+
+> `Speech metadata for text parts.`
+>
+> フィールド: `speaker`(`string`、`Optional. Optional speaker name
+> for multi-speaker synthesis.`)、`style`(`string`、`Optional. Optional
+> style instruction for the speech synthesis.`)
+
+JSON representation(逐語):
+```
+{
+  "speaker": string,
+  "style": string
+}
+```
+
+**解釈**: REST API仕様上は、`speechMetadata`(camelCase)は
+GenerateContent APIの`Part`のフィールドとして**公式に定義されている**
+(Interactions APIの`annotations`配列を経由する形とは別に、
+GenerateContent API自体にもこのフィールドが存在する)。Phase 0で
+`types.Part(text=..., speech_metadata=...)`が即座に
+`pydantic.ValidationError(extra_forbidden)`になったのは、
+サーバ側/REST仕様の問題ではなく、**2.14.0時点のPython SDK側の型定義
+(pydanticモデル)がこのフィールドをまだ持っていなかったこと**が
+直接の原因であったことが、この一次資料により裏付けられた。
+
+### §12.4 公式ガイド(`gemini-api/docs/speech-generation`)側の記載
+
+出典: `https://ai.google.dev/gemini-api/docs/speech-generation`
+(取得日時2026-09-27 05:04 UTC、HTTP 200)。
+
+このガイド内の実行例(JSON/Python/JavaScript)はいずれも
+**Interactions API形式(`annotations: [{"type": "speech_metadata",
+"style": "..."}]`)のみ**を示しており、GenerateContent APIの
+`Part.speechMetadata`(§12.3)を直接使う例は本ガイド内には無い
+(見出し`Control speech style with metadata and tags`配下、逐語:
+`Gemini 3.8 TTS treats the text field strictly as a verbatim
+transcript. To control delivery without having stage directions read
+aloud, split your instructions by scope:`)。
+
+**未確認事項として残るもの(推測で埋めない)**: GenerateContent API
+経由で`Part.speechMetadata`を直接使う具体例・挙動は、本Trialで
+参照した2つの一次資料(REST APIリファレンス・speech-generation
+ガイド)のどちらにも実行例が無く、未確認。§12.2のSDK
+Changelog(2.25.0で「公開SDKへexpose」)と§12.3のREST定義の存在は
+確認できたが、**2.25.0を実際にインストールして
+`client.models.generate_content`経由で送信できるかどうかの実機検証は、
+本Trialでは行っていない**(委任文の「インストールはしない」指示に
+従ったため)。
+
+## §13 Fable評価(2026-09-27)
+
+Status: `USER_DECISION_REQUIRED`(Stage 1未着手、TTS課金¥0、
+Cap ¥500未消費)。SDK制約の発見時点でSTOPした判断は委任条件どおりで
+適切。隔離環境で既存TTS関連テスト264件超がPASSしたことにより、
+Production `.venv`無変更は確認済み。
+
+§12の補足調査により、当初§10で「未確認」としていた事項の一部に
+新しい事実(推測ではなく一次資料の逐語引用)が加わった: (1) SDKには
+2.14.0より新しい版が11件存在し、うち2.25.0(2026-09-22公開)の
+Changelogに「SpeechMetadataを公開GenAI SDKへexposeした」という
+直接該当する記述がある。(2) REST APIリファレンス自体には、
+GenerateContent APIの`Part`型の一部として`speechMetadata`
+フィールド(`speaker`/`style`)が公式に定義されている。これらは
+Phase 0で発見された制約(2.14.0のSDK型定義に`speech_metadata`が
+存在しない)が、サーバ/仕様側の欠落ではなくSDKのバージョン遅れに
+起因していた可能性を示す一次資料上の裏付けであり、2.25.0を
+実際にインストールして動作確認しない限り「解決した」とは断定
+できない(§12.4参照、実機検証は本タスクの範囲外[インストール禁止]
+のため未実施)。
+
+次の一手はユーザー判断(選択肢: 新SDK版[2.25.0]をTrial環境
+[`.venv_trial_genai214`とは別の新規Trial venv、または既存を複製]へ
+導入して実機再確認する/RESTでの直接送信をTrial限定で試す/保留)。
+Fable推奨は、§12の一次資料(Changelog・REST定義双方が2.25.0での
+対応を示唆)を踏まえ、**選択肢2(新SDKバージョンをTrial限定で導入し
+GenerateContent API経由での実機確認を行う)を次のTrial候補として
+優先度高く提示する**。ただし実装はユーザー承認後に行う(Sonnetの
+裁量では実施していない)。
+
+pricing_snapshot.jsonへの公式単価追加は追加のみで既存エントリ無変更を
+確認(Gate上の副作用なし)。
