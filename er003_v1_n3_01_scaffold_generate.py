@@ -28,6 +28,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p2_keywords as bk
@@ -188,7 +189,8 @@ def get_client():
 # Key Phrase選定(article_idを動的に渡すための薄いwrapper)
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
-                              process: str = None, diagnostic_note: str = None) -> dict:
+                              process: str = None, diagnostic_note: str = None,
+                              kp_backend: str = "strategy_l") -> dict:
     """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
     渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
     このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
@@ -197,7 +199,35 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     diagnostic_note(ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01追加): 前回の
     選定でKey Phrase Set Redundancy QA(er011_key_phrase_set_redundancy_qa_01.py)
     がNGと判定した場合、その診断情報をprompt末尾へ追加して再選定させる
-    (記事固有のハードコードではなく、直前の判定結果をそのまま渡すだけ)。"""
+    (記事固有のハードコードではなく、直前の判定結果をそのまま渡すだけ)。
+
+    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01追加、
+    2026-09-27): 既定`"strategy_l"`は本関数の従来どおりの挙動(本文全文を
+    prompt送信するStrategy L方式、以下の関数本体)を変更しない。
+    `"db_hybrid"`を渡すと、Family X通常記事向けにユーザーが正式採用した
+    DB Hybrid方式(Primary、`er030_key_phrase_db_hybrid_selector_01`)を
+    試み、失敗した場合のみこの関数の既存挙動(Strategy L全文方式、
+    Fallback)へ自動的に切り替える(失敗理由は
+    `er030_output/kp_backend_telemetry_01/telemetry.jsonl`へ記録する)。
+    既定値を変更していないため、Family X以外の全既存呼び出し元
+    (Family A/B/C/News/Z等)は無変更のまま影響を受けない。"""
+    if kp_backend == "db_hybrid":
+        return _run_key_phrase_selection_db_hybrid_with_fallback(
+            article_text, out_dir, article_id, source_level, process=process,
+            diagnostic_note=diagnostic_note)
+    result = _run_key_phrase_selection_strategy_l(
+        article_text, out_dir, article_id, source_level, process=process,
+        diagnostic_note=diagnostic_note)
+    result["kp_backend_used"] = "strategy_l"
+    return result
+
+
+def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, article_id: str, source_level: str,
+                                          process: str = None, diagnostic_note: str = None) -> dict:
+    """既存Strategy L全文方式(本文全体をprompt送信)。2026-09-27に
+    run_key_phrase_selection()から名前を分離しただけで、本体は無変更
+    (KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01のFallback経路
+    としてもそのまま再利用する)。"""
     os.makedirs(out_dir, exist_ok=True)
     template = bk.load_prompt_template()
     user_message = bk.build_user_message(article_text, template=template)
@@ -228,6 +258,60 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     if status != "KEY_WORDS_STRUCTURE_PASS":
         return result
     result["original_items"] = parsed["items"]
+    return result
+
+
+KP_BACKEND_TELEMETRY_PATH = os.path.join("er030_output", "kp_backend_telemetry_01", "telemetry.jsonl")
+
+
+def _log_kp_backend_telemetry(article_id: str, source_level: str, backend: str,
+                               fallback_triggered: bool, **extra) -> None:
+    """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: DB Hybrid方式の
+    使用実績・fallback発火をjsonlへ追記する(記事・レベル・backend・
+    fallback理由・cost・model_idの観測可能性を確保する。fallbackが
+    silentlyに通常経路化しないよう、常にこの1ファイルへ記録する)。"""
+    os.makedirs(os.path.dirname(KP_BACKEND_TELEMETRY_PATH), exist_ok=True)
+    entry = {
+        "timestamp": time.time(), "article_id": article_id, "source_level": source_level,
+        "backend": backend, "fallback_triggered": fallback_triggered,
+        **extra,
+    }
+    with open(KP_BACKEND_TELEMETRY_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _run_key_phrase_selection_db_hybrid_with_fallback(
+        article_text: str, out_dir: str, article_id: str, source_level: str,
+        process: str = None, diagnostic_note: str = None) -> dict:
+    """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: Primary=DB
+    Hybrid方式(`er030_key_phrase_db_hybrid_selector_01`)を試み、
+    `DbHybridFailure`が送出された場合のみFallback=既存Strategy L全文方式
+    (`_run_key_phrase_selection_strategy_l`、無変更)へ切り替える。
+    いずれの経路でもtelemetryへ1行記録する(fallbackの黙示的な通常経路化
+    を防ぐ)。"""
+    import er030_key_phrase_db_hybrid_selector_01 as db_hybrid
+
+    try:
+        result = db_hybrid.run_db_hybrid_selection(
+            article_text, os.path.join(out_dir, "key_phrases_db_hybrid"), article_id, source_level,
+            process=process, diagnostic_note=diagnostic_note)
+    except db_hybrid.DbHybridFailure as e:
+        _log_kp_backend_telemetry(article_id, source_level, "db_hybrid", True,
+                                   fallback_reason_code=e.reason_code, fallback_reason=str(e),
+                                   **e.telemetry)
+        print(f"[KP-BACKEND] db_hybrid selectorが失敗しました({e.reason_code}: {e})。"
+              f"Strategy L全文方式へfallbackします({article_id})。")
+        result = _run_key_phrase_selection_strategy_l(
+            article_text, out_dir, article_id, source_level, process=process,
+            diagnostic_note=diagnostic_note)
+        result["kp_backend_used"] = "strategy_l_fallback"
+        result["kp_backend_fallback_reason_code"] = e.reason_code
+        return result
+
+    _log_kp_backend_telemetry(article_id, source_level, "db_hybrid", False,
+                               cost_jpy=result.get("cost_jpy"), model_id=result.get("model_id"),
+                               shortlist_total_count=result.get("shortlist_total_count"))
+    result["kp_backend_used"] = "db_hybrid"
     return result
 
 
@@ -320,7 +404,7 @@ def detect_key_phrase_symbol_findings(merged_items: list) -> list:
 
 
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
-                     process: str = None) -> dict:
+                     process: str = None, kp_backend: str = "strategy_l") -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
 
@@ -330,12 +414,17 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
     上限まで再試行してもNGが残る場合は、既存のKey Phrase QAの人間確認
     運用(REVIEW_REQUIRED = 自動不採用・人間確認後に採用可)にならい、
     本文は変更せず"NG_REVIEW_REQUIRED"として報告する(黙示的な自動採用は
-    しない)。"""
+    しない)。
+
+    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01追加):
+    意味はrun_key_phrase_selection()と同じ。retry(選定からやり直す
+    ループ)でも同じkp_backendが一貫して使われる(既定"strategy_l"は
+    全既存呼び出し元で無変更)。"""
     redundancy_retry_log = []
     diagnostic_note = None
     for attempt in range(0, KEY_PHRASE_REDUNDANCY_RETRY_MAX + 1):
         sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process,
-                                        diagnostic_note=diagnostic_note)
+                                        diagnostic_note=diagnostic_note, kp_backend=kp_backend)
         if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
             return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
                      "redundancy_retry_log": redundancy_retry_log}

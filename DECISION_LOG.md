@@ -10278,3 +10278,119 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   production_adoption_packet_01.md`、`TTS-GEMINI-3.8-FLASH-LITE-NEXT-
   TRIAL-01_REPORT.md`(§14-§23)。
 - commit: 本コミット(Phase 0、SSOT反映+配線設計)。
+
+## KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: DB Hybrid方式
+Production採用(Family X、Primary/Fallback配線、Phase 1、2026-09-27)
+
+- **性質**: Production module新設+opt-in配線+test+runtime evidence。
+  Guardrail¥40(runtime evidenceのみ実API課金、コード・testは¥0)。
+- **ユーザー正式決定(2026-09-27、逐語要旨)**:
+  1. Family X: DB Hybrid方式(KEY-PHRASE-DB-HYBRID-TRIAL-04、er029、
+     baseline commit`57b61273`、12本文12/12 structural PASS)を
+     `VALIDATED` → **`APPROVED_FOR_PRODUCTION`**。Gate 3完了まで
+     `PRODUCTION_WIRED`にしない(判定はFable)。
+  2. 基本方針: **Primary=DB Hybrid、Fallback=現行Strategy L全文方式**。
+     Family XのProduction正式初回pathへ配線。retry/fallback/
+     regenerationとの整合。Trial専用scriptのまま残さず、Production
+     moduleへ昇格する。
+  3. 現行Strategy Lは即時削除せずfallbackとして残す。DB Hybrid
+     failure時のfallback条件を明示し、fallbackが勝手に通常経路化
+     しないようtelemetryで観測可能にする。
+  4. 共有KP層(`er003_v1_n3_01_scaffold_generate.py`)変更 →
+     実装後にMandatory Opus L2(Fable発火)。BLOCKER解消前に
+     `PRODUCTION_WIRED`宣言しない。
+  5. 並行ルール: Trial-04挙動(er029)をbaselineとして固定し、並走中の
+     Family Z Trial・Family X音声Agentの都合でCore(candidate
+     generation/shortlist logic/共通validator)を変更しない。
+- **実装(Phase 1)**:
+  - 新規`er030_key_phrase_db_hybrid_core_01.py`(Core: er029 stage1の
+    候補生成[Fix A引用符対応sentence分割・Fix B rare/technical single
+    word]+`run_stage1_and_shortlist_v4`相当のshortlist組み立てを、
+    関数名の"_v4"接尾辞のみ除去してロジック無変更のまま複製。
+    er023/er027/er028[群1DB抽出・Wiktionary lookup・possessive noise
+    除去・context mismatch検出]は既存資産としてそのまま依存し無変更)。
+    12本文(Trial-04の既存6+追加6)でer029と完全に同一の
+    shortlist/stage1結果を返すことを固定回帰化。
+  - 新規`er030_key_phrase_db_hybrid_selector_01.py`(Selector:
+    compact shortlist promptを組み立て、既存Production Strategy L
+    選定gate`er003_key_words_production.run_production_selection_gate`
+    [schema/model/validator一切無変更]を1回呼ぶ。失敗条件
+    [`SHORTLIST_TOO_SMALL`(閾値8件未満)/選定gate非PASS status/
+    `SELECTOR_EXCEPTION`/`COST_GUARD_EXCEEDED`(1記事JPY 5.0超過、
+    Trial-04実測最大¥2.03の約2.5倍)]で`DbHybridFailure`を送出)。
+  - 配線: `er003_v1_n3_01_scaffold_generate.py::run_key_phrase_
+    selection()`/`run_key_phrases()`にopt-in引数`kp_backend`(既定
+    `"strategy_l"`、本体を`_run_key_phrase_selection_strategy_l()`へ
+    改名しただけで無変更)を追加。`"db_hybrid"`指定時のみDB Hybridを
+    試み、失敗時は`_run_key_phrase_selection_strategy_l()`(既存
+    Strategy L、無変更)へ自動fallbackし、いずれの経路でも
+    `er030_output/kp_backend_telemetry_01/telemetry.jsonl`へ1行記録
+    する。`er019_family_x_audio_production_runner_01.py::
+    run_theme_scaffold()`の既定値のみ`"db_hybrid"`にし、Family X以外
+    の全既存呼び出し元(Family A/B/C/News/Z、B-Family等、すべて同一の
+    共有関数`run_key_phrases()`を呼ぶ)は既定`"strategy_l"`のまま無変更。
+  - rollback: `kp_backend`既定値(`run_theme_scaffold`引数既定値の
+    1箇所)を`"strategy_l"`へ戻すだけで即座に旧方式へ全面復帰可能。
+- **test**: `er030_key_phrase_db_hybrid_family_x_production_wiring_01_
+  test.py`(15件、全PASS、費用¥0)。Core等価性(12本文、er029と
+  byte-identicalなshortlist)、既知bug A〜E再発なし(discontinuous
+  phrasal verb/possessive noise/quote-aware split/rare single
+  word)、Family X 6本文(Meta/Hormuz/small_bag)の機械screening無回帰
+  (Trial-04 REPORT §3実測shortlist件数[21→22/22→24/20→20×4]と一致、
+  ユーザー例示語[Brent crude/sea blockade/contract worker]保持を固定
+  回帰化)、`SHORTLIST_TOO_SMALL`fallback発火(API呼び出し前、費用ゼロ)、
+  legacy既定不変(`kp_backend`未指定時は`er030_*`モジュールに一切
+  到達しないことをmock検証)、dispatch確認(db_hybrid成功/fallback両方の
+  telemetry記録)。`run_project_regression.py`(collected 3344、
+  failed 7+errors 2。内訳: (a) `er003_test_bad`の意図的にFAILする
+  fixture、(b)`er003_test_p2j_investigate`の過去のtest件数集計
+  自己整合性test[歴史的な値との照合、本タスクと無関係]、(c)
+  `er015_standard_a2_6000_generation_first_trial_01`の起動時version
+  drift STOP guard[import時RuntimeError、本タスクと無関係な既存
+  Production安全装置]、(d)`er011_open112_trend_synthesis_mode_
+  production_wiring_01_test_01`のbyte parity test3件[本タスクが
+  一切importしない`er003_v1_n3_01_articles_generate`依存、無関係]、
+  (e)`er019_family_x_pointless_01_test_01::test_family_a_files_have_
+  no_working_tree_diff`[本タスクが`er003_v1_n3_01_scaffold_generate.py`
+  へ加えた変更がcommit前の一時的な未commit差分として検知されたもの、
+  本コミット後に解消見込み]。(a)〜(d)は本タスク開始前から存在する
+  既知の無関係failureであり新規regressionではない)。
+- **Runtime evidence**(2026-09-27、Guardrail¥40、`er030_output/
+  family_x_kp_db_hybrid_evidence_01/`、既存Production artifact
+  [`er019_output/family_x_b3_*`配下]は一切上書きしていない
+  [`git status`で無変更を確認済み]): 実Production共有入口
+  `sc.run_key_phrases(kp_backend="db_hybrid")`をMeta A2/B1B・
+  Hormuz A2/B1Bの4記事で実行し、選定→canonicalization→Key Phrase
+  Set Redundancy QAが全記事`KEY_WORDS_STRUCTURE_PASS`/
+  `CANONICALIZATION_PASS`/`REDUNDANCY_PASS`で完走した(model_id
+  `gpt-5.6-luna`、ER-006-MODEL-ROUTING-CONTRACT-01経由のrouting
+  runtime evidence、fallback非発火、DB Hybrid選定分の実測費用合計
+  JPY 9.2517。canonicalization/redundancy QA自体は既存Production側が
+  元々cost計測していないため対象外、既存の既知の限界であり本タスクの
+  新規欠落ではない)。最終5件の実例: meta_a2=concierge/pull back/
+  take off/contract worker/speak for、hormuz_a2=give back/Brent
+  crude/be taken back/center stage/sea blockade等、重要語
+  (contract worker/Brent crude/sea blockade)の選定漏れは発生しな
+  かった。追加でHormuz A2に対し、cost guardを一時的にJPY 0.0001へ
+  monkeypatchして`COST_GUARD_EXCEEDED`を実際に2回発火させ(Key
+  Phrase Set Redundancy QA retryループ内でも同一のfallback経路が
+  機能することを確認)、Strategy L全文方式への実fallback(選定→
+  canonicalization→Redundancy QA、全てPASS、最終5件は
+  give back some gains/blockade/charge ships/take a sharp turn/
+  settlement priceへ変化)を実測した。全件`er030_output/kp_backend_
+  telemetry_01/telemetry.jsonl`へ記録済み。
+- **反映範囲**: `CURRENT_SPEC.md`(「Key Phrase」節「Family X選定方式
+  (DB Hybrid、Primary/Fallback)」行新設)、`OPEN_ITEMS.md`(Trial-04
+  留保事項をOPEN-202として新規登録)、`docs/pm/REPORT_LEDGER.md`
+  (新規管理ID行追加)、`KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-
+  WIRING-01_REPORT.md`(新規)、本エントリ新設。
+- **STOP該当**: 無し(Core/shortlist logic/共通validatorは無変更、
+  並行中のFamily Z Trialのbaselineとも矛盾しない)。
+- **Mandatory Opus L2**: 共有KP層(`er003_v1_n3_01_scaffold_
+  generate.py`)を変更したため、ユーザー決定どおりFableが発火する
+  (本タスクでは未実施、REPORT側に申し送り事項を記載)。
+- **根拠**: ユーザー正式決定(2026-09-27、逐語)、
+  `KEY-PHRASE-DB-HYBRID-TRIAL-04_REPORT.md`、
+  `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`。
+- commit: 本コミット(Phase 1、Production module昇格+opt-in配線+
+  test+runtime evidence)。

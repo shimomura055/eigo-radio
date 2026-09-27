@@ -1,0 +1,84 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# 20% Plan Taken Back—but the Oil Chart Was Not Done Yet
+
+This news feels like a short play in three acts. Act One was “20%.” Act Two brought a surprise. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted about a US plan. The United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay. It did not say how the money would be collected. It did not say what law would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.
+
+### The 20% plan changes overnight
+
+About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees.
+
+The change was sudden. But the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.
+
+### The chart refuses to stay down
+
+After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.
+
+## In one line
+
+Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage. But the chart pulled back only briefly before recovering. The policy turn and the oil chart’s “not over yet” move happened that same day.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "give back",
+    "japanese_gloss": "上がった分を失う",
+    "source_sentence": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "Brent crude",
+    "japanese_gloss": "世界の原油価格の目安になる原油",
+    "source_sentence": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "be taken back",
+    "japanese_gloss": "いったん出した案が引っ込められる",
+    "source_sentence": "20% Plan Taken Back—but the Oil Chart Was Not Done Yet"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "center stage",
+    "japanese_gloss": "注目の中心に立つ",
+    "source_sentence": "For the moment, only a large number stood at center stage"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "sea blockade",
+    "japanese_gloss": "海からの封鎖",
+    "source_sentence": "Reuters linked that rise to concern about a US sea blockade of Iran"
+  }
+]

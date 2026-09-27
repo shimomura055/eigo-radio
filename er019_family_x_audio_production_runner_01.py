@@ -297,10 +297,20 @@ def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     return results
 
 
-def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str]) -> dict:
+def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
+                        kp_backend: str = "db_hybrid") -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
-    既定構成をそのまま再利用する、本委任文の前提どおり)。"""
+    既定構成をそのまま再利用する、本委任文の前提どおり)。
+
+    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01、
+    2026-09-27): ユーザー正式決定によりFamily X通常記事はDB Hybrid方式
+    (Primary、"db_hybrid")を既定で使う。失敗時は
+    `sc.run_key_phrase_selection`内部で既存Strategy L全文方式へ自動
+    fallbackする(本関数はfallbackの発生有無を意識しない、
+    `er030_output/kp_backend_telemetry_01/telemetry.jsonl`で観測可能)。
+    他Family(A/B/C/News/Z)の`sc.run_key_phrases`呼び出しはこの引数を
+    渡さないため既定"strategy_l"のまま無変更。"""
     result = {}
     for level in levels:
         article_path = f"{source_dir}/{level}/article.md"
@@ -317,7 +327,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str])
         kp_dir = f"{level_out_dir}/key_phrases"
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
-        kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process)
+        kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
+                                 kp_backend=kp_backend)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
 
