@@ -668,340 +668,103 @@
   },
   "full_story_part2": {
     "state": "HUMAN_REVIEW_REQUIRED",
-    "canonical_text_sha256": "084e7f59854efe4104f3112096dcb2243c08003c77696a57d35d4b4ce3732a4d",
+    "canonical_text_sha256": "16ebfa49b8052037608a09f102f446b0719f338ae5a9357ce7bbd01da7a5a5fc",
     "language": "en",
     "theme_id": "hormuz__run_02",
     "level": "b1b",
     "segment_id": "full_story_part2",
-    "updated_at": "2026-09-27T12:25:14",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
+    "updated_at": "2026-09-27T15:36:31",
+    "reason": "最終status=STOPPED。canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:%, NUMERIC_SYMBOL_OBSERVE:$",
     "final_status": "STOPPED",
     "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 0,
+    "cumulative_asr_calls": 0,
     "budget_guard_triggered": false,
-    "last_attempts_log": [
-      {
-        "attempt": 1,
-        "status": "OK",
-        "asr_text": "The 20 percent plan changes overnight. About 24 hours and 48 minutes later, at 11:04 a.m. on July 14th, Trump said the 20 percent plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited \"very productive discussions\" with Middle Eastern leaders. He also said no one should charge ships in the Strait of Hormuz and that he disliked fees. The change was sudden, but to read the oil move, the dates must be kept separate. On July 13th, Brent rose 9.59 percent and settled at $83.36. Reuters linked that rise to concern about a U.S. sea blockade of Iran planned for the next day and energy shipments through the Strait of Hormuz.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": false,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 49.091,
-          "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 49.091,
-          "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.32
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part2_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "The 20% plan changes overnight. About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the Straits, and that he disliked fees. The change was sudden, but to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "NORMALIZED_MATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 47.731,
-          "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.3,
-          "trimmed_duration_seconds": 47.731,
-          "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.3
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": true,
-        "repetition_qa_evidence": {
-          "flagged": true,
-          "duration_seconds": 47.731,
-          "method_a_ngram": {
-            "matches": [
-              {
-                "span_text": " The  20 %  plan",
-                "n_words": 4,
-                "category": "phrase",
-                "first_start_s": 0.0,
-                "first_end_s": 1.58,
-                "second_start_s": 9.8,
-                "second_end_s": 11.1,
-                "gap_seconds": 8.22,
-                "canonical_repeat_count": 0,
-                "intentional": false,
-                "flagged": true
-              }
-            ],
-            "flagged": true,
-            "flagged_matches": [
-              {
-                "span_text": " The  20 %  plan",
-                "n_words": 4,
-                "category": "phrase",
-                "first_start_s": 0.0,
-                "first_end_s": 1.58,
-                "second_start_s": 9.8,
-                "second_end_s": 11.1,
-                "gap_seconds": 8.22,
-                "canonical_repeat_count": 0,
-                "intentional": false,
-                "flagged": true
-              }
-            ],
-            "word_count": 121,
-            "canonical_known": true,
-            "min_words": 3
-          },
-          "method_d_spectral_long_lag": {
-            "top_matches": [
-              {
-                "similarity": 0.998,
-                "time_a_seconds": 9.88,
-                "time_b_seconds": 28.23,
-                "lag_seconds": 18.35,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9973,
-                "time_a_seconds": 7.84,
-                "time_b_seconds": 14.52,
-                "lag_seconds": 6.68,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.9971,
-                "time_a_seconds": 11.42,
-                "time_b_seconds": 28.25,
-                "lag_seconds": 16.83,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.9968,
-                "time_a_seconds": 17.89,
-                "time_b_seconds": 21.6,
-                "lag_seconds": 3.71
-              },
-              {
-                "similarity": 0.9965,
-                "time_a_seconds": 17.91,
-                "time_b_seconds": 24.47,
-                "lag_seconds": 6.56
-              }
-            ],
-            "best_run_length_seconds": 0.04,
-            "min_lag_seconds": 1.0,
-            "sim_threshold": 0.85,
-            "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": false,
-            "local_asr_confirmation": null,
-            "flagged": false
-          },
-          "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.26,
-            "time_a": 40.99,
-            "lag": 1.72,
-            "similarity_at_start": 0.7415,
-            "best_run_length_seconds": 0.26,
-            "lag_range_seconds": [
-              0.5,
-              2.0
-            ],
-            "sim_threshold": 0.7,
-            "decision_threshold_seconds": 0.6,
-            "flagged": false
-          },
-          "method_c_v2_window_check": null
-        },
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part2_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "The 20 percent plan changes overnight. About 24 hours and 48 minutes later, at 11:04 a.m. on July 14th, Trump said the 20 percent plan would be replaced by trade and investment projects between Gulf states and the U.S. He cited very productive discussions with Middle Eastern leaders. He also said no one should charge ships in the strait and that he disliked fees. The change was sudden, but to read the oil move, the dates must be kept separate. On July 13th, Brent rose 9.59 percent and settled at $83.30. Reuters linked that rise to concern about a U.S. sea blockade of Iran planned for the next day and energy shipments through the Strait of Hormuz.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "NORMALIZED_MATCH",
-        "connected_speech_info": null,
-        "length_ok": false,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 47.211,
-          "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.24,
-          "trimmed_duration_seconds": 47.211,
-          "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.24
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part2_attempt3_englishstyleprefixwidemargin.wav"
-      }
-    ]
+    "last_attempts_log": []
   },
   "full_story_part3": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "4fb041b670d3822846b7c61afddc9a8f84a5a3b5bd4ef8f0efdd83aa2a9c1f29",
+    "canonical_text_sha256": "36269202574f6c5dd6a634ef2702c71df192b79251ca31ce8e6612da0b18e6f5",
     "language": "en",
     "theme_id": "hormuz__run_02",
     "level": "b1b",
     "segment_id": "full_story_part3",
-    "updated_at": "2026-09-27T12:38:24",
+    "updated_at": "2026-09-27T15:37:17",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part3.wav",
-    "cumulative_tts_attempts": 4,
-    "cumulative_asr_calls": 4,
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "The chart refuses to stay down. On July 14th, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6% above $84 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 29.411,
-          "raw_leading_silence_seconds": 0.32,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 29.411,
-          "leading_margin_retained_seconds": 0.32,
-          "trailing_margin_retained_seconds": 0.32
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "The chart refuses to stay down. On July 14th, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $84 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 29.051,
-          "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.46,
-          "trimmed_duration_seconds": 28.941,
-          "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "The chart refuses to stay down. On July 14th, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $84 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 27.891,
-          "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.42,
-          "trimmed_duration_seconds": 27.821,
-          "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_attempt3_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 1,
-        "status": "OK",
-        "asr_text": "The chart refuses to stay down. On July 14th, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6% at more than $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
+        "asr_text": "On July 14th, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
         "instruction_type": "english_style_prefix_wide_margin",
         "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 29.371,
-          "raw_leading_silence_seconds": 0.26,
-          "raw_trailing_silence_seconds": 0.38,
-          "trimmed_duration_seconds": 29.341,
-          "leading_margin_retained_seconds": 0.26,
-          "trailing_margin_retained_seconds": 0.35
+          "raw_duration_seconds": 25.931,
+          "raw_leading_silence_seconds": 0.24,
+          "raw_trailing_silence_seconds": 0.3,
+          "trimmed_duration_seconds": 25.931,
+          "leading_margin_retained_seconds": 0.24,
+          "trailing_margin_retained_seconds": 0.3
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 29.341,
+          "duration_seconds": 25.931,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 69,
+            "word_count": 60,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.997,
-                "time_a_seconds": 0.08,
-                "time_b_seconds": 10.78,
-                "lag_seconds": 10.7,
+                "similarity": 0.9956,
+                "time_a_seconds": 21.87,
+                "time_b_seconds": 23.59,
+                "lag_seconds": 1.72,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9944,
+                "time_a_seconds": 8.35,
+                "time_b_seconds": 14.88,
+                "lag_seconds": 6.53,
                 "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9969,
-                "time_a_seconds": 0.08,
-                "time_b_seconds": 15.34,
-                "lag_seconds": 15.26,
-                "run_length_seconds_at_thresh_0.85": 0.06
+                "similarity": 0.9934,
+                "time_a_seconds": 3.18,
+                "time_b_seconds": 11.3,
+                "lag_seconds": 8.12,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9969,
-                "time_a_seconds": 2.97,
-                "time_b_seconds": 14.9,
-                "lag_seconds": 11.93,
-                "run_length_seconds_at_thresh_0.85": 0.02
+                "similarity": 0.993,
+                "time_a_seconds": 23.57,
+                "time_b_seconds": 24.89,
+                "lag_seconds": 1.32
               },
               {
-                "similarity": 0.9967,
-                "time_a_seconds": 0.14,
-                "time_b_seconds": 21.9,
-                "lag_seconds": 21.76
-              },
-              {
-                "similarity": 0.9965,
-                "time_a_seconds": 2.94,
-                "time_b_seconds": 8.66,
-                "lag_seconds": 5.72
+                "similarity": 0.9928,
+                "time_a_seconds": 10.27,
+                "time_b_seconds": 16.45,
+                "lag_seconds": 6.18
               }
             ],
-            "best_run_length_seconds": 0.06,
+            "best_run_length_seconds": 0.03,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -1010,11 +773,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.23,
-            "time_a": 14.89,
-            "lag": 1.68,
-            "similarity_at_start": 0.7409,
-            "best_run_length_seconds": 0.23,
+            "run_length_seconds": 0.36,
+            "time_a": 1.78,
+            "lag": 1.52,
+            "similarity_at_start": 0.866,
+            "best_run_length_seconds": 0.36,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -1025,7 +788,7 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_attempt4_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_attempt5_englishstyleprefixwidemargin.wav"
       }
     ]
   },
@@ -1414,6 +1177,74 @@
           "trailing_margin_retained_seconds": 0.35
         },
         "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/kp5_ja_charon_attempt1_standard.wav"
+      }
+    ]
+  },
+  "full_story_part2_heading": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "13fd080fe7a209078cfaa58111705521ec5fae013738364678e0ea2e397f766e",
+    "language": "en",
+    "theme_id": "hormuz__run_02",
+    "level": "b1b",
+    "segment_id": "full_story_part2_heading",
+    "updated_at": "2026-09-27T15:36:31",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part2_heading.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "asr_text": "The twenty percent plan changes overnight.",
+        "audio_classification": "NORMALIZED_MATCH",
+        "length_ok": true,
+        "verified": true,
+        "instruction_type": "english_style_prefix",
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 6,
+          "transcript": "The  20 %  plan  changes  overnight.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part2_heading_attempt1_englishstyleprefix.wav"
+      }
+    ]
+  },
+  "full_story_part3_heading": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "0dfc5bc876e620aab698cae944540725b1a73cfda531fd3dd135e6826bff34f8",
+    "language": "en",
+    "theme_id": "hormuz__run_02",
+    "level": "b1b",
+    "segment_id": "full_story_part3_heading",
+    "updated_at": "2026-09-27T15:36:40",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/full_story_part3_heading.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "asr_text": "The chart refuses to stay down.",
+        "audio_classification": "NORMALIZED_MATCH",
+        "length_ok": true,
+        "verified": true,
+        "instruction_type": "english_style_prefix",
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 6,
+          "transcript": "The  chart  refuses  to  stay  down.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/narration/attempts/full_story_part3_heading_attempt1_englishstyleprefix.wav"
       }
     ]
   }

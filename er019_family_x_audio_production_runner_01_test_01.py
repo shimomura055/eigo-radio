@@ -179,6 +179,19 @@ class SegmentIdNarrativeRoleResolutionTests(unittest.TestCase):
         for seg in used_ids:
             self.assertNotIn("point", seg.lower())
 
+    def test_heading_sub_segments_are_not_connected_speech_enabled(self):
+        """Stage 3c: full_story_part2_heading/full_story_part3_heading は
+        er020_tts_retry_local_rewrite_01.NON_APPLICABLE_SEGMENT_IDS(point_
+        one_heading/point_two_headingのみハードコード)に含まれないため、
+        resolve_narrative_role()はNoneを返す(er020編集禁止のため)。ただし
+        connected_speech_enabled_for()の実効値はFamily Aのpoint_one_heading
+        (HEADING_READOUT)と同じFalseであり、挙動差はないことを確認する。"""
+        for seg in ("full_story_part2_heading", "full_story_part3_heading"):
+            with self.subTest(seg=seg):
+                self.assertIsNone(retry_primitive.resolve_narrative_role(seg))
+                self.assertFalse(retry_primitive.connected_speech_enabled_for(seg))
+                self.assertFalse(retry_primitive.connected_speech_enabled_for("point_one_heading"))
+
 
 class SegmentOrderPlanTests(unittest.TestCase):
     def _labels(self, order):
@@ -206,11 +219,30 @@ class SegmentOrderPlanTests(unittest.TestCase):
         for order in (plan.FAMILY_X_B1_SEGMENT_ORDER, plan.FAMILY_X_A2_SEGMENT_ORDER):
             seg_ids = [seg for _label, seg, _role in order if seg]
             expected = ["topic_intro", "preview", "comment_1", "full_story_part1",
-                        "comment_2", "full_story_part2", "comment_3", "full_story_part3",
+                        "comment_2", "full_story_part2_heading", "full_story_part2",
+                        "comment_3", "full_story_part3_heading", "full_story_part3",
                         "comment_4", "in_one_line"]
             # japanese_titleがA2にのみ挟まるため、共通部分のみ順序一致を確認する。
             filtered = [s for s in seg_ids if s != "japanese_title"]
             self.assertEqual(filtered, expected)
+
+    def test_heading_sub_segment_immediately_precedes_its_body(self):
+        """Stage 3c: 見出しsub-segmentは対応する本文の直前(同一スロット)に
+        置かれ、間に他のsegment(SFX含む)を挟まないこと。"""
+        for order in (plan.FAMILY_X_B1_SEGMENT_ORDER, plan.FAMILY_X_A2_SEGMENT_ORDER):
+            seg_ids = [seg for _label, seg, _role in order]  # Noneも含む(SFX検知用)
+            for body in ("full_story_part2", "full_story_part3"):
+                heading = f"{body}_heading"
+                idx_heading = seg_ids.index(heading)
+                idx_body = seg_ids.index(body)
+                self.assertEqual(idx_body, idx_heading + 1,
+                                  f"{heading}の直後は{body}であるべき(実際: {seg_ids[idx_heading:idx_heading + 2]})")
+
+    def test_heading_sub_segment_plan_role_is_heading_readout(self):
+        for order in (plan.FAMILY_X_B1_SEGMENT_ORDER, plan.FAMILY_X_A2_SEGMENT_ORDER):
+            by_id = {seg: role for _label, seg, role in order if seg}
+            self.assertEqual(by_id["full_story_part2_heading"], "HEADING_READOUT")
+            self.assertEqual(by_id["full_story_part3_heading"], "HEADING_READOUT")
 
 
 class CommentRoleWordingTests(unittest.TestCase):
@@ -268,6 +300,22 @@ class BuildSegmentPlanTests(unittest.TestCase):
             if row["segment_id"] in ("comment_1", "comment_2", "comment_3", "comment_4"):
                 self.assertEqual(row["resolved_narrative_role"], "COMMENT")
 
+    def test_plan_heading_sub_segments_use_heading_text_and_english_estimate(self):
+        """Stage 3c: 見出しsub-segmentのtextはheading1/heading2(見出しのみ、
+        本文を含まない)であり、A2でも(日本語ではなく)英語CPMで見積もること。"""
+        for level in ("a2", "b1b"):
+            result = runner.build_segment_plan(level, self.parts, support=None)
+            by_id = {r["segment_id"]: r for r in result["segments"] if r["segment_id"]}
+            self.assertEqual(by_id["full_story_part2_heading"]["plan_role"], "HEADING_READOUT")
+            self.assertTrue(by_id["full_story_part2_heading"]["text_available"])
+            self.assertIn("estimated_seconds", by_id["full_story_part2_heading"])
+            self.assertGreater(by_id["full_story_part2_heading"]["estimated_seconds"], 0.0)
+            # full_story_part2本文の見積り(body2のみ)は、heading+body合算の
+            # part2見積りより短い(見出し語が二重計上されていないことの間接確認)。
+            body_seconds = by_id["full_story_part2"]["estimated_seconds"]
+            combined_seconds = plan.estimate_seconds_english(self.parts["part2"])
+            self.assertLess(body_seconds, combined_seconds)
+
 
 class DryRunEndToEndTests(unittest.TestCase):
     """--dry-runがAPI呼び出しなしでplan(segment表・順序・想定秒数)を
@@ -324,6 +372,8 @@ class DryRunEndToEndTests(unittest.TestCase):
             self.assertTrue(seg_plan["no_new_sfx_after_body_start"])
             segment_ids = [r["segment_id"] for r in seg_plan["segments"] if r["segment_id"]]
             self.assertIn("full_story_part3", segment_ids)
+            self.assertIn("full_story_part2_heading", segment_ids)
+            self.assertIn("full_story_part3_heading", segment_ids)
             self.assertNotIn("point_one", segment_ids)
             self.assertNotIn("point_two", segment_ids)
 
@@ -336,6 +386,66 @@ class DryRunEndToEndTests(unittest.TestCase):
             for name in files:
                 self.assertFalse(name.endswith(".wav"), f"unexpected wav file: {name}")
                 self.assertNotEqual(name, "raw_usage_log.jsonl")
+
+
+class GenerateOrReuseTextSafetyTests(unittest.TestCase):
+    """Stage 3c: full_story_part2/3のcanonical textが見出し分離により
+    変わったにもかかわらず、旧run(見出しを含む音声)がstatus=="OK"のまま
+    誤って再利用されないことを回帰確認する(実データ[Hormuz b1b]で発見した
+    問題、runtime evidence詳細はRESULT_PACKET/REPORT参照)。"""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="generate_or_reuse_safety_")
+        self.wav_path = os.path.join(self.tmpdir, "full_story_part3.wav")
+        with open(self.wav_path, "wb") as f:
+            f.write(b"RIFF____WAVEfmt ")  # 実在すればよい(中身は使わない)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_reuses_when_cached_canonical_text_matches(self):
+        cached = {"segments": {"full_story_part3": {"status": "OK", "canonical_text": "old body only"}}}
+        called = {"n": 0}
+
+        def generate_fn():
+            called["n"] += 1
+            return {"status": "OK", "canonical_text": "old body only"}
+
+        result = runner._generate_or_reuse(cached, "full_story_part3", self.wav_path, generate_fn,
+                                            expected_text="old body only")
+        self.assertEqual(called["n"], 0)
+        self.assertTrue(result.get("reused_from_previous_run"))
+
+    def test_regenerates_when_cached_canonical_text_differs(self):
+        """見出しを含んでいた旧canonical_text(heading+body)と、見出し分離後の
+        期待text(bodyのみ)が食い違う場合、必ず再生成する(古い音声の
+        使い回し=見出し二重読み上げバグを防ぐ)。"""
+        cached = {"segments": {"full_story_part3": {
+            "status": "OK", "canonical_text": "The chart refuses to stay down\n\nOn July 14, ..."}}}
+        called = {"n": 0}
+
+        def generate_fn():
+            called["n"] += 1
+            return {"status": "OK", "canonical_text": "On July 14, ..."}
+
+        result = runner._generate_or_reuse(cached, "full_story_part3", self.wav_path, generate_fn,
+                                            expected_text="On July 14, ...")
+        self.assertEqual(called["n"], 1)
+        self.assertNotIn("reused_from_previous_run", result)
+
+    def test_legacy_callers_without_expected_text_keep_old_behavior(self):
+        """expected_text省略時は既存呼び出し元の挙動(status==OKのみで判定)
+        を変えない(後方互換)。"""
+        cached = {"segments": {"preview": {"status": "OK", "canonical_text": "anything"}}}
+        called = {"n": 0}
+
+        def generate_fn():
+            called["n"] += 1
+            return {"status": "OK"}
+
+        result = runner._generate_or_reuse(cached, "preview", self.wav_path, generate_fn)
+        self.assertEqual(called["n"], 0)
+        self.assertTrue(result.get("reused_from_previous_run"))
 
 
 class SourceArticleMissingTests(unittest.TestCase):

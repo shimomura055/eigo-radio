@@ -24,20 +24,33 @@
 #   既定構成をそのまま再利用する(CURRENT_SPEC Family X節に別段の記載が
 #   ないため)。
 #
-# DESIGN NOTE(Sonnet設計判断、RESULT_PACKETで要確認・未承認の解釈):
-#   本文2/3の見出しテキストを実際にTTS音声として読み上げるか否かは、
-#   CURRENT_SPEC本文の「本文2=見出し+content」という文言からは断定
-#   できない(content境界の定義であり、見出しの朗読要否の明記ではない)。
-#   本実装はspec文言を字義通りに解釈し、見出しテキストを本文2/3
-#   segmentの冒頭に含めて音声化する(Family Aのように見出しを独立readout
-#   segmentへ分離しない)。理由: 本委任文要件3で指定されたsegment_id
-#   命名がfull_story_part1/2/3のみであり、見出し専用のsegment_id自体が
-#   存在しない(er020_tts_retry_local_rewrite_01.NON_APPLICABLE_
-#   SEGMENT_IDSはpoint_one_heading/point_two_headingのみをハードコード
-#   しており、Family X用の見出しsegment名はここに追加できない
-#   [er020編集禁止])。この解釈が誤りであれば、Fable/ユーザーの指示で
-#   本文2/3から見出し文を除外する変更のみで対応可能(分割関数のI/Fは
-#   変えずに済む設計)。
+# DESIGN NOTE(Stage 1解釈、Stage 3bで見直し・Stage 3cで変更確定):
+#   Stage 1〜3bでは本文2/3の見出しテキストを本文segment(full_story_
+#   part2/3)と同一TTS呼び出しで読み上げていた。Stage 3b(Hormuz記事)の
+#   runtime実行で、この方式が原因と判明したSTOPPED 2件(A2 full_story_
+#   part2/B1B full_story_part2、見出し文と本文冒頭の語句反復をrepetition
+#   QAが誤検知/見出し境界がASR上で後続文と連結)が発生した
+#   (`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`§Stage 3b参照)。
+#   Stage 3c(本管理ID、Fable/ユーザー確認済みの技術的実装変更、CURRENT_
+#   SPECの音声構造・順序・効果音方針自体は無変更)で、見出しを同一スロット
+#   内の独立した短いTTS呼び出し(sub-segment、segment_id=
+#   full_story_part2_heading/full_story_part3_heading)へ分離した。
+#   Family A B1の`point_one_heading`/`point_two_heading`
+#   (`er003_v1_sing01_point_headings_aoede.generate`、既存Production関数)
+#   と同じ機構をB1Bで再利用し、A2はFamily A A2の同機構
+#   (`er003_v1_n3_01_tts_generate.generate_a2_segment_with_slowdown`、
+#   style_prefix=A2_ENGLISH_STYLE_PREFIX_SLOWER)を再利用する(新規TTS
+#   経路は作らない)。新segment_idはer020_tts_retry_local_rewrite_01.
+#   NON_APPLICABLE_SEGMENT_IDS(point_one_heading/point_two_headingのみ
+#   ハードコード)に含まれないため、resolve_narrative_role()はNoneを返し
+#   connected_speech_enabled_for()はFalseになる(er020編集禁止のため。
+#   ただしFamily Aのpoint_one_heading扱い[HEADING_READOUT→Connected
+#   Speech非適用]と実質的な効果は同一=Falseであり、挙動差はない)。
+#   音声上の順序は「見出し→本文」で同一スロット内に連続、間の間隔は
+#   新規pause値を追加せずFamily A既存の見出し→本文pause定数を再利用する
+#   (B1B: `er003_v1_n3_01_assemble.HEADING_TO_BODY_PAUSE_SECONDS_B1`、
+#   A2: `er003_v1_crosslevel_audio_02_common.POINT_EXPLANATION_PAUSE_
+#   SECONDS`、いずれも0.7秒・既存値、asm/crosslevel_common自体は無編集)。
 # ============================================================
 from __future__ import annotations
 
@@ -213,8 +226,11 @@ FAMILY_X_B1_SEGMENT_ORDER = (
     ("Comment 1 (Charon)", "comment_1", "COMMENT"),
     ("Full Story Part 1 (Aoede)", "full_story_part1", "FULL_STORY"),
     ("Comment 2 (Charon)", "comment_2", "COMMENT"),
+    # Stage 3c: 見出しsub-segment(本文2直前、同一スロット・SFXなしで連続)。
+    ("Full Story Part 2 Heading (Aoede)", "full_story_part2_heading", "HEADING_READOUT"),
     ("Full Story Part 2 (Aoede)", "full_story_part2", "FULL_STORY"),
     ("Comment 3 (Charon)", "comment_3", "COMMENT"),
+    ("Full Story Part 3 Heading (Aoede)", "full_story_part3_heading", "HEADING_READOUT"),
     ("Full Story Part 3 (Aoede)", "full_story_part3", "FULL_STORY"),
     ("Comment 4 (Charon)", "comment_4", "COMMENT"),
     ("In One Line (Aoede)", "in_one_line", "IN_ONE_LINE"),
@@ -240,8 +256,11 @@ FAMILY_X_A2_SEGMENT_ORDER = (
     ("Comment 1", "comment_1", "COMMENT"),
     ("Full Story Part 1", "full_story_part1", "FULL_STORY"),
     ("Comment 2", "comment_2", "COMMENT"),
+    # Stage 3c: 見出しsub-segment(本文2直前、同一スロット・SFXなしで連続)。
+    ("Full Story Part 2 Heading", "full_story_part2_heading", "HEADING_READOUT"),
     ("Full Story Part 2", "full_story_part2", "FULL_STORY"),
     ("Comment 3", "comment_3", "COMMENT"),
+    ("Full Story Part 3 Heading", "full_story_part3_heading", "HEADING_READOUT"),
     ("Full Story Part 3", "full_story_part3", "FULL_STORY"),
     ("Comment 4", "comment_4", "COMMENT"),
     ("In One Line", "in_one_line", "IN_ONE_LINE"),

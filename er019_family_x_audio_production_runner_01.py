@@ -46,6 +46,7 @@ import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as n3_tts
 import er003_v1_sing01_news_tail_fix as news_tail_fix
+import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
@@ -152,9 +153,15 @@ def build_segment_plan(level: str, parts: dict, support: dict | None = None) -> 
     """level="b1b"|"a2"。supportがNone(scaffold未実行)の場合、Comment/
     Previewのtextはplan上「(未生成)」として扱う(dry-runでも実行可能)。"""
     order = plan.FAMILY_X_B1_SEGMENT_ORDER if level == "b1b" else plan.FAMILY_X_A2_SEGMENT_ORDER
+    # Stage 3c: 本文2/3は見出しsub-segment(full_story_part2_heading/
+    # full_story_part3_heading、常に英語)+本文のみ(body2/body3、見出し
+    # 文を含まない)に分離済み(語の二重計上を避けるため、combined part2/
+    # part3ではなくheading/bodyを個別に使う)。
     text_by_segment_id = {
-        "full_story_part1": parts["part1"], "full_story_part2": parts["part2"],
-        "full_story_part3": parts["part3"], "in_one_line": parts["in_one_line"],
+        "full_story_part1": parts["part1"],
+        "full_story_part2_heading": parts["heading1"], "full_story_part2": parts["body2"],
+        "full_story_part3_heading": parts["heading2"], "full_story_part3": parts["body3"],
+        "in_one_line": parts["in_one_line"],
     }
     if support:
         for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -167,7 +174,7 @@ def build_segment_plan(level: str, parts: dict, support: dict | None = None) -> 
             text = text_by_segment_id[segment_id]
             entry["text_available"] = text is not None
             if text is not None:
-                if level == "b1b" or plan_role == "FULL_STORY" or plan_role in ("TOPIC_INTRO",):
+                if level == "b1b" or plan_role in ("FULL_STORY", "TOPIC_INTRO", "HEADING_READOUT"):
                     entry["estimated_seconds"] = plan.estimate_seconds_english(text)
                 else:
                     entry["estimated_seconds"] = plan.estimate_seconds_japanese(text)
@@ -181,7 +188,7 @@ def build_segment_plan(level: str, parts: dict, support: dict | None = None) -> 
         rows.append(entry)
 
     body_seconds = sum(
-        r.get("estimated_seconds", 0.0) for r in rows if r.get("plan_role") == "FULL_STORY")
+        r.get("estimated_seconds", 0.0) for r in rows if r.get("plan_role") in ("FULL_STORY", "HEADING_READOUT"))
     return {
         "level": level,
         "segments": rows,
@@ -344,9 +351,20 @@ def _load_cached_tts_results(out_dir: str) -> dict | None:
         return None
 
 
-def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn):
+def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
+    """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
+    sub-segment分離)で判明した安全性ギャップの修正: 従来はstatus=="OK"+
+    wavファイル存在のみで再利用可否を判定していたが、これだと
+    full_story_part2/3のように「segment_idは同じだがcanonical textが
+    変わった」場合(本文2/3から見出し文が除去された等)、古い(異なる文面の)
+    音声を誤って再利用してしまう。expected_textが渡された場合は、cache
+    されたcanonical_textと完全一致する場合のみ再利用する(不一致時は
+    generate_fn()で必ず再生成し、古い音声の使い回しを防ぐ)。expected_text
+    省略時(既存呼び出し元、後方互換)は従来どおりの挙動を維持する。"""
     cached_result = (cached.get("segments") or {}).get(name) if cached else None
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
+        if expected_text is not None and cached_result.get("canonical_text") != expected_text:
+            return generate_fn()
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
         return reused
@@ -374,7 +392,15 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
 
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/b1_support_texts.json")
-    kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
+    kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
+    # small_bag run_02(Stage 3c実行時)で発見: Key Phrase選定が構造Gate
+    # (KEY_WORDS_STRUCTURE_INVALID等)でSTOPし、keywords_canonicalized.json
+    # 自体が書かれないケースがある(既存Key Phrase Gateの正常動作、Gateを
+    # 回避・再試行はしない)。そのままload_jsonすると未処理の
+    # FileNotFoundErrorでtts stage全体がクラッシュし、full_story等の
+    # 他segmentの結果すら得られなくなるため、無い場合はkp=Noneとして
+    # Key Phrase生成のみ明示的にスキップし、他segmentは生成を継続する。
+    kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
     shared_narration.ensure_all_shared_narration_b1(narration_dir)
     _cached = _load_cached_tts_results(out_dir)
@@ -387,7 +413,7 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                 n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
                 f"{narration_dir}/topic_intro.wav",
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
-                    "topic_intro")))
+                    "topic_intro")), expected_text=topic_intro_text)
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -397,12 +423,12 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                 _cached, name, f"{narration_dir}/{name}.wav", lambda text=text, name=name: voice01.generate_charon_english(
                     n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
                     style_prefix_override=n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM, disfluency_qa=True,
-                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name)))
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name)),
+                expected_text=text)
         results[name]["canonical_text"] = text
 
     for name, text in (
-        ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
-        ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
+        ("full_story_part1", parts["part1"]), ("in_one_line", parts["in_one_line"]),
     ):
         with cl.segment_context(name):
             results[name] = _generate_or_reuse(
@@ -411,17 +437,48 @@ def generate_family_x_b1_segments(theme_out_dir: str) -> dict:
                     n3_tts.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
-                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)))
+                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)), expected_text=text)
         results[name]["canonical_text"] = text
 
-    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached)
+    # Stage 3c: 本文2/3は見出しsub-segment(独立TTS呼び出し、Family A
+    # point_one_heading/point_two_headingと同じ機構[point_headings.
+    # generate()、Aoede]を再利用)+本文(見出しを含まないbody2/body3)へ
+    # 分離する(見出し文と本文冒頭の反復をrepetition QA/ASRが誤検知した
+    # Stage 3b STOPへの対応、詳細はer019_family_x_audio_plan_01.py DESIGN NOTE参照)。
+    for body_name, heading_text, body_text in (
+        ("full_story_part2", parts["heading1"], parts["body2"]),
+        ("full_story_part3", parts["heading2"], parts["body3"]),
+    ):
+        heading_name = f"{body_name}_heading"
+        with cl.segment_context(heading_name):
+            results[heading_name] = _generate_or_reuse(
+                _cached, heading_name, f"{narration_dir}/{heading_name}.wav",
+                lambda heading_text=heading_text, heading_name=heading_name: point_headings.generate(
+                    n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(heading_text)),
+                    f"{narration_dir}/{heading_name}.wav"), expected_text=heading_text)
+        results[heading_name]["canonical_text"] = heading_text
+
+        with cl.segment_context(body_name):
+            results[body_name] = _generate_or_reuse(
+                _cached, body_name, f"{narration_dir}/{body_name}.wav",
+                lambda body_text=body_text, body_name=body_name: news_tail_fix.generate_news_narration_wide_margin(
+                    n3_tts.tts_safe_news_en(body_text), f"{narration_dir}/{body_name}.wav",
+                    disfluency_qa=False,
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
+                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES)), expected_text=body_text)
+        results[body_name]["canonical_text"] = body_text
+
+    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached) if kp is not None else {}
+    kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese"].get("status")}
                  for r, v in kp_results.items()}
-    save_json(f"{out_dir}/audit/tts_generation_results.json", {"segments": results, "key_phrases": kp_results})
-    save_json(f"{out_dir}/run_summary_tts.json", {"segment_status": all_status, "key_phrase_status": kp_status})
-    return {"segment_status": all_status, "key_phrase_status": kp_status}
+    save_json(f"{out_dir}/audit/tts_generation_results.json",
+              {"segments": results, "key_phrases": kp_results, "kp_scaffold_status": kp_scaffold_status})
+    save_json(f"{out_dir}/run_summary_tts.json",
+              {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status})
+    return {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status}
 
 
 def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
@@ -459,7 +516,11 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
 
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/a2_support_texts.json")
-    kp = load_json(f"{out_dir}/key_phrases/keywords_canonicalized.json")
+    kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
+    # generate_family_x_b1_segments()と同じ理由(Key Phrase構造Gate STOP時に
+    # keywords_canonicalized.jsonが存在しないケースへの防御、Gate自体は
+    # 回避しない)。
+    kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
     shared_narration.ensure_all_shared_narration_a2(narration_dir)
     _cached = _load_cached_tts_results(out_dir)
@@ -475,7 +536,7 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
                 n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text)),
                 f"{narration_dir}/topic_intro.wav", n3_tts.first_words(parts["title"], 3), max_extra_chars=30,
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
-                    "topic_intro")))
+                    "topic_intro")), expected_text=topic_intro_text)
     results["topic_intro"]["canonical_text"] = topic_intro_text
 
     with cl.segment_context("japanese_title"):
@@ -483,7 +544,7 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
             _cached, "japanese_title", f"{narration_dir}/japanese_title.wav",
             lambda: n3_tts.generate_a2_japanese_with_reading_safety(
                 japanese_title, f"{narration_dir}/japanese_title.wav",
-                n3_tts.expected_substring_ja(japanese_title), max_extra_chars=30))
+                n3_tts.expected_substring_ja(japanese_title), max_extra_chars=30), expected_text=japanese_title)
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
         text = support[name]
@@ -491,11 +552,10 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
             results[name] = _generate_or_reuse(
                 _cached, name, f"{narration_dir}/{name}.wav",
                 lambda text=text: n3_tts.generate_a2_japanese_with_reading_safety(
-                    text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text)))
+                    text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text)), expected_text=text)
 
     for name, text in (
-        ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
-        ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
+        ("full_story_part1", parts["part1"]), ("in_one_line", parts["in_one_line"]),
     ):
         tts_input = n3_tts.tts_safe_news_en(text)
         sub = n3_tts.first_words(text)
@@ -507,17 +567,52 @@ def generate_family_x_a2_segments(theme_out_dir: str, japanese_title: str) -> di
                     style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
-                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)))
+                    enable_repetition_qa=(name in _BODY_SEGMENT_NAMES)), expected_text=text)
         results[name]["canonical_text"] = text
 
-    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached)
+    # Stage 3c: 本文2/3見出しsub-segment(A2はFamily A A2のpoint_one_heading
+    # と同一関数[n3_tts.generate_a2_segment_with_slowdown、6%減速]を再利用)。
+    for body_name, heading_text, body_text in (
+        ("full_story_part2", parts["heading1"], parts["body2"]),
+        ("full_story_part3", parts["heading2"], parts["body3"]),
+    ):
+        heading_name = f"{body_name}_heading"
+        heading_tts_input = n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(heading_text))
+        with cl.segment_context(heading_name):
+            results[heading_name] = _generate_or_reuse(
+                _cached, heading_name, f"{narration_dir}/{heading_name}.wav",
+                lambda heading_tts_input=heading_tts_input, heading_text=heading_text,
+                heading_name=heading_name: n3_tts.generate_a2_segment_with_slowdown(
+                    heading_tts_input, f"{narration_dir}/{heading_name}.wav", n3_tts.first_words(heading_text, 3),
+                    max_extra_chars=20, style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    disfluency_qa=True), expected_text=heading_text)
+        results[heading_name]["canonical_text"] = heading_text
+
+        body_tts_input = n3_tts.tts_safe_news_en(body_text)
+        body_sub = n3_tts.first_words(body_text)
+        with cl.segment_context(body_name):
+            results[body_name] = _generate_or_reuse(
+                _cached, body_name, f"{narration_dir}/{body_name}.wav",
+                lambda body_tts_input=body_tts_input, body_sub=body_sub,
+                body_name=body_name: n3_tts.generate_a2_segment_with_slowdown(
+                    body_tts_input, f"{narration_dir}/{body_name}.wav", body_sub,
+                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    disfluency_qa=False,
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
+                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES)), expected_text=body_text)
+        results[body_name]["canonical_text"] = body_text
+
+    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached) if kp is not None else {}
+    kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                  for r, v in kp_results.items()}
-    save_json(f"{out_dir}/audit/tts_generation_results.json", {"segments": results, "key_phrases": kp_results})
-    save_json(f"{out_dir}/run_summary_tts.json", {"segment_status": all_status, "key_phrase_status": kp_status})
-    return {"segment_status": all_status, "key_phrase_status": kp_status}
+    save_json(f"{out_dir}/audit/tts_generation_results.json",
+              {"segments": results, "key_phrases": kp_results, "kp_scaffold_status": kp_scaffold_status})
+    save_json(f"{out_dir}/run_summary_tts.json",
+              {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status})
+    return {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status}
 
 
 def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
@@ -583,7 +678,8 @@ def load_family_x_b1_sources(theme_out_dir: str) -> dict:
     narration["topic_intro"] = mono
 
     b1_segments = {}
-    for name in ("full_story_part1", "full_story_part2", "full_story_part3",
+    for name in ("full_story_part1", "full_story_part2_heading", "full_story_part2",
+                  "full_story_part3_heading", "full_story_part3",
                   "comment_1", "comment_2", "comment_3", "comment_4", "preview", "in_one_line"):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
         assert sr == common.SAMPLE_RATE
@@ -701,10 +797,14 @@ def build_family_x_b1_timeline(parts: dict) -> list:
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 2 (Charon)", b1["comment_2"]),
         ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
+        ("Full Story Part 2 Heading (Aoede)", b1["full_story_part2_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
         ("Full Story Part 2 (Aoede)", b1["full_story_part2"]),
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 3 (Charon, Bridge to Part 3)", b1["comment_3"]),
         ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
+        ("Full Story Part 3 Heading (Aoede)", b1["full_story_part3_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
         ("Full Story Part 3 (Aoede)", b1["full_story_part3"]),
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 4 (Charon)", b1["comment_4"]),
@@ -720,6 +820,18 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str) -> dict:
     out_dir = f"{theme_out_dir}/b1b"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    # small_bag run_02(Stage 3c実行時)で発見: Key Phrase選定が構造Gateで
+    # STOPし、keywords_canonicalized.json自体が存在しない場合、そのまま
+    # 進むとFileNotFoundErrorで未処理クラッシュする(既存Key Phrase Gateを
+    # 回避する意図ではなく、既に上流でBLOCKED済みであることをplayer.html
+    # 生成まで到達できる形で明示的に記録するための防御)。
+    if not os.path.exists(f"{out_dir}/key_phrases/keywords_canonicalized.json"):
+        summary = {"status": "BLOCKED_KP_SCAFFOLD_MISSING",
+                   "reason": "key_phrases/keywords_canonicalized.jsonが存在しません"
+                             "(上流のKey Phrase構造Gate[KEY_WORDS_STRUCTURE_INVALID等]でSTOP、"
+                             "本runnerはこのGateを回避しません)。"}
+        save_json(f"{out_dir}/run_summary_assemble.json", summary)
+        return summary
     sources = load_family_x_b1_sources(theme_out_dir)
     parts = apply_family_x_b1_gain(sources)
     seq = build_family_x_b1_timeline(parts)
@@ -778,7 +890,8 @@ def load_family_x_a2_sources(theme_out_dir: str) -> dict:
 
     a2_segments = {}
     for name in ("comment_1", "comment_2", "comment_3", "comment_4",
-                  "full_story_part1", "full_story_part2", "full_story_part3", "in_one_line"):
+                  "full_story_part1", "full_story_part2_heading", "full_story_part2",
+                  "full_story_part3_heading", "full_story_part3", "in_one_line"):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
         assert sr == common.SAMPLE_RATE
         a2_segments[name] = mono
@@ -879,10 +992,14 @@ def build_family_x_a2_timeline(parts: dict) -> list:
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 2", a2["comment_2"]),
         ("pause_0.8_ja_to_en", p9a.silence_stereo(0.8)),
+        ("Full Story Part 2 Heading", a2["full_story_part2_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(crosslevel_common.POINT_EXPLANATION_PAUSE_SECONDS)),
         ("Full Story Part 2", a2["full_story_part2"]),
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 3", a2["comment_3"]),
         ("pause_0.8_ja_to_en", p9a.silence_stereo(0.8)),
+        ("Full Story Part 3 Heading", a2["full_story_part3_heading"]),
+        ("pause_0.7_heading_to_body", p9a.silence_stereo(crosslevel_common.POINT_EXPLANATION_PAUSE_SECONDS)),
         ("Full Story Part 3", a2["full_story_part3"]),
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 4", a2["comment_4"]),
@@ -898,6 +1015,15 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str) -> dict:
     out_dir = f"{theme_out_dir}/a2"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    # stage_assemble_family_x_b1()と同じ防御(対称性のため、A2側でも同じ
+    # 状況が起きた場合に備える)。
+    if not os.path.exists(f"{out_dir}/key_phrases/keywords_canonicalized.json"):
+        summary = {"status": "BLOCKED_KP_SCAFFOLD_MISSING",
+                   "reason": "key_phrases/keywords_canonicalized.jsonが存在しません"
+                             "(上流のKey Phrase構造Gate[KEY_WORDS_STRUCTURE_INVALID等]でSTOP、"
+                             "本runnerはこのGateを回避しません)。"}
+        save_json(f"{out_dir}/run_summary_assemble.json", summary)
+        return summary
     sources = load_family_x_a2_sources(theme_out_dir)
     parts = apply_family_x_a2_gain(sources)
     seq = build_family_x_a2_timeline(parts)
@@ -1026,9 +1152,18 @@ def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narra
         if label.startswith(f"Comment {i}"):
             return {"text": support[f"comment_{i}"], "voice": voice,
                     "audio": f"{narration_dir}/comment_{i}.wav", "sfx": False}
+    # Stage 3c見出しsub-segment(本文行より先に判定する。"Full Story Part 2
+    # Heading (Aoede)"はstartswithで"Full Story Part 2"にも一致するため、
+    # 見出し用ラベルを先にチェックしないと誤って本文行と判定されてしまう)。
+    for i in (2, 3):
+        if label.startswith(f"Full Story Part {i} Heading"):
+            heading_key = "heading1" if i == 2 else "heading2"
+            return {"text": parts[heading_key], "voice": voice,
+                    "audio": f"{narration_dir}/full_story_part{i}_heading.wav", "sfx": False}
     for i in (1, 2, 3):
         if label.startswith(f"Full Story Part {i}"):
-            return {"text": parts[f"part{i}"], "voice": voice,
+            body_key = f"part{i}" if i == 1 else f"body{i}"
+            return {"text": parts[body_key], "voice": voice,
                     "audio": f"{narration_dir}/full_story_part{i}.wav", "sfx": False}
     if label.startswith("In One Line"):
         return {"text": parts["in_one_line"], "voice": voice,
