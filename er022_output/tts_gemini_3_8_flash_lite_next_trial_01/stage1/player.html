@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<title>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 1 A/B試聴</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+audio { width: 100%; }
+.status-OK { color: green; font-weight: bold; }
+.status-STOPPED { color: red; font-weight: bold; }
+</style></head>
+<body>
+<h1>TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01: Stage 1(1 segment)A/B試聴
+(Trial、Production非採用)</h1>
+<p>対象記事: 「AIが採用を選ぶとき」Standard(A2)版。segment=tension_reflection
+(Voice=Aoede、固有名詞"New York City"を含む唯一のsegment)。
+A=現行Production(gemini-2.5-pro-preview-tts、Structured Separation prompt、
+実測62.25秒)。B=Gemini 3.8 Flash-Lite TTS(gemini-3.8-flash-lite-tts、
+speech_metadataによるverbatim transcript方式、style=""[plain TTS、attempt1で
+即PASS]、実測49.08秒)。B列のstatusは既存Production ASR検証パイプライン
+(英語6分類Validator)の判定結果。</p>
+<table>
+<tr><th>Segment</th><th>A(現行Production)</th><th>B(Gemini 3.8 Flash-Lite、Trial)</th></tr>
+<tr>
+  <td>tension_reflection<br><span style="color:#888;font-size:0.8em">Voice: Aoede</span></td>
+  <td><audio controls preload="none" src="segments_mp3/a/tension_reflection.mp3"></audio></td>
+  <td><audio controls preload="none" src="segments_mp3/b/tension_reflection.mp3"></audio><br>
+      <span class="status status-OK">OK</span></td>
+</tr>
+</table>
+</body></html>

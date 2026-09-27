@@ -389,3 +389,147 @@ GenerateContent API経由での実機確認を行う)を次のTrial候補とし�
 
 pricing_snapshot.jsonへの公式単価追加は追加のみで既存エントリ無変更を
 確認(Gate上の副作用なし)。
+
+## §14 SDK更新(google-genai 2.25.0)結果(2回目委任、2026-09-27)
+
+Trial専用venv `.venv_trial_genai225`(Python 3.12.10、`.venv_trial_genai214`
+と同一パターン: `requirements-ci.txt`インストール後に
+`google-genai==2.25.0`へupgrade、追加で`soundfile`/`pykakasi`/`jaconv`/
+`imageio_ffmpeg`を導入)を**新規作成**した(`.venv_trial_genai214`は
+削除せず保持、名称は委任文が明示的に許可した`.venv_trial_genai225`を
+採用)。Production `.venv`(`google-genai==2.11.0`)・`.venv-ci`・
+`requirements-ci.txt`・`requirements.txt`への変更は**0件**。
+
+## §15 課金前4確認(委任文a〜d、実測)
+
+| 項目 | 結果 |
+|---|---|
+| (a) speech_metadataが2.25.0で実際に送信可能か | **可能(確認済み)**。(1)型確認: `types.Part.model_fields`に`speech_metadata`(alias`speechMetadata`)が存在し、`types.SpeechMetadata`が構築可能、`Part.model_dump()`に反映される(ネットワーク呼び出し0件)。(2)送信直前wire body確認: `httpx.Client.send`を送信直前でintercept(`er022_tts_gemini_3_8_flash_lite_next_trial_01_sdk_225_check.py`、ネットワーク呼び出し0件)した結果、REST仕様通り`{"text": "...", "speechMetadata": {"style": "..."}}`という**正しいsibling field形状**で送信されることを確認(2.14.0で確認された`UNKNOWN`変質/消失は解消)。(3)実TTS呼び出し(Stage 1本体、下記§16): 実際に1回の呼び出しで音声が生成され、ASR検証PASSまで到達した(実費用込みの最終確認)。 |
+| (b) 既存TTS呼び出しとの互換性 | **問題なし**。`.venv_trial_genai225`から既存TTS関連unit test 9ファイル(前回と同一)を実行し全てOK(合計264+テストケース、ログ: `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/existing_unit_tests_log_225.txt`)。 |
+| (c) pip check で依存関係衝突なし | **問題なし**(`No broken requirements found`、`er022_output/tts_gemini_3_8_flash_lite_next_trial_01/venv_pip_check_225.txt`)。 |
+| (d) Trial環境だけの変更で実行できるか | **可能**。Production `.venv`の`pip freeze`を本タスク開始前後で比較し無差分を確認(`google-genai==2.11.0`のまま)。`git status`で`requirements-ci.txt`/`requirements.txt`に差分なし。`.venv_trial_genai225/`は`.gitignore`の`.venv_trial*/`パターンに合致(追加変更不要)。 |
+
+4項目すべて問題なしと確認できたため、委任文の指示通りStage 1へ進んだ。
+
+## §16 Stage 1実行結果(1 segment、実費用込み)
+
+対象: `tension_reflection`(英語、Voice=Aoede、`er012_output/
+user_test_voices_a2_minimal_01/ai_hiring_3v_a2/kp_fix_01/a2/`の既存A側、
+固有名詞"New York City"を含む唯一のsegment、前回AB-01で最も重度に
+失敗したsegment)。本文(canonical text)は`parts.json`の`tension_body`を
+一切変更せずそのまま使用(850文字)。
+
+呼び出し方式: 現行Productionの`build_tts_prompt`(Structured Separation、
+delimiter方式)は使わず、`client.models.generate_content`へ
+`contents=Content(parts=[Part(text=<verbatim>, speech_metadata=
+SpeechMetadata(style=<style>))])`という新しい構造化形状で送信する独立
+実装(`er022_tts_gemini_3_8_flash_lite_next_trial_01_stage1.py`、
+Production `build_tts_prompt`は一切呼んでいない)。既存Production関数
+(ASR routing・英語6分類Validator・異常長検知)はimportしてそのまま利用。
+retry構成は標準2回+fallback1回=計3回(既存`PRODUCTION_MAX_TTS_ATTEMPTS`/
+`PRODUCTION_STANDARD_TTS_ATTEMPTS`の値を参照、呼び出し形状が変わるため
+独立orchestrationループとして実装、計画doc§4の想定通り)。style系列:
+attempt1=空文字列(公式推奨"Test plain TTS first")→attempt2=
+"natural, clear, conversational"→attempt3(fallback)="clear"。
+
+**結果表**:
+
+| 項目 | 値 |
+|---|---|
+| attempt数 | **1/3**(1回目=style空、で即PASS。2回目・3回目は未実行) |
+| ASR分類 | `NORMALIZED_MATCH`(should_pass=True。理由:「表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致」。差分は"job. But"→"job, but"のカンマ/大文字小文字のみ) |
+| duration A(既存) | 62.25秒 |
+| duration B(今回) | **49.08秒**(A比 約79%、実測) |
+| 指示文漏れ有無 | **無し**(ASRテキストにstyle文言["natural"/"clear"/"conversational"等]は一切含まれない、attempt1はstyle自体が空文字列のため指示文自体が存在しない) |
+| 本文外発話有無 | **無し**(`TRUE_CONTENT_MISMATCH`自体が発生していない) |
+| 異常長検知 | 該当なし(`is_anomaly=False`、見積り上限232秒に対し実測49.08秒) |
+| latency(TTS呼び出し1回) | 13.803秒 |
+| latency(ASR 1回) | 3.045秒 |
+| token数 | input_tokens=171, output_tokens=1571, total_tokens=1742(公式`usage_metadata`実測値) |
+| 費用(公式単価) | gemini: ¥1.52、openai_asr: ¥0.23、**合計¥1.76** |
+| 早期STOP発火有無 | **無し**(§13のSTOP条件6件いずれも非該当) |
+
+音声フォーマット(計画doc§1-3の予測を実測で確認): 生成された音声は
+**WAVヘッダ(RIFFマジックバイト)付き**で返却された
+(`wav_header_detected=true`)。本Trial実装の防御的処理(`wave`モジュールで
+正しくデコード)が正常に作動し、`wave`モジュールで直接読み込んだ
+duration(49.08秒/24000Hz/mono/16bit)と、Trial側で算出した
+`duration_seconds`が完全一致することを確認(ヘッダ誤読は発生していない)。
+副次的発見(Production非変更、観察のみ): 既存`er005_cost_logger.py`の
+`output_audio_seconds_computed_from_pcm`という診断用フィールドは、
+ヘッダ無し生PCM前提で計算しているため実測より約0.13秒長く出る
+(49.206秒 vs 実際49.08秒)。**実際の費用計算(input_tokens/output_tokensベース、
+公式`usage_metadata`由来)はこの影響を受けず正確**(この診断フィールドは
+Cost Guard判定にも使われていない)。Production `er005_cost_logger.py`は
+無変更。
+
+試聴artifact(内部証跡パスのみ、`docs/pm/PM_GOVERNANCE.md`9-5に基づき
+ローカルpathのためユーザー向け試聴依頼リンクとしては提示しない。本段階は
+計画doc§8の通りSonnet/Fable自動チェック優先の段階であり、まだ人間試聴が
+必要と判断していない):
+`er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage1/player.html`
+(A/B比較、mp3実体: `stage1/segments_mp3/a/tension_reflection.mp3` /
+`stage1/segments_mp3/b/tension_reflection.mp3`)。結果JSON:
+`stage1/audit/stage1_result.json`。raw usage log:
+`stage1/audit/raw_usage_log.jsonl`。
+
+音質所見(観察、人間試聴による正式判定ではない): ASR側は句読点位置起因の
+軽微な差(コンマ/ピリオド)のみで文意・語彙は完全一致。durationがAより
+約21%短い(62.25秒→49.08秒)ことは、style指示無し(attempt1のみで成功)の
+自然な発話速度による可能性が高いと推測されるが、断定はしない(実際に
+「不自然に速い」かどうかは人間試聴でしか判断できない、現段階では自動
+チェック[ASR PASS・異常長なし・本文外発話なし]のみで判断する計画doc§8の
+方針に従う)。
+
+## §17 累積費用・Cap(Stage 1終了時点)
+
+- Stage 1実費用: **¥1.76**(gemini ¥1.52 + openai_asr ¥0.23)。
+- Cap: ¥500(消費率0.35%)。
+- Phase 0(SDK確認、本REPORT§0-§13)の実費用¥0と合算しても、本管理ID
+  全体の累積実費用は**¥1.76**。
+
+## §18 Sonnet仮分類
+
+**Stage 1: SUCCESS**(事実ベース、Sonnetの独自判断による拡大解釈では
+ない)。委任文§12の成功条件(「選定segmentがASR検証PASS
+[EXACT_MATCH/NORMALIZED_MATCH/PHONETIC_MATCH相当]かつ異常長検知に該当
+せず、本文外発話が確認されないこと。かつ実測latency・costが記録される
+こと」)を全て満たした。加えて、attempt1回目(retry無し)で成功した点は、
+前回Trial(AB-01、17segment中14がSTOPPED)・今回Phase 0(SDK制約でStage 1
+未着手)のいずれとも異なる、明確な改善である。
+
+STOP該当: **無し**(§13のSTOP条件6件いずれも非発火)。
+
+## §19 Stage 2へ進む場合の見積(実装はしていない、ユーザー判断待ち)
+
+委任文により本委任ではStage 2以降を実行しない。参考見積のみ記録する:
+Stage 1の実測(1 segment、850文字、attempt1回で成功)から、費用は
+実測¥1.76/segment程度(計画doc§10のworst-case¥15.7/attemptより大幅に
+低い、retry無しで済んだため)。Stage 2(2〜3 segment、計画doc§5の
+`full_story_part1`/`point_two_body`を追加候補として想定)は、同様に
+attempt1回で済めば実費用¥5未満、worst-case(3segment×3attempt×¥15.7)でも
+Cap ¥500に対し十分小さい。Sonnet推奨: Stage 1の結果(§16-§18)をFable/
+ユーザーが確認し、Stage 2へ進む可否を判断してから次委任を行う(計画doc
+§14の段階的拡大方針通り、自動連鎖しない)。
+
+## §20 Production非変更の確認(Stage 1、追加分)
+
+- `er003_*`/`er006_*`/`er011_*`/`er012_*`等Production対象ファイルへの
+  変更: **0件**(import・利用のみ)。
+- `er005_cost_logger.py`: 変更0件(§16の観察は既存挙動の観察のみ)。
+- Production `.venv`・`.venv-ci`・`requirements-ci.txt`・
+  `requirements.txt`への変更: **0件**(§15(d)参照)。
+- 新規ファイルのみ:
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_sdk_225_check.py`、
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage1.py`、
+  `er022_tts_gemini_3_8_flash_lite_next_trial_01_stage1_assets.py`
+  (いずれもTrial専用)、
+  `er022_output/tts_gemini_3_8_flash_lite_next_trial_01/`配下の追加
+  ファイル(JSON/txt/wav/mp3/html)。既存記事artifact
+  (`er012_output/user_test_voices_a2_minimal_01/...`)は読み取りのみ、
+  一切変更していない。
+- API呼び出し: Stage 1でTTS(gemini)1回・ASR(openai_asr)1回、合計¥1.76
+  (§17)。それ以外の課金APIは呼んでいない(SDK確認probeはネットワーク
+  呼び出し0件)。
+- `.venv_trial_genai225/`: `.gitignore`の既存`.venv_trial*/`パターンに
+  合致するため追加のGit操作不要(確認済み)。

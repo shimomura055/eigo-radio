@@ -1,0 +1,29 @@
+{
+  "management_id": "TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01",
+  "phase": "SDK 2.25.0 confirmation (実費用¥0、ネットワーク呼び出し0件)",
+  "genai_version": {
+    "installed_version": "2.25.0",
+    "expected": "2.25.0",
+    "matches_expected": true
+  },
+  "type_definition_check": {
+    "part_has_speech_metadata_field": true,
+    "field_alias": "speechMetadata",
+    "speech_metadata_type_constructible": true,
+    "part_model_dump_includes_speech_metadata": true
+  },
+  "generate_content_wire_body_probe": {
+    "intercepted_before_network": true,
+    "network_calls_made": 0,
+    "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash-lite-tts:generateContent",
+    "wire_body_first_part": {
+      "text": "Hello world, this is a probe test sentence.",
+      "speechMetadata": {
+        "style": "natural, clear, conversational"
+      }
+    },
+    "speech_metadata_sibling_field_present": true,
+    "speech_metadata_style_value_correct": true,
+    "conclusion": "2.25.0では、GenerateContent APIのPart.speechMetadataがREST仕様通りsibling fieldとして正しく送信直前のwire body上に存在する(2.14.0で確認されたUNKNOWN変質/消失は解消)。"
+  }
+}
