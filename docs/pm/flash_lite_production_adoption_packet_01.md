@@ -146,6 +146,46 @@ Trial実行結果からの外挿であり、統計的信頼区間は無い**(退
   segmentのみで、A2記事全体[17segment]をFlash-Liteで完走させた実測は
   無い)。
 
+### B-5 単価ベース比較(公平比較、Fable Gatekeeper是正で追加)
+
+B-1のHormuz現行実測¥87.7は36 attempt(`raw_usage_log.jsonl`をsegment名で
+フィルタしただけの集計であり、複数run分のretry履歴が混在している可能性を
+排除できていない)を含むため、B-2実測¥8.72(Stage3、13 attempt)との単純な
+「1/10」比較は**公平比較ではない**。そこで、`er005_output/cost_baseline_01/
+pricing_snapshot.json`の公式単価(取得日2026-09-27)と、Stage3実測の
+input/output token構成比を用いて、**同一トークン量あたりの費用比**を
+算出した(本タスクで実測・計算、Trial script実行なし・API呼び出し0件)。
+
+- 公式単価(1M tokensあたり、USD): 現行`gemini-2.5-pro-preview-tts`
+  input$1.00/output$20.00。`gemini-3.8-flash-lite-tts` input$0.50/
+  output$6.00。
+- Stage3実測token合計(`er022_output/tts_gemini_3_8_flash_lite_next_
+  trial_01/stage3/audit/raw_usage_log.jsonl`、gemini providerのみ、
+  13 attempt全件): input_tokens合計=900、output_tokens合計=7,775
+  (audio出力主体でoutput側が費用を支配)。
+- 計算式: 費用比 = (input_tokens×$0.50 + output_tokens×$6.00) ÷
+  (input_tokens×$1.00 + output_tokens×$20.00)
+  = (900×0.50 + 7,775×6.00) ÷ (900×1.00 + 7,775×20.00)
+  = 47,100 ÷ 156,400 ≈ **0.301**。
+- **結論**: 同一トークン量で比較した場合、Flash-Liteの費用は現行の
+  **約30.1%**(現行はFlash-Liteの約**3.3倍**)であり、B-1/B-2の実額比較
+  から示唆される「1/10程度」は**単価差としては誇張**(実額差が大きいのは
+  主にB-1側のattempt数[36]がB-2[13]より多いことに起因する可能性が高い)。
+
+**Hormuz B1B現行側「1回完成コスト」(最終採用attemptのみ)の抽出試行**:
+`tts_generation_results.json`(`er019_output/family_x_audio_production_
+wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/audit/`)を
+確認したところ、Stage3比較対象12segmentのうち11segmentが
+`"reused_from_previous_run": true`(=このrunでの新規API呼び出しではなく
+過去runの音声を再利用)であり、実際に採用された音声を生成したattemptの
+input/output tokensは、本runの`raw_usage_log.jsonl`(このrunで実行された
+呼び出しのみを記録)には存在しない可能性が高い。加えて同ファイル内の
+同一segmentの記録は、attempt_number(1,2,...)が数時間おきに複数回
+リセットされており(例: `full_story_part3`はattempt1〜5が2回出現)、
+どのattemptが実際に採用されたものかをtoken記録だけから一意に特定する
+手段が無い。したがって「1回完成コスト」は**未取得**(集計方法の限界、
+推測で埋めない)。
+
 ---
 
 ## C. Latency/throughput
@@ -323,8 +363,9 @@ importして使うが、Human Review Lock・pronunciation resolver・cost logger
 4. retry/fallback構成(標準2+fallback1)を、`speech_metadata`方式の
    実際のProduction関数内部へ再実装(現状はTrial独立orchestrationループ)。
 5. §22.6-3で発生した共有store(`er021_output/en_asr_semantic_equivalence_
-   production_wiring_01/telemetry.jsonl`)への意図しない4行書込みの
-   後始末(下記I参照、USER_DECISION_REQUIRED)。
+   production_wiring_01/telemetry.jsonl`)への意図しない4行書込みは、
+   ユーザー既決(2026-09-27): 残置・close済み(OPEN-201)。Production
+   wiring時の作業は不要(下記I参照、再度の判断は求めない)。
 
 ---
 
@@ -334,8 +375,11 @@ importして使うが、Human Review Lock・pronunciation resolver・cost logger
 Stage 1-3の範囲(Family X B1B、12segment、Voice2種、数値/固有名詞/幕番号
 表現を含む)では、Flash-Lite(`speech_metadata`方式)は現行モデルに対し
 **品質面で同等以上(instruction leakage/hallucination 0件、ユーザー試聴で
-自然と評価)、コスト面で明確に有利(同一記事でTTS実費用が現行実測の
-1/10程度)**という結果が出ている。一方で、SDKバージョン更新・Production
+自然と評価)、コスト面で有利(単価ベースの公平比較[§B-5]で同一トークン量
+あたり約30%、すなわち現行の約1/3程度。B-1/B-2の実額差[Hormuz実測¥87.7
+対Flash-Lite実測¥8.72]が示唆する「1/10」は、B-1側のattempt数[36]が
+B-2[13]より多いことも影響しており単価差としては誇張、§B-5参照)**という
+結果が出ている。一方で、SDKバージョン更新・Production
 実配線・既存安全機構(Human Review Lock/pronunciation resolver/A2
 slowdown)との統合・role別styleの正式仕様化はいずれも未着手であり、
 「今すぐ全Family一括採用」するにはリスクが大きい。

@@ -1034,3 +1034,13 @@ Production非変更の確認(本タスク追加分): ¥0(API呼び出し0件、T
 みで変更していない。SSOT(`CURRENT_SPEC.md`/`DECISION_LOG.md`/
 `OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`)への反映は本節と同時に実施
 (該当エントリ参照)。
+
+**Fable Gatekeeper是正(2026-09-27、¥0・API呼び出し0件)**: (1) G-2項目5の
+telemetry 4行残置をユーザー既決(残置・close済み、OPEN-201)へ書き換え、
+再度の判断を求めない形に修正。(2) B節へB-5「単価ベース比較」を追加し、
+`pricing_snapshot.json`公式単価とStage3実測token構成(input=900/
+output=7,775)から同一トークン量あたりの費用比を算出(Flash-Lite≈現行の
+約30.1%、現行はFlash-Liteの約3.3倍)、H節の「1/10程度」表現を実額差
+(attempt数36 vs 13の影響)と単価差を区別する記述へ補正。Hormuz B1B側の
+「1回完成コスト」抽出はattempts_logの`reused_from_previous_run`混在等
+により未取得と明記。
