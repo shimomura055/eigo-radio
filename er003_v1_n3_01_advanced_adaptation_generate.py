@@ -258,6 +258,64 @@ _assert_unchanged_portion_sha256()  # import時にfail-closedで検証する
 _assert_vocab_rule_v2_sha256()  # import時にfail-closedで検証する
 
 
+# ------------------------------------------------------------
+# Section Boundary Contract(NEWS-FAMILY-X-SECTION-SEGMENTATION-
+# PRODUCTION-WIRING-01、2026-09-27、ユーザー正式進行許可済み)
+# ------------------------------------------------------------
+# 出典: `docs/pm/design_family_x_section_segmentation_spec_01.md` §3.1と
+# 一字一句同一(Fable承認済み)。既存`ADVANCED_CONTRACT_SUFFIX_LINES`
+# (Format規定: 見出し数・語数・ラベル禁止)とは別の独立ブロックとして
+# 追加する(既存ブロック自体は無変更のまま、`ADVANCED_UNCHANGED_PORTION_
+# SHA256`の対象にも含めない)。目的: 各`### `見出しの直前で、次Sectionが
+# 本格的に依拠する出典・具体例・数値・引用を先取りしないことを明示する。
+ADVANCED_SECTION_BOUNDARY_CONTRACT = (
+    "Section boundary rule: each \"### \" heading marks where its section "
+    "begins. The first concrete point a section makes -- its main source, "
+    "example, figure, or quotation -- belongs after that section's own "
+    "heading, not before it.\n"
+    "\n"
+    "Right before a \"### \" heading, you may close the point you were just "
+    "making, and, if it helps the flow, add one bridging sentence that "
+    "signals a shift is coming (for example, a closing remark, or a "
+    "question you do not yet answer). This bridging sentence must not name "
+    "the specific source, example, figure, or quotation that the upcoming "
+    "section is about to build on, and must not state the upcoming "
+    "section's main point.\n"
+    "\n"
+    "Self-check for every heading before you finish: (1) If this heading "
+    "were deleted, would the sentence right before it already give away "
+    "the section's first concrete point? If yes, move that sentence to "
+    "after the heading. (2) Does the sentence right before this heading "
+    "name the specific source, example, figure, or quotation that this "
+    "section is built on? If yes, move it to after the heading.\n"
+    "\n"
+    "A heading should open its own section with a new concrete point, not "
+    "restate the point that was just made."
+)
+
+ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256 = (
+    "bba08c021ae41ebd748313f329b2a7eba78b1a59d7f85042ec649a7d591b8421"
+)
+
+
+def _compute_section_boundary_contract_sha256() -> str:
+    return hashlib.sha256(ADVANCED_SECTION_BOUNDARY_CONTRACT.encode("utf-8")).hexdigest()
+
+
+def _assert_section_boundary_contract_sha256() -> None:
+    actual = _compute_section_boundary_contract_sha256()
+    if actual != ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256:
+        raise RuntimeError(
+            "[STOP] ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256 mismatch: "
+            f"expected={ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256} actual={actual}. "
+            "ADVANCED_SECTION_BOUNDARY_CONTRACTが設計doc §3.1の正式決定テキストと"
+            "一致しません。"
+        )
+
+
+_assert_section_boundary_contract_sha256()  # import時にfail-closedで検証する
+
+
 # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01(2026-09-27)で追加した
 # must-fix受け口(新規追加ブロックのみ、既存段落[PREFIX/GENERAL_PRESERVE_
 # BULLETS/SUFFIX/ARM3_BLOCK/VOCAB_RULE_V2_BLOCK/CONTRACT_SUFFIX]は一切
@@ -290,7 +348,9 @@ def build_prompt(ja_article_text: str, must_fix: list | None = None) -> str:
     prompt = (
         common_block_general + "\n\n" + ADVANCED_ARM3_BLOCK + "\n\n" +
         ADVANCED_VOCAB_RULE_V2_BLOCK + "\n\n" +
-        ADVANCED_CONTRACT_SUFFIX + "\n\n[Japanese article]\n" + ja_article_text
+        ADVANCED_CONTRACT_SUFFIX + "\n\n" +
+        ADVANCED_SECTION_BOUNDARY_CONTRACT +
+        "\n\n[Japanese article]\n" + ja_article_text
     )
     if must_fix:
         prompt += "\n\n" + build_must_fix_block(must_fix)

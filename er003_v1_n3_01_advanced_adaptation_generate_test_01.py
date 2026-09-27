@@ -120,8 +120,10 @@ class BuildPromptTests(unittest.TestCase):
         idx_arm3 = prompt.find("Adaptation level: NATURAL ENGLISH.")
         idx_vocab = prompt.find("Vocabulary difficulty rule:")
         idx_contract = prompt.find("Format (Markdown): start with")
+        idx_section_boundary = prompt.find("Section boundary rule:")
         idx_article = prompt.find("[Japanese article]\n" + JA_TEXT)
-        self.assertTrue(idx_common < idx_bullets < idx_arm3 < idx_vocab < idx_contract < idx_article)
+        self.assertTrue(idx_common < idx_bullets < idx_arm3 < idx_vocab < idx_contract
+                         < idx_section_boundary < idx_article)
 
     def test_build_prompt_does_not_contain_meta_specific_bullets(self):
         prompt = adv.build_prompt(JA_TEXT)
@@ -188,13 +190,68 @@ class VocabRuleV2Tests(unittest.TestCase):
         finally:
             adv.ADVANCED_VOCAB_RULE_V2_SHA256 = original
 
-    def test_standard_a2_module_unchanged_sha256(self):
-        # er003_v1_n3_01_standard_a2_generate.py(Standard v5)は本タスクで
-        # 変更しない。既存のSTANDARD_A2_PROMPT_SHA256 assertが引き続き
-        # 無エラーで通ることで、本タスクによる意図しない変更が無いことを
-        # 確認する(直接diffはこのテストの責務外、Git側で別途確認)。
+    def test_standard_a2_module_self_consistent_sha256(self):
+        # er003_v1_n3_01_standard_a2_generate.py(Standard v5)は本Advanced
+        # Section Boundary Contract追加では一切変更しない(このファイルが
+        # importするのは確認目的のみ)。同一セッション内で別管理ID
+        # (NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01 Stage 2)によりStandardの
+        # 語彙段落・境界維持行は正式に変更されているため、ここでは「Standard
+        # モジュール自身のPrompt定数とsha256定数が整合していること」のみを
+        # 確認する(Advanced側の変更がStandard側に意図せず波及していないか
+        # の最低限の生存確認、逐語不変の主張はしない)。
         import er003_v1_n3_01_standard_a2_generate as std
         std._assert_prompt_sha256()  # 無エラーならOK
+
+
+class SectionBoundaryContractTests(unittest.TestCase):
+    """NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01: 見出し境界
+    Contract(design doc §3.1)がPrompt本体に含まれ、既存ブロック
+    (CONTRACT_SUFFIX/VOCAB_RULE_V2_BLOCK)を書き換えていないこと、
+    small_bag等の記事固有語を含まないことを確認する。"""
+
+    def test_section_boundary_contract_present_in_prompt(self):
+        prompt = adv.build_prompt(JA_TEXT)
+        self.assertIn(adv.ADVANCED_SECTION_BOUNDARY_CONTRACT, prompt)
+
+    def test_section_boundary_contract_contains_core_rules(self):
+        text = adv.ADVANCED_SECTION_BOUNDARY_CONTRACT
+        self.assertIn("Section boundary rule:", text)
+        self.assertIn("belongs after that section's own heading, not before it", text)
+        self.assertIn("must not name the specific source, example, figure, or quotation", text)
+        self.assertIn("Self-check for every heading before you finish", text)
+        self.assertIn("A heading should open its own section with a new concrete point", text)
+
+    def test_section_boundary_contract_does_not_contain_article_specific_words(self):
+        # small_bag/Vogue/ELLE/Hormuz等の記事固有語を一切含まない一般形であること。
+        text = adv.ADVANCED_SECTION_BOUNDARY_CONTRACT
+        for article_specific in ("Vogue", "ELLE", "mini bag", "large bag", "Hormuz",
+                                   "Meta", "Muse", "small_bag"):
+            self.assertNotIn(article_specific, text)
+
+    def test_existing_contract_suffix_unchanged_by_new_block(self):
+        # 既存ADVANCED_CONTRACT_SUFFIX_LINES(Format規定)は無変更のまま
+        # 別ブロックとして新contractが追加されていること。
+        self.assertEqual(adv.ADVANCED_CONTRACT_SUFFIX_LINES, [
+            "Write in English.",
+            "Length: about 280–420 words in total.",
+            "Format (Markdown): start with \"# \" followed by the title; then the "
+            "main story; then exactly two \"### \" subsections, each 30–60 "
+            "words, with headings that describe their content in your own words "
+            "(do not use labels like \"Point One\"); then a final section headed "
+            "exactly \"## In one line\" containing one sentence.",
+        ])
+
+    def test_section_boundary_contract_sha256_assert_does_not_raise(self):
+        adv._assert_section_boundary_contract_sha256()
+
+    def test_section_boundary_contract_sha256_mismatch_raises(self):
+        original = adv.ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256
+        try:
+            adv.ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256 = "0" * 64
+            with self.assertRaises(RuntimeError):
+                adv._assert_section_boundary_contract_sha256()
+        finally:
+            adv.ADVANCED_SECTION_BOUNDARY_CONTRACT_SHA256 = original
 
 
 class GenerateAdvancedAdaptationTests(unittest.TestCase):
