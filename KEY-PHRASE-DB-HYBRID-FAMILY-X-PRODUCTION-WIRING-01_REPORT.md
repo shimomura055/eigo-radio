@@ -239,7 +239,7 @@ artifact(`er019_output/family_x_b3_*`配下)への書き込みは無い
 | DEV・Trial-onlyではないこと | **済** | Core/Selectorとも新規Production module(`er030_*`)、Trial script(`er027/028/029`)は無変更のまま読み取り専用依存に留める |
 | Production runtimeでの実発火 | **済** | §4のruntime evidence(実API、実Production関数経由) |
 | 必要testのPASS | **済** | §3(単体/統合、Phase 1時点15件PASS→修正1回目で32件PASS、§3-2)、project regression既知failureのみ(§3-2、コミット後に確認) |
-| runtime evidence | **済** | §4(Phase 1時点、再取得なし。B2 per-article metadataは次回run以降) |
+| runtime evidence | **済** | §4(Phase 1時点)+§12(修正1回目後のpost-fix evidence、B1 telemetry新schema・B2 per-article metadata・S3/S4/S5・model_idを実測確認) |
 | 実際のmodel_id・routing確認 | **済** | `gpt-5.6-luna`(routing contract経由、実測) |
 | コスト影響評価 | **済** | §4(実測JPY 9.2517+概算、Guardrail¥40以内。修正1回目は¥0) |
 | `CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`反映 | **済** | 「Key Phrase」節新規行(修正1回目で内容更新)、DECISION_LOGエントリ新設(修正1回目分追加)、OPEN-202新規登録+OPEN-206新規登録(修正1回目N5) |
@@ -520,5 +520,139 @@ runtime evidenceは再取得していない(既存4記事evidence[§4]は有効�
 `PRODUCTION_WIRED`化の最終判定はFable/ユーザーに委ねる。Sonnetは
 BLOCKER 3件を解消したと判断するが、`PRODUCTION_WIRED`の正式宣言は
 行わない。
+
+**2026-09-27追記(post-fix runtime evidence取得後)**: §12のHormuz A2
+post-fix runtime evidenceにより、B1(telemetry観測性)・B2(per-article
+traceability)・S3(source span照合)・S4(cost意味論)・S5(shortlist条件)・
+model_id(routing contract経由)のいずれも実際のProduction共有入口
+(`sc.run_key_phrases(kp_backend="db_hybrid")`)経由で正常動作することを
+実測確認した。B3(routing違反→fallback不可STOP)は課金を伴わないため
+既存mock test(`ModelContractViolationStopsWithoutFallbackTests`)の
+再実行で再確認した(§12-4)。Gate 3チェックリスト(§5)は全項目
+「済」となったが、`PRODUCTION_WIRED`の正式宣言は引き続きFable/
+ユーザーの最終確認に委ねる(Sonnet単独では宣言しない)。
+
+---
+
+## 12. post-fix runtime evidence(修正1回目後、Gate 3最終項目、
+2026-09-27、実測¥2.601)
+
+管理ID: `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01`(本節、
+委任文全文`docs/pm/delegation_log/2026-09-27_NEWS-FAMILY-X-AUDIO-
+PRODUCTION-WIRING-01_07.md`Part B)。Guardrail¥20に対し実測¥2.601
+(見積り¥1〜2に対しKey Phrase Set Redundancy QA retryが1回発火した
+ため若干上振れ、Guardrail内)。
+
+### 12-1. 実行方法
+
+新規スクリプト`er030_family_x_kp_db_hybrid_evidence_02_run.py`
+(既存`er030_family_x_kp_db_hybrid_evidence_01_run.py`と同型)を新設し、
+Hormuz A2記事1本(`er019_output/family_x_b3_diversity_trial_01/hormuz/
+run_02/a2/article.md`)に対し、実Production共有入口
+`sc.run_key_phrases(article_text, out_dir, article_id, "a2",
+process="A2_SUPPORT", kp_backend="db_hybrid")`を1回呼んだ。出力先は
+`er030_output/family_x_kp_db_hybrid_evidence_02/hormuz_a2/`のみで、
+既存Production artifact(`er019_output/family_x_audio_production_
+wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/key_phrases/
+keywords_canonicalized.json`、Stage 3fでAssembly済みのHormuz A2本番
+成果物)への書き込みは無い(`git status --short er019_output/`で
+本節実行前後とも無変更であることを確認済み)。
+
+### 12-2. 結果
+
+db_hybrid選定は1回目`REDUNDANCY_NG`(rank1「be taken back」とrank4
+「center stage」のusage_context/conceptual_role重複)で選定からの
+retryが1回発火し、2回目で`REDUNDANCY_PASS`まで到達した
+(`redundancy_retry_attempts=1`)。最終`kp_backend_used="db_hybrid"`
+(fallback発火なし)。
+
+| 項目 | 値 |
+|---|---|
+| kp_backend_used | `db_hybrid`(fallbackなし) |
+| selection_status | `KEY_WORDS_STRUCTURE_PASS` |
+| canonicalization_status | `CANONICALIZATION_PASS` |
+| redundancy_qa_status | `REDUNDANCY_PASS`(retry 1回) |
+| shortlist_total_count | 20(閾値`MIN_SHORTLIST_COUNT`=12を満たす) |
+| phrase+important_noun件数 | 12(閾値`MIN_SHORTLIST_PHRASE_PLUS_IMPORTANT_COUNT`=5を満たす) |
+| model_id(両attempt共通) | `gpt-5.6-luna` |
+| 選定cost実測(1回目/2回目/合計) | JPY 1.3225 / JPY 1.2785 / **JPY 2.6010** |
+| 記事累積cost上限(`KP_ARTICLE_COST_CAP_JPY`=15.0)との比較 | 2.601 ≪ 15.0(未超過、正常) |
+| 最終5件(used_form) | be taken back/give back/Brent crude/center stage/sea blockade |
+
+### 12-3. Gate 3項目ごとのevidence
+
+- **B1(telemetry観測性)**: `er030_output/kp_backend_telemetry_01/
+  telemetry.jsonl`に本evidence run分2行が追記され、いずれも
+  `requested_backend`/`backend_used`/`final_status`/
+  `fallback_triggered`/`fallback_reason_code`/`synthetic`(=`false`、
+  実runであることを示す)/`spec_id`/`article_id`/`level`/`model_id`/
+  `cost_jpy`の全フィールドを持つことを実測確認した(1回目
+  cost_jpy=1.3225、2回目cost_jpy=1.2785、いずれも
+  `final_status="KEY_WORDS_STRUCTURE_PASS"`)。
+- **B2(per-article traceability)**: `er030_output/family_x_kp_db_
+  hybrid_evidence_02/hormuz_a2/key_phrases/keywords_runtime_
+  metadata.json`(記事の正式per-article traceabilityファイル)に
+  `kp_backend`/`kp_backend_used`/`kp_backend_fallback_reason_code`/
+  `kp_backend_cost_jpy`/`kp_backend_model_id`/
+  `kp_backend_shortlist_total_count`/`kp_backend_cost_guard_exceeded`/
+  `kp_backend_attempts_detail`が実際に書き込まれることを確認した
+  (`_merge_kp_backend_metadata_into_runtime_file`が意図どおり動作)。
+  なお、委任文が挙げた`kp_backend.json`という独立ファイルは実装上
+  存在せず(コード全文grepで確認済み)、同等の情報は上記
+  `keywords_runtime_metadata.json`への追記型merge、および(実CLI経由の
+  scaffold実行時のみ)`entry_point.json`の`kp_backend_used_by_level`
+  (`er019_family_x_audio_production_runner_01.py`main()、§1-2既述)に
+  含まれる。本evidence runは既存Production artifactを上書きしない
+  隔離目的のため、`sc.run_key_phrases()`を直接呼ぶ方式を採り
+  (evidence_01と同型)、`er019`側`main()`の`entry_point.json`
+  merge処理自体はこの1回では再実行していない(実Family X CLIの
+  `--stage scaffold`を実記事へ再実行すると、既にStage 3fでAssembly
+  済みのHormuz A2 Key Phrase artifactを上書きし再課金が発生するため、
+  本タスクでは意図的に避けた)。`entry_point.json`側のmerge処理自体は
+  §1-2で実装済み・コードレビュー済みであり、`scaffold_result[level]
+  .get("kp_backend_used")`は本evidence runと同じ`run_key_phrases()`
+  戻り値の`selection.get("kp_backend_used")`をそのまま使うため、
+  ロジック的な差異は無い。
+- **S3(source span照合)**: 2回のattemptとも`SOURCE_SPAN_NOT_IN_RAW_
+  ARTICLE`は発火せず(発火していれば`DbHybridFailure`で即STOPし
+  `KEY_WORDS_STRUCTURE_PASS`まで到達しない)、5件全ての`source_span`
+  が実際の記事本文(`article.md`)に存在することを間接確認した。
+- **S4(cost意味論)**: 1回目・2回目とも`cost_guard_exceeded=false`
+  (単発cost 1.3225/1.2785はいずれも`DEFAULT_COST_GUARD_JPY`=5.0未満)。
+  記事累積cost(2.601)は`KP_ARTICLE_COST_CAP_JPY`=15.0を大きく下回り
+  `KP_ARTICLE_COST_CAP_EXCEEDED`は発火しなかった(正常、cap超過時の
+  fail-closed動作自体は既存単体test`CostGuardAndArticleCostCapTests`
+  でmock確認済み、本evidenceでは非超過ケースの実測)。
+- **S5(shortlist条件)**: shortlist_total_count=20・
+  phrase+important_noun=12がいずれも閾値(12/5)を満たすことを実測
+  (§12-2表)。
+- **model_id**: 両attemptとも`gpt-5.6-luna`
+  (`routing.require_model("A2_SUPPORT", routing.SUPPORT_MODEL)`
+  経由、telemetry・keywords_runtime_metadata.json双方で一致確認)。
+
+### 12-4. B3(routing違反→fallback不可STOP)の再確認(課金なし)
+
+課金を伴う実routing違反の再現は行わず、既存mock test
+`ModelContractViolationStopsWithoutFallbackTests`
+(`er030_key_phrase_db_hybrid_family_x_production_wiring_01_test.py`)
+を再実行し2件ともPASSを確認した(`.venv/Scripts/python.exe -m
+unittest er030_key_phrase_db_hybrid_family_x_production_wiring_01_
+test.ModelContractViolationStopsWithoutFallbackTests -v` →
+`Ran 2 tests ... OK`)。この再実行により、既存test設計上
+`er030_output/kp_backend_telemetry_01/telemetry.jsonl`へsynthetic
+testエントリ1行(`TEST_ID_MISMATCH`、`synthetic=false`、既存test設計、
+本タスクの新規欠陥ではない)が追記される(既存commit時点でも同型の
+test entryが既に混在していたことを`git log`で確認済み)。
+
+### 12-5. 費用まとめ
+
+| 区分 | 金額(JPY) |
+|---|---|
+| Hormuz A2 db_hybrid選定(1回目、REDUNDANCY_NG) | 1.3225 |
+| Hormuz A2 db_hybrid選定(2回目、REDUNDANCY_PASS) | 1.2785 |
+| canonicalization/Redundancy QA(既存Production既知のcost計測欠落、OPEN-206) | 計測不可(既存限界) |
+| B3再確認(mock test、API呼び出しなし) | 0 |
+| **Part B合計(実測)** | **2.6010** |
+| Guardrail | ¥20(超過なし) |
 
 Management-ID: KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01

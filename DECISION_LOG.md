@@ -10607,3 +10607,55 @@ Assembly Gate配線漏れ修正+Hormuz A2/B1B・Meta A2 Assembly実行、
   Part Aに保存)、`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`
   「## Stage 3f」。
 - commit: 本コミット(Stage 3f、code+test+assembly artifact+SSOT反映)。
+
+## KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: post-fix
+runtime evidence(修正1回目後、Gate 3最終項目、2026-09-27、実測
+JPY 2.6010)
+
+- **性質**: 修正1回目(commit`bfd7090e`)で解消したと判断したOpus L2
+  BLOCKER 3件(B1/B2/B3)・SHOULD_FIX項目(S3/S4/S5)・model_idについて、
+  実Production共有入口経由のruntime evidenceを取得(Gate 3の最終
+  未確認項目)。Production code変更なし(evidence取得スクリプト
+  `er030_family_x_kp_db_hybrid_evidence_02_run.py`のみ新設)。
+- **決定**: Hormuz A2記事1本を、実Production共有入口
+  `sc.run_key_phrases(kp_backend="db_hybrid")`で1回実行(既存
+  Production artifact[Stage 3fでAssembly済みのHormuz A2 Key Phrase]は
+  上書きしない隔離出力`er030_output/family_x_kp_db_hybrid_evidence_02/`
+  へ)。
+- **Runtime evidence**(実測JPY 2.6010、Guardrail¥20): Key Phrase
+  Set Redundancy QA retryが1回発火(rank1/rank4のusage_context/
+  conceptual_role重複)し、2回目で`REDUNDANCY_PASS`まで到達
+  (`kp_backend_used="db_hybrid"`、fallback非発火)。B1
+  (telemetry.jsonlに2行追記、全フィールド`synthetic=false`)・B2
+  (`keywords_runtime_metadata.json`への`kp_backend_*`追記型merge)・
+  S3(source span照合、非発火=正常)・S4(記事累積cost JPY 2.601、
+  上限JPY 15.0を大きく下回り未超過)・S5(shortlist=20≥12、
+  phrase+important=12≥5)・model_id(`gpt-5.6-luna`、routing contract
+  経由)をいずれも実測確認した。B3(routing契約違反→fallback不可STOP)
+  は課金を伴わないため既存mock test
+  `ModelContractViolationStopsWithoutFallbackTests`の再実行のみで
+  再確認(実API呼び出しなし、2 test PASS)。
+- **委任文の`kp_backend.json`という独立ファイル名について**: 実装上
+  存在しないことをコード全文grepで確認した(同等情報は
+  `keywords_runtime_metadata.json`の`kp_backend_*`フィールド、および
+  実CLI経由scaffold実行時のみ生成される`entry_point.json`の
+  `kp_backend_used_by_level`に含まれる)。本evidence runは
+  `er019`側`main()`のentry_point.json merge処理自体は実CLI再実行して
+  いない(既にAssembly済みのHormuz A2 Production Key Phrase artifactを
+  上書きし再課金するリスクを避けるため意図的に非実行、ロジックは
+  §1-2で実装済み・コードレビュー済み)。
+- **反映範囲**: `CURRENT_SPEC.md`(「Family X選定方式」行へpost-fix
+  evidence追記、Statusは`APPROVED_FOR_PRODUCTION`のまま変更なし)、
+  `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_REPORT.md`
+  (「## 12. post-fix runtime evidence」新設、§5 Gate 3表・§11更新)、
+  `docs/pm/REPORT_LEDGER.md`(該当行更新)、本エントリ新設。
+  `OPEN_ITEMS.md`の新規変更は無し(新たなOPENは発生していない)。
+- **STOP該当**: 無し。Gate 3チェックリストは全項目「済」となったが、
+  `PRODUCTION_WIRED`の正式宣言は引き続きFable/ユーザーの最終確認に
+  委ねる(Sonnet単独では宣言しない)。
+- **根拠**: ユーザー正式決定(委任文、2026-09-27、`docs/pm/delegation_
+  log/2026-09-27_NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_07.md`
+  Part Bに保存)、`KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01_
+  REPORT.md`「## 12」。
+- commit: 本コミット(post-fix evidence、evidence script+artifact+
+  telemetry追記+SSOT反映)。
