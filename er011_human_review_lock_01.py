@@ -285,6 +285,18 @@ def record_outcome(out_path: str, text: str, language: str, result: dict, run_id
     budget_guard_triggered = (cumulative_tts > MAX_CUMULATIVE_TTS_ATTEMPTS
                               or cumulative_asr > MAX_CUMULATIVE_ASR_CALLS)
 
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(telemetry項目追加
+    # のみ、既存フィールド・既存挙動は無変更): attempts_log中にsemantic_
+    # equivalence(Tier1/Tier3、classify_asr_match/evaluate_attempt_with_
+    # cascade_detail側で既に付与済み)を持つ最初のattemptを、このcallの
+    # 代表値としてattempt_history.jsonlへそのままパススルーする(既存の
+    # attempts_log自体はここでは変更しない、読み取るだけ)。
+    semantic_equivalence_summary = None
+    for _a in (attempts_log if isinstance(attempts_log, list) else []):
+        if isinstance(_a, dict) and _a.get("semantic_equivalence"):
+            semantic_equivalence_summary = _a["semantic_equivalence"]
+            break
+
     if status == "OK" and not budget_guard_triggered:
         new_state = "RESOLVED"
         reason = "status=OKで確定しました。"
@@ -350,6 +362,7 @@ def record_outcome(out_path: str, text: str, language: str, result: dict, run_id
         "final_lock_state": new_state,
         "budget_guard_triggered": budget_guard_triggered,
         "duration_seconds": duration_seconds,
+        "semantic_equivalence": semantic_equivalence_summary,
     })
     return new_entry
 

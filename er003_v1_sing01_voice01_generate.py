@@ -81,6 +81,15 @@ def generate_charon_english(text: str, out_path: str,
                       "(Human Review待ち): " + ", ".join(f["token"] for f in label_findings),
             "canonical_text": text, "internal_label_findings": label_findings,
         }
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None、
+    # out_pathが標準命名慣習に従わない場合[単体テストのダミーパス等]は
+    # Noneのまま=role gate非適用、既存挙動と完全に同じ): narration wav
+    # パスから機械的にsegment_idを導出し、classify_asr_matchのrole
+    # gating(Tier1/Tier3)へ渡す。_local_rewrite_recovery_for_charon_
+    # english()と同じ導出方法(review_lock.derive_segment_key)を使う。
+    segment_id = None
+    if review_lock._has_valid_narration_layout(out_path):
+        _, _, segment_id = review_lock.derive_segment_key(out_path)
     max_len = len(text) + 15
     attempts_log = []
     classification_history = []
@@ -154,13 +163,15 @@ def generate_charon_english(text: str, out_path: str,
             # 発火し得なかった(docs/pm/recon_connected_speech_scope_01.md
             # 「事実1」)。呼び出し側がconnected_speech_enabled_for()で
             # 判定した値をそのまま転送する。
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            segment_id=segment_id)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
+                              "semantic_equivalence": getattr(cls, "semantic_equivalence_info", None),
                               "length_ok": length_ok, "verified": verified, "trim_info": trim_info,
                               "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})

@@ -240,6 +240,12 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
     asr_text, err = routing.transcribe(out_path, language="en-US", timeout_seconds=300.0)
     length_ok = asr_text is not None and len(asr_text) <= max_len
     ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None、out_path
+    # が標準命名慣習に従わない場合はNoneのまま=role gate非適用、既存挙動と
+    # 完全に同じ): voice01.generate_charon_englishと同じ導出方法。
+    segment_id = None
+    if review_lock._has_valid_narration_layout(out_path):
+        _, _, segment_id = review_lock.derive_segment_key(out_path)
     # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
     # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
     # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
@@ -248,7 +254,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
         text, asr_text, classification_history, out_path, language="en-US",
         ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
         force_secondary=True,
-        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        segment_id=segment_id)
     verified = verified_content and length_ok
     gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
     verified = gate["verified"]

@@ -135,12 +135,16 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
         result["slowdown_info"] = stretch_info
         return result
 
-    classification = en_validator.classify_asr_match(tts_input_text, asr_text)
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: nameは既にこの
+    # segmentのsegment_id(A2_SLOWDOWN_TARGET_SEGMENTS、narration/{name}.wav
+    # のbasename)そのものなので、追加の導出なしでそのままrole gatingへ渡す。
+    classification = en_validator.classify_asr_match(tts_input_text, asr_text, segment_id=name)
     result["original_path"] = original_path
     result["slowdown_applied"] = True
     result["slowdown_info"] = stretch_info
     result["post_slowdown_asr_text"] = asr_text
     result["post_slowdown_classification"] = classification.classification
+    result["post_slowdown_semantic_equivalence"] = getattr(classification, "semantic_equivalence_info", None)
     # trim_info/duration_secondsはslowdown前の値のままだと実際の最終
     # 音声(narration/{name}.wav)の長さと食い違う(過去のtaskで発見・
     # 記録した既知のデータ不整合パターンを未然に防ぐ)。time-stretch比率

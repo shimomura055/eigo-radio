@@ -32,6 +32,15 @@ from dataclasses import dataclass, field
 
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
 import er011_b1_connected_speech_validator_01 as connected_speech
+# EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、ユーザー
+# 正式承認済みAPPROVED_FOR_PRODUCTION 2026-09-27): Tier 1(数値/通貨/%/
+# 年/時刻/分数/ローマ数字/略語の値等価)判定モジュール。このmoduleはval
+# (このファイル自身)を一切importしないため、ここでmodule-level import
+# しても循環import は発生しない(下記classify_asr_match()ラッパー内で
+# 使用)。role gating(resolve_narrative_role/connected_speech_enabled_for)
+# は、er020がこのファイルをimportしているため、呼び出し時点での遅延
+# importにする(下記参照)。
+import er021_en_asr_semantic_equivalence_production_01 as semantic_equivalence
 
 # ------------------------------------------------------------
 # 正規化(ER-006-POOL-PILOT-COST-ROOTFIX-01のer006_cost_rootfix_01_text_
@@ -772,6 +781,17 @@ VALID_CLASSIFICATIONS = (
     # should_pass=True・should_retry=False(その他のPASS系分類と同じ扱い、
     # 新規のClassification専用の下流分岐は追加していない)。
     "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、
+    # APPROVED_FOR_PRODUCTION 2026-09-27): Tier 1数値/通貨/%/年/時刻/
+    # 分数/ローマ数字/略語の値等価(classify_asr_match()ラッパー冒頭の
+    # role gating付きearly-exit、下記参照)。should_pass=True。
+    "NUMERIC_EQUIVALENCE_MATCH",
+    # Tier 3(規則的複数形・固有名詞ASR表記差)のSecondary/Local ASR
+    # corroboration付き救済(er006_secondary_asr_01.evaluate_attempt_
+    # with_cascade_detail内、既存Connected Speech Equivalence Layerの
+    # 後段で判定)。should_pass=True・PASS_WITH_WARNING相当(telemetryへ
+    # warning=Trueを記録)。
+    "SECONDARY_ASR_CORROBORATED_MATCH",
 )
 
 
@@ -789,6 +809,13 @@ class ClassificationResult:
     # boundary/false_accept_risk)。既存呼び出し元は位置引数のみ使うため
     # 末尾にdefault付きで追加し、後方互換を保つ。
     connected_speech_info: dict | None = None
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: classification が
+    # NUMERIC_EQUIVALENCE_MATCH/SECONDARY_ASR_CORROBORATED_MATCH の場合、
+    # または(should_pass=Falseでも)role gatingが適用された呼び出しで
+    # observability用のsub_reason判定を行った場合に非Noneになる、
+    # {tier_applied, sub_reason, corroborated_by, warning}形式のdict。
+    # 同じくdefault付き末尾追加(既存呼び出し元・位置引数は無変更)。
+    semantic_equivalence_info: dict | None = None
 
 
 def _classify_asr_match_core(canonical_text: str, asr_text: str,
@@ -949,10 +976,34 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
                                  reason="内容語の差は検出されないが、一致率がPASS基準に届かない")
 
 
+_SEMANTIC_EQUIVALENCE_APPLICABLE_ROLES = semantic_equivalence.FIVE_ROLES_APPLICABLE
+
+
+def _resolve_semantic_equivalence_role(segment_id: str | None, role: str | None) -> str | None:
+    """EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: role判定は
+    er020_tts_retry_local_rewrite_01.resolve_narrative_role()/
+    connected_speech_enabled_for()と同じ単一関数を使う(role名の判定
+    ロジックをここで重複実装しない)。er020はこのファイル(val)を
+    importしているため、モジュールtop-levelでの相互import(循環import)
+    を避け、この関数が実際に呼ばれるcall-time(両モジュールとも既に
+    ロード済みのタイミング)にのみ遅延importする。segment_id/role両方が
+    Noneの場合は何もimportせずNoneを返す(既存呼び出し元の挙動を一切
+    変えないための最短経路)。"""
+    if role is not None:
+        return role
+    if segment_id is None:
+        return None
+    import er020_tts_retry_local_rewrite_01 as _role_gate
+    return _role_gate.resolve_narrative_role(segment_id)
+
+
 def classify_asr_match(canonical_text: str, asr_text: str,
                         high_similarity_threshold: float = 0.98,
                         uncertain_threshold: float = 0.85,
-                        tts_failure_threshold: float = 0.4) -> ClassificationResult:
+                        tts_failure_threshold: float = 0.4,
+                        *,
+                        segment_id: str | None = None,
+                        role: str | None = None) -> ClassificationResult:
     """OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01:
     既存の分類本体(_classify_asr_match_core、無変更)を「外側から包む」
     薄いラッパー。この関数名を既存呼び出し元(A2/B1本文・Key Phrase・
@@ -980,7 +1031,37 @@ def classify_asr_match(canonical_text: str, asr_text: str,
     テーブルに含めていても、誤った解釈を選んだ場合は単純に展開後も
     一致しないままなので安全側(false acceptにはならず、rescueできない
     だけ)に倒れる(OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_
-    REPORT.md §10/§13で実証済み、false accept 0/82)。"""
+    REPORT.md §10/§13で実証済み、false accept 0/82)。
+
+    EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A、
+    APPROVED_FOR_PRODUCTION 2026-09-27): 上記(1)より前段に、Tier 1
+    (数値/通貨/%/年/時刻/分数/ローマ数字/略語の値等価、
+    er021_en_asr_semantic_equivalence_production_01.tier1_numeric_
+    equivalence())のearly-exitを追加する。適用は5role(Full Story/
+    Comment/Preview/Topic intro/In One Line)限定であり、role gating
+    判定はer020の単一SSOT関数を再利用する(上記_resolve_semantic_
+    equivalence_role参照)。segment_id/roleを渡さない既存の全呼び出し元
+    (約50ファイル)は、この関数呼び出し自体が発生しないため挙動は完全に
+    無変更。role適用対象でもTier 1のパースが両側で完全一致しない限り
+    このearly-exitには入らず、以降は既存の(1)〜(4)の手順を無変更で
+    実行する(Tier 1はearly-exitのみで、既存の分類本体・contraction展開
+    ロジックそのものには一切触れない)。"""
+    resolved_role = _resolve_semantic_equivalence_role(segment_id, role)
+    role_gate_applicable = resolved_role in _SEMANTIC_EQUIVALENCE_APPLICABLE_ROLES
+    if role_gate_applicable and asr_text is not None:
+        tier1 = semantic_equivalence.tier1_numeric_equivalence(canonical_text, asr_text)
+        if tier1 is not None:
+            return ClassificationResult(
+                "NUMERIC_EQUIVALENCE_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                should_pass=True, should_retry=False,
+                reason="Tier 1(数値/通貨/%/年/時刻/分数/ローマ数字/略語)の値パースが両側で"
+                       f"完全一致(role={resolved_role})",
+                semantic_equivalence_info={
+                    "tier_applied": "tier1_numeric", "sub_reason": "numeric_only",
+                    "corroborated_by": [], "warning": False, "role": resolved_role,
+                    "diff_spans": tier1,
+                })
+
     baseline = _classify_asr_match_core(
         canonical_text, asr_text, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
     if baseline.should_pass:
@@ -989,19 +1070,46 @@ def classify_asr_match(canonical_text: str, asr_text: str,
     canon_expanded = expand_standard_contractions(canonical_text)
     asr_expanded = expand_standard_contractions(asr_text)
     if canon_expanded == canonical_text and asr_expanded == asr_text:
-        return baseline  # 展開で何も変わらない(元々contractionが無い) -> 介入不要
+        result = baseline  # 展開で何も変わらない(元々contractionが無い) -> 介入不要
+    else:
+        candidate = _classify_asr_match_core(
+            canon_expanded, asr_expanded, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
+        if not candidate.should_pass:
+            result = baseline  # 展開後も既存Validatorが一致と認めない -> 安全側でbaselineのまま
+        else:
+            result = ClassificationResult(
+                "TRANSCRIPT_STYLE_NORMALIZED_MATCH", candidate.normalized_ratio, candidate.protected,
+                should_pass=True, should_retry=False,
+                reason=f"標準contraction展開(否定保持のみ、can/can't等の反転・wanna系は対象外)後に"
+                       f"PASS(内部classification={candidate.classification}): {candidate.reason}",
+                connected_speech_info=candidate.connected_speech_info)
 
-    candidate = _classify_asr_match_core(
-        canon_expanded, asr_expanded, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
-    if not candidate.should_pass:
-        return baseline  # 展開後も既存Validatorが一致と認めない -> 安全側でbaselineのまま
-
-    return ClassificationResult(
-        "TRANSCRIPT_STYLE_NORMALIZED_MATCH", candidate.normalized_ratio, candidate.protected,
-        should_pass=True, should_retry=False,
-        reason=f"標準contraction展開(否定保持のみ、can/can't等の反転・wanna系は対象外)後に"
-               f"PASS(内部classification={candidate.classification}): {candidate.reason}",
-        connected_speech_info=candidate.connected_speech_info)
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase Aの観測性
+    # 改善): role適用対象の呼び出しで、なお不合格(should_pass=False)の
+    # 場合のみ、canonical/ASR/diff_span/sub_reasonをtelemetryへ追記する
+    # (挙動変更なし、既存のretry/Human Review Lockには一切影響しない)。
+    if role_gate_applicable and not result.should_pass:
+        canon_tokens = tokenize(canonical_text)
+        asr_tokens = tokenize(asr_text) if asr_text is not None else []
+        sub_reason, diff_loc = semantic_equivalence.determine_sub_reason(
+            classification=result.classification, should_pass=result.should_pass,
+            content_word_diffs=result.protected.content_word_diffs,
+            number_mismatches=result.protected.number_mismatches,
+            negation_mismatches=result.protected.negation_mismatches,
+            canon_tokens=canon_tokens, asr_tokens=asr_tokens)
+        result.semantic_equivalence_info = {
+            "tier_applied": "none", "sub_reason": sub_reason, "corroborated_by": [],
+            "warning": False, "role": resolved_role, "diff_spans": diff_loc,
+        }
+        try:
+            semantic_equivalence.append_telemetry_log({
+                "canonical": canonical_text, "asr": asr_text, "role": resolved_role,
+                "classification": result.classification, "sub_reason": sub_reason,
+                "diff_span": diff_loc,
+            })
+        except OSError:
+            pass  # telemetry書き込み失敗は既存の判定・retry挙動に影響させない(安全側)
+    return result
 
 
 # ------------------------------------------------------------
@@ -1032,7 +1140,8 @@ def should_stop_retrying(attempt_results: list[ClassificationResult], max_same_s
 # 実際のretry loopへ配線した際に使う統一エントリポイント)
 # ------------------------------------------------------------
 def evaluate_attempt(canonical_text: str, asr_text: str, prior_results: list,
-                      max_same_signature: int = 3) -> tuple[bool, bool, "ClassificationResult"]:
+                      max_same_signature: int = 3, *,
+                      segment_id: str | None = None) -> tuple[bool, bool, "ClassificationResult"]:
     """1回のTTS attemptの評価結果を返す。
     prior_resultsは呼び出し側がループの外で初期化し、毎回このリストへ
     追記していく(同一segment内の履歴、standard/fallback別に分けて渡すこと)。
@@ -1045,8 +1154,12 @@ def evaluate_attempt(canonical_text: str, asr_text: str, prior_results: list,
                               audioをそのまま採用し、STATUS="ASR_VALIDATION_
                               UNCERTAIN"として返すこと(STOPPEDとは区別する)。
       それ以外              → 通常通りretryを継続する。
+
+    segment_id(EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01で追加、
+    既定None): classify_asr_match()へそのまま転送する(role gating用)。
+    Noneの既存呼び出し元は挙動無変更。
     """
-    result = classify_asr_match(canonical_text, asr_text)
+    result = classify_asr_match(canonical_text, asr_text, segment_id=segment_id)
     prior_results.append(result)
     if result.should_pass:
         return True, False, result

@@ -154,6 +154,11 @@ import er006_pronunciation_research_01 as pronun_research
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
 import er008_disfluency_qa_18 as disfluency_qa
 import er011_connected_speech_equivalence_layer_production_01 as cs_equivalence
+# EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、
+# APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3(規則的複数形・固有名詞ASR
+# 表記差のcorroboration付き救済)。このmoduleはval/er006_secondary_asr_01を
+# 一切importしないため、module-level importでも循環importは発生しない。
+import er021_en_asr_semantic_equivalence_production_01 as semantic_equivalence
 
 FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01。
                                             # 旧OFF状態はOPEN-48で「追加検証待ち」としていたが、
@@ -333,6 +338,9 @@ def evaluate_attempt_with_cascade(
     force_secondary: bool = False, enable_non_latin_cascade: bool = False,
     enable_connected_speech_equivalence_layer: bool = False,
     detail_out: Optional[dict] = None,
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None):
+    # evaluate_attempt_with_cascade_detail()へそのまま転送する。
+    segment_id: Optional[str] = None,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
     と同じ(verified, stop_retrying, classification)のタプルを返す
@@ -375,7 +383,8 @@ def evaluate_attempt_with_cascade(
         ledger_phrases=ledger_phrases, max_same_signature=max_same_signature,
         cascade_enabled=cascade_enabled, force_secondary=force_secondary,
         enable_non_latin_cascade=enable_non_latin_cascade,
-        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        segment_id=segment_id)
     if detail["human_review_required"]:
         _log_human_review(detail)
     if detail_out is not None:
@@ -445,6 +454,10 @@ def evaluate_attempt_with_cascade_detail(
     max_same_signature: int = 3, cascade_enabled: bool = FEATURE_FLAG_SECONDARY_ASR_ENABLED,
     force_secondary: bool = False, enable_non_latin_cascade: bool = False,
     enable_connected_speech_equivalence_layer: bool = False,
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None): Tier 1
+    # (val.classify_asr_matchのrole gating)とTier 3(下記)の両方へ転送する。
+    # Noneの既存呼び出し元は挙動無変更(role gate非適用)。
+    segment_id: Optional[str] = None,
 ) -> dict:
     """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
     その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
@@ -501,7 +514,8 @@ def evaluate_attempt_with_cascade_detail(
     (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
     """
     verified, stop_retrying, cls = val.evaluate_attempt(
-        canonical_text, asr_text, prior_results, max_same_signature=max_same_signature)
+        canonical_text, asr_text, prior_results, max_same_signature=max_same_signature,
+        segment_id=segment_id)
 
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
               "classification": cls.classification}]
@@ -566,13 +580,90 @@ def evaluate_attempt_with_cascade_detail(
                     reason=cls.reason, connected_speech_info=eq_result)
                 result["classification"] = cls
 
+    if (not verified and cascade_enabled and segment_id is not None
+            and cls.classification == "ASR_VALIDATION_UNCERTAIN"):
+        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase B、
+        # APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3(規則的複数形・
+        # 固有名詞ASR表記差のcorroboration付き救済)。既存Connected Speech
+        # Equivalence Layerの後段に配置する(上記ブロックのfall-through、
+        # または元々そちらの対象外[protected.passed=False等]だった場合も
+        # ここへ到達する)。対象はPrimary#1時点でASR_VALIDATION_UNCERTAIN
+        # かつ diffがちょうど1トークンの規則的複数形/固有名詞差のみの
+        # ケース(entity_only_diffs自体は既存のis_entity_like_mismatch経由の
+        # cascade[下記]でも別途扱われるが、そちらはCMU辞書ARPAbet完全一致
+        # のみをPASS対象とする設計のため、本Tier3は「独立ASRの
+        # corroboration」という別の根拠で救済する、経路として重複しない)。
+        # role gatingはval側と同じSSOT(resolve_narrative_role)を再利用する。
+        import er020_tts_retry_local_rewrite_01 as _role_gate
+        resolved_role = _role_gate.resolve_narrative_role(segment_id)
+        if resolved_role in semantic_equivalence.FIVE_ROLES_APPLICABLE:
+            canon_tokens = val.tokenize(canonical_text)
+            asr_tokens = val.tokenize(asr_text) if asr_text is not None else []
+            sub_reason, diff_loc = semantic_equivalence.determine_sub_reason(
+                classification=cls.classification, should_pass=cls.should_pass,
+                content_word_diffs=cls.protected.content_word_diffs,
+                number_mismatches=cls.protected.number_mismatches,
+                negation_mismatches=cls.protected.negation_mismatches,
+                canon_tokens=canon_tokens, asr_tokens=asr_tokens)
+            if sub_reason in ("plural_only", "entity_only") and diff_loc:
+                result["cascade_invoked"] = True
+                text_corr, err_corr = get_full_text_via_azure_stt_with_phrase_list(
+                    wav_path, language=language, phrases=ledger_phrases)
+                cumulative_cost_usd += 0.00001  # Azure概算単価(既存cascadeと同じ見積もり)
+                steps.append({"step": "tier3_corroboration_secondary", "provider": "azure",
+                               "text": text_corr, "sub_reason": sub_reason})
+                corroborated_by = []
+                if text_corr is not None:
+                    supports = semantic_equivalence.corroboration_supports(
+                        canon_tokens, diff_loc["index"], val.tokenize(text_corr))
+                    if supports is True:
+                        corroborated_by.append("secondary")
+                semantic_equivalence_record = {
+                    "tier_applied": "tier3_corroboration" if corroborated_by else "tier3_attempted_no_corroboration",
+                    "sub_reason": sub_reason, "corroborated_by": corroborated_by,
+                    "warning": bool(corroborated_by), "role": resolved_role, "diff_spans": diff_loc,
+                }
+                if corroborated_by:
+                    cls = val.ClassificationResult(
+                        "SECONDARY_ASR_CORROBORATED_MATCH", cls.normalized_ratio, cls.protected,
+                        should_pass=True, should_retry=False,
+                        reason=(f"Tier3救済(sub_reason={sub_reason}): 独立ASR({corroborated_by})が"
+                                f"diff位置でcanonical語'{diff_loc['canonical_word']}'を支持"),
+                        semantic_equivalence_info=semantic_equivalence_record)
+                    verified = True
+                    stop_retrying = False
+                    result["verified"] = True
+                    result["stop_retrying"] = False
+                    result["final_status"] = cls.classification
+                    result["classification"] = cls
+                else:
+                    # 救済不可(独立ASRが支持しない、またはASR取得失敗) ->
+                    # 既存判定(should_pass/should_retryとも元のまま)は変えず、
+                    # 診断情報だけをsemantic_equivalence_infoへ付与する
+                    # (false accept 0を維持する安全側フォールバック)。
+                    cls = val.ClassificationResult(
+                        cls.classification, cls.normalized_ratio, cls.protected,
+                        should_pass=cls.should_pass, should_retry=cls.should_retry,
+                        reason=cls.reason, connected_speech_info=cls.connected_speech_info,
+                        semantic_equivalence_info=semantic_equivalence_record)
+                    result["classification"] = cls
+                try:
+                    semantic_equivalence.append_telemetry_log({
+                        "canonical": canonical_text, "asr": asr_text, "role": resolved_role,
+                        "classification": cls.classification, "sub_reason": sub_reason,
+                        "diff_span": diff_loc, "corroborated_by": corroborated_by,
+                        "step": "tier3_corroboration",
+                    })
+                except OSError:
+                    pass  # telemetry書き込み失敗は判定・retry挙動に影響させない(安全側)
+
     if not verified and cascade_enabled and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
         # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)。
         result["cascade_invoked"] = True
         result["non_latin_cascade_invoked"] = True
         text_nl, err_nl = get_full_text_via_azure_stt_with_phrase_list(
             wav_path, language=language, phrases=ledger_phrases)
-        cls_nl = val.classify_asr_match(canonical_text, text_nl) if text_nl is not None else None
+        cls_nl = val.classify_asr_match(canonical_text, text_nl, segment_id=segment_id) if text_nl is not None else None
         steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
                        "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
                        "phrase_list_used": bool(ledger_phrases),
@@ -594,7 +685,7 @@ def evaluate_attempt_with_cascade_detail(
         result["cascade_invoked"] = True
         text_s_forced, err_s_forced = get_full_text_via_azure_stt_with_phrase_list(
             wav_path, language=language, phrases=ledger_phrases)
-        cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced) if text_s_forced is not None else None
+        cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced, segment_id=segment_id) if text_s_forced is not None else None
         steps.append({"step": "secondary_forced", "provider": "azure", "text": text_s_forced,
                        "classification": cls_s_forced.classification if cls_s_forced else "TTS_FAILURE",
                        "phrase_list_used": bool(ledger_phrases)})
@@ -633,7 +724,7 @@ def evaluate_attempt_with_cascade_detail(
     text_p2, err_p2 = routing.transcribe(wav_path, language=language)
     cost_guess = 0.000002  # OpenAI mini ASRの概算単価(1呼び出しあたり数十秒の音声で1円未満)
     cumulative_cost_usd += cost_guess
-    cls_p2 = val.classify_asr_match(canonical_text, text_p2) if text_p2 is not None else None
+    cls_p2 = val.classify_asr_match(canonical_text, text_p2, segment_id=segment_id) if text_p2 is not None else None
     steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
                    "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
     if cls_p2 is not None and cls_p2.should_pass:
@@ -661,7 +752,7 @@ def evaluate_attempt_with_cascade_detail(
     text_s1, err_s1 = get_full_text_via_azure_stt_with_phrase_list(
         wav_path, language=language, phrases=ledger_phrases)
     cumulative_cost_usd += 0.00001  # Azure概算単価(1秒あたり約$0.00028、数十秒想定)
-    cls_s1 = val.classify_asr_match(canonical_text, text_s1) if text_s1 is not None else None
+    cls_s1 = val.classify_asr_match(canonical_text, text_s1, segment_id=segment_id) if text_s1 is not None else None
     steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
                    "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE",
                    "phrase_list_used": bool(ledger_phrases)})
@@ -690,7 +781,7 @@ def evaluate_attempt_with_cascade_detail(
     text_s2, err_s2 = get_full_text_via_azure_stt_with_phrase_list(
         wav_path, language=language, phrases=ledger_phrases)
     cumulative_cost_usd += 0.00001
-    cls_s2 = val.classify_asr_match(canonical_text, text_s2) if text_s2 is not None else None
+    cls_s2 = val.classify_asr_match(canonical_text, text_s2, segment_id=segment_id) if text_s2 is not None else None
     steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
                    "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE",
                    "phrase_list_used": bool(ledger_phrases)})
