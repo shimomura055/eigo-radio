@@ -179,8 +179,9 @@ Fable判定: `DESIGN_READY_FOR_TRIAL`(条件付き)。Trial着手前提条件は
 ## 費用・証跡
 
 - API費用: ¥0(HTTP GETのみ、LLM呼び出し0回)。
-- コミット: `<commit_hash>`(本レポート直後に記載)
-- raw URL: 本レポートpush後に追記。
+- コミット: 本レポートを含むcommit: 070f44dc(設計doc)、
+  §9追記commit: c1ceb827e042d7bff54e094f645fc92a7e474ade
+- raw URL: https://raw.githubusercontent.com/shimomura055/eigo-radio/main/KEY-PHRASE-DB-BASED-SELECTION-DESIGN-01_REPORT.md
 - 詳細証跡: `docs/pm/design_key_phrase_db_based_selection_01.md`、
   `docs/pm/db_survey_key_phrase_sources_01.md`
 
