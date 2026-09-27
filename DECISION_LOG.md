@@ -10659,3 +10659,44 @@ JPY 2.6010)
   REPORT.md`「## 12」。
 - commit: 本コミット(post-fix evidence、evidence script+artifact+
   telemetry追記+SSOT反映)。
+
+## Fable Gate 3判定(2026-09-27): 3件を`PRODUCTION_WIRED`へ表記同期
+
+- **性質**: 新規判断ではなく、既にGate 3全項目充足済みの3管理IDについて
+  SSOT表記(`CURRENT_SPEC.md`Status欄)を`APPROVED_FOR_PRODUCTION`から
+  `PRODUCTION_WIRED`へ同期する事務的整理(`PM-CLOSEOUT-CONSOLIDATION-
+  2026-09-27-D`、コード変更なし、¥0)。
+- **対象1: `KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01`**
+  (commit`46ab8183`→`bfd7090e`→`bc7d9bb8`)。Opus L2 BLOCKER 3件
+  (B1/B2/B3)は修正1回目(`bfd7090e`)で解消済み、post-fix runtime
+  evidence(`bc7d9bb8`、Hormuz A2実測JPY 2.6010)でGate 3チェックリスト
+  全項目「済」を確認済み(REPORT§5・§12)。**Family X限定**
+  (Primary=DB Hybrid/Fallback=Strategy L)で`PRODUCTION_WIRED`。
+- **対象2: `PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`**
+  (Phase 2、commit`323a18a7`でcloseout済み)。CURRENT_SPEC「固有名詞
+  読み解決(JA/EN共通)」節のFable判定はcloseout時点(2026-09-27)で
+  既に確定していたが、Status表記が`APPROVED_FOR_PRODUCTION`のまま
+  残っていたため`PRODUCTION_WIRED`へ表記同期。
+- **対象3: `PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+  VALIDATOR-PUNCT-01`**(commit`b3cb2308`/`8da4b190`/`eb7825d7`)。
+  Opus L2レビューにBLOCKERなし(§10逐語)、SHOULD_FIX S1〜S4は修正
+  2回目(`eb7825d7`)で反映済み。Family X Stage 3e runtimeで
+  OPEN-197/198/199クローズを実測確認(Hormuz A2/B1B`full_story_
+  part2`OK、Meta A2`japanese_title`OK、Lock記録fix含む、§13)。
+  同じCURRENT_SPEC節内(Phase 3追記)として`PRODUCTION_WIRED`に統合。
+  残穴OPEN-203(A2側`crosslevel_common.generate_english_segment_
+  with_fallback()`が`en_pronunciation_resolver_info`をfallback結果へ
+  伝播しない既知Gap)は`OPEN`のまま維持し、別途ユーザー判断待ちとする
+  (今回の表記同期対象には含めない)。
+- **STOP該当**: 無し(表記同期のみ、Production挙動・コードの変更なし)。
+- **反映範囲**: `CURRENT_SPEC.md`(「Family X選定方式」Status欄、
+  「固有名詞読み解決(JA/EN共通)」見出しStatus)、`OPEN_ITEMS.md`
+  (OPEN-195をCLOSEDへ)、`docs/pm/REPORT_LEDGER.md`(該当3行の
+  Status更新)、本エントリ新設。
+- **根拠**: 各REPORTのGate 3チェックリスト表(KEY-PHRASE-DB-HYBRID
+  REPORT§5・§12、Phase 2 REPORT§22-2、Phase 3 REPORT§13)・Opus L2
+  所見反映確認・runtime evidence・regression(既知failureのみ、新規
+  regressionなし)・SSOT記載・Git commit(上記6件)がいずれも充足済み
+  であることをGrep/直接確認したうえでの表記同期(2026-09-27、
+  `PM-CLOSEOUT-CONSOLIDATION-2026-09-27-D`)。
+- commit: 本コミット(SSOT表記同期のみ、コード変更なし)。
