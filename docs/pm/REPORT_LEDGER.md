@@ -48,6 +48,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 | NEWS-FAMILY-X-WRITER-FACT-SELECTION-TRIAL-01 | 2026-09-26以前 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | |
 | ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01 | 2026-09-26 | 済(2026-09-26以前、会話ログ上) | 済(2026-09-26以前、会話ログ上) | N | `DECISION_LOG.md`に`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`確定として記録済み。 |
 | STANDARD-A2-6000-GENERATION-FIRST-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26: `NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01`方針で上書き) | N | `VOCAB-ABCD-STRICT-EXCEPTION-TRIAL-01`のユーザーFeedbackによる方針変更後継。S-1/S-2/S-3はユーザー決定済み(上書き)。 |
+| TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-PLAN-01 | 2026-09-27 | 済(2026-09-27) | 未(代表segment選定・Trial実行可否・SDK整合の判断待ち) | Y | Fable評価(§6追記): Status `TRIAL_PLAN_READY`承認。委任条件充足、実Trial未開始。 |
 | NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26: X-2決着、X-1はDiversity Trial/原因調査へ移管) | N(移管先で報告) | 配線PRODUCTION_WIRED(2026-09-26)、記事ユーザー確認待ち。 |
 | FICTION-REAL-STORY-AND-TRUE-CRIME-TRIAL-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26) | N | 差し戻し1回(True Crime再生成)後に初回報告。F-1/F-2 `VALIDATED`、F-3不採用(Family Z人名ルールへsupersede)、F-4条件付き採用。 |
 | TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01 | 2026-09-26 | 済(2026-09-26) | 済(2026-09-26 `PRODUCTION_WIRED`確定) | N | 差し戻し1回目(A2経路cool-down/Local Rewrite配線+topic_intro role漏れ修正)後、Fable Gate最終判定`PRODUCTION_WIRED`にユーザー異議なし確定。 |

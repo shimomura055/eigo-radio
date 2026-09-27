@@ -89,3 +89,24 @@ prebuilt voiceとして有効、日本語・英語とも対応言語内。
 - git: 本REPORTと`docs/pm/plan_tts_gemini_3_8_flash_lite_next_trial_01.md`
   の2ファイルのみをpath指定でcommit・push予定(`ACTIVE_TASK_TTSP.md`等の
   一時ファイルは対象外)。
+
+## §6 Fable評価(2026-09-27)
+
+- Status `TRIAL_PLAN_READY` を承認(Fable判定)。委任条件(公式一次情報のみ・
+  API呼び出し0・段階拡大・segment単位早期STOP・¥500 Capの事前ガード方式)は
+  すべて充足。
+- 前回失敗原因の仮説(3.8系はverbatim transcript設計、style指示は
+  `speech_metadata`へ外出し)は公式docと整合し有力。ただし未検証であり、
+  次Trialの最初のステップは「`speech_metadata`が現SDK経由で送れるか」の
+  最小API形状確認(¥数円)とする。
+- 代表segmentについて: 委任条件「数字を多少含む」は対象article(A2、算用
+  数字なし)では満たせないとSonnetが正直に報告。Fable推奨: Stage 1=候補1
+  `tension_reflection`(前回最重度失敗の直接回帰チェック、固有名詞あり)。
+  Stage 2(2〜3 segment)で数字を含むsegmentを追加する場合は、Family X
+  baseline完成後にHormuz/Meta B1B `full_story_part1`(既存OK音声あり、
+  数値・固有名詞含む)を候補とする。最終選定はユーザー。
+- 環境齟齬(google-genai: requirements-ci 2.14.0 / .venv 2.11.0)は本タスク
+  範囲外の発見として記録。`speech_metadata`型定義の有無に関わるため、
+  Trial実行前に整合させるかはユーザー判断(Fable推奨: requirements-ci側に
+  合わせて.venvを更新し、全体regressionで無影響を確認してからTrial)。
+- 実Trialは開始しない(ユーザー判断待ち)。
