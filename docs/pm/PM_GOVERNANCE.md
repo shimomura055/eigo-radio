@@ -171,7 +171,10 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   Production runtimeでの実発火 / 必要testのPASS / runtime evidence /
   実際のmodel_id・routing確認(必要時) / コスト影響評価(2-2参照) /
   `CURRENT_SPEC.md` / `DECISION_LOG.md` / `OPEN_ITEMS.md` / 必要なGit反映 /
-  approved specとProduction挙動の一致。
+  approved specとProduction挙動の一致。**必須Opusレビュー該当案件(11-2節
+  「Opus Escalation 3段階」の発火条件(i)〜(iv)に該当する変更)は、Opus
+  所見の反映状況もGate 3項目に含める(2026-09-27追記、管理ID
+  `PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27`)。**
 - **Gate 4 — Dangling Reference Check**: Production code / Prompt / retry等が
   未承認・未実装・Trial-only仕様を参照していないかを確認する。
   **定義の正本は`CURRENT_SPEC.md`の既存「Dangling Reference Check」
@@ -513,6 +516,12 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     指示。標準player必須要素は2節Gate 7補足(a)〜(m)参照、事例: Trend
     記事・Discovery Trial-12がいずれも技術的完成のみでcloseと同一視
     されかけた)。
+23. 既存仕様を重複登録していないか(21節「Existing Spec / Prior Trial
+    Check Gate」、2026-09-27追記)
+24. 過去Trialを重複していないか(同上)
+25. 既決事項を再質問していないか(同上)
+26. 既存仕様の未発火を新仕様と誤認していないか(同上。該当する場合は
+    新仕様ではなくwiring/implementation/regression問題として扱う)
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -1581,6 +1590,13 @@ News Trial-12 A/B解釈の3件)。原則は「重要論点にスコープを絞�
 L2レビューを含め、Opusへの入力は下記「context packet方式の標準化」
 (2026-09-12追記)を標準入力方式とする。
 
+**(2026-09-27追記、旧運用の位置づけ)**: 本パラグラフが定める「対象は
+個別にユーザー承認された案件に限る」という運用(**旧: L2は案件別ユーザー
+事前承認が必要**)は、11-2節「Opus Escalation 3段階」導入前の運用である。
+11-2節の発火条件(i)〜(iv)に該当する場合は、11-2節のユーザー包括承認
+(2026-09-27)により個別の案件別事前承認は不要となる。本パラグラフ自体は
+上書きせず、歴史的記録として保持する。
+
 **Opus L2入力限定の運用(2026-09-11追記、ユーザー正式決定、
 PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-2026-09-11-02)**: Opusへ
 巨大SSOT(`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`等)の全文を
@@ -1810,6 +1826,60 @@ QA→完成まで完了させてよい。ただし以下のSTOP条件に該当�
 できない品質問題である場合。**Sonnetのレビュー往復ループ上限(本節冒頭、
 1管理IDあたり初回+修正・再生成指示最大3回)および既存の費用上限運用
 (15節)は、本項により変更・拡張されない(従来どおり)**。
+
+### 11-2. Opus Escalation 3段階(2026-09-27ユーザー承認、APPROVED_FOR_PRODUCTION)
+
+**管理ID: PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27
+(2026-09-27、ユーザー正式承認、Status=`APPROVED_FOR_PRODUCTION`)**
+
+Opus起用を3段階(必須Opusレビュー/任意Opusレビュー/Sonnet・Fableのみ)へ
+再整理する。既存のL0〜L3定義(`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`)・
+context packet方式・自動再実行禁止は変更しない。
+
+**必須Opusレビュー(L2)**: 高影響変更ではPRODUCTION_WIRED判定前にOpus
+レビューを必須化する。**案件ごとのユーザー事前承認は不要**(本ユーザー
+承認[2026-09-27]をもって包括承認とする)。
+
+発火条件(チェックリスト、Fableが機械的に判定する):
+(i) 2 Family以上、または共有TTS/ASR/Ledger/Gate層に及ぶProduction module変更
+(ii) 安全機構・Gate・retry予算・Lockの追加/変更
+(iii) Production model/SDK切替の採用判定
+(iv) 公開物の仕様(音声構造・命名・権利Gate)変更
+
+レビューは論点限定のcontext packet(`docs/pm/templates/
+OPUS_CONTEXT_PACKET_TEMPLATE.md`、11節上記「context packet方式の標準化」)
+で委任する。Opus結果を受けてSonnetを自動再実行しない(既存運用を維持)。
+
+**任意Opusレビュー**: 新Family runnerの初回E2E配線、Trial→Production
+採用判断の材料、10項目超のSSOT closeout。Fable裁量、1日2回まで。
+
+**Sonnet/Fableのみ**: Trial、read-only調査、SSOT表記同期、単一ファイルの
+低リスク変更。低リスクTrialや単純SSOT同期でOpusを乱発しない(既存L2定義
+「儀式的な起用[毎回自動的にOpusへ回す運用]は禁止する」と同旨)。
+
+**上限**: L2 1回+L3 1回/管理ID(2026-09-27より、従来の「L2+L3合計で
+1管理IDあたり最大1回」から分離する。本節導入前のMODEL ROUTING運用Trial
+[11節上記]・不変の項目[11節冒頭]が定める「L2+L3合計最大1回」は、本節に
+より最大2回[L2 1回+L3 1回]へ更新される)。
+
+**記録義務**: Opus発火の有無(L2/L3/無)を`docs/pm/REPORT_LEDGER.md`
+(該当列)へ記録する(12-12節の運用と統合、管理IDごとに1回記録)。
+
+**即時適用**: 読み解決/Pronunciation Phase 2
+(`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`)へ直ちに
+適用する(Fableが2026-09-27にOpus L2を起動済み=初回runtime evidence)。
+
+**Gate 3との関係**: 必須Opusレビュー該当案件はOpus所見の反映を`PRODUCTION_
+WIRED`判定前のGate 3項目に含める(2節Gate 3定義へ追記済み)。
+
+**delegation_logの保存欠落の修復**: `docs/pm/delegation_log/`への保存が
+2026-09-19以降欠落していたことが判明した(`docs/pm/RESULT_PACKET_OPR.md`
+事実調査)。以後、Sonnet/Opusは委任受領時に委任文全文を
+`docs/pm/delegation_log/<YYYY-MM-DD>_<管理ID>_<連番>.md`へ保存してから
+commit対象に含める(D-2委任文標準の`T-0`[委任文保存+検証]と同一運用の
+明文化。2026-09-27時点で2026-09-19〜2026-09-26分の全文は失われているため
+復元しない。2026-09-27分は`docs/pm/ACTIVE_TASK_*.md`[本日更新分]からの
+backfillとして管理ID・委任要旨・Statusを保存した[全文欠落と明記])。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
@@ -2065,6 +2135,18 @@ commit済み・Fable内部では完了している、ということは「ユー
 ものではなく、「REPORTファイルの存在それ自体が報告済みを意味しない」
 という混同が実際に発生したことを踏まえ、状態管理の仕組み
 (`REPORT_LEDGER.md`)を明文化したものである。
+
+### 12-13. `USER_DECISION_REQUIRED`提示前のExisting Spec / Prior Trial Check Gate照合(2026-09-27追記)
+
+**管理ID: PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27
+(2026-09-27、ユーザー正式決定)**
+
+`USER_DECISION_REQUIRED`をユーザーへ提示する前に、21節「Existing Spec /
+Prior Trial Check Gate」が定める既存資産照合(A. 既存仕様あり/B. 過去
+Trialあり・未採用/C. 本当に新規)を必ず行い、分類結果(A/B/C)を提示内容へ
+明記する。既決事項の再質問・既存仕様の未発火を新仕様と誤認したままの
+`USER_DECISION_REQUIRED`提示を防ぐことが目的であり、12-1〜12-12が定める
+既存の報告単位管理ルール自体は変更しない。
 
 ## 13. 新規記事テーマ選定ルール
 
@@ -2455,6 +2537,59 @@ resolved / superseded / N/A を確認する。」
   `POST_USER_VALIDATION`)を`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`の
   実測(固定費約¥2.20/記事、latency約110秒)に基づき新規登録した。詳細は
   `OPEN_ITEMS.md`OPEN-189行、`DECISION_LOG.md`同管理IDエントリ参照。
+
+## 21. Existing Spec / Prior Trial Check Gate(2026-09-27ユーザー決定)
+
+**管理ID: PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27
+(2026-09-27、ユーザー正式決定、Status=`APPROVED_FOR_PRODUCTION`)**
+
+**背景(再発問題)**: 既存仕様・過去Trial・既決事項が大量にあるにもかかわ
+らず十分確認せず、(a)既存仕様を新規問題として扱う、(b)既決事項を
+再質問する、(c)既存Production機構の未発火を新仕様判断として上げる、
+(d)過去Trialと同じことを再検討する、が発生した(実例: 固有名詞読み
+[Melos人物名]、my word→one's word[既存`generalize_person_dependent_
+reference`仕様])。Project管理上の再発問題として扱う。
+
+**5つの入口(以下の**前に必ず**既存資産を確認する)**:
+1. 新仕様提案前
+2. 新Trial起票前
+3. `USER_DECISION_REQUIRED`提示前
+4. Production修正方針決定前
+5. 新Open Item登録前
+
+**確認対象7種(最低限)**:
+- `CURRENT_SPEC.md`
+- `DECISION_LOG.md`
+- `OPEN_ITEMS.md`
+- 関連する過去REPORT・Trial
+- Production code
+- regression・validator test
+- 関連管理ID・commit
+
+**分類(必ずA/B/Cのいずれかへ分類する)**:
+- **A. 既存仕様あり**: 新規仕様にしない。未発火ならwiring/
+  implementation/regression問題として扱う。
+- **B. 過去Trialあり・未採用**: 過去結果を再利用する。同じTrialを
+  再実施するなら「何が変わったため再検証が必要か」を明示する。
+- **C. 本当に新規**: この場合のみ新仕様・新Trial・`USER_DECISION_
+  REQUIRED`候補とする。
+
+**必須Gate**: `USER_DECISION_REQUIRED`を提示する前の既決事項照合を
+必須Gateとする(12-13節「`USER_DECISION_REQUIRED`提示前のExisting Spec /
+Prior Trial Check Gate照合」へ接続)。
+
+**委任文標準への反映**: Fableの委任文テンプレート
+(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`)に「既存資産照合
+結果(A/B/C)」欄を必須化する。Sonnetは委任受領時に、上記確認対象7種に
+沿って同じ照合を委任冒頭(または着手直後)で先頭に行い、`RESULT_PACKET`へ
+分類(A/B/C)を記載する義務を負う。
+
+**Closeout Mandatory Check(3節)への追加**: 3節へ項目23〜26(既存仕様の
+重複登録・過去Trialの重複・既決事項の再質問・既存仕様の未発火を新仕様と
+誤認、のいずれも無いことの確認)を追加した(3節本文参照)。
+
+**本質**: SSOTが存在していても実作業の入口で強制的に参照されていない。
+記録を増やすだけでなく、新規判断の前に既存資産照合を必須化する。
 
 ## 変更履歴
 
@@ -3033,3 +3168,26 @@ resolved / superseded / N/A を確認する。」
   VALIDATION/PRE_USER_VALIDATIONへ区分、境界日2026-09-14、棚卸し4分類・
   旧項目再実装禁止ルール)。新規OPEN-189登録。詳細は`DECISION_LOG.md`
   同管理IDエントリ参照。
+- 2026-09-27(`PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-
+  2026-09-27`、ユーザー正式承認、`APPROVED_FOR_PRODUCTION`): 11節へ
+  「11-2. Opus Escalation 3段階」を新設(必須Opusレビュー[L2]の包括承認
+  [案件別事前承認は不要]、発火条件(i)〜(iv)、任意Opusレビュー、Sonnet/
+  Fableのみの範囲、上限をL2 1回+L3 1回/管理IDへ更新[従来のL2+L3合計1回
+  から分離]、`REPORT_LEDGER.md`への記録義務、delegation_log保存欠落
+  [2026-09-19以降]の修復運用)。2節Gate 3定義へ必須Opusレビュー該当案件の
+  Opus所見反映を追記。新設21節「Existing Spec / Prior Trial Check Gate」
+  (新仕様提案前/新Trial起票前/`USER_DECISION_REQUIRED`提示前/Production
+  修正方針決定前/新Open Item登録前の5入口で既存資産[CURRENT_SPEC/
+  DECISION_LOG/OPEN_ITEMS/過去REPORT・Trial/Production code/regression・
+  validator test/関連管理ID・commit]を照合し、A[既存仕様あり]/B[過去
+  Trialあり・未採用]/C[本当に新規]へ分類する運用、委任文標準への「既存
+  資産照合結果(A/B/C)」欄必須化)。3節Closeout Mandatory Checkへ項目
+  23〜26(既存仕様重複登録/過去Trial重複/既決事項再質問/既存仕様未発火の
+  新仕様誤認、の非該当確認)を追加。12節へ「12-13.
+  `USER_DECISION_REQUIRED`提示前のExisting Spec / Prior Trial Check
+  Gate照合」を新設。`docs/pm/REPORT_LEDGER.md`へ「Opus発火(L2/L3/無)」
+  列を追加(既存全行「無」、`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-
+  FAMILIES-PRODUCTION-01`行のみ「L2(2026-09-27起動)」)。
+  `docs/pm/delegation_log/`へ2026-09-27分backfill(全文欠落、`docs/pm/
+  ACTIVE_TASK_*.md`からの抽出)を保存。詳細は`DECISION_LOG.md`同管理ID
+  エントリ、`docs/pm/RESULT_PACKET_OPR.md`(事実調査)参照。

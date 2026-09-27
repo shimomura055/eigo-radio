@@ -43,6 +43,17 @@
 だけを理由に並列可能なタスクを未着手状態にしない(詳細は
 `docs/pm/PM_GOVERNANCE.md`8節「8-X. 並列実行原則」参照)。
 
+**Opus Escalation 3段階(2026-09-27ユーザー承認)**: 必須Opusレビュー
+(L2、発火条件(i)〜(iv)該当時は案件別事前承認不要の包括承認)/任意Opus
+レビュー(Fable裁量、1日2回まで)/Sonnet・Fableのみ、の3段階運用。上限は
+L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
+
+**Existing Spec / Prior Trial Check Gate(2026-09-27ユーザー決定)**: 新仕様
+提案前・新Trial起票前・`USER_DECISION_REQUIRED`提示前・Production修正
+方針決定前・新Open Item登録前には、既存SSOT・過去Trial・Production
+実装を確認しA(既存仕様あり)/B(過去Trialあり・未採用)/C(本当に新規)へ
+分類することを必須Gateとする。詳細は`docs/pm/PM_GOVERNANCE.md`21節参照。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。
@@ -180,7 +191,10 @@ Fableは、`docs/pm/ACTIVE_TASK.md`を上書きする全ての委任で、ファ
 20〜30行・300〜800 token以内(2026-09-10、報告単位管理ルール追加に伴い
 15〜25行から緩和)。ヘッダは要約であり、詳細はSSOT(`OPEN_ITEMS.md`等)を
 必要箇所だけGrepして確認する(鵜呑みにしない)。compact直後の復帰手順は
-`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。報告前には
+`CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。`USER_DECISION_
+REQUIRED`提示前には、CLAUDE.mdの復帰手順に加えて`docs/pm/PM_GOVERNANCE.md`
+21節「Existing Spec / Prior Trial Check Gate」のA/B/C照合を行う
+(2026-09-27追記)。報告前には
 `docs/pm/REPORT_LEDGER.md`を確認し、初回報告未の管理IDを要約・再掲扱い
 にしない(`docs/pm/PM_GOVERNANCE.md` 12-12節、2026-09-26追記)。
 

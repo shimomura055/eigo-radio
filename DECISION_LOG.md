@@ -9919,3 +9919,74 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
 - 根拠: すべてFable/ユーザー既決事項の表記同期であり、新しい判断は
   含まない(Fable指示、管理ID`PM-CLOSEOUT-CONSOLIDATION-2026-09-27-B`)。
 - commit: 本コミット。
+
+## PM-OPUS-ESCALATION-3TIER-AND-EXISTING-SPEC-CHECK-GATE-2026-09-27: Opus Escalation 3段階ルール+Existing Spec / Prior Trial Check GateのSSOT反映(PM運用ルール、コード変更なし、¥0)
+
+- 日付: 2026-09-27
+- 区分: PM運用ルール(Implementation Hardening寄り、記事・音声仕様そのもの
+  ではない)。Status=`APPROVED_FOR_PRODUCTION`(ユーザー正式承認)。
+  Production Prompt・コード変更なし、API ¥0。
+- **決定1(Opus Escalation 3段階、逐語要旨)**: 高影響変更では
+  `PRODUCTION_WIRED`判定前にOpusレビュー(L2)を必須化する。**案件ごとの
+  ユーザー事前承認は不要**(本承認をもって包括承認)。発火条件(チェック
+  リスト、Fableが機械的に判定): (i) 2 Family以上または共有TTS/ASR/
+  Ledger/Gate層に及ぶProduction module変更、(ii) 安全機構・Gate・retry
+  予算・Lockの追加/変更、(iii) Production model/SDK切替の採用判定、
+  (iv) 公開物の仕様(音声構造・命名・権利Gate)変更。レビューは論点限定の
+  context packetで委任。Opus結果を受けてSonnetを自動再実行しない
+  (既存維持)。上限: L2 1回+L3 1回/管理ID(現行「L2+L3合計1回」を分離)。
+  任意Opusレビュー(新Family runner初回E2E配線・Trial→Production採用
+  判断・10項目超SSOT closeout、Fable裁量1日2回まで)・Sonnet/Fableのみ
+  (Trial・read-only調査・SSOT表記同期・単一ファイル低リスク変更)の
+  3段階運用として整理した。読み解決/Pronunciation Phase 2
+  (`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`)へ
+  直ちに適用(Fableが2026-09-27にOpus L2を起動済み=初回runtime
+  evidence、`docs/pm/REPORT_LEDGER.md`同管理ID行へ「L2(2026-09-27起動)」
+  記録済み)。delegation_logの保存欠落(2026-09-19以降)を確認し、以後は
+  委任文全文を`docs/pm/delegation_log/<YYYY-MM-DD>_<管理ID>_<連番>.md`
+  へ保存してからcommitする運用を明文化、2026-09-27分29件をACTIVE_TASK_
+  *.mdからのbackfill(全文欠落と明記)として保存した。
+- **決定2(Existing Spec / Prior Trial Check Gate、逐語要旨)**: 既存仕様・
+  過去Trial・既決事項が大量にあるにもかかわらず十分確認せず、既存仕様を
+  新規問題として扱う/既決事項を再質問する/既存Production機構の未発火を
+  新仕様判断として上げる/過去Trialと同じことを再検討する、が発生した
+  (実例: 固有名詞読み[Melos人物名]、my word→one's word[既存
+  `generalize_person_dependent_reference`仕様])。新仕様提案前/新Trial
+  起票前/`USER_DECISION_REQUIRED`提示前/Production修正方針決定前/新Open
+  Item登録前の5入口で、`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+  `OPEN_ITEMS.md`/関連過去REPORT・Trial/Production code/regression・
+  validator test/関連管理ID・commitの7種を確認し、A(既存仕様あり、
+  未発火ならwiring/implementation/regression問題として扱う)/B(過去
+  Trialあり・未採用、再検証には変化点の明示が必要)/C(本当に新規、この
+  場合のみ新仕様・新Trial・UDR候補)へ分類することを必須Gateとした。
+  `USER_DECISION_REQUIRED`提示前の既決事項照合を必須化し、Closeout
+  Mandatory Checkへ4項目(既存仕様重複登録/過去Trial重複/既決事項再質問/
+  既存仕様未発火の新仕様誤認、いずれも非該当確認)を追加した。
+- **Gate 3充足状況(本管理ID自体、Production wiring対象がPMルール文書
+  そのものであるためのチェックリスト)**:
+  - ルール記載: 充足(`docs/pm/PM_GOVERNANCE.md` 11-2節・21節・2節Gate 3
+    追記・3節Closeout Check 23〜26・12-13節、`docs/pm/PM_BRIEF.md`参照行)
+  - `REPORT_LEDGER.md`列追加: 充足(「Opus発火(L2/L3/無)」列、既存全行
+    「無」、`PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01`
+    行のみ「L2(2026-09-27起動)」)
+  - `delegation_log`保存欠落の修復運用明記+2026-09-27分backfill:
+    充足(29ファイル、全文欠落と明記・捏造なし)
+  - 初回発火evidence(3段階ルール運用後の初回L2レビューがGate 3判定へ
+    実際に反映されたことの確認): **未充足**。Pronunciation Phase 2の
+    Opus L2所見受領後にFableが本エントリへ追記する
+    (`OPEN_ITEMS.md`新規Open Item[POST_USER_VALIDATION]で追跡)。
+- 反映範囲: `docs/pm/PM_GOVERNANCE.md`(11-2節新設・2節Gate 3追記・3節
+  Closeout Check項目23〜26追加・12-13節新設・21節新設・変更履歴追記)、
+  `docs/pm/PM_BRIEF.md`(11-2節・21節参照行、compact復帰手順への1行追加)、
+  `docs/pm/REPORT_LEDGER.md`(Opus発火列追加)、`docs/pm/delegation_log/`
+  (2026-09-27分backfill 29ファイル+運用ルール明記)、`OPEN_ITEMS.md`
+  (新規Open Item登録)。`CURRENT_SPEC.md`は変更していない。
+  `.claude/agents/opus-consultant.md`は発火条件チェックリストの逐語記述が
+  元々存在しないため変更していない(frontmatter/tools/model・本文とも
+  無変更)。
+- 根拠: ユーザー正式承認(2026-09-27、`PM-OPUS-ESCALATION-3TIER-AND-
+  EXISTING-SPEC-CHECK-GATE-2026-09-27`)。事実調査は
+  `docs/pm/RESULT_PACKET_OPR.md`(現行L0〜L3定義、Opus起動実績10件
+  [2026-09-09〜09-12に集中、09-13以降0件]、delegation_log 09-19以降欠落)
+  参照。
+- commit: 本コミット。
