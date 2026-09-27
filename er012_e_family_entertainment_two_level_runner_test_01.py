@@ -124,8 +124,19 @@ STANDARD_TEXT = (
 )
 
 
-def _deviation_result(status: str) -> dict:
-    return {"parsed": {"overall_status": status}}
+def _deviation_result(status: str, deviations: list | None = None,
+                       all_prior_issues_resolved: bool | None = None) -> dict:
+    parsed = {"overall_status": status, "deviations": deviations or []}
+    if all_prior_issues_resolved is not None:
+        parsed["all_prior_issues_resolved"] = all_prior_issues_resolved
+    return {"parsed": parsed}
+
+
+def _major_deviation(origin: str = "translation", fact_id: str = "F1") -> dict:
+    return {
+        "claim_in_article": "claim X", "issue": "issue X", "severity": "MAJOR",
+        "explanation": "expl X", "related_fact_id": fact_id, "origin": origin,
+    }
 
 
 class RunWriterStageTests(unittest.TestCase):
@@ -159,26 +170,52 @@ class RunWriterStageTests(unittest.TestCase):
     def test_writer_stage_retries_once_on_major_deviation_then_passes(self):
         adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result), \
+        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result) as m_adv, \
              mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
-                                side_effect=[_deviation_result("LEDGER_DEVIATION"), _deviation_result("LEDGER_COMPLIANT"),
-                                             _deviation_result("LEDGER_COMPLIANT")]) as m_dev, \
+                                side_effect=[
+                                    _deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()]),
+                                    _deviation_result("LEDGER_COMPLIANT", all_prior_issues_resolved=True),
+                                    _deviation_result("LEDGER_COMPLIANT"),
+                                ]) as m_dev, \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             evidence = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                                 ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
         self.assertEqual(m_dev.call_count, 3)
         self.assertTrue(evidence["advanced"]["retried_for_deviation"])
+        # 2回目(retry)呼び出しはmust_fix/prior_issuesを渡していること。
+        self.assertEqual(m_adv.call_count, 2)
+        retry_kwargs = m_adv.call_args_list[1].kwargs
+        self.assertEqual(len(retry_kwargs.get("must_fix")), 1)
+        self.assertEqual(retry_kwargs["must_fix"][0]["fact_id"], "F1")
+        retry_check_kwargs = m_dev.call_args_list[1].kwargs
+        self.assertEqual(len(retry_check_kwargs.get("prior_issues")), 1)
 
     def test_writer_stage_stops_on_persistent_major_deviation(self):
         adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
         with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_DEVIATION")), \
+                                return_value=_deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()])), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             with self.assertRaises(RuntimeError):
                 runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                          ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
+
+    def test_writer_stage_ja_recheck_required_stop_no_blind_retry(self):
+        """NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: English MAJORが
+        origin=ja_source(JA R2由来)と判定された場合、Englishを盲目的に
+        再生成せずJARecheckRequiredError(RuntimeErrorのサブクラス)でSTOPする
+        こと(generate_advanced_adaptationは1回しか呼ばれない)。"""
+        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
+        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result) as m_adv, \
+             mock.patch.object(runner.vfl01, "run_deviation_check",
+                                return_value=_deviation_result(
+                                    "LEDGER_DEVIATION", deviations=[_major_deviation(origin="ja_source")])), \
+             mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            with self.assertRaises(runner.JARecheckRequiredError):
+                runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
+                                         ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
+        self.assertEqual(m_adv.call_count, 1)
 
     def test_writer_stage_only_standard_reads_existing_advanced_file(self):
         b1b_dir = os.path.join(self.theme["out_dir"], "b1b")

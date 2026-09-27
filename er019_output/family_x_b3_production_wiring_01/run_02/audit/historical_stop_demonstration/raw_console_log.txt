@@ -1,0 +1,30 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er019_output/family_x_b3_production_wiring_01/run_02/research_ledger
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er019_output/family_x_b3_production_wiring_01/run_02/storyline_b3
+[JA-WRITER][ja_original] Fact Check MAJOR。must-fixで1回だけ再生成します(major_count=1)...
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 192, in run_ja_writer
+    result = jaw.run_ja_writer_o_r1_r2(client, storyline_line, selected_fact_brief_text,
+                                        full_ledger_text=full_ledger_text)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_ja_writer_o_r1_r2_01.py", line 252, in run_ja_writer_o_r1_r2
+    raise JAFactCheckStopError(
+    ...<4 lines>...
+    )
+er019_family_x_ja_writer_o_r1_r2_01.JAFactCheckStopError: [STOP] JA_FACT_CHECK_STOP: JA Original Fact Check、must-fix Rewrite後もMAJORが残りました。本文を手で直さずSTOPします。
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 404, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 365, in main
+    writer_result = run_ja_writer(
+        client, storyline_result["selected_storyline"],
+        storyline_result["selected_fact_brief_text"], out_dir,
+        full_ledger_text=ledger_text)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 203, in run_ja_writer
+    raise RuntimeError(str(exc)) from exc
+RuntimeError: [STOP] JA_FACT_CHECK_STOP: JA Original Fact Check、must-fix Rewrite後もMAJORが残りました。本文を手で直さずSTOPします。
+
+[exited with code 0]

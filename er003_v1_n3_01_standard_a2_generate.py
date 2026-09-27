@@ -169,8 +169,34 @@ def _assert_prompt_sha256() -> None:
 _assert_prompt_sha256()  # import時にfail-closedで検証する
 
 
-def build_prompt(advanced_article: str) -> str:
-    return STANDARD_A2_PROMPT_V5.format(advanced_article=advanced_article)
+# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01(2026-09-27)で追加した
+# must-fix受け口(新規追加ブロックのみ、STANDARD_A2_PROMPT_V5の段落自体は
+# 一切変更しない)。Prompt本文の文言編集自体は別Agentが後段で行うため、
+# ここでは「must_fix引数を受け取り、末尾に指摘ブロックを追加できる」
+# 受け口のみを実装する。
+def build_must_fix_block(must_fix: list) -> str:
+    lines = [
+        "The previous version had the following Fact Safety issues when checked "
+        "against the Verified Fact Ledger. You must resolve every item below. "
+        "Fix only what is necessary to make each claim consistent with the "
+        "Ledger; do not introduce new claims, details, or scope while fixing "
+        "these.",
+    ]
+    for i, item in enumerate(must_fix or [], start=1):
+        lines.append(
+            f"{i}. Fact ID: {item.get('fact_id') or '(unknown)'} | "
+            f"Claim in article: {item.get('claim_in_article', '')} | "
+            f"Issue: {item.get('issue', '')} | "
+            f"Explanation: {item.get('explanation', '')}"
+        )
+    return "\n".join(lines)
+
+
+def build_prompt(advanced_article: str, must_fix: list | None = None) -> str:
+    prompt = STANDARD_A2_PROMPT_V5.format(advanced_article=advanced_article)
+    if must_fix:
+        prompt += "\n\n" + build_must_fix_block(must_fix)
+    return prompt
 
 
 # ------------------------------------------------------------
@@ -290,7 +316,8 @@ class StandardA2Result:
 
 
 def generate_standard_a2(advanced_text: str, *, client=None, model: str | None = None,
-                          effort: str = "high", max_retries: int = 1) -> StandardA2Result:
+                          effort: str = "high", max_retries: int = 1,
+                          must_fix: list | None = None) -> StandardA2Result:
     """Advanced(CEFR B1 Natural English Adaptation)記事本文からStandard
     (CEFR A2、v5 6,000語ライン+自然さ優先)版を生成する。
 
@@ -308,6 +335,12 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
     `effort`が`vfl01.REASONING_EFFORT`と一致することをassertする
     (不一致の場合はvfl01側のグローバル設定を勝手に書き換えず、
     ValueErrorとしてSTOPする)。
+
+    must_fix(NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01で追加、既定
+    None)は、English deviation checkでMAJORだった場合に呼び出し側
+    (`er012_e_family_entertainment_two_level_runner_01.run_writer_stage`)
+    が1回だけ再生成する際にのみ渡す。既存呼び出し(must_fix省略)の
+    prompt・挙動は一切変わらない。
     """
     if effort != vfl01.REASONING_EFFORT:
         raise ValueError(
@@ -319,7 +352,7 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
         client = vfl01.get_client()
     requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
 
-    prompt = build_prompt(advanced_text)
+    prompt = build_prompt(advanced_text, must_fix=must_fix)
     price_fn = _load_pricing()
 
     t0 = time.time()

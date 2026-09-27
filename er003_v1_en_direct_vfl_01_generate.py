@@ -631,16 +631,181 @@ HOOK_AWARE_DEVIATION_JSON_SCHEMA = {
 }
 
 
+# ============================================================
+# JA/English Fact Check拡張(NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-
+# WIRING-01、2026-09-27、ユーザー正式決定によりAPPROVED_FOR_PRODUCTION)
+# ============================================================
+# run_deviation_check()へ3つの後方互換オプション引数を追加する(いずれも
+# 既定None/False。既存呼び出し[全て引数省略]のprompt文言・schema・戻り値の
+# キー集合は一切変わらない):
+#   - include_related_fact_id: 各deviationに、最も関連するVerified/Full
+#     Ledgerのfact_id(related_fact_id)を追加で出力させる(must-fix
+#     Rewrite/Retryへ具体的なFact IDを渡すため)。
+#   - source_article_text: 指定時、各deviationについてその逸脱が既に
+#     この原文(通常はJA R2)に存在していたか(ja_source)、それとも
+#     この記事(翻訳・適応後)で新たに生じたか(translation)を追加で
+#     判定させる(English側retryがJAへ戻すべきかを機械的に判定するため。
+#     決定論的ルールではなくChecker自身への追加質問として実施する)。
+#   - prior_issues: 指定時(list[dict]、各dictはfact_id/claim_in_article/
+#     issue/explanationを想定)、前回指摘の各項目が今回解消されたかを
+#     個別に判定させ、戻り値のparsedへprior_issues_resolved(list)と
+#     all_prior_issues_resolved(bool)を追加する。overall_statusの計算
+#     方法自体は変更しない(既存の10フラグベースpost-hoc判定のまま)。
+#     呼び出し側は「overall_status==LEDGER_COMPLIANT かつ
+#     all_prior_issues_resolved」の両方を見て最終成功を判定すること
+#     (本関数はその合成判定を勝手に行わない)。
+ORIGIN_ENUM_VALUES = ["ja_source", "translation", "not_applicable"]
+
+RELATED_FACT_ID_INSTRUCTION = (
+    "\n\n【追加指示: 関連Fact ID】\n"
+    "各deviationについて、最も関連するVerified/Full Ledger内のfact_id"
+    "(Ledger中の`[VERIFIED] <fact_id>:`等の行のfact_id部分、例: F1)を"
+    "related_fact_idとして記録してください。特定できない場合は空文字列に"
+    "してください。"
+)
+
+ORIGIN_INSTRUCTION_TEMPLATE = (
+    "\n\n【追加指示: 逸脱の発生源】\n"
+    "各deviationについて、その逸脱が以下の原文記事(この記事の翻訳・適応元)に"
+    "既に存在していたか、それともこの記事(翻訳・適応後)で新たに生じたものかを"
+    "判定し、originとして記録してください。\n"
+    "- ja_source: 原文記事の時点で既にこの逸脱に相当する内容が存在していた\n"
+    "- translation: 原文記事では問題なく、翻訳・適応の過程で新たに生じた\n"
+    "\n【原文記事(翻訳・適応元)】\n{source_article_text}"
+)
+
+
+def build_prior_issues_instruction(prior_issues: list) -> str:
+    lines = [
+        "\n\n【追加指示: 前回指摘の解消確認】",
+        "以下は前回のFact Checkで指摘された項目です。今回の記事で、各項目が"
+        "個別に解消されたかを判定し、prior_issues_resolvedとして記録してください"
+        "(indexは以下のリストの番号[0始まり]と対応させること。全項目に"
+        "ついて回答すること)。",
+    ]
+    for i, item in enumerate(prior_issues or []):
+        lines.append(
+            f"- index={i}: fact_id={item.get('fact_id', '')} | "
+            f"claim_in_article={item.get('claim_in_article', '')} | "
+            f"issue={item.get('issue', '')} | "
+            f"explanation={item.get('explanation', '')}"
+        )
+    return "\n".join(lines)
+
+
+PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "index": {"type": "integer"},
+        "resolved": {"type": "boolean"},
+        "explanation": {"type": "string"},
+    },
+    "required": ["index", "resolved", "explanation"],
+    "additionalProperties": False,
+}
+
+
+def _extended_deviation_item_schema(hook_aware: bool, include_related_fact_id: bool,
+                                     include_origin: bool) -> dict:
+    props = {
+        "claim_in_article": {"type": "string"},
+        "issue": {"type": "string"},
+        "severity": {"type": "string", "enum": ["MINOR", "MAJOR"]},
+    }
+    for k in DEVIATION_FLAG_KEYS:
+        props[k] = {"type": "boolean"}
+    props["explanation"] = {"type": "string"}
+    required = ["claim_in_article", "issue", "severity"] + list(DEVIATION_FLAG_KEYS) + ["explanation"]
+    if hook_aware:
+        props["treated_as_hook"] = {"type": "boolean"}
+        required.append("treated_as_hook")
+    if include_related_fact_id:
+        props["related_fact_id"] = {"type": "string"}
+        required.append("related_fact_id")
+    if include_origin:
+        props["origin"] = {"type": "string", "enum": ORIGIN_ENUM_VALUES}
+        required.append("origin")
+    return {"type": "object", "properties": props, "required": required, "additionalProperties": False}
+
+
+def _build_extended_deviation_schema(hook_aware: bool, include_related_fact_id: bool,
+                                      include_origin: bool, include_prior_issues: bool) -> dict:
+    item_schema = _extended_deviation_item_schema(hook_aware, include_related_fact_id, include_origin)
+    props = {"deviations": {"type": "array", "items": item_schema}}
+    required = ["deviations"]
+    if include_prior_issues:
+        props["prior_issues_resolved"] = {"type": "array", "items": PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA}
+        required.append("prior_issues_resolved")
+    name_parts = ["ledger_deviation_check_v2_ext"]
+    if hook_aware:
+        name_parts.append("hook")
+    if include_related_fact_id:
+        name_parts.append("factid")
+    if include_origin:
+        name_parts.append("origin")
+    if include_prior_issues:
+        name_parts.append("prior")
+    return {
+        "name": "_".join(name_parts),
+        "schema": {"type": "object", "properties": props, "required": required, "additionalProperties": False},
+        "strict": True,
+    }
+
+
+def deviation_audit_record(check_result: dict) -> dict:
+    """Fact Check呼び出し1回分の観測性記録(prompt/raw_text/parsed/
+    response_id/model/usage/elapsed_seconds)。NEWS-FAMILY-X-JA-FACT-CHECK-
+    PRODUCTION-WIRING-01: 呼び出し側は各stage各attemptで`audit/
+    deviation_checks/<stage>_attempt<N>.json`として必ず保存する
+    (1回目も含む)。"""
+    return {
+        "prompt": check_result.get("prompt"),
+        "raw_text": check_result.get("raw_text"),
+        "parsed": check_result.get("parsed"),
+        "response_id": check_result.get("response_id"),
+        "model": check_result.get("model"),
+        "usage": check_result.get("usage"),
+        "elapsed_seconds": check_result.get("elapsed_seconds"),
+        "hook_aware": check_result.get("hook_aware"),
+    }
+
+
 def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL,
-                         hook_aware: bool = False) -> dict:
+                         hook_aware: bool = False, prior_issues: list | None = None,
+                         include_related_fact_id: bool = False,
+                         source_article_text: str | None = None) -> dict:
     """hook_aware=True(既定False)で、Hook-aware判定(上記HOOK_CLAUSE)を
     使う。Production(er003_v1_n3_01_articles_generate.py)のみ明示的に
     hook_aware=Trueを渡す。既存のDEV/Trial呼び出し元は引数を渡していない
-    ため、挙動は従来のまま変わらない。"""
+    ため、挙動は従来のまま変わらない。
+
+    prior_issues/include_related_fact_id/source_article_text
+    (NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01で追加、いずれも
+    既定None/False)は、いずれかが指定された場合のみprompt/schemaを拡張
+    する。全て未指定の既存呼び出しは、prompt文言・schema・戻り値の
+    キー集合とも一切変わらない(新規追加キーはparsedへ指定時のみ増える)。
+    """
     developer_message = HOOK_AWARE_DEVIATION_DEVELOPER_MESSAGE if hook_aware else DEVIATION_DEVELOPER_MESSAGE
     prompt_template = HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE if hook_aware else DEVIATION_PROMPT_TEMPLATE
-    schema = HOOK_AWARE_DEVIATION_JSON_SCHEMA if hook_aware else DEVIATION_JSON_SCHEMA
     prompt = prompt_template.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
+
+    include_origin = source_article_text is not None
+    include_prior_issues = prior_issues is not None
+
+    if include_related_fact_id:
+        prompt += RELATED_FACT_ID_INSTRUCTION
+    if include_origin:
+        prompt += ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=source_article_text)
+    if include_prior_issues:
+        prompt += build_prior_issues_instruction(prior_issues)
+
+    if include_related_fact_id or include_origin or include_prior_issues:
+        schema = _build_extended_deviation_schema(hook_aware, include_related_fact_id, include_origin,
+                                                   include_prior_issues)
+    else:
+        schema = HOOK_AWARE_DEVIATION_JSON_SCHEMA if hook_aware else DEVIATION_JSON_SCHEMA
+
+    t0 = time.time()
     response = client.responses.create(
         model=model,
         reasoning={"effort": REASONING_EFFORT},
@@ -650,11 +815,41 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
             {"role": "user", "content": prompt},
         ],
     )
+    elapsed = round(time.time() - t0, 3)
     text = response.output_text
     raw_parsed = json.loads(text)
     parsed = _apply_deviation_post_hoc_validation(raw_parsed)
-    return {"prompt": prompt, "raw_text": text, "raw_parsed": raw_parsed, "parsed": parsed,
-            "model": response.model, "response_id": response.id, "hook_aware": hook_aware}
+
+    if include_prior_issues:
+        resolved = raw_parsed.get("prior_issues_resolved", [])
+        parsed["prior_issues_resolved"] = resolved
+        parsed["all_prior_issues_resolved"] = (
+            len(resolved) == len(prior_issues)
+            and all(bool(r.get("resolved")) for r in resolved)
+        )
+
+    usage = getattr(response, "usage", None)
+    input_tokens = getattr(usage, "input_tokens", None) if usage else None
+    output_tokens = getattr(usage, "output_tokens", None) if usage else None
+    cached_tokens = None
+    reasoning_tokens = None
+    if usage is not None:
+        in_details = getattr(usage, "input_tokens_details", None)
+        if in_details is not None:
+            cached_tokens = getattr(in_details, "cached_tokens", None)
+        out_details = getattr(usage, "output_tokens_details", None)
+        if out_details is not None:
+            reasoning_tokens = getattr(out_details, "reasoning_tokens", None)
+
+    return {
+        "prompt": prompt, "raw_text": text, "raw_parsed": raw_parsed, "parsed": parsed,
+        "model": response.model, "response_id": response.id, "hook_aware": hook_aware,
+        "usage": {
+            "input_tokens": input_tokens, "cached_input_tokens": cached_tokens,
+            "output_tokens": output_tokens, "reasoning_tokens": reasoning_tokens,
+        },
+        "elapsed_seconds": elapsed,
+    }
 
 
 # ============================================================

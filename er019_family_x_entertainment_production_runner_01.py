@@ -179,12 +179,28 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
 
 
 # ------------------------------------------------------------
-# Stage 3: JA Writer(Original -> R1 -> R2)
+# Stage 3: JA Writer(Original -> R1 -> R2 + JA Fact Check、
+# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01 Stage 1で追加)
 # ------------------------------------------------------------
-def run_ja_writer(client, storyline_line: str, selected_fact_brief_text: str, out_dir: str) -> dict:
+def run_ja_writer(client, storyline_line: str, selected_fact_brief_text: str, out_dir: str,
+                   full_ledger_text: str | None = None) -> dict:
     stage_dir = f"{out_dir}/ja_writer"
     os.makedirs(stage_dir, exist_ok=True)
-    result = jaw.run_ja_writer_o_r1_r2(client, storyline_line, selected_fact_brief_text)
+    os.makedirs(f"{stage_dir}/audit/deviation_checks", exist_ok=True)
+
+    try:
+        result = jaw.run_ja_writer_o_r1_r2(client, storyline_line, selected_fact_brief_text,
+                                            full_ledger_text=full_ledger_text)
+    except jaw.JAFactCheckStopError as exc:
+        # JA_FACT_CHECK_STOP: must-fix Rewrite後もMAJORが残った場合。
+        # 本文を手で直さず、監査証跡(未採用本文+Checker全attempt)を保存して
+        # RuntimeErrorとしてSTOPする(既存run_writer_stage[er012]と同じ方針)。
+        for i, check in enumerate(exc.checks, start=1):
+            save_json(f"{stage_dir}/audit/deviation_checks/ja_{exc.stage}_attempt{i}.json",
+                       vfl01.deviation_audit_record(check))
+        save_text(f"{stage_dir}/audit/rejected_ja_{exc.stage}.md", exc.rejected_text)
+        save_json(f"{stage_dir}/audit/rejected_ja_{exc.stage}_must_fix.json", exc.must_fix_used)
+        raise RuntimeError(str(exc)) from exc
 
     save_text(f"{stage_dir}/original.md", result["stages"]["original"]["text"])
     save_text(f"{stage_dir}/revision1.md", result["stages"]["r1"]["text"])
@@ -197,6 +213,19 @@ def run_ja_writer(client, storyline_line: str, selected_fact_brief_text: str, ou
         "chain_method": result["chain_method"], "verbatim_shas": result["verbatim_shas"],
         "title": result["title"],
     }
+    if "fact_checks" in result:
+        runtime_evidence["fact_checks_summary"] = {
+            stage_key: {
+                "must_fix_applied": fc["must_fix_applied"],
+                "must_fix_used": fc["must_fix_used"],
+                "final_status": fc["final_status"],
+            }
+            for stage_key, fc in result["fact_checks"].items()
+        }
+        for stage_key, fc in result["fact_checks"].items():
+            for i, check in enumerate(fc["checks"], start=1):
+                save_json(f"{stage_dir}/audit/deviation_checks/ja_{stage_key}_attempt{i}.json",
+                          vfl01.deviation_audit_record(check))
     save_json(f"{stage_dir}/runtime_evidence.json", runtime_evidence)
     return {"ja_text": result["final_text"], "title": result["title"], "runtime_evidence": runtime_evidence}
 
@@ -335,7 +364,8 @@ def main() -> None:
         else:
             writer_result = run_ja_writer(
                 client, storyline_result["selected_storyline"],
-                storyline_result["selected_fact_brief_text"], out_dir)
+                storyline_result["selected_fact_brief_text"], out_dir,
+                full_ledger_text=ledger_text)
             ja_text = writer_result["ja_text"]
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after ja_writer")
         if stage == "writer" or args.stop_after == "writer":

@@ -117,6 +117,22 @@ class BuildPromptTests(unittest.TestCase):
         self.assertTrue(prompt.startswith("Rewrite this entire article for CEFR A2 learners."))
         self.assertNotIn("{advanced_article}", prompt)
 
+    def test_build_prompt_without_must_fix_unchanged(self):
+        # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: must_fix省略時、
+        # v5 promptの段落自体は一切変わらない(受け口追加のみ)。
+        prompt = std_a2.build_prompt("Hello world article.")
+        self.assertEqual(prompt, std_a2.STANDARD_A2_PROMPT_V5.format(advanced_article="Hello world article."))
+
+    def test_build_prompt_with_must_fix_appends_block(self):
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim", "issue": "issue", "explanation": "expl"}]
+        prompt = std_a2.build_prompt("Hello world article.", must_fix=must_fix)
+        base_prompt = std_a2.STANDARD_A2_PROMPT_V5.format(advanced_article="Hello world article.")
+        self.assertTrue(prompt.startswith(base_prompt))
+        self.assertIn("Fact ID: F1", prompt)
+        self.assertIn("claim", prompt)
+        self.assertIn("issue", prompt)
+        self.assertIn("expl", prompt)
+
 
 class GenerateStandardA2Tests(unittest.TestCase):
     def test_success_no_retry(self):
@@ -179,6 +195,22 @@ class GenerateStandardA2Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             std_a2.generate_standard_a2(ADVANCED_TEXT, client=client, model="gpt-5.6-luna",
                                          effort="low")
+
+    def test_must_fix_passed_through_to_prompt(self):
+        # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: must_fixが渡された
+        # 場合、送信されるuser messageへFact ID/claim/issue/explanationが
+        # 反映されること(受け口のみ、STANDARD_A2_PROMPT_V5の段落は無変更)。
+        good = _fake_response(GOOD_STRUCTURE_TEXT)
+        client = _FakeClient([good])
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim-X", "issue": "issue-X",
+                     "explanation": "expl-X"}]
+        with mock.patch.object(std_a2.routing, "require_model", side_effect=lambda process, model: model), \
+             mock.patch.object(std_a2, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)):
+            std_a2.generate_standard_a2(ADVANCED_TEXT, client=client, model="gpt-5.6-luna",
+                                         must_fix=must_fix)
+        sent = client.responses.calls[0]
+        self.assertIn("Fact ID: F1", sent["input"][1]["content"])
+        self.assertIn("claim-X", sent["input"][1]["content"])
 
 
 class RunChecksTests(unittest.TestCase):

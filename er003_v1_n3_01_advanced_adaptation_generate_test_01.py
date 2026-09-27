@@ -128,6 +128,23 @@ class BuildPromptTests(unittest.TestCase):
         self.assertNotIn("AI makes the phone call", prompt)
         self.assertNotIn("understudy", prompt)
 
+    def test_build_prompt_without_must_fix_unchanged(self):
+        # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: must_fix省略時、
+        # 既存段落は一切変わらない(受け口追加のみ)。
+        with_none = adv.build_prompt(JA_TEXT, must_fix=None)
+        without_arg = adv.build_prompt(JA_TEXT)
+        self.assertEqual(with_none, without_arg)
+
+    def test_build_prompt_with_must_fix_appends_block(self):
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim", "issue": "issue", "explanation": "expl"}]
+        base_prompt = adv.build_prompt(JA_TEXT)
+        prompt = adv.build_prompt(JA_TEXT, must_fix=must_fix)
+        self.assertTrue(prompt.startswith(base_prompt))
+        self.assertIn("Fact ID: F1", prompt)
+        self.assertIn("claim", prompt)
+        self.assertIn("issue", prompt)
+        self.assertIn("expl", prompt)
+
 
 class VocabRuleV2Tests(unittest.TestCase):
     """ADVANCED-VOCAB-V2-PRODUCTION-RESTORE-01: v2語彙ルールがPrompt本体に
@@ -234,6 +251,21 @@ class GenerateAdvancedAdaptationTests(unittest.TestCase):
             result = adv.generate_advanced_adaptation(JA_TEXT, client=client, model="gpt-5.6-luna")
         self.assertTrue(result.fallback_detected)
         self.assertEqual(result.model_id_actual, "gpt-5.6-other")
+
+    def test_must_fix_passed_through_to_prompt(self):
+        # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: must_fixが渡された
+        # 場合、送信されるuser messageへFact ID/claim/issue/explanationが
+        # 反映されること(受け口のみ、既存段落は無変更)。
+        good = _fake_response(GOOD_STRUCTURE_TEXT)
+        client = _FakeClient([good])
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim-X", "issue": "issue-X",
+                     "explanation": "expl-X"}]
+        with mock.patch.object(adv.routing, "require_model", side_effect=lambda process, model: model), \
+             mock.patch.object(adv, "_load_pricing", return_value=(lambda provider, model, meter: 0.0)):
+            adv.generate_advanced_adaptation(JA_TEXT, client=client, model="gpt-5.6-luna", must_fix=must_fix)
+        sent = client.responses.calls[0]
+        self.assertIn("Fact ID: F1", sent["input"][1]["content"])
+        self.assertIn("claim-X", sent["input"][1]["content"])
 
 
 if __name__ == "__main__":

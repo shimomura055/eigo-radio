@@ -24,6 +24,17 @@
 #
 # 本moduleはOriginal→R1→R2で停止する(R3は生成しない、正式フローの
 # 「Original→R1→R2」に一致させる)。
+#
+# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01(Stage 1、2026-09-27、
+# ユーザー正式決定によりAPPROVED_FOR_PRODUCTION)で追加: full_ledger_text
+# (Full Ledger、Storyline+B3が参照した検証済み事実全量)が渡された場合、
+# Original直後・R2直後にvfl01.run_deviation_check()でJA記事自体をFull
+# Ledgerへ照合するFact Checkを行う。MAJORなら「以下の指摘を必ず解消する」
+# must-fixブロック付きで1回だけ再生成し、再Checkでもなお解消しなければ
+# JAFactCheckStopErrorを送出してSTOPする(本文を手で直さない、既存
+# run_writer_stage[er012]のSTOP方針と同じ設計)。full_ledger_textが
+# Noneの場合(既存/他呼び出し元)は一切のFact Check処理を行わず、従来の
+# Original→R1→R2のみの挙動と完全に同じ(後方互換)。
 # ============================================================
 from __future__ import annotations
 
@@ -77,15 +88,77 @@ def verbatim_shas() -> dict:
     }
 
 
-def build_original_prompt(storyline_line: str, selected_fact_brief_text: str) -> str:
+def build_must_fix_block(must_fix: list, full_ledger_text: str) -> str:
+    """NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: 「以下の指摘を
+    必ず解消する(Ledger原文を提示し、それに整合させる)」ブロック。
+    Fact ID/claim_in_article/issue/explanationを渡す。"""
+    lines = [
+        "【必ず解消すべき指摘(Fact Check MAJOR)】",
+        "以下の指摘を必ず解消してください。指摘に対応する記述は、下記の"
+        "Full Ledger原文に厳密に整合させてください(Ledgerにない断定・"
+        "因果・数値・主体・時期・比較・否定・一般化を残さないこと)。",
+    ]
+    for i, item in enumerate(must_fix or [], start=1):
+        lines.append(
+            f"{i}. Fact ID: {item.get('fact_id') or '(不明)'} / "
+            f"該当箇所: {item.get('claim_in_article', '')} / "
+            f"指摘: {item.get('issue', '')} / "
+            f"理由: {item.get('explanation', '')}"
+        )
+    lines.append("")
+    lines.append("【Full Ledger原文(再掲)】")
+    lines.append(full_ledger_text or "")
+    return "\n".join(lines)
+
+
+def build_original_prompt(storyline_line: str, selected_fact_brief_text: str,
+                           must_fix: list | None = None, full_ledger_text: str | None = None) -> str:
     """trial_02.build_prompt()と同一構造(「テーマ：」行を差し替え、
-    末尾に[ニュース]欄を追加)。素材はSelected Fact Brief全文。"""
+    末尾に[ニュース]欄を追加)。素材はSelected Fact Brief全文。
+
+    must_fix/full_ledger_text(NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-
+    WIRING-01で追加、既定None)は、JA Original Fact CheckでMAJORだった
+    場合のmust-fix Rewriteでのみ指定する。既存呼び出し(省略)の挙動は
+    一切変わらない。"""
     lines = R0_PROMPT.split("\n")
     new_lines = [f"テーマ：{storyline_line}" if line.startswith("テーマ：") else line
                  for line in lines]
     prompt = "\n".join(new_lines)
     prompt += "\n\n[ニュース]\n" + selected_fact_brief_text
+    if must_fix:
+        prompt += "\n\n" + build_must_fix_block(must_fix, full_ledger_text or "")
     return prompt
+
+
+class JAFactCheckStopError(RuntimeError):
+    """NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: JA Original/R2の
+    Fact CheckでMAJORが解消されなかった場合のSTOP(本文を手で直さない)。
+    呼び出し側(runner)がrejected_ja_<stage>.mdとaudit/deviation_checksを
+    保存できるよう、必要な情報を属性として保持する。"""
+
+    def __init__(self, stage: str, message: str, rejected_text: str,
+                 checks: list, must_fix_used: list):
+        super().__init__(message)
+        self.stage = stage
+        self.rejected_text = rejected_text
+        self.checks = checks
+        self.must_fix_used = must_fix_used
+
+
+def _major_deviations(check_result: dict) -> list:
+    return [d for d in check_result["parsed"].get("deviations", []) if d.get("severity") == "MAJOR"]
+
+
+def _must_fix_from_deviations(major_devs: list) -> list:
+    return [
+        {
+            "fact_id": d.get("related_fact_id", ""),
+            "claim_in_article": d.get("claim_in_article", ""),
+            "issue": d.get("issue", ""),
+            "explanation": d.get("explanation", ""),
+        }
+        for d in major_devs
+    ]
 
 
 def _extract_title(article_text: str) -> str:
@@ -123,12 +196,23 @@ def call_with_previous_response_id(client, user: str, effort: str, previous_resp
     return response
 
 
-def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text: str) -> dict:
+def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text: str,
+                           full_ledger_text: str | None = None) -> dict:
     """Original -> r1 -> r2をprevious_response_idで連鎖実行する。
     技術的失敗(previous_response_id不可)時のみ、直前記事全文を貼る
     fallback_full_textへ切替える(trial01/02と同一方針)。
+
+    full_ledger_text(NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01で
+    追加、既定None)が渡された場合のみ、Original直後・R2直後にFact Check
+    (vfl01.run_deviation_check、Full Ledger vs JA記事)を行う。MAJORなら
+    must-fix Rewrite 1回→再Check、なおMAJORならJAFactCheckStopErrorを
+    送出する(呼び出し側=runnerがrejected_ja_<stage>.md保存等を行い
+    STOPする)。Noneの場合はFact Check自体を行わず、従来と完全に同じ
+    挙動(後方互換)。
     戻り値: {"stages": {"original": {...}, "r1": {...}, "r2": {...}},
-             "final_text": <r2本文>, "chain_method": ...}"""
+             "final_text": <r2本文>, "chain_method": ...,
+             "fact_checks": {"original": {...}, "r2": {...}} (Fact Check
+             実行時のみ)}"""
     prompt_original = build_original_prompt(storyline_line, selected_fact_brief_text)
     response = call_fresh(client, DEVELOPER_MESSAGE, prompt_original, WRITER_EFFORT, "ja_original")
     original_text = response.output_text.strip()
@@ -138,7 +222,58 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
             "prompt": prompt_original, "developer_message": DEVELOPER_MESSAGE,
         }
     }
-    prev_id = response.id
+    fact_checks = {}
+
+    if full_ledger_text is not None:
+        with cl.logging_context(THEME_TAG, "ja_original_check"):
+            check1 = vfl01.run_deviation_check(client, full_ledger_text, original_text,
+                                                hook_aware=False, include_related_fact_id=True)
+        checks_log = [check1]
+        status1 = check1["parsed"].get("overall_status")
+        final_status = status1
+        must_fix_applied = False
+        must_fix_used = []
+        if status1 == "LEDGER_DEVIATION":
+            must_fix_applied = True
+            major_devs = _major_deviations(check1)
+            must_fix_used = _must_fix_from_deviations(major_devs)
+            print(f"[JA-WRITER][ja_original] Fact Check MAJOR。must-fixで1回だけ再生成します"
+                  f"(major_count={len(major_devs)})...")
+            prompt_must_fix = build_original_prompt(
+                storyline_line, selected_fact_brief_text,
+                must_fix=must_fix_used, full_ledger_text=full_ledger_text)
+            response_mf = call_fresh(client, DEVELOPER_MESSAGE, prompt_must_fix, WRITER_EFFORT,
+                                      "ja_original_must_fix")
+            rewritten_text = response_mf.output_text.strip()
+            with cl.logging_context(THEME_TAG, "ja_original_check_retry"):
+                check2 = vfl01.run_deviation_check(client, full_ledger_text, rewritten_text,
+                                                    hook_aware=False, include_related_fact_id=True,
+                                                    prior_issues=must_fix_used)
+            checks_log.append(check2)
+            final_status = check2["parsed"].get("overall_status")
+            all_resolved = check2["parsed"].get("all_prior_issues_resolved", False)
+            if not (final_status == "LEDGER_COMPLIANT" and all_resolved):
+                raise JAFactCheckStopError(
+                    stage="original",
+                    message="[STOP] JA_FACT_CHECK_STOP: JA Original Fact Check、"
+                            "must-fix Rewrite後もMAJOR、または前回指摘の未解消が残りました"
+                            f"(overall_status={final_status}, all_prior_issues_resolved={all_resolved})。"
+                            "本文を手で直さずSTOPします。",
+                    rejected_text=rewritten_text, checks=checks_log, must_fix_used=must_fix_used,
+                )
+            original_text = rewritten_text
+            stages["original"] = {
+                "text": original_text, "response_id": response_mf.id, "model": response_mf.model,
+                "prompt": prompt_must_fix, "developer_message": DEVELOPER_MESSAGE,
+                "must_fix_applied": True, "must_fix": must_fix_used,
+                "pre_must_fix_response_id": response.id,
+            }
+        fact_checks["original"] = {
+            "checks": checks_log, "must_fix_applied": must_fix_applied,
+            "must_fix_used": must_fix_used, "final_status": final_status,
+        }
+
+    prev_id = stages["original"]["response_id"]
     prev_text = original_text
     chain_method = None
 
@@ -170,8 +305,76 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
         prev_id = response.id
         prev_text = article_text
 
-    return {
+    if full_ledger_text is not None:
+        r2_text = stages["r2"]["text"]
+        with cl.logging_context(THEME_TAG, "ja_r2_check"):
+            checkR2_1 = vfl01.run_deviation_check(client, full_ledger_text, r2_text,
+                                                   hook_aware=False, include_related_fact_id=True)
+        checksR2_log = [checkR2_1]
+        statusR2_1 = checkR2_1["parsed"].get("overall_status")
+        finalR2_status = statusR2_1
+        must_fix_applied_r2 = False
+        must_fix_used_r2 = []
+        if statusR2_1 == "LEDGER_DEVIATION":
+            must_fix_applied_r2 = True
+            major_devs_r2 = _major_deviations(checkR2_1)
+            must_fix_used_r2 = _must_fix_from_deviations(major_devs_r2)
+            print(f"[JA-WRITER][ja_r2] Fact Check MAJOR。R1からのrevisionとしてmust-fixで"
+                  f"1回だけ再生成します(major_count={len(major_devs_r2)})...")
+            r2_must_fix_instruction = (
+                REVISION_INSTRUCTIONS["r2"] + "\n\n" +
+                build_must_fix_block(must_fix_used_r2, full_ledger_text)
+            )
+            r1_response_id = stages["r1"]["response_id"]
+            used_method_mf = None
+            response_mf = None
+            try:
+                response_mf = call_with_previous_response_id(
+                    client, r2_must_fix_instruction, WRITER_EFFORT, r1_response_id, "ja_r2_must_fix")
+                used_method_mf = "previous_response_id"
+            except Exception as exc:  # noqa: BLE001 - 技術的失敗時のみフォールバック
+                print(f"[WARN][ja_writer] previous_response_id失敗、フォールバックへ切替"
+                      f"(ja_r2_must_fix): {exc}")
+                response_mf = None
+            if response_mf is None:
+                fallback_user = f"以下の記事:\n\n{stages['r1']['text']}\n\n{r2_must_fix_instruction}"
+                response_mf = call_fresh(client, DEVELOPER_MESSAGE, fallback_user, WRITER_EFFORT,
+                                          "ja_r2_must_fix")
+                used_method_mf = "fallback_full_text"
+            rewritten_r2 = response_mf.output_text.strip()
+            with cl.logging_context(THEME_TAG, "ja_r2_check_retry"):
+                checkR2_2 = vfl01.run_deviation_check(client, full_ledger_text, rewritten_r2,
+                                                       hook_aware=False, include_related_fact_id=True,
+                                                       prior_issues=must_fix_used_r2)
+            checksR2_log.append(checkR2_2)
+            finalR2_status = checkR2_2["parsed"].get("overall_status")
+            all_resolved_r2 = checkR2_2["parsed"].get("all_prior_issues_resolved", False)
+            if not (finalR2_status == "LEDGER_COMPLIANT" and all_resolved_r2):
+                raise JAFactCheckStopError(
+                    stage="r2",
+                    message="[STOP] JA_FACT_CHECK_STOP: JA R2 Fact Check、"
+                            "must-fix Rewrite後もMAJOR、または前回指摘の未解消が残りました"
+                            f"(overall_status={finalR2_status}, "
+                            f"all_prior_issues_resolved={all_resolved_r2})。"
+                            "本文を手で直さずSTOPします。",
+                    rejected_text=rewritten_r2, checks=checksR2_log, must_fix_used=must_fix_used_r2,
+                )
+            stages["r2"] = {
+                **stages["r2"], "text": rewritten_r2, "response_id": response_mf.id,
+                "model": response_mf.model, "must_fix_applied": True,
+                "must_fix": must_fix_used_r2, "must_fix_chain_method": used_method_mf,
+                "pre_must_fix_response_id": stages["r2"]["response_id"],
+            }
+        fact_checks["r2"] = {
+            "checks": checksR2_log, "must_fix_applied": must_fix_applied_r2,
+            "must_fix_used": must_fix_used_r2, "final_status": finalR2_status,
+        }
+
+    result = {
         "stages": stages, "final_text": stages["r2"]["text"],
         "chain_method": chain_method, "verbatim_shas": verbatim_shas(),
         "title": _extract_title(stages["r2"]["text"]),
     }
+    if full_ledger_text is not None:
+        result["fact_checks"] = fact_checks
+    return result

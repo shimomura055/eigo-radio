@@ -256,6 +256,40 @@ def _extract_title(article_text: str) -> str:
     return ""
 
 
+# ------------------------------------------------------------
+# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01(Stage 1、2026-09-27、
+# ユーザー正式決定によりAPPROVED_FOR_PRODUCTION)で追加: English側
+# (Advanced/Standard)deviation checkのmust-fix retry・issue persistence・
+# JA由来判定。既存の「1回だけ再生成→なおMAJORならSTOP」という上限・
+# Gate自体は変更しない(既存retry回数の枠内での拡張)。
+# ------------------------------------------------------------
+class JARecheckRequiredError(RuntimeError):
+    """English側MAJORのclaim_in_articleがJA R2由来(origin=ja_source)と
+    Checkerが判定した場合のSTOP。Englishを盲目的に再生成せず、JA側の
+    再確認が必要であることを呼び出し元へ伝える(自動ループしない)。"""
+
+    def __init__(self, stage: str, message: str, major_deviations: list):
+        super().__init__(message)
+        self.stage = stage
+        self.major_deviations = major_deviations
+
+
+def _major_deviations(deviation_result: dict) -> list:
+    return [d for d in deviation_result["parsed"].get("deviations", []) if d.get("severity") == "MAJOR"]
+
+
+def _must_fix_from_deviations(major_devs: list) -> list:
+    return [
+        {
+            "fact_id": d.get("related_fact_id", ""),
+            "claim_in_article": d.get("claim_in_article", ""),
+            "issue": d.get("issue", ""),
+            "explanation": d.get("explanation", ""),
+        }
+        for d in major_devs
+    ]
+
+
 def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
                       budget_jpy: float, only: str | None = None) -> dict:
     """only: None(両方)/"advanced"/"standard"(delegation D4の
@@ -263,8 +297,8 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
     out_dir = theme["out_dir"]
     b1b_dir = f"{out_dir}/b1b"
     a2_dir = f"{out_dir}/a2"
-    os.makedirs(f"{b1b_dir}/audit", exist_ok=True)
-    os.makedirs(f"{a2_dir}/audit", exist_ok=True)
+    os.makedirs(f"{b1b_dir}/audit/deviation_checks", exist_ok=True)
+    os.makedirs(f"{a2_dir}/audit/deviation_checks", exist_ok=True)
     evidence = {}
 
     if only in (None, "advanced"):
@@ -272,24 +306,46 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
         adv_result = adv_gen.generate_advanced_adaptation(ja_text, client=client)
         advanced_text = adv_result.text
         print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation check開始...")
-        deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False)
+        deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
+                                               include_related_fact_id=True, source_article_text=ja_text)
+        save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt1.json",
+                   vfl01.deviation_audit_record(deviation))
         dev_status = deviation["parsed"].get("overall_status")
         retried_for_deviation = False
+        must_fix_used = []
         if dev_status == "LEDGER_DEVIATION":
-            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJOR。1回だけ再生成します...")
-            adv_result = adv_gen.generate_advanced_adaptation(ja_text, client=client)
+            major_devs = _major_deviations(deviation)
+            ja_sourced = [d for d in major_devs if d.get("origin") == "ja_source"]
+            if ja_sourced:
+                raise JARecheckRequiredError(
+                    stage="advanced",
+                    message=f"[STOP] JA_RECHECK_REQUIRED: Advanced deviation MAJORのうち"
+                            f"{len(ja_sourced)}件がJA R2由来(origin=ja_source)と判定されました。"
+                            "Englishを盲目的に再生成せず、JA側の再確認が必要です。",
+                    major_deviations=major_devs,
+                )
+            must_fix_used = _must_fix_from_deviations(major_devs)
+            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJOR。"
+                  f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
+            adv_result = adv_gen.generate_advanced_adaptation(ja_text, client=client, must_fix=must_fix_used)
             advanced_text = adv_result.text
-            deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False)
+            deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
+                                                   include_related_fact_id=True, source_article_text=ja_text,
+                                                   prior_issues=must_fix_used)
+            save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt2.json",
+                       vfl01.deviation_audit_record(deviation))
             dev_status = deviation["parsed"].get("overall_status")
+            all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
             retried_for_deviation = True
-            if dev_status == "LEDGER_DEVIATION":
+            if not (dev_status == "LEDGER_COMPLIANT" and all_resolved):
                 save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
                 # STOPでも未採用の生成text自体は監査証跡として保存する(本文としては
                 # 採用しない、article.mdとは別名で保存)。
                 save_text(f"{b1b_dir}/audit/rejected_advanced_attempt2.md", advanced_text)
                 raise RuntimeError(
-                    f"[STOP] Advanced deviation check: 再生成後もMAJOR"
-                    f"(retry_for_deviation={retried_for_deviation})。本文を手で直さずSTOPします。"
+                    f"[STOP] Advanced deviation check: 再生成後もMAJOR、または前回指摘の未解消あり"
+                    f"(retry_for_deviation={retried_for_deviation}, "
+                    f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
                 )
         save_text(f"{b1b_dir}/article.md", advanced_text)
         save_json(f"{b1b_dir}/parts.json", sc.split_article_text(advanced_text))
@@ -304,6 +360,7 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             "attempts": adv_result.attempts,
             "retried": adv_result.retried,
             "retried_for_deviation": retried_for_deviation,
+            "must_fix_used": must_fix_used,
             "deviation_overall_status": dev_status,
             "usage": adv_result.usage,
             "cost_usd": adv_result.cost_usd,
@@ -320,21 +377,43 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
         std_result = std_gen.generate_standard_a2(advanced_text, client=client)
         standard_text = std_result.text
         print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation check開始...")
-        deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False)
+        deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
+                                               include_related_fact_id=True, source_article_text=ja_text)
+        save_json(f"{a2_dir}/audit/deviation_checks/standard_attempt1.json",
+                   vfl01.deviation_audit_record(deviation))
         dev_status = deviation["parsed"].get("overall_status")
         retried_for_deviation = False
+        must_fix_used = []
         if dev_status == "LEDGER_DEVIATION":
-            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation MAJOR。1回だけ再生成します...")
-            std_result = std_gen.generate_standard_a2(advanced_text, client=client)
+            major_devs = _major_deviations(deviation)
+            ja_sourced = [d for d in major_devs if d.get("origin") == "ja_source"]
+            if ja_sourced:
+                raise JARecheckRequiredError(
+                    stage="standard",
+                    message=f"[STOP] JA_RECHECK_REQUIRED: Standard deviation MAJORのうち"
+                            f"{len(ja_sourced)}件がJA R2由来(origin=ja_source)と判定されました。"
+                            "Englishを盲目的に再生成せず、JA側の再確認が必要です。",
+                    major_deviations=major_devs,
+                )
+            must_fix_used = _must_fix_from_deviations(major_devs)
+            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation MAJOR。"
+                  f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
+            std_result = std_gen.generate_standard_a2(advanced_text, client=client, must_fix=must_fix_used)
             standard_text = std_result.text
-            deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False)
+            deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
+                                                   include_related_fact_id=True, source_article_text=ja_text,
+                                                   prior_issues=must_fix_used)
+            save_json(f"{a2_dir}/audit/deviation_checks/standard_attempt2.json",
+                       vfl01.deviation_audit_record(deviation))
             dev_status = deviation["parsed"].get("overall_status")
+            all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
             retried_for_deviation = True
-            if dev_status == "LEDGER_DEVIATION":
+            if not (dev_status == "LEDGER_COMPLIANT" and all_resolved):
                 save_json(f"{a2_dir}/audit/deviation_check.json", deviation["parsed"])
                 raise RuntimeError(
-                    f"[STOP] Standard deviation check: 再生成後もMAJOR"
-                    f"(retry_for_deviation={retried_for_deviation})。本文を手で直さずSTOPします。"
+                    f"[STOP] Standard deviation check: 再生成後もMAJOR、または前回指摘の未解消あり"
+                    f"(retry_for_deviation={retried_for_deviation}, "
+                    f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
                 )
         save_text(f"{a2_dir}/article.md", standard_text)
         save_json(f"{a2_dir}/parts.json", sc.split_article_text(standard_text))
@@ -349,6 +428,7 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             "attempts": std_result.attempts,
             "retried": std_result.retried,
             "retried_for_deviation": retried_for_deviation,
+            "must_fix_used": must_fix_used,
             "deviation_overall_status": dev_status,
             "usage": std_result.usage,
             "cost_usd": std_result.cost_usd,
