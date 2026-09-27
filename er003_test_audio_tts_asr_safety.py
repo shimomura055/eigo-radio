@@ -564,14 +564,35 @@ class DetectProhibitedSymbolsTests(unittest.TestCase):
         # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01
         # 修正1回目(2026-09-27): 時刻表記(H:MM)のコロンは数値表記として
         # 許容し、RESIDUAL_PLACEHOLDERとして検出しない(Family X Hormuz
-        # "11:04 a.m."の実例)。
+        # "11:04 a.m."の実例)。修正2回目(Opus L2所見SF-3、同日): STOPは
+        # しないが、observe専用カテゴリとして記録は残る仕様へ変更した。
         findings = safety.detect_prohibited_symbols(
             "The plan changed at 11:04 a.m.", "en")
-        self.assertEqual(findings, [])
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["category"], safety.SYMBOL_CATEGORY_TIME_COLON_OBSERVE)
+        self.assertFalse(safety.symbol_gate_requires_stop(findings))
 
     def test_time_expression_colon_not_flagged_ja(self):
         findings = safety.detect_prohibited_symbols("午前11:04に予定が変わった", "ja")
-        self.assertEqual(findings, [])
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["category"], safety.SYMBOL_CATEGORY_TIME_COLON_OBSERVE)
+        self.assertFalse(safety.symbol_gate_requires_stop(findings))
+
+    def test_time_expression_colon_not_flagged_ja_fullwidth(self):
+        # 修正2回目(2026-09-27、Opus L2所見SF-2): 全角コロン「：」・
+        # 全角数字にも同じ許容ルールを適用する。
+        findings = safety.detect_prohibited_symbols("午前１１：０４に予定が変わった", "ja")
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["category"], safety.SYMBOL_CATEGORY_TIME_COLON_OBSERVE)
+        self.assertFalse(safety.symbol_gate_requires_stop(findings))
+
+    def test_time_expression_colon_not_flagged_en_fullwidth_colon_mixed(self):
+        # 半角数字+全角コロンの混在(実例corpusで起こり得る表記ゆれ)も
+        # 同じ許容ルールの対象とする。
+        findings = safety.detect_prohibited_symbols("The plan changed at 11：04 a.m.", "en")
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["category"], safety.SYMBOL_CATEGORY_TIME_COLON_OBSERVE)
+        self.assertFalse(safety.symbol_gate_requires_stop(findings))
 
     def test_non_time_colon_still_blocks(self):
         # 時刻表記以外のコロン(前後どちらかが数字でない通常の区切り用法)
@@ -579,6 +600,15 @@ class DetectProhibitedSymbolsTests(unittest.TestCase):
         # (今回の修正が一般化しすぎていないことの回帰確認)。
         findings = safety.detect_prohibited_symbols(
             "Three reasons: budget", "en")
+        categories = {f["category"] for f in findings}
+        self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
+        self.assertTrue(safety.symbol_gate_requires_stop(findings))
+
+    def test_non_time_fullwidth_colon_still_blocks(self):
+        # 全角対応の拡張後も、時刻表記でない全角コロンは引き続き
+        # RESIDUAL_PLACEHOLDERとしてSTOP対象のまま(一般化しすぎていない
+        # ことの回帰確認、修正2回目)。
+        findings = safety.detect_prohibited_symbols("理由は三つ：予算、人員、期限", "ja")
         categories = {f["category"] for f in findings}
         self.assertIn(safety.SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER, categories)
         self.assertTrue(safety.symbol_gate_requires_stop(findings))
@@ -634,6 +664,23 @@ class BuildSymbolViolationPromptNoteTests(unittest.TestCase):
         note = safety.build_symbol_violation_prompt_note([])
         self.assertIsInstance(note, str)
         self.assertGreater(len(note), 0)
+
+    def test_observe_only_findings_excluded_from_note(self):
+        # 修正2回目(2026-09-27、Opus L2所見SF-3): NUMERIC_SYMBOL_OBSERVE・
+        # TIME_COLON_ALLOWED_OBSERVEはobserve専用であり、STOP対象の
+        # BRACKETと混在していても、Writerへの指摘文には含めない
+        # (誤って「直せ」と伝えない)。
+        findings = [
+            {"token": "(", "category": safety.SYMBOL_CATEGORY_BRACKET, "reason": "reason text"},
+            {"token": "%", "category": safety.SYMBOL_CATEGORY_NUMERIC_OBSERVE, "reason": "observe reason"},
+            {"token": ":", "category": safety.SYMBOL_CATEGORY_TIME_COLON_OBSERVE, "reason": "time observe reason"},
+        ]
+        note = safety.build_symbol_violation_prompt_note(findings)
+        self.assertIn("BRACKET", note)
+        self.assertNotIn("NUMERIC_SYMBOL_OBSERVE", note)
+        self.assertNotIn("TIME_COLON_ALLOWED_OBSERVE", note)
+        self.assertNotIn("observe reason", note)
+        self.assertNotIn("time observe reason", note)
 
 
 if __name__ == "__main__":

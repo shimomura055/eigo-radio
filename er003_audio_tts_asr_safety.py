@@ -968,9 +968,15 @@ SYMBOL_CATEGORY_URL_EMAIL = "URL_EMAIL"
 SYMBOL_CATEGORY_EMOJI = "EMOJI"
 SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER = "RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL"
 SYMBOL_CATEGORY_NUMERIC_OBSERVE = "NUMERIC_SYMBOL_OBSERVE"
+# 時刻表記(H:MM、半角/全角)のコロンは数値表記として無変換のまま許容する
+# ため、STOP対象ではなくobserve記録専用のカテゴリとして分ける(TTS-
+# SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01 修正2回目、
+# 2026-09-27、Opus L2所見SF-3)。
+SYMBOL_CATEGORY_TIME_COLON_OBSERVE = "TIME_COLON_ALLOWED_OBSERVE"
 
 # ブロック対象カテゴリ(1件でもあればTTS呼び出し/Writer出力を止める)。
-# NUMERIC_SYMBOL_OBSERVE(英語の%$¥)はここに含めない(observe専用)。
+# NUMERIC_SYMBOL_OBSERVE(英語の%$¥)・TIME_COLON_ALLOWED_OBSERVE(時刻表記
+# コロン)はここに含めない(いずれもobserve専用)。
 _SYMBOL_STOP_CATEGORIES = (
     SYMBOL_CATEGORY_BRACKET, SYMBOL_CATEGORY_SLASH, SYMBOL_CATEGORY_URL_EMAIL,
     SYMBOL_CATEGORY_EMOJI, SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER,
@@ -989,7 +995,7 @@ _EN_NUMERIC_SYMBOL_RE = re.compile(r"[%$¥]")
 _RESIDUAL_PLACEHOLDER_RE = re.compile(r"[〜～]|(?:…+|\.{3,})|[:;：;；]")
 
 # 時刻表記(H:MM、時1〜2桁+分ちょうど2桁)のコロンは、記号が不可避な実例
-# (数値表記)としてGateの検出対象から除外する(TTS-SYMBOL-NORMALIZATION-
+# (数値表記)としてGateのSTOP対象から除外する(TTS-SYMBOL-NORMALIZATION-
 # ALL-FAMILY-PRODUCTION-WIRING-01 修正1回目、2026-09-27。Family X Hormuz
 # "11:04 a.m."がRESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOLで誤ってSTOPしていた
 # 実例に対応)。前後が数字でないことを要求する既存Normalizer
@@ -997,13 +1003,19 @@ _RESIDUAL_PLACEHOLDER_RE = re.compile(r"[〜～]|(?:…+|\.{3,})|[:;：;；]")
 # 分がちょうど2桁であることを要求するため、比率表記("3:1")・聖書引用等
 # への一般化は行わない(単桁の分はこの許容から自然に外れる)。後続の
 # a.m./p.m./AM/PM等の有無はコロン自体の正当性判定には影響しない。
-_TIME_HMM_COLON_RE = re.compile(r"(?<!\d)\d{1,2}(:)\d{2}(?!\d)")
+# 修正2回目(2026-09-27、Opus L2所見SF-2): 全角コロン「：」・全角数字
+# 「０-９」にも対応する(日本語本文で全角表記の時刻が使われた場合の
+# 誤STOPを避ける、`_JA_COLON_SEMICOLON_RE`の除外条件[数字直前直後、
+# 半角/全角とも]と定義を一致させる)。
+_TIME_HMM_COLON_RE = re.compile(
+    r"(?<![0-9０-９])[0-9０-９]{1,2}([:：])[0-9０-９]{2}(?![0-9０-９])"
+)
 
 
 def _time_hmm_colon_offsets(text: str) -> set:
-    """text中で時刻表記(H:MM)の一部と判定できるコロンの文字位置(offset)
-    集合を返す(detect_prohibited_symbolsのRESIDUAL_PLACEHOLDER判定から
-    除外するために使う)。"""
+    """text中で時刻表記(H:MM、半角/全角とも)の一部と判定できるコロンの
+    文字位置(offset)集合を返す(detect_prohibited_symbolsのRESIDUAL_
+    PLACEHOLDER判定から除外するために使う)。"""
     return {m.start(1) for m in _TIME_HMM_COLON_RE.finditer(text or "")}
 
 
@@ -1044,10 +1056,15 @@ def detect_prohibited_symbols(text: str, language: str) -> list:
                           "reason": f"絵文字/装飾記号が本文に残っています: {ch!r}"})
     _time_colon_offsets = _time_hmm_colon_offsets(text)
     for m in _RESIDUAL_PLACEHOLDER_RE.finditer(text):
-        if m.group(0) == ":" and m.start() in _time_colon_offsets:
-            # 時刻表記(H:MM)のコロンは数値表記として無変換のまま許容する
-            # (Normalizer側も同じ理由で既に変換対象外、上記_TIME_HMM_
-            # COLON_RE参照)。
+        if m.group(0) in (":", "：") and m.start() in _time_colon_offsets:
+            # 時刻表記(H:MM、半角/全角とも)のコロンは数値表記として無変換
+            # のまま許容する(Normalizer側も同じ理由で既に変換対象外、上記
+            # _TIME_HMM_COLON_RE参照)。STOPはしないが、observe専用
+            # カテゴリとして記録は残す(修正2回目、Opus L2所見SF-3。
+            # symbol_gate_requires_stop()はこのカテゴリをブロックしない)。
+            findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_TIME_COLON_OBSERVE,
+                              "reason": f"時刻表記のコロンとして許容されています"
+                                        f"(observe専用、ブロックしません): {m.group(0)!r}"})
             continue
         findings.append({"token": m.group(0), "category": SYMBOL_CATEGORY_RESIDUAL_PLACEHOLDER,
                           "reason": f"未変換のplaceholder/ポーズ記号が残っています: {m.group(0)!r}。"
@@ -1070,10 +1087,19 @@ def build_symbol_violation_prompt_note(findings: list) -> str:
     """Writer出力直後のValidator(Layer 2)が検出結果を、既存のmust-fix/
     Diagnostic Full Retryプロンプトへ追記するNG理由ブロックへ整形する
     共通ヘルパー(Family A本文Writer・Family X ja_writer等、複数Writerで
-    再利用する。呼び出し側固有のフォーマットは持たない)。"""
+    再利用する。呼び出し側固有のフォーマットは持たない)。
+
+    STOP対象カテゴリ(_SYMBOL_STOP_CATEGORIES)のみを列挙する(修正2回目、
+    2026-09-27、Opus L2所見SF-3)。NUMERIC_SYMBOL_OBSERVE(英語の%$¥)・
+    TIME_COLON_ALLOWED_OBSERVE(時刻表記コロン)はobserve専用でありWriterに
+    「直せ」と誤って伝えないよう、ここでは除外する(呼び出し側は通常
+    symbol_gate_requires_stop()がTrueの場合のみ本関数を呼ぶため、observe
+    のみでこの関数が呼ばれる想定はないが、フィルタは独立して安全側に
+    倒す)。"""
+    stop_findings = [f for f in (findings or []) if f.get("category") in _SYMBOL_STOP_CATEGORIES]
     lines = ["【音声化できない記号が検出されました(必ず解消してください)】",
               "以下の記号が本文に残っています。音声(TTS)で読み上げられないため、"
               "該当箇所を記号を使わない自然な文章へ書き直してください。"]
-    for i, f in enumerate(findings or [], start=1):
+    for i, f in enumerate(stop_findings, start=1):
         lines.append(f"{i}. {f.get('category')}: {f.get('token')!r} — {f.get('reason')}")
     return "\n".join(lines)

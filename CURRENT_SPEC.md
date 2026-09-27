@@ -1626,7 +1626,36 @@ Validation Gate/Human Review Lockへ合流)の3層(実質4層)構成とする。
   の記述」注記および`OPEN_ITEMS.md` OPEN-117参照、旧記述は上書きせず残す)。
 - 「…」「……」: 文末相当なら句点「。」、それ以外は読点「、」へ変換する。
 - コロン「:」「：」・セミコロン「;」「；」: 句点へ変換する(数字直前直後は
-  対象外、時刻表記等を保護)。
+  対象外、時刻表記等を保護)。**2026-09-27追記(修正1回目、`TTS-SYMBOL-
+  NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`)**: 時刻表記(H:MM、時
+  1〜2桁+分ちょうど2桁、後続のa.m./p.m./AM/PM等の有無は不問)のコロンは
+  数値表記として無変換のまま許容し、TTS直前の残存記号Gate(Layer 4、
+  `detect_prohibited_symbols`)も同じ条件でこれをSTOP対象として検出しない
+  (Family X Hormuz`full_story_part2`の"11:04 a.m."が誤ってSTOPしていた
+  実例に対応)。比率表記("3:1"等、分がちょうど2桁ではない表記)への一般化
+  は行わない(比率表記は分が単桁になりがちなため対象外になりやすいが、
+  分がちょうど2桁の比率表記[例:"1:20"]は許容対象に含まれてしまう。厳密に
+  比率表記そのものを判別しているわけではない)。**2026-09-27追記(修正2回目、
+  同管理ID、Opus L2所見反映)**: (1) 上記の時刻表記コロン許容は全角コロン
+  「：」・全角数字にも対応する(`_JA_COLON_SEMICOLON_RE`の数字直前直後
+  除外条件[半角/全角とも]と定義を一致させた)。(2) 許容したコロンはSTOPし
+  ないが、Gateの検出結果には`TIME_COLON_ALLOWED_OBSERVE`というobserve
+  専用カテゴリとして記録を残す(`symbol_gate_requires_stop()`はこの
+  カテゴリをブロックしない)。(3) Writer出力直後のValidator(Layer 2)が
+  NG理由をPromptへ追記する`build_symbol_violation_prompt_note()`は、
+  STOP対象カテゴリのみを列挙するようフィルタし、英語%/$/¥の既存observe
+  (`NUMERIC_SYMBOL_OBSERVE`)・上記時刻コロンobserveのいずれも、Writerへ
+  「直せ」と誤って伝えないようにした。(4) JA側Layer 1 Prompt
+  (`er019_family_x_ja_writer_o_r1_r2_01.SYMBOL_PREVENTION_BLOCK_JA`)へ
+  「時刻は『午前11時4分』のように日本語で書く(数字とコロンの記号表記は
+  使わない)」を明記し、EN側Layer 1 Prompt
+  (`er003_v1_n3_01_articles_generate.py`のコロン禁止文)へ「時刻表記の
+  コロンは例外的に使ってよい」を明記して、Prompt指示と実際の
+  Normalizer/Gate仕様の不一致を解消した。JA本文はcanonical text自体が
+  時刻を日本語表記で書く前提のため、JA側Normalizer/GateにEN同様の時刻
+  コロン許容を新設する対応(SF-1(b))は不採用とした(JA本文でH:MM表記が
+  生成されること自体をPromptで防ぐ方針、詳細`DECISION_LOG.md`同管理ID
+  エントリ参照)。
 - 英語%/$/¥: Writer Prompt予防のみ(自然語[percent/dollars等]での表記を
   指示)。Validatorは検出・ログのみで生成を止めない(既存retry予算を消費
   しない)。

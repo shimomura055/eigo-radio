@@ -9818,14 +9818,50 @@ OPEN-166: 本記事固有のfreshness問題は本タスクで解消(新Ledger・
   既存の共有安全モジュール(`er003_audio_tts_asr_safety.py`)内に配置し、
   未承認Trial仕様への参照は作っていない。Family C Layer 2の意図的未実装は
   dangling referenceではない(元々そのretryループを持たないため)。
+- **修正1回目(2026-09-27、commit`9bc458d0`)**: TTS呼び出し直前の残存記号
+  Gate(`detect_prohibited_symbols`内`_RESIDUAL_PLACEHOLDER_RE`)が、
+  Normalizer(`normalize_colon_semicolon_pause_en/_ja`)が既に前後数字を
+  除外して無変換のまま許容していた時刻表記(H:MM)のコロンを、無条件に
+  `RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`として誤ってSTOPしていた実装穴
+  (Family X Hormuz`full_story_part2`"11:04 a.m."の実例)を是正した。
+  新規`_TIME_HMM_COLON_RE`/`_time_hmm_colon_offsets()`により、時刻表記
+  コロンをGateのSTOP判定から除外する(分類: 既存仕様の実装範囲の穴、
+  新規一般化ルールの新設ではない)。比率表記("3:1"等)への一般化はしない。
+  テスト4件追加、既存96件含め100 tests OK。
+- **修正2回目(2026-09-27、ユーザー承認、Opus L2所見反映)**: (1) SF-2:
+  上記の時刻表記コロン許容を全角コロン「：」・全角数字にも拡張(既存
+  `_JA_COLON_SEMICOLON_RE`の除外条件と定義を一致)。(2) SF-3: 許容した
+  コロンは新規observe専用カテゴリ`TIME_COLON_ALLOWED_OBSERVE`として記録
+  を残す(`_SYMBOL_STOP_CATEGORIES`には含めずSTOPしない)。あわせて
+  `build_symbol_violation_prompt_note()`をSTOP対象カテゴリのみ列挙する
+  よう修正し、既存の英語%/$/¥ observe(`NUMERIC_SYMBOL_OBSERVE`)・上記
+  時刻コロンobserveのいずれも、Writerへ「直せ」と誤って伝えないよう
+  フィルタした。(3) N-3: EN Layer 1 Prompt(`er003_v1_n3_01_articles_
+  generate.py`)のコロン禁止文へ「時刻表記のコロンは例外的に使ってよい」
+  を明記、JA Layer 1 Prompt(`er019_family_x_ja_writer_o_r1_r2_01.
+  SYMBOL_PREVENTION_BLOCK_JA`)へ「時刻は『午前11時4分』のように日本語で
+  書く(数字とコロンの記号表記は使わない)」を明記し、Prompt指示と実際の
+  Normalizer/Gate仕様の不一致を解消した。**SF-1(b)(er007 ASR側にH:MM
+  等価判定を追加する案)はユーザー承認により不採用**(JA本文はPromptで
+  時刻の記号表記自体を防ぐ方針を優先し、ASR側の新規等価判定機構は追加
+  しない)。テスト5件追加(全角時刻表記2件・全角非時刻コロンSTOP維持1件・
+  observe記録・prompt note filter各1件)、既存分含め104 tests OK(同一
+  結果を2回実行し決定論性を確認)。全Family Layer 2/4呼び出し元の既存
+  unit test(`er003_test_v1_n3_01_tts_generate.py`21件・
+  `er019_family_x_ja_writer_o_r1_r2_01_test_01.py`8件・
+  `er011_point_role_planning_focus_connection_trial_04_test_01.py`6件)
+  実行、無回帰。実TTS/実ASR APIを呼び出す`er024_..._fixtures.py`は本
+  修正の制約(¥0)により実行していない。
 - 反映範囲: `CURRENT_SPEC.md`(「TTS記号正規化(全Family共通)」節新設、
   OPEN-117関連の旧記述[文頭・読点直後限定]は上書きせず「拡張前の記述」
-  として残置)・`OPEN_ITEMS.md`(OPEN-117・OPEN-118へ拡張済み追記、
-  OPEN-183備考7、新規OPEN-191〜194)・`docs/pm/REPORT_LEDGER.md`。
+  として残置。修正1・2回目の追記込み)・`OPEN_ITEMS.md`(OPEN-117・
+  OPEN-118へ拡張済み追記、OPEN-183備考7、新規OPEN-191〜194、OPEN-194へ
+  修正1・2回目実施の1行追記)・`docs/pm/REPORT_LEDGER.md`。
 - 根拠レポート: `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01_
-  REPORT.md`(§0〜§11、Phase 3で§11追記)、`docs/pm/recon_tts_symbol_
-  normalization_01.md`。
-- commit: Phase 2=`19e638b5`、Phase 3(本SSOT反映)=本コミット。
+  REPORT.md`(§0〜§13、Phase 3で§11追記、修正1回目=§12、修正2回目=§13)、
+  `docs/pm/recon_tts_symbol_normalization_01.md`。
+- commit: Phase 2=`19e638b5`、Phase 3(本SSOT反映)=`2b11e0bb`、
+  修正1回目=`9bc458d0`、修正2回目(本SSOT反映込み)=本コミット。
 
 ## PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27: Family A/B/CをLegacy/Backup化、Active Production FamilyをX/Y/Zへ移行(2026-09-27)
 

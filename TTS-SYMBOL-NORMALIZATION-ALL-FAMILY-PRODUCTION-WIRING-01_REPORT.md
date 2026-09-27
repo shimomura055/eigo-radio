@@ -473,3 +473,69 @@ REPORT追記のみが範囲のため、SSOT本体は編集していない)。
 本修正はコード・テスト・fixtureのみであり、Family X Hormuz
 `full_story_part2`(A2/B1B)の実際の再TTS実行は、本修正commit後の
 **別委任**で実施する(本タスクの範囲外、¥0を維持)。
+
+## §13 修正2回目(2026-09-27、ユーザー承認済みOpus L2所見反映)
+
+管理ID: `TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01`
+修正2回目。¥0(TTS/LLM API呼び出しなし)。
+
+### Opus L2所見との照合表
+
+| 項目 | 対応区分 | 内容/理由 |
+|---|---|---|
+| SF-1(a) | 対応 | JA Layer 1 Prompt(`er019_family_x_ja_writer_o_r1_r2_01.SYMBOL_PREVENTION_BLOCK_JA`)へ「時刻は『午前11時4分』のように日本語で書く(数字とコロンの記号表記は使わない)」を追記。Family A側のJA Promptは存在しない(Family Aは英語のみを生成、`コロン`grep全件確認済み)ため同種対応は不要。 |
+| SF-1(b) | **不採用** | er007 ASR側にH:MM等価判定を追加する案。ユーザー承認により不採用。理由: JA本文はPromptで時刻の記号表記(H:MM)自体の生成を防ぐ方針を優先し、ASR側に新規の等価判定機構(既存retry/fallbackとは別種の判定ロジック)を追加すると、既存の安全機構の外側に独自拡張を積み増すことになるため。 |
+| SF-2 | 対応 | `_TIME_HMM_COLON_RE`を全角コロン「：」・全角数字にも対応(`[0-9０-９]{1,2}([:：])[0-9０-９]{2}`へ拡張)。Gate内判定を`m.group(0) in (":", "：")`へ変更。既存`_JA_COLON_SEMICOLON_RE`の数字直前直後除外条件(半角/全角とも)と定義が一致することを確認済み(どちらも`[0-9０-９]`を除外対象とする)。fixtureへ全角ケース2件追加。 |
+| SF-3 | 対応 | 新規observe専用カテゴリ`SYMBOL_CATEGORY_TIME_COLON_OBSERVE`(`"TIME_COLON_ALLOWED_OBSERVE"`)を新設し、`_SYMBOL_STOP_CATEGORIES`には含めない(`symbol_gate_requires_stop()`はブロックしない)。あわせて`build_symbol_violation_prompt_note()`をSTOP対象カテゴリのみ列挙するようフィルタし、既存の英語%/$/¥ observe(`NUMERIC_SYMBOL_OBSERVE`)・今回追加の時刻コロンobserveのいずれも、Writerへの指摘文(must-fix/Diagnostic Full Retry prompt追記)に混入しないことを確認(fixture追加)。既存呼び出し元(Layer 2: `er003_v1_n3_01_articles_generate`/`er019_family_x_ja_writer_o_r1_r2_01`/`er003_v1_n3_01_scaffold_generate`、Layer 4: `er003_v1_repro01_main_generate`/`er003_v1_n3_01_tts_generate`/`er003_v1_sing01_*`)はいずれも`symbol_gate_requires_stop()`経由でSTOP判定しており、observe findingがSTOP判定へ混入する経路は元々ない(コード確認済み、11ファイル全件grep)。 |
+| N-3 | 対応 | EN Layer 1 Prompt(`er003_v1_n3_01_articles_generate.py`181行付近、コロン禁止文)へ「例外: "11:04 a.m."のような時刻表記のコロンは使ってよい」を追記。JA Layer 1 Prompt(SF-1(a)で対応済み)は「時刻は日本語で書く」方向で整合させたため、EN側とは表現の方向性が異なる(EN=記号表記のまま許容、JA=記号表記自体を使わせない)。これはNormalizer/Gateの実装(EN=H:MM許容、JAはPromptで防ぐためGate側の扱いは変更不要)と整合する。 |
+| N-4(iv) | 対応(補正) | REPORT §12の「比率表記は自然に対象外」という表現は、分がちょうど2桁の比率表記(例:"1:20")には該当せず実態より強い表現だったため、`CURRENT_SPEC.md`の追記文で「分がちょうど2桁の比率表記は許容対象に含まれてしまう。厳密に比率表記そのものを判別しているわけではない」と補正した。 |
+| N-1 | 対応(小) | `CURRENT_SPEC.md`追記文・本§13照合表の記述により、時刻表記コロンとそれ以外の区別・非時刻コロンは引き続き人手確認(STOP)対象であることを明示した(STOP理由文そのものの追加変更はしていない、既存`RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL`のreason文で足りると判断)。 |
+
+### diff要約
+
+- `er003_audio_tts_asr_safety.py`: `SYMBOL_CATEGORY_TIME_COLON_OBSERVE`新設、
+  `_TIME_HMM_COLON_RE`の全角対応、`detect_prohibited_symbols()`の時刻コロン
+  分岐をobserve finding追加へ変更(`continue`のみ→finding追加+`continue`)、
+  `build_symbol_violation_prompt_note()`をSTOP対象カテゴリのみへフィルタ。
+- `er003_v1_n3_01_articles_generate.py`: EN Layer 1 Promptのコロン禁止文へ
+  時刻表記例外を追記(1行)。
+- `er019_family_x_ja_writer_o_r1_r2_01.py`: `SYMBOL_PREVENTION_BLOCK_JA`へ
+  時刻の日本語表記指示を追記(1項目)。
+
+### test結果
+
+`.venv/Scripts/python.exe -m unittest er003_test_audio_tts_asr_safety`:
+**104 tests, OK**(修正1回目時点の100件+新規5件[全角時刻ja/全角混在en/
+全角非時刻コロンSTOP維持/observe記録2件更新+prompt note filter1件]、
+既存分すべて無回帰)。同一コマンドを2回実行し同一結果であることを確認
+(決定論性、API呼び出しなし)。
+
+全Family Layer 2/4呼び出し元の既存unit test実行結果(いずれもOK、無回帰):
+`er003_test_v1_n3_01_tts_generate.py`(21 tests)・
+`er019_family_x_ja_writer_o_r1_r2_01_test_01.py`(8 tests)・
+`er011_point_role_planning_focus_connection_trial_04_test_01.py`(6 tests)。
+`import er003_audio_tts_asr_safety, er019_family_x_ja_writer_o_r1_r2_01,
+er003_v1_n3_01_articles_generate, er003_v1_repro01_main_generate,
+er003_v1_n3_01_scaffold_generate, er003_v1_sing01_point_headings_aoede,
+er003_v1_sing01_news_tail_fix, er003_v1_sing01_voice01_generate`が
+無エラーで完了することを確認(未修正の他Layer 2/4呼び出し元ファイルの
+import連鎖に破壊的変更がないことの確認)。`er024_tts_symbol_
+normalization_all_family_production_wiring_01_fixtures.py`(実TTS/実ASR
+API使用)は本委任の制約(¥0)により**実行していない**。
+
+### SSOT反映箇所
+
+- `CURRENT_SPEC.md`「TTS記号正規化(全Family共通)」節、コロン/セミコロン
+  行へ2026-09-27追記(修正1回目・修正2回目、Opus L2所見反映)。
+- `DECISION_LOG.md``TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-
+  WIRING-01`エントリへ「修正1回目」「修正2回目」ブロック追加(SF-1(b)
+  不採用を明記)、反映範囲・根拠レポート・commit行を更新。
+- `OPEN_ITEMS.md` OPEN-194行へ1行追記(修正1・2回目実施の記録)。
+- `OPEN_ITEMS.md`への新規項目登録は行っていない(既存項目への追記のみ)。
+
+### 残課題
+
+- Family X Hormuz`full_story_part2`(A2/B1B)の実際の再TTS実行は、
+  読み解決resolver関連の並走委任(Phase 2)のcommit後に別委任で実施する
+  (本タスクの範囲外、¥0を維持、§12から引き続き未実施)。
+- SF-1(b)(ASR側H:MM等価判定)は不採用が確定したため、以後の追跡は不要。
