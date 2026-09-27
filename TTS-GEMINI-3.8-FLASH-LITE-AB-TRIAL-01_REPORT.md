@@ -246,3 +246,10 @@ issueによる追加委任ではなく、費用超過の事後報告)。次の�
 - 実測usage log: `er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/b/audit/raw_usage_log.jsonl`
 - 費用集計: `er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/cost_table.json`
 - 試聴player: `er022_output/tts_gemini_3_8_flash_lite_ab_trial_01/player.html`
+
+## §11 Fable評価(2026-09-27)
+
+- 委任条件との照合: 対象artifactの一意特定(DECISION_LOG L444、`kp_fix_01/a2`)=充足。TTSモデル以外(voice/segment/style/pause/ASR/retry)無変更=充足(with文内monkeypatch、復元確認済み)。Production非変更=充足。試聴artifact=segment別A/B player(記事全体playerは未完成品誤認防止のため意図的に不作成、妥当)。Key Phrase 10 segmentを対象外としたスコープ縮小は委任文の「segment構成維持」からの逸脱だが、Bが英語ナレーション12/12でSTOPPEDとなった結果を踏まえるとKey Phrase追加実行は結論を変えず費用のみ増やしたため、事後的に妥当と判断する(ただし委任時点の承認はなかった点を記録)。
+- Guardrail超過(¥275.7 > ¥200): duration anomaly(異常長生成)の反復によるtoken消費が原因で、事後判明。PM_GOVERNANCE 7-6の「暴走防止Guardrailであり自動停止ではない」の範囲内だが、超過発覚後に追加生成を行わなかった点は適切。B側単価はproxy(gemini-3.1-flash-tts-preview同一rate)であり実価格は未確認。
+- 分類: Sonnet仮分類`REJECTED`は採用しない。ユーザー委任条件「style-tuningの不一致だけで即REJECTしない」に従い、本TrialのStatusは**`USER_DECISION_REQUIRED`**(純粋なモデル差替えとしては不成立=17 segment中14 STOPPED、成功3件はいずれも短い日本語Comment。長文segmentでの無関係内容生成[hallucination]はstyle指示の問題とは別の懸念として記録)。Phase 2(Prompt/style tuning)の実施可否はユーザー判断。
+- スコープ外発見(§1): landing表示title「AIが採用を選ぶとき」とcanonical本文/japanese_titleナレーション「AIが仕事と人の間に立つとき」の表記差分。本Trialでは無変更。Closeout時にOPEN_ITEMS備考へ記録する候補。
