@@ -545,10 +545,245 @@ reasons:
 
 ---
 
+## 15. 追加評価run(既存user_test 2026-09-18 3記事×A2/B1、ユーザー指定2026-09-27)
+
+ユーザー指定により、新規記事生成(§6のテーマ候補は未生成のまま)では
+なく、`user_test/articles_2026_0918.html`に既に掲載中の3記事×A2/B1=
+6本文へ、確定版Trial-03方式(`er028_key_phrase_db_hybrid_trial_03_run.py`/
+`_stage1.py`、**無変更**)を適用した。新規orchestration
+`er028_key_phrase_db_hybrid_trial_03_run_02_user_test_0918.py`を追加し、
+対象記事リストの差し替えと出力先変更のみを行った(確定版ルール自体は
+一切変更していない)。記事側artifact(article.md等)は一切書き換えて
+いない(read-onlyで読むだけ)。
+
+### 15-1. パス特定根拠
+
+`user_test/articles_2026_0918.html`のbtn-std/btn-adv hrefの`src`
+クエリパラメータ(URLデコード後)が指すディレクトリを機械的に特定した。
+
+| 記事 | レベル | article本文パス | 既存Production公開KP出典 |
+|---|---|---|---|
+| Why We Wake Before the Alarm(なぜ目覚まし前に目が覚める？) | A2 | `er011_output/discovery_generalization_wake_before_alarm_trial_12/a2/article.md` | `.../a2/key_phrases/keywords_canonicalized.json` |
+| 同上 | B1 | `er011_output/discovery_generalization_wake_before_alarm_trial_12/b1b/article.md` | `.../b1b/key_phrases/keywords_canonicalized.json` |
+| When AI Helps Choose Who Gets Hired(AIが採用を選ぶとき) | A2 | `er012_output/user_test_voices_a2_minimal_01/ai_hiring_3v_a2/a2/article.md` | `.../a2/key_phrases/keywords_canonicalized.json` |
+| 同上 | B1 | `er012_output/editorial_b_voices_3v_audio_trial_01/b1b/article.md` | `.../b1b/key_phrases/keywords_canonicalized.json` |
+| Digital Twins: A Copy of the Real World(デジタルツインとは何か) | A2 | `er013_output/family_c_episode_trial_12/twins_a2/article_normalized.txt` | `.../twins_a2/key_phrases/keywords_canonicalized.json` |
+| 同上 | B1 | `er013_output/family_c_episode_trial_12/twins_b1/article_normalized.txt` | `.../twins_b1/key_phrases/keywords_canonicalized.json` |
+
+**Topic見出し再利用に関する既存artifactの制約(Family C)**: Family A/B
+(wake/aihiring)の記事は`article.md`のH1見出し行が既存Writer成果物として
+存在し、`extract_article_title`をそのまま無変更で使えた。Family C
+(twins)は物語形式のため`article.md`自体が存在せず(`article_normalized.txt`
+のみ)、H1見出しに相当する既存artifactが無い。本runでは、`article.md`
+H1見出し再利用と同じ「既存の公開artifactを新しいLLM callなしに再利用
+する」という設計方針を維持したまま、既にユーザーが指定した公開ページ
+(`user_test/articles_2026_0918.html`)自身が持つ公開英語タイトル
+(`en=Digital+Twins`。`er013_output/.../twins_a2/player.html`のh1表記
+とも一致)をTopicとして再利用した。これは記事側artifactの変更を伴わない
+read-only運用だが、確定版方式が前提としていたFamily A/B固有の
+「article.md H1」という入力形式そのものはFamily Cには存在しない、
+という制約はここに明記する。
+
+### 15-2. 実行結果サマリ(6本文、実API呼び出し)
+
+| article | word数(概算) | shortlist | hybrid3 status | 選定5件 vs 既存Production KP 一致数 |
+|---|---:|---:|---|---:|
+| wake_a2 | 328 | 20 | PASS | 0/5 |
+| wake_b1b | 395 | 20 | PASS | 2/5 |
+| aihiring_a2 | 612 | 20 | PASS | 1/5 |
+| aihiring_b1 | 535 | 20 | PASS | 1/5 |
+| twins_a2 | 380 | 20 | **INVALID** | (参考、構造的に無効な応答内の一致数)2/5 |
+| twins_b1 | 477 | 20 | PASS | 3/5 |
+
+全記事で`assert_no_full_article_body`(article全文非送信assertion)は
+例外なく通過した。stop_conditions(§4相当のユーザー例示語チェック・
+shortlist超過チェック)は全記事で該当なし。
+
+**選定5件(確定、全文はJSON参照)**:
+
+- wake_a2: sleep stage(technical_term)/hormone(word)/conscious(word)/
+  feel like(idiom)/gradual(word)
+- wake_b1b: body clock(noun_phrase)/keep time(collocation)/as if(idiom)/
+  heart rate(noun_phrase)/ring(word)
+- aihiring_a2: answer for(phrasal_verb)/give notice(idiom)/go through
+  (phrasal_verb)/fairness check(noun_phrase)/fair chance(noun_phrase)
+- aihiring_b1: answer for(phrasal_verb)/pass through(phrasal_verb)/
+  be screened(word)/fairness check(noun_phrase)/fair chance(noun_phrase)
+- twins_a2(INVALID、参考): digital twin(technical_term)/take over
+  (phrasal_verb)/repair office(noun_phrase)/open the door(idiom)/
+  sit up(phrasal_verb)
+- twins_b1: digital twin(noun_phrase)/take over(phrasal_verb)/audition
+  (word)/pretend(word)/be moved into(phrasal_verb)
+
+既知bug A〜E(discontinuous phrasal verb false positive、Wiktionary
+multiword粗さ、possessive noise、important noun phrase過剰除外、
+finite auxiliary hard requirement)の再発は、6本文全shortlistを
+目視確認した範囲では**確認されなかった**(`'s`/`s'`残存なし、
+`even though`/`other side`/`other end`類の混入なし、`X in`/`Y out`型の
+discontinuous phrasal verb false positiveなし)。
+
+### 15-3. twins_a2がINVALIDになった原因(新規discovery、bug A〜Eとは別カテゴリ)
+
+Trial-03確定版6本文では発生しなかった、**新しい構造的limitation**を
+本runで発見した。twins_a2のitem 5(`sit up`)がvalidator(Production側
+`validate_min_unit_selection`、無変更)から
+`source_sentenceがB2本文に存在しない`で却下された。原因は、Stage 1の
+文単位分割(`attach_compact_context`が内部で使うsentence segmentation)
+が、短い引用文が連続する会話文(例: `"You asked me to wake you."
+"I did not." "You did not remember asking." Mara sat up.`という4文が
+連続する箇所)を**1個のsentence unit(S6)へ結合してしまう**ことに
+ある(実際のSENTENCE REFERENCE出力: `S6: ""You asked me to wake you."
+"I did not." "You did not remember asking." Mara sat up"`)。モデルは
+このS6をsource_sentenceとしてそのまま使う設計どおりの挙動をしたが、
+結果としてvalidatorが期待する「本文中に実在する1文」との照合に失敗した。
+
+これはFamily X(ニュース系記事、宣言文中心)では起きなかった問題で、
+Family C(会話文が多い物語ジャンル)特有の入力特性によって初めて表面化
+した。ユーザー指示により本runでは`er028_key_phrase_db_hybrid_trial_03_*`
+(stage1のsentence segmentation含む)を無変更としているため、**修正は
+行っていない**。また、本Trial設計は`max_attempts=1`(Production既定の
+`MAX_PRODUCTION_RETRY_ATTEMPTS=2`を意図的に使っていない、§3-E既述)で
+あるため、Production同等のretryが1回発生していれば同じ入力でも
+別の結果になった可能性があるが、これは検証していない。
+
+### 15-4. important termの機械screening漏れ(新規discovery、wake_a2)
+
+wake_a2の既存Production公開KP5件(`grogginess`/`self-awakening`/
+`count as success`/`slow build-up`/`inner timekeeper`)は、本run6本文中
+最も一致数が低かった(0/5)。shortlist・stage1_debugを確認したところ、
+`self-awakening`/`grogginess`はStage 1のcandidate一覧に**一切出現して
+いない**(除外ログにも無い、候補生成の時点で存在しない)。原因を
+コード読解で特定した:
+
+- Wiktionary multiword targeted lookup(`select_unmatched_ngram_candidates_for_lookup`、
+  `er027_key_phrase_db_hybrid_trial_02_stage1.py` 579行目)は
+  `min_n=2, max_n=3`に限定されており、**1-gram(単語1個)の候補は
+  そもそもWiktionary照合の対象外**である。
+- word候補(`word_survivors`)はCEFR-J・NGSLとのDB一致が必要
+  (実際のshortlistのevidence欄は`cefr_j`/`ngsl_family`のみ)。
+  `grogginess`(基本語彙リストに無い派生名詞)・`self-awakening`
+  (ハイフンで1トークン化される専門複合語)はいずれもCEFR-J/NGSLの
+  基本語彙には含まれないため、word_survivorsにも入らない。
+- 結果として、**CEFR-J/NGSLに無く、かつ2〜3-gramのWiktionary照合にも
+  掛からない「レアな単語1個」は、DB-anchored screening全体で候補にすら
+  ならない**という構造的な穴がある。これは`count as success`/
+  `slow build-up`(2〜3語の記事固有collocation、既存辞書に載っていない
+  ためWiktionary照合でもヒットしない)という既存の既知limitation
+  (§7・§12-1、「候補一覧内からのみ選ぶ制約下でモデルが新しい
+  collocationを作れない」)と同じ根本原因の**単語1個版**であり、
+  全く新しいバグではなく、既知limitationの適用範囲が「phrase」だけで
+  なく「rare single word」にも及ぶことを示す新しい実データ根拠である。
+
+なお、Strategy L自身は候補一覧内から最善を尽くし(sleep stage/hormone/
+conscious/feel like/gradual)、structural gateはPASSしている。「悪い
+選定」ではなく「元のProduction選定が持っていた語彙的な鋭さ(rare/
+technical single wordの選定)を、DB screening経由では再現できなかった」
+という質的な後退である。
+
+### 15-5. 新規discovery(参考、影響は限定的): dialogue tag false positive
+
+twins_a2/twins_b1のshortlistには、`Echo said`(occ 2/5)・`Mara said`
+(occ 3)が`repeated_compound_noun`根拠でimportant_noun_phrase候補として
+出現した(会話タグ「固有名詞+said」の繰り返しを、名詞句の繰り返しと
+機械的に誤検出したものと推測される。固有名詞はCEFR-J品詞情報を持たず、
+不規則過去形`said`も表層形のままではCEFR-J照合に掛からないため、
+品詞妥当性チェックが「情報不足→許容」側にデフォルトした可能性が高い)。
+ただし、Strategy L自身はいずれの回もこれを最終5件に選ばず(§15-2の
+選定5件参照)、**今回の実行結果には実害が出ていない**。screening層の
+精度課題として記録するに留め、修正は行っていない。
+
+### 15-6. cost分解(6本文、Family X 6本文[§9]との比較)
+
+| article | word数(概算) | input | output | reasoning | cost(¥) | latency(秒) |
+|---|---:|---:|---:|---:|---:|---:|
+| wake_a2 | 328 | 2,312 | 5,211 | 3,926 | 1.0745 | 53.27 |
+| wake_b1b | 395 | 2,424 | 4,607 | 3,361 | 0.9621 | 47.30 |
+| aihiring_a2 | 612 | 2,333 | 3,350 | 2,070 | 0.7179 | 31.68 |
+| aihiring_b1 | 535 | 2,393 | 4,952 | 3,624 | 1.0274 | 46.34 |
+| twins_a2 | 380 | 2,351 | 5,414 | 4,142 | 1.1147 | 52.71 |
+| twins_b1 | 477 | 2,319 | 5,209 | 3,921 | 1.0743 | 53.75 |
+| **合計/平均** | **平均454** | **平均2,355** | **平均4,791** | **平均3,507** | **合計¥5.9709/平均¥0.9952** | 平均47.51 |
+
+比較対象(§9): 現行Production baseline平均¥1.2228/call、Trial-02
+Hybrid平均¥1.2083/call、Trial-03(Family X 6本文、平均300〜400語)
+平均¥1.1084/call。本run(平均454語、baselineより長い記事を含む)の
+平均¥0.9952/callは、Trial-03(Family X)自身よりも**さらに低い**。
+記事が長くなってもinput tokenがほぼ一定(2,312〜2,424、Family Xの
+平均2,406とほぼ同水準)であることを確認した。これは§9・§12-2で
+「未検証」としていた「長い記事でのinput token削減効果」に対する
+一次的な回答になる: SENTENCE REFERENCEが「候補が言及する文のみ」を
+参照する設計のため、**記事本文が長くなっても、prompt本体のサイズは
+記事全体の長さに比例して増えない**(aihiring_a2は612語で全6本文中
+最長だが、input tokenは平均的、costはむしろ最安の¥0.7179)。ただし
+これは今回の6本文(328〜612語)の範囲内での観測であり、極端に長い
+記事(1000語超等)での検証ではない。
+
+実API支出はGuardrail(¥60)・STOP閾値(¥50)のいずれにも達していない
+(実測合計¥5.9709)。
+
+### 15-7. STOP条件チェック(§9の8項目、本runへの適用)
+
+| STOP条件 | 該当有無 | 根拠 |
+|---|---|---|
+| article全文を渡さないと品質維持不能 | 非該当 | 5/6本文がstructural PASS。twins_a2のINVALIDはsentence segmentation起因(§15-3)であり、全文送信でしか解決できない性質のものではない |
+| 追加LLM callが必要 | 非該当 | 1本文1 call厳守(§15-6) |
+| costが現行より明確に高いまま | 非該当 | 平均¥0.9952/call、baseline・Trial-02 Hybrid・Trial-03いずれよりも低い |
+| important termが機械screeningで落ちる | **該当の可能性あり(wake_a2)** | §15-4。rare single word(grogginess/self-awakening)がDB screening全体で候補にすら入らない構造的な穴を実データで確認した。他5本文では大きな問題は見えていない |
+| known bug修正で正しいphraseを大量に落とす | 非該当 | bug A〜Eの再発・過剰除外は6本文で確認されなかった(§15-2) |
+| 新しいDBが必要 | **要検討** | §15-4の穴を埋めるには、rare/technical single wordを拾える何らかのDB・ヒューリスティック(例: wordfreq等による低頻度語検出、または1-gramもWiktionary/専門語DBの対象に含める)が必要になる可能性がある。今回のuser指示範囲(新DB探索禁止)を超えるため、Sonnetからは提案のみでSTOPする |
+| Production仕様変更が必要 | 非該当 | Production module無変更 |
+| 既存仕様との衝突 | 非該当 | §0参照 |
+
+### 15-8. Status仮分類(Sonnet仮判定、確定はFable/ユーザー判断)
+
+本runは、Trial-03確定版方式を**新規に選んだ既存記事**(Family A/B
+news-style 4本文+Family C dialogue-heavy fiction 2本文)という、
+確定版REPORT作成時には使っていなかった素材で再検証したものである。
+5/6本文はstructural PASSし、cost(平均¥0.9952/call)はTrial-03自身
+よりも良好で、bug A〜Eの再発もなかった。一方で、確定版REPORTでは
+見えていなかった**2つの新しい構造的limitation**を実データで発見した:
+(1) twins_a2のsentence segmentation起因のINVALID(§15-3、Family C
+特有の会話文入力で発生)、(2) rare single wordがDB screening全体から
+構造的に排除される穴(§15-4、wake_a2で実害[0/5一致、既存の鋭い語彙
+選定の再現失敗]を確認)。
+
+いずれも「Production module自体の欠陥」ではなく「Trial-03のStage 1
+screening設計(er028/er027由来、無変更)がFamily X news-style以外の
+入力(会話体小説・専門語彙が単語1個で完結する解説記事)に対しては
+まだ十分に汎化していない」という設計限界であり、Sonnetは
+**「REJECTED」と断定するほどの失敗ではないが、確定版REPORTの
+`VALIDATED`寄りの仮分類[§11]をそのままFamily横断でProduction採用
+判断に使うのは時期尚早」**と判断する。最終Statusは
+`USER_DECISION_REQUIRED`を提案する(Fable/ユーザーが、(a)Family C
+dialogue-heavy fiction・rare single word中心の記事への適用を許容
+範囲内の既知limitationとして受け入れるか、(b)追加のStage 1修正
+[本runでは実施していない]を要求するかを判断)。**Production配線・
+`APPROVED_FOR_PRODUCTION`化は行っていない。**
+
+### 15-9. 証跡
+
+出力: `er028_output/key_phrase_db_hybrid_trial_03/run_02_user_test_0918/
+<article>/{lightweight_selector_prompt.txt, hybrid3_trial_result.json,
+stage1_debug.json}`、同ディレクトリ直下の`cost.json`
+(実測合計¥5.9709)・`raw_usage_log.jsonl`・`all_articles_stop_conditions.json`。
+実行コマンド: `.venv/Scripts/python.exe
+er028_key_phrase_db_hybrid_trial_03_run_02_user_test_0918.py`。
+unit test再確認: `.venv/Scripts/python.exe -m unittest
+er028_key_phrase_db_hybrid_trial_03_test -v` → 30件、全PASS
+(無変更のまま再確認)。共有ストア(pronunciation ledger/master audio
+store/human_review_queue/telemetry)への書き込みは発生していない
+(実行前後でこれらのファイルのmtimeに変化がないことを確認済み。
+Strategy L呼び出しは`run_production_selection_gate`をvalidatorとして
+使うのみで、ledger等への書き込みAPIを別途呼び出していないため)。
+
+---
+
 ## Status
 
-**Sonnet報告完了、Fable/ユーザー判断待ち**(§11仮分類・§12未解決事項
-参照。最終Status[`VALIDATED`/`REJECTED`/`USER_DECISION_REQUIRED`]の
-確定はFable/ユーザーに委ねる)。
+**Sonnet報告完了、Fable/ユーザー判断待ち**(§11仮分類・§12未解決事項・
+§15[追加評価run、2026-09-27]参照。最終Status
+[`VALIDATED`/`REJECTED`/`USER_DECISION_REQUIRED`]の確定はFable/
+ユーザーに委ねる。Sonnetの仮提案は§15-8の
+`USER_DECISION_REQUIRED`)。
 
 Management-ID: KEY-PHRASE-DB-HYBRID-TRIAL-03
