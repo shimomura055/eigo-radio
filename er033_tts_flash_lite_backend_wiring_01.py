@@ -168,10 +168,12 @@ def make_speech_metadata_call_fn(model_name: str, voice_name: str, client=None,
             config=types.GenerateContentConfig(
                 response_modalities=["AUDIO"],
                 speech_config=types.SpeechConfig(
+                    language_code=common.LANGUAGE_CODE,
                     voice_config=types.VoiceConfig(
                         prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice_name)
                     )
                 ),
+                http_options=types.HttpOptions(timeout=gclient.TTS_TIMEOUT_MS),
             ),
         )
         parts = response.candidates[0].content.parts

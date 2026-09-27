@@ -15,6 +15,8 @@ from unittest import mock
 
 import numpy as np
 
+import er002_common as common
+import er002_gemini_client as gclient
 import er003_b1_p4c_audio as p4c
 import er006_model_routing_contract_01 as routing_contract
 import er033_tts_flash_lite_backend_wiring_01 as flw
@@ -192,8 +194,9 @@ class _FakeContent:
 
 
 class _FakeSpeechConfig:
-    def __init__(self, voice_config=None):
+    def __init__(self, voice_config=None, language_code=None):
         self.voice_config = voice_config
+        self.language_code = language_code
 
 
 class _FakeVoiceConfig:
@@ -207,9 +210,15 @@ class _FakePrebuiltVoiceConfig:
 
 
 class _FakeGenerateContentConfig:
-    def __init__(self, response_modalities=None, speech_config=None):
+    def __init__(self, response_modalities=None, speech_config=None, http_options=None):
         self.response_modalities = response_modalities
         self.speech_config = speech_config
+        self.http_options = http_options
+
+
+class _FakeHttpOptions:
+    def __init__(self, timeout=None):
+        self.timeout = timeout
 
 
 def _patch_genai_types():
@@ -223,6 +232,7 @@ def _patch_genai_types():
         Part=_FakePart, Content=_FakeContent, SpeechMetadata=_FakeSpeechMetadata,
         GenerateContentConfig=_FakeGenerateContentConfig, SpeechConfig=_FakeSpeechConfig,
         VoiceConfig=_FakeVoiceConfig, PrebuiltVoiceConfig=_FakePrebuiltVoiceConfig,
+        HttpOptions=_FakeHttpOptions,
         create=True)
 
 
@@ -240,6 +250,7 @@ class MakeSpeechMetadataCallFnShapeTests(unittest.TestCase):
             def generate_content(self, model, contents, config):
                 captured["model"] = model
                 captured["contents"] = contents
+                captured["config"] = config
                 part = mock.Mock(inline_data=mock.Mock(data=wav_bytes))
                 return mock.Mock(candidates=[mock.Mock(content=mock.Mock(parts=[part]))])
 
@@ -259,6 +270,59 @@ class MakeSpeechMetadataCallFnShapeTests(unittest.TestCase):
         self.assertEqual(content.parts[0].speech_metadata.style, "calm, conversational")
         roundtrip = np.frombuffer(pcm, dtype=np.int16)
         self.assertEqual(len(roundtrip), len(samples))
+
+    def test_call_fn_sets_explicit_timeout_matching_existing_english_path(self):
+        # Phase 3所見対応: 既存英語経路(er002_gemini_client.make_tts_call_fn)と
+        # 同一のTTS_TIMEOUT_MS(150,000ms)をhttp_optionsへ明示することを確認する
+        # (Phase 2所見1: timeout未設定の解消)。
+        samples = np.array([1, 2], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        captured = {}
+
+        class FakeModels:
+            def generate_content(self, model, contents, config):
+                captured["config"] = config
+                part = mock.Mock(inline_data=mock.Mock(data=wav_bytes))
+                return mock.Mock(candidates=[mock.Mock(content=mock.Mock(parts=[part]))])
+
+        class FakeClient:
+            def __init__(self):
+                self.models = FakeModels()
+
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types():
+            call_fn = flw.make_speech_metadata_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient())
+            call_fn(("Hello.", "calm"))
+
+        config = captured["config"]
+        self.assertIsNotNone(config.http_options)
+        self.assertEqual(config.http_options.timeout, gclient.TTS_TIMEOUT_MS)
+
+    def test_call_fn_sets_language_code_matching_existing_english_path(self):
+        # Phase 3所見対応: 既存経路(er002_gemini_client.build_speech_config)と
+        # 同一のcommon.LANGUAGE_CODE("en-us")をspeech_configへ明示することを
+        # 確認する(Phase 2所見2: language_code未指定の解消)。
+        samples = np.array([1, 2], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        captured = {}
+
+        class FakeModels:
+            def generate_content(self, model, contents, config):
+                captured["config"] = config
+                part = mock.Mock(inline_data=mock.Mock(data=wav_bytes))
+                return mock.Mock(candidates=[mock.Mock(content=mock.Mock(parts=[part]))])
+
+        class FakeClient:
+            def __init__(self):
+                self.models = FakeModels()
+
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types():
+            call_fn = flw.make_speech_metadata_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient())
+            call_fn(("Hello.", "calm"))
+
+        config = captured["config"]
+        self.assertEqual(config.speech_config.language_code, common.LANGUAGE_CODE)
 
     def test_call_fn_omits_speech_metadata_when_style_empty(self):
         samples = np.array([10, 20], dtype=np.int16)
@@ -361,6 +425,10 @@ class RealSDKSpeechMetadataIntegrationTests(unittest.TestCase):
         self.assertEqual(content.parts[0].speech_metadata.style, "calm, conversational")
         roundtrip = np.frombuffer(pcm, dtype=np.int16)
         self.assertEqual(len(roundtrip), len(samples))
+        config = captured["config"]
+        self.assertEqual(config.speech_config.language_code, common.LANGUAGE_CODE)
+        self.assertIsNotNone(config.http_options)
+        self.assertEqual(config.http_options.timeout, gclient.TTS_TIMEOUT_MS)
 
     def test_call_fn_omits_speech_metadata_when_style_empty_real_types(self):
         samples = np.array([10, 20], dtype=np.int16)

@@ -10766,3 +10766,65 @@ JPY 2.6010)
 - **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-01_04.md`、`TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-01_REPORT.md`Phase 2節。
+
+## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: Phase 3
+(Gate 3残2項目解消+Phase 2所見の小修正、2026-09-28)
+
+- **性質**: 実API呼び出しあり。実測費用合計**約¥30.79**(Guardrail¥60
+  以内)。全TTSで`TTS_EXECUTION_MODE=STANDARD`を明示指定。
+- **小修正(¥0)**: flash-lite backendの`GenerateContentConfig`へ、既存
+  英語経路(`er002_gemini_client`)と同一の`http_options.timeout`
+  [150,000ms]・`speech_config.language_code`[`"en-us"`]を明示追加した
+  (Phase 2所見の解消)。unit test 2件新規追加(Fake型へ`timeout`/
+  `language_code`属性を追加、実SDK型統合テストにも同等assertion追加)。
+  単体実行`27 tests OK`(既存25+新規2)。Pronunciation Ledgerの
+  `surface="us"`誤登録は委任文の指示どおり修正せず、`OPEN_ITEMS.md`へ
+  `OPEN-207`として新規記録(`ledger_health_check()`が既存の
+  `canonical_spelling_mismatch`チェックでこの1件を含む計5件を実際に
+  検出することを確認済み)。
+- **A2 end-to-end実測(Hormuz A2主記事13segment、`speech_metadata_
+  flash_lite`)**: evidence run dir`hormuz__run_03_flashlite/a2`
+  (Phase 2の`b1b`と同じrun dir配下、既存Production artifact`hormuz__
+  run_02`は無変更)。13/13 segment OK(JA 5+EN 8[見出し2件含む])、費用
+  約¥10.49、429エラー0件、Human Review Lock到達0件(13/13 RESOLVED)。
+  **A2 6% slowdown post-process**(Gate項目7)を実際にFlash-Lite音声へ
+  適用し、slowdown後のASR再検証(`post_slowdown_classification`)が
+  4segment全てPASSすることを実測確認した。現行モデル音声(既存
+  `hormuz__run_02/a2`)とのB/A duration比較で、Flash-Liteの方が総尺
+  約12.2%短い(233.05秒 vs 265.56秒)ことを記録した。
+- **並列2プロセスでのrate limit観測**(Gate項目13): Hormuz B1B再実行
+  (`hormuz__run_04_parallel_a`)とMeta B1B(`family_x_b3_production_
+  wiring_01__run_02_parallel_b`)を同時起動(`ALLOW_PRONUNCIATION_WEB_
+  LOOKUP=0`でLedger書込み回避、実行前後で`ledger.json`に差分が無い
+  ことを確認)。両者とも429エラー0件。Meta側は12/12を0 retryで完走
+  (¥7.02)。Hormuz側は`full_story_part1`でAct One/Two/Three digit読み
+  (`TRUE_CONTENT_MISMATCH`)がstandard 3 attempt全てで再現(Trial N=1→
+  Phase2 N=2→本Phase N=3以上へ拡大)したため、既存の事前承認済み
+  Local Rewrite Recovery機構(Luna、全backend共通の既存仕様)が実際に
+  発火し、canonical textの言い換えにより自己解決(12/12 RESOLVED、
+  ¥13.28)。この遅延はcontent classification起因であり、2プロセス
+  同時実行によるrate limitとは無関係と判断した。
+- **フル回帰**: `collected=3403 passed=3395 failed=6 errors=2`
+  (Phase 2最終値から本Phase追加test 2件分のみ増分、failed/errorsは
+  既知baselineと完全一致、新規regression0件)。
+- **Gate 3チェックリスト(16項目)**: **全16件完了**(残項目#7[A2
+  slowdown backend実測]・#13[並列rate limit確認]を本Phaseで解消)。
+  `PRODUCTION_WIRED`はMandatory Opus L2レビュー実施後にFableが判定
+  する(本Phaseでは判定しない)。
+- **Opus L2引き継ぎ**: Phase 1/2の5+6所見の状況を更新し、Phase 3新規
+  所見(digit読みregressionがN=3以上まで拡大した事実、standard
+  3-attempt予算のみでは同一パターンの再現を防げないこと[Local
+  Rewrite Recoveryが実効的にカバーしていることは確認済み]、writer
+  prompt側での予防的対策の検討価値)を追加した統合表を作成した。
+- **反映範囲**: `CURRENT_SPEC.md`(Gemini 3.8 Flash-Lite TTS行にPhase 3
+  実測事実を追記)、`OPEN_ITEMS.md`(OPEN-201更新[Gate 3全16件完了]、
+  OPEN-207新規[Pronunciation Ledger`"us"`誤登録])、`docs/pm/
+  REPORT_LEDGER.md`、`er033_tts_flash_lite_backend_wiring_01.py`
+  (timeout/language_code追加)、`er033_tts_flash_lite_backend_wiring_
+  01_test_01.py`(unit test 2件追加+Fake型拡張)、`TTS-GEMINI-3.8-
+  FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01_REPORT.md`(Phase 3節新設)、
+  本エントリ新設。
+- **STOP該当**: 無し(guardrail¥60に対し実測合計約¥30.79で完了)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-01_05.md`、`TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-01_REPORT.md`Phase 3節。
