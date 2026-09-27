@@ -58,6 +58,7 @@ import er003_key_words_production as prod
 import er006_model_routing_contract_01 as routing
 import er009_n1_routing_governance_10_actual_model_cost as pricing
 import er030_key_phrase_db_hybrid_core_01 as core
+import er030_key_phrase_db_hybrid_source_reference_contract_01 as src_ref_contract
 
 # Trial-04実測(12本文合計¥12.8159、最大¥2.0284/記事)の約2.5倍を安全域と
 # する(runaway reasoning token検知、通常記事はこの閾値に到達しない)。
@@ -385,7 +386,7 @@ def _verify_source_spans_against_raw_article(items: list, article_text: str) -> 
 def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
                              process: str = None, diagnostic_note: str = None,
                              dbs: dict = None, cost_guard_jpy: float = None,
-                             shortlist_cache: dict = None) -> dict:
+                             shortlist_cache: dict = None, family_profile: str = "family_x") -> dict:
     """DB Hybrid方式でKey Phrase選定gateを1回実行する。戻り値は既存
     `run_key_phrase_selection`(Strategy L全文方式)と同じ最小契約
     (`status`/`parsed`/`original_items`)を満たし、追加でtelemetry用の
@@ -412,7 +413,29 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     sha256をkeyとする)。指定された場合、同一article_textに対する
     2回目以降の呼び出しはStage1/Wiktionary lookupを再実行せず
     キャッシュされたshortlistを再利用する(retryはprompt[diagnostic_
-    note]再生成のみ、候補生成をやり直さない)。"""
+    note]再生成のみ、候補生成をやり直さない)。
+
+    `family_profile`(KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-
+    PRODUCTION-WIRING-01、既定"family_x"): Source Reference Contract
+    (候補ID方式、`er030_key_phrase_db_hybrid_source_reference_
+    contract_01`)のFamily別最終選定ルール差込点。現時点で実装済みなのは
+    "family_x"のみ(既存呼び出し元は全てFamily Xのため既定値のまま
+    影響を受けない)。"family_z"を指定した場合は明示的にNotImplemented
+    Errorになる(Family Z DB Hybrid Core v2全体の採用は本管理IDの対象
+    外、未配線のまま)。
+
+    Source Reference Contract(候補ID方式、KEY-PHRASE-DB-HYBRID-SOURCE-
+    REFERENCE-CONTRACT-PRODUCTION-WIRING-01、2026-09-28ユーザー正式
+    採用): 本関数のselector呼び出しは、LLMに`source_sentence`/
+    `source_span`を自由記述させず、shortlist候補ID(`source_candidate_
+    id`、enum制約)のみを選ばせ、Python側でStage 1候補データから
+    `source_sentence`/`source_span`を決定論的に復元する
+    (`src_ref_contract.restore_source_fields`)。これによりLLMが
+    表示delimiter付きの引用符を誤ってコピーする等の書式ゆらぎに
+    よる`KEY_WORDS_STRUCTURE_INVALID`が構造的に発生しなくなる
+    (詳細はTrial-06 REPORT参照)。既存Production validator
+    (`p2g.validate_min_unit_selection`)・canonicalization・Source
+    Consistency Gateはいずれも無変更のまま通す。"""
     os.makedirs(out_dir, exist_ok=True)
     guard = cost_guard_jpy if cost_guard_jpy is not None else DEFAULT_COST_GUARD_JPY
     dbs = dbs if dbs is not None else core.load_group1_dbs()
@@ -453,8 +476,23 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
                        "phrase_plus_important_count": phrase_plus_important_count})
 
     static_instructions = extract_static_instructions(bk.load_prompt_template())
-    lightweight_message = build_lightweight_user_message(
-        title, shortlist_info, shortlist_info["sentence_reference"], static_instructions)
+
+    # KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+    # (2026-09-28、ユーザー正式採用): shortlistの各候補へ一意なcandidate_id
+    # (C1, C2, ...)を付与し、LLMには本文文字列(source_sentence/
+    # source_span)を一切書かせず、選んだ候補のcandidate_idのみを返させる
+    # (schema enum制約)。source_sentence/source_spanはPython側でStage 1
+    # 候補データから決定論的に復元する(旧来の自由記述契約で発生していた
+    # 表示delimiter付き引用符の誤コピー等の書式ゆらぎが構造的に発生しなく
+    # なる、詳細はTrial-06 REPORT参照)。
+    ids_result = src_ref_contract.assign_candidate_ids(shortlist_info["shortlist"])
+    shortlist_with_ids = ids_result["shortlist_with_ids"]
+    id_to_candidate = ids_result["id_to_candidate"]
+    candidate_ids = ids_result["candidate_ids"]
+
+    lightweight_message = src_ref_contract.build_lightweight_user_message(
+        title, shortlist_with_ids, shortlist_info["sentence_reference"], static_instructions,
+        family_profile=family_profile)
     if diagnostic_note:
         lightweight_message = lightweight_message + "\n\n" + diagnostic_note
     assert_no_full_article_body(lightweight_message, article_text)
@@ -464,17 +502,30 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     model = routing.require_model(process, routing.SUPPORT_MODEL) if process else prod.SELECTOR_MODEL
     usage_sink = []
     contract_violation_sink = []
-    factory = _make_instrumented_selector_factory(
-        lightweight_message, model, usage_sink, contract_violation_sink=contract_violation_sink)
-    parsed, status, attempts, model_id, response_id = prod.run_production_selection_gate(
-        article_id, factory, article_text, strategy_id=prod.STANDARD_STRATEGY_ID, max_attempts=1,
-    )
+    factory = src_ref_contract.make_instrumented_selector_factory(
+        lightweight_message, model, candidate_ids, usage_sink,
+        contract_violation_sink=contract_violation_sink)
+    gate_result = src_ref_contract.run_source_reference_contract_gate(
+        article_id, factory, article_text, id_to_candidate, shortlist_info["sentence_reference"],
+        strategy_id=prod.STANDARD_STRATEGY_ID, family_profile=family_profile)
+    status = gate_result["status"]
+    parsed = gate_result["parsed"]
+    model_id = gate_result["model_id"]
+    response_id = gate_result["response_id"]
+    restore_telemetry = gate_result.get("restore_telemetry", {})
+    attempts = [{
+        "attempt": 1, "status": status,
+        "validation_reasons": gate_result.get("validation_reasons", []),
+        "item_reasons": gate_result.get("item_reasons", []),
+        "raw_text": gate_result.get("raw_text"),
+        "parsed": parsed, "model": model_id, "response_id": response_id,
+        "restore_telemetry": {k: v for k, v in restore_telemetry.items() if k != "mismatch_details"},
+    }]
 
     # 修正1回目(Opus L2所見B3): モデルルーティング契約違反は
-    # prod.run_production_selection_gate内部で既にTECHNICAL_GENERATION_
-    # FAILEDへ吸収されているため、ここで独立に検知しfallback不可の
-    # DbHybridFailureを送出する(fallback先でも同じ契約違反が再発しうる
-    # ため、fallbackで隠蔽しない)。
+    # gate内部で既にTECHNICAL_GENERATION_FAILEDへ吸収されているため、
+    # ここで独立に検知しfallback不可のDbHybridFailureを送出する
+    # (fallback先でも同じ契約違反が再発しうるため、fallbackで隠蔽しない)。
     if contract_violation_sink:
         violation = contract_violation_sink[0]
         raise DbHybridFailure(
@@ -501,6 +552,13 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
             "important_noun_included_count": shortlist_info["important_noun_included_count"],
             "word_included_count": shortlist_info["word_included_count"],
         },
+        # KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+        "source_reference_contract": src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+        "family_profile": family_profile,
+        "candidate_count": len(candidate_ids),
+        "candidate_mismatch_suspected_count": restore_telemetry.get("mismatch_count", 0),
+        "candidate_mismatch_details": restore_telemetry.get("mismatch_details", []),
+        "unresolved_candidate_id_count": len(restore_telemetry.get("unresolved", []) or []),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
     }
     with open(os.path.join(out_dir, "keywords_runtime_metadata.json"), "w", encoding="utf-8") as f:
@@ -533,6 +591,8 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         "model_id": model_id, "response_id": response_id, "cost_jpy": round(cost_jpy, 4),
         "cost_guard_exceeded": cost_guard_exceeded,
         "shortlist_total_count": shortlist_count, "kp_backend": "db_hybrid",
+        "source_reference_contract": src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+        "candidate_mismatch_suspected_count": restore_telemetry.get("mismatch_count", 0),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
     }
     return result

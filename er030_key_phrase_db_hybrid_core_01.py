@@ -289,6 +289,50 @@ def build_rare_single_word_evidences(selected: list, wiktionary_confirmed: dict)
 
 
 # ============================================================
+# Stage 1 source_span整理(KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-
+# CONTRACT-PRODUCTION-WIRING-01、2026-09-28新設)。
+# ============================================================
+
+def _normalize_important_noun_candidate_source_span(candidates: list) -> list:
+    """`find_repeated_compound_noun_candidates`(`er027_key_phrase_db_
+    hybrid_trial_02_stage1`、無変更のまま読み取り専用でimportする既存
+    資産)が返す`important_noun_phrase_candidate`カテゴリの候補dictは、
+    `source_span`フィールドに「短い句」ではなく「その句が最初に出現した
+    文全体」を保持している(`er027`480行:
+    `"source_span": first_seen_source.get(merge_key, best_surface)`、
+    `first_seen_source`は`" ".join(sent_tokens)`=文全体)。他の全ての
+    候補生成経路(n-gram一致・rare single word・Wiktionary multiword
+    lookup)では`source_span`は常に「短い句(surface_form相当)」を保持
+    しており、このカテゴリだけが意味論的に不整合だった
+    (KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-TRIAL-06で実データ
+    発見、`source_candidate_id`契約[`er030_key_phrase_db_hybrid_source_
+    reference_contract_01.restore_source_fields`]がこのフィールドを
+    復元源として使うとvalidatorの「source_spanがsource_sentence内に
+    存在しない」判定を誤って引き起こす)。
+
+    `er027`自体(v1 baseline`er029`・Trial記録`er027`/`er028`が共有依存
+    する既存資産)は無変更のまま維持し、本関数はProduction Core(本
+    ファイル)が受け取った候補dictのコピーに対してのみ、その場で以下の
+    2点を補正する:
+    - `source_span`を「句」の意味論(他の全カテゴリと同じ)に統一する
+      ため、常に正しい句を保持する`surface_form`の値へ差し替える。
+    - 旧来「文全体」を保持していた値は、意図せぬ既存参照が万一あった
+      場合に備えて失わずに`legacy_sentence_text`(deprecated、新規
+      フィールド)へ退避する(silent semantic changeを避ける)。
+
+    `canonical_form`/`surface_form`/`repetition_count_in_article`等、
+    候補生成の実質的な内容(shortlist件数・canonical_form列、既存
+    equivalence fixtureが検証する範囲)は一切変更しない。"""
+    normalized = []
+    for c in candidates:
+        c2 = dict(c)
+        c2["legacy_sentence_text"] = c2.get("source_span")
+        c2["source_span"] = c2.get("surface_form")
+        normalized.append(c2)
+    return normalized
+
+
+# ============================================================
 # Stage 1 メインエントリポイント
 # (er029_key_phrase_db_hybrid_trial_04_stage1.run_stage1_for_article_v4
 #  を無変更のまま複製)
@@ -340,7 +384,8 @@ def run_stage1_for_article(article_text: str, dbs: dict) -> dict:
     phrase_survivors = s1v2.merge_near_duplicates(phrase_survivors_raw)
     phrase_survivors.sort(key=lambda c: (-c["db_match_count"], c["canonical_form"]))
 
-    important_noun_candidates = s1v2.find_repeated_compound_noun_candidates(sentences_tokens, dbs)
+    important_noun_candidates = _normalize_important_noun_candidate_source_span(
+        s1v2.find_repeated_compound_noun_candidates(sentences_tokens, dbs))
     existing_canonicals = {c["canonical_form"] for c in phrase_survivors}
     important_noun_candidates = [c for c in important_noun_candidates
                                   if c["canonical_form"] not in existing_canonicals]

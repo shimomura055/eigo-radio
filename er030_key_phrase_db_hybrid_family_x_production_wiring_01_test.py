@@ -408,11 +408,24 @@ class CostGuardAndArticleCostCapTests(unittest.TestCase):
         return {"stage1": {}, "shortlist_info": _build_minimal_shortlist_info()}
 
     def test_cost_guard_exceeded_does_not_discard_pass_result(self):
+        # KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+        # (2026-09-28): run_db_hybrid_selectionは候補ID contract
+        # (`src_ref_contract`)経由でselector callを行うため、mock対象を
+        # 新しい呼び出し先へ切り替える(旧`db_hybrid._make_instrumented_
+        # selector_factory`/`db_hybrid.prod.run_production_selection_gate`
+        # はもはやdb_hybrid経路から呼ばれないため、これらをmockしても
+        # 実APIが素通りし課金される事故が発生した[修正時に実測¥20.78の
+        # 意図しない実API呼び出しを検出、REPORTに記録]。本testはこの
+        # 事故の再発防止として新しい呼び出し先を直接mockする)。
+        fake_gate_result = {
+            "status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "model_id": "fake-model",
+            "response_id": "resp_1", "raw_text": "{}", "restore_telemetry": {},
+            "validation_reasons": [], "item_reasons": [],
+        }
         with mock.patch.object(core, "run_stage1_and_shortlist", return_value=self._fake_s1r()), \
-             mock.patch.object(db_hybrid, "_make_instrumented_selector_factory") as mocked_factory, \
-             mock.patch.object(db_hybrid.prod, "run_production_selection_gate",
-                                return_value=({"items": []}, "KEY_WORDS_STRUCTURE_PASS", [], "fake-model",
-                                              "resp_1")), \
+             mock.patch.object(db_hybrid.src_ref_contract, "make_instrumented_selector_factory") as mocked_factory, \
+             mock.patch.object(db_hybrid.src_ref_contract, "run_source_reference_contract_gate",
+                                return_value=fake_gate_result), \
              mock.patch.object(db_hybrid.pricing, "cost_jpy_for_call", return_value=999.0):
             out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_cost_guard")
             result = db_hybrid.run_db_hybrid_selection(
@@ -445,7 +458,14 @@ class ModelContractViolationStopsWithoutFallbackTests(unittest.TestCase):
     def test_run_db_hybrid_selection_raises_fallback_disallowed_on_model_mismatch(self):
         fake_shortlist_info = _build_minimal_shortlist_info()
 
-        def _fake_factory_maker(user_message, model, usage_sink, contract_violation_sink=None, client=None):
+        # KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+        # (2026-09-28): mock対象を`src_ref_contract.make_instrumented_
+        # selector_factory`へ切り替え(新しいsignatureはcandidate_idsを
+        # 追加の位置引数として受け取る)。旧`db_hybrid._make_instrumented_
+        # selector_factory`をmockしたままだと実APIが素通りし課金される
+        # (修正時に実測¥8.925の意図しない実API呼び出しを検出)。
+        def _fake_factory_maker(user_message, model, candidate_ids, usage_sink,
+                                 contract_violation_sink=None, client=None):
             def factory():
                 def fn():
                     if contract_violation_sink is not None:
@@ -460,7 +480,8 @@ class ModelContractViolationStopsWithoutFallbackTests(unittest.TestCase):
 
         with mock.patch.object(core, "run_stage1_and_shortlist",
                                 return_value={"stage1": {}, "shortlist_info": fake_shortlist_info}), \
-             mock.patch.object(db_hybrid, "_make_instrumented_selector_factory", side_effect=_fake_factory_maker):
+             mock.patch.object(db_hybrid.src_ref_contract, "make_instrumented_selector_factory",
+                                side_effect=_fake_factory_maker):
             out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_model_mismatch")
             with self.assertRaises(db_hybrid.DbHybridFailure) as ctx:
                 db_hybrid.run_db_hybrid_selection(

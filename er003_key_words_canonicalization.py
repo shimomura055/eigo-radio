@@ -593,7 +593,7 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         }
         item_review_required = any(v == "FAIL" for v in qa.values())
         any_review_required = any_review_required or item_review_required
-        merged_items.append({
+        merged_item = {
             "rank": rank,
             "source_span": original.get("source_span", ""),
             "source_sentence": original.get("source_sentence", ""),
@@ -611,7 +611,17 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
             "qa": qa,
             "qa_overall_status": "REVIEW_REQUIRED" if item_review_required else "PASS",
             "reasoning": canon["reasoning"],
-        })
+        }
+        # KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+        # (2026-09-28新設): 候補ID方式(Source Reference Contract)で選定
+        # された場合のみ選定itemに存在する追加フィールドを、存在する場合
+        # だけbackward compatibleに引き継ぐ(Strategy L等、これらの
+        # フィールドを持たない既存経路の挙動・出力形は一切変更しない)。
+        for passthrough_field in ("source_reference_contract", "source_candidate_id",
+                                   "surface_echo", "candidate_mismatch_suspected"):
+            if passthrough_field in original:
+                merged_item[passthrough_field] = original[passthrough_field]
+        merged_items.append(merged_item)
     return {
         "items": merged_items,
         "overall_status": "REVIEW_REQUIRED" if any_review_required else "PASS",

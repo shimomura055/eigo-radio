@@ -231,7 +231,8 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     _log_kp_backend_telemetry(
         article_id, source_level, requested_backend="strategy_l", backend_used="strategy_l",
         final_status=result.get("status"), fallback_triggered=False,
-        model_id=result.get("model_id"), cost_jpy=None, synthetic=synthetic)
+        model_id=result.get("model_id"), cost_jpy=None, synthetic=synthetic,
+        source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID)
     return result
 
 
@@ -279,6 +280,17 @@ KP_BACKEND_TELEMETRY_PATH = os.path.join("er030_output", "kp_backend_telemetry_0
 # 修正1回目(Opus L2所見B1、2026-09-27): telemetry各行にspec_idを付与し、
 # 将来別specがtelemetry.jsonlを共有する場合でも起源を区別できるようにする。
 KP_BACKEND_SPEC_ID = "KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01"
+
+# KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
+# (2026-09-28新設): Fallback(Strategy L全文方式)は従来どおりLLMが
+# source_sentence/source_spanを自由記述する契約のままである(候補ID
+# 契約はDB Hybrid経路にのみ適用する)。telemetryへ両契約の混在を観測
+# 可能にするためのタグ(db_hybrid成功時のタグは
+# `er030_key_phrase_db_hybrid_source_reference_contract_01.
+# SOURCE_REFERENCE_CONTRACT_ID`側で定義、ここでは循環import回避のため
+# 文字列を直接複製する[両定数は意味的に対になる、値の変更時は両方を
+# 揃えて更新する])。
+FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID = "free_text_strategy_l"
 
 
 def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_backend: str,
@@ -353,7 +365,9 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
             _log_kp_backend_telemetry(
                 article_id, source_level, requested_backend="db_hybrid", backend_used="db_hybrid",
                 final_status="STOP", fallback_triggered=False, fallback_reason_code=e.reason_code,
-                fallback_reason=str(e), synthetic=synthetic, **e.telemetry)
+                fallback_reason=str(e), synthetic=synthetic,
+                source_reference_contract=db_hybrid.src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+                **e.telemetry)
             _merge_kp_backend_metadata_into_runtime_file(out_dir, {
                 "kp_backend": "db_hybrid", "kp_backend_used": None,
                 "kp_backend_fallback_allowed": False, "kp_backend_stop_reason_code": e.reason_code,
@@ -365,7 +379,8 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         _log_kp_backend_telemetry(
             article_id, source_level, requested_backend="db_hybrid", backend_used="strategy_l_fallback",
             final_status="FALLBACK_TRIGGERED", fallback_triggered=True, fallback_reason_code=e.reason_code,
-            fallback_reason=str(e), synthetic=synthetic, **e.telemetry)
+            fallback_reason=str(e), synthetic=synthetic,
+            source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID, **e.telemetry)
         print(f"[KP-BACKEND] db_hybrid selectorが失敗しました({e.reason_code}: {e})。"
               f"Strategy L全文方式へfallbackします({article_id})。")
         result = _run_key_phrase_selection_strategy_l(
@@ -377,6 +392,7 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
             "kp_backend": "db_hybrid_attempted", "kp_backend_used": "strategy_l_fallback",
             "kp_backend_fallback_reason_code": e.reason_code, "kp_backend_fallback_reason": str(e),
             "kp_backend_attempted_telemetry": e.telemetry,
+            "kp_backend_source_reference_contract": FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
         })
         return result
 
@@ -385,7 +401,9 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         final_status=result.get("status"), fallback_triggered=False,
         cost_jpy=result.get("cost_jpy"), model_id=result.get("model_id"), synthetic=synthetic,
         shortlist_total_count=result.get("shortlist_total_count"),
-        cost_guard_exceeded=result.get("cost_guard_exceeded"))
+        cost_guard_exceeded=result.get("cost_guard_exceeded"),
+        source_reference_contract=result.get("source_reference_contract"),
+        candidate_mismatch_suspected_count=result.get("candidate_mismatch_suspected_count"))
     result["kp_backend_used"] = "db_hybrid"
     _merge_kp_backend_metadata_into_runtime_file(out_dir, {
         "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
@@ -394,6 +412,8 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         "kp_backend_shortlist_total_count": result.get("shortlist_total_count"),
         "kp_backend_cost_guard_exceeded": result.get("cost_guard_exceeded"),
         "kp_backend_attempts_detail": result.get("attempts_detail"),
+        "kp_backend_source_reference_contract": result.get("source_reference_contract"),
+        "kp_backend_candidate_mismatch_suspected_count": result.get("candidate_mismatch_suspected_count"),
     })
     return result
 

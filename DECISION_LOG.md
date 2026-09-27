@@ -11028,3 +11028,98 @@ Gitのいずれかが未完了の間は`PRODUCTION_WIRED`を宣言しない、�
   RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01_02.md`、
   `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
   LIKE-01_REPORT.md`(§8修正1回目)。
+
+## KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01: Source Reference Contract(候補ID方式)のFamily X Production配線+Family Z共通仕様+Stage 1 source_span整理
+
+ユーザー正式決定(2026-09-28): KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-
+CONTRACT-TRIAL-06(`VALIDATED`、19 call全件PASS、実測)の「候補ID方式
+Source Reference Contract」を、**Family X / Family Z共通のCore
+contractとして`APPROVED_FOR_PRODUCTION`**と正式採用する委任
+(`docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-SOURCE-
+REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`)。
+
+- **契約内容**: selector LLMの出力から`source_sentence`/`source_span`
+  の自由記述を除去し、`source_candidate_id`(必須、当該呼び出しの
+  shortlist候補IDのみ、JSON Schema enum制約)と`surface_echo`(任意的
+  性質、非ブロッキングの取り違え検知専用)のみを出力させる。Python側が
+  `source_candidate_id`→Stage 1候補(`surface_form`/`context_sentence_
+  id`)→`source_sentence`/`source_span`を決定論的に復元し、既存
+  Production validator・canonicalization・Source Consistency Gateは
+  無変更のまま通す。
+- **実装**: 新規Production module`er030_key_phrase_db_hybrid_source_
+  reference_contract_01.py`(Trial実装`er034_..._contract.py`のロジック
+  を昇格、Trial側は無変更のまま残す)。`er030_key_phrase_db_hybrid_
+  selector_01.py::run_db_hybrid_selection`のprompt構築・API呼び出し・
+  gate呼び出しを候補ID contractへ切替(旧自由記述関数群はbyte一致test
+  対象として削除せず保持)。`family_profile`引数(既定`"family_x"`)を
+  Family別最終選定ルールの差込点として新設し、`"family_z"`は
+  `NotImplementedError`(Family Z DB Hybrid Core v2全体の採用は本管理ID
+  の対象外・未決定、`er026_*`は無変更)。
+- **Stage 1 `source_span`整理**: `er030_key_phrase_db_hybrid_core_01.py`
+  に新設した`_normalize_important_noun_candidate_source_span()`が、
+  `important_noun_phrase_candidate`(`repeated_compound_noun_
+  heuristic`)カテゴリのみ(Trial-06で発見: このカテゴリの候補dictの
+  `source_span`が「短い句」ではなく「その句が最初に出現した文全体」を
+  保持するバグ)、`source_span`をsurface_form相当へ補正し、旧値を新規
+  `legacy_sentence_text`(deprecated)へ退避する。`er027_key_phrase_db_
+  hybrid_trial_02_stage1.py`自体は無変更(v1 baseline`er029`・Trial
+  記録`er027`/`er028`・v2`er032`は無影響、migration不要)。downstream
+  参照を全列挙し旧「文全体」意味論への依存が既存コードに無いことを
+  確認した。
+- **backward compatible passthrough**: `er003_key_words_canonicalization.
+  py::merge_canonicalization_result()`が、選定itemに`source_reference_
+  contract`/`source_candidate_id`/`surface_echo`/`candidate_mismatch_
+  suspected`が存在する場合のみ`keywords_canonicalized.json`へpassthrough
+  する(これらを持たない既存経路[Strategy L]の出力は完全無変更、既存
+  canonicalization test66件全PASSで確認)。
+- **telemetry**: db_hybrid成功時は`source_reference_contract=
+  "candidate_id_v1"`、Strategy L(既定・fallback とも)は
+  `"free_text_strategy_l"`を`telemetry.jsonl`/`keywords_runtime_
+  metadata.json`へ記録し、両contractの混在を観測可能にした。
+- **test**: 新規`er030_key_phrase_db_hybrid_source_reference_contract_
+  01_test.py`(27件)+既存`er030_key_phrase_db_hybrid_family_x_
+  production_wiring_01_test.py`(32件、2件mock対象更新)+`er034_..._
+  trial_06_test.py`(21件、無変更)+`er003_test_key_words_
+  canonicalization.py`(66件)、計146件全PASS(¥0)。`run_project_
+  regression.py`: `collected=3432 passed=3423 failed=7 errors=2`。
+  内訳は全て既知baseline(`er003_test_p2j_investigate`3 FAIL+1
+  ERROR・`er011_open112_trend_synthesis_mode_production_wiring_01_
+  test_01`3 FAIL・`er015_standard_a2_6000_generation_first_trial_01_
+  test_01`loader 1 ERROR、いずれも本タスクと無関係な既存の構造的
+  failure)+本タスク自身の一時的なuncommitted diff検知1件
+  (`er019_family_x_pointless_01_test_01::test_family_a_files_have_
+  no_working_tree_diff`、`er003_v1_n3_01_scaffold_generate.py`への
+  正規の変更をcommit前に検知したもの、commit後に解消見込み)。新規の
+  code regressionは0件。
+- **runtime evidence**(実Production共有入口`sc.run_key_phrases(kp_
+  backend="db_hybrid")`経由、既存Production artifact非上書き、
+  `er030_output/family_x_kp_source_reference_contract_evidence_01/`):
+  Hormuz A2・Meta A2・Meta B1B・Hormuz B1B(Family X regression確認)+
+  twins A2×3・Melos A2×3(quote-heavy、Trial-05/06の根本原因だった
+  引用符コピーバグの再発なしを実データで確認)の全8記事+反復サンプルが
+  `KEY_WORDS_STRUCTURE_PASS`・`candidate_mismatch_suspected_count=0`・
+  `source_reference_contract="candidate_id_v1"`・model_id`gpt-5.6-
+  luna`(実測)。強制`SHORTLIST_TOO_SMALL`注入によるfallback実発火1回で
+  `source_reference_contract="free_text_strategy_l"`のtelemetryタグ
+  付けを確認した。実測selection cost合計は複数回に分けた実行の総和
+  (詳細REPORT §5)。
+- **事故の開示**: 実装切替に伴うtest更新が後追いになり、既存test2件が
+  旧呼び出し先(`db_hybrid._make_instrumented_selector_factory`/
+  `db_hybrid.prod.run_production_selection_gate`)をmockしたまま
+  実際にOpenAI APIを2回呼び出し、実測¥20.7826を消費する事故が発生
+  した。直ちに新しい呼び出し先(`src_ref_contract.make_instrumented_
+  selector_factory`/`run_source_reference_contract_gate`)へmock対象を
+  更新し再発を防止した(修正後は0.02秒・API呼び出しなしで完了を確認)。
+  Guardrail¥40のうち事故分を差し引いた残予算内でruntime evidence規模
+  を調整した(詳細REPORT §0・§5)。
+- **STOP該当**: 無し(新DB追加・追加LLM call常設・v1 baseline挙動の
+  変化・大規模schema変更・Production互換性を壊すmigrationのいずれも
+  発生していない)。事故(¥20.7826)は透明性のため報告する。
+- **未完了・Fable判断待ち**: Opus L2レビュー実施要否・タイミング、
+  `PRODUCTION_WIRED`最終判定。`run_project_regression.py`のdiscovery
+  pattern(`er0*_test_*.py`)が末尾`_test.py`形式のファイルを拾えて
+  いない既存gapをUSER_DECISION_REQUIRED候補として提起した(REPORT §7)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-
+  SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`、
+  `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-
+  01_REPORT.md`。
