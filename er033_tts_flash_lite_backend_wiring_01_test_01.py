@@ -299,12 +299,99 @@ class MakeSpeechMetadataCallFnShapeTests(unittest.TestCase):
                 call_fn(("Hello.", "calm"))
 
 
+class RealSDKSpeechMetadataIntegrationTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01 Phase 2
+    (2026-09-28): Production `.venv`へgoogle-genai 2.25.0を導入した後、
+    Fake(_patch_genai_types、上記MakeSpeechMetadataCallFnShapeTests)ではなく
+    実SDK型(google.genai.types.Part/Content/SpeechMetadata等)を一切
+    patchせずそのまま使って同じ検証を行う(委任文「実SDK型に置き換え
+    (またはSDKが提供する場合は実型を優先し、fakeはフォールバックに)」)。
+    google-genai<2.25.0の環境(例: 一部の`.venv-ci`)ではtypes.SpeechMetadata
+    が無くこのテストクラス自体が意味を持たないため、収集時に存在確認して
+    無ければskip理由付きでスキップする(fail-closedガード自体は
+    SDKFailClosedGuardTestsが別途担保)。"""
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            from google.genai import types as real_types
+        except Exception as e:  # pragma: no cover
+            raise unittest.SkipTest(f"google.genai import失敗: {e}")
+        if not hasattr(real_types, "SpeechMetadata"):
+            raise unittest.SkipTest(
+                "installed google-genaiにtypes.SpeechMetadataが無い"
+                "(2.25.0未満の環境、例: 一部の.venv-ci。Fakeベースの"
+                "MakeSpeechMetadataCallFnShapeTestsが同等の配線検証を担保する)。")
+        cls.real_types = real_types
+
+    def test_real_speech_metadata_style_roundtrip(self):
+        sm = self.real_types.SpeechMetadata(style="calm, conversational")
+        self.assertEqual(sm.style, "calm, conversational")
+
+    def test_call_fn_sends_real_speech_metadata_and_returns_pcm(self):
+        samples = np.array([100, -100, 200], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        captured = {}
+
+        class FakeModels:
+            def generate_content(self, model, contents, config):
+                captured["model"] = model
+                captured["contents"] = contents
+                captured["config"] = config
+                part = mock.Mock(inline_data=mock.Mock(data=wav_bytes))
+                return mock.Mock(candidates=[mock.Mock(content=mock.Mock(parts=[part]))])
+
+        class FakeClient:
+            def __init__(self):
+                self.models = FakeModels()
+
+        # 実SDK型は一切patchしない(installed 2.25.0をそのまま使う)。
+        # FakeClientのみ差し込み、実API呼び出し(ネットワーク)は発生しない。
+        call_fn = flw.make_speech_metadata_call_fn(
+            fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient())
+        pcm = call_fn(("Hello.", "calm, conversational"))
+
+        self.assertEqual(captured["model"], fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME)
+        content = captured["contents"]
+        self.assertIsInstance(content, self.real_types.Content)
+        self.assertEqual(len(content.parts), 1)
+        self.assertIsInstance(content.parts[0], self.real_types.Part)
+        self.assertEqual(content.parts[0].text, "Hello.")
+        self.assertIsInstance(content.parts[0].speech_metadata, self.real_types.SpeechMetadata)
+        self.assertEqual(content.parts[0].speech_metadata.style, "calm, conversational")
+        roundtrip = np.frombuffer(pcm, dtype=np.int16)
+        self.assertEqual(len(roundtrip), len(samples))
+
+    def test_call_fn_omits_speech_metadata_when_style_empty_real_types(self):
+        samples = np.array([10, 20], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        captured = {}
+
+        class FakeModels:
+            def generate_content(self, model, contents, config):
+                captured["contents"] = contents
+                part = mock.Mock(inline_data=mock.Mock(data=wav_bytes))
+                return mock.Mock(candidates=[mock.Mock(content=mock.Mock(parts=[part]))])
+
+        class FakeClient:
+            def __init__(self):
+                self.models = FakeModels()
+
+        call_fn = flw.make_speech_metadata_call_fn(
+            fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient())
+        call_fn(("Hello.", ""))
+
+        content = captured["contents"]
+        self.assertIsNone(content.parts[0].speech_metadata)
+
+
 def run():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
     for cls in (
         DefaultBackendByteIdenticalTests, SDKFailClosedGuardTests, ResolveActualModelNameTests,
         ModelRoutingContractIntegrationTests, WavPcmDefenseTests, MakeSpeechMetadataCallFnShapeTests,
+        RealSDKSpeechMetadataIntegrationTests,
     ):
         suite.addTests(loader.loadTestsFromTestCase(cls))
     runner = unittest.TextTestRunner(verbosity=2)

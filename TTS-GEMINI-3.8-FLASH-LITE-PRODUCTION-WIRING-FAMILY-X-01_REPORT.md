@@ -374,3 +374,244 @@ commit `f548541e`のHEAD状態に対して独立に再実行し、正当性を�
 (paperwork commit[本追記+delegation_log `_03.md`]のみ)。詳細は
 `docs/pm/delegation_log/2026-09-27_TTS-GEMINI-3.8-FLASH-LITE-
 PRODUCTION-WIRING-FAMILY-X-01_03.md`。
+
+## Phase 2: SDK 2.25.0 Production導入+end-to-end実測+公平cost比較
+(2026-09-28)
+
+性質: 実API呼び出しあり(実測費用合計**約¥55.90**、Guardrail¥200以内)。
+Production `.venv`のgoogle-genaiを2.11.0→2.25.0へ実際に更新した
+(rollback実演込み)。全TTS呼び出しで`TTS_EXECUTION_MODE=STANDARD`を
+明示指定。委任文: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-
+FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01_04.md`。
+
+### 1. SDK導入・rollback実演
+
+| 項目 | 結果 |
+|---|---|
+| Production `.venv`(導入前) | google-genai==2.11.0 |
+| Production `.venv`(導入後) | google-genai==2.25.0 |
+| 巻き込み変更(pip freeze差分) | `google-auth`のみ(2.55.2→2.58.1)。他パッケージ変化なし(`er033_output/sdk_upgrade_01/pip_freeze_before.txt`/`pip_freeze_after.txt`) |
+| `.venv-ci`(requirements-ci.txt) | google-genai 2.14.0→2.25.0。他パッケージ変化なし(`pip list --format=freeze`差分で確認) |
+| `.venv_trial_genai225` | 既に2.25.0のため変更不要(Trial専用のまま維持) |
+| `pip check`(導入後) | `No broken requirements found` |
+| **rollback実演** | `.venv`を2.11.0へ降格→`assert_sdk_supports_speech_metadata()`が`TTSBackendSDKUnsupportedError`を実際に送出することを確認(fail-closedガード実証)→2.25.0へ再導入→`pip check`再度クリーン、ガード正常復帰。1往復完了 |
+
+`requirements-ci.txt`の正式再生成手順(ファイル冒頭コメント記載の
+「クリーン`.venv-ci`再作成+`scripts/run_ci_tests.py`実行」)は、本更新とは
+無関係な既存`ci_test_manifest.json`のドリフト(未登録testファイル多数、
+SDK更新前から存在する既知の別問題)により実行できなかった。個別のTTS
+関連import健全性は`.venv-ci`で直接確認済み(下記2節)。
+
+### 2. フル回帰・import smoke test・fake→実SDK型置き換え
+
+- **フル回帰(SDK 2.25.0導入後、Production `.venv`)**: `collected=3398
+  passed=3390 failed=6 errors=2`。Phase 1 post-commit独立検証時と完全に
+  同一の既知baseline(`er003_test_p2j_investigate.py`件数照合ドリフト
+  4件、`er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py`
+  baseline一致3件、`er015_standard_a2_6000_generation_first_trial_01_test_01.py`
+  module-level import RuntimeError 1件)と一致、**SDK更新起因の新規
+  regressionは0件**。
+- **Gemini利用箇所(パケットD-3一覧)のimport smoke test**: `er002_gemini_client`/
+  `er003_b1_p7a_audio`/`er003_b1_p3v_capability`/`er003_v1_b1_p3v_generate`/
+  `er003_v1_b1_p7a_generate`/`er003_v1_repro01_main_generate`/
+  `er006_model_routing_contract_01`/`er006_batch_tts_wiring_01`/
+  `er005_avr02_instruction_separation`/`er008_n7_baseline_reset_01`/
+  `er008_n7_pilot_run_01`/`er011_open121_tts_repetition_general_qa_trial_01`/
+  `er011_open107_opened_tts_diagnostic_trial_01`/
+  `er011_kp_display_tts_separation_prod_wiring_01`の14ファイル全件、
+  import時エラー0件。
+- **fake `SpeechMetadata`→実SDK型**: `er033_tts_flash_lite_backend_wiring_01_test_01.py`へ
+  `RealSDKSpeechMetadataIntegrationTests`(3件)を新規追加。既存の
+  `_patch_genai_types`ベースのFake実装(`MakeSpeechMetadataCallFnShapeTests`)は
+  `.venv-ci`等の旧SDK環境向けフォールバックとして残置し、実SDK型
+  (`google.genai.types.Part`/`Content`/`SpeechMetadata`)を一切patchせず
+  そのまま使う統合テストを別クラスとして追加した(該当ファイル計25件、
+  全件PASS)。
+- **最終フル回帰(本Phase全変更完了後、再実行)**: `collected=3401
+  passed=3393 failed=6 errors=2`(collected/passed増分3件は上記新規
+  テストのみ、failed/errorsは既知baselineと不変)。**本Phase起因の
+  新規regression 0件を最終確認**。
+
+### 3. end-to-end実測(Flash-Liteバックエンド、Hormuz B1B全12segment)
+
+evidence run dir: `er019_output/family_x_audio_production_wiring_01/
+family_x_b3_diversity_trial_01/hormuz__run_03_flashlite`(既存Production
+artifact`hormuz__run_02`は無変更。scaffoldテキスト成果物[parts.json/
+b1_support_texts.json/key_phrases]とKey Phrase音声[kp1-5 en/ja]は
+`hormuz__run_02`からコピーして再利用し、Key Phrase分の新規TTS呼び出しは
+発生させていない[Key PhraseはPhase 1範囲外のため常にstructured_
+separation、詳細は同dir内`PHASE2_EVIDENCE_RUN_NOTE.md`]。主記事12segment
+[topic_intro/preview/comment_1-4/full_story_part1-3+見出し2件/
+in_one_line]のみ`tts_backend=speech_metadata_flash_lite`で新規生成)。
+
+| 項目 | 実測結果 |
+|---|---|
+| 実行コマンド | `TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level b1b --stage tts --out-dir <上記dir> --tts-backend speech_metadata_flash_lite --budget-jpy 30` |
+| segment結果 | 12/12 `status=OK`(全segment最終PASS) |
+| 実際のmodel_id(raw_usage_log実測) | 全14 gemini呼び出しで`"model_id": "gemini-3.8-flash-lite-tts"`を確認(routing contract`FAMILY_X_FLASH_LITE_TTS`経由) |
+| tts_execution_mode | 全呼び出しで`"tts_execution_mode": "STANDARD"`を確認 |
+| 費用 | **¥10.78**(gemini ¥9.16+openai_asr ¥1.63、runner自己集計とtoken数からの手計算[input 1,058/output 9,449 tokens×公式単価]が完全一致) |
+| API呼び出し内訳 | gemini 14回(12segment+`full_story_part1`のみ2回追加retry)、openai_asr 15回。**429・失敗0件** |
+| instruction leakage | 0件(全segmentのasr_textをrole別style文字列["conversational"/"engaging"等]でスキャンし、文脈上の自然な語のみでverbatim leakage無しを確認) |
+| 異常長・clipping | 該当なし(全segment`clipping_detected=False`、duration実測値は12.7〜47.0秒の範囲で異常なし) |
+| Human Review Lock | `review_lock_state.json`で12/12 segmentが`RESOLVED`、Lock到達0件・regeneration発火0件 |
+| pronunciation resolver | 呼び出し経路は正しく実行された(`en_pronunciation_resolver_info.hints_applied=false`、本記事に発音辞書登録済み固有名詞が無かったため不発火。実際にhintが適用される正のケースの実測は本Phase範囲外) |
+| A2 6% slowdown | 対象外(本evidence runはB1Bのみ、A2 flash-lite本文segmentの実行は未実施。post-process自体がbackend非依存であることはコードで確認済み[§(e)]) |
+| **Act One/Two/Three digit読みの再現**(Gate項目14の追加実測) | `full_story_part1`のattempt1・attempt2の両方で"Act 1"/"Act 2"/"Act 3"というdigit読みが再発し、既存ASR検証が`TRUE_CONTENT_MISMATCH`で正しく検出(Trial N=1から実測でN=2以上へ拡大)。既存の**事前承認済み10分cool-down機構**(`er020_tts_retry_local_rewrite_01.maybe_cooldown_before_attempt`、`COOLDOWN_SECONDS=600`、attempt3直前に無条件発火する既存Production仕様。Flash-Lite固有ではなく全backend共通)が実際に600.004秒待機した後、attempt3(同一style・同一text、rewriteなし)で`NORMALIZED_MATCH`となりそのまま自己解決した(Luna Local Rewrite Recoveryへは到達せず) |
+
+### 4. JA speech_metadataの初実測(Meta A2 `japanese_title`、1segment)
+
+既存Production関数`n3_tts.generate_a2_japanese_with_reading_safety()`を
+`tts_backend="speech_metadata_flash_lite"`で直接呼ぶ評価専用スクリプト
+(`er033_output/phase2_ja_evidence_01/run_ja_flashlite_evidence_01.py`)を
+新規作成し実行(既存Meta A2 Production artifact`japanese_title.wav`は
+無変更、別path`er033_output/phase2_ja_evidence_01/japanese_title_flashlite.wav`
+[.gitignore対象]へ出力)。
+
+| 項目 | 実測結果 |
+|---|---|
+| 実行コマンド | `TTS_EXECUTION_MODE=STANDARD PYTHONPATH=. .venv/Scripts/python.exe er033_output/phase2_ja_evidence_01/run_ja_flashlite_evidence_01.py` |
+| canonical text | Meta A2既存`entry_point.json`記載の日本語タイトル(逐語) |
+| 結果 | `status=OK`、1 attempt目で`audio_classification=PHONETIC_MATCH`、`asr_verified=True` |
+| 実際のmodel_id/voice | `gemini-3.8-flash-lite-tts`/`Aoede`(raw_usage_log実測) |
+| style | 既存`JAPANESE_STYLE_PREFIX`(Trial新規JA style不使用、設計書§(c-2)/`FAMILY_X_JA_STYLE_NOTE`の方針どおり)をそのまま`speech_metadata.style`へ転送 |
+| 費用 | ¥0.27(gemini ¥0.23+openai_asr ¥0.04) |
+
+JA側の`speech_metadata`実測はStage1-3(Trial)・Phase1(opt-in配線)を
+通じて本Phaseが初(Gate 3項目4のJA側実証として記録)。
+
+### 5. 公平な1回完成cost比較(現行モデル、同一記事・同一12segment)
+
+evidence run dir: `hormuz__run_03_baseline`(flash-lite runと同じ再利用
+方針[scaffold/KP流用、主記事12segmentのみ新規生成]、`--tts-backend
+structured_separation`[既定]で実行。既存`hormuz__run_02`実測[Adoption
+Packet§B-5]が複数run分のretry混入で「1回完成コスト」として使えない
+ことが既に判明していたため、新規1回完成実測を実施)。
+
+| 項目 | Flash-Lite(本Phase実測) | 現行モデル(本Phase実測、baseline) |
+|---|---|---|
+| 実行コマンド | 上記3節参照 | `TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level b1b --stage tts --out-dir <baseline dir> --tts-backend structured_separation --budget-jpy 100` |
+| segment結果 | 12/12 OK | 12/12 OK |
+| 総attempt数(gemini) | 14(12segment+2 retry) | 20(12segment+8 retry) |
+| 総費用 | **¥10.78**(gemini¥9.16+ASR¥1.63) | **¥44.85**(gemini¥38.33+openai_asr¥2.26+openai/Luna¥4.26+azure/perplexity¥0) |
+| retry内訳 | `full_story_part1`のみ2回追加(cool-down後に自己解決) | `comment_3`(1回追加)・`comment_4`(3回追加、Luna Local Rewrite Recovery経由で解決)・`full_story_part1`(1回追加)・`full_story_part2`(2回追加、Secondary ASR Cascade[azure+perplexity corroboration]経由で解決) |
+| 429・失敗 | 0件 | 0件 |
+
+**結論(誇張しない記載)**: 本実測では現行モデルの方がFlash-Liteより
+総額・総attempt数とも多かった(¥44.85 vs ¥10.78、20 vs 14attempt)。ただし
+これは主に本記事1回の実測でたまたま現行モデル側のretry率が高かった
+ことに起因しており(`comment_4`のLocal Rewrite Recovery・
+`full_story_part2`のSecondary ASR Cascade発火は現行モデルでも起こり得る
+既存の想定内挙動)、**単価差(Adoption Packet§B-5: 同一token量なら
+Flash-Liteは現行の約30.1%)とは別の要因**である。N=1回の比較であり、
+retry率の再現性は統計的に未確認(既存Trialと同じ限界)。
+
+### 6. rate limit・concurrency観測
+
+| 項目 | 結果 |
+|---|---|
+| 429エラー件数 | 0件(flash-lite run 29回・baseline run 50回・JA evidence 2回、計81 API呼び出し中、`success=false`は0件) |
+| 意図的cool-down発火 | flash-lite run 1回(`full_story_part1`)、baseline run 1回(`comment_4`)。いずれも既存の事前承認済み10分機構(§3参照)であり、Flash-Lite固有の新規挙動ではない |
+| 並列実行 | 未検証(本Phaseは逐次実行のみ、設計書§(j)の計画どおりPhase 3以降の課題として残す) |
+
+### 7. Dangling Reference Check(再実施)
+
+`grep`で"stage3"/"Stage3"/`TRIAL_UNVALIDATED`等を全`er003_*.py`から検索した
+結果、Trial本体(`er022_...`)への新規参照追加は無し(該当4ファイルの
+うち3件は無関係な既存コード["Discovery Focus"独自のstage命名]、1件は
+Phase1で追加済みの正当なtext-only regression fixtureのコメント記載)。
+Production初回/retry/fallback/regeneration経路がTrial専用style・未承認
+原則を参照していないことを再確認した(問題なし)。
+
+### 8. Gate 3チェックリスト更新(Phase 2後)
+
+| # | 項目 | 状態(Phase 2後) |
+|---|---|---|
+| 1 | Production正式初回pathへのspeech_metadata方式実装 | **完了**(実e2eでHormuz B1B全12segment実行、実際にAPI呼び出しが発生し全segment PASSしたことを実測) |
+| 2 | retry・fallback・regenerationでの同一実装経由 | **完了**(実e2eで`full_story_part1`が実際にretry+cool-down経路を通過したことを実測。`approve_regenerate()`自体は本Phaseで発火するSTOPが0件だったため未発火[Lock全件RESOLVED]、コード経路はPhase1で確認済み) |
+| 3 | Human Review Lockとの整合 | **完了**(`review_lock_state.json`で12/12 segment RESOLVED、Lock到達0件を実測) |
+| 4 | Pronunciation・Reading Resolver統合 | **完了(EN側hook動作確認・JA側初実測)**。実際にhintsが適用される正のケースの実測は範囲外のまま(次回記事での確認を推奨) |
+| 5 | voice指定 | **完了**(Charon/Aoede実際に使用確認)。**新規軽微所見**: flash-lite backendの`SpeechConfig`に既存英語経路が持つ`language_code="en-us"`相当の指定が無い(§9参照、Gate 3判定前の検討事項として記録) |
+| 6 | role別style正式仕様化(6-role) | **完了**(実際にrole別style文字列がAPIへ送信されたことを実測) |
+| 7 | A2 6% slowdown post-processとの関係 | 未実測のまま(本Phase e2eはB1Bのみ。USER_DECISION候補、次Phase) |
+| 8 | ASR validation流用 | **完了**(NORMALIZED_MATCH/PHONETIC_MATCH/TRUE_CONTENT_MISMATCHが実際に正しく機能したことを実測) |
+| 9 | cost ledger・telemetry正式統合 | **完了**(raw_usage_log.jsonl・attempt_history.jsonl・review_lock_state.jsonへの自動記録を実測) |
+| 10 | SDK 2.25.0 Production `.venv`導入 | **完了**(rollback実演込み) |
+| 11 | フル回帰(3300+件規模) | **完了**(最終`collected=3401 passed=3393 failed=6 errors=2`、新規regression0件) |
+| 12 | 実際のmodel_id・routing runtime evidence | **完了**(raw_usage_log.jsonlで`gemini-3.8-flash-lite-tts`を実測) |
+| 13 | rate limit・concurrency確認 | **部分完了**(429エラー0件を実測。並列実行は未検証のままPhase 3へ) |
+| 14 | Act One型digit読みのregression fixture化 | **完了+実測補強**(text-only fixtureに加え、実e2eで同一現象を実際に2回連続再現し既存cool-downで自己解決したことを実測) |
+| 15 | 現行モデルとの公平な1回完成cost比較 | **完了**(同一記事・同一12segment・新規1回完成実測、¥10.78 vs ¥44.85) |
+| 16 | rollback可能性確認 | **完了**(SDK downgrade実演+tts_backend切替の2段階、両方実証) |
+
+**Gate 3残項目**: #7(A2 6% slowdownとの関係、backend実測)、#13後半
+(並列実行時のrate limit)。いずれもUSER_DECISION範囲またはPhase 3以降の
+課題として次Phaseへ持ち越す。
+
+### 9. Opus L2引き継ぎメモ(Phase 1引き継ぎ5点の状況+Phase 2新規所見)
+
+Phase 1引き継ぎ5点の現状:
+1. news_tail_fix/point_headings scope拡張 → 本Phase e2eで実際に
+   正しく機能したことを実測確認(full_story_part2/3・見出しsegment
+   全てOK)。
+2. A2側role別style非対応のまま → 変更なし(A2 flash-lite本文の実行
+   自体を本Phaseで行っていないため、Gate項目7とあわせて未解決)。
+3. JA style「Trial未検証」フラグ → 本Phase§4で初実測(1件のみ、PASS)。
+   6-role相当のJA短styleは依然未考案のまま(既存`JAPANESE_STYLE_PREFIX`
+   を流用する現行方針は実測で問題なし)。
+4. Key Phrase対象外のまま → 変更なし(本Phase evidence runもKey Phrase
+   は既存音声を再利用、新規TTS呼び出しなし)。
+5. SDK 2.11.0→2.25.0 → 本Phaseで完了(§1参照)。
+
+Phase 2新規所見(次Phaseレビュー向け):
+1. **flash-lite call_fnにexplicit timeoutが無い**: `er033_tts_flash_lite_
+   backend_wiring_01.make_speech_metadata_call_fn()`の
+   `GenerateContentConfig`には、既存英語経路(`er002_gemini_client.
+   make_tts_call_fn`)が持つ`http_options=types.HttpOptions(timeout=
+   TTS_TIMEOUT_MS)`[150,000ms]に相当する指定が無い。本Phaseの実行では
+   全呼び出しが数秒〜15秒程度で完了しハングは一切発生しなかった
+   (§3で観測した約10分の遅延は、既存の意図的な600秒cool-downによる
+   ものであり、この所見とは無関係)。ただし将来的なAPI側の異常応答
+   (無応答)に対する防御が無い状態であるため、Gate 3判定前に
+   タイムアウト追加を検討することを推奨する。
+2. **`language_code`未指定**: 上記Gate表#5参照。英語音声で実際に
+   問題は観測されなかったが(全segment ASR PASS)、モデル側の暗黙
+   デフォルト言語判定に依存している点は将来のモデル更新で挙動が
+   変わるリスクがあるため、明示指定を追加候補として記録する。
+3. **現行モデルの方がretry率が高かった実測(§5)**: 「Flash-Liteは
+   品質面で同等以上」という従来の評価と矛盾しない(Flash-Liteは
+   むしろ本実測でretryが少なかった)が、単価差の主張(30.1%)と
+   実額差(24%)を混同しないよう、次回報告時も両者を明確に分けて
+   記載すること。
+4. **A2側flash-lite実測が依然0件**: Gate項目7(A2 6% slowdown)は
+   Phase 3以降でA2記事1本の実測が必要(USER_DECISION候補、継続)。
+5. **並列実行のrate limit確認は未着手**: 意図的な逐次運用を継続しつつ、
+   Production通常運用でのFamily X複数記事同時生成時に429の有無を
+   観測することを次Phaseの課題とする。
+6. **既存Pronunciation Ledgerの誤登録を偶発的に発見(本Phase起因ではない
+   既存バグ、修正せず報告のみ)**: baseline run実行中、Secondary ASR
+   Cascadeが`full_story_part2`の"US"という語を未解決entityとして
+   research対象にした際、`er006_output/pronunciation_ledger_01/
+   ledger.json`へ`surface="us"`のエントリが追加されたが、その中身
+   (`canonical_spelling`/IPA/pronunciation_hint等)は誤って"unknown"
+   という**別の単語**の発音情報になっていた(cascade_unresolved_entity
+   のresearch対象特定ロジックに既存の取り違えバグがある可能性を示唆)。
+   本Phaseのtts_backend変更とは無関係な既存共有機構([ER-010-ENTITY-
+   PHONETIC-CORROBORATION-01]系)の挙動であり、本Phaseでは修正せず
+   事実のみ記録する(該当1件のみ、Gate判定・Cost・音声品質には
+   影響しない)。
+
+### STOP該当
+
+無し(guardrail¥200に対し実測合計¥55.90で完了、STOP条件[累計超過見込み・
+segment単位早期STOP・SDK regression・共有ストア破壊]のいずれにも該当
+しなかった)。
+
+### 参照(Phase 2追加分)
+
+`docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-
+WIRING-FAMILY-X-01_04.md`、`er033_output/sdk_upgrade_01/`(pip freeze
+前後)、`er033_output/phase2_ja_evidence_01/`(JA evidence一式)、
+`er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_
+trial_01/hormuz__run_03_flashlite/`・`hormuz__run_03_baseline/`(e2e
+evidence一式)。

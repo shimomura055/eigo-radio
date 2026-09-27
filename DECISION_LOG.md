@@ -10700,3 +10700,69 @@ JPY 2.6010)
   であることをGrep/直接確認したうえでの表記同期(2026-09-27、
   `PM-CLOSEOUT-CONSOLIDATION-2026-09-27-D`)。
 - commit: 本コミット(SSOT表記同期のみ、コード変更なし)。
+
+## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: Phase 2
+(SDK 2.25.0 Production導入+end-to-end実測、2026-09-28)
+
+- **性質**: 実API呼び出しあり。実測費用合計**¥55.90**(Guardrail¥200
+  以内)。全TTSで`TTS_EXECUTION_MODE=STANDARD`を明示指定。
+- **SDK導入**: Production `.venv`のgoogle-genaiを2.11.0→2.25.0へ実際に
+  導入(巻き込み変更は`google-auth`のみ[2.55.2→2.58.1]、他パッケージ
+  変化なし)。`requirements-ci.txt`も2.14.0→2.25.0へ統一(巻き込み変更
+  なし)。`.venv_trial_genai225`は既に2.25.0のため変更不要。
+  **rollback実演**: 2.11.0へ降格→`assert_sdk_supports_speech_metadata()`
+  が`TTSBackendSDKUnsupportedError`を実際に送出→2.25.0へ再導入→
+  `pip check`クリーン、ガード正常復帰。1往復完了。
+- **フル回帰**: SDK更新後`collected=3398 passed=3390 failed=6 errors=2`
+  (既知baselineと完全一致、新規regression0件)。本Phase全変更完了後の
+  最終回帰は`collected=3401 passed=3393 failed=6 errors=2`(増分3件は
+  新規追加した実SDK型統合テストのみ)。
+- **Gemini利用箇所14ファイルのimport smoke test**: 全件エラー0件。
+- **fake `SpeechMetadata`→実SDK型**: `RealSDKSpeechMetadataIntegrationTests`
+  (3件)を新規追加、実SDK型を一切patchせず使う統合テストとして機能。
+  既存Fake実装は`.venv-ci`等の旧SDK環境向けフォールバックとして残置。
+- **end-to-end実測(Hormuz B1B全12segment、`speech_metadata_flash_lite`)**:
+  評価run dir`hormuz__run_03_flashlite`(既存Production artifact
+  `hormuz__run_02`は無変更、scaffoldテキスト・Key Phrase音声は再利用し
+  新規TTS呼び出しを主記事12segmentのみに限定)。12/12 segment OK。実際の
+  model_id`gemini-3.8-flash-lite-tts`をraw_usage_logで確認。費用¥10.78
+  (gemini¥9.16+ASR¥1.63)。`full_story_part1`でAct One/Two/Three
+  digit読み(`TRUE_CONTENT_MISMATCH`)をattempt1・2の両方で再現(Trial
+  N=1から実測でN=2以上へ拡大)、既存の事前承認済み600秒cool-down機構
+  (Flash-Lite固有ではなく全backend共通の既存Production仕様)が実際に
+  発火し、attempt3で自己解決(rewriteなし)。Human Review Lock到達0件
+  (12/12 `RESOLVED`)、429エラー0件、instruction leakage 0件。
+- **JA `speech_metadata`初実測**: Meta A2 `japanese_title`1segmentを
+  同backendで実行(既存Production関数`generate_a2_japanese_with_
+  reading_safety`をそのまま使用、既存Meta A2 artifactは無変更)。1
+  attempt目で`PHONETIC_MATCH`、model/voice実測`gemini-3.8-flash-lite-tts`/
+  `Aoede`確認。費用¥0.27。
+- **公平な1回完成cost比較**: 同一記事(Hormuz)・同一12segmentで、現行
+  モデル(`structured_separation`、既定backend)による新規1回完成実測
+  (`hormuz__run_03_baseline`)を実施。12/12 OK、費用¥44.85(gemini¥38.33
+  +openai_asr¥2.26+openai/Luna Local Rewrite Recovery¥4.26+azure/
+  perplexity Secondary ASR Cascade¥0)。本実測ではFlash-Liteの方が
+  総額・総attempt数とも少なかった(¥10.78 vs ¥44.85、14 vs 20attempt)。
+  既存の単価差(Adoption Packet§B-5: 同一token量でFlash-Liteは現行の
+  約30.1%)とは別の要因(現行モデル側のretry率がこの実測でたまたま
+  高かった)であり、両者を混同しない記載とした。N=1回の実測であり
+  再現性は統計的に未確認。
+- **rate limit観測**: 429エラー0件(2run+JA計81 API呼び出し)。逐次
+  実行のみ検証、並列実行は未検証(Phase 3以降の課題)。
+- **Dangling Reference Check再実施**: Production初回/retry/fallback/
+  regeneration経路がTrial専用style・未承認原則を参照していないことを
+  再確認(問題なし)。
+- **Gate 3チェックリスト(16項目)**: 14件完了。残2件(A2 6% slowdown
+  backend実測/並列実行時のrate limit確認)はUSER_DECISION範囲または
+  Phase 3以降の課題として持ち越し。`PRODUCTION_WIRED`はGate 3残項目
+  解消+Mandatory Opus L2レビュー後にFableが判定する(未宣言のまま)。
+- **反映範囲**: `CURRENT_SPEC.md`(Gemini 3.8 Flash-Lite TTS行にPhase 2
+  実測事実を追記)、`OPEN_ITEMS.md`(OPEN-201更新)、`docs/pm/
+  REPORT_LEDGER.md`、`requirements-ci.txt`(SDK版数更新)、
+  `er033_tts_flash_lite_backend_wiring_01_test_01.py`(実SDK型テスト
+  追加)、`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01_
+  REPORT.md`(Phase 2節新設)、本エントリ新設。
+- **STOP該当**: 無し(guardrail¥200に対し実測合計¥55.90で完了)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-01_04.md`、`TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-01_REPORT.md`Phase 2節。

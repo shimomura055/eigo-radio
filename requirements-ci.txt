@@ -14,6 +14,20 @@
 #      `python -m pip install -r requirements-ci.txt` だけで
 #      同じテスト結果を再現できることを確認してから更新を確定する
 # 最終検証日: 2026-07-27 (AUTO-001-03B, Windows 11 / win32)
+# 追記(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01 Phase 2、
+#   2026-09-28): google-genai を 2.14.0→2.25.0 へ更新(Production `.venv`
+#   2.25.0導入に合わせた3系統統一)。`.venv-ci`へ`pip install
+#   google-genai==2.25.0`を実行した結果、この1パッケージ以外の版数変化は
+#   無かった(`pip list --format=freeze`差分で確認、pip自体の版数表示行を
+#   除く)。手順4の`scripts/run_ci_tests.py`によるフル再検証は、
+#   本更新とは無関係な既存`ci_test_manifest.json`のドリフト
+#   (未登録testファイル多数、SDK更新前から存在する既知の別問題)により
+#   実行できなかった(pre-existing、本更新のスコープ外)。`.venv-ci`は
+#   直接依存5件のみのため(pykakasi/soundfile等の非対象モジュール未導入)、
+#   TTS関連unit testの網羅実行はProduction `.venv`(google-genai同時に
+#   2.25.0導入済み)側の`run_project_regression.py`フル回帰で実施した
+#   (下記Phase 2 REPORTの「フル回帰」節参照、`.venv-ci`はimport
+#   互換性[google-genai本体のAPI呼び出しに関する型定義]の健全性確認のみ)。
 #
 # 注意: このファイルは本番コード(記事生成・音声合成等)や実験スクリプト
 #   (generate_test.py, tts_test*.py 等)全体の依存関係を表すものではない。
@@ -29,7 +43,7 @@ colorama==0.4.6
 cryptography==49.0.0
 distro==1.9.0
 google-auth==2.56.2
-google-genai==2.14.0
+google-genai==2.25.0
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
