@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hormuz Flash-Lite A/B — 前回Trial vs 今回Production</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;max-width:1040px;margin:32px auto;padding:0 18px;line-height:1.6;color:#111}
+h1{font-size:1.45rem} h2{margin-top:2rem;border-bottom:1px solid #bbb;padding-bottom:.35rem}
+.note{padding:12px 14px;border:1px solid #bbb;border-radius:8px;background:#fafafa}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{border:1px solid #bbb;border-radius:8px;padding:14px}
+audio{width:100%} table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ccc;padding:9px;vertical-align:middle}th{background:#f3f3f3;text-align:left}
+button{padding:7px 10px;cursor:pointer}code{font-size:.88em}.small{color:#555;font-size:.9em}
+@media(max-width:760px){.grid{grid-template-columns:1fr}table{font-size:.9em}}
+</style>
+</head>
+<body>
+<h1>Hormuz Flash-Lite A/B｜前回Trial vs 今回Production版</h1>
+<div class="note">
+同じHormuz Advancedについて、前回ユーザー試聴済みのFlash-Lite Trial音声と、現在のProduction経路で生成・AssemblyされたFlash-Lite音声を比較します。
+新しいTTS生成はしていません。
+</div>
+
+<h2>記事全体</h2>
+<div class="grid">
+<div class="card"><strong>前回Trial</strong>
+<audio controls preload="none" src="/eigo-radio/er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/full_article_b.mp3"></audio>
+<div class="small">Stage 3 / Flash-Lite / Advanced</div></div>
+<div class="card"><strong>今回Production版</strong>
+<audio id="currentFull" controls preload="metadata" src="./hormuz_advanced_flash_lite.mp3"></audio>
+<div class="small">Production path / Flash-Lite / Advanced</div></div>
+</div>
+
+<h2>同一segmentごとのA/B</h2>
+<p class="small">左は前回Trialのsegment音声、右は今回Production完成音声の該当区間を再生します。</p>
+<table>
+<thead><tr><th>Segment</th><th>前回Trial</th><th>今回Production</th><th>今回duration</th></tr></thead>
+<tbody>
+<tr><td><strong>Topic intro</strong><br><code>topic_intro</code></td><td><button onclick="playPrev('topic_intro')">▶ 前回Trial</button></td><td><button onclick="playCurrent(13.126,5.89)">▶ 今回Production</button></td><td>5.89s</td></tr><tr><td><strong>Preview</strong><br><code>preview</code></td><td><button onclick="playPrev('preview')">▶ 前回Trial</button></td><td><button onclick="playCurrent(24.086,12.75)">▶ 今回Production</button></td><td>12.75s</td></tr><tr><td><strong>Comment 1</strong><br><code>comment_1</code></td><td><button onclick="playPrev('comment_1')">▶ 前回Trial</button></td><td><button onclick="playCurrent(88.866,5.47)">▶ 今回Production</button></td><td>5.47s</td></tr><tr><td><strong>Full Story 1</strong><br><code>full_story_part1</code></td><td><button onclick="playPrev('full_story_part1')">▶ 前回Trial</button></td><td><button onclick="playCurrent(95.136,45.84)">▶ 今回Production</button></td><td>45.84s</td></tr><tr><td><strong>Comment 2</strong><br><code>comment_2</code></td><td><button onclick="playPrev('comment_2')">▶ 前回Trial</button></td><td><button onclick="playCurrent(141.776,11.83)">▶ 今回Production</button></td><td>11.83s</td></tr><tr><td><strong>Heading 2</strong><br><code>full_story_part2_heading</code></td><td><button onclick="playPrev('full_story_part2_heading')">▶ 前回Trial</button></td><td><button onclick="playCurrent(154.406,2.83)">▶ 今回Production</button></td><td>2.83s</td></tr><tr><td><strong>Full Story 2</strong><br><code>full_story_part2</code></td><td><button onclick="playPrev('full_story_part2')">▶ 前回Trial</button></td><td><button onclick="playCurrent(157.936,42.68)">▶ 今回Production</button></td><td>42.68s</td></tr><tr><td><strong>Comment 3</strong><br><code>comment_3</code></td><td><button onclick="playPrev('comment_3')">▶ 前回Trial</button></td><td><button onclick="playCurrent(201.416,20.09)">▶ 今回Production</button></td><td>20.09s</td></tr><tr><td><strong>Heading 3</strong><br><code>full_story_part3_heading</code></td><td><button onclick="playPrev('full_story_part3_heading')">▶ 前回Trial</button></td><td><button onclick="playCurrent(222.306,2.56)">▶ 今回Production</button></td><td>2.56s</td></tr><tr><td><strong>Full Story 3</strong><br><code>full_story_part3</code></td><td><button onclick="playPrev('full_story_part3')">▶ 前回Trial</button></td><td><button onclick="playCurrent(225.566,26.07)">▶ 今回Production</button></td><td>26.07s</td></tr><tr><td><strong>Comment 4</strong><br><code>comment_4</code></td><td><button onclick="playPrev('comment_4')">▶ 前回Trial</button></td><td><button onclick="playCurrent(252.436,11.95)">▶ 今回Production</button></td><td>11.95s</td></tr><tr><td><strong>In One Line</strong><br><code>in_one_line</code></td><td><button onclick="playPrev('in_one_line')">▶ 前回Trial</button></td><td><button onclick="playCurrent(265.186,17.57)">▶ 今回Production</button></td><td>17.57s</td></tr>
+</tbody></table>
+
+<h2>比較プレイヤー</h2>
+<div class="grid">
+<div class="card"><strong>前回Trial segment</strong><audio id="prevPlayer" controls preload="none"></audio></div>
+<div class="card"><strong>今回Production segment</strong><audio id="curPlayer" controls preload="metadata" src="./hormuz_advanced_flash_lite.mp3"></audio></div>
+</div>
+
+<h2>条件</h2>
+<div class="note">
+主要条件は同じです：Gemini 3.8 Flash-Lite TTS、Advanced、同じHormuz本文、Topic/Preview/CommentはCharon、本文等はAoede、6-role系style。
+Production化後はretry/fallback、Pronunciation/ASR、Master Audio Store reuse、shell短文style、共有ナレーションGate等の正式経路が追加されています。
+</div>
+
+<script>
+const prev=document.getElementById('prevPlayer');
+const cur=document.getElementById('curPlayer');
+let stopAt=null;
+function playPrev(id){
+  cur.pause(); stopAt=null;
+  prev.src='/eigo-radio/er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/segments_mp3/b/'+id+'.mp3';
+  prev.currentTime=0; prev.play();
+}
+function playCurrent(start,duration){
+  prev.pause(); stopAt=start+duration;
+  const go=()=>{cur.currentTime=start;cur.play();};
+  if(cur.readyState>=1)go(); else cur.addEventListener('loadedmetadata',go,{once:true});
+}
+cur.addEventListener('timeupdate',()=>{if(stopAt!==null&&cur.currentTime>=stopAt){cur.pause();stopAt=null;}});
+</script>
+</body></html>
