@@ -94,6 +94,26 @@ SYMBOL_PREVENTION_BLOCK_JA = (
     "- URLやメールアドレスは書かないでください。絵文字も使わないでください。"
 )
 
+# FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28): Trial
+# (er037/er039)のA3+N2(AN3、ユーザー正式決定APPROVED_FOR_PRODUCTION)を
+# 逐語で移設。R0_PROMPT自体は無変更、build_original_prompt()で別途追記
+# する(SYMBOL_PREVENTION_BLOCK_JAと同型パターン)。「数字を0にする」とは
+# 定義しない(定性的な抑制指示であり数値目標ではない)。
+CONCRETENESS_CONTROL_AN3_BLOCK = (
+    "\n\n数字・時刻は基本的に使わないでください。記事の理解に本当に必要な場合"
+    "だけ、最小限に使ってください。\n"
+    "人名・企業名・地名などの固有名詞は、話の理解に必要な場合だけ使い、それ"
+    "以外は一般的な言い方にしてください。"
+)
+
+# FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28): R1/R2で
+# 数字・固有名詞を再前景化しないためのreminder(previous_response_id失敗時の
+# fallback_full_text経路ではAN3指示自体が再送されないため、頑健性のため追加)。
+CONCRETENESS_CONTROL_AN3_REMINDER_JA = (
+    "この修正で、すでに減らした細かい数字・時刻や固有名詞を、記事理解に"
+    "必要でない限り再び増やさないでください。"
+)
+
 
 def sha256_text(text: str) -> str:
     return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
@@ -105,6 +125,9 @@ def verbatim_shas() -> dict:
         "developer_message_sha256": sha256_text(DEVELOPER_MESSAGE),
         "r1_instruction_sha256": sha256_text(REVISION_INSTRUCTIONS["r1"]),
         "r2_instruction_sha256": sha256_text(REVISION_INSTRUCTIONS["r2"]),
+        # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28): 追加
+        "concreteness_an3_block_sha256": sha256_text(CONCRETENESS_CONTROL_AN3_BLOCK),
+        "concreteness_an3_reminder_sha256": sha256_text(CONCRETENESS_CONTROL_AN3_REMINDER_JA),
     }
 
 
@@ -146,6 +169,7 @@ def build_original_prompt(storyline_line: str, selected_fact_brief_text: str,
     prompt = "\n".join(new_lines)
     prompt += "\n\n[ニュース]\n" + selected_fact_brief_text
     prompt += SYMBOL_PREVENTION_BLOCK_JA
+    prompt += CONCRETENESS_CONTROL_AN3_BLOCK  # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01
     if must_fix:
         prompt += "\n\n" + build_must_fix_block(must_fix, full_ledger_text or "")
     return prompt
@@ -330,7 +354,10 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
     chain_method = None
 
     for stage_key in ("r1", "r2"):
-        instruction = REVISION_INSTRUCTIONS[stage_key] + SYMBOL_PREVENTION_BLOCK_JA
+        instruction = (
+            REVISION_INSTRUCTIONS[stage_key] + SYMBOL_PREVENTION_BLOCK_JA
+            + CONCRETENESS_CONTROL_AN3_REMINDER_JA  # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01
+        )
         used_method = None
         response = None
         if chain_method != "fallback_full_text":
@@ -374,7 +401,9 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
             print(f"[JA-WRITER][ja_r2] Fact Check MAJOR。R1からのrevisionとしてmust-fixで"
                   f"1回だけ再生成します(major_count={len(major_devs_r2)})...")
             r2_must_fix_instruction = (
-                REVISION_INSTRUCTIONS["r2"] + "\n\n" +
+                REVISION_INSTRUCTIONS["r2"]
+                + CONCRETENESS_CONTROL_AN3_REMINDER_JA  # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01
+                + "\n\n" +
                 build_must_fix_block(must_fix_used_r2, full_ledger_text)
             )
             r1_response_id = stages["r1"]["response_id"]
@@ -433,7 +462,9 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
         print(f"[JA-WRITER][ja_r2] 音声化禁止記号を検出。R1からのrevisionとしてmust-fixで"
               f"1回だけ再生成します(count={len(r2_symbol_findings)})...")
         r2_symbol_instruction = (
-            REVISION_INSTRUCTIONS["r2"] + SYMBOL_PREVENTION_BLOCK_JA + "\n\n"
+            REVISION_INSTRUCTIONS["r2"] + SYMBOL_PREVENTION_BLOCK_JA
+            + CONCRETENESS_CONTROL_AN3_REMINDER_JA  # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01
+            + "\n\n"
             + safety.build_symbol_violation_prompt_note(r2_symbol_findings)
         )
         r1_response_id_for_symbol = stages["r1"]["response_id"]

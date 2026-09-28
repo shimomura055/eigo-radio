@@ -12095,3 +12095,62 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **Fable判定**: `USER_DECISION_REQUIRED`(ユーザー試聴待ち、変更なし)。
 - **根拠**: `TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_REPORT.md`§13〜§15、
   commit`132828cb`/`105ec62d`/`5f84c670`。
+
+## FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01: Family X JA Writer正式経路へAN3(A3+N2)を配線(2026-09-28)
+
+- **決定**: AN3-T0(JA側A3+N2定性抑制+現行英語化Promptのまま)をFamily X
+  Production JA Writerへ`APPROVED_FOR_PRODUCTION`(配線完了・Fable
+  Gate 3判定待ち、ユーザー正式決定)。AN2・T1(英語化Trial限定抑制追記)
+  は不採用(Hormuz AN3-T1・Meta AN2-T1で各1件MAJOR Deviation、
+  `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02`)。
+- **実装**: `er019_family_x_ja_writer_o_r1_r2_01.py`へ4箇所の最小diff。
+  (1)`CONCRETENESS_CONTROL_AN3_BLOCK`(A3+N2逐語、`er037`と同一文字列)
+  を`build_original_prompt()`のSYMBOL_PREVENTION_BLOCK_JA直後へ追加、
+  (2)`CONCRETENESS_CONTROL_AN3_REMINDER_JA`をR1/R2の3箇所(通常r1/r2
+  ループ・R2 Fact Check must-fix・R2音声記号must-fix)全てへ追加、
+  (3)`verbatim_shas()`へ2キー追加。R0_PROMPT/REVISION_INSTRUCTIONS
+  本体・Advanced化Prompt(`ADVANCED_VOCAB_RULE_V2_BLOCK`)は無変更。
+- **REMINDERの性質**: `CONCRETENESS_CONTROL_AN3_REMINDER_JA`はTrial
+  (`FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-01`)では未送信だった追加文で
+  ある(Trial-01はR1/R2でAN3文言を再送せずprevious_response_id連鎖の
+  会話文脈継承のみで0件[Arabic数字]を維持した)。Production配線では
+  previous_response_id失敗時のfallback_full_text経路でAN3指示自体が
+  再送されない頑健性リスクに対応するため追加した(retry/fallback/
+  regenerationでも同じ仕様を維持するというユーザー要件に基づく判断)。
+- **既存非対称性(変更せず、新規OPEN)**: R2 Fact Check must-fix経路
+  (L376-379)はSYMBOL_PREVENTION_BLOCK_JAが元々含まれない既存の非対称
+  実装であり、本タスクでは変更しない(REMINDERのみ追加)。OPEN-227として
+  新規記録。
+- **確認用再生成(実API)**: 専用out-dir(既存run非上書き)でHormuz・
+  Metaの2記事をJA(Original→R1→R2)+Advanced(English)まで正式path
+  (writer/advanced段階のみ、TTS/ASRなし)で再生成。runtime_evidence.json
+  にAN3 sha256キー2件を2記事とも記録、`verbatim_shas()`と一致。JA/
+  Advanced Fact Check最終status: 2記事とも`LEDGER_COMPLIANT`(既存の
+  1回must-fix retry機構が複数箇所で正しく作動、独自retry追加なし)。
+  費用実測合計¥14.031(Guardrail上限¥15内)。
+- **数字カウンタ誤認の訂正**: `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02_
+  REPORT.md`「JA数字はAN3が両記事で0」は、`count_numeric_tokens()`の
+  `_DIGIT_RE=r"\d+"`がArabic数字専用の実装だったことによる表現であり、
+  漢数字(七月十三日・二割・一バレル八十五ドル等)は未計測だった。実
+  本文には理解に必要な漢数字表現が複数残存しており、「数字を0にした」
+  という意味ではない(誤っていたのはカウンタの報告文言でありAN3自体の
+  生成品質ではない、AN3採用根拠「0件だから」ではなく「実本文で必要
+  情報を残しながら不要な具体性をより強く落とせたため」は不変)。
+  `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02_REPORT.md`§14へ訂正注記を
+  追記した。
+- **新規発見(スコープ外・未修正)**: Hormuz Advanced生成で、既存の
+  Main Story段落数チェック(`split_article_text()`、自動retryなし)に
+  2回連続失敗(TTS準備専用parts.json生成のみに影響、article本文・
+  Fact Check・Prompt sha256には無関係)。Meta側は1発PASSのためAN3固有の
+  系統的問題とは断定しない。新規Validator/retry機構は本タスクでは
+  追加せず、報告のみ(Fable/ユーザー判断待ち)。
+- **OPEN_ITEMS**: OPEN-224は`CLOSED`(T1不採用確定)。OPEN-220は
+  `DEFERRED`のまま(所在ファイル誤記訂正: `er003_v1_n3_01_advanced_
+  adaptation_generate.py`が正、`articles_generate.py`ではない)。新規
+  OPEN-227(R2 must-fix経路のSYMBOL_PREVENTION_BLOCK_JA非対称性)。
+- **Opus発火**: なし。
+- **Fable判定**: `APPROVED_FOR_PRODUCTION`(配線完了・Fable Gate 3判定
+  待ち)。`PRODUCTION_WIRED`はSonnetが書かない。
+- **根拠**: `FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md`、
+  `docs/pm/design_family_x_concreteness_an3_t0_production_wiring_01.md`
+  §8。

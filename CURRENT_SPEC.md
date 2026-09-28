@@ -882,6 +882,69 @@ signal/limitation必須化ルール・Trend成立条件・Evidence Strength分�
 は、本節(通常News)には含めない。これらは「## News Editorial Mode
 (Trend Synthesis)」節(別Editorial Mode)を参照。
 
+## Family X Writer — Concreteness Control(AN3-T0) — 2026-09-28新設(ユーザー正式決定、`FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01`)
+
+**Status**: 2026-09-28ユーザー正式決定により`APPROVED_FOR_PRODUCTION`
+(配線完了・Fable Gate 3判定待ち)。Family X JA Original Writer Prompt
+(`er019_family_x_ja_writer_o_r1_r2_01.py::build_original_prompt()`)へ、
+数字・時刻・固有名詞に関する定性的な抑制指示(AN3=A3+N2、`FAMILY-XY-
+CONCRETENESS-CONTROL-TRIAL-01/02`から逐語移設)を`CONCRETENESS_CONTROL_
+AN3_BLOCK`として追加した。R1/R2側にも`CONCRETENESS_CONTROL_AN3_
+REMINDER_JA`(短いreminder文)を、既存retry/fallback/regeneration経路
+(通常r1/r2ループ・R2 Fact Check must-fix・R2音声記号must-fix)全3箇所
+へ個別追加した(既存コードが関数化されていないため、SYMBOL_PREVENTION_
+BLOCK_JAと同型の個別append方式、リファクタリングはしない)。
+
+**ユーザー正式思想(逐語)**: 「細かい数字・時刻・過度な精度は極力使わず、
+記事理解に本当に必要な数字だけ最小限残す。固有名詞も同様に、理解上
+必要なものだけ残す。」**「数字を0にする」とは絶対に定義しない。**
+AN2よりAN3を選んだ理由は「0件だから」ではなく「実本文で必要情報を
+残しながら不要な具体性をより強く落とせたため」。
+
+**適用path**: `er019_family_x_entertainment_production_runner_01.py`
+経由のFamily X JA Writer全経路(通常Original・Original Fact Check
+must-fix retry・Original音声記号must-fix retry・通常R1/R2・R2 Fact
+Check must-fix retry・R2音声記号must-fix retry・previous_response_id
+失敗時のfallback_full_text・`--regenerate-stage writer`)が対象
+(全経路が`build_original_prompt()`または3箇所のR1/R2パターンの
+いずれかを必ず通る、設計書`docs/pm/design_family_x_concreteness_
+an3_t0_production_wiring_01.md` §1a)。**Advanced化(English)Promptは
+本タスクで一切変更しない**(`ADVANCED_VOCAB_RULE_V2_BLOCK`は無変更、
+Trial限定の英語側抑制追記T1はProductionへ混入禁止)。
+
+**成功条件・QA方針**: 数値カウンタ(Arabic数字・漢数字とも)を成功条件
+にしない。既存のLedger Deviation Check(`vfl01.run_deviation_check()`、
+Essential Fact・因果関係のMAJOR Deviation判定)を主判定とする。
+OPEN-20(固有名詞密度の数値目標REJECTED)とは対象が異なり非衝突
+(OPEN-20は数値目標・一般ルール化を却下したものであり、AN3は定性的な
+編集方針指示であり数値目標を含まない、設計書§1c)。
+
+**確認用再生成(実API、2026-09-28)**: 専用out-dir
+`er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01/{hormuz,meta}/`
+にてHormuz・Metaの2記事をJA(Original→R1→R2)+Advanced(English)まで
+正式path(writer/advanced段階のみ、TTS/ASRなし)で再生成した。
+`runtime_evidence.json`に`concreteness_an3_block_sha256`/
+`concreteness_an3_reminder_sha256`が2記事とも記録され、
+`jaw.verbatim_shas()`の値と一致。JA Fact Check最終status: Hormuz
+Original`LEDGER_COMPLIANT`(1発)・R2`LEDGER_COMPLIANT`(既存1回must-fix
+retryでMAJOR解消)、Meta Original`LEDGER_COMPLIANT`(既存1回must-fix
+retryでMAJOR解消)・R2`LEDGER_COMPLIANT`(1発)。Advanced Englishも
+Meta`LEDGER_COMPLIANT`(1発)、Hormuzは既存Advanced deviation must-fix
+retryでMAJOR解消後`LEDGER_COMPLIANT`。費用実測合計¥14.031(上限¥15内)。
+既存test(`er019*_test_*.py`143件・`er037*_test_*.py`12件・
+`er039*_test_*.py`17件)全PASS、新規test(`er019_family_x_concreteness_
+an3_t0_production_wiring_01_test_01.py`17件)全PASS。詳細
+`FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md`。
+
+**新規発見(本タスクのスコープ外、修正せず報告のみ)**: Hormuz Advanced
+生成で、`h3_count==2`構造Gate([Auto-retry付き])はPASSしたが、その
+後段の`split_article_text()`(Main Story導入部の段落数2以上を要求する
+既存チェック、自動retry機構なし)に2回連続で失敗した。Meta側は1発で
+PASSしたためAN3固有の系統的問題と断定できない(n=1の偶発的な生成
+ばらつきの可能性が高い)。この失敗はTTS準備専用の`parts.json`生成に
+留まり、Fact Check・Prompt sha256等の本節の証拠には影響しない。詳細
+設計書§8-4。
+
 ## Discovery/Why(Pool型) — 2026-09-09新設(ユーザー決定、PM-CLOSEOUT-CONSOLIDATION-41、最小節)
 
 A Family(Discovery/Why + News[Major/Daily] + Trend Synthesis)のうち、

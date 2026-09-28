@@ -469,3 +469,71 @@ Grep(`Number Treatment|spoken_first|count_numbers` in `er0*.py`)の
    では別途承認が必要)。
 6. **STOP候補**: 本Phase Aでは衝突・矛盾は検出されなかった(§1c)ため
    STOP対象なし。Phase B実装着手の可否自体はFable/ユーザー承認を要する。
+
+## 8. Phase B 実施記録(委任_02、2026-09-28)
+
+### 8-1. 実装
+
+`er019_family_x_ja_writer_o_r1_r2_01.py`へ§3設計通り4箇所を実装した
+(逐語一致、diff最小、既存パターン[SYMBOL_PREVENTION_BLOCK_JAと同型]を
+踏襲、ヘルパー関数化なし)。`CONCRETENESS_CONTROL_AN3_BLOCK`は
+`build_original_prompt()`のSYMBOL_PREVENTION_BLOCK_JA直後へ1行追加。
+`CONCRETENESS_CONTROL_AN3_REMINDER_JA`はR1/R2の3箇所(通常r1/r2ループ・
+R2 Fact Check must-fix・R2音声記号must-fix)全てへ追加した。§7-2の
+L376-379既存非対称性(SYMBOL_PREVENTION_BLOCK_JA非含有)は変更せず、
+REMINDERのみ追加(OPEN-227として新規記録)。`verbatim_shas()`へ2キー
+追加。
+
+### 8-2. テスト
+
+新規`er019_family_x_concreteness_an3_t0_production_wiring_01_test_01.py`
+(17件、全PASS)。既存regression: `er019*_test_*.py`(143件PASS、新規17件
+含む)、`er037*_test_*.py`(12件PASS)、`er039*_test_*.py`(17件PASS)。
+R0_PROMPT/REVISION_INSTRUCTIONS/ADVANCED_VOCAB_RULE_V2_BLOCKいずれも
+系譜元・既存固定sha256と逐語一致を再確認、テスト破壊なし(§4-2の予測
+通り)。
+
+### 8-3. 確認用再生成(実API)
+
+専用out-dir
+`er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01/{hormuz,meta}/`
+(既存run上書きなし)。research_ledger/storyline_b3は既存Production run
+(`er019_output/family_x_b3_diversity_trial_01/hormuz/run_02`、
+`er019_output/family_x_b3_production_wiring_01/run_01`)から複製した
+上でrunnerのreuseロジックにより無課金で再利用し、writer/advanced段階の
+みを正式path(`er019_family_x_entertainment_production_runner_01.py
+--stage writer --stop-after writer`、続けて`--stage advanced
+--stop-after advanced`)で実API実行した(TTS/ASR段階は本runnerに実装
+自体が存在しないためコード上呼ばれない、§1a・本ファイルimport文で
+確認済み)。
+
+結果: Hormuz/Meta ともJA(Original→R1→R2)は既存Fact Check機構により
+最終的に`LEDGER_COMPLIANT`(Hormuz original 1発PASS・r2は既存1回
+must-fix retryでMAJOR解消、Meta original 1回must-fix retryでMAJOR
+解消・r2は1発PASS)。Advanced(English)もMeta 1発`LEDGER_COMPLIANT`、
+Hormuzは1回目PASS判定後に別の構造チェック(後述8-4)でクラッシュ、
+2回目は既存Advanced deviation must-fix retryでMAJOR解消後
+`LEDGER_COMPLIANT`。`runtime_evidence.json`に
+`concreteness_an3_block_sha256`/`concreteness_an3_reminder_sha256`が
+2記事とも記録され、`jaw.verbatim_shas()`の値と一致した。費用実測
+合計¥14.031(Hormuz¥8.822+Meta¥5.209、上限¥15内)。
+
+### 8-4. 新規発見(本タスクのスコープ外、修正せず報告のみ)
+
+Hormuz Advanced生成で、`er003_v1_n3_01_advanced_adaptation_generate.py`
+側の構造Gate(`h3_count==2`の`validate_point_structure()`、
+`run_writer_with_technical_retry()`内でmax_attempts=2の自動retry付き)
+はPASSしたが、その**後段**の`er012_e_family_entertainment_two_level_
+runner_01.py: run_writer_stage()`が呼ぶ
+`er003_v1_n3_01_scaffold_generate.py: split_article_text()`の
+「Main Story(タイトル直後、最初の###見出し前の導入部)は段落数2以上」
+というチェックに2回連続で失敗した(`RuntimeError`、自動retry機構なし、
+未捕捉のままクラッシュ)。Meta側は1発でこのチェックもPASSしたため、
+AN3固有の系統的問題と断定はできない(n=1の偶発的な生成ばらつきの
+可能性が高い、JA記事自体はHormuz/Meta双方とも段落数・情報量は既存
+baselineと近い)。この構造チェックはparts.json(TTS音声化準備専用の
+成果物、`er019_family_x_audio_production_runner_01.py`のみが消費)の
+生成失敗に留まり、article.md本文・Fact Check・Prompt sha256などの
+本タスク証拠には影響しない。本タスクでは新規Validator/retry機構を
+追加しないという禁止事項に従い、**修正は行わず新規OPEN候補として
+報告のみ**とする(Fable/ユーザー判断)。

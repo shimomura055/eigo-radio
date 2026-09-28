@@ -201,3 +201,21 @@ SHA256`がimport時点で自己検証されることも確認済み(§4)。
 3. 「固有名詞9→19」の原因がカウント方式のアーティファクトだったという
    本Trialの実測結果を踏まえ、OPEN-220(Advanced Prompt側固有名詞抑制)の
    優先度・要否をどう扱うか。
+
+## 14. 訂正注記(2026-09-28、FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01で判明)
+
+上記L122「JA数字はAN3が両記事で0」は、`count_numeric_tokens()`の
+`_DIGIT_RE = re.compile(r"\d+")`(`er037_family_xy_concreteness_control_trial_01.py`
+L140)がArabic数字(0-9)のみを検出する実装であったことによる。漢数字
+(「七月」「十三日」「二割」「八十五ドル」「一バレル」等)は本カウンタ
+では計測されておらず、AN3-T0の実本文(`er039_output/family_xy_
+concreteness_control_trial_02/hormuz/cells/AN3-T0_ja.md`)には理解に
+必要な数量表現が漢数字で複数残存していることを確認した。「AN3は記事
+から数字を完全に除去した」という意味ではない。ユーザーの「数字を0に
+するとは絶対に定義しない」という方針と、実際の出力結果は一致している。
+誤っていたのは**カウンタの表現・報告文言**であり、AN3自体の生成品質
+ではない。正しくは「Arabic数字表記は0、漢数字は本Trialでは未計測」と
+訂正する。AN3採用の根拠は「0件だから」ではなく「実本文で必要情報を
+残しながら不要な具体性をより強く落とせたため」であり、この結論自体は
+変わらない(詳細は`docs/pm/design_family_x_concreteness_an3_t0_
+production_wiring_01.md` §5、`DECISION_LOG.md`同日エントリ参照)。
