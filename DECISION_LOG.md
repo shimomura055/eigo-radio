@@ -11784,3 +11784,30 @@ WIRING-FAMILY-X-02 / EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02を
   への仕様追加は行っていない)。
 - **根拠**: `FAMILY-Y-VOICE-STRUCTURE-TRIAL-01_REPORT.md`、
   `docs/pm/RESULT_PACKET_FY1.md`、commit`d2bacf9c`。
+
+## Fable Gate 3判定(2026-09-28): KEY-PHRASE-4PLUS1-TOPIC-PHRASE-
+PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
+
+- **性質**: 新規判断ではなく、既にGate 3全項目充足済みの管理IDについて
+  SSOT表記(`CURRENT_SPEC.md`/`docs/pm/REPORT_LEDGER.md`Status欄)を
+  `APPROVED_FOR_PRODUCTION`・Sonnet実装済みから`PRODUCTION_WIRED`へ
+  同期する事務的整理(コード変更なし、¥0)。
+- **対象**: `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01`(commit
+  `0e6744e0`→`0cb59383`)。スコープ: 共通Key Phrase経路(Strategy L/DB
+  Hybrid両経路・全Family)の4+1構成(重要語4+Topic Phrase/Word 1)、DB
+  Hybrid backup_item補完、Strategy L retry最大2回+2回目到達時報告、
+  Strategy L側runner-up契約はOPEN-211で`DEFERRED`のまま。
+- **根拠**: Opus L2レビュー(BLOCKER 0件、SHOULD_FIX S1〜S7・N1/N7は
+  修正1回目`0cb59383`で反映済み、REPORT§12逐語)、runtime evidence
+  (`er035_output/kp_4plus1_evidence_01/`+`_02/`、計9記事+forced
+  fallback1件、実測費用合計¥4.8383+¥1.1945、いずれも`role_counts`={
+  important:4, topic:1}でPASS到達)、test27件(既存20+新規7)+既存test
+  4ファイルfixture更新で計331件全PASS、`run_project_regression.py`
+  (failed=7・errors=2、既知baseline一致、本タスク由来の新規regression
+  0件)、SSOT反映済み(REPORT§11 Gate 3表・§21再確認表)。
+- **STOP該当**: 無し(表記同期のみ、Production挙動・コードの変更なし)。
+- **反映範囲**: `CURRENT_SPEC.md`(4+1構成節のStatus欄)、
+  `docs/pm/REPORT_LEDGER.md`(該当行Status・Opus発火列)、
+  `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`(Gate 3表・
+  Gate 3再確認表の判定欄)、本エントリ新設。
+- commit: 本コミット(SSOT表記同期のみ、コード変更なし)。

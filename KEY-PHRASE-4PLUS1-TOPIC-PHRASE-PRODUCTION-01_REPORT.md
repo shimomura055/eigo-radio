@@ -225,8 +225,8 @@ forced_fallback)は既存Production側がcost計測していない(OPEN-206、
 | runtime evidence | 済(9記事×レベル、¥4.8383、§6参照) |
 | SSOT反映 | 済(`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`、本コミット) |
 | STOP/USER_DECISION候補記録 | 済(§10、OPEN-211) |
-| Mandatory Opus L2レビュー | 未実施(共有Core module変更のため対象と判断、実施要否・タイミングはFable判断) |
-| `PRODUCTION_WIRED`最終判定 | 未(Fable判断待ち) |
+| Mandatory Opus L2レビュー | 済(修正1回目で実施、§12参照。BLOCKER0件、S1〜S7/N1/N7反映済み) |
+| `PRODUCTION_WIRED`最終判定 | **`PRODUCTION_WIRED`**(2026-09-28、Fable Gate 3判定。本表はPhase B時点の記録であり、最終判定は下記「Gate 3再確認表」[修正1回目後]を参照) |
 
 ## §12 Opus L2設計レビュー所見(逐語、2026-09-28)
 
@@ -431,7 +431,7 @@ substitution_target`も同様に同じ5ファイルのみでDangling無し。
 | PM_GOVERNANCE | 該当なし(通常のProduction配線修正、Gate 1〜7の枠組み内) |
 | Git | 所有ファイル+testのみadd予定(`git add -A`不使用)、他Agent差分は一切addしない |
 | Dangling | 済(上記参照) |
-| `PRODUCTION_WIRED`最終判定 | 未(Fable判断待ち) |
+| `PRODUCTION_WIRED`最終判定 | **`PRODUCTION_WIRED`**(2026-09-28、Fable Gate 3判定。スコープ: 共通Key Phrase経路[Strategy L/DB Hybrid両経路・全Family]の4+1構成、DB Hybrid backup補完、Strategy L retry2回+2回目報告、runner-upはOPEN-211で`DEFERRED`。根拠: commit`0e6744e0`/`0cb59383`、Opus L2[BLOCKER0件、S1〜S7/N1/N7反映]、evidence9記事+差分evidence_02、test27件+regression baseline一致、SSOT反映済み) |
 
 ### STOP・新規USER_DECISION候補
 
