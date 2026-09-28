@@ -915,6 +915,36 @@ Phrase段階を含むタスク同士の並列禁止等)を満たすことを前�
   技術的必然ではなくPM上の優先順位判断で未着手のまま放置されたことを
   受けたユーザー指示(再発防止ルール化)。
 
+**8-Y. SSOT編集の直列化ルール(2026-09-28、`PM-GOVERNANCE-SSOT-
+SERIALIZATION-RULE-01`、ユーザー正式採用、再発防止ルール)**:
+
+- (a) SSOT 4点(`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`/
+  `docs/pm/REPORT_LEDGER.md`)および`docs/pm/PM_GOVERNANCE.md`の編集は、
+  同時に1 Agentのみが行う。Fableは委任時にSSOT編集権を持つAgentを1件に
+  限定し、他の並行Agentには(SSOTを直接編集させず)SSOT追記文案を
+  RESULT_PACKETへ書かせるよう指示する。
+- (b) 他Agentの未commit差分が存在するファイルは`git add`しない。
+- (c) commit前に対象ファイルへ`git status --porcelain <path>`と
+  `git diff <path>`を実行して差分所有者を確認し、自分の編集以外の内容が
+  含まれる場合はaddしない(最大10分待機→解消しなければ、そのファイル分の
+  文案をRESULT_PACKETへ残し未適用のまま報告する)。
+- (d) 並列Agentが同一SSOTファイルを同時編集しない(上記(a)の帰結として
+  明文化)。
+- (e) 背景: 2026-09-28に同種の巻き込み事故が3回発生した(commit
+  `3d9a28be`に`KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-
+  PRODUCTION-WIRING-01`[KPS1]の`CURRENT_SPEC.md`/`DECISION_LOG.md`編集が
+  他Agent[`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02`]のcommitへ
+  混入、`b2736e13`系で`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-
+  FAMILY-X-02`[FLX2]の`docs/pm/REPORT_LEDGER.md`編集がKPS1のcommitへ
+  混入、`6b0e792d`にASR関連の`docs/pm/REPORT_LEDGER.md`更新がFLX2の
+  commitへ混入)。いずれも内容自体は正しく実害(データ破損・履歴書き換え)
+  なしと各当事者Agentが個別に確認済みだが、ファイル単位の`git add`は
+  他Agentの編集途中を構造的に巻き込みうるため、単なる運用注意ではなく
+  正式な再発防止ルールとする。
+- (f) 11節D-2委任文標準テンプレート(`docs/pm/templates/
+  DELEGATION_STANDARD_TEMPLATE.md`)の「## Git」欄に「SSOT編集権の有無」を
+  明記する運用とする。
+
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
 Fableがユーザーへ報告・説明する際は、Sonnetの技術レポートをそのまま転記しない。

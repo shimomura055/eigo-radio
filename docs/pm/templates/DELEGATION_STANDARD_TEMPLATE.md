@@ -68,6 +68,11 @@ import実行される事故防止(CONSOLIDATION-124)。)
 
 (明示`git add`対象ファイルの一覧、コミットメッセージ文案、末尾trailerを記す。
 `-A`/`stash`/`amend`は既定で禁止。)
+(SSOT編集権の有無: 本Agentが`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`/`docs/pm/PM_GOVERNANCE.md`の
+編集権を持つか明記する。持たない場合、SSOT追記文案はRESULT_PACKETへ
+記載するのみとし、SSOTファイル自体は編集・addしない。8-Y節[SSOT編集の
+直列化ルール]参照。)
 
 ## 報告(RESULT_PACKET項目)
 
