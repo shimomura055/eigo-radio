@@ -12008,3 +12008,42 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **確認ページ**: https://shimomura055.github.io/eigo-radio/user_test/kp_advanced_explanation_trial_02/index.html
 - **根拠**: `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02_REPORT.md`、
   `docs/pm/RESULT_PACKET_KE2.md`、commit`3d86edd9`。
+
+## TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-01: Trial記録(2026-09-28)
+
+- **目的**: 全記事共通かつ文言固定のTTS要素(固定shell)を棚卸しし、
+  各固定phraseごとにChampion候補(現行Production Master/Flash-Lite
+  Role style/既存2.5 Pro系)を比較するTrial。
+- **棚卸し結果**: EN 9件(welcome/preview_intro/key_phrases_intro/
+  full_story_intro/num_one〜num_five)、JA 1件(point_explanation、
+  Standardのみ)の計10件。他に「全記事共通かつ文言固定」のTTSなし。
+- **Candidate**: A=Production既存Master(`v2_flash_lite_short_style`、
+  新規API呼び出し0件)。B=Flash-Lite+Task B Role style(num_two/
+  num_threeは既知失敗のため再生成せず既存evidenceを引用)。C=既存
+  2.5 Pro系`structured_separation`。
+- **結果**: A 10/10 OK。B 7/10(num_oneが新規に3attempt全滅)。C 9/10
+  (num_threeが新規に3attempt全滅、num_twoも3attempt中2回CJKドリフト
+  後合格)。welcome等5 phraseは全候補OK・drift無し。One〜Fiveセットは
+  Aのみ5/5完全。
+- **Master Audio Store整合性**: `style_instruction_version`/
+  `tts_model_id`等で旧style Masterと区別され誤reuseしないことを
+  `test_master_audio_key_distinguishes_style_versions`で確認済み。
+- **費用**: ¥3.61(Guardrail¥40)。
+- **回帰**: 15/15 PASS。
+- **Production状態**: Production Master Audio Store無変更(Trial Store
+  へ隔離、context manager復元をテスト確認)。Production code・正式
+  Prompt・`CURRENT_SPEC.md`無変更。共有append-only監査ログ
+  `er011_output/attempt_history.jsonl`へTrial分3 attemptが追記された
+  (OPEN-223と同型、commit対象外)。
+- **量産コストへの含意**: 既存`level=None`共有keyにより、Standard/
+  Advanced間の固定phrase reuseは既に追加TTS 0で成立している。Champion
+  化の効果は「style変更イベント時の再生成・Human Review Lock回避」が
+  主目的である。
+- **Opus発火**: なし。
+- **Fable判定**: `USER_DECISION_REQUIRED`(ユーザー試聴+phraseごとの
+  Champion選定待ち。機械判定ではnum_one〜num_threeはA継続が最も
+  安全)。Champion選定・Production配線はユーザー判断後に別管理IDで
+  実施する。Production採用はユーザーのみが判断する。
+- **確認ページ**: https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_01/index.html
+- **根拠**: `TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-01_REPORT.md`、
+  commit`8047392c`/`79adef33`。
