@@ -54,7 +54,8 @@ er040_tts_fixed_shell_master_champion_trial_01_test_01`(pytest未インストー
 ## 4. 成果物
 
 - 試聴比較ページ: `user_test/fixed_shell_champion_trial_01/index.html`
-  (push後URL: 後述commit hashの後に追記)
+  (公開URL: https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_01/index.html 、
+  `curl -sI`で200確認済み)
 - Trial結果JSON: `er040_output/tts_fixed_shell_master_champion_trial_01/champion_trial_results.json`、
   `comparison_data.json`
 - 音声: mp3 30件(phrase×candidate、`lameenc`使用、ffmpeg/pydub不在のため既存precedent
@@ -211,4 +212,12 @@ master_audio_store_restores_*`)で確認済み。
   `er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl`(共有append-only監査ログ、
   §9-5開示のとおり他タスクの未commit差分と混在するため非commit)。
 
-(commit/push実施後、hash・raw URLを追記)
+commit hash: `8047392c0bb686ecaae391d470408a9d0b284364`(push origin/main成功、fast-forward、
+競合なし)。
+
+Raw URL(代表ファイル):
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er040_tts_fixed_shell_master_champion_trial_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er040_tts_fixed_shell_master_champion_trial_01_page_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er040_tts_fixed_shell_master_champion_trial_01_test_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/design_tts_fixed_shell_master_champion_trial_01.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-01_REPORT.md
