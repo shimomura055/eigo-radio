@@ -12214,3 +12214,43 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **Fable判定**: `USER_DECISION_REQUIRED`(phraseごとのChampion選定待ち)。
 - **根拠**: `TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02_REPORT.md`。試聴:
   https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_02/index.html
+## TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02: Trial記録+JA Role Style機構不在の発見(2026-09-28)
+
+- **概要**: commit`06691c46`/`a0c4b592`/`0db37f37`(本体)、`f31392e8`(修正1回目)、
+  push済み。対象=可変segment8件(JA Standard: preview/comment_1〜4、EN Advanced:
+  topic_intro/full_story_part1/in_one_line)。固定phrase(Task 2)・Key Phrase系
+  (Task 1)・full_story_part2/3(費用抑制)は除外。J0/E0は既存音声reuse、
+  J1〜J3/E1〜E3の24件新規(segment×pattern単位の部分実行、`--stage all`なし)。
+  全32件ASR OK、drift 0、Human Review Lock 0。費用¥20.71(Guardrail¥60)。
+  回帰11/11。Production無変更。Pages7項目確認PASS(headless Edge、`<audio>`37件)。
+- **重要な発見(J0の訂正の経緯)**: delegationが想定したJ0(「落ち着いた、自然な
+  話し言葉で」)は、実は現行Productionには配線されていない別Trial
+  (`TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01`)がTrial限定で導入した新規値だった。
+  コード実測の結果、現行Production日本語音声(Standard preview/comment_1〜4)は
+  常に`p9a.JAPANESE_STYLE_PREFIX`という長文instruction(「noticeably animated,
+  emotionally present, and expressive delivery」等、むしろ表情豊かな方向)を
+  使っており、role別の短いstyle指定機構自体が存在しないことを確認した
+  (`generate_a2_japanese_with_reading_safety`に`style_prefix_override`
+  パラメータが無いことを実測確認)。本Trialでは、この真のProduction現状をJ0
+  として採用し直した。EN側(FULL_STORY/IN_ONE_LINE/TOPIC_INTRO)は delegation
+  想定どおり既存6-roleと完全一致することを実測確認済み(乖離なし)。
+- **Prompt全文(詳細はREPORT参照)**: JA J1「落ち着いた、自然な話し言葉で。
+  意味の流れに合わせて軽く抑揚をつけてください。」/J2「落ち着いた、自然な
+  話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないで
+  ください。」/J3「落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に
+  応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。」
+  EN FULL_STORY E0「calm, steady news narration」/E1〜E3は自然な抑揚を段階的に
+  加えた文言(REPORT§4逐語掲載)。EN IN_ONE_LINE E0「concise, clear」/E1〜E3も
+  同様に段階的(REPORT§4逐語掲載)。
+- **修正1回目(¥0)**: ユーザーが基準点として述べた「現状=『落ち着いた、自然な
+  話し言葉で』は抑揚不足」の音声が、実はTask B(`TTS-ALL-SPOKEN-ROLE-STYLE-
+  TRIAL-01`)のTrial限定値であり本Trialの真のProduction現状J0とは異なる
+  ことを踏まえ、比較の連続性のためTask B Trial値のJA音声を参考列として
+  試聴ページへ追加(reuseのみ、新規生成なし、¥0)。J0ラベルを「現行Production
+  (長文instruction)」に明確化。
+- **共有ログ**: `er011_output/attempt_history.jsonl`へ追記(OPEN-223同型)。
+- **付記**: 採否・Production配線はユーザー判断後に別管理IDで実施する。
+  本Trial自体はProduction code/Prompt/CURRENT_SPEC無変更。Opus発火なし。
+- **Fable判定**: `USER_DECISION_REQUIRED`(ユーザー試聴でJ/Eパターンを選ぶ)。
+- **根拠**: `TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02_REPORT.md`。試聴:
+  https://shimomura055.github.io/eigo-radio/user_test/tts_variable_role_style_trial_02/index.html
