@@ -253,8 +253,152 @@ REJECTED、未配線)。Status: USER_DECISION_REQUIRED(試聴待ち)。Productio
    (Production動作には影響しないが、将来同様のTrialを行う際の既知の
    注意点として記録)。
 
-## STOP該当有無
+## STOP該当有無(§1-12、修正前時点)
 
 なし(Human Review Lock到達はSTOPではなく、既存Gateの正常動作として
 記録・報告した。予算はGuardrail以内、暴走的retry・想定外API消費は
 観測されていない)。
+
+---
+
+## 13. 修正1回目(ユーザー指示反映): Production Master reuse実装 + コスト超過インシデント報告
+
+委任文: `docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_03.md`
+(check結果: FAIL、必須セクション2件[事前指定Read一覧/Grep一覧]欠落+
+コマンド行1件の書式記法のみ、内容不備なし)。
+
+### 13-1. 実装(意図通り完了、¥0)
+
+ユーザー指示「Two./Three.のためだけに毎回再生成する方向へ寄せない。
+固定shellはTask Cの思想『合格済み固定音声をMaster化してreuse』と整合
+させる。Task CのChampion選定前にProduction Masterを勝手に置換しない」
+を反映し、`er038_tts_all_spoken_role_style_trial_01.py`へ以下を追加した
+(最小変更、Production正式path無変更)。
+
+- `PRODUCTION_MASTER_REUSE_SHELL_SEGMENTS`: Production Master Audio Store
+  (`er006_output/master_audio_store_01/manifest.json`、read-only参照)から
+  実測特定した既存ASR verified OK Masterの表。
+
+  | segment | canonical_text | master_audio_id | style_instruction_version | tts_model_id | asr_text_evidence |
+  |---|---|---|---|---|---|
+  | num_two | "Two." | `75d64a8e14e3b8592db99a5a` | v2_flash_lite_short_style(=FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]) | gemini-3.8-flash-lite-tts | "2" |
+  | num_three | "Three." | `410e12ebe93da7a797860b89` | v2_flash_lite_short_style(=FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]) | gemini-3.8-flash-lite-tts | "3" |
+
+  特定根拠: `canonical_text_hash = sha256(text)[:16]`が"Two."/"Three."と
+  一致することを実測確認(`1eb32d1ee4458814`/`43c4d94ea2cd4fbe`)。両entryは
+  `TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02` 修正3回目
+  (commit `ee280e76`、"shell短文style+version bump")の作業で
+  `er019_family_x_audio_production_wiring_01.py`(family_x_b3_diversity_
+  trial_01/hormuz__run_06_flashlite_full_kp/b1b)実行時にASR verified OK
+  (`asr_text="2"`/`"3"`)として生成されたもの(`reuse_telemetry.jsonl`実測)。
+- `_reuse_production_master_segment()`: Production Master wavを
+  `shutil.copyfile`でTrial側segmentへread-onlyコピー(Production Store
+  側は書き込み一切なし)、`reused_from_production_master=true`・
+  `master_audio_id`・`asr_text_evidence_carried_forward=true`等を記録。
+- `generate_shell_segments(..., reuse_production_master=...)`:
+  指定segment(num_two/num_three)のみreuse経路、他segmentは従来通り
+  Trial専用Store経由(変更なし)。
+- CLI: `--reuse-production-master num_two,num_three`(カンマ区切り)。
+- 単体test 3件追加(計16件、全PASS): canonical_text_hashがProduction
+  manifest実entryと一致することの確認、reuse関数がProduction Store
+  ファイルを一切変更しないことの確認(mtime/バイト列比較)、
+  `generate_shell_segments`がreuse対象segmentで`store.get_or_generate`を
+  呼ばないことの確認。
+
+**動作確認(実測、¥0)**: num_two/num_three Trial側wavのsha256が
+Production Master wavのsha256と完全一致することを確認
+(`8eaedab9...c9` / `d1825164...f7`)。Production Master Audio Store
+(`manifest.json`/`reuse_telemetry.jsonl`)のsha256は作業前後で不変
+(`9070cb81...8b` / `594d8b20...04`、変更なし)。Human Review Lock関連の
+共有ログ(`er011_output/attempt_history.jsonl`)にnum_two/num_three関連の
+新規entryは無い(reuse経路は`guarded_generate`デコレータ付き関数を一切
+呼ばないため)。
+
+### 13-2. インシデント: コスト超過(¥30.80、Guardrail¥5の約6倍)
+
+**原因**: reuse実装の動作確認のため
+`--stage all`(=`run_tts_stage`+`run_assemble_stage`)を実行したが、
+`run_tts_stage`は**shared narration(shell)層のみ**Trial専用Store経由の
+cache機構(`store.get_or_generate`)を持ち、**主記事12segment・Key
+Phrase 10segmentにはこの層のcache機構が無い**(design docに明記の
+「single-run想定」設計)。このため既に完成済みのAdvanced(B1B)
+主記事・Key Phraseまで意図せず全て再生成対象となった。約120秒で
+timeoutしBashがbackground実行へ移行したため、実消費に気づくのが遅れた。
+`raw_usage_log.jsonl`実測でKP 10/10・主記事9/12(topic_intro/preview/
+comment_1-4/full_story_part1/in_one_line/full_story_part2_heading)の
+新規TTS+ASR呼び出しを検出した時点で対象processを強制終了した
+(`Stop-Process -Force`、PID 2件)。full_story_part2(本文)/
+full_story_part3_heading/full_story_part3(本文)の3segmentは未着手のまま
+(旧音声のまま)。
+
+- **実費用**: ¥30.80(`fx_runner.compute_cost_jpy_so_far`実測、
+  gemini ¥25.54 + openai_asr ¥5.26)。本delegationのGuardrail上限¥5を
+  超過(約6.2倍)。ユーザーの既存メモ(「小口API課金は事前確認不要、
+  大口のみ一時停止」)の基準では絶対額としては小口だが、本delegationが
+  明示した「原則¥0=reuseのみ、reuse不能なら実行せずSTOP」という契約には
+  反しており、正直に報告する。
+- **Production安全性への影響**: **無し(確認済み)**。Production Master
+  Audio Store(`er006_output/master_audio_store_01/`)はsha256比較で
+  作業前後バイト単位不変。num_two/num_threeのHuman Review Lock状態も
+  この事故で新規に変更されていない(§13-1参照、reuse経路はLock機構を
+  一切経由しない)。
+- **結果として発見した既存Gate(独自回避せず正常に機能)**: 再生成後の
+  KP 10segmentで`asm.verify_episode_audio_validation_gate`
+  (`er003_v1_n3_01_assemble.py`、ASSET_HASH_MISMATCH、
+  ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05/
+  ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)がAssembly実行を正しく
+  ブロックした(音声byteが検証済みevidenceと不一致のため)。このGateは
+  独自判断で回避・無効化していない。
+
+### 13-3. 復旧措置(¥0のみ実施、それ以上の対応は実施せず報告)
+
+1. `--reuse-production-master num_two,num_three`付きで
+   `generate_shell_segments()`単体を再実行(shell層は全segment cache
+   hitまたはreuse-copyのため追加API呼び出し0件、実測で`raw_usage_log.
+   jsonl`行数不変を確認)。これにより`shared_narration.num_two/num_three`
+   のみ正しく`OK`(reuse詳細付き)へ更新した。
+2. `b1b/audit/tts_generation_results.json`の`shared_narration`を上記結果で
+   更新し、`production_master_reuse_note`(§手順2要求のHuman Review
+   Lock代替記録、OPEN-223参照)と`reconciliation_note_2026_09_28`
+   (本インシデントの説明)を追記した。`segments`/`key_phrases`セクションは
+   意図せぬ再生成前(直前の正常完了run)の実測値のまま保持しており、
+   再生成後の実際の音声byteとは厳密には一致しない可能性がある(status
+   ="OK"自体は両者とも意味的に真、実際にASR再検証は再生成時に行われて
+   いるが値の保存前にprocessを終了したため未記録)。
+3. `b1b/run_summary_assemble.json`を、現在の実際のblock要因
+   (§13-2のASSET_HASH_MISMATCH)へ更新し、旧`BLOCKED_SHARED_NARRATION_
+   NOT_OK`という現状不正確な記述を残さないようにした。
+4. **Advanced(B1B)全体のAssembly・mp3変換・index.html更新は実施していない**
+   (§13-2のGateにより現時点で安全に完了できないため)。`user_test/
+   tts_all_role_style_trial_01/`の既存ファイル(Standard=
+   `hormuz_standard_trial.mp3`含む、A2は本インシデントの影響を一切
+   受けていない)は無変更のまま維持した。
+
+### 13-4. ユーザー/Fableへの選択肢提示(Sonnetは独自判断で先へ進めない)
+
+1. **Option A**: KP 10segment(+必要なら主記事9segment)を、既存の
+   6% slowdown等の必須post-process込みで再検証・evidence再紐付けする
+   追加作業を新規委任として承認する(追加費用は僅少見込みだが、本
+   delegationのGuardrail¥5は既に超過済みのため、新しいGuardrailの
+   明示が必要)。
+2. **Option B**: Advanced full assembly(hormuz_advanced_trial.mp3)は
+   本Trialでは見送り、Standard(A2、既存`hormuz_standard_trial.mp3`、
+   影響なし)のみで試聴・評価を先行する。Advanced個別29/31要素は既存の
+   個別mp3(`user_test/.../b1b_*.mp3`、本インシデントの影響なし
+   [これらは元々個別変換済みの旧音声のまま])で参考試聴可能。
+3. **Option C**: 本インシデントで生成された新しい音声(KP
+   10segment・主記事9segment)は品質的には実際にASR検証を通過している
+   ため、evidence再紐付け(Option A同等の作業)が完了すれば、そのまま
+   Advanced fullとして採用してよいか、あるいは元の(pre-incident)音声を
+   何らかの形で復元すべきか、ユーザーの意向を確認する
+   (pre-incident音声のバイナリそのものは`*.wav`がgit管理外のため復元
+   不可、`user_test/.../b1b_*.mp3`が唯一のpre-incident参考artifact)。
+
+### 13-5. STOP該当有無(§13時点、更新)
+
+**あり**。本追加Guardrail(¥5)を実測¥30.80で超過したこと、および
+Advanced full assembly成果物が未完成のまま既存Gateでブロックされて
+いることを理由に、これ以上の追加API呼び出し・追加費用を伴う対応は
+Sonnet単独では実施せず、ここでSTOPしてFable/ユーザーへ選択肢を提示する
+(§13-4)。Production安全性(Master Store不変・Human Review Lock状態不変)
+は実測で確認済みであり、Productionへの実害は無い。

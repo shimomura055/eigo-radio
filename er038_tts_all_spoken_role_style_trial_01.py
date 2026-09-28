@@ -113,6 +113,111 @@ SEGMENT_ROLE_MAP_A2.update({
 })
 del SEGMENT_ROLE_MAP_A2["kp_japanese"]
 
+# ------------------------------------------------------------
+# 修正1回目(ユーザー指示反映、delegation_log
+# docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_03.md):
+# num_two/num_three("Two."/"Three.")をTrial NUMBER_LABEL styleで毎回
+# 再生成せず、Production Master Audio Store
+# (er006_output/master_audio_store_01/、read-onlyで参照するのみ、一切
+# 書き込まない)内の既存ASR verified OK Master(TTS-GEMINI-3.8-FLASH-LITE-
+# PRODUCTION-WIRING-FAMILY-X-02 修正3回目[commit ee280e76]由来、
+# FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル=
+# SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
+# "v2_flash_lite_short_style"[er006_audio_cost_pilot_02_shared_narration.py])
+# をコピーしてTrial内でreuseする。Master IDは
+# er006_output/master_audio_store_01/manifest.jsonから実測特定した値
+# (canonical_text_hash=sha256("Two."/"Three.")[:16]で一致確認済み)。
+# ASR証跡("2"/"3")はer019_output配下の既存Production実測記録から引用
+# (Trialで再ASRは行わない、追加API費用¥0)。
+# ------------------------------------------------------------
+PRODUCTION_MASTER_REUSE_SHELL_SEGMENTS = {
+    "num_two": {
+        "master_audio_id": "75d64a8e14e3b8592db99a5a",
+        "audio_path": "er006_output/master_audio_store_01/audio/75d64a8e14e3b8592db99a5a.wav",
+        "canonical_text": "Two.",
+        "style_instruction_id": "charon_english_fixed_shell",
+        "style_instruction_version": "v2_flash_lite_short_style",
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "asr_text_evidence": "2",
+        "asr_evidence_source": (
+            "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/"
+            "hormuz__run_06_flashlite_full_kp/b1b/audit/tts_generation_results.json#segments.num_two"),
+    },
+    "num_three": {
+        "master_audio_id": "410e12ebe93da7a797860b89",
+        "audio_path": "er006_output/master_audio_store_01/audio/410e12ebe93da7a797860b89.wav",
+        "canonical_text": "Three.",
+        "style_instruction_id": "charon_english_fixed_shell",
+        "style_instruction_version": "v2_flash_lite_short_style",
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "asr_text_evidence": "3",
+        "asr_evidence_source": (
+            "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/"
+            "hormuz__run_06_flashlite_full_kp/b1b/audit/tts_generation_results.json#segments.num_three"),
+    },
+}
+
+
+def _reuse_production_master_segment(reuse_entry: dict, out_path: str) -> dict:
+    """Production Master Audio Store(read-only)の既存ASR verified OK
+    master wavをコピーしてTrial側segmentとして使う。コピー先(out_path)
+    のみ新規作成し、Production Store側ファイルは一切書き込まない
+    (Human Review Lockの共有state[review_lock_state.json]もこの経路では
+    一切呼ばないため無変更のまま)。"""
+    src = reuse_entry["audio_path"]
+    if not os.path.exists(src):
+        return {
+            "status": "STOPPED",
+            "reason": f"reuse対象のProduction Master audioが見つかりません: {src}",
+        }
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    shutil.copyfile(src, out_path)
+    with open(out_path, "rb") as f:
+        sha256 = hashlib.sha256(f.read()).hexdigest()
+    return {
+        "status": "OK",
+        "reused": True,
+        "reused_from_production_master": True,
+        "master_audio_id": reuse_entry["master_audio_id"],
+        "production_master_audio_path": src,
+        "production_style_instruction_id": reuse_entry["style_instruction_id"],
+        "production_style_instruction_version": reuse_entry["style_instruction_version"],
+        "production_tts_model_id": reuse_entry["tts_model_id"],
+        "asr_text": reuse_entry["asr_text_evidence"],
+        "asr_text_evidence_carried_forward": True,
+        "asr_evidence_source": reuse_entry["asr_evidence_source"],
+        "attempts_log": [],
+        "sha256": sha256,
+        "human_review_lock_state": "trial_reuse_substitutes_for_lock_resolution_not_unlocked",
+        "note": ("Trial NUMBER_LABEL styleでの新規生成ではなく、Production合格Master"
+                 "(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル)をTrial内でreuseした"
+                 "(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目、ユーザー指示)。"
+                 "共有Human Review Lock state(review_lock_state.json)はこの経路では"
+                 "変更していない(OPEN-223参照、Lock解除ではなくTrial内reuseでの代替)。"),
+    }
+
+
+def _summarize_shared_narration_with_reuse_detail(raw: dict) -> dict:
+    """fx_runner._summarize_shared_narration()(Production共有関数、無変更)
+    が返す必須field(status/reused/master_audio_id/asr_text/attempts)は
+    そのまま維持しつつ、Production Master reuse(修正1回目)の追加証跡
+    fieldをTrial側でだけ付加する。"""
+    summary = fx_runner._summarize_shared_narration(raw)
+    for name, r in raw.items():
+        if r.get("reused_from_production_master"):
+            summary[name].update({
+                "reused_from_production_master": True,
+                "production_master_audio_path": r.get("production_master_audio_path"),
+                "production_style_instruction_id": r.get("production_style_instruction_id"),
+                "production_style_instruction_version": r.get("production_style_instruction_version"),
+                "production_tts_model_id": r.get("production_tts_model_id"),
+                "asr_text_evidence_carried_forward": r.get("asr_text_evidence_carried_forward"),
+                "asr_evidence_source": r.get("asr_evidence_source"),
+                "human_review_lock_state": r.get("human_review_lock_state"),
+                "note": r.get("note"),
+            })
+    return summary
+
 
 def load_json(path: str) -> dict:
     with open(path, encoding="utf-8") as f:
@@ -332,12 +437,19 @@ def _en_shell_role(name: str) -> str:
     return "NUMBER_LABEL"  # num_one..num_five
 
 
-def generate_shell_segments(narration_dir: str, level: str, tts_backend: str) -> dict:
+def generate_shell_segments(narration_dir: str, level: str, tts_backend: str,
+                             reuse_production_master: frozenset = frozenset()) -> dict:
     """FIXED_ENGLISH_TEXTS/FIXED_JAPANESE_TEXTS_A2_ONLY(既存テキスト定数、
     無変更のまま再利用)をTrial Role styleで生成する。ensure_fixed_*_
     segment()は単一固定styleしか渡せないため使わず、同じ下位関数
     (voice01.generate_charon_english/独自JA generator)+Trial専用Store
-    (store.get_or_generate)を直接呼ぶ。"""
+    (store.get_or_generate)を直接呼ぶ。
+
+    修正1回目(ユーザー指示反映): reuse_production_masterに名前が含まれる
+    segment(現状num_two/num_threeのみ想定)は、Trial NUMBER_LABEL styleで
+    新規生成せず、PRODUCTION_MASTER_REUSE_SHELL_SEGMENTSのProduction Master
+    をread-onlyでコピーして使う(store.get_or_generateは呼ばない=Trial
+    専用Storeへも書き込まない)。"""
     os.makedirs(narration_dir, exist_ok=True)
     results = {}
     suffix = "_charon" if level == "b1b" else ""
@@ -345,16 +457,20 @@ def generate_shell_segments(narration_dir: str, level: str, tts_backend: str) ->
         role = _en_shell_role(name)
         style = TRIAL_ROLE_STYLE_EN[role]
         out_path = f"{narration_dir}/{name}{suffix}.wav"
-        key = store.MasterAudioKey(
-            language="en", speaker_voice="Charon",
-            tts_model_id=shared_narration._resolve_shared_narration_model("en", tts_backend),
-            canonical_text=text, level=None,
-            style_instruction_id=f"trial_role_style_{role.lower()}", style_instruction_version="v1_trial",
-        )
-        results[name] = store.get_or_generate(
-            key, out_path,
-            lambda p, text=text, style=style: voice01.generate_charon_english(
-                text, p, style_prefix_override=style, tts_backend=tts_backend))
+        reuse_entry = PRODUCTION_MASTER_REUSE_SHELL_SEGMENTS.get(name)
+        if name in reuse_production_master and reuse_entry is not None and reuse_entry["canonical_text"] == text:
+            results[name] = _reuse_production_master_segment(reuse_entry, out_path)
+        else:
+            key = store.MasterAudioKey(
+                language="en", speaker_voice="Charon",
+                tts_model_id=shared_narration._resolve_shared_narration_model("en", tts_backend),
+                canonical_text=text, level=None,
+                style_instruction_id=f"trial_role_style_{role.lower()}", style_instruction_version="v1_trial",
+            )
+            results[name] = store.get_or_generate(
+                key, out_path,
+                lambda p, text=text, style=style: voice01.generate_charon_english(
+                    text, p, style_prefix_override=style, tts_backend=tts_backend))
         results[name]["canonical_text"] = text
         results[name]["role"] = role
         results[name]["style_prefix_used"] = style
@@ -632,15 +748,17 @@ def derive_japanese_title_reused(source_dir: str) -> str | None:
 # ------------------------------------------------------------
 # Orchestration
 # ------------------------------------------------------------
-def run_tts_stage(source_dir: str, out_dir: str, level: str, tts_backend: str) -> dict:
+def run_tts_stage(source_dir: str, out_dir: str, level: str, tts_backend: str,
+                   reuse_production_master: frozenset = frozenset()) -> dict:
     prepare_text_artifacts(source_dir, out_dir, level)
     level_dir = f"{out_dir}/{level}"
     narration_dir = f"{level_dir}/narration"
 
     trial_store_dir = f"{out_dir}/trial_master_audio_store"
     with trial_master_audio_store(trial_store_dir):
-        shared_raw = generate_shell_segments(narration_dir, level, tts_backend)
-        shared_status = fx_runner._summarize_shared_narration(shared_raw)
+        shared_raw = generate_shell_segments(narration_dir, level, tts_backend,
+                                              reuse_production_master=reuse_production_master)
+        shared_status = _summarize_shared_narration_with_reuse_detail(shared_raw)
 
         kp_path = f"{level_dir}/key_phrases/keywords_canonicalized.json"
         kp = load_json(kp_path) if os.path.exists(kp_path) else None
@@ -661,11 +779,21 @@ def run_tts_stage(source_dir: str, out_dir: str, level: str, tts_backend: str) -
         kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                      for r, v in kp_results.items()}
 
+    production_master_reuse_note = {
+        name: {
+            "reused_from_production_master": True,
+            "master_audio_id": v.get("master_audio_id"),
+            "human_review_lock_state": v.get("human_review_lock_state"),
+            "note": v.get("note"),
+        }
+        for name, v in shared_status.items() if v.get("reused_from_production_master")
+    }
     save_json(f"{level_dir}/audit/tts_generation_results.json", {
         "segments": results, "key_phrases": kp_results, "shared_narration": shared_status,
         "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
         "management_id": MANAGEMENT_ID, "trial_role_style_en": TRIAL_ROLE_STYLE_EN,
         "trial_role_style_ja": TRIAL_ROLE_STYLE_JA,
+        "production_master_reuse_note": production_master_reuse_note,
     })
     save_json(f"{level_dir}/run_summary_tts.json", {
         "segment_status": all_status, "key_phrase_status": kp_status,
@@ -698,6 +826,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--budget-jpy", type=float, required=True)
     parser.add_argument("--stage", default="tts", choices=("tts", "assemble", "all"))
     parser.add_argument("--theme-id", default="tts_all_spoken_role_style_trial_01")
+    parser.add_argument("--reuse-production-master", default="",
+                         help="修正1回目(ユーザー指示反映): カンマ区切りのshared narration"
+                              "segment名(現状num_two,num_threeのみ対応)。指定segmentは"
+                              "Trial NUMBER_LABEL styleで再生成せず、"
+                              "PRODUCTION_MASTER_REUSE_SHELL_SEGMENTSのProduction Master"
+                              "(read-only参照)をコピーしてreuseする。")
     return parser
 
 
@@ -706,10 +840,13 @@ def main() -> None:
     args = parser.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
     cl.install(f"{args.out_dir}/raw_usage_log.jsonl")
+    reuse_production_master = frozenset(
+        s.strip() for s in args.reuse_production_master.split(",") if s.strip())
 
     if args.stage in ("tts", "all"):
         with cl.logging_context(args.theme_id, "tts"):
-            run_tts_stage(args.source_run, args.out_dir, args.level, args.tts_backend)
+            run_tts_stage(args.source_run, args.out_dir, args.level, args.tts_backend,
+                           reuse_production_master=reuse_production_master)
         fx_runner.assert_budget_ok(args.out_dir, args.budget_jpy, "after tts")
 
     if args.stage in ("assemble", "all"):

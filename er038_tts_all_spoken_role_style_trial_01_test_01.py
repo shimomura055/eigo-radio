@@ -150,6 +150,94 @@ class NoWpmGuardTest(unittest.TestCase):
             common.assert_no_wpm_specification(style)  # raiseしなければPASS
 
 
+class ProductionMasterReuseTest(unittest.TestCase):
+    """修正1回目(ユーザー指示反映): num_two/num_threeのProduction Master
+    reuse経路が、Production Master Audio Store(er006_output/
+    master_audio_store_01/)へ一切書き込まないことを確認する。"""
+
+    PRODUCTION_MANIFEST = "er006_output/master_audio_store_01/manifest.json"
+
+    def test_reuse_constants_canonical_text_hash_matches_production_manifest_entries(self):
+        for name, entry in trial.PRODUCTION_MASTER_REUSE_SHELL_SEGMENTS.items():
+            expected_hash = hashlib.sha256(entry["canonical_text"].encode("utf-8")).hexdigest()[:16]
+            with open(self.PRODUCTION_MANIFEST, encoding="utf-8") as f:
+                manifest = json.load(f)
+            self.assertIn(entry["master_audio_id"], manifest, f"{name}: master_audio_idがProduction Storeに無い")
+            key = manifest[entry["master_audio_id"]]["key"]
+            self.assertEqual(key["canonical_text_hash"], expected_hash)
+            self.assertEqual(key["tts_model_id"], entry["tts_model_id"])
+            self.assertEqual(key["style_instruction_version"], entry["style_instruction_version"])
+
+    def test_reuse_production_master_segment_copies_without_touching_production_store(self):
+        before_mtime = os.path.getmtime(self.PRODUCTION_MANIFEST)
+        with open(self.PRODUCTION_MANIFEST, "rb") as f:
+            before_bytes = f.read()
+
+        tmp_dir = tempfile.mkdtemp(prefix="er038_test_")
+        try:
+            src = os.path.join(tmp_dir, "fake_master.wav")
+            with open(src, "wb") as f:
+                f.write(b"\x00\x00" * 10)
+            out_path = os.path.join(tmp_dir, "num_two_charon.wav")
+            fake_entry = {
+                "master_audio_id": "fakeid123", "audio_path": src, "canonical_text": "Two.",
+                "style_instruction_id": "charon_english_fixed_shell",
+                "style_instruction_version": "v2_flash_lite_short_style",
+                "tts_model_id": "gemini-3.8-flash-lite-tts", "asr_text_evidence": "2",
+                "asr_evidence_source": "dummy",
+            }
+            result = trial._reuse_production_master_segment(fake_entry, out_path)
+            self.assertEqual(result["status"], "OK")
+            self.assertTrue(result["reused_from_production_master"])
+            self.assertEqual(result["master_audio_id"], "fakeid123")
+            self.assertEqual(result["asr_text"], "2")
+            self.assertTrue(os.path.exists(out_path))
+            with open(out_path, "rb") as f:
+                self.assertEqual(f.read(), b"\x00\x00" * 10)
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+
+        self.assertEqual(os.path.getmtime(self.PRODUCTION_MANIFEST), before_mtime)
+        with open(self.PRODUCTION_MANIFEST, "rb") as f:
+            after_bytes = f.read()
+        self.assertEqual(before_bytes, after_bytes, "Production Master Storeが変更されています")
+
+    def test_generate_shell_segments_skips_store_get_or_generate_for_reused_names(self):
+        tmp_dir = tempfile.mkdtemp(prefix="er038_test_")
+        try:
+            narration_dir = os.path.join(tmp_dir, "narration")
+            calls = []
+
+            def fake_get_or_generate(key, out_path, gen_fn):
+                calls.append(key.canonical_text)
+                with open(out_path, "wb") as f:
+                    f.write(b"\x00\x00" * 5)
+                return {"status": "OK", "reused": False, "master_audio_id": "x", "attempts_log": []}
+
+            def fake_reuse(reuse_entry, out_path):
+                with open(out_path, "wb") as f:
+                    f.write(b"\x00\x00" * 5)
+                return {"status": "OK", "reused": True, "reused_from_production_master": True,
+                        "master_audio_id": reuse_entry["master_audio_id"], "attempts_log": [],
+                        "asr_text": reuse_entry["asr_text_evidence"]}
+
+            with mock.patch.object(trial.store, "get_or_generate", side_effect=fake_get_or_generate), \
+                 mock.patch.object(trial, "_reuse_production_master_segment", side_effect=fake_reuse):
+                results = trial.generate_shell_segments(
+                    narration_dir, "b1b", "speech_metadata_flash_lite",
+                    reuse_production_master=frozenset({"num_two", "num_three"}))
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+
+        self.assertEqual(results["num_two"]["status"], "OK")
+        self.assertTrue(results["num_two"]["reused_from_production_master"])
+        self.assertEqual(results["num_three"]["status"], "OK")
+        self.assertTrue(results["num_three"]["reused_from_production_master"])
+        self.assertNotIn("Two.", calls)
+        self.assertNotIn("Three.", calls)
+        self.assertIn("Welcome to English Your Way.", calls)  # 非reuse segmentは従来通りStore経由
+
+
 class MasterAudioStoreIsolationTest(unittest.TestCase):
     def test_trial_master_audio_store_redirects_and_restores(self):
         orig = (store.STORE_DIR, store.AUDIO_DIR, store.MANIFEST_PATH, store.TELEMETRY_PATH)

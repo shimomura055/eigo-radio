@@ -7023,18 +7023,36 @@
       "attempts": 0
     },
     "num_two": {
-      "status": "HUMAN_REVIEW_LOCKED",
-      "reused": false,
-      "master_audio_id": "ce836da2da597dd8eca33889",
-      "asr_text": null,
-      "attempts": 3
+      "status": "OK",
+      "reused": true,
+      "master_audio_id": "75d64a8e14e3b8592db99a5a",
+      "asr_text": "2",
+      "attempts": 0,
+      "reused_from_production_master": true,
+      "production_master_audio_path": "er006_output/master_audio_store_01/audio/75d64a8e14e3b8592db99a5a.wav",
+      "production_style_instruction_id": "charon_english_fixed_shell",
+      "production_style_instruction_version": "v2_flash_lite_short_style",
+      "production_tts_model_id": "gemini-3.8-flash-lite-tts",
+      "asr_text_evidence_carried_forward": true,
+      "asr_evidence_source": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/b1b/audit/tts_generation_results.json#segments.num_two",
+      "human_review_lock_state": "trial_reuse_substitutes_for_lock_resolution_not_unlocked",
+      "note": "Trial NUMBER_LABEL styleでの新規生成ではなく、Production合格Master(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル)をTrial内でreuseした(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目、ユーザー指示)。共有Human Review Lock state(review_lock_state.json)はこの経路では変更していない(OPEN-223参照、Lock解除ではなくTrial内reuseでの代替)。"
     },
     "num_three": {
-      "status": "HUMAN_REVIEW_LOCKED",
-      "reused": false,
-      "master_audio_id": "9d4813bc9000d30479b351f3",
-      "asr_text": null,
-      "attempts": 3
+      "status": "OK",
+      "reused": true,
+      "master_audio_id": "410e12ebe93da7a797860b89",
+      "asr_text": "3",
+      "attempts": 0,
+      "reused_from_production_master": true,
+      "production_master_audio_path": "er006_output/master_audio_store_01/audio/410e12ebe93da7a797860b89.wav",
+      "production_style_instruction_id": "charon_english_fixed_shell",
+      "production_style_instruction_version": "v2_flash_lite_short_style",
+      "production_tts_model_id": "gemini-3.8-flash-lite-tts",
+      "asr_text_evidence_carried_forward": true,
+      "asr_evidence_source": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/b1b/audit/tts_generation_results.json#segments.num_three",
+      "human_review_lock_state": "trial_reuse_substitutes_for_lock_resolution_not_unlocked",
+      "note": "Trial NUMBER_LABEL styleでの新規生成ではなく、Production合格Master(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル)をTrial内でreuseした(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目、ユーザー指示)。共有Human Review Lock state(review_lock_state.json)はこの経路では変更していない(OPEN-223参照、Lock解除ではなくTrial内reuseでの代替)。"
     },
     "num_four": {
       "status": "OK",
@@ -7074,5 +7092,20 @@
     "NUMBER_LABEL": "簡潔に、はっきりと",
     "TITLE": "はっきりと、聞き取りやすく",
     "KEY_PHRASE_JA": "はっきりと、落ち着いて"
-  }
+  },
+  "production_master_reuse_note": {
+    "num_two": {
+      "reused_from_production_master": true,
+      "master_audio_id": "75d64a8e14e3b8592db99a5a",
+      "human_review_lock_state": "trial_reuse_substitutes_for_lock_resolution_not_unlocked",
+      "note": "Trial NUMBER_LABEL styleでの新規生成ではなく、Production合格Master(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル)をTrial内でreuseした(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目、ユーザー指示)。共有Human Review Lock state(review_lock_state.json)はこの経路では変更していない(OPEN-223参照、Lock解除ではなくTrial内reuseでの代替)。"
+    },
+    "num_three": {
+      "reused_from_production_master": true,
+      "master_audio_id": "410e12ebe93da7a797860b89",
+      "human_review_lock_state": "trial_reuse_substitutes_for_lock_resolution_not_unlocked",
+      "note": "Trial NUMBER_LABEL styleでの新規生成ではなく、Production合格Master(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]スタイル)をTrial内でreuseした(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目、ユーザー指示)。共有Human Review Lock state(review_lock_state.json)はこの経路では変更していない(OPEN-223参照、Lock解除ではなくTrial内reuseでの代替)。"
+    }
+  },
+  "reconciliation_note_2026_09_28": "TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目の実行中、--stage all (run_tts_stage)を誤って再実行し、shared_narration以外のsegments/key_phrases (main article 9/12・KP 10/10)も意図せず再生成された(実費用約30.80円、本タスクのGuardrail上限5円を超過。Production Master Audio Storeへの書込みは無し、確認済み)。処理は該当箇所で強制終了し、以降の追加API呼び出しは行っていない。本ファイルの'segments'/'key_phrases'のasr_text/duration等の実測値は再生成前(直前の正常完了run)の記録のまま保持しており、再生成後の実際の音声byteとは厳密には一致しない可能性がある(status='OK'は両者とも意味的に真、ASR再検証は再生成時に実施済みだが値の保存前にprocessが終了したため)。shared_narrationのnum_two/num_threeのみ、本reconciliationで正しくOKへ更新した(Production Master reuse、追加API呼び出し無し)。詳細はFableへ報告。"
 }
