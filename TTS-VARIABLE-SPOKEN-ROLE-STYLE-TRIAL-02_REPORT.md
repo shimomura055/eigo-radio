@@ -152,3 +152,76 @@ raw URL(コピペ用):
 - https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er044_tts_variable_spoken_role_style_trial_02_test_01.py
 - https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/design_tts_variable_spoken_role_style_trial_02.md
 - https://raw.githubusercontent.com/shimomura055/eigo-radio/main/user_test/tts_variable_role_style_trial_02/index.html
+
+## §14 修正1回目(Task B Trial値の参考列追加、¥0)
+
+管理ID委任 `_02`(`docs/pm/delegation_log/2026-09-28_TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02_02.md`)。
+
+**背景**: ユーザーが基準点として述べた「現状=『落ち着いた、自然な話し言葉で』は
+抑揚不足」の音声は、実はTask B(`TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01`、er038)が
+Trial限定で導入した値であり、本Trial02がJ0として採用した真のProduction現状
+(`p9a.JAPANESE_STYLE_PREFIX`)とは異なる。比較の連続性のため、Task B側JA音声を
+参考列として追加した。
+
+**追加内容**: ページA(日本語)の5segment(preview/comment_1〜4)全行(J0〜J3、
+計20行)へ「参考: Task B Trial値(Production未配線)」列を追加(各segmentの
+J0行に`rowspan='4'`でStyle全文/ASR実測/duration/音声を表示、J1〜J3行は同一
+セルを共有)。J0ラベルを「J0=現行Production(長文instruction)」に明確化(5箇所)。
+冒頭`.finding` divの直後に、ユーザーが以前聴いた値がTask B Trial値である旨の
+説明段落(`.note` div)を追加。表B(英語本文)・head/style・その他section は
+バイト単位で無変更(`section B identical: True`実測確認)。
+
+**reuse元・style一致確認**(全5segment、`er038_output/tts_all_spoken_role_style_
+trial_01/hormuz/a2/audit/tts_generation_results.json`実測):
+
+| segment | status | style_prefix_used | duration(trimmed) | sha256(先頭8桁) |
+|---|---|---|---|---|
+| preview | OK | 落ち着いた、自然な話し言葉で | 13.57s | bb56f979 |
+| comment_1 | OK | 落ち着いた、自然な話し言葉で | 9.23s | 20882736 |
+| comment_2 | OK | 落ち着いた、自然な話し言葉で | 11.20s | 0e54f638 |
+| comment_3 | OK | 落ち着いた、自然な話し言葉で | 19.44s | 9cf1369b |
+| comment_4 | OK | 落ち着いた、自然な話し言葉で | 24.83s | 13c7fcae |
+
+全5件が`status=OK`かつ`style_prefix_used`が想定文言と完全一致(delegation §1
+の確認要件を満たす)。「参考音声なし」segmentは0件。wavはread-onlyでコピーし
+(`er044_output/tts_variable_spoken_role_style_trial_02/hormuz/reference_taskb/`、
+commit対象外)、lameencでmp3化して試聴ページへ配置(`reference_taskb_<segment>.mp3`、
+5件、全件非ゼロサイズ確認済み)。
+
+**Pages公開確認7項目**(反映後に再実施、全て満たす):
+1. HTTP 200: 新規ページ・追加mp3 5件を含む全37audio対象の代表を確認(下記参照)。
+2. headless Edge DOM取得: `msedge --headless --dump-dom`で公開DOM取得し、参考列
+   ラベル・J0新ラベルが実在することをgrepで確認。
+3. 省略表記(`(existing 6-role value, unchanged)`等): 0件。
+4. Style Prompt全文の公開DOM実表示: 参考列のStyle欄に「落ち着いた、自然な話し
+   言葉で」全文を表示(省略なし)。
+5. `<audio>`件数: 37件(既存32件+参考5件)、集計と一致。
+6. mp3全件: HTTP 200・`Content-Type: audio/mpeg`・非ゼロ長を新規5件について確認、
+   1件(`reference_taskb_preview.mp3`)をダウンロードし代表デコード可能を確認。
+7. 表示Styleと生成結果jsonの一致: `reference_data.json`の`style_prefix_used`と
+   ページ表示文字列が完全一致(構造的に同一source)。
+
+**API支出**: `er044_output/tts_variable_spoken_role_style_trial_02/hormuz/
+raw_usage_log.jsonl`は実施前後で54行のまま不変(新規TTS/ASR呼び出し0件)。
+`er011_output/attempt_history.jsonl`等の共有pathの差分は、本修正実行前から
+既に存在していた他タスク由来の差分であり(セッション開始時点のgit status
+snapshotで確認)、本修正では追記していない(`trial_master_audio_store`/
+生成関数を一切呼んでいないため)。
+
+**Regression**: `run_project_regression.py --pattern "er044*_test_*.py"`
+11/11 PASS(既存11 testを変更なしで維持、新規追加関数は既存test対象外)。
+
+**Production無変更**: 変更ファイルは`er044_tts_variable_spoken_role_style_
+trial_02.py`(ページ生成部の関数追加のみ、`J_PATTERN_STYLES`/`E_PATTERN_STYLES`/
+`main()`/`build_arg_parser()`等の既存ロジックは無変更)と
+`user_test/tts_variable_role_style_trial_02/`のみ。`er0*.py`(er044除く)・
+`er003_v1_translator_briefs/`・`er006_output/master_audio_store_01/`への
+差分なし。
+
+**逸脱**: T-0の`check_delegation_prompt.py`は`status: FAIL`(委任文中の実行
+コマンド例`<ページ再生成の引数 逐語記録>`がプレースホルダのため、`command_check`
+の必須引数/絶対パス検査に抵触)。委任文はFableから渡された内容をそのまま逐語
+保存しており、実行層側で書き換える権限がないため、結果をそのまま記録する。
+実際に実行したコマンドは本§14および下記の通り(プレースホルダではなく実値)。
+
+**到達Status**: `USER_DECISION_REQUIRED`のまま(暴走STOPなし)。

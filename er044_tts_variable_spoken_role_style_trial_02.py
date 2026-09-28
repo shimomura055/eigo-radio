@@ -24,9 +24,18 @@ from __future__ import annotations
 import argparse
 import contextlib
 import hashlib
+import html
 import json
 import os
+import re
 import shutil
+import wave
+
+try:
+    import lameenc
+    _HAS_LAMEENC = True
+except ImportError:
+    _HAS_LAMEENC = False
 
 import er002_common as common
 import er003_v1_n3_01_tts_generate as n3_tts
@@ -240,6 +249,183 @@ def run_en_segment(theme_out_dir: str, segment_name: str, patterns: list, tts_ba
             else:
                 results[pattern] = generate_en_pattern_segment(segment_name, text, out_path, pattern, tts_backend)
     return {"segment": segment_name, "language": "en", "results": results}
+
+
+# ------------------------------------------------------------
+# 修正1回目(delegation _02、2026-09-28): Task B Trial値の参考列追加
+# ------------------------------------------------------------
+# ユーザーが基準点として述べた「現状=『落ち着いた、自然な話し言葉で』は
+# 抑揚不足」の"落ち着いた、自然な話し言葉で"は、実はTask B
+# (TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01、er038)がTrial限定で導入した値
+# であり、本Trial02がJ0として採用した真のProduction現状
+# (p9a.JAPANESE_STYLE_PREFIX)とは異なる。比較の連続性のため、Task B側の
+# JA音声(preview/comment_1〜4)をread-onlyでreuseし、試聴ページへ
+# 「参考: Task B Trial値」列として追加する。新規TTS/ASR呼び出しは
+# 一切行わない(API支出0)。J1〜J3・E0〜E3・J0/E0のreuse元は変更しない。
+TASKB_JA_STYLE = "落ち着いた、自然な話し言葉で"
+TASKB_MANAGEMENT_ID = "TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01"
+TASKB_REFERENCE_SOURCE_DIR = "er038_output/tts_all_spoken_role_style_trial_01/hormuz/a2"
+TASKB_REFERENCE_AUDIT_PATH = f"{TASKB_REFERENCE_SOURCE_DIR}/audit/tts_generation_results.json"
+TASKB_JA_REFERENCE_SEGMENTS = ("preview", "comment_1", "comment_2", "comment_3", "comment_4")
+
+
+def wav_to_mp3(wav_path: str, mp3_path: str, bitrate: int = 128) -> bool:
+    """lameencでwav→mp3変換する(ffmpeg不要、er040_*_page_01.pyと同一手法)。
+    エンコーダが無い環境ではFalseを返し、呼び出し側がフォールバックする。"""
+    if not _HAS_LAMEENC:
+        return False
+    with wave.open(wav_path, "rb") as w:
+        channels = w.getnchannels()
+        framerate = w.getframerate()
+        frames = w.readframes(w.getnframes())
+    encoder = lameenc.Encoder()
+    encoder.set_bit_rate(bitrate)
+    encoder.set_in_sample_rate(framerate)
+    encoder.set_channels(channels)
+    encoder.set_quality(2)
+    data = encoder.encode(frames)
+    data += encoder.flush()
+    os.makedirs(os.path.dirname(mp3_path) or ".", exist_ok=True)
+    with open(mp3_path, "wb") as f:
+        f.write(data)
+    return True
+
+
+def build_taskb_reference_data(theme_out_dir: str, page_dir: str) -> dict:
+    """Task B(er038)のJA音声(style=「落ち着いた、自然な話し言葉で」)を
+    read-onlyでreuseし、参考列用データを作る。新規TTS/ASR呼び出しは
+    一切行わない(既存wavのコピー+mp3変換のみ)。"""
+    audit = load_json(TASKB_REFERENCE_AUDIT_PATH)
+    segs = audit["segments"]
+    ref_dir = f"{theme_out_dir}/reference_taskb"
+    os.makedirs(ref_dir, exist_ok=True)
+    data = {}
+    for name in TASKB_JA_REFERENCE_SEGMENTS:
+        s = segs.get(name)
+        if s is None or s.get("status") != "OK":
+            data[name] = {"status": "NOT_AVAILABLE", "reason": "Task B出力に該当segmentのOK音声が無い"}
+            continue
+        style_used = s.get("style_prefix_used")
+        if style_used != TASKB_JA_STYLE:
+            data[name] = {
+                "status": "NOT_AVAILABLE",
+                "reason": f"Task B側のstyleが想定と不一致(実測={style_used!r})、参考音声を追加しない",
+            }
+            continue
+        src_wav = s["path"]
+        dst_wav = f"{ref_dir}/{name}_taskb.wav"
+        shutil.copyfile(src_wav, dst_wav)
+        mp3_name = f"reference_taskb_{name}.mp3"
+        mp3_path = f"{page_dir}/{mp3_name}"
+        converted = wav_to_mp3(dst_wav, mp3_path)
+        data[name] = {
+            "status": "OK",
+            "style_prefix_used": style_used,
+            "duration_seconds": s["trim_info"]["trimmed_duration_seconds"],
+            "asr_text": s.get("asr_text"),
+            "canonical_text": s.get("canonical_text"),
+            "reused_from": src_wav,
+            "sha256": s.get("sha256"),
+            "audio_file": mp3_name if converted else None,
+            "source_management_id": TASKB_MANAGEMENT_ID,
+        }
+    save_json(f"{ref_dir}/reference_data.json", data)
+    return data
+
+
+_J0_LABEL_OLD = "<b>J0</b>"
+_J0_LABEL_NEW = "<b>J0=現行Production(長文instruction)</b>"
+
+_TASKB_NOTE_HTML = """
+<div class="note">
+<b>参考列(Task B Trial値)について</b>: ユーザーが以前に試聴し「現状=『落ち着いた、
+自然な話し言葉で』は抑揚不足」と述べた基準点の音声は、実はTask B(<code>TTS-ALL-
+SPOKEN-ROLE-STYLE-TRIAL-01</code>)がTrial限定で導入した値であり、Productionには
+配線されていません。本ページのJ0は真のProduction現状(長文instruction、上記
+「重要な発見」参照)であり、ユーザーが以前聴いたTask B値とは異なります。比較の
+連続性のため、下表A(日本語)の各segment行に、Task B側の音声を「参考: Task B
+Trial値」列として追加しました(新規TTS/ASR呼び出しなし、既存音声のread-only
+reuseのみ)。
+</div>
+"""
+
+
+def _build_reference_cell_html(segment_name: str, entry: dict) -> str:
+    if entry.get("status") != "OK":
+        return (f"<td rowspan='4' style='max-width:220px;font-size:11px'>"
+                f"参考音声なし: {html.escape(entry.get('reason', ''))}</td>")
+    style_html = html.escape(entry["style_prefix_used"])
+    asr_html = html.escape(entry.get("asr_text") or "")
+    audio_html = (
+        f"<audio controls preload='none' style='width:200px'>"
+        f"<source src='{entry['audio_file']}' type='audio/mpeg'></audio>"
+        if entry.get("audio_file") else "(mp3変換不可、参照のみ)")
+    return (
+        "<td rowspan='4' style='max-width:220px;font-size:11px'>"
+        f"<b>参考: Task B Trial値</b>(<code>{TASKB_MANAGEMENT_ID}</code>、Production未配線)<br>"
+        f"Style(全文): <pre style='white-space:pre-wrap;margin:0;font-size:11px'>{style_html}</pre>"
+        f"ASR(実測): {asr_html}<br>Duration: {entry['duration_seconds']}s<br>"
+        f"{audio_html}"
+        "</td>")
+
+
+def augment_page_with_taskb_reference_column(page_path: str, reference_data: dict) -> None:
+    """試聴ページindex.htmlの表A(日本語)のみへ、Task B参考列を追加する。
+    表B(英語本文)・その他section・head/style等は一切変更しない。
+    行を新規に組み立てるのではなく、既存の1ページ全体を文字列として読み込み、
+    表Aの<tr>単位で正規表現分割して挿入するだけの最小差分アプローチを取る
+    (Section Bを誤って書き換えるリスクを避けるため、表A開始位置は
+    '<h2>A. 日本語'〜'<h2>B. 英語本文'の間に限定する)。"""
+    with open(page_path, encoding="utf-8") as f:
+        content = f.read()
+
+    marker_a = "<h2>A. 日本語"
+    marker_b = "<h2>B. 英語本文"
+    idx_a = content.index(marker_a)
+    idx_b = content.index(marker_b, idx_a)
+    section_a = content[idx_a:idx_b]
+
+    table_match = re.search(r"<table class='seg'>.*?</table>", section_a, re.S)
+    if table_match is None:
+        raise AssertionError("表A(<table class='seg'>)が見つかりません")
+    table_html = table_match.group(0)
+    rows = re.findall(r"<tr>.*?</tr>", table_html, re.S)
+    if len(rows) != 1 + len(TASKB_JA_REFERENCE_SEGMENTS) * 4:
+        raise AssertionError(
+            f"表Aの行数が想定外(header+segment*4想定): got={len(rows)}")
+
+    header_row = rows[0]
+    header_row_new = header_row.replace(
+        "</tr>", "<th>参考: Task B Trial値(Production未配線)</th></tr>")
+
+    data_rows_new = []
+    for seg_idx, segment_name in enumerate(TASKB_JA_REFERENCE_SEGMENTS):
+        chunk = rows[1 + seg_idx * 4: 1 + seg_idx * 4 + 4]
+        entry = reference_data.get(segment_name, {"status": "NOT_AVAILABLE", "reason": "no data"})
+        ref_cell = _build_reference_cell_html(segment_name, entry)
+        for pattern_idx, row_html in enumerate(chunk):
+            row_html = row_html.replace(_J0_LABEL_OLD, _J0_LABEL_NEW)
+            if pattern_idx == 0:
+                row_html = row_html.replace("</tr>", ref_cell + "</tr>")
+            data_rows_new.append(row_html)
+
+    table_html_new = "".join([header_row_new] + data_rows_new)
+    table_html_new = f"<table class='seg'>{table_html_new}</table>"
+
+    section_a_new = section_a.replace(table_match.group(0), table_html_new, 1)
+    content_new = content[:idx_a] + section_a_new + content[idx_b:]
+
+    # 冒頭の<div class="finding">...</div>(重要な発見)の直後にTask B参考列の
+    # 説明段落を追加する(表Aより前、ページ全体content内で検索する。
+    # finding divはidx_aより前に存在する)。
+    finding_match = re.search(r'<div class="finding">.*?</div>', content_new, re.S)
+    if finding_match is None:
+        raise AssertionError('<div class="finding">...</div>が見つかりません')
+    finding_end = finding_match.end()
+    content_new = content_new[:finding_end] + _TASKB_NOTE_HTML + content_new[finding_end:]
+
+    with open(page_path, "w", encoding="utf-8") as f:
+        f.write(content_new)
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
