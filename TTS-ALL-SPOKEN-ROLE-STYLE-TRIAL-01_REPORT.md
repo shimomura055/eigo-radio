@@ -402,3 +402,147 @@ Advanced full assembly成果物が未完成のまま既存Gateでブロックさ
 Sonnet単独では実施せず、ここでSTOPしてFable/ユーザーへ選択肢を提示する
 (§13-4)。Production安全性(Master Store不変・Human Review Lock状態不変)
 は実測で確認済みであり、Productionへの実害は無い。
+
+## 14. 修正2回目(evidence再紐付け、delegation
+docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_04.md、
+§13のOption A相当を¥10上限で実施)
+
+### 14-1. 何が問題だったか
+
+§13で記録した通り、`--stage all`の意図しない再実行により再生成された
+Advanced(B1B)の19segment(主記事9segment・Key Phrase(EN)5segment・
+Key Phrase(JA)5segment)について、`b1b/audit/tts_generation_results.json`
+に記録されたASR検証evidence(asr_text/disfluency_evidence/
+audio_classification/sha256)が、再生成前(pre-incident)の実測値のまま
+残っており、実際の音声byteと一致しなかった。この不一致のうち、Key
+Phrase 10segment(EN 5+JA 5)は`sha256`フィールドを持つため既存Gate
+(`asm.verify_episode_audio_validation_gate`)がASSET_HASH_MISMATCHで
+正しくブロックしていた。主記事9segmentは`sha256`フィールド自体を
+持たない生成経路(`voice01.generate_charon_english`/
+`news_tail_fix.generate_news_narration_wide_margin`等)のため、Gateには
+ブロックされないが、記録されたasr_text等は依然として実際の音声とは
+不一致のままだった。
+
+### 14-2. 何を変更したか(新規TTS呼び出しは0件)
+
+**現状把握(¥0)**: `narration/attempts/`配下に、再生成時(修正1回目
+インシデント時)の中間attempt file(wav+json)が19segment中14segment分
+(主記事9segment全部+KP EN 5segment全部)残存していることを発見した。
+各segmentの現在の`narration/*.wav`のsha256と、対応する`attempts/
+*_attemptN_*.wav`のsha256を全件突合した結果、14segmentは完全一致する
+attempt fileが1件ずつ見つかった(スクリプト:
+`reconcile_step1_zero_cost.py`、リポジトリ外の一時scratchpadで実行、
+新規API呼び出し0件)。KP JA 5segmentは、1回目の試行で確定保存された
+ため中間attempt fileが存在せず、sha256完全一致するevidenceが見つから
+なかった。
+
+**Step 1(14segment、追加費用¥0)**: 一致したattempt fileが実測記録して
+いたASR検証結果(asr_text/disfluency_checked/disfluency_evidence/
+audio_classification/verified/sha256)を、そのまま`segments`/
+`key_phrases[rank]['english']`側のevidenceへ上書きした(新規TTS/ASR
+呼び出し0件、`raw_usage_log.jsonl`のgemini/openai行数が実行前後で不変
+であることを実測確認)。
+
+**Step 2(KP JA 5segment、追加費用実測¥0.0638)**: 新規TTSは一切呼ばず、
+既存Production検証関数のみを、現存する音声byteに対して再実行した
+(`er006_asr_provider_routing_01.transcribe(wav_path, language="ja-JP")`
+→ `er007_ja_secondary_asr_01.evaluate_attempt_ja_with_cascade(tts_input,
+asr_text, wav_path, cascade_enabled=FEATURE_FLAG_JA_PRIMARY_OPENAI,
+expected_readings=None)`)。`tts_input`はテキストartifactが再生成間で
+不変(新規Key Phrase選定なし)であるため、pre-incidentの
+stale evidence内`tts_input_text_after_reading_safety`(5segment全て
+`reading_safety_changed_text=False`、`reading_dictionary`/`resolved`が
+空であることを事前に実測確認済み、= `canonical_text`と同一)をそのまま
+再利用した(新規のtext前処理API呼び出しなし)。5segment全て
+`verified=True`(kp1: PHONETIC_MATCH、kp2: PHONETIC_MATCH、kp3:
+EXACT_MATCH、kp4: NORMALIZED_MATCH、kp5: EXACT_MATCH)。
+
+実行コマンド(全文、`TTS_EXECUTION_MODE=STANDARD`をscript内で明示設定
+済み):
+```
+PYTHONIOENCODING=utf-8 PYTHONPATH=. .venv/Scripts/python.exe
+  <scratchpad>/reconcile_step2_ja_asr_only.py
+```
+(scriptは本repoにcommitしていない一時ファイル、内容は本節に転記した
+関数呼び出しのみでTTS関連関数[`flw.resolve_tts_call_and_prompt`/
+`common._call_tts_with_retry`/`voice01.*`/`generate_ja_role_style`/
+`run_tts_stage`]は一切import・呼び出ししていない)。
+
+**Gate確認**: 上記reconciliation後、`asm.verify_episode_audio_validation_
+gate(out_dir, "B1")`を直接呼び出して`GATE PASS`を実測確認(修正前は
+`kp1-5_english`/`kp1-5_japanese`の10segmentがASSET_HASH_MISMATCHで
+ブロックされていたことも実測で再現確認済み)。
+
+**Assembly/mp3変換**:
+```
+.venv/Scripts/python.exe er038_tts_all_spoken_role_style_trial_01.py
+  --source-run er019_output/family_x_b3_diversity_trial_01/hormuz/run_06_flashlite_full_kp
+  --level b1b --out-dir er038_output/tts_all_spoken_role_style_trial_01/hormuz
+  --budget-jpy 999 --stage assemble --theme-id tts_all_spoken_role_style_trial_01
+```
+(`--stage assemble`のみ、`run_tts_stage`は未実行。`run_assemble_stage`→
+`fx_runner.stage_assemble_family_x_b1`はGate呼び出しと既存wav読み込み・
+結合のみでTTS呼び出しを含まないことをコード読解[`er038_tts_all_spoken_
+role_style_trial_01.py:809-812`、`er019_family_x_audio_production_
+runner_01.py:890-945`]で確認済み)。結果: `status=OK`、
+`duration_seconds=295.98`、`clipping_detected=False`。出力wavを
+`imageio_ffmpeg`同梱ffmpeg(128kbps、Standard版と同一設定)で
+`user_test/tts_all_role_style_trial_01/hormuz_advanced_trial.mp3`へ変換
+し、`index.html`のセクション2(Advanced全体)を、Advanced full音声
+プレーヤー追加+経緯説明(修正1回目のnum_two/num_three reuse→修正2回目
+のevidence再紐付け)へ更新した。Standard側の既存要素(セクション1・
+`hormuz_standard_trial.mp3`・A2個別segment)は無変更。
+
+**既知の残課題(本delegationのscope外、実施していない)**: Advanced
+Role別segmentテーブル(セクション4)の個別プレビューmp3
+(`b1b_comment_1.mp3`等19segment、および修正1回目のnum_two/num_three
+`b1b_shared_num_two.mp3`/`b1b_shared_num_three.mp3`)は、いずれも
+mtime実測で本インシデント以前(16:26台)の古い音声のままであり
+(現在の`narration/*.wav`は17:28〜17:36台)、今回のfull assembly/
+evidence再紐付けの対象に含めていない(delegation本文の指示範囲が
+「Advanced full」のみのため)。表示上、セクション4の該当行は引き続き
+pre-incident音声・旧status(num_two/num_threeはHUMAN_REVIEW_LOCKED
+表示のまま)であり、実際の現状(全segment OK・reuse済み)とは一致しない。
+個別プレビューmp3の再変換・テーブル更新要否はFable/ユーザーの判断を
+仰ぐ。
+
+### 14-3. 何が改善されるか
+
+Advanced(B1B)のfull episode音声(`hormuz_advanced_trial.mp3`、4分56秒)
+が、新規TTS呼び出し0件・追加費用¥0.0638のみで、実際の音声byteと整合した
+evidence付きで初めて試聴可能になった。既存Gate
+(`verify_episode_audio_validation_gate`)は独自回避せず、正規のevidence
+更新によって正常にPASSした。
+
+### 14-4. リスク・注意点
+
+- gemini呼び出し0件の実測: `raw_usage_log.jsonl`のgemini行数は作業前後
+  で85件のまま不変(全体行数178→183、openai_asr行数93→98の+5のみ、
+  KP JA 5segmentの実ASR再検証に一致)。
+- 費用実測(上限¥10): 作業前累計¥30.80 → 作業後累計¥30.87
+  (`fx_runner.compute_cost_jpy_so_far`実測、Step2差分¥0.0638)。上限
+  ¥10に対し大幅に余裕あり。
+- Gate PASSの証拠: `asm.verify_episode_audio_validation_gate(out_dir,
+  "B1")`をreconciliation前後で直接呼び出し、ブロック→PASSの変化を
+  実測確認(§14-2)。
+- Regression: `.venv/Scripts/python.exe run_project_regression.py
+  --pattern "er038*_test_*.py"` → `collected=16 passed=16 failed=0
+  errors=0 skipped=0`(変更なし、既存16件を維持)。
+- Production無変更の証拠: `er006_output/master_audio_store_01/
+  manifest.json`/`reuse_telemetry.jsonl`のmtimeが本セッション開始
+  (17:2x台)より前の16:24:14のままであることを実測確認(他Agent由来の
+  既存未commit差分であり本セッションでは一切触れていない)。
+  `git diff --stat HEAD -- "er0*.py" "er003_v1_translator_briefs/" |
+  grep -v er038`は空(Production .pyファイルへの変更なし)。
+  `er038_tts_all_spoken_role_style_trial_01.py`自体も`git status
+  --porcelain`で無変更を確認。
+- delegation prompt事前check(T-0)は`status: FAIL`(必須セクション
+  「事前指定Read一覧」「事前指定Grep一覧+追記位置・更新位置の手順」
+  欠落、および「実行コマンド全文」セクション未検出)。内容を書き換えて
+  PASSさせることはせず、結果をそのまま記録した
+  (`docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_04.md_check.json`)。
+- Pages 200確認: 下記コマンドで実測(push後)。
+- STOP有無: なし(費用・Gate・Regression・Production無変更いずれも
+  想定範囲内)。到達Statusは引き続き**USER_DECISION_REQUIRED**
+  (ユーザー試聴待ち、Advanced fullが新たに試聴可能になった点が
+  修正1回目からの変化)。

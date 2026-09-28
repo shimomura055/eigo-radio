@@ -24,20 +24,24 @@ h2 { border-bottom: 2px solid #333; padding-bottom: 4px; margin-top: 36px; }
 <p><audio controls preload="none" style="width:220px"><source src="hormuz_standard_trial.mp3" type="audio/mpeg"></audio></p>
 
 <h2>2. Advanced(Trial)全体</h2>
+<p><audio controls preload="none" style="width:220px"><source src="hormuz_advanced_trial.mp3" type="audio/mpeg"></audio></p>
 <div class="note">
-<b>重要な既知の制約</b>: Advanced(B1B)の共有ナレーション <code>num_two</code>(「Two.」)/
-<code>num_three</code>(「Three.」)が、既存Production安全装置(Human Review Lock、
-<code>er011_human_review_lock_01.py</code>)により <b>HUMAN_REVIEW_LOCKED</b> となり、
-既存のAssembly Gate(<code>_assert_shared_narration_ok</code>)がフル episode の組立てを
-ブロックしました(Opus L2所見BL-2と同じGate、既存の安全装置は独自判断で回避していません)。
-そのため <b>Advanced全体の組み立て済み音声はこのTrialでは生成されていません</b>。
-下記「Role別segment」で Advanced の29/31 spoken要素(主記事12件・Key Phrase 10件・
-共有narration7/9件)は個別に試聴できます。同一テキスト(「Two.」「Three.」)は
-Standard側では attempt 1 で成功しており(既存Production報告 OPEN-201 と同じ
-「同一テキストがA2実行時はattempt1で成功する」パターンの再現)、Flash-Liteの
-極端に短い文脈なし単語に対する既知の品質限界と考えられます(詳細は報告§9)。
-num_two/num_three の音声(<b>ASR未検証、Human Review Lock中</b>)は診断参考として
-下表に含めていますが、Trial結果として採用しないでください。
+<b>経緯(修正1回目→修正2回目)</b>: 当初、共有ナレーション <code>num_two</code>
+(「Two.」)/<code>num_three</code>(「Three.」)がHuman Review Lockで
+<b>HUMAN_REVIEW_LOCKED</b> となりフル episode 組立てがブロックされていたため、
+修正1回目でProduction Master Audio Store(<code>er006_output/master_audio_store_01/</code>、
+read-only参照)の既存ASR verified OK Masterをコピーしてreuseし解消した
+(Production Store自体は無変更)。その後の修正2回目実行時、
+<code>--stage all</code> の再実行により主記事9segment・Key Phrase(EN)10segmentが
+意図せず再生成され(費用¥30.80)、音声byteと記録evidenceが不整合になった
+(詳細はREPORT §13)。本ページの音声・下表evidenceは、その19segmentについて
+<b>新規TTSを一切発生させず</b>(既存attempt file[14segment、追加費用¥0]の
+再紐付け、または既存Production ASR検証関数の再実行のみ[5segment、追加費用
+実測¥0.0638]で)実際の音声byteへ再紐付けした後の状態であり
+(修正2回目、REPORT §14)、既存のAssembly Gate
+(<code>asm.verify_episode_audio_validation_gate</code>)がPASSすることを
+実測確認済み。<b>ユーザー試聴・最終判断はまだ得られていません</b>
+(USER_DECISION_REQUIRED)。
 </div>
 
 <div class="baseline">

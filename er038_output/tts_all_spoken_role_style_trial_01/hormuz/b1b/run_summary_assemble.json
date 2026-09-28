@@ -1,12 +1,18 @@
 {
-  "status": "BLOCKED_ASSET_HASH_MISMATCH",
-  "reason": "TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01 修正1回目作業中、run_tts_stage(--stage all)を誤って再実行し、shared_narration以外(main article 9/12・Key Phrase 10/10)も意図せず再生成された(実費用約30.80円、本タスクGuardrail上限5円を超過。Production Master Audio Store[er006_output/master_audio_store_01/]への書込みは無し、sha256比較で確認済み)。shared_narrationのnum_two/num_threeはProduction Master reuseによりOKへ更新済み(このBLOCKED状態は解消済み、追加API呼び出し無し)。しかし既存の別Gate(asm.verify_episode_audio_validation_gate、ASSET_HASH_MISMATCH、ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05/ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)が、再生成されたKP 10segmentの現在の音声byteが検証済みevidenceと一致しないことを検知しAssemblyを中止した(このGateは正しく機能しており、独自判断で回避・無効化していない)。Advanced(B1B)全体のAssemblyは未完了。詳細・対応案はFableへ報告済み。",
-  "shared_narration_non_ok": {},
-  "blocked_by_different_gate": "asm.verify_episode_audio_validation_gate(ASSET_HASH_MISMATCH)",
-  "asset_hash_mismatch_segments": [
-    "kp1_english", "kp1_japanese", "kp2_english", "kp2_japanese", "kp3_english", "kp3_japanese",
-    "kp4_english", "kp4_japanese", "kp5_english", "kp5_japanese"
-  ],
-  "production_master_store_verified_unchanged": true,
-  "actual_cost_jpy_this_incident": 30.80
+  "status": "OK",
+  "out_path": "er038_output/tts_all_spoken_role_style_trial_01/hormuz/b1b/assembled/Family_X_Audio_B1_TTS_ALL_SPOKEN_ROLE_STYLE_TRIAL_01.wav",
+  "duration_seconds": 295.98,
+  "clipping_detected": false,
+  "peak": 0.91521,
+  "sample_rate": 48000,
+  "channels": 2,
+  "headroom_safety_valve": {
+    "threshold": 0.98,
+    "peak_before": 0.9152122,
+    "cause_piece": "Intro",
+    "cause_piece_peak": 0.9152122,
+    "applied": false,
+    "scalar": 1.0,
+    "peak_after": 0.9152122
+  }
 }
