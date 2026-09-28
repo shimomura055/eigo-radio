@@ -11973,3 +11973,38 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   実施していない)。
 - **根拠**: `docs/pm/RESULT_PACKET_REC1.md`、本タスク実行ログ。
 - commit: 本コミット(SSOT反映のみ、コード変更なし)。
+
+## KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02: Trial記録(2026-09-28)
+
+- **目的**: 前回`KEY-PHRASE-LEVEL-SPEC-TRIAL-01`の`REJECTED`主因だった
+  Phrase選定Prompt v1を今回は使わず除外し、Hormuz既存Advanced Key
+  Phrase 5件(give back / sea blockade / stand at center stage /
+  take a sharp turn / recover the cost、再選定なし)を対象に、解説
+  言語だけをisolatedに比較した。A=現行(英語句+日本語意味)、B=同一
+  英語句+平易な英語解説(前回の`explanation_en`仕様文を逐語再利用、
+  語数上限15語は前回実測値を踏襲)。A/BでPhrase完全同一を機械検証
+  済み。
+- **結果**: 決定論指標5/5語数上限内、新規Fact混入0件。wordfreq zipf
+  で「phraseより難しい語」が5件中3件に1〜3語出現(give back:
+  lose/earlier/gain、stand at center stage: focus)。LLM rubric 7
+  観点の平均は4.71〜5.00。
+- **音声**: A側は既存Hormuz音声をそのままコピー再利用(新規生成なし)。
+  B側の英語解説5segmentのみFlash-Liteで新規生成(Task B `er038`の
+  `KEY_PHRASE_EXPLANATION_EN` styleとTrial専用Storeをimport流用、
+  `TTS_EXECUTION_MODE=STANDARD`明示、Production Master Store無変更)。
+- **費用**: 合計¥0.90(text ¥0.30 + audio ¥0.60、上限¥20以内)。
+- **回帰**: 13/13 PASS。
+- **Production状態**: Production code・正式Prompt・`CURRENT_SPEC.md`・
+  Key Phrase選定ロジックは無変更。`KEY_PHRASE_EXPLANATION_EN`は引き続き
+  Production未実装。Production採用はユーザーのみが判断する。
+- **既知の限界**: 新規Fact検出ヒューリスティック(大文字語頭語+数字の
+  パターンマッチ)は、文脈依存の言い換えや既知情報の再表現を新規Factと
+  誤検知しうる簡易判定であり、厳密なFact-checkの代替ではない。
+- **Opus発火**: なし。
+- **Fable判定**: `USER_DECISION_REQUIRED`。
+- **ユーザー判断待ちの論点**: (1) Bの方向(平易な英語解説)で仕様検証を
+  継続するか。(2) 音声(発音・自然さ)の試聴結果。(3) MAX_WORDS=15・
+  新規Fact検出ロジックを今後の参考値として引き継ぐか。
+- **確認ページ**: https://shimomura055.github.io/eigo-radio/user_test/kp_advanced_explanation_trial_02/index.html
+- **根拠**: `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02_REPORT.md`、
+  `docs/pm/RESULT_PACKET_KE2.md`、commit`3d86edd9`。
