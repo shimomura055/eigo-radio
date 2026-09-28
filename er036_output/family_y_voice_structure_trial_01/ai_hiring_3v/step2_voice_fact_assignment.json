@@ -1,0 +1,35 @@
+{
+  "parsed": {
+    "voices": [
+      {
+        "voice_key": "voice_1",
+        "stakeholder": "Applicant",
+        "angle": "I focus on how an AI assessment affects my opportunity to be hired, especially when the criteria are opaque and I cannot opt out or challenge the result.",
+        "fact_ids": [
+          "R2_fact_004"
+        ]
+      },
+      {
+        "voice_key": "voice_2",
+        "stakeholder": "Recruiter / Hiring Manager",
+        "angle": "I focus on using AI in day-to-day hiring while being able to explain and document why the process is fair. I am concerned with responding to candidates’ distrust through transparency materials and bias-audit information.",
+        "fact_ids": [
+          "R2_fact_006",
+          "R1_recruiter_industry_pressure_to_document_ai_fairness"
+        ]
+      },
+      {
+        "voice_key": "voice_3",
+        "stakeholder": "Business Owner",
+        "angle": "I focus on whether AI delivers meaningful gains in hiring speed and cost without exposing the company to discrimination claims, legal liability, or lasting reputational damage.",
+        "fact_ids": [
+          "R2_fact_011",
+          "R1_business_risk_of_discrimination_and_reputation_nature"
+        ]
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0eabcae4735451ef006ab9cc8a48c887d0b03ed27176082bc1",
+  "prompt": "【Selected Fact Brief(Step 1で選定済み、これ以外のFactは存在しないものとして扱うこと)】\n企業は採用の速度・コストを下げるためAI選考を広げているが、その運用を担う人事には公平性を説明する責任が生じ、評価される応募者には不透明な判定による不利益が及び、経営者には効率化と法的・評判リスクの両方を引き受ける判断が迫られている。\n\n- 応募者側では、CVS Healthへの応募者が、動画面接でAIによる表情・声のトーン分析を使った「信頼性・誠実さ」スコアリングを受け、オプトアウトや結果への異議申し立てもできないまま不採用となったとして提訴した。CVSは後に集団訴訟の暫定和解に応じた。\n- 人事側では、2026年のPaylocity調査でHRリーダーの91%が採用プロセスのどこかでAIを積極的に使用している。AIはすでに採用実務の一部だが、採用担当者は候補者の不信感に応えるため、バイアス監査の要約や透明性資料を示し、公平性を説明する責任・プレッシャーを負う。\n- 経営側では、Hiltonが採用期間を約6週間から5日間へ短縮し、IBMが採用コストを約30%削減したとの報告があり、速度・コスト面が導入の動機になる。一方、AIによる差別が起きれば、企業は倫理的・法的責任や賠償、評判・信頼の喪失に直面しうるため、経営者は効率化の利益とリスクを同時に判断する必要がある。\n\n【選定済みfact_id一覧】\nR2_fact_004, R2_fact_006, R1_recruiter_industry_pressure_to_document_ai_fairness, R2_fact_011, R1_business_risk_of_discrimination_and_reputation_nature\n\n【3つのVoice(固定、stakeholderの候補ラベル)】\n- voice_1: Applicant(応募者。AIスクリーニングを受ける側)\n- voice_2: Recruiter / Hiring Manager(採用担当・人事責任者。実際にAIツールを使う側)\n- voice_3: Business Owner(経営者。採用のコスト・速度・会社の存続に責任を負う側)\n\n各Voiceについて、以下を決めてください(記事本文は書かない):\n- stakeholder: 上記候補ラベルをそのまま使うか、内容に応じて自然な言い方に微調整してよい\n- angle: このVoiceが自分の状況の中で何を見て、何を気にしているか(1〜2文、英語)\n- fact_ids: 上記の選定済みfact_id一覧の中から、このVoiceが背景として使ってよいFactを\n  原則1件、必要な場合のみ最大2件選ぶこと(全Voice共通の1セットを機械的に割り当てない。\n  3つのVoiceの fact_ids の集合が完全に同一にならないようにすること)。\n"
+}

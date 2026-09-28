@@ -1,0 +1,97 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_0648bca554290dc3006ab9cce16edc87d089e15602d2fcf90f",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する7項目(2026-09-17ユーザー正式決定で候補C/leak_position_blur追加)】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字が、その人物自身の経験に属する数値であり、かつその人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、またはその人物自身の経験に属する数字が\n  1個だけ実感として自然に織り込まれている場合はPASS。survey/report/study等、本人の経験に\n  属さない外部統計をVoice内で論証材料として使っている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n- leak_position_blur: このVoiceが、自分の立場の中の迷い・葛藤(nuance)の範囲を超えて、他の\n  Voice(相手側)が中心的に抱えている懸念・反論そのものを、自分の中心的な主張として代弁して\n  いない場合PASS(相手側の中心論点をこのVoiceが実質的に引き受けてしまっている場合はFAIL)\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_discovery_syntax / leak_evidence_memorable: 上記と同じ意味\n  (Tension本文に対して判定)\n- leak_numbers_foreground(Tension用): 具体的な数字・比較結果が、3人の合理性を制約する力の\n  描写より前面に出ていない場合PASS(Tensionは1人の経験ではなく複数人の力関係を扱うため、\n  Voice用の「本人の経験に属する数値」限定はここでは適用しない)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI press “send” on my application. Then I wait.\n\nMaybe a person will read it. Maybe a computer will read it first. I may not know which words the system wants. I may not know what it sees as a strong answer.\n\nThen comes the video interview. I speak to a camera, not a person. The system may study my face, my voice, and the way I speak. It may give me a score for qualities such as trust and honesty.\n\nBut can a face show honesty? Can a voice show how well I will do a job? If the answer is no, I may lose my chance before anyone meets me.\n\nI think about an applicant in Massachusetts. In 2021, he applied for a supply-chain job at CVS Health. He took a video interview that used HireVue technology and AI from Affectiva to study facial expressions and voice tone. He said he could not refuse the AI process. He also said he could not challenge the result. He was not hired.\n\nHe sued CVS. Later, CVS agreed to a temporary settlement in a class-action case.\n\nThat story stays with me. If an AI score rejects me, what can I do? Can I ask for a human review? Can I explain something the system missed? Can I even find out what the system decided?\n\nI understand why companies use AI. There may be thousands of applications. But I am not a line on a screen. I am a person waiting outside the hiring door. I need to know why the door opened for someone else—and why it closed for me.\n\n【Voice 2本文】\nMy morning begins with a crowded hiring list. Applications wait. Interview times must be arranged. Managers want names. Candidates want answers.\n\nAI can help. It can sort applications, plan interviews, and help write job posts. In a 2026 survey, 91 percent of HR leaders said they were actively using AI somewhere in hiring. Resume screening was the most common use.\n\nThe tool gives me speed. It also gives me a new job inside my job: I must check the checker.\n\nA candidate may ask, “Was I rejected because of my experience, my answers, or an AI score?” I cannot answer, “The computer said no.” That is not an explanation.\n\nMany job seekers already believe AI screening can be biased. So I need more than a friendly message. I need documents that show where AI is used. I need to explain what it measures. I need regular bias checks. I need records that show whether the system treats different groups differently.\n\nI also need a plan for mistakes. If an applicant says, “This score is wrong,” someone must listen. If a person can review the decision, I must know when and how that review happens.\n\nThis is the strange part. AI was supposed to make my work lighter. Instead, it adds a new question to every hiring decision: Can I defend this choice?\n\nI still need to fill the job. I still need to move quickly. But if I cannot explain the process, the fast tool becomes a slow-moving problem.\n\n【Voice 3本文】\nI look at an empty position and see a clock.\n\nWhile the job is open, work may slow down. Customers may wait. A strong candidate may accept another offer. Hiring can take weeks, and weeks cost money.\n\nAI promises a faster race. Hilton has reported that its average hiring time fell from about six weeks to five days after using AI. IBM has reported a reduction in hiring costs of about 30 percent.\n\nThose numbers catch my attention. Five days sounds better than six weeks. Lower costs sound better than higher costs. If the company cannot control its hiring costs, it may not be able to protect its business.\n\nThen another clock starts.\n\nWhat if the system treats an applicant unfairly? The company may face a discrimination claim. We may face legal responsibility and damages. Our reputation may also suffer. A company can lose trust much faster than it can build trust.\n\nThat loss may reach customers, workers, and future applicants. A quick hire may look good this month. A public problem may stay with us for years.\n\nSo I ask questions that do not fit neatly on a sales slide. Can we check the system? Can we show how it made a decision? Can a person review a result? Can we answer a complaint without saying, “We do not know”?\n\nThese checks cost time and money. They may make the hiring process less fast. But using AI without them may create a much larger bill.\n\nI want the speed. I also want the company to survive the mistake that speed might hide.\n\n【Tension本文】\nThe applicant sees a locked door. The recruiter sees a black box with a question mark. The owner sees a clock and a possible bill.\n\nAll three are looking at the same AI system. But their best results are different.\n\nThe applicant wants a clear reason and a real chance to challenge the score. The recruiter needs time to check the process and explain it. The owner wants the job filled quickly and the cost kept low.\n\nThese goals do not simply join together. A human review may help an applicant, but reviews take time. A bias audit may help a recruiter, but audits cost money. A faster system may help the owner, but speed does not prove fairness.\n\nA report can say that the system works well. It may still fail to explain one person’s rejection. A company can save money on hiring. It may still pay much more after a discrimination claim. A recruiter can believe the process is fair. The applicant may still feel trapped inside a decision they cannot see.\n\nThe real contest is not only between people and machines. It is between three kinds of pressure: the need for a chance, the need for an explanation, and the need to protect the business.\n\n【Closing本文】\nAI can move an application through the hiring process in seconds. It cannot answer every person who waits on the other side of the screen.\n\nThe applicant still needs a fair chance. The recruiter still needs proof that the process is fair. The owner still needs to weigh speed against legal, financial, and reputational risk.\n\nThat is why the decision is not a simple race between “use AI” and “do not use AI.” The harder question comes after the score appears:\n\nWho will explain it?\n\nIf the answer is nobody, the company may save time today. But the applicant may lose a future, the recruiter may lose control of the process, and the owner may discover that the fastest hiring decision was the most expensive one.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "応募者自身の不安と、AIに拒否理由を説明してほしいという経験が中心にある。一方、本人の経験ではない訴訟事例に「2021年」という具体的な数字が付され、外部事例が論証材料として使われている。",
+      "quoted_evidence": "In 2021, he applied for a supply-chain job at CVS Health."
+    },
+    "voice_2": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "FAIL",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "leak_position_blur": "PASS",
+      "reasoning": "HR担当者の一人称はあるものの、冒頭で調査結果と利用率を前面に出し、その後の主張を外部データで説明している。調査結果が人物の実感より強く残り、Discovery記事型のデータ提示に戻っている。",
+      "quoted_evidence": "In a 2026 survey, 91 percent of HR leaders said they were actively using AI somewhere in hiring. Resume screening was the most common use."
+    },
+    "voice_3": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "leak_position_blur": "PASS",
+      "reasoning": "経営側の速度・費用・責任への葛藤は一貫しているが、HiltonとIBMの報告値が具体的な比較データとして前面に出ている。企業事例と数値による効果説明が、経営者の経験や判断より目立つ構成になっている。",
+      "quoted_evidence": "Hilton has reported that its average hiring time fell from about six weeks to five days after using AI. IBM has reported a reduction in hiring costs of about 30 percent."
+    },
+    "tension": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "三者それぞれの異なる制約と、レビュー・監査・速度が衝突する構造が中心で、単純な賛成派対反対派にはなっていない。ただし、外部報告を主語にした一文が入り、証拠主体の文が存在する。",
+      "quoted_evidence": "A report can say that the system works well."
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "三者の要点を再確認しつつ、「Who will explain it?」という未解決の責任の問いに収束している。単なる「人による」という要約でも、Writer独自の解決策・妥協案の提案でもない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_1",
+      "fail_fields": [
+        "leak_numbers_foreground"
+      ],
+      "reasoning": "応募者自身の不安と、AIに拒否理由を説明してほしいという経験が中心にある。一方、本人の経験ではない訴訟事例に「2021年」という具体的な数字が付され、外部事例が論証材料として使われている。",
+      "quoted_evidence": "In 2021, he applied for a supply-chain job at CVS Health."
+    },
+    {
+      "voice": "voice_2",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_narrator_analysis",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "HR担当者の一人称はあるものの、冒頭で調査結果と利用率を前面に出し、その後の主張を外部データで説明している。調査結果が人物の実感より強く残り、Discovery記事型のデータ提示に戻っている。",
+      "quoted_evidence": "In a 2026 survey, 91 percent of HR leaders said they were actively using AI somewhere in hiring. Resume screening was the most common use."
+    },
+    {
+      "voice": "voice_3",
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "経営側の速度・費用・責任への葛藤は一貫しているが、HiltonとIBMの報告値が具体的な比較データとして前面に出ている。企業事例と数値による効果説明が、経営者の経験や判断より目立つ構成になっている。",
+      "quoted_evidence": "Hilton has reported that its average hiring time fell from about six weeks to five days after using AI. IBM has reported a reduction in hiring costs of about 30 percent."
+    },
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_evidence_subject"
+      ],
+      "reasoning": "三者それぞれの異なる制約と、レビュー・監査・速度が衝突する構造が中心で、単純な賛成派対反対派にはなっていない。ただし、外部報告を主語にした一文が入り、証拠主体の文が存在する。",
+      "quoted_evidence": "A report can say that the system works well."
+    }
+  ],
+  "any_flagged": true
+}

@@ -1,0 +1,74 @@
+{
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_084dd8ffb563b543006ab9ccc2793087d08eacefd3d38a3668",
+  "prompt": "以下は、あるVoices/Perspective型記事(3 Voices版)の5つのsection本文\n(Voice 1〜3/Tension/Closing)です。それぞれについて、指定された項目を判定してください\n(それぞれPASS/FAIL)。\n\n【Voice 1〜3に共通で適用する7項目(2026-09-17ユーザー正式決定で候補C/leak_position_blur追加)】\n- leak_evidence_subject: 文の主語がsurvey/research/data/percentageになっている文が無い場合PASS\n- leak_numbers_foreground: 具体的な数字が、その人物自身の経験に属する数値であり、かつその人の\n  経験の描写より前面に出ていない場合PASS(数字が0個、またはその人物自身の経験に属する数字が\n  1個だけ実感として自然に織り込まれている場合はPASS。survey/report/study等、本人の経験に\n  属さない外部統計をVoice内で論証材料として使っている場合はFAIL)\n- leak_narrator_analysis: Narrator(語り手)が、Voiceの人物を外側から分析・要約していない場合PASS\n- leak_unknowable_analysis: その人物自身が実際に考え・言いそうにない、外部の分析的視点を、その人の\n  Perspectiveとして書いていない場合PASS\n- leak_discovery_syntax: Discovery/Trend記事のような文構造へ戻っていない場合PASS\n- leak_evidence_memorable: Evidenceよりもその人物の経験・感情の方が記憶に残る書き方になっている場合PASS\n- leak_position_blur: このVoiceが、自分の立場の中の迷い・葛藤(nuance)の範囲を超えて、他の\n  Voice(相手側)が中心的に抱えている懸念・反論そのものを、自分の中心的な主張として代弁して\n  いない場合PASS(相手側の中心論点をこのVoiceが実質的に引き受けてしまっている場合はFAIL)\n\nいずれのVoiceについても、他のVoiceと同一の基準で判定してください(特定の立場が抽象的な\n代弁者の解説になっている場合は、leak_evidence_subject/leak_narrator_analysis/leak_discovery_syntax\nのいずれかでFAILとしてください)。\n\n【Tensionに適用する項目】\n- leak_evidence_subject / leak_discovery_syntax / leak_evidence_memorable: 上記と同じ意味\n  (Tension本文に対して判定)\n- leak_numbers_foreground(Tension用): 具体的な数字・比較結果が、3人の合理性を制約する力の\n  描写より前面に出ていない場合PASS(Tensionは1人の経験ではなく複数人の力関係を扱うため、\n  Voice用の「本人の経験に属する数値」限定はここでは適用しない)\n- leak_tension_reverts_to_research: Tensionの中心が、3人がなぜ違う答えに至るのかの掘り下げになって\n  おり、survey/研究データそのものの説明・比較へ戻っていない場合PASS\n- leak_binary_camp_split: Tensionが3人を単純に対称的な2対1の陣営へ分けて描いていない場合PASS\n  (分けている場合FAIL)\n\n【Closingに適用する1項目】\n- leak_closing_simple_summary: Closingが、単なる要約や「人による」という結び方だけで終わっておらず、\n  かつWriter自身の解決策・妥協案の提案になっていない場合PASS\n\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する\n原文を引用してください(英語本文をそのまま引用してよい)。PASSの場合quoted_evidenceは空文字列に\nしてください。\n\n【Voice 1本文】\nI speak to a camera. Software scores my voice, face, and gestures. I read about a woman who did well on a skills test. But AI gave her low scores for gestures and facial expressions. She later had no job for a long time. I also know about an applicant who said AI scored his reliability and honesty. He had no way to refuse the score or question it. I want people to see my skills and character. I do not want them reduced to one score.\n\n【Voice 2本文】\nI start with résumés and an AI tool. It sorts résumés, sets interviews, and matches people with jobs. It helps when applications arrive faster than my team can read them. But a score does not finish the work. I may write a simple summary of a fairness check. I may also answer candidates' questions. One company's public notice shows this duty is real. I also judge résumés written by AI. Are they a useful skill, or do they show too little effort? I run the tool. But I do not decide if the company adopts it.\n\n【Voice 3本文】\nEach week, I check the hiring dashboard. I look at time, cost, and the people we still need. If hiring slows, the work does not wait. I have read reports of faster hiring and lower costs after AI. That is why I may keep using it. But news of a tool that rated women lower makes me check my choice again. If people question it, my name is attached. I protect the company's future. But I also carry the risk of being wrong.\n\n【Tension本文】\nAll three want the right person in the right job. But they face different problems. The applicant may lose a fair chance. The recruiter must keep work moving and explain the system. The owner must keep the company running and answer for the choice. The applicant cannot choose the system. The recruiter runs it and may help decide if the company adopts it. The owner may make the final choice. Outside rules limit all three roles. In New York City, an employer needs a recent fairness check. It also needs a public summary and notice before using an automated hiring tool. The recruiter cannot use the tool in secret. The owner cannot depend on speed alone. The applicant still cannot control the score. One company stopped a tool after it rated women lower. These views do not give one simple answer.\n\n【Closing本文】\nThis is not only a question about a machine. It may read a résumé or study a face. It is also about who decides what a fair chance means. Who must explain the system? Who faces the results when it fails? Hiring is not only a choice about tools. It is also about power, proof, and responsibility.\n",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "語り手はカメラ審査を受ける本人として、自分の技能や人格が一つの点数に還元される不安を述べている。外部事例は懸念を補強する範囲にとどまり、他のVoiceの中心論点を代弁していない。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "採用担当者の実務上の経験と限界が、AIの運用、候補者への説明、導入判断への関与範囲として具体的に描かれている。公開通知への言及はあるが、調査結果の解説がVoice全体を占めてはいない。",
+      "quoted_evidence": ""
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "具体的な数値はないが、外部レポートをAI導入を続ける根拠として明示的に使っているため、本人の経験ではない外部データが論証材料になっている。もっとも、最後は経営者自身の責任と誤りへの恐れに戻っている。",
+      "quoted_evidence": "I have read reports of faster hiring and lower costs after AI. That is why I may keep using it."
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "FAIL",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "三者が受ける制約は、応募者の公平性、採用担当者の説明責任、経営者の事業責任として区別されており、単純な二陣営にはなっていない。一方で、人物の経験より規則・通知・企業事例の説明が前面に出ている。",
+      "quoted_evidence": "In New York City, an employer needs a recent fairness check. It also needs a public summary and notice before using an automated hiring tool.\nOne company stopped a tool after it rated women lower."
+    },
+    "closing": {
+      "leak_closing_simple_summary": "PASS",
+      "reasoning": "単なる「人による」という要約ではなく、公平性の定義、説明責任、失敗時の責任、権力と証拠という未解決の論点を提示して終えている。Writer自身の具体的な解決策や妥協案も提案していない。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "voice": "voice_3",
+      "fail_fields": [
+        "leak_numbers_foreground"
+      ],
+      "reasoning": "具体的な数値はないが、外部レポートをAI導入を続ける根拠として明示的に使っているため、本人の経験ではない外部データが論証材料になっている。もっとも、最後は経営者自身の責任と誤りへの恐れに戻っている。",
+      "quoted_evidence": "I have read reports of faster hiring and lower costs after AI. That is why I may keep using it."
+    },
+    {
+      "voice": "tension",
+      "fail_fields": [
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "三者が受ける制約は、応募者の公平性、採用担当者の説明責任、経営者の事業責任として区別されており、単純な二陣営にはなっていない。一方で、人物の経験より規則・通知・企業事例の説明が前面に出ている。",
+      "quoted_evidence": "In New York City, an employer needs a recent fairness check. It also needs a public summary and notice before using an automated hiring tool.\nOne company stopped a tool after it rated women lower."
+    }
+  ],
+  "any_flagged": true
+}
