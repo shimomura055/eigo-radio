@@ -11888,3 +11888,41 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   PM-GIT-STATE-VERIFICATION-AFTER-REBASE-01.md`委任文および本タスク
   実行ログ参照)。
 - commit: 本コミット(SSOT反映のみ、コード変更なし)。
+
+## TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01: Trial記録(2026-09-28)
+
+- **概要**: ユーザー指示によりFamily X Flash-Lite既存6-roleを全spoken
+  要素(shell narration・Key Phrase・JA含む)へ拡張するTrialを実施。
+  Role表・style表は
+  `docs/pm/design_tts_all_spoken_role_style_trial_01.md`。Standard(A2)は
+  全件OK・Baseline同等duration、Advanced(B1B)は共有narration2件
+  (num_two/num_three)が既存Human Review Lockに到達しフルepisode組立て
+  不可(既存安全装置の正常動作、独自回避なし)。Advanced Key Phrase
+  英語解説の既存Production仕様・テキストartifactは存在しないことを
+  確認(過去Trial`KEY-PHRASE-LEVEL-SPEC-TRIAL-01`はREJECTED、未配線)。
+- **費用**: ¥23.41(実API、Gemini TTS + OpenAI ASR。内訳gemini¥19.17/
+  openai_asr¥4.24)、Guardrail¥45以内。
+- **Production変更ゼロの証拠**: `git diff --stat HEAD -- "er0*.py"
+  "er003_v1_translator_briefs/" | grep -v er038`が空、Production
+  Master Audio Store(`er006_output/master_audio_store_01/`)の
+  manifest.jsonにTrialのstyle_instruction_id・Role名を含むentryが0件
+  (Trial専用Store`er038_output/.../trial_master_audio_store/
+  manifest.json`に10 entryへ完全分離)。詳細REPORT§12。
+- **Fable判定**: `USER_DECISION_REQUIRED`(試聴待ち)。Production採用は
+  未決、CURRENT_SPEC変更なし。
+- **ユーザー判断待ちの論点**: (1) Trial限定のHuman Review Lock解除+
+  "Two."/"Three."の再生成をREGENERATE_APPROVEDとして承認するか
+  (NUMBER_LABEL styleをProduction実証済み
+  `FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`スタイルへ差し替えての再試行を
+  含む)、(2) Advanced結合(フルepisode組立て)の実施要否、(3) Advanced
+  Key Phrase英語解説の前提維持(現状「英語句+日本語意味」構成のまま。
+  過去Trial`KEY-PHRASE-LEVEL-SPEC-TRIAL-01`はREJECTED)、(4) 本Trialで
+  共有ログ(`attempt_history.jsonl`/`human_review_queue.jsonl`)に混入
+  した可能性のあるentryの扱い。
+- **新規OPEN登録**: OPEN-221(Advanced Key Phrase英語解説artifact
+  不在)、OPEN-222(極短context-free単語のFlash-Lite言語ドリフトが
+  Trial styleでも再現、OPEN-201関連)、OPEN-223(Human Review Lock/
+  attempt historyの共有固定pathがパラメータ化されておらずTrial分が
+  混入した可能性)。
+- **根拠**: `TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_REPORT.md`、
+  commit`e6d2a6cd`/`f1e23ce2`。
