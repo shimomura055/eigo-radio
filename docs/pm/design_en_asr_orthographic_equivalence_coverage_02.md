@@ -189,10 +189,22 @@ whole-segment all-or-nothingの脆弱性そのもの**は、そもそも構造�
 
 ### 1.5 帰着(仕様漏れ/実装漏れ/corpus不足/coverage設計不足)
 複数の原因が複合している:
-1. **実装漏れ(Category A)**: Tier 1のatomパーサーが、既に承認済み
-   だった旧Validatorの安全策(略語のdespaced救済、日付序数の月名限定
-   正規化)を継承し損ねている。REVIEW-01時点で「既に解決済み」と
-   誤認された前提が、実装後に再検証されなかった。
+1. **実装漏れ(Category A、2026-09-28是正: 原因記述を修正)**: 当初
+   「(旧Validatorの安全策を)継承し損ねている」と記述したが、これは
+   不正確だった。正確には、Tier 1のtokenizer(`_TOKEN_RE`)は上付き
+   文字等の情報欠落を防ぐため**意図的にpunctuationを保持したまま
+   1文字ずつliteral atom化する設計**(L97-102のER021-SAFETYコメント
+   参照)であり、これ自体は正しい安全設計である。一方、旧Validator
+   (`normalize_text()`)は逆にpunctuationを**除去**する正規化(かつ
+   `despaced()`で空白も除去して救済する)という、Tier 1とは正反対の
+   戦略を取っている。問題は「継承し損ねた」ことではなく、**この2つの
+   異なる戦略(punctuation保持 vs punctuation除去)の間で、
+   punctuation由来の差分をどちらの層が最終的に吸収するかという
+   調整が行われていなかった**ことである。Tier 1はpunctuationを
+   保持する設計上、略語のatom分裂・日付序数のatom数不一致をそのまま
+   全体判定の道連れにしてしまい、旧Validator側の除去戦略の恩恵を
+   受けられていなかった(§3のdiff-anchored化は、この未調整を
+   Tier 1内部で解消する対策である)。
 2. **coverage設計そのものの不足(構造的)**: Tier 1がwhole-segment
    all-or-nothingという設計を採用したこと自体が、「1箇所の対象外
    phenomenonが同一segment内の他の対象内phenomenonの判定まで道連れに
@@ -244,6 +256,18 @@ long segmentでは§1のとおり無関係な差分と同居すると道連れ�
 | 22 | negative: 値そのものが違う | "1 million copies" | "1 billion copies" | NO MATCH(正しく保護) | REJECT(現状維持) | 実測(本書) |
 | 23 | negative: 基数vs序数(品詞違い) | "28 articles" | "28th articles" | NO MATCH(正しく保護) | REJECT(現状維持) | telemetry実例(§1.3)、序数接尾辞を無条件absorbすると壊れる根拠 |
 
+### 2.1 coverage matrix拡張(2026-09-28、Phase 2実装レビュー[Opus指摘]で追加)
+「単一カテゴリ単独」ではなく「**同一segment内で複数差分が共存するケース**」
+自体を独立した検証観点として追加する(Hormuz実例が示した本質的な脆弱性は
+まさにこれであり、§2の各行は単独カテゴリの実測に留まっていたため)。
+
+| # | カテゴリ | canonical例 | ASR例 | 実装後の判定 | 根拠 |
+|---|---|---|---|---|---|
+| 24 | 番号ラベル+略語+日付序数の3種同時共存(Hormuz実例そのもの) | "Act One...US efforts...July 13" | "Act 1...U.S. efforts...July 13th" | PASS(diff-anchored、absorbed_ops=1、日付序数は前処理で無差分化) | 実装後実測(本Phase、runtime evidence) |
+| 25 | 序数語("third")+per cent+meridiem略記が同一segmentに共存 | "the third attempt...20 per cent...10:16 am" | "the 3rd attempt...20%...10:16 a.m." | PASS(各差分が個別にTier1既存判定/strict合成規則へ帰着) | 実装後実測(本Phase) |
+| 26 | punctuation差+文の丸ごと欠落が同一segmentに共存(合成negative) | 長尺segment(略語差含む) | 同上+末尾1文が欠落 | REJECT(欠落文の英数字内容がalnum不一致のため即座に全体非等価) | 実装後実測(本Phase、long-segment negative test) |
+| 27 | punctuation差+数値1桁違いが同一segmentに共存(合成negative) | 長尺segment(略語差含む) | 同上+数値が1桁違う | REJECT(値の異なるnumber atomはkindは同じでもkeyが異なりequalにならず、opは非literal混入でabsorb対象外) | 実装後実測(本Phase、long-segment negative test) |
+
 ## 3. E-3 設計原則・設計案比較
 
 ### 3.1 設計原則(Fable最終レビュー2026-09-26を継承、本書で明確化する点を追加)
@@ -263,12 +287,12 @@ long segmentでは§1のとおり無関係な差分と同居すると道連れ�
 | 観点 | 案1: 現状維持+個別pre-processing追加のみ | 案2: diff-anchored比較への変更(pre-processing追加込み) | 案3: 意味parse層を新設(全面刷新) |
 |---|---|---|---|
 | 説明 | `_tier1_atoms`の前処理へ「打点略語をatomへ結合」「月名直後の裸digit+序数接尾辞を吸収」の2パッチのみ追加、all-or-nothingのzip比較はそのまま | 上記2パッチに加え、`len(ca)!=len(aa)`即NGを廃し、`difflib.SequenceMatcher`でatom列をalignし、非equalな各opが「許容済みパターン(既存atom種別+新設2種)」に帰着する場合のみ全体PASSとする | Tier1を破棄し、canonical/ASR両方を文単位で構造化パース(数値・日付・固有表現等をラベル付きノードに)する新層を作る |
-| false reject耐性 | 中(今回のAct One実例のように、無関係な**3つ目**の別要因が同一segmentに出た場合はまだ道連れになる) | 高(無関係要因が何個同居しても、各要因が個別に許容パターンなら全体PASS。今回の実例は完全に解消される) | 高(理論上は最も柔軟) |
+| false reject耐性 | 中(今回のAct One実例[打点略語+日付序数の2要因]は2パッチで解消できるが、**3つ目以降**の未知の別要因が同一segmentに出た場合はまだ道連れになる) | 高(無関係要因が何個同居しても、各要因が個別に許容パターンなら全体PASS。今回の実例はもちろん、将来の未知のpunctuation差にも構造的に耐性がある) | 高(理論上は最も柔軟) |
 | false acceptリスク | 低(既存の閉じた判定基準のまま) | 低〜中(SequenceMatcherのalignmentが複数の連続した差分を1つのopとして誤って大きく括る可能性があるため、**opごとに厳密な許容パターン一致**を要求する実装規律が必須。既存のTier3 `locate_single_token_diff`と同様、op自体が「1箇所の閉じた許容パターン」に完全一致しない場合は非等価のまま[best-effort禁止]とする設計にすれば旧来同様に低リスク) | 不明(新規実装のため要ゼロベース検証、実装・レビューコスト大) |
 | 変更範囲 | `er021`内のみ、小さい | `er021`内のみ、中程度(比較アルゴリズムの置き換え) | 新モジュール、全呼び出し経路への再配線が必要、大きい |
 | 全経路一貫性 | 保たれる(既存wrapper無変更) | 保たれる(既存wrapper無変更、`tier1_numeric_equivalence()`の内部実装のみ変更、シグネチャ不変) | 要再設計、既存の5role wrapper・telemetry・Tier3との統合をやり直す必要 |
 | コスト | ¥0、決定論コード | ¥0、決定論コード | ¥0のはずだが実装・レビュー工数が最大 |
-| 今回のAct One実例を解消するか | **しない**(このケース自体は「打点略語」+「日付序数」の**2つ**が同一segmentに同居しているため、2パッチを個別に当てても`len(ca)!=len(aa)`のall-or-nothing判定自体は変えない限り、2パッチ後もatom数が一致すれば通る可能性はあるが、**3つ目の想定外要因が今後出るたびに同じ問題が再発する**) | **する**(構造的に解消。今後同種の未知の微小tokenization差が出ても、他の正しい等価判定を道連れにしなくなる) | する(が過剰) |
+| 今回のAct One実例を解消するか | **する**(2026-09-28実装レビューで是正: 打点略語を1atomへ結合するpre-processingと月名限定の序数吸収pre-processingの**2パッチだけでも**、両方を適用すれば残る差は無くなり`len(ca)==len(aa)`のall-or-nothing判定のままでも今回の実例そのものは解消できることを実装時に確認した。先の記述「しない」は誤りだったため訂正する) | **する**(2パッチと同じ範囲を解消しつつ、**未知の3つ目以降の想定外punctuation差**が将来同一segmentに同居した場合にも道連れにしない、という構造的な耐性が2パッチのみとの真の差分である) | する(が過剰) |
 
 **推奨: 案2(diff-anchored比較+2つの具体的pre-processing修正)**。
 理由: (a) 今回の実例を確実に解消する、(b) 変更範囲が最小(`er021`
@@ -313,7 +337,7 @@ Tier3救済ロジックに一切触れない)、(c) 「1箇所の未知の微小
 | A2標準+fallback | `er003_v1_crosslevel_audio_02_common.py`→内部で上記er003_v1_n3_01の共通生成コアを呼ぶ(直接呼び出しなし、同一関数を再利用) | 同上 | ○ |
 | retry(同一関数内ループ) | 同上(初回と同一コード経路) | 同上 | ○ |
 | Local Rewrite回復(er020) | 再TTS後の再検証は同一生成コアの再呼び出し(`er003_v1_n3_01_tts_generate.py:144`と同一箇所)を通る、独立実装なし | 同上 | ○ |
-| Secondary ASR cascade | `er006_secondary_asr_01.py`(5箇所、L682/706/747/777/808) | `segment_id=segment_id` | ○(role該当時) |
+| Secondary ASR cascade | `er006_secondary_asr_01.py`(直接呼び出し5箇所、L682/706/747/777/808、+間接2箇所[L395: `evaluate_attempt_with_cascade`→内部で`evaluate_attempt_with_cascade_detail`を同じsegment_idで再呼び出し、L526: `evaluate_attempt_with_cascade_detail`→`val.evaluate_attempt`経由でclassify_asr_matchへ到達]、2026-09-28追加確認) | `segment_id=segment_id` | ○(role該当時) |
 | Human Review Lock直前 | cascade結果(上記)をそのまま使用、独立再判定なし | — | ○(cascade経由) |
 | Key Phrase英語経路 | `classify_asr_match()`は呼ばれるが`segment_id`/`role`いずれも渡していない箇所が大多数(約50ファイル中の非該当segment) | 渡さない | ×(role非該当、既存仕様どおり対象外) |
 

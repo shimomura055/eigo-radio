@@ -531,5 +531,247 @@ class NewsTailFixB1WiringFixTest(unittest.TestCase):
         self.assertEqual(self.tts_call_count, 1)
 
 
+class StrictTier1SynthesisRuleTest(unittest.TestCase):
+    """EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02(Phase 2、ユーザー
+    承認2026-09-28: strict版Tier1合成規則+分類A技術修正)。diff-anchored
+    比較+punctuation由来局所差分吸収(打点略語・meridiem略記・hyphenated
+    numeric・alphanumeric entity)、月名限定序数吸収、序数語("third"等)、
+    "per cent"、数値語runの"and"飲み込みバグ修正、単独ローマ数字(V/X)の
+    締める方向の安全化を、実際の配線経路(val.classify_asr_match(...,
+    segment_id=APPLICABLE_SEGMENT_ID))で固定する。"""
+
+    def _match(self, canonical, asr):
+        return val.classify_asr_match(canonical, asr, segment_id=APPLICABLE_SEGMENT_ID)
+
+    # ---- positive: 分類A技術修正が実際に救済すること ----
+
+    def test_ordinal_word_matches_digit_suffix(self):
+        r = self._match("The team completed the third attempt successfully.",
+                         "The team completed the 3rd attempt successfully.")
+        self.assertTrue(r.should_pass)
+        self.assertEqual(r.classification, "NUMERIC_EQUIVALENCE_MATCH")
+
+    def test_per_cent_two_word_matches_percent_word(self):
+        r = self._match("Sales rose by 20 per cent this quarter.",
+                         "Sales rose by 20 percent this quarter.")
+        self.assertTrue(r.should_pass)
+
+    def test_per_cent_two_word_matches_percent_symbol(self):
+        r = self._match("Sales rose by 20 per cent this quarter.",
+                         "Sales rose by 20% this quarter.")
+        self.assertTrue(r.should_pass)
+
+    def test_and_swallow_parser_bug_fixed_true_equivalence_rescued(self):
+        # 修正前は"and"が隣接する裸digit語(five)を誤って飲み込み、
+        # canonical/ASR間でatom数がずれてTier1が正しい等価性を救済
+        # できなかった(既存の安全装置を回避するものではなく、既存の
+        # false rejectを解消する修正であることを固定する)。
+        r = self._match("The bus arrives, and five minutes later it departs.",
+                         "The bus arrives, and 5 minutes later it departs.")
+        self.assertTrue(r.should_pass)
+
+    def test_meridiem_abbreviation_matches_am_pm_word(self):
+        r = self._match("The meeting starts at 10:16 am today.",
+                         "The meeting starts at 10:16 a.m. today.")
+        self.assertTrue(r.should_pass)
+
+    def test_hyphenated_numeric_matches_spaced_form(self):
+        r = self._match("It was a 15-minute walk worth $5.",
+                         "It was a 15 minute walk worth $5.")
+        self.assertTrue(r.should_pass)
+
+    def test_alphanumeric_entity_hyphen_matches_spaced_form(self):
+        r = self._match("The COVID-19 outbreak began in 2019.",
+                         "The COVID 19 outbreak began in 2019.")
+        self.assertTrue(r.should_pass)
+
+    def test_date_ordinal_month_adjacent_absorbed(self):
+        r = self._match("The curtain rose on July 13, costing $5.",
+                         "The curtain rose on July 13th, costing $5.")
+        self.assertTrue(r.should_pass)
+
+    def test_act_one_hormuz_style_combined_punctuation_diffs_pass(self):
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01 Phase 3の
+        # 既知gap(er003_test_v1_n3_01_tts_generate.py::
+        # ActHeadingDigitReadingRegressionTests、role gate非適用の回帰
+        # fixtureは無変更のまま)を、role gate適用状態(本来のProduction
+        # 配線)で再現し、strict版Tier1合成規則により正しく等価
+        # (PASS)へ是正されたことを固定する(OPEN-186/COVERAGE-REVIEW-02の
+        # 是正そのもの)。旧fixtureとの関係: 旧fixtureはsegment_id/roleを
+        # 渡さない呼び出しを検証しており、Tier1自体が発火しないため今回の
+        # 修正の影響を受けず、無回帰のまま残る(是正はこのテストが担う)。
+        canonical = (
+            "The play unfolds in three acts. Act One introduces the "
+            "characters. Act Two raises the stakes. Act Three resolves "
+            "the conflict. The curtain rose on July 13. The cost of US "
+            "efforts was notable."
+        )
+        asr_digit_and_punctuation_form = (
+            "The play unfolds in three acts. Act 1 introduces the "
+            "characters. Act 2 raises the stakes. Act 3 resolves "
+            "the conflict. The curtain rose on July 13th. The cost of U.S. "
+            "efforts was notable."
+        )
+        r = self._match(canonical, asr_digit_and_punctuation_form)
+        self.assertTrue(r.should_pass, f"expected rescue via strict Tier1 synthesis rule, got {r.classification}")
+        self.assertEqual(r.classification, "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertTrue(r.semantic_equivalence_info["diff_spans"]["diff_anchored"])
+        self.assertGreaterEqual(r.semantic_equivalence_info["diff_spans"]["absorbed_ops"], 1)
+
+    # ---- negative: false accept 0(既存の安全性を拡張しない) ----
+
+    def test_model_x_vs_model_10_not_absorbed(self):
+        r = self._match("This is Model X, priced at $5.", "This is Model 10, priced at $5.")
+        self.assertFalse(r.should_pass)
+        self.assertNotEqual(r.classification, "NUMERIC_EQUIVALENCE_MATCH")
+
+    def test_cardinal_vs_ordinal_28_28th_not_absorbed_outside_date_context(self):
+        r = self._match("The study included 28 articles, costing $5.",
+                         "The study included 28th articles, costing $5.")
+        self.assertFalse(r.should_pass)
+
+    def test_us_vs_uk_abbreviation_not_absorbed(self):
+        r = self._match("The cost was $5 for US efforts.", "The cost was $5 for UK efforts.")
+        self.assertFalse(r.should_pass)
+
+    def test_approx_vs_exact_not_absorbed(self):
+        r = self._match("About 20 people attended, costing $5.", "20 people attended, costing $5.")
+        self.assertFalse(r.should_pass)
+
+    def test_percent_vs_percentage_points_not_absorbed(self):
+        r = self._match("Inflation rose by five percent, costing $5.",
+                         "Inflation rose by five percentage points, costing $5.")
+        self.assertFalse(r.should_pass)
+
+    def test_roman_numeral_single_letter_without_label_context_not_absorbed(self):
+        r = self._match("I bought a V for $5.", "I bought a 5 for $5.")
+        self.assertFalse(r.should_pass)
+
+    def test_roman_numeral_single_letter_with_label_context_still_absorbed(self):
+        # 締める方向の安全化は「無条件」を止めるだけで、閉じたラベル文脈
+        # (Section/Act/Part等)では従来通りローマ数字として機能すること。
+        # (数字直後にcomma等が隣接すると_TOKEN_REの桁区切りcomma対応と
+        # 干渉するため、意図的に数字とcommaが隣接しない文言にする。)
+        r = self._match("Please review Section V for details, it costs $5.",
+                         "Please review Section 5 for details, it costs $5.")
+        self.assertTrue(r.should_pass)
+
+    def test_digit_hyphen_digit_code_not_absorbed_by_tier1(self):
+        # ハイフンが2つの数値atomの間に挟まる場合(コード/ID風の表記)は、
+        # 「文字-数字」「数字-文字」拡張の対象外のままとし、Tier1自体の
+        # 既存安全性を拡張しない(Tier1単体で直接確認する。旧Validator側
+        # の独立した既存正規化[despaced()等、本タスクの変更範囲外]が
+        # 別途NORMALIZED_MATCHで救済する場合があるが、それはTier1の
+        # false acceptではない)。
+        r = semantic_equivalence.tier1_numeric_equivalence(
+            "The reference code is 12-34, costing $5.",
+            "The reference code is 12 34, costing $5.")
+        self.assertIsNone(r, "Tier1がハイフン区切りのコードを誤って吸収している(false accept)")
+
+    def test_genuine_negative_number_sign_preserved_by_tier1(self):
+        # Tier1自体が符号(-5 vs 5)を吸収しないことを直接確認する(旧
+        # Validator側の独立した既存正規化は本タスクの変更範囲外)。
+        r = semantic_equivalence.tier1_numeric_equivalence(
+            "The change was -5 degrees, a shift of $3.",
+            "The change was 5 degrees, a shift of $3.")
+        self.assertIsNone(r, "Tier1が符号違いを誤って吸収している(false accept)")
+
+    # ---- 長尺(>200 atom)・合成negative群: punctuation差と同居しても
+    # 正当なnegativeが道連れで救済されないこと(false accept 0)を固定する。
+
+    _LONG_BASE_SENTENCES = [
+        "Act One introduces the characters in three acts.",
+        "Act Two raises the stakes for everyone involved.",
+        "Act Three resolves the conflict on stage.",
+        "The curtain rose on July 13 in front of a large crowd.",
+        "The cost of US efforts was notable across the region.",
+        "The meeting starts at 10:16 am at the main office.",
+        "The report is divided into 15 parts for the committee.",
+        "Analysts said the plan could raise prices by 20 percent.",
+        "The company said the change was worth about $5 million.",
+        "Officials declined to comment on the record this week.",
+    ]
+
+    @classmethod
+    def _long_canonical(cls):
+        return " ".join(cls._LONG_BASE_SENTENCES * 2)
+
+    @classmethod
+    def _long_asr_punctuation_only(cls):
+        # 番号ラベルdigit化・meridiem略記・US略語のみを変え、内容自体は
+        # 変えない(canonicalと"意味的に完全に同じ"長尺ASR書き起こし)。
+        sentences = [
+            "Act 1 introduces the characters in three acts.",
+            "Act 2 raises the stakes for everyone involved.",
+            "Act 3 resolves the conflict on stage.",
+            "The curtain rose on July 13th in front of a large crowd.",
+            "The cost of U.S. efforts was notable across the region.",
+            "The meeting starts at 10:16 a.m. at the main office.",
+            "The report is divided into 15 parts for the committee.",
+            "Analysts said the plan could raise prices by 20 percent.",
+            "The company said the change was worth about $5 million.",
+            "Officials declined to comment on the record this week.",
+        ]
+        return " ".join(sentences * 2)
+
+    def test_long_segment_punctuation_only_diffs_pass(self):
+        canonical = self._long_canonical()
+        asr = self._long_asr_punctuation_only()
+        # 前提: 200 atomを超える長尺segmentであることを固定する
+        # (autojunk境界・diff-anchored化の効果を確認する対象規模)。
+        self.assertGreater(len(semantic_equivalence._tier1_atoms(canonical)), 200)
+        r = self._match(canonical, asr)
+        self.assertTrue(r.should_pass, f"expected long-segment punctuation-only PASS, got {r.classification}")
+
+    def test_long_segment_dropped_sentence_not_absorbed(self):
+        canonical = self._long_canonical()
+        sentences = self._long_asr_punctuation_only().split(". ")
+        # 1文まるごと欠落させる(合成negative: 文の丸ごと欠落)。
+        asr = ". ".join(sentences[:-2] + sentences[-1:])
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "文の丸ごと欠落が誤って救済されている(false accept)")
+
+    def test_long_segment_negation_dropped_not_absorbed(self):
+        canonical = self._long_canonical()
+        asr = self._long_asr_punctuation_only().replace(
+            "Officials declined to comment on the record this week.",
+            "Officials agreed to comment on the record this week.", 1)
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "否定語欠落(declined->agreed)が誤って救済されている(false accept)")
+
+    def test_long_segment_number_off_by_one_not_absorbed(self):
+        canonical = self._long_canonical()
+        asr = self._long_asr_punctuation_only().replace(
+            "The report is divided into 15 parts for the committee.",
+            "The report is divided into 16 parts for the committee.", 1)
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "数値1桁違いが誤って救済されている(false accept)")
+
+    def test_long_segment_unit_only_diff_not_absorbed(self):
+        canonical = self._long_canonical()
+        asr = self._long_asr_punctuation_only().replace(
+            "Analysts said the plan could raise prices by 20 percent.",
+            "Analysts said the plan could raise prices by 20 percentage points.", 1)
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "単位のみ相違(percent->percentage points)が誤って救済されている(false accept)")
+
+    def test_long_segment_us_vs_uk_not_absorbed(self):
+        canonical = self._long_canonical()
+        asr = self._long_asr_punctuation_only().replace(
+            "The cost of U.S. efforts was notable across the region.",
+            "The cost of U.K. efforts was notable across the region.", 1)
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "U.S.≠U.K.(別の実体)が誤って救済されている(false accept)")
+
+    def test_long_segment_cardinal_vs_ordinal_non_month_adjacent_not_absorbed(self):
+        canonical = self._long_canonical()
+        # "15 parts"(基数) vs "15th parts"(序数、月名に隣接しない裸digit)。
+        asr = self._long_asr_punctuation_only().replace(
+            "The report is divided into 15 parts for the committee.",
+            "The report is divided into 15th parts for the committee.", 1)
+        r = self._match(canonical, asr)
+        self.assertFalse(r.should_pass, "基数/序数の意味差(15 vs 15th、月名非隣接)が誤って救済されている(false accept)")
+
+
 if __name__ == "__main__":
     unittest.main()

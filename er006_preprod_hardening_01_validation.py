@@ -118,13 +118,10 @@ _NUM_WORD_VOCAB = set(_ONES) | set(_TENS) | set(_SCALES) | {"and"}
 # 除外する(実際に"a company...may first run at a loss"という副詞用法が、
 # 誤って"May 1st"と一致してしまう実回帰を検出したため)。third以降は
 # 副詞的用法の頻度が大きく下がるため対象に含める。
-_ORDINAL_WORDS = {
-    "third": "3rd", "fourth": "4th", "fifth": "5th",
-    "sixth": "6th", "seventh": "7th", "eighth": "8th", "ninth": "9th", "tenth": "10th",
-    "eleventh": "11th", "twelfth": "12th", "thirteenth": "13th", "fourteenth": "14th",
-    "fifteenth": "15th", "sixteenth": "16th", "seventeenth": "17th", "eighteenth": "18th",
-    "nineteenth": "19th", "twentieth": "20th", "thirtieth": "30th",
-}
+# EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02(2026-09-28、分類A技術
+# 修正): 複製ではなく共通化のため、定義自体はer021側(Tier1のordinal atom
+# 認識でも同じ閉じた集合を使う)へ移設し、ここでは参照するだけにする。
+_ORDINAL_WORDS = semantic_equivalence._ORDINAL_WORDS
 _ORDINAL_WORD_RE = re.compile(r"\b(" + "|".join(_ORDINAL_WORDS.keys()) + r")\b", re.IGNORECASE)
 
 # ER-010-DATE-SPOKEN-FORM-POINT-FIX-01(2026-08-27)で発見: 複合序数
@@ -165,9 +162,13 @@ def _convert_compound_ordinal_words(text: str) -> str:
         return f"{tens_val + int(ones_digit)}{suffix}"
     return _COMPOUND_ORDINAL_RE.sub(_repl, text)
 
-_MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august",
-           "september", "october", "november", "december")
-_DATE_ORDINAL_RE = re.compile(r"\b(" + "|".join(_MONTHS) + r")\s+(\d{1,2})(st|nd|rd|th)\b", re.IGNORECASE)
+# EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02(2026-09-28、分類A技術
+# 修正): 複製ではなく共通化のため、定義自体はer021_en_asr_semantic_
+# equivalence_production_01.py側へ移設し、ここでは同じオブジェクトを
+# 参照するだけにする(semantic_equivalenceは本ファイル冒頭で既に
+# module-level importしており、val -> er021の一方向importの範囲内)。
+_MONTHS = semantic_equivalence._MONTHS
+_DATE_ORDINAL_RE = semantic_equivalence._DATE_ORDINAL_RE
 
 # ============================================================
 # ER-006-GATE-CALIBRATION-ASR-CASCADE-MATH-VALIDATOR-01: 数式表記の正規化

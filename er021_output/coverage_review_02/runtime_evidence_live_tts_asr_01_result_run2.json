@@ -1,0 +1,190 @@
+{
+  "management_id": "EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02",
+  "purpose": "strict版Tier1合成規則(diff-anchored+punctuation局所差分吸収)の実TTS+実ASR end-to-end runtime evidence",
+  "started_at": "2026-09-28T09:21:00",
+  "finished_at": "2026-09-28T09:21:07",
+  "env": {
+    "TTS_EXECUTION_MODE": "STANDARD"
+  },
+  "model_id_en_tts": "gemini-2.5-pro-preview-tts",
+  "voice": "Aoede",
+  "asr_provider_routing": null,
+  "tts_backend": "structured_separation (既定、Flash-Lite非対象)",
+  "segment_id": "full_story_part1",
+  "out_path": "er021_output/coverage_review_02/live_evidence_audio_not_narration_layout/full_story_part1_run2.wav",
+  "narration_layout_detected": false,
+  "canonical_text": "The report is divided into three parts. Part One covers the background.",
+  "result_status": "OK",
+  "attempts_log": [
+    {
+      "attempt": 1,
+      "status": "OK",
+      "duration_seconds": 5.381,
+      "asr_text": "The report is divided into three parts. Part one covers the background.",
+      "asr_text_length": 71,
+      "max_len": 86,
+      "substring_ok": null,
+      "length_ok": true,
+      "phonetic_verdict": null,
+      "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "verified": true,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": false,
+      "repetition_qa_evidence": null,
+      "asr_prompt_applied": false,
+      "non_latin_cascade_enabled": false,
+      "non_latin_cascade_invoked": false,
+      "attempt_audio_path": null
+    }
+  ],
+  "tier1_reclassify_via_production_wrapper": {
+    "classification": "NUMERIC_EQUIVALENCE_MATCH",
+    "should_pass": true,
+    "semantic_equivalence_info": {
+      "tier_applied": "tier1_numeric",
+      "sub_reason": "numeric_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "FULL_STORY",
+      "diff_spans": {
+        "canonical_atoms": [
+          {
+            "kind": "literal",
+            "word": "the"
+          },
+          {
+            "kind": "literal",
+            "word": "report"
+          },
+          {
+            "kind": "literal",
+            "word": "is"
+          },
+          {
+            "kind": "literal",
+            "word": "divided"
+          },
+          {
+            "kind": "literal",
+            "word": "into"
+          },
+          {
+            "kind": "number",
+            "value": "3",
+            "currency": null,
+            "percent": false,
+            "ordinal": false,
+            "value_float": 3.0
+          },
+          {
+            "kind": "literal",
+            "word": "parts"
+          },
+          {
+            "kind": "literal",
+            "word": "."
+          },
+          {
+            "kind": "literal",
+            "word": "part"
+          },
+          {
+            "kind": "number",
+            "value": "1",
+            "currency": null,
+            "percent": false,
+            "ordinal": false,
+            "value_float": 1.0
+          },
+          {
+            "kind": "literal",
+            "word": "covers"
+          },
+          {
+            "kind": "literal",
+            "word": "the"
+          },
+          {
+            "kind": "literal",
+            "word": "background"
+          },
+          {
+            "kind": "literal",
+            "word": "."
+          }
+        ],
+        "asr_atoms": [
+          {
+            "kind": "literal",
+            "word": "the"
+          },
+          {
+            "kind": "literal",
+            "word": "report"
+          },
+          {
+            "kind": "literal",
+            "word": "is"
+          },
+          {
+            "kind": "literal",
+            "word": "divided"
+          },
+          {
+            "kind": "literal",
+            "word": "into"
+          },
+          {
+            "kind": "number",
+            "value": "3",
+            "currency": null,
+            "percent": false,
+            "ordinal": false,
+            "value_float": 3.0
+          },
+          {
+            "kind": "literal",
+            "word": "parts"
+          },
+          {
+            "kind": "literal",
+            "word": "."
+          },
+          {
+            "kind": "literal",
+            "word": "part"
+          },
+          {
+            "kind": "number",
+            "value": "1",
+            "currency": null,
+            "percent": false,
+            "ordinal": false,
+            "value_float": 1.0
+          },
+          {
+            "kind": "literal",
+            "word": "covers"
+          },
+          {
+            "kind": "literal",
+            "word": "the"
+          },
+          {
+            "kind": "literal",
+            "word": "background"
+          },
+          {
+            "kind": "literal",
+            "word": "."
+          }
+        ],
+        "diff_anchored": false,
+        "absorbed_ops": 0
+      }
+    }
+  }
+}

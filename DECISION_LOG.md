@@ -11124,6 +11124,92 @@ REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`)。
   `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-
   01_REPORT.md`。
 
+## KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01: 修正1回目
+(Mandatory Opus L2所見反映、2026-09-28、¥0)
+
+- **性質**: 候補ID方式Source Reference ContractのProduction配線に伴う
+  Mandatory Opus L2レビュー(Fable発火)の結果を反映するSonnet修正1回目。
+  BLOCKER 0件・SHOULD_FIX(SF)7件・N項目(N1/N2/N4/N5/N6/N11)+軽微1件へ
+  対応。API/LLM呼び出しなし、¥0(既存evidence10記事のオフライン再検証の
+  み、Wiktionary APIのみ使用[既存test慣行と同じ無料経路])。
+- **Fable判定**: BLOCKER 0件のためPRODUCTION_WIRED判定へ進んで可、ただし
+  SF-1/SF-2は同一IDで閉じることを強く推奨(本修正で対応)。
+- **SF-1(最優先、source_span整合性補正)**: `restore_source_fields`の
+  `surface_form`(最頻表層)と`context_sentence_id`(変異形のいずれかが
+  最初にヒットした文)が独立に決まるため、復元した`source_span`が
+  `source_sentence`に含まれない場合がある(単数導入→複数反復の典型
+  パターン)。API呼び出し前に`correct_shortlist_source_span_consistency`
+  (新設)を`run_db_hybrid_selection`へ配線し、不整合候補を補正(その文に
+  実在する最長の`observed_surface_variants`を採用)またはfail-closedで
+  候補ID表から除外する。`restore_source_fields`側にも同じ補正を防御的に
+  二重実装(`_longest_matching_variant_in_sentence`)。meta_a2実データ
+  候補(`contract worker`/`contract workers`)を反転させたfixtureで検証、
+  既存evidence 10記事のオフライン再復元(生LLM出力相当データ+再計算
+  shortlist、OpenAI API呼び出しなし)で全件PASS維持(audit不整合0件・
+  新規unresolved0件・既存復元結果と完全一致)を確認した。
+- **SF-2(死んだmockガードの復活)**: `test_shortlist_too_small_raises_
+  before_any_api_call`のmock対象を旧`db_hybrid._make_instrumented_
+  selector_factory`(実行時にはもう呼ばれない)から実際に使われる
+  `db_hybrid.src_ref_contract.make_instrumented_selector_factory`へ修正。
+- **SF-3(文言明確化)**: `surface_echo`はJSON Schema strict mode制約に
+  よりschema上は必須プロパティだが、判定(PASS/FAIL)上は非ブロッキング
+  であり取り違え検知専用の参考情報であることをモジュールdocstring・
+  CURRENT_SPECで明確化(コード不変)。
+- **SF-4(取り違え検知の拡充)**: `candidate_mismatch_suspected`の算出へ、
+  `display_phrase`と復元候補の`surface_form`との弱い(lemma許容)一致
+  比較(`_display_phrase_candidate_mismatch_suspected`)を追加(非
+  ブロッキング、telemetryのみ、`signals`で内訳[surface_echo/display_
+  phrase]を記録)。
+- **SF-5(fail-closed化)**: `surface_form`欠落時に旧`source_span`
+  フィールドへフォールバックしていた挙動を削除し、`unresolved`(理由
+  `SURFACE_FORM_MISSING`)へ倒す。
+- **SF-6(重複計測)**: 同一`source_candidate_id`の重複選択件数
+  (`duplicate_candidate_id_selection_count`/`duplicate_candidate_ids`)を
+  `restore_telemetry`・`keywords_runtime_metadata.json`へ追加(非
+  ブロッキング)。
+- **SF-7(早期fail-closed)**: `run_db_hybrid_selection`冒頭(Stage1/
+  Wiktionary lookup前)で`_check_family_profile_supported`を呼び、
+  未サポートfamily_profileを無駄な処理前に検知する。
+- **項目15(軽微)**: fallback発火時のtelemetry行へ`attempted_source_
+  reference_contract`(db_hybrid側が試みていた契約)を追加。
+- **N1(位置づけの明確化)**: 実際にsource_span/source_sentenceの正しさを
+  守っていたのは、常に`surface_form`(短い句)を優先して復元源とする
+  `restore_source_fields`の規則そのものであり、Stage 1
+  `_normalize_important_noun_candidate_source_span`によるcandidate
+  dictレベルの`source_span`整理は、この規則がすでに機能していた上への
+  防御の二重化(将来的にrestoreロジックがsurface_form以外を参照する
+  よう変更された場合の保険)であることを明記する。
+- **N2(Family Z配線時の必須化)**: CURRENT_SPECへ「Family ZのDB Hybrid
+  系を将来Production配線する場合は`er030_key_phrase_db_hybrid_source_
+  reference_contract_01`経由が規範として必須(旧`source_sentence`/
+  `source_span`自由記述のコピー方式は禁止)」を明記した。
+- **N4(PM追跡候補の提起、未登録)**: `run_project_regression.py`の
+  `DEFAULT_PATTERNS`(`er0*_test_*.py`)が末尾`_NN_test.py`形式(29
+  モジュール、Production中核test含む)を収集しない既存gapと、test修正が
+  実装切替に追随せずmockが空振りする「mock-drift」構造的リスクへの
+  恒久対策の要否を、Fable/ユーザー判断待ちのPM追跡候補として提起した
+  (STOP条件「大規模変更」回避のため本タスクでは未登録・未実装。
+  2026-09-28、本SSOT反映と同時にOPEN-209として正式登録した)。
+- **N5/N6(OPEN-202へ追記)**: source_sentenceが記事見出し行になりうる
+  構造的リスク(観測、実データでは0件)、canonicalization Rule 7の復元
+  余地縮小に伴う`REVIEW_REQUIRED`率の継続監視、をそれぞれOPEN-202へ
+  追記した。
+- **N11(再確認、対応不要)**: REPORT本文・REPORT_LEDGER・CURRENT_SPEC・
+  evidence_run script群のいずれも`er030_output/family_x_kp_source_
+  reference_contract_evidence_01/`という同一パス表記で、実ディレクトリ
+  とも一致していることを再確認した。具体的な誤記箇所は発見できなかった
+  ため対応不要と判断した。
+- **検証**: 新規/更新test158件(既存146件+修正1回目新規12件)全PASS
+  (¥0)。`run_project_regression.py`実測(既知baseline以外の新規
+  regression 0件、詳細REPORT §11)。
+- **STOP該当**: 無し。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-
+  SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01_02.md`、
+  `docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-SOURCE-
+  REFERENCE-CONTRACT-PRODUCTION-WIRING-01_03.md`、
+  `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-
+  01_REPORT.md`§10-11。
+
 ## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02: 前ID
 Opus L2所見反映+ユーザー確定仕様(B-1/B-2/C/D)実装
 
@@ -11188,3 +11274,96 @@ GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02_01.md`)に基づき、
 - **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-02_01.md`、`TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md`。
+
+## EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02: Phase 2(strict版
+Tier1合成規則、ユーザー承認`APPROVED_FOR_PRODUCTION`)実装
+
+- **ユーザー承認事項(2026-09-28)**: Phase 1(原因分析+coverage再監査+
+  設計案)完了後、**strict版Tier1合成規則**を`APPROVED_FOR_PRODUCTION`と
+  して承認。同一segment内に複数の表記差が存在しても、英数字内容が一致
+  しておりpunctuation由来の局所差だけである場合はTier1で吸収する(例:
+  U.S.↔US、a.m.↔am、COVID-19↔COVID 19)。閉じた規則: 差分atomはliteral
+  のみ/両側の英数字内容が`re.sub(r"[^a-z0-9]","",…)`で完全一致/
+  punctuation atomを含む差分に限定/許容operation数に上限(定数化)/
+  数字・時間atomそのものの差は吸収しない/単語脱落・否定語脱落・数量差・
+  固有名詞差を通さない。1つでも満たさなければ即座に全体非等価
+  (best-effort禁止)。あわせて分類A技術修正(追加判断不要な既承認範囲内
+  の実装是正)を承認: 月名限定序数吸収の共通化・序数語(third等)処理・
+  per cent対応・"and"飲み込みparser bug修正・単独ローマ数字V/Xの安全化・
+  er006→er021の定義共通化・参照化。`'s`はDEFERRED。
+- **実装内容**: `er021_en_asr_semantic_equivalence_production_01.py::
+  tier1_numeric_equivalence()`を、既存の全体完全一致判定(無変更、既存
+  合格経路はそのまま)を先に試み、一致しない場合のみ
+  `difflib.SequenceMatcher(autojunk=False)`によるdiff-anchored比較+
+  `_closed_punctuation_diff_ok()`(strict版合成規則の実装、assertで
+  「英数字内容完全一致」の不変条件を固定)へフォールバックする方式へ
+  変更。op数上限3・atom比率上限20%を定数化(防御的多重防御)。月名限定
+  裸digit序数接尾辞吸収(`_MONTHS`/`_DATE_ORDINAL_RE`をer021側へ移設し
+  er006が参照、複製ではなく共通化)、序数語(third〜thirtieth、
+  `_ORDINAL_WORDS`も同様に共通化、ordinalフラグでnumber atomの基数/序数
+  を区別)、"per cent"(2語)対応、`_consume_number_word_run()`の
+  "and"飲み込みparser bug修正(runの先頭/末尾の"and"を除外)、単独ローマ
+  数字"V"/"X"は閉じたラベル語(act/part/chapter/section/phase/version等)
+  直後限定へ安全化(`_ROMAN_AMBIGUOUS_SINGLE`)。meridiem略記
+  (a.m./p.m.)・hyphenated numeric/alphanumeric entity(15-minute/
+  COVID-19)は、事前に発見した実装バグ(`_preprocess_raw()`の
+  マイナス記号判定が文字直前のハイフンまで誤って" minus "化していた)
+  も合わせて修正した上で、汎用のstrict版合成規則が構造的に吸収する
+  (個別パッチ不要)。呼び出しシグネチャ・5role wiring・telemetry・
+  Tier3救済ロジックは無変更。
+- **test**: 既存Trial-01 corpus(POSITIVE 34/NEGATIVE 34)・OPEN-123
+  Regression fixture(POSITIVE 29+AMBIGUOUS 2+NEGATIVE 28)全件無回帰。
+  新規`StrictTier1SynthesisRuleTest`(27件、POSITIVE 9+NEGATIVE 18、
+  長尺>200 atom合成negative群[文の丸ごと欠落・否定語欠落・数値1桁違い・
+  単位のみ相違・US↔UK・28↔28th非月名隣接]含む)を追加、false accept 0を
+  固定。
+- **runtime evidence**: (a)既存telemetry(4,536件時点)をProduction
+  wrapperでオフライン再判定(¥0、read-only、
+  `er021_output/coverage_review_02/offline_telemetry_reclassify_01.py`)。
+  reversal 7件、すべて同一Hormuz記事由来の再掲。他sub_reason
+  (content_word 1,802/protected_negation 168/entity_only 295/
+  plural_only 396/homophone_only 56/low_ratio 6)は反転0件
+  (false accept 0を実データで確認)。(b)実際のHormuz Production
+  artifact(`er011_output/local_rewrite_recovery/hormuz__run_04_
+  parallel_a/b1b/local_rewrite_recovery_full_story_part1.json`の
+  canonical/last_asr_text)を実際のwrapper`val.classify_asr_match(...,
+  segment_id="full_story_part1")`で再判定しPASS(`NUMERIC_EQUIVALENCE_
+  MATCH`、diff_anchored=True、absorbed_ops=1、¥0)。(c)実TTS+実ASR
+  2segment(Guardrail¥15内、`TTS_EXECUTION_MODE=STANDARD`、Lock非接触
+  [narration layout外へ出力]、`er021_output/coverage_review_02/
+  runtime_evidence_live_tts_asr_01_run.py`)を実行、model_id
+  (`gemini-2.5-pro-preview-tts`)・ASR routingを記録。2回とも実際の
+  モデル出力が偶然canonicalと完全一致したため(diff_anchored=False の
+  既存経路でPASS)、新規則(diff_anchored=True)の発火自体は(b)の実
+  Production artifact再判定で確認した。
+- **定期offline検知**: `er021_offline_false_reject_detector_01.py`
+  (read-only、haiku-worker委任可)を新設。telemetry NG recordを
+  cap_limited(op単位では閉じた基準を満たすがop数/atom比率上限のみで
+  非等価のまま、上限見直しのactionableな候補)/near_match(alnum類似度
+  0.85以上だが完全一致ではない、新しい閉じた吸収規則の候補になり得るが
+  対義語・単複等の真の内容差も混在するため必ず人間が目視判断)へ分類する。
+  自動採用は行わない。
+- **設計書是正**: `docs/pm/design_en_asr_orthographic_equivalence_
+  coverage_02.md`のB-3比較表(前処理2パッチのみでも今回実例[Act One]
+  自体は解消できることを実装時に確認、案2の真の価値は未知のpunctuation
+  差分への構造的耐性であると訂正)・S-1原因記述(「継承漏れ」ではなく
+  「意図的punctuation保持tokenizerとpunctuation除去正規化[旧Validator]
+  の未調整」と訂正)・S-2 matrix拡張(同一segment内複数差分共存ケース、
+  #24-27追加)・S-4全経路確認(`er006_secondary_asr_01.py`のL395/L526
+  間接呼び出し2箇所を追加)を是正。
+- **Act One fixture**: `er003_test_v1_n3_01_tts_generate.py::
+  ActHeadingDigitReadingRegressionTests`(role gate非適用の既存fixture、
+  TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02側でdocstring
+  是正)は無変更のまま残置(Tier1が発火しない経路の検証であり本Phaseの
+  影響を受けない)。role gate適用状態での正しい期待値(等価=PASS)は
+  `er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py::
+  StrictTier1SynthesisRuleTest.test_act_one_hormuz_style_combined_
+  punctuation_diffs_pass`が担う。
+- **未解決**: `'s`由来の単独"s"の無視処理は引き続きDEFERRED(REVIEW-01
+  A-2項目11)。Hormuz記事本文(Local Rewrite後の"The first act"等)の
+  再生成・再TTSは本タスクでは行っていない。Opus L3診断・Fable Gate 3
+  判定は未実施(`PRODUCTION_WIRED`の最終判定は別途)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_EN-ASR-SEMANTIC-
+  EQUIVALENCE-COVERAGE-REVIEW-02_02.md`、`EN-ASR-SEMANTIC-EQUIVALENCE-
+  COVERAGE-REVIEW-02_REPORT.md`(Phase 2節)、`docs/pm/design_en_asr_
+  orthographic_equivalence_coverage_02.md`。
