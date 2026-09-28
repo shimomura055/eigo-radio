@@ -93,6 +93,13 @@ class FullStoryNewsTailFixSemanticEquivalenceSurfacingTest(unittest.TestCase):
         self.assertNotEqual(result.get("status"), "OK")
         self.assertIn("semantic_equivalence_info", result["attempts_log"][0])
         self.assertIsNone(result["attempts_log"][0]["semantic_equivalence_info"])
+        # SF-5是正(修正3回目、2026-09-28、Opus L2所見): D-4のtop-level
+        # 昇格はstatus=OKの戻り値のみに適用されており、不合格系
+        # (ASR_VALIDATION_UNCERTAIN/最終STOPPED)には無かった。ここでは
+        # 最終STOPPED到達時もtop-levelキー自体が存在すること(Noneでも
+        # よい、新規判定ロジックは加えない)を確認する。
+        self.assertIn("semantic_equivalence_info", result)
+        self.assertIsNone(result["semantic_equivalence_info"])
 
 
 def run():

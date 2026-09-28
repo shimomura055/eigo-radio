@@ -161,6 +161,32 @@ class A2RoleStyleFlashLiteTests(unittest.TestCase):
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
+    def test_flash_lite_role_style_combined_with_slower_pace_is_wpm_guarded(self):
+        # N-7是正(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+        # 修正3回目、2026-09-28、Opus L2所見): legacy A2_ENGLISH_STYLE_
+        # PREFIX_SLOWERはモジュール読み込み時にassert_no_wpm_specification()
+        # で検査済みだが、_role_style_slower()の合成文字列(6-role短style+
+        # 減速instruction)はガードされていなかった(非対称)。role style
+        # 定数へ意図的にWPM数値指定を注入し、AssertionErrorが伝播する
+        # (=ガードが実際に効いている)ことを確認する。
+        tmpdir = tempfile.mkdtemp(prefix="family_x_a2_role_style_wpm_guard_")
+        try:
+            self._make_a2_dir(tmpdir)
+            with mock.patch.object(fl_styles, "FAMILY_X_ROLE_STYLE_EN",
+                                    {**fl_styles.FAMILY_X_ROLE_STYLE_EN,
+                                     "FULL_STORY": "steady, 150 words per minute"}), \
+                 mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_a2"), \
+                 mock.patch.object(runner.crosslevel_common, "generate_english_segment_with_fallback",
+                                    side_effect=_ok), \
+                 mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
+                                    side_effect=_ok), \
+                 mock.patch.object(runner.n3_tts, "generate_a2_segment_with_slowdown", side_effect=_ok):
+                with self.assertRaises(AssertionError):
+                    runner.generate_family_x_a2_segments(tmpdir, "日本語タイトル",
+                                                          tts_backend="speech_metadata_flash_lite")
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+
     def test_default_backend_keeps_legacy_slower_prefix_unchanged(self):
         tmpdir = tempfile.mkdtemp(prefix="family_x_a2_role_style_default_")
         try:

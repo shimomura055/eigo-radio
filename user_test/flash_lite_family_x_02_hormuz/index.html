@@ -21,19 +21,20 @@ p.meta { font-size:0.85em; color:#444; }
 <body>
 <h1>Flash-Lite Family X 試聴比較 (Hormuz記事: Standard/Advanced)</h1>
 <div class="note">
-本ページは<b>TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02</b>(Fableからの修正2回目)
-の配布物です。<b>ステータスに変更はなく、Flash-Liteモデルは
+本ページは<b>TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02</b>(Fableからの修正3回目、
+Opus L2所見反映後)の配布物です。<b>ステータスに変更はなく、Flash-Liteモデルは
 <code>APPROVED_FOR_PRODUCTION</code>/<code>PRODUCTION_WIRED</code>ではありません</b>
 (試聴・比較のためのTrial配布)。Gemini 3.8 Flash-Liteで生成したフル記事音声
 (Standard=A2/Advanced=B1B)と、現行Productionモデル(structured_separation、
-Hormuz A2/B1B完成エピソード)を聞き比べできます。
+Hormuz A2/B1B完成エピソード)を聞き比べできます。下記の音声(Flash-Lite2本)は
+修正3回目(shell短文style配線+version bump)適用後に再生成したものへ差し替え済み。
 </div>
 
 <h2>Standard/Advanced 比較試聴</h2>
 <h3>Standard(内部レベル: A2)</h3><div class="compare"><div class="compare-col">
 <h4>Flash-Lite(Gemini 3.8 Flash-Lite TTS)</h4>
 <audio controls preload="none" src="hormuz_standard_flash_lite.mp3"></audio>
-<p class="stat">duration: 5:31.78 (331.78s) / segment数: 13 / 失敗segment: 0</p>
+<p class="stat">duration: 5:29.45 (329.451s) / segment数: 13 / 失敗segment: 0(修正3回目再生成後)</p>
 </div>
 <div class="compare-col">
 <h4>現行モデル(structured_separation、Production実績)</h4>
@@ -43,7 +44,7 @@ Hormuz A2/B1B完成エピソード)を聞き比べできます。
 </div><h3>Advanced(内部レベル: B1B)</h3><div class="compare"><div class="compare-col">
 <h4>Flash-Lite(Gemini 3.8 Flash-Lite TTS)</h4>
 <audio controls preload="none" src="hormuz_advanced_flash_lite.mp3"></audio>
-<p class="stat">duration: 4:52.03 (292.03s) / segment数: 12 / 失敗segment: 0</p>
+<p class="stat">duration: 4:49.70 (289.7s) / segment数: 12 / 失敗segment: 0(修正3回目再生成後、num_two含め共有narration 9件全てOK)</p>
 </div>
 <div class="compare-col">
 <h4>現行モデル(structured_separation、Production実績)</h4>
@@ -62,18 +63,35 @@ Hormuz A2/B1B完成エピソード)を聞き比べできます。
 </div>
 
 <div class="note">
-既知の注記(修正1回目 RESULT_PACKET_FLX2より): Flash-Lite Advanced(B1B)の
-共有ナレーション<code>num_two</code>は、3回のTTS試行すべてで
-<code>TRUE_CONTENT_MISMATCH</code>となり<code>review_lock=
-HUMAN_REVIEW_REQUIRED/STOPPED</code>のままだが、Master Audio Store経由の
-既存reuse(A2側で同一モデル・同一textが検証済みの音声を流用)で実際の
-音声ファイルは正しい内容に置き換え済み(¥0、新規TTS/ASR呼び出し0回)。
-下記segment表の<code>tts_generation_results.json</code>には共有ナレーション
-(num_one〜five/welcome等)は記録されないため、本ページのsegment表には
-現れない。詳細: <code>er019_output/family_x_audio_production_wiring_01/
-family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/b1b/audit/
-num_two_retry_evidence_flx2.json</code>。
+<b>修正3回目で解消(Opus L2所見BL-1/BL-2)</b>: 修正1回目〜2回目の時点では、
+Flash-Lite Advanced(B1B)の共有ナレーション<code>num_two</code>("Two.")が
+3回のTTS試行すべてで<code>TRUE_CONTENT_MISMATCH</code>(ASR="Ту"等の
+無関係な内容)となり<code>review_lock=HUMAN_REVIEW_REQUIRED/STOPPED</code>の
+ままだった。Opus L2レビューにより根本原因は「モデルだけFlash-Liteへ切替わり、
+speech_metadata.styleは記事本文向けの長い指示(約2,000字)のまま単語1つに
+適用されていたこと」と判明(BL-1)。ユーザー承認のもと、共有ナレーション
+shellへ短いstyle(<code>FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]</code>
+="natural, clear, conversational"、新規style文言の考案なし)を適用し、
+<code>style_instruction_version</code>をbumpして再生成した結果、
+<b>9件全てstatus=OK(num_two含む、attempt1でasr_text="2"のNUMERIC_
+EQUIVALENCE_MATCH)</b>となった(下表参照、実行日2026-09-28)。あわせて、
+共有ナレーションが1件でも不合格の場合はrunnerがAssemblyへ進む前にSTOPする
+安全策(BL-2)も追加済み(本ページの音声はこのGateを通過したもの)。
 </div>
+
+<h3>共有ナレーション(shell)結果 — Advanced(B1B)、修正3回目再生成</h3>
+<table class="seg"><thead><tr><th>segment</th><th>status</th><th>attempts</th><th>ASR text</th><th>master_audio_id</th></tr></thead><tbody>
+<tr><td>welcome</td><td>OK</td><td>1</td><td>Welcome to English Your Way.</td><td>aa130472d437ac80b7cdd474</td></tr>
+<tr><td>preview_intro</td><td>OK</td><td>1</td><td>Here&#x27;s a quick preview.</td><td>0fde5374a5c44d878e4fad35</td></tr>
+<tr><td>key_phrases_intro</td><td>OK</td><td>1</td><td>Here are today&#x27;s key phrases.</td><td>b755d23fb9a3d34b48edec65</td></tr>
+<tr><td>full_story_intro</td><td>OK</td><td>1</td><td>Now the full story.</td><td>b2f26f1e48790fe4419c3073</td></tr>
+<tr><td>num_one</td><td>OK</td><td>2</td><td>One</td><td>8777d342686360afa76939c0</td></tr>
+<tr><td>num_two</td><td>OK</td><td>1</td><td>2</td><td>75d64a8e14e3b8592db99a5a</td></tr>
+<tr><td>num_three</td><td>OK</td><td>2</td><td>3</td><td>410e12ebe93da7a797860b89</td></tr>
+<tr><td>num_four</td><td>OK</td><td>3</td><td>four</td><td>38ef109dce8a44110b445710</td></tr>
+<tr><td>num_five</td><td>OK</td><td>1</td><td>Five</td><td>e47acbcbcba0b476cb2bbf3e</td></tr>
+</tbody></table>
+<p class="meta">Standard(A2)側は上記9件+<code>point_explanation</code>(JA)を全てMaster Audio Store経由でreused=True・追加API呼び出し0件のまま取得(同一モデル・同一text・同一level=Noneキーのため)。JA point_explanationはstyle自体を変更していないためversion不変(BL-1スコープ外、既存のまま合格状態を維持)。</p>
 
 <h2>Segment一覧</h2>
 <h3>Flash-Lite / Standard(A2)</h3><p class="meta">tts_backend記録: speech_metadata_flash_lite / segment数: 13 / status!=OK件数: 0</p>

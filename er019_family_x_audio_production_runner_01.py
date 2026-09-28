@@ -397,6 +397,74 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     return generate_fn()
 
 
+# TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正3回目、
+# 2026-09-28、Opus L2所見BL-2是正): shared_narration.ensure_all_shared_
+# narration_b1/a2()の戻り値statusをこれまで呼び出し元(本ファイル)が
+# 一切見ておらず、下位のvoice01.generate_charon_englishはASR実行前に
+# write_wav_floatするため、3 attempt全滅(status!=OK)でも最後の不合格
+# 音声(実例: num_two_charon.wav、asr_text="Ту"、TRUE_CONTENT_MISMATCH)
+# がファイルとして残り、Audio Validation Gate(tts_generation_results.json
+# のsegments/key_phrasesのみ走査)の対象外のままAssemblyへ素通りしていた
+# (Opus L2所見BL-2、実データ2026-09-28 num_two_retry_evidence_flx2.json
+# で顕在化を確認)。blast radiusをFamily X内に限定するため、assemble.py
+# (共有Gate関数)自体は無変更のまま、本runner内でのみ検知・記録・STOPする。
+class SharedNarrationBlockedError(RuntimeError):
+    """共有narration(固定shell)segmentが1件でもstatus!=OKの場合に送出する。
+    review_lock(audit/review_lock_state.json)・human_review_queue.jsonl
+    (er006_secondary_asr_01経由)への記録は、既存のguarded_generate/
+    secondary_asr.evaluate_attempt_with_cascade機構により、この例外を
+    送出する前に既に完了している(本例外は追加の記録ではなく、後続処理
+    [同一run内の他segment生成・Assembly stage]への進行を止めるための
+    ゲートである)。"""
+
+
+def _summarize_shared_narration(raw: dict) -> dict:
+    return {
+        name: {
+            "status": r.get("status"),
+            "reused": r.get("reused"),
+            "master_audio_id": r.get("master_audio_id"),
+            "asr_text": r.get("asr_text"),
+            "attempts": len(r.get("attempts_log") or []),
+        }
+        for name, r in raw.items()
+    }
+
+
+def _assert_shared_narration_ok(shared_narration_status: dict, level: str) -> None:
+    non_ok = {name: v["status"] for name, v in shared_narration_status.items() if v["status"] != "OK"}
+    if non_ok:
+        raise SharedNarrationBlockedError(
+            f"[{level}] 共有narration(shell)segmentがSTOPPEDです: {non_ok} 。"
+            "review_lock/human_review_queueへは既存機構経由で記録済み。"
+            "audit/tts_generation_results.jsonのshared_narrationを確認し、"
+            "Human Review完了(承認/REGENERATE_APPROVED)後に再実行してください。"
+        )
+
+
+def _shared_narration_gate_blocked_summary(out_dir: str) -> dict | None:
+    """Assembly stage側の防御(defense-in-depth): TTS stageと同一プロセス
+    内で完結せず`--stage assemble`が独立実行された場合でも、直前のtts
+    stageで記録されたtts_generation_results.jsonのshared_narrationに
+    非OKが残っていればAssemblyへ進ませない。ファイルが無い場合(旧run・
+    未実行等)はNoneを返し、既存の他Gate(KP scaffold欠落等)に判断を
+    委ねる(新たな前提を追加しない)。"""
+    path = f"{out_dir}/audit/tts_generation_results.json"
+    if not os.path.exists(path):
+        return None
+    data = load_json(path)
+    shared = data.get("shared_narration") or {}
+    non_ok = {name: v.get("status") for name, v in shared.items() if v.get("status") != "OK"}
+    if not non_ok:
+        return None
+    return {
+        "status": "BLOCKED_SHARED_NARRATION_NOT_OK",
+        "reason": f"共有narration(shell)segmentがSTOPPEDのままです: {non_ok} 。"
+                  "Human Review完了まではAssemblyを実行しません(Opus L2所見BL-2)。",
+        "shared_narration_non_ok": non_ok,
+    }
+
+
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -444,7 +512,8 @@ def generate_family_x_b1_segments(
     # Key Phrase生成のみ明示的にスキップし、他segmentは生成を継続する。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend)
+    shared_narration_raw_b1 = shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend)
+    shared_narration_status = _summarize_shared_narration(shared_narration_raw_b1)
     _cached = _load_cached_tts_results(out_dir)
 
     results = {}
@@ -548,13 +617,17 @@ def generate_family_x_b1_segments(
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese"].get("status")}
                  for r, v in kp_results.items()}
     save_json(f"{out_dir}/audit/tts_generation_results.json",
-              {"segments": results, "key_phrases": kp_results, "kp_scaffold_status": kp_scaffold_status,
-               "tts_backend": tts_backend})
+              {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
     save_json(f"{out_dir}/run_summary_tts.json",
-              {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status,
-               "tts_backend": tts_backend})
-    return {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status,
-            "tts_backend": tts_backend}
+              {"segment_status": all_status, "key_phrase_status": kp_status,
+               "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
+    # Opus L2所見BL-2: 監査記録の保存後にSTOPする(記録自体は必ず残す)。
+    _assert_shared_narration_ok(shared_narration_status, "b1b")
+    return {"segment_status": all_status, "key_phrase_status": kp_status,
+            "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+            "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend}
 
 
 def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None,
@@ -628,7 +701,15 @@ def generate_family_x_a2_segments(
         base = _role_style(role)
         if base is None:
             return None
-        return f"{base}\n{n3_tts.A2_SLOWER_PACE_INSTRUCTION.strip()}"
+        # N-7是正(修正3回目、2026-09-28、Opus L2所見): legacy
+        # A2_ENGLISH_STYLE_PREFIX_SLOWERはer003_v1_n3_01_tts_generate.py:80
+        # でモジュール読み込み時にassert_no_wpm_specification()検査済みだが、
+        # この合成文字列(6-role短style+減速instruction)は検査されておらず
+        # ガードが非対称だった(現行値にWPM数値記述は無く実害なし)。
+        combined = f"{base}\n{n3_tts.A2_SLOWER_PACE_INSTRUCTION.strip()}"
+        import er002_common as common
+        common.assert_no_wpm_specification(combined)
+        return combined
 
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
@@ -642,7 +723,8 @@ def generate_family_x_a2_segments(
     # 回避しない)。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend)
+    shared_narration_raw_a2 = shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend)
+    shared_narration_status = _summarize_shared_narration(shared_narration_raw_a2)
     _cached = _load_cached_tts_results(out_dir)
 
     results = {}
@@ -738,13 +820,17 @@ def generate_family_x_a2_segments(
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                  for r, v in kp_results.items()}
     save_json(f"{out_dir}/audit/tts_generation_results.json",
-              {"segments": results, "key_phrases": kp_results, "kp_scaffold_status": kp_scaffold_status,
-               "tts_backend": tts_backend})
+              {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
     save_json(f"{out_dir}/run_summary_tts.json",
-              {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status,
-               "tts_backend": tts_backend})
-    return {"segment_status": all_status, "key_phrase_status": kp_status, "kp_scaffold_status": kp_scaffold_status,
-            "tts_backend": tts_backend}
+              {"segment_status": all_status, "key_phrase_status": kp_status,
+               "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
+    # Opus L2所見BL-2: 監査記録の保存後にSTOPする(記録自体は必ず残す)。
+    _assert_shared_narration_ok(shared_narration_status, "a2")
+    return {"segment_status": all_status, "key_phrase_status": kp_status,
+            "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+            "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend}
 
 
 def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None,
@@ -990,6 +1076,14 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
                              "本runnerはこのGateを回避しません)。"}
         save_json(f"{out_dir}/run_summary_assemble.json", summary)
         return summary
+    # Opus L2所見BL-2(defense-in-depth): shared_narration(shell)segmentが
+    # 非OKのまま記録されていれば、既存Gate(asm.verify_episode_audio_
+    # validation_gate、segments/key_phrasesのみ走査で構造的に対象外)より
+    # 前でAssemblyを拒否する。assemble.py自体は無変更。
+    shared_blocked = _shared_narration_gate_blocked_summary(out_dir)
+    if shared_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
+        return shared_blocked
     sources = load_family_x_b1_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_b1_gain(sources)
     seq = build_family_x_b1_timeline(parts)
@@ -1189,6 +1283,11 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
                              "本runnerはこのGateを回避しません)。"}
         save_json(f"{out_dir}/run_summary_assemble.json", summary)
         return summary
+    # stage_assemble_family_x_b1()と同じ防御(BL-2、defense-in-depth)。
+    shared_blocked = _shared_narration_gate_blocked_summary(out_dir)
+    if shared_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
+        return shared_blocked
     sources = load_family_x_a2_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_a2_gain(sources)
     seq = build_family_x_a2_timeline(parts)
@@ -1246,14 +1345,28 @@ def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
             provider = rec.get("provider")
             model = rec.get("model_id") or rec.get("model")
             usd = 0.0
-            try:
-                if provider in ("gemini", "openai", "openai_asr") and model:
-                    in_tok = rec.get("input_tokens") or 0
-                    out_tok = rec.get("output_tokens") or 0
-                    usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
-                        + out_tok * price(provider, model, "output_tokens") / 1e6
-            except StopIteration:
-                usd = 0.0
+            # SF-1是正(修正3回目、2026-09-28、Opus L2所見): Batch経路
+            # (provider="gemini_batch"、er006_batch_tts_wiring_01.py:154)は
+            # 既にcost_usd/cost_jpyを実額でrecへ記録済み(:167-169、
+            # pricing_snapshot.jsonのflash-lite Batch tier単価から算出済み)
+            # にもかかわらず、本関数はprovider in (gemini/openai/openai_asr)
+            # のみをtoken基準で再計算しており、Batch分は常に0円扱いだった
+            # (既定BATCHでもtts-backend=speech_metadata_flash_liteへ到達
+            # 可能になったため、既定実行モードでのbudget guardが盲目に
+            # なる運用リスク)。recに既にcost_usdがあれば、providerに
+            # 関わらずそれを実額としてそのまま採用する(token単価による
+            # 二重計算はしない)。
+            if rec.get("cost_usd") is not None:
+                usd = rec["cost_usd"]
+            else:
+                try:
+                    if provider in ("gemini", "openai", "openai_asr") and model:
+                        in_tok = rec.get("input_tokens") or 0
+                        out_tok = rec.get("output_tokens") or 0
+                        usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
+                            + out_tok * price(provider, model, "output_tokens") / 1e6
+                except StopIteration:
+                    usd = 0.0
             total_usd += usd
             by_provider[provider] = by_provider.get(provider, 0.0) + usd
     jpy = total_usd * USD_JPY

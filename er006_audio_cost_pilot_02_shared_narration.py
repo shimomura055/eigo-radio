@@ -74,16 +74,60 @@ FIXED_JAPANESE_TEXTS_A2_ONLY = {
 }
 
 
+
+# TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正3回目、
+# 2026-09-28、Opus L2所見BL-1是正): shell固定英語segment(welcome/
+# preview_intro/key_phrases_intro/full_story_intro/num_one〜five)は、
+# tts_backend="speech_metadata_flash_lite"のときstyle_prefix_overrideを
+# 渡していなかったため、モデルだけFlash-Liteへ切り替わりstyle層は
+# p9a.ENGLISH_STYLE_PREFIX(約2,000字・記事本文向けの長い指示)のまま
+# 単語1つ("Two."等)に適用され、num_two実測失敗(ASR="Ту"、
+# TRUE_CONTENT_MISMATCH)の最有力原因になっていた。新規style文言は
+# 考案せず、既にTrial実測済みのer033_tts_flash_lite_family_x_styles_01.
+# FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]("natural, clear, conversational")を
+# 流用する(ユーザー承認2026-09-28「shell用styleは、報告案どおり既存の
+# FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]を流用してよい」)。既定backend
+# ("structured_separation")では従来どおりstyle_prefix_override=None
+# のまま(byte-identical)。
+SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION = "v2_flash_lite_short_style"
+
+
+def _resolve_shell_english_style_prefix_override(tts_backend: str) -> str | None:
+    if tts_backend != "speech_metadata_flash_lite":
+        return None
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    return fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+
+
 def _make_english_key(text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
+    # BL-1是正: Flash-Lite backend時のみstyle_instruction_versionをbump
+    # する。さもないと長prefixで生成済みのFlash-Lite shell masterが
+    # 黙ってcache hitし続け、上記のstyle override修正が効かない
+    # (shared_narration.py内KEY_PHRASE_TRIM_POLICY_VERSIONで過去に
+    # 踏んだ同型の罠、Opus所見BL-1参照)。既定backendのkeyは無変更
+    # ("v1"のまま、既存Structured Separation資産のcache維持)。
+    version = (SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
+               if tts_backend == "speech_metadata_flash_lite" else "v1")
     return store.MasterAudioKey(
         language="en", speaker_voice="Charon",
         tts_model_id=_resolve_shared_narration_model("en", tts_backend),
         canonical_text=text, level=None,
-        style_instruction_id="charon_english_fixed_shell", style_instruction_version="v1",
+        style_instruction_id="charon_english_fixed_shell", style_instruction_version=version,
     )
 
 
 def _make_japanese_key(text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
+    # BL-1所見はensure_fixed_japanese_segment(point_explanation、A2のみ)
+    # にも触れているが、下位のvoice01.generate_charon_japanese自体に
+    # style_prefix_override引数が無く(EN側のgenerate_charon_englishとは
+    # 非対称)、実測でも既存Flash-Lite entry(master_audio_id=
+    # 586a1ecd053b563c856dad20)がasr_verified=Trueで既に合格済みである
+    # ことを確認した(num_two型の失敗は再現していない)。JA側のstyle
+    # override機構自体の新設は本修正のスコープ外(ユーザー承認文言は
+    # FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]というEN限定の定数流用のみを
+    # 明示しており、JA用の既存短文定数もStorem未定義)。このため
+    # style_instruction_versionはv1のまま変更しない(RESULT_PACKETで
+    # 未対応理由として明記)。
     return store.MasterAudioKey(
         language="ja", speaker_voice="Charon",
         tts_model_id=_resolve_shared_narration_model("ja", tts_backend),
@@ -102,8 +146,10 @@ def ensure_fixed_english_segment(name: str, narration_dir: str, filename_suffix:
     text = FIXED_ENGLISH_TEXTS[name]
     out_path = f"{narration_dir}/{name}{filename_suffix}.wav"
     key = _make_english_key(text, tts_backend)
+    style_prefix_override = _resolve_shell_english_style_prefix_override(tts_backend)
     return store.get_or_generate(
-        key, out_path, lambda p: voice01.generate_charon_english(text, p, tts_backend=tts_backend))
+        key, out_path, lambda p: voice01.generate_charon_english(
+            text, p, style_prefix_override=style_prefix_override, tts_backend=tts_backend))
 
 
 def ensure_fixed_japanese_segment(name: str, narration_dir: str,

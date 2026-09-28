@@ -167,7 +167,18 @@ def generate_charon_english(text: str, out_path: str,
                                   "instruction_type": instruction_type})
             # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
             # Structured Separationを適用する。
-            fallback_style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
+            # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+            # (修正3回目、2026-09-28、Opus L2所見BL-3是正): Flash-Lite
+            # backend時のみ、er003_v1_repro01_main_generate.py:536-540
+            # (generate_english_component_minimal_instruction)と同じ方式で
+            # 短いfallback style(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]、新規
+            # style文言は考案しない)を使う。既定backend(structured_
+            # separation)はMINIMAL_INSTRUCTION_PREFIXのまま(byte-identical)。
+            if tts_backend == "speech_metadata_flash_lite":
+                import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+                fallback_style_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+            else:
+                fallback_style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
             # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
             # VALIDATOR-PUNCT-01(修正2回目、Opus L2所見S3是正・非対称
             # 解消): 標準style_prefix(style_prefix_override)側にのみ

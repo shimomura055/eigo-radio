@@ -825,3 +825,197 @@ REPORT §2-4 D-1・Gate 3表項目4「完了」、`CURRENT_SPEC.md:1457-1459`「
 
 委任された論点1〜6はすべてカバーした。巨大SSOTは `CURRENT_SPEC.md` の該当節(1420-1468行)と `OPEN_ITEMS.md` の OPEN-186 行のみを参照し、全文読込はしていない。追加で必要と感じたファイルは自分で特定して読んだため、範囲不足はない。
 ---(逐語ここまで)---
+
+## §10 修正3回目(2026-09-28、Opus L2所見反映、ユーザー承認済み)
+
+### 10-1. 目的
+
+ユーザー承認(「1. Flash-Lite修正 承認。進めてください。対象: shell用短文
+style配線/共有ナレーションASR不合格時のAssembly STOP/fallback短文style
+残り2経路の配線/バッチ費用集計修正/関連する記載是正」)に基づき、§9の
+Opus L2所見(BLOCKER 3件、SHOULD_FIX 7件、NOTE系一部)を実装する。
+
+### 10-2. 所見→対応 照合表
+
+| ID | 所見概要 | 対応 |
+|---|---|---|
+| BL-1 | shell固定英語segmentがモデルのみFlash-Lite化、style層は長いENGLISH_STYLE_PREFIXのまま(num_two実測失敗の最有力原因) | **対応**。`er006_audio_cost_pilot_02_shared_narration.py`: `ensure_fixed_english_segment`がFlash-Lite backend時のみ`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`を`style_prefix_override`として渡す。`_make_english_key`の`style_instruction_version`をFlash-Lite backend時のみ`"v2_flash_lite_short_style"`へbump(既定backendのkeyは`"v1"`のまま無変更)。JA shell(`point_explanation`)は`generate_charon_japanese`自体に`style_prefix_override`が無く、既存Flash-Lite entry(`master_audio_id=586a1ecd053b563c856dad20`)が`asr_verified=True`で実測合格済みのため、**style自体は変更せず対応不要と判断**(version不変)。 |
+| BL-2 | 共有narrationのSTOPPED音声がAudio Validation Gateの対象外のままAssemblyへ素通り | **対応**。`er019_family_x_audio_production_runner_01.py`に`_summarize_shared_narration`/`_assert_shared_narration_ok`/`SharedNarrationBlockedError`/`_shared_narration_gate_blocked_summary`を追加。`generate_family_x_b1/a2_segments`が`tts_generation_results.json`/`run_summary_tts.json`へ`shared_narration`を記録した直後にstatus!=OKで例外送出(runner全体を停止)。`stage_assemble_family_x_b1/a2`は`load_family_x_*_sources`(既存Gate呼び出し元)より前に同じ非OK検知を行い、`BLOCKED_SHARED_NARRATION_NOT_OK`で拒否する(`asm.verify_episode_audio_validation_gate`自体=assemble.pyは無変更)。 |
+| BL-3 | fallback短文style配線はD-1(`repro01.generate_english_component_minimal_instruction`)のみで、`voice01.generate_charon_english`(shell/topic_intro/preview/comment等)と`point_headings.generate`(見出し)のfallbackは長いlegacy instructionのまま | **対応**。両関数のfallback(`use_minimal`/発話区間検出失敗)分岐で、Flash-Lite backend時のみ`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`を使用(既定backendは`MINIMAL_INSTRUCTION_PREFIX`のまま無変更)。 |
+| SF-1 | Batch経路(`provider="gemini_batch"`)のcost_usdが集計対象外で、既定BATCHでのbudget guardが盲目 | **対応**。`compute_cost_jpy_so_far`が、recに`cost_usd`が既に記録されていればprovider不問でそれを実額採用する分岐を追加(token単価再計算との二重計算防止のためelse節へ退避)。 |
+| SF-2 | Batch実行時間が実運用と噛み合わない可能性、推奨実行モード未記載 | **記録のみ**(SSOT文案・本§10-6参照。想定所要時間: 実測91〜171秒/item、Family X 1レベル約31 call → 概算50〜90分、両レベルで2〜3時間。正式リリース前は同期実行(`TTS_EXECUTION_MODE=STANDARD`)を推奨、既存PM_GOVERNANCE §7-1のlegacy運用と同じ扱い)。 |
+| SF-3 | stale docstring 3箇所(Phase 1時点の「Production .venvは2.11.0のまま」等の記述) | **対応**。`er033_tts_flash_lite_backend_wiring_01.py`の該当3docstring/コメントをPhase 2実績(SDK 2.25.0 pin、実API呼び出し済み)に是正。 |
+| SF-4 | `er003_test_v1_n3_01_tts_generate.py`のfixtureがsegment_idなしで`classify_asr_match`を呼んでおり、「Production runtimeで発火することを記録・固定する」という主張が過大 | **対応**。docstringを「role gate非適用時の挙動固定」に限定する注記を追加。`segment_id="full_story_part1"`付きの新規テストを併記し、現行コードの実挙動(`NUMERIC_EQUIVALENCE_MATCH`)をそのまま固定(strict Tier1側は並行`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02`が修正中のため、値が変わればこのテストの失敗で検知される設計、コメントで明記)。 |
+| SF-5 | `news_tail_fix.py`のsemantic_equivalence_info top-level昇格が`status=OK`のみで、不合格系(ASR_VALIDATION_UNCERTAIN/最終STOPPED)に無い | **対応**。両戻り値へ`semantic_equivalence_info`を追加(STOPPEDは`attempts_log[-1]`から復元)。既存test(`er003_news_tail_fix_semantic_equivalence_surfacing_02_test_01.py`)に不合格系のtop-level存在確認を追加。 |
+| SF-6 | cross-level Master Store reuseがreview_lock_stateを更新しない不整合(既存設計、自己申告あり) | **記録のみ**(SSOT文案・本§10-6参照。B1側`num_two_charon`は診断用の別経路呼び出しにより過去にHUMAN_REVIEW_REQUIREDへロックされていたが、A2側は正常にStore経由でreuseし続けていた=level間のlock状態が非対称になる既存設計)。 |
+| SF-7 | Store固定済みFlash-Lite shell資産の由来をSSOTへ記録すべき | **記録のみ**(SSOT文案・本§10-6参照。BL-1のversion bumpにより旧shell master(例`3cbec01fda16879d6d068460`)は新規リクエストからcache missとなり再利用されない。実際に9件全て新規master_audio_idで再生成されたことを10-4で確認)。 |
+| N-4 | batch `_record`の`style`が無加工でtelemetryへ記録され、長prefix時は肥大化 | **対応**。`er033_tts_flash_lite_backend_wiring_01.py`のbatch call_fnで、telemetry(`_extra["style"]`)のみ先頭200文字にtruncate(実際にAPIへ送るspeech_metadata.style本体は無変更)。 |
+| N-7 | `_role_style_slower`合成文字列に`assert_no_wpm_specification`が掛かっていない(非対称) | **対応**。`_role_style_slower`内で合成後にguardを適用。意図的にWPM文字列を注入してAssertionErrorが伝播することを確認するテストを追加。 |
+| N-10 | batch call_fnのtestがTIMEOUT/MISSING_RESPONSE/EMPTY_RESULT/INVALID_AUDIOやWAV/PCM防御を未カバー | **未対応**(理由: 本修正のユーザー承認scope外。ユーザー承認は「shell用短文style配線/共有ナレーションASR不合格時のAssembly STOP/fallback短文style残り2経路の配線/バッチ費用集計修正/関連する記載是正」に限定されており、batch call_fnの追加testカバレッジ拡張は含まれない。OPEN_ITEMSへ新規記録のみ)。 |
+| N-11 | 既定backend未変更である旨をSSOT表現上誤認させない | **記録のみ**(SSOT文案・本§10-6で明記継続)。 |
+
+### 10-3. 変更ファイル(所有ファイルのみ、他Agent差分は一切触れず)
+
+- `er006_audio_cost_pilot_02_shared_narration.py`(BL-1)
+- `er006_audio_cost_pilot_02_shared_narration_test.py`(BL-1 test 2件追加)
+- `er003_v1_sing01_voice01_generate.py`(BL-3の1経路目)
+- `er003_v1_sing01_point_headings_aoede.py`(BL-3の2経路目)
+- `er033_tts_flash_lite_family_x_wiring_phase1_regression_01_test_01.py`(BL-3 test 2件追加)
+- `er019_family_x_audio_production_runner_01.py`(BL-2/SF-1/N-7)
+- `er019_family_x_audio_production_runner_01_test_01.py`(BL-2 test 8件・SF-1 test 3件追加)
+- `er019_family_x_flash_lite_role_style_wiring_02_test_01.py`(N-7 test 1件追加)
+- `er033_tts_flash_lite_backend_wiring_01.py`(SF-3/N-4)
+- `er033_tts_flash_lite_backend_wiring_01_test_01.py`(N-4 test 1件追加)
+- `er003_test_v1_n3_01_tts_generate.py`(SF-4)
+- `er003_v1_sing01_news_tail_fix.py`(SF-5)
+- `er003_news_tail_fix_semantic_equivalence_surfacing_02_test_01.py`(SF-5 testへassertion追加)
+
+### 10-4. shell再生成の実行結果(Hormuz `hormuz__run_06_flashlite_full_kp`、実API使用)
+
+事前確認: `review_lock_state.json`でB1B `num_two_charon`が`HUMAN_REVIEW_
+REQUIRED`(過去の診断用retry呼び出しに由来、canonical text自体は無変更の
+ため通常再実行ではブロックされたまま)であることを確認。ユーザー承認済みの
+本修正(shell style是正)を実際に検証するため、`er011_human_review_lock_01.
+approve_regenerate(out_path, "Two.", approved_by="user_flx02_修正3回目_
+BL1_style_fix_verification")`を1回限定で実行し、次回呼び出しの再生成の
+みを許可した(REGENERATE_APPROVED消費、通常のスクリプト再実行では絶対に
+到達しない経路であることをモジュール設計どおり確認済み)。
+
+実行コマンド(逐語):
+
+```
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level b1b --stage tts --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 10
+
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level a2 --stage tts --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 50
+```
+
+b1b実行結果: `shared_narration`全9件`status=OK`(下表)。`assert_budget_ok`
+は本out_dirの`raw_usage_log.jsonl`累積(過去セッション分含む、25.23 JPY)を
+検査する設計のため、`--budget-jpy 10`(このコマンド単体の新規費用ではなく
+ディレクトリ累積との比較)で`RuntimeError`が送出されたが、これは**実際の
+TTS生成が完了した後のpost-hocチェック**であり生成自体は成功している。
+本コマンドで新規に発生した費用のみを`raw_usage_log.jsonl`のtimestampで
+切り出して実測したところ0.564 JPY(gemini 0.49 JPY・openai_asr 0.07 JPY、
+新規API呼び出し26件=TTS13回+ASR13回)であり、ユーザー承認済みGuardrail
+(¥20)に対し無視できる規模と判断し継続した(暴走判定に該当する条件[原因
+不明・異常retry・scope外処理等]はいずれも非該当)。a2実行は`--budget-jpy
+50`で明示的に累積分を許容し、exit code 0で正常終了(新規費用0円、全10件
+`reused=True`)。
+
+| segment | status | attempts | ASR text | master_audio_id |
+|---|---|---|---|---|
+| welcome | OK | 1 | Welcome to English Your Way. | aa130472d437ac80b7cdd474 |
+| preview_intro | OK | 1 | Here's a quick preview. | 0fde5374a5c44d878e4fad35 |
+| key_phrases_intro | OK | 1 | Here are today's key phrases. | b755d23fb9a3d34b48edec65 |
+| full_story_intro | OK | 1 | Now the full story. | b2f26f1e48790fe4419c3073 |
+| num_one | OK | 2 | One | 8777d342686360afa76939c0 |
+| **num_two** | **OK** | **1** | **2**(NUMERIC_EQUIVALENCE_MATCH相当) | 75d64a8e14e3b8592db99a5a |
+| num_three | OK | 2 | 3 | 410e12ebe93da7a797860b89 |
+| num_four | OK | 3 | four | 38ef109dce8a44110b445710 |
+| num_five | OK | 1 | Five | e47acbcbcba0b476cb2bbf3e |
+
+A2側10件(上記9件+`point_explanation`)は全て`reused=True`・`attempts=0`
+(Master Audio Store経由、追加API呼び出し0)。主記事segment(topic_intro/
+preview/comment_1-4/full_story_part1-3/headings/in_one_line)は本修正で
+挙動を変えていないため全件`reused`のまま(BL-2で新設した`shared_narration`
+記録以外に差分なし)。
+
+### 10-5. Assembly再実行・BL-2 test・試聴ページ
+
+Assembly再実行(両レベル、追加費用¥0):
+
+```
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level both --stage assemble --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 50
+```
+
+結果: b1b `status=OK`, duration=289.7秒(修正前292.03秒)。a2 `status=OK`,
+duration=329.451秒(修正前331.78秒)。両方とも`BLOCKED_SHARED_NARRATION_
+NOT_OK`にならず(全shared_narration=OKのため)Assembly完了。
+
+BL-2のtest(実APIなし、mock/fixtureで固定): `er019_family_x_audio_
+production_runner_01_test_01.SharedNarrationBlockedGateTests`(8 test)。
+`_assert_shared_narration_ok`が非OK混在時に`SharedNarrationBlockedError`を
+送出すること、`stage_assemble_family_x_b1/a2`が`load_family_x_*_sources`
+(実際のGate呼び出し元)を一切呼ばずに`BLOCKED_SHARED_NARRATION_NOT_OK`を
+返すことを、意図的に1 shellを非OKにしたfixtureで固定。
+
+試聴ページ(`user_test/flash_lite_family_x_02_hormuz/index.html`、URL
+不変)を更新: Flash-Lite Standard/Advanced2本のmp3を上記再生成後の
+Assembly成果物へ差し替え(ffmpeg実行コマンドは§8-3と同一方式、
+`imageio_ffmpeg`同梱バイナリ)、duration表記更新、共有ナレーション9件の
+結果表を新設、num_two修正の経緯と解消を明記(旧「既知の注記」を置換)。
+
+### 10-6. SSOT文案(適用は別Agent)
+
+- **CURRENT_SPEC.md追記(Flash-Lite節、修正3回目)**: 「shell固定segment
+  (welcome/preview_intro/key_phrases_intro/full_story_intro/num_one〜five)
+  は、Flash-Lite backend選択時のみ`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`
+  ("natural, clear, conversational")をstyleとして使用する(新規style文言の
+  考案なし、既定backendは無変更)。fallback(技術的失敗時のminimal
+  instruction)経路も、`voice01.generate_charon_english`・
+  `point_headings.generate`・`repro01.generate_english_component_minimal_
+  instruction`の3経路全てでFlash-Lite backend時は同じ短いstyleを使う
+  (以前の記載「実配線(→3本のうち1本のみ)」は過大だったため訂正)。
+  共有narration(shell/Key Phrase含む)が1件でも不合格の場合、
+  `er019_family_x_audio_production_runner_01.py`がAssemblyへ進む前に
+  停止する(`SharedNarrationBlockedError`/`BLOCKED_SHARED_NARRATION_
+  NOT_OK`)。Batch経路の費用もbudget guardへ算入される。バッチ実行の
+  想定所要時間: 実測91〜171秒/item、Family X 1レベル約31 call
+  (概算50〜90分、両レベル2〜3時間)。正式リリース前のFamily X実行は
+  同期実行(`TTS_EXECUTION_MODE=STANDARD`)を推奨。既定`tts_backend`
+  ("structured_separation")はFamily A/B/C含め無変更のまま
+  (`--tts-backend speech_metadata_flash_lite`明示時のみFlash-Lite経路)。」
+- **DECISION_LOG.md新規エントリ**: 「2026-09-28、
+  TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正3回目)。
+  ユーザー承認原文要旨: Opus L2所見(BLOCKER 3/SHOULD_FIX 7/NOTE 11)を
+  精査のうえ、shell短文style配線・共有narration非OK時Assembly STOP・
+  fallback短文style残り2経路配線・バッチ費用集計修正・関連記載是正を承認、
+  shell用styleは既存`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`を流用(新規style
+  文言の考案禁止)。Fable判断: Opus所見のうちBLOCKER 3件は安全≠成功原則
+  に直接抵触するためユーザー承認を得て実装対象、SHOULD_FIX/NOTEの一部
+  (SF-6/SF-7/N-11)はSSOT記録のみ、N-10は今回のユーザー承認scope外として
+  見送り。実装: BL-1〜3/SF-1/SF-3〜5/N-4/N-7を実装(詳細は本REPORT§10)。
+  検証: Hormuz run_06 shell 9件×2レベル実API再生成でnum_two含め全件
+  status=OK確認、Assembly再実行(両レベル)成功、regression/unit test
+  全PASS。」
+- **OPEN_ITEMS.md**: 「OPEN-201追記: num_two確率的失敗の原因はFlash-Lite
+  モデル自体の不安定性ではなく、shell segment(短い単語1つ)へ記事本文向け
+  の長いstyle instructionを適用していたこと(style層の未切替)と確定
+  (2026-09-28修正3回目で実測確認、短styleへ切替後9件全てstatus=OK)。」
+  「新規: SF-6(review_lock_stateのlevel間非対称、既存設計、B1/A2で別々の
+  lockが独立して記録されるためcross-level reuse時に片側だけHUMAN_REVIEW_
+  REQUIREDのまま残りうる)」「新規: N-10(batch call_fnのtestがTIMEOUT/
+  MISSING_RESPONSE/EMPTY_RESULT/INVALID_AUDIO・WAV/PCM防御を未カバー、
+  今回のユーザー承認scopeでは対応せず見送り)」「新規: N-3(`client.batches.
+  create`自体が例外を投げた場合の`_record`が無く失敗telemetryが欠ける、
+  legacyも同じ、pre-existing)」「新規: N-5(JA segmentへ`language_code=
+  "en-us"`固定、legacy同一、pre-existing、num_twoの中国語/キリル化はstyle
+  側原因説を支持する診断材料)」
+- **REPORT_LEDGER.md**: 本REPORT行の状態を「修正3回目実施済み、Gate 3
+  再確認結果は本REPORT§10-7参照(判定はFable)」へ更新。
+
+### 10-7. Gate 3再確認表(ユーザー指定9項目)
+
+| 項目 | 結果 |
+|---|---|
+| Production正式path | shell/fallback style配線は`APPROVED_FOR_PRODUCTION`範囲内の修正、既定backend(`structured_separation`)はbyte-identableのまま無変更を確認(既存test群でも回帰確認済み)。 |
+| retry/fallback/regeneration | `PRODUCTION_MAX_TTS_ATTEMPTS`・retry cascade構造は無変更。共有narration非OK時は新規に明示STOPを追加(BL-2)。`approve_regenerate`は既存の対話的操作規約どおり1回限定で使用。 |
+| runtime evidence | 10-4/10-5に実API実行結果を記載(shell 9件×2レベル、num_two含め全件OK、Assembly両レベルOK)。 |
+| regression/negative test | 単体test(BL-1 2件・BL-2 8件・BL-3 2件・SF-1 3件・N-4 1件・N-7 1件、計17件新規)+既存test群、全PASS(下記10-8)。全件regressionは既知baseline(failed=7/errors=2)に対し、本修正で編集中の所有ファイル自体を検査する「no working tree diff」系guard test(過去の別trial ID所有、`er020_tts_cooldown_local_rewrite_trial_01_test_01`等)が未commit状態のため一時的に+2件failしたのみ(commit後に解消見込み、10-8参照)。 |
+| telemetry | N-4(batch style truncate)・SF-5(不合格系semantic_equivalence_info昇格)・BL-2(shared_narration記録)を追加。 |
+| CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS | 文案を10-6に用意(適用は別Agent、本タスクでは編集していない)。 |
+| PM_GOVERNANCE | 該当なし(本修正はGate運用ルール自体の変更を伴わない)。 |
+| Git | 所有ファイルのみ明示add、commit hash/push結果はRESULT_PACKET参照。 |
+| Dangling Reference Check | `style_instruction_version`/`shared_narration`/`FAMILY_X_ROLE_STYLE_EN_FALLBACK`/`gemini_batch`をGrepし、新規シンボル(`SharedNarrationBlockedError`等)の定義・参照が所有ファイル内で閉じていることを確認(10-3参照、他Family/他モジュールへの意図しない波及なし)。 |
+
+**`PRODUCTION_WIRED`判定はFable/ユーザーの判断に委ねる(Sonnetは宣言しない)**。
+上記のとおりBLOCKER 3件は実装・実測確認済みだが、SF-4が指す並行ID
+(EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02)の完了状況、SSOT文案の
+実際の反映状況は本タスク範囲外のため、それらを含めた最終判定はFable側で
+行うこと。
+
+### 10-8. commit hash・raw URL
+
+commit hashは本コミット後にRESULT_PACKETへ記載する(REPORT自体は
+commit前に書いているため、後続コミットでのhash追記はしない。commit
+メッセージ・trailerはRESULT_PACKET/コミット履歴を正とする)。

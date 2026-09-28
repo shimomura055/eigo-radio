@@ -291,7 +291,11 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={cls.classification})",
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
-                    "cooldown_events": cooldown_events}
+                    "cooldown_events": cooldown_events,
+                    # SF-5是正(修正3回目、2026-09-28、Opus L2所見): D-4の
+                    # top-level昇格はstatus=OKの戻り値のみに適用されており、
+                    # 不合格系(false rejection分析に最も必要)には無かった。
+                    "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None)}
     if enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_news_narration(
@@ -304,7 +308,13 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             return recovered
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
             "attempts_log": attempts_log, "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
-            "cooldown_events": cooldown_events}
+            "cooldown_events": cooldown_events,
+            # SF-5是正(修正3回目、2026-09-28、Opus L2所見): 最終STOPPED
+            # 到達時も、直前attemptのsemantic_equivalence_infoをtop-level
+            # へ昇格する(attempts_log内には既に含まれているため、ここでは
+            # 復元するだけで新規判定ロジックは追加しない)。
+            "semantic_equivalence_info": (attempts_log[-1].get("semantic_equivalence_info")
+                                           if attempts_log else None)}
 
 
 def _local_rewrite_recovery_for_news_narration(

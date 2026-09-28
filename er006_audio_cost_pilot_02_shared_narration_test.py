@@ -151,8 +151,76 @@ def test_ensure_functions_thread_tts_backend_to_generators():
     print("PASS: test_ensure_functions_thread_tts_backend_to_generators")
 
 
+def test_bl1_flash_lite_shell_uses_short_style_override_default_backend_unchanged():
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(BL-1、
+    修正3回目、2026-09-28、Opus L2所見): ensure_fixed_english_segment()が
+    tts_backend="speech_metadata_flash_lite"の場合のみ、voice01.
+    generate_charon_englishへstyle_prefix_override=
+    FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]を渡すことを確認する(既定backendは
+    style_prefix_override=None=既存挙動のまま、byte-identical)。"""
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    tmp_dir = "er006_output/_test_shared_narration_bl1_tmp"
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
+    orig_store_dir, orig_audio_dir = store.STORE_DIR, store.AUDIO_DIR
+    orig_manifest, orig_telemetry = store.MANIFEST_PATH, store.TELEMETRY_PATH
+    store.STORE_DIR = f"{tmp_dir}/store"
+    store.AUDIO_DIR = f"{tmp_dir}/store/audio"
+    store.MANIFEST_PATH = f"{tmp_dir}/store/manifest.json"
+    store.TELEMETRY_PATH = f"{tmp_dir}/store/reuse_telemetry.jsonl"
+
+    captured = {}
+    orig_en = voice01.generate_charon_english
+
+    def fake_en(text, out_path, **kwargs):
+        captured["style_prefix_override"] = kwargs.get("style_prefix_override")
+        _write_dummy_wav(out_path)
+        return {"status": "OK"}
+
+    voice01.generate_charon_english = fake_en
+    try:
+        narration_dir = f"{tmp_dir}/b1b/narration"
+        shared.ensure_fixed_english_segment("num_two", narration_dir, filename_suffix="_charon")
+        assert captured["style_prefix_override"] is None, \
+            f"既定backendはstyle_prefix_override=Noneのままのはず。実際={captured['style_prefix_override']!r}"
+        captured.clear()
+        shared.ensure_fixed_english_segment(
+            "num_two", narration_dir, filename_suffix="_charon", tts_backend="speech_metadata_flash_lite")
+        assert captured["style_prefix_override"] == fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0], \
+            f"Flash-Lite backendはFAMILY_X_ROLE_STYLE_EN_FALLBACK[0]を渡すはず。実際={captured['style_prefix_override']!r}"
+    finally:
+        voice01.generate_charon_english = orig_en
+        store.STORE_DIR, store.AUDIO_DIR = orig_store_dir, orig_audio_dir
+        store.MANIFEST_PATH, store.TELEMETRY_PATH = orig_manifest, orig_telemetry
+        if os.path.exists(tmp_dir):
+            shutil.rmtree(tmp_dir)
+    print("PASS: test_bl1_flash_lite_shell_uses_short_style_override_default_backend_unchanged")
+
+
+def test_bl1_style_instruction_version_bump_only_for_flash_lite_key():
+    """BL-1是正: style override変更に伴い、Flash-Lite backend時のみ
+    style_instruction_versionをbumpする(既定backendのkeyは"v1"のまま
+    無変更=既存Structured Separation資産のcache維持)。JA keyは今回
+    style自体を変更していないためversionもv1のまま(意図的、RESULT_PACKET
+    参照)。"""
+    key_legacy_en = shared._make_english_key("Two.")
+    key_flash_en = shared._make_english_key("Two.", "speech_metadata_flash_lite")
+    assert key_legacy_en.style_instruction_version == "v1"
+    assert key_flash_en.style_instruction_version == shared.SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
+    assert key_legacy_en.style_instruction_version != key_flash_en.style_instruction_version
+    # 既存Flash-Lite資産(旧style時代に生成済みのmaster、例:
+    # master_audio_id=586a1ecd053b563c856dad20相当のnum_two等)はversion差分により
+    # cache missとなり、新styleで再生成される(意図どおり)。
+    key_flash_ja = shared._make_japanese_key("ポイント解説", "speech_metadata_flash_lite")
+    assert key_flash_ja.style_instruction_version == "v1", \
+        "JA shellはstyle自体を変更していないためversionもv1のまま(意図的、BL-1のJAスコープ外判断)"
+    print("PASS: test_bl1_style_instruction_version_bump_only_for_flash_lite_key")
+
+
 if __name__ == "__main__":
     test_b1_and_a2_share_master_no_double_tts()
     test_flash_lite_backend_uses_separate_master_key_and_does_not_touch_legacy_assets()
     test_ensure_functions_thread_tts_backend_to_generators()
+    test_bl1_flash_lite_shell_uses_short_style_override_default_backend_unchanged()
+    test_bl1_style_instruction_version_bump_only_for_flash_lite_key()
     print("ALL TESTS PASSED")

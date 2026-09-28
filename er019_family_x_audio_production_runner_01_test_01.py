@@ -532,6 +532,177 @@ class ArticleTextGateWiringTests(unittest.TestCase):
         self.assertIsNone(self.captured["article_text"])
 
 
+class SharedNarrationBlockedGateTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(BL-2、
+    修正3回目、2026-09-28、Opus L2所見): 共有narration(shell)segmentが
+    1件でもstatus!=OKの場合、(1)_assert_shared_narration_ok()がSTOPする
+    (SharedNarrationBlockedError送出)、(2)Assembly stage
+    (stage_assemble_family_x_b1/a2)が既存Gate(asm.verify_episode_audio_
+    validation_gate)へ進む前に拒否することを、実APIを使わずmockで固定する。"""
+
+    def test_summarize_shared_narration_shape(self):
+        raw = {
+            "num_two": {"status": "STOPPED", "reason": "発話区間検出失敗", "reused": False,
+                        "master_audio_id": "abc123", "asr_text": None, "attempts_log": [{"attempt": 1}, {"attempt": 2}]},
+            "welcome": {"status": "OK", "reused": True, "master_audio_id": "def456", "asr_text": "Welcome."},
+        }
+        summary = runner._summarize_shared_narration(raw)
+        self.assertEqual(summary["num_two"]["status"], "STOPPED")
+        self.assertEqual(summary["num_two"]["attempts"], 2)
+        self.assertEqual(summary["welcome"]["status"], "OK")
+        self.assertEqual(summary["welcome"]["reused"], True)
+
+    def test_assert_shared_narration_ok_raises_when_any_non_ok(self):
+        status = {"welcome": {"status": "OK"}, "num_two": {"status": "STOPPED"}}
+        with self.assertRaises(runner.SharedNarrationBlockedError) as ctx:
+            runner._assert_shared_narration_ok(status, "b1b")
+        self.assertIn("num_two", str(ctx.exception))
+
+    def test_assert_shared_narration_ok_passes_when_all_ok(self):
+        status = {"welcome": {"status": "OK"}, "num_two": {"status": "OK"}}
+        runner._assert_shared_narration_ok(status, "b1b")  # 例外が出なければOK
+
+    def test_gate_blocked_summary_none_when_file_absent(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_shared_narration_gate_")
+        try:
+            self.assertIsNone(runner._shared_narration_gate_blocked_summary(tmp))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_gate_blocked_summary_none_when_all_ok(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_shared_narration_gate_")
+        try:
+            os.makedirs(os.path.join(tmp, "audit"), exist_ok=True)
+            runner.save_json(os.path.join(tmp, "audit", "tts_generation_results.json"),
+                              {"shared_narration": {"welcome": {"status": "OK"}}})
+            self.assertIsNone(runner._shared_narration_gate_blocked_summary(tmp))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_gate_blocked_summary_returns_blocked_dict_when_non_ok(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_shared_narration_gate_")
+        try:
+            os.makedirs(os.path.join(tmp, "audit"), exist_ok=True)
+            runner.save_json(os.path.join(tmp, "audit", "tts_generation_results.json"),
+                              {"shared_narration": {"welcome": {"status": "OK"},
+                                                     "num_two": {"status": "STOPPED"}}})
+            blocked = runner._shared_narration_gate_blocked_summary(tmp)
+            self.assertIsNotNone(blocked)
+            self.assertEqual(blocked["status"], "BLOCKED_SHARED_NARRATION_NOT_OK")
+            self.assertEqual(blocked["shared_narration_non_ok"], {"num_two": "STOPPED"})
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def _write_kp_scaffold(self, out_dir):
+        os.makedirs(os.path.join(out_dir, "key_phrases"), exist_ok=True)
+        runner.save_json(os.path.join(out_dir, "key_phrases", "keywords_canonicalized.json"), {"items": []})
+
+    def test_stage_assemble_family_x_b1_rejects_before_reaching_load_sources(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_shared_narration_assemble_")
+        try:
+            theme_out_dir = os.path.join(tmp, "theme")
+            out_dir = os.path.join(theme_out_dir, "b1b")
+            self._write_kp_scaffold(out_dir)
+            os.makedirs(os.path.join(out_dir, "audit"), exist_ok=True)
+            runner.save_json(os.path.join(out_dir, "audit", "tts_generation_results.json"),
+                              {"shared_narration": {"num_two": {"status": "STOPPED"}}})
+
+            original_loader = runner.load_family_x_b1_sources
+
+            def _fail_if_called(*a, **k):
+                raise AssertionError("load_family_x_b1_sources must not be called when shared_narration is blocked")
+
+            runner.load_family_x_b1_sources = _fail_if_called
+            try:
+                result = runner.stage_assemble_family_x_b1(theme_out_dir, "test_theme")
+            finally:
+                runner.load_family_x_b1_sources = original_loader
+            self.assertEqual(result["status"], "BLOCKED_SHARED_NARRATION_NOT_OK")
+            saved = runner.load_json(os.path.join(out_dir, "run_summary_assemble.json"))
+            self.assertEqual(saved["status"], "BLOCKED_SHARED_NARRATION_NOT_OK")
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_stage_assemble_family_x_a2_rejects_before_reaching_load_sources(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_shared_narration_assemble_")
+        try:
+            theme_out_dir = os.path.join(tmp, "theme")
+            out_dir = os.path.join(theme_out_dir, "a2")
+            self._write_kp_scaffold(out_dir)
+            os.makedirs(os.path.join(out_dir, "audit"), exist_ok=True)
+            runner.save_json(os.path.join(out_dir, "audit", "tts_generation_results.json"),
+                              {"shared_narration": {"point_explanation": {"status": "STOPPED"}}})
+
+            original_loader = runner.load_family_x_a2_sources
+
+            def _fail_if_called(*a, **k):
+                raise AssertionError("load_family_x_a2_sources must not be called when shared_narration is blocked")
+
+            runner.load_family_x_a2_sources = _fail_if_called
+            try:
+                result = runner.stage_assemble_family_x_a2(theme_out_dir, "test_theme")
+            finally:
+                runner.load_family_x_a2_sources = original_loader
+            self.assertEqual(result["status"], "BLOCKED_SHARED_NARRATION_NOT_OK")
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+class BatchCostAggregationTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(SF-1、
+    修正3回目、2026-09-28、Opus L2所見): compute_cost_jpy_so_far()が
+    provider="gemini_batch"(er006_batch_tts_wiring_01.py:154)のレコードを
+    token単価では0円扱いせず、recに既に記録済みのcost_usdをそのまま
+    採用することを確認する(既定BATCHでもbudget guardが機能するように
+    なることの回帰防止)。"""
+
+    def _write_log(self, tmp, lines):
+        path = os.path.join(tmp, "raw_usage_log.jsonl")
+        with open(path, "w", encoding="utf-8") as f:
+            for line in lines:
+                f.write(json.dumps(line) + "\n")
+        return path
+
+    def test_gemini_batch_record_with_cost_usd_is_counted(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_batch_cost_")
+        try:
+            path = self._write_log(tmp, [
+                {"provider": "gemini_batch", "model_id": "gemini-3.8-flash-lite-tts",
+                 "cost_usd": 0.001234, "cost_jpy": 0.1974},
+            ])
+            jpy, by_provider = runner.compute_cost_jpy_so_far(path)
+            self.assertAlmostEqual(jpy, 0.001234 * runner.USD_JPY, places=4)
+            self.assertIn("gemini_batch", by_provider)
+            self.assertGreater(by_provider["gemini_batch"], 0.0)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_gemini_batch_record_without_cost_usd_still_zero_no_crash(self):
+        # cost_usdが無い旧形式レコード(例: batches.create自体が例外の
+        # ケース、N-3既知gap)は0円のまま(クラッシュしないことのみ確認、
+        # 新規の推定ロジックは追加しない)。
+        tmp = tempfile.mkdtemp(prefix="family_x_batch_cost_")
+        try:
+            path = self._write_log(tmp, [{"provider": "gemini_batch", "model_id": "gemini-3.8-flash-lite-tts"}])
+            jpy, by_provider = runner.compute_cost_jpy_so_far(path)
+            self.assertEqual(jpy, 0.0)
+            self.assertEqual(by_provider.get("gemini_batch"), 0.0)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_mixed_gemini_and_gemini_batch_records_both_counted(self):
+        tmp = tempfile.mkdtemp(prefix="family_x_batch_cost_")
+        try:
+            path = self._write_log(tmp, [
+                {"provider": "gemini_batch", "model_id": "gemini-3.8-flash-lite-tts", "cost_usd": 0.002},
+                {"provider": "gemini_batch", "model_id": "gemini-3.8-flash-lite-tts", "cost_usd": 0.003},
+            ])
+            jpy, by_provider = runner.compute_cost_jpy_so_far(path)
+            self.assertAlmostEqual(jpy, 0.005 * runner.USD_JPY, places=4)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
 class AssembledFilenameThemeComponentTests(unittest.TestCase):
     """Stage 3f実行時に発見した既存バグ(サブディレクトリ区切り"/"を含む
     --slug[例: Hormuz/small_bag]でAssembly出力filenameがFileNotFoundError

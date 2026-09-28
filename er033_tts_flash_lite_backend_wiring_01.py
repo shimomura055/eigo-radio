@@ -10,8 +10,12 @@
 #
 # 設計根拠: docs/pm/design_flash_lite_family_x_wiring_01.md §(a-3)(b)(g)。
 # 実際のAPI呼び出し(client.models.generate_content)はこのモジュール内の
-# 1箇所(make_speech_metadata_call_fn内のtts_call_fn)にのみ存在し、
-# Phase 1では一度も呼ばれない(既定backendのみが使われるため)。
+# 1箇所(make_speech_metadata_call_fn内のtts_call_fn)にのみ存在する。
+# SF-3是正(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+# 修正3回目、2026-09-28、Opus L2所見): 「Phase 1では一度も呼ばれない」は
+# Phase 1時点の記述で、Phase 2でSDK 2.25.0導入・Production `.venv`での
+# 実API呼び出し(Family X runnerがtts_backend="speech_metadata_flash_lite"
+# を明示的に渡す経路)が既に実施済みのため、現状と矛盾する。
 from __future__ import annotations
 
 import io
@@ -31,8 +35,14 @@ SUPPORTED_TTS_BACKENDS = (BACKEND_STRUCTURED_SEPARATION, BACKEND_SPEECH_METADATA
 DEFAULT_TTS_BACKEND = BACKEND_STRUCTURED_SEPARATION
 
 # google-genai SDKの最小要求バージョン(Trial実行環境
-# `.venv_trial_genai225`で検証済みのバージョン。Production `.venv`は
-# 2026-09-27時点2.11.0のままであり、speech_metadata方式は未対応)。
+# `.venv_trial_genai225`で検証済みのバージョン)。
+# SF-3是正(修正3回目、2026-09-28、Opus L2所見): 「Production `.venv`は
+# 2026-09-27時点2.11.0のままであり、speech_metadata方式は未対応」は
+# Phase 1時点の記述。Phase 2(D-2、2026-09-28)でProduction `.venv`へ
+# google-genai==2.25.0を導入済み(`requirements-production-genai-pin.txt`
+# にexact pin、`assert_sdk_supports_speech_metadata()`実行時に実測値
+# 2.25.0であることを確認済み)であり、speech_metadata方式は実API呼び出し
+# 済み。
 MIN_SUPPORTED_GENAI_VERSION = (2, 25, 0)
 
 # 設計書§(g): TTS routing contractへ新規processとして登録する
@@ -73,8 +83,13 @@ def _parse_genai_version() -> tuple:
 
 def assert_sdk_supports_speech_metadata() -> tuple:
     """speech_metadata_flash_liteバックエンドを使う直前に必ず呼ぶ。
-    Production `.venv`(2.11.0)ではここで確実に例外を送出する
-    (Phase 1はAPI呼び出し0件であり、この関数はunit testからのみ実行される)。"""
+    SF-3是正(修正3回目、2026-09-28、Opus L2所見): 旧docstring「Production
+    `.venv`(2.11.0)ではここで確実に例外を送出する(Phase 1はAPI呼び出し
+    0件であり、この関数はunit testからのみ実行される)」はPhase 1時点の
+    記述。Phase 2以降、Production `.venv`はgoogle-genai==2.25.0
+    (`requirements-production-genai-pin.txt`)であり、本関数は例外を
+    送出せずversionを返して実API呼び出し経路へ進む(Family X runnerの
+    実行を実際に確認済み)。"""
     version = _parse_genai_version()
     if version < MIN_SUPPORTED_GENAI_VERSION:
         raise TTSBackendSDKUnsupportedError(
@@ -263,7 +278,14 @@ def make_speech_metadata_batch_call_fn(model_name: str, voice_name: str, client=
         job, state = batch_wiring.wait_for_batch_multi(
             client, job_name, poll_interval_seconds=_poll, timeout_seconds=_timeout)
         elapsed = time.time() - t0
-        _extra = {"tts_backend": BACKEND_SPEECH_METADATA_FLASH_LITE, "style": style}
+        # N-4是正(修正3回目、2026-09-28、Opus L2所見): shell/legacy prefix
+        # 経路ではstyleが約2,000字(p9a.ENGLISH_STYLE_PREFIX等)になり得るため、
+        # 無加工でraw_usage_log.jsonlへ書くと毎callで肥大化する。telemetry
+        # 用途(どのstyleが使われたかの識別)には先頭200文字で十分なため
+        # truncateする(実際のTTS呼び出しに渡すstyle本体[speech_metadata]は
+        # 無変更、telemetry記録のみの変更)。
+        _style_for_telemetry = style[:200] if isinstance(style, str) else style
+        _extra = {"tts_backend": BACKEND_SPEECH_METADATA_FLASH_LITE, "style": _style_for_telemetry}
 
         if state == "TIMEOUT_EXCEEDED":
             batch_wiring._record(batch_wiring.BatchItemStatus.TIMEOUT, resolved_model_name, voice_name, job_name,

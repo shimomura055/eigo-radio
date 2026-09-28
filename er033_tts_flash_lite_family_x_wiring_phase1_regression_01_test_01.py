@@ -99,6 +99,32 @@ class VoiceCharonEnglishDefaultBackendTests(unittest.TestCase):
             standard_prompt, p4c.build_tts_prompt("Preview text.", n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM))
 
 
+class VoiceCharonEnglishFlashLiteFallbackStyleTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(BL-3、
+    修正3回目、2026-09-28、Opus L2所見): tts_backend=
+    "speech_metadata_flash_lite"の場合、fallback(発話区間検出失敗時の
+    minimal instruction)発火時のspeech_metadata.styleが、既存の長い
+    repro01.MINIMAL_INSTRUCTION_PREFIXではなく、
+    `er033_tts_flash_lite_family_x_styles_01.FAMILY_X_ROLE_STYLE_EN_
+    FALLBACK[0]`であることを確認する(Repro01MinimalInstruction
+    FlashLiteFallbackStyleTestsと同じ検証パターンをvoice01側へ適用)。
+    既定backendはVoiceCharonEnglishDefaultBackendTestsでbyte-identicalの
+    ままであることを別途確認済み(無影響)。"""
+
+    def test_flash_lite_backend_uses_short_fallback_style_not_legacy_minimal_prefix(self):
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+        with _patched_retry() as fake:
+            voice01.generate_charon_english(
+                "Topic intro text.", DUMMY_OUT_PATH, max_attempts=1,
+                tts_backend="speech_metadata_flash_lite")
+        self.assertEqual(len(fake.calls), 2)
+        _, fallback_prompt = fake.calls[1]
+        text, style = fallback_prompt
+        self.assertEqual(text, "Topic intro text.")
+        self.assertEqual(style, fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0])
+        self.assertNotEqual(style, repro01.MINIMAL_INSTRUCTION_PREFIX)
+
+
 class VoiceCharonJapaneseDefaultBackendTests(unittest.TestCase):
     def test_standard_attempt_prompt_matches_legacy(self):
         with _patched_retry() as fake:
@@ -192,6 +218,29 @@ class PointHeadingsDefaultBackendTests(unittest.TestCase):
         self.assertEqual(prompt, p4c.build_tts_prompt("Point One.", p9a.ENGLISH_STYLE_PREFIX))
 
 
+class PointHeadingsFlashLiteFallbackStyleTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(BL-3、
+    修正3回目、2026-09-28、Opus L2所見): point_headings.generate()の
+    minimal_fallback(attempt > minimal_after)経路も、tts_backend=
+    "speech_metadata_flash_lite"の場合はFAMILY_X_ROLE_STYLE_EN_
+    FALLBACK[0]を使う(既定backendはPointHeadingsDefaultBackendTestsで
+    byte-identicalのまま無変更)。"""
+
+    def test_flash_lite_backend_uses_short_fallback_style_on_minimal_fallback_attempt(self):
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+        with _patched_retry() as fake:
+            point_headings.generate(
+                "Point One.", DUMMY_OUT_PATH, max_attempts=2,
+                tts_backend="speech_metadata_flash_lite")
+        # attempt1=standard(english_style_prefix)、attempt2=minimal_fallback。
+        self.assertEqual(len(fake.calls), 2)
+        _, fallback_prompt = fake.calls[1]
+        text, style = fallback_prompt
+        self.assertEqual(text, "Point One.")
+        self.assertEqual(style, fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0])
+        self.assertNotEqual(style, repro01.MINIMAL_INSTRUCTION_PREFIX)
+
+
 class A2JapaneseMinimalInstructionDefaultBackendTests(unittest.TestCase):
     def test_prompt_matches_legacy(self):
         with _patched_retry() as fake:
@@ -223,9 +272,11 @@ def run():
     suite = unittest.TestSuite()
     for cls in (
         P9aGenerateNarrationSnippetDefaultBackendTests, VoiceCharonEnglishDefaultBackendTests,
+        VoiceCharonEnglishFlashLiteFallbackStyleTests,
         VoiceCharonJapaneseDefaultBackendTests, Repro01MinimalInstructionDefaultBackendTests,
         Repro01MinimalInstructionFlashLiteFallbackStyleTests,
         NewsTailFixDefaultBackendTests, PointHeadingsDefaultBackendTests,
+        PointHeadingsFlashLiteFallbackStyleTests,
         A2JapaneseMinimalInstructionDefaultBackendTests, TtsBackendSignatureBackwardCompatibilityTests,
     ):
         suite.addTests(loader.loadTestsFromTestCase(cls))

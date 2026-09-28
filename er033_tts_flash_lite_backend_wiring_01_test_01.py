@@ -507,6 +507,29 @@ class MakeSpeechMetadataBatchCallFnShapeTests(unittest.TestCase):
         self.assertEqual(entry["tts_backend"], flw.BACKEND_SPEECH_METADATA_FLASH_LITE)
         self.assertTrue(entry["success"])
 
+    def test_call_fn_truncates_long_style_in_telemetry_extra(self):
+        # N-4是正(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+        # 修正3回目、2026-09-28、Opus L2所見): shell/legacy prefix経路では
+        # styleが約2,000字になり得るため、telemetry(raw_usage_log.jsonl)
+        # 側では先頭200文字にtruncateする(実際のTTS呼び出しに渡す
+        # speech_metadata.style本体は無変更、telemetry記録のみ変更)。
+        import er005_cost_logger as cost_logger
+        samples = np.array([1, 2, 3], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        client = self._make_fake_client(wav_bytes)
+        recorded = []
+        long_style = "x" * 2500
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types(), \
+             mock.patch.object(cost_logger, "_LOG_PATH", "dummy.jsonl"), \
+             mock.patch.object(cost_logger, "record", side_effect=lambda e: recorded.append(e)):
+            call_fn = flw.make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=client,
+                poll_interval_seconds=0.001, timeout_seconds=5.0)
+            call_fn(("Hello.", long_style))
+        self.assertEqual(len(recorded), 1)
+        self.assertEqual(len(recorded[0]["style"]), 200)
+        self.assertEqual(recorded[0]["style"], long_style[:200])
+
     def test_call_fn_raises_on_api_error_item(self):
         job = _FakeBatchJob(
             "batches/fakeerr", "JobState.JOB_STATE_SUCCEEDED",

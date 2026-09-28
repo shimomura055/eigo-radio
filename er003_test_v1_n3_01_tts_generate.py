@@ -194,7 +194,24 @@ class ActHeadingDigitReadingRegressionTests(unittest.TestCase):
     (retry cascade)で発火することを記録・固定することであり、この
     挙動を「正解」として推奨するものではない。判定ロジック自体の変更
     (数値等価判定の拡張)は本fixtureの範囲外であり、OPEN-186/
-    COVERAGE-REVIEW-02側の別管理IDで扱う。"""
+    COVERAGE-REVIEW-02側の別管理IDで扱う。
+
+    **再是正(SF-4、修正3回目、2026-09-28、Opus L2所見)**: 直下の
+    `test_act_heading_digit_reading_is_true_content_mismatch`は
+    `classify_asr_match(canonical, asr_text)`を**segment_idなし**で
+    呼んでおり、role gating(Tier1/Tier3の`segment_id`/`role`引数)が
+    一切効かない。したがってこのテストが固定しているのは「role gate
+    **非適用時**の挙動」であり、docstring旧文言の「Production runtime
+    (retry cascade)で実際に発火することを記録・固定する」は、実際の
+    Production呼び出し(`full_story_part1`はFIVE_ROLES_APPLICABLE・
+    strict Tier1適用対象)の挙動そのものを固定しているわけではない
+    (過大な主張だった)。strict Tier1側の実際の挙動は、下記
+    `test_act_heading_digit_reading_with_full_story_part1_segment_id`
+    (segment_id="full_story_part1"付き)で別途固定する。このstrict
+    Tier1側は並行する別管理ID`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-
+    REVIEW-02`が現在修正中(`er006_preprod_hardening_01_validation.py`、
+    本タスクの所有ファイル外)のため、そちらの完了後に値が変わる可能性が
+    ある(その場合はこの新規テストが失敗して変化を検知する設計)。"""
 
     def test_act_heading_digit_reading_is_true_content_mismatch(self):
         canonical = (
@@ -210,6 +227,30 @@ class ActHeadingDigitReadingRegressionTests(unittest.TestCase):
         result = en_validator.classify_asr_match(canonical, asr_text_digit_form)
         self.assertEqual(result.classification, "TRUE_CONTENT_MISMATCH")
         self.assertFalse(result.should_pass)
+
+    def test_act_heading_digit_reading_with_full_story_part1_segment_id(self):
+        # SF-4是正(修正3回目、2026-09-28、Opus L2所見): full_story_part1は
+        # Production実呼び出しでrole gate(strict Tier1)が適用される
+        # segment_idである。segment_idを渡さない上のtestとは別に、実際の
+        # Production経路の挙動を現行コードのまま固定する(この値の
+        # 当否は判定しない。EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02
+        # [OPEN-186 追記5]が並行してこの領域を修正中のため、そちらの
+        # 変更で本testが失敗した場合は、strict Tier1側の挙動が変わった
+        # ことの検知として扱うこと[意図的な回帰検知]。)
+        canonical = (
+            "The play unfolds in three acts. Act One introduces the "
+            "characters. Act Two raises the stakes. Act Three resolves "
+            "the conflict."
+        )
+        asr_text_digit_form = (
+            "The play unfolds in three acts. Act 1 introduces the "
+            "characters. Act 2 raises the stakes. Act 3 resolves "
+            "the conflict."
+        )
+        result = en_validator.classify_asr_match(
+            canonical, asr_text_digit_form, segment_id="full_story_part1")
+        self.assertEqual(result.classification, "NUMERIC_EQUIVALENCE_MATCH")
+        self.assertTrue(result.should_pass)
 
     def test_act_heading_word_reading_passes(self):
         # REPORT§22.5のattempt2相当(同一canonical、word読みのASR結果)。

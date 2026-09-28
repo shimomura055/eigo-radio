@@ -86,7 +86,17 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         if use_minimal:
             # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にも
             # Structured Separationを適用する。
-            style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
+            # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+            # (修正3回目、2026-09-28、Opus L2所見BL-3是正): Flash-Lite
+            # backend時のみ、er003_v1_repro01_main_generate.py:536-540と
+            # 同じ方式で短いfallback style(FAMILY_X_ROLE_STYLE_EN_
+            # FALLBACK[0]、新規style文言は考案しない)を使う。既定backend
+            # はMINIMAL_INSTRUCTION_PREFIXのまま(byte-identical)。
+            if tts_backend == "speech_metadata_flash_lite":
+                import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+                style_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+            else:
+                style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
             instruction_type = "minimal_fallback"
         else:
             style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
