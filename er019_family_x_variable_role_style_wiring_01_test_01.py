@@ -106,8 +106,8 @@ class RunnerBackendGateTests(unittest.TestCase):
     def _make_a2_dir(self, tmpdir):
         parts = {
             "title": "Sample Title", "title_tts": "Sample Title",
-            "part1": "Part one text.", "heading1": "Heading One.", "body2": "Body two text.",
-            "heading2": "Heading Two.", "body3": "Body three text.", "in_one_line": "In one line text.",
+            "part1": "Part one text.", "part2": "Body two text.", "heading1": "Heading One.", "body2": "Body two text.",
+            "part3": "Body three text.", "heading2": "Heading Two.", "body3": "Body three text.", "in_one_line": "In one line text.",
         }
         support = {"preview": "プレビュー。", "comment_1": "コメント1。", "comment_2": "コメント2。",
                    "comment_3": "コメント3。", "comment_4": "コメント4。"}

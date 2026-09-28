@@ -133,12 +133,40 @@ def split_family_x_article_text(text: str) -> dict:
     }
 
 
+# ============================================================
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29、ユーザー
+# 正式決定APPROVED_FOR_PRODUCTION): 新記事構造(途中Heading廃止・忠実
+# 英訳・段落境界での決定論的3分割)向けのsplit関数。上のsplit_family_x_
+# article_text()(###見出し2つ前提、Stage 1〜3c仕様)は一切変更しない
+# (旧仕様との比較・後方互換確認に残す)。アルゴリズム本体は
+# er003_v1_n3_01_scaffold_generate.split_family_x_article_text_v2()
+# (Family X Writer stage[er012_e_family_entertainment_two_level_
+# runner_01.run_writer_stage()]のparts.json生成と共通実装)をそのまま
+# 使う(重複実装しない)。
+# ============================================================
+def split_family_x_article_text_v2(text: str) -> dict:
+    """新構造(# Title -> 本文[段落、見出しなし] ->『## In one line』)を
+    part1/part2/part3+in_one_lineへ分割する。『## In one line』が見つか
+    らない場合のみRuntimeError、paragraph_count<3の場合はstatus=
+    "TOO_FEW_PARAGRAPHS"を返す(旧split_family_x_article_text()の###
+    見出し2つ必須・無retryクラッシュ[OPEN-228]は新経路に存在しない)。"""
+    return sc.split_family_x_article_text_v2(text)
+
+
 def reconstruct_family_x_article_text(parts: dict) -> str:
     """Preview/Key Phrase生成のcontext用に、Family Xの構造からMarkdown
     全文を再構成する(語は一切変更しない、既存内容の再結合のみ)。"""
     return (f"# {parts['title']}\n\n{parts['part1']}\n\n"
             f"### {parts['heading1']}\n\n{parts['body2']}\n\n"
             f"### {parts['heading2']}\n\n{parts['body3']}\n\n"
+            f"## In one line\n{parts['in_one_line']}")
+
+
+def reconstruct_family_x_article_text_v2(parts: dict) -> str:
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): 新構造(見出し廃止)
+    向けのreconstruct。split_family_x_article_text_v2()が返すpart1/2/3
+    (見出しを含まない)を単純に段落として連結する(語は一切変更しない)。"""
+    return (f"# {parts['title']}\n\n{parts['part1']}\n\n{parts['part2']}\n\n{parts['part3']}\n\n"
             f"## In one line\n{parts['in_one_line']}")
 
 
@@ -237,6 +265,34 @@ FAMILY_X_B1_SEGMENT_ORDER = (
     ("Outro (Charon)", None, "SFX"),
 )
 
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): 新記事構造
+# (Heading Readout撤去)向けのsegment順序。上のFAMILY_X_B1_SEGMENT_ORDER
+# (旧、見出しsub-segment込み)は無変更のまま残す。組立順はComment1->
+# 本文1->Comment2->本文2->Comment3->本文3->Comment4->In One Line
+# (見出しsub-segmentは存在しない)。
+FAMILY_X_B1_SEGMENT_ORDER_V2 = (
+    ("Intro", None, "SFX"),
+    ("Welcome (Charon)", None, "FIXED_SHARED"),
+    ("Topic intro (Charon)", "topic_intro", "TOPIC_INTRO"),
+    ("Notification 1", None, "SFX"),
+    ("Preview intro (Charon)", None, "FIXED_SHARED"),
+    ("Preview (Charon)", "preview", "PREVIEW"),
+    ("Notification 2", None, "SFX"),
+    ("Key phrases intro (Charon)", None, "FIXED_SHARED"),
+    ("Key Phrase 1..N", None, "KEY_PHRASE"),
+    ("Notification 3", None, "SFX"),
+    ("Full story intro (Charon)", None, "FIXED_SHARED"),
+    ("Comment 1 (Charon)", "comment_1", "COMMENT"),
+    ("Full Story Part 1 (Aoede)", "full_story_part1", "FULL_STORY"),
+    ("Comment 2 (Charon)", "comment_2", "COMMENT"),
+    ("Full Story Part 2 (Aoede)", "full_story_part2", "FULL_STORY"),
+    ("Comment 3 (Charon)", "comment_3", "COMMENT"),
+    ("Full Story Part 3 (Aoede)", "full_story_part3", "FULL_STORY"),
+    ("Comment 4 (Charon)", "comment_4", "COMMENT"),
+    ("In One Line (Aoede)", "in_one_line", "IN_ONE_LINE"),
+    ("Outro (Charon)", None, "SFX"),
+)
+
 # A2は既存Family Aの"Point explanation"(Point構造を説明する固定前置き)
 # segmentを使わない(CURRENT_SPEC Family X節: 「ポイント解説」等のPoint
 # 前置きも使わない、Commentで自然につなぐ)。
@@ -261,6 +317,33 @@ FAMILY_X_A2_SEGMENT_ORDER = (
     ("Full Story Part 2", "full_story_part2", "FULL_STORY"),
     ("Comment 3", "comment_3", "COMMENT"),
     ("Full Story Part 3 Heading", "full_story_part3_heading", "HEADING_READOUT"),
+    ("Full Story Part 3", "full_story_part3", "FULL_STORY"),
+    ("Comment 4", "comment_4", "COMMENT"),
+    ("In One Line", "in_one_line", "IN_ONE_LINE"),
+    ("Outro", None, "SFX"),
+)
+
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): 新記事構造
+# (Heading Readout撤去)向けのA2 segment順序。上のFAMILY_X_A2_SEGMENT_
+# ORDER(旧、見出しsub-segment込み)は無変更のまま残す。
+FAMILY_X_A2_SEGMENT_ORDER_V2 = (
+    ("Intro", None, "SFX"),
+    ("Welcome", None, "FIXED_SHARED"),
+    ("Topic intro", "topic_intro", "TOPIC_INTRO"),
+    ("Japanese title", "japanese_title", "JAPANESE_TITLE"),
+    ("Notification 1", None, "SFX"),
+    ("Preview intro", None, "FIXED_SHARED"),
+    ("Preview", "preview", "PREVIEW"),
+    ("Notification 2", None, "SFX"),
+    ("Key phrases intro", None, "FIXED_SHARED"),
+    ("Key Phrase 1..N", None, "KEY_PHRASE"),
+    ("Notification 3", None, "SFX"),
+    ("Full story intro", None, "FIXED_SHARED"),
+    ("Comment 1", "comment_1", "COMMENT"),
+    ("Full Story Part 1", "full_story_part1", "FULL_STORY"),
+    ("Comment 2", "comment_2", "COMMENT"),
+    ("Full Story Part 2", "full_story_part2", "FULL_STORY"),
+    ("Comment 3", "comment_3", "COMMENT"),
     ("Full Story Part 3", "full_story_part3", "FULL_STORY"),
     ("Comment 4", "comment_4", "COMMENT"),
     ("In One Line", "in_one_line", "IN_ONE_LINE"),

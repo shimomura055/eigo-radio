@@ -112,16 +112,43 @@ class _FakeWriterResult:
     checks: dict = field(default_factory=dict)
 
 
-ADVANCED_TEXT = (
-    "# Advanced Title\n\nBody paragraph one.\n\nBody paragraph two.\n\n"
-    "### First point\nFirst point body.\n\n### Second point\nSecond point body.\n\n"
-    "## In one line\nOne closing sentence."
-)
+@dataclass
+class _FakeFaithfulTranslationResult:
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): adv_gen.
+    FamilyXFaithfulTranslationResultのtitle/body形状に合わせたfake(旧
+    _FakeWriterResultは.textのみでStandard側にのみ引き続き使う)。"""
+    title: str
+    body: str
+    model_id_actual: str = "gpt-5.6-luna"
+    model_id_requested: str = "gpt-5.6-luna"
+    response_id: str = "resp_1"
+    usage: dict = field(default_factory=dict)
+    cost_usd: float = 0.001
+    cost_jpy: float = 0.16
+    attempts: int = 1
+    retried: bool = False
+    fallback_detected: bool = False
+    structure_status: str = "STRUCTURE_PASS"
+    elapsed_seconds: float = 1.0
+
+
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): 新記事構造(途中Heading
+# 廃止、###×2は使わない)のfixture。段落境界3分割が成立するよう本文は
+# 3段落以上にする。
+ADVANCED_BODY = "Body paragraph one.\n\nBody paragraph two.\n\nBody paragraph three."
+ADVANCED_TITLE = "Advanced Title"
+ADVANCED_IN_ONE_LINE = "One closing sentence."
+ADVANCED_TEXT = f"# {ADVANCED_TITLE}\n\n{ADVANCED_BODY}\n\n## In one line\n{ADVANCED_IN_ONE_LINE}"
+
 STANDARD_TEXT = (
-    "# Standard Title\n\nSimple body one.\n\nSimple body two.\n\n"
-    "### First point\nFirst point body.\n\n### Second point\nSecond point body.\n\n"
+    "# Standard Title\n\nSimple body one.\n\nSimple body two.\n\nSimple body three.\n\n"
     "## In one line\nOne closing sentence."
 )
+
+
+def _fake_in_one_line(client, title, body, **kwargs):
+    return {"text": ADVANCED_IN_ONE_LINE, "model": "gpt-5.6-luna", "response_id": "resp_iol",
+            "usage": {}, "cost_usd": 0.0001, "cost_jpy": 0.016, "elapsed_seconds": 0.1}
 
 
 def _deviation_result(status: str, deviations: list | None = None,
@@ -149,10 +176,14 @@ class RunWriterStageTests(unittest.TestCase):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def test_writer_stage_success_no_deviation_retry(self):
-        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
+        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result) as m_adv, \
-             mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result) as m_std, \
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
+                                return_value=adv_result) as m_adv, \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
+                                side_effect=_fake_in_one_line), \
+             mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
+                                return_value=std_result) as m_std, \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result("LEDGER_COMPLIANT")) as m_dev, \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
@@ -164,14 +195,24 @@ class RunWriterStageTests(unittest.TestCase):
         self.assertEqual(m_dev.call_count, 2)  # advanced + standard, no retry
         self.assertEqual(evidence["advanced"]["deviation_overall_status"], "LEDGER_COMPLIANT")
         self.assertEqual(evidence["standard"]["deviation_overall_status"], "LEDGER_COMPLIANT")
+        self.assertFalse(evidence["advanced"]["paragraph_retried"])
+        self.assertFalse(evidence["standard"]["paragraph_retried"])
         self.assertTrue(os.path.exists(os.path.join(self.theme["out_dir"], "b1b", "article.md")))
         self.assertTrue(os.path.exists(os.path.join(self.theme["out_dir"], "a2", "article.md")))
+        # OPEN-228: 新構造はheadingを持たない(旧h3見出しcontractへの復帰なし)。
+        with open(os.path.join(self.theme["out_dir"], "b1b", "article.md"), encoding="utf-8") as f:
+            b1b_article = f.read()
+        self.assertNotIn("### ", b1b_article)
 
     def test_writer_stage_retries_once_on_major_deviation_then_passes(self):
-        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
+        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result) as m_adv, \
-             mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result), \
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
+                                return_value=adv_result) as m_adv, \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
+                                side_effect=_fake_in_one_line), \
+             mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
+                                return_value=std_result), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 side_effect=[
                                     _deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()]),
@@ -192,8 +233,11 @@ class RunWriterStageTests(unittest.TestCase):
         self.assertEqual(len(retry_check_kwargs.get("prior_issues")), 1)
 
     def test_writer_stage_stops_on_persistent_major_deviation(self):
-        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result), \
+        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
+                                return_value=adv_result), \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
+                                side_effect=_fake_in_one_line), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()])), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
@@ -205,9 +249,12 @@ class RunWriterStageTests(unittest.TestCase):
         """NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: English MAJORが
         origin=ja_source(JA R2由来)と判定された場合、Englishを盲目的に
         再生成せずJARecheckRequiredError(RuntimeErrorのサブクラス)でSTOPする
-        こと(generate_advanced_adaptationは1回しか呼ばれない)。"""
-        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result) as m_adv, \
+        こと(generate_family_x_faithful_translationは1回しか呼ばれない)。"""
+        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
+                                return_value=adv_result) as m_adv, \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
+                                side_effect=_fake_in_one_line), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result(
                                     "LEDGER_DEVIATION", deviations=[_major_deviation(origin="ja_source")])), \
@@ -223,7 +270,8 @@ class RunWriterStageTests(unittest.TestCase):
         with open(os.path.join(b1b_dir, "article.md"), "w", encoding="utf-8") as f:
             f.write(ADVANCED_TEXT)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
-        with mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result) as m_std, \
+        with mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
+                                return_value=std_result) as m_std, \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result("LEDGER_COMPLIANT")), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
@@ -239,11 +287,14 @@ class RunWriterStageTests(unittest.TestCase):
         only="standard")を別呼び出しした場合でも、writer_run_summary.jsonへ
         両stageのevidenceキーが両方残ること(旧実装は後勝ち上書きでadvancedキーが
         消えていた)を検証する。"""
-        adv_result = _FakeWriterResult(text=ADVANCED_TEXT)
+        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
         summary_path = os.path.join(self.theme["out_dir"], "writer_run_summary.json")
 
-        with mock.patch.object(runner.adv_gen, "generate_advanced_adaptation", return_value=adv_result), \
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
+                                return_value=adv_result), \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
+                                side_effect=_fake_in_one_line), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result("LEDGER_COMPLIANT")), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
@@ -255,7 +306,8 @@ class RunWriterStageTests(unittest.TestCase):
         self.assertIn("advanced", summary_after_advanced)
         self.assertNotIn("standard", summary_after_advanced)
 
-        with mock.patch.object(runner.std_gen, "generate_standard_a2", return_value=std_result), \
+        with mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
+                                return_value=std_result), \
              mock.patch.object(runner.vfl01, "run_deviation_check",
                                 return_value=_deviation_result("LEDGER_COMPLIANT")), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):

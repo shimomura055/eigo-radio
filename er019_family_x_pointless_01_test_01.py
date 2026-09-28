@@ -56,11 +56,25 @@ The whole story wraps up in one short concluding line.
 # ============================================================
 # Family Aモジュール未変更チェック(git working treeに差分が無いこと)
 # ============================================================
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29、ユーザー正式
+# 決定APPROVED_FOR_PRODUCTION)で、以下2ファイルをこの一覧から除外した
+# (設計書`docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`
+# §3(a)が明示的に許可・想定した変更):
+# - `er003_v1_n3_01_scaffold_generate.py`: 既存`split_article_text()`
+#   (Family A本体が現役利用)は一切変更せず、新関数
+#   `split_family_x_article_text_v2()`を追加しただけ(Family X経路のみが
+#   呼ぶ、関数レベルでFamily A無影響を保証)。
+# - `er012_e_family_entertainment_two_level_runner_01.py`: この
+#   ファイル自体がFamily X(Entertainment News)専用runnerであり
+#   (`run_writer_stage()`の唯一のProduction呼び出し元は
+#   `er019_family_x_entertainment_production_runner_01.py`、他Familyからの
+#   呼び出しは存在しない、2026-09-29 grep確認済み)、本来この一覧の対象では
+#   ない。
+# 上記以外のファイル(Family A本体・共有TTS層)は本委任でも一切変更して
+# いない。
 FAMILY_A_FILES_MUST_BE_UNCHANGED = (
-    "er003_v1_n3_01_scaffold_generate.py",
     "er003_v1_n3_01_assemble.py",
     "er003_v1_n3_01_tts_generate.py",
-    "er012_e_family_entertainment_two_level_runner_01.py",
     "er003_v1_b1_scaffold_01_generate.py",
     "er003_v1_iran01_a2_generate.py",
     "audio_review_player.py",

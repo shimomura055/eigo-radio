@@ -41,8 +41,8 @@ class B1RoleStyleFlashLiteTests(unittest.TestCase):
     def _make_b1b_dir(self, tmpdir):
         parts = {
             "title": "Sample Title", "part1": "Part one text.",
-            "heading1": "Heading One.", "body2": "Body two text.",
-            "heading2": "Heading Two.", "body3": "Body three text.",
+            "part2": "Body two text.", "heading1": "Heading One.", "body2": "Body two text.",
+            "part3": "Body three text.", "heading2": "Heading Two.", "body3": "Body three text.",
             "in_one_line": "In one line text.",
         }
         support = {"preview": "Preview.", "comment_1": "C1.", "comment_2": "C2.",
@@ -77,10 +77,11 @@ class B1RoleStyleFlashLiteTests(unittest.TestCase):
                               fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
             self.assertNotIn(n3_tts.A2_SLOWER_PACE_INSTRUCTION.strip(),
                               fs1_call.kwargs.get("style_prefix_override") or "")
-            # heading: role HEADING_READOUT
-            heading_call = heading_mock.call_args_list[0]
-            self.assertEqual(heading_call.kwargs.get("style_prefix_override"),
-                              fl_styles.FAMILY_X_ROLE_STYLE_EN["HEADING_READOUT"])
+            # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): Heading Readout撤去。
+            # point_headings.generate()はFamily X新構造からは一切呼ばれない
+            # (定数FAMILY_X_ROLE_STYLE_EN["HEADING_READOUT"]自体は削除せず
+            # 未使用のまま残置、他Family[point_one_heading等]は無影響)。
+            self.assertEqual(heading_mock.call_args_list, [])
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
@@ -109,8 +110,8 @@ class A2RoleStyleFlashLiteTests(unittest.TestCase):
     def _make_a2_dir(self, tmpdir):
         parts = {
             "title": "Sample Title", "title_tts": "Sample Title",
-            "part1": "Part one text.", "heading1": "Heading One.", "body2": "Body two text.",
-            "heading2": "Heading Two.", "body3": "Body three text.", "in_one_line": "In one line text.",
+            "part1": "Part one text.", "part2": "Body two text.", "heading1": "Heading One.", "body2": "Body two text.",
+            "part3": "Body three text.", "heading2": "Heading Two.", "body3": "Body three text.", "in_one_line": "In one line text.",
         }
         support = {"preview": "プレビュー。", "comment_1": "コメント1。", "comment_2": "コメント2。",
                    "comment_3": "コメント3。", "comment_4": "コメント4。"}
@@ -239,7 +240,8 @@ class KeyPhraseBackendPropagationTests(unittest.TestCase):
         tmpdir = tempfile.mkdtemp(prefix="family_x_kp_shared_narration_")
         try:
             os.makedirs(os.path.join(tmpdir, "b1b"), exist_ok=True)
-            parts = {"title": "T", "part1": "P1.", "heading1": "H1.", "body2": "B2.",
+            parts = {"title": "T", "part1": "P1.", "part2": "B2.", "part3": "B3.",
+                     "heading1": "H1.", "body2": "B2.",
                      "heading2": "H2.", "body3": "B3.", "in_one_line": "IOL."}
             support = {"preview": "Pv.", "comment_1": "C1.", "comment_2": "C2.",
                        "comment_3": "C3.", "comment_4": "C4."}

@@ -573,3 +573,47 @@ Guardrail遵守確認(W3):
 - point_explanation(JA)はstyle override機構自体が`generate_charon_
   japanese`に無いため、Champion style文言はcache hit経路でのみ実際の
   音声と対応する(既知の限界、Opus L2論点としてREPORT §W2に記録)。
+
+### 9-W1 Phase B(W1、2026-09-29)実施結果の要約
+
+新記事構造(途中Heading廃止・忠実英訳・段落境界3分割・Comment1〜4・
+Heading Readout撤去)をFamily X Production経路(`er012_e_family_
+entertainment_two_level_runner_01.run_writer_stage()`+`er019_family_x_
+audio_production_runner_01.py`)へ配線した。詳細は`FAMILY-X-REFRESH-E2E-
+PRODUCTION-WIRING-01_REPORT.md` §W1参照(変更ファイル・Prompt sha256・
+split一致証拠・JA入力検証表・テスト結果・Opus L2論点)。
+
+§3(a)からの主な実装判断:
+- `er003_v1_n3_01_advanced_adaptation_generate.py`/`er003_v1_n3_01_
+  standard_a2_generate.py`ともに、既存`ADVANCED_*`/`STANDARD_A2_*`
+  Prompt・生成関数は一切変更せず、Family X専用の新Prompt定数・新生成
+  関数(`generate_family_x_faithful_translation`/`generate_family_x_
+  standard_a2_no_heading`)を追加する設計を採用した(§3(f)の想定どおり)。
+- h3構造Gate(`vfl01.run_writer_with_technical_retry`、Family A本体・
+  News等が共有)には一切触れず、Family X専用の独立retryループを新設した
+  (§6のOpen items「h3 validator置換」を、共有primitive変更ではなく
+  新規追加で解消)。
+- `split_family_x_article_text_v2()`は`er003_v1_n3_01_scaffold_
+  generate.py`(Writer stage用)と`er019_family_x_audio_plan_01.py`
+  (Audio用、scaffold実装への薄いwrapper)の両方に配置し、単一の
+  アルゴリズム実装(scaffold側)を共有する設計とした。
+- §3(a)で未確認事項だったStandard(A2)生成の入力元は、`std_gen.
+  generate_standard_a2(advanced_text)`(Advanced英訳結果を入力とする)
+  であることをコード読解で確認した(STOP候補ではなかった)。
+- §6のSTOP候補1(JA入力の一意特定)は、er039 AN3-T0セル(er037/er039
+  経由、Trial-02で既に生成済み)が機械検証条件をすべて満たしたため解消
+  した(REPORT §W1のJA入力検証表参照、STOPに至らなかった)。
+- §6のSTOP候補2(Advanced KP解説のAssembly順序)は本W1のスコープ外
+  (次Phaseへ持ち越し、未解消のまま)。
+- Standard(A2)の見出し廃止Promptはer045等で未検証の新規文言であり、
+  Opus L2レビュー対象として明記した(REPORT §W1)。
+
+Guardrail遵守確認(W1):
+- API支出: ¥0(LLM/TTS/ASR呼び出し0件、単体テストは全てmock)。
+- 削除・移動・`rm`・`git clean`・stash/rebase/reset/amend/force push:
+  実施なし。
+- E2E入力配置(`er019_output/family_x_refresh_e2e_01/{hormuz,meta}/
+  input/`)は既存`er039_output`のコピーのみ(元ファイル不変)。
+- W2/W3で入れた`SHELL_CHAMPION_*`・`FAMILY_X_VARIABLE_ROLE_STYLE_
+  VERSION`・style_prefix evidence: 一切編集していない(`git diff --stat
+  HEAD -- "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み)。

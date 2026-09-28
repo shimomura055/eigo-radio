@@ -152,16 +152,14 @@ def derive_japanese_title(source_dir: str) -> dict:
 def build_segment_plan(level: str, parts: dict, support: dict | None = None) -> dict:
     """level="b1b"|"a2"。supportがNone(scaffold未実行)の場合、Comment/
     Previewのtextはplan上「(未生成)」として扱う(dry-runでも実行可能)。"""
-    order = plan.FAMILY_X_B1_SEGMENT_ORDER if level == "b1b" else plan.FAMILY_X_A2_SEGMENT_ORDER
-    # Stage 3c: 本文2/3は見出しsub-segment(full_story_part2_heading/
-    # full_story_part3_heading、常に英語)+本文のみ(body2/body3、見出し
-    # 文を含まない)に分離済み(語の二重計上を避けるため、combined part2/
-    # part3ではなくheading/bodyを個別に使う)。
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): Heading Readout撤去後の
+    # 新構造(v2 segment順序、見出しsub-segmentなし)。旧FAMILY_X_B1_
+    # SEGMENT_ORDER/FAMILY_X_A2_SEGMENT_ORDER(heading込み)は無変更のまま
+    # 残す(本関数からは呼ばない)。
+    order = plan.FAMILY_X_B1_SEGMENT_ORDER_V2 if level == "b1b" else plan.FAMILY_X_A2_SEGMENT_ORDER_V2
     text_by_segment_id = {
-        "full_story_part1": parts["part1"],
-        "full_story_part2_heading": parts["heading1"], "full_story_part2": parts["body2"],
-        "full_story_part3_heading": parts["heading2"], "full_story_part3": parts["body3"],
-        "in_one_line": parts["in_one_line"],
+        "full_story_part1": parts["part1"], "full_story_part2": parts["part2"],
+        "full_story_part3": parts["part3"], "in_one_line": parts["in_one_line"],
     }
     if support:
         for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -208,9 +206,14 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str]) -> dict:
             continue
         article_text = load_text(article_path)
         try:
-            parts = plan.split_family_x_article_text(article_text)
+            parts = plan.split_family_x_article_text_v2(article_text)
         except RuntimeError as e:
             result[level] = {"status": "SPLIT_FAILED", "error": str(e), "article_path": article_path}
+            continue
+        if parts.get("status") != "OK":
+            result[level] = {"status": "SPLIT_FAILED",
+                              "error": f"paragraph_count={parts.get('paragraph_count')}<3(TOO_FEW_PARAGRAPHS)",
+                              "article_path": article_path}
             continue
 
         support_path = f"{out_dir}/{level}/b1_support_texts.json" if level == "b1b" \
@@ -253,7 +256,7 @@ def run_family_x_b1_scaffold(client, parts: dict, out_dir: str) -> dict:
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] B1 Preview生成開始({out_dir})...")
     preview_prompt_role = b1s.PREVIEW_ROLE.format(
         comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
-    article_text = plan.reconstruct_family_x_article_text(parts)
+    article_text = plan.reconstruct_family_x_article_text_v2(parts)
     preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
     preview = b1s.run_support_text(client, preview_prompt_role, preview_context, model=_b1_support_model())
 
@@ -286,7 +289,7 @@ def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Preview生成開始({out_dir})...")
     preview_prompt_role = a2gen.PREVIEW_ROLE.format(
         comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
-    article_text = plan.reconstruct_family_x_article_text(parts)
+    article_text = plan.reconstruct_family_x_article_text_v2(parts)
     preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
     preview = a2gen.run_support_text(client, preview_prompt_role, preview_context, model=_a2_support_model())
 
@@ -315,7 +318,14 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
     for level in levels:
         article_path = f"{source_dir}/{level}/article.md"
         article_text = load_text(article_path)
-        parts = plan.split_family_x_article_text(article_text)
+        parts = plan.split_family_x_article_text_v2(article_text)
+        if parts.get("status") != "OK":
+            raise RuntimeError(
+                f"[STOP] Family X audio scaffold: {article_path}のparagraph_count="
+                f"{parts.get('paragraph_count')}<3のため3分割できません(TOO_FEW_PARAGRAPHS)。"
+                "Writer stageのparagraph retryが既に使用済みのはずのため、本文を手で直さず"
+                "STOPします。"
+            )
         level_out_dir = f"{out_dir}/{level}"
         save_json(f"{level_out_dir}/parts.json", parts)
 
@@ -574,8 +584,15 @@ def generate_family_x_b1_segments(
                 expected_text=text)
         results[name]["canonical_text"] = text
 
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
+    # Readout撤去(旧Stage 3cのfull_story_part2_heading/full_story_part3_
+    # headingサブsegment生成を削除)。新構造は本文が段落境界で決定論的に
+    # part1/part2/part3へ3分割済み(見出し文が存在しない)ため、本文3
+    # segmentすべてを同一loop・同一TTS呼び出し(news_tail_fix.generate_
+    # news_narration_wide_margin、既存関数無変更)で生成する。
     for name, text in (
-        ("full_story_part1", parts["part1"]), ("in_one_line", parts["in_one_line"]),
+        ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
+        ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
     ):
         with cl.segment_context(name):
             results[name] = _generate_or_reuse(
@@ -593,41 +610,6 @@ def generate_family_x_b1_segments(
                     style_prefix_override=_role_style("IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"),
                     tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
-
-    # Stage 3c: 本文2/3は見出しsub-segment(独立TTS呼び出し、Family A
-    # point_one_heading/point_two_headingと同じ機構[point_headings.
-    # generate()、Aoede]を再利用)+本文(見出しを含まないbody2/body3)へ
-    # 分離する(見出し文と本文冒頭の反復をrepetition QA/ASRが誤検知した
-    # Stage 3b STOPへの対応、詳細はer019_family_x_audio_plan_01.py DESIGN NOTE参照)。
-    for body_name, heading_text, body_text in (
-        ("full_story_part2", parts["heading1"], parts["body2"]),
-        ("full_story_part3", parts["heading2"], parts["body3"]),
-    ):
-        heading_name = f"{body_name}_heading"
-        with cl.segment_context(heading_name):
-            results[heading_name] = _generate_or_reuse(
-                _cached, heading_name, f"{narration_dir}/{heading_name}.wav",
-                lambda heading_text=heading_text, heading_name=heading_name: point_headings.generate(
-                    n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(heading_text)),
-                    f"{narration_dir}/{heading_name}.wav",
-                    style_prefix_override=_role_style("HEADING_READOUT"),
-                    tts_backend=tts_backend), expected_text=heading_text)
-        results[heading_name]["canonical_text"] = heading_text
-
-        with cl.segment_context(body_name):
-            results[body_name] = _generate_or_reuse(
-                _cached, body_name, f"{narration_dir}/{body_name}.wav",
-                lambda body_text=body_text, body_name=body_name: news_tail_fix.generate_news_narration_wide_margin(
-                    n3_tts.tts_safe_news_en(body_text), f"{narration_dir}/{body_name}.wav",
-                    disfluency_qa=False,
-                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
-                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES),
-                    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
-                    # VALIDATOR-PUNCT-01(OPEN-198是正): Family X runnerのみ。
-                    enable_pronunciation_resolver=True,
-                    style_prefix_override=_role_style("FULL_STORY"),
-                    tts_backend=tts_backend), expected_text=body_text)
-        results[body_name]["canonical_text"] = body_text
 
     kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend) if kp is not None else {}
@@ -819,8 +801,15 @@ def generate_family_x_a2_segments(
                     style_prefix_override=_role_style_ja(),
                     tts_backend=tts_backend), expected_text=text)
 
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
+    # Readout撤去(旧Stage 3cのfull_story_part2_heading/full_story_part3_
+    # headingサブsegment生成を削除)。新構造は本文が段落境界で決定論的に
+    # part1/part2/part3へ3分割済みのため、本文3segmentすべてを同一loop・
+    # 同一TTS呼び出し(n3_tts.generate_a2_segment_with_slowdown、既存関数
+    # 無変更・6%減速)で生成する。
     for name, text in (
-        ("full_story_part1", parts["part1"]), ("in_one_line", parts["in_one_line"]),
+        ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
+        ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
     ):
         tts_input = n3_tts.tts_safe_news_en(text)
         sub = n3_tts.first_words(text)
@@ -835,42 +824,6 @@ def generate_family_x_a2_segments(
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     enable_repetition_qa=(name in _BODY_SEGMENT_NAMES), tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
-
-    # Stage 3c: 本文2/3見出しsub-segment(A2はFamily A A2のpoint_one_heading
-    # と同一関数[n3_tts.generate_a2_segment_with_slowdown、6%減速]を再利用)。
-    for body_name, heading_text, body_text in (
-        ("full_story_part2", parts["heading1"], parts["body2"]),
-        ("full_story_part3", parts["heading2"], parts["body3"]),
-    ):
-        heading_name = f"{body_name}_heading"
-        heading_tts_input = n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(heading_text))
-        with cl.segment_context(heading_name):
-            results[heading_name] = _generate_or_reuse(
-                _cached, heading_name, f"{narration_dir}/{heading_name}.wav",
-                lambda heading_tts_input=heading_tts_input, heading_text=heading_text,
-                heading_name=heading_name: n3_tts.generate_a2_segment_with_slowdown(
-                    heading_tts_input, f"{narration_dir}/{heading_name}.wav", n3_tts.first_words(heading_text, 3),
-                    max_extra_chars=20,
-                    style_prefix_override=(_role_style_slower("HEADING_READOUT")
-                                            or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
-                    disfluency_qa=True, tts_backend=tts_backend), expected_text=heading_text)
-        results[heading_name]["canonical_text"] = heading_text
-
-        body_tts_input = n3_tts.tts_safe_news_en(body_text)
-        body_sub = n3_tts.first_words(body_text)
-        with cl.segment_context(body_name):
-            results[body_name] = _generate_or_reuse(
-                _cached, body_name, f"{narration_dir}/{body_name}.wav",
-                lambda body_tts_input=body_tts_input, body_sub=body_sub,
-                body_name=body_name: n3_tts.generate_a2_segment_with_slowdown(
-                    body_tts_input, f"{narration_dir}/{body_name}.wav", body_sub,
-                    style_prefix_override=(_role_style_slower("FULL_STORY")
-                                            or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
-                    disfluency_qa=False,
-                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
-                    enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES),
-                    tts_backend=tts_backend), expected_text=body_text)
-        results[body_name]["canonical_text"] = body_text
 
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend) if kp is not None else {}
@@ -985,8 +938,7 @@ def load_family_x_b1_sources(theme_out_dir: str, source_dir: str | None = None) 
     narration["topic_intro"] = mono
 
     b1_segments = {}
-    for name in ("full_story_part1", "full_story_part2_heading", "full_story_part2",
-                  "full_story_part3_heading", "full_story_part3",
+    for name in ("full_story_part1", "full_story_part2", "full_story_part3",
                   "comment_1", "comment_2", "comment_3", "comment_4", "preview", "in_one_line"):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
         assert sr == common.SAMPLE_RATE
@@ -1104,14 +1056,10 @@ def build_family_x_b1_timeline(parts: dict) -> list:
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 2 (Charon)", b1["comment_2"]),
         ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
-        ("Full Story Part 2 Heading (Aoede)", b1["full_story_part2_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
         ("Full Story Part 2 (Aoede)", b1["full_story_part2"]),
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 3 (Charon, Bridge to Part 3)", b1["comment_3"]),
         ("pause_0.8", p9a.silence_stereo(asm.CHARON_TO_AOEDE_PAUSE_SECONDS)),
-        ("Full Story Part 3 Heading (Aoede)", b1["full_story_part3_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(asm.HEADING_TO_BODY_PAUSE_SECONDS_B1)),
         ("Full Story Part 3 (Aoede)", b1["full_story_part3"]),
         ("pause_1.0", p9a.silence_stereo(asm.AOEDE_TO_CHARON_PAUSE_SECONDS)),
         ("Comment 4 (Charon)", b1["comment_4"]),
@@ -1212,8 +1160,8 @@ def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) 
 
     a2_segments = {}
     for name in ("comment_1", "comment_2", "comment_3", "comment_4",
-                  "full_story_part1", "full_story_part2_heading", "full_story_part2",
-                  "full_story_part3_heading", "full_story_part3", "in_one_line"):
+                  "full_story_part1", "full_story_part2",
+                  "full_story_part3", "in_one_line"):
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/{name}.wav")
         assert sr == common.SAMPLE_RATE
         a2_segments[name] = mono
@@ -1314,14 +1262,10 @@ def build_family_x_a2_timeline(parts: dict) -> list:
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 2", a2["comment_2"]),
         ("pause_0.8_ja_to_en", p9a.silence_stereo(0.8)),
-        ("Full Story Part 2 Heading", a2["full_story_part2_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(crosslevel_common.POINT_EXPLANATION_PAUSE_SECONDS)),
         ("Full Story Part 2", a2["full_story_part2"]),
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 3", a2["comment_3"]),
         ("pause_0.8_ja_to_en", p9a.silence_stereo(0.8)),
-        ("Full Story Part 3 Heading", a2["full_story_part3_heading"]),
-        ("pause_0.7_heading_to_body", p9a.silence_stereo(crosslevel_common.POINT_EXPLANATION_PAUSE_SECONDS)),
         ("Full Story Part 3", a2["full_story_part3"]),
         ("pause_1.0_en_to_ja", p9a.silence_stereo(1.0)),
         ("Comment 4", a2["comment_4"]),
@@ -1493,18 +1437,12 @@ def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narra
         if label.startswith(f"Comment {i}"):
             return {"text": support[f"comment_{i}"], "voice": voice,
                     "audio": f"{narration_dir}/comment_{i}.wav", "sfx": False}
-    # Stage 3c見出しsub-segment(本文行より先に判定する。"Full Story Part 2
-    # Heading (Aoede)"はstartswithで"Full Story Part 2"にも一致するため、
-    # 見出し用ラベルを先にチェックしないと誤って本文行と判定されてしまう)。
-    for i in (2, 3):
-        if label.startswith(f"Full Story Part {i} Heading"):
-            heading_key = "heading1" if i == 2 else "heading2"
-            return {"text": parts[heading_key], "voice": voice,
-                    "audio": f"{narration_dir}/full_story_part{i}_heading.wav", "sfx": False}
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): Heading Readout撤去後は
+    # "Full Story Part N Heading"ラベル自体がv2 segment順序に存在しない
+    # ため、本文3つ(part1/part2/part3)のみを判定すればよい。
     for i in (1, 2, 3):
         if label.startswith(f"Full Story Part {i}"):
-            body_key = f"part{i}" if i == 1 else f"body{i}"
-            return {"text": parts[body_key], "voice": voice,
+            return {"text": parts[f"part{i}"], "voice": voice,
                     "audio": f"{narration_dir}/full_story_part{i}.wav", "sfx": False}
     if label.startswith("In One Line"):
         return {"text": parts["in_one_line"], "voice": voice,

@@ -300,21 +300,17 @@ class BuildSegmentPlanTests(unittest.TestCase):
             if row["segment_id"] in ("comment_1", "comment_2", "comment_3", "comment_4"):
                 self.assertEqual(row["resolved_narrative_role"], "COMMENT")
 
-    def test_plan_heading_sub_segments_use_heading_text_and_english_estimate(self):
-        """Stage 3c: 見出しsub-segmentのtextはheading1/heading2(見出しのみ、
-        本文を含まない)であり、A2でも(日本語ではなく)英語CPMで見積もること。"""
+    def test_plan_has_no_heading_sub_segments(self):
+        """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): Heading Readout
+        撤去後、build_segment_plan()(v2 segment順序)はfull_story_part2_
+        heading/full_story_part3_heading segmentを一切生成しないこと。"""
         for level in ("a2", "b1b"):
             result = runner.build_segment_plan(level, self.parts, support=None)
-            by_id = {r["segment_id"]: r for r in result["segments"] if r["segment_id"]}
-            self.assertEqual(by_id["full_story_part2_heading"]["plan_role"], "HEADING_READOUT")
-            self.assertTrue(by_id["full_story_part2_heading"]["text_available"])
-            self.assertIn("estimated_seconds", by_id["full_story_part2_heading"])
-            self.assertGreater(by_id["full_story_part2_heading"]["estimated_seconds"], 0.0)
-            # full_story_part2本文の見積り(body2のみ)は、heading+body合算の
-            # part2見積りより短い(見出し語が二重計上されていないことの間接確認)。
-            body_seconds = by_id["full_story_part2"]["estimated_seconds"]
-            combined_seconds = plan.estimate_seconds_english(self.parts["part2"])
-            self.assertLess(body_seconds, combined_seconds)
+            segment_ids = {r["segment_id"] for r in result["segments"] if r["segment_id"]}
+            self.assertNotIn("full_story_part2_heading", segment_ids)
+            self.assertNotIn("full_story_part3_heading", segment_ids)
+            self.assertIn("full_story_part2", segment_ids)
+            self.assertIn("full_story_part3", segment_ids)
 
 
 class DryRunEndToEndTests(unittest.TestCase):
@@ -371,9 +367,11 @@ class DryRunEndToEndTests(unittest.TestCase):
             self.assertTrue(seg_plan["no_point_structure"])
             self.assertTrue(seg_plan["no_new_sfx_after_body_start"])
             segment_ids = [r["segment_id"] for r in seg_plan["segments"] if r["segment_id"]]
+            self.assertIn("full_story_part2", segment_ids)
             self.assertIn("full_story_part3", segment_ids)
-            self.assertIn("full_story_part2_heading", segment_ids)
-            self.assertIn("full_story_part3_heading", segment_ids)
+            # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): Heading Readout撤去。
+            self.assertNotIn("full_story_part2_heading", segment_ids)
+            self.assertNotIn("full_story_part3_heading", segment_ids)
             self.assertNotIn("point_one", segment_ids)
             self.assertNotIn("point_two", segment_ids)
 

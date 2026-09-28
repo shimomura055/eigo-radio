@@ -480,6 +480,134 @@ def generate_standard_a2(advanced_text: str, *, client=None, model: str | None =
     )
 
 
+# ============================================================
+# Family X 新記事構造(Heading廃止、FAMILY-X-REFRESH-E2E-PRODUCTION-
+# WIRING-01 W1、2026-09-29、ユーザー正式決定APPROVED_FOR_PRODUCTION)。
+#
+# 上のSTANDARD_A2_PROMPT_V5/generate_standard_a2()は一切変更しない
+# (既存呼び出し元は無し[OPEN-177(1)、本モジュールは元々未接続]だが、
+# Trial互換のため定数・関数自体は保持する)。
+#
+# 重要(Opus L2レビュー対象、README的注記): STANDARD_A2_PROMPT_V5と異なり、
+# 本セクションのPromptはer045等のText-only Trialで一度も検証されて
+# いない(er045はAdvanced/CEFR-B1レベルの忠実英訳のみを検証した)。
+# 見出し依存部分([Format]内の「Keep the same Markdown structure(...
+# the two "### " sections...)」と、独立行のSTANDARD_A2_SECTION_PRESERVE_
+# SENTENCE)を、Family X Advanced忠実英訳Prompt(FAMILY_X_FAITHFUL_
+# TRANSLATION_INSTRUCTION、ユーザー承認済み文言)から流用した「段落を
+# 保持する」指示文へ機械的に置換したのみで、CEFR A2簡略化ルール本文
+# (STANDARD_A2_NEW_VOCAB_BLOCK含む)は一字も変更していない。この置換
+# 文言自体はTrialで実測検証されていないため、E2E実行結果を見てから
+# Fable/ユーザーが内容を確認することを推奨する。
+# ============================================================
+FAMILY_X_STANDARD_A2_NO_HEADING_PRESERVE_SENTENCE = (
+    "Do not add section headings, subheadings, or any Markdown heading "
+    "markup (\"#\", \"##\", \"###\") inside the body. Keep the same "
+    "paragraph structure and order as the article below: do not merge, "
+    "split, or reorder paragraphs."
+)
+
+FAMILY_X_STANDARD_A2_NO_HEADING_PROMPT = ("""Rewrite this entire article for CEFR A2 learners.
+Simplify the English, not the story.
+
+Rebuild the sentences. Do not just replace difficult words. Write every sentence again using simpler grammar and shorter structures.
+Aim for an average sentence length of about 9–11 words across the whole article. Some sentences may be longer or shorter; do not force every sentence to the same length.
+Use mostly one main idea per sentence. Split long clauses. Do not pack a cause, an extra detail, an exception, and a result into one sentence.
+""" + STANDARD_A2_NEW_VOCAB_BLOCK + """
+
+Preserve the same story structure, the same interesting angle, the same surprise in the same place, the important metaphor or storytelling device, the same order of information, the same selection of facts, and the same ending logic.
+Do not turn the article into a summary.
+Do not remove an entertaining detail only because it is harder to express. Say it in simpler English instead.
+Do not add new facts, new explanations, or new general observations.
+Keep every fact exactly as it is: names, numbers, who did what, cause and effect, the order of events, negations, limitations, and words of scope such as "some" or "all".
+
+The result must still sound natural when read aloud. Do not write like a children's book, and do not write a flat list of short sentences.
+
+Keep the same Markdown structure (the "# " title, and the final "## In one line" section); do not add or remove sections.
+""" + FAMILY_X_STANDARD_A2_NO_HEADING_PRESERVE_SENTENCE + """
+
+Output only the English title and the English body.
+
+[Article]
+{advanced_article}""")
+
+
+def build_family_x_no_heading_prompt(advanced_article: str, must_fix: list | None = None) -> str:
+    prompt = FAMILY_X_STANDARD_A2_NO_HEADING_PROMPT.format(advanced_article=advanced_article)
+    if must_fix:
+        prompt += "\n\n" + build_must_fix_block(must_fix)
+    return prompt
+
+
+def generate_family_x_standard_a2_no_heading(advanced_text: str, *, client=None, model: str | None = None,
+                                              max_attempts: int = 2,
+                                              must_fix: list | None = None) -> StandardA2Result:
+    """Family X新構造(見出し廃止)のStandard(A2)版を生成する。既存
+    generate_standard_a2()/vfl01.run_writer_with_technical_retry()(h3
+    構造Gate専用)は使わない。vfl01.run_writer_no_search()を直接呼び、
+    Title+Body形式のパース可否のみをGateにしたretryを独自実装する(h3
+    非依存、既存generate_standard_a2()には一切影響しない)。"""
+    if client is None:
+        client = vfl01.get_client()
+    requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
+    prompt = build_family_x_no_heading_prompt(advanced_text, must_fix=must_fix)
+    price_fn = _load_pricing()
+
+    t0 = time.time()
+    attempts_detail = []
+    parsed_title = None
+    result = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            result = vfl01.run_writer_no_search(client, prompt, model=requested_model,
+                                                 developer=STANDARD_A2_DEVELOPER)
+        except Exception as e:
+            attempts_detail.append({"attempt": attempt, "status": "TECHNICAL_FAILED",
+                                     "error": f"{type(e).__name__}: {e}"})
+            if attempt < max_attempts:
+                time.sleep(2)
+                continue
+            raise RuntimeError(
+                f"[FAMILY_X_STANDARD_A2_NO_HEADING] {max_attempts}回試行しても生成に"
+                f"失敗しました: attempts={attempts_detail}")
+        title, _ = strip_title(result["raw_text"])
+        status = "STRUCTURE_PASS" if title else "STRUCTURE_INVALID"
+        attempts_detail.append({
+            "attempt": attempt, "status": status, "model": result["model"],
+            "response_id": result["response_id"], "raw_text": result["raw_text"],
+        })
+        if title:
+            parsed_title = title
+            break
+        if attempt < max_attempts:
+            continue
+        raise RuntimeError(
+            f"[FAMILY_X_STANDARD_A2_NO_HEADING] {max_attempts}回試行してもTitle行を"
+            f"検出できませんでした(先頭200字): {result['raw_text'][:200]!r}")
+    elapsed = round(time.time() - t0, 3)
+
+    text = result["raw_text"]
+    model_actual = result["model"]
+    response_id = result["response_id"]
+    attempts_count = len(attempts_detail)
+    retried = attempts_count > 1
+    fallback_detected = (model_actual != requested_model)
+
+    usage_dict = result.get("usage") or {}
+    cost_usd, cost_jpy = _compute_cost_jpy(
+        price_fn, model_actual, usage_dict.get("input_tokens") or 0,
+        usage_dict.get("cached_input_tokens") or 0, usage_dict.get("output_tokens") or 0)
+
+    checks = run_checks(advanced_text, text)
+
+    return StandardA2Result(
+        text=text, model_id_actual=model_actual, model_id_requested=requested_model,
+        response_id=response_id, usage=usage_dict, cost_usd=cost_usd, cost_jpy=cost_jpy,
+        attempts=attempts_count, retried=retried, fallback_detected=fallback_detected,
+        elapsed_seconds=elapsed, structure_status="STRUCTURE_PASS", checks=checks,
+    )
+
+
 # ------------------------------------------------------------
 # CLI
 # ------------------------------------------------------------

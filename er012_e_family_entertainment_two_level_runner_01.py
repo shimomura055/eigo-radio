@@ -290,10 +290,55 @@ def _must_fix_from_deviations(major_devs: list) -> list:
     ]
 
 
+def _family_x_ensure_split_or_paragraph_retry(article_text: str, regen_fn, label: str) -> dict:
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): sc.split_family_x_
+    article_text_v2()がTOO_FEW_PARAGRAPHSを返した場合のみ、regen_fn()
+    (段落保持を強調したmust-fixで1回だけ再生成するゼロ引数callable、
+    新しいarticle_textを返す)を1回だけ実行し、それでも3分割不能なら
+    RuntimeError(STOP)にする。既存Deviation Check→MAJOR時must-fix retry
+    (1回のみ)とは完全に独立したretry軸(段落数と事実整合性は別問題)。
+    Standard/Advancedの両方から同一ロジックで呼ぶことで非対称にしない
+    (設計書§3(b))。"""
+    split_result = sc.split_family_x_article_text_v2(article_text)
+    if split_result["status"] == "OK":
+        return {"article_text": article_text, "split": split_result, "paragraph_retried": False}
+    print(f"[E-FAMILY-RUNNER] {label}: paragraph_count={split_result.get('paragraph_count')}<3。"
+          "段落保持を強調したmust-fixで1回だけ再生成します...")
+    new_article_text = regen_fn()
+    split_result2 = sc.split_family_x_article_text_v2(new_article_text)
+    if split_result2["status"] != "OK":
+        raise RuntimeError(
+            f"[STOP] Family X {label}: 段落保持retry後もparagraph_count="
+            f"{split_result2.get('paragraph_count')}<3のため3分割できません。"
+            "本文を手で直さずSTOPします(設計書§3(b)のcontingency、E2Eで顕在化)。"
+        )
+    return {"article_text": new_article_text, "split": split_result2, "paragraph_retried": True}
+
+
+_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX = [{
+    "fact_id": "", "claim_in_article": "",
+    "issue": "PARAGRAPH_COUNT_TOO_FEW",
+    "explanation": (
+        "The previous version merged or reordered paragraphs, leaving fewer than "
+        "three paragraphs (the story must be split into three audio parts by "
+        "paragraph boundary). Keep the same paragraph structure and order as the "
+        "Japanese article; do not merge paragraphs together."
+    ),
+}]
+
+
 def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
                       budget_jpy: float, only: str | None = None) -> dict:
     """only: None(両方)/"advanced"/"standard"(delegation D4の
-    --regenerate-stage相当。同じ生成関数をそのまま再呼び出しする)。"""
+    --regenerate-stage相当。同じ生成関数をそのまま再呼び出しする)。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29、ユーザー
+    正式決定APPROVED_FOR_PRODUCTION): 途中Heading(###×2)を廃止し、忠実
+    英訳(er045_family_x_no_heading_segmentation_trial_01のProduction化)
+    +決定論的3分割(sc.split_family_x_article_text_v2())へ切替えた。旧
+    `adv_gen.generate_advanced_adaptation()`/`std_gen.generate_standard_
+    a2()`/`sc.split_article_text()`(h3見出し2つ前提)は本経路では一切
+    呼ばない(関数自体は無変更のまま残置、Trial互換のため)。"""
     out_dir = theme["out_dir"]
     b1b_dir = f"{out_dir}/b1b"
     a2_dir = f"{out_dir}/a2"
@@ -302,9 +347,27 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
     evidence = {}
 
     if only in (None, "advanced"):
-        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced(Natural English Adaptation)生成開始...")
-        adv_result = adv_gen.generate_advanced_adaptation(ja_text, client=client)
-        advanced_text = adv_result.text
+        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced(Family X忠実英訳)生成開始...")
+        adv_result = adv_gen.generate_family_x_faithful_translation(ja_text, client=client)
+        advanced_title, advanced_body = adv_result.title, adv_result.body
+
+        def _advanced_paragraph_retry_regen(client=client, ja_text=ja_text):
+            retry_result = adv_gen.generate_family_x_faithful_translation(
+                ja_text, client=client, must_fix=_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)
+            nonlocal adv_result, advanced_title, advanced_body
+            adv_result = retry_result
+            advanced_title, advanced_body = retry_result.title, retry_result.body
+            iol = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+            return f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol['text']}"
+
+        iol_result = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+        advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
+        para_outcome = _family_x_ensure_split_or_paragraph_retry(
+            advanced_text, _advanced_paragraph_retry_regen, "Advanced")
+        advanced_text = para_outcome["article_text"]
+        advanced_split = para_outcome["split"]
+        paragraph_retried_advanced = para_outcome["paragraph_retried"]
+
         print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation check開始...")
         deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
                                                include_related_fact_id=True, source_article_text=ja_text)
@@ -327,8 +390,18 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             must_fix_used = _must_fix_from_deviations(major_devs)
             print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJOR。"
                   f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
-            adv_result = adv_gen.generate_advanced_adaptation(ja_text, client=client, must_fix=must_fix_used)
-            advanced_text = adv_result.text
+            adv_result = adv_gen.generate_family_x_faithful_translation(
+                ja_text, client=client, must_fix=must_fix_used)
+            advanced_title, advanced_body = adv_result.title, adv_result.body
+            iol_result = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+            advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
+            advanced_split = sc.split_family_x_article_text_v2(advanced_text)
+            if advanced_split["status"] != "OK":
+                raise RuntimeError(
+                    f"[STOP] Family X Advanced: deviation must-fix retry後にparagraph_count="
+                    f"{advanced_split.get('paragraph_count')}<3になりました。段落数retryは既に"
+                    "使用済みのため、これ以上自動再生成せずSTOPします。"
+                )
             deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
                                                    include_related_fact_id=True, source_article_text=ja_text,
                                                    prior_issues=must_fix_used)
@@ -348,10 +421,10 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
                     f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
                 )
         save_text(f"{b1b_dir}/article.md", advanced_text)
-        save_json(f"{b1b_dir}/parts.json", sc.split_article_text(advanced_text))
+        save_json(f"{b1b_dir}/parts.json", advanced_split)
         save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
         evidence["advanced"] = {
-            "process_label": adv_gen.PROCESS_LABEL,
+            "process_label": "FAMILY_X_FAITHFUL_TRANSLATION",
             "model_id_requested": adv_result.model_id_requested,
             "model_id_actual": adv_result.model_id_actual,
             "fallback_detected": adv_result.fallback_detected,
@@ -360,22 +433,37 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             "attempts": adv_result.attempts,
             "retried": adv_result.retried,
             "retried_for_deviation": retried_for_deviation,
+            "paragraph_retried": paragraph_retried_advanced,
             "must_fix_used": must_fix_used,
             "deviation_overall_status": dev_status,
             "usage": adv_result.usage,
             "cost_usd": adv_result.cost_usd,
             "cost_jpy": adv_result.cost_jpy,
             "elapsed_seconds": adv_result.elapsed_seconds,
-            "title": _extract_title(advanced_text),
+            "title": advanced_title,
         }
         assert_budget_ok(out_dir, budget_jpy, "after advanced writer+deviation")
 
     if only in (None, "standard"):
         if only == "standard":
             advanced_text = load_text(f"{b1b_dir}/article.md")
-        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard(A2 v5)生成開始...")
-        std_result = std_gen.generate_standard_a2(advanced_text, client=client)
+        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard(Family X見出し廃止A2)生成開始...")
+        std_result = std_gen.generate_family_x_standard_a2_no_heading(advanced_text, client=client)
         standard_text = std_result.text
+
+        def _standard_paragraph_retry_regen(client=client, advanced_text=advanced_text):
+            retry_result = std_gen.generate_family_x_standard_a2_no_heading(
+                advanced_text, client=client, must_fix=_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)
+            nonlocal std_result
+            std_result = retry_result
+            return retry_result.text
+
+        para_outcome = _family_x_ensure_split_or_paragraph_retry(
+            standard_text, _standard_paragraph_retry_regen, "Standard")
+        standard_text = para_outcome["article_text"]
+        standard_split = para_outcome["split"]
+        paragraph_retried_standard = para_outcome["paragraph_retried"]
+
         print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation check開始...")
         deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
                                                include_related_fact_id=True, source_article_text=ja_text)
@@ -398,8 +486,16 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             must_fix_used = _must_fix_from_deviations(major_devs)
             print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation MAJOR。"
                   f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
-            std_result = std_gen.generate_standard_a2(advanced_text, client=client, must_fix=must_fix_used)
+            std_result = std_gen.generate_family_x_standard_a2_no_heading(
+                advanced_text, client=client, must_fix=must_fix_used)
             standard_text = std_result.text
+            standard_split = sc.split_family_x_article_text_v2(standard_text)
+            if standard_split["status"] != "OK":
+                raise RuntimeError(
+                    f"[STOP] Family X Standard: deviation must-fix retry後にparagraph_count="
+                    f"{standard_split.get('paragraph_count')}<3になりました。段落数retryは既に"
+                    "使用済みのため、これ以上自動再生成せずSTOPします。"
+                )
             deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
                                                    include_related_fact_id=True, source_article_text=ja_text,
                                                    prior_issues=must_fix_used)
@@ -416,10 +512,10 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
                     f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
                 )
         save_text(f"{a2_dir}/article.md", standard_text)
-        save_json(f"{a2_dir}/parts.json", sc.split_article_text(standard_text))
+        save_json(f"{a2_dir}/parts.json", standard_split)
         save_json(f"{a2_dir}/audit/deviation_check.json", deviation["parsed"])
         evidence["standard"] = {
-            "process_label": std_gen.PROCESS_LABEL,
+            "process_label": "FAMILY_X_STANDARD_A2_NO_HEADING",
             "model_id_requested": std_result.model_id_requested,
             "model_id_actual": std_result.model_id_actual,
             "fallback_detected": std_result.fallback_detected,
@@ -428,6 +524,7 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             "attempts": std_result.attempts,
             "retried": std_result.retried,
             "retried_for_deviation": retried_for_deviation,
+            "paragraph_retried": paragraph_retried_standard,
             "must_fix_used": must_fix_used,
             "deviation_overall_status": dev_status,
             "usage": std_result.usage,
@@ -435,7 +532,7 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
             "cost_jpy": std_result.cost_jpy,
             "elapsed_seconds": std_result.elapsed_seconds,
             "checks": std_result.checks,
-            "title": _extract_title(standard_text),
+            "title": standard_split.get("title"),
         }
         assert_budget_ok(out_dir, budget_jpy, "after standard writer+deviation")
 

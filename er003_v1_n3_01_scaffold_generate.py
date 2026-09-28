@@ -25,6 +25,7 @@
 
 from __future__ import annotations
 
+import itertools
 import json
 import os
 import re
@@ -159,6 +160,86 @@ def split_article_text(text: str) -> dict:
         "point_one_heading": point_one_heading, "point_one_body": point_one_body,
         "point_two_heading": point_two_heading, "point_two_body": point_two_body,
         "in_one_line": in_one_line_text,
+    }
+
+
+# ============================================================
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29、ユーザー正式
+# 決定APPROVED_FOR_PRODUCTION): Family X新記事構造(途中Heading廃止・
+# 忠実英訳・段落境界での決定論的3分割)。上のsplit_article_text()(###
+# 見出し2つ前提、Family A本体はじめ多数のFamilyが現役利用)は一切変更
+# しない。本関数は完全に別名・別実装であり、Family X経路
+# (er012_e_family_entertainment_two_level_runner_01.run_writer_stage())
+# のみが呼び出す(他Familyは無影響)。
+#
+# アルゴリズムはer045_family_x_no_heading_segmentation_trial_01.
+# deterministic_three_way_split()と同一(段落単位、2境界全探索、二乗誤差
+# 最小化)。段落数<3の場合はRuntimeErrorを送出せず
+# status="TOO_FEW_PARAGRAPHS"を返す(retry要否は呼び出し側が判断する。
+# OPEN-228のような無retryクラッシュを新経路では起こさない)。
+# ============================================================
+def _family_x_word_count_en(s: str) -> int:
+    return len(re.findall(r"[A-Za-z']+", s or ""))
+
+
+def split_family_x_article_text_v2(text: str) -> dict:
+    """Family X新構造(# Title -> 本文[段落、見出しなし] ->『## In one
+    line』)を、段落境界のみを使った決定論的アルゴリズムでpart1/2/3へ
+    3分割する。『## In one line』が見つからない場合のみRuntimeError
+    (この構造契約自体は新旧共通)。段落数<3はエラーにせず
+    status="TOO_FEW_PARAGRAPHS"を返す。"""
+    title_match = re.match(r"^#\s+(.+?)\s*\n", text)
+    title = title_match.group(1).strip() if title_match else ""
+    body_start = title_match.end() if title_match else 0
+
+    in_one_line_match = re.search(
+        r"^##\s+In [Oo]ne [Ll]ine[…\.]*\s*\n(.+)", text, flags=re.MULTILINE | re.DOTALL)
+    if not in_one_line_match:
+        raise RuntimeError("[FAMILY-X-SPLIT-V2] 『## In one line』見出しが見つかりません")
+    if title_match and in_one_line_match.start() < title_match.end():
+        raise RuntimeError("[FAMILY-X-SPLIT-V2] In one lineがTitleより前に出現しています")
+
+    def strip_markdown_bold(s: str) -> str:
+        return re.sub(r"\*\*(.+?)\*\*", r"\1", s)
+
+    title = strip_markdown_bold(title)
+    body_text = strip_markdown_bold(text[body_start:in_one_line_match.start()].strip())
+    in_one_line_text = strip_markdown_bold(in_one_line_match.group(1).strip())
+
+    paragraphs = [p.strip() for p in body_text.split("\n\n") if p.strip()]
+    n = len(paragraphs)
+    if n < 3:
+        return {"status": "TOO_FEW_PARAGRAPHS", "paragraph_count": n, "title": title,
+                "in_one_line": in_one_line_text}
+
+    counts = [_family_x_word_count_en(p) for p in paragraphs]
+    total = sum(counts)
+    target = total / 3.0
+
+    best = None
+    for i, j in itertools.combinations(range(1, n), 2):
+        c1 = sum(counts[:i])
+        c2 = sum(counts[i:j])
+        c3 = sum(counts[j:])
+        cost = (c1 - target) ** 2 + (c2 - target) ** 2 + (c3 - target) ** 2
+        key = (cost, i, j)
+        if best is None or key < best[0]:
+            best = (key, i, j, c1, c2, c3)
+
+    _, i, j, c1, c2, c3 = best
+    part1 = "\n\n".join(paragraphs[:i])
+    part2 = "\n\n".join(paragraphs[i:j])
+    part3 = "\n\n".join(paragraphs[j:])
+
+    return {
+        "status": "OK", "title": title, "paragraph_count": n,
+        "boundary_i": i, "boundary_j": j,
+        "part1": part1, "part2": part2, "part3": part3,
+        "in_one_line": in_one_line_text,
+        "word_counts": {
+            "part1": c1, "part2": c2, "part3": c3,
+            "in_one_line": _family_x_word_count_en(in_one_line_text), "total": total,
+        },
     }
 
 

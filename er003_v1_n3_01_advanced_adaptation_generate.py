@@ -497,6 +497,231 @@ def generate_advanced_adaptation(ja_article_text: str, *, client=None, model: st
     )
 
 
+# ============================================================
+# Family X 新記事構造(Heading廃止・忠実英訳、FAMILY-X-REFRESH-E2E-
+# PRODUCTION-WIRING-01 W1、2026-09-29、ユーザー正式決定
+# APPROVED_FOR_PRODUCTION)。
+#
+# 上のADVANCED_*/generate_advanced_adaptation()は一切変更しない(Trial
+# 互換[er015/er037]呼び出しを壊さない、既存Family X以外の経路も無影響)。
+# Family X Production経路(er012_e_family_entertainment_two_level_
+# runner_01.run_writer_stage())は、以下の新関数群へ切替える。
+#
+# Prompt本文はer045_family_x_no_heading_segmentation_trial_01.
+# TRIAL_FAITHFUL_TRANSLATION_INSTRUCTION/TRIAL_DEVELOPER_MESSAGE/
+# TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATEの逐語転記(Production定数化)。
+# sha256同一性はer019_family_x_new_structure_wiring_01_test_01.pyで
+# er045(test importのみ)と突き合わせて確認する。ADVANCED_VOCAB_RULE_V2_
+# BLOCK(既存、無変更)・build_must_fix_block()(既存、無変更)をそのまま
+# 流用する。
+# ============================================================
+import re as _fx_re
+
+FAMILY_X_TRANSLATOR_DEVELOPER = (
+    "You are a translator who turns a finished Japanese feature article "
+    "into natural English for listeners who are learning English. Your "
+    "task is translation, not editorial rewriting."
+)
+
+FAMILY_X_FAITHFUL_TRANSLATION_INSTRUCTION = (
+    "Translate the Japanese article below into English, paragraph by "
+    "paragraph, staying as close to the original as natural English "
+    "allows.\n"
+    "\n"
+    "Do not add new ideas, claims, background, general observations, "
+    "examples, or facts that are not in the Japanese article. Do not "
+    "remove any fact, claim, or causal link that is in the Japanese "
+    "article. Keep the same order of information and the same paragraph "
+    "structure: the English article must have exactly the same number of "
+    "paragraphs as the Japanese article, in the same order, each English "
+    "paragraph translating the corresponding Japanese paragraph. Do not "
+    "merge, split, or reorder paragraphs.\n"
+    "\n"
+    "Do not add section headings, subheadings, or any Markdown heading "
+    "markup (\"#\", \"##\", \"###\") inside the body. Do not add a "
+    "concluding one-line summary; that is handled separately by another "
+    "step.\n"
+    "\n"
+    "Output format: first output a title line starting with \"# \" "
+    "followed by an English title that translates the Japanese title, "
+    "then a blank line, then the body paragraphs (one blank line between "
+    "paragraphs, same count and order as the Japanese article). Output "
+    "nothing else (no commentary about the translation itself).\n"
+    "\n"
+    "Use short, simple, natural English that a learner could understand "
+    "by listening once."
+)
+
+FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE = (
+    "Below is a finished English news feature article (already "
+    "translated from Japanese, no section headings). Write ONE short, "
+    "natural sentence that captures the core of the story, in a way a "
+    "listener can understand by hearing it just once.\n"
+    "\n"
+    "Requirements:\n"
+    "- Exactly one sentence.\n"
+    "- Understandable on a single listen.\n"
+    "- Do not pack in multiple separate points; focus on the single most "
+    "important point or twist of the story.\n"
+    "- Do not add any new fact, conclusion, or lesson that is not already "
+    "stated in the article below.\n"
+    "\n"
+    "As a rough guide only (Trial-only guidance, not a strict rule): aim "
+    "for one main clause with at most one subordinate clause, roughly "
+    "12-18 words.\n"
+    "\n"
+    "Output only the sentence itself, nothing else (no quotation marks, "
+    "no label like \"In one line:\", no Markdown heading markup).\n"
+    "\n"
+    "[Article]\n{article_text}"
+)
+
+_FAMILY_X_TITLE_BODY_RE = _fx_re.compile(r"^#\s+(.+?)\s*\n\n(.+)$", _fx_re.S)
+
+
+def build_family_x_faithful_translation_prompt(ja_article_text: str, must_fix: list | None = None) -> str:
+    """er045_family_x_no_heading_segmentation_trial_01.generate_trial_
+    translation()/build_must_fix_retry_prompt()と同一構成(ADVANCED_VOCAB_
+    RULE_V2_BLOCKは既存Production定数をそのまま流用、must_fixはbuild_
+    must_fix_block()=既存Production関数をそのまま流用)。"""
+    prompt = (FAMILY_X_FAITHFUL_TRANSLATION_INSTRUCTION + "\n\n" +
+              ADVANCED_VOCAB_RULE_V2_BLOCK +
+              "\n\n[Japanese article]\n" + ja_article_text)
+    if must_fix:
+        prompt += "\n\n" + build_must_fix_block(must_fix)
+    return prompt
+
+
+def parse_family_x_faithful_translation(raw_text: str) -> dict | None:
+    """Title+Body形式のパースに失敗した場合はNoneを返す(retry判断は
+    呼び出し側[generate_family_x_faithful_translation()内のretryループ]
+    が行う。h3見出し前提の`restore_r2.validate_point_structure()`は
+    一切使わない、新構造専用の別validator)。"""
+    m = _FAMILY_X_TITLE_BODY_RE.match((raw_text or "").strip())
+    if not m:
+        return None
+    return {"title": m.group(1).strip(), "body": m.group(2).strip()}
+
+
+@dataclass
+class FamilyXFaithfulTranslationResult:
+    text: str
+    title: str
+    body: str
+    model_id_actual: str
+    model_id_requested: str
+    response_id: str
+    usage: dict
+    cost_usd: float
+    cost_jpy: float
+    attempts: int
+    retried: bool
+    fallback_detected: bool
+    structure_status: str
+    elapsed_seconds: float
+    attempts_detail: list = field(default_factory=list)
+
+
+def generate_family_x_faithful_translation(ja_article_text: str, *, client=None, model: str | None = None,
+                                            max_attempts: int = 2,
+                                            must_fix: list | None = None) -> FamilyXFaithfulTranslationResult:
+    """Family X新構造(見出し廃止)の忠実英訳を生成する。既存generate_
+    advanced_adaptation()/vfl01.run_writer_with_technical_retry()(h3構造
+    Gate専用)は一切使わない。ここではvfl01.run_writer_no_search()を直接
+    呼び、Title+Body形式のパース可否のみをGateにしたretry(max_attempts回、
+    既定2=初回+1回)を独自実装する(h3非依存の新validator、他Familyの
+    validatorには一切影響しない)。
+
+    段落数(JAとの対応・3分割可否)のvalidationはここでは行わない。呼び
+    出し側(er012_e_family_entertainment_two_level_runner_01.run_writer_
+    stage())が、生成結果をsc.split_family_x_article_text_v2()へ渡した後、
+    paragraph_count<3の場合にのみ別途1回だけmust-fix retryする(このretry
+    軸とは独立、Standard/Advanced対称)。
+    """
+    if client is None:
+        client = vfl01.get_client()
+    requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
+    prompt = build_family_x_faithful_translation_prompt(ja_article_text, must_fix=must_fix)
+    price_fn = _load_pricing()
+
+    t0 = time.time()
+    attempts_detail = []
+    parsed = None
+    result = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            result = vfl01.run_writer_no_search(client, prompt, model=requested_model,
+                                                 developer=FAMILY_X_TRANSLATOR_DEVELOPER)
+        except Exception as e:
+            attempts_detail.append({"attempt": attempt, "status": "TECHNICAL_FAILED",
+                                     "error": f"{type(e).__name__}: {e}"})
+            if attempt < max_attempts:
+                time.sleep(2)
+                continue
+            raise RuntimeError(
+                f"[FAMILY_X_FAITHFUL_TRANSLATION] {max_attempts}回試行しても生成に失敗しました: "
+                f"attempts={attempts_detail}")
+        parsed = parse_family_x_faithful_translation(result["raw_text"])
+        status = "STRUCTURE_PASS" if parsed else "STRUCTURE_INVALID"
+        attempts_detail.append({
+            "attempt": attempt, "status": status, "model": result["model"],
+            "response_id": result["response_id"], "raw_text": result["raw_text"],
+        })
+        if parsed:
+            break
+        if attempt < max_attempts:
+            continue
+        raise RuntimeError(
+            f"[FAMILY_X_FAITHFUL_TRANSLATION] {max_attempts}回試行してもTitle+Body形式"
+            f"(『# Title』+空行+本文)を満たせませんでした(先頭200字): "
+            f"{result['raw_text'][:200]!r}")
+    elapsed = round(time.time() - t0, 3)
+
+    model_actual = result["model"]
+    response_id = result["response_id"]
+    attempts_count = len(attempts_detail)
+    retried = attempts_count > 1
+    fallback_detected = (model_actual != requested_model)
+
+    usage_dict = result.get("usage") or {}
+    input_tokens = usage_dict.get("input_tokens")
+    cached_tokens = usage_dict.get("cached_input_tokens")
+    output_tokens = usage_dict.get("output_tokens")
+    cost_usd, cost_jpy = _compute_cost_jpy(
+        price_fn, model_actual, input_tokens or 0, cached_tokens or 0, output_tokens or 0)
+
+    return FamilyXFaithfulTranslationResult(
+        text=result["raw_text"], title=parsed["title"], body=parsed["body"],
+        model_id_actual=model_actual, model_id_requested=requested_model,
+        response_id=response_id, usage=usage_dict, cost_usd=cost_usd, cost_jpy=cost_jpy,
+        attempts=attempts_count, retried=retried, fallback_detected=fallback_detected,
+        structure_status="STRUCTURE_PASS", elapsed_seconds=elapsed,
+        attempts_detail=[{k: v for k, v in a.items() if k != "raw_text"} for a in attempts_detail],
+    )
+
+
+def generate_family_x_in_one_line(client, title: str, body: str, *, model: str | None = None) -> dict:
+    """In One Line v2(Family X新構造)。er045_family_x_no_heading_
+    segmentation_trial_01.generate_trial_in_one_line_v2()と同一Prompt
+    (逐語)、Production primitiveのみで再実装する。"""
+    requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
+    article_text = f"# {title}\n\n{body}"
+    prompt = FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE.format(article_text=article_text)
+    t0 = time.time()
+    result = vfl01.run_writer_no_search(client, prompt, model=requested_model,
+                                         developer=FAMILY_X_TRANSLATOR_DEVELOPER)
+    elapsed = round(time.time() - t0, 3)
+    text = result["raw_text"].strip()
+    price_fn = _load_pricing()
+    usage_dict = result.get("usage") or {}
+    cost_usd, cost_jpy = _compute_cost_jpy(
+        price_fn, result["model"], usage_dict.get("input_tokens") or 0,
+        usage_dict.get("cached_input_tokens") or 0, usage_dict.get("output_tokens") or 0)
+    return {"text": text, "model": result["model"], "response_id": result["response_id"],
+            "usage": usage_dict, "cost_usd": cost_usd, "cost_jpy": cost_jpy,
+            "elapsed_seconds": elapsed}
+
+
 # ------------------------------------------------------------
 # CLI
 # ------------------------------------------------------------
