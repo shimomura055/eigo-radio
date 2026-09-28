@@ -575,7 +575,7 @@ unresolved0件・mismatch件数変化0件・`source_span`/`source_sentence`/
 | runtime evidence | 済(§5、再取得不要と判断[§11-2のオフライン再検証で新ロジックが実データへ影響しないことを確認済みのため]) |
 | 実際のmodel_id・routing確認 | 済(§5-6、変更なし) |
 | コスト影響評価 | 済(修正1回目¥0、事故なし) |
-| `CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md` | 済(修正2回目、commit`<pending>`。着手時に別Agent[`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02`]の未commit差分と競合したため修正1回目時点では未反映のまま`docs/pm/RESULT_PACKET_KPC2.md`へ下書きのみ保存し、修正2回目[本SSOT反映委任]で適用) |
+| `CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md` | 済(修正2回目、commit`b2736e13`。CURRENT_SPEC.md分は編集中に並走していた別Agent[`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02`]のcommit`3d9a28be`へ意図せず混入し先行反映済み、DECISION_LOG.md/OPEN_ITEMS.md/REPORT_LEDGER.mdは本commit`b2736e13`で反映。着手時に別Agent[`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02`]の未commit差分と競合したため修正1回目時点では未反映のまま`docs/pm/RESULT_PACKET_KPC2.md`へ下書きのみ保存していたものを適用) |
 | 必要なGit反映 | 済(本commit) |
 | approved specとProduction挙動の一致 | 済 |
 | **Opus L2レビュー** | **実施済み**(本節§10所見、BLOCKER0件) |
