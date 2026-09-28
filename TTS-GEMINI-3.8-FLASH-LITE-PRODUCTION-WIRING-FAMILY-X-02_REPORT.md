@@ -594,3 +594,106 @@ reuseのため新規TTS/ASR呼び出し無し、Assembly/playerはAPI呼び出�
 無し(実費用¥0、Guardrail¥20以内。STOP条件[新しい仕様判断が必要・
 コスト超過・Family X内モデル混在・canonical text変更・retry上限拡張・
 runtime evidence取得不能]のいずれにも該当しなかった)。
+
+## §8. 修正2回目(2026-09-28、Fableからの修正指示: GitHub Pages配布)
+
+### 8-1. 目的
+
+修正1回目(§7)で生成済みのFlash-Lite Hormuz Standard(A2)/Advanced(B1B)
+フル記事エピソードを、ユーザーが実際に試聴できる形(GitHub Pages)で配布し、
+現行Productionモデル(structured_separation)との比較試聴も可能にする。
+コード変更・SSOT変更・新規TTS/ASR呼び出しは無し(実費用¥0)。
+
+### 8-2. 配布ディレクトリ・配布物
+
+新設: `user_test/flash_lite_family_x_02_hormuz/`
+
+| ファイル | 内容 | サイズ |
+|---|---|---|
+| `index.html` | 試聴比較ページ(相対パスの`<audio src>`のみ、segment一覧表付き) | 19,103 bytes |
+| `hormuz_standard_flash_lite.mp3` | Flash-Lite Standard(A2)フル記事、128kbps | 5,309,612 bytes |
+| `hormuz_advanced_flash_lite.mp3` | Flash-Lite Advanced(B1B)フル記事、128kbps | 4,673,324 bytes |
+| `hormuz_standard_current_model.mp3` | 現行モデル(structured_separation) Standard(A2)比較用、128kbps | 5,693,228 bytes |
+| `hormuz_advanced_current_model.mp3` | 現行モデル(structured_separation) Advanced(B1B)比較用、128kbps | 5,034,668 bytes |
+
+合計サイズ: 約20,710,832 bytes(約19.75MB、STOP閾値50MB未満)。1ファイルは
+いずれも100MB未満。
+
+### 8-3. 音声変換(wav→mp3)
+
+配布経路の慣行確認: `git ls-files "*.mp3"`で既存1,871件のmp3が追跡対象
+(例`er003_output/b1_p9a/A02/web/episode.mp3`)、`git ls-files "*.wav"`は
+0件(`.gitignore`の`*.wav`ルールにより除外、`user_test/`配下にも例外規則は
+存在しない、`.gitignore`にuser_test関連の除外規則追加なし)。よってmp3変換
+が既存慣行と判断した。
+
+本環境に`ffmpeg`コマンド本体は存在しなかったが、`.venv`に`imageio_ffmpeg`
+パッケージが導入済みで、同梱バイナリ(`ffmpeg-win-x86_64-v7.1.exe`,
+version 7.1-essentials_build, `--enable-libmp3lame`込み)が利用可能なことを
+確認し、これを使用した(新規パッケージインストールなし、追加費用なし)。
+
+実行コマンド(逐語、4回、`FFMPEG_EXE`は
+`.venv/Scripts/python.exe -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())"`
+の出力):
+
+```
+"$FFMPEG_EXE" -y -i "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav" -codec:a libmp3lame -b:a 128k "user_test/flash_lite_family_x_02_hormuz/hormuz_standard_flash_lite.mp3"
+
+"$FFMPEG_EXE" -y -i "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav" -codec:a libmp3lame -b:a 128k "user_test/flash_lite_family_x_02_hormuz/hormuz_advanced_flash_lite.mp3"
+
+"$FFMPEG_EXE" -y -i "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav" -codec:a libmp3lame -b:a 128k "user_test/flash_lite_family_x_02_hormuz/hormuz_standard_current_model.mp3"
+
+"$FFMPEG_EXE" -y -i "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav" -codec:a libmp3lame -b:a 128k "user_test/flash_lite_family_x_02_hormuz/hormuz_advanced_current_model.mp3"
+```
+
+いずれも`encoder=Lavc61.19.100 libmp3lame`, `128.0kbits/s`でエンコード成功
+(exit code 0、標準エラー出力にffmpeg進捗ログのみ)。API呼び出しは伴わない
+(ローカル音声変換のみ)。
+
+### 8-4. 現行モデル比較用エピソードの出典
+
+`hormuz__run_03_baseline/`配下に`assembled/`ディレクトリが存在しなかった
+(narration wavのみ)ため、委任文の代替指示に従い、
+`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md` Stage 3f
+(805行目以降)記載のHormuz A2/B1B Assembly完了パスを使用した:
+
+| level | 出典path(内部証跡) | duration | Gate |
+|---|---|---|---|
+| Hormuz A2(Standard) | `er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_02/a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 355.762秒 | `PASS`(5/5、`article_source=caller_supplied`、907行目) |
+| Hormuz B1B(Advanced) | `.../hormuz__run_02/b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 314.61秒 | `PASS`(5/5、908行目) |
+
+両ファイルの実在をディスク上で確認済み(`ls -la`実測、68,306,260 bytes /
+60,405,172 bytes)。
+
+### 8-5. Segment一覧(index.htmlへ表示)
+
+`tts_generation_results.json`(4ファイル: flash-lite a2/b1b、現行モデル
+a2/b1b)から抽出。全4エピソードで`status!=OK`のsegmentは0件
+(Flash-Lite Standard 13件、Flash-Lite Advanced 12件、現行モデル
+Standard 13件、現行モデル Advanced 12件)。role/voice/style
+(`instruction_type`)/attempts数/ASR verified/duration(秒)/model/ASR text
+先頭80字を表形式で掲載。
+
+**既知の注記(read-only、修正なし)**: Flash-Lite Advanced(B1B)の共有
+ナレーション`num_two`は§7-1のとおりMaster Audio Store reuseで解消済みだが、
+`tts_generation_results.json`には共有ナレーション自体が記録されないため
+本segment表には現れない(index.html内に注記を明記)。
+
+TTS実行方式(同期/バッチ)注記: 4エピソードとも生成時
+`TTS_EXECUTION_MODE=STANDARD`(同期実行)を使用したことを出典行番号付きで
+index.htmlへ明記(本§8では新規TTS実行なし、既存記録の参照のみ)。
+
+### 8-6. Git・Pages配布確認
+
+- add対象: `user_test/flash_lite_family_x_02_hormuz/`配下5ファイル、本
+  REPORT §8、delegation_log`_03.md`+`_03.md_check.json`のみ(他Agent差分は
+  一切add対象外、`git add -A`不使用)。
+- commit hash: `<PLACEHOLDER_COMMIT_HASH>`
+- push: `git push origin main`実行、結果は下記RESULT_PACKET参照。
+- HTTP 200確認: `curl -sI https://shimomura055.github.io/eigo-radio/user_test/flash_lite_family_x_02_hormuz/index.html`
+  の結果は下記RESULT_PACKET参照(push後の待機・再確認込み)。
+
+### 8-7. STOP該当(修正2回目)
+
+無し(実費用¥0、合計配布サイズ約19.75MB<50MB閾値、`.gitignore`変更不要、
+`git add -f`不使用、コード/SSOT変更なし)。
