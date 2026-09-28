@@ -11926,3 +11926,50 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   混入した可能性)。
 - **根拠**: `TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_REPORT.md`、
   commit`e6d2a6cd`/`f1e23ce2`。
+
+## FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02: Trial記録(2026-09-28)
+
+- **概要**: `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-01`の未決事項を受け、
+  AN3(A3+N2)/AN2(A2+N2)×T0(通常)/T1(英語化Trial限定抑制追記)の
+  2×2 Matrix(Hormuz/Meta)を実測。T0は全セルCOMPLIANT(Deviation
+  Check主判定)。T1はHormuz AN3-T1・Meta AN2-T1で各1セルMAJOR
+  Deviationを検出。AN3はAN2と比べ数字削減で優位、固有名詞削減は
+  AN3/AN2で同水準だった。
+- **固有名詞「9→19」問題の原因判明**: Trial-01で観測された固有名詞
+  「9→19」は、改良カウンタによる実測(複合語・Title Case除外・漢字
+  固有名詞を区別)でJA=EN=7と一致し、英語化時の新規固有名詞追加は
+  確認されなかった。旧カウント方式(tokenization・Title Case混入)の
+  アーティファクトが主因と判明。
+- **費用**: ¥16.9(実API)。
+- **Fable判定**: `USER_DECISION_REQUIRED`。Production未配線・
+  CURRENT_SPEC変更なし。
+- **ユーザー判断待ちの論点**: (1) AN3(A3+N2)とAN2(A2+N2)のどちらを
+  次段階の検証優先とするか。(2) T1(抑制追記)方式を検証継続するか、
+  一旦保留するか(Hormuz/Meta双方で各1セルMAJOR Deviationあり、
+  Production採用検討には再現性確認が必要)。(3) 「9→19」がカウント
+  方式のアーティファクトと判明したことを踏まえ、OPEN-220(Advanced
+  Prompt側固有名詞抑制)の優先度をどう扱うか。
+- **根拠**: `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02_REPORT.md`、
+  `docs/pm/RESULT_PACKET_CC2.md`、commit`42f63319`。
+
+## PM-RECOVER-DELETED-UNTRACKED-FILES-01: 未追跡ファイル誤削除の事後開示(2026-09-28)
+
+- **概要**: `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-02`の初回実行Agentが、
+  スコープ外の未追跡ファイル2件を`rm -f`で誤削除していたことが判明し、
+  read-only調査+可能な範囲での復元を実施した。
+  - `a2_jt_debug.json`(1,117 bytes、2026-09-27作成): **復元不可**
+    (元の内容を再現する手段が存在しない、用途不明)。
+  - `docs/pm/b1b_naming_investigation.md`(9,213 bytes): **完全復元**
+    (transcript内のWrite内容から復元、削除直前`ls -la`が示すサイズ
+    `9213 bytes`と復元後ファイルのサイズがbyte一致で完全一致することを
+    確認)。
+- **性質**: read-only調査+復元のみ(¥0、API呼び出しなし、コード編集
+  なし)。
+- **再発防止**: 以後の全委任文の固定ブロックへ「削除・移動・`rm`・
+  `git clean`・stash/rebase/reset/amend/force push 禁止(自タスクの
+  out-dir外に触れない)」を明記する(適用済み、`docs/pm/PM_GOVERNANCE.md`
+  8節末尾にも運用補足として追記)。
+- **STOP該当**: 無し(read-only調査+復元のみ、破壊的操作は本タスクでは
+  実施していない)。
+- **根拠**: `docs/pm/RESULT_PACKET_REC1.md`、本タスク実行ログ。
+- commit: 本コミット(SSOT反映のみ、コード変更なし)。

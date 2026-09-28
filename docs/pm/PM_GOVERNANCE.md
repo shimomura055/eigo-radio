@@ -955,6 +955,12 @@ SERIALIZATION-RULE-01`、ユーザー正式採用、再発防止ルール)**:
   (`git status`)を添えてFable/ユーザーへ報告する。並行Agentの未commit
   差分(stashされていない未追跡ファイル・working tree差分)に対しては、
   上記(a)〜(d)のSSOT直列化ルールと同様、一切触れない。
+- (h) **委任Agentの削除・移動禁止(2026-09-28、`PM-RECOVER-DELETED-
+  UNTRACKED-FILES-01`事後開示を受けた運用補足)**: 委任Agentは自タスク
+  の所有ファイル以外を削除・移動しない(`rm`/`git clean`禁止)。未追跡
+  ファイルは他Agent/ユーザーの作業物として扱う(正式ルール化は
+  ユーザー判断待ち、詳細`DECISION_LOG.md``PM-RECOVER-DELETED-UNTRACKED-
+  FILES-01`エントリ)。
 
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
