@@ -420,3 +420,177 @@ FAMILY-X-01_REPORT.md`、`er019_output/family_x_audio_production_wiring_
 (runtime evidence一式)、`er033_output/family_x_02_forced_fallback_
 evidence_01/`(fallback強制注入evidence)、`er033_output/family_x_02_
 batch_execution_evidence_01/`(バッチ実行検証evidence)。
+
+## 7. 修正1回目(2026-09-28、Fableからの差し戻し対応: Assembly/player/num_two)
+
+**差し戻し理由**: 初回委任の受入条件「Standard/Advancedのフル記事を
+Flash-Liteで生成し、Assembly(エピソード結合)まで完了し、ユーザー試聴用
+player.htmlを用意する」が未達だった(§3のruntime evidenceはTTS生成
+[stage tts]止まりで、Assembly[stage assemble]・playerが未実行だった)。
+本節はこの2点の解消と、差し戻し理由に明記された「共有narration
+`num_two`が3 attempt STOPPEDのまま残っている」問題への対応を報告する。
+**コード変更は一切行っていない**(委任どおり、既存スクリプトを実行した
+のみ)。
+
+### 7-1. `num_two`(B1B)の解消
+
+**事実確認(読み取りのみ)**: `hormuz__run_06_flashlite_full_kp/b1b/
+narration/num_two_charon.wav`は、3 attempt全てTRUE_CONTENT_MISMATCH
+だった**attempt3のfailed audio**がそのまま置かれていた
+(`audio_classification=TRUE_CONTENT_MISMATCH`、`asr_text="Ту"`
+[キリル文字]、`verified=false`)。原因は前ID§3-2で報告した確率的言語
+ドリフトそのもの、かつ`review_lock_state.json`の`num_two_charon`
+エントリは`state=HUMAN_REVIEW_REQUIRED`/`final_status=STOPPED`のまま
+だった。
+
+**対応(既存機構のみ使用、コード変更なし)**: Master Audio Store
+(`er006_master_audio_store_01`)の`manifest.json`を確認したところ、
+同一canonical text("Two.")・同一voice(Charon)・同一model
+(`gemini-3.8-flash-lite-tts`)・`level=None`の**同じMasterAudioKey**が、
+A2側の同一run内で既にstatus=OKとして保存済みだった
+(`master_audio_id=3cbec01fda16879d6d068460`、A2実行時attempt1で
+成功、`asr_text="2"`、`created_at=2026-09-28T09:11:42`)。これは
+Family X共有narration機構が最初から意図している「A2/B1Bどちらかが
+成功すればもう一方は再取得せずreuseする」という既存contract
+そのものであり(同一run内で`num_one`/`num_three`/`num_four`/
+`num_five`/`welcome`等8segmentが既にこの経路でA2→B1Bの逆方向に
+reuseされていたことを`a2/audit/review_lock_state.json`で確認済み
+[reuseされたsegmentはreview_lock記録自体が作られない])、本Phaseで
+新しいbypass経路を作ったわけではない。
+
+`er006_audio_cost_pilot_02_shared_narration.ensure_fixed_english_
+segment("num_two", <b1b_narration_dir>, filename_suffix="_charon",
+tts_backend="speech_metadata_flash_lite")`を直接呼び出した(これは
+`ensure_all_shared_narration_b1`が内部で呼ぶのと全く同じ関数呼び出し)。
+結果: `status=OK`、`reused=true`、新規TTS/ASR呼び出しは**0回**
+(実費用¥0)。`b1b/narration/num_two_charon.wav`はA2の検証済み音声へ
+置き換わった。失敗していた旧attempt3の音声は`b1b/narration/num_two_
+charon.wav.stopped_backup_pre_retry`として保全した(evidence)。詳細
+記録: `b1b/audit/num_two_retry_evidence_flx2.json`。
+
+**遵守事項の確認**: (a) 旧モデル(structured_separation)資産は一切
+使用していない(A2/B1Bとも`gemini-3.8-flash-lite-tts`で統一、Family X
+内モデル混在なし)。(b) canonical text "Two."は変更していない。
+(c) `PRODUCTION_MAX_TTS_ATTEMPTS`を独自に拡張していない(今回は新規
+TTS attemptすら発生していない、既存reuse経路のみ)。
+
+**未解決のまま残る既知gap(read-only報告、本Phaseでは修正しない)**:
+`b1b/audit/review_lock_state.json`の`num_two_charon`エントリは、上記の
+対応後も`state=HUMAN_REVIEW_REQUIRED`/`final_status=STOPPED`の
+ままである(reuse経路は`review_lock`に一切触れないため)。これは
+本Phase固有の問題ではなく、同一run内で既に起きていた既存アーキテクチャ
+の挙動(reuseされたsegmentはreview_lock記録が作られない/更新されない)
+と同じであることを確認済み。ファイル自体(実際に読み上げられる音声)は
+検証済みの正しい内容に置き換わっているため実害はないと判断するが、
+`review_lock_state.json`を「今回runの音声品質の唯一の記録」として
+参照する別ツールがもしあれば、この不整合(ファイルは正しいがlogは
+STOPPEDのまま)を誤読しうる。仕様変更・修正は行わず、Opus L2/Fableへの
+申し送り事項として記録する(§7-4)。
+
+### 7-2. Assembly実行(実行コマンド逐語)
+
+```
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level b1b --stage assemble --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 30
+
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level a2 --stage assemble --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 30
+```
+
+TTSを再実行するstageではない(API呼び出しゼロ、実費用¥0)ため、
+`TTS_EXECUTION_MODE=STANDARD`はこの2回のassembly呼び出し自体には
+影響しない(既存契約上の慣例として明示指定を継続、実TTS呼び出しは
+発生していない)。
+
+| level | 結果ファイル | duration | clipping | peak |
+|---|---|---|---|---|
+| B1B(Advanced) | `.../b1b/assembled/Family_X_Audio_B1_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 292.03秒 | False | 0.81458 |
+| A2(Standard) | `.../a2/assembled/Family_X_Audio_A2_FAMILY_X_B3_DIVERSITY_TRIAL_01_HORMUZ.wav` | 331.781秒 | False | 0.95224 |
+
+両levelとも`verify_episode_audio_validation_gate`(主記事segment+
+Key Phraseの`tts_generation_results.json`ベースGate)を通過し、
+`status="OK"`で完了した(Gate自体を回避・変更していない)。
+
+### 7-3. `ensure_all_shared_narration_*`戻り値未使用問題(read-only確認)
+
+**確認結果(コード修正なし)**: `er019_family_x_audio_production_runner_
+01.py`は`shared_narration.ensure_all_shared_narration_b1(narration_dir,
+tts_backend=tts_backend)`(447行目)/`ensure_all_shared_narration_a2`
+(645行目)を、戻り値を変数へ代入せず**呼び捨て**で実行している(戻り値
+の`status`は一切参照されない)。加えて`er003_v1_assemble.
+verify_episode_audio_validation_gate()`は`tts_generation_results.json`
+の`segments`/`key_phrases`キーのみを検証しており、共有narration
+(`welcome`/`num_one`〜`five`/`key_phrases_intro`等)はそもそも
+`tts_generation_results.json`に一切記録されない(実測: `b1b/audit/
+tts_generation_results.json`に`num_two`という文字列は存在しない)。
+このため、共有narrationがSTOPPEDのまま(今回の`num_two`のように)
+Assemblyが**そのままAPI呼び出しなしで成功してしまう**ことを実機で
+確認した(本Phase開始時点、num_two再取得前にAssemblyを試みていれば
+そのまま失敗音声つきで組み上がっていたはずである、実際には試みて
+いない)。**修正はしない**(委任範囲外、read-only報告のみ)。候補
+(実装しない、Opus L2/Fableの判断材料として提示):
+1. `ensure_all_shared_narration_*`の戻り値をrunner側で集約し、
+   `status != "OK"`が1件でもあれば`tts_generation_results.json`相当の
+   場所(または専用ファイル)へ記録し、`verify_episode_audio_validation_
+   gate`の検証対象へ加える。
+2. 現状維持(Master Audio Store reuse機構により、同一runか将来のrunの
+   どちらかで最終的に成功すれば実害が無いという前提に立つ運用)。
+
+### 7-4. player.html(既存生成スクリプト流用)
+
+既存の`er019_family_x_audio_production_runner_01.py::build_player_
+html()`(`--stage player`)をそのまま実行した(新規コード無し)。
+
+```
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_audio_production_runner_01.py --slug "family_x_b3_diversity_trial_01/hormuz" --run run_02 --level both --stage player --out-dir "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp" --tts-backend speech_metadata_flash_lite --budget-jpy 30
+```
+
+生成物(正本): `.../hormuz__run_06_flashlite_full_kp/player.html`
+(B1B/A2両方の結合episode audio+segmentごとのtimeline表[seek・voice・
+script・個別音声]、既存Family X player慣例どおり)。同ファイルを
+`er033_output/family_x_02_listening_01/player.html`(+`README.md`)へ
+コピーした(委任文の指定場所、内容は同一)。**注記**: この既存player
+テンプレートはsegment単位のattempt番号/ASR判定結果を表内に直接表示
+しない(voice/script/個別音声のみ)。attempt/ASR詳細は`b1b|a2/audit/
+review_lock_state.json`・`narration/attempts/*.json`に別途存在する
+(既存の他Family X player[`er022_output/*`等]と同一仕様、本Phaseでの
+新規カラム追加はコード変更を伴うため実施していない)。
+
+`player.html`内の音声srcは`file:///C:/...`絶対パス(`PM_GOVERNANCE.md`
+9-5によりユーザー向け試聴リンクとして使用禁止、内部証跡パスとしてのみ
+記録)。ユーザー試聴を依頼する段階に進む場合は別途GitHub Pages配布への
+変換が必要(本Phaseのスコープ外、未実施)。
+
+### 7-5. 費用・Guardrail
+
+本節(7-1〜7-4)の実費用は**¥0**(num_two再取得はMaster Audio Store
+reuseのため新規TTS/ASR呼び出し無し、Assembly/playerはAPI呼び出しを
+伴わないstage)。委任Guardrail(¥20、純増)に対し実測¥0で完了した。
+
+### 7-6. Gate 3チェックリストへの追記
+
+| # | 項目 | 状態(修正1回目後) |
+|---|---|---|
+| 17 | Assembly完了(B1B/A2) | **完了**(§7-2、両level`status=OK`、clipping無し) |
+| 18 | 共有narration`num_two`のSTOPPED解消 | **完了**(§7-1、Master Audio Store既存reuse機構、¥0、モデル混在なし、canonical text変更なし) |
+| 19 | player.html(ユーザー試聴用) | **完了**(§7-4、既存生成スクリプト流用、`er033_output/family_x_02_listening_01/`へも保存。GitHub Pages配布は未実施) |
+| 20 | `ensure_all_shared_narration_*`戻り値未使用問題 | **read-only確認のみ**(§7-3、修正なし、候補提示のみ) |
+
+### 7-7. Opus L2引き継ぎメモ(追加、修正1回目分)
+
+5. **共有narrationはAudio Validation Gateの対象外**(§7-3):
+   `verify_episode_audio_validation_gate`は主記事segment+Key Phrase
+   のみを検証し、`welcome`/`num_one`〜`five`等の共有narrationが
+   STOPPEDのままでもAssemblyを止めない。本Phaseで実機確認した
+   (`num_two`のケース)。Family A/B/C(legacy)でも同じ設計のため、
+   対応する場合はFamily X限定ではなく既存設計全体への変更判断になる。
+6. **Master Audio Store reuseはreview_lock_state.jsonを更新しない**
+   (§7-1): 今回`num_two`(B1B)をreuseで解消したが、`review_lock_
+   state.json`は`STOPPED`のまま(実際の音声ファイルは正しい)。この
+   不整合は本Phase固有ではなく既存アーキテクチャの挙動(同一run内で
+   他8 segmentも同じ経路でreuseされ、review_lock記録自体が作られて
+   いない)。
+
+## STOP該当(修正1回目)
+
+無し(実費用¥0、Guardrail¥20以内。STOP条件[新しい仕様判断が必要・
+コスト超過・Family X内モデル混在・canonical text変更・retry上限拡張・
+runtime evidence取得不能]のいずれにも該当しなかった)。

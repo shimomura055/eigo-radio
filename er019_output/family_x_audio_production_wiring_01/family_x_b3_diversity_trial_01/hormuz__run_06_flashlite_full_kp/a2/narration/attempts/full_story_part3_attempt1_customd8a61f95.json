@@ -1,0 +1,109 @@
+{
+  "attempt_number": 1,
+  "route": "custom_d8a61f95",
+  "segment_id": "full_story_part3",
+  "theme_id": "hormuz__run_06_flashlite_full_kp",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/a2/narration/full_story_part3.wav",
+  "saved_at": "2026-09-28T09:15:49",
+  "sha256": "261ad23b6edf0c2a8cf2b43f7f005c65b30a529c6141318cda972ee5787c91d5",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "calm, steady news narration\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
+  "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 22.93,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 55,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9926,
+          "time_a_seconds": 5.77,
+          "time_b_seconds": 17.28,
+          "lag_seconds": 11.51,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9922,
+          "time_a_seconds": 19.37,
+          "time_b_seconds": 21.4,
+          "lag_seconds": 2.03,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9919,
+          "time_a_seconds": 0.14,
+          "time_b_seconds": 22.85,
+          "lag_seconds": 22.71,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9918,
+          "time_a_seconds": 11.43,
+          "time_b_seconds": 21.98,
+          "lag_seconds": 10.55
+        },
+        {
+          "similarity": 0.9908,
+          "time_a_seconds": 11.43,
+          "time_b_seconds": 19.38,
+          "lag_seconds": 7.95
+        }
+      ],
+      "best_run_length_seconds": 0.03,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.38,
+      "time_a": 19.07,
+      "lag": 1.98,
+      "similarity_at_start": 0.7094,
+      "best_run_length_seconds": 0.38,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.",
+      "classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

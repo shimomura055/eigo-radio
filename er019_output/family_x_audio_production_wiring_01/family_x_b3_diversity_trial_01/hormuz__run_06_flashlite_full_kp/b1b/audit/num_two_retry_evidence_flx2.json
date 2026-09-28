@@ -1,0 +1,18 @@
+{
+  "management_id": "TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正1回目)",
+  "issue": "B1B num_two_charon.wav was the failed attempt3 output (audio_classification=TRUE_CONTENT_MISMATCH, asr_text='Ту', verified=false) because the caller (ensure_all_shared_narration_b1) never checks the return value, and the underlying generate_charon_english() writes the final attempt's audio to out_path regardless of pass/fail status. review_lock_state.json for b1b/num_two_charon still shows state=HUMAN_REVIEW_REQUIRED/final_status=STOPPED.",
+  "action_taken": "Called er006_audio_cost_pilot_02_shared_narration.ensure_fixed_english_segment('num_two', b1b_narration_dir, filename_suffix='_charon', tts_backend='speech_metadata_flash_lite') directly (the same production call already invoked internally by ensure_all_shared_narration_b1). This is the existing Master Audio Store reuse mechanism (level=None key, shared across A2/B1B by design), not a new bypass code path.",
+  "result": {
+    "status": "OK",
+    "reused": true,
+    "master_audio_id": "3cbec01fda16879d6d068460",
+    "asr_verified": true,
+    "asr_text": "2",
+    "source_of_reused_audio": "a2/narration/num_two.wav (same run, A2 attempt1 succeeded 2026-09-28T09:11:42, same gemini-3.8-flash-lite-tts model, canonical_text='Two.')"
+  },
+  "cost_jpy": 0,
+  "no_new_tts_or_asr_call": true,
+  "pre_retry_backup": "b1b/narration/num_two_charon.wav.stopped_backup_pre_retry (sha256 matches attempt3 STOPPED wav, kept as evidence)",
+  "note_bx_1_model_mixing_check": "Not applicable: both A2 and B1B used gemini-3.8-flash-lite-tts for this segment; no legacy/structured_separation asset was used (satisfies user-confirmed prohibition on Family X model mixing).",
+  "note_known_gap_unfixed": "review_lock_state.json for b1b/num_two_charon was NOT updated by this action (state remains HUMAN_REVIEW_REQUIRED/STOPPED even though the on-disk wav is now the verified-OK reused asset). This mirrors the pre-existing architecture: cross-level Master Audio Store reuse never touches review_lock_state.json for the reusing level (confirmed: a2 review_lock_state.json has NO entries at all for num_one/num_three/num_four/num_five/welcome/etc., which were reused from b1b in this same run). This is a read-only finding, not fixed in this Phase (out of scope per delegation instruction)."
+}
