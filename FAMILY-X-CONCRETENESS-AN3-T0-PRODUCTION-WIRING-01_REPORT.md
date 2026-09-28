@@ -538,5 +538,5 @@ BLOCKを追加、R1/R2は既存Revision指示のみ)であり、Original側の
 
 ### commit・push
 
-commit `<下記実行時に記録>`(実装+テスト+REPORT+設計書一括、
-`git push origin main`実行)。詳細はcommit hashを本節末尾へ追記。
+commit `54739a9d`(実装+テスト+REPORT+設計書+delegation_log一括、
+`git push origin main`成功)。
