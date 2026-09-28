@@ -11640,3 +11640,33 @@ WIRING-FAMILY-X-02 / EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02を
   §5・§10-7、`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md`
   Gate 3表・Gate 3再確認表。
 - commit: 本コミット(SSOT表記同期のみ、コード変更なし)。
+
+## FAMILY-Y-VOICE-STRUCTURE-TRIAL-01: Family Y Voice構造改善Trial
+(2026-09-28)
+
+- **ユーザー指示要旨**: Fact Selection/Voice Fact Assignment/Angle
+  先決め/「Fact is context, not script」の各観点でFamily Y(Voices)の
+  Voice構造を改善できるかをTrialし、Family X既存R1→R2 Revisionの
+  流用、Family B既存Voice重複対策(overlap monitoring/leakage check)
+  の流用を試すこと。
+- **使用記事**: Family B `ai_hiring_3v`(Standard)。
+- **流用した既存正式資産**(新規仕様の発明ではない): Family X
+  「Storyline決定+B3 Fact選定」方式、Family X R1→R2 Revision指示文
+  (逐語)+`previous_response_id`連鎖(JA専用のFact Check/記号チェックは
+  英語Voiceへ適用不可のため未適用、Fable事後承認)、Family B
+  `run_overlap_monitoring_3v`/`run_analytical_leakage_check_3v`。
+- **結果**: 前段(Fact Selection→Voice Fact Assignment→Angle先決め)
+  は技術的に機能し、Voice間fact_id重複0件・情報不足の兆候なしを確認。
+  一方、Family X R1→R2 RevisionをFamily Y文脈へ適用した結果、既存
+  Family B Leakage Checkのfail-field数がR1→R2で2→3→11と悪化し、
+  LLM rubric単独評価では改善したように見える結果との乖離を実測した。
+- **Fable判定**: `USER_DECISION_REQUIRED`(SonnetはVALIDATEDを自己宣言
+  しない、Fableも同判定)。
+- **ユーザー判断待ちの論点**: (1) R1→R2の扱い(a: 最小制約1文+Leakage
+  Check must-fixゲート付きの追加Trial、b: Family Y文脈では見送り、
+  c: 打ち切り)、(2) 評価方法としてLLM rubric単独ではなく既存Family B
+  Leakage Check併用を必須化するか。
+- **費用**: ¥5.90。Production採用は未決(Trial記録のみ、CURRENT_SPEC
+  への仕様追加は行っていない)。
+- **根拠**: `FAMILY-Y-VOICE-STRUCTURE-TRIAL-01_REPORT.md`、
+  `docs/pm/RESULT_PACKET_FY1.md`、commit`d2bacf9c`。
