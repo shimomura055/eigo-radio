@@ -375,7 +375,8 @@ governanceの「同じ失敗の無意味なretry loop」STOP基準に抵触す�
 
 ## commit・push
 
-(コミット後に追記)
+commit `1f47ff72`(実装+テスト+確認用再生成evidence+REPORT+SSOT一括、
+`git push origin main`成功、`b814f241..1f47ff72`)。
 
 ## Fable Gate 3判定に必要な残確認事項
 
