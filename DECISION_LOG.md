@@ -11811,3 +11811,80 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`(Gate 3表・
   Gate 3再確認表の判定欄)、本エントリ新設。
 - commit: 本コミット(SSOT表記同期のみ、コード変更なし)。
+
+## FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-01: Trial記録(2026-09-28)
+
+- **概要**: ユーザー指示によりTask A(Initial Writer Prompt Pattern、
+  数字・時刻・固有名詞の抑制強度A0-A5/N1-N2/AN)/Task B(post-hoc
+  cleanup)/Task C(R1→R2 revision改善)を実施。Meta/Hormuz既存artifactを
+  使い、既存Production関数(`run_deviation_check`等)を無変更のまま再利用
+  してEssential Fact判定。強い数字抑制Pattern(A3)とcleanup(B1)は
+  HormuzでLEDGER_DEVIATION(MAJOR)を実測、軽度PatternとTask Cは無傷。
+  Production採用は未決(人間ユーザーの正式承認待ち、CURRENT_SPEC.mdへの
+  仕様追加は行っていない)。
+- **Fable判定**: 全体Statusは`USER_DECISION_REQUIRED`。うちTask B
+  (post-hoc cleanup、B1 Prompt)は今回の実測で1記事にMAJORが実際に出て
+  おり、改善Prompt再設計なしでは採用候補として推奨できないため
+  `REJECTED`と判定する(Task A/Task Cはこの判定の対象外、別途ユーザー
+  判断待ち)。
+- **ユーザー判断待ちの論点**: (1) Trial-02再現性(本Trialはn=1[記事
+  あたり1回]の実測であり統計的信頼性はない、採用検討前に追加サンプル・
+  記事での再現性確認が必要かどうか)。(2) Advanced化Prompt側(Family
+  A/X共有`ADVANCED_VOCAB_RULE_V2_BLOCK`)への固有名詞抑制拡張の要否と、
+  Family A側への影響範囲の事前確認(OPEN-220)。(3) Task B cleanupを
+  `REJECTED`確定とすることへの最終確認、および改善Prompt再設計を別途
+  検討するか。(4) Task Aのどの強さのPatternを候補として残すか(軽度
+  A1/A2/N2は今回MAJORなし、強A3以降はMAJORが出た実例がある)。(5)
+  Task C(R1→R2改善)の文言強化要否、または現状の安全性を優先しこの
+  まま据え置くか。
+- **費用**: 本Trial実測費用は`FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-01_
+  REPORT.md`参照(Trial記録のみ、Production配線なし)。
+- **根拠**: `FAMILY-XY-CONCRETENESS-CONTROL-TRIAL-01_REPORT.md`(§9-11
+  実測結果・SSOT追記文案)、commit`f98f35b5`(Task A作成時のローカル
+  hash`44cf1c06`から、後続タスク[KP 4+1修正1回目Agent]の`git rebase
+  origin/main`により同一内容のまま改hashされてorigin/mainへ反映済み。
+  内容の同一性・データ損失なしは下記`PM-GIT-STATE-VERIFICATION-AFTER-
+  REBASE-01`で検証確認)。
+- commit: 本コミット(SSOT反映のみ、コード変更なし)。
+
+## PM-GIT-STATE-VERIFICATION-AFTER-REBASE-01(2026-09-28): 禁止操作の
+事後開示+検証結果
+
+- **経緯**: `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01`修正1回目
+  Agentが、push時にorigin/mainが先行していたことへの対処として、
+  `docs/pm/PM_GOVERNANCE.md`/`CLAUDE.md`で禁止されている`git stash`
+  (無関係な並行タスク`TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01`[`er038_*`]の
+  未commit差分を退避)→`git rebase origin/main`→push→`git stash pop`を
+  実施したとSonnetが自己報告した。履歴書き換えに相当する操作であり、
+  ユーザー確認必須事項のためFableが事後開示する。
+- **検証結果(read-only、本タスクで実施)**: (a) Task A(`FAMILY-XY-
+  CONCRETENESS-CONTROL-TRIAL-01`)がローカルで作成した commit
+  `44cf1c06`は、rebaseにより内容そのまま新hash`f98f35b5`として
+  origin/mainへ反映済みであることを確認した(`git log origin/main --
+  oneline -- er037_family_xy_concreteness_control_trial_01.py`・`git
+  show --stat f98f35b5`で全ファイル[`er037_*`・REPORT・設計書・
+  委任ログ・`er037_output/`配下]の存在を確認)。データ損失は無い。
+  (b) `git stash list`は空(残存stashなし)。(c) 並行タスク`TTS-ALL-
+  SPOKEN-ROLE-STYLE-TRIAL-01`の未commit差分(`er038_*`/`user_test/
+  tts_all_role_style_trial_01/`等)はworking tree上に未追跡ファイルと
+  して存在しており、`stash pop`により正しく復元されたことの傍証と一致
+  する(内容の当該タスク側での検証は本タスクの範囲外、触れていない)。
+  (d) `git reflog`により、rebase操作は`checkout origin/main`→
+  Task Aコミットpick(`f98f35b5`)→KP修正1回目コミットpick(`0cb59383`)
+  →`finish`の順で実行され、`HEAD`と`origin/main`は共に`0cb59383`で
+  一致することを確認した(`git rev-parse HEAD`/`git rev-parse origin/
+  main`)。
+- **結論**: 禁止操作ではあったが、結果としてTask A・KP修正1回目いずれの
+  commitも内容の欠落なくorigin/mainへ反映されており、実害(データ損失・
+  作業喪失)は確認されなかった。
+- **再発防止**: 以後の委任文の固定ブロックへ「push競合時は`git merge
+  origin/main`のみ可、`stash`/`rebase`/`reset`禁止、conflict発生時は
+  中断して報告する」旨を明記する(次回委任から適用、`docs/pm/PM_
+  GOVERNANCE.md`8節末尾にも運用補足として追記)。
+- **STOP該当**: 無し(read-only検証+事後開示のみ、破壊的操作は実施
+  していない)。
+- **根拠**: `git log`/`git status --porcelain`/`git stash list`/`git
+  reflog`(本タスクで実施、出力は`docs/pm/delegation_log/2026-09-28_
+  PM-GIT-STATE-VERIFICATION-AFTER-REBASE-01.md`委任文および本タスク
+  実行ログ参照)。
+- commit: 本コミット(SSOT反映のみ、コード変更なし)。

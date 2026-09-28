@@ -944,6 +944,17 @@ SERIALIZATION-RULE-01`、ユーザー正式採用、再発防止ルール)**:
 - (f) 11節D-2委任文標準テンプレート(`docs/pm/templates/
   DELEGATION_STANDARD_TEMPLATE.md`)の「## Git」欄に「SSOT編集権の有無」を
   明記する運用とする。
+- (g) **push競合時の手順(2026-09-28、`PM-GIT-STATE-VERIFICATION-AFTER-
+  REBASE-01`事後開示を受けた運用補足)**: `git push origin main`が
+  リモート先行(`rejected`/`non-fast-forward`)で失敗した場合、Agentが
+  独自判断で行ってよいのは`git merge origin/main`(fast-forwardまたは
+  通常merge)のみとする。`git stash`/`git rebase`/`git reset`はコード
+  変更を伴わないSSOT同期タスクを含め**常に禁止**(既存CLAUDE.md/本節の
+  禁止事項の再確認であり新規ルールではない)。merge時にconflictが発生
+  した場合は解消を試みず作業を中断し、その時点のworking tree状態
+  (`git status`)を添えてFable/ユーザーへ報告する。並行Agentの未commit
+  差分(stashされていない未追跡ファイル・working tree差分)に対しては、
+  上記(a)〜(d)のSSOT直列化ルールと同様、一切触れない。
 
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 
