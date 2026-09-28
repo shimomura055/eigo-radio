@@ -12432,3 +12432,45 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   `docs/pm/REPORT_LEDGER.md`該当行・各REPORTを参照)。
 - **根拠**: ユーザー正式決定(2026-09-28、Fable転記)。SSOT反映のみ
   (コード/Prompt無変更、API支出¥0)。
+
+## FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01: Trial記録(2026-09-28)
+
+- **概要**: Family X完成JA記事(Hormuz/Meta、AN3-T0)を入力に、見出し生成
+  指示を除いた忠実英訳(既存語彙ルール流用、Trial限定Prompt)+段落境界
+  のみで決定論的に3分割(既存Comment1〜4は既存機構reuse)+短いIn One
+  Lineを生成するTrialを実施。Baseline=現行Advanced(見出しあり)。
+- **結果**: Hormuz Trial Deviation Checkは初回で`LEDGER_COMPLIANT`(段落数
+  8=8、3分割37.6/35.3/27.1%)。Meta Trialは初回`LEDGER_DEVIATION`
+  (MAJOR1件、「元に戻した」を"put back the feature"と意味反転する翻訳
+  ミス)となったため、Production同等のmust-fix retry機構(既存
+  `build_must_fix_block`等をそのままimportして流用、コピペなし)で1回
+  再生成し、v2で`LEDGER_COMPLIANT`(段落数10=10、分割37.6/31.5/30.9%)に
+  到達。
+- **In One Line**: v1は両記事ともBaselineより長文化(Hormuz20→27語、
+  Meta14→28語)。ユーザー仕様(短い自然な一文、論点を詰め込まない)を
+  Trial限定Promptへ明示したv2で両記事とも18語(参考ガイド12〜18語、
+  Trial限定値)に短縮。
+- **rubric(14項目)**: 忠実性・Fact・順序・新規Fact0の観点はTrialが優位、
+  読みやすさ・聞きやすさ・Entertainment性はBaselineが優位(5対4)。
+  Comment接続の自然さはTrialが優位。見出し廃止による著しい単調化は
+  確認されず(4/5)。一部LLM再評価ノイズあり(本文自体の変化ではない)。
+- **費用**: 実測約¥13.3(初回¥9.2[破棄run¥4.1含む]+修正1回目¥4.1)。
+  Regression 19/19 PASS。
+- **Production**: 無変更(`er045_family_x_no_heading_segmentation_trial_
+  01.py`新規のみ、`er0*.py`/`er003_v1_translator_briefs/`にer045以外の
+  差分なし)。OPEN-228は本Trialでは修正しない(**ユーザー決定の順序に
+  従う**: 1.本Trial実施→2.ユーザー採用判断→3.採用ならsplit/Gate/retry
+  整理[OPEN-228の前提不要化を含む]→4.`FAMILY-X-CONCRETENESS-AN3-T0-
+  PRODUCTION-WIRING-01`のProduction Wiring完了、の順)。
+- **既存仕様との関係**: 音声構造自体は既存と一致。見出し基準の本文
+  1/2/3定義とSection Segmentation Contract(PRODUCTION_WIRED)は、本
+  Trialが採用された場合の置き換え対象として残置(無変更)。
+- **試読確認**: push後HTTP 200(初回はheadless EdgeでDOM確認、修正回は
+  fetch確認のみ)。試読URL: https://shimomura055.github.io/eigo-radio/
+  user_test/no_heading_trial_01/index.html
+- **Opus**: 発火なし。
+- **Status**: `USER_DECISION_REQUIRED`(Fable判定、ユーザーの試読・採否
+  判断待ち)。**Production採用はユーザーのみが判断する。**
+- **根拠**: commit`88b7e7de`(初回)/`9fc0c77a`(修正1回目)、push済み
+  (origin/main)。詳細`FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-
+  TRIAL-01_REPORT.md`。
