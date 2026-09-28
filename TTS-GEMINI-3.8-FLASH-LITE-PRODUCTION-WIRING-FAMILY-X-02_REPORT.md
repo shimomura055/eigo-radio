@@ -688,7 +688,7 @@ index.htmlへ明記(本§8では新規TTS実行なし、既存記録の参照の
 - add対象: `user_test/flash_lite_family_x_02_hormuz/`配下5ファイル、本
   REPORT §8、delegation_log`_03.md`+`_03.md_check.json`のみ(他Agent差分は
   一切add対象外、`git add -A`不使用)。
-- commit hash: `<PLACEHOLDER_COMMIT_HASH>`
+- commit hash: `dc68e949`(push済み、`origin/main`反映確認: `ff679c41..dc68e949 main -> main`)
 - push: `git push origin main`実行、結果は下記RESULT_PACKET参照。
 - HTTP 200確認: `curl -sI https://shimomura055.github.io/eigo-radio/user_test/flash_lite_family_x_02_hormuz/index.html`
   の結果は下記RESULT_PACKET参照(push後の待機・再確認込み)。
