@@ -130,8 +130,27 @@ diff本文を`grep -iE "TRIAL-04|er046|trial_04"`で検索したところ0件で
 
 ## §9 試聴ページ / GitHub Pages公開確認(7項目)
 
-commit/push後に実施し、結果は`docs/pm/RESULT_PACKET_KA4.md`および
-handbackへ記録する(本セクションは実施結果を追記)。
+commit(`650df8d8`)/push後に実施。全7項目満たしたことを確認。
+
+1. HTTP 200: `curl -sI https://shimomura055.github.io/eigo-radio/
+   user_test/kp_advanced_explanation_audio_trial_04/index.html`
+   → 直後は404(Pages反映待ち、最大約数分)、ポーリング後`HTTP/1.1 200 OK`。
+2. headless DOM(Edge・Chrome両方で実施):
+   `msedge.exe --headless --disable-gpu --dump-dom <URL>` /
+   `chrome.exe --headless --disable-gpu --dump-dom <URL>`。両方とも
+   `<audio` 件数=30、Style全文5種すべて検出。
+3. 省略表記0件: DOM中に`...`や`…`等の省略記号なし(grep 0件)。
+4. Style全文表示: metadataの5種類(Before/Reference After/A/B/C)全て
+   DOM中に完全一致で出現。
+5. `<audio>`件数: 30(5 Phrase × [phrase_en/before/A/B/C/reference_after])。
+6. mp3全件200・audio・非ゼロ長・代表デコード: 30ファイル全て
+   `HTTP/1.1 200 OK`・`Content-Type: audio/mp3`・`Content-Length`>0を
+   確認(21.5KB〜89KB)。代表1件(`kp2_variant_C_en.mp3`)を`imageio_
+   ffmpeg`同梱ffmpegでデコード(`ffmpeg -v error -i ... -f null -`)、
+   `returncode=0`・stderr出力なしでデコード成功を確認。
+7. 表示Styleとmetadata一致: `page_data.json`の全5行×5 Style文字列
+   (Before/Reference After/A/B/C)がindex.html本文に完全一致で出現、
+   不一致0件をPythonスクリプトで機械確認。
 
 ## §10 Trial Status
 
