@@ -1,0 +1,136 @@
+{
+  "article_key": "meta_a2",
+  "article_id": "KP_4PLUS1_EVIDENCE_01_META_A2",
+  "family": "Family X News (Meta)",
+  "level": "a2",
+  "kp_backend_requested": "db_hybrid",
+  "kp_backend_used": "db_hybrid",
+  "kp_backend_fallback_reason_code": null,
+  "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+  "selection_cost_jpy": 1.1945,
+  "selection_model_id": "gpt-5.6-luna",
+  "shortlist_total_count": 22,
+  "source_reference_contract": "candidate_id_v1",
+  "selection_contract": "4plus1_v1",
+  "role_counts": {
+    "topic": 1,
+    "important": 4
+  },
+  "canonicalization_status": "CANONICALIZATION_PASS",
+  "redundancy_qa_status": "REDUNDANCY_PASS",
+  "redundancy_retry_attempts": 0,
+  "final_5_items": [
+    {
+      "rank": 1,
+      "key_phrase_role": "topic",
+      "display_phrase": "contract worker",
+      "key_phrase": "contract worker",
+      "japanese_gloss": "契約スタッフ",
+      "selection_reason": "記事の中心となる人間の関与を示し、同じ話題を追ううえで重要。複合語として一度で聞き取れないと、その後の説明を追いにくい。",
+      "phrase_type": "noun_phrase"
+    },
+    {
+      "rank": 2,
+      "key_phrase_role": "important",
+      "display_phrase": "pull back",
+      "key_phrase": "pull back",
+      "japanese_gloss": "いったん取り下げる",
+      "selection_reason": "人間が対応する機能をMetaがどうしたかを示す重要な結論部分の表現。記事の展開と結果を理解するのに役立つ。",
+      "phrase_type": "phrasal_verb"
+    },
+    {
+      "rank": 3,
+      "key_phrase_role": "important",
+      "display_phrase": "concierge",
+      "key_phrase": "concierge",
+      "japanese_gloss": "利用者を手助けする案内係",
+      "selection_reason": "記事特有の人間対応機能を表す語で、feature の内容を具体的に理解する手がかりになる。",
+      "phrase_type": "word"
+    },
+    {
+      "rank": 4,
+      "key_phrase_role": "important",
+      "display_phrase": "step out",
+      "key_phrase": "step out",
+      "japanese_gloss": "中から姿を現す",
+      "selection_reason": "AIの背後にいた人が明らかになる場面の比喩表現で、記事の面白さと展開の転換を直接支える。",
+      "phrase_type": "phrasal_verb"
+    },
+    {
+      "rank": 5,
+      "key_phrase_role": "important",
+      "display_phrase": "speak for",
+      "key_phrase": "speak for",
+      "japanese_gloss": "～の代わりに話す",
+      "selection_reason": "AIが人の代わりに電話などをするという記事全体の論点を短く表す表現。最後の問題提起を理解しやすくする。",
+      "phrase_type": "phrasal_verb"
+    }
+  ],
+  "topic_item_raw": {
+    "rank": 1,
+    "source_span": "contract workers",
+    "source_sentence": "In some calls through Muse, trained contract workers made the calls, not AI",
+    "display_phrase": "contract worker",
+    "key_phrase": "contract worker",
+    "used_form": "contract worker",
+    "japanese_gloss": "契約スタッフ",
+    "japanese_gloss_tts": "契約スタッフ",
+    "changed_from_display_phrase": false,
+    "normalization_reason": "inherit_selection_normalization",
+    "qa": {
+      "qa_standalone_natural_unit": "PASS",
+      "qa_no_residual_context_word": "PASS",
+      "qa_meaning_or_usage_unchanged": "PASS",
+      "qa_reusable_other_context": "PASS",
+      "qa_traceable_contiguous_span": "PASS",
+      "qa_listening_blocker_value_preserved": "PASS",
+      "qa_standalone_comprehensibility": "PASS",
+      "qa_not_over_minimized": "PASS",
+      "qa_context_sufficiency": "PASS",
+      "qa_core_meaning_preserved": "PASS",
+      "qa_no_semantic_role_loss": "PASS",
+      "qa_person_reference_generalized": "PASS"
+    },
+    "qa_overall_status": "PASS",
+    "reasoning": "display_phraseは、source_spanの複数形から学習用に整理済みの自然な単数形であり、そのまま再利用できる。意味の核である「契約労働者」を保つため、語を追加・削除しない。",
+    "source_reference_contract": "candidate_id_v1",
+    "source_candidate_id": "C15",
+    "surface_echo": "contract workers",
+    "candidate_mismatch_suspected": false,
+    "key_phrase_role": "topic"
+  },
+  "topic_item_selection_reason": "記事の中心となる人間の関与を示し、同じ話題を追ううえで重要。複合語として一度で聞き取れないと、その後の説明を追いにくい。",
+  "stage1_topic_presence": {
+    "available": true,
+    "matches": [
+      {
+        "bucket": "important_noun_candidates",
+        "candidate": {
+          "surface_form": "contract workers",
+          "canonical_form": "contract workers",
+          "n": 2,
+          "unit_type": "phrase",
+          "matched_dbs": [
+            "repeated_compound_noun_heuristic"
+          ],
+          "db_match_count": 0,
+          "db_categories": [
+            "important_noun_phrase_heuristic"
+          ],
+          "cefr_level": null,
+          "repetition_count_in_article": 3,
+          "observed_surface_variants": [
+            "contract worker",
+            "contract workers"
+          ],
+          "source_span": "contract workers",
+          "important_noun_phrase_candidate": true,
+          "legacy_sentence_text": "In some calls through Muse trained contract workers made the calls not AI"
+        }
+      }
+    ],
+    "match_count": 1
+  },
+  "elapsed_sec": 114.45,
+  "cumulative_measured_selection_cost_jpy_so_far": 1.1945
+}

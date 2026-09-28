@@ -1,13 +1,21 @@
 # ============================================================
-# er003_key_words_min_unit_4plus1_test_01.py
+# er003_test_key_words_min_unit_4plus1_01.py
 # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01: Phase B最小実装のテスト
 # ============================================================
+# 修正1回目(Opus L2所見S3、2026-09-28): 既存命名規約
+# `er0NNN_test_*.py`(件数照合meta-test`er003_test_p2j_investigate.py`の
+# combined/prefix両patternに一致)へrename(旧
+# `er003_key_words_min_unit_4plus1_test_01.py`)。回帰regression収集自体は
+# rename前後どちらの名前でも`run_project_regression.py`のdefault pattern
+# に一致するが、meta-testの件数不変条件(prefix別合計=combined合計)は
+# renameしないと崩れる(詳細REPORT §8参照)。
+#
 # 実API・Web検索は一切行わない。すべてモック・既存成果物の読み込みのみ
 # (Wiktionary API等の既存Stage1決定論処理も呼ばない、純粋なschema/
 # validator/canonicalization/prompt-templateユニットテスト)。
 #
 # 実行方法:
-#   .venv/Scripts/python.exe -m unittest er003_key_words_min_unit_4plus1_test_01 -v
+#   .venv/Scripts/python.exe -m unittest er003_test_key_words_min_unit_4plus1_01 -v
 #
 # カバー範囲(委任文の指定7項目):
 #   1. schema伝播(Strategy L/DB Hybrid両経路)
@@ -22,12 +30,15 @@
 
 import inspect
 import json
+import tempfile
 import unittest
+from unittest.mock import patch
 
 import er003_b1_p2_keywords as bk
 import er003_key_words_canonicalization as kc
 import er003_key_words_min_unit as p2g
 import er003_key_words_production as prod
+import er003_v1_n3_01_scaffold_generate as sc
 import er030_key_phrase_db_hybrid_selector_01 as db_hybrid
 import er030_key_phrase_db_hybrid_source_reference_contract_01 as src_ref_contract
 
@@ -306,6 +317,198 @@ class StrategyLRetryOnRoleInvalidTests(unittest.TestCase):
             "A01", self._pass_factory(make_valid_4plus1_items()), GOOD_ARTICLE)
         self.assertEqual(status, "KEY_WORDS_STRUCTURE_PASS")
         self.assertEqual(len(attempts), 1)
+
+
+# ============================================================
+# 8. Strategy L retry最大2回+2回目到達時の報告記録(修正1回目、
+#    ユーザー既決事項、2026-09-28)
+# ============================================================
+def make_db_hybrid_item(rank, display_phrase, candidate_id, surface_echo=None,
+                         key_phrase_role="important", ja_gloss="テスト訳語"):
+    return {
+        "rank": rank, "display_phrase": display_phrase, "source_candidate_id": candidate_id,
+        "surface_echo": surface_echo if surface_echo is not None else display_phrase,
+        "ja_gloss": ja_gloss, "phrase_type": "technical_term", "normalization_type": "none",
+        "normalization_note": "note", "selection_reason": "reason",
+        "listening_difficulty_reason": "difficulty reason", "inference_transparency": "LOW",
+        "topic_exposure_dependency": "HIGH", "comprehension_impact": "HIGH",
+        "figurative_or_emotional_value": "LOW", "spoiler_risk": "LOW",
+        "portfolio_category": "domain_expression", "portfolio_substitution": False,
+        "portfolio_substitution_reason": "reason", "key_phrase_role": key_phrase_role,
+    }
+
+
+class StrategyLRetryReachedSecondAttemptReportingTests(unittest.TestCase):
+    """`bk.make_selector_fn`をmockし(実API呼び出しなし)、Strategy L経路の
+    max_attempts=1固定(修正前の既存挙動)がProduction既定
+    MAX_PRODUCTION_RETRY_ATTEMPTS(=2)へ揃ったこと、2回目到達時に
+    `strategy_l_attempts`/`retry_reached_second_attempt`が
+    runtime_metadata.jsonへ記録されることを確認する。"""
+
+    def test_retry_reaches_second_attempt_and_passes_records_report_fields(self):
+        call_count = {"n": 0}
+        zero_topic_items = make_valid_4plus1_items()
+        zero_topic_items[2] = {**zero_topic_items[2], "key_phrase_role": "important"}
+        valid_items = make_valid_4plus1_items()
+
+        def fake_make_selector_fn(user_message, **kwargs):
+            call_count["n"] += 1
+
+            def fn():
+                items = zero_topic_items if call_count["n"] == 1 else valid_items
+                return json.dumps({"items": items}), "gpt-5.6-sol", f"resp_{call_count['n']}"
+            return fn
+
+        with patch.object(bk, "make_selector_fn", side_effect=fake_make_selector_fn):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                result = sc._run_key_phrase_selection_strategy_l(GOOD_ARTICLE, tmp_dir, "A01", "L")
+                with open(f"{tmp_dir}/keywords_runtime_metadata.json", encoding="utf-8") as f:
+                    runtime_metadata = json.load(f)
+
+        self.assertEqual(call_count["n"], 2)
+        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS", msg=result)
+        self.assertEqual(result["strategy_l_attempts"], 2)
+        self.assertTrue(result["retry_reached_second_attempt"])
+        self.assertEqual(runtime_metadata["strategy_l_attempts"], 2)
+        self.assertTrue(runtime_metadata["retry_reached_second_attempt"])
+
+    def test_single_attempt_pass_does_not_report_second_attempt(self):
+        def fake_make_selector_fn(user_message, **kwargs):
+            def fn():
+                return json.dumps({"items": make_valid_4plus1_items()}), "gpt-5.6-sol", "resp_1"
+            return fn
+
+        with patch.object(bk, "make_selector_fn", side_effect=fake_make_selector_fn):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                result = sc._run_key_phrase_selection_strategy_l(GOOD_ARTICLE, tmp_dir, "A01", "L")
+
+        self.assertEqual(result["strategy_l_attempts"], 1)
+        self.assertFalse(result["retry_reached_second_attempt"])
+
+
+# ============================================================
+# 9. Opus L2所見S1: Strategy L経路のtelemetry観測性(INVALID時も
+#    role_countsが失われないこと)
+# ============================================================
+class StrategyLRoleCountsObservabilityTests(unittest.TestCase):
+
+    def test_role_counts_present_even_when_final_status_invalid(self):
+        zero_topic_items = make_valid_4plus1_items()
+        zero_topic_items[2] = {**zero_topic_items[2], "key_phrase_role": "important"}
+
+        def fake_make_selector_fn(user_message, **kwargs):
+            def fn():
+                return json.dumps({"items": zero_topic_items}), "gpt-5.6-sol", "resp_1"
+            return fn
+
+        with patch.object(bk, "make_selector_fn", side_effect=fake_make_selector_fn):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                result = sc._run_key_phrase_selection_strategy_l(GOOD_ARTICLE, tmp_dir, "A01", "L")
+
+        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_INVALID")
+        self.assertIsNotNone(result.get("role_counts"))
+        self.assertEqual(result["role_counts"], {"important": 5})
+
+
+# ============================================================
+# 10. DB Hybrid backup_item補完(修正1回目、ユーザー既決事項、2026-09-28):
+#     topicが欠損/単独無効な場合のみ、backup_item(important役割の予備
+#     候補)で機械的に置換する。曖昧・backup自体が使えないケースは
+#     既存のINVALID経路へそのまま委ねる。
+# ============================================================
+def _db_hybrid_id_to_candidate():
+    return {
+        "C1": {"candidate_id": "C1", "surface_form": "stoppage time", "context_sentence_id": "s1"},
+        "C2": {"candidate_id": "C2", "surface_form": "blew the whistle", "context_sentence_id": "s2"},
+        "C3": {"candidate_id": "C3", "surface_form": "wild finish", "context_sentence_id": "s3"},
+        "C4": {"candidate_id": "C4", "surface_form": "file out", "context_sentence_id": "s4"},
+        "C5": {"candidate_id": "C5", "surface_form": "take charge", "context_sentence_id": "s5"},
+        "C6": {"candidate_id": "C6", "surface_form": "the celebration", "context_sentence_id": "s5"},
+    }
+
+
+def _db_hybrid_sentence_reference():
+    return {
+        "s1": "Then came stoppage time.",
+        "s2": "The referee blew the whistle.",
+        "s3": "It was a wild finish to the match.",
+        "s4": "Fans began to file out of the stadium.",
+        "s5": "The captain decided to take charge of the celebration.",
+    }
+
+
+class DbHybridBackupSubstitutionTests(unittest.TestCase):
+
+    def _factory(self, items, backup_item):
+        def factory():
+            def fn():
+                return json.dumps({"items": items, "backup_item": backup_item}), "gpt-5.6-sol", "resp_1"
+            return fn
+        return factory
+
+    def test_topic_missing_filled_by_backup_passes(self):
+        items = [
+            make_db_hybrid_item(1, "stoppage time", "C1"),
+            make_db_hybrid_item(2, "blew the whistle", "C2"),
+            make_db_hybrid_item(3, "wild finish", "C3"),
+            make_db_hybrid_item(4, "file out", "C4"),
+            make_db_hybrid_item(5, "take charge", "C5"),
+        ]
+        backup = make_db_hybrid_item(5, "the celebration", "C6")
+        gate_result = src_ref_contract.run_source_reference_contract_gate(
+            "A01", self._factory(items, backup), GOOD_ARTICLE,
+            _db_hybrid_id_to_candidate(), _db_hybrid_sentence_reference())
+        self.assertEqual(gate_result["status"], "KEY_WORDS_STRUCTURE_PASS", msg=gate_result)
+        self.assertTrue(gate_result["topic_slot_filled_by_backup"])
+        self.assertEqual(gate_result["backup_substitution_reason"], "topic_missing")
+        final_items = gate_result["parsed"]["items"]
+        self.assertEqual(len(final_items), 5)
+        self.assertEqual([it["key_phrase_role"] for it in final_items].count("important"), 5)
+        self.assertEqual(final_items[4]["display_phrase"], "the celebration")
+
+    def test_topic_present_but_invalid_item_filled_by_backup_passes(self):
+        items = [
+            make_db_hybrid_item(1, "stoppage time", "C1"),
+            make_db_hybrid_item(2, "blew the whistle", "C2"),
+            make_db_hybrid_item(3, "wild finish", "C3", key_phrase_role="topic", ja_gloss="broken gloss"),
+            make_db_hybrid_item(4, "file out", "C4"),
+            make_db_hybrid_item(5, "take charge", "C5"),
+        ]
+        backup = make_db_hybrid_item(5, "the celebration", "C6")
+        gate_result = src_ref_contract.run_source_reference_contract_gate(
+            "A01", self._factory(items, backup), GOOD_ARTICLE,
+            _db_hybrid_id_to_candidate(), _db_hybrid_sentence_reference())
+        self.assertEqual(gate_result["status"], "KEY_WORDS_STRUCTURE_PASS", msg=gate_result)
+        self.assertTrue(gate_result["topic_slot_filled_by_backup"])
+        self.assertEqual(gate_result["backup_substitution_reason"], "topic_item_invalid")
+        final_items = gate_result["parsed"]["items"]
+        self.assertNotIn("broken gloss", [it.get("ja_gloss") for it in final_items])
+
+    def test_backup_duplicate_candidate_skips_substitution_stays_invalid(self):
+        items = [
+            make_db_hybrid_item(1, "stoppage time", "C1"),
+            make_db_hybrid_item(2, "blew the whistle", "C2"),
+            make_db_hybrid_item(3, "wild finish", "C3"),
+            make_db_hybrid_item(4, "file out", "C4"),
+            make_db_hybrid_item(5, "take charge", "C5"),
+        ]
+        backup = make_db_hybrid_item(5, "stoppage time", "C1")  # 既存item0と重複するcandidate ID
+        gate_result = src_ref_contract.run_source_reference_contract_gate(
+            "A01", self._factory(items, backup), GOOD_ARTICLE,
+            _db_hybrid_id_to_candidate(), _db_hybrid_sentence_reference())
+        self.assertEqual(gate_result["status"], "KEY_WORDS_STRUCTURE_INVALID", msg=gate_result)
+        self.assertFalse(gate_result["topic_slot_filled_by_backup"])
+        self.assertEqual(gate_result["backup_substitution_reason"], "backup_candidate_duplicate_skip")
+
+
+# ============================================================
+# 11. Opus L2所見N7: 定数の二重管理の等価性(片方だけ変わると4+1検証が
+#     黙って無効化されるリスクへの回帰防止)
+# ============================================================
+class ProductionItemCountEquivalenceTests(unittest.TestCase):
+
+    def test_production_item_count_unchanged_equals_production_item_count(self):
+        self.assertEqual(p2g.PRODUCTION_ITEM_COUNT_UNCHANGED, prod.PRODUCTION_ITEM_COUNT)
 
 
 if __name__ == "__main__":

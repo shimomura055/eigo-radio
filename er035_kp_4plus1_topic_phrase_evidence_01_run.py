@@ -121,7 +121,13 @@ def _run_one(article_key: str, article_path_or_text: str, level: str, process: s
 
     print(f"=== {article_key} (family={family}, kp_backend={kp_backend}) ===")
     t0 = time.time()
-    kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=process, kp_backend=kp_backend)
+    # 修正1回目(Opus L2所見S2、2026-09-28): このevidence実行はProduction
+    # telemetryへsynthetic=Trueで記録する(evidence起源であることを
+    # fallback率・KP失敗率等のProduction監視指標と区別するため)。
+    # article_id接頭辞`KP_4PLUS1_EVIDENCE_01_`はevidence起源(OPEN_ITEMS.md
+    # OPEN-211参照)。
+    kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=process, kp_backend=kp_backend,
+                             synthetic=True)
     elapsed = time.time() - t0
 
     selection = kp["selection"]

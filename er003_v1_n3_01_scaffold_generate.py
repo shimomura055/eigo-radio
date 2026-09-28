@@ -229,15 +229,20 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
         article_text, out_dir, article_id, source_level, process=process,
         diagnostic_note=diagnostic_note)
     result["kp_backend_used"] = "strategy_l"
-    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): この呼び出し
-    # 時点でresult["original_items"]が入手可能な場合のみ(status PASS)
-    # role_countsを記録する(各attemptでのobservability)。
+    # 修正1回目(Opus L2所見S1、2026-09-28): result["role_counts"]は
+    # `_run_key_phrase_selection_strategy_l`がstatus(PASS/INVALID)を
+    # 問わず常に計算・格納する(旧: result.get("original_items")経由の
+    # 計算はstatus PASS時のみ入手可能なitemsに依存していたため、role
+    # 不成立でINVALIDになった瞬間だけtelemetryがrole_counts: nullに
+    # なる観測性の欠落があった)。
     _log_kp_backend_telemetry(
         article_id, source_level, requested_backend="strategy_l", backend_used="strategy_l",
         final_status=result.get("status"), fallback_triggered=False,
         model_id=result.get("model_id"), cost_jpy=None, synthetic=synthetic,
         source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
-        role_counts=_role_counts_from_items(result.get("original_items")))
+        role_counts=result.get("role_counts"),
+        strategy_l_attempts=result.get("strategy_l_attempts"),
+        retry_reached_second_attempt=result.get("retry_reached_second_attempt"))
     return result
 
 
@@ -259,10 +264,22 @@ def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, articl
         model = routing.require_model(process, routing.SUPPORT_MODEL) if process else None
         return bk.make_selector_fn(user_message, model=model)
 
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+    # ユーザー既決事項): この経路のmax_attempts=1固定(本タスク以前からの
+    # 既存挙動、role構成不成立でも自動retryしなかった)を、Production
+    # 既定のMAX_PRODUCTION_RETRY_ATTEMPTS(=2)に揃える。2回目に到達した
+    # 場合は報告必須のため、下記でruntime_metadata/telemetryへ記録し、
+    # printで明示する。
     parsed, status, attempts, model_id, response_id = prod.run_production_selection_gate(
         article_id, make_selector_factory, article_text,
-        strategy_id=prod.STANDARD_STRATEGY_ID, max_attempts=1,
+        strategy_id=prod.STANDARD_STRATEGY_ID, max_attempts=prod.MAX_PRODUCTION_RETRY_ATTEMPTS,
     )
+    strategy_l_attempts = len(attempts)
+    retry_reached_second_attempt = strategy_l_attempts >= 2
+    if retry_reached_second_attempt:
+        first_attempt_status = attempts[0].get("status") if attempts else None
+        print(f"[KP-BACKEND][STRATEGY-L][RETRY] {article_id}: Key Phrase選定が2回目の試行に到達しました"
+              f"(1回目status={first_attempt_status}, 最終status={status})。")
     # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、Fable判断):
     # Strategy L経路にもDB Hybridと同名のcontract表示・role_countsを
     # 追加する。5枠外候補データ(F-4)は本Phaseでは実装しない(新出力契約は
@@ -278,11 +295,19 @@ def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, articl
         "selection_contract": "4plus1_v1", "role_counts": role_counts,
         "auxiliary_candidates": None, "auxiliary_candidates_reason": "not_available_strategy_l",
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+        # ユーザー既決事項): retry最大2回・2回目到達時の報告必須。
+        "strategy_l_attempts": strategy_l_attempts,
+        "retry_reached_second_attempt": retry_reached_second_attempt,
     }
     with open(f"{out_dir}/keywords_runtime_metadata.json", "w", encoding="utf-8") as f:
         json.dump(runtime_metadata, f, ensure_ascii=False, indent=2)
 
-    result = {"status": status, "parsed": parsed, "model_id": model_id}
+    result = {
+        "status": status, "parsed": parsed, "model_id": model_id, "role_counts": role_counts,
+        "strategy_l_attempts": strategy_l_attempts,
+        "retry_reached_second_attempt": retry_reached_second_attempt,
+    }
     if status != "KEY_WORDS_STRUCTURE_PASS":
         return result
     result["original_items"] = parsed["items"]
@@ -435,7 +460,12 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         source_reference_contract=result.get("source_reference_contract"),
         candidate_mismatch_suspected_count=result.get("candidate_mismatch_suspected_count"),
         role_counts=_role_counts_from_items(result.get("original_items")),
-        auxiliary_candidate_count=result.get("auxiliary_candidate_count"))
+        auxiliary_candidate_count=result.get("auxiliary_candidate_count"),
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+        # ユーザー既決事項): topic欠損/単独無効をbackup_itemで機械的に
+        # 補完したかの観測用フラグ・理由。
+        topic_slot_filled_by_backup=result.get("topic_slot_filled_by_backup"),
+        backup_substitution_reason=result.get("backup_substitution_reason"))
     result["kp_backend_used"] = "db_hybrid"
     _merge_kp_backend_metadata_into_runtime_file(out_dir, {
         "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
@@ -449,6 +479,8 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         "kp_backend_selection_contract": result.get("selection_contract"),
         "kp_backend_role_counts": result.get("role_counts"),
         "kp_backend_auxiliary_candidate_count": result.get("auxiliary_candidate_count"),
+        "kp_backend_topic_slot_filled_by_backup": result.get("topic_slot_filled_by_backup"),
+        "kp_backend_backup_substitution_reason": result.get("backup_substitution_reason"),
     })
     return result
 

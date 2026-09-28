@@ -182,6 +182,11 @@ class ProductionValidatorUnchangedIntegrationTests(unittest.TestCase):
             "comprehension_impact": "HIGH", "figurative_or_emotional_value": "LOW",
             "spoiler_risk": "LOW", "portfolio_category": "domain_expression",
             "portfolio_substitution": False, "portfolio_substitution_reason": "",
+            # 修正1回目(Opus L2所見S4、KEY-PHRASE-4PLUS1-TOPIC-PHRASE-
+            # PRODUCTION-01、2026-09-28): p2g._ITEM_REQUIRED_FIELDSに
+            # key_phrase_roleが追加されたため、このfixtureも追従する
+            # (挙動非依存、既存Trial testを既知FAILのまま放置しない)。
+            "key_phrase_role": "important",
         }
         restored = contract.restore_source_fields(
             [item], ids["id_to_candidate"], _fixture_sentence_reference())

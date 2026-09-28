@@ -11525,6 +11525,120 @@ Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
   (10観点評価表)。
 - commit: 本コミット(Phase B実装+検証evidence+SSOT反映)。
 
+## KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01: 修正1回目(ユーザー既決
+事項の実装+Opus L2 SHOULD_FIX反映、2026-09-28)
+
+- **性質**: Production配線の修正(ユーザー承認`APPROVED_FOR_PRODUCTION`
+  範囲内)。Fableからの修正1回目委任。
+- **ユーザー既決事項(原文要旨、2026-09-28)**: 「Strategy L retry最大2回、
+  2回目到達時は報告必須。Topic Phraseが取れない場合はDB側で通常候補
+  4件+backup 1件、Topic欠損時はそのbackupで補完。Topic slotが既存の
+  重要語カテゴリに該当する場合はその条件を満たした扱いでよい。Strategy
+  L側のrunner-up/5-slot外候補は現時点では不要、将来のUI設計時に再検討、
+  Open Itemとしてdefer」。あわせてOpus L2所見(REPORT§12逐語)の
+  SHOULD_FIX S1〜S7・NOTE N1・N7も本修正で反映(Fable指示)。
+- **実装1(Strategy L retry)**: `er003_v1_n3_01_scaffold_generate.py`
+  `_run_key_phrase_selection_strategy_l`の`max_attempts`を`1`固定から
+  `er003_key_words_production.MAX_PRODUCTION_RETRY_ATTEMPTS`(=2)へ
+  変更。2回目に到達した場合、戻り値・`keywords_runtime_metadata.json`・
+  telemetry(`kp_backend_telemetry_01/telemetry.jsonl`)へ
+  `strategy_l_attempts`/`retry_reached_second_attempt`を記録し、
+  printでも明示(既存の報告経路を使う、新UIなし)。
+- **実装2(DB Hybrid backup_item補完)**: DB Hybrid経路(Family X
+  Primary)のみ、`er030_key_phrase_db_hybrid_source_reference_
+  contract_01.build_json_schema()`へ`backup_item`(important役割の
+  予備候補1件、item schemaと同形、常に必須で返す)を追加。
+  `run_source_reference_contract_gate()`が、topicロール構成が不成立
+  (0件、または1件だが個別に無効[候補ID解決以外の点で不合格])かつ
+  それ以外は全item健全な場合にのみ、新規helper
+  `_identify_topic_backup_substitution_target()`で置換対象indexを
+  特定し、backup_itemを`key_phrase_role="important"`へ強制して5件目
+  として差し替え、`er003_key_words_min_unit.validate_min_unit_
+  selection()`へ新設した引数`topic_requirement_satisfied_via_backup
+  =True`でtopic=1件要求のみをスキップして再検証する(他のhard
+  requirement・重複・rank整合等の判定は無変更)。曖昧なケース(topicが
+  複数返る・target以外にも問題がある・backup候補IDが他item と重複/
+  解決不能)はNoneを返し、既存のINVALID→fallback経路(`fallback_
+  allowed`既定値含め無変更)へそのまま委ねる(新候補生成ロジックは
+  作らない)。`topic_slot_filled_by_backup`/`backup_substitution_
+  reason`をruntime_metadata/telemetryへ記録。Strategy L側schemaは
+  無変更。
+- **実装3(Prompt文言)**: DB Hybrid guidance
+  (`_FAMILY_X_SOURCE_REFERENCE_SELECTION_GUIDANCE`)へbackup_item
+  指示1段落を追加(「5件とは別にbackup_itemを1件、異なるcandidate ID
+  で選ぶ、topicが正しく選べた場合も必ず返す」)。共有Prompt
+  (`b1_p2_keywords_l_prompt_template.txt`、Strategy L/DB Hybrid両経路
+  共有)のTopic段落へ「該当する語・表現が見当たらない場合でもtopicを
+  空にせず最善候補を選ぶ」旨の1文を追加(Strategy L側にも一般的な
+  指示として適用、backup_item自体への言及はDB Hybrid固有guidanceに
+  限定しschema不整合を避けた)。
+- **実装4(Topic=重要語区分充足可、ユーザー既決事項3)**: `er030_key_
+  phrase_db_hybrid_source_reference_contract_01.py:172-173`の既存
+  guidance文言(「5個のうち少なくとも1個は重要な単語・単語群候補区分
+  から」)は無変更のまま維持。この条件を機械検証しているコードは元々
+  存在しない(guidanceのみ)ことを確認したため、topic由来の1件で充足
+  可という扱いはSSOT記録のみで対応し、実装変更は行っていない。
+- **実装5(runner-up DEFERRED)**: Strategy L側5枠外候補データの新出力
+  契約は本修正でも実装しない。`OPEN_ITEMS.md` OPEN-211を`DEFERRED`
+  (runner_up契約のみ、将来のUI設計時に再検討)へ更新。同OPEN内の
+  他2件の観測所見(候補プール薄記事でのTopic不在/Strategy L retry
+  未実装)は、実装1・2により解消済みとして同エントリ内に追記。
+- **Opus L2 SHOULD_FIX/NOTE反映**: S1(`_role_counts_from_items(result.
+  get("original_items"))`がstatus PASS時のみ機能していた観測性欠落を
+  是正、`_run_key_phrase_selection_strategy_l`の戻り値へ`role_counts`
+  を常時格納しtelemetry呼び出し側もそれを参照するよう変更)。S2
+  (`er035_kp_4plus1_topic_phrase_evidence_01_run.py`の`run_key_
+  phrases`呼び出しへ`synthetic=True`追加、OPEN-211へevidence起源の
+  article_id接頭辞注記)。S3(新規testを`er003_test_key_words_min_
+  unit_4plus1_01.py`へ`git mv`でrename、件数照合meta-test
+  `er003_test_p2j_investigate.py::test_combined_equals_sum_of_er002_
+  and_er003`のrename前後差分を実測で解消確認)。S4(`er034_key_phrase_
+  db_hybrid_source_reference_contract_trial_06_test.py`のfixtureへ
+  `"key_phrase_role": "important"`を1行追加)。S5(`er003_key_words_
+  production.py`の`PRODUCTION_PROMPT_TEMPLATE_PATH`直前へ「test専用・
+  4+1契約非対応」の1行コメント追加)。S6(共有Promptの「残り4個の基準」
+  6項目再掲を参照形へ縮約、候補区分列挙を一般化)。S7(REPORT/SPEC
+  記載の既存testファイル数を5→4へ是正)。N1(`er030_key_phrase_db_
+  hybrid_selector_01.py`の`role_structure_invalid`判定が`item_
+  reasons`も参照するよう1行追加)。N7(`PRODUCTION_ITEM_COUNT_
+  UNCHANGED == PRODUCTION_ITEM_COUNT`の等価性testを1件追加)。
+- **検証結果**: 新規test27件(`er003_test_key_words_min_unit_4plus1_
+  01.py`、うち7件が本修正で追加: retry 2回到達報告2件・S1 role_counts
+  観測性1件・DB Hybrid backup_item補完3件[missing→PASS/invalid item→
+  PASS/backup重複→INVALID]・N7等価性1件)+既存test4ファイルのfixture
+  更新、計331 unittest全PASS(`.venv/Scripts/python.exe -m unittest
+  er030_key_phrase_db_hybrid_source_reference_contract_01_test
+  er030_key_phrase_db_hybrid_family_x_production_wiring_01_test
+  er003_test_key_words_canonicalization er003_test_key_words_min_unit
+  er003_test_p2i_production er003_test_b1_p2`実行、pytest未導入のため
+  unittestで代替)。`run_project_regression.py`実行結果
+  `collected=3551 passed=3542 failed=7 errors=2`(委任文が事前提示した
+  既知baseline[failed=7/errors=2]と一致、機能regression0件。
+  collected件数の増分[3495→3551]は本タスク新規7件分に加え、並行実行中
+  の他管理ID[`FAMILY-XY-*`/`TTS-ALL-*`]のtest追加による集計対象拡大が
+  主因であり本タスクの管掌外)。`test_combined_equals_sum_of_er002_
+  and_er003`は本タスクのrename後も引き続き失敗するが、これは本タスク
+  管掌ファイルとは別の、より大規模な既存/並行ドリフト由来の不整合
+  (`OPEN-209`既知)であり、本タスク新規testファイル自体はrename後に
+  combined/prefix両patternへ一致することを直接確認した(是正済み)。
+  実データ(Guardrail¥20内、`synthetic=True`): DB Hybrid meta_a2実測
+  selection cost¥1.1945(`er035_output/kp_4plus1_evidence_02/
+  meta_a2/`、backup_itemを含む新schemaで実API疎通確認、topic正常選定
+  につきbackup未使用でPASS)。Strategy L melos_a2(同ディレクトリ
+  `melos_a2/`、`strategy_l_attempts=1`で1回目PASS、今回はretry未発火。
+  Strategy L選定costは既存OPEN-206の限界により未計測)。retry 2回目
+  到達・DB Hybrid backup補完いずれも実APIでは今回発火しなかったため、
+  両機構の正しさは上記の決定的単体test6件で確認した。
+- **Dangling Reference Check**: `backup_item|topic_slot_filled_by_
+  backup|retry_reached_second_attempt|strategy_l_attempts`を全`*.py`
+  へgrepし、ヒット5ファイル(実装4ファイル+新規test1ファイル)のみで
+  無関係な参照・取りこぼしなし。
+- **到達Status**: 引き続き`APPROVED_FOR_PRODUCTION`・Sonnet実装済み。
+  `PRODUCTION_WIRED`はSonnetが単独宣言しない(Fable Gate 3再判定待ち)。
+- **根拠**: `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`
+  「修正1回目」節、`er035_output/kp_4plus1_evidence_02/summary.json`。
+- commit: 本コミット(修正1回目実装+検証+SSOT反映)。
+
 ## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02: 修正3回目
 (Opus L2所見反映、SSOT反映)
 

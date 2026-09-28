@@ -133,6 +133,12 @@ def build_item_required_fields() -> tuple:
 def build_json_schema(candidate_ids: list) -> dict:
     props = build_item_schema_properties(candidate_ids)
     required = list(build_item_required_fields())
+    item_schema = {
+        "type": "object",
+        "properties": props,
+        "required": required,
+        "additionalProperties": False,
+    }
     return {
         "name": "b2_key_words_source_reference_contract_selection",
         "schema": {
@@ -142,15 +148,18 @@ def build_json_schema(candidate_ids: list) -> dict:
                     "type": "array",
                     "minItems": prod.PRODUCTION_ITEM_COUNT,
                     "maxItems": prod.PRODUCTION_ITEM_COUNT,
-                    "items": {
-                        "type": "object",
-                        "properties": props,
-                        "required": required,
-                        "additionalProperties": False,
-                    },
+                    "items": item_schema,
                 },
+                # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目
+                # (2026-09-28、ユーザー既決事項): important役割の予備候補を
+                # schema上必須で常に1件返させる(topicが正しく選べた場合も
+                # 含む)。topicが欠損・単独で無効な場合にのみ、Python側
+                # (`run_source_reference_contract_gate`)がこの候補を5件目
+                # として機械的に差し替える(新しい候補生成ロジックは作らない、
+                # DB Hybrid経路のみ、Strategy Lのschemaは無変更)。
+                "backup_item": item_schema,
             },
-            "required": ["items"],
+            "required": ["items", "backup_item"],
             "additionalProperties": False,
         },
         "strict": True,
@@ -180,6 +189,10 @@ _FAMILY_X_SOURCE_REFERENCE_SELECTION_GUIDANCE = """
   自由記述)は一切書かないでください。
 - surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
   ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現
+  (key_phrase_role="important")の予備候補を1件、上記5件とは異なる
+  candidate IDで選んでください。topicの候補が正しく選べた場合でも、
+  backup_itemは必ず1件返してください(その場合は採用されません)。
 """
 
 
@@ -495,6 +508,43 @@ def restore_source_fields(items: list, id_to_candidate: dict, sentence_reference
 
 
 # ------------------------------------------------------------
+# KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+# ユーザー既決事項): topic役割の構成が不成立(0件、または1件だが個別に
+# 無効)であり、かつそれ以外は全item健全な場合にのみ、backup_itemによる
+# 機械的な置換対象indexを返す。topicが2件以上返る・topic以外のitemにも
+# 問題がある等の曖昧なケースはNoneを返し、既存のINVALID→fallback経路へ
+# そのまま委ねる(新しい候補生成・複雑な自動修復はしない)。
+# ------------------------------------------------------------
+def _identify_topic_backup_substitution_target(items: list, validation_reasons: list,
+                                                 item_reasons: list) -> Optional[int]:
+    non_role_top_reasons = [r for r in (validation_reasons or []) if "key_phrase_role" not in r]
+    if non_role_top_reasons:
+        return None
+
+    item_reasons_by_index = {
+        r["index"]: [x for x in (r.get("reasons") or []) if "key_phrase_role" not in x]
+        for r in (item_reasons or [])
+    }
+
+    topic_indices = [i for i, it in enumerate(items)
+                      if isinstance(it, dict) and it.get("key_phrase_role") == "topic"]
+    if len(topic_indices) == 0:
+        if not items:
+            return None
+        target_index = max(range(len(items)),
+                            key=lambda i: items[i].get("rank", -1) if isinstance(items[i], dict) else -1)
+    elif len(topic_indices) == 1:
+        target_index = topic_indices[0]
+    else:
+        return None  # topicが複数返る曖昧なケース、backup 1件では機械的に解決しない
+
+    for i in range(len(items)):
+        if i != target_index and item_reasons_by_index.get(i):
+            return None  # target以外にも問題があり、backup 1件では吸収できない
+    return target_index
+
+
+# ------------------------------------------------------------
 # gate: parse(既存p2g.parse_selector_json、無変更)-> candidate_id解決
 # (本モジュール)-> source_sentence/source_spanを代入(本モジュール)->
 # p2g.validate_min_unit_selection(既存、無変更)、という順に呼ぶ薄い
@@ -512,6 +562,14 @@ def run_source_reference_contract_gate(
         article_id: str, make_selector_factory: Callable[[], Callable], article_text: str,
         id_to_candidate: dict, sentence_reference: dict,
         strategy_id: str = prod.STANDARD_STRATEGY_ID, family_profile: str = "family_x") -> dict:
+    """修正1回目(KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01、2026-09-28、
+    ユーザー既決事項): モデルは常にbackup_item(important役割の予備候補
+    1件)も返す。topicの構成が不成立(0件、または1件だが個別に無効)で、
+    かつそれ以外の全itemが健全な場合にのみ、backup_itemを5件目として
+    key_phrase_role="important"で機械的に置換し、再検証する
+    (`topic_requirement_satisfied_via_backup=True`でtopic=1件要求のみ
+    スキップ、他の判定は一切変更しない)。それ以外の曖昧なケースは
+    既存のINVALID→fallback経路へそのまま委ねる(新候補生成はしない)。"""
     _check_family_profile_supported(family_profile)
     selector_fn = make_selector_factory()
     try:
@@ -521,6 +579,7 @@ def run_source_reference_contract_gate(
             "status": "TECHNICAL_GENERATION_FAILED", "parsed": None, "model_id": None,
             "response_id": None, "error": f"{type(e).__name__}: {e}", "raw_text": None,
             "restore_telemetry": {}, "validation_reasons": [], "item_reasons": [],
+            "topic_slot_filled_by_backup": False, "backup_substitution_reason": None,
         }
 
     try:
@@ -530,15 +589,19 @@ def run_source_reference_contract_gate(
             "status": "PARSE_FAILED", "parsed": None, "model_id": model_id,
             "response_id": response_id, "error": str(e), "raw_text": raw_text,
             "restore_telemetry": {}, "validation_reasons": [], "item_reasons": [],
+            "topic_slot_filled_by_backup": False, "backup_substitution_reason": None,
         }
 
     restore_result = restore_source_fields(parsed.get("items", []), id_to_candidate, sentence_reference)
     if restore_result["unresolved"]:
-        # schemaのenum制約により通常発生しないはずの防御的分岐。
+        # schemaのenum制約により通常発生しないはずの防御的分岐(backup_item
+        # による救済はここでは行わない、itemsそのものの候補ID解決不能は
+        # topic欠損とは別種の異常)。
         return {
             "status": "UNRESOLVED_CANDIDATE_ID", "parsed": parsed, "model_id": model_id,
             "response_id": response_id, "raw_text": raw_text,
             "restore_telemetry": restore_result, "validation_reasons": [], "item_reasons": [],
+            "topic_slot_filled_by_backup": False, "backup_substitution_reason": None,
         }
 
     parsed_restored = dict(parsed)
@@ -547,11 +610,55 @@ def run_source_reference_contract_gate(
     validation = p2g.validate_min_unit_selection(
         parsed_with_metadata, article_text, expected_item_count=prod.PRODUCTION_ITEM_COUNT)
 
+    topic_slot_filled_by_backup = False
+    backup_substitution_reason = None
+    backup_raw = parsed.get("backup_item")
+    backup_item_restored = None
+    if isinstance(backup_raw, dict):
+        backup_restore = restore_source_fields([backup_raw], id_to_candidate, sentence_reference)
+        if not backup_restore["unresolved"]:
+            backup_item_restored = backup_restore["items"][0]
+
+    if validation["status"] != "KEY_WORDS_STRUCTURE_PASS" and backup_item_restored is not None:
+        target_index = _identify_topic_backup_substitution_target(
+            parsed_with_metadata["items"], validation["reasons"], validation["item_reasons"])
+        if target_index is None:
+            backup_substitution_reason = "no_unambiguous_topic_target"
+        else:
+            backup_candidate_id = backup_item_restored.get("resolved_candidate_id")
+            other_candidate_ids = {
+                it.get("resolved_candidate_id") for i, it in enumerate(parsed_with_metadata["items"])
+                if i != target_index}
+            if backup_candidate_id in other_candidate_ids:
+                backup_substitution_reason = "backup_candidate_duplicate_skip"
+            else:
+                substituted_items = list(parsed_with_metadata["items"])
+                original_target = substituted_items[target_index]
+                topic_was_missing = original_target.get("key_phrase_role") != "topic"
+                backup_final = dict(backup_item_restored)
+                backup_final["key_phrase_role"] = "important"
+                backup_final["rank"] = original_target.get("rank")
+                substituted_items[target_index] = backup_final
+                parsed_substituted = dict(parsed_with_metadata)
+                parsed_substituted["items"] = substituted_items
+                revalidation = p2g.validate_min_unit_selection(
+                    parsed_substituted, article_text, expected_item_count=prod.PRODUCTION_ITEM_COUNT,
+                    topic_requirement_satisfied_via_backup=True)
+                if revalidation["status"] == "KEY_WORDS_STRUCTURE_PASS":
+                    parsed_with_metadata = parsed_substituted
+                    validation = revalidation
+                    topic_slot_filled_by_backup = True
+                    backup_substitution_reason = "topic_missing" if topic_was_missing else "topic_item_invalid"
+                else:
+                    backup_substitution_reason = "backup_substitution_failed_other_checks"
+
     return {
         "status": validation["status"], "parsed": parsed_with_metadata,
         "validation_reasons": validation["reasons"], "item_reasons": validation["item_reasons"],
         "model_id": model_id, "response_id": response_id, "raw_text": raw_text,
         "restore_telemetry": restore_result,
+        "topic_slot_filled_by_backup": topic_slot_filled_by_backup,
+        "backup_substitution_reason": backup_substitution_reason,
     }
 
 

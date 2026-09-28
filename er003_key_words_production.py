@@ -41,6 +41,11 @@ SELECTOR_MODEL = p2g.SELECTOR_MODEL
 SELECTOR_REASONING_EFFORT = p2g.SELECTOR_REASONING_EFFORT
 SELECTOR_DEVELOPER_MESSAGE = p2g.SELECTOR_DEVELOPER_MESSAGE
 
+# 修正1回目(Opus L2所見S5、KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01、
+# 2026-09-28): このテンプレートはtest専用であり、4+1契約(key_phrase_role
+# 追記文言)には対応していない。本番経路は
+# `er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt`
+# (Strategy L/DB Hybrid共通)。
 PRODUCTION_PROMPT_TEMPLATE_PATH = "er003_v1_translator_briefs/b2_key_words_production_l_prompt_template.txt"
 
 # 確定済み入力はP2D/P2E/P2F/P2Gと完全に同一のものを使う。

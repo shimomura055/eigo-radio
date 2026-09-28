@@ -528,6 +528,12 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     model_id = gate_result["model_id"]
     response_id = gate_result["response_id"]
     restore_telemetry = gate_result.get("restore_telemetry", {})
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+    # ユーザー既決事項): topic欠損/単独無効をbackup_itemで機械的に置換
+    # できた場合、statusは既にgate側でPASSへ更新済み(parsedも置換後の
+    # 構成)。ここではobservability用にフラグ・理由のみ取り出す。
+    topic_slot_filled_by_backup = gate_result.get("topic_slot_filled_by_backup", False)
+    backup_substitution_reason = gate_result.get("backup_substitution_reason")
     attempts = [{
         "attempt": 1, "status": status,
         "validation_reasons": gate_result.get("validation_reasons", []),
@@ -535,6 +541,8 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         "raw_text": gate_result.get("raw_text"),
         "parsed": parsed, "model": model_id, "response_id": response_id,
         "restore_telemetry": {k: v for k, v in restore_telemetry.items() if k != "mismatch_details"},
+        "topic_slot_filled_by_backup": topic_slot_filled_by_backup,
+        "backup_substitution_reason": backup_substitution_reason,
     }]
 
     # 修正1回目(Opus L2所見B3): モデルルーティング契約違反は
@@ -599,6 +607,11 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         "duplicate_candidate_id_selection_count":
             restore_telemetry.get("duplicate_candidate_id_selection_count", 0),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
+        # ユーザー既決事項): topic欠損/単独無効をbackup_item(important役割の
+        # 予備候補)で機械的に補完した場合の観測用フラグ・理由。
+        "topic_slot_filled_by_backup": topic_slot_filled_by_backup,
+        "backup_substitution_reason": backup_substitution_reason,
     }
     with open(os.path.join(out_dir, "keywords_runtime_metadata.json"), "w", encoding="utf-8") as f:
         json.dump(runtime_metadata, f, ensure_ascii=False, indent=2)
@@ -610,13 +623,22 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         # (新しい分岐点を作らない)。telemetry識別のためのタグとして
         # `role_structure_invalid`のみ追加する(4+1件数不成立がreasonsに
         # 含まれるかをgrepするだけの非侵襲的な観測フラグ)。
+        #
+        # 修正1回目(Opus L2所見N1、2026-09-28): トップレベルreasons
+        # (validation_reasons)だけでなく、per-itemのenum不正
+        # (item_reasonsに入る、線423-424)も参照する(取りこぼし是正)。
         validation_reasons = gate_result.get("validation_reasons", []) or []
-        role_structure_invalid = any("key_phrase_role" in r for r in validation_reasons)
+        item_reasons = gate_result.get("item_reasons", []) or []
+        role_structure_invalid = (
+            any("key_phrase_role" in r for r in validation_reasons)
+            or any("key_phrase_role" in x for r in item_reasons for x in (r.get("reasons") or [])))
         raise DbHybridFailure(
             status, f"DB Hybrid selector gateがPASSしませんでした(status={status})",
             telemetry={"reason_code": status, "cost_jpy": round(cost_jpy, 4), "model_id": model_id,
                        "shortlist_total_count": shortlist_count,
-                       "detail_reason_code": "ROLE_STRUCTURE_INVALID" if role_structure_invalid else None})
+                       "detail_reason_code": "ROLE_STRUCTURE_INVALID" if role_structure_invalid else None,
+                       "topic_slot_filled_by_backup": topic_slot_filled_by_backup,
+                       "backup_substitution_reason": backup_substitution_reason})
 
     # 修正1回目(Opus L2所見S3): source_span/source_sentenceの生article_text
     # 照合(canonicalization前、machine screeningのみ)。
@@ -668,5 +690,7 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         "candidate_mismatch_suspected_count": restore_telemetry.get("mismatch_count", 0),
         "auxiliary_candidate_count": len(auxiliary_candidates),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
+        "topic_slot_filled_by_backup": topic_slot_filled_by_backup,
+        "backup_substitution_reason": backup_substitution_reason,
     }
     return result

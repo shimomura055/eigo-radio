@@ -352,7 +352,8 @@ _STRING_FIELDS = ("display_phrase", "source_span", "source_sentence", "ja_gloss"
 
 
 def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str,
-                                 expected_item_count: int = RESEARCH_ITEM_COUNT) -> dict:
+                                 expected_item_count: int = RESEARCH_ITEM_COUNT,
+                                 topic_requirement_satisfied_via_backup: bool = False) -> dict:
     """runtimeメタデータ付与後のselectionを決定的に検証する。比較・
     監査のための判定のみを行い、項目の追加・修正・入れ替えは一切
     行わない。article_id/strategy_idはruntime付与値を前提とし、model
@@ -362,7 +363,19 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
     expected_item_countはP2Gの研究版(10件)がデフォルトだが、この
     hard requirement判定ロジック自体はitem数に依存しないため、ER-003-
     P2Iの本番版(5件)validatorからもそのまま再利用できるよう引数化
-    している。"""
+    している。
+
+    topic_requirement_satisfied_via_backup(KEY-PHRASE-4PLUS1-TOPIC-
+    PHRASE-PRODUCTION-01 修正1回目、2026-09-28、ユーザー既決事項、既定
+    False): DB Hybrid経路が、topic役割の構成不成立(欠損または単独で
+    無効)をbackup_item(important役割の予備候補)で機械的に置換した後、
+    その置換結果を再検証する際にのみTrueを渡す。Trueの場合は下記の
+    topic=1件・important={expected_item_count-1}件の集計検証のみを
+    スキップし(置換により意図的にimportantのみの構成になるため)、
+    他のhard requirement・重複・rank整合等の判定は一切変更しない。
+    呼び出し元は`er030_key_phrase_db_hybrid_source_reference_contract_01.
+    run_source_reference_contract_gate`のみ(Strategy L経路は本引数を
+    渡さない、既定Falseのまま無変更)。"""
     reasons = []
     ok = True
     item_reasons: list = []
@@ -482,7 +495,7 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
     # この構成契約の対象外のためガードする。不成立は既存
     # KEY_WORDS_STRUCTURE_INVALIDへそのまま合流する(新しいstatus値は
     # 作らない)。
-    if expected_item_count == PRODUCTION_ITEM_COUNT_UNCHANGED:
+    if expected_item_count == PRODUCTION_ITEM_COUNT_UNCHANGED and not topic_requirement_satisfied_via_backup:
         role_counts = Counter(it.get("key_phrase_role") for it in items if isinstance(it, dict))
         if role_counts.get("topic", 0) != 1 or role_counts.get("important", 0) != expected_item_count - 1:
             reasons.append(
