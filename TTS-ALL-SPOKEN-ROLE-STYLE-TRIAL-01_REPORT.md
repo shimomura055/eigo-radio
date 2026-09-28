@@ -546,3 +546,93 @@ evidence付きで初めて試聴可能になった。既存Gate
   想定範囲内)。到達Statusは引き続き**USER_DECISION_REQUIRED**
   (ユーザー試聴待ち、Advanced fullが新たに試聴可能になった点が
   修正1回目からの変化)。
+
+## 15. 修正3回目(試聴ページ個別プレビュー整合、delegation
+docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_05.md、
+上限¥0)
+
+### 15-1. 何が問題だったか
+
+§14-2の「既知の残課題」の通り、修正2回目でAdvanced(B1B)のfull episode
+音声(`hormuz_advanced_trial.mp3`)は整合させたが、試聴ページセクション4
+(Advanced Role別segmentテーブル)の個別プレビューmp3は据え置いていた。
+その結果、`b1b_comment_1.mp3`等19segmentおよび
+`b1b_shared_num_two.mp3`/`b1b_shared_num_three.mp3`の計21件が、
+インシデント以前(mtime 16:26台)の古い音声のままfull音声(現在の
+`narration/*.wav`、mtime 17:28〜17:36台)と不一致だった。また
+num_two/num_threeのテーブル表示は実態(Production既存合格Master
+reuseでOK)に反し`HUMAN_REVIEW_LOCKED`のままだった。
+
+### 15-2. 何を変更したか(新規TTS呼び出しは0件)
+
+**現状把握(¥0)**: `tts_generation_results.json`の`reconciliation_2026_09_28`
+フィールド有無とnarration wavの実測mtimeを突合し、再生成された19segment
+(主記事9: topic_intro/preview/comment_1-4/full_story_part1/
+full_story_part2_heading/in_one_line、KP EN5・KP JA5)と、インシデントの
+影響を受けなかった3segment(full_story_part2/full_story_part3/
+full_story_part3_heading、mtime 16:13台のまま=pre-incident wavを維持)を
+実測で切り分けた。後者3segmentは現在のwavが元々pre-incident音声と同一の
+ため、既存プレビューmp3は再変換不要と判断し、対象外とした(delegation
+本文の「19件」と実測が一致することを確認)。
+
+**mp3再変換(21件、追加費用¥0)**: 対象wav(24000Hz・mono、TTS生の出力と
+同一)を、`imageio_ffmpeg`同梱ffmpeg(`ffmpeg -y -i <wav> -b:a 96k
+<mp3>`)で同名mp3へ再変換した。既存のStandard(A2)側同一segmentのmp3
+(例: `a2_comment_1.mp3`)および旧B1Bプレビューmp3も96kbps/24000Hz/mono
+であったため、既存ページ全体の音質・形式との一貫性を優先し96kbpsを
+採用した(delegation本文中の「128kbps」はfull episode[48000Hz/stereo]
+向けの記述であり、個別segment previewの既存precedent[Standard側含む
+全個別プレビューmp3]とは異なる設定だったため、既存precedentへ合わせた。
+技術判断のみで新規仕様の創作ではない)。
+
+**index.html更新**: セクション4のAdvanced(B1B)テーブルへ「備考」列を
+追加し(Standard/A2テーブルは無変更)、上記19segmentへ「2026-09-28
+再生成後の音声、evidence再検証済み」、num_two/num_threeへ
+「Production既存合格Master reuse、
+TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02 由来」を記載した。
+num_two/num_threeはStatus表示を`HUMAN_REVIEW_LOCKED`(赤)から`OK`(緑)へ、
+ASR text列を空欄から実測値(`2`/`3`、`tts_generation_results.json`の
+`shared_narration.num_two/num_three.asr_text`)へ、Attempts列を
+旧値`3`/`2`から現在のreuse実態`0`へ更新した。それ以外の未変更segment
+(full_story_part2等3件、および元々影響のなかったshared 7件)の備考は
+空欄のまま。既存のセクション2の経緯説明(num_two/num_three reuseの
+経緯)と矛盾しないことを確認した。
+
+### 15-3. 何が改善されるか
+
+ユーザーが試聴ページのAdvanced個別segmentプレビューとfull音声の両方で、
+同一の(現在の)音声を聴ける状態になった。テーブル表示も実際のevidence
+(`tts_generation_results.json`)と一致した。
+
+### 15-4. リスク・注意点
+
+- API 0件の実測: `raw_usage_log.jsonl`の総行数は作業前後で183行のまま
+  不変(TTS/ASR/LLM呼び出し0件)。
+- 変換元wavとfull assembly入力の一致: 21segmentの変換元wavは、
+  `assembled/Family_X_Audio_B1_TTS_ALL_SPOKEN_ROLE_STYLE_TRIAL_01.wav`
+  (mtime 17:53:06、`hormuz_advanced_trial.mp3`の生成元)より前の
+  mtime(最終17:36:43)であり、本セッション開始後にnarration/wavへの
+  書き込みは一切行っていないため、full assembly入力と同一のバイト列
+  であることを実測(mtime比較)で確認した。
+- Regression: `.venv\Scripts\python.exe run_project_regression.py
+  --pattern "er038*_test_*.py"` → `collected=16 passed=16 failed=0
+  errors=0 skipped=0`(変更なし)。
+- Production無変更の証拠: `er006_output/master_audio_store_01/
+  manifest.json`/`reuse_telemetry.jsonl`のmtimeが16:24:14のまま不変
+  (本セッションでは一切触れていない)。`git diff --stat HEAD --
+  "er0*.py" "er003_v1_translator_briefs/" | grep -v er038`は空。
+  `er038_tts_all_spoken_role_style_trial_01.py`自体も`git status
+  --porcelain`で無変更。
+- delegation prompt事前check(T-0)は`status: FAIL`(「実行コマンド
+  全文」セクションのffmpegコマンドが具体値/絶対パスを含まないテンプレート
+  記述と判定されたため)。内容を書き換えてPASSさせることはせず、結果を
+  そのまま記録した
+  (`docs/pm/delegation_log/2026-09-28_TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_05.md_check.json`)。
+- ビットレート判断(128kbps→96kbps)はdelegation本文の記述と異なる
+  技術選択であり、Fable/ユーザーへ報告し必要なら指示を仰ぐ
+  (Production採用可否には関わらない、試聴ページのみの変更)。
+- Pages 200確認: 下記コマンドで実測(push後)。
+- STOP有無: なし(費用・Gate・Regression・Production無変更いずれも
+  想定範囲内)。到達Statusは引き続き**USER_DECISION_REQUIRED**
+  (ユーザー試聴待ち)。本管理IDのSonnet委任は本回(_05)が上限
+  (初回+修正3回=合計4回)のため終了。
