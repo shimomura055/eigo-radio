@@ -11561,3 +11561,40 @@ Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
   LITE-PRODUCTION-WIRING-FAMILY-X-02_06.md`、`TTS-GEMINI-3.8-FLASH-
   LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md`§10。
 - commit: `ee280e76`。
+
+## EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02: 修正1回目
+(Opus L3 BLOCKER-1反映、SSOT反映)
+
+- **ユーザー承認原文要旨(2026-09-28)**: 「ASR strict Tier 1実装漏れ修正
+  承認。新仕様追加ではなく承認済みstrict Tier 1仕様への適合修正として
+  扱う。句読点atom必須条件の正しい実装/false accept防止/`'s`のDEFERRED
+  維持/否定語保護の二重防御/分かち書き・apostrophe negative test追加/
+  telemetry汚染の隔離/REPORT・SSOT記載是正/既存NEGATIVE fixture全再実行/
+  false accept 0確認。受理範囲拡張は不要、拡張が必要になった場合はSTOP。
+  Flash-Lite/ASR共にGate 3完了までは`PRODUCTION_WIRED`としないこと」。
+- **Opus L3診断(BLOCKER 1件/SHOULD_FIX 5件/NOTE多数)対応**: BLOCKER-1
+  (句読点atom必須未実装)→`_closed_punctuation_diff_ok()`へ条件(4)(5)を
+  追加し実装済み。SF-1(telemetry汚染)→setUpModule/tearDownModuleで隔離
+  し母数不変(4,977→4,977)を実測確認。SF-2(恒真assert)→独立不変条件へ
+  置換。SF-3/SF-5/N-6〜N-9→REPORT・設計書の記載是正。`'s`由来の単独`s`
+  無視処理は引き続きDEFERRED(事実と整合、未実装のまま)。
+- **検証結果**: 新規/既存33件+既存29件、ファイル全体62 unittest全件
+  PASS(false accept 0、Tier1直呼び+実配線[segment_id="full_story_
+  part1"]両経路で確認)。既存corpus(Trial-01 68件+OPEN-123 57件)含め
+  無回帰。オフライン再判定reversal 7→7(不変、Opus予測どおり)。
+  project-wide regression: collected=3506・failed=9・errors=2(9+2すべて
+  個別確認し本タスク無関係[経年drift3件・byte-parity3件・他Sonnet
+  Flash-Lite並行作業起因2件・er015 import guard起因2件])。
+  Dangling Reference Check: 検出なし。
+- **重要な注記**: "not able"/"notable"等の6negativeはTier1層では正しく
+  非等価(false accept 0)判定だが、実配線経路の最終`should_pass`は既存
+  baseline側の独立した`despaced()`正規化(本修正の変更範囲外)により別途
+  PASSする場合がある(実測: NORMALIZED_MATCH)。これはBLOCKER-1修正が
+  新たに開けた穴ではなく従来からの既存挙動(Opus L3「緩和事情」)。
+- **到達Status**: `PRODUCTION_WIRED`は本エントリでは宣言しない(Fable
+  Gate 3判定待ち)。runtime evidence: 新規則の実経路発火は(b)実artifact
+  再判定のみで確認済み、(c)実TTS+実ASR 2segmentでは未発火(Phase 2から
+  変化なし、本修正では追加TTS/ASR実行なし、費用¥0)。
+- **根拠**: `EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md`
+  「修正1回目」節、`docs/pm/RESULT_PACKET_ASR4.md`。
+- commit: `7af9b22f`。
