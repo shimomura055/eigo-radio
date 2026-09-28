@@ -122,13 +122,20 @@ class ProductionConstantsUnchangedTest(unittest.TestCase):
     """Production style定数の不変性の確認。"""
 
     def test_production_6role_style_constants_unchanged(self):
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # ユーザー正式決定(E2、TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02)を
+        # TOPIC_INTRO/FULL_STORY/IN_ONE_LINEへ反映したため期待値を更新
+        # (E0→E2、逐語)。PREVIEW/COMMENT/HEADING_READOUTはE2未検証のため
+        # 不変(E0のまま)。
         self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN, {
-            "TOPIC_INTRO": "brief, clear, engaging news topic introduction",
+            "TOPIC_INTRO": "brief, clear, engaging news topic introduction with natural emphasis on the topic; "
+                           "not dramatic.",
             "PREVIEW": "calm, conversational",
             "COMMENT": "calm, conversational",
-            "FULL_STORY": "calm, steady news narration",
+            "FULL_STORY": "calm, steady news narration with natural emphasis at key points and turns; "
+                          "not dramatic.",
             "HEADING_READOUT": "brief and clear",
-            "IN_ONE_LINE": "concise, clear",
+            "IN_ONE_LINE": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.",
         })
         self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK, ["natural, clear, conversational", "clear"])
         payload = json.dumps(fl_styles.FAMILY_X_ROLE_STYLE_EN, sort_keys=True, ensure_ascii=False)
@@ -136,12 +143,18 @@ class ProductionConstantsUnchangedTest(unittest.TestCase):
         self.assertEqual(len(actual_hash), 64)
 
     def test_trial_role_style_reuses_existing_6role_values_unchanged(self):
-        self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["TOPIC_INTRO"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # trial.TRIAL_ROLE_STYLE_EN(このTrialスクリプト自身、無変更・E0の
+        # まま)と、Production側fl_styles.FAMILY_X_ROLE_STYLE_EN(E2へ更新
+        # 済み)は、TOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleではもはや
+        # 一致しない(意図的な差分、E0→E2)。PREVIEW/COMMENT/HEADING_READOUT
+        # の3roleはE2未検証のためProduction側も不変で、引き続き一致する。
         self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["PREVIEW"], fl_styles.FAMILY_X_ROLE_STYLE_EN["PREVIEW"])
         self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["COMMENT"], fl_styles.FAMILY_X_ROLE_STYLE_EN["COMMENT"])
-        self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["FULL_STORY"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
         self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["HEADING"], fl_styles.FAMILY_X_ROLE_STYLE_EN["HEADING_READOUT"])
-        self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["IN_ONE_LINE"], fl_styles.FAMILY_X_ROLE_STYLE_EN["IN_ONE_LINE"])
+        self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["TOPIC_INTRO"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
+        self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["FULL_STORY"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
+        self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["IN_ONE_LINE"], fl_styles.FAMILY_X_ROLE_STYLE_EN["IN_ONE_LINE"])
 
 
 class NoWpmGuardTest(unittest.TestCase):

@@ -682,10 +682,15 @@ def generate_family_x_a2_segments(
     選択時のみ、speech_metadata.styleへ「6-role短い descriptor」+
     「既承認の減速instruction(逐語)」を連結した文字列を渡す
     (post-process自体は`generate_a2_segment_with_slowdown`内で無変更)。
-    JA segment(japanese_title/preview/comment_1-4)は既存
-    `generate_a2_japanese_with_reading_safety`がstyle_prefix_override
-    自体を持たないため無変更(既存JAPANESE_STYLE_PREFIX/minimal
-    instructionテキストをそのまま流用、設計書§(c-2)どおり)。"""
+    TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+    上記docstringの「JA segment(japanese_title/preview/comment_1-4)は
+    style_prefix_override自体を持たないため無変更」を更新する。
+    `generate_a2_japanese_with_reading_safety`/`with_fallback`へ
+    `style_prefix_override`引数を追加し、preview/comment_1-4のみ
+    `_role_style_ja()`(下記)経由でJ3(TTS-VARIABLE-SPOKEN-ROLE-STYLE-
+    TRIAL-02実測・ユーザー承認)を渡す。japanese_titleはTrial-02の
+    JA_SEGMENTS対象外のため引き続き無変更(既存JAPANESE_STYLE_PREFIX/
+    minimal instructionテキストをそのまま流用)。"""
     import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 
     def _role_style(role: str) -> str | None:
@@ -710,6 +715,20 @@ def generate_family_x_a2_segments(
         import er002_common as common
         common.assert_no_wpm_specification(combined)
         return combined
+
+    # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+    # ユーザー正式決定(J3、APPROVED_FOR_PRODUCTION、TTS-VARIABLE-SPOKEN-
+    # ROLE-STYLE-TRIAL-02)。EN側_role_style()と同じbackendゲート
+    # (speech_metadata_flash_lite明示時のみ)。既定backendではNoneを返し、
+    # generate_a2_japanese_with_reading_safetyのstyle_prefix_override既定
+    # None(=JAPANESE_STYLE_PREFIXのまま)と同じ挙動(他Family無影響)。
+    # Family Xランナーのみが参照する(Dangling Reference Check、EN側と対称)。
+    # 適用範囲はStandard(A2)のpreview/comment_1〜4のみ(japanese_title/Key
+    # Phraseは対象外、Trial-02のJA_SEGMENTS_REQUIRED/OPTIONALに合わせる)。
+    def _role_style_ja() -> str | None:
+        if tts_backend != "speech_metadata_flash_lite":
+            return None
+        return fl_styles.FAMILY_X_ROLE_STYLE_JA
 
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
@@ -757,6 +776,7 @@ def generate_family_x_a2_segments(
                 _cached, name, f"{narration_dir}/{name}.wav",
                 lambda text=text: n3_tts.generate_a2_japanese_with_reading_safety(
                     text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text),
+                    style_prefix_override=_role_style_ja(),
                     tts_backend=tts_backend), expected_text=text)
 
     for name, text in (

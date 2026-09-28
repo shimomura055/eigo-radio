@@ -482,7 +482,13 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                         # (c.generate_narration_snippet_verified_strict)・
                                         # fallback経路(_generate_a2_japanese_minimal_instruction)
                                         # の両方に転送する。
-                                        tts_backend: str = "structured_separation") -> dict:
+                                        tts_backend: str = "structured_separation",
+                                        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、
+                                        # 2026-09-28、既定None=従来挙動): 標準経路
+                                        # (c.generate_narration_snippet_verified_strict)にのみ転送する。
+                                        # fallback経路(_generate_a2_japanese_minimal_instruction)は
+                                        # FAMILY-X-02 D-1の方針どおり既存テキスト流用のまま変更しない。
+                                        style_prefix_override: str | None = None) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
@@ -506,7 +512,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
-        expected_readings=expected_readings, tts_backend=tts_backend)
+        expected_readings=expected_readings, tts_backend=tts_backend,
+        style_prefix_override=style_prefix_override)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -586,7 +593,11 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
                                               # (2026-09-27、既定"structured_separation"で既存挙動と
                                               # byte-identical): Family X runnerのみが明示的に
                                               # "speech_metadata_flash_lite"を渡す。
-                                              tts_backend: str = "structured_separation") -> dict:
+                                              tts_backend: str = "structured_separation",
+                                              # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、
+                                              # 2026-09-28、既定None=従来のJAPANESE_STYLE_PREFIXを維持):
+                                              # generate_a2_japanese_with_fallbackへそのまま転送する。
+                                              style_prefix_override: str | None = None) -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
     # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
@@ -646,7 +657,8 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     } or None
     r = generate_a2_japanese_with_fallback(
         tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
-        expected_readings=expected_readings, tts_backend=tts_backend)
+        expected_readings=expected_readings, tts_backend=tts_backend,
+        style_prefix_override=style_prefix_override)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)

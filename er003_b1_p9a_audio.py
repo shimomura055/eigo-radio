@@ -218,14 +218,20 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
 
     style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): 指定するとENGLISH_STYLE_PREFIX/
-    JAPANESE_STYLE_PREFIXの代わりにこの文字列を使う(A2英語のみに
-    「わずかに遅く」の指示を追加するためのA2専用経路。声・モデル・
-    fallback経路は無変更、B1側はこの引数を渡さないため影響なし)。"""
+    JAPANESE_STYLE_PREFIXの代わりにこの文字列を使う(元々はA2英語の
+    「わずかに遅く」の指示を追加するためのA2専用経路だった。
+    TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01[Phase B、2026-09-28]で
+    ja分岐もen分岐と対称化し、Family X Standard[A2]のJA preview/
+    comment_1-4へJ3 role styleを渡せるようにした。既定None時の挙動は
+    EN/JAとも従来通り、声・モデル・fallback経路は無変更)。"""
     if language == "en":
         style_prefix, model_name = style_prefix_override or ENGLISH_STYLE_PREFIX, ENGLISH_MODEL_NAME
         default_call_fn_factory = _make_english_call_fn
     elif language == "ja":
-        style_prefix, model_name = JAPANESE_STYLE_PREFIX, JAPANESE_MODEL_NAME
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # EN分岐(L225)と対称化。既定style_prefix_override=Noneのため、
+        # 既存の全呼び出し元(Family A/B/C/X問わず)は挙動無変化。
+        style_prefix, model_name = style_prefix_override or JAPANESE_STYLE_PREFIX, JAPANESE_MODEL_NAME
         default_call_fn_factory = _make_japanese_call_fn
     else:
         raise ValueError(f"unsupported language: {language}")
@@ -282,6 +288,9 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         "model": actual_model_name, "voice": VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
         "sha256": sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"], "tts_backend": tts_backend,
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # runtime evidence用に実際に使われたstyle文字列を記録する(新規計算なし)。
+        "style_prefix": style_prefix,
     }
 
 

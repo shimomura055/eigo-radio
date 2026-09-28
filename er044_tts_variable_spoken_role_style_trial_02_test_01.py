@@ -29,11 +29,15 @@ class TestPatternWordingVerbatim(unittest.TestCase):
             "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
             "演技がかった話し方は避けてください。")
 
-    def test_e0_matches_production_family_x_role_style(self):
+    def test_e2_matches_production_family_x_role_style(self):
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # ユーザー正式決定によりProduction側(fl_styles.FAMILY_X_ROLE_STYLE_EN)
+        # はE0からE2へ更新済みのため、比較対象をE0からE2へ更新する(このTrial
+        # スクリプト自身のE_PATTERN_STYLES辞書は無変更、逐語比較のみ変更)。
         import er033_tts_flash_lite_family_x_styles_01 as fl_styles
-        self.assertEqual(vr2.E_PATTERN_STYLES["FULL_STORY"]["E0"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
-        self.assertEqual(vr2.E_PATTERN_STYLES["IN_ONE_LINE"]["E0"], fl_styles.FAMILY_X_ROLE_STYLE_EN["IN_ONE_LINE"])
-        self.assertEqual(vr2.E_PATTERN_STYLES["TOPIC_INTRO"]["E0"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
+        self.assertEqual(vr2.E_PATTERN_STYLES["FULL_STORY"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
+        self.assertEqual(vr2.E_PATTERN_STYLES["IN_ONE_LINE"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["IN_ONE_LINE"])
+        self.assertEqual(vr2.E_PATTERN_STYLES["TOPIC_INTRO"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
 
     def test_all_new_styles_have_no_wpm_specification(self):
         import er002_common as common

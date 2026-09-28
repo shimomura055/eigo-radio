@@ -33,13 +33,19 @@ FAMILY_X_FLASH_LITE_MODEL_NAME = "gemini-3.8-flash-lite-tts"
 # 英語6-role style(Trial実測値、attempt1専用。Stage3
 # ROLE_ATTEMPT1_STYLEをそのまま転記)
 # ------------------------------------------------------------
+# TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+# TOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3値を、TTS-VARIABLE-SPOKEN-ROLE-
+# STYLE-TRIAL-02でユーザーが正式決定・APPROVED_FOR_PRODUCTIONとした
+# E2実測値へ更新(逐語転記、新規style考案なし)。PREVIEW/COMMENT/
+# HEADING_READOUTはE2未検証のため不変(E0のまま)。
 FAMILY_X_ROLE_STYLE_EN = {
-    "TOPIC_INTRO": "brief, clear, engaging news topic introduction",
+    "TOPIC_INTRO": "brief, clear, engaging news topic introduction with natural emphasis on the topic; "
+                   "not dramatic.",
     "PREVIEW": "calm, conversational",
     "COMMENT": "calm, conversational",
-    "FULL_STORY": "calm, steady news narration",
+    "FULL_STORY": "calm, steady news narration with natural emphasis at key points and turns; not dramatic.",
     "HEADING_READOUT": "brief and clear",
-    "IN_ONE_LINE": "concise, clear",
+    "IN_ONE_LINE": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.",
 }
 
 # Trial Stage3のattempt2/3 fallback style(FALLBACK_STYLESをそのまま転記)。
@@ -55,27 +61,37 @@ FAMILY_X_ROLE_STYLE_EN = {
 FAMILY_X_ROLE_STYLE_EN_FALLBACK = ["natural, clear, conversational", "clear"]
 
 # ------------------------------------------------------------
-# 日本語style(Trial未実測、設計書§(c-2)の判断を踏まえた技術決定)
+# 日本語style(Phase 1: Trial未実測、Phase 2: TRIAL-02実測・ユーザー
+# 承認済みのJ3を採用)
 # ------------------------------------------------------------
-# Trial(Stage1-3)はFamily X Hormuz B1Bの英語12segmentのみを対象とし、
-# 日本語segment(A2 preview/comment/japanese_title/KP meaning等)は一度も
-# 実際にspeech_metadata方式で生成・ASR検証されていない。設計書§(c-2)は
-# 「日本語側の発音解決はtext自体の書き換えであり、speech_metadata方式の
-# styleフィールドとは無関係な層のため、追加設計・変更は不要」と判断して
-# いるが、これは「JAのtext処理は無変更でよい」という結論であり、
-# speech_metadata.styleへ何を渡すべきかは実測データが無いままである。
-# 以下の値は、既存Structured Separation方式で使っているinstruction文字列
-# (p9a.JAPANESE_STYLE_PREFIX等)をそのまま流用する設計方針(Production
-# 共有関数側の実装、Dangling Reference Check維持のためこのモジュール内には
-# 転記しない)を補助する短い代替表現として用意したが、**Phase 1時点では
-# Family Xランナーからは参照しない**(JA側はstyle_prefix_overrideを渡さず、
-# 各共有関数が保持する既存JAPANESE_STYLE_PREFIX/MINIMAL_INSTRUCTION_
-# PREFIX_JA等のテキストをそのままspeech_metadata.styleへ転用する)。
-# Phase 2でJA実音声evidenceが揃うまでUSER_DECISION_REQUIREDではなく
-# 「Trial未検証」の状態として明示するための記録として残す。
+# Trial(Stage1-3、Phase 1時点)はFamily X Hormuz B1Bの英語12segmentのみを
+# 対象とし、日本語segment(A2 preview/comment/japanese_title/KP meaning等)
+# は一度もspeech_metadata方式で生成・ASR検証されていなかった。設計書
+# §(c-2)は「日本語側の発音解決はtext自体の書き換えであり、speech_metadata
+# 方式のstyleフィールドとは無関係な層のため、追加設計・変更は不要」と
+# 判断していたが、これは「JAのtext処理は無変更でよい」という結論であり、
+# speech_metadata.styleへ何を渡すべきかは実測データが無いままだった。
+# **Phase 1時点では**以下のFAMILY_X_JA_STYLE_NOTEの方針どおりFamily X
+# ランナーからは参照せず、各共有関数が保持する既存JAPANESE_STYLE_PREFIX/
+# MINIMAL_INSTRUCTION_PREFIX_JA等のテキストをそのままspeech_metadata.style
+# へ転用していた。
 FAMILY_X_JA_STYLE_NOTE = (
     "TRIAL_UNVALIDATED: JA speech_metadata.style content is not yet "
     "evidence-based; Phase 1 reuses each shared function's existing "
     "JAPANESE_STYLE_PREFIX / minimal-instruction text verbatim as the "
     "style field (no new short JA style invented here)."
+)
+
+# TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+# TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02(er044.J_PATTERN_STYLES["J3"])で
+# 実測・ASR検証・ユーザー正式決定(APPROVED_FOR_PRODUCTION)されたJ3を、
+# 新規style考案なしで逐語転記する。日本語はEN側のようなrole別辞書ではなく、
+# role非依存の単一style文字列(Family X Standard[A2]のJA preview/
+# comment_1〜4へ一律適用、japanese_title・Key Phraseは対象外)。
+# `speech_metadata_flash_lite` backend明示時のみ参照される(EN 6-roleと
+# 同じbackendゲート、既定backendでは`er019._role_style_ja()`がNoneを返し
+# JAPANESE_STYLE_PREFIXのまま無変更)。
+FAMILY_X_ROLE_STYLE_JA = (
+    "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
+    "演技がかった話し方は避けてください。"
 )

@@ -14,8 +14,16 @@ from pathlib import Path
 
 import er019_family_x_audio_plan_01 as plan
 import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+import er044_tts_variable_spoken_role_style_trial_02 as trial02
 
 _STAGE3_PATH = Path(__file__).with_name("er022_tts_gemini_3_8_flash_lite_next_trial_01_stage3.py")
+
+# TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28)で
+# TOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleがE0(Stage3実測値)からE2
+# (TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02実測・ユーザー承認値)へ更新
+# されたため、E0のままのroleとE2へ更新されたroleを分けてテストする。
+_E2_UPDATED_ROLES = frozenset({"TOPIC_INTRO", "FULL_STORY", "IN_ONE_LINE"})
+_E0_UNCHANGED_ROLES = frozenset({"PREVIEW", "COMMENT", "HEADING_READOUT"})
 
 _SIX_ROLES = frozenset({
     "TOPIC_INTRO", "PREVIEW", "COMMENT", "FULL_STORY", "HEADING_READOUT", "IN_ONE_LINE",
@@ -37,9 +45,21 @@ class RoleStyleMatchesTrialEvidenceTests(unittest.TestCase):
     def test_stage3_script_exists(self):
         self.assertTrue(_STAGE3_PATH.exists(), f"Trial script not found: {_STAGE3_PATH}")
 
-    def test_role_style_en_byte_identical_to_trial_stage3(self):
+    def test_unchanged_role_style_en_byte_identical_to_trial_stage3(self):
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B):
+        # PREVIEW/COMMENT/HEADING_READOUTはE2未検証のため不変のまま(E0)。
         stage3 = _load_stage3_module()
-        self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN, stage3.ROLE_ATTEMPT1_STYLE)
+        for role in _E0_UNCHANGED_ROLES:
+            with self.subTest(role=role):
+                self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN[role], stage3.ROLE_ATTEMPT1_STYLE[role])
+
+    def test_updated_role_style_en_byte_identical_to_trial02_e2(self):
+        # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
+        # ユーザー正式決定(E2、TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02)を
+        # 逐語反映したことを確認する(stage3のE0とはもはや異なる)。
+        for role in _E2_UPDATED_ROLES:
+            with self.subTest(role=role):
+                self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN[role], trial02.E_PATTERN_STYLES[role]["E2"])
 
     def test_fallback_styles_byte_identical_to_trial_stage3(self):
         stage3 = _load_stage3_module()

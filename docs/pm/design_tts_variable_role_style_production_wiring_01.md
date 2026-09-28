@@ -529,6 +529,41 @@ snippet`/`generate_narration_snippet_verified_strict`)の戻り値には
    flash_lite`限定にするか、既定backend(`structured_separation`)にも
    拡張するかはSTOP候補(ユーザー/Fable判断が必要、本Phase Aでは判断
    しない)。
+8. **【Phase B追記】B1B(Advanced)EN経路のruntime evidence欠落**: §4の
+   runtime evidence追加(`p9a.generate_narration_snippet`戻り値への
+   `style_prefix`フィールド)は、A2(Standard)側が経由する
+   `c.generate_narration_snippet_verified_strict`→`p9a.generate_
+   narration_snippet`の呼び出し連鎖には伝播するが、B1B(Advanced)の
+   `voice01.generate_charon_english`/`news_tail_fix.generate_news_
+   narration_wide_margin`/`point_headings.generate`は独自の戻り値dictを
+   構築しており(`flw.resolve_tts_call_and_prompt`を直接呼ぶ、p9aの
+   dictを経由しない設計)、`style_prefix`フィールドを持たない。実際の
+   TTS呼び出しにはE2が正しく使われていること自体は、確認用再生成の
+   `instruction_type`(fallbackでないことの間接証拠)とコード読解
+   (`standard_style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_
+   PREFIX`を`flw.resolve_tts_call_and_prompt`へそのまま渡す設計)で
+   確認したが、JSON上の直接的な文字列証拠は無い。この3ファイルは本
+   タスクのファイル所有範囲外(delegation記載の4ファイルに含まれない)
+   のため、Phase Bでは変更していない。B1B側にも同様の`style_prefix`
+   フィールドを追加するかはFable/Opus L2判断が必要な追加スコープ候補
+   として申し送る(この3ファイルへの変更は本タスクの「共有関数」変更の
+   範囲を超え、Family A/B/C[legacy]が広く共有するTTS層への影響評価が
+   追加で必要になるため、独断で実装しなかった)。
+9. **【Phase B追記】確認用再生成で1segment STOPPED**: `a2_en_full_story_
+   part1`が"Act One/Two/Three"の数詞読み(`TRUE_CONTENT_MISMATCH`)で
+   standard 2回+fallback 1回とも不合格になった。これはOPEN-201のPhase 3
+   実測(同一記事・同一箇所)で既に確認済みのcontent-classification事象
+   であり、Production full pipelineでは`retry_primitive`経由のLocal
+   Rewrite Recovery(Luna)が自己解決する既存の安全網が働く想定だが、
+   本確認スクリプトはrunnerのCLIがsegment単位の部分実行を提供しない
+   ため直接生成関数を呼ぶ代替方式を採っており、Local Rewrite
+   Recovery層・`enable_connected_speech_equivalence_layer`・
+   `enable_repetition_qa`を意図的に含めていない(runnerの実際の呼び出し
+   と完全一致しない簡略版)。J3/E2配線自体が原因である可能性は低いと
+   判断したが(style変更ではなく数詞表記の読み上げの問題)、Fable/Opus
+   L2が必要と判断すれば、runner本体を通した完全な経路でのRegressionを
+   追加実施する余地がある(追加費用が発生するため、本タスクの¥20上限
+   内では実施しなかった)。
 
 ---
 
@@ -555,3 +590,84 @@ snippet`/`generate_narration_snippet_verified_strict`)の戻り値には
   設計書側の§2/§4は個別には未読了(er044本体で同等の情報[J3/E2の値・
   置換方式・JA_SEGMENTS範囲]を直接確認できたため。Phase Bで必要になれば
   追加で読む)。
+
+---
+
+## 9. Phase B実施記録(2026-09-28、委任`_02`、実装完了)
+
+Phase Aの最小diff案(§3)を、行番号までほぼそのまま実装した(実装時点で
+er003_b1_p9a_audio.py/er003_v1_n3_01_tts_generate.pyの該当行番号は
+Phase A記載どおりでズレていなかった)。
+
+### 9-1. 実装差分(要約、詳細は`git diff`参照)
+
+- `er003_b1_p9a_audio.py`: L228付近のja分岐を`style_prefix_override or
+  JAPANESE_STYLE_PREFIX`へ変更(§3-2 a)どおり)。戻り値dictへ
+  `"style_prefix": style_prefix`を追加(§4のruntime evidence案どおり)。
+  docstringも更新。
+- `er003_v1_n3_01_tts_generate.py`: `generate_a2_japanese_with_fallback`/
+  `generate_a2_japanese_with_reading_safety`へ`style_prefix_override:
+  str | None = None`を追加し、標準経路(`c.generate_narration_snippet_
+  verified_strict`)へのみ転送(fallback[`_generate_a2_japanese_minimal_
+  instruction`]は§3-2 b)どおり無変更)。
+- `er033_tts_flash_lite_family_x_styles_01.py`: `FAMILY_X_ROLE_STYLE_JA`
+  (J3逐語)を新設(§3-2 d)どおり)。`FAMILY_X_ROLE_STYLE_EN`の
+  TOPIC_INTRO/FULL_STORY/IN_ONE_LINEをE2へ値更新(§3-1どおり、新規
+  version付き定数は追加しない設計を踏襲)。`style_instruction_version`
+  相当の識別子はこのモジュールには存在しない(可変segmentはMaster Audio
+  Store対象外のため、§2(d)の設計どおりversion管理の対象外。bump不要と
+  判断)。
+- `er019_family_x_audio_production_runner_01.py`:
+  `generate_family_x_a2_segments()`内に`_role_style_ja()`を新設(§3-2 e)
+  どおり、EN`_role_style()`と同一のbackendゲート)、preview/comment_1〜4
+  ループへ`style_prefix_override=_role_style_ja()`を配線。japanese_title
+  は対象外のまま(§3-2 e)の判断どおり)。docstringも更新。
+
+### 9-2. Phase A設計からの差分・補足発見
+
+- Phase A §3-1では「新規版管理識別子は不要」としていたが、実装時に
+  `style_instruction_version`という名前の識別子がer033モジュール自体には
+  そもそも存在しないことを確認した(Master Store側`MasterAudioKey`の
+  フィールドであり、可変segmentは§2(d)によりStore非対象のため無関係)。
+  委任文の「style_instruction_version相当の識別子があればbump」は
+  該当なしとして扱った。
+- Phase Aでは想定していなかった発見: EN側runtime evidence
+  (`style_prefix`フィールド)は、A2(Standard)経路
+  (`c.generate_narration_snippet_verified_strict`→`p9a.generate_
+  narration_snippet`)を通るsegment(JA preview/comment、EN
+  `generate_a2_segment_with_slowdown`系)には正しく伝播するが、B1B
+  (Advanced)のEN経路(`voice01.generate_charon_english`/`news_tail_fix.
+  generate_news_narration_wide_margin`/`point_headings.generate`)は
+  `p9a.generate_narration_snippet`を呼ばず、`flw.resolve_tts_call_and_
+  prompt`を直接呼ぶ独自実装であり、戻り値dictに`style_prefix`フィールド
+  を持たない(実際のTTS呼び出しには正しくE2が使われている、
+  `instruction_type="english_style_prefix"`[fallbackでないことの間接証拠]
+  とコード読解で確認)。この3ファイルは本タスクのファイル所有範囲外
+  (delegation記載の「本タスクの所有」4ファイルに含まれない)のため、
+  今回は変更していない。§7へOpus L2論点として追記する。
+
+### 9-3. テスト・Regression結果
+
+`run_project_regression.py --pattern "er033*_test_*.py"`(64 test)、
+`"er019*_test_*.py"`(143 test、既知の1件[`FamilyAUnchangedTest`、
+未コミット差分検知による一時的FAIL、commit後は解消見込み]除き全PASS)、
+`"er038*_test_*.py"`(16 test、期待値更新後全PASS)、
+`"er044*_test_*.py"`(11 test、期待値更新後全PASS)、新規
+`er019_family_x_variable_role_style_wiring_01_test_01.py`(13 test、全
+PASS)。詳細は`TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01_REPORT.md`
+参照。
+
+### 9-4. 確認用再生成(¥20内)
+
+Hormuz(`er019_output/family_x_audio_production_wiring_01/family_x_b3_
+diversity_trial_01/hormuz__run_06_flashlite_full_kp/`のparts.json/support
+textをreadonly再利用、記事text再生成なし)を専用out-dir
+(`er019_output/family_x_audio_production_wiring_01/variable_role_style_
+wiring_regression_01/hormuz/`)へ、runnerのCLIがsegment単位の部分実行を
+提供しないため代替の小スクリプト
+(`er019_family_x_variable_role_style_wiring_01_confirmation_regen_01.py`)
+で13segment(JA Standard 5+EN Advanced 6+EN Standard 2)を生成。12/13 OK・
+1件STOPPED(`a2_en_full_story_part1`、OPEN-201既知のcontent-classification
+事象と一致、本配線が原因ではない、§7へ追記)。実測費用¥18.26。Production
+Master Audio Store manifest.jsonはsha256前後不変。詳細は
+`er019_output/.../confirmation_regen_results.json`参照。

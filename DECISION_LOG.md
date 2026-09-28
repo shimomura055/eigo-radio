@@ -12298,3 +12298,79 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   retry整理→4. AN3-T0のProduction Wiring完了(`PRODUCTION_WIRED`)。
 - **根拠**: ユーザー正式決定(2026-09-28、Fable転記)。SSOT反映のみ(コード/
   Prompt/PM_GOVERNANCE無変更、API支出¥0)。
+
+## TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01: 可変segment Role Style(J3/E2)の正式経路への配線(Phase B、2026-09-28)
+
+`TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02`でユーザーが正式決定した日本語=J3・
+英語=E2(`PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`)を、既存の
+`APPROVED_FOR_PRODUCTION`(条件付き`PRODUCTION_WIRED`)な6-role style機構
+(`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02`、
+`--tts-backend speech_metadata_flash_lite`明示時のみ有効)へ配線した。
+
+- **実装**: (1) `er003_b1_p9a_audio.py`の`generate_narration_snippet()`ja
+  分岐をen分岐と対称化(`style_prefix_override or JAPANESE_STYLE_PREFIX`、
+  既定None=従来挙動)し、戻り値dictへruntime evidence用の`style_prefix`
+  フィールドを追加。(2) `er003_v1_n3_01_tts_generate.py`の
+  `generate_a2_japanese_with_fallback`/`generate_a2_japanese_with_reading_
+  safety`へ`style_prefix_override: str | None = None`引数を追加し標準経路
+  にのみ転送(fallback[minimal instruction]経路は既存どおり無変更、
+  FAMILY-X-02 D-1踏襲)。(3) `er033_tts_flash_lite_family_x_styles_01.py`へ
+  `FAMILY_X_ROLE_STYLE_JA`(J3逐語)を新設、`FAMILY_X_ROLE_STYLE_EN`の
+  TOPIC_INTRO/FULL_STORY/IN_ONE_LINEをE0からE2へ値更新(PREVIEW/COMMENT/
+  HEADING_READOUTはE2未検証のため不変)。(4)
+  `er019_family_x_audio_production_runner_01.py`の
+  `generate_family_x_a2_segments()`へ、EN`_role_style()`と対称な
+  `_role_style_ja()`(同一backendゲート)を新設し、Standard(A2)のpreview/
+  comment_1〜4のみへ配線(japanese_title・Key Phraseは対象外)。
+- **Fable設計判断の適用**: JAのbackendゲートはEN 6-roleと同一条件
+  (Flash-Lite明示時のみ)。J3は長文`JAPANESE_STYLE_PREFIX`を**置換**する
+  方式(Trial-02[er044]と同一、併記ではない)。適用範囲はJA=Standard(A2)
+  のpreview/comment_1〜4のみ、EN=Role定数(level非依存)のためStandard/
+  Advanced両方のEN segmentに反映(PREVIEW/COMMENT/HEADING_READOUTは対象外
+  で不変)。共有関数の既定値はNone=従来挙動(Family A/B/C無影響)。
+- **テスト**: 新規`er019_family_x_variable_role_style_wiring_01_test_01.py`
+  (13 test、(a)J3/E2逐語一致(b)backendゲート(c)既定転送(d)固定shell不変
+  (e)Key Phrase無変更(f)fallback経路不変、を確認)。既存
+  `er033_tts_flash_lite_family_x_styles_01_test_01.py`/
+  `er038_tts_all_spoken_role_style_trial_01_test_01.py`/
+  `er044_tts_variable_spoken_role_style_trial_02_test_01.py`のE0リテラル
+  assertionをE2へ更新(理由コメント付き、構造[key集合・型]は不変)。
+  `run_project_regression.py`(er033/er019/er038/er044パターン+新規test)
+  全PASS(er019パターンで1件、`er019_family_x_pointless_01_test_01.
+  FamilyAUnchangedTest`がcommit直前の未コミット差分検知により一時的に
+  FAILしたが、これは`er003_b1_p9a_audio.py`/`er003_v1_n3_01_tts_generate.py`
+  が本タスクの承認済み変更対象であるための想定内の一時的状態であり、
+  commit後は working tree差分が解消されPASSに戻る[git status比較の仕組み
+  上の性質、機能後退ではない])。
+- **確認用再生成(Hormuz、専用out-dir、記事text再生成なし、Store reuse)**:
+  Standard(A2) JA 5segment(preview/comment_1〜4、J3、asr_verified全件
+  True、style_prefixフィールドがJ3と逐語一致することを確認)、Advanced
+  (B1B) EN 6segment(topic_intro/full_story_part1/full_story_part2[+見出し
+  2件]/in_one_line、E2、asr_verified全件True、instruction_type="english_
+  style_prefix"[fallback未発火]を確認。ただしvoice01.generate_charon_
+  english/news_tail_fix.generate_news_narration_wide_margin/point_
+  headings.generateは本タスクのファイル所有範囲外のため、戻り値dictへの
+  `style_prefix`フィールド追加は行っておらず、これら3ファイル経由の
+  segmentでは実際の適用は`instruction_type`+コード読解[`flw.resolve_tts_
+  call_and_prompt`へ同じoverride値を渡す実装]で確認、JSON文字列としての
+  直接記録は無い。Opus L2への申し送り事項)、Standard(A2) EN 2segment
+  (full_story_part1[STOPPED、後述]/in_one_line[OK、E2+`A2_SLOWER_PACE_
+  INSTRUCTION`連結がstyle_prefixフィールドに逐語記録されることを確認])。
+  13segment中12件OK・1件STOPPED(`a2_en_full_story_part1`、"Act One/Two/
+  Three"の数詞読み[TRUE_CONTENT_MISMATCH]がstandard 2回+fallback 1回とも
+  不合格。OPEN-201のPhase 3実測[同一記事・同一箇所で既知・再現済みの
+  content-classification事象、Local Rewrite Recovery[Luna]がProduction
+  full pipelineでは発火する既存の安全網]と一致するパターンであり、本タスク
+  のJ3/E2配線が原因ではない。本確認スクリプトはrunnerのCLIがsegment単位の
+  部分実行を提供しないため直接生成関数を呼ぶ代替方式を採ったが、runner本体
+  が使うLocal Rewrite Recovery層[retry_primitive経由]・connected_speech_
+  equivalence_layer/repetition_qa gateは意図的に含めておらず[budget上限¥20
+  の範囲で13segmentの部分実行に絞るため]、実際のProduction full pipeline
+  ではこのSTOPPEDは自己解決する可能性が高い)。実測費用¥18.26(上限¥20
+  以内)。Production Master Audio Store manifest.jsonはsha256前後不変
+  (`9070cb818999596e59bb8ec8a417999738dfba9ff0658857dfa5aa6629be888b`)。
+  詳細:
+  `er019_output/family_x_audio_production_wiring_01/variable_role_style_
+  wiring_regression_01/hormuz/audit/confirmation_regen_results.json`。
+- **到達Status**: `APPROVED_FOR_PRODUCTION`(配線完了・Opus L2レビュー+
+  Fable Gate 3判定待ち)。`PRODUCTION_WIRED`は未宣言。

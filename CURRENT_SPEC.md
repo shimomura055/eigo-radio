@@ -1559,29 +1559,56 @@ speech_metadata_flash_lite`明示時の経路[主記事+Key Phrase音声+共有
 | 日本語表記ゆれ(漢字/かな)のCascade内自動PASS条件 | `ORTHOGRAPHIC_VARIANT_CONFIRMED`: 「ASRが同じ表記を何回書いたか」ではなく、「ASR側の漢字spanが辞書上持ちうる正当な読み候補の中に、canonical側の期待読みが含まれるか」を各ステップ個別に確認し、かつ異なる2エンジン(OpenAI/Azure)以上がその状態に到達した場合のみPASSする。既知の限界: 「頃」のように単漢字として複数の読み(ころ/ごろ等)が辞書上正当とされる文字は、テキストのみからは実際に発話された読みを完全には確定できない(音声を伴わない原理的な限界、OPEN_ITEMS.md参照) | ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 |
 | 英語homophone(同音異義語)のCascade内自動PASS条件 | `HOMOPHONE_EQUIVALENT`: canonical/ASRの単一語置換差について、CMU Pronouncing DictionaryのARPAbet音素列が完全一致する場合のみcascade対象とする(即blind TTS retryしない)。Secondary(または2回目のASR)側の結果が、(a)canonical文字一致、または(b)同じくARPAbet完全一致のいずれかを満たした場合のみPASSする(「他に問題が見つからなかった」という消極的な理由ではPASSしない)。辞書に無い語向けの小さな閉じた補完テーブルを併設(2026-08-28時点で空、必要時に追記) | ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 |
 
-### 可変segment Role Style(J3/E2)— Status: `APPROVED_FOR_PRODUCTION`(2026-09-28 ユーザー正式決定、配線未実施)
+### 可変segment Role Style(J3/E2)— Status: `APPROVED_FOR_PRODUCTION`(配線完了、`PRODUCTION_WIRED`判定待ち、2026-09-28)
 
 ユーザーが2026-09-28に、`TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02`の可変segment
 Role Style比較結果から、日本語=**J3**・英語=**E2**を`APPROVED_FOR_PRODUCTION`と
-正式決定した(配線未実施)。**適用範囲**: JA Standard segment(preview/
-comment_1〜4)、EN Advanced segment(full_story_part1/in_one_line/
-topic_intro)のみ。固定Master phrase(welcome/preview_intro/key_phrases_intro/
+正式決定し、**同日中に`TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01`(Phase B)
+で正式経路へ配線した**(Status: `APPROVED_FOR_PRODUCTION`(配線完了・Opus L2
+レビュー+Fable Gate 3判定待ち)。`PRODUCTION_WIRED`はGate 3判定後)。
+**適用範囲(配線後の確定値)**: JA=Family X **Standard(A2)**のpreview/
+comment_1〜4のみ(japanese_title・Key Phrase JA・固定Master phraseは対象外)。
+EN=`FAMILY_X_ROLE_STYLE_EN`のTOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleを
+E0からE2へ値更新(Role定数はlevel非依存のためStandard/Advanced両方のEN
+segmentへ適用される。PREVIEW/COMMENT/HEADING_READOUTはE2未検証のため不変
+[E0のまま])。固定Master phrase(welcome/preview_intro/key_phrases_intro/
 full_story_intro/num_one〜five/point_explanation)には適用しない(下記
-「固定フレーズ Champion」節を参照、別トラック)。**J3(日本語、逐語)**:
+「固定フレーズ Champion」節を参照、別トラック)。**backendゲート**: JA(J3)は
+EN 6-roleと同一条件=`--tts-backend speech_metadata_flash_lite`明示時のみ有効。
+既定backend(`structured_separation`)ではJA/ENとも従来挙動のまま無変更
+(Family A/B/Cは無影響)。**方式**: J3は長文`JAPANESE_STYLE_PREFIX`を**置換**
+する(Trial-02[er044]と同一方式、併記ではない)。**J3(日本語、逐語)**:
 「落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに
 抑揚をつけてください。演技がかった話し方は避けてください。」。**E2(英語、
 逐語)**: FULL_STORY="calm, steady news narration with natural emphasis at
 key points and turns; not dramatic."/IN_ONE_LINE="concise, clear, landing
 naturally as a settled conclusion; not flat, not dramatic."/TOPIC_INTRO=
 "brief, clear, engaging news topic introduction with natural emphasis on the
-topic; not dramatic."。**現行Productionは従来どおり無変更**: 本節の追記は
-Trial結果の採用記録であり、配線済み仕様ではない。現行Production JA音声
-(Standard preview/comment)は役割別Role Style機構自体を持たず、常に長文
-instruction`JAPANESE_STYLE_PREFIX`を使用したまま(OPEN-229)。EN側は現行
-6-role styleのまま(無変更)。**配線予定**:
-`TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01`(Phase A設計中、別管理ID)。 |
+topic; not dramatic."。**実装箇所**: `er003_b1_p9a_audio.py`
+`generate_narration_snippet()`のja分岐をen分岐と対称化
+(`style_prefix_override or JAPANESE_STYLE_PREFIX`、既定None=従来挙動)、
+`er003_v1_n3_01_tts_generate.py`の`generate_a2_japanese_with_reading_safety`/
+`with_fallback`へ`style_prefix_override`引数追加(fallback[minimal
+instruction]経路は不変)、`er033_tts_flash_lite_family_x_styles_01.py`へ
+`FAMILY_X_ROLE_STYLE_JA`定数追加+`FAMILY_X_ROLE_STYLE_EN`のE2値更新、
+`er019_family_x_audio_production_runner_01.py`の`generate_family_x_a2_
+segments()`へ`_role_style_ja()`(EN`_role_style()`と対称なbackendゲート)を
+新設しpreview/comment_1〜4のみへ配線。**runtime evidence**: `p9a.generate_
+narration_snippet()`の戻り値dictへ`style_prefix`(実文字列)を追加、既存audit
+(`tts_generation_results.json`)へ記録される。**Regression**: Hormuz(既存
+Flash-Lite run読み込み、記事text再生成なし)でStandard JA 5segment
+(preview/comment_1〜4)・Advanced EN 6segment(topic_intro/full_story_part1〜
+2[+heading2件]/in_one_line)・Standard EN 2segment(full_story_part1/
+in_one_line、slower指示との重畳実測)を専用out-dirへ部分実行で確認生成。
+証拠: `er019_output/family_x_audio_production_wiring_01/variable_role_style_
+wiring_regression_01/hormuz/audit/confirmation_regen_results.json`。
+Production Master Audio Store(`er006_output/master_audio_store_01/
+manifest.json`)は本配線・確認生成の前後でsha256不変(可変segmentはStore
+対象外、設計書§2(d))。 |
 出典: `TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02_REPORT.md`§4、
 `docs/pm/design_tts_variable_spoken_role_style_trial_02.md`§4-4、
+`docs/pm/design_tts_variable_role_style_production_wiring_01.md`、
+`TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01_REPORT.md`、
 `PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`(DECISION_LOG.md) |
 2026-09-28 |
 
