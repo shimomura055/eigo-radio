@@ -91,23 +91,99 @@ FIXED_JAPANESE_TEXTS_A2_ONLY = {
 # のまま(byte-identical)。
 SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION = "v2_flash_lite_short_style"
 
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29): ユーザーが
+# TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02(er043)/TTS-FIXED-SHELL-NUMBER-
+# THREE-FIVE-RETRIAL-01(er047)で正式決定したChampion(固定phraseごとに
+# 勝者candidate/takeが異なる、B系統とC系統が混在)をProduction Master
+# Storeへ配線する。welcomeのみ現行Master(v2_flash_lite_short_style、
+# FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]="natural, clear, conversational")を
+# 継続reuseし、新規登録しない(ユーザー決定「welcome=A」)。welcome以外の
+# 8 English phraseは、phraseごとに異なるChampion style文言(B/C系統)を
+# 使うため、単一のFAMILY_X_ROLE_STYLE_EN_FALLBACK[0]一律適用では表現
+# できず、phrase別style mapが必要になった(旧v2版の「shell全体に単一
+# style」という設計からの変更点)。
+#
+# 新styleを適用するには、旧v2_flash_lite_short_style時代に生成済みの
+# master(9件、Championとは異なるstyleで生成された資産)が黙ってcache
+# hitし続けないよう、style_instruction_versionを必ずbumpする(BL-1で
+# 踏んだ同型の罠、上のコメント参照)。旧v2資産は削除せず残置する
+# (以後のreuseは新versionのkeyのみが参照する)。
+SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION = "v3_champion_2026_09_29"
 
-def _resolve_shell_english_style_prefix_override(tts_backend: str) -> str | None:
+# er043_output/tts_fixed_shell_master_champion_trial_02/
+# champion_trial_results.json の各candidateの"style_prefix_used"から
+# 逐語転記(welcomeを除く8 English phrase。num_three/num_fiveは
+# er047_output/tts_fixed_shell_number_three_five_retrial_01/
+# retrial_results.jsonのstyleB take1の"style_prefix_used"から逐語転記、
+# num_two/num_threeが同じstyleB系統・num_one/num_fourが同じstyleC系統の
+# 文言であることをsource JSON上で確認済み)。新しいstyle文言の考案は
+# 一切していない。
+SHELL_CHAMPION_STYLE_BY_PHRASE_EN = {
+    "preview_intro": "natural, clear, conversational",
+    "key_phrases_intro": "natural, clear, conversational",
+    "full_story_intro": (
+        "natural, clear, conversational, unhurried pace, "
+        "with a brief pause before continuing"),
+    "num_one": (
+        "measured, matter-of-fact delivery, consistent energy and tempo "
+        "for every word, plain falling pitch at the end, spoken as a flat "
+        "statement, not a question"),
+    "num_two": (
+        "calm, steady, declarative tone, even volume and pace across the "
+        "set, ending each word with a clear falling pitch, stated plainly, "
+        "never rising like a question"),
+    "num_three": (
+        "calm, steady, declarative tone, even volume and pace across the "
+        "set, ending each word with a clear falling pitch, stated plainly, "
+        "never rising like a question"),
+    "num_four": (
+        "measured, matter-of-fact delivery, consistent energy and tempo "
+        "for every word, plain falling pitch at the end, spoken as a flat "
+        "statement, not a question"),
+    "num_five": (
+        "calm, steady, declarative tone, even volume and pace across the "
+        "set, ending each word with a clear falling pitch, stated plainly, "
+        "never rising like a question"),
+}
+
+# point_explanation(JA、A2専用)のChampion(candidate B)。
+# er043_output/.../champion_trial_results.jsonのcandidates.B.
+# point_explanation.style_prefix_usedから逐語転記。下位の
+# voice01.generate_charon_japaneseにはstyle_prefix_override引数が無く
+# (EN側generate_charon_englishとは非対称、BL-1所見時点からの既知の
+# 制約・本タスクのスコープ外)、cache hit経路(登録済みChampion音声の
+# reuse)でのみこの文言が実際の音声と対応する。cache miss(登録済み
+# 音声が万一失われた場合のfallback再生成)時はこの文言が音声生成には
+# 反映されない既知の制約として記録する(REPORT参照)。
+SHELL_CHAMPION_STYLE_JA_POINT_EXPLANATION_B = "自然な抑揚をつけて、はっきりと落ち着いた調子で話す"
+
+
+def _resolve_shell_english_style_prefix_override(name: str, tts_backend: str) -> str | None:
     if tts_backend != "speech_metadata_flash_lite":
         return None
-    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
-    return fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+    if name == "welcome":
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+        return fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+    return SHELL_CHAMPION_STYLE_BY_PHRASE_EN[name]
 
 
-def _make_english_key(text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
+def _make_english_key(name: str, text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
     # BL-1是正: Flash-Lite backend時のみstyle_instruction_versionをbump
     # する。さもないと長prefixで生成済みのFlash-Lite shell masterが
     # 黙ってcache hitし続け、上記のstyle override修正が効かない
     # (shared_narration.py内KEY_PHRASE_TRIM_POLICY_VERSIONで過去に
     # 踏んだ同型の罠、Opus所見BL-1参照)。既定backendのkeyは無変更
     # ("v1"のまま、既存Structured Separation資産のcache維持)。
-    version = (SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
-               if tts_backend == "speech_metadata_flash_lite" else "v1")
+    #
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29):
+    # welcomeは現行Master(v2)を継続。welcome以外はChampion版
+    # (SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION)へ切り替える。
+    if tts_backend != "speech_metadata_flash_lite":
+        version = "v1"
+    elif name == "welcome":
+        version = SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
+    else:
+        version = SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION
     return store.MasterAudioKey(
         language="en", speaker_voice="Charon",
         tts_model_id=_resolve_shared_narration_model("en", tts_backend),
@@ -120,19 +196,24 @@ def _make_japanese_key(text: str, tts_backend: str = "structured_separation") ->
     # BL-1所見はensure_fixed_japanese_segment(point_explanation、A2のみ)
     # にも触れているが、下位のvoice01.generate_charon_japanese自体に
     # style_prefix_override引数が無く(EN側のgenerate_charon_englishとは
-    # 非対称)、実測でも既存Flash-Lite entry(master_audio_id=
-    # 586a1ecd053b563c856dad20)がasr_verified=Trueで既に合格済みである
-    # ことを確認した(num_two型の失敗は再現していない)。JA側のstyle
-    # override機構自体の新設は本修正のスコープ外(ユーザー承認文言は
-    # FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]というEN限定の定数流用のみを
-    # 明示しており、JA用の既存短文定数もStorem未定義)。このため
-    # style_instruction_versionはv1のまま変更しない(RESULT_PACKETで
-    # 未対応理由として明記)。
+    # 非対称)。JA側のstyle override機構自体の新設(generate_charon_japanese
+    # への引数追加)は本タスクでも引き続きスコープ外(SHELL_CHAMPION_STYLE_
+    # JA_POINT_EXPLANATION_B参照のコメント)。
+    #
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29): ただし
+    # point_explanationはChampion(candidate B)としてProduction Master
+    # Storeへ新規登録するため、Flash-Lite backend時のみversionをbumpし、
+    # 旧v1資産(Champion決定前のstyleで生成された既存entry)が新keyの
+    # 参照先として黙ってcache hitしないようにする(現在JA固定phraseは
+    # point_explanationの1種類のみのため、phrase別mapは不要、一律bump
+    # で足りる)。
+    version = (SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION
+               if tts_backend == "speech_metadata_flash_lite" else "v1")
     return store.MasterAudioKey(
         language="ja", speaker_voice="Charon",
         tts_model_id=_resolve_shared_narration_model("ja", tts_backend),
         canonical_text=text, level=None,
-        style_instruction_id="charon_japanese_fixed_shell", style_instruction_version="v1",
+        style_instruction_id="charon_japanese_fixed_shell", style_instruction_version=version,
     )
 
 
@@ -145,8 +226,8 @@ def ensure_fixed_english_segment(name: str, narration_dir: str, filename_suffix:
                                   tts_backend: str = "structured_separation") -> dict:
     text = FIXED_ENGLISH_TEXTS[name]
     out_path = f"{narration_dir}/{name}{filename_suffix}.wav"
-    key = _make_english_key(text, tts_backend)
-    style_prefix_override = _resolve_shell_english_style_prefix_override(tts_backend)
+    key = _make_english_key(name, text, tts_backend)
+    style_prefix_override = _resolve_shell_english_style_prefix_override(name, tts_backend)
     return store.get_or_generate(
         key, out_path, lambda p: voice01.generate_charon_english(
             text, p, style_prefix_override=style_prefix_override, tts_backend=tts_backend))

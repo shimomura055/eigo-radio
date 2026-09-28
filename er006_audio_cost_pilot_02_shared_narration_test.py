@@ -77,8 +77,13 @@ def test_flash_lite_backend_uses_separate_master_key_and_does_not_touch_legacy_a
     MasterAudioKey.tts_model_idがFlash-Lite専用値になり、既存Structured
     Separation資産(tts_backend既定)とは別のmaster_audio_id(=別キー)に
     なることを確認する。既存資産の再利用可否には触れない(生成しない)。"""
-    key_legacy_en = shared._make_english_key("Welcome to English Your Way.")
-    key_flash_en = shared._make_english_key("Welcome to English Your Way.", "speech_metadata_flash_lite")
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29):
+    # _make_english_keyの引数にname(phrase名)を追加(Champion style map
+    # がphraseごとに異なる文言を持つため)。welcomeを使う限り本テストの
+    # 意図(legacy/flash-lite backendで別master_audio_idになる)は無変更。
+    key_legacy_en = shared._make_english_key("welcome", "Welcome to English Your Way.")
+    key_flash_en = shared._make_english_key(
+        "welcome", "Welcome to English Your Way.", "speech_metadata_flash_lite")
     assert key_legacy_en.tts_model_id == shared.TTS_MODEL_EN
     assert key_flash_en.tts_model_id == shared.TTS_MODEL_FLASH_LITE
     assert key_legacy_en.master_audio_id() != key_flash_en.master_audio_id()
@@ -184,10 +189,21 @@ def test_bl1_flash_lite_shell_uses_short_style_override_default_backend_unchange
         assert captured["style_prefix_override"] is None, \
             f"既定backendはstyle_prefix_override=Noneのままのはず。実際={captured['style_prefix_override']!r}"
         captured.clear()
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29):
+        # num_twoはChampion(candidate B)へ切り替わったため、
+        # FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]ではなく
+        # SHELL_CHAMPION_STYLE_BY_PHRASE_EN["num_two"]が渡されるはず。
         shared.ensure_fixed_english_segment(
             "num_two", narration_dir, filename_suffix="_charon", tts_backend="speech_metadata_flash_lite")
+        assert captured["style_prefix_override"] == shared.SHELL_CHAMPION_STYLE_BY_PHRASE_EN["num_two"], \
+            f"Flash-Lite backendはChampion styleを渡すはず。実際={captured['style_prefix_override']!r}"
+        captured.clear()
+        # welcomeは引き続きFAMILY_X_ROLE_STYLE_EN_FALLBACK[0](現行Master
+        # 継続、Champion決定「welcome=A」)。
+        shared.ensure_fixed_english_segment(
+            "welcome", narration_dir, filename_suffix="_charon", tts_backend="speech_metadata_flash_lite")
         assert captured["style_prefix_override"] == fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0], \
-            f"Flash-Lite backendはFAMILY_X_ROLE_STYLE_EN_FALLBACK[0]を渡すはず。実際={captured['style_prefix_override']!r}"
+            f"welcomeはFAMILY_X_ROLE_STYLE_EN_FALLBACK[0]のまま不変のはず。実際={captured['style_prefix_override']!r}"
     finally:
         voice01.generate_charon_english = orig_en
         store.STORE_DIR, store.AUDIO_DIR = orig_store_dir, orig_audio_dir
@@ -203,18 +219,57 @@ def test_bl1_style_instruction_version_bump_only_for_flash_lite_key():
     無変更=既存Structured Separation資産のcache維持)。JA keyは今回
     style自体を変更していないためversionもv1のまま(意図的、RESULT_PACKET
     参照)。"""
-    key_legacy_en = shared._make_english_key("Two.")
-    key_flash_en = shared._make_english_key("Two.", "speech_metadata_flash_lite")
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29)によって
+    # num_twoはChampion(candidate B)へ切り替わったため、_make_english_key
+    # の引数にname="num_two"が必要になった(以前はtextのみでtts_backendの
+    # 分岐のみ判定していた)。Championのversionは
+    # SHELL_CHAMPION_STYLE_INSTRUCTION_VERSIONへ変わる(旧
+    # SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSIONはwelcome専用に
+    # 縮小)。JA側point_explanationもChampion(candidate B)登録に伴い
+    # versionをbumpするため、下のJA assertも合わせて更新する(BL-1時点の
+    # 「JAはスコープ外」判断は本タスクでversion面のみ解消、style本体の
+    # 実runtime適用は引き続きスコープ外=SHELL_CHAMPION_STYLE_JA_
+    # POINT_EXPLANATION_Bのコメント参照)。
+    key_legacy_en = shared._make_english_key("num_two", "Two.")
+    key_flash_en = shared._make_english_key("num_two", "Two.", "speech_metadata_flash_lite")
     assert key_legacy_en.style_instruction_version == "v1"
-    assert key_flash_en.style_instruction_version == shared.SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
+    assert key_flash_en.style_instruction_version == shared.SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION
     assert key_legacy_en.style_instruction_version != key_flash_en.style_instruction_version
+    # welcomeは引き続き旧v2 versionのまま(Champion決定「welcome=A」=現行
+    # Master継続、新規登録なし)。
+    key_flash_welcome = shared._make_english_key(
+        "welcome", "Welcome to English Your Way.", "speech_metadata_flash_lite")
+    assert key_flash_welcome.style_instruction_version == shared.SHELL_ENGLISH_FLASH_LITE_STYLE_INSTRUCTION_VERSION
     # 既存Flash-Lite資産(旧style時代に生成済みのmaster、例:
     # master_audio_id=586a1ecd053b563c856dad20相当のnum_two等)はversion差分により
     # cache missとなり、新styleで再生成される(意図どおり)。
     key_flash_ja = shared._make_japanese_key("ポイント解説", "speech_metadata_flash_lite")
-    assert key_flash_ja.style_instruction_version == "v1", \
-        "JA shellはstyle自体を変更していないためversionもv1のまま(意図的、BL-1のJAスコープ外判断)"
+    assert key_flash_ja.style_instruction_version == shared.SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION, \
+        "point_explanationはChampion(candidate B)としてW2で新規登録するためversionをbumpする"
     print("PASS: test_bl1_style_instruction_version_bump_only_for_flash_lite_key")
+
+
+def test_w2_champion_style_map_matches_all_shell_phrases_except_welcome():
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29):
+    SHELL_CHAMPION_STYLE_BY_PHRASE_ENが、welcome以外のFIXED_ENGLISH_TEXTS
+    全phraseをカバーし、welcomeは含まないことを確認する(er048登録
+    スクリプトのkey計算とここのmapが常に一致しているという前提の
+    regression guard)。"""
+    non_welcome_names = set(shared.FIXED_ENGLISH_TEXTS) - {"welcome"}
+    assert set(shared.SHELL_CHAMPION_STYLE_BY_PHRASE_EN) == non_welcome_names, (
+        f"Champion style mapがFIXED_ENGLISH_TEXTS(welcome除く)と一致しない。"
+        f"map={sorted(shared.SHELL_CHAMPION_STYLE_BY_PHRASE_EN)} "
+        f"expected={sorted(non_welcome_names)}")
+    assert "welcome" not in shared.SHELL_CHAMPION_STYLE_BY_PHRASE_EN
+    for name in non_welcome_names:
+        override = shared._resolve_shell_english_style_prefix_override(name, "speech_metadata_flash_lite")
+        assert override == shared.SHELL_CHAMPION_STYLE_BY_PHRASE_EN[name]
+        key = shared._make_english_key(name, shared.FIXED_ENGLISH_TEXTS[name], "speech_metadata_flash_lite")
+        assert key.style_instruction_version == shared.SHELL_CHAMPION_STYLE_INSTRUCTION_VERSION
+    # welcomeだけはFALLBACK[0]・旧versionのまま。
+    assert shared._resolve_shell_english_style_prefix_override(
+        "welcome", "speech_metadata_flash_lite") == "natural, clear, conversational"
+    print("PASS: test_w2_champion_style_map_matches_all_shell_phrases_except_welcome")
 
 
 if __name__ == "__main__":
@@ -223,4 +278,5 @@ if __name__ == "__main__":
     test_ensure_functions_thread_tts_backend_to_generators()
     test_bl1_flash_lite_shell_uses_short_style_override_default_backend_unchanged()
     test_bl1_style_instruction_version_bump_only_for_flash_lite_key()
+    test_w2_champion_style_map_matches_all_shell_phrases_except_welcome()
     print("ALL TESTS PASSED")

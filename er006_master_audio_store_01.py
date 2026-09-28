@@ -164,3 +164,39 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
     r["master_audio_id"] = master_id
     r["cache_miss_reason"] = cache_miss_reason
     return r
+
+
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29): 既にTrial等
+# で生成・ASR検証済みの音声ファイルを、TTS/ASR呼び出しを一切行わずに
+# Master Audio Storeへ直接登録するための最小追加関数(既存get_or_generate
+# のTTS生成パスは無変更、この関数からは呼ばれない)。固定フレーズ
+# Championの正式登録(read-onlyなsource_audio_pathからのコピーのみ)専用。
+def register_precomputed(key: MasterAudioKey, source_audio_path: str, qa_evidence: dict) -> dict:
+    """key.master_audio_id()が既にmanifestに存在する場合は何もせず
+    SKIPPED_ALREADY_EXISTSを返す(既存entryの上書き禁止、idempotent)。
+    存在しない場合のみsource_audio_pathをAUDIO_DIRへコピーし、manifestへ
+    新entryを追加する(get_or_generateが生成成功時に書き込む形式と同じ
+    dict構造、qa_evidenceは呼び出し側が用意した既存ASR結果等を渡す)。"""
+    master_id = key.master_audio_id()
+    manifest = _load_manifest()
+    if master_id in manifest:
+        return {
+            "status": "SKIPPED_ALREADY_EXISTS", "master_audio_id": master_id,
+            "audio_path": manifest[master_id]["audio_path"],
+        }
+    if not os.path.exists(source_audio_path):
+        return {"status": "SOURCE_MISSING", "master_audio_id": master_id, "source_audio_path": source_audio_path}
+    os.makedirs(AUDIO_DIR, exist_ok=True)
+    stored_path = f"{AUDIO_DIR}/{master_id}.wav"
+    shutil.copyfile(source_audio_path, stored_path)
+    manifest[master_id] = {
+        "audio_path": stored_path, "key": key.as_dict(),
+        "created_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "qa_evidence": qa_evidence,
+    }
+    _save_manifest(manifest)
+    _log_telemetry({
+        "event": "registered_precomputed", "master_audio_id": master_id,
+        "source_audio_path": source_audio_path, "key": key.as_dict(),
+    })
+    return {"status": "REGISTERED", "master_audio_id": master_id, "audio_path": stored_path}
