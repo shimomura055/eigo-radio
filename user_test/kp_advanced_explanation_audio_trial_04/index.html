@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04 試聴・確認ページ</title>
+<style>
+body { font-family: sans-serif; max-width: 1100px; margin: 20px auto; padding: 0 12px; }
+h1 { border-bottom: 3px solid #333; padding-bottom: 8px; }
+h2 { border-bottom: 2px solid #999; padding-bottom: 4px; margin-top: 40px; background:#f5f5f5; padding:6px; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 13px; }
+table th, table td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table th { background: #eef; }
+.style-box { font-family: monospace; background:#f0f0f0; padding:2px 6px; }
+.note { background: #fff3e0; border: 1px solid #ef6c00; padding: 10px; margin: 14px 0; }
+.ref { color: #888; }
+</style>
+</head>
+<body>
+<h1>KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04</h1>
+<p>管理ID: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04(Trial、音声Styleのみ比較、Production未配線)。前提: Advanced Key Phrase英語解説のtext仕様はユーザーが正式採用済み(<code>APPROVED_FOR_PRODUCTION</code>、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補5件、Production wiringは未実施)。Hormuzの既存5 Key Phrase・既存英語解説文をそのまま使用(再生成・再選定なし)。</p>
+<p><b>経緯</b>: TRIAL-03で Before = <span class="style-box">clear, precise, explanatory</span> と After = <span class="style-box">clear, precise, unhurried</span> を比較したが、ユーザー判断により After(unhurried)は<b>遅すぎた</b>(不採用)。本Trialは Before と unhurried の<b>中間の自然な速度感</b>を3案(A/B/C)で新規に探索する。Before・Reference After(参考、不採用)・Phrase EN音声はTRIAL-03の既存音声をそのまま再利用(新規TTS callなし)。A/B/Cのみ本Trialで新規15 call生成した。</p>
+<div class="note">本Trialの目的は音声Style比較のみです。Statusは<code>USER_DECISION_REQUIRED</code>(ユーザー試聴後に判断)。Key Phrase選定ロジック・DB Hybrid・Production Master Audio Storeは無変更。Reference After(unhurried)は<b>不採用</b>だが速度感の参考として掲載している。</div>
+<h2>duration比較表(速度感の客観指標: words per second)</h2>
+<table>
+<tr><th>#</th><th>Phrase</th><th>語数</th><th>Before<br>(explanatory)</th><th>A</th><th>B</th><th>C</th><th>Reference After<br>(unhurried, 不採用)</th></tr>
+<tr><td>1</td><td>give back</td><td>7</td><td>2.72s<br>(2.57 wps)</td><td>2.74s<br>(2.55 wps)</td><td>2.82s<br>(2.48 wps)</td><td>3.46s<br>(2.02 wps)</td><td class="ref">3.22s<br>(2.17 wps)</td></tr>
+<tr><td>2</td><td>sea blockade</td><td>11</td><td>3.82s<br>(2.88 wps)</td><td>4.26s<br>(2.58 wps)</td><td>4.4s<br>(2.5 wps)</td><td>5.12s<br>(2.15 wps)</td><td class="ref">5.5s<br>(2.0 wps)</td></tr>
+<tr><td>3</td><td>stand at center stage</td><td>7</td><td>2.68s<br>(2.61 wps)</td><td>3.02s<br>(2.32 wps)</td><td>3.54s<br>(1.98 wps)</td><td>3.46s<br>(2.02 wps)</td><td class="ref">3.32s<br>(2.11 wps)</td></tr>
+<tr><td>4</td><td>take a sharp turn</td><td>5</td><td>3.1s<br>(1.61 wps)</td><td>3.14s<br>(1.59 wps)</td><td>3.26s<br>(1.53 wps)</td><td>3.8s<br>(1.32 wps)</td><td class="ref">3.78s<br>(1.32 wps)</td></tr>
+<tr><td>5</td><td>recover the cost</td><td>8</td><td>2.94s<br>(2.72 wps)</td><td>2.98s<br>(2.68 wps)</td><td>3.34s<br>(2.4 wps)</td><td>3.34s<br>(2.4 wps)</td><td class="ref">3.26s<br>(2.45 wps)</td></tr>
+</table>
+<p style="font-size:12px;color:#666">wps = words per second(語数 ÷ duration秒)。数値が小さいほどゆっくり話している。</p>
+<h2>#1: give back</h2>
+<table>
+<tr><th style="width:16%"></th><th>内容</th><th style="width:28%">実際に渡したStyle Prompt全文</th></tr>
+<tr><td>Phrase(共通)</td><td><b>give back</b> <audio controls preload="none" style="width:220px"><source src="kp1_phrase_en.mp3" type="audio/mpeg"></audio></td><td>(Phrase音声はTRIAL-03既存再利用、本TrialのStyle比較対象外)</td></tr>
+<tr><td>英語解説text(共通)</td><td colspan="2">to lose some of an earlier gain(語数=7)</td></tr>
+<tr><td>Before音声<br>(参考、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp1_before_en.mp3" type="audio/mpeg"></audio><br>duration=2.72s (2.57 wps) / asr_verified=True<br>ASR text: to lose some of an earlier gain.</td><td><span class="style-box">clear, precise, explanatory</span></td></tr>
+<tr><td>Variant A<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp1_variant_A_en.mp3" type="audio/mpeg"></audio><br>duration=2.74s (2.55 wps) / asr_verified=True / retry_count=0<br>ASR text: To lose some of an earlier gain.</td><td><span class="style-box">clear, precise, at a slightly relaxed pace</span></td></tr>
+<tr><td>Variant B<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp1_variant_B_en.mp3" type="audio/mpeg"></audio><br>duration=2.82s (2.48 wps) / asr_verified=True / retry_count=0<br>ASR text: To lose some of an earlier gain.</td><td><span class="style-box">clear, precise, at a measured pace, without dragging</span></td></tr>
+<tr><td>Variant C<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp1_variant_C_en.mp3" type="audio/mpeg"></audio><br>duration=3.46s (2.02 wps) / asr_verified=True / retry_count=0<br>ASR text: to lose some of an earlier gain.</td><td><span class="style-box">clear, precise, carefully paced for understanding, without slowing down</span></td></tr>
+<tr><td>Reference After音声<br>(参考、不採用、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp1_reference_after_en.mp3" type="audio/mpeg"></audio><br>duration=3.22s (2.17 wps) / asr_verified=True<br>ASR text: to lose some of an earlier gain.</td><td><span class="style-box">clear, precise, unhurried</span></td></tr>
+</table>
+<h2>#2: sea blockade</h2>
+<table>
+<tr><th style="width:16%"></th><th>内容</th><th style="width:28%">実際に渡したStyle Prompt全文</th></tr>
+<tr><td>Phrase(共通)</td><td><b>sea blockade</b> <audio controls preload="none" style="width:220px"><source src="kp2_phrase_en.mp3" type="audio/mpeg"></audio></td><td>(Phrase音声はTRIAL-03既存再利用、本TrialのStyle比較対象外)</td></tr>
+<tr><td>英語解説text(共通)</td><td colspan="2">the act of stopping ships from entering or leaving by sea(語数=11)</td></tr>
+<tr><td>Before音声<br>(参考、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp2_before_en.mp3" type="audio/mpeg"></audio><br>duration=3.82s (2.88 wps) / asr_verified=True<br>ASR text: The act of stopping ships from entering or leaving by sea.</td><td><span class="style-box">clear, precise, explanatory</span></td></tr>
+<tr><td>Variant A<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp2_variant_A_en.mp3" type="audio/mpeg"></audio><br>duration=4.26s (2.58 wps) / asr_verified=True / retry_count=0<br>ASR text: The act of stopping ships from entering or leaving by sea.</td><td><span class="style-box">clear, precise, at a slightly relaxed pace</span></td></tr>
+<tr><td>Variant B<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp2_variant_B_en.mp3" type="audio/mpeg"></audio><br>duration=4.4s (2.5 wps) / asr_verified=True / retry_count=0<br>ASR text: The act of stopping ships from entering or leaving by sea.</td><td><span class="style-box">clear, precise, at a measured pace, without dragging</span></td></tr>
+<tr><td>Variant C<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp2_variant_C_en.mp3" type="audio/mpeg"></audio><br>duration=5.12s (2.15 wps) / asr_verified=True / retry_count=0<br>ASR text: The act of stopping ships from entering or leaving by sea.</td><td><span class="style-box">clear, precise, carefully paced for understanding, without slowing down</span></td></tr>
+<tr><td>Reference After音声<br>(参考、不採用、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp2_reference_after_en.mp3" type="audio/mpeg"></audio><br>duration=5.5s (2.0 wps) / asr_verified=True<br>ASR text: The act of stopping ships from entering or leaving by sea.</td><td><span class="style-box">clear, precise, unhurried</span></td></tr>
+</table>
+<h2>#3: stand at center stage</h2>
+<table>
+<tr><th style="width:16%"></th><th>内容</th><th style="width:28%">実際に渡したStyle Prompt全文</th></tr>
+<tr><td>Phrase(共通)</td><td><b>stand at center stage</b> <audio controls preload="none" style="width:220px"><source src="kp3_phrase_en.mp3" type="audio/mpeg"></audio></td><td>(Phrase音声はTRIAL-03既存再利用、本TrialのStyle比較対象外)</td></tr>
+<tr><td>英語解説text(共通)</td><td colspan="2">to be the main focus of attention(語数=7)</td></tr>
+<tr><td>Before音声<br>(参考、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp3_before_en.mp3" type="audio/mpeg"></audio><br>duration=2.68s (2.61 wps) / asr_verified=True<br>ASR text: to be the main focus of attention.</td><td><span class="style-box">clear, precise, explanatory</span></td></tr>
+<tr><td>Variant A<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp3_variant_A_en.mp3" type="audio/mpeg"></audio><br>duration=3.02s (2.32 wps) / asr_verified=True / retry_count=0<br>ASR text: To be the main focus of attention.</td><td><span class="style-box">clear, precise, at a slightly relaxed pace</span></td></tr>
+<tr><td>Variant B<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp3_variant_B_en.mp3" type="audio/mpeg"></audio><br>duration=3.54s (1.98 wps) / asr_verified=True / retry_count=0<br>ASR text: to be the main focus of attention.</td><td><span class="style-box">clear, precise, at a measured pace, without dragging</span></td></tr>
+<tr><td>Variant C<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp3_variant_C_en.mp3" type="audio/mpeg"></audio><br>duration=3.46s (2.02 wps) / asr_verified=True / retry_count=0<br>ASR text: to be the main focus of attention.</td><td><span class="style-box">clear, precise, carefully paced for understanding, without slowing down</span></td></tr>
+<tr><td>Reference After音声<br>(参考、不採用、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp3_reference_after_en.mp3" type="audio/mpeg"></audio><br>duration=3.32s (2.11 wps) / asr_verified=True<br>ASR text: To be the main focus of attention.</td><td><span class="style-box">clear, precise, unhurried</span></td></tr>
+</table>
+<h2>#4: take a sharp turn</h2>
+<table>
+<tr><th style="width:16%"></th><th>内容</th><th style="width:28%">実際に渡したStyle Prompt全文</th></tr>
+<tr><td>Phrase(共通)</td><td><b>take a sharp turn</b> <audio controls preload="none" style="width:220px"><source src="kp4_phrase_en.mp3" type="audio/mpeg"></audio></td><td>(Phrase音声はTRIAL-03既存再利用、本TrialのStyle比較対象外)</td></tr>
+<tr><td>英語解説text(共通)</td><td colspan="2">to change suddenly and significantly(語数=5)</td></tr>
+<tr><td>Before音声<br>(参考、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp4_before_en.mp3" type="audio/mpeg"></audio><br>duration=3.1s (1.61 wps) / asr_verified=True<br>ASR text: To change suddenly and significantly.</td><td><span class="style-box">clear, precise, explanatory</span></td></tr>
+<tr><td>Variant A<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp4_variant_A_en.mp3" type="audio/mpeg"></audio><br>duration=3.14s (1.59 wps) / asr_verified=True / retry_count=0<br>ASR text: To change suddenly and significantly.</td><td><span class="style-box">clear, precise, at a slightly relaxed pace</span></td></tr>
+<tr><td>Variant B<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp4_variant_B_en.mp3" type="audio/mpeg"></audio><br>duration=3.26s (1.53 wps) / asr_verified=True / retry_count=0<br>ASR text: To change suddenly and significantly.</td><td><span class="style-box">clear, precise, at a measured pace, without dragging</span></td></tr>
+<tr><td>Variant C<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp4_variant_C_en.mp3" type="audio/mpeg"></audio><br>duration=3.8s (1.32 wps) / asr_verified=True / retry_count=0<br>ASR text: To change suddenly and significantly.</td><td><span class="style-box">clear, precise, carefully paced for understanding, without slowing down</span></td></tr>
+<tr><td>Reference After音声<br>(参考、不採用、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp4_reference_after_en.mp3" type="audio/mpeg"></audio><br>duration=3.78s (1.32 wps) / asr_verified=True<br>ASR text: To change suddenly and significantly.</td><td><span class="style-box">clear, precise, unhurried</span></td></tr>
+</table>
+<h2>#5: recover the cost</h2>
+<table>
+<tr><th style="width:16%"></th><th>内容</th><th style="width:28%">実際に渡したStyle Prompt全文</th></tr>
+<tr><td>Phrase(共通)</td><td><b>recover the cost</b> <audio controls preload="none" style="width:220px"><source src="kp5_phrase_en.mp3" type="audio/mpeg"></audio></td><td>(Phrase音声はTRIAL-03既存再利用、本TrialのStyle比較対象外)</td></tr>
+<tr><td>英語解説text(共通)</td><td colspan="2">to get back the money spent on something(語数=8)</td></tr>
+<tr><td>Before音声<br>(参考、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp5_before_en.mp3" type="audio/mpeg"></audio><br>duration=2.94s (2.72 wps) / asr_verified=True<br>ASR text: To get back the money spent on something.</td><td><span class="style-box">clear, precise, explanatory</span></td></tr>
+<tr><td>Variant A<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp5_variant_A_en.mp3" type="audio/mpeg"></audio><br>duration=2.98s (2.68 wps) / asr_verified=True / retry_count=0<br>ASR text: To get back the money spent on something.</td><td><span class="style-box">clear, precise, at a slightly relaxed pace</span></td></tr>
+<tr><td>Variant B<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp5_variant_B_en.mp3" type="audio/mpeg"></audio><br>duration=3.34s (2.4 wps) / asr_verified=True / retry_count=0<br>ASR text: To get back the money spent on something.</td><td><span class="style-box">clear, precise, at a measured pace, without dragging</span></td></tr>
+<tr><td>Variant C<br>(新規生成)</td><td><audio controls preload="none" style="width:220px"><source src="kp5_variant_C_en.mp3" type="audio/mpeg"></audio><br>duration=3.34s (2.4 wps) / asr_verified=True / retry_count=0<br>ASR text: To get back the money spent on something.</td><td><span class="style-box">clear, precise, carefully paced for understanding, without slowing down</span></td></tr>
+<tr><td>Reference After音声<br>(参考、不採用、reuse)</td><td><audio controls preload="none" style="width:220px"><source src="kp5_reference_after_en.mp3" type="audio/mpeg"></audio><br>duration=3.26s (2.45 wps) / asr_verified=True<br>ASR text: To get back the money spent on something.</td><td><span class="style-box">clear, precise, unhurried</span></td></tr>
+</table>
+</body>
+</html>
