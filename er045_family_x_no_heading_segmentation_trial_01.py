@@ -52,6 +52,12 @@ load_dotenv()
 
 REPORT_PATH = "FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md"
 
+# FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01 修正1回目(委任_02)で
+# 追加: v1実行で使ったsource-dirの既定値(v2系--stage呼び出しは
+# --source-dir省略時にこれを使う。v1実行時と同一パス、read-onlyで参照する
+# だけで値自体は変更しない)。
+SOURCE_DIR = "er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01"
+
 # Baseline English(見出しあり)の取得元。Hormuzのみdisk article.mdを使わず
 # REPORT転記から抽出する理由は本ファイル冒頭コメント参照。
 BASELINE_SOURCE = {
@@ -292,6 +298,95 @@ def generate_trial_translation(client, model: str, ja_text: str) -> dict:
             "usage": result.get("usage"), "elapsed_seconds": elapsed}
 
 
+# ------------------------------------------------------------
+# (a-2) 修正1回目(委任_02): Meta忠実英訳へのmust-fix retry(Production
+# 同等・1回のみ)。`er003_v1_n3_01_advanced_adaptation_generate.
+# build_must_fix_block()`(Production定数・関数、読み取りのみimport)を
+# そのまま流用する。ここでの新規追加は「Trial翻訳Promptの末尾へ同じ
+# ブロックを付加する」受け口のみで、must-fix文言自体はProduction関数を
+# 呼ぶだけ(コピペしない)。
+# ------------------------------------------------------------
+def _must_fix_from_major_deviations(major_devs: list) -> list:
+    """er012_e_family_entertainment_two_level_runner_01.py::
+    _must_fix_from_deviations()と同じ形(fact_id/claim_in_article/issue/
+    explanationを、related_fact_id/claim_in_article/issue/explanationから
+    組み立てる)。Productionファイルは読み取りのみで一切編集していない。"""
+    return [
+        {
+            "fact_id": d.get("related_fact_id", ""),
+            "claim_in_article": d.get("claim_in_article", ""),
+            "issue": d.get("issue", ""),
+            "explanation": d.get("explanation", ""),
+        }
+        for d in major_devs
+    ]
+
+
+def build_must_fix_retry_prompt(ja_text: str, must_fix: list) -> str:
+    return (TRIAL_FAITHFUL_TRANSLATION_INSTRUCTION + "\n\n" +
+            adv_gen.ADVANCED_VOCAB_RULE_V2_BLOCK +
+            "\n\n[Japanese article]\n" + ja_text +
+            "\n\n" + adv_gen.build_must_fix_block(must_fix))
+
+
+def generate_trial_translation_must_fix_retry(client, model: str, ja_text: str, must_fix: list) -> dict:
+    prompt = build_must_fix_retry_prompt(ja_text, must_fix)
+    t0 = time.time()
+    result = vfl01.run_writer_no_search(client, prompt, model=model, developer=TRIAL_DEVELOPER_MESSAGE)
+    elapsed = round(time.time() - t0, 3)
+    raw_text = result["raw_text"].strip()
+    m = _TRIAL_TITLE_RE.match(raw_text)
+    if not m:
+        raise RuntimeError(f"[ER-045] must-fix retry翻訳の出力形式が想定外です(先頭200字): {raw_text[:200]!r}")
+    title, body = m.group(1).strip(), m.group(2).strip()
+    return {"prompt": prompt, "raw_text": raw_text, "title": title, "body": body,
+            "model": result["model"], "response_id": result["response_id"],
+            "usage": result.get("usage"), "elapsed_seconds": elapsed, "must_fix_used": must_fix}
+
+
+# ------------------------------------------------------------
+# (a-3) 修正1回目(委任_02): In One Line v2(ユーザー仕様「短く自然な一文/
+# 一回聞いて理解できる/論点を詰め込みすぎない」+ Trial限定の目安語数)。
+# 見出し生成の指示は含まない(§Trial全体でTRIAL_FAITHFUL_TRANSLATION_
+# INSTRUCTIONと同様、本文再構成・見出し生成は行わない)。
+# ------------------------------------------------------------
+TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE = (
+    "Below is a finished English news feature article (already "
+    "translated from Japanese, no section headings). Write ONE short, "
+    "natural sentence that captures the core of the story, in a way a "
+    "listener can understand by hearing it just once.\n"
+    "\n"
+    "Requirements:\n"
+    "- Exactly one sentence.\n"
+    "- Understandable on a single listen.\n"
+    "- Do not pack in multiple separate points; focus on the single most "
+    "important point or twist of the story.\n"
+    "- Do not add any new fact, conclusion, or lesson that is not already "
+    "stated in the article below.\n"
+    "\n"
+    "As a rough guide only (Trial-only guidance, not a strict rule): aim "
+    "for one main clause with at most one subordinate clause, roughly "
+    "12-18 words.\n"
+    "\n"
+    "Output only the sentence itself, nothing else (no quotation marks, "
+    "no label like \"In one line:\", no Markdown heading markup).\n"
+    "\n"
+    "[Article]\n{article_text}"
+)
+
+
+def generate_trial_in_one_line_v2(client, model: str, trial_title: str, trial_body: str) -> dict:
+    article_text = f"# {trial_title}\n\n{trial_body}"
+    prompt = TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE.format(article_text=article_text)
+    t0 = time.time()
+    result = vfl01.run_writer_no_search(client, prompt, model=model, developer=TRIAL_DEVELOPER_MESSAGE)
+    elapsed = round(time.time() - t0, 3)
+    text = result["raw_text"].strip()
+    return {"prompt": prompt, "text": text, "model": result["model"],
+            "response_id": result["response_id"], "usage": result.get("usage"),
+            "elapsed_seconds": elapsed}
+
+
 def generate_trial_in_one_line(client, model: str, trial_title: str, trial_body: str) -> dict:
     article_text = f"# {trial_title}\n\n{trial_body}"
     prompt = TRIAL_IN_ONE_LINE_INSTRUCTION_TEMPLATE.format(article_text=article_text)
@@ -521,6 +616,155 @@ def run_rubric(client, model: str, ja_text: str, baseline_text: str, trial_text:
 
 
 # ------------------------------------------------------------
+# 修正1回目(委任_02)の3ステージ: must-fix-retry / in-one-line-v2 /
+# rubric-v2。いずれもv1の`trial_result.json`を入力として読み込み、
+# `{out_dir}/v2/`配下へ新規artifactを追加保存する(v1のファイルは一切
+# 上書きしない、透明性のため併載)。
+# ------------------------------------------------------------
+def run_must_fix_retry_stage(article: str, source_dir: str, out_dir: str, budget_jpy: float) -> dict:
+    """Meta本文の忠実英訳Deviation Check MAJORへの、Production同様の
+    must-fix retry(1回のみ、上限回避なし)。MAJORが無い場合(Hormuz)は
+    API呼び出しをせずSKIPPEDを記録する。"""
+    trial_result_v1 = load_json(f"{out_dir}/trial_result.json")
+    deviation_v1 = trial_result_v1["trial_deviation"]["parsed"]
+    major_devs = [d for d in deviation_v1.get("deviations", []) if d.get("severity") == "MAJOR"]
+    if not major_devs:
+        print(f"[ER-045][must-fix-retry] article={article}: MAJOR deviationなし。retryせずSKIP。")
+        result = {"article": article, "status": "SKIPPED_NO_MAJOR"}
+        save_json(f"{out_dir}/v2/must_fix_retry_result.json", result)
+        return result
+
+    client = vfl01.get_client()
+    model = routing.require_model_or_override("B1_WRITER", routing.WRITER_MODEL)
+    price_fn = _load_pricing()
+    tracker = CostTracker(budget_jpy)
+
+    must_fix = _must_fix_from_major_deviations(major_devs)
+    ja_text_full = trial_result_v1["ja_text"]
+    ledger_text = load_verified_ledger_text(source_dir, article)
+
+    trial_translation_v2 = generate_trial_translation_must_fix_retry(client, model, ja_text_full, must_fix)
+    tracker.add("trial_translation_v2_must_fix_retry", trial_translation_v2["model"],
+                trial_translation_v2["usage"], price_fn)
+
+    split_result_v2 = deterministic_three_way_split(trial_translation_v2["body"])
+    trial_full_text_v2 = f"# {trial_translation_v2['title']}\n\n{trial_translation_v2['body']}"
+
+    deviation_v2 = vfl01.run_deviation_check(client, ledger_text, trial_full_text_v2, model=model,
+                                              hook_aware=False, include_related_fact_id=True,
+                                              source_article_text=ja_text_full, prior_issues=must_fix)
+    tracker.add("trial_deviation_check_v2", deviation_v2.get("model", model),
+                deviation_v2.get("usage"), price_fn)
+
+    status_v2 = deviation_v2["parsed"].get("overall_status")
+    all_resolved = deviation_v2["parsed"].get("all_prior_issues_resolved", False)
+    # Production(er012_e_family_entertainment_two_level_runner_01.py)と同じ
+    # 上限: 1回だけ再生成し、なおMAJOR/未解消があってもそれ以上retryせず記録する。
+    result = {
+        "article": article, "status": "OK",
+        "must_fix_used": must_fix,
+        "trial_translation_v2": trial_translation_v2,
+        "split_result_v2": split_result_v2,
+        "deviation_check_v2": {"parsed": deviation_v2.get("parsed"), "model": deviation_v2.get("model"),
+                                "usage": deviation_v2.get("usage")},
+        "overall_status_v2": status_v2,
+        "all_prior_issues_resolved": all_resolved,
+        "retry_success": (status_v2 == "LEDGER_COMPLIANT"),
+        "cost": {"total_jpy": round(tracker.total_jpy, 4), "calls": tracker.calls,
+                 "budget_jpy": budget_jpy, "over_budget": tracker.total_jpy > budget_jpy},
+    }
+    save_json(f"{out_dir}/v2/trial_translation_v2.json", trial_translation_v2)
+    save_json(f"{out_dir}/v2/trial_split_v2.json", split_result_v2)
+    save_json(f"{out_dir}/v2/deviation_check_trial_v2.json", vfl01.deviation_audit_record(deviation_v2))
+    save_json(f"{out_dir}/v2/must_fix_retry_result.json", result)
+    print(f"[ER-045][must-fix-retry] article={article} status_v2={status_v2} "
+          f"all_resolved={all_resolved} cost_jpy={round(tracker.total_jpy, 4)}")
+    return result
+
+
+def run_in_one_line_v2_stage(article: str, out_dir: str, budget_jpy: float) -> dict:
+    """両記事共通。Metaはmust-fix retry後のv2本文(存在する場合)、
+    Hormuzはv1本文(不変)を対象にIn One Line v2を1回生成する。"""
+    trial_result_v1 = load_json(f"{out_dir}/trial_result.json")
+    v2_translation_path = f"{out_dir}/v2/trial_translation_v2.json"
+    if os.path.exists(v2_translation_path):
+        base = load_json(v2_translation_path)
+        source_label = "trial_translation_v2 (must-fix retry後)"
+    else:
+        base = trial_result_v1["trial_translation"]
+        source_label = "trial_translation (v1、must-fix retry対象外)"
+
+    client = vfl01.get_client()
+    model = routing.require_model_or_override("B1_WRITER", routing.WRITER_MODEL)
+    price_fn = _load_pricing()
+    tracker = CostTracker(budget_jpy)
+
+    in_one_line_v2 = generate_trial_in_one_line_v2(client, model, base["title"], base["body"])
+    tracker.add("trial_in_one_line_v2", in_one_line_v2["model"], in_one_line_v2["usage"], price_fn)
+
+    sentence_count = len([x for x in re.split(r"(?<=[.!?])\s+", in_one_line_v2["text"].strip()) if x.strip()])
+    result = {
+        "article": article, "status": "OK", "source_body_used": source_label,
+        "in_one_line_v2": in_one_line_v2,
+        "word_count": _word_count_en(in_one_line_v2["text"]),
+        "sentence_count": sentence_count,
+        "cost": {"total_jpy": round(tracker.total_jpy, 4), "calls": tracker.calls,
+                 "budget_jpy": budget_jpy, "over_budget": tracker.total_jpy > budget_jpy},
+    }
+    save_json(f"{out_dir}/v2/in_one_line_v2.json", result)
+    print(f"[ER-045][in-one-line-v2] article={article} word_count={result['word_count']} "
+          f"sentence_count={sentence_count} cost_jpy={round(tracker.total_jpy, 4)}")
+    return result
+
+
+def run_rubric_v2_stage(article: str, out_dir: str, budget_jpy: float) -> dict:
+    """変更した要素(Meta本文v2、In One Line v2)についてv1と同じ14項目
+    rubricを再評価する。Hormuzは本文がv1のまま(must-fix retry対象外)
+    なので、本文自体の再評価は目的ではなく、In One Line v2反映後の
+    in_one_line_conciseness_accuracy項目を得るために同じ1 callを実行する
+    (14項目のうち本文関連13項目は参考値、実質的な変化点はIn One Line関連)。
+    """
+    trial_result_v1 = load_json(f"{out_dir}/trial_result.json")
+    ja_text_full = trial_result_v1["ja_text"]
+    baseline_text = trial_result_v1["baseline"]["text"]
+    baseline_in_one_line = trial_result_v1["baseline_in_one_line"]
+    comments = trial_result_v1["comments"]["comments"]
+    split_result = trial_result_v1["split_result"]
+
+    v2_translation_path = f"{out_dir}/v2/trial_translation_v2.json"
+    if os.path.exists(v2_translation_path):
+        base = load_json(v2_translation_path)
+        body_label = "v2(must-fix retry後)"
+    else:
+        base = trial_result_v1["trial_translation"]
+        body_label = "v1(不変、must-fix retry対象外)"
+    trial_full_text_v2 = f"# {base['title']}\n\n{base['body']}"
+
+    in_one_line_v2_data = load_json(f"{out_dir}/v2/in_one_line_v2.json")
+    in_one_line_v2_text = in_one_line_v2_data["in_one_line_v2"]["text"]
+
+    client = vfl01.get_client()
+    model = routing.require_model_or_override("B1_WRITER", routing.WRITER_MODEL)
+    price_fn = _load_pricing()
+    tracker = CostTracker(budget_jpy)
+
+    rubric_v2 = run_rubric(client, model, ja_text_full, baseline_text, trial_full_text_v2,
+                            baseline_in_one_line, in_one_line_v2_text, comments, split_result)
+    tracker.add("rubric_v2", rubric_v2.get("model", model), rubric_v2.get("usage"), price_fn)
+
+    result = {
+        "article": article, "status": "OK", "body_used": body_label,
+        "rubric_v2": rubric_v2,
+        "cost": {"total_jpy": round(tracker.total_jpy, 4), "calls": tracker.calls,
+                 "budget_jpy": budget_jpy, "over_budget": tracker.total_jpy > budget_jpy},
+    }
+    save_json(f"{out_dir}/v2/rubric_v2.json", result)
+    print(f"[ER-045][rubric-v2] article={article} body_used={body_label} "
+          f"cost_jpy={round(tracker.total_jpy, 4)}")
+    return result
+
+
+# ------------------------------------------------------------
 # メイン
 # ------------------------------------------------------------
 def run_trial(article: str, source_dir: str, out_dir: str, budget_jpy: float) -> dict:
@@ -664,6 +908,89 @@ def _rubric_table_html(rubric_items: list) -> str:
     )
 
 
+def _attach_v2(result: dict, result_dir: str) -> None:
+    """修正1回目(委任_02)。API呼び出しなし、既存v2/*.jsonがあれば
+    result['v2']へ添付する(なければNoneのまま、v1のみのページになる)。"""
+    v2 = {}
+    must_fix_path = f"{result_dir}/v2/must_fix_retry_result.json"
+    in_one_line_v2_path = f"{result_dir}/v2/in_one_line_v2.json"
+    rubric_v2_path = f"{result_dir}/v2/rubric_v2.json"
+    if os.path.exists(must_fix_path):
+        v2["must_fix_retry"] = load_json(must_fix_path)
+    if os.path.exists(in_one_line_v2_path):
+        v2["in_one_line_v2"] = load_json(in_one_line_v2_path)
+    if os.path.exists(rubric_v2_path):
+        v2["rubric_v2"] = load_json(rubric_v2_path)
+    result["v2"] = v2 or None
+
+
+def _render_v2_section(article_key: str, result: dict) -> str:
+    v2 = result.get("v2")
+    if not v2:
+        return ""
+
+    must_fix = v2.get("must_fix_retry")
+    must_fix_html = ""
+    if must_fix and must_fix.get("status") == "OK":
+        dev2 = must_fix["deviation_check_v2"]["parsed"]
+        mf_items = "".join(
+            f"<li>Fact ID: {_html_escape(item.get('fact_id',''))} | "
+            f"該当箇所: {_html_escape(item.get('claim_in_article',''))} | "
+            f"指摘: {_html_escape(item.get('issue',''))}</li>"
+            for item in must_fix["must_fix_used"]
+        )
+        must_fix_html = f"""
+<h3>Meta must-fix retry(Production同等・1回のみ)</h3>
+<p>指摘{len(must_fix['must_fix_used'])}件:</p>
+<ul>{mf_items}</ul>
+<div style="background:#e6ffe6;padding:12px;border-radius:6px">
+<p><b># {_html_escape(must_fix['trial_translation_v2']['title'])}</b></p>
+{_para_html(must_fix['trial_translation_v2']['body'])}
+</div>
+<p>再生成後Deviation Check: overall_status=<b>{_html_escape(dev2.get('overall_status',''))}</b>
+(deviations={len(dev2.get('deviations', []))}, all_prior_issues_resolved=
+{must_fix.get('all_prior_issues_resolved')})</p>
+"""
+    elif must_fix and must_fix.get("status") == "SKIPPED_NO_MAJOR":
+        must_fix_html = "<h3>Meta must-fix retry</h3><p>MAJOR deviationなし。retry対象外(v1のまま)。</p>"
+
+    ioL_v2 = v2.get("in_one_line_v2")
+    ioL_html = ""
+    if ioL_v2:
+        ioL_v1 = result["trial_in_one_line"]
+        m1 = result["metrics"]["in_one_line_after"]
+        ioL_html = f"""
+<h3>In One Line: v1 → v2(簡潔化Prompt+参考ガイド12-18語)</h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%">
+<tr><th>v1</th><th>v2</th></tr>
+<tr>
+<td>{_html_escape(ioL_v1['text'])}<br>
+<span style="font-size:0.8em;color:#888">{m1['word_count']}語 / {m1['sentence_count']}文</span></td>
+<td>{_html_escape(ioL_v2['in_one_line_v2']['text'])}<br>
+<span style="font-size:0.8em;color:#888">{ioL_v2['word_count']}語 / {ioL_v2['sentence_count']}文
+(使用本文: {_html_escape(ioL_v2['source_body_used'])})</span></td>
+</tr>
+</table>
+"""
+
+    rubric_v2 = v2.get("rubric_v2")
+    rubric_html = ""
+    if rubric_v2:
+        rubric_html = f"""
+<h3>Rubric v2(変更要素反映後の再評価、body_used={_html_escape(rubric_v2['body_used'])})</h3>
+{_rubric_table_html(rubric_v2['rubric_v2']['parsed']['items'])}
+"""
+
+    return f"""
+<section style="margin-top:24px;border-top:2px dashed #999;padding-top:12px">
+<h3 style="color:#a30">修正1回目(2026-09-28、NH1B)</h3>
+{must_fix_html}
+{ioL_html}
+{rubric_html}
+</section>
+"""
+
+
 def render_article_section(article_key: str, label: str, result: dict) -> str:
     comments = result["comments"]["comments"]
     split = result["split_result"]
@@ -751,6 +1078,7 @@ Trial EN={metrics['trial_en_entity_count_improved']}件</li>
 
 <p style="font-size:0.85em;color:#888">Cost: 総額 ¥{result['cost']['total_jpy']}
 (予算¥{result['cost']['budget_jpy']}、超過={result['cost']['over_budget']})</p>
+{_render_v2_section(article_key, result)}
 </section>
 """
 
@@ -799,16 +1127,33 @@ def main() -> None:
     parser.add_argument("--hormuz-result-dir")
     parser.add_argument("--meta-result-dir")
     parser.add_argument("--page-out")
+    # 修正1回目(委任_02)で追加。--source-dir省略時はv1実行と同じSOURCE_DIRを使う。
+    parser.add_argument("--stage", choices=["must-fix-retry", "in-one-line-v2", "rubric-v2"],
+                         help="v1の trial_result.json を入力に、out-dir/v2/ へ新規artifactを追加する")
     args = parser.parse_args()
 
     if args.build_page:
         hormuz_result = load_json(f"{args.hormuz_result_dir}/trial_result.json")
         meta_result = load_json(f"{args.meta_result_dir}/trial_result.json")
+        _attach_v2(hormuz_result, args.hormuz_result_dir)
+        _attach_v2(meta_result, args.meta_result_dir)
         build_comparison_page(hormuz_result, meta_result, args.page_out)
         return
 
+    if args.stage:
+        if not (args.article and args.out_dir):
+            parser.error("--article/--out-dirは--stage指定時も必須です")
+        source_dir = args.source_dir or SOURCE_DIR
+        if args.stage == "must-fix-retry":
+            run_must_fix_retry_stage(args.article, source_dir, args.out_dir, args.budget_jpy)
+        elif args.stage == "in-one-line-v2":
+            run_in_one_line_v2_stage(args.article, args.out_dir, args.budget_jpy)
+        elif args.stage == "rubric-v2":
+            run_rubric_v2_stage(args.article, args.out_dir, args.budget_jpy)
+        return
+
     if not (args.article and args.source_dir and args.out_dir):
-        parser.error("--article/--source-dir/--out-dirは--build-page未指定時は必須です")
+        parser.error("--article/--source-dir/--out-dirは--build-page/--stage未指定時は必須です")
     run_trial(args.article, args.source_dir, args.out_dir, args.budget_jpy)
 
 

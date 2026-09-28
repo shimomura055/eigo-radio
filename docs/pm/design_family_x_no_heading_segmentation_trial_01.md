@@ -306,3 +306,59 @@ Product判断が必要。→ いずれかに該当した場合、追加改善(Pr
 
 `git diff --stat HEAD -- "er0*.py" "er003_v1_translator_briefs/" | grep -v
 er045`が空であることをコミット前に確認する(§実行コマンド全文参照)。
+
+## 7. 修正1回目(2026-09-28、委任_02)で追加した3ステージ
+
+初回(§3-4)はTrialのDeviation CheckでMAJORが出てもmust-fix retryを
+行わない設計だった。これはBaselineが持つmust-fix retry機構
+(`er012_e_family_entertainment_two_level_runner_01.py`)と比較条件が
+異なっていたため、修正1回目で以下の3ステージを`--stage`引数として追加
+した(v1の`run_trial()`本体は無変更、v1成果物`trial_translation.json`
+等も一切上書きしない。新規artifactは`{out_dir}/v2/`配下へ追加保存)。
+
+### 7-1. `--stage must-fix-retry`(Metaのみ)
+
+- 入力: v1の`trial_result.json`内`trial_deviation.parsed.deviations`
+  からseverity=="MAJOR"のみ抽出(MINORはmust-fix対象外、Production同様)。
+- must-fixブロック生成: `er003_v1_n3_01_advanced_adaptation_generate.
+  build_must_fix_block(must_fix)`をそのままimportして呼び出す(Trial側で
+  文言を再定義しない)。Trial翻訳Prompt(`TRIAL_FAITHFUL_TRANSLATION_
+  INSTRUCTION` + `ADVANCED_VOCAB_RULE_V2_BLOCK` + JA本文)の末尾へ、この
+  ブロックをそのまま追加するだけ(見出し生成等の新規指示は追加しない)。
+- 1回だけ再生成 → `vfl01.run_deviation_check(..., prior_issues=must_fix)`
+  で再検証(Production`er012`と同一呼び出しパターン、`prior_issues`
+  経由で`all_prior_issues_resolved`を取得)。`LEDGER_COMPLIANT`に
+  ならなくてもそれ以上retryしない(Production同様、1回→STOP)。
+- Hormuzは既にCOMPLIANTのため、このステージ自体を呼び出さない
+  (MAJORが無い場合はSKIPPED_NO_MAJORを記録して安全側に倒す実装だが、
+  実運用ではHormuzに対して本ステージを実行していない)。
+
+### 7-2. `--stage in-one-line-v2`(両記事)
+
+- 新規Prompt`TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE`(Trial限定):
+  ユーザー仕様(1文のみ/一回聞いて理解できる/論点を詰め込まない/新規
+  Fact・結論・教訓の追加禁止)を明示し、「参考ガイド(Trial限定、厳密
+  ルールではない): 主節1つ+従属節最大1つ、およそ12〜18語」を追記。
+  見出しMarkup生成の指示は含まない(テストで確認)。
+- 入力本文: `{out_dir}/v2/trial_translation_v2.json`が存在すれば
+  それ(Meta、must-fix retry後)、無ければv1の`trial_translation`
+  (Hormuz)。
+
+### 7-3. `--stage rubric-v2`(両記事)
+
+- v1と同じ`run_rubric()`(14項目、Comment文脈込み)を、Meta本文はv2
+  (must-fix retry後、存在すれば)、Hormuz本文はv1(不変)を使って
+  再実行。In One Line欄はv2のテキストを使う。目的はIn One Line
+  v2反映後の`in_one_line_conciseness_accuracy`等の更新であり、
+  本文自体の再評価(Hormuz)は同じ1 callの副産物として得られる値。
+
+### 7-4. ページ(`--build-page`)への統合
+
+`_attach_v2(result, result_dir)`が`{result_dir}/v2/*.json`の存在有無を
+見て`result['v2']`へ添付する(API呼び出しなし)。`_render_v2_section()`が
+存在する場合のみ「修正1回目」セクションを記事ごとに追記する(v1
+セクションは無変更のまま残り、v1/v2併載)。
+
+結果・費用実測・テスト結果は
+`FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01_REPORT.md`§13に
+記載。

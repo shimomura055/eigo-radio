@@ -53,6 +53,46 @@ class TestTrialPromptHasNoHeadingOrInOneLineInstruction(unittest.TestCase):
         self.assertIn("Do not add any new fact", text)
 
 
+class TestMustFixRetryPromptNoHeadingInstruction(unittest.TestCase):
+    # FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01 修正1回目
+    # (委任_02)で追加。must-fix retry Prompt(v2)もTRIAL_FAITHFUL_
+    # TRANSLATION_INSTRUCTIONをそのまま再利用するため、見出し禁止指示を
+    # 引き継いだままであること・新たな見出し生成指示を追加していないことを
+    # 確認する。
+    def test_must_fix_retry_prompt_still_forbids_headings(self):
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim",
+                     "issue": "issue", "explanation": "explanation"}]
+        prompt = trial.build_must_fix_retry_prompt("タイトル\n\n段落1。\n\n段落2。", must_fix)
+        self.assertIn("Do not add section headings", prompt)
+        self.assertNotIn("### ", prompt)
+
+    def test_must_fix_retry_prompt_includes_production_must_fix_block(self):
+        import er003_v1_n3_01_advanced_adaptation_generate as adv_gen
+        must_fix = [{"fact_id": "F1", "claim_in_article": "claim",
+                     "issue": "issue", "explanation": "explanation"}]
+        prompt = trial.build_must_fix_retry_prompt("タイトル\n\n段落1。\n\n段落2。", must_fix)
+        self.assertIn(adv_gen.build_must_fix_block(must_fix), prompt)
+
+
+class TestInOneLineV2PromptNoHeadingOrNewFacts(unittest.TestCase):
+    # FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01 修正1回目
+    # (委任_02)で追加。
+    def test_v2_prompt_forbids_new_facts(self):
+        text = trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE
+        self.assertIn("Do not add any new fact", text)
+
+    def test_v2_prompt_has_no_heading_generation_instruction(self):
+        text = trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE
+        self.assertNotIn("### ", text)
+        self.assertNotIn("# Title", text)
+        self.assertIn("no Markdown heading markup", text)
+
+    def test_v2_prompt_states_word_count_guide_as_reference_only(self):
+        text = trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE
+        self.assertIn("rough guide only", text)
+        self.assertIn("12-18 words", text)
+
+
 class TestDeterministicThreeWaySplit(unittest.TestCase):
     def _sample_body(self, n_paragraphs=7):
         return "\n\n".join(f"Paragraph {i} has some words in it for testing purposes today." * (i % 3 + 1)
