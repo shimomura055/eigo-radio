@@ -1,9 +1,13 @@
-"""FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(Phase B、委任_02)
+"""FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(Phase B、委任_02。
+修正=ユーザー決定によるR1/R2 reminder削除の反映、委任_04)
 
 Family X JA Writer正式経路(er019_family_x_ja_writer_o_r1_r2_01.py)へ配線した
-AN3(A3+N2)Concreteness Controlブロック/reminderの静的整合性テスト。
-実APIは一切呼ばない(build_original_prompt()はプロンプト文字列を組み立てる
-だけで、API呼び出しは行わない純粋関数)。
+AN3(A3+N2)Concreteness Controlブロックの静的整合性テスト。AN3はOriginal側
+のみ(Trial-02=er037/er039と同一条件)。R1/R2のreminderはTrial-02で検証
+されていない未Trial追加仕様だったため、ユーザー正式決定(2026-09-28)により
+削除し、R1/R2はPhase B以前(commit b814f241)の逐語(既存Revision指示のみ)
+に戻っていることを確認する。実APIは一切呼ばない(build_original_prompt()は
+プロンプト文字列を組み立てるだけで、API呼び出しは行わない純粋関数)。
 """
 
 from __future__ import annotations
@@ -66,52 +70,69 @@ class BuildOriginalPromptIncludesAN3Tests(unittest.TestCase):
         self.assertLess(symbol_idx, an3_idx)
 
 
-class R1R2ReminderThreeLocationsTests(unittest.TestCase):
-    """R1/R2は関数化されておらず3箇所に個別実装されている(設計書§1a)ため、
-    ソースを読み、3箇所すべてにREMINDERが含まれることをassertする。"""
+class R1R2NoReminderThreeLocationsTests(unittest.TestCase):
+    """FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(修正、委任_04):
+    ユーザー正式決定(2026-09-28)により、R1/R2のreminderはTrial-02で検証
+    されていない未Trial追加仕様だったため削除した。R1/R2は関数化されて
+    おらず3箇所に個別実装されている(設計書§1a)ため、ソースを読み、
+    3箇所すべてがPhase B以前(commit b814f241)の逐語に戻っている
+    (=reminderが含まれない)ことをassertする。"""
 
     @classmethod
     def setUpClass(cls):
         cls.source = inspect.getsource(jaw)
 
-    def test_reminder_constant_defined_once(self):
-        count = self.source.count("CONCRETENESS_CONTROL_AN3_REMINDER_JA = (")
-        self.assertEqual(count, 1)
+    def test_reminder_constant_not_defined(self):
+        self.assertFalse(hasattr(jaw, "CONCRETENESS_CONTROL_AN3_REMINDER_JA"))
+        self.assertNotIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", self.source)
 
-    def test_reminder_referenced_in_five_locations_total(self):
-        # 定義1 + verbatim_shas()内1 + 通常r1r2ループ1 + r2 must-fix1 + r2 symbol must-fix1 = 5
-        count = self.source.count("CONCRETENESS_CONTROL_AN3_REMINDER_JA")
-        self.assertEqual(count, 5)
+    def test_reminder_phrase_absent_from_source(self):
+        self.assertNotIn("再び増やさない", self.source)
 
-    def test_normal_r1_r2_loop_references_reminder(self):
+    def test_normal_r1_r2_loop_matches_phase_b_before(self):
         m = re.search(
-            r'for stage_key in \("r1", "r2"\):\s*instruction = \((.*?)\)',
-            self.source, re.DOTALL,
+            r'for stage_key in \("r1", "r2"\):\s*instruction = ([^\n]+)\n',
+            self.source,
         )
         self.assertIsNotNone(m, "通常r1/r2ループのinstruction組み立てが見つかりません")
-        self.assertIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
-        self.assertIn("SYMBOL_PREVENTION_BLOCK_JA", m.group(1))
+        self.assertEqual(
+            m.group(1).strip(),
+            'REVISION_INSTRUCTIONS[stage_key] + SYMBOL_PREVENTION_BLOCK_JA',
+        )
 
-    def test_r2_must_fix_instruction_references_reminder(self):
+    def test_r2_must_fix_instruction_matches_phase_b_before(self):
         m = re.search(
             r'r2_must_fix_instruction = \((.*?)\)\n            r1_response_id',
             self.source, re.DOTALL,
         )
         self.assertIsNotNone(m, "r2_must_fix_instructionの組み立てが見つかりません")
-        self.assertIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
+        self.assertEqual(
+            _normalize(m.group(1)),
+            _normalize(
+                'REVISION_INSTRUCTIONS["r2"] + "\\n\\n" +\n'
+                '                build_must_fix_block(must_fix_used_r2, full_ledger_text)'
+            ),
+        )
         # 設計書§7で報告された既存の非対称性(SYMBOL_PREVENTION_BLOCK_JAが
         # この箇所には元々含まれない)は本タスクのスコープ外として維持する
         # (OPEN-227として別途記録)。
         self.assertNotIn("SYMBOL_PREVENTION_BLOCK_JA", m.group(1))
+        self.assertNotIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
 
-    def test_r2_symbol_instruction_references_reminder(self):
+    def test_r2_symbol_instruction_matches_phase_b_before(self):
         m = re.search(
             r'r2_symbol_instruction = \((.*?)\)\n        r1_response_id_for_symbol',
             self.source, re.DOTALL,
         )
         self.assertIsNotNone(m, "r2_symbol_instructionの組み立てが見つかりません")
-        self.assertIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
-        self.assertIn("SYMBOL_PREVENTION_BLOCK_JA", m.group(1))
+        self.assertEqual(
+            _normalize(m.group(1)),
+            _normalize(
+                'REVISION_INSTRUCTIONS["r2"] + SYMBOL_PREVENTION_BLOCK_JA + "\\n\\n"\n'
+                '            + safety.build_symbol_violation_prompt_note(r2_symbol_findings)'
+            ),
+        )
+        self.assertNotIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
 
 
 class T1NonContaminationTests(unittest.TestCase):
@@ -134,19 +155,21 @@ class T1NonContaminationTests(unittest.TestCase):
             self.assertNotIn(phrase, source)
 
 
-class VerbatimShasIncludeAN3KeysTests(unittest.TestCase):
-    def test_verbatim_shas_has_two_new_keys_with_correct_values(self):
+class VerbatimShasAN3KeyTests(unittest.TestCase):
+    def test_verbatim_shas_has_block_key_with_correct_value(self):
         shas = jaw.verbatim_shas()
         self.assertIn("concreteness_an3_block_sha256", shas)
-        self.assertIn("concreteness_an3_reminder_sha256", shas)
         self.assertEqual(
             shas["concreteness_an3_block_sha256"],
             hashlib.sha256(jaw.CONCRETENESS_CONTROL_AN3_BLOCK.encode("utf-8")).hexdigest(),
         )
-        self.assertEqual(
-            shas["concreteness_an3_reminder_sha256"],
-            hashlib.sha256(jaw.CONCRETENESS_CONTROL_AN3_REMINDER_JA.encode("utf-8")).hexdigest(),
-        )
+
+    def test_verbatim_shas_has_no_reminder_key(self):
+        # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(修正、委任_04):
+        # ユーザー正式決定によりreminder自体を削除したため、
+        # verbatim_shas()にconcreteness_an3_reminder_sha256は存在しない。
+        shas = jaw.verbatim_shas()
+        self.assertNotIn("concreteness_an3_reminder_sha256", shas)
 
     def test_verbatim_shas_still_has_original_four_keys(self):
         shas = jaw.verbatim_shas()

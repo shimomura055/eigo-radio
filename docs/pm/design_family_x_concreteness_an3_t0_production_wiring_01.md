@@ -537,3 +537,48 @@ baselineと近い)。この構造チェックはparts.json(TTS音声化準備専
 本タスク証拠には影響しない。本タスクでは新規Validator/retry機構を
 追加しないという禁止事項に従い、**修正は行わず新規OPEN候補として
 報告のみ**とする(Fable/ユーザー判断)。
+
+## 9. ユーザー決定によるR1/R2 reminder削除(委任_04、2026-09-28)
+
+### 9-1. 経緯
+
+§3-2で設計した`CONCRETENESS_CONTROL_AN3_REMINDER_JA`(R1/R2の3箇所への
+reminder追記)は、「fallback_full_text経路での頑健性向上」という設計上の
+配慮から追加した独自仕様であり、Trial-02(`er039`)のAN3-T0セル実測では
+使われていなかった(Trial-02の実際の構成はOriginal側へのAN3追加のみ、
+R1/R2は既存Revision指示のみ)。ユーザーはこれを「未Trial追加仕様の
+Production混入」と判断し、Production正式経路から外すことを決定した
+(2026-09-28)。
+
+### 9-2. 変更内容
+
+`CONCRETENESS_CONTROL_AN3_REMINDER_JA`定数と、§3-2で追記した3箇所
+(通常r1/r2ループ・R2 Fact Check must-fix・R2音声記号must-fix)の
+reminder追記を削除し、Phase B以前(commit `b814f241`)の逐語へ復元した。
+`verbatim_shas()`から`concreteness_an3_reminder_sha256`キーを削除した。
+§3-1の`CONCRETENESS_CONTROL_AN3_BLOCK`(Original側)は無変更のまま
+維持する(ユーザー決定「AN3はOriginal側のみに戻す」に対応)。
+
+### 9-3. Checklist項目「R1/R2で数字・固有名詞を再前景化しない既存方針との
+整合」(§3-2の要件文)の再評価
+
+§3-2時点ではreminder追加によりこの要件へ対応する設計としていたが、
+この対応方法自体が未Trial仕様だったため撤回した。現在の充足基準は
+「Trial-02と同一条件(R1/R2は既存Revision指示のみで追加reminderなし)」
+であり、この基準での充足を委任_04のregressionテスト(`R1R2NoReminder
+ThreeLocationsTests`)で機械的に確認した。詳細はREPORT §16参照。
+
+### 9-4. §3-3(retry/fallback/regenerationの通過確認)への影響
+
+§3-3で述べた「全生成経路は2定数を追加する4箇所を必ず通る」という設計は、
+削除後は「Original側1定数(`CONCRETENESS_CONTROL_AN3_BLOCK`)を追加する
+1箇所(`build_original_prompt()`)のみを必ず通る」に修正される。R1/R2は
+reminderを含まないPhase B以前の経路へ戻ったため、fallback_full_text
+経路を含め、R1/R2側でAN3関連の追加処理を経由する箇所は無くなった。
+
+### 9-5. runtime evidenceの扱い
+
+§8-3で記録したruntime evidence(Phase B時点、reminderあり構成)は削除
+せずそのまま保持する。reminder削除後のR1/R2の挙動はTrial-02
+(`er039`、AN3-T0セル)の実測と同一条件であるため、新たなAPI再生成は
+行わない(詳細・費用¥0の理由はREPORT §16参照)。

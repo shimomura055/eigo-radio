@@ -387,3 +387,156 @@ commit `1f47ff72`(実装+テスト+確認用再生成evidence+REPORT+SSOT一括�
 3. OPEN-220(Advanced Prompt側固有名詞抑制拡張要否、`DEFERRED`のまま)。
 4. 生成されたHormuz/Meta記事本文(§4)自体のユーザー確認・試聴判断
    (既存Mandatory STOP、音声化は本タスクのスコープ外)。
+
+## §16. ユーザー決定による R1/R2 reminder削除(2026-09-28、委任_04)
+
+### 背景・ユーザー決定(逐語要旨)
+
+Trial-02(`er039_family_xy_concreteness_control_trial_02.py`)でAN3-T0を
+実測評価した際の実際の構成は、Original生成時にAN3(A3+N2)を追加するのみで、
+R1/R2は既存Revision指示(`REVISION_INSTRUCTIONS["r1"/"r2"]`)のみであり、
+`CONCRETENESS_CONTROL_AN3_REMINDER_JA`のようなreminder文は含まれていな
+かった。Phase B(委任_02)でProduction Wiring時に独自追加した当該reminder
+は、Trialで検証されていない未Trial追加仕様であったため、ユーザーが
+Production正式経路から外すことを決定した(2026-09-28)。
+
+### 削除箇所(ファイル・行、修正前後)
+
+`er019_family_x_ja_writer_o_r1_r2_01.py`:
+
+1. `CONCRETENESS_CONTROL_AN3_REMINDER_JA`定数定義(旧L109-115、コメント+
+   定数本体)を削除。`CONCRETENESS_CONTROL_AN3_BLOCK`(Original側)は
+   無変更のまま維持。
+2. `verbatim_shas()`から`concreteness_an3_reminder_sha256`キーを削除
+   (旧L130)。`concreteness_an3_block_sha256`キーは維持。
+3. 通常r1/r2ループ(旧L357-360): `instruction = (REVISION_INSTRUCTIONS
+   [stage_key] + SYMBOL_PREVENTION_BLOCK_JA + CONCRETENESS_CONTROL_AN3_
+   REMINDER_JA)` → `instruction = REVISION_INSTRUCTIONS[stage_key] +
+   SYMBOL_PREVENTION_BLOCK_JA`(Phase B以前=commit `b814f241`時点の
+   逐語に復元)。
+4. R2 Fact Check must-fix経路(旧L403-408): `r2_must_fix_instruction`
+   からreminder追記を削除、`REVISION_INSTRUCTIONS["r2"] + "\n\n" +
+   build_must_fix_block(...)`のみに復元(`b814f241`時点の逐語)。
+5. R2音声記号must-fix経路(旧L464-469): `r2_symbol_instruction`から
+   reminder追記を削除、`REVISION_INSTRUCTIONS["r2"] + SYMBOL_PREVENTION_
+   BLOCK_JA + "\n\n" + safety.build_symbol_violation_prompt_note(...)`
+   のみに復元(`b814f241`時点の逐語)。
+
+fallback_full_text経路(`previous_response_id`失敗時)は上記3経路と同一の
+`instruction`変数をそのまま使うため、reminder文言は当然残らない
+(fallback専用の追加箇所は存在しない)。
+
+### Phase B以前(commit `b814f241`)との逐語一致diff結果
+
+`git show b814f241:er019_family_x_ja_writer_o_r1_r2_01.py`を一時ファイルへ
+出力し、現行ファイルと`diff -u`で比較した結果、残る差分は以下3箇所のみ
+(全てOriginal側=`CONCRETENESS_CONTROL_AN3_BLOCK`関連、ユーザー決定で
+「Original側のみ維持」とされた部分と完全一致):
+
+1. `CONCRETENESS_CONTROL_AN3_BLOCK`定数定義(コメント6行+定数本体6行、
+   `build_original_prompt()`より前に新設)。
+2. `verbatim_shas()`内`"concreteness_an3_block_sha256": sha256_text(
+   CONCRETENESS_CONTROL_AN3_BLOCK)`の1キー追加。
+3. `build_original_prompt()`内`prompt += CONCRETENESS_CONTROL_AN3_BLOCK`
+   の1行追加。
+
+R1/R2の3経路(通常ループ・R2 Fact Check must-fix・R2音声記号must-fix)に
+対応する箇所は、`b814f241`との差分ゼロ(diffに出現しない=完全一致)を
+確認した。すなわちR1/R2は現在Trial-02と同一条件(既存Revision指示のみ)
+に戻っている。
+
+`diff -u`出力全文(`git show b814f241:er019_family_x_ja_writer_o_r1_r2_
+01.py`との比較、3ハンクのみ、全てOriginal側):
+
+```diff
+--- jaw_b814f241.py (commit b814f241)
++++ er019_family_x_ja_writer_o_r1_r2_01.py (現行)
+@@ -94,6 +94,18 @@
+     "- URLやメールアドレスは書かないでください。絵文字も使わないでください。"
+ )
+ 
++# FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28): Trial
++# (er037/er039)のA3+N2(AN3、ユーザー正式決定APPROVED_FOR_PRODUCTION)を
++# 逐語で移設。R0_PROMPT自体は無変更、build_original_prompt()で別途追記
++# する(SYMBOL_PREVENTION_BLOCK_JAと同型パターン)。「数字を0にする」とは
++# 定義しない(定性的な抑制指示であり数値目標ではない)。
++CONCRETENESS_CONTROL_AN3_BLOCK = (
++    "\n\n数字・時刻は基本的に使わないでください。記事の理解に本当に必要な場合"
++    "だけ、最小限に使ってください。\n"
++    "人名・企業名・地名などの固有名詞は、話の理解に必要な場合だけ使い、それ"
++    "以外は一般的な言い方にしてください。"
++)
++
+ 
+ def sha256_text(text: str) -> str:
+     return hashlib.sha256((text or "").encode("utf-8")).hexdigest()
+@@ -105,6 +117,8 @@
+         "developer_message_sha256": sha256_text(DEVELOPER_MESSAGE),
+         "r1_instruction_sha256": sha256_text(REVISION_INSTRUCTIONS["r1"]),
+         "r2_instruction_sha256": sha256_text(REVISION_INSTRUCTIONS["r2"]),
++        # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28): 追加
++        "concreteness_an3_block_sha256": sha256_text(CONCRETENESS_CONTROL_AN3_BLOCK),
+     }
+ 
+ 
+@@ -146,6 +160,7 @@
+     prompt = "\n".join(new_lines)
+     prompt += "\n\n[ニュース]\n" + selected_fact_brief_text
+     prompt += SYMBOL_PREVENTION_BLOCK_JA
++    prompt += CONCRETENESS_CONTROL_AN3_BLOCK  # FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01
+     if must_fix:
+         prompt += "\n\n" + build_must_fix_block(must_fix, full_ledger_text or "")
+     return prompt
+```
+
+`grep -n "再び増やさない" er0*.py`の結果は、本削除確認用に新設した
+regressionテスト(`er019_family_x_concreteness_an3_t0_production_wiring_
+01_test_01.py`内の`assertNotIn("再び増やさない", self.source)`という
+文字列リテラル1件のみ)であり、Production側コード(`er019_family_x_ja_
+writer_o_r1_r2_01.py`を含む全er0*.pyのProduction module)には0件。
+
+### テスト結果
+
+`er019_family_x_concreteness_an3_t0_production_wiring_01_test_01.py`の
+`R1R2ReminderThreeLocationsTests`を`R1R2NoReminderThreeLocationsTests`
+へ置換し、3経路とも「reminderが含まれないこと」「Phase B以前の逐語と
+一致すること」をassertする内容へ変更、`VerbatimShasIncludeAN3KeysTests`
+も`concreteness_an3_reminder_sha256`が存在しないことをassertする内容へ
+変更した(Original側のBLOCK含有・er037逐語一致・T1不在・Advanced Prompt
+sha一致のテストは無変更のまま維持)。単体実行18件全PASS。
+`run_project_regression.py --pattern "er019*_test_*.py"`は157件中156件
+PASS、1件FAIL(`er019_family_x_pointless_01_test_01.
+FamilyAUnchangedTest.test_family_a_files_have_no_working_tree_diff`、
+`er003_v1_n3_01_tts_generate.py`の未commit差分を検知するテスト。この
+ファイルは本タスク開始時点で既に並行作業中の別Sonnet[Task 4 Phase B]が
+編集中であり[委任文T-0記載]、本タスクの変更対象外・無関係。本タスクの
+変更適用前から存在する差分であり、本削除作業に起因するFAILではない)。
+`er037*_test_*.py`(12件)・`er039*_test_*.py`(17件)は全PASS
+(Trial script側は無変更のため回帰なし)。
+
+### runtime evidenceの扱い
+
+`er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_
+regression_01/{hormuz,meta}/`配下の既存`runtime_evidence.json`
+(`ja_writer/runtime_evidence.json`等)は、Phase B時点(reminderあり構成)
+の実測記録であり、削除・上書きせずそのまま残す。reminder削除後のR1/R2は
+Trial-02(`er039`、AN3-T0セル)と実行時の構成が同一(Original側のみAN3
+BLOCKを追加、R1/R2は既存Revision指示のみ)であり、Original側の
+`CONCRETENESS_CONTROL_AN3_BLOCK`定数の文言・sha256は本修正で一切変更して
+いない。したがってTrial-02の実測結果(AN3-T0セルのJA/EN記事)が、reminder
+なし構成でのR1/R2挙動の実証根拠となる。**本タスクではAPI再生成を行って
+いない(¥0)**。
+
+### Checklist項目「R1/R2で数字・固有名詞を再前景化しない既存方針との整合」
+の再評価
+
+設計書§3-2で提起されたこの要件は、Phase B時点ではreminder追加により対応
+していたが、Trial-02で未検証の仕様であったため、ユーザー決定によりこの
+対応方法自体を撤回した。現在は「Trial-02と同一条件(R1/R2は既存Revision
+指示のみで、reminder等の追加なし)」を要件充足の基準とし、この基準で
+充足していることを上記regressionテストで機械的に確認した。
+
+### commit・push
+
+commit `<下記実行時に記録>`(実装+テスト+REPORT+設計書一括、
+`git push origin main`実行)。詳細はcommit hashを本節末尾へ追記。
