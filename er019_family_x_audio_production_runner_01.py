@@ -348,6 +348,17 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
 # ============================================================
 _BODY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2", "full_story_part3")
 
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、2026-09-29、Opus L2
+# 所見MAJOR-3是正): 可変segment(japanese_title/topic_intro/preview/
+# comment_*/full_story_*/heading/in_one_line)のstyle仕様(J3/E2/
+# japanese_titleへのJ3適用等)を変更するたびに、この値をbumpする。
+# tts_generation_results.jsonのトップレベルへ保存し、_generate_or_reuse
+# がcacheのversionと比較する。値が不一致または欠落(旧run・旧cache)の
+# 場合は可変segmentの再利用を行わない(shell固定phrase・Key Phraseの
+# reuse判定[_generate_or_reuse_kp、shared_narration側]はこの値を参照
+# せず、本変更の影響を受けない)。
+FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v2_j3_e2_title"
+
 
 # ============================================================
 # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27):
@@ -376,7 +387,16 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     音声を誤って再利用してしまう。expected_textが渡された場合は、cache
     されたcanonical_textと完全一致する場合のみ再利用する(不一致時は
     generate_fn()で必ず再生成し、古い音声の使い回しを防ぐ)。expected_text
-    省略時(既存呼び出し元、後方互換)は従来どおりの挙動を維持する。"""
+    省略時(既存呼び出し元、後方互換)は従来どおりの挙動を維持する。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MAJOR-3
+    是正): cachedのトップレベル"style_version"が現行の
+    FAMILY_X_VARIABLE_ROLE_STYLE_VERSIONと不一致・欠落の場合、可変
+    segmentのreuseを一切行わない(必ずgenerate_fn()で再生成する)。
+    旧cache(本是正以前のrun)にはこのキー自体が無いため既定でNoneとなり、
+    確実に不一致(=再生成)になる。"""
+    if cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
+        return generate_fn()
     cached_result = (cached.get("segments") or {}).get(name) if cached else None
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
@@ -618,7 +638,10 @@ def generate_family_x_b1_segments(
                  for r, v in kp_results.items()}
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
-               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
+               # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
+               # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
+               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION})
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -689,8 +712,17 @@ def generate_family_x_a2_segments(
     `style_prefix_override`引数を追加し、preview/comment_1-4のみ
     `_role_style_ja()`(下記)経由でJ3(TTS-VARIABLE-SPOKEN-ROLE-STYLE-
     TRIAL-02実測・ユーザー承認)を渡す。japanese_titleはTrial-02の
-    JA_SEGMENTS対象外のため引き続き無変更(既存JAPANESE_STYLE_PREFIX/
-    minimal instructionテキストをそのまま流用)。"""
+    JA_SEGMENTS対象外のため当時は無変更(既存JAPANESE_STYLE_PREFIX/
+    minimal instructionテキストをそのまま流用)としていた。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、2026-09-29、Opus L2
+    所見MAJOR-1是正・ユーザー正式決定): 上記の判断を撤回する。japanese_
+    titleもpreview/comment_1-4と同一の`_role_style_ja()`(同一関数・同一
+    backendゲート)を渡すよう統一した。理由: 同一A2記事内でjapanese_
+    title(旧仕様のまま=長文JAPANESE_STYLE_PREFIX)とpreview/comment
+    (J3)のstyleが混在し、誰も通しで試聴していなかった(Opus L2所見
+    MAJOR-1)。既定backendでは`_role_style_ja()`はNoneを返すため、
+    既存挙動(JAPANESE_STYLE_PREFIXのまま)に影響はない。"""
     import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 
     def _role_style(role: str) -> str | None:
@@ -767,6 +799,14 @@ def generate_family_x_a2_segments(
             lambda: n3_tts.generate_a2_japanese_with_reading_safety(
                 japanese_title, f"{narration_dir}/japanese_title.wav",
                 n3_tts.expected_substring_ja(japanese_title), max_extra_chars=30,
+                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
+                # MAJOR-1是正、ユーザー正式決定): japanese_titleもpreview/
+                # comment_1-4と同一のJ3(_role_style_ja())へ統一する
+                # (同一関数・同一backendゲート。既定backendではNoneのまま
+                # =従来JAPANESE_STYLE_PREFIX、既存挙動に影響なし)。従来は
+                # japanese_titleだけJ3対象外のまま残り、Flash-Lite backend
+                # 選択時に同一A2記事内でstyleが混在していた。
+                style_prefix_override=_role_style_ja(),
                 tts_backend=tts_backend), expected_text=japanese_title)
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -841,7 +881,10 @@ def generate_family_x_a2_segments(
                  for r, v in kp_results.items()}
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
-               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend})
+               "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
+               # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
+               # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
+               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION})
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},

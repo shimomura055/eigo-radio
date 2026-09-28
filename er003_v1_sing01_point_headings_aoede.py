@@ -153,13 +153,25 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
                     "disfluency_checked": gate["disfluency_checked"],
                     "disfluency_evidence": gate.get("disfluency_evidence"), "tts_backend": tts_backend,
-                    "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
+                    "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2
+                    # 所見MAJOR-2/MINOR-A是正): 実際に渡した最終style文字列
+                    # (override指定時のみ)・model_idのruntime evidence。
+                    # use_minimal時(instruction_type=="minimal_fallback")は
+                    # style_prefix_overrideの影響を受けないfallback定数が
+                    # 実際に使われるため、その値をそのまま記録する。
+                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                    "style_prefix": (style_prefix if (style_prefix_override or use_minimal)
+                                      else "<default:ENGLISH_STYLE_PREFIX>")}
         if stop_retrying:
             return {"status": "ASR_VALIDATION_UNCERTAIN", "text": text, "path": out_path, "voice": AOEDE,
                     "asr_verified": False, "asr_text": asr_text, "attempts_log": attempts_log,
                     "instruction_type": instruction_type, "max_len": max_len,
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
-                              f"(最終classification={cls.classification})"}
+                              f"(最終classification={cls.classification})",
+                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                    "style_prefix": (style_prefix if (style_prefix_override or use_minimal)
+                                      else "<default:ENGLISH_STYLE_PREFIX>")}
     return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証(内容+長さ)に合格しませんでした",
             "attempts_log": attempts_log}
 

@@ -26,13 +26,20 @@ import json
 import os
 import shutil
 import tempfile
+import types
 import unittest
 from unittest import mock
 
+import numpy as np
+
 import er003_b1_p9a_audio as p9a
 import er003_v1_n3_01_tts_generate as n3_tts
+import er003_v1_sing01_news_tail_fix as news_tail_fix_mod
+import er003_v1_sing01_point_headings_aoede as point_headings_mod
+import er003_v1_sing01_voice01_generate as voice01_mod
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er019_family_x_audio_production_runner_01 as runner
+import er033_tts_flash_lite_backend_wiring_01 as flw
 import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 import er044_tts_variable_spoken_role_style_trial_02 as trial02
 
@@ -112,7 +119,11 @@ class RunnerBackendGateTests(unittest.TestCase):
             json.dump(support, f)
         return a2_dir
 
-    def test_flash_lite_backend_passes_j3_to_preview_and_comments_only(self):
+    def test_flash_lite_backend_passes_j3_to_title_preview_and_comments(self):
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MAJOR-1
+        # 是正・ユーザー正式決定): japanese_titleもpreview/comment_1-4と
+        # 同一のJ3を受け取るよう統一した(従来はjapanese_titleだけ対象外
+        # だったが、これを撤回)。
         tmpdir = tempfile.mkdtemp(prefix="family_x_a2_ja_role_style_")
         try:
             self._make_a2_dir(tmpdir)
@@ -125,13 +136,8 @@ class RunnerBackendGateTests(unittest.TestCase):
                 runner.generate_family_x_a2_segments(tmpdir, "日本語タイトル",
                                                       tts_backend="speech_metadata_flash_lite")
 
-            # japanese_title(1回目の呼び出し)はTrial-02のJA_SEGMENTS対象外
-            # =style_prefix_overrideを渡さない(既定None)。
-            title_call = ja_mock.call_args_list[0]
-            self.assertIsNone(title_call.kwargs.get("style_prefix_override"))
-
-            # preview/comment_1〜4(2回目以降の呼び出し)はJ3を渡す。
-            for call in ja_mock.call_args_list[1:]:
+            # japanese_title(1回目の呼び出し)を含む全6回がJ3を受け取る。
+            for call in ja_mock.call_args_list:
                 self.assertEqual(call.kwargs.get("style_prefix_override"), fl_styles.FAMILY_X_ROLE_STYLE_JA)
             self.assertEqual(len(ja_mock.call_args_list), 6)  # japanese_title + preview + comment_1-4
         finally:
@@ -176,13 +182,23 @@ class ReadingSafetyDefaultForwardingTests(unittest.TestCase):
 
 
 class ShellFixedPhraseUnaffectedTests(unittest.TestCase):
-    """(d) 固定Master phrase(shell)のstyle解決関数が本変更の影響を受けない
-    (逐語不変)ことを確認する。"""
+    """(d) 固定Master phrase(shell)のstyle解決関数が本タスク
+    (TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01)の影響を受けない
+    (逐語不変)ことを確認する。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W2、2026-09-29)により
+    _resolve_shell_english_style_prefix_overrideの引数にname(phrase名)が
+    追加され、welcome以外の8 English phraseはChampion style map
+    (SHELL_CHAMPION_STYLE_BY_PHRASE_EN)経由の文言へ切り替わった
+    (この置き換え自体が本Championタスクの目的であり、意図した破壊的変更)。
+    本テストの目的である「welcomeの解決結果が不変」の検証は維持し、
+    旧シグネチャ呼び出し・旧一律style期待だけを更新する。"""
 
     def test_shell_english_style_resolution_literal_unchanged(self):
-        self.assertIsNone(shared_narration._resolve_shell_english_style_prefix_override("structured_separation"))
+        self.assertIsNone(
+            shared_narration._resolve_shell_english_style_prefix_override("welcome", "structured_separation"))
         self.assertEqual(
-            shared_narration._resolve_shell_english_style_prefix_override("speech_metadata_flash_lite"),
+            shared_narration._resolve_shell_english_style_prefix_override("welcome", "speech_metadata_flash_lite"),
             "natural, clear, conversational")
         # FAMILY_X_ROLE_STYLE_EN_FALLBACK自体もJ3/E2配線の対象外(不変)。
         self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK, ["natural, clear, conversational", "clear"])
@@ -229,6 +245,208 @@ class FallbackPathUnaffectedTests(unittest.TestCase):
         self.assertNotIn("style_prefix_override", minimal_mock.call_args.kwargs)
 
 
+# ============================================================
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、2026-09-29)
+# Opus L2所見MAJOR-3是正: 可変segment reuse判定のcache version guard。
+# ============================================================
+class CacheVersionGuardTests(unittest.TestCase):
+    """_generate_or_reuse()がcachedのトップレベル"style_version"を見て、
+    現行FAMILY_X_VARIABLE_ROLE_STYLE_VERSIONと不一致・欠落の場合は可変
+    segmentのreuseを一切行わないこと(shell/Key Phrase側の_generate_or_
+    reuse_kpは対象外で無変更のまま)を確認する。"""
+
+    def test_reuse_skipped_when_style_version_mismatches(self):
+        cached = {"style_version": "old_version_before_this_fix",
+                  "segments": {"seg": {"status": "OK", "canonical_text": "x"}}}
+        calls = {"n": 0}
+
+        def gen():
+            calls["n"] += 1
+            return {"status": "OK", "canonical_text": "x"}
+
+        with mock.patch.object(runner.os.path, "exists", return_value=True):
+            result = runner._generate_or_reuse(cached, "seg", "dummy.wav", gen, expected_text="x")
+        self.assertEqual(calls["n"], 1)
+        self.assertNotIn("reused_from_previous_run", result)
+
+    def test_reuse_skipped_when_style_version_missing(self):
+        # 本是正以前に保存されたcache(style_versionキー自体が無い)。
+        cached = {"segments": {"seg": {"status": "OK", "canonical_text": "x"}}}
+        calls = {"n": 0}
+
+        def gen():
+            calls["n"] += 1
+            return {"status": "OK", "canonical_text": "x"}
+
+        with mock.patch.object(runner.os.path, "exists", return_value=True):
+            result = runner._generate_or_reuse(cached, "seg", "dummy.wav", gen, expected_text="x")
+        self.assertEqual(calls["n"], 1)
+        self.assertNotIn("reused_from_previous_run", result)
+
+    def test_reuse_allowed_when_style_version_matches(self):
+        cached = {"style_version": runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                  "segments": {"seg": {"status": "OK", "canonical_text": "x"}}}
+        calls = {"n": 0}
+
+        def gen():
+            calls["n"] += 1
+            return {"status": "OK", "canonical_text": "x"}
+
+        with mock.patch.object(runner.os.path, "exists", return_value=True):
+            result = runner._generate_or_reuse(cached, "seg", "dummy.wav", gen, expected_text="x")
+        self.assertEqual(calls["n"], 0)
+        self.assertTrue(result.get("reused_from_previous_run"))
+
+    def test_reuse_still_allowed_when_cached_is_none(self):
+        # cache自体が存在しない(新規out-dir初回run)場合は従来どおり
+        # generate_fn()を呼ぶ(version guardの新設で新規runへの影響なし)。
+        calls = {"n": 0}
+
+        def gen():
+            calls["n"] += 1
+            return {"status": "OK", "canonical_text": "x"}
+
+        result = runner._generate_or_reuse(None, "seg", "dummy_nonexistent.wav", gen, expected_text="x")
+        self.assertEqual(calls["n"], 1)
+        self.assertNotIn("reused_from_previous_run", result)
+
+    def test_key_phrase_reuse_unaffected_by_style_version_guard(self):
+        # (e)と対称: shell固定phrase・Key Phraseのreuse判定
+        # (_generate_or_reuse_kp)はstyle_versionを一切参照しない(不変)。
+        cached = {"style_version": "old_version_before_this_fix",
+                  "key_phrases": {"1": {"english": {"status": "OK"}}}}
+        calls = {"n": 0}
+
+        def gen():
+            calls["n"] += 1
+            return {"status": "OK"}
+
+        with mock.patch.object(runner.os.path, "exists", return_value=True):
+            result = runner._generate_or_reuse_kp(cached, 1, "english", "dummy.wav", gen)
+        self.assertEqual(calls["n"], 0)
+        self.assertTrue(result.get("reused_from_previous_run"))
+
+
+# ============================================================
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、2026-09-29)
+# Opus L2所見MAJOR-2/MINOR-A是正: Advanced(B1B)英語経路
+# (er003_v1_sing01_voice01_generate.py/news_tail_fix.py/
+# point_headings_aoede.py)の戻り値へruntime evidence(style_prefix/
+# tts_model_id/voice)が追加されたことを確認する。
+#
+# 設計上の注記(MINOR-B): 本テストは各関数単体をmockで固めた単体テスト
+# であり、「runner配線」(japanese_title/preview等がどのstyleを選ぶか)の
+# 検証はRunnerBackendGateTests側が担う。実際にFlash-Lite backendで生成
+# した音声にstyleが正しく反映されていることのruntime実測(E2E)は、本W3
+# の範囲外(後続のE2Eで取得)。
+# ============================================================
+_FAKE_CLS_EXACT_MATCH = types.SimpleNamespace(classification="EXACT_MATCH")
+
+
+class RuntimeEvidenceKeysTests(unittest.TestCase):
+    def setUp(self):
+        self._tmpdir = tempfile.mkdtemp(prefix="family_x_runtime_evidence_")
+        self._out_path = os.path.join(self._tmpdir, "dummy_out.wav")
+
+    def tearDown(self):
+        shutil.rmtree(self._tmpdir, ignore_errors=True)
+
+    def test_voice01_generate_charon_english_returns_evidence_keys(self):
+        samples = (np.sin(np.linspace(0, 6.28, 2400)) * 0.05).astype(np.float64)
+        with mock.patch.object(flw, "resolve_tts_call_and_prompt",
+                                return_value=(lambda prompt: b"\x00\x00" * 100, "dummy prompt")), \
+             mock.patch.object(voice01_mod.common, "_call_tts_with_retry",
+                                return_value=(b"\x00\x00" * 100, 0, True, None)), \
+             mock.patch.object(voice01_mod.p3u, "trim_english_keyword_silence",
+                                return_value=(samples, {"raw_duration_seconds": 1.0})), \
+             mock.patch.object(voice01_mod.routing, "transcribe", return_value=("hello there.", None)), \
+             mock.patch.object(voice01_mod.secondary_asr, "evaluate_attempt_with_cascade",
+                                return_value=(True, False, _FAKE_CLS_EXACT_MATCH)):
+            # override指定時: 実値がstyle_prefixへ記録される。
+            result_override = voice01_mod.generate_charon_english.__wrapped__(
+                "hello there.", self._out_path, style_prefix_override="calm, conversational")
+            self.assertEqual(result_override["status"], "OK")
+            self.assertEqual(result_override["voice"], voice01_mod.CHARON)
+            self.assertIn("tts_model_id", result_override)
+            self.assertEqual(result_override["style_prefix"], "calm, conversational")
+
+            # 既定(override無し)時: 長文prefixの実値ではなくラベルを記録する
+            # (Opus L2所見MINOR-A是正)。
+            result_default = voice01_mod.generate_charon_english.__wrapped__(
+                "hello there.", self._out_path)
+            self.assertEqual(result_default["status"], "OK")
+            self.assertEqual(result_default["style_prefix"], "<default:ENGLISH_STYLE_PREFIX>")
+
+    def test_news_tail_fix_generate_news_narration_returns_evidence_keys(self):
+        samples = (np.sin(np.linspace(0, 6.28, 2400)) * 0.05).astype(np.float64)
+        with mock.patch.object(flw, "resolve_tts_call_and_prompt",
+                                return_value=(lambda prompt: b"\x00\x00" * 100, "dummy prompt")), \
+             mock.patch.object(news_tail_fix_mod.common, "_call_tts_with_retry",
+                                return_value=(b"\x00\x00" * 100, 0, True, None)), \
+             mock.patch.object(news_tail_fix_mod.p3u, "trim_english_keyword_silence",
+                                return_value=(samples, {"raw_duration_seconds": 1.0})), \
+             mock.patch.object(news_tail_fix_mod.routing, "transcribe", return_value=("hello there.", None)), \
+             mock.patch.object(news_tail_fix_mod.secondary_asr, "evaluate_attempt_with_cascade",
+                                return_value=(True, False, _FAKE_CLS_EXACT_MATCH)):
+            result_override = news_tail_fix_mod.generate_news_narration_wide_margin.__wrapped__(
+                "hello there.", self._out_path, style_prefix_override="clear")
+            self.assertEqual(result_override["status"], "OK")
+            self.assertEqual(result_override["voice"], news_tail_fix_mod.p9a.VOICE_NAME)
+            self.assertIn("tts_model_id", result_override)
+            self.assertEqual(result_override["style_prefix"], "clear")
+
+            result_default = news_tail_fix_mod.generate_news_narration_wide_margin.__wrapped__(
+                "hello there.", self._out_path)
+            self.assertEqual(result_default["status"], "OK")
+            self.assertEqual(result_default["style_prefix"], "<default:ENGLISH_STYLE_PREFIX>")
+
+    def test_point_headings_aoede_generate_returns_evidence_keys(self):
+        samples = (np.sin(np.linspace(0, 6.28, 2400)) * 0.05).astype(np.float64)
+        with mock.patch.object(flw, "resolve_tts_call_and_prompt",
+                                return_value=(lambda prompt: b"\x00\x00" * 100, "dummy prompt")), \
+             mock.patch.object(point_headings_mod.common, "_call_tts_with_retry",
+                                return_value=(b"\x00\x00" * 100, 0, True, None)), \
+             mock.patch.object(point_headings_mod.p3u, "trim_english_keyword_silence",
+                                return_value=(samples, {"raw_duration_seconds": 1.0})), \
+             mock.patch.object(point_headings_mod.routing, "transcribe", return_value=("First point.", None)), \
+             mock.patch.object(point_headings_mod.secondary_asr, "evaluate_attempt_with_cascade",
+                                return_value=(True, False, _FAKE_CLS_EXACT_MATCH)):
+            result_override = point_headings_mod.generate.__wrapped__(
+                "First point.", self._out_path, disfluency_qa=False, style_prefix_override="brief and clear")
+            self.assertEqual(result_override["status"], "OK")
+            self.assertEqual(result_override["voice"], point_headings_mod.AOEDE)
+            self.assertIn("tts_model_id", result_override)
+            self.assertEqual(result_override["style_prefix"], "brief and clear")
+
+            result_default = point_headings_mod.generate.__wrapped__(
+                "First point.", self._out_path, disfluency_qa=False)
+            self.assertEqual(result_default["status"], "OK")
+            self.assertEqual(result_default["style_prefix"], "<default:ENGLISH_STYLE_PREFIX>")
+
+
+class P9aDefaultLabelTests(unittest.TestCase):
+    """(MINOR-A是正) p9a.generate_narration_snippet()のstyle_prefixが、
+    override指定時は実値、既定時は短いラベルになること。"""
+
+    def test_override_records_actual_value_en(self):
+        samples = (np.sin(np.linspace(0, 6.28, 2400)) * 0.05).astype(np.float64)
+        tmpdir = tempfile.mkdtemp(prefix="p9a_default_label_")
+        try:
+            out_path = os.path.join(tmpdir, "dummy_out.wav")
+            with mock.patch.object(p9a.common, "_call_tts_with_retry",
+                                    return_value=(b"\x00\x00" * 100, 0, True, None)), \
+                 mock.patch.object(p9a, "p3u") as p3u_mock:
+                p3u_mock.trim_english_keyword_silence.return_value = (samples, {"raw_duration_seconds": 1.0})
+                p3u_mock.EN_TRIM_SAFETY_MARGIN_SECONDS = 0.08
+                result_override = p9a.generate_narration_snippet(
+                    "hello", "en", out_path, style_prefix_override="calm, conversational")
+                result_default = p9a.generate_narration_snippet("hello", "en", out_path)
+            self.assertEqual(result_override["style_prefix"], "calm, conversational")
+            self.assertEqual(result_default["style_prefix"], "<default:ENGLISH_STYLE_PREFIX>")
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+
+
 def run():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
@@ -236,6 +454,7 @@ def run():
         J3E2VerbatimMatchTests, P9aJapaneseBranchSymmetryTests, RunnerBackendGateTests,
         ReadingSafetyDefaultForwardingTests, ShellFixedPhraseUnaffectedTests,
         KeyPhraseRoleUnchangedTests, FallbackPathUnaffectedTests,
+        CacheVersionGuardTests, RuntimeEvidenceKeysTests, P9aDefaultLabelTests,
     ):
         suite.addTests(loader.loadTestsFromTestCase(cls))
     runner_ = unittest.TextTestRunner(verbosity=2)

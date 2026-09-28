@@ -268,7 +268,19 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(D-4):
                     # attempts_logと同じ理由でtop-levelにも昇格する。
                     "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
-                    "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend)}
+                    "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
+                    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2
+                    # 所見MAJOR-2/MINOR-A是正): runtime evidence(voice/
+                    # tts_model_id/style_prefix)。style_prefixは標準分岐
+                    # (このstandard_style_prefix)の値であり、instruction_
+                    # type=="minimal_fallback"の場合は実際にはrepro01.
+                    # generate_english_component_minimal_instruction内部の
+                    # 別文字列が使われている(本関数の可視範囲外、既存の
+                    # instruction_typeフィールドで判別可能)。
+                    "voice": p9a.VOICE_NAME,
+                    "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
+                    "style_prefix": (standard_style_prefix if style_prefix_override
+                                      else "<default:ENGLISH_STYLE_PREFIX>")}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
@@ -295,7 +307,11 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # SF-5是正(修正3回目、2026-09-28、Opus L2所見): D-4の
                     # top-level昇格はstatus=OKの戻り値のみに適用されており、
                     # 不合格系(false rejection分析に最も必要)には無かった。
-                    "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None)}
+                    "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
+                    "voice": p9a.VOICE_NAME,
+                    "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
+                    "style_prefix": (standard_style_prefix if style_prefix_override
+                                      else "<default:ENGLISH_STYLE_PREFIX>")}
     if enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_news_narration(

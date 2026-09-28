@@ -404,7 +404,13 @@ class GenerateOrReuseTextSafetyTests(unittest.TestCase):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_reuses_when_cached_canonical_text_matches(self):
-        cached = {"segments": {"full_story_part3": {"status": "OK", "canonical_text": "old body only"}}}
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MAJOR-3
+        # 是正): reuseが成立するためには、cacheのstyle_versionも現行の
+        # FAMILY_X_VARIABLE_ROLE_STYLE_VERSIONと一致している必要がある
+        # (このテストはcanonical_text一致時のreuseを確認する趣旨のため、
+        # style_versionは意図的に一致させる)。
+        cached = {"style_version": runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                  "segments": {"full_story_part3": {"status": "OK", "canonical_text": "old body only"}}}
         called = {"n": 0}
 
         def generate_fn():
@@ -436,7 +442,8 @@ class GenerateOrReuseTextSafetyTests(unittest.TestCase):
     def test_legacy_callers_without_expected_text_keep_old_behavior(self):
         """expected_text省略時は既存呼び出し元の挙動(status==OKのみで判定)
         を変えない(後方互換)。"""
-        cached = {"segments": {"preview": {"status": "OK", "canonical_text": "anything"}}}
+        cached = {"style_version": runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                  "segments": {"preview": {"status": "OK", "canonical_text": "anything"}}}
         called = {"n": 0}
 
         def generate_fn():

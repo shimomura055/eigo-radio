@@ -500,3 +500,76 @@ E(1名)、F(1名)の4分割を推奨(衝突しない単位)。
 - 本タスク由来の差分: 本設計書・delegation_log・delegation_log_check.json
   のみ(`git status --porcelain -- "er0*.py" CURRENT_SPEC.md`は
   Phase A完了時点で空である必要がある、§Git実行時に確認)。
+
+## 9-W3. Phase B(W3)実装完了時点の記録
+
+2026-09-29、委任`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`(_03、W3)。
+§3(d)の設計どおり、以下を実装した(詳細は`FAMILY-X-REFRESH-E2E-
+PRODUCTION-WIRING-01_REPORT_W3.md`参照。§9本体・W2章は編集していない、
+本節のみ追記)。
+
+- **MAJOR-1(Japanese Title統一)**: `er019_family_x_audio_production_
+  runner_01.py`の`generate_family_x_a2_segments()`内、japanese_title
+  呼び出しへ`style_prefix_override=_role_style_ja()`を追加(§3(d)の
+  1行diffどおり)。Advanced(B1B)側`generate_family_x_b1_segments()`には
+  日本語title相当segmentが存在しないことをGrep+Read(L468-631)で確認し、
+  「該当なし」と記録する。
+- **MAJOR-3(cache version guard)**: `_generate_or_reuse()`内で閉じる
+  形で実装(§3(d)で示唆した代替案の後者を採用、共有層[Master Audio
+  Store/shared_narration]には触れていない)。`FAMILY_X_VARIABLE_ROLE_
+  STYLE_VERSION = "v2_j3_e2_title"`を新設し、`tts_generation_results.
+  json`のトップレベル(`style_version`)へ保存。cacheの`style_version`が
+  現行値と不一致・欠落の場合、`_generate_or_reuse()`は可変segment
+  (japanese_title/topic_intro/preview/comment_*/full_story_*/heading/
+  in_one_line)のreuseを行わず必ず`generate_fn()`で再生成する。shell固定
+  phrase・Key Phrase側の`_generate_or_reuse_kp()`・`shared_narration`は
+  この値を一切参照せず無変更。
+- **MAJOR-2(Advanced英語経路のruntime evidence)**: §3(d)の方針どおり
+  「戻り値dictへの`style_prefix`/`tts_model_id`/`voice`フィールド追加
+  のみ(呼び出し方は無変更)」に限定し、`voice01.generate_charon_
+  english`/`news_tail_fix.generate_news_narration_wide_margin`/
+  `point_headings.generate`の3関数へ実施した(共有層[p4c/p9a本体の
+  TTS呼び出し方式・fallback順序]は無変更)。
+- **MINOR-A(既定時ラベル化)**: `er003_b1_p9a_audio.py`
+  `generate_narration_snippet()`および上記3関数で、
+  `style_prefix_override`指定時のみ実値を記録し、既定時は
+  `"<default:ENGLISH_STYLE_PREFIX>"`/`"<default:JAPANESE_STYLE_PREFIX>"`
+  に統一(Opus L2案どおり、200字truncate方式は不採用)。
+- **MINOR-B**: 本節および`REPORT_W3`に、「runner配線(japanese_title/
+  preview等がどのstyleを選ぶか)はmockによる単体テストで確認し、実際に
+  生成した音声へのstyle反映(runtime実測)は後続のE2Eで取得する」という
+  2段構成である旨を明記する。
+
+Guardrail遵守確認(W3):
+- API支出: ¥0(TTS/ASR/LLM呼び出し0件、既存のunit testはすべてmock)。
+- 削除・移動・`rm`・`git clean`・stash/rebase/reset/amend/force push:
+  実施なし。
+- 未追跡ファイル・W2所有ファイル(`er006_audio_cost_pilot_02_shared_
+  narration.py`/`er006_audio_cost_pilot_02_shared_narration_test.py`/
+  `er006_master_audio_store_01.py`/`er048_*`): 一切編集していない
+  (`git diff --stat HEAD -- "er0*.py"`で確認済み、本タスク由来の差分は
+  所有5ファイル+テスト2ファイルのみ)。
+
+### 9-W2 Phase B(W2、2026-09-29)実施結果の要約
+
+固定フレーズChampion(welcomeを除く9 phrase)をProduction Master Store
+(`er006_output/master_audio_store_01/`)へ正式登録した。詳細は
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md` §W2を参照
+(対応表・manifest前後・reuseドライラン・テスト結果・費用・Opus L2論点)。
+
+§3(c)からの主な実装判断:
+- style_instruction_versionのbump名は`"v3_champion_2026_09_29"`
+  (§3(c)の例をそのまま採用)。
+- welcomeは現行Master(`v2_flash_lite_short_style`)継続、新規登録なし
+  (ユーザー決定「welcome=A」)。
+- phrase別Champion style文言は`er006_audio_cost_pilot_02_shared_
+  narration.py`の`SHELL_CHAMPION_STYLE_BY_PHRASE_EN`
+  (English 8 phrase)・`SHELL_CHAMPION_STYLE_JA_POINT_EXPLANATION_B`
+  (JA 1 phrase)として実装し、`_make_english_key`/`_resolve_shell_
+  english_style_prefix_override`に`name`引数を追加した(§3(f)のF担当
+  スコープ)。
+- Store側は`er006_master_audio_store_01.py::register_precomputed()`を
+  最小追加(既存`get_or_generate`は無変更)。
+- point_explanation(JA)はstyle override機構自体が`generate_charon_
+  japanese`に無いため、Champion style文言はcache hit経路でのみ実際の
+  音声と対応する(既知の限界、Opus L2論点としてREPORT §W2に記録)。

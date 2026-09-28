@@ -290,7 +290,14 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"], "tts_backend": tts_backend,
         # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
         # runtime evidence用に実際に使われたstyle文字列を記録する(新規計算なし)。
-        "style_prefix": style_prefix,
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MINOR-A
+        # 是正): style_prefix_override指定時のみ実値を記録し、既定backend
+        # (override無し)では長文ENGLISH_STYLE_PREFIX/JAPANESE_STYLE_PREFIX
+        # (約1,700〜2,000字)を全Family・全segmentのauditへ無加工複製する
+        # 肥大を避けるため、短いラベルにする(Family X role style自体
+        # [J3/E2/A2連結値]の証拠価値は override指定時の実値記録で保たれる)。
+        "style_prefix": style_prefix if style_prefix_override else (
+            "<default:ENGLISH_STYLE_PREFIX>" if language == "en" else "<default:JAPANESE_STYLE_PREFIX>"),
     }
 
 

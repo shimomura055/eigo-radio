@@ -124,6 +124,11 @@ def generate_charon_english(text: str, out_path: str,
     # telemetry形状en_pronunciation_resolver_info)を、opt-in引数が
     # Trueの場合のみ適用する。hintが1件も無い場合はstyle_prefix_override
     # を一切変更しない(既存呼び出し元・既存promptへの影響をゼロに保つ)。
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MAJOR-2/
+    # MINOR-A是正): 呼び出し元がstyle_prefix_overrideを実際に指定したか
+    # どうかを、以降の(発音resolverによる)再代入より前に固定しておく
+    # (runtime evidence記録の既定/override判定用。既存挙動には無影響)。
+    _caller_provided_style_override = style_prefix_override is not None
     en_pronunciation_resolver_info = None
     if enable_pronunciation_resolver:
         base_style_prefix = style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX
@@ -150,6 +155,9 @@ def generate_charon_english(text: str, out_path: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
         # backendでは上記2行とbyte-identical。
         standard_style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、MAJOR-2是正):
+        # 実際にTTSへ渡した最終文字列をruntime evidence用に保持する。
+        _active_style_prefix = standard_style_prefix
         call_fn, prompt = flw.resolve_tts_call_and_prompt(
             text, standard_style_prefix, common.MODEL_NAME, CHARON, out_path, tts_backend=tts_backend,
             build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
@@ -190,6 +198,9 @@ def generate_charon_english(text: str, out_path: str,
                     and en_pronunciation_resolver_info.get("cache_hits"):
                 fallback_style_prefix = pron_resolver_core.augment_style_prefix_with_cached_hits(
                     fallback_style_prefix, en_pronunciation_resolver_info["cache_hits"])
+            # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、MAJOR-2是正):
+            # fallback発火時は、こちらが実際にTTSへ渡した最終文字列になる。
+            _active_style_prefix = fallback_style_prefix
             call_fn2, prompt2 = flw.resolve_tts_call_and_prompt(
                 text, fallback_style_prefix, common.MODEL_NAME, CHARON, out_path, tts_backend=tts_backend,
                 build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
@@ -270,7 +281,13 @@ def generate_charon_english(text: str, out_path: str,
                     "disfluency_evidence": gate.get("disfluency_evidence"),
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events, "tts_backend": tts_backend,
-                    "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
+                    "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2
+                    # 所見MAJOR-2/MINOR-A是正): 実際に渡した最終style文字列
+                    # (override指定時のみ)・model_idのruntime evidence。
+                    "style_prefix": (_active_style_prefix if _caller_provided_style_override
+                                      else "<default:ENGLISH_STYLE_PREFIX>"),
+                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             if enable_connected_speech_equivalence_layer:
@@ -288,7 +305,10 @@ def generate_charon_english(text: str, out_path: str,
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={cls.classification})",
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
-                    "cooldown_events": cooldown_events}
+                    "cooldown_events": cooldown_events,
+                    "style_prefix": (_active_style_prefix if _caller_provided_style_override
+                                      else "<default:ENGLISH_STYLE_PREFIX>"),
+                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
     if enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_charon_english(
