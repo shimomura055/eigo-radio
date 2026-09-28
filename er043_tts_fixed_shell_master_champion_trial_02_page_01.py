@@ -122,6 +122,98 @@ def _wav_path_for(candidate: str, name: str) -> str:
             f"/shell/narration/{name}.wav")
 
 
+# ------------------------------------------------------------
+# 修正1回目(TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02_02、2026-09-28)。
+# STOPPED(3attempt全てASR検証不合格)となったphrase×candidateについて、
+# 既存の attempts_log から全attemptのwav/ASR結果/失敗分類を収集し、
+# 「人間確認用」section用のデータを作る。新規TTS/ASR呼び出しは一切
+# 行わない(既存生成物の読み取り・mp3変換のみ、Production登録扱いにも
+# しない)。
+# ------------------------------------------------------------
+def collect_stopped_attempts(results: dict) -> dict:
+    stopped: dict = {}
+    for name in PHRASE_ORDER:
+        for cand in ("A", "B", "C"):
+            r = results["candidates"].get(cand, {}).get(name)
+            if not r or r.get("status") != "STOPPED":
+                continue
+            attempts = []
+            for a in (r.get("attempts_log") or []):
+                wav_path = a.get("attempt_audio_path")
+                exists = bool(wav_path and os.path.exists(wav_path))
+                entry = {
+                    "attempt": a.get("attempt"),
+                    "asr_text": a.get("asr_text"),
+                    "audio_classification": a.get("audio_classification"),
+                    "instruction_type": a.get("instruction_type"),
+                    "verified": a.get("verified"),
+                    "wav_exists": exists,
+                }
+                if exists:
+                    metrics = measured_metrics_for(wav_path)
+                    entry["duration_seconds"] = metrics["duration_seconds"] if metrics else None
+                    mp3_name = f"{name}_cand{cand}_attempt{a.get('attempt')}.mp3"
+                    converted = page1.wav_to_mp3(wav_path, f"{PAGE_DIR}/{mp3_name}")
+                    entry["audio_file"] = mp3_name if converted else None
+                    entry["pitch_trend"] = estimate_pitch_trend(wav_path).get("trend")
+                else:
+                    entry["audio_file"] = None
+                    entry["duration_seconds"] = None
+                    entry["pitch_trend"] = None
+                    entry["note"] = "音声未保存"
+                attempts.append(entry)
+            stopped.setdefault(name, {})[cand] = {
+                "canonical_text": r.get("canonical_text"),
+                "style_prefix_used": r.get("style_prefix_used"),
+                "reason": r.get("reason"),
+                "attempts": attempts,
+            }
+    return stopped
+
+
+def build_reference_sequences(results: dict) -> dict:
+    """B/Cについて、OK音声+未合格phraseは「未合格attemptのうち最初の
+    attempt」を使って参考連結mp3を作る(人間確認用、Production登録候補
+    ではない旨を明示)。Aの既存連結(one_to_five_candA)は変更しない。"""
+    ref_seq: dict = {}
+    for cand in ("B", "C"):
+        wav_paths = []
+        included = []
+        for name in NUMBER_PHRASES:
+            r = results["candidates"].get(cand, {}).get(name)
+            if r and r.get("status") == "OK":
+                wav_path = r.get("path") or _wav_path_for(cand, name)
+                if os.path.exists(wav_path):
+                    wav_paths.append(wav_path)
+                    included.append([name, "OK"])
+                else:
+                    included.append([name, "MISSING"])
+            elif r and r.get("status") == "STOPPED":
+                attempts = r.get("attempts_log") or []
+                first = attempts[0] if attempts else None
+                first_path = first.get("attempt_audio_path") if first else None
+                if first_path and os.path.exists(first_path):
+                    wav_paths.append(first_path)
+                    included.append([name, "UNVERIFIED_ATTEMPT1(ASR未合格)"])
+                else:
+                    included.append([name, "MISSING"])
+            else:
+                included.append([name, "NOT_ATTEMPTED"])
+        out_wav = f"{OUT_DIR}/one_to_five_cand{cand}_ref.wav"
+        ok = page1.concat_wavs(wav_paths, out_wav)
+        if ok:
+            mp3_name = f"one_to_five_cand{cand}_ref.mp3"
+            converted = page1.wav_to_mp3(out_wav, f"{PAGE_DIR}/{mp3_name}")
+            ref_seq[cand] = {
+                "audio_file": mp3_name if converted else None,
+                "included": included,
+                "included_count": len(wav_paths),
+            }
+        else:
+            ref_seq[cand] = {"audio_file": None, "included": included, "included_count": 0}
+    return ref_seq
+
+
 def build_comparison_data(results: dict) -> dict:
     os.makedirs(PAGE_DIR, exist_ok=True)
     table = {}
@@ -201,7 +293,11 @@ def build_comparison_data(results: dict) -> dict:
             "per_word": num_set_metrics[cand],
         }
 
-    return {"table": table, "sequence_files": sequence_files, "alignment_summary": alignment_summary}
+    stopped_attempts = collect_stopped_attempts(results)
+    reference_sequences = build_reference_sequences(results)
+
+    return {"table": table, "sequence_files": sequence_files, "alignment_summary": alignment_summary,
+            "stopped_attempts": stopped_attempts, "reference_sequences": reference_sequences}
 
 
 def _fmt(v) -> str:
@@ -211,6 +307,85 @@ def _fmt(v) -> str:
 def _esc(v) -> str:
     s = _fmt(v)
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def build_stopped_attempts_html(stopped: dict) -> str:
+    if not stopped:
+        return ""
+    blocks = []
+    for name in PHRASE_ORDER:
+        if name not in stopped:
+            continue
+        for cand in ("A", "B", "C"):
+            if cand not in stopped[name]:
+                continue
+            info = stopped[name][cand]
+            rows = []
+            for a in info["attempts"]:
+                if a.get("wav_exists"):
+                    audio_html = (f'<audio controls src="{a["audio_file"]}"></audio>' if a.get("audio_file")
+                                  else "(mp3変換不可、wav未配布)")
+                else:
+                    audio_html = "(音声未保存)"
+                pitch = a.get("pitch_trend")
+                rows.append(
+                    f'<tr><td>{_fmt(a.get("attempt"))}</td><td>{audio_html}</td>'
+                    f'<td>ASR="{_esc(a.get("asr_text"))}"</td>'
+                    f'<td>{_esc(a.get("audio_classification"))}</td>'
+                    f'<td>{_fmt(a.get("duration_seconds"))}s</td>'
+                    f'<td>{_esc(pitch) if pitch else ""}</td>'
+                    f'<td>{"検証済(verified)" if a.get("verified") else "未検証(unverified)"}</td></tr>'
+                )
+            blocks.append(
+                f'<h3>{_esc(name)} / Candidate {cand}</h3>'
+                f'<p>canonical_text="{_esc(info.get("canonical_text"))}"<br>'
+                f'<b>Style Prompt全文</b>: "{_esc(info.get("style_prefix_used"))}"<br>'
+                f'reason={_esc(info.get("reason"))}<br>'
+                f'<b style="color:#a00">この phrase は3attempt全てASR検証に不合格'
+                f'(既存Human Review Lockにより自動STOP)。以下は人間確認用の全attempt'
+                f'音声であり、「合格」でも「Production登録可」でもない。</b></p>'
+                f'<table><tr><th>attempt</th><th>音声</th><th>ASR認識結果</th>'
+                f'<th>失敗分類</th><th>duration</th><th>pitch_trend(簡易proxy)</th>'
+                f'<th>verified</th></tr>{"".join(rows)}</table>'
+            )
+    return (
+        '<h2 id="stopped-attempts">ASR 未合格 attempt(人間確認用・Production 登録不可のまま)</h2>'
+        '<p>Candidate B/Cで、3attempt全てASR検証に不合格となった(status=STOPPED)'
+        'phraseの全attempt音声・ASR認識結果・失敗分類を掲載する。'
+        '<b style="color:#a00">いずれもASR未合格であり、Production Master Storeへは'
+        '一切登録されていない(既存Human Review Lockはそのまま維持、本ページはLock状態を'
+        '変更しない)。</b>単語1語の極短音声に対するASR厳格一致の限界(OPEN-222)を、'
+        '人間が実際に聴いて判断するための参考材料。</p>'
+        + "".join(blocks)
+    )
+
+
+def build_reference_sequences_html(ref_seq: dict) -> str:
+    if not ref_seq:
+        return ""
+    blocks = []
+    for cand in ("B", "C"):
+        if cand not in ref_seq:
+            continue
+        s = ref_seq[cand]
+        included_desc = "、".join(f"{n}={st}" for n, st in s["included"])
+        audio_html = (f'<audio controls src="{s["audio_file"]}"></audio>' if s.get("audio_file")
+                      else "(連結不可、OK音声+attempt音声が0件)")
+        blocks.append(
+            f'<div><b>Candidate {cand}(参考連結、{s.get("included_count")}/5件)</b>: '
+            f'{audio_html}<br>構成: {_esc(included_desc)}<br>'
+            f'<span style="color:#a00">未検証(ASR不合格)attemptを含む参考音声であり、'
+            f'Production登録候補ではない。</span></div>'
+        )
+    return (
+        '<h2 id="reference-sequences">One→Five 参考連結(未検証attemptを含む、参考情報)</h2>'
+        '<p>Candidate B/Cについて、OK音声と、ASR不合格phraseは未合格attemptのうち'
+        '最初のattemptを組み合わせた参考連結音声(5個セットとして通しで聴きたい、という'
+        'ユーザー要望への対応)。<b style="color:#a00">未検証音声を含む参考情報であり、'
+        'Championの正式候補ではない</b>。既存のOne→Five連続再生比較section(上記、OK音声のみ)'
+        'は本sectionでは一切変更していない。</p>'
+        + "".join(blocks)
+    )
 
 
 def build_html(comparison: dict) -> str:
@@ -261,6 +436,12 @@ def build_html(comparison: dict) -> str:
 
     legend = "".join(f"<li><b>{k}</b>: {v}</li>" for k, v in CANDIDATE_LABELS.items())
 
+    # 修正1回目(TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02_02、2026-09-28)。
+    # 既存section(上記legend/One→Five連続再生比較/Phraseごと比較表)は
+    # 一切変更せず、新規sectionを</body>直前に追加のみ行う。
+    stopped_attempts_html = build_stopped_attempts_html(comparison.get("stopped_attempts") or {})
+    reference_sequences_html = build_reference_sequences_html(comparison.get("reference_sequences") or {})
+
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -290,6 +471,8 @@ full_story_introは発音の速さ、One〜Fiveはテンション/抑揚/語尾/
 <tr><th>Phrase / Group</th><th>{CANDIDATE_LABELS["A"]}</th><th>{CANDIDATE_LABELS["B"]}</th><th>{CANDIDATE_LABELS["C"]}</th></tr>
 {''.join(rows_html)}
 </table>
+{reference_sequences_html}
+{stopped_attempts_html}
 </body>
 </html>
 """

@@ -269,3 +269,92 @@ style文言は語尾下降を明示的に指示しているにもかかわらず
 
 `USER_DECISION_REQUIRED`(Championをユーザーが選ぶ前段階)。STOP要因なし
 (Guardrail超過なし、暴走なし)。Sonnetは`VALIDATED`を自己宣言しない。
+
+## 13. 修正1回目(未合格attemptの可視化、¥0、2026-09-28)
+
+delegation本文は「REPORT §9に追記」と指定していたが、既存§9は既に
+「Production無変更の証拠」として完結した内容であり、上書きすると証跡が
+失われるため、本節を新規§13として末尾に追加した(delegationの意図=
+「今回の追加作業の記録をREPORTへ追記する」ことは本節で満たしている)。
+
+### 13-1. 追加内容
+
+試聴ページ(`user_test/fixed_shell_champion_trial_02/index.html`)に、
+既存section(legend/One→Five連続再生比較[OK音声のみ、既存のまま不変]/
+Phraseごと比較表)を一切変更せず、`</body>`直前へ以下2つの新規sectionを
+追加した(新規TTS/ASR呼び出しは無し、既存生成物の読み取り+mp3変換のみ)。
+
+1. **「ASR 未合格 attempt(人間確認用・Production 登録不可のまま)」**:
+   STOPPEDとなった4組(Candidate B: num_one/num_three/num_four、
+   Candidate C: num_three)、計12 attemptについて、attemptごとに
+   音声(mp3)・ASR認識結果・失敗分類(`audio_classification`)・
+   duration・簡易F0 pitch_trend・verified状態を表形式で掲載。
+   各ブロックにcanonical_text・Style Prompt全文・reasonも明記し、
+   「合格でもProduction登録可でもない」旨を赤字で明示。
+2. **「One→Five 参考連結(未検証attemptを含む、参考情報)」**: Candidate
+   B/Cそれぞれについて、OK音声+STOPPED phraseは最初のattempt(attempt1)
+   を組み合わせた参考連結mp3(`one_to_five_candB_ref.mp3`/
+   `one_to_five_candC_ref.mp3`)を追加。構成(どのphraseがOKでどれが
+   未検証attemptか)を明記し、Championの正式候補ではない旨を赤字で明示。
+   Candidate Aの既存連結(`one_to_five_candA.mp3`)は変更していない。
+
+### 13-2. attemptごとのASR結果一覧(全12 attempt、`champion_trial_results.
+json`実測から転記)
+
+| Phrase | Candidate | attempt | ASR結果 | 失敗分類 | duration | pitch_trend(簡易proxy) |
+|---|---|---|---|---|---|---|
+| num_one | B | 1 | "一" | TTS_FAILURE | 0.93s | rising(疑問形っぽさの疑い) |
+| num_one | B | 2 | "一" | TTS_FAILURE | 0.95s | rising(疑問形っぽさの疑い) |
+| num_one | B | 3 | "1" | TRUE_CONTENT_MISMATCH | 0.99s | flat(ほぼ平坦) |
+| num_three | B | 1 | "三" | TRUE_CONTENT_MISMATCH | 1.04s | flat(ほぼ平坦) |
+| num_three | B | 2 | "三" | TRUE_CONTENT_MISMATCH | 1.05s | falling(平叙文らしい語尾) |
+| num_three | B | 3 | "三" | TRUE_CONTENT_MISMATCH | 1.00s | flat(ほぼ平坦) |
+| num_three | C | 1 | "三" | TRUE_CONTENT_MISMATCH | 0.97s | rising(疑問形っぽさの疑い) |
+| num_three | C | 2 | "三" | TRUE_CONTENT_MISMATCH | 0.92s | rising(疑問形っぽさの疑い) |
+| num_three | C | 3 | "三" | TRUE_CONTENT_MISMATCH | 0.88s | flat(ほぼ平坦) |
+| num_four | B | 1 | "四" | TRUE_CONTENT_MISMATCH | 0.98s | rising(疑問形っぽさの疑い) |
+| num_four | B | 2 | "四" | TRUE_CONTENT_MISMATCH | 1.12s | rising(疑問形っぽさの疑い) |
+| num_four | B | 3 | "四" | TRUE_CONTENT_MISMATCH | 0.94s | flat(ほぼ平坦) |
+
+12 attempt全てwav保存済み(音声未保存attemptなし)、全件mp3変換済み。
+全attemptともASR結果は原文(One/Three/Four)と不一致(CJK漢数字化または
+数字・別語への誤認識)であり、OPEN-222の既知パターンと一致する。この
+一覧だけでは「音声自体は正しく発話されているが単語1語の極短音声に対する
+ASR側が誤認識している可能性」と「TTS自体が誤った音を生成した可能性」を
+機械的に区別できないため、最終判断はユーザー試聴に委ねる(design方針通り)。
+
+### 13-3. One〜Five「参考込み」揃い指標(既存§6-3のOK限定版との対比)
+
+| Candidate | 構成 | 揃い5/5化 |
+|---|---|---|
+| A(既存、不変) | 5/5 OK | 対象外(既存§6-3の通り5/5完全OK) |
+| B(参考連結) | OK=num_two/num_five、未検証attempt1=num_one/num_three/num_four | 5/5(うち3件は未検証) |
+| C(参考連結) | OK=num_one/num_two/num_four/num_five、未検証attempt1=num_three | 5/5(うち1件は未検証) |
+
+既存§6-4の簡易F0 proxyはSTOPPED attemptにも同一関数(`estimate_pitch_
+trend`)で適用済み(§13-2表のpitch_trend列)。追加傾向: num_four(B)の
+attempt1/2は「rising」、num_one(B)のattempt1/2も「rising」であり、
+現行Production Baseline(Candidate A)でnum_four/fiveが「rising」だった
+既存観察(§6-4)と方向性として近い。ただしこの簡易proxyの精度限界は
+既存記載の通りであり、機械判定を最終結論として扱わない。
+
+### 13-4. Production無変更・API支出の実測
+
+- `git diff --stat HEAD -- "er0*.py" "er003_v1_translator_briefs/"
+  "er006_output/master_audio_store_01/" | grep -v er043`は§9記載時点と
+  差分無し(本追加作業はPhrase生成・ASR呼び出しを一切行っていないため)。
+- 新規TTS/ASR呼び出し**0件**: `er043_output/tts_fixed_shell_master_
+  champion_trial_02/raw_usage_log.jsonl`の行数は本追加作業の前後で
+  **64行のまま不変**(`wc -l`実測)。`_page_01.py`はmp3変換
+  (`page1.wav_to_mp3`)とwav単純連結(`page1.concat_wavs`)のみを行い、
+  いずれも既存生成物のファイル読み取りのみでAPIを呼ばない設計。
+- Production Master Audio Store(`er006_output/master_audio_store_01/`)
+  への書き込みは発生していない(読み取りすら発生しない、本追加作業は
+  `er043_output/`配下のTrial専用attempt wavのみを参照)。
+- `run_project_regression.py --pattern "er043*_test_*.py"`:
+  **collected=17 passed=17 failed=0 errors=0 skipped=0**(既存17件を
+  維持、新規テスト追加なし、既存の`er043_..._page_01.py`公開関数
+  シグネチャは変更していないため影響なし)。
+- Pages公開確認7項目: commit push後に再実施し、全項目実測PASSを確認
+  (詳細は本追加作業のdelegation報告[RESULT_PACKET_CH2B]およびcommit
+  ログ参照)。
