@@ -11364,3 +11364,85 @@ Tier1合成規則、ユーザー承認`APPROVED_FOR_PRODUCTION`)実装
   EQUIVALENCE-COVERAGE-REVIEW-02_02.md`、`EN-ASR-SEMANTIC-EQUIVALENCE-
   COVERAGE-REVIEW-02_REPORT.md`(Phase 2節)、`docs/pm/design_en_asr_
   orthographic_equivalence_coverage_02.md`。
+
+## PM-GOVERNANCE-SSOT-SERIALIZATION-RULE-01: SSOT編集直列化ルール正式採用(2026-09-28)
+
+- **区分**: Implementation Hardening(PM運用ルール、コード変更なし、
+  ¥0)。
+- **ユーザー指示原文(2026-09-28、ユーザー正式承認)**: 「3. SSOT直列化
+  ルール 正式採用します。PM_GOVERNANCEへ以下を正式ルールとして反映して
+  ください。- SSOT 4点の編集は1 Agentずつ直列化 - 他Agentの未commit
+  差分が存在するファイルをgit addしない - commit前に対象ファイルの
+  差分所有者を確認 - 並列Agentが同一SSOTファイルを同時編集しない
+  再発が2回あるため、単なる運用注意ではなく正式な再発防止ルールとして
+  記録してください。」
+- **背景(再発事例、いずれも実害なし・履歴書き換えなし)**: (1)commit
+  `3d9a28be`に`KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-
+  PRODUCTION-WIRING-01`(KPS1)の`CURRENT_SPEC.md`/`DECISION_LOG.md`
+  編集が、並行稼働していた`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-
+  REVIEW-02`側の広いgit add操作により意図せず混入(KPS1側は該当commit
+  時点で自身のcommit権を持たず作業ツリーに未commit差分を残していた)。
+  (2)commit`b2736e13`系で`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-
+  FAMILY-X-02`(FLX2)の`docs/pm/REPORT_LEDGER.md`編集がKPS1のcommitへ
+  混入(同一working tree共有により、KPS1がREPORT_LEDGER.mdをgit add
+  した時点でFLX2の未commit編集が既に同ファイル上に存在)。(3)commit
+  `6b0e792d`にASR関連の`docs/pm/REPORT_LEDGER.md`更新がFLX2のcommitへ
+  混入。詳細は`docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-
+  SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01_03.md`(「混入」記載
+  箇所)、`docs/pm/RESULT_PACKET_FLX2.md`、`docs/pm/RESULT_PACKET_
+  ASRO.md`参照。
+- **正式ルール(`docs/pm/PM_GOVERNANCE.md` 8節末尾「8-Y. SSOT編集の
+  直列化ルール」として追記)**: (a)SSOT 4点(`CURRENT_SPEC.md`/
+  `DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`)および
+  `docs/pm/PM_GOVERNANCE.md`の編集は同時に1 Agentのみ(Fableが委任時に
+  編集権Agentを1件に限定、他の並行Agentへは追記文案をRESULT_PACKETへ
+  記載させる)。(b)他Agentの未commit差分が存在するファイルはgit add
+  しない。(c)commit前に`git status --porcelain <path>`/`git diff
+  <path>`で差分所有者を確認し、自分以外の内容が含まれる場合はaddしない
+  (最大10分待機→解消しなければ文案をRESULT_PACKETへ残し未適用で報告)。
+  (d)並列Agentが同一SSOTファイルを同時編集しない。(e)11節D-2委任文
+  標準テンプレート(`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`)
+  の「## Git」欄へ「SSOT編集権の有無」明記を追加。
+- **単なる運用注意ではなく正式ルール化する理由**: 混入した内容自体は
+  いずれも正しく、破壊的操作(revert/reset)による訂正は行われていない
+  ため実害はないが、再発が2回(ユーザー認識)を超えて3回確認され、
+  ファイル単位の`git add`が構造的に他Agentの編集途中を巻き込みうる
+  ことが明らかなため、再発防止ルールとして明文化する。
+- **STOP該当**: 無し(運用ルール追記のみ、コード・仕様変更なし)。
+- **反映範囲**: `docs/pm/PM_GOVERNANCE.md`(8節末尾「8-Y」新設)、
+  `docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`(Git欄追記)、
+  本エントリ新設。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_PM-GOVERNANCE-SSOT-
+  SERIALIZATION-RULE-01.md`(本委任文)。
+- commit: 本コミット。
+
+## Fable Gate 3判定(2026-09-28): KP Source Reference Contract・
+Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
+
+- **性質**: 新規判断ではなく、Gate 3全項目充足済みの2管理IDについて
+  SSOT表記を`APPROVED_FOR_PRODUCTION`/未判定から`PRODUCTION_WIRED`へ
+  同期する事務的整理(コード変更なし、¥0)。
+- **対象1: `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-
+  PRODUCTION-WIRING-01`**(commit`9fa6f388`でOpus L2所見反映[SF-1〜7、
+  BLOCKER0件]、SSOT反映`b2736e13`/`b63fb35d`)。Family X Production
+  配線+Family Z共通Core contract仕様として`PRODUCTION_WIRED`(Family Z
+  runnerは対象外・未配線のまま、既定backendは無変更)。
+- **対象2: `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-
+  ASR-ENTITY-LIKE-01`**(commit`535bb391`/`f8d5887c`)。Opus L2レビュー
+  BLOCKER0件(S1〜S3/N1〜N7対応済み)を根拠に`PRODUCTION_WIRED`。ただし
+  A-1のLedger surface条件(`LEDGER_ENTITY_FLAGS_ENABLED_FOR_
+  CLASSIFICATION`)はProduction既定`OFF`のまま`DEFERRED`/
+  `NOT_ADOPTED`であり、本表記同期の対象に含めない(OPEN-208として
+  継続監視)。
+- **STOP該当**: 無し(表記同期のみ、Production挙動・コードの変更なし)。
+- **反映範囲**: `CURRENT_SPEC.md`(Source Reference Contract行、
+  固有名詞読み解決節Phase 4追記のStatus文言)、`docs/pm/REPORT_LEDGER.md`
+  (該当2行のStatus)、両REPORTのGate 3表「`PRODUCTION_WIRED`最終判定」
+  行、本エントリ新設。関連OPEN(OPEN-202/206/207/208)のStatusは変更せず
+  継続監視項目のまま維持する。
+- **根拠**: `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-
+  PRODUCTION-WIRING-01_REPORT.md`§11-3 Gate 3表、
+  `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-
+  ENTITY-LIKE-01_REPORT.md`§8-6 Gate 3表(いずれもOpus L2レビュー
+  「実施済み」・BLOCKER0件を確認したうえでの表記同期、2026-09-28)。
+- commit: 本コミット(SSOT表記同期のみ、コード変更なし)。

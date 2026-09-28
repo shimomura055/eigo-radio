@@ -579,9 +579,9 @@ unresolved0件・mismatch件数変化0件・`source_span`/`source_sentence`/
 | 必要なGit反映 | 済(本commit) |
 | approved specとProduction挙動の一致 | 済 |
 | **Opus L2レビュー** | **実施済み**(本節§10所見、BLOCKER0件) |
-| **`PRODUCTION_WIRED`最終判定** | **Fable判定待ち**(Sonnetは宣言しない) |
+| **`PRODUCTION_WIRED`最終判定** | **Fable判定 `PRODUCTION_WIRED`(2026-09-28)** |
 
-Sonnetは`PRODUCTION_WIRED`を宣言しない(最終判定はFable/ユーザー)。
+**Fable Gate 3判定により`PRODUCTION_WIRED`確定(2026-09-28)**(Sonnet自身はこの判定を宣言していない。判定根拠は`PM-GOVERNANCE-SSOT-SERIALIZATION-RULE-01`委任下でのSSOT/REPORT同期作業を参照)。
 
 ### 11-4. SSOT反映詳細
 

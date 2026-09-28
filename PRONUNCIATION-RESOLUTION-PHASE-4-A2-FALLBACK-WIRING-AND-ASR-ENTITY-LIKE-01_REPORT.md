@@ -2,9 +2,10 @@
 
 管理ID: `PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01`
 Status: 実装完了(初回: A-1・A-2とも。修正1回目: Opus L2所見反映、
-§8参照)。**`APPROVED_FOR_PRODUCTION`のままGate 3 closeoutへ進行中。
-Opus L2レビューはBLOCKER0件で実施済み(§8)。`PRODUCTION_WIRED`最終判定は
-未実施(Fable判断待ち)**。Human Review Lockの解除・small_bag再実行は
+§8参照)。**Opus L2レビューはBLOCKER0件で実施済み(§8)。Fable Gate 3
+判定: `PRODUCTION_WIRED`(2026-09-28、ただしA-1のLedger surface条件は
+`DEFERRED`/`NOT_ADOPTED`のまま、OPEN-208で継続監視)**。Human Review
+Lockの解除・small_bag再実行は
 本タスク(初回・修正1回目とも)では一切行っていない。
 
 対象: `RESULT_PACKET_FXD1.md`(`NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`
@@ -398,7 +399,7 @@ CURRENT_SPEC.md・DECISION_LOG.mdへ本修正1回目の内容を反映した。
 | 6 | SSOT反映(CURRENT_SPEC/DECISION_LOG/REPORT_LEDGER) | 済。`OPEN_ITEMS.md`は他Agent未commit差分のため今回は未反映(§8-5、記載案はRESULT_PACKET) |
 | 7 | Git(delegation_log保存・path指定commit・push) | 本REPORT完成後に実施 |
 | 8 | **Opus L2レビュー** | **実施済み(BLOCKER0件、§8-1)** |
-| 9 | `PRODUCTION_WIRED`最終判定 | **未実施(Fable判断待ち)** |
+| 9 | `PRODUCTION_WIRED`最終判定 | **Fable判定 `PRODUCTION_WIRED`(2026-09-28)**(Ledger surface条件は`DEFERRED`/`NOT_ADOPTED`のまま) |
 
 ### §8-7 再実行候補(実施しない、見積のみ)
 
