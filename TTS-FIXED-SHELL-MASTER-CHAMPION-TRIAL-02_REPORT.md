@@ -184,12 +184,39 @@ style文言は語尾下降を明示的に指示しているにもかかわらず
 - 試聴ページ: `user_test/fixed_shell_champion_trial_02/index.html`
 - 公開URL: https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_02/index.html
 
-(7項目の実測結果は本REPORT作成後、commit・push・Pages反映を待って追記する。
-下記§8「Pages公開確認ログ」に逐語記録。)
+7項目全て実測確認済み(§8)。
 
-## 8. Pages公開確認ログ
+## 8. Pages公開確認ログ(逐語記録、commit `7f01bad1` push後に実施)
 
-(commit/push後に追記)
+1. **URL 200確認**: `curl -sI .../fixed_shell_champion_trial_02/index.html`。
+   push直後は404(Pages未反映)、10秒間隔でpolling後 約90秒後に
+   `HTTP/1.1 200 OK`(Content-Length: 14660)を確認。
+2. **実ブラウザ相当のDOM取得**: `"C:\...\msedge.exe" --headless --disable-gpu
+   --dump-dom <URL>` で公開DOMを取得(14,793 byte)。exit code 0。
+3. **placeholder不在確認**: 取得DOM中`(existing 6-role value, unchanged)`の
+   出現回数=**0件**。
+4. **Style Prompt全文の実表示確認**: 6種類のstyle文言(group1〜4のB/C、
+   group1はA/B/C共通文言)全てが、DOM中に**省略なく完全一致で出現**する
+   ことを`grep -o`(英語文言)/`grep -c`(日本語文言)で確認: group1
+   "natural, clear, conversational"=6件(3phrase×B/C)、group2 pace文言=2件、
+   group3 B文言=5件(5word分、STOPPED含む)、group3 C文言=5件、group4 JA
+   B文言=1件、group4 JA C文言=1件。
+5. **`<audio>`件数**: DOM中`<audio`出現数=**29件**(A=10 OK+B=7 OK+C=9 OK
+   +One→Five連結3件=29、champion_trial_results.jsonのstatus集計と完全一致)。
+6. **mp3個別確認(29件全て)**: `curl -sI`で全29件が`HTTP/1.1 200 OK`・
+   `Content-Type: audio/mp3`・`Content-Length`非ゼロを確認(FAIL_COUNT=0)。
+   代表4件(welcome_candA/num_three_candA/one_to_five_candC/point_
+   explanation_candB)を実ダウンロードし、MP3フレーム同期バイト
+   (`0xFF`+`0xEx`/`0xFx`)の検出によりデコード可能な構造であることを確認
+   (lameenc encoder使用、全29件同一コード経路で生成のため代表確認とした)。
+7. **ページ表示StyleとStyle metadata(json)の一致**: `champion_trial_
+   results.json`の`style_prefix_used`値5サンプル(welcome/B, num_one/B,
+   num_three/C, point_explanation/B, full_story_intro/C)全てが公開DOM内に
+   文字列として完全一致で出現することを確認(page生成コードが同じ
+   `style_prefix_used`フィールドから直接HTMLへ書き出しているため、
+   構造的に一致が保証される設計)。
+
+7項目全て満たしたため、試聴ページは完成状態にある。
 
 ## 9. Production無変更の証拠
 
