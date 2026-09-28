@@ -12474,3 +12474,73 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **根拠**: commit`88b7e7de`(初回)/`9fc0c77a`(修正1回目)、push済み
   (origin/main)。詳細`FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-
   TRIAL-01_REPORT.md`。
+
+## FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01: ユーザー決定2件のSSOT反映(2026-09-29)
+
+- **概要**: ユーザーが2026-09-29に2件を正式決定した(いずれも
+  `APPROVED_FOR_PRODUCTION`、配線は本管理IDの後続Wで実施、`PRODUCTION_
+  WIRED`はE2E Gate後にFableが判定する)。
+
+- **(1) Key Phrase音声構造(Standard/Advanced共通骨格)**: ユーザー逐語
+  「Advanced Key Phraseの音声構造は、以下で正式決定です。Advanced: 英語
+  Phrase→英語解説→英語Phrase / Standard: 英語Phrase→日本語意味→英語
+  Phrase。つまり、両レベルで『Phraseを最初と最後にもう一度聞く』という
+  同じ骨格にし、中間だけをレベル別に変えます。Standard: 中間=日本語
+  意味/Advanced: 中間=平易な英語解説。この仕様でProduction正式経路へ
+  配線してください。今回の決定により、先ほどのAdvanced KP Assembly順序
+  に関するUSER_DECISION_REQUIREDは解消です。」。付帯条件(逐語):
+  Advancedの英語解説音声は採用済みVariant B(「clear, precise, at a
+  measured pace, without dragging」、`KEY-PHRASE-ADVANCED-ENGLISH-
+  EXPLANATION-AUDIO-STYLE-TRIAL-04`のB候補)、最後の英語Phraseは最初と
+  同じcanonical Phraseを使用、追加の別文言・別候補は作らない、Standard
+  側の既存構造は壊さず対応関係を明確に保つ、retry/fallback/cache/
+  Master Storeでも最初と最後のPhraseが同一canonical text・同一正式
+  音源/生成条件になること、量産コスト報告ではAdvancedでPhraseが追加
+  再生される分についてreuseで済むか新規生成callが必要かを明示し、
+  reuse可能なら量産APIコスト増として数えないこと。
+- **反映**: `CURRENT_SPEC.md`「Key Phrase」節へ新設小節「Key Phrase
+  音声構造(Standard/Advanced共通骨格)」を追加(Standard/Advanced対比
+  表・付帯条件・コスト報告要件を記録)。既存「Advanced Key Phrase
+  英語解説(text仕様)」節の音声Style記述を更新し、TRIAL-03(Before/
+  After)→TRIAL-04(中間3案A/B/C)を経てVariant B採用・`USER_DECISION_
+  REQUIRED`解消をStatus`DECIDED`として記録した(2件の節は相互参照し、
+  重複記述はしない)。`OPEN_ITEMS.md`のOPEN-221(「Advanced Key Phrase
+  音声に既存の英語解説トラックが存在しない」、Advanced KP音声構造・
+  Styleの採否を問うていた`USER_DECISION_REQUIRED`本体)へ2026-09-29
+  追記を行い、Status`USER_DECISION_REQUIRED`→`CLOSED`(決定完了、配線
+  待ちの残作業は本管理ID側で追跡)へ更新した。OPEN-222(極短数字語の
+  一般的ASR限界の技術的所見)へも2026-09-29追記でnum_three/num_five
+  take選定完了を記録した(一般的技術所見自体・既存Human Review Lock
+  判定は無変更)。OPEN-229(JA Role Style既定backend拡張、別論点)・
+  OPEN-230(忠実英訳方式のFact精度、別論点)はいずれも本決定と無関係
+  のためGrep照合のみで変更していない。
+
+- **(2) 固定フレーズChampion num_three/num_five確定**: ユーザーが
+  `TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01`(er047、model
+  `gemini-3.8-flash-lite-tts`/voice Charon)の再Trial結果(B系統4take・
+  C系統4take、16take中OK7)から、num_three=B take1、num_five=B take1
+  を正式決定した。これにより固定phrase(全10 phrase)のChampionが全件
+  確定した(welcome=A現行継続/preview_intro=C/key_phrases_intro=C/
+  full_story_intro=C/num_one=C/num_two=B/num_three=B take1/num_four=C/
+  num_five=B take1/point_explanation=B)。
+- **反映**: `CURRENT_SPEC.md`「固定フレーズ Champion」節の対応表へ
+  num_three/num_five行を追加し、「未確定」表記を削除。既に`FAMILY-X-
+  REFRESH-E2E-PRODUCTION-WIRING-01`(W2、commit`2ecb0c64`)でwelcome除く
+  9件がProduction Master Audio Storeへ`v3_champion_2026_09_29`として
+  登録済み(TTS 0回・reuse確認済み)であることを付記し、Statusは
+  「登録済み・E2E Gate待ち」とし`PRODUCTION_WIRED`とは書いていない。
+
+- **矛盾チェック**: `CURRENT_SPEC.md`/`OPEN_ITEMS.md`いずれにも旧
+  「未確定」「(num_three/num_fiveに関する)USER_DECISION_REQUIRED」の
+  残存が無いことをGrepで確認済み(OPEN-222は極短数字語の一般的不安定性
+  記録・take選定待ちの記述として残る箇所のみで、take選定自体は本決定
+  で完了済みとして矛盾しない旨を明記)。
+- **Opus**: 発火なし(SSOT編集のみ、コード/Prompt変更なし)。
+- **Status**: `APPROVED_FOR_PRODUCTION`(2件とも配線未実施、`PRODUCTION_
+  WIRED`はE2E Gate通過後にFableが判定)。
+- **根拠**: ユーザー正式決定(2026-09-29、Fable転記)。SSOT反映のみ
+  (コード/Prompt無変更、API支出¥0)。詳細:
+  `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-
+  WIRING-01_05.md`、`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01_
+  REPORT.md`、`KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-
+  TRIAL-04`(`PM-USER-DECISIONS-2026-09-28-CONSOLIDATION-SSOT-02`内(E))。

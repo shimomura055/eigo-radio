@@ -1613,11 +1613,13 @@ manifest.json`)は本配線・確認生成の前後でsha256不変(可変segment
 `PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`(DECISION_LOG.md) |
 2026-09-28 |
 
-### 固定フレーズ Champion — Status: `APPROVED_FOR_PRODUCTION`(未配線)
+### 固定フレーズ Champion — Status: `APPROVED_FOR_PRODUCTION`(welcome除く9件はProduction Master Store登録済み・E2E Gate待ち、`PRODUCTION_WIRED`ではない)
 
 ユーザーが2026-09-28に、`TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02`の試聴
 結果から固定phrase(全記事共通・文言固定のTTS要素)8件のChampionを正式決定
-した(Master登録・Production配線は未実施、別管理ID)。試聴ページ
+し、2026-09-29にnum_three/num_fiveの残り2件(`TTS-FIXED-SHELL-NUMBER-
+THREE-FIVE-RETRIAL-01`、er047、take選定)も正式決定した。これにより10
+phrase全件のChampionが確定した(**未確定は残っていない**)。試聴ページ
 (`user_test/fixed_shell_champion_trial_02/index.html`)の表ヘッダ列順(左=
 Baseline/Candidate A[現行Production Master]、中=Candidate B、右=
 Candidate C)から列位置を確定した対応表:
@@ -1630,19 +1632,34 @@ Candidate C)から列位置を確定した対応表:
 | full_story_intro | C | "natural, clear, conversational, unhurried pace, with a brief pause before continuing" | gemini-3.8-flash-lite-tts/Charon |
 | num_one | C | "measured, matter-of-fact delivery, consistent energy and tempo for every word, plain falling pitch at the end, spoken as a flat statement, not a question" | gemini-3.8-flash-lite-tts/Charon |
 | num_two | B | "calm, steady, declarative tone, even volume and pace across the set, ending each word with a clear falling pitch, stated plainly, never rising like a question" | gemini-3.8-flash-lite-tts/Charon |
+| num_three | B take1(2026-09-29確定) | num_twoと同一Style系統B("calm, steady, declarative tone, even volume and pace across the set, ending each word with a clear falling pitch, stated plainly, never rising like a question"、文言のみ"Three.") | gemini-3.8-flash-lite-tts/Charon |
 | num_four | C | "measured, matter-of-fact delivery, consistent energy and tempo for every word, plain falling pitch at the end, spoken as a flat statement, not a question" | gemini-3.8-flash-lite-tts/Charon |
+| num_five | B take1(2026-09-29確定) | num_twoと同一Style系統B(同上、文言のみ"Five.") | gemini-3.8-flash-lite-tts/Charon |
 | point_explanation(JA) | B | "自然な抑揚をつけて、はっきりと落ち着いた調子で話す" | gemini-3.8-flash-lite-tts/Charon |
 
-**未確定**: num_three/num_fiveは`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-
-RETRIAL-01`で再Trial中(モデル・voice・基本Style思想は上表の採用品と同一
-条件)、Championはこの2件を除く8 phraseのみ確定。**現行Productionは従来
-どおり無変更**: Master Audio Store登録・実配線は未実施(別管理ID)。詳細
-対応表・style全文は`user_test/fixed_shell_champion_trial_02/index.html`、
+**2026-09-29追記**: num_three/num_fiveは、採用済みOne(C)/Two(B)/Four(C)と
+同model(Flash-Lite)・同voice(Charon)・同Style系統(B/C既存定数)でのB系統
+4take・C系統4take再Trial(16take中OK7)の結果から、ユーザーがそれぞれ
+B take1を正式選定した(詳細take一覧・不合格9takeの記録は
+`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01_REPORT.md`、
+`er047_output/tts_fixed_shell_number_three_five_retrial_01/
+retrial_results.json`参照)。**登録状況**: welcome除く9 phrase(preview_
+intro/key_phrases_intro/full_story_intro/num_one/num_two/num_three/
+num_four/num_five/point_explanation)は`FAMILY-X-REFRESH-E2E-PRODUCTION-
+WIRING-01`(W2、commit`2ecb0c64`)でProduction Master Audio Storeへ
+`v3_champion_2026_09_29`として正式登録済み(TTS 0回・reuse確認済み)。
+welcomeはA(現行Master継続)のため登録不要。**現行Productionの実際の
+生成呼び出しは未配線のまま**(Master登録済みだが呼び出し元の実配線・E2E
+Gate通過は別管理ID`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`のW4以降)。
+詳細対応表・style全文は`user_test/fixed_shell_champion_trial_02/index.html`、
 `er043_output/tts_fixed_shell_master_champion_trial_02/
 champion_trial_results.json`を参照。 |
 出典: `TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02_REPORT.md`、
-`PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`(DECISION_LOG.md) |
-2026-09-28 |
+`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01_REPORT.md`、
+`PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`・
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`(DECISION_LOG.md、2026-09-29
+エントリ) |
+2026-09-29 |
 
 ## Key Phrase
 
@@ -1674,9 +1691,40 @@ champion_trial_results.json`を参照。 |
 
 **修正1回目(2026-09-28、ユーザー既決事項+Opus L2所見S1〜S7/N1/N7反映)**: (1)Strategy L経路`_run_key_phrase_selection_strategy_l`の`max_attempts`を`1`固定から`prod.MAX_PRODUCTION_RETRY_ATTEMPTS`(=2)へ変更。2回目到達時は`keywords_runtime_metadata.json`/telemetryへ`strategy_l_attempts`/`retry_reached_second_attempt`を記録しprintでも明示(報告必須)。(2)DB Hybrid経路(Family X Primary)のみ、selector schemaへ`backup_item`(important役割の予備候補1件、必須プロパティ・常に返す)を追加。topicが欠損(0件)または単独で無効(構造・候補ID検証で無効)かつそれ以外は全item健全な場合にのみ、Python側(`er030_key_phrase_db_hybrid_source_reference_contract_01.run_source_reference_contract_gate`内`_identify_topic_backup_substitution_target`)がbackup_itemを5件目として`key_phrase_role="important"`で機械的に置換し(`topic_requirement_satisfied_via_backup=True`で`validate_min_unit_selection`のtopic=1件要求のみをスキップして再検証、他の判定は無変更)、`topic_slot_filled_by_backup`/`backup_substitution_reason`をruntime_metadata/telemetryへ記録。曖昧なケース(topic複数返却・target以外にも問題あり・backup候補ID重複/解決不能)は既存のINVALID→fallback経路へそのまま委ねる(新候補生成ロジックは作らない)。Strategy L側schemaは無変更。(3)DB Hybrid guidance文言(`_FAMILY_X_SOURCE_REFERENCE_SELECTION_GUIDANCE`)へbackup_item指示1段落追加、共有Prompt(`b1_p2_keywords_l_prompt_template.txt`)のTopic段落へ「該当する語・表現が見当たらない場合でもtopicを空にせず最善候補を選ぶ」旨の1文追加(S6により「残り4個は上記の基準に従って選んでください」への参照形へ縮約、候補区分列挙も「候補の種類・区分」へ一般化)。(4)「5個のうち少なくとも1個は重要語区分から」という既存guidance文言(`er030_key_phrase_db_hybrid_source_reference_contract_01.py`)は無変更のまま、topic由来の1件で充足可(ユーザー決定、機械検証は元々存在せずguidanceのみのため実装変更なし)。(5)Strategy L runner_up(5枠外候補)契約は引き続き未実装、OPEN-211を`DEFERRED`(将来のUI設計時に再検討)へ更新。(6)Opus L2所見: S1(Strategy L telemetryがINVALID時に`role_counts: null`になる観測性欠落)是正、S2(evidence実行がProduction telemetryへ`synthetic=false`混入)是正、S3(新規test rename・件数照合meta-test不変条件回復)是正、S4(`er034_..._trial_06_test.py`fixtureへ`key_phrase_role`追加)是正、S5(`er003_key_words_production.py`にtest専用・4+1非対応の1行コメント追加)是正、S6(Prompt再掲の縮約・一般化)是正、S7(REPORT/SPEC記載の既存testファイル数是正)是正、N1(`detail_reason_code`判定が`item_reasons`も参照するよう是正)反映、N7(`PRODUCTION_ITEM_COUNT_UNCHANGED==PRODUCTION_ITEM_COUNT`等価性test追加)反映。検証: 新規test27件+既存test4ファイルfixture更新全PASS(計331件)、`run_project_regression.py`(failed=7・errors=2、委任文の既知baselineと一致、機能regression0件)、実データ(DB Hybrid meta_a2実測¥1.1945・Strategy L melos_a2、いずれも`synthetic=True`、実行時は双方とも1回目でPASSし今回はretry/backup補完は発火せず、双方の機構は単体test[27件中6件が該当]で確認)。詳細: `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`「修正1回目」節。**runtime evidence**(`er035_output/kp_4plus1_evidence_01/`、実測selection cost合計¥4.8383): Family X News(Meta/Hormuz、DB Hybrid)4記事+Family Z Fiction(Melos)・legacy Family C(twins)・legacy Family B(Voices)計4記事(Strategy L)+forced fallback1件の計9件全てが`role_counts`={important:4, topic:1}で`KEY_WORDS_STRUCTURE_PASS`に到達。DB Hybrid 4件全てでTopic該当語がStage1 shortlistの既存候補区分(重要な単語・単語群候補、またはphrase候補)から選ばれ、専用のTopic候補区分は存在しないことを確認(Phase A設計書の予測どおり)。Topic Phraseはいずれも固有名詞ではなかった(固有名詞偏りなし)。Important 4件は同記事の旧Production 5件と概念的に高い重複(3〜5/5)を保ち品質劣化は未観測。melos_a2は評価中に2回失敗(1回は既存source_sentence整合性チェック起因で4+1と無関係、1回は`topic=2件`のrole構成不成立で4+1 validatorが実際に機能した例)、3回目でPASS(Strategy L経路`run_production_selection_gate`の`max_attempts=1`固定[本タスク以前からの既存挙動]により、`run_key_phrases`単位では自動retryされない)。**Fable Gate 3判定: `PRODUCTION_WIRED`(2026-09-28、スコープ: 共通Key Phrase経路[Strategy L/DB Hybrid両経路・全Family]の4+1構成、DB Hybrid backup補完、Strategy L retry 2回+2回目報告、runner-up DEFERRED[OPEN-211]。根拠: commit`0e6744e0`/`0cb59383`、Opus L2[BLOCKER 0、S1〜S7/N1/N7反映]、evidence9記事+差分evidence_02、test27件+regression baseline一致)** | **`PRODUCTION_WIRED`**(2026-09-28、Fable Gate 3判定。共通Key Phrase経路[Strategy L/DB Hybrid・全Family]の4+1構成、runner-upはOPEN-211で`DEFERRED`) | KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(Phase A設計・Fable判断→Phase B最小実装+検証evidence) | 2026-09-28 |
 
-### Advanced Key Phrase 英語解説(text仕様)— Status: `APPROVED_FOR_PRODUCTION`(2026-09-28 ユーザー正式決定、配線未実施)
+### Key Phrase 音声構造(Standard/Advanced 共通骨格)— Status: `APPROVED_FOR_PRODUCTION`(未配線、2026-09-29 ユーザー正式決定)
 
-ユーザーが2026-09-28に、Advanced(B1B)Key Phraseの英語解説**text仕様**(KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補: 同一の英語Key Phrase+平易な英語解説を追加する方式)を`APPROVED_FOR_PRODUCTION`と正式決定した。**要点**: (1) 英語Key Phrase自体は既存選定結果(Strategy L/DB Hybrid、4+1構成含む)を変更せず流用する、(2) 解説文はKEY-PHRASE-LEVEL-SPEC-TRIAL-01で定義した`explanation_en`の仕様文をそのまま逐語再利用する、(3) 語数上限は目安15語、新規Factの追加はしない(記事本文に存在する情報の範囲内で言い換える)、(4) 決定論的チェック3種(語数・新規Fact混入・重複表現)はGate候補として検討中だが未確定。**Role**: `KEY_PHRASE_EXPLANATION_EN`という名称のRoleを想定しているが、**Production未実装**(既存`japanese_gloss`/`japanese_gloss_tts`と並ぶ新フィールド・新TTS呼び出しを追加するProduction wiringは別管理IDでユーザー判断後に実施する)。**現行Productionの挙動は無変更**: 「B-Family」節・上記表の各行が示すとおり、Advanced(B1B)のKey Phraseは引き続き「英語句+日本語意味(`japanese_gloss`/`japanese_gloss_tts`)」のまま生成・TTS化される(この節の追記はtext仕様の採用記録であり、配線済み仕様ではない)。**音声Style**: `KEY_PHRASE_EXPLANATION_EN`を仮に音声化する場合のStyle(Before「clear, precise, explanatory」/After「clear, precise, unhurried」)はKEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03でBefore/After比較Trialを作成済みだが、Status`USER_DECISION_REQUIRED`(Fable判定、ユーザー試聴待ち)であり未決定。 | 出典: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(text仕様B候補・ユーザー正式採用)、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03(音声Style Before/After Trial、`USER_DECISION_REQUIRED`) | 2026-09-28 |
+ユーザーが2026-09-29に、Key Phraseセクションの音声構造をStandard/
+Advanced共通の骨格として正式決定した(逐語決定文は`DECISION_LOG.md`
+同日エントリ参照、解釈・拡張はしない)。**共通骨格**: 両レベルとも
+「英語Phraseを最初と最後にもう一度聞く」構造にし、中間部分のみレベル別
+に変える。
+
+| レベル | 構造 | 中間部分 |
+|---|---|---|
+| Standard(A2/B1) | 英語Phrase→日本語意味→英語Phrase | 日本語意味(`japanese_gloss`/`japanese_gloss_tts`、既存「Key Phrasesセクション構成」行[番号→英語→日本語訳→英語]と同一、無変更) |
+| Advanced(B1B) | 英語Phrase→英語解説→英語Phrase | 英語解説(`KEY_PHRASE_EXPLANATION_EN`、text仕様は次節「Advanced Key Phrase 英語解説」、音声StyleはVariant B採用) |
+
+**付帯条件(ユーザー決定、逐語)**: 最後の英語Phraseは最初と同じcanonical
+Phraseを使用し、追加の別文言・別候補は作らない。Standard側の既存構造は
+壊さず、対応関係を明確に保つ。retry/fallback/cache/Master Storeのいずれ
+の経路でも、最初と最後のPhraseが同一canonical text・同一正式音源/生成
+条件になること(既存Master Audio Store cache identity設計と整合させる)。
+**コスト**: Advancedで英語Phraseがもう1回再生される分について、既存
+Phrase音源のreuseで済むかを配線時(W4)に実測し、reuse可能なら量産API
+コスト増として数えない(reuse不可[新規生成callが必要]の場合は増分として
+明示する、ユーザー要求)。**この決定により、Advanced KP Assembly順序に
+関するUSER_DECISION_REQUIREDは解消した**(次節「Advanced Key Phrase
+英語解説」の音声Styleに関するUSER_DECISION_REQUIREDも、本決定で
+Variant B採用のため併せて解消)。**配線**: `FAMILY-X-REFRESH-E2E-
+PRODUCTION-WIRING-01`のW4で実施予定であり、現時点ではProduction未配線
+(現行Advancedの挙動は「英語句+日本語意味」のまま無変更、次節参照)。
+`PRODUCTION_WIRED`化はE2E Gate通過後にFableが判定する。 | 出典:
+`DECISION_LOG.md`(2026-09-29エントリ、`FAMILY-X-REFRESH-E2E-PRODUCTION-
+WIRING-01`) | 2026-09-29 |
+
+### Advanced Key Phrase 英語解説(text仕様)— Status: `APPROVED_FOR_PRODUCTION`(2026-09-28 text仕様ユーザー正式決定、2026-09-29 音声Style確定、いずれも配線未実施)
+
+ユーザーが2026-09-28に、Advanced(B1B)Key Phraseの英語解説**text仕様**(KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補: 同一の英語Key Phrase+平易な英語解説を追加する方式)を`APPROVED_FOR_PRODUCTION`と正式決定した。**要点**: (1) 英語Key Phrase自体は既存選定結果(Strategy L/DB Hybrid、4+1構成含む)を変更せず流用する、(2) 解説文はKEY-PHRASE-LEVEL-SPEC-TRIAL-01で定義した`explanation_en`の仕様文をそのまま逐語再利用する、(3) 語数上限は目安15語、新規Factの追加はしない(記事本文に存在する情報の範囲内で言い換える)、(4) 決定論的チェック3種(語数・新規Fact混入・重複表現)はGate候補として検討中だが未確定。**Role**: `KEY_PHRASE_EXPLANATION_EN`という名称のRoleを想定しているが、**Production未実装**(既存`japanese_gloss`/`japanese_gloss_tts`と並ぶ新フィールド・新TTS呼び出しを追加するProduction wiringは別管理IDでユーザー判断後に実施する)。**現行Productionの挙動は無変更**: 「B-Family」節・上記表の各行が示すとおり、Advanced(B1B)のKey Phraseは引き続き「英語句+日本語意味(`japanese_gloss`/`japanese_gloss_tts`)」のまま生成・TTS化される(この節の追記はtext仕様の採用記録であり、配線済み仕様ではない)。**音声Style**: `KEY_PHRASE_EXPLANATION_EN`の音声Styleは、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03(Before「clear, precise, explanatory」/After「clear, precise, unhurried」比較)→`KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04`(中間3案A/B/C比較、Bは「clear, precise, at a measured pace, without dragging」)を経て、ユーザーが2026-09-29に**Variant B「clear, precise, at a measured pace, without dragging」を正式採用**と決定した(`DECIDED`、`USER_DECISION_REQUIRED`は解消)。上位の音声構造決定(前節「Key Phrase 音声構造(Standard/Advanced 共通骨格)」)と併せて参照し、重複記述はしない。 | 出典: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(text仕様B候補・ユーザー正式採用)、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03/`TRIAL-04`(音声Style比較Trial)、`DECISION_LOG.md`2026-09-29エントリ(Variant B正式採用・音声構造決定) | 2026-09-29 |
 
 ## Preview
 
