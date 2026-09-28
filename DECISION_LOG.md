@@ -12254,3 +12254,47 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **Fable判定**: `USER_DECISION_REQUIRED`(ユーザー試聴でJ/Eパターンを選ぶ)。
 - **根拠**: `TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02_REPORT.md`。試聴:
   https://shimomura055.github.io/eigo-radio/user_test/tts_variable_role_style_trial_02/index.html
+## PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01: ユーザー正式決定4件(2026-09-28)
+
+- **(A) KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03**: 「clear,
+  precise, unhurried」は遅すぎたため不採用(`REJECTED`)。「clear, precise,
+  explanatory」との中間案を`TRIAL-04`で探索(進行中)。text仕様(TRIAL-02の
+  B候補)の`APPROVED_FOR_PRODUCTION`(未配線)は変わらず。
+- **(B) TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02のChampion**: 試聴ページ
+  `user_test/fixed_shell_champion_trial_02/index.html`の表ヘッダ列順(左=
+  Baseline/Candidate A[現行Production Master]、中=Candidate B、右=
+  Candidate C)から列位置を確定し、ユーザー選定結果を対応させた。
+
+  | phrase | 列位置 | candidate | style全文 | model/voice |
+  |---|---|---|---|---|
+  | welcome | 左 | A(現行Master継続) | "既存Production v2_flash_lite_short_style(FALLBACK[0])" | gemini-3.8-flash-lite-tts/Charon |
+  | preview_intro | 右 | C | "natural, clear, conversational" | gemini-3.8-flash-lite-tts/Charon |
+  | key_phrases_intro | 右 | C | "natural, clear, conversational" | gemini-3.8-flash-lite-tts/Charon |
+  | full_story_intro | 右 | C | "natural, clear, conversational, unhurried pace, with a brief pause before continuing" | gemini-3.8-flash-lite-tts/Charon |
+  | num_one | 右 | C | "measured, matter-of-fact delivery, consistent energy and tempo for every word, plain falling pitch at the end, spoken as a flat statement, not a question" | gemini-3.8-flash-lite-tts/Charon |
+  | num_two | 中 | B | "calm, steady, declarative tone, even volume and pace across the set, ending each word with a clear falling pitch, stated plainly, never rising like a question" | gemini-3.8-flash-lite-tts/Charon |
+  | num_four | 右 | C | "measured, matter-of-fact delivery, consistent energy and tempo for every word, plain falling pitch at the end, spoken as a flat statement, not a question" | gemini-3.8-flash-lite-tts/Charon |
+  | point_explanation | 中 | B | "自然な抑揚をつけて、はっきりと落ち着いた調子で話す" | gemini-3.8-flash-lite-tts/Charon |
+
+  8 phraseの Champion は`APPROVED_FOR_PRODUCTION`(Master登録・配線は未実施、
+  別管理ID)。num_three/num_fiveは`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-
+  RETRIAL-01`で再Trial(進行中、モデル・voice・基本Style思想は採用品と同一
+  条件)。
+- **(C) TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02**: 日本語=J3「落ち着いた、
+  自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけて
+  ください。演技がかった話し方は避けてください。」、英語=E2(FULL_STORY=
+  "calm, steady news narration with natural emphasis at key points and
+  turns; not dramatic."/IN_ONE_LINE="concise, clear, landing naturally as a
+  settled conclusion; not flat, not dramatic."/TOPIC_INTRO="brief, clear,
+  engaging news topic introduction with natural emphasis on the topic; not
+  dramatic.")を`APPROVED_FOR_PRODUCTION`(未配線)。配線は
+  `TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01`(Phase A設計中)。固定Master
+  phraseには適用しない。
+- **(D) FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01/OPEN-228の扱い**:
+  AN3-T0は採用済み(実装済み、`APPROVED_FOR_PRODUCTION`、Gate 3保留)。
+  OPEN-228を単独で先行修正しない。順序=1.
+  `FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01`(見出し廃止+3分割
+  Trial、進行中)→2.ユーザー採用判断→3.採用なら新構造に合わせてsplit/Gate/
+  retry整理→4. AN3-T0のProduction Wiring完了(`PRODUCTION_WIRED`)。
+- **根拠**: ユーザー正式決定(2026-09-28、Fable転記)。SSOT反映のみ(コード/
+  Prompt/PM_GOVERNANCE無変更、API支出¥0)。
