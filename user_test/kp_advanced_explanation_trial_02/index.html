@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02 試聴・確認ページ</title>
+<style>
+body { font-family: sans-serif; max-width: 1000px; margin: 20px auto; padding: 0 12px; }
+h1 { border-bottom: 3px solid #333; padding-bottom: 8px; }
+h2 { border-bottom: 2px solid #999; padding-bottom: 4px; margin-top: 40px; background:#f5f5f5; padding:6px; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 13px; }
+table th, table td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table th { background: #eef; }
+table.cmp td { font-size: 14px; }
+.src { color:#555; font-size:13px; }
+.avg { font-weight:bold; }
+.note { background: #fff3e0; border: 1px solid #ef6c00; padding: 10px; margin: 14px 0; }
+</style>
+</head>
+<body>
+<h1>KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02</h1>
+<p>管理ID: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(Trial、Production未採用)。
+Hormuz(既存run_06)の既存確定済みAdvanced Key Phrase 5個をそのまま使用(Phrase再選定・記事再生成なし)。
+用語: Standard/Advanced表記を使用。A=現行仕様(英語Phrase+日本語意味)、B=Advanced候補(同一英語Phrase+平易な英語解説、新規に生成)。
+詳細設計: <code>docs/pm/design_key_phrase_advanced_english_explanation_trial_02.md</code>。
+テキスト生成費用: 0.2964円 + 音声化(B解説5segment新規生成のみ、Aは既存音声を再利用)約0.60円。</p>
+<div class="note">
+本Trialの目的はProduct仕様確認(text優先)です。Statusは<code>USER_DECISION_REQUIRED</code>
+(ユーザー確認後に判断)。ここでのAdvanced候補(B)はまだProduction採用されていません。
+</div>
+
+<h2>#1: give back</h2>
+<p class="src">source_sentence: <em>Brent crude futures briefly gave back some of their gains.</em></p>
+<table class="cmp">
+<tr><th style="width:12%"></th><th style="width:44%">A: 現行(英語Phrase + 日本語意味)</th><th style="width:44%">B: Advanced候補(同一英語Phrase + 平易な英語解説)</th></tr>
+<tr>
+  <td>Phrase(共通)</td>
+  <td colspan="2"><b>give back</b> <audio controls preload="none" style="width:180px;vertical-align:middle"><source src="kp1_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+<tr>
+  <td>意味/解説</td>
+  <td>上がった分をいったん吐き出す<br>
+      <audio controls preload="none" style="width:180px"><source src="kp1_ja.mp3" type="audio/mpeg"></audio></td>
+  <td>to lose some of an earlier gain<br>
+      <audio controls preload="none" style="width:180px"><source src="kp1_explanation_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+</table>
+<table class="metrics">
+<tr><th>決定論指標</th><th>値</th></tr>
+<tr><td>Bの語数</td><td>7 語(上限15語以内: OK)</td></tr>
+<tr><td>Phraseより難しい語(zipf比較)</td><td>lose, earlier, gain</td></tr>
+<tr><td>新規Fact候補(source_sentence外の固有名詞・数字)</td><td>(なし)</td></tr>
+</table>
+<table class="rubric">
+<tr><th>rubric評価観点</th><th>score</th><th>根拠</th></tr>
+<tr><td>英語のみで理解可能か</td><td>5/5</td><td>The explanation clearly says that a previous gain is partly lost.</td></tr><tr><td>説明が難しすぎないか</td><td>4/5</td><td>The words are mostly common, although &quot;gain&quot; may be slightly less familiar.</td></tr><tr><td>長すぎないか</td><td>5/5</td><td>It is very short and direct.</td></tr><tr><td>Phraseより説明が易しいか</td><td>4/5</td><td>It is easy to understand, though &quot;earlier gain&quot; is not much simpler than the phrase.</td></tr><tr><td>再利用性</td><td>5/5</td><td>It applies to financial gains in many different situations.</td></tr><tr><td>記事固有に寄りすぎていないか</td><td>5/5</td><td>It does not refer to any specific news story or situation.</td></tr><tr><td>意味の正確性</td><td>5/5</td><td>It accurately describes losing part of an amount that had previously increased.</td></tr>
+</table>
+<p class="avg">rubric平均: 4.71/5</p>
+
+<h2>#2: sea blockade</h2>
+<p class="src">source_sentence: <em>Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</em></p>
+<table class="cmp">
+<tr><th style="width:12%"></th><th style="width:44%">A: 現行(英語Phrase + 日本語意味)</th><th style="width:44%">B: Advanced候補(同一英語Phrase + 平易な英語解説)</th></tr>
+<tr>
+  <td>Phrase(共通)</td>
+  <td colspan="2"><b>sea blockade</b> <audio controls preload="none" style="width:180px;vertical-align:middle"><source src="kp2_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+<tr>
+  <td>意味/解説</td>
+  <td>海からの封鎖<br>
+      <audio controls preload="none" style="width:180px"><source src="kp2_ja.mp3" type="audio/mpeg"></audio></td>
+  <td>the act of stopping ships from entering or leaving by sea<br>
+      <audio controls preload="none" style="width:180px"><source src="kp2_explanation_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+</table>
+<table class="metrics">
+<tr><th>決定論指標</th><th>値</th></tr>
+<tr><td>Bの語数</td><td>11 語(上限15語以内: OK)</td></tr>
+<tr><td>Phraseより難しい語(zipf比較)</td><td>(なし)</td></tr>
+<tr><td>新規Fact候補(source_sentence外の固有名詞・数字)</td><td>(なし)</td></tr>
+</table>
+<table class="rubric">
+<tr><th>rubric評価観点</th><th>score</th><th>根拠</th></tr>
+<tr><td>英語のみで理解可能か</td><td>5/5</td><td>It clearly explains that ships are prevented from entering or leaving by sea.</td></tr><tr><td>説明が難しすぎないか</td><td>4/5</td><td>The vocabulary is suitable, though &quot;blockade&quot; is explained with the somewhat formal word &quot;act.&quot;</td></tr><tr><td>長すぎないか</td><td>5/5</td><td>It is concise while giving the essential meaning.</td></tr><tr><td>Phraseより説明が易しいか</td><td>5/5</td><td>The explanation uses familiar words to explain the less common noun &quot;blockade.&quot;</td></tr><tr><td>再利用性</td><td>5/5</td><td>It works for any situation involving ships being stopped at sea.</td></tr><tr><td>記事固有に寄りすぎていないか</td><td>5/5</td><td>It contains no details limited to a particular article.</td></tr><tr><td>意味の正確性</td><td>5/5</td><td>It correctly matches the meaning of a blockade carried out by sea.</td></tr>
+</table>
+<p class="avg">rubric平均: 4.86/5</p>
+
+<h2>#3: stand at center stage</h2>
+<p class="src">source_sentence: <em>For the moment, only a large number stood at center stage.</em></p>
+<table class="cmp">
+<tr><th style="width:12%"></th><th style="width:44%">A: 現行(英語Phrase + 日本語意味)</th><th style="width:44%">B: Advanced候補(同一英語Phrase + 平易な英語解説)</th></tr>
+<tr>
+  <td>Phrase(共通)</td>
+  <td colspan="2"><b>stand at center stage</b> <audio controls preload="none" style="width:180px;vertical-align:middle"><source src="kp3_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+<tr>
+  <td>意味/解説</td>
+  <td>注目の中心にある<br>
+      <audio controls preload="none" style="width:180px"><source src="kp3_ja.mp3" type="audio/mpeg"></audio></td>
+  <td>to be the main focus of attention<br>
+      <audio controls preload="none" style="width:180px"><source src="kp3_explanation_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+</table>
+<table class="metrics">
+<tr><th>決定論指標</th><th>値</th></tr>
+<tr><td>Bの語数</td><td>7 語(上限15語以内: OK)</td></tr>
+<tr><td>Phraseより難しい語(zipf比較)</td><td>focus</td></tr>
+<tr><td>新規Fact候補(source_sentence外の固有名詞・数字)</td><td>(なし)</td></tr>
+</table>
+<table class="rubric">
+<tr><th>rubric評価観点</th><th>score</th><th>根拠</th></tr>
+<tr><td>英語のみで理解可能か</td><td>5/5</td><td>It clearly means being the main subject of people&#x27;s attention.</td></tr><tr><td>説明が難しすぎないか</td><td>5/5</td><td>The vocabulary is common and easy for a B1 learner.</td></tr><tr><td>長すぎないか</td><td>5/5</td><td>It is brief and efficient.</td></tr><tr><td>Phraseより説明が易しいか</td><td>5/5</td><td>The explanation uses very familiar words and is easier than the idiomatic phrase.</td></tr><tr><td>再利用性</td><td>5/5</td><td>It can describe any person, issue, or event receiving the most attention.</td></tr><tr><td>記事固有に寄りすぎていないか</td><td>5/5</td><td>It gives a general meaning without referring to the article&#x27;s details.</td></tr><tr><td>意味の正確性</td><td>5/5</td><td>It accurately expresses the idea of being at the center of attention.</td></tr>
+</table>
+<p class="avg">rubric平均: 5.0/5</p>
+
+<h2>#4: take a sharp turn</h2>
+<p class="src">source_sentence: <em>Then the story took a sharp turn.</em></p>
+<table class="cmp">
+<tr><th style="width:12%"></th><th style="width:44%">A: 現行(英語Phrase + 日本語意味)</th><th style="width:44%">B: Advanced候補(同一英語Phrase + 平易な英語解説)</th></tr>
+<tr>
+  <td>Phrase(共通)</td>
+  <td colspan="2"><b>take a sharp turn</b> <audio controls preload="none" style="width:180px;vertical-align:middle"><source src="kp4_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+<tr>
+  <td>意味/解説</td>
+  <td>事態が急に変わる<br>
+      <audio controls preload="none" style="width:180px"><source src="kp4_ja.mp3" type="audio/mpeg"></audio></td>
+  <td>to change suddenly and significantly<br>
+      <audio controls preload="none" style="width:180px"><source src="kp4_explanation_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+</table>
+<table class="metrics">
+<tr><th>決定論指標</th><th>値</th></tr>
+<tr><td>Bの語数</td><td>5 語(上限15語以内: OK)</td></tr>
+<tr><td>Phraseより難しい語(zipf比較)</td><td>(なし)</td></tr>
+<tr><td>新規Fact候補(source_sentence外の固有名詞・数字)</td><td>(なし)</td></tr>
+</table>
+<table class="rubric">
+<tr><th>rubric評価観点</th><th>score</th><th>根拠</th></tr>
+<tr><td>英語のみで理解可能か</td><td>5/5</td><td>It clearly explains a sudden and major change.</td></tr><tr><td>説明が難しすぎないか</td><td>4/5</td><td>Most words are common, but &quot;significantly&quot; may be slightly difficult for some B1 learners.</td></tr><tr><td>長すぎないか</td><td>5/5</td><td>It is short and focused.</td></tr><tr><td>Phraseより説明が易しいか</td><td>4/5</td><td>The meaning is clear, but &quot;significantly&quot; is not necessarily simpler than &quot;sharp.&quot;</td></tr><tr><td>再利用性</td><td>5/5</td><td>It applies to many sudden major changes in situations, plans, or trends.</td></tr><tr><td>記事固有に寄りすぎていないか</td><td>5/5</td><td>It is a general explanation that does not depend on the news context.</td></tr><tr><td>意味の正確性</td><td>5/5</td><td>It correctly captures the figurative meaning of a sudden change in circumstances.</td></tr>
+</table>
+<p class="avg">rubric平均: 4.71/5</p>
+
+<h2>#5: recover the cost</h2>
+<p class="src">source_sentence: <em>The aim was to recover the cost of US efforts to keep the strait safe.</em></p>
+<table class="cmp">
+<tr><th style="width:12%"></th><th style="width:44%">A: 現行(英語Phrase + 日本語意味)</th><th style="width:44%">B: Advanced候補(同一英語Phrase + 平易な英語解説)</th></tr>
+<tr>
+  <td>Phrase(共通)</td>
+  <td colspan="2"><b>recover the cost</b> <audio controls preload="none" style="width:180px;vertical-align:middle"><source src="kp5_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+<tr>
+  <td>意味/解説</td>
+  <td>かかった費用を回収する<br>
+      <audio controls preload="none" style="width:180px"><source src="kp5_ja.mp3" type="audio/mpeg"></audio></td>
+  <td>to get back the money spent on something<br>
+      <audio controls preload="none" style="width:180px"><source src="kp5_explanation_en.mp3" type="audio/mpeg"></audio></td>
+</tr>
+</table>
+<table class="metrics">
+<tr><th>決定論指標</th><th>値</th></tr>
+<tr><td>Bの語数</td><td>8 語(上限15語以内: OK)</td></tr>
+<tr><td>Phraseより難しい語(zipf比較)</td><td>(なし)</td></tr>
+<tr><td>新規Fact候補(source_sentence外の固有名詞・数字)</td><td>(なし)</td></tr>
+</table>
+<table class="rubric">
+<tr><th>rubric評価観点</th><th>score</th><th>根拠</th></tr>
+<tr><td>英語のみで理解可能か</td><td>5/5</td><td>It clearly means getting back money that was spent.</td></tr><tr><td>説明が難しすぎないか</td><td>5/5</td><td>The vocabulary is common and appropriate for a B1 learner.</td></tr><tr><td>長すぎないか</td><td>5/5</td><td>It is concise and useful.</td></tr><tr><td>Phraseより説明が易しいか</td><td>5/5</td><td>&quot;Get back&quot; and &quot;money spent&quot; are simpler than &quot;recover the cost.&quot;</td></tr><tr><td>再利用性</td><td>5/5</td><td>It works for many purchases, projects, and investments.</td></tr><tr><td>記事固有に寄りすぎていないか</td><td>5/5</td><td>It does not include any article-specific information.</td></tr><tr><td>意味の正確性</td><td>5/5</td><td>It accurately describes recovering money that was paid as a cost.</td></tr>
+</table>
+<p class="avg">rubric平均: 5.0/5</p>
+
+</body>
+</html>

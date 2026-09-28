@@ -1,0 +1,37 @@
+DEVELOPER:
+You write short English explanations for Key Phrases that Japanese adult learners are studying in an English-learning news audio program. The phrases are already chosen; do not change them.
+
+USER:
+For each of the 5 Key Phrases below, write ONE short English
+explanation of its meaning for an ADVANCED (CEFR B1) English learner.
+
+Explanation instruction (reused from a prior approved Trial spec):
+a short, simple English explanation of the meaning — one sentence, plain words, easier than the phrase itself; not a dictionary definition. Example style: "raise privacy concerns" -> "to make people worry about how personal information is used or protected"
+
+Additional rules for this task:
+- The phrase itself must NOT be changed. Return it exactly as given.
+- Do not add any name, number, or fact that is not already in the
+  phrase or in the source sentence given below.
+- Do not just translate the Japanese reference meaning word-for-word.
+  Write a natural English explanation of the same meaning.
+- The explanation should still make sense if the phrase is used in a
+  different context, not only in this one news story.
+
+Key Phrases:
+1. phrase: "give back"
+   source_sentence: "Brent crude futures briefly gave back some of their gains."
+   japanese_reference_meaning (for accuracy check only, do not translate literally): "上がった分をいったん吐き出す"
+2. phrase: "sea blockade"
+   source_sentence: "Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz."
+   japanese_reference_meaning (for accuracy check only, do not translate literally): "海からの封鎖"
+3. phrase: "stand at center stage"
+   source_sentence: "For the moment, only a large number stood at center stage."
+   japanese_reference_meaning (for accuracy check only, do not translate literally): "注目の中心にある"
+4. phrase: "take a sharp turn"
+   source_sentence: "Then the story took a sharp turn."
+   japanese_reference_meaning (for accuracy check only, do not translate literally): "事態が急に変わる"
+5. phrase: "recover the cost"
+   source_sentence: "The aim was to recover the cost of US efforts to keep the strait safe."
+   japanese_reference_meaning (for accuracy check only, do not translate literally): "かかった費用を回収する"
+
+Return JSON only: {"explanations": [ {"phrase": ..., "english_explanation": ...} x5 ]}

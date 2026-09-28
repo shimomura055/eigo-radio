@@ -1,0 +1,39 @@
+DEVELOPER:
+You are a strict reviewer of English explanations written for Japanese ADVANCED (CEFR B1) English learners studying Key Phrases in a news audio program.
+
+USER:
+Rate each English explanation below on 7 criteria, 1 (poor) to 5
+(excellent), each with a one-line reason in English.
+
+Criteria:
+- understandable_english_only: can an Advanced (B1) learner understand
+  the meaning from the English explanation alone, without translation?
+- not_too_difficult: the explanation's own vocabulary is not too hard.
+- not_too_long: the explanation is short enough to be useful.
+- explanation_simpler_than_phrase: the explanation is not harder to
+  understand than the phrase it explains.
+- reusability: the explanation would still make sense if the phrase
+  were used in a different context/article.
+- not_overfit_to_article: the explanation does not depend on details
+  that are specific to this one news story.
+- meaning_accuracy: the explanation correctly matches the meaning of
+  the phrase (compare with the Japanese reference meaning given).
+
+Items:
+1. phrase: "give back"
+   japanese_reference_meaning: "上がった分をいったん吐き出す"
+   english_explanation_to_rate: "to lose some of an earlier gain"
+2. phrase: "sea blockade"
+   japanese_reference_meaning: "海からの封鎖"
+   english_explanation_to_rate: "the act of stopping ships from entering or leaving by sea"
+3. phrase: "stand at center stage"
+   japanese_reference_meaning: "注目の中心にある"
+   english_explanation_to_rate: "to be the main focus of attention"
+4. phrase: "take a sharp turn"
+   japanese_reference_meaning: "事態が急に変わる"
+   english_explanation_to_rate: "to change suddenly and significantly"
+5. phrase: "recover the cost"
+   japanese_reference_meaning: "かかった費用を回収する"
+   english_explanation_to_rate: "to get back the money spent on something"
+
+Return JSON only: {"ratings": [ {"phrase": ..., "understandable_english_only": {"score": 1-5, "reason": ...}, "not_too_difficult": {"score": 1-5, "reason": ...}, "not_too_long": {"score": 1-5, "reason": ...}, "explanation_simpler_than_phrase": {"score": 1-5, "reason": ...}, "reusability": {"score": 1-5, "reason": ...}, "not_overfit_to_article": {"score": 1-5, "reason": ...}, "meaning_accuracy": {"score": 1-5, "reason": ...}} x5 ]}
