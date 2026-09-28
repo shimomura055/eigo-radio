@@ -1210,16 +1210,33 @@ def classify_asr_match(canonical_text: str, asr_text: str,
     if role_gate_applicable and asr_text is not None:
         tier1 = semantic_equivalence.tier1_numeric_equivalence(canonical_text, asr_text)
         if tier1 is not None:
-            return ClassificationResult(
-                "NUMERIC_EQUIVALENCE_MATCH", 1.0, ProtectedCheckResult(passed=True),
-                should_pass=True, should_retry=False,
-                reason="Tier 1(数値/通貨/%/年/時刻/分数/ローマ数字/略語)の値パースが両側で"
-                       f"完全一致(role={resolved_role})",
-                semantic_equivalence_info={
-                    "tier_applied": "tier1_numeric", "sub_reason": "numeric_only",
-                    "corroborated_by": [], "warning": False, "role": resolved_role,
-                    "diff_spans": tier1,
-                })
+            # EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02修正1回目
+            # (Opus L3所見、ユーザー承認2026-09-28、否定語二重防御):
+            # diff-anchored合成規則(句読点atom局所吸収、tier1["diff_
+            # anchored"]がTrue)を通過した場合に限り、否定語の有無が両側で
+            # 一致することを独立した第二の防御層として追加確認する
+            # (_closed_punctuation_diff_ok()側のBLOCKER-1本体修正で既に
+            # 閉じているはずの経路だが、実装バグ混入時の多重防御として
+            # 保持する)。全体一致経路(diff_anchored=False、従来のall-or-
+            # nothing判定)は無変更のまま即座にearly-exitする。
+            negation_blocked = False
+            if tier1.get("diff_anchored"):
+                neg_check = protected_check(tokenize(canonical_text), tokenize(asr_text))
+                negation_blocked = bool(neg_check.negation_mismatches)
+            if not negation_blocked:
+                return ClassificationResult(
+                    "NUMERIC_EQUIVALENCE_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                    should_pass=True, should_retry=False,
+                    reason="Tier 1(数値/通貨/%/年/時刻/分数/ローマ数字/略語)の値パースが両側で"
+                           f"完全一致(role={resolved_role})",
+                    semantic_equivalence_info={
+                        "tier_applied": "tier1_numeric", "sub_reason": "numeric_only",
+                        "corroborated_by": [], "warning": False, "role": resolved_role,
+                        "diff_spans": tier1,
+                    })
+            # negation_blocked=Trueの場合はearly-exitせず、以降の既存
+            # (1)〜(4)の手順(baseline判定等、protected_checkによる否定語
+            # 保護を含む)へフォールバックする(安全側)。
 
     baseline = _classify_asr_match_core(
         canonical_text, asr_text, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)

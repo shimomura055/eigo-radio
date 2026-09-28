@@ -33,6 +33,49 @@ KEY_PHRASE_SEGMENT_ID = "kp1_en"          # role=KEY_PHRASE(非適用)
 
 TRIAL_CORPUS_PATH = "er021_output/en_asr_semantic_equivalence_trial_01/corpus.jsonl"
 
+# EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02修正1回目(SF-1是正、
+# Opus L3所見)。本ファイルの多数のtestはrole適用segmentへの呼び出しを
+# 経由し、should_pass=Falseになる度にval.classify_asr_match()内部から
+# semantic_equivalence.append_telemetry_log()が呼ばれ、Production側の実
+# telemetry.jsonl(er021_output/en_asr_semantic_equivalence_production_
+# wiring_01/telemetry.jsonl)へ書き込む設計になっている。これはtest実行の
+# たびにProduction側の観測ログ(false accept監査等に使うオフライン再判定の
+# 母数)を汚染する(Opus L3所見SF-1、実測で母数4,187→4,536件など)。
+# 本fixtureは本ファイル内の全test classへ共通適用され(setUpModule/
+# tearDownModuleはunittestがファイル単位で1回だけ実行する)、test実行中は
+# append_telemetry_log()の書き込み先を一時ディレクトリへ差し替える
+# (分類ロジック・戻り値には一切影響しない、書き込み先のみの隔離)。
+# 既存の混入分(このfixture導入以前のtest実行で生じたもの)は削除せず、
+# er021_output/coverage_review_02/telemetry_contamination_note.json へ
+# 「test由来混入期間」として記録する(SSOT側での扱いはOPEN_ITEMS文案を
+# 参照)。
+_telemetry_isolation_dir = None
+_telemetry_isolation_patcher = None
+
+
+def setUpModule():
+    global _telemetry_isolation_dir, _telemetry_isolation_patcher
+    _telemetry_isolation_dir = tempfile.mkdtemp(prefix="er021_telemetry_test_isolation_")
+    isolated_path = os.path.join(_telemetry_isolation_dir, "telemetry_test_isolated.jsonl")
+    real_append = semantic_equivalence.append_telemetry_log
+
+    def _isolated_append(record, path=isolated_path):
+        return real_append(record, path=path)
+
+    _telemetry_isolation_patcher = mock.patch.object(
+        semantic_equivalence, "append_telemetry_log", _isolated_append)
+    _telemetry_isolation_patcher.start()
+
+
+def tearDownModule():
+    global _telemetry_isolation_dir, _telemetry_isolation_patcher
+    if _telemetry_isolation_patcher is not None:
+        _telemetry_isolation_patcher.stop()
+        _telemetry_isolation_patcher = None
+    if _telemetry_isolation_dir is not None:
+        shutil.rmtree(_telemetry_isolation_dir, ignore_errors=True)
+        _telemetry_isolation_dir = None
+
 
 def _load_trial_corpus():
     """EN-ASR-SEMANTIC-EQUIVALENCE-TRIAL-01で検証済みのcorpus(POSITIVE
@@ -771,6 +814,122 @@ class StrictTier1SynthesisRuleTest(unittest.TestCase):
             "The report is divided into 15th parts for the committee.", 1)
         r = self._match(canonical, asr)
         self.assertFalse(r.should_pass, "基数/序数の意味差(15 vs 15th、月名非隣接)が誤って救済されている(false accept)")
+
+    # ---- SF-4是正(Opus L3所見、ユーザー承認2026-09-28、BLOCKER-1修正の
+    # negative fixture固定): 分かち書き差・アポストロフィ差だけの差分
+    # (句読点atomを1つも含まない)は、修正後も吸収されない(false accept
+    # 0)ことを、Tier1直呼び経路+classify_asr_match(segment_id=
+    # "full_story_part1")の実配線経路の両方で固定する。各文には数値
+    # anchor("20 percent"等)を含め、Tier1の対象外(数値的内容が無い)には
+    # ならないようにする。
+
+    def _tier1_direct(self, canonical, asr):
+        return semantic_equivalence.tier1_numeric_equivalence(canonical, asr)
+
+    def _match_full_story(self, canonical, asr):
+        return val.classify_asr_match(canonical, asr, segment_id="full_story_part1")
+
+    def _assert_tier1_did_not_fire_via_full_story(self, canonical, asr, msg):
+        # BLOCKER-1の修正範囲はTier1(_closed_punctuation_diff_ok/
+        # tier1_numeric_equivalence)のみであり、実配線経路の最終
+        # should_passには、Tier1より後段の既存baseline側の独立した正規化
+        # (例: despaced()、本タスクの変更範囲外)が別途作用し得る
+        # (Opus L3所見の「緩和事情」: 分かち書き差だけの単独ケースは
+        # 従来からdespaced()でPASSしていた、これは新規のfalse acceptでは
+        # ない)。したがってここではTier1自体が発火していないこと
+        # (classification!="NUMERIC_EQUIVALENCE_MATCH")のみを検証する。
+        r = self._match_full_story(canonical, asr)
+        self.assertNotEqual(r.classification, "NUMERIC_EQUIVALENCE_MATCH", msg)
+        return r
+
+    def test_not_able_vs_notable_not_absorbed(self):
+        # 最重要反例(Opus L3): 否定語"not"の欠落がalnum一致だけで吸収
+        # されてはならない。
+        canonical = ("The findings are not able to explain the 20 percent "
+                     "drop recorded across the region this year.")
+        asr = ("The findings are notable to explain the 20 percent "
+               "drop recorded across the region this year.")
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "not able/notable(否定語欠落)がTier1で誤って吸収されている(false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "not able/notableがTier1経由で誤って救済されている(false accept)")
+
+    def test_a_part_vs_apart_not_absorbed(self):
+        canonical = ("Officials said the 2 islands remain a part of the "
+                     "territory, and the review will finish in 2027.")
+        asr = ("Officials said the 2 islands remain apart of the "
+               "territory, and the review will finish in 2027.")
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "a part/apartがTier1で誤って吸収されている(false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "a part/apartがTier1経由で誤って救済されている(false accept)")
+
+    def test_ottawas_vs_ottawa_s_not_absorbed_deferred(self):
+        # DEFERRED扱いのはずの's処理(REPORT記載どおり、事実として未実装)
+        # が事実上実装されてしまっていないことを固定する。
+        canonical = ("Ottawa's mayor said the 20 percent plan would start "
+                     "in 2027 across the region this year.")
+        asr = ("Ottawa s mayor said the 20 percent plan would start "
+               "in 2027 across the region this year.")
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "Ottawa's/Ottawa sがTier1で誤って吸収されている(DEFERRED項目の暗黙実装、false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "Ottawa's/Ottawa sがTier1経由で誤って救済されている(false accept)")
+
+    def test_were_vs_were_apostrophe_not_absorbed(self):
+        canonical = "We're seeing a 20 percent rise across the region this year."
+        asr = "Were seeing a 20 percent rise across the region this year."
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "we're/wereがTier1で誤って吸収されている(false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "we're/wereがTier1経由で誤って救済されている(false accept)")
+
+    def test_may_be_vs_maybe_not_absorbed(self):
+        canonical = "The report may be delayed by 20 percent this year."
+        asr = "The report maybe delayed by 20 percent this year."
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "may be/maybeがTier1で誤って吸収されている(false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "may be/maybeがTier1経由で誤って救済されている(false accept)")
+
+    def test_mixed_punctuation_and_word_boundary_not_absorbed(self):
+        # 残存リスク(Opus L3所見、BLOCKER-1(5)で締めた混在型): 句読点atom
+        # (U.S.の".")と語境界ずれ(not able/notable)が同一op内に同居する
+        # 場合は、(4)だけでは依然吸収され得るため(5)のmin条件で弾く。
+        canonical = ("The U.S. not able to meet the 20 percent target "
+                     "was surprising this year.")
+        asr = ("The US notable to meet the 20 percent target "
+               "was surprising this year.")
+        self.assertIsNone(self._tier1_direct(canonical, asr),
+                           "混在型(U.S. not able/US notable)がTier1で誤って吸収されている(false accept)")
+        self._assert_tier1_did_not_fire_via_full_story(
+            canonical, asr, "混在型がTier1経由で誤って救済されている(false accept)")
+
+    # ---- positive維持test(BLOCKER-1修正後もHormuz型は救済されること) ----
+
+    def test_safe_period_but_vs_safe_comma_but_still_absorbed(self):
+        canonical = "The effort was safe. But 20 percent of the plan failed this year."
+        asr = "The effort was safe, but 20 percent of the plan failed this year."
+        result = self._tier1_direct(canonical, asr)
+        self.assertIsNotNone(result, "safe. But/safe, but(句読点のみ差)が修正後に誤って非等価になっている(false reject)")
+        self.assertTrue(result["diff_anchored"])
+        r = self._match_full_story(canonical, asr)
+        self.assertTrue(r.should_pass, "safe. But/safe, butが実配線経路で救済されなくなっている(false reject)")
+
+    def test_hormuz_style_still_absorbed_via_direct_tier1_call(self):
+        # 文を十分長くし(_TIER1_MAX_ABSORBED_PUNCT_ATOM_RATIO=0.2の上限に
+        # 抵触しないよう、absorbed_atom_total=5に対しtotal_atomsを十分
+        # 確保する)、既存の上限定数(本タスクの変更範囲外)とは無関係に
+        # BLOCKER-1修正そのものの効果だけを確認する。
+        canonical = ("The aim was to recover the cost of US efforts to keep "
+                     "the strait safe for the region, according to officials "
+                     "who reviewed the matter carefully this year, costing $5.")
+        asr = ("The aim was to recover the cost of U.S. efforts to keep "
+               "the strait safe for the region, according to officials "
+               "who reviewed the matter carefully this year, costing $5.")
+        result = self._tier1_direct(canonical, asr)
+        self.assertIsNotNone(result, "Hormuz型(US/U.S.)がBLOCKER-1修正後に誤って非等価になっている(false reject)")
+        self.assertTrue(result["diff_anchored"])
 
 
 if __name__ == "__main__":

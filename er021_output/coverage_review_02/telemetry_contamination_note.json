@@ -1,0 +1,38 @@
+{
+  "management_id": "EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02",
+  "note": "SF-1(Opus L3所見)是正の記録。修正1回目(本タスク)で、er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py全体へ setUpModule/tearDownModule によるtelemetry書込先の一時ディレクトリへの隔離を追加した(semantic_equivalence.append_telemetry_log()をmonkeypatch)。これによりこのテストファイル自身が今後Production側の実telemetry.jsonlを汚染することはなくなる。既存の混入分は削除していない(read-only原則、削除は別途ユーザー判断事項)。",
+  "production_telemetry_path": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl",
+  "observed_counts_over_time": [
+    {
+      "source": "EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md line 38",
+      "when": "Phase 2完了時点(2026-09-28、本タスク以前)",
+      "total_records": 4187,
+      "note": "test隔離が実装される前の、Phase 2実装完了直後の値(REPORT本文記載)。"
+    },
+    {
+      "source": "er021_output/coverage_review_02/offline_telemetry_reclassify_01_result.json",
+      "when": "Opus L3診断時点(2026-09-28、本タスク開始前)",
+      "total_records": 4536,
+      "protected_number": 1813,
+      "note": "4187から349件増加。Opus L3所見(SF-1)が指摘した、StrictTier1SynthesisRuleTest等がテスト実行のたびにProduction側telemetry.jsonlへ書き込んでいたことによる混入を含む。"
+    },
+    {
+      "source": "本タスク開始時点でのwc -l確認(修正着手前、いかなるtestもまだ実行していない時点)",
+      "when": "2026-09-28(本タスク=修正1回目、着手直後)",
+      "total_records": 4977,
+      "note": "4536からさらに441件増加。本タスクのSonnetは着手後この時点まで一切test実行していないため、この増加分はtelemetry隔離が実装されていなかった期間中の、他セッション・他タスクによるrun_project_regression.py等の実行(本ファイルおよび役割適用segmentへ到達する他の呼び出し元を経由するもの)由来と推定される。個々の実行元の特定はread-only原則の範囲外のため行っていない。"
+    },
+    {
+      "source": "er021_output/coverage_review_02/offline_telemetry_reclassify_02_result.json",
+      "when": "本タスク(修正1回目)の修正・全testパス後",
+      "total_records": 4977,
+      "protected_number": 2016,
+      "note": "本タスクのtest実行(unittest 62件、複数回)およびオフライン再判定scriptの実行では総数が増加していないことを確認済み(隔離fixtureが機能している証拠、本ファイル冒頭の実測ログ参照)。run_project_regression.py実行後は他の未隔離経路を経由する可能性があるため、実行後に再度wc -lで確認する運用とする。"
+    }
+  ],
+  "test_origin_period_summary": {
+    "description": "「test由来期間」として明記(OPEN_ITEMS文案参照): 4,187件(Phase 2完了時点)から4,977件(本タスク着手時点)までの790件の増分は、telemetry隔離が実装されていなかった期間(2026-09-28 Phase 2完了後 〜 本タスクでのsetUpModule/tearDownModule追加まで)の複数回のtest実行由来であり、実際のProduction運用(実配信・実TTS+実ASR経由)由来のNG記録ではない可能性が高い。既存混入分の削除・母数からの除外はユーザー判断事項として別途提起する。",
+    "delta_since_phase2_completion": 790,
+    "isolation_fix_commit": "本タスク(修正1回目)のcommitで導入予定(commit hashはRESULT_PACKET/コミット後に追記)"
+  }
+}

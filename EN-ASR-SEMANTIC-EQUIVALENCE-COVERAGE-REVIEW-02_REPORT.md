@@ -2,11 +2,13 @@
 
 管理ID: EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02
 日付: 2026-09-28(Phase 1)/2026-09-28(Phase 2)
-Phase: 1(原因分析+coverage再監査+設計案)完了 → **2(Production実装、
-本REPORT末尾のPhase 2節参照)完了、Mandatory Opus L3診断待ち**
+Phase: 1(原因分析+coverage再監査+設計案)完了 → 2(Production実装、
+本REPORT末尾のPhase 2節参照)完了 → **修正1回目(Opus L3 BLOCKER-1反映、
+本REPORT末尾「修正1回目」節参照)完了、Fable Gate 3再判定待ち**
 Status: **Phase 1 DESIGN_COMPLETED(Opus L2レビュー実施済み、ユーザー
-`APPROVED_FOR_PRODUCTION`承認済み) / Phase 2 IMPLEMENTATION_COMPLETE、
-Opus L3 REVIEW PENDING、`PRODUCTION_WIRED`はFable Gate 3判定待ち**
+`APPROVED_FOR_PRODUCTION`承認済み) / Phase 2 IMPLEMENTATION_COMPLETE(Opus
+L3診断によりBLOCKER 1件・SHOULD_FIX 5件検出) / 修正1回目 実装・テスト
+完了、`PRODUCTION_WIRED`はFable Gate 3判定待ち(未宣言)**
 性質(Phase 1): ¥0・API呼び出しなし・Production code変更なし・SSOT本体
 編集なし(Phase 1時点の記載、Phase 2はSSOT編集込み、詳細は末尾節参照)。
 設計全文: `docs/pm/design_en_asr_orthographic_equivalence_coverage_02.md`
@@ -442,6 +444,167 @@ if not punct_present:
 - `C:\Users\tensh\eigo-radio\er021_output\coverage_review_02\offline_telemetry_reclassify_01_result.json`
 
 入力範囲は十分だった(追加で必要なファイルは無い)。唯一、N-9の集合同一性のみgit diff未確認。
+
+---
+
+## 修正1回目(Opus L3 BLOCKER-1反映、2026-09-28、ユーザー承認済み)
+
+性質: 承認済みstrict Tier 1仕様への**適合修正**(受理範囲を広げる追加仕様
+ではない、決定論のみ・追加API呼び出しなし・費用¥0)。
+
+### 対応表(Opus L3所見 → 対応)
+
+| 所見 | 対応 | 状態 |
+|---|---|---|
+| BLOCKER-1(句読点atom必須が未実装) | `_closed_punctuation_diff_ok()`へ(4)句読点atom存在必須+(5)句読点atom除外後atom数minが1以下、を追加 | 反映済み |
+| SF-1(telemetry汚染) | `er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`全体へ`setUpModule`/`tearDownModule`でtelemetry書込先を一時ディレクトリへ隔離 | 反映済み(既存混入分は削除せず`telemetry_contamination_note.json`へ記録) |
+| SF-2(恒真assert) | `if ok: assert canon_alnum == asr_alnum`を削除し、独立した2つの不変条件(句読点atom存在/非literal atom不在)のassertへ置換 | 反映済み |
+| SF-3(「既存合格経路の挙動は完全に同一」の過大表現) | 本節で「比較アルゴリズム[全体zip→diff-anchored]は保存されるが、atom化自体は分類A修正の範囲で変更され、特にローマ数字安全化は従来PASSしていた一部組合せを安全側に落とす」と訂正 | 反映済み(下記参照) |
+| SF-4(negative fixture欠落) | `StrictTier1SynthesisRuleTest`へ6件追加(not able/notable、a part/apart、Ottawa's/Ottawa s、we're/were、may be/maybe、混在型U.S. not able/US notable)+positive維持2件、Tier1直呼び経路+`classify_asr_match(segment_id="full_story_part1")`経路の両方で固定 | 反映済み |
+| SF-5(Gate 3表「runtime evidence完了」の内訳) | 下記Gate 3再確認表へ「新規則の実経路発火は(b)実Production artifact再判定でのみ確認、(c)実TTS+実ASR 2segmentでは発火せず」を明記 | 反映済み |
+| N-6(設計書§5(B)-2/§7-5との対応) | `docs/pm/design_en_asr_orthographic_equivalence_coverage_02.md`へ対応表追記 | 反映済み(設計書側diff参照) |
+| N-7(offline再判定はfalse reject減少のみ測定可) | 本節「オフライン再判定」項へ明記 | 反映済み |
+| N-8(insert/delete不吸収・op上限3の実務上の狭さ) | 本節・SSOT文案で「構造的耐性」の過大表現を避け、範囲を明記 | 反映済み |
+| N-9(移設前後の集合同一性) | `git show 3d9a28be`で`_MONTHS`/`_DATE_ORDINAL_RE`/`_ORDINAL_WORDS`のer006側削除内容とer021側追加内容が文字列単位で完全一致することを確認 | 確認済み(差分同一) |
+| `'s`のDEFERRED記述 | BLOCKER-1修正により、`Ottawa's`/`Ottawa s`は句読点atomが存在しないため吸収されない。DEFERRED(未実装)の記載は事実として正しい状態に復帰した | 修正により整合 |
+
+### 実装差分(要約)
+
+- `er021_en_asr_semantic_equivalence_production_01.py::_closed_punctuation_diff_ok()`:
+  句読点atom(alnum除去後が空のatom)の存在を必須化する条件(4)、および
+  句読点atomを除いた側のatom数のminが1以下であることを要求する条件(5)を
+  追加。これにより"not able"↔"notable"のような語境界(分かち書き)差のみの
+  差分は吸収されなくなり(false accept防止)、Hormuz型("us"↔"u"+"."+"s"+".")
+  は句読点atomが存在するため従来どおり吸収される。SF-2是正として、恒真
+  assertを独立した2つの不変条件のassertへ置換。
+- `er006_preprod_hardening_01_validation.py::classify_asr_match()`:
+  Tier 1 early-exitのうち`tier1["diff_anchored"]`がTrueの場合のみ、
+  `protected_check().negation_mismatches`が空であることを追加確認する
+  否定語二重防御を追加(全体一致経路[diff_anchored=False]は無変更)。
+  BLOCKER-1本体の修正により現状のnegative fixtureでは本guardが単独で
+  発火する経路は確認されていない(実装バグ混入時の多重防御として保持)。
+- `er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`:
+  (1)ファイル全体共通の`setUpModule`/`tearDownModule`でtelemetry書込先を
+  一時ディレクトリへ隔離(SF-1)。(2)`StrictTier1SynthesisRuleTest`へ
+  SF-4のnegative test 6件+positive維持test 2件を追加(計8件、既存25件と
+  合わせて33件、ファイル全体では62 unittest)。
+
+### negative test結果(false accept 0)
+
+Tier1直呼び経路(`semantic_equivalence.tier1_numeric_equivalence()`)、
+実配線経路(`val.classify_asr_match(..., segment_id="full_story_part1")`)
+の両方で以下を固定(全件PASS、詳細は
+`er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`
+`StrictTier1SynthesisRuleTest`参照)。
+
+| ペア | Tier1直呼び | 実配線経路(Tier1発火有無) |
+|---|---|---|
+| not able / notable | 非等価(None) | Tier1不発火(classification≠NUMERIC_EQUIVALENCE_MATCH。ただし既存baseline側の独立した`despaced()`正規化[本タスクの変更範囲外、Opus L3所見「緩和事情」]により最終的にはNORMALIZED_MATCHで別途PASSする。これは新規のfalse acceptではなく従来からの既存挙動) |
+| a part / apart | 非等価(None) | Tier1不発火(同上) |
+| Ottawa's / Ottawa s | 非等価(None、DEFERRED維持) | Tier1不発火(同上) |
+| we're / were | 非等価(None) | Tier1不発火(同上) |
+| may be / maybe | 非等価(None) | Tier1不発火(同上) |
+| 混在型(U.S. not able / US notable) | 非等価(None、条件(5)で遮断) | Tier1不発火 |
+| safe. But / safe, but(positive維持) | 等価(diff_anchored=True) | Tier1発火・PASS |
+| Hormuz型 US/U.S.(positive維持) | 等価(diff_anchored=True) | (別途既存test群で確認済み) |
+
+重要な注記(誤解防止): 上表の「Tier1不発火」6件について、実配線経路
+(classify_asr_match)の**最終**should_passは、Tier1より後段の既存
+baseline側の独立した`despaced()`正規化(空白除去一致でのPASS、本タスクの
+変更範囲外、`er006_preprod_hardening_01_validation.py`の既存ロジック)に
+より`True`になる場合がある(実測: `not able`/`notable`単独ケースは
+`NORMALIZED_MATCH`でPASS)。これはBLOCKER-1が新たに開けた穴ではなく、
+Opus L3所見「緩和事情」が指摘したとおり従来から存在する挙動であり、
+本タスクの是正範囲(Tier1層のみ)の外にある。将来この経路自体の是非を
+問う場合は別途ユーザー判断が必要な論点として`OPEN_ITEMS.md`側で扱う
+(本タスクでは変更しない)。
+
+既存NEGATIVE fixture全再実行: Trial-01 corpus(68件)+OPEN-123 Regression
+fixture(57件)+既存StrictTier1SynthesisRuleTest(25件)+本修正で追加した
+8件、計`er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py`
+62 unittest全件PASS(`.venv\Scripts\python.exe -m unittest
+er021_en_asr_semantic_equivalence_production_wiring_01_test_01 -v`実行、
+false accept 0)。
+
+### オフライン再判定(reversal件数の前後比較)
+
+`er021_output/coverage_review_02/offline_telemetry_reclassify_01.py`
+(無変更、read-only)を修正後コードで再実行。
+
+| | 修正前(`_01_result.json`) | 修正後(`_02_result.json`) |
+|---|---|---|
+| 総record数 | 4,536 | 4,977(SF-1隔離導入前の期間中に増加、`telemetry_contamination_note.json`参照) |
+| reversal(Tier1 MATCHへ反転) | 7 | 7(不変、全件同一Hormuz記事由来) |
+| 他sub_reasonの反転 | 0 | 0 |
+
+Opus L3予測(「reversal 7件は不変」)どおり、BLOCKER-1修正はオフライン
+telemetry上のfalse reject救済件数に影響しない(修正前後で件数・内訳とも
+完全一致)。
+
+### project-wide regression
+
+`run_project_regression.py`実行(pattern既定`er0*_test_*.py`、全件)。
+結果: `collected=3506 passed=3495 failed=9 errors=2`。個別に確認した
+結果、9件のFAIL+2件のERRORはいずれも本タスクの変更(ASR/Tier1/
+semantic_equivalence関連)とは無関係と確認した:
+- 3件(`er003_test_p2j_investigate`): テスト総数の経年増加に対する
+  ハードコード済み過去スナップショット値との突合せ(本タスクに限らず
+  リポジトリ全体のtest追加で恒常的にドリフトする既知の性質)。
+- 3件(`er011_open112_trend_synthesis_mode_production_wiring_01_test_01`
+  ::TestBuildCommonBlockDefaultByteParity): プロンプトテンプレートの
+  byte-parity差分(本タスクが触れていないファイル由来)。
+- 2件(`er019_family_x_pointless_01_test_01`/
+  `er020_tts_*_trial_*_test_01`::「no uncommitted diff」系): 並行して
+  作業中の別Sonnetセッション(Flash-Lite family、`er003_v1_n3_01_
+  scaffold_generate.py`/`er003_v1_sing01_voice01_generate.py`)の
+  未commit差分を検出したもの(本委任文が明示する既知の並行衝突、本タスク
+  では一切編集していないファイル)。
+- 2件(ERROR、`er015_standard_a2_6000_generation_first_trial_01*`):
+  `STANDARD_A2_PROMPT_V5`構文不一致によるProduction側import時の意図的
+  `RuntimeError` STOP(本タスクが触れていないファイル由来)。
+
+### Gate 3再確認表(ユーザー指定9項目、Fable判定用)
+
+| 項目 | 状態(修正1回目時点) |
+|---|---|
+| 設計(Phase 1) | 完了、Mandatory Opus L2レビュー実施済み(無変更) |
+| ユーザー承認 | 済(strict版Tier1合成規則+分類A技術修正、2026-09-28。かつ本修正1回目=BLOCKER-1反映もユーザー承認済み) |
+| 実装 | 完了(BLOCKER-1修正+否定語二重防御+SF-2是正、上記「実装差分」参照) |
+| test | 完了(既存125件+StrictTier1SynthesisRuleTest 33件[既存25+新規8]、ファイル全体62 unittest全件PASS、false accept 0を直接経路・実配線経路の両方で確認) |
+| runtime evidence | (a)telemetryオフライン再判定¥0(reversal 7件、修正前後で不変)。(b)実Production artifact再判定¥0(Phase 2実施済み、BLOCKER-1修正はこの経路[Hormuz型、句読点atom有り]を変えない)。(c)実TTS+実ASR 2segment(Phase 2実施済み、Guardrail¥15内)。**新規則(diff_anchored=True)の実経路発火は(b)でのみ確認済みであり、(c)の2segmentでは発火していない**(Phase 2時点から変化なし、追加のTTS/ASR実行は本修正1回目では行っていない[Guardrail¥0]) |
+| 定期offline検知 | Phase 2で新設済み(`er021_offline_false_reject_detector_01.py`)、本修正1回目での追加変更なし |
+| SSOT反映 | 本修正1回目の文案を`RESULT_PACKET_ASR4.md`(一時ファイル)へ記載、`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`本体への反映はFable/ユーザー側の作業(本Sonnetの担当範囲外、衝突回避のため無編集) |
+| Mandatory Opus L3診断 | 実施済み(本REPORT前節「Opus L3診断所見」参照)、BLOCKER-1は本修正1回目で反映 |
+| `PRODUCTION_WIRED`最終判定 | **Fable/ユーザー判定待ち(本Sonnetは宣言しない)** |
+
+### telemetry隔離の確認
+
+`er021_output/en_asr_semantic_equivalence_production_wiring_01/
+telemetry.jsonl`の行数を、本タスクの修正・test実行の前後で確認
+(`wc -l`)。前: 4,977件。本タスクの全unittest実行(複数回)後: 4,977件
+(不変)。隔離fixture(`setUpModule`/`tearDownModule`)が機能していることを
+実測で確認した。既存の混入分(4,187→4,977、詳細は
+`telemetry_contamination_note.json`)は削除していない(read-only原則、
+削除の要否は別途ユーザー判断事項)。
+
+### Dangling Reference Check
+
+`_closed_punctuation_diff_ok|diff_anchored|negation_mismatches|
+TELEMETRY_LOG_PATH`をリポジトリ全体でGrep。本タスクの変更対象外で
+この4語を参照する箇所(`er006_secondary_asr_01.py`の独立した
+`negation_mismatches`アクセス、`er007_ja_asr_validator_01.py`の日本語ASR
+用の同名フィールド等)はいずれも別モジュール・別management IDの独立した
+既存フィールドであり、本修正による関数シグネチャ変更の影響は受けない
+(`_closed_punctuation_diff_ok()`は本ファイル内でのみ呼ばれる private
+関数、呼び出し箇所は1箇所のみ)。dangling referenceは検出されなかった。
+
+### N-9確認結果
+
+`git show 3d9a28be -- er006_preprod_hardening_01_validation.py
+er021_en_asr_semantic_equivalence_production_01.py`のdiffを確認した
+結果、er006側で削除された`_MONTHS`/`_DATE_ORDINAL_RE`/`_ORDINAL_WORDS`の
+リテラル値と、er021側で新規追加された同名定義のリテラル値は文字列単位で
+完全に一致していた(コピー&リネームであり、値の変更・欠落は無い)。
 
 ---
 Management-ID: EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02

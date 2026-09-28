@@ -535,10 +535,11 @@ _TIER1_MAX_ABSORBED_PUNCT_ATOM_RATIO = 0.2
 
 
 def _closed_punctuation_diff_ok(canon_slice: list[dict], asr_slice: list[dict]) -> bool:
-    """strict版Tier1合成規則(ユーザー承認2026-09-28)。diff-anchored
-    比較で非equalと判定された1つのop区間について、局所的に許容してよい
-    「punctuation由来の差分」かどうかを判定する。1つでも満たさなければ
-    False(best-effort禁止、opごと・全体非等価)。
+    """strict版Tier1合成規則(ユーザー承認2026-09-28、EN-ASR-SEMANTIC-
+    EQUIVALENCE-COVERAGE-REVIEW-02修正1回目でOpus L3 BLOCKER-1を反映)。
+    diff-anchored比較で非equalと判定された1つのop区間について、局所的に
+    許容してよい「punctuation由来の差分」かどうかを判定する。1つでも
+    満たさなければFalse(best-effort禁止、opごと・全体非等価)。
 
     閉じた規則(すべて満たす場合のみTrue):
     (1) 差分区間の両側atomはliteralのみ(数字・時刻atomの差は絶対に
@@ -547,11 +548,14 @@ def _closed_punctuation_diff_ok(canon_slice: list[dict], asr_slice: list[dict]) 
     (2) 両側の英数字内容(re.sub(r"[^a-z0-9]","",word)を連結したもの)が
         完全一致すること。literal atomの語は既に小文字化・前後アポスト
         ロフィ除去済みのため、この一致は大文字小文字や語順の並べ替えでは
-        なく、句読点・空白によるtokenization差のみによって成立する
-        (このopが既に'equal'でない=どちらかの側にatomが余る/種類が違う
-        ことは確定しているため、alnum内容が一致するならその差は必ず
-        punctuation由来である。単語脱落・否定語脱落・数量差・固有名詞差は
-        alnum内容そのものが変わるため、この等式を満たせない)。
+        なく、句読点・空白によるtokenization差のみによって成立する…はず
+        だったが、(2)単独では「語境界(分かち書き)差」だけの差分
+        (例: "not able"↔"notable")もalnum一致してしまうことがOpus L3
+        診断(BLOCKER-1)で判明した。これは否定語欠落を吸収し、かつ
+        DEFERRED扱いのはずの`'s`処理(例: "Ottawa's"↔"Ottawa s")を事実上
+        実装してしまう抜けだった。そのため、これを閉じる下記(4)(5)を
+        追加する(承認仕様の中核条件への適合修正、受理範囲は広げない
+        締める方向のみ)。
     (3) 両側とも少なくとも1 atom以上を含むこと(replaceのみを対象とし、
         insert/delete[片側が完全に空]は対象外とする)。理由: ハイフン付き
         数値・alphanumeric entity(15-minute/COVID-19等)は_preprocess_raw()
@@ -561,6 +565,23 @@ def _closed_punctuation_diff_ok(canon_slice: list[dict], asr_slice: list[dict]) 
         数値の意味的な単位[2つの独立した数/1つのコード全体]を左右し得る
         ケースまで安全側の判定を緩めてしまう回帰を実測で確認したため、
         意図的に対象外とする(既存の安全性を拡張しない)。
+    (4) 差分区間の両側atomのうち、alnum除去後が空になるatom(句読点atomの
+        意)が少なくとも1つ存在すること(BLOCKER-1本体の修正)。これが
+        無いと分かち書き差だけの差分(句読点atomゼロ)まで(2)のalnum一致
+        だけで吸収されてしまう。Hormuz型("us"↔"u"+"."+"s"+".")は"."が
+        句読点atomとして存在するため通過し、"not able"↔"notable"は
+        句読点atomが無いため、この条件でFalseとなり非等価のまま
+        (best-effort側=baselineへフォールバック、否定語保護は従来経路が
+        担う)。
+    (5) 句読点atomを除いた側のatom数のmin(両側)が1以下であること
+        (Opus L3所見「残存リスク」を採用、片側が結合形の1語であることを
+        要求する追加の締め)。理由: 句読点atomと語境界ずれが同一op内に
+        同居するケース(例: "U.S. not able"↔"US notable")は(4)だけでは
+        まだ吸収され得る。Hormuz型は句読点atom除外後
+        min(canon=1["us"], asr=2["u","s"])=1で通過し、上記の混在型は
+        min(4["u","s","not","able" ... ], 2["us","notable"])のように
+        非punct atom数が2以上になり弾かれる(具体値は実装のnonpunct
+        カウントを参照)。
     """
     if not canon_slice or not asr_slice:
         return False
@@ -568,12 +589,35 @@ def _closed_punctuation_diff_ok(canon_slice: list[dict], asr_slice: list[dict]) 
         return False
     canon_alnum = "".join(re.sub(r"[^a-z0-9]", "", a["word"]) for a in canon_slice)
     asr_alnum = "".join(re.sub(r"[^a-z0-9]", "", a["word"]) for a in asr_slice)
+
+    def _is_punct_atom(a: dict) -> bool:
+        return re.sub(r"[^a-z0-9]", "", a["word"]) == ""
+
+    # BLOCKER-1(4): 句読点atom(alnum除去後が空のatom)が両側合わせて
+    # 少なくとも1つ存在しない限り、この局所差はpunctuation由来ではない
+    # (分かち書き差のみ)と判定し、吸収しない。
+    punct_present = any(_is_punct_atom(a) for a in (*canon_slice, *asr_slice))
+    if not punct_present:
+        return False
+    # BLOCKER-1(5)(Opus L3所見「残存リスク」の追加締め): 句読点atomを
+    # 除いた側のatom数のminが1を超える場合は、句読点差と語境界ずれが
+    # 同一op内に同居している(=結合形が2語以上)ため吸収しない。
+    canon_nonpunct = sum(1 for a in canon_slice if not _is_punct_atom(a))
+    asr_nonpunct = sum(1 for a in asr_slice if not _is_punct_atom(a))
+    if min(canon_nonpunct, asr_nonpunct) > 1:
+        return False
+
     ok = canon_alnum == asr_alnum
-    # 安全装置(assertレベル): このopがPASSする範囲は「英数字内容完全一致」
-    # に限定されることを実行時にも固定する(diff-anchored化後の実装バグ
-    # 混入を防ぐ防御的アサーション、best-effort禁止の原則を機械的に保証)。
+    # SF-2是正(Opus L3所見): 旧実装は「ok = (canon_alnum == asr_alnum)」の
+    # 直後に全く同一の式を`assert`する恒真文であり(python -Oで消え、
+    # 実効性が無かった)、実質的にレビュー上のノイズだった。ここでは
+    # 独立した別の不変条件を確認する(このopがPASSする時点で必ず成立
+    # しているべき事実の機械的固定): 句読点atomが実在すること、および
+    # このop区間に非literal atomが紛れ込んでいないこと。
     if ok:
-        assert canon_alnum == asr_alnum
+        assert punct_present, "punctuation atom must be present when a diff is absorbed"
+        assert not any(a["kind"] != "literal" for a in (*canon_slice, *asr_slice)), (
+            "non-literal atom must never be absorbed by this rule")
     return ok
 
 
